@@ -9,15 +9,23 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "swift-ac-collections",
-            targets: ["swift-ac-collections"]),
+            targets: ["AcCollections"]),
+    ],
+    dependencies: [
+        .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.4"),
+        .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "swift-ac-collections"),
+            name: "AcCollections",
+            dependencies: [
+                .product(name: "Collections", package: "swift-collections"),
+            ]
+        ),
         .testTarget(
             name: "swift-ac-collectionsTests",
-            dependencies: ["swift-ac-collections"]),
+            dependencies: ["AcCollections"]),
     ]
 )

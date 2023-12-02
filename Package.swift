@@ -25,7 +25,7 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "swift-ac-collectionsTests",
+            name: "AcCollectionsTests",
             dependencies: ["AcCollections"]),
     ]
 )

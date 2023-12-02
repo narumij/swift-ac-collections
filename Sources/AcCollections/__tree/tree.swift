@@ -8,10 +8,10 @@
      http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import Foundation
-
 // Original : https://github.com/llvm/llvm-project/blob/main/libcxx/include/__tree
-// Licence: https://github.com/llvm/llvm-project/blob/main/LICENSE.TXT
+// OriginalLicence: https://github.com/llvm/llvm-project/blob/main/LICENSE.TXT
+
+import Foundation
 
 extension _RedBlackTree._UnsafeHandle {
 
@@ -440,6 +440,10 @@ extension _RedBlackTree._UnsafeHandle {
     
     // MARK: -
     
+    func __insert_unique(_ x: Element) {
+        __emplace_unique_key_args(x)
+    }
+
     func
     clear()
     {
@@ -517,6 +521,8 @@ extension _RedBlackTree._UnsafeHandle {
         return .init(ref: __parent,.__left_)
     }
     
+    // __find_leaf(...)
+    
     func
     __find_equal(_ __parent: inout _Pointer!, _ __v: Element) -> _Reference {
         var __nd: _Pointer! = __root
@@ -549,6 +555,8 @@ extension _RedBlackTree._UnsafeHandle {
         return .init(ref: __end_node, .__left_)
     }
     
+    // __find_equal(...)
+
     func
     __insert_node_at(
         _ __parent: _Pointer!, _ __child: _Reference,
@@ -561,14 +569,15 @@ extension _RedBlackTree._UnsafeHandle {
         // __new_node->__is_black_ is initialized in __tree_balance_after_insert
         var ___child = __child
         ___child.reference = __new_node
+#if false
+        // 一時的なワークアラウンドコード。なくても大丈夫なことが確信できたら、削除すること。
         if ___child.target == __end_node {
             __new_node.__parent_ = ___child.target
         }
-        
+#endif
         if (__begin_node.__left_ != nil) {
             __begin_node = __begin_node.__left_ }
         __tree_balance_after_insert(__end_node.__left_, __new_node);
-        
         size += 1
     }
     
@@ -583,6 +592,25 @@ extension _RedBlackTree._UnsafeHandle {
         }
     }
     
+    // __emplace_hint_unique_key_args(...)
+    
+    // __construct_node(...)
+    
+    // __emplace_unique_impl(...)
+    
+    // __emplace_hint_unique_impl(...)
+    
+    // __emplace_multi(...)
+    
+    // __emplace_hint_multi(...)
+    
+    // __node_assign_unique(...)
+    
+    // __node_insert_multi(...)
+    
+    // __node_insert_multi(...)
+    
+    // __remove_node_pointer(...)
     func
     __remove_node_pointer(_ __ptr: _Pointer!)
     {
@@ -591,7 +619,55 @@ extension _RedBlackTree._UnsafeHandle {
                       __ptr)
     }
     
-    func __insert_unique(_ x: Element) {
-        __emplace_unique_key_args(x)
-    }
+    // __node_handle_insert_unique(...)
+    
+    // __node_handle_insert_unique(...)
+    
+    // __node_handle_extract(...)
+    
+    // __node_handle_extract(...)
+    
+    // __node_handle_merge_unique(...)
+    
+    // __node_handle_insert_multi(...)
+    
+    // __node_handle_insert_multi(...)
+    
+    // __node_handle_merge_multi(...)
+    
+    // erase(...)
+    
+    // erase(...)
+    
+    // __erase_unique(...)
+    
+    // __erase_multi(...)
+    
+    // find(...)
+    
+    // find(...)
+    
+    // __count_unique(...)
+    
+    // __count_multi(...)
+    
+    // __lower_bound(...)
+    
+    // __lower_bound(...)
+    
+    // __upper_bound(...)
+    
+    // __upper_bound(...)
+    
+    // __equal_range_unique(...)
+    
+    // __equal_range_unique(...)
+    
+    // __equal_range_multi(...)
+    
+    // __equal_range_multi(...)
+    
+    // remove(...)
+    
+    // swap(...)
 }

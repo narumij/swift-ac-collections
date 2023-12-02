@@ -7,7 +7,7 @@ extension _RedBlackTree {
     }
 }
 
-final class swift_ac_collectionsTests: XCTestCase {
+final class RedBlackTreeTests: XCTestCase {
     func testExample() throws {
         // XCTest Documentation
         // https://developer.apple.com/documentation/xctest

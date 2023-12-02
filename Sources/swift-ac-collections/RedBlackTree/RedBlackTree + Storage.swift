@@ -24,7 +24,7 @@ extension _RedBlackTree {
         @inlinable @inline(__always)
         init(minimumCapacity: Int) {
             let object = _Buffer.create(minimumCapacity: minimumCapacity) {
-                _BufferHeader(capacity: $0.capacity, count: 0, size: 0) }
+                _BufferHeader(capacity: $0.capacity, count: 0, size: 0, __begin_node_: 0) }
             self.init(_buffer: _BufferPointer(unsafeBufferObject: object), storageManager: .init())
             _buffer.withUnsafeMutablePointerToElements { elements in
                 elements.initialize(to: .init())

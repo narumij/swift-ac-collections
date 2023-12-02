@@ -101,8 +101,29 @@ extension _RedBlackTree._UnsafeHandle {
         return __x.__parent_
     }
     
-    // __tree_next_iter(_NodePtr __x) _NOEXCEPT
-    // __tree_prev_iter(_EndNodePtr __x) _NOEXCEPT
+    func
+    __tree_next_iter(_ __x: _Pointer!) -> _Pointer!
+    {
+        assert(__x != nil, "node shouldn't be null");
+        var __x: _Pointer! = __x
+        if (__x.__right_ != nil) {
+            return __tree_min(__x.__right_) }
+        while __tree_is_left_child(__x) {
+            __x = __x.__parent_ }
+        return __x.__parent_
+    }
+    
+    func
+    __tree_prev_iter(_ __x: _Pointer!) -> _Pointer!
+    {
+        assert(__x != nil, "node shouldn't be null");
+        if (__x.__left_ != nil) {
+            return __tree_max(__x.__left_) }
+        var __xx: _Pointer! = __x
+        while __tree_is_left_child(__xx) {
+            __xx = __xx.__parent_ }
+        return __xx.__parent_
+    }
     
     func
     __tree_leaf(_ __x: _Pointer!) -> _Pointer!
@@ -423,13 +444,81 @@ extension _RedBlackTree._UnsafeHandle {
     clear()
     {
         destroy(__root)
-        size = 0;
-        //__begin_node() = __end_node();
-        //__end_node()->__left_ = nullptr;
+        size = 0
+        __begin_node = __end_node
+        __end_node.__left_ = nil
     }
     
     func
-    __find_equal(_ _parent: inout _Pointer!, _ __v: Element) -> _Reference {
+    __find_leaf_low(_ __parent: inout _Pointer!, _ __v: Element) -> _Reference
+    {
+        var __nd: _Pointer! = __root
+        if (__nd != nil)
+        {
+            while (true)
+            {
+                if (value_comp(__nd.__value_, __v))
+                {
+                    if (__nd.__right_ != nil) {
+                        __nd = __nd.__right_ }
+                    else
+                    {
+                        __parent = __nd
+                        return .init(ref: __nd,.__right_)
+                    }
+                }
+                else
+                {
+                    if (__nd.__left_ != nil) {
+                        __nd = __nd.__left_ }
+                    else
+                    {
+                        __parent = __nd
+                        return .init(ref: __parent,.__left_)
+                    }
+                }
+            }
+        }
+        __parent = __end_node
+        return .init(ref: __parent,.__left_)
+    }
+    
+    func
+    __find_leaf_high(_ __parent: inout _Pointer!, _ __v: Element) -> _Reference
+    {
+        var __nd: _Pointer! = __root
+        if (__nd != nil)
+        {
+            while (true)
+            {
+                if (value_comp(__v, __nd.__value_))
+                {
+                    if (__nd.__left_ != nil) {
+                        __nd = __nd.__left_ }
+                    else
+                    {
+                        __parent = __nd
+                        return .init(ref: __parent,.__left_)
+                    }
+                }
+                else
+                {
+                    if (__nd.__right_ != nil) {
+                        __nd = __nd.__right_ }
+                    else
+                    {
+                        __parent = __nd
+                        return .init(ref: __nd,.__right_)
+                    }
+                }
+            }
+        }
+        __parent = __end_node
+        return .init(ref: __parent,.__left_)
+    }
+    
+    func
+    __find_equal(_ __parent: inout _Pointer!, _ __v: Element) -> _Reference {
         var __nd: _Pointer! = __root
         if (__nd != nil)
         {
@@ -440,24 +529,24 @@ extension _RedBlackTree._UnsafeHandle {
                     if __nd.__left_ != nil {
                         __nd = __nd.__left_
                     } else {
-                        _parent = __nd
-                        return .init(target: _parent, member: .left)
+                        __parent = __nd
+                        return .init(ref: __parent, .__left_)
                     }
                 } else if value_comp(__nd.__value_, __v) {
                     if __nd.__right_ != nil {
                         __nd = __nd.__right_
                     } else {
-                        _parent = __nd
-                        return .init(target: _parent, member: .right)
+                        __parent = __nd
+                        return .init(ref: __parent, .__right_)
                     }
                 } else {
-                    _parent = __nd
-                    return .init( target: _parent, member: .`self`)
+                    __parent = __nd
+                    return .init( ref: __parent, .__self_)
                 }
             }
         }
-        _parent = __end_node
-        return .init(target: __end_node, member: .left)
+        __parent = __end_node
+        return .init(ref: __end_node, .__left_)
     }
     
     func
@@ -475,13 +564,11 @@ extension _RedBlackTree._UnsafeHandle {
         if ___child.target == __end_node {
             __new_node.__parent_ = ___child.target
         }
-#if false
-        if (__begin_node().__left_ != nil) {
-            __begin_node() = __begin_node().__left_ }
-        __tree_balance_after_insert(__end_node().__left_, __child);
-#else
+        
+        if (__begin_node.__left_ != nil) {
+            __begin_node = __begin_node.__left_ }
         __tree_balance_after_insert(__end_node.__left_, __new_node);
-#endif
+        
         size += 1
     }
     

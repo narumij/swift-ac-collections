@@ -46,7 +46,7 @@ extension _RedBlackTree._UnsafeHandle {
     @usableFromInline
     struct _Reference {
         @inlinable @inline(__always)
-        public init(target: _Pointer? = nil, member: _NodeKeyPath) {
+        public init(ref target: _Pointer? = nil, _ member: _NodeKeyPath) {
             self.target = target
             self.member = member
         }
@@ -69,6 +69,11 @@ extension _RedBlackTree._UnsafeHandle {
         nonmutating set { __end_node.__raw_pointer.pointee.__left_ = newValue.offset }
     }
     
+    var __begin_node: _Pointer! {
+        @inline(__always) get { pointer(_header.pointee.__begin_node_) }
+        nonmutating set { _header.pointee.__begin_node_ = newValue.offset }
+    }
+
     var __end_node: _Pointer! {
         @inline(__always) get { pointer(0) }
         nonmutating set { }
@@ -153,10 +158,11 @@ extension _RedBlackTree._UnsafeHandle {
     public func moveElements(minimumCapacity: Int) -> _Storage {
         let count = _header.pointee.count
         let size = _header.pointee.size
+        let __begin_node_ = _header.pointee.__begin_node_
         
         let object = _Buffer.create(
             minimumCapacity: minimumCapacity) {
-                .init(capacity: $0.capacity, count: count, size: size)
+                .init(capacity: $0.capacity, count: count, size: size, __begin_node_: __begin_node_)
             }
         
         let result = _Storage (

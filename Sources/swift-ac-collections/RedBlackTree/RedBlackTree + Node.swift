@@ -36,9 +36,9 @@ protocol __tree_node: __tree_node_base {
 
 @usableFromInline
 enum _NodeKeyPath {
-    case `self`
-    case left
-    case right
+    case __self_
+    case __left_
+    case __right_
 }
 
 extension _BufferPointer where _Pointee: __tree_node {
@@ -72,16 +72,16 @@ extension _BufferPointer where _Pointee: __tree_node {
     @inlinable subscript(key: _NodeKeyPath) -> Self! {
         @inline(__always) get {
             switch key {
-            case .`self`: return __parent_
-            case .left  : return __left_
-            case .right : return __right_
+            case .__self_: return __parent_
+            case .__left_  : return __left_
+            case .__right_ : return __right_
             }
         }
         set {
             switch key {
-            case .`self`: self = newValue
-            case .left  : __left_   = newValue
-            case .right : __right_  = newValue
+            case .__self_: self = newValue
+            case .__left_  : __left_   = newValue
+            case .__right_ : __right_  = newValue
             }
         }
     }

@@ -19,16 +19,5 @@ extension _BufferPointer {
     var __raw_pointer: UnsafeMutablePointer<_Pointee> {
         @inline(__always) get { (elements + offset) }
     }
-    
-#if false
-    public subscript<T>(dynamicMember keyPath: KeyPath<_Pointee, T>) -> T {
-        get { __raw_pointer.pointee[keyPath: keyPath] }
-    }
-    
-    public subscript<T>(dynamicMember keyPath: WritableKeyPath<_Pointee, T>) -> T {
-        get { __raw_pointer.pointee[keyPath: keyPath] }
-        set { __raw_pointer.pointee[keyPath: keyPath] = newValue }
-    }
-#endif
 }
 

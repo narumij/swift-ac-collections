@@ -17,7 +17,7 @@ struct RedBlackSet<Element: Comparable> {
     }
     
     func contains(_ e: Element) -> Bool {
-        fatalError()
+        __tree[e] != nil
     }
     
     var count: Int { __tree.count }

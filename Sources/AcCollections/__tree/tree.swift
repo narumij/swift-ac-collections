@@ -655,9 +655,45 @@ extension _RedBlackTree._UnsafeHandle {
     
     // __lower_bound(...)
     
+    func
+    __lower_bound(_ __v: Element,_ __root: _Pointer!,_ __result: _Pointer!) -> _Pointer!
+    {
+        var __result: _Pointer! = __result
+        var __root: _Pointer! = __root
+        while (__root != nil)
+        {
+            if (!value_comp(__root.__value_, __v))
+            {
+                __result = __root
+                __root = __root.__left_
+            }
+            else {
+                __root = __root.__right_ }
+        }
+        return __result
+    }
+    
     // __upper_bound(...)
     
     // __upper_bound(...)
+    
+    func
+    __upper_bound(_ __v: Element,_ __root: _Pointer!,_ __result: _Pointer!) -> _Pointer!
+    {
+        var __result: _Pointer! = __result
+        var __root: _Pointer! = __root
+        while (__root != nil)
+        {
+            if (value_comp(__v, __root.__value_))
+            {
+                __result = __root
+                __root = __root.__left_
+            }
+            else {
+                __root = __root.__right_ }
+        }
+        return __result
+    }
     
     // __equal_range_unique(...)
     

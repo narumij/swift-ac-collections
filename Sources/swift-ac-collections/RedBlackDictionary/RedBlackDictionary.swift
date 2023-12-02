@@ -18,8 +18,8 @@ struct RedBlackDictionary<Key: Comparable, Value> {
     
     subscript(key: Key) -> Value? {
         get { __tree[.init(key: key,value: nil)]?.value }
-        set { 
-            // __tree.insert(.init(key: key, value: newValue))
+        set {
+            // 未テスト。コンパイルは通っているが実際に動作するか不明
             __tree[.init(key: key,value: nil)]?.value = newValue
         }
     }

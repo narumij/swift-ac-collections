@@ -18,7 +18,7 @@ C++のSTLのsetやmapと同等の動作をするモノを目指して開発し�
 
 swift-collectionsの動向次第ではありますが、
 
-bitsetやswift-collectionsをあてにしており追加の予定はありません。
+bitsetはswift-collectionsのものをあてにしており追加の予定はありません。
 
 heapや優先キューは動向を見守りつつ必要そうなら追加するかもしれません。
 

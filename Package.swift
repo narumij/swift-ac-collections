@@ -26,6 +26,9 @@ let package = Package(
         ),
         .testTarget(
             name: "AcCollectionsTests",
-            dependencies: ["AcCollections"]),
+            dependencies: [
+                "AcCollections",
+                .product(name: "Algorithms", package: "swift-algorithms"),
+            ]),
     ]
 )

@@ -8,11 +8,24 @@ AtCoderで必要とされるデータ構造のうち、SwiftとAC(AtCoder) Libra
 
 ## 内容
 
-・RedBlackSet, RedBlackDictionary
+- RedBlackSet, RedBlackDictionary
 
 C++のSTLのsetやmapと同等の動作をするモノを目指して開発しています。
 
 木の回転や、木のリバランシングに関しては、LLVMのコードをほぼ丸写しでつかっています。ありがとうございます。
+
+各種SetでACできなかった場合に、お試しください。
+
+
+- NextPermutation
+
+順列全列挙です。swift-algorithmのpermutationsのコードから周囲を剥ぎ取り、配列を書き換える動作にしたものです。
+
+オリジナルでは配列のコピーが発生するので、組み合わ数次第で簡単に処理が終わらなくなり、AC不可能な場合がたまにあります。
+
+そういう場合にお試しください。
+
+デバッグビルドとリリースビルドとの速度差が激しいので、厳しめの問題ではリリースビルドでの確認をおすすめします。
 
 ## 今後
 

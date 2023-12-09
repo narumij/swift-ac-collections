@@ -38,20 +38,42 @@ final class RedBlackSetTests: XCTestCase {
         s.insert(2)
         s.insert(3)
         s.insert(4)
+        XCTAssertEqual(nil, s.prev(1))
         XCTAssertEqual(1, s.prev(2))
         XCTAssertEqual(2, s.prev(3))
         XCTAssertEqual(3, s.prev(4))
+//        XCTAssertEqual(4, s.prev(5))
     }
     
+    func testPrevNext() throws {
+        var s = RedBlackSet<Int>()
+        s.insert(0)
+        s.insert(2)
+        XCTAssertEqual(0, s.prev(1))
+        XCTAssertEqual(2, s.next(1))
+    }
+    
+    func testPrevNext2() throws {
+        var s = RedBlackSet<Int>()
+        s.insert(0)
+        s.insert(2)
+        s.insert(7)
+        s.insert(9)
+        s.insert(10)
+        XCTAssertEqual(2, s.prev(3))
+    }
+
     func testNext() throws {
         var s = RedBlackSet<Int>()
         s.insert(1)
         s.insert(2)
         s.insert(3)
         s.insert(4)
+        XCTAssertEqual(1, s.next(0))
         XCTAssertEqual(2, s.next(1))
         XCTAssertEqual(3, s.next(2))
         XCTAssertEqual(4, s.next(3))
+        XCTAssertEqual(nil, s.next(4))
     }
 
     func testPerformanceExample() throws {

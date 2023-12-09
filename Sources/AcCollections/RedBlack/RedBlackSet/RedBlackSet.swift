@@ -1,6 +1,7 @@
 import Foundation
 
-struct RedBlackSet<Element: Comparable> {
+public struct RedBlackSet<Element: Comparable> {
+    public init() { }
 
     private var __tree = _RedBlackTree<Element, _red_brack_tree_comparable_compare<Element>>()
     
@@ -8,15 +9,15 @@ struct RedBlackSet<Element: Comparable> {
     
     var last: Element? { __tree.last }
 
-    mutating func insert(_ e: Element) {
+    public mutating func insert(_ e: Element) {
         __tree.insert(e)
     }
     
-    mutating func remove(_ e: Element) {
+    public mutating func remove(_ e: Element) {
         __tree.remove(e)
     }
     
-    func contains(_ e: Element) -> Bool {
+    public func contains(_ e: Element) -> Bool {
         __tree.storage.__read {
             var __root = $0.__end_node.__left_
             let result = $0.__find_equal(&__root, e)
@@ -24,24 +25,25 @@ struct RedBlackSet<Element: Comparable> {
         }
     }
     
-    var count: Int { __tree.count }
+    public var count: Int { __tree.count }
 }
 
 extension RedBlackSet {
     
-    func prev(_ e: Element) -> Element {
+    public func prev(_ e: Element) -> Element? {
         __tree.storage.__read {
-            var __root = $0.__end_node.__left_
-            let it = $0.__find_equal(&__root, e)
-            return $0.__tree_prev_iter(it.target).__value_
+            let __root = $0.__end_node.__left_
+            let p = $0.__lower_bound(e, __root, __root)
+            return $0.__tree_prev_iter(p)?.__value_
         }
     }
     
-    func next(_ e: Element) -> Element {
+    public func next(_ e: Element) -> Element? {
         __tree.storage.__read {
-            var __root = $0.__end_node.__left_
-            let it = $0.__find_equal(&__root, e)
-            return $0.__tree_next_iter(it.target).__value_
+            let __root = $0.__end_node.__left_
+            let p = $0.__upper_bound(e, __root, __root)
+            guard let value = p?.__value_ else { return nil }
+            return value > e ? value : nil
         }
     }
 }

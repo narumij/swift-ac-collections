@@ -18,7 +18,9 @@ extension _RedBlackTree._UnsafeHandle {
     func
     __tree_is_left_child(_ __x: _Pointer?) -> Bool
     {
-        return __x == __x?.__parent_?.__left_
+        guard let __parent_ = __x?.__parent_ else { return false }
+        return __x == __parent_.__left_
+//        return __x == __x?.__parent_?.__left_
     }
     
     func
@@ -116,7 +118,7 @@ extension _RedBlackTree._UnsafeHandle {
     func
     __tree_prev_iter(_ __x: _Pointer!) -> _Pointer!
     {
-        assert(__x != nil, "node shouldn't be null");
+        assert(__x != nil, "node shouldn't be null")
         if (__x.__left_ != nil) {
             return __tree_max(__x.__left_) }
         var __xx: _Pointer! = __x

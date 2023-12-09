@@ -16,9 +16,9 @@ import Foundation
 extension _RedBlackTree._UnsafeHandle {
 
     func
-    __tree_is_left_child(_ __x: _Pointer!) -> Bool
+    __tree_is_left_child(_ __x: _Pointer?) -> Bool
     {
-        return __x == __x.__parent_.__left_
+        return __x == __x?.__parent_?.__left_
     }
     
     func
@@ -104,11 +104,11 @@ extension _RedBlackTree._UnsafeHandle {
     func
     __tree_next_iter(_ __x: _Pointer!) -> _Pointer!
     {
-        assert(__x != nil, "node shouldn't be null");
-        var __x: _Pointer! = __x
+        assert(__x != nil, "node shouldn't be null")
         if (__x.__right_ != nil) {
             return __tree_min(__x.__right_) }
-        while __tree_is_left_child(__x) {
+        var __x: _Pointer! = __x
+        while !__tree_is_left_child(__x) {
             __x = __x.__parent_ }
         return __x.__parent_
     }

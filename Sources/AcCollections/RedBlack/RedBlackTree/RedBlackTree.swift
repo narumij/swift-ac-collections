@@ -40,13 +40,13 @@ extension _RedBlackTree {
         storage.__update { $0.erase(e) }
     }
     
-    func contains(_ e: Element) -> Bool {
-        storage.__read {
-            var __root = $0.__end_node.__left_
-            let result = $0.__find_equal(&__root, e)
-            return result.target != $0.__end_node
-        }
-    }
+//    func contains(_ e: Element) -> Bool {
+//        storage.__read {
+//            var __root = $0.__end_node.__left_
+//            let result = $0.__find_equal(&__root, e)
+//            return result.target != $0.__end_node
+//        }
+//    }
     
     var count: Int { storage.size }
     
@@ -62,7 +62,7 @@ extension _RedBlackTree {
             storage.__update {
                 var __root = $0.__end_node.__left_
                 let result = $0.__find_equal(&__root, element)
-                result.reference?.__value_ = newValue
+                result.target?.__value_ = newValue
             }
         }
     }

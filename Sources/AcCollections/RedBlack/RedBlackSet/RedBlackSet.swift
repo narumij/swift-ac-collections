@@ -17,8 +17,31 @@ struct RedBlackSet<Element: Comparable> {
     }
     
     func contains(_ e: Element) -> Bool {
-        __tree[e] != nil
+        __tree.storage.__read {
+            var __root = $0.__end_node.__left_
+            let result = $0.__find_equal(&__root, e)
+            return result.target?.__value_ == e
+        }
     }
     
     var count: Int { __tree.count }
+}
+
+extension RedBlackSet {
+    
+    func prev(_ e: Element) -> Element {
+        __tree.storage.__read {
+            var __root = $0.__end_node.__left_
+            let it = $0.__find_equal(&__root, e)
+            return $0.__tree_prev_iter(it.target).__value_
+        }
+    }
+    
+    func next(_ e: Element) -> Element {
+        __tree.storage.__read {
+            var __root = $0.__end_node.__left_
+            let it = $0.__find_equal(&__root, e)
+            return $0.__tree_next_iter(it.target).__value_
+        }
+    }
 }

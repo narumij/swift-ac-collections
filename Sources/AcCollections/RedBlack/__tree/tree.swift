@@ -571,12 +571,6 @@ extension _RedBlackTree._UnsafeHandle {
         // __new_node->__is_black_ is initialized in __tree_balance_after_insert
         var ___child = __child
         ___child.reference = __new_node
-#if false
-        // 一時的なワークアラウンドコード。なくても大丈夫なことが確信できたら、削除すること。
-        if ___child.target == __end_node {
-            __new_node.__parent_ = ___child.target
-        }
-#endif
         if (__begin_node.__left_ != nil) {
             __begin_node = __begin_node.__left_ }
         __tree_balance_after_insert(__end_node.__left_, __new_node);

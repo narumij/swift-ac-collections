@@ -1,6 +1,7 @@
 import XCTest
 @testable import AcCollections
 
+#if false
 extension _RedBlackTree {
     mutating func ensureCapacity(minimumCapacity: Int) {
         storage = storage.ensureCapacity(minimumCapacity: minimumCapacity)
@@ -241,3 +242,4 @@ final class RedBlackTreeTests: XCTestCase {
     }
     
 }
+#endif

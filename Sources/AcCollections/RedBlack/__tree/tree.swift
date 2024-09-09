@@ -129,12 +129,8 @@ protocol ___tree_base_find: ___tree_base_with_ref & ___tree_base_with_value
 }
 
 protocol __RedBlackTree: ___tree_base & ___tree_base_find {
-//    associatedtype Element
-//    associatedtype _NodePtr: __node_pointer where _NodePtr.__node_value_type == Element
-//    associatedtype __parent_pointer: __node_pointer
     var __root_ptr: _NodePtr { get }
     var __begin_node: _NodePtr { get nonmutating set }
-//    associatedtype _NodeRef
     func __construct_node() -> __node_holder
     func destroy(_: _NodePtr)
     var size: Int { get nonmutating set }

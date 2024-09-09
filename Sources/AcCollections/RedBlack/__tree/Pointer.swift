@@ -75,6 +75,9 @@ extension UnsafeOffset {
         }
         return nil
     }
+    static func node(pointer: UnsafeMutableBufferPointer<Pointee>,_ n: Int) -> Self {
+        .offset(pointer, n)
+    }
 }
 
 struct Item: Equatable {

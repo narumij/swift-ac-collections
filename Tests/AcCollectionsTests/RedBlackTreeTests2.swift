@@ -8,12 +8,7 @@
 import XCTest
 @testable import AcCollections
 
-struct RedBlackNode: Equatable {
-    var isBlack: Bool
-    var parent: Int?
-    var left: Int?
-    var right: Int?
-}
+typealias RedBlackNode = Item
 
 extension Array where Element == RedBlackNode {
     
@@ -38,22 +33,32 @@ extension Array where Element == RedBlackNode {
     }
 }
 
-enum Pointer: Equatable, ___tree_base, __node_base_pointer {
-    static var data: [RedBlackNode] = []
-    case none
-    case node(Int)
-    init(nilLiteral: ()) { self = .none }
-    var index: Int? {
-        switch self {
-        case .node(let n):
-            return n
-        default:
-            return nil
-        }
+public typealias Pointer = RawOffset
+
+var _data: [RedBlackNode] = []
+
+extension RawOffset {
+    static func node(_ n: Int) -> Self {
+        .offset(n)
     }
-    var __right_: Pointer {
+}
+
+extension Pointer: ___tree_base { 
+    static var __root: Pointer {
+        __end_node.__left_
+    }
+    static var __end_node: Pointer! {
+        .node(0)
+    }
+}
+
+extension Pointer: __node_base_pointer {
+    
+    static var data: [RedBlackNode] { get { _data } set { _data = newValue } }
+    
+    public var __right_: Pointer {
         get {
-            if case .node(let int) = self,
+            if case .offset(let int) = self,
                let r = Self.data[int].right {
                 return .node(r)
             }
@@ -61,8 +66,8 @@ enum Pointer: Equatable, ___tree_base, __node_base_pointer {
         }
         nonmutating set {
             switch self {
-            case .node(let int):
-                if case .node(let n) = newValue {
+            case .offset(let int):
+                if case .offset(let n) = newValue {
                     Self.data[int].right = n
                 } else {
                     Self.data[int].right = nil
@@ -72,9 +77,9 @@ enum Pointer: Equatable, ___tree_base, __node_base_pointer {
             }
         }
     }
-    var __parent_: Pointer {
+    public var __parent_: Pointer {
         get {
-            if case .node(let int) = self,
+            if case .offset(let int) = self,
                let p = Self.data[int].parent {
                 return .node(p)
             }
@@ -82,8 +87,8 @@ enum Pointer: Equatable, ___tree_base, __node_base_pointer {
         }
         nonmutating set {
             switch self {
-            case .node(let int):
-                if case .node(let n) = newValue {
+            case .offset(let int):
+                if case .offset(let n) = newValue {
                     Self.data[int].parent = n
                 } else {
                     Self.data[int].parent = nil
@@ -93,25 +98,25 @@ enum Pointer: Equatable, ___tree_base, __node_base_pointer {
             }
         }
     }
-    var __is_black_: Bool {
+    public var __is_black_: Bool {
         get {
-            if case .node(let int) = self {
+            if case .offset(let int) = self {
                 return Self.data[int].isBlack
             }
             return false
         }
         nonmutating set {
             switch self {
-            case .node(let int):
+            case .offset(let int):
                 Self.data[int].isBlack = newValue
             case .none:
                 break
             }
         }
     }
-    var __left_: Pointer {
+    public var __left_: Pointer {
         get {
-            if case .node(let int) = self,
+            if case .offset(let int) = self,
                let l = Self.data[int].left {
                 return .node(l)
             }
@@ -119,8 +124,8 @@ enum Pointer: Equatable, ___tree_base, __node_base_pointer {
         }
         nonmutating set {
             switch self {
-            case .node(let int):
-                if case .node(let n) = newValue {
+            case .offset(let int):
+                if case .offset(let n) = newValue {
                     Self.data[int].left = n
                 } else {
                     Self.data[int].left = nil
@@ -130,12 +135,49 @@ enum Pointer: Equatable, ___tree_base, __node_base_pointer {
             }
         }
     }
-    func __parent_unsafe() -> Pointer { __parent_ }
-    static func __root() -> Pointer {
-        __end_node().__left_
+    public func __parent_unsafe() -> Pointer { __parent_ }
+}
+
+extension Pointer {
+
+    enum Reference {
+        case __parent_(Pointer)
+        case __left_(Pointer)
+        case __right_(Pointer)
+        var referencee: Pointer {
+            get {
+                switch self {
+                case .__parent_(let p):
+                    return p.__parent_
+                case .__left_(let p):
+                    return p.__left_
+                case .__right_(let p):
+                    return p.__right_
+                }
+            }
+            nonmutating set {
+                switch self {
+                case .__parent_(let p):
+                    p.__parent_ = newValue
+                case .__left_(let p):
+                    p.__left_ = newValue
+                case .__right_(let p):
+                    p.__right_ = newValue
+                }
+            }
+        }
     }
-    static func __end_node() -> Pointer! {
-        .node(0)
+    
+    var __parent_ref: Reference {
+        .__parent_(self)
+    }
+    
+    var __left_ref: Reference {
+        .__left_(self)
+    }
+    
+    var __right_ref: Reference {
+        .__right_(self)
     }
 }
 
@@ -143,7 +185,7 @@ enum __tree_error: Swift.Error {
     case error(Int,Any,String)
 }
 
-extension ___tree_base {
+extension Pointer {
     
     static func
     __tree_sub_invariant__<_NodePtr>(_ __x: _NodePtr) throws -> Int
@@ -215,7 +257,7 @@ final class RedBlackTreeTests2: XCTestCase {
             .init(isBlack: false, parent: 0, left: nil,right: nil),
         ]
         XCTAssertFalse(Pointer.__tree_is_left_child(Pointer.node(1)))
-        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root()))
+        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root))
 
         Pointer.data = [
             .init(isBlack: false, parent: nil, left: 1,right: nil),
@@ -223,7 +265,7 @@ final class RedBlackTreeTests2: XCTestCase {
             .init(isBlack: false, parent: 1, left: nil,right: nil),
         ]
         XCTAssertTrue(Pointer.__tree_is_left_child(Pointer.node(1)))
-        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root()))
+        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root))
     }
     
     func testRotate() throws {
@@ -239,7 +281,7 @@ final class RedBlackTreeTests2: XCTestCase {
         let initial = Pointer.data
         
         print(Pointer.data.graphviz())
-        XCTAssertFalse(Pointer.__tree_invariant(Pointer.__root()))
+        XCTAssertFalse(Pointer.__tree_invariant(Pointer.__root))
 
         Pointer.__tree_left_rotate(Pointer.node(1))
         print(Pointer.data.graphviz())
@@ -276,7 +318,7 @@ final class RedBlackTreeTests2: XCTestCase {
             .init(isBlack: false, parent: 2, left: nil,right: nil), // 6
         ]
         
-        XCTAssertNoThrow(try Pointer.__tree_invariant__(Pointer.__root()))
+        XCTAssertNoThrow(try Pointer.__tree_invariant__(Pointer.__root))
         
         XCTAssertEqual(Pointer.__tree_min(Pointer.node(1)), Pointer.node(4))
         XCTAssertEqual(Pointer.__tree_max(Pointer.node(1)), Pointer.node(5))
@@ -294,7 +336,7 @@ final class RedBlackTreeTests2: XCTestCase {
         Pointer.__tree_balance_after_insert(Pointer.node(1), Pointer.node(6))
         print(Pointer.data.graphviz())
 
-        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root()))
+        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root))
 
         XCTAssertEqual(Pointer.data[0], lastData[0])
         XCTAssertEqual(Pointer.data[1], lastData[1])
@@ -316,34 +358,32 @@ final class RedBlackTreeTests2: XCTestCase {
     
     func testExample2_1() throws {
         
-        throw XCTSkip()
-
         Pointer.data = [
             .init(isBlack: false),
         ]
         
         XCTAssertEqual(Pointer.data.count, 1)
-        XCTAssertEqual(Pointer.__root(), nil)
-        XCTAssertEqual(Pointer.__root().__parent_, nil)
-        XCTAssertEqual(Pointer.__root().__left_, nil)
-        XCTAssertEqual(Pointer.__root().__right_, nil)
+        XCTAssertEqual(Pointer.__root, nil)
+        XCTAssertEqual(Pointer.__root.__parent_, nil)
+        XCTAssertEqual(Pointer.__root.__left_, nil)
+        XCTAssertEqual(Pointer.__root.__right_, nil)
 
-        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root()))
+        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root))
 
-        Pointer.__end_node().__left_ = .node(Pointer.data.count)
+        Pointer.__end_node.__left_ = .node(Pointer.data.count)
         Pointer.data.append(.init(isBlack: true, parent: 0))
         
         XCTAssertEqual(Pointer.data.count, 2)
-        XCTAssertNotEqual(Pointer.__root(), nil)
-        XCTAssertNotEqual(Pointer.__root().__parent_, nil)
-        XCTAssertEqual(Pointer.__root().__left_, nil)
-        XCTAssertEqual(Pointer.__root().__right_, nil)
+        XCTAssertNotEqual(Pointer.__root, nil)
+        XCTAssertNotEqual(Pointer.__root.__parent_, nil)
+        XCTAssertEqual(Pointer.__root.__left_, nil)
+        XCTAssertEqual(Pointer.__root.__right_, nil)
 
-        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root()))
+        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root))
 
-        Pointer.__tree_balance_after_insert(Pointer.__root(), Pointer.node(1))
+        Pointer.__tree_balance_after_insert(Pointer.__root, Pointer.node(1))
 
-        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root()))
+        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root))
     }
     
     func testExample2_2() throws {
@@ -353,8 +393,8 @@ final class RedBlackTreeTests2: XCTestCase {
             .init(isBlack: true, parent: 0, left: 2, right: nil),
             .init(isBlack: false, parent: 1, left: nil,right: nil),
         ]
-        XCTAssertEqual(Pointer.__root(), .node(1))
-        XCTAssertNoThrow(try Pointer.__tree_invariant__(Pointer.__root()))
+        XCTAssertEqual(Pointer.__root, .node(1))
+        XCTAssertNoThrow(try Pointer.__tree_invariant__(Pointer.__root))
 
         // print(Pointer.data.graphviz())
         /* graphviz
@@ -387,8 +427,8 @@ final class RedBlackTreeTests2: XCTestCase {
          }
          */
         
-        XCTAssertThrowsError(try Pointer.__tree_invariant__(Pointer.__root()))
-        Pointer.__tree_balance_after_insert(Pointer.__root(), Pointer.node(newNode.index!))
+        XCTAssertThrowsError(try Pointer.__tree_invariant__(Pointer.__root))
+        Pointer.__tree_balance_after_insert(Pointer.__root, Pointer.node(newNode.index!))
         
         // print(Pointer.data.graphviz())
         /* graphviz
@@ -405,38 +445,70 @@ final class RedBlackTreeTests2: XCTestCase {
          }
          */
         
-        XCTAssertTrue(try Pointer.__tree_invariant__(Pointer.__root()))
+        XCTAssertTrue(try Pointer.__tree_invariant__(Pointer.__root))
     }
     
     func testExample3() throws {
-        
-        throw XCTSkip()
 
         Pointer.data = [
             .init(isBlack: false, parent: nil, left: 1,right: nil),
             .init(isBlack: true, parent: 0, left: 2,right: 3),
-            .init(isBlack: false, parent: 1, left: 4,right: 6),
-            .init(isBlack: false, parent: 1, left: nil,right: 5),
-            .init(isBlack: true, parent: 2, left: nil,right: nil),
-            .init(isBlack: true, parent: 3, left: nil,right: nil),
-            .init(isBlack: true, parent: 2, left: nil,right: nil),
+            .init(isBlack: true, parent: 1, left: 4,right: 6),
+            .init(isBlack: true, parent: 1, left: nil,right: 5),
+            .init(isBlack: false, parent: 2, left: nil,right: nil),
+            .init(isBlack: false, parent: 3, left: nil,right: nil),
+            .init(isBlack: false, parent: 2, left: nil,right: nil),
         ]
-        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root()))
+        
+        /* graphviz
+         digraph {
+             node [shape = circle; style = filled; fillcolor = red;];
+             0;
+             4;
+             5;
+             6;
+             node [shape = circle; fillcolor = black; fontcolor = white;];
+             0 -> 1 [label = "left";];
+             1 -> 2 [label = "left";];
+             2 -> 4 [label = "left";];
+             node [shape = circle; fillcolor = black; fontcolor = white;];
+             1 -> 3 [label = "right";];
+             2 -> 6 [label = "right";];
+             3 -> 5 [label = "right";];
+         }
+         */
+        
+        XCTAssertNoThrow(try Pointer.__tree_invariant__(Pointer.__root))
 
         print(Pointer.data.graphviz())
         let lastData = Pointer.data
-        Pointer.__tree_remove(Pointer.__root(), Pointer.node(6))
+        Pointer.__tree_remove(Pointer.__root, Pointer.node(6))
         print(Pointer.data.graphviz())
+        
+        /*
+         digraph {
+             node [shape = circle; style = filled; fillcolor = red;];
+             0;
+             4;
+             5;
+             node [shape = circle; fillcolor = black; fontcolor = white;];
+             0 -> 1 [label = "left";];
+             1 -> 2 [label = "left";];
+             2 -> 4 [label = "left";];
+             node [shape = circle; fillcolor = black; fontcolor = white;];
+             1 -> 3 [label = "right";];
+             3 -> 5 [label = "right";];
+         }
+         */
 
-        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root()))
+        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root))
 
         XCTAssertEqual(Pointer.data[0], lastData[0])
         XCTAssertEqual(Pointer.data[1], lastData[1])
-        XCTAssertEqual(Pointer.data[2], .init(isBlack: false, parent: 1, left: 4, right: nil))
-        XCTAssertEqual(Pointer.data[3], .init(isBlack: false, parent: 1, left: nil, right: 5))
+        XCTAssertEqual(Pointer.data[2], .init(isBlack: true, parent: 1, left: 4, right: nil))
+        XCTAssertEqual(Pointer.data[3], .init(isBlack: true, parent: 1, left: nil, right: 5))
         XCTAssertEqual(Pointer.data[4], lastData[4])
         XCTAssertEqual(Pointer.data[5], lastData[5])
-//        XCTAssertEqual(Pointer.data[6], .init(isBlack: false, parent: 2, left: nil, right: nil))
 
         XCTAssertEqual(Pointer.__tree_min(Pointer.node(1)), Pointer.node(4))
         XCTAssertEqual(Pointer.__tree_max(Pointer.node(1)), Pointer.node(5))
@@ -449,33 +521,31 @@ final class RedBlackTreeTests2: XCTestCase {
     
     func testExample4() throws {
         
-        throw XCTSkip()
-
         Pointer.data = [
             .init(isBlack: false, parent: nil, left: 1,right: nil),
             .init(isBlack: true, parent: 0, left: 2,right: 3),
-            .init(isBlack: false, parent: 1, left: 4,right: 6),
-            .init(isBlack: false, parent: 1, left: nil,right: 5),
-            .init(isBlack: true, parent: 2, left: nil,right: nil),
-            .init(isBlack: true, parent: 3, left: nil,right: nil),
-            .init(isBlack: true, parent: 2, left: nil,right: nil),
+            .init(isBlack: true, parent: 1, left: 4,right: 6),
+            .init(isBlack: true, parent: 1, left: nil,right: 5),
+            .init(isBlack: false, parent: 2, left: nil,right: nil),
+            .init(isBlack: false, parent: 3, left: nil,right: nil),
+            .init(isBlack: false, parent: 2, left: nil,right: nil),
         ]
-        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root()))
+        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root))
 
         print(Pointer.data.graphviz())
         let lastData = Pointer.data
         Pointer.__tree_remove(Pointer.node(1), Pointer.node(4))
         print(Pointer.data.graphviz())
 
-        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root()))
+        XCTAssertTrue(Pointer.__tree_invariant(Pointer.__root))
 
         XCTAssertEqual(Pointer.data[0], lastData[0])
         XCTAssertEqual(Pointer.data[1], lastData[1])
-        XCTAssertEqual(Pointer.data[2], .init(isBlack: false, parent: 1, left: nil, right: 6))
-        XCTAssertEqual(Pointer.data[3], .init(isBlack: false, parent: 1, left: nil, right: 5))
+        XCTAssertEqual(Pointer.data[2], .init(isBlack: true, parent: 1, left: nil, right: 6))
+        XCTAssertEqual(Pointer.data[3], .init(isBlack: true, parent: 1, left: nil, right: 5))
         XCTAssertEqual(Pointer.data[4], lastData[4])
         XCTAssertEqual(Pointer.data[5], lastData[5])
-        XCTAssertEqual(Pointer.data[6], .init(isBlack: true, parent: 2, left: nil, right: nil))
+        XCTAssertEqual(Pointer.data[6], .init(isBlack: false, parent: 2, left: nil, right: nil))
 
         XCTAssertEqual(Pointer.__tree_min(Pointer.node(1)), Pointer.node(2))
         XCTAssertEqual(Pointer.__tree_max(Pointer.node(1)), Pointer.node(5))
@@ -486,12 +556,10 @@ final class RedBlackTreeTests2: XCTestCase {
         XCTAssertEqual(Pointer.__tree_next(Pointer.node(3)), Pointer.node(5))
     }
 
-
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
         self.measure {
             // Put the code you want to measure the time of here.
         }
     }
-
 }

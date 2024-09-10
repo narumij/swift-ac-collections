@@ -80,16 +80,24 @@ extension UnsafeOffset {
     }
 }
 
-struct Item: Equatable {
+protocol Item: Equatable {
+    var isBlack: Bool { get set }
+    var parent: Int? { get set }
+    var left: Int? { get set }
+    var right: Int? { get set }
+}
+
+struct __item<Element>: Item where Element: Comparable {
     var isBlack: Bool
     var parent: Int?
     var left: Int?
     var right: Int?
+    var __value_: Element
 }
 
-extension UnsafeOffset where Pointee == Item {
+extension UnsafeOffset where Pointee: Item {
     
-    typealias Pointer = UnsafeOffset<Item>
+    typealias Pointer = UnsafeOffset<Pointee>
 
     var __right_: Pointer {
         get {
@@ -173,7 +181,7 @@ extension UnsafeOffset where Pointee == Item {
     func __parent_unsafe() -> Self { __parent_ }
 }
 
-extension UnsafeOffset where Pointee == Item {
+extension UnsafeOffset where Pointee: Item {
 
     enum Reference {
         case __parent_(Pointer)
@@ -215,3 +223,5 @@ extension UnsafeOffset where Pointee == Item {
         .__right_(self)
     }
 }
+
+// 内部イテレータと外部イテレータを別々に実装すること

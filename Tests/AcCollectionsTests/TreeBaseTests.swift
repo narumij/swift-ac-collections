@@ -30,62 +30,7 @@ fileprivate enum TreeBase: ___tree_base {
     }
 }
 
-fileprivate extension ___tree_base {
-    
-    static func
-    __tree_sub_invariant__<_NodePtr>(_ __x: _NodePtr) throws -> Int
-    where _NodePtr: ___tree_node_pointer_base_protocol
-    {
-        if (__x == nil) {
-            return 1; }
-          // parent consistency checked by caller
-          // check __x->__left_ consistency
-        if (__x.__left_ != nil && __x.__left_.__parent_ != __x) {
-            return 0; }
-          // check __x->__right_ consistency
-        if (__x.__right_ != nil && __x.__right_.__parent_ != __x) {
-            return 0; }
-          // check __x->__left_ != __x->__right_ unless both are nullptr
-        if (__x.__left_ == __x.__right_ && __x.__left_ != nil) {
-            return 0; }
-          // If this is red, neither child can be red
-        if (!__x.__is_black_) {
-            if (__x.__left_ != nil && !__x.__left_.__is_black_) {
-                return 0; }
-            if (__x.__right_ != nil && !__x.__right_.__is_black_) {
-                return 0; }
-          }
-        let __h = try __tree_sub_invariant__(__x.__left_);
-        if (__h == 0) {
-            return 0; } // invalid left subtree
-        if (try __h != __tree_sub_invariant__(__x.__right_)) {
-            return 0; }                   // invalid or different height right subtree
-        return __h + (__x.__is_black_ ? 1 : 0); // return black height of this node
-    }
-    
-    static func
-    __tree_invariant__<_NodePtr>(_ __root: _NodePtr) throws -> Bool
-    where _NodePtr: ___tree_node_pointer_base_protocol
-    {
-        if (__root == nil) {
-            return true; }
-        // check __x->__parent_ consistency
-        if (__root.__parent_ == nil) {
-            throw __tree_error.error(#line,__root, "check __x->__parent_ consistency"); }
-        if (!__tree_is_left_child(__root)) {
-            throw __tree_error.error(#line,__root,"__tree_is_not_left_child"); }
-        // root must be black
-        if (!__root.__is_black_) {
-            throw __tree_error.error(#line,__root,"__root_is_not_black"); }
-        // do normal node checks
-        if try __tree_sub_invariant__(__root) == 0 {
-            throw __tree_error.error(#line,__root,"__tree_sub_invariant(__root) == 0");
-        }
-        return true
-    }
-}
-
-final class TreeBaseTests: XCTestCase {
+class TreeBaseTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -113,7 +58,7 @@ final class TreeBaseTests: XCTestCase {
     func testExample000() throws {
         
         TreeBase.data = [
-            .init(isBlack: true, parent: .end, left: 2,right: nil, __value_: 0),
+            .init(isBlack: true, parent: .end, left: 2, right: nil, __value_: 0),
         ]
         TreeBase.__root = .node(0)
 
@@ -195,8 +140,8 @@ final class TreeBaseTests: XCTestCase {
         ]
         TreeBase.__root = .node(0)
 
-        XCTAssertNoThrow(try TreeBase.__tree_invariant__(TreeBase.__root))
-        
+        XCTAssertTrue(TreeBase.__tree_invariant(TreeBase.__root))
+
         XCTAssertEqual(TreeBase.__tree_min(TreeBase.node(0)), TreeBase.node(3))
         XCTAssertEqual(TreeBase.__tree_max(TreeBase.node(0)), TreeBase.node(4))
         
@@ -271,7 +216,7 @@ final class TreeBaseTests: XCTestCase {
         TreeBase.__root = .node(0)
         
         XCTAssertEqual(TreeBase.__root, .node(0))
-        XCTAssertNoThrow(try TreeBase.__tree_invariant__(TreeBase.__root))
+        XCTAssertTrue(TreeBase.__tree_invariant(TreeBase.__root))
 
         // print(TreeBase.data.graphviz())
         /* graphviz
@@ -304,7 +249,7 @@ final class TreeBaseTests: XCTestCase {
          }
          */
         
-        XCTAssertThrowsError(try TreeBase.__tree_invariant__(TreeBase.__root))
+        XCTAssertFalse(TreeBase.__tree_invariant(TreeBase.__root))
         TreeBase.__tree_balance_after_insert(TreeBase.__root, newNode)
         
         // print(TreeBase.data.graphviz())
@@ -322,7 +267,7 @@ final class TreeBaseTests: XCTestCase {
          }
          */
         
-        XCTAssertTrue(try TreeBase.__tree_invariant__(TreeBase.__root))
+        XCTAssertTrue(TreeBase.__tree_invariant(TreeBase.__root))
     }
     
     func testExample3() throws {
@@ -355,7 +300,7 @@ final class TreeBaseTests: XCTestCase {
          }
          */
         
-        XCTAssertNoThrow(try TreeBase.__tree_invariant__(TreeBase.__root))
+        XCTAssertTrue(TreeBase.__tree_invariant(TreeBase.__root))
 
         print(TreeBase.data.graphviz())
         let lastData = TreeBase.data

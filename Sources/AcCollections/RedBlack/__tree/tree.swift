@@ -21,11 +21,13 @@ protocol ___tree_node_pointer_base_protocol: Equatable, ExpressibleByNilLiteral 
     var __parent_: __node_ptr_type { get nonmutating set }
     var __is_black_: Bool  { get nonmutating set }
     func __parent_unsafe() -> __node_ptr_type
+    static var nullptr: Self { get }
 }
 
 protocol ___tree_node_reference_protocol: Equatable, ExpressibleByNilLiteral {
     associatedtype Referencee
     var referencee: Referencee { get nonmutating set }
+    static var nullptr: Self { get }
 }
 
 protocol ___tree_node_pointer_value_protocol: ___tree_node_pointer_base_protocol {
@@ -67,6 +69,15 @@ protocol ___tree_find_base: ___tree_base {
     func addressof(_ ptr: _NodeRef) -> _NodeRef
 }
 
+extension ___tree_find_base {
+    func addressof(_ ptr: _NodeRef) -> _NodeRef {
+        ptr
+    }
+    var __root_ptr: _NodeRef {
+        __root.__self_ref
+    }
+}
+
 protocol ___tree_clear_base: ___tree_base_find {
     func destroy(_: _NodePtr)
     var __begin_node: _NodePtr { get nonmutating set }
@@ -97,23 +108,23 @@ extension ___tree_base {
     __tree_sub_invariant<_NodePtr>(_ __x: _NodePtr) -> Int
     where _NodePtr: ___tree_node_pointer_base_protocol
     {
-        if (__x == nil) {
+        if (__x == .nullptr) {
             return 1; }
           // parent consistency checked by caller
           // check __x->__left_ consistency
-        if (__x.__left_ != nil && __x.__left_.__parent_ != __x) {
+        if (__x.__left_ != .nullptr && __x.__left_.__parent_ != __x) {
             return 0; }
           // check __x->__right_ consistency
-        if (__x.__right_ != nil && __x.__right_.__parent_ != __x) {
+        if (__x.__right_ != .nullptr && __x.__right_.__parent_ != __x) {
             return 0; }
           // check __x->__left_ != __x->__right_ unless both are nullptr
         if (__x.__left_ == __x.__right_ && __x.__left_ != nil) {
             return 0; }
           // If this is red, neither child can be red
         if (!__x.__is_black_) {
-            if (__x.__left_ != nil && !__x.__left_.__is_black_) {
+            if (__x.__left_ != .nullptr && !__x.__left_.__is_black_) {
                 return 0; }
-            if (__x.__right_ != nil && !__x.__right_.__is_black_) {
+            if (__x.__right_ != .nullptr && !__x.__right_.__is_black_) {
                 return 0; }
           }
         let __h = __tree_sub_invariant(__x.__left_);
@@ -128,10 +139,10 @@ extension ___tree_base {
     __tree_invariant<_NodePtr>(_ __root: _NodePtr) -> Bool
     where _NodePtr: ___tree_node_pointer_base_protocol
     {
-        if (__root == nil) {
+        if (__root == .nullptr) {
             return true; }
         // check __x->__parent_ consistency
-        if (__root.__parent_ == nil) {
+        if (__root.__parent_ == .nullptr) {
             return false; }
         if (!__tree_is_left_child(__root)) {
             return false; }
@@ -146,9 +157,9 @@ extension ___tree_base {
     __tree_min<_NodePtr>(_ __x: _NodePtr) -> _NodePtr
     where _NodePtr: ___tree_node_pointer_base_protocol
     {
-        assert(__x != nil, "Root node shouldn't be null");
+        assert(__x != .nullptr, "Root node shouldn't be null");
         var __x = __x
-        while (__x.__left_ != nil) {
+        while (__x.__left_ != .nullptr) {
             __x = __x.__left_ }
         return __x
     }
@@ -157,9 +168,9 @@ extension ___tree_base {
     __tree_max<_NodePtr>(_ __x: _NodePtr) -> _NodePtr
     where _NodePtr: ___tree_node_pointer_base_protocol
     {
-        assert(__x != nil, "Root node shouldn't be null");
+        assert(__x != .nullptr, "Root node shouldn't be null");
         var __x = __x
-        while (__x.__right_ != nil) {
+        while (__x.__right_ != .nullptr) {
             __x = __x.__right_ }
         return __x
     }
@@ -168,9 +179,9 @@ extension ___tree_base {
     __tree_next<_NodePtr>(_ __x: _NodePtr) -> _NodePtr
     where _NodePtr: ___tree_node_pointer_base_protocol
     {
-        assert(__x != nil, "node shouldn't be null");
+        assert(__x != .nullptr, "node shouldn't be null");
         var __x = __x
-        if (__x.__right_ != nil) {
+        if (__x.__right_ != .nullptr) {
             return __tree_min(__x.__right_); }
         while (!__tree_is_left_child(__x)) {
             __x = __x.__parent_unsafe(); }
@@ -183,9 +194,9 @@ extension ___tree_base {
     __tree_next_iter<_NodePtr>(_ __x: _NodePtr) -> _NodePtr
     where _NodePtr: ___tree_node_pointer_base_protocol
     {
-        assert(__x != nil, "node shouldn't be null")
+        assert(__x != .nullptr, "node shouldn't be null")
         var __x = __x
-        if (__x.__right_ != nil) {
+        if (__x.__right_ != .nullptr) {
             return static_cast_EndNodePtr(__tree_min(__x.__right_)); }
         while (!__tree_is_left_child(__x)) {
             __x = __x.__parent_unsafe(); }
@@ -198,8 +209,8 @@ extension ___tree_base {
     __tree_prev_iter<_NodePtr>(_ __x: _NodePtr) -> _NodePtr
     where _NodePtr: ___tree_node_pointer_base_protocol
     {
-        assert(__x != nil, "node shouldn't be null")
-        if (__x.__left_ != nil) {
+        assert(__x != .nullptr, "node shouldn't be null")
+        if (__x.__left_ != .nullptr) {
             return __tree_max(__x.__left_); }
         var __xx: _NodePtr = static_cast_NodePtr(__x);
         while (__tree_is_left_child(__xx)) {
@@ -211,16 +222,16 @@ extension ___tree_base {
     __tree_leaf<_NodePtr>(_ __x: _NodePtr) -> _NodePtr
     where _NodePtr: ___tree_node_pointer_base_protocol
     {
-        assert(__x != nil, "node shouldn't be null");
+        assert(__x != .nullptr, "node shouldn't be null");
         var __x = __x
         while (true)
         {
-            if (__x.__left_ != nil)
+            if (__x.__left_ != .nullptr)
             {
                 __x = __x.__left_
                 continue
             }
-            if (__x.__right_ != nil)
+            if (__x.__right_ != .nullptr)
             {
                 __x = __x.__right_
                 continue
@@ -234,11 +245,11 @@ extension ___tree_base {
     __tree_left_rotate<_NodePtr>(_ __x: _NodePtr)
     where _NodePtr: ___tree_node_pointer_base_protocol
     {
-        assert(__x != nil, "node shouldn't be null");
-        assert(__x.__right_ != nil, "node should have a right child");
+        assert(__x != .nullptr, "node shouldn't be null");
+        assert(__x.__right_ != .nullptr, "node should have a right child");
         let __y = __x.__right_
         __x.__right_ = __y.__left_
-        if (__x.__right_ != nil) {
+        if (__x.__right_ != .nullptr) {
             __x.__right_.__parent_ = __x }
         __y.__parent_ = __x.__parent_
         if __tree_is_left_child(__x) {
@@ -253,11 +264,11 @@ extension ___tree_base {
     __tree_right_rotate<_NodePtr>(_ __x: _NodePtr)
     where _NodePtr: ___tree_node_pointer_base_protocol
     {
-        assert(__x != nil, "node shouldn't be null");
-        assert(__x.__left_ != nil, "node should have a left child");
+        assert(__x != .nullptr, "node shouldn't be null");
+        assert(__x.__left_ != .nullptr, "node should have a left child");
         let __y = __x.__left_
         __x.__left_ = __y.__right_
-        if (__x.__left_ != nil) {
+        if (__x.__left_ != .nullptr) {
             __x.__left_.__parent_ = __x }
         __y.__parent_ = __x.__parent_
         if __tree_is_left_child(__x) {
@@ -272,15 +283,15 @@ extension ___tree_base {
     __tree_balance_after_insert<_NodePtr>(_ __root: _NodePtr, _ __x: _NodePtr)
     where _NodePtr: ___tree_node_pointer_base_protocol
     {
-        assert(__root != nil, "Root of the tree shouldn't be null");
-        assert(__x != nil, "Can't attach null node to a leaf");
+        assert(__root != .nullptr, "Root of the tree shouldn't be null");
+        assert(__x != .nullptr, "Can't attach null node to a leaf");
         __x.__is_black_ = __x == __root;
         while (__x != __root && !__x.__parent_unsafe().__is_black_) {
             var __x = __x
           // __x->__parent_ != __root because __x->__parent_->__is_black == false
             if (__tree_is_left_child(__x.__parent_unsafe())) {
                 let __y: _NodePtr = __x.__parent_unsafe().__parent_unsafe().__right_;
-                if (__y != nil && !__y.__is_black_) {
+                if (__y != .nullptr && !__y.__is_black_) {
                     __x             = __x.__parent_unsafe();
                     __x.__is_black_ = true;
                     __x             = __x.__parent_unsafe();
@@ -300,7 +311,7 @@ extension ___tree_base {
                 }
             } else {
                 let __y: _NodePtr = __x.__parent_unsafe().__parent_.__left_;
-                if (__y != nil && !__y.__is_black_) {
+                if (__y != .nullptr && !__y.__is_black_) {
                     __x             = __x.__parent_unsafe();
                     __x.__is_black_ = true;
                     __x             = __x.__parent_unsafe();
@@ -326,22 +337,22 @@ extension ___tree_base {
     __tree_remove<_NodePtr>(_ __root: _NodePtr,_ __z: _NodePtr)
     where _NodePtr: ___tree_node_pointer_base_protocol
     {
-        assert(__root != nil, "Root node should not be null")
-        assert(__z != nil, "The node to remove should not be null")
+        assert(__root != .nullptr, "Root node should not be null")
+        assert(__z != .nullptr, "The node to remove should not be null")
         assert(__tree_invariant(__root), "The tree invariants should hold");
         var __root = __root
         // __z will be removed from the tree.  Client still needs to destruct/deallocate it
         // __y is either __z, or if __z has two children, __tree_next(__z).
         // __y will have at most one child.
         // __y will be the initial hole in the tree (make the hole at a leaf)
-        let __y: _NodePtr = (__z.__left_ == nil || __z.__right_ == nil) ?
+        let __y: _NodePtr = (__z.__left_ == .nullptr || __z.__right_ == .nullptr) ?
         __z : __tree_next(__z)
         // __x is __y's possibly null single child
-        var __x: _NodePtr = __y.__left_ != nil ? __y.__left_ : __y.__right_
+        var __x: _NodePtr = __y.__left_ != .nullptr ? __y.__left_ : __y.__right_
         // __w is __x's possibly null uncle (will become __x's sibling)
-        var __w: _NodePtr = nil
+        var __w: _NodePtr = .nullptr
         // link __x to __y's parent, and find __w
-        if (__x != nil) {
+        if (__x != .nullptr) {
             __x.__parent_ = __y.__parent_ }
         if (__tree_is_left_child(__y))
         {
@@ -371,7 +382,7 @@ extension ___tree_base {
             __y.__left_ = __z.__left_
             __y.__left_.__parent_ = __y
             __y.__right_ = __z.__right_
-            if (__y.__right_ != nil) {
+            if (__y.__right_ != .nullptr) {
                 __y.__right_.__parent_ = __y }
             __y.__is_black_ = __z.__is_black_
             if (__root == __z) {
@@ -379,7 +390,7 @@ extension ___tree_base {
         }
         // There is no need to rebalance if we removed a red, or if we removed
         //     the last node.
-        if (__removed_black && __root != nil)
+        if (__removed_black && __root != .nullptr)
         {
             // Rebalance:
             // __x has an implicit black color (transferred from the removed __y)
@@ -393,7 +404,7 @@ extension ___tree_base {
             //   is either red with no children, else null, otherwise __y would have
             //   different black heights under left and right pointers.
             // if (__x == __root || __x != nullptr && !__x->__is_black_)
-            if (__x != nil) {
+            if (__x != .nullptr) {
                 __x.__is_black_ = true }
             else
             {
@@ -419,8 +430,8 @@ extension ___tree_base {
                             __w = __w.__left_.__right_
                         }
                         // __w->__is_black_ is now true, __w may have null children
-                        if ((__w.__left_  == nil || __w.__left_.__is_black_) &&
-                            (__w.__right_ == nil || __w.__right_.__is_black_))
+                        if ((__w.__left_  == .nullptr || __w.__left_.__is_black_) &&
+                            (__w.__right_ == .nullptr || __w.__right_.__is_black_))
                         {
                             __w.__is_black_ = false
                             __x = __w.__parent_
@@ -438,7 +449,7 @@ extension ___tree_base {
                         }
                         else  // __w has a red child
                         {
-                            if (__w.__right_ == nil || __w.__right_.__is_black_)
+                            if (__w.__right_ == .nullptr || __w.__right_.__is_black_)
                             {
                                 // __w left child is non-null and red
                                 __w.__left_.__is_black_ = true
@@ -471,8 +482,8 @@ extension ___tree_base {
                             __w = __w.__right_.__left_
                         }
                         // __w->__is_black_ is now true, __w may have null children
-                        if ((__w.__left_  == nil || __w.__left_.__is_black_) &&
-                            (__w.__right_ == nil || __w.__right_.__is_black_))
+                        if ((__w.__left_  == .nullptr || __w.__left_.__is_black_) &&
+                            (__w.__right_ == .nullptr || __w.__right_.__is_black_))
                         {
                             __w.__is_black_ = false
                             __x = __w.__parent_
@@ -490,7 +501,7 @@ extension ___tree_base {
                         }
                         else  // __w has a red child
                         {
-                            if (__w.__left_ == nil || __w.__left_.__is_black_)
+                            if (__w.__left_ == .nullptr || __w.__left_.__is_black_)
                             {
                                 // __w right child is non-null and red
                                 __w.__right_.__is_black_ = true
@@ -551,14 +562,14 @@ extension ___tree_find_base {
         if __nd != nil {
             while true {
                 if Self.value_comp(__nd.__value_, __v) {
-                    if __nd.__right_ != nil {
+                    if __nd.__right_ != .nullptr {
                         __nd = __nd.__right_; }
                     else {
                         __parent = __nd;
                         return __nd.__right_ref;
                     }
                 } else {
-                    if __nd.__left_ != nil {
+                    if __nd.__left_ != .nullptr {
                         __nd = __nd.__left_; }
                     else {
                         __parent = __nd;
@@ -580,7 +591,7 @@ extension ___tree_find_base {
             {
                 if Self.value_comp(__v, __nd.__value_)
                 {
-                    if __nd.__left_ != nil {
+                    if __nd.__left_ != .nullptr {
                         __nd = __nd.__left_ }
                     else
                     {
@@ -590,7 +601,7 @@ extension ___tree_find_base {
                 }
                 else
                 {
-                    if __nd.__right_ != nil {
+                    if __nd.__right_ != .nullptr {
                         __nd = __nd.__right_ }
                     else
                     {
@@ -643,10 +654,10 @@ extension ___tree_find_base {
     {
         var __nd: __node_pointer          = __root;
         var __nd_ptr: __node_base_pointer = __root_ptr;
-        if (__nd != nil) {
+        if (__nd != .nullptr) {
           while (true) {
               if (Self.value_comp(__v, __nd.__value_)) {
-                  if (__nd.__left_ != nil) {
+                  if (__nd.__left_ != .nullptr) {
                       __nd_ptr = addressof(__nd.__left_ref);
                       __nd     = static_cast__node_pointer(__nd.__left_);
               } else {
@@ -654,7 +665,7 @@ extension ___tree_find_base {
                   return __parent.__left_ref;
               }
               } else if (Self.value_comp(__nd.__value_, __v)) {
-                  if (__nd.__right_ != nil) {
+                  if (__nd.__right_ != .nullptr) {
                       __nd_ptr = addressof(__nd.__right_ref);
                       __nd     = static_cast__node_pointer(__nd.__right_);
               } else {
@@ -684,12 +695,12 @@ extension ___tree_insert_base {
         _ __parent: _NodePtr, _ __child: _NodeRef,
         _ __new_node: _NodePtr)
     {
-        __new_node.__left_   = nil;
-        __new_node.__right_  = nil;
+        __new_node.__left_   = .nullptr;
+        __new_node.__right_  = .nullptr;
         __new_node.__parent_ = __parent;
         // __new_node->__is_black_ is initialized in __tree_balance_after_insert
         __child.referencee = __new_node;
-        if (__begin_node.__left_ != nil) {
+        if (__begin_node.__left_ != .nullptr) {
             __begin_node = static_cast__iter_pointer(__begin_node.__left_);
         }
         Self.__tree_balance_after_insert(__end_node.__left_, __child.referencee);
@@ -702,11 +713,11 @@ extension ___tree_construct_base {
     func
     __emplace_unique_key_args(_ __k: Element) -> (iterator: __tree_iterator, __inserted: Bool)
     {
-        var __parent: _NodePtr = nil
+        var __parent: _NodePtr = .nullptr
         let __child    = __find_equal(&__parent, __k)
         let __r        = __child
         var __inserted = false
-        if __child == nil {
+        if __child == .nullptr {
             let __h = __construct_node()
             __insert_node_at(__parent, __child, __h)
             __inserted = true

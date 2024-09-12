@@ -1,75 +1,84 @@
 import Foundation
-@testable import AcCollections
 
-var _left: BasePtr = nil
-var _data: [NodeItem] = []
+protocol NodeItemProtocol: Equatable {
+    associatedtype Element: Equatable
+    var isBlack: Bool { get set }
+    var parent: BasePtr { get set }
+    var left: BasePtr { get set }
+    var right: BasePtr { get set }
+    var __value_: Element { get set }
+}
 
-enum BasePtr: Equatable {
+protocol TreeHandleProtocol: Equatable {
+    associatedtype NodeItem: NodeItemProtocol
+    var __left_: BasePtr { get nonmutating set }
+    subscript(index: Int) -> NodeItem { get nonmutating set }
+}
+
+enum HandlePtr<Handle>: Equatable where Handle: TreeHandleProtocol {
     case none
-    case node(Int)
-    case end
+    case end(Handle)
+    case node(Handle,Int)
 }
 
-struct NodeItem: Equatable {
-    var isBlack: Bool
-    var parent: BasePtr
-    var left: BasePtr
-    var right: BasePtr
-    var __value_: Int
-}
-
-extension BasePtr: ExpressibleByNilLiteral {
+extension HandlePtr: ExpressibleByNilLiteral {
     init(nilLiteral: ()) {
         self = .none
     }
 }
 
-extension BasePtr: ExpressibleByIntegerLiteral {
-    init(integerLiteral value: Int) {
-        self = .node(value)
+extension HandlePtr {
+    var basePtr: BasePtr {
+        switch self {
+        case .node(_, let int):
+            return .node(int)
+        case .end(_):
+            return .end
+        case .none:
+            return .none
+        }
     }
 }
 
-extension BasePtr: ___tree_node_pointer_protocol { }
-extension BasePtr.Reference: ___tree_node_reference_protocol { }
-
-extension BasePtr {
-    static var __root: BasePtr {
-        get { __end_node.__left_ }
-        set { __end_node.__left_ = newValue }
-    }
-    static var __end_node: BasePtr {
-        .end
-    }
-    static func ___construct_node() -> BasePtr {
-        let node = BasePtr.node(_data.count)
-        _data.append(.init(isBlack: false, parent: nil, left: nil, right: nil, __value_: 0))
-        return node
+extension HandlePtr {
+    var index: Int? {
+        switch self {
+        case .node(_, let int):
+            return int
+        case .end(_):
+            return nil
+        case .none:
+            return nil
+        }
     }
 }
 
-extension BasePtr {
+extension HandlePtr: ___tree_node_pointer_protocol {
+    static var nullptr: Self { .none }
+}
+
+extension HandlePtr.Reference: ___tree_node_reference_protocol {
+    static var nullptr: Self { .none }
+}
+
+extension HandlePtr {
     
-    fileprivate static var data: [RedBlackNode] {
-        get { _data }
-        set { _data = newValue }
-    }
-    
-    public var __right_: BasePtr {
+    public var __right_: HandlePtr {
         get {
             switch self {
-            case .node(let int):
-                return Self.data[int].right
+            case .node(let handle, let int):
+                return handle[int].right.handlePtr(handle)
             case .end:
                 fatalError()
             case .none:
-                return .none
+//                return .none
+                fatalError()
             }
         }
         nonmutating set {
             switch self {
-            case .node(let int):
-                Self.data[int].right = newValue
+            case .node(let handle, let int):
+                handle[int].right = newValue.basePtr
             case .end:
                 fatalError()
             case .none:
@@ -77,21 +86,22 @@ extension BasePtr {
             }
         }
     }
-    public var __parent_: BasePtr {
+    public var __parent_: HandlePtr {
         get {
             switch self {
-            case .node(let int):
-                return Self.data[int].parent
+            case .node(let handle, let int):
+                return handle[int].parent.handlePtr(handle)
             case .end:
                 fatalError()
             case .none:
-                return .none
+//                return .none
+                fatalError()
             }
         }
         nonmutating set {
             switch self {
-            case .node(let int):
-                Self.data[int].parent = newValue
+            case .node(let handle, let int):
+                handle[int].parent = newValue.basePtr
             case .end:
                 fatalError()
             case .none:
@@ -102,8 +112,8 @@ extension BasePtr {
     public var __is_black_: Bool {
         get {
             switch self {
-            case .node(let int):
-                return Self.data[int].isBlack
+            case .node(let handle, let int):
+                return handle[int].isBlack
             case .end:
                 fatalError()
             case .none:
@@ -112,8 +122,8 @@ extension BasePtr {
         }
         nonmutating set {
             switch self {
-            case .node(let int):
-                Self.data[int].isBlack = newValue
+            case .node(let handle, let int):
+                handle[int].isBlack = newValue
             case .end:
                 fatalError()
             case .none:
@@ -121,33 +131,34 @@ extension BasePtr {
             }
         }
     }
-    public var __left_: BasePtr {
+    public var __left_: HandlePtr {
         get {
             switch self {
-            case .node(let int):
-                return Self.data[int].left
-            case .end:
-                return _left
+            case .node(let handle, let int):
+                return handle[int].left.handlePtr(handle)
+            case .end(let handle):
+                return handle.__left_.handlePtr(handle)
             case .none:
-                return .none
+//                return .none
+                fatalError()
             }
         }
         nonmutating set {
             switch self {
-            case .node(let int):
-                Self.data[int].left = newValue
-            case .end:
-                _left = newValue
+            case .node(let handle, let int):
+                handle[int].left = newValue.basePtr
+            case .end(let handle):
+                handle.__left_ = newValue.basePtr
             case .none:
                 fatalError()
             }
         }
     }
-    public var __value_: Int {
+    public var __value_: Handle.NodeItem.Element {
         get {
             switch self {
-            case .node(let int):
-                return Self.data[int].__value_
+            case .node(let handle, let int):
+                return handle[int].__value_
             case .end:
                 fatalError()
             case .none:
@@ -156,8 +167,8 @@ extension BasePtr {
         }
         nonmutating set {
             switch self {
-            case .node(let int):
-                Self.data[int].__value_ = newValue
+            case .node(let handle,let int):
+                handle[int].__value_ = newValue
             case .end:
                 fatalError()
             case .none:
@@ -166,20 +177,20 @@ extension BasePtr {
         }
     }
 
-    public func __parent_unsafe() -> BasePtr { __parent_ }
+    public func __parent_unsafe() -> HandlePtr { __parent_ }
 }
 
-extension BasePtr {
+extension HandlePtr {
 
     public enum Reference {
         public init(nilLiteral: ()) {
             self = .none
         }
         case none
-        case __parent_(BasePtr)
-        case __left_(BasePtr)
-        case __right_(BasePtr)
-        public var referencee: BasePtr {
+        case __parent_(HandlePtr<Handle>)
+        case __left_(HandlePtr<Handle>)
+        case __right_(HandlePtr<Handle>)
+        public var referencee: HandlePtr<Handle> {
             get {
                 switch self {
                 case .__parent_(let p):
@@ -230,9 +241,9 @@ extension BasePtr {
         return .none
     }
     
-    public enum ReferenceValue {
-        case __value_(BasePtr)
-        var referencee: Int {
+    public enum _ValueRef {
+        case __value_(HandlePtr<Handle>)
+        var referencee: Handle.NodeItem.Element {
             get {
                 switch self {
                 case .__value_(let p):
@@ -248,9 +259,7 @@ extension BasePtr {
         }
     }
     
-    var __value_ref: ReferenceValue {
+    var __value_ref: _ValueRef {
         .__value_(self)
     }
 }
-
-

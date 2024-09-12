@@ -1,5 +1,6 @@
 import Foundation
 
+#if false
 enum RawOffset: Equatable {
     case none
     case offset(Int)
@@ -87,7 +88,7 @@ protocol Item: Equatable {
     var right: Int? { get set }
 }
 
-struct __item<Element>: Item where Element: Comparable {
+struct __item<Element>: Item where Element: Comparable {    
     var isBlack: Bool
     var parent: Int?
     var left: Int?
@@ -223,5 +224,6 @@ extension UnsafeOffset where Pointee: Item {
         .__right_(self)
     }
 }
+#endif
 
 // 内部イテレータと外部イテレータを別々に実装すること

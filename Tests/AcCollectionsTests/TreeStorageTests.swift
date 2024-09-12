@@ -21,6 +21,159 @@ final class TreeStorageTests: XCTestCase {
     }
     
     fileprivate typealias TreeBase = TreeStorage<Int>
+    
+    func testIterNext() throws {
+        storage.items = [
+            .init(isBlack: true, parent: .end, left: 1, right: 4, __value_: 3),
+            .init(isBlack: false, parent: 0, left: 2, right: 3, __value_: 1),
+            .init(isBlack: true, parent: 1, left: nil, right: nil, __value_: 0),
+            .init(isBlack: true, parent: 1, left: nil, right: nil, __value_: 2),
+            .init(isBlack: false, parent: 0, left: 5, right: 6, __value_: 5),
+            .init(isBlack: true, parent: 4, left: nil, right: nil, __value_: 4),
+            .init(isBlack: true, parent: 4, left: nil, right: nil, __value_: 6),
+        ]
+        print(storage.items.graphviz())
+        storage.__root = storage.node(0)
+        XCTAssertTrue(TreeBase.__tree_invariant(storage.__root))
+        
+        var __ptr_ = storage.node(2)
+        XCTAssertEqual(__ptr_.__value_, 0)
+        XCTAssertEqual(__ptr_, storage.node(2))
+        XCTAssertEqual(TreeBase.__tree_next(__ptr_), TreeBase.__tree_next_iter(__ptr_))
+        __ptr_ = TreeBase.__tree_next_iter(__ptr_)
+        XCTAssertEqual(__ptr_.__value_, 1)
+        XCTAssertEqual(__ptr_, storage.node(1))
+        XCTAssertEqual(TreeBase.__tree_next(__ptr_), TreeBase.__tree_next_iter(__ptr_))
+        __ptr_ = TreeBase.__tree_next_iter(__ptr_)
+        XCTAssertEqual(__ptr_.__value_, 2)
+        XCTAssertEqual(__ptr_, storage.node(3))
+        XCTAssertEqual(TreeBase.__tree_next(__ptr_), TreeBase.__tree_next_iter(__ptr_))
+        __ptr_ = TreeBase.__tree_next_iter(__ptr_)
+        XCTAssertEqual(__ptr_.__value_, 3)
+        XCTAssertEqual(__ptr_, storage.node(0))
+        XCTAssertEqual(TreeBase.__tree_next(__ptr_), TreeBase.__tree_next_iter(__ptr_))
+        __ptr_ = TreeBase.__tree_next_iter(__ptr_)
+        XCTAssertEqual(__ptr_.__value_, 4)
+        XCTAssertEqual(__ptr_, storage.node(5))
+        XCTAssertEqual(TreeBase.__tree_next(__ptr_), TreeBase.__tree_next_iter(__ptr_))
+        __ptr_ = TreeBase.__tree_next_iter(__ptr_)
+        XCTAssertEqual(__ptr_.__value_, 5)
+        XCTAssertEqual(__ptr_, storage.node(4))
+        XCTAssertEqual(TreeBase.__tree_next(__ptr_), TreeBase.__tree_next_iter(__ptr_))
+        __ptr_ = TreeBase.__tree_next_iter(__ptr_)
+        XCTAssertEqual(__ptr_.__value_, 6)
+        XCTAssertEqual(__ptr_, storage.node(6))
+        XCTAssertEqual(TreeBase.__tree_next(__ptr_), TreeBase.__tree_next_iter(__ptr_))
+        __ptr_ = TreeBase.__tree_next_iter(__ptr_)
+        XCTAssertEqual(__ptr_, storage.end())
+    }
+    
+    func testIterPrev() throws {
+        storage.items = [
+            .init(isBlack: true, parent: .end, left: 1, right: 4, __value_: 3),
+            .init(isBlack: false, parent: 0, left: 2, right: 3, __value_: 1),
+            .init(isBlack: true, parent: 1, left: nil, right: nil, __value_: 0),
+            .init(isBlack: true, parent: 1, left: nil, right: nil, __value_: 2),
+            .init(isBlack: false, parent: 0, left: 5, right: 6, __value_: 5),
+            .init(isBlack: true, parent: 4, left: nil, right: nil, __value_: 4),
+            .init(isBlack: true, parent: 4, left: nil, right: nil, __value_: 6),
+        ]
+        print(storage.items.graphviz())
+        storage.__root = storage.node(0)
+        XCTAssertTrue(TreeBase.__tree_invariant(storage.__root))
+
+        var __ptr_ = storage.node(6)
+        XCTAssertEqual(__ptr_.__value_, 6)
+        XCTAssertEqual(__ptr_, storage.node(6))
+        __ptr_ = TreeBase.__tree_prev_iter(__ptr_)
+        XCTAssertEqual(__ptr_.__value_, 5)
+        XCTAssertEqual(__ptr_, storage.node(4))
+        __ptr_ = TreeBase.__tree_prev_iter(__ptr_)
+        XCTAssertEqual(__ptr_.__value_, 4)
+        XCTAssertEqual(__ptr_, storage.node(5))
+        __ptr_ = TreeBase.__tree_prev_iter(__ptr_)
+        XCTAssertEqual(__ptr_.__value_, 3)
+        XCTAssertEqual(__ptr_, storage.node(0))
+        __ptr_ = TreeBase.__tree_prev_iter(__ptr_)
+        XCTAssertEqual(__ptr_.__value_, 2)
+        XCTAssertEqual(__ptr_, storage.node(3))
+        __ptr_ = TreeBase.__tree_prev_iter(__ptr_)
+        XCTAssertEqual(__ptr_.__value_, 1)
+        XCTAssertEqual(__ptr_, storage.node(1))
+        __ptr_ = TreeBase.__tree_prev_iter(__ptr_)
+        XCTAssertEqual(__ptr_.__value_, 0)
+        XCTAssertEqual(__ptr_, storage.node(2))
+        
+        __ptr_ = storage.end()
+        __ptr_ = TreeBase.__tree_prev_iter(__ptr_)
+        XCTAssertEqual(__ptr_.__value_, 6)
+        XCTAssertEqual(__ptr_, storage.node(6))
+    }
+    
+    func testIterator() throws {
+        storage.items = [
+            .init(isBlack: true, parent: .end, left: 1, right: 4, __value_: 3),
+            .init(isBlack: false, parent: 0, left: 2, right: 3, __value_: 1),
+            .init(isBlack: true, parent: 1, left: nil, right: nil, __value_: 0),
+            .init(isBlack: true, parent: 1, left: nil, right: nil, __value_: 2),
+            .init(isBlack: false, parent: 0, left: 5, right: 6, __value_: 5),
+            .init(isBlack: true, parent: 4, left: nil, right: nil, __value_: 4),
+            .init(isBlack: true, parent: 4, left: nil, right: nil, __value_: 6),
+        ]
+        print(storage.items.graphviz())
+        storage.__root = storage.node(0)
+//        storage.end_ptr = .node(6)
+        XCTAssertTrue(TreeBase.__tree_invariant(storage.__root))
+
+        var it = storage.iterator(storage.node(2))
+        XCTAssertEqual(it.__ptr_.__value_, 0)
+        XCTAssertEqual(it.__ptr_, storage.node(2))
+        it.next()
+        XCTAssertEqual(it.__ptr_.__value_, 1)
+        XCTAssertEqual(it.__ptr_, storage.node(1))
+        it.next()
+        XCTAssertEqual(it.__ptr_.__value_, 2)
+        XCTAssertEqual(it.__ptr_, storage.node(3))
+        it.next()
+        XCTAssertEqual(it.__ptr_.__value_, 3)
+        XCTAssertEqual(it.__ptr_, storage.node(0))
+        it.next()
+        XCTAssertEqual(it.__ptr_.__value_, 4)
+        XCTAssertEqual(it.__ptr_, storage.node(5))
+        it.next()
+        XCTAssertEqual(it.__ptr_.__value_, 5)
+        XCTAssertEqual(it.__ptr_, storage.node(4))
+        it.next()
+        XCTAssertEqual(it.__ptr_.__value_, 6)
+        XCTAssertEqual(it.__ptr_, storage.node(6))
+        it.next()
+        XCTAssertEqual(it.__ptr_, storage.end())
+        it.prev()
+        XCTAssertEqual(it.__ptr_.__value_, 6)
+        XCTAssertEqual(it.__ptr_, storage.node(6))
+        it.prev()
+        XCTAssertEqual(it.__ptr_.__value_, 5)
+        XCTAssertEqual(it.__ptr_, storage.node(4))
+        it.prev()
+        XCTAssertEqual(it.__ptr_.__value_, 4)
+        XCTAssertEqual(it.__ptr_, storage.node(5))
+        it.prev()
+        XCTAssertEqual(it.__ptr_.__value_, 3)
+        XCTAssertEqual(it.__ptr_, storage.node(0))
+        it.prev()
+        XCTAssertEqual(it.__ptr_.__value_, 2)
+        XCTAssertEqual(it.__ptr_, storage.node(3))
+        it.prev()
+        XCTAssertEqual(it.__ptr_.__value_, 1)
+        XCTAssertEqual(it.__ptr_, storage.node(1))
+        it.prev()
+        XCTAssertEqual(it.__ptr_.__value_, 0)
+        XCTAssertEqual(it.__ptr_, storage.node(2))
+        
+//        it.prev()
+//        XCTAssertEqual(it.__ptr_.__value_, 0)
+//        XCTAssertEqual(it.__ptr_, storage.node(2))
+    }
 
     func testExample() throws {
         
@@ -99,7 +252,7 @@ final class TreeStorageTests: XCTestCase {
         next[2] = .init(isBlack: false, parent: .end, left: 0, right: 4, __value_: 0)
         next[3] = .init(isBlack: true, parent: 0, left: nil, right: nil, __value_: 0)
 
-        XCTAssertEqual(storage.end, 2)
+        XCTAssertEqual(storage.end_ptr, 2)
         XCTAssertEqual(storage.items[0], next[0])
         XCTAssertEqual(storage.items[1], next[1])
         XCTAssertEqual(storage.items[2], next[2])

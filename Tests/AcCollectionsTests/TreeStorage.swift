@@ -22,8 +22,8 @@ class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_insert_base
     
     static var value_comp: (Element, Element) -> Bool { (<) }
 
-    var begin: BasePtr = .end
-    var end: BasePtr = .end
+    var begin_ptr: BasePtr = .end
+    var end_ptr: BasePtr = .end
     var items: [Item] = []
     
     struct Item: Equatable, NodeItemProtocol {
@@ -32,6 +32,15 @@ class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_insert_base
         var left: BasePtr
         var right: BasePtr
         var element: Element
+    }
+    
+    struct Iterator: Equatable, ___tree_iterator_protocol {
+        var __ptr_: TreeStorage<Element>._NodePtr
+        var __end_: TreeStorage<Element>._NodePtr
+        var __begin_: TreeStorage<Element>._NodePtr
+//        init(_ p: TreeStorage<Element>._NodePtr,_ e: TreeStorage<Element>._NodePtr) { __ptr_ = p; __end_ = e }
+        func reference() -> reference { __ptr_.__self_ref }
+        func pointer() -> pointer { __ptr_ }
     }
     
     struct Handle: Equatable, TreeHandleProtocol {
@@ -43,8 +52,8 @@ class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_insert_base
             nonmutating set { storage.items[index] = newValue }
         }
         var __left_: BasePtr {
-            get { storage.end }
-            nonmutating set { storage.end = newValue }
+            get { storage.end_ptr }
+            nonmutating set { storage.end_ptr = newValue }
         }
         let storage: TreeStorage<Element>
     }
@@ -52,23 +61,35 @@ class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_insert_base
     var handle: Handle { .init(storage: self) }
     
     func node(_ n: Int) -> _NodePtr { .node(handle, n) }
+    func end() -> _NodePtr { .end(handle) }
     
     var __root: _NodePtr {
         get { __end_node.__left_ }
-        set { __end_node.__left_ = newValue }
+        set {
+            __end_node.__left_ = newValue
+            if newValue != .none {
+                newValue.__parent_ = .end(handle)
+            }
+        }
     }
     
     var __begin_node: _NodePtr {
-        get { begin.handlePtr(handle) }
-        set { begin = newValue.basePtr }
+        get { begin_ptr.handlePtr(handle) }
+        set { begin_ptr = newValue.basePtr }
     }
     
     var __end_node: _NodePtr { .end(handle) }
+    
+//    var __end_iter: Iterator { .init(end_ptr.handlePtr(handle), __end_node, __begin_: _NodePtr) }
     
     func ___construct_node() -> _NodePtr {
         let node = _NodePtr.node(handle, items.count)
         items.append(.init(isBlack: false, parent: nil, left: nil, right: nil, __value_: 0))
         return node
+    }
+    
+    func iterator(_ p: _NodePtr) -> Iterator {
+        .init(__ptr_: p, __end_: end(), __begin_: Self.__tree_min(p))
     }
     
     var size: Int = 0

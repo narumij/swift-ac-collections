@@ -44,3 +44,15 @@ extension BasePtr {
     }
 }
 
+extension BasePtr: CustomDebugStringConvertible {
+    var debugDescription: String {
+        switch self {
+        case .none:
+            return ".none"
+        case .end:
+            return ".end"
+        case .node(let int):
+            return ".node(\(int))"
+        }
+    }
+}

@@ -30,6 +30,19 @@ extension HandlePtr: ExpressibleByNilLiteral {
     }
 }
 
+extension HandlePtr: CustomDebugStringConvertible {
+    var debugDescription: String {
+        switch self {
+        case .none:
+            return ".none"
+        case .end(_):
+            return ".end"
+        case .node(_, let int):
+            return ".node(\(int))"
+        }
+    }
+}
+
 extension HandlePtr {
     var basePtr: BasePtr {
         switch self {

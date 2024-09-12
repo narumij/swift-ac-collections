@@ -1,11 +1,14 @@
 import Foundation
 
-protocol NodeItemProtocol: Equatable {
-    associatedtype Element: Equatable
+protocol TreeNodeProtocol: Equatable {
     var isBlack: Bool { get set }
     var parent: BasePtr { get set }
     var left: BasePtr { get set }
     var right: BasePtr { get set }
+}
+
+protocol NodeItemProtocol: TreeNodeProtocol {
+    associatedtype Element: Equatable
     var __value_: Element { get set }
 }
 
@@ -68,10 +71,7 @@ extension HandlePtr {
             switch self {
             case .node(let handle, let int):
                 return handle[int].right.handlePtr(handle)
-            case .end:
-                fatalError()
-            case .none:
-//                return .none
+            default:
                 fatalError()
             }
         }
@@ -79,9 +79,7 @@ extension HandlePtr {
             switch self {
             case .node(let handle, let int):
                 handle[int].right = newValue.basePtr
-            case .end:
-                fatalError()
-            case .none:
+            default:
                 fatalError()
             }
         }
@@ -91,10 +89,7 @@ extension HandlePtr {
             switch self {
             case .node(let handle, let int):
                 return handle[int].parent.handlePtr(handle)
-            case .end:
-                fatalError()
-            case .none:
-//                return .none
+            default:
                 fatalError()
             }
         }
@@ -102,9 +97,7 @@ extension HandlePtr {
             switch self {
             case .node(let handle, let int):
                 handle[int].parent = newValue.basePtr
-            case .end:
-                fatalError()
-            case .none:
+            default:
                 fatalError()
             }
         }
@@ -114,9 +107,7 @@ extension HandlePtr {
             switch self {
             case .node(let handle, let int):
                 return handle[int].isBlack
-            case .end:
-                fatalError()
-            case .none:
+            default:
                 fatalError()
             }
         }
@@ -124,9 +115,7 @@ extension HandlePtr {
             switch self {
             case .node(let handle, let int):
                 handle[int].isBlack = newValue
-            case .end:
-                fatalError()
-            case .none:
+            default:
                 fatalError()
             }
         }
@@ -139,7 +128,6 @@ extension HandlePtr {
             case .end(let handle):
                 return handle.__left_.handlePtr(handle)
             case .none:
-//                return .none
                 fatalError()
             }
         }
@@ -159,9 +147,7 @@ extension HandlePtr {
             switch self {
             case .node(let handle, let int):
                 return handle[int].__value_
-            case .end:
-                fatalError()
-            case .none:
+            default:
                 fatalError()
             }
         }
@@ -169,9 +155,7 @@ extension HandlePtr {
             switch self {
             case .node(let handle,let int):
                 handle[int].__value_ = newValue
-            case .end:
-                fatalError()
-            case .none:
+            default:
                 fatalError()
             }
         }
@@ -195,10 +179,10 @@ extension HandlePtr {
                 switch self {
                 case .__parent_(let p):
                     return p.__parent_
-                case .__left_(let p):
-                    return p.__left_
-                case .__right_(let p):
-                    return p.__right_
+                case .__left_(let l):
+                    return l.__left_
+                case .__right_(let r):
+                    return r.__right_
                 default:
                     break
                 }
@@ -208,10 +192,10 @@ extension HandlePtr {
                 switch self {
                 case .__parent_(let p):
                     p.__parent_ = newValue
-                case .__left_(let p):
-                    p.__left_ = newValue
-                case .__right_(let p):
-                    p.__right_ = newValue
+                case .__left_(let l):
+                    l.__left_ = newValue
+                case .__right_(let r):
+                    r.__right_ = newValue
                 default:
                     fatalError()
                 }
@@ -232,13 +216,14 @@ extension HandlePtr {
     }
     
     public var __self_ref: Reference {
-        if __parent_.__left_ == self {
+        switch self {
+        case __parent_.__left_:
             return .__left_(__parent_)
-        }
-        if __parent_.__right_ == self {
+        case __parent_.__right_:
             return .__right_(__parent_)
+        default:
+            return .none
         }
-        return .none
     }
     
     public enum _ValueRef {
@@ -246,14 +231,14 @@ extension HandlePtr {
         var referencee: Handle.NodeItem.Element {
             get {
                 switch self {
-                case .__value_(let p):
-                    return p.__value_
+                case .__value_(let v):
+                    return v.__value_
                 }
             }
             nonmutating set {
                 switch self {
-                case .__value_(let p):
-                    p.__value_ = newValue
+                case .__value_(let v):
+                    v.__value_ = newValue
                 }
             }
         }

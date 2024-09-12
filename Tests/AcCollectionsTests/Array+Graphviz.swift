@@ -36,14 +36,7 @@ extension Array where Element == NodeItem {
     func graphviz() -> String { "" }
 }
 
-protocol BasePtrItem: Equatable {
-    var isBlack: Bool { get set }
-    var parent: BasePtr { get set }
-    var left: BasePtr { get set }
-    var right: BasePtr { get set }
-}
-
-extension Array where Element: BasePtrItem {
+extension Array where Element: TreeNodeProtocol {
     
     func graphviz() -> String {
         let header = """
@@ -65,14 +58,10 @@ extension Array where Element: BasePtrItem {
         
         return header +
         red + reds + "\n" +
-        black + lefts + rights + "\n" +
+        black + "\n" +
+        lefts + "\n" +
+        rights + "\n" +
         hooter
     }
 }
 
-//extension Array where Element == BasePtrItem {
-//    
-//    func graphviz() -> String { "" }
-//}
-
-extension Storage.Item: BasePtrItem { }

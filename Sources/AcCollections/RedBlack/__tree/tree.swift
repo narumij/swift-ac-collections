@@ -744,6 +744,10 @@ extension ___tree_construct_base {
     // __node_insert_multi(...)
     
     // __remove_node_pointer(...)
+}
+
+extension ___tree_insert_base {
+
     func
     __remove_node_pointer(_ __ptr: _NodePtr)
     {
@@ -790,11 +794,11 @@ extension ___tree_construct_base {
     
 }
 
-#if false
-extension __RedBlackTree where _Node: __node_base_pointer, _Node.__node_value_type == Element {
+#if true
+extension ___tree_find_base {
     
     func
-    __lower_bound(_ __v: Element,_ __root: inout _Node,_ __result: inout _Node) -> _Node
+    __lower_bound(_ __v: Element,_ __root: inout _NodePtr,_ __result: inout _NodePtr) -> _NodePtr
     {
         while (__root != nil)
         {
@@ -814,7 +818,7 @@ extension __RedBlackTree where _Node: __node_base_pointer, _Node.__node_value_ty
     // __upper_bound(...)
     
     func
-    __upper_bound(_ __v: Element,_ __root: inout _Node,_ __result: inout _Node) -> _Node
+    __upper_bound(_ __v: Element,_ __root: inout _NodePtr,_ __result: inout _NodePtr) -> _NodePtr
     {
         while (__root != nil)
         {

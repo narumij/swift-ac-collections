@@ -27,7 +27,7 @@ struct Tree {
     typealias _Node = BasePtr
     typealias _NodeRef = BasePtr.Reference
     
-    var data: [RedBlackNode] {
+    var data: [NodeItem] {
         get { _data }
         set { _data = newValue }
     }

@@ -65,7 +65,8 @@ final class TreeTests: XCTestCase {
         tree.__root = .node(0)
 
         do {
-            let result = tree.__find_leaf_low(&tree.__root, 5)
+            var parent = tree.__root
+            let result = tree.__find_leaf_low(&parent, 5)
             XCTAssertEqual(result, .__left_(tree.__root))
         }
     }
@@ -79,7 +80,8 @@ final class TreeTests: XCTestCase {
         tree.__root = .node(0)
 
         do {
-            let result = tree.__find_leaf_high(&tree.__root, 5)
+            var parent = tree.__root
+            let result = tree.__find_leaf_high(&parent, 5)
             XCTAssertEqual(result, .__right_(tree.__root))
         }
     }
@@ -93,15 +95,18 @@ final class TreeTests: XCTestCase {
         tree.__root = .node(0)
 
         do {
-            let result = tree.__find_equal(&tree.__root, 0)
+            var parent = tree.__root
+            let result = tree.__find_equal(&parent, 0)
             XCTAssertEqual(result, tree.__root.__left_ref)
         }
         do {
-            let result = tree.__find_equal(&tree.__root, 10)
+            var parent = tree.__root
+            let result = tree.__find_equal(&parent, 10)
             XCTAssertEqual(result, tree.__root.__self_ref)
         }
         do {
-            let result = tree.__find_equal(&tree.__root, 20)
+            var parent = tree.__root
+            let result = tree.__find_equal(&parent, 20)
             XCTAssertEqual(result, tree.__root.__right_ref)
         }
     }

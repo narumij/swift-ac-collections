@@ -55,7 +55,8 @@ extension BasePtr {
             case .node(let int):
                 return Self.data[int].right
             case .end:
-                fatalError()
+//                fatalError()
+                return .none
             case .none:
                 return .none
             }
@@ -67,7 +68,8 @@ extension BasePtr {
             case .end:
                 fatalError()
             case .none:
-                fatalError()
+//                fatalError()
+                break
             }
         }
     }
@@ -77,7 +79,8 @@ extension BasePtr {
             case .node(let int):
                 return Self.data[int].parent
             case .end:
-                fatalError()
+//                fatalError()
+                return .none
             case .none:
                 return .none
             }
@@ -87,7 +90,8 @@ extension BasePtr {
             case .node(let int):
                 Self.data[int].parent = newValue
             case .end:
-                fatalError()
+//                fatalError()
+                break
             case .none:
                 fatalError()
             }
@@ -109,7 +113,8 @@ extension BasePtr {
             case .node(let int):
                 Self.data[int].isBlack = newValue
             case .end:
-                fatalError()
+//                fatalError()
+                break
             case .none:
                 fatalError()
             }

@@ -13,7 +13,16 @@ enum BlackOrRed: Equatable {
     case red
 }
 
-class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_insert_base where Element: Equatable, Element: ExpressibleByIntegerLiteral, Element: Comparable {
+class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_insert_base, ___tree_construct_base where Element: Equatable, Element: ExpressibleByIntegerLiteral, Element: Comparable {
+    func __construct_node(_ element: Element) -> AcCollections.HandlePtr<Handle> {
+        let result = __node(items.count)
+        items.append(.init(color: .red, parent: nil, left: nil, right: nil, element: element))
+        return result
+    }
+    
+    func iterator(_ r: AcCollections.HandlePtr<Handle>.Reference) -> Iterator {
+        .init(__ptr_: r.referencee, __end_: .end(handle), __begin_: .none)
+    }
     
     typealias Element = Element
     
@@ -35,12 +44,19 @@ class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_insert_base
     }
     
     struct Iterator: Equatable, ___tree_iterator_protocol {
+        func value() -> Element {
+            fatalError()
+        }
+        
+        typealias __iter_pointer = TreeStorage<Element>._NodePtr
+        typealias __node_value_type = TreeStorage<Element>._NodePtr.__node_value_type
+        
         var __ptr_: TreeStorage<Element>._NodePtr
         var __end_: TreeStorage<Element>._NodePtr
         var __begin_: TreeStorage<Element>._NodePtr
 //        init(_ p: TreeStorage<Element>._NodePtr,_ e: TreeStorage<Element>._NodePtr) { __ptr_ = p; __end_ = e }
-        func reference() -> reference { __ptr_.__self_ref }
-        func pointer() -> pointer { __ptr_ }
+//        func reference() -> TreeStorage<Element>._NodeRef { __ptr_.__self_ref }
+        func pointer() -> TreeStorage<Element>._NodePtr { __ptr_ }
     }
     
     struct Handle: Equatable, TreeHandleProtocol {
@@ -60,8 +76,9 @@ class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_insert_base
     
     var handle: Handle { .init(storage: self) }
     
-    func node(_ n: Int) -> _NodePtr { .node(handle, n) }
-    func end() -> _NodePtr { .end(handle) }
+    func __node(_ n: Int) -> _NodePtr { .node(handle, n) }
+    func __end() -> _NodePtr { .end(handle) }
+    func __none() -> _NodePtr { .none }
     
     var __root: _NodePtr {
         get { __end_node.__left_ }
@@ -89,7 +106,7 @@ class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_insert_base
     }
     
     func iterator(_ p: _NodePtr) -> Iterator {
-        .init(__ptr_: p, __end_: end(), __begin_: Self.__tree_min(p))
+        .init(__ptr_: p, __end_: __end(), __begin_: Self.__tree_min(p))
     }
     
     var size: Int = 0

@@ -52,9 +52,9 @@ extension Array where Element: TreeNodeProtocol {
         
         let reds: String = (startIndex ..< endIndex).filter{ !self[$0].isBlack }.map{"\($0)"}.joined(separator: " ")
         
-        let lefts: String = (startIndex ..< endIndex).filter{ self[$0].left != nil }.map{ "\($0) -> \(self[$0].left.index!) [label = \"left\"];" }.joined(separator: "\n")
+        let lefts: String = (startIndex ..< endIndex).filter{ self[$0].left != nil }.map{ "\($0) -> \(self[$0].left.index ?? -1) [label = \"left\"];" }.joined(separator: "\n")
         
-        let rights: String = (startIndex ..< endIndex).filter{ self[$0].right != nil }.map{ "\($0) -> \(self[$0].right.index!) [label = \"right\"];" }.joined(separator: "\n")
+        let rights: String = (startIndex ..< endIndex).filter{ self[$0].right != nil }.map{ "\($0) -> \(self[$0].right.index ?? -1) [label = \"right\"];" }.joined(separator: "\n")
         
         return header +
         red + reds + "\n" +

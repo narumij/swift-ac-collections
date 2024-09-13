@@ -228,16 +228,16 @@ extension HandlePtr {
         .__right_(self)
     }
     
-    public var __self_ref: Reference {
-        switch self {
-        case __parent_.__left_:
-            return .__left_(__parent_)
-        case __parent_.__right_:
-            return .__right_(__parent_)
-        default:
-            return .none
-        }
-    }
+//    public var __self_ref: Reference {
+//        switch self {
+//        case __parent_.__left_:
+//            return .__left_(__parent_)
+//        case __parent_.__right_:
+//            return .__right_(__parent_)
+//        default:
+//            return .none
+//        }
+//    }
     
     public enum _ValueRef {
         case __value_(HandlePtr<Handle>)

@@ -1,52 +1,97 @@
 import Foundation
 
-protocol ___tree_iterator_base_protocol: ___tree_const_base
-where __value_type == __iter_pointer.__value_type
+protocol ___tree_base_with_pointer_type: ___tree_base
+where __node_ptr_type: ___tree_node_ptr_protocol,
+      __node_ptr_type.__value_type == __value_type
 {
-    associatedtype __iter_pointer: ___tree_node_value_protocol
-    var __ptr_: __iter_pointer { get set }
-    var __end_: __iter_pointer { get }
-    var __begin_: __iter_pointer { get }
-    
     associatedtype __value_type
+    static var value_comp: (__value_type, __value_type) -> Bool { get }
+    associatedtype __node_ptr_type
 }
 
-extension ___tree_iterator_base_protocol {
-    @discardableResult
-    mutating func next() -> __value_type! {
-        assert(__ptr_ != __end_)
-        __ptr_ = Self.__tree_next_iter(__ptr_)
-        if __ptr_ != __end_ {
-            return __ptr_.__value_
-        }
-        return nil
-    }
-    @discardableResult
-    mutating func prev() -> __value_type! {
-        assert(__ptr_ != __begin_)
-        __ptr_ = Self.__tree_prev_iter(__ptr_)
-        return __ptr_.__value_
-    }
-    mutating func next(_ n: Int) -> Self {
-        var it = self
-        (0..<n).forEach{ _ in it.next() }
-        return it
-    }
-    mutating func prev(_ n: Int) -> Self {
-        var it = self
-        (0..<n).forEach{ _ in it.prev() }
-        return it
+protocol ___tree_base_with_reference_type: ___tree_base_with_pointer_type
+where __node_ref_type: ___ref_protocol,
+      __node_ref_type == __node_ptr_type.__node_ref_type,
+      __node_ref_type.__wrapped_type == __node_ptr_type
+{
+    associatedtype __node_ref_type
+}
+
+protocol ___tree_base_with_iterator_type: ___tree_base_with_pointer_type
+where __node_iter_type: ___tree_node_iter_protocol,
+      __node_iter_type == __node_ptr_type
+{
+    associatedtype __node_iter_type
+}
+
+protocol ___tree_base_ptr_basic_members: ___tree_base
+where Self: ___tree_base_with_pointer_type
+{
+    associatedtype __node_ptr_type
+    var __root: __node_ptr_type { get nonmutating set }
+    var __end_node: __node_ptr_type { get }
+}
+
+extension ___tree_base_ptr_basic_members {
+    var __root: __node_ptr_type {
+        get { __end_node.__left_ }
+        nonmutating set { __end_node.__left_ = newValue }
     }
 }
 
-protocol ___tree_iterator_protocol: ___tree_iterator_base_protocol, Equatable
-where __iter_pointer: ___tree_node_ptr_protocol {
-    func value() -> pointer.__value_type
-    func pointer() -> pointer
+protocol ___tree_base_ptr_members: ___tree_base_ptr_basic_members {
+    var __begin_node: __node_ptr_type { get nonmutating set }
+    var size: Int { get nonmutating set }
 }
 
-extension ___tree_iterator_protocol {
-    typealias reference = __iter_pointer.__node_ref_type
-    typealias pointer = __iter_pointer.__node_ptr_type
+protocol ___tree_base_ref_basic_members: ___tree_base
+where Self: ___tree_base_with_reference_type
+{
+    associatedtype __node_ref_type
+    var __root_ptr: __node_ref_type { get }
 }
 
+protocol ___tree_base_iter_basic_members: ___tree_base
+where Self: ___tree_base_with_iterator_type
+{
+    func begin() -> __node_iter_type
+    func end() -> __node_iter_type
+}
+
+protocol ___tree_find_base: ___tree_base, ___tree_base_with_reference_type {
+    var __root: __node_ptr_type { get }
+    var __end_node: __node_ptr_type { get }
+    var __root_ptr: __node_ref_type { get }
+    func addressof(_ ptr: __node_ref_type) -> __node_ref_type
+}
+
+extension ___tree_find_base {
+    var __root_ptr: __node_ref_type {
+        __end_node.__left_ref
+    }
+    func addressof(_ ptr: __node_ref_type) -> __node_ref_type { ptr }
+}
+
+protocol ___tree_insert_base: ___tree_base_with_reference_type & ___tree_base_ptr_members { }
+
+protocol ___tree_find_leaf: ___tree_find_base, ___tree_base_iter_basic_members {
+    
+    func
+    __find_leaf_low(_ __parent: inout __node_ptr_type, _ __v: __value_type) -> __node_ref_type
+
+    func
+    __find_leaf_high(_ __parent: inout __node_ptr_type, _ __v: __value_type) -> __node_ref_type
+}
+
+//protocol ___tree_clear_base: ___tree_find_base & ___tree_base_ptr_members {
+//    func destroy(_: __node_ptr_type)
+//}
+//
+//protocol ___tree_construct_base: ___tree_insert_base & ___tree_base_with_iterator_type {
+//    func __construct_node(_ : __value_type) -> __node_ptr_type
+//    func iterator(_ r: __node_ref_type) -> __node_iter_type
+//    func
+//    __find_equal(_ __parent: inout __node_ptr_type, _ __v: __value_type) -> __node_ref_type
+//}
+
+protocol ___tree_remove_base: ___tree_base_ptr_members & ___tree_base_with_iterator_type { }

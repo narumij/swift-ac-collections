@@ -33,10 +33,20 @@ extension BasePtr {
     public typealias __node_ref_type = Reference
 }
 
-extension Tree: ___tree_find_base, ___tree_find_equal {
+extension Tree: ___tree_find_base {
+    typealias __node_ref_type = BasePtr.Reference
+    
+    typealias __value_type = Element
+    
+    typealias __node_ptr_type = BasePtr
     
     func addressof(_ ptr: _NodeRef) -> _NodeRef {
         ptr
+    }
+    
+    var __root: BasePtr {
+        get { __end_node.__left_ }
+        nonmutating set { __end_node.__left_ = newValue }
     }
     
     var __root_ptr: BasePtr.Reference {

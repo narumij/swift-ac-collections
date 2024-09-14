@@ -1,6 +1,6 @@
 import Foundation
 
-protocol __tree_node_const_protocol: Equatable, ExpressibleByNilLiteral, CustomDebugStringConvertible {
+protocol ___tree_node_const_protocol: Equatable, ExpressibleByNilLiteral, CustomDebugStringConvertible {
     associatedtype __node_ptr_type
     where __node_ptr_type == Self
     var __left_:   __node_ptr_type { get }
@@ -11,7 +11,7 @@ protocol __tree_node_const_protocol: Equatable, ExpressibleByNilLiteral, CustomD
     static var nullptr: Self { get }
 }
 
-protocol ___tree_node_protocol: __tree_node_const_protocol {
+protocol ___tree_node_protocol: ___tree_node_const_protocol {
     var __left_:   __node_ptr_type { get nonmutating set }
     var __right_:  __node_ptr_type { get nonmutating set }
     var __parent_: __node_ptr_type { get nonmutating set }

@@ -1,6 +1,6 @@
 import Foundation
 
-protocol TreeNodeProtocol: Equatable {
+protocol TreeNodeProtocol {
     var isBlack: Bool { get set }
     var parent: BasePtr { get set }
     var left: BasePtr { get set }
@@ -8,20 +8,36 @@ protocol TreeNodeProtocol: Equatable {
 }
 
 protocol NodeItemProtocol: TreeNodeProtocol {
-    associatedtype Element: Equatable
+    associatedtype Element
     var __value_: Element { get set }
 }
 
-protocol TreeHandleProtocol: Equatable {
+protocol TreeHandleProtocol {
     associatedtype NodeItem: NodeItemProtocol
     var __left_: BasePtr { get nonmutating set }
     subscript(index: Int) -> NodeItem { get nonmutating set }
 }
 
-enum HandlePtr<Handle>: Equatable where Handle: TreeHandleProtocol {
+enum HandlePtr<Handle> where Handle: ___tree_const_base & TreeHandleProtocol {
     case none
     case end(Handle)
     case node(Handle,Int)
+}
+
+extension HandlePtr: Equatable {
+    static func == (lhs: HandlePtr<Handle>, rhs: HandlePtr<Handle>) -> Bool {
+        switch (lhs, rhs) {
+        case (.none,.none):
+            return true
+        case (.end,.end):
+            return true
+        case (.node(_,let l),.node(_,let r)):
+            return l == r
+        default:
+            break
+        }
+        return false
+    }
 }
 
 extension HandlePtr: ExpressibleByNilLiteral {
@@ -230,17 +246,6 @@ extension HandlePtr {
         .__right_(self)
     }
     
-//    public var __self_ref: Reference {
-//        switch self {
-//        case __parent_.__left_:
-//            return .__left_(__parent_)
-//        case __parent_.__right_:
-//            return .__right_(__parent_)
-//        default:
-//            return .none
-//        }
-//    }
-    
     public enum _ValueRef {
         case __value_(HandlePtr<Handle>)
         var referencee: Handle.NodeItem.Element {
@@ -262,4 +267,41 @@ extension HandlePtr {
     var __value_ref: _ValueRef {
         .__value_(self)
     }
+}
+
+extension HandlePtr: ___tree_node_iter_protocol {
+    
+    var __is_end_: Bool {
+        get {
+            switch self {
+            case .end(_):
+                return true
+            default:
+                return false
+            }
+        }
+    }
+    mutating func next() -> __value_type? {
+        assert(!__ptr_.__is_end_)
+        self = Handle.__tree_next_iter(__ptr_)
+        if !__ptr_.__is_end_ {
+            return __ptr_.__value_
+        }
+        return nil
+    }
+    mutating func prev() -> __value_type? {
+        self = Handle.__tree_prev_iter(self)
+        return __value_
+    }
+    static func -= (lhs: inout HandlePtr<Handle>, rhs: Int) {
+        for _ in 0..<rhs {
+            _ = lhs.prev()
+        }
+    }
+    static func += (lhs: inout HandlePtr<Handle>, rhs: Int) {
+        for _ in 0..<rhs {
+            _ = lhs.next()
+        }
+    }
+    var __ptr_: Self { self }
 }

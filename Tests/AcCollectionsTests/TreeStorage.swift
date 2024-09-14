@@ -13,70 +13,45 @@ enum BlackOrRed: Equatable {
     case red
 }
 
-class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_find_equal, ___tree_base_ref_basic_members_impl, ___tree_insert_base, ___tree_construct_base where Element: Equatable, Element: ExpressibleByIntegerLiteral, Element: Comparable {
-    
+class TreeStorage<Element>: ___tree_base, ___tree_find_base,  ___tree_insert_base where Element: Equatable, Element: ExpressibleByIntegerLiteral, Element: Comparable {
+    typealias __node_iter_type = _NodePtr
     typealias __node_ptr_type = _NodePtr
     typealias __node_ref_type = _NodeRef
     typealias __value_type = Element
     
-    func __construct_node(_ element: Element) -> AcCollections.HandlePtr<Handle> {
-        let result = __node(items.count)
-        items.append(.init(color: .red, parent: nil, left: nil, right: nil, element: element))
-        return result
-    }
-    
-    func iterator(_ r: AcCollections.HandlePtr<Handle>.Reference) -> Iterator {
-        .init(__ptr_: r.referencee, __end_: .end(handle), __begin_: .none)
+    func iterator(_ r: _NodeRef) -> _NodePtr {
+        r.referencee
     }
     
     typealias Element = Element
     
     typealias _NodePtr = HandlePtr<Handle>
     typealias _NodeRef = HandlePtr<Handle>.Reference
-    
+    typealias _NodeIter = _NodePtr
+
     static var value_comp: (Element, Element) -> Bool { (<) }
 
-    var begin_ptr: BasePtr = .end
-    var end_ptr: BasePtr = .end
+    var header: TreeHeader = .init()
     var items: [Item] = []
-    
+
     struct Item: Equatable, NodeItemProtocol {
-        var color: BlackOrRed = .black
+        var isBlack: Bool
         var parent: BasePtr
         var left: BasePtr
         var right: BasePtr
-        var element: Element
+        var __value_: Element
     }
     
-    struct Iterator: Equatable, ___tree_iterator_protocol {
-        func value() -> Element {
-            fatalError()
-        }
-        
-        typealias __iter_pointer = TreeStorage<Element>._NodePtr
-        typealias __value_type = TreeStorage<Element>._NodePtr.__value_type
-        
-        var __ptr_: TreeStorage<Element>._NodePtr
-        var __end_: TreeStorage<Element>._NodePtr
-        var __begin_: TreeStorage<Element>._NodePtr
-//        init(_ p: TreeStorage<Element>._NodePtr,_ e: TreeStorage<Element>._NodePtr) { __ptr_ = p; __end_ = e }
-//        func reference() -> TreeStorage<Element>._NodeRef { __ptr_.__self_ref }
-        func pointer() -> TreeStorage<Element>._NodePtr { __ptr_ }
-    }
-    
-    struct Handle: Equatable, TreeHandleProtocol {
-        static func == (lhs: TreeStorage<Element>.Handle, rhs: TreeStorage<Element>.Handle) -> Bool {
-            lhs.storage === rhs.storage
-        }
+    struct Handle: ___tree_const_base, TreeHandleProtocol {
+        let storage: TreeStorage<Element>
         subscript(index: Int) -> TreeStorage<Element>.Item {
             get { storage.items[index] }
             nonmutating set { storage.items[index] = newValue }
         }
         var __left_: BasePtr {
-            get { storage.end_ptr }
-            nonmutating set { storage.end_ptr = newValue }
+            get { storage.header.end_ptr }
+            nonmutating set { storage.header.end_ptr = newValue }
         }
-        let storage: TreeStorage<Element>
     }
     
     var handle: Handle { .init(storage: self) }
@@ -96,42 +71,124 @@ class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_find_equal,
     }
     
     var __begin_node: _NodePtr {
-        get { begin_ptr.handlePtr(handle) }
-        set { begin_ptr = newValue.basePtr }
+        get { header.begin_ptr.handlePtr(handle) }
+        set { header.begin_ptr = newValue.basePtr }
     }
     
     var __end_node: _NodePtr { .end(handle) }
     
-//    var __end_iter: Iterator { .init(end_ptr.handlePtr(handle), __end_node, __begin_: _NodePtr) }
-    
-    func ___construct_node() -> _NodePtr {
+    func ___construct_node(_ k: Element) -> _NodePtr {
         let node = _NodePtr.node(handle, items.count)
-        items.append(.init(isBlack: false, parent: nil, left: nil, right: nil, __value_: 0))
+        items.append(.init(isBlack: false, parent: nil, left: nil, right: nil, __value_: k))
         return node
     }
     
-    func iterator(_ p: _NodePtr) -> Iterator {
-        .init(__ptr_: p, __end_: __end(), __begin_: Self.__tree_min(p))
+    var size: Int {
+        get { header.size }
+        set { header.size = newValue }
+    }
+}
+
+extension TreeStorage: ___tree_storage {
+    func find(_ __v: Element) -> _NodePtr {
+        fatalError()
     }
     
+    func begin() -> _NodePtr {
+        fatalError()
+    }
+    
+    func end() -> _NodePtr {
+        fatalError()
+    }
+}
+
+struct TreeHeader {
+    var begin_ptr: BasePtr = .end
+    var end_ptr: BasePtr = .end
     var size: Int = 0
 }
 
-extension TreeStorage.Item {
-    init(isBlack: Bool, parent: BasePtr = nil, left: BasePtr = nil, right: BasePtr = nil, __value_: Element) {
-        self.color = isBlack ? .black : .red
-        self.parent = parent
-        self.left = left
-        self.right = right
-        self.element = __value_
+struct UnsafeHandle<Item>: ___tree_const_base, TreeHandleProtocol where Item: NodeItemProtocol, Item.Element: Comparable {
+    let _header: UnsafeMutablePointer<TreeHeader>
+    let _buffer: UnsafeMutableBufferPointer<Item>
+    subscript(index: Int) -> Item {
+        get { _buffer[index] }
+        nonmutating set { _buffer[index] = newValue }
     }
-    var isBlack: Bool {
-        get { color == .black }
-        set { color = newValue ? .black : .red }
-    }
-    var __value_: Element {
-        get { element }
-        set { element = newValue }
+    var __left_: BasePtr {
+        get { _header.pointee.end_ptr }
+        nonmutating set { _header.pointee.end_ptr = newValue }
     }
 }
 
+struct UnsafeTree<Item>: ___tree_base, ___tree_find_base where Item: NodeItemProtocol, Item.Element: Comparable {
+
+    let _header: UnsafeMutablePointer<TreeHeader>
+    let _buffer: UnsafeMutableBufferPointer<Item>
+    
+    static var value_comp: (Element, Element) -> Bool { (<) }
+
+    var handle: Handle { Handle(_header: _header, _buffer: _buffer) }
+    
+    typealias __node_iter_type = _NodePtr
+    typealias __node_ptr_type = _NodePtr
+    typealias __node_ref_type = _NodeRef
+    typealias __value_type = Element
+    
+    typealias Handle = UnsafeHandle<Item>
+    typealias Element = Item.Element
+    typealias _NodePtr = HandlePtr<Handle>
+    typealias _NodeRef = HandlePtr<Handle>.Reference
+    typealias _NodeIter = _NodePtr
+    
+    func __node(_ n: Int) -> _NodePtr { .node(handle, n) }
+    func __end() -> _NodePtr { .end(handle) }
+    func __none() -> _NodePtr { .none }
+    var __root: _NodePtr {
+        get { __end_node.__left_ }
+        set {
+            __end_node.__left_ = newValue
+            if newValue != .none {
+                newValue.__parent_ = .end(handle)
+            }
+        }
+    }
+    var __begin_node: _NodePtr {
+        get { _header.pointee.begin_ptr.handlePtr(handle) }
+        set { _header.pointee.begin_ptr = newValue.basePtr }
+    }
+    var __end_node: _NodePtr { .end(handle) }
+    var size: Int {
+        get { _header.pointee.size }
+        set { _header.pointee.size = newValue }
+    }
+}
+
+
+class TreeTreeTree<Element> {
+    var header: TreeHeader = .init()
+    var buffer: [Item] = []
+    
+    struct Item: NodeItemProtocol {
+        var isBlack: Bool
+        var parent: BasePtr
+        var left: BasePtr
+        var right: BasePtr
+        var __value_: Element
+    }
+    
+    func _update<R>(_ body: (UnsafeTree<Item>) -> R) -> R {
+        withUnsafeMutablePointer(to: &header) { header in
+            buffer.withUnsafeMutableBufferPointer { buffer in
+                body(UnsafeTree(_header: header, _buffer: buffer))
+            }
+        }
+    }
+    
+    func construct_node(_ k: Element) -> BasePtr {
+        let result = BasePtr.node(buffer.count)
+        buffer.append(.init(isBlack: false, parent: nil, left: nil, right: nil, __value_: k))
+        return result
+    }
+}

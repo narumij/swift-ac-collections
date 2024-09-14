@@ -13,237 +13,121 @@
 
 import Foundation
 
-protocol ___tree_node_pointer_const_base_protocol: Equatable, ExpressibleByNilLiteral, CustomDebugStringConvertible {
-    associatedtype __node_ptr_type
-    where __node_ptr_type == Self
-    var __left_:   __node_ptr_type { get }
-    var __right_:  __node_ptr_type { get }
-    var __parent_: __node_ptr_type { get }
-    var __is_black_: Bool  { get }
-    func __parent_unsafe() -> __node_ptr_type
-    static var nullptr: Self { get }
-}
-
-protocol ___tree_node_pointer_base_protocol: ___tree_node_pointer_const_base_protocol {
-    var __left_:   __node_ptr_type { get nonmutating set }
-    var __right_:  __node_ptr_type { get nonmutating set }
-    var __parent_: __node_ptr_type { get nonmutating set }
-    var __is_black_: Bool  { get nonmutating set }
-}
-
-protocol ___tree_node_const_reference_protocol: Equatable, ExpressibleByNilLiteral {
-    associatedtype Referencee
-    var referencee: Referencee { get }
-    static var nullptr: Self { get }
-}
-
-protocol ___tree_node_reference_protocol: ___tree_node_const_reference_protocol {
-    var referencee: Referencee { get nonmutating set }
-}
-
-protocol ___tree_node_const_ref_protocol: ___tree_node_const_reference_protocol {
-    associatedtype __node_ref_type
-    where __node_ref_type == Self
-    var __parent_ref: __node_ref_type { get }
-    var __left_ref:   __node_ref_type { get }
-    var __right_ref:  __node_ref_type { get }
-}
-
-protocol ___tree_node_ref_protocol: ___tree_node_reference_protocol {
-    associatedtype __node_ref_type
-    where __node_ref_type == Self
-    var __parent_ref: __node_ref_type { get }
-    var __left_ref:   __node_ref_type { get }
-    var __right_ref:  __node_ref_type { get }
-}
-
-protocol ___tree_node_pointer_const_value_protocol: ___tree_node_pointer_base_protocol {
-    associatedtype __node_value_type
-    var __value_: __node_value_type { get }
-}
-
-protocol ___tree_node_pointer_value_protocol: ___tree_node_pointer_const_value_protocol {
-    var __value_: __node_value_type { get nonmutating set }
-}
-
-protocol ___tree_node_pointer_const_ref_protocol: ___tree_node_pointer_const_base_protocol {
-    associatedtype __node_ref_type
-    where __node_ref_type: ___tree_node_const_reference_protocol,
-          __node_ref_type.Referencee == __node_ptr_type
-    var __parent_ref: __node_ref_type { get }
-    var __left_ref:   __node_ref_type { get }
-    var __right_ref:  __node_ref_type { get }
-}
-
-protocol ___tree_node_pointer_ref_protocol: ___tree_node_pointer_base_protocol {
-    associatedtype __node_ref_type
-    where __node_ref_type: ___tree_node_reference_protocol,
-          __node_ref_type.Referencee == __node_ptr_type
-    var __parent_ref: __node_ref_type { get }
-    var __left_ref:   __node_ref_type { get }
-    var __right_ref:  __node_ref_type { get }
-}
-
-protocol ___tree_node_const_pointer_protocol: ___tree_node_pointer_const_base_protocol & ___tree_node_pointer_const_value_protocol & ___tree_node_pointer_const_ref_protocol { }
-
-protocol ___tree_node_pointer_protocol: ___tree_node_pointer_base_protocol & ___tree_node_pointer_value_protocol & ___tree_node_pointer_ref_protocol { }
-
-protocol ___tree_iterator_base_protocol: ___tree_const_base {
-    associatedtype __iter_pointer: ___tree_node_pointer_const_value_protocol
-    associatedtype __node_value_type // where __node_value_type == __iter_pointer.__node_value_type
-    var __ptr_: __iter_pointer { get set }
-    var __end_: __iter_pointer { get }
-    var __begin_: __iter_pointer { get }
-}
-
-extension ___tree_iterator_base_protocol where __node_value_type == __iter_pointer.__node_value_type {
-    @discardableResult
-    mutating func next() -> __node_value_type! {
-        assert(__ptr_ != __end_)
-        __ptr_ = Self.__tree_next_iter(__ptr_)
-        if __ptr_ != __end_ {
-            return __ptr_.__value_
-        }
-        return nil
-    }
-    @discardableResult
-    mutating func prev() -> __node_value_type! {
-        assert(__ptr_ != __begin_)
-        __ptr_ = Self.__tree_prev_iter(__ptr_)
-        return __ptr_.__value_
-    }
-    mutating func next(_ n: Int) -> Self {
-        var it = self
-        (0..<n).forEach{ _ in it.next() }
-        return it
-    }
-    mutating func prev(_ n: Int) -> Self {
-        var it = self
-        (0..<n).forEach{ _ in it.prev() }
-        return it
-    }
-}
-
-protocol ___tree_iterator_protocol: ___tree_iterator_base_protocol, Equatable
-where __iter_pointer: ___tree_node_pointer_protocol {
-//    init(_ p: __iter_pointer)
-    func value() -> pointer.__node_value_type
-    func pointer() -> pointer
-//    func reference() -> reference
-}
-
-extension ___tree_iterator_protocol {
-    typealias reference = __iter_pointer.__node_ref_type
-    typealias pointer = __iter_pointer.__node_ptr_type
-}
-
-protocol ___tree_const_iterator_protocol: ___tree_iterator_base_protocol, Equatable
-where __iter_pointer: ___tree_node_const_pointer_protocol {
-    associatedtype __node_value_type
-//    init(_ p: __iter_pointer)
-    func pointer() -> pointer
-    func reference() -> reference
-}
-
-extension ___tree_const_iterator_protocol {
-    typealias reference = __iter_pointer.__node_ref_type
-    typealias pointer = __iter_pointer.__node_ptr_type
-}
-
-
 protocol ___tree_const_base { }
 
 protocol ___tree_base: ___tree_const_base { }
 
-protocol ___tree_find_base: ___tree_base {
-    
-    associatedtype Element
-    
-    associatedtype _NodePtr
-    where _NodePtr: ___tree_node_pointer_protocol,
-          _NodePtr.__node_value_type == Element
-
-    associatedtype _NodeRef
-    where _NodeRef == _NodePtr.__node_ref_type
-
-    var __root: _NodePtr { get }
-    var __root_ptr: _NodeRef { get }
-    var __end_node: _NodePtr { get }
-    
-    static var value_comp: (Element, Element) -> Bool { get }
-    
-    func addressof(_ ptr: _NodeRef) -> _NodeRef
+protocol ___tree_base_with_pointer_type: ___tree_base
+where __node_ptr_type: ___tree_node_ptr_protocol,
+      __node_ptr_type.__value_type == __value_type
+{
+    associatedtype __value_type
+    static var value_comp: (__value_type, __value_type) -> Bool { get }
+    associatedtype __node_ptr_type
 }
 
-extension ___tree_find_base {
-    func addressof(_ ptr: _NodeRef) -> _NodeRef {
-        ptr
+protocol ___tree_base_with_reference_type: ___tree_base_with_pointer_type
+where __node_ref_type: ___ref_protocol,
+      __node_ref_type == __node_ptr_type.__node_ref_type,
+      __node_ref_type.__wrapped_type == __node_ptr_type
+{
+    associatedtype __node_ref_type
+}
+
+protocol ___tree_base_with_iterator_type: ___tree_base_with_pointer_type
+where __node_iter_type: ___tree_iterator_protocol,
+      __node_iter_type.__iter_pointer == __node_ptr_type,
+      __node_iter_type.__value_type == __value_type
+{
+    associatedtype __node_iter_type
+}
+
+protocol ___tree_base_ptr_basic_members: ___tree_base
+where Self: ___tree_base_with_pointer_type
+{
+    associatedtype __node_ptr_type
+    var __root: __node_ptr_type { get nonmutating set }
+    var __end_node: __node_ptr_type { get }
+}
+
+extension ___tree_base_ptr_basic_members {
+    var __root: __node_ptr_type {
+        get { __end_node.__left_ }
+        nonmutating set { __end_node.__left_ = newValue }
     }
-    var __root_ptr: _NodeRef {
-//        __root.__self_ref
+}
+
+protocol ___tree_base_ptr_members: ___tree_base_ptr_basic_members {
+    var __begin_node: __node_ptr_type { get nonmutating set }
+    var size: Int { get nonmutating set }
+}
+
+protocol ___tree_base_ref_basic_members: ___tree_base
+where Self: ___tree_base_with_reference_type
+{
+    associatedtype __node_ref_type
+    var __root_ptr: __node_ref_type { get }
+}
+
+protocol ___tree_base_iter_basic_members: ___tree_base
+where Self: ___tree_base_with_iterator_type
+{
+    func begin() -> __node_iter_type
+    func end() -> __node_iter_type
+}
+
+protocol ___tree_base_ref_basic_members_impl: ___tree_base_ptr_members, ___tree_base_ref_basic_members { }
+
+extension ___tree_base_ref_basic_members_impl {
+    var __root_ptr: __node_ref_type {
         __end_node.__left_ref
     }
 }
 
-protocol ___tree_find_leaf: ___tree_base {
-    
-    associatedtype Element
-    
-    associatedtype _NodePtr
-    where _NodePtr: ___tree_node_pointer_protocol,
-          _NodePtr.__node_value_type == Element
+protocol ___tree_find_base: ___tree_base, ___tree_base_ptr_basic_members, ___tree_base_with_reference_type { }
 
-    associatedtype _NodeRef
-    where _NodeRef: ___tree_node_ref_protocol,
-          _NodeRef == _NodePtr.__node_ref_type
+extension ___tree_find_base {
+    func addressof(_ ptr: __node_ref_type) -> __node_ref_type { ptr }
+}
 
-    associatedtype _NodeIter
-    where _NodeIter: ___tree_iterator_protocol,
-          _NodeIter.__iter_pointer == _NodePtr,
-          _NodeIter.__node_value_type == Element
+protocol ___tree_find_equal: ___tree_find_base, ___tree_base_ref_basic_members { }
 
-    func begin() -> _NodeIter
-    func end() -> _NodeIter
-    
-    static var value_comp: (Element, Element) -> Bool { get }
-    
+protocol ___tree_find_leaf: ___tree_find_base, ___tree_base_with_iterator_type, ___tree_base_iter_basic_members
+{
     func
-    __find_leaf_low(_ __parent: inout _NodePtr, _ __v: Element) -> _NodeRef
+    __find_leaf_low(_ __parent: inout __node_ptr_type, _ __v: __value_type) -> __node_ref_type
 
     func
-    __find_leaf_high(_ __parent: inout _NodePtr, _ __v: Element) -> _NodeRef
+    __find_leaf_high(_ __parent: inout __node_ptr_type, _ __v: __value_type) -> __node_ref_type
 }
 
 
-protocol ___tree_clear_base: ___tree_base_find {
-    func destroy(_: _NodePtr)
-    var __begin_node: _NodePtr { get nonmutating set }
-    var size: Int { get nonmutating set }
+protocol ___tree_clear_base: ___tree_find_base & ___tree_base_ptr_members {
+    func destroy(_: __node_ptr_type)
 }
 
-protocol ___tree_insert_base: ___tree_find_base {
-    var __begin_node: _NodePtr { get nonmutating set }
-    var size: Int { get nonmutating set }
-}
+protocol ___tree_insert_base: ___tree_base_with_reference_type & ___tree_base_ptr_members { }
 
-protocol ___tree_construct_base: ___tree_insert_base {
+protocol ___tree_construct_base: ___tree_insert_base & ___tree_base_with_reference_type {
     associatedtype __tree_iterator: ___tree_iterator_protocol
-    func __construct_node(_ : Element) -> _NodePtr
-    func iterator(_ r: _NodeRef) -> __tree_iterator
+    func __construct_node(_ : __value_type) -> __node_ptr_type
+    func iterator(_ r: __node_ref_type) -> __tree_iterator
+    func
+    __find_equal(_ __parent: inout __node_ptr_type, _ __v: __value_type) -> __node_ref_type
 }
 
 extension ___tree_const_base {
     
     static func
     __tree_is_left_child<_NodePtr>(_ __x: _NodePtr) -> Bool
-    where _NodePtr: ___tree_node_pointer_const_base_protocol
+    where _NodePtr: __tree_node_const_protocol
     {
         return __x == __x.__parent_.__left_
     }
     
     fileprivate static func
     __tree_sub_invariant<_NodePtr>(_ __x: _NodePtr) -> Int
-    where _NodePtr: ___tree_node_pointer_const_base_protocol
+    where _NodePtr: __tree_node_const_protocol
     {
         if (__x == .nullptr) {
             return 1; }
@@ -274,7 +158,7 @@ extension ___tree_const_base {
     
     static func
     __tree_invariant<_NodePtr>(_ __root: _NodePtr) -> Bool
-    where _NodePtr: ___tree_node_pointer_const_base_protocol
+    where _NodePtr: __tree_node_const_protocol
     {
         if (__root == .nullptr) {
             return true; }
@@ -292,7 +176,7 @@ extension ___tree_const_base {
     
     static func
     __tree_min<_NodePtr>(_ __x: _NodePtr) -> _NodePtr
-    where _NodePtr: ___tree_node_pointer_const_base_protocol
+    where _NodePtr: __tree_node_const_protocol
     {
         assert(__x != .nullptr, "Root node shouldn't be null");
         var __x = __x
@@ -303,7 +187,7 @@ extension ___tree_const_base {
     
     static func
     __tree_max<_NodePtr>(_ __x: _NodePtr) -> _NodePtr
-    where _NodePtr: ___tree_node_pointer_const_base_protocol
+    where _NodePtr: __tree_node_const_protocol
     {
         assert(__x != .nullptr, "Root node shouldn't be null");
         var __x = __x
@@ -314,7 +198,7 @@ extension ___tree_const_base {
     
     static func
     __tree_next<_NodePtr>(_ __x: _NodePtr) -> _NodePtr
-    where _NodePtr: ___tree_node_pointer_const_base_protocol
+    where _NodePtr: __tree_node_const_protocol
     {
         assert(__x != .nullptr, "node shouldn't be null");
         var __x = __x
@@ -329,7 +213,7 @@ extension ___tree_const_base {
     
     static func
     __tree_next_iter<_NodePtr>(_ __x: _NodePtr) -> _NodePtr
-    where _NodePtr: ___tree_node_pointer_const_base_protocol
+    where _NodePtr: __tree_node_const_protocol
     {
         assert(__x != .nullptr, "node shouldn't be null")
         var __x = __x
@@ -344,7 +228,7 @@ extension ___tree_const_base {
     
     static func
     __tree_prev_iter<_NodePtr>(_ __x: _NodePtr) -> _NodePtr
-    where _NodePtr: ___tree_node_pointer_const_base_protocol
+    where _NodePtr: __tree_node_const_protocol
     {
         assert(__x != .nullptr, "node shouldn't be null")
         if (__x.__left_ != .nullptr) {
@@ -357,7 +241,7 @@ extension ___tree_const_base {
     
     static func
     __tree_leaf<_NodePtr>(_ __x: _NodePtr) -> _NodePtr
-    where _NodePtr: ___tree_node_pointer_const_base_protocol
+    where _NodePtr: __tree_node_const_protocol
     {
         assert(__x != .nullptr, "node shouldn't be null");
         var __x = __x
@@ -383,7 +267,7 @@ extension ___tree_base {
 
     static func
     __tree_left_rotate<_NodePtr>(_ __x: _NodePtr)
-    where _NodePtr: ___tree_node_pointer_base_protocol
+    where _NodePtr: ___tree_node_protocol
     {
         assert(__x != .nullptr, "node shouldn't be null");
         assert(__x.__right_ != .nullptr, "node should have a right child");
@@ -402,7 +286,7 @@ extension ___tree_base {
     
     static func
     __tree_right_rotate<_NodePtr>(_ __x: _NodePtr)
-    where _NodePtr: ___tree_node_pointer_base_protocol
+    where _NodePtr: ___tree_node_protocol
     {
         assert(__x != .nullptr, "node shouldn't be null");
         assert(__x.__left_ != .nullptr, "node should have a left child");
@@ -421,12 +305,12 @@ extension ___tree_base {
     
     static func
     __tree_balance_after_insert<_NodePtr>(_ __root: _NodePtr, _ __x: _NodePtr)
-    where _NodePtr: ___tree_node_pointer_base_protocol
+    where _NodePtr: ___tree_node_protocol
     {
         assert(__root != .nullptr, "Root of the tree shouldn't be null");
         assert(__x != .nullptr, "Can't attach null node to a leaf");
-        __x.__is_black_ = __x == __root;
         var __x = __x
+        __x.__is_black_ = __x == __root;
         while (__x != __root && !__x.__parent_unsafe().__is_black_) {
           // __x->__parent_ != __root because __x->__parent_->__is_black == false
             if (__tree_is_left_child(__x.__parent_unsafe())) {
@@ -475,7 +359,7 @@ extension ___tree_base {
     
     static func
     __tree_remove<_NodePtr>(_ __root: _NodePtr,_ __z: _NodePtr)
-    where _NodePtr: ___tree_node_pointer_base_protocol
+    where _NodePtr: ___tree_node_protocol
     {
         assert(__root != .nullptr, "Root node should not be null")
         assert(__z != .nullptr, "The node to remove should not be null")
@@ -696,9 +580,9 @@ extension ___tree_clear_base {
 extension ___tree_find_base {
     
     func
-    __find_leaf_low(_ __parent: inout _NodePtr, _ __v: Element) -> _NodeRef
+    __find_leaf_low(_ __parent: inout __node_ptr_type, _ __v: __value_type) -> __node_ref_type
     {
-        var __nd: _NodePtr = __root;
+        var __nd: __node_ptr_type = __root;
         if __nd != nil {
             while true {
                 if Self.value_comp(__nd.__value_, __v) {
@@ -723,9 +607,9 @@ extension ___tree_find_base {
     }
     
     func
-    __find_leaf_high(_ __parent: inout _NodePtr, _ __v: Element) -> _NodeRef
+    __find_leaf_high(_ __parent: inout __node_ptr_type, _ __v: __value_type) -> __node_ref_type
     {
-        var __nd: _NodePtr = __root
+        var __nd: __node_ptr_type = __root
         if __nd != nil {
             while true
             {
@@ -758,16 +642,16 @@ extension ___tree_find_base {
 
 extension ___tree_find_leaf {
     
-    func static_cast__parent_pointer(_ p:_NodePtr) -> _NodePtr { fatalError() }
-    func static_cast__node_base_pointer(_ p:_NodePtr) -> _NodeRef { fatalError() }
+    func static_cast__parent_pointer(_ p:__node_ptr_type) -> __node_ptr_type { fatalError() }
+    func static_cast__node_base_pointer(_ p:__node_ptr_type) -> __node_ptr_type { fatalError() }
 
     func
-    __find_leaf(__hint: _NodeIter, __parent: inout _NodePtr, __v: Element) -> _NodeRef
+    __find_leaf(__hint: __node_iter_type, __parent: inout __node_ptr_type, __v: __value_type) -> __node_ref_type
     {
         if (__hint == end() || !Self.value_comp(__hint.value(), __v)) // check before
         {
             // __v <= *__hint
-            var __prior: _NodeIter = __hint;
+            var __prior: __node_iter_type = __hint;
             if (__prior == begin() || !Self.value_comp(__v, __prior.prev())) {
                 // *prev(__hint) <= __v <= *__hint
                 if (__hint.__ptr_.__left_ == .nullptr) {
@@ -787,17 +671,17 @@ extension ___tree_find_leaf {
     
 }
 
-extension ___tree_find_base {
+extension ___tree_find_equal {
 
-    typealias __node_pointer = _NodePtr
-    typealias __node_base_pointer = _NodeRef
-    typealias __parent_pointer = _NodePtr
+    typealias __node_pointer = __node_ptr_type
+    typealias __node_base_pointer = __node_ref_type
+    typealias __parent_pointer = __node_ptr_type
     
-    func static_cast__node_pointer(_ p:_NodePtr) -> __node_pointer { p }
-    func static_cast__parent_pointer(_ p:_NodePtr) -> __parent_pointer { p }
+    func static_cast__node_pointer(_ p:__node_ptr_type) -> __node_pointer { p }
+    func static_cast__parent_pointer(_ p:__node_ptr_type) -> __parent_pointer { p }
 
     func
-    __find_equal(_ __parent: inout _NodePtr, _ __v: Element) -> _NodeRef
+    __find_equal(_ __parent: inout __node_ptr_type, _ __v: __value_type) -> __node_ref_type
     {
         var __nd: __node_pointer          = __root;
         var __nd_ptr: __node_base_pointer = __root_ptr;
@@ -834,13 +718,13 @@ extension ___tree_insert_base {
 
     // __find_equal(...)
     
-    typealias __iter_pointer = _NodePtr
-    func static_cast__iter_pointer(_ p:_NodePtr) -> __iter_pointer { p }
+    typealias __iter_pointer = __node_ptr_type
+    func static_cast__iter_pointer(_ p:__node_ptr_type) -> __iter_pointer { p }
 
     func
     __insert_node_at(
-        _ __parent: _NodePtr, _ __child: _NodeRef,
-        _ __new_node: _NodePtr)
+        _ __parent: __node_ptr_type, _ __child: __node_ref_type,
+        _ __new_node: __node_ptr_type)
     {
         __new_node.__left_   = .nullptr;
         __new_node.__right_  = .nullptr;
@@ -850,8 +734,7 @@ extension ___tree_insert_base {
         if (__begin_node.__left_ != .nullptr) {
             __begin_node = static_cast__iter_pointer(__begin_node.__left_);
         }
-//        Self.__tree_balance_after_insert(__end_node.__left_, __child.referencee);
-        Self.__tree_balance_after_insert(__root, __new_node);
+        Self.__tree_balance_after_insert(__end_node.__left_, __child.referencee);
         size += 1
     }
 }
@@ -859,9 +742,9 @@ extension ___tree_insert_base {
 extension ___tree_construct_base {
     
     func
-    __emplace_unique_key_args(_ __k: Element) -> (iterator: __tree_iterator, __inserted: Bool)
+    __emplace_unique_key_args(_ __k: __value_type) -> (iterator: __tree_iterator, __inserted: Bool)
     {
-        var __parent: _NodePtr = .nullptr
+        var __parent: __node_ptr_type = .nullptr
         let __child    = __find_equal(&__parent, __k)
         let __r        = __child
         var __inserted = false
@@ -897,7 +780,7 @@ extension ___tree_construct_base {
 extension ___tree_insert_base {
 
     func
-    __remove_node_pointer(_ __ptr: _NodePtr)
+    __remove_node_pointer(_ __ptr: __node_ptr_type)
     {
         size -= 1
         Self.__tree_remove(__end_node.__left_,
@@ -942,11 +825,11 @@ extension ___tree_insert_base {
     
 }
 
-#if false
+#if true
 extension ___tree_find_base {
     
     func
-    __lower_bound(_ __v: Element,_ __root: inout _NodePtr,_ __result: inout _NodePtr) -> _NodePtr
+    __lower_bound(_ __v: __value_type,_ __root: inout __node_ptr_type,_ __result: inout __node_ptr_type) -> __node_ptr_type
     {
         while (__root != nil)
         {
@@ -966,7 +849,7 @@ extension ___tree_find_base {
     // __upper_bound(...)
     
     func
-    __upper_bound(_ __v: Element,_ __root: inout _NodePtr,_ __result: inout _NodePtr) -> _NodePtr
+    __upper_bound(_ __v: __value_type,_ __root: inout __node_ptr_type,_ __result: inout __node_ptr_type) -> __node_ptr_type
     {
         while (__root != nil)
         {

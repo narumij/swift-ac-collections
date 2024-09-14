@@ -19,11 +19,11 @@ struct NodeItem: Equatable, NodeItemProtocol {
     var __value_: Int
 }
 
-extension BasePtr: ___tree_node_pointer_protocol {
+extension BasePtr: ___tree_node_ptr_protocol {
     public static var nullptr: Self { .none }
 }
 
-extension BasePtr.Reference: ___tree_node_reference_protocol {
+extension BasePtr.Reference: ___ref_protocol {
     public static var nullptr: BasePtr.Reference { .none }
 }
 

@@ -7,6 +7,7 @@
 
 import Foundation
 
+#if false
 protocol __tree_end_node {
     associatedtype pointer
     var __left_: pointer { get nonmutating set }
@@ -40,7 +41,6 @@ where pointer == Self, __parent_pointer == Self
 protocol __node_pointer: __node_base_pointer & __tree_node { }
 
 
-#if false
 protocol __end_node_pointer { }
 protocol __iter_pointer { }
 
@@ -74,7 +74,6 @@ protocol __const_ref: Equatable, ExpressibleByNilLiteral {
     associatedtype Referencee
     var referencee: Referencee { get  }
 }
-#endif
 
 protocol _node_value_ptr {
     associatedtype __node_value_type
@@ -91,28 +90,11 @@ protocol _node_ref_ptr {
 
 protocol _node_base_ref: ___tree_node_reference_protocol { }
 
-protocol ___tree_base_with_ptr: ___tree_base
-where _NodePtr: __node_pointer
-{
-    associatedtype _NodePtr
-}
-
-protocol ___tree_base_with_ref: ___tree_base_with_ptr
+protocol ___tree_base_find: ___tree_base_with_value
 where _NodePtr: _node_ref_ptr, _NodePtr.Ref == _NodeRef, _NodePtr == _NodeRef.Referencee
 {
-    associatedtype _NodePtr
+    associatedtype _NodePtr: __node_pointer
     associatedtype _NodeRef
-}
-
-protocol ___tree_base_with_value: ___tree_base_with_ptr
-where _NodePtr: _node_value_ptr, _NodePtr.__node_value_type == Element
-{
-    associatedtype Element
-    static var value_comp: (Element, Element) -> Bool { get }
-}
-
-protocol ___tree_base_find: ___tree_base_with_ref & ___tree_base_with_value
-{
     var __root: _NodePtr { get }
     var __end_node: _NodePtr { get }
 }
@@ -134,3 +116,4 @@ protocol __RedBlackTree: ___tree_base & ___tree_base_find & ___tree_find_base wh
 extension __RedBlackTree {
     typealias __node_holder = _NodePtr
 }
+#endif

@@ -15,10 +15,6 @@ enum __tree_error: Swift.Error {
 struct Tree {
     static var value_comp: (Int, Int) -> Bool { (<) }
     
-    var __root: BasePtr {
-        get { __end_node.__left_ }
-        set { __end_node.__left_ = newValue }
-    }
     var __end_node: BasePtr {
         BasePtr.__end_node
     }
@@ -33,7 +29,11 @@ struct Tree {
     }
 }
 
-extension Tree: ___tree_find_base {
+extension BasePtr {
+    public typealias __node_ref_type = Reference
+}
+
+extension Tree: ___tree_find_base, ___tree_find_equal {
     
     func addressof(_ ptr: _NodeRef) -> _NodeRef {
         ptr

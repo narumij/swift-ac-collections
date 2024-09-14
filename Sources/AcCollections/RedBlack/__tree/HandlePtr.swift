@@ -69,11 +69,11 @@ extension HandlePtr {
     }
 }
 
-extension HandlePtr: ___tree_node_pointer_protocol {
+extension HandlePtr: ___tree_node_ptr_protocol {
     static var nullptr: Self { .none }
 }
 
-extension HandlePtr.Reference: ___tree_node_reference_protocol {
+extension HandlePtr.Reference: ___ref_protocol {
     static var nullptr: Self { .none }
 }
 
@@ -178,6 +178,8 @@ extension HandlePtr {
 }
 
 extension HandlePtr {
+    
+    public typealias __node_ref_type = HandlePtr<Handle>.Reference
 
     public enum Reference {
         public init(nilLiteral: ()) {

@@ -13,7 +13,12 @@ enum BlackOrRed: Equatable {
     case red
 }
 
-class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_insert_base, ___tree_construct_base where Element: Equatable, Element: ExpressibleByIntegerLiteral, Element: Comparable {
+class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_find_equal, ___tree_base_ref_basic_members_impl, ___tree_insert_base, ___tree_construct_base where Element: Equatable, Element: ExpressibleByIntegerLiteral, Element: Comparable {
+    
+    typealias __node_ptr_type = _NodePtr
+    typealias __node_ref_type = _NodeRef
+    typealias __value_type = Element
+    
     func __construct_node(_ element: Element) -> AcCollections.HandlePtr<Handle> {
         let result = __node(items.count)
         items.append(.init(color: .red, parent: nil, left: nil, right: nil, element: element))
@@ -49,7 +54,7 @@ class TreeStorage<Element>: ___tree_base, ___tree_find_base, ___tree_insert_base
         }
         
         typealias __iter_pointer = TreeStorage<Element>._NodePtr
-        typealias __node_value_type = TreeStorage<Element>._NodePtr.__node_value_type
+        typealias __value_type = TreeStorage<Element>._NodePtr.__value_type
         
         var __ptr_: TreeStorage<Element>._NodePtr
         var __end_: TreeStorage<Element>._NodePtr

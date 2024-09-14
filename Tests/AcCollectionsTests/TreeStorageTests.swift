@@ -614,6 +614,42 @@ final class TreeStorageTests: XCTestCase {
         
     }
     
+    func testHoge2() throws {
+        
+        fixtureEmpty()
+        
+        XCTAssertTrue(TreeBase.__tree_invariant(storage.__root))
+        
+        for i in (0..<10).map({ $0 * 10 }) {
+            let result = storage.__emplace_unique_key_args(i)
+            XCTAssertTrue(result.__inserted)
+            XCTAssertTrue(try TreeBase.__tree_invariant__(storage.__root))
+            print(storage.items.graphviz())
+        }
+        
+        print(storage.items.graphviz())
+        
+        do {
+            var root = storage.__root
+            XCTAssertEqual(root, storage.__node(3))
+            var lb = storage.__none()
+            _ = storage.__lower_bound(10, &root, &lb)
+            XCTAssertEqual(root, storage.__none())
+            XCTAssertEqual(lb, storage.__node(1))
+        }
+        
+        do {
+            var root = storage.__root
+            XCTAssertEqual(root, storage.__node(3))
+            var lb = storage.__none()
+            _ = storage.__upper_bound(10, &root, &lb)
+            XCTAssertEqual(root, storage.__none())
+            XCTAssertEqual(lb, storage.__node(2))
+        }
+
+    }
+
+    
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
         self.measure {

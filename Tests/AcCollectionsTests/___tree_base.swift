@@ -5,7 +5,7 @@ extension ___tree_base {
     
     static func
     __tree_sub_invariant__<_NodePtr>(_ __x: _NodePtr) throws -> Int
-    where _NodePtr: ___tree_node_pointer_base_protocol
+    where _NodePtr: ___tree_node_protocol
     {
         if (__x == .nullptr) {
             return 1; }
@@ -36,7 +36,7 @@ extension ___tree_base {
     
     static func
     __tree_invariant__<_NodePtr>(_ __root: _NodePtr) throws -> Bool
-    where _NodePtr: ___tree_node_pointer_base_protocol
+    where _NodePtr: ___tree_node_protocol
     {
         if (__root == .nullptr) {
             return true; }

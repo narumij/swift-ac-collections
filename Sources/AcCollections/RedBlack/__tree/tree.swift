@@ -669,12 +669,14 @@ extension ___tree_insert_base {
 }
 
 protocol ___tree_work: ___tree_insert_base & ___tree_find_base & ___tree_base_iter_basic_members & ___tree_remove_base {
-    func
-    __lower_bound(_ __v: _Key,_ __root: __node_pointer,_ __result: __iter_pointer) -> __node_ptr_type
 }
 
 protocol ___tree_storage: ___tree_insert_base & ___tree_find_base & ___tree_base_iter_basic_members & ___tree_remove_base {
     
+    associatedtype iterator where iterator == __node_iter_type
+    
+    func __construct_node(_ k: __value_type) -> __node_ptr_type
+    func destroy(_ k: __node_ptr_type)
     func find(_ __v: __value_type) -> __node_iter_type
 }
 
@@ -703,7 +705,7 @@ protocol TreeStorageProtocol {
     var size: Int { get set }
 }
 
-extension TreeStorageProtocol {
+extension ___tree_storage {
     
     mutating func
     clear()
@@ -807,6 +809,7 @@ extension ___tree_remove_base {
     typealias __node_pointer = __node_ptr_type
     
     func iterator(_ p: __node_ptr_type) -> __node_ptr_type { p }
+    
     func static_cast__node_base_pointer(_ p: __node_ptr_type) -> __node_ptr_type { p }
     
     func __remove_node_pointer(_ __ptr: __node_pointer) -> __node_pointer {

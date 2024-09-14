@@ -1,24 +1,23 @@
 import Foundation
 
-protocol TreeNodeProtocol {
+protocol NodeItemProtocol {
     var isBlack: Bool { get set }
     var parent: BasePtr { get set }
     var left: BasePtr { get set }
     var right: BasePtr { get set }
-}
-
-protocol NodeItemProtocol: TreeNodeProtocol {
+    
     associatedtype Element
     var __value_: Element { get set }
 }
 
-protocol TreeHandleProtocol {
+protocol TreeHandleProtocol: ___tree_const_base {
     associatedtype NodeItem: NodeItemProtocol
-    var __left_: BasePtr { get nonmutating set }
+    var __begin: BasePtr { get }
+    var __end_left_: BasePtr { get nonmutating set }
     subscript(index: Int) -> NodeItem { get nonmutating set }
 }
 
-enum HandlePtr<Handle> where Handle: ___tree_const_base & TreeHandleProtocol {
+enum HandlePtr<Handle> where Handle: TreeHandleProtocol {
     case none
     case end(Handle)
     case node(Handle,Int)
@@ -155,7 +154,7 @@ extension HandlePtr {
             case .node(let handle, let int):
                 return handle[int].left.handlePtr(handle)
             case .end(let handle):
-                return handle.__left_.handlePtr(handle)
+                return handle.__end_left_.handlePtr(handle)
             case .none:
                 fatalError()
             }
@@ -165,7 +164,7 @@ extension HandlePtr {
             case .node(let handle, let int):
                 handle[int].left = newValue.basePtr
             case .end(let handle):
-                handle.__left_ = newValue.basePtr
+                handle.__end_left_ = newValue.basePtr
             case .none:
                 fatalError()
             }
@@ -272,13 +271,19 @@ extension HandlePtr {
 extension HandlePtr: ___tree_node_iter_protocol {
     
     var __is_end_: Bool {
-        get {
-            switch self {
-            case .end(_):
-                return true
-            default:
-                return false
-            }
+        switch self {
+        case .end(_):
+            return true
+        default:
+            return false
+        }
+    }
+    var __is_begin: Bool {
+        switch self {
+        case .node(let handle,_):
+            return handle.__begin == self.basePtr
+        default:
+            return false
         }
     }
     mutating func next() -> __value_type? {
@@ -290,6 +295,9 @@ extension HandlePtr: ___tree_node_iter_protocol {
         return nil
     }
     mutating func prev() -> __value_type? {
+        if __is_begin {
+            return nil
+        }
         self = Handle.__tree_prev_iter(self)
         return __value_
     }

@@ -9,7 +9,10 @@ import Foundation
 @testable import AcCollections
 
 struct GlobalScopeTreeHandle: TreeHandleProtocol {
-    var __left_: BasePtr {
+    var __begin: BasePtr {
+        fatalError("not implemented")
+    }
+    var __end_left_: BasePtr {
         get { _left }
         nonmutating set { _left = newValue }
     }

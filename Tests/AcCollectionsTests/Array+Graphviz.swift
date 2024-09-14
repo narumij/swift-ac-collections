@@ -31,12 +31,19 @@ extension Array where Element: Item {
     }
 }
 
+extension UnsafeMutableBufferPointer where Element: NodeItemProtocol {
+    
+    var contents: [Element] {
+        (startIndex ..< endIndex).map{ self[$0] }
+    }
+}
+
 extension Array where Element == NodeItem {
     
     func graphviz() -> String { "" }
 }
 
-extension Array where Element: TreeNodeProtocol {
+extension Array where Element: NodeItemProtocol {
     
     func graphviz() -> String {
         let header = """

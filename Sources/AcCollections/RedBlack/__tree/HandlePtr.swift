@@ -1,15 +1,5 @@
 import Foundation
 
-protocol NodeItemProtocol {
-    var isBlack: Bool { get set }
-    var parent: BasePtr { get set }
-    var left: BasePtr { get set }
-    var right: BasePtr { get set }
-    
-    associatedtype Element
-    var __value_: Element { get set }
-}
-
 protocol TreeHandleProtocol: ___tree_const_base {
     associatedtype NodeItem: NodeItemProtocol
     var __begin: BasePtr { get }
@@ -313,3 +303,15 @@ extension HandlePtr: ___tree_node_iter_protocol {
     }
     var __ptr_: Self { self }
 }
+
+protocol HandlePtrFactory {
+    associatedtype Handle: TreeHandleProtocol
+    var handle: Handle { get }
+}
+
+extension HandlePtrFactory {
+    func __node(_ n: Int) -> HandlePtr<Handle> { .node(handle, n) }
+    func __end() -> HandlePtr<Handle> { .end(handle) }
+    func __none() -> HandlePtr<Handle> { .none }
+}
+

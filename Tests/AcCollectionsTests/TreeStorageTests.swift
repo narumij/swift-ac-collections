@@ -253,7 +253,7 @@ final class TreeStorageTests: XCTestCase {
         next[2] = .init(isBlack: false, parent: .end, left: 0, right: 4, __value_: 0)
         next[3] = .init(isBlack: true, parent: 0, left: nil, right: nil, __value_: 0)
 
-        XCTAssertEqual(tree.header.end_ptr, 2)
+        XCTAssertEqual(tree.header.end_left_ptr, 2)
         XCTAssertEqual(tree.items[0], next[0])
         XCTAssertEqual(tree.items[1], next[1])
         XCTAssertEqual(tree.items[2], next[2])

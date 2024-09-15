@@ -70,5 +70,32 @@ extension Array where Element: NodeItemProtocol {
         rights + "\n" +
         hooter
     }
+    
+    func graphviz2() -> String {
+        let header = """
+        digraph {
+        """
+        let red = "node [shape = circle style=filled fillcolor=red];"
+        let black = """
+        node [shape = circle fillcolor=black fontcolor=white];
+        """
+        let hooter = """
+        }
+        """
+        
+        let reds: String = (startIndex ..< endIndex).filter{ !self[$0].isBlack && !self[$0].isNil }.map{"\(self[$0].__value_)"}.joined(separator: " ")
+        
+        let lefts: String = (startIndex ..< endIndex).filter{ self[$0].left != nil }.map{ "\(self[$0].__value_) -> \(self[self[$0].left.index ?? -1].__value_) [label = \"left\"];" }.joined(separator: "\n")
+        
+        let rights: String = (startIndex ..< endIndex).filter{ self[$0].right != nil }.map{ "\(self[$0].__value_) -> \(self[self[$0].right.index ?? -1].__value_) [label = \"right\"];" }.joined(separator: "\n")
+        
+        return header +
+        red + reds + "\n" +
+        black + "\n" +
+        lefts + "\n" +
+        rights + "\n" +
+        hooter
+    }
+
 }
 

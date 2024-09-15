@@ -668,44 +668,7 @@ extension ___tree_insert_base {
     }
 }
 
-protocol ___tree_work: ___tree_insert_base & ___tree_find_base & ___tree_base_iter_basic_members & ___tree_remove_base {
-}
-
-protocol ___tree_storage: ___tree_insert_base & ___tree_find_base & ___tree_base_iter_basic_members & ___tree_remove_base {
-    
-    associatedtype iterator where iterator == __node_iter_type
-    
-    func __construct_node(_ k: __value_type) -> __node_ptr_type
-    func destroy(_ k: __node_ptr_type)
-    func find(_ __v: __value_type) -> __node_iter_type
-}
-
-protocol TreeStorageProtocol {
-    associatedtype tree_type: ___tree_storage
-    associatedtype __value_type where __value_type == tree_type.__value_type
-    associatedtype __node_ptr_type where __node_ptr_type == tree_type.__node_ptr_type
-    associatedtype __node_ref_type where __node_ref_type == tree_type.__node_ref_type
-    associatedtype __node_iter_type where __node_iter_type == tree_type.__node_iter_type
-    associatedtype iterator where iterator == __node_iter_type
-    associatedtype __node_pointer where __node_pointer == __node_ptr_type
-    func __construct_node(_ k: __value_type) -> __node_ptr_type
-    func destroy(_ k: __node_ptr_type)
-    func
-    __find_equal(_ __parent: inout __node_ptr_type, _ __v: __value_type) -> __node_ref_type
-    func
-    __insert_node_at(
-        _ __parent: __node_ptr_type, _ __child: __node_ref_type,
-        _ __new_node: __node_ptr_type)
-    func __remove_node_pointer(_ __ptr: __node_pointer) -> __node_pointer
-    func find(_ __v: __value_type) -> __node_iter_type
-    func end() -> __node_iter_type
-    var __root: __node_ptr_type { get }
-    var __begin_node: __node_ptr_type { get set }
-    var __end_node: __node_ptr_type { get }
-    var size: Int { get set }
-}
-
-extension ___tree_storage {
+extension ___tree_erase_unique {
     
     mutating func
     clear()
@@ -715,12 +678,15 @@ extension ___tree_storage {
         __begin_node = __end_node
         __end_node.__left_ = nil
     }
+}
 
+extension ___tree_insert_unique {
+    
     func __insert_unique(_ x: __value_type) -> (ref: __node_ref_type, __inserted: Bool) {
         
         __emplace_unique_key_args(x)
     }
-
+    
     func
     __emplace_unique_key_args(_ __k: __value_type) -> (__node_ref_type, Bool)
     {
@@ -735,7 +701,10 @@ extension ___tree_storage {
         }
         return (__r, __inserted)
     }
-    
+}
+
+extension ___tree_erase_unique {
+
 //    template <class _Tp, class _Compare, class _Allocator>
 //    typename __tree<_Tp, _Compare, _Allocator>::iterator __tree<_Tp, _Compare, _Allocator>::erase(const_iterator __p) {
     func
@@ -746,6 +715,7 @@ extension ___tree_storage {
 //      __node_allocator& __na = __node_alloc();
 //      __node_traits::destroy(__na, _NodeTypes::__get_ptr(const_cast<__node_value_type&>(*__p)));
 //      __node_traits::deallocate(__na, __np, 1);
+        destroy(__p)
       return __r;
     }
 
@@ -850,7 +820,7 @@ extension ___tree_base {
     // __erase_multi(...)
 }
 
-extension ___tree_work {
+extension ___tree_find {
     
     typealias iterator = __node_iter_type
     // find(...)

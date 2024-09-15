@@ -11,21 +11,6 @@ import Collections
 
 final class TreeTreeTreeTests: XCTestCase {
     
-    class DummyAllocator: AllocatorProtocol {
-        var __reserved: Deque<BasePtr> = []
-        var reserved: Int { __reserved.count }
-        required init() { }
-        func create() -> BasePtr {
-            __reserved.popFirst()!
-        }
-        func delete(_ p: BasePtr) {
-            fatalError()
-        }
-        func reserve<C: Collection>(contentsOf newElements: C) where C.Element == BasePtr {
-            __reserved.append(contentsOf: newElements)
-        }
-    }
-
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -34,7 +19,7 @@ final class TreeTreeTreeTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
     
-    typealias TreeBase = TreeTreeTree<DummyAllocator, StandardComparer<Int>, Int>
+    typealias TreeBase = RedBlackTree<TreeNodeAllocator, StandardComparer<Int>, Int>
     typealias Base = TreeBase.__unsafe_tree
 
     func fixtureEmpty(_ tree: TreeBase) {
@@ -280,7 +265,7 @@ final class TreeTreeTreeTests: XCTestCase {
             next[2] = .init(isBlack: false, parent: .end, left: 0, right: 4, ___value_: 0)
             next[3] = .init(isBlack: true, parent: 0, left: nil, right: nil, ___value_: 0)
             
-            XCTAssertEqual(tree._header.pointee.end_ptr, 2)
+            XCTAssertEqual(tree._header.pointee.end_left_ptr, 2)
             XCTAssertEqual(tree._buffer[0], next[0])
             XCTAssertEqual(tree._buffer[1], next[1])
             XCTAssertEqual(tree._buffer[2], next[2])
@@ -691,17 +676,17 @@ final class TreeTreeTreeTests: XCTestCase {
     
     func testHoge() throws {
         let tree = TreeBase()
-
+        
         fixtureEmpty(tree)
         
-        tree.ensureReserved(count: 10)
         
         tree._update { tree in
             XCTAssertTrue(Base.__tree_invariant(tree.__root))
         }
-
+        
         for i in 0..<10 {
-           try tree._update { tree in
+            tree.ensureReserved(count: 1)
+            try tree._update { tree in
                 let result = tree.__insert_unique(i)
                 XCTAssertTrue(result.__inserted)
                 XCTAssertEqual(tree._header.pointee.size, i + 1)
@@ -711,6 +696,106 @@ final class TreeTreeTreeTests: XCTestCase {
         }
         
         print(tree.buffer.graphviz())
+    }
+    
+    func testHoge3() throws {
+        let tree = TreeBase()
+        
+        fixtureEmpty(tree)
+        
+        tree._update { tree in
+            XCTAssertTrue(Base.__tree_invariant(tree.__root))
+        }
+        
+        for i in (0..<200).map({ _ in (0..<1000).randomElement()! }) {
+            tree.ensureReserved(count: 1)
+            try tree._update { tree in
+                _ = tree.__insert_unique(i)
+                XCTAssertTrue(try Base.__tree_invariant__(tree.__root))
+            }
+//            print(tree.buffer.graphviz())
+        }
+        
+        print(tree.buffer.graphviz())
+        
+        while tree.buffer.count != tree.allocator.reserved {
+            let i = tree.buffer.indices.filter{ tree.buffer[$0].___value_ != nil }.randomElement()!
+            print(tree.allocator.reserved)
+            tree._update { tree in
+                _ = tree.__remove_node_pointer(tree.__node(i))
+                XCTAssertTrue(Base.__tree_invariant(tree.__root))
+                tree.destroy(tree.__node(i))
+            }
+//            print(tree.buffer.graphviz())
+        }
+    }
+
+    func testHoge4() throws {
+        let tree = TreeBase()
+        
+        fixtureEmpty(tree)
+        
+        tree._update { tree in
+            XCTAssertTrue(Base.__tree_invariant(tree.__root))
+        }
+        
+        for i in (0..<200).map({ _ in (0..<1000).randomElement()! }) {
+            tree.ensureReserved(count: 1)
+            try tree._update { tree in
+                _ = tree.__insert_unique(i)
+                XCTAssertTrue(try Base.__tree_invariant__(tree.__root))
+            }
+//            print(tree.buffer.graphviz())
+        }
+        
+        print(tree.buffer.graphviz())
+        
+        while tree.buffer.count != tree.allocator.reserved {
+            let i = tree.buffer.indices.filter{ tree.buffer[$0].___value_ != nil }.randomElement()!
+            print(tree.allocator.reserved)
+            tree._update { tree in
+//                _ = tree.__erase_unique(tree._buffer[i].__value_)
+//                _ = tree.__remove_node_pointer(tree.__node(i))
+                _ = tree.erase(tree.__node(i))
+                XCTAssertTrue(Base.__tree_invariant(tree.__root))
+//                tree.destroy(tree.__node(i))
+            }
+//            print(tree.buffer.graphviz())
+        }
+    }
+    
+    func testHoge5() throws {
+        let tree = TreeBase()
+        
+        fixtureEmpty(tree)
+        
+        tree._update { tree in
+            XCTAssertTrue(Base.__tree_invariant(tree.__root))
+        }
+        
+        for i in (0..<200).map({ _ in (0..<1000).randomElement()! }) {
+            tree.ensureReserved(count: 1)
+            try tree._update { tree in
+                _ = tree.__insert_unique(i)
+                XCTAssertTrue(try Base.__tree_invariant__(tree.__root))
+            }
+//            print(tree.buffer.graphviz())
+        }
+        
+        print(tree.buffer.graphviz2())
+        
+        while tree.buffer.count != tree.allocator.reserved {
+            let i = tree.buffer.indices.filter{ tree.buffer[$0].___value_ != nil }.randomElement()!
+            print(tree.allocator.reserved)
+            tree._update { tree in
+                _ = tree.__erase_unique(tree._buffer[i].__value_)
+//                _ = tree.__remove_node_pointer(tree.__node(i))
+//                _ = tree.erase(tree.__node(i))
+                XCTAssertTrue(Base.__tree_invariant(tree.__root))
+//                tree.destroy(tree.__node(i))
+            }
+//            print(tree.buffer.graphviz())
+        }
     }
     
     func testHoge2() throws {

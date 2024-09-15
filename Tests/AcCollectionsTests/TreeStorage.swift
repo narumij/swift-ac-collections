@@ -33,6 +33,8 @@ class TreeStorage<Element>: ___tree_base, ___tree_find_base,  ___tree_insert_bas
         var left: BasePtr
         var right: BasePtr
         var __value_: Element
+        var isNil: Bool { false }
+        func clear() { }
     }
     
     struct Handle: ___tree_const_base, TreeHandleProtocol {
@@ -45,8 +47,8 @@ class TreeStorage<Element>: ___tree_base, ___tree_find_base,  ___tree_insert_bas
             storage.header.begin_ptr
         }
         var __end_left_: BasePtr {
-            get { storage.header.end_ptr }
-            nonmutating set { storage.header.end_ptr = newValue }
+            get { storage.header.end_left_ptr }
+            nonmutating set { storage.header.end_left_ptr = newValue }
         }
     }
     

@@ -24,8 +24,7 @@ where __node_iter_type: ___tree_node_iter_protocol,
     associatedtype __node_iter_type
 }
 
-protocol ___tree_base_ptr_basic_members: ___tree_base
-where Self: ___tree_base_with_pointer_type
+protocol ___tree_base_ptr_basic_members: ___tree_base_with_pointer_type
 {
     associatedtype __node_ptr_type
     var __root: __node_ptr_type { get nonmutating set }
@@ -41,38 +40,38 @@ extension ___tree_base_ptr_basic_members {
 
 protocol ___tree_base_ptr_members: ___tree_base_ptr_basic_members {
     var __begin_node: __node_ptr_type { get nonmutating set }
+}
+
+protocol ___tree_base_size_member {
     var size: Int { get nonmutating set }
 }
 
-protocol ___tree_base_ref_basic_members: ___tree_base
-where Self: ___tree_base_with_reference_type
-{
+protocol ___tree_base_ref_basic_members: ___tree_base_with_reference_type {
     associatedtype __node_ref_type
     var __root_ptr: __node_ref_type { get }
 }
 
-protocol ___tree_base_iter_basic_members: ___tree_base
-where Self: ___tree_base_with_iterator_type
-{
+protocol ___tree_base_iter_basic_members: ___tree_base_with_iterator_type & ___tree_base_ptr_members {
     func begin() -> __node_iter_type
     func end() -> __node_iter_type
 }
 
-protocol ___tree_find_base: ___tree_base, ___tree_base_with_reference_type {
-    var __root: __node_ptr_type { get }
-    var __end_node: __node_ptr_type { get }
+extension ___tree_base_iter_basic_members {
+    func begin() -> __node_iter_type { __begin_node }
+    func end() -> __node_iter_type { __end_node }
+}
+
+protocol ___tree_insert_base: ___tree_base_with_reference_type & ___tree_base_ptr_members & ___tree_base_size_member { }
+
+protocol ___tree_find_base: ___tree_base_with_reference_type, ___tree_base_ptr_basic_members {
     var __root_ptr: __node_ref_type { get }
     func addressof(_ ptr: __node_ref_type) -> __node_ref_type
 }
 
 extension ___tree_find_base {
-    var __root_ptr: __node_ref_type {
-        __end_node.__left_ref
-    }
+    var __root_ptr: __node_ref_type { __end_node.__left_ref }
     func addressof(_ ptr: __node_ref_type) -> __node_ref_type { ptr }
 }
-
-protocol ___tree_insert_base: ___tree_base_with_reference_type & ___tree_base_ptr_members { }
 
 protocol ___tree_find_leaf: ___tree_find_base, ___tree_base_iter_basic_members {
     
@@ -83,15 +82,20 @@ protocol ___tree_find_leaf: ___tree_find_base, ___tree_base_iter_basic_members {
     __find_leaf_high(_ __parent: inout __node_ptr_type, _ __v: __value_type) -> __node_ref_type
 }
 
-//protocol ___tree_clear_base: ___tree_find_base & ___tree_base_ptr_members {
-//    func destroy(_: __node_ptr_type)
-//}
-//
-//protocol ___tree_construct_base: ___tree_insert_base & ___tree_base_with_iterator_type {
-//    func __construct_node(_ : __value_type) -> __node_ptr_type
-//    func iterator(_ r: __node_ref_type) -> __node_iter_type
-//    func
-//    __find_equal(_ __parent: inout __node_ptr_type, _ __v: __value_type) -> __node_ref_type
-//}
+protocol ___tree_remove_base: ___tree_base_with_iterator_type & ___tree_base_ptr_members & ___tree_base_size_member {
+}
 
-protocol ___tree_remove_base: ___tree_base_ptr_members & ___tree_base_with_iterator_type { }
+protocol ___tree_erase_unique: ___tree_remove_base & ___tree_base_iter_basic_members {
+    associatedtype iterator where iterator == __node_iter_type
+    func find(_ __v: __value_type) -> __node_iter_type
+    func destroy(_ k: __node_ptr_type)
+}
+
+protocol ___tree_find: ___tree_insert_base & ___tree_find_base & ___tree_base_iter_basic_members & ___tree_remove_base {
+}
+
+protocol ___tree_insert_unique: ___tree_find {
+    
+    func __construct_node(_ k: __value_type) -> __node_ptr_type
+}
+

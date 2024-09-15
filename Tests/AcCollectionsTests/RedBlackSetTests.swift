@@ -8,7 +8,6 @@
 import XCTest
 @testable import AcCollections
 
-#if false
 final class RedBlackSetTests: XCTestCase {
 
     override func setUpWithError() throws {
@@ -17,6 +16,30 @@ final class RedBlackSetTests: XCTestCase {
 
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+
+    func testFind() throws {
+        var s = RedBlackSet<Int>()
+        s.insert(1)
+        s.insert(2)
+        s.insert(3)
+        s.insert(4)
+        XCTAssertEqual(s.storage._update{ $0.find(-1) }.basePtr, .end)
+        XCTAssertNotEqual(s.storage._update{ $0.find(0) }.basePtr, .none)
+        XCTAssertNotEqual(s.storage._update{ $0.find(1) }.basePtr, .none)
+        XCTAssertNotEqual(s.storage._update{ $0.find(2) }.basePtr, .none)
+        XCTAssertNotEqual(s.storage._update{ $0.find(3) }.basePtr, .none)
+        XCTAssertNotEqual(s.storage._update{ $0.find(4) }.basePtr, .none)
+        XCTAssertEqual(s.storage._update{ $0.find(5) }.basePtr, .end)
+    }
+    
+    func testMap() throws {
+        var s = RedBlackSet<Int>()
+        s.insert(1)
+        s.insert(2)
+        s.insert(3)
+        s.insert(4)
+        XCTAssertEqual(s.map{ $0 }, [1,2,3,4])
     }
 
     func testContains() throws {
@@ -33,6 +56,7 @@ final class RedBlackSetTests: XCTestCase {
         XCTAssertFalse(s.contains(5))
     }
 
+#if false
     func testPrev() throws {
         var s = RedBlackSet<Int>()
         s.insert(1)
@@ -76,6 +100,7 @@ final class RedBlackSetTests: XCTestCase {
         XCTAssertEqual(4, s.next(3))
         XCTAssertEqual(nil, s.next(4))
     }
+#endif
 
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
@@ -85,4 +110,3 @@ final class RedBlackSetTests: XCTestCase {
     }
 
 }
-#endif

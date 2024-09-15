@@ -17,6 +17,8 @@ struct NodeItem: Equatable, NodeItemProtocol {
     var left: BasePtr
     var right: BasePtr
     var __value_: Int
+    var isNil: Bool { false }
+    func clear() { }
 }
 
 extension BasePtr: ___tree_node_ptr_protocol {

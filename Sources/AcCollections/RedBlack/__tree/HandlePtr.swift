@@ -221,6 +221,21 @@ extension HandlePtr {
                 }
             }
         }
+        var __self_: HandlePtr<Handle> {
+            get {
+                switch self {
+                case .__parent_(let p):
+                    return p
+                case .__left_(let l):
+                    return l
+                case .__right_(let r):
+                    return r
+                default:
+                    break
+                }
+                fatalError()
+            }
+        }
     }
     
     public var __parent_ref: Reference {
@@ -235,30 +250,44 @@ extension HandlePtr {
         .__right_(self)
     }
     
-    public enum _ValueRef {
-        case __value_(HandlePtr<Handle>)
-        var referencee: Handle.NodeItem.Element {
-            get {
-                switch self {
-                case .__value_(let v):
-                    return v.__value_
-                }
-            }
-            nonmutating set {
-                switch self {
-                case .__value_(let v):
-                    v.__value_ = newValue
-                }
-            }
-        }
-    }
-    
-    var __value_ref: _ValueRef {
-        .__value_(self)
-    }
+//    public enum _ValueRef {
+//        case __value_(HandlePtr<Handle>)
+//        var referencee: Handle.NodeItem.Element {
+//            get {
+//                switch self {
+//                case .__value_(let v):
+//                    return v.__value_
+//                }
+//            }
+//            nonmutating set {
+//                switch self {
+//                case .__value_(let v):
+//                    v.__value_ = newValue
+//                }
+//            }
+//        }
+//    }
+//    
+//    var __value_ref: _ValueRef {
+//        .__value_(self)
+//    }
 }
 
 extension HandlePtr: ___tree_node_iter_protocol {
+    
+    var __is_node: Bool {
+        if case .node(_,_) = self {
+            return true
+        }
+        return false
+    }
+    
+    var __is_none: Bool {
+        if case .none = self {
+            return true
+        }
+        return false
+    }
     
     var __is_end_: Bool {
         switch self {

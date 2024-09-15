@@ -42,5 +42,27 @@ extension BasePtr {
             return nil
         }
     }
+    
+    var isNode: Bool {
+        if case .node(_) = self {
+            return true
+        }
+        return false
+    }
+    
+    var isNone: Bool {
+        if case .none = self {
+            return true
+        }
+        return false
+    }
+    
+    var isEnd: Bool {
+        if case .end = self {
+            return true
+        }
+        return false
+    }
+
 }
 

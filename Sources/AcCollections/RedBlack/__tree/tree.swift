@@ -670,7 +670,7 @@ extension ___tree_insert_base {
 
 extension ___tree_erase_unique {
     
-    mutating func
+    func
     clear()
     {
         destroy(__root)
@@ -682,7 +682,7 @@ extension ___tree_erase_unique {
 
 extension ___tree_insert_unique {
     
-    func __insert_unique(_ x: __value_type) -> (ref: __node_ref_type, __inserted: Bool) {
+    func __insert_unique(_ x: __value_type) -> (__r: __node_ref_type, __inserted: Bool) {
         
         __emplace_unique_key_args(x)
     }

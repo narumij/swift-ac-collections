@@ -1,7 +1,7 @@
 import Foundation
 import Collections
 
-protocol AllocatorProtocol {
+public protocol AllocatorProtocol {
     init()
     func create() -> BasePtr
     func delete(_ p: BasePtr)
@@ -9,17 +9,17 @@ protocol AllocatorProtocol {
     func reserve<C: Collection>(contentsOf newElements: C) where C.Element == BasePtr
 }
 
-class TreeNodeAllocator: AllocatorProtocol {
+public class TreeNodeAllocator: AllocatorProtocol {
     var __reserved: Deque<BasePtr> = []
-    var reserved: Int { __reserved.count }
-    required init() { }
-    func create() -> BasePtr {
+    public var reserved: Int { __reserved.count }
+    public required init() { }
+    public func create() -> BasePtr {
         __reserved.popFirst()!
     }
-    func delete(_ p: BasePtr) {
+    public func delete(_ p: BasePtr) {
         __reserved.prepend(p)
     }
-    func reserve<C: Collection>(contentsOf newElements: C) where C.Element == BasePtr {
+    public func reserve<C: Collection>(contentsOf newElements: C) where C.Element == BasePtr {
         __reserved.append(contentsOf: newElements)
     }
 }

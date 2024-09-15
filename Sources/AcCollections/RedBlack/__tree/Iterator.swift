@@ -25,7 +25,7 @@ extension ___tree_node_iter_protocol {
 
 // MARK: -
 
-protocol SequenceTree {
+public protocol SequenceTree {
     associatedtype Element
     func value(_ p: BasePtr) -> Element
     func next(_ p: BasePtr) -> BasePtr
@@ -34,11 +34,11 @@ protocol SequenceTree {
     func end() -> BasePtr
 }
 
-struct BaseIterator<Tree>: Comparable, IteratorProtocol where Tree: SequenceTree {
+public struct BaseIterator<Tree>: Comparable, IteratorProtocol where Tree: SequenceTree {
     nonmutating func current() -> Tree.Element? {
         return __ptr_ != __tree_.end() ? __tree_.value(__ptr_) : nil
     }
-    mutating func next() -> Tree.Element? {
+    public mutating func next() -> Tree.Element? {
         defer {
             if __ptr_ != __end_ {
                 __ptr_ = __tree_.next(__ptr_)
@@ -56,10 +56,10 @@ struct BaseIterator<Tree>: Comparable, IteratorProtocol where Tree: SequenceTree
     var __ptr_: BasePtr
     var __begin: BasePtr
     var __end_: BasePtr
-    static func == (lhs: Self, rhs: Self) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.__ptr_ == rhs.__ptr_
     }
-    static func < (lhs: Self, rhs: Self) -> Bool {
+    public static func < (lhs: Self, rhs: Self) -> Bool {
         fatalError("not implemented yet")
     }
     static func + (lhs: Self, rhs: Int) -> Self {

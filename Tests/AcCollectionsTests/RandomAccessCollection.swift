@@ -1,4 +1,5 @@
 import Foundation
+@testable import AcCollections
 
 protocol TreeTest3: TreeTest2, RandomAccessCollection { }
 

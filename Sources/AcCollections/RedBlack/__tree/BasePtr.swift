@@ -1,19 +1,19 @@
 import Foundation
 
-enum BasePtr: Equatable {
+public enum BasePtr: Equatable {
     case none
     case end
     case node(Int)
 }
 
 extension BasePtr: ExpressibleByNilLiteral {
-    init(nilLiteral: ()) {
+    public init(nilLiteral: ()) {
         self = .none
     }
 }
 
 extension BasePtr: ExpressibleByIntegerLiteral {
-    init(integerLiteral value: Int) {
+    public init(integerLiteral value: Int) {
         self = .node(value)
     }
 }

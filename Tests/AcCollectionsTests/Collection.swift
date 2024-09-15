@@ -1,8 +1,15 @@
 import Foundation
+@testable import AcCollections
 
-protocol TreeTest2: TreeTest, Collection
-where Index == BaseIterator<Storage>
-{ }
+protocol TreeTest2: Sequence, Collection
+where Index == BaseIterator<Storage>,
+      Iterator == BaseIterator<Storage>
+{
+    associatedtype Element
+    associatedtype Storage: SequenceTree where Element == Storage.Element
+    func makeIterator(_ __ptr_: BasePtr) -> Iterator
+    var storage: Storage { get }
+}
 
 extension TreeTest2 {
     

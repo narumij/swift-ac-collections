@@ -1,6 +1,6 @@
 import Foundation
 
-class RedBlackTree<Allocator, Comparer, Element>
+public class RedBlackTree<Allocator, Comparer, Element>
 where Allocator: AllocatorProtocol,
       Comparer: ComparerProtocol,
       Comparer.Element == Element
@@ -51,26 +51,26 @@ where Allocator: AllocatorProtocol,
 
 extension RedBlackTree: SequenceTree {
     
-    func value(_ p: BasePtr) -> Element {
+    public func value(_ p: BasePtr) -> Element {
         if case .node(let int) = p {
             return buffer[int].__value_
         }
         fatalError()
     }
     
-    func next(_ p: BasePtr) -> BasePtr {
+    public func next(_ p: BasePtr) -> BasePtr {
         _update{ __unsafe_tree.__tree_next_iter(p.handlePtr($0.handle)).basePtr }
     }
     
-    func prev(_ p: BasePtr) -> BasePtr {
+    public func prev(_ p: BasePtr) -> BasePtr {
         _update{ __unsafe_tree.__tree_prev_iter(p.handlePtr($0.handle)).basePtr }
     }
     
-    func begin() -> BasePtr {
+    public func begin() -> BasePtr {
         header.begin_ptr
     }
     
-    func end() -> BasePtr {
+    public func end() -> BasePtr {
         .end
     }
 }

@@ -1,32 +1,14 @@
-import Foundation
 import Collections
+import Foundation
 
 @frozen
 public struct RedBlackTreeSet<Element: Comparable> {
 
   public
-  typealias Element = Element
+    typealias Element = Element
   
   @usableFromInline
   typealias _Key = Element
-
-  @inlinable @inline(__always)
-  public init() {
-    header = .zero
-    nodes = []
-    values = []
-    stock = []
-  }
-
-  @inlinable
-  public init(minimumCapacity: Int) {
-    header = .zero
-    nodes = []
-    values = []
-    stock = []
-    nodes.reserveCapacity(minimumCapacity)
-    values.reserveCapacity(minimumCapacity)
-  }
 
   @usableFromInline
   var header: RedBlackTree.Header
@@ -35,56 +17,26 @@ public struct RedBlackTreeSet<Element: Comparable> {
   @usableFromInline
   var values: [Element]
   @usableFromInline
-  var stock: Heap<_NodePtr>
+  var stock: Heap<_NodePtr> = []
+}
 
-  #if false
-    @usableFromInline
-    var stock: [_NodePtr] = []
-  #endif
+extension RedBlackTreeSet {
 
-  @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+  @inlinable @inline(__always)
+  public init() {
+    header = .zero
+    nodes = []
+    values = []
+  }
+
+  @inlinable @inline(__always)
+  public init(minimumCapacity: Int) {
+    header = .zero
+    nodes = []
+    values = []
     nodes.reserveCapacity(minimumCapacity)
     values.reserveCapacity(minimumCapacity)
   }
-}
-
-extension RedBlackTreeSet: ValueComparer {
-
-  @inlinable @inline(__always)
-  static func __key(_ e: Element) -> Element { e }
-
-  @inlinable
-  static func value_comp(_ a: Element, _ b: Element) -> Bool {
-    a < b
-  }
-}
-
-extension RedBlackTreeSet: RedBlackTreeSetContainer {}
-extension RedBlackTreeSet: _UnsafeHandleBase {}
-
-extension RedBlackTreeSet: _UnsafeMutatingHandleBase {
-
-  @inlinable
-  @inline(__always)
-  mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafeMutablePointer(to: &header) { header in
-      try nodes.withUnsafeMutableBufferPointer { nodes in
-        try values.withUnsafeMutableBufferPointer { values in
-          try body(
-            _UnsafeMutatingHandle<Self>(
-              __header_ptr: header,
-              __node_ptr: nodes.baseAddress!,
-              __value_ptr: values.baseAddress!))
-        }
-      }
-    }
-  }
-}
-
-extension RedBlackTreeSet: InsertUniqueProtocol {}
-
-extension RedBlackTreeSet {
 
   @inlinable @inline(__always)
   public init<S>(_ _a: S) where S: Collection, S.Element == Element {
@@ -127,8 +79,73 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet: RedBlackTreeSetUtil {}
+extension RedBlackTreeSet {
+  
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    nodes.reserveCapacity(minimumCapacity)
+    values.reserveCapacity(minimumCapacity)
+  }
+}
+
+extension RedBlackTreeSet {
+
+  @inlinable @inline(__always)
+  public var count: Int { ___count }
+
+  @inlinable @inline(__always)
+  public var isEmpty: Bool { ___isEmpty }
+
+  @inlinable @inline(__always)
+  public func begin() -> _NodePtr {
+    ___begin()
+  }
+
+  @inlinable @inline(__always)
+  public func end() -> _NodePtr {
+    ___end()
+  }
+}
+
+extension RedBlackTreeSet: ValueComparer {
+
+  @inlinable @inline(__always)
+  static func __key(_ e: Element) -> Element { e }
+
+  @inlinable
+  static func value_comp(_ a: Element, _ b: Element) -> Bool {
+    a < b
+  }
+}
+
+extension RedBlackTreeSet: RedBlackTreeSetContainer {}
+extension RedBlackTreeSet: _UnsafeHandleBase {}
+
+extension RedBlackTreeSet: _UnsafeMutatingHandleBase {
+
+  // プロトコルでupdateが書けなかったため、個別で実装している
+  @inlinable
+  @inline(__always)
+  mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
+    return try withUnsafeMutablePointer(to: &header) { header in
+      try nodes.withUnsafeMutableBufferPointer { nodes in
+        try values.withUnsafeMutableBufferPointer { values in
+          try body(
+            _UnsafeMutatingHandle<Self>(
+              __header_ptr: header,
+              __node_ptr: nodes.baseAddress!,
+              __value_ptr: values.baseAddress!))
+        }
+      }
+    }
+  }
+}
+
+extension RedBlackTreeSet: InsertUniqueProtocol {}
+
 extension RedBlackTreeSet: RedBlackTreeRemoveProtocol {}
+
+extension RedBlackTreeSet: RedBlackTreeSetInternal {}
 
 extension RedBlackTreeSet {
 
@@ -173,7 +190,7 @@ extension RedBlackTreeSet {
   public func lower_bound(_ p: Element) -> _NodePtr {
     ___lower_bound(p)
   }
-  
+
   @inlinable
   public func upper_bound(_ p: Element) -> _NodePtr {
     ___upper_bound(p)
@@ -181,7 +198,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-  
+
   @inlinable
   public func lessThan(_ p: Element) -> Element? {
     ___lt(p)

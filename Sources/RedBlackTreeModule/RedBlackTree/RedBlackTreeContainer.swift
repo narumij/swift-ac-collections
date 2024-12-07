@@ -32,18 +32,18 @@ extension RedBlackTreeContainerBase {
 extension RedBlackTreeContainerBase {
 
   @inlinable
-  public var count: Int { header.size }
+  public var ___count: Int { header.size }
 
   @inlinable
-  public var isEmpty: Bool { count == 0 }
+  public var ___isEmpty: Bool { ___count == 0 }
 
   @inlinable
-  public func begin() -> _NodePtr {
+  public func ___begin() -> _NodePtr {
     header.__begin_node
   }
 
   @inlinable
-  public func end() -> _NodePtr {
+  public func ___end() -> _NodePtr {
     .end
   }
 }

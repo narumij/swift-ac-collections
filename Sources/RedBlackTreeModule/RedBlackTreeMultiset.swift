@@ -1,5 +1,5 @@
-import Foundation
 import Collections
+import Foundation
 
 // AC https://atcoder.jp/contests/abc358/submissions/59018223
 
@@ -7,11 +7,23 @@ import Collections
 public struct RedBlackTreeMultiset<Element: Comparable> {
 
   public
-  typealias Element = Element
+    typealias Element = Element
 
   @usableFromInline
   typealias _Key = Element
 
+  @usableFromInline
+  var header: RedBlackTree.Header
+  @usableFromInline
+  var nodes: [RedBlackTree.Node]
+  @usableFromInline
+  var values: [Element]
+  @usableFromInline
+  var stock: Heap<_NodePtr>
+}
+
+extension RedBlackTreeMultiset {
+  
   @inlinable @inline(__always)
   public init() {
     header = .zero
@@ -29,25 +41,32 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
     nodes.reserveCapacity(minimumCapacity)
     values.reserveCapacity(minimumCapacity)
   }
+}
 
-  @usableFromInline
-  var header: RedBlackTree.Header
-  @usableFromInline
-  var nodes: [RedBlackTree.Node]
-  @usableFromInline
-  var values: [Element]
-  @usableFromInline
-  var stock: Heap<_NodePtr>
-
-  #if false
-    @usableFromInline
-    var stock: [_NodePtr] = []
-  #endif
-
+extension RedBlackTreeMultiset {
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     nodes.reserveCapacity(minimumCapacity)
     values.reserveCapacity(minimumCapacity)
+  }
+}
+
+extension RedBlackTreeMultiset {
+
+  @inlinable @inline(__always)
+  public var count: Int { ___count }
+
+  @inlinable @inline(__always)
+  public var isEmpty: Bool { ___isEmpty }
+
+  @inlinable @inline(__always)
+  public func begin() -> _NodePtr {
+    ___begin()
+  }
+
+  @inlinable @inline(__always)
+  public func end() -> _NodePtr {
+    ___end()
   }
 }
 
@@ -67,6 +86,7 @@ extension RedBlackTreeMultiset: _UnsafeHandleBase {}
 
 extension RedBlackTreeMultiset: _UnsafeMutatingHandleBase {
 
+  // プロトコルでupdateが書けなかったため、個別で実装している
   @inlinable
   @inline(__always)
   mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
@@ -100,7 +120,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset: RedBlackTreeSetUtil {}
+extension RedBlackTreeMultiset: RedBlackTreeSetInternal {}
 extension RedBlackTreeMultiset: RedBlackTreeRemoveProtocol {}
 
 extension RedBlackTreeMultiset {
@@ -146,7 +166,7 @@ extension RedBlackTreeMultiset {
   public func lower_bound(_ p: Element) -> _NodePtr {
     ___lower_bound(p)
   }
-  
+
   @inlinable
   public func upper_bound(_ p: Element) -> _NodePtr {
     ___upper_bound(p)
@@ -154,7 +174,7 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset {
-  
+
   @inlinable
   public func lessThan(_ p: Element) -> Element? {
     ___lt(p)

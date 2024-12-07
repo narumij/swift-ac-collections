@@ -10,7 +10,7 @@ extension RedBlackTreeSetInternal {
 
 extension RedBlackTreeSetInternal {
 
-  @inlinable
+  @inlinable @inline(__always)
   func ___contains(_ p: Element) -> Bool {
     _read {
       let it = $0.__lower_bound(p, $0.__root(), $0.__left_)
@@ -19,7 +19,7 @@ extension RedBlackTreeSetInternal {
     }
   }
 
-  @inlinable
+  @inlinable @inline(__always)
   func ___min() -> Element? {
     _read {
       let p = $0.__tree_min($0.__root())
@@ -27,7 +27,7 @@ extension RedBlackTreeSetInternal {
     }
   }
 
-  @inlinable
+  @inlinable @inline(__always)
   func ___max() -> Element? {
     _read {
       let p = $0.__tree_max($0.__root())
@@ -38,12 +38,12 @@ extension RedBlackTreeSetInternal {
 
 extension RedBlackTreeSetInternal {
 
-  @inlinable
+  @inlinable @inline(__always)
   func ___lower_bound(_ p: Element) -> _NodePtr {
     _read { $0.__lower_bound(p, $0.__root(), .end) }
   }
 
-  @inlinable
+  @inlinable @inline(__always)
   func ___upper_bound(_ p: Element) -> _NodePtr {
     _read { $0.__upper_bound(p, $0.__root(), .end) }
   }
@@ -51,7 +51,7 @@ extension RedBlackTreeSetInternal {
 
 extension RedBlackTreeSetInternal {
 
-  @inlinable
+  @inlinable @inline(__always)
   func ___lt(_ p: Element) -> Element? {
     _read {
       var it = $0.__lower_bound(p, $0.__root(), .end)
@@ -60,14 +60,16 @@ extension RedBlackTreeSetInternal {
       return it != .end ? $0.__value_ptr[it] : nil
     }
   }
-  @inlinable
+  
+  @inlinable @inline(__always)
   func ___gt(_ p: Element) -> Element? {
     _read {
       let it = $0.__upper_bound(p, $0.__root(), .end)
       return it != .end ? $0.__value_ptr[it] : nil
     }
   }
-  @inlinable
+  
+  @inlinable @inline(__always)
   func ___le(_ p: Element) -> Element? {
     _read {
       var __parent = _NodePtr.nullptr
@@ -86,7 +88,8 @@ extension RedBlackTreeSetInternal {
       return __parent != .end ? $0.__value_(__parent) : nil
     }
   }
-  @inlinable
+  
+  @inlinable @inline(__always)
   func ___ge(_ p: Element) -> Element? {
     _read {
       var __parent = _NodePtr.nullptr

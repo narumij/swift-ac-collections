@@ -53,18 +53,22 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset {
 
-  @inlinable @inline(__always)
-  public var count: Int { ___count }
+  @inlinable
+  public var count: Int {
+    ___count
+  }
 
-  @inlinable @inline(__always)
-  public var isEmpty: Bool { ___isEmpty }
+  @inlinable
+  public var isEmpty: Bool {
+    ___isEmpty
+  }
 
-  @inlinable @inline(__always)
+  @inlinable
   public func begin() -> _NodePtr {
     ___begin()
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   public func end() -> _NodePtr {
     ___end()
   }
@@ -134,16 +138,27 @@ extension RedBlackTreeMultiset {
   @inlinable
   @discardableResult
   public mutating func remove(_ p: Element) -> Bool {
-    return __erase_multi(p) != 0
+    __erase_multi(p) != 0
   }
 }
 
 // Sequenceプロトコルとの衝突があるため、直接の実装が必要
 extension RedBlackTreeMultiset {
 
-  @inlinable public func contains(_ p: Element) -> Bool { ___contains(p) }
-  @inlinable public func min() -> Element? { ___min() }
-  @inlinable public func max() -> Element? { ___max() }
+  @inlinable
+  public func contains(_ p: Element) -> Bool {
+    ___contains(p)
+  }
+  
+  @inlinable
+  public func min() -> Element? {
+    ___min()
+  }
+  
+  @inlinable
+  public func max() -> Element? {
+    ___max()
+  }
 }
 
 extension RedBlackTreeMultiset: Sequence, RedBlackTree.Iteratee {

@@ -90,18 +90,22 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  @inlinable @inline(__always)
-  public var count: Int { ___count }
+  @inlinable
+  public var count: Int {
+    ___count
+  }
 
-  @inlinable @inline(__always)
-  public var isEmpty: Bool { ___isEmpty }
+  @inlinable
+  public var isEmpty: Bool {
+    ___isEmpty
+  }
 
-  @inlinable @inline(__always)
+  @inlinable
   public func begin() -> _NodePtr {
     ___begin()
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   public func end() -> _NodePtr {
     ___end()
   }

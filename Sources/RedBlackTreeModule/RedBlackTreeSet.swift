@@ -148,9 +148,9 @@ extension RedBlackTreeSet {
 // Sequenceプロトコルとの衝突があるため、直接の実装が必要
 extension RedBlackTreeSet {
 
-  @inlinable public func contains(_ p: Element) -> Bool { _contains(p) }
-  @inlinable public func min() -> Element? { _min() }
-  @inlinable public func max() -> Element? { _max() }
+  @inlinable public func contains(_ p: Element) -> Bool { ___contains(p) }
+  @inlinable public func min() -> Element? { ___min() }
+  @inlinable public func max() -> Element? { ___max() }
 }
 
 extension RedBlackTreeSet: Sequence, RedBlackTree.Iteratee {
@@ -164,5 +164,38 @@ extension RedBlackTreeSet: Sequence, RedBlackTree.Iteratee {
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
   public init(arrayLiteral elements: Element...) {
     self.init(elements)
+  }
+}
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  public func lower_bound(_ p: Element) -> _NodePtr {
+    ___lower_bound(p)
+  }
+  
+  @inlinable
+  public func upper_bound(_ p: Element) -> _NodePtr {
+    ___upper_bound(p)
+  }
+}
+
+extension RedBlackTreeSet {
+  
+  @inlinable
+  public func lt(_ p: Element) -> Element? {
+    ___lt(p)
+  }
+  @inlinable
+  public func gt(_ p: Element) -> Element? {
+    ___gt(p)
+  }
+  @inlinable
+  public func le(_ p: Element) -> Element? {
+    ___le(p)
+  }
+  @inlinable
+  public func ge(_ p: Element) -> Element? {
+    ___ge(p)
   }
 }

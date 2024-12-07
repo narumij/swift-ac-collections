@@ -11,7 +11,7 @@ extension RedBlackTreeSetUtil {
 extension RedBlackTreeSetUtil {
   
   @inlinable
-  public func _contains(_ p: Element) -> Bool {
+  public func ___contains(_ p: Element) -> Bool {
     _read {
       let it = $0.__lower_bound(p, $0.__root(), $0.__left_)
       guard it >= 0 else { return false }
@@ -20,7 +20,7 @@ extension RedBlackTreeSetUtil {
   }
 
   @inlinable
-  func _min() -> Element? {
+  func ___min() -> Element? {
     _read {
       let p = $0.__tree_min($0.__root())
       return p == .end ? nil : $0.__value_(p)
@@ -28,7 +28,7 @@ extension RedBlackTreeSetUtil {
   }
   
   @inlinable
-  func _max() -> Element? {
+  func ___max() -> Element? {
     _read {
       let p = $0.__tree_max($0.__root())
       return p == .end ? nil : $0.__value_(p)
@@ -39,12 +39,12 @@ extension RedBlackTreeSetUtil {
 extension RedBlackTreeSetUtil {
 
   @inlinable
-  public func lower_bound(_ p: Element) -> _NodePtr {
+  public func ___lower_bound(_ p: Element) -> _NodePtr {
     _read { $0.__lower_bound(p, $0.__root(), .end) }
   }
   
   @inlinable
-  public func upper_bound(_ p: Element) -> _NodePtr {
+  public func ___upper_bound(_ p: Element) -> _NodePtr {
     _read { $0.__upper_bound(p, $0.__root(), .end) }
   }
 }
@@ -52,7 +52,7 @@ extension RedBlackTreeSetUtil {
 extension RedBlackTreeSetUtil {
   
   @inlinable
-  public func lt(_ p: Element) -> Element? {
+  public func ___lt(_ p: Element) -> Element? {
     _read {
       var it = $0.__lower_bound(p, $0.__root(), .end)
       if it == $0.__begin_node { return nil }
@@ -61,14 +61,14 @@ extension RedBlackTreeSetUtil {
     }
   }
   @inlinable
-  public func gt(_ p: Element) -> Element? {
+  public func ___gt(_ p: Element) -> Element? {
     _read {
       let it = $0.__upper_bound(p, $0.__root(), .end)
       return it != .end ? $0.__value_ptr[it] : nil
     }
   }
   @inlinable
-  public func le(_ p: Element) -> Element? {
+  public func ___le(_ p: Element) -> Element? {
     _read {
       var __parent = _NodePtr.nullptr
       _ = $0.__find_equal(&__parent, p)
@@ -87,7 +87,7 @@ extension RedBlackTreeSetUtil {
     }
   }
   @inlinable
-  public func ge(_ p: Element) -> Element? {
+  public func ___ge(_ p: Element) -> Element? {
     _read {
       var __parent = _NodePtr.nullptr
       _ = $0.__find_equal(&__parent, p)

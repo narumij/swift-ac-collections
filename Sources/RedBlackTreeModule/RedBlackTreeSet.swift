@@ -6,16 +6,19 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
   public
     typealias Element = Element
-  
+
   @usableFromInline
   typealias _Key = Element
 
   @usableFromInline
-  var header: RedBlackTree.Header
+  var header: RedBlackTree.___Header
+  
   @usableFromInline
-  var nodes: [RedBlackTree.Node]
+  var nodes: [RedBlackTree.___Node]
+  
   @usableFromInline
   var values: [Element]
+  
   @usableFromInline
   var stock: Heap<_NodePtr> = []
 }
@@ -41,8 +44,8 @@ extension RedBlackTreeSet {
   @inlinable @inline(__always)
   public init<S>(_ _a: S) where S: Collection, S.Element == Element {
     var _values: [Element] = _a + []
-    var _header: RedBlackTree.Header = .zero
-    self.nodes = [RedBlackTree.Node](
+    var _header: RedBlackTree.___Header = .zero
+    self.nodes = [RedBlackTree.___Node](
       unsafeUninitializedCapacity: _values.count
     ) { _nodes, initializedCount in
       withUnsafeMutablePointer(to: &_header) { _header in
@@ -80,7 +83,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-  
+
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     nodes.reserveCapacity(minimumCapacity)
@@ -99,6 +102,9 @@ extension RedBlackTreeSet {
   public var isEmpty: Bool {
     ___isEmpty
   }
+}
+
+extension RedBlackTreeSet {
 
   @inlinable
   public func begin() -> _NodePtr {
@@ -147,7 +153,7 @@ extension RedBlackTreeSet: _UnsafeMutatingHandleBase {
 
 extension RedBlackTreeSet: InsertUniqueProtocol {}
 
-extension RedBlackTreeSet: RedBlackTreeRemoveProtocol {}
+extension RedBlackTreeSet: RedBlackTreeEraseProtocol {}
 
 extension RedBlackTreeSet: RedBlackTreeSetInternal {}
 

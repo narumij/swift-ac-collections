@@ -72,9 +72,9 @@ extension RedBlackTree {
     }
 
     @usableFromInline
-    var header: RedBlackTree.Header
+    var header: RedBlackTree.___Header
     @usableFromInline
-    var nodes: [RedBlackTree.Node]
+    var nodes: [RedBlackTree.___Node]
     @usableFromInline
     var values: [Element]
     @usableFromInline

@@ -8,7 +8,7 @@
 import XCTest
 @testable import RedBlackTreeModule
 
-extension RedBlackTree.Node {
+extension RedBlackTree.___Node {
     static var node: Self {
         .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
     }
@@ -16,7 +16,7 @@ extension RedBlackTree.Node {
 
 final class TreeTests: XCTestCase, MemberProtocol, RootImpl, EndNodeProtocol {
     
-    var  __nodes: [RedBlackTree.Node] = []
+    var  __nodes: [RedBlackTree.___Node] = []
     var  __end_left: _NodePtr = .nullptr
     func __left_(_ p: _NodePtr)         -> _NodePtr { p == .end ? __end_left : __nodes[p].__left_ }
     func __right_(_ p: _NodePtr)        -> _NodePtr { __nodes[p].__right_ }

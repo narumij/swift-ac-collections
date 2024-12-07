@@ -13,9 +13,9 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
   typealias _Key = Element
 
   @usableFromInline
-  var header: RedBlackTree.Header
+  var header: RedBlackTree.___Header
   @usableFromInline
-  var nodes: [RedBlackTree.Node]
+  var nodes: [RedBlackTree.___Node]
   @usableFromInline
   var values: [Element]
   @usableFromInline
@@ -125,7 +125,7 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset: RedBlackTreeSetInternal {}
-extension RedBlackTreeMultiset: RedBlackTreeRemoveProtocol {}
+extension RedBlackTreeMultiset: RedBlackTreeEraseProtocol {}
 
 extension RedBlackTreeMultiset {
   @inlinable

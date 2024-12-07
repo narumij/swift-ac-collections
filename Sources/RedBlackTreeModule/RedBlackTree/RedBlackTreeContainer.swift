@@ -4,8 +4,8 @@ import Collections
 @usableFromInline
 protocol RedBlackTreeContainerBase: EndProtocol, ValueComparer {
   associatedtype Element
-  var header: RedBlackTree.Header { get set }
-  var nodes: [RedBlackTree.Node] { get set }
+  var header: RedBlackTree.___Header { get set }
+  var nodes: [RedBlackTree.___Node] { get set }
   var values: [Element] { get set }
   var stock: Heap<_NodePtr> { get set }
 }
@@ -35,7 +35,7 @@ extension RedBlackTreeContainerBase {
   public var ___count: Int { header.size }
 
   @inlinable
-  public var ___isEmpty: Bool { ___count == 0 }
+  public var ___isEmpty: Bool { header.size == 0 }
 
   @inlinable
   public func ___begin() -> _NodePtr {
@@ -114,11 +114,11 @@ extension RedBlackTreeSetContainer {
 }
 
 @usableFromInline
-protocol RedBlackTreeRemoveProtocol: RedBlackTreeContainer, EraseProtocol {
+protocol RedBlackTreeEraseProtocol: RedBlackTreeContainer, EraseProtocol {
   mutating func erase(_ __p: _NodePtr) -> _NodePtr
 }
 
-extension RedBlackTreeRemoveProtocol {
+extension RedBlackTreeEraseProtocol {
   @inlinable
   @discardableResult
   public mutating func remove(at ptr: _NodePtr) -> Element? {

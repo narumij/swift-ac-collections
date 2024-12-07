@@ -2,7 +2,7 @@ import Foundation
 
 extension RedBlackTree {
 
-  public struct Node {
+  public struct ___Node {
 
     @usableFromInline
     var __right_: _NodePtr
@@ -39,4 +39,4 @@ extension RedBlackTree {
   }
 }
 
-extension RedBlackTree.Node: Equatable {}
+extension RedBlackTree.___Node: Equatable {}

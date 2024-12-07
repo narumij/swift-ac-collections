@@ -9,9 +9,9 @@ extension RedBlackTree {
         public init() { }
         
         @usableFromInline
-        var header: RedBlackTree.Header = .init()
+        var header: RedBlackTree.___Header = .init()
         @usableFromInline
-        var nodes: [RedBlackTree.Node] = []
+        var nodes: [RedBlackTree.___Node] = []
         @usableFromInline
         var values: [Element] = []
         

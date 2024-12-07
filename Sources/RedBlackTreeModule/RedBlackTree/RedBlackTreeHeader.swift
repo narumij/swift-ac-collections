@@ -4,7 +4,7 @@ extension RedBlackTree {
 
   @frozen
   @usableFromInline
-  struct Header {
+  struct ___Header {
 
     @inlinable
     @inline(__always)

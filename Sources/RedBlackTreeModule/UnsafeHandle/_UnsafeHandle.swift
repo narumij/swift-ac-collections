@@ -7,8 +7,8 @@ struct _UnsafeHandle<VC> where VC: ValueComparer {
   @inlinable
   @inline(__always)
   init(
-    __header_ptr: UnsafePointer<RedBlackTree.Header>,
-    __node_ptr: UnsafePointer<RedBlackTree.Node>,
+    __header_ptr: UnsafePointer<RedBlackTree.___Header>,
+    __node_ptr: UnsafePointer<RedBlackTree.___Node>,
     __value_ptr: UnsafePointer<Element>
   ) {
     self.__header_ptr = __header_ptr
@@ -16,9 +16,9 @@ struct _UnsafeHandle<VC> where VC: ValueComparer {
     self.__value_ptr = __value_ptr
   }
   @usableFromInline
-  let __header_ptr: UnsafePointer<RedBlackTree.Header>
+  let __header_ptr: UnsafePointer<RedBlackTree.___Header>
   @usableFromInline
-  let __node_ptr: UnsafePointer<RedBlackTree.Node>
+  let __node_ptr: UnsafePointer<RedBlackTree.___Node>
   @usableFromInline
   let __value_ptr: UnsafePointer<Element>
 }

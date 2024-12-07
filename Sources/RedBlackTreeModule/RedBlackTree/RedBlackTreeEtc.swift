@@ -1,14 +1,17 @@
-@usableFromInline
-protocol RedBlackTreeSetInternal: ValueComparer
-where Element == _Key, Element: Equatable {
-  func _read<R>(_ body: (_UnsafeHandle<Self>) throws -> R) rethrows -> R
+
+extension RedBlackTree {
+  @usableFromInline
+  protocol SetInternal: ValueComparer
+  where Element == _Key, Element: Equatable {
+    func _read<R>(_ body: (_UnsafeHandle<Self>) throws -> R) rethrows -> R
+  }
 }
 
-extension RedBlackTreeSetInternal {
+extension RedBlackTree.SetInternal {
   public typealias Pointer = _NodePtr
 }
 
-extension RedBlackTreeSetInternal {
+extension RedBlackTree.SetInternal {
 
   @inlinable @inline(__always)
   func ___contains(_ p: Element) -> Bool {
@@ -36,7 +39,7 @@ extension RedBlackTreeSetInternal {
   }
 }
 
-extension RedBlackTreeSetInternal {
+extension RedBlackTree.SetInternal {
 
   @inlinable @inline(__always)
   func ___lower_bound(_ p: Element) -> _NodePtr {
@@ -49,7 +52,7 @@ extension RedBlackTreeSetInternal {
   }
 }
 
-extension RedBlackTreeSetInternal {
+extension RedBlackTree.SetInternal {
 
   @inlinable @inline(__always)
   func ___lt(_ p: Element) -> Element? {

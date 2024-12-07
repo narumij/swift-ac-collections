@@ -155,7 +155,7 @@ extension RedBlackTreeSet: InsertUniqueProtocol {}
 
 extension RedBlackTreeSet: RedBlackTreeEraseProtocol {}
 
-extension RedBlackTreeSet: RedBlackTreeSetInternal {}
+extension RedBlackTreeSet: RedBlackTree.SetInternal {}
 
 extension RedBlackTreeSet {
 

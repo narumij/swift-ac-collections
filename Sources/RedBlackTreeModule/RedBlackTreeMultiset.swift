@@ -124,7 +124,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset: RedBlackTreeSetInternal {}
+extension RedBlackTreeMultiset: RedBlackTree.SetInternal {}
 extension RedBlackTreeMultiset: RedBlackTreeEraseProtocol {}
 
 extension RedBlackTreeMultiset {

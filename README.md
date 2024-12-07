@@ -1,8 +1,8 @@
-# swift-tree
+# swift-ac-collections
 
 ## 内容
 
-### tree
+### RedBlackTreeModule
 
 競技プログラミングで使うことを目的に、LLVMの__treeをSwiftに移植したものです。
 

@@ -30,9 +30,10 @@ final class EtcTests: XCTestCase {
       a.index(a.startIndex, offsetBy: 3)
       
       var b: RedBlackTreeSet<Int> = [1,2,3]
-      
       b.index(after: b.startIndex)
-      b.index(b.startIndex, offsetBy: 3)
+      
+      XCTAssertEqual(b.index(b.startIndex, offsetBy: 3), .end)
+      XCTAssertEqual(b.map { $0 * 2 }, [2,4,6])
     }
 
     func testPerformanceExample() throws {

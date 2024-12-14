@@ -212,6 +212,7 @@ extension RedBlackTreeSet {
   @inlinable public func max() -> Element? { ___max() }
 }
 
+#if false
 extension RedBlackTreeSet: Sequence, RedBlackTree.Iteratee {
 
   @inlinable
@@ -219,6 +220,7 @@ extension RedBlackTreeSet: Sequence, RedBlackTree.Iteratee {
     .init(container: self, ptr: header.__begin_node)
   }
 }
+#endif
 
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
   public init(arrayLiteral elements: Element...) {

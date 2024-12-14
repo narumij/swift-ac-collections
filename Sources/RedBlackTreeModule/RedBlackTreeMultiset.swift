@@ -196,6 +196,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
+#if false
 extension RedBlackTreeMultiset: Sequence, RedBlackTree.Iteratee {
 
   @inlinable
@@ -203,6 +204,7 @@ extension RedBlackTreeMultiset: Sequence, RedBlackTree.Iteratee {
     .init(container: self, ptr: header.__begin_node)
   }
 }
+#endif
 
 extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
   public init(arrayLiteral elements: Element...) {

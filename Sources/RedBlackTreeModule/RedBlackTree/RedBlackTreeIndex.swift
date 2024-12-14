@@ -44,6 +44,10 @@ extension RedBlackTree {
   }
 }
 
-extension RedBlackTree.Index: Comparable {
-  
+extension RedBlackTree.Index: Comparable { }
+
+extension RedBlackTree.Index: ExpressibleByNilLiteral {
+  public init(nilLiteral: ()) {
+    self = .end
+  }
 }

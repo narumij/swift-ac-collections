@@ -54,7 +54,9 @@ import AcCollections
 以下のリンクから具体的な使用例を見ることができます：
 - [使用例](https://atcoder.jp/contests/abc370/submissions/57922896)
 
-この実装は、[SortedSet](https://github.com/tatyam-prime/SortedSet) を参考にし、公開されているメンバー関数やメンバー変数をベースにしています。
+### その他
+
+この実装は、[SortedSet](https://github.com/tatyam-prime/SortedSet) も参考にしています。
 
 ## ライセンス
 

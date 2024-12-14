@@ -174,7 +174,7 @@ extension RedBlackTreeDictionary {
   }
 
   @inlinable
-  func min() -> (Key, Value)? {
+  func min() -> KeyValue? {
     _read {
       let p = $0.__tree_min($0.__root())
       return p == .end ? nil : $0.__value_(p)
@@ -182,7 +182,7 @@ extension RedBlackTreeDictionary {
   }
 
   @inlinable
-  func max() -> (Key, Value)? {
+  func max() -> KeyValue? {
     _read {
       let p = $0.__tree_max($0.__root())
       return p == .end ? nil : $0.__value_(p)

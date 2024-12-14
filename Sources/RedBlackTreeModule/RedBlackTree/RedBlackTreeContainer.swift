@@ -80,7 +80,7 @@ extension RedBlackTreeContainer {
     values[node]
   }
 
-  @inlinable public subscript(node: _NodePtr, offsetBy distance: Int) -> Element {
+  @inlinable subscript(node: _NodePtr, offsetBy distance: Int) -> Element {
     element(node, offsetBy: distance)!
   }
 

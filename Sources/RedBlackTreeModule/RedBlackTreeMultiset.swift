@@ -32,7 +32,7 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
     typealias Element = Element
 
   public
-    typealias Index = _NodePtr
+    typealias Index = RedBlackTree.Index
 
   @usableFromInline
   typealias _Key = Element
@@ -173,7 +173,7 @@ extension RedBlackTreeMultiset {
   
   @inlinable
   public mutating func remove(at index: Index) {
-    _ = erase(index)
+    _ = erase(index.pointer)
   }
 }
 
@@ -214,12 +214,12 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   public func lowerBound(_ p: Element) -> Index {
-    ___lower_bound(p)
+    Index(___lower_bound(p))
   }
 
   @inlinable
   public func upperBound(_ p: Element) -> Index {
-    ___upper_bound(p)
+    Index(___upper_bound(p))
   }
 }
 
@@ -244,20 +244,24 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset: BidirectionalCollection {
-  
-  public func index(before i: _NodePtr) -> _NodePtr {
-    _read{ $0.__tree_prev_iter(i) }
+
+  public subscript(position: RedBlackTree.Index) -> Element {
+    self[position.pointer]
   }
-  
-  public func index(after i: _NodePtr) -> _NodePtr {
-    _read{ $0.__tree_next_iter(i) }
+
+  public func index(before i: Index) -> Index {
+    Index(_read { $0.__tree_prev_iter(i.pointer) })
   }
-  
-  public var startIndex: _NodePtr {
-    ___begin()
+
+  public func index(after i: Index) -> Index {
+    Index(_read { $0.__tree_next_iter(i.pointer) })
   }
-  
-  public var endIndex: _NodePtr {
-    ___end()
+
+  public var startIndex: Index {
+    Index(___begin())
+  }
+
+  public var endIndex: Index {
+    Index(___end())
   }
 }

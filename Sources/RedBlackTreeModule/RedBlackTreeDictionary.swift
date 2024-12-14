@@ -128,17 +128,36 @@ extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseProtocol {
   }
 }
 
-extension RedBlackTreeDictionary: RedBlackTreeSetContainer {}
+extension RedBlackTreeDictionary: RedBlackTreeEraseProtocol {}
 
-#if false
-  extension RedBlackTreeDictionary: Sequence, RedBlackTree.Iteratee {
+extension RedBlackTreeDictionary {
 
-    @inlinable
-    public func makeIterator() -> RedBlackTree.Iterator<Self> {
-      .init(container: self, ptr: header.__begin_node)
-    }
+  @inlinable
+  @discardableResult
+  public mutating func remove(_ p: Key) -> Bool {
+    __erase_unique(p)
   }
-#endif
+
+  @inlinable
+  public mutating func remove(at index: Index) -> (Key, Value)? {
+    remove(at: index.pointer)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  @inlinable
+  public func lowerBound(_ p: Key) -> Index {
+    Index(_read { $0.__lower_bound(p, $0.__root(), .end) })
+  }
+
+  @inlinable
+  public func upperBound(_ p: Key) -> Index {
+    Index(_read { $0.__upper_bound(p, $0.__root(), .end) })
+  }
+}
+
+extension RedBlackTreeDictionary: RedBlackTreeSetContainer {}
 
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
   public init(dictionaryLiteral elements: (Key, Value)...) {

@@ -129,21 +129,6 @@ extension RedBlackTreeSet {
   }
 }
 
-#if false
-  extension RedBlackTreeSet {
-
-    @inlinable
-    func begin() -> Index {
-      ___begin()
-    }
-
-    @inlinable
-    func end() -> Index {
-      ___end()
-    }
-  }
-#endif
-
 extension RedBlackTreeSet: ValueComparer {
 
   @inlinable @inline(__always)
@@ -199,8 +184,8 @@ extension RedBlackTreeSet {
   }
 
   @inlinable
-  public mutating func remove(at index: Index) {
-    _ = erase(index.pointer)
+  public mutating func remove(at index: Index) -> Element? {
+    remove(at: index.pointer)
   }
 }
 
@@ -212,16 +197,6 @@ extension RedBlackTreeSet {
   @inlinable public func max() -> Element? { ___max() }
 }
 
-#if false
-extension RedBlackTreeSet: Sequence, RedBlackTree.Iteratee {
-
-  @inlinable
-  public func makeIterator() -> RedBlackTree.Iterator<Self> {
-    .init(container: self, ptr: header.__begin_node)
-  }
-}
-#endif
-
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
   public init(arrayLiteral elements: Element...) {
     self.init(elements)
@@ -232,12 +207,12 @@ extension RedBlackTreeSet {
 
   @inlinable
   public func lowerBound(_ p: Element) -> Index {
-    .init(___lower_bound(p))
+    Index(___lower_bound(p))
   }
 
   @inlinable
   public func upperBound(_ p: Element) -> Index {
-    .init(___upper_bound(p))
+    Index(___upper_bound(p))
   }
 }
 

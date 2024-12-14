@@ -76,20 +76,23 @@ protocol RedBlackTreeContainer: RedBlackTreeContainerBase {}
 extension RedBlackTreeContainer {
 
   @inlinable
-  public subscript(node: _NodePtr) -> Element {
+  subscript(node: _NodePtr) -> Element {
     values[node]
   }
 
-  @inlinable subscript(node: _NodePtr, offsetBy distance: Int) -> Element {
+  @inlinable
+  subscript(node: _NodePtr, offsetBy distance: Int) -> Element {
     element(node, offsetBy: distance)!
   }
 
-  @inlinable func element(_ ptr: _NodePtr, offsetBy distance: Int) -> Element? {
+  @inlinable
+  func element(_ ptr: _NodePtr, offsetBy distance: Int) -> Element? {
     let ptr = pointer(ptr, offsetBy: distance)
     return ptr == .end ? nil : values[ptr]
   }
 
-  @inlinable func pointer(_ ptr: _NodePtr, offsetBy distance: Int) -> _NodePtr {
+  @inlinable
+  func pointer(_ ptr: _NodePtr, offsetBy distance: Int) -> _NodePtr {
     _read { $0.pointer(ptr, offsetBy: distance) }
   }
 
@@ -143,7 +146,7 @@ protocol RedBlackTreeEraseProtocol: RedBlackTreeContainer, EraseProtocol {
 extension RedBlackTreeEraseProtocol {
   @inlinable
   @discardableResult
-  public mutating func remove(at ptr: _NodePtr) -> Element? {
+  mutating func remove(at ptr: _NodePtr) -> Element? {
     guard ptr != .end else { return nil }
     let e = values[ptr]
     _ = erase(ptr)

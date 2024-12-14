@@ -89,21 +89,6 @@ extension RedBlackTreeMultiset {
   }
 }
 
-#if false
-extension RedBlackTreeMultiset {
-
-  @inlinable
-  func begin() -> Index {
-    ___begin()
-  }
-
-  @inlinable
-  func end() -> Index {
-    ___end()
-  }
-}
-#endif
-
 extension RedBlackTreeMultiset: ValueComparer {
 
   @inlinable @inline(__always)
@@ -158,6 +143,7 @@ extension RedBlackTreeMultiset: RedBlackTree.SetInternal {}
 extension RedBlackTreeMultiset: RedBlackTreeEraseProtocol {}
 
 extension RedBlackTreeMultiset {
+  
   @inlinable
   @discardableResult
   public mutating func insert(_ p: Element) -> Bool {
@@ -172,8 +158,8 @@ extension RedBlackTreeMultiset {
   }
   
   @inlinable
-  public mutating func remove(at index: Index) {
-    _ = erase(index.pointer)
+  public mutating func remove(at index: Index) -> Element? {
+    remove(at: index.pointer)
   }
 }
 
@@ -195,16 +181,6 @@ extension RedBlackTreeMultiset {
     ___max()
   }
 }
-
-#if false
-extension RedBlackTreeMultiset: Sequence, RedBlackTree.Iteratee {
-
-  @inlinable
-  public func makeIterator() -> RedBlackTree.Iterator<Self> {
-    .init(container: self, ptr: header.__begin_node)
-  }
-}
-#endif
 
 extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
   public init(arrayLiteral elements: Element...) {

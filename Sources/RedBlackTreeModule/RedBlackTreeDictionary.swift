@@ -24,13 +24,16 @@ import Collections
 
 @frozen
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
-  
+
+  public
+    typealias Index = RedBlackTree.Index
+
   @usableFromInline
   typealias KeyInfo = RedBlackTree.KeyInfo<Key>
-  
+
   @usableFromInline
   typealias _Key = Key
-  
+
   public init() {
     header = .zero
     nodes = []
@@ -125,15 +128,17 @@ extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseProtocol {
   }
 }
 
-extension RedBlackTreeDictionary: RedBlackTreeSetContainer { }
+extension RedBlackTreeDictionary: RedBlackTreeSetContainer {}
 
-extension RedBlackTreeDictionary: Sequence, RedBlackTree.Iteratee {
-  
-  @inlinable
-  public func makeIterator() -> RedBlackTree.Iterator<Self> {
-    .init(container: self, ptr: header.__begin_node)
+#if false
+  extension RedBlackTreeDictionary: Sequence, RedBlackTree.Iteratee {
+
+    @inlinable
+    public func makeIterator() -> RedBlackTree.Iterator<Self> {
+      .init(container: self, ptr: header.__begin_node)
+    }
   }
-}
+#endif
 
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
   public init(dictionaryLiteral elements: (Key, Value)...) {
@@ -141,5 +146,28 @@ extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
     for (k, v) in elements {
       self[k] = v
     }
+  }
+}
+
+extension RedBlackTreeDictionary: BidirectionalCollection {
+
+  public subscript(position: RedBlackTree.Index) -> (Key, Value) {
+    self[position.pointer]
+  }
+
+  public func index(before i: Index) -> Index {
+    Index(_read { $0.__tree_prev_iter(i.pointer) })
+  }
+
+  public func index(after i: Index) -> Index {
+    Index(_read { $0.__tree_next_iter(i.pointer) })
+  }
+
+  public var startIndex: Index {
+    Index(___begin())
+  }
+
+  public var endIndex: Index {
+    Index(___end())
   }
 }

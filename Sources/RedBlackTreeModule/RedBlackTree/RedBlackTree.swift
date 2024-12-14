@@ -24,6 +24,7 @@ import Foundation
 
 public enum RedBlackTree {}
 
+#if false
 extension RedBlackTree {
 
   public
@@ -64,3 +65,4 @@ extension RedBlackTreeSetContainer {
     values[ptr]
   }
 }
+#endif

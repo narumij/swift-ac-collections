@@ -29,6 +29,9 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias Element = Element
 
+  public
+    typealias Index = _NodePtr
+
   @usableFromInline
   typealias _Key = Element
 
@@ -129,12 +132,12 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   @inlinable
-  public func begin() -> _NodePtr {
+  public func begin() -> Index {
     ___begin()
   }
 
   @inlinable
-  public func end() -> _NodePtr {
+  public func end() -> Index {
     ___end()
   }
 }
@@ -219,12 +222,12 @@ extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 extension RedBlackTreeSet {
 
   @inlinable
-  public func lower_bound(_ p: Element) -> _NodePtr {
+  public func lower_bound(_ p: Element) -> Index {
     ___lower_bound(p)
   }
 
   @inlinable
-  public func upper_bound(_ p: Element) -> _NodePtr {
+  public func upper_bound(_ p: Element) -> Index {
     ___upper_bound(p)
   }
 }

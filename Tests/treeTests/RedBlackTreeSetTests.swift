@@ -11,8 +11,8 @@
   @testable import RedBlackTreeModule
 
   extension RedBlackTreeSet {
-    func left(_ p: Element) -> Int { distance(to: lower_bound(p)) }
-    func right(_ p: Element) -> Int { distance(to: upper_bound(p)) }
+    func left(_ p: Element) -> Int { distance(to: lowerBound(p).pointer) }
+    func right(_ p: Element) -> Int { distance(to: upperBound(p).pointer) }
   }
 
   final class RedBlackTreeSetTests: XCTestCase {
@@ -407,20 +407,20 @@
 
     func testArrayAccess1() throws {
       let set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set[set.begin(), offsetBy: 0], 0)
-      XCTAssertEqual(set[set.begin(), offsetBy: 1], 1)
-      XCTAssertEqual(set[set.begin(), offsetBy: 2], 2)
-      XCTAssertEqual(set[set.begin(), offsetBy: 3], 3)
-      XCTAssertEqual(set[set.begin(), offsetBy: 4], 4)
+      XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 0)], 0)
+      XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 1)], 1)
+      XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 2)], 2)
+      XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 3)], 3)
+      XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 4)], 4)
     }
 
     func testArrayAccess2() throws {
       let set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set[set.end(), offsetBy: -5], 0)
-      XCTAssertEqual(set[set.end(), offsetBy: -4], 1)
-      XCTAssertEqual(set[set.end(), offsetBy: -3], 2)
-      XCTAssertEqual(set[set.end(), offsetBy: -2], 3)
-      XCTAssertEqual(set[set.end(), offsetBy: -1], 4)
+      XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -5)], 0)
+      XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -4)], 1)
+      XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -3)], 2)
+      XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -2)], 3)
+      XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -1)], 4)
     }
 
     func testRandom() throws {

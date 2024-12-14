@@ -30,7 +30,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
     typealias Element = Element
 
   public
-    typealias Index = _NodePtr
+    typealias Index = RedBlackTree.Index
 
   @usableFromInline
   typealias _Key = Element
@@ -129,18 +129,20 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet {
+#if false
+  extension RedBlackTreeSet {
 
-  @inlinable
-  public func begin() -> Index {
-    ___begin()
-  }
+    @inlinable
+    func begin() -> Index {
+      ___begin()
+    }
 
-  @inlinable
-  public func end() -> Index {
-    ___end()
+    @inlinable
+    func end() -> Index {
+      ___end()
+    }
   }
-}
+#endif
 
 extension RedBlackTreeSet: ValueComparer {
 
@@ -195,6 +197,11 @@ extension RedBlackTreeSet {
   public mutating func remove(_ p: Element) -> Bool {
     __erase_unique(p)
   }
+
+  @inlinable
+  public mutating func remove(at index: Index) {
+    _ = erase(index.pointer)
+  }
 }
 
 // Sequenceプロトコルとの衝突があるため、直接の実装が必要
@@ -222,13 +229,13 @@ extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 extension RedBlackTreeSet {
 
   @inlinable
-  public func lower_bound(_ p: Element) -> Index {
-    ___lower_bound(p)
+  public func lowerBound(_ p: Element) -> Index {
+    .init(___lower_bound(p))
   }
 
   @inlinable
-  public func upper_bound(_ p: Element) -> Index {
-    ___upper_bound(p)
+  public func upperBound(_ p: Element) -> Index {
+    .init(___upper_bound(p))
   }
 }
 
@@ -249,5 +256,28 @@ extension RedBlackTreeSet {
   @inlinable
   public func greatorEqual(_ p: Element) -> Element? {
     ___ge(p)
+  }
+}
+
+extension RedBlackTreeSet: BidirectionalCollection {
+
+  public subscript(position: RedBlackTree.Index) -> Element {
+    self[position.pointer]
+  }
+
+  public func index(before i: Index) -> Index {
+    Index(_read { $0.__tree_prev_iter(i.pointer) })
+  }
+
+  public func index(after i: Index) -> Index {
+    Index(_read { $0.__tree_next_iter(i.pointer) })
+  }
+
+  public var startIndex: Index {
+    Index(___begin())
+  }
+
+  public var endIndex: Index {
+    Index(___end())
   }
 }

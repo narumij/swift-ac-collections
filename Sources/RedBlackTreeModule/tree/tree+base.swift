@@ -26,10 +26,13 @@ public
   typealias _NodePtr = Int
 
 extension _NodePtr {
+  /// 赤黒木のIndexで、nullを表す
   @inlinable
-  static var nullptr: Self { -2 }
+  public static var nullptr: Self { -2 }
+  /// 赤黒木のIndexで、終端を表す
   @inlinable
-  static var end: Self { -1 }
+  public static var end: Self { -1 }
+  
   @inlinable
   static func node(_ p: Int) -> Self { p }
 }
@@ -122,4 +125,4 @@ protocol SizeProtocol {
 }
 
 @usableFromInline
-protocol EqualProtocol: ValueProtocol, RootProtocol, EndNodeProtocol { }
+protocol EqualProtocol: ValueProtocol, RootProtocol, EndNodeProtocol {}

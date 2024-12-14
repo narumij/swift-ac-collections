@@ -77,27 +77,32 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset {
-
+  
   @inlinable
   public var count: Int {
     ___count
   }
-
+  
   @inlinable
   public var isEmpty: Bool {
     ___isEmpty
   }
+}
+
+#if false
+extension RedBlackTreeMultiset {
 
   @inlinable
-  public func begin() -> Index {
+  func begin() -> Index {
     ___begin()
   }
 
   @inlinable
-  public func end() -> Index {
+  func end() -> Index {
     ___end()
   }
 }
+#endif
 
 extension RedBlackTreeMultiset: ValueComparer {
 
@@ -165,6 +170,11 @@ extension RedBlackTreeMultiset {
   public mutating func remove(_ p: Element) -> Bool {
     __erase_multi(p) != 0
   }
+  
+  @inlinable
+  public mutating func remove(at index: Index) {
+    _ = erase(index)
+  }
 }
 
 // Sequenceプロトコルとの衝突があるため、直接の実装が必要
@@ -203,12 +213,12 @@ extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
 extension RedBlackTreeMultiset {
 
   @inlinable
-  public func lower_bound(_ p: Element) -> Index {
+  public func lowerBound(_ p: Element) -> Index {
     ___lower_bound(p)
   }
 
   @inlinable
-  public func upper_bound(_ p: Element) -> Index {
+  public func upperBound(_ p: Element) -> Index {
     ___upper_bound(p)
   }
 }
@@ -230,5 +240,24 @@ extension RedBlackTreeMultiset {
   @inlinable
   public func greatorEqual(_ p: Element) -> Element? {
     ___ge(p)
+  }
+}
+
+extension RedBlackTreeMultiset: BidirectionalCollection {
+  
+  public func index(before i: _NodePtr) -> _NodePtr {
+    _read{ $0.__tree_prev_iter(i) }
+  }
+  
+  public func index(after i: _NodePtr) -> _NodePtr {
+    _read{ $0.__tree_next_iter(i) }
+  }
+  
+  public var startIndex: _NodePtr {
+    ___begin()
+  }
+  
+  public var endIndex: _NodePtr {
+    ___end()
   }
 }

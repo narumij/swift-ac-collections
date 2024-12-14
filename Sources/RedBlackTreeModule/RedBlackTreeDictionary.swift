@@ -28,6 +28,9 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   public
     typealias Index = RedBlackTree.Index
 
+  public
+    typealias KeyValue = (key: Key, value: Value)
+
   @usableFromInline
   typealias KeyInfo = RedBlackTree.KeyInfo<Key>
 
@@ -66,7 +69,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   @usableFromInline
   var nodes: [RedBlackTree.___Node]
   @usableFromInline
-  var values: [Element]
+  var values: [KeyValue]
   @usableFromInline
   var stock: Heap<_NodePtr>
 
@@ -77,10 +80,10 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 extension RedBlackTreeDictionary: ValueComparer {
 
   @inlinable
-  static func __key(_ kv: (Key, Value)) -> Key { kv.0 }
+  static func __key(_ kv: KeyValue) -> Key { kv.0 }
 
   @inlinable
-  static func __value(_ kv: (Key, Value)) -> Value { kv.1 }
+  static func __value(_ kv: KeyValue) -> Value { kv.1 }
 
   @inlinable
   static func value_comp(_ a: Key, _ b: Key) -> Bool {
@@ -112,7 +115,7 @@ extension RedBlackTreeDictionary: _UnsafeMutatingHandleBase {
 extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseProtocol {
 
   @inlinable
-  mutating func __construct_node(_ k: (Key, Value)) -> _NodePtr {
+  mutating func __construct_node(_ k: KeyValue) -> _NodePtr {
     if let stock = stock.popMin() {
       return stock
     }
@@ -159,6 +162,34 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: RedBlackTreeSetContainer {}
 
+extension RedBlackTreeDictionary {
+
+  @inlinable
+  func contains(_ p: Key) -> Bool {
+    _read {
+      let it = $0.__lower_bound(p, $0.__root(), $0.__left_)
+      guard it >= 0 else { return false }
+      return $0.__value_ptr[it].key == p
+    }
+  }
+
+  @inlinable
+  func min() -> (Key, Value)? {
+    _read {
+      let p = $0.__tree_min($0.__root())
+      return p == .end ? nil : $0.__value_(p)
+    }
+  }
+
+  @inlinable
+  func max() -> (Key, Value)? {
+    _read {
+      let p = $0.__tree_max($0.__root())
+      return p == .end ? nil : $0.__value_(p)
+    }
+  }
+}
+
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
   public init(dictionaryLiteral elements: (Key, Value)...) {
     self.init()
@@ -170,7 +201,7 @@ extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
 
 extension RedBlackTreeDictionary: BidirectionalCollection {
 
-  public subscript(position: RedBlackTree.Index) -> (Key, Value) {
+  public subscript(position: RedBlackTree.Index) -> KeyValue {
     self[position.pointer]
   }
 

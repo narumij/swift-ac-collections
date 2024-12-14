@@ -192,9 +192,20 @@ extension RedBlackTreeSet {
 // Sequenceプロトコルとの衝突があるため、直接の実装が必要
 extension RedBlackTreeSet {
 
-  @inlinable public func contains(_ p: Element) -> Bool { ___contains(p) }
-  @inlinable public func min() -> Element? { ___min() }
-  @inlinable public func max() -> Element? { ___max() }
+  @inlinable
+  public func contains(_ p: Element) -> Bool {
+    ___contains(p)
+  }
+  
+  @inlinable
+  public func min() -> Element? {
+    ___min()
+  }
+  
+  @inlinable
+  public func max() -> Element? {
+    ___max()
+  }
 }
 
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {

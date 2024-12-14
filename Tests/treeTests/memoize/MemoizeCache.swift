@@ -1,6 +1,4 @@
-import Foundation
-
-@testable import RedBlackTreeModule
+import RedBlackTreeModule
 
 @usableFromInline
 struct MemoizeCache1<A, B>
@@ -14,11 +12,11 @@ where A: Comparable, B: Comparable {
     }
   }
   @usableFromInline
-  init(__memo: RedBlackTree.MapBase<Key, B> = .init()) {
+  init(__memo: RedBlackTree.__MapBase<Key, B> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: RedBlackTree.MapBase<Key, B> = .init()
+  var __memo: RedBlackTree.__MapBase<Key, B> = .init()
   @inlinable
   subscript(a: A) -> B? {
     get { __memo[a] }
@@ -38,11 +36,11 @@ where A: Comparable, B: Comparable {
     }
   }
   @usableFromInline
-  init(__memo: RedBlackTree.MapBase<Key, C> = .init()) {
+  init(__memo: RedBlackTree.__MapBase<Key, C> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: RedBlackTree.MapBase<Key, C> = .init()
+  var __memo: RedBlackTree.__MapBase<Key, C> = .init()
   @inlinable
   subscript(a: A, b: B) -> C? {
     get { __memo[(a, b)] }
@@ -62,11 +60,11 @@ where A: Comparable, B: Comparable, C: Comparable {
     }
   }
   @usableFromInline
-  init(__memo: RedBlackTree.MapBase<Key, D> = .init()) {
+  init(__memo: RedBlackTree.__MapBase<Key, D> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: RedBlackTree.MapBase<Key, D> = .init()
+  var __memo: RedBlackTree.__MapBase<Key, D> = .init()
   @inlinable
   subscript(a: A, b: B, c: C) -> D? {
     get { __memo[(a, b, c)] }
@@ -86,11 +84,11 @@ where A: Comparable, B: Comparable, C: Comparable, D: Comparable {
     }
   }
   @usableFromInline
-  init(__memo: RedBlackTree.MapBase<Key, E> = .init()) {
+  init(__memo: RedBlackTree.__MapBase<Key, E> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: RedBlackTree.MapBase<Key, E> = .init()
+  var __memo: RedBlackTree.__MapBase<Key, E> = .init()
   @inlinable
   subscript(a: A, b: B, c: C, d: D) -> E? {
     get { __memo[(a, b, c, d)] }

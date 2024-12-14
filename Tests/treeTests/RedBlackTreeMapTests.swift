@@ -19,13 +19,13 @@ final class RedBlackTreeMapTests: XCTestCase {
   }
 
   func testInitEmtpy() throws {
-    let map = RedBlackTreeMap<Int, Int>()
+    let map = RedBlackTreeDictionary<Int, Int>()
     XCTAssertEqual(map.count, 0)
     XCTAssertTrue(map.isEmpty)
   }
 
   func testUsage0() throws {
-    var map = RedBlackTreeMap<Int, Int>()
+    var map = RedBlackTreeDictionary<Int, Int>()
     XCTAssertEqual(map[0], nil)
     map[0] = 0
     XCTAssertEqual(map[0], 0)
@@ -36,7 +36,7 @@ final class RedBlackTreeMapTests: XCTestCase {
   }
 
   func testLiteral() throws {
-    let map: RedBlackTreeMap<Int, Int> = [1: 2, 3: 4, 5: 6]
+    let map: RedBlackTreeDictionary<Int, Int> = [1: 2, 3: 4, 5: 6]
     XCTAssertEqual(map[1], 2)
     XCTAssertEqual(map[3], 4)
     XCTAssertEqual(map[5], 6)

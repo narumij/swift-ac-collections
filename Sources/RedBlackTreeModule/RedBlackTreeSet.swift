@@ -34,13 +34,13 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
   @usableFromInline
   var header: RedBlackTree.___Header
-  
+
   @usableFromInline
   var nodes: [RedBlackTree.___Node]
-  
+
   @usableFromInline
   var values: [Element]
-  
+
   @usableFromInline
   var stock: Heap<_NodePtr> = []
 }

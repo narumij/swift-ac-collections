@@ -163,7 +163,6 @@ extension RedBlackTreeMultiset {
   }
 }
 
-// Sequenceプロトコルとの衝突があるため、直接の実装が必要
 extension RedBlackTreeMultiset {
 
   @inlinable

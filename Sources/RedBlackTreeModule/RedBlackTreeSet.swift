@@ -189,7 +189,6 @@ extension RedBlackTreeSet {
   }
 }
 
-// Sequenceプロトコルとの衝突があるため、直接の実装が必要
 extension RedBlackTreeSet {
 
   @inlinable

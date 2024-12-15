@@ -33,6 +33,8 @@ final class EtcTests: XCTestCase {
 
     var b: RedBlackTreeSet<Int> = [1, 2, 3]
     _ = b.index(after: b.startIndex)
+//    _ = b.index(b.startIndex, offsetBy: -1)
+//    _ = b.index(b.endIndex, offsetBy: 1)
 
     XCTAssertEqual(b.index(b.startIndex, offsetBy: 3), nil)
     XCTAssertEqual(b.map { $0 * 2 }, [2, 4, 6])

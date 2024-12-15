@@ -73,49 +73,6 @@ extension RedBlackTreeContainerBase {
 @usableFromInline
 protocol RedBlackTreeContainer: RedBlackTreeContainerBase {}
 
-extension RedBlackTreeContainer {
-
-  @inlinable
-  subscript(node: _NodePtr) -> Element {
-    values[node]
-  }
-
-  @inlinable
-  subscript(node: _NodePtr, offsetBy distance: Int) -> Element {
-    element(node, offsetBy: distance)!
-  }
-
-  @inlinable
-  func element(_ ptr: _NodePtr, offsetBy distance: Int) -> Element? {
-    let ptr = pointer(ptr, offsetBy: distance)
-    return ptr == .end ? nil : values[ptr]
-  }
-
-  @inlinable
-  func pointer(_ ptr: _NodePtr, offsetBy distance: Int) -> _NodePtr {
-    _read { $0.pointer(ptr, offsetBy: distance) }
-  }
-
-  #if DEBUG
-    @inlinable
-    var elements: [Element] {
-      var result: [Element] = []
-      var p = header.__begin_node
-      _read {
-        while p != .end {
-          result.append($0.__value_(p))
-          p = $0.__tree_next_iter(p)
-        }
-      }
-      return result
-    }
-
-    func distance(to ptr: _NodePtr) -> Int {
-      _read { $0.distance(to: ptr) }
-    }
-  #endif
-}
-
 @usableFromInline
 protocol RedBlackTreeSetContainer: RedBlackTreeContainer {}
 

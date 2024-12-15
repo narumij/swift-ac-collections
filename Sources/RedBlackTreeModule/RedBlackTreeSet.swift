@@ -261,7 +261,7 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet: BidirectionalCollection {
 
   @inlinable public subscript(position: RedBlackTree.Index) -> Element {
-    self[position.pointer]
+    values[position.pointer]
   }
 
   @inlinable public func index(before i: Index) -> Index {
@@ -294,7 +294,7 @@ extension RedBlackTreeSet {
 
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
     _read {
-      Index($0.pointer(i.pointer, offsetBy: distance))
+      Index($0.pointer(i.pointer, offsetBy: distance, type: "RedBlackTreeSet"))
     }
   }
 
@@ -302,7 +302,7 @@ extension RedBlackTreeSet {
     _ i: Index, offsetBy distance: Int, limitedBy limit: Index
   ) -> Index? {
     _read {
-      Index($0.pointer(i.pointer, offsetBy: distance, limitedBy: limit.pointer))
+      Index($0.pointer(i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeSet"))
     }
   }
 

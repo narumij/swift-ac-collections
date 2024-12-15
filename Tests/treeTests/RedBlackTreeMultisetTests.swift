@@ -85,8 +85,15 @@
   }
 
   extension RedBlackTreeMultiset {
-    func left(_ p: Element) -> Int { distance(to: lowerBound(p).pointer) }
-    func right(_ p: Element) -> Int { distance(to: upperBound(p).pointer) }
+    func left(_ p: Element) -> Int {
+      _read { $0.distance(__first: $0.__begin_node, __last: $0.__lower_bound(p, $0.__root(), $0.end())) }
+    }
+    func right(_ p: Element) -> Int {
+      _read { $0.distance(__first: $0.__begin_node, __last: $0.__upper_bound(p, $0.__root(), $0.end())) }
+    }
+    var elements: [Element] {
+      map { $0 }
+    }
   }
 
   final class RedBlackTreeMultisetTests: XCTestCase {

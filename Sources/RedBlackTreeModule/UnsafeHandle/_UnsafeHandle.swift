@@ -94,21 +94,21 @@ extension _UnsafeHandle {
 
   @inlinable
   @inline(__always)
-  func pointer(_ ptr: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr? = .none) -> _NodePtr {
+  func pointer(_ ptr: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr? = .none, type: String) -> _NodePtr {
     return distance > 0
-    ? pointer(ptr, nextBy: UInt(distance), limitedBy: limit)
-    : pointer(ptr, prevBy: UInt(abs(distance)), limitedBy: limit)
+    ? pointer(ptr, nextBy: UInt(distance), limitedBy: limit, type: type)
+    : pointer(ptr, prevBy: UInt(abs(distance)), limitedBy: limit, type: type)
   }
 
   @inlinable
   @inline(__always)
-  func pointer(_ ptr: _NodePtr, prevBy distance: UInt, limitedBy limit: _NodePtr? = .none) -> _NodePtr {
+  func pointer(_ ptr: _NodePtr, prevBy distance: UInt, limitedBy limit: _NodePtr? = .none, type: String) -> _NodePtr {
     var ptr = ptr
     var distance = distance
     while distance != 0, ptr != limit {
       // __begin_nodeを越えない
       guard ptr != __begin_node else {
-        fatalError("Set index is out of Bound.")
+        fatalError("\(type) index is out of Bound.")
       }
       ptr = __tree_prev_iter(ptr)
       distance -= 1
@@ -118,13 +118,13 @@ extension _UnsafeHandle {
 
   @inlinable
   @inline(__always)
-  func pointer(_ ptr: _NodePtr, nextBy distance: UInt, limitedBy limit: _NodePtr? = .none) -> _NodePtr {
+  func pointer(_ ptr: _NodePtr, nextBy distance: UInt, limitedBy limit: _NodePtr? = .none, type: String) -> _NodePtr {
     var ptr = ptr
     var distance = distance
     while distance != 0, ptr != limit {
       // __end_node()を越えない
       guard ptr != __end_node() else {
-        fatalError("Set index is out of Bound.")
+        fatalError("\(type) index is out of Bound.")
       }
       ptr = __tree_next_iter(ptr)
       distance -= 1
@@ -142,17 +142,5 @@ extension _UnsafeHandle {
       __r += 1
     }
     return __r
-  }
-
-  @inlinable
-  func distance(to ptr: _NodePtr) -> Int {
-    var count = 0
-    var p = __begin_node
-    while p != .end {
-      if p == ptr { break }
-      p = __tree_next_iter(p)
-      count += 1
-    }
-    return count
   }
 }

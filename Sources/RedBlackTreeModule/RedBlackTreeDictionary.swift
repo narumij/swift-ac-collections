@@ -206,7 +206,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
     typealias Element = KeyValue
 
   @inlinable public subscript(position: RedBlackTree.Index) -> KeyValue {
-    self[position.pointer]
+    values[position.pointer]
   }
 
   @inlinable public func index(before i: Index) -> Index {
@@ -239,7 +239,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
     _read {
-      Index($0.pointer(i.pointer, offsetBy: distance))
+      Index($0.pointer(i.pointer, offsetBy: distance, type: "RedBlackTreeDictionary"))
     }
   }
 
@@ -247,7 +247,7 @@ extension RedBlackTreeDictionary {
     _ i: Index, offsetBy distance: Int, limitedBy limit: Index
   ) -> Index? {
     _read {
-      Index($0.pointer(i.pointer, offsetBy: distance, limitedBy: limit.pointer))
+      Index($0.pointer(i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeDictionary"))
     }
   }
 

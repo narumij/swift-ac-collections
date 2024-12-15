@@ -68,6 +68,9 @@ extension RedBlackTreeSet {
 }
 
 #if false
+  // リーク上等のスタンスでカリカリチューニングをしているため、公開には適さない初期化子となっている。
+  // その点が修正できれば第一戦に復帰できるが、今のところ目処はない。
+  // 将来的に削除する可能性が依然として高い。
   extension RedBlackTreeSet {
 
     @inlinable @inline(__always)

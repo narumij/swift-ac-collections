@@ -263,7 +263,7 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary {
-  
+
   @inlinable mutating func update(at position: Index, _ value: Value) {
     values[position.pointer].value = value
   }

@@ -48,7 +48,7 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
 }
 
 extension RedBlackTreeMultiset {
-  
+
   @inlinable @inline(__always)
   public init() {
     header = .zero
@@ -90,12 +90,12 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset {
-  
+
   @inlinable
   public var count: Int {
     ___count
   }
-  
+
   @inlinable
   public var isEmpty: Bool {
     ___isEmpty
@@ -143,7 +143,7 @@ extension RedBlackTreeMultiset: RedBlackTree.SetInternal {}
 extension RedBlackTreeMultiset: RedBlackTreeEraseProtocol {}
 
 extension RedBlackTreeMultiset {
-  
+
   @inlinable
   @discardableResult
   public mutating func insert(_ p: Element) -> Bool {
@@ -169,11 +169,11 @@ extension RedBlackTreeMultiset {
   @inlinable public func contains(_ p: Element) -> Bool {
     ___contains(p)
   }
-  
+
   @inlinable public func min() -> Element? {
     ___min()
   }
-  
+
   @inlinable public func max() -> Element? {
     ___max()
   }
@@ -272,6 +272,7 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset {
+
   @inlinable public func count(_ element: Element) -> Int {
     _read {
       $0.distance(

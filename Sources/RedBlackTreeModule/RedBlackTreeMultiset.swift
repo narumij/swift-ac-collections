@@ -69,6 +69,19 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset {
+  @inlinable @inline(__always)
+  public init<S>(_ _a: S) where S: Collection, S.Element == Element {
+    self.nodes = []
+    self.header = .zero
+    self.values = []
+    self.stock = []
+    for a in _a {
+      _ = insert(a)
+    }
+  }
+}
+
+extension RedBlackTreeMultiset {
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     nodes.reserveCapacity(minimumCapacity)
@@ -125,19 +138,6 @@ extension RedBlackTreeMultiset: _UnsafeMutatingHandleBase {
 
 extension RedBlackTreeMultiset: InsertMultiProtocol {}
 extension RedBlackTreeMultiset: EraseProtocol2 {}
-
-extension RedBlackTreeMultiset {
-  @inlinable @inline(__always)
-  public init<S>(_ _a: S) where S: Collection, S.Element == Element {
-    self.nodes = []
-    self.header = .zero
-    self.values = []
-    self.stock = []
-    for a in _a {
-      _ = insert(a)
-    }
-  }
-}
 
 extension RedBlackTreeMultiset: RedBlackTree.SetInternal {}
 extension RedBlackTreeMultiset: RedBlackTreeEraseProtocol {}

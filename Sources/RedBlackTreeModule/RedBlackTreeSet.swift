@@ -65,47 +65,65 @@ extension RedBlackTreeSet {
     nodes.reserveCapacity(minimumCapacity)
     values.reserveCapacity(minimumCapacity)
   }
+}
 
-  @inlinable @inline(__always)
-  public init<S>(_ _a: S) where S: Collection, S.Element == Element {
-    var _values: [Element] = _a + []
-    var _header: RedBlackTree.___Header = .zero
-    self.nodes = [RedBlackTree.___Node](
-      unsafeUninitializedCapacity: _values.count
-    ) { _nodes, initializedCount in
-      withUnsafeMutablePointer(to: &_header) { _header in
-        _values.withUnsafeMutableBufferPointer { _values in
-          var count = 0
-          func ___construct_node(_ __k: Element) -> _NodePtr {
-            _nodes[count] = .zero
-            _values[count] = __k
-            defer { count += 1 }
-            return count
-          }
-          let tree = _UnsafeMutatingHandle<Self>(
-            __header_ptr: _header,
-            __node_ptr: _nodes.baseAddress!,
-            __value_ptr: _values.baseAddress!)
-          var i = 0
-          while i < _a.count {
-            let __k = _values[i]
-            i += 1
-            var __parent = _NodePtr.nullptr
-            let __child = tree.__find_equal(&__parent, __k)
-            if tree.__ref_(__child) == .nullptr {
-              let __h = ___construct_node(__k)
-              tree.__insert_node_at(__parent, __child, __h)
+#if false
+  extension RedBlackTreeSet {
+
+    @inlinable @inline(__always)
+    public init<S>(_ _a: S) where S: Collection, S.Element == Element {
+      var _values: [Element] = _a + []
+      var _header: RedBlackTree.___Header = .zero
+      self.nodes = [RedBlackTree.___Node](
+        unsafeUninitializedCapacity: _values.count
+      ) { _nodes, initializedCount in
+        withUnsafeMutablePointer(to: &_header) { _header in
+          _values.withUnsafeMutableBufferPointer { _values in
+            var count = 0
+            func ___construct_node(_ __k: Element) -> _NodePtr {
+              _nodes[count] = .zero
+              _values[count] = __k
+              defer { count += 1 }
+              return count
             }
+            let tree = _UnsafeMutatingHandle<Self>(
+              __header_ptr: _header,
+              __node_ptr: _nodes.baseAddress!,
+              __value_ptr: _values.baseAddress!)
+            var i = 0
+            while i < _a.count {
+              let __k = _values[i]
+              i += 1
+              var __parent = _NodePtr.nullptr
+              let __child = tree.__find_equal(&__parent, __k)
+              if tree.__ref_(__child) == .nullptr {
+                let __h = ___construct_node(__k)
+                tree.__insert_node_at(__parent, __child, __h)
+              }
+            }
+            initializedCount = count
           }
-          initializedCount = count
         }
       }
+      self.header = _header
+      self.values = _values
+      self.stock = []
     }
-    self.header = _header
-    self.values = _values
-    self.stock = []
   }
-}
+#else
+  extension RedBlackTreeSet {
+    @inlinable @inline(__always)
+    public init<S>(_ _a: S) where S: Collection, S.Element == Element {
+      self.nodes = []
+      self.header = .zero
+      self.values = []
+      self.stock = []
+      for a in _a {
+        _ = insert(a)
+      }
+    }
+  }
+#endif
 
 extension RedBlackTreeSet {
 
@@ -196,12 +214,12 @@ extension RedBlackTreeSet {
   public func contains(_ p: Element) -> Bool {
     ___contains(p)
   }
-  
+
   @inlinable
   public func min() -> Element? {
     ___min()
   }
-  
+
   @inlinable
   public func max() -> Element? {
     ___max()

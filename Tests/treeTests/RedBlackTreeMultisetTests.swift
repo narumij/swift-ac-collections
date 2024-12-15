@@ -409,7 +409,7 @@
       XCTAssertEqual(set.right(5).index, 5)
       XCTAssertEqual(set.right(6).index, 5)
       XCTAssertEqual(set.remove(1), 1)
-      XCTAssertEqual(set.remove(3), 1)
+      XCTAssertEqual(set.remove(3), 3)
       XCTAssertEqual(set.remove(1), nil)
       XCTAssertEqual(set.remove(3), nil)
       XCTAssertEqual(set.elements, [0, 2, 4])

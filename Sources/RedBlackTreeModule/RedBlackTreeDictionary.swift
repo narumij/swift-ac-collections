@@ -201,6 +201,9 @@ extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
 
 extension RedBlackTreeDictionary: BidirectionalCollection {
 
+  public
+    typealias Element = KeyValue
+
   public subscript(position: RedBlackTree.Index) -> KeyValue {
     self[position.pointer]
   }

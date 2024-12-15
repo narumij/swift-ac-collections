@@ -38,6 +38,9 @@ final class EtcTests: XCTestCase {
       _ = b.remove(at: b.index(before: b.lowerBound(2)))
       
       XCTAssertEqual(b.map { $0 }, [2,3])
+      
+      XCTAssertEqual(b.distance(from: b.lowerBound(2), to: b.lowerBound(3)), 1)
+      XCTAssertEqual(b.distance(from: b.lowerBound(3), to: b.lowerBound(2)), -1)
     }
 
     func testPerformanceExample() throws {

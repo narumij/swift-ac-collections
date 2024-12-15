@@ -143,7 +143,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @discardableResult
-  public mutating func remove(at index: Index) -> (Key, Value)? {
+  public mutating func remove(at index: Index) -> KeyValue? {
     remove(at: index.pointer)
   }
 }

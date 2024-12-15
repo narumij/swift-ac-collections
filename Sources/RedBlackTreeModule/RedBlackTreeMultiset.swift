@@ -153,14 +153,14 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   @discardableResult
-  public mutating func remove(_ p: Element) -> Bool {
-    __erase_multi(p) != 0
+  public mutating func remove(_ p: Element) -> Element? {
+    __erase_unique(p) ? p : nil
   }
-  
+
   @inlinable
   @discardableResult
-  public mutating func remove(at index: Index) -> Element? {
-    remove(at: index.pointer)
+  public mutating func remove(at index: Index) -> Element {
+    remove(at: index.pointer)!
   }
 }
 

@@ -273,8 +273,8 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset {
   @inlinable public func count(_ element: Element) -> Int {
-    return _read {
-      return $0.distance(
+    _read {
+      $0.distance(
         __first: $0.__lower_bound(element, $0.__root(), $0.__end_node()),
         __last: $0.__upper_bound(element, $0.__root(), $0.__end_node()))
     }

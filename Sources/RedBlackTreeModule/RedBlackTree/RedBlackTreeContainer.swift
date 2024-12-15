@@ -34,6 +34,25 @@ protocol RedBlackTreeContainerBase: EndProtocol, ValueComparer {
 
 extension RedBlackTreeContainerBase {
 
+  @inlinable public var ___count: Int {
+    header.size
+  }
+
+  @inlinable public var ___isEmpty: Bool {
+    header.size == 0
+  }
+
+  @inlinable public func ___begin() -> _NodePtr {
+    header.__begin_node
+  }
+
+  @inlinable public func ___end() -> _NodePtr {
+    .end
+  }
+}
+
+extension RedBlackTreeContainerBase {
+
   @inlinable
   @inline(__always)
   func _read<R>(_ body: (_UnsafeHandle<Self>) throws -> R) rethrows -> R {
@@ -48,25 +67,6 @@ extension RedBlackTreeContainerBase {
         }
       }
     }
-  }
-}
-
-extension RedBlackTreeContainerBase {
-
-  @inlinable
-  public var ___count: Int { header.size }
-
-  @inlinable
-  public var ___isEmpty: Bool { header.size == 0 }
-
-  @inlinable
-  public func ___begin() -> _NodePtr {
-    header.__begin_node
-  }
-
-  @inlinable
-  public func ___end() -> _NodePtr {
-    .end
   }
 }
 

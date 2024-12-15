@@ -44,6 +44,14 @@ final class EtcTests: XCTestCase {
     XCTAssertEqual(b.distance(from: b.lowerBound(2), to: b.lowerBound(3)), 1)
     XCTAssertEqual(b.distance(from: b.lowerBound(3), to: b.lowerBound(2)), -1)
   }
+  
+  func testExample2() throws {
+    let b: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3]
+    XCTAssertEqual(b.count, 6)
+    XCTAssertEqual(b.count(1), 2)
+    XCTAssertEqual(b.count(2), 3)
+    XCTAssertEqual(b.count(3), 1)
+  }
 
   func testPerformanceDistanceFromTo() throws {
     let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)

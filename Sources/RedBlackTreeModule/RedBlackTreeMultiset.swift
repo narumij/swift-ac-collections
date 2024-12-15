@@ -166,57 +166,48 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset {
 
-  @inlinable
-  public func contains(_ p: Element) -> Bool {
+  @inlinable public func contains(_ p: Element) -> Bool {
     ___contains(p)
   }
   
-  @inlinable
-  public func min() -> Element? {
+  @inlinable public func min() -> Element? {
     ___min()
   }
   
-  @inlinable
-  public func max() -> Element? {
+  @inlinable public func max() -> Element? {
     ___max()
   }
 }
 
 extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
-  public init(arrayLiteral elements: Element...) {
+  @inlinable public init(arrayLiteral elements: Element...) {
     self.init(elements)
   }
 }
 
 extension RedBlackTreeMultiset {
 
-  @inlinable
-  public func lowerBound(_ p: Element) -> Index {
+  @inlinable public func lowerBound(_ p: Element) -> Index {
     Index(___lower_bound(p))
   }
 
-  @inlinable
-  public func upperBound(_ p: Element) -> Index {
+  @inlinable public func upperBound(_ p: Element) -> Index {
     Index(___upper_bound(p))
   }
 }
 
 extension RedBlackTreeMultiset {
 
-  @inlinable
-  public func lessThan(_ p: Element) -> Element? {
+  @inlinable public func lessThan(_ p: Element) -> Element? {
     ___lt(p)
   }
-  @inlinable
-  public func greatorThan(_ p: Element) -> Element? {
+  @inlinable public func greatorThan(_ p: Element) -> Element? {
     ___gt(p)
   }
-  @inlinable
-  public func lessEqual(_ p: Element) -> Element? {
+  @inlinable public func lessEqual(_ p: Element) -> Element? {
     ___le(p)
   }
-  @inlinable
-  public func greatorEqual(_ p: Element) -> Element? {
+  @inlinable public func greatorEqual(_ p: Element) -> Element? {
     ___ge(p)
   }
 }
@@ -280,3 +271,12 @@ extension RedBlackTreeMultiset {
   }
 }
 
+extension RedBlackTreeMultiset {
+  @inlinable public func count(_ element: Element) -> Int {
+    return _read {
+      return $0.distance(
+        __first: $0.__lower_bound(element, $0.__root(), $0.__end_node()),
+        __last: $0.__upper_bound(element, $0.__root(), $0.__end_node()))
+    }
+  }
+}

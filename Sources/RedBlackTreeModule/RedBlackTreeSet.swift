@@ -213,80 +213,107 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  @inlinable
-  public func contains(_ p: Element) -> Bool {
+  @inlinable public func contains(_ p: Element) -> Bool {
     ___contains(p)
   }
 
-  @inlinable
-  public func min() -> Element? {
+  @inlinable public func min() -> Element? {
     ___min()
   }
 
-  @inlinable
-  public func max() -> Element? {
+  @inlinable public func max() -> Element? {
     ___max()
   }
 }
 
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
-  public init(arrayLiteral elements: Element...) {
+  @inlinable public init(arrayLiteral elements: Element...) {
     self.init(elements)
   }
 }
 
 extension RedBlackTreeSet {
 
-  @inlinable
-  public func lowerBound(_ p: Element) -> Index {
+  @inlinable public func lowerBound(_ p: Element) -> Index {
     Index(___lower_bound(p))
   }
 
-  @inlinable
-  public func upperBound(_ p: Element) -> Index {
+  @inlinable public func upperBound(_ p: Element) -> Index {
     Index(___upper_bound(p))
   }
 }
 
 extension RedBlackTreeSet {
 
-  @inlinable
-  public func lessThan(_ p: Element) -> Element? {
+  @inlinable public func lessThan(_ p: Element) -> Element? {
     ___lt(p)
   }
-  @inlinable
-  public func greatorThan(_ p: Element) -> Element? {
+  @inlinable public func greatorThan(_ p: Element) -> Element? {
     ___gt(p)
   }
-  @inlinable
-  public func lessEqual(_ p: Element) -> Element? {
+  @inlinable public func lessEqual(_ p: Element) -> Element? {
     ___le(p)
   }
-  @inlinable
-  public func greatorEqual(_ p: Element) -> Element? {
+  @inlinable public func greatorEqual(_ p: Element) -> Element? {
     ___ge(p)
   }
 }
 
 extension RedBlackTreeSet: BidirectionalCollection {
 
-  public subscript(position: RedBlackTree.Index) -> Element {
+  @inlinable public subscript(position: RedBlackTree.Index) -> Element {
     self[position.pointer]
   }
 
-  public func index(before i: Index) -> Index {
+  @inlinable public func index(before i: Index) -> Index {
     Index(_read { $0.__tree_prev_iter(i.pointer) })
   }
 
-  public func index(after i: Index) -> Index {
+  @inlinable public func index(after i: Index) -> Index {
     Index(_read { $0.__tree_next_iter(i.pointer) })
   }
 
-  public var startIndex: Index {
+  @inlinable public var startIndex: Index {
     Index(___begin())
   }
 
-  public var endIndex: Index {
+  @inlinable public var endIndex: Index {
     Index(___end())
+  }
+}
+
+/// Overwrite Default implementation for bidirectional collections.
+extension RedBlackTreeSet {
+
+  /// Replaces the given index with its predecessor.
+  ///
+  /// - Parameter i: A valid index of the collection. `i` must be greater than
+  ///   `startIndex`.
+  @inlinable public func formIndex(before i: inout Index) {
+    i = Index(_read { $0.__tree_prev_iter(i.pointer) })
+  }
+
+  @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
+    _read {
+      Index($0.pointer(i.pointer, offsetBy: distance))
+    }
+  }
+
+  @inlinable public func index(
+    _ i: Index, offsetBy distance: Int, limitedBy limit: Index
+  ) -> Index? {
+    _read {
+      Index($0.pointer(i.pointer, offsetBy: distance, limitedBy: limit.pointer))
+    }
+  }
+
+  @inlinable func distance(__last: _NodePtr) -> Int {
+    if __last == end() { return count }
+    return _read { $0.distance(__first: $0.__begin_node, __last: __last) }
+  }
+
+  /// O(n)
+  @inlinable public func distance(from start: Index, to end: Index) -> Int {
+    distance(__last: end.pointer) - distance(__last: start.pointer)
   }
 }

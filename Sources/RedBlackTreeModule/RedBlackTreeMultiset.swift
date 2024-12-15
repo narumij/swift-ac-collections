@@ -223,23 +223,60 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset: BidirectionalCollection {
 
-  public subscript(position: RedBlackTree.Index) -> Element {
+  @inlinable public subscript(position: RedBlackTree.Index) -> Element {
     self[position.pointer]
   }
 
-  public func index(before i: Index) -> Index {
+  @inlinable public func index(before i: Index) -> Index {
     Index(_read { $0.__tree_prev_iter(i.pointer) })
   }
 
-  public func index(after i: Index) -> Index {
+  @inlinable public func index(after i: Index) -> Index {
     Index(_read { $0.__tree_next_iter(i.pointer) })
   }
 
-  public var startIndex: Index {
+  @inlinable public var startIndex: Index {
     Index(___begin())
   }
 
-  public var endIndex: Index {
+  @inlinable public var endIndex: Index {
     Index(___end())
   }
 }
+
+/// Overwrite Default implementation for bidirectional collections.
+extension RedBlackTreeMultiset {
+
+  /// Replaces the given index with its predecessor.
+  ///
+  /// - Parameter i: A valid index of the collection. `i` must be greater than
+  ///   `startIndex`.
+  @inlinable public func formIndex(before i: inout Index) {
+    i = Index(_read { $0.__tree_prev_iter(i.pointer) })
+  }
+
+  @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
+    _read {
+      Index($0.pointer(i.pointer, offsetBy: distance))
+    }
+  }
+
+  @inlinable public func index(
+    _ i: Index, offsetBy distance: Int, limitedBy limit: Index
+  ) -> Index? {
+    _read {
+      Index($0.pointer(i.pointer, offsetBy: distance, limitedBy: limit.pointer))
+    }
+  }
+
+  @inlinable func distance(__last: _NodePtr) -> Int {
+    if __last == end() { return count }
+    return _read { $0.distance(__first: $0.__begin_node, __last: __last) }
+  }
+
+  /// O(n)
+  @inlinable public func distance(from start: Index, to end: Index) -> Int {
+    distance(__last: end.pointer) - distance(__last: start.pointer)
+  }
+}
+

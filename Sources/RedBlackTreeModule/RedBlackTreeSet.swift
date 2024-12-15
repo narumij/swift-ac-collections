@@ -167,8 +167,7 @@ extension RedBlackTreeSet: _UnsafeHandleBase {}
 extension RedBlackTreeSet: _UnsafeMutatingHandleBase {
 
   // プロトコルでupdateが書けなかったため、個別で実装している
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
     return try withUnsafeMutablePointer(to: &header) { header in
       try nodes.withUnsafeMutableBufferPointer { nodes in

@@ -158,6 +158,7 @@ extension RedBlackTreeMultiset {
   }
   
   @inlinable
+  @discardableResult
   public mutating func remove(at index: Index) -> Element? {
     remove(at: index.pointer)
   }

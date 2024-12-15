@@ -25,17 +25,17 @@ final class EtcTests: XCTestCase {
         // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
         // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
       
-      var a = "abcdefg"
-      a.index(after: a.startIndex)
-      a.index(a.startIndex, offsetBy: 3)
+      let a = "abcdefg"
+      _ = a.index(after: a.startIndex)
+      _ = a.index(a.startIndex, offsetBy: 3)
       
       var b: RedBlackTreeSet<Int> = [1,2,3]
-      b.index(after: b.startIndex)
+      _ = b.index(after: b.startIndex)
       
       XCTAssertEqual(b.index(b.startIndex, offsetBy: 3), nil)
       XCTAssertEqual(b.map { $0 * 2 }, [2,4,6])
       
-      b.remove(at: b.index(before: b.lowerBound(2)))
+      _ = b.remove(at: b.index(before: b.lowerBound(2)))
       
       XCTAssertEqual(b.map { $0 }, [2,3])
     }

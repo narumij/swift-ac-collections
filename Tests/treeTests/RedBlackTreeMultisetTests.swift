@@ -175,16 +175,16 @@
 
     func testInsert() throws {
       var set = RedBlackTreeMultiset<Int>([])
-      XCTAssertEqual(set.insert(0), true)
-      XCTAssertEqual(set.insert(1), true)
-      XCTAssertEqual(set.insert(2), true)
-      XCTAssertEqual(set.insert(3), true)
-      XCTAssertEqual(set.insert(4), true)
-      XCTAssertEqual(set.insert(0), true)
-      XCTAssertEqual(set.insert(1), true)
-      XCTAssertEqual(set.insert(2), true)
-      XCTAssertEqual(set.insert(3), true)
-      XCTAssertEqual(set.insert(4), true)
+      XCTAssertEqual(set.insert(0).inserted, true)
+      XCTAssertEqual(set.insert(1).inserted, true)
+      XCTAssertEqual(set.insert(2).inserted, true)
+      XCTAssertEqual(set.insert(3).inserted, true)
+      XCTAssertEqual(set.insert(4).inserted, true)
+      XCTAssertEqual(set.insert(0).inserted, true)
+      XCTAssertEqual(set.insert(1).inserted, true)
+      XCTAssertEqual(set.insert(2).inserted, true)
+      XCTAssertEqual(set.insert(3).inserted, true)
+      XCTAssertEqual(set.insert(4).inserted, true)
     }
 
     func test_LT_GT() throws {

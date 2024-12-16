@@ -261,7 +261,6 @@ extension RedBlackTreeSet: ValueComparer {
 
 extension RedBlackTreeSet: RedBlackTreeSetContainer {}
 extension RedBlackTreeSet: _UnsafeHandleBase {}
-
 extension RedBlackTreeSet: _UnsafeMutatingHandleBase {
 
   // プロトコルでupdateが書けなかったため、個別で実装している
@@ -282,9 +281,7 @@ extension RedBlackTreeSet: _UnsafeMutatingHandleBase {
 }
 
 extension RedBlackTreeSet: InsertUniqueProtocol {}
-
 extension RedBlackTreeSet: RedBlackTreeEraseProtocol {}
-
 extension RedBlackTreeSet: RedBlackTree.SetInternal {}
 
 extension RedBlackTreeSet {
@@ -419,8 +416,8 @@ extension RedBlackTreeSet {
   /// - Returns: `member` がセット内に存在する場合は `true`、存在しない場合は `false`。
   ///
   /// - 計算量: O(log *n*)
-  @inlinable public func contains(_ p: Element) -> Bool {
-    ___contains(p)
+  @inlinable public func contains(_ member: Element) -> Bool {
+    ___contains(member)
   }
 
   @inlinable public func min() -> Element? {
@@ -477,8 +474,8 @@ extension RedBlackTreeSet {
   /// - Returns: 指定された値以上の最小要素のインデックスを返します。該当する要素が存在しない場合は `endIndex` を返します。
   ///
   /// - 計算量: O(log *n*)
-  @inlinable public func lowerBound(_ p: Element) -> Index {
-    Index(___lower_bound(p))
+  @inlinable public func lowerBound(_ member: Element) -> Index {
+    Index(___lower_bound(member))
   }
 
   /// 指定された値より大きい最小の要素を見つけ、そのインデックスを返します。
@@ -501,8 +498,8 @@ extension RedBlackTreeSet {
   /// - Returns: 指定された値より大きい最小要素のインデックスを返します。該当する要素が存在しない場合は `endIndex` を返します。
   ///
   /// - 計算量: O(log *n*)
-  @inlinable public func upperBound(_ p: Element) -> Index {
-    Index(___upper_bound(p))
+  @inlinable public func upperBound(_ member: Element) -> Index {
+    Index(___upper_bound(member))
   }
 }
 

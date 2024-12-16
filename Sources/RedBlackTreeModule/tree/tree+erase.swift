@@ -57,11 +57,11 @@ extension EraseProtocol {
 }
 
 @usableFromInline
-protocol EraseProtocol2: EraseProtocol {
+protocol EraseMultiProtocol: EraseProtocol {
   func __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)
 }
 
-extension EraseProtocol2 {
+extension EraseMultiProtocol {
 
   @inlinable
   mutating func __erase_multi(_ __k: _Key) -> Int {

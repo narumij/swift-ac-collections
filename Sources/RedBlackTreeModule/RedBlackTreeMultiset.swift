@@ -94,6 +94,19 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
 
 extension RedBlackTreeMultiset {
 
+  /// 空の赤黒木マルチセットを作成します。
+  ///
+  /// このイニシャライザは、新しい空の `RedBlackTreeMultiSet` インスタンスを作成します。
+  /// 作成直後のマルチセットは要素を持たず、操作に応じて動的に要素が追加されます。
+  ///
+  /// 以下は、空のマルチセットを作成し要素を追加する例です:
+  ///
+  /// ```swift
+  /// var multiset = RedBlackTreeMultiSet<Int>()
+  /// multiset.insert(3)
+  /// multiset.insert(3)
+  /// print(multiset) // 出力: [3, 3]
+  /// ```
   @inlinable @inline(__always)
   public init() {
     header = .zero
@@ -102,6 +115,21 @@ extension RedBlackTreeMultiset {
     stock = []
   }
 
+  /// 指定された容量を持つ空の赤黒木マルチセットを作成します。
+  ///
+  /// このイニシャライザは、要素の格納に必要な初期容量を指定して空の `RedBlackTreeMultiSet` を作成します。
+  /// あらかじめ容量を確保することで、要素の追加時における動的なメモリ割り当ての回数を削減できます。
+  ///
+  /// 以下は、初期容量を指定してマルチセットを作成する例です:
+  ///
+  /// ```swift
+  /// var multiset = RedBlackTreeMultiSet<Int>(minimumCapacity: 10)
+  /// multiset.insert(1)
+  /// multiset.insert(2)
+  /// print(multiset) // 出力: [1, 2]
+  /// ```
+  ///
+  /// - Parameter minimumCapacity: 初期確保する要素の容量。
   @inlinable
   public init(minimumCapacity: Int) {
     header = .zero
@@ -113,48 +141,67 @@ extension RedBlackTreeMultiset {
   }
 }
 
-#if true
-  extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiset {
 
-    @inlinable @inline(__always)
-    public init<S>(_ _a: S) where S: Sequence, S.Element == Element {
-      // 全数使うため、一度確保すると、そのまま
-      var _values: [Element] = _a + []
-      var _header: RedBlackTree.___Header = .zero
-      self.nodes = [RedBlackTree.___Node](
-        unsafeUninitializedCapacity: _values.count
-      ) { _nodes, initializedCount in
-        withUnsafeMutablePointer(to: &_header) { _header in
-          var count = 0
-          _values.withUnsafeMutableBufferPointer { _values in
-            func ___construct_node(_ __k: Element) -> _NodePtr {
-              _nodes[count] = .zero
-              defer { count += 1 }
-              return count
-            }
-            let tree = _UnsafeMutatingHandle<Self>(
-              __header_ptr: _header,
-              __node_ptr: _nodes.baseAddress!,
-              __value_ptr: _values.baseAddress!)
-            var i = 0
-            while i < _values.count {
-              let __k = _values[i]
-              i += 1
-              let __h = ___construct_node(__k)
-              var __parent = _NodePtr.nullptr
-              let __child = tree.__find_leaf_high(&__parent, __k)
-              tree.__insert_node_at(__parent, __child, __h)
-            }
-            initializedCount = count
+  /// 指定されたシーケンスの要素を持つ赤黒木マルチセットを作成します。
+  ///
+  /// このイニシャライザは、指定されたシーケンス内の全ての要素を格納する新しい `RedBlackTreeMultiSet` を作成します。
+  /// シーケンスに重複要素が含まれる場合、それらもそのまま格納されます。
+  ///
+  /// 以下は、シーケンスを基にしたマルチセットの作成例です:
+  ///
+  /// ```swift
+  /// let numbers = [1, 2, 2, 3, 3, 3]
+  /// let multiset = RedBlackTreeMultiSet(numbers)
+  /// print(multiset) // 出力: [1, 2, 2, 3, 3, 3]
+  /// ```
+  ///
+  /// - Parameter sequence: 新しいマルチセットに含める要素を持つシーケンス。
+  ///   シーケンス内の要素は順序に従って格納されます。
+  ///
+  /// - Complexity: O(*n* log *n*), ここで *n* はシーケンスの要素数。
+  @inlinable
+  public init<Source>(_ sequence: Source)
+  where Element == Source.Element, Source: Sequence {
+    // 全数使うため、一度確保すると、そのまま
+    var _values: [Element] = sequence + []
+    var _header: RedBlackTree.___Header = .zero
+    self.nodes = [RedBlackTree.___Node](
+      unsafeUninitializedCapacity: _values.count
+    ) { _nodes, initializedCount in
+      withUnsafeMutablePointer(to: &_header) { _header in
+        var count = 0
+        _values.withUnsafeMutableBufferPointer { _values in
+          func ___construct_node(_ __k: Element) -> _NodePtr {
+            _nodes[count] = .zero
+            defer { count += 1 }
+            return count
           }
+          let tree = _UnsafeMutatingHandle<Self>(
+            __header_ptr: _header,
+            __node_ptr: _nodes.baseAddress!,
+            __value_ptr: _values.baseAddress!)
+          var i = 0
+          while i < _values.count {
+            let __k = _values[i]
+            i += 1
+            let __h = ___construct_node(__k)
+            var __parent = _NodePtr.nullptr
+            let __child = tree.__find_leaf_high(&__parent, __k)
+            tree.__insert_node_at(__parent, __child, __h)
+          }
+          initializedCount = count
         }
       }
-      self.header = _header
-      self.values = _values
-      self.stock = []
     }
+    self.header = _header
+    self.values = _values
+    self.stock = []
   }
-#else
+}
+
+#if true
+  // naive
   extension RedBlackTreeMultiset {
     @inlinable @inline(__always)
     public init<S>(_ _a: S) where S: Collection, S.Element == Element {
@@ -168,15 +215,6 @@ extension RedBlackTreeMultiset {
     }
   }
 #endif
-
-extension RedBlackTreeMultiset {
-
-  @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    nodes.reserveCapacity(minimumCapacity)
-    values.reserveCapacity(minimumCapacity)
-  }
-}
 
 extension RedBlackTreeMultiset {
 
@@ -198,6 +236,26 @@ extension RedBlackTreeMultiset {
   @inlinable
   public var capacity: Int {
     ___capacity
+  }
+}
+
+extension RedBlackTreeMultiset {
+
+  /// 指定された要素数を格納するのに十分な領域を確保します。
+  ///
+  /// 挿入する要素数が事前にわかっている場合、このメソッドを使用すると、
+  /// 複数回の領域再割り当てを避けることができます。このメソッドは、
+  /// 赤黒木セットが一意で変更可能な連続した領域を持つようにし、
+  /// 少なくとも指定された要素数を格納できる領域を確保します。
+  ///
+  /// 既存のストレージに `minimumCapacity` 個の要素を格納できる余地があったとしても、
+  /// `reserveCapacity(_:)` メソッドを呼び出すと、連続した新しい領域へのコピーが発生します。
+  ///
+  /// - Parameter minimumCapacity: 確保したい要素数。
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    nodes.reserveCapacity(minimumCapacity)
+    values.reserveCapacity(minimumCapacity)
   }
 }
 
@@ -237,13 +295,35 @@ extension RedBlackTreeMultiset: _UnsafeMutatingHandleBase {
 }
 
 extension RedBlackTreeMultiset: InsertMultiProtocol {}
-extension RedBlackTreeMultiset: EraseProtocol2 {}
-
+extension RedBlackTreeMultiset: EraseMultiProtocol {}
 extension RedBlackTreeMultiset: RedBlackTree.SetInternal {}
 extension RedBlackTreeMultiset: RedBlackTreeEraseProtocol {}
 
 extension RedBlackTreeMultiset {
 
+  /// 指定された要素を赤黒木マルチセットに挿入します。
+  ///
+  /// このメソッドは、指定された要素 `newMember` をマルチセットに挿入します。
+  /// マルチセットは重複を許容するため、同じ値の要素が既に存在していても新たに挿入されます。
+  ///
+  /// 以下は、要素を挿入する例です:
+  ///
+  /// ```swift
+  /// var multiset: RedBlackTreeMultiSet = [1, 2, 3]
+  ///
+  /// let result = multiset.insert(2)
+  /// print(result) // 出力: (inserted: true, memberAfterInsert: 2)
+  /// print(multiset) // 出力: [1, 2, 2, 3]
+  /// ```
+  ///
+  /// - Parameter newMember: マルチセットに挿入する要素。
+  /// - Returns: タプル `(inserted: Bool, memberAfterInsert: Element)` を返します。
+  ///   - `inserted`: 要素が正常に挿入された場合は `true`、そうでない場合は `false`。
+  ///   - `memberAfterInsert`: 挿入後の要素（マルチセット内に既に存在していた場合も含む）。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はマルチセット内の要素数。
+  ///
+  /// - Note: `@discardableResult` を使用しているため、戻り値を使用しない場合でも警告は発生しません。
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
@@ -253,12 +333,41 @@ extension RedBlackTreeMultiset {
     return (true, newMember)
   }
 
+  /// 指定された要素を赤黒木マルチセットから削除します。
+  ///
+  /// このメソッドは、指定された要素 `member` をマルチセットから1つ削除します。
+  /// 同じ値の要素が複数存在する場合、その中の1つだけが削除されます。
+  /// 該当する要素が存在しない場合、このメソッドは `nil` を返します。
+  ///
+  /// 以下は、`remove(_:)` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// var multiset: RedBlackTreeMultiSet = [1, 2, 2, 3, 3, 3]
+  ///
+  /// if let removed = multiset.remove(2) {
+  ///     print("Removed \(removed)") // 出力: "Removed 2"
+  /// } else {
+  ///     print("Element not found.")
+  /// }
+  /// print(multiset) // 出力: [1, 2, 3, 3, 3]
+  /// ```
+  ///
+  /// - Parameter member: 削除対象の要素。
+  /// - Returns: 削除された要素を返します。
+  ///   マルチセットに指定された要素が存在しない場合は `nil` を返します。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はマルチセット内の要素数。
   @inlinable
   @discardableResult
-  public mutating func remove(_ p: Element) -> Element? {
-    __erase_unique(p) ? p : nil
+  public mutating func remove(_ member: Element) -> Element? {
+    __erase_multi(member) != 0 ? member : nil
   }
 
+  /// 指定されたインデックス位置にある要素を赤黒木セットから削除します。
+  ///
+  /// - Parameter position: 削除する要素のインデックス。
+  ///   `position` はセット内の有効なインデックスであり、セットの終端インデックス（`endIndex`）と等しくない必要があります。
+  /// - Returns: セットから削除された要素。
   @inlinable
   @discardableResult
   public mutating func remove(at position: Index) -> Element {
@@ -268,6 +377,10 @@ extension RedBlackTreeMultiset {
     return element
   }
 
+  /// 赤黒木セットからすべての要素を削除します。
+  ///
+  /// - Parameter keepingCapacity: `true` を指定すると、セットのバッファ容量が保持されます。
+  ///   `false` を指定すると、内部バッファが解放されます（デフォルトは `false`）。
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     __removeAll(keepingCapacity: keepCapacity)
@@ -276,8 +389,25 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset {
 
-  @inlinable public func contains(_ p: Element) -> Bool {
-    ___contains(p)
+  /// 指定された要素が赤黒木マルチセット内に存在するかを示すブール値を返します。
+  ///
+  /// このメソッドは、指定された要素 `member` がマルチセット内に少なくとも1つ存在するかを判定します。
+  ///
+  /// 以下は、`contains(_:)` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let multiset: RedBlackTreeMultiSet = [1, 2, 2, 3, 3, 3]
+  ///
+  /// print(multiset.contains(2)) // 出力: true
+  /// print(multiset.contains(4)) // 出力: false
+  /// ```
+  ///
+  /// - Parameter member: 検索対象の要素。
+  /// - Returns: `member` がマルチセット内に存在する場合は `true`、存在しない場合は `false`。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はマルチセット内の要素数。
+  @inlinable public func contains(_ member: Element) -> Bool {
+    ___contains(member)
   }
 
   @inlinable public func min() -> Element? {
@@ -290,6 +420,24 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
+  
+  /// 配列リテラルから赤黒木マルチセットを作成します。
+  ///
+  /// このイニシャライザは、配列リテラル内の全ての要素を格納する新しい `RedBlackTreeMultiSet` を作成します。
+  /// 配列リテラルに重複要素が含まれる場合、それらもそのまま格納されます。
+  ///
+  /// 配列リテラルを使用して赤黒木マルチセットを作成するには、要素をカンマで区切って角括弧で囲んでください:
+  ///
+  /// ```swift
+  /// let multiset: RedBlackTreeMultiSet = [1, 2, 2, 3, 3, 3]
+  /// print(multiset) // 出力: [1, 2, 2, 3, 3, 3]
+  /// ```
+  ///
+  /// このイニシャライザは、`ExpressibleByArrayLiteral` プロトコルに準拠しているため、配列リテラルを使用して簡単にマルチセットを初期化できます。
+  ///
+  /// - Parameter elements: 新しいマルチセットに含める要素のリスト。
+  ///
+  /// - Complexity: O(*n* log *n*), ここで *n* は配列リテラル内の要素数。
   @inlinable public init(arrayLiteral elements: Element...) {
     self.init(elements)
   }
@@ -297,12 +445,56 @@ extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
 
 extension RedBlackTreeMultiset {
 
-  @inlinable public func lowerBound(_ p: Element) -> Index {
-    Index(___lower_bound(p))
+  /// 指定された値以上の最小の要素を指すインデックスを返します。
+  ///
+  /// このメソッドは、`RedBlackTreeMultiSet` 内で指定された値 `member` と等しい、またはそれより大きい最小の要素を効率的に見つけます。
+  /// 見つかった要素を指すインデックスを返します。該当する要素が存在しない場合は、`endIndex` を返します。
+  ///
+  /// 以下は、`lowerBound(_:)` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let multiset: RedBlackTreeMultiSet = [1, 2, 2, 3, 3, 3]
+  ///
+  /// let index = multiset.lowerBound(2)
+  /// if index != multiset.endIndex {
+  ///     print("Lower bound for 2 is \(multiset[index])") // 出力: 2
+  /// } else {
+  ///     print("No elements are greater than or equal to 2.")
+  /// }
+  /// ```
+  ///
+  /// - Parameter member: 検索対象の値。
+  /// - Returns: `member` と等しい、またはそれより大きい最小の要素を指すインデックス。該当する要素が存在しない場合は `endIndex`。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はマルチセット内の要素数。
+  @inlinable public func lowerBound(_ member: Element) -> Index {
+    Index(___lower_bound(member))
   }
 
-  @inlinable public func upperBound(_ p: Element) -> Index {
-    Index(___upper_bound(p))
+  /// 指定された値より大きい最小の要素を指すインデックスを返します。
+  ///
+  /// このメソッドは、`RedBlackTreeMultiSet` 内で指定された値 `member` より大きい最小の要素を効率的に見つけます。
+  /// 見つかった要素を指すインデックスを返します。該当する要素が存在しない場合は、`endIndex` を返します。
+  ///
+  /// 以下は、`upperBound(_:)` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let multiset: RedBlackTreeMultiSet = [1, 2, 2, 3, 3, 3]
+  ///
+  /// let index = multiset.upperBound(2)
+  /// if index != multiset.endIndex {
+  ///     print("Upper bound for 2 is \(multiset[index])") // 出力: 3
+  /// } else {
+  ///     print("No elements are greater than 2.")
+  /// }
+  /// ```
+  ///
+  /// - Parameter member: 検索対象の値。
+  /// - Returns: `member` より大きい最小の要素を指すインデックス。該当する要素が存在しない場合は `endIndex`。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はマルチセット内の要素数。
+  @inlinable public func upperBound(_ member: Element) -> Index {
+    Index(___upper_bound(member))
   }
 }
 
@@ -385,6 +577,27 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset {
 
+  /// 指定された要素が赤黒木マルチセット内に含まれる回数を返します。
+  ///
+  /// このメソッドは、指定された要素 `element` がマルチセット内に何回出現するかを計算します。
+  /// 内部的には、`lowerBound` と `upperBound` を利用して要素の範囲を特定し、その範囲の要素数を計算します。
+  ///
+  /// 以下は、`count(_:)` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let multiset: RedBlackTreeMultiSet = [1, 2, 2, 3, 3, 3]
+  ///
+  /// print(multiset.count(2)) // 出力: 2
+  /// print(multiset.count(3)) // 出力: 3
+  /// print(multiset.count(4)) // 出力: 0
+  /// ```
+  ///
+  /// - Parameter element: カウント対象の要素。
+  /// - Returns: `element` がマルチセット内に含まれる回数。該当要素が存在しない場合は `0` を返します。
+  ///
+  /// - Complexity: O(log *n* + *k*), ここで *n* はマルチセット内の要素数、*k* は指定された要素の出現回数。
+  ///   - `lowerBound` と `upperBound` の計算に O(log *n*)。
+  ///   - 範囲内の要素数を計算するために O(*k*)。
   @inlinable public func count(_ element: Element) -> Int {
     _read {
       $0.distance(

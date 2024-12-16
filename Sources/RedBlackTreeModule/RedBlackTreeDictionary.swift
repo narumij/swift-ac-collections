@@ -344,7 +344,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
-    guard let element = __remove(at: index.pointer) else {
+    guard let element = ___remove(at: index.pointer) else {
       fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
     }
     return element
@@ -352,7 +352,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    __removeAll(keepingCapacity: keepCapacity)
+    ___removeAll(keepingCapacity: keepCapacity)
   }
 }
 

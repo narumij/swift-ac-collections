@@ -110,7 +110,7 @@ extension RedBlackTreeEraseProtocol {
   
   @inlinable
   @discardableResult
-  mutating func __remove(at ptr: _NodePtr) -> Element? {
+  mutating func ___remove(at ptr: _NodePtr) -> Element? {
     guard
       // 下二つのコメントアウトと等価
       0 <= ptr,
@@ -125,7 +125,7 @@ extension RedBlackTreeEraseProtocol {
     return e
   }
 
-  public mutating func __removeAll(keepingCapacity keepCapacity: Bool = false) {
+  public mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
     ___header = .zero
     ___nodes.removeAll(keepingCapacity: keepCapacity)
     ___values.removeAll(keepingCapacity: keepCapacity)

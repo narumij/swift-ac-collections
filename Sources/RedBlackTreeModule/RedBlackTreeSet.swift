@@ -379,7 +379,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    guard let element = __remove(at: index.pointer) else {
+    guard let element = ___remove(at: index.pointer) else {
       fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
     }
     return element
@@ -391,7 +391,7 @@ extension RedBlackTreeSet {
   ///   `false` を指定すると、内部バッファが解放されます（デフォルトは `false`）。
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    __removeAll(keepingCapacity: keepCapacity)
+    ___removeAll(keepingCapacity: keepCapacity)
   }
 }
 

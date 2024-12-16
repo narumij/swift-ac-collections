@@ -373,13 +373,13 @@ extension RedBlackTreeSet {
 
   /// 指定されたインデックス位置にある要素を赤黒木セットから削除します。
   ///
-  /// - Parameter position: 削除する要素のインデックス。
-  ///   `position` はセット内の有効なインデックスであり、セットの終端インデックス（`endIndex`）と等しくない必要があります。
+  /// - Parameter index: 削除する要素のインデックス。
+  ///   `index` はセット内の有効なインデックスであり、セットの終端インデックス（`endIndex`）と等しくない必要があります。
   /// - Returns: セットから削除された要素。
   @inlinable
   @discardableResult
-  public mutating func remove(at position: Index) -> Element {
-    guard let element = __remove(at: position.pointer) else {
+  public mutating func remove(at index: Index) -> Element {
+    guard let element = __remove(at: index.pointer) else {
       fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
     }
     return element
@@ -390,9 +390,9 @@ extension RedBlackTreeSet {
   /// - Parameter keepingCapacity: `true` を指定すると、セットのバッファ容量が保持されます。
   ///   `false` を指定すると、内部バッファが解放されます（デフォルトは `false`）。
   @inlinable
-    public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-      __removeAll(keepingCapacity: keepCapacity)
-    }
+  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    __removeAll(keepingCapacity: keepCapacity)
+  }
 }
 
 extension RedBlackTreeSet {
@@ -430,7 +430,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
-  
+
   /// 指定された配列リテラルの要素を含む赤黒木セットを作成します。
   ///
   /// このイニシャライザを直接呼び出さないでください。
@@ -580,3 +580,14 @@ extension RedBlackTreeSet {
   }
 }
 
+extension RedBlackTreeSet: CustomStringConvertible, CustomDebugStringConvertible {
+  /// 人間が読みやすい形式でセットの内容を文字列として表現します。
+  public var description: String {
+    "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
+  }
+
+  /// デバッグ時にセットの詳細情報を含む文字列を返します。
+  public var debugDescription: String {
+    "RedBlackTreeSet(\(description))"
+  }
+}

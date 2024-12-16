@@ -365,13 +365,13 @@ extension RedBlackTreeMultiset {
 
   /// 指定されたインデックス位置にある要素を赤黒木セットから削除します。
   ///
-  /// - Parameter position: 削除する要素のインデックス。
-  ///   `position` はセット内の有効なインデックスであり、セットの終端インデックス（`endIndex`）と等しくない必要があります。
+  /// - Parameter index: 削除する要素のインデックス。
+  ///   `index` はセット内の有効なインデックスであり、セットの終端インデックス（`endIndex`）と等しくない必要があります。
   /// - Returns: セットから削除された要素。
   @inlinable
   @discardableResult
-  public mutating func remove(at position: Index) -> Element {
-    guard let element = __remove(at: position.pointer) else {
+  public mutating func remove(at index: Index) -> Element {
+    guard let element = __remove(at: index.pointer) else {
       fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
     }
     return element
@@ -604,5 +604,17 @@ extension RedBlackTreeMultiset {
         __first: $0.__lower_bound(element, $0.__root(), $0.__end_node()),
         __last: $0.__upper_bound(element, $0.__root(), $0.__end_node()))
     }
+  }
+}
+
+extension RedBlackTreeMultiset: CustomStringConvertible, CustomDebugStringConvertible {
+  /// 人間が読みやすい形式でセットの内容を文字列として表現します。
+  public var description: String {
+    "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
+  }
+
+  /// デバッグ時にセットの詳細情報を含む文字列を返します。
+  public var debugDescription: String {
+    "RedBlackTreeMultiset(\(description))"
   }
 }

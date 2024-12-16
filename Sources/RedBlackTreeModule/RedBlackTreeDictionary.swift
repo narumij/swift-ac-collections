@@ -221,14 +221,22 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @discardableResult
-  public mutating func remove(_ p: Key) -> Bool {
-    __erase_unique(p)
+  public mutating func remove(_ key: Key) -> Bool {
+    __erase_unique(key)
   }
 
   @inlinable
   @discardableResult
-  public mutating func remove(at index: Index) -> KeyValue? {
-    __remove(at: index.pointer)
+  public mutating func remove(at index: Index) -> KeyValue {
+    guard let element = __remove(at: index.pointer) else {
+      fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
+    }
+    return element
+  }
+  
+  @inlinable
+  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    __removeAll(keepingCapacity: keepCapacity)
   }
 }
 

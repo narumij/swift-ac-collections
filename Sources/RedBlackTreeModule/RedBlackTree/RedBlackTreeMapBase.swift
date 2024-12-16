@@ -27,7 +27,7 @@ extension RedBlackTree {
 
   /// メモ化向け
   @frozen
-  public struct __MapBase<KeyInfo, Value>
+  public struct ___MapBase<KeyInfo, Value>
   where KeyInfo: RedBlackTree.KeyProtocol  //, KeyInfo.Key: Equatable
   {
 
@@ -81,7 +81,7 @@ extension RedBlackTree {
   }
 }
 
-extension RedBlackTree.__MapBase: ValueComparer {
+extension RedBlackTree.___MapBase: ValueComparer {
 
   @inlinable
   static func __key(_ kv: (Key, Value)) -> Key { kv.0 }
@@ -95,9 +95,9 @@ extension RedBlackTree.__MapBase: ValueComparer {
   }
 }
 
-extension RedBlackTree.__MapBase: RedBlackTreeContainerBase, _UnsafeHandleBase {}
+extension RedBlackTree.___MapBase: RedBlackTreeContainerBase, _UnsafeHandleBase {}
 
-extension RedBlackTree.__MapBase: _UnsafeMutatingHandleBase {
+extension RedBlackTree.___MapBase: _UnsafeMutatingHandleBase {
 
   @inlinable
   @inline(__always)
@@ -116,7 +116,7 @@ extension RedBlackTree.__MapBase: _UnsafeMutatingHandleBase {
   }
 }
 
-extension RedBlackTree.__MapBase: InsertUniqueProtocol, EraseProtocol {
+extension RedBlackTree.___MapBase: InsertUniqueProtocol, EraseProtocol {
 
   @inlinable
   mutating func __construct_node(_ k: (Key, Value)) -> _NodePtr {

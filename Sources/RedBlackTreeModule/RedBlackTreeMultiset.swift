@@ -170,6 +170,7 @@ extension RedBlackTreeMultiset {
 #endif
 
 extension RedBlackTreeMultiset {
+
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     nodes.reserveCapacity(minimumCapacity)
@@ -179,14 +180,24 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset {
 
+  /// 赤黒木セットが空であるかどうかを示すブール値。
+  @inlinable
+  public var isEmpty: Bool {
+    ___isEmpty
+  }
+
+  /// 赤黒木セットに含まれる要素の数。
+  ///
+  /// - 計算量: O(1)
   @inlinable
   public var count: Int {
     ___count
   }
 
+  /// 新しい領域を割り当てることなく、赤黒木セットが格納できる要素の総数。
   @inlinable
-  public var isEmpty: Bool {
-    ___isEmpty
+  public var capacity: Int {
+    ___capacity
   }
 }
 
@@ -234,9 +245,11 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   @discardableResult
-  public mutating func insert(_ p: Element) -> Bool {
-    _ = __insert_multi(p)
-    return true
+  public mutating func insert(_ newMember: Element) -> (
+    inserted: Bool, memberAfterInsert: Element
+  ) {
+    _ = __insert_multi(newMember)
+    return (true, newMember)
   }
 
   @inlinable
@@ -247,8 +260,16 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   @discardableResult
-  public mutating func remove(at index: Index) -> Element {
-    __remove(at: index.pointer)!
+  public mutating func remove(at position: Index) -> Element {
+    guard let element = __remove(at: position.pointer) else {
+      fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
+    }
+    return element
+  }
+
+  @inlinable
+  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    __removeAll(keepingCapacity: keepCapacity)
   }
 }
 
@@ -344,7 +365,9 @@ extension RedBlackTreeMultiset {
     _ i: Index, offsetBy distance: Int, limitedBy limit: Index
   ) -> Index? {
     _read {
-      Index($0.pointer(i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeMultiset"))
+      Index(
+        $0.pointer(
+          i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeMultiset"))
     }
   }
 

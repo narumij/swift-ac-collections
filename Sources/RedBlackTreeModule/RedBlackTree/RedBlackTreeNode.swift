@@ -62,3 +62,16 @@ extension RedBlackTree {
 }
 
 extension RedBlackTree.___Node: Equatable {}
+
+extension RedBlackTree.___Node {
+  
+  @inlinable
+  mutating func invalidate() {
+    __parent_ = .nullptr
+  }
+  
+  @inlinable
+  var isValid: Bool {
+    __parent_ != .nullptr
+  }
+}

@@ -20,8 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
 import Collections
+import Foundation
 
 @usableFromInline
 protocol RedBlackTreeContainerBase: EndProtocol, ValueComparer {
@@ -41,7 +41,7 @@ extension RedBlackTreeContainerBase {
   @inlinable public var ___isEmpty: Bool {
     header.size == 0
   }
-  
+
   @inlinable public var ___capacity: Int {
     Swift.min(values.capacity, nodes.capacity)
   }
@@ -95,10 +95,10 @@ extension RedBlackTreeSetContainer {
 
   @inlinable
   mutating func destroy(_ p: _NodePtr) {
-    nodes[p].__parent_ = .nullptr
+    nodes[p].invalidate()
     stock.insert(p)
   }
-  
+
 }
 
 @usableFromInline
@@ -110,9 +110,18 @@ extension RedBlackTreeEraseProtocol {
   @inlinable
   @discardableResult
   mutating func __remove(at ptr: _NodePtr) -> Element? {
-    guard ptr != .end else { return nil }
+    guard
+      // 下二つのコメントアウトと等価
+      0 <= ptr,
+      // ptr != .nullptr,
+      // ptr != .end,
+      nodes[ptr].isValid
+    else {
+      return nil
+    }
     let e = values[ptr]
     _ = erase(ptr)
     return e
   }
+
 }

@@ -124,4 +124,10 @@ extension RedBlackTreeEraseProtocol {
     return e
   }
 
+  public mutating func __removeAll(keepingCapacity keepCapacity: Bool = false) {
+    header = .zero
+    nodes.removeAll(keepingCapacity: keepCapacity)
+    values.removeAll(keepingCapacity: keepCapacity)
+    stock = []
+  }
 }

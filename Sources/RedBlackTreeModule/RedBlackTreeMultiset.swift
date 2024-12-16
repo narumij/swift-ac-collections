@@ -72,7 +72,7 @@ extension RedBlackTreeMultiset {
   extension RedBlackTreeMultiset {
 
     @inlinable @inline(__always)
-    public init<S>(_ _a: S) where S: Collection, S.Element == Element {
+    public init<S>(_ _a: S) where S: Sequence, S.Element == Element {
       // 全数使うため、一度確保すると、そのまま
       var _values: [Element] = _a + []
       var _header: RedBlackTree.___Header = .zero
@@ -92,7 +92,7 @@ extension RedBlackTreeMultiset {
               __node_ptr: _nodes.baseAddress!,
               __value_ptr: _values.baseAddress!)
             var i = 0
-            while i < _a.count {
+            while i < _values.count {
               let __k = _values[i]
               i += 1
               let __h = ___construct_node(__k)

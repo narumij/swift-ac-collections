@@ -45,6 +45,10 @@ final class EtcTests: XCTestCase {
 
     XCTAssertEqual(b.distance(from: b.lowerBound(2), to: b.lowerBound(3)), 1)
     XCTAssertEqual(b.distance(from: b.lowerBound(3), to: b.lowerBound(2)), -1)
+
+//    let c: [Int:Int] = [1:1, 1:2]
+//    let c: [Int:Int] = .init(uniqueKeysWithValues: [(1,1),(1,2)])
+//    let d: RedBlackTreeDictionary<Int,Int> = .init(uniqueKeysWithValues: [(1,1),(1,2)])
   }
   
   func testExample2() throws {

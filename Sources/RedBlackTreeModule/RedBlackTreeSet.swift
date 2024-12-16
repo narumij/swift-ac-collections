@@ -71,7 +71,7 @@ extension RedBlackTreeSet {
   extension RedBlackTreeSet {
 
     @inlinable @inline(__always)
-    public init<S>(_ _a: S) where S: Collection, S.Element == Element {
+    public init<S>(_ _a: S) where S: Sequence, S.Element == Element {
       // valuesは一旦全部の分を確保する
       var _values: [Element] = _a + []
       var _header: RedBlackTree.___Header = .zero
@@ -93,7 +93,7 @@ extension RedBlackTreeSet {
               __node_ptr: _nodes.baseAddress!,
               __value_ptr: _values.baseAddress!)
             var i = 0
-            while i < _a.count {
+            while i < _values.count {
               let __k = _values[i]
               i += 1
               var __parent = _NodePtr.nullptr

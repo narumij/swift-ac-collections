@@ -77,6 +77,70 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   public var isEmpty: Bool { count == 0 }
 }
 
+#if true
+  extension RedBlackTreeDictionary {
+
+    @inlinable public init<S>(uniqueKeysWithValues keysAndValues: S)
+    where S: Sequence, S.Element == (Key, Value) {
+      // valuesは一旦全部の分を確保する
+      var _values: [Element] = keysAndValues.map { ($0.0, $0.1) }
+      var _header: RedBlackTree.___Header = .zero
+      self.nodes = [RedBlackTree.___Node](
+        unsafeUninitializedCapacity: _values.count
+      ) { _nodes, initializedCount in
+        withUnsafeMutablePointer(to: &_header) { _header in
+          var count = 0
+          _values.withUnsafeMutableBufferPointer { _values in
+            func ___construct_node(_ __k: Element) -> _NodePtr {
+              _nodes[count] = .zero
+              // 前方から詰め直している
+              _values[count] = __k
+              defer { count += 1 }
+              return count
+            }
+            let tree = _UnsafeMutatingHandle<Self>(
+              __header_ptr: _header,
+              __node_ptr: _nodes.baseAddress!,
+              __value_ptr: _values.baseAddress!)
+            var i = 0
+            while i < _values.count {
+              let __k = _values[i]
+              i += 1
+              var __parent = _NodePtr.nullptr
+              let __child = tree.__find_equal(&__parent, __k.0)
+              if tree.__ref_(__child) == .nullptr {
+                let __h = ___construct_node(__k)
+                tree.__insert_node_at(__parent, __child, __h)
+              } else {
+                fatalError("Dupricate values for key: '\(__k.0)'")
+              }
+            }
+            initializedCount = count
+          }
+          // 詰め終わった残りの部分を削除する
+          _values.removeLast(_values.count - count)
+        }
+      }
+      self.header = _header
+      self.values = _values
+      self.stock = []
+    }
+  }
+#else
+extension RedBlackTreeDictionary {
+  @inlinable public init<S>(uniqueKeysWithValues keysAndValues: S)
+  where S: Sequence, S.Element == (Key, Value) {
+    self.nodes = []
+    self.header = .zero
+    self.values = []
+    self.stock = []
+    for (k, v) in keysAndValues {
+      self[k] = v
+    }
+  }
+}
+#endif
+
 extension RedBlackTreeDictionary: ValueComparer {
 
   @inlinable
@@ -193,10 +257,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
   public init(dictionaryLiteral elements: (Key, Value)...) {
-    self.init()
-    for (k, v) in elements {
-      self[k] = v
-    }
+    self.init(uniqueKeysWithValues: elements)
   }
 }
 
@@ -247,7 +308,9 @@ extension RedBlackTreeDictionary {
     _ i: Index, offsetBy distance: Int, limitedBy limit: Index
   ) -> Index? {
     _read {
-      Index($0.pointer(i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeDictionary"))
+      Index(
+        $0.pointer(
+          i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeDictionary"))
     }
   }
 

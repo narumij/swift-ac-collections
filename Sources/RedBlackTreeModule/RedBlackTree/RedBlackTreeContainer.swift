@@ -107,6 +107,7 @@ protocol RedBlackTreeEraseProtocol: RedBlackTreeContainer, EraseProtocol {
 }
 
 extension RedBlackTreeEraseProtocol {
+  
   @inlinable
   @discardableResult
   mutating func __remove(at ptr: _NodePtr) -> Element? {

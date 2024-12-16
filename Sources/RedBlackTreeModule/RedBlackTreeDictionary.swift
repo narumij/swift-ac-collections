@@ -44,26 +44,6 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     stock = []
   }
 
-  public subscript(key: Key) -> Value? {
-    get {
-      _read {
-        let it = $0.__lower_bound(key, $0.__root(), $0.__left_)
-        guard it >= 0,
-          !Self.value_comp(Self.__key($0.__value_ptr[it]), key),
-          !Self.value_comp(key, Self.__key($0.__value_ptr[it]))
-        else { return nil }
-        return Self.__value($0.__value_ptr[it])
-      }
-    }
-    set {
-      if let newValue {
-        _ = __insert_unique((key, newValue))
-      } else {
-        _ = __erase_unique(key)
-      }
-    }
-  }
-
   @usableFromInline
   var header: RedBlackTree.___Header
   @usableFromInline
@@ -74,68 +54,69 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   var stock: Heap<_NodePtr>
 }
 
-#if true
-  extension RedBlackTreeDictionary {
-
-    @inlinable public init<S>(uniqueKeysWithValues keysAndValues: S)
-    where S: Sequence, S.Element == (Key, Value) {
-      // valuesは一旦全部の分を確保する
-      var _values: [Element] = keysAndValues.map { ($0.0, $0.1) }
-      var _header: RedBlackTree.___Header = .zero
-      self.nodes = [RedBlackTree.___Node](
-        unsafeUninitializedCapacity: _values.count
-      ) { _nodes, initializedCount in
-        withUnsafeMutablePointer(to: &_header) { _header in
-          var count = 0
-          _values.withUnsafeMutableBufferPointer { _values in
-            func ___construct_node(_ __k: Element) -> _NodePtr {
-              _nodes[count] = .zero
-              // 前方から詰め直している
-              _values[count] = __k
-              defer { count += 1 }
-              return count
-            }
-            let tree = _UnsafeMutatingHandle<Self>(
-              __header_ptr: _header,
-              __node_ptr: _nodes.baseAddress!,
-              __value_ptr: _values.baseAddress!)
-            var i = 0
-            while i < _values.count {
-              let __k = _values[i]
-              i += 1
-              var __parent = _NodePtr.nullptr
-              let __child = tree.__find_equal(&__parent, __k.0)
-              if tree.__ref_(__child) == .nullptr {
-                let __h = ___construct_node(__k)
-                tree.__insert_node_at(__parent, __child, __h)
-              } else {
-                fatalError("Dupricate values for key: '\(__k.0)'")
-              }
-            }
-            initializedCount = count
-          }
-          // 詰め終わった残りの部分を削除する
-          _values.removeLast(_values.count - count)
-        }
-      }
-      self.header = _header
-      self.values = _values
-      self.stock = []
-    }
-  }
-#else
 extension RedBlackTreeDictionary {
+
   @inlinable public init<S>(uniqueKeysWithValues keysAndValues: S)
   where S: Sequence, S.Element == (Key, Value) {
-    self.nodes = []
-    self.header = .zero
-    self.values = []
-    self.stock = []
-    for (k, v) in keysAndValues {
-      self[k] = v
+    // valuesは一旦全部の分を確保する
+    var _values: [Element] = keysAndValues.map { ($0.0, $0.1) }
+    var _header: RedBlackTree.___Header = .zero
+    self.nodes = [RedBlackTree.___Node](
+      unsafeUninitializedCapacity: _values.count
+    ) { _nodes, initializedCount in
+      withUnsafeMutablePointer(to: &_header) { _header in
+        var count = 0
+        _values.withUnsafeMutableBufferPointer { _values in
+          func ___construct_node(_ __k: Element) -> _NodePtr {
+            _nodes[count] = .zero
+            // 前方から詰め直している
+            _values[count] = __k
+            defer { count += 1 }
+            return count
+          }
+          let tree = _UnsafeMutatingHandle<Self>(
+            __header_ptr: _header,
+            __node_ptr: _nodes.baseAddress!,
+            __value_ptr: _values.baseAddress!)
+          var i = 0
+          while i < _values.count {
+            let __k = _values[i]
+            i += 1
+            var __parent = _NodePtr.nullptr
+            let __child = tree.__find_equal(&__parent, __k.0)
+            if tree.__ref_(__child) == .nullptr {
+              let __h = ___construct_node(__k)
+              tree.__insert_node_at(__parent, __child, __h)
+            } else {
+              fatalError("Dupricate values for key: '\(__k.0)'")
+            }
+          }
+          initializedCount = count
+        }
+        // 詰め終わった残りの部分を削除する
+        _values.removeLast(_values.count - count)
+      }
     }
+    self.header = _header
+    self.values = _values
+    self.stock = []
   }
 }
+
+#if false
+  // naive
+  extension RedBlackTreeDictionary {
+    @inlinable public init<S>(uniqueKeysWithValues keysAndValues: S)
+    where S: Sequence, S.Element == (Key, Value) {
+      self.nodes = []
+      self.header = .zero
+      self.values = []
+      self.stock = []
+      for (k, v) in keysAndValues {
+        self[k] = v
+      }
+    }
+  }
 #endif
 
 extension RedBlackTreeDictionary {
@@ -215,14 +196,60 @@ extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseProtocol {
   }
 }
 
+extension RedBlackTreeDictionary {
+
+  public subscript(key: Key) -> Value? {
+    get {
+      _read {
+        let it = $0.__lower_bound(key, $0.__root(), $0.__left_)
+        guard it >= 0,
+          !Self.value_comp(Self.__key($0.__value_ptr[it]), key),
+          !Self.value_comp(key, Self.__key($0.__value_ptr[it]))
+        else { return nil }
+        return Self.__value($0.__value_ptr[it])
+      }
+    }
+    set {
+      if let newValue {
+        _ = __insert_unique((key, newValue))
+      } else {
+        _ = __erase_unique(key)
+      }
+    }
+  }
+}
+
 extension RedBlackTreeDictionary: RedBlackTreeEraseProtocol {}
 
 extension RedBlackTreeDictionary {
 
+  @discardableResult
+  @inlinable
+  public mutating func updateValue(
+    _ value: Value,
+    forKey key: Key
+  ) -> Value? {
+    let (__r, __inserted) = __insert_unique((key, value))
+    return __inserted
+      ? nil
+      : _read {
+        let __p = $0.__ref_(__r)
+        let oldMember = values[__p]
+        values[__p] = (key, value)
+        return oldMember.value
+      }
+  }
+
   @inlinable
   @discardableResult
-  public mutating func remove(_ key: Key) -> Bool {
-    __erase_unique(key)
+  public mutating func removeValue(forKey __k: Key) -> Value? {
+    let __i = find(__k)
+    if __i == end() {
+      return nil
+    }
+    let value = values[__i].value
+    _ = erase(__i)
+    return value
   }
 
   @inlinable
@@ -233,7 +260,7 @@ extension RedBlackTreeDictionary {
     }
     return element
   }
-  
+
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     __removeAll(keepingCapacity: keepCapacity)

@@ -26,28 +26,28 @@ import Foundation
 @usableFromInline
 protocol RedBlackTreeContainerBase: EndProtocol, ValueComparer {
   associatedtype Element
-  var header: RedBlackTree.___Header { get set }
-  var nodes: [RedBlackTree.___Node] { get set }
+  var ___header: RedBlackTree.___Header { get set }
+  var ___nodes: [RedBlackTree.___Node] { get set }
   var ___values: [Element] { get set }
-  var stock: Heap<_NodePtr> { get set }
+  var ___stock: Heap<_NodePtr> { get set }
 }
 
 extension RedBlackTreeContainerBase {
 
   @inlinable public var ___count: Int {
-    header.size
+    ___header.size
   }
 
   @inlinable public var ___isEmpty: Bool {
-    header.size == 0
+    ___header.size == 0
   }
 
   @inlinable public var ___capacity: Int {
-    Swift.min(___values.capacity, nodes.capacity)
+    Swift.min(___values.capacity, ___nodes.capacity)
   }
 
   @inlinable public func ___begin() -> _NodePtr {
-    header.__begin_node
+    ___header.__begin_node
   }
 
   @inlinable public func ___end() -> _NodePtr {
@@ -60,8 +60,8 @@ extension RedBlackTreeContainerBase {
   @inlinable
   @inline(__always)
   func _read<R>(_ body: (_UnsafeHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafePointer(to: header) { header in
-      try nodes.withUnsafeBufferPointer { nodes in
+    return try withUnsafePointer(to: ___header) { header in
+      try ___nodes.withUnsafeBufferPointer { nodes in
         try ___values.withUnsafeBufferPointer { values in
           try body(
             _UnsafeHandle<Self>(
@@ -84,19 +84,19 @@ extension RedBlackTreeSetContainer {
 
   @inlinable
   mutating func __construct_node(_ k: Element) -> _NodePtr {
-    if let stock = stock.popMin() {
+    if let stock = ___stock.popMin() {
       return stock
     }
-    let n = Swift.min(nodes.count, ___values.count)
-    nodes.append(.zero)
+    let n = Swift.min(___nodes.count, ___values.count)
+    ___nodes.append(.zero)
     ___values.append(k)
     return n
   }
 
   @inlinable
   mutating func destroy(_ p: _NodePtr) {
-    nodes[p].invalidate()
-    stock.insert(p)
+    ___nodes[p].invalidate()
+    ___stock.insert(p)
   }
 
 }
@@ -116,7 +116,7 @@ extension RedBlackTreeEraseProtocol {
       0 <= ptr,
       // ptr != .nullptr,
       // ptr != .end,
-      nodes[ptr].isValid
+      ___nodes[ptr].isValid
     else {
       return nil
     }
@@ -126,9 +126,9 @@ extension RedBlackTreeEraseProtocol {
   }
 
   public mutating func __removeAll(keepingCapacity keepCapacity: Bool = false) {
-    header = .zero
-    nodes.removeAll(keepingCapacity: keepCapacity)
+    ___header = .zero
+    ___nodes.removeAll(keepingCapacity: keepCapacity)
     ___values.removeAll(keepingCapacity: keepCapacity)
-    stock = []
+    ___stock = []
   }
 }

@@ -41,10 +41,10 @@ extension RedBlackTree {
     typealias _Key = Key
 
     public init() {
-      header = .zero
-      nodes = []
+      ___header = .zero
+      ___nodes = []
       ___values = []
-      stock = []
+      ___stock = []
     }
 
     public subscript(key: Key) -> Value? {
@@ -68,15 +68,15 @@ extension RedBlackTree {
     }
 
     @usableFromInline
-    var header: RedBlackTree.___Header
+    var ___header: RedBlackTree.___Header
     @usableFromInline
-    var nodes: [RedBlackTree.___Node]
+    var ___nodes: [RedBlackTree.___Node]
     @usableFromInline
     var ___values: [Element]
     @usableFromInline
-    var stock: Heap<_NodePtr>
+    var ___stock: Heap<_NodePtr>
 
-    public var count: Int { header.size }
+    public var count: Int { ___header.size }
     public var isEmpty: Bool { count == 0 }
   }
 }
@@ -102,8 +102,8 @@ extension RedBlackTree.__MapBase: _UnsafeMutatingHandleBase {
   @inlinable
   @inline(__always)
   mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafeMutablePointer(to: &header) { header in
-      try nodes.withUnsafeMutableBufferPointer { nodes in
+    return try withUnsafeMutablePointer(to: &___header) { header in
+      try ___nodes.withUnsafeMutableBufferPointer { nodes in
         try ___values.withUnsafeMutableBufferPointer { values in
           try body(
             _UnsafeMutatingHandle<Self>(
@@ -120,17 +120,17 @@ extension RedBlackTree.__MapBase: InsertUniqueProtocol, EraseProtocol {
 
   @inlinable
   mutating func __construct_node(_ k: (Key, Value)) -> _NodePtr {
-    if let stock = stock.popMin() {
+    if let stock = ___stock.popMin() {
       return stock
     }
-    let n = Swift.min(nodes.count, ___values.count)
-    nodes.append(.zero)
+    let n = Swift.min(___nodes.count, ___values.count)
+    ___nodes.append(.zero)
     ___values.append(k)
     return n
   }
 
   @inlinable
   mutating func destroy(_ p: _NodePtr) {
-    stock.insert(p)
+    ___stock.insert(p)
   }
 }

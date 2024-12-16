@@ -78,16 +78,16 @@ public struct RedBlackTreeSet<Element: Comparable> {
   typealias _Key = Element
 
   @usableFromInline
-  var header: RedBlackTree.___Header
+  var ___header: RedBlackTree.___Header
 
   @usableFromInline
-  var nodes: [RedBlackTree.___Node]
+  var ___nodes: [RedBlackTree.___Node]
 
   @usableFromInline
   var ___values: [Element]
 
   @usableFromInline
-  var stock: Heap<_NodePtr> = []
+  var ___stock: Heap<_NodePtr> = []
 }
 
 extension RedBlackTreeSet {
@@ -105,8 +105,8 @@ extension RedBlackTreeSet {
   ///     // 出力: "true"
   @inlinable @inline(__always)
   public init() {
-    header = .zero
-    nodes = []
+    ___header = .zero
+    ___nodes = []
     ___values = []
   }
 
@@ -119,10 +119,10 @@ extension RedBlackTreeSet {
   ///   格納できる最低限の要素数。
   @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
-    header = .zero
-    nodes = []
+    ___header = .zero
+    ___nodes = []
     ___values = []
-    nodes.reserveCapacity(minimumCapacity)
+    ___nodes.reserveCapacity(minimumCapacity)
     ___values.reserveCapacity(minimumCapacity)
   }
 }
@@ -147,7 +147,7 @@ extension RedBlackTreeSet {
     var _values: [Element] = sequence + []
     var _header: RedBlackTree.___Header = .zero
     // nodesの初期化回数を減らそうとして以下のようにしている
-    self.nodes = [RedBlackTree.___Node](
+    self.___nodes = [RedBlackTree.___Node](
       unsafeUninitializedCapacity: _values.count
     ) { _nodes, initializedCount in
       withUnsafeMutablePointer(to: &_header) { _header in
@@ -183,9 +183,9 @@ extension RedBlackTreeSet {
         _values.removeLast(_values.count - count)
       }
     }
-    self.header = _header
+    self.___header = _header
     self.___values = _values
-    self.stock = []
+    self.___stock = []
   }
 }
 
@@ -243,7 +243,7 @@ extension RedBlackTreeSet {
   /// - Parameter minimumCapacity: 確保したい要素数。
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    nodes.reserveCapacity(minimumCapacity)
+    ___nodes.reserveCapacity(minimumCapacity)
     ___values.reserveCapacity(minimumCapacity)
   }
 }
@@ -266,8 +266,8 @@ extension RedBlackTreeSet: _UnsafeMutatingHandleBase {
   // プロトコルでupdateが書けなかったため、個別で実装している
   @inlinable @inline(__always)
   mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafeMutablePointer(to: &header) { header in
-      try nodes.withUnsafeMutableBufferPointer { nodes in
+    return try withUnsafeMutablePointer(to: &___header) { header in
+      try ___nodes.withUnsafeMutableBufferPointer { nodes in
         try ___values.withUnsafeMutableBufferPointer { values in
           try body(
             _UnsafeMutatingHandle<Self>(

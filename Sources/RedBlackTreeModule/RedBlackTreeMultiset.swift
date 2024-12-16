@@ -83,13 +83,13 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
   typealias _Key = Element
 
   @usableFromInline
-  var header: RedBlackTree.___Header
+  var ___header: RedBlackTree.___Header
   @usableFromInline
-  var nodes: [RedBlackTree.___Node]
+  var ___nodes: [RedBlackTree.___Node]
   @usableFromInline
   var ___values: [Element]
   @usableFromInline
-  var stock: Heap<_NodePtr>
+  var ___stock: Heap<_NodePtr>
 }
 
 extension RedBlackTreeMultiset {
@@ -109,10 +109,10 @@ extension RedBlackTreeMultiset {
   /// ```
   @inlinable @inline(__always)
   public init() {
-    header = .zero
-    nodes = []
+    ___header = .zero
+    ___nodes = []
     ___values = []
-    stock = []
+    ___stock = []
   }
 
   /// 指定された容量を持つ空の赤黒木マルチセットを作成します。
@@ -132,11 +132,11 @@ extension RedBlackTreeMultiset {
   /// - Parameter minimumCapacity: 初期確保する要素の容量。
   @inlinable
   public init(minimumCapacity: Int) {
-    header = .zero
-    nodes = []
+    ___header = .zero
+    ___nodes = []
     ___values = []
-    stock = []
-    nodes.reserveCapacity(minimumCapacity)
+    ___stock = []
+    ___nodes.reserveCapacity(minimumCapacity)
     ___values.reserveCapacity(minimumCapacity)
   }
 }
@@ -166,7 +166,7 @@ extension RedBlackTreeMultiset {
     // 全数使うため、一度確保すると、そのまま
     var _values: [Element] = sequence + []
     var _header: RedBlackTree.___Header = .zero
-    self.nodes = [RedBlackTree.___Node](
+    self.___nodes = [RedBlackTree.___Node](
       unsafeUninitializedCapacity: _values.count
     ) { _nodes, initializedCount in
       withUnsafeMutablePointer(to: &_header) { _header in
@@ -194,9 +194,9 @@ extension RedBlackTreeMultiset {
         }
       }
     }
-    self.header = _header
+    self.___header = _header
     self.___values = _values
-    self.stock = []
+    self.___stock = []
   }
 }
 
@@ -205,10 +205,10 @@ extension RedBlackTreeMultiset {
   extension RedBlackTreeMultiset {
     @inlinable @inline(__always)
     public init<S>(_ _a: S) where S: Collection, S.Element == Element {
-      self.nodes = []
-      self.header = .zero
+      self.___nodes = []
+      self.___header = .zero
       self.___values = []
-      self.stock = []
+      self.___stock = []
       for a in _a {
         _ = insert(a)
       }
@@ -254,7 +254,7 @@ extension RedBlackTreeMultiset {
   /// - Parameter minimumCapacity: 確保したい要素数。
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    nodes.reserveCapacity(minimumCapacity)
+    ___nodes.reserveCapacity(minimumCapacity)
     ___values.reserveCapacity(minimumCapacity)
   }
 }
@@ -280,8 +280,8 @@ extension RedBlackTreeMultiset: _UnsafeMutatingHandleBase {
   @inlinable
   @inline(__always)
   mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafeMutablePointer(to: &header) { header in
-      try nodes.withUnsafeMutableBufferPointer { nodes in
+    return try withUnsafeMutablePointer(to: &___header) { header in
+      try ___nodes.withUnsafeMutableBufferPointer { nodes in
         try ___values.withUnsafeMutableBufferPointer { values in
           try body(
             _UnsafeMutatingHandle<Self>(

@@ -44,20 +44,20 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   typealias _Key = Key
 
   public init() {
-    header = .zero
-    nodes = []
+    ___header = .zero
+    ___nodes = []
     ___values = []
-    stock = []
+    ___stock = []
   }
 
   @usableFromInline
-  var header: RedBlackTree.___Header
+  var ___header: RedBlackTree.___Header
   @usableFromInline
-  var nodes: [RedBlackTree.___Node]
+  var ___nodes: [RedBlackTree.___Node]
   @usableFromInline
   var ___values: [KeyValue]
   @usableFromInline
-  var stock: Heap<_NodePtr>
+  var ___stock: Heap<_NodePtr>
 }
 
 extension RedBlackTreeDictionary {
@@ -67,7 +67,7 @@ extension RedBlackTreeDictionary {
     // valuesは一旦全部の分を確保する
     var _values: [Element] = keysAndValues.map { ($0.0, $0.1) }
     var _header: RedBlackTree.___Header = .zero
-    self.nodes = [RedBlackTree.___Node](
+    self.___nodes = [RedBlackTree.___Node](
       unsafeUninitializedCapacity: _values.count
     ) { _nodes, initializedCount in
       withUnsafeMutablePointer(to: &_header) { _header in
@@ -103,9 +103,9 @@ extension RedBlackTreeDictionary {
         _values.removeLast(_values.count - count)
       }
     }
-    self.header = _header
+    self.___header = _header
     self.___values = _values
-    self.stock = []
+    self.___stock = []
   }
 }
 
@@ -134,7 +134,7 @@ extension RedBlackTreeDictionary {
     // valuesは一旦全部の分を確保する
     var _values: [Element] = keysAndValues.map { ($0.0, $0.1) }
     var _header: RedBlackTree.___Header = .zero
-    self.nodes = try [RedBlackTree.___Node](
+    self.___nodes = try [RedBlackTree.___Node](
       unsafeUninitializedCapacity: _values.count
     ) { _nodes, initializedCount in
       try withUnsafeMutablePointer(to: &_header) { _header in
@@ -171,9 +171,9 @@ extension RedBlackTreeDictionary {
         _values.removeLast(_values.count - count)
       }
     }
-    self.header = _header
+    self.___header = _header
     self.___values = _values
-    self.stock = []
+    self.___stock = []
   }
 }
 
@@ -221,8 +221,8 @@ extension RedBlackTreeDictionary: _UnsafeMutatingHandleBase {
   @inlinable
   @inline(__always)
   mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafeMutablePointer(to: &header) { header in
-      try nodes.withUnsafeMutableBufferPointer { nodes in
+    return try withUnsafeMutablePointer(to: &___header) { header in
+      try ___nodes.withUnsafeMutableBufferPointer { nodes in
         try ___values.withUnsafeMutableBufferPointer { values in
           try body(
             _UnsafeMutatingHandle<Self>(
@@ -239,18 +239,18 @@ extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseProtocol {
 
   @inlinable
   mutating func __construct_node(_ k: KeyValue) -> _NodePtr {
-    if let stock = stock.popMin() {
+    if let stock = ___stock.popMin() {
       return stock
     }
-    let n = Swift.min(nodes.count, ___values.count)
-    nodes.append(.zero)
+    let n = Swift.min(___nodes.count, ___values.count)
+    ___nodes.append(.zero)
     ___values.append(k)
     return n
   }
 
   @inlinable
   mutating func destroy(_ p: _NodePtr) {
-    stock.insert(p)
+    ___stock.insert(p)
   }
 }
 
@@ -298,16 +298,15 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary {
-  
+
   public var keys: Keys {
-      map(\.key)
+    map(\.key)
   }
-  
+
   public var values: Values {
     map(\.value)
   }
 }
-
 
 extension RedBlackTreeDictionary: RedBlackTreeEraseProtocol {}
 

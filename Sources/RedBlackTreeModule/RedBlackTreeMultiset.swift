@@ -68,18 +68,61 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
-  @inlinable @inline(__always)
-  public init<S>(_ _a: S) where S: Collection, S.Element == Element {
-    self.nodes = []
-    self.header = .zero
-    self.values = []
-    self.stock = []
-    for a in _a {
-      _ = insert(a)
+#if true
+  extension RedBlackTreeMultiset {
+
+    @inlinable @inline(__always)
+    public init<S>(_ _a: S) where S: Collection, S.Element == Element {
+      // 全数使うため、一度確保すると、そのまま
+      var _values: [Element] = _a + []
+      var _header: RedBlackTree.___Header = .zero
+      self.nodes = [RedBlackTree.___Node](
+        unsafeUninitializedCapacity: _values.count
+      ) { _nodes, initializedCount in
+        withUnsafeMutablePointer(to: &_header) { _header in
+          var count = 0
+          _values.withUnsafeMutableBufferPointer { _values in
+            func ___construct_node(_ __k: Element) -> _NodePtr {
+              _nodes[count] = .zero
+              defer { count += 1 }
+              return count
+            }
+            let tree = _UnsafeMutatingHandle<Self>(
+              __header_ptr: _header,
+              __node_ptr: _nodes.baseAddress!,
+              __value_ptr: _values.baseAddress!)
+            var i = 0
+            while i < _a.count {
+              let __k = _values[i]
+              i += 1
+              let __h = ___construct_node(__k)
+              var __parent = _NodePtr.nullptr
+              let __child = tree.__find_leaf_high(&__parent, __k)
+              tree.__insert_node_at(__parent, __child, __h)
+            }
+            initializedCount = count
+          }
+        }
+      }
+      self.header = _header
+      self.values = _values
+      self.stock = []
     }
   }
-}
+#else
+  extension RedBlackTreeMultiset {
+    @inlinable @inline(__always)
+    public init<S>(_ _a: S) where S: Collection, S.Element == Element {
+      self.nodes = []
+      self.header = .zero
+      self.values = []
+      self.stock = []
+      for a in _a {
+        _ = insert(a)
+      }
+    }
+  }
+#endif
 
 extension RedBlackTreeMultiset {
   @inlinable

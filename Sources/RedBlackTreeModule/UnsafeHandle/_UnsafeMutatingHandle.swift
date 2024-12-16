@@ -52,7 +52,7 @@ extension _UnsafeMutatingHandle: _UnsafeHandleCommon {
 }
 
 extension _UnsafeMutatingHandle: UpdateHandleImpl {}
-extension _UnsafeMutatingHandle: NodeFindProtocol & NodeFindEtcProtocol {}
+extension _UnsafeMutatingHandle: NodeFindProtocol & NodeFindEtcProtocol & FindLeafEtcProtocol {}
 extension _UnsafeMutatingHandle: NodeInsertProtocol {}
 extension _UnsafeMutatingHandle: RemoveProtocol {}
 

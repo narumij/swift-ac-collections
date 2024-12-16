@@ -67,24 +67,23 @@ extension RedBlackTreeSet {
   }
 }
 
-#if false
-  // リーク上等のスタンスでカリカリチューニングをしているため、公開には適さない初期化子となっている。
-  // その点が修正できれば第一戦に復帰できるが、今のところ目処はない。
-  // 将来的に削除する可能性が依然として高い。
+#if true
   extension RedBlackTreeSet {
 
     @inlinable @inline(__always)
     public init<S>(_ _a: S) where S: Collection, S.Element == Element {
+      // valuesは一旦全部の分を確保する
       var _values: [Element] = _a + []
       var _header: RedBlackTree.___Header = .zero
       self.nodes = [RedBlackTree.___Node](
         unsafeUninitializedCapacity: _values.count
       ) { _nodes, initializedCount in
         withUnsafeMutablePointer(to: &_header) { _header in
+          var count = 0
           _values.withUnsafeMutableBufferPointer { _values in
-            var count = 0
             func ___construct_node(_ __k: Element) -> _NodePtr {
               _nodes[count] = .zero
+              // 前方から詰め直している
               _values[count] = __k
               defer { count += 1 }
               return count
@@ -106,6 +105,8 @@ extension RedBlackTreeSet {
             }
             initializedCount = count
           }
+          // 詰め終わった残りの部分を削除する
+          _values.removeLast(_values.count - count)
         }
       }
       self.header = _header

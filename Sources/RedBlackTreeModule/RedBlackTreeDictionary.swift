@@ -31,6 +31,12 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   public
     typealias KeyValue = (key: Key, value: Value)
 
+  public
+    typealias Keys = [Key]
+
+  public
+    typealias Values = [Value]
+
   @usableFromInline
   typealias KeyInfo = RedBlackTree.KeyInfo<Key>
 
@@ -121,6 +127,58 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+  @inlinable public init<S>(
+    _ keysAndValues: S,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows where S: Sequence, S.Element == (Key, Value) {
+    // valuesは一旦全部の分を確保する
+    var _values: [Element] = keysAndValues.map { ($0.0, $0.1) }
+    var _header: RedBlackTree.___Header = .zero
+    self.nodes = try [RedBlackTree.___Node](
+      unsafeUninitializedCapacity: _values.count
+    ) { _nodes, initializedCount in
+      try withUnsafeMutablePointer(to: &_header) { _header in
+        var count = 0
+        try _values.withUnsafeMutableBufferPointer { _values in
+          func ___construct_node(_ __k: Element) -> _NodePtr {
+            _nodes[count] = .zero
+            // 前方から詰め直している
+            _values[count] = __k
+            defer { count += 1 }
+            return count
+          }
+          let tree = _UnsafeMutatingHandle<Self>(
+            __header_ptr: _header,
+            __node_ptr: _nodes.baseAddress!,
+            __value_ptr: _values.baseAddress!)
+          var i = 0
+          while i < _values.count {
+            let __k = _values[i]
+            i += 1
+            var __parent = _NodePtr.nullptr
+            let __child = tree.__find_equal(&__parent, __k.0)
+            if tree.__ref_(__child) == .nullptr {
+              let __h = ___construct_node(__k)
+              tree.__insert_node_at(__parent, __child, __h)
+            } else {
+              _values[tree.__ref_(__child)].value = try combine(
+                _values[tree.__ref_(__child)].value, __k.value)
+            }
+          }
+          initializedCount = count
+        }
+        // 詰め終わった残りの部分を削除する
+        _values.removeLast(_values.count - count)
+      }
+    }
+    self.header = _header
+    self.values = _values
+    self.stock = []
+  }
+}
+
+extension RedBlackTreeDictionary {
+
   /// 赤黒木セットが空であるかどうかを示すブール値。
   @inlinable
   public var isEmpty: Bool {
@@ -145,10 +203,10 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary: ValueComparer {
 
   @inlinable
-  static func __key(_ kv: KeyValue) -> Key { kv.0 }
+  static func __key(_ kv: KeyValue) -> Key { kv.key }
 
   @inlinable
-  static func __value(_ kv: KeyValue) -> Value { kv.1 }
+  static func __value(_ kv: KeyValue) -> Value { kv.value }
 
   @inlinable
   static func value_comp(_ a: Key, _ b: Key) -> Bool {
@@ -198,6 +256,7 @@ extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseProtocol {
 
 extension RedBlackTreeDictionary {
 
+  @inlinable
   public subscript(key: Key) -> Value? {
     get {
       _read {
@@ -217,7 +276,39 @@ extension RedBlackTreeDictionary {
       }
     }
   }
+
+  @inlinable
+  public subscript(
+    key: Key, default defaultValue: @autoclosure () -> Value
+  ) -> Value {
+    get {
+      _read {
+        let it = $0.__lower_bound(key, $0.__root(), $0.__left_)
+        guard it >= 0,
+          !Self.value_comp(Self.__key($0.__value_ptr[it]), key),
+          !Self.value_comp(key, Self.__key($0.__value_ptr[it]))
+        else { return defaultValue() }
+        return Self.__value($0.__value_ptr[it])
+      }
+    }
+    set {
+      _ = __insert_unique((key, newValue))
+    }
+  }
 }
+
+extension RedBlackTreeDictionary {
+  
+  public var keys: Keys {
+      map(\.key)
+  }
+  
+  // 問題発生。名前が衝突する
+//  public var values: Values {
+//    map(\.value)
+//  }
+}
+
 
 extension RedBlackTreeDictionary: RedBlackTreeEraseProtocol {}
 

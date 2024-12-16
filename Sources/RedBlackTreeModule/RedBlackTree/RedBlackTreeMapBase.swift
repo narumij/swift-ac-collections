@@ -43,7 +43,7 @@ extension RedBlackTree {
     public init() {
       header = .zero
       nodes = []
-      values = []
+      ___values = []
       stock = []
     }
 
@@ -72,7 +72,7 @@ extension RedBlackTree {
     @usableFromInline
     var nodes: [RedBlackTree.___Node]
     @usableFromInline
-    var values: [Element]
+    var ___values: [Element]
     @usableFromInline
     var stock: Heap<_NodePtr>
 
@@ -104,7 +104,7 @@ extension RedBlackTree.__MapBase: _UnsafeMutatingHandleBase {
   mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
     return try withUnsafeMutablePointer(to: &header) { header in
       try nodes.withUnsafeMutableBufferPointer { nodes in
-        try values.withUnsafeMutableBufferPointer { values in
+        try ___values.withUnsafeMutableBufferPointer { values in
           try body(
             _UnsafeMutatingHandle<Self>(
               __header_ptr: header,
@@ -123,9 +123,9 @@ extension RedBlackTree.__MapBase: InsertUniqueProtocol, EraseProtocol {
     if let stock = stock.popMin() {
       return stock
     }
-    let n = Swift.min(nodes.count, values.count)
+    let n = Swift.min(nodes.count, ___values.count)
     nodes.append(.zero)
-    values.append(k)
+    ___values.append(k)
     return n
   }
 

@@ -84,7 +84,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   var nodes: [RedBlackTree.___Node]
 
   @usableFromInline
-  var values: [Element]
+  var ___values: [Element]
 
   @usableFromInline
   var stock: Heap<_NodePtr> = []
@@ -107,7 +107,7 @@ extension RedBlackTreeSet {
   public init() {
     header = .zero
     nodes = []
-    values = []
+    ___values = []
   }
 
   /// 指定された要素数を収容するための領域を事前に確保した空の赤黒木セットを作成します。
@@ -121,9 +121,9 @@ extension RedBlackTreeSet {
   public init(minimumCapacity: Int) {
     header = .zero
     nodes = []
-    values = []
+    ___values = []
     nodes.reserveCapacity(minimumCapacity)
-    values.reserveCapacity(minimumCapacity)
+    ___values.reserveCapacity(minimumCapacity)
   }
 }
 
@@ -184,7 +184,7 @@ extension RedBlackTreeSet {
       }
     }
     self.header = _header
-    self.values = _values
+    self.___values = _values
     self.stock = []
   }
 }
@@ -244,7 +244,7 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     nodes.reserveCapacity(minimumCapacity)
-    values.reserveCapacity(minimumCapacity)
+    ___values.reserveCapacity(minimumCapacity)
   }
 }
 
@@ -268,7 +268,7 @@ extension RedBlackTreeSet: _UnsafeMutatingHandleBase {
   mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
     return try withUnsafeMutablePointer(to: &header) { header in
       try nodes.withUnsafeMutableBufferPointer { nodes in
-        try values.withUnsafeMutableBufferPointer { values in
+        try ___values.withUnsafeMutableBufferPointer { values in
           try body(
             _UnsafeMutatingHandle<Self>(
               __header_ptr: header,
@@ -317,7 +317,7 @@ extension RedBlackTreeSet {
     inserted: Bool, memberAfterInsert: Element
   ) {
     let (__r, __inserted) = __insert_unique(newMember)
-    return (__inserted, __inserted ? newMember : _read { values[$0.__ref_(__r)] })
+    return (__inserted, __inserted ? newMember : _read { ___values[$0.__ref_(__r)] })
   }
 
   /// 指定された要素を条件なしで赤黒木セットに挿入します。
@@ -345,8 +345,8 @@ extension RedBlackTreeSet {
       ? nil
       : _read {
         let __p = $0.__ref_(__r)
-        let oldMember = values[__p]
-        values[__p] = newMember
+        let oldMember = ___values[__p]
+        ___values[__p] = newMember
         return oldMember
       }
   }
@@ -522,7 +522,7 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet: BidirectionalCollection {
 
   @inlinable public subscript(position: RedBlackTree.Index) -> Element {
-    values[position.pointer]
+    ___values[position.pointer]
   }
 
   @inlinable public func index(before i: Index) -> Index {

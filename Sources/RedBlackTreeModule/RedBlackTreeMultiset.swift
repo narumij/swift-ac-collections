@@ -87,7 +87,7 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
   @usableFromInline
   var nodes: [RedBlackTree.___Node]
   @usableFromInline
-  var values: [Element]
+  var ___values: [Element]
   @usableFromInline
   var stock: Heap<_NodePtr>
 }
@@ -111,7 +111,7 @@ extension RedBlackTreeMultiset {
   public init() {
     header = .zero
     nodes = []
-    values = []
+    ___values = []
     stock = []
   }
 
@@ -134,10 +134,10 @@ extension RedBlackTreeMultiset {
   public init(minimumCapacity: Int) {
     header = .zero
     nodes = []
-    values = []
+    ___values = []
     stock = []
     nodes.reserveCapacity(minimumCapacity)
-    values.reserveCapacity(minimumCapacity)
+    ___values.reserveCapacity(minimumCapacity)
   }
 }
 
@@ -195,7 +195,7 @@ extension RedBlackTreeMultiset {
       }
     }
     self.header = _header
-    self.values = _values
+    self.___values = _values
     self.stock = []
   }
 }
@@ -207,7 +207,7 @@ extension RedBlackTreeMultiset {
     public init<S>(_ _a: S) where S: Collection, S.Element == Element {
       self.nodes = []
       self.header = .zero
-      self.values = []
+      self.___values = []
       self.stock = []
       for a in _a {
         _ = insert(a)
@@ -255,7 +255,7 @@ extension RedBlackTreeMultiset {
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     nodes.reserveCapacity(minimumCapacity)
-    values.reserveCapacity(minimumCapacity)
+    ___values.reserveCapacity(minimumCapacity)
   }
 }
 
@@ -282,7 +282,7 @@ extension RedBlackTreeMultiset: _UnsafeMutatingHandleBase {
   mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
     return try withUnsafeMutablePointer(to: &header) { header in
       try nodes.withUnsafeMutableBufferPointer { nodes in
-        try values.withUnsafeMutableBufferPointer { values in
+        try ___values.withUnsafeMutableBufferPointer { values in
           try body(
             _UnsafeMutatingHandle<Self>(
               __header_ptr: header,
@@ -517,7 +517,7 @@ extension RedBlackTreeMultiset {
 extension RedBlackTreeMultiset: BidirectionalCollection {
 
   @inlinable public subscript(position: RedBlackTree.Index) -> Element {
-    values[position.pointer]
+    ___values[position.pointer]
   }
 
   @inlinable public func index(before i: Index) -> Index {

@@ -28,7 +28,7 @@ protocol RedBlackTreeContainerBase: EndProtocol, ValueComparer {
   associatedtype Element
   var header: RedBlackTree.___Header { get set }
   var nodes: [RedBlackTree.___Node] { get set }
-  var values: [Element] { get set }
+  var ___values: [Element] { get set }
   var stock: Heap<_NodePtr> { get set }
 }
 
@@ -43,7 +43,7 @@ extension RedBlackTreeContainerBase {
   }
 
   @inlinable public var ___capacity: Int {
-    Swift.min(values.capacity, nodes.capacity)
+    Swift.min(___values.capacity, nodes.capacity)
   }
 
   @inlinable public func ___begin() -> _NodePtr {
@@ -62,7 +62,7 @@ extension RedBlackTreeContainerBase {
   func _read<R>(_ body: (_UnsafeHandle<Self>) throws -> R) rethrows -> R {
     return try withUnsafePointer(to: header) { header in
       try nodes.withUnsafeBufferPointer { nodes in
-        try values.withUnsafeBufferPointer { values in
+        try ___values.withUnsafeBufferPointer { values in
           try body(
             _UnsafeHandle<Self>(
               __header_ptr: header,
@@ -87,9 +87,9 @@ extension RedBlackTreeSetContainer {
     if let stock = stock.popMin() {
       return stock
     }
-    let n = Swift.min(nodes.count, values.count)
+    let n = Swift.min(nodes.count, ___values.count)
     nodes.append(.zero)
-    values.append(k)
+    ___values.append(k)
     return n
   }
 
@@ -120,7 +120,7 @@ extension RedBlackTreeEraseProtocol {
     else {
       return nil
     }
-    let e = values[ptr]
+    let e = ___values[ptr]
     _ = erase(ptr)
     return e
   }
@@ -128,7 +128,7 @@ extension RedBlackTreeEraseProtocol {
   public mutating func __removeAll(keepingCapacity keepCapacity: Bool = false) {
     header = .zero
     nodes.removeAll(keepingCapacity: keepCapacity)
-    values.removeAll(keepingCapacity: keepCapacity)
+    ___values.removeAll(keepingCapacity: keepCapacity)
     stock = []
   }
 }

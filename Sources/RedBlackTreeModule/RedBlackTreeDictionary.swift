@@ -46,7 +46,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   public init() {
     header = .zero
     nodes = []
-    values = []
+    ___values = []
     stock = []
   }
 
@@ -55,7 +55,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   @usableFromInline
   var nodes: [RedBlackTree.___Node]
   @usableFromInline
-  var values: [KeyValue]
+  var ___values: [KeyValue]
   @usableFromInline
   var stock: Heap<_NodePtr>
 }
@@ -104,7 +104,7 @@ extension RedBlackTreeDictionary {
       }
     }
     self.header = _header
-    self.values = _values
+    self.___values = _values
     self.stock = []
   }
 }
@@ -172,7 +172,7 @@ extension RedBlackTreeDictionary {
       }
     }
     self.header = _header
-    self.values = _values
+    self.___values = _values
     self.stock = []
   }
 }
@@ -223,7 +223,7 @@ extension RedBlackTreeDictionary: _UnsafeMutatingHandleBase {
   mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
     return try withUnsafeMutablePointer(to: &header) { header in
       try nodes.withUnsafeMutableBufferPointer { nodes in
-        try values.withUnsafeMutableBufferPointer { values in
+        try ___values.withUnsafeMutableBufferPointer { values in
           try body(
             _UnsafeMutatingHandle<Self>(
               __header_ptr: header,
@@ -242,9 +242,9 @@ extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseProtocol {
     if let stock = stock.popMin() {
       return stock
     }
-    let n = Swift.min(nodes.count, values.count)
+    let n = Swift.min(nodes.count, ___values.count)
     nodes.append(.zero)
-    values.append(k)
+    ___values.append(k)
     return n
   }
 
@@ -325,8 +325,8 @@ extension RedBlackTreeDictionary {
       ? nil
       : _read {
         let __p = $0.__ref_(__r)
-        let oldMember = values[__p]
-        values[__p] = (key, value)
+        let oldMember = ___values[__p]
+        ___values[__p] = (key, value)
         return oldMember.value
       }
   }
@@ -338,7 +338,7 @@ extension RedBlackTreeDictionary {
     if __i == end() {
       return nil
     }
-    let value = values[__i].value
+    let value = ___values[__i].value
     _ = erase(__i)
     return value
   }
@@ -413,7 +413,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
     typealias Element = KeyValue
 
   @inlinable public subscript(position: RedBlackTree.Index) -> KeyValue {
-    values[position.pointer]
+    ___values[position.pointer]
   }
 
   @inlinable public func index(before i: Index) -> Index {
@@ -474,6 +474,6 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   @inlinable mutating func update(at position: Index, _ value: Value) {
-    values[position.pointer].value = value
+    ___values[position.pointer].value = value
   }
 }

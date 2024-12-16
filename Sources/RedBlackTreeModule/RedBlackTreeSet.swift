@@ -70,18 +70,20 @@ extension RedBlackTreeSet {
 #if true
   extension RedBlackTreeSet {
 
-    @inlinable @inline(__always)
-    public init<S>(_ _a: S) where S: Sequence, S.Element == Element {
+    @inlinable
+    public init<Source>(_ sequence: Source)
+    where Element == Source.Element, Source: Sequence {
       // valuesは一旦全部の分を確保する
-      var _values: [Element] = _a + []
+      var _values: [Element] = sequence + []
       var _header: RedBlackTree.___Header = .zero
+      // nodesの初期化回数を減らそうとして以下のようにしている
       self.nodes = [RedBlackTree.___Node](
         unsafeUninitializedCapacity: _values.count
       ) { _nodes, initializedCount in
         withUnsafeMutablePointer(to: &_header) { _header in
           var count = 0
           _values.withUnsafeMutableBufferPointer { _values in
-            func ___construct_node(_ __k: Element) -> _NodePtr {
+            func __construct_node(_ __k: Element) -> _NodePtr {
               _nodes[count] = .zero
               // 前方から詰め直している
               _values[count] = __k
@@ -96,10 +98,12 @@ extension RedBlackTreeSet {
             while i < _values.count {
               let __k = _values[i]
               i += 1
+              // 以下は、__insert_uniqueと等価だが、__construct_nodeが初期化中で使えないため、
+              // べた書きしている
               var __parent = _NodePtr.nullptr
               let __child = tree.__find_equal(&__parent, __k)
               if tree.__ref_(__child) == .nullptr {
-                let __h = ___construct_node(__k)
+                let __h = __construct_node(__k)
                 tree.__insert_node_at(__parent, __child, __h)
               }
             }
@@ -132,13 +136,9 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    nodes.reserveCapacity(minimumCapacity)
-    values.reserveCapacity(minimumCapacity)
+  public var isEmpty: Bool {
+    ___isEmpty
   }
-}
-
-extension RedBlackTreeSet {
 
   @inlinable
   public var count: Int {
@@ -146,8 +146,17 @@ extension RedBlackTreeSet {
   }
 
   @inlinable
-  public var isEmpty: Bool {
-    ___isEmpty
+  public var capacity: Int {
+    ___capacity
+  }
+}
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    nodes.reserveCapacity(minimumCapacity)
+    values.reserveCapacity(minimumCapacity)
   }
 }
 
@@ -192,23 +201,42 @@ extension RedBlackTreeSet: RedBlackTree.SetInternal {}
 
 extension RedBlackTreeSet {
 
-  @inlinable
   @discardableResult
-  public mutating func insert(_ p: Element) -> Bool {
-    __insert_unique(p).__inserted
+  @inlinable public mutating func insert(_ newMember: Element) -> (
+    inserted: Bool, memberAfterInsert: Element
+  ) {
+    let (__r, __inserted) = __insert_unique(newMember)
+    return (__inserted, __inserted ? newMember : _read { values[$0.__ref_(__r)] })
   }
 
-  @inlinable
   @discardableResult
-  public mutating func remove(_ p: Element) -> Element? {
+  @inlinable public mutating func update(with newMember: Element) -> Element? {
+    let (__r, __inserted) = __insert_unique(newMember)
+    return __inserted ? nil : _read {
+      let __p = $0.__ref_(__r)
+      let oldMember = values[__p]
+      values[__p] = newMember
+      return oldMember
+    }
+  }
+
+  @discardableResult
+  @inlinable public mutating func remove(_ p: Element) -> Element? {
     __erase_unique(p) ? p : nil
   }
 
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    remove(at: index.pointer)!
+    guard
+      nodes[index.pointer].__parent_ != .nullptr,
+      let element = __remove(at: index.pointer)
+    else {
+      fatalError("Attempting to access Set elements using an invalid index")
+    }
+    return element
   }
+  
 }
 
 extension RedBlackTreeSet {
@@ -303,7 +331,9 @@ extension RedBlackTreeSet {
     _ i: Index, offsetBy distance: Int, limitedBy limit: Index
   ) -> Index? {
     _read {
-      Index($0.pointer(i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeSet"))
+      Index(
+        $0.pointer(i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeSet")
+      )
     }
   }
 

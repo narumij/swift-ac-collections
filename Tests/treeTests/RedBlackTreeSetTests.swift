@@ -86,31 +86,31 @@
 
     func testRemoveAt() throws {
       var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set.remove(at: set.header.__begin_node), 0)
+      XCTAssertEqual(set.__remove(at: set.header.__begin_node), 0)
       XCTAssertEqual(set.elements, [1, 2, 3, 4])
-      XCTAssertEqual(set.remove(at: set.header.__begin_node), 1)
+      XCTAssertEqual(set.__remove(at: set.header.__begin_node), 1)
       XCTAssertEqual(set.elements, [2, 3, 4])
-      XCTAssertEqual(set.remove(at: set.header.__begin_node), 2)
+      XCTAssertEqual(set.__remove(at: set.header.__begin_node), 2)
       XCTAssertEqual(set.elements, [3, 4])
-      XCTAssertEqual(set.remove(at: set.header.__begin_node), 3)
+      XCTAssertEqual(set.__remove(at: set.header.__begin_node), 3)
       XCTAssertEqual(set.elements, [4])
-      XCTAssertEqual(set.remove(at: set.header.__begin_node), 4)
+      XCTAssertEqual(set.__remove(at: set.header.__begin_node), 4)
       XCTAssertEqual(set.elements, [])
-      XCTAssertEqual(set.remove(at: set.header.__begin_node), nil)
+      XCTAssertEqual(set.__remove(at: set.header.__begin_node), nil)
     }
 
     func testInsert() throws {
       var set = RedBlackTreeSet<Int>([])
-      XCTAssertEqual(set.insert(0), true)
-      XCTAssertEqual(set.insert(1), true)
-      XCTAssertEqual(set.insert(2), true)
-      XCTAssertEqual(set.insert(3), true)
-      XCTAssertEqual(set.insert(4), true)
-      XCTAssertEqual(set.insert(0), false)
-      XCTAssertEqual(set.insert(1), false)
-      XCTAssertEqual(set.insert(2), false)
-      XCTAssertEqual(set.insert(3), false)
-      XCTAssertEqual(set.insert(4), false)
+      XCTAssertEqual(set.insert(0).inserted, true)
+      XCTAssertEqual(set.insert(1).inserted, true)
+      XCTAssertEqual(set.insert(2).inserted, true)
+      XCTAssertEqual(set.insert(3).inserted, true)
+      XCTAssertEqual(set.insert(4).inserted, true)
+      XCTAssertEqual(set.insert(0).inserted, false)
+      XCTAssertEqual(set.insert(1).inserted, false)
+      XCTAssertEqual(set.insert(2).inserted, false)
+      XCTAssertEqual(set.insert(3).inserted, false)
+      XCTAssertEqual(set.insert(4).inserted, false)
     }
 
     func test_LT_GT() throws {
@@ -462,5 +462,94 @@
       let set: RedBlackTreeSet<Int> = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
       XCTAssertEqual(set.map { $0 }, [1, 2, 3, 4, 5])
     }
+    
+    class A: Hashable, Comparable {
+      static func < (lhs: A, rhs: A) -> Bool {
+        lhs.x < rhs.x
+      }
+      static func == (lhs: A, rhs: A) -> Bool {
+        lhs.x == rhs.x
+      }
+      let x: Int
+      let label: String
+      init(x: Int, label: String) {
+        self.x = x
+        self.label = label
+      }
+      func hash(into hasher: inout Hasher) {
+        hasher.combine(x)
+      }
+    }
+    
+    func testSetUpdate() throws {
+      let a = A(x: 3, label: "a")
+      let b = A(x: 3, label: "b")
+      var s: Set<A> = [a]
+      XCTAssertFalse(a === b)
+      XCTAssertTrue(s.update(with: b) === a)
+      XCTAssertTrue(s.update(with: a) === b)
+    }
+    
+    func testRedBlackTreeSetUpdate() throws {
+      let a = A(x: 3, label: "a")
+      let b = A(x: 3, label: "b")
+      var s: RedBlackTreeSet<A> = [a]
+      XCTAssertFalse(a === b)
+      XCTAssertTrue(s.update(with: b) === a)
+      XCTAssertTrue(s.update(with: a) === b)
+    }
+    
+    func testSetInsert() throws {
+      let a = A(x: 3, label: "a")
+      let b = A(x: 3, label: "b")
+      var s: Set<A> = []
+      XCTAssertFalse(a === b)
+      do {
+        let r = s.insert(a)
+        XCTAssertEqual(r.inserted, true)
+        XCTAssertTrue(r.memberAfterInsert === a)
+      }
+      do {
+        let r = s.insert(b)
+        XCTAssertEqual(r.inserted, false)
+        XCTAssertTrue(r.memberAfterInsert === a)
+      }
+    }
+    
+    func testRedBlackTreeSetInsert() throws {
+      let a = A(x: 3, label: "a")
+      let b = A(x: 3, label: "b")
+      var s: RedBlackTreeSet<A> = []
+      XCTAssertFalse(a === b)
+      do {
+        let r = s.insert(a)
+        XCTAssertEqual(r.inserted, true)
+        XCTAssertTrue(r.memberAfterInsert === a)
+      }
+      do {
+        let r = s.insert(b)
+        XCTAssertEqual(r.inserted, false)
+        XCTAssertTrue(r.memberAfterInsert === a)
+      }
+    }
+    
+    func testRedBlackTreeSetRemove() throws {
+      var s: Set<Int> = [1,2,3,4]
+      let i = s.firstIndex(of: 2)!
+      s.remove(at: i)
+      // Attempting to access Set elements using an invalid index
+//      s.remove(at: i)
+//      s.remove(at: s.endIndex)
+    }
+    
+    func testRedBlackTreeRedBlackTreeSetRemove() throws {
+      var s: RedBlackTreeSet<Int> = [1,2,3,4]
+      let i = s.firstIndex(of: 2)!
+      s.remove(at: i)
+      // Attempting to access Set elements using an invalid index
+//      s.remove(at: i)
+//      s.remove(at: s.endIndex)
+    }
+    
   }
 #endif

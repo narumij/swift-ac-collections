@@ -160,17 +160,17 @@
 
     func testRemoveAt() throws {
       var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set.remove(at: set.header.__begin_node), 0)
+      XCTAssertEqual(set.__remove(at: set.header.__begin_node), 0)
       XCTAssertEqual(set.elements, [1, 2, 3, 4])
-      XCTAssertEqual(set.remove(at: set.header.__begin_node), 1)
+      XCTAssertEqual(set.__remove(at: set.header.__begin_node), 1)
       XCTAssertEqual(set.elements, [2, 3, 4])
-      XCTAssertEqual(set.remove(at: set.header.__begin_node), 2)
+      XCTAssertEqual(set.__remove(at: set.header.__begin_node), 2)
       XCTAssertEqual(set.elements, [3, 4])
-      XCTAssertEqual(set.remove(at: set.header.__begin_node), 3)
+      XCTAssertEqual(set.__remove(at: set.header.__begin_node), 3)
       XCTAssertEqual(set.elements, [4])
-      XCTAssertEqual(set.remove(at: set.header.__begin_node), 4)
+      XCTAssertEqual(set.__remove(at: set.header.__begin_node), 4)
       XCTAssertEqual(set.elements, [])
-      XCTAssertEqual(set.remove(at: set.header.__begin_node), nil)
+      XCTAssertEqual(set.__remove(at: set.header.__begin_node), nil)
     }
 
     func testInsert() throws {

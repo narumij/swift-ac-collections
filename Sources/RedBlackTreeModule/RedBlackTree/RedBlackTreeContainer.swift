@@ -41,6 +41,10 @@ extension RedBlackTreeContainerBase {
   @inlinable public var ___isEmpty: Bool {
     header.size == 0
   }
+  
+  @inlinable public var ___capacity: Int {
+    Swift.min(values.capacity, nodes.capacity)
+  }
 
   @inlinable public func ___begin() -> _NodePtr {
     header.__begin_node
@@ -91,8 +95,10 @@ extension RedBlackTreeSetContainer {
 
   @inlinable
   mutating func destroy(_ p: _NodePtr) {
+    nodes[p].__parent_ = .nullptr
     stock.insert(p)
   }
+  
 }
 
 @usableFromInline
@@ -103,7 +109,7 @@ protocol RedBlackTreeEraseProtocol: RedBlackTreeContainer, EraseProtocol {
 extension RedBlackTreeEraseProtocol {
   @inlinable
   @discardableResult
-  mutating func remove(at ptr: _NodePtr) -> Element? {
+  mutating func __remove(at ptr: _NodePtr) -> Element? {
     guard ptr != .end else { return nil }
     let e = values[ptr]
     _ = erase(ptr)

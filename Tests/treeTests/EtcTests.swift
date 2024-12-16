@@ -49,6 +49,7 @@ final class EtcTests: XCTestCase {
 //    let c: [Int:Int] = [1:1, 1:2]
 //    let c: [Int:Int] = .init(uniqueKeysWithValues: [(1,1),(1,2)])
 //    let d: RedBlackTreeDictionary<Int,Int> = .init(uniqueKeysWithValues: [(1,1),(1,2)])
+//    let e: Set<Int> = .init()
   }
   
   func testExample2() throws {

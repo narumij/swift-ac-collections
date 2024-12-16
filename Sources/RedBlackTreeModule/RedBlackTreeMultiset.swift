@@ -25,6 +25,51 @@ import Foundation
 
 // AC https://atcoder.jp/contests/abc358/submissions/59018223
 
+/// 重複を許容する要素を格納する順序付きコレクションである赤黒木マルチセット。
+///
+/// `RedBlackTreeMultiSet` は、赤黒木（Red-Black Tree）を基盤としたマルチセットのデータ構造で、効率的な要素の挿入、削除、探索をサポートします。
+/// マルチセットは、同じ要素を複数回格納する必要がある場合や、順序付きのデータを扱う場合に有用です。
+///
+/// ## 主な特徴
+/// - 要素は昇順に自動的にソートされます。
+/// - 同じ値の要素を複数回格納することができます。
+/// - 任意の比較可能な型（`Comparable` に準拠した型）を要素として使用可能です。
+/// - `BidirectionalCollection` に適合しており、双方向に要素を走査できます。
+///
+/// ## 実装済みの機能
+/// - **境界探索**:
+///   - `lowerBound(_:)` メソッドで、指定した値以上の最小要素を効率的に見つけられます。
+///   - `upperBound(_:)` メソッドで、指定した値より大きい最小要素を効率的に見つけられます。
+/// - **イテレーション**:
+///   - 順序に従った要素の走査が可能です。
+///
+/// ## 使用例
+/// 以下の例は、`RedBlackTreeMultiSet` を使用して重複要素を扱う方法を示します:
+///
+/// ```swift
+/// var multiset: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 3, 3]
+///
+/// // 要素の挿入
+/// multiset.insert(2)
+/// print(multiset) // 出力: [1, 2, 2, 2, 3, 3, 3]
+///
+/// // lowerBoundとupperBoundの使用
+/// if let lower = multiset.lowerBound(2) {
+///     print("Lower bound for 2: \(multiset[lower])") // 出力: 2
+/// }
+/// if let upper = multiset.upperBound(2) {
+///     print("Upper bound for 2: \(multiset[upper])") // 出力: 3
+/// }
+/// ```
+///
+/// ## 制約
+/// - 要素型は `Comparable` プロトコルに準拠している必要があります。
+///
+/// ## 計算量
+/// - 要素の挿入、削除、探索: O(log *n*)
+/// - 境界探索 (`lowerBound`, `upperBound`): O(log *n*)
+///
+/// `RedBlackTreeMultiSet` は、重複した値を扱う必要がある競技プログラミングや、順序付けられたデータを効率的に操作する必要があるアプリケーションで有用です。
 @frozen
 public struct RedBlackTreeMultiset<Element: Comparable> {
 

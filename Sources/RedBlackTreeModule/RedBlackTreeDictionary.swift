@@ -72,9 +72,6 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   var values: [KeyValue]
   @usableFromInline
   var stock: Heap<_NodePtr>
-
-  public var count: Int { header.size }
-  public var isEmpty: Bool { count == 0 }
 }
 
 #if true
@@ -140,6 +137,29 @@ extension RedBlackTreeDictionary {
   }
 }
 #endif
+
+extension RedBlackTreeDictionary {
+
+  /// 赤黒木セットが空であるかどうかを示すブール値。
+  @inlinable
+  public var isEmpty: Bool {
+    ___isEmpty
+  }
+
+  /// 赤黒木セットに含まれる要素の数。
+  ///
+  /// - 計算量: O(1)
+  @inlinable
+  public var count: Int {
+    ___count
+  }
+
+  /// 新しい領域を割り当てることなく、赤黒木セットが格納できる要素の総数。
+  @inlinable
+  public var capacity: Int {
+    ___capacity
+  }
+}
 
 extension RedBlackTreeDictionary: ValueComparer {
 

@@ -303,10 +303,9 @@ extension RedBlackTreeDictionary {
       map(\.key)
   }
   
-  // 問題発生。名前が衝突する
-//  public var values: Values {
-//    map(\.value)
-//  }
+  public var values: Values {
+    map(\.value)
+  }
 }
 
 

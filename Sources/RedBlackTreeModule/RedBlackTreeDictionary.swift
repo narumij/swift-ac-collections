@@ -235,24 +235,7 @@ extension RedBlackTreeDictionary: _UnsafeMutatingHandleBase {
   }
 }
 
-extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseProtocol {
-
-  @inlinable
-  mutating func __construct_node(_ k: KeyValue) -> _NodePtr {
-    if let stock = ___stock.popMin() {
-      return stock
-    }
-    let n = Swift.min(___nodes.count, ___values.count)
-    ___nodes.append(.zero)
-    ___values.append(k)
-    return n
-  }
-
-  @inlinable
-  mutating func destroy(_ p: _NodePtr) {
-    ___stock.insert(p)
-  }
-}
+extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseProtocol { }
 
 extension RedBlackTreeDictionary {
 

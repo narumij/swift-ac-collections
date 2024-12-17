@@ -74,13 +74,7 @@ extension RedBlackTreeContainerBase {
   }
 }
 
-@usableFromInline
-protocol RedBlackTreeContainer: RedBlackTreeContainerBase {}
-
-@usableFromInline
-protocol RedBlackTreeSetContainer: RedBlackTreeContainer {}
-
-extension RedBlackTreeSetContainer {
+extension RedBlackTreeContainerBase {
 
   @inlinable
   mutating func __construct_node(_ k: Element) -> _NodePtr {
@@ -100,6 +94,12 @@ extension RedBlackTreeSetContainer {
   }
 
 }
+
+@usableFromInline
+protocol RedBlackTreeContainer: RedBlackTreeContainerBase {}
+
+@usableFromInline
+protocol RedBlackTreeSetContainer: RedBlackTreeContainer {}
 
 @usableFromInline
 protocol RedBlackTreeEraseProtocol: RedBlackTreeContainer, EraseProtocol {

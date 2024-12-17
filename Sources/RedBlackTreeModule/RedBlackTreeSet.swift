@@ -385,6 +385,32 @@ extension RedBlackTreeSet {
     return element
   }
 
+  /// 赤黒木セットの最初の要素を削除して返します。
+  ///
+  /// このメソッドは、赤黒木セット内の最小要素を削除して返します。
+  /// 赤黒木セットは要素がソートされた状態で格納されるため、「最初の要素」とは順序的に最小の要素を指します。
+  /// セットが空であってはいけません。
+  ///
+  /// 以下は、`removeFirst()` メソッドの使用例です:
+  ///
+  /// ```swift
+  /// var set: RedBlackTreeSet = [1, 2, 3, 4]
+  /// let first = set.removeFirst()
+  /// print(first)       // 出力: 1
+  /// print(set)         // 出力: [2, 3, 4]
+  /// ```
+  ///
+  /// - Returns: セットから削除された要素（順序的に最小の要素）。
+  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  ///
+  /// - Precondition: セットが空でないこと。
+  @inlinable
+  @discardableResult
+  public mutating func removeFirst() -> Element {
+    precondition(!isEmpty, "Can't removeFirst from an empty Set")
+    return remove(at: startIndex)
+  }
+
   /// 赤黒木セットからすべての要素を削除します。
   ///
   /// - Parameter keepingCapacity: `true` を指定すると、セットのバッファ容量が保持されます。
@@ -420,10 +446,52 @@ extension RedBlackTreeSet {
     ___contains(member)
   }
 
+  /// 赤黒木セット内の最小要素を返します。
+  ///
+  /// このメソッドは、`RedBlackTreeSet` 内で順序的に最小の要素を返します。
+  /// セットが空の場合は `nil` を返します。
+  ///
+  /// 以下は、`min()` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let set: RedBlackTreeSet = [3, 1, 4, 5, 9]
+  /// if let minValue = set.min() {
+  ///     print("Minimum value: \(minValue)") // 出力: "Minimum value: 1"
+  /// } else {
+  ///     print("The set is empty.")
+  /// }
+  /// ```
+  ///
+  /// - Returns: セット内の最小要素。セットが空の場合は `nil`。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  ///
+  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、最小要素は効率的に取得できます。
   @inlinable public func min() -> Element? {
     ___min()
   }
 
+  /// 赤黒木セット内の最大要素を返します。
+  ///
+  /// このメソッドは、`RedBlackTreeSet` 内で順序的に最大の要素を返します。
+  /// セットが空の場合は `nil` を返します。
+  ///
+  /// 以下は、`max()` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let set: RedBlackTreeSet = [3, 1, 4, 5, 9]
+  /// if let maxValue = set.max() {
+  ///     print("Maximum value: \(maxValue)") // 出力: "Maximum value: 9"
+  /// } else {
+  ///     print("The set is empty.")
+  /// }
+  /// ```
+  ///
+  /// - Returns: セット内の最大要素。セットが空の場合は `nil`。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  ///
+  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、最大要素は効率的に取得できます。
   @inlinable public func max() -> Element? {
     ___max()
   }
@@ -505,38 +573,289 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// 指定された値より小さい最大の要素を返します。
+  ///
+  /// このメソッドは、`RedBlackTreeSet` 内で指定された値 `p` 未満の最大要素を効率的に検索し、返します。
+  /// 該当する要素が存在しない場合は `nil` を返します。
+  ///
+  /// 以下は、`lessThan(_:)` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let set: RedBlackTreeSet = [1, 3, 5, 7, 9]
+  ///
+  /// if let value = set.lessThan(5) {
+  ///     print("The largest value less than 5 is \(value)") // 出力: "The largest value less than 5 is 3"
+  /// } else {
+  ///     print("No values are less than 5.")
+  /// }
+  /// ```
+  ///
+  /// - Parameter p: 探索対象の基準値。
+  /// - Returns: `p` より小さい最大の要素。該当する要素が存在しない場合は `nil`。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  ///
+  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、この操作は効率的に実行されます。
   @inlinable public func lessThan(_ p: Element) -> Element? {
     ___lt(p)
   }
+  
+  /// 指定された値より大きい最小の要素を返します。
+  ///
+  /// このメソッドは、`RedBlackTreeSet` 内で指定された値 `p` より大きい最小の要素を効率的に検索し、返します。
+  /// 該当する要素が存在しない場合は `nil` を返します。
+  ///
+  /// 以下は、`greaterThan(_:)` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let set: RedBlackTreeSet = [1, 3, 5, 7, 9]
+  ///
+  /// if let value = set.greaterThan(5) {
+  ///     print("The smallest value greater than 5 is \(value)") // 出力: "The smallest value greater than 5 is 7"
+  /// } else {
+  ///     print("No values are greater than 5.")
+  /// }
+  /// ```
+  ///
+  /// - Parameter p: 探索対象の基準値。
+  /// - Returns: `p` より大きい最小の要素。該当する要素が存在しない場合は `nil`。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  ///
+  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、この操作は効率的に実行されます。
   @inlinable public func greaterThan(_ p: Element) -> Element? {
     ___gt(p)
   }
+  
+  /// 指定された値以下の最大の要素を返します。
+  ///
+  /// このメソッドは、`RedBlackTreeSet` 内で指定された値 `p` 以下の最大の要素を効率的に検索し、返します。
+  /// 該当する要素が存在しない場合は `nil` を返します。
+  ///
+  /// 以下は、`lessThanOrEqual(_:)` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let set: RedBlackTreeSet = [1, 3, 5, 7, 9]
+  ///
+  /// if let value = set.lessThanOrEqual(5) {
+  ///     print("The largest value less than or equal to 5 is \(value)") // 出力: "The largest value less than or equal to 5 is 5"
+  /// } else {
+  ///     print("No values are less than or equal to 5.")
+  /// }
+  /// ```
+  ///
+  /// - Parameter p: 探索対象の基準値。
+  /// - Returns: `p` 以下の最大の要素。該当する要素が存在しない場合は `nil`。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  ///
+  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、この操作は効率的に実行されます。
   @inlinable public func lessThanOrEqual(_ p: Element) -> Element? {
     ___le(p)
   }
+  
+  /// 指定された値以上の最小の要素を返します。
+  ///
+  /// このメソッドは、`RedBlackTreeSet` 内で指定された値 `p` 以上の最小の要素を効率的に検索し、返します。
+  /// 該当する要素が存在しない場合は `nil` を返します。
+  ///
+  /// 以下は、`greaterThanOrEqual(_:)` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let set: RedBlackTreeSet = [1, 3, 5, 7, 9]
+  ///
+  /// if let value = set.greaterThanOrEqual(5) {
+  ///     print("The smallest value greater than or equal to 5 is \(value)") // 出力: "The smallest value greater than or equal to 5 is 5"
+  /// } else {
+  ///     print("No values are greater than or equal to 5.")
+  /// }
+  /// ```
+  ///
+  /// - Parameter p: 探索対象の基準値。
+  /// - Returns: `p` 以上の最小の要素。該当する要素が存在しない場合は `nil`。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  ///
+  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、この操作は効率的に実行されます。
   @inlinable public func greaterThanOrEqual(_ p: Element) -> Element? {
     ___ge(p)
   }
 }
 
+extension RedBlackTreeSet {
+
+  /// セット内の最小の要素を返します。
+  ///
+  /// - Returns: セット内の最小の要素。セットが空の場合は `nil`。
+  ///
+  /// - Complexity: O(1)。
+  @inlinable
+  public var first: Element? {
+    startIndex == .end ? nil : self[startIndex]
+  }
+
+  /// 指定された要素のインデックスを返します。要素がセットに存在しない場合は `nil` を返します。
+  ///
+  /// このメソッドは、赤黒木セット内で指定された要素 `member` を検索し、存在する場合はその要素のインデックスを返します。
+  /// 要素がセット内に存在しない場合は `nil` を返します。
+  ///
+  /// 以下は、`index(of:)` メソッドの使用例です:
+  ///
+  /// ```swift
+  /// let set: RedBlackTreeSet = [1, 3, 5, 7]
+  ///
+  /// if let index = set.index(of: 5) {
+  ///     print("Index of 5: \(index)")
+  ///     print("Value at index: \(set[index])") // 出力: 5
+  /// } else {
+  ///     print("5 is not in the set.")
+  /// }
+  /// ```
+  ///
+  /// - Parameter member: セット内で検索する要素。
+  /// - Returns: `member` のインデックスを返します。要素が存在しない場合は `nil`。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  @inlinable
+  public func firstIndex(of member: Element) -> Index? {
+    _read {
+      var __parent = _NodePtr.nullptr
+      let ptr = $0.__ref_($0.__find_equal(&__parent, member))
+      if ptr == .nullptr { return nil }
+      return Index(ptr)
+    }
+  }
+
+  /// 指定された述語を満たす最初の要素のインデックスを返します。
+  ///
+  /// このメソッドは、`RedBlackTreeSet` 内の要素を順序に従って走査し、指定された述語 `predicate` が `true` を返す最初の要素のインデックスを返します。
+  /// 述語を満たす要素が存在しない場合は `nil` を返します。
+  ///
+  /// 以下は、`firstIndex(where:)` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let set: RedBlackTreeSet = [1, 3, 5, 7, 9]
+  ///
+  /// if let index = set.firstIndex(where: { $0 > 4 }) {
+  ///     print("First index where element > 4: \(index)")
+  ///     print("Value at index: \(set[index])") // 出力: 5
+  /// } else {
+  ///     print("No elements match the condition.")
+  /// }
+  /// ```
+  ///
+  /// - Parameter predicate: 各要素に対して評価する述語。`predicate` は `true` または `false` を返します。
+  /// - Returns: `predicate` を満たす最初の要素のインデックス。条件に一致する要素がない場合は `nil`。
+  ///
+  /// - Complexity: O(*n*), ここで *n* はセット内の要素数。
+  ///
+  /// - Note: このメソッドは、セット内の要素を昇順に走査します。
+  @inlinable
+  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    try _read {
+      var ptr = $0.__begin_node
+      while ptr != $0.__end_node() {
+        if try predicate(___values[ptr]) {
+          return Index(ptr)
+        }
+        ptr = $0.__tree_next_iter(ptr)
+      }
+      return nil
+    }
+  }
+}
+
+extension RedBlackTreeSet {
+
+  /// 赤黒木セット内の要素を昇順にソートして配列として返します。
+  ///
+  /// `RedBlackTreeSet` は要素を昇順に保持しているため、このメソッドはセット内の全要素を順序通りに取り出し、配列として返します。
+  ///
+  /// 以下は、`sorted()` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let set: RedBlackTreeSet = [3, 1, 4, 1, 5, 9]
+  /// let sortedArray = set.sorted()
+  /// print(sortedArray) // 出力: [1, 3, 4, 5, 9]
+  /// ```
+  ///
+  /// - Returns: セット内の要素を昇順に並べた配列。
+  ///
+  /// - Complexity: O(*n*), ここで *n* はセット内の要素数。
+  ///
+  /// - Note: `RedBlackTreeSet` は既に要素を昇順で管理しているため、このメソッドは効率的に全要素を抽出します。
+  @inlinable
+  func sorted() -> [Element] {
+    map { $0 }
+  }
+}
+
 extension RedBlackTreeSet: BidirectionalCollection {
 
+  /// 指定された位置にある要素へアクセスします。
+  ///
+  /// インデックスを使用して `RedBlackTreeSet` 内の要素を取得します。
+  /// 指定されたインデックスはセット内の有効な位置である必要があります。
+  ///
+  /// - Parameter position: アクセスする要素のインデックス。
+  /// - Returns: 指定されたインデックス位置にある要素。
+  ///
+  /// - Complexity: O(1)。
+  ///
+  /// - Precondition: `position` は `startIndex` 以上、`endIndex` 未満である必要があります。
   @inlinable public subscript(position: RedBlackTree.Index) -> Element {
     ___values[position.pointer]
   }
 
+  /// 指定されたインデックスの直前の位置を返します。
+  ///
+  /// `index(before:)` メソッドは、指定されたインデックス `i` の直前にあるインデックスを返します。
+  /// `i` は `startIndex` より大きい有効なインデックスである必要があります。
+  ///
+  /// - Parameter i: 基準となるインデックス。`startIndex` を超える位置でなければなりません。
+  /// - Returns: 指定されたインデックスの直前の位置。
+  ///
+  /// - Complexity: O(1)。
+  ///
+  /// - Precondition: `i` は `startIndex` より大きく、`endIndex` 以下である必要があります。
   @inlinable public func index(before i: Index) -> Index {
     Index(_read { $0.__tree_prev_iter(i.pointer) })
   }
 
+  /// 指定されたインデックスの直後の位置を返します。
+  ///
+  /// `index(after:)` メソッドは、指定されたインデックス `i` の直後にあるインデックスを返します。
+  /// `i` は `endIndex` より小さい有効なインデックスである必要があります。
+  ///
+  /// - Parameter i: 基準となるインデックス。`endIndex` 未満でなければなりません。
+  /// - Returns: 指定されたインデックスの直後の位置。
+  ///
+  /// - Complexity: O(1)。
+  ///
+  /// - Precondition: `i` は `startIndex` 以上、`endIndex` 未満である必要があります。
   @inlinable public func index(after i: Index) -> Index {
     Index(_read { $0.__tree_next_iter(i.pointer) })
   }
 
+  /// セット内の要素を反復処理するための開始位置を返します。
+  ///
+  /// セットが空の場合、`startIndex` は `endIndex` と等しくなります。
+  ///
+  /// - Returns: セット内の最初の要素を指すインデックス。セットが空の場合は `endIndex`。
+  ///
+  /// - Complexity: O(1)。
   @inlinable public var startIndex: Index {
     Index(___begin())
   }
 
+  /// セットの「終端を過ぎた」位置を返します。
+  ///
+  /// このプロパティは、`RedBlackTreeSet` 内の最後の有効な要素の次の位置を指します。
+  /// セットが空の場合、`endIndex` は `startIndex` と等しくなります。
+  ///
+  /// - Returns: セットの終端を過ぎた位置を指すインデックス。
+  ///
+  /// - Complexity: O(1)。
   @inlinable public var endIndex: Index {
     Index(___end())
   }
@@ -545,12 +864,41 @@ extension RedBlackTreeSet: BidirectionalCollection {
 /// Overwrite Default implementation for bidirectional collections.
 extension RedBlackTreeSet {
 
+  /// 指定されたインデックスから、指定された距離分だけオフセットした位置のインデックスを返します。
+  ///
+  /// `index(_:offsetBy:)` メソッドは、指定されたインデックス `i` から `distance` 要素分進んだ、または戻った位置のインデックスを返します。
+  /// 正の距離は前方へのオフセット、負の距離は後方へのオフセットを意味します。
+  ///
+  /// - Parameters:
+  ///   - i: 基準となるインデックス。`startIndex` 以上 `endIndex` 以下である必要があります。
+  ///   - distance: オフセットする要素数。正の場合は前方、負の場合は後方へ移動します。
+  /// - Returns: 指定された距離だけオフセットされたインデックス。
+  ///
+  /// - Complexity: O(*k*)、ここで *k* は移動する距離の要素数です。
+  ///
+  /// - Precondition: 結果のインデックスは `startIndex` 以上 `endIndex` 以下である必要があります。
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
     _read {
       Index($0.pointer(i.pointer, offsetBy: distance, type: "RedBlackTreeSet"))
     }
   }
 
+  /// 指定されたインデックスから、指定された距離分オフセットした位置のインデックスを返します。
+  /// ただし、結果が指定された制限インデックスを超える場合は `nil` を返します。
+  ///
+  /// `index(_:offsetBy:limitedBy:)` メソッドは、指定されたインデックス `i` から `distance` 要素分だけ
+  /// 進む、または戻る位置を計算します。結果が制限インデックス `limit` を超えない場合にのみ有効です。
+  ///
+  /// - Parameters:
+  ///   - i: 基準となるインデックス。`startIndex` 以上 `endIndex` 以下である必要があります。
+  ///   - distance: オフセットする要素数。正の場合は前方、負の場合は後方へ移動します。
+  ///   - limit: 計算結果が超えてはいけない制限インデックス。
+  /// - Returns: 指定された距離だけオフセットされたインデックス。
+  ///            結果が `limit` を超える場合は `nil` を返します。
+  ///
+  /// - Complexity: O(*k*)、ここで *k* は移動する距離の要素数です。
+  ///
+  /// - Precondition: `i` と `limit` は有効なインデックスである必要があります。
   @inlinable public func index(
     _ i: Index, offsetBy distance: Int, limitedBy limit: Index
   ) -> Index? {
@@ -566,7 +914,19 @@ extension RedBlackTreeSet {
     return _read { $0.distance(__first: $0.__begin_node, __last: __last) }
   }
 
-  /// O(n)
+  /// 2つのインデックス間の距離を返します。
+  ///
+  /// `distance(from:to:)` メソッドは、指定された開始インデックス `start` から終了インデックス `end` までの要素数を計算します。
+  /// インデックス間の距離は正または負の整数で返されます。
+  ///
+  /// - Parameters:
+  ///   - start: 距離の計算を開始するインデックス。`startIndex` 以上 `endIndex` 以下である必要があります。
+  ///   - end: 距離の計算を終了するインデックス。`startIndex` 以上 `endIndex` 以下である必要があります。
+  /// - Returns: `start` から `end` までの要素数。`start` より `end` が後の場合は正の値、前の場合は負の値になります。
+  ///
+  /// - Complexity: O(*k*), ここで *k* は2つのインデックス間にある要素数です。
+  ///
+  /// - Precondition: `start` および `end` は有効なインデックスである必要があります。
   @inlinable public func distance(from start: Index, to end: Index) -> Int {
     distance(__last: end.pointer) - distance(__last: start.pointer)
   }

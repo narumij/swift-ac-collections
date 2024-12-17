@@ -12,10 +12,14 @@
 
   extension RedBlackTreeSet {
     func left(_ p: Element) -> Int {
-      _read { $0.distance(__first: $0.__begin_node, __last: $0.__lower_bound(p, $0.__root(), $0.end())) }
+      _read {
+        $0.distance(__first: $0.__begin_node, __last: $0.__lower_bound(p, $0.__root(), $0.end()))
+      }
     }
     func right(_ p: Element) -> Int {
-      _read { $0.distance(__first: $0.__begin_node, __last: $0.__upper_bound(p, $0.__root(), $0.end())) }
+      _read {
+        $0.distance(__first: $0.__begin_node, __last: $0.__upper_bound(p, $0.__root(), $0.end()))
+      }
     }
     var elements: [Element] {
       map { $0 }
@@ -462,7 +466,7 @@
       let set: RedBlackTreeSet<Int> = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
       XCTAssertEqual(set.map { $0 }, [1, 2, 3, 4, 5])
     }
-    
+
     class A: Hashable, Comparable {
       static func < (lhs: A, rhs: A) -> Bool {
         lhs.x < rhs.x
@@ -480,7 +484,7 @@
         hasher.combine(x)
       }
     }
-    
+
     func testSetUpdate() throws {
       let a = A(x: 3, label: "a")
       let b = A(x: 3, label: "b")
@@ -489,7 +493,7 @@
       XCTAssertTrue(s.update(with: b) === a)
       XCTAssertTrue(s.update(with: a) === b)
     }
-    
+
     func testRedBlackTreeSetUpdate() throws {
       let a = A(x: 3, label: "a")
       let b = A(x: 3, label: "b")
@@ -498,7 +502,7 @@
       XCTAssertTrue(s.update(with: b) === a)
       XCTAssertTrue(s.update(with: a) === b)
     }
-    
+
     func testSetInsert() throws {
       let a = A(x: 3, label: "a")
       let b = A(x: 3, label: "b")
@@ -515,7 +519,7 @@
         XCTAssertTrue(r.memberAfterInsert === a)
       }
     }
-    
+
     func testRedBlackTreeSetInsert() throws {
       let a = A(x: 3, label: "a")
       let b = A(x: 3, label: "b")
@@ -532,33 +536,36 @@
         XCTAssertTrue(r.memberAfterInsert === a)
       }
     }
-    
+
     func testSetRemove() throws {
-      var s: Set<Int> = [1,2,3,4]
+      var s: Set<Int> = [1, 2, 3, 4]
       let i = s.firstIndex(of: 2)!
 
       s.remove(at: i)
       // Attempting to access Set elements using an invalid index
-//      s.remove(at: i)
-//      s.remove(at: s.endIndex)
+      //      s.remove(at: i)
+      //      s.remove(at: s.endIndex)
     }
-    
+
     func testRedBlackTreeSetRemove() throws {
-      var s: RedBlackTreeSet<Int> = [1,2,3,4]
+      var s: RedBlackTreeSet<Int> = [1, 2, 3, 4]
+      XCTAssertEqual(s.first, 1)
       let i = s.firstIndex(of: 2)!
       s.remove(at: i)
-      XCTAssertEqual(s.map{$0}, [1,3,4])
+      XCTAssertEqual(s.map { $0 }, [1, 3, 4])
       s.removeAll(keepingCapacity: true)
-      XCTAssertEqual(s.map{$0}, [])
+      XCTAssertEqual(s.map { $0 }, [])
       XCTAssertGreaterThanOrEqual(s.capacity, 3)
       s.removeAll(keepingCapacity: false)
-      XCTAssertEqual(s.map{$0}, [])
+      XCTAssertEqual(s.map { $0 }, [])
       XCTAssertGreaterThanOrEqual(s.capacity, 0)
       // Attempting to access Set elements using an invalid index
-//      s.remove(at: i)
-//      s.remove(at: s.endIndex)
+      //      s.remove(at: i)
+      //      s.remove(at: s.endIndex)
+      XCTAssertNil(s.first)
+      //      s.removeFirst()
     }
-    
+
     func testRedBlackTreeSetLowerBound() throws {
       let numbers: RedBlackTreeSet = [1, 3, 5, 7, 9]
       XCTAssertEqual(numbers.lowerBound(4).pointer, 2)
@@ -568,7 +575,7 @@
       let numbers: RedBlackTreeSet = [1, 3, 5, 7, 9]
       XCTAssertEqual(numbers.upperBound(7).pointer, 4)
     }
-    
+
     func testRedBlackTreeCapacity() throws {
       var numbers: RedBlackTreeSet<Int> = .init(minimumCapacity: 3)
       XCTAssertGreaterThanOrEqual(numbers.capacity, 3)
@@ -578,18 +585,90 @@
 
     func testRedBlackTreeConveniences() throws {
       let numbers: RedBlackTreeSet = [1, 3, 5, 7, 9]
-      
+
       XCTAssertEqual(numbers.lessThan(4), 3)
       XCTAssertEqual(numbers.lessThanOrEqual(4), 3)
       XCTAssertEqual(numbers.lessThan(5), 3)
       XCTAssertEqual(numbers.lessThanOrEqual(5), 5)
-      
+
       XCTAssertEqual(numbers.greaterThan(6), 7)
       XCTAssertEqual(numbers.greaterThanOrEqual(6), 7)
       XCTAssertEqual(numbers.greaterThan(5), 7)
       XCTAssertEqual(numbers.greaterThanOrEqual(5), 5)
     }
 
-    
+    func testRedBlackTreeSetFirstIndex() throws {
+      let members: RedBlackTreeSet = [1, 3, 5, 7, 9]
+      XCTAssertEqual(members.firstIndex(of: 3), .init(1))
+      XCTAssertEqual(members.firstIndex(of: 2), nil)
+      XCTAssertEqual(members.firstIndex(where: { $0 > 3 }), .init(2))
+      XCTAssertEqual(members.firstIndex(where: { $0 > 9 }), nil)
+    }
+
+    func testPerformanceDistanceFromTo() throws {
+      let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
+      self.measure {
+        // BidirectionalCollectionの実装の場合、0.3sec
+        // 木の場合、0.08sec
+        // 片方がendIndexの場合、その部分だけO(1)となるよう修正
+        XCTAssertEqual(s.distance(from: s.endIndex, to: s.startIndex), -1_000_000)
+      }
+    }
+
+    func testPerformanceIndexOffsetBy1() throws {
+      let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
+      self.measure {
+        XCTAssertEqual(s.index(s.startIndex, offsetBy: 1_000_000), s.endIndex)
+      }
+    }
+
+    func testPerformanceIndexOffsetBy2() throws {
+      let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
+      self.measure {
+        XCTAssertEqual(s.index(s.endIndex, offsetBy: -1_000_000), s.startIndex)
+      }
+    }
+
+    func testPerformanceFirstIndex1() throws {
+      let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
+      self.measure {
+        XCTAssertEqual(s.firstIndex(of: 1_000_000 - 1), s.index(before: s.endIndex))
+      }
+    }
+
+    func testPerformanceFirstIndex2() throws {
+      let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
+      self.measure {
+        XCTAssertEqual(s.firstIndex(of: 0), s.startIndex)
+      }
+    }
+
+    func testPerformanceFirstIndex3() throws {
+      let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
+      self.measure {
+        XCTAssertEqual(s.firstIndex(of: 1_000_000), nil)
+      }
+    }
+
+    func testPerformanceFirstIndex4() throws {
+      let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
+      self.measure {
+        XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 - 1 }), s.index(before: s.endIndex))
+      }
+    }
+
+    func testPerformanceFirstIndex5() throws {
+      let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
+      self.measure {
+        XCTAssertEqual(s.firstIndex(where: { $0 >= 0 }), s.startIndex)
+      }
+    }
+
+    func testPerformanceFirstIndex6() throws {
+      let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
+      self.measure {
+        XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
+      }
+    }
   }
 #endif

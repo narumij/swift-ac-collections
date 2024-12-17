@@ -31,12 +31,14 @@ extension RedBlackTree {
     case end
     @usableFromInline
     init(_ node: _NodePtr) {
+      precondition(node != .nullptr)
       self = node == .end ? .end : .node(node)
     }
     @usableFromInline
     var pointer: _NodePtr {
       switch self {
       case .node(let _NodePtr):
+        assert(_NodePtr != .nullptr)
         return _NodePtr
       case .end:
         return .end

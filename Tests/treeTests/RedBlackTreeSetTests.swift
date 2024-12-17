@@ -72,6 +72,12 @@
       let b: RedBlackTreeSet<Int> = [1, 2, 3]
       XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), b.count)
     }
+    
+    func testSmoke() throws {
+      let b: RedBlackTreeSet<Int> = [1, 2, 3]
+      print(b)
+      debugPrint(b)
+    }
 
     func testRemove() throws {
       var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])

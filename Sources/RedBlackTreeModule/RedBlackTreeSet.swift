@@ -468,6 +468,7 @@ extension RedBlackTreeSet {
   ///
   /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、最小要素は効率的に取得できます。
   @inlinable public func min() -> Element? {
+    // O(1)にできるが、オリジナルにならい、一旦このまま
     ___min()
   }
 
@@ -493,6 +494,7 @@ extension RedBlackTreeSet {
   ///
   /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、最大要素は効率的に取得できます。
   @inlinable public func max() -> Element? {
+    // O(1)にできるが、オリジナルにならい、一旦このまま
     ___max()
   }
 }
@@ -786,6 +788,7 @@ extension RedBlackTreeSet {
   /// - Note: `RedBlackTreeSet` は既に要素を昇順で管理しているため、このメソッドは効率的に全要素を抽出します。
   @inlinable
   func sorted() -> [Element] {
+    // _readでトラバースする方が速い可能性があるが、未検証
     map { $0 }
   }
 }

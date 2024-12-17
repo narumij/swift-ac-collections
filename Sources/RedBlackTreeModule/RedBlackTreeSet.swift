@@ -29,7 +29,7 @@ import Foundation
 /// 順序を意識したコレクション操作が必要な場合に、リストや配列の代わりに利用できます。
 ///
 /// ## 主な特徴
-/// - 要素はユニークで、重複を許しません。
+/// - 要素はユニークで、重複を許容しません。
 /// - 自動的に昇順にソートされた状態で管理されます。
 /// - 任意の比較可能な型（`Comparable` に準拠した型）を要素として使用可能です。
 /// - `BidirectionalCollection` に適合しており、双方向に要素を走査できます。
@@ -544,14 +544,6 @@ extension RedBlackTreeSet: BidirectionalCollection {
 
 /// Overwrite Default implementation for bidirectional collections.
 extension RedBlackTreeSet {
-
-  /// Replaces the given index with its predecessor.
-  ///
-  /// - Parameter i: A valid index of the collection. `i` must be greater than
-  ///   `startIndex`.
-  @inlinable public func formIndex(before i: inout Index) {
-    i = Index(_read { $0.__tree_prev_iter(i.pointer) })
-  }
 
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
     _read {

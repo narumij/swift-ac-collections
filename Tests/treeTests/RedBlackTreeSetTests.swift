@@ -536,6 +536,7 @@
     func testSetRemove() throws {
       var s: Set<Int> = [1,2,3,4]
       let i = s.firstIndex(of: 2)!
+
       s.remove(at: i)
       // Attempting to access Set elements using an invalid index
 //      s.remove(at: i)

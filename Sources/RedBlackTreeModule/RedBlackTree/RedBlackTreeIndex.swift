@@ -23,9 +23,10 @@
 import Foundation
 
 extension RedBlackTree {
-  
+
   public
-  enum Index {
+    enum Index
+  {
     case node(_NodePtr)
     case end
     @usableFromInline
@@ -44,7 +45,21 @@ extension RedBlackTree {
   }
 }
 
-extension RedBlackTree.Index: Comparable { }
+extension Optional where Wrapped == RedBlackTree.Index {
+  @inlinable
+  init(_ ptr: _NodePtr) {
+    switch ptr {
+    case .nullptr:
+      self = .none
+    case .end:
+      self = .some(.end)
+    default:
+      self = .some(.node(ptr))
+    }
+  }
+}
+
+extension RedBlackTree.Index: Comparable {}
 
 extension RedBlackTree.Index: ExpressibleByNilLiteral {
   public init(nilLiteral: ()) {

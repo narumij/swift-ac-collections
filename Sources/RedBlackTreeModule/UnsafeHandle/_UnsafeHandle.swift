@@ -113,7 +113,10 @@ extension _UnsafeHandle {
       ptr = __tree_prev_iter(ptr)
       distance -= 1
     }
-    return ptr
+    guard distance == 0 else {
+      return .nullptr
+    }
+    return ptr == limit ? .nullptr : ptr
   }
 
   @inlinable
@@ -128,6 +131,9 @@ extension _UnsafeHandle {
       }
       ptr = __tree_next_iter(ptr)
       distance -= 1
+    }
+    guard distance == 0 else {
+      return .nullptr
     }
     return ptr
   }

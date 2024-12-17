@@ -59,4 +59,50 @@ final class EtcTests: XCTestCase {
     XCTAssertEqual(b.count(2), 3)
     XCTAssertEqual(b.count(3), 1)
   }
+  
+  class A: Hashable, Comparable {
+    static func < (lhs: A, rhs: A) -> Bool {
+      lhs.x < rhs.x
+    }
+    static func == (lhs: A, rhs: A) -> Bool {
+      lhs.x == rhs.x
+    }
+    let x: Int
+    let label: String
+    init(x: Int, label: String) {
+      self.x = x
+      self.label = label
+    }
+    func hash(into hasher: inout Hasher) {
+      hasher.combine(x)
+    }
+  }
+  
+  func testSetUpdate() throws {
+    let a = A(x: 3, label: "a")
+    let b = A(x: 3, label: "b")
+    var s: Set<A> = [a]
+    XCTAssertFalse(a === b)
+    XCTAssertTrue(s.update(with: b) === a)
+    XCTAssertTrue(s.update(with: a) === b)
+  }
+
+  func testSetInsert() throws {
+    let a = A(x: 3, label: "a")
+    let b = A(x: 3, label: "b")
+    var s: Set<A> = []
+    XCTAssertFalse(a === b)
+    do {
+      let r = s.insert(a)
+      XCTAssertEqual(r.inserted, true)
+      XCTAssertTrue(r.memberAfterInsert === a)
+    }
+    do {
+      let r = s.insert(b)
+      XCTAssertEqual(r.inserted, false)
+      XCTAssertTrue(r.memberAfterInsert === a)
+    }
+  }
+
+
 }

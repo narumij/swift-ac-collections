@@ -433,6 +433,23 @@
       XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -2)], 3)
       XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -1)], 4)
     }
+    
+    func testIndexLimit1() throws {
+      let set = Set<Int>([0, 1, 2, 3, 4])
+      XCTAssertNotEqual(set.index(set.startIndex, offsetBy: 4, limitedBy: set.index(set.startIndex, offsetBy: 4)), nil)
+      XCTAssertEqual(set.index(set.startIndex, offsetBy: 5, limitedBy: set.index(set.startIndex, offsetBy: 4)), nil)
+      XCTAssertEqual(set.index(set.startIndex, offsetBy: 5, limitedBy: set.endIndex), set.endIndex)
+      XCTAssertEqual(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex), nil)
+//      XCTAssertEqual(set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex), nil)
+    }
+
+    func testIndexLimit2() throws {
+      let set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
+      XCTAssertNotEqual(set.index(set.startIndex, offsetBy: 4, limitedBy: set.index(set.startIndex, offsetBy: 4)), nil)
+      XCTAssertEqual(set.index(set.startIndex, offsetBy: 5, limitedBy: set.index(set.startIndex, offsetBy: 4)), nil)
+      XCTAssertEqual(set.index(set.startIndex, offsetBy: 5, limitedBy: set.endIndex), set.endIndex)
+      XCTAssertEqual(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex), nil)
+    }
 
     func testRandom() throws {
       var set = RedBlackTreeSet<Int>()
@@ -485,15 +502,6 @@
       }
     }
 
-    func testSetUpdate() throws {
-      let a = A(x: 3, label: "a")
-      let b = A(x: 3, label: "b")
-      var s: Set<A> = [a]
-      XCTAssertFalse(a === b)
-      XCTAssertTrue(s.update(with: b) === a)
-      XCTAssertTrue(s.update(with: a) === b)
-    }
-
     func testRedBlackTreeSetUpdate() throws {
       let a = A(x: 3, label: "a")
       let b = A(x: 3, label: "b")
@@ -501,23 +509,6 @@
       XCTAssertFalse(a === b)
       XCTAssertTrue(s.update(with: b) === a)
       XCTAssertTrue(s.update(with: a) === b)
-    }
-
-    func testSetInsert() throws {
-      let a = A(x: 3, label: "a")
-      let b = A(x: 3, label: "b")
-      var s: Set<A> = []
-      XCTAssertFalse(a === b)
-      do {
-        let r = s.insert(a)
-        XCTAssertEqual(r.inserted, true)
-        XCTAssertTrue(r.memberAfterInsert === a)
-      }
-      do {
-        let r = s.insert(b)
-        XCTAssertEqual(r.inserted, false)
-        XCTAssertTrue(r.memberAfterInsert === a)
-      }
     }
 
     func testRedBlackTreeSetInsert() throws {
@@ -598,11 +589,17 @@
     }
 
     func testRedBlackTreeSetFirstIndex() throws {
-      let members: RedBlackTreeSet = [1, 3, 5, 7, 9]
+      var members: RedBlackTreeSet = [1, 3, 5, 7, 9]
       XCTAssertEqual(members.firstIndex(of: 3), .init(1))
       XCTAssertEqual(members.firstIndex(of: 2), nil)
       XCTAssertEqual(members.firstIndex(where: { $0 > 3 }), .init(2))
       XCTAssertEqual(members.firstIndex(where: { $0 > 9 }), nil)
+      XCTAssertEqual(members.sorted(), [1, 3, 5, 7, 9])
+      XCTAssertEqual(members.removeFirst(), 1)
+      XCTAssertEqual(members.removeFirst(), 3)
+      XCTAssertEqual(members.removeFirst(), 5)
+      XCTAssertEqual(members.removeFirst(), 7)
+      XCTAssertEqual(members.removeFirst(), 9)
     }
 
     func testPerformanceDistanceFromTo() throws {

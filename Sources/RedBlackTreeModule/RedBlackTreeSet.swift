@@ -508,13 +508,13 @@ extension RedBlackTreeSet {
   @inlinable public func lessThan(_ p: Element) -> Element? {
     ___lt(p)
   }
-  @inlinable public func greatorThan(_ p: Element) -> Element? {
+  @inlinable public func greaterThan(_ p: Element) -> Element? {
     ___gt(p)
   }
-  @inlinable public func lessEqual(_ p: Element) -> Element? {
+  @inlinable public func lessThanOrEqual(_ p: Element) -> Element? {
     ___le(p)
   }
-  @inlinable public func greatorEqual(_ p: Element) -> Element? {
+  @inlinable public func greaterThanOrEqual(_ p: Element) -> Element? {
     ___ge(p)
   }
 }

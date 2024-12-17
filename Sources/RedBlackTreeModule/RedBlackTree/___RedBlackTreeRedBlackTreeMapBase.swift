@@ -114,7 +114,7 @@ extension ___RedBlackTreeMapBase: ___UnsafeMutatingHandleBase {
   }
 }
 
-extension ___RedBlackTreeMapBase: InsertUniqueProtocol, EraseProtocol {
+extension ___RedBlackTreeMapBase: InsertUniqueProtocol, EraseUniqueProtocol {
 
   @inlinable
   mutating func __construct_node(_ k: (Key, Value)) -> _NodePtr {

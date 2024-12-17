@@ -114,11 +114,12 @@ extension RedBlackTreeDictionary {
   extension RedBlackTreeDictionary {
     @inlinable public init<S>(uniqueKeysWithValues keysAndValues: S)
     where S: Sequence, S.Element == (Key, Value) {
-      self.nodes = []
-      self.header = .zero
-      self.values = []
-      self.stock = []
+      self.___header = .zero
+      self.___nodes = []
+      self.___values = []
+      self.___stock = []
       for (k, v) in keysAndValues {
+        assert(self[k] == nil)
         self[k] = v
       }
     }
@@ -174,6 +175,42 @@ extension RedBlackTreeDictionary {
     self.___header = _header
     self.___values = _values
     self.___stock = []
+  }
+}
+
+#if false
+  // naive
+  extension RedBlackTreeDictionary {
+    @inlinable public init<S>(
+      _ keysAndValues: S,
+      uniquingKeysWith combine: (Value, Value) throws -> Value
+    ) rethrows where S: Sequence, S.Element == (Key, Value) {
+      self.___header = .zero
+      self.___nodes = []
+      self.___values = []
+      self.___stock = []
+      for (k, v) in keysAndValues {
+        self[k] = self[k] == nil ? v : try combine(self[k]!, v)
+      }
+    }
+  }
+#endif
+
+extension RedBlackTreeDictionary {
+  
+  // naive
+  @inlinable
+  public init<S: Sequence>(
+    grouping values_: __owned S,
+    by keyForValue: (S.Element) throws -> Key
+  ) rethrows where Value == [S.Element] {
+    self.___header = .zero
+    self.___nodes = []
+    self.___values = []
+    self.___stock = []
+    for v in values_ {
+      self[try keyForValue(v), default: []].append(v)
+    }
   }
 }
 
@@ -235,7 +272,7 @@ extension RedBlackTreeDictionary: ___UnsafeMutatingHandleBase {
   }
 }
 
-extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseProtocol { }
+extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseUniqueProtocol { }
 
 extension RedBlackTreeDictionary {
 

@@ -87,7 +87,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   var ___values: [Element]
 
   @usableFromInline
-  var ___stock: Heap<_NodePtr> = []
+  var ___stock: Heap<_NodePtr>
 }
 
 extension RedBlackTreeSet {
@@ -108,6 +108,7 @@ extension RedBlackTreeSet {
     ___header = .zero
     ___nodes = []
     ___values = []
+    ___stock = []
   }
 
   /// 指定された要素数を収容するための領域を事前に確保した空の赤黒木セットを作成します。
@@ -122,6 +123,7 @@ extension RedBlackTreeSet {
     ___header = .zero
     ___nodes = []
     ___values = []
+    ___stock = []
     ___nodes.reserveCapacity(minimumCapacity)
     ___values.reserveCapacity(minimumCapacity)
   }
@@ -281,6 +283,7 @@ extension RedBlackTreeSet: ___UnsafeMutatingHandleBase {
 }
 
 extension RedBlackTreeSet: InsertUniqueProtocol {}
+extension RedBlackTreeSet: EraseUniqueProtocol {}
 extension RedBlackTreeSet: ___RedBlackTreeEraseProtocol {}
 extension RedBlackTreeSet: ___RedBlackTreeSetInternal {}
 

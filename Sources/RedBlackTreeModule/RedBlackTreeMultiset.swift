@@ -84,10 +84,13 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
 
   @usableFromInline
   var ___header: ___RedBlackTree.___Header
+  
   @usableFromInline
   var ___nodes: [___RedBlackTree.___Node]
+  
   @usableFromInline
   var ___values: [Element]
+  
   @usableFromInline
   var ___stock: Heap<_NodePtr>
 }
@@ -172,7 +175,7 @@ extension RedBlackTreeMultiset {
       withUnsafeMutablePointer(to: &_header) { _header in
         var count = 0
         _values.withUnsafeMutableBufferPointer { _values in
-          func ___construct_node(_ __k: Element) -> _NodePtr {
+          func __construct_node(_ __k: Element) -> _NodePtr {
             _nodes[count] = .zero
             defer { count += 1 }
             return count
@@ -185,7 +188,7 @@ extension RedBlackTreeMultiset {
           while i < _values.count {
             let __k = _values[i]
             i += 1
-            let __h = ___construct_node(__k)
+            let __h = __construct_node(__k)
             var __parent = _NodePtr.nullptr
             let __child = tree.__find_leaf_high(&__parent, __k)
             tree.__insert_node_at(__parent, __child, __h)
@@ -200,7 +203,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-#if true
+#if false
   // naive
   extension RedBlackTreeMultiset {
     @inlinable @inline(__always)
@@ -271,9 +274,7 @@ extension RedBlackTreeMultiset: ValueComparer {
 }
 
 extension RedBlackTreeMultiset: ___RedBlackTreeSetContainer {}
-
 extension RedBlackTreeMultiset: ___UnsafeHandleBase {}
-
 extension RedBlackTreeMultiset: ___UnsafeMutatingHandleBase {
 
   // プロトコルでupdateが書けなかったため、個別で実装している
@@ -377,6 +378,13 @@ extension RedBlackTreeMultiset {
     return element
   }
 
+  @inlinable
+  @discardableResult
+  public mutating func removeFirst() -> Element {
+    precondition(!isEmpty, "Can't removeFirst from an empty Set")
+    return remove(at: startIndex)
+  }
+  
   /// 赤黒木セットからすべての要素を削除します。
   ///
   /// - Parameter keepingCapacity: `true` を指定すると、セットのバッファ容量が保持されます。
@@ -511,6 +519,90 @@ extension RedBlackTreeMultiset {
   }
   @inlinable public func greaterThanOrEqual(_ p: Element) -> Element? {
     ___ge(p)
+  }
+}
+
+
+extension RedBlackTreeMultiset {
+
+  /// セット内の最小の要素を返します。
+  ///
+  /// - Returns: セット内の最小の要素。セットが空の場合は `nil`。
+  ///
+  /// - Complexity: O(1)。
+  @inlinable
+  public var first: Element? {
+    startIndex == .end ? nil : self[startIndex]
+  }
+
+  /// 指定された要素のインデックスを返します。要素がセットに存在しない場合は `nil` を返します。
+  ///
+  /// このメソッドは、赤黒木セット内で指定された要素 `member` を検索し、存在する場合はその要素のインデックスを返します。
+  /// 要素がセット内に存在しない場合は `nil` を返します。
+  ///
+  /// 以下は、`index(of:)` メソッドの使用例です:
+  ///
+  /// ```swift
+  /// let set: RedBlackTreeSet = [1, 3, 5, 7]
+  ///
+  /// if let index = set.index(of: 5) {
+  ///     print("Index of 5: \(index)")
+  ///     print("Value at index: \(set[index])") // 出力: 5
+  /// } else {
+  ///     print("5 is not in the set.")
+  /// }
+  /// ```
+  ///
+  /// - Parameter member: セット内で検索する要素。
+  /// - Returns: `member` のインデックスを返します。要素が存在しない場合は `nil`。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  @inlinable
+  public func firstIndex(of member: Element) -> Index? {
+    _read {
+      var __parent = _NodePtr.nullptr
+      let ptr = $0.__ref_($0.__find_equal(&__parent, member))
+      if ptr == .nullptr { return nil }
+      return Index(ptr)
+    }
+  }
+
+  /// 指定された述語を満たす最初の要素のインデックスを返します。
+  ///
+  /// このメソッドは、`RedBlackTreeSet` 内の要素を順序に従って走査し、指定された述語 `predicate` が `true` を返す最初の要素のインデックスを返します。
+  /// 述語を満たす要素が存在しない場合は `nil` を返します。
+  ///
+  /// 以下は、`firstIndex(where:)` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let set: RedBlackTreeSet = [1, 3, 5, 7, 9]
+  ///
+  /// if let index = set.firstIndex(where: { $0 > 4 }) {
+  ///     print("First index where element > 4: \(index)")
+  ///     print("Value at index: \(set[index])") // 出力: 5
+  /// } else {
+  ///     print("No elements match the condition.")
+  /// }
+  /// ```
+  ///
+  /// - Parameter predicate: 各要素に対して評価する述語。`predicate` は `true` または `false` を返します。
+  /// - Returns: `predicate` を満たす最初の要素のインデックス。条件に一致する要素がない場合は `nil`。
+  ///
+  /// - Complexity: O(*n*), ここで *n* はセット内の要素数。
+  ///
+  /// - Note: このメソッドは、セット内の要素を昇順に走査します。
+  @inlinable
+  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    try _read {
+      var ptr = $0.__begin_node
+      while ptr != $0.__end_node() {
+        if try predicate(___values[ptr]) {
+          return Index(ptr)
+        }
+        ptr = $0.__tree_next_iter(ptr)
+      }
+      return nil
+    }
   }
 }
 

@@ -51,13 +51,18 @@ final class EtcTests: XCTestCase {
 //    let d: RedBlackTreeDictionary<Int,Int> = .init(uniqueKeysWithValues: [(1,1),(1,2)])
 //    let e: Set<Int> = .init()
   }
-  
+
   func testExample2() throws {
     let b: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3]
     XCTAssertEqual(b.count, 6)
     XCTAssertEqual(b.count(1), 2)
     XCTAssertEqual(b.count(2), 3)
     XCTAssertEqual(b.count(3), 1)
+  }
+
+  func testExample3() throws {
+    let b: Set<Int> = [1,2,3]
+    XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), 3)
   }
   
   class A: Hashable, Comparable {

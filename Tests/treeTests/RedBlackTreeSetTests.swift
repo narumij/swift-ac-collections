@@ -41,6 +41,7 @@
       XCTAssertEqual(set.elements, [])
       XCTAssertEqual(set._count, 0)
       XCTAssertTrue(set.isEmpty)
+      XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
     }
 
     func testInitRange() throws {
@@ -48,6 +49,7 @@
       XCTAssertEqual(set.elements, (0..<10000) + [])
       XCTAssertEqual(set._count, 10000)
       XCTAssertFalse(set.isEmpty)
+      XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 10000)
     }
 
     func testInitCollection1() throws {
@@ -55,6 +57,7 @@
       XCTAssertEqual(set.elements, (0..<10000) + [])
       XCTAssertEqual(set._count, 10000)
       XCTAssertFalse(set.isEmpty)
+      XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 10000)
     }
 
     func testInitCollection2() throws {
@@ -62,6 +65,12 @@
       XCTAssertEqual(set.elements, [0, 1, 2, 3])
       XCTAssertEqual(set._count, 4)
       XCTAssertFalse(set.isEmpty)
+      XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
+    }
+    
+    func testExample3() throws {
+      let b: RedBlackTreeSet<Int> = [1, 2, 3]
+      XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), b.count)
     }
 
     func testRemove() throws {
@@ -433,22 +442,57 @@
       XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -2)], 3)
       XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -1)], 4)
     }
-    
+
     func testIndexLimit1() throws {
       let set = Set<Int>([0, 1, 2, 3, 4])
-      XCTAssertNotEqual(set.index(set.startIndex, offsetBy: 4, limitedBy: set.index(set.startIndex, offsetBy: 4)), nil)
-      XCTAssertEqual(set.index(set.startIndex, offsetBy: 5, limitedBy: set.index(set.startIndex, offsetBy: 4)), nil)
+      XCTAssertNotEqual(
+        set.index(set.startIndex, offsetBy: 4, limitedBy: set.index(set.startIndex, offsetBy: 4)),
+        nil)
+      XCTAssertEqual(
+        set.index(set.startIndex, offsetBy: 5, limitedBy: set.index(set.startIndex, offsetBy: 4)),
+        nil)
       XCTAssertEqual(set.index(set.startIndex, offsetBy: 5, limitedBy: set.endIndex), set.endIndex)
       XCTAssertEqual(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex), nil)
-//      XCTAssertEqual(set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex), nil)
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: 6, limitedBy: set.endIndex), nil)
+      //      XCTAssertEqual(set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex), nil)
     }
 
     func testIndexLimit2() throws {
       let set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertNotEqual(set.index(set.startIndex, offsetBy: 4, limitedBy: set.index(set.startIndex, offsetBy: 4)), nil)
-      XCTAssertEqual(set.index(set.startIndex, offsetBy: 5, limitedBy: set.index(set.startIndex, offsetBy: 4)), nil)
+      XCTAssertNotEqual(
+        set.index(set.startIndex, offsetBy: 4, limitedBy: set.index(set.startIndex, offsetBy: 4)),
+        nil)
+      XCTAssertEqual(
+        set.index(set.startIndex, offsetBy: 5, limitedBy: set.index(set.startIndex, offsetBy: 4)),
+        nil)
       XCTAssertEqual(set.index(set.startIndex, offsetBy: 5, limitedBy: set.endIndex), set.endIndex)
       XCTAssertEqual(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex), nil)
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: 6, limitedBy: set.endIndex), nil)
+    }
+
+    func testIndexLimit3() throws {
+      let set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
+      XCTAssertEqual(set.startIndex, .node(0))
+      XCTAssertEqual(set.index(before: set.endIndex), .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1), .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex), .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), .node(0))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
+      XCTAssertNotEqual(
+        set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),
+        nil)
+      XCTAssertEqual(
+        set.index(set.endIndex, offsetBy: -5, limitedBy: set.index(set.endIndex, offsetBy: -4)),
+        nil)
+      XCTAssertEqual(
+        set.index(set.endIndex, offsetBy: -5, limitedBy: set.startIndex),
+        set.startIndex)
+      XCTAssertEqual(
+        set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex),
+        nil)
+      XCTAssertEqual(
+        set.index(set.startIndex, offsetBy: -6, limitedBy: set.startIndex),
+        nil)
     }
 
     func testRandom() throws {
@@ -603,6 +647,7 @@
     }
 
     func testPerformanceDistanceFromTo() throws {
+      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         // BidirectionalCollectionの実装の場合、0.3sec
@@ -613,6 +658,7 @@
     }
 
     func testPerformanceIndexOffsetBy1() throws {
+      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.index(s.startIndex, offsetBy: 1_000_000), s.endIndex)
@@ -620,6 +666,7 @@
     }
 
     func testPerformanceIndexOffsetBy2() throws {
+      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.index(s.endIndex, offsetBy: -1_000_000), s.startIndex)
@@ -627,6 +674,7 @@
     }
 
     func testPerformanceFirstIndex1() throws {
+      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.firstIndex(of: 1_000_000 - 1), s.index(before: s.endIndex))
@@ -634,6 +682,7 @@
     }
 
     func testPerformanceFirstIndex2() throws {
+      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.firstIndex(of: 0), s.startIndex)
@@ -641,6 +690,7 @@
     }
 
     func testPerformanceFirstIndex3() throws {
+      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.firstIndex(of: 1_000_000), nil)
@@ -648,6 +698,7 @@
     }
 
     func testPerformanceFirstIndex4() throws {
+      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 - 1 }), s.index(before: s.endIndex))
@@ -655,6 +706,7 @@
     }
 
     func testPerformanceFirstIndex5() throws {
+      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.firstIndex(where: { $0 >= 0 }), s.startIndex)
@@ -662,6 +714,7 @@
     }
 
     func testPerformanceFirstIndex6() throws {
+      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)

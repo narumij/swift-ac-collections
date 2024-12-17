@@ -116,7 +116,7 @@ extension _UnsafeHandle {
     guard distance == 0 else {
       return .nullptr
     }
-    return ptr == limit ? .nullptr : ptr
+    return ptr
   }
 
   @inlinable

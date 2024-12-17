@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension RedBlackTree {
+extension ___RedBlackTree {
 
   @frozen
   @usableFromInline

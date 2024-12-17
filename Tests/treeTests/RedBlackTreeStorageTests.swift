@@ -8,7 +8,7 @@
 import XCTest
 @testable import RedBlackTreeModule
 
-typealias RedBlackTreeStorage = RedBlackTree.Storage
+typealias RedBlackTreeStorage = ___RedBlackTree.Storage
 
 extension RedBlackTreeStorage {
     

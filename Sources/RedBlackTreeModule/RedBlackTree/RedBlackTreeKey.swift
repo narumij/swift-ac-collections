@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension RedBlackTree {
+extension ___RedBlackTree {
 
   public
     protocol KeyProtocol
@@ -33,7 +33,7 @@ extension RedBlackTree {
 
   @frozen
   public
-    enum KeyInfo<Key: Comparable>: RedBlackTree.KeyProtocol
+    enum KeyInfo<Key: Comparable>: ___RedBlackTree.KeyProtocol
   {
     public typealias Key = Key
     @inlinable

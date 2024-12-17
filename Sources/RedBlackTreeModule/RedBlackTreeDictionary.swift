@@ -26,7 +26,7 @@ import Collections
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   public
-    typealias Index = RedBlackTree.Index
+    typealias Index = ___RedBlackTree.Index
 
   public
     typealias KeyValue = (key: Key, value: Value)
@@ -38,7 +38,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias Values = [Value]
 
   @usableFromInline
-  typealias KeyInfo = RedBlackTree.KeyInfo<Key>
+  typealias KeyInfo = ___RedBlackTree.KeyInfo<Key>
 
   @usableFromInline
   typealias _Key = Key
@@ -51,9 +51,9 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   }
 
   @usableFromInline
-  var ___header: RedBlackTree.___Header
+  var ___header: ___RedBlackTree.___Header
   @usableFromInline
-  var ___nodes: [RedBlackTree.___Node]
+  var ___nodes: [___RedBlackTree.___Node]
   @usableFromInline
   var ___values: [KeyValue]
   @usableFromInline
@@ -66,8 +66,8 @@ extension RedBlackTreeDictionary {
   where S: Sequence, S.Element == (Key, Value) {
     // valuesは一旦全部の分を確保する
     var _values: [Element] = keysAndValues.map { ($0.0, $0.1) }
-    var _header: RedBlackTree.___Header = .zero
-    self.___nodes = [RedBlackTree.___Node](
+    var _header: ___RedBlackTree.___Header = .zero
+    self.___nodes = [___RedBlackTree.___Node](
       unsafeUninitializedCapacity: _values.count
     ) { _nodes, initializedCount in
       withUnsafeMutablePointer(to: &_header) { _header in
@@ -133,8 +133,8 @@ extension RedBlackTreeDictionary {
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
     // valuesは一旦全部の分を確保する
     var _values: [Element] = keysAndValues.map { ($0.0, $0.1) }
-    var _header: RedBlackTree.___Header = .zero
-    self.___nodes = try [RedBlackTree.___Node](
+    var _header: ___RedBlackTree.___Header = .zero
+    self.___nodes = try [___RedBlackTree.___Node](
       unsafeUninitializedCapacity: _values.count
     ) { _nodes, initializedCount in
       try withUnsafeMutablePointer(to: &_header) { _header in
@@ -393,7 +393,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   public
     typealias Element = KeyValue
 
-  @inlinable public subscript(position: RedBlackTree.Index) -> KeyValue {
+  @inlinable public subscript(position: ___RedBlackTree.Index) -> KeyValue {
     ___values[position.pointer]
   }
 

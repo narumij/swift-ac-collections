@@ -1,7 +1,7 @@
 import Foundation
 @testable import RedBlackTreeModule
 
-extension Collection where Element == RedBlackTree.___Node, Index == Int {
+extension Collection where Element == ___RedBlackTree.___Node, Index == Int {
     
     func graphviz() -> String {
         let header = """

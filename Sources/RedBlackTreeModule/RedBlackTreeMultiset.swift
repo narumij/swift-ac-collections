@@ -77,15 +77,15 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
     typealias Element = Element
 
   public
-    typealias Index = RedBlackTree.Index
+    typealias Index = ___RedBlackTree.Index
 
   @usableFromInline
   typealias _Key = Element
 
   @usableFromInline
-  var ___header: RedBlackTree.___Header
+  var ___header: ___RedBlackTree.___Header
   @usableFromInline
-  var ___nodes: [RedBlackTree.___Node]
+  var ___nodes: [___RedBlackTree.___Node]
   @usableFromInline
   var ___values: [Element]
   @usableFromInline
@@ -165,8 +165,8 @@ extension RedBlackTreeMultiset {
   where Element == Source.Element, Source: Sequence {
     // 全数使うため、一度確保すると、そのまま
     var _values: [Element] = sequence + []
-    var _header: RedBlackTree.___Header = .zero
-    self.___nodes = [RedBlackTree.___Node](
+    var _header: ___RedBlackTree.___Header = .zero
+    self.___nodes = [___RedBlackTree.___Node](
       unsafeUninitializedCapacity: _values.count
     ) { _nodes, initializedCount in
       withUnsafeMutablePointer(to: &_header) { _header in
@@ -296,7 +296,7 @@ extension RedBlackTreeMultiset: _UnsafeMutatingHandleBase {
 
 extension RedBlackTreeMultiset: InsertMultiProtocol {}
 extension RedBlackTreeMultiset: EraseMultiProtocol {}
-extension RedBlackTreeMultiset: RedBlackTree.SetInternal {}
+extension RedBlackTreeMultiset: ___RedBlackTree.SetInternal {}
 extension RedBlackTreeMultiset: RedBlackTreeEraseProtocol {}
 
 extension RedBlackTreeMultiset {
@@ -516,7 +516,7 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset: BidirectionalCollection {
 
-  @inlinable public subscript(position: RedBlackTree.Index) -> Element {
+  @inlinable public subscript(position: ___RedBlackTree.Index) -> Element {
     ___values[position.pointer]
   }
 

@@ -23,12 +23,12 @@
 import Collections
 import Foundation
 
-extension RedBlackTree {
+extension ___RedBlackTree {
 
   /// メモ化向け
   @frozen
   public struct ___MapBase<KeyInfo, Value>
-  where KeyInfo: RedBlackTree.KeyProtocol  //, KeyInfo.Key: Equatable
+  where KeyInfo: ___RedBlackTree.KeyProtocol  //, KeyInfo.Key: Equatable
   {
 
     public
@@ -68,9 +68,9 @@ extension RedBlackTree {
     }
 
     @usableFromInline
-    var ___header: RedBlackTree.___Header
+    var ___header: ___RedBlackTree.___Header
     @usableFromInline
-    var ___nodes: [RedBlackTree.___Node]
+    var ___nodes: [___RedBlackTree.___Node]
     @usableFromInline
     var ___values: [Element]
     @usableFromInline
@@ -81,7 +81,7 @@ extension RedBlackTree {
   }
 }
 
-extension RedBlackTree.___MapBase: ValueComparer {
+extension ___RedBlackTree.___MapBase: ValueComparer {
 
   @inlinable
   static func __key(_ kv: (Key, Value)) -> Key { kv.0 }
@@ -95,9 +95,9 @@ extension RedBlackTree.___MapBase: ValueComparer {
   }
 }
 
-extension RedBlackTree.___MapBase: RedBlackTreeContainerBase, _UnsafeHandleBase {}
+extension ___RedBlackTree.___MapBase: RedBlackTreeContainerBase, _UnsafeHandleBase {}
 
-extension RedBlackTree.___MapBase: _UnsafeMutatingHandleBase {
+extension ___RedBlackTree.___MapBase: _UnsafeMutatingHandleBase {
 
   @inlinable
   @inline(__always)
@@ -116,7 +116,7 @@ extension RedBlackTree.___MapBase: _UnsafeMutatingHandleBase {
   }
 }
 
-extension RedBlackTree.___MapBase: InsertUniqueProtocol, EraseProtocol {
+extension ___RedBlackTree.___MapBase: InsertUniqueProtocol, EraseProtocol {
 
   @inlinable
   mutating func __construct_node(_ k: (Key, Value)) -> _NodePtr {

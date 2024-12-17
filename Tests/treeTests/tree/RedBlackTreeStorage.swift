@@ -1,7 +1,7 @@
 import Foundation
 @testable import RedBlackTreeModule
 
-extension RedBlackTree {
+extension ___RedBlackTree {
     
     public final class Storage<Element: Comparable> {
         
@@ -9,9 +9,9 @@ extension RedBlackTree {
         public init() { }
         
         @usableFromInline
-        var header: RedBlackTree.___Header = .init()
+        var header: ___RedBlackTree.___Header = .init()
         @usableFromInline
-        var nodes: [RedBlackTree.___Node] = []
+        var nodes: [___RedBlackTree.___Node] = []
         @usableFromInline
         var values: [Element] = []
         
@@ -23,7 +23,7 @@ extension RedBlackTree {
     }
 }
 
-extension RedBlackTree.Storage {
+extension ___RedBlackTree.Storage {
     
     @inlinable
     @inline(__always)
@@ -41,7 +41,7 @@ extension RedBlackTree.Storage {
     }
 }
 
-extension RedBlackTree.Storage {
+extension ___RedBlackTree.Storage {
     
     @inlinable
     func __construct_node(_ k: Element) -> _NodePtr {
@@ -101,7 +101,7 @@ extension RedBlackTree.Storage {
     }
 }
 
-extension RedBlackTree.Storage {
+extension ___RedBlackTree.Storage {
     
     @inlinable
     public
@@ -129,7 +129,7 @@ extension RedBlackTree.Storage {
 
 }
 
-extension RedBlackTree.Storage {
+extension ___RedBlackTree.Storage {
     
     @inlinable func
     __get_np(_ p: _NodePtr) -> _NodePtr { p }

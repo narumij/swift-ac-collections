@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension RedBlackTree {
+extension ___RedBlackTree {
 
   public struct ___Node {
 
@@ -61,9 +61,9 @@ extension RedBlackTree {
   }
 }
 
-extension RedBlackTree.___Node: Equatable {}
+extension ___RedBlackTree.___Node: Equatable {}
 
-extension RedBlackTree.___Node {
+extension ___RedBlackTree.___Node {
   
   @inlinable
   mutating func invalidate() {

@@ -72,16 +72,16 @@ public struct RedBlackTreeSet<Element: Comparable> {
     typealias Element = Element
 
   public
-    typealias Index = RedBlackTree.Index
+    typealias Index = ___RedBlackTree.Index
 
   @usableFromInline
   typealias _Key = Element
 
   @usableFromInline
-  var ___header: RedBlackTree.___Header
+  var ___header: ___RedBlackTree.___Header
 
   @usableFromInline
-  var ___nodes: [RedBlackTree.___Node]
+  var ___nodes: [___RedBlackTree.___Node]
 
   @usableFromInline
   var ___values: [Element]
@@ -145,9 +145,9 @@ extension RedBlackTreeSet {
   where Element == Source.Element, Source: Sequence {
     // valuesは一旦全部の分を確保する
     var _values: [Element] = sequence + []
-    var _header: RedBlackTree.___Header = .zero
+    var _header: ___RedBlackTree.___Header = .zero
     // nodesの初期化回数を減らそうとして以下のようにしている
-    self.___nodes = [RedBlackTree.___Node](
+    self.___nodes = [___RedBlackTree.___Node](
       unsafeUninitializedCapacity: _values.count
     ) { _nodes, initializedCount in
       withUnsafeMutablePointer(to: &_header) { _header in
@@ -282,7 +282,7 @@ extension RedBlackTreeSet: _UnsafeMutatingHandleBase {
 
 extension RedBlackTreeSet: InsertUniqueProtocol {}
 extension RedBlackTreeSet: RedBlackTreeEraseProtocol {}
-extension RedBlackTreeSet: RedBlackTree.SetInternal {}
+extension RedBlackTreeSet: ___RedBlackTree.SetInternal {}
 
 extension RedBlackTreeSet {
 
@@ -806,7 +806,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   /// - Complexity: O(1)。
   ///
   /// - Precondition: `position` は `startIndex` 以上、`endIndex` 未満である必要があります。
-  @inlinable public subscript(position: RedBlackTree.Index) -> Element {
+  @inlinable public subscript(position: ___RedBlackTree.Index) -> Element {
     ___values[position.pointer]
   }
 

@@ -26,8 +26,8 @@ import Foundation
 @usableFromInline
 protocol RedBlackTreeContainerBase: EndProtocol, ValueComparer {
   associatedtype Element
-  var ___header: RedBlackTree.___Header { get set }
-  var ___nodes: [RedBlackTree.___Node] { get set }
+  var ___header: ___RedBlackTree.___Header { get set }
+  var ___nodes: [___RedBlackTree.___Node] { get set }
   var ___values: [Element] { get set }
   var ___stock: Heap<_NodePtr> { get set }
 }

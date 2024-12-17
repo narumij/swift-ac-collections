@@ -22,5 +22,5 @@
 
 import Foundation
 
-public enum RedBlackTree {}
+public enum ___RedBlackTree {}
 

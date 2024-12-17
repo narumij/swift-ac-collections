@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension RedBlackTree {
+extension ___RedBlackTree {
 
   public
     enum Index
@@ -47,7 +47,7 @@ extension RedBlackTree {
   }
 }
 
-extension Optional where Wrapped == RedBlackTree.Index {
+extension Optional where Wrapped == ___RedBlackTree.Index {
   @inlinable
   init(_ ptr: _NodePtr) {
     switch ptr {
@@ -61,9 +61,9 @@ extension Optional where Wrapped == RedBlackTree.Index {
   }
 }
 
-extension RedBlackTree.Index: Comparable {}
+extension ___RedBlackTree.Index: Comparable {}
 
-extension RedBlackTree.Index: ExpressibleByNilLiteral {
+extension ___RedBlackTree.Index: ExpressibleByNilLiteral {
   public init(nilLiteral: ()) {
     self = .end
   }

@@ -24,7 +24,7 @@ import Foundation
 
 @frozen
 @usableFromInline
-struct _UnsafeMutatingHandle<VC> where VC: ValueComparer {
+struct ___UnsafeMutatingHandle<VC> where VC: ValueComparer {
 
   @inlinable @inline(__always)
   init(
@@ -44,25 +44,25 @@ struct _UnsafeMutatingHandle<VC> where VC: ValueComparer {
   let __value_ptr: UnsafeMutablePointer<Element>
 }
 
-extension _UnsafeMutatingHandle: _UnsafeHandleCommon {
+extension ___UnsafeMutatingHandle: ___UnsafeHandleCommon {
 
   @inlinable func __value_(_ p: _NodePtr) -> _Key {
     __value_(__value_ptr[p])
   }
 }
 
-extension _UnsafeMutatingHandle: UpdateHandleImpl {}
-extension _UnsafeMutatingHandle: NodeFindProtocol & NodeFindEtcProtocol & FindLeafEtcProtocol {}
-extension _UnsafeMutatingHandle: NodeInsertProtocol {}
-extension _UnsafeMutatingHandle: RemoveProtocol {}
+extension ___UnsafeMutatingHandle: ___RedBlackTreeUpdateHandleImpl {}
+extension ___UnsafeMutatingHandle: NodeFindProtocol & NodeFindEtcProtocol & FindLeafEtcProtocol {}
+extension ___UnsafeMutatingHandle: NodeInsertProtocol {}
+extension ___UnsafeMutatingHandle: RemoveProtocol {}
 
 @usableFromInline
-protocol _UnsafeMutatingHandleBase {
+protocol ___UnsafeMutatingHandleBase {
   associatedtype VC: ValueComparer
-  mutating func _update<R>(_ body: (_UnsafeMutatingHandle<VC>) throws -> R) rethrows -> R
+  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<VC>) throws -> R) rethrows -> R
 }
 
-extension _UnsafeMutatingHandleBase {
+extension ___UnsafeMutatingHandleBase {
 
   @inlinable
   mutating func __insert_node_at(_ __parent: _NodePtr, _ __child: _NodeRef, _ __new_node: _NodePtr)
@@ -74,5 +74,4 @@ extension _UnsafeMutatingHandleBase {
   mutating func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {
     _update { $0.__remove_node_pointer(__ptr) }
   }
-
 }

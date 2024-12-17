@@ -24,7 +24,7 @@ struct _UnsafeUpdateHandle<Element: Comparable> {
   let __value_ptr: UnsafeMutablePointer<Element>
 }
 
-extension _UnsafeUpdateHandle: UpdateHandleImpl {}
+extension _UnsafeUpdateHandle: ___RedBlackTreeUpdateHandleImpl {}
 extension _UnsafeUpdateHandle: NodeFindProtocol & NodeFindEtcProtocol {
     @inlinable
     func value_comp(_ a: Element, _ b: Element) -> Bool {

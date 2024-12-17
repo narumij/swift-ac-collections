@@ -80,7 +80,7 @@ extension RedBlackTreeDictionary {
             defer { count += 1 }
             return count
           }
-          let tree = _UnsafeMutatingHandle<Self>(
+          let tree = ___UnsafeMutatingHandle<Self>(
             __header_ptr: _header,
             __node_ptr: _nodes.baseAddress!,
             __value_ptr: _values.baseAddress!)
@@ -147,7 +147,7 @@ extension RedBlackTreeDictionary {
             defer { count += 1 }
             return count
           }
-          let tree = _UnsafeMutatingHandle<Self>(
+          let tree = ___UnsafeMutatingHandle<Self>(
             __header_ptr: _header,
             __node_ptr: _nodes.baseAddress!,
             __value_ptr: _values.baseAddress!)
@@ -214,18 +214,18 @@ extension RedBlackTreeDictionary: ValueComparer {
   }
 }
 
-extension RedBlackTreeDictionary: RedBlackTreeContainerBase, _UnsafeHandleBase {}
+extension RedBlackTreeDictionary: ___RedBlackTreeContainerBase, ___UnsafeHandleBase {}
 
-extension RedBlackTreeDictionary: _UnsafeMutatingHandleBase {
+extension RedBlackTreeDictionary: ___UnsafeMutatingHandleBase {
 
   @inlinable
   @inline(__always)
-  mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
+  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
     return try withUnsafeMutablePointer(to: &___header) { header in
       try ___nodes.withUnsafeMutableBufferPointer { nodes in
         try ___values.withUnsafeMutableBufferPointer { values in
           try body(
-            _UnsafeMutatingHandle<Self>(
+            ___UnsafeMutatingHandle<Self>(
               __header_ptr: header,
               __node_ptr: nodes.baseAddress!,
               __value_ptr: values.baseAddress!))
@@ -291,7 +291,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary: RedBlackTreeEraseProtocol {}
+extension RedBlackTreeDictionary: ___RedBlackTreeEraseProtocol {}
 
 extension RedBlackTreeDictionary {
 
@@ -352,7 +352,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary: RedBlackTreeSetContainer {}
+extension RedBlackTreeDictionary: ___RedBlackTreeSetContainer {}
 
 extension RedBlackTreeDictionary {
 

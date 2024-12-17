@@ -4,7 +4,7 @@ import RedBlackTreeModule
 struct MemoizeCache1<A, B>
 where A: Comparable, B: Comparable {
   @usableFromInline
-  enum Key: ___RedBlackTree.KeyProtocol
+  enum Key: ___RedBlackTreeKeyProtocol
   where A: Comparable {
     @inlinable
     static func value_comp(_ a: A, _ b: A) -> Bool {
@@ -12,11 +12,11 @@ where A: Comparable, B: Comparable {
     }
   }
   @usableFromInline
-  init(__memo: ___RedBlackTree.___MapBase<Key, B> = .init()) {
+  init(__memo: ___RedBlackTreeMapBase<Key, B> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: ___RedBlackTree.___MapBase<Key, B> = .init()
+  var __memo: ___RedBlackTreeMapBase<Key, B> = .init()
   @inlinable
   subscript(a: A) -> B? {
     get { __memo[a] }
@@ -28,7 +28,7 @@ where A: Comparable, B: Comparable {
 struct MemoizeCache2<A, B, C>
 where A: Comparable, B: Comparable {
   @usableFromInline
-  enum Key: ___RedBlackTree.KeyProtocol
+  enum Key: ___RedBlackTreeKeyProtocol
   where A: Comparable, B: Comparable {
     @inlinable
     static func value_comp(_ a: (A, B), _ b: (A, B)) -> Bool {
@@ -36,11 +36,11 @@ where A: Comparable, B: Comparable {
     }
   }
   @usableFromInline
-  init(__memo: ___RedBlackTree.___MapBase<Key, C> = .init()) {
+  init(__memo: ___RedBlackTreeMapBase<Key, C> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: ___RedBlackTree.___MapBase<Key, C> = .init()
+  var __memo: ___RedBlackTreeMapBase<Key, C> = .init()
   @inlinable
   subscript(a: A, b: B) -> C? {
     get { __memo[(a, b)] }
@@ -52,7 +52,7 @@ where A: Comparable, B: Comparable {
 struct MemoizeCache3<A, B, C, D>
 where A: Comparable, B: Comparable, C: Comparable {
   @usableFromInline
-  enum Key: ___RedBlackTree.KeyProtocol
+  enum Key: ___RedBlackTreeKeyProtocol
   where A: Comparable, B: Comparable, C: Comparable {
     @inlinable
     static func value_comp(_ a: (A, B, C), _ b: (A, B, C)) -> Bool {
@@ -60,11 +60,11 @@ where A: Comparable, B: Comparable, C: Comparable {
     }
   }
   @usableFromInline
-  init(__memo: ___RedBlackTree.___MapBase<Key, D> = .init()) {
+  init(__memo: ___RedBlackTreeMapBase<Key, D> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: ___RedBlackTree.___MapBase<Key, D> = .init()
+  var __memo: ___RedBlackTreeMapBase<Key, D> = .init()
   @inlinable
   subscript(a: A, b: B, c: C) -> D? {
     get { __memo[(a, b, c)] }
@@ -76,7 +76,7 @@ where A: Comparable, B: Comparable, C: Comparable {
 struct MemoizeCache4<A, B, C, D, E>
 where A: Comparable, B: Comparable, C: Comparable, D: Comparable {
   @usableFromInline
-  enum Key: ___RedBlackTree.KeyProtocol
+  enum Key: ___RedBlackTreeKeyProtocol
   where A: Comparable, B: Comparable, C: Comparable, D: Comparable {
     @inlinable
     static func value_comp(_ a: (A, B, C, D), _ b: (A, B, C, D)) -> Bool {
@@ -84,11 +84,11 @@ where A: Comparable, B: Comparable, C: Comparable, D: Comparable {
     }
   }
   @usableFromInline
-  init(__memo: ___RedBlackTree.___MapBase<Key, E> = .init()) {
+  init(__memo: ___RedBlackTreeMapBase<Key, E> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: ___RedBlackTree.___MapBase<Key, E> = .init()
+  var __memo: ___RedBlackTreeMapBase<Key, E> = .init()
   @inlinable
   subscript(a: A, b: B, c: C, d: D) -> E? {
     get { __memo[(a, b, c, d)] }

@@ -22,18 +22,18 @@
 
 import Foundation
 
-extension ___RedBlackTree {
+public
+  protocol ___RedBlackTreeKeyProtocol
+{
+  associatedtype Key
+  static func value_comp(_ a: Key, _ b: Key) -> Bool
+}
 
-  public
-    protocol KeyProtocol
-  {
-    associatedtype Key
-    static func value_comp(_ a: Key, _ b: Key) -> Bool
-  }
+extension ___RedBlackTree {
 
   @frozen
   public
-    enum KeyInfo<Key: Comparable>: ___RedBlackTree.KeyProtocol
+    enum KeyInfo<Key: Comparable>: ___RedBlackTreeKeyProtocol
   {
     public typealias Key = Key
     @inlinable

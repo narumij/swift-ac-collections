@@ -24,7 +24,7 @@ import Collections
 import Foundation
 
 @usableFromInline
-protocol RedBlackTreeContainerBase: EndProtocol, ValueComparer {
+protocol ___RedBlackTreeContainerBase: EndProtocol, ValueComparer {
   associatedtype Element
   var ___header: ___RedBlackTree.___Header { get set }
   var ___nodes: [___RedBlackTree.___Node] { get set }
@@ -32,7 +32,7 @@ protocol RedBlackTreeContainerBase: EndProtocol, ValueComparer {
   var ___stock: Heap<_NodePtr> { get set }
 }
 
-extension RedBlackTreeContainerBase {
+extension ___RedBlackTreeContainerBase {
 
   @inlinable public var ___count: Int {
     ___header.size
@@ -55,16 +55,16 @@ extension RedBlackTreeContainerBase {
   }
 }
 
-extension RedBlackTreeContainerBase {
+extension ___RedBlackTreeContainerBase {
 
   @inlinable
   @inline(__always)
-  func _read<R>(_ body: (_UnsafeHandle<Self>) throws -> R) rethrows -> R {
+  func _read<R>(_ body: (___UnsafeHandle<Self>) throws -> R) rethrows -> R {
     return try withUnsafePointer(to: ___header) { header in
       try ___nodes.withUnsafeBufferPointer { nodes in
         try ___values.withUnsafeBufferPointer { values in
           try body(
-            _UnsafeHandle<Self>(
+            ___UnsafeHandle<Self>(
               __header_ptr: header,
               __node_ptr: nodes.baseAddress!,
               __value_ptr: values.baseAddress!))
@@ -74,7 +74,7 @@ extension RedBlackTreeContainerBase {
   }
 }
 
-extension RedBlackTreeContainerBase {
+extension ___RedBlackTreeContainerBase {
 
   @inlinable
   mutating func __construct_node(_ k: Element) -> _NodePtr {
@@ -96,17 +96,17 @@ extension RedBlackTreeContainerBase {
 }
 
 @usableFromInline
-protocol RedBlackTreeContainer: RedBlackTreeContainerBase {}
+protocol ___RedBlackTreeContainer: ___RedBlackTreeContainerBase {}
 
 @usableFromInline
-protocol RedBlackTreeSetContainer: RedBlackTreeContainer {}
+protocol ___RedBlackTreeSetContainer: ___RedBlackTreeContainer {}
 
 @usableFromInline
-protocol RedBlackTreeEraseProtocol: RedBlackTreeContainer, EraseProtocol {
+protocol ___RedBlackTreeEraseProtocol: ___RedBlackTreeContainer, EraseProtocol {
   mutating func erase(_ __p: _NodePtr) -> _NodePtr
 }
 
-extension RedBlackTreeEraseProtocol {
+extension ___RedBlackTreeEraseProtocol {
   
   @inlinable
   @discardableResult

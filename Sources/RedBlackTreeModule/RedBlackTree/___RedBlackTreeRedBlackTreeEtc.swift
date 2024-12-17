@@ -20,20 +20,17 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-extension ___RedBlackTree {
-  
   @usableFromInline
-  protocol SetInternal: ValueComparer
+  protocol ___RedBlackTreeSetInternal: ValueComparer
   where Element == _Key, Element: Equatable {
-    func _read<R>(_ body: (_UnsafeHandle<Self>) throws -> R) rethrows -> R
+    func _read<R>(_ body: (___UnsafeHandle<Self>) throws -> R) rethrows -> R
   }
-}
 
-extension ___RedBlackTree.SetInternal {
+extension ___RedBlackTreeSetInternal {
   public typealias Pointer = _NodePtr
 }
 
-extension ___RedBlackTree.SetInternal {
+extension ___RedBlackTreeSetInternal {
 
   @inlinable @inline(__always)
   func ___contains(_ p: Element) -> Bool {
@@ -61,7 +58,7 @@ extension ___RedBlackTree.SetInternal {
   }
 }
 
-extension ___RedBlackTree.SetInternal {
+extension ___RedBlackTreeSetInternal {
 
   @inlinable @inline(__always)
   func ___lower_bound(_ p: Element) -> _NodePtr {
@@ -74,7 +71,7 @@ extension ___RedBlackTree.SetInternal {
   }
 }
 
-extension ___RedBlackTree.SetInternal {
+extension ___RedBlackTreeSetInternal {
 
   @inlinable @inline(__always)
   func ___lt(_ p: Element) -> Element? {

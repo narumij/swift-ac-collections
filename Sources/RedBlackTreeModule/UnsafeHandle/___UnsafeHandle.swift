@@ -24,7 +24,7 @@ import Foundation
 
 @frozen
 @usableFromInline
-struct _UnsafeHandle<VC> where VC: ValueComparer {
+struct ___UnsafeHandle<VC> where VC: ValueComparer {
 
   @inlinable
   @inline(__always)
@@ -45,23 +45,23 @@ struct _UnsafeHandle<VC> where VC: ValueComparer {
   let __value_ptr: UnsafePointer<Element>
 }
 
-extension _UnsafeHandle: _UnsafeHandleCommon {
+extension ___UnsafeHandle: ___UnsafeHandleCommon {
 
   @inlinable func __value_(_ p: _NodePtr) -> _Key {
     __value_(__value_ptr[p])
   }
 }
 
-extension _UnsafeHandle: ReadHandleImpl {}
-extension _UnsafeHandle: NodeFindProtocol & NodeFindEtcProtocol & FindLeafEtcProtocol {}
+extension ___UnsafeHandle: ___RedBlackTreeReadHandleImpl {}
+extension ___UnsafeHandle: NodeFindProtocol & NodeFindEtcProtocol & FindLeafEtcProtocol {}
 
 @usableFromInline
-protocol _UnsafeHandleBase {
+protocol ___UnsafeHandleBase {
   associatedtype VC: ValueComparer
-  func _read<R>(_ body: (_UnsafeHandle<VC>) throws -> R) rethrows -> R
+  func _read<R>(_ body: (___UnsafeHandle<VC>) throws -> R) rethrows -> R
 }
 
-extension _UnsafeHandleBase {
+extension ___UnsafeHandleBase {
 
   @inlinable
   func __ref_(_ rhs: _NodeRef) -> _NodePtr {
@@ -90,7 +90,7 @@ extension _UnsafeHandleBase {
   }
 }
 
-extension _UnsafeHandle {
+extension ___UnsafeHandle {
 
   @inlinable
   @inline(__always)

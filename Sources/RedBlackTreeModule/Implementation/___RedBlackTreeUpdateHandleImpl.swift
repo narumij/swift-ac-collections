@@ -23,35 +23,35 @@
 import Foundation
 
 @usableFromInline
-protocol ReadHandleImpl: MemberProtocol & ValueProtocol & EqualProtocol & RootImpl & RefImpl & RootPtrImpl {
+protocol ___RedBlackTreeUpdateHandleImpl: RefSetImpl & RootImpl & RootPtrImpl {
   associatedtype Element
-  var __header_ptr: UnsafePointer<___RedBlackTree.___Header> { get }
-  var __node_ptr: UnsafePointer<___RedBlackTree.___Node> { get }
-  var __value_ptr: UnsafePointer<Element> { get }
+  var __header_ptr: UnsafeMutablePointer<___RedBlackTree.___Header> { get }
+  var __node_ptr: UnsafeMutablePointer<___RedBlackTree.___Node> { get }
+  var __value_ptr: UnsafeMutablePointer<Element> { get }
 }
 
-extension ReadHandleImpl {
+extension ___RedBlackTreeUpdateHandleImpl {
 
   @inlinable
-  @inline(__always)
   var __left_: _NodePtr {
-    __header_ptr.pointee.__left_
+    @inline(__always) get { __header_ptr.pointee.__left_ }
+    nonmutating set { __header_ptr.pointee.__left_ = newValue }
   }
 
   @inlinable
-  @inline(__always)
   var __begin_node: _NodePtr {
-    __header_ptr.pointee.__begin_node
+    @inline(__always) get { __header_ptr.pointee.__begin_node }
+    nonmutating set { __header_ptr.pointee.__begin_node = newValue }
   }
 
   @inlinable
-  @inline(__always)
   var size: Int {
-    __header_ptr.pointee.size
+    @inline(__always) get { __header_ptr.pointee.size }
+    nonmutating set { __header_ptr.pointee.size = newValue }
   }
 }
 
-extension ReadHandleImpl {
+extension ___RedBlackTreeUpdateHandleImpl {
 
   @inlinable
   @inline(__always)
@@ -80,7 +80,32 @@ extension ReadHandleImpl {
   }
 }
 
-extension ReadHandleImpl {
+extension ___RedBlackTreeUpdateHandleImpl {
+
+  @inlinable
+  func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
+    __node_ptr[lhs].__is_black_ = rhs
+  }
+  @inlinable
+  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+    __node_ptr[lhs].__parent_ = rhs
+  }
+  @inlinable
+  func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+    if lhs == .end {
+      __left_ = rhs
+    } else {
+      __node_ptr[lhs].__left_ = rhs
+    }
+  }
+  @inlinable
+  func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+    __node_ptr[lhs].__right_ = rhs
+  }
+}
+
+extension ___RedBlackTreeUpdateHandleImpl {
+
   @inlinable
   @inline(__always)
   func __value_(_ p: _NodePtr) -> Element { __value_ptr[p] }

@@ -31,11 +31,11 @@ protocol ValueComparer {
 }
 
 @usableFromInline
-protocol _UnsafeHandleCommon {
+protocol ___UnsafeHandleCommon {
   associatedtype VC: ValueComparer
 }
 
-extension _UnsafeHandleCommon {
+extension ___UnsafeHandleCommon {
 
   @usableFromInline
   typealias _Key = VC._Key

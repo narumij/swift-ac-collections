@@ -23,12 +23,10 @@
 import Collections
 import Foundation
 
-extension ___RedBlackTree {
-
   /// メモ化向け
   @frozen
-  public struct ___MapBase<KeyInfo, Value>
-  where KeyInfo: ___RedBlackTree.KeyProtocol  //, KeyInfo.Key: Equatable
+  public struct ___RedBlackTreeMapBase<KeyInfo, Value>
+  where KeyInfo: ___RedBlackTreeKeyProtocol  //, KeyInfo.Key: Equatable
   {
 
     public
@@ -79,9 +77,9 @@ extension ___RedBlackTree {
     public var count: Int { ___header.size }
     public var isEmpty: Bool { count == 0 }
   }
-}
 
-extension ___RedBlackTree.___MapBase: ValueComparer {
+
+extension ___RedBlackTreeMapBase: ValueComparer {
 
   @inlinable
   static func __key(_ kv: (Key, Value)) -> Key { kv.0 }
@@ -95,18 +93,18 @@ extension ___RedBlackTree.___MapBase: ValueComparer {
   }
 }
 
-extension ___RedBlackTree.___MapBase: RedBlackTreeContainerBase, _UnsafeHandleBase {}
+extension ___RedBlackTreeMapBase: ___RedBlackTreeContainerBase, ___UnsafeHandleBase {}
 
-extension ___RedBlackTree.___MapBase: _UnsafeMutatingHandleBase {
+extension ___RedBlackTreeMapBase: ___UnsafeMutatingHandleBase {
 
   @inlinable
   @inline(__always)
-  mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
+  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
     return try withUnsafeMutablePointer(to: &___header) { header in
       try ___nodes.withUnsafeMutableBufferPointer { nodes in
         try ___values.withUnsafeMutableBufferPointer { values in
           try body(
-            _UnsafeMutatingHandle<Self>(
+            ___UnsafeMutatingHandle<Self>(
               __header_ptr: header,
               __node_ptr: nodes.baseAddress!,
               __value_ptr: values.baseAddress!))
@@ -116,7 +114,7 @@ extension ___RedBlackTree.___MapBase: _UnsafeMutatingHandleBase {
   }
 }
 
-extension ___RedBlackTree.___MapBase: InsertUniqueProtocol, EraseProtocol {
+extension ___RedBlackTreeMapBase: InsertUniqueProtocol, EraseProtocol {
 
   @inlinable
   mutating func __construct_node(_ k: (Key, Value)) -> _NodePtr {

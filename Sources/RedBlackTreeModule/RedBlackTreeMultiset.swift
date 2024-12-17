@@ -177,7 +177,7 @@ extension RedBlackTreeMultiset {
             defer { count += 1 }
             return count
           }
-          let tree = _UnsafeMutatingHandle<Self>(
+          let tree = ___UnsafeMutatingHandle<Self>(
             __header_ptr: _header,
             __node_ptr: _nodes.baseAddress!,
             __value_ptr: _values.baseAddress!)
@@ -270,21 +270,21 @@ extension RedBlackTreeMultiset: ValueComparer {
   }
 }
 
-extension RedBlackTreeMultiset: RedBlackTreeSetContainer {}
+extension RedBlackTreeMultiset: ___RedBlackTreeSetContainer {}
 
-extension RedBlackTreeMultiset: _UnsafeHandleBase {}
+extension RedBlackTreeMultiset: ___UnsafeHandleBase {}
 
-extension RedBlackTreeMultiset: _UnsafeMutatingHandleBase {
+extension RedBlackTreeMultiset: ___UnsafeMutatingHandleBase {
 
   // プロトコルでupdateが書けなかったため、個別で実装している
   @inlinable
   @inline(__always)
-  mutating func _update<R>(_ body: (_UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
+  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
     return try withUnsafeMutablePointer(to: &___header) { header in
       try ___nodes.withUnsafeMutableBufferPointer { nodes in
         try ___values.withUnsafeMutableBufferPointer { values in
           try body(
-            _UnsafeMutatingHandle<Self>(
+            ___UnsafeMutatingHandle<Self>(
               __header_ptr: header,
               __node_ptr: nodes.baseAddress!,
               __value_ptr: values.baseAddress!))
@@ -296,8 +296,8 @@ extension RedBlackTreeMultiset: _UnsafeMutatingHandleBase {
 
 extension RedBlackTreeMultiset: InsertMultiProtocol {}
 extension RedBlackTreeMultiset: EraseMultiProtocol {}
-extension RedBlackTreeMultiset: ___RedBlackTree.SetInternal {}
-extension RedBlackTreeMultiset: RedBlackTreeEraseProtocol {}
+extension RedBlackTreeMultiset: ___RedBlackTreeSetInternal {}
+extension RedBlackTreeMultiset: ___RedBlackTreeEraseProtocol {}
 
 extension RedBlackTreeMultiset {
 

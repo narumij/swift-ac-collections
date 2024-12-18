@@ -534,7 +534,19 @@ extension RedBlackTreeMultiset {
   /// - Complexity: O(1)。
   @inlinable
   public var first: Element? {
-    startIndex == .end ? nil : self[startIndex]
+    guard !isEmpty else { return nil }
+    return self[startIndex]
+  }
+  
+  /// セット内の最大の要素を返します。
+  ///
+  /// - Returns: セット内の最大の要素。セットが空の場合は `nil`。
+  ///
+  /// - Complexity: O(1)。
+  @inlinable
+  public var last: Element? {
+    guard !isEmpty else { return nil }
+    return self[index(before: .end)]
   }
 
   /// 指定された要素のインデックスを返します。要素がセットに存在しない場合は `nil` を返します。

@@ -381,7 +381,9 @@ extension RedBlackTreeMultiset {
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
-    precondition(!isEmpty, "Can't removeFirst from an empty Set")
+    guard !isEmpty else {
+      preconditionFailure("Can't removeFirst from an empty Set")
+    }
     return remove(at: startIndex)
   }
   
@@ -562,8 +564,7 @@ extension RedBlackTreeMultiset {
     _read {
       var __parent = _NodePtr.nullptr
       let ptr = $0.__ref_($0.__find_equal(&__parent, member))
-      if ptr == .nullptr { return nil }
-      return Index(ptr)
+      return Optional<Index>(ptr)
     }
   }
 
@@ -606,6 +607,15 @@ extension RedBlackTreeMultiset {
   }
 }
 
+extension RedBlackTreeMultiset {
+
+  @inlinable
+  func sorted() -> [Element] {
+    // _readでトラバースする方が速い可能性があるが、未検証
+    map { $0 }
+  }
+}
+
 extension RedBlackTreeMultiset: BidirectionalCollection {
 
   @inlinable public subscript(position: ___RedBlackTree.Index) -> Element {
@@ -631,14 +641,6 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
 
 /// Overwrite Default implementation for bidirectional collections.
 extension RedBlackTreeMultiset {
-
-  /// Replaces the given index with its predecessor.
-  ///
-  /// - Parameter i: A valid index of the collection. `i` must be greater than
-  ///   `startIndex`.
-  @inlinable public func formIndex(before i: inout Index) {
-    i = Index(_read { $0.__tree_prev_iter(i.pointer) })
-  }
 
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
     _read {

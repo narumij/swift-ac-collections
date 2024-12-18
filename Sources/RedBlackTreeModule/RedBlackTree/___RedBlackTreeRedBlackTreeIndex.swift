@@ -29,11 +29,15 @@ extension ___RedBlackTree {
   {
     case node(_NodePtr)
     case end
+      
     @usableFromInline
     init(_ node: _NodePtr) {
-      precondition(node != .nullptr)
+      guard node != .nullptr else {
+        preconditionFailure("_NodePtr is nullptr")
+      }
       self = node == .end ? .end : .node(node)
     }
+      
     @usableFromInline
     var pointer: _NodePtr {
       switch self {
@@ -47,24 +51,11 @@ extension ___RedBlackTree {
   }
 }
 
+extension ___RedBlackTree.Index: Comparable {}
+
 extension Optional where Wrapped == ___RedBlackTree.Index {
   @inlinable
   init(_ ptr: _NodePtr) {
-    switch ptr {
-    case .nullptr:
-      self = .none
-    case .end:
-      self = .some(.end)
-    default:
-      self = .some(.node(ptr))
-    }
-  }
-}
-
-extension ___RedBlackTree.Index: Comparable {}
-
-extension ___RedBlackTree.Index: ExpressibleByNilLiteral {
-  public init(nilLiteral: ()) {
-    self = .end
+    self = ptr == .nullptr ? .none : .some(___RedBlackTree.Index(ptr))
   }
 }

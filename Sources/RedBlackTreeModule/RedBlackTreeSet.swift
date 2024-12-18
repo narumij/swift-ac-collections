@@ -410,7 +410,9 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
-    precondition(!isEmpty, "Can't removeFirst from an empty Set")
+    guard !isEmpty else {
+      preconditionFailure("Can't removeFirst from an empty Set")
+    }
     return remove(at: startIndex)
   }
 
@@ -726,8 +728,7 @@ extension RedBlackTreeSet {
     _read {
       var __parent = _NodePtr.nullptr
       let ptr = $0.__ref_($0.__find_equal(&__parent, member))
-      if ptr == .nullptr { return nil }
-      return Index(ptr)
+      return Optional<Index>(ptr)
     }
   }
 

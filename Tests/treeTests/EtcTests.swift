@@ -36,7 +36,7 @@ final class EtcTests: XCTestCase {
 //    _ = b.index(b.startIndex, offsetBy: -1)
 //    _ = b.index(b.endIndex, offsetBy: 1)
 
-    XCTAssertEqual(b.index(b.startIndex, offsetBy: 3), nil)
+    XCTAssertEqual(b.index(b.startIndex, offsetBy: 3), .end)
     XCTAssertEqual(b.map { $0 * 2 }, [2, 4, 6])
 
     _ = b.remove(at: b.index(before: b.lowerBound(2)))

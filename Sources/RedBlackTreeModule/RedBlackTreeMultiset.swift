@@ -144,6 +144,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
+#if false
 extension RedBlackTreeMultiset {
 
   /// 指定されたシーケンスの要素を持つ赤黒木マルチセットを作成します。
@@ -202,8 +203,9 @@ extension RedBlackTreeMultiset {
     self.___stock = []
   }
 }
+#endif
 
-#if false
+#if true
   // naive
   extension RedBlackTreeMultiset {
     @inlinable @inline(__always)
@@ -395,6 +397,7 @@ extension RedBlackTreeMultiset {
     }
     return remove(at: index(before: endIndex))
   }
+
   
   /// 赤黒木セットからすべての要素を削除します。
   ///
@@ -673,7 +676,7 @@ extension RedBlackTreeMultiset {
     _ i: Index, offsetBy distance: Int, limitedBy limit: Index
   ) -> Index? {
     _read {
-      Index(
+      Optional<Self.Index>(
         $0.pointer(
           i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeMultiset"))
     }

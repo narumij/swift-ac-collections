@@ -116,6 +116,7 @@ extension ___UnsafeHandle {
     guard distance == 0 else {
       return .nullptr
     }
+    assert(ptr != .nullptr)
     return ptr
   }
 
@@ -135,6 +136,7 @@ extension ___UnsafeHandle {
     guard distance == 0 else {
       return .nullptr
     }
+    assert(ptr != .nullptr)
     return ptr
   }
   

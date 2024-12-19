@@ -387,6 +387,15 @@ extension RedBlackTreeMultiset {
     return remove(at: startIndex)
   }
   
+  @inlinable
+  @discardableResult
+  public mutating func removeLast() -> Element {
+    guard !isEmpty else {
+      preconditionFailure("Can't removeFirst from an empty Set")
+    }
+    return remove(at: index(before: endIndex))
+  }
+  
   /// 赤黒木セットからすべての要素を削除します。
   ///
   /// - Parameter keepingCapacity: `true` を指定すると、セットのバッファ容量が保持されます。

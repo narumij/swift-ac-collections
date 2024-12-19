@@ -592,6 +592,7 @@
       var s: RedBlackTreeSet<Int> = [1, 2, 3, 4]
       XCTAssertEqual(s.first, 1)
       let i = s.firstIndex(of: 2)!
+      XCTAssertEqual(s.last, 4)
       s.remove(at: i)
       XCTAssertEqual(s.map { $0 }, [1, 3, 4])
       s.removeAll(keepingCapacity: true)
@@ -604,6 +605,7 @@
       //      s.remove(at: i)
       //      s.remove(at: s.endIndex)
       XCTAssertNil(s.first)
+      XCTAssertNil(s.last)
       //      s.removeFirst()
     }
 
@@ -650,6 +652,15 @@
       XCTAssertEqual(members.removeFirst(), 5)
       XCTAssertEqual(members.removeFirst(), 7)
       XCTAssertEqual(members.removeFirst(), 9)
+    }
+    
+    func testRedBlackTreeSetRemoveLast() throws {
+      var members: RedBlackTreeSet = [1, 3, 5, 7, 9]
+      XCTAssertEqual(members.removeLast(), 9)
+      XCTAssertEqual(members.removeLast(), 7)
+      XCTAssertEqual(members.removeLast(), 5)
+      XCTAssertEqual(members.removeLast(), 3)
+      XCTAssertEqual(members.removeLast(), 1)
     }
 
     func testPerformanceDistanceFromTo() throws {

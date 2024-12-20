@@ -287,14 +287,14 @@ extension RedBlackTreeDictionary {
     }
     set {
       let (__parent, __child, _) = _prepareForKeyingModify(key)
-      _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: newValue)
+      _finalizeKeyingModify(__parent, __child, key: key, value: newValue)
     }
     @inline(__always)
     _modify {
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       var value: Value? = __ptr == .nullptr ? nil : ___values[__ptr].value
       defer {
-        _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: value)
+        _finalizeKeyingModify(__parent, __child, key: key, value: value)
       }
       yield &value
     }
@@ -310,14 +310,14 @@ extension RedBlackTreeDictionary {
     }
     set {
       let (__parent, __child, _) = _prepareForKeyingModify(key)
-      _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: newValue)
+      _finalizeKeyingModify(__parent, __child, key: key, value: newValue)
     }
     @inline(__always)
     _modify {
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       var value = __ptr == .nullptr ? defaultValue() : ___values[__ptr].value
       defer {
-        _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: value)
+        _finalizeKeyingModify(__parent, __child, key: key, value: value)
       }
       yield &value
     }
@@ -337,7 +337,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   mutating func _finalizeKeyingModify(
-    __parent: _NodePtr, __child: _NodeRef, key: Key, value: Value?
+    _ __parent: _NodePtr,_ __child: _NodeRef, key: Key, value: Value?
   ) {
     let __ptr = __ref_(__child)
     switch (__ptr, value) {

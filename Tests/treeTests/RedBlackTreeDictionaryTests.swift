@@ -24,13 +24,70 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     XCTAssertTrue(map.isEmpty)
   }
 
-  func testUsage0() throws {
+  func testUsage_1() throws {
+    var map: [Int:Int] = [:]
+    XCTAssertEqual(map[0], nil)
+    map[0] = 0
+    XCTAssertEqual(map[0], 0)
+    XCTAssertEqual(map[1], nil)
+    map[0] = nil
+    XCTAssertEqual(map[0], nil)
+    XCTAssertEqual(map[1], nil)
+    map[1] = 2
+    XCTAssertEqual(map[0], nil)
+    XCTAssertEqual(map[1], 2)
+    map[1] = nil
+    XCTAssertEqual(map[0], nil)
+    XCTAssertEqual(map[1], nil)
+  }
+  
+  func testUsage_2() throws {
+    var map: [Int:Int] = [:]
+    XCTAssertEqual(map[0], nil)
+    map[0] = 0
+    XCTAssertEqual(map[0], 0)
+    XCTAssertEqual(map[1], nil)
+    map[1] = 2
+    XCTAssertEqual(map[0], 0)
+    XCTAssertEqual(map[1], 2)
+    map[0] = nil
+    XCTAssertEqual(map[0], nil)
+    XCTAssertEqual(map[1], 2)
+    map[1] = nil
+    XCTAssertEqual(map[0], nil)
+    XCTAssertEqual(map[1], nil)
+  }
+
+  func testUsage1() throws {
     var map = RedBlackTreeDictionary<Int, Int>()
     XCTAssertEqual(map[0], nil)
     map[0] = 0
     XCTAssertEqual(map[0], 0)
     XCTAssertEqual(map[1], nil)
     map[0] = nil
+    XCTAssertEqual(map[0], nil)
+    XCTAssertEqual(map[1], nil)
+    map[1] = 2
+    XCTAssertEqual(map[0], nil)
+    XCTAssertEqual(map[1], 2)
+    map[1] = nil
+    XCTAssertEqual(map[0], nil)
+    XCTAssertEqual(map[1], nil)
+  }
+  
+  func testUsage2() throws {
+    var map = RedBlackTreeDictionary<Int, Int>()
+    XCTAssertEqual(map[0], nil)
+    map[0] = 0
+    XCTAssertEqual(map[0], 0)
+    XCTAssertEqual(map[1], nil)
+    map[1] = 2
+    XCTAssertEqual(map[0], 0)
+    XCTAssertEqual(map[1], 2)
+    map[0] = nil
+    XCTAssertEqual(map[0], nil)
+    XCTAssertEqual(map[1], 2)
+    map[1] = nil
     XCTAssertEqual(map[0], nil)
     XCTAssertEqual(map[1], nil)
   }
@@ -44,6 +101,8 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
 
   func testSubscriptDefault0() throws {
     var map: [Int: [Int]] = [:]
+    _ = map[1, default: []]
+    XCTAssertEqual(map[1], nil)
     map[1, default: []].append(1)
     XCTAssertEqual(map[1], [1])
     map[1, default: []].append(2)
@@ -60,6 +119,8 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
 
   func testSubscriptDefault() throws {
     var map: RedBlackTreeDictionary<Int, [Int]> = [:]
+    _ = map[1, default: []]
+    XCTAssertEqual(map[1], nil)
     map[1, default: []].append(1)
     XCTAssertEqual(map[1], [1])
     map[1, default: []].append(2)
@@ -72,8 +133,9 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     XCTAssertEqual(map[1], [1])
     map[1]?.append(2)
     XCTAssertEqual(map[1], [1,2])
+    _ = map[1]?.removeFirst()
+    XCTAssertEqual(map[1], [2])
   }
-
 
   func testPerformanceExample() throws {
     // This is an example of a performance test case.

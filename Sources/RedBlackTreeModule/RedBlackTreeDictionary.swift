@@ -299,6 +299,7 @@ extension RedBlackTreeDictionary {
       }
     }
     // TODO: refiine
+    @inline(__always)
     _modify {
       var value: Value?
       var __parent: _NodePtr = .nullptr
@@ -340,6 +341,7 @@ extension RedBlackTreeDictionary {
       _ = __insert_unique((key, newValue))
     }
     // TODO: refiine
+    @inline(__always)
     _modify {
       var __parent: _NodePtr = .nullptr
       var ptr = _read{ $0.__ref_($0.__find_equal(&__parent, key)) }

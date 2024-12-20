@@ -355,21 +355,6 @@ extension RedBlackTreeDictionary {
     }
     @inline(__always)
     _modify {
-#if false
-      var __parent = _NodePtr.nullptr
-      let __child = __find_equal(&__parent, key)
-      let __ptr = __ref_(__child)
-      if __ptr == .nullptr {
-        var value = defaultValue()
-        defer {
-          let __h = __construct_node((key, value))
-          __insert_node_at(__parent, __child, __h)
-        }
-        yield &value
-      } else {
-        yield &___values[__ptr].value
-      }
-#else
       var __parent = _NodePtr.nullptr
       let __child = __find_equal(&__parent, key)
       let __ptr = __ref_(__child)
@@ -378,7 +363,6 @@ extension RedBlackTreeDictionary {
         _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: value)
       }
       yield &value
-#endif
     }
   }
 }

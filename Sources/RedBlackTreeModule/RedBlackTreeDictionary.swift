@@ -52,10 +52,13 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   @usableFromInline
   var ___header: ___RedBlackTree.___Header
+
   @usableFromInline
   var ___nodes: [___RedBlackTree.___Node]
+
   @usableFromInline
   var ___values: [KeyValue]
+
   @usableFromInline
   var ___stock: Heap<_NodePtr>
 }
@@ -197,7 +200,7 @@ extension RedBlackTreeDictionary {
 #endif
 
 extension RedBlackTreeDictionary {
-  
+
   // naive
   @inlinable
   public init<S: Sequence>(
@@ -272,7 +275,7 @@ extension RedBlackTreeDictionary: ___UnsafeMutatingHandleBase {
   }
 }
 
-extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseUniqueProtocol { }
+extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseUniqueProtocol {}
 
 extension RedBlackTreeDictionary {
 
@@ -295,6 +298,7 @@ extension RedBlackTreeDictionary {
         _ = __erase_unique(key)
       }
     }
+    // TODO: implement modifiy
   }
 
   @inlinable
@@ -314,6 +318,11 @@ extension RedBlackTreeDictionary {
     set {
       _ = __insert_unique((key, newValue))
     }
+    // TODO: implement modifiy
+    //    _modify {
+    //      _ = __insert_unique((key, newValue))
+    //      ___values[position.pointer]
+    //    }
   }
 }
 
@@ -430,7 +439,9 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   public
     typealias Element = KeyValue
 
-  @inlinable public subscript(position: ___RedBlackTree.Index) -> KeyValue {
+  @inlinable
+  @inline(__always)
+  public subscript(position: ___RedBlackTree.Index) -> KeyValue {
     ___values[position.pointer]
   }
 

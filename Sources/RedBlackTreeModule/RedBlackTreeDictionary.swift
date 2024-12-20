@@ -345,17 +345,19 @@ extension RedBlackTreeDictionary {
     }
     @inline(__always)
     _modify {
-      var __parent: _NodePtr = .nullptr
-      let ptr = _read { $0.__ref_($0.__find_equal(&__parent, key)) }
-      var value: Value = ptr == .nullptr ? defaultValue() : ___values[ptr].value
-      defer {
-        if ptr == .nullptr {
-          _ = __insert_unique((key, value))
-        } else {
-          ___values[ptr] = (key, value)
+      var __parent = _NodePtr.nullptr
+      let __child = __find_equal(&__parent, key)
+      if __ref_(__child) == .nullptr {
+        var value = defaultValue()
+        defer {
+          let __h = __construct_node((key, value))
+          __insert_node_at(__parent, __child, __h)
         }
+        yield &value
       }
-      yield &value
+      else {
+        yield &___values[__ref_(__child)].value
+      }
     }
   }
 }

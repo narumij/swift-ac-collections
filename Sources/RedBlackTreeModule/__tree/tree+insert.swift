@@ -23,14 +23,14 @@
 import Foundation
 
 @usableFromInline
-protocol NodeInsertProtocol: MemberSetProtocol
+protocol InsertNodeAtProtocol: MemberSetProtocol
     & RefSetProtocol
     & SizeProtocol
     & BeginNodeProtocol
     & EndNodeProtocol
 {}
 
-extension NodeInsertProtocol {
+extension InsertNodeAtProtocol {
 
   @inlinable
   func
@@ -43,7 +43,7 @@ extension NodeInsertProtocol {
   }
 }
 
-extension NodeInsertProtocol {
+extension InsertNodeAtProtocol {
 
   @inlinable
   func
@@ -65,6 +65,7 @@ extension NodeInsertProtocol {
   }
 }
 
+// 名前が微妙
 @usableFromInline
 protocol StorageProtocol {
 
@@ -158,4 +159,13 @@ extension InsertMultiProtocol {
     __insert_node_at(__parent, __child, __h)
     return __h
   }
+}
+
+@usableFromInline
+protocol InsertOrAssignProtocol: StorageProtocol {
+  associatedtype Key
+  associatedtype Value
+}
+
+extension InsertOrAssignProtocol {
 }

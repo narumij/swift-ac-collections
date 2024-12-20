@@ -109,14 +109,25 @@ extension EndNodeProtocol {
 }
 
 @usableFromInline
-protocol EndProtocol {
+protocol BeginProtocol: BeginNodeProtocol {
+  func begin() -> _NodePtr
+}
+
+extension BeginProtocol {
+  @inlinable
+  @inline(__always)
+  func begin() -> _NodePtr { __begin_node }
+}
+
+@usableFromInline
+protocol EndProtocol: EndNodeProtocol {
   func end() -> _NodePtr
 }
 
 extension EndProtocol {
   @inlinable
   @inline(__always)
-  func end() -> _NodePtr { .end }
+  func end() -> _NodePtr { __end_node() }
 }
 
 @usableFromInline

@@ -130,14 +130,6 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     XCTAssertEqual(map[1], [1,2])
   }
   
-  func testSubscriptDefault1() throws {
-    var map: [Int: [Int]] = [:]
-    map[1] = [1]
-    XCTAssertEqual(map[1], [1])
-    map[1]?.append(2)
-    XCTAssertEqual(map[1], [1,2])
-  }
-
   func testSubscriptDefault() throws {
     var map: RedBlackTreeDictionary<Int, [Int]> = [:]
     _ = map[1, default: []]
@@ -148,10 +140,20 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     XCTAssertEqual(map[1], [1,2])
   }
   
+  func testSubscriptDefault1() throws {
+    var map: [Int: [Int]] = [:]
+    map[1]?.append(1)
+    XCTAssertEqual(map[1], nil)
+    map[1] = [1]
+    XCTAssertEqual(map[1], [1])
+    map[1]?.append(2)
+    XCTAssertEqual(map[1], [1,2])
+  }
+
   func testSubscriptDefault3() throws {
     var map: RedBlackTreeDictionary<Int, [Int]> = [:]
-    map[1] = [0]
-    XCTAssertEqual(map[1], [0])
+    map[1]?.append(1)
+    XCTAssertEqual(map[1], nil)
     map[1] = [1]
     XCTAssertEqual(map[1], [1])
     map[1]?.append(2)

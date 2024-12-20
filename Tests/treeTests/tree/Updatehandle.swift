@@ -25,11 +25,11 @@ struct _UnsafeUpdateHandle<Element: Comparable> {
 }
 
 extension _UnsafeUpdateHandle: ___RedBlackTreeUpdateHandleImpl {}
-extension _UnsafeUpdateHandle: NodeFindProtocol & NodeFindEtcProtocol {
+extension _UnsafeUpdateHandle: NodeFindProtocol & NodeFindEqualProtocol {
     @inlinable
     func value_comp(_ a: Element, _ b: Element) -> Bool {
         a < b
     }
 }
-extension _UnsafeUpdateHandle: NodeInsertProtocol {}
+extension _UnsafeUpdateHandle: InsertNodeAtProtocol {}
 extension _UnsafeUpdateHandle: RemoveProtocol {}

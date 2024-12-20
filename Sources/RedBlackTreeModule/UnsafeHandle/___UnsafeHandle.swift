@@ -53,7 +53,7 @@ extension ___UnsafeHandle: ___UnsafeHandleCommon {
 }
 
 extension ___UnsafeHandle: ___RedBlackTreeReadHandleImpl {}
-extension ___UnsafeHandle: NodeFindProtocol & NodeFindEtcProtocol & FindLeafEtcProtocol {}
+extension ___UnsafeHandle: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
 
 @usableFromInline
 protocol ___UnsafeHandleBase {

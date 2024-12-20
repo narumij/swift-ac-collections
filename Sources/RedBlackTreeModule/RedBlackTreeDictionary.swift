@@ -293,31 +293,27 @@ extension RedBlackTreeDictionary {
     }
     set {
       if let newValue {
-//        _ = __insert_unique((key, newValue))
         let (__r, __inserted) = __insert_unique((key, newValue))
         if !__inserted {
-          ___values[_read{ $0.__ref_(__r) }].value = newValue
+          _read {
+            ___values[$0.__ref_(__r)].value = newValue
+          }
         }
       } else {
         _ = __erase_unique(key)
       }
     }
-    // TODO: refiine
     @inline(__always)
     _modify {
-      var value: Value?
       var __parent: _NodePtr = .nullptr
-      let ptr = _read{ $0.__ref_($0.__find_equal(&__parent, key)) }
-      if ptr != .nullptr {
-        value = ___values[ptr].value
-      }
+      let ptr = _read { $0.__ref_($0.__find_equal(&__parent, key)) }
+      var value: Value? = ptr == .nullptr ? nil : ___values[ptr].value
       defer {
         if let value {
-          let (__r, __inserted) = __insert_unique((key, value))
-          if !__inserted {
-            _read {
-              ___values[$0.__ref_(__r)] = (key, value)
-            }
+          if ptr == .nullptr {
+            _ = __insert_unique((key, value))
+          } else {
+            ___values[ptr] = (key, value)
           }
         } else {
           _ = __erase_unique(key)
@@ -344,19 +340,22 @@ extension RedBlackTreeDictionary {
     set {
       let (__r, __inserted) = __insert_unique((key, newValue))
       if !__inserted {
-        ___values[_read{ $0.__ref_(__r) }].value = newValue
+        ___values[__ref_(__r)].value = newValue
       }
     }
-    // TODO: refiine
     @inline(__always)
     _modify {
       var __parent: _NodePtr = .nullptr
-      var ptr = _read{ $0.__ref_($0.__find_equal(&__parent, key)) }
-      if ptr == .nullptr {
-        let result = __insert_unique((key, defaultValue()))
-        ptr = _read{ $0.__ref_(result.__r) }
+      let ptr = _read { $0.__ref_($0.__find_equal(&__parent, key)) }
+      var value: Value = ptr == .nullptr ? defaultValue() : ___values[ptr].value
+      defer {
+        if ptr == .nullptr {
+          _ = __insert_unique((key, value))
+        } else {
+          ___values[ptr] = (key, value)
+        }
       }
-      yield &___values[ptr].value
+      yield &value
     }
   }
 }

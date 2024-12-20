@@ -282,28 +282,56 @@ extension RedBlackTreeDictionary {
   @inlinable
   public subscript(key: Key) -> Value? {
     get {
-      _read {
-        var __parent = _NodePtr.nullptr
-        let __child = $0.__find_equal(&__parent, key)
-        let __ptr = $0.__ref_(__child)
-        return __ptr == .nullptr ? nil : ___values[__ptr].value
-      }
+      let (_, _, __ptr) = _prepareForKeyingModify(key)
+      return __ptr == .nullptr ? nil : ___values[__ptr].value
     }
     set {
-      var __parent = _NodePtr.nullptr
-      let __child = __find_equal(&__parent, key)
+      let (__parent, __child, _) = _prepareForKeyingModify(key)
       _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: newValue)
     }
     @inline(__always)
     _modify {
-      var __parent = _NodePtr.nullptr
-      let __child = __find_equal(&__parent, key)
-      let __ptr = __ref_(__child)
+      let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       var value: Value? = __ptr == .nullptr ? nil : ___values[__ptr].value
       defer {
         _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: value)
       }
       yield &value
+    }
+  }
+
+  @inlinable
+  public subscript(
+    key: Key, default defaultValue: @autoclosure () -> Value
+  ) -> Value {
+    get {
+      let (_, _, __ptr) = _prepareForKeyingModify(key)
+      return __ptr == .nullptr ? defaultValue() : ___values[__ptr].value
+    }
+    set {
+      let (__parent, __child, _) = _prepareForKeyingModify(key)
+      _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: newValue)
+    }
+    @inline(__always)
+    _modify {
+      let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
+      var value = __ptr == .nullptr ? defaultValue() : ___values[__ptr].value
+      defer {
+        _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: value)
+      }
+      yield &value
+    }
+  }
+
+  @inlinable
+  internal func _prepareForKeyingModify(
+    _ key: Key
+  ) -> (__parent: _NodePtr, __child: _NodeRef, __ptr: _NodePtr) {
+    _read {
+      var __parent = _NodePtr.nullptr
+      let __child = $0.__find_equal(&__parent, key)
+      let __ptr = $0.__ref_(__child)
+      return (__parent, __child, __ptr)
     }
   }
 
@@ -333,36 +361,6 @@ extension RedBlackTreeDictionary {
       // 更新する
       ___values[__ptr].value = value
       break
-    }
-  }
-
-  @inlinable
-  public subscript(
-    key: Key, default defaultValue: @autoclosure () -> Value
-  ) -> Value {
-    get {
-      _read {
-        var __parent = _NodePtr.nullptr
-        let __child = $0.__find_equal(&__parent, key)
-        let __ptr = $0.__ref_(__child)
-        return __ptr == .nullptr ? defaultValue() : ___values[__ptr].value
-      }
-    }
-    set {
-      var __parent = _NodePtr.nullptr
-      let __child = __find_equal(&__parent, key)
-      _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: newValue)
-    }
-    @inline(__always)
-    _modify {
-      var __parent = _NodePtr.nullptr
-      let __child = __find_equal(&__parent, key)
-      let __ptr = __ref_(__child)
-      var value: Value = __ptr == .nullptr ? defaultValue() : ___values[__ptr].value
-      defer {
-        _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: value)
-      }
-      yield &value
     }
   }
 }

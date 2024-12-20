@@ -27,8 +27,8 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
   func testUsage_1() throws {
     var map: [Int:Int] = [:]
     XCTAssertEqual(map[0], nil)
-    map[0] = 0
-    XCTAssertEqual(map[0], 0)
+    map[0] = 1
+    XCTAssertEqual(map[0], 1)
     XCTAssertEqual(map[1], nil)
     map[0] = nil
     XCTAssertEqual(map[0], nil)
@@ -56,13 +56,17 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     map[1] = nil
     XCTAssertEqual(map[0], nil)
     XCTAssertEqual(map[1], nil)
+    map[1] = 3
+    XCTAssertEqual(map[0], nil)
+    XCTAssertEqual(map[1], 3)
   }
 
   func testUsage1() throws {
+    // 意外と普通のユースケースでバグがあることが判明
     var map = RedBlackTreeDictionary<Int, Int>()
     XCTAssertEqual(map[0], nil)
-    map[0] = 0
-    XCTAssertEqual(map[0], 0)
+    map[0] = 1
+    XCTAssertEqual(map[0], 1)
     XCTAssertEqual(map[1], nil)
     map[0] = nil
     XCTAssertEqual(map[0], nil)
@@ -90,6 +94,23 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     map[1] = nil
     XCTAssertEqual(map[0], nil)
     XCTAssertEqual(map[1], nil)
+    map[1] = 3
+    XCTAssertEqual(map[0], nil)
+    XCTAssertEqual(map[1], 3)
+  }
+  
+  func testUsage3() throws {
+    var map = RedBlackTreeDictionary<Int, Int>()
+    map[0] = 0
+    XCTAssertEqual(map[0], 0)
+    map.remove(at: map.startIndex)
+    XCTAssertEqual(map[0], nil)
+    XCTAssertTrue(map.isEmpty)
+    map[0] = 0
+    XCTAssertEqual(map[0], 0)
+    map.remove(at: map.startIndex)
+    XCTAssertEqual(map[0], nil)
+    XCTAssertTrue(map.isEmpty)
   }
 
   func testLiteral() throws {

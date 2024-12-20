@@ -79,6 +79,7 @@ extension ___RedBlackTreeContainerBase {
   @inlinable
   mutating func __construct_node(_ k: Element) -> _NodePtr {
     if let stock = ___stock.popMin() {
+      ___values[stock] = k
       return stock
     }
     let n = Swift.min(___nodes.count, ___values.count)

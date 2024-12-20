@@ -118,7 +118,9 @@ extension ___RedBlackTreeMapBase: InsertUniqueProtocol, EraseUniqueProtocol {
 
   @inlinable
   mutating func __construct_node(_ k: (Key, Value)) -> _NodePtr {
+    //　メモ化用だと、開放は起きないので、無駄かもしれない
     if let stock = ___stock.popMin() {
+      ___values[stock] = k
       return stock
     }
     let n = Swift.min(___nodes.count, ___values.count)

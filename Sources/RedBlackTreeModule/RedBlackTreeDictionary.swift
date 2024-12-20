@@ -504,14 +504,6 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
 /// Overwrite Default implementation for bidirectional collections.
 extension RedBlackTreeDictionary {
 
-  /// Replaces the given index with its predecessor.
-  ///
-  /// - Parameter i: A valid index of the collection. `i` must be greater than
-  ///   `startIndex`.
-  @inlinable public func formIndex(before i: inout Index) {
-    i = Index(_read { $0.__tree_prev_iter(i.pointer) })
-  }
-
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
     _read {
       Index($0.pointer(i.pointer, offsetBy: distance, type: "RedBlackTreeDictionary"))

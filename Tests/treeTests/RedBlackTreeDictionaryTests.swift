@@ -184,6 +184,12 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     XCTAssertEqual(map[1], [2])
   }
 
+  func testSmoke() throws {
+    let b: RedBlackTreeDictionary<Int,[Int]> = [1: [1,2], 2: [2,3], 3: [3, 4]]
+    print(b)
+    debugPrint(b)
+  }
+
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
     self.measure {

@@ -537,3 +537,21 @@ extension RedBlackTreeDictionary {
     ___values[position.pointer].value = value
   }
 }
+
+extension RedBlackTreeDictionary: CustomStringConvertible, CustomDebugStringConvertible {
+  
+  // MARK: - CustomStringConvertible
+  
+  /// 人間が読みやすい形式で辞書の内容を文字列として表現します。
+  public var description: String {
+    let pairs = map { "\($0.key): \($0.value)" }
+    return "[\(pairs.joined(separator: ", "))]"
+  }
+  
+  // MARK: - CustomDebugStringConvertible
+  
+  /// デバッグ時に辞書の詳細情報を含む文字列を返します。
+  public var debugDescription: String {
+    return "RedBlackTreeDictionary(\(description))"
+  }
+}

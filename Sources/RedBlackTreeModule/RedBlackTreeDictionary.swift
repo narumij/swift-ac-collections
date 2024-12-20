@@ -298,7 +298,28 @@ extension RedBlackTreeDictionary {
         _ = __erase_unique(key)
       }
     }
-    // TODO: implement modifiy
+    // TODO: refiine
+    _modify {
+      var value: Value?
+      var __parent: _NodePtr = .nullptr
+      let ptr = _read{ $0.__ref_($0.__find_equal(&__parent, key)) }
+      if ptr != .nullptr {
+        value = ___values[ptr].value
+      }
+      defer {
+        if let value {
+          let (__r, __inserted) = __insert_unique((key, value))
+          if !__inserted {
+            _read {
+              ___values[$0.__ref_(__r)] = (key, value)
+            }
+          }
+        } else {
+          _ = __erase_unique(key)
+        }
+      }
+      yield &value
+    }
   }
 
   @inlinable
@@ -318,11 +339,16 @@ extension RedBlackTreeDictionary {
     set {
       _ = __insert_unique((key, newValue))
     }
-    // TODO: implement modifiy
-    //    _modify {
-    //      _ = __insert_unique((key, newValue))
-    //      ___values[position.pointer]
-    //    }
+    // TODO: refiine
+    _modify {
+      var __parent: _NodePtr = .nullptr
+      var ptr = _read{ $0.__ref_($0.__find_equal(&__parent, key)) }
+      if ptr == .nullptr {
+        let result = __insert_unique((key, defaultValue()))
+        ptr = _read{ $0.__ref_(result.__r) }
+      }
+      yield &___values[ptr].value
+    }
   }
 }
 

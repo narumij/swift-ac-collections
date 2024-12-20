@@ -283,43 +283,56 @@ extension RedBlackTreeDictionary {
   public subscript(key: Key) -> Value? {
     get {
       _read {
-        let it = $0.__lower_bound(key, $0.__root(), $0.__left_)
-        guard it >= 0,
-          !Self.value_comp(Self.__key($0.__value_ptr[it]), key),
-          !Self.value_comp(key, Self.__key($0.__value_ptr[it]))
-        else { return nil }
-        return Self.__value($0.__value_ptr[it])
+        var __parent = _NodePtr.nullptr
+        let __child = $0.__find_equal(&__parent, key)
+        let __ptr = $0.__ref_(__child)
+        return __ptr == .nullptr ? nil : ___values[__ptr].value
       }
     }
     set {
-      if let newValue {
-        let (__r, __inserted) = __insert_unique((key, newValue))
-        if !__inserted {
-          _read {
-            ___values[$0.__ref_(__r)].value = newValue
-          }
-        }
-      } else {
-        _ = __erase_unique(key)
-      }
+      var __parent = _NodePtr.nullptr
+      let __child = __find_equal(&__parent, key)
+      _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: newValue)
     }
     @inline(__always)
     _modify {
-      var __parent: _NodePtr = .nullptr
-      let ptr = _read { $0.__ref_($0.__find_equal(&__parent, key)) }
-      var value: Value? = ptr == .nullptr ? nil : ___values[ptr].value
+      var __parent = _NodePtr.nullptr
+      let __child = __find_equal(&__parent, key)
+      let __ptr = __ref_(__child)
+      var value: Value? = __ptr == .nullptr ? nil : ___values[__ptr].value
       defer {
-        if let value {
-          if ptr == .nullptr {
-            _ = __insert_unique((key, value))
-          } else {
-            ___values[ptr] = (key, value)
-          }
-        } else {
-          _ = __erase_unique(key)
-        }
+        _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: value)
       }
       yield &value
+    }
+  }
+
+  @inlinable
+  mutating func _finalizeKeyingModify(
+    __parent: _NodePtr, __child: _NodeRef, key: Key, value: Value?
+  ) {
+    let __ptr = __ref_(__child)
+    switch (__ptr, value) {
+    // 変更前が空で、変更後も空の場合
+    case (.nullptr, .none):
+      // 変わらない
+      break
+    // 変更前が空で、変更後は値の場合
+    case (.nullptr, .some(let value)):
+      // 追加する
+      let __h = __construct_node((key, value))
+      __insert_node_at(__parent, __child, __h)
+      break
+    // 変更前が値で、変更後は空の場合
+    case (_, .none):
+      // 削除する
+      _ = erase(__ptr)
+      break
+    // 変更前が値で、変更後も値の場合
+    case (_, .some(let value)):
+      // 更新する
+      ___values[__ptr].value = value
+      break
     }
   }
 
@@ -329,35 +342,43 @@ extension RedBlackTreeDictionary {
   ) -> Value {
     get {
       _read {
-        let it = $0.__lower_bound(key, $0.__root(), $0.__left_)
-        guard it >= 0,
-          !Self.value_comp(Self.__key($0.__value_ptr[it]), key),
-          !Self.value_comp(key, Self.__key($0.__value_ptr[it]))
-        else { return defaultValue() }
-        return Self.__value($0.__value_ptr[it])
+        var __parent = _NodePtr.nullptr
+        let __child = $0.__find_equal(&__parent, key)
+        let __ptr = $0.__ref_(__child)
+        return __ptr == .nullptr ? defaultValue() : ___values[__ptr].value
       }
     }
     set {
-      let (__r, __inserted) = __insert_unique((key, newValue))
-      if !__inserted {
-        ___values[__ref_(__r)].value = newValue
-      }
+      var __parent = _NodePtr.nullptr
+      let __child = __find_equal(&__parent, key)
+      _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: newValue)
     }
     @inline(__always)
     _modify {
+#if false
       var __parent = _NodePtr.nullptr
       let __child = __find_equal(&__parent, key)
-      if __ref_(__child) == .nullptr {
+      let __ptr = __ref_(__child)
+      if __ptr == .nullptr {
         var value = defaultValue()
         defer {
           let __h = __construct_node((key, value))
           __insert_node_at(__parent, __child, __h)
         }
         yield &value
+      } else {
+        yield &___values[__ptr].value
       }
-      else {
-        yield &___values[__ref_(__child)].value
+#else
+      var __parent = _NodePtr.nullptr
+      let __child = __find_equal(&__parent, key)
+      let __ptr = __ref_(__child)
+      var value: Value = __ptr == .nullptr ? defaultValue() : ___values[__ptr].value
+      defer {
+        _finalizeKeyingModify(__parent: __parent, __child: __child, key: key, value: value)
       }
+      yield &value
+#endif
     }
   }
 }

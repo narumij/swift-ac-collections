@@ -8,6 +8,12 @@
 import RedBlackTreeModule
 import XCTest
 
+extension Optional where Wrapped == Int {
+  mutating func hoge() {
+    self = .some(1515)
+  }
+}
+
 final class RedBlackTreeDictionaryTests: XCTestCase {
 
   override func setUpWithError() throws {
@@ -139,7 +145,23 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     map[1, default: []].append(2)
     XCTAssertEqual(map[1], [1,2])
   }
+
+  func testSubscriptDefault__1() throws {
+    var map: [Int: Int] = [:]
+    map[1].hoge()
+    XCTAssertEqual(map[1], 1515)
+    map[1] = nil
+    XCTAssertEqual(map[1], nil)
+  }
   
+  func testSubscriptDefault__2() throws {
+    var map: RedBlackTreeDictionary<Int, Int> = [:]
+    map[1].hoge()
+    XCTAssertEqual(map[1], 1515)
+    map[1] = nil
+    XCTAssertEqual(map[1], nil)
+  }
+
   func testSubscriptDefault1() throws {
     var map: [Int: [Int]] = [:]
     map[1]?.append(1)

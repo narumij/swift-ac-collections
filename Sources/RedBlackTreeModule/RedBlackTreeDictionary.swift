@@ -293,7 +293,11 @@ extension RedBlackTreeDictionary {
     }
     set {
       if let newValue {
-        _ = __insert_unique((key, newValue))
+//        _ = __insert_unique((key, newValue))
+        let (__r, __inserted) = __insert_unique((key, newValue))
+        if !__inserted {
+          ___values[_read{ $0.__ref_(__r) }].value = newValue
+        }
       } else {
         _ = __erase_unique(key)
       }
@@ -338,7 +342,10 @@ extension RedBlackTreeDictionary {
       }
     }
     set {
-      _ = __insert_unique((key, newValue))
+      let (__r, __inserted) = __insert_unique((key, newValue))
+      if !__inserted {
+        ___values[_read{ $0.__ref_(__r) }].value = newValue
+      }
     }
     // TODO: refiine
     @inline(__always)

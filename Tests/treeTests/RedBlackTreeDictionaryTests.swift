@@ -150,6 +150,8 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
   
   func testSubscriptDefault3() throws {
     var map: RedBlackTreeDictionary<Int, [Int]> = [:]
+    map[1] = [0]
+    XCTAssertEqual(map[1], [0])
     map[1] = [1]
     XCTAssertEqual(map[1], [1])
     map[1]?.append(2)

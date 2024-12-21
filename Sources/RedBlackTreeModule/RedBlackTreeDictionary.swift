@@ -519,14 +519,25 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   @inlinable
+  public func forEach(_ body: (Self.Element) throws -> Void) rethrows {
+    try _read { tree in
+      var ptr = tree.__begin_node
+      while ptr != tree.__end_node() {
+        try body(___values[ptr])
+        ptr = tree.__tree_next_iter(ptr)
+      }
+    }
+  }
+
+  @inlinable
   public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try _read {
-      var ptr = $0.__begin_node
-      while ptr != $0.__end_node() {
+    try _read { tree in
+      var ptr = tree.__begin_node
+      while ptr != tree.__end_node() {
         if try predicate(___values[ptr]) {
           return true
         }
-        ptr = $0.__tree_next_iter(ptr)
+        ptr = tree.__tree_next_iter(ptr)
       }
       return false
     }
@@ -534,13 +545,13 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try _read {
-      var ptr = $0.__begin_node
-      while ptr != $0.__end_node() {
+    try _read { tree in
+      var ptr = tree.__begin_node
+      while ptr != tree.__end_node() {
         if try !predicate(___values[ptr]) {
           return false
         }
-        ptr = $0.__tree_next_iter(ptr)
+        ptr = tree.__tree_next_iter(ptr)
       }
       return true
     }

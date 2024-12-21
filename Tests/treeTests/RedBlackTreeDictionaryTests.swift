@@ -433,6 +433,7 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     XCTAssertNotEqual(RedBlackTreeDictionary<Int,Int>(), [1:1])
     XCTAssertEqual([1:1] as RedBlackTreeDictionary<Int,Int>, [1:1])
     XCTAssertNotEqual([1:1,2:2] as RedBlackTreeDictionary<Int,Int>, [1:1])
+    XCTAssertNotEqual([2:2,3:3] as RedBlackTreeDictionary<Int,Int>, [1:1,2:2])
   }
 
   func testPerformanceExample() throws {

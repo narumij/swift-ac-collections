@@ -564,6 +564,7 @@
       XCTAssertFalse(a === b)
       XCTAssertTrue(s.update(with: b) === a)
       XCTAssertTrue(s.update(with: a) === b)
+      XCTAssertEqual(s.update(with: A(x: 10, label: "c")), nil)
     }
 
     func testRedBlackTreeSetInsert() throws {
@@ -663,6 +664,7 @@
       XCTAssertNotEqual(RedBlackTreeSet<Int>(), [1])
       XCTAssertEqual([1] as RedBlackTreeSet<Int>, [1])
       XCTAssertNotEqual([1,2] as RedBlackTreeSet<Int>, [1])
+      XCTAssertNotEqual([2] as RedBlackTreeSet<Int>, [1])
     }
 
     func testPerformanceDistanceFromTo() throws {

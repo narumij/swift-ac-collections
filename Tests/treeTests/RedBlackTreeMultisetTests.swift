@@ -738,6 +738,7 @@
       XCTAssertNotEqual(RedBlackTreeMultiset<Int>(), [1])
       XCTAssertEqual([1] as RedBlackTreeMultiset<Int>, [1])
       XCTAssertNotEqual([1,1] as RedBlackTreeMultiset<Int>, [1])
+      XCTAssertNotEqual([1,2] as RedBlackTreeMultiset<Int>, [1,1])
     }
 
     func testPerformanceDistanceFromTo() throws {

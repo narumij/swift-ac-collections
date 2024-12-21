@@ -71,6 +71,7 @@ extension ___RedBlackTreeSetInternal {
   }
 }
 
+#if false
 extension ___RedBlackTreeSetInternal {
 
   @inlinable @inline(__always)
@@ -123,3 +124,4 @@ extension ___RedBlackTreeSetInternal {
     }
   }
 }
+#endif

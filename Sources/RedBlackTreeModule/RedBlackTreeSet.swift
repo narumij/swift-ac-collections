@@ -589,117 +589,6 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// 指定された値より小さい最大の要素を返します。
-  ///
-  /// このメソッドは、`RedBlackTreeSet` 内で指定された値 `p` 未満の最大要素を効率的に検索し、返します。
-  /// 該当する要素が存在しない場合は `nil` を返します。
-  ///
-  /// 以下は、`lessThan(_:)` メソッドを使用した例です:
-  ///
-  /// ```swift
-  /// let set: RedBlackTreeSet = [1, 3, 5, 7, 9]
-  ///
-  /// if let value = set.lessThan(5) {
-  ///     print("The largest value less than 5 is \(value)") // 出力: "The largest value less than 5 is 3"
-  /// } else {
-  ///     print("No values are less than 5.")
-  /// }
-  /// ```
-  ///
-  /// - Parameter p: 探索対象の基準値。
-  /// - Returns: `p` より小さい最大の要素。該当する要素が存在しない場合は `nil`。
-  ///
-  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
-  ///
-  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、この操作は効率的に実行されます。
-  @inlinable public func lessThan(_ p: Element) -> Element? {
-    ___lt(p)
-  }
-  
-  /// 指定された値より大きい最小の要素を返します。
-  ///
-  /// このメソッドは、`RedBlackTreeSet` 内で指定された値 `p` より大きい最小の要素を効率的に検索し、返します。
-  /// 該当する要素が存在しない場合は `nil` を返します。
-  ///
-  /// 以下は、`greaterThan(_:)` メソッドを使用した例です:
-  ///
-  /// ```swift
-  /// let set: RedBlackTreeSet = [1, 3, 5, 7, 9]
-  ///
-  /// if let value = set.greaterThan(5) {
-  ///     print("The smallest value greater than 5 is \(value)") // 出力: "The smallest value greater than 5 is 7"
-  /// } else {
-  ///     print("No values are greater than 5.")
-  /// }
-  /// ```
-  ///
-  /// - Parameter p: 探索対象の基準値。
-  /// - Returns: `p` より大きい最小の要素。該当する要素が存在しない場合は `nil`。
-  ///
-  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
-  ///
-  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、この操作は効率的に実行されます。
-  @inlinable public func greaterThan(_ p: Element) -> Element? {
-    ___gt(p)
-  }
-  
-  /// 指定された値以下の最大の要素を返します。
-  ///
-  /// このメソッドは、`RedBlackTreeSet` 内で指定された値 `p` 以下の最大の要素を効率的に検索し、返します。
-  /// 該当する要素が存在しない場合は `nil` を返します。
-  ///
-  /// 以下は、`lessThanOrEqual(_:)` メソッドを使用した例です:
-  ///
-  /// ```swift
-  /// let set: RedBlackTreeSet = [1, 3, 5, 7, 9]
-  ///
-  /// if let value = set.lessThanOrEqual(5) {
-  ///     print("The largest value less than or equal to 5 is \(value)") // 出力: "The largest value less than or equal to 5 is 5"
-  /// } else {
-  ///     print("No values are less than or equal to 5.")
-  /// }
-  /// ```
-  ///
-  /// - Parameter p: 探索対象の基準値。
-  /// - Returns: `p` 以下の最大の要素。該当する要素が存在しない場合は `nil`。
-  ///
-  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
-  ///
-  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、この操作は効率的に実行されます。
-  @inlinable public func lessThanOrEqual(_ p: Element) -> Element? {
-    ___le(p)
-  }
-  
-  /// 指定された値以上の最小の要素を返します。
-  ///
-  /// このメソッドは、`RedBlackTreeSet` 内で指定された値 `p` 以上の最小の要素を効率的に検索し、返します。
-  /// 該当する要素が存在しない場合は `nil` を返します。
-  ///
-  /// 以下は、`greaterThanOrEqual(_:)` メソッドを使用した例です:
-  ///
-  /// ```swift
-  /// let set: RedBlackTreeSet = [1, 3, 5, 7, 9]
-  ///
-  /// if let value = set.greaterThanOrEqual(5) {
-  ///     print("The smallest value greater than or equal to 5 is \(value)") // 出力: "The smallest value greater than or equal to 5 is 5"
-  /// } else {
-  ///     print("No values are greater than or equal to 5.")
-  /// }
-  /// ```
-  ///
-  /// - Parameter p: 探索対象の基準値。
-  /// - Returns: `p` 以上の最小の要素。該当する要素が存在しない場合は `nil`。
-  ///
-  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
-  ///
-  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、この操作は効率的に実行されます。
-  @inlinable public func greaterThanOrEqual(_ p: Element) -> Element? {
-    ___ge(p)
-  }
-}
-
-extension RedBlackTreeSet {
-  
   /// セット内の最小の要素を返します。
   ///
   /// - Returns: セット内の最小の要素。セットが空の場合は `nil`。
@@ -710,7 +599,7 @@ extension RedBlackTreeSet {
     guard !isEmpty else { return nil }
     return self[startIndex]
   }
-  
+
   /// セット内の最大の要素を返します。
   ///
   /// - Returns: セット内の最大の要素。セットが空の場合は `nil`。
@@ -749,7 +638,7 @@ extension RedBlackTreeSet {
     _read {
       var __parent = _NodePtr.nullptr
       let ptr = $0.__ref_($0.__find_equal(&__parent, member))
-      return Optional<Index>(ptr)
+      return Index?(ptr)
     }
   }
 
@@ -931,7 +820,7 @@ extension RedBlackTreeSet {
     _ i: Index, offsetBy distance: Int, limitedBy limit: Index
   ) -> Index? {
     _read {
-      Optional<Index>(
+      Index?(
         $0.pointer(i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeSet")
       )
     }
@@ -989,3 +878,24 @@ extension RedBlackTreeSet: Equatable {
     }
   }
 }
+
+#if false
+  extension RedBlackTreeSet {
+
+    @inlinable public func lessThan(_ p: Element) -> Element? {
+      ___lt(p)
+    }
+
+    @inlinable public func greaterThan(_ p: Element) -> Element? {
+      ___gt(p)
+    }
+
+    @inlinable public func lessThanOrEqual(_ p: Element) -> Element? {
+      ___le(p)
+    }
+
+    @inlinable public func greaterThanOrEqual(_ p: Element) -> Element? {
+      ___ge(p)
+    }
+  }
+#endif

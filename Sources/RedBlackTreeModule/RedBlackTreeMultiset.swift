@@ -520,6 +520,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
+#if false
 extension RedBlackTreeMultiset {
 
   @inlinable public func lessThan(_ p: Element) -> Element? {
@@ -535,7 +536,7 @@ extension RedBlackTreeMultiset {
     ___ge(p)
   }
 }
-
+#endif
 
 extension RedBlackTreeMultiset {
 

@@ -184,39 +184,3 @@ extension ___RedBlackTreeContainer {
     ___stock.insert(p)
   }
 }
-
-@usableFromInline
-protocol ___RedBlackTreeSetContainer: ___RedBlackTreeContainer {}
-
-@usableFromInline
-protocol ___RedBlackTreeEraseProtocol: ___RedBlackTreeContainer, EraseProtocol {
-  mutating func erase(_ __p: _NodePtr) -> _NodePtr
-}
-
-extension ___RedBlackTreeEraseProtocol {
-
-  @inlinable
-  @discardableResult
-  mutating func ___remove(at ptr: _NodePtr) -> Element? {
-    guard
-      // 下二つのコメントアウトと等価
-      0 <= ptr,
-      // ptr != .nullptr,
-      // ptr != .end,
-      ___nodes[ptr].isValid
-    else {
-      return nil
-    }
-    let e = ___values[ptr]
-    _ = erase(ptr)
-    return e
-  }
-
-  public mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
-    ___header = .zero
-    ___nodes.removeAll(keepingCapacity: keepCapacity)
-    ___values.removeAll(keepingCapacity: keepCapacity)
-    ___stock = []
-  }
-}
-

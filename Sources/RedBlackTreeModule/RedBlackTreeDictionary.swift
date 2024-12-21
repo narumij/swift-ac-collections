@@ -462,16 +462,14 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public func lowerBound(_ p: Key) -> Index {
-    Index(_read { $0.__lower_bound(p, $0.__root(), .end) })
+    Index(___lower_bound(p))
   }
 
   @inlinable
   public func upperBound(_ p: Key) -> Index {
-    Index(_read { $0.__upper_bound(p, $0.__root(), .end) })
+    Index(___upper_bound(p))
   }
 }
-
-extension RedBlackTreeDictionary: ___RedBlackTreeSetContainer {}
 
 extension RedBlackTreeDictionary {
 

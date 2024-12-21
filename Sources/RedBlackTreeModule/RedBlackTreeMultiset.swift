@@ -274,7 +274,6 @@ extension RedBlackTreeMultiset: ValueComparer {
   }
 }
 
-extension RedBlackTreeMultiset: ___RedBlackTreeSetContainer {}
 extension RedBlackTreeMultiset: ___UnsafeHandleBase {}
 extension RedBlackTreeMultiset: ___UnsafeMutatingHandleBase {
 
@@ -298,7 +297,6 @@ extension RedBlackTreeMultiset: ___UnsafeMutatingHandleBase {
 
 extension RedBlackTreeMultiset: InsertMultiProtocol {}
 extension RedBlackTreeMultiset: EraseMultiProtocol {}
-extension RedBlackTreeMultiset: ___RedBlackTreeSetInternal {}
 extension RedBlackTreeMultiset: ___RedBlackTreeEraseProtocol {}
 
 extension RedBlackTreeMultiset {
@@ -659,16 +657,7 @@ extension RedBlackTreeMultiset {
   /// - Note: このメソッドは、セット内の要素を昇順に走査します。
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try _read {
-      var ptr = $0.__begin_node
-      while ptr != $0.__end_node() {
-        if try predicate(___values[ptr]) {
-          return Index(ptr)
-        }
-        ptr = $0.__tree_next_iter(ptr)
-      }
-      return nil
-    }
+    try ___for_each { ptr, value in try predicate(value) ? Index(ptr) : nil }
   }
 }
 

@@ -841,18 +841,21 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*k*), ここで *k* は2つのインデックス間にある要素数です。
   ///
   /// - Precondition: `start` および `end` は有効なインデックスである必要があります。
-  @inlinable public func distance(from start: Index, to end: Index) -> Int {
+  @inlinable
+  public func distance(from start: Index, to end: Index) -> Int {
     ___distance(__last: end.pointer) - ___distance(__last: start.pointer)
   }
 }
 
 extension RedBlackTreeSet: CustomStringConvertible, CustomDebugStringConvertible {
   /// 人間が読みやすい形式でセットの内容を文字列として表現します。
+  @inlinable
   public var description: String {
     "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
   }
 
   /// デバッグ時にセットの詳細情報を含む文字列を返します。
+  @inlinable
   public var debugDescription: String {
     "RedBlackTreeSet(\(description))"
   }
@@ -860,19 +863,8 @@ extension RedBlackTreeSet: CustomStringConvertible, CustomDebugStringConvertible
 
 extension RedBlackTreeSet: Equatable {
 
+  @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    guard lhs.count == rhs.count else { return false }
-    return lhs._read { _lhs in
-      rhs._read { _rhs in
-        var l = _lhs.__begin_node
-        var r = _rhs.__begin_node
-        while l != _lhs.__end_node(), r != _rhs.__end_node() {
-          guard lhs.___values[l] == rhs.___values[r] else { return false }
-          l = _lhs.__tree_next_iter(l)
-          r = _rhs.__tree_next_iter(r)
-        }
-        return true
-      }
-    }
+    lhs.___equal_with(rhs)
   }
 }

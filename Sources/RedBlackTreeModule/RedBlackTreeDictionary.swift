@@ -521,7 +521,8 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
-  public init(dictionaryLiteral elements: (Key, Value)...) {
+  
+  @inlinable public init(dictionaryLiteral elements: (Key, Value)...) {
     self.init(uniqueKeysWithValues: elements)
   }
 }
@@ -577,6 +578,7 @@ extension RedBlackTreeDictionary: CustomStringConvertible, CustomDebugStringConv
   // MARK: - CustomStringConvertible
 
   /// 人間が読みやすい形式で辞書の内容を文字列として表現します。
+  @inlinable
   public var description: String {
     let pairs = map { "\($0.key): \($0.value)" }
     return "[\(pairs.joined(separator: ", "))]"
@@ -585,6 +587,7 @@ extension RedBlackTreeDictionary: CustomStringConvertible, CustomDebugStringConv
   // MARK: - CustomDebugStringConvertible
 
   /// デバッグ時に辞書の詳細情報を含む文字列を返します。
+  @inlinable
   public var debugDescription: String {
     return "RedBlackTreeDictionary(\(description))"
   }
@@ -592,19 +595,8 @@ extension RedBlackTreeDictionary: CustomStringConvertible, CustomDebugStringConv
 
 extension RedBlackTreeDictionary: Equatable where Value: Equatable {
 
+  @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    guard lhs.count == rhs.count else { return false }
-    return lhs._read { _lhs in
-      rhs._read { _rhs in
-        var l = _lhs.__begin_node
-        var r = _rhs.__begin_node
-        while l != _lhs.__end_node(), r != _rhs.__end_node() {
-          guard lhs.___values[l] == rhs.___values[r] else { return false }
-          l = _lhs.__tree_next_iter(l)
-          r = _rhs.__tree_next_iter(r)
-        }
-        return true
-      }
-    }
+    lhs.___equal_with(rhs)
   }
 }

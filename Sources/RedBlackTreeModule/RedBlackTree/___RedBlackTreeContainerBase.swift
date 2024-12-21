@@ -329,3 +329,42 @@ extension ___RedBlackTreeContainerBase {
     }
   }
 }
+
+extension ___RedBlackTreeContainerBase {
+  
+  @inlinable
+  func ___equal_with(_ rhs: Self) -> Bool where Element: Equatable {
+    guard ___count == rhs.___count else { return false }
+    return _read { _lhs in
+      rhs._read { _rhs in
+        var l = _lhs.__begin_node
+        var r = _rhs.__begin_node
+        while l != _lhs.__end_node(), r != _rhs.__end_node() {
+          guard ___values[l] == rhs.___values[r] else { return false }
+          l = _lhs.__tree_next_iter(l)
+          r = _rhs.__tree_next_iter(r)
+        }
+        return true
+      }
+    }
+  }
+  
+  @inlinable
+  func ___equal_with<K,V>(_ rhs: Self) -> Bool where K: Equatable, V: Equatable, Element == (key: K, value: V) {
+    guard ___count == rhs.___count else { return false }
+    return _read { _lhs in
+      rhs._read { _rhs in
+        var l = _lhs.__begin_node
+        var r = _rhs.__begin_node
+        while l != _lhs.__end_node(), r != _rhs.__end_node() {
+          guard ___values[l] == rhs.___values[r] else { return false }
+          l = _lhs.__tree_next_iter(l)
+          r = _rhs.__tree_next_iter(r)
+        }
+        return true
+      }
+    }
+  }
+
+}
+

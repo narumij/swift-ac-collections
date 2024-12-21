@@ -59,3 +59,38 @@ extension RedBlackTreeMultiset {
     return index(after: position)
   }
 }
+
+extension RedBlackTreeMultiset {
+  
+  @inlinable
+  func forEach(in range: Range<Element>, _ body: (Index, Element) throws -> Void) rethrows {
+    var it = lowerBound(range.lowerBound)
+    let end = upperBound(range.upperBound)
+    while it != end {
+      let o = it
+      it = index(after: it)
+      try body(o, self[o])
+    }
+  }
+
+  @inlinable
+  public mutating func remove(in range: Range<Element>) {
+    let lower = lowerBound(range.lowerBound)
+    let upper = upperBound(range.upperBound)
+    var it = lower
+    while it != upper {
+      it = erase(at: it)
+    }
+  }
+
+  @inlinable
+  public mutating func remove(in range: Range<Element>, perform body: ((Element) throws -> Void) = { _ in }) rethrows {
+    let lower = lowerBound(range.lowerBound)
+    let upper = upperBound(range.upperBound)
+    var it = lower
+    while it != upper {
+      try body(self[it])
+      it = erase(at: it)
+    }
+  }
+}

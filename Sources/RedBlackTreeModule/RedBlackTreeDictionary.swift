@@ -130,39 +130,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if false
-  // naive
-  extension RedBlackTreeDictionary {
-    @inlinable public init<S>(uniqueKeysWithValues keysAndValues: S)
-    where S: Sequence, S.Element == (Key, Value) {
-      self.___header = .zero
-      self.___nodes = []
-      self.___values = []
-      self.___stock = []
-      for (k, v) in keysAndValues {
-        assert(self[k] == nil)
-        self[k] = v
-      }
-    }
-  }
-
-  // naive
-  extension RedBlackTreeDictionary {
-    @inlinable public init<S>(
-      _ keysAndValues: S,
-      uniquingKeysWith combine: (Value, Value) throws -> Value
-    ) rethrows where S: Sequence, S.Element == (Key, Value) {
-      self.___header = .zero
-      self.___nodes = []
-      self.___values = []
-      self.___stock = []
-      for (k, v) in keysAndValues {
-        self[k] = self[k] == nil ? v : try combine(self[k]!, v)
-      }
-    }
-  }
-#endif
-
 extension RedBlackTreeDictionary {
 
   // naive

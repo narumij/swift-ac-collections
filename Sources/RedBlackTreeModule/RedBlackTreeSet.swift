@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Collections
+import Foundation
 
 /// ユニークな要素を格納する順序付きコレクションである赤黒木セット。
 ///
@@ -84,9 +84,6 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
   @usableFromInline
   var ___values: [Element]
-
-  @usableFromInline
-  var ___stock: Heap<_NodePtr>
 }
 
 extension RedBlackTreeSet {
@@ -107,7 +104,7 @@ extension RedBlackTreeSet {
     ___header = .zero
     ___nodes = []
     ___values = []
-    ___stock = []
+//    ___stock = []
   }
 
   /// 指定された要素数を収容するための領域を事前に確保した空の赤黒木セットを作成します。
@@ -122,7 +119,7 @@ extension RedBlackTreeSet {
     ___header = .zero
     ___nodes = []
     ___values = []
-    ___stock = []
+//    ___stock = []
     ___nodes.reserveCapacity(minimumCapacity)
     ___values.reserveCapacity(minimumCapacity)
   }
@@ -148,7 +145,7 @@ extension RedBlackTreeSet {
       ___header,
       ___nodes,
       ___values,
-      ___stock
+      _
     ) = Self.___initialize(
       _sequence: sequence,
       _to_elements: { $0.map { $0 } }

@@ -51,7 +51,7 @@ extension ___RedBlackTreeEraseProtocol {
     ___header = .zero
     ___nodes.removeAll(keepingCapacity: keepCapacity)
     ___values.removeAll(keepingCapacity: keepCapacity)
-    ___stock = []
+//    ___stock = []
   }
 }
 

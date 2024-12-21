@@ -8,7 +8,7 @@
 import RedBlackTreeModule
 import XCTest
 
-extension Optional where Wrapped == Int {
+fileprivate extension Optional where Wrapped == Int {
   mutating func hoge() {
     self = .some(1515)
   }

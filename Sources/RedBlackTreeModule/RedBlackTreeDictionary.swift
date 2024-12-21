@@ -516,36 +516,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if false
-  extension RedBlackTreeDictionary {
-
-    @inlinable
-    func contains(_ p: Key) -> Bool {
-      _read {
-        let it = $0.__lower_bound(p, $0.__root(), $0.__left_)
-        guard it >= 0 else { return false }
-        return $0.__value_ptr[it].key == p
-      }
-    }
-
-    @inlinable
-    func min() -> KeyValue? {
-      _read {
-        let p = $0.__tree_min($0.__root())
-        return p == .end ? nil : $0.__value_(p)
-      }
-    }
-
-    @inlinable
-    func max() -> KeyValue? {
-      _read {
-        let p = $0.__tree_max($0.__root())
-        return p == .end ? nil : $0.__value_(p)
-      }
-    }
-  }
-#endif
-
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
   public init(dictionaryLiteral elements: (Key, Value)...) {
     self.init(uniqueKeysWithValues: elements)

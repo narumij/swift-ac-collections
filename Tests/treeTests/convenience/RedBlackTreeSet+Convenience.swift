@@ -37,3 +37,26 @@ extension RedBlackTreeSet {
     return self[hi]
   }
 }
+
+extension RedBlackTreeSet {
+  
+  /// 範囲削除を行う場合に使用する
+  ///
+  /// remove(at:)後のIndexは不正となり、利用できなくなる
+  /// このメソッドを使うことでその不便を解消し、C++のような範囲削除が可能となる
+  ///
+  /// ```swift
+  /// var treeSet: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+  /// var it = treeSet.lowerBound(2)
+  /// let end = treeSet.upperBound(5)
+  /// while it != end {
+  ///   it = treeSet.erase(at: it)
+  /// }
+  /// print(treeSet) // 出力: [1, 6]
+  /// ```
+  @inlinable
+  public mutating func erase(at i: Index) -> Index {
+    defer { remove(at: i) }
+    return index(after: i)
+  }
+}

@@ -37,3 +37,25 @@ extension RedBlackTreeMultiset {
     return self[hi]
   }
 }
+
+extension RedBlackTreeMultiset {
+  /// 範囲削除を行う場合に使用する
+  ///
+  /// remove(at:)後のIndexは不正となり、利用できなくなる
+  /// このメソッドを使うことでその不便を解消し、C++のような範囲削除が可能となる
+  ///
+  /// ```swift
+  /// var treeMultiset: RedBlackTreeMultiset<Int> = [1, 2, 2, 2, 3, 4]
+  /// var it = treeMultiset.lowerBound(2)
+  /// let end = treeMultiset.upperBound(2)
+  /// while it != end {
+  ///   it = treeMultiset.erase(at: it)
+  /// }
+  /// print(treeMultiset) // 出力: [1,3,4]
+  /// ```
+  @inlinable
+  public mutating func erase(at i: Index) -> Index {
+    defer { remove(at: i) }
+    return index(after: i)
+  }
+}

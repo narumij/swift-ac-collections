@@ -21,7 +21,6 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 import Collections
-import Foundation
 
 /// ユニークな要素を格納する順序付きコレクションである赤黒木セット。
 ///

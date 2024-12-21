@@ -23,16 +23,19 @@
 import Foundation
 
 @usableFromInline
-protocol ___UnsafeMutatingHandleBase {
+protocol ___RedBlackTreeUpdate {
   associatedtype VC: ValueComparer
   mutating func _update<R>(_ body: (___UnsafeMutatingHandle<VC>) throws -> R) rethrows -> R
 }
 
-extension ___UnsafeMutatingHandleBase {
+extension ___RedBlackTreeUpdate {
 
   @inlinable
-  mutating func __insert_node_at(_ __parent: _NodePtr, _ __child: _NodeRef, _ __new_node: _NodePtr)
-  {
+  mutating func __insert_node_at(
+    _ __parent: _NodePtr,
+    _ __child: _NodeRef,
+    _ __new_node: _NodePtr
+  ) {
     _update { $0.__insert_node_at(__parent, __child, __new_node) }
   }
 

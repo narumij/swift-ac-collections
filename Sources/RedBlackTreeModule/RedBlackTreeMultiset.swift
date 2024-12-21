@@ -274,7 +274,7 @@ extension RedBlackTreeMultiset: ValueComparer {
   }
 }
 
-extension RedBlackTreeMultiset: ___UnsafeMutatingHandleBase {
+extension RedBlackTreeMultiset: ___RedBlackTreeUpdate {
 
   // プロトコルでupdateが書けなかったため、個別で実装している
   @inlinable

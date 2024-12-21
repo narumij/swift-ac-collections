@@ -23,11 +23,11 @@
 import Foundation
 
 @usableFromInline
-protocol ___UnsafeHandleCommon {
+protocol ___UnsafeHandleBase {
   associatedtype VC: ValueComparer
 }
 
-extension ___UnsafeHandleCommon {
+extension ___UnsafeHandleBase {
 
   @usableFromInline
   typealias _Key = VC._Key
@@ -43,4 +43,3 @@ extension ___UnsafeHandleCommon {
     VC.value_comp(a, b)
   }
 }
-

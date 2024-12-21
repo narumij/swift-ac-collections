@@ -93,7 +93,7 @@ extension ___RedBlackTreeMemoizeBase: ValueComparer {
 
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeContainerBase {}
 
-extension ___RedBlackTreeMemoizeBase: ___UnsafeMutatingHandleBase {
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeUpdate {
 
   @inlinable
   @inline(__always)

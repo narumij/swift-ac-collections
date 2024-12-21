@@ -45,7 +45,7 @@ struct ___UnsafeHandle<VC> where VC: ValueComparer {
   let __value_ptr: UnsafePointer<Element>
 }
 
-extension ___UnsafeHandle: ___UnsafeHandleCommon {
+extension ___UnsafeHandle: ___UnsafeHandleBase {
 
   @inlinable
   @inline(__always)
@@ -61,15 +61,19 @@ extension ___UnsafeHandle {
 
   @inlinable
   @inline(__always)
-  func pointer(_ ptr: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr? = .none, type: String) -> _NodePtr {
+  func pointer(
+    _ ptr: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr? = .none, type: String
+  ) -> _NodePtr {
     return distance > 0
-    ? pointer(ptr, nextBy: UInt(distance), limitedBy: limit, type: type)
-    : pointer(ptr, prevBy: UInt(abs(distance)), limitedBy: limit, type: type)
+      ? pointer(ptr, nextBy: UInt(distance), limitedBy: limit, type: type)
+      : pointer(ptr, prevBy: UInt(abs(distance)), limitedBy: limit, type: type)
   }
 
   @inlinable
   @inline(__always)
-  func pointer(_ ptr: _NodePtr, prevBy distance: UInt, limitedBy limit: _NodePtr? = .none, type: String) -> _NodePtr {
+  func pointer(
+    _ ptr: _NodePtr, prevBy distance: UInt, limitedBy limit: _NodePtr? = .none, type: String
+  ) -> _NodePtr {
     var ptr = ptr
     var distance = distance
     while distance != 0, ptr != limit {
@@ -89,7 +93,9 @@ extension ___UnsafeHandle {
 
   @inlinable
   @inline(__always)
-  func pointer(_ ptr: _NodePtr, nextBy distance: UInt, limitedBy limit: _NodePtr? = .none, type: String) -> _NodePtr {
+  func pointer(
+    _ ptr: _NodePtr, nextBy distance: UInt, limitedBy limit: _NodePtr? = .none, type: String
+  ) -> _NodePtr {
     var ptr = ptr
     var distance = distance
     while distance != 0, ptr != limit {
@@ -106,7 +112,7 @@ extension ___UnsafeHandle {
     assert(ptr != .nullptr)
     return ptr
   }
-  
+
   @inlinable
   @inline(__always)
   func distance(__first: _NodePtr, __last: _NodePtr) -> Int {

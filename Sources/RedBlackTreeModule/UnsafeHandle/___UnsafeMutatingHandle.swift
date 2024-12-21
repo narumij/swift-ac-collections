@@ -44,7 +44,7 @@ struct ___UnsafeMutatingHandle<VC> where VC: ValueComparer {
   let __value_ptr: UnsafeMutablePointer<Element>
 }
 
-extension ___UnsafeMutatingHandle: ___UnsafeHandleCommon {
+extension ___UnsafeMutatingHandle: ___UnsafeHandleBase {
 
   @inlinable func __value_(_ p: _NodePtr) -> _Key {
     __value_(__value_ptr[p])
@@ -55,5 +55,3 @@ extension ___UnsafeMutatingHandle: ___RedBlackTreeUpdateHandleImpl {}
 extension ___UnsafeMutatingHandle: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
 extension ___UnsafeMutatingHandle: InsertNodeAtProtocol {}
 extension ___UnsafeMutatingHandle: RemoveProtocol {}
-
-

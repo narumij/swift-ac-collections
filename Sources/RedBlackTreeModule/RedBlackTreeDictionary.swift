@@ -290,7 +290,7 @@ extension RedBlackTreeDictionary: ValueComparer {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeContainerBase {}
 
-extension RedBlackTreeDictionary: ___UnsafeMutatingHandleBase {
+extension RedBlackTreeDictionary: ___RedBlackTreeUpdate {
 
   @inlinable
   @inline(__always)

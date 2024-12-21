@@ -260,7 +260,7 @@ extension RedBlackTreeSet: ValueComparer {
   }
 }
 
-extension RedBlackTreeSet: ___UnsafeMutatingHandleBase {
+extension RedBlackTreeSet: ___RedBlackTreeUpdate {
 
   // プロトコルでupdateが書けなかったため、個別で実装している
   @inlinable @inline(__always)

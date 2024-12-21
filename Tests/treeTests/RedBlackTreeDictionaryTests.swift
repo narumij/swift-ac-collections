@@ -190,6 +190,80 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     debugPrint(b)
   }
 
+  func testInitUniqueKeysWithValues_() throws {
+    let dict = [Int:Int](uniqueKeysWithValues: [(1,10),(2,20)])
+    XCTAssertEqual(dict.keys.sorted(), [1,2])
+    XCTAssertEqual(dict.values.sorted(), [10,20])
+    XCTAssertEqual(dict[0], nil)
+    XCTAssertEqual(dict[1], 10)
+    XCTAssertEqual(dict[2], 20)
+    XCTAssertEqual(dict[3], nil)
+  }
+
+  func testInitUniqueKeysWithValues() throws {
+    let dict = RedBlackTreeDictionary(uniqueKeysWithValues: [(1,10),(2,20)])
+    XCTAssertEqual(dict.keys.sorted(), [1,2])
+    XCTAssertEqual(dict.values.sorted(), [10,20])
+    XCTAssertEqual(dict[0], nil)
+    XCTAssertEqual(dict[1], 10)
+    XCTAssertEqual(dict[2], 20)
+    XCTAssertEqual(dict[3], nil)
+  }
+
+  func testInitUniquingKeysWith_() throws {
+    do {
+      let dict = [Int:Int]([(1,10),(1,11),(2,20),(2,22)], uniquingKeysWith: { _,b in b })
+      XCTAssertEqual(dict.keys.sorted(), [1,2])
+      XCTAssertEqual(dict.values.sorted(), [11,22])
+      XCTAssertEqual(dict[0], nil)
+      XCTAssertEqual(dict[1], 11)
+      XCTAssertEqual(dict[2], 22)
+      XCTAssertEqual(dict[3], nil)
+    }
+    do {
+      let dict = [Int:Int]([(1,10),(1,11),(2,20),(2,22)], uniquingKeysWith: { a,_ in a })
+      XCTAssertEqual(dict.keys.sorted(), [1,2])
+      XCTAssertEqual(dict.values.sorted(), [10,20])
+      XCTAssertEqual(dict[0], nil)
+      XCTAssertEqual(dict[1], 10)
+      XCTAssertEqual(dict[2], 20)
+      XCTAssertEqual(dict[3], nil)
+    }
+  }
+
+  func testInitUniquingKeysWith() throws {
+    do {
+      let dict = RedBlackTreeDictionary([(1,10),(1,11),(2,20),(2,22)], uniquingKeysWith: { _,b in b })
+      XCTAssertEqual(dict.keys.sorted(), [1,2])
+      XCTAssertEqual(dict.values.sorted(), [11,22])
+      XCTAssertEqual(dict[0], nil)
+      XCTAssertEqual(dict[1], 11)
+      XCTAssertEqual(dict[2], 22)
+      XCTAssertEqual(dict[3], nil)
+    }
+    do {
+      let dict = RedBlackTreeDictionary([(1,10),(1,11),(2,20),(2,22)], uniquingKeysWith: { a,_ in a })
+      XCTAssertEqual(dict.keys.sorted(), [1,2])
+      XCTAssertEqual(dict.values.sorted(), [10,20])
+      XCTAssertEqual(dict[0], nil)
+      XCTAssertEqual(dict[1], 10)
+      XCTAssertEqual(dict[2], 20)
+      XCTAssertEqual(dict[3], nil)
+    }
+  }
+  
+  func testInitGroupingBy_() throws {
+    let students = ["Kofi", "Abena", "Efua", "Kweku", "Akosua"]
+    let studentsByLetter = Dictionary(grouping: students, by: { $0.first! })
+    XCTAssertEqual(studentsByLetter, ["E": ["Efua"], "K": ["Kofi", "Kweku"], "A": ["Abena", "Akosua"]])
+  }
+
+  func testInitGroupingBy() throws {
+    let students = ["Kofi", "Abena", "Efua", "Kweku", "Akosua"]
+    let studentsByLetter = RedBlackTreeDictionary(grouping: students, by: { $0.first! })
+    XCTAssertEqual(studentsByLetter, ["E": ["Efua"], "K": ["Kofi", "Kweku"], "A": ["Abena", "Akosua"]])
+  }
+
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
     self.measure {

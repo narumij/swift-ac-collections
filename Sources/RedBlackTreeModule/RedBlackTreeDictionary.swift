@@ -555,3 +555,32 @@ extension RedBlackTreeDictionary: CustomStringConvertible, CustomDebugStringConv
     return "RedBlackTreeDictionary(\(description))"
   }
 }
+
+extension RedBlackTreeDictionary: Equatable where Value: Equatable {
+//  public static func == (lhs: Self, rhs: Self) -> Bool {
+//    guard lhs.count == rhs.count else { return false }
+//    var l = lhs.startIndex
+//    var r = rhs.startIndex
+//    while l != lhs.endIndex, r != rhs.endIndex {
+//      guard lhs[l] == rhs[r] else { return false }
+//      l = lhs.index(after: l)
+//      r = rhs.index(after: r)
+//    }
+//    return true
+//  }
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    guard lhs.count == rhs.count else { return false }
+    return lhs._read { _lhs in
+      rhs._read { _rhs in
+        var l = _lhs.__begin_node
+        var r = _rhs.__begin_node
+        while l != _lhs.__end_node(), r != _rhs.__end_node() {
+          guard lhs.___values[l] == rhs.___values[r] else { return false }
+          l = _lhs.__tree_next_iter(l)
+          r = _rhs.__tree_next_iter(r)
+        }
+        return true
+      }
+    }
+  }
+}

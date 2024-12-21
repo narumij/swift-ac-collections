@@ -971,3 +971,21 @@ extension RedBlackTreeSet: CustomStringConvertible, CustomDebugStringConvertible
     "RedBlackTreeSet(\(description))"
   }
 }
+
+extension RedBlackTreeSet: Equatable {
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    guard lhs.count == rhs.count else { return false }
+    return lhs._read { _lhs in
+      rhs._read { _rhs in
+        var l = _lhs.__begin_node
+        var r = _rhs.__begin_node
+        while l != _lhs.__end_node(), r != _rhs.__end_node() {
+          guard lhs.___values[l] == rhs.___values[r] else { return false }
+          l = _lhs.__tree_next_iter(l)
+          r = _rhs.__tree_next_iter(r)
+        }
+        return true
+      }
+    }
+  }
+}

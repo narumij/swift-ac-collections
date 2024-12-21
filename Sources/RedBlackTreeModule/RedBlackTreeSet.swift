@@ -516,41 +516,17 @@ extension RedBlackTreeSet {
 
   @inlinable
   public func forEach(_ body: (Self.Element) throws -> Void) rethrows {
-    try _read { tree in
-      var ptr = tree.__begin_node
-      while ptr != tree.__end_node() {
-        try body(___values[ptr])
-        ptr = tree.__tree_next_iter(ptr)
-      }
-    }
+    try ___for_each(body)
   }
 
   @inlinable
   public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try _read { tree in
-      var ptr = tree.__begin_node
-      while ptr != tree.__end_node() {
-        if try predicate(___values[ptr]) {
-          return true
-        }
-        ptr = tree.__tree_next_iter(ptr)
-      }
-      return false
-    }
+    try ___for_each { try predicate($0) ? true : nil } ?? false
   }
 
   @inlinable
   public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try _read { tree in
-      var ptr = tree.__begin_node
-      while ptr != tree.__end_node() {
-        if try !predicate(___values[ptr]) {
-          return false
-        }
-        ptr = tree.__tree_next_iter(ptr)
-      }
-      return true
-    }
+    try ___for_each { try predicate($0) ? nil : false } ?? true
   }
 }
 

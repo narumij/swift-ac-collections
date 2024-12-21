@@ -79,7 +79,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  @inlinable public init<S>(uniqueKeysWithValues keysAndValues: S)
+  @inlinable public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
     // valuesは一旦全部の分を確保する
     var _values: [Element] = keysAndValues.map { ($0.0, $0.1) }
@@ -146,7 +146,7 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   @inlinable public init<S>(
-    _ keysAndValues: S,
+    _ keysAndValues: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
     // valuesは一旦全部の分を確保する
@@ -489,30 +489,12 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try _read {
-      var ptr = $0.__begin_node
-      while ptr != $0.__end_node() {
-        if try predicate(___values[ptr]) {
-          return ___values[ptr]
-        }
-        ptr = $0.__tree_next_iter(ptr)
-      }
-      return nil
-    }
+    try ___for_each { try predicate($0) ? $0 : nil }
   }
 
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try _read {
-      var ptr = $0.__begin_node
-      while ptr != $0.__end_node() {
-        if try predicate(___values[ptr]) {
-          return Index(ptr)
-        }
-        ptr = $0.__tree_next_iter(ptr)
-      }
-      return nil
-    }
+    try ___for_each { ptr, value in try predicate(value) ? Index(ptr) : nil }
   }
 }
 
@@ -520,41 +502,17 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public func forEach(_ body: (Self.Element) throws -> Void) rethrows {
-    try _read { tree in
-      var ptr = tree.__begin_node
-      while ptr != tree.__end_node() {
-        try body(___values[ptr])
-        ptr = tree.__tree_next_iter(ptr)
-      }
-    }
+    try ___for_each(body)
   }
 
   @inlinable
   public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try _read { tree in
-      var ptr = tree.__begin_node
-      while ptr != tree.__end_node() {
-        if try predicate(___values[ptr]) {
-          return true
-        }
-        ptr = tree.__tree_next_iter(ptr)
-      }
-      return false
-    }
+    try ___for_each { try predicate($0) ? true : nil } ?? false
   }
 
   @inlinable
   public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try _read { tree in
-      var ptr = tree.__begin_node
-      while ptr != tree.__end_node() {
-        if try !predicate(___values[ptr]) {
-          return false
-        }
-        ptr = tree.__tree_next_iter(ptr)
-      }
-      return true
-    }
+    try ___for_each { try predicate($0) ? nil : false } ?? true
   }
 }
 

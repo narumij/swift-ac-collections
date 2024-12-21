@@ -12,11 +12,11 @@ where A: Comparable, B: Comparable {
     }
   }
   @usableFromInline
-  init(__memo: ___RedBlackTreeMapBase<Key, B> = .init()) {
+  init(__memo: ___RedBlackTreeMemoizeBase<Key, B> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: ___RedBlackTreeMapBase<Key, B> = .init()
+  var __memo: ___RedBlackTreeMemoizeBase<Key, B> = .init()
   @inlinable
   subscript(a: A) -> B? {
     get { __memo[a] }
@@ -36,11 +36,11 @@ where A: Comparable, B: Comparable {
     }
   }
   @usableFromInline
-  init(__memo: ___RedBlackTreeMapBase<Key, C> = .init()) {
+  init(__memo: ___RedBlackTreeMemoizeBase<Key, C> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: ___RedBlackTreeMapBase<Key, C> = .init()
+  var __memo: ___RedBlackTreeMemoizeBase<Key, C> = .init()
   @inlinable
   subscript(a: A, b: B) -> C? {
     get { __memo[(a, b)] }
@@ -60,11 +60,11 @@ where A: Comparable, B: Comparable, C: Comparable {
     }
   }
   @usableFromInline
-  init(__memo: ___RedBlackTreeMapBase<Key, D> = .init()) {
+  init(__memo: ___RedBlackTreeMemoizeBase<Key, D> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: ___RedBlackTreeMapBase<Key, D> = .init()
+  var __memo: ___RedBlackTreeMemoizeBase<Key, D> = .init()
   @inlinable
   subscript(a: A, b: B, c: C) -> D? {
     get { __memo[(a, b, c)] }
@@ -84,11 +84,11 @@ where A: Comparable, B: Comparable, C: Comparable, D: Comparable {
     }
   }
   @usableFromInline
-  init(__memo: ___RedBlackTreeMapBase<Key, E> = .init()) {
+  init(__memo: ___RedBlackTreeMemoizeBase<Key, E> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: ___RedBlackTreeMapBase<Key, E> = .init()
+  var __memo: ___RedBlackTreeMemoizeBase<Key, E> = .init()
   @inlinable
   subscript(a: A, b: B, c: C, d: D) -> E? {
     get { __memo[(a, b, c, d)] }

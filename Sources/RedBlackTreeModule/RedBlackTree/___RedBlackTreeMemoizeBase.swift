@@ -27,7 +27,7 @@ import Foundation
 ///
 ///  メモリ管理をゆるめにしている
 @frozen
-public struct ___RedBlackTreeMapBase<KeyInfo, Value>
+public struct ___RedBlackTreeMemoizeBase<KeyInfo, Value>
 where KeyInfo: ___RedBlackTreeKeyProtocol  //, KeyInfo.Key: Equatable
 {
 
@@ -77,7 +77,7 @@ where KeyInfo: ___RedBlackTreeKeyProtocol  //, KeyInfo.Key: Equatable
   public var isEmpty: Bool { count == 0 }
 }
 
-extension ___RedBlackTreeMapBase: ValueComparer {
+extension ___RedBlackTreeMemoizeBase: ValueComparer {
 
   @inlinable
   static func __key(_ kv: (Key, Value)) -> Key { kv.0 }
@@ -91,9 +91,9 @@ extension ___RedBlackTreeMapBase: ValueComparer {
   }
 }
 
-extension ___RedBlackTreeMapBase: ___RedBlackTreeContainerBase, ___UnsafeHandleBase {}
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeContainerBase, ___UnsafeHandleBase {}
 
-extension ___RedBlackTreeMapBase: ___UnsafeMutatingHandleBase {
+extension ___RedBlackTreeMemoizeBase: ___UnsafeMutatingHandleBase {
 
   @inlinable
   @inline(__always)
@@ -112,7 +112,7 @@ extension ___RedBlackTreeMapBase: ___UnsafeMutatingHandleBase {
   }
 }
 
-extension ___RedBlackTreeMapBase: InsertUniqueProtocol, EraseUniqueProtocol {
+extension ___RedBlackTreeMemoizeBase: InsertUniqueProtocol, EraseUniqueProtocol {
 
   @inlinable
   mutating func __construct_node(_ k: (Key, Value)) -> _NodePtr {

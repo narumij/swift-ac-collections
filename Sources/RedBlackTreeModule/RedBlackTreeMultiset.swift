@@ -164,7 +164,7 @@ extension RedBlackTreeMultiset {
     ///
     /// - Complexity: O(*n* log *n*), ここで *n* はシーケンスの要素数。
     @inlinable
-    public init<Source>(_ sequence: Source)
+    public init<Source>(_ sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
       // 全数使うため、一度確保すると、そのまま
       var _values: [Element] = sequence + []

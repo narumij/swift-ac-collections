@@ -142,7 +142,7 @@ extension RedBlackTreeSet {
   ///
   /// - Parameter sequence: 新しい赤黒木セットのメンバーとして使用する要素列。
   @inlinable
-  public init<Source>(_ sequence: Source)
+  public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
     // valuesは一旦全部の分を確保する
     var _values: [Element] = sequence + []

@@ -504,13 +504,35 @@
       XCTAssertEqual(members.removeLast(), 1)
     }
     
-    
+    func testContainsAllSatisfy() throws {
+      let dict = [1, 2, 2, 2, 3, 3, 4, 5] as RedBlackTreeSet<Int>
+      XCTAssertEqual(dict.first, 1)
+      XCTAssertEqual(dict.last, 5)
+      XCTAssertEqual(dict.first(where: { $0 > 4}), 5)
+      XCTAssertEqual(dict.firstIndex(where: { $0 > 4 }), dict.index(before: dict.endIndex))
+      XCTAssertEqual(dict.first(where: { $0 > 5}), nil)
+      XCTAssertEqual(dict.firstIndex(where: { $0 > 5 }), nil)
+      XCTAssertTrue(dict.contains(where: { $0 > 3 }))
+      XCTAssertFalse(dict.contains(where: { $0 > 5 }))
+      XCTAssertTrue(dict.allSatisfy({ $0 > 0 }))
+      XCTAssertFalse(dict.allSatisfy({ $0 > 1 }))
+    }
+
     func testEqualtable() throws {
       XCTAssertEqual(RedBlackTreeSet<Int>(), [])
       XCTAssertNotEqual(RedBlackTreeSet<Int>(), [1])
       XCTAssertEqual([1] as RedBlackTreeSet<Int>, [1])
       XCTAssertNotEqual([1,2] as RedBlackTreeSet<Int>, [1])
       XCTAssertNotEqual([2] as RedBlackTreeSet<Int>, [1])
+    }
+
+    func testForEach() throws {
+      let dict = [1,2,2,3] as RedBlackTreeSet<Int>
+      var d: [Int] = []
+      dict.forEach { v in
+        d.append(v)
+      }
+      XCTAssertEqual(d, [1,2,3])
     }
 
     func testPerformanceDistanceFromTo() throws {

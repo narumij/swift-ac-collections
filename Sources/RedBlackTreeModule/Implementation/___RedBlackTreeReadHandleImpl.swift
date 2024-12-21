@@ -44,11 +44,11 @@ extension ___RedBlackTreeReadHandleImpl {
     __header_ptr.pointee.__begin_node
   }
 
-  @inlinable
-  @inline(__always)
-  var size: Int {
-    __header_ptr.pointee.size
-  }
+//  @inlinable
+//  @inline(__always)
+//  var size: Int {
+//    __header_ptr.pointee.size
+//  }
 }
 
 extension ___RedBlackTreeReadHandleImpl {

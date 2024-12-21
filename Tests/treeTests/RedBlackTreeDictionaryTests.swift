@@ -28,6 +28,8 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     let map = RedBlackTreeDictionary<Int, Int>()
     XCTAssertEqual(map.count, 0)
     XCTAssertTrue(map.isEmpty)
+    XCTAssertNil(map.first)
+    XCTAssertNil(map.last)
     XCTAssertEqual(map.distance(from: map.startIndex, to: map.endIndex), 0)
   }
   
@@ -450,6 +452,15 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     XCTAssertFalse(dict.contains(where: { $0.value / $0.key == 22 }))
     XCTAssertTrue(dict.allSatisfy({ $0.value / $0.key == 11 }))
     XCTAssertFalse(dict.allSatisfy({ $0.value / $0.key == 22 }))
+  }
+  
+  func testForEach() throws {
+    let dict = [1:11,2:22,3:33] as RedBlackTreeDictionary<Int,Int>
+    var d: [Int:Int] = [:]
+    dict.forEach { k,v in
+      d[k] = v
+    }
+    XCTAssertEqual(d, [1:11,2:22,3:33])
   }
 
   func testPerformanceExample() throws {

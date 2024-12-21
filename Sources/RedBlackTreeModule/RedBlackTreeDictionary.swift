@@ -82,7 +82,7 @@ extension RedBlackTreeDictionary {
   @inlinable public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
     // valuesは一旦全部の分を確保する
-    var _values: [Element] = keysAndValues.map { ($0.0, $0.1) }
+    var _values: [Element] = keysAndValues.map { k,v in (k,v) }
     var _header: ___RedBlackTree.___Header = .zero
     self.___nodes = [___RedBlackTree.___Node](
       unsafeUninitializedCapacity: _values.count
@@ -150,7 +150,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
     // valuesは一旦全部の分を確保する
-    var _values: [Element] = keysAndValues.map { ($0.0, $0.1) }
+    var _values: [Element] = keysAndValues.map { k,v in (k,v) }
     var _header: ___RedBlackTree.___Header = .zero
     self.___nodes = try [___RedBlackTree.___Node](
       unsafeUninitializedCapacity: _values.count
@@ -276,13 +276,13 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: ValueComparer {
 
-  @inlinable
+  @inlinable @inline(__always)
   static func __key(_ kv: KeyValue) -> Key { kv.key }
 
-  @inlinable
+  @inlinable @inline(__always)
   static func __value(_ kv: KeyValue) -> Value { kv.value }
 
-  @inlinable
+  @inlinable @inline(__always)
   static func value_comp(_ a: Key, _ b: Key) -> Bool {
     KeyInfo.value_comp(a, b)
   }
@@ -361,10 +361,10 @@ extension RedBlackTreeDictionary {
   internal func _prepareForKeyingModify(
     _ key: Key
   ) -> (__parent: _NodePtr, __child: _NodeRef, __ptr: _NodePtr) {
-    _read {
+    _read { tree in
       var __parent = _NodePtr.nullptr
-      let __child = $0.__find_equal(&__parent, key)
-      let __ptr = $0.__ref_(__child)
+      let __child = tree.__find_equal(&__parent, key)
+      let __ptr = tree.__ref_(__child)
       return (__parent, __child, __ptr)
     }
   }
@@ -423,8 +423,8 @@ extension RedBlackTreeDictionary {
     let (__r, __inserted) = __insert_unique((key, value))
     return __inserted
       ? nil
-      : _read {
-        let __p = $0.__ref_(__r)
+      : _read { tree in
+        let __p = tree.__ref_(__r)
         let oldMember = ___values[__p]
         ___values[__p] = (key, value)
         return oldMember.value
@@ -475,24 +475,24 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public var first: Element? {
-    guard !isEmpty else { return nil }
-    return self[startIndex]
+    isEmpty ? nil : self[startIndex]
   }
 
   @inlinable
   public var last: Element? {
-    guard !isEmpty else { return nil }
-    return self[index(before: .end)]
+    isEmpty ? nil : self[index(before: .end)]
   }
 
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___for_each { try predicate($0) ? $0 : nil }
+    try ___for_each { member in
+      try predicate(member) ? member : nil }
   }
 
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___for_each { ptr, value in try predicate(value) ? Index(ptr) : nil }
+    try ___for_each { ptr, member in
+      try predicate(member) ? Index(ptr) : nil }
   }
 }
 
@@ -505,12 +505,14 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___for_each { try predicate($0) ? true : nil } ?? false
+    try ___for_each { member in
+      try predicate(member) ? true : nil } ?? false
   }
 
   @inlinable
   public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___for_each { try predicate($0) ? nil : false } ?? true
+    try ___for_each { member in
+      try predicate(member) ? nil : false } ?? true
   }
 }
 
@@ -562,17 +564,21 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   }
 
   @inlinable public func index(before i: Index) -> Index {
-    guard i != startIndex else {
-      fatalError("Attempting to access RedBlackTreeDictionary elements using an invalid index")
+    _read { tree in
+      guard i != startIndex else {
+        fatalError("Attempting to access RedBlackTreeDictionary elements using an invalid index")
+      }
+      return Index(tree.__tree_prev_iter(i.pointer))
     }
-    return Index(_read { $0.__tree_prev_iter(i.pointer) })
   }
 
   @inlinable public func index(after i: Index) -> Index {
-    guard i != endIndex else {
-      fatalError("Attempting to access RedBlackTreeDictionary elements using an invalid index")
+    _read { tree in
+      guard i != endIndex else {
+        fatalError("Attempting to access RedBlackTreeDictionary elements using an invalid index")
+      }
+      return Index(tree.__tree_next_iter(i.pointer))
     }
-    return Index(_read { $0.__tree_next_iter(i.pointer) })
   }
 
   @inlinable public var startIndex: Index {
@@ -588,24 +594,25 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
 extension RedBlackTreeDictionary {
 
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    _read {
-      Index($0.pointer(i.pointer, offsetBy: distance, type: "RedBlackTreeDictionary"))
+    _read { tree in
+      Index(tree.pointer(i.pointer, offsetBy: distance, type: "RedBlackTreeDictionary"))
     }
   }
 
   @inlinable public func index(
     _ i: Index, offsetBy distance: Int, limitedBy limit: Index
   ) -> Index? {
-    _read {
+    _read { tree in
       Index?(
-        $0.pointer(
+        tree.pointer(
           i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeDictionary"))
     }
   }
 
   @inlinable func distance(__last: _NodePtr) -> Int {
-    if __last == end() { return count }
-    return _read { $0.distance(__first: $0.__begin_node, __last: __last) }
+    _read { tree in
+      __last == end() ? count : tree.distance(__first: tree.__begin_node, __last: __last)
+    }
   }
 
   /// O(n)

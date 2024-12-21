@@ -479,7 +479,7 @@ extension RedBlackTreeSet {
   ///
   /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
   ///
-  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、最小要素は効率的に取得できます。
+  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、最小要素は割と効率的に取得できます。
   @inlinable public func min() -> Element? {
     // O(1)にできるが、オリジナルにならい、一旦このまま
     ___min()
@@ -505,10 +505,41 @@ extension RedBlackTreeSet {
   ///
   /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
   ///
-  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、最大要素は効率的に取得できます。
+  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、最大要素は割と効率的に取得できます。
   @inlinable public func max() -> Element? {
     // O(1)にできるが、オリジナルにならい、一旦このまま
     ___max()
+  }
+}
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
+    try _read {
+      var ptr = $0.__begin_node
+      while ptr != $0.__end_node() {
+        if try predicate(___values[ptr]) {
+          return true
+        }
+        ptr = $0.__tree_next_iter(ptr)
+      }
+      return false
+    }
+  }
+
+  @inlinable
+  public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
+    try _read {
+      var ptr = $0.__begin_node
+      while ptr != $0.__end_node() {
+        if try !predicate(___values[ptr]) {
+          return false
+        }
+        ptr = $0.__tree_next_iter(ptr)
+      }
+      return true
+    }
   }
 }
 

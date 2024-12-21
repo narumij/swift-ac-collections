@@ -473,8 +473,6 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeSetContainer {}
 
-
-#if false
 extension RedBlackTreeDictionary {
 
   @inlinable
@@ -488,7 +486,7 @@ extension RedBlackTreeDictionary {
     guard !isEmpty else { return nil }
     return self[index(before: .end)]
   }
-  
+
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try _read {
@@ -517,7 +515,37 @@ extension RedBlackTreeDictionary {
     }
   }
 }
-#endif
+
+extension RedBlackTreeDictionary {
+
+  @inlinable
+  public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
+    try _read {
+      var ptr = $0.__begin_node
+      while ptr != $0.__end_node() {
+        if try predicate(___values[ptr]) {
+          return true
+        }
+        ptr = $0.__tree_next_iter(ptr)
+      }
+      return false
+    }
+  }
+
+  @inlinable
+  public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
+    try _read {
+      var ptr = $0.__begin_node
+      while ptr != $0.__end_node() {
+        if try !predicate(___values[ptr]) {
+          return false
+        }
+        ptr = $0.__tree_next_iter(ptr)
+      }
+      return true
+    }
+  }
+}
 
 #if false
   extension RedBlackTreeDictionary {

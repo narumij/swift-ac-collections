@@ -430,12 +430,85 @@ extension RedBlackTreeMultiset {
     ___contains(member)
   }
 
+  /// 赤黒木セット内の最小要素を返します。
+  ///
+  /// このメソッドは、`RedBlackTreeSet` 内で順序的に最小の要素を返します。
+  /// セットが空の場合は `nil` を返します。
+  ///
+  /// 以下は、`min()` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let set: RedBlackTreeSet = [3, 1, 4, 5, 9]
+  /// if let minValue = set.min() {
+  ///     print("Minimum value: \(minValue)") // 出力: "Minimum value: 1"
+  /// } else {
+  ///     print("The set is empty.")
+  /// }
+  /// ```
+  ///
+  /// - Returns: セット内の最小要素。セットが空の場合は `nil`。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  ///
+  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、最小要素は割と効率的に取得できます。
   @inlinable public func min() -> Element? {
     ___min()
   }
 
+  /// 赤黒木セット内の最大要素を返します。
+  ///
+  /// このメソッドは、`RedBlackTreeSet` 内で順序的に最大の要素を返します。
+  /// セットが空の場合は `nil` を返します。
+  ///
+  /// 以下は、`max()` メソッドを使用した例です:
+  ///
+  /// ```swift
+  /// let set: RedBlackTreeSet = [3, 1, 4, 5, 9]
+  /// if let maxValue = set.max() {
+  ///     print("Maximum value: \(maxValue)") // 出力: "Maximum value: 9"
+  /// } else {
+  ///     print("The set is empty.")
+  /// }
+  /// ```
+  ///
+  /// - Returns: セット内の最大要素。セットが空の場合は `nil`。
+  ///
+  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  ///
+  /// - Note: `RedBlackTreeSet` は要素を昇順で管理しているため、最大要素は割と効率的に取得できます。
   @inlinable public func max() -> Element? {
     ___max()
+  }
+}
+
+extension RedBlackTreeMultiset {
+
+  @inlinable
+  public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
+    try _read {
+      var ptr = $0.__begin_node
+      while ptr != $0.__end_node() {
+        if try predicate(___values[ptr]) {
+          return true
+        }
+        ptr = $0.__tree_next_iter(ptr)
+      }
+      return false
+    }
+  }
+
+  @inlinable
+  public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
+    try _read {
+      var ptr = $0.__begin_node
+      while ptr != $0.__end_node() {
+        if try !predicate(___values[ptr]) {
+          return false
+        }
+        ptr = $0.__tree_next_iter(ptr)
+      }
+      return true
+    }
   }
 }
 

@@ -447,7 +447,9 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     XCTAssertEqual(dict.first(where: { $0.value == 44})?.key, nil)
     XCTAssertEqual(dict.firstIndex(where: { $0.value == 44}), nil)
     XCTAssertTrue(dict.contains(where: { $0.value / $0.key == 11 }))
+    XCTAssertFalse(dict.contains(where: { $0.value / $0.key == 22 }))
     XCTAssertTrue(dict.allSatisfy({ $0.value / $0.key == 11 }))
+    XCTAssertFalse(dict.allSatisfy({ $0.value / $0.key == 22 }))
   }
 
   func testPerformanceExample() throws {

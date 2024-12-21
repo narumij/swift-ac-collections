@@ -144,67 +144,24 @@ extension RedBlackTreeSet {
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    // valuesは一旦全部の分を確保する
-    var _values: [Element] = sequence + []
-    var _header: ___RedBlackTree.___Header = .zero
-    // nodesの初期化回数を減らそうとして以下のようにしている
-    self.___nodes = [___RedBlackTree.___Node](
-      unsafeUninitializedCapacity: _values.count
-    ) { _nodes, initializedCount in
-      withUnsafeMutablePointer(to: &_header) { _header in
-        var count = 0
-        _values.withUnsafeMutableBufferPointer { _values in
-          func __construct_node(_ __k: Element) -> _NodePtr {
-            _nodes[count] = .zero
-            // 前方から詰め直している
-            _values[count] = __k
-            defer { count += 1 }
-            return count
-          }
-          let tree = ___UnsafeMutatingHandle<Self>(
-            __header_ptr: _header,
-            __node_ptr: _nodes.baseAddress!,
-            __value_ptr: _values.baseAddress!)
-          var i = 0
-          while i < _values.count {
-            let __k = _values[i]
-            i += 1
-            // 以下は、__insert_uniqueと等価だが、__construct_nodeが初期化中で使えないため、
-            // べた書きしている
-            var __parent = _NodePtr.nullptr
-            let __child = tree.__find_equal(&__parent, __k)
-            if tree.__ref_(__child) == .nullptr {
-              let __h = __construct_node(__k)
-              tree.__insert_node_at(__parent, __child, __h)
-            }
-          }
-          initializedCount = count
-        }
-        // 詰め終わった残りの部分を削除する
-        _values.removeLast(_values.count - count)
+    (
+      self.___header,
+      self.___nodes,
+      self.___values,
+      self.___stock
+    ) = Self.___initialize(
+      ___sequence: sequence,
+      ___elements: { $0.map { $0 } }
+    ) { tree, __k, _, __construct_node in
+      var __parent = _NodePtr.nullptr
+      let __child = tree.__find_equal(&__parent, __k)
+      if tree.__ref_(__child) == .nullptr {
+        let __h = __construct_node(__k)
+        tree.__insert_node_at(__parent, __child, __h)
       }
     }
-    self.___header = _header
-    self.___values = _values
-    self.___stock = []
   }
 }
-
-#if false
-  // naive
-  extension RedBlackTreeSet {
-    @inlinable @inline(__always)
-    public init<S>(_ _a: S) where S: Collection, S.Element == Element {
-      self.nodes = []
-      self.header = .zero
-      self.values = []
-      self.stock = []
-      for a in _a {
-        _ = insert(a)
-      }
-    }
-  }
-#endif
 
 extension RedBlackTreeSet {
 

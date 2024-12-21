@@ -143,82 +143,44 @@ extension RedBlackTreeMultiset {
   }
 }
 
-#if true
-  extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiset {
 
-    /// 指定されたシーケンスの要素を持つ赤黒木マルチセットを作成します。
-    ///
-    /// このイニシャライザは、指定されたシーケンス内の全ての要素を格納する新しい `RedBlackTreeMultiSet` を作成します。
-    /// シーケンスに重複要素が含まれる場合、それらもそのまま格納されます。
-    ///
-    /// 以下は、シーケンスを基にしたマルチセットの作成例です:
-    ///
-    /// ```swift
-    /// let numbers = [1, 2, 2, 3, 3, 3]
-    /// let multiset = RedBlackTreeMultiSet(numbers)
-    /// print(multiset) // 出力: [1, 2, 2, 3, 3, 3]
-    /// ```
-    ///
-    /// - Parameter sequence: 新しいマルチセットに含める要素を持つシーケンス。
-    ///   シーケンス内の要素は順序に従って格納されます。
-    ///
-    /// - Complexity: O(*n* log *n*), ここで *n* はシーケンスの要素数。
-    @inlinable
-    public init<Source>(_ sequence: __owned Source)
-    where Element == Source.Element, Source: Sequence {
-      // 全数使うため、一度確保すると、そのまま
-      var _values: [Element] = sequence + []
-      var _header: ___RedBlackTree.___Header = .zero
-      self.___nodes = [___RedBlackTree.___Node](
-        unsafeUninitializedCapacity: _values.count
-      ) { _nodes, initializedCount in
-        withUnsafeMutablePointer(to: &_header) { _header in
-          var count = 0
-          _values.withUnsafeMutableBufferPointer { _values in
-            func __construct_node(_ __k: Element) -> _NodePtr {
-              _nodes[count] = .zero
-              defer { count += 1 }
-              return count
-            }
-            let tree = ___UnsafeMutatingHandle<Self>(
-              __header_ptr: _header,
-              __node_ptr: _nodes.baseAddress!,
-              __value_ptr: _values.baseAddress!)
-            var i = 0
-            while i < _values.count {
-              let __k = _values[i]
-              i += 1
-              let __h = __construct_node(__k)
-              var __parent = _NodePtr.nullptr
-              let __child = tree.__find_leaf_high(&__parent, __k)
-              tree.__insert_node_at(__parent, __child, __h)
-            }
-            initializedCount = count
-          }
-        }
-      }
-      self.___header = _header
-      self.___values = _values
-      self.___stock = []
+  /// 指定されたシーケンスの要素を持つ赤黒木マルチセットを作成します。
+  ///
+  /// このイニシャライザは、指定されたシーケンス内の全ての要素を格納する新しい `RedBlackTreeMultiSet` を作成します。
+  /// シーケンスに重複要素が含まれる場合、それらもそのまま格納されます。
+  ///
+  /// 以下は、シーケンスを基にしたマルチセットの作成例です:
+  ///
+  /// ```swift
+  /// let numbers = [1, 2, 2, 3, 3, 3]
+  /// let multiset = RedBlackTreeMultiSet(numbers)
+  /// print(multiset) // 出力: [1, 2, 2, 3, 3, 3]
+  /// ```
+  ///
+  /// - Parameter sequence: 新しいマルチセットに含める要素を持つシーケンス。
+  ///   シーケンス内の要素は順序に従って格納されます。
+  ///
+  /// - Complexity: O(*n* log *n*), ここで *n* はシーケンスの要素数。
+  @inlinable
+  public init<Source>(_ sequence: __owned Source)
+  where Element == Source.Element, Source: Sequence {
+    (
+      self.___header,
+      self.___nodes,
+      self.___values,
+      self.___stock
+    ) = Self.___initialize(
+      ___sequence: sequence,
+      ___elements: { $0.map { $0 } }
+    ) { tree, __k, _, __construct_node in
+      let __h = __construct_node(__k)
+      var __parent = _NodePtr.nullptr
+      let __child = tree.__find_leaf_high(&__parent, __k)
+      tree.__insert_node_at(__parent, __child, __h)
     }
   }
-#endif
-
-#if false
-  // naive
-  extension RedBlackTreeMultiset {
-    @inlinable @inline(__always)
-    public init<S>(_ _a: S) where S: Collection, S.Element == Element {
-      self.___nodes = []
-      self.___header = .zero
-      self.___values = []
-      self.___stock = []
-      for a in _a {
-        _ = insert(a)
-      }
-    }
-  }
-#endif
+}
 
 extension RedBlackTreeMultiset {
 

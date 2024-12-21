@@ -81,48 +81,52 @@ extension RedBlackTreeDictionary {
 
   @inlinable public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
-    // valuesは一旦全部の分を確保する
-    var _values: [Element] = keysAndValues.map { k, v in (k, v) }
-    var _header: ___RedBlackTree.___Header = .zero
-    self.___nodes = [___RedBlackTree.___Node](
-      unsafeUninitializedCapacity: _values.count
-    ) { _nodes, initializedCount in
-      withUnsafeMutablePointer(to: &_header) { _header in
-        var count = 0
-        _values.withUnsafeMutableBufferPointer { _values in
-          func ___construct_node(_ __k: Element) -> _NodePtr {
-            _nodes[count] = .zero
-            // 前方から詰め直している
-            _values[count] = __k
-            defer { count += 1 }
-            return count
-          }
-          let tree = ___UnsafeMutatingHandle<Self>(
-            __header_ptr: _header,
-            __node_ptr: _nodes.baseAddress!,
-            __value_ptr: _values.baseAddress!)
-          var i = 0
-          while i < _values.count {
-            let __k = _values[i]
-            i += 1
-            var __parent = _NodePtr.nullptr
-            let __child = tree.__find_equal(&__parent, __k.0)
-            if tree.__ref_(__child) == .nullptr {
-              let __h = ___construct_node(__k)
-              tree.__insert_node_at(__parent, __child, __h)
-            } else {
-              fatalError("Dupricate values for key: '\(__k.0)'")
-            }
-          }
-          initializedCount = count
-        }
-        // 詰め終わった残りの部分を削除する
-        _values.removeLast(_values.count - count)
+    (
+      self.___header,
+      self.___nodes,
+      self.___values,
+      self.___stock
+    ) = Self.___initialize(
+      ___sequence: keysAndValues,
+      ___elements: { $0.map { k, v in (k, v) } }
+    ) { tree, __k, _, ___construct_node in
+      var __parent = _NodePtr.nullptr
+      let __child = tree.__find_equal(&__parent, __k.0)
+      if tree.__ref_(__child) == .nullptr {
+        let __h = ___construct_node(__k)
+        tree.__insert_node_at(__parent, __child, __h)
+      } else {
+        fatalError("Dupricate values for key: '\(__k.0)'")
       }
     }
-    self.___header = _header
-    self.___values = _values
-    self.___stock = []
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  @inlinable public init<S>(
+    _ keysAndValues: __owned S,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows where S: Sequence, S.Element == (Key, Value) {
+    (
+      self.___header,
+      self.___nodes,
+      self.___values,
+      self.___stock
+    ) = try Self.___initialize(
+      ___sequence: keysAndValues,
+      ___elements: { $0.map { k, v in (k, v) } }
+    ) { tree, __k, _values, ___construct_node in
+      var __parent = _NodePtr.nullptr
+      let __child = tree.__find_equal(&__parent, __k.0)
+      if tree.__ref_(__child) == .nullptr {
+        let __h = ___construct_node(__k)
+        tree.__insert_node_at(__parent, __child, __h)
+      } else {
+        _values[tree.__ref_(__child)].value = try combine(
+          _values[tree.__ref_(__child)].value, __k.value)
+      }
+    }
   }
 }
 
@@ -141,61 +145,7 @@ extension RedBlackTreeDictionary {
       }
     }
   }
-#endif
 
-extension RedBlackTreeDictionary {
-
-  @inlinable public init<S>(
-    _ keysAndValues: __owned S,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows where S: Sequence, S.Element == (Key, Value) {
-    // valuesは一旦全部の分を確保する
-    var _values: [Element] = keysAndValues.map { k, v in (k, v) }
-    var _header: ___RedBlackTree.___Header = .zero
-    self.___nodes = try [___RedBlackTree.___Node](
-      unsafeUninitializedCapacity: _values.count
-    ) { _nodes, initializedCount in
-      try withUnsafeMutablePointer(to: &_header) { _header in
-        var count = 0
-        try _values.withUnsafeMutableBufferPointer { _values in
-          func ___construct_node(_ __k: Element) -> _NodePtr {
-            _nodes[count] = .zero
-            // 前方から詰め直している
-            _values[count] = __k
-            defer { count += 1 }
-            return count
-          }
-          let tree = ___UnsafeMutatingHandle<Self>(
-            __header_ptr: _header,
-            __node_ptr: _nodes.baseAddress!,
-            __value_ptr: _values.baseAddress!)
-          var i = 0
-          while i < _values.count {
-            let __k = _values[i]
-            i += 1
-            var __parent = _NodePtr.nullptr
-            let __child = tree.__find_equal(&__parent, __k.0)
-            if tree.__ref_(__child) == .nullptr {
-              let __h = ___construct_node(__k)
-              tree.__insert_node_at(__parent, __child, __h)
-            } else {
-              _values[tree.__ref_(__child)].value = try combine(
-                _values[tree.__ref_(__child)].value, __k.value)
-            }
-          }
-          initializedCount = count
-        }
-        // 詰め終わった残りの部分を削除する
-        _values.removeLast(_values.count - count)
-      }
-    }
-    self.___header = _header
-    self.___values = _values
-    self.___stock = []
-  }
-}
-
-#if false
   // naive
   extension RedBlackTreeDictionary {
     @inlinable public init<S>(
@@ -521,7 +471,7 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
-  
+
   @inlinable public init(dictionaryLiteral elements: (Key, Value)...) {
     self.init(uniqueKeysWithValues: elements)
   }

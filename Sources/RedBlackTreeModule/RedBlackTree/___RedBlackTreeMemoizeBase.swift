@@ -48,13 +48,13 @@ where KeyInfo: ___RedBlackTreeKeyProtocol  //, KeyInfo.Key: Equatable
 
   public subscript(key: Key) -> Value? {
     get {
-      _read {
-        let it = $0.__lower_bound(key, $0.__root(), $0.__left_)
+      _read { tree in
+        let it = tree.__lower_bound(key, tree.__root(), tree.__left_)
         guard it >= 0,
-          !Self.value_comp(Self.__key($0.__value_ptr[it]), key),
-          !Self.value_comp(key, Self.__key($0.__value_ptr[it]))
+          !Self.value_comp(Self.__key(tree.__value_ptr[it]), key),
+          !Self.value_comp(key, Self.__key(tree.__value_ptr[it]))
         else { return nil }
-        return Self.__value($0.__value_ptr[it])
+        return Self.__value(tree.__value_ptr[it])
       }
     }
     set {

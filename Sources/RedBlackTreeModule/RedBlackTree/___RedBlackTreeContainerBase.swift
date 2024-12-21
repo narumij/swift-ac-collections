@@ -76,28 +76,33 @@ extension ___RedBlackTreeContainerBase {
 
   @inlinable
   func __ref_(_ rhs: _NodeRef) -> _NodePtr {
-    _read { $0.__ref_(rhs) }
+    _read { tree in
+      tree.__ref_(rhs) }
   }
   
   @inlinable
   func __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef {
-    _read { $0.__find_leaf_high(&__parent, __v) }
+    _read { tree in
+      tree.__find_leaf_high(&__parent, __v) }
   }
 
   @inlinable
   func __find_equal(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef {
-    _read { $0.__find_equal(&__parent, __v) }
+    _read { tree in
+      tree.__find_equal(&__parent, __v) }
   }
 
   @inlinable
   func find(_ __v: _Key) -> _NodePtr {
-    _read { $0.find(__v) }
+    _read { tree in
+      tree.find(__v) }
   }
   
   @inlinable
   func
   __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr) {
-    _read { $0.__equal_range_multi(__k) }
+    _read { tree in
+      tree.__equal_range_multi(__k) }
   }
 }
 
@@ -150,26 +155,26 @@ extension ___RedBlackTreeContainerBase {
   
   @inlinable @inline(__always)
   func ___contains(_ __k: _Key) -> Bool where _Key: Equatable {
-    _read {
-      let it = $0.__lower_bound(__k, $0.__root(), $0.__left_)
+    _read { tree in
+      let it = tree.__lower_bound(__k, tree.__root(), tree.__left_)
       guard it >= 0 else { return false }
-      return Self.__key($0.__value_ptr[it]) == __k
+      return Self.__key(tree.__value_ptr[it]) == __k
     }
   }
   
   @inlinable @inline(__always)
   func ___min() -> Element? {
-    _read {
-      let p = $0.__tree_min($0.__root())
-      return p == .end ? nil : $0.__value_(p)
+    _read { tree in
+      let p = tree.__tree_min(tree.__root())
+      return p == .end ? nil : tree.__value_(p)
     }
   }
 
   @inlinable @inline(__always)
   func ___max() -> Element? {
-    _read {
-      let p = $0.__tree_max($0.__root())
-      return p == .end ? nil : $0.__value_(p)
+    _read { tree in
+      let p = tree.__tree_max(tree.__root())
+      return p == .end ? nil : tree.__value_(p)
     }
   }
 }
@@ -178,11 +183,15 @@ extension ___RedBlackTreeContainerBase {
 
   @inlinable @inline(__always)
   func ___lower_bound(_ __k: _Key) -> _NodePtr {
-    _read { $0.__lower_bound(__k, $0.__root(), .end) }
+    _read { tree in
+      tree.__lower_bound(__k, tree.__root(), .end)
+    }
   }
 
   @inlinable @inline(__always)
   func ___upper_bound(_ __k: _Key) -> _NodePtr {
-    _read { $0.__upper_bound(__k, $0.__root(), .end) }
+    _read { tree in
+      tree.__upper_bound(__k, tree.__root(), .end)
+    }
   }
 }

@@ -36,11 +36,13 @@ extension ___RedBlackTreeUpdate {
     _ __child: _NodeRef,
     _ __new_node: _NodePtr
   ) {
-    _update { $0.__insert_node_at(__parent, __child, __new_node) }
+    _update { tree in
+      tree.__insert_node_at(__parent, __child, __new_node) }
   }
 
   @inlinable
   mutating func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {
-    _update { $0.__remove_node_pointer(__ptr) }
+    _update { tree in
+      tree.__remove_node_pointer(__ptr) }
   }
 }

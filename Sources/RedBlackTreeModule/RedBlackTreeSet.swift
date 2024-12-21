@@ -519,13 +519,15 @@ extension RedBlackTreeSet {
   @inlinable
   public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
     try ___for_each { member in
-      try predicate(member) ? true : nil } ?? false
+      try predicate(member) ? true : nil
+    } ?? false
   }
 
   @inlinable
   public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
     try ___for_each { member in
-      try predicate(member) ? nil : false } ?? true
+      try predicate(member) ? nil : false
+    } ?? true
   }
 }
 
@@ -743,12 +745,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   ///
   /// - Precondition: `i` は `startIndex` より大きく、`endIndex` 以下である必要があります。
   @inlinable public func index(before i: Index) -> Index {
-    _read { tree in
-      guard i != startIndex else {
-        fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
-      }
-      return Index(tree.__tree_prev_iter(i.pointer))
-    }
+    ___index_before(i, type: "RedBlackTreeSet")
   }
 
   /// 指定されたインデックスの直後の位置を返します。
@@ -763,12 +760,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   ///
   /// - Precondition: `i` は `startIndex` 以上、`endIndex` 未満である必要があります。
   @inlinable public func index(after i: Index) -> Index {
-    _read { tree in
-      guard i != endIndex else {
-        fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
-      }
-      return Index(tree.__tree_next_iter(i.pointer))
-    }
+    ___index_after(i, type: "RedBlackTreeSet")
   }
 
   /// セット内の要素を反復処理するための開始位置を返します。
@@ -779,7 +771,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   ///
   /// - Complexity: O(1)。
   @inlinable public var startIndex: Index {
-    Index(___begin())
+    ___index_begin()
   }
 
   /// セットの「終端を過ぎた」位置を返します。
@@ -791,7 +783,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   ///
   /// - Complexity: O(1)。
   @inlinable public var endIndex: Index {
-    Index(___end())
+    ___index_end()
   }
 }
 
@@ -812,9 +804,7 @@ extension RedBlackTreeSet {
   ///
   /// - Precondition: 結果のインデックスは `startIndex` 以上 `endIndex` 以下である必要があります。
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    _read { tree in
-      Index(tree.pointer(i.pointer, offsetBy: distance, type: "RedBlackTreeSet"))
-    }
+    ___index(i, offsetBy: distance, type: "RedBlackTreeSet")
   }
 
   /// 指定されたインデックスから、指定された距離分オフセットした位置のインデックスを返します。
@@ -833,21 +823,9 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*k*)、ここで *k* は移動する距離の要素数です。
   ///
   /// - Precondition: `i` と `limit` は有効なインデックスである必要があります。
-  @inlinable public func index(
-    _ i: Index, offsetBy distance: Int, limitedBy limit: Index
-  ) -> Index? {
-    _read { tree in
-      Index?(
-        tree.pointer(
-          i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeSet")
-      )
-    }
-  }
-
-  @inlinable func distance(__last: _NodePtr) -> Int {
-    _read { tree in
-      __last == end() ? count : tree.distance(__first: tree.__begin_node, __last: __last)
-    }
+  @inlinable public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index?
+  {
+    ___index(i, offsetBy: distance, limitedBy: limit, type: "RedBlackTreeSet")
   }
 
   /// 2つのインデックス間の距離を返します。
@@ -864,7 +842,7 @@ extension RedBlackTreeSet {
   ///
   /// - Precondition: `start` および `end` は有効なインデックスである必要があります。
   @inlinable public func distance(from start: Index, to end: Index) -> Int {
-    distance(__last: end.pointer) - distance(__last: start.pointer)
+    ___distance(__last: end.pointer) - ___distance(__last: start.pointer)
   }
 }
 

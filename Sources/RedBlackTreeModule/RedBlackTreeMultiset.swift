@@ -488,13 +488,15 @@ extension RedBlackTreeMultiset {
   @inlinable
   public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
     try ___for_each { member in
-      try predicate(member) ? true : nil } ?? false
+      try predicate(member) ? true : nil
+    } ?? false
   }
 
   @inlinable
   public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
     try ___for_each { member in
-      try predicate(member) ? nil : false } ?? true
+      try predicate(member) ? nil : false
+    } ?? true
   }
 }
 
@@ -678,29 +680,19 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   }
 
   @inlinable public func index(before i: Index) -> Index {
-    _read { tree in
-      guard i != startIndex else {
-        fatalError("Attempting to access RedBlackTreeMultiset elements using an invalid index")
-      }
-      return Index(tree.__tree_prev_iter(i.pointer))
-    }
+    ___index_before(i, type: "RedBlackTreeMultiset")
   }
 
   @inlinable public func index(after i: Index) -> Index {
-    _read { tree in
-      guard i != endIndex else {
-        fatalError("Attempting to access RedBlackTreeMultiset elements using an invalid index")
-      }
-      return Index(tree.__tree_next_iter(i.pointer))
-    }
+    ___index_after(i, type: "RedBlackTreeMultiset")
   }
 
   @inlinable public var startIndex: Index {
-    Index(___begin())
+    ___index_begin()
   }
 
   @inlinable public var endIndex: Index {
-    Index(___end())
+    ___index_end()
   }
 }
 
@@ -708,30 +700,17 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
 extension RedBlackTreeMultiset {
 
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    _read { tree in
-      Index(tree.pointer(i.pointer, offsetBy: distance, type: "RedBlackTreeMultiset"))
-    }
+    ___index(i, offsetBy: distance, type: "RedBlackTreeMultiset")
   }
 
-  @inlinable public func index(
-    _ i: Index, offsetBy distance: Int, limitedBy limit: Index
-  ) -> Index? {
-    _read { tree in
-      Index?(
-        tree.pointer(
-          i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeMultiset"))
-    }
-  }
-
-  @inlinable func distance(__last: _NodePtr) -> Int {
-    _read { tree in
-      __last == end() ? count : tree.distance(__first: tree.__begin_node, __last: __last)
-    }
+  @inlinable public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index?
+  {
+    ___index(i, offsetBy: distance, limitedBy: limit, type: "RedBlackTreeMultiset")
   }
 
   /// O(n)
   @inlinable public func distance(from start: Index, to end: Index) -> Int {
-    distance(__last: end.pointer) - distance(__last: start.pointer)
+    ___distance(__last: end.pointer) - ___distance(__last: start.pointer)
   }
 }
 

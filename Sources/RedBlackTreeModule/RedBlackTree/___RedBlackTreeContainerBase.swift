@@ -31,24 +31,29 @@ protocol ___RedBlackTreeContainerBase: EndProtocol, ValueComparer {
 }
 
 extension ___RedBlackTreeContainerBase {
-
-  @inlinable public var ___count: Int {
+  
+  @inlinable @inline(__always)
+  public var ___count: Int {
     ___header.size
   }
 
-  @inlinable public var ___isEmpty: Bool {
+  @inlinable @inline(__always)
+  public var ___isEmpty: Bool {
     ___header.size == 0
   }
 
-  @inlinable public var ___capacity: Int {
+  @inlinable @inline(__always)
+  public var ___capacity: Int {
     Swift.min(___values.capacity, ___nodes.capacity)
   }
 
-  @inlinable public func ___begin() -> _NodePtr {
+  @inlinable @inline(__always)
+  public func ___begin() -> _NodePtr {
     ___header.__begin_node
   }
 
-  @inlinable public func ___end() -> _NodePtr {
+  @inlinable @inline(__always)
+  public func ___end() -> _NodePtr {
     .end
   }
 }
@@ -77,39 +82,44 @@ extension ___RedBlackTreeContainerBase {
   @inlinable
   func __ref_(_ rhs: _NodeRef) -> _NodePtr {
     _read { tree in
-      tree.__ref_(rhs) }
+      tree.__ref_(rhs)
+    }
   }
-  
+
   @inlinable
   func __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef {
     _read { tree in
-      tree.__find_leaf_high(&__parent, __v) }
+      tree.__find_leaf_high(&__parent, __v)
+    }
   }
 
   @inlinable
   func __find_equal(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef {
     _read { tree in
-      tree.__find_equal(&__parent, __v) }
+      tree.__find_equal(&__parent, __v)
+    }
   }
 
   @inlinable
   func find(_ __v: _Key) -> _NodePtr {
     _read { tree in
-      tree.find(__v) }
+      tree.find(__v)
+    }
   }
-  
+
   @inlinable
   func
-  __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr) {
+    __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)
+  {
     _read { tree in
-      tree.__equal_range_multi(__k) }
+      tree.__equal_range_multi(__k)
+    }
   }
 }
 
 extension ___RedBlackTreeContainerBase {
-  
-  @inlinable
-  @inline(__always)
+
+  @inlinable @inline(__always)
   func ___for_each(_ body: (Element) throws -> Void) rethrows {
     try _read { tree in
       var ptr = tree.__begin_node
@@ -119,9 +129,8 @@ extension ___RedBlackTreeContainerBase {
       }
     }
   }
-  
-  @inlinable
-  @inline(__always)
+
+  @inlinable @inline(__always)
   func ___for_each<T>(_ body: (Element) throws -> T?) rethrows -> T? {
     try _read { tree in
       var ptr = tree.__begin_node
@@ -134,9 +143,8 @@ extension ___RedBlackTreeContainerBase {
       return nil
     }
   }
-  
-  @inlinable
-  @inline(__always)
+
+  @inlinable @inline(__always)
   func ___for_each<T>(_ body: (_NodePtr, Element) throws -> T?) rethrows -> T? {
     try _read { tree in
       var ptr = tree.__begin_node
@@ -152,7 +160,7 @@ extension ___RedBlackTreeContainerBase {
 }
 
 extension ___RedBlackTreeContainerBase {
-  
+
   @inlinable @inline(__always)
   func ___contains(_ __k: _Key) -> Bool where _Key: Equatable {
     _read { tree in
@@ -161,7 +169,7 @@ extension ___RedBlackTreeContainerBase {
       return Self.__key(tree.__value_ptr[it]) == __k
     }
   }
-  
+
   @inlinable @inline(__always)
   func ___min() -> Element? {
     _read { tree in
@@ -192,6 +200,16 @@ extension ___RedBlackTreeContainerBase {
   func ___upper_bound(_ __k: _Key) -> _NodePtr {
     _read { tree in
       tree.__upper_bound(__k, tree.__root(), .end)
+    }
+  }
+}
+
+extension ___RedBlackTreeContainerBase {
+
+  @inlinable @inline(__always)
+  func ___distance(__last: _NodePtr) -> Int {
+    _read { tree in
+      __last == end() ? ___count : tree.distance(__first: tree.__begin_node, __last: __last)
     }
   }
 }

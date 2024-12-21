@@ -629,11 +629,17 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   }
 
   @inlinable public func index(before i: Index) -> Index {
-    Index(_read { $0.__tree_prev_iter(i.pointer) })
+    guard i != startIndex else {
+      fatalError("Attempting to access RedBlackTreeMultiset elements using an invalid index")
+    }
+    return Index(_read { $0.__tree_prev_iter(i.pointer) })
   }
 
   @inlinable public func index(after i: Index) -> Index {
-    Index(_read { $0.__tree_next_iter(i.pointer) })
+    guard i != endIndex else {
+      fatalError("Attempting to access RedBlackTreeMultiset elements using an invalid index")
+    }
+    return Index(_read { $0.__tree_next_iter(i.pointer) })
   }
 
   @inlinable public var startIndex: Index {

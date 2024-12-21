@@ -473,6 +473,52 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeSetContainer {}
 
+
+#if false
+extension RedBlackTreeDictionary {
+
+  @inlinable
+  public var first: Element? {
+    guard !isEmpty else { return nil }
+    return self[startIndex]
+  }
+
+  @inlinable
+  public var last: Element? {
+    guard !isEmpty else { return nil }
+    return self[index(before: .end)]
+  }
+  
+  @inlinable
+  public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+    try _read {
+      var ptr = $0.__begin_node
+      while ptr != $0.__end_node() {
+        if try predicate(___values[ptr]) {
+          return ___values[ptr]
+        }
+        ptr = $0.__tree_next_iter(ptr)
+      }
+      return nil
+    }
+  }
+
+  @inlinable
+  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    try _read {
+      var ptr = $0.__begin_node
+      while ptr != $0.__end_node() {
+        if try predicate(___values[ptr]) {
+          return Index(ptr)
+        }
+        ptr = $0.__tree_next_iter(ptr)
+      }
+      return nil
+    }
+  }
+}
+#endif
+
 #if false
   extension RedBlackTreeDictionary {
 
@@ -521,11 +567,17 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   }
 
   @inlinable public func index(before i: Index) -> Index {
-    Index(_read { $0.__tree_prev_iter(i.pointer) })
+    guard i != startIndex else {
+      fatalError("Attempting to access RedBlackTreeDictionary elements using an invalid index")
+    }
+    return Index(_read { $0.__tree_prev_iter(i.pointer) })
   }
 
   @inlinable public func index(after i: Index) -> Index {
-    Index(_read { $0.__tree_next_iter(i.pointer) })
+    guard i != endIndex else {
+      fatalError("Attempting to access RedBlackTreeDictionary elements using an invalid index")
+    }
+    return Index(_read { $0.__tree_next_iter(i.pointer) })
   }
 
   @inlinable public var startIndex: Index {

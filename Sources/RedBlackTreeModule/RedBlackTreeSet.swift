@@ -736,7 +736,10 @@ extension RedBlackTreeSet: BidirectionalCollection {
   ///
   /// - Precondition: `i` は `startIndex` より大きく、`endIndex` 以下である必要があります。
   @inlinable public func index(before i: Index) -> Index {
-    Index(_read { $0.__tree_prev_iter(i.pointer) })
+    guard i != startIndex else {
+      fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
+    }
+    return Index(_read { $0.__tree_prev_iter(i.pointer) })
   }
 
   /// 指定されたインデックスの直後の位置を返します。
@@ -751,7 +754,10 @@ extension RedBlackTreeSet: BidirectionalCollection {
   ///
   /// - Precondition: `i` は `startIndex` 以上、`endIndex` 未満である必要があります。
   @inlinable public func index(after i: Index) -> Index {
-    Index(_read { $0.__tree_next_iter(i.pointer) })
+    guard i != endIndex else {
+      fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
+    }
+    return Index(_read { $0.__tree_next_iter(i.pointer) })
   }
 
   /// セット内の要素を反復処理するための開始位置を返します。

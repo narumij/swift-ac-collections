@@ -114,8 +114,8 @@ final class EtcTests: XCTestCase {
     XCTAssertEqual(a.index(before: a.startIndex), -1)
   }
 
-  func testIndexAfer() throws {
-    let a = [1,2,3]
-    XCTAssertEqual(a.index(after: a.endIndex), 4)
-  }
+//  func testIndexAfer() throws {
+//    let a: Set<Int> = [1,2,3]
+//    XCTAssertEqual(a.index(after: a.endIndex), a.endIndex)
+//  }
 }

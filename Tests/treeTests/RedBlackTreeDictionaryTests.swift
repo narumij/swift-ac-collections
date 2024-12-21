@@ -435,6 +435,20 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     XCTAssertNotEqual([1:1,2:2] as RedBlackTreeDictionary<Int,Int>, [1:1])
     XCTAssertNotEqual([2:2,3:3] as RedBlackTreeDictionary<Int,Int>, [1:1,2:2])
   }
+  
+  func testFirstLast() throws {
+    let dict = [1:11,2:22,3:33] as RedBlackTreeDictionary<Int,Int>
+    XCTAssertEqual(dict.first?.key, 1)
+    XCTAssertEqual(dict.first?.value, 11)
+    XCTAssertEqual(dict.last?.key, 3)
+    XCTAssertEqual(dict.last?.value, 33)
+    XCTAssertEqual(dict.first(where: { $0.value == 22})?.key, 2)
+    XCTAssertEqual(dict.firstIndex(where: { $0.value == 22}), dict.index(after: dict.startIndex))
+    XCTAssertEqual(dict.first(where: { $0.value == 44})?.key, nil)
+    XCTAssertEqual(dict.firstIndex(where: { $0.value == 44}), nil)
+    XCTAssertTrue(dict.contains(where: { $0.value / $0.key == 11 }))
+    XCTAssertTrue(dict.allSatisfy({ $0.value / $0.key == 11 }))
+  }
 
   func testPerformanceExample() throws {
     // This is an example of a performance test case.

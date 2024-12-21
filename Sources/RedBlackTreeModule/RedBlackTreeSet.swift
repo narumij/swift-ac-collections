@@ -407,7 +407,7 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func removeFirst() -> Element {
     guard !isEmpty else {
-      preconditionFailure("Can't removeFirst from an empty Set")
+      preconditionFailure("Can't removeFirst from an empty RedBlackTreeSet")
     }
     return remove(at: startIndex)
   }
@@ -416,7 +416,7 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func removeLast() -> Element {
     guard !isEmpty else {
-      preconditionFailure("Can't removeFirst from an empty Set")
+      preconditionFailure("Can't removeFirst from an empty RedBlackTreeSet")
     }
     return remove(at: index(before: endIndex))
   }
@@ -577,7 +577,7 @@ extension RedBlackTreeSet {
   ///
   /// - 計算量: O(log *n*)
   @inlinable public func lowerBound(_ member: Element) -> Index {
-    Index(___lower_bound(member))
+    ___index_lower_bound(member)
   }
 
   /// 指定された値より大きい最小の要素を見つけ、そのインデックスを返します。
@@ -601,7 +601,7 @@ extension RedBlackTreeSet {
   ///
   /// - 計算量: O(log *n*)
   @inlinable public func upperBound(_ member: Element) -> Index {
-    Index(___upper_bound(member))
+    ___index_upper_bound(member)
   }
 }
 
@@ -745,7 +745,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   ///
   /// - Precondition: `i` は `startIndex` より大きく、`endIndex` 以下である必要があります。
   @inlinable public func index(before i: Index) -> Index {
-    ___index_before(i, type: "RedBlackTreeSet")
+    ___index_prev(i, type: "RedBlackTreeSet")
   }
 
   /// 指定されたインデックスの直後の位置を返します。
@@ -760,7 +760,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   ///
   /// - Precondition: `i` は `startIndex` 以上、`endIndex` 未満である必要があります。
   @inlinable public func index(after i: Index) -> Index {
-    ___index_after(i, type: "RedBlackTreeSet")
+    ___index_next(i, type: "RedBlackTreeSet")
   }
 
   /// セット内の要素を反復処理するための開始位置を返します。

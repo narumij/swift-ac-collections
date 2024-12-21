@@ -462,12 +462,12 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public func lowerBound(_ p: Key) -> Index {
-    Index(___lower_bound(p))
+    ___index_lower_bound(p)
   }
 
   @inlinable
   public func upperBound(_ p: Key) -> Index {
-    Index(___upper_bound(p))
+    ___index_upper_bound(p)
   }
 }
 
@@ -538,11 +538,11 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   }
 
   @inlinable public func index(before i: Index) -> Index {
-    ___index_before(i, type: "RedBlackTreeDictionary")
+    ___index_prev(i, type: "RedBlackTreeDictionary")
   }
 
   @inlinable public func index(after i: Index) -> Index {
-    ___index_after(i, type: "RedBlackTreeDictionary")
+    ___index_next(i, type: "RedBlackTreeDictionary")
   }
 
   @inlinable public var startIndex: Index {

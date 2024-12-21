@@ -31,7 +31,7 @@ protocol ___RedBlackTreeContainerBase: EndProtocol, ValueComparer {
 }
 
 extension ___RedBlackTreeContainerBase {
-  
+
   @inlinable @inline(__always)
   public var ___count: Int {
     ___header.size
@@ -189,17 +189,33 @@ extension ___RedBlackTreeContainerBase {
 
 extension ___RedBlackTreeContainerBase {
 
+  @usableFromInline
+  typealias ___Index = ___RedBlackTree.Index
+
   @inlinable @inline(__always)
-  func ___lower_bound(_ __k: _Key) -> _NodePtr {
+  func ___index_begin() -> ___Index {
+    ___Index(___begin())
+  }
+
+  @inlinable @inline(__always)
+  func ___index_end() -> ___Index {
+    ___Index(___end())
+  }
+}
+
+extension ___RedBlackTreeContainerBase {
+
+  @inlinable @inline(__always)
+  func ___index_lower_bound(_ __k: _Key) -> ___Index {
     _read { tree in
-      tree.__lower_bound(__k, tree.__root(), .end)
+      ___Index(tree.__lower_bound(__k, tree.__root(), .end))
     }
   }
 
   @inlinable @inline(__always)
-  func ___upper_bound(_ __k: _Key) -> _NodePtr {
+  func ___index_upper_bound(_ __k: _Key) -> ___Index {
     _read { tree in
-      tree.__upper_bound(__k, tree.__root(), .end)
+      ___Index(tree.__upper_bound(__k, tree.__root(), .end))
     }
   }
 }
@@ -210,6 +226,106 @@ extension ___RedBlackTreeContainerBase {
   func ___distance(__last: _NodePtr) -> Int {
     _read { tree in
       __last == end() ? ___count : tree.distance(__first: tree.__begin_node, __last: __last)
+    }
+  }
+}
+
+extension ___RedBlackTreeContainerBase {
+
+  @inlinable @inline(__always)
+  func ___index_prev(_ i: ___Index, type: String) -> ___Index {
+    let i = i.pointer
+    return _read { tree in
+      guard i != tree.__begin_node else {
+        fatalError("Attempting to access \(type) elements using an invalid index")
+      }
+      return ___Index(tree.__tree_prev_iter(i))
+    }
+  }
+
+  @inlinable @inline(__always)
+  func ___index_next(_ i: ___Index, type: String) -> ___Index {
+    let i = i.pointer
+    return _read { tree in
+      guard i != tree.__end_node() else {
+        fatalError("Attempting to access \(type) elements using an invalid index")
+      }
+      return ___Index(tree.__tree_next_iter(i))
+    }
+  }
+}
+
+extension ___RedBlackTreeContainerBase {
+
+  @inlinable
+  func ___index(_ i: ___Index, offsetBy distance: Int, type: String) -> ___Index {
+    ___Index(pointer(i.pointer, offsetBy: distance, type: type))
+  }
+
+  @inlinable
+  func ___index(
+    _ i: ___Index, offsetBy distance: Int, limitedBy limit: ___Index, type: String
+  ) -> ___Index? {
+    ___Index?(
+      pointer(
+        i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: type))
+  }
+
+  @inlinable
+  @inline(__always)
+  func pointer(
+    _ ptr: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr? = .none, type: String
+  ) -> _NodePtr {
+    return distance > 0
+      ? pointer(ptr, nextBy: UInt(distance), limitedBy: limit, type: type)
+      : pointer(ptr, prevBy: UInt(abs(distance)), limitedBy: limit, type: type)
+  }
+
+  @inlinable
+  @inline(__always)
+  func pointer(
+    _ ptr: _NodePtr, prevBy distance: UInt, limitedBy limit: _NodePtr? = .none, type: String
+  ) -> _NodePtr {
+    _read { tree in
+      var ptr = ptr
+      var distance = distance
+      while distance != 0, ptr != limit {
+        // __begin_nodeを越えない
+        guard ptr != tree.__begin_node else {
+          fatalError("\(type) index is out of Bound.")
+        }
+        ptr = tree.__tree_prev_iter(ptr)
+        distance -= 1
+      }
+      guard distance == 0 else {
+        return .nullptr
+      }
+      assert(ptr != .nullptr)
+      return ptr
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  func pointer(
+    _ ptr: _NodePtr, nextBy distance: UInt, limitedBy limit: _NodePtr? = .none, type: String
+  ) -> _NodePtr {
+    _read { tree in
+      var ptr = ptr
+      var distance = distance
+      while distance != 0, ptr != limit {
+        // __end_node()を越えない
+        guard ptr != tree.__end_node() else {
+          fatalError("\(type) index is out of Bound.")
+        }
+        ptr = tree.__tree_next_iter(ptr)
+        distance -= 1
+      }
+      guard distance == 0 else {
+        return .nullptr
+      }
+      assert(ptr != .nullptr)
+      return ptr
     }
   }
 }

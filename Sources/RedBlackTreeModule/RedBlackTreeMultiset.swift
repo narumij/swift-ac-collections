@@ -549,7 +549,7 @@ extension RedBlackTreeMultiset {
   ///
   /// - Complexity: O(log *n*), ここで *n* はマルチセット内の要素数。
   @inlinable public func lowerBound(_ member: Element) -> Index {
-    Index(___lower_bound(member))
+    ___index_lower_bound(member)
   }
 
   /// 指定された値より大きい最小の要素を指すインデックスを返します。
@@ -575,7 +575,7 @@ extension RedBlackTreeMultiset {
   ///
   /// - Complexity: O(log *n*), ここで *n* はマルチセット内の要素数。
   @inlinable public func upperBound(_ member: Element) -> Index {
-    Index(___upper_bound(member))
+    ___index_upper_bound(member)
   }
 }
 
@@ -680,11 +680,11 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   }
 
   @inlinable public func index(before i: Index) -> Index {
-    ___index_before(i, type: "RedBlackTreeMultiset")
+    ___index_prev(i, type: "RedBlackTreeMultiset")
   }
 
   @inlinable public func index(after i: Index) -> Index {
-    ___index_after(i, type: "RedBlackTreeMultiset")
+    ___index_next(i, type: "RedBlackTreeMultiset")
   }
 
   @inlinable public var startIndex: Index {

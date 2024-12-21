@@ -288,7 +288,7 @@ extension RedBlackTreeDictionary: ValueComparer {
   }
 }
 
-extension RedBlackTreeDictionary: ___RedBlackTreeContainerBase, ___UnsafeHandleBase {}
+extension RedBlackTreeDictionary: ___RedBlackTreeContainerBase {}
 
 extension RedBlackTreeDictionary: ___UnsafeMutatingHandleBase {
 

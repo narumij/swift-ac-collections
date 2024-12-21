@@ -47,48 +47,15 @@ struct ___UnsafeHandle<VC> where VC: ValueComparer {
 
 extension ___UnsafeHandle: ___UnsafeHandleCommon {
 
-  @inlinable func __value_(_ p: _NodePtr) -> _Key {
+  @inlinable
+  @inline(__always)
+  func __value_(_ p: _NodePtr) -> _Key {
     __value_(__value_ptr[p])
   }
 }
 
 extension ___UnsafeHandle: ___RedBlackTreeReadHandleImpl {}
 extension ___UnsafeHandle: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
-
-@usableFromInline
-protocol ___UnsafeHandleBase {
-  associatedtype VC: ValueComparer
-  func _read<R>(_ body: (___UnsafeHandle<VC>) throws -> R) rethrows -> R
-}
-
-extension ___UnsafeHandleBase {
-
-  @inlinable
-  func __ref_(_ rhs: _NodeRef) -> _NodePtr {
-    _read { $0.__ref_(rhs) }
-  }
-  
-  @inlinable
-  func __find_leaf_high(_ __parent: inout _NodePtr, _ __v: VC._Key) -> _NodeRef {
-    _read { $0.__find_leaf_high(&__parent, __v) }
-  }
-
-  @inlinable
-  func __find_equal(_ __parent: inout _NodePtr, _ __v: VC._Key) -> _NodeRef {
-    _read { $0.__find_equal(&__parent, __v) }
-  }
-
-  @inlinable
-  func find(_ __v: VC._Key) -> _NodePtr {
-    _read { $0.find(__v) }
-  }
-  
-  @inlinable
-  func
-  __equal_range_multi(_ __k: VC._Key) -> (_NodePtr, _NodePtr) {
-    _read { $0.__equal_range_multi(__k) }
-  }
-}
 
 extension ___UnsafeHandle {
 

@@ -73,6 +73,35 @@ extension ___RedBlackTreeContainerBase {
 }
 
 extension ___RedBlackTreeContainerBase {
+
+  @inlinable
+  func __ref_(_ rhs: _NodeRef) -> _NodePtr {
+    _read { $0.__ref_(rhs) }
+  }
+  
+  @inlinable
+  func __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef {
+    _read { $0.__find_leaf_high(&__parent, __v) }
+  }
+
+  @inlinable
+  func __find_equal(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef {
+    _read { $0.__find_equal(&__parent, __v) }
+  }
+
+  @inlinable
+  func find(_ __v: _Key) -> _NodePtr {
+    _read { $0.find(__v) }
+  }
+  
+  @inlinable
+  func
+  __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr) {
+    _read { $0.__equal_range_multi(__k) }
+  }
+}
+
+extension ___RedBlackTreeContainerBase {
   
   @inlinable
   @inline(__always)
@@ -157,4 +186,3 @@ extension ___RedBlackTreeContainerBase {
     _read { $0.__upper_bound(__k, $0.__root(), .end) }
   }
 }
-

@@ -56,22 +56,4 @@ extension ___UnsafeMutatingHandle: NodeFindProtocol & NodeFindEqualProtocol & Fi
 extension ___UnsafeMutatingHandle: InsertNodeAtProtocol {}
 extension ___UnsafeMutatingHandle: RemoveProtocol {}
 
-@usableFromInline
-protocol ___UnsafeMutatingHandleBase {
-  associatedtype VC: ValueComparer
-  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<VC>) throws -> R) rethrows -> R
-}
 
-extension ___UnsafeMutatingHandleBase {
-
-  @inlinable
-  mutating func __insert_node_at(_ __parent: _NodePtr, _ __child: _NodeRef, _ __new_node: _NodePtr)
-  {
-    _update { $0.__insert_node_at(__parent, __child, __new_node) }
-  }
-
-  @inlinable
-  mutating func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {
-    _update { $0.__remove_node_pointer(__ptr) }
-  }
-}

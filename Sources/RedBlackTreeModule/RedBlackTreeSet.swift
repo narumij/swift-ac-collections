@@ -260,7 +260,6 @@ extension RedBlackTreeSet: ValueComparer {
   }
 }
 
-extension RedBlackTreeSet: ___UnsafeHandleBase {}
 extension RedBlackTreeSet: ___UnsafeMutatingHandleBase {
 
   // プロトコルでupdateが書けなかったため、個別で実装している

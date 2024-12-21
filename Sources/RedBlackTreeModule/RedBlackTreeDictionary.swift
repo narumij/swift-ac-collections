@@ -87,8 +87,8 @@ extension RedBlackTreeDictionary {
       self.___values,
       self.___stock
     ) = Self.___initialize(
-      ___sequence: keysAndValues,
-      ___elements: { $0.map { k, v in (k, v) } }
+      _sequence: keysAndValues,
+      _to_elements: { $0.map { k, v in (k, v) } }
     ) { tree, __k, _, ___construct_node in
       var __parent = _NodePtr.nullptr
       let __child = tree.__find_equal(&__parent, __k.0)
@@ -114,8 +114,8 @@ extension RedBlackTreeDictionary {
       self.___values,
       self.___stock
     ) = try Self.___initialize(
-      ___sequence: keysAndValues,
-      ___elements: { $0.map { k, v in (k, v) } }
+      _sequence: keysAndValues,
+      _to_elements: { $0.map { k, v in (k, v) } }
     ) { tree, __k, _values, ___construct_node in
       var __parent = _NodePtr.nullptr
       let __child = tree.__find_equal(&__parent, __k.0)

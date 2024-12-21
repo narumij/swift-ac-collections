@@ -171,8 +171,8 @@ extension RedBlackTreeMultiset {
       self.___values,
       self.___stock
     ) = Self.___initialize(
-      ___sequence: sequence,
-      ___elements: { $0.map { $0 } }
+      _sequence: sequence,
+      _to_elements: { $0.map { $0 } }
     ) { tree, __k, _, __construct_node in
       let __h = __construct_node(__k)
       var __parent = _NodePtr.nullptr

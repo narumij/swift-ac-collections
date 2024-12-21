@@ -150,8 +150,8 @@ extension RedBlackTreeSet {
       self.___values,
       self.___stock
     ) = Self.___initialize(
-      ___sequence: sequence,
-      ___elements: { $0.map { $0 } }
+      _sequence: sequence,
+      _to_elements: { $0.map { $0 } }
     ) { tree, __k, _, __construct_node in
       var __parent = _NodePtr.nullptr
       let __child = tree.__find_equal(&__parent, __k)

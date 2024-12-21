@@ -43,6 +43,13 @@
       XCTAssertTrue(set.isEmpty)
       XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
     }
+    
+    func testRedBlackTreeCapacity() throws {
+      var numbers: RedBlackTreeSet<Int> = .init(minimumCapacity: 3)
+      XCTAssertGreaterThanOrEqual(numbers.capacity, 3)
+      numbers.reserveCapacity(4)
+      XCTAssertGreaterThanOrEqual(numbers.capacity, 4)
+    }
 
     func testInitRange() throws {
       let set = RedBlackTreeSet<Int>(0..<10000)
@@ -579,11 +586,7 @@
     func testSetRemove() throws {
       var s: Set<Int> = [1, 2, 3, 4]
       let i = s.firstIndex(of: 2)!
-
       s.remove(at: i)
-      // Attempting to access Set elements using an invalid index
-      //      s.remove(at: i)
-      //      s.remove(at: s.endIndex)
     }
 
     func testRedBlackTreeSetRemove() throws {
@@ -615,13 +618,6 @@
     func testRedBlackTreeSetUpperBound() throws {
       let numbers: RedBlackTreeSet = [1, 3, 5, 7, 9]
       XCTAssertEqual(numbers.upperBound(7).pointer, 4)
-    }
-
-    func testRedBlackTreeCapacity() throws {
-      var numbers: RedBlackTreeSet<Int> = .init(minimumCapacity: 3)
-      XCTAssertGreaterThanOrEqual(numbers.capacity, 3)
-      numbers.reserveCapacity(4)
-      XCTAssertGreaterThanOrEqual(numbers.capacity, 4)
     }
 
     func testRedBlackTreeConveniences() throws {
@@ -659,6 +655,14 @@
       XCTAssertEqual(members.removeLast(), 5)
       XCTAssertEqual(members.removeLast(), 3)
       XCTAssertEqual(members.removeLast(), 1)
+    }
+    
+    
+    func testEqualtable() throws {
+      XCTAssertEqual(RedBlackTreeSet<Int>(), [])
+      XCTAssertNotEqual(RedBlackTreeSet<Int>(), [1])
+      XCTAssertEqual([1] as RedBlackTreeSet<Int>, [1])
+      XCTAssertNotEqual([1,2] as RedBlackTreeSet<Int>, [1])
     }
 
     func testPerformanceDistanceFromTo() throws {

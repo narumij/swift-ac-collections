@@ -28,6 +28,21 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     let map = RedBlackTreeDictionary<Int, Int>()
     XCTAssertEqual(map.count, 0)
     XCTAssertTrue(map.isEmpty)
+    XCTAssertEqual(map.distance(from: map.startIndex, to: map.endIndex), 0)
+  }
+  
+  func testRedBlackTreeCapacity() throws {
+    var numbers: RedBlackTreeDictionary<Int, Int> = .init(minimumCapacity: 3)
+    XCTAssertGreaterThanOrEqual(numbers.capacity, 3)
+    numbers.reserveCapacity(4)
+    XCTAssertGreaterThanOrEqual(numbers.capacity, 4)
+    XCTAssertEqual(numbers.distance(from: numbers.startIndex, to: numbers.endIndex), 0)
+  }
+  
+  func testInitRange() throws {
+    let set = RedBlackTreeDictionary<Int,[Int]>(grouping: 0..<10000, by: { $0 })
+    XCTAssertFalse(set.isEmpty)
+    XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 10000)
   }
 
   func testUsage_1() throws {
@@ -134,6 +149,9 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     XCTAssertEqual(map[1], [1])
     map[1, default: []].append(2)
     XCTAssertEqual(map[1], [1,2])
+    map[2, default: []] = [3,4]
+    XCTAssertEqual(map[2, default: []], [3,4])
+    XCTAssertEqual(map[3, default: []], [])
   }
   
   func testSubscriptDefault() throws {
@@ -144,6 +162,9 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     XCTAssertEqual(map[1], [1])
     map[1, default: []].append(2)
     XCTAssertEqual(map[1], [1,2])
+    map[2, default: []] = [3,4]
+    XCTAssertEqual(map[2, default: []], [3,4])
+    XCTAssertEqual(map[3, default: []], [])
   }
 
   func testSubscriptDefault__1() throws {
@@ -262,6 +283,156 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     let students = ["Kofi", "Abena", "Efua", "Kweku", "Akosua"]
     let studentsByLetter = RedBlackTreeDictionary(grouping: students, by: { $0.first! })
     XCTAssertEqual(studentsByLetter, ["E": ["Efua"], "K": ["Kofi", "Kweku"], "A": ["Abena", "Akosua"]])
+  }
+
+  func testUpdate_() throws {
+    var dict = [1:1,2:2,3:3]
+    XCTAssertEqual(dict.updateValue(0, forKey: 0), nil)
+    XCTAssertEqual(dict[1], 1)
+    XCTAssertEqual(dict.updateValue(10, forKey: 1), 1)
+    XCTAssertEqual(dict[1], 10)
+  }
+
+  func testUpdate() throws {
+    var dict = [1:1,2:2,3:3] as RedBlackTreeDictionary<Int,Int>
+    XCTAssertEqual(dict.updateValue(0, forKey: 0), nil)
+    XCTAssertEqual(dict[1], 1)
+    XCTAssertEqual(dict.updateValue(10, forKey: 1), 1)
+    XCTAssertEqual(dict[1], 10)
+  }
+
+  func testRemoveKey_() throws {
+    var dict = [1:1,2:2,3:3]
+    XCTAssertEqual(dict.removeValue(forKey: 0), nil)
+    XCTAssertEqual(dict.removeValue(forKey: 1), 1)
+    XCTAssertEqual(dict, [2:2,3:3])
+  }
+
+  func testRemoveKey() throws {
+    var dict = [1:1,2:2,3:3] as RedBlackTreeDictionary<Int,Int>
+    XCTAssertEqual(dict.removeValue(forKey: 0), nil)
+    XCTAssertEqual(dict.removeValue(forKey: 1), 1)
+    XCTAssertEqual(dict, [2:2,3:3])
+    XCTAssertEqual(dict.first?.key, 2)
+    XCTAssertEqual(dict.last?.key, 3)
+  }
+
+  func testRemove_() throws {
+    var dict = [1:1,2:2,3:3]
+    let i = dict.firstIndex { (k,v) in k == 1 }!
+    XCTAssertEqual(dict.remove(at: i).value, 1)
+  }
+
+  func testRemove() throws {
+    var dict = [1:1,2:2,3:3] as RedBlackTreeDictionary<Int,Int>
+    let i = dict.firstIndex { (k,v) in k == 1 }!
+    XCTAssertEqual(dict.remove(at: i).value, 1)
+  }
+
+  func testRemoveAll_() throws {
+    var dict = [1:1,2:2,3:3]
+    dict.removeAll(keepingCapacity: true)
+    XCTAssertTrue(dict.map { $0 }.isEmpty)
+    XCTAssertGreaterThanOrEqual(dict.capacity, 3)
+    dict.removeAll(keepingCapacity: false)
+    XCTAssertTrue(dict.map { $0 }.isEmpty)
+    XCTAssertGreaterThanOrEqual(dict.capacity, 0)
+    XCTAssertNil(dict.first)
+  }
+
+  func testRemoveAll() throws {
+    var dict = [1:1,2:2,3:3] as RedBlackTreeDictionary<Int,Int>
+    dict.removeAll(keepingCapacity: true)
+    XCTAssertTrue(dict.map { $0 }.isEmpty)
+    XCTAssertGreaterThanOrEqual(dict.capacity, 3)
+    dict.removeAll(keepingCapacity: false)
+    XCTAssertTrue(dict.map { $0 }.isEmpty)
+    XCTAssertGreaterThanOrEqual(dict.capacity, 0)
+    XCTAssertNil(dict.first)
+    XCTAssertNil(dict.last)
+  }
+  
+  func testBound() throws {
+    let dict = [1:10,3:30,5:50] as RedBlackTreeDictionary<Int,Int>
+    XCTAssertEqual(dict.lowerBound(2), dict.index(after: dict.startIndex))
+    XCTAssertEqual(dict.lowerBound(3), dict.index(after: dict.startIndex))
+    XCTAssertEqual(dict.upperBound(2), dict.index(after: dict.startIndex))
+    XCTAssertEqual(dict.upperBound(3), dict.index(dict.startIndex, offsetBy: 2))
+  }
+
+  func testArrayAccess1() throws {
+    let set = [0:0, 1:10, 2:20, 3:30, 4:40] as RedBlackTreeDictionary<Int,Int>
+    XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 0)].key, 0)
+    XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 1)].key, 1)
+    XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 2)].key, 2)
+    XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 3)].key, 3)
+    XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 4)].key, 4)
+  }
+
+  func testArrayAccess2() throws {
+    let set = [0:0, 1:10, 2:20, 3:30, 4:40] as RedBlackTreeDictionary<Int,Int>
+    XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -5)].key, 0)
+    XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -4)].key, 1)
+    XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -3)].key, 2)
+    XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -2)].key, 3)
+    XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -1)].key, 4)
+  }
+
+  func testIndexLimit1() throws {
+    let set = [0:0, 1:10, 2:20, 3:30, 4:40] as RedBlackTreeDictionary<Int,Int>
+    XCTAssertNotEqual(
+      set.index(set.startIndex, offsetBy: 4, limitedBy: set.index(set.startIndex, offsetBy: 4)),
+      nil)
+    XCTAssertEqual(
+      set.index(set.startIndex, offsetBy: 5, limitedBy: set.index(set.startIndex, offsetBy: 4)),
+      nil)
+    XCTAssertEqual(set.index(set.startIndex, offsetBy: 5, limitedBy: set.endIndex), set.endIndex)
+    XCTAssertEqual(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex), nil)
+    XCTAssertEqual(set.index(set.endIndex, offsetBy: 6, limitedBy: set.endIndex), nil)
+    //      XCTAssertEqual(set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex), nil)
+  }
+
+  func testIndexLimit2() throws {
+    let set = [0:0, 1:10, 2:20, 3:30, 4:40] as RedBlackTreeDictionary<Int,Int>
+    XCTAssertNotEqual(set.index(set.startIndex, offsetBy: 4, limitedBy: set.index(set.startIndex, offsetBy: 4)), nil)
+    XCTAssertEqual(
+      set.index(set.startIndex, offsetBy: 5, limitedBy: set.index(set.startIndex, offsetBy: 4)),
+      nil)
+    XCTAssertEqual(set.index(set.startIndex, offsetBy: 5, limitedBy: set.endIndex), set.endIndex)
+    XCTAssertEqual(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex), nil)
+    XCTAssertEqual(set.index(set.endIndex, offsetBy: 6, limitedBy: set.endIndex), nil)
+  }
+
+  func testIndexLimit3() throws {
+    let set = [0:0, 1:10, 2:20, 3:30, 4:40] as RedBlackTreeDictionary<Int,Int>
+    XCTAssertEqual(set.startIndex, .node(0))
+    XCTAssertEqual(set.index(before: set.endIndex), .node(4))
+    XCTAssertEqual(set.index(set.endIndex, offsetBy: -1), .node(4))
+    XCTAssertEqual(set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex), .node(4))
+    XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), .node(0))
+    XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
+    XCTAssertNotEqual(
+      set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),
+      nil)
+    XCTAssertEqual(
+      set.index(set.endIndex, offsetBy: -5, limitedBy: set.index(set.endIndex, offsetBy: -4)),
+      nil)
+    XCTAssertEqual(
+      set.index(set.endIndex, offsetBy: -5, limitedBy: set.startIndex),
+      set.startIndex)
+    XCTAssertEqual(
+      set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex),
+      nil)
+    XCTAssertEqual(
+      set.index(set.startIndex, offsetBy: -6, limitedBy: set.startIndex),
+      nil)
+  }
+  
+  func testEqualtable() throws {
+    XCTAssertEqual(RedBlackTreeDictionary<Int,Int>(), [:])
+    XCTAssertNotEqual(RedBlackTreeDictionary<Int,Int>(), [1:1])
+    XCTAssertEqual([1:1] as RedBlackTreeDictionary<Int,Int>, [1:1])
+    XCTAssertNotEqual([1:1,2:2] as RedBlackTreeDictionary<Int,Int>, [1:1])
   }
 
   func testPerformanceExample() throws {

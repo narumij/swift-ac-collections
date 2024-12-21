@@ -43,13 +43,6 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   @usableFromInline
   typealias _Key = Key
 
-  public init() {
-    ___header = .zero
-    ___nodes = []
-    ___values = []
-    ___stock = []
-  }
-
   @usableFromInline
   var ___header: ___RedBlackTree.___Header
 
@@ -61,6 +54,27 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   @usableFromInline
   var ___stock: Heap<_NodePtr>
+}
+
+extension RedBlackTreeDictionary {
+  
+  @inlinable @inline(__always)
+  public init() {
+    ___header = .zero
+    ___nodes = []
+    ___values = []
+    ___stock = []
+  }
+  
+  @inlinable @inline(__always)
+  public init(minimumCapacity: Int) {
+    ___header = .zero
+    ___nodes = []
+    ___values = []
+    ___stock = []
+    ___nodes.reserveCapacity(minimumCapacity)
+    ___values.reserveCapacity(minimumCapacity)
+  }
 }
 
 extension RedBlackTreeDictionary {
@@ -237,6 +251,26 @@ extension RedBlackTreeDictionary {
   @inlinable
   public var capacity: Int {
     ___capacity
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  /// 指定された要素数を格納するのに十分な領域を確保します。
+  ///
+  /// 挿入する要素数が事前にわかっている場合、このメソッドを使用すると、
+  /// 複数回の領域再割り当てを避けることができます。このメソッドは、
+  /// 赤黒木セットが一意で変更可能な連続した領域を持つようにし、
+  /// 少なくとも指定された要素数を格納できる領域を確保します。
+  ///
+  /// 既存のストレージに `minimumCapacity` 個の要素を格納できる余地があったとしても、
+  /// `reserveCapacity(_:)` メソッドを呼び出すと、連続した新しい領域へのコピーが発生します。
+  ///
+  /// - Parameter minimumCapacity: 確保したい要素数。
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    ___nodes.reserveCapacity(minimumCapacity)
+    ___values.reserveCapacity(minimumCapacity)
   }
 }
 
@@ -439,6 +473,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeSetContainer {}
 
+#if false
 extension RedBlackTreeDictionary {
 
   @inlinable
@@ -466,6 +501,7 @@ extension RedBlackTreeDictionary {
     }
   }
 }
+#endif
 
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
   public init(dictionaryLiteral elements: (Key, Value)...) {
@@ -514,7 +550,7 @@ extension RedBlackTreeDictionary {
     _ i: Index, offsetBy distance: Int, limitedBy limit: Index
   ) -> Index? {
     _read {
-      Index(
+      Optional<Index>(
         $0.pointer(
           i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeDictionary"))
     }
@@ -531,12 +567,12 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary {
-
-  @inlinable mutating func update(at position: Index, _ value: Value) {
-    ___values[position.pointer].value = value
-  }
-}
+//extension RedBlackTreeDictionary {
+//
+//  @inlinable mutating func update(at position: Index, _ value: Value) {
+//    ___values[position.pointer].value = value
+//  }
+//}
 
 extension RedBlackTreeDictionary: CustomStringConvertible, CustomDebugStringConvertible {
   

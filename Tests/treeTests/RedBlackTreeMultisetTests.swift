@@ -114,6 +114,13 @@
       XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
     }
 
+    func testRedBlackTreeCapacity() throws {
+      var numbers: RedBlackTreeMultiset<Int> = .init(minimumCapacity: 3)
+      XCTAssertGreaterThanOrEqual(numbers.capacity, 3)
+      numbers.reserveCapacity(4)
+      XCTAssertGreaterThanOrEqual(numbers.capacity, 4)
+    }
+
     func testInitRange() throws {
       let set = RedBlackTreeMultiset<Int>(0..<10000)
       XCTAssertEqual(set.elements, (0..<10000) + [])
@@ -689,13 +696,6 @@
       XCTAssertEqual(numbers.upperBound(7).pointer, 4)
     }
 
-    func testRedBlackTreeCapacity() throws {
-      var numbers: RedBlackTreeMultiset<Int> = .init(minimumCapacity: 3)
-      XCTAssertGreaterThanOrEqual(numbers.capacity, 3)
-      numbers.reserveCapacity(4)
-      XCTAssertGreaterThanOrEqual(numbers.capacity, 4)
-    }
-
     func testRedBlackTreeConveniences() throws {
       let numbers: RedBlackTreeMultiset = [1, 3, 5, 7, 9]
 
@@ -731,6 +731,13 @@
       XCTAssertEqual(members.removeLast(), 5)
       XCTAssertEqual(members.removeLast(), 3)
       XCTAssertEqual(members.removeLast(), 1)
+    }
+
+    func testEqualtable() throws {
+      XCTAssertEqual(RedBlackTreeMultiset<Int>(), [])
+      XCTAssertNotEqual(RedBlackTreeMultiset<Int>(), [1])
+      XCTAssertEqual([1] as RedBlackTreeMultiset<Int>, [1])
+      XCTAssertNotEqual([1,1] as RedBlackTreeMultiset<Int>, [1])
     }
 
     func testPerformanceDistanceFromTo() throws {

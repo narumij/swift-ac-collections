@@ -676,7 +676,7 @@ extension RedBlackTreeMultiset {
     _ i: Index, offsetBy distance: Int, limitedBy limit: Index
   ) -> Index? {
     _read {
-      Optional<Self.Index>(
+      Optional<Index>(
         $0.pointer(
           i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeMultiset"))
     }

@@ -54,8 +54,8 @@ extension RedBlackTreeMultiset {
   /// print(treeMultiset) // 出力: [1,3,4]
   /// ```
   @inlinable
-  public mutating func erase(at i: Index) -> Index {
-    defer { remove(at: i) }
-    return index(after: i)
+  public mutating func erase(at position: Index) -> Index {
+    defer { remove(at: position) }
+    return index(after: position)
   }
 }

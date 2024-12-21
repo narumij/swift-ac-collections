@@ -55,8 +55,8 @@ extension RedBlackTreeSet {
   /// print(treeSet) // 出力: [1, 6]
   /// ```
   @inlinable
-  public mutating func erase(at i: Index) -> Index {
-    defer { remove(at: i) }
-    return index(after: i)
+  public mutating func erase(at position: Index) -> Index {
+    defer { remove(at: position) }
+    return index(after: position)
   }
 }

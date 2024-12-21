@@ -82,10 +82,10 @@ extension RedBlackTreeDictionary {
   @inlinable public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
     (
-      self.___header,
-      self.___nodes,
-      self.___values,
-      self.___stock
+      ___header,
+      ___nodes,
+      ___values,
+      ___stock
     ) = Self.___initialize(
       _sequence: keysAndValues,
       _to_elements: { $0.map { k, v in (k, v) } }
@@ -109,10 +109,10 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
     (
-      self.___header,
-      self.___nodes,
-      self.___values,
-      self.___stock
+      ___header,
+      ___nodes,
+      ___values,
+      ___stock
     ) = try Self.___initialize(
       _sequence: keysAndValues,
       _to_elements: { $0.map { k, v in (k, v) } }
@@ -138,10 +138,10 @@ extension RedBlackTreeDictionary {
     grouping values_: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == [S.Element] {
-    self.___header = .zero
-    self.___nodes = []
-    self.___values = []
-    self.___stock = []
+    ___header = .zero
+    ___nodes = []
+    ___values = []
+    ___stock = []
     for v in values_ {
       self[try keyForValue(v), default: []].append(v)
     }

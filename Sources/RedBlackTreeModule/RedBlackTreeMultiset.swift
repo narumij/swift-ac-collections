@@ -166,10 +166,10 @@ extension RedBlackTreeMultiset {
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
     (
-      self.___header,
-      self.___nodes,
-      self.___values,
-      self.___stock
+      ___header,
+      ___nodes,
+      ___values,
+      ___stock
     ) = Self.___initialize(
       _sequence: sequence,
       _to_elements: { $0.map { $0 } }

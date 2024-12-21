@@ -57,10 +57,6 @@ import AcCollections
 対してこちらの実装では、BidirectionalCollectionへ対応していることと、lowerBoundやupperBoundがあることで、クエリー的な用途でも使えるようになっています。
 一方で集合的な操作に関してはほとんど実装しておりません。そういった用途には標準のSetや、その他集合のコレクションをご利用ください。
 
-### その他
-
-この実装は、[SortedSet](https://github.com/tatyam-prime/SortedSet) も参考にしています。
-
 ## ライセンス
 
 このプロジェクトは LLVM の派生成果物であり、特例が不要であるため、Apache 2.0 ライセンスに基づいて公開されています。

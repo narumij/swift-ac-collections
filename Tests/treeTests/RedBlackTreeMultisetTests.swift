@@ -9,88 +9,97 @@
   import XCTest
   @testable import RedBlackTreeModule
 
-  extension RedBlackTreeMultiset {
+  #if true
+    extension RedBlackTreeMultiset {
 
-    @inlinable
-    var _count: Int {
-      var it = ___header.__begin_node
-      if it == .end {
-        return 0
+      @inlinable
+      var _count: Int {
+        var it = ___header.__begin_node
+        if it == .end {
+          return 0
+        }
+        var c = 0
+        repeat {
+          c += 1
+          it = _read { $0.__tree_next_iter(it) }
+        } while it != .end
+        return c
       }
-      var c = 0
-      repeat {
-        c += 1
-        it = _read { $0.__tree_next_iter(it) }
-      } while it != .end
-      return c
+
+      @inlinable var __left_: _NodePtr {
+        get { ___header.__left_ }
+        set { ___header.__left_ = newValue }
+      }
+
+      @inlinable func __left_(_ p: _NodePtr) -> _NodePtr {
+        _read { $0.__left_(p) }
+      }
+
+      @inlinable func __right_(_ p: _NodePtr) -> _NodePtr {
+        _read { $0.__right_(p) }
+      }
+
+      @inlinable
+      func __root() -> _NodePtr {
+        __left_
+      }
+      @inlinable
+      mutating func __root(_ p: _NodePtr) {
+        __left_ = p
+      }
+      @inlinable
+      func
+        __tree_invariant(_ __root: _NodePtr) -> Bool
+      {
+        _read { $0.__tree_invariant(__root) }
+      }
+      @inlinable
+      func
+        __tree_min(_ __x: _NodePtr) -> _NodePtr
+      {
+        _read { $0.__tree_min(__x) }
+      }
+      @inlinable
+      func
+        __tree_max(_ __x: _NodePtr) -> _NodePtr
+      {
+        _read { $0.__tree_max(__x) }
+      }
+      @inlinable
+      mutating func
+        __tree_left_rotate(_ __x: _NodePtr)
+      {
+        _update { $0.__tree_left_rotate(__x) }
+      }
+      @inlinable
+      mutating func
+        __tree_right_rotate(_ __x: _NodePtr)
+      {
+        _update { $0.__tree_right_rotate(__x) }
+      }
+      @inlinable
+      mutating func
+        __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
+      {
+        _update { $0.__tree_balance_after_insert(__root, __x) }
+      }
     }
 
-    @inlinable var __left_: _NodePtr {
-      get { ___header.__left_ }
-      set { ___header.__left_ = newValue }
+    extension RedBlackTreeMultiset {
+      func left(_ p: Element) -> Int {
+        _read {
+          $0.distance(__first: $0.__begin_node, __last: $0.__lower_bound(p, $0.__root(), $0.end()))
+        }
+      }
+      func right(_ p: Element) -> Int {
+        _read {
+          $0.distance(__first: $0.__begin_node, __last: $0.__upper_bound(p, $0.__root(), $0.end()))
+        }
+      }
     }
-
-    @inlinable func __left_(_ p: _NodePtr) -> _NodePtr {
-      _read { $0.__left_(p) }
-    }
-
-    @inlinable func __right_(_ p: _NodePtr) -> _NodePtr {
-      _read { $0.__right_(p) }
-    }
-
-    @inlinable
-    func __root() -> _NodePtr {
-      __left_
-    }
-    @inlinable
-    mutating func __root(_ p: _NodePtr) {
-      __left_ = p
-    }
-    @inlinable
-    func
-      __tree_invariant(_ __root: _NodePtr) -> Bool
-    {
-      _read { $0.__tree_invariant(__root) }
-    }
-    @inlinable
-    func
-      __tree_min(_ __x: _NodePtr) -> _NodePtr
-    {
-      _read { $0.__tree_min(__x) }
-    }
-    @inlinable
-    func
-      __tree_max(_ __x: _NodePtr) -> _NodePtr
-    {
-      _read { $0.__tree_max(__x) }
-    }
-    @inlinable
-    mutating func
-      __tree_left_rotate(_ __x: _NodePtr)
-    {
-      _update { $0.__tree_left_rotate(__x) }
-    }
-    @inlinable
-    mutating func
-      __tree_right_rotate(_ __x: _NodePtr)
-    {
-      _update { $0.__tree_right_rotate(__x) }
-    }
-    @inlinable
-    mutating func
-      __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
-    {
-      _update { $0.__tree_balance_after_insert(__root, __x) }
-    }
-  }
+  #endif
 
   extension RedBlackTreeMultiset {
-    func left(_ p: Element) -> Int {
-      _read { $0.distance(__first: $0.__begin_node, __last: $0.__lower_bound(p, $0.__root(), $0.end())) }
-    }
-    func right(_ p: Element) -> Int {
-      _read { $0.distance(__first: $0.__begin_node, __last: $0.__upper_bound(p, $0.__root(), $0.end())) }
-    }
     var elements: [Element] {
       map { $0 }
     }
@@ -144,18 +153,17 @@
       XCTAssertFalse(set.isEmpty)
       XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
     }
-    
+
     func testExample3() throws {
       let b: RedBlackTreeMultiset<Int> = [1, 2, 3]
       XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), b.count)
     }
-    
+
     func testSmoke() throws {
       let b: RedBlackTreeMultiset<Int> = [1, 2, 3]
       print(b)
       debugPrint(b)
     }
-
 
     func testRemove() throws {
       var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
@@ -389,7 +397,9 @@
 
     func testIndexLimit2() throws {
       let set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
-      XCTAssertNotEqual(set.index(set.startIndex, offsetBy: 4, limitedBy: set.index(set.startIndex, offsetBy: 4)), nil)
+      XCTAssertNotEqual(
+        set.index(set.startIndex, offsetBy: 4, limitedBy: set.index(set.startIndex, offsetBy: 4)),
+        nil)
       XCTAssertEqual(
         set.index(set.startIndex, offsetBy: 5, limitedBy: set.index(set.startIndex, offsetBy: 4)),
         nil)
@@ -422,7 +432,7 @@
         set.index(set.startIndex, offsetBy: -6, limitedBy: set.startIndex),
         nil)
     }
-    
+
     func testRandom() throws {
       var set = RedBlackTreeMultiset<Int>()
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -474,14 +484,14 @@
       }
     }
 
-//    func testRedBlackTreeSetUpdate() throws {
-//      let a = A(x: 3, label: "a")
-//      let b = A(x: 3, label: "b")
-//      var s: RedBlackTreeMultiset<A> = [a]
-//      XCTAssertFalse(a === b)
-//      XCTAssertTrue(s.update(with: b) === a)
-//      XCTAssertTrue(s.update(with: a) === b)
-//    }
+    //    func testRedBlackTreeSetUpdate() throws {
+    //      let a = A(x: 3, label: "a")
+    //      let b = A(x: 3, label: "b")
+    //      var s: RedBlackTreeMultiset<A> = [a]
+    //      XCTAssertFalse(a === b)
+    //      XCTAssertTrue(s.update(with: b) === a)
+    //      XCTAssertTrue(s.update(with: a) === b)
+    //    }
 
     func testRedBlackTreeSetInsert() throws {
       let a = A(x: 3, label: "a")
@@ -569,7 +579,7 @@
       XCTAssertEqual(members.removeFirst(), 7)
       XCTAssertEqual(members.removeFirst(), 9)
     }
-    
+
     func testRedBlackTreeSetRemoveLast() throws {
       var members: RedBlackTreeMultiset = [1, 3, 5, 7, 9]
       XCTAssertEqual(members.removeLast(), 9)
@@ -583,8 +593,8 @@
       XCTAssertEqual(RedBlackTreeMultiset<Int>(), [])
       XCTAssertNotEqual(RedBlackTreeMultiset<Int>(), [1])
       XCTAssertEqual([1] as RedBlackTreeMultiset<Int>, [1])
-      XCTAssertNotEqual([1,1] as RedBlackTreeMultiset<Int>, [1])
-      XCTAssertNotEqual([1,2] as RedBlackTreeMultiset<Int>, [1,1])
+      XCTAssertNotEqual([1, 1] as RedBlackTreeMultiset<Int>, [1])
+      XCTAssertNotEqual([1, 2] as RedBlackTreeMultiset<Int>, [1, 1])
     }
 
     func testPerformanceDistanceFromTo() throws {

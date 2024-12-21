@@ -6,8 +6,7 @@
 //
 
 import XCTest
-
-@testable import RedBlackTreeModule
+import RedBlackTreeModule
 
 final class ConvenienceTests: XCTestCase {
 

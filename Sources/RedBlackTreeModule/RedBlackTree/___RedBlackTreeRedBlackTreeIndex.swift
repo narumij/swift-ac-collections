@@ -29,7 +29,7 @@ extension ___RedBlackTree {
   {
     case node(_NodePtr)
     case end
-      
+
     @usableFromInline
     init(_ node: _NodePtr) {
       guard node != .nullptr else {
@@ -37,7 +37,7 @@ extension ___RedBlackTree {
       }
       self = node == .end ? .end : .node(node)
     }
-      
+
     @usableFromInline
     var pointer: _NodePtr {
       switch self {

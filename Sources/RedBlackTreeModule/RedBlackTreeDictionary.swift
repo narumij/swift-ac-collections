@@ -57,7 +57,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 }
 
 extension RedBlackTreeDictionary {
-  
+
   @inlinable @inline(__always)
   public init() {
     ___header = .zero
@@ -65,7 +65,7 @@ extension RedBlackTreeDictionary {
     ___values = []
     ___stock = []
   }
-  
+
   @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
     ___header = .zero
@@ -371,7 +371,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   mutating func _finalizeKeyingModify(
-    _ __parent: _NodePtr,_ __child: _NodeRef, key: Key, value: Value?
+    _ __parent: _NodePtr, _ __child: _NodeRef, key: Key, value: Value?
   ) {
     let __ptr = __ref_(__child)
     switch (__ptr, value) {
@@ -474,33 +474,33 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary: ___RedBlackTreeSetContainer {}
 
 #if false
-extension RedBlackTreeDictionary {
+  extension RedBlackTreeDictionary {
 
-  @inlinable
-  func contains(_ p: Key) -> Bool {
-    _read {
-      let it = $0.__lower_bound(p, $0.__root(), $0.__left_)
-      guard it >= 0 else { return false }
-      return $0.__value_ptr[it].key == p
+    @inlinable
+    func contains(_ p: Key) -> Bool {
+      _read {
+        let it = $0.__lower_bound(p, $0.__root(), $0.__left_)
+        guard it >= 0 else { return false }
+        return $0.__value_ptr[it].key == p
+      }
+    }
+
+    @inlinable
+    func min() -> KeyValue? {
+      _read {
+        let p = $0.__tree_min($0.__root())
+        return p == .end ? nil : $0.__value_(p)
+      }
+    }
+
+    @inlinable
+    func max() -> KeyValue? {
+      _read {
+        let p = $0.__tree_max($0.__root())
+        return p == .end ? nil : $0.__value_(p)
+      }
     }
   }
-
-  @inlinable
-  func min() -> KeyValue? {
-    _read {
-      let p = $0.__tree_min($0.__root())
-      return p == .end ? nil : $0.__value_(p)
-    }
-  }
-
-  @inlinable
-  func max() -> KeyValue? {
-    _read {
-      let p = $0.__tree_max($0.__root())
-      return p == .end ? nil : $0.__value_(p)
-    }
-  }
-}
 #endif
 
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
@@ -550,7 +550,7 @@ extension RedBlackTreeDictionary {
     _ i: Index, offsetBy distance: Int, limitedBy limit: Index
   ) -> Index? {
     _read {
-      Optional<Index>(
+      Index?(
         $0.pointer(
           i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeDictionary"))
     }
@@ -567,25 +567,18 @@ extension RedBlackTreeDictionary {
   }
 }
 
-//extension RedBlackTreeDictionary {
-//
-//  @inlinable mutating func update(at position: Index, _ value: Value) {
-//    ___values[position.pointer].value = value
-//  }
-//}
-
 extension RedBlackTreeDictionary: CustomStringConvertible, CustomDebugStringConvertible {
-  
+
   // MARK: - CustomStringConvertible
-  
+
   /// 人間が読みやすい形式で辞書の内容を文字列として表現します。
   public var description: String {
     let pairs = map { "\($0.key): \($0.value)" }
     return "[\(pairs.joined(separator: ", "))]"
   }
-  
+
   // MARK: - CustomDebugStringConvertible
-  
+
   /// デバッグ時に辞書の詳細情報を含む文字列を返します。
   public var debugDescription: String {
     return "RedBlackTreeDictionary(\(description))"
@@ -593,17 +586,7 @@ extension RedBlackTreeDictionary: CustomStringConvertible, CustomDebugStringConv
 }
 
 extension RedBlackTreeDictionary: Equatable where Value: Equatable {
-//  public static func == (lhs: Self, rhs: Self) -> Bool {
-//    guard lhs.count == rhs.count else { return false }
-//    var l = lhs.startIndex
-//    var r = rhs.startIndex
-//    while l != lhs.endIndex, r != rhs.endIndex {
-//      guard lhs[l] == rhs[r] else { return false }
-//      l = lhs.index(after: l)
-//      r = rhs.index(after: r)
-//    }
-//    return true
-//  }
+
   public static func == (lhs: Self, rhs: Self) -> Bool {
     guard lhs.count == rhs.count else { return false }
     return lhs._read { _lhs in

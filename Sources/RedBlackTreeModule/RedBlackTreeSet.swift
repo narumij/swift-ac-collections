@@ -862,6 +862,7 @@ extension RedBlackTreeSet: CustomStringConvertible, CustomDebugStringConvertible
 }
 
 extension RedBlackTreeSet: Equatable {
+
   public static func == (lhs: Self, rhs: Self) -> Bool {
     guard lhs.count == rhs.count else { return false }
     return lhs._read { _lhs in
@@ -878,24 +879,3 @@ extension RedBlackTreeSet: Equatable {
     }
   }
 }
-
-#if false
-  extension RedBlackTreeSet {
-
-    @inlinable public func lessThan(_ p: Element) -> Element? {
-      ___lt(p)
-    }
-
-    @inlinable public func greaterThan(_ p: Element) -> Element? {
-      ___gt(p)
-    }
-
-    @inlinable public func lessThanOrEqual(_ p: Element) -> Element? {
-      ___le(p)
-    }
-
-    @inlinable public func greaterThanOrEqual(_ p: Element) -> Element? {
-      ___ge(p)
-    }
-  }
-#endif

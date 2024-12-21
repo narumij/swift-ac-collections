@@ -29,7 +29,6 @@ protocol ___RedBlackTreeContainerBase: EndProtocol, ValueComparer {
   var ___header: ___RedBlackTree.___Header { get set }
   var ___nodes: [___RedBlackTree.___Node] { get set }
   var ___values: [Element] { get set }
-  var ___stock: Heap<_NodePtr> { get set }
 }
 
 extension ___RedBlackTreeContainerBase {
@@ -74,7 +73,12 @@ extension ___RedBlackTreeContainerBase {
   }
 }
 
-extension ___RedBlackTreeContainerBase {
+@usableFromInline
+protocol ___RedBlackTreeContainer: ___RedBlackTreeContainerBase {
+  var ___stock: Heap<_NodePtr> { get set }
+}
+
+extension ___RedBlackTreeContainer {
 
   @inlinable
   mutating func __construct_node(_ k: Element) -> _NodePtr {
@@ -93,11 +97,7 @@ extension ___RedBlackTreeContainerBase {
     ___nodes[p].invalidate()
     ___stock.insert(p)
   }
-
 }
-
-@usableFromInline
-protocol ___RedBlackTreeContainer: ___RedBlackTreeContainerBase {}
 
 @usableFromInline
 protocol ___RedBlackTreeSetContainer: ___RedBlackTreeContainer {}
@@ -108,7 +108,7 @@ protocol ___RedBlackTreeEraseProtocol: ___RedBlackTreeContainer, EraseProtocol {
 }
 
 extension ___RedBlackTreeEraseProtocol {
-  
+
   @inlinable
   @discardableResult
   mutating func ___remove(at ptr: _NodePtr) -> Element? {

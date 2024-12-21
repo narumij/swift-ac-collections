@@ -23,61 +23,59 @@
 import Collections
 import Foundation
 
-  /// メモ化向け
-  @frozen
-  public struct ___RedBlackTreeMapBase<KeyInfo, Value>
-  where KeyInfo: ___RedBlackTreeKeyProtocol  //, KeyInfo.Key: Equatable
-  {
+/// メモ化向け
+///
+///  メモリ管理をゆるめにしている
+@frozen
+public struct ___RedBlackTreeMapBase<KeyInfo, Value>
+where KeyInfo: ___RedBlackTreeKeyProtocol  //, KeyInfo.Key: Equatable
+{
 
-    public
-      typealias Key = KeyInfo.Key
+  public
+    typealias Key = KeyInfo.Key
 
-    public
-      typealias Value = Value
+  public
+    typealias Value = Value
 
-    @usableFromInline
-    typealias _Key = Key
+  @usableFromInline
+  typealias _Key = Key
 
-    public init() {
-      ___header = .zero
-      ___nodes = []
-      ___values = []
-      ___stock = []
-    }
-
-    public subscript(key: Key) -> Value? {
-      get {
-        _read {
-          let it = $0.__lower_bound(key, $0.__root(), $0.__left_)
-          guard it >= 0,
-            !Self.value_comp(Self.__key($0.__value_ptr[it]), key),
-            !Self.value_comp(key, Self.__key($0.__value_ptr[it]))
-          else { return nil }
-          return Self.__value($0.__value_ptr[it])
-        }
-      }
-      set {
-        if let newValue {
-          _ = __insert_unique((key, newValue))
-        } else {
-          _ = __erase_unique(key)
-        }
-      }
-    }
-
-    @usableFromInline
-    var ___header: ___RedBlackTree.___Header
-    @usableFromInline
-    var ___nodes: [___RedBlackTree.___Node]
-    @usableFromInline
-    var ___values: [Element]
-    @usableFromInline
-    var ___stock: Heap<_NodePtr>
-
-    public var count: Int { ___header.size }
-    public var isEmpty: Bool { count == 0 }
+  public init() {
+    ___header = .zero
+    ___nodes = []
+    ___values = []
   }
 
+  public subscript(key: Key) -> Value? {
+    get {
+      _read {
+        let it = $0.__lower_bound(key, $0.__root(), $0.__left_)
+        guard it >= 0,
+          !Self.value_comp(Self.__key($0.__value_ptr[it]), key),
+          !Self.value_comp(key, Self.__key($0.__value_ptr[it]))
+        else { return nil }
+        return Self.__value($0.__value_ptr[it])
+      }
+    }
+    set {
+      if let newValue {
+        _ = __insert_unique((key, newValue))
+      } else {
+        _ = __erase_unique(key)
+      }
+    }
+  }
+
+  @usableFromInline
+  var ___header: ___RedBlackTree.___Header
+  @usableFromInline
+  var ___nodes: [___RedBlackTree.___Node]
+  @usableFromInline
+  var ___values: [Element]
+
+  public var count: Int { ___header.size }
+  public var isEmpty: Bool { count == 0 }
+}
 
 extension ___RedBlackTreeMapBase: ValueComparer {
 
@@ -118,11 +116,6 @@ extension ___RedBlackTreeMapBase: InsertUniqueProtocol, EraseUniqueProtocol {
 
   @inlinable
   mutating func __construct_node(_ k: (Key, Value)) -> _NodePtr {
-    //　メモ化用だと、開放は起きないので、無駄かもしれない
-    if let stock = ___stock.popMin() {
-      ___values[stock] = k
-      return stock
-    }
     let n = Swift.min(___nodes.count, ___values.count)
     ___nodes.append(.zero)
     ___values.append(k)
@@ -131,6 +124,6 @@ extension ___RedBlackTreeMapBase: InsertUniqueProtocol, EraseUniqueProtocol {
 
   @inlinable
   mutating func destroy(_ p: _NodePtr) {
-    ___stock.insert(p)
+    ___nodes[p].invalidate()
   }
 }

@@ -820,8 +820,8 @@ extension RedBlackTreeSet {
   public typealias ElementSequence = ArraySlice<Element>
 
   @inlinable
-  public subscript(bounds: IndexRange) -> ElementSequence {
-    .init(___element_sequence(from: bounds.lhs, to: bounds.rhs))
+  public subscript(bounds: IndexRange) -> Array<Element> {
+    ___element_sequence__(from: bounds.lhs, to: bounds.rhs)
   }
 
   @inlinable

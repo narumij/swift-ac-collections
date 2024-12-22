@@ -367,7 +367,7 @@ final class ConvenienceTests: XCTestCase {
     XCTAssertEqual(set[set.startIndex ..< set.startIndex], [])
     XCTAssertEqual(set[set.endIndex ..< set.endIndex], [])
 
-    XCTAssertNotEqual((set[set.startIndex ..< set.endIndex] as RedBlackTreeSet<Int>.ElementSequence ).map{ $0 }, [])
+//    XCTAssertNotEqual((set[set.startIndex ..< set.endIndex] as RedBlackTreeSet<Int>.ElementSequence ).map{ $0 }, [])
 
 //    XCTAssertNotEqual((set[set.startIndex ..< set.endIndex] as RedBlackTreeSet<Int>.UnfoldElementSequence ).map{ $0 }, [])
   }
@@ -404,5 +404,4 @@ final class ConvenienceTests: XCTestCase {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
     XCTAssertEqual(set.reduce(0) { $0 + $1 }, 21)
   }
-
 }

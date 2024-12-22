@@ -381,6 +381,11 @@ extension RedBlackTreeSet {
     return remove(at: index(before: endIndex))
   }
 
+  @inlinable
+  public mutating func remove(from: Index, to: Index) {
+    ___remove(from: from.pointer, to: to.pointer)
+  }
+
   /// 赤黒木セットからすべての要素を削除します。
   ///
   /// - Parameter keepingCapacity: `true` を指定すると、セットのバッファ容量が保持されます。

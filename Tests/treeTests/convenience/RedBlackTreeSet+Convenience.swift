@@ -39,7 +39,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-  
+
   /// 範囲削除を行う場合に使用する
   ///
   /// remove(at:)後のIndexは不正となり、利用できなくなる
@@ -62,36 +62,17 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-  
-  @inlinable
-  func forEach(in range: Range<Element>, _ body: (Index, Element) throws -> Void) rethrows {
-    var it = lowerBound(range.lowerBound)
-    let end = upperBound(range.upperBound)
-    while it != end {
-      let o = it
-      it = index(after: it)
-      try body(o, self[o])
-    }
-  }
 
   @inlinable
-  public mutating func remove(in range: Range<Element>) {
-    let lower = lowerBound(range.lowerBound)
-    let upper = upperBound(range.upperBound)
-    var it = lower
-    while it != upper {
-      it = erase(at: it)
-    }
+  public subscript(bounds: Range<Element>) -> ElementSequence {
+    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
   }
+}
+
+extension RedBlackTreeSet {
 
   @inlinable
-  public mutating func remove(in range: Range<Element>, perform body: ((Element) throws -> Void) = { _ in }) rethrows {
-    let lower = lowerBound(range.lowerBound)
-    let upper = upperBound(range.upperBound)
-    var it = lower
-    while it != upper {
-      try body(self[it])
-      it = erase(at: it)
-    }
+  public func enumerated(lowerBound from: Element, upperBound to: Element) -> EnumeratedSequence {
+    ___enumerated_sequence(from: lowerBound(from), to: upperBound(to))
   }
 }

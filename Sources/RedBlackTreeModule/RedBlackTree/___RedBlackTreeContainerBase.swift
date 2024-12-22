@@ -120,48 +120,6 @@ extension ___RedBlackTreeContainerBase {
 extension ___RedBlackTreeContainerBase {
 
   @inlinable @inline(__always)
-  func ___for_each(_ body: (Element) throws -> Void) rethrows {
-    try _read { tree in
-      var ptr = tree.__begin_node
-      while ptr != tree.__end_node() {
-        try body(___values[ptr])
-        ptr = tree.__tree_next_iter(ptr)
-      }
-    }
-  }
-
-  @inlinable @inline(__always)
-  func ___for_each<T>(_ body: (Element) throws -> T?) rethrows -> T? {
-    try _read { tree in
-      var ptr = tree.__begin_node
-      while ptr != tree.__end_node() {
-        if let result = try body(___values[ptr]) {
-          return result
-        }
-        ptr = tree.__tree_next_iter(ptr)
-      }
-      return nil
-    }
-  }
-
-  @inlinable @inline(__always)
-  func ___for_each<T>(_ body: (_NodePtr, Element) throws -> T?) rethrows -> T? {
-    try _read { tree in
-      var ptr = tree.__begin_node
-      while ptr != tree.__end_node() {
-        if let result = try body(ptr, ___values[ptr]) {
-          return result
-        }
-        ptr = tree.__tree_next_iter(ptr)
-      }
-      return nil
-    }
-  }
-}
-
-extension ___RedBlackTreeContainerBase {
-
-  @inlinable @inline(__always)
   func ___contains(_ __k: _Key) -> Bool where _Key: Equatable {
     _read { tree in
       let it = tree.__lower_bound(__k, tree.__root(), tree.__left_)
@@ -334,40 +292,107 @@ extension ___RedBlackTreeContainerBase {
 }
 
 extension ___RedBlackTreeContainerBase {
-  
+
   @inlinable
   func ___equal_with(_ rhs: Self) -> Bool where Element: Equatable {
-    guard ___count == rhs.___count else { return false }
-    return _read { _lhs in
-      rhs._read { _rhs in
-        var l = _lhs.__begin_node
-        var r = _rhs.__begin_node
-        while l != _lhs.__end_node(), r != _rhs.__end_node() {
-          guard ___values[l] == rhs.___values[r] else { return false }
-          l = _lhs.__tree_next_iter(l)
-          r = _rhs.__tree_next_iter(r)
-        }
-        return true
-      }
-    }
-  }
-  
-  @inlinable
-  func ___equal_with<K,V>(_ rhs: Self) -> Bool where K: Equatable, V: Equatable, Element == (key: K, value: V) {
-    guard ___count == rhs.___count else { return false }
-    return _read { _lhs in
-      rhs._read { _rhs in
-        var l = _lhs.__begin_node
-        var r = _rhs.__begin_node
-        while l != _lhs.__end_node(), r != _rhs.__end_node() {
-          guard ___values[l] == rhs.___values[r] else { return false }
-          l = _lhs.__tree_next_iter(l)
-          r = _rhs.__tree_next_iter(r)
-        }
-        return true
-      }
-    }
+    ___count == rhs.___count &&
+    zip(___element_sequence, rhs.___element_sequence).allSatisfy(==)
   }
 
+  @inlinable
+  func ___equal_with<K, V>(_ rhs: Self) -> Bool
+  where K: Equatable, V: Equatable, Element == (key: K, value: V) {
+    ___count == rhs.___count &&
+    zip(___element_sequence, rhs.___element_sequence).allSatisfy(==)
+  }
 }
 
+extension ___RedBlackTreeContainerBase {
+
+  public typealias SequenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
+  public typealias EnumeratedElement = (position: ___RedBlackTree.Index, element: Element)
+
+  @inlinable
+  func ___next(_ ptr: _NodePtr, to: _NodePtr) -> _NodePtr {
+    ptr == to ? ptr : _read { $0.__tree_next_iter(ptr) }
+  }
+
+  @inlinable @inline(__always)
+  func ___begin(_ from: _NodePtr, to: _NodePtr) -> SequenceState {
+    (from, ___next(from, to: to), to)
+  }
+
+  @inlinable @inline(__always)
+  func ___next(_ state: inout SequenceState) {
+    state.current = state.next
+    state.next = ___next(state.next, to: state.to)
+  }
+  
+  @inlinable @inline(__always)
+  func ___end(_ state: SequenceState) -> Bool {
+    state.current != state.to
+  }
+
+  public typealias ___EnumeratedSequence = UnfoldSequence<EnumeratedElement, SequenceState>
+
+  /// 将来的にも公開メンバーであるかどうかは保証されません。
+  @inlinable
+  public func ___enumerated_sequence(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index) -> ___EnumeratedSequence {
+    return sequence(state: ___begin(from.pointer, to: to.pointer)) { state in
+      guard ___end(state) else { return nil }
+      defer { ___next(&state) }
+      return (___RedBlackTree.Index(state.current), ___values[state.current])
+    }
+  }
+
+  @inlinable
+  public var ___enumerated_sequence: ___EnumeratedSequence {
+    ___enumerated_sequence(from: ___index_begin(), to: ___index_end())
+  }
+
+  /// 将来的にも公開メンバーであるかどうかは保証されません。
+  @inlinable
+  public func ___index_sequence(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index) -> UnfoldSequence<___RedBlackTree.Index, SequenceState> {
+    return sequence(state: ___begin(from.pointer, to: to.pointer)) { state in
+      guard ___end(state) else { return nil }
+      defer { ___next(&state) }
+      return ___RedBlackTree.Index(state.current)
+    }
+  }
+
+  /// 将来的にも公開メンバーであるかどうかは保証されません。
+  @inlinable
+  public var ___index_sequence: UnfoldSequence<___RedBlackTree.Index, SequenceState> {
+    ___index_sequence(from: ___index_begin(), to: ___index_end())
+  }
+
+  /// 将来的にも公開メンバーであるかどうかは保証されません。
+  @inlinable
+  public func ___element_sequence(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index) -> UnfoldSequence<Element, SequenceState> {
+    return sequence(state: ___begin(from.pointer, to: to.pointer)) { state in
+      guard ___end(state) else { return nil }
+      defer { ___next(&state) }
+      return ___values[state.current]
+    }
+  }
+
+  /// 将来的にも公開メンバーであるかどうかは保証されません。
+  @inlinable
+  public var ___element_sequence: UnfoldSequence<Element, SequenceState> {
+    ___element_sequence(from: ___index_begin(), to: ___index_end())
+  }
+
+  @inlinable
+  func ___ptr_sequence(from: _NodePtr, to: _NodePtr) -> UnfoldSequence<_NodePtr, SequenceState> {
+    return sequence(state: ___begin(from, to: to)) { state in
+      guard ___end(state) else { return nil }
+      defer { ___next(&state) }
+      return state.current
+    }
+  }
+
+  @inlinable
+  var ___ptr_sequence: UnfoldSequence<_NodePtr, SequenceState> {
+    ___ptr_sequence(from: ___begin(), to: ___end())
+  }
+}

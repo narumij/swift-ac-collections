@@ -326,6 +326,19 @@ final class ConvenienceTests: XCTestCase {
     XCTAssertEqual(set.elements, [])
   }
   
+  func testRedBlackTreeConveniences() throws {
+    let numbers: RedBlackTreeSet = [1, 3, 5, 7, 9]
+
+    XCTAssertEqual(numbers.lessThan(4), 3)
+    XCTAssertEqual(numbers.lessThanOrEqual(4), 3)
+    XCTAssertEqual(numbers.lessThan(5), 3)
+    XCTAssertEqual(numbers.lessThanOrEqual(5), 5)
+
+    XCTAssertEqual(numbers.greaterThan(6), 7)
+    XCTAssertEqual(numbers.greaterThanOrEqual(6), 7)
+    XCTAssertEqual(numbers.greaterThan(5), 7)
+    XCTAssertEqual(numbers.greaterThanOrEqual(5), 5)
+  }
   
   func testSetErase() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
@@ -336,7 +349,7 @@ final class ConvenienceTests: XCTestCase {
     }
     XCTAssertEqual(set, [1,6])
   }
-  
+
   func testMultietErase() throws {
     var set: RedBlackTreeMultiset<Int> = [1, 2, 2, 2, 3, 4]
     var it = set.lowerBound(2)
@@ -345,6 +358,28 @@ final class ConvenienceTests: XCTestCase {
       it = set.erase(at: it)
     }
     XCTAssertEqual(set, [1,3,4])
+  }
+
+  func testSetIndexRange() throws {
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+    XCTAssertEqual(set[set.startIndex ..< set.endIndex], [1, 2, 3, 4, 5, 6])
+    XCTAssertEqual(set[set.lowerBound(2) ..< set.upperBound(4)], [2, 3, 4])
+    XCTAssertEqual(set[set.startIndex ..< set.startIndex], [])
+    XCTAssertEqual(set[set.endIndex ..< set.endIndex], [])
+
+    XCTAssertNotEqual((set[set.startIndex ..< set.endIndex] as RedBlackTreeSet<Int>.ElementSequence ).map{ $0 }, [])
+
+//    XCTAssertNotEqual((set[set.startIndex ..< set.endIndex] as RedBlackTreeSet<Int>.UnfoldElementSequence ).map{ $0 }, [])
+  }
+  
+  func testEnumerate() throws {
+    var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+    set
+      .enumrated()
+      .forEach { i, v in
+      set.remove(at: i)
+    }
+    XCTAssertEqual(set, [])
   }
 
 }

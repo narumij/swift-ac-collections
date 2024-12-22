@@ -457,31 +457,29 @@
       //      s.removeFirst()
     }
 
-    func testRedBlackTreeSetLowerBound() throws {
-      let numbers: RedBlackTreeSet = [1, 3, 5, 7, 9]
+    func testLowerBound() throws {
+      let numbers: RedBlackTreeSet = [1, 3, 5]
+      XCTAssertEqual(numbers.lowerBound(0).pointer, 0)
+      XCTAssertEqual(numbers.lowerBound(1).pointer, 0)
+      XCTAssertEqual(numbers.lowerBound(2).pointer, 1)
+      XCTAssertEqual(numbers.lowerBound(3).pointer, 1)
       XCTAssertEqual(numbers.lowerBound(4).pointer, 2)
+      XCTAssertEqual(numbers.lowerBound(5).pointer, 2)
+      XCTAssertEqual(numbers.lowerBound(6).pointer, .end)
     }
 
-    func testRedBlackTreeSetUpperBound() throws {
-      let numbers: RedBlackTreeSet = [1, 3, 5, 7, 9]
-      XCTAssertEqual(numbers.upperBound(7).pointer, 4)
+    func testUpperBound() throws {
+      let numbers: RedBlackTreeSet = [1, 3, 5]
+      XCTAssertEqual(numbers.upperBound(0).pointer, 0)
+      XCTAssertEqual(numbers.upperBound(1).pointer, 1)
+      XCTAssertEqual(numbers.upperBound(2).pointer, 1)
+      XCTAssertEqual(numbers.upperBound(3).pointer, 2)
+      XCTAssertEqual(numbers.upperBound(4).pointer, 2)
+      XCTAssertEqual(numbers.upperBound(5).pointer, .end)
+      XCTAssertEqual(numbers.upperBound(6).pointer, .end)
     }
 
-    func testRedBlackTreeConveniences() throws {
-      let numbers: RedBlackTreeSet = [1, 3, 5, 7, 9]
-
-      XCTAssertEqual(numbers.lessThan(4), 3)
-      XCTAssertEqual(numbers.lessThanOrEqual(4), 3)
-      XCTAssertEqual(numbers.lessThan(5), 3)
-      XCTAssertEqual(numbers.lessThanOrEqual(5), 5)
-
-      XCTAssertEqual(numbers.greaterThan(6), 7)
-      XCTAssertEqual(numbers.greaterThanOrEqual(6), 7)
-      XCTAssertEqual(numbers.greaterThan(5), 7)
-      XCTAssertEqual(numbers.greaterThanOrEqual(5), 5)
-    }
-
-    func testRedBlackTreeSetFirstIndex() throws {
+    func testFirstIndex() throws {
       var members: RedBlackTreeSet = [1, 3, 5, 7, 9]
       XCTAssertEqual(members.firstIndex(of: 3), .init(1))
       XCTAssertEqual(members.firstIndex(of: 2), nil)
@@ -495,7 +493,7 @@
       XCTAssertEqual(members.removeFirst(), 9)
     }
     
-    func testRedBlackTreeSetRemoveLast() throws {
+    func testRemoveLast() throws {
       var members: RedBlackTreeSet = [1, 3, 5, 7, 9]
       XCTAssertEqual(members.removeLast(), 9)
       XCTAssertEqual(members.removeLast(), 7)
@@ -533,6 +531,29 @@
         d.append(v)
       }
       XCTAssertEqual(d, [1,2,3])
+    }
+    
+    func testIndexRange() throws {
+      throw XCTSkip()
+      let s: RedBlackTreeSet<Int> = [3, 1, 2]
+      let target = 2
+      func f(_ range: Range<RedBlackTreeSet<Int>.Index>) {
+        XCTAssertEqual(range.lowerBound, s.lowerBound(target))
+        XCTAssertEqual(range.upperBound, s.upperBound(target))
+      }
+      f(s.lowerBound(target) ..< s.upperBound(target))
+    }
+    
+    func testIndexAfter() throws {
+      do {
+        let s: RedBlackTreeSet<Int> = []
+        XCTAssertEqual(s.startIndex, .end)
+      }
+      do {
+        let s: RedBlackTreeSet<Int> = [1]
+        XCTAssertEqual(s.startIndex, .node(0))
+        XCTAssertEqual(s.index(after: s.startIndex), .end)
+      }
     }
 
     func testPerformanceDistanceFromTo() throws {

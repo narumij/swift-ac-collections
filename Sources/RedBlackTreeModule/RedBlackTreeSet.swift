@@ -473,21 +473,17 @@ extension RedBlackTreeSet {
 
   @inlinable
   public func forEach(_ body: (Self.Element) throws -> Void) rethrows {
-    try ___for_each(body)
+    try ___element_sequence.forEach(body)
   }
 
   @inlinable
   public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___for_each { member in
-      try predicate(member) ? true : nil
-    } ?? false
+    try ___element_sequence.contains(where: predicate)
   }
 
   @inlinable
   public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___for_each { member in
-      try predicate(member) ? nil : false
-    } ?? true
+    try ___element_sequence.allSatisfy(predicate)
   }
 }
 
@@ -644,9 +640,10 @@ extension RedBlackTreeSet {
   /// - Note: このメソッドは、セット内の要素を昇順に走査します。
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___for_each { ptr, member in
-      try predicate(member) ? Index(ptr) : nil
+    for (i, m) in ___enumerated_sequence {
+      if try predicate(m) { return i }
     }
+    return nil
   }
 }
 
@@ -826,5 +823,30 @@ extension RedBlackTreeSet: Equatable {
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.___equal_with(rhs)
+  }
+}
+
+extension RedBlackTreeSet {
+
+  public typealias IndexRange = ___RedBlackTree.Range
+  public typealias SeqenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
+  public typealias EnumeratedElement = (position: Index, element: Element)
+
+  public typealias EnumeratedSequence = UnfoldSequence<EnumeratedElement, SeqenceState>
+  public typealias ElementSequence = ArraySlice<Element>
+
+  @inlinable
+  public subscript(bounds: IndexRange) -> ElementSequence {
+    .init(___element_sequence(from: bounds.lhs, to: bounds.rhs))
+  }
+
+  @inlinable
+  public func enumrated() -> EnumeratedSequence {
+    ___enumerated_sequence
+  }
+
+  @inlinable
+  public func enumrated(from: Index, to: Index) -> EnumeratedSequence {
+    ___enumerated_sequence(from: from, to: to)
   }
 }

@@ -73,10 +73,11 @@ extension ___UnsafeHandle {
 
   @inlinable
   @inline(__always)
-  public func ___for_each(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void) rethrows {
+  public func ___for_each(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void) rethrows {
     var __p = __p
-    while __p != __l {
-      try body(__p)
+    var cont = true
+    while cont, __p != __l {
+      try body(__p, &cont)
       __p = __tree_next(__p)
     }
   }

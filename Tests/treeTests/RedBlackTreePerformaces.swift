@@ -8,6 +8,7 @@
 import RedBlackTreeModule
 import XCTest
 
+#if true
 final class RedBlackTreePerformaces: XCTestCase {
 
   override func setUpWithError() throws {
@@ -17,13 +18,14 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample00() throws {
-    
+    throw XCTSkip()
     self.measure {
       let set = Set<Int>(0..<10_000_000)
     }
   }
 
   func testPerformanceExample05() throws {
+    throw XCTSkip()
     var set = Set<Int>(0..<10_000_000)
     self.measure {
       for v in 0..<10_000_000 {
@@ -33,13 +35,14 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample0() throws {
-    
+    throw XCTSkip()
     self.measure {
       let set = RedBlackTreeSet<Int>(0..<10_000_000)
     }
   }
 
   func testPerformanceExample1() throws {
+    throw XCTSkip()
     let set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       XCTAssertNotEqual(set[set.startIndex..<set.endIndex], [])
@@ -47,6 +50,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample2() throws {
+    throw XCTSkip()
     let set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       XCTAssertNotEqual(
@@ -62,6 +66,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample4() throws {
+    throw XCTSkip()
     var set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       set.enumerated()
@@ -80,4 +85,30 @@ final class RedBlackTreePerformaces: XCTestCase {
     }
   }
 
+  func testPerformanceExample6() throws {
+    throw XCTSkip()
+    var set1 = RedBlackTreeSet<Int>(0..<10_000_000)
+    var set2 = RedBlackTreeSet<Int>(0..<10_000_000)
+    self.measure {
+      _ = set1 == set2
+    }
+  }
+
+  func testPerformanceExample7() throws {
+    throw XCTSkip()
+    var set = RedBlackTreeSet<Int>(0..<10_000_000)
+    self.measure {
+      _ = set.firstIndex { $0 > 10_000_000 }
+    }
+  }
+
+  func testPerformanceExample8() throws {
+    throw XCTSkip()
+    var set = RedBlackTreeSet<Int>(0..<10_000_000)
+    self.measure {
+      _ = set.first { $0 > 10_000_000 }
+    }
+  }
+
 }
+#endif

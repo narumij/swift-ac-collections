@@ -402,12 +402,17 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___element_sequence.first(where: predicate)
+    try ___first(where: predicate)
+  }
+
+  @inlinable
+  public func firstIndex(of key: Key) -> Index? {
+    ___first_index(of: key)
   }
 
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___enumerated_sequence.first(where: { try predicate($0.element) })?.position
+    try ___first_index(where: predicate)
   }
 }
 
@@ -499,11 +504,11 @@ extension RedBlackTreeDictionary {
   public typealias EnumeratedElement = (position: Index, element: Element)
 
   public typealias EnumeratedSequence = UnfoldSequence<EnumeratedElement, SeqenceState>
-  public typealias ElementSequence = ArraySlice<Element>
+  public typealias ElementSequence = Array<Element>
 
   @inlinable
   public subscript(bounds: IndexRange) -> ElementSequence {
-    .init(___element_sequence(from: bounds.lhs, to: bounds.rhs))
+    ___element_sequence__(from: bounds.lhs, to: bounds.rhs)
   }
 
   @inlinable

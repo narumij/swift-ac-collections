@@ -24,7 +24,8 @@ import Collections
 import Foundation
 
 @usableFromInline
-protocol ___RedBlackTreeEraseProtocol: ___RedBlackTreeContainer, EraseProtocol {
+protocol ___RedBlackTreeEraseProtocol: ___RedBlackTreeContainer, EraseProtocol
+{
   mutating func erase(_ __p: _NodePtr) -> _NodePtr
   mutating func erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
 }

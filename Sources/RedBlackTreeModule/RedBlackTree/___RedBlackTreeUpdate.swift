@@ -45,4 +45,44 @@ extension ___RedBlackTreeUpdate {
     _update { tree in
       tree.__remove_node_pointer(__ptr) }
   }
+  
+}
+
+@usableFromInline
+protocol ___RedBlackTreeEraseUniqueProtocol: ___RedBlackTreeUpdate, StorageProtocol { }
+
+extension ___RedBlackTreeEraseUniqueProtocol {
+  
+  @inlinable
+  mutating func
+  ___erase_unique(_ __k: VC._Key) -> Bool
+  {
+    var destroyed: [_NodePtr] = []
+    defer { destroyed.forEach { destroy($0) } }
+    
+    return _update { tree in
+
+      func __get_np(_ p: _NodePtr) -> _NodePtr { p }
+      
+      func destroy(_ p: _NodePtr) {
+        destroyed.append(p)
+      }
+
+      func
+        erase(_ __p: _NodePtr) -> _NodePtr
+      {
+        let __np = __get_np(__p)
+        let __r = tree.__remove_node_pointer(__np)
+        destroy(__p)
+        return __r
+      }
+
+      let __i = tree.find(__k)
+      if __i == tree.end() {
+        return false
+      }
+      _ = erase(__i)
+      return true
+    }
+  }
 }

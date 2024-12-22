@@ -239,6 +239,7 @@ extension RedBlackTreeSet: ___RedBlackTreeUpdate {
 extension RedBlackTreeSet: InsertUniqueProtocol {}
 extension RedBlackTreeSet: EraseUniqueProtocol {}
 extension RedBlackTreeSet: ___RedBlackTreeEraseProtocol {}
+extension RedBlackTreeSet: ___RedBlackTreeEraseUniqueProtocol {}
 
 extension RedBlackTreeSet {
 
@@ -566,6 +567,11 @@ extension RedBlackTreeSet {
   public var last: Element? {
     isEmpty ? nil : self[index(before: .end)]
   }
+  
+  @inlinable
+  public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+    try ___first(where: predicate)
+  }
 
   /// 指定された要素のインデックスを返します。要素がセットに存在しない場合は `nil` を返します。
   ///
@@ -591,11 +597,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
   @inlinable
   public func firstIndex(of member: Element) -> Index? {
-    _read { tree in
-      var __parent = _NodePtr.nullptr
-      let ptr = tree.__ref_(tree.__find_equal(&__parent, member))
-      return Index?(ptr)
-    }
+    ___first_index(of: member)
   }
 
   /// 指定された述語を満たす最初の要素のインデックスを返します。
@@ -624,7 +626,7 @@ extension RedBlackTreeSet {
   /// - Note: このメソッドは、セット内の要素を昇順に走査します。
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___enumerated_sequence.first(where: { try predicate($0.element) })?.position
+    try ___first_index(where: predicate)
   }
 }
 
@@ -815,7 +817,6 @@ extension RedBlackTreeSet {
 
   public typealias EnumeratedSequence = UnfoldSequence<EnumeratedElement, SeqenceState>
   public typealias ElementSequence = Array<Element>
-//  public typealias ElementSequence = UnfoldSequence<Element, SeqenceState>
 
   @inlinable
   public subscript(bounds: IndexRange) -> ElementSequence {

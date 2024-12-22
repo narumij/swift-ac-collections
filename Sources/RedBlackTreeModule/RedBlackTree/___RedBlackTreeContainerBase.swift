@@ -292,16 +292,56 @@ extension ___RedBlackTreeContainerBase {
 }
 
 extension ___RedBlackTreeContainerBase {
+  
+  @inlinable
+  public func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+    try _read { tree in
+      var result: Element?
+      try tree.___for_each(__p: tree.__begin_node, __l: tree.__end_node()) { __p, cont in
+        if try predicate(___values[__p]) {
+          result = ___values[__p]
+          cont = false
+        }
+      }
+      return result
+    }
+  }
+  
+  @inlinable
+  public func ___first_index(of member: _Key) -> ___RedBlackTree.Index? {
+    _read { tree in
+      var __parent = _NodePtr.nullptr
+      let ptr = tree.__ref_(tree.__find_equal(&__parent, member))
+      return ___RedBlackTree.Index?(ptr)
+    }
+  }
+  
+  @inlinable
+  public func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> ___RedBlackTree.Index? {
+    try _read { tree in
+      var result: ___RedBlackTree.Index?
+      try tree.___for_each(__p: tree.__begin_node, __l: tree.__end_node()) { __p, cont in
+        if try predicate(___values[__p]) {
+          result = ___RedBlackTree.Index(__p)
+          cont = false
+        }
+      }
+      return result
+    }
+  }
+}
+
+extension ___RedBlackTreeContainerBase {
 
   @inlinable
   func ___equal_with(_ rhs: Self) -> Bool where Element: Equatable {
-    ___count == rhs.___count && zip(___element_sequence, rhs.___element_sequence).allSatisfy(==)
+    ___count == rhs.___count && zip(___element_sequence__, rhs.___element_sequence__).allSatisfy(==)
   }
 
   @inlinable
   func ___equal_with<K, V>(_ rhs: Self) -> Bool
   where K: Equatable, V: Equatable, Element == (key: K, value: V) {
-    ___count == rhs.___count && zip(___element_sequence, rhs.___element_sequence).allSatisfy(==)
+    ___count == rhs.___count && zip(___element_sequence__, rhs.___element_sequence__).allSatisfy(==)
   }
 }
 
@@ -349,7 +389,6 @@ extension ___RedBlackTreeContainerBase {
 
   public typealias ___EnumeratedSequence = UnfoldSequence<EnumeratedElement, SafeSequenceState>
 
-  /// 将来的にも公開メンバーであるかどうかは保証されません。
   @inlinable
   public func ___enumerated_sequence(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index)
     -> ___EnumeratedSequence
@@ -366,62 +405,31 @@ extension ___RedBlackTreeContainerBase {
     ___enumerated_sequence(from: ___index_begin(), to: ___index_end())
   }
 
-  /// 将来的にも公開メンバーであるかどうかは保証されません。
   @inlinable
-  public func ___index_sequence(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index)
-    -> UnfoldSequence<___RedBlackTree.Index, SafeSequenceState>
+  public func ___enumerated_sequence__(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index)
+    -> [EnumeratedElement]
   {
-    return sequence(state: ___begin(from.pointer, to: to.pointer)) { state in
-      guard ___end(state) else { return nil }
-      defer { ___next(&state) }
-      return ___RedBlackTree.Index(state.current)
-    }
-  }
-
-  /// 将来的にも公開メンバーであるかどうかは保証されません。
-  @inlinable
-  public var ___index_sequence: UnfoldSequence<___RedBlackTree.Index, SafeSequenceState> {
-    ___index_sequence(from: ___index_begin(), to: ___index_end())
-  }
-
-  /// 将来的にも公開メンバーであるかどうかは保証されません。
-  @inlinable
-  public func ___element_sequence(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index)
-    -> UnfoldSequence<Element, SafeSequenceState>
-  {
-    return sequence(state: ___begin(from.pointer, to: to.pointer)) { state in
-      guard ___end(state) else { return nil }
-      defer { ___next(&state) }
-      return ___values[state.current]
-    }
-  }
-
-  /// 将来的にも公開メンバーであるかどうかは保証されません。
-  @inlinable
-  public var ___element_sequence: UnfoldSequence<Element, SafeSequenceState> {
-    ___element_sequence(from: ___index_begin(), to: ___index_end())
-  }
-
-  @inlinable
-  public func ___for_each(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) -> Void)
-  {
-    _read { tree in
-      var __p = __p
-      while __p != __l {
-        body(__p)
-        __p = tree.__tree_next(__p)
+    return _read { tree in
+      var result = [EnumeratedElement]()
+      tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
+        result.append((___RedBlackTree.Index(__p),___values[__p]))
       }
+      return result
     }
   }
 
-#if true
+  @inlinable
+  public var ___enumerated_sequence__: [EnumeratedElement] {
+    ___enumerated_sequence__(from: ___index_begin(), to: ___index_end())
+  }
+
   @inlinable
   public func ___element_sequence__(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index)
     -> [Element]
   {
     _read { tree in
       var result = [Element]()
-      tree.___for_each(__p: from.pointer, __l: to.pointer) { __p in
+      tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
         result.append(___values[__p])
       }
       return result
@@ -431,21 +439,5 @@ extension ___RedBlackTreeContainerBase {
   @inlinable
   public var ___element_sequence__: [Element] {
     ___element_sequence__(from: ___index_begin(), to: ___index_end())
-  }
-#endif
-
-  @inlinable
-  func ___ptr_sequence(from: _NodePtr, to: _NodePtr) -> UnfoldSequence<_NodePtr, SafeSequenceState>
-  {
-    return sequence(state: ___begin(from, to: to)) { state in
-      guard ___end(state) else { return nil }
-      defer { ___next(&state) }
-      return state.current
-    }
-  }
-
-  @inlinable
-  var ___ptr_sequence: UnfoldSequence<_NodePtr, SafeSequenceState> {
-    ___ptr_sequence(from: ___begin(), to: ___end())
   }
 }

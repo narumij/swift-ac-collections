@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
+import Collections
 
 // AC https://atcoder.jp/contests/abc358/submissions/59018223
 
@@ -89,6 +89,9 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
 
   @usableFromInline
   var ___values: [Element]
+  
+  @usableFromInline
+  var ___stock: Heap<_NodePtr>
 }
 
 extension RedBlackTreeMultiset {
@@ -111,6 +114,7 @@ extension RedBlackTreeMultiset {
     ___header = .zero
     ___nodes = []
     ___values = []
+    ___stock = []
   }
 
   /// 指定された容量を持つ空の赤黒木マルチセットを作成します。
@@ -133,6 +137,7 @@ extension RedBlackTreeMultiset {
     ___header = .zero
     ___nodes = []
     ___values = []
+    ___stock = []
     ___nodes.reserveCapacity(minimumCapacity)
     ___values.reserveCapacity(minimumCapacity)
   }
@@ -164,7 +169,7 @@ extension RedBlackTreeMultiset {
       ___header,
       ___nodes,
       ___values,
-      _
+      ___stock
     ) = Self.___initialize(
       _sequence: sequence,
       _to_elements: { $0.map { $0 } }

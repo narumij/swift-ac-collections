@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
+import Collections
 
 @frozen
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
@@ -52,8 +52,8 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   @usableFromInline
   var ___values: [KeyValue]
 
-//  @usableFromInline
-//  var ___stock: Heap<_NodePtr>
+  @usableFromInline
+  var ___stock: Heap<_NodePtr>
 }
 
 extension RedBlackTreeDictionary {
@@ -63,7 +63,7 @@ extension RedBlackTreeDictionary {
     ___header = .zero
     ___nodes = []
     ___values = []
-//    ___stock = []
+    ___stock = []
   }
 
   @inlinable @inline(__always)
@@ -71,7 +71,7 @@ extension RedBlackTreeDictionary {
     ___header = .zero
     ___nodes = []
     ___values = []
-//    ___stock = []
+    ___stock = []
     ___nodes.reserveCapacity(minimumCapacity)
     ___values.reserveCapacity(minimumCapacity)
   }
@@ -85,7 +85,7 @@ extension RedBlackTreeDictionary {
       ___header,
       ___nodes,
       ___values,
-      _
+      ___stock
     ) = Self.___initialize(
       _sequence: keysAndValues,
       _to_elements: { $0.map { k, v in (k, v) } }
@@ -112,7 +112,7 @@ extension RedBlackTreeDictionary {
       ___header,
       ___nodes,
       ___values,
-      _
+      ___stock
     ) = try Self.___initialize(
       _sequence: keysAndValues,
       _to_elements: { $0.map { k, v in (k, v) } }
@@ -141,7 +141,7 @@ extension RedBlackTreeDictionary {
     ___header = .zero
     ___nodes = []
     ___values = []
-//    ___stock = []
+    ___stock = []
     for v in values_ {
       self[try keyForValue(v), default: []].append(v)
     }

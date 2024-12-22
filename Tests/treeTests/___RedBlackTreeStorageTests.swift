@@ -6,6 +6,7 @@
 //
 
 import XCTest
+#if DEBUG
 @testable import RedBlackTreeModule
 
 typealias RedBlackTreeStorage = ___RedBlackTree.Storage
@@ -404,3 +405,4 @@ final class ___RedBlackTreeStorageTests: XCTestCase {
         }
     }
 }
+#endif

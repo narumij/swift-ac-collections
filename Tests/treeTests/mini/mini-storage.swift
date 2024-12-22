@@ -1,5 +1,7 @@
 import Foundation
+#if DEBUG
 @testable import RedBlackTreeModule
+#endif
 
 // 書いてみたけれども、
 // よくよく考えるとサイズが小さいと

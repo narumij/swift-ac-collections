@@ -6,6 +6,7 @@
 //
 
 import XCTest
+#if DEBUG
 @testable import RedBlackTreeModule
 
 extension ___RedBlackTree.___Node {
@@ -78,3 +79,4 @@ final class TreeTests: XCTestCase, MemberProtocol, RootImpl, EndNodeProtocol {
     }
 
 }
+#endif

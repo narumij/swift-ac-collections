@@ -1,4 +1,5 @@
 import Foundation
+#if DEBUG
 @testable import RedBlackTreeModule
 
 extension ___RedBlackTree {
@@ -152,3 +153,4 @@ extension ___RedBlackTree.Storage {
         return 1
     }
 }
+#endif

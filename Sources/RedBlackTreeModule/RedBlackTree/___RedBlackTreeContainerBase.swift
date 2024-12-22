@@ -387,7 +387,7 @@ extension ___RedBlackTreeContainerBase {
   /// 将来的にも公開メンバーであるかどうかは保証されません。
   @inlinable
   public func ___element_sequence(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index)
-    -> UnfoldSequence<Element, UnsafeSequenceState>
+    -> UnfoldSequence<Element, SafeSequenceState>
   {
     return sequence(state: ___begin(from.pointer, to: to.pointer)) { state in
       guard ___end(state) else { return nil }
@@ -398,34 +398,41 @@ extension ___RedBlackTreeContainerBase {
 
   /// 将来的にも公開メンバーであるかどうかは保証されません。
   @inlinable
-  public var ___element_sequence: UnfoldSequence<Element, UnsafeSequenceState> {
+  public var ___element_sequence: UnfoldSequence<Element, SafeSequenceState> {
     ___element_sequence(from: ___index_begin(), to: ___index_end())
   }
 
   @inlinable
-  public func ___element_sequence__(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index)
-    -> [Element]
+  public func ___for_each(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) -> Void)
   {
-    var result = Array<Element>()
-    result.reserveCapacity(___capacity / 2)
-
-    var __p = from.pointer
-    let __l = to.pointer
-
     _read { tree in
+      var __p = __p
       while __p != __l {
-        result.append(___values[__p])
+        body(__p)
         __p = tree.__tree_next(__p)
       }
     }
-    
-    return result
+  }
+
+#if true
+  @inlinable
+  public func ___element_sequence__(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index)
+    -> [Element]
+  {
+    _read { tree in
+      var result = [Element]()
+      tree.___for_each(__p: from.pointer, __l: to.pointer) { __p in
+        result.append(___values[__p])
+      }
+      return result
+    }
   }
 
   @inlinable
   public var ___element_sequence__: [Element] {
     ___element_sequence__(from: ___index_begin(), to: ___index_end())
   }
+#endif
 
   @inlinable
   func ___ptr_sequence(from: _NodePtr, to: _NodePtr) -> UnfoldSequence<_NodePtr, SafeSequenceState>

@@ -1,4 +1,5 @@
 import Foundation
+#if DEBUG
 @testable import RedBlackTreeModule
 
 extension _NodeRef {
@@ -13,3 +14,4 @@ extension _NodeRef {
         }
     }
 }
+#endif

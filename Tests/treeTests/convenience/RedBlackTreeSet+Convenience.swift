@@ -64,7 +64,7 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   @inlinable
-  public subscript(bounds: Range<Element>) -> ElementSequence {
+  public subscript(bounds: Range<Element>) -> Array<Element> {
     self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
   }
 }

@@ -381,5 +381,28 @@ final class ConvenienceTests: XCTestCase {
     }
     XCTAssertEqual(set, [])
   }
+  
+  func testEnumerate2() throws {
+    var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+    set
+      .forEach { v in
+      set.remove(v)
+    }
+    XCTAssertEqual(set, [])
+  }
+  
+  func testEnumerate3() throws {
+    var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+    var it: IndexingIterator<RedBlackTreeSet<Int>> = set.makeIterator()
+    while let element = it.next() {
+      set.remove(element)
+    }
+    XCTAssertEqual(set, [])
+  }
+
+  func testReduce() throws {
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+    XCTAssertEqual(set.reduce(0) { $0 + $1 }, 21)
+  }
 
 }

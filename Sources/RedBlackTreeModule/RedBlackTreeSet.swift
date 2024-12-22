@@ -469,24 +469,6 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet {
-
-  @inlinable
-  public func forEach(_ body: (Self.Element) throws -> Void) rethrows {
-    try ___element_sequence.forEach(body)
-  }
-
-  @inlinable
-  public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___element_sequence.contains(where: predicate)
-  }
-
-  @inlinable
-  public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___element_sequence.allSatisfy(predicate)
-  }
-}
-
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 
   /// 指定された配列リテラルの要素を含む赤黒木セットを作成します。
@@ -640,10 +622,7 @@ extension RedBlackTreeSet {
   /// - Note: このメソッドは、セット内の要素を昇順に走査します。
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    for (i, m) in ___enumerated_sequence {
-      if try predicate(m) { return i }
-    }
-    return nil
+    try ___enumerated_sequence.first(where: { try predicate($0.element) })?.position
   }
 }
 
@@ -673,7 +652,7 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet: BidirectionalCollection {
+extension RedBlackTreeSet: Collection {
 
   /// 指定された位置にある要素へアクセスします。
   ///

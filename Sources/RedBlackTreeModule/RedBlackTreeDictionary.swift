@@ -411,24 +411,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary {
-
-  @inlinable
-  public func forEach(_ body: (Self.Element) throws -> Void) rethrows {
-    try ___element_sequence.forEach(body)
-  }
-
-  @inlinable
-  public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___element_sequence.contains(where: predicate)
-  }
-
-  @inlinable
-  public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___element_sequence.allSatisfy(predicate)
-  }
-}
-
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
 
   @inlinable public init(dictionaryLiteral elements: (Key, Value)...) {
@@ -436,7 +418,7 @@ extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
   }
 }
 
-extension RedBlackTreeDictionary: BidirectionalCollection {
+extension RedBlackTreeDictionary: Collection {
 
   public
     typealias Element = KeyValue

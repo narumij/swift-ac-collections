@@ -51,9 +51,11 @@ import AcCollections
 
 ### TreeSet等との差異
 
-謹製のTreeSetは集合操作に長けていますが、BidirectionaCollectionに対応していないこともあり、クエリー的な用途で不利となっています。
-対してこちらの実装では、BidirectionalCollectionへ対応していることと、lowerBoundやupperBoundがあることで、クエリー的な用途でも使えるようになっています。
-一方で集合的な操作に関してはほとんど実装しておりません。そういった用途には標準のSetや、その他集合のコレクションをご利用ください。
+~謹製のTreeSetは集合操作に長けていますが、BidirectionaCollectionに対応していないこともあり、クエリー的な用途で不利となっています。~
+~対してこちらの実装では、BidirectionalCollectionへ対応していることと、lowerBoundやupperBoundがあることで、クエリー的な用途でも使えるようになっています。~
+~一方で集合的な操作に関してはほとんど実装しておりません。そういった用途には標準のSetや、その他集合のコレクションをご利用ください。~
+
+Collection適合で十分動くため、BidirectionaCollectionへの適合はやめました。index操作は双方向可能です。
 
 ## ライセンス
 

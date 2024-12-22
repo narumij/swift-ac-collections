@@ -440,24 +440,6 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
-
-  @inlinable
-  public func forEach(_ body: (Self.Element) throws -> Void) rethrows {
-    try ___element_sequence.forEach(body)
-  }
-
-  @inlinable
-  public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___element_sequence.contains(where: predicate)
-  }
-
-  @inlinable
-  public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___element_sequence.allSatisfy(predicate)
-  }
-}
-
 extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
 
   /// 配列リテラルから赤黒木マルチセットを作成します。
@@ -632,7 +614,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset: BidirectionalCollection {
+extension RedBlackTreeMultiset: Collection {
 
   @inlinable public subscript(position: ___RedBlackTree.Index) -> Element {
     ___values[position.pointer]

@@ -29,7 +29,7 @@ protocol EraseProtocol: StorageProtocol {
 
 extension EraseProtocol {
 
-  @inlinable
+  @inlinable @inline(__always)
   func __get_np(_ p: _NodePtr) -> _NodePtr { p }
 
   @inlinable @inline(__always)

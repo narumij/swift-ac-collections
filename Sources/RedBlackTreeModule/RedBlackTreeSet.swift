@@ -239,7 +239,6 @@ extension RedBlackTreeSet: ___RedBlackTreeUpdate {
 extension RedBlackTreeSet: InsertUniqueProtocol {}
 extension RedBlackTreeSet: EraseUniqueProtocol {}
 extension RedBlackTreeSet: ___RedBlackTreeEraseProtocol {}
-extension RedBlackTreeSet: ___RedBlackTreeEraseUniqueProtocol {}
 
 extension RedBlackTreeSet {
 

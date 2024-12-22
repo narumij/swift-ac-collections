@@ -26,6 +26,7 @@ import Foundation
 @usableFromInline
 protocol ___RedBlackTreeEraseProtocol: ___RedBlackTreeContainer, EraseProtocol {
   mutating func erase(_ __p: _NodePtr) -> _NodePtr
+  mutating func erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
 }
 
 extension ___RedBlackTreeEraseProtocol {
@@ -45,6 +46,12 @@ extension ___RedBlackTreeEraseProtocol {
     let e = ___values[ptr]
     _ = erase(ptr)
     return e
+  }
+  
+  @inlinable
+  @discardableResult
+  mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
+    erase(from, to)
   }
 
   public mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {

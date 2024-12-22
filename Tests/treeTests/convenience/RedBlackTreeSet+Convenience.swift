@@ -55,8 +55,24 @@ extension RedBlackTreeSet {
   /// print(treeSet) // 出力: [1, 6]
   /// ```
   @inlinable
-  public mutating func erase(at i: Index) -> Index {
-    defer { remove(at: i) }
-    return index(after: i)
+  public mutating func erase(at position: Index) -> Index {
+    defer { remove(at: position) }
+    return index(after: position)
+  }
+}
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  public subscript(bounds: Range<Element>) -> ElementSequence {
+    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
+  }
+}
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  public func enumerated(lowerBound from: Element, upperBound to: Element) -> EnumeratedSequence {
+    ___enumerated_sequence(from: lowerBound(from), to: upperBound(to))
   }
 }

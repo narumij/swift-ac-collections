@@ -37,7 +37,7 @@ import AcCollections
 - 要素の挿入、削除、探索を効率的に行えます。
 
 以下のリンクから具体的な使用例を見ることができます：
-- [使用例](https://atcoder.jp/contests/abc370/submissions/57922896)
+- [使用例](https://atcoder.jp/contests/abc385/submissions/61003801)
 
 #### RedBlackTreeMultiSet
 - 重複要素を許容する集合(MultiSet)のデータ構造です。
@@ -48,14 +48,14 @@ import AcCollections
 
 #### RedBlackTreeDictionary
 - 辞書(Dictionary)として利用可能なキーと値のペアを管理するデータ構造です。
-- **補助的な実装であり、実用性や機能性が十分ではありません。**
-  - シンプルな動作や基本的な用途には対応していますが、競技プログラミングでの使用には注意が必要です。
 
 ### TreeSet等との差異
 
-謹製のTreeSetは集合操作に長けていますが、BidirectionaCollectionに対応していないこともあり、クエリー的な用途で不利となっています。
-対してこちらの実装では、BidirectionalCollectionへ対応していることと、lowerBoundやupperBoundがあることで、クエリー的な用途でも使えるようになっています。
-一方で集合的な操作に関してはほとんど実装しておりません。そういった用途には標準のSetや、その他集合のコレクションをご利用ください。
+~謹製のTreeSetは集合操作に長けていますが、BidirectionaCollectionに対応していないこともあり、クエリー的な用途で不利となっています。~
+~対してこちらの実装では、BidirectionalCollectionへ対応していることと、lowerBoundやupperBoundがあることで、クエリー的な用途でも使えるようになっています。~
+~一方で集合的な操作に関してはほとんど実装しておりません。そういった用途には標準のSetや、その他集合のコレクションをご利用ください。~
+
+Collection適合で十分動くため、BidirectionaCollectionへの適合はやめました。index操作は双方向可能です。
 
 ## ライセンス
 

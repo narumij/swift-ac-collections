@@ -22,6 +22,9 @@
 
 import Foundation
 
+// AC https://atcoder.jp/contests/abc370/submissions/57922896
+// AC https://atcoder.jp/contests/abc385/submissions/61003801
+
 /// ユニークな要素を格納する順序付きコレクションである赤黒木セット。
 ///
 /// `RedBlackTreeSet` は、赤黒木（Red-Black Tree）を基盤としたデータ構造で、効率的な要素の挿入、削除、および探索をサポートします。
@@ -463,28 +466,6 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet {
-
-  @inlinable
-  public func forEach(_ body: (Self.Element) throws -> Void) rethrows {
-    try ___for_each(body)
-  }
-
-  @inlinable
-  public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___for_each { member in
-      try predicate(member) ? true : nil
-    } ?? false
-  }
-
-  @inlinable
-  public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___for_each { member in
-      try predicate(member) ? nil : false
-    } ?? true
-  }
-}
-
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 
   /// 指定された配列リテラルの要素を含む赤黒木セットを作成します。
@@ -638,9 +619,7 @@ extension RedBlackTreeSet {
   /// - Note: このメソッドは、セット内の要素を昇順に走査します。
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___for_each { ptr, member in
-      try predicate(member) ? Index(ptr) : nil
-    }
+    try ___enumerated_sequence.first(where: { try predicate($0.element) })?.position
   }
 }
 
@@ -670,7 +649,7 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet: BidirectionalCollection {
+extension RedBlackTreeSet: Collection {
 
   /// 指定された位置にある要素へアクセスします。
   ///
@@ -820,5 +799,30 @@ extension RedBlackTreeSet: Equatable {
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.___equal_with(rhs)
+  }
+}
+
+extension RedBlackTreeSet {
+
+  public typealias IndexRange = ___RedBlackTree.Range
+  public typealias SeqenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
+  public typealias EnumeratedElement = (position: Index, element: Element)
+
+  public typealias EnumeratedSequence = UnfoldSequence<EnumeratedElement, SeqenceState>
+  public typealias ElementSequence = ArraySlice<Element>
+
+  @inlinable
+  public subscript(bounds: IndexRange) -> ElementSequence {
+    .init(___element_sequence(from: bounds.lhs, to: bounds.rhs))
+  }
+
+  @inlinable
+  public func enumrated() -> EnumeratedSequence {
+    ___enumerated_sequence
+  }
+
+  @inlinable
+  public func enumrated(from: Index, to: Index) -> EnumeratedSequence {
+    ___enumerated_sequence(from: from, to: to)
   }
 }

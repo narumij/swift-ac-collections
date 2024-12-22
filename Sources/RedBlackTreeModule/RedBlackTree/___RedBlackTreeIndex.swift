@@ -59,3 +59,23 @@ extension Optional where Wrapped == ___RedBlackTree.Index {
     self = ptr == .nullptr ? .none : .some(___RedBlackTree.Index(ptr))
   }
 }
+
+extension ___RedBlackTree {
+  
+  /// 標準のRangeの場合、lowerBoundとupperBoundの比較が行われるが、
+  /// この挙動がRedBlackTreeに適さないため、独自のRangeを使用している
+  public struct Range {
+    @inlinable
+    public init(lhs: Index, rhs: Index) {
+      self.lhs = lhs
+      self.rhs = rhs
+    }
+    public var lhs, rhs: Bound
+    public typealias Bound = Index
+  }
+}
+
+@inlinable
+public func ..< (lhs: ___RedBlackTree.Index, rhs: ___RedBlackTree.Index) -> ___RedBlackTree.Range {
+  .init(lhs: lhs, rhs: rhs)
+}

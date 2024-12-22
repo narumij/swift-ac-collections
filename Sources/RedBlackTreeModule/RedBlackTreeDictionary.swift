@@ -402,38 +402,12 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___for_each { member in
-      try predicate(member) ? member : nil
-    }
+    try ___element_sequence.first(where: predicate)
   }
 
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___for_each { ptr, member in
-      try predicate(member) ? Index(ptr) : nil
-    }
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  @inlinable
-  public func forEach(_ body: (Self.Element) throws -> Void) rethrows {
-    try ___for_each(body)
-  }
-
-  @inlinable
-  public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___for_each { member in
-      try predicate(member) ? true : nil
-    } ?? false
-  }
-
-  @inlinable
-  public func allSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
-    try ___for_each { member in
-      try predicate(member) ? nil : false
-    } ?? true
+    try ___enumerated_sequence.first(where: { try predicate($0.element) })?.position
   }
 }
 
@@ -444,7 +418,7 @@ extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
   }
 }
 
-extension RedBlackTreeDictionary: BidirectionalCollection {
+extension RedBlackTreeDictionary: Collection {
 
   public
     typealias Element = KeyValue
@@ -515,5 +489,30 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.___equal_with(rhs)
+  }
+}
+
+extension RedBlackTreeDictionary {
+  
+  public typealias IndexRange = ___RedBlackTree.Range
+  public typealias SeqenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
+  public typealias EnumeratedElement = (position: Index, element: Element)
+
+  public typealias EnumeratedSequence = UnfoldSequence<EnumeratedElement, SeqenceState>
+  public typealias ElementSequence = ArraySlice<Element>
+
+  @inlinable
+  public subscript(bounds: IndexRange) -> ElementSequence {
+    .init(___element_sequence(from: bounds.lhs, to: bounds.rhs))
+  }
+
+  @inlinable
+  public func enumrated() -> EnumeratedSequence {
+    ___enumerated_sequence
+  }
+
+  @inlinable
+  public func enumrated(from: Index, to: Index) -> EnumeratedSequence {
+    ___enumerated_sequence(from: from, to: to)
   }
 }

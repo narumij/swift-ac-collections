@@ -28,10 +28,10 @@ public
 extension _NodePtr {
   /// 赤黒木のIndexで、nullを表す
   @inlinable
-  public static var nullptr: Self { -2 }
+  public static var nullptr: Self { -1 }
   /// 赤黒木のIndexで、終端を表す
   @inlinable
-  public static var end: Self { -1 }
+  public static var end: Self { -2 }
   
   @inlinable
   static func node(_ p: Int) -> Self { p }

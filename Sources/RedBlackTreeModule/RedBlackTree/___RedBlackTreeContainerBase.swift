@@ -309,7 +309,8 @@ extension ___RedBlackTreeContainerBase {
 
 extension ___RedBlackTreeContainerBase {
 
-  public typealias SequenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
+  public typealias SafeSequenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
+  public typealias UnsafeSequenceState = (current: _NodePtr, to: _NodePtr)
   public typealias EnumeratedElement = (position: ___RedBlackTree.Index, element: Element)
 
   @inlinable
@@ -318,22 +319,37 @@ extension ___RedBlackTreeContainerBase {
   }
 
   @inlinable @inline(__always)
-  func ___begin(_ from: _NodePtr, to: _NodePtr) -> SequenceState {
+  func ___begin(_ from: _NodePtr, to: _NodePtr) -> SafeSequenceState {
     (from, ___next(from, to: to), to)
   }
 
   @inlinable @inline(__always)
-  func ___next(_ state: inout SequenceState) {
+  func ___next(_ state: inout SafeSequenceState) {
     state.current = state.next
     state.next = ___next(state.next, to: state.to)
   }
   
   @inlinable @inline(__always)
-  func ___end(_ state: SequenceState) -> Bool {
+  func ___end(_ state: SafeSequenceState) -> Bool {
     state.current != state.to
   }
 
-  public typealias ___EnumeratedSequence = UnfoldSequence<EnumeratedElement, SequenceState>
+  @inlinable @inline(__always)
+  func ___begin(_ from: _NodePtr, to: _NodePtr) -> UnsafeSequenceState {
+    (from, to)
+  }
+
+  @inlinable @inline(__always)
+  func ___next(_ state: inout UnsafeSequenceState) {
+    state.current = ___next(state.current, to: state.to)
+  }
+  
+  @inlinable @inline(__always)
+  func ___end(_ state: UnsafeSequenceState) -> Bool {
+    state.current != state.to
+  }
+
+  public typealias ___EnumeratedSequence = UnfoldSequence<EnumeratedElement, SafeSequenceState>
 
   /// 将来的にも公開メンバーであるかどうかは保証されません。
   @inlinable
@@ -352,7 +368,7 @@ extension ___RedBlackTreeContainerBase {
 
   /// 将来的にも公開メンバーであるかどうかは保証されません。
   @inlinable
-  public func ___index_sequence(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index) -> UnfoldSequence<___RedBlackTree.Index, SequenceState> {
+  public func ___index_sequence(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index) -> UnfoldSequence<___RedBlackTree.Index, SafeSequenceState> {
     return sequence(state: ___begin(from.pointer, to: to.pointer)) { state in
       guard ___end(state) else { return nil }
       defer { ___next(&state) }
@@ -362,13 +378,13 @@ extension ___RedBlackTreeContainerBase {
 
   /// 将来的にも公開メンバーであるかどうかは保証されません。
   @inlinable
-  public var ___index_sequence: UnfoldSequence<___RedBlackTree.Index, SequenceState> {
+  public var ___index_sequence: UnfoldSequence<___RedBlackTree.Index, SafeSequenceState> {
     ___index_sequence(from: ___index_begin(), to: ___index_end())
   }
 
   /// 将来的にも公開メンバーであるかどうかは保証されません。
   @inlinable
-  public func ___element_sequence(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index) -> UnfoldSequence<Element, SequenceState> {
+  public func ___element_sequence(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index) -> UnfoldSequence<Element, UnsafeSequenceState> {
     return sequence(state: ___begin(from.pointer, to: to.pointer)) { state in
       guard ___end(state) else { return nil }
       defer { ___next(&state) }
@@ -378,12 +394,12 @@ extension ___RedBlackTreeContainerBase {
 
   /// 将来的にも公開メンバーであるかどうかは保証されません。
   @inlinable
-  public var ___element_sequence: UnfoldSequence<Element, SequenceState> {
+  public var ___element_sequence: UnfoldSequence<Element, UnsafeSequenceState> {
     ___element_sequence(from: ___index_begin(), to: ___index_end())
   }
 
   @inlinable
-  func ___ptr_sequence(from: _NodePtr, to: _NodePtr) -> UnfoldSequence<_NodePtr, SequenceState> {
+  func ___ptr_sequence(from: _NodePtr, to: _NodePtr) -> UnfoldSequence<_NodePtr, SafeSequenceState> {
     return sequence(state: ___begin(from, to: to)) { state in
       guard ___end(state) else { return nil }
       defer { ___next(&state) }
@@ -392,7 +408,7 @@ extension ___RedBlackTreeContainerBase {
   }
 
   @inlinable
-  var ___ptr_sequence: UnfoldSequence<_NodePtr, SequenceState> {
+  var ___ptr_sequence: UnfoldSequence<_NodePtr, SafeSequenceState> {
     ___ptr_sequence(from: ___begin(), to: ___end())
   }
 }

@@ -400,7 +400,7 @@ extension ___RedBlackTreeContainerBase {
     }
   }
 
-  @inlinable
+  @inlinable @inline(__always)
   public var ___enumerated_sequence: ___EnumeratedSequence {
     ___enumerated_sequence(from: ___index_begin(), to: ___index_end())
   }
@@ -418,7 +418,7 @@ extension ___RedBlackTreeContainerBase {
     }
   }
 
-  @inlinable
+  @inlinable @inline(__always)
   public var ___enumerated_sequence__: [EnumeratedElement] {
     ___enumerated_sequence__(from: ___index_begin(), to: ___index_end())
   }
@@ -436,7 +436,7 @@ extension ___RedBlackTreeContainerBase {
     }
   }
 
-  @inlinable
+  @inlinable @inline(__always)
   public var ___element_sequence__: [Element] {
     ___element_sequence__(from: ___index_begin(), to: ___index_end())
   }

@@ -12,7 +12,10 @@ for i in 0 ..< 1_000_000 {
     _ = tree.__insert_unique(i)
 }
 #else
-var tree = RedBlackTreeSet<Int>(0 ..< 1_000_000)
+var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
+for v in 0..<10_000_000 {
+  tree.remove(v)
+}
 #endif
 print("Hola!")
 

@@ -24,17 +24,17 @@ import Collections
 
 @usableFromInline
 protocol ___RedBlackTreeContainer: ___RedBlackTreeContainerBase {
-  var ___stock: Heap<_NodePtr> { get set }
+//  var ___stock: Heap<_NodePtr> { get set }
 }
 
 extension ___RedBlackTreeContainer {
 
   @inlinable
   mutating func __construct_node(_ k: Element) -> _NodePtr {
-    if let stock = ___stock.popMin() {
-      ___values[stock] = k
-      return stock
-    }
+//    if let stock = ___stock.popMin() {
+//      ___values[stock] = k
+//      return stock
+//    }
     let n = Swift.min(___nodes.count, ___values.count)
     ___nodes.append(.zero)
     ___values.append(k)
@@ -44,7 +44,7 @@ extension ___RedBlackTreeContainer {
   @inlinable
   mutating func destroy(_ p: _NodePtr) {
     ___nodes[p].invalidate()
-    ___stock.insert(p)
+//    ___stock.insert(p)
   }
 }
 
@@ -63,7 +63,7 @@ extension ___RedBlackTreeContainer {
     _header: ___RedBlackTree.___Header,
     _nodes: [___RedBlackTree.___Node],
     _values: [Element],
-    _stock: Heap<_NodePtr>
+    _stock: [_NodePtr]
   )
   where S: Sequence {
     // valuesは一旦全部の分を確保する

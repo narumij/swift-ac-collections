@@ -44,5 +44,5 @@ extension ___RedBlackTreeUpdate {
   mutating func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {
     _update { tree in
       tree.__remove_node_pointer(__ptr) }
-  }
+  }  
 }

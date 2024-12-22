@@ -1,4 +1,5 @@
 import Foundation
+#if DEBUG
 @testable import RedBlackTreeModule
 
 @frozen
@@ -33,3 +34,4 @@ extension _UnsafeUpdateHandle: NodeFindProtocol & NodeFindEqualProtocol {
 }
 extension _UnsafeUpdateHandle: InsertNodeAtProtocol {}
 extension _UnsafeUpdateHandle: RemoveProtocol {}
+#endif

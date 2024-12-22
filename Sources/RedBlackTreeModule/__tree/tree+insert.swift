@@ -33,11 +33,13 @@ protocol InsertNodeAtProtocol: MemberSetProtocol
 extension InsertNodeAtProtocol {
 
   @inlinable
+  @inline(__always)
   func
     static_cast__iter_pointer(_ p: _NodePtr) -> _NodePtr
   { p }
 
   @inlinable
+  @inline(__always)
   func __tree_balance_after_insert(_ lhs: _NodePtr, _ rhs: _NodeRef) {
     __tree_balance_after_insert(lhs, __ref_(rhs))
   }
@@ -96,6 +98,7 @@ protocol InsertUniqueProtocol: StorageProtocol {
 extension InsertUniqueProtocol {
 
   @inlinable
+  @inline(__always)
   public mutating func __insert_unique(_ x: Element) -> (__r: _NodeRef, __inserted: Bool) {
 
     __emplace_unique_key_args(x)
@@ -135,6 +138,7 @@ extension InsertMultiProtocol {
   //    return __emplace_multi(std::move(__v));
   //  }
   @inlinable
+  @inline(__always)
   public mutating func __insert_multi(_ x: Element) -> _NodePtr {
     __emplace_multi(x)
   }

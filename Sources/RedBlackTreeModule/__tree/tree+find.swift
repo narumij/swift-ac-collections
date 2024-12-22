@@ -225,7 +225,7 @@ extension NodeFindProtocol {
   @inlinable
   func find(_ __v: _Key) -> _NodePtr {
     let __p = __lower_bound(__v, __root(), __end_node())
-    if __p != end() && !value_comp(__v, __value_(__p)) {
+    if __p != end(), !value_comp(__v, __value_(__p)) {
       return __p
     }
     return end()

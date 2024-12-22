@@ -6,6 +6,7 @@
 //
 
 import XCTest
+#if DEBUG
 @testable import RedBlackTreeModule
 
 extension RedBlackTreeSet {
@@ -405,3 +406,4 @@ final class ___RedBlackTreeContainerTests: XCTestCase {
         }
     }
 }
+#endif

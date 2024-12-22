@@ -46,7 +46,8 @@ struct ___UnsafeMutatingHandle<VC> where VC: ValueComparer {
 
 extension ___UnsafeMutatingHandle: ___UnsafeHandleBase {
 
-  @inlinable func __value_(_ p: _NodePtr) -> _Key {
+  @inlinable @inline(__always)
+  func __value_(_ p: _NodePtr) -> _Key {
     __value_(__value_ptr[p])
   }
 }

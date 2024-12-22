@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Collections
+import Foundation
 
 // AC https://atcoder.jp/contests/abc370/submissions/57922896
 // AC https://atcoder.jp/contests/abc385/submissions/61003801
@@ -87,9 +87,6 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
   @usableFromInline
   var ___values: [Element]
-
-  @usableFromInline
-  var ___stock: Heap<_NodePtr>
 }
 
 extension RedBlackTreeSet {
@@ -110,7 +107,7 @@ extension RedBlackTreeSet {
     ___header = .zero
     ___nodes = []
     ___values = []
-    ___stock = []
+//    ___stock = []
   }
 
   /// 指定された要素数を収容するための領域を事前に確保した空の赤黒木セットを作成します。
@@ -125,7 +122,7 @@ extension RedBlackTreeSet {
     ___header = .zero
     ___nodes = []
     ___values = []
-    ___stock = []
+//    ___stock = []
     ___nodes.reserveCapacity(minimumCapacity)
     ___values.reserveCapacity(minimumCapacity)
   }
@@ -151,7 +148,7 @@ extension RedBlackTreeSet {
       ___header,
       ___nodes,
       ___values,
-      ___stock
+      _
     ) = Self.___initialize(
       _sequence: sequence,
       _to_elements: { $0.map { $0 } }
@@ -569,6 +566,11 @@ extension RedBlackTreeSet {
   public var last: Element? {
     isEmpty ? nil : self[index(before: .end)]
   }
+  
+  @inlinable
+  public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+    try ___first(where: predicate)
+  }
 
   /// 指定された要素のインデックスを返します。要素がセットに存在しない場合は `nil` を返します。
   ///
@@ -594,11 +596,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
   @inlinable
   public func firstIndex(of member: Element) -> Index? {
-    _read { tree in
-      var __parent = _NodePtr.nullptr
-      let ptr = tree.__ref_(tree.__find_equal(&__parent, member))
-      return Index?(ptr)
-    }
+    ___first_index(of: member)
   }
 
   /// 指定された述語を満たす最初の要素のインデックスを返します。
@@ -627,7 +625,7 @@ extension RedBlackTreeSet {
   /// - Note: このメソッドは、セット内の要素を昇順に走査します。
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___enumerated_sequence.first(where: { try predicate($0.element) })?.position
+    try ___first_index(where: predicate)
   }
 }
 
@@ -817,20 +815,20 @@ extension RedBlackTreeSet {
   public typealias EnumeratedElement = (position: Index, element: Element)
 
   public typealias EnumeratedSequence = UnfoldSequence<EnumeratedElement, SeqenceState>
-  public typealias ElementSequence = ArraySlice<Element>
+  public typealias ElementSequence = Array<Element>
 
   @inlinable
-  public subscript(bounds: IndexRange) -> Array<Element> {
+  public subscript(bounds: IndexRange) -> ElementSequence {
     ___element_sequence__(from: bounds.lhs, to: bounds.rhs)
   }
 
   @inlinable
-  public func enumrated() -> EnumeratedSequence {
+  public func enumerated() -> EnumeratedSequence {
     ___enumerated_sequence
   }
 
   @inlinable
-  public func enumrated(from: Index, to: Index) -> EnumeratedSequence {
+  public func enumerated(from: Index, to: Index) -> EnumeratedSequence {
     ___enumerated_sequence(from: from, to: to)
   }
 }

@@ -1,4 +1,6 @@
 import Foundation
+
+#if DEBUG
 @testable import RedBlackTreeModule
 
 extension Collection where Element == ___RedBlackTree.___Node, Index == Int {
@@ -29,3 +31,4 @@ extension Collection where Element == ___RedBlackTree.___Node, Index == Int {
         hooter
     }
 }
+#endif

@@ -40,11 +40,13 @@ extension RefImpl {
   }
 
   @inlinable
+  @inline(__always)
   func __left_ref(_ p: _NodePtr) -> _NodeRef {
     .__left_(p)
   }
 
   @inlinable
+  @inline(__always)
   func __right_ref(_ p: _NodePtr) -> _NodeRef {
     .__right_(p)
   }
@@ -83,5 +85,6 @@ protocol RootPtrImpl: RefProtocol & EndNodeProtocol {}
 
 extension RootPtrImpl {
   @inlinable
+  @inline(__always)
   func __root_ptr() -> _NodeRef { __left_ref(__end_node()) }
 }

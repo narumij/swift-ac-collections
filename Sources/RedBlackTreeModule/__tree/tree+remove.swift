@@ -32,17 +32,21 @@ protocol RemoveProtocol: MemberSetProtocol
 extension RemoveProtocol {
 
   @inlinable
+  @inline(__always)
   func next(_ p: _NodePtr) -> _NodePtr {
     __tree_next_iter(p)
   }
 
   @inlinable
+  @inline(__always)
   func __ptr_(_ p: _NodePtr) -> _NodePtr { p }
 
   @inlinable
+  @inline(__always)
   func iterator(_ p: _NodePtr) -> _NodePtr { p }
 
   @inlinable
+  @inline(__always)
   func static_cast__node_base_pointer(_ p: _NodePtr) -> _NodePtr { p }
 
   @inlinable

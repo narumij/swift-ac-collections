@@ -35,11 +35,13 @@ extension ___UnsafeHandleBase {
   @usableFromInline
   typealias Element = VC.Element
 
-  @inlinable func __value_(_ e: VC.Element) -> _Key {
+  @inlinable @inline(__always)
+  func __value_(_ e: VC.Element) -> _Key {
     VC.__key(e)
   }
 
-  @inlinable func value_comp(_ a: _Key, _ b: _Key) -> Bool {
+  @inlinable @inline(__always)
+  func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     VC.value_comp(a, b)
   }
 }

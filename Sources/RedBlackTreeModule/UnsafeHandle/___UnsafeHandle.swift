@@ -58,16 +58,27 @@ extension ___UnsafeHandle: ___RedBlackTreeReadHandleImpl {}
 extension ___UnsafeHandle: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
 
 extension ___UnsafeHandle {
-  
+
   @inlinable
   @inline(__always)
   func distance(__first: _NodePtr, __last: _NodePtr) -> Int {
     var __first = __first
     var __r = 0
     while __first != __last {
-      __first = __tree_next_iter(__first)
+      __first = __tree_next(__first)
       __r += 1
     }
     return __r
+  }
+
+  @inlinable
+  @inline(__always)
+  public func ___for_each(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void) rethrows {
+    var __p = __p
+    var cont = true
+    while cont, __p != __l {
+      try body(__p, &cont)
+      __p = __tree_next(__p)
+    }
   }
 }

@@ -39,7 +39,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-
+  
   /// 範囲削除を行う場合に使用する
   ///
   /// remove(at:)後のIndexは不正となり、利用できなくなる

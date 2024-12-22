@@ -1,4 +1,5 @@
 import Foundation
+#if DEBUG
 @testable import RedBlackTreeModule
 
 extension _NodePtr {
@@ -23,3 +24,4 @@ extension _NodePtr: ExpressibleByNilLiteral {
         self = .nullptr
     }
 }
+#endif

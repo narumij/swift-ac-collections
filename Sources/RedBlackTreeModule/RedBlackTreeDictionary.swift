@@ -245,6 +245,8 @@ extension RedBlackTreeDictionary {
       get { isNil ? nil : pointer.pointee }
       @inline(__always)
       set {
+        // _modifyでvalue変数を中継するとコピーが2回発生するが
+        // この方法だとコピーが1回減って1回になる、はず
         if let newValue { pointer.pointee = newValue }
         else { isNil = true }
       }
@@ -253,6 +255,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public subscript(key: Key) -> Value? {
+    @inline(__always)
     get {
       let (_, _, __ptr) = _prepareForKeyingModify(key)
       return __ptr == .nullptr ? nil : ___values[__ptr].value
@@ -286,6 +289,7 @@ extension RedBlackTreeDictionary {
   public subscript(
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
+    @inline(__always)
     get {
       let (_, _, __ptr) = _prepareForKeyingModify(key)
       return __ptr == .nullptr ? defaultValue() : ___values[__ptr].value

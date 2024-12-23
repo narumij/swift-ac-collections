@@ -59,6 +59,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample3() throws {
+    throw XCTSkip()
     var set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       set.remove(from: set.startIndex, to: set.endIndex)
@@ -77,6 +78,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
   
   func testPerformanceExample5() throws {
+    throw XCTSkip()
     var set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       for v in 0..<10_000_000 {

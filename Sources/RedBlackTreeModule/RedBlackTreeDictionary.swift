@@ -52,8 +52,8 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   @usableFromInline
   var ___values: [KeyValue]
 
-//  @usableFromInline
-//  var ___stock: Heap<_NodePtr>
+  //  @usableFromInline
+  //  var ___stock: Heap<_NodePtr>
 }
 
 extension RedBlackTreeDictionary {
@@ -63,7 +63,7 @@ extension RedBlackTreeDictionary {
     ___header = .zero
     ___nodes = []
     ___values = []
-//    ___stock = []
+    //    ___stock = []
   }
 
   @inlinable @inline(__always)
@@ -71,7 +71,7 @@ extension RedBlackTreeDictionary {
     ___header = .zero
     ___nodes = []
     ___values = []
-//    ___stock = []
+    //    ___stock = []
     ___nodes.reserveCapacity(minimumCapacity)
     ___values.reserveCapacity(minimumCapacity)
   }
@@ -141,7 +141,7 @@ extension RedBlackTreeDictionary {
     ___header = .zero
     ___nodes = []
     ___values = []
-//    ___stock = []
+    //    ___stock = []
     for v in values_ {
       self[try keyForValue(v), default: []].append(v)
     }
@@ -232,7 +232,7 @@ extension RedBlackTreeDictionary {
 
   @usableFromInline
   struct ___ModifyHelper {
-    @inlinable
+    @inlinable @inline(__always)
     init(pointer: UnsafeMutablePointer<Value>) {
       self.pointer = pointer
     }
@@ -242,29 +242,28 @@ extension RedBlackTreeDictionary {
     var pointer: UnsafeMutablePointer<Value>
     @inlinable
     var value: Value? {
-      get { isNil ? nil : pointer.pointee }
       @inline(__always)
+      get { isNil ? nil : pointer.pointee }
       set {
         // _modifyでvalue変数を中継するとコピーが2回発生するが
         // この方法だとコピーが1回減って1回になる、はず
-        if let newValue { pointer.pointee = newValue }
-        else { isNil = true }
+        if let newValue { pointer.pointee = newValue } else { isNil = true }
       }
     }
   }
 
   @inlinable
   public subscript(key: Key) -> Value? {
-    @inline(__always)
     get {
-      let (_, _, __ptr) = _prepareForKeyingModify(key)
-      return __ptr == .nullptr ? nil : ___values[__ptr].value
+      _read {
+        let __ptr = $0.find(key)
+        return __ptr < 0 ? nil : ___values[__ptr].value
+      }
     }
     set {
       let (__parent, __child, _) = _prepareForKeyingModify(key)
       _finalizeKeyingModify(__parent, __child, key: key, value: newValue)
     }
-    @inline(__always)
     _modify {
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
@@ -289,30 +288,19 @@ extension RedBlackTreeDictionary {
   public subscript(
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
-    @inline(__always)
     get {
-      let (_, _, __ptr) = _prepareForKeyingModify(key)
-      return __ptr == .nullptr ? defaultValue() : ___values[__ptr].value
-    }
-    set {
-      let (__parent, __child, _) = _prepareForKeyingModify(key)
-      _finalizeKeyingModify(__parent, __child, key: key, value: newValue)
-    }
-    @inline(__always)
-    _modify {
-      let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
-      if __ptr == .nullptr {
-        var value = defaultValue()
-        defer {
-          _finalizeKeyingModify2(__parent, __child, key: key, value: value)
-        }
-        yield &value
-      } else {
-        defer {
-          _finalizeKeyingModify2(__parent, __child, key: key, value: ___values[__ptr].value)
-        }
-        yield &___values[__ptr].value
+      _read {
+        let __ptr = $0.find(key)
+        return __ptr < 0 ? defaultValue() : ___values[__ptr].value
       }
+    }
+    _modify {
+      var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
+      if __ptr == .nullptr {
+        __ptr = __construct_node((key, defaultValue()))
+        __insert_node_at(__parent, __child, __ptr)
+      }
+      yield &___values[__ptr].value
     }
   }
 
@@ -355,25 +343,7 @@ extension RedBlackTreeDictionary {
       break
     }
   }
-  
-  @inlinable
-  mutating func _finalizeKeyingModify2(
-    _ __parent: _NodePtr, _ __child: _NodeRef, key: Key, value: Value
-  ) {
-    switch __ref_(__child) {
-    case .nullptr:
-      // 追加する
-      let __h = __construct_node((key, value))
-      __insert_node_at(__parent, __child, __h)
-      break
-    // 変更前が値で、変更後も値の場合
-    case (let __ptr):
-      // 更新する
-      ___values[__ptr].value = value
-      break
-    }
-  }
-  
+
   @inlinable
   mutating func _finalizeKeyingModify3(
     _ __parent: _NodePtr, _ __child: _NodeRef, key: Key, value: Value?
@@ -575,13 +545,13 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
 }
 
 extension RedBlackTreeDictionary {
-  
+
   public typealias IndexRange = ___RedBlackTree.Range
   public typealias SeqenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
   public typealias EnumeratedElement = (position: Index, element: Element)
 
   public typealias EnumeratedSequence = UnfoldSequence<EnumeratedElement, SeqenceState>
-  public typealias ElementSequence = Array<Element>
+  public typealias ElementSequence = [Element]
 
   @inlinable
   public subscript(bounds: IndexRange) -> ElementSequence {

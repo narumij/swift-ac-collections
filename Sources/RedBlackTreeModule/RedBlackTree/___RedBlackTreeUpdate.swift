@@ -46,3 +46,38 @@ extension ___RedBlackTreeUpdate {
       tree.__remove_node_pointer(__ptr) }
   }  
 }
+
+@usableFromInline
+protocol ___RedBlackTreeEraseSubrangeProtocol: ___RedBlackTreeContainer, StorageProtocol, ___RedBlackTreeUpdate {
+  
+}
+
+extension ___RedBlackTreeEraseSubrangeProtocol {
+  
+  @inlinable
+  @discardableResult
+  mutating func ___erase(_ l: _NodePtr,_ r: _NodePtr) -> _NodePtr {
+    var destroyed = [_NodePtr]()
+    func ___destroy(_ p: _NodePtr) {
+      destroyed.append(p)
+    }
+    defer {
+      destroyed.forEach {
+        destroy($0)
+      }
+    }
+    return _update { tree in
+      tree.erase(___destroy: ___destroy, l, r)
+    }
+  }
+  
+  @inlinable
+  @discardableResult
+  mutating func ___remove___(from: _NodePtr, to: _NodePtr) -> _NodePtr {
+    guard ___nodes[from].isValid, ___nodes[to].isValid else {
+      fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
+    }
+    return ___erase(from, to)
+  }
+}
+

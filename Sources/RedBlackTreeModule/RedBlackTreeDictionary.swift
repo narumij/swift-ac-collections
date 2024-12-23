@@ -212,9 +212,9 @@ extension RedBlackTreeDictionary: ___RedBlackTreeUpdate {
   @inlinable
   @inline(__always)
   mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafeMutablePointer(to: &___header) { header in
+    return try ___values.withUnsafeMutableBufferPointer { values in
       try ___nodes.withUnsafeMutableBufferPointer { nodes in
-        try ___values.withUnsafeMutableBufferPointer { values in
+        try withUnsafeMutablePointer(to: &___header) { header in
           try body(
             ___UnsafeMutatingHandle<Self>(
               __header_ptr: header,
@@ -230,24 +230,103 @@ extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseUniqueProtocol {}
 
 extension RedBlackTreeDictionary {
 
+  @usableFromInline
+  struct ___ModifyHelper {
+    @inlinable @inline(__always)
+    init(pointer: UnsafeMutablePointer<Value>) {
+      self.pointer = pointer
+    }
+    @usableFromInline
+    var isNil: Bool = false
+    @usableFromInline
+    var pointer: UnsafeMutablePointer<Value>
+    @inlinable
+    var value: Value? {
+      @inline(__always)
+      get { isNil ? nil : pointer.pointee }
+      set {
+        // _modifyでvalue変数を中継するとコピーが2回発生するが
+        // この方法だとコピーが1回減って1回になる、はず
+        if let newValue { pointer.pointee = newValue } else { isNil = true }
+      }
+    }
+  }
+
+  @usableFromInline
+  struct ___ModifyHelper2 {
+    @inlinable @inline(__always)
+    init(setter: @escaping (Value) -> Void) {
+      self.setter = setter
+    }
+    @usableFromInline
+    var setter: (Value) -> Void
+    @inlinable
+    var value: Value? {
+      get { nil }
+      nonmutating set {
+        if let newValue {
+          setter(newValue)
+        }
+      }
+    }
+  }
+
   @inlinable
   public subscript(key: Key) -> Value? {
     get {
-      let (_, _, __ptr) = _prepareForKeyingModify(key)
-      return __ptr == .nullptr ? nil : ___values[__ptr].value
+      _read {
+        let __ptr = $0.find(key)
+        return __ptr < 0 ? nil : ___values[__ptr].value
+      }
     }
-    set {
-      let (__parent, __child, _) = _prepareForKeyingModify(key)
-      _finalizeKeyingModify(__parent, __child, key: key, value: newValue)
-    }
-    @inline(__always)
+    //    set {
+    //      let (__parent, __child, _) = _prepareForKeyingModify(key)
+    //      _finalizeKeyingModify(__parent, __child, key: key, value: newValue)
+    //    }
     _modify {
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
-      var value: Value? = __ptr == .nullptr ? nil : ___values[__ptr].value
-      defer {
-        _finalizeKeyingModify(__parent, __child, key: key, value: value)
+      if __ptr == .nullptr {
+        #if true
+          var value: Value?
+          defer {
+            _finalizeKeyingModify3(__parent, __child, key: key, value: value)
+          }
+          // __construct_nodeを省くことで、配列の末尾を最初から使うことが可能かもしれない
+          yield &value
+        #else
+          func preconstruct() -> _NodePtr {
+            ___nodes.count
+          }
+          let __ptr = preconstruct()
+          var isNil = true
+          var localNodes = ___nodes
+          var localValues = ___values
+
+          let helper = ___ModifyHelper2 { value in
+            isNil = false
+            localNodes.append(.zero)
+            localValues.append((key, value))
+          }
+
+          defer {
+            if !isNil {
+              ___nodes = localNodes
+              ___values = localValues
+              __insert_node_at(__parent, __child, __ptr)
+            }
+          }
+
+          yield &helper.value
+        #endif
+      } else {
+        var helper = ___ModifyHelper(pointer: &___values[__ptr].value)
+        defer {
+          if helper.isNil {
+            _ = erase(__ptr)
+          }
+        }
+        yield &helper.value
       }
-      yield &value
     }
   }
 
@@ -256,21 +335,18 @@ extension RedBlackTreeDictionary {
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
     get {
-      let (_, _, __ptr) = _prepareForKeyingModify(key)
-      return __ptr == .nullptr ? defaultValue() : ___values[__ptr].value
-    }
-    set {
-      let (__parent, __child, _) = _prepareForKeyingModify(key)
-      _finalizeKeyingModify(__parent, __child, key: key, value: newValue)
-    }
-    @inline(__always)
-    _modify {
-      let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
-      var value = __ptr == .nullptr ? defaultValue() : ___values[__ptr].value
-      defer {
-        _finalizeKeyingModify(__parent, __child, key: key, value: value)
+      _read {
+        let __ptr = $0.find(key)
+        return __ptr < 0 ? defaultValue() : ___values[__ptr].value
       }
-      yield &value
+    }
+    _modify {
+      var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
+      if __ptr == .nullptr {
+        __ptr = __construct_node((key, defaultValue()))
+        __insert_node_at(__parent, __child, __ptr)
+      }
+      yield &___values[__ptr].value
     }
   }
 
@@ -290,8 +366,7 @@ extension RedBlackTreeDictionary {
   mutating func _finalizeKeyingModify(
     _ __parent: _NodePtr, _ __child: _NodeRef, key: Key, value: Value?
   ) {
-    let __ptr = __ref_(__child)
-    switch (__ptr, value) {
+    switch (__ref_(__child), value) {
     // 変更前が空で、変更後も空の場合
     case (.nullptr, .none):
       // 変わらない
@@ -303,14 +378,32 @@ extension RedBlackTreeDictionary {
       __insert_node_at(__parent, __child, __h)
       break
     // 変更前が値で、変更後は空の場合
-    case (_, .none):
+    case (let __ptr, .none):
       // 削除する
       _ = erase(__ptr)
       break
     // 変更前が値で、変更後も値の場合
-    case (_, .some(let value)):
+    case (let __ptr, .some(let value)):
       // 更新する
       ___values[__ptr].value = value
+      break
+    }
+  }
+
+  @inlinable
+  mutating func _finalizeKeyingModify3(
+    _ __parent: _NodePtr, _ __child: _NodeRef, key: Key, value: Value?
+  ) {
+    switch value {
+    // 変更前が空で、変更後も空の場合
+    case .none:
+      // 変わらない
+      break
+    // 変更前が空で、変更後は値の場合
+    case .some(let value):
+      // 追加する
+      let __h = __construct_node((key, value))
+      __insert_node_at(__parent, __child, __h)
       break
     }
   }
@@ -498,13 +591,13 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
 }
 
 extension RedBlackTreeDictionary {
-  
+
   public typealias IndexRange = ___RedBlackTree.Range
   public typealias SeqenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
   public typealias EnumeratedElement = (position: Index, element: Element)
 
   public typealias EnumeratedSequence = UnfoldSequence<EnumeratedElement, SeqenceState>
-  public typealias ElementSequence = Array<Element>
+  public typealias ElementSequence = [Element]
 
   @inlinable
   public subscript(bounds: IndexRange) -> ElementSequence {

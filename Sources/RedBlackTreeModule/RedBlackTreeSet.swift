@@ -242,6 +242,7 @@ extension RedBlackTreeSet: ___RedBlackTreeUpdate {
 extension RedBlackTreeSet: InsertUniqueProtocol {}
 extension RedBlackTreeSet: EraseUniqueProtocol {}
 extension RedBlackTreeSet: ___RedBlackTreeEraseProtocol {}
+extension RedBlackTreeSet: ___RedBlackTreeEraseSubrangeProtocol {}
 
 extension RedBlackTreeSet {
 
@@ -384,6 +385,11 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func remove(from: Index, to: Index) {
     ___remove(from: from.pointer, to: to.pointer)
+  }
+  
+  @inlinable
+  public mutating func removeSubrange(_ range: ___RedBlackTree.Range) {
+    ___remove___(from: range.lhs.pointer, to: range.rhs.pointer)
   }
 
   /// 赤黒木セットからすべての要素を削除します。

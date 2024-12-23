@@ -24,11 +24,11 @@ import Foundation
 
 extension MemberProtocol {
 
-  @inlinable
+  @inlinable @inline(__always)
   func
     static_cast_EndNodePtr(_ p: _NodePtr) -> _NodePtr { p }
 
-  @inlinable
+  @inlinable @inline(__always)
   func
     static_cast_NodePtr(_ p: _NodePtr) -> _NodePtr { p }
 }

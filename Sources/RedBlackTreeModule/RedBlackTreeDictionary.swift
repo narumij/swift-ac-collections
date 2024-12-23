@@ -245,10 +245,19 @@ extension RedBlackTreeDictionary {
     var value: Value? {
       @inline(__always)
       get { isNil ? nil : pointer.pointee }
-      set {
-        // _modifyでvalue変数を中継するとコピーが2回発生するが
-        // この方法だとコピーが1回減って1回になる、はず
-        if let newValue { pointer.pointee = newValue } else { isNil = true }
+//      set {
+//        if let newValue { pointer.pointee = newValue } else { isNil = true }
+//      }
+      _modify {
+        var value: Value? = pointer.move()
+        defer {
+          if let value {
+            pointer.initialize(to: value)
+          } else {
+            isNil = true
+          }
+        }
+        yield &value
       }
     }
   }

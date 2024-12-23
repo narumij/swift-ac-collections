@@ -22,14 +22,12 @@ for i in 0 ..< 2_000_000 {
   xy[1, default: []].insert(i)
 }
 #elseif false
-// 追試が必要
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
 for i in 0 ..< 200_000 {
   // 不正なインデックスに関する修正が必要そう
   xy[1]?.removeSubrange(.node(i) ..< .node(i + 10))
 }
-#elseif true
-// 追試が必要
+#elseif false
 var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
 let N = 1000
 for i in 0 ..< 2_000_000 / N {
@@ -39,10 +37,17 @@ for i in 0 ..< 2_000_000 / N {
     xy[1, default: []].removeSubrange(lo ..< hi)
   }
 }
-#elseif false
+#elseif true
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
 for i in 0 ..< 2_000_000 {
   xy[1]?.remove(i)
+//  xy[1, default: []].remove(i)
+}
+#elseif false
+var xy: [Int:RedBlackTreeSet<Int>] = [1: .init(0 ..< 2_000_000)]
+for i in 0 ..< 2_000_000 {
+  xy[1]?.remove(i)
+//  xy[1, default: []].remove(i)
 }
 #elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]

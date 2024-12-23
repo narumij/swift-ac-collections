@@ -32,6 +32,7 @@ extension StorageEraseProtocol {
   @inlinable @inline(__always)
   func __get_np(_ p: _NodePtr) -> _NodePtr { p }
 
+#if false
   @inlinable @inline(__always)
   func __ptr_(_ p: _NodePtr) -> _NodePtr {
     p
@@ -41,7 +42,9 @@ extension StorageEraseProtocol {
   func iterator(_ p: _NodePtr) -> _NodePtr {
     p
   }
+#endif
 
+#if false
   @inlinable
   mutating func
     erase(_ __p: _NodePtr) -> _NodePtr
@@ -62,8 +65,10 @@ extension StorageEraseProtocol {
     }
     return iterator(__ptr_(__l))
   }
+#endif
 }
 
+#if false
 @usableFromInline
 protocol EraseUniqueProtocol: StorageEraseProtocol & EndProtocol {
   func find(_ __v: _Key) -> _NodePtr
@@ -83,7 +88,9 @@ extension EraseUniqueProtocol {
     return true
   }
 }
+#endif
 
+#if false
 @usableFromInline
 protocol EraseMultiProtocol: StorageEraseProtocol {
   func __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)
@@ -102,6 +109,7 @@ extension EraseMultiProtocol {
     return __r
   }
 }
+#endif
 
 @usableFromInline
 protocol EraseProtocol {

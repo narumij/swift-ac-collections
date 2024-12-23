@@ -57,3 +57,6 @@ extension ___UnsafeMutatingHandle: NodeFindProtocol & NodeFindEqualProtocol & Fi
 extension ___UnsafeMutatingHandle: InsertNodeAtProtocol {}
 extension ___UnsafeMutatingHandle: RemoveProtocol {}
 extension ___UnsafeMutatingHandle: EraseProtocol {}
+extension ___UnsafeMutatingHandle: EqualProtocol {}
+
+

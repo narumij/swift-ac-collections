@@ -257,8 +257,8 @@ extension RedBlackTreeMultiset: ___RedBlackTreeUpdate {
 }
 
 extension RedBlackTreeMultiset: InsertMultiProtocol {}
-extension RedBlackTreeMultiset: EraseMultiProtocol {}
 extension RedBlackTreeMultiset: ___RedBlackTreeEraseProtocol {}
+extension RedBlackTreeMultiset: ___RedBlackTreeDestroyProtocol {}
 extension RedBlackTreeMultiset: ___RedBlackTreeDirectReadImpl {}
 
 extension RedBlackTreeMultiset {
@@ -322,7 +322,7 @@ extension RedBlackTreeMultiset {
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
-    __erase_multi(member) != 0 ? member : nil
+    ___erase_multi___(member) != 0 ? member : nil
   }
 
   /// 指定されたインデックス位置にある要素を赤黒木セットから削除します。
@@ -333,7 +333,7 @@ extension RedBlackTreeMultiset {
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    guard let element = ___remove(at: index.pointer) else {
+    guard let element = ___remove___(at: index.pointer) else {
       fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
     }
     return element

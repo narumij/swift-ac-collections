@@ -226,8 +226,10 @@ extension RedBlackTreeDictionary: ___RedBlackTreeUpdate {
   }
 }
 
-extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseUniqueProtocol {}
+extension RedBlackTreeDictionary: InsertUniqueProtocol {}
 extension RedBlackTreeDictionary: ___RedBlackTreeDirectReadImpl {}
+extension RedBlackTreeDictionary: ___RedBlackTreeDestroyProtocol {}
+extension RedBlackTreeDictionary: ___RedBlackTreeEraseProtocol {}
 
 extension RedBlackTreeDictionary {
 
@@ -284,7 +286,7 @@ extension RedBlackTreeDictionary {
         var helper = ___ModifyHelper(pointer: &___values[__ptr].value)
         defer {
           if helper.isNil {
-            _ = erase(__ptr)
+            _ = ___erase___(__ptr)
           }
         }
         yield &helper.value
@@ -357,8 +359,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary: ___RedBlackTreeEraseProtocol {}
-
 extension RedBlackTreeDictionary {
 
   @discardableResult
@@ -381,19 +381,22 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
-    let __i = find(__k)
-    if __i == end() {
-      return nil
+    let ___values___ = ___values
+    return _update { tree, ___destroy in
+      let __i = tree.find(__k)
+      if __i == tree.end() {
+        return nil
+      }
+      let value = ___values___[__i].value
+      _ = tree.erase(___destroy: ___destroy, __i)
+      return value
     }
-    let value = ___values[__i].value
-    _ = erase(__i)
-    return value
   }
 
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
-    guard let element = ___remove(at: index.pointer) else {
+    guard let element = ___remove___(at: index.pointer) else {
       fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
     }
     return element

@@ -26,12 +26,15 @@ import Foundation
 @usableFromInline
 protocol ___RedBlackTreeEraseProtocol: ___RedBlackTreeContainer, StorageEraseProtocol
 {
+#if false
   mutating func erase(_ __p: _NodePtr) -> _NodePtr
   mutating func erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
+#endif
 }
 
 extension ___RedBlackTreeEraseProtocol {
 
+#if false
   @inlinable
   @discardableResult
   mutating func ___remove(at ptr: _NodePtr) -> Element? {
@@ -57,11 +60,12 @@ extension ___RedBlackTreeEraseProtocol {
     }
     return erase(from, to)
   }
-
-  public mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
-    ___header = .zero
-    ___nodes.removeAll(keepingCapacity: keepCapacity)
-    ___values.removeAll(keepingCapacity: keepCapacity)
+#endif
+  
+//  public mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
+//    ___header = .zero
+//    ___nodes.removeAll(keepingCapacity: keepCapacity)
+//    ___values.removeAll(keepingCapacity: keepCapacity)
 //    ___stock = []
-  }
+//  }
 }

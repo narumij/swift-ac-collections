@@ -227,6 +227,7 @@ extension RedBlackTreeDictionary: ___RedBlackTreeUpdate {
 }
 
 extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseUniqueProtocol {}
+extension RedBlackTreeDictionary: ___RedBlackTreeDirectReadImpl {}
 
 extension RedBlackTreeDictionary {
 
@@ -252,25 +253,6 @@ extension RedBlackTreeDictionary {
     }
   }
 
-  @usableFromInline
-  struct ___ModifyHelper2 {
-    @inlinable @inline(__always)
-    init(setter: @escaping (Value) -> Void) {
-      self.setter = setter
-    }
-    @usableFromInline
-    var setter: (Value) -> Void
-    @inlinable
-    var value: Value? {
-      get { nil }
-      nonmutating set {
-        if let newValue {
-          setter(newValue)
-        }
-      }
-    }
-  }
-
   @inlinable
   public subscript(key: Key) -> Value? {
     get {
@@ -279,45 +261,14 @@ extension RedBlackTreeDictionary {
         return __ptr < 0 ? nil : ___values[__ptr].value
       }
     }
-    //    set {
-    //      let (__parent, __child, _) = _prepareForKeyingModify(key)
-    //      _finalizeKeyingModify(__parent, __child, key: key, value: newValue)
-    //    }
     _modify {
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
-        #if true
           var value: Value?
           defer {
-            _finalizeKeyingModify3(__parent, __child, key: key, value: value)
+            _finalizeKeyingModify(__parent, __child, key: key, value: value)
           }
-          // __construct_nodeを省くことで、配列の末尾を最初から使うことが可能かもしれない
           yield &value
-        #else
-          func preconstruct() -> _NodePtr {
-            ___nodes.count
-          }
-          let __ptr = preconstruct()
-          var isNil = true
-          var localNodes = ___nodes
-          var localValues = ___values
-
-          let helper = ___ModifyHelper2 { value in
-            isNil = false
-            localNodes.append(.zero)
-            localValues.append((key, value))
-          }
-
-          defer {
-            if !isNil {
-              ___nodes = localNodes
-              ___values = localValues
-              __insert_node_at(__parent, __child, __ptr)
-            }
-          }
-
-          yield &helper.value
-        #endif
       } else {
         var helper = ___ModifyHelper(pointer: &___values[__ptr].value)
         defer {
@@ -351,6 +302,7 @@ extension RedBlackTreeDictionary {
   }
 
   @inlinable
+  @inline(__always)
   internal func _prepareForKeyingModify(
     _ key: Key
   ) -> (__parent: _NodePtr, __child: _NodeRef, __ptr: _NodePtr) {
@@ -363,35 +315,8 @@ extension RedBlackTreeDictionary {
   }
 
   @inlinable
+  @inline(__always)
   mutating func _finalizeKeyingModify(
-    _ __parent: _NodePtr, _ __child: _NodeRef, key: Key, value: Value?
-  ) {
-    switch (__ref_(__child), value) {
-    // 変更前が空で、変更後も空の場合
-    case (.nullptr, .none):
-      // 変わらない
-      break
-    // 変更前が空で、変更後は値の場合
-    case (.nullptr, .some(let value)):
-      // 追加する
-      let __h = __construct_node((key, value))
-      __insert_node_at(__parent, __child, __h)
-      break
-    // 変更前が値で、変更後は空の場合
-    case (let __ptr, .none):
-      // 削除する
-      _ = erase(__ptr)
-      break
-    // 変更前が値で、変更後も値の場合
-    case (let __ptr, .some(let value)):
-      // 更新する
-      ___values[__ptr].value = value
-      break
-    }
-  }
-
-  @inlinable
-  mutating func _finalizeKeyingModify3(
     _ __parent: _NodePtr, _ __child: _NodeRef, key: Key, value: Value?
   ) {
     switch value {

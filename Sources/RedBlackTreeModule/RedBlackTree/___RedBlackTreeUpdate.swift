@@ -56,7 +56,7 @@ extension ___RedBlackTreeEraseSubrangeProtocol {
   
   @inlinable
   @discardableResult
-  mutating func ___erase(_ l: _NodePtr,_ r: _NodePtr) -> _NodePtr {
+  mutating func ___erase___(_ l: _NodePtr,_ r: _NodePtr) -> _NodePtr {
     var destroyed = [_NodePtr]()
     func ___destroy(_ p: _NodePtr) {
       destroyed.append(p)
@@ -74,10 +74,13 @@ extension ___RedBlackTreeEraseSubrangeProtocol {
   @inlinable
   @discardableResult
   mutating func ___remove___(from: _NodePtr, to: _NodePtr) -> _NodePtr {
-    guard ___nodes[from].isValid, ___nodes[to].isValid else {
+    guard from != .end else {
+      return .end
+    }
+    guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
       fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
     }
-    return ___erase(from, to)
+    return ___erase___(from, to)
   }
 }
 

@@ -31,10 +31,12 @@ for i in 0 ..< 200_000 {
 #elseif true
 // 追試が必要
 var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
-for i in 0 ..< 2_000_000 / 1000 {
-  if let lo = xy[1]?.lowerBound(i * 1000),
-     let hi = xy[1]?.upperBound(i * 1000 + 1000) {
-    xy[1]?.removeSubrange(lo ..< hi)
+let N = 1000
+for i in 0 ..< 2_000_000 / N {
+  if let lo = xy[1]?.lowerBound(i * N),
+     let hi = xy[1]?.upperBound(i * N + N) {
+//    xy[1]?.removeSubrange(lo ..< hi)
+    xy[1, default: []].removeSubrange(lo ..< hi)
   }
 }
 #elseif false
@@ -42,11 +44,17 @@ var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000
 for i in 0 ..< 2_000_000 {
   xy[1]?.remove(i)
 }
-#else
+#elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
 for i in 0 ..< 2_000_000 {
   _ = xy[1]?.lowerBound(i)
 }
+#else
+var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]
+  for i in 0 ..< 2_000_000 {
+    _ = xy[1]?[i] = 100
+    _ = 1 + (xy[1]?[i / 2] ?? 0)
+  }
 #endif
 print("Hola!")
 

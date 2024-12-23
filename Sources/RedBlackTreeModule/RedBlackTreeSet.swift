@@ -243,6 +243,12 @@ extension RedBlackTreeSet: InsertUniqueProtocol {}
 extension RedBlackTreeSet: EraseUniqueProtocol {}
 extension RedBlackTreeSet: ___RedBlackTreeEraseProtocol {}
 extension RedBlackTreeSet: ___RedBlackTreeEraseSubrangeProtocol {}
+extension RedBlackTreeSet: ___RedBlackTreeDirectReadImpl & ValueProtocol {
+  @usableFromInline
+  func value_comp(_ a: Element, _ b: Element) -> Bool {
+    Self.value_comp(a, b)
+  }
+}
 
 extension RedBlackTreeSet {
 

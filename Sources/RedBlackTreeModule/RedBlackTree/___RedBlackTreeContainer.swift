@@ -31,6 +31,14 @@ extension ___RedBlackTreeContainer {
   
   @inlinable
   mutating func garbageCollect() {
+    var last = ___nodes.count
+    if last != 0, !___stock.isEmpty, ___stock.max == last - 1 {
+      _ = ___stock.popMax()
+      last -= 1
+    }
+    let amount = max(___nodes.count - last, 0)
+    ___nodes.removeLast(amount)
+    ___values.removeLast(amount)
   }
 
   @inlinable

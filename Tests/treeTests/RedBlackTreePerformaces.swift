@@ -122,5 +122,29 @@ final class RedBlackTreePerformaces: XCTestCase {
     }
   }
 
+  func testPerformanceExample10() throws {
+    throw XCTSkip()
+    var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]
+    self.measure {
+      for i in 0 ..< 2_000_000 {
+        _ = xy[1]?[i] = 100
+        _ = 1 + (xy[1]?[i / 2] ?? 0)
+      }
+    }
+  }
+  
+  func testPerformanceExample11() throws {
+    throw XCTSkip()
+    var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]
+    self.measure {
+      for i in 0 ..< 2_000_000 {
+        _ = xy[1]?[i] = 100
+        _ = xy[1]?.withUnsafeBufferPointer { xy in
+          1 + xy.baseAddress![i / 2]
+        }
+      }
+    }
+  }
+
 }
 #endif

@@ -79,12 +79,14 @@ extension ___RedBlackTreeContainerBase {
 
 extension ___RedBlackTreeContainerBase {
 
+#if false
   @inlinable
   func __ref_(_ rhs: _NodeRef) -> _NodePtr {
     _read { tree in
       tree.__ref_(rhs)
     }
   }
+#endif
 
   @inlinable
   func __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef {

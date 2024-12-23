@@ -112,6 +112,7 @@ extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeUpdate {
   }
 }
 
+
 extension ___RedBlackTreeMemoizeBase: InsertUniqueProtocol, EraseUniqueProtocol {
 
   @inlinable
@@ -127,3 +128,5 @@ extension ___RedBlackTreeMemoizeBase: InsertUniqueProtocol, EraseUniqueProtocol 
     ___nodes[p].invalidate()
   }
 }
+
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeDirectReadImpl { }

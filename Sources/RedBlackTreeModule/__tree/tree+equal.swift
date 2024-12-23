@@ -22,6 +22,9 @@
 
 import Foundation
 
+@usableFromInline
+protocol EqualProtocol: ValueProtocol, RootProtocol, EndNodeProtocol {}
+
 extension EqualProtocol {
 
   //  template <class _Tp, class _Compare, class _Allocator>

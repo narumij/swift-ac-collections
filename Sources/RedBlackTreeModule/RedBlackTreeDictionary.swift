@@ -248,6 +248,7 @@ extension RedBlackTreeDictionary {
 //      set {
 //        if let newValue { pointer.pointee = newValue } else { isNil = true }
 //      }
+      @inline(__always)
       _modify {
         var value: Value? = pointer.move()
         defer {
@@ -270,6 +271,7 @@ extension RedBlackTreeDictionary {
         return __ptr < 0 ? nil : ___values[__ptr].value
       }
     }
+    @inline(__always)
     _modify {
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
@@ -300,6 +302,7 @@ extension RedBlackTreeDictionary {
         return __ptr < 0 ? defaultValue() : ___values[__ptr].value
       }
     }
+    @inline(__always)
     _modify {
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {

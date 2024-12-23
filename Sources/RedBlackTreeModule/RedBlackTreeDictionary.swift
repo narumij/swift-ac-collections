@@ -230,6 +230,27 @@ extension RedBlackTreeDictionary: InsertUniqueProtocol, EraseUniqueProtocol {}
 
 extension RedBlackTreeDictionary {
 
+  @usableFromInline
+  struct ___ModifyHelper {
+    @inlinable
+    init(pointer: UnsafeMutablePointer<Value>) {
+      self.pointer = pointer
+    }
+    @usableFromInline
+    var isNil: Bool = false
+    @usableFromInline
+    var pointer: UnsafeMutablePointer<Value>
+    @inlinable
+    var value: Value? {
+      get { isNil ? nil : pointer.pointee }
+      @inline(__always)
+      set {
+        if let newValue { pointer.pointee = newValue }
+        else { isNil = true }
+      }
+    }
+  }
+
   @inlinable
   public subscript(key: Key) -> Value? {
     get {
@@ -243,11 +264,21 @@ extension RedBlackTreeDictionary {
     @inline(__always)
     _modify {
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
-      var value: Value? = __ptr == .nullptr ? nil : ___values[__ptr].value
-      defer {
-        _finalizeKeyingModify(__parent, __child, key: key, value: value)
+      if __ptr == .nullptr {
+        var value: Value?
+        defer {
+          _finalizeKeyingModify3(__parent, __child, key: key, value: value)
+        }
+        yield &value
+      } else {
+        var helper = ___ModifyHelper(pointer: &___values[__ptr].value)
+        defer {
+          if helper.isNil {
+            _ = erase(__ptr)
+          }
+        }
+        yield &helper.value
       }
-      yield &value
     }
   }
 
@@ -266,11 +297,18 @@ extension RedBlackTreeDictionary {
     @inline(__always)
     _modify {
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
-      var value = __ptr == .nullptr ? defaultValue() : ___values[__ptr].value
-      defer {
-        _finalizeKeyingModify(__parent, __child, key: key, value: value)
+      if __ptr == .nullptr {
+        var value = defaultValue()
+        defer {
+          _finalizeKeyingModify2(__parent, __child, key: key, value: value)
+        }
+        yield &value
+      } else {
+        defer {
+          _finalizeKeyingModify2(__parent, __child, key: key, value: ___values[__ptr].value)
+        }
+        yield &___values[__ptr].value
       }
-      yield &value
     }
   }
 
@@ -290,8 +328,7 @@ extension RedBlackTreeDictionary {
   mutating func _finalizeKeyingModify(
     _ __parent: _NodePtr, _ __child: _NodeRef, key: Key, value: Value?
   ) {
-    let __ptr = __ref_(__child)
-    switch (__ptr, value) {
+    switch (__ref_(__child), value) {
     // 変更前が空で、変更後も空の場合
     case (.nullptr, .none):
       // 変わらない
@@ -303,14 +340,50 @@ extension RedBlackTreeDictionary {
       __insert_node_at(__parent, __child, __h)
       break
     // 変更前が値で、変更後は空の場合
-    case (_, .none):
+    case (let __ptr, .none):
       // 削除する
       _ = erase(__ptr)
       break
     // 変更前が値で、変更後も値の場合
-    case (_, .some(let value)):
+    case (let __ptr, .some(let value)):
       // 更新する
       ___values[__ptr].value = value
+      break
+    }
+  }
+  
+  @inlinable
+  mutating func _finalizeKeyingModify2(
+    _ __parent: _NodePtr, _ __child: _NodeRef, key: Key, value: Value
+  ) {
+    switch __ref_(__child) {
+    case .nullptr:
+      // 追加する
+      let __h = __construct_node((key, value))
+      __insert_node_at(__parent, __child, __h)
+      break
+    // 変更前が値で、変更後も値の場合
+    case (let __ptr):
+      // 更新する
+      ___values[__ptr].value = value
+      break
+    }
+  }
+  
+  @inlinable
+  mutating func _finalizeKeyingModify3(
+    _ __parent: _NodePtr, _ __child: _NodeRef, key: Key, value: Value?
+  ) {
+    switch value {
+    // 変更前が空で、変更後も空の場合
+    case .none:
+      // 変わらない
+      break
+    // 変更前が空で、変更後は値の場合
+    case .some(let value):
+      // 追加する
+      let __h = __construct_node((key, value))
+      __insert_node_at(__parent, __child, __h)
       break
     }
   }

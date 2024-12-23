@@ -608,8 +608,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   func sorted() -> [Element] {
-    // _readでトラバースする方が速い可能性があるが、未検証
-    map { $0 }
+    ___element_sequence__
   }
 }
 

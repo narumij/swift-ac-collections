@@ -30,7 +30,8 @@ protocol ___RedBlackTreeContainer: ___RedBlackTreeContainerBase {
 extension ___RedBlackTreeContainer {
   
   @inlinable
-  mutating func garbageCollect() {
+  mutating func ___garbageCollect() {
+    // 未使用末尾を開放する
     var last = ___nodes.count
     if last != 0, !___stock.isEmpty, ___stock.max == last - 1 {
       _ = ___stock.popMax()
@@ -57,7 +58,7 @@ extension ___RedBlackTreeContainer {
   mutating func destroy(_ p: _NodePtr) {
     ___nodes[p].invalidate()
     ___stock.insert(p)
-    garbageCollect()
+    ___garbageCollect()
   }
 }
 

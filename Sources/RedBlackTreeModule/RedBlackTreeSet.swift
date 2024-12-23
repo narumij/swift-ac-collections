@@ -665,8 +665,7 @@ extension RedBlackTreeSet {
   /// - Note: `RedBlackTreeSet` は既に要素を昇順で管理しているため、このメソッドは効率的に全要素を抽出します。
   @inlinable
   func sorted() -> [Element] {
-    // _readでトラバースする方が速い可能性があるが、未検証
-    map { $0 }
+    ___element_sequence__
   }
 }
 

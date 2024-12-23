@@ -23,11 +23,11 @@
 import Foundation
 
 @usableFromInline
-protocol EraseProtocol: StorageProtocol {
+protocol StorageEraseProtocol: StorageProtocol {
   mutating func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
 }
 
-extension EraseProtocol {
+extension StorageEraseProtocol {
 
   @inlinable @inline(__always)
   func __get_np(_ p: _NodePtr) -> _NodePtr { p }
@@ -65,7 +65,7 @@ extension EraseProtocol {
 }
 
 @usableFromInline
-protocol EraseUniqueProtocol: EraseProtocol & EndProtocol {
+protocol EraseUniqueProtocol: StorageEraseProtocol & EndProtocol {
   func find(_ __v: _Key) -> _NodePtr
 }
 
@@ -85,7 +85,7 @@ extension EraseUniqueProtocol {
 }
 
 @usableFromInline
-protocol EraseMultiProtocol: EraseProtocol {
+protocol EraseMultiProtocol: StorageEraseProtocol {
   func __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)
 }
 
@@ -100,5 +100,47 @@ extension EraseMultiProtocol {
       __p.0 = erase(__p.0)
     }
     return __r
+  }
+}
+
+@usableFromInline
+protocol EraseProtocol {
+  func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
+}
+
+extension EraseProtocol {
+
+  @inlinable @inline(__always)
+  func __get_np(_ p: _NodePtr) -> _NodePtr { p }
+
+  @inlinable @inline(__always)
+  func __ptr_(_ p: _NodePtr) -> _NodePtr {
+    p
+  }
+
+  @inlinable @inline(__always)
+  func iterator(_ p: _NodePtr) -> _NodePtr {
+    p
+  }
+
+  @inlinable
+  func
+  erase(___destroy: (_NodePtr) -> Void, _ __p: _NodePtr) -> _NodePtr
+  {
+    let __np = __get_np(__p)
+    let __r = __remove_node_pointer(__np)
+    ___destroy(__p)
+    return __r
+  }
+
+  @inlinable
+  func
+    erase(___destroy: (_NodePtr) -> Void,_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
+  {
+    var __f = __f
+    while __f != __l {
+      __f = erase(___destroy: ___destroy, __f)
+    }
+    return iterator(__ptr_(__l))
   }
 }

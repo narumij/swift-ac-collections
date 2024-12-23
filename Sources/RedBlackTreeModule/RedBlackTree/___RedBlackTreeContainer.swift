@@ -28,6 +28,10 @@ protocol ___RedBlackTreeContainer: ___RedBlackTreeContainerBase {
 }
 
 extension ___RedBlackTreeContainer {
+  
+  @inlinable
+  mutating func garbageCollect() {
+  }
 
   @inlinable
   mutating func __construct_node(_ k: Element) -> _NodePtr {
@@ -45,6 +49,7 @@ extension ___RedBlackTreeContainer {
   mutating func destroy(_ p: _NodePtr) {
     ___nodes[p].invalidate()
 //    ___stock.insert(p)
+    garbageCollect()
   }
 }
 

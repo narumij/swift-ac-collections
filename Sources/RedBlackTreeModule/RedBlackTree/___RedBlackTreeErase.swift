@@ -24,7 +24,7 @@ import Collections
 import Foundation
 
 @usableFromInline
-protocol ___RedBlackTreeEraseProtocol: ___RedBlackTreeContainer, EraseProtocol
+protocol ___RedBlackTreeEraseProtocol: ___RedBlackTreeContainer, StorageEraseProtocol
 {
   mutating func erase(_ __p: _NodePtr) -> _NodePtr
   mutating func erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
@@ -52,7 +52,10 @@ extension ___RedBlackTreeEraseProtocol {
   @inlinable
   @discardableResult
   mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
-    erase(from, to)
+    guard ___nodes[from].isValid, ___nodes[to].isValid else {
+      fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
+    }
+    return erase(from, to)
   }
 
   public mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -62,4 +65,3 @@ extension ___RedBlackTreeEraseProtocol {
 //    ___stock = []
   }
 }
-

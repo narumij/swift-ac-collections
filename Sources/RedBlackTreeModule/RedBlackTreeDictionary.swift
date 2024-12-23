@@ -212,9 +212,9 @@ extension RedBlackTreeDictionary: ___RedBlackTreeUpdate {
   @inlinable
   @inline(__always)
   mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafeMutablePointer(to: &___header) { header in
+    return try ___values.withUnsafeMutableBufferPointer { values in
       try ___nodes.withUnsafeMutableBufferPointer { nodes in
-        try ___values.withUnsafeMutableBufferPointer { values in
+        try withUnsafeMutablePointer(to: &___header) { header in
           try body(
             ___UnsafeMutatingHandle<Self>(
               __header_ptr: header,
@@ -252,6 +252,25 @@ extension RedBlackTreeDictionary {
     }
   }
 
+  @usableFromInline
+  struct ___ModifyHelper2 {
+    @inlinable @inline(__always)
+    init(setter: @escaping (Value) -> Void) {
+      self.setter = setter
+    }
+    @usableFromInline
+    var setter: (Value) -> Void
+    @inlinable
+    var value: Value? {
+      get { nil }
+      nonmutating set {
+        if let newValue {
+          setter(newValue)
+        }
+      }
+    }
+  }
+
   @inlinable
   public subscript(key: Key) -> Value? {
     get {
@@ -260,18 +279,45 @@ extension RedBlackTreeDictionary {
         return __ptr < 0 ? nil : ___values[__ptr].value
       }
     }
-    set {
-      let (__parent, __child, _) = _prepareForKeyingModify(key)
-      _finalizeKeyingModify(__parent, __child, key: key, value: newValue)
-    }
+    //    set {
+    //      let (__parent, __child, _) = _prepareForKeyingModify(key)
+    //      _finalizeKeyingModify(__parent, __child, key: key, value: newValue)
+    //    }
     _modify {
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
-        var value: Value?
-        defer {
-          _finalizeKeyingModify3(__parent, __child, key: key, value: value)
-        }
-        yield &value
+        #if true
+          var value: Value?
+          defer {
+            _finalizeKeyingModify3(__parent, __child, key: key, value: value)
+          }
+          // __construct_nodeを省くことで、配列の末尾を最初から使うことが可能かもしれない
+          yield &value
+        #else
+          func preconstruct() -> _NodePtr {
+            ___nodes.count
+          }
+          let __ptr = preconstruct()
+          var isNil = true
+          var localNodes = ___nodes
+          var localValues = ___values
+
+          let helper = ___ModifyHelper2 { value in
+            isNil = false
+            localNodes.append(.zero)
+            localValues.append((key, value))
+          }
+
+          defer {
+            if !isNil {
+              ___nodes = localNodes
+              ___values = localValues
+              __insert_node_at(__parent, __child, __ptr)
+            }
+          }
+
+          yield &helper.value
+        #endif
       } else {
         var helper = ___ModifyHelper(pointer: &___values[__ptr].value)
         defer {

@@ -56,3 +56,4 @@ extension ___UnsafeMutatingHandle: ___RedBlackTreeUpdateHandleImpl {}
 extension ___UnsafeMutatingHandle: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
 extension ___UnsafeMutatingHandle: InsertNodeAtProtocol {}
 extension ___UnsafeMutatingHandle: RemoveProtocol {}
+extension ___UnsafeMutatingHandle: EraseProtocol {}

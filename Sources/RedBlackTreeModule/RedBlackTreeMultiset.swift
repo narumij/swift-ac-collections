@@ -126,16 +126,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset: ValueComparer {
-
-  @inlinable @inline(__always)
-  static func __key(_ e: Element) -> Element { e }
-
-  @inlinable @inline(__always)
-  static func value_comp(_ a: Element, _ b: Element) -> Bool {
-    a < b
-  }
-}
+extension RedBlackTreeMultiset: ScalarComparer {}
 
 extension RedBlackTreeMultiset: ___RedBlackTreeUpdateBase {
 

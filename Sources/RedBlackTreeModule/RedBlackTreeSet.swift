@@ -227,16 +227,7 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet: ValueComparer {
-
-  @inlinable @inline(__always)
-  static func __key(_ e: Element) -> Element { e }
-
-  @inlinable @inline(__always)
-  static func value_comp(_ a: Element, _ b: Element) -> Bool {
-    a < b
-  }
-}
+extension RedBlackTreeSet: ScalarComparer {}
 
 extension RedBlackTreeSet: ___RedBlackTreeUpdateBase {
 

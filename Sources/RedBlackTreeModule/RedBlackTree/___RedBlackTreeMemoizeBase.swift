@@ -27,18 +27,27 @@ import Foundation
 ///
 ///  メモリ管理をゆるめにしている
 @frozen
-public struct ___RedBlackTreeMemoizeBase<KeyInfo, Value>
-where KeyInfo: ___RedBlackTreeKeyProtocol  //, KeyInfo.Key: Equatable
+public struct ___RedBlackTreeMemoizeBase<CustomKey, Value>
+where CustomKey: CustomKeyProtocol
 {
 
   public
-    typealias Key = KeyInfo.Key
+    typealias Key = CustomKey.Key
 
   public
     typealias Value = Value
 
+  public
+    typealias KeyValue = (key: Key, value: Value)
+  
+  public
+  typealias Element = KeyValue
+
   @usableFromInline
   typealias _Key = Key
+  
+  @usableFromInline
+  typealias _Value = Value
 
   public init() {
     ___header = .zero
@@ -77,20 +86,7 @@ where KeyInfo: ___RedBlackTreeKeyProtocol  //, KeyInfo.Key: Equatable
   public var isEmpty: Bool { count == 0 }
 }
 
-extension ___RedBlackTreeMemoizeBase: ValueComparer {
-
-  @inlinable
-  static func __key(_ kv: (Key, Value)) -> Key { kv.0 }
-
-  @inlinable
-  static func __value(_ kv: (Key, Value)) -> Value { kv.1 }
-
-  @inlinable
-  static func value_comp(_ a: Key, _ b: Key) -> Bool {
-    KeyInfo.value_comp(a, b)
-  }
-}
-
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeCustomKeyProtocol { }
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeContainerBase {}
 
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeUpdate {
@@ -115,7 +111,7 @@ extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeUpdate {
 extension ___RedBlackTreeMemoizeBase: InsertUniqueProtocol {
 
   @inlinable
-  mutating func __construct_node(_ k: (Key, Value)) -> _NodePtr {
+  mutating func __construct_node(_ k: KeyValue) -> _NodePtr {
     let n = Swift.min(___nodes.count, ___values.count)
     ___nodes.append(.zero)
     ___values.append(k)

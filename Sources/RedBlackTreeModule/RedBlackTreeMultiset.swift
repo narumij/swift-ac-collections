@@ -126,7 +126,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset: ScalarComparer {}
+extension RedBlackTreeMultiset: ScalarValueComparer {}
 
 extension RedBlackTreeMultiset: ___RedBlackTreeUpdateBase {
 

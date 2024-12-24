@@ -30,17 +30,43 @@ protocol ValueComparer {
   static func value_comp(_: _Key, _: _Key) -> Bool
 }
 
-
-@usableFromInline
-protocol ScalarComparer: ValueComparer where _Key == Element, Element: Comparable {}
-
-extension ScalarComparer {
-  
-  @inlinable @inline(__always)
-  static func __key(_ e: _Key) -> Element { e }
+extension ValueComparer where _Key: Comparable {
 
   @inlinable @inline(__always)
-  static func value_comp(_ a: Element, _ b: Element) -> Bool {
+  static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     a < b
   }
 }
+
+// MARK: key
+
+@usableFromInline
+protocol ScalarValueComparer: ValueComparer where _Key == Element {}
+
+extension ScalarValueComparer {
+  
+  @inlinable @inline(__always)
+  static func __key(_ e: Element) -> _Key { e }
+}
+
+// MARK: key value
+
+@usableFromInline
+protocol KeyValueComparer: ValueComparer {
+  associatedtype _Value
+}
+
+extension KeyValueComparer {
+  public typealias _KeyValue = (key: _Key, value: _Value)
+}
+
+extension KeyValueComparer where Element == _KeyValue {
+
+  @inlinable @inline(__always)
+  static func __key(_ e: Element) -> _Key { e.key }
+  
+  @inlinable @inline(__always)
+  static func __value(_ element: Element) -> _Value { element.value }
+}
+
+

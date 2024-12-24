@@ -41,10 +41,10 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias Values = [Value]
 
   @usableFromInline
-  typealias KeyInfo = ___RedBlackTree.KeyInfo<Key>
+  typealias _Key = Key
 
   @usableFromInline
-  typealias _Key = Key
+  typealias _Value = Value
 
   @usableFromInline
   var ___header: ___RedBlackTree.___Header
@@ -181,20 +181,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary: ValueComparer {
-
-  @inlinable @inline(__always)
-  static func __key(_ kv: KeyValue) -> Key { kv.key }
-
-  @inlinable @inline(__always)
-  static func __value(_ kv: KeyValue) -> Value { kv.value }
-
-  @inlinable @inline(__always)
-  static func value_comp(_ a: Key, _ b: Key) -> Bool {
-    KeyInfo.value_comp(a, b)
-  }
-}
-
+extension RedBlackTreeDictionary: KeyValueComparer {}
 extension RedBlackTreeDictionary: ___RedBlackTreeContainerBase {}
 
 extension RedBlackTreeDictionary: ___RedBlackTreeUpdateBase {

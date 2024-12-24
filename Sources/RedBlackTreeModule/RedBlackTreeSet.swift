@@ -227,7 +227,7 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet: ScalarComparer {}
+extension RedBlackTreeSet: ScalarValueComparer {}
 
 extension RedBlackTreeSet: ___RedBlackTreeUpdateBase {
 

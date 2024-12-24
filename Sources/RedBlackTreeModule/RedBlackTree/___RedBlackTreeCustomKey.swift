@@ -23,24 +23,21 @@
 import Foundation
 
 public
-  protocol ___RedBlackTreeKeyProtocol
+  protocol CustomKeyProtocol
 {
   associatedtype Key
   static func value_comp(_ a: Key, _ b: Key) -> Bool
 }
 
-extension ___RedBlackTree {
+@usableFromInline
+protocol ___RedBlackTreeCustomKeyProtocol: KeyValueComparer {
+  associatedtype CustomKey: CustomKeyProtocol
+}
 
-  @frozen
-  public
-    enum KeyInfo<Key: Comparable>: ___RedBlackTreeKeyProtocol
-  {
-    public typealias Key = Key
-    @inlinable
-    public static func
-      value_comp(_ a: Key, _ b: Key) -> Bool
-    {
-      a < b
-    }
+extension ___RedBlackTreeCustomKeyProtocol where _Key == CustomKey.Key {
+  
+  @inlinable
+  static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
+    CustomKey.value_comp(a, b)
   }
 }

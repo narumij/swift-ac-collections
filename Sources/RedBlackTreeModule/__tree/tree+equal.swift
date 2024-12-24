@@ -27,27 +27,6 @@ protocol EqualProtocol: ValueProtocol, RootProtocol, EndNodeProtocol {}
 
 extension EqualProtocol {
 
-  //  template <class _Tp, class _Compare, class _Allocator>
-  //  template <class _Key>
-  //  pair<typename __tree<_Tp, _Compare, _Allocator>::const_iterator,
-  //       typename __tree<_Tp, _Compare, _Allocator>::const_iterator>
-  //  __tree<_Tp, _Compare, _Allocator>::__equal_range_multi(const _Key& __k) const {
-  //    typedef pair<const_iterator, const_iterator> _Pp;
-  //    __iter_pointer __result = __end_node();
-  //    __node_pointer __rt     = __root();
-  //    while (__rt != nullptr) {
-  //      if (value_comp()(__k, __rt->__value_)) {
-  //        __result = static_cast<__iter_pointer>(__rt);
-  //        __rt     = static_cast<__node_pointer>(__rt->__left_);
-  //      } else if (value_comp()(__rt->__value_, __k))
-  //        __rt = static_cast<__node_pointer>(__rt->__right_);
-  //      else
-  //        return _Pp(__lower_bound(__k, static_cast<__node_pointer>(__rt->__left_), static_cast<__iter_pointer>(__rt)),
-  //                   __upper_bound(__k, static_cast<__node_pointer>(__rt->__right_), __result));
-  //    }
-  //    return _Pp(const_iterator(__result), const_iterator(__result));
-  //  }
-
   @inlinable
   func
     __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)

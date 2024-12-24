@@ -434,7 +434,7 @@ extension ___RedBlackTreeContainerBase {
   }
 
   @inlinable
-  public func ___element_sequence__<T>(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index,_ transform: (Element) throws -> T)
+  public func ___element_sequence__<T>(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index, transform: (Element) throws -> T)
     rethrows -> [T]
   {
     try _read { tree in
@@ -447,13 +447,13 @@ extension ___RedBlackTreeContainerBase {
   }
   
   @inlinable
-  public func ___element_sequence__(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index,_ predicate: (Element) throws -> Bool)
+  public func ___element_sequence__(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index, isIncluded: (Element) throws -> Bool)
     rethrows -> [Element]
   {
     try _read { tree in
       var result = [Element]()
       try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-        if try predicate(___values[__p]) {
+        if try isIncluded(___values[__p]) {
           result.append(___values[__p])
         }
       }
@@ -504,7 +504,7 @@ extension ___RedBlackTreeContainerBase {
   public func ___element_sequence__<T>(_ transform: (Element) throws -> T)
     rethrows -> [T]
   {
-    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), transform)
+    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), transform: transform)
   }
 
   @inlinable @inline(__always)

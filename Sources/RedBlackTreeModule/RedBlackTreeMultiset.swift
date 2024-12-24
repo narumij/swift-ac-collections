@@ -716,16 +716,41 @@ extension RedBlackTreeMultiset: Equatable {
 extension RedBlackTreeMultiset {
 
   public typealias IndexRange = ___RedBlackTree.Range
-  public typealias SeqenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
-  public typealias EnumeratedElement = (position: Index, element: Element)
-
-  public typealias EnumeratedSequence = Array<EnumeratedElement>
-  public typealias ElementSequence = Array<Element>
+  public typealias ElementSequence = [Element]
 
   @inlinable
   public subscript(bounds: IndexRange) -> ElementSequence {
     ___element_sequence__(from: bounds.lhs, to: bounds.rhs)
   }
+}
+
+extension RedBlackTreeMultiset {
+
+  @inlinable public func map<T>(_ transform: (Element) throws -> T) rethrows -> [T] {
+    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), transform: transform)
+  }
+
+  @inlinable public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> [Element] {
+    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), isIncluded: isIncluded)
+  }
+
+  @inlinable public func reduce<Result>(
+    into initialResult: Result, _ updateAccumulatingResult: (inout Result, Element) throws -> Void
+  ) rethrows -> Result {
+    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), into: initialResult, updateAccumulatingResult)
+  }
+
+  @inlinable public func reduce<Result>(
+    _ initialResult: Result, _ nextPartialResult: (Result, Element) throws -> Result
+  ) rethrows -> Result {
+    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), initialResult, nextPartialResult)
+  }
+}
+
+extension RedBlackTreeMultiset {
+
+  public typealias EnumeratedElement = (position: Index, element: Element)
+  public typealias EnumeratedSequence = [EnumeratedElement]
 
   @inlinable
   public func enumerated() -> EnumeratedSequence {

@@ -464,12 +464,12 @@ extension RedBlackTreeSet: Collection {
     ___values[position.pointer]
   }
 
-  /// - Complexity: O(1)。
+  /// - Complexity: 償却された O(1)。
   @inlinable public func index(before i: Index) -> Index {
     ___index_prev(i)
   }
 
-  /// - Complexity: O(1)。
+  /// - Complexity: 償却された O(1)。
   @inlinable public func index(after i: Index) -> Index {
     ___index_next(i)
   }

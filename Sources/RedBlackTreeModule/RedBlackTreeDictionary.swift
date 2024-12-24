@@ -240,9 +240,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public subscript(key: Key) -> Value? {
-    get {
-      ___value_for(key)?.value
-    }
+    get { ___value_for(key)?.value }
     @inline(__always)
     _modify {
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
@@ -268,12 +266,7 @@ extension RedBlackTreeDictionary {
   public subscript(
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
-    get {
-      _read {
-        let __ptr = $0.find(key)
-        return __ptr < 0 ? defaultValue() : ___values[__ptr].value
-      }
-    }
+    get { ___value_for(key)?.value ?? defaultValue() }
     @inline(__always)
     _modify {
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)

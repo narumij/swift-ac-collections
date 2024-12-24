@@ -182,7 +182,7 @@ extension RedBlackTreeMultiset {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     guard let element = ___remove(at: index.pointer) else {
-      fatalError("Attempting to access RedBlackTreeMultiset elements using an invalid index")
+      fatalError(.invalidIndex)
     }
     return element
   }

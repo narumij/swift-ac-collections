@@ -293,7 +293,7 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     guard let element = ___remove(at: index.pointer) else {
-      fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
+      fatalError(.invalidIndex)
     }
     return element
   }

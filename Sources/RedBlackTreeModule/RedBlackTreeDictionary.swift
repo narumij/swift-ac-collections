@@ -404,7 +404,7 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
     guard let element = ___remove(at: index.pointer) else {
-      fatalError("Attempting to access RedBlackTreeDictionary elements using an invalid index")
+      fatalError(.invalidIndex)
     }
     return element
   }

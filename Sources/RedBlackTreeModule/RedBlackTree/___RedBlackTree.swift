@@ -24,3 +24,11 @@ import Foundation
 
 public enum ___RedBlackTree {}
 
+extension String {
+
+  @usableFromInline
+  static var invalidIndex = "Attempting to access RedBlackTree elements using an invalid index"
+
+  @usableFromInline
+  static var outOfBounds = "RedBlackTree index is out of Bound."
+}

@@ -163,7 +163,7 @@ extension ___RedBlackTreeRemove {
       return .end
     }
     guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
-      fatalError("Attempting to access RedBlackTree elements using an invalid index")
+      fatalError(.invalidIndex)
     }
     return ___erase(from, to)
   }
@@ -174,7 +174,7 @@ extension ___RedBlackTreeRemove {
       return
     }
     guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
-      fatalError("Attempting to access RedBlackTree elements using an invalid index")
+      fatalError(.invalidIndex)
     }
     return try ___erase(from, to, forEach: action)
   }
@@ -185,7 +185,7 @@ extension ___RedBlackTreeRemove {
       return initialResult
     }
     guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
-      fatalError("Attempting to access RedBlackTree elements using an invalid index")
+      fatalError(.invalidIndex)
     }
     return try ___erase(from, to, into: initialResult, updateAccumulatingResult)
   }
@@ -196,7 +196,7 @@ extension ___RedBlackTreeRemove {
       return initialResult
     }
     guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
-      fatalError("Attempting to access RedBlackTree elements using an invalid index")
+      fatalError(.invalidIndex)
     }
     return try ___erase(from, to, initialResult, nextPartialResult)
   }

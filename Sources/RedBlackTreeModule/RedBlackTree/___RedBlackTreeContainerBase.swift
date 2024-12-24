@@ -197,7 +197,7 @@ extension ___RedBlackTreeContainerBase {
     let i = i.pointer
     return _read { tree in
       guard i != tree.__begin_node, i == tree.__end_node() || ___nodes[i].isValid else {
-        fatalError("Attempting to access RedBlackTree elements using an invalid index")
+        fatalError(.invalidIndex)
       }
       return ___Index(tree.__tree_prev_iter(i))
     }
@@ -208,7 +208,7 @@ extension ___RedBlackTreeContainerBase {
     let i = i.pointer
     return _read { tree in
       guard i != tree.__end_node(), ___nodes[i].isValid else {
-        fatalError("Attempting to access RedBlackTree elements using an invalid index")
+        fatalError(.invalidIndex)
       }
       return ___Index(tree.__tree_next_iter(i))
     }
@@ -236,7 +236,7 @@ extension ___RedBlackTreeContainerBase {
   func pointer(
     _ ptr: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr? = .none) -> _NodePtr {
     guard ptr == ___end() || ___nodes[ptr].isValid else {
-      fatalError("Attempting to access RedBlackTree elements using an invalid index")
+      fatalError(.invalidIndex)
     }
     return distance > 0
       ? pointer(ptr, nextBy: UInt(distance), limitedBy: limit)
@@ -253,7 +253,7 @@ extension ___RedBlackTreeContainerBase {
       while distance != 0, ptr != limit {
         // __begin_nodeを越えない
         guard ptr != tree.__begin_node else {
-          fatalError("RedBlackTree index is out of Bound.")
+          fatalError(.outOfBounds)
         }
         ptr = tree.__tree_prev_iter(ptr)
         distance -= 1
@@ -276,7 +276,7 @@ extension ___RedBlackTreeContainerBase {
       while distance != 0, ptr != limit {
         // __end_node()を越えない
         guard ptr != tree.__end_node() else {
-          fatalError("RedBlackTree index is out of Bound.")
+          fatalError(.outOfBounds)
         }
         ptr = tree.__tree_next_iter(ptr)
         distance -= 1

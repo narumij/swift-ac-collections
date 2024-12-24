@@ -386,7 +386,7 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func removeFirst() -> Element {
     guard !isEmpty else {
-      preconditionFailure("Can't removeFirst from an empty RedBlackTreeDictionary")
+      preconditionFailure(.emptyFirst)
     }
     return remove(at: startIndex)
   }
@@ -395,7 +395,7 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func removeLast() -> Element {
     guard !isEmpty else {
-      preconditionFailure("Can't removeFirst from an empty RedBlackTreeDictionary")
+      preconditionFailure(.emptyLast)
     }
     return remove(at: index(before: endIndex))
   }

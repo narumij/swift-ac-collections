@@ -31,4 +31,10 @@ extension String {
 
   @usableFromInline
   static var outOfBounds = "RedBlackTree index is out of Bound."
+  
+  @usableFromInline
+  static var emptyFirst = "Can't removeFirst from an empty RedBlackTree"
+  
+  @usableFromInline
+  static var emptyLast = "Can't removeLast from an empty RedBlackTree"
 }

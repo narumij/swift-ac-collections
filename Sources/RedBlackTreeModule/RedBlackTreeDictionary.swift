@@ -229,7 +229,6 @@ extension RedBlackTreeDictionary: ___RedBlackTreeUpdate {
 extension RedBlackTreeDictionary: InsertUniqueProtocol {}
 extension RedBlackTreeDictionary: ___RedBlackTreeDirectReadImpl {}
 extension RedBlackTreeDictionary: ___RedBlackTreeDestroyProtocol {}
-extension RedBlackTreeDictionary: ___RedBlackTreeEraseProtocol {}
 
 extension RedBlackTreeDictionary {
 

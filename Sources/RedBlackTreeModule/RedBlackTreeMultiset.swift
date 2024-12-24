@@ -257,7 +257,6 @@ extension RedBlackTreeMultiset: ___RedBlackTreeUpdate {
 }
 
 extension RedBlackTreeMultiset: InsertMultiProtocol {}
-extension RedBlackTreeMultiset: ___RedBlackTreeEraseProtocol {}
 extension RedBlackTreeMultiset: ___RedBlackTreeDestroyProtocol {}
 extension RedBlackTreeMultiset: ___RedBlackTreeDirectReadImpl {}
 

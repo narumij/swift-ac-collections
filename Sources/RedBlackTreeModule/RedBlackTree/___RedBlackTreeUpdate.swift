@@ -26,6 +26,7 @@ import Foundation
 protocol ___RedBlackTreeUpdate {
   associatedtype VC: ValueComparer
   mutating func _update<R>(_ body: (___UnsafeMutatingHandle<VC>) throws -> R) rethrows -> R
+  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<VC>, (_NodePtr) -> Void) throws -> R) rethrows -> R
 }
 
 extension ___RedBlackTreeUpdate {
@@ -47,36 +48,9 @@ extension ___RedBlackTreeUpdate {
       tree.__remove_node_pointer(__ptr)
     }
   }
-}
-
-@usableFromInline
-protocol ___RedBlackTreeDestroyProtocol: ___RedBlackTreeContainer, ___RedBlackTreeUpdate
-where Self._Key == VC._Key {
-}
-
-extension ___RedBlackTreeDestroyProtocol {
-
+  
   @inlinable
-  @inline(__always)
-  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<VC>, (_NodePtr) -> Void) throws -> R)
-    rethrows -> R
-  {
-    var destroyed = [_NodePtr]()
-    func ___destroy(_ p: _NodePtr) {
-      destroyed.append(p)
-    }
-    defer {
-      destroyed.forEach {
-        destroy($0)
-      }
-    }
-    return try _update { tree in
-      try body(tree, ___destroy)
-    }
-  }
-
-  @inlinable
-  mutating func ___erase_multi___(_ __k: _Key) -> Int {
+  mutating func ___erase_multi___(_ __k: VC._Key) -> Int {
     _update { tree, ___destroy in
       var __p = tree.__equal_range_multi(__k)
       var __r = 0
@@ -89,7 +63,7 @@ extension ___RedBlackTreeDestroyProtocol {
   }
 
   @inlinable
-  mutating func ___erase_unique___(_ __k: _Key) -> Bool {
+  mutating func ___erase_unique___(_ __k: VC._Key) -> Bool {
     _update { tree, ___destroy in
       let __i = tree.find(__k)
       if __i == tree.end() {
@@ -113,6 +87,31 @@ extension ___RedBlackTreeDestroyProtocol {
   mutating func ___erase___(_ l: _NodePtr, _ r: _NodePtr) -> _NodePtr {
     _update { tree, ___destroy in
       tree.erase(___destroy: ___destroy, l, r)
+    }
+  }
+}
+
+@usableFromInline
+protocol ___RedBlackTreeDestroyProtocol: ___RedBlackTreeContainer, ___RedBlackTreeUpdate {}
+
+extension ___RedBlackTreeDestroyProtocol {
+
+  @inlinable
+  @inline(__always)
+  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<VC>, (_NodePtr) -> Void) throws -> R)
+    rethrows -> R
+  {
+    var destroyed = [_NodePtr]()
+    func ___destroy(_ p: _NodePtr) {
+      destroyed.append(p)
+    }
+    defer {
+      destroyed.forEach {
+        destroy($0)
+      }
+    }
+    return try _update { tree in
+      try body(tree, ___destroy)
     }
   }
 

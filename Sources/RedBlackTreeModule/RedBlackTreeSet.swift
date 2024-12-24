@@ -240,7 +240,6 @@ extension RedBlackTreeSet: ___RedBlackTreeUpdate {
 }
 
 extension RedBlackTreeSet: InsertUniqueProtocol {}
-extension RedBlackTreeSet: ___RedBlackTreeEraseProtocol {}
 extension RedBlackTreeSet: ___RedBlackTreeDestroyProtocol {}
 extension RedBlackTreeSet: ___RedBlackTreeDirectReadImpl & ValueProtocol {
   @usableFromInline

@@ -110,6 +110,25 @@ extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeUpdate {
       }
     }
   }
+  
+  @inlinable
+  @inline(__always)
+  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>, (_NodePtr) -> Void) throws -> R)
+    rethrows -> R
+  {
+    var destroyed = [_NodePtr]()
+    func ___destroy(_ p: _NodePtr) {
+      destroyed.append(p)
+    }
+    defer {
+      destroyed.forEach {
+        destroy($0)
+      }
+    }
+    return try _update { tree in
+      try body(tree, ___destroy)
+    }
+  }
 }
 
 
@@ -129,9 +148,4 @@ extension ___RedBlackTreeMemoizeBase: InsertUniqueProtocol {
   }
 }
 
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeDirectReadImpl {
-  @inlinable
-  mutating func ___erase_unique___(_ __k: _Key) -> Bool {
-    fatalError()
-  }
-}
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeDirectReadImpl {}

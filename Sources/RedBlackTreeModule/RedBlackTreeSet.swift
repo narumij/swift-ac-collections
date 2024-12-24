@@ -496,7 +496,7 @@ extension RedBlackTreeSet {
     ___index(i, offsetBy: distance, limitedBy: limit, type: "RedBlackTreeSet")
   }
 
-  /// O(*n*)
+  /// 償却された O(*n*)
   @inlinable
   public func distance(from start: Index, to end: Index) -> Int {
     ___distance(from: start, to: end)

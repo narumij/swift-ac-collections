@@ -150,21 +150,19 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// 赤黒木セットが空であるかどうかを示すブール値。
+  /// - 計算量: O(1)
   @inlinable
   public var isEmpty: Bool {
     ___isEmpty
   }
 
-  /// 赤黒木セットに含まれる要素の数。
-  ///
   /// - 計算量: O(1)
   @inlinable
   public var count: Int {
     ___count
   }
 
-  /// 新しい領域を割り当てることなく、赤黒木セットが格納できる要素の総数。
+  /// - 計算量: O(1)
   @inlinable
   public var capacity: Int {
     ___capacity
@@ -173,17 +171,6 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// 指定された要素数を格納するのに十分な領域を確保します。
-  ///
-  /// 挿入する要素数が事前にわかっている場合、このメソッドを使用すると、
-  /// 複数回の領域再割り当てを避けることができます。このメソッドは、
-  /// 赤黒木セットが一意で変更可能な連続した領域を持つようにし、
-  /// 少なくとも指定された要素数を格納できる領域を確保します。
-  ///
-  /// 既存のストレージに `minimumCapacity` 個の要素を格納できる余地があったとしても、
-  /// `reserveCapacity(_:)` メソッドを呼び出すと、連続した新しい領域へのコピーが発生します。
-  ///
-  /// - Parameter minimumCapacity: 確保したい要素数。
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     ___nodes.reserveCapacity(minimumCapacity)
@@ -530,7 +517,6 @@ extension RedBlackTreeDictionary: CustomStringConvertible, CustomDebugStringConv
 
   // MARK: - CustomStringConvertible
 
-  /// 人間が読みやすい形式で辞書の内容を文字列として表現します。
   @inlinable
   public var description: String {
     let pairs = map { "\($0.key): \($0.value)" }
@@ -539,7 +525,6 @@ extension RedBlackTreeDictionary: CustomStringConvertible, CustomDebugStringConv
 
   // MARK: - CustomDebugStringConvertible
 
-  /// デバッグ時に辞書の詳細情報を含む文字列を返します。
   @inlinable
   public var debugDescription: String {
     return "RedBlackTreeDictionary(\(description))"

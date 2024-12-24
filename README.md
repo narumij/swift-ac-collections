@@ -1,64 +1,86 @@
 # swift-ac-collections
 
-`swift-ac-collections` は、競技プログラミングで利用するために作成された、赤黒木（Red-Black Tree）を基盤としたコレクションライブラリです。このプロジェクトでは、LLVMの `__tree` を Swift に移植し、平衡二分木を活用したさまざまなデータ構造を提供します。
+`swift-ac-collections` は、Swift で実装された赤黒木（Red-Black Tree）ベースのコレクションライブラリです。  
+競技プログラミング等での高速な挿入・削除・探索が必要な場合に役立ちます。
 
 ## 利用方法
 
-SwiftPM で `swift-ac-collections` を利用するには、以下を `Package.swift` に追加してください。
+### Swift Package Manager での利用
 
-```swift
+`Package.swift` の `dependencies` に以下を追加してください:
+
 dependencies: [
   .package(url: "https://github.com/narumij/swift-ac-collections.git", from: "0.0.1"),
 ]
-```
 
-ビルドターゲットに以下を追加します。
+さらに、ビルドターゲットに以下を追加します:
 
-```swift
 dependencies: [
   .product(name: "AcCollections", package: "swift-ac-collections")
 ]
-```
 
-ソースコードに以下を記述してインポートします。
+ソースコード上で以下を記述してインポートできます:
 
-```swift
 import AcCollections
-```
 
 ## 内容
 
 ### RedBlackTreeModule
 
-[平衡二分木](https://ja.wikipedia.org/wiki/平衡二分探索木)の一種である [赤黒木](https://ja.wikipedia.org/wiki/赤黒木) を用いたコレクションを実装しています。このモジュールは、以下の3つのデータ構造を提供します：
+本ライブラリでは、赤黒木（Red-Black Tree）を用いて以下のコレクションを提供しています。
 
-#### RedBlackTreeSet
-- 二分探索木をベースにした集合(Set)のデータ構造です。
-- 要素の挿入、削除、探索を効率的に行えます。
+#### 1. RedBlackTreeSet
 
-以下のリンクから具体的な使用例を見ることができます：
-- [使用例](https://atcoder.jp/contests/abc385/submissions/61003801)
+- **重複なし** の要素を管理する Set。  
+- 要素の挿入・削除・探索を平均的に `O(log n)` で行えます。  
+- `Collection` に適合しており、インデックスによる要素アクセスや `startIndex` / `endIndex` などが利用可能です。  
+- 境界探索メソッド（`lowerBound` / `upperBound`）なども提供しています。  
+- 使用例: [AtCoder 提出例](https://atcoder.jp/contests/abc370/submissions/57922896) / [AtCoder 提出例](https://atcoder.jp/contests/abc385/submissions/61003801) など。
 
-#### RedBlackTreeMultiSet
-- 重複要素を許容する集合(MultiSet)のデータ構造です。
-- 同じ要素を複数回保持できる点が `RedBlackTreeSet` との違いです。
+#### 2. RedBlackTreeMultiSet
 
-以下のリンクから具体的な使用例を見ることができます：
-- [使用例](https://atcoder.jp/contests/abc358/submissions/59018223)
+- **重複あり** の要素を管理する MultiSet。  
+- `count(_:)` により、特定の要素が何個含まれるかを取得できます。  
+- その他の特性や使い方は `RedBlackTreeSet` に準じます。  
+- 使用例: [AtCoder 提出例](https://atcoder.jp/contests/abc358/submissions/59018223) など。
 
-#### RedBlackTreeDictionary
-- 辞書(Dictionary)として利用可能なキーと値のペアを管理するデータ構造です。
+#### 3. RedBlackTreeDictionary
 
-### TreeSet等との差異
+- **キーと値** を管理する Dictionary。  
+- 基本的なキー検索・挿入・削除などの操作を `O(log n)` で行えます。  
+- 連想配列リテラル（`ExpressibleByDictionaryLiteral`）にも対応しています。
 
-~謹製のTreeSetは集合操作に長けていますが、BidirectionaCollectionに対応していないこともあり、クエリー的な用途で不利となっています。~
-~対してこちらの実装では、BidirectionalCollectionへ対応していることと、lowerBoundやupperBoundがあることで、クエリー的な用途でも使えるようになっています。~
-~一方で集合的な操作に関してはほとんど実装しておりません。そういった用途には標準のSetや、その他集合のコレクションをご利用ください。~
+## 簡単な使用例
 
-Collection適合で十分動くため、BidirectionaCollectionへの適合はやめました。index操作は双方向可能です。
+import AcCollections
+
+// RedBlackTreeSet の例
+var set = RedBlackTreeSet<Int>()
+set.insert(10)
+set.insert(5)
+set.insert(5)    // 重複は無視される
+print(set)       // 例: [5, 10]
+print(set.min()) // 例: Optional(5)
+
+// RedBlackTreeMultiSet の例
+var multiset = RedBlackTreeMultiSet<Int>([1, 2, 2, 3])
+multiset.insert(2)
+print(multiset)       // 例: [1, 2, 2, 2, 3]
+print(multiset.count(2))  // 例: 3
+
+// RedBlackTreeDictionary の例
+var dict = RedBlackTreeDictionary<String, Int>()
+dict["apple"] = 5
+dict["banana"] = 3
+print(dict) // 例: [apple: 5, banana: 3]
 
 ## ライセンス
 
-このプロジェクトは LLVM の派生成果物であり、特例が不要であるため、Apache 2.0 ライセンスに基づいて公開されています。
+このライブラリは [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) に基づいて配布しています。  
+本コードは LLVM による実装をもとに改変したものであり、オリジナルのライセンスに関しては  
+[https://llvm.org/LICENSE.txt](https://llvm.org/LICENSE.txt) をご参照ください。
 
-もしライセンスに関して誤解や間違いがある場合は、ご指摘いただけると幸いです。
+---
+
+不具合報告や機能追加の要望は、Issue または Pull Request をお寄せください。  
+ご利用いただきありがとうございます！

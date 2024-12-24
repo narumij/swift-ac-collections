@@ -9,19 +9,25 @@
 
 `Package.swift` の `dependencies` に以下を追加してください:
 
+```
 dependencies: [
   .package(url: "https://github.com/narumij/swift-ac-collections.git", from: "0.0.1"),
 ]
+```
 
 さらに、ビルドターゲットに以下を追加します:
 
+```
 dependencies: [
   .product(name: "AcCollections", package: "swift-ac-collections")
 ]
+```
 
 ソースコード上で以下を記述してインポートできます:
 
+```
 import AcCollections
+```
 
 ## 内容
 
@@ -52,6 +58,7 @@ import AcCollections
 
 ## 簡単な使用例
 
+```
 import AcCollections
 
 // RedBlackTreeSet の例
@@ -73,6 +80,7 @@ var dict = RedBlackTreeDictionary<String, Int>()
 dict["apple"] = 5
 dict["banana"] = 3
 print(dict) // 例: [apple: 5, banana: 3]
+```
 
 ## ライセンス
 

@@ -25,9 +25,9 @@ import Foundation
 @usableFromInline
 protocol ___RedBlackTreeDirectReadImpl: MemberProtocol & RootImpl & RefImpl & RootPtrImpl {
   associatedtype Element
-  var ___header: ___RedBlackTree.___Header { get set }
-  var ___nodes: [___RedBlackTree.___Node] { get set }
-  var ___values: [Element] { get set }
+  var ___header: ___RedBlackTree.___Header { get }
+  var ___nodes: [___RedBlackTree.___Node] { get }
+  var ___values: [Element] { get }
 }
 
 extension ___RedBlackTreeDirectReadImpl {

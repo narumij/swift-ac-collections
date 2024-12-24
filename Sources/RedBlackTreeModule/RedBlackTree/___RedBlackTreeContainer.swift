@@ -33,7 +33,7 @@ extension ___RedBlackTreeContainer {
   mutating func ___garbageCollect() {
     // 未使用末尾を開放する
     var last = ___nodes.count
-    if last != 0, !___stock.isEmpty, ___stock.max == last - 1 {
+    while last != 0, !___stock.isEmpty, ___stock.max == last - 1 {
       _ = ___stock.popMax()
       last -= 1
     }

@@ -70,11 +70,14 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-
+  
   @inlinable
   public func enumerated(lowerBound from: Element, upperBound to: Element) -> EnumeratedSequence {
     ___enumerated_sequence__(from: lowerBound(from), to: upperBound(to))
   }
+}
+
+extension RedBlackTreeSet {
 
   @inlinable
   public mutating func removeAndForEach(

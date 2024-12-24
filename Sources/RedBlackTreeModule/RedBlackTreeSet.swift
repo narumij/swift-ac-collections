@@ -157,12 +157,7 @@ extension RedBlackTreeSet: ___RedBlackTreeUpdateBase {
 
 extension RedBlackTreeSet: InsertUniqueProtocol {}
 extension RedBlackTreeSet: ___RedBlackTreeRemove {}
-extension RedBlackTreeSet: ___RedBlackTreeDirectReadImpl & ValueProtocol {
-  @usableFromInline
-  func value_comp(_ a: Element, _ b: Element) -> Bool {
-    Self.value_comp(a, b)
-  }
-}
+extension RedBlackTreeSet: ___RedBlackTreeDirectReadImpl {}
 
 extension RedBlackTreeSet {
 

@@ -9,7 +9,7 @@
 
 `Package.swift` の `dependencies` に以下を追加してください:
 
-```
+```Swift
 dependencies: [
   .package(url: "https://github.com/narumij/swift-ac-collections.git", from: "0.0.1"),
 ]
@@ -17,7 +17,7 @@ dependencies: [
 
 さらに、ビルドターゲットに以下を追加します:
 
-```
+```Swift
 dependencies: [
   .product(name: "AcCollections", package: "swift-ac-collections")
 ]
@@ -25,7 +25,7 @@ dependencies: [
 
 ソースコード上で以下を記述してインポートできます:
 
-```
+```Swift
 import AcCollections
 ```
 
@@ -58,7 +58,7 @@ import AcCollections
 
 ## 簡単な使用例
 
-```
+```Swift
 import AcCollections
 
 // RedBlackTreeSet の例

@@ -302,11 +302,11 @@ extension RedBlackTreeMultiset: Collection {
   }
 
   @inlinable public func index(before i: Index) -> Index {
-    ___index_prev(i, type: "RedBlackTreeMultiset")
+    ___index_prev(i)
   }
 
   @inlinable public func index(after i: Index) -> Index {
-    ___index_next(i, type: "RedBlackTreeMultiset")
+    ___index_next(i)
   }
 
   @inlinable public var startIndex: Index {

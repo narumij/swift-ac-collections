@@ -466,12 +466,12 @@ extension RedBlackTreeSet: Collection {
 
   /// - Complexity: O(1)。
   @inlinable public func index(before i: Index) -> Index {
-    ___index_prev(i, type: "RedBlackTreeSet")
+    ___index_prev(i)
   }
 
   /// - Complexity: O(1)。
   @inlinable public func index(after i: Index) -> Index {
-    ___index_next(i, type: "RedBlackTreeSet")
+    ___index_next(i)
   }
 
   /// - Complexity: O(1)

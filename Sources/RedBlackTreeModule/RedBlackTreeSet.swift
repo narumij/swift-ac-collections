@@ -220,7 +220,7 @@ extension RedBlackTreeSet: ValueComparer {
   }
 }
 
-extension RedBlackTreeSet: ___RedBlackTreeUpdate {
+extension RedBlackTreeSet: ___RedBlackTreeUpdateBase {
 
   // プロトコルでupdateが書けなかったため、個別で実装している
   @inlinable @inline(__always)
@@ -240,7 +240,7 @@ extension RedBlackTreeSet: ___RedBlackTreeUpdate {
 }
 
 extension RedBlackTreeSet: InsertUniqueProtocol {}
-extension RedBlackTreeSet: ___RedBlackTreeDestroyProtocol {}
+extension RedBlackTreeSet: ___RedBlackTreeRemove {}
 extension RedBlackTreeSet: ___RedBlackTreeDirectReadImpl & ValueProtocol {
   @usableFromInline
   func value_comp(_ a: Element, _ b: Element) -> Bool {
@@ -332,7 +332,7 @@ extension RedBlackTreeSet {
   /// - Returns: 指定された `member` がセットに含まれていた場合、その値を返します。それ以外の場合は `nil` を返します。
   @discardableResult
   @inlinable public mutating func remove(_ member: Element) -> Element? {
-    ___erase_unique___(member) ? member : nil
+    ___erase_unique(member) ? member : nil
   }
 
   /// 指定されたインデックス位置にある要素を赤黒木セットから削除します。
@@ -343,7 +343,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    guard let element = ___remove___(at: index.pointer) else {
+    guard let element = ___remove(at: index.pointer) else {
       fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
     }
     return element
@@ -388,12 +388,12 @@ extension RedBlackTreeSet {
 
   @inlinable
   public mutating func remove(from: Index, to: Index) {
-    ___remove___(from: from.pointer, to: to.pointer)
+    ___remove(from: from.pointer, to: to.pointer)
   }
   
   @inlinable
   public mutating func removeSubrange(_ range: ___RedBlackTree.Range) {
-    ___remove___(from: range.lhs.pointer, to: range.rhs.pointer)
+    ___remove(from: range.lhs.pointer, to: range.rhs.pointer)
   }
 
   /// 赤黒木セットからすべての要素を削除します。

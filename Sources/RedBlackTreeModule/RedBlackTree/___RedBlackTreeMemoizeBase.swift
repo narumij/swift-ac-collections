@@ -61,7 +61,7 @@ where KeyInfo: ___RedBlackTreeKeyProtocol  //, KeyInfo.Key: Equatable
       if let newValue {
         _ = __insert_unique((key, newValue))
       } else {
-        _ = ___erase_unique___(key)
+        _ = ___erase_unique(key)
       }
     }
   }
@@ -110,27 +110,7 @@ extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeUpdate {
       }
     }
   }
-  
-  @inlinable
-  @inline(__always)
-  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>, (_NodePtr) -> Void) throws -> R)
-    rethrows -> R
-  {
-    var destroyed = [_NodePtr]()
-    func ___destroy(_ p: _NodePtr) {
-      destroyed.append(p)
-    }
-    defer {
-      destroyed.forEach {
-        destroy($0)
-      }
-    }
-    return try _update { tree in
-      try body(tree, ___destroy)
-    }
-  }
 }
-
 
 extension ___RedBlackTreeMemoizeBase: InsertUniqueProtocol {
 

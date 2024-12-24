@@ -23,13 +23,12 @@
 import Foundation
 
 @usableFromInline
-protocol ___RedBlackTreeUpdate {
+protocol ___RedBlackTreeUpdateBase {
   associatedtype VC: ValueComparer
   mutating func _update<R>(_ body: (___UnsafeMutatingHandle<VC>) throws -> R) rethrows -> R
-  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<VC>, (_NodePtr) -> Void) throws -> R) rethrows -> R
 }
 
-extension ___RedBlackTreeUpdate {
+extension ___RedBlackTreeUpdateBase {
 
   @inlinable
   mutating func __insert_node_at(
@@ -41,65 +40,17 @@ extension ___RedBlackTreeUpdate {
       tree.__insert_node_at(__parent, __child, __new_node)
     }
   }
-
-  @inlinable
-  mutating func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {
-    _update { tree in
-      tree.__remove_node_pointer(__ptr)
-    }
-  }
-  
-  @inlinable
-  mutating func ___erase_multi___(_ __k: VC._Key) -> Int {
-    _update { tree, ___destroy in
-      var __p = tree.__equal_range_multi(__k)
-      var __r = 0
-      while __p.0 != __p.1 {
-        defer { __r += 1 }
-        __p.0 = tree.erase(___destroy: ___destroy, __p.0)
-      }
-      return __r
-    }
-  }
-
-  @inlinable
-  mutating func ___erase_unique___(_ __k: VC._Key) -> Bool {
-    _update { tree, ___destroy in
-      let __i = tree.find(__k)
-      if __i == tree.end() {
-        return false
-      }
-      _ = tree.erase(___destroy: ___destroy, __i)
-      return true
-    }
-  }
-
-  @inlinable
-  @discardableResult
-  mutating func ___erase___(_ r: _NodePtr) -> _NodePtr {
-    _update { tree, ___destroy in
-      tree.erase(___destroy: ___destroy, r)
-    }
-  }
-
-  @inlinable
-  @discardableResult
-  mutating func ___erase___(_ l: _NodePtr, _ r: _NodePtr) -> _NodePtr {
-    _update { tree, ___destroy in
-      tree.erase(___destroy: ___destroy, l, r)
-    }
-  }
 }
 
 @usableFromInline
-protocol ___RedBlackTreeDestroyProtocol: ___RedBlackTreeContainer, ___RedBlackTreeUpdate {}
+protocol ___RedBlackTreeUpdate: ___RedBlackTreeUpdateBase, StorageProtocol { }
 
-extension ___RedBlackTreeDestroyProtocol {
-
+extension ___RedBlackTreeUpdate {
+  
   @inlinable
   @inline(__always)
   mutating func _update<R>(_ body: (___UnsafeMutatingHandle<VC>, (_NodePtr) -> Void) throws -> R)
-    rethrows -> R
+  rethrows -> R
   {
     var destroyed = [_NodePtr]()
     func ___destroy(_ p: _NodePtr) {
@@ -114,10 +65,57 @@ extension ___RedBlackTreeDestroyProtocol {
       try body(tree, ___destroy)
     }
   }
+  
+  @inlinable
+  mutating func ___erase_multi(_ __k: VC._Key) -> Int {
+    _update { tree, ___destroy in
+      var __p = tree.__equal_range_multi(__k)
+      var __r = 0
+      while __p.0 != __p.1 {
+        defer { __r += 1 }
+        __p.0 = tree.erase(___destroy, __p.0)
+      }
+      return __r
+    }
+  }
+
+  @inlinable
+  mutating func ___erase_unique(_ __k: VC._Key) -> Bool {
+    _update { tree, ___destroy in
+      let __i = tree.find(__k)
+      if __i == tree.end() {
+        return false
+      }
+      _ = tree.erase(___destroy, __i)
+      return true
+    }
+  }
 
   @inlinable
   @discardableResult
-  mutating func ___remove___(at ptr: _NodePtr) -> Element? {
+  mutating func ___erase(_ r: _NodePtr) -> _NodePtr {
+    _update { tree, ___destroy in
+      tree.erase(___destroy, r)
+    }
+  }
+
+  @inlinable
+  @discardableResult
+  mutating func ___erase(_ l: _NodePtr, _ r: _NodePtr) -> _NodePtr {
+    _update { tree, ___destroy in
+      tree.erase(___destroy, l, r)
+    }
+  }
+}
+
+@usableFromInline
+protocol ___RedBlackTreeRemove: ___RedBlackTreeContainer, ___RedBlackTreeUpdate {}
+
+extension ___RedBlackTreeRemove {
+
+  @inlinable
+  @discardableResult
+  mutating func ___remove(at ptr: _NodePtr) -> Element? {
     guard
       // 下二つのコメントアウトと等価
       0 <= ptr,
@@ -128,19 +126,19 @@ extension ___RedBlackTreeDestroyProtocol {
       return nil
     }
     let e = ___values[ptr]
-    _ = ___erase___(ptr)
+    _ = ___erase(ptr)
     return e
   }
 
   @inlinable
   @discardableResult
-  mutating func ___remove___(from: _NodePtr, to: _NodePtr) -> _NodePtr {
+  mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
     guard from != .end else {
       return .end
     }
     guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
       fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
     }
-    return ___erase___(from, to)
+    return ___erase(from, to)
   }
 }

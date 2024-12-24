@@ -207,7 +207,7 @@ extension RedBlackTreeDictionary: ValueComparer {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeContainerBase {}
 
-extension RedBlackTreeDictionary: ___RedBlackTreeUpdate {
+extension RedBlackTreeDictionary: ___RedBlackTreeUpdateBase {
 
   @inlinable
   @inline(__always)
@@ -228,7 +228,7 @@ extension RedBlackTreeDictionary: ___RedBlackTreeUpdate {
 
 extension RedBlackTreeDictionary: InsertUniqueProtocol {}
 extension RedBlackTreeDictionary: ___RedBlackTreeDirectReadImpl {}
-extension RedBlackTreeDictionary: ___RedBlackTreeDestroyProtocol {}
+extension RedBlackTreeDictionary: ___RedBlackTreeRemove {}
 
 extension RedBlackTreeDictionary {
 
@@ -285,7 +285,7 @@ extension RedBlackTreeDictionary {
         var helper = ___ModifyHelper(pointer: &___values[__ptr].value)
         defer {
           if helper.isNil {
-            _ = ___erase___(__ptr)
+            _ = ___erase(__ptr)
           }
         }
         yield &helper.value
@@ -387,7 +387,7 @@ extension RedBlackTreeDictionary {
         return nil
       }
       let value = ___values___[__i].value
-      _ = tree.erase(___destroy: ___destroy, __i)
+      _ = tree.erase(___destroy, __i)
       return value
     }
   }
@@ -395,7 +395,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
-    guard let element = ___remove___(at: index.pointer) else {
+    guard let element = ___remove(at: index.pointer) else {
       fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
     }
     return element

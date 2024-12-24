@@ -39,7 +39,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-  
+
   /// 範囲削除を行う場合に使用する
   ///
   /// remove(at:)後のIndexは不正となり、利用できなくなる
@@ -64,8 +64,8 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   @inlinable
-  public subscript(bounds: Range<Element>) -> Array<Element> {
-    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
+  public subscript(bounds: Range<Element>) -> [Element] {
+    self[lowerBound(bounds.lowerBound)..<upperBound(bounds.upperBound)]
   }
 }
 
@@ -74,5 +74,39 @@ extension RedBlackTreeSet {
   @inlinable
   public func enumerated(lowerBound from: Element, upperBound to: Element) -> EnumeratedSequence {
     ___enumerated_sequence__(from: lowerBound(from), to: upperBound(to))
+  }
+
+  @inlinable
+  public mutating func removeAndReduce(
+    lowerbound from: Element, upperbound to: Element,
+    forEach action: (Element) throws -> ()) rethrows {
+    try ___remove(
+      from: lowerBound(from),
+      to: upperBound(to),
+      forEach: action)
+  }
+
+  @inlinable
+  public mutating func removeAndReduce<Result>(
+    lowerbound from: Element, upperbound to: Element,
+    into initialResult: Result,
+    _ updateAccumulatingResult: (inout Result, Element) throws -> Void
+  ) rethrows -> Result {
+    try ___remove(
+      from: lowerBound(from),
+      to: upperBound(to),
+      into: initialResult, updateAccumulatingResult)
+  }
+
+  @inlinable
+  public mutating func removeBetween<Result>(
+    lowerbound from: Element, upperbound to: Element,
+    _ initialResult: Result,
+    _ nextPartialResult: (Result, Element) throws -> Result
+  ) rethrows -> Result {
+    try ___remove(
+      from: lowerBound(from),
+      to: upperBound(to),
+      initialResult, nextPartialResult)
   }
 }

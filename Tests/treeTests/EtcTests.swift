@@ -117,7 +117,6 @@ final class EtcTests: XCTestCase {
   func testHoge() throws {
 //    typealias A = RedBlackTreeSet<Int>.SubSequence
 //    [1,2].enumerated().map {}
-    var a = [Int]()
 //    a.reserveCapacity(1)
 //    a.withUnsafeMutableBufferPointer {
 //      $0.initializeElement(at: 0, to: 3)

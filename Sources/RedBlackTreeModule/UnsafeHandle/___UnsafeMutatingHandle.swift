@@ -59,4 +59,42 @@ extension ___UnsafeMutatingHandle: RemoveProtocol {}
 extension ___UnsafeMutatingHandle: EraseProtocol {}
 extension ___UnsafeMutatingHandle: EqualProtocol {}
 
+extension ___UnsafeMutatingHandle {
 
+  @inlinable
+  func
+  ___erase(_ ___destroy: (_NodePtr) -> Void,_ __f: _NodePtr,_ __l: _NodePtr,_ action: (Element) throws -> Void) rethrows
+  {
+    var __f = __f
+    while __f != __l {
+      try action(__value_(__f))
+      __f = erase(___destroy, __f)
+    }
+  }
+
+  @inlinable
+  func
+  ___erase<Result>(_ ___destroy: (_NodePtr) -> Void,_ __f: _NodePtr, _ __l: _NodePtr,_ initialResult: Result, _ nextPartialResult: (Result, Element) throws -> Result) rethrows -> Result
+  {
+    var result = initialResult
+    var __f = __f
+    while __f != __l {
+      result = try nextPartialResult(result, __value_(__f))
+      __f = erase(___destroy, __f)
+    }
+    return result
+  }
+
+  @inlinable
+  func
+  ___erase<Result>(_ ___destroy: (_NodePtr) -> Void,_ __f: _NodePtr, _ __l: _NodePtr, into initialResult: Result, _ updateAccumulatingResult: (inout Result, Element) throws -> ()) rethrows -> Result
+  {
+    var result = initialResult
+    var __f = __f
+    while __f != __l {
+      try updateAccumulatingResult(&result, __value_(__f))
+      __f = erase(___destroy, __f)
+    }
+    return result
+  }
+}

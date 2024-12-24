@@ -106,6 +106,32 @@ extension ___RedBlackTreeUpdate {
       tree.erase(___destroy, l, r)
     }
   }
+  
+  @inlinable
+  mutating func
+  ___erase(_ l: _NodePtr,_ r: _NodePtr, forEach action: (VC.Element) throws -> Void) rethrows
+  {
+    try _update { tree, ___destroy in
+      try tree.___erase(___destroy, l, r, action)
+    }
+  }
+
+  @inlinable
+  mutating func
+  ___erase<Result>(_ l: _NodePtr, _ r: _NodePtr, into initialResult: Result, _ updateAccumulatingResult: (inout Result, VC.Element) throws -> ()) rethrows -> Result
+  {
+    try _update { tree, ___destroy in
+      try tree.___erase(___destroy, l, r,into: initialResult, updateAccumulatingResult)
+    }
+  }
+  
+  @inlinable
+  mutating func
+  ___erase<Result>(_ l: _NodePtr, _ r: _NodePtr,_ initialResult: Result, _ nextPartialResult: (Result, VC.Element) throws -> Result) rethrows -> Result {
+    try _update { tree, ___destroy in
+      try tree.___erase(___destroy, l, r, initialResult, nextPartialResult)
+    }
+  }
 }
 
 @usableFromInline
@@ -137,8 +163,56 @@ extension ___RedBlackTreeRemove {
       return .end
     }
     guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
-      fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
+      fatalError("Attempting to access RedBlackTree elements using an invalid index")
     }
     return ___erase(from, to)
+  }
+
+  @inlinable
+  mutating func ___remove(from: _NodePtr, to: _NodePtr, forEach action: (VC.Element) throws -> ()) rethrows {
+    guard from != .end else {
+      return
+    }
+    guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
+      fatalError("Attempting to access RedBlackTree elements using an invalid index")
+    }
+    return try ___erase(from, to, forEach: action)
+  }
+
+  @inlinable
+  mutating func ___remove<Result>(from: _NodePtr, to: _NodePtr, into initialResult: Result, _ updateAccumulatingResult: (inout Result, VC.Element) throws -> ()) rethrows -> Result {
+    guard from != .end else {
+      return initialResult
+    }
+    guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
+      fatalError("Attempting to access RedBlackTree elements using an invalid index")
+    }
+    return try ___erase(from, to, into: initialResult, updateAccumulatingResult)
+  }
+  
+  @inlinable
+  mutating func ___remove<Result>(from: _NodePtr, to: _NodePtr,_ initialResult: Result, _ nextPartialResult: (Result, VC.Element) throws -> Result) rethrows -> Result {
+    guard from != .end else {
+      return initialResult
+    }
+    guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
+      fatalError("Attempting to access RedBlackTree elements using an invalid index")
+    }
+    return try ___erase(from, to, initialResult, nextPartialResult)
+  }
+  
+  @inlinable
+  public mutating func ___remove(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index, forEach action: (VC.Element) throws -> ()) rethrows {
+    try ___remove(from: from.pointer, to: to.pointer, forEach: action)
+  }
+
+  @inlinable
+  public mutating func ___remove<Result>(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index, into initialResult: Result, _ updateAccumulatingResult: (inout Result, VC.Element) throws -> ()) rethrows -> Result {
+    try ___remove(from: from.pointer, to: to.pointer, into: initialResult, updateAccumulatingResult)
+  }
+
+  @inlinable
+  public mutating func ___remove<Result>(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index,_  initialResult: Result, _ nextPartialResult: (Result, VC.Element) throws -> Result) rethrows -> Result {
+    try ___remove(from: from.pointer, to: to.pointer, initialResult, nextPartialResult)
   }
 }

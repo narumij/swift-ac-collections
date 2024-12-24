@@ -33,6 +33,9 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
   public
     typealias Index = ___RedBlackTree.Index
 
+  public
+    typealias IndexRange = ___RedBlackTree.Range
+
   @usableFromInline
   typealias _Key = Element
 
@@ -370,7 +373,6 @@ extension RedBlackTreeMultiset: Equatable {
 
 extension RedBlackTreeMultiset {
 
-  public typealias IndexRange = ___RedBlackTree.Range
   public typealias ElementSequence = [Element]
 
   @inlinable

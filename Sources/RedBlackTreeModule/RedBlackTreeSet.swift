@@ -133,6 +133,9 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias Index = ___RedBlackTree.Index
 
+  public
+    typealias IndexRange = ___RedBlackTree.Range
+
   @usableFromInline
   typealias _Key = Element
 
@@ -523,7 +526,6 @@ extension RedBlackTreeSet: Equatable {
 
 extension RedBlackTreeSet {
 
-  public typealias IndexRange = ___RedBlackTree.Range
   public typealias ElementSequence = [Element]
 
   @inlinable
@@ -568,7 +570,7 @@ extension RedBlackTreeSet {
   /// 指定した範囲（`lhs ..< rhs` の半開区間）内の要素を、
   /// `(position: Index, element: Element)` タプルの配列として返します。
   ///
-  /// - Parameter range: 列挙したい要素の範囲を示す `___RedBlackTree.Range` で、
+  /// - Parameter range: 列挙したい要素の範囲を示す `IndexRange` で、
   ///   Swift の `lhs ..< rhs` のように、`lhs`（含む）から `rhs`（含まない）までの
   ///   半開区間を表します。
   /// - Returns: 該当範囲の要素を `(Index, Element)` タプルの配列で返す `EnumeratedSequence`。
@@ -583,7 +585,7 @@ extension RedBlackTreeSet {
   /// - Important: `lhs ..< rhs` のように左端が右端より大きい（または等しい）場合など、
   ///   無効な区間が指定されたときの挙動は未定義です。必ず正しい範囲を指定してください。
   @inlinable
-  public func enumeratedSubrange(_ range: ___RedBlackTree.Range) -> EnumeratedSequence {
+  public func enumeratedSubrange(_ range: IndexRange) -> EnumeratedSequence {
     ___enumerated_sequence__(from: range.lhs, to: range.rhs)
   }
 }

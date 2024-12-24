@@ -22,26 +22,41 @@
 
 import Foundation
 
+/// 赤黒木の内部Index
+///
+/// ヒープの代わりに配列を使っているため、実際には内部配列のインデックスを使用している
+///
+/// インデックスが0からはじまるため、一般的にnullは0で表現するところを、-1で表現している
+///
+/// endはルートノードを保持するオブジェクトを指すかわりに、-2で表現している
+///
+/// `__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
 public
   typealias _NodePtr = Int
 
 extension _NodePtr {
+  
   /// 赤黒木のIndexで、nullを表す
   @inlinable
-  public static var nullptr: Self { -1 }
+  static var nullptr: Self { -1 }
+  
   /// 赤黒木のIndexで、終端を表す
   @inlinable
-  public static var end: Self { -2 }
+  static var end: Self { -2 }
   
+  /// 数値を直接扱うことを避けるための初期化メソッド
   @inlinable
   static func node(_ p: Int) -> Self { p }
 }
 
+/// 赤黒木の参照型を表す内部enum
 public
   enum _NodeRef: Equatable
 {
   case nullptr
+    /// 右ノードへの参照
   case __right_(_NodePtr)
+    /// 左ノードへの参照
   case __left_(_NodePtr)
 }
 

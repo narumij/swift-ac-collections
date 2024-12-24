@@ -29,6 +29,9 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias Index = ___RedBlackTree.Index
 
   public
+    typealias IndexRange = ___RedBlackTree.Range
+
+  public
     typealias KeyValue = (key: Key, value: Value)
 
   public
@@ -541,7 +544,6 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
 
 extension RedBlackTreeDictionary {
 
-  public typealias IndexRange = ___RedBlackTree.Range
   public typealias ElementSequence = [Element]
 
   @inlinable

@@ -350,11 +350,11 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   public var keys: Keys {
-    map(\.key)
+    ___element_sequence__(\.key)
   }
 
   public var values: Values {
-    map(\.value)
+    ___element_sequence__(\.value)
   }
 }
 

@@ -426,6 +426,19 @@ extension ___RedBlackTreeContainerBase {
   }
 
   @inlinable
+  public func ___element_sequence__<T>(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index,_ transform: (Element) throws -> T)
+    rethrows -> [T]
+  {
+    try _read { tree in
+      var result = [T]()
+      try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
+        result.append(try transform(___values[__p]))
+      }
+      return result
+    }
+  }
+
+  @inlinable
   public func ___element_sequence__(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index)
     -> [Element]
   {
@@ -436,6 +449,13 @@ extension ___RedBlackTreeContainerBase {
       }
       return result
     }
+  }
+
+  @inlinable
+  public func ___element_sequence__<T>(_ transform: (Element) throws -> T)
+    rethrows -> [T]
+  {
+    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), transform)
   }
 
   @inlinable @inline(__always)

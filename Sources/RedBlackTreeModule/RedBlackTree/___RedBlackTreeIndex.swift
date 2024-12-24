@@ -24,6 +24,9 @@ import Foundation
 
 extension ___RedBlackTree {
 
+  /// 公開用のインデックス
+  ///
+  /// nullptrはオプショナルで表現する想定で、nullptrを保持しない
   public
     enum Index
   {
@@ -62,6 +65,8 @@ extension Optional where Wrapped == ___RedBlackTree.Index {
 
 extension ___RedBlackTree {
   
+  /// 赤黒木用の半開区間
+  ///
   /// 標準のRangeの場合、lowerBoundとupperBoundの比較が行われるが、
   /// この挙動がRedBlackTreeに適さないため、独自のRangeを使用している
   public struct Range {

@@ -508,19 +508,21 @@ extension RedBlackTreeDictionary: Collection {
 
 /// Overwrite Default implementation for bidirectional collections.
 extension RedBlackTreeDictionary {
-
+  
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i, offsetBy: distance, type: "RedBlackTreeDictionary")
   }
-
+  
   @inlinable public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index?
   {
     ___index(i, offsetBy: distance, limitedBy: limit, type: "RedBlackTreeDictionary")
   }
-
-  /// O(n)
+  
+  /// fromからtoまでの符号付き距離を返す
+  ///
+  /// O(*n*)
   @inlinable public func distance(from start: Index, to end: Index) -> Int {
-    ___distance(__last: end.pointer) - ___distance(__last: start.pointer)
+    ___distance(from: start, to: end)
   }
 }
 

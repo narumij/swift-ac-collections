@@ -185,7 +185,7 @@ extension ___RedBlackTreeContainerBase {
   @inlinable @inline(__always)
   func ___distance(__last: _NodePtr) -> Int {
     _read { tree in
-      __last == end() ? ___count : tree.distance(__first: tree.__begin_node, __last: __last)
+      tree.distance(__l: tree.__begin_node, __r: __last)
     }
   }
 }
@@ -290,6 +290,14 @@ extension ___RedBlackTreeContainerBase {
       assert(ptr != .nullptr)
       return ptr
     }
+  }
+}
+
+extension ___RedBlackTreeContainerBase {
+  
+  @inlinable
+  public func ___distance(from start: ___RedBlackTree.Index, to end: ___RedBlackTree.Index) -> Int {
+    _read { $0.distance(__l: start.pointer, __r: end.pointer) }
   }
 }
 
@@ -433,6 +441,47 @@ extension ___RedBlackTreeContainerBase {
       var result = [T]()
       try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
         result.append(try transform(___values[__p]))
+      }
+      return result
+    }
+  }
+  
+  @inlinable
+  public func ___element_sequence__(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index,_ predicate: (Element) throws -> Bool)
+    rethrows -> [Element]
+  {
+    try _read { tree in
+      var result = [Element]()
+      try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
+        if try predicate(___values[__p]) {
+          result.append(___values[__p])
+        }
+      }
+      return result
+    }
+  }
+  
+  @inlinable
+  public func ___element_sequence__<T>(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index,_ initial: T,_ folding: (T, Element) throws -> T)
+    rethrows -> T
+  {
+    try _read { tree in
+      var result = initial
+      try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
+        result = try folding(result, ___values[__p])
+      }
+      return result
+    }
+  }
+  
+  @inlinable
+  public func ___element_sequence__<T>(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index,into initial: T,_ folding: (inout T, Element) throws -> Void)
+    rethrows -> T
+  {
+    try _read { tree in
+      var result = initial
+      try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
+        try folding(&result, ___values[__p])
       }
       return result
     }

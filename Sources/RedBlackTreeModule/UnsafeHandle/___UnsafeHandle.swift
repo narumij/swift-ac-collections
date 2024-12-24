@@ -70,6 +70,23 @@ extension ___UnsafeHandle {
     }
     return __r
   }
+  
+  @inlinable
+  @inline(__always)
+  func distance(__l: _NodePtr, __r: _NodePtr) -> Int {
+    var __p = __begin_node
+    var (l,r): (Int?,Int?) = (nil,nil)
+    var __a = 0
+    while __p != __end_node(), l == nil || r == nil {
+      if __p == __l { l = __a }
+      if __p == __r { r = __a }
+      __p = __tree_next(__p)
+      __a += 1
+    }
+    if __p == __l { l = __a }
+    if __p == __r { r = __a }
+    return r! - l!
+  }
 
   @inlinable
   @inline(__always)

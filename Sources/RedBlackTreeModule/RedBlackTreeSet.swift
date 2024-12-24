@@ -774,22 +774,12 @@ extension RedBlackTreeSet {
     ___index(i, offsetBy: distance, limitedBy: limit, type: "RedBlackTreeSet")
   }
 
-  /// 2つのインデックス間の距離を返します。
-  ///
-  /// `distance(from:to:)` メソッドは、指定された開始インデックス `start` から終了インデックス `end` までの要素数を計算します。
-  /// インデックス間の距離は正または負の整数で返されます。
-  ///
-  /// - Parameters:
-  ///   - start: 距離の計算を開始するインデックス。`startIndex` 以上 `endIndex` 以下である必要があります。
-  ///   - end: 距離の計算を終了するインデックス。`startIndex` 以上 `endIndex` 以下である必要があります。
-  /// - Returns: `start` から `end` までの要素数。`start` より `end` が後の場合は正の値、前の場合は負の値になります。
-  ///
-  /// - Complexity: O(*k*), ここで *k* は2つのインデックス間にある要素数です。
-  ///
-  /// - Precondition: `start` および `end` は有効なインデックスである必要があります。
+  /// fromからtoまでの符号付き距離を返す
+  /// 
+  /// O(*n*)
   @inlinable
   public func distance(from start: Index, to end: Index) -> Int {
-    ___distance(__last: end.pointer) - ___distance(__last: start.pointer)
+    ___distance(from: start, to: end)
   }
 }
 

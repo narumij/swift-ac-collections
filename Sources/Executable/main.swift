@@ -38,6 +38,12 @@ for i in 0 ..< 2_000_000 / N {
   }
 }
 #elseif true
+var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: []]
+for i in 0 ..< 2_000_000 {
+  xy[1]?.insert(i)
+//  xy[1, default: []].remove(i)
+}
+#elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
 for i in 0 ..< 2_000_000 {
   xy[1]?.remove(i)

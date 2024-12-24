@@ -651,9 +651,11 @@ extension RedBlackTreeMultiset {
     ___index(i, offsetBy: distance, limitedBy: limit, type: "RedBlackTreeMultiset")
   }
 
-  /// O(n)
+  /// fromからtoまでの符号付き距離を返す
+  ///
+  /// O(*n*)
   @inlinable public func distance(from start: Index, to end: Index) -> Int {
-    ___distance(__last: end.pointer) - ___distance(__last: start.pointer)
+    ___distance(from: start, to: end)
   }
 }
 

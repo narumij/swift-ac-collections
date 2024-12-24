@@ -73,6 +73,6 @@ extension RedBlackTreeSet {
 
   @inlinable
   public func enumerated(lowerBound from: Element, upperBound to: Element) -> EnumeratedSequence {
-    ___enumerated_sequence(from: lowerBound(from), to: upperBound(to))
+    ___enumerated_sequence__(from: lowerBound(from), to: upperBound(to))
   }
 }

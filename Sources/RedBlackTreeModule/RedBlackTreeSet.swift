@@ -811,7 +811,7 @@ extension RedBlackTreeSet {
   public typealias SeqenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
   public typealias EnumeratedElement = (position: Index, element: Element)
 
-  public typealias EnumeratedSequence = UnfoldSequence<EnumeratedElement, SeqenceState>
+  public typealias EnumeratedSequence = Array<EnumeratedElement>
   public typealias ElementSequence = Array<Element>
 
   @inlinable
@@ -821,11 +821,11 @@ extension RedBlackTreeSet {
 
   @inlinable
   public func enumerated() -> EnumeratedSequence {
-    ___enumerated_sequence
+    ___enumerated_sequence__
   }
 
   @inlinable
-  public func enumerated(from: Index, to: Index) -> EnumeratedSequence {
-    ___enumerated_sequence(from: from, to: to)
+  public func enumeratedSubrange(_ range: ___RedBlackTree.Range) -> EnumeratedSequence {
+    ___enumerated_sequence__(from: range.lhs, to: range.rhs)
   }
 }

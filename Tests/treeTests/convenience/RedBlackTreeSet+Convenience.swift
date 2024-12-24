@@ -77,9 +77,9 @@ extension RedBlackTreeSet {
   }
 
   @inlinable
-  public mutating func removeAndReduce(
+  public mutating func removeAndForEach(
     lowerbound from: Element, upperbound to: Element,
-    forEach action: (Element) throws -> ()) rethrows {
+    _ action: (Element) throws -> ()) rethrows {
     try ___remove(
       from: lowerBound(from),
       to: upperBound(to),
@@ -99,7 +99,7 @@ extension RedBlackTreeSet {
   }
 
   @inlinable
-  public mutating func removeBetween<Result>(
+  public mutating func removeAndReduce<Result>(
     lowerbound from: Element, upperbound to: Element,
     _ initialResult: Result,
     _ nextPartialResult: (Result, Element) throws -> Result

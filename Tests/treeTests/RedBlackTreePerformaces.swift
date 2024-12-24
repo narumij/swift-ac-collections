@@ -62,7 +62,7 @@ final class RedBlackTreePerformaces: XCTestCase {
     throw XCTSkip()
     var set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
-      set.remove(from: set.startIndex, to: set.endIndex)
+      set.removeSubrange(set.startIndex ..< set.endIndex)
     }
   }
 

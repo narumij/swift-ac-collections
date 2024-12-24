@@ -387,11 +387,6 @@ extension RedBlackTreeSet {
   }
 
   @inlinable
-  public mutating func remove(from: Index, to: Index) {
-    ___remove(from: from.pointer, to: to.pointer)
-  }
-  
-  @inlinable
   public mutating func removeSubrange(_ range: ___RedBlackTree.Range) {
     ___remove(from: range.lhs.pointer, to: range.rhs.pointer)
   }

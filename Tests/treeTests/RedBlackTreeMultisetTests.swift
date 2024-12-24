@@ -588,6 +588,12 @@
       XCTAssertEqual(members.removeLast(), 3)
       XCTAssertEqual(members.removeLast(), 1)
     }
+    
+    func testRemoveSubrange() throws {
+      var members: RedBlackTreeMultiset = [1, 3, 3, 5, 7, 7, 9]
+      members.removeSubrange(members.lowerBound(2) ..< members.upperBound(6))
+      XCTAssertEqual(members, [1,7,7,9])
+    }
 
     func testEqualtable() throws {
       XCTAssertEqual(RedBlackTreeMultiset<Int>(), [])

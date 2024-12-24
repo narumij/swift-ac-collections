@@ -502,6 +502,12 @@
       XCTAssertEqual(members.removeLast(), 1)
     }
     
+    func testRemoveSubrange() throws {
+      var members: RedBlackTreeSet = [1, 3, 5, 7, 9]
+      members.removeSubrange(members.lowerBound(2) ..< members.upperBound(6))
+      XCTAssertEqual(members, [1,7,9])
+    }
+    
     func testContainsAllSatisfy() throws {
       let dict = [1, 2, 2, 2, 3, 3, 4, 5] as RedBlackTreeSet<Int>
       XCTAssertEqual(dict.first, 1)

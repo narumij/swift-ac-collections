@@ -394,11 +394,34 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @discardableResult
+  public mutating func removeFirst() -> Element {
+    guard !isEmpty else {
+      preconditionFailure("Can't removeFirst from an empty RedBlackTreeDictionary")
+    }
+    return remove(at: startIndex)
+  }
+
+  @inlinable
+  @discardableResult
+  public mutating func removeLast() -> Element {
+    guard !isEmpty else {
+      preconditionFailure("Can't removeFirst from an empty RedBlackTreeDictionary")
+    }
+    return remove(at: index(before: endIndex))
+  }
+  
+  @inlinable
+  @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
     guard let element = ___remove(at: index.pointer) else {
-      fatalError("Attempting to access RedBlackTreeSet elements using an invalid index")
+      fatalError("Attempting to access RedBlackTreeDictionary elements using an invalid index")
     }
     return element
+  }
+
+  @inlinable
+  public mutating func removeSubrange(_ range: ___RedBlackTree.Range) {
+    ___remove(from: range.lhs.pointer, to: range.rhs.pointer)
   }
 
   @inlinable

@@ -56,16 +56,7 @@ where CustomKey: CustomKeyProtocol
   }
 
   public subscript(key: Key) -> Value? {
-    get {
-      _read { tree in
-        let it = tree.__lower_bound(key, tree.__root(), tree.__left_)
-        guard it >= 0,
-          !Self.value_comp(Self.__key(tree.__value_ptr[it]), key),
-          !Self.value_comp(key, Self.__key(tree.__value_ptr[it]))
-        else { return nil }
-        return Self.__value(tree.__value_ptr[it])
-      }
-    }
+    get { ___value_for(key)?.value }
     set {
       if let newValue {
         _ = __insert_unique((key, newValue))

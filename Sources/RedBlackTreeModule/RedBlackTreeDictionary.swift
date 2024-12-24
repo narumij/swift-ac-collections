@@ -223,9 +223,6 @@ extension RedBlackTreeDictionary {
     var value: Value? {
       @inline(__always)
       get { isNil ? nil : pointer.pointee }
-//      set {
-//        if let newValue { pointer.pointee = newValue } else { isNil = true }
-//      }
       @inline(__always)
       _modify {
         var value: Value? = pointer.move()
@@ -244,10 +241,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   public subscript(key: Key) -> Value? {
     get {
-      _read {
-        let __ptr = $0.find(key)
-        return __ptr < 0 ? nil : ___values[__ptr].value
-      }
+      ___value_for(key)?.value
     }
     @inline(__always)
     _modify {

@@ -120,6 +120,18 @@ extension ___RedBlackTreeContainerBase {
 }
 
 extension ___RedBlackTreeContainerBase {
+  
+  @inlinable @inline(__always)
+  func ___value_for(_ __k: _Key) -> Element?
+  {
+    _read {
+      let __ptr = $0.find(__k)
+      return __ptr < 0 ? nil : ___values[__ptr]
+    }
+  }
+}
+
+extension ___RedBlackTreeContainerBase {
 
   @inlinable @inline(__always)
   func ___contains(_ __k: _Key) -> Bool where _Key: Equatable {

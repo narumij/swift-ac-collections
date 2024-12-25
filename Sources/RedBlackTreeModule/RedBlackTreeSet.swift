@@ -154,6 +154,8 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
 extension RedBlackTreeSet: ScalarValueComparer {}
 extension RedBlackTreeSet: InsertUniqueProtocol {}
+extension RedBlackTreeSet: ___RedBlackTreeContainer {}
+extension RedBlackTreeSet: ___RedBlackTreeDefaultAllocator {}
 extension RedBlackTreeSet: ___RedBlackTreeRemove {}
 extension RedBlackTreeSet: ___RedBlackTreeMember {}
 extension RedBlackTreeSet: ___RedBlackTreeInsert {}

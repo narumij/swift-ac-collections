@@ -23,7 +23,7 @@
 import Collections
 
 @usableFromInline
-protocol ___RedBlackTreeContainer: ___RedBlackTreeContainerBase, ___RedBlackTreeDefaultAllocator { }
+protocol ___RedBlackTreeContainer: ___RedBlackTreeContainerBase { }
 
 extension ___RedBlackTreeContainer {
 
@@ -76,12 +76,5 @@ extension ___RedBlackTreeContainer {
       }
     }
     return (_header, _nodes, _values, [])
-  }
-  
-  public mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
-    ___header = .zero
-    ___nodes.removeAll(keepingCapacity: keepCapacity)
-    ___elements.removeAll(keepingCapacity: keepCapacity)
-    ___recycle = []
   }
 }

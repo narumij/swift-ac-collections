@@ -20,11 +20,13 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+import Collections
+
 @usableFromInline
-protocol ___RedBlackTreeRemove: ___RedBlackTreeContainer, ___RedBlackTreeErase {}
+protocol ___RedBlackTreeRemove: ___RedBlackTreeBody, ___RedBlackTreeErase {}
 
 extension ___RedBlackTreeRemove {
-
+  
   @inlinable
   @discardableResult
   mutating func ___remove(at ptr: _NodePtr) -> Element? {
@@ -33,7 +35,7 @@ extension ___RedBlackTreeRemove {
       0 <= ptr,
       // ptr != .nullptr,
       // ptr != .end,
-      ___nodes[ptr].isValid
+        ___nodes[ptr].isValid
     else {
       return nil
     }
@@ -41,7 +43,7 @@ extension ___RedBlackTreeRemove {
     _ = ___erase(ptr)
     return e
   }
-
+  
   @inlinable
   @discardableResult
   mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
@@ -53,7 +55,7 @@ extension ___RedBlackTreeRemove {
     }
     return ___erase(from, to)
   }
-
+  
   @inlinable
   mutating func ___remove(from: _NodePtr, to: _NodePtr, forEach action: (VC.Element) throws -> ()) rethrows {
     guard from != .end else {
@@ -64,7 +66,7 @@ extension ___RedBlackTreeRemove {
     }
     return try ___erase(from, to, forEach: action)
   }
-
+  
   @inlinable
   mutating func ___remove<Result>(from: _NodePtr, to: _NodePtr, into initialResult: Result, _ updateAccumulatingResult: (inout Result, VC.Element) throws -> ()) rethrows -> Result {
     guard from != .end else {
@@ -91,14 +93,35 @@ extension ___RedBlackTreeRemove {
   public mutating func ___remove(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index, forEach action: (VC.Element) throws -> ()) rethrows {
     try ___remove(from: from.pointer, to: to.pointer, forEach: action)
   }
-
+  
   @inlinable
   public mutating func ___remove<Result>(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index, into initialResult: Result, _ updateAccumulatingResult: (inout Result, VC.Element) throws -> ()) rethrows -> Result {
     try ___remove(from: from.pointer, to: to.pointer, into: initialResult, updateAccumulatingResult)
   }
-
+  
   @inlinable
   public mutating func ___remove<Result>(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index,_  initialResult: Result, _ nextPartialResult: (Result, VC.Element) throws -> Result) rethrows -> Result {
     try ___remove(from: from.pointer, to: to.pointer, initialResult, nextPartialResult)
+  }
+}
+
+extension ___RedBlackTreeRemove where Self: ___RedBlackTreeLeakingAllocator {
+
+  @inlinable
+  mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
+    ___header = .zero
+    ___nodes.removeAll(keepingCapacity: keepCapacity)
+    ___elements.removeAll(keepingCapacity: keepCapacity)
+  }
+}
+
+extension ___RedBlackTreeRemove where Self: ___RedBlackTreeNonleakingAllocator {
+
+  @inlinable
+  mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
+    ___header = .zero
+    ___nodes.removeAll(keepingCapacity: keepCapacity)
+    ___elements.removeAll(keepingCapacity: keepCapacity)
+    ___recycle = []
   }
 }

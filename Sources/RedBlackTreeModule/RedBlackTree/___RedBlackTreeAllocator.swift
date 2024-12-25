@@ -49,17 +49,17 @@ extension ___RedBlackTreeLeakingAllocator {
 // 末尾の未使用領域の開放も行う
 @usableFromInline
 protocol ___RedBlackTreeNonleakingAllocator: ___RedBlackTreeBody {
-  var ___stock: Heap<_NodePtr> { get set }
+  var ___recycle: Heap<_NodePtr> { get set }
 }
 
 extension ___RedBlackTreeNonleakingAllocator {
   
   @inlinable
-  mutating func ___garbageCollect() {
+  mutating func ___finalize_destroy() {
     // 未使用末尾を開放する
     var last = ___nodes.count
-    while last != 0, !___stock.isEmpty, ___stock.max == last - 1 {
-      _ = ___stock.popMax()
+    while last != 0, !___recycle.isEmpty, ___recycle.max == last - 1 {
+      _ = ___recycle.popMax()
       last -= 1
     }
     let amount = max(___nodes.count - last, 0)
@@ -69,7 +69,7 @@ extension ___RedBlackTreeNonleakingAllocator {
 
   @inlinable
   mutating func __construct_node(_ k: Element) -> _NodePtr {
-    if let stock = ___stock.popMin() {
+    if let stock = ___recycle.popMin() {
       ___elements[stock] = k
       return stock
     }
@@ -82,8 +82,8 @@ extension ___RedBlackTreeNonleakingAllocator {
   @inlinable
   mutating func destroy(_ p: _NodePtr) {
     ___nodes[p].invalidate()
-    ___stock.insert(p)
-    ___garbageCollect()
+    ___recycle.insert(p)
+    ___finalize_destroy()
   }
 }
 

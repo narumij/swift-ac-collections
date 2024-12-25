@@ -149,7 +149,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   var ___elements: [Element]
 
   @usableFromInline
-  var ___stock: Heap<_NodePtr>
+  var ___recycle: Heap<_NodePtr>
 }
 
 extension RedBlackTreeSet: ScalarValueComparer {}
@@ -183,7 +183,7 @@ extension RedBlackTreeSet {
     ___header = .zero
     ___nodes = []
     ___elements = []
-    ___stock = []
+    ___recycle = []
   }
 
   @inlinable @inline(__always)
@@ -191,7 +191,7 @@ extension RedBlackTreeSet {
     ___header = .zero
     ___nodes = []
     ___elements = []
-    ___stock = []
+    ___recycle = []
     ___nodes.reserveCapacity(minimumCapacity)
     ___elements.reserveCapacity(minimumCapacity)
   }
@@ -206,7 +206,7 @@ extension RedBlackTreeSet {
       ___header,
       ___nodes,
       ___elements,
-      ___stock
+      ___recycle
     ) = Self.___initialize(
       _sequence: sequence,
       _to_elements: { $0.map { $0 } }

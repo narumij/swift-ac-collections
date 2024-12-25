@@ -82,6 +82,6 @@ extension ___RedBlackTreeContainer {
     ___header = .zero
     ___nodes.removeAll(keepingCapacity: keepCapacity)
     ___elements.removeAll(keepingCapacity: keepCapacity)
-    ___stock = []
+    ___recycle = []
   }
 }

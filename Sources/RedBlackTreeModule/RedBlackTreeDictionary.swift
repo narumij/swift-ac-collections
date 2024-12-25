@@ -56,7 +56,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   var ___elements: [KeyValue]
 
   @usableFromInline
-  var ___stock: Heap<_NodePtr>
+  var ___recycle: Heap<_NodePtr>
 }
 
 extension RedBlackTreeDictionary: KeyValueComparer {}
@@ -90,7 +90,7 @@ extension RedBlackTreeDictionary {
     ___header = .zero
     ___nodes = []
     ___elements = []
-    ___stock = []
+    ___recycle = []
   }
 
   @inlinable @inline(__always)
@@ -98,7 +98,7 @@ extension RedBlackTreeDictionary {
     ___header = .zero
     ___nodes = []
     ___elements = []
-    ___stock = []
+    ___recycle = []
     ___nodes.reserveCapacity(minimumCapacity)
     ___elements.reserveCapacity(minimumCapacity)
   }
@@ -112,7 +112,7 @@ extension RedBlackTreeDictionary {
       ___header,
       ___nodes,
       ___elements,
-      ___stock
+      ___recycle
     ) = Self.___initialize(
       _sequence: keysAndValues,
       _to_elements: { $0.map { k, v in (k, v) } }
@@ -139,7 +139,7 @@ extension RedBlackTreeDictionary {
       ___header,
       ___nodes,
       ___elements,
-      ___stock
+      ___recycle
     ) = try Self.___initialize(
       _sequence: keysAndValues,
       _to_elements: { $0.map { k, v in (k, v) } }
@@ -168,7 +168,7 @@ extension RedBlackTreeDictionary {
     ___header = .zero
     ___nodes = []
     ___elements = []
-    ___stock = []
+    ___recycle = []
     for v in values_ {
       self[try keyForValue(v), default: []].append(v)
     }

@@ -24,6 +24,58 @@ import Foundation
 
 public enum ___RedBlackTree {}
 
+@usableFromInline
+protocol ___RedBlackTreeBody {
+  associatedtype Element
+  var ___header: ___RedBlackTree.___Header { get set }
+  var ___nodes: [___RedBlackTree.___Node] { get set }
+  var ___values: [Element] { get set }
+}
+
+extension ___RedBlackTreeBody {
+
+  @inlinable @inline(__always)
+  public var ___count: Int {
+    ___header.size
+  }
+
+  @inlinable @inline(__always)
+  public var ___isEmpty: Bool {
+    ___header.size == 0
+  }
+
+  @inlinable @inline(__always)
+  public var ___capacity: Int {
+    Swift.min(___values.capacity, ___nodes.capacity)
+  }
+
+  @inlinable @inline(__always)
+  public func ___begin() -> _NodePtr {
+    ___header.__begin_node
+  }
+
+  @inlinable @inline(__always)
+  public func ___end() -> _NodePtr {
+    .end
+  }
+}
+
+extension ___RedBlackTreeBody {
+
+  @usableFromInline
+  typealias ___Index = ___RedBlackTree.Index
+
+  @inlinable @inline(__always)
+  func ___index_begin() -> ___Index {
+    ___Index(___begin())
+  }
+
+  @inlinable @inline(__always)
+  func ___index_end() -> ___Index {
+    ___Index(___end())
+  }
+}
+
 extension String {
 
   @usableFromInline

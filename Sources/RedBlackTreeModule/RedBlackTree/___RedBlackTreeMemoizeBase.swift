@@ -77,9 +77,6 @@ where CustomKey: CustomKeyProtocol
   public var isEmpty: Bool { count == 0 }
 }
 
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeCustomKeyProtocol { }
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeContainerBase {}
-
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeUpdate {
 
   @inlinable
@@ -99,20 +96,10 @@ extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeUpdate {
   }
 }
 
-extension ___RedBlackTreeMemoizeBase: InsertUniqueProtocol {
-
-  @inlinable
-  mutating func __construct_node(_ k: KeyValue) -> _NodePtr {
-    let n = Swift.min(___nodes.count, ___values.count)
-    ___nodes.append(.zero)
-    ___values.append(k)
-    return n
-  }
-
-  @inlinable
-  mutating func destroy(_ p: _NodePtr) {
-    ___nodes[p].invalidate()
-  }
-}
-
+extension ___RedBlackTreeMemoizeBase: InsertUniqueProtocol {}
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeAllocatorBase {}
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeCustomKeyProtocol {}
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeContainerBase {}
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeDirectReadImpl {}
+
+

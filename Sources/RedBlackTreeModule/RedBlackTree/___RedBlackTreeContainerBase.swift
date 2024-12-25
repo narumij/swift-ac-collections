@@ -23,40 +23,7 @@
 import Collections
 
 @usableFromInline
-protocol ___RedBlackTreeContainerBase: EndProtocol, ValueComparer {
-  associatedtype Element
-  var ___header: ___RedBlackTree.___Header { get set }
-  var ___nodes: [___RedBlackTree.___Node] { get set }
-  var ___values: [Element] { get set }
-}
-
-extension ___RedBlackTreeContainerBase {
-
-  @inlinable @inline(__always)
-  public var ___count: Int {
-    ___header.size
-  }
-
-  @inlinable @inline(__always)
-  public var ___isEmpty: Bool {
-    ___header.size == 0
-  }
-
-  @inlinable @inline(__always)
-  public var ___capacity: Int {
-    Swift.min(___values.capacity, ___nodes.capacity)
-  }
-
-  @inlinable @inline(__always)
-  public func ___begin() -> _NodePtr {
-    ___header.__begin_node
-  }
-
-  @inlinable @inline(__always)
-  public func ___end() -> _NodePtr {
-    .end
-  }
-}
+protocol ___RedBlackTreeContainerBase: ___RedBlackTreeBody, EndProtocol, ValueComparer {}
 
 extension ___RedBlackTreeContainerBase {
 
@@ -156,22 +123,6 @@ extension ___RedBlackTreeContainerBase {
       let p = tree.__tree_max(tree.__root())
       return p == .end ? nil : tree.__value_(p)
     }
-  }
-}
-
-extension ___RedBlackTreeContainerBase {
-
-  @usableFromInline
-  typealias ___Index = ___RedBlackTree.Index
-
-  @inlinable @inline(__always)
-  func ___index_begin() -> ___Index {
-    ___Index(___begin())
-  }
-
-  @inlinable @inline(__always)
-  func ___index_end() -> ___Index {
-    ___Index(___end())
   }
 }
 

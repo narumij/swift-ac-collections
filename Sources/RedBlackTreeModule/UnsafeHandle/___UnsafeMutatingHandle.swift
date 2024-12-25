@@ -54,10 +54,10 @@ extension ___UnsafeMutatingHandle: EraseProtocol {}
 extension ___UnsafeMutatingHandle: EqualProtocol {}
 
 // 以下二つはどうしてこうしたのか、あらためてみると謎。どうしてこうしたのか思い出せない
-// TODO: 使用箇所と__treeを照らし合わせて、どちらかの名前を変更する
 
 extension ___UnsafeMutatingHandle {
 
+  // 違和感はあるが、__tree由来なので致し方なし
   @inlinable @inline(__always)
   func __value_(_ p: _NodePtr) -> _Key {
     __value_(__value_ptr[p])
@@ -67,7 +67,7 @@ extension ___UnsafeMutatingHandle {
 extension ___UnsafeMutatingHandle {
 
   @inlinable @inline(__always)
-  func __value_(_ p: _NodePtr) -> Element { __value_ptr[p] }
+  func ___element(_ p: _NodePtr) -> Element { __value_ptr[p] }
 }
 
 // ポインタに依存するコードは、抽象化して分離することが難しい
@@ -158,7 +158,7 @@ extension ___UnsafeMutatingHandle {
   {
     var __f = __f
     while __f != __l {
-      try action(__value_(__f))
+      try action(___element(__f))
       __f = erase(___destroy, __f)
     }
   }
@@ -170,7 +170,7 @@ extension ___UnsafeMutatingHandle {
     var result = initialResult
     var __f = __f
     while __f != __l {
-      result = try nextPartialResult(result, __value_(__f))
+      result = try nextPartialResult(result, ___element(__f))
       __f = erase(___destroy, __f)
     }
     return result
@@ -183,7 +183,7 @@ extension ___UnsafeMutatingHandle {
     var result = initialResult
     var __f = __f
     while __f != __l {
-      try updateAccumulatingResult(&result, __value_(__f))
+      try updateAccumulatingResult(&result, ___element(__f))
       __f = erase(___destroy, __f)
     }
     return result

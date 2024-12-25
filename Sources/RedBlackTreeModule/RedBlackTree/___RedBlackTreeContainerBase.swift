@@ -116,7 +116,7 @@ extension ___RedBlackTreeContainerBase {
   func ___min() -> Element? {
     _read { tree in
       let p = tree.__tree_min(tree.__root())
-      return p == .end ? nil : tree.__value_(p)
+      return p == .end ? nil : tree.___element(p)
     }
   }
 
@@ -124,7 +124,7 @@ extension ___RedBlackTreeContainerBase {
   func ___max() -> Element? {
     _read { tree in
       let p = tree.__tree_max(tree.__root())
-      return p == .end ? nil : tree.__value_(p)
+      return p == .end ? nil : tree.___element(p)
     }
   }
 }

@@ -50,10 +50,10 @@ extension ___UnsafeHandle: ___UnsafeHandleBase { }
 extension ___UnsafeHandle: MemberProtocol & ValueProtocol & EqualProtocol & RootImpl & RefImpl & RootPtrImpl & NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
 
 // 以下二つはどうしてこうしたのか、あらためてみると謎。どうしてこうしたのか思い出せない
-// TODO: 使用箇所と__treeを照らし合わせて、どちらかの名前を変更する
 
 extension ___UnsafeHandle {
 
+  // 違和感はあるが、__tree由来なので致し方なし
   @inlinable @inline(__always)
   func __value_(_ p: _NodePtr) -> _Key {
     __value_(__value_ptr[p])
@@ -63,7 +63,7 @@ extension ___UnsafeHandle {
 extension ___UnsafeHandle {
   
   @inlinable @inline(__always)
-  func __value_(_ p: _NodePtr) -> Element { __value_ptr[p] }
+  func ___element(_ p: _NodePtr) -> Element { __value_ptr[p] }
 }
 
 // ポインタに依存するコードは、抽象化して分離することが難しい

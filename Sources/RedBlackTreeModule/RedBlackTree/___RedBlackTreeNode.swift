@@ -61,14 +61,14 @@ extension ___RedBlackTree {
     static let zero: Self = .init(__is_black_: false, __left_: 0, __right_: 0, __parent_: 0)
   }
 #else
-  public struct ___Node {
+  public struct ___Node32 {
 
     @usableFromInline
-    var right: CInt
+    var right: Int32
     @usableFromInline
-    var left: CInt
+    var left: Int32
     @usableFromInline
-    var parent: CInt
+    var parent: Int32
     @usableFromInline
     var __is_black_: Bool
 
@@ -76,19 +76,19 @@ extension ___RedBlackTree {
     var __right_: _NodePtr {
       @inline(__always)
       get { _NodePtr(truncatingIfNeeded: right) }
-      set { right = CInt(newValue) }
+      set { right = Int32(newValue) }
     }
     @inlinable
     var __left_: _NodePtr {
       @inline(__always)
       get { _NodePtr(truncatingIfNeeded: left) }
-      set { left = CInt(newValue) }
+      set { left = Int32(newValue) }
     }
     @inlinable
     var __parent_: _NodePtr {
       @inline(__always)
       get { _NodePtr(truncatingIfNeeded: parent) }
-      set { parent = CInt(newValue) }
+      set { parent = Int32(newValue) }
     }
 
     @inlinable
@@ -106,15 +106,17 @@ extension ___RedBlackTree {
       __right_: _NodePtr = .nullptr,
       __parent_: _NodePtr = .nullptr
     ) {
-      self.right = CInt(truncatingIfNeeded: __right_)
-      self.left = CInt(truncatingIfNeeded: __left_)
-      self.parent = CInt(truncatingIfNeeded: __parent_)
+      self.right = Int32(truncatingIfNeeded: __right_)
+      self.left = Int32(truncatingIfNeeded: __left_)
+      self.parent = Int32(truncatingIfNeeded: __parent_)
       self.__is_black_ = __is_black_
     }
 
     @usableFromInline
-    static let zero: Self = .init(__is_black_: false, __left_: 0, __right_: 0, __parent_: 0)
+    static let zero: Self = .init(__is_black_: false, __left_: 0, __right_: 0, __parent_: .nullptr)
   }
+  
+  public typealias ___Node = ___Node32
 #endif
 }
 

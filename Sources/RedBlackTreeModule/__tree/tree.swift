@@ -22,174 +22,132 @@
 
 import Foundation
 
-extension MemberProtocol {
+/// 赤黒木の内部Index
+///
+/// ヒープの代わりに配列を使っているため、実際には内部配列のインデックスを使用している
+///
+/// インデックスが0からはじまるため、一般的にnullは0で表現するところを、-1で表現している
+///
+/// endはルートノードを保持するオブジェクトを指すかわりに、-2で表現している
+///
+/// `__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
+public
+  typealias _NodePtr = Int
 
-  @inlinable @inline(__always)
-  func
-    static_cast_EndNodePtr(_ p: _NodePtr) -> _NodePtr { p }
-
-  @inlinable @inline(__always)
-  func
-    static_cast_NodePtr(_ p: _NodePtr) -> _NodePtr { p }
+extension _NodePtr {
+  
+  /// 赤黒木のIndexで、nullを表す
+  @inlinable
+  static var nullptr: Self { -1 }
+  
+  /// 赤黒木のIndexで、終端を表す
+  @inlinable
+  static var end: Self { -2 }
+  
+  /// 数値を直接扱うことを避けるための初期化メソッド
+  @inlinable
+  static func node(_ p: Int) -> Self { p }
 }
 
-extension MemberProtocol {
+/// 赤黒木の参照型を表す内部enum
+public
+  enum _NodeRef: Equatable
+{
+  case nullptr
+    /// 右ノードへの参照
+  case __right_(_NodePtr)
+    /// 左ノードへの参照
+  case __left_(_NodePtr)
+}
 
+@usableFromInline
+protocol MemberProtocol {
+  func __parent_(_: _NodePtr) -> _NodePtr
+  func __left_(_: _NodePtr) -> _NodePtr
+  func __right_(_: _NodePtr) -> _NodePtr
+  func __is_black_(_: _NodePtr) -> Bool
+  func __parent_unsafe(_: _NodePtr) -> _NodePtr
+}
+
+@usableFromInline
+protocol MemberSetProtocol: MemberProtocol {
+  func __is_black_(_ lhs: _NodePtr, _ rhs: Bool)
+  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr)
+  func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr)
+  func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr)
+}
+
+@usableFromInline
+protocol RefProtocol: MemberProtocol {
+  func __left_ref(_: _NodePtr) -> _NodeRef
+  func __right_ref(_: _NodePtr) -> _NodeRef
+  // 名前が良くないが、かといって変わりも浮かばない
+  func __ref_(_ rhs: _NodeRef) -> _NodePtr
+}
+
+@usableFromInline
+protocol RefSetProtocol: RefProtocol {
+  func __ref_(_ lhs: _NodeRef, _ rhs: _NodePtr)
+}
+
+@usableFromInline
+protocol ValueProtocol: MemberProtocol {
+
+  associatedtype _Key
+  func __value_(_: _NodePtr) -> _Key
+  func value_comp(_: _Key, _: _Key) -> Bool
+}
+
+@usableFromInline
+protocol BeginNodeProtocol {
+  var __begin_node: _NodePtr { get nonmutating set }
+}
+
+@usableFromInline
+protocol RootProtocol {
+  func __root() -> _NodePtr
+}
+
+@usableFromInline
+protocol RootPtrProrototol {
+  func __root_ptr() -> _NodeRef
+}
+
+@usableFromInline
+protocol EndNodeProtocol {
+  func __end_node() -> _NodePtr
+}
+
+extension EndNodeProtocol {
   @inlinable
   @inline(__always)
-  func
-    __tree_is_left_child(_ __x: _NodePtr) -> Bool
-  {
-    return __x == __left_(__parent_(__x))
-  }
-
-  @inlinable
-  func
-    __tree_sub_invariant(_ __x: _NodePtr) -> UInt
-  {
-    if __x == .nullptr {
-      return 1
-    }
-    // parent consistency checked by caller
-    // check __x->__left_ consistency
-    if __left_(__x) != .nullptr && __parent_(__left_(__x)) != __x {
-      return 0
-    }
-    // check __x->__right_ consistency
-    if __right_(__x) != .nullptr && __parent_(__right_(__x)) != __x {
-      return 0
-    }
-    // check __x->__left_ != __x->__right_ unless both are nullptr
-    if __left_(__x) == __right_(__x) && __left_(__x) != .nullptr {
-      return 0
-    }
-    // If this is red, neither child can be red
-    if !__is_black_(__x) {
-      if __left_(__x) != .nullptr && !__is_black_(__left_(__x)) {
-        return 0
-      }
-      if __right_(__x) != .nullptr && !__is_black_(__right_(__x)) {
-        return 0
-      }
-    }
-    let __h = __tree_sub_invariant(__left_(__x))
-    if __h == 0 {
-      return 0
-    }  // invalid left subtree
-    if __h != __tree_sub_invariant(__right_(__x)) {
-      return 0
-    }  // invalid or different height right subtree
-    return __h + (__is_black_(__x) ? 1 : 0)  // return black height of this node
-  }
-
-  @inlinable
-  func
-    __tree_invariant(_ __root: _NodePtr) -> Bool
-  {
-    if __root == .nullptr {
-      return true
-    }
-    // check __x->__parent_ consistency
-    if __parent_(__root) == .nullptr {
-      return false
-    }
-    if !__tree_is_left_child(__root) {
-      return false
-    }
-    // root must be black
-    if !__is_black_(__root) {
-      return false
-    }
-    // do normal node checks
-    return __tree_sub_invariant(__root) != 0
-  }
-
-  @inlinable
-  func
-    __tree_min(_ __x: _NodePtr) -> _NodePtr
-  {
-    assert(__x != .nullptr, "Root node shouldn't be null")
-    var __x = __x
-    while __left_(__x) != .nullptr {
-      __x = __left_(__x)
-    }
-    return __x
-  }
-
-  @inlinable
-  func
-    __tree_max(_ __x: _NodePtr) -> _NodePtr
-  {
-    assert(__x != .nullptr, "Root node shouldn't be null")
-    var __x = __x
-    while __right_(__x) != .nullptr {
-      __x = __right_(__x)
-    }
-    return __x
-  }
-
-  @inlinable
-  func
-    __tree_next(_ __x: _NodePtr) -> _NodePtr
-  {
-    assert(__x != .nullptr, "node shouldn't be null")
-    var __x = __x
-    if __right_(__x) != .nullptr {
-      return __tree_min(__right_(__x))
-    }
-    while !__tree_is_left_child(__x) {
-      __x = __parent_unsafe(__x)
-    }
-    return __parent_unsafe(__x)
-  }
-
-  @inlinable
-  func
-    __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
-  {
-    assert(__x != .nullptr, "node shouldn't be null")
-    var __x = __x
-    if __right_(__x) != .nullptr {
-      return static_cast_EndNodePtr(__tree_min(__right_(__x)))
-    }
-    while !__tree_is_left_child(__x) {
-      __x = __parent_unsafe(__x)
-    }
-    return static_cast_EndNodePtr(__parent_(__x))
-  }
-
-  @inlinable
-  func
-    __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
-  {
-    assert(__x != .nullptr, "node shouldn't be null")
-    if __left_(__x) != .nullptr {
-      return __tree_max(__left_(__x))
-    }
-    var __xx = static_cast_NodePtr(__x)
-    while __tree_is_left_child(__xx) {
-      __xx = __parent_unsafe(__xx)
-    }
-    return __parent_unsafe(__xx)
-  }
-
-  @inlinable
-  func
-    __tree_leaf(_ __x: _NodePtr) -> _NodePtr
-  {
-    assert(__x != .nullptr, "node shouldn't be null")
-    var __x = __x
-    while true {
-      if __left_(__x) != .nullptr {
-        __x = __left_(__x)
-        continue
-      }
-      if __right_(__x) != .nullptr {
-        __x = __right_(__x)
-        continue
-      }
-      break
-    }
-    return __x
-  }
+  func __end_node() -> _NodePtr { .end }
 }
+
+@usableFromInline
+protocol BeginProtocol: BeginNodeProtocol {
+  func begin() -> _NodePtr
+}
+
+extension BeginProtocol {
+  @inlinable
+  @inline(__always)
+  func begin() -> _NodePtr { __begin_node }
+}
+
+@usableFromInline
+protocol EndProtocol: EndNodeProtocol {
+  func end() -> _NodePtr
+}
+
+extension EndProtocol {
+  @inlinable
+  @inline(__always)
+  func end() -> _NodePtr { __end_node() }
+}
+
+@usableFromInline
+protocol SizeProtocol {
+  var size: Int { get nonmutating set }
+}
+

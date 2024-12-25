@@ -25,6 +25,7 @@ import Collections
 @usableFromInline
 typealias ___RedBlackTreeDefaultAllocator = ___RedBlackTreeNonleakingAllocator
 
+// 一度削除したノードやエレメントの箇所を再利用せず、ゴミとして残すもの
 @usableFromInline
 protocol ___RedBlackTreeLeakingAllocator: ___RedBlackTreeBody { }
 
@@ -44,6 +45,8 @@ extension ___RedBlackTreeLeakingAllocator {
   }
 }
 
+// 一度削除したノードやエレメントの箇所を優先的に再利用するもの
+// 末尾の未使用領域の開放も行う
 @usableFromInline
 protocol ___RedBlackTreeNonleakingAllocator: ___RedBlackTreeBody {
   var ___stock: Heap<_NodePtr> { get set }

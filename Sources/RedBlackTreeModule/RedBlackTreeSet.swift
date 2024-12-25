@@ -152,6 +152,29 @@ public struct RedBlackTreeSet<Element: Comparable> {
   var ___stock: Heap<_NodePtr>
 }
 
+extension RedBlackTreeSet: ScalarValueComparer {}
+extension RedBlackTreeSet: InsertUniqueProtocol {}
+extension RedBlackTreeSet: ___RedBlackTreeRemove {}
+extension RedBlackTreeSet: ___RedBlackTreeDirectReadImpl {}
+extension RedBlackTreeSet: ___RedBlackTreeUpdateBase {
+
+  // プロトコルでupdateが書けなかったため、個別で実装している
+  @inlinable @inline(__always)
+  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
+    return try withUnsafeMutablePointer(to: &___header) { header in
+      try ___nodes.withUnsafeMutableBufferPointer { nodes in
+        try ___values.withUnsafeMutableBufferPointer { values in
+          try body(
+            ___UnsafeMutatingHandle<Self>(
+              __header_ptr: header,
+              __node_ptr: nodes.baseAddress!,
+              __value_ptr: values.baseAddress!))
+        }
+      }
+    }
+  }
+}
+
 extension RedBlackTreeSet {
 
   @inlinable @inline(__always)
@@ -226,31 +249,6 @@ extension RedBlackTreeSet {
     ___values.reserveCapacity(minimumCapacity)
   }
 }
-
-extension RedBlackTreeSet: ScalarValueComparer {}
-
-extension RedBlackTreeSet: ___RedBlackTreeUpdateBase {
-
-  // プロトコルでupdateが書けなかったため、個別で実装している
-  @inlinable @inline(__always)
-  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafeMutablePointer(to: &___header) { header in
-      try ___nodes.withUnsafeMutableBufferPointer { nodes in
-        try ___values.withUnsafeMutableBufferPointer { values in
-          try body(
-            ___UnsafeMutatingHandle<Self>(
-              __header_ptr: header,
-              __node_ptr: nodes.baseAddress!,
-              __value_ptr: values.baseAddress!))
-        }
-      }
-    }
-  }
-}
-
-extension RedBlackTreeSet: InsertUniqueProtocol {}
-extension RedBlackTreeSet: ___RedBlackTreeRemove {}
-extension RedBlackTreeSet: ___RedBlackTreeDirectReadImpl {}
 
 extension RedBlackTreeSet {
 

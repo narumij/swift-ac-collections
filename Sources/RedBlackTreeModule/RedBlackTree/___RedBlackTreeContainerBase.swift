@@ -32,12 +32,12 @@ extension ___RedBlackTreeContainerReadImpl {
   func _read<R>(_ body: (___UnsafeHandle<Self>) throws -> R) rethrows -> R {
     return try withUnsafePointer(to: ___header) { header in
       try ___nodes.withUnsafeBufferPointer { nodes in
-        try ___values.withUnsafeBufferPointer { values in
+        try ___elements.withUnsafeBufferPointer { elements in
           try body(
             ___UnsafeHandle<Self>(
               __header_ptr: header,
               __node_ptr: nodes.baseAddress!,
-              __value_ptr: values.baseAddress!))
+              __element_ptr: elements.baseAddress!))
         }
       }
     }
@@ -96,7 +96,7 @@ extension ___RedBlackTreeContainerBase {
   {
     _read {
       let __ptr = $0.find(__k)
-      return __ptr < 0 ? nil : ___values[__ptr]
+      return __ptr < 0 ? nil : ___elements[__ptr]
     }
   }
 }
@@ -108,7 +108,7 @@ extension ___RedBlackTreeContainerBase {
     _read { tree in
       let it = tree.__lower_bound(__k, tree.__root(), tree.__left_)
       guard it >= 0 else { return false }
-      return Self.__key(tree.__value_ptr[it]) == __k
+      return Self.__key(tree.__element_ptr[it]) == __k
     }
   }
 
@@ -271,8 +271,8 @@ extension ___RedBlackTreeContainerBase {
     try _read { tree in
       var result: Element?
       try tree.___for_each(__p: tree.__begin_node, __l: tree.__end_node()) { __p, cont in
-        if try predicate(___values[__p]) {
-          result = ___values[__p]
+        if try predicate(___elements[__p]) {
+          result = ___elements[__p]
           cont = false
         }
       }
@@ -294,7 +294,7 @@ extension ___RedBlackTreeContainerBase {
     try _read { tree in
       var result: ___RedBlackTree.Index?
       try tree.___for_each(__p: tree.__begin_node, __l: tree.__end_node()) { __p, cont in
-        if try predicate(___values[__p]) {
+        if try predicate(___elements[__p]) {
           result = ___RedBlackTree.Index(__p)
           cont = false
         }
@@ -369,7 +369,7 @@ extension ___RedBlackTreeContainerBase {
     return sequence(state: ___begin(from.pointer, to: to.pointer)) { state in
       guard ___end(state) else { return nil }
       defer { ___next(&state) }
-      return (___RedBlackTree.Index(state.current), ___values[state.current])
+      return (___RedBlackTree.Index(state.current), ___elements[state.current])
     }
   }
 
@@ -385,7 +385,7 @@ extension ___RedBlackTreeContainerBase {
     return _read { tree in
       var result = [EnumeratedElement]()
       tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-        result.append((___RedBlackTree.Index(__p),___values[__p]))
+        result.append((___RedBlackTree.Index(__p),___elements[__p]))
       }
       return result
     }
@@ -403,7 +403,7 @@ extension ___RedBlackTreeContainerBase {
     try _read { tree in
       var result = [T]()
       try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-        result.append(try transform(___values[__p]))
+        result.append(try transform(___elements[__p]))
       }
       return result
     }
@@ -416,8 +416,8 @@ extension ___RedBlackTreeContainerBase {
     try _read { tree in
       var result = [Element]()
       try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-        if try isIncluded(___values[__p]) {
-          result.append(___values[__p])
+        if try isIncluded(___elements[__p]) {
+          result.append(___elements[__p])
         }
       }
       return result
@@ -431,7 +431,7 @@ extension ___RedBlackTreeContainerBase {
     try _read { tree in
       var result = initial
       try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-        result = try folding(result, ___values[__p])
+        result = try folding(result, ___elements[__p])
       }
       return result
     }
@@ -444,7 +444,7 @@ extension ___RedBlackTreeContainerBase {
     try _read { tree in
       var result = initial
       try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-        try folding(&result, ___values[__p])
+        try folding(&result, ___elements[__p])
       }
       return result
     }
@@ -457,7 +457,7 @@ extension ___RedBlackTreeContainerBase {
     _read { tree in
       var result = [Element]()
       tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-        result.append(___values[__p])
+        result.append(___elements[__p])
       }
       return result
     }

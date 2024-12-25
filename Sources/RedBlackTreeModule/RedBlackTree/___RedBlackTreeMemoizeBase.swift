@@ -52,7 +52,7 @@ where CustomKey: CustomKeyProtocol
   public init() {
     ___header = .zero
     ___nodes = []
-    ___values = []
+    ___elements = []
   }
 
   public subscript(key: Key) -> Value? {
@@ -71,7 +71,7 @@ where CustomKey: CustomKeyProtocol
   @usableFromInline
   var ___nodes: [___RedBlackTree.___Node]
   @usableFromInline
-  var ___values: [Element]
+  var ___elements: [Element]
 
   public var count: Int { ___header.size }
   public var isEmpty: Bool { count == 0 }
@@ -84,12 +84,12 @@ extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeErase {
   mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
     return try withUnsafeMutablePointer(to: &___header) { header in
       try ___nodes.withUnsafeMutableBufferPointer { nodes in
-        try ___values.withUnsafeMutableBufferPointer { values in
+        try ___elements.withUnsafeMutableBufferPointer { values in
           try body(
             ___UnsafeMutatingHandle<Self>(
               __header_ptr: header,
               __node_ptr: nodes.baseAddress!,
-              __value_ptr: values.baseAddress!))
+              __element_ptr: values.baseAddress!))
         }
       }
     }

@@ -29,7 +29,7 @@ protocol ___RedBlackTreeBody {
   associatedtype Element
   var ___header: ___RedBlackTree.___Header { get set }
   var ___nodes: [___RedBlackTree.___Node] { get set }
-  var ___values: [Element] { get set }
+  var ___elements: [Element] { get set }
 }
 
 extension ___RedBlackTreeBody {
@@ -46,7 +46,7 @@ extension ___RedBlackTreeBody {
 
   @inlinable @inline(__always)
   public var ___capacity: Int {
-    Swift.min(___values.capacity, ___nodes.capacity)
+    Swift.min(___elements.capacity, ___nodes.capacity)
   }
 
   @inlinable @inline(__always)

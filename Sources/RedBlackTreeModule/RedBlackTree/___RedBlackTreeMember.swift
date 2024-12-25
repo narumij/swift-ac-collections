@@ -78,5 +78,5 @@ extension ___RedBlackTreeMember {
 extension ___RedBlackTreeMember {
   @inlinable
   @inline(__always)
-  func __value_(_ p: _NodePtr) -> Element { ___values[p] }
+  func __value_(_ p: _NodePtr) -> Element { ___elements[p] }
 }

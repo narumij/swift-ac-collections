@@ -37,7 +37,7 @@ extension ___RedBlackTreeRemove {
     else {
       return nil
     }
-    let e = ___values[ptr]
+    let e = ___elements[ptr]
     _ = ___erase(ptr)
     return e
   }

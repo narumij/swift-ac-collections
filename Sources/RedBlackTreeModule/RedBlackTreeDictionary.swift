@@ -53,7 +53,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   var ___nodes: [___RedBlackTree.___Node]
 
   @usableFromInline
-  var ___values: [KeyValue]
+  var ___elements: [KeyValue]
 
   @usableFromInline
   var ___stock: Heap<_NodePtr>
@@ -69,20 +69,19 @@ extension RedBlackTreeDictionary: ___RedBlackTreeUpdate {
   @inlinable
   @inline(__always)
   mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try ___values.withUnsafeMutableBufferPointer { values in
-      try ___nodes.withUnsafeMutableBufferPointer { nodes in
-        try withUnsafeMutablePointer(to: &___header) { header in
+    return try withUnsafeMutablePointer(to: &___header) { header in
+      try ___elements.withUnsafeMutableBufferPointer { elements in
+        try ___nodes.withUnsafeMutableBufferPointer { nodes in
           try body(
             ___UnsafeMutatingHandle<Self>(
               __header_ptr: header,
               __node_ptr: nodes.baseAddress!,
-              __value_ptr: values.baseAddress!))
+              __element_ptr: elements.baseAddress!))
         }
       }
     }
   }
 }
-
 
 extension RedBlackTreeDictionary {
 
@@ -90,7 +89,7 @@ extension RedBlackTreeDictionary {
   public init() {
     ___header = .zero
     ___nodes = []
-    ___values = []
+    ___elements = []
     ___stock = []
   }
 
@@ -98,10 +97,10 @@ extension RedBlackTreeDictionary {
   public init(minimumCapacity: Int) {
     ___header = .zero
     ___nodes = []
-    ___values = []
+    ___elements = []
     ___stock = []
     ___nodes.reserveCapacity(minimumCapacity)
-    ___values.reserveCapacity(minimumCapacity)
+    ___elements.reserveCapacity(minimumCapacity)
   }
 }
 
@@ -112,7 +111,7 @@ extension RedBlackTreeDictionary {
     (
       ___header,
       ___nodes,
-      ___values,
+      ___elements,
       ___stock
     ) = Self.___initialize(
       _sequence: keysAndValues,
@@ -139,7 +138,7 @@ extension RedBlackTreeDictionary {
     (
       ___header,
       ___nodes,
-      ___values,
+      ___elements,
       ___stock
     ) = try Self.___initialize(
       _sequence: keysAndValues,
@@ -168,7 +167,7 @@ extension RedBlackTreeDictionary {
   ) rethrows where Value == [S.Element] {
     ___header = .zero
     ___nodes = []
-    ___values = []
+    ___elements = []
     ___stock = []
     for v in values_ {
       self[try keyForValue(v), default: []].append(v)
@@ -202,7 +201,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     ___nodes.reserveCapacity(minimumCapacity)
-    ___values.reserveCapacity(minimumCapacity)
+    ___elements.reserveCapacity(minimumCapacity)
   }
 }
 
@@ -244,13 +243,13 @@ extension RedBlackTreeDictionary {
     _modify {
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
-          var value: Value?
-          defer {
-            _finalizeKeyingModify(__parent, __child, key: key, value: value)
-          }
-          yield &value
+        var value: Value?
+        defer {
+          _finalizeKeyingModify(__parent, __child, key: key, value: value)
+        }
+        yield &value
       } else {
-        var helper = ___ModifyHelper(pointer: &___values[__ptr].value)
+        var helper = ___ModifyHelper(pointer: &___elements[__ptr].value)
         defer {
           if helper.isNil {
             _ = ___erase(__ptr)
@@ -273,7 +272,7 @@ extension RedBlackTreeDictionary {
         __ptr = __construct_node((key, defaultValue()))
         __insert_node_at(__parent, __child, __ptr)
       }
-      yield &___values[__ptr].value
+      yield &___elements[__ptr].value
     }
   }
 
@@ -334,8 +333,8 @@ extension RedBlackTreeDictionary {
       ? nil
       : _read { tree in
         let __p = tree.__ref_(__r)
-        let oldMember = ___values[__p]
-        ___values[__p] = (key, value)
+        let oldMember = ___elements[__p]
+        ___elements[__p] = (key, value)
         return oldMember.value
       }
   }
@@ -343,7 +342,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
-    let ___values___ = ___values
+    let ___values___ = ___elements
     return _update { tree, ___destroy in
       let __i = tree.find(__k)
       if __i == tree.end() {
@@ -372,7 +371,7 @@ extension RedBlackTreeDictionary {
     }
     return remove(at: index(before: endIndex))
   }
-  
+
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
@@ -449,7 +448,7 @@ extension RedBlackTreeDictionary: Collection {
   @inlinable
   @inline(__always)
   public subscript(position: ___RedBlackTree.Index) -> KeyValue {
-    ___values[position.pointer]
+    ___elements[position.pointer]
   }
 
   @inlinable public func index(before i: Index) -> Index {
@@ -471,16 +470,16 @@ extension RedBlackTreeDictionary: Collection {
 
 /// Overwrite Default implementation for bidirectional collections.
 extension RedBlackTreeDictionary {
-  
+
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i, offsetBy: distance, type: "RedBlackTreeDictionary")
   }
-  
+
   @inlinable public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index?
   {
     ___index(i, offsetBy: distance, limitedBy: limit, type: "RedBlackTreeDictionary")
   }
-  
+
   /// fromからtoまでの符号付き距離を返す
   ///
   /// O(*n*)
@@ -538,13 +537,15 @@ extension RedBlackTreeDictionary {
   @inlinable public func reduce<Result>(
     into initialResult: Result, _ updateAccumulatingResult: (inout Result, Element) throws -> Void
   ) rethrows -> Result {
-    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), into: initialResult, updateAccumulatingResult)
+    try ___element_sequence__(
+      from: ___index_begin(), to: ___index_end(), into: initialResult, updateAccumulatingResult)
   }
 
   @inlinable public func reduce<Result>(
     _ initialResult: Result, _ nextPartialResult: (Result, Element) throws -> Result
   ) rethrows -> Result {
-    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), initialResult, nextPartialResult)
+    try ___element_sequence__(
+      from: ___index_begin(), to: ___index_end(), initialResult, nextPartialResult)
   }
 }
 
@@ -563,4 +564,3 @@ extension RedBlackTreeDictionary {
     ___enumerated_sequence__(from: range.lhs, to: range.rhs)
   }
 }
-

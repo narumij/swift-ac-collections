@@ -62,7 +62,7 @@ extension ___RedBlackTreeContainer {
           let tree = ___UnsafeMutatingHandle<Self>(
             __header_ptr: _header,
             __node_ptr: _nodes.baseAddress!,
-            __value_ptr: _values.baseAddress!)
+            __element_ptr: _values.baseAddress!)
           var i = 0
           while i < _values.count {
             let __k = _values[i]
@@ -81,7 +81,7 @@ extension ___RedBlackTreeContainer {
   public mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
     ___header = .zero
     ___nodes.removeAll(keepingCapacity: keepCapacity)
-    ___values.removeAll(keepingCapacity: keepCapacity)
+    ___elements.removeAll(keepingCapacity: keepCapacity)
     ___stock = []
   }
 }

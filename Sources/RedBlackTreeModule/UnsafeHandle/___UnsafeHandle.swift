@@ -31,18 +31,18 @@ struct ___UnsafeHandle<VC> where VC: ValueComparer {
   init(
     __header_ptr: UnsafePointer<___RedBlackTree.___Header>,
     __node_ptr: UnsafePointer<___RedBlackTree.___Node>,
-    __value_ptr: UnsafePointer<Element>
+    __element_ptr: UnsafePointer<Element>
   ) {
     self.__header_ptr = __header_ptr
     self.__node_ptr = __node_ptr
-    self.__value_ptr = __value_ptr
+    self.__element_ptr = __element_ptr
   }
   @usableFromInline
   let __header_ptr: UnsafePointer<___RedBlackTree.___Header>
   @usableFromInline
   let __node_ptr: UnsafePointer<___RedBlackTree.___Node>
   @usableFromInline
-  let __value_ptr: UnsafePointer<Element>
+  let __element_ptr: UnsafePointer<Element>
 }
 
 extension ___UnsafeHandle: ___UnsafeHandleBase { }
@@ -56,14 +56,14 @@ extension ___UnsafeHandle {
   // 違和感はあるが、__tree由来なので致し方なし
   @inlinable @inline(__always)
   func __value_(_ p: _NodePtr) -> _Key {
-    __value_(__value_ptr[p])
+    __value_(__element_ptr[p])
   }
 }
 
 extension ___UnsafeHandle {
   
   @inlinable @inline(__always)
-  func ___element(_ p: _NodePtr) -> Element { __value_ptr[p] }
+  func ___element(_ p: _NodePtr) -> Element { __element_ptr[p] }
 }
 
 // ポインタに依存するコードは、抽象化して分離することが難しい

@@ -33,9 +33,9 @@ extension ___RedBlackTreeLeakingAllocator {
   
   @inlinable
   mutating func __construct_node(_ k: Element) -> _NodePtr {
-    let n = Swift.min(___nodes.count, ___values.count)
+    let n = Swift.min(___nodes.count, ___elements.count)
     ___nodes.append(.zero)
-    ___values.append(k)
+    ___elements.append(k)
     return n
   }
 
@@ -64,18 +64,18 @@ extension ___RedBlackTreeNonleakingAllocator {
     }
     let amount = max(___nodes.count - last, 0)
     ___nodes.removeLast(amount)
-    ___values.removeLast(amount)
+    ___elements.removeLast(amount)
   }
 
   @inlinable
   mutating func __construct_node(_ k: Element) -> _NodePtr {
     if let stock = ___stock.popMin() {
-      ___values[stock] = k
+      ___elements[stock] = k
       return stock
     }
-    let n = Swift.min(___nodes.count, ___values.count)
+    let n = Swift.min(___nodes.count, ___elements.count)
     ___nodes.append(.zero)
-    ___values.append(k)
+    ___elements.append(k)
     return n
   }
 

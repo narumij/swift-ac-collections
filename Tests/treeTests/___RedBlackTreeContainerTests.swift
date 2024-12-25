@@ -94,7 +94,7 @@ final class ___RedBlackTreeContainerTests: XCTestCase {
             .init(__is_black_: false, __left_: nil, __right_: nil, __parent_: 0   ),
             .init(__is_black_: false, __left_: nil, __right_: nil, __parent_: 0   ),
         ]
-        tree.___values = [
+        tree.___elements = [
             10,
             0,
             20,
@@ -114,7 +114,7 @@ final class ___RedBlackTreeContainerTests: XCTestCase {
             .init(__is_black_:  true, __left_: nil, __right_: nil, __parent_:    4),
             .init(__is_black_:  true, __left_: nil, __right_: nil, __parent_:    4),
         ]
-        tree.___values = [
+        tree.___elements = [
             3,
             1,
             0,

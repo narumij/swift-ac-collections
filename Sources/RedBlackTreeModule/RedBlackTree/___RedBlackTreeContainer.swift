@@ -23,7 +23,7 @@
 import Collections
 
 @usableFromInline
-protocol ___RedBlackTreeContainer: ___RedBlackTreeContainerBase, ___RedBlackTreeAllocator { }
+protocol ___RedBlackTreeContainer: ___RedBlackTreeContainerBase, ___RedBlackTreeDefaultAllocator { }
 
 extension ___RedBlackTreeContainer {
 

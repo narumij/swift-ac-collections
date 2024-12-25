@@ -96,10 +96,11 @@ extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeUpdate {
   }
 }
 
-extension ___RedBlackTreeMemoizeBase: InsertUniqueProtocol {}
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeAllocatorBase {}
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeLeakingAllocator {}
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeCustomKeyProtocol {}
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeContainerBase {}
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeDirectReadImpl {}
+
+extension ___RedBlackTreeMemoizeBase: InsertUniqueProtocol {}
 
 

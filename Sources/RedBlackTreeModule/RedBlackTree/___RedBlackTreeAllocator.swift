@@ -8,9 +8,12 @@
 import Collections
 
 @usableFromInline
-protocol ___RedBlackTreeAllocatorBase: ___RedBlackTreeBody { }
+typealias ___RedBlackTreeDefaultAllocator = ___RedBlackTreeNonleakingAllocator
 
-extension ___RedBlackTreeAllocatorBase {
+@usableFromInline
+protocol ___RedBlackTreeLeakingAllocator: ___RedBlackTreeBody { }
+
+extension ___RedBlackTreeLeakingAllocator {
   
   @inlinable
   mutating func __construct_node(_ k: Element) -> _NodePtr {
@@ -27,11 +30,11 @@ extension ___RedBlackTreeAllocatorBase {
 }
 
 @usableFromInline
-protocol ___RedBlackTreeAllocator: ___RedBlackTreeBody {
+protocol ___RedBlackTreeNonleakingAllocator: ___RedBlackTreeBody {
   var ___stock: Heap<_NodePtr> { get set }
 }
 
-extension ___RedBlackTreeAllocator {
+extension ___RedBlackTreeNonleakingAllocator {
   
   @inlinable
   mutating func ___garbageCollect() {

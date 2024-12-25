@@ -24,6 +24,7 @@ import Foundation
 
 extension ___RedBlackTree {
 
+#if false
   public struct ___Node {
 
     @usableFromInline
@@ -59,6 +60,62 @@ extension ___RedBlackTree {
     @usableFromInline
     static let zero: Self = .init(__is_black_: false, __left_: 0, __right_: 0, __parent_: 0)
   }
+#else
+  public struct ___Node {
+
+    @usableFromInline
+    var right: CInt
+    @usableFromInline
+    var left: CInt
+    @usableFromInline
+    var parent: CInt
+    @usableFromInline
+    var __is_black_: Bool
+
+    @inlinable
+    var __right_: _NodePtr {
+      @inline(__always)
+      get { _NodePtr(truncatingIfNeeded: right) }
+      set { right = CInt(newValue) }
+    }
+    @inlinable
+    var __left_: _NodePtr {
+      @inline(__always)
+      get { _NodePtr(truncatingIfNeeded: left) }
+      set { left = CInt(newValue) }
+    }
+    @inlinable
+    var __parent_: _NodePtr {
+      @inline(__always)
+      get { _NodePtr(truncatingIfNeeded: parent) }
+      set { parent = CInt(newValue) }
+    }
+
+    @inlinable
+    mutating func clear() {
+      __right_ = .nullptr
+      __left_ = .nullptr
+      __parent_ = .nullptr
+      __is_black_ = false
+    }
+
+    @inlinable
+    init(
+      __is_black_: Bool,
+      __left_: _NodePtr = .nullptr,
+      __right_: _NodePtr = .nullptr,
+      __parent_: _NodePtr = .nullptr
+    ) {
+      self.right = CInt(truncatingIfNeeded: __right_)
+      self.left = CInt(truncatingIfNeeded: __left_)
+      self.parent = CInt(truncatingIfNeeded: __parent_)
+      self.__is_black_ = __is_black_
+    }
+
+    @usableFromInline
+    static let zero: Self = .init(__is_black_: false, __left_: 0, __right_: 0, __parent_: 0)
+  }
+#endif
 }
 
 extension ___RedBlackTree.___Node: Equatable {}

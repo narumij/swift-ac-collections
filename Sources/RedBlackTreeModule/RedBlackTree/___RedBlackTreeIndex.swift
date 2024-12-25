@@ -57,9 +57,20 @@ extension ___RedBlackTree {
 extension ___RedBlackTree.Index: Comparable {}
 
 extension Optional where Wrapped == ___RedBlackTree.Index {
+  
   @inlinable
   init(_ ptr: _NodePtr) {
     self = ptr == .nullptr ? .none : .some(___RedBlackTree.Index(ptr))
+  }
+  
+  @usableFromInline
+  var pointer: _NodePtr {
+    switch self {
+    case .none:
+      return .nullptr
+    case .some(let ptr):
+      return ptr.pointer
+    }
   }
 }
 

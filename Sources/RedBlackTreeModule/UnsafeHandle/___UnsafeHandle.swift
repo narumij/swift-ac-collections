@@ -46,10 +46,9 @@ struct ___UnsafeHandle<VC> where VC: ValueComparer {
 }
 
 extension ___UnsafeHandle: ___UnsafeHandleBase { }
-
-extension ___UnsafeHandle: MemberProtocol & ValueProtocol & EqualProtocol & RootImpl & RefImpl & RootPtrImpl & NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
-
-// 以下二つはどうしてこうしたのか、あらためてみると謎。どうしてこうしたのか思い出せない
+extension ___UnsafeHandle: RefImpl & RootImpl & RootPtrImpl {}
+extension ___UnsafeHandle: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
+extension ___UnsafeHandle: EqualProtocol {}
 
 extension ___UnsafeHandle {
 

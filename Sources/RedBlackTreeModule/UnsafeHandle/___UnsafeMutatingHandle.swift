@@ -45,15 +45,12 @@ struct ___UnsafeMutatingHandle<VC> where VC: ValueComparer {
 }
 
 extension ___UnsafeMutatingHandle: ___UnsafeHandleBase {}
-
 extension ___UnsafeMutatingHandle: RefSetImpl & RootImpl & RootPtrImpl {}
 extension ___UnsafeMutatingHandle: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
+extension ___UnsafeMutatingHandle: EqualProtocol {}
 extension ___UnsafeMutatingHandle: InsertNodeAtProtocol {}
 extension ___UnsafeMutatingHandle: RemoveProtocol {}
 extension ___UnsafeMutatingHandle: EraseProtocol {}
-extension ___UnsafeMutatingHandle: EqualProtocol {}
-
-// 以下二つはどうしてこうしたのか、あらためてみると謎。どうしてこうしたのか思い出せない
 
 extension ___UnsafeMutatingHandle {
 

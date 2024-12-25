@@ -63,7 +63,7 @@ extension KeyValueComparer {
 extension KeyValueComparer where Element == _KeyValue {
 
   @inlinable @inline(__always)
-  static func __key(_ e: Element) -> _Key { e.key }
+  static func __key(_ element: Element) -> _Key { element.key }
   
   @inlinable @inline(__always)
   static func __value(_ element: Element) -> _Value { element.value }

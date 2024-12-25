@@ -59,6 +59,31 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   var ___stock: Heap<_NodePtr>
 }
 
+extension RedBlackTreeDictionary: KeyValueComparer {}
+extension RedBlackTreeDictionary: InsertUniqueProtocol {}
+extension RedBlackTreeDictionary: ___RedBlackTreeContainerBase {}
+extension RedBlackTreeDictionary: ___RedBlackTreeDirectReadImpl {}
+extension RedBlackTreeDictionary: ___RedBlackTreeRemove {}
+extension RedBlackTreeDictionary: ___RedBlackTreeUpdateBase {
+
+  @inlinable
+  @inline(__always)
+  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
+    return try ___values.withUnsafeMutableBufferPointer { values in
+      try ___nodes.withUnsafeMutableBufferPointer { nodes in
+        try withUnsafeMutablePointer(to: &___header) { header in
+          try body(
+            ___UnsafeMutatingHandle<Self>(
+              __header_ptr: header,
+              __node_ptr: nodes.baseAddress!,
+              __value_ptr: values.baseAddress!))
+        }
+      }
+    }
+  }
+}
+
+
 extension RedBlackTreeDictionary {
 
   @inlinable @inline(__always)
@@ -180,32 +205,6 @@ extension RedBlackTreeDictionary {
     ___values.reserveCapacity(minimumCapacity)
   }
 }
-
-extension RedBlackTreeDictionary: KeyValueComparer {}
-extension RedBlackTreeDictionary: ___RedBlackTreeContainerBase {}
-
-extension RedBlackTreeDictionary: ___RedBlackTreeUpdateBase {
-
-  @inlinable
-  @inline(__always)
-  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try ___values.withUnsafeMutableBufferPointer { values in
-      try ___nodes.withUnsafeMutableBufferPointer { nodes in
-        try withUnsafeMutablePointer(to: &___header) { header in
-          try body(
-            ___UnsafeMutatingHandle<Self>(
-              __header_ptr: header,
-              __node_ptr: nodes.baseAddress!,
-              __value_ptr: values.baseAddress!))
-        }
-      }
-    }
-  }
-}
-
-extension RedBlackTreeDictionary: InsertUniqueProtocol {}
-extension RedBlackTreeDictionary: ___RedBlackTreeDirectReadImpl {}
-extension RedBlackTreeDictionary: ___RedBlackTreeRemove {}
 
 extension RedBlackTreeDictionary {
 

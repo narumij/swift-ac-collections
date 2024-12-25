@@ -45,17 +45,73 @@ struct ___UnsafeHandle<VC> where VC: ValueComparer {
   let __value_ptr: UnsafePointer<Element>
 }
 
-extension ___UnsafeHandle: ___UnsafeHandleBase {
+extension ___UnsafeHandle: ___UnsafeHandleBase { }
 
-  @inlinable
-  @inline(__always)
+extension ___UnsafeHandle: MemberProtocol & ValueProtocol & EqualProtocol & RootImpl & RefImpl & RootPtrImpl & NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
+
+extension ___UnsafeHandle {
+
+  @inlinable @inline(__always)
   func __value_(_ p: _NodePtr) -> _Key {
     __value_(__value_ptr[p])
   }
 }
 
-extension ___UnsafeHandle: ___RedBlackTreeReadHandleImpl {}
-extension ___UnsafeHandle: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
+extension ___UnsafeHandle {
+  
+  @inlinable @inline(__always)
+  func __value_(_ p: _NodePtr) -> Element { __value_ptr[p] }
+}
+
+extension ___UnsafeHandle {
+
+  @inlinable
+  @inline(__always)
+  var __left_: _NodePtr {
+    __header_ptr.pointee.__left_
+  }
+
+  @inlinable
+  @inline(__always)
+  var __begin_node: _NodePtr {
+    __header_ptr.pointee.__begin_node
+  }
+
+//  @inlinable
+//  @inline(__always)
+//  var size: Int {
+//    __header_ptr.pointee.size
+//  }
+}
+
+extension ___UnsafeHandle {
+
+  @inlinable
+  @inline(__always)
+  func __parent_(_ p: _NodePtr) -> _NodePtr {
+    __node_ptr[p].__parent_
+  }
+  @inlinable
+  @inline(__always)
+  func __left_(_ p: _NodePtr) -> _NodePtr {
+    p == .end ? __left_ : __node_ptr[p].__left_
+  }
+  @inlinable
+  @inline(__always)
+  func __right_(_ p: _NodePtr) -> _NodePtr {
+    __node_ptr[p].__right_
+  }
+  @inlinable
+  @inline(__always)
+  func __is_black_(_ p: _NodePtr) -> Bool {
+    __node_ptr[p].__is_black_
+  }
+  @inlinable
+  @inline(__always)
+  func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
+    __parent_(p)
+  }
+}
 
 extension ___UnsafeHandle {
 

@@ -23,9 +23,9 @@
 import Collections
 
 @usableFromInline
-protocol ___RedBlackTreeContainerReadImpl: ___RedBlackTreeBody {}
+protocol ___RedBlackTreeContainerRead: ___RedBlackTreeBody {}
 
-extension ___RedBlackTreeContainerReadImpl {
+extension ___RedBlackTreeContainerRead {
 
   @inlinable
   @inline(__always)
@@ -45,7 +45,7 @@ extension ___RedBlackTreeContainerReadImpl {
 }
 
 @usableFromInline
-protocol ___RedBlackTreeContainerBase: ___RedBlackTreeBody, ___RedBlackTreeContainerReadImpl, EndProtocol, ValueComparer {}
+protocol ___RedBlackTreeContainerBase: ___RedBlackTreeBody, ___RedBlackTreeContainerRead, EndProtocol, ValueComparer {}
 
 extension ___RedBlackTreeContainerBase {
 

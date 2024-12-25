@@ -120,7 +120,7 @@ extension ___UnsafeHandle {
 }
 
 // ここまでは基本的な実装
-// 以下はセット、マルチセット、辞書の実装
+// ここからはセット、マルチセット、辞書の実装
 
 extension ___UnsafeHandle {
 

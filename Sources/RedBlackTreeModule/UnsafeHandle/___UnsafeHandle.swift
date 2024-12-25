@@ -49,6 +49,9 @@ extension ___UnsafeHandle: ___UnsafeHandleBase { }
 
 extension ___UnsafeHandle: MemberProtocol & ValueProtocol & EqualProtocol & RootImpl & RefImpl & RootPtrImpl & NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
 
+// 以下二つはどうしてこうしたのか、あらためてみると謎。どうしてこうしたのか思い出せない
+// TODO: 使用箇所と__treeを照らし合わせて、どちらかの名前を変更する
+
 extension ___UnsafeHandle {
 
   @inlinable @inline(__always)
@@ -62,6 +65,9 @@ extension ___UnsafeHandle {
   @inlinable @inline(__always)
   func __value_(_ p: _NodePtr) -> Element { __value_ptr[p] }
 }
+
+// ポインタに依存するコードは、抽象化して分離することが難しい
+// このため、___UnsafeMutableHandleとかぶりが多い
 
 extension ___UnsafeHandle {
 
@@ -112,6 +118,9 @@ extension ___UnsafeHandle {
     __parent_(p)
   }
 }
+
+// ここまでは基本的な実装
+// 以下はセット、マルチセット、辞書の実装
 
 extension ___UnsafeHandle {
 

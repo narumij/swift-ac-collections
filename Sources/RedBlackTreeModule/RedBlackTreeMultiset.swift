@@ -56,7 +56,10 @@ extension RedBlackTreeMultiset: ScalarValueComparer {}
 extension RedBlackTreeMultiset: InsertMultiProtocol {}
 extension RedBlackTreeMultiset: ___RedBlackTreeRemove {}
 extension RedBlackTreeMultiset: ___RedBlackTreeDirectReadImpl {}
-extension RedBlackTreeMultiset: ___RedBlackTreeUpdateBase {
+extension RedBlackTreeMultiset: ___RedBlackTreeUpdateBase {}
+extension RedBlackTreeMultiset: ___RedBlackTreeInsert {}
+
+extension RedBlackTreeMultiset {
 
   // プロトコルでupdateが書けなかったため、個別で実装している
   @inlinable

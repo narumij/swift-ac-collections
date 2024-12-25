@@ -77,7 +77,7 @@ where CustomKey: CustomKeyProtocol
   public var isEmpty: Bool { count == 0 }
 }
 
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeUpdate {
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeErase {
 
   @inlinable
   @inline(__always)
@@ -100,6 +100,7 @@ extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeLeakingAllocator {}
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeCustomKeyProtocol {}
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeContainerBase {}
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeDirectReadImpl {}
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeInsert {}
 
 extension ___RedBlackTreeMemoizeBase: InsertUniqueProtocol {}
 

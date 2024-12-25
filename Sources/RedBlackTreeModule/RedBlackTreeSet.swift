@@ -156,6 +156,7 @@ extension RedBlackTreeSet: ScalarValueComparer {}
 extension RedBlackTreeSet: InsertUniqueProtocol {}
 extension RedBlackTreeSet: ___RedBlackTreeRemove {}
 extension RedBlackTreeSet: ___RedBlackTreeDirectReadImpl {}
+extension RedBlackTreeSet: ___RedBlackTreeInsert {}
 extension RedBlackTreeSet: ___RedBlackTreeUpdateBase {
 
   // プロトコルでupdateが書けなかったため、個別で実装している

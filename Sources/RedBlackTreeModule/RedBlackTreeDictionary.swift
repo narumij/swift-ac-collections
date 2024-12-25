@@ -64,6 +64,7 @@ extension RedBlackTreeDictionary: InsertUniqueProtocol {}
 extension RedBlackTreeDictionary: ___RedBlackTreeContainerBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeDirectReadImpl {}
 extension RedBlackTreeDictionary: ___RedBlackTreeRemove {}
+extension RedBlackTreeDictionary: ___RedBlackTreeInsert {}
 extension RedBlackTreeDictionary: ___RedBlackTreeUpdateBase {
 
   @inlinable

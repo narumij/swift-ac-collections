@@ -99,7 +99,7 @@ extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeErase {
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeLeakingAllocator {}
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeCustomKeyProtocol {}
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeContainerBase {}
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeDirectReadImpl {}
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeMember {}
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeInsert {}
 
 extension ___RedBlackTreeMemoizeBase: InsertUniqueProtocol {}

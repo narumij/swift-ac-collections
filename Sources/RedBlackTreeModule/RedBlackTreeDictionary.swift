@@ -61,11 +61,10 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
 extension RedBlackTreeDictionary: KeyValueComparer {}
 extension RedBlackTreeDictionary: InsertUniqueProtocol {}
-extension RedBlackTreeDictionary: ___RedBlackTreeContainerBase {}
-extension RedBlackTreeDictionary: ___RedBlackTreeDirectReadImpl {}
+extension RedBlackTreeDictionary: ___RedBlackTreeMember {}
 extension RedBlackTreeDictionary: ___RedBlackTreeRemove {}
 extension RedBlackTreeDictionary: ___RedBlackTreeInsert {}
-extension RedBlackTreeDictionary: ___RedBlackTreeUpdateBase {
+extension RedBlackTreeDictionary: ___RedBlackTreeUpdate {
 
   @inlinable
   @inline(__always)

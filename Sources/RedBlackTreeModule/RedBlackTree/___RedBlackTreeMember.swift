@@ -23,14 +23,9 @@
 import Foundation
 
 @usableFromInline
-protocol ___RedBlackTreeDirectReadImpl: MemberProtocol & RootImpl & RefImpl & RootPtrImpl {
-  associatedtype Element
-  var ___header: ___RedBlackTree.___Header { get }
-  var ___nodes: [___RedBlackTree.___Node] { get }
-  var ___values: [Element] { get }
-}
+protocol ___RedBlackTreeMember: ___RedBlackTreeBody, MemberProtocol & RootImpl & RefImpl & RootPtrImpl { }
 
-extension ___RedBlackTreeDirectReadImpl {
+extension ___RedBlackTreeMember {
 
   @inlinable
   @inline(__always)
@@ -51,7 +46,7 @@ extension ___RedBlackTreeDirectReadImpl {
 //  }
 }
 
-extension ___RedBlackTreeDirectReadImpl {
+extension ___RedBlackTreeMember {
 
   @inlinable
   @inline(__always)
@@ -80,7 +75,7 @@ extension ___RedBlackTreeDirectReadImpl {
   }
 }
 
-extension ___RedBlackTreeDirectReadImpl {
+extension ___RedBlackTreeMember {
   @inlinable
   @inline(__always)
   func __value_(_ p: _NodePtr) -> Element { ___values[p] }

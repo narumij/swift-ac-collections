@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol ___RedBlackTreeErase: ___RedBlackTreeUpdateBase, StorageProtocol { }
+protocol ___RedBlackTreeErase: ___RedBlackTreeUpdate, StorageProtocol { }
 
 extension ___RedBlackTreeErase {
   

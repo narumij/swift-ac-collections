@@ -55,11 +55,9 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
 extension RedBlackTreeMultiset: ScalarValueComparer {}
 extension RedBlackTreeMultiset: InsertMultiProtocol {}
 extension RedBlackTreeMultiset: ___RedBlackTreeRemove {}
-extension RedBlackTreeMultiset: ___RedBlackTreeDirectReadImpl {}
-extension RedBlackTreeMultiset: ___RedBlackTreeUpdateBase {}
+extension RedBlackTreeMultiset: ___RedBlackTreeMember {}
 extension RedBlackTreeMultiset: ___RedBlackTreeInsert {}
-
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiset: ___RedBlackTreeUpdate {
 
   // プロトコルでupdateが書けなかったため、個別で実装している
   @inlinable

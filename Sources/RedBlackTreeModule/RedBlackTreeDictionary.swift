@@ -61,7 +61,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
 extension RedBlackTreeDictionary: KeyValueComparer {}
 extension RedBlackTreeDictionary: InsertUniqueProtocol {}
-extension RedBlackTreeDictionary: ___RedBlackTreeContainer {}
+extension RedBlackTreeDictionary: ___RedBlackTreeInitializeHelper {}
 extension RedBlackTreeDictionary: ___RedBlackTreeDefaultAllocator {}
 extension RedBlackTreeDictionary: ___RedBlackTreeMember {}
 extension RedBlackTreeDictionary: ___RedBlackTreeRemove {}

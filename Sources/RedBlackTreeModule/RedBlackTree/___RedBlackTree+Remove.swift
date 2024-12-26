@@ -23,7 +23,7 @@
 import Collections
 
 @usableFromInline
-protocol ___RedBlackTreeRemove: ___RedBlackTreeBody, ___RedBlackTreeErase {}
+protocol ___RedBlackTreeRemove: ___RedBlackTreeAllocatorBase, ___RedBlackTreeErase {}
 
 extension ___RedBlackTreeRemove {
   
@@ -35,7 +35,8 @@ extension ___RedBlackTreeRemove {
       0 <= ptr,
       // ptr != .nullptr,
       // ptr != .end,
-        ___nodes[ptr].isValid
+        ___is_valid(ptr)
+//        ___nodes[ptr].isValid
     else {
       return nil
     }
@@ -50,7 +51,7 @@ extension ___RedBlackTreeRemove {
     guard from != .end else {
       return .end
     }
-    guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
+    guard ___is_valid(from), to == .end || ___is_valid(to) else {
       fatalError(.invalidIndex)
     }
     return ___erase(from, to)
@@ -61,7 +62,7 @@ extension ___RedBlackTreeRemove {
     guard from != .end else {
       return
     }
-    guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
+    guard ___is_valid(from), to == .end || ___is_valid(to) else {
       fatalError(.invalidIndex)
     }
     return try ___erase(from, to, forEach: action)
@@ -72,7 +73,7 @@ extension ___RedBlackTreeRemove {
     guard from != .end else {
       return initialResult
     }
-    guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
+    guard ___is_valid(from), to == .end || ___is_valid(to) else {
       fatalError(.invalidIndex)
     }
     return try ___erase(from, to, into: initialResult, updateAccumulatingResult)
@@ -83,7 +84,7 @@ extension ___RedBlackTreeRemove {
     guard from != .end else {
       return initialResult
     }
-    guard ___nodes[from].isValid, to == .end || ___nodes[to].isValid else {
+    guard ___is_valid(from), to == .end || ___is_valid(to) else {
       fatalError(.invalidIndex)
     }
     return try ___erase(from, to, initialResult, nextPartialResult)

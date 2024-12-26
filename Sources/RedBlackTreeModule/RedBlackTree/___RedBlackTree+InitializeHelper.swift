@@ -22,12 +22,10 @@
 
 import Collections
 
-// TODO: 整頓
-
 @usableFromInline
-protocol ___RedBlackTreeContainer: ___RedBlackTreeContainerBase { }
+protocol ___RedBlackTreeInitializeHelper: ___RedBlackTreeContainerBase { }
 
-extension ___RedBlackTreeContainer {
+extension ___RedBlackTreeInitializeHelper {
 
   @inlinable static func ___initialize<S>(
     _sequence: __owned S,

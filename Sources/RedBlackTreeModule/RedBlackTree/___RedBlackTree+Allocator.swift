@@ -25,9 +25,21 @@ import Collections
 @usableFromInline
 typealias ___RedBlackTreeDefaultAllocator = ___RedBlackTreeNonleakingAllocator
 
+@usableFromInline
+protocol ___RedBlackTreeAllocatorBase: ___RedBlackTreeBody {
+  
+}
+
+extension ___RedBlackTreeAllocatorBase {
+  @inlinable @inline(__always)
+  func ___is_valid(_ p: _NodePtr) -> Bool {
+    ___nodes[p].__parent_ != .nullptr
+  }
+}
+
 // 一度削除したノードやエレメントの箇所を再利用せず、ゴミとして残すもの
 @usableFromInline
-protocol ___RedBlackTreeLeakingAllocator: ___RedBlackTreeBody { }
+protocol ___RedBlackTreeLeakingAllocator: ___RedBlackTreeAllocatorBase { }
 
 extension ___RedBlackTreeLeakingAllocator {
   
@@ -48,7 +60,7 @@ extension ___RedBlackTreeLeakingAllocator {
 // 一度削除したノードやエレメントの箇所を優先的に再利用するもの
 // 末尾の未使用領域の開放も行う
 @usableFromInline
-protocol ___RedBlackTreeNonleakingAllocator: ___RedBlackTreeBody {
+protocol ___RedBlackTreeNonleakingAllocator: ___RedBlackTreeAllocatorBase {
   var ___recycle: Heap<_NodePtr> { get set }
 }
 

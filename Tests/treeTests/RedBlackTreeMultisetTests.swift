@@ -353,9 +353,16 @@
     }
 
     func testMinMax() throws {
-      let set = RedBlackTreeMultiset<Int>([5, 2, 3, 1, 0])
-      XCTAssertEqual(set.max(), 5)
-      XCTAssertEqual(set.min(), 0)
+      do {
+        let set = RedBlackTreeMultiset<Int>([5, 2, 3, 1, 0])
+        XCTAssertEqual(set.max(), 5)
+        XCTAssertEqual(set.min(), 0)
+      }
+      do {
+        let set = RedBlackTreeMultiset<Int>()
+        XCTAssertEqual(set.max(), nil)
+        XCTAssertEqual(set.min(), nil)
+      }
     }
 
     func testSequence() throws {

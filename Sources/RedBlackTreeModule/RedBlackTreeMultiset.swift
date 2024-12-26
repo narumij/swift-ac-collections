@@ -54,7 +54,7 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
 
 extension RedBlackTreeMultiset: ScalarValueComparer {}
 extension RedBlackTreeMultiset: InsertMultiProtocol {}
-extension RedBlackTreeMultiset: ___RedBlackTreeContainer {}
+extension RedBlackTreeMultiset: ___RedBlackTreeInitializeHelper {}
 extension RedBlackTreeMultiset: ___RedBlackTreeDefaultAllocator {}
 extension RedBlackTreeMultiset: ___RedBlackTreeRemove {}
 extension RedBlackTreeMultiset: ___RedBlackTreeMember {}

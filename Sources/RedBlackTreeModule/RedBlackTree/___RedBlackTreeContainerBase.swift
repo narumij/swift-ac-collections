@@ -22,32 +22,10 @@
 
 import Collections
 
-@usableFromInline
-protocol ___RedBlackTreeContainerRead: ___RedBlackTreeBody {}
-
-extension ___RedBlackTreeContainerRead {
-
-  @inlinable
-  @inline(__always)
-  func _read<R>(_ body: (___UnsafeHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafePointer(to: ___header) { header in
-      try ___nodes.withUnsafeBufferPointer { nodes in
-        try ___elements.withUnsafeBufferPointer { elements in
-          try body(
-            ___UnsafeHandle<Self>(
-              __header_ptr: header,
-              __node_ptr: nodes.baseAddress!,
-              __element_ptr: elements.baseAddress!))
-        }
-      }
-    }
-  }
-}
-
 // TODO: 整頓
 
 @usableFromInline
-protocol ___RedBlackTreeContainerBase: ___RedBlackTreeBody, ___RedBlackTreeContainerRead, EndProtocol, ValueComparer {}
+protocol ___RedBlackTreeContainerBase: ___RedBlackTreeAllocatorBase, ___RedBlackTreeContainerRead, EndProtocol, ValueComparer {}
 
 extension ___RedBlackTreeContainerBase {
 
@@ -117,16 +95,14 @@ extension ___RedBlackTreeContainerBase {
   @inlinable @inline(__always)
   func ___min() -> Element? {
     _read { tree in
-      let p = tree.__tree_min(tree.__root())
-      return p == .end ? nil : tree.___element(p)
+      tree.__root() == .nullptr ? nil : tree.___element(tree.__tree_min(tree.__root()))
     }
   }
 
   @inlinable @inline(__always)
   func ___max() -> Element? {
     _read { tree in
-      let p = tree.__tree_max(tree.__root())
-      return p == .end ? nil : tree.___element(p)
+      tree.__root() == .nullptr ? nil : tree.___element(tree.__tree_max(tree.__root()))
     }
   }
 }
@@ -164,7 +140,7 @@ extension ___RedBlackTreeContainerBase {
   func ___index_prev(_ i: ___Index) -> ___Index {
     let i = i.pointer
     return _read { tree in
-      guard i != tree.__begin_node, i == tree.__end_node() || ___nodes[i].isValid else {
+      guard i != tree.__begin_node, i == tree.__end_node() || ___is_valid(i) else {
         fatalError(.invalidIndex)
       }
       return ___Index(tree.__tree_prev_iter(i))
@@ -175,7 +151,7 @@ extension ___RedBlackTreeContainerBase {
   func ___index_next(_ i: ___Index) -> ___Index {
     let i = i.pointer
     return _read { tree in
-      guard i != tree.__end_node(), ___nodes[i].isValid else {
+      guard i != tree.__end_node(), ___is_valid(i) else {
         fatalError(.invalidIndex)
       }
       return ___Index(tree.__tree_next_iter(i))
@@ -203,7 +179,7 @@ extension ___RedBlackTreeContainerBase {
   @inline(__always)
   func pointer(
     _ ptr: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr? = .none) -> _NodePtr {
-    guard ptr == ___end() || ___nodes[ptr].isValid else {
+    guard ptr == ___end() || ___is_valid(ptr) else {
       fatalError(.invalidIndex)
     }
     return distance > 0

@@ -23,9 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol ___RedBlackTreeInsert: ___RedBlackTreeUpdate {
-  
-}
+protocol ___RedBlackTreeInsert: ___RedBlackTreeUpdate { }
 
 extension ___RedBlackTreeInsert {
 

@@ -22,45 +22,16 @@
 
 import Foundation
 
-@usableFromInline
-protocol ___RedBlackTreeInsert: ___RedBlackTreeUpdate {
-  
-}
-
-extension ___RedBlackTreeInsert {
-
-  @inlinable
-  mutating func __insert_node_at(
-    _ __parent: _NodePtr,
-    _ __child: _NodeRef,
-    _ __new_node: _NodePtr
-  ) {
-    _update { tree in
-      tree.__insert_node_at(__parent, __child, __new_node)
-    }
-  }
-}
-
-// MARK: - Insert Unique
-
 extension ___RedBlackTreeContainerBase {
-  
+
   @inlinable
-  func __find_equal(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef {
-    _read { tree in
-      tree.__find_equal(&__parent, __v)
-    }
+  func ___equal_with(_ rhs: Self) -> Bool where Element: Equatable {
+    ___count == rhs.___count && zip(___element_sequence__, rhs.___element_sequence__).allSatisfy(==)
   }
-}
 
-// MARK: - Insert Multi
-
-extension ___RedBlackTreeContainerBase {
-  
   @inlinable
-  func __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef {
-    _read { tree in
-      tree.__find_leaf_high(&__parent, __v)
-    }
+  func ___equal_with<K, V>(_ rhs: Self) -> Bool
+  where K: Equatable, V: Equatable, Element == (key: K, value: V) {
+    ___count == rhs.___count && zip(___element_sequence__, rhs.___element_sequence__).allSatisfy(==)
   }
 }

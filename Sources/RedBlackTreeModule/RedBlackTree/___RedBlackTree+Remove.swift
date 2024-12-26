@@ -91,17 +91,17 @@ extension ___RedBlackTreeRemove {
   }
   
   @inlinable
-  public mutating func ___remove(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index, forEach action: (VC.Element) throws -> ()) rethrows {
+  public mutating func ___remove(from: ___Index, to: ___Index, forEach action: (VC.Element) throws -> ()) rethrows {
     try ___remove(from: from.pointer, to: to.pointer, forEach: action)
   }
   
   @inlinable
-  public mutating func ___remove<Result>(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index, into initialResult: Result, _ updateAccumulatingResult: (inout Result, VC.Element) throws -> ()) rethrows -> Result {
+  public mutating func ___remove<Result>(from: ___Index, to: ___Index, into initialResult: Result, _ updateAccumulatingResult: (inout Result, VC.Element) throws -> ()) rethrows -> Result {
     try ___remove(from: from.pointer, to: to.pointer, into: initialResult, updateAccumulatingResult)
   }
   
   @inlinable
-  public mutating func ___remove<Result>(from: ___RedBlackTree.Index, to: ___RedBlackTree.Index,_  initialResult: Result, _ nextPartialResult: (Result, VC.Element) throws -> Result) rethrows -> Result {
+  public mutating func ___remove<Result>(from: ___Index, to: ___Index,_  initialResult: Result, _ nextPartialResult: (Result, VC.Element) throws -> Result) rethrows -> Result {
     try ___remove(from: from.pointer, to: to.pointer, initialResult, nextPartialResult)
   }
 }

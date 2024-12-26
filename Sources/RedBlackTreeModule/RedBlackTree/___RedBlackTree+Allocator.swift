@@ -35,6 +35,11 @@ extension ___RedBlackTreeAllocatorBase {
   func ___is_valid(_ p: _NodePtr) -> Bool {
     ___nodes[p].__parent_ != .nullptr
   }
+
+  @inlinable @inline(__always)
+  mutating func ___invalidate(_ p: _NodePtr) {
+    ___nodes[p].__parent_ = .nullptr
+  }
 }
 
 // 一度削除したノードやエレメントの箇所を再利用せず、ゴミとして残すもの
@@ -53,7 +58,7 @@ extension ___RedBlackTreeLeakingAllocator {
 
   @inlinable
   mutating func destroy(_ p: _NodePtr) {
-    ___nodes[p].invalidate()
+    ___invalidate(p)
   }
 }
 
@@ -93,7 +98,7 @@ extension ___RedBlackTreeNonleakingAllocator {
 
   @inlinable
   mutating func destroy(_ p: _NodePtr) {
-    ___nodes[p].invalidate()
+    ___invalidate(p)
     ___recycle.insert(p)
     ___finalize_destroy()
   }

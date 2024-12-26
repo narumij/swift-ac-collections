@@ -60,21 +60,9 @@ extension ___RedBlackTreeBody {
   }
 }
 
-extension ___RedBlackTreeBody {
+@usableFromInline
+protocol ___RedBlackTreeContainerBase: ___RedBlackTreeAllocatorBase, ___RedBlackTreeContainerRead, EndProtocol, ValueComparer {}
 
-  @usableFromInline
-  typealias ___Index = ___RedBlackTree.Index
-
-  @inlinable @inline(__always)
-  func ___index_begin() -> ___Index {
-    ___Index(___begin())
-  }
-
-  @inlinable @inline(__always)
-  func ___index_end() -> ___Index {
-    ___Index(___end())
-  }
-}
 
 extension String {
 

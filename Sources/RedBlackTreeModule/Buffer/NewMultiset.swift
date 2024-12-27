@@ -1,32 +1,10 @@
-// Copyright 2024 narumij
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
-//
-// Copyright © 2003-2024 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
-// The original license can be found at https://llvm.org/LICENSE.txt
-//
-// This Swift implementation includes modifications and adaptations made by narumij.
+import Foundation
 
-#if false
-import Collections
-
-// AC https://atcoder.jp/contests/abc358/submissions/59018223
+public
+typealias RedBlackTreeMultiset = NewMultiset
 
 @frozen
-public struct RedBlackTreeMultiset<Element: Comparable> {
+public struct NewMultiset<Element: Comparable> {
 
   public
     typealias Element = Element
@@ -41,82 +19,36 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
   typealias _Key = Element
 
   @usableFromInline
-  var ___header: ___RedBlackTree.___Header
-
-  @usableFromInline
-  var ___nodes: [___RedBlackTree.___Node]
-
-  @usableFromInline
-  var ___elements: [Element]
-  
-  @usableFromInline
-  var ___recycle: Heap<_NodePtr>
+  var tree: Tree
 }
 
-extension RedBlackTreeMultiset: ScalarValueComparer {}
-extension RedBlackTreeMultiset: InsertMultiProtocol {}
-extension RedBlackTreeMultiset: ___RedBlackTreeInitializeHelper {}
-extension RedBlackTreeMultiset: ___RedBlackTreeDefaultAllocator {}
-extension RedBlackTreeMultiset: ___RedBlackTreeRemove {}
-extension RedBlackTreeMultiset: ___RedBlackTreeMember {}
-extension RedBlackTreeMultiset: ___RedBlackTreeInsert {}
-extension RedBlackTreeMultiset: ___RedBlackTreeUpdate {
+extension NewMultiset: NewContainer {}
+extension NewMultiset: ScalarValueComparer {}
 
-  // プロトコルでupdateが書けなかったため、個別で実装している
-  @inlinable
-  @inline(__always)
-  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafeMutablePointer(to: &___header) { header in
-      try ___elements.withUnsafeMutableBufferPointer { elements in
-        try ___nodes.withUnsafeMutableBufferPointer { nodes in
-          try body(
-            ___UnsafeMutatingHandle<Self>(
-              __header_ptr: header,
-              __node_ptr: nodes.baseAddress!,
-              __element_ptr: elements.baseAddress!))
-        }
-      }
-    }
-  }
-}
-
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   @inlinable @inline(__always)
   public init() {
-    ___header = .zero
-    ___nodes = []
-    ___elements = []
-    ___recycle = []
+    self.init(minimumCapacity: 0)
   }
 
-  @inlinable
+  @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
-    ___header = .zero
-    ___nodes = []
-    ___elements = []
-    ___recycle = []
-    ___nodes.reserveCapacity(minimumCapacity)
-    ___elements.reserveCapacity(minimumCapacity)
+    tree = .create(withCapacity: minimumCapacity)
   }
 }
 
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   /// - Complexity: O(*n* log *n*), ここで *n* はシーケンスの要素数。
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    (
-      ___header,
-      ___nodes,
-      ___elements,
-      ___recycle
-    ) = Self.___initialize(
-      _sequence: sequence,
-      _to_elements: { $0.map { $0 } }
-    ) { tree, __k, _, __construct_node in
-      let __h = __construct_node(__k)
+    
+    self.init()
+    for __k in sequence {
+      Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+      let __h = tree.__construct_node(__k)
       var __parent = _NodePtr.nullptr
       let __child = tree.__find_leaf_high(&__parent, __k)
       tree.__insert_node_at(__parent, __child, __h)
@@ -124,7 +56,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   /// - 計算量: O(1)
   @inlinable
@@ -145,36 +77,37 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    ___nodes.reserveCapacity(minimumCapacity)
-    ___elements.reserveCapacity(minimumCapacity)
+    ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
   }
 }
 
-
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    _ = __insert_multi(newMember)
+    ensureUniqueAndCapacity()
+    _ = tree.__insert_multi(newMember)
     return (true, newMember)
   }
 
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
-    ___erase_multi(member) != 0 ? member : nil
+    ensureUnique()
+    return tree.___erase_multi(member) != 0 ? member : nil
   }
 
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
+    ensureUnique()
     guard let element = ___remove(at: index.pointer) else {
       fatalError(.invalidIndex)
     }
@@ -210,7 +143,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   /// - Complexity: O(*n*), ここで *n* はマルチセット内の要素数。
   @inlinable public func contains(_ member: Element) -> Bool {
@@ -228,7 +161,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
+extension NewMultiset: ExpressibleByArrayLiteral {
 
   /// - Complexity: O(*n* log *n*), ここで *n* は配列リテラル内の要素数。
   @inlinable public init(arrayLiteral elements: Element...) {
@@ -236,7 +169,7 @@ extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   /// - Complexity: O(log *n*), ここで *n* はマルチセット内の要素数。
   @inlinable public func lowerBound(_ member: Element) -> Index {
@@ -249,7 +182,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   /// - Complexity: O(1)。
   @inlinable
@@ -281,7 +214,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   @inlinable
   func sorted() -> [Element] {
@@ -289,10 +222,29 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset: Collection {
+extension NewMultiset: Sequence {
+  public struct Iterator: IteratorProtocol {
+    @usableFromInline
+    internal init(it: NewMultiset<Element>.Tree.Iterator) {
+      self.it = it
+    }
+    var it: Tree.Iterator
+    public mutating func next() -> Element? {
+      it.next()
+    }
+  }
+  @inlinable public func makeIterator() -> Iterator {
+    .init(it: tree.makeIterator())
+  }
+}
+
+//extension NewMultiset: BidirectionalCollection {
+//}
+
+extension NewMultiset {
 
   @inlinable public subscript(position: ___RedBlackTree.Index) -> Element {
-    ___elements[position.pointer]
+    ___elements(position.pointer)
   }
 
   @inlinable public func index(before i: Index) -> Index {
@@ -313,7 +265,7 @@ extension RedBlackTreeMultiset: Collection {
 }
 
 /// Overwrite Default implementation for bidirectional collections.
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i, offsetBy: distance, type: "RedBlackTreeMultiset")
@@ -332,19 +284,17 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   /// - Complexity: O(log *n* + *k*), ここで *n* はマルチセット内の要素数、*k* は指定された要素の出現回数。
   @inlinable public func count(_ element: Element) -> Int {
-    _read { tree in
       tree.distance(
         __first: tree.__lower_bound(element, tree.__root(), tree.__end_node()),
         __last: tree.__upper_bound(element, tree.__root(), tree.__end_node()))
-    }
   }
 }
 
-extension RedBlackTreeMultiset: CustomStringConvertible, CustomDebugStringConvertible {
+extension NewMultiset: CustomStringConvertible, CustomDebugStringConvertible {
   
   @inlinable
   public var description: String {
@@ -357,7 +307,7 @@ extension RedBlackTreeMultiset: CustomStringConvertible, CustomDebugStringConver
   }
 }
 
-extension RedBlackTreeMultiset: Equatable {
+extension NewMultiset: Equatable {
 
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -365,7 +315,7 @@ extension RedBlackTreeMultiset: Equatable {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   public typealias ElementSequence = [Element]
 
@@ -375,7 +325,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   @inlinable public func map<T>(_ transform: (Element) throws -> T) rethrows -> [T] {
     try ___element_sequence__(from: ___index_begin(), to: ___index_end(), transform: transform)
@@ -398,7 +348,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension NewMultiset {
 
   public typealias EnumeratedElement = (position: Index, element: Element)
   public typealias EnumeratedSequence = [EnumeratedElement]
@@ -413,4 +363,3 @@ extension RedBlackTreeMultiset {
     ___enumerated_sequence__(from: range.lhs, to: range.rhs)
   }
 }
-#endif

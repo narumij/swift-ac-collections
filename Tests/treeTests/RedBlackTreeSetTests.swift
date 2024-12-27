@@ -12,14 +12,10 @@
 
   extension RedBlackTreeSet {
     func left(_ p: Element) -> Int {
-      _read {
-        $0.distance(__l: $0.__begin_node, __r: $0.__lower_bound(p, $0.__root(), $0.end()))
-      }
+        tree.distance(__l: tree.__begin_node, __r: tree.__lower_bound(p, tree.__root(), tree.end()))
     }
     func right(_ p: Element) -> Int {
-      _read {
-        $0.distance(__l: $0.__begin_node, __r: $0.__upper_bound(p, $0.__root(), $0.end()))
-      }
+      tree.distance(__l: tree.__begin_node, __r: tree.__upper_bound(p, tree.__root(), tree.end()))
     }
     var elements: [Element] {
       map { $0 }
@@ -36,10 +32,11 @@
       // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+#if true
     func testInitEmtpy() throws {
       let set = RedBlackTreeSet<Int>()
       XCTAssertEqual(set.elements, [])
-      XCTAssertEqual(set._count, 0)
+      XCTAssertEqual(set.count, 0)
       XCTAssertTrue(set.isEmpty)
       XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
     }
@@ -54,7 +51,7 @@
     func testInitRange() throws {
       let set = RedBlackTreeSet<Int>(0..<10000)
       XCTAssertEqual(set.elements, (0..<10000) + [])
-      XCTAssertEqual(set._count, 10000)
+      XCTAssertEqual(set.count, 10000)
       XCTAssertFalse(set.isEmpty)
       XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 10000)
     }
@@ -62,7 +59,7 @@
     func testInitCollection1() throws {
       let set = RedBlackTreeSet<Int>(0..<10000)
       XCTAssertEqual(set.elements, (0..<10000) + [])
-      XCTAssertEqual(set._count, 10000)
+      XCTAssertEqual(set.count, 10000)
       XCTAssertFalse(set.isEmpty)
       XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 10000)
     }
@@ -70,7 +67,7 @@
     func testInitCollection2() throws {
       let set = RedBlackTreeSet<Int>([2, 3, 3, 0, 0, 1, 1, 1])
       XCTAssertEqual(set.elements, [0, 1, 2, 3])
-      XCTAssertEqual(set._count, 4)
+      XCTAssertEqual(set.count, 4)
       XCTAssertFalse(set.isEmpty)
       XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
     }
@@ -112,18 +109,19 @@
 
     func testRemoveAt() throws {
       var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set.___remove(at: set.___header.__begin_node), 0)
+      XCTAssertEqual(set.___remove(at: set.tree.__begin_node), 0)
       XCTAssertEqual(set.elements, [1, 2, 3, 4])
-      XCTAssertEqual(set.___remove(at: set.___header.__begin_node), 1)
+      XCTAssertEqual(set.___remove(at: set.tree.__begin_node), 1)
       XCTAssertEqual(set.elements, [2, 3, 4])
-      XCTAssertEqual(set.___remove(at: set.___header.__begin_node), 2)
+      XCTAssertEqual(set.___remove(at: set.tree.__begin_node), 2)
       XCTAssertEqual(set.elements, [3, 4])
-      XCTAssertEqual(set.___remove(at: set.___header.__begin_node), 3)
+      XCTAssertEqual(set.___remove(at: set.tree.__begin_node), 3)
       XCTAssertEqual(set.elements, [4])
-      XCTAssertEqual(set.___remove(at: set.___header.__begin_node), 4)
+      XCTAssertEqual(set.___remove(at: set.tree.__begin_node), 4)
       XCTAssertEqual(set.elements, [])
-      XCTAssertEqual(set.___remove(at: set.___header.__begin_node), nil)
+      XCTAssertEqual(set.___remove(at: set.tree.__begin_node), nil)
     }
+#endif
 
     func testInsert() throws {
       var set = RedBlackTreeSet<Int>([])
@@ -139,9 +137,10 @@
       XCTAssertEqual(set.insert(4).inserted, false)
     }
 
+#if true
     func testContains() throws {
       var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set._count, 5)
+      XCTAssertEqual(set.count, 5)
       XCTAssertEqual(set.contains(-1), false)
       XCTAssertEqual(set.contains(0), true)
       XCTAssertEqual(set.contains(1), true)
@@ -190,7 +189,7 @@
 
     func testLeftRight() throws {
       var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set._count, 5)
+      XCTAssertEqual(set.count, 5)
       XCTAssertEqual(set.left(-1).index, 0)
       //        XCTAssertEqual(set.elements.count{ $0 < -1 }, 0)
       XCTAssertEqual(set.left(0).index, 0)
@@ -363,27 +362,27 @@
       var set = RedBlackTreeSet<Int>()
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
         set.insert(i)
-        XCTAssertTrue(set._read { $0.__tree_invariant($0.__root()) })
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
         set.remove(i)
-        XCTAssertTrue(set._read { $0.__tree_invariant($0.__root()) })
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
         set.insert(i)
-        XCTAssertTrue(set._read { $0.__tree_invariant($0.__root()) })
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
         set.remove(i)
-        XCTAssertTrue(set._read { $0.__tree_invariant($0.__root()) })
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
         set.insert(i)
-        XCTAssertTrue(set._read { $0.__tree_invariant($0.__root()) })
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
       }
       for i in set {
         set.remove(i)
-        XCTAssertTrue(set._read { $0.__tree_invariant($0.__root()) })
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
       }
     }
 
@@ -643,5 +642,6 @@
         XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
       }
     }
+#endif
   }
 #endif

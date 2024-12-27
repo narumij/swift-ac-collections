@@ -64,6 +64,9 @@ public
       upperBound(range.upperBound),
       forEach: action)
   }
+}
+
+extension Container {
 
   @inlinable
   mutating func ensureUnique() {
@@ -98,3 +101,5 @@ public
       minimumCapacity)
   }
 }
+
+

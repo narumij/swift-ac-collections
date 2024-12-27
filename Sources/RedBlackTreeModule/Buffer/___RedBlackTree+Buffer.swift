@@ -1,3 +1,25 @@
+// Copyright 2024 narumij
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2024 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+
 import Foundation
 
 extension ___RedBlackTree {
@@ -7,9 +29,8 @@ extension ___RedBlackTree {
     ___RedBlackTree.___Buffer<VC, Element>.Header,
     ___RedBlackTree.___Buffer<VC, Element>.Node
   >
-  where Element: Comparable, VC: ValueComparer, Element == VC.Element
-  {
-    
+  where VC: ValueComparer, Element == VC.Element {
+
     @usableFromInline
     static var empty: Buffer { create(withCapacity: 0) }
 
@@ -20,6 +41,98 @@ extension ___RedBlackTree {
         header.deinitialize(count: 1)
       }
     }
+  }
+}
+
+extension ___RedBlackTree.___Buffer {
+
+  @inlinable @inline(__always)
+  internal static func create(
+    withCapacity capacity: Int
+  ) -> Buffer {
+
+    let storage = Buffer.create(minimumCapacity: capacity) { _ in
+      Header(
+        capacity: capacity,
+        __left_: .nullptr,
+        __begin_node: .end,
+        __initialized_count: 0,
+        __destroy_count: 0,
+        __destroy_node: .nullptr)
+    }
+
+    return unsafeDowncast(storage, to: Buffer.self)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func copy(newCapacity: Int? = nil) -> Buffer {
+
+    let capacity = newCapacity ?? self.header.capacity
+    let __left_ = self.header.__left_
+    let __begin_node = self.header.__begin_node
+    let __initialized_count = self.header.initializedCount
+    let __destroy_count = self.header.destroyCount
+    let __destroy_node = self.header.destroyNode
+
+    let newStorage = Buffer.create(withCapacity: capacity)
+
+    newStorage.header.capacity = capacity
+    newStorage.header.__left_ = __left_
+    newStorage.header.__begin_node = __begin_node
+    newStorage.header.initializedCount = __initialized_count
+    newStorage.header.destroyCount = __destroy_count
+    newStorage.header.destroyNode = __destroy_node
+
+    self.withUnsafeMutablePointerToElements { oldNodes in
+      newStorage.withUnsafeMutablePointerToElements { newNodes in
+        newNodes.initialize(from: oldNodes, count: __initialized_count)
+      }
+    }
+
+    return newStorage
+  }
+}
+
+extension ___RedBlackTree.___Buffer {
+  
+  @inlinable
+  static func ensureUnique(tree: inout Buffer) {
+    if !isKnownUniquelyReferenced(&tree) {
+      tree = tree.copy(newCapacity: tree.header.capacity)
+    }
+  }
+
+  @inlinable
+  static func ensureUniqueAndCapacity(tree: inout Buffer, minimumCapacity: Int) {
+    let shouldExpand = tree.header.capacity < minimumCapacity
+    if shouldExpand || !isKnownUniquelyReferenced(&tree) {
+      tree = tree.copy(newCapacity: _growCapacity(tree: &tree, to: minimumCapacity, linearly: false))
+    }
+  }
+  
+  @inlinable
+  static func ensureCapacity(tree: inout Buffer, minimumCapacity: Int) {
+    let shouldExpand = tree.header.capacity < minimumCapacity
+    if shouldExpand {
+      tree = tree.copy(newCapacity: _growCapacity(tree: &tree, to: minimumCapacity, linearly: false))
+    }
+  }
+  
+  @inlinable
+  @inline(__always)
+  internal static var growthFactor: Double { 1.75 }
+
+  @usableFromInline
+  internal static func _growCapacity(
+    tree: inout Buffer,
+    to minimumCapacity: Int,
+    linearly: Bool
+  ) -> Int {
+    if linearly { return Swift.max(tree.header.capacity, minimumCapacity) }
+    return Swift.max(
+      Int((Self.growthFactor * Double(tree.header.capacity)).rounded(.up)),
+      minimumCapacity)
   }
 }
 
@@ -138,7 +251,7 @@ extension ___RedBlackTree.___Buffer {
   /// O(1)
   @inlinable
   func ___pushDestroy(_ p: _NodePtr) {
-    assert(header.destroyCount < capacity)
+    assert(header.destroyCount <= header.capacity)
     assert(header.destroyNode != p)
     __node_ptr[p].__right_ = header.destroyNode
     __node_ptr[p].__left_ = p
@@ -174,7 +287,7 @@ extension ___RedBlackTree.___Buffer {
   /// O(1)
   @inlinable
   func __eraseAll() {
-    __begin_node = .nullptr
+    __begin_node = .end
     __left_ = .nullptr
     ___clearDestroy()
   }
@@ -245,16 +358,17 @@ extension ___RedBlackTree.___Buffer {
 }
 
 extension ___RedBlackTree.___Buffer {
-  
+
   @inlinable @inline(__always)
   func ___element(_ p: _NodePtr) -> Element { self[p].__value_ }
 }
 
-
 extension ___RedBlackTree.___Buffer: ___UnsafeHandleBase {}
+
 extension ___RedBlackTree.___Buffer: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
 extension ___RedBlackTree.___Buffer: EqualProtocol {}
 extension ___RedBlackTree.___Buffer: InsertNodeAtProtocol {}
+extension ___RedBlackTree.___Buffer: InsertMultiProtocol {}
 extension ___RedBlackTree.___Buffer: RemoveProtocol {}
 extension ___RedBlackTree.___Buffer: StorageEraseProtocol {}
 extension ___RedBlackTree.___Buffer: InsertUniqueProtocol2 {
@@ -319,6 +433,51 @@ extension ___RedBlackTree.___Buffer {
 extension ___RedBlackTree.___Buffer {
 
   @inlinable
+  @inline(__always)
+  func distance(__first: _NodePtr, __last: _NodePtr) -> Int {
+    var __first = __first
+    var __r = 0
+    while __first != __last {
+      __first = __tree_next(__first)
+      __r += 1
+    }
+    return __r
+  }
+
+  @inlinable
+  @inline(__always)
+  func distance(__l: _NodePtr, __r: _NodePtr) -> Int {
+    var __p = __begin_node
+    var (l, r): (Int?, Int?) = (nil, nil)
+    var __a = 0
+    while __p != __end_node(), l == nil || r == nil {
+      if __p == __l { l = __a }
+      if __p == __r { r = __a }
+      __p = __tree_next(__p)
+      __a += 1
+    }
+    if __p == __l { l = __a }
+    if __p == __r { r = __a }
+    return r! - l!
+  }
+
+  @inlinable
+  @inline(__always)
+  public func ___for_each(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void)
+    rethrows
+  {
+    var __p = __p
+    var cont = true
+    while cont, __p != __l {
+      try body(__p, &cont)
+      __p = __tree_next(__p)
+    }
+  }
+}
+
+extension ___RedBlackTree.___Buffer {
+
+  @inlinable
   func ___erase_unique(_ __k: VC._Key) -> Bool {
     let __i = find(__k)
     if __i == end() {
@@ -329,8 +488,22 @@ extension ___RedBlackTree.___Buffer {
   }
 
   @inlinable
+  func ___erase_multi(_ __k: VC._Key) -> Int {
+    var __p = __equal_range_multi(__k)
+    var __r = 0
+    while __p.0 != __p.1 {
+      defer { __r += 1 }
+      __p.0 = erase(__p.0)
+    }
+    return __r
+  }
+}
+
+extension ___RedBlackTree.___Buffer {
+
+  @inlinable
   func
-  ___erase(_ __f: _NodePtr,_ __l: _NodePtr,_ action: (Element) throws -> Void) rethrows
+    ___erase(_ __f: _NodePtr, _ __l: _NodePtr, _ action: (Element) throws -> Void) rethrows
   {
     var __f = __f
     while __f != __l {
@@ -338,54 +511,120 @@ extension ___RedBlackTree.___Buffer {
       __f = erase(__f)
     }
   }
+
+  @inlinable
+  func
+    ___erase<Result>(
+      _ __f: _NodePtr, _ __l: _NodePtr, _ initialResult: Result,
+      _ nextPartialResult: (Result, Element) throws -> Result
+    ) rethrows -> Result
+  {
+    var result = initialResult
+    var __f = __f
+    while __f != __l {
+      result = try nextPartialResult(result, ___element(__f))
+      __f = erase(__f)
+    }
+    return result
+  }
+
+  @inlinable
+  func
+    ___erase<Result>(
+      _ __f: _NodePtr, _ __l: _NodePtr, into initialResult: Result,
+      _ updateAccumulatingResult: (inout Result, Element) throws -> Void
+    ) rethrows -> Result
+  {
+    var result = initialResult
+    var __f = __f
+    while __f != __l {
+      try updateAccumulatingResult(&result, ___element(__f))
+      __f = erase(__f)
+    }
+    return result
+  }
 }
 
 extension ___RedBlackTree.___Buffer {
 
   @inlinable @inline(__always)
-  internal static func create(
-    withCapacity capacity: Int
-  ) -> Buffer {
-
-    let storage = Buffer.create(minimumCapacity: capacity) { _ in
-      Header(
-        capacity: capacity,
-        __left_: .nullptr,
-        __begin_node: .end,
-        __initialized_count: 0,
-        __destroy_count: 0,
-        __destroy_node: .nullptr)
-    }
-
-    return unsafeDowncast(storage, to: Buffer.self)
+  public var ___count: Int {
+    count
   }
 
+  @inlinable @inline(__always)
+  public var ___isEmpty: Bool {
+    count == 0
+  }
+
+  @inlinable @inline(__always)
+  public var ___capacity: Int {
+    header.capacity
+  }
+
+  @inlinable @inline(__always)
+  public func ___begin() -> _NodePtr {
+    header.__begin_node
+  }
+
+  @inlinable @inline(__always)
+  public func ___end() -> _NodePtr {
+    .end
+  }
+}
+
+extension ___RedBlackTree.___Buffer {
+  
+  public typealias SafeSequenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
+
   @inlinable
-  @inline(__always)
-  internal func copy(newCapacity: Int? = nil) -> Buffer {
-    
-    let capacity = newCapacity ?? self.header.capacity
-    let __left_ = self.header.__left_
-    let __begin_node = self.header.__begin_node
-    let __initialized_count = self.header.initializedCount
-    let __destroy_count = self.header.destroyCount
-    let __destroy_node = self.header.destroyNode
+  func ___next(_ ptr: _NodePtr, to: _NodePtr) -> _NodePtr {
+    ptr == to ? ptr : __tree_next_iter(ptr)
+  }
+  
+  @inlinable @inline(__always)
+  func ___begin(_ from: _NodePtr, to: _NodePtr) -> SafeSequenceState {
+    (from, ___next(from, to: to), to)
+  }
+  
+  @inlinable @inline(__always)
+  func ___next(_ state: inout SafeSequenceState) {
+    state.current = state.next
+    state.next = ___next(state.next, to: state.to)
+  }
+  
+  @inlinable @inline(__always)
+  func ___end(_ state: SafeSequenceState) -> Bool {
+    state.current != state.to
+  }
+}
 
-    let newStorage = Buffer.create(withCapacity: capacity)
+extension ___RedBlackTree.___Buffer: Sequence {
+  
+  @usableFromInline
+  func makeIterator() -> Iterator {
+    .init(tree: self)
+  }
+  
+  @usableFromInline
+  struct Iterator: IteratorProtocol {
 
-    newStorage.header.capacity = capacity
-    newStorage.header.__left_ = __left_
-    newStorage.header.__begin_node = __begin_node
-    newStorage.header.initializedCount = __initialized_count
-    newStorage.header.destroyCount = __destroy_count
-    newStorage.header.destroyNode = __destroy_node
-
-    self.withUnsafeMutablePointerToElements { oldNodes in
-      newStorage.withUnsafeMutablePointerToElements { newNodes in
-        newNodes.initialize(from: oldNodes, count: __initialized_count)
-      }
+    @usableFromInline
+    internal init(tree: ___RedBlackTree.___Buffer<VC, Element>.Buffer) {
+      self._tree = tree
+      self.state = tree.___begin(tree.__begin_node, to: tree.__end_node())
     }
-
-    return newStorage
+    
+    @usableFromInline
+    let _tree: Buffer
+    @usableFromInline
+    var state: SafeSequenceState
+    
+    @usableFromInline
+    mutating func next() -> Element? {
+      guard _tree.___end(state) else { return nil }
+      defer { _tree.___next(&state) }
+      return _tree[state.current].__value_
+    }
   }
 }

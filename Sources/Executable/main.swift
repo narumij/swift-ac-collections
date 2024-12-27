@@ -10,6 +10,9 @@ tree.reserveCapacity(1_000_000)
 for i in 0 ..< 1_000_000 {
     _ = tree.__insert_unique(i)
 }
+for i in 0 ..< 1_000_000 {
+  _ = tree.remove(i)
+}
 #elseif false
 var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 for v in 0..<10_000_000 {
@@ -60,9 +63,12 @@ for i in 0 ..< 2_000_000 {
   _ = xy[1]?.lowerBound(i)
 }
 #elseif true
-var x = Container(minimumCapacity: 1_000_000)
+var x = Container(minimumCapacity: 0)
 for i in 0 ..< 1_000_000 {
   x.insert(i)
+}
+for i in 0 ..< 1_000_000 {
+  x.erase(i)
 }
 #else
 var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]

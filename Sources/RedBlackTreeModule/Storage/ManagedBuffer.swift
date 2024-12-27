@@ -125,11 +125,11 @@ extension ___RedBlackTree.___Storage {
   @inlinable
   subscript(pointer: _NodePtr) -> Component {
     get {
-      assert(0 <= pointer && pointer < ___initialized_count)
+      assert(0 <= pointer && pointer < header.___initialized_count)
       return __node_ptr[pointer]
     }
     _modify {
-      assert(0 <= pointer && pointer < ___initialized_count)
+      assert(0 <= pointer && pointer < header.___initialized_count)
       yield &__node_ptr[pointer]
     }
   }
@@ -139,31 +139,31 @@ extension ___RedBlackTree.___Storage {
   
   @inlinable
   func ___pushDestroy(_ p: _NodePtr) {
-    assert(___destroy_count < capacity)
-    assert(___destroy_node != p)
-    __node_ptr[p].__right_ = ___destroy_node
+    assert(header.___destroy_count < capacity)
+    assert(header.___destroy_node != p)
+    __node_ptr[p].__right_ = header.___destroy_node
     __node_ptr[p].__left_ = p
-    ___destroy_node = p
-    ___destroy_count += 1
+    header.___destroy_node = p
+    header.___destroy_count += 1
   }
   @inlinable
   func ___popDetroy() -> _NodePtr {
-    assert(___destroy_count > 0)
-    let p = __node_ptr[___destroy_node].__left_
-    ___destroy_node = __node_ptr[p].__right_
-    ___destroy_count -= 1
+    assert(header.___destroy_count > 0)
+    let p = __node_ptr[header.___destroy_node].__left_
+    header.___destroy_node = __node_ptr[p].__right_
+    header.___destroy_count -= 1
     return p
   }
   @inlinable
   func ___clearDestroy() {
-    ___destroy_node = .nullptr
-    ___destroy_count = 0
+    header.___destroy_node = .nullptr
+    header.___destroy_count = 0
   }
   var ___destroyNodes: [_NodePtr] {
-    if ___destroy_node == .nullptr {
+    if header.___destroy_node == .nullptr {
       return []
     }
-    var nodes: [_NodePtr] = [___destroy_node]
+    var nodes: [_NodePtr] = [header.___destroy_node]
     while let l = nodes.last, self[l].__right_ != .nullptr {
       nodes.append(self[l].__right_)
     }
@@ -183,24 +183,6 @@ extension ___RedBlackTree.___Storage {
   @inlinable
   var count: Int {
     __header_ptr.pointee.___initialized_count - __header_ptr.pointee.___destroy_count
-  }
-  
-  @inlinable
-  var ___initialized_count: Int {
-    get { __header_ptr.pointee.___initialized_count }
-    _modify { yield &__header_ptr.pointee.___initialized_count }
-  }
-  
-  @inlinable
-  var ___destroy_count: Int {
-    get { __header_ptr.pointee.___destroy_count }
-    _modify { yield &__header_ptr.pointee.___destroy_count }
-  }
-  
-  @inlinable
-  var ___destroy_node: _NodePtr {
-    get { __header_ptr.pointee.___destroy_node }
-    _modify { yield &__header_ptr.pointee.___destroy_node }
   }
   
   @inlinable
@@ -236,12 +218,12 @@ extension ___RedBlackTree.___Storage {
 
   @inlinable
   func __construct_node(_ k: Element) -> _NodePtr {
-    if ___destroy_count > 0 {
+    if header.___destroy_count > 0 {
       return ___popDetroy()
     }
     let index = count
     (__node_ptr + index).initialize(to: .init(__value_: k))
-    ___initialized_count += 1
+    header.___initialized_count += 1
     return index
   }
   
@@ -344,7 +326,7 @@ extension ___RedBlackTree.___Storage {
   internal static func create(
     withCapacity capacity: Int
   ) -> Storage {
-
+    
     let storage = Storage.create(minimumCapacity: capacity) { _ in
       Header(
         capacity: capacity,
@@ -370,6 +352,7 @@ extension ___RedBlackTree.___Storage {
 
     let newStorage = Storage.create(withCapacity: capacity)
 
+    newStorage.header.capacity = capacity
     newStorage.header.__left_ = __left_
     newStorage.header.__begin_node = __begin_node
     newStorage.header.___initialized_count = __initialized_count

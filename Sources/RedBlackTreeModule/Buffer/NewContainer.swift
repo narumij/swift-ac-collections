@@ -46,7 +46,7 @@ extension NewContainer {
 
   @inlinable
   mutating func ensureUniqueAndCapacity() {
-    Tree.ensureUniqueAndCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+    Tree.ensureUniqueAndCapacity(tree: &tree)
   }
 }
 

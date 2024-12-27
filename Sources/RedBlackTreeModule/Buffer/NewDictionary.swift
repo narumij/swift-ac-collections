@@ -177,6 +177,7 @@ extension NewDictionary {
       get { isNil ? nil : pointer.pointee }
       @inline(__always)
       _modify {
+        defer { _fixLifetime(self) }
         var value: Value? = pointer.move()
         defer {
           if let value {
@@ -195,7 +196,7 @@ extension NewDictionary {
     get { ___value_for(key)?.value }
     @inline(__always)
     _modify {
-      ensureUniqueAndCapacity()
+      defer { _fixLifetime(self) }
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
         var value: Value?
@@ -204,6 +205,7 @@ extension NewDictionary {
         }
         yield &value
       } else {
+        ensureUnique()
         var helper = ___ModifyHelper(pointer: &tree[__ptr].__value_.value)
         defer {
           if helper.isNil {
@@ -222,11 +224,13 @@ extension NewDictionary {
     get { ___value_for(key)?.value ?? defaultValue() }
     @inline(__always)
     _modify {
-      ensureUniqueAndCapacity()
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
+        ensureUniqueAndCapacity()
         __ptr = tree.__construct_node((key, defaultValue()))
         tree.__insert_node_at(__parent, __child, __ptr)
+      } else {
+        ensureUnique()
       }
       yield &tree[__ptr].__value_.value
     }
@@ -256,6 +260,7 @@ extension NewDictionary {
     // 変更前が空で、変更後は値の場合
     case .some(let value):
       // 追加する
+      ensureUniqueAndCapacity()
       let __h = tree.__construct_node((key, value))
       tree.__insert_node_at(__parent, __child, __h)
       break

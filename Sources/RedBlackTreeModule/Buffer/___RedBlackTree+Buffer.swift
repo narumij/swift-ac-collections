@@ -104,6 +104,11 @@ extension ___RedBlackTree.___Buffer {
   }
 
   @inlinable
+  static func ensureUniqueAndCapacity(tree: inout Buffer) {
+    ensureUniqueAndCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+  }
+
+  @inlinable
   static func ensureUniqueAndCapacity(tree: inout Buffer, minimumCapacity: Int) {
     let shouldExpand = tree.header.capacity < minimumCapacity
     if shouldExpand || !isKnownUniquelyReferenced(&tree) {
@@ -243,6 +248,7 @@ extension ___RedBlackTree.___Buffer {
       return __node_ptr[pointer]
     }
     _modify {
+      defer { _fixLifetime(self) }
       assert(0 <= pointer && pointer < header.initializedCount)
       yield &__node_ptr[pointer]
     }
@@ -311,13 +317,19 @@ extension ___RedBlackTree.___Buffer {
   @inlinable
   var __left_: _NodePtr {
     get { __header_ptr.pointee.__left_ }
-    _modify { yield &__header_ptr.pointee.__left_ }
+    _modify {
+      defer { _fixLifetime(self) }
+      yield &__header_ptr.pointee.__left_
+    }
   }
 
   @inlinable
   var __begin_node: _NodePtr {
     get { __header_ptr.pointee.__begin_node }
-    _modify { yield &__header_ptr.pointee.__begin_node }
+    _modify {
+      defer { _fixLifetime(self) }
+      yield &__header_ptr.pointee.__begin_node
+    }
   }
 
   @inlinable @inline(__always)

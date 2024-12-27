@@ -63,3 +63,6 @@ extension ___RedBlackTree {
 
 extension ___RedBlackTree.___Node: Equatable {}
 
+#if swift(>=5.5)
+extension ___RedBlackTree.___Node: @unchecked Sendable {}
+#endif

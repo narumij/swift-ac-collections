@@ -67,14 +67,14 @@ protocol ___RedBlackTreeContainerBase: ___RedBlackTreeAllocatorBase, ___RedBlack
 extension String {
 
   @usableFromInline
-  static var invalidIndex = "Attempting to access RedBlackTree elements using an invalid index"
+  nonisolated(unsafe) static var invalidIndex = "Attempting to access RedBlackTree elements using an invalid index"
 
   @usableFromInline
-  static var outOfBounds = "RedBlackTree index is out of Bound."
+  nonisolated(unsafe) static var outOfBounds = "RedBlackTree index is out of Bound."
   
   @usableFromInline
-  static var emptyFirst = "Can't removeFirst from an empty RedBlackTree"
+  nonisolated(unsafe) static var emptyFirst = "Can't removeFirst from an empty RedBlackTree"
   
   @usableFromInline
-  static var emptyLast = "Can't removeLast from an empty RedBlackTree"
+  nonisolated(unsafe) static var emptyLast = "Can't removeLast from an empty RedBlackTree"
 }

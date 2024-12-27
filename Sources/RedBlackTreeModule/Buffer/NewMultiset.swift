@@ -244,22 +244,6 @@ extension NewMultiset {
   }
 }
 
-//extension NewMultiset: Sequence {
-//  public struct Iterator: IteratorProtocol {
-//    @usableFromInline
-//    internal init(it: NewMultiset<Element>.Tree.Iterator) {
-//      self.it = it
-//    }
-//    var it: Tree.Iterator
-//    public mutating func next() -> Element? {
-//      it.next()
-//    }
-//  }
-//  @inlinable public func makeIterator() -> Iterator {
-//    .init(it: tree.makeIterator())
-//  }
-//}
-
 extension NewMultiset: Collection {}
 
 extension NewMultiset {

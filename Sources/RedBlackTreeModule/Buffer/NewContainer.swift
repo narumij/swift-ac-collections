@@ -537,5 +537,19 @@ extension NewContainer {
 
 // MARK: - InitializeHelper
 
-extension NewContainer {
-}
+//extension NewContainer {
+//  public struct Iterator: IteratorProtocol {
+//    @usableFromInline
+//    internal init(it: Tree.Iterator) {
+//      self.it = it
+//    }
+//    var it: Tree.Iterator
+//    public mutating func next() -> Element? {
+//      it.next()
+//    }
+//  }
+//  @inlinable public func makeIterator() -> Iterator {
+//    .init(it: tree.makeIterator())
+//  }
+//}
+

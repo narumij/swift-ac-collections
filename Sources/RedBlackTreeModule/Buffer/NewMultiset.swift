@@ -1,7 +1,29 @@
+// Copyright 2024 narumij
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2024 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+
 import Foundation
 
 public
-typealias RedBlackTreeMultiset = NewMultiset
+  typealias RedBlackTreeMultiset = NewMultiset
 
 @frozen
 public struct NewMultiset<Element: Comparable> {
@@ -44,7 +66,7 @@ extension NewMultiset {
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    
+
     self.init()
     for __k in sequence {
       Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
@@ -222,24 +244,23 @@ extension NewMultiset {
   }
 }
 
-extension NewMultiset: Sequence {
-  public struct Iterator: IteratorProtocol {
-    @usableFromInline
-    internal init(it: NewMultiset<Element>.Tree.Iterator) {
-      self.it = it
-    }
-    var it: Tree.Iterator
-    public mutating func next() -> Element? {
-      it.next()
-    }
-  }
-  @inlinable public func makeIterator() -> Iterator {
-    .init(it: tree.makeIterator())
-  }
-}
-
-//extension NewMultiset: BidirectionalCollection {
+//extension NewMultiset: Sequence {
+//  public struct Iterator: IteratorProtocol {
+//    @usableFromInline
+//    internal init(it: NewMultiset<Element>.Tree.Iterator) {
+//      self.it = it
+//    }
+//    var it: Tree.Iterator
+//    public mutating func next() -> Element? {
+//      it.next()
+//    }
+//  }
+//  @inlinable public func makeIterator() -> Iterator {
+//    .init(it: tree.makeIterator())
+//  }
 //}
+
+extension NewMultiset: Collection {}
 
 extension NewMultiset {
 
@@ -288,14 +309,14 @@ extension NewMultiset {
 
   /// - Complexity: O(log *n* + *k*), ここで *n* はマルチセット内の要素数、*k* は指定された要素の出現回数。
   @inlinable public func count(_ element: Element) -> Int {
-      tree.distance(
-        __first: tree.__lower_bound(element, tree.__root(), tree.__end_node()),
-        __last: tree.__upper_bound(element, tree.__root(), tree.__end_node()))
+    tree.distance(
+      __first: tree.__lower_bound(element, tree.__root(), tree.__end_node()),
+      __last: tree.__upper_bound(element, tree.__root(), tree.__end_node()))
   }
 }
 
 extension NewMultiset: CustomStringConvertible, CustomDebugStringConvertible {
-  
+
   @inlinable
   public var description: String {
     "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
@@ -338,13 +359,15 @@ extension NewMultiset {
   @inlinable public func reduce<Result>(
     into initialResult: Result, _ updateAccumulatingResult: (inout Result, Element) throws -> Void
   ) rethrows -> Result {
-    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), into: initialResult, updateAccumulatingResult)
+    try ___element_sequence__(
+      from: ___index_begin(), to: ___index_end(), into: initialResult, updateAccumulatingResult)
   }
 
   @inlinable public func reduce<Result>(
     _ initialResult: Result, _ nextPartialResult: (Result, Element) throws -> Result
   ) rethrows -> Result {
-    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), initialResult, nextPartialResult)
+    try ___element_sequence__(
+      from: ___index_begin(), to: ___index_end(), initialResult, nextPartialResult)
   }
 }
 

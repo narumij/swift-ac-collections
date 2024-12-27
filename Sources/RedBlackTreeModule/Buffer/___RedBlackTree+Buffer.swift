@@ -95,7 +95,7 @@ extension ___RedBlackTree.___Buffer {
 }
 
 extension ___RedBlackTree.___Buffer {
-  
+
   @inlinable
   static func ensureUnique(tree: inout Buffer) {
     if !isKnownUniquelyReferenced(&tree) {
@@ -107,18 +107,20 @@ extension ___RedBlackTree.___Buffer {
   static func ensureUniqueAndCapacity(tree: inout Buffer, minimumCapacity: Int) {
     let shouldExpand = tree.header.capacity < minimumCapacity
     if shouldExpand || !isKnownUniquelyReferenced(&tree) {
-      tree = tree.copy(newCapacity: _growCapacity(tree: &tree, to: minimumCapacity, linearly: false))
+      tree = tree.copy(
+        newCapacity: _growCapacity(tree: &tree, to: minimumCapacity, linearly: false))
     }
   }
-  
+
   @inlinable
   static func ensureCapacity(tree: inout Buffer, minimumCapacity: Int) {
     let shouldExpand = tree.header.capacity < minimumCapacity
     if shouldExpand {
-      tree = tree.copy(newCapacity: _growCapacity(tree: &tree, to: minimumCapacity, linearly: false))
+      tree = tree.copy(
+        newCapacity: _growCapacity(tree: &tree, to: minimumCapacity, linearly: false))
     }
   }
-  
+
   @inlinable
   @inline(__always)
   internal static var growthFactor: Double { 1.75 }
@@ -334,7 +336,9 @@ extension ___RedBlackTree.___Buffer {
   @inlinable
   func __construct_node(_ k: Element) -> _NodePtr {
     if header.destroyCount > 0 {
-      return ___popDetroy()
+      let p = ___popDetroy()
+      __node_ptr[p] = .init(__value_: k)
+      return p
     }
     let index = count
     (__node_ptr + index).initialize(to: .init(__value_: k))
@@ -574,25 +578,25 @@ extension ___RedBlackTree.___Buffer {
 }
 
 extension ___RedBlackTree.___Buffer {
-  
+
   public typealias SafeSequenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
 
   @inlinable
   func ___next(_ ptr: _NodePtr, to: _NodePtr) -> _NodePtr {
     ptr == to ? ptr : __tree_next_iter(ptr)
   }
-  
+
   @inlinable @inline(__always)
   func ___begin(_ from: _NodePtr, to: _NodePtr) -> SafeSequenceState {
     (from, ___next(from, to: to), to)
   }
-  
+
   @inlinable @inline(__always)
   func ___next(_ state: inout SafeSequenceState) {
     state.current = state.next
     state.next = ___next(state.next, to: state.to)
   }
-  
+
   @inlinable @inline(__always)
   func ___end(_ state: SafeSequenceState) -> Bool {
     state.current != state.to
@@ -600,12 +604,12 @@ extension ___RedBlackTree.___Buffer {
 }
 
 extension ___RedBlackTree.___Buffer: Sequence {
-  
+
   @usableFromInline
   func makeIterator() -> Iterator {
     .init(tree: self)
   }
-  
+
   @usableFromInline
   struct Iterator: IteratorProtocol {
 
@@ -614,12 +618,12 @@ extension ___RedBlackTree.___Buffer: Sequence {
       self._tree = tree
       self.state = tree.___begin(tree.__begin_node, to: tree.__end_node())
     }
-    
+
     @usableFromInline
     let _tree: Buffer
     @usableFromInline
     var state: SafeSequenceState
-    
+
     @usableFromInline
     mutating func next() -> Element? {
       guard _tree.___end(state) else { return nil }

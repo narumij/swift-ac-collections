@@ -79,26 +79,18 @@ public
     }
   }
 
-    @inlinable
-      @inline(__always)
-      internal static var growthFactor: Double { 1.5 }
-    
-    @usableFromInline
-    internal func _growCapacity(
-      to minimumCapacity: Int,
-      linearly: Bool
-    ) -> Int {
-      if linearly { return Swift.max(storage.header.capacity, minimumCapacity) }
-      return Swift.max(Int((Self.growthFactor * Double(storage.header.capacity)).rounded(.up)),
-                       minimumCapacity)
-    }
-    
-//  @inlinable
-//  func recommendCapacity(_ minimumCapacity: Int) -> Int {
-//    var capacity = 256
-//    while capacity < minimumCapacity {
-//      capacity <<= 1
-//    }
-//    return capacity
-//  }
+  @inlinable
+  @inline(__always)
+  internal static var growthFactor: Double { 1.75 }
+
+  @usableFromInline
+  internal func _growCapacity(
+    to minimumCapacity: Int,
+    linearly: Bool
+  ) -> Int {
+    if linearly { return Swift.max(storage.header.capacity, minimumCapacity) }
+    return Swift.max(
+      Int((Self.growthFactor * Double(storage.header.capacity)).rounded(.up)),
+      minimumCapacity)
+  }
 }

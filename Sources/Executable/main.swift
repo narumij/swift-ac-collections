@@ -68,7 +68,7 @@ for i in 0 ..< 1_000_000 {
   x.insert(i)
 }
 for i in 0 ..< 1_000_000 {
-  x.erase(i)
+  x.remove(i)
 }
 #else
 var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]

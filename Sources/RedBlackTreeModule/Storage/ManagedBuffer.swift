@@ -2,7 +2,28 @@ import Foundation
 
 extension ___RedBlackTree {
 
-  public struct ___Node_<Element> {
+  @usableFromInline
+  class ___Storage<VC, Element>: ManagedBuffer<
+    ___RedBlackTree.___Storage<VC, Element>.Header,
+    ___RedBlackTree.___Storage<VC, Element>.Node
+  >
+  where Element: Comparable, VC: ValueComparer, Element == VC.Element {
+    @usableFromInline
+    static var empty: Storage { create(withCapacity: 0) }
+
+    @inlinable
+    deinit {
+      self.withUnsafeMutablePointers { header, elements in
+        elements.deinitialize(count: header.pointee.___initialized_count)
+        header.deinitialize(count: 1)
+      }
+    }
+  }
+}
+
+extension ___RedBlackTree.___Storage {
+
+  public struct Node {
 
     @usableFromInline
     var __right_: _NodePtr
@@ -32,37 +53,13 @@ extension ___RedBlackTree {
   }
 }
 
-extension ___RedBlackTree {
-
-  @usableFromInline
-  class ___Storage<VC,Element>: ManagedBuffer<
-    ___RedBlackTree.___Storage<VC,Element>.Header, ___RedBlackTree.___Node_<Element>
-  >
-  where Element: Comparable, VC: ValueComparer, Element == VC.Element
-  {
-    @usableFromInline
-    static var empty: Storage { create(withCapacity: 0) }
-
-    @inlinable
-    deinit {
-      self.withUnsafeMutablePointers { header, elements in
-        elements.deinitialize(count: header.pointee.___initialized_count)
-        header.deinitialize(count: 1)
-      }
-    }
-  }
-}
-
 extension ___RedBlackTree.___Storage {
 
   @usableFromInline
-  typealias Storage = ___RedBlackTree.___Storage<VC,Element>
+  typealias Storage = ___RedBlackTree.___Storage<VC, Element>
 
   @usableFromInline
-  typealias Component = ___RedBlackTree.___Node_<Element>
-
-  @usableFromInline
-  typealias Manager = ManagedBufferPointer<Header, Component>
+  typealias Manager = ManagedBufferPointer<Header, Node>
 }
 
 extension ___RedBlackTree.___Storage {
@@ -118,12 +115,12 @@ extension ___RedBlackTree.___Storage {
   }
 
   @inlinable
-  var __node_ptr: UnsafeMutablePointer<Component> {
+  var __node_ptr: UnsafeMutablePointer<Node> {
     withUnsafeMutablePointerToElements({ $0 })
   }
 
   @inlinable
-  subscript(pointer: _NodePtr) -> Component {
+  subscript(pointer: _NodePtr) -> Node {
     get {
       assert(0 <= pointer && pointer < header.___initialized_count)
       return __node_ptr[pointer]
@@ -136,7 +133,7 @@ extension ___RedBlackTree.___Storage {
 }
 
 extension ___RedBlackTree.___Storage {
-  
+
   @inlinable
   func ___pushDestroy(_ p: _NodePtr) {
     assert(header.___destroy_count < capacity)
@@ -169,7 +166,7 @@ extension ___RedBlackTree.___Storage {
     }
     return nodes
   }
-  
+
   @inlinable
   func clear() {
     __begin_node = .nullptr
@@ -179,35 +176,35 @@ extension ___RedBlackTree.___Storage {
 }
 
 extension ___RedBlackTree.___Storage {
-  
+
   @inlinable
   var count: Int {
     __header_ptr.pointee.___initialized_count - __header_ptr.pointee.___destroy_count
   }
-  
+
   @inlinable
   var size: Int {
     get { count }
-    set { /* NOP */ }
+    set { /* NOP */  }
   }
-  
+
   @inlinable
   var __left_: _NodePtr {
     get { __header_ptr.pointee.__left_ }
     _modify { yield &__header_ptr.pointee.__left_ }
   }
-  
+
   @inlinable
   var __begin_node: _NodePtr {
     get { __header_ptr.pointee.__begin_node }
     _modify { yield &__header_ptr.pointee.__begin_node }
   }
-  
+
   @inlinable @inline(__always)
   func ___is_valid(_ p: _NodePtr) -> Bool {
     __node_ptr[p].__parent_ != .nullptr
   }
-  
+
   @inlinable @inline(__always)
   func ___invalidate(_ p: _NodePtr) {
     __node_ptr[p].__parent_ = .nullptr
@@ -226,7 +223,7 @@ extension ___RedBlackTree.___Storage {
     header.___initialized_count += 1
     return index
   }
-  
+
   @inlinable
   func destroy(_ p: _NodePtr) {
     ___invalidate(p)
@@ -235,14 +232,14 @@ extension ___RedBlackTree.___Storage {
 }
 
 extension ___RedBlackTree.___Storage {
-  
+
   @inlinable @inline(__always)
   func __value_(_ p: _NodePtr) -> _Key {
     __value_(__node_ptr[p].__value_)
   }
 }
 
-extension ___RedBlackTree.___Storage: ___UnsafeHandleBase { }
+extension ___RedBlackTree.___Storage: ___UnsafeHandleBase {}
 extension ___RedBlackTree.___Storage: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
 extension ___RedBlackTree.___Storage: EqualProtocol {}
 extension ___RedBlackTree.___Storage: InsertNodeAtProtocol {}
@@ -284,7 +281,7 @@ extension ___RedBlackTree.___Storage: MemberProtocol & RootImpl & RefSetImpl & R
 }
 
 extension ___RedBlackTree.___Storage {
-  
+
   @inlinable
   func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
     __node_ptr[lhs].__is_black_ = rhs
@@ -308,7 +305,7 @@ extension ___RedBlackTree.___Storage {
 }
 
 extension ___RedBlackTree.___Storage {
-  
+
   @inlinable
   func ___erase_unique(_ __k: VC._Key) -> Bool {
     let __i = find(__k)
@@ -318,6 +315,20 @@ extension ___RedBlackTree.___Storage {
     _ = erase(__i)
     return true
   }
+  
+  @inlinable @inline(__always)
+  func ___element(_ p: _NodePtr) -> Element { self[p].__value_ }
+
+  @inlinable
+  func
+  ___erase(_ __f: _NodePtr,_ __l: _NodePtr,_ action: (Element) throws -> Void) rethrows
+  {
+    var __f = __f
+    while __f != __l {
+      try action(___element(__f))
+      __f = erase(__f)
+    }
+  }
 }
 
 extension ___RedBlackTree.___Storage {
@@ -326,7 +337,7 @@ extension ___RedBlackTree.___Storage {
   internal static func create(
     withCapacity capacity: Int
   ) -> Storage {
-    
+
     let storage = Storage.create(minimumCapacity: capacity) { _ in
       Header(
         capacity: capacity,
@@ -370,124 +381,126 @@ extension ___RedBlackTree.___Storage {
 }
 
 #if false
-extension ___RedBlackTree.___Storage {
+  extension ___RedBlackTree.___Storage {
 
-  @usableFromInline
-  internal struct UnsafeHandle {
+    @usableFromInline
+    internal struct UnsafeHandle {
+
+      @inlinable
+      @inline(__always)
+      internal init(
+        __header_ptr: UnsafeMutablePointer<Header>,
+        __node_ptr: UnsafeMutablePointer<Component>
+      ) {
+        self.__header_ptr = __header_ptr
+        self.__node_ptr = __node_ptr
+      }
+
+      @usableFromInline
+      internal let __header_ptr: UnsafeMutablePointer<Header>
+
+      @usableFromInline
+      internal let __node_ptr: UnsafeMutablePointer<Component>
+    }
+  }
+
+  extension ___RedBlackTree.___Storage.UnsafeHandle: ___UnsafeHandleBase {}
+  extension ___RedBlackTree.___Storage.UnsafeHandle: RefSetImpl & RootImpl & RootPtrImpl {}
+  extension ___RedBlackTree.___Storage.UnsafeHandle: NodeFindProtocol & NodeFindEqualProtocol
+      & FindLeafProtocol
+  {}
+  extension ___RedBlackTree.___Storage.UnsafeHandle: EqualProtocol {}
+  extension ___RedBlackTree.___Storage.UnsafeHandle: InsertNodeAtProtocol {}
+  extension ___RedBlackTree.___Storage.UnsafeHandle: RemoveProtocol {}
+  extension ___RedBlackTree.___Storage.UnsafeHandle: EraseProtocol {}
+
+  extension ___RedBlackTree.___Storage.UnsafeHandle {
+
+    @inlinable @inline(__always)
+    func __value_(_ p: _NodePtr) -> _Key {
+      __value_(__node_ptr[p].__value_)
+    }
+  }
+
+  extension ___RedBlackTree.___Storage.UnsafeHandle {
+
+    @inlinable @inline(__always)
+    func ___element(_ p: _NodePtr) -> Element {
+      __node_ptr[p].__value_
+    }
+  }
+
+  extension ___RedBlackTree.___Storage.UnsafeHandle {
+
+    @inlinable
+    var __left_: _NodePtr {
+      @inline(__always) get { __header_ptr.pointee.__left_ }
+      nonmutating set { __header_ptr.pointee.__left_ = newValue }
+    }
+
+    @inlinable
+    var __begin_node: _NodePtr {
+      @inline(__always) get { __header_ptr.pointee.__begin_node }
+      nonmutating set { __header_ptr.pointee.__begin_node = newValue }
+    }
+
+    @inlinable
+    var size: Int {
+      @inline(__always) get { __header_ptr.pointee.count }
+      nonmutating set { __header_ptr.pointee.count = newValue }
+    }
+  }
+
+  extension ___RedBlackTree.___Storage.UnsafeHandle {
 
     @inlinable
     @inline(__always)
-    internal init(
-      __header_ptr: UnsafeMutablePointer<Header>,
-      __node_ptr: UnsafeMutablePointer<Component>
-    ) {
-      self.__header_ptr = __header_ptr
-      self.__node_ptr = __node_ptr
+    func __parent_(_ p: _NodePtr) -> _NodePtr {
+      __node_ptr[p].__parent_
     }
-
-    @usableFromInline
-    internal let __header_ptr: UnsafeMutablePointer<Header>
-
-    @usableFromInline
-    internal let __node_ptr: UnsafeMutablePointer<Component>
-  }
-}
-
-extension ___RedBlackTree.___Storage.UnsafeHandle: ___UnsafeHandleBase {}
-extension ___RedBlackTree.___Storage.UnsafeHandle: RefSetImpl & RootImpl & RootPtrImpl {}
-extension ___RedBlackTree.___Storage.UnsafeHandle: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
-extension ___RedBlackTree.___Storage.UnsafeHandle: EqualProtocol {}
-extension ___RedBlackTree.___Storage.UnsafeHandle: InsertNodeAtProtocol {}
-extension ___RedBlackTree.___Storage.UnsafeHandle: RemoveProtocol {}
-extension ___RedBlackTree.___Storage.UnsafeHandle: EraseProtocol {}
-
-extension ___RedBlackTree.___Storage.UnsafeHandle {
-  
-  @inlinable @inline(__always)
-  func __value_(_ p: _NodePtr) -> _Key {
-    __value_(__node_ptr[p].__value_)
-  }
-}
-
-extension ___RedBlackTree.___Storage.UnsafeHandle {
-  
-  @inlinable @inline(__always)
-  func ___element(_ p: _NodePtr) -> Element {
-    __node_ptr[p].__value_
-  }
-}
-
-extension ___RedBlackTree.___Storage.UnsafeHandle {
-
-  @inlinable
-  var __left_: _NodePtr {
-    @inline(__always) get { __header_ptr.pointee.__left_ }
-    nonmutating set { __header_ptr.pointee.__left_ = newValue }
-  }
-
-  @inlinable
-  var __begin_node: _NodePtr {
-    @inline(__always) get { __header_ptr.pointee.__begin_node }
-    nonmutating set { __header_ptr.pointee.__begin_node = newValue }
-  }
-
-  @inlinable
-  var size: Int {
-    @inline(__always) get { __header_ptr.pointee.count }
-    nonmutating set { __header_ptr.pointee.count = newValue }
-  }
-}
-
-extension ___RedBlackTree.___Storage.UnsafeHandle {
-
-  @inlinable
-  @inline(__always)
-  func __parent_(_ p: _NodePtr) -> _NodePtr {
-    __node_ptr[p].__parent_
-  }
-  @inlinable
-  @inline(__always)
-  func __left_(_ p: _NodePtr) -> _NodePtr {
-    p == .end ? __left_ : __node_ptr[p].__left_
-  }
-  @inlinable
-  @inline(__always)
-  func __right_(_ p: _NodePtr) -> _NodePtr {
-    __node_ptr[p].__right_
-  }
-  @inlinable
-  @inline(__always)
-  func __is_black_(_ p: _NodePtr) -> Bool {
-    __node_ptr[p].__is_black_
-  }
-  @inlinable
-  @inline(__always)
-  func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
-    __parent_(p)
-  }
-}
-
-extension ___RedBlackTree.___Storage.UnsafeHandle {
-
-  @inlinable
-  func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
-    __node_ptr[lhs].__is_black_ = rhs
-  }
-  @inlinable
-  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    __node_ptr[lhs].__parent_ = rhs
-  }
-  @inlinable
-  func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    if lhs == .end {
-      __left_ = rhs
-    } else {
-      __node_ptr[lhs].__left_ = rhs
+    @inlinable
+    @inline(__always)
+    func __left_(_ p: _NodePtr) -> _NodePtr {
+      p == .end ? __left_ : __node_ptr[p].__left_
+    }
+    @inlinable
+    @inline(__always)
+    func __right_(_ p: _NodePtr) -> _NodePtr {
+      __node_ptr[p].__right_
+    }
+    @inlinable
+    @inline(__always)
+    func __is_black_(_ p: _NodePtr) -> Bool {
+      __node_ptr[p].__is_black_
+    }
+    @inlinable
+    @inline(__always)
+    func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
+      __parent_(p)
     }
   }
-  @inlinable
-  func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    __node_ptr[lhs].__right_ = rhs
+
+  extension ___RedBlackTree.___Storage.UnsafeHandle {
+
+    @inlinable
+    func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
+      __node_ptr[lhs].__is_black_ = rhs
+    }
+    @inlinable
+    func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+      __node_ptr[lhs].__parent_ = rhs
+    }
+    @inlinable
+    func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+      if lhs == .end {
+        __left_ = rhs
+      } else {
+        __node_ptr[lhs].__left_ = rhs
+      }
+    }
+    @inlinable
+    func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+      __node_ptr[lhs].__right_ = rhs
+    }
   }
-}
 #endif

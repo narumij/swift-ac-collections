@@ -13,6 +13,7 @@ final class ManagedBufferTests: XCTestCase {
 
   enum VC: ScalarValueComparer {
     typealias _Key = Int
+    typealias Element = Int
   }
 
   override func setUpWithError() throws {

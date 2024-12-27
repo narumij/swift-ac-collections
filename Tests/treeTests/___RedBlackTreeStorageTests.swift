@@ -56,7 +56,7 @@ import XCTest
           (0..<count).map { .init(__node_ptr[$0]) }
         }
         set {
-          count = newValue.count
+          __initialized_count = newValue.count
           newValue.enumerated().forEach {
             i, v in __node_ptr[i].node = v
           }
@@ -69,7 +69,7 @@ import XCTest
           (0..<count).map { __node_ptr[$0].__value_ }
         }
         set {
-          count = newValue.count
+          __initialized_count = newValue.count
           newValue.enumerated().forEach {
             i, v in __node_ptr[i].__value_ = v
           }

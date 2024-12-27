@@ -141,6 +141,7 @@ extension ___RedBlackTree.___Storage {
 }
 
 extension ___RedBlackTree.___Storage {
+  @inlinable
   func pushDestroy(_ p: _NodePtr) {
     assert(__destroy_count < capacity)
     assert(__destroy_node != p)
@@ -148,6 +149,7 @@ extension ___RedBlackTree.___Storage {
     __destroy_node = p
     __destroy_count += 1
   }
+  @inlinable
   func popDetroy() -> _NodePtr {
     assert(__destroy_count > 0)
     let p = __destroy_node
@@ -155,6 +157,7 @@ extension ___RedBlackTree.___Storage {
     __destroy_count -= 1
     return p
   }
+  @inlinable
   func clearDestroy() {
     __destroy_node = .nullptr
     __destroy_count = 0
@@ -226,6 +229,9 @@ extension ___RedBlackTree.___Storage {
 
   @inlinable
   func __construct_node(_ k: Element) -> _NodePtr {
+    if __destroy_count > 0 {
+      return popDetroy()
+    }
     let index = count
     (__node_ptr + index).initialize(to: .init(__value_: k))
     __initialized_count += 1
@@ -236,6 +242,7 @@ extension ___RedBlackTree.___Storage {
   func destroy(_ p: _NodePtr) {
     ___invalidate(p)
     (__node_ptr + p).pointee.__parent_ = .nullptr
+    pushDestroy(p)
   }
 }
 

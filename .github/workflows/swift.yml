@@ -15,10 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@vlatest
+    - uses: actions/checkout@latest
     
     - name: Set up Swift
-      uses: fwal/setup-swift@vlatest
+      uses: fwal/setup-swift@latest
       with:
         swift-version: '5'
     

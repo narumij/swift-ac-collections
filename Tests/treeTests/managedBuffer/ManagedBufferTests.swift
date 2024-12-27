@@ -60,36 +60,36 @@ final class ManagedBufferTests: XCTestCase {
   
   func testDestroyStack() async throws {
     let storage = ___RedBlackTree.___Storage<VC,Int>.create(withCapacity: 4)
-    storage.___initialized_count = 4
+    storage.header.___initialized_count = 4
     XCTAssertEqual(storage.header.___destroy_node, .nullptr)
     XCTAssertEqual(storage.___destroyNodes, [])
-    XCTAssertEqual(storage.___destroy_count, 0)
+    XCTAssertEqual(storage.header.___destroy_count, 0)
     storage.___pushDestroy(0)
     XCTAssertEqual(storage.header.___destroy_node, 0)
     XCTAssertEqual(storage[0].__right_, .nullptr)
     XCTAssertEqual(storage.___destroyNodes, [0])
-    XCTAssertEqual(storage.___destroy_count, 1)
+    XCTAssertEqual(storage.header.___destroy_count, 1)
     storage.___pushDestroy(1)
     XCTAssertEqual(storage.___destroyNodes, [1,0])
-    XCTAssertEqual(storage.___destroy_count, 2)
+    XCTAssertEqual(storage.header.___destroy_count, 2)
     storage.___pushDestroy(2)
     XCTAssertEqual(storage.___destroyNodes, [2,1,0])
-    XCTAssertEqual(storage.___destroy_count, 3)
+    XCTAssertEqual(storage.header.___destroy_count, 3)
     storage.___pushDestroy(3)
     XCTAssertEqual(storage.___destroyNodes, [3,2,1,0])
-    XCTAssertEqual(storage.___destroy_count, 4)
+    XCTAssertEqual(storage.header.___destroy_count, 4)
     XCTAssertEqual(storage.___popDetroy(), 3)
     XCTAssertEqual(storage.___destroyNodes, [2,1,0])
-    XCTAssertEqual(storage.___destroy_count, 3)
+    XCTAssertEqual(storage.header.___destroy_count, 3)
     XCTAssertEqual(storage.___popDetroy(), 2)
     XCTAssertEqual(storage.___destroyNodes, [1,0])
-    XCTAssertEqual(storage.___destroy_count, 2)
+    XCTAssertEqual(storage.header.___destroy_count, 2)
     XCTAssertEqual(storage.___popDetroy(), 1)
     XCTAssertEqual(storage.___destroyNodes, [0])
-    XCTAssertEqual(storage.___destroy_count, 1)
+    XCTAssertEqual(storage.header.___destroy_count, 1)
     XCTAssertEqual(storage.___popDetroy(), 0)
     XCTAssertEqual(storage.___destroyNodes, [])
-    XCTAssertEqual(storage.___destroy_count, 0)
+    XCTAssertEqual(storage.header.___destroy_count, 0)
   }
 
   func testConstructDestroy() async throws {
@@ -102,7 +102,7 @@ final class ManagedBufferTests: XCTestCase {
       XCTAssertEqual(storage.count, 0)
       XCTAssertEqual(storage.header.___destroy_node, 0)
       XCTAssertEqual(storage.___destroyNodes, [0])
-      XCTAssertEqual(storage.___destroy_count, 1)
+      XCTAssertEqual(storage.header.___destroy_count, 1)
       XCTAssertEqual(storage[0].__right_, .nullptr)
     }
     do {
@@ -117,13 +117,13 @@ final class ManagedBufferTests: XCTestCase {
         XCTAssertEqual(storage.count, 1)
         XCTAssertEqual(storage.header.___destroy_node, 1)
         XCTAssertEqual(storage.___destroyNodes, [1])
-        XCTAssertEqual(storage.___destroy_count, 1)
+        XCTAssertEqual(storage.header.___destroy_count, 1)
       }
       storage.destroy(p)
       XCTAssertEqual(storage.count, 0)
       XCTAssertEqual(storage.header.___destroy_node, 0)
       XCTAssertEqual(storage.___destroyNodes, [0,1])
-      XCTAssertEqual(storage.___destroy_count, 2)
+      XCTAssertEqual(storage.header.___destroy_count, 2)
       XCTAssertEqual(storage[1].__right_, .nullptr)
     }
     do {
@@ -142,20 +142,20 @@ final class ManagedBufferTests: XCTestCase {
           XCTAssertEqual(storage.count, 2)
           XCTAssertEqual(storage.header.___destroy_node, 2)
           XCTAssertEqual(storage.___destroyNodes, [2])
-          XCTAssertEqual(storage.___destroy_count, 1)
+          XCTAssertEqual(storage.header.___destroy_count, 1)
           XCTAssertEqual(storage[2].__right_, .nullptr)
         }
         storage.destroy(p)
         XCTAssertEqual(storage.count, 1)
         XCTAssertEqual(storage.header.___destroy_node, 1)
         XCTAssertEqual(storage.___destroyNodes, [1,2])
-        XCTAssertEqual(storage.___destroy_count, 2)
+        XCTAssertEqual(storage.header.___destroy_count, 2)
         XCTAssertEqual(storage[2].__right_, .nullptr)
       }
       storage.destroy(p)
       XCTAssertEqual(storage.header.___destroy_node, 0)
       XCTAssertEqual(storage.___destroyNodes, [0,1,2])
-      XCTAssertEqual(storage.___destroy_count, 3)
+      XCTAssertEqual(storage.header.___destroy_count, 3)
       XCTAssertEqual(storage[2].__right_, .nullptr)
     }
   }

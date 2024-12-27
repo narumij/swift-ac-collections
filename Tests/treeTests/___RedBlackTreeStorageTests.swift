@@ -7,6 +7,28 @@
 
 import XCTest
 
+@usableFromInline
+protocol NodeBase {
+  var __right_: _NodePtr { get set }
+  var __left_: _NodePtr { get set }
+  var __parent_: _NodePtr { get set }
+  var __is_black_: Bool { get set }
+}
+
+extension NodeBase {
+
+  @inlinable
+  var node: ___RedBlackTree.___Node {
+    get { .init(self) }
+    set {
+      __is_black_ = newValue.__is_black_
+      __left_ = newValue.__left_
+      __right_ = newValue.__right_
+      __parent_ = newValue.__parent_
+    }
+  }
+}
+
 #if true
   #if DEBUG
     @testable import RedBlackTreeModule
@@ -24,7 +46,7 @@ import XCTest
     extension ___RedBlackTree.___Node {
 
       @inlinable
-      init<Element>(_ node: ___RedBlackTree.___Node_<Element>) {
+      init<Node: NodeBase>(_ node: Node) {
         self.init(
           __is_black_: node.__is_black_,
           __left_: node.__left_,
@@ -34,18 +56,7 @@ import XCTest
       }
     }
 
-    extension ___RedBlackTree.___Node_ {
-
-      @inlinable
-      var node: ___RedBlackTree.___Node {
-        get { .init(self) }
-        set {
-          __is_black_ = newValue.__is_black_
-          __left_ = newValue.__left_
-          __right_ = newValue.__right_
-          __parent_ = newValue.__parent_
-        }
-      }
+    extension ___RedBlackTree.___Storage.Node: NodeBase {
     }
 
     extension ___RedBlackTree.___Storage {
@@ -56,7 +67,7 @@ import XCTest
           (0..<count).map { .init(__node_ptr[$0]) }
         }
         set {
-          ___initialized_count = newValue.count
+          header.___initialized_count = newValue.count
           newValue.enumerated().forEach {
             i, v in __node_ptr[i].node = v
           }
@@ -69,7 +80,7 @@ import XCTest
           (0..<count).map { __node_ptr[$0].__value_ }
         }
         set {
-          ___initialized_count = newValue.count
+          header.___initialized_count = newValue.count
           newValue.enumerated().forEach {
             i, v in __node_ptr[i].__value_ = v
           }
@@ -353,7 +364,7 @@ import XCTest
 
       func testRemove3() throws {
 
-//        throw XCTSkip("Not implemented")
+        //        throw XCTSkip("Not implemented")
 
         let tree = RedBlackTreeStorage.create(withCapacity: 8)
         _ = tree.__insert_unique(0)
@@ -372,7 +383,7 @@ import XCTest
 
       func testRemove2() throws {
 
-//        throw XCTSkip("Not implemented")
+        //        throw XCTSkip("Not implemented")
 
         let tree = RedBlackTreeStorage.create(withCapacity: 8)
         for i in 0..<2 {
@@ -395,7 +406,7 @@ import XCTest
 
       func testRemove7() throws {
 
-//        throw XCTSkip("Not implemented")
+        //        throw XCTSkip("Not implemented")
 
         let tree = RedBlackTreeStorage.create(withCapacity: 16)
         for i in 0..<7 {

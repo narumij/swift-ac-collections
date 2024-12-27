@@ -83,7 +83,11 @@ import XCTest
 
       @inlinable
       var validCount: Int {
-        (Int(0) ..< count as Range<Int>).count { ___is_valid($0) }
+        var c = 0
+        for i in 0..<count {
+          c += ___is_valid(i) ? 1 : 0
+        }
+        return c
       }
     }
 

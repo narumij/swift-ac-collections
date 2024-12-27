@@ -7,7 +7,7 @@
 
 import XCTest
 
-#if false
+#if true
 #if DEBUG
   @testable import RedBlackTreeModule
 

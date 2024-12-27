@@ -89,17 +89,27 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     var map = RedBlackTreeDictionary<Int, Int>()
     XCTAssertEqual(map[0], nil)
     map[0] = 1
+//    map.updateValue(1, forKey: 0)
     XCTAssertEqual(map[0], 1)
     XCTAssertEqual(map[1], nil)
+    XCTAssertTrue(zip(map.map{ ($0.0,$0.1) }, [(0,1)]).allSatisfy(==))
     map[0] = nil
+//    map.removeValue(forKey: 0)
     XCTAssertEqual(map[0], nil)
     XCTAssertEqual(map[1], nil)
+    XCTAssertTrue(zip(map.map{ ($0.0,$0.1) }, []).allSatisfy(==))
     map[1] = 2
+//    map.updateValue(20, forKey: 10)
     XCTAssertEqual(map[0], nil)
     XCTAssertEqual(map[1], 2)
+    XCTAssertEqual(map.map(\.key), [1])
+    XCTAssertEqual(map.map(\.value), [2])
     map[1] = nil
+//    map.removeValue(forKey: 10)
     XCTAssertEqual(map[0], nil)
     XCTAssertEqual(map[1], nil)
+    XCTAssertEqual(map.map(\.key), [])
+    XCTAssertEqual(map.map(\.value), [])
   }
   
   func testUsage2() throws {

@@ -21,7 +21,7 @@ final class ConvenienceTests: XCTestCase {
 #if DEBUG
   func test_set_LT_GT() throws {
     var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-    XCTAssertEqual(set._count, 5)
+    XCTAssertEqual(set.count, 5)
     XCTAssertEqual(set.lessThan(-1), nil)
     XCTAssertEqual(set.greaterThan(-1), 0)
     XCTAssertEqual(set.lessThan(0), nil)
@@ -98,7 +98,7 @@ final class ConvenienceTests: XCTestCase {
 
   func test_set_LE_GE() throws {
     var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-    XCTAssertEqual(set._count, 5)
+    XCTAssertEqual(set.count, 5)
     XCTAssertEqual(set.lessThanOrEqual(-1), nil)
     XCTAssertEqual(set.greaterThanOrEqual(-1), 0)
     XCTAssertEqual(set.lessThanOrEqual(0), 0)
@@ -175,7 +175,7 @@ final class ConvenienceTests: XCTestCase {
 
   func test_Multiset_LT_GT() throws {
     var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
-    XCTAssertEqual(set._count, 5)
+    XCTAssertEqual(set.count, 5)
     XCTAssertEqual(set.lessThan(-1), nil)
     XCTAssertEqual(set.greaterThan(-1), 0)
     XCTAssertEqual(set.lessThan(0), nil)
@@ -252,7 +252,7 @@ final class ConvenienceTests: XCTestCase {
 
   func test_Multiset_LE_GE() throws {
     var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
-    XCTAssertEqual(set._count, 5)
+    XCTAssertEqual(set.count, 5)
     XCTAssertEqual(set.lessThanOrEqual(-1), nil)
     XCTAssertEqual(set.greaterThanOrEqual(-1), 0)
     XCTAssertEqual(set.lessThanOrEqual(0), 0)

@@ -83,7 +83,7 @@ import XCTest
 
       @inlinable
       var validCount: Int {
-        (0..<count).count { ___is_valid($0) }
+        (0 ..< __header_ptr.pointee.count).count { ___is_valid($0) }
       }
     }
 

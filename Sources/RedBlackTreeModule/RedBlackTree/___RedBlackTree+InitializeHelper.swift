@@ -40,7 +40,7 @@ extension ___RedBlackTreeInitializeHelper {
     _header: ___RedBlackTree.___Header,
     _nodes: [___RedBlackTree.___Node],
     _values: [Element],
-    _stock: Heap<_NodePtr>
+    _stock: [_NodePtr]
   )
   where S: Sequence {
     // valuesは一旦全部の分を確保する

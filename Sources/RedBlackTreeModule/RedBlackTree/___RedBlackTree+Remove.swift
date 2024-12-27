@@ -116,6 +116,7 @@ extension ___RedBlackTreeRemove where Self: ___RedBlackTreeLeakingAllocator {
   }
 }
 
+#if false
 extension ___RedBlackTreeRemove where Self: ___RedBlackTreeNonleakingAllocator {
 
   @inlinable
@@ -126,3 +127,4 @@ extension ___RedBlackTreeRemove where Self: ___RedBlackTreeNonleakingAllocator {
     ___recycle = []
   }
 }
+#endif

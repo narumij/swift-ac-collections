@@ -149,7 +149,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   var ___elements: [Element]
 
   @usableFromInline
-  var ___recycle: Heap<_NodePtr>
+  var ___recycle: [_NodePtr]
 }
 
 extension RedBlackTreeSet: ScalarValueComparer {}

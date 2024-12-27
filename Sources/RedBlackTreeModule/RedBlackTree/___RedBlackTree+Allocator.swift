@@ -23,7 +23,7 @@
 import Collections
 
 @usableFromInline
-typealias ___RedBlackTreeDefaultAllocator = ___RedBlackTreeNonleakingAllocator
+typealias ___RedBlackTreeDefaultAllocator = ___RedBlackTreeLeakingAllocator
 
 @usableFromInline
 protocol ___RedBlackTreeAllocatorBase: ___RedBlackTreeBody {
@@ -62,6 +62,7 @@ extension ___RedBlackTreeLeakingAllocator {
   }
 }
 
+#if false
 // 一度削除したノードやエレメントの箇所を優先的に再利用するもの
 // 末尾の未使用領域の開放も行う
 @usableFromInline
@@ -103,4 +104,4 @@ extension ___RedBlackTreeNonleakingAllocator {
     ___finalize_destroy()
   }
 }
-
+#endif

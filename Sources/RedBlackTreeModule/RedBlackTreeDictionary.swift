@@ -56,7 +56,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   var ___elements: [KeyValue]
 
   @usableFromInline
-  var ___recycle: Heap<_NodePtr>
+  var ___recycle: [_NodePtr]
 }
 
 extension RedBlackTreeDictionary: KeyValueComparer {}

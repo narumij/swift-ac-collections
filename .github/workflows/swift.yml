@@ -18,9 +18,7 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Set up Swift
-      uses: fwal/setup-swift@latest
-      with:
-        swift-version: '5'
+      uses: fwal/setup-swift@2
     
     - name: Build
       run: swift build -v

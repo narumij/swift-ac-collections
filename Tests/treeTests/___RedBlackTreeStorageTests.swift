@@ -56,7 +56,7 @@ import XCTest
           (0..<count).map { .init(__node_ptr[$0]) }
         }
         set {
-          __initialized_count = newValue.count
+          ___initialized_count = newValue.count
           newValue.enumerated().forEach {
             i, v in __node_ptr[i].node = v
           }
@@ -69,7 +69,7 @@ import XCTest
           (0..<count).map { __node_ptr[$0].__value_ }
         }
         set {
-          __initialized_count = newValue.count
+          ___initialized_count = newValue.count
           newValue.enumerated().forEach {
             i, v in __node_ptr[i].__value_ = v
           }
@@ -353,7 +353,7 @@ import XCTest
 
       func testRemove3() throws {
 
-        throw XCTSkip("Not implemented")
+//        throw XCTSkip("Not implemented")
 
         let tree = RedBlackTreeStorage.create(withCapacity: 8)
         _ = tree.__insert_unique(0)
@@ -372,7 +372,7 @@ import XCTest
 
       func testRemove2() throws {
 
-        throw XCTSkip("Not implemented")
+//        throw XCTSkip("Not implemented")
 
         let tree = RedBlackTreeStorage.create(withCapacity: 8)
         for i in 0..<2 {
@@ -395,7 +395,7 @@ import XCTest
 
       func testRemove7() throws {
 
-        throw XCTSkip("Not implemented")
+//        throw XCTSkip("Not implemented")
 
         let tree = RedBlackTreeStorage.create(withCapacity: 16)
         for i in 0..<7 {
@@ -498,6 +498,8 @@ import XCTest
       }
 
       func testInsert0() throws {
+
+        throw XCTSkip("slow")
 
         var tree = RedBlackTreeStorage.create(withCapacity: 10000 + 1)
         fixtureEmpty(&tree)

@@ -4,9 +4,8 @@ import Foundation
 import RedBlackTreeModule
 
 #if false
-var tree = RedBlackTree.Container<Int>()
+var tree = RedBlackTreeSet<Int>()
 //let tree = RedBlackTree.Storage<Int>()
-
 tree.reserveCapacity(1_000_000)
 for i in 0 ..< 1_000_000 {
     _ = tree.__insert_unique(i)
@@ -37,7 +36,7 @@ for i in 0 ..< 2_000_000 / N {
     xy[1, default: []].removeSubrange(lo ..< hi)
   }
 }
-#elseif true
+#elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: []]
 for i in 0 ..< 2_000_000 {
   xy[1]?.insert(i)
@@ -59,6 +58,11 @@ for i in 0 ..< 2_000_000 {
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
 for i in 0 ..< 2_000_000 {
   _ = xy[1]?.lowerBound(i)
+}
+#elseif true
+var x = Container(minimumCapacity: 1_000_000)
+for i in 0 ..< 1_000_000 {
+  x.insert(i)
 }
 #else
 var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]

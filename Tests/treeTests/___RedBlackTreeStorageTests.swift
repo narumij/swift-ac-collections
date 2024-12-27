@@ -176,11 +176,11 @@ import XCTest
       let reds: String = (0..<count).filter { !self[$0].__is_black_ }.map { "\($0)" }.joined(
         separator: " ")
 
-      let lefts: String = (0..<count).filter { self[$0].__left_ != nil }.map {
+      let lefts: String = (0..<count).filter { self[$0].__left_ != .nullptr }.map {
         "\($0) -> \(self[$0].__left_.offset ?? -1) [label = \"left\"];"
       }.joined(separator: "\n")
 
-      let rights: String = (0..<count).filter { self[$0].__right_ != nil }.map {
+      let rights: String = (0..<count).filter { self[$0].__right_ != .nullptr }.map {
         "\($0) -> \(self[$0].__right_.offset ?? -1) [label = \"right\"];"
       }.joined(separator: "\n")
 
@@ -200,8 +200,8 @@ import XCTest
     func fixture0_10_20(_ tree: inout RedBlackTreeStorage) {
       tree.nodes = [
         .init(__is_black_: true, __left_: 1, __right_: 2, __parent_: .end),
-        .init(__is_black_: false, __left_: nil, __right_: nil, __parent_: 0),
-        .init(__is_black_: false, __left_: nil, __right_: nil, __parent_: 0),
+        .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: 0),
+        .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: 0),
       ]
       tree.values = [
         10,
@@ -217,11 +217,11 @@ import XCTest
       tree.nodes = [
         .init(__is_black_: true, __left_: 1, __right_: 4, __parent_: .end),
         .init(__is_black_: false, __left_: 2, __right_: 3, __parent_: 0),
-        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: 1),
-        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: 1),
+        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 1),
+        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 1),
         .init(__is_black_: false, __left_: 5, __right_: 6, __parent_: 0),
-        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: 4),
-        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: 4),
+        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 4),
+        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 4),
       ]
       tree.values = [
         3,
@@ -253,7 +253,7 @@ import XCTest
       XCTAssertTrue(tree.__tree_invariant(tree.__root()))
 
       tree.nodes = [
-        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: .end)
+        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: .end)
       ]
 
       tree.__root(.nullptr)
@@ -263,12 +263,12 @@ import XCTest
       XCTAssertTrue(tree.__tree_invariant(tree.__root()))
 
       tree.nodes = [
-        .init(__is_black_: false, __left_: nil, __right_: nil, __parent_: .end)
+        .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .end)
       ]
       XCTAssertFalse(tree.__tree_invariant(tree.__root()))
 
       tree.nodes = [
-        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: nil)
+        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
       ]
       XCTAssertFalse(tree.__tree_invariant(tree.__root()))
     }
@@ -298,14 +298,14 @@ import XCTest
     }
 
     func testRotate() throws {
-      var tree = RedBlackTreeStorage.create(withCapacity: 8)
+      let tree = RedBlackTreeStorage.create(withCapacity: 8)
 
       tree.nodes = [
         .init(__is_black_: true, __left_: 1, __right_: 2, __parent_: .end),
-        .init(__is_black_: false, __left_: nil, __right_: nil, __parent_: 0),
+        .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: 0),
         .init(__is_black_: false, __left_: 3, __right_: 4, __parent_: 0),
-        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: 2),
-        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: 2),
+        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 2),
+        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 2),
       ]
       tree.__root(0)
 
@@ -320,7 +320,7 @@ import XCTest
       var next = initial
       next[0] = .init(__is_black_: true, __left_: 1, __right_: 3, __parent_: 2)
       next[2] = .init(__is_black_: false, __left_: 0, __right_: 4, __parent_: .end)
-      next[3] = .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: 0)
+      next[3] = .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 0)
 
       XCTAssertEqual(tree.__left_, 2)
       XCTAssertEqual(tree.nodes[0], next[0])
@@ -339,12 +339,12 @@ import XCTest
       var tree = RedBlackTreeStorage.create(withCapacity: 8)
       fixtureEmpty(&tree)
       tree.__left_ = .node(tree.nodes.count)
-      tree.nodes.append(.init(__is_black_: false, __left_: nil, __right_: nil, __parent_: .end))
+      tree.nodes.append(.init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .end))
       XCTAssertEqual(tree.nodes.count, 1)
-      XCTAssertNotEqual(tree.__root(), nil)
-      //        XCTAssertNotEqual(tree.__parent_(tree.__root()), nil)
-      XCTAssertEqual(tree.__left_(tree.__root()), nil)
-      XCTAssertEqual(tree.__right_(tree.__root()), nil)
+      XCTAssertNotEqual(tree.__root(), .nullptr)
+      //        XCTAssertNotEqual(tree.__parent_(tree.__root()), .nullptr)
+      XCTAssertEqual(tree.__left_(tree.__root()), .nullptr)
+      XCTAssertEqual(tree.__right_(tree.__root()), .nullptr)
       XCTAssertFalse(tree.__tree_invariant(tree.__root()))
       tree.__tree_balance_after_insert(tree.__root(), 0)
       XCTAssertTrue(tree.__tree_invariant(tree.__root()))
@@ -426,7 +426,7 @@ import XCTest
           XCTAssertEqual(__child, .__left_(.end))
         }
         do {
-          tree.__left_ = nil
+          tree.__left_ = .nullptr
           var __parent: _NodePtr = .nullptr
           let __k = 5
           let __child = tree.__find_equal(&__parent, __k)

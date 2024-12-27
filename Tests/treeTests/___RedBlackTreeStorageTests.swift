@@ -41,7 +41,7 @@ extension NodeBase {
       typealias Element = Int
     }
 
-    typealias RedBlackTreeStorage = ___RedBlackTree.___Storage<VC, VC._Key>
+    typealias RedBlackTreeStorage = ___RedBlackTree.___Buffer<VC, VC._Key>
 
     extension ___RedBlackTree.___Node {
 
@@ -56,10 +56,10 @@ extension NodeBase {
       }
     }
 
-    extension ___RedBlackTree.___Storage.Node: NodeBase {
+    extension ___RedBlackTree.___Buffer.Node: NodeBase {
     }
 
-    extension ___RedBlackTree.___Storage {
+    extension ___RedBlackTree.___Buffer {
 
       @inlinable
       var nodes: [___RedBlackTree.___Node] {
@@ -67,7 +67,7 @@ extension NodeBase {
           (0..<count).map { .init(__node_ptr[$0]) }
         }
         set {
-          header.___initialized_count = newValue.count
+          header.initializedCount = newValue.count
           newValue.enumerated().forEach {
             i, v in __node_ptr[i].node = v
           }
@@ -80,7 +80,7 @@ extension NodeBase {
           (0..<count).map { __node_ptr[$0].__value_ }
         }
         set {
-          header.___initialized_count = newValue.count
+          header.initializedCount = newValue.count
           newValue.enumerated().forEach {
             i, v in __node_ptr[i].__value_ = v
           }

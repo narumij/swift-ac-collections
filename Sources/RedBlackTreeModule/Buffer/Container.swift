@@ -8,24 +8,24 @@ public
   public typealias Element = Int
 
   @usableFromInline
-  var storage: Storage
+  var tree: Tree
 
   @usableFromInline
-  typealias Storage = ___RedBlackTree.___Storage<Self, Int>
+  typealias Tree = ___RedBlackTree.___Buffer<Self, Int>
 
   @inlinable
   public
     init(minimumCapacity: Int)
   {
-    storage = .create(withCapacity: minimumCapacity)
+    tree = .create(withCapacity: minimumCapacity)
   }
 
   @inlinable
   public
     mutating func insert(_ p: Int)
   {
-    ensureUniqueAndCapacity(minimumCapacity: storage.count + 1)
-    _ = storage.__insert_unique(p)
+    ensureUniqueAndCapacity(minimumCapacity: tree.count + 1)
+    _ = tree.__insert_unique(p)
   }
 
   @inlinable
@@ -33,24 +33,25 @@ public
     mutating func remove(_ p: Int)
   {
     ensureUnique()
-    _ = storage.___erase_unique(p)
+    _ = tree.___erase_unique(p)
   }
 
   @inlinable
   func lowerBound(_ __k: _Key) -> _NodePtr {
-    storage.__lower_bound(__k, storage.__root(), .end)
+    tree.__lower_bound(__k, tree.__root(), .end)
   }
 
   @inlinable
   func upperBound(_ __k: _Key) -> _NodePtr {
-    storage.__upper_bound(__k, storage.__root(), .end)
+    tree.__upper_bound(__k, tree.__root(), .end)
   }
 
   @inlinable
   mutating func
     ___erase(_ l: _NodePtr, _ r: _NodePtr, forEach action: (Element) throws -> Void) rethrows
   {
-    try storage.___erase(l, r, action)
+    ensureUnique()
+    try tree.___erase(l, r, action)
   }
 
   @inlinable
@@ -66,16 +67,16 @@ public
 
   @inlinable
   mutating func ensureUnique() {
-    if !isKnownUniquelyReferenced(&storage) {
-      storage = storage.copy(newCapacity: storage.header.capacity)
+    if !isKnownUniquelyReferenced(&tree) {
+      tree = tree.copy(newCapacity: tree.header.capacity)
     }
   }
 
   @inlinable
   mutating func ensureUniqueAndCapacity(minimumCapacity: Int) {
-    let shouldExpand = storage.header.capacity < minimumCapacity
-    if shouldExpand || !isKnownUniquelyReferenced(&storage) {
-      storage = storage.copy(newCapacity: _growCapacity(to: minimumCapacity, linearly: false))
+    let shouldExpand = tree.header.capacity < minimumCapacity
+    if shouldExpand || !isKnownUniquelyReferenced(&tree) {
+      tree = tree.copy(newCapacity: _growCapacity(to: minimumCapacity, linearly: false))
     }
   }
 
@@ -83,14 +84,17 @@ public
   @inline(__always)
   internal static var growthFactor: Double { 1.75 }
 
+  @inlinable
+  var capacity: Int { tree.header.capacity }
+
   @usableFromInline
   internal func _growCapacity(
     to minimumCapacity: Int,
     linearly: Bool
   ) -> Int {
-    if linearly { return Swift.max(storage.header.capacity, minimumCapacity) }
+    if linearly { return Swift.max(capacity, minimumCapacity) }
     return Swift.max(
-      Int((Self.growthFactor * Double(storage.header.capacity)).rounded(.up)),
+      Int((Self.growthFactor * Double(capacity)).rounded(.up)),
       minimumCapacity)
   }
 }

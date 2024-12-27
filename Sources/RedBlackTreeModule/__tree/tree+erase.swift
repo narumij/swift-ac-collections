@@ -59,3 +59,48 @@ extension EraseProtocol {
     return iterator(__ptr_(__l))
   }
 }
+
+@usableFromInline
+protocol StorageEraseProtocol: AnyObject {
+  
+  func destroy(_ p: _NodePtr)
+
+  func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
+}
+
+extension StorageEraseProtocol {
+
+  @inlinable @inline(__always)
+  func __get_np(_ p: _NodePtr) -> _NodePtr { p }
+
+  @inlinable @inline(__always)
+  func __ptr_(_ p: _NodePtr) -> _NodePtr {
+    p
+  }
+
+  @inlinable @inline(__always)
+  func iterator(_ p: _NodePtr) -> _NodePtr {
+    p
+  }
+
+  @inlinable
+  func
+    erase(_ __p: _NodePtr) -> _NodePtr
+  {
+    let __np = __get_np(__p)
+    let __r = __remove_node_pointer(__np)
+    destroy(__p)
+    return __r
+  }
+
+  @inlinable
+  func
+    erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
+  {
+    var __f = __f
+    while __f != __l {
+      __f = erase(__f)
+    }
+    return iterator(__ptr_(__l))
+  }
+}

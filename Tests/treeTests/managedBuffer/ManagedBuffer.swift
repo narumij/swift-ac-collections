@@ -191,7 +191,7 @@ extension ___RedBlackTree.___Storage: NodeFindProtocol & NodeFindEqualProtocol &
 extension ___RedBlackTree.___Storage: EqualProtocol {}
 extension ___RedBlackTree.___Storage: InsertNodeAtProtocol {}
 extension ___RedBlackTree.___Storage: RemoveProtocol {}
-extension ___RedBlackTree.___Storage: EraseProtocol {}
+extension ___RedBlackTree.___Storage: StorageEraseProtocol {}
 extension ___RedBlackTree.___Storage: InsertUniqueProtocol2 {
   @inlinable
   static func __key(_ e: VC.Element) -> VC._Key {
@@ -259,7 +259,7 @@ extension ___RedBlackTree.___Storage {
     if __i == end() {
       return false
     }
-    _ = erase(destroy, __i)
+    _ = erase(__i)
     return true
   }
 }

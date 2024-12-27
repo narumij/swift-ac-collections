@@ -74,6 +74,10 @@ extension Optional where Wrapped == ___RedBlackTree.Index {
   }
 }
 
+#if swift(>=5.5)
+extension ___RedBlackTree.Index: @unchecked Sendable {}
+#endif
+
 extension ___RedBlackTree {
   
   /// 赤黒木用の半開区間

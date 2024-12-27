@@ -45,7 +45,7 @@ extension ___RedBlackTree {
 
     @inlinable
     init(
-      __is_black_: Bool,
+      __is_black_: Bool = false,
       __left_: _NodePtr = .nullptr,
       __right_: _NodePtr = .nullptr,
       __parent_: _NodePtr = .nullptr

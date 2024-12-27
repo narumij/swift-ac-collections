@@ -122,6 +122,56 @@ extension InsertUniqueProtocol {
 }
 
 @usableFromInline
+protocol InsertUniqueProtocol2: AnyObject {
+  associatedtype _Key
+  associatedtype Element
+
+  @inlinable
+  static func __key(_ e: Element) -> _Key
+
+  @inlinable
+  func __construct_node(_ k: Element) -> _NodePtr
+
+  @inlinable
+  func destroy(_ p: _NodePtr)
+
+  func __ref_(_ rhs: _NodeRef) -> _NodePtr
+  func
+    __find_equal(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
+  func
+    __insert_node_at(
+      _ __parent: _NodePtr, _ __child: _NodeRef,
+      _ __new_node: _NodePtr)
+}
+
+extension InsertUniqueProtocol2 {
+
+  @inlinable
+  @inline(__always)
+  public func __insert_unique(_ x: Element) -> (__r: _NodeRef, __inserted: Bool) {
+
+    __emplace_unique_key_args(x)
+  }
+
+  @inlinable
+  func
+    __emplace_unique_key_args(_ __k: Element) -> (__r: _NodeRef, __inserted: Bool)
+  {
+    var __parent = _NodePtr.nullptr
+    let __child = __find_equal(&__parent, Self.__key(__k))
+    let __r = __child
+    var __inserted = false
+    if __ref_(__child) == .nullptr {
+      let __h = __construct_node(__k)
+      __insert_node_at(__parent, __child, __h)
+      __inserted = true
+    }
+    return (__r, __inserted)
+  }
+}
+
+
+@usableFromInline
 protocol InsertMultiProtocol: StorageProtocol {
   func __ref_(_ rhs: _NodeRef) -> _NodePtr
   func

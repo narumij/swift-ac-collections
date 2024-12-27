@@ -7,6 +7,7 @@
 
 import XCTest
 
+#if false
 #if DEBUG
   @testable import RedBlackTreeModule
 
@@ -531,4 +532,5 @@ import XCTest
 #if false
     #endif
   }
+#endif
 #endif

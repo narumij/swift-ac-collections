@@ -89,12 +89,12 @@ extension FindLeafProtocol {
 }
 
 @usableFromInline
-protocol NodeFindEqualProtocol: NodeFindProtocol
+protocol FindEqualProtocol: FindProtocol
     & RefProtocol
     & RootPtrProrototol
 {}
 
-extension NodeFindEqualProtocol {
+extension FindEqualProtocol {
 
   @inlinable
   @inline(__always)
@@ -115,7 +115,7 @@ extension NodeFindEqualProtocol {
   { p }
 }
 
-extension NodeFindEqualProtocol {
+extension FindEqualProtocol {
 
   @inlinable
   func
@@ -152,9 +152,10 @@ extension NodeFindEqualProtocol {
   }
 }
 
+#if false
 // 辞書型用、作業中
 @usableFromInline
-protocol NodeFindEqual2Protocol: NodeFindEqualProtocol
+protocol NodeFindEqual2Protocol: FindEqualProtocol
     & BeginNodeProtocol
     & BeginProtocol
 {}
@@ -164,16 +165,16 @@ extension NodeFindEqual2Protocol {
   // TODO: implement __find_equal(,,,)
   
 }
-
+#endif
 
 @usableFromInline
-protocol NodeFindProtocol: ValueProtocol
+protocol FindProtocol: ValueProtocol
     & RootProtocol
     & EndNodeProtocol
     & EndProtocol
 {}
 
-extension NodeFindProtocol {
+extension FindProtocol {
 
   @inlinable
   func find(_ __v: _Key) -> _NodePtr {

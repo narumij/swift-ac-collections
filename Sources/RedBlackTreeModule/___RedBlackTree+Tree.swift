@@ -421,7 +421,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
+extension ___RedBlackTree.___Buffer: FindProtocol & FindEqualProtocol & FindLeafProtocol {}
 extension ___RedBlackTree.___Buffer: EqualProtocol {}
 extension ___RedBlackTree.___Buffer: InsertNodeAtProtocol {}
 extension ___RedBlackTree.___Buffer: InsertMultiProtocol {}
@@ -736,14 +736,20 @@ extension ___RedBlackTree.___Buffer {
 extension ___RedBlackTree.___Buffer {
   
   public struct SubSequence: Sequence {
+    @inlinable
+    public init(tree: ___RedBlackTree.___Buffer<VC, Element>, startIndex: ___RedBlackTree.Index, endIndex: ___RedBlackTree.Index) {
+      self.tree = tree
+      self.startIndex = startIndex
+      self.endIndex = endIndex
+    }
     public typealias SubSequence = Self
     public typealias Index = ___RedBlackTree.Index
+    @usableFromInline
+    let tree: Buffer
     @usableFromInline
     var startIndex: ___RedBlackTree.Index
     @usableFromInline
     var endIndex: ___RedBlackTree.Index
-    @usableFromInline
-    let tree: Buffer
     @inlinable
     public func makeIterator() -> Iterator {
       .init(tree: tree, start: startIndex.pointer, end: endIndex.pointer)
@@ -792,6 +798,16 @@ extension ___RedBlackTreeBase {
   @inlinable
   public func makeIterator() -> Iterator {
     tree.makeIterator()
+  }
+  
+  @inlinable
+  public func ___makeIterator(start: ___RedBlackTree.Index, end: ___RedBlackTree.Index) -> Iterator {
+    .init(tree: tree, start: start.pointer, end: end.pointer)
+  }
+  
+  @inlinable
+  public func ___makeSubSequence(start: ___RedBlackTree.Index, end: ___RedBlackTree.Index) -> Tree.SubSequence {
+    .init(tree: tree, startIndex: start, endIndex: end)
   }
 }
 

@@ -468,11 +468,14 @@ extension RedBlackTreeSet: Equatable {
 
 extension RedBlackTreeSet {
 
+  public
+  typealias Tree = ___RedBlackTree.___Buffer<Self, Element>
+  
   public typealias ElementSequence = [Element]
 
   @inlinable
-  public subscript(bounds: IndexRange) -> ElementSequence {
-    ___element_sequence__(from: bounds.lhs, to: bounds.rhs)
+  public subscript(bounds: IndexRange) -> Tree.SubSequence {
+    ___makeSubSequence(start: bounds.lhs, end: bounds.rhs)
   }
 }
 

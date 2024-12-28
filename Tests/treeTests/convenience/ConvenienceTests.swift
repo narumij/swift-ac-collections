@@ -364,11 +364,10 @@ final class ConvenienceTests: XCTestCase {
 
   func testSetIndexRange() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
-    XCTAssertEqual(set[set.startIndex ..< set.endIndex], [1, 2, 3, 4, 5, 6])
-    XCTAssertEqual(set[set.lowerBound(2) ..< set.upperBound(4)], [2, 3, 4])
-    XCTAssertEqual(set[set.startIndex ..< set.startIndex], [])
-    XCTAssertEqual(set[set.endIndex ..< set.endIndex], [])
-
+    XCTAssertEqual(set[set.startIndex ..< set.endIndex].map{ $0 }, [1, 2, 3, 4, 5, 6])
+    XCTAssertEqual(set[set.lowerBound(2) ..< set.upperBound(4)].map{ $0 }, [2, 3, 4])
+    XCTAssertEqual(set[set.startIndex ..< set.startIndex].map{ $0 }, [])
+    XCTAssertEqual(set[set.endIndex ..< set.endIndex].map{ $0 }, [])
 //    XCTAssertNotEqual((set[set.startIndex ..< set.endIndex] as RedBlackTreeSet<Int>.ElementSequence ).map{ $0 }, [])
 
 //    XCTAssertNotEqual((set[set.startIndex ..< set.endIndex] as RedBlackTreeSet<Int>.UnfoldElementSequence ).map{ $0 }, [])

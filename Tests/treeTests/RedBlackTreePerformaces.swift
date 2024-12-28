@@ -45,7 +45,7 @@ final class RedBlackTreePerformaces: XCTestCase {
     throw XCTSkip()
     let set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
-      XCTAssertNotEqual(set[set.startIndex..<set.endIndex], [])
+      XCTAssertNotEqual(set[set.startIndex ..< set.endIndex] + [], [])
     }
   }
 
@@ -54,7 +54,7 @@ final class RedBlackTreePerformaces: XCTestCase {
     let set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       XCTAssertNotEqual(
-        set[set.lowerBound(10_000_000 / 4)..<set.upperBound(10_000_000 / 4 * 3)], [])
+        set[set.lowerBound(10_000_000 / 4)..<set.upperBound(10_000_000 / 4 * 3)] + [], [])
     }
   }
 

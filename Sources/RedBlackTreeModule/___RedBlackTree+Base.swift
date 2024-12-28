@@ -31,7 +31,8 @@ protocol ___RedBlackTreeBase: ValueComparer {
 }
 
 extension ___RedBlackTreeBase {
-  public typealias Tree = ___RedBlackTree.___Buffer<Self, Element>
+  @usableFromInline
+  typealias Tree = ___RedBlackTree.___Buffer<Self, Element>
 }
 
 extension ___RedBlackTreeBase {

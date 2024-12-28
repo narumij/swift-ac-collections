@@ -67,7 +67,7 @@ final class ManagedBufferTests: XCTestCase {
     XCTAssertEqual(storage.header.destroyCount, 0)
     storage.___pushDestroy(0)
     XCTAssertEqual(storage.header.destroyNode, 0)
-    XCTAssertEqual(storage[node : 0].__right_, .nullptr)
+    XCTAssertEqual(storage[node : 0].__left_, .nullptr)
     XCTAssertEqual(storage.___destroyNodes, [0])
     XCTAssertEqual(storage.header.destroyCount, 1)
     storage.___pushDestroy(1)
@@ -104,7 +104,7 @@ final class ManagedBufferTests: XCTestCase {
       XCTAssertEqual(storage.header.destroyNode, 0)
       XCTAssertEqual(storage.___destroyNodes, [0])
       XCTAssertEqual(storage.header.destroyCount, 1)
-      XCTAssertEqual(storage[node : 0].__right_, .nullptr)
+      XCTAssertEqual(storage[node : 0].__left_, .nullptr)
     }
     do {
       let p = storage.__construct_node(-1)
@@ -125,7 +125,7 @@ final class ManagedBufferTests: XCTestCase {
       XCTAssertEqual(storage.header.destroyNode, 0)
       XCTAssertEqual(storage.___destroyNodes, [0,1])
       XCTAssertEqual(storage.header.destroyCount, 2)
-      XCTAssertEqual(storage[node : 1].__right_, .nullptr)
+      XCTAssertEqual(storage[node : 1].__left_, .nullptr)
     }
     do {
       let p = storage.__construct_node(-1)
@@ -144,20 +144,20 @@ final class ManagedBufferTests: XCTestCase {
           XCTAssertEqual(storage.header.destroyNode, 2)
           XCTAssertEqual(storage.___destroyNodes, [2])
           XCTAssertEqual(storage.header.destroyCount, 1)
-          XCTAssertEqual(storage[node : 2].__right_, .nullptr)
+          XCTAssertEqual(storage[node : 2].__left_, .nullptr)
         }
         storage.destroy(p)
         XCTAssertEqual(storage.count, 1)
         XCTAssertEqual(storage.header.destroyNode, 1)
         XCTAssertEqual(storage.___destroyNodes, [1,2])
         XCTAssertEqual(storage.header.destroyCount, 2)
-        XCTAssertEqual(storage[node : 2].__right_, .nullptr)
+        XCTAssertEqual(storage[node : 2].__left_, .nullptr)
       }
       storage.destroy(p)
       XCTAssertEqual(storage.header.destroyNode, 0)
       XCTAssertEqual(storage.___destroyNodes, [0,1,2])
       XCTAssertEqual(storage.header.destroyCount, 3)
-      XCTAssertEqual(storage[node : 2].__right_, .nullptr)
+      XCTAssertEqual(storage[node : 2].__left_, .nullptr)
     }
   }
 }

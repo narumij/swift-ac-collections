@@ -287,8 +287,8 @@ extension ___RedBlackTree.___Buffer {
   func ___pushDestroy(_ p: _NodePtr) {
     assert(header.destroyCount <= header.capacity)
     assert(header.destroyNode != p)
-    __node_ptr[p].__right_ = header.destroyNode
-    __node_ptr[p].__left_ = p
+    __node_ptr[p].__left_ = header.destroyNode
+    __node_ptr[p].__right_ = p
     header.destroyNode = p
     header.destroyCount += 1
   }
@@ -297,8 +297,8 @@ extension ___RedBlackTree.___Buffer {
   @inline(__always)
   func ___popDetroy() -> _NodePtr {
     assert(header.destroyCount > 0)
-    let p = __node_ptr[header.destroyNode].__left_
-    header.destroyNode = __node_ptr[p].__right_
+    let p = __node_ptr[header.destroyNode].__right_
+    header.destroyNode = __node_ptr[p].__left_
     header.destroyCount -= 1
     return p
   }
@@ -319,8 +319,8 @@ extension ___RedBlackTree.___Buffer {
         return []
       }
       var nodes: [_NodePtr] = [header.destroyNode]
-      while let l = nodes.last, self[node: l].__right_ != .nullptr {
-        nodes.append(self[node: l].__right_)
+      while let l = nodes.last, self[node: l].__left_ != .nullptr {
+        nodes.append(self[node: l].__left_)
       }
       return nodes
     }

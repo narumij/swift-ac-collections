@@ -25,14 +25,18 @@ import Foundation
 extension String {
 
   @usableFromInline
-  static var invalidIndex = "Attempting to access RedBlackTree elements using an invalid index"
+  static var invalidIndex: String {
+    "Attempting to access RedBlackTree elements using an invalid index" }
 
   @usableFromInline
-  static var outOfBounds = "RedBlackTree index is out of Bound."
+  static var outOfBounds: String {
+    "RedBlackTree index is out of Bound." }
   
   @usableFromInline
-  static var emptyFirst = "Can't removeFirst from an empty RedBlackTree"
+  static var emptyFirst: String {
+    "Can't removeFirst from an empty RedBlackTree" }
   
   @usableFromInline
-  static var emptyLast = "Can't removeLast from an empty RedBlackTree"
+  static var emptyLast: String {
+    "Can't removeLast from an empty RedBlackTree" }
 }

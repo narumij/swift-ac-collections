@@ -754,10 +754,10 @@ extension ___RedBlackTree.___Buffer {
 }
 #endif
 
-// TODO: SubSequenceこみのCollection適合にトライする
+#if false
 extension ___RedBlackTree.___Buffer { // Collection
 
-  @usableFromInline
+  public
   typealias Index = _NodePtr
 
   @inlinable
@@ -783,8 +783,7 @@ extension ___RedBlackTree.___Buffer { // BidirectionalCollection
     __tree_prev_iter(i)
   }
 }
-
-// MARK: -
+#endif
 
 // MARK: -
 

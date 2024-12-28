@@ -378,9 +378,7 @@ extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
 
 extension RedBlackTreeDictionary: Collection {
 
-  @inlinable
-  @inline(__always)
-  public subscript(position: ___RedBlackTree.Index) -> KeyValue {
+  @inlinable public subscript(position: Index) -> KeyValue {
     tree[position.pointer]
   }
 

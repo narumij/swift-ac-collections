@@ -22,6 +22,7 @@
 
 import Foundation
 
+#if DEBUG
 @testable import RedBlackTreeModule
 
 extension ___RedBlackTree {
@@ -47,3 +48,4 @@ extension ___RedBlackTree {
     static let zero: Self = .init()
   }
 }
+#endif

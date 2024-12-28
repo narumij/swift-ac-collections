@@ -7,6 +7,8 @@
 
 import XCTest
 
+import RedBlackTreeModule
+
 @usableFromInline
 protocol NodeBase {
   var __right_: _NodePtr { get set }
@@ -15,6 +17,7 @@ protocol NodeBase {
   var __is_black_: Bool { get set }
 }
 
+#if DEBUG
 extension NodeBase {
 
   @inlinable
@@ -28,6 +31,7 @@ extension NodeBase {
     }
   }
 }
+#endif
 
 #if true
   #if DEBUG

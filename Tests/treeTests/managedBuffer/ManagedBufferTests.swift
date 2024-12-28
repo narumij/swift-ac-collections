@@ -7,6 +7,7 @@
 
 import XCTest
 
+#if DEBUG
 @testable import RedBlackTreeModule
 
 final class ManagedBufferTests: XCTestCase {
@@ -160,3 +161,4 @@ final class ManagedBufferTests: XCTestCase {
     }
   }
 }
+#endif

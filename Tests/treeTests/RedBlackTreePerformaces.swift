@@ -146,5 +146,16 @@ final class RedBlackTreePerformaces: XCTestCase {
     }
   }
 
+  func testPerformanceExample12() throws {
+//    throw XCTSkip()
+    let set = RedBlackTreeSet<Int>(0..<10_000_000)
+    self.measure {
+      // func 0.125 sec
+      // SequenceIterator 0.145 sec
+      // IndexingIterator 0.152 sec
+      XCTAssertNotEqual(set.map{ $0 + 1 }, [])
+    }
+  }
+
 }
 #endif

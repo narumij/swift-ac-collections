@@ -402,7 +402,7 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet: Collection {
 
   /// - Complexity: O(1)。
-  @inlinable public subscript(position: ___RedBlackTree.Index) -> Element {
+  @inlinable public subscript(position: Index) -> Element {
     tree[position.pointer]
   }
 

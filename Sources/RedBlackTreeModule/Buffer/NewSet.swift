@@ -22,8 +22,8 @@
 
 import Foundation
 
-public
-  typealias RedBlackTreeSet = NewSet
+//public
+//  typealias RedBlackTreeSet = NewSet
 
 @frozen
 public struct NewSet<Element: Comparable> {

@@ -22,7 +22,6 @@
 
 import Collections
 
-#if false
 // AC https://atcoder.jp/contests/abc370/submissions/57922896
 // AC https://atcoder.jp/contests/abc385/submissions/61003801
 
@@ -141,62 +140,22 @@ public struct RedBlackTreeSet<Element: Comparable> {
   typealias _Key = Element
 
   @usableFromInline
-  var ___header: ___RedBlackTree.___Header
-
-  @usableFromInline
-  var ___nodes: [___RedBlackTree.___Node]
-
-  @usableFromInline
-  var ___elements: [Element]
-
-  @usableFromInline
-  var ___recycle: [_NodePtr]
+  var tree: Tree
 }
 
+extension RedBlackTreeSet: NewContainer {}
 extension RedBlackTreeSet: ScalarValueComparer {}
-extension RedBlackTreeSet: InsertUniqueProtocol {}
-extension RedBlackTreeSet: ___RedBlackTreeInitializeHelper {}
-extension RedBlackTreeSet: ___RedBlackTreeDefaultAllocator {}
-extension RedBlackTreeSet: ___RedBlackTreeRemove {}
-extension RedBlackTreeSet: ___RedBlackTreeMember {}
-extension RedBlackTreeSet: ___RedBlackTreeInsert {}
-extension RedBlackTreeSet: ___RedBlackTreeUpdate {
-
-  // プロトコルでupdateが書けなかったため、個別で実装している
-  @inlinable @inline(__always)
-  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafeMutablePointer(to: &___header) { header in
-      try ___elements.withUnsafeMutableBufferPointer { elements in
-        try ___nodes.withUnsafeMutableBufferPointer { nodes in
-          try body(
-            ___UnsafeMutatingHandle<Self>(
-              __header_ptr: header,
-              __node_ptr: nodes.baseAddress!,
-              __element_ptr: elements.baseAddress!))
-        }
-      }
-    }
-  }
-}
 
 extension RedBlackTreeSet {
 
   @inlinable @inline(__always)
   public init() {
-    ___header = .zero
-    ___nodes = []
-    ___elements = []
-    ___recycle = []
+    self.init(minimumCapacity: 0)
   }
 
   @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
-    ___header = .zero
-    ___nodes = []
-    ___elements = []
-    ___recycle = []
-    ___nodes.reserveCapacity(minimumCapacity)
-    ___elements.reserveCapacity(minimumCapacity)
+    tree = .create(withCapacity: minimumCapacity)
   }
 }
 
@@ -205,19 +164,14 @@ extension RedBlackTreeSet {
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    (
-      ___header,
-      ___nodes,
-      ___elements,
-      ___recycle
-    ) = Self.___initialize(
-      _sequence: sequence,
-      _to_elements: { $0.map { $0 } }
-    ) { tree, __k, _, __construct_node in
+
+    self.init()
+    for __k in sequence {
+      Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
       var __parent = _NodePtr.nullptr
       let __child = tree.__find_equal(&__parent, __k)
       if tree.__ref_(__child) == .nullptr {
-        let __h = __construct_node(__k)
+        let __h = tree.__construct_node(__k)
         tree.__insert_node_at(__parent, __child, __h)
       }
     }
@@ -248,8 +202,7 @@ extension RedBlackTreeSet {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    ___nodes.reserveCapacity(minimumCapacity)
-    ___elements.reserveCapacity(minimumCapacity)
+    ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
   }
 }
 
@@ -259,26 +212,25 @@ extension RedBlackTreeSet {
   @inlinable public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    let (__r, __inserted) = __insert_unique(newMember)
-    return (__inserted, __inserted ? newMember : ___elements[__ref_(__r)])
+    ensureUniqueAndCapacity()
+    let (__r, __inserted) = tree.__insert_unique(newMember)
+    return (__inserted, __inserted ? newMember : ___elements(tree.__ref_(__r)))
   }
 
   @discardableResult
   @inlinable public mutating func update(with newMember: Element) -> Element? {
-    let (__r, __inserted) = __insert_unique(newMember)
-    return __inserted
-      ? nil
-      : _read {
-        let __p = $0.__ref_(__r)
-        let oldMember = ___elements[__p]
-        ___elements[__p] = newMember
-        return oldMember
-      }
+    ensureUniqueAndCapacity()
+    let (__r, __inserted) = tree.__insert_unique(newMember)
+    guard !__inserted else { return nil }
+    let __p = tree.__ref_(__r)
+    let oldMember = ___elements(__p)
+    tree[__p].__value_ = newMember
+    return oldMember
   }
 
   @discardableResult
   @inlinable public mutating func remove(_ member: Element) -> Element? {
-    ___erase_unique(member) ? member : nil
+    tree.___erase_unique(member) ? member : nil
   }
 
   @inlinable
@@ -373,7 +325,7 @@ extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 }
 
 extension RedBlackTreeSet {
-  
+
   /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
   /// 最初の位置（`Index`）を返します。
   ///
@@ -453,7 +405,7 @@ extension RedBlackTreeSet: Collection {
 
   /// - Complexity: O(1)。
   @inlinable public subscript(position: ___RedBlackTree.Index) -> Element {
-    ___elements[position.pointer]
+    ___elements(position.pointer)
   }
 
   /// - Complexity: 償却された O(1)。
@@ -482,7 +434,7 @@ extension RedBlackTreeSet {
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i, offsetBy: distance, type: "RedBlackTreeSet")
   }
-  
+
   @inlinable public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index?
   {
     ___index(i, offsetBy: distance, limitedBy: limit, type: "RedBlackTreeSet")
@@ -496,7 +448,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet: CustomStringConvertible, CustomDebugStringConvertible {
-  
+
   @inlinable
   public var description: String {
     "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
@@ -539,13 +491,15 @@ extension RedBlackTreeSet {
   @inlinable public func reduce<Result>(
     into initialResult: Result, _ updateAccumulatingResult: (inout Result, Element) throws -> Void
   ) rethrows -> Result {
-    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), into: initialResult, updateAccumulatingResult)
+    try ___element_sequence__(
+      from: ___index_begin(), to: ___index_end(), into: initialResult, updateAccumulatingResult)
   }
 
   @inlinable public func reduce<Result>(
     _ initialResult: Result, _ nextPartialResult: (Result, Element) throws -> Result
   ) rethrows -> Result {
-    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), initialResult, nextPartialResult)
+    try ___element_sequence__(
+      from: ___index_begin(), to: ___index_end(), initialResult, nextPartialResult)
   }
 }
 
@@ -581,4 +535,3 @@ extension RedBlackTreeSet {
     ___enumerated_sequence__(from: range.lhs, to: range.rhs)
   }
 }
-#endif

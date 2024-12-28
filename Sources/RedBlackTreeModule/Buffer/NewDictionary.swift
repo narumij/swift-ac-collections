@@ -22,8 +22,8 @@
 
 import Foundation
 
-public
-  typealias RedBlackTreeDictionary = NewDictionary
+//public
+//  typealias RedBlackTreeDictionary = NewDictionary
 
 @frozen
 public

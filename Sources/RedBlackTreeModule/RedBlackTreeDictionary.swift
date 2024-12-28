@@ -22,88 +22,50 @@
 
 import Collections
 
-#if false
 @frozen
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
-  public
-    typealias Index = ___RedBlackTree.Index
+    public
+      typealias Index = ___RedBlackTree.Index
 
-  public
-    typealias IndexRange = ___RedBlackTree.Range
+    public
+      typealias IndexRange = ___RedBlackTree.Range
 
-  public
-    typealias KeyValue = (key: Key, value: Value)
+    public
+      typealias KeyValue = (key: Key, value: Value)
 
-  public
-    typealias Keys = [Key]
+    public
+      typealias Element = KeyValue
 
-  public
-    typealias Values = [Value]
+    public
+      typealias Keys = [Key]
 
-  @usableFromInline
-  typealias _Key = Key
+    public
+      typealias Values = [Value]
 
-  @usableFromInline
-  typealias _Value = Value
+    @usableFromInline
+    typealias _Key = Key
 
-  @usableFromInline
-  var ___header: ___RedBlackTree.___Header
+    @usableFromInline
+    typealias _Value = Value
 
-  @usableFromInline
-  var ___nodes: [___RedBlackTree.___Node]
-
-  @usableFromInline
-  var ___elements: [KeyValue]
-
-  @usableFromInline
-  var ___recycle: [_NodePtr]
-}
-
-extension RedBlackTreeDictionary: KeyValueComparer {}
-extension RedBlackTreeDictionary: InsertUniqueProtocol {}
-extension RedBlackTreeDictionary: ___RedBlackTreeInitializeHelper {}
-extension RedBlackTreeDictionary: ___RedBlackTreeDefaultAllocator {}
-extension RedBlackTreeDictionary: ___RedBlackTreeMember {}
-extension RedBlackTreeDictionary: ___RedBlackTreeRemove {}
-extension RedBlackTreeDictionary: ___RedBlackTreeInsert {}
-extension RedBlackTreeDictionary: ___RedBlackTreeUpdate {
-
-  @inlinable
-  @inline(__always)
-  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafeMutablePointer(to: &___header) { header in
-      try ___elements.withUnsafeMutableBufferPointer { elements in
-        try ___nodes.withUnsafeMutableBufferPointer { nodes in
-          try body(
-            ___UnsafeMutatingHandle<Self>(
-              __header_ptr: header,
-              __node_ptr: nodes.baseAddress!,
-              __element_ptr: elements.baseAddress!))
-        }
-      }
-    }
+    @usableFromInline
+    var tree: Tree
   }
-}
+
+  extension RedBlackTreeDictionary: NewContainer {}
+  extension RedBlackTreeDictionary: KeyValueComparer {}
 
 extension RedBlackTreeDictionary {
 
   @inlinable @inline(__always)
   public init() {
-    ___header = .zero
-    ___nodes = []
-    ___elements = []
-    ___recycle = []
+    self.init(minimumCapacity: 0)
   }
 
   @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
-    ___header = .zero
-    ___nodes = []
-    ___elements = []
-    ___recycle = []
-    ___nodes.reserveCapacity(minimumCapacity)
-    ___elements.reserveCapacity(minimumCapacity)
+    tree = .create(withCapacity: minimumCapacity)
   }
 }
 
@@ -111,19 +73,13 @@ extension RedBlackTreeDictionary {
 
   @inlinable public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
-    (
-      ___header,
-      ___nodes,
-      ___elements,
-      ___recycle
-    ) = Self.___initialize(
-      _sequence: keysAndValues,
-      _to_elements: { $0.map { k, v in (k, v) } }
-    ) { tree, __k, _, ___construct_node in
+    self.init()
+    for __k in keysAndValues {
+      Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
       var __parent = _NodePtr.nullptr
       let __child = tree.__find_equal(&__parent, __k.0)
       if tree.__ref_(__child) == .nullptr {
-        let __h = ___construct_node(__k)
+        let __h = tree.__construct_node(__k)
         tree.__insert_node_at(__parent, __child, __h)
       } else {
         fatalError("Dupricate values for key: '\(__k.0)'")
@@ -138,23 +94,17 @@ extension RedBlackTreeDictionary {
     _ keysAndValues: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
-    (
-      ___header,
-      ___nodes,
-      ___elements,
-      ___recycle
-    ) = try Self.___initialize(
-      _sequence: keysAndValues,
-      _to_elements: { $0.map { k, v in (k, v) } }
-    ) { tree, __k, _values, ___construct_node in
+    self.init()
+    for __k in keysAndValues {
+      Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
       var __parent = _NodePtr.nullptr
       let __child = tree.__find_equal(&__parent, __k.0)
       if tree.__ref_(__child) == .nullptr {
-        let __h = ___construct_node(__k)
+        let __h = tree.__construct_node(__k)
         tree.__insert_node_at(__parent, __child, __h)
       } else {
-        _values[tree.__ref_(__child)].value = try combine(
-          _values[tree.__ref_(__child)].value, __k.value)
+        tree[tree.__ref_(__child)].__value_.value = try combine(
+          tree[tree.__ref_(__child)].__value_.value, __k.1)
       }
     }
   }
@@ -168,10 +118,7 @@ extension RedBlackTreeDictionary {
     grouping values_: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == [S.Element] {
-    ___header = .zero
-    ___nodes = []
-    ___elements = []
-    ___recycle = []
+    self.init()
     for v in values_ {
       self[try keyForValue(v), default: []].append(v)
     }
@@ -203,8 +150,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    ___nodes.reserveCapacity(minimumCapacity)
-    ___elements.reserveCapacity(minimumCapacity)
+    ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
   }
 }
 
@@ -226,9 +172,11 @@ extension RedBlackTreeDictionary {
       get { isNil ? nil : pointer.pointee }
       @inline(__always)
       _modify {
+        defer { _fixLifetime(self) }
         var value: Value? = pointer.move()
         defer {
           if let value {
+            isNil = false
             pointer.initialize(to: value)
           } else {
             isNil = true
@@ -246,16 +194,23 @@ extension RedBlackTreeDictionary {
     _modify {
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
-        var value: Value?
+        let pointer = UnsafeMutablePointer<Value>.allocate(capacity: 1)
+        var helper = ___ModifyHelper(pointer: pointer)
         defer {
-          _finalizeKeyingModify(__parent, __child, key: key, value: value)
+          if !helper.isNil {
+            ensureUniqueAndCapacity()
+            let __h = tree.__construct_node((key, pointer.move()))
+            tree.__insert_node_at(__parent, __child, __h)
+          }
+          pointer.deallocate()
         }
-        yield &value
+        yield &helper.value
       } else {
-        var helper = ___ModifyHelper(pointer: &___elements[__ptr].value)
+        ensureUnique()
+        var helper = ___ModifyHelper(pointer: &tree[__ptr].__value_.value)
         defer {
           if helper.isNil {
-            _ = ___erase(__ptr)
+            _ = tree.erase(__ptr)
           }
         }
         yield &helper.value
@@ -272,10 +227,13 @@ extension RedBlackTreeDictionary {
     _modify {
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
-        __ptr = __construct_node((key, defaultValue()))
-        __insert_node_at(__parent, __child, __ptr)
+        ensureUniqueAndCapacity()
+        __ptr = tree.__construct_node((key, defaultValue()))
+        tree.__insert_node_at(__parent, __child, __ptr)
+      } else {
+        ensureUnique()
       }
-      yield &___elements[__ptr].value
+      yield &tree[__ptr].__value_.value
     }
   }
 
@@ -284,31 +242,10 @@ extension RedBlackTreeDictionary {
   internal func _prepareForKeyingModify(
     _ key: Key
   ) -> (__parent: _NodePtr, __child: _NodeRef, __ptr: _NodePtr) {
-    _read { tree in
-      var __parent = _NodePtr.nullptr
-      let __child = tree.__find_equal(&__parent, key)
-      let __ptr = tree.__ref_(__child)
-      return (__parent, __child, __ptr)
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  mutating func _finalizeKeyingModify(
-    _ __parent: _NodePtr, _ __child: _NodeRef, key: Key, value: Value?
-  ) {
-    switch value {
-    // 変更前が空で、変更後も空の場合
-    case .none:
-      // 変わらない
-      break
-    // 変更前が空で、変更後は値の場合
-    case .some(let value):
-      // 追加する
-      let __h = __construct_node((key, value))
-      __insert_node_at(__parent, __child, __h)
-      break
-    }
+    var __parent = _NodePtr.nullptr
+    let __child = tree.__find_equal(&__parent, key)
+    let __ptr = tree.__ref_(__child)
+    return (__parent, __child, __ptr)
   }
 }
 
@@ -331,30 +268,26 @@ extension RedBlackTreeDictionary {
     _ value: Value,
     forKey key: Key
   ) -> Value? {
-    let (__r, __inserted) = __insert_unique((key, value))
-    return __inserted
-      ? nil
-      : _read { tree in
-        let __p = tree.__ref_(__r)
-        let oldMember = ___elements[__p]
-        ___elements[__p] = (key, value)
-        return oldMember.value
-      }
+    ensureUniqueAndCapacity()
+    let (__r, __inserted) = tree.__insert_unique((key, value))
+    guard !__inserted else { return nil }
+    let __p = tree.__ref_(__r)
+    let oldMember = tree[__p].__value_
+    tree[__p].__value_ = (key, value)
+    return oldMember.value
   }
 
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
-    let ___values___ = ___elements
-    return _update { tree, ___destroy in
-      let __i = tree.find(__k)
-      if __i == tree.end() {
-        return nil
-      }
-      let value = ___values___[__i].value
-      _ = tree.erase(___destroy, __i)
-      return value
+    let __i = tree.find(__k)
+    if __i == tree.end() {
+      return nil
     }
+    let value = tree[__i].__value_.value
+    ensureUnique()
+    _ = tree.erase(__i)
+    return value
   }
 
   @inlinable
@@ -445,13 +378,10 @@ extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
 
 extension RedBlackTreeDictionary: Collection {
 
-  public
-    typealias Element = KeyValue
-
   @inlinable
   @inline(__always)
   public subscript(position: ___RedBlackTree.Index) -> KeyValue {
-    ___elements[position.pointer]
+    ___elements(position.pointer)
   }
 
   @inlinable public func index(before i: Index) -> Index {
@@ -567,4 +497,3 @@ extension RedBlackTreeDictionary {
     ___enumerated_sequence__(from: range.lhs, to: range.rhs)
   }
 }
-#endif

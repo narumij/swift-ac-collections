@@ -22,8 +22,8 @@
 
 import Foundation
 
-public
-  typealias RedBlackTreeMultiset = NewMultiset
+//public
+//  typealias RedBlackTreeMultiset = NewMultiset
 
 @frozen
 public struct NewMultiset<Element: Comparable> {

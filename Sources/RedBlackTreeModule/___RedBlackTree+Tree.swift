@@ -31,9 +31,6 @@ extension ___RedBlackTree {
   >
   where VC: ValueComparer, Element == VC.Element {
 
-    @usableFromInline
-    static var empty: Buffer { create(withCapacity: 0) }
-
     @inlinable
     deinit {
       self.withUnsafeMutablePointers { header, elements in
@@ -46,7 +43,7 @@ extension ___RedBlackTree {
 
 extension ___RedBlackTree.___Buffer {
 
-  @inlinable @inline(__always)
+  @inlinable
   internal static func create(
     withCapacity capacity: Int
   ) -> Buffer {
@@ -65,7 +62,6 @@ extension ___RedBlackTree.___Buffer {
   }
 
   @inlinable
-  @inline(__always)
   internal func copy(newCapacity: Int? = nil) -> Buffer {
 
     let capacity = newCapacity ?? self.header.capacity
@@ -128,9 +124,9 @@ extension ___RedBlackTree.___Buffer {
 
   @inlinable
   @inline(__always)
-  internal static var growthFactor: Double { 1.732 }
+  internal static var growthFactor: Double { 1.75 }
 
-  @usableFromInline
+  @inlinable
   internal static func _growCapacity(
     tree: inout Buffer,
     to minimumCapacity: Int,
@@ -263,7 +259,6 @@ extension ___RedBlackTree.___Buffer {
       assert(0 <= pointer && pointer < header.initializedCount)
       return __node_ptr[pointer]
     }
-    set { __node_ptr[pointer] = newValue }
     @inline(__always)
     _modify {
       defer { _fixLifetime(self) }
@@ -279,7 +274,6 @@ extension ___RedBlackTree.___Buffer {
       assert(0 <= pointer && pointer < header.initializedCount)
       return __node_ptr[pointer].__value_
     }
-    set { __node_ptr[pointer].__value_ = newValue }
     @inline(__always)
     _modify {
       defer { _fixLifetime(self) }
@@ -296,10 +290,6 @@ extension ___RedBlackTree.___Buffer {
       assert(0 <= pointer && pointer < header.initializedCount)
       return __node_ptr[pointer].__value_
     }
-    set {
-      let pointer = __ref_(ref)
-      __node_ptr[pointer].__value_ = newValue
-    }
     @inline(__always)
     _modify {
       defer { _fixLifetime(self) }
@@ -313,6 +303,7 @@ extension ___RedBlackTree.___Buffer {
 extension ___RedBlackTree.___Buffer {
   /// O(1)
   @inlinable
+  @inline(__always)
   func ___pushDestroy(_ p: _NodePtr) {
     assert(header.destroyCount <= header.capacity)
     assert(header.destroyNode != p)
@@ -323,6 +314,7 @@ extension ___RedBlackTree.___Buffer {
   }
   /// O(1)
   @inlinable
+  @inline(__always)
   func ___popDetroy() -> _NodePtr {
     assert(header.destroyCount > 0)
     let p = __node_ptr[header.destroyNode].__left_
@@ -336,6 +328,11 @@ extension ___RedBlackTree.___Buffer {
     header.destroyNode = .nullptr
     header.destroyCount = 0
   }
+}
+
+#if DEBUG
+extension ___RedBlackTree.___Buffer {
+
   /// O(*k*)
   var ___destroyNodes: [_NodePtr] {
     if header.destroyNode == .nullptr {
@@ -347,45 +344,10 @@ extension ___RedBlackTree.___Buffer {
     }
     return nodes
   }
-  /// O(1)
-  @inlinable
-  func __eraseAll() {
-    __begin_node = .end
-    __left_ = .nullptr
-    ___clearDestroy()
-  }
 }
+#endif
 
 extension ___RedBlackTree.___Buffer {
-
-  @inlinable
-  var count: Int {
-    __header_ptr.pointee.initializedCount - __header_ptr.pointee.destroyCount
-  }
-
-  @inlinable
-  var size: Int {
-    get { count }
-    set { /* NOP */  }
-  }
-
-  @inlinable
-  var __left_: _NodePtr {
-    get { __header_ptr.pointee.__left_ }
-    _modify {
-      defer { _fixLifetime(self) }
-      yield &__header_ptr.pointee.__left_
-    }
-  }
-
-  @inlinable
-  var __begin_node: _NodePtr {
-    get { __header_ptr.pointee.__begin_node }
-    _modify {
-      defer { _fixLifetime(self) }
-      yield &__header_ptr.pointee.__begin_node
-    }
-  }
 
   @inlinable @inline(__always)
   func ___is_valid(_ p: _NodePtr) -> Bool {
@@ -413,23 +375,42 @@ extension ___RedBlackTree.___Buffer {
     return index
   }
   
-//  @inlinable
-//  func __construct_node(_ k: UnsafeMutablePointer<Element>) -> _NodePtr {
-//    if header.destroyCount > 0 {
-//      let p = ___popDetroy()
-//      __node_ptr[p].__value_ = k.move()
-//      return p
-//    }
-//    let index = count
-//    (__node_ptr + index).initialize(to: Node(__pointer_: k))
-//    header.initializedCount += 1
-//    return index
-//  }
-
   @inlinable
   func destroy(_ p: _NodePtr) {
     ___invalidate(p)
     ___pushDestroy(p)
+  }
+}
+
+extension ___RedBlackTree.___Buffer {
+  
+  @inlinable
+  var count: Int {
+    __header_ptr.pointee.initializedCount - __header_ptr.pointee.destroyCount
+  }
+  
+  @inlinable
+  var size: Int {
+    get { count }
+    set { /* NOP */  }
+  }
+  
+  @inlinable
+  var __left_: _NodePtr {
+    get { __header_ptr.pointee.__left_ }
+    _modify {
+      defer { _fixLifetime(self) }
+      yield &__header_ptr.pointee.__left_
+    }
+  }
+  
+  @inlinable
+  var __begin_node: _NodePtr {
+    get { __header_ptr.pointee.__begin_node }
+    _modify {
+      defer { _fixLifetime(self) }
+      yield &__header_ptr.pointee.__begin_node
+    }
   }
 }
 
@@ -468,6 +449,7 @@ extension ___RedBlackTree.___Buffer: RemoveProtocol {}
 extension ___RedBlackTree.___Buffer: StorageEraseProtocol {}
 extension ___RedBlackTree.___Buffer: InsertUniqueProtocol {
   @inlinable
+  @inline(__always)
   static func __key(_ e: VC.Element) -> VC._Key {
     VC.__key(e)
   }
@@ -637,6 +619,17 @@ extension ___RedBlackTree.___Buffer {
       __f = erase(__f)
     }
     return result
+  }
+}
+
+extension ___RedBlackTree.___Buffer {
+
+  /// O(1)
+  @inlinable
+  func __eraseAll() {
+    __begin_node = .end
+    __left_ = .nullptr
+    ___clearDestroy()
   }
 }
 

@@ -188,14 +188,8 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public subscript(key: Key) -> Value? {
+    @inline(__always)
     get { ___value_for(key)?.value }
-    set {
-      if let newValue {
-        updateValue(newValue, forKey: key)
-      } else {
-        removeValue(forKey: key)
-      }
-    }
     @inline(__always)
     _modify {
       // TODO: もうすこしライフタイム管理に明るくなったら、再度ここのチューニングに取り組む
@@ -227,8 +221,8 @@ extension RedBlackTreeDictionary {
   public subscript(
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
+    @inline(__always)
     get { ___value_for(key)?.value ?? defaultValue() }
-    set { updateValue(newValue, forKey: key) }
     @inline(__always)
     _modify {
       defer { _fixLifetime(self) }

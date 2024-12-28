@@ -273,16 +273,16 @@ extension ___RedBlackTreeBase {
 
 #warning("不要になっている可能性が高い")
   
-  @inlinable
-  public func ___enumerated_sequence__(from: ___RedBlackTree.SimpleIndex, to: ___RedBlackTree.SimpleIndex)
-    -> [EnumeratedElement]
-  {
-    var result = [EnumeratedElement]()
-    tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-      result.append((___index(__p), tree[__p]))
-    }
-    return result
-  }
+//  @inlinable
+//  public func ___enumerated_sequence__(from: ___RedBlackTree.SimpleIndex, to: ___RedBlackTree.SimpleIndex)
+//    -> [EnumeratedElement]
+//  {
+//    var result = [EnumeratedElement]()
+//    tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
+//      result.append((___index(__p), tree[__p]))
+//    }
+//    return result
+//  }
 
   @inlinable
   public func ___enumerated_sequence__(from: ___Index, to: ___Index)

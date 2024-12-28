@@ -132,8 +132,10 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
   typealias Index = ___RedBlackTree.TreeIndex<Self>
 
+//  public
+//    typealias IndexRange = ___RedBlackTree.TreeRange<Self>
   public
-    typealias IndexRange = ___RedBlackTree.TreeRange<Self>
+  typealias IndexRange = Range<Index>
 
   public
   typealias _Key = Element
@@ -285,7 +287,7 @@ extension RedBlackTreeSet {
   /// ```
   @inlinable
   public mutating func removeSubrange(_ range: IndexRange) {
-    ___remove(from: range.lhs.pointer, to: range.rhs.pointer)
+    ___remove(from: range.lowerBound.pointer, to: range.upperBound.pointer)
   }
 
   /// - Complexity: O(1)
@@ -479,17 +481,9 @@ extension RedBlackTreeSet: ___Tree {
     self.tree = ___tree
   }
   
-//  public typealias SubSequence = ___SubSequence
-  
-  public subscript(bounds: IndexRange) -> ___SubSequence {
-    .init(_subSequence: .init(tree: tree, start: bounds.lhs.pointer, end: bounds.rhs.pointer))
-//    Slice(___SubSequence(_subSequence: .init(tree: tree, start: bounds.lhs.pointer, end: bounds.rhs.pointer)))
+  public subscript(bounds: Range<Index>) -> Slice<Self> {
+    Slice(base: self, bounds: bounds)
   }
-
-//  @inlinable
-//  public subscript(bounds: IndexRange) -> SubSequence {
-//    .init(_subSequence: .init(tree: tree, start: bounds.lhs.pointer, end: bounds.rhs.pointer))
-//  }
 }
 
 extension RedBlackTreeSet {
@@ -546,6 +540,6 @@ extension RedBlackTreeSet {
   ///   無効な区間が指定されたときの挙動は未定義です。必ず正しい範囲を指定してください。
   @inlinable
   public func enumeratedSubrange(_ range: IndexRange) -> EnumeratedSequence {
-    ___enumerated_sequence__(from: range.lhs, to: range.rhs)
+    ___enumerated_sequence__(from: range.lowerBound, to: range.upperBound)
   }
 }

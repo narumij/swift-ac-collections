@@ -33,8 +33,10 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
   public
   typealias Index = ___RedBlackTree.TreeIndex<Self>
 
+//  public
+//  typealias IndexRange = ___RedBlackTree.TreeRange<Self>
   public
-  typealias IndexRange = ___RedBlackTree.TreeRange<Self>
+  typealias IndexRange = Range<Index>
 
   public
   typealias _Key = Element
@@ -154,7 +156,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   public mutating func removeSubrange(_ range: ___RedBlackTree.TreeRange<Self>) {
-    ___remove(from: range.lhs.pointer, to: range.rhs.pointer)
+    ___remove(from: range.lowerBound.pointer, to: range.upperBound.pointer)
   }
 
   @inlinable
@@ -327,7 +329,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   public subscript(bounds: IndexRange) -> ElementSequence {
-    ___element_sequence__(from: bounds.lhs, to: bounds.rhs)
+    ___element_sequence__(from: bounds.lowerBound, to: bounds.upperBound)
   }
 }
 
@@ -367,7 +369,7 @@ extension RedBlackTreeMultiset {
   }
 
   @inlinable
-  public func enumeratedSubrange(_ range: ___RedBlackTree.Range) -> EnumeratedSequence {
-    ___enumerated_sequence__(from: range.lhs, to: range.rhs)
+  public func enumeratedSubrange(_ range: IndexRange) -> EnumeratedSequence {
+    ___enumerated_sequence__(from: range.lowerBound, to: range.upperBound)
   }
 }

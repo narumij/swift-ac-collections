@@ -28,8 +28,10 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   public
   typealias Index = ___RedBlackTree.TreeIndex<Self>
 
+//  public
+//  typealias IndexRange = ___RedBlackTree.TreeRange<Self>
   public
-  typealias IndexRange = ___RedBlackTree.TreeRange<Self>
+  typealias IndexRange = Range<Index>
 
   public
     typealias KeyValue = (key: Key, value: Value)
@@ -451,7 +453,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public subscript(bounds: IndexRange) -> ElementSequence {
-    ___element_sequence__(from: bounds.lhs, to: bounds.rhs)
+    ___element_sequence__(from: bounds.lowerBound, to: bounds.upperBound)
   }
 }
 
@@ -491,7 +493,7 @@ extension RedBlackTreeDictionary {
   }
 
   @inlinable
-  public func enumeratedSubrange(_ range: ___RedBlackTree.Range) -> EnumeratedSequence {
-    ___enumerated_sequence__(from: range.lhs, to: range.rhs)
+  public func enumeratedSubrange(_ range: IndexRange) -> EnumeratedSequence {
+    ___enumerated_sequence__(from: range.lowerBound, to: range.upperBound)
   }
 }

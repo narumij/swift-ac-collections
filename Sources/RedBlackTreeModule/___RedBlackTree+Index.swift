@@ -180,10 +180,10 @@ extension ___RedBlackTree {
     public typealias Index = ___RedBlackTree.TreeIndex<Base>
     @inlinable
     public init(lhs: Bound, rhs: Bound) {
-      self.lhs = lhs
-      self.rhs = rhs
+      self.lowerBound = lhs
+      self.upperBound = rhs
     }
-    public var lhs, rhs: Bound
+    public var lowerBound, upperBound: Bound
     public typealias Bound = Index
   }
 }

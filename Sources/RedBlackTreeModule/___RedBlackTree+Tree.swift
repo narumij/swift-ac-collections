@@ -281,6 +281,9 @@ extension ___RedBlackTree.___Buffer {
 }
 
 extension ___RedBlackTree.___Buffer {
+  // コンスセルでイメージすると、右に伸ばしていく方がイメージ通りだったが、
+  // leftを伸ばしていく方が意味が通じやすいので、そちらにした
+  
   /// O(1)
   @inlinable
   @inline(__always)

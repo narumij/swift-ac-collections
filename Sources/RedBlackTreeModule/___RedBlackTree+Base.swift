@@ -88,7 +88,7 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @usableFromInline
-  typealias ___Index = ___RedBlackTree.TreeIndex<Self>
+  typealias ___Index = ___RedBlackTree.TreePointer<Self>
   
   @inlinable @inline(__always)
   func ___index(_ p: _NodePtr) -> ___Index {
@@ -271,8 +271,7 @@ extension ___RedBlackTreeBase {
     }
   }
 
-#warning("不要になっている可能性が高い")
-  
+// #warning("不要になっている可能性が高い")
 //  @inlinable
 //  public func ___enumerated_sequence__(from: ___RedBlackTree.SimpleIndex, to: ___RedBlackTree.SimpleIndex)
 //    -> [EnumeratedElement]

@@ -22,6 +22,7 @@
 
 import Foundation
 
+#if false
 extension ___RedBlackTree {
 
   /// 公開用のインデックス
@@ -77,73 +78,9 @@ extension Optional where Wrapped == ___RedBlackTree.SimpleIndex {
 #if swift(>=5.5)
 extension ___RedBlackTree.SimpleIndex: @unchecked Sendable {}
 #endif
+#endif
 
-extension ___RedBlackTree {
-  
-  public struct TreeIndex<Base: ValueComparer>: Comparable {
-
-    public typealias Tree = ___RedBlackTree.___Buffer<Base>
-    public typealias Index = Self
-    
-    public static func score(_ rhs: Index) -> Int {
-      rhs.pointer != .end ? rhs.pointer : Int.max
-    }
-    
-    public static func < (lhs: Index, rhs: Index) -> Bool {
-      
-      if lhs.pointer == rhs.pointer {
-        return false
-      }
-      
-      guard score(lhs) == score(rhs) else {
-        return score(lhs) < score(rhs)
-      }
-      
-      return lhs.tree.distance(__l: lhs.pointer, __r: rhs.pointer) < 0
-    }
-    
-    public static func == (lhs: Index, rhs: Index) -> Bool {
-      lhs.pointer == rhs.pointer
-    }
-    
-    @inlinable
-    internal init(__tree: Tree, pointer: _NodePtr) {
-//      guard pointer != .nullptr else {
-//        preconditionFailure("_NodePtr is nullptr")
-//      }
-      self.tree = __tree
-      self.pointer = pointer
-    }
-    
-    @usableFromInline
-    let tree: ___RedBlackTree.___Buffer<Base>
-    
-    @usableFromInline
-    let pointer: _NodePtr
-    
-    var pointee: Base.Element {
-      get { tree[pointer] }
-      _modify { yield &tree[pointer] }
-    }
-
-    public static func nullptr(_ tree: Tree) -> Index {
-      .init(__tree: tree, pointer: .nullptr)
-    }
-
-    public static func end(_ tree: Tree) -> Index {
-      .init(__tree: tree, pointer: tree.__end_node())
-    }
-    
-    public func after() -> Index {
-      .init(__tree: tree, pointer: tree.__tree_next(pointer))
-    }
-
-    public func before() -> Index {
-      .init(__tree: tree, pointer: tree.__tree_prev_iter(pointer))
-    }
-  }
-}
-
+#if false
 extension ___RedBlackTree {
   
   /// 赤黒木用の半開区間
@@ -196,4 +133,4 @@ extension ___RedBlackTree.TreeRange: @unchecked Sendable {}
 public func ..< <Base: ValueComparer>(lhs: ___RedBlackTree.TreeIndex<Base>, rhs: ___RedBlackTree.TreeIndex<Base>) -> ___RedBlackTree.TreeRange<Base> {
   .init(lhs: lhs, rhs: rhs)
 }
-
+#endif

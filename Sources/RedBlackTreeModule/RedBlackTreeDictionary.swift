@@ -26,7 +26,7 @@ import Foundation
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   public
-  typealias Index = ___RedBlackTree.TreeIndex<Self>
+  typealias Index = ___RedBlackTree.TreePointer<Self>
 
 //  public
 //  typealias IndexRange = ___RedBlackTree.TreeRange<Self>
@@ -320,8 +320,8 @@ extension RedBlackTreeDictionary {
   }
 
   @inlinable
-  public mutating func removeSubrange(_ range: ___RedBlackTree.Range) {
-    ___remove(from: range.lhs.pointer, to: range.rhs.pointer)
+  public mutating func removeSubrange(_ range: IndexRange) {
+    ___remove(from: range.lowerBound.pointer, to: range.upperBound.pointer)
   }
 
   @inlinable

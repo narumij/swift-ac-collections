@@ -31,7 +31,7 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
     typealias Element = Element
 
   public
-  typealias Index = ___RedBlackTree.TreeIndex<Self>
+  typealias Index = ___RedBlackTree.TreePointer<Self>
 
 //  public
 //  typealias IndexRange = ___RedBlackTree.TreeRange<Self>
@@ -155,13 +155,8 @@ extension RedBlackTreeMultiset {
   }
 
   @inlinable
-  public mutating func removeSubrange(_ range: ___RedBlackTree.TreeRange<Self>) {
+  public mutating func removeSubrange(_ range: IndexRange) {
     ___remove(from: range.lowerBound.pointer, to: range.upperBound.pointer)
-  }
-
-  @inlinable
-  public mutating func removeSubrange(_ range: ___RedBlackTree.Range) {
-    ___remove(from: range.lhs.pointer, to: range.rhs.pointer)
   }
 
   @inlinable

@@ -24,10 +24,11 @@ import Foundation
 
 public protocol ___Tree: ValueComparer {
   init(___tree: Tree)
-  func ___makeIterator(startIndex: ___RedBlackTree.SimpleIndex, endIndex: ___RedBlackTree.SimpleIndex) -> ___Iterator
+  func ___makeIterator(startIndex: ___Pointer, endIndex: ___Pointer) -> ___Iterator
 }
 
 extension ___Tree {
+  public typealias ___Pointer = ___RedBlackTree.TreePointer<Self>
   public typealias ___Iterator = ___RedBlackTree.Iterator<Self>
   public typealias ___SubSequence = ___RedBlackTree.SubSequence<Self>
 }
@@ -44,7 +45,7 @@ extension ___RedBlackTree {
 
     public typealias _Tree = ___RedBlackTree.___Buffer<Base>
 
-    public typealias Index = ___RedBlackTree.TreeIndex<Base>
+    public typealias Index = ___RedBlackTree.TreePointer<Base>
 
     public typealias Element = Base.Element
     
@@ -79,7 +80,7 @@ extension ___RedBlackTree.SubSequence: Sequence {
 extension ___RedBlackTree.SubSequence: Collection {
   
   public func index(after i: Index) -> Index {
-    i.after()
+    i.___next()
   }
   
   public subscript(position: Index) -> Base.Element {
@@ -96,17 +97,17 @@ extension ___RedBlackTree.SubSequence: Collection {
 extension ___RedBlackTree.SubSequence: BidirectionalCollection {
   
   public func index(before i: Index) -> Index {
-    i.before()
+    i.___prev()
   }
 }
 
 extension ___RedBlackTreeBase {
   
-  public func ___makeIterator(startIndex: ___RedBlackTree.SimpleIndex, endIndex: ___RedBlackTree.SimpleIndex) -> ___RedBlackTree.Iterator<Self> {
-    .init(tree.makeIterator(start: startIndex.pointer, end: endIndex.pointer))
-  }
+//  public func ___makeIterator(startIndex: ___RedBlackTree.SimpleIndex, endIndex: ___RedBlackTree.SimpleIndex) -> ___RedBlackTree.Iterator<Self> {
+//    .init(tree.makeIterator(start: startIndex.pointer, end: endIndex.pointer))
+//  }
   
-  public func ___makeIterator(startIndex: ___RedBlackTree.TreeIndex<Self>, endIndex: ___RedBlackTree.TreeIndex<Self>) -> ___RedBlackTree.Iterator<Self> {
+  public func ___makeIterator(startIndex: ___RedBlackTree.TreePointer<Self>, endIndex: ___RedBlackTree.TreePointer<Self>) -> ___RedBlackTree.Iterator<Self> {
     .init(tree.makeIterator(start: startIndex.pointer, end: endIndex.pointer))
   }
 

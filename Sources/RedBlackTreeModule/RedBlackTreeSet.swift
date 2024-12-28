@@ -130,7 +130,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   ///
   /// - SeeAlso: `startIndex`, `endIndex`, `index(before:)`, `index(after:)`
   public
-  typealias Index = ___RedBlackTree.TreeIndex<Self>
+  typealias Index = ___RedBlackTree.TreePointer<Self>
 
 //  public
 //    typealias IndexRange = ___RedBlackTree.TreeRange<Self>
@@ -481,8 +481,8 @@ extension RedBlackTreeSet: ___Tree {
     self.tree = ___tree
   }
   
-  public subscript(bounds: Range<Index>) -> Slice<Self> {
-    Slice(base: self, bounds: bounds)
+  public subscript(bounds: Range<Index>) -> Slice<___SubSequence> {
+    Slice(base: .init(_subSequence: .init(tree: tree, start: bounds.lowerBound.pointer, end: bounds.upperBound.pointer)), bounds: bounds)
   }
 }
 

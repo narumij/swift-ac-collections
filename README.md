@@ -1,7 +1,6 @@
 # swift-ac-collections
 
 `swift-ac-collections` は、Swift で実装された赤黒木（Red-Black Tree）ベースのコレクションライブラリです。  
-競技プログラミング等での高速な挿入・削除・探索が必要な場合に役立ちます。
 
 ## 利用方法
 
@@ -41,7 +40,7 @@ import AcCollections
 - 要素の挿入・削除・探索を平均的に `O(log n)` で行えます。  
 - `Collection` に適合しており、インデックスによる要素アクセスや `startIndex` / `endIndex` などが利用可能です。  
 - 境界探索メソッド（`lowerBound` / `upperBound`）なども提供しています。  
-- 使用例: [AtCoder 提出例](https://atcoder.jp/contests/abc370/submissions/57922896) / [AtCoder 提出例](https://atcoder.jp/contests/abc385/submissions/61003801) など。
+- 使用例: [AtCoder 提出例](https://atcoder.jp/contests/abc370/submissions/57922896) / [AtCoder 提出例](https://atcoder.jp/contests/abc385/submissions/61134983) など。
 
 #### 2. RedBlackTreeMultiSet
 
@@ -55,6 +54,7 @@ import AcCollections
 - **キーと値** を管理する Dictionary。  
 - 基本的なキー検索・挿入・削除などの操作を `O(log n)` で行えます。  
 - 連想配列リテラル（`ExpressibleByDictionaryLiteral`）にも対応しています。
+- Swift 5.8.1では標準辞書に及びませんが、Swift 6.0ではこちらの方が速い場合もあります。
 
 ## 簡単な使用例
 

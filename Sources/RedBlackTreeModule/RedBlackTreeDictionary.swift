@@ -189,8 +189,16 @@ extension RedBlackTreeDictionary {
   @inlinable
   public subscript(key: Key) -> Value? {
     get { ___value_for(key)?.value }
+    set {
+      if let newValue {
+        updateValue(newValue, forKey: key)
+      } else {
+        removeValue(forKey: key)
+      }
+    }
     @inline(__always)
     _modify {
+      defer { _fixLifetime(self) }
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
         let pointer = UnsafeMutablePointer<Value>.allocate(capacity: 1)
@@ -202,6 +210,7 @@ extension RedBlackTreeDictionary {
             tree.__insert_node_at(__parent, __child, __h)
           }
           pointer.deallocate()
+          _fixLifetime(pointer)
         }
         yield &helper.value
       } else {
@@ -222,8 +231,10 @@ extension RedBlackTreeDictionary {
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
     get { ___value_for(key)?.value ?? defaultValue() }
+    set { updateValue(newValue, forKey: key) }
     @inline(__always)
     _modify {
+      defer { _fixLifetime(self) }
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
         ensureUniqueAndCapacity()

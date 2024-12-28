@@ -263,6 +263,7 @@ extension ___RedBlackTree.___Buffer {
       assert(0 <= pointer && pointer < header.initializedCount)
       return __node_ptr[pointer]
     }
+    set { __node_ptr[pointer] = newValue }
     @inline(__always)
     _modify {
       defer { _fixLifetime(self) }
@@ -278,6 +279,7 @@ extension ___RedBlackTree.___Buffer {
       assert(0 <= pointer && pointer < header.initializedCount)
       return __node_ptr[pointer].__value_
     }
+    set { __node_ptr[pointer].__value_ = newValue }
     @inline(__always)
     _modify {
       defer { _fixLifetime(self) }
@@ -390,18 +392,18 @@ extension ___RedBlackTree.___Buffer {
     return index
   }
   
-  @inlinable
-  func __construct_node(_ k: UnsafeMutablePointer<Element>) -> _NodePtr {
-    if header.destroyCount > 0 {
-      let p = ___popDetroy()
-      __node_ptr[p].__value_ = k.move()
-      return p
-    }
-    let index = count
-    (__node_ptr + index).initialize(to: Node(__pointer_: k))
-    header.initializedCount += 1
-    return index
-  }
+//  @inlinable
+//  func __construct_node(_ k: UnsafeMutablePointer<Element>) -> _NodePtr {
+//    if header.destroyCount > 0 {
+//      let p = ___popDetroy()
+//      __node_ptr[p].__value_ = k.move()
+//      return p
+//    }
+//    let index = count
+//    (__node_ptr + index).initialize(to: Node(__pointer_: k))
+//    header.initializedCount += 1
+//    return index
+//  }
 
   @inlinable
   func destroy(_ p: _NodePtr) {

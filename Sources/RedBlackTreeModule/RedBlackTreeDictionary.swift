@@ -103,8 +103,8 @@ extension RedBlackTreeDictionary {
         let __h = tree.__construct_node(__k)
         tree.__insert_node_at(__parent, __child, __h)
       } else {
-        tree[tree.__ref_(__child)].__value_.value = try combine(
-          tree[tree.__ref_(__child)].__value_.value, __k.1)
+        tree[node : tree.__ref_(__child)].__value_.value = try combine(
+          tree[node : tree.__ref_(__child)].__value_.value, __k.1)
       }
     }
   }
@@ -172,7 +172,6 @@ extension RedBlackTreeDictionary {
       get { isNil ? nil : pointer.pointee }
       @inline(__always)
       _modify {
-        defer { _fixLifetime(self) }
         var value: Value? = pointer.move()
         defer {
           if let value {
@@ -207,7 +206,7 @@ extension RedBlackTreeDictionary {
         yield &helper.value
       } else {
         ensureUnique()
-        var helper = ___ModifyHelper(pointer: &tree[__ptr].__value_.value)
+        var helper = ___ModifyHelper(pointer: &tree[__ptr].value)
         defer {
           if helper.isNil {
             _ = tree.erase(__ptr)
@@ -233,7 +232,7 @@ extension RedBlackTreeDictionary {
       } else {
         ensureUnique()
       }
-      yield &tree[__ptr].__value_.value
+      yield &tree[__ptr].value
     }
   }
 
@@ -272,8 +271,8 @@ extension RedBlackTreeDictionary {
     let (__r, __inserted) = tree.__insert_unique((key, value))
     guard !__inserted else { return nil }
     let __p = tree.__ref_(__r)
-    let oldMember = tree[__p].__value_
-    tree[__p].__value_ = (key, value)
+    let oldMember = tree[node : __p].__value_
+    tree[node : __p].__value_ = (key, value)
     return oldMember.value
   }
 
@@ -284,7 +283,7 @@ extension RedBlackTreeDictionary {
     if __i == tree.end() {
       return nil
     }
-    let value = tree[__i].__value_.value
+    let value = tree[node : __i].__value_.value
     ensureUnique()
     _ = tree.erase(__i)
     return value
@@ -381,7 +380,7 @@ extension RedBlackTreeDictionary: Collection {
   @inlinable
   @inline(__always)
   public subscript(position: ___RedBlackTree.Index) -> KeyValue {
-    ___elements(position.pointer)
+    tree[position.pointer]
   }
 
   @inlinable public func index(before i: Index) -> Index {

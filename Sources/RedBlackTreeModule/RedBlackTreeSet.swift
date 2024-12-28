@@ -214,7 +214,7 @@ extension RedBlackTreeSet {
   ) {
     ensureUniqueAndCapacity()
     let (__r, __inserted) = tree.__insert_unique(newMember)
-    return (__inserted, __inserted ? newMember : ___elements(tree.__ref_(__r)))
+    return (__inserted, __inserted ? newMember : tree[tree.__ref_(__r)])
   }
 
   @discardableResult
@@ -223,8 +223,8 @@ extension RedBlackTreeSet {
     let (__r, __inserted) = tree.__insert_unique(newMember)
     guard !__inserted else { return nil }
     let __p = tree.__ref_(__r)
-    let oldMember = ___elements(__p)
-    tree[__p].__value_ = newMember
+    let oldMember = tree[__p]
+    tree[node : __p].__value_ = newMember
     return oldMember
   }
 
@@ -405,7 +405,7 @@ extension RedBlackTreeSet: Collection {
 
   /// - Complexity: O(1)。
   @inlinable public subscript(position: ___RedBlackTree.Index) -> Element {
-    ___elements(position.pointer)
+    tree[position.pointer]
   }
 
   /// - Complexity: 償却された O(1)。

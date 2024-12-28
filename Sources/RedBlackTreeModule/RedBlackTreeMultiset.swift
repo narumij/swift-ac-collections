@@ -245,7 +245,7 @@ extension RedBlackTreeMultiset {
 extension RedBlackTreeMultiset: Collection {
 
   @inlinable public subscript(position: ___RedBlackTree.Index) -> Element {
-    ___elements(position.pointer)
+    tree[position.pointer]
   }
 
   @inlinable public func index(before i: Index) -> Index {

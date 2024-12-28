@@ -219,7 +219,7 @@ extension ___RedBlackTreeBase {
   public func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> ___Index? {
     var result: ___Index?
     try tree.___for_each(__p: tree.__begin_node, __l: tree.__end_node()) { __p, cont in
-      if try predicate(___elements(__p)) {
+      if try predicate(tree[__p]) {
         result = ___Index(__p)
         cont = false
       }
@@ -245,11 +245,6 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
 
-  // TODO: ひとだんらくしたら、inline化して取り除く
-  @inlinable func ___elements(_ p: _NodePtr) -> Element {
-    tree[p].__value_
-  }
-
   public typealias ___EnumeratedSequence = UnfoldSequence<EnumeratedElement, Tree.SafeSequenceState>
 
   @inlinable
@@ -259,7 +254,7 @@ extension ___RedBlackTreeBase {
     return sequence(state: tree.___begin(from.pointer, to: to.pointer)) { state in
       guard tree.___end(state) else { return nil }
       defer { tree.___next(&state) }
-      return (___Index(state.current), ___elements(state.current))
+      return (___Index(state.current), tree[state.current])
     }
   }
   
@@ -269,7 +264,7 @@ extension ___RedBlackTreeBase {
   {
     var result = [EnumeratedElement]()
     tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-      result.append((___Index(__p), ___elements(__p)))
+      result.append((___Index(__p), tree[__p]))
     }
     return result
   }
@@ -287,7 +282,7 @@ extension ___RedBlackTreeBase {
   {
     var result = [T]()
     try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-      result.append(try transform(___elements(__p)))
+      result.append(try transform(tree[__p]))
     }
     return result
   }
@@ -300,8 +295,8 @@ extension ___RedBlackTreeBase {
   {
     var result = [Element]()
     try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-      if try isIncluded(___elements(__p)) {
-        result.append(___elements(__p))
+      if try isIncluded(tree[__p]) {
+        result.append(tree[__p])
       }
     }
     return result
@@ -315,7 +310,7 @@ extension ___RedBlackTreeBase {
   {
     var result = initial
     try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-      result = try folding(result, ___elements(__p))
+      result = try folding(result, tree[__p])
     }
     return result
   }
@@ -328,7 +323,7 @@ extension ___RedBlackTreeBase {
   {
     var result = initial
     try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-      try folding(&result, ___elements(__p))
+      try folding(&result, tree[__p])
     }
     return result
   }
@@ -339,7 +334,7 @@ extension ___RedBlackTreeBase {
   {
     var result = [Element]()
     tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-      result.append(___elements(__p))
+      result.append(tree[__p])
     }
     return result
   }
@@ -385,7 +380,7 @@ extension ___RedBlackTreeBase {
     else {
       return nil
     }
-    let e = ___elements(ptr)
+    let e = tree[ptr]
     ensureUnique()
     _ = tree.erase(ptr)
     return e
@@ -509,7 +504,7 @@ extension ___RedBlackTreeBase {
   func ___contains(_ __k: _Key) -> Bool where _Key: Equatable {
     let it = tree.__lower_bound(__k, tree.__root(), tree.__left_)
     guard it >= 0 else { return false }
-    return Self.__key(___elements(it)) == __k
+    return Self.__key(tree[it]) == __k
   }
 }
 
@@ -517,12 +512,12 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___min() -> Element? {
-    tree.__root() == .nullptr ? nil : tree.___element(tree.__tree_min(tree.__root()))
+    tree.__root() == .nullptr ? nil : tree[tree.__tree_min(tree.__root())]
   }
 
   @inlinable @inline(__always)
   func ___max() -> Element? {
-    tree.__root() == .nullptr ? nil : tree.___element(tree.__tree_max(tree.__root()))
+    tree.__root() == .nullptr ? nil : tree[tree.__tree_max(tree.__root())]
   }
 }
 
@@ -531,7 +526,7 @@ extension ___RedBlackTreeBase {
   @inlinable @inline(__always)
   func ___value_for(_ __k: _Key) -> Element? {
     let __ptr = tree.find(__k)
-    return __ptr < 0 ? nil : ___elements(__ptr)
+    return __ptr < 0 ? nil : tree[__ptr]
   }
 }
 
@@ -541,8 +536,8 @@ extension ___RedBlackTreeBase {
   public func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     var result: Element?
     try tree.___for_each(__p: tree.__begin_node, __l: tree.__end_node()) { __p, cont in
-      if try predicate(___elements(__p)) {
-        result = ___elements(__p)
+      if try predicate(tree[__p]) {
+        result = tree[__p]
         cont = false
       }
     }

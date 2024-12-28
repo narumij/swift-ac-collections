@@ -128,7 +128,7 @@ extension ___RedBlackTree.___Buffer {
 
   @inlinable
   @inline(__always)
-  internal static var growthFactor: Double { 1.75 }
+  internal static var growthFactor: Double { 1.732 }
 
   @usableFromInline
   internal static func _growCapacity(
@@ -257,15 +257,32 @@ extension ___RedBlackTree.___Buffer {
   }
 
   @inlinable
-  subscript(pointer: _NodePtr) -> Node {
+  subscript(node pointer: _NodePtr) -> Node {
+    @inline(__always)
     get {
       assert(0 <= pointer && pointer < header.initializedCount)
       return __node_ptr[pointer]
     }
+    @inline(__always)
     _modify {
       defer { _fixLifetime(self) }
       assert(0 <= pointer && pointer < header.initializedCount)
       yield &__node_ptr[pointer]
+    }
+  }
+  
+  @inlinable
+  subscript(_ pointer: _NodePtr) -> Element {
+    @inline(__always)
+    get {
+      assert(0 <= pointer && pointer < header.initializedCount)
+      return __node_ptr[pointer].__value_
+    }
+    @inline(__always)
+    _modify {
+      defer { _fixLifetime(self) }
+      assert(0 <= pointer && pointer < header.initializedCount)
+      yield &__node_ptr[pointer].__value_
     }
   }
 }
@@ -302,8 +319,8 @@ extension ___RedBlackTree.___Buffer {
       return []
     }
     var nodes: [_NodePtr] = [header.destroyNode]
-    while let l = nodes.last, self[l].__right_ != .nullptr {
-      nodes.append(self[l].__right_)
+    while let l = nodes.last, self[node : l].__right_ != .nullptr {
+      nodes.append(self[node : l].__right_)
     }
     return nodes
   }
@@ -399,12 +416,6 @@ extension ___RedBlackTree.___Buffer {
   func __value_(_ p: _NodePtr) -> _Key {
     __value_(__node_ptr[p].__value_)
   }
-}
-
-extension ___RedBlackTree.___Buffer {
-
-  @inlinable @inline(__always)
-  func ___element(_ p: _NodePtr) -> Element { self[p].__value_ }
 }
 
 extension ___RedBlackTree.___Buffer {
@@ -568,7 +579,7 @@ extension ___RedBlackTree.___Buffer {
   {
     var __f = __f
     while __f != __l {
-      try action(___element(__f))
+      try action(self[__f])
       __f = erase(__f)
     }
   }
@@ -583,7 +594,7 @@ extension ___RedBlackTree.___Buffer {
     var result = initialResult
     var __f = __f
     while __f != __l {
-      result = try nextPartialResult(result, ___element(__f))
+      result = try nextPartialResult(result, self[__f])
       __f = erase(__f)
     }
     return result
@@ -599,7 +610,7 @@ extension ___RedBlackTree.___Buffer {
     var result = initialResult
     var __f = __f
     while __f != __l {
-      try updateAccumulatingResult(&result, ___element(__f))
+      try updateAccumulatingResult(&result, self[__f])
       __f = erase(__f)
     }
     return result
@@ -685,7 +696,7 @@ extension ___RedBlackTree.___Buffer: Sequence {
     mutating func next() -> Element? {
       guard _tree.___end(state) else { return nil }
       defer { _tree.___next(&state) }
-      return _tree[state.current].__value_
+      return _tree[node : state.current].__value_
     }
   }
 }

@@ -287,6 +287,27 @@ extension ___RedBlackTree.___Buffer {
       yield &__node_ptr[pointer].__value_
     }
   }
+  
+  @inlinable
+  subscript(_ ref: _NodeRef) -> Element {
+    @inline(__always)
+    get {
+      let pointer = __ref_(ref)
+      assert(0 <= pointer && pointer < header.initializedCount)
+      return __node_ptr[pointer].__value_
+    }
+    set {
+      let pointer = __ref_(ref)
+      __node_ptr[pointer].__value_ = newValue
+    }
+    @inline(__always)
+    _modify {
+      defer { _fixLifetime(self) }
+      let pointer = __ref_(ref)
+      assert(0 <= pointer && pointer < header.initializedCount)
+      yield &__node_ptr[pointer].__value_
+    }
+  }
 }
 
 extension ___RedBlackTree.___Buffer {

@@ -24,8 +24,7 @@ import Foundation
 
 extension ___RedBlackTree {
 
-  @usableFromInline
-  class ___Buffer<VC, Element>: ManagedBuffer<
+  public class ___Buffer<VC, Element>: ManagedBuffer<
     ___RedBlackTree.___Buffer<VC, Element>.Header,
     ___RedBlackTree.___Buffer<VC, Element>.Node
   >
@@ -182,8 +181,7 @@ extension ___RedBlackTree.___Buffer {
 
 extension ___RedBlackTree.___Buffer {
 
-  @usableFromInline
-  struct Header {
+  public struct Header {
 
     @inlinable
     init(
@@ -716,21 +714,21 @@ extension ___RedBlackTree.___Buffer {
     
     @inlinable
     internal init(tree: Buffer, start: _NodePtr, end: _NodePtr) {
-      self._tree = tree
+      self.tree = tree
       self.state = tree.___begin(start, to: end)
     }
 
     @usableFromInline
-    let _tree: Buffer
+    let tree: Buffer
 
     @usableFromInline
     var state: SequenceState
 
-    @usableFromInline
+    public
     mutating func next() -> Element? {
-      guard _tree.___end(state) else { return nil }
-      defer { _tree.___next(&state) }
-      return _tree[node: state.current].__value_
+      guard tree.___end(state) else { return nil }
+      defer { tree.___next(&state) }
+      return tree[node: state.current].__value_
     }
   }
 }
@@ -745,10 +743,10 @@ extension ___RedBlackTree.___Buffer {
     @usableFromInline
     var endIndex: ___RedBlackTree.Index
     @usableFromInline
-    let _tree: Buffer
+    let tree: Buffer
     @inlinable
     public func makeIterator() -> Iterator {
-      .init(tree: _tree, start: startIndex.pointer, end: endIndex.pointer)
+      .init(tree: tree, start: startIndex.pointer, end: endIndex.pointer)
     }
   }
 }

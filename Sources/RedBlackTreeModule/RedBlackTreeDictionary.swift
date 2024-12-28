@@ -43,10 +43,10 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   public
     typealias Values = [Value]
 
-  @usableFromInline
+  public
   typealias _Key = Key
 
-  @usableFromInline
+  public
   typealias _Value = Value
 
   @usableFromInline

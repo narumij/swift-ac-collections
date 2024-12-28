@@ -46,11 +46,11 @@ where CustomKey: CustomKeyProtocol {
   public
     typealias Element = KeyValue
 
-  @usableFromInline
-  typealias _Key = Key
+  public
+    typealias _Key = Key
 
-  @usableFromInline
-  typealias _Value = Value
+  public
+    typealias _Value = Value
 
   public init() {
     tree = .create(withCapacity: 0)
@@ -78,7 +78,7 @@ extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeBase {}
 extension ___RedBlackTreeMemoizeBase: KeyValueComparer {
 
   @inlinable
-  static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
+  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     CustomKey.value_comp(a, b)
   }
 }

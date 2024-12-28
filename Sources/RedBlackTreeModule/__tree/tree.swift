@@ -169,8 +169,7 @@ protocol AllocatorProtocol {
 
 // MARK: common
 
-@usableFromInline
-protocol ValueComparer {
+public protocol ValueComparer {
   associatedtype _Key
   associatedtype Element
   static func __key(_: Element) -> _Key
@@ -180,26 +179,24 @@ protocol ValueComparer {
 extension ValueComparer where _Key: Comparable {
 
   @inlinable @inline(__always)
-  static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
+  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     a < b
   }
 }
 
 // MARK: key
 
-@usableFromInline
-protocol ScalarValueComparer: ValueComparer where _Key == Element {}
+public protocol ScalarValueComparer: ValueComparer where _Key == Element {}
 
 extension ScalarValueComparer {
   
   @inlinable @inline(__always)
-  static func __key(_ e: Element) -> _Key { e }
+  public static func __key(_ e: Element) -> _Key { e }
 }
 
 // MARK: key value
 
-@usableFromInline
-protocol KeyValueComparer: ValueComparer {
+public protocol KeyValueComparer: ValueComparer {
   associatedtype _Value
 }
 
@@ -210,7 +207,7 @@ extension KeyValueComparer {
 extension KeyValueComparer where Element == _KeyValue {
 
   @inlinable @inline(__always)
-  static func __key(_ element: Element) -> _Key { element.key }
+  public static func __key(_ element: Element) -> _Key { element.key }
   
   @inlinable @inline(__always)
   static func __value(_ element: Element) -> _Value { element.value }

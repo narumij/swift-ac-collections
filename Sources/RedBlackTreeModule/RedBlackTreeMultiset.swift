@@ -36,7 +36,7 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
   public
     typealias IndexRange = ___RedBlackTree.Range
 
-  @usableFromInline
+  public
   typealias _Key = Element
 
   @usableFromInline

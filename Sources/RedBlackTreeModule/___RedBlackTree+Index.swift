@@ -28,7 +28,7 @@ extension ___RedBlackTree {
   ///
   /// nullptrはオプショナルで表現する想定で、nullptrを保持しない
   public
-    enum Index
+    enum SimpleIndex
   {
     case node(_NodePtr)
     case end
@@ -54,13 +54,13 @@ extension ___RedBlackTree {
   }
 }
 
-extension ___RedBlackTree.Index: Comparable {}
+extension ___RedBlackTree.SimpleIndex: Comparable {}
 
-extension Optional where Wrapped == ___RedBlackTree.Index {
+extension Optional where Wrapped == ___RedBlackTree.SimpleIndex {
   
   @inlinable
   init(_ ptr: _NodePtr) {
-    self = ptr == .nullptr ? .none : .some(___RedBlackTree.Index(ptr))
+    self = ptr == .nullptr ? .none : .some(___RedBlackTree.SimpleIndex(ptr))
   }
   
   @usableFromInline
@@ -75,8 +75,74 @@ extension Optional where Wrapped == ___RedBlackTree.Index {
 }
 
 #if swift(>=5.5)
-extension ___RedBlackTree.Index: @unchecked Sendable {}
+extension ___RedBlackTree.SimpleIndex: @unchecked Sendable {}
 #endif
+
+extension ___RedBlackTree {
+  
+  public struct TreeIndex<Base: ValueComparer>: Comparable {
+
+    public typealias Tree = ___RedBlackTree.___Buffer<Base>
+    public typealias Index = Self
+    
+    public static func score(_ rhs: Index) -> Int {
+      rhs.pointer != .end ? rhs.pointer : Int.max
+    }
+    
+    public static func < (lhs: Index, rhs: Index) -> Bool {
+      
+      if lhs.pointer == rhs.pointer {
+        return false
+      }
+      
+      guard score(lhs) == score(rhs) else {
+        return score(lhs) < score(rhs)
+      }
+      
+      return lhs.tree.distance(__l: lhs.pointer, __r: rhs.pointer) < 0
+    }
+    
+    public static func == (lhs: Index, rhs: Index) -> Bool {
+      lhs.pointer == rhs.pointer
+    }
+    
+    @inlinable
+    internal init(__tree: Tree, pointer: _NodePtr) {
+//      guard pointer != .nullptr else {
+//        preconditionFailure("_NodePtr is nullptr")
+//      }
+      self.tree = __tree
+      self.pointer = pointer
+    }
+    
+    @usableFromInline
+    let tree: ___RedBlackTree.___Buffer<Base>
+    
+    @usableFromInline
+    let pointer: _NodePtr
+    
+    var pointee: Base.Element {
+      get { tree[pointer] }
+      _modify { yield &tree[pointer] }
+    }
+
+    public static func nullptr(_ tree: Tree) -> Index {
+      .init(__tree: tree, pointer: .nullptr)
+    }
+
+    public static func end(_ tree: Tree) -> Index {
+      .init(__tree: tree, pointer: tree.__end_node())
+    }
+    
+    public func after() -> Index {
+      .init(__tree: tree, pointer: tree.__tree_next(pointer))
+    }
+
+    public func before() -> Index {
+      .init(__tree: tree, pointer: tree.__tree_prev_iter(pointer))
+    }
+  }
+}
 
 extension ___RedBlackTree {
   
@@ -86,7 +152,34 @@ extension ___RedBlackTree {
   /// この挙動がRedBlackTreeに適さないため、独自のRangeを使用している
   public struct Range {
     @inlinable
-    public init(lhs: Index, rhs: Index) {
+    public init(lhs: SimpleIndex, rhs: SimpleIndex) {
+      self.lhs = lhs
+      self.rhs = rhs
+    }
+    public var lhs, rhs: Bound
+    public typealias Bound = SimpleIndex
+  }
+}
+
+#if swift(>=5.5)
+extension ___RedBlackTree.Range: @unchecked Sendable {}
+#endif
+
+@inlinable
+public func ..< (lhs: ___RedBlackTree.SimpleIndex, rhs: ___RedBlackTree.SimpleIndex) -> ___RedBlackTree.Range {
+  .init(lhs: lhs, rhs: rhs)
+}
+
+extension ___RedBlackTree {
+  
+  /// 赤黒木用の半開区間
+  ///
+  /// 標準のRangeの場合、lowerBoundとupperBoundの比較が行われるが、
+  /// この挙動がRedBlackTreeに適さないため、独自のRangeを使用している
+  public struct TreeRange<Base: ValueComparer> {
+    public typealias Index = ___RedBlackTree.TreeIndex<Base>
+    @inlinable
+    public init(lhs: Bound, rhs: Bound) {
       self.lhs = lhs
       self.rhs = rhs
     }
@@ -96,10 +189,11 @@ extension ___RedBlackTree {
 }
 
 #if swift(>=5.5)
-extension ___RedBlackTree.Range: @unchecked Sendable {}
+extension ___RedBlackTree.TreeRange: @unchecked Sendable {}
 #endif
 
 @inlinable
-public func ..< (lhs: ___RedBlackTree.Index, rhs: ___RedBlackTree.Index) -> ___RedBlackTree.Range {
+public func ..< <Base: ValueComparer>(lhs: ___RedBlackTree.TreeIndex<Base>, rhs: ___RedBlackTree.TreeIndex<Base>) -> ___RedBlackTree.TreeRange<Base> {
   .init(lhs: lhs, rhs: rhs)
 }
+

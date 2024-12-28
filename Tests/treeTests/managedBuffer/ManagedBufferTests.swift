@@ -26,7 +26,7 @@ final class ManagedBufferTests: XCTestCase {
   }
 
   func testCreateZero() async throws {
-    let storage = ___RedBlackTree.___Buffer<VC, Int>.create(withCapacity: 0)
+    let storage = ___RedBlackTree.___Buffer<VC>.create(withCapacity: 0)
     XCTAssertEqual(storage.capacity, 0)
     XCTAssertEqual(storage.count, 0)
     XCTAssertEqual(storage.__left_, .nullptr)
@@ -34,7 +34,7 @@ final class ManagedBufferTests: XCTestCase {
   }
 
   func testCreate() async throws {
-    let storage = ___RedBlackTree.___Buffer<VC,Int>.create(withCapacity: 4)
+    let storage = ___RedBlackTree.___Buffer<VC>.create(withCapacity: 4)
     XCTAssertEqual(storage.capacity, 4)
     XCTAssertEqual(storage.count, 0)
     XCTAssertEqual(storage.__left_, .nullptr)
@@ -42,7 +42,7 @@ final class ManagedBufferTests: XCTestCase {
   }
 
   func testConstruct() async throws {
-    let storage = ___RedBlackTree.___Buffer<VC,Int>.create(withCapacity: 4)
+    let storage = ___RedBlackTree.___Buffer<VC>.create(withCapacity: 4)
     let ptr = storage.__construct_node(100)
     XCTAssertEqual(storage[node : ptr].__value_, 100)
     storage[node : ptr].__value_ = 20
@@ -52,7 +52,7 @@ final class ManagedBufferTests: XCTestCase {
   }
 
   func testDestroy0() async throws {
-    let storage = ___RedBlackTree.___Buffer<VC,Int>.create(withCapacity: 4)
+    let storage = ___RedBlackTree.___Buffer<VC>.create(withCapacity: 4)
     let ptr = storage.__construct_node(100)
     XCTAssertEqual(storage[node : ptr].__value_, 100)
     storage.destroy(ptr)
@@ -60,7 +60,7 @@ final class ManagedBufferTests: XCTestCase {
   }
   
   func testDestroyStack() async throws {
-    let storage = ___RedBlackTree.___Buffer<VC,Int>.create(withCapacity: 4)
+    let storage = ___RedBlackTree.___Buffer<VC>.create(withCapacity: 4)
     storage.header.initializedCount = 4
     XCTAssertEqual(storage.header.destroyNode, .nullptr)
     XCTAssertEqual(storage.___destroyNodes, [])
@@ -94,7 +94,7 @@ final class ManagedBufferTests: XCTestCase {
   }
 
   func testConstructDestroy() async throws {
-    let storage = ___RedBlackTree.___Buffer<VC,Int>.create(withCapacity: 4)
+    let storage = ___RedBlackTree.___Buffer<VC>.create(withCapacity: 4)
     do {
       let p = storage.__construct_node(-1)
       XCTAssertEqual(storage.count, 1)

@@ -24,6 +24,10 @@ import Foundation
 
 public enum ___RedBlackTree {}
 
+extension ValueComparer {
+  public typealias Tree = ___RedBlackTree.___Buffer<Self>
+}
+
 @usableFromInline
 protocol ___RedBlackTreeBase: ValueComparer {
   associatedtype Element
@@ -31,8 +35,6 @@ protocol ___RedBlackTreeBase: ValueComparer {
 }
 
 extension ___RedBlackTreeBase {
-  @usableFromInline
-  typealias Tree = ___RedBlackTree.___Buffer<Self, Element>
 }
 
 extension ___RedBlackTreeBase {
@@ -86,16 +88,26 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @usableFromInline
-  typealias ___Index = ___RedBlackTree.Index
+  typealias ___Index = ___RedBlackTree.TreeIndex<Self>
+  
+  @inlinable @inline(__always)
+  func ___index(_ p: _NodePtr) -> ___Index {
+    .init(__tree: tree, pointer: p)
+  }
+  
+  @inlinable @inline(__always)
+  func ___index_or_nil(_ p: _NodePtr) -> ___Index? {
+    p == .nullptr ? nil : ___index(p)
+  }
 
   @inlinable @inline(__always)
   func ___index_begin() -> ___Index {
-    ___Index(tree.___begin())
+    ___index(tree.___begin())
   }
 
   @inlinable @inline(__always)
   func ___index_end() -> ___Index {
-    ___Index(tree.___end())
+    ___index(tree.___end())
   }
 }
 
@@ -103,12 +115,12 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___index_lower_bound(_ __k: _Key) -> ___Index {
-    ___Index(tree.__lower_bound(__k, tree.__root(), .end))
+    ___index(tree.__lower_bound(__k, tree.__root(), .end))
   }
 
   @inlinable @inline(__always)
   func ___index_upper_bound(_ __k: _Key) -> ___Index {
-    ___Index(tree.__upper_bound(__k, tree.__root(), .end))
+    ___index(tree.__upper_bound(__k, tree.__root(), .end))
   }
 }
 
@@ -120,7 +132,7 @@ extension ___RedBlackTreeBase {
     guard i != tree.__begin_node, i == tree.__end_node() || tree.___is_valid(i) else {
       fatalError(.invalidIndex)
     }
-    return ___Index(tree.__tree_prev_iter(i))
+    return ___index(tree.__tree_prev_iter(i))
   }
 
   @inlinable @inline(__always)
@@ -129,7 +141,7 @@ extension ___RedBlackTreeBase {
     guard i != tree.__end_node(), tree.___is_valid(i) else {
       fatalError(.invalidIndex)
     }
-    return ___Index(tree.__tree_next_iter(i))
+    return ___index(tree.__tree_next_iter(i))
   }
 }
 
@@ -137,14 +149,14 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   func ___index(_ i: ___Index, offsetBy distance: Int, type: String) -> ___Index {
-    ___Index(pointer(i.pointer, offsetBy: distance))
+    ___index(pointer(i.pointer, offsetBy: distance))
   }
 
   @inlinable
   func ___index(
     _ i: ___Index, offsetBy distance: Int, limitedBy limit: ___Index, type: String
   ) -> ___Index? {
-    ___Index?(
+    ___index_or_nil(
       pointer(
         i.pointer, offsetBy: distance, limitedBy: limit.pointer))
   }
@@ -213,7 +225,7 @@ extension ___RedBlackTreeBase {
   public func ___first_index(of member: _Key) -> ___Index? {
     var __parent = _NodePtr.nullptr
     let ptr = tree.__ref_(tree.__find_equal(&__parent, member))
-    return ___Index?(ptr)
+    return ___index_or_nil(ptr)
   }
 
   @inlinable
@@ -221,7 +233,7 @@ extension ___RedBlackTreeBase {
     var result: ___Index?
     try tree.___for_each(__p: tree.__begin_node, __l: tree.__end_node()) { __p, cont in
       if try predicate(tree[__p]) {
-        result = ___Index(__p)
+        result = ___index(__p)
         cont = false
       }
     }
@@ -255,17 +267,30 @@ extension ___RedBlackTreeBase {
     return sequence(state: tree.___begin(from.pointer, to: to.pointer)) { state in
       guard tree.___end(state) else { return nil }
       defer { tree.___next(&state) }
-      return (___Index(state.current), tree[state.current])
+      return (___index(state.current), tree[state.current])
     }
   }
+
+#warning("不要になっている可能性が高い")
   
+  @inlinable
+  public func ___enumerated_sequence__(from: ___RedBlackTree.SimpleIndex, to: ___RedBlackTree.SimpleIndex)
+    -> [EnumeratedElement]
+  {
+    var result = [EnumeratedElement]()
+    tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
+      result.append((___index(__p), tree[__p]))
+    }
+    return result
+  }
+
   @inlinable
   public func ___enumerated_sequence__(from: ___Index, to: ___Index)
     -> [EnumeratedElement]
   {
     var result = [EnumeratedElement]()
     tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-      result.append((___Index(__p), tree[__p]))
+      result.append((___index(__p), tree[__p]))
     }
     return result
   }

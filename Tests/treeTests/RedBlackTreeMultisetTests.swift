@@ -413,11 +413,11 @@
 
     func testIndexLimit3() throws {
       let set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set.startIndex, .node(0))
-      XCTAssertEqual(set.index(before: set.endIndex), .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1), .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex), .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), .node(0))
+      XCTAssertEqual(set.startIndex.pointer, .node(0))
+      XCTAssertEqual(set.index(before: set.endIndex).pointer, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).pointer, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.pointer, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).pointer, .node(0))
       XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
       XCTAssertNotEqual(
         set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),
@@ -571,9 +571,9 @@
 
     func testRedBlackTreeSetFirstIndex() throws {
       var members: RedBlackTreeMultiset = [1, 3, 5, 7, 9]
-      XCTAssertEqual(members.firstIndex(of: 3), .init(1))
+      XCTAssertEqual(members.firstIndex(of: 3)?.pointer, .init(1))
       XCTAssertEqual(members.firstIndex(of: 2), nil)
-      XCTAssertEqual(members.firstIndex(where: { $0 > 3 }), .init(2))
+      XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?.pointer, .init(2))
       XCTAssertEqual(members.firstIndex(where: { $0 > 9 }), nil)
       XCTAssertEqual(members.sorted(), [1, 3, 5, 7, 9])
       XCTAssertEqual(members.removeFirst(), 1)

@@ -362,6 +362,14 @@ final class ConvenienceTests: XCTestCase {
     XCTAssertEqual(set, [1,3,4])
   }
 
+  func testSetIndexRange0() throws {
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+    XCTAssertTrue(set.startIndex < set.endIndex)
+    XCTAssertFalse(set.startIndex > set.endIndex)
+    XCTAssertFalse(set.startIndex == set.endIndex)
+    _ = set.startIndex ..< set.endIndex
+  }
+  
   func testSetIndexRange() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
     XCTAssertEqual(set[set.startIndex ..< set.endIndex].map{ $0 }, [1, 2, 3, 4, 5, 6])
@@ -406,5 +414,29 @@ final class ConvenienceTests: XCTestCase {
   func testReduce() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
     XCTAssertEqual(set.reduce(0) { $0 + $1 }, 21)
+  }
+  
+  func testSubSeq() throws {
+    var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+//    var seq: Slice<RedBlackTreeSet<Int>> = RedBlackTreeSet<Int>.SubSequence(base: set, bounds: set.startIndex ..< set.endIndex)
+//    XCTAssertEqual(seq.map{ $0 }, [1, 2, 3, 4, 5, 6])
+  }
+
+  func testSubSeq2() throws {
+    throw XCTSkip()
+    let set: RedBlackTreeSet<Int> = .init((0 ..< 10_000).reversed())
+    for _ in 0 ..< 1000 {
+      var (a,b) = ((0 ..< 10_000).randomElement()!, (0 ..< 10_000).randomElement()!)
+      if a > b { swap(&a, &b) }
+      let lo = set.lowerBound(a)
+      let hi = set.upperBound(b)
+      guard lo > hi else { continue }
+      // 数値比較で大小が逆転している場合、標準のdistance実装では迷子になってクラッシュする
+      // distanceを実装することで、クラッシュせずに動く
+//      let seq: RedBlackTreeSet<Int>.___SubSequence = set[a ..< b]
+      let seq = set[a ..< b]
+      XCTAssertNotEqual(seq + [], [])
+      XCTAssertEqual(seq + [], seq.sorted())
+    }
   }
 }

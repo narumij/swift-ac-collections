@@ -130,10 +130,10 @@ public struct RedBlackTreeSet<Element: Comparable> {
   ///
   /// - SeeAlso: `startIndex`, `endIndex`, `index(before:)`, `index(after:)`
   public
-    typealias Index = ___RedBlackTree.Index
+  typealias Index = ___RedBlackTree.TreeIndex<Self>
 
   public
-    typealias IndexRange = ___RedBlackTree.Range
+    typealias IndexRange = ___RedBlackTree.TreeRange<Self>
 
   public
   typealias _Key = Element
@@ -284,7 +284,7 @@ extension RedBlackTreeSet {
   /// // 結果: treeSet = [0,1,5,6]
   /// ```
   @inlinable
-  public mutating func removeSubrange(_ range: ___RedBlackTree.Range) {
+  public mutating func removeSubrange(_ range: IndexRange) {
     ___remove(from: range.lhs.pointer, to: range.rhs.pointer)
   }
 
@@ -369,7 +369,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)。
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : self[index(before: .end)]
+    isEmpty ? nil : self[index(before: .end(tree))]
   }
 
   @inlinable
@@ -399,7 +399,7 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet: Collection {
+extension RedBlackTreeSet {
 
   /// - Complexity: O(1)。
   @inlinable public subscript(position: Index) -> Element {
@@ -427,7 +427,7 @@ extension RedBlackTreeSet: Collection {
   }
 }
 
-extension RedBlackTreeSet {
+extension RedBlackTreeSet: Collection {
 
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i, offsetBy: distance, type: "RedBlackTreeSet")
@@ -466,17 +466,30 @@ extension RedBlackTreeSet: Equatable {
   }
 }
 
-extension RedBlackTreeSet {
-
-  public
-  typealias Tree = ___RedBlackTree.___Buffer<Self, Element>
+extension RedBlackTreeSet: Sequence {
   
-  public typealias ElementSequence = [Element]
-
-  @inlinable
-  public subscript(bounds: IndexRange) -> Tree.SubSequence {
-    ___makeSubSequence(start: bounds.lhs, end: bounds.rhs)
+  public func makeIterator() -> ___Iterator {
+    ___makeIterator(startIndex: startIndex, endIndex: endIndex)
   }
+}
+
+extension RedBlackTreeSet: ___Tree {
+  
+  public init(___tree: Tree) {
+    self.tree = ___tree
+  }
+  
+//  public typealias SubSequence = ___SubSequence
+  
+  public subscript(bounds: IndexRange) -> ___SubSequence {
+    .init(_subSequence: .init(tree: tree, start: bounds.lhs.pointer, end: bounds.rhs.pointer))
+//    Slice(___SubSequence(_subSequence: .init(tree: tree, start: bounds.lhs.pointer, end: bounds.rhs.pointer)))
+  }
+
+//  @inlinable
+//  public subscript(bounds: IndexRange) -> SubSequence {
+//    .init(_subSequence: .init(tree: tree, start: bounds.lhs.pointer, end: bounds.rhs.pointer))
+//  }
 }
 
 extension RedBlackTreeSet {

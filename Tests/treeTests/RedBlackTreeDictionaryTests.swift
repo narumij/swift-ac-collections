@@ -5,7 +5,7 @@
 //  Created by narumij on 2024/09/23.
 //
 
-import RedBlackTreeModule
+@testable import RedBlackTreeModule
 import XCTest
 
 fileprivate extension Optional where Wrapped == Int {
@@ -417,11 +417,11 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
 
   func testIndexLimit3() throws {
     let set = [0:0, 1:10, 2:20, 3:30, 4:40] as RedBlackTreeDictionary<Int,Int>
-    XCTAssertEqual(set.startIndex, .node(0))
-    XCTAssertEqual(set.index(before: set.endIndex), .node(4))
-    XCTAssertEqual(set.index(set.endIndex, offsetBy: -1), .node(4))
-    XCTAssertEqual(set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex), .node(4))
-    XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), .node(0))
+    XCTAssertEqual(set.startIndex.pointer, .node(0))
+    XCTAssertEqual(set.index(before: set.endIndex).pointer, .node(4))
+    XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).pointer, .node(4))
+    XCTAssertEqual(set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.pointer, .node(4))
+    XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).pointer, .node(0))
     XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
     XCTAssertNotEqual(
       set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),

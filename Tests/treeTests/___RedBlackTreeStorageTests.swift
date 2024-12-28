@@ -45,7 +45,7 @@ extension NodeBase {
       typealias Element = Int
     }
 
-    typealias RedBlackTreeStorage = ___RedBlackTree.___Buffer<VC, VC._Key>
+    typealias RedBlackTreeStorage = ___RedBlackTree.___Buffer<VC>
 
     extension ___RedBlackTree.___Node {
 

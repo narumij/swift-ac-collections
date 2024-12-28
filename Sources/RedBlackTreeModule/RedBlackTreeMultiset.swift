@@ -31,10 +31,10 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
     typealias Element = Element
 
   public
-    typealias Index = ___RedBlackTree.Index
+  typealias Index = ___RedBlackTree.TreeIndex<Self>
 
   public
-    typealias IndexRange = ___RedBlackTree.Range
+  typealias IndexRange = ___RedBlackTree.TreeRange<Self>
 
   public
   typealias _Key = Element
@@ -153,6 +153,11 @@ extension RedBlackTreeMultiset {
   }
 
   @inlinable
+  public mutating func removeSubrange(_ range: ___RedBlackTree.TreeRange<Self>) {
+    ___remove(from: range.lhs.pointer, to: range.rhs.pointer)
+  }
+
+  @inlinable
   public mutating func removeSubrange(_ range: ___RedBlackTree.Range) {
     ___remove(from: range.lhs.pointer, to: range.rhs.pointer)
   }
@@ -213,7 +218,7 @@ extension RedBlackTreeMultiset {
   /// - Complexity: O(1)。
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : self[index(before: .end)]
+    isEmpty ? nil : self[index(before: .end(tree))]
   }
 
   @inlinable

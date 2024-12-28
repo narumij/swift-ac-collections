@@ -26,10 +26,10 @@ import Foundation
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   public
-    typealias Index = ___RedBlackTree.Index
+  typealias Index = ___RedBlackTree.TreeIndex<Self>
 
   public
-    typealias IndexRange = ___RedBlackTree.Range
+  typealias IndexRange = ___RedBlackTree.TreeRange<Self>
 
   public
     typealias KeyValue = (key: Key, value: Value)
@@ -350,7 +350,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : self[index(before: .end)]
+    isEmpty ? nil : self[index(before: .end(tree))]
   }
 
   @inlinable

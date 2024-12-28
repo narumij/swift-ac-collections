@@ -181,6 +181,7 @@ extension NewDictionary {
         var value: Value? = pointer.move()
         defer {
           if let value {
+            isNil = false
             pointer.initialize(to: value)
           } else {
             isNil = true
@@ -196,14 +197,19 @@ extension NewDictionary {
     get { ___value_for(key)?.value }
     @inline(__always)
     _modify {
-      defer { _fixLifetime(self) }
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
-        var value: Value?
+        let pointer = UnsafeMutablePointer<Value>.allocate(capacity: 1)
+        var helper = ___ModifyHelper(pointer: pointer)
         defer {
-          _finalizeKeyingModify(__parent, __child, key: key, value: value)
+          if !helper.isNil {
+            ensureUniqueAndCapacity()
+            let __h = tree.__construct_node((key, pointer.move()))
+            tree.__insert_node_at(__parent, __child, __h)
+          }
+          pointer.deallocate()
         }
-        yield &value
+        yield &helper.value
       } else {
         ensureUnique()
         var helper = ___ModifyHelper(pointer: &tree[__ptr].__value_.value)
@@ -245,26 +251,6 @@ extension NewDictionary {
     let __child = tree.__find_equal(&__parent, key)
     let __ptr = tree.__ref_(__child)
     return (__parent, __child, __ptr)
-  }
-
-  @inlinable
-  @inline(__always)
-  mutating func _finalizeKeyingModify(
-    _ __parent: _NodePtr, _ __child: _NodeRef, key: Key, value: Value?
-  ) {
-    switch value {
-    // 変更前が空で、変更後も空の場合
-    case .none:
-      // 変わらない
-      break
-    // 変更前が空で、変更後は値の場合
-    case .some(let value):
-      // 追加する
-      ensureUniqueAndCapacity()
-      let __h = tree.__construct_node((key, value))
-      tree.__insert_node_at(__parent, __child, __h)
-      break
-    }
   }
 }
 

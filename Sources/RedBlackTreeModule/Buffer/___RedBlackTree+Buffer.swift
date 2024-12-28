@@ -172,6 +172,21 @@ extension ___RedBlackTree.___Buffer {
       self.__is_black_ = __is_black_
       self.__value_ = __value_
     }
+    
+    @inlinable
+    init(
+      __is_black_: Bool = false,
+      __left_: _NodePtr = .nullptr,
+      __right_: _NodePtr = .nullptr,
+      __parent_: _NodePtr = .nullptr,
+      __pointer_: UnsafeMutablePointer<Element>
+    ) {
+      self.__right_ = __right_
+      self.__left_ = __left_
+      self.__parent_ = __parent_
+      self.__is_black_ = __is_black_
+      self.__value_ = __pointer_.move()
+    }
   }
 }
 
@@ -349,11 +364,24 @@ extension ___RedBlackTree.___Buffer {
   func __construct_node(_ k: Element) -> _NodePtr {
     if header.destroyCount > 0 {
       let p = ___popDetroy()
-      __node_ptr[p] = .init(__value_: k)
+      __node_ptr[p].__value_ = k
       return p
     }
     let index = count
-    (__node_ptr + index).initialize(to: .init(__value_: k))
+    (__node_ptr + index).initialize(to: Node(__value_: k))
+    header.initializedCount += 1
+    return index
+  }
+  
+  @inlinable
+  func __construct_node(_ k: UnsafeMutablePointer<Element>) -> _NodePtr {
+    if header.destroyCount > 0 {
+      let p = ___popDetroy()
+      __node_ptr[p].__value_ = k.move()
+      return p
+    }
+    let index = count
+    (__node_ptr + index).initialize(to: Node(__pointer_: k))
     header.initializedCount += 1
     return index
   }

@@ -22,6 +22,8 @@
 
 import Foundation
 
+public enum ___RedBlackTree {}
+
 @usableFromInline
 protocol ___RedBlackTreeBase: ValueComparer {
   associatedtype Element

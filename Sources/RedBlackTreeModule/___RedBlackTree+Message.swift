@@ -22,22 +22,17 @@
 
 import Foundation
 
-public
-  protocol CustomKeyProtocol
-{
-  associatedtype Key
-  static func value_comp(_ a: Key, _ b: Key) -> Bool
-}
+extension String {
 
-@usableFromInline
-protocol ___RedBlackTreeCustomKeyProtocol: KeyValueComparer {
-  associatedtype CustomKey: CustomKeyProtocol
-}
+  @usableFromInline
+  static var invalidIndex = "Attempting to access RedBlackTree elements using an invalid index"
 
-extension ___RedBlackTreeCustomKeyProtocol where _Key == CustomKey.Key {
+  @usableFromInline
+  static var outOfBounds = "RedBlackTree index is out of Bound."
   
-  @inlinable
-  static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    CustomKey.value_comp(a, b)
-  }
+  @usableFromInline
+  static var emptyFirst = "Can't removeFirst from an empty RedBlackTree"
+  
+  @usableFromInline
+  static var emptyLast = "Can't removeLast from an empty RedBlackTree"
 }

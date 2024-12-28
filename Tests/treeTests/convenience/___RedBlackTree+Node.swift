@@ -22,26 +22,49 @@
 
 import Foundation
 
+@testable import RedBlackTreeModule
+
 extension ___RedBlackTree {
 
-  @frozen
-  @usableFromInline
-  struct ___Header {
+  public struct ___Node {
+
+    @usableFromInline
+    var __right_: _NodePtr
+    @usableFromInline
+    var __left_: _NodePtr
+    @usableFromInline
+    var __parent_: _NodePtr
+    @usableFromInline
+    var __is_black_: Bool
 
     @inlinable
-    @inline(__always)
-    init() {}
+    mutating func clear() {
+      __right_ = .nullptr
+      __left_ = .nullptr
+      __parent_ = .nullptr
+      __is_black_ = false
+    }
+
+    @inlinable
+    init(
+      __is_black_: Bool = false,
+      __left_: _NodePtr = .nullptr,
+      __right_: _NodePtr = .nullptr,
+      __parent_: _NodePtr = .nullptr
+    ) {
+      self.__right_ = __right_
+      self.__left_ = __left_
+      self.__parent_ = __parent_
+      self.__is_black_ = __is_black_
+    }
 
     @usableFromInline
-    var __left_: _NodePtr = .nullptr
-
-    @usableFromInline
-    var __begin_node: _NodePtr = .end
-
-    @usableFromInline
-    var size: Int = 0
-
-    @usableFromInline
-    static let zero: Self = .init()
+    static let zero: Self = .init(__is_black_: false, __left_: 0, __right_: 0, __parent_: 0)
   }
 }
+
+extension ___RedBlackTree.___Node: Equatable {}
+
+#if swift(>=5.5)
+extension ___RedBlackTree.___Node: @unchecked Sendable {}
+#endif

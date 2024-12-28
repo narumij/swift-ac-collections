@@ -22,11 +22,17 @@
 
 import Foundation
 
+public
+  protocol CustomKeyProtocol
+{
+  associatedtype Key
+  static func value_comp(_ a: Key, _ b: Key) -> Bool
+}
+
 /// メモ化向け
 @frozen
 public struct ___RedBlackTreeMemoizeBase<CustomKey, Value>
-where CustomKey: CustomKeyProtocol
-{
+where CustomKey: CustomKeyProtocol {
 
   public
     typealias Key = CustomKey.Key
@@ -36,13 +42,13 @@ where CustomKey: CustomKeyProtocol
 
   public
     typealias KeyValue = (key: Key, value: Value)
-  
+
   public
-  typealias Element = KeyValue
+    typealias Element = KeyValue
 
   @usableFromInline
   typealias _Key = Key
-  
+
   @usableFromInline
   typealias _Value = Value
 
@@ -68,6 +74,11 @@ where CustomKey: CustomKeyProtocol
   public var isEmpty: Bool { count == 0 }
 }
 
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeBase { }
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeCustomKeyProtocol { }
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeBase {}
+extension ___RedBlackTreeMemoizeBase: KeyValueComparer {
 
+  @inlinable
+  static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
+    CustomKey.value_comp(a, b)
+  }
+}

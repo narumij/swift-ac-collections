@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Collections
+import Foundation
 
 // AC https://atcoder.jp/contests/abc370/submissions/57922896
 // AC https://atcoder.jp/contests/abc385/submissions/61003801

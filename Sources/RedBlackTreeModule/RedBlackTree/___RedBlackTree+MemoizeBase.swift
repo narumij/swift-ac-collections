@@ -20,7 +20,6 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Collections
 import Foundation
 
 /// メモ化向け

@@ -168,21 +168,6 @@ extension ___RedBlackTree.___Buffer {
       self.__is_black_ = __is_black_
       self.__value_ = __value_
     }
-    
-    @inlinable
-    init(
-      __is_black_: Bool = false,
-      __left_: _NodePtr = .nullptr,
-      __right_: _NodePtr = .nullptr,
-      __parent_: _NodePtr = .nullptr,
-      __pointer_: UnsafeMutablePointer<Element>
-    ) {
-      self.__right_ = __right_
-      self.__left_ = __left_
-      self.__parent_ = __parent_
-      self.__is_black_ = __is_black_
-      self.__value_ = __pointer_.move()
-    }
   }
 }
 
@@ -237,9 +222,6 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer.Header {
-}
-
 extension ___RedBlackTree.___Buffer {
 
   @inlinable
@@ -266,7 +248,7 @@ extension ___RedBlackTree.___Buffer {
       yield &__node_ptr[pointer]
     }
   }
-  
+
   @inlinable
   subscript(_ pointer: _NodePtr) -> Element {
     @inline(__always)
@@ -281,7 +263,7 @@ extension ___RedBlackTree.___Buffer {
       yield &__node_ptr[pointer].__value_
     }
   }
-  
+
   @inlinable
   subscript(_ ref: _NodeRef) -> Element {
     @inline(__always)
@@ -331,20 +313,20 @@ extension ___RedBlackTree.___Buffer {
 }
 
 #if DEBUG
-extension ___RedBlackTree.___Buffer {
+  extension ___RedBlackTree.___Buffer {
 
-  /// O(*k*)
-  var ___destroyNodes: [_NodePtr] {
-    if header.destroyNode == .nullptr {
-      return []
+    /// O(*k*)
+    var ___destroyNodes: [_NodePtr] {
+      if header.destroyNode == .nullptr {
+        return []
+      }
+      var nodes: [_NodePtr] = [header.destroyNode]
+      while let l = nodes.last, self[node: l].__right_ != .nullptr {
+        nodes.append(self[node: l].__right_)
+      }
+      return nodes
     }
-    var nodes: [_NodePtr] = [header.destroyNode]
-    while let l = nodes.last, self[node : l].__right_ != .nullptr {
-      nodes.append(self[node : l].__right_)
-    }
-    return nodes
   }
-}
 #endif
 
 extension ___RedBlackTree.___Buffer {
@@ -374,7 +356,7 @@ extension ___RedBlackTree.___Buffer {
     header.initializedCount += 1
     return index
   }
-  
+
   @inlinable
   func destroy(_ p: _NodePtr) {
     ___invalidate(p)
@@ -383,18 +365,18 @@ extension ___RedBlackTree.___Buffer {
 }
 
 extension ___RedBlackTree.___Buffer {
-  
+
   @inlinable
   var count: Int {
     __header_ptr.pointee.initializedCount - __header_ptr.pointee.destroyCount
   }
-  
+
   @inlinable
   var size: Int {
     get { count }
     set { /* NOP */  }
   }
-  
+
   @inlinable
   var __left_: _NodePtr {
     get { __header_ptr.pointee.__left_ }
@@ -403,7 +385,7 @@ extension ___RedBlackTree.___Buffer {
       yield &__header_ptr.pointee.__left_
     }
   }
-  
+
   @inlinable
   var __begin_node: _NodePtr {
     get { __header_ptr.pointee.__begin_node }
@@ -663,7 +645,12 @@ extension ___RedBlackTree.___Buffer {
 
 extension ___RedBlackTree.___Buffer {
 
-  public typealias SafeSequenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
+  // CoWがない時期はこちらが必要だった
+  @usableFromInline
+  typealias SafeSequenceState = (current: _NodePtr, next: _NodePtr, to: _NodePtr)
+  // CoWがあるので、こちらで十分かもしれない
+  @usableFromInline
+  typealias UnsafeSequenceState = (current: _NodePtr, to: _NodePtr)
 
   @inlinable
   func ___next(_ ptr: _NodePtr, to: _NodePtr) -> _NodePtr {
@@ -685,34 +672,133 @@ extension ___RedBlackTree.___Buffer {
   func ___end(_ state: SafeSequenceState) -> Bool {
     state.current != state.to
   }
+
+  @inlinable @inline(__always)
+  func ___begin(_ from: _NodePtr, to: _NodePtr) -> UnsafeSequenceState {
+    (from, to)
+  }
+
+  @inlinable @inline(__always)
+  func ___next(_ state: inout UnsafeSequenceState) {
+    state.current = ___next(state.current, to: state.to)
+  }
+
+  @inlinable @inline(__always)
+  func ___end(_ state: UnsafeSequenceState) -> Bool {
+    state.current != state.to
+  }
 }
 
-extension ___RedBlackTree.___Buffer: Sequence {
+#if true
+extension ___RedBlackTree.___Buffer {
 
   @usableFromInline
-  func makeIterator() -> Iterator {
+  typealias SequenceState = UnsafeSequenceState
+
+  public typealias Iterator = SequenceIterator
+
+  @inlinable
+  public func makeIterator() -> Iterator {
+    makeSequenceIterator()
+  }
+
+  @inlinable
+  public func makeSequenceIterator() -> SequenceIterator {
     .init(tree: self)
   }
 
-  @usableFromInline
-  struct Iterator: IteratorProtocol {
+  public struct SequenceIterator: IteratorProtocol {
 
-    @usableFromInline
-    internal init(tree: ___RedBlackTree.___Buffer<VC, Element>.Buffer) {
+    @inlinable
+    internal init(tree: Buffer) {
+      self.init(tree: tree, start: tree.__begin_node, end: tree.__end_node())
+    }
+    
+    @inlinable
+    internal init(tree: Buffer, start: _NodePtr, end: _NodePtr) {
       self._tree = tree
-      self.state = tree.___begin(tree.__begin_node, to: tree.__end_node())
+      self.state = tree.___begin(start, to: end)
     }
 
     @usableFromInline
     let _tree: Buffer
+
     @usableFromInline
-    var state: SafeSequenceState
+    var state: SequenceState
 
     @usableFromInline
     mutating func next() -> Element? {
       guard _tree.___end(state) else { return nil }
       defer { _tree.___next(&state) }
-      return _tree[node : state.current].__value_
+      return _tree[node: state.current].__value_
     }
   }
+}
+
+extension ___RedBlackTree.___Buffer {
+  
+  public struct SubSequence: Sequence {
+    public typealias SubSequence = Self
+    public typealias Index = ___RedBlackTree.Index
+    @usableFromInline
+    var startIndex: ___RedBlackTree.Index
+    @usableFromInline
+    var endIndex: ___RedBlackTree.Index
+    @usableFromInline
+    let _tree: Buffer
+    @inlinable
+    public func makeIterator() -> Iterator {
+      .init(tree: _tree, start: startIndex.pointer, end: endIndex.pointer)
+    }
+  }
+}
+#endif
+
+// TODO: SubSequenceこみのCollection適合にトライする
+extension ___RedBlackTree.___Buffer { // Collection
+
+  @usableFromInline
+  typealias Index = _NodePtr
+
+  @inlinable
+  func index(after i: Index) -> Index {
+    __tree_next(i)
+  }
+
+  @inlinable
+  var startIndex: Index {
+    __begin_node
+  }
+
+  @inlinable
+  var endIndex: Index {
+    __end_node()
+  }
+}
+
+extension ___RedBlackTree.___Buffer { // BidirectionalCollection
+
+  @inlinable
+  func index(before i: Index) -> Index {
+    __tree_prev_iter(i)
+  }
+}
+
+// MARK: -
+
+// MARK: -
+
+extension ___RedBlackTreeBase {
+
+  public typealias Iterator = Tree.Iterator
+
+  @inlinable
+  public func makeIterator() -> Iterator {
+    tree.makeIterator()
+  }
+}
+
+extension ___RedBlackTreeBase {
+
+  public typealias SubSequence = Tree.SubSequence
 }

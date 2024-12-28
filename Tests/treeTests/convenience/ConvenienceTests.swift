@@ -395,7 +395,9 @@ final class ConvenienceTests: XCTestCase {
   
   func testEnumerate3() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
-    var it: IndexingIterator<RedBlackTreeSet<Int>> = set.makeIterator()
+//    var it: IndexingIterator<RedBlackTreeSet<Int>> = set.makeIterator()
+//    var it: IndexingIterator<RedBlackTreeSet<Int>.Tree> = set.makeIterator()
+    var it = set.makeIterator()
     while let element = it.next() {
       set.remove(element)
     }

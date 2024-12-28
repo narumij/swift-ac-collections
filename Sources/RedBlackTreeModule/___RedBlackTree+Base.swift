@@ -109,26 +109,45 @@ extension ___RedBlackTreeBase {
   func ___index_end() -> ___Index {
     ___index(tree.___end())
   }
-}
-
-extension ___RedBlackTreeBase {
-
+  
   @inlinable @inline(__always)
-  func ___index_lower_bound(_ __k: _Key) -> ___Index {
-    ___index(tree.__lower_bound(__k, tree.__root(), .end))
+  func ___ptr_begin() -> _NodePtr {
+    tree.___begin()
   }
 
   @inlinable @inline(__always)
-  func ___index_upper_bound(_ __k: _Key) -> ___Index {
-    ___index(tree.__upper_bound(__k, tree.__root(), .end))
+  func ___ptr_end() -> _NodePtr {
+    tree.___end()
   }
 }
 
 extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
-  func ___index_prev(_ i: ___Index) -> ___Index {
-    let i = i.pointer
+  public func ___ptr_lower_bound(_ __k: _Key) -> _NodePtr {
+    tree.__lower_bound(__k, tree.__root(), .end)
+  }
+
+  @inlinable @inline(__always)
+  public func ___ptr_upper_bound(_ __k: _Key) -> _NodePtr {
+    tree.__upper_bound(__k, tree.__root(), .end)
+  }
+  
+  @inlinable @inline(__always)
+  public func ___index_lower_bound(_ __k: _Key) -> ___Index {
+    ___index(___ptr_lower_bound(__k))
+  }
+
+  @inlinable @inline(__always)
+  public func ___index_upper_bound(_ __k: _Key) -> ___Index {
+    ___index(___ptr_upper_bound(__k))
+  }
+}
+
+extension ___RedBlackTreeBase {
+
+  @inlinable @inline(__always)
+  func ___index_prev(_ i: _NodePtr) -> ___Index {
     guard i != tree.__begin_node, i == tree.__end_node() || tree.___is_valid(i) else {
       fatalError(.invalidIndex)
     }
@@ -136,8 +155,7 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable @inline(__always)
-  func ___index_next(_ i: ___Index) -> ___Index {
-    let i = i.pointer
+  func ___index_next(_ i: _NodePtr) -> ___Index {
     guard i != tree.__end_node(), tree.___is_valid(i) else {
       fatalError(.invalidIndex)
     }
@@ -148,17 +166,16 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @inlinable
-  func ___index(_ i: ___Index, offsetBy distance: Int, type: String) -> ___Index {
-    ___index(pointer(i.pointer, offsetBy: distance))
+  func ___index(_ i: _NodePtr, offsetBy distance: Int, type: String) -> ___Index {
+    ___index(pointer(i, offsetBy: distance))
   }
 
   @inlinable
   func ___index(
-    _ i: ___Index, offsetBy distance: Int, limitedBy limit: ___Index, type: String
+    _ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr, type: String
   ) -> ___Index? {
     ___index_or_nil(
-      pointer(
-        i.pointer, offsetBy: distance, limitedBy: limit.pointer))
+      pointer(i, offsetBy: distance, limitedBy: limit))
   }
 
   @inlinable
@@ -244,8 +261,8 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @inlinable
-  public func ___distance(from start: ___Index, to end: ___Index) -> Int {
-    tree.distance(__l: start.pointer, __r: end.pointer)
+  public func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int {
+    tree.distance(__l: start, __r: end)
   }
 }
 
@@ -261,10 +278,10 @@ extension ___RedBlackTreeBase {
   public typealias ___EnumeratedSequence = UnfoldSequence<EnumeratedElement, Tree.SafeSequenceState>
 
   @inlinable
-  public func ___enumerated_sequence(from: ___Index, to: ___Index)
+  public func ___enumerated_sequence(from: _NodePtr, to: _NodePtr)
     -> ___EnumeratedSequence
   {
-    return sequence(state: tree.___begin(from.pointer, to: to.pointer)) { state in
+    return sequence(state: tree.___begin(from, to: to)) { state in
       guard tree.___end(state) else { return nil }
       defer { tree.___next(&state) }
       return (___index(state.current), tree[state.current])
@@ -284,11 +301,11 @@ extension ___RedBlackTreeBase {
 //  }
 
   @inlinable
-  public func ___enumerated_sequence__(from: ___Index, to: ___Index)
+  public func ___enumerated_sequence__(from: _NodePtr, to: _NodePtr)
     -> [EnumeratedElement]
   {
     var result = [EnumeratedElement]()
-    tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
+    tree.___for_each(__p: from, __l: to) { __p, _ in
       result.append((___index(__p), tree[__p]))
     }
     return result
@@ -296,17 +313,17 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public var ___enumerated_sequence__: [EnumeratedElement] {
-    ___enumerated_sequence__(from: ___index_begin(), to: ___index_end())
+    ___enumerated_sequence__(from: ___ptr_begin(), to: ___ptr_end())
   }
 
   @inlinable
   public func ___element_sequence__<T>(
-    from: ___Index, to: ___Index, transform: (Element) throws -> T
+    from: _NodePtr, to: _NodePtr, transform: (Element) throws -> T
   )
     rethrows -> [T]
   {
     var result = [T]()
-    try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
+    try tree.___for_each(__p: from, __l: to) { __p, _ in
       result.append(try transform(tree[__p]))
     }
     return result
@@ -314,12 +331,12 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   public func ___element_sequence__(
-    from: ___Index, to: ___Index, isIncluded: (Element) throws -> Bool
+    from: _NodePtr, to: _NodePtr, isIncluded: (Element) throws -> Bool
   )
     rethrows -> [Element]
   {
     var result = [Element]()
-    try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
+    try tree.___for_each(__p: from, __l: to) { __p, _ in
       if try isIncluded(tree[__p]) {
         result.append(tree[__p])
       }
@@ -329,12 +346,12 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   public func ___element_sequence__<T>(
-    from: ___Index, to: ___Index, _ initial: T, _ folding: (T, Element) throws -> T
+    from: _NodePtr, to: _NodePtr, _ initial: T, _ folding: (T, Element) throws -> T
   )
     rethrows -> T
   {
     var result = initial
-    try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
+    try tree.___for_each(__p: from, __l: to) { __p, _ in
       result = try folding(result, tree[__p])
     }
     return result
@@ -342,23 +359,23 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   public func ___element_sequence__<T>(
-    from: ___Index, to: ___Index, into initial: T, _ folding: (inout T, Element) throws -> Void
+    from: _NodePtr, to: _NodePtr, into initial: T, _ folding: (inout T, Element) throws -> Void
   )
     rethrows -> T
   {
     var result = initial
-    try tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
+    try tree.___for_each(__p: from, __l: to) { __p, _ in
       try folding(&result, tree[__p])
     }
     return result
   }
 
   @inlinable
-  public func ___element_sequence__(from: ___Index, to: ___Index)
+  public func ___element_sequence__(from: _NodePtr, to: _NodePtr)
     -> [Element]
   {
     var result = [Element]()
-    tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
+    tree.___for_each(__p: from, __l: to) { __p, _ in
       result.append(tree[__p])
     }
     return result
@@ -368,12 +385,12 @@ extension ___RedBlackTreeBase {
   public func ___element_sequence__<T>(_ transform: (Element) throws -> T)
     rethrows -> [T]
   {
-    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), transform: transform)
+    try ___element_sequence__(from: ___ptr_begin(), to: ___ptr_end(), transform: transform)
   }
 
   @inlinable @inline(__always)
   public var ___element_sequence__: [Element] {
-    ___element_sequence__(from: ___index_begin(), to: ___index_end())
+    ___element_sequence__(from: ___ptr_begin(), to: ___ptr_end())
   }
 }
 
@@ -425,7 +442,7 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable
-  mutating func ___remove(from: _NodePtr, to: _NodePtr, forEach action: (Element) throws -> Void)
+  public mutating func ___remove(from: _NodePtr, to: _NodePtr, forEach action: (Element) throws -> Void)
     rethrows
   {
     guard from != .end else {
@@ -439,8 +456,9 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable
-  mutating func ___remove<Result>(
-    from: _NodePtr, to: _NodePtr, into initialResult: Result,
+  public mutating func ___remove<Result>(
+    from: _NodePtr, to: _NodePtr,
+    into initialResult: Result,
     _ updateAccumulatingResult: (inout Result, Element) throws -> Void
   ) rethrows -> Result {
     guard from != .end else {
@@ -454,8 +472,9 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable
-  mutating func ___remove<Result>(
-    from: _NodePtr, to: _NodePtr, _ initialResult: Result,
+  public mutating func ___remove<Result>(
+    from: _NodePtr, to: _NodePtr,
+    _ initialResult: Result,
     _ nextPartialResult: (Result, Element) throws -> Result
   ) rethrows -> Result {
     guard from != .end else {
@@ -468,28 +487,28 @@ extension ___RedBlackTreeBase {
     return try tree.___erase(from, to, initialResult, nextPartialResult)
   }
 
-  @inlinable
-  public mutating func ___remove(
-    from: ___Index, to: ___Index, forEach action: (Element) throws -> Void
-  ) rethrows {
-    try ___remove(from: from.pointer, to: to.pointer, forEach: action)
-  }
-
-  @inlinable
-  public mutating func ___remove<Result>(
-    from: ___Index, to: ___Index, into initialResult: Result,
-    _ updateAccumulatingResult: (inout Result, Element) throws -> Void
-  ) rethrows -> Result {
-    try ___remove(from: from.pointer, to: to.pointer, into: initialResult, updateAccumulatingResult)
-  }
-
-  @inlinable
-  public mutating func ___remove<Result>(
-    from: ___Index, to: ___Index, _ initialResult: Result,
-    _ nextPartialResult: (Result, Element) throws -> Result
-  ) rethrows -> Result {
-    try ___remove(from: from.pointer, to: to.pointer, initialResult, nextPartialResult)
-  }
+//  @inlinable
+//  public mutating func ___remove(
+//    from: ___Index, to: ___Index, forEach action: (Element) throws -> Void
+//  ) rethrows {
+//    try ___remove(from: from.pointer, to: to.pointer, forEach: action)
+//  }
+//
+//  @inlinable
+//  public mutating func ___remove<Result>(
+//    from: ___Index, to: ___Index, into initialResult: Result,
+//    _ updateAccumulatingResult: (inout Result, Element) throws -> Void
+//  ) rethrows -> Result {
+//    try ___remove(from: from.pointer, to: to.pointer, into: initialResult, updateAccumulatingResult)
+//  }
+//
+//  @inlinable
+//  public mutating func ___remove<Result>(
+//    from: ___Index, to: ___Index, _ initialResult: Result,
+//    _ nextPartialResult: (Result, Element) throws -> Result
+//  ) rethrows -> Result {
+//    try ___remove(from: from.pointer, to: to.pointer, initialResult, nextPartialResult)
+//  }
 }
 
 extension ___RedBlackTreeBase {

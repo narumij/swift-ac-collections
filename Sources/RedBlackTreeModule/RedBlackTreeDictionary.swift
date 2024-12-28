@@ -385,11 +385,11 @@ extension RedBlackTreeDictionary: Collection {
   }
 
   @inlinable public func index(before i: Index) -> Index {
-    ___index_prev(i)
+    ___index_prev(i.pointer)
   }
 
   @inlinable public func index(after i: Index) -> Index {
-    ___index_next(i)
+    ___index_next(i.pointer)
   }
 
   @inlinable public var startIndex: Index {
@@ -405,19 +405,19 @@ extension RedBlackTreeDictionary: Collection {
 extension RedBlackTreeDictionary {
 
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(i, offsetBy: distance, type: "RedBlackTreeDictionary")
+    ___index(i.pointer, offsetBy: distance, type: "RedBlackTreeDictionary")
   }
 
   @inlinable public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index?
   {
-    ___index(i, offsetBy: distance, limitedBy: limit, type: "RedBlackTreeDictionary")
+    ___index(i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeDictionary")
   }
 
   /// fromからtoまでの符号付き距離を返す
   ///
   /// O(*n*)
   @inlinable public func distance(from start: Index, to end: Index) -> Int {
-    ___distance(from: start, to: end)
+    ___distance(from: start.pointer, to: end.pointer)
   }
 }
 
@@ -453,32 +453,32 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public subscript(bounds: IndexRange) -> ElementSequence {
-    ___element_sequence__(from: bounds.lowerBound, to: bounds.upperBound)
+    ___element_sequence__(from: bounds.lowerBound.pointer, to: bounds.upperBound.pointer)
   }
 }
 
 extension RedBlackTreeDictionary {
 
   @inlinable public func map<T>(_ transform: (Element) throws -> T) rethrows -> [T] {
-    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), transform: transform)
+    try ___element_sequence__(from: ___ptr_begin(), to: ___ptr_end(), transform: transform)
   }
 
   @inlinable public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> [Element] {
-    try ___element_sequence__(from: ___index_begin(), to: ___index_end(), isIncluded: isIncluded)
+    try ___element_sequence__(from: ___ptr_begin(), to: ___ptr_end(), isIncluded: isIncluded)
   }
 
   @inlinable public func reduce<Result>(
     into initialResult: Result, _ updateAccumulatingResult: (inout Result, Element) throws -> Void
   ) rethrows -> Result {
     try ___element_sequence__(
-      from: ___index_begin(), to: ___index_end(), into: initialResult, updateAccumulatingResult)
+      from: ___ptr_begin(), to: ___ptr_end(), into: initialResult, updateAccumulatingResult)
   }
 
   @inlinable public func reduce<Result>(
     _ initialResult: Result, _ nextPartialResult: (Result, Element) throws -> Result
   ) rethrows -> Result {
     try ___element_sequence__(
-      from: ___index_begin(), to: ___index_end(), initialResult, nextPartialResult)
+      from: ___ptr_begin(), to: ___ptr_end(), initialResult, nextPartialResult)
   }
 }
 
@@ -494,6 +494,6 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public func enumeratedSubrange(_ range: IndexRange) -> EnumeratedSequence {
-    ___enumerated_sequence__(from: range.lowerBound, to: range.upperBound)
+    ___enumerated_sequence__(from: range.lowerBound.pointer, to: range.upperBound.pointer)
   }
 }

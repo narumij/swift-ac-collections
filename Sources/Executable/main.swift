@@ -39,13 +39,13 @@ for i in 0 ..< 2_000_000 / N {
     xy[1, default: []].removeSubrange(lo ..< hi)
   }
 }
-#elseif true
+#elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: []]
 for i in 0 ..< 2_000_000 {
   xy[1, default: []].insert(i)
 //  xy[1, default: []].remove(i)
 }
-#elseif true
+#elseif false
 var xy: [Int:RedBlackTreeSet<Int>] = [1: []]
 for i in 0 ..< 2_000_000 {
   xy[1]?.insert(i)
@@ -63,10 +63,13 @@ for i in 0 ..< 2_000_000 {
   xy[1]?.remove(i)
 //  xy[1, default: []].remove(i)
 }
-#elseif false
+#elseif true
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
 for i in 0 ..< 2_000_000 {
-  _ = xy[1]?.lowerBound(i)
+//  _ = xy[1]?.lowerBound(i)
+  xy[1]?.removeAndForEach(0 ..< i) { e in
+    _ = e + 1
+  }
 }
 #else
 var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]
@@ -77,3 +80,16 @@ var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]
 #endif
 print("Hola!")
 
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  public mutating func removeAndForEach(
+    _ range: Range<Element>,
+    _ action: (Element) throws -> ()) rethrows {
+    try ___remove(
+      from: ___ptr_lower_bound(range.lowerBound),
+      to: ___ptr_upper_bound(range.upperBound),
+      forEach: action)
+  }
+}

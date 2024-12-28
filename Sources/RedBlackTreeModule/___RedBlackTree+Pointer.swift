@@ -60,8 +60,10 @@ extension ___RedBlackTree {
       self.pointer = pointer
     }
     
+    // retainすると死ぬほど遅い場面がある。
+    // しばらく悩むことにする
     @usableFromInline
-    let tree: ___RedBlackTree.___Buffer<Base>
+    unowned let tree: ___RedBlackTree.___Buffer<Base>
     
     @usableFromInline
     let pointer: _NodePtr
@@ -88,3 +90,10 @@ extension ___RedBlackTree {
     }
   }
 }
+
+//extension Range: Sequence where Bound == ___RedBlackTree.TreePointer<Any> {
+//  
+//}
+
+
+

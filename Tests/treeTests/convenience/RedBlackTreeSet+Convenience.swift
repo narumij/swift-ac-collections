@@ -73,7 +73,7 @@ extension RedBlackTreeSet {
   
   @inlinable
   public func enumerated(lowerBound from: Element, upperBound to: Element) -> EnumeratedSequence {
-    ___enumerated_sequence__(from: lowerBound(from), to: upperBound(to))
+    ___enumerated_sequence__(from: ___ptr_lower_bound(from), to: ___ptr_upper_bound(to))
   }
 }
 
@@ -85,8 +85,8 @@ extension RedBlackTreeSet {
     _ action: (Element) throws -> Void
   ) rethrows {
     try ___remove(
-      from: lowerBound(from),
-      to: upperBound(to),
+      from: ___ptr_lower_bound(from),
+      to: ___ptr_upper_bound(to),
       forEach: action)
   }
 }
@@ -96,11 +96,10 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func removeAndForEach(
     _ range: Range<Element>,
-    _ action: (Element) throws -> Void
-  ) rethrows {
+    _ action: (Element) throws -> ()) rethrows {
     try ___remove(
-      from: lowerBound(range.lowerBound),
-      to: upperBound(range.upperBound),
+      from: ___ptr_lower_bound(range.lowerBound),
+      to: ___ptr_upper_bound(range.upperBound),
       forEach: action)
   }
 
@@ -111,8 +110,8 @@ extension RedBlackTreeSet {
     _ updateAccumulatingResult: (inout Result, Element) throws -> Void
   ) rethrows -> Result {
     try ___remove(
-      from: lowerBound(from),
-      to: upperBound(to),
+      from: ___ptr_lower_bound(from),
+      to: ___ptr_upper_bound(to),
       into: initialResult, updateAccumulatingResult)
   }
 
@@ -123,8 +122,8 @@ extension RedBlackTreeSet {
     _ nextPartialResult: (Result, Element) throws -> Result
   ) rethrows -> Result {
     try ___remove(
-      from: lowerBound(from),
-      to: upperBound(to),
+      from: ___ptr_lower_bound(from),
+      to: ___ptr_upper_bound(to),
       initialResult, nextPartialResult)
   }
 }

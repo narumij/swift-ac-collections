@@ -412,7 +412,7 @@ extension ___RedBlackTree.___Buffer: ___UnsafeHandleBase {}
 extension ___RedBlackTree.___Buffer: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
 extension ___RedBlackTree.___Buffer: EqualProtocol {}
 extension ___RedBlackTree.___Buffer: InsertNodeAtProtocol {}
-extension ___RedBlackTree.___Buffer: InsertMultiProtocol {}
+extension ___RedBlackTree.___Buffer: InsertMultiProtocol2 {}
 extension ___RedBlackTree.___Buffer: RemoveProtocol {}
 extension ___RedBlackTree.___Buffer: StorageEraseProtocol {}
 extension ___RedBlackTree.___Buffer: InsertUniqueProtocol2 {

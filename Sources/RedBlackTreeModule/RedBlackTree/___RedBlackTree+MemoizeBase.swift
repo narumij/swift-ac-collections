@@ -24,8 +24,6 @@ import Collections
 import Foundation
 
 /// メモ化向け
-///
-///  メモリ管理をゆるめにしている
 @frozen
 public struct ___RedBlackTreeMemoizeBase<CustomKey, Value>
 where CustomKey: CustomKeyProtocol
@@ -50,59 +48,27 @@ where CustomKey: CustomKeyProtocol
   typealias _Value = Value
 
   public init() {
-    ___header = .zero
-    ___nodes = []
-    ___elements = []
+    tree = .create(withCapacity: 0)
   }
 
   public subscript(key: Key) -> Value? {
     get { ___value_for(key)?.value }
     set {
       if let newValue {
-        _ = __insert_unique((key, newValue))
+        _ = tree.__insert_unique((key, newValue))
       } else {
-        _ = ___erase_unique(key)
+        _ = tree.___erase_unique(key)
       }
     }
   }
 
   @usableFromInline
-  var ___header: ___RedBlackTree.___Header
-  @usableFromInline
-  var ___nodes: [___RedBlackTree.___Node]
-  @usableFromInline
-  var ___elements: [Element]
+  var tree: Tree
 
-  public var count: Int { ___header.size }
+  public var count: Int { tree.size }
   public var isEmpty: Bool { count == 0 }
 }
 
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeUpdate {
-
-  @inlinable
-  @inline(__always)
-  mutating func _update<R>(_ body: (___UnsafeMutatingHandle<Self>) throws -> R) rethrows -> R {
-    return try withUnsafeMutablePointer(to: &___header) { header in
-      try ___nodes.withUnsafeMutableBufferPointer { nodes in
-        try ___elements.withUnsafeMutableBufferPointer { values in
-          try body(
-            ___UnsafeMutatingHandle<Self>(
-              __header_ptr: header,
-              __node_ptr: nodes.baseAddress!,
-              __element_ptr: values.baseAddress!))
-        }
-      }
-    }
-  }
-}
-
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeLeakingAllocator {}
+extension ___RedBlackTreeMemoizeBase: NewContainer { }
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeCustomKeyProtocol {}
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeContainerBase {}
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeMember {}
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeInsert {}
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeErase {}
-
-extension ___RedBlackTreeMemoizeBase: InsertUniqueProtocol {}
-
 

@@ -126,13 +126,10 @@ protocol InsertUniqueProtocol2: AnyObject {
   associatedtype _Key
   associatedtype Element
 
-  @inlinable
   static func __key(_ e: Element) -> _Key
 
-  @inlinable
   func __construct_node(_ k: Element) -> _NodePtr
 
-  @inlinable
   func destroy(_ p: _NodePtr)
 
   func __ref_(_ rhs: _NodeRef) -> _NodePtr
@@ -195,6 +192,49 @@ extension InsertMultiProtocol {
   
   @inlinable
   mutating func
+  __emplace_multi(_ __k: Element) -> _NodePtr
+  {
+    let __h = __construct_node(__k);
+    var __parent = _NodePtr.nullptr
+    let __child = __find_leaf_high(&__parent, Self.__key(__k))
+    __insert_node_at(__parent, __child, __h)
+    return __h
+  }
+}
+
+@usableFromInline
+protocol InsertMultiProtocol2: AnyObject {
+  
+  associatedtype _Key
+  associatedtype Element
+
+  static func __key(_ e: Element) -> _Key
+
+  func __construct_node(_ k: Element) -> _NodePtr
+
+  func __ref_(_ rhs: _NodeRef) -> _NodePtr
+  
+  func
+    __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
+  func
+    __insert_node_at(
+      _ __parent: _NodePtr, _ __child: _NodeRef,
+      _ __new_node: _NodePtr)
+}
+
+extension InsertMultiProtocol2 {
+  
+  //  _LIBCPP_HIDE_FROM_ABI iterator __insert_multi(__container_value_type&& __v) {
+  //    return __emplace_multi(std::move(__v));
+  //  }
+  @inlinable
+  @inline(__always)
+  public func __insert_multi(_ x: Element) -> _NodePtr {
+    __emplace_multi(x)
+  }
+  
+  @inlinable
+  func
   __emplace_multi(_ __k: Element) -> _NodePtr
   {
     let __h = __construct_node(__k);

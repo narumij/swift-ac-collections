@@ -100,6 +100,7 @@ public func ..< (lhs: ___RedBlackTree.Index, rhs: ___RedBlackTree.Index) -> ___R
   .init(lhs: lhs, rhs: rhs)
 }
 
+#if false
 extension ___RedBlackTreeBody {
 
   @usableFromInline
@@ -268,3 +269,4 @@ extension ___RedBlackTreeContainerBase {
     }
   }
 }
+#endif

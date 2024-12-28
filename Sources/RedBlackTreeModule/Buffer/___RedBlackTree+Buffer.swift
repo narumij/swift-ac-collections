@@ -407,15 +407,32 @@ extension ___RedBlackTree.___Buffer {
   func ___element(_ p: _NodePtr) -> Element { self[p].__value_ }
 }
 
-extension ___RedBlackTree.___Buffer: ___UnsafeHandleBase {}
+extension ___RedBlackTree.___Buffer {
+
+  @usableFromInline
+  typealias _Key = VC._Key
+
+  @usableFromInline
+  typealias Element = VC.Element
+
+  @inlinable @inline(__always)
+  func __value_(_ e: VC.Element) -> _Key {
+    VC.__key(e)
+  }
+
+  @inlinable @inline(__always)
+  func value_comp(_ a: _Key, _ b: _Key) -> Bool {
+    VC.value_comp(a, b)
+  }
+}
 
 extension ___RedBlackTree.___Buffer: NodeFindProtocol & NodeFindEqualProtocol & FindLeafProtocol {}
 extension ___RedBlackTree.___Buffer: EqualProtocol {}
 extension ___RedBlackTree.___Buffer: InsertNodeAtProtocol {}
-extension ___RedBlackTree.___Buffer: InsertMultiProtocol2 {}
+extension ___RedBlackTree.___Buffer: InsertMultiProtocol {}
 extension ___RedBlackTree.___Buffer: RemoveProtocol {}
 extension ___RedBlackTree.___Buffer: StorageEraseProtocol {}
-extension ___RedBlackTree.___Buffer: InsertUniqueProtocol2 {
+extension ___RedBlackTree.___Buffer: InsertUniqueProtocol {
   @inlinable
   static func __key(_ e: VC.Element) -> VC._Key {
     VC.__key(e)

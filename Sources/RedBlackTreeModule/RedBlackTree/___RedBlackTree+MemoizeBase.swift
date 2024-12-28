@@ -70,5 +70,7 @@ where CustomKey: CustomKeyProtocol
 }
 
 extension ___RedBlackTreeMemoizeBase: NewContainer { }
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeCustomKeyProtocol {}
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeCustomKeyProtocol {
+  
+}
 

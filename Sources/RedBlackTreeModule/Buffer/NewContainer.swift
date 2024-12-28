@@ -248,6 +248,19 @@ extension NewContainer {
     tree[p].__value_
   }
 
+  public typealias ___EnumeratedSequence = UnfoldSequence<EnumeratedElement, Tree.SafeSequenceState>
+
+  @inlinable
+  public func ___enumerated_sequence(from: ___Index, to: ___Index)
+    -> ___EnumeratedSequence
+  {
+    return sequence(state: tree.___begin(from.pointer, to: to.pointer)) { state in
+      guard tree.___end(state) else { return nil }
+      defer { tree.___next(&state) }
+      return (___Index(state.current), ___elements(state.current))
+    }
+  }
+  
   @inlinable
   public func ___enumerated_sequence__(from: ___Index, to: ___Index)
     -> [EnumeratedElement]

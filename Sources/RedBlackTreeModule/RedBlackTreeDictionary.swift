@@ -103,8 +103,8 @@ extension RedBlackTreeDictionary {
         let __h = tree.__construct_node(__k)
         tree.__insert_node_at(__parent, __child, __h)
       } else {
-        tree[node : tree.__ref_(__child)].__value_.value = try combine(
-          tree[node : tree.__ref_(__child)].__value_.value, __k.1)
+        tree[node: tree.__ref_(__child)].__value_.value = try combine(
+          tree[node: tree.__ref_(__child)].__value_.value, __k.1)
       }
     }
   }
@@ -198,21 +198,17 @@ extension RedBlackTreeDictionary {
     }
     @inline(__always)
     _modify {
-      defer { _fixLifetime(self) }
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
-        let pointer = UnsafeMutablePointer<Value>.allocate(capacity: 1)
-        var helper = ___ModifyHelper(pointer: pointer)
+        var value: Value?
         defer {
-          if !helper.isNil {
+          if let value {
             ensureUniqueAndCapacity()
-            let __h = tree.__construct_node((key, pointer.move()))
+            let __h = tree.__construct_node((key, value))
             tree.__insert_node_at(__parent, __child, __h)
           }
-          pointer.deallocate()
-          _fixLifetime(pointer)
         }
-        yield &helper.value
+        yield &value
       } else {
         ensureUnique()
         var helper = ___ModifyHelper(pointer: &tree[__ptr].value)
@@ -282,8 +278,8 @@ extension RedBlackTreeDictionary {
     let (__r, __inserted) = tree.__insert_unique((key, value))
     guard !__inserted else { return nil }
     let __p = tree.__ref_(__r)
-    let oldMember = tree[node : __p].__value_
-    tree[node : __p].__value_ = (key, value)
+    let oldMember = tree[node: __p].__value_
+    tree[node: __p].__value_ = (key, value)
     return oldMember.value
   }
 
@@ -294,7 +290,7 @@ extension RedBlackTreeDictionary {
     if __i == tree.end() {
       return nil
     }
-    let value = tree[node : __i].__value_.value
+    let value = tree[node: __i].__value_.value
     ensureUnique()
     _ = tree.erase(__i)
     return value

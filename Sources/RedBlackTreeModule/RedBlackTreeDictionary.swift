@@ -198,6 +198,7 @@ extension RedBlackTreeDictionary {
     }
     @inline(__always)
     _modify {
+      // TODO: もうすこしライフタイム管理に明るくなったら、再度ここのチューニングに取り組む
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
         var value: Value?

@@ -151,6 +151,30 @@ protocol SizeProtocol {
   var size: Int { get nonmutating set }
 }
 
+// MARK: -
+
+@usableFromInline
+protocol AllocatorProtocol {
+
+  associatedtype Element
+
+  @inlinable
+  func __construct_node(_ k: Element) -> _NodePtr
+
+  @inlinable
+  func destroy(_ p: _NodePtr)
+}
+
+@usableFromInline
+protocol KeyProtocol {
+
+  associatedtype _Key
+  associatedtype Element
+
+  @inlinable
+  func __key(_ e: Element) -> _Key
+}
+
 // MARK: common
 
 @usableFromInline

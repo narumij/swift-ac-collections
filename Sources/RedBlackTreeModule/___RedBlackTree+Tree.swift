@@ -450,7 +450,7 @@ extension ___RedBlackTree.___Buffer: StorageEraseProtocol {}
 extension ___RedBlackTree.___Buffer: InsertUniqueProtocol {
   @inlinable
   @inline(__always)
-  static func __key(_ e: VC.Element) -> VC._Key {
+  func __key(_ e: VC.Element) -> VC._Key {
     VC.__key(e)
   }
 }

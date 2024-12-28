@@ -67,25 +67,8 @@ extension InsertNodeAtProtocol {
   }
 }
 
-// 名前が微妙
 @usableFromInline
-protocol StorageProtocol {
-
-  associatedtype _Key
-  associatedtype Element
-
-  @inlinable
-  static func __key(_ e: Element) -> _Key
-
-  @inlinable
-  func __construct_node(_ k: Element) -> _NodePtr
-
-  @inlinable
-  func destroy(_ p: _NodePtr)
-}
-
-@usableFromInline
-protocol InsertUniqueProtocol: StorageProtocol {
+protocol InsertUniqueProtocol: AllocatorProtocol, KeyProtocol {
   func __ref_(_ rhs: _NodeRef) -> _NodePtr
   func
     __find_equal(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
@@ -109,7 +92,7 @@ extension InsertUniqueProtocol {
     __emplace_unique_key_args(_ __k: Element) -> (__r: _NodeRef, __inserted: Bool)
   {
     var __parent = _NodePtr.nullptr
-    let __child = __find_equal(&__parent, Self.__key(__k))
+    let __child = __find_equal(&__parent, __key(__k))
     let __r = __child
     var __inserted = false
     if __ref_(__child) == .nullptr {
@@ -122,7 +105,7 @@ extension InsertUniqueProtocol {
 }
 
 @usableFromInline
-protocol InsertMultiProtocol: StorageProtocol {
+protocol InsertMultiProtocol: AllocatorProtocol, KeyProtocol {
   func __ref_(_ rhs: _NodeRef) -> _NodePtr
   func
     __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
@@ -149,17 +132,17 @@ extension InsertMultiProtocol {
   {
     let __h = __construct_node(__k);
     var __parent = _NodePtr.nullptr
-    let __child = __find_leaf_high(&__parent, Self.__key(__k))
+    let __child = __find_leaf_high(&__parent, __key(__k))
     __insert_node_at(__parent, __child, __h)
     return __h
   }
 }
 
-@usableFromInline
-protocol InsertOrAssignProtocol: StorageProtocol {
-  associatedtype Key
-  associatedtype Value
-}
-
-extension InsertOrAssignProtocol {
-}
+//@usableFromInline
+//protocol InsertOrAssignProtocol: StorageProtocol {
+//  associatedtype Key
+//  associatedtype Value
+//}
+//
+//extension InsertOrAssignProtocol {
+//}

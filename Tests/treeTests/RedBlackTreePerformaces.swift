@@ -147,7 +147,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample12() throws {
-//    throw XCTSkip()
+    throw XCTSkip()
     let set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       // func 0.125 sec

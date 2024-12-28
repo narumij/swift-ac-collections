@@ -25,36 +25,36 @@ import Foundation
 @frozen
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
-    public
-      typealias Index = ___RedBlackTree.Index
+  public
+    typealias Index = ___RedBlackTree.Index
 
-    public
-      typealias IndexRange = ___RedBlackTree.Range
+  public
+    typealias IndexRange = ___RedBlackTree.Range
 
-    public
-      typealias KeyValue = (key: Key, value: Value)
+  public
+    typealias KeyValue = (key: Key, value: Value)
 
-    public
-      typealias Element = KeyValue
+  public
+    typealias Element = KeyValue
 
-    public
-      typealias Keys = [Key]
+  public
+    typealias Keys = [Key]
 
-    public
-      typealias Values = [Value]
+  public
+    typealias Values = [Value]
 
-    @usableFromInline
-    typealias _Key = Key
+  @usableFromInline
+  typealias _Key = Key
 
-    @usableFromInline
-    typealias _Value = Value
+  @usableFromInline
+  typealias _Value = Value
 
-    @usableFromInline
-    var tree: Tree
-  }
+  @usableFromInline
+  var tree: Tree
+}
 
-  extension RedBlackTreeDictionary: NewContainer {}
-  extension RedBlackTreeDictionary: KeyValueComparer {}
+extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
+extension RedBlackTreeDictionary: KeyValueComparer {}
 
 extension RedBlackTreeDictionary {
 

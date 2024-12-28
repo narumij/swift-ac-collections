@@ -23,16 +23,16 @@
 import Foundation
 
 @usableFromInline
-protocol NewContainer: ValueComparer {
+protocol ___RedBlackTreeBase: ValueComparer {
   associatedtype Element
   var tree: Tree { get set }
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
   public typealias Tree = ___RedBlackTree.___Buffer<Self, Element>
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable
   mutating func ensureUnique() {
@@ -50,7 +50,7 @@ extension NewContainer {
   }
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public var ___count: Int {
@@ -80,7 +80,7 @@ extension NewContainer {
 
 // MARK: - Index
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @usableFromInline
   typealias ___Index = ___RedBlackTree.Index
@@ -96,7 +96,7 @@ extension NewContainer {
   }
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___index_lower_bound(_ __k: _Key) -> ___Index {
@@ -109,7 +109,7 @@ extension NewContainer {
   }
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___index_prev(_ i: ___Index) -> ___Index {
@@ -130,7 +130,7 @@ extension NewContainer {
   }
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable
   func ___index(_ i: ___Index, offsetBy distance: Int, type: String) -> ___Index {
@@ -204,7 +204,7 @@ extension NewContainer {
   }
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable
   public func ___first_index(of member: _Key) -> ___Index? {
@@ -226,7 +226,7 @@ extension NewContainer {
   }
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable
   public func ___distance(from start: ___Index, to end: ___Index) -> Int {
@@ -236,12 +236,12 @@ extension NewContainer {
 
 // MARK: - Sequence
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   public typealias EnumeratedElement = (position: ___Index, element: Element)
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   // TODO: ひとだんらくしたら、inline化して取り除く
   @inlinable func ___elements(_ p: _NodePtr) -> Element {
@@ -355,7 +355,7 @@ extension NewContainer {
   }
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
   @inlinable @inline(__always)
   public var ___ptr_sequence__: [_NodePtr] {
     var result = [_NodePtr]()
@@ -368,7 +368,7 @@ extension NewContainer {
 
 // MARK: - Remove
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable
   @discardableResult
@@ -470,7 +470,7 @@ extension NewContainer {
   }
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable
   mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -485,7 +485,7 @@ extension NewContainer {
 
 // MARK: - Equatable
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable
   func ___equal_with(_ rhs: Self) -> Bool where Element: Equatable {
@@ -501,7 +501,7 @@ extension NewContainer {
 
 // MARK: - Etc
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___contains(_ __k: _Key) -> Bool where _Key: Equatable {
@@ -511,7 +511,7 @@ extension NewContainer {
   }
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___min() -> Element? {
@@ -524,7 +524,7 @@ extension NewContainer {
   }
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___value_for(_ __k: _Key) -> Element? {
@@ -533,7 +533,7 @@ extension NewContainer {
   }
 }
 
-extension NewContainer {
+extension ___RedBlackTreeBase {
 
   @inlinable
   public func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {

@@ -143,7 +143,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   var tree: Tree
 }
 
-extension RedBlackTreeSet: NewContainer {}
+extension RedBlackTreeSet: ___RedBlackTreeBase {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 
 extension RedBlackTreeSet {

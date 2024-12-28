@@ -95,6 +95,10 @@ extension ___RedBlackTree {
   }
 }
 
+#if swift(>=5.5)
+extension ___RedBlackTree.Range: @unchecked Sendable {}
+#endif
+
 @inlinable
 public func ..< (lhs: ___RedBlackTree.Index, rhs: ___RedBlackTree.Index) -> ___RedBlackTree.Range {
   .init(lhs: lhs, rhs: rhs)

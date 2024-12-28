@@ -68,6 +68,6 @@ where CustomKey: CustomKeyProtocol
   public var isEmpty: Bool { count == 0 }
 }
 
-extension ___RedBlackTreeMemoizeBase: NewContainer { }
+extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeBase { }
 extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeCustomKeyProtocol { }
 

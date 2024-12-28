@@ -43,7 +43,7 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
   var tree: Tree
 }
 
-extension RedBlackTreeMultiset: NewContainer {}
+extension RedBlackTreeMultiset: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiset: ScalarValueComparer {}
 
 extension RedBlackTreeMultiset {

@@ -91,6 +91,13 @@ protocol RefSetProtocol: RefProtocol {
 }
 
 @usableFromInline
+protocol KeyProtocol {
+  associatedtype _Key
+  associatedtype Element
+  func __key(_ e: Element) -> _Key
+}
+
+@usableFromInline
 protocol ValueProtocol: MemberProtocol {
 
   associatedtype _Key
@@ -155,24 +162,9 @@ protocol SizeProtocol {
 
 @usableFromInline
 protocol AllocatorProtocol {
-
   associatedtype Element
-
-  @inlinable
   func __construct_node(_ k: Element) -> _NodePtr
-
-  @inlinable
   func destroy(_ p: _NodePtr)
-}
-
-@usableFromInline
-protocol KeyProtocol {
-
-  associatedtype _Key
-  associatedtype Element
-
-  @inlinable
-  func __key(_ e: Element) -> _Key
 }
 
 // MARK: common

@@ -13,11 +13,11 @@ let count = 2_000_000
 #if false
 var tree = RedBlackTreeSet<Int>()
 //let tree = RedBlackTree.Storage<Int>()
-tree.reserveCapacity(1_000_000)
-for i in 0 ..< 1_000_000 {
-    _ = tree.__insert_unique(i)
+tree.reserveCapacity(count)
+for i in 0 ..< count {
+  _ = tree.insert(i)
 }
-for i in 0 ..< 1_000_000 {
+for i in 0 ..< count {
   _ = tree.remove(i)
 }
 #elseif false
@@ -29,6 +29,41 @@ for v in 0..<10_000_000 {
 var tree = RedBlackTreeSet<Int>(0 ..< count)
 for v in tree {
   tree.remove(v)
+}
+#elseif false
+var tree = RedBlackTreeSet<Int>(0 ..< count)
+for i in tree[tree.startIndex ..< tree.endIndex] {
+  tree.remove(i)
+}
+#elseif false
+var tree = RedBlackTreeSet<Int>(0 ..< count)
+for (i,_) in tree.enumerated() {
+  tree.remove(at: i)
+}
+#elseif false
+var tree = RedBlackTreeSet<Int>(0 ..< count)
+for (i,v) in tree[tree.startIndex ..< tree.endIndex].enumerated() {
+  tree.remove(at: i)
+}
+#elseif false
+var tree = RedBlackTreeSet<Int>(0 ..< count)
+tree[tree.startIndex ..< tree.endIndex].forEach { i in
+  tree.remove(i)
+}
+#elseif false
+var tree = RedBlackTreeSet<Int>(0 ..< count)
+tree.enumerated().forEach { i, v in
+  tree.remove(at: i)
+}
+#elseif false
+var tree = RedBlackTreeSet<Int>(0 ..< count)
+tree[tree.startIndex ..< tree.endIndex].enumerated().forEach { i, v in
+  tree.remove(at: i)
+}
+#elseif true
+var tree = RedBlackTreeSet<Int>(0 ..< count)
+tree[0 ..< count].enumerated().forEach { i, v in
+  tree.remove(at: i)
 }
 #elseif false
 var xy: [Int:RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]
@@ -47,7 +82,7 @@ for i in 0 ..< 200_000 {
   // 不正なインデックスに関する修正が必要そう
   xy[1]?.removeSubrange(.node(i) ..< .node(i + 10))
 }
-#elseif false
+#elseif true
 var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
 let N = 1000
 for i in 0 ..< 2_000_000 / N {

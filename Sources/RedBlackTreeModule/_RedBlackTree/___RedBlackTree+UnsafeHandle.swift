@@ -9,17 +9,23 @@ extension ___RedBlackTree.___Tree {
   
   @usableFromInline
   struct UnsafeHandle {
+    @inlinable
+    @inline(__always)
+    internal init(__header_ptr: UnsafeMutablePointer<___RedBlackTree.___Tree<VC>.Header>, __node_ptr: UnsafeMutablePointer<___RedBlackTree.___Tree<VC>.Node>) {
+      self.__header_ptr = __header_ptr
+      self.__node_ptr = __node_ptr
+    }
     @usableFromInline
     var __header_ptr: UnsafeMutablePointer<Header>
     @usableFromInline
     var __node_ptr: UnsafeMutablePointer<Node>
-    
     public typealias VC = Tree.VC
   }
   
-  @usableFromInline
-  static func with<R>(_ pointer: Manager,_ body: (UnsafeHandle) -> R) -> R {
-    pointer.withUnsafeMutablePointers { header, nodes in
+  @inlinable
+  @inline(__always)
+  static func with<R>(_ manager: Manager,_ body: (UnsafeHandle) -> R) -> R {
+    manager.withUnsafeMutablePointers { header, nodes in
       body(UnsafeHandle(__header_ptr: header, __node_ptr: nodes))
     }
   }
@@ -29,6 +35,7 @@ extension ___RedBlackTree.___Tree.UnsafeHandle {
   
   @inlinable
   public subscript(_ pointer: _NodePtr) -> Element {
+    @inline(__always)
     get { __node_ptr[pointer].__value_ }
     nonmutating set { __node_ptr[pointer].__value_ = newValue }
   }
@@ -40,6 +47,7 @@ extension ___RedBlackTree.___Tree.UnsafeHandle {
   }
 
   @inlinable
+  @inline(__always)
   public var __left_: _NodePtr {
     get { __header_ptr.pointee.__left_ }
     nonmutating set { __header_ptr.pointee.__left_ = newValue }
@@ -54,8 +62,7 @@ extension ___RedBlackTree.___Tree.UnsafeHandle: ValueProtocol {
   public
     typealias Element = VC.Element
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   func __key(_ e: VC.Element) -> VC._Key {
     VC.__key(e)
   }

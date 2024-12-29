@@ -79,7 +79,7 @@ extension ___RedBlackTreeBase {
   typealias ___Index = Tree.TreePointer
   
   @inlinable @inline(__always)
-  func ___index(_ p: _NodePtr) -> ___Index {
+  __consuming func ___index(_ p: _NodePtr) -> ___Index {
     .init(__tree: tree.manager(), pointer: p)
   }
   

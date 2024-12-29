@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   public struct TreePointer: Comparable {
 

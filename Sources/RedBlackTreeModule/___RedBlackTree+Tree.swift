@@ -24,9 +24,9 @@ import Foundation
 
 extension ___RedBlackTree {
 
-  public class ___Buffer<VC>: ManagedBuffer<
-    ___RedBlackTree.___Buffer<VC>.Header,
-    ___RedBlackTree.___Buffer<VC>.Node
+  public class ___Tree<VC>: ManagedBuffer<
+    ___RedBlackTree.___Tree<VC>.Header,
+    ___RedBlackTree.___Tree<VC>.Node
   >
   where VC: ValueComparer {
 
@@ -40,7 +40,7 @@ extension ___RedBlackTree {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   @inlinable
   internal static func create(
@@ -89,7 +89,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   @inlinable
   static func ensureUnique(tree: inout Buffer) {
@@ -138,7 +138,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   public struct Node {
 
@@ -170,16 +170,16 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   public
-    typealias Buffer = ___RedBlackTree.___Buffer<VC>
+    typealias Buffer = ___RedBlackTree.___Tree<VC>
 
   @usableFromInline
   typealias Manager = ManagedBufferPointer<Header, Node>
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   public struct Header {
 
@@ -220,7 +220,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   @inlinable
   var __header_ptr: UnsafeMutablePointer<Header> {
@@ -287,7 +287,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
   // コンスセルでイメージすると、右に伸ばしていく方がイメージ通りだったが、
   // leftを伸ばしていく方が意味が通じやすいので、そちらにした
 
@@ -321,7 +321,7 @@ extension ___RedBlackTree.___Buffer {
 }
 
 #if DEBUG
-  extension ___RedBlackTree.___Buffer {
+  extension ___RedBlackTree.___Tree {
 
     /// O(*k*)
     var ___destroyNodes: [_NodePtr] {
@@ -337,7 +337,7 @@ extension ___RedBlackTree.___Buffer {
   }
 #endif
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
   func ___is_valid(_ p: _NodePtr) -> Bool {
@@ -350,7 +350,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   @inlinable
   func __construct_node(_ k: Element) -> _NodePtr {
@@ -372,7 +372,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   @inlinable
   public var count: Int {
@@ -404,7 +404,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
   func __value_(_ p: _NodePtr) -> _Key {
@@ -412,7 +412,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   @usableFromInline
   typealias _Key = VC._Key
@@ -431,13 +431,13 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer: FindProtocol & FindEqualProtocol & FindLeafProtocol {}
-extension ___RedBlackTree.___Buffer: EqualProtocol {}
-extension ___RedBlackTree.___Buffer: InsertNodeAtProtocol {}
-extension ___RedBlackTree.___Buffer: InsertMultiProtocol {}
-extension ___RedBlackTree.___Buffer: RemoveProtocol {}
-extension ___RedBlackTree.___Buffer: StorageEraseProtocol {}
-extension ___RedBlackTree.___Buffer: InsertUniqueProtocol {
+extension ___RedBlackTree.___Tree: FindProtocol & FindEqualProtocol & FindLeafProtocol {}
+extension ___RedBlackTree.___Tree: EqualProtocol {}
+extension ___RedBlackTree.___Tree: InsertNodeAtProtocol {}
+extension ___RedBlackTree.___Tree: InsertMultiProtocol {}
+extension ___RedBlackTree.___Tree: RemoveProtocol {}
+extension ___RedBlackTree.___Tree: StorageEraseProtocol {}
+extension ___RedBlackTree.___Tree: InsertUniqueProtocol {
   @inlinable
   @inline(__always)
   func __key(_ e: VC.Element) -> VC._Key {
@@ -445,7 +445,7 @@ extension ___RedBlackTree.___Buffer: InsertUniqueProtocol {
   }
 }
 
-extension ___RedBlackTree.___Buffer: MemberProtocol & RootImpl & RefSetImpl & RootPtrImpl {
+extension ___RedBlackTree.___Tree: MemberProtocol & RootImpl & RefSetImpl & RootPtrImpl {
   @inlinable
   @inline(__always)
   func __parent_(_ p: _NodePtr) -> _NodePtr {
@@ -473,7 +473,7 @@ extension ___RedBlackTree.___Buffer: MemberProtocol & RootImpl & RefSetImpl & Ro
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   @inlinable
   func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
@@ -497,9 +497,9 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer: DistanceProtocol & CountProtocol { }
+extension ___RedBlackTree.___Tree: DistanceProtocol & CountProtocol { }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
 //  @inlinable
 //  @inline(__always)
@@ -544,7 +544,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   @inlinable
   func ___erase_unique(_ __k: VC._Key) -> Bool {
@@ -568,7 +568,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   @inlinable
   func
@@ -614,7 +614,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   /// O(1)
   @inlinable
@@ -625,7 +625,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
   public var ___count: Int {
@@ -653,7 +653,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   // CoWがない時期はこちらが必要だった
   @usableFromInline
@@ -699,7 +699,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer: Sequence {
+extension ___RedBlackTree.___Tree: Sequence {
   
   public struct Iterator: IteratorProtocol {
     
@@ -827,7 +827,7 @@ extension ___RedBlackTree.___Buffer: Sequence {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
 
   public struct SubSequence: Sequence {
 
@@ -937,7 +937,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
   
   public struct EnumerateIterator: IteratorProtocol {
     
@@ -979,7 +979,7 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
-extension ___RedBlackTree.___Buffer.EnumerateIterator: @unchecked Sendable {}
+extension ___RedBlackTree.___Tree.EnumerateIterator: @unchecked Sendable {}
 
 public
 protocol __EnumerateSequence {
@@ -989,7 +989,7 @@ protocol __EnumerateSequence {
 
 // MARK: -
 
-extension ___RedBlackTree.___Buffer {
+extension ___RedBlackTree.___Tree {
   
   @frozen
   public struct EnumeratedSequence<Base: __EnumerateSequence> {
@@ -1005,7 +1005,7 @@ extension ___RedBlackTree.___Buffer {
 
 //extension ___RedBlackTree.___Buffer.EnumeratedSequence: Sendable where Base: Sendable {}
 
-extension ___RedBlackTree.___Buffer.EnumeratedSequence: Sequence {
+extension ___RedBlackTree.___Tree.EnumeratedSequence: Sequence {
   
   @inlinable
   public __consuming func makeIterator() -> Base.EnumerateIterator {

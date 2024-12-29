@@ -30,7 +30,7 @@ extension ___RedBlackTree {
     public typealias Element = _Tree.Element
 
     public
-      typealias _Tree = ___RedBlackTree.___Buffer<Base>
+      typealias _Tree = ___RedBlackTree.___Tree<Base>
 
     @usableFromInline
     internal var _iterator: _Tree.Iterator

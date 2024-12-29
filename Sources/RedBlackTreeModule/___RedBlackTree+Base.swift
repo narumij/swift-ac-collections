@@ -25,7 +25,7 @@ import Foundation
 public enum ___RedBlackTree {}
 
 extension ValueComparer {
-  public typealias Tree = ___RedBlackTree.___Buffer<Self>
+  public typealias Tree = ___RedBlackTree.___Tree<Self>
 }
 
 @usableFromInline

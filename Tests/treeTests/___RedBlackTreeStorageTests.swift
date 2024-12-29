@@ -45,7 +45,7 @@ extension NodeBase {
       typealias Element = Int
     }
 
-    typealias RedBlackTreeStorage = ___RedBlackTree.___Buffer<VC>
+    typealias RedBlackTreeStorage = ___RedBlackTree.___Tree<VC>
 
     extension ___RedBlackTree.___Node {
 
@@ -60,10 +60,10 @@ extension NodeBase {
       }
     }
 
-    extension ___RedBlackTree.___Buffer.Node: NodeBase {
+    extension ___RedBlackTree.___Tree.Node: NodeBase {
     }
 
-    extension ___RedBlackTree.___Buffer {
+    extension ___RedBlackTree.___Tree {
 
       @inlinable
       var nodes: [___RedBlackTree.___Node] {

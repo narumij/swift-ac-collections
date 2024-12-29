@@ -320,6 +320,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    ensureUnique()
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }

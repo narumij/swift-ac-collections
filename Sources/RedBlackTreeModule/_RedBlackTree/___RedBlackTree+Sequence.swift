@@ -35,7 +35,7 @@ extension ___RedBlackTree.___Tree: Sequence {
     }
     
     @usableFromInline
-    unowned let tree: Tree
+    let tree: Tree
     
     @usableFromInline
     var current, end: _NodePtr

@@ -463,6 +463,62 @@
         XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
       }
     }
+    
+    func testRandom2() throws {
+      var set = RedBlackTreeMultiset<Int>()
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.remove(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.remove(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for i in set[set.startIndex ..< set.endIndex] {
+        set.remove(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+    }
+    
+    func testRandom3() throws {
+      var set = RedBlackTreeMultiset<Int>()
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.remove(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.remove(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for (i,_) in set.enumerated() {
+        set.remove(at: i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+    }
 
     func testLiteral() throws {
       let set: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]

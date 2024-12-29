@@ -92,8 +92,12 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
+  static func checkUnique(tree: inout Tree) -> Bool {
+    isKnownUniquelyReferenced(&tree)
+  }
+
+  @inlinable
   static func ensureUnique(tree: inout Tree) {
-    
     if !isKnownUniquelyReferenced(&tree) {
       tree = tree.copy(newCapacity: tree.header.capacity)
     }
@@ -686,8 +690,19 @@ extension ___RedBlackTree.___Tree {
 
 extension ___RedBlackTree.___Tree {
   
+#if false
   @inlinable @inline(__always)
-  __consuming func manager() -> Manager {
+  func manager() -> Manager {
     .init(unsafeBufferObject: self)
   }
+#else
+  @inlinable @inline(__always)
+  func manager() -> Tree { self }
+#endif
+  
+  @inlinable @inline(__always)
+  func manager() -> Manager {
+    .init(unsafeBufferObject: self)
+  }
+
 }

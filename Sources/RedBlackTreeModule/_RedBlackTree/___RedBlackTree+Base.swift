@@ -37,7 +37,12 @@ protocol ___RedBlackTreeBase: ValueComparer {
 extension ___RedBlackTreeBase {
 
   @inlinable
-  mutating func ensureUnique() {
+  public mutating func ___checkUnique() -> Bool {
+    Tree.checkUnique(tree: &tree)
+  }
+
+  @inlinable
+  public mutating func ensureUnique() {
     Tree.ensureUnique(tree: &tree)
   }
 

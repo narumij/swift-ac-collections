@@ -60,7 +60,7 @@ var tree = RedBlackTreeSet<Int>(0 ..< count)
 tree[tree.startIndex ..< tree.endIndex].enumerated().forEach { i, v in
   tree.remove(at: i)
 }
-#elseif true
+#elseif false
 var tree = RedBlackTreeSet<Int>(0 ..< count)
 tree[0 ..< count].enumerated().forEach { i, v in
   tree.remove(at: i)
@@ -82,18 +82,42 @@ for i in 0 ..< 200_000 {
   // 不正なインデックスに関する修正が必要そう
   xy[1]?.removeSubrange(.node(i) ..< .node(i + 10))
 }
-#elseif true
-var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
+#elseif false
+// これがいまだにCoW過剰発火している
+//var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
+var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< 2_000_000)]
+print("initialized")
 let N = 1000
 for i in 0 ..< 2_000_000 / N {
   if let lo = xy[1]?.lowerBound(i * N),
      let hi = xy[1]?.upperBound(i * N + N) {
-//    xy[1]?.removeSubrange(lo ..< hi)
-    xy[1, default: []].removeSubrange(lo ..< hi)
+    xy[1]?.removeSubrange(lo ..< hi)
+//    xy[1, default: []].removeSubrange(lo ..< hi)
   }
 }
+#elseif false
+// これがいまだにCoW過剰発火している
+//var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
+var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< 2_000)]
+print("initialized")
+let N = 1000
+for i in 0 ..< 10_000 / N {
+  
+//  print("1)",xy[1]?.checkUnique() != true ? "NG" : "OK") // OK
+  
+//  let lo = xy[1]?._ptr_lowerBound(i * N) // OK
+
+//  let lo = xy[1]?._idx_lowerBound(i * N) // OK
+
+  let lo = xy[1]?.startIndex
+  
+  print("2)", xy[1]?.checkUnique() != true ? "NG" : "OK") // NG
+//  print("3)", xy[1]?.checkUnique2() != true ? "NG" : "OK") // NG
+}
 #elseif true
-var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
+// これもまだ
+//var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
+var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]
 let N = 1000
 for i in 0 ..< count / N {
   xy[1]?[(i * N) ..< (i * N + N)].enumerated().forEach { i, v in
@@ -105,6 +129,28 @@ for i in 0 ..< count / N {
 //  }
 }
 #elseif true
+// これもまだ
+var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
+//var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]
+let N = 1000
+for i in 0 ..< count / N {
+
+//  let a = xy[1]
+//  let a = xy[1]?[(i * N) ..< (i * N + N)]
+//  let a = xy[1]?[(i * N) ..< (i * N + N)].enumerated()
+
+//  print("0)", xy[1]?.checkUnique() != true ? "NG" : "OK") // NG
+
+  xy[1]?[(i * N) ..< (i * N + N)].enumerated().forEach { i, v in
+    print("0)", xy[1]?.checkUnique() != true ? "NG" : "OK") // NG
+//    xy[1]?.ensureUnique()
+    xy[1]?.remove(at: i)
+  }
+//     let hi = xy[1]?.upperBound(i * N + N) {
+////    xy[1]?.removeSubrange(lo ..< hi)
+//    xy[1, default: []].removeSubrange(lo ..< hi)
+//  }
+}#elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: []]
 for i in 0 ..< 2_000_000 {
   xy[1, default: []].insert(i)
@@ -128,7 +174,7 @@ for i in 0 ..< 2_000_000 {
   xy[1]?.remove(i)
 //  xy[1, default: []].remove(i)
 }
-#elseif true
+#elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
 for i in 0 ..< 2_000_000 {
 //  _ = xy[1]?.lowerBound(i)

@@ -39,9 +39,7 @@ import Foundation
 // 全体のコピーは非常に重たい操作なので、不用意に発火してしまうと、
 // パフォーマスに著しい影響を与えます。クソおせーです。
 
-// 標準的な書き方を定め、そちらで問題なかったことで、一旦リリース可能と判断していますが、
-// 過剰発火について、ある書き方ではまだ過剰発火があることが確認されています、たしか。
-
+// 過剰発火について、ある書き方ではまだ過剰発火があることが確認されています。
 // こういった問題に関して、なにか発見がありましたら、イシュー等に記載いただけると助かります。
 
 /// `RedBlackTreeSet` は、`Element` 型の要素を一意に格納するための
@@ -748,5 +746,29 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
     SubSequence(
       _subSequence:
         _subSequence[bounds.lowerBound..<bounds.upperBound])
+  }
+}
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  public mutating func checkUnique() -> Bool {
+    Tree.checkUnique(tree: &tree)
+  }
+  
+  @inlinable
+  public mutating func checkUnique2() -> Bool {
+    var a = Tree.Manager(unsafeBufferObject: tree)
+    return a.isUniqueReference()
+  }
+
+  @inlinable
+  public func _ptr_lowerBound(_ member: Element) -> _NodePtr {
+    ___ptr_lower_bound(member)
+  }
+
+  @inlinable
+  public func _idx_lowerBound(_ member: Element) -> ___RedBlackTree.SimpleIndex {
+    .init(___ptr_lower_bound(member))
   }
 }

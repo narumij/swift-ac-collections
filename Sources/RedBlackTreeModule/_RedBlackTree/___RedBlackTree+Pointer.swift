@@ -27,37 +27,36 @@ extension ___RedBlackTree.___Tree {
   public struct TreePointer: Comparable {
 
     public typealias Pointer = Self
-    
+
     @inlinable
     internal static func rank(_ rhs: Pointer) -> Int {
-//      rhs.pointer != .end ? rhs.pointer : Int.max
+      //      rhs.pointer != .end ? rhs.pointer : Int.max
       switch rhs.pointer {
       case .nullptr: return 3
       case .end: return 2
       default: return 1
       }
     }
-    
+
     public static func < (lhs: Pointer, rhs: Pointer) -> Bool {
-      
+
       if lhs.pointer == rhs.pointer {
         return false
       }
-      
+
       guard rank(lhs) == rank(rhs) else {
         return rank(lhs) < rank(rhs)
       }
-      
+
       return with(lhs.tree) { tree in
         return tree.value_comp(tree[key: lhs.pointer], tree[key: rhs.pointer])
       }
-//      return lhs.tree.value_comp(lhs.tree[key: lhs.pointer], rhs.tree[key: rhs.pointer])
     }
-    
+
     public static func == (lhs: Pointer, rhs: Pointer) -> Bool {
       lhs.pointer == rhs.pointer
     }
-    
+
     @inlinable
     internal init(__tree: Tree.Manager, pointer: _NodePtr) {
       guard pointer != .nullptr else {
@@ -66,36 +65,46 @@ extension ___RedBlackTree.___Tree {
       self.tree = __tree
       self.pointer = pointer
     }
-    
-    // 性能の面でunownedを選択することにした。このためSendableには適合できない
+
     @usableFromInline
     let tree: Tree.Manager
-    
+
     @usableFromInline
     var pointer: _NodePtr
-    
-    // これを公開にすると、リテインが必要な使い方を奨励してしまう
-//    @inlinable
-//    var pointee: Element {
-//      get { tree[pointer] }
-//      _modify { yield &tree[pointer] }
-//    }
 
     @inlinable
-    internal static func end(_ tree: Tree.Manager) -> Pointer {
+    public var rawValue: Int {
+      pointer
+    }
+
+    @inlinable
+    public var isNullptr: Bool {
+      pointer == .nullptr
+    }
+
+    @inlinable
+    public var isEnd: Bool {
+      pointer == .end
+    }
+
+    @inlinable
+    public var ___pointee: Element {
+      Tree.with(tree) { $0[pointer] }
+    }
+
+    @inlinable
+    static func end(_ tree: Tree.Manager) -> Pointer {
       .init(__tree: tree, pointer: .end)
     }
-    
-    // これを公開にすると、リテインが必要な使い方を奨励してしまう
-//    @inlinable
-//    internal func ___next() -> Pointer {
-//      .init(__tree: tree, pointer: tree.__tree_next(pointer))
-//    }
 
-    // これを公開にすると、リテインが必要な使い方を奨励してしまう
-//    @inlinable
-//    internal func ___prev() -> Pointer {
-//      .init(__tree: tree, pointer: tree.__tree_prev_iter(pointer))
-//    }
+    @inlinable
+    public mutating func ___next() {
+      pointer = Tree.with(tree) { $0.__tree_next_iter(pointer) }
+    }
+
+    @inlinable
+    public mutating func ___prev() {
+      pointer = Tree.with(tree) { $0.__tree_prev_iter(pointer) }
+    }
   }
 }

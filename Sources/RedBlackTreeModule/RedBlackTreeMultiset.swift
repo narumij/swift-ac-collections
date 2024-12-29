@@ -272,43 +272,6 @@ extension RedBlackTreeMultiset: Equatable {
   }
 }
 
-#if false
-extension RedBlackTreeMultiset {
-
-  public typealias ElementSequence = [Element]
-
-  @inlinable
-  public subscript(bounds: IndexRange) -> ElementSequence {
-    ___element_sequence__(from: bounds.lowerBound.pointer, to: bounds.upperBound.pointer)
-  }
-}
-
-extension RedBlackTreeMultiset {
-
-  @inlinable public func map<T>(_ transform: (Element) throws -> T) rethrows -> [T] {
-    try ___element_sequence__(from: ___ptr_start(), to: ___ptr_end(), transform: transform)
-  }
-
-  @inlinable public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> [Element] {
-    try ___element_sequence__(from: ___ptr_start(), to: ___ptr_end(), isIncluded: isIncluded)
-  }
-
-  @inlinable public func reduce<Result>(
-    into initialResult: Result, _ updateAccumulatingResult: (inout Result, Element) throws -> Void
-  ) rethrows -> Result {
-    try ___element_sequence__(
-      from: ___ptr_start(), to: ___ptr_end(), into: initialResult, updateAccumulatingResult)
-  }
-
-  @inlinable public func reduce<Result>(
-    _ initialResult: Result, _ nextPartialResult: (Result, Element) throws -> Result
-  ) rethrows -> Result {
-    try ___element_sequence__(
-      from: ___ptr_start(), to: ___ptr_end(), initialResult, nextPartialResult)
-  }
-}
-#endif
-
 extension RedBlackTreeMultiset: Sequence {
 
   @inlinable

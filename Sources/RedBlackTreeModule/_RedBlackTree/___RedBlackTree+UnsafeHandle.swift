@@ -71,7 +71,7 @@ extension ___RedBlackTree.___Tree.UnsafeHandle {
   }
 }
 
-extension ___RedBlackTree.___Tree.UnsafeHandle: MemberProtocol & RootImpl & RefSetImpl & RootPtrImpl { }
+extension ___RedBlackTree.___Tree.UnsafeHandle: MemberProtocol & RootImpl & RefImpl & RootPtrImpl { }
 extension ___RedBlackTree.___Tree.UnsafeHandle: ValueProtocol { }
 
 extension ___RedBlackTree.___Tree.UnsafeHandle {
@@ -132,7 +132,8 @@ extension ___RedBlackTree.___Tree.UnsafeHandle {
   }
 }
 
-extension ___RedBlackTree.___Tree.UnsafeHandle {
+#if false
+extension ___RedBlackTree.___Tree.UnsafeHandle: RefSetImpl {
 
   @inlinable
   func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
@@ -155,3 +156,4 @@ extension ___RedBlackTree.___Tree.UnsafeHandle {
     __node_ptr[lhs].__right_ = rhs
   }
 }
+#endif

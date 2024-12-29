@@ -28,11 +28,6 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   public
   typealias Index = Tree.TreePointer
 
-//  public
-//  typealias IndexRange = ___RedBlackTree.TreeRange<Self>
-  public
-  typealias IndexRange = Range<Index>
-
   public
     typealias KeyValue = (key: Key, value: Value)
 
@@ -314,7 +309,7 @@ extension RedBlackTreeDictionary {
   }
 
   @inlinable
-  public mutating func removeSubrange(_ range: IndexRange) {
+  public mutating func removeSubrange(_ range: Range<Index>) {
     ___remove(from: range.lowerBound.pointer, to: range.upperBound.pointer)
   }
 

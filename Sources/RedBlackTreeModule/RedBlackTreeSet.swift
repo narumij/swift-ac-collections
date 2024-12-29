@@ -132,11 +132,6 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias Index = Tree.TreePointer
 
-  //  public
-  //    typealias IndexRange = ___RedBlackTree.TreeRange<Self>
-  public
-    typealias IndexRange = Range<Index>
-
   public
     typealias _Key = Element
 
@@ -290,7 +285,7 @@ extension RedBlackTreeSet {
   /// // 結果: treeSet = [0,1,5,6]
   /// ```
   @inlinable
-  public mutating func removeSubrange(_ range: IndexRange) {
+  public mutating func removeSubrange(_ range: Range<Index>) {
     ___remove(from: range.lowerBound.pointer, to: range.upperBound.pointer)
   }
 

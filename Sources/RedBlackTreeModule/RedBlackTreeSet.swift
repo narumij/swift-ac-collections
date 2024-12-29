@@ -651,10 +651,10 @@ extension RedBlackTreeSet.SubSequence: Sequence {
 #endif
 
 extension RedBlackTreeSet.SubSequence: __EnumerateSequence {
-  public func makeEnumerateIterator() -> RedBlackTreeSet.Tree.Tree.EnumerateIterator {
-    tree.makeEnumerateIterator(start: startIndex.pointer, end: endIndex.pointer)
+  public func makeEnumerateIterator() -> RedBlackTreeSet.Tree.Tree.EnumeratedIterator {
+    tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer)
   }
-  public typealias EnumerateIterator = RedBlackTreeSet.Tree.Tree.EnumerateIterator
+  public typealias EnumerateIterator = RedBlackTreeSet.Tree.Tree.EnumeratedIterator
 }
 
 extension RedBlackTreeSet.SubSequence: BidirectionalCollection {

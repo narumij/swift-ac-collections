@@ -706,11 +706,6 @@ extension ___RedBlackTree.___Tree: Sequence {
   public struct Iterator: IteratorProtocol {
     
     @inlinable
-    internal init(tree: Tree) {
-      self.init(tree: tree, start: tree.__begin_node, end: tree.__end_node())
-    }
-    
-    @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.tree = tree
       self.current = start
@@ -943,7 +938,7 @@ extension ___RedBlackTree.___Tree {
 
 extension ___RedBlackTree.___Tree {
   
-  public struct EnumerateIterator: IteratorProtocol {
+  public struct EnumeratedIterator: IteratorProtocol {
     
     @inlinable
     internal init(tree: Tree) {
@@ -974,12 +969,12 @@ extension ___RedBlackTree.___Tree {
   }
   
   @inlinable
-  public func makeEnumerateIterator() -> EnumerateIterator {
-    makeEnumerateIterator(start: __begin_node, end: __end_node())
+  public func makeEnumeratedIterator() -> EnumeratedIterator {
+    makeEnumeratedIterator(start: __begin_node, end: __end_node())
   }
   
   @inlinable
-  public func makeEnumerateIterator(start: _NodePtr, end: _NodePtr) -> EnumerateIterator {
+  public func makeEnumeratedIterator(start: _NodePtr, end: _NodePtr) -> EnumeratedIterator {
     .init(tree: self, start: start, end: end)
   }
 }

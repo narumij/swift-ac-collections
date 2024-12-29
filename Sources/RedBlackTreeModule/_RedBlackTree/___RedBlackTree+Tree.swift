@@ -98,6 +98,7 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   static func ensureUnique(tree: inout Tree) {
+    // このチェックだけでも、重い場合がある模様
     if !isKnownUniquelyReferenced(&tree) {
       tree = tree.copy(newCapacity: tree.header.capacity)
     }

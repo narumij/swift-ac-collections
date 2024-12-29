@@ -244,6 +244,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(at index: ___RedBlackTree.SimpleIndex) -> Element {
+    ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
@@ -253,6 +254,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
+    ensureUnique()
     guard let element = ___remove(at: index.pointer) else {
       fatalError(.invalidIndex)
     }
@@ -263,6 +265,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
+    ensureUnique()
     guard !isEmpty else {
       preconditionFailure(.emptyFirst)
     }
@@ -272,6 +275,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
+    ensureUnique()
     guard !isEmpty else {
       preconditionFailure(.emptyLast)
     }
@@ -304,6 +308,7 @@ extension RedBlackTreeSet {
   /// ```
   @inlinable
   public mutating func removeSubrange(_ range: Range<Index>) {
+    ensureUnique()
     ___remove(from: range.lowerBound.pointer, to: range.upperBound.pointer)
   }
 

@@ -220,7 +220,6 @@ extension ___RedBlackTreeBase {
       return nil
     }
     let e = tree[ptr]
-    ensureUnique()
     _ = tree.erase(ptr)
     return e
   }
@@ -235,7 +234,6 @@ extension ___RedBlackTreeBase {
     guard tree.___is_valid(from), to == .end || tree.___is_valid(to) else {
       fatalError(.invalidIndex)
     }
-    ensureUnique()
     return tree.erase(from, to)
   }
 
@@ -250,7 +248,6 @@ extension ___RedBlackTreeBase {
     guard tree.___is_valid(from), to == .end || tree.___is_valid(to) else {
       fatalError(.invalidIndex)
     }
-    ensureUnique()
     return try tree.___erase(from, to, action)
   }
 
@@ -267,7 +264,6 @@ extension ___RedBlackTreeBase {
     guard tree.___is_valid(from), to == .end || tree.___is_valid(to) else {
       fatalError(.invalidIndex)
     }
-    ensureUnique()
     return try tree.___erase(from, to, into: initialResult, updateAccumulatingResult)
   }
 
@@ -284,7 +280,6 @@ extension ___RedBlackTreeBase {
     guard tree.___is_valid(from), to == .end || tree.___is_valid(to) else {
       fatalError(.invalidIndex)
     }
-    ensureUnique()
     return try tree.___erase(from, to, initialResult, nextPartialResult)
   }
 }

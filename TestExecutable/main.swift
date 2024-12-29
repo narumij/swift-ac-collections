@@ -114,7 +114,7 @@ for i in 0 ..< 10_000 / N {
   print("2)", xy[1]?.checkUnique() != true ? "NG" : "OK") // NG
 //  print("3)", xy[1]?.checkUnique2() != true ? "NG" : "OK") // NG
 }
-#elseif true
+#elseif false
 // これもまだ
 //var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
 var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]

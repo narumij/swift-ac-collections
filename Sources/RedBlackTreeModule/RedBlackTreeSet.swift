@@ -24,6 +24,10 @@ import Foundation
 
 // AC https://atcoder.jp/contests/abc370/submissions/57922896
 // AC https://atcoder.jp/contests/abc385/submissions/61134983
+
+// 以下の書き方を標準形としてチューニングしています。
+// AC https://atcoder.jp/contests/abc385/submissions/61235111
+
 /// `RedBlackTreeSet` は、`Element` 型の要素を一意に格納するための
 /// 赤黒木（Red-Black Tree）ベースの集合型です。
 ///

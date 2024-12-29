@@ -48,7 +48,10 @@ extension ___RedBlackTree.___Tree {
         return rank(lhs) < rank(rhs)
       }
       
-      return lhs.tree.value_comp(lhs.tree[key: lhs.pointer], rhs.tree[key: rhs.pointer])
+      return with(lhs.tree) { tree in
+        return tree.value_comp(tree[key: lhs.pointer], tree[key: rhs.pointer])
+      }
+//      return lhs.tree.value_comp(lhs.tree[key: lhs.pointer], rhs.tree[key: rhs.pointer])
     }
     
     public static func == (lhs: Pointer, rhs: Pointer) -> Bool {
@@ -56,7 +59,7 @@ extension ___RedBlackTree.___Tree {
     }
     
     @inlinable
-    internal init(__tree: Tree, pointer: _NodePtr) {
+    internal init(__tree: Tree.Manager, pointer: _NodePtr) {
       guard pointer != .nullptr else {
         preconditionFailure("_NodePtr is nullptr")
       }
@@ -66,33 +69,33 @@ extension ___RedBlackTree.___Tree {
     
     // 性能の面でunownedを選択することにした。このためSendableには適合できない
     @usableFromInline
-    unowned let tree: Tree
+    let tree: Tree.Manager
     
     @usableFromInline
     var pointer: _NodePtr
     
     // これを公開にすると、リテインが必要な使い方を奨励してしまう
-    @inlinable
-    var pointee: Element {
-      get { tree[pointer] }
-      _modify { yield &tree[pointer] }
-    }
+//    @inlinable
+//    var pointee: Element {
+//      get { tree[pointer] }
+//      _modify { yield &tree[pointer] }
+//    }
 
     @inlinable
-    internal static func end(_ tree: Tree) -> Pointer {
-      .init(__tree: tree, pointer: tree.__end_node())
+    internal static func end(_ tree: Tree.Manager) -> Pointer {
+      .init(__tree: tree, pointer: .end)
     }
     
     // これを公開にすると、リテインが必要な使い方を奨励してしまう
-    @inlinable
-    internal func ___next() -> Pointer {
-      .init(__tree: tree, pointer: tree.__tree_next(pointer))
-    }
+//    @inlinable
+//    internal func ___next() -> Pointer {
+//      .init(__tree: tree, pointer: tree.__tree_next(pointer))
+//    }
 
     // これを公開にすると、リテインが必要な使い方を奨励してしまう
-    @inlinable
-    internal func ___prev() -> Pointer {
-      .init(__tree: tree, pointer: tree.__tree_prev_iter(pointer))
-    }
+//    @inlinable
+//    internal func ___prev() -> Pointer {
+//      .init(__tree: tree, pointer: tree.__tree_prev_iter(pointer))
+//    }
   }
 }

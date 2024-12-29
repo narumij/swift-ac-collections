@@ -80,7 +80,7 @@ extension ___RedBlackTreeBase {
   
   @inlinable @inline(__always)
   func ___index(_ p: _NodePtr) -> ___Index {
-    .init(__tree: tree, pointer: p)
+    .init(__tree: tree.manager(), pointer: p)
   }
   
   @inlinable @inline(__always)

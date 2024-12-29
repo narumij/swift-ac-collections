@@ -93,6 +93,7 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   static func ensureUnique(tree: inout Tree) {
+    
     if !isKnownUniquelyReferenced(&tree) {
       tree = tree.copy(newCapacity: tree.header.capacity)
     }
@@ -174,6 +175,9 @@ extension ___RedBlackTree.___Tree {
 
   public
     typealias Tree = ___RedBlackTree.___Tree<VC>
+
+  public
+    typealias VC = VC
 
   @usableFromInline
   typealias Manager = ManagedBufferPointer<Header, Node>
@@ -456,6 +460,8 @@ extension ___RedBlackTree.___Tree: InsertUniqueProtocol {
   }
 }
 
+extension ___RedBlackTree.___Tree: DistanceProtocol & CountProtocol { }
+
 extension ___RedBlackTree.___Tree: MemberProtocol & RootImpl & RefSetImpl & RootPtrImpl {
   @inlinable
   @inline(__always)
@@ -508,8 +514,6 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree: DistanceProtocol & CountProtocol { }
-
 extension ___RedBlackTree.___Tree {
   
   @inlinable
@@ -553,10 +557,8 @@ extension ___RedBlackTree.___Tree {
     rethrows
   {
     var __p = __p
-    var tree_pointer = TreePointer(__tree: self, pointer: __p)
     while __p != __l {
-      tree_pointer.pointer = __p
-      try body((tree_pointer, self[__p]))
+      try body((.init(__p), self[__p]))
       __p = __tree_next(__p)
     }
   }
@@ -679,5 +681,14 @@ extension ___RedBlackTree.___Tree {
       result.append(self[__p])
     }
     return result
+  }
+}
+
+
+extension ___RedBlackTree.___Tree {
+  
+  @inlinable @inline(__always)
+  __consuming func manager() -> Manager {
+    .init(unsafeBufferObject: self)
   }
 }

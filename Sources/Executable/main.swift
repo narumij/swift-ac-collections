@@ -3,6 +3,13 @@
 import Foundation
 import RedBlackTreeModule
 
+#if DEBUG
+let count = 500_000
+#else
+let count = 2_000_000
+//let count = 1_000_000
+#endif
+
 #if false
 var tree = RedBlackTreeSet<Int>()
 //let tree = RedBlackTree.Storage<Int>()
@@ -17,6 +24,17 @@ for i in 0 ..< 1_000_000 {
 var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 for v in 0..<10_000_000 {
   tree.remove(v)
+}
+#elseif false
+var tree = RedBlackTreeSet<Int>(0 ..< count)
+for v in tree {
+  tree.remove(v)
+}
+#elseif false
+var xy: [Int:RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]
+for i in xy[1, default: []] {
+  xy[1, default: []].remove(i)
+//  xy[1, default: []].remove(i)
 }
 #elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [:]
@@ -40,9 +58,9 @@ for i in 0 ..< 2_000_000 / N {
   }
 }
 #elseif true
-var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
+var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
 let N = 1000
-for i in 0 ..< 2_000_000 / N {
+for i in 0 ..< count / N {
   xy[1]?[(i * N) ..< (i * N + N)].enumerated().forEach { i, v in
     xy[1]?.remove(at: i)
   }

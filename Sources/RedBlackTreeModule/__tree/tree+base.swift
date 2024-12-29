@@ -82,6 +82,7 @@ extension MemberProtocol {
     return __h + (__is_black_(__x) ? 1 : 0)  // return black height of this node
   }
 
+#if true
   @inlinable
   func
     __tree_invariant(_ __root: _NodePtr) -> Bool
@@ -103,6 +104,11 @@ extension MemberProtocol {
     // do normal node checks
     return __tree_sub_invariant(__root) != 0
   }
+#else
+  @inlinable
+  @inline(__always)
+  func __tree_invariant(_ __root: _NodePtr) -> Bool { return true }
+#endif
 
   @inlinable
   func

@@ -230,6 +230,15 @@ extension RedBlackTreeSet {
 
   @inlinable
   @discardableResult
+  public mutating func remove(at index: ___RedBlackTree.SimpleIndex) -> Element {
+    guard let element = ___remove(at: index.pointer) else {
+      fatalError(.invalidIndex)
+    }
+    return element
+  }
+
+  @inlinable
+  @discardableResult
   public mutating func remove(at index: Index) -> Element {
     guard let element = ___remove(at: index.pointer) else {
       fatalError(.invalidIndex)
@@ -367,7 +376,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)。
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : self[index(before: .end(tree))]
+    isEmpty ? nil : self[index(before: .end(tree.manager()))]
   }
 
   @inlinable
@@ -419,30 +428,30 @@ extension RedBlackTreeSet: Equatable {
 }
 
 #if false
-extension RedBlackTreeSet {
+  extension RedBlackTreeSet {
 
-  @inlinable public func map<T>(_ transform: (Element) throws -> T) rethrows -> [T] {
-    try ___element_sequence__(from: ___ptr_start(), to: ___ptr_end(), transform: transform)
-  }
+    @inlinable public func map<T>(_ transform: (Element) throws -> T) rethrows -> [T] {
+      try ___element_sequence__(from: ___ptr_start(), to: ___ptr_end(), transform: transform)
+    }
 
-  @inlinable public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> [Element] {
-    try ___element_sequence__(from: ___ptr_start(), to: ___ptr_end(), isIncluded: isIncluded)
-  }
+    @inlinable public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> [Element] {
+      try ___element_sequence__(from: ___ptr_start(), to: ___ptr_end(), isIncluded: isIncluded)
+    }
 
-  @inlinable public func reduce<Result>(
-    into initialResult: Result, _ updateAccumulatingResult: (inout Result, Element) throws -> Void
-  ) rethrows -> Result {
-    try ___element_sequence__(
-      from: ___ptr_start(), to: ___ptr_end(), into: initialResult, updateAccumulatingResult)
-  }
+    @inlinable public func reduce<Result>(
+      into initialResult: Result, _ updateAccumulatingResult: (inout Result, Element) throws -> Void
+    ) rethrows -> Result {
+      try ___element_sequence__(
+        from: ___ptr_start(), to: ___ptr_end(), into: initialResult, updateAccumulatingResult)
+    }
 
-  @inlinable public func reduce<Result>(
-    _ initialResult: Result, _ nextPartialResult: (Result, Element) throws -> Result
-  ) rethrows -> Result {
-    try ___element_sequence__(
-      from: ___ptr_start(), to: ___ptr_end(), initialResult, nextPartialResult)
+    @inlinable public func reduce<Result>(
+      _ initialResult: Result, _ nextPartialResult: (Result, Element) throws -> Result
+    ) rethrows -> Result {
+      try ___element_sequence__(
+        from: ___ptr_start(), to: ___ptr_end(), initialResult, nextPartialResult)
+    }
   }
-}
 #endif
 
 extension RedBlackTreeSet: Sequence {
@@ -452,7 +461,7 @@ extension RedBlackTreeSet: Sequence {
   public func forEach(_ body: (Element) throws -> Void) rethrows {
     try tree.___for_each_(body)
   }
-  
+
   @frozen
   public struct Iterator: IteratorProtocol {
     @usableFromInline
@@ -476,28 +485,28 @@ extension RedBlackTreeSet: Sequence {
   public __consuming func makeIterator() -> Iterator {
     return Iterator(_base: self)
   }
-  
+
   @inlinable
   @inline(__always)
-  public func enumerated() -> AnySequence<Tree.EnumeratedElement> {
+  public __consuming func enumerated() -> AnySequence<Tree.EnumeratedElement> {
     AnySequence { tree.makeEnumeratedIterator() }
   }
 }
 
 extension RedBlackTreeSet: BidirectionalCollection {
-  
-  @inlinable
-  @inline(__always)
-  public var startIndex: Index { Index(__tree: tree, pointer: tree.startIndex) }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__tree: tree, pointer: tree.endIndex) }
+  public var startIndex: Index { Index(__tree: tree.manager(), pointer: tree.startIndex) }
+
+  @inlinable
+  @inline(__always)
+  public var endIndex: Index { Index(__tree: tree.manager(), pointer: tree.endIndex) }
 
   @inlinable
   @inline(__always)
   public var count: Int { tree.count }
-  
+
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
@@ -507,7 +516,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__tree: tree, pointer: tree.index(after: i.pointer))
+    return Index(__tree: tree.manager(), pointer: tree.index(after: i.pointer))
   }
 
   @inlinable
@@ -519,7 +528,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__tree: tree, pointer: tree.index(before: i.pointer))
+    return Index(__tree: tree.manager(), pointer: tree.index(before: i.pointer))
   }
 
   @inlinable
@@ -531,7 +540,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__tree: tree, pointer: tree.index(i.pointer, offsetBy: distance))
+    return Index(__tree: tree.manager(), pointer: tree.index(i.pointer, offsetBy: distance))
   }
 
   @inlinable
@@ -545,7 +554,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
 
     if let i = tree.index(i.pointer, offsetBy: distance, limitedBy: limit.pointer) {
-      return Index(__tree: tree, pointer: i)
+      return Index(__tree: tree.manager(), pointer: i)
     } else {
       return nil
     }
@@ -572,13 +581,12 @@ extension RedBlackTreeSet: BidirectionalCollection {
         tree.subsequence(from: bounds.lowerBound.pointer, to: bounds.upperBound.pointer)
     )
   }
-  
+
   @inlinable
   public subscript(bounds: Range<Element>) -> SubSequence {
-    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
+    self[lowerBound(bounds.lowerBound)..<upperBound(bounds.upperBound)]
   }
 }
-
 
 extension RedBlackTreeSet {
 
@@ -609,7 +617,7 @@ extension RedBlackTreeSet.SubSequence: Sequence {
   public func forEach(_ body: (Element) throws -> Void) rethrows {
     try tree.___for_each_(__p: startIndex.pointer, __l: endIndex.pointer, body: body)
   }
-  
+
   public typealias Element = RedBlackTreeSet.Element
 
   public struct Iterator: IteratorProtocol {
@@ -635,30 +643,46 @@ extension RedBlackTreeSet.SubSequence: Sequence {
     Iterator(_subSequence.makeIterator())
   }
 
-  @inlinable
-  @inline(__always)
-  public func enumerated() -> AnySequence<RedBlackTreeSet.Tree.EnumeratedElement> {
-    AnySequence { tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer) }
-  }
+#if true
+    @inlinable
+    @inline(__always)
+    public __consuming func enumerated() -> AnySequence<RedBlackTreeSet.Tree.EnumeratedElement> {
+      AnySequence { tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer) }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> RedBlackTreeSet.Tree.EnumeratedSequence {
+//      tree.enumeratedSubsequence(from: startIndex.pointer, to: endIndex.pointer)
+      return .init(tree: tree, start: startIndex.pointer, end: startIndex.pointer)
+    }
+  #endif
+}
+
+extension RedBlackTreeSet.SubSequence {
+//  public func makeEnumerateIterator() -> RedBlackTreeSet.Tree.EnumeratedIterator {
+//    tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer)
+//  }
+  public typealias EnumerateIterator = RedBlackTreeSet.Tree.EnumeratedIterator
 }
 
 extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
-  
+
   public typealias Index = RedBlackTreeSet.Index
   public typealias SubSequence = Self
 
   @inlinable
   @inline(__always)
-  public var startIndex: Index { Index(__tree: tree, pointer: _subSequence.startIndex) }
+  public var startIndex: Index { Index(__tree: tree.manager(), pointer: _subSequence.startIndex) }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__tree: tree, pointer: _subSequence.endIndex) }
+  public var endIndex: Index { Index(__tree: tree.manager(), pointer: _subSequence.endIndex) }
 
   @inlinable
   @inline(__always)
   public var count: Int { _subSequence.count }
-  
+
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
@@ -668,7 +692,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(after: i.pointer))
+    return Index(__tree: tree.manager(), pointer: _subSequence.index(after: i.pointer))
   }
 
   @inlinable
@@ -680,7 +704,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(before: i.pointer))
+    return Index(__tree: tree.manager(), pointer: _subSequence.index(before: i.pointer))
   }
 
   @inlinable
@@ -692,7 +716,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(i.pointer, offsetBy: distance))
+    return Index(__tree: tree.manager(), pointer: _subSequence.index(i.pointer, offsetBy: distance))
   }
 
   @inlinable
@@ -706,7 +730,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
 
     if let i = _subSequence.index(i.pointer, offsetBy: distance, limitedBy: limit.pointer) {
-      return Index(__tree: tree, pointer: i)
+      return Index(__tree: tree.manager(), pointer: i)
     } else {
       return nil
     }
@@ -733,4 +757,3 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
         _subSequence[bounds.lowerBound..<bounds.upperBound])
   }
 }
-

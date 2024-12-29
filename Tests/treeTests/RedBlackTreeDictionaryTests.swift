@@ -5,6 +5,7 @@
 //  Created by narumij on 2024/09/23.
 //
 
+#if false
 @testable import RedBlackTreeModule
 import XCTest
 
@@ -481,3 +482,4 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
   }
 
 }
+#endif

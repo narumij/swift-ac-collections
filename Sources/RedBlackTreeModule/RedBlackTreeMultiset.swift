@@ -123,6 +123,15 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   @discardableResult
+  public mutating func remove(at index: ___RedBlackTree.SimpleIndex) -> Element {
+    guard let element = ___remove(at: index.pointer) else {
+      fatalError(.invalidIndex)
+    }
+    return element
+  }
+
+  @inlinable
+  @discardableResult
   public mutating func remove(at index: Index) -> Element {
     guard let element = ___remove(at: index.pointer) else {
       fatalError(.invalidIndex)
@@ -210,7 +219,7 @@ extension RedBlackTreeMultiset {
   /// - Complexity: O(1)。
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : self[index(before: .end(tree))]
+    isEmpty ? nil : self[index(before: .end(tree.manager()))]
   }
 
   @inlinable
@@ -389,7 +398,7 @@ extension RedBlackTreeMultiset: Sequence {
   @inlinable
   @inline(__always)
   public __consuming func makeIterator() -> Iterator {
-    return Iterator(_base: self)
+    Iterator(_base: self)
   }
   
   @inlinable
@@ -403,11 +412,11 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   
   @inlinable
   @inline(__always)
-  public var startIndex: Index { Index(__tree: tree, pointer: tree.startIndex) }
+  public var startIndex: Index { Index(__tree: tree.manager(), pointer: tree.startIndex) }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__tree: tree, pointer: tree.endIndex) }
+  public var endIndex: Index { Index(__tree: tree.manager(), pointer: tree.endIndex) }
 
   @inlinable
   @inline(__always)
@@ -422,7 +431,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__tree: tree, pointer: tree.index(after: i.pointer))
+    return Index(__tree: tree.manager(), pointer: tree.index(after: i.pointer))
   }
 
   @inlinable
@@ -434,7 +443,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__tree: tree, pointer: tree.index(before: i.pointer))
+    return Index(__tree: tree.manager(), pointer: tree.index(before: i.pointer))
   }
 
   @inlinable
@@ -446,7 +455,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__tree: tree, pointer: tree.index(i.pointer, offsetBy: distance))
+    return Index(__tree: tree.manager(), pointer: tree.index(i.pointer, offsetBy: distance))
   }
 
   @inlinable
@@ -460,7 +469,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
 
     if let i = tree.index(i.pointer, offsetBy: distance, limitedBy: limit.pointer) {
-      return Index(__tree: tree, pointer: i)
+      return Index(__tree: tree.manager(), pointer: i)
     } else {
       return nil
     }
@@ -564,11 +573,11 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public var startIndex: Index { Index(__tree: tree, pointer: _subSequence.startIndex) }
+  public var startIndex: Index { Index(__tree: tree.manager(), pointer: _subSequence.startIndex) }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__tree: tree, pointer: _subSequence.endIndex) }
+  public var endIndex: Index { Index(__tree: tree.manager(), pointer: _subSequence.endIndex) }
 
   @inlinable
   @inline(__always)
@@ -583,7 +592,7 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(after: i.pointer))
+    return Index(__tree: tree.manager(), pointer: _subSequence.index(after: i.pointer))
   }
 
   @inlinable
@@ -595,7 +604,7 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(before: i.pointer))
+    return Index(__tree: tree.manager(), pointer: _subSequence.index(before: i.pointer))
   }
 
   @inlinable
@@ -607,7 +616,7 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(i.pointer, offsetBy: distance))
+    return Index(__tree: tree.manager(), pointer: _subSequence.index(i.pointer, offsetBy: distance))
   }
 
   @inlinable
@@ -621,7 +630,7 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
 
     if let i = _subSequence.index(i.pointer, offsetBy: distance, limitedBy: limit.pointer) {
-      return Index(__tree: tree, pointer: i)
+      return Index(__tree: tree.manager(), pointer: i)
     } else {
       return nil
     }

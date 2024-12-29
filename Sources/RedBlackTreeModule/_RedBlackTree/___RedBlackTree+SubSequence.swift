@@ -143,7 +143,7 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
   
   @inlinable
-  func subsequence(from: _NodePtr, to: _NodePtr) -> SubSequence {
+  __consuming func subsequence(from: _NodePtr, to: _NodePtr) -> SubSequence {
     .init(tree: self, start: from, end: to)
   }
 }

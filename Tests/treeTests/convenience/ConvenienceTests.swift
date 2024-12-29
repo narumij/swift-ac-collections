@@ -423,7 +423,7 @@ final class ConvenienceTests: XCTestCase {
   }
   
   func testSubSeq() throws {
-    var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+    var _: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
 //    var seq: Slice<RedBlackTreeSet<Int>> = RedBlackTreeSet<Int>.SubSequence(base: set, bounds: set.startIndex ..< set.endIndex)
 //    XCTAssertEqual(seq.map{ $0 }, [1, 2, 3, 4, 5, 6])
   }

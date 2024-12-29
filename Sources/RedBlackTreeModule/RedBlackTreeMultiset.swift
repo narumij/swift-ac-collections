@@ -243,51 +243,6 @@ extension RedBlackTreeMultiset {
   }
 }
 
-#if false
-extension RedBlackTreeMultiset: Collection {
-
-  @inlinable public subscript(position: Index) -> Element {
-    tree[position.pointer]
-  }
-
-  @inlinable public func index(before i: Index) -> Index {
-    ___index(before: i.pointer)
-  }
-
-  @inlinable public func index(after i: Index) -> Index {
-    ___index(after: i.pointer)
-  }
-
-  @inlinable public var startIndex: Index {
-    ___index_start()
-  }
-
-  @inlinable public var endIndex: Index {
-    ___index_end()
-  }
-}
-
-/// Overwrite Default implementation for bidirectional collections.
-extension RedBlackTreeMultiset {
-
-  @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(i.pointer, offsetBy: distance)
-  }
-
-  @inlinable public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index?
-  {
-    ___index(i.pointer, offsetBy: distance, limitedBy: limit.pointer)
-  }
-
-  /// fromからtoまでの符号付き距離を返す
-  ///
-  /// O(*n*)
-  @inlinable public func distance(from start: Index, to end: Index) -> Int {
-    ___distance(from: start.pointer, to: end.pointer)
-  }
-}
-#endif
-
 extension RedBlackTreeMultiset {
 
   /// - Complexity: O(log *n* + *k*), ここで *n* はマルチセット内の要素数、*k* は指定された要素の出現回数。

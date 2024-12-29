@@ -26,7 +26,7 @@ import Foundation
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   public
-  typealias Index = ___RedBlackTree.TreePointer<Self>
+  typealias Index = Tree.TreePointer
 
 //  public
 //  typealias IndexRange = ___RedBlackTree.TreeRange<Self>

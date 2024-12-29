@@ -25,6 +25,7 @@ import Foundation
 extension MemberSetProtocol {
 
   @inlinable
+  @inline(__always)
   func
     __tree_left_rotate(_ __x: _NodePtr)
   {
@@ -74,11 +75,11 @@ extension MemberSetProtocol {
     assert(__x != .nullptr, "Can't attach null node to a leaf")
     var __x = __x
     __is_black_(__x, __x == __root)
-    while __x != __root && !__is_black_(__parent_unsafe(__x)) {
+    while __x != __root, !__is_black_(__parent_unsafe(__x)) {
       // __x->__parent_ != __root because __x->__parent_->__is_black == false
       if __tree_is_left_child(__parent_unsafe(__x)) {
         let __y = __right_(__parent_unsafe(__parent_unsafe(__x)))
-        if __y != .nullptr && !__is_black_(__y) {
+        if __y != .nullptr, !__is_black_(__y) {
           __x = __parent_unsafe(__x)
           __is_black_(__x, true)
           __x = __parent_unsafe(__x)
@@ -98,7 +99,7 @@ extension MemberSetProtocol {
         }
       } else {
         let __y = __left_(__parent_(__parent_unsafe(__x)))
-        if __y != .nullptr && !__is_black_(__y) {
+        if __y != .nullptr, !__is_black_(__y) {
           __x = __parent_unsafe(__x)
           __is_black_(__x, true)
           __x = __parent_unsafe(__x)

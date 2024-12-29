@@ -22,16 +22,21 @@
 
 import Foundation
 
-extension ___RedBlackTree {
-  
-  public struct TreePointer<Base: ValueComparer>: Comparable {
+extension ___RedBlackTree.___Buffer {
 
-    public typealias Tree = ___RedBlackTree.___Buffer<Base>
+  public struct TreePointer: Comparable {
+
+    public typealias Tree = Buffer
     public typealias Pointer = Self
     
     @inlinable
     internal static func rank(_ rhs: Pointer) -> Int {
-      rhs.pointer != .end ? rhs.pointer : Int.max
+//      rhs.pointer != .end ? rhs.pointer : Int.max
+      switch rhs.pointer {
+      case .nullptr: return 3
+      case .end: return 2
+      default: return 1
+      }
     }
     
     public static func < (lhs: Pointer, rhs: Pointer) -> Bool {
@@ -44,7 +49,86 @@ extension ___RedBlackTree {
         return rank(lhs) < rank(rhs)
       }
       
-      return lhs.tree.distance(__l: lhs.pointer, __r: rhs.pointer) < 0
+      return lhs.tree.value_comp(lhs.tree[key: lhs.pointer], rhs.tree[key: rhs.pointer])
+    }
+    
+    public static func == (lhs: Pointer, rhs: Pointer) -> Bool {
+      lhs.pointer == rhs.pointer
+    }
+    
+    @inlinable
+    internal init(__tree: Tree, pointer: _NodePtr) {
+      guard pointer != .nullptr else {
+        preconditionFailure("_NodePtr is nullptr")
+      }
+      self.tree = __tree
+      self.pointer = pointer
+    }
+    
+    // retainすると死ぬほど遅い場面がある。
+    // しばらく悩むことにする
+    @usableFromInline
+    unowned let tree: Buffer
+    
+    @usableFromInline
+    var pointer: _NodePtr
+    
+    // これを公開にすると、リテインが必要な使い方を奨励してしまう
+    @inlinable
+    var pointee: Element {
+      get { tree[pointer] }
+      _modify { yield &tree[pointer] }
+    }
+
+    @inlinable
+    internal static func end(_ tree: Tree) -> Pointer {
+      .init(__tree: tree, pointer: tree.__end_node())
+    }
+    
+    // これを公開にすると、リテインが必要な使い方を奨励してしまう
+    @inlinable
+    internal func ___next() -> Pointer {
+      .init(__tree: tree, pointer: tree.__tree_next(pointer))
+    }
+
+    // これを公開にすると、リテインが必要な使い方を奨励してしまう
+    @inlinable
+    internal func ___prev() -> Pointer {
+      .init(__tree: tree, pointer: tree.__tree_prev_iter(pointer))
+    }
+  }
+}
+
+
+#if false
+extension ___RedBlackTree {
+  
+  public struct TreePointer<Base: ValueComparer>: Comparable {
+
+    public typealias Tree = ___RedBlackTree.___Buffer<Base>
+    public typealias Pointer = Self
+    
+    @inlinable
+    internal static func rank(_ rhs: Pointer) -> Int {
+//      rhs.pointer != .end ? rhs.pointer : Int.max
+      switch rhs.pointer {
+      case .nullptr: return 3
+      case .end: return 2
+      default: return 1
+      }
+    }
+    
+    public static func < (lhs: Pointer, rhs: Pointer) -> Bool {
+      
+      if lhs.pointer == rhs.pointer {
+        return false
+      }
+      
+      guard rank(lhs) == rank(rhs) else {
+        return rank(lhs) < rank(rhs)
+      }
+      
+      return lhs.tree.distance(__l: lhs.pointer, __r: rhs.pointer) > 0
     }
     
     public static func == (lhs: Pointer, rhs: Pointer) -> Bool {
@@ -68,8 +152,9 @@ extension ___RedBlackTree {
     @usableFromInline
     let pointer: _NodePtr
     
+    // これを公開にすると、リテインが必要な使い方を奨励してしまう
     @inlinable
-    public var pointee: Base.Element {
+    var pointee: Base.Element {
       get { tree[pointer] }
       _modify { yield &tree[pointer] }
     }
@@ -79,17 +164,20 @@ extension ___RedBlackTree {
       .init(__tree: tree, pointer: tree.__end_node())
     }
     
+    // これを公開にすると、リテインが必要な使い方を奨励してしまう
     @inlinable
-    public func ___next() -> Pointer {
+    internal func ___next() -> Pointer {
       .init(__tree: tree, pointer: tree.__tree_next(pointer))
     }
 
+    // これを公開にすると、リテインが必要な使い方を奨励してしまう
     @inlinable
-    public func ___prev() -> Pointer {
+    internal func ___prev() -> Pointer {
       .init(__tree: tree, pointer: tree.__tree_prev_iter(pointer))
     }
   }
 }
+#endif
 
 //extension Range: Sequence where Bound == ___RedBlackTree.TreePointer<Any> {
 //  

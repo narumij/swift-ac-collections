@@ -88,7 +88,7 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @usableFromInline
-  typealias ___Index = ___RedBlackTree.TreePointer<Self>
+  typealias ___Index = Tree.TreePointer
   
   @inlinable @inline(__always)
   func ___index(_ p: _NodePtr) -> ___Index {
@@ -166,6 +166,7 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @inlinable
+  @inline(__always)
   func ___index(_ i: _NodePtr, offsetBy distance: Int, type: String) -> ___Index {
     ___index(pointer(i, offsetBy: distance))
   }
@@ -261,6 +262,7 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @inlinable
+  @inline(__always)
   public func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int {
     tree.distance(__l: start, __r: end)
   }
@@ -278,6 +280,7 @@ extension ___RedBlackTreeBase {
   public typealias ___EnumeratedSequence = UnfoldSequence<EnumeratedElement, Tree.SafeSequenceState>
 
   @inlinable
+  @inline(__always)
   public func ___enumerated_sequence(from: _NodePtr, to: _NodePtr)
     -> ___EnumeratedSequence
   {
@@ -301,6 +304,7 @@ extension ___RedBlackTreeBase {
 //  }
 
   @inlinable
+  @inline(__always)
   public func ___enumerated_sequence__(from: _NodePtr, to: _NodePtr)
     -> [EnumeratedElement]
   {
@@ -317,6 +321,7 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable
+  @inline(__always)
   public func ___element_sequence__<T>(
     from: _NodePtr, to: _NodePtr, transform: (Element) throws -> T
   )
@@ -330,6 +335,7 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable
+  @inline(__always)
   public func ___element_sequence__(
     from: _NodePtr, to: _NodePtr, isIncluded: (Element) throws -> Bool
   )
@@ -345,6 +351,7 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable
+  @inline(__always)
   public func ___element_sequence__<T>(
     from: _NodePtr, to: _NodePtr, _ initial: T, _ folding: (T, Element) throws -> T
   )
@@ -358,6 +365,7 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable
+  @inline(__always)
   public func ___element_sequence__<T>(
     from: _NodePtr, to: _NodePtr, into initial: T, _ folding: (inout T, Element) throws -> Void
   )
@@ -371,6 +379,7 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable
+  @inline(__always)
   public func ___element_sequence__(from: _NodePtr, to: _NodePtr)
     -> [Element]
   {
@@ -410,6 +419,7 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @inlinable
+  @inline(__always)
   @discardableResult
   mutating func ___remove(at ptr: _NodePtr) -> Element? {
     guard
@@ -429,6 +439,7 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable
+  @inline(__always)
   @discardableResult
   mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
     guard from != .end else {
@@ -442,6 +453,7 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable
+  @inline(__always)
   public mutating func ___remove(from: _NodePtr, to: _NodePtr, forEach action: (Element) throws -> Void)
     rethrows
   {
@@ -456,6 +468,7 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable
+  @inline(__always)
   public mutating func ___remove<Result>(
     from: _NodePtr, to: _NodePtr,
     into initialResult: Result,
@@ -472,6 +485,7 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable
+  @inline(__always)
   public mutating func ___remove<Result>(
     from: _NodePtr, to: _NodePtr,
     _ initialResult: Result,

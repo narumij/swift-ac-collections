@@ -39,7 +39,19 @@ for i in 0 ..< 2_000_000 / N {
     xy[1, default: []].removeSubrange(lo ..< hi)
   }
 }
-#elseif false
+#elseif true
+var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
+let N = 1000
+for i in 0 ..< 2_000_000 / N {
+  xy[1]?[(i * N) ..< (i * N + N)].enumerated().forEach { i, v in
+    xy[1]?.remove(at: i)
+  }
+//     let hi = xy[1]?.upperBound(i * N + N) {
+////    xy[1]?.removeSubrange(lo ..< hi)
+//    xy[1, default: []].removeSubrange(lo ..< hi)
+//  }
+}
+#elseif true
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: []]
 for i in 0 ..< 2_000_000 {
   xy[1, default: []].insert(i)
@@ -83,6 +95,11 @@ print("Hola!")
 
 extension RedBlackTreeSet {
 
+  @inlinable
+  public subscript(bounds: Range<Element>) -> SubSequence {
+    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
+  }
+  
   @inlinable
   public mutating func removeAndForEach(
     _ range: Range<Element>,

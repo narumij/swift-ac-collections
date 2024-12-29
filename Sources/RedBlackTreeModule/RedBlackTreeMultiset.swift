@@ -31,7 +31,7 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
     typealias Element = Element
 
   public
-  typealias Index = ___RedBlackTree.TreePointer<Self>
+  typealias Index = Tree.TreePointer
 
 //  public
 //  typealias IndexRange = ___RedBlackTree.TreeRange<Self>

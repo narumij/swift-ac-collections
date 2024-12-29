@@ -122,6 +122,9 @@ final class EtcTests: XCTestCase {
 //      $0.initializeElement(at: 0, to: 3)
 //    }
 //    XCTAssertEqual(a[0], 3)
+    let a = [1,2,3]
+    
+//    a.enumerated()
   }
   
 //  func testIndexAfer() throws {

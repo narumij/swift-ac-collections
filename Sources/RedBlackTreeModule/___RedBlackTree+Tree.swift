@@ -248,6 +248,13 @@ extension ___RedBlackTree.___Buffer {
   }
 
   @inlinable
+  @inline(__always)
+  subscript(key pointer: _NodePtr) -> _Key {
+      assert(0 <= pointer && pointer < header.initializedCount)
+      return __key(__node_ptr[pointer].__value_)
+  }
+
+  @inlinable
   public subscript(_ pointer: _NodePtr) -> Element {
     @inline(__always)
     get {
@@ -691,77 +698,136 @@ extension ___RedBlackTree.___Buffer {
 }
 
 extension ___RedBlackTree.___Buffer: Sequence {
-
+  
   public struct Iterator: IteratorProtocol {
-
+    
     @inlinable
     internal init(tree: Buffer) {
       self.init(tree: tree, start: tree.__begin_node, end: tree.__end_node())
     }
-
+    
     @inlinable
     internal init(tree: Buffer, start: _NodePtr, end: _NodePtr) {
       self.tree = tree
       self.state = tree.___begin(start, to: end)
     }
-
+    
     @usableFromInline
     let tree: Buffer
-
+    
     @usableFromInline
     var state: UnsafeSequenceState
-
+    
     public
-      mutating func next() -> Element?
+    mutating func next() -> Element?
     {
       guard tree.___end(state) else { return nil }
       defer { tree.___next(&state) }
       return tree[node: state.current].__value_
     }
   }
-
+  
   @inlinable
   public func makeIterator() -> Iterator {
     makeIterator(start: __begin_node, end: __end_node())
   }
-
+  
   @inlinable
   public func makeIterator(start: _NodePtr, end: _NodePtr) -> Iterator {
     .init(tree: self, start: start, end: end)
   }
-}
-
-extension ___RedBlackTree.___Buffer: Collection {
   
-  public func index(after i: Int) -> Int {
-    __tree_next(i)
-  }
-  
-  public var startIndex: Int {
-    __begin_node
-  }
-  
-  public var endIndex: Int {
-    __end_node()
-  }
+  public typealias Index = _NodePtr
   
   // この実装がないと、迷子になる
   @inlinable
   public func distance(from start: Index, to end: Index) -> Int {
     distance(__l: start, __r: end)
   }
-}
-
-extension ___RedBlackTree.___Buffer: BidirectionalCollection {
   
-  public func index(before i: Int) -> Int {
+  @inlinable
+  @inline(__always)
+  public func index(after i: Index) -> Index {
+    __tree_next(i)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func formIndex(after i: inout Index) {
+    i = __tree_next(i)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func index(before i: Index) -> Index {
     __tree_prev_iter(i)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func formIndex(before i: inout Index) {
+    i = __tree_prev_iter(i)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int) -> Index {
+    var distance = distance
+    var i = i
+    while distance != 0 {
+      if 0 < distance {
+        i = index(after: i)
+        distance -= 1
+      }
+      else {
+        i = index(before: i)
+        distance += 1
+      }
+    }
+    return i
+  }
+  
+  @inlinable
+  @inline(__always)
+  internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    i = index(i, offsetBy: distance)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+    var distance = distance
+    var i = i
+    while distance != 0 {
+      if i == limit {
+        return nil
+      }
+      if 0 < distance {
+        i = index(after: i)
+        distance -= 1
+      }
+      else {
+        i = index(before: i)
+        distance += 1
+      }
+    }
+    return i
+  }
+  
+  @inlinable
+  @inline(__always)
+  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index) -> Bool {
+    if let ii = index(i, offsetBy: distance, limitedBy: limit) {
+      i = ii
+      return true
+    }
+    return false
   }
 }
 
 extension ___RedBlackTree.___Buffer {
 
-  public struct ___SubSequence: Sequence {
+  public struct SubSequence: Sequence {
 
     public typealias Element = Buffer.Element
     public typealias Index = _NodePtr
@@ -774,7 +840,7 @@ extension ___RedBlackTree.___Buffer {
     }
 
     @usableFromInline
-    let base: Buffer
+    unowned let base: Buffer
 
     public
       var startIndex: Index
@@ -784,25 +850,163 @@ extension ___RedBlackTree.___Buffer {
 
     @inlinable
     public func makeIterator() -> Iterator {
-      base.makeIterator(start: startIndex, end: startIndex)
-    }
-
-    public func index(after i: Index) -> Index {
-      base.__tree_next_iter(i)
+      base.makeIterator(start: startIndex, end: endIndex)
     }
     
-    public func index(before i: Index) -> Index {
-      base.__tree_prev_iter(i)
-    }
-    
-    public subscript(position: Index) -> Element {
-      base[position]
+    @inlinable
+    @inline(__always)
+    var count: Int {
+      base.distance(from: startIndex, to: endIndex)
     }
     
     // この実装がないと、迷子になる
     @inlinable
+    @inline(__always)
     public func distance(from start: Index, to end: Index) -> Int {
       base.distance(from: start, to: end)
     }
+    
+    @inlinable
+    @inline(__always)
+    public func index(after i: Index) -> Index {
+      base.index(after: i)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func formIndex(after i: inout Index) {
+      base.formIndex(after: &i)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func index(before i: Index) -> Index {
+      base.index(before: i)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func formIndex(before i: inout Index) {
+      base.formIndex(before: &i)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func index(_ i: Index, offsetBy distance: Int) -> Index {
+      base.index(i, offsetBy: distance)
+    }
+    
+    @inlinable
+    @inline(__always)
+    internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+      base.formIndex(&i, offsetBy: distance)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+      base.index(i, offsetBy: distance, limitedBy: limit)
+    }
+    
+    @inlinable
+    @inline(__always)
+    internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index) -> Bool {
+      if let ii = index(i, offsetBy: distance, limitedBy: limit) {
+        i = ii
+        return true
+      }
+      return false
+    }
+    
+    @inlinable
+    @inline(__always)
+    public subscript(position: Index) -> Element {
+      base[position]
+    }
+    
+    @inlinable
+    public subscript(bounds: Range<TreePointer>) -> SubSequence {
+      .init(tree: base, start: bounds.lowerBound.pointer, end: bounds.upperBound.pointer)
+    }
+  }
+  
+  func subsequence(from: _NodePtr, to: _NodePtr) -> SubSequence {
+    .init(tree: self, start: from, end: to)
+  }
+}
+
+extension ___RedBlackTree.___Buffer {
+  
+  public struct EnumerateIterator: IteratorProtocol {
+    
+    @inlinable
+    internal init(tree: Buffer) {
+      self.init(tree: tree, start: tree.__begin_node, end: tree.__end_node())
+    }
+    
+    @inlinable
+    internal init(tree: Buffer, start: _NodePtr, end: _NodePtr) {
+      self.tree = tree
+      self.state = tree.___begin(start, to: end)
+    }
+    
+    @usableFromInline
+    unowned let tree: Buffer
+    
+    @usableFromInline
+    var state: UnsafeSequenceState
+    
+    public
+    mutating func next() -> (offset: TreePointer, element: Element)?
+    {
+      guard tree.___end(state) else { return nil }
+      defer { tree.___next(&state) }
+      return (TreePointer(__tree: tree, pointer: state.current),
+              tree[node: state.current].__value_)
+    }
+  }
+  
+  @inlinable
+  public func makeEnumerateIterator() -> EnumerateIterator {
+    makeEnumerateIterator(start: __begin_node, end: __end_node())
+  }
+  
+  @inlinable
+  public func makeEnumerateIterator(start: _NodePtr, end: _NodePtr) -> EnumerateIterator {
+    .init(tree: self, start: start, end: end)
+  }
+}
+
+extension ___RedBlackTree.___Buffer.EnumerateIterator: @unchecked Sendable {}
+
+public
+protocol __EnumerateSequence {
+  associatedtype EnumerateIterator: IteratorProtocol
+  func makeEnumerateIterator() -> EnumerateIterator
+}
+
+// MARK: -
+
+extension ___RedBlackTree.___Buffer {
+  
+  @frozen
+  public struct EnumeratedSequence<Base: __EnumerateSequence> {
+    @usableFromInline
+    internal var _base: Base
+
+    @inlinable
+    internal init(_base: Base) {
+      self._base = _base
+    }
+  }
+}
+
+//extension ___RedBlackTree.___Buffer.EnumeratedSequence: Sendable where Base: Sendable {}
+
+extension ___RedBlackTree.___Buffer.EnumeratedSequence: Sequence {
+  
+  @inlinable
+  public __consuming func makeIterator() -> Base.EnumerateIterator {
+    _base.makeEnumerateIterator()
   }
 }

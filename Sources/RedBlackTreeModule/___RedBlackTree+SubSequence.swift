@@ -22,13 +22,13 @@
 
 import Foundation
 
+#if false
 public protocol ___Tree: ValueComparer {
   init(___tree: Tree)
-  func ___makeIterator(startIndex: ___Pointer, endIndex: ___Pointer) -> ___Iterator
+  func ___makeIterator(startIndex: _NodePtr, endIndex: _NodePtr) -> ___Iterator
 }
 
 extension ___Tree {
-  public typealias ___Pointer = ___RedBlackTree.TreePointer<Self>
   public typealias ___Iterator = ___RedBlackTree.Iterator<Self>
   public typealias ___SubSequence = ___RedBlackTree.SubSequence<Self>
 }
@@ -39,7 +39,7 @@ extension ___RedBlackTree {
   where Base: ___Tree {
     
     @inlinable
-    init(_subSequence: ___RedBlackTree.SubSequence<Base>._Tree.___SubSequence) {
+    init(_subSequence: ___RedBlackTree.SubSequence<Base>._Tree.SubSequence) {
       self._subSequence = _subSequence
     }
 
@@ -52,7 +52,7 @@ extension ___RedBlackTree {
     public typealias Base = Base
 
     @usableFromInline
-    internal let _subSequence: _Tree.___SubSequence
+    internal let _subSequence: _Tree.SubSequence
     public
       var startIndex: Index
     { Index(__tree: _subSequence.base, pointer: _subSequence.startIndex) }
@@ -77,38 +77,37 @@ extension ___RedBlackTree.SubSequence: Sequence {
   }
 }
 
-extension ___RedBlackTree.SubSequence: Collection {
-  
-  public func index(after i: Index) -> Index {
-    i.___next()
-  }
-  
-  public subscript(position: Index) -> Base.Element {
-    position.pointee
-  }
-  
-  // この実装がないと、迷子になる
-  @inlinable
-  public func distance(from start: Index, to end: Index) -> Int {
-    _subSequence.distance(from: start.pointer, to: end.pointer)
-  }
-}
-
-extension ___RedBlackTree.SubSequence: BidirectionalCollection {
-  
-  public func index(before i: Index) -> Index {
-    i.___prev()
-  }
-}
+//extension ___RedBlackTree.SubSequence: Collection {
+//  
+//  public func index(after i: Index) -> Index {
+//    i.___next()
+//  }
+//  
+//  public subscript(position: Index) -> Base.Element {
+//    position.pointee
+//  }
+//  
+//  // この実装がないと、迷子になる
+//  @inlinable
+//  public func distance(from start: Index, to end: Index) -> Int {
+//    _subSequence.distance(from: start.pointer, to: end.pointer)
+//  }
+//}
+//
+//extension ___RedBlackTree.SubSequence: BidirectionalCollection {
+//  
+//  public func index(before i: Index) -> Index {
+//    i.___prev()
+//  }
+//}
 
 extension ___RedBlackTreeBase {
   
-//  public func ___makeIterator(startIndex: ___RedBlackTree.SimpleIndex, endIndex: ___RedBlackTree.SimpleIndex) -> ___RedBlackTree.Iterator<Self> {
-//    .init(tree.makeIterator(start: startIndex.pointer, end: endIndex.pointer))
-//  }
-  
-  public func ___makeIterator(startIndex: ___RedBlackTree.TreePointer<Self>, endIndex: ___RedBlackTree.TreePointer<Self>) -> ___RedBlackTree.Iterator<Self> {
-    .init(tree.makeIterator(start: startIndex.pointer, end: endIndex.pointer))
+  public func ___makeIterator(startIndex: _NodePtr, endIndex: _NodePtr) -> ___RedBlackTree.Iterator<Self> {
+    .init(tree.makeIterator(start: startIndex, end: endIndex))
   }
 
 }
+#endif
+
+

@@ -29,7 +29,7 @@ public
   static func value_comp(_ a: Key, _ b: Key) -> Bool
 }
 
-/// メモ化向け
+/// メモ化用途向け
 @frozen
 public struct ___RedBlackTreeMemoizeBase<CustomKey, Value>
 where CustomKey: CustomKeyProtocol {

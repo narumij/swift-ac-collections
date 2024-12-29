@@ -52,7 +52,6 @@ extension ___RedBlackTree.___Tree: Sequence {
   
   @inlinable
   public __consuming func makeIterator() -> Iterator {
-//    makeIterator(start: __begin_node, end: __end_node())
     .init(tree: manager(), start: __begin_node, end: __end_node())
   }
   
@@ -220,7 +219,6 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   public __consuming func makeTransformIterator<T>(_ transform: @escaping (Tree.Element) -> T) -> TransformIterator<T> {
     .init(tree: manager(), start: __begin_node, end: __end_node(), transform)
-//    makeTransformIterator(start: __begin_node, end: __end_node(), transform)
   }
   
   @inlinable

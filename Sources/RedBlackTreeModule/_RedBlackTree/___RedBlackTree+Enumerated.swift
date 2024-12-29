@@ -59,7 +59,6 @@ extension ___RedBlackTree.___Tree {
   
   @inlinable
   public __consuming func makeEnumeratedIterator() -> EnumeratedIterator {
-//    makeEnumeratedIterator(start: __begin_node, end: __end_node())
     .init(tree: manager(), start: __begin_node, end: __end_node())
   }
   
@@ -180,9 +179,4 @@ extension ___RedBlackTree.___Tree {
       .init(tree: base, start: bounds.lowerBound.pointer, end: bounds.upperBound.pointer)
     }
   }
-  
-//  @inlinable
-//  __consuming func enumeratedSubsequence(from: _NodePtr, to: _NodePtr) -> EnumeratedSequence {
-//    .init(tree: self, start: from, end: to)
-//  }
 }

@@ -359,16 +359,6 @@ extension RedBlackTreeMultiset {
 }
 #endif
 
-//extension RedBlackTreeMultiset {
-//
-//  public typealias EnumeratedElement = Tree.EnumeratedElement
-//
-//  @inlinable
-//  public func enumerated() -> AnySequence<EnumeratedElement> {
-//    AnySequence { tree.makeEnumeratedIterator() }
-//  }
-//}
-
 extension RedBlackTreeMultiset: Sequence {
 
   @inlinable

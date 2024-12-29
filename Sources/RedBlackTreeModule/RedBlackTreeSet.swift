@@ -649,27 +649,20 @@ extension RedBlackTreeSet.SubSequence: Sequence {
     Iterator(_subSequence.makeIterator())
   }
 
-#if true
+  #if true
     @inlinable
     @inline(__always)
     public __consuming func enumerated() -> AnySequence<RedBlackTreeSet.Tree.EnumeratedElement> {
       AnySequence { tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer) }
     }
   #else
+    // どうしても過剰解法されてしまう。困った
     @inlinable
     @inline(__always)
     public func enumerated() -> RedBlackTreeSet.Tree.EnumeratedSequence {
-//      tree.enumeratedSubsequence(from: startIndex.pointer, to: endIndex.pointer)
       return .init(tree: tree, start: startIndex.pointer, end: startIndex.pointer)
     }
   #endif
-}
-
-extension RedBlackTreeSet.SubSequence {
-//  public func makeEnumerateIterator() -> RedBlackTreeSet.Tree.EnumeratedIterator {
-//    tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer)
-//  }
-  public typealias EnumerateIterator = RedBlackTreeSet.Tree.EnumeratedIterator
 }
 
 extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
@@ -761,7 +754,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   public subscript(position: ___RedBlackTree.SimpleIndex) -> Element {
     return tree[position.pointer]
   }
-  
+
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
     SubSequence(

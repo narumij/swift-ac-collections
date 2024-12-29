@@ -481,18 +481,6 @@ extension RedBlackTreeDictionary {
 }
 #endif
 
-//extension RedBlackTreeDictionary {
-//
-//  public typealias EnumeratedElement = Tree.EnumeratedElement
-//
-//  @inlinable
-//  public func enumerated() -> AnySequence<EnumeratedElement> {
-//    AnySequence { tree.makeEnumeratedIterator() }
-//  }
-//}
-
-// MARK: -
-
 extension RedBlackTreeDictionary: Sequence {
 
   @inlinable
@@ -627,12 +615,11 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
     )
   }
   
-//  @inlinable
-//  public subscript(bounds: Range<Element>) -> SubSequence {
-//    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
-//  }
+  @inlinable
+  public subscript(bounds: Range<Key>) -> SubSequence {
+    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
+  }
 }
-
 
 extension RedBlackTreeDictionary {
 

@@ -30,7 +30,8 @@ let package = Package(
       name: "Executable",
       dependencies: [
         "RedBlackTreeModule"
-      ]
+      ], 
+      path: "TestExecutable"
     ),
   ]
 )

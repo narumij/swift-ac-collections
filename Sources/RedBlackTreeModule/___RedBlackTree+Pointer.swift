@@ -64,8 +64,7 @@ extension ___RedBlackTree.___Tree {
       self.pointer = pointer
     }
     
-    // retainすると死ぬほど遅い場面がある。
-    // しばらく悩むことにする
+    // 性能の面でunownedを選択することにした。このためSendableには適合できない
     @usableFromInline
     unowned let tree: Tree
     

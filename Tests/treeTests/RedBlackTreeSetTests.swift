@@ -12,10 +12,10 @@
 
   extension RedBlackTreeSet {
     func left(_ p: Element) -> Int {
-      tree.___signed_distance(tree.__begin_node, tree.__lower_bound(p, tree.__root(), tree.end()))
+      tree.___signed_distance(tree.__begin_node, tree.lower_bound(p))
     }
     func right(_ p: Element) -> Int {
-      tree.___signed_distance(tree.__begin_node, tree.__upper_bound(p, tree.__root(), tree.end()))
+      tree.___signed_distance(tree.__begin_node, tree.upper_bound(p))
     }
     var elements: [Element] {
       map { $0 }

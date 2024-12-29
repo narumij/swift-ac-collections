@@ -187,12 +187,6 @@ extension RedBlackTreeSet {
     ___isEmpty
   }
 
-  /// - 計算量: O(1)
-  @inlinable
-  public var count: Int {
-    ___count
-  }
-
   @inlinable
   public var capacity: Int {
     ___capacity
@@ -230,7 +224,8 @@ extension RedBlackTreeSet {
 
   @discardableResult
   @inlinable public mutating func remove(_ member: Element) -> Element? {
-    tree.___erase_unique(member) ? member : nil
+    ensureUnique()
+    return tree.___erase_unique(member) ? member : nil
   }
 
   @inlinable
@@ -293,6 +288,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    ensureUnique()
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }
@@ -401,54 +397,6 @@ extension RedBlackTreeSet {
   }
 }
 
-#if true
-extension RedBlackTreeSet: BidirectionalCollection {
-
-  /// - Complexity: O(1)。
-  @inlinable public subscript(position: Index) -> Element {
-    tree[position.pointer]
-  }
-
-  /// - Complexity: 償却された O(1)。
-  @inlinable public func index(before i: Index) -> Index {
-    ___index(before: i.pointer)
-  }
-
-  /// - Complexity: 償却された O(1)。
-  @inlinable public func index(after i: Index) -> Index {
-    ___index(after: i.pointer)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable public var startIndex: Index {
-    ___index_start()
-  }
-
-  /// - Complexity: O(1)
-  @inlinable public var endIndex: Index {
-    ___index_end()
-  }
-}
-
-extension RedBlackTreeSet {
-
-  @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(i.pointer, offsetBy: distance)
-  }
-
-  @inlinable public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index?
-  {
-    ___index(i.pointer, offsetBy: distance, limitedBy: limit.pointer)
-  }
-
-  /// 償却された O(*n*)
-  @inlinable
-  public func distance(from start: Index, to end: Index) -> Int {
-    ___distance(from: start.pointer, to: end.pointer)
-  }
-}
-#endif
-
 extension RedBlackTreeSet: CustomStringConvertible, CustomDebugStringConvertible {
 
   @inlinable
@@ -497,38 +445,14 @@ extension RedBlackTreeSet {
 }
 #endif
 
-extension RedBlackTreeSet {
-
-  @inlinable
-  public func enumerated() -> AnySequence<Tree.EnumeratedElement> {
-    AnySequence { tree.makeEnumeratedIterator() }
-  }
-
-  /// 指定した範囲（`lhs ..< rhs` の半開区間）内の要素を、
-  /// `(position: Index, element: Element)` タプルの配列として返します。
-  ///
-  /// - Parameter range: 列挙したい要素の範囲を示す `IndexRange` で、
-  ///   Swift の `lhs ..< rhs` のように、`lhs`（含む）から `rhs`（含まない）までの
-  ///   半開区間を表します。
-  /// - Returns: 該当範囲の要素を `(Index, Element)` タプルの配列で返す `EnumeratedSequence`。
-  ///
-  /// ## 計算量 (償却)
-  /// - 単一の「次ノード」取得 (`tree_next_iter` など) に注目すれば、
-  ///   木の高さに比例して最悪 **O(log n)** となる場合があります。
-  /// - しかし、範囲内の要素を **連続** して辿る場合は、同じ枝を何度も上り下りしないため、
-  ///   *k* 個の要素を取得し終えるまでの合計コストは償却 **O(k)** です。
-  ///   （ここで *k* は範囲内の要素数）
-  ///
-  /// - Important: `lhs ..< rhs` のように左端が右端より大きい（または等しい）場合など、
-  ///   無効な区間が指定されたときの挙動は未定義です。必ず正しい範囲を指定してください。
-  @inlinable
-  public func enumeratedSubrange(_ range: IndexRange) -> AnySequence<Tree.EnumeratedElement> {
-    AnySequence { tree.makeEnumeratedIterator(start: range.lowerBound.pointer, end: range.upperBound.pointer) }
-  }
-}
-
 extension RedBlackTreeSet: Sequence {
 
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (Element) throws -> Void) rethrows {
+    try tree.___for_each_(body)
+  }
+  
   @frozen
   public struct Iterator: IteratorProtocol {
     @usableFromInline
@@ -552,7 +476,109 @@ extension RedBlackTreeSet: Sequence {
   public __consuming func makeIterator() -> Iterator {
     return Iterator(_base: self)
   }
+  
+  @inlinable
+  @inline(__always)
+  public func enumerated() -> AnySequence<Tree.EnumeratedElement> {
+    AnySequence { tree.makeEnumeratedIterator() }
+  }
 }
+
+extension RedBlackTreeSet: BidirectionalCollection {
+  
+  @inlinable
+  @inline(__always)
+  public var startIndex: Index { Index(__tree: tree, pointer: tree.startIndex) }
+
+  @inlinable
+  @inline(__always)
+  public var endIndex: Index { Index(__tree: tree, pointer: tree.endIndex) }
+
+  @inlinable
+  @inline(__always)
+  public var count: Int { tree.count }
+  
+  @inlinable
+  @inline(__always)
+  public func distance(from start: Index, to end: Index) -> Int {
+    return tree.distance(from: start.pointer, to: end.pointer)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(after i: Index) -> Index {
+    return Index(__tree: tree, pointer: tree.index(after: i.pointer))
+  }
+
+  @inlinable
+  @inline(__always)
+  public func formIndex(after i: inout Index) {
+    return tree.formIndex(after: &i.pointer)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(before i: Index) -> Index {
+    return Index(__tree: tree, pointer: tree.index(before: i.pointer))
+  }
+
+  @inlinable
+  @inline(__always)
+  public func formIndex(before i: inout Index) {
+    tree.formIndex(before: &i.pointer)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int) -> Index {
+    return Index(__tree: tree, pointer: tree.index(i.pointer, offsetBy: distance))
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    tree.formIndex(&i.pointer, offsetBy: distance)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+
+    if let i = tree.index(i.pointer, offsetBy: distance, limitedBy: limit.pointer) {
+      return Index(__tree: tree, pointer: i)
+    } else {
+      return nil
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+    -> Bool
+  {
+    return tree.formIndex(&i.pointer, offsetBy: distance, limitedBy: limit.pointer)
+  }
+
+  @inlinable
+  @inline(__always)
+  public subscript(position: Index) -> Element {
+    return tree[position.pointer]
+  }
+
+  @inlinable
+  public subscript(bounds: Range<Index>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        tree.subsequence(from: bounds.lowerBound.pointer, to: bounds.upperBound.pointer)
+    )
+  }
+  
+  @inlinable
+  public subscript(bounds: Range<Element>) -> SubSequence {
+    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
+  }
+}
+
 
 extension RedBlackTreeSet {
 
@@ -610,23 +636,14 @@ extension RedBlackTreeSet.SubSequence: Sequence {
   }
 
   @inlinable
+  @inline(__always)
   public func enumerated() -> AnySequence<RedBlackTreeSet.Tree.EnumeratedElement> {
-    AnySequence { makeEnumerateIterator() }
+    AnySequence { tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer) }
   }
-//  @inlinable
-//  public func enumerated() -> RedBlackTreeSet.Tree.EnumeratedSequence {
-//    tree.enumeratedSubsequence(from: startIndex.pointer, to: endIndex.pointer)
-//  }
-}
-
-extension RedBlackTreeSet.SubSequence {
-  public func makeEnumerateIterator() -> RedBlackTreeSet.Tree.EnumeratedIterator {
-    tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer)
-  }
-  public typealias EnumerateIterator = RedBlackTreeSet.Tree.EnumeratedIterator
 }
 
 extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
+  
   public typealias Index = RedBlackTreeSet.Index
   public typealias SubSequence = Self
 
@@ -641,7 +658,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public var count: Int { _subSequence.count }
-
+  
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
@@ -711,25 +728,9 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-
-    let bound = bounds.lowerBound..<bounds.upperBound
-
-    return SubSequence(_subSequence: _subSequence[bound])
-  }
-}
-
-extension RedBlackTreeSet {
-
-  public subscript(bounds: Range<Index>) -> SubSequence {
     SubSequence(
-      _subSequence: tree.subsequence(from: bounds.lowerBound.pointer, to: bounds.upperBound.pointer)
-    )
-  }
-  
-  @inlinable
-  public subscript(bounds: Range<Element>) -> SubSequence {
-    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
+      _subSequence:
+        _subSequence[bounds.lowerBound..<bounds.upperBound])
   }
 }
-
 

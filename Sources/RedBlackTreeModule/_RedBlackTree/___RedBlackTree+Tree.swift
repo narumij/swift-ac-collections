@@ -447,6 +447,7 @@ extension ___RedBlackTree.___Tree: InsertNodeAtProtocol {}
 extension ___RedBlackTree.___Tree: InsertMultiProtocol {}
 extension ___RedBlackTree.___Tree: RemoveProtocol {}
 extension ___RedBlackTree.___Tree: StorageEraseProtocol {}
+extension ___RedBlackTree.___Tree: BoundProtocol {}
 extension ___RedBlackTree.___Tree: InsertUniqueProtocol {
   @inlinable
   @inline(__always)
@@ -510,6 +511,16 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree: DistanceProtocol & CountProtocol { }
 
 extension ___RedBlackTree.___Tree {
+  
+  @inlinable
+  @inline(__always)
+  public func ___for_each_(_ body: (Element) throws -> Void) rethrows {
+    var __p = startIndex
+    while __p != endIndex {
+      try body(self[__p])
+      __p = __tree_next(__p)
+    }
+  }
 
   @inlinable
   @inline(__always)

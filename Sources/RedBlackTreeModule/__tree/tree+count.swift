@@ -47,7 +47,7 @@ extension CountProtocol {
       } else if value_comp(__value_(__rt), __k) {
         __rt = static_cast__node_pointer(__right_(__rt)) }
       else {
-        return ___signed_distance(
+        return __distance(
           __lower_bound(__k, static_cast__node_pointer(__left_(__rt)), static_cast__iter_pointer(__rt)),
           __upper_bound(__k, static_cast__node_pointer(__right_(__rt)), __result))
       }

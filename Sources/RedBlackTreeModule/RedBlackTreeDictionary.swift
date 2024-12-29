@@ -137,12 +137,6 @@ extension RedBlackTreeDictionary {
 
   /// - 計算量: O(1)
   @inlinable
-  public var count: Int {
-    ___count
-  }
-
-  /// - 計算量: O(1)
-  @inlinable
   public var capacity: Int {
     ___capacity
   }
@@ -378,6 +372,7 @@ extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
   }
 }
 
+#if false
 extension RedBlackTreeDictionary: Collection {
 
   @inlinable public subscript(position: Index) -> KeyValue {
@@ -420,6 +415,7 @@ extension RedBlackTreeDictionary {
     ___distance(from: start.pointer, to: end.pointer)
   }
 }
+#endif
 
 extension RedBlackTreeDictionary: CustomStringConvertible, CustomDebugStringConvertible {
 
@@ -447,7 +443,7 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
   }
 }
 
-#if true
+#if false
 extension RedBlackTreeDictionary {
 
   public typealias ElementSequence = [Element]
@@ -484,17 +480,303 @@ extension RedBlackTreeDictionary {
 }
 #endif
 
-extension RedBlackTreeDictionary {
+//extension RedBlackTreeDictionary {
+//
+//  public typealias EnumeratedElement = Tree.EnumeratedElement
+//
+//  @inlinable
+//  public func enumerated() -> AnySequence<EnumeratedElement> {
+//    AnySequence { tree.makeEnumeratedIterator() }
+//  }
+//}
 
-  public typealias EnumeratedElement = (offset: Index, element: Element)
+// MARK: -
+
+extension RedBlackTreeDictionary: Sequence {
 
   @inlinable
-  public func enumerated() -> AnySequence<EnumeratedElement> {
-    AnySequence { tree.makeEnumeratedIterator() }
+  @inline(__always)
+  public func forEach(_ body: (Element) throws -> Void) rethrows {
+    try tree.___for_each_(body)
+  }
+  
+  @frozen
+  public struct Iterator: IteratorProtocol {
+    @usableFromInline
+    internal var _iterator: Tree.Iterator
+
+    @inlinable
+    @inline(__always)
+    internal init(_base: RedBlackTreeDictionary) {
+      self._iterator = _base.tree.makeIterator()
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> Element? {
+      return self._iterator.next()
+    }
   }
 
   @inlinable
-  public func enumeratedSubrange(_ range: IndexRange) -> AnySequence<EnumeratedElement> {
-    AnySequence { tree.makeEnumeratedIterator(start: range.lowerBound.pointer, end: range.upperBound.pointer) }
+  @inline(__always)
+  public __consuming func makeIterator() -> Iterator {
+    return Iterator(_base: self)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func enumerated() -> AnySequence<Tree.EnumeratedElement> {
+    AnySequence { tree.makeEnumeratedIterator() }
+  }
+}
+
+extension RedBlackTreeDictionary: BidirectionalCollection {
+  
+  @inlinable
+  @inline(__always)
+  public var startIndex: Index { Index(__tree: tree, pointer: tree.startIndex) }
+
+  @inlinable
+  @inline(__always)
+  public var endIndex: Index { Index(__tree: tree, pointer: tree.endIndex) }
+
+  @inlinable
+  @inline(__always)
+  public var count: Int { tree.count }
+  
+  @inlinable
+  @inline(__always)
+  public func distance(from start: Index, to end: Index) -> Int {
+    return tree.distance(from: start.pointer, to: end.pointer)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(after i: Index) -> Index {
+    return Index(__tree: tree, pointer: tree.index(after: i.pointer))
+  }
+
+  @inlinable
+  @inline(__always)
+  public func formIndex(after i: inout Index) {
+    return tree.formIndex(after: &i.pointer)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(before i: Index) -> Index {
+    return Index(__tree: tree, pointer: tree.index(before: i.pointer))
+  }
+
+  @inlinable
+  @inline(__always)
+  public func formIndex(before i: inout Index) {
+    tree.formIndex(before: &i.pointer)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int) -> Index {
+    return Index(__tree: tree, pointer: tree.index(i.pointer, offsetBy: distance))
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    tree.formIndex(&i.pointer, offsetBy: distance)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+
+    if let i = tree.index(i.pointer, offsetBy: distance, limitedBy: limit.pointer) {
+      return Index(__tree: tree, pointer: i)
+    } else {
+      return nil
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+    -> Bool
+  {
+    return tree.formIndex(&i.pointer, offsetBy: distance, limitedBy: limit.pointer)
+  }
+
+  @inlinable
+  @inline(__always)
+  public subscript(position: Index) -> Element {
+    return tree[position.pointer]
+  }
+
+  @inlinable
+  public subscript(bounds: Range<Index>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        tree.subsequence(from: bounds.lowerBound.pointer, to: bounds.upperBound.pointer)
+    )
+  }
+  
+//  @inlinable
+//  public subscript(bounds: Range<Element>) -> SubSequence {
+//    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
+//  }
+}
+
+
+extension RedBlackTreeDictionary {
+
+  @frozen
+  public struct SubSequence {
+
+    @usableFromInline
+    internal typealias _TreeSubSequence = Tree.SubSequence
+
+    @usableFromInline
+    internal let _subSequence: _TreeSubSequence
+
+    @inlinable
+    init(_subSequence: _TreeSubSequence) {
+      self._subSequence = _subSequence
+    }
+
+    @inlinable
+    @inline(__always)
+    internal var tree: Tree { _subSequence.base }
+  }
+}
+
+extension RedBlackTreeDictionary.SubSequence: Sequence {
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (Element) throws -> Void) rethrows {
+    try tree.___for_each_(__p: startIndex.pointer, __l: endIndex.pointer, body: body)
+  }
+  
+  public typealias Element = RedBlackTreeDictionary.Element
+
+  public struct Iterator: IteratorProtocol {
+    @usableFromInline
+    internal var _iterator: _TreeSubSequence.Iterator
+
+    @inlinable
+    @inline(__always)
+    internal init(_ _iterator: _TreeSubSequence.Iterator) {
+      self._iterator = _iterator
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> Element? {
+      _iterator.next()
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> Iterator {
+    Iterator(_subSequence.makeIterator())
+  }
+
+  @inlinable
+  @inline(__always)
+  public func enumerated() -> AnySequence<RedBlackTreeDictionary.Tree.EnumeratedElement> {
+    AnySequence { tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer) }
+  }
+}
+
+extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
+  
+  public typealias Index = RedBlackTreeDictionary.Index
+  public typealias SubSequence = Self
+
+  @inlinable
+  @inline(__always)
+  public var startIndex: Index { Index(__tree: tree, pointer: _subSequence.startIndex) }
+
+  @inlinable
+  @inline(__always)
+  public var endIndex: Index { Index(__tree: tree, pointer: _subSequence.endIndex) }
+
+  @inlinable
+  @inline(__always)
+  public var count: Int { _subSequence.count }
+  
+  @inlinable
+  @inline(__always)
+  public func distance(from start: Index, to end: Index) -> Int {
+    return _subSequence.distance(from: start.pointer, to: end.pointer)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(after i: Index) -> Index {
+    return Index(__tree: tree, pointer: _subSequence.index(after: i.pointer))
+  }
+
+  @inlinable
+  @inline(__always)
+  public func formIndex(after i: inout Index) {
+    return _subSequence.formIndex(after: &i.pointer)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(before i: Index) -> Index {
+    return Index(__tree: tree, pointer: _subSequence.index(before: i.pointer))
+  }
+
+  @inlinable
+  @inline(__always)
+  public func formIndex(before i: inout Index) {
+    _subSequence.formIndex(before: &i.pointer)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int) -> Index {
+    return Index(__tree: tree, pointer: _subSequence.index(i.pointer, offsetBy: distance))
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    _subSequence.formIndex(&i.pointer, offsetBy: distance)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+
+    if let i = _subSequence.index(i.pointer, offsetBy: distance, limitedBy: limit.pointer) {
+      return Index(__tree: tree, pointer: i)
+    } else {
+      return nil
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+    -> Bool
+  {
+    return _subSequence.formIndex(&i.pointer, offsetBy: distance, limitedBy: limit.pointer)
+  }
+
+  @inlinable
+  @inline(__always)
+  public subscript(position: Index) -> Element {
+    return _subSequence[position.pointer]
+  }
+
+  @inlinable
+  public subscript(bounds: Range<Index>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        _subSequence[bounds.lowerBound..<bounds.upperBound])
   }
 }

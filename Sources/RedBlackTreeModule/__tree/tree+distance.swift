@@ -16,7 +16,7 @@ extension DistanceProtocol {
   
 //  func __distance(_ __first: _InputIter,_ __last: _InputIter, input_iterator_tag) -> difference_type {
   @inlinable
-  func __distance(__first: _InputIter,__last: _InputIter) -> difference_type {
+  func __distance(_ __first: _InputIter,_ __last: _InputIter) -> difference_type {
     var __first = __first
     var __r = 0
     while __first != __last {

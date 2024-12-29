@@ -118,12 +118,12 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public func ___ptr_lower_bound(_ __k: _Key) -> _NodePtr {
-    tree.__lower_bound(__k, tree.__root(), .end)
+    tree.lower_bound(__k)
   }
 
   @inlinable @inline(__always)
   public func ___ptr_upper_bound(_ __k: _Key) -> _NodePtr {
-    tree.__upper_bound(__k, tree.__root(), .end)
+    tree.upper_bound(__k)
   }
   
   @inlinable @inline(__always)
@@ -201,7 +201,7 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 }
 
-#if true
+#if false
 extension ___RedBlackTreeBase {
 
   public typealias EnumeratedElement = (position: ___Index, element: Element)
@@ -446,9 +446,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___contains(_ __k: _Key) -> Bool where _Key: Equatable {
-    let it = tree.__lower_bound(__k, tree.__root(), tree.__left_)
-    guard it >= 0 else { return false }
-    return Self.__key(tree[it]) == __k
+    tree.__count_multi(__k: __k) != 0
   }
 }
 

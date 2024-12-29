@@ -23,29 +23,29 @@
 import Foundation
 
 extension ___RedBlackTree.___Tree {
-
+  
   @frozen
   public struct SubSequence: Sequence {
-
+    
     public typealias Element = Tree.Element
     public typealias Index = _NodePtr
-
+    
     @inlinable
     public init(tree: Tree, start: Index, end: Index) {
       self.base = tree
       self.startIndex = start
       self.endIndex = end
     }
-
+    
     @usableFromInline
     unowned let base: Tree
-
-    public
-      var startIndex: Index
     
     public
-      var endIndex: Index
-
+    var startIndex: Index
+    
+    public
+    var endIndex: Index
+    
     @inlinable
     public func makeIterator() -> Iterator {
       base.makeIterator(start: startIndex, end: endIndex)
@@ -56,6 +56,17 @@ extension ___RedBlackTree.___Tree {
     var count: Int {
       base.distance(from: startIndex, to: endIndex)
     }
+    
+    // 断念
+    //    @inlinable
+    //    public func lowerBound(_ member: Element) -> Index {
+    //      base.__lower_bound(base.__key(member), base.__root(), endIndex)
+    //    }
+    //
+    //    @inlinable
+    //    public func upperBound(_ member: Element) -> Index {
+    //      base.__upper_bound(base.__key(member), base.__root(), endIndex)
+    //    }
     
     // この実装がないと、迷子になる
     @inlinable
@@ -127,7 +138,11 @@ extension ___RedBlackTree.___Tree {
       .init(tree: base, start: bounds.lowerBound.pointer, end: bounds.upperBound.pointer)
     }
   }
+}
+
+extension ___RedBlackTree.___Tree {
   
+  @inlinable
   func subsequence(from: _NodePtr, to: _NodePtr) -> SubSequence {
     .init(tree: self, start: from, end: to)
   }

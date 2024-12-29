@@ -22,8 +22,27 @@
 
 import Foundation
 
+@usableFromInline
+protocol BoundProtocol: ValueProtocol & RootProtocol & EndNodeProtocol { }
+
+extension BoundProtocol {
+
+  @inlinable
+  @inline(__always)
+  func lower_bound(_ __v: _Key) -> _NodePtr {
+    return __lower_bound(__v, __root(), __end_node())
+  }
+  
+  @inlinable
+  @inline(__always)
+  func upper_bound(_ __v: _Key) -> _NodePtr {
+    return __upper_bound(__v, __root(), __end_node())
+  }
+}
+
 extension ValueProtocol {
 
+  
   @inlinable
   func
     __lower_bound(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr

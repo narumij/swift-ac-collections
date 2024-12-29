@@ -32,14 +32,14 @@ extension ___RedBlackTree.___Tree {
   public struct EnumeratedIterator: IteratorProtocol {
     
     @inlinable
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+    internal init(tree: Tree.Manager, start: _NodePtr, end: _NodePtr) {
       self.tree = tree
       self.current = start
       self.end = end
     }
     
     @usableFromInline
-    let tree: Tree
+    let tree: Tree.Manager
     
     @usableFromInline
     var current, end: _NodePtr
@@ -49,8 +49,8 @@ extension ___RedBlackTree.___Tree {
     public mutating func next() -> EnumeratedElement?
     {
       guard current != end else { return nil }
-      defer { current = tree.__tree_next(current) }
-      return (.init(current), tree[current])
+      defer { current = Tree.with(tree) { $0.__tree_next(current) } }
+      return Tree.with(tree) { (.init(current),$0[current]) }
     }
   }
 }
@@ -60,12 +60,12 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   public __consuming func makeEnumeratedIterator() -> EnumeratedIterator {
 //    makeEnumeratedIterator(start: __begin_node, end: __end_node())
-    .init(tree: self, start: __begin_node, end: __end_node())
+    .init(tree: manager(), start: __begin_node, end: __end_node())
   }
   
   @inlinable
   public __consuming func makeEnumeratedIterator(start: _NodePtr, end: _NodePtr) -> EnumeratedIterator {
-    .init(tree: self, start: start, end: end)
+    .init(tree: manager(), start: start, end: end)
   }
 }
 
@@ -85,7 +85,7 @@ extension ___RedBlackTree.___Tree {
     }
 
     @usableFromInline
-    var base: Tree
+    let base: Tree
 
     public
       var startIndex: Index

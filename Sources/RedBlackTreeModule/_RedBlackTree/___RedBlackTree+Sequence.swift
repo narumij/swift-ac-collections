@@ -191,7 +191,7 @@ extension ___RedBlackTree.___Tree {
   public struct TransformIterator<T>: IteratorProtocol {
     
     @inlinable
-    public init(tree: Tree, start: _NodePtr, end: _NodePtr, _ transform: @escaping (Tree.Element) -> T) {
+    internal init(tree: Tree.Manager, start: _NodePtr, end: _NodePtr, _ transform: @escaping (Tree.Element) -> T) {
       self.tree = tree
       self.current = start
       self.end = end
@@ -199,7 +199,7 @@ extension ___RedBlackTree.___Tree {
     }
     
     @usableFromInline
-    let tree: Tree
+    let tree: Tree.Manager
     
     @usableFromInline
     var current, end: _NodePtr
@@ -212,19 +212,19 @@ extension ___RedBlackTree.___Tree {
     public mutating func next() -> T?
     {
       guard current != end else { return nil }
-      defer { current = tree.__tree_next(current) }
-      return transform(tree[current])
+      defer { current = Tree.with(tree) { $0.__tree_next(current) } }
+      return Tree.with(tree) { transform($0[current]) }
     }
   }
   
   @inlinable
   public __consuming func makeTransformIterator<T>(_ transform: @escaping (Tree.Element) -> T) -> TransformIterator<T> {
-    .init(tree: self, start: __begin_node, end: __end_node(), transform)
+    .init(tree: manager(), start: __begin_node, end: __end_node(), transform)
 //    makeTransformIterator(start: __begin_node, end: __end_node(), transform)
   }
   
   @inlinable
   public __consuming func makeTransformIterator<T>(start: _NodePtr, end: _NodePtr, _ transform: @escaping (Tree.Element) -> T) -> TransformIterator<T> {
-    .init(tree: self, start: start, end: end, transform)
+    .init(tree: manager(), start: start, end: end, transform)
   }
 }

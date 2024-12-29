@@ -38,7 +38,7 @@ extension ___RedBlackTree.___Tree {
     }
     
     @usableFromInline
-    unowned let base: Tree
+    let base: Tree
     
     public
     var startIndex: Index

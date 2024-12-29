@@ -69,13 +69,13 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet {
-  
-  @inlinable
-  public func enumerated(lowerBound from: Element, upperBound to: Element) -> EnumeratedSequence {
-    ___enumerated_sequence__(from: ___ptr_lower_bound(from), to: ___ptr_upper_bound(to))
-  }
-}
+//extension RedBlackTreeSet {
+//  
+//  @inlinable
+//  public func enumerated(lowerBound from: Element, upperBound to: Element) -> EnumeratedSequence {
+//    ___enumerated_sequence__(from: ___ptr_lower_bound(from), to: ___ptr_upper_bound(to))
+//  }
+//}
 
 extension RedBlackTreeSet {
 

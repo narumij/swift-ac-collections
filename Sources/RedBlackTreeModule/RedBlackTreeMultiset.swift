@@ -240,7 +240,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   func sorted() -> [Element] {
-    ___element_sequence__
+    tree.___sorted
   }
 }
 
@@ -319,6 +319,7 @@ extension RedBlackTreeMultiset: Equatable {
   }
 }
 
+#if true
 extension RedBlackTreeMultiset {
 
   public typealias ElementSequence = [Element]
@@ -353,19 +354,19 @@ extension RedBlackTreeMultiset {
       from: ___ptr_start(), to: ___ptr_end(), initialResult, nextPartialResult)
   }
 }
+#endif
 
 extension RedBlackTreeMultiset {
 
-  public typealias EnumeratedElement = (position: Index, element: Element)
-  public typealias EnumeratedSequence = [EnumeratedElement]
+  public typealias EnumeratedElement = (offset: Index, element: Element)
 
   @inlinable
-  public func enumerated() -> EnumeratedSequence {
-    ___enumerated_sequence__
+  public func enumerated() -> AnySequence<EnumeratedElement> {
+    AnySequence { tree.makeEnumeratedIterator() }
   }
 
   @inlinable
-  public func enumeratedSubrange(_ range: IndexRange) -> EnumeratedSequence {
-    ___enumerated_sequence__(from: range.lowerBound.pointer, to: range.upperBound.pointer)
+  public func enumeratedSubrange(_ range: IndexRange) -> AnySequence<EnumeratedElement> {
+    AnySequence { tree.makeEnumeratedIterator(start: range.lowerBound.pointer, end: range.upperBound.pointer) }
   }
 }

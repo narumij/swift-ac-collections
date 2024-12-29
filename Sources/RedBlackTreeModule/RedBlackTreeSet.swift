@@ -215,7 +215,7 @@ extension RedBlackTreeSet {
   ) {
     ensureUniqueAndCapacity()
     let (__r, __inserted) = tree.__insert_unique(newMember)
-    return (__inserted, __inserted ? newMember : tree[__r])
+    return (__inserted, __inserted ? newMember : tree[ref: __r])
   }
 
   @discardableResult
@@ -223,8 +223,8 @@ extension RedBlackTreeSet {
     ensureUniqueAndCapacity()
     let (__r, __inserted) = tree.__insert_unique(newMember)
     guard !__inserted else { return nil }
-    let oldMember = tree[__r]
-    tree[__r] = newMember
+    let oldMember = tree[ref: __r]
+    tree[ref: __r] = newMember
     return oldMember
   }
 
@@ -397,11 +397,12 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*n*), ここで *n* はセット内の要素数。
   @inlinable
   func sorted() -> [Element] {
-    ___element_sequence__
+    tree.___sorted
   }
 }
 
-extension RedBlackTreeSet {
+#if true
+extension RedBlackTreeSet: BidirectionalCollection {
 
   /// - Complexity: O(1)。
   @inlinable public subscript(position: Index) -> Element {
@@ -446,6 +447,7 @@ extension RedBlackTreeSet {
     ___distance(from: start.pointer, to: end.pointer)
   }
 }
+#endif
 
 extension RedBlackTreeSet: CustomStringConvertible, CustomDebugStringConvertible {
 
@@ -468,26 +470,7 @@ extension RedBlackTreeSet: Equatable {
   }
 }
 
-//extension RedBlackTreeSet: Sequence {
-//
-//  public func makeIterator() -> ___Iterator {
-//    ___makeIterator(startIndex: ___ptr_begin(), endIndex: ___ptr_end())
-//  }
-//}
-
-extension RedBlackTreeSet {
-
-  public init(___tree: Tree) {
-    self.tree = ___tree
-  }
-
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    SubSequence(
-      _subSequence: tree.subsequence(from: bounds.lowerBound.pointer, to: bounds.upperBound.pointer)
-    )
-  }
-}
-
+#if false
 extension RedBlackTreeSet {
 
   @inlinable public func map<T>(_ transform: (Element) throws -> T) rethrows -> [T] {
@@ -512,15 +495,13 @@ extension RedBlackTreeSet {
       from: ___ptr_start(), to: ___ptr_end(), initialResult, nextPartialResult)
   }
 }
+#endif
 
 extension RedBlackTreeSet {
 
-  public typealias EnumeratedElement = (position: Index, element: Element)
-  public typealias EnumeratedSequence = [EnumeratedElement]
-
   @inlinable
-  public func enumerated() -> EnumeratedSequence {
-    ___enumerated_sequence__
+  public func enumerated() -> AnySequence<Tree.EnumeratedElement> {
+    AnySequence { tree.makeEnumeratedIterator() }
   }
 
   /// 指定した範囲（`lhs ..< rhs` の半開区間）内の要素を、
@@ -541,8 +522,8 @@ extension RedBlackTreeSet {
   /// - Important: `lhs ..< rhs` のように左端が右端より大きい（または等しい）場合など、
   ///   無効な区間が指定されたときの挙動は未定義です。必ず正しい範囲を指定してください。
   @inlinable
-  public func enumeratedSubrange(_ range: IndexRange) -> EnumeratedSequence {
-    ___enumerated_sequence__(from: range.lowerBound.pointer, to: range.upperBound.pointer)
+  public func enumeratedSubrange(_ range: IndexRange) -> AnySequence<Tree.EnumeratedElement> {
+    AnySequence { tree.makeEnumeratedIterator(start: range.lowerBound.pointer, end: range.upperBound.pointer) }
   }
 }
 
@@ -573,13 +554,9 @@ extension RedBlackTreeSet: Sequence {
   }
 }
 
-#if swift(>=5.5)
-  extension RedBlackTreeSet.Iterator: @unchecked Sendable
-  where Element: Sendable {}
-#endif
-
 extension RedBlackTreeSet {
 
+  @frozen
   public struct SubSequence {
 
     @usableFromInline
@@ -593,22 +570,20 @@ extension RedBlackTreeSet {
       self._subSequence = _subSequence
     }
 
-    @usableFromInline
-    var tree: Tree { _subSequence.base }
-
     @inlinable
     @inline(__always)
-    internal var base: RedBlackTreeSet { .init(___tree: _subSequence.base) }
+    internal var tree: Tree { _subSequence.base }
   }
 }
 
-#if swift(>=5.5)
-  extension RedBlackTreeSet.SubSequence: @unchecked Sendable
-  where Element: Sendable {}
-#endif
-
 extension RedBlackTreeSet.SubSequence: Sequence {
 
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (Element) throws -> Void) rethrows {
+    try tree.___for_each_(__p: startIndex.pointer, __l: endIndex.pointer, body: body)
+  }
+  
   public typealias Element = RedBlackTreeSet.Element
 
   public struct Iterator: IteratorProtocol {
@@ -638,12 +613,11 @@ extension RedBlackTreeSet.SubSequence: Sequence {
   public func enumerated() -> AnySequence<RedBlackTreeSet.Tree.EnumeratedElement> {
     AnySequence { makeEnumerateIterator() }
   }
+//  @inlinable
+//  public func enumerated() -> RedBlackTreeSet.Tree.EnumeratedSequence {
+//    tree.enumeratedSubsequence(from: startIndex.pointer, to: endIndex.pointer)
+//  }
 }
-
-#if swift(>=5.5)
-  extension RedBlackTreeSet.SubSequence.Iterator: @unchecked Sendable
-  where Element: Sendable {}
-#endif
 
 extension RedBlackTreeSet.SubSequence {
   public func makeEnumerateIterator() -> RedBlackTreeSet.Tree.EnumeratedIterator {
@@ -741,6 +715,20 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
     let bound = bounds.lowerBound..<bounds.upperBound
 
     return SubSequence(_subSequence: _subSequence[bound])
+  }
+}
+
+extension RedBlackTreeSet {
+
+  public subscript(bounds: Range<Index>) -> SubSequence {
+    SubSequence(
+      _subSequence: tree.subsequence(from: bounds.lowerBound.pointer, to: bounds.upperBound.pointer)
+    )
+  }
+  
+  @inlinable
+  public subscript(bounds: Range<Element>) -> SubSequence {
+    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
   }
 }
 

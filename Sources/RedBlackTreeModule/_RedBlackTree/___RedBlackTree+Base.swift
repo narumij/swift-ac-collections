@@ -199,6 +199,10 @@ extension ___RedBlackTreeBase {
 // MARK: - Sequence
 
 extension ___RedBlackTreeBase {
+}
+
+#if true
+extension ___RedBlackTreeBase {
 
   public typealias EnumeratedElement = (position: ___Index, element: Element)
 }
@@ -315,6 +319,7 @@ extension ___RedBlackTreeBase {
     return result
   }
 }
+#endif
 
 // MARK: - Remove
 
@@ -422,16 +427,16 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @inlinable
-  func ___equal_with(_ rhs: Self) -> Bool where Element: Equatable {
+  func ___equal_with(_ rhs: Self) -> Bool where Self: Sequence, Element: Equatable {
     tree === rhs.tree ||
-    (___count == rhs.___count && zip(___element_sequence__, rhs.___element_sequence__).allSatisfy(==))
+    (___count == rhs.___count && zip(self, rhs).allSatisfy(==))
   }
 
   @inlinable
   func ___equal_with<K, V>(_ rhs: Self) -> Bool
-  where K: Equatable, V: Equatable, Element == (key: K, value: V) {
+  where Self: Sequence, K: Equatable, V: Equatable, Element == (key: K, value: V) {
     tree === rhs.tree ||
-    (___count == rhs.___count && zip(___element_sequence__, rhs.___element_sequence__).allSatisfy(==))
+    (___count == rhs.___count && zip(self, rhs).allSatisfy(==))
   }
 }
 

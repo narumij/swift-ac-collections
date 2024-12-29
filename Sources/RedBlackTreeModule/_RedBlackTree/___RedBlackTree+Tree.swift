@@ -220,6 +220,16 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
+extension ___RedBlackTree.___Tree.Header {
+  @inlinable
+  @inline(__always)
+  mutating func clear() {
+    __begin_node = .end
+    __left_ = .nullptr
+    initializedCount = 0
+  }
+}
+
 extension ___RedBlackTree.___Tree {
 
   @inlinable
@@ -270,7 +280,7 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
-  subscript(_ ref: _NodeRef) -> Element {
+  subscript(ref ref: _NodeRef) -> Element {
     @inline(__always)
     get {
       let pointer = __ref_(ref)
@@ -513,6 +523,32 @@ extension ___RedBlackTree.___Tree {
       __p = __tree_next(__p)
     }
   }
+  
+  @inlinable
+  @inline(__always)
+  public func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (Element) throws -> Void)
+    rethrows
+  {
+    var __p = __p
+    while __p != __l {
+      try body(self[__p])
+      __p = __tree_next(__p)
+    }
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func ___for_each__(__p: _NodePtr, __l: _NodePtr, body: (EnumeratedElement) throws -> Void)
+    rethrows
+  {
+    var __p = __p
+    var tree_pointer = TreePointer(__tree: self, pointer: __p)
+    while __p != __l {
+      tree_pointer.pointer = __p
+      try body((tree_pointer, self[__p]))
+      __p = __tree_next(__p)
+    }
+  }
 }
 
 extension ___RedBlackTree.___Tree {
@@ -590,8 +626,7 @@ extension ___RedBlackTree.___Tree {
   /// O(1)
   @inlinable
   func __eraseAll() {
-    __begin_node = .end
-    __left_ = .nullptr
+    header.clear()
     ___clearDestroy()
   }
 }
@@ -621,5 +656,17 @@ extension ___RedBlackTree.___Tree {
   @inlinable @inline(__always)
   public func ___end() -> _NodePtr {
     .end
+  }
+}
+
+extension ___RedBlackTree.___Tree {
+  
+  @inlinable @inline(__always)
+  public var ___sorted: [Element] {
+    var result = [Element]()
+    ___for_each(__p: __begin_node, __l: __end_node()) { __p, _ in
+      result.append(self[__p])
+    }
+    return result
   }
 }

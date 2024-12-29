@@ -24,6 +24,7 @@ import Foundation
 
 extension ___RedBlackTree.___Tree: Sequence {
   
+  @frozen
   public struct Iterator: IteratorProtocol {
     
     @inlinable
@@ -179,5 +180,49 @@ extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalColle
       return true
     }
     return false
+  }
+}
+
+
+extension ___RedBlackTree.___Tree {
+  
+  @frozen
+  public struct TransformIterator<T>: IteratorProtocol {
+    
+    @inlinable
+    public init(tree: Tree, start: _NodePtr, end: _NodePtr, _ transform: @escaping (Tree.Element) -> T) {
+      self.tree = tree
+      self.current = start
+      self.end = end
+      self.transform = transform
+    }
+    
+    @usableFromInline
+    unowned let tree: Tree
+    
+    @usableFromInline
+    var current, end: _NodePtr
+    
+    @usableFromInline
+    let transform: (Tree.Element) -> T
+    
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> T?
+    {
+      guard current != end else { return nil }
+      defer { current = tree.__tree_next(current) }
+      return transform(tree[current])
+    }
+  }
+  
+  @inlinable
+  public func makeTransformIterator<T>(_ transform: @escaping (Tree.Element) -> T) -> TransformIterator<T> {
+    makeTransformIterator(start: __begin_node, end: __end_node(), transform)
+  }
+  
+  @inlinable
+  public __consuming func makeTransformIterator<T>(start: _NodePtr, end: _NodePtr, _ transform: @escaping (Tree.Element) -> T) -> TransformIterator<T> {
+    .init(tree: self, start: start, end: end, transform)
   }
 }

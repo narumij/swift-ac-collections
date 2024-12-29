@@ -40,10 +40,10 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias Element = KeyValue
 
   public
-    typealias Keys = [Key]
+  typealias Keys = AnySequence<Key>
 
   public
-    typealias Values = [Value]
+  typealias Values = AnySequence<Value>
 
   public
   typealias _Key = Key
@@ -255,11 +255,11 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   public var keys: Keys {
-    ___element_sequence__(\.key)
+    AnySequence { tree.makeTransformIterator(\.key) }
   }
 
   public var values: Values {
-    ___element_sequence__(\.value)
+    AnySequence { tree.makeTransformIterator(\.value) }
   }
 }
 
@@ -274,8 +274,8 @@ extension RedBlackTreeDictionary {
     ensureUniqueAndCapacity()
     let (__r, __inserted) = tree.__insert_unique((key, value))
     guard !__inserted else { return nil }
-    let oldMember = tree[__r]
-    tree[__r] = (key, value)
+    let oldMember = tree[ref: __r]
+    tree[ref: __r] = (key, value)
     return oldMember.value
   }
 
@@ -447,6 +447,7 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
   }
 }
 
+#if true
 extension RedBlackTreeDictionary {
 
   public typealias ElementSequence = [Element]
@@ -481,19 +482,19 @@ extension RedBlackTreeDictionary {
       from: ___ptr_start(), to: ___ptr_end(), initialResult, nextPartialResult)
   }
 }
+#endif
 
 extension RedBlackTreeDictionary {
 
-  public typealias EnumeratedElement = (position: Index, element: Element)
-  public typealias EnumeratedSequence = [EnumeratedElement]
+  public typealias EnumeratedElement = (offset: Index, element: Element)
 
   @inlinable
-  public func enumerated() -> EnumeratedSequence {
-    ___enumerated_sequence__
+  public func enumerated() -> AnySequence<EnumeratedElement> {
+    AnySequence { tree.makeEnumeratedIterator() }
   }
 
   @inlinable
-  public func enumeratedSubrange(_ range: IndexRange) -> EnumeratedSequence {
-    ___enumerated_sequence__(from: range.lowerBound.pointer, to: range.upperBound.pointer)
+  public func enumeratedSubrange(_ range: IndexRange) -> AnySequence<EnumeratedElement> {
+    AnySequence { tree.makeEnumeratedIterator(start: range.lowerBound.pointer, end: range.upperBound.pointer) }
   }
 }

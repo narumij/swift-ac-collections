@@ -56,7 +56,7 @@ extension DistanceProtocol {
     }
     return (swapped ? -1 : 1) * __distance(__first: __first, __last: __last)
 #else
-    return ___signed_distance(__l: __first, __r: __last);
+    return ___signed_distance(__l: __first, __r: __last)
 #endif
   }
 }

@@ -24,6 +24,7 @@ import Foundation
 
 extension ___RedBlackTree.___Tree {
 
+  @frozen
   public struct SubSequence: Sequence {
 
     public typealias Element = Tree.Element

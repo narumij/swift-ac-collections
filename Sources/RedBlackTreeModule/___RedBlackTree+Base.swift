@@ -264,7 +264,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int {
-    tree.distance(__l: start, __r: end)
+    tree.___signed_distance(start, end)
   }
 }
 

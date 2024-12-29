@@ -497,36 +497,38 @@ extension ___RedBlackTree.___Buffer {
   }
 }
 
+extension ___RedBlackTree.___Buffer: DistanceProtocol & CountProtocol { }
+
 extension ___RedBlackTree.___Buffer {
 
-  @inlinable
-  @inline(__always)
-  func distance(__first: _NodePtr, __last: _NodePtr) -> Int {
-    var __first = __first
-    var __r = 0
-    while __first != __last {
-      __first = __tree_next(__first)
-      __r += 1
-    }
-    return __r
-  }
+//  @inlinable
+//  @inline(__always)
+//  func distance(__first: _NodePtr, __last: _NodePtr) -> Int {
+//    var __first = __first
+//    var __r = 0
+//    while __first != __last {
+//      __first = __tree_next(__first)
+//      __r += 1
+//    }
+//    return __r
+//  }
 
-  @inlinable
-  @inline(__always)
-  func distance(__l: _NodePtr, __r: _NodePtr) -> Int {
-    var __p = __begin_node
-    var (l, r): (Int?, Int?) = (nil, nil)
-    var __a = 0
-    while __p != __end_node(), l == nil || r == nil {
-      if __p == __l { l = __a }
-      if __p == __r { r = __a }
-      __p = __tree_next(__p)
-      __a += 1
-    }
-    if __p == __l { l = __a }
-    if __p == __r { r = __a }
-    return r! - l!
-  }
+//  @inlinable
+//  @inline(__always)
+//  func distance(__l: _NodePtr, __r: _NodePtr) -> Int {
+//    var __p = __begin_node
+//    var (l, r): (Int?, Int?) = (nil, nil)
+//    var __a = 0
+//    while __p != __end_node(), l == nil || r == nil {
+//      if __p == __l { l = __a }
+//      if __p == __r { r = __a }
+//      __p = __tree_next(__p)
+//      __a += 1
+//    }
+//    if __p == __l { l = __a }
+//    if __p == __r { r = __a }
+//    return r! - l!
+//  }
 
   @inlinable
   @inline(__always)
@@ -742,7 +744,7 @@ extension ___RedBlackTree.___Buffer: Sequence {
   // この実装がないと、迷子になる
   @inlinable
   public func distance(from start: Index, to end: Index) -> Int {
-    distance(__l: start, __r: end)
+    ___signed_distance(start, end)
   }
   
   @inlinable

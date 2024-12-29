@@ -87,10 +87,10 @@
 
     extension RedBlackTreeMultiset {
       func left(_ p: Element) -> Int {
-        tree.distance(__l: tree.__begin_node, __r: tree.__lower_bound(p, tree.__root(), tree.end()))
+        tree.___signed_distance(tree.__begin_node, tree.__lower_bound(p, tree.__root(), tree.end()))
       }
       func right(_ p: Element) -> Int {
-        tree.distance(__l: tree.__begin_node, __r: tree.__upper_bound(p, tree.__root(), tree.end()))
+        tree.___signed_distance(tree.__begin_node, tree.__upper_bound(p, tree.__root(), tree.end()))
       }
     }
   #endif

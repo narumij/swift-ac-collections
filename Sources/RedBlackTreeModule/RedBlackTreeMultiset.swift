@@ -291,9 +291,10 @@ extension RedBlackTreeMultiset {
 
   /// - Complexity: O(log *n* + *k*), ここで *n* はマルチセット内の要素数、*k* は指定された要素の出現回数。
   @inlinable public func count(_ element: Element) -> Int {
-    tree.distance(
-      __first: tree.__lower_bound(element, tree.__root(), tree.__end_node()),
-      __last: tree.__upper_bound(element, tree.__root(), tree.__end_node()))
+//    tree.distance(
+//      __first: tree.__lower_bound(element, tree.__root(), tree.__end_node()),
+//      __last: tree.__upper_bound(element, tree.__root(), tree.__end_node()))
+    tree.__count_multi(__k: element)
   }
 }
 

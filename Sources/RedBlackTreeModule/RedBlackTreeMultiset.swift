@@ -124,7 +124,7 @@ extension RedBlackTreeMultiset {
   @inlinable
   @discardableResult
   public mutating func remove(at index: ___RedBlackTree.SimpleIndex) -> Element {
-    guard let element = ___remove(at: index.pointer) else {
+    guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
     return element
@@ -482,7 +482,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public subscript(position: ___RedBlackTree.SimpleIndex) -> Element {
-    return tree[position.pointer]
+    return tree[position.rawValue]
   }
 
   @inlinable
@@ -649,7 +649,7 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public subscript(position: ___RedBlackTree.SimpleIndex) -> Element {
-    return tree[position.pointer]
+    return tree[position.rawValue]
   }
 
   @inlinable

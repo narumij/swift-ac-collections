@@ -24,10 +24,15 @@ import Foundation
 
 extension ___RedBlackTree {
 
-  /// 公開用のインデックス
+  /// enumerated()用のインデックス
+  ///
+  /// ManagedBufferに対する参照カウントの増加と、それに伴うコピーを避けるためにサルベージして利用している。
+  ///
+  /// 元々はメインの外部インデックスだった。
   ///
   /// nullptrはオプショナルで表現する想定で、nullptrを保持しない
   public
+  // 名前は、取り急ぎのものなので、変えたい
     enum SimpleIndex
   {
     case node(_NodePtr)
@@ -36,13 +41,15 @@ extension ___RedBlackTree {
     @usableFromInline
     init(_ node: _NodePtr) {
       guard node != .nullptr else {
+        // null相当の数値で初期化すると、おこです。
         preconditionFailure("_NodePtr is nullptr")
       }
       self = node == .end ? .end : .node(node)
     }
 
+      // 検査用の便利アクセサ
     @usableFromInline
-    var pointer: _NodePtr {
+    var rawValue: _NodePtr {
       switch self {
       case .node(let _NodePtr):
         assert(_NodePtr != .nullptr)
@@ -67,7 +74,7 @@ extension Optional where Wrapped == ___RedBlackTree.SimpleIndex {
     case .none:
       return .nullptr
     case .some(let ptr):
-      return ptr.pointer
+      return ptr.rawValue
     }
   }
 }

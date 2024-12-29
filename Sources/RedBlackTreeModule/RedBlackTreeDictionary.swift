@@ -604,7 +604,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public subscript(position: ___RedBlackTree.SimpleIndex) -> Element {
-    return tree[position.pointer]
+    return tree[position.rawValue]
   }
 
   @inlinable
@@ -770,7 +770,7 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public subscript(position: ___RedBlackTree.SimpleIndex) -> Element {
-    return tree[position.pointer]
+    return tree[position.rawValue]
   }
 
   @inlinable

@@ -26,7 +26,6 @@ extension ___RedBlackTree.___Tree {
 
   public struct TreePointer: Comparable {
 
-    public typealias Tree = Buffer
     public typealias Pointer = Self
     
     @inlinable
@@ -68,7 +67,7 @@ extension ___RedBlackTree.___Tree {
     // retainすると死ぬほど遅い場面がある。
     // しばらく悩むことにする
     @usableFromInline
-    unowned let tree: Buffer
+    unowned let tree: Tree
     
     @usableFromInline
     var pointer: _NodePtr

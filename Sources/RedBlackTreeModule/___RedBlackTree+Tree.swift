@@ -45,9 +45,9 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   internal static func create(
     withCapacity capacity: Int
-  ) -> Buffer {
+  ) -> Tree {
 
-    let storage = Buffer.create(minimumCapacity: capacity) { _ in
+    let storage = Tree.create(minimumCapacity: capacity) { _ in
       Header(
         capacity: capacity,
         __left_: .nullptr,
@@ -57,11 +57,11 @@ extension ___RedBlackTree.___Tree {
         __destroy_node: .nullptr)
     }
 
-    return unsafeDowncast(storage, to: Buffer.self)
+    return unsafeDowncast(storage, to: Tree.self)
   }
 
   @inlinable
-  internal func copy(newCapacity: Int? = nil) -> Buffer {
+  internal func copy(newCapacity: Int? = nil) -> Tree {
 
     let capacity = newCapacity ?? self.header.capacity
     let __left_ = self.header.__left_
@@ -70,7 +70,7 @@ extension ___RedBlackTree.___Tree {
     let __destroy_count = self.header.destroyCount
     let __destroy_node = self.header.destroyNode
 
-    let newStorage = Buffer.create(withCapacity: capacity)
+    let newStorage = Tree.create(withCapacity: capacity)
 
     newStorage.header.capacity = capacity
     newStorage.header.__left_ = __left_
@@ -92,19 +92,19 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
-  static func ensureUnique(tree: inout Buffer) {
+  static func ensureUnique(tree: inout Tree) {
     if !isKnownUniquelyReferenced(&tree) {
       tree = tree.copy(newCapacity: tree.header.capacity)
     }
   }
 
   @inlinable
-  static func ensureUniqueAndCapacity(tree: inout Buffer) {
+  static func ensureUniqueAndCapacity(tree: inout Tree) {
     ensureUniqueAndCapacity(tree: &tree, minimumCapacity: tree.count + 1)
   }
 
   @inlinable
-  static func ensureUniqueAndCapacity(tree: inout Buffer, minimumCapacity: Int) {
+  static func ensureUniqueAndCapacity(tree: inout Tree, minimumCapacity: Int) {
     let shouldExpand = tree.header.capacity < minimumCapacity
     if shouldExpand || !isKnownUniquelyReferenced(&tree) {
       tree = tree.copy(
@@ -113,7 +113,7 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
-  static func ensureCapacity(tree: inout Buffer, minimumCapacity: Int) {
+  static func ensureCapacity(tree: inout Tree, minimumCapacity: Int) {
     let shouldExpand = tree.header.capacity < minimumCapacity
     if shouldExpand {
       tree = tree.copy(
@@ -127,7 +127,7 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   internal static func _growCapacity(
-    tree: inout Buffer,
+    tree: inout Tree,
     to minimumCapacity: Int,
     linearly: Bool
   ) -> Int {
@@ -173,7 +173,7 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   public
-    typealias Buffer = ___RedBlackTree.___Tree<VC>
+    typealias Tree = ___RedBlackTree.___Tree<VC>
 
   @usableFromInline
   typealias Manager = ManagedBufferPointer<Header, Node>
@@ -704,18 +704,18 @@ extension ___RedBlackTree.___Tree: Sequence {
   public struct Iterator: IteratorProtocol {
     
     @inlinable
-    internal init(tree: Buffer) {
+    internal init(tree: Tree) {
       self.init(tree: tree, start: tree.__begin_node, end: tree.__end_node())
     }
     
     @inlinable
-    internal init(tree: Buffer, start: _NodePtr, end: _NodePtr) {
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.tree = tree
       self.state = tree.___begin(start, to: end)
     }
     
     @usableFromInline
-    let tree: Buffer
+    let tree: Tree
     
     @usableFromInline
     var state: UnsafeSequenceState
@@ -831,18 +831,18 @@ extension ___RedBlackTree.___Tree {
 
   public struct SubSequence: Sequence {
 
-    public typealias Element = Buffer.Element
+    public typealias Element = Tree.Element
     public typealias Index = _NodePtr
 
     @inlinable
-    public init(tree: Buffer, start: Index, end: Index) {
+    public init(tree: Tree, start: Index, end: Index) {
       self.base = tree
       self.startIndex = start
       self.endIndex = end
     }
 
     @usableFromInline
-    unowned let base: Buffer
+    unowned let base: Tree
 
     public
       var startIndex: Index
@@ -942,18 +942,18 @@ extension ___RedBlackTree.___Tree {
   public struct EnumerateIterator: IteratorProtocol {
     
     @inlinable
-    internal init(tree: Buffer) {
+    internal init(tree: Tree) {
       self.init(tree: tree, start: tree.__begin_node, end: tree.__end_node())
     }
     
     @inlinable
-    internal init(tree: Buffer, start: _NodePtr, end: _NodePtr) {
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.tree = tree
       self.state = tree.___begin(start, to: end)
     }
     
     @usableFromInline
-    unowned let tree: Buffer
+    unowned let tree: Tree
     
     @usableFromInline
     var state: UnsafeSequenceState

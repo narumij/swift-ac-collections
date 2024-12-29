@@ -40,3 +40,5 @@ extension String {
   static var emptyLast: String {
     "Can't removeLast from an empty RedBlackTree" }
 }
+
+// メッセージをマッサージに空見するぐらい疲れている

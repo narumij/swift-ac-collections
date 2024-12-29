@@ -1,9 +1,26 @@
+// Copyright 2024 narumij
 //
-//  ___RedBlackTree+Handle.swift
-//  swift-ac-collections
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-//  Created by narumij on 2024/12/29.
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2024 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+
+import Foundation
 
 extension ___RedBlackTree.___Tree {
   
@@ -24,9 +41,9 @@ extension ___RedBlackTree.___Tree {
   
   @inlinable
   @inline(__always)
-  static func with<R>(_ manager: Manager,_ body: (UnsafeHandle) -> R) -> R {
-    manager.withUnsafeMutablePointers { header, nodes in
-      body(UnsafeHandle(__header_ptr: header, __node_ptr: nodes))
+  static func with<R>(_ manager: Manager,_ body: (UnsafeHandle) throws -> R) rethrows -> R {
+    try manager.withUnsafeMutablePointers { header, nodes in
+      try body(UnsafeHandle(__header_ptr: header, __node_ptr: nodes))
     }
   }
 }
@@ -54,7 +71,10 @@ extension ___RedBlackTree.___Tree.UnsafeHandle {
   }
 }
 
-extension ___RedBlackTree.___Tree.UnsafeHandle: ValueProtocol {
+extension ___RedBlackTree.___Tree.UnsafeHandle: MemberProtocol & RootImpl & RefSetImpl & RootPtrImpl { }
+extension ___RedBlackTree.___Tree.UnsafeHandle: ValueProtocol { }
+
+extension ___RedBlackTree.___Tree.UnsafeHandle {
   
   @usableFromInline
   typealias _Key = VC._Key
@@ -83,7 +103,7 @@ extension ___RedBlackTree.___Tree.UnsafeHandle: ValueProtocol {
   }
 }
 
-extension ___RedBlackTree.___Tree.UnsafeHandle: MemberProtocol & RootImpl & RefSetImpl & RootPtrImpl {
+extension ___RedBlackTree.___Tree.UnsafeHandle {
   
   @inlinable
   @inline(__always)

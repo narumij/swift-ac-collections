@@ -575,6 +575,12 @@ extension RedBlackTreeSet: BidirectionalCollection {
   }
 
   @inlinable
+  @inline(__always)
+  public subscript(position: ___RedBlackTree.SimpleIndex) -> Element {
+    return tree[position.pointer]
+  }
+
+  @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
     SubSequence(
       _subSequence:
@@ -750,6 +756,12 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
     return _subSequence[position.pointer]
   }
 
+  @inlinable
+  @inline(__always)
+  public subscript(position: ___RedBlackTree.SimpleIndex) -> Element {
+    return tree[position.pointer]
+  }
+  
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
     SubSequence(

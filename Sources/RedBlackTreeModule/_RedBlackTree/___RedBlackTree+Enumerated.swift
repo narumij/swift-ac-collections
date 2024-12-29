@@ -107,12 +107,7 @@ extension ___RedBlackTree.___Tree {
     @inlinable
     @inline(__always)
     public func forEach(_ body: @escaping (EnumeratedElement) throws -> Void) rethrows {
-//      try base.___for_each__(__p: startIndex, __l: endIndex, body: body)
-      var __p = startIndex
-      while __p != endIndex {
-        try body((.init(__p), base[__p]))
-        __p = base.__tree_next(__p)
-      }
+      try base.___for_each__(__p: startIndex, __l: endIndex, body: body)
     }
     
     // この実装がないと、迷子になる

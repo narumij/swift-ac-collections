@@ -277,19 +277,19 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
 
-  public typealias ___EnumeratedSequence = UnfoldSequence<EnumeratedElement, Tree.SafeSequenceState>
-
-  @inlinable
-  @inline(__always)
-  public func ___enumerated_sequence(from: _NodePtr, to: _NodePtr)
-    -> ___EnumeratedSequence
-  {
-    return sequence(state: tree.___begin(from, to: to)) { state in
-      guard tree.___end(state) else { return nil }
-      defer { tree.___next(&state) }
-      return (___index(state.current), tree[state.current])
-    }
-  }
+//  public typealias ___EnumeratedSequence = UnfoldSequence<EnumeratedElement, Tree.SafeSequenceState>
+//
+//  @inlinable
+//  @inline(__always)
+//  public func ___enumerated_sequence(from: _NodePtr, to: _NodePtr)
+//    -> ___EnumeratedSequence
+//  {
+//    return sequence(state: tree.___begin(from, to: to)) { state in
+//      guard tree.___end(state) else { return nil }
+//      defer { tree.___next(&state) }
+//      return (___index(state.current), tree[state.current])
+//    }
+//  }
 
 // #warning("不要になっている可能性が高い")
 //  @inlinable

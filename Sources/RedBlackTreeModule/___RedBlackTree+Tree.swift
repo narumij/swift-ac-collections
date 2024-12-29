@@ -653,6 +653,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
+#if false
 extension ___RedBlackTree.___Tree {
 
   // CoWがない時期はこちらが必要だった
@@ -698,6 +699,7 @@ extension ___RedBlackTree.___Tree {
     state.current != state.to
   }
 }
+#endif
 
 extension ___RedBlackTree.___Tree: Sequence {
   
@@ -711,31 +713,33 @@ extension ___RedBlackTree.___Tree: Sequence {
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.tree = tree
-      self.state = tree.___begin(start, to: end)
+      self.current = start
+      self.end = end
     }
     
     @usableFromInline
-    let tree: Tree
+    unowned let tree: Tree
     
     @usableFromInline
-    var state: UnsafeSequenceState
+    var current, end: _NodePtr
     
-    public
-    mutating func next() -> Element?
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> Element?
     {
-      guard tree.___end(state) else { return nil }
-      defer { tree.___next(&state) }
-      return tree[node: state.current].__value_
+      guard current != end else { return nil }
+      defer { current = tree.__tree_next(current) }
+      return tree[current]
     }
   }
   
   @inlinable
-  public func makeIterator() -> Iterator {
+  public __consuming func makeIterator() -> Iterator {
     makeIterator(start: __begin_node, end: __end_node())
   }
   
   @inlinable
-  public func makeIterator(start: _NodePtr, end: _NodePtr) -> Iterator {
+  public __consuming func makeIterator(start: _NodePtr, end: _NodePtr) -> Iterator {
     .init(tree: self, start: start, end: end)
   }
   
@@ -949,22 +953,23 @@ extension ___RedBlackTree.___Tree {
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.tree = tree
-      self.state = tree.___begin(start, to: end)
+      self.current = start
+      self.end = end
     }
     
     @usableFromInline
     unowned let tree: Tree
     
     @usableFromInline
-    var state: UnsafeSequenceState
+    var current, end: _NodePtr
     
-    public
-    mutating func next() -> (offset: TreePointer, element: Element)?
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> (offset: TreePointer, element: Element)?
     {
-      guard tree.___end(state) else { return nil }
-      defer { tree.___next(&state) }
-      return (TreePointer(__tree: tree, pointer: state.current),
-              tree[node: state.current].__value_)
+      guard current != end else { return nil }
+      defer { current = tree.__tree_next(current) }
+      return (TreePointer(__tree: tree, pointer: current), tree[current])
     }
   }
   
@@ -978,8 +983,6 @@ extension ___RedBlackTree.___Tree {
     .init(tree: self, start: start, end: end)
   }
 }
-
-extension ___RedBlackTree.___Tree.EnumerateIterator: @unchecked Sendable {}
 
 public
 protocol __EnumerateSequence {
@@ -1002,8 +1005,6 @@ extension ___RedBlackTree.___Tree {
     }
   }
 }
-
-//extension ___RedBlackTree.___Buffer.EnumeratedSequence: Sendable where Base: Sendable {}
 
 extension ___RedBlackTree.___Tree.EnumeratedSequence: Sequence {
   

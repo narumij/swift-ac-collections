@@ -635,13 +635,8 @@ extension RedBlackTreeSet.SubSequence: Sequence {
   }
 
   @inlinable
-  public func enumerated() -> RedBlackTreeSet.Tree.EnumeratedSequence<SubSequence> {
-//    var result = [RedBlackTreeSet.EnumeratedElement]()
-//    tree.___for_each(__p: startIndex.pointer, __l: endIndex.pointer) { __p, _ in
-//      result.append((Index(__tree: tree, pointer: __p), tree[__p]))
-//    }
-//    return result
-    .init(_base: self)
+  public func enumerated() -> AnySequence<RedBlackTreeSet.Tree.EnumeratedElement> {
+    AnySequence { makeEnumerateIterator() }
   }
 }
 
@@ -650,11 +645,11 @@ extension RedBlackTreeSet.SubSequence: Sequence {
   where Element: Sendable {}
 #endif
 
-extension RedBlackTreeSet.SubSequence: __EnumerateSequence {
-  public func makeEnumerateIterator() -> RedBlackTreeSet.Tree.Tree.EnumeratedIterator {
+extension RedBlackTreeSet.SubSequence {
+  public func makeEnumerateIterator() -> RedBlackTreeSet.Tree.EnumeratedIterator {
     tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer)
   }
-  public typealias EnumerateIterator = RedBlackTreeSet.Tree.Tree.EnumeratedIterator
+  public typealias EnumerateIterator = RedBlackTreeSet.Tree.EnumeratedIterator
 }
 
 extension RedBlackTreeSet.SubSequence: BidirectionalCollection {

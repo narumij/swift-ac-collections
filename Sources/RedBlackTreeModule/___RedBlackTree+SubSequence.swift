@@ -22,92 +22,112 @@
 
 import Foundation
 
-#if false
-public protocol ___Tree: ValueComparer {
-  init(___tree: Tree)
-  func ___makeIterator(startIndex: _NodePtr, endIndex: _NodePtr) -> ___Iterator
-}
+extension ___RedBlackTree.___Tree {
 
-extension ___Tree {
-  public typealias ___Iterator = ___RedBlackTree.Iterator<Self>
-  public typealias ___SubSequence = ___RedBlackTree.SubSequence<Self>
-}
+  public struct SubSequence: Sequence {
 
-extension ___RedBlackTree {
+    public typealias Element = Tree.Element
+    public typealias Index = _NodePtr
 
-  public struct SubSequence<Base>
-  where Base: ___Tree {
-    
     @inlinable
-    init(_subSequence: ___RedBlackTree.SubSequence<Base>._Tree.SubSequence) {
-      self._subSequence = _subSequence
+    public init(tree: Tree, start: Index, end: Index) {
+      self.base = tree
+      self.startIndex = start
+      self.endIndex = end
     }
 
-    public typealias _Tree = ___RedBlackTree.___Buffer<Base>
-
-    public typealias Index = ___RedBlackTree.TreePointer<Base>
-
-    public typealias Element = Base.Element
-    
-    public typealias Base = Base
-
     @usableFromInline
-    internal let _subSequence: _Tree.SubSequence
+    unowned let base: Tree
+
     public
       var startIndex: Index
-    { Index(__tree: _subSequence.base, pointer: _subSequence.startIndex) }
+    
     public
       var endIndex: Index
-    { Index(__tree: _subSequence.base, pointer: _subSequence.endIndex) }
 
     @inlinable
+    public func makeIterator() -> Iterator {
+      base.makeIterator(start: startIndex, end: endIndex)
+    }
+    
+    @inlinable
     @inline(__always)
-    internal var base: Base { Base(___tree: _subSequence.base) }
+    var count: Int {
+      base.distance(from: startIndex, to: endIndex)
+    }
+    
+    // この実装がないと、迷子になる
+    @inlinable
+    @inline(__always)
+    public func distance(from start: Index, to end: Index) -> Int {
+      base.distance(from: start, to: end)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func index(after i: Index) -> Index {
+      base.index(after: i)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func formIndex(after i: inout Index) {
+      base.formIndex(after: &i)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func index(before i: Index) -> Index {
+      base.index(before: i)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func formIndex(before i: inout Index) {
+      base.formIndex(before: &i)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func index(_ i: Index, offsetBy distance: Int) -> Index {
+      base.index(i, offsetBy: distance)
+    }
+    
+    @inlinable
+    @inline(__always)
+    internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+      base.formIndex(&i, offsetBy: distance)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+      base.index(i, offsetBy: distance, limitedBy: limit)
+    }
+    
+    @inlinable
+    @inline(__always)
+    internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index) -> Bool {
+      if let ii = index(i, offsetBy: distance, limitedBy: limit) {
+        i = ii
+        return true
+      }
+      return false
+    }
+    
+    @inlinable
+    @inline(__always)
+    public subscript(position: Index) -> Element {
+      base[position]
+    }
+    
+    @inlinable
+    public subscript(bounds: Range<TreePointer>) -> SubSequence {
+      .init(tree: base, start: bounds.lowerBound.pointer, end: bounds.upperBound.pointer)
+    }
   }
-}
-
-extension ___RedBlackTree.SubSequence: Sequence {
   
-  @usableFromInline
-  var _tree: _Tree { _subSequence.base }
-
-  @inlinable
-  public func makeIterator() -> ___RedBlackTree.Iterator<Base> {
-    .init(_tree.makeIterator(start: startIndex.pointer, end: endIndex.pointer))
+  func subsequence(from: _NodePtr, to: _NodePtr) -> SubSequence {
+    .init(tree: self, start: from, end: to)
   }
 }
-
-//extension ___RedBlackTree.SubSequence: Collection {
-//  
-//  public func index(after i: Index) -> Index {
-//    i.___next()
-//  }
-//  
-//  public subscript(position: Index) -> Base.Element {
-//    position.pointee
-//  }
-//  
-//  // この実装がないと、迷子になる
-//  @inlinable
-//  public func distance(from start: Index, to end: Index) -> Int {
-//    _subSequence.distance(from: start.pointer, to: end.pointer)
-//  }
-//}
-//
-//extension ___RedBlackTree.SubSequence: BidirectionalCollection {
-//  
-//  public func index(before i: Index) -> Index {
-//    i.___prev()
-//  }
-//}
-
-extension ___RedBlackTreeBase {
-  
-  public func ___makeIterator(startIndex: _NodePtr, endIndex: _NodePtr) -> ___RedBlackTree.Iterator<Self> {
-    .init(tree.makeIterator(start: startIndex, end: endIndex))
-  }
-
-}
-#endif
-
-

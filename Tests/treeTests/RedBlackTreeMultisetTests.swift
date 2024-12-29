@@ -520,6 +520,34 @@
       }
     }
 
+    func testRandom4() throws {
+      var set = RedBlackTreeMultiset<Int>()
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.remove(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.remove(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+      for (i,_) in set[set.startIndex ..< set.endIndex].enumerated() {
+        set.remove(at: i)
+        XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+      }
+    }
+    
     func testLiteral() throws {
       let set: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
       XCTAssertEqual(set.map { $0 }, [1, 1, 2, 2, 3, 3, 4, 4, 5, 5])
@@ -578,6 +606,41 @@
       // Attempting to access Set elements using an invalid index
       //      s.remove(at: i)
       //      s.remove(at: s.endIndex)
+    }
+    
+    func testSmokeRemove0() throws {
+      var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0,$0] })
+      for i in s {
+        s.remove(i)
+      }
+    }
+
+    func testSmokeRemove1() throws {
+      var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0,$0] })
+      for i in s[0..<10_000] {
+        s.remove(i)
+      }
+    }
+
+    func testSmokeRemove2() throws {
+      var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0,$0] })
+      for i in s[0..<10_000].map({ $0 }) {
+        s.remove(i)
+      }
+    }
+
+    func testSmokeRemove3() throws {
+      var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0,$0] })
+      for (i, _) in s.enumerated() {
+        s.remove(at: i)
+      }
+    }
+
+    func testSmokeRemove4() throws {
+      var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0,$0] })
+      for (i, _) in s[0..<10_000].enumerated() {
+        s.remove(at: i)
+      }
     }
 
     func testRedBlackTreeSetRemove() throws {

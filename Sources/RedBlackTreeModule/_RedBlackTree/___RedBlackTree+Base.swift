@@ -35,9 +35,6 @@ protocol ___RedBlackTreeBase: ValueComparer {
 }
 
 extension ___RedBlackTreeBase {
-}
-
-extension ___RedBlackTreeBase {
 
   @inlinable
   mutating func ensureUnique() {
@@ -69,17 +66,8 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public var ___capacity: Int {
+    // tree.capacityはバイトサイズになるので注意
     tree.header.capacity
-  }
-
-  @inlinable @inline(__always)
-  public func ___begin() -> _NodePtr {
-    tree.__begin_node
-  }
-
-  @inlinable @inline(__always)
-  public func ___end() -> _NodePtr {
-    .end
   }
 }
 
@@ -101,7 +89,12 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable @inline(__always)
-  func ___index_begin() -> ___Index {
+  func ___index_or_nil(_ p: _NodePtr?) -> ___Index? {
+    p.map{ ___index($0) }
+  }
+
+  @inlinable @inline(__always)
+  func ___index_start() -> ___Index {
     ___index(tree.___begin())
   }
 
@@ -111,7 +104,7 @@ extension ___RedBlackTreeBase {
   }
   
   @inlinable @inline(__always)
-  func ___ptr_begin() -> _NodePtr {
+  func ___ptr_start() -> _NodePtr {
     tree.___begin()
   }
 
@@ -147,19 +140,13 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
-  func ___index_prev(_ i: _NodePtr) -> ___Index {
-    guard i != tree.__begin_node, i == tree.__end_node() || tree.___is_valid(i) else {
-      fatalError(.invalidIndex)
-    }
-    return ___index(tree.__tree_prev_iter(i))
+  func ___index(before i: _NodePtr) -> ___Index {
+    ___index(tree.index(before: i))
   }
 
   @inlinable @inline(__always)
-  func ___index_next(_ i: _NodePtr) -> ___Index {
-    guard i != tree.__end_node(), tree.___is_valid(i) else {
-      fatalError(.invalidIndex)
-    }
-    return ___index(tree.__tree_next_iter(i))
+  func ___index(after i: _NodePtr) -> ___Index {
+    ___index(tree.index(after: i))
   }
 }
 
@@ -167,73 +154,14 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  func ___index(_ i: _NodePtr, offsetBy distance: Int, type: String) -> ___Index {
-    ___index(pointer(i, offsetBy: distance))
+  func ___index(_ i: _NodePtr, offsetBy distance: Int) -> ___Index {
+    ___index(tree.index(i, offsetBy: distance))
   }
 
   @inlinable
   func ___index(
-    _ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr, type: String
-  ) -> ___Index? {
-    ___index_or_nil(
-      pointer(i, offsetBy: distance, limitedBy: limit))
-  }
-
-  @inlinable
-  @inline(__always)
-  func pointer(
-    _ ptr: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr? = .none
-  ) -> _NodePtr {
-    guard ptr == tree.___end() || tree.___is_valid(ptr) else {
-      fatalError(.invalidIndex)
-    }
-    return distance > 0
-      ? pointer(ptr, nextBy: UInt(distance), limitedBy: limit)
-      : pointer(ptr, prevBy: UInt(abs(distance)), limitedBy: limit)
-  }
-
-  @inlinable
-  @inline(__always)
-  func pointer(
-    _ ptr: _NodePtr, prevBy distance: UInt, limitedBy limit: _NodePtr? = .none
-  ) -> _NodePtr {
-    var ptr = ptr
-    var distance = distance
-    while distance != 0, ptr != limit {
-      // __begin_nodeを越えない
-      guard ptr != tree.__begin_node else {
-        fatalError(.outOfBounds)
-      }
-      ptr = tree.__tree_prev_iter(ptr)
-      distance -= 1
-    }
-    guard distance == 0 else {
-      return .nullptr
-    }
-    assert(ptr != .nullptr)
-    return ptr
-  }
-
-  @inlinable
-  @inline(__always)
-  func pointer(
-    _ ptr: _NodePtr, nextBy distance: UInt, limitedBy limit: _NodePtr? = .none
-  ) -> _NodePtr {
-    var ptr = ptr
-    var distance = distance
-    while distance != 0, ptr != limit {
-      // __end_node()を越えない
-      guard ptr != tree.__end_node() else {
-        fatalError(.outOfBounds)
-      }
-      ptr = tree.__tree_next_iter(ptr)
-      distance -= 1
-    }
-    guard distance == 0 else {
-      return .nullptr
-    }
-    assert(ptr != .nullptr)
-    return ptr
+    _ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> ___Index? {
+    ___index_or_nil(tree.index(i, offsetBy: distance, limitedBy: limit))
   }
 }
 
@@ -277,32 +205,6 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
 
-//  public typealias ___EnumeratedSequence = UnfoldSequence<EnumeratedElement, Tree.SafeSequenceState>
-//
-//  @inlinable
-//  @inline(__always)
-//  public func ___enumerated_sequence(from: _NodePtr, to: _NodePtr)
-//    -> ___EnumeratedSequence
-//  {
-//    return sequence(state: tree.___begin(from, to: to)) { state in
-//      guard tree.___end(state) else { return nil }
-//      defer { tree.___next(&state) }
-//      return (___index(state.current), tree[state.current])
-//    }
-//  }
-
-// #warning("不要になっている可能性が高い")
-//  @inlinable
-//  public func ___enumerated_sequence__(from: ___RedBlackTree.SimpleIndex, to: ___RedBlackTree.SimpleIndex)
-//    -> [EnumeratedElement]
-//  {
-//    var result = [EnumeratedElement]()
-//    tree.___for_each(__p: from.pointer, __l: to.pointer) { __p, _ in
-//      result.append((___index(__p), tree[__p]))
-//    }
-//    return result
-//  }
-
   @inlinable
   @inline(__always)
   public func ___enumerated_sequence__(from: _NodePtr, to: _NodePtr)
@@ -317,7 +219,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public var ___enumerated_sequence__: [EnumeratedElement] {
-    ___enumerated_sequence__(from: ___ptr_begin(), to: ___ptr_end())
+    ___enumerated_sequence__(from: ___ptr_start(), to: ___ptr_end())
   }
 
   @inlinable
@@ -394,12 +296,12 @@ extension ___RedBlackTreeBase {
   public func ___element_sequence__<T>(_ transform: (Element) throws -> T)
     rethrows -> [T]
   {
-    try ___element_sequence__(from: ___ptr_begin(), to: ___ptr_end(), transform: transform)
+    try ___element_sequence__(from: ___ptr_start(), to: ___ptr_end(), transform: transform)
   }
 
   @inlinable @inline(__always)
   public var ___element_sequence__: [Element] {
-    ___element_sequence__(from: ___ptr_begin(), to: ___ptr_end())
+    ___element_sequence__(from: ___ptr_start(), to: ___ptr_end())
   }
 }
 
@@ -500,29 +402,6 @@ extension ___RedBlackTreeBase {
     ensureUnique()
     return try tree.___erase(from, to, initialResult, nextPartialResult)
   }
-
-//  @inlinable
-//  public mutating func ___remove(
-//    from: ___Index, to: ___Index, forEach action: (Element) throws -> Void
-//  ) rethrows {
-//    try ___remove(from: from.pointer, to: to.pointer, forEach: action)
-//  }
-//
-//  @inlinable
-//  public mutating func ___remove<Result>(
-//    from: ___Index, to: ___Index, into initialResult: Result,
-//    _ updateAccumulatingResult: (inout Result, Element) throws -> Void
-//  ) rethrows -> Result {
-//    try ___remove(from: from.pointer, to: to.pointer, into: initialResult, updateAccumulatingResult)
-//  }
-//
-//  @inlinable
-//  public mutating func ___remove<Result>(
-//    from: ___Index, to: ___Index, _ initialResult: Result,
-//    _ nextPartialResult: (Result, Element) throws -> Result
-//  ) rethrows -> Result {
-//    try ___remove(from: from.pointer, to: to.pointer, initialResult, nextPartialResult)
-//  }
 }
 
 extension ___RedBlackTreeBase {
@@ -544,13 +423,15 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   func ___equal_with(_ rhs: Self) -> Bool where Element: Equatable {
-    ___count == rhs.___count && zip(___element_sequence__, rhs.___element_sequence__).allSatisfy(==)
+    tree === rhs.tree ||
+    (___count == rhs.___count && zip(___element_sequence__, rhs.___element_sequence__).allSatisfy(==))
   }
 
   @inlinable
   func ___equal_with<K, V>(_ rhs: Self) -> Bool
   where K: Equatable, V: Equatable, Element == (key: K, value: V) {
-    ___count == rhs.___count && zip(___element_sequence__, rhs.___element_sequence__).allSatisfy(==)
+    tree === rhs.tree ||
+    (___count == rhs.___count && zip(___element_sequence__, rhs.___element_sequence__).allSatisfy(==))
   }
 }
 
@@ -602,22 +483,3 @@ extension ___RedBlackTreeBase {
     return result
   }
 }
-
-// MARK: - InitializeHelper
-
-//extension NewContainer {
-//  public struct Iterator: IteratorProtocol {
-//    @usableFromInline
-//    internal init(it: Tree.Iterator) {
-//      self.it = it
-//    }
-//    var it: Tree.Iterator
-//    public mutating func next() -> Element? {
-//      it.next()
-//    }
-//  }
-//  @inlinable public func makeIterator() -> Iterator {
-//    .init(it: tree.makeIterator())
-//  }
-//}
-

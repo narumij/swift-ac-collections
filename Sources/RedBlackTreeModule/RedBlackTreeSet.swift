@@ -410,17 +410,17 @@ extension RedBlackTreeSet {
 
   /// - Complexity: 償却された O(1)。
   @inlinable public func index(before i: Index) -> Index {
-    ___index_prev(i.pointer)
+    ___index(before: i.pointer)
   }
 
   /// - Complexity: 償却された O(1)。
   @inlinable public func index(after i: Index) -> Index {
-    ___index_next(i.pointer)
+    ___index(after: i.pointer)
   }
 
   /// - Complexity: O(1)
   @inlinable public var startIndex: Index {
-    ___index_begin()
+    ___index_start()
   }
 
   /// - Complexity: O(1)
@@ -432,12 +432,12 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   @inlinable public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(i.pointer, offsetBy: distance, type: "RedBlackTreeSet")
+    ___index(i.pointer, offsetBy: distance)
   }
 
   @inlinable public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index?
   {
-    ___index(i.pointer, offsetBy: distance, limitedBy: limit.pointer, type: "RedBlackTreeSet")
+    ___index(i.pointer, offsetBy: distance, limitedBy: limit.pointer)
   }
 
   /// 償却された O(*n*)
@@ -491,25 +491,25 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   @inlinable public func map<T>(_ transform: (Element) throws -> T) rethrows -> [T] {
-    try ___element_sequence__(from: ___ptr_begin(), to: ___ptr_end(), transform: transform)
+    try ___element_sequence__(from: ___ptr_start(), to: ___ptr_end(), transform: transform)
   }
 
   @inlinable public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> [Element] {
-    try ___element_sequence__(from: ___ptr_begin(), to: ___ptr_end(), isIncluded: isIncluded)
+    try ___element_sequence__(from: ___ptr_start(), to: ___ptr_end(), isIncluded: isIncluded)
   }
 
   @inlinable public func reduce<Result>(
     into initialResult: Result, _ updateAccumulatingResult: (inout Result, Element) throws -> Void
   ) rethrows -> Result {
     try ___element_sequence__(
-      from: ___ptr_begin(), to: ___ptr_end(), into: initialResult, updateAccumulatingResult)
+      from: ___ptr_start(), to: ___ptr_end(), into: initialResult, updateAccumulatingResult)
   }
 
   @inlinable public func reduce<Result>(
     _ initialResult: Result, _ nextPartialResult: (Result, Element) throws -> Result
   ) rethrows -> Result {
     try ___element_sequence__(
-      from: ___ptr_begin(), to: ___ptr_end(), initialResult, nextPartialResult)
+      from: ___ptr_start(), to: ___ptr_end(), initialResult, nextPartialResult)
   }
 }
 

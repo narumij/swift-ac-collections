@@ -81,7 +81,10 @@ extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalColle
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    __tree_next(i)
+    guard i != __end_node(), ___is_valid(i) else {
+      fatalError(.invalidIndex)
+    }
+    return __tree_next(i)
   }
   
   @inlinable
@@ -93,7 +96,10 @@ extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalColle
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    __tree_prev_iter(i)
+    guard i != __begin_node, i == __end_node() || ___is_valid(i) else {
+      fatalError(.invalidIndex)
+    }
+    return __tree_prev_iter(i)
   }
   
   @inlinable
@@ -105,14 +111,23 @@ extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalColle
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
+    guard i == ___end() || ___is_valid(i) else {
+      fatalError(.invalidIndex)
+    }
     var distance = distance
     var i = i
     while distance != 0 {
       if 0 < distance {
+        guard i != __end_node() else {
+          fatalError(.outOfBounds)
+        }
         i = index(after: i)
         distance -= 1
       }
       else {
+        guard i != __begin_node else {
+          fatalError(.outOfBounds)
+        }
         i = index(before: i)
         distance += 1
       }
@@ -129,6 +144,9 @@ extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalColle
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+    guard i == ___end() || ___is_valid(i) else {
+      fatalError(.invalidIndex)
+    }
     var distance = distance
     var i = i
     while distance != 0 {
@@ -136,10 +154,16 @@ extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalColle
         return nil
       }
       if 0 < distance {
+        guard i != __end_node() else {
+          fatalError(.outOfBounds)
+        }
         i = index(after: i)
         distance -= 1
       }
       else {
+        guard i != __begin_node else {
+          fatalError(.outOfBounds)
+        }
         i = index(before: i)
         distance += 1
       }

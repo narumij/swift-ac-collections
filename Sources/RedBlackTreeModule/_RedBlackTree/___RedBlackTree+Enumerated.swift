@@ -40,7 +40,7 @@ extension ___RedBlackTree.___Tree {
     
     // AnySequenceにキャプチャされるため、ownedでは過剰と理解している
     @usableFromInline
-    let tree: Tree
+    unowned let tree: Tree
     
     @usableFromInline
     var current, end: _NodePtr
@@ -59,12 +59,143 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
   
   @inlinable
-  public __consuming func makeEnumeratedIterator() -> EnumeratedIterator {
+  public __consuming func makeEnumIterator() -> EnumeratedIterator {
     .init(tree: self, start: __begin_node, end: __end_node())
   }
   
   @inlinable
   public __consuming func makeEnumeratedIterator(start: _NodePtr, end: _NodePtr) -> EnumeratedIterator {
     .init(tree: self, start: start, end: end)
+  }
+}
+
+extension ___RedBlackTree.___Tree {
+
+  @frozen
+  public struct EnumeratedSequence: Sequence {
+
+    public typealias Element = Tree.EnumeratedElement
+    public typealias Index = _NodePtr
+
+    @inlinable
+    public init(tree: Tree, start: Index, end: Index) {
+      self.base = tree
+      self.startIndex = start
+      self.endIndex = end
+    }
+
+    @usableFromInline
+    unowned let base: Tree
+
+    public
+      var startIndex: Index
+    
+    public
+      var endIndex: Index
+
+    @inlinable
+    public func makeIterator() -> EnumeratedIterator {
+      base.makeEnumeratedIterator(start: startIndex, end: endIndex)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public var count: Int {
+      base.distance(from: startIndex, to: endIndex)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: @escaping (EnumeratedElement) throws -> Void) rethrows {
+      var __p = startIndex
+      while __p != endIndex {
+        let __c = __p
+        __p = base.__tree_next(__p)
+        try body((.init(__c), base[__c]))
+      }
+    }
+    
+    // この実装がないと、迷子になる
+    @inlinable
+    @inline(__always)
+    public func distance(from start: Index, to end: Index) -> Int {
+      base.distance(from: start, to: end)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func index(after i: Index) -> Index {
+      base.index(after: i)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func formIndex(after i: inout Index) {
+      base.formIndex(after: &i)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func index(before i: Index) -> Index {
+      base.index(before: i)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func formIndex(before i: inout Index) {
+      base.formIndex(before: &i)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func index(_ i: Index, offsetBy distance: Int) -> Index {
+      base.index(i, offsetBy: distance)
+    }
+    
+    @inlinable
+    @inline(__always)
+    internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+      base.formIndex(&i, offsetBy: distance)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+      base.index(i, offsetBy: distance, limitedBy: limit)
+    }
+    
+    @inlinable
+    @inline(__always)
+    internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index) -> Bool {
+      if let ii = index(i, offsetBy: distance, limitedBy: limit) {
+        i = ii
+        return true
+      }
+      return false
+    }
+    
+    @inlinable
+    @inline(__always)
+    public subscript(position: Index) -> EnumeratedElement {
+      (.init(position),base[position])
+    }
+    
+    @inlinable
+    public subscript(bounds: Range<TreePointer>) -> EnumeratedSequence {
+      .init(tree: base, start: bounds.lowerBound.pointer, end: bounds.upperBound.pointer)
+    }
+  }
+}
+
+extension ___RedBlackTree.___Tree {
+
+  @inlinable
+  func enumeratedSubsequence() -> EnumeratedSequence {
+    .init(tree: self, start: __begin_node, end: __end_node())
+  }
+
+  @inlinable
+  func enumeratedSubsequence(from: _NodePtr, to: _NodePtr) -> EnumeratedSequence {
+    .init(tree: self, start: from, end: to)
   }
 }

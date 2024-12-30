@@ -134,7 +134,7 @@ for i in 0 ..< count / N {
 //    xy[1, default: []].removeSubrange(lo ..< hi)
 //  }
 }
-#elseif false
+#elseif true
 // これもまだ
 //var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
 var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]

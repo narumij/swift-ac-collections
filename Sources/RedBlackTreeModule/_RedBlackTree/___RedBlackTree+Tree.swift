@@ -152,9 +152,9 @@ extension ___RedBlackTree.___Tree {
     to minimumCapacity: Int,
     linearly: Bool
   ) -> Int {
-    if linearly { return Swift.max(tree.header.capacity, minimumCapacity) }
+    if linearly { return Swift.max(tree.header.initializedCount, minimumCapacity) }
     return Swift.max(
-      Int((Self.growthFactor * Double(tree.header.capacity)).rounded(.up)),
+      Int((Self.growthFactor * Double(tree.header.initializedCount)).rounded(.up)),
       minimumCapacity)
   }
 }

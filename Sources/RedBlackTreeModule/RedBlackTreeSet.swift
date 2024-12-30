@@ -153,17 +153,20 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias _Key = Element
 
+  public
+    typealias EnumElement = Tree.EnumeratedElement
+
   @inlinable
   @inline(__always)
   var tree: Tree {
     get { storage.tree }
     _modify { yield &storage.tree }
   }
-  
+
   @inlinable
   @inline(__always)
   var lifeStorage: Tree.LifeStorage { storage.lifeStorage }
-  
+
   @usableFromInline
   var storage: Tree.Storage
 }
@@ -201,7 +204,7 @@ extension RedBlackTreeSet {
         tree.__insert_node_at(__parent, __child, __h)
       }
     }
-    
+
     self.storage = .init(__tree: tree)
   }
 }
@@ -469,7 +472,7 @@ extension RedBlackTreeSet: Sequence {
   public struct Iterator: IteratorProtocol {
     @usableFromInline
     internal var _iterator: Tree.Iterator
-    
+
     @inlinable
     @inline(__always)
     internal init(_base: RedBlackTreeSet) {
@@ -489,11 +492,19 @@ extension RedBlackTreeSet: Sequence {
     return Iterator(_base: self)
   }
 
-  @inlinable
-  @inline(__always)
-  public func enumerated() -> AnySequence<Tree.EnumeratedElement> {
-    AnySequence { tree.makeEnumeratedIterator() }
-  }
+  #if false
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> AnySequence<EnumElement> {
+      AnySequence { tree.makeEnumIterator() }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> EnumSequence {
+      EnumSequence(_subSequence: tree.enumeratedSubsequence())
+    }
+  #endif
 }
 
 extension RedBlackTreeSet: BidirectionalCollection {
@@ -631,7 +642,9 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet.SubSequence: Sequence {
 
   public typealias Element = RedBlackTreeSet.Element
-  public typealias EnumeratedElement = RedBlackTreeSet.Tree.EnumeratedElement
+  public typealias EnumElement = RedBlackTreeSet.Tree.EnumeratedElement
+  //  public typealias EnumeratedSequence = RedBlackTreeSet.Tree.EnumeratedSequence
+  public typealias EnumSequence = RedBlackTreeSet.EnumSequence
 
   public struct Iterator: IteratorProtocol {
     @usableFromInline
@@ -656,11 +669,20 @@ extension RedBlackTreeSet.SubSequence: Sequence {
     Iterator(_subSequence.makeIterator())
   }
 
-  @inlinable
-  @inline(__always)
-  public func enumerated() -> AnySequence<EnumeratedElement> {
-    AnySequence { tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer) }
-  }
+  #if false
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> AnySequence<EnumeratedElement> {
+      AnySequence { tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer) }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> EnumSequence {
+      EnumSequence(
+        _subSequence: tree.enumeratedSubsequence(from: startIndex.pointer, to: endIndex.pointer))
+    }
+  #endif
 }
 
 extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
@@ -762,53 +784,122 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 }
 
 #if DEBUG || true
-// TODO: CoWの挙動についてテストーコードを書くこと
+  // TODO: CoWの挙動についてテストーコードを書くこと
 
-// 不具合調査用
-extension RedBlackTreeSet {
-  
-  public var copyCount: Int {
-    get { storage.tree.copyCount }
-    set { storage.tree.copyCount = newValue }
-  }
+  // 不具合調査用
+  extension RedBlackTreeSet {
 
-  @inlinable
-  public mutating func checkUnique() -> Bool {
-    Tree._isKnownUniquelyReferenced(tree: &tree)
-  }
+    public var copyCount: Int {
+      get { storage.tree.copyCount }
+      set { storage.tree.copyCount = newValue }
+    }
 
-//  @inlinable
-//  public mutating func checkUnique2() -> Bool {
-//    var a = Tree.Manager(unsafeBufferObject: tree)
-//    return a.isUniqueReference()
-//  }
-//
-  @inlinable
-  public func _ptr_lowerBound(_ member: Element) -> _NodePtr {
-    ___ptr_lower_bound(member)
-  }
+    @inlinable
+    public mutating func checkUnique() -> Bool {
+      Tree._isKnownUniquelyReferenced(tree: &tree)
+    }
 
-  @inlinable
-  public func _idx_lowerBound(_ member: Element) -> ___RedBlackTree.SimpleIndex {
-    .init(___ptr_lower_bound(member))
+    //  @inlinable
+    //  public mutating func checkUnique2() -> Bool {
+    //    var a = Tree.Manager(unsafeBufferObject: tree)
+    //    return a.isUniqueReference()
+    //  }
+
+    @inlinable
+    public func _ptr_lowerBound(_ member: Element) -> _NodePtr {
+      ___ptr_lower_bound(member)
+    }
+
+    @inlinable
+    public func _idx_lowerBound(_ member: Element) -> ___RedBlackTree.SimpleIndex {
+      .init(___ptr_lower_bound(member))
+    }
   }
-}
 #endif
 
 extension RedBlackTreeSet {
-  
+
   @usableFromInline
   var tree2: (Tree, Tree.LifeStorage) {
     (tree, lifeStorage)
-//    fatalError()
   }
 }
 
 extension RedBlackTreeSet.SubSequence {
-  
+
   @usableFromInline
   var tree2: (_Tree, _Tree.LifeStorage) {
-//    fatalError()
     (tree, .init())
   }
+}
+
+// MARK: - Enumerated Sequence
+
+extension RedBlackTreeSet {
+
+  @frozen
+  public struct EnumSequence {
+
+    public typealias _Element = Tree.EnumeratedElement
+
+    public typealias Element = Tree.EnumeratedElement
+
+    @usableFromInline
+    internal typealias _TreeSubSequence = Tree.EnumeratedSequence
+
+    @usableFromInline
+    internal let _subSequence: _TreeSubSequence
+
+    @inlinable
+    init(_subSequence: _TreeSubSequence) {
+      self._subSequence = _subSequence
+    }
+
+    @inlinable
+    @inline(__always)
+    internal var tree: Tree { _subSequence.base }
+  }
+}
+
+extension RedBlackTreeSet.EnumSequence: Sequence {
+
+  public struct EnumIterator: IteratorProtocol {
+
+    @usableFromInline
+    internal var _iterator: _TreeSubSequence.Iterator
+
+    public typealias Element = _Element
+
+    @inlinable
+    @inline(__always)
+    internal init(_ _iterator: _TreeSubSequence.Iterator) {
+      self._iterator = _iterator
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> Element? {
+      _iterator.next()
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> EnumIterator {
+    Iterator(_subSequence.makeIterator())
+  }
+}
+
+extension RedBlackTreeSet.EnumSequence {
+
+  //  @inlinable
+  //  @inline(__always)
+  //  public func forEach(_ body: (_Element) throws -> Void) rethrows {
+  //      var __p = _subSequence.startIndex
+  //      while __p != _subSequence.endIndex {
+  //        let __c = __p
+  //        __p = _subSequence.base.__tree_next(__p)
+  //        try body((.init(__c), _subSequence.base[__c]))
+  //    }
+  //  }
 }

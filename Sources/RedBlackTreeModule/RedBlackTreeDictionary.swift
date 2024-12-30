@@ -436,7 +436,7 @@ extension RedBlackTreeDictionary: Sequence {
   @inlinable
   @inline(__always)
   public func enumerated() -> AnySequence<Tree.EnumeratedElement> {
-    AnySequence { tree.makeEnumeratedIterator() }
+    AnySequence { tree.makeEnumIterator() }
   }
 }
 

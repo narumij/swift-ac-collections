@@ -27,7 +27,7 @@ var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 for v in 0..<10_000_000 {
   tree.remove(v)
 }
-#elseif true
+#elseif false
 var tree = RedBlackTreeSet<Int>(0 ..< count)
 tree.copyCount = 0
 print(tree.count)
@@ -88,7 +88,7 @@ for i in 0 ..< 200_000 {
   // 不正なインデックスに関する修正が必要そう
   xy[1]?.removeSubrange(.node(i) ..< .node(i + 10))
 }
-#elseif true
+#elseif false
 // これがいまだにCoW過剰発火している
 //var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
 var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< 2_000_000)]
@@ -120,7 +120,7 @@ for i in 0 ..< 10_000 / N {
   print("2)", xy[1]?.checkUnique() != true ? "NG" : "OK") // NG
 //  print("3)", xy[1]?.checkUnique2() != true ? "NG" : "OK") // NG
 }
-#elseif false
+#elseif true
 // これもまだ
 //var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
 var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]

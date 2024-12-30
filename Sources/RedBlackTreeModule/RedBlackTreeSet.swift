@@ -470,14 +470,10 @@ extension RedBlackTreeSet: Sequence {
     @usableFromInline
     internal var _iterator: Tree.Iterator
     
-    @usableFromInline
-    let tree: Tree
-
     @inlinable
     @inline(__always)
     internal init(_base: RedBlackTreeSet) {
       self._iterator = _base.tree.makeIterator()
-      self.tree = _base.tree
     }
 
     @inlinable

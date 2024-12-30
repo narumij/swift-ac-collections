@@ -43,17 +43,17 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable
-  public mutating func ensureUnique() {
+  public mutating func _ensureUnique() {
     Tree.ensureUnique(tree: &tree)
   }
 
   @inlinable
-  mutating func ensureUniqueAndCapacity(minimumCapacity: Int) {
+  mutating func _ensureUniqueAndCapacity(minimumCapacity: Int) {
     Tree.ensureUniqueAndCapacity(tree: &tree, minimumCapacity: minimumCapacity)
   }
 
   @inlinable
-  mutating func ensureUniqueAndCapacity() {
+  mutating func _ensureUniqueAndCapacity() {
     Tree.ensureUniqueAndCapacity(tree: &tree)
   }
 }

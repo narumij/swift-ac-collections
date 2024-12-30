@@ -96,7 +96,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
+    _ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
   }
 }
 
@@ -107,7 +107,7 @@ extension RedBlackTreeMultiset {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    ensureUniqueAndCapacity()
+    _ensureUniqueAndCapacity()
     _ = tree.__insert_multi(newMember)
     return (true, newMember)
   }
@@ -115,7 +115,7 @@ extension RedBlackTreeMultiset {
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
-    ensureUnique()
+    _ensureUnique()
     return tree.___erase_multi(member) != 0 ? member : nil
   }
 
@@ -162,7 +162,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    ensureUnique()
+    _ensureUnique()
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }

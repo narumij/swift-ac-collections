@@ -144,7 +144,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
+    _ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
   }
 }
 
@@ -192,14 +192,14 @@ extension RedBlackTreeDictionary {
         var value: Value?
         defer {
           if let value {
-            ensureUniqueAndCapacity()
+            _ensureUniqueAndCapacity()
             let __h = tree.__construct_node((key, value))
             tree.__insert_node_at(__parent, __child, __h)
           }
         }
         yield &value
       } else {
-        ensureUnique()
+        _ensureUnique()
         var helper = ___ModifyHelper(pointer: &tree[__ptr].value)
         defer {
           if helper.isNil {
@@ -222,11 +222,11 @@ extension RedBlackTreeDictionary {
       defer { _fixLifetime(self) }
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
-        ensureUniqueAndCapacity()
+        _ensureUniqueAndCapacity()
         __ptr = tree.__construct_node((key, defaultValue()))
         tree.__insert_node_at(__parent, __child, __ptr)
       } else {
-        ensureUnique()
+        _ensureUnique()
       }
       yield &tree[__ptr].value
     }
@@ -263,7 +263,7 @@ extension RedBlackTreeDictionary {
     _ value: Value,
     forKey key: Key
   ) -> Value? {
-    ensureUniqueAndCapacity()
+    _ensureUniqueAndCapacity()
     let (__r, __inserted) = tree.__insert_unique((key, value))
     guard !__inserted else { return nil }
     let oldMember = tree[ref: __r]
@@ -279,7 +279,7 @@ extension RedBlackTreeDictionary {
       return nil
     }
     let value = tree[node: __i].__value_.value
-    ensureUnique()
+    _ensureUnique()
     _ = tree.erase(__i)
     return value
   }
@@ -318,7 +318,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    ensureUnique()
+    _ensureUnique()
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }

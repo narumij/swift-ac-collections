@@ -37,8 +37,9 @@ extension ___RedBlackTree.___Tree {
       self.endIndex = end
     }
     
+    // 後続処理のイテレーター等がownedになるため、ここで保持すると過剰となる、と理解
     @usableFromInline
-    let base: Tree
+    unowned let base: Tree
     
     public
     var startIndex: Index
@@ -47,8 +48,8 @@ extension ___RedBlackTree.___Tree {
     var endIndex: Index
     
     @inlinable
-    public func makeIterator() -> Iterator {
-      base.makeIterator(start: startIndex, end: endIndex)
+    public __consuming func makeIterator() -> Iterator {
+      Iterator(tree: base, start: startIndex, end: endIndex)
     }
     
     @inlinable
@@ -143,7 +144,7 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
   
   @inlinable
-  __consuming func subsequence(from: _NodePtr, to: _NodePtr) -> SubSequence {
+  func subsequence(from: _NodePtr, to: _NodePtr) -> SubSequence {
     .init(tree: self, start: from, end: to)
   }
 }

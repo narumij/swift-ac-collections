@@ -98,12 +98,11 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   static func ensureUnique(tree: inout Tree) {
-    // このチェックだけでも、重い場合がある模様
     if !isKnownUniquelyReferenced(&tree) {
-      tree = tree.copy(newCapacity: tree.header.capacity)
+      makeEnsureUnique(tree: &tree)
     }
   }
-
+  
   @inlinable
   static func ensureUniqueAndCapacity(tree: inout Tree) {
     ensureUniqueAndCapacity(tree: &tree, minimumCapacity: tree.count + 1)
@@ -113,20 +112,29 @@ extension ___RedBlackTree.___Tree {
   static func ensureUniqueAndCapacity(tree: inout Tree, minimumCapacity: Int) {
     let shouldExpand = tree.header.capacity < minimumCapacity
     if shouldExpand || !isKnownUniquelyReferenced(&tree) {
-      tree = tree.copy(
-        newCapacity: _growCapacity(tree: &tree, to: minimumCapacity, linearly: false))
+      makeEnsureUniqueAndCapacity(tree: &tree, minimumCapacity: minimumCapacity)
     }
   }
 
   @inlinable
   static func ensureCapacity(tree: inout Tree, minimumCapacity: Int) {
-    let shouldExpand = tree.header.capacity < minimumCapacity
-    if shouldExpand {
-      tree = tree.copy(
-        newCapacity: _growCapacity(tree: &tree, to: minimumCapacity, linearly: false))
+    if tree.header.capacity < minimumCapacity {
+      makeEnsureUniqueAndCapacity(tree: &tree, minimumCapacity: minimumCapacity)
     }
   }
+  
+  @inlinable
+  static func makeEnsureUnique(tree: inout Tree) {
+    tree = tree.copy(
+      newCapacity: tree.header.capacity)
+  }
 
+  @inlinable
+  static func makeEnsureUniqueAndCapacity(tree: inout Tree, minimumCapacity: Int) {
+    tree = tree.copy(
+      newCapacity: _growCapacity(tree: &tree, to: minimumCapacity, linearly: false))
+  }
+  
   @inlinable
   @inline(__always)
   internal static var growthFactor: Double { 1.75 }
@@ -260,7 +268,6 @@ extension ___RedBlackTree.___Tree {
     }
     @inline(__always)
     _modify {
-      defer { _fixLifetime(self) }
       assert(0 <= pointer && pointer < header.initializedCount)
       yield &__node_ptr[pointer]
     }
@@ -282,7 +289,6 @@ extension ___RedBlackTree.___Tree {
     }
     @inline(__always)
     _modify {
-      defer { _fixLifetime(self) }
       assert(0 <= pointer && pointer < header.initializedCount)
       yield &__node_ptr[pointer].__value_
     }
@@ -298,7 +304,6 @@ extension ___RedBlackTree.___Tree {
     }
     @inline(__always)
     _modify {
-      defer { _fixLifetime(self) }
       let pointer = __ref_(ref)
       assert(0 <= pointer && pointer < header.initializedCount)
       yield &__node_ptr[pointer].__value_
@@ -408,7 +413,6 @@ extension ___RedBlackTree.___Tree {
   var __left_: _NodePtr {
     get { __header_ptr.pointee.__left_ }
     _modify {
-      defer { _fixLifetime(self) }
       yield &__header_ptr.pointee.__left_
     }
   }
@@ -417,7 +421,6 @@ extension ___RedBlackTree.___Tree {
   var __begin_node: _NodePtr {
     get { __header_ptr.pointee.__begin_node }
     _modify {
-      defer { _fixLifetime(self) }
       yield &__header_ptr.pointee.__begin_node
     }
   }
@@ -687,23 +690,4 @@ extension ___RedBlackTree.___Tree {
     }
     return result
   }
-}
-
-extension ___RedBlackTree.___Tree {
-  
-#if false
-  @inlinable @inline(__always)
-  func manager() -> Manager {
-    .init(unsafeBufferObject: self)
-  }
-#else
-  @inlinable @inline(__always)
-  func manager() -> Tree { self }
-#endif
-  
-  @inlinable @inline(__always)
-  func manager() -> Manager {
-    .init(unsafeBufferObject: self)
-  }
-
 }

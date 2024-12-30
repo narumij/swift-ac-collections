@@ -3,6 +3,8 @@
 import Foundation
 import RedBlackTreeModule
 
+print("start job")
+
 #if DEBUG
 let count = 500_000
 #else
@@ -130,8 +132,8 @@ for i in 0 ..< count / N {
 }
 #elseif true
 // これもまだ
-var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
-//var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]
+//var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
+var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]
 let N = 1000
 for i in 0 ..< count / N {
 
@@ -141,8 +143,12 @@ for i in 0 ..< count / N {
 
 //  print("0)", xy[1]?.checkUnique() != true ? "NG" : "OK") // NG
 
+//  for _ in xy[1, default: []][0 ..< i].enumerated() {
+//  for (i,v) in xy[1]![(i * N) ..< (i * N + N)].enumerated() {
   xy[1]?[(i * N) ..< (i * N + N)].enumerated().forEach { i, v in
-    print("0)", xy[1]?.checkUnique() != true ? "NG" : "OK") // NG
+//  xy[1, default: []][(i * N) ..< (i * N + N)].forEach { v in
+//    print("0)", xy[1]?.checkUnique() != true ? "NG" : "OK") // NG
+//    xy[1]?.___checkUnique()
 //    xy[1]?.ensureUnique()
     xy[1]?.remove(at: i)
   }
@@ -194,11 +200,6 @@ print("Hola!")
 
 extension RedBlackTreeSet {
 
-  @inlinable
-  public subscript(bounds: Range<Element>) -> SubSequence {
-    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
-  }
-  
   @inlinable
   public mutating func removeAndForEach(
     _ range: Range<Element>,

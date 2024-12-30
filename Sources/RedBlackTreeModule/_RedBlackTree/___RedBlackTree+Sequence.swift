@@ -28,14 +28,14 @@ extension ___RedBlackTree.___Tree: Sequence {
   public struct Iterator: IteratorProtocol {
     
     @inlinable
-    internal init(tree: Tree.Manager, start: _NodePtr, end: _NodePtr) {
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.tree = tree
       self.current = start
       self.end = end
     }
     
     @usableFromInline
-    let tree: Tree.Manager
+    let tree: Tree
     
     @usableFromInline
     var current, end: _NodePtr
@@ -45,19 +45,14 @@ extension ___RedBlackTree.___Tree: Sequence {
     public mutating func next() -> Element?
     {
       guard current != end else { return nil }
-      defer { current = Tree.with(tree) { $0.__tree_next(current) } }
-      return Tree.with(tree) { $0[current] }
+      defer { current = tree.__tree_next(current) }
+      return tree[current]
     }
   }
   
   @inlinable
   public __consuming func makeIterator() -> Iterator {
-    .init(tree: manager(), start: __begin_node, end: __end_node())
-  }
-  
-  @inlinable
-  public __consuming func makeIterator(start: _NodePtr, end: _NodePtr) -> Iterator {
-    .init(tree: manager(), start: start, end: end)
+    .init(tree: self, start: __begin_node, end: __end_node())
   }
 }
 
@@ -180,49 +175,5 @@ extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalColle
       return true
     }
     return false
-  }
-}
-
-
-extension ___RedBlackTree.___Tree {
-  
-  @frozen
-  public struct TransformIterator<T>: IteratorProtocol {
-    
-    @inlinable
-    internal init(tree: Tree.Manager, start: _NodePtr, end: _NodePtr, _ transform: @escaping (Tree.Element) -> T) {
-      self.tree = tree
-      self.current = start
-      self.end = end
-      self.transform = transform
-    }
-    
-    @usableFromInline
-    let tree: Tree.Manager
-    
-    @usableFromInline
-    var current, end: _NodePtr
-    
-    @usableFromInline
-    let transform: (Tree.Element) -> T
-    
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> T?
-    {
-      guard current != end else { return nil }
-      defer { current = Tree.with(tree) { $0.__tree_next(current) } }
-      return Tree.with(tree) { transform($0[current]) }
-    }
-  }
-  
-  @inlinable
-  public __consuming func makeTransformIterator<T>(_ transform: @escaping (Tree.Element) -> T) -> TransformIterator<T> {
-    .init(tree: manager(), start: __begin_node, end: __end_node(), transform)
-  }
-  
-  @inlinable
-  public __consuming func makeTransformIterator<T>(start: _NodePtr, end: _NodePtr, _ transform: @escaping (Tree.Element) -> T) -> TransformIterator<T> {
-    .init(tree: manager(), start: start, end: end, transform)
   }
 }

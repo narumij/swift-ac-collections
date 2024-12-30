@@ -39,7 +39,7 @@ extension ___RedBlackTree.___Tree {
     
     // 後続処理のイテレーター等がownedになるため、ここで保持すると過剰となる、と理解
     @usableFromInline
-    unowned let base: Tree
+    let base: Tree
     
     public
     var startIndex: Index

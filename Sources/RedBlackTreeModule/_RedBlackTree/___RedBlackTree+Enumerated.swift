@@ -40,7 +40,7 @@ extension ___RedBlackTree.___Tree {
     
     // AnySequenceにキャプチャされるため、ownedでは過剰と理解している
     @usableFromInline
-    unowned let tree: Tree
+    let tree: Tree
     
     @usableFromInline
     var current, end: _NodePtr

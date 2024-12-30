@@ -777,12 +777,12 @@ extension RedBlackTreeSet {
     Tree._isKnownUniquelyReferenced(tree: &tree)
   }
 
-  @inlinable
-  public mutating func checkUnique2() -> Bool {
-    var a = Tree.Manager(unsafeBufferObject: tree)
-    return a.isUniqueReference()
-  }
-
+//  @inlinable
+//  public mutating func checkUnique2() -> Bool {
+//    var a = Tree.Manager(unsafeBufferObject: tree)
+//    return a.isUniqueReference()
+//  }
+//
   @inlinable
   public func _ptr_lowerBound(_ member: Element) -> _NodePtr {
     ___ptr_lower_bound(member)

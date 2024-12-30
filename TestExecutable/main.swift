@@ -120,7 +120,7 @@ for i in 0 ..< 10_000 / N {
   print("2)", xy[1]?.checkUnique() != true ? "NG" : "OK") // NG
 //  print("3)", xy[1]?.checkUnique2() != true ? "NG" : "OK") // NG
 }
-#elseif true
+#elseif false
 // これもまだ
 //var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
 var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]
@@ -134,7 +134,7 @@ for i in 0 ..< count / N {
 //    xy[1, default: []].removeSubrange(lo ..< hi)
 //  }
 }
-#elseif true
+#elseif false
 // これもまだ
 //var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
 var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]
@@ -160,7 +160,8 @@ for i in 0 ..< count / N {
 ////    xy[1]?.removeSubrange(lo ..< hi)
 //    xy[1, default: []].removeSubrange(lo ..< hi)
 //  }
-}#elseif false
+}
+#elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: []]
 for i in 0 ..< 2_000_000 {
   xy[1, default: []].insert(i)
@@ -178,12 +179,34 @@ for i in 0 ..< 2_000_000 {
   xy[1]?.remove(i)
 //  xy[1, default: []].remove(i)
 }
+#elseif true
+var xy: [Int:RedBlackTreeSet<Int>] = [:]
+xy[1]?.copyCount = 0
+(0 ..< 100_000).forEach { i in
+  xy[1, default: []].insert(i)
+//  xy[1, default: []].remove(i)
+}
+print("tree.unique", xy[1]!.checkUnique())
+print("tree.count", xy[1]!.count)
+print("tree.copyCount", xy[1]!.copyCount)
 #elseif false
 var xy: [Int:RedBlackTreeSet<Int>] = [1: .init(0 ..< 2_000_000)]
-for i in 0 ..< 2_000_000 {
+xy[1]?.copyCount = 0
+(0 ..< 2_000_000).forEach { i in
   xy[1]?.remove(i)
 //  xy[1, default: []].remove(i)
 }
+print("tree.unique", xy[1]!.checkUnique())
+print("tree.count", xy[1]!.count)
+print("tree.copyCount", xy[1]!.copyCount)
+#elseif true
+var xy: [Int:RedBlackTreeSet<Int>] = [1: .init(0 ..< 2_000_000)]
+xy[1]?.copyCount = 0
+xy[1]?[0 ..< 2_000_000].enumerated().forEach { i, v in
+  xy[1]?.remove(at: i)
+}
+print("tree.count",xy[1]!.count)
+print("tree.copyCount",xy[1]!.copyCount)
 #elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
 for i in 0 ..< 2_000_000 {

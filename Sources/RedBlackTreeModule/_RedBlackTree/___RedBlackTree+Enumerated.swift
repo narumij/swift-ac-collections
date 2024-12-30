@@ -29,7 +29,7 @@ extension ___RedBlackTree.___Tree {
   public typealias EnumeratedElement = (offset: EnumeratedIndex, element: Element)
   
   @frozen
-  public struct EnumeratedIterator: IteratorProtocol {
+  public struct EnumIterator: IteratorProtocol {
     
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -40,7 +40,7 @@ extension ___RedBlackTree.___Tree {
     
     // AnySequenceにキャプチャされるため、ownedでは過剰と理解している
     @usableFromInline
-    unowned let tree: Tree
+    let tree: Tree
     
     @usableFromInline
     var current, end: _NodePtr
@@ -59,12 +59,12 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
   
   @inlinable
-  public __consuming func makeEnumIterator() -> EnumeratedIterator {
+  public __consuming func makeEnumIterator() -> EnumIterator {
     .init(tree: self, start: __begin_node, end: __end_node())
   }
   
   @inlinable
-  public __consuming func makeEnumeratedIterator(start: _NodePtr, end: _NodePtr) -> EnumeratedIterator {
+  public __consuming func makeEnumeratedIterator(start: _NodePtr, end: _NodePtr) -> EnumIterator {
     .init(tree: self, start: start, end: end)
   }
 }
@@ -72,7 +72,7 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @frozen
-  public struct EnumeratedSequence: Sequence {
+  public struct EnumSequence: Sequence {
 
     public typealias Element = Tree.EnumeratedElement
     public typealias Index = _NodePtr
@@ -85,7 +85,7 @@ extension ___RedBlackTree.___Tree {
     }
 
     @usableFromInline
-    unowned let base: Tree
+    let base: Tree
 
     public
       var startIndex: Index
@@ -94,7 +94,7 @@ extension ___RedBlackTree.___Tree {
       var endIndex: Index
 
     @inlinable
-    public func makeIterator() -> EnumeratedIterator {
+    public func makeIterator() -> EnumIterator {
       base.makeEnumeratedIterator(start: startIndex, end: endIndex)
     }
     
@@ -181,7 +181,7 @@ extension ___RedBlackTree.___Tree {
     }
     
     @inlinable
-    public subscript(bounds: Range<TreePointer>) -> EnumeratedSequence {
+    public subscript(bounds: Range<TreePointer>) -> EnumSequence {
       .init(tree: base, start: bounds.lowerBound.pointer, end: bounds.upperBound.pointer)
     }
   }
@@ -190,12 +190,12 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
-  func enumeratedSubsequence() -> EnumeratedSequence {
+  func enumeratedSubsequence() -> EnumSequence {
     .init(tree: self, start: __begin_node, end: __end_node())
   }
 
   @inlinable
-  func enumeratedSubsequence(from: _NodePtr, to: _NodePtr) -> EnumeratedSequence {
+  func enumeratedSubsequence(from: _NodePtr, to: _NodePtr) -> EnumSequence {
     .init(tree: self, start: from, end: to)
   }
 }

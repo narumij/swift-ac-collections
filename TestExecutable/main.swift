@@ -27,7 +27,7 @@ var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 for v in 0..<10_000_000 {
   tree.remove(v)
 }
-#elseif false
+#elseif true
 var tree = RedBlackTreeSet<Int>(0 ..< count)
 tree.copyCount = 0
 print(tree.count)
@@ -138,9 +138,11 @@ for i in 0 ..< count / N {
 // これもまだ
 //var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
 var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]
+xy[1]?.copyCount = 0
 let N = 1000
+var loopCount = 0
 for i in 0 ..< count / N {
-
+  loopCount += 1
 //  let a = xy[1]
 //  let a = xy[1]?[(i * N) ..< (i * N + N)]
 //  let a = xy[1]?[(i * N) ..< (i * N + N)].enumerated()
@@ -161,6 +163,10 @@ for i in 0 ..< count / N {
 //    xy[1, default: []].removeSubrange(lo ..< hi)
 //  }
 }
+print("tree.unique", xy[1]!.checkUnique())
+print("tree.count", xy[1]!.count)
+print("tree.copyCount", xy[1]!.copyCount)
+print("loopCount", loopCount)
 #elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: []]
 for i in 0 ..< 2_000_000 {

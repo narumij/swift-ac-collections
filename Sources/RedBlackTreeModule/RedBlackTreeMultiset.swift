@@ -113,7 +113,9 @@ extension RedBlackTreeMultiset {
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     ensureUnique()
-    return tree.___erase_multi(member) != 0 ? member : nil
+    let result = tree.___erase_multi(member) != 0 ? member : nil
+    assert(tree.__tree_invariant(tree.__root()))
+    return result
   }
 
   @inlinable

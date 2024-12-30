@@ -460,7 +460,11 @@ extension RedBlackTreeSet: Sequence {
     @inline(__always)
     internal init(_base: RedBlackTreeSet) {
       self._iterator = _base.tree.makeIterator()
+      self.tree = _base.tree
     }
+    
+    @usableFromInline
+    var tree: Tree
 
     @inlinable
     @inline(__always)
@@ -627,7 +631,11 @@ extension RedBlackTreeSet.SubSequence: Sequence {
     @inline(__always)
     internal init(_ _iterator: _TreeSubSequence.Iterator) {
       self._iterator = _iterator
+      self.tree = _iterator.tree
     }
+    
+    @usableFromInline
+    var tree: _Tree
 
     @inlinable
     @inline(__always)

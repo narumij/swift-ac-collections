@@ -38,7 +38,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   public mutating func ___checkUnique() -> Bool {
-    Tree.checkUnique(tree: &tree)
+    Tree._isKnownUniquelyReferenced(tree: &tree)
   }
 
   @inlinable

@@ -94,3 +94,10 @@ extension RedBlackTreeMultiset {
     }
   }
 }
+
+extension RedBlackTreeMultiset {
+  var elements: [Element] {
+    map { $0 }
+  }
+}
+

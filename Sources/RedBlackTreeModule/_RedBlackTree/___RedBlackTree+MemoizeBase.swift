@@ -69,6 +69,9 @@ where CustomKey: CustomKeyProtocol {
 
   @usableFromInline
   var tree: Tree
+  
+  @usableFromInline
+  var lifeStorage: Tree.LifeStorage = .init()
 
   public var count: Int { tree.size }
   public var isEmpty: Bool { count == 0 }

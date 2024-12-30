@@ -153,11 +153,23 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias _Key = Element
 
+  @inlinable
+  @inline(__always)
+  var tree: Tree {
+    get { storage.tree }
+    _modify { yield &storage.tree }
+  }
+  
+  @inlinable
+  @inline(__always)
+  var lifeStorage: Tree.LifeStorage { storage.lifeStorage }
+  
   @usableFromInline
-  var tree: Tree
+  var storage: Tree.Storage
 }
 
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
+extension RedBlackTreeSet: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 
 extension RedBlackTreeSet {
@@ -169,7 +181,7 @@ extension RedBlackTreeSet {
 
   @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
-    tree = .create(withCapacity: minimumCapacity)
+    storage = .create(withCapacity: minimumCapacity)
   }
 }
 
@@ -179,7 +191,7 @@ extension RedBlackTreeSet {
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
 
-    self.init()
+    var tree: Tree = .create(withCapacity: 0)
     for __k in sequence {
       Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
       var __parent = _NodePtr.nullptr
@@ -189,6 +201,8 @@ extension RedBlackTreeSet {
         tree.__insert_node_at(__parent, __child, __h)
       }
     }
+    
+    self.storage = .init(__tree: tree)
   }
 }
 
@@ -210,7 +224,7 @@ extension RedBlackTreeSet {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
+    ___ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
   }
 }
 
@@ -220,14 +234,14 @@ extension RedBlackTreeSet {
   @inlinable public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    ensureUniqueAndCapacity()
+    ___ensureUniqueAndCapacity()
     let (__r, __inserted) = tree.__insert_unique(newMember)
     return (__inserted, __inserted ? newMember : tree[ref: __r])
   }
 
   @discardableResult
   @inlinable public mutating func update(with newMember: Element) -> Element? {
-    ensureUniqueAndCapacity()
+    ___ensureUniqueAndCapacity()
     let (__r, __inserted) = tree.__insert_unique(newMember)
     guard !__inserted else { return nil }
     let oldMember = tree[ref: __r]
@@ -237,14 +251,14 @@ extension RedBlackTreeSet {
 
   @discardableResult
   @inlinable public mutating func remove(_ member: Element) -> Element? {
-    ensureUnique()
+    ___ensureUnique()
     return tree.___erase_unique(member) ? member : nil
   }
 
   @inlinable
   @discardableResult
   public mutating func remove(at index: ___RedBlackTree.SimpleIndex) -> Element {
-    ensureUnique()
+    ___ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
@@ -254,7 +268,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    ensureUnique()
+    ___ensureUnique()
     guard let element = ___remove(at: index.pointer) else {
       fatalError(.invalidIndex)
     }
@@ -306,14 +320,14 @@ extension RedBlackTreeSet {
   /// ```
   @inlinable
   public mutating func removeSubrange(_ range: Range<Index>) {
-    ensureUnique()
+    ___ensureUnique()
     ___remove(from: range.lowerBound.pointer, to: range.upperBound.pointer)
   }
 
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    ensureUnique()
+    ___ensureUnique()
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }
@@ -392,7 +406,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)。
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : self[index(before: .end(tree))]
+    isEmpty ? nil : self[index(before: .end(tree2))]
   }
 
   @inlinable
@@ -455,11 +469,15 @@ extension RedBlackTreeSet: Sequence {
   public struct Iterator: IteratorProtocol {
     @usableFromInline
     internal var _iterator: Tree.Iterator
+    
+    @usableFromInline
+    let tree: Tree
 
     @inlinable
     @inline(__always)
     internal init(_base: RedBlackTreeSet) {
       self._iterator = _base.tree.makeIterator()
+      self.tree = _base.tree
     }
 
     @inlinable
@@ -486,11 +504,11 @@ extension RedBlackTreeSet: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public var startIndex: Index { Index(__tree: tree, pointer: tree.startIndex) }
+  public var startIndex: Index { Index(__tree: tree2, pointer: tree.startIndex) }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__tree: tree, pointer: tree.endIndex) }
+  public var endIndex: Index { Index(__tree: tree2, pointer: tree.endIndex) }
 
   @inlinable
   @inline(__always)
@@ -505,7 +523,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__tree: tree, pointer: tree.index(after: i.pointer))
+    return Index(__tree: tree2, pointer: tree.index(after: i.pointer))
   }
 
   @inlinable
@@ -517,7 +535,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__tree: tree, pointer: tree.index(before: i.pointer))
+    return Index(__tree: tree2, pointer: tree.index(before: i.pointer))
   }
 
   @inlinable
@@ -529,7 +547,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__tree: tree, pointer: tree.index(i.pointer, offsetBy: distance))
+    return Index(__tree: tree2, pointer: tree.index(i.pointer, offsetBy: distance))
   }
 
   @inlinable
@@ -543,7 +561,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
 
     if let i = tree.index(i.pointer, offsetBy: distance, limitedBy: limit.pointer) {
-      return Index(__tree: tree, pointer: i)
+      return Index(__tree: tree2, pointer: i)
     } else {
       return nil
     }
@@ -656,11 +674,11 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public var startIndex: Index { Index(__tree: tree, pointer: _subSequence.startIndex) }
+  public var startIndex: Index { Index(__tree: tree2, pointer: _subSequence.startIndex) }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__tree: tree, pointer: _subSequence.endIndex) }
+  public var endIndex: Index { Index(__tree: tree2, pointer: _subSequence.endIndex) }
 
   @inlinable
   @inline(__always)
@@ -675,7 +693,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(after: i.pointer))
+    return Index(__tree: tree2, pointer: _subSequence.index(after: i.pointer))
   }
 
   @inlinable
@@ -687,7 +705,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(before: i.pointer))
+    return Index(__tree: tree2, pointer: _subSequence.index(before: i.pointer))
   }
 
   @inlinable
@@ -699,7 +717,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(i.pointer, offsetBy: distance))
+    return Index(__tree: tree2, pointer: _subSequence.index(i.pointer, offsetBy: distance))
   }
 
   @inlinable
@@ -713,7 +731,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
 
     if let i = _subSequence.index(i.pointer, offsetBy: distance, limitedBy: limit.pointer) {
-      return Index(__tree: tree, pointer: i)
+      return Index(__tree: tree2, pointer: i)
     } else {
       return nil
     }
@@ -747,13 +765,20 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   }
 }
 
-#if false
+#if DEBUG || true
+// TODO: CoWの挙動についてテストーコードを書くこと
+
 // 不具合調査用
 extension RedBlackTreeSet {
+  
+  public var copyCount: Int {
+    get { storage.tree.copyCount }
+    set { storage.tree.copyCount = newValue }
+  }
 
   @inlinable
   public mutating func checkUnique() -> Bool {
-    Tree.checkUnique(tree: &tree)
+    Tree._isKnownUniquelyReferenced(tree: &tree)
   }
 
   @inlinable
@@ -773,3 +798,21 @@ extension RedBlackTreeSet {
   }
 }
 #endif
+
+extension RedBlackTreeSet {
+  
+  @usableFromInline
+  var tree2: (Tree, Tree.LifeStorage) {
+    (tree, lifeStorage)
+//    fatalError()
+  }
+}
+
+extension RedBlackTreeSet.SubSequence {
+  
+  @usableFromInline
+  var tree2: (_Tree, _Tree.LifeStorage) {
+//    fatalError()
+    (tree, .init())
+  }
+}

@@ -32,13 +32,14 @@ extension ValueComparer {
 protocol ___RedBlackTreeBase: ValueComparer {
   associatedtype Element
   var tree: Tree { get set }
+  var lifeStorage: Tree.LifeStorage { get }
 }
 
 extension ___RedBlackTreeBase {
 
   @inlinable
-  public mutating func ___checkUnique() -> Bool {
-    Tree.checkUnique(tree: &tree)
+  public mutating func _checkUnique() -> Bool {
+    Tree._isKnownUniquelyReferenced(tree: &tree)
   }
 
   @inlinable
@@ -85,7 +86,7 @@ extension ___RedBlackTreeBase {
   
   @inlinable @inline(__always)
   func ___index(_ p: _NodePtr) -> ___Index {
-    .init(__tree: tree, pointer: p)
+    .init(__tree: tree, __storage: lifeStorage, pointer: p)
   }
   
   @inlinable @inline(__always)
@@ -361,3 +362,4 @@ extension ___RedBlackTreeBase {
     return result
   }
 }
+

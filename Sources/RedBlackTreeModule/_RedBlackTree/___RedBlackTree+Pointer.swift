@@ -33,6 +33,9 @@ extension ___RedBlackTree.___Tree {
     unowned let tree: Tree
 
     @usableFromInline
+    let storage: Tree.LifeStorage
+
+    @usableFromInline
     var pointer: _NodePtr
 
     @inlinable
@@ -42,17 +45,24 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    internal init(__tree: Tree, pointer: _NodePtr) {
+    internal init(__tree: Tree,__storage: Tree.LifeStorage , pointer: _NodePtr) {
       guard pointer != .nullptr else {
         preconditionFailure("_NodePtr is nullptr")
       }
       self.tree = __tree
       self.pointer = pointer
+      self.storage = __storage
     }
 
     @inlinable
     @inline(__always)
-    static func end(_ tree: Tree) -> Pointer {
+    init(__tree t: (Tree, Tree.LifeStorage), pointer: _NodePtr) {
+      self.init(__tree: t.0, __storage: t.1, pointer: pointer)
+    }
+
+    @inlinable
+    @inline(__always)
+    static func end(_ tree: (Tree, Tree.LifeStorage)) -> Pointer {
       .init(__tree: tree, pointer: .end)
     }
     

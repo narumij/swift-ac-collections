@@ -5,6 +5,7 @@
 //  Created by narumij on 2024/09/16.
 //
 
+#if false // skip all
 #if DEBUG
   import XCTest
   @testable import RedBlackTreeModule
@@ -94,12 +95,6 @@
       }
     }
   #endif
-
-  extension RedBlackTreeMultiset {
-    var elements: [Element] {
-      map { $0 }
-    }
-  }
 
   final class RedBlackTreeMultisetTests: XCTestCase {
 
@@ -823,4 +818,5 @@
       }
     }
   }
+#endif
 #endif

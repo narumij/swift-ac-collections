@@ -5,7 +5,7 @@
 //  Created by narumij on 2024/09/23.
 //
 
-#if false
+#if true
 @testable import RedBlackTreeModule
 import XCTest
 

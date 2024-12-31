@@ -12,10 +12,10 @@
 
   extension RedBlackTreeSet {
     func left(_ p: Element) -> Int {
-      tree.___signed_distance(tree.__begin_node, tree.lower_bound(p))
+      _tree.___signed_distance(_tree.__begin_node, _tree.lower_bound(p))
     }
     func right(_ p: Element) -> Int {
-      tree.___signed_distance(tree.__begin_node, tree.upper_bound(p))
+      _tree.___signed_distance(_tree.__begin_node, _tree.upper_bound(p))
     }
     var elements: [Element] {
       map { $0 }
@@ -109,17 +109,17 @@
 
       func testRemoveAt() throws {
         var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-        XCTAssertEqual(set.___remove(at: set.tree.__begin_node), 0)
+        XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 0)
         XCTAssertEqual(set.elements, [1, 2, 3, 4])
-        XCTAssertEqual(set.___remove(at: set.tree.__begin_node), 1)
+        XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 1)
         XCTAssertEqual(set.elements, [2, 3, 4])
-        XCTAssertEqual(set.___remove(at: set.tree.__begin_node), 2)
+        XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 2)
         XCTAssertEqual(set.elements, [3, 4])
-        XCTAssertEqual(set.___remove(at: set.tree.__begin_node), 3)
+        XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 3)
         XCTAssertEqual(set.elements, [4])
-        XCTAssertEqual(set.___remove(at: set.tree.__begin_node), 4)
+        XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 4)
         XCTAssertEqual(set.elements, [])
-        XCTAssertEqual(set.___remove(at: set.tree.__begin_node), nil)
+        XCTAssertEqual(set.___remove(at: set._tree.__begin_node), nil)
       }
     #endif
 
@@ -367,27 +367,27 @@
         var set = RedBlackTreeSet<Int>()
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.insert(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.remove(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.insert(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.remove(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.insert(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in set {
           set.remove(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
       }
 
@@ -395,27 +395,27 @@
         var set = RedBlackTreeSet<Int>()
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.insert(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.remove(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.insert(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.remove(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.insert(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in set[set.startIndex..<set.endIndex] {
           set.remove(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
       }
 
@@ -423,27 +423,27 @@
         var set = RedBlackTreeSet<Int>()
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.insert(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.remove(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.insert(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.remove(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.insert(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for (i, _) in set.enumerated() {
           set.remove(at: i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
       }
 
@@ -451,27 +451,27 @@
         var set = RedBlackTreeSet<Int>()
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.insert(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.remove(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.insert(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.remove(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
           set.insert(i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
         for (i, _) in set[set.startIndex..<set.endIndex].enumerated() {
           set.remove(at: i)
-          XCTAssertTrue(set.tree.__tree_invariant(set.tree.__root()))
+          XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
         }
       }
 

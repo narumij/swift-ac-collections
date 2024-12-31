@@ -160,7 +160,7 @@ extension ___RedBlackTree.___Tree {
 
 @usableFromInline
 protocol ___RedBlackTreeStorageLifetime: ValueComparer {
-  var storage: Tree.Storage { get set }
+  var _storage: Tree.Storage { get set }
 }
 
 extension ___RedBlackTreeStorageLifetime {
@@ -168,10 +168,10 @@ extension ___RedBlackTreeStorageLifetime {
   @inlinable
   @inline(__always)
   mutating func _isKnownUniquelyReferenced() -> Bool {
-    if !isKnownUniquelyReferenced(&storage) {
+    if !isKnownUniquelyReferenced(&_storage) {
       return false
     }
-    if !storage.isKnownUniquelyReferenced_tree() {
+    if !_storage.isKnownUniquelyReferenced_tree() {
       return false
     }
     return true
@@ -181,52 +181,52 @@ extension ___RedBlackTreeStorageLifetime {
   @inline(__always)
   mutating func _ensureUnique() {
     if !_isKnownUniquelyReferenced() {
-      storage = storage.copy()
+      _storage = _storage.copy()
     }
   }
 
   @inlinable
   @inline(__always)
   mutating func _ensureUniqueAndCapacity() {
-    _ensureUniqueAndCapacity(minimumCapacity: storage.count + 1)
+    _ensureUniqueAndCapacity(minimumCapacity: _storage.count + 1)
   }
 
   @inlinable
   @inline(__always)
   mutating func _ensureUniqueAndCapacity(minimumCapacity: Int) {
-    let shouldExpand = storage.capacity < minimumCapacity
+    let shouldExpand = _storage.capacity < minimumCapacity
     if shouldExpand || !_isKnownUniquelyReferenced() {
-      storage = storage.copy(minimumCapacity: Tree._growCapacity(tree: &storage.tree, to: minimumCapacity, linearly: false))
+      _storage = _storage.copy(minimumCapacity: Tree._growCapacity(tree: &_storage.tree, to: minimumCapacity, linearly: false))
     }
-    assert(storage.capacity >= minimumCapacity)
-    assert(storage.tree.header.initializedCount <= storage.capacity)
+    assert(_storage.capacity >= minimumCapacity)
+    assert(_storage.tree.header.initializedCount <= _storage.capacity)
   }
 }
 
 @usableFromInline
 protocol ___RedBlackTreeNonStorageLifetime: ValueComparer {
-  var tree: Tree { get set }
+  var _tree: Tree { get set }
 }
 
 extension ___RedBlackTreeNonStorageLifetime {
   
   @inlinable
   public mutating func _isKnownUniquelyReferenced() -> Bool {
-    Tree._isKnownUniquelyReferenced(tree: &tree)
+    Tree._isKnownUniquelyReferenced(tree: &_tree)
   }
 
   @inlinable
   public mutating func _ensureUnique() {
-    Tree.ensureUnique(tree: &tree)
+    Tree.ensureUnique(tree: &_tree)
   }
 
   @inlinable
   mutating func _ensureUniqueAndCapacity() {
-    Tree.ensureUniqueAndCapacity(tree: &tree)
+    Tree.ensureUniqueAndCapacity(tree: &_tree)
   }
   
   @inlinable
   mutating func _ensureUniqueAndCapacity(minimumCapacity: Int) {
-    Tree.ensureUniqueAndCapacity(tree: &tree, minimumCapacity: minimumCapacity)
+    Tree.ensureUniqueAndCapacity(tree: &_tree, minimumCapacity: minimumCapacity)
   }
 }

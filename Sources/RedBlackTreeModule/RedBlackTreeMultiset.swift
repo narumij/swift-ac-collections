@@ -37,10 +37,10 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
   typealias _Key = Element
 
   @usableFromInline
-  var tree: Tree
+  var _tree: Tree
   
   @usableFromInline
-  var storage: Tree.Storage = .create(withCapacity: 0)
+  var _storage: Tree.Storage = .create(withCapacity: 0)
 }
 
 extension RedBlackTreeMultiset: ___RedBlackTreeBase {}
@@ -56,7 +56,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
-    tree = .create(withCapacity: minimumCapacity)
+    _tree = .create(withCapacity: minimumCapacity)
   }
 }
 
@@ -69,11 +69,11 @@ extension RedBlackTreeMultiset {
 
     self.init()
     for __k in sequence {
-      Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
-      let __h = tree.__construct_node(__k)
+      Tree.ensureCapacity(tree: &_tree, minimumCapacity: _tree.count + 1)
+      let __h = _tree.__construct_node(__k)
       var __parent = _NodePtr.nullptr
-      let __child = tree.__find_leaf_high(&__parent, __k)
-      tree.__insert_node_at(__parent, __child, __h)
+      let __child = _tree.__find_leaf_high(&__parent, __k)
+      _tree.__insert_node_at(__parent, __child, __h)
     }
   }
 }
@@ -109,7 +109,7 @@ extension RedBlackTreeMultiset {
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
-    _ = tree.__insert_multi(newMember)
+    _ = _tree.__insert_multi(newMember)
     return (true, newMember)
   }
 
@@ -117,7 +117,7 @@ extension RedBlackTreeMultiset {
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     _ensureUnique()
-    return tree.___erase_multi(member) != 0 ? member : nil
+    return _tree.___erase_multi(member) != 0 ? member : nil
   }
 
   @inlinable
@@ -218,7 +218,7 @@ extension RedBlackTreeMultiset {
   /// - Complexity: O(1)。
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : self[index(before: .end(storage))]
+    isEmpty ? nil : self[index(before: .end(_storage))]
   }
 
   @inlinable
@@ -243,7 +243,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   func sorted() -> [Element] {
-    tree.___sorted
+    _tree.___sorted
   }
 }
 
@@ -251,7 +251,7 @@ extension RedBlackTreeMultiset {
 
   /// - Complexity: O(log *n* + *k*), ここで *n* はマルチセット内の要素数、*k* は指定された要素の出現回数。
   @inlinable public func count(_ element: Element) -> Int {
-    tree.__count_multi(__k: element)
+    _tree.__count_multi(__k: element)
   }
 }
 
@@ -281,7 +281,7 @@ extension RedBlackTreeMultiset: Sequence {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try tree.___for_each_(body)
+    try _tree.___for_each_(body)
   }
   
   @frozen
@@ -295,8 +295,8 @@ extension RedBlackTreeMultiset: Sequence {
     @inlinable
     @inline(__always)
     internal init(_base: RedBlackTreeMultiset) {
-      self._iterator = _base.tree.makeIterator()
-      self.tree = _base.tree
+      self._iterator = _base._tree.makeIterator()
+      self.tree = _base._tree
     }
 
     @inlinable
@@ -324,64 +324,64 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   
   @inlinable
   @inline(__always)
-  public var startIndex: Index { Index(__storage: storage, pointer: tree.startIndex) }
+  public var startIndex: Index { Index(__storage: _storage, pointer: _tree.startIndex) }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__storage: storage, pointer: tree.endIndex) }
+  public var endIndex: Index { Index(__storage: _storage, pointer: _tree.endIndex) }
 
   @inlinable
   @inline(__always)
-  public var count: Int { tree.count }
+  public var count: Int { _tree.count }
   
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    return tree.distance(from: start._pointer, to: end._pointer)
+    return _tree.distance(from: start._pointer, to: end._pointer)
   }
 
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__storage: storage, pointer: tree.index(after: i._pointer))
+    return Index(__storage: _storage, pointer: _tree.index(after: i._pointer))
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
-    return tree.formIndex(after: &i._pointer)
+    return _tree.formIndex(after: &i._pointer)
   }
 
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__storage: storage, pointer: tree.index(before: i._pointer))
+    return Index(__storage: _storage, pointer: _tree.index(before: i._pointer))
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
-    tree.formIndex(before: &i._pointer)
+    _tree.formIndex(before: &i._pointer)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__storage: storage, pointer: tree.index(i._pointer, offsetBy: distance))
+    return Index(__storage: _storage, pointer: _tree.index(i._pointer, offsetBy: distance))
   }
 
   @inlinable
   @inline(__always)
   internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    tree.formIndex(&i._pointer, offsetBy: distance)
+    _tree.formIndex(&i._pointer, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
 
-    if let i = tree.index(i._pointer, offsetBy: distance, limitedBy: limit._pointer) {
-      return Index(__storage: storage, pointer: i)
+    if let i = _tree.index(i._pointer, offsetBy: distance, limitedBy: limit._pointer) {
+      return Index(__storage: _storage, pointer: i)
     } else {
       return nil
     }
@@ -392,26 +392,26 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
     -> Bool
   {
-    return tree.formIndex(&i._pointer, offsetBy: distance, limitedBy: limit._pointer)
+    return _tree.formIndex(&i._pointer, offsetBy: distance, limitedBy: limit._pointer)
   }
 
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
-    return tree[position._pointer]
+    return _tree[position._pointer]
   }
 
   @inlinable
   @inline(__always)
   public subscript(position: ___RedBlackTree.SimpleIndex) -> Element {
-    return tree[position.rawValue]
+    return _tree[position.rawValue]
   }
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
     SubSequence(
       _subSequence:
-        tree.subsequence(lifeStorage: storage.lifeStorage, from: bounds.lowerBound._pointer, to: bounds.upperBound._pointer)
+        _tree.subsequence(lifeStorage: _storage.lifeStorage, from: bounds.lowerBound._pointer, to: bounds.upperBound._pointer)
     )
   }
   
@@ -596,7 +596,7 @@ extension RedBlackTreeMultiset {
   @usableFromInline
   var tree2: (Tree, Tree.LifeStorage) {
 //    fatalError()
-    (tree, storage.lifeStorage)
+    (_tree, _storage.lifeStorage)
   }
 }
 

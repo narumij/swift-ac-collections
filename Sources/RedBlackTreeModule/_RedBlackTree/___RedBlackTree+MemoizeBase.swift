@@ -53,30 +53,30 @@ where CustomKey: CustomKeyProtocol {
     typealias _Value = Value
 
   public init() {
-    storage = .create(withCapacity: 0)
+    _storage = .create(withCapacity: 0)
   }
 
   public subscript(key: Key) -> Value? {
     get { ___value_for(key)?.value }
     set {
       if let newValue {
-        _ = tree.__insert_unique((key, newValue))
+        _ = _tree.__insert_unique((key, newValue))
       } else {
-        _ = tree.___erase_unique(key)
+        _ = _tree.___erase_unique(key)
       }
     }
   }
 
   @usableFromInline
-  var tree: Tree {
-    get { storage.tree }
-    _modify { yield &storage.tree }
+  var _tree: Tree {
+    get { _storage.tree }
+    _modify { yield &_storage.tree }
   }
   
   @usableFromInline
-  var storage: Tree.Storage
+  var _storage: Tree.Storage
 
-  public var count: Int { tree.size }
+  public var count: Int { _tree.size }
   public var isEmpty: Bool { count == 0 }
 }
 

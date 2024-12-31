@@ -275,6 +275,8 @@ extension RedBlackTreeMultiset: CustomStringConvertible, CustomDebugStringConver
   }
 }
 
+// MARK: - Equatable
+
 extension RedBlackTreeMultiset: Equatable {
 
   @inlinable
@@ -283,6 +285,8 @@ extension RedBlackTreeMultiset: Equatable {
   }
 }
 
+// MARK: - Sequence, BidirectionalCollection
+
 extension RedBlackTreeMultiset: Sequence {
 
   @inlinable
@@ -290,20 +294,16 @@ extension RedBlackTreeMultiset: Sequence {
   public func forEach(_ body: (Element) throws -> Void) rethrows {
     try _tree.___for_each_(body)
   }
-  
+
   @frozen
   public struct Iterator: IteratorProtocol {
     @usableFromInline
     internal var _iterator: Tree.Iterator
 
-    @usableFromInline
-    let tree: Tree
-
     @inlinable
     @inline(__always)
     internal init(_base: RedBlackTreeMultiset) {
       self._iterator = _base._tree.makeIterator()
-      self.tree = _base._tree
     }
 
     @inlinable
@@ -316,32 +316,26 @@ extension RedBlackTreeMultiset: Sequence {
   @inlinable
   @inline(__always)
   public __consuming func makeIterator() -> Iterator {
-    Iterator(_base: self)
+    return Iterator(_base: self)
   }
-  
-#if true
-  @inlinable
-  @inline(__always)
-  public func enumerated() -> AnySequence<EnumElement> {
-    AnySequence { _tree.makeEnumIterator() }
-  }
-#else
-  @inlinable
-  @inline(__always)
-  public func enumerated() -> EnumSequence {
-    EnumSequence(_subSequence: _storage.enumeratedSubsequence())
-  }
-#endif
-//  @inlinable
-//  @inline(__always)
-//  public func enumerated() -> AnySequence<Tree.EnumElement> {
-////    AnySequence { tree.makeEnumIterator(lifeStorage: lifeStorage) }
-//    fatalError()
-//  }
+
+  #if false
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> AnySequence<EnumElement> {
+      AnySequence { _tree.makeEnumIterator() }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> EnumSequence {
+      EnumSequence(_subSequence: _tree.enumeratedSubsequence())
+    }
+  #endif
 }
 
 extension RedBlackTreeMultiset: BidirectionalCollection {
-  
+
   @inlinable
   @inline(__always)
   public var startIndex: Index { Index(__storage: _storage, pointer: _tree.startIndex) }
@@ -353,7 +347,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public var count: Int { _tree.count }
-  
+
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
@@ -399,7 +393,6 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-
     if let i = _tree.index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue) {
       return Index(__storage: _storage, pointer: i)
     } else {
@@ -431,16 +424,21 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   public subscript(bounds: Range<Index>) -> SubSequence {
     SubSequence(
       _subSequence:
-        _tree.subsequence(from: bounds.lowerBound.rawValue, to: bounds.upperBound.rawValue)
+        _tree.subsequence(
+          from: bounds.lowerBound.rawValue,
+          to: bounds.upperBound.rawValue)
     )
   }
-  
+
   @inlinable
   public subscript(bounds: Range<Element>) -> SubSequence {
-    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: ___ptr_lower_bound(bounds.lowerBound),
+          to: ___ptr_upper_bound(bounds.upperBound)))
   }
 }
-
 
 extension RedBlackTreeMultiset {
 
@@ -448,10 +446,10 @@ extension RedBlackTreeMultiset {
   public struct SubSequence {
 
     @usableFromInline
-    internal typealias _TreeSubSequence = Tree.SubSequence
+    internal typealias _Tree = Tree
 
     @usableFromInline
-    internal typealias _Tree = Tree
+    internal typealias _TreeSubSequence = Tree.SubSequence
 
     @usableFromInline
     internal let _subSequence: _TreeSubSequence
@@ -468,16 +466,11 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset.SubSequence: Sequence {
-
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try tree.___for_each_(__p: startIndex.rawValue, __l: endIndex.rawValue, body: body)
-  }
   
-  public typealias Element = RedBlackTreeMultiset.Element
-  public typealias EnumElement = RedBlackTreeMultiset.Tree.EnumElement
-//  public typealias EnumeratedElement = RedBlackTreeMultiset.Tree.EnumElement
+  public typealias Base = RedBlackTreeMultiset
+  public typealias Element = Base.Element
+  public typealias EnumElement = Base.Tree.EnumElement
+  public typealias EnumSequence = Base.EnumSequence
 
   public struct Iterator: IteratorProtocol {
     @usableFromInline
@@ -502,31 +495,27 @@ extension RedBlackTreeMultiset.SubSequence: Sequence {
     Iterator(_subSequence.makeIterator())
   }
 
-#if true
+  #if false
     @inlinable
     @inline(__always)
     public func enumerated() -> AnySequence<EnumElement> {
-      AnySequence { tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue) }
+      AnySequence {
+        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
+      }
     }
   #else
     @inlinable
     @inline(__always)
     public func enumerated() -> EnumSequence {
       EnumSequence(
-        _subSequence: tree.enumeratedSubsequence(lifeStorage: lifeStorage, from: startIndex._pointer, to: endIndex._pointer))
+        _subSequence: tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
     }
   #endif
-//  @inlinable
-//  @inline(__always)
-//  public func enumerated() -> AnySequence<EnumeratedElement> {
-////    AnySequence { tree.makeEnumeratedIterator(lifeStorage: lifeStorage, start: startIndex.pointer, end: endIndex.pointer) }
-//    fatalError()
-//  }
 }
 
 extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
-  
-  public typealias Index = RedBlackTreeMultiset.Index
+
+  public typealias Index = Base.Index
   public typealias SubSequence = Self
 
   @inlinable
@@ -540,7 +529,13 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public var count: Int { _subSequence.count }
-  
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (Element) throws -> Void) rethrows {
+    try _subSequence.forEach(body)
+  }
+
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
@@ -622,3 +617,85 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
   }
 }
 
+// MARK: - Enumerated Sequence
+
+extension RedBlackTreeMultiset {
+
+  @frozen
+  public struct EnumSequence {
+
+    public typealias _Element = Tree.EnumElement
+
+    public typealias Element = Tree.EnumElement
+
+    @usableFromInline
+    internal typealias _TreeEnumSequence = Tree.EnumSequence
+
+    @usableFromInline
+    internal let _subSequence: _TreeEnumSequence
+
+    @inlinable
+    init(_subSequence: _TreeEnumSequence) {
+      self._subSequence = _subSequence
+    }
+
+    @inlinable
+    @inline(__always)
+    internal var _tree: Tree { _subSequence._tree }
+  }
+}
+
+extension RedBlackTreeMultiset.EnumSequence: Sequence {
+
+  public struct EnumIterator: IteratorProtocol {
+
+    @usableFromInline
+    internal var _iterator: _TreeEnumSequence.Iterator
+
+    public typealias Element = _Element
+
+    @inlinable
+    @inline(__always)
+    internal init(_ _iterator: _TreeEnumSequence.Iterator) {
+      self._iterator = _iterator
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> Element? {
+      _iterator.next()
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> EnumIterator {
+    Iterator(_subSequence.makeIterator())
+  }
+}
+
+extension RedBlackTreeMultiset.EnumSequence {
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (_Element) throws -> Void) rethrows {
+    try _subSequence.forEach(body)
+  }
+}
+
+// MARK: -
+
+extension RedBlackTreeMultiset {
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index: Tree.TreePointer) -> Bool {
+    ___is_valid_index(index.rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index: ___RedBlackTree.RawPointer) -> Bool {
+    ___is_valid_index(index.rawValue)
+  }
+}

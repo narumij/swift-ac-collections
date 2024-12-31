@@ -486,7 +486,6 @@
         XCTAssertTrue(set.___tree_invariant())
       }
       XCTAssertEqual(set.map{ $0 }, set[set.startIndex ..< set.endIndex].map{ $0 })
-      print("set",set)
       print("set.count",set.count)
       print("set._copyCount",set._copyCount)
       for i in set[set.startIndex ..< set.endIndex] {

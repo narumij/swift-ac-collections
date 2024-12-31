@@ -453,6 +453,8 @@ extension RedBlackTreeSet: CustomStringConvertible, CustomDebugStringConvertible
   }
 }
 
+// MARK: - Equatable
+
 extension RedBlackTreeSet: Equatable {
 
   @inlinable
@@ -460,6 +462,8 @@ extension RedBlackTreeSet: Equatable {
     lhs.___equal_with(rhs)
   }
 }
+
+// MARK: - Sequence, BidirectionalCollection
 
 extension RedBlackTreeSet: Sequence {
 
@@ -640,10 +644,11 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet.SubSequence: Sequence {
-
-  public typealias Element = RedBlackTreeSet.Element
-  public typealias EnumElement = RedBlackTreeSet.Tree.EnumElement
-  public typealias EnumSequence = RedBlackTreeSet.EnumSequence
+  
+  public typealias Base = RedBlackTreeSet
+  public typealias Element = Base.Element
+  public typealias EnumElement = Base.Tree.EnumElement
+  public typealias EnumSequence = Base.EnumSequence
 
   public struct Iterator: IteratorProtocol {
     @usableFromInline
@@ -688,7 +693,7 @@ extension RedBlackTreeSet.SubSequence: Sequence {
 
 extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 
-  public typealias Index = RedBlackTreeSet.Index
+  public typealias Index = Base.Index
   public typealias SubSequence = Self
 
   @inlinable
@@ -855,6 +860,8 @@ extension RedBlackTreeSet.EnumSequence {
     try _subSequence.forEach(body)
   }
 }
+
+// MARK: -
 
 extension RedBlackTreeSet {
 

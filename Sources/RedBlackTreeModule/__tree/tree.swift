@@ -111,6 +111,14 @@ protocol ValueProtocol: MemberProtocol {
   func value_comp(_: _Key, _: _Key) -> Bool
 }
 
+extension ValueProtocol {
+  @inlinable
+  @inline(__always)
+  func ___value_equal(_ a: _Key, _ b: _Key) -> Bool {
+    !value_comp(a, b) && !value_comp(b, a)
+  }
+}
+
 @usableFromInline
 protocol BeginNodeProtocol {
   var __begin_node: _NodePtr { get nonmutating set }

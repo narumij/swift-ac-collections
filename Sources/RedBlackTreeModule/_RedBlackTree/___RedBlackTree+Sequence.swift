@@ -22,9 +22,11 @@
 
 import Foundation
 
+// 単発削除対策型のイテレータ実装
 @usableFromInline
 protocol RedBlackTreeIteratorNextProtocol: IteratorProtocol {
-  associatedtype _Tree: MemberProtocol
+  associatedtype VC: ValueComparer
+  associatedtype _Tree: ___RedBlackTree.___Tree<VC>
   var _tree: _Tree { get }
   var _current: _NodePtr { get set }
   var _next: _NodePtr { get set }
@@ -38,9 +40,72 @@ extension RedBlackTreeIteratorNextProtocol {
     guard _current != _end else { return nil }
     defer {
       _current = _next
-      _next = _next == .end ? .end : _tree.__tree_next(_next)
+      _next = _next == _end ? _end : _tree.__tree_next(_next)
     }
     return _current
+  }
+}
+
+// 同一値複数削除対策型のイテレータ実装
+@usableFromInline
+protocol RedBlackTreeIteratorNextProtocol2: IteratorProtocol {
+  associatedtype VC: ValueComparer
+  associatedtype _Tree: ___RedBlackTree.___Tree<VC>
+  var _tree: _Tree { get }
+  // 返却予定位置
+  var _current: _NodePtr { get set }
+  // 単発削除対策で、次の位置
+  var _next: _NodePtr { get set }
+  // 複数削除対策で、次の位置とは値が異なるさらに先の位置を指すもの
+  var _next_next: _NodePtr { get set }
+  // 終了位置
+  var _end: _NodePtr { get set }
+}
+
+extension RedBlackTreeIteratorNextProtocol2 {
+  
+  @inlinable
+  @inline(__always)
+  public mutating func _next() -> _NodePtr? {
+    guard _current != _end else { return nil }
+    defer {
+      // カレントをネクスト二つから選ぶ
+      _next = _next(_next, _next_next)
+      // 返却予定を更新
+      _current = _next
+      // 次を更新
+      _next = _next(_next)
+      // 次の予備を更新
+      _next_next = _next_next(_next)
+    }
+    return _current
+  }
+
+  @inlinable
+  @inline(__always)
+  public func _next(_ _next: _NodePtr,_ _next_next: _NodePtr) -> _NodePtr {
+    _next != _end && _tree.___is_valid(_next) ? _next : _next_next
+  }
+
+  @inlinable
+  @inline(__always)
+  public func _next(_ _next: _NodePtr) -> _NodePtr {
+    _next == _end ? _end : _tree.__tree_next(_next)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func _next_next(_ _next: _NodePtr) -> _NodePtr {
+    var _next_next = _next
+    // _nextと_next_nextの値が異なるところまで、_next_nextを進める
+    while _next_next != _end,
+          _tree.___value_equal(
+            _tree.__value_(_next),
+            _tree.__value_(_next_next))
+    {
+      _next_next = _tree.__tree_next(_next_next)
+    }
+    return _next_next
   }
 }
 

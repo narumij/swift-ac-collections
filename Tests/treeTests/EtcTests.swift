@@ -5,8 +5,13 @@
 //  Created by narumij on 2024/12/15.
 //
 
-@testable import RedBlackTreeModule
 import XCTest
+
+#if DEBUG
+@testable import RedBlackTreeModule
+#else
+import RedBlackTreeModule
+#endif
 
 final class EtcTests: XCTestCase {
 

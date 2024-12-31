@@ -670,6 +670,15 @@
       XCTAssertNil(s.last)
       //      s.removeFirst()
     }
+    
+    func testRemoveLimit() throws {
+      var members: RedBlackTreeMultiset = [Int.min, Int.min, Int.max, Int.max]
+      XCTAssertEqual(members.count, 4)
+      members.remove(Int.min)
+      XCTAssertEqual(members.count, 2)
+      members.remove(Int.max)
+      XCTAssertEqual(members.count, 0)
+    }
 
     func testRedBlackTreeSetLowerBound() throws {
       let numbers: RedBlackTreeMultiset = [1, 3, 5, 7, 9]

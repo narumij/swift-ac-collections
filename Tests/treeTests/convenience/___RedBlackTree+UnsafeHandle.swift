@@ -22,8 +22,13 @@
 
 import Foundation
 
+#if DEBUG
 @testable import RedBlackTreeModule
+#else
+import RedBlackTreeModule
+#endif
 
+#if DEBUG
 extension ___RedBlackTree.___Tree {
   
   // CoWの過剰発火に効くことを期待したが、効果が無い模様
@@ -134,6 +139,7 @@ extension ___RedBlackTree.___Tree.UnsafeHandle {
     __parent_(p)
   }
 }
+#endif
 
 #if false
 extension ___RedBlackTree.___Tree.UnsafeHandle: RefSetImpl {

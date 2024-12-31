@@ -45,46 +45,48 @@ extension MemberProtocol {
     return __x == __left_(__parent_(__x))
   }
 
-  @inlinable
-  func
-    __tree_sub_invariant(_ __x: _NodePtr) -> UInt
-  {
-    if __x == .nullptr {
-      return 1
-    }
-    // parent consistency checked by caller
-    // check __x->__left_ consistency
-    if __left_(__x) != .nullptr && __parent_(__left_(__x)) != __x {
-      return 0
-    }
-    // check __x->__right_ consistency
-    if __right_(__x) != .nullptr && __parent_(__right_(__x)) != __x {
-      return 0
-    }
-    // check __x->__left_ != __x->__right_ unless both are nullptr
-    if __left_(__x) == __right_(__x) && __left_(__x) != .nullptr {
-      return 0
-    }
-    // If this is red, neither child can be red
-    if !__is_black_(__x) {
-      if __left_(__x) != .nullptr && !__is_black_(__left_(__x)) {
+  #if TREE_INVARIANT_CHECKS
+    @inlinable
+    func
+      __tree_sub_invariant(_ __x: _NodePtr) -> UInt
+    {
+      if __x == .nullptr {
+        return 1
+      }
+      // parent consistency checked by caller
+      // check __x->__left_ consistency
+      if __left_(__x) != .nullptr && __parent_(__left_(__x)) != __x {
         return 0
       }
-      if __right_(__x) != .nullptr && !__is_black_(__right_(__x)) {
+      // check __x->__right_ consistency
+      if __right_(__x) != .nullptr && __parent_(__right_(__x)) != __x {
         return 0
       }
+      // check __x->__left_ != __x->__right_ unless both are nullptr
+      if __left_(__x) == __right_(__x) && __left_(__x) != .nullptr {
+        return 0
+      }
+      // If this is red, neither child can be red
+      if !__is_black_(__x) {
+        if __left_(__x) != .nullptr && !__is_black_(__left_(__x)) {
+          return 0
+        }
+        if __right_(__x) != .nullptr && !__is_black_(__right_(__x)) {
+          return 0
+        }
+      }
+      let __h = __tree_sub_invariant(__left_(__x))
+      if __h == 0 {
+        return 0
+      }  // invalid left subtree
+      if __h != __tree_sub_invariant(__right_(__x)) {
+        return 0
+      }  // invalid or different height right subtree
+      return __h + (__is_black_(__x) ? 1 : 0)  // return black height of this node
     }
-    let __h = __tree_sub_invariant(__left_(__x))
-    if __h == 0 {
-      return 0
-    }  // invalid left subtree
-    if __h != __tree_sub_invariant(__right_(__x)) {
-      return 0
-    }  // invalid or different height right subtree
-    return __h + (__is_black_(__x) ? 1 : 0)  // return black height of this node
-  }
+  #endif
 
-  #if true
+  #if TREE_INVARIANT_CHECKS
     @inlinable
     func
       __tree_invariant(_ __root: _NodePtr) -> Bool
@@ -109,7 +111,7 @@ extension MemberProtocol {
   #else
     @inlinable
     @inline(__always)
-    func __tree_invariant(_ __root: _NodePtr) -> Bool { return true }
+    func __tree_invariant(_ __root: _NodePtr) -> Bool { true }
   #endif
 
   @inlinable

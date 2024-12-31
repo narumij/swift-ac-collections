@@ -7,10 +7,15 @@
 
 import XCTest
 
+#if DEBUG
 @testable import RedBlackTreeModule
+#else
+import RedBlackTreeModule
+#endif
 
 final class AllocationTests: XCTestCase {
 
+#if DEBUG
   typealias Tree = RedBlackTreeSet<Int>.Tree
   typealias Storage = RedBlackTreeSet<Int>.Tree.Storage
   typealias Header = RedBlackTreeSet<Int>.Tree.Header
@@ -118,4 +123,6 @@ final class AllocationTests: XCTestCase {
     }
 #endif
   }
+  
+#endif // DEBUG
 }

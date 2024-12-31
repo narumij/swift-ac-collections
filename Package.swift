@@ -5,6 +5,7 @@ import PackageDescription
 
 var defines: [String] = [
 //  "AC_COLLECTIONS_INTERNAL_CHECKS",
+//  "TREE_INVARIANT_CHECKS",
 ]
 
 var _settings: [SwiftSetting] = defines.map { .define($0) }

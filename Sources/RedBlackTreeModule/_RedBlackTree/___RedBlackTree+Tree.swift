@@ -631,8 +631,8 @@ extension ___RedBlackTree.___Tree {
   @inlinable @inline(__always)
   public var ___sorted: [Element] {
     var result = [Element]()
-    ___for_each(__p: __begin_node, __l: __end_node()) { __p, _ in
-      result.append(self[__p])
+    ___for_each_() { member in
+      result.append(member)
     }
     return result
   }

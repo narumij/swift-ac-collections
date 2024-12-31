@@ -183,6 +183,23 @@ RedBlackTreeMultisetのremove(:)は、enumerated()やforEach(:)の削除時対�
 
 このため、要素数が多い場合には注意を必要とします。具体的には、削除時に有効なイテレータやサブシーケンスやインデックスが存在しない状態にする必要があります。削除に必要な情報は一度map関数で配列にする等。
 
+```Swift
+var multiset: RedBlackTreeMultiet<Int> = [0,0,1,1,2,2]
+for member in multiset {
+  // この時点でイテレータが有効で、イテレータの破壊を予防するために内部コピーを行う
+  // この場合、5回の内部コピーが行われる
+  multiset.remove(member)
+}
+```
+
+```Swift
+var multiset: RedBlackTreeMultiet<Int> = [0,0,1,1,2,2]
+for member in multiset.map({ $0 }) {
+  // イテレータが消費済みなため、コピーが発生しない
+  multiset.remove(member)
+}
+```
+
 ## アンダースコア付き宣言について
 
 「アンダースコア付き宣言」は、完全修飾名のどこかにアンダースコア (`_`) で始まる部分が含まれる宣言のことを指します。たとえば、以下のような名前は技術的に `public` として宣言されていても、パブリックAPIには含まれません：

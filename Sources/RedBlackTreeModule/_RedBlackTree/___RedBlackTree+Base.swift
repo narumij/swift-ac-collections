@@ -391,3 +391,22 @@ extension ___RedBlackTreeBase {
     }
   }
 #endif
+
+extension ___RedBlackTreeBase {
+  
+  // C++風の削除コードが書きたい場合にこっそりつかうもの
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func ___std_erase(_ ptr: RawPointer) -> RawPointer {
+    RawPointer(_tree.erase(ptr.rawValue))
+  }
+  
+  // C++風の削除コードが書きたい場合にこっそりつかうもの
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func ___std_erase(_ ptr: TreePointer) -> TreePointer {
+    TreePointer(__storage: _storage, pointer: _tree.erase(ptr.rawValue))
+  }
+}

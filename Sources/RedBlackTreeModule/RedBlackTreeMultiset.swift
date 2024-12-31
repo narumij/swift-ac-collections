@@ -126,6 +126,13 @@ extension RedBlackTreeMultiset {
     _strongEnsureUnique()
     return _tree.___erase_multi(member) != 0 ? member : nil
   }
+  
+  @inlinable
+  @discardableResult
+  public mutating func remove(unsafe member: Element) -> Element? {
+    _ensureUnique()
+    return _tree.___erase_multi(member) != 0 ? member : nil
+  }
 
   @inlinable
   @discardableResult

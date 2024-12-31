@@ -2,6 +2,7 @@
 
 import Foundation
 import RedBlackTreeModule
+import Collections
 
 print("start job")
 
@@ -12,7 +13,16 @@ let count = 2_000_000
 //let count = 1_000_000
 #endif
 
-#if false
+#if true
+var tree = RedBlackTreeSet<Int>()
+for i in 0 ..< count {
+  _ = tree.insert(i)
+//  print("tree.capacity",tree.capacity)
+}
+print("tree.count",tree.count)
+print("tree.copyCount",tree.copyCount)
+print("tree.___rawCapacity",tree.___rawCapacity)
+#elseif false
 var tree = RedBlackTreeSet<Int>()
 //let tree = RedBlackTree.Storage<Int>()
 tree.reserveCapacity(count)
@@ -29,9 +39,13 @@ for v in 0..<10_000_000 {
 }
 #elseif false
 var tree = RedBlackTreeSet<Int>(0 ..< count)
+tree.copyCount = 0
+print(tree.count)
 for v in tree {
   tree.remove(v)
 }
+print("tree.count",tree.count)
+print("tree.copyCount",tree.copyCount)
 #elseif false
 var tree = RedBlackTreeSet<Int>(0 ..< count)
 for i in tree[tree.startIndex ..< tree.endIndex] {
@@ -134,9 +148,11 @@ for i in 0 ..< count / N {
 // これもまだ
 //var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
 var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]
+xy[1]?.copyCount = 0
 let N = 1000
+var loopCount = 0
 for i in 0 ..< count / N {
-
+  loopCount += 1
 //  let a = xy[1]
 //  let a = xy[1]?[(i * N) ..< (i * N + N)]
 //  let a = xy[1]?[(i * N) ..< (i * N + N)].enumerated()
@@ -156,7 +172,12 @@ for i in 0 ..< count / N {
 ////    xy[1]?.removeSubrange(lo ..< hi)
 //    xy[1, default: []].removeSubrange(lo ..< hi)
 //  }
-}#elseif false
+}
+print("tree.unique", xy[1]!.checkUnique())
+print("tree.count", xy[1]!.count)
+print("tree.copyCount", xy[1]!.copyCount)
+print("loopCount", loopCount)
+#elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: []]
 for i in 0 ..< 2_000_000 {
   xy[1, default: []].insert(i)
@@ -175,11 +196,33 @@ for i in 0 ..< 2_000_000 {
 //  xy[1, default: []].remove(i)
 }
 #elseif false
+var xy: [Int:RedBlackTreeSet<Int>] = [:]
+xy[1]?.copyCount = 0
+(0 ..< 100_000).forEach { i in
+  xy[1, default: []].insert(i)
+//  xy[1, default: []].remove(i)
+}
+print("tree.unique", xy[1]!.checkUnique())
+print("tree.count", xy[1]!.count)
+print("tree.copyCount", xy[1]!.copyCount)
+#elseif false
 var xy: [Int:RedBlackTreeSet<Int>] = [1: .init(0 ..< 2_000_000)]
-for i in 0 ..< 2_000_000 {
+xy[1]?.copyCount = 0
+(0 ..< 2_000_000).forEach { i in
   xy[1]?.remove(i)
 //  xy[1, default: []].remove(i)
 }
+print("tree.unique", xy[1]!.checkUnique())
+print("tree.count", xy[1]!.count)
+print("tree.copyCount", xy[1]!.copyCount)
+#elseif false
+var xy: [Int:RedBlackTreeSet<Int>] = [1: .init(0 ..< 2_000_000)]
+xy[1]?.copyCount = 0
+xy[1]?[0 ..< 2_000_000].enumerated().forEach { i, v in
+  xy[1]?.remove(at: i)
+}
+print("tree.count",xy[1]!.count)
+print("tree.copyCount",xy[1]!.copyCount)
 #elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
 for i in 0 ..< 2_000_000 {
@@ -188,6 +231,24 @@ for i in 0 ..< 2_000_000 {
     _ = e + 1
   }
 }
+#elseif false
+var xy: [Int] = (0 ..< 200_000_000) + []
+  for _ in 0 ..< 200_000_000 {
+    // 配列の場合、CoWチェックは走ってるが、コピーは起きてない
+    for _ in xy {
+      xy.removeLast()
+      continue
+    }
+  }
+#elseif true
+var xy: Deque<Int> = (0 ..< 200_000_000) + []
+  for _ in 0 ..< 200_000_000 {
+    // Dequeの場合、一度だけ、コピーが発生している
+    for i in xy {
+      xy.removeFirst()
+      continue
+    }
+  }
 #else
 var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]
   for i in 0 ..< 2_000_000 {

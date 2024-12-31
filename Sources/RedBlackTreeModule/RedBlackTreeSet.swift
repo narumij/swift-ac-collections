@@ -503,7 +503,7 @@ extension RedBlackTreeSet: Sequence {
     @inlinable
     @inline(__always)
     public func enumerated() -> EnumSequence {
-      EnumSequence(_subSequence: _storage.enumeratedSubsequence())
+      EnumSequence(_subSequence: _tree.enumeratedSubsequence())
     }
   #endif
 }
@@ -686,7 +686,7 @@ extension RedBlackTreeSet.SubSequence: Sequence {
     @inline(__always)
     public func enumerated() -> EnumSequence {
       EnumSequence(
-        _subSequence: tree.enumeratedSubsequence(lifeStorage: lifeStorage, from: startIndex._pointer, to: endIndex._pointer))
+        _subSequence: tree.enumeratedSubsequence(from: startIndex._pointer, to: endIndex._pointer))
     }
   #endif
 }

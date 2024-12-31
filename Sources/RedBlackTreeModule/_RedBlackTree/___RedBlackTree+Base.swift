@@ -288,14 +288,14 @@ extension ___RedBlackTreeBase {
   @inlinable
   func ___equal_with(_ rhs: Self) -> Bool where Self: Sequence, Element: Equatable {
     _tree === rhs._tree ||
-    (___count == rhs.___count && zip(self, rhs).allSatisfy(==))
+    (___count == rhs.___count && zip(_tree, rhs._tree).allSatisfy(==))
   }
 
   @inlinable
   func ___equal_with<K, V>(_ rhs: Self) -> Bool
   where Self: Sequence, K: Equatable, V: Equatable, Element == (key: K, value: V) {
     _tree === rhs._tree ||
-    (___count == rhs.___count && zip(self, rhs).allSatisfy(==))
+    (___count == rhs.___count && zip(_tree, rhs._tree).allSatisfy(==))
   }
 }
 

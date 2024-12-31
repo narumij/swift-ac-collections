@@ -45,7 +45,7 @@ extension RedBlackTreeIteratorNextProtocol {
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___RedBlackTree.___Tree: Sequence {
   
   @frozen
   public struct Iterator: RedBlackTreeIteratorNextProtocol {
@@ -74,7 +74,7 @@ extension ___RedBlackTree.___Tree {
   }
   
   @inlinable
-  __consuming func makeIterator() -> Iterator {
+  public __consuming func makeIterator() -> Iterator {
     .init(tree: self, start: __begin_node, end: __end_node())
   }
 }

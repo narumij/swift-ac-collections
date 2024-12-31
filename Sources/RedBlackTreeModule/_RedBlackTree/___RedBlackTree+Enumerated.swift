@@ -112,9 +112,8 @@ extension ___RedBlackTree.___Tree {
     public typealias Index = _NodePtr
 
     @inlinable
-    init(tree: Tree, lifeStorage: LifeStorage, start: Index, end: Index) {
+    init(tree: Tree, start: Index, end: Index) {
       self._tree = tree
-      self._lifeStorage = lifeStorage
       self.startIndex = start
       self.endIndex = end
     }
@@ -122,9 +121,6 @@ extension ___RedBlackTree.___Tree {
     @usableFromInline
     let _tree: Tree
     
-    @usableFromInline
-    let _lifeStorage: LifeStorage
-
     public
       var startIndex: Index
     
@@ -220,7 +216,7 @@ extension ___RedBlackTree.___Tree {
     
     @inlinable
     public subscript(bounds: Range<TreePointer>) -> EnumSequence {
-      .init(tree: _tree, lifeStorage: _lifeStorage, start: bounds.lowerBound._pointer, end: bounds.upperBound._pointer)
+      .init(tree: _tree, start: bounds.lowerBound._pointer, end: bounds.upperBound._pointer)
     }
   }
 }
@@ -228,31 +224,31 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
-  func enumeratedSubsequence(lifeStorage: LifeStorage) -> EnumSequence {
-    .init(tree: self, lifeStorage: lifeStorage, start: __begin_node, end: __end_node())
-  }
-
-  @inlinable
-  func enumeratedSubsequence(lifeStorage: LifeStorage, from: _NodePtr, to: _NodePtr) -> EnumSequence {
-    .init(tree: self, lifeStorage: lifeStorage, start: from, end: to)
-  }
-}
-
-extension ___RedBlackTree.___Tree {
-  public typealias _EnumSequence = EnumSequence
-}
-
-extension ___RedBlackTree.___Tree.Storage {
-  
-  public typealias EnumSequence = ___RedBlackTree.___Tree<VC>.EnumSequence
-  
-  @inlinable
   func enumeratedSubsequence() -> EnumSequence {
-    .init(tree: tree, lifeStorage: lifeStorage, start: tree.__begin_node, end: tree.__end_node())
+    .init(tree: self, start: __begin_node, end: __end_node())
   }
 
   @inlinable
   func enumeratedSubsequence(from: _NodePtr, to: _NodePtr) -> EnumSequence {
-    .init(tree: tree, lifeStorage: lifeStorage, start: from, end: to)
+    .init(tree: self, start: from, end: to)
   }
 }
+
+//extension ___RedBlackTree.___Tree {
+//  public typealias _EnumSequence = EnumSequence
+//}
+//
+//extension ___RedBlackTree.___Tree.Storage {
+//  
+//  public typealias EnumSequence = ___RedBlackTree.___Tree<VC>.EnumSequence
+//  
+//  @inlinable
+//  func enumeratedSubsequence() -> EnumSequence {
+//    .init(tree: tree, start: tree.__begin_node, end: tree.__end_node())
+//  }
+//
+//  @inlinable
+//  func enumeratedSubsequence(from: _NodePtr, to: _NodePtr) -> EnumSequence {
+//    .init(tree: tree, start: from, end: to)
+//  }
+//}

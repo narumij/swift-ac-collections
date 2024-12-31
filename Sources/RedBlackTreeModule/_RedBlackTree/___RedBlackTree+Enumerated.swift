@@ -40,7 +40,6 @@ extension SimpleIndexBuilder {
 protocol TreePointerBuilder {
   associatedtype VC: ValueComparer
   var _tree: Tree { get }
-  var _lifeStorage: Tree.LifeStorage { get }
 }
 
 extension TreePointerBuilder {
@@ -50,7 +49,7 @@ extension TreePointerBuilder {
   @inlinable
   @inline(__always)
   public func ___index(_ p: _NodePtr) -> EnumeratedIndex {
-    .init(__tree: _tree, lifeStorage: _lifeStorage, pointer: p)
+    .init(__tree: _tree, pointer: p)
   }
 }
 
@@ -70,9 +69,8 @@ extension ___RedBlackTree.___Tree {
   public struct EnumIterator: RedBlackTreeIteratorNextProtocol, EnumIndexMaker {
     
     @inlinable
-    internal init(tree: Tree, lifeStorage: LifeStorage, start: _NodePtr, end: _NodePtr) {
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self._tree = tree
-      self._lifeStorage = lifeStorage
       self._current = start
       self._end = end
       self._next = start == .end ? .end : tree.__tree_next(start)
@@ -80,9 +78,6 @@ extension ___RedBlackTree.___Tree {
     
     @usableFromInline
     let _tree: Tree
-    
-    @usableFromInline
-    let _lifeStorage: Tree.LifeStorage
     
     @usableFromInline
     var _current, _next, _end: _NodePtr
@@ -98,13 +93,13 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
   
   @inlinable
-  __consuming func makeEnumIterator(lifeStorage: LifeStorage) -> EnumIterator {
-    .init(tree: self, lifeStorage: lifeStorage, start: __begin_node, end: __end_node())
+  __consuming func makeEnumIterator() -> EnumIterator {
+    .init(tree: self, start: __begin_node, end: __end_node())
   }
   
   @inlinable
-  __consuming func makeEnumeratedIterator(lifeStorage: LifeStorage, start: _NodePtr, end: _NodePtr) -> EnumIterator {
-    .init(tree: self, lifeStorage: lifeStorage, start: start, end: end)
+  __consuming func makeEnumeratedIterator(start: _NodePtr, end: _NodePtr) -> EnumIterator {
+    .init(tree: self, start: start, end: end)
   }
 }
 
@@ -138,7 +133,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     public func makeIterator() -> EnumIterator {
-      _tree.makeEnumeratedIterator(lifeStorage: _lifeStorage, start: startIndex, end: endIndex)
+      _tree.makeEnumeratedIterator(start: startIndex, end: endIndex)
     }
     
     @inlinable

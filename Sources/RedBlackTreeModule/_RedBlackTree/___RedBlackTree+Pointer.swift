@@ -31,10 +31,7 @@ extension ___RedBlackTree.___Tree {
     public typealias Pointer = Self
 
     @usableFromInline
-    unowned let _tree: Tree
-
-    @usableFromInline
-    let _lifeStorage: Tree.LifeStorage
+    let _tree: Tree
 
     @usableFromInline
     var _pointer: _NodePtr
@@ -52,24 +49,22 @@ extension ___RedBlackTree.___Tree {
       }
       self._tree = __storage.tree
       self._pointer = pointer
-      self._lifeStorage = __storage.lifeStorage
     }
 
     @inlinable
     @inline(__always)
-    internal init(__tree: Tree, lifeStorage: Tree.LifeStorage, pointer: _NodePtr) {
+    internal init(__tree: Tree, pointer: _NodePtr) {
       guard pointer != .nullptr else {
         preconditionFailure("_NodePtr is nullptr")
       }
       self._tree = __tree
       self._pointer = pointer
-      self._lifeStorage = lifeStorage
     }
 
     @inlinable
     @inline(__always)
     static func end(_ storage: Tree.Storage) -> Pointer {
-      .init(__tree: storage.tree, lifeStorage: storage.lifeStorage, pointer: .end)
+      .init(__tree: storage.tree, pointer: .end)
     }
     
     // MARK: -

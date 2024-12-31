@@ -53,9 +53,8 @@ extension ___RedBlackTree.___Tree {
     public typealias Element = Tree.Element
     
     @inlinable
-    internal init(tree: Tree, lifeStorage: Tree.LifeStorage, start: _NodePtr, end: _NodePtr) {
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self._tree = tree
-      self._lifeStorage = lifeStorage
       self._current = start
       self._end = end
       self._next = start == .end ? .end : tree.__tree_next(start)
@@ -64,9 +63,6 @@ extension ___RedBlackTree.___Tree {
     @usableFromInline
     let _tree: Tree
     
-    @usableFromInline
-    let _lifeStorage: Tree.LifeStorage
-
     @usableFromInline
     var _current, _next, _end: _NodePtr
     
@@ -78,8 +74,8 @@ extension ___RedBlackTree.___Tree {
   }
   
   @inlinable
-  __consuming func makeIterator(lifeStorage: LifeStorage) -> Iterator {
-    .init(tree: self, lifeStorage: lifeStorage, start: __begin_node, end: __end_node())
+  __consuming func makeIterator() -> Iterator {
+    .init(tree: self, start: __begin_node, end: __end_node())
   }
 }
 

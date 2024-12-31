@@ -52,7 +52,7 @@ extension ___RedBlackTree.___Tree {
     
     @inlinable
     public __consuming func makeIterator() -> Iterator {
-      Iterator(tree: _tree, lifeStorage: _lifeStorage, start: startIndex, end: endIndex)
+      Iterator(tree: _tree, start: startIndex, end: endIndex)
     }
     
     @inlinable

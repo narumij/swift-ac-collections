@@ -26,11 +26,13 @@ extension MemberProtocol {
 
   @inlinable @inline(__always)
   func
-    static_cast_EndNodePtr(_ p: _NodePtr) -> _NodePtr { p }
+    static_cast_EndNodePtr(_ p: _NodePtr) -> _NodePtr
+  { p }
 
   @inlinable @inline(__always)
   func
-    static_cast_NodePtr(_ p: _NodePtr) -> _NodePtr { p }
+    static_cast_NodePtr(_ p: _NodePtr) -> _NodePtr
+  { p }
 }
 
 extension MemberProtocol {
@@ -82,33 +84,33 @@ extension MemberProtocol {
     return __h + (__is_black_(__x) ? 1 : 0)  // return black height of this node
   }
 
-#if true
-  @inlinable
-  func
-    __tree_invariant(_ __root: _NodePtr) -> Bool
-  {
-    if __root == .nullptr {
-      return true
+  #if true
+    @inlinable
+    func
+      __tree_invariant(_ __root: _NodePtr) -> Bool
+    {
+      if __root == .nullptr {
+        return true
+      }
+      // check __x->__parent_ consistency
+      if __parent_(__root) == .nullptr {
+        return false
+      }
+      if !__tree_is_left_child(__root) {
+        return false
+      }
+      // root must be black
+      if !__is_black_(__root) {
+        return false
+      }
+      // do normal node checks
+      return __tree_sub_invariant(__root) != 0
     }
-    // check __x->__parent_ consistency
-    if __parent_(__root) == .nullptr {
-      return false
-    }
-    if !__tree_is_left_child(__root) {
-      return false
-    }
-    // root must be black
-    if !__is_black_(__root) {
-      return false
-    }
-    // do normal node checks
-    return __tree_sub_invariant(__root) != 0
-  }
-#else
-  @inlinable
-  @inline(__always)
-  func __tree_invariant(_ __root: _NodePtr) -> Bool { return true }
-#endif
+  #else
+    @inlinable
+    @inline(__always)
+    func __tree_invariant(_ __root: _NodePtr) -> Bool { return true }
+  #endif
 
   @inlinable
   func

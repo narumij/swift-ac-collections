@@ -116,7 +116,7 @@ protocol InsertMultiProtocol: AllocatorProtocol, KeyProtocol {
 }
 
 extension InsertMultiProtocol {
-  
+
   //  _LIBCPP_HIDE_FROM_ABI iterator __insert_multi(__container_value_type&& __v) {
   //    return __emplace_multi(std::move(__v));
   //  }
@@ -125,12 +125,12 @@ extension InsertMultiProtocol {
   public mutating func __insert_multi(_ x: Element) -> _NodePtr {
     __emplace_multi(x)
   }
-  
+
   @inlinable
   mutating func
-  __emplace_multi(_ __k: Element) -> _NodePtr
+    __emplace_multi(_ __k: Element) -> _NodePtr
   {
-    let __h = __construct_node(__k);
+    let __h = __construct_node(__k)
     var __parent = _NodePtr.nullptr
     let __child = __find_leaf_high(&__parent, __key(__k))
     __insert_node_at(__parent, __child, __h)

@@ -1,22 +1,22 @@
 import Foundation
 
 @usableFromInline
-protocol DistanceProtocol: MemberProtocol & BeginNodeProtocol & EndNodeProtocol & ValueProtocol { }
+protocol DistanceProtocol: MemberProtocol & BeginNodeProtocol & EndNodeProtocol & ValueProtocol {}
 
 extension DistanceProtocol {
-  
+
   @usableFromInline
   typealias difference_type = Int
-  
+
   @usableFromInline
   typealias _InputIter = Int
-  
+
   @usableFromInline
   typealias _RandIter = Int
-  
-//  func __distance(_ __first: _InputIter,_ __last: _InputIter, input_iterator_tag) -> difference_type {
+
+  //  func __distance(_ __first: _InputIter,_ __last: _InputIter, input_iterator_tag) -> difference_type {
   @inlinable
-  func __distance(_ __first: _InputIter,_ __last: _InputIter) -> difference_type {
+  func __distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type {
     var __first = __first
     var __r = 0
     while __first != __last {
@@ -25,7 +25,7 @@ extension DistanceProtocol {
     }
     return __r
   }
-  
+
   @inlinable
   @inline(__always)
   func ___signed_distance(__l: _NodePtr, __r: _NodePtr) -> Int {
@@ -44,19 +44,19 @@ extension DistanceProtocol {
   }
 
   @inlinable
-  func ___signed_distance(_ __first: _InputIter,_ __last: _InputIter) -> difference_type {
-//    return __distance(__first, __last, typename iterator_traits<_InputIter>::iterator_category());
-//    return __distance(__first, __last);
-#if false
-    var (__first, __last) = (__first, __last)
-    var swapped = false
-    if __last != .end, !value_comp(__value_(__first), __value_(__last)) {
-      swap(&__first, &__last)
-      swapped = true
-    }
-    return (swapped ? -1 : 1) * __distance(__first: __first, __last: __last)
-#else
-    return ___signed_distance(__l: __first, __r: __last)
-#endif
+  func ___signed_distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type {
+    //    return __distance(__first, __last, typename iterator_traits<_InputIter>::iterator_category());
+    //    return __distance(__first, __last);
+    #if false
+      var (__first, __last) = (__first, __last)
+      var swapped = false
+      if __last != .end, !value_comp(__value_(__first), __value_(__last)) {
+        swap(&__first, &__last)
+        swapped = true
+      }
+      return (swapped ? -1 : 1) * __distance(__first: __first, __last: __last)
+    #else
+      return ___signed_distance(__l: __first, __r: __last)
+    #endif
   }
 }

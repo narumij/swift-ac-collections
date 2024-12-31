@@ -35,15 +35,15 @@ public
   typealias _NodePtr = Int
 
 extension _NodePtr {
-  
+
   /// 赤黒木のIndexで、nullを表す
   @inlinable
   static var nullptr: Self { -1 }
-  
+
   /// 赤黒木のIndexで、終端を表す
   @inlinable
   static var end: Self { -2 }
-  
+
   /// 数値を直接扱うことを避けるための初期化メソッド
   @inlinable
   static func node(_ p: Int) -> Self { p }
@@ -60,9 +60,9 @@ public
   enum _NodeRef: Equatable
 {
   case nullptr
-    /// 右ノードへの参照
+  /// 右ノードへの参照
   case __right_(_NodePtr)
-    /// 左ノードへの参照
+  /// 左ノードへの参照
   case __left_(_NodePtr)
 }
 
@@ -195,7 +195,7 @@ extension ValueComparer where _Key: Comparable {
 public protocol ScalarValueComparer: ValueComparer where _Key == Element {}
 
 extension ScalarValueComparer {
-  
+
   @inlinable @inline(__always)
   public static func __key(_ e: Element) -> _Key { e }
 }
@@ -214,8 +214,7 @@ extension KeyValueComparer where Element == _KeyValue {
 
   @inlinable @inline(__always)
   public static func __key(_ element: Element) -> _Key { element.key }
-  
+
   @inlinable @inline(__always)
   static func __value(_ element: Element) -> _Value { element.value }
 }
-

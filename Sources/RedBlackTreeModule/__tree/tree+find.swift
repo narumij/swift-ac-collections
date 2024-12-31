@@ -153,18 +153,18 @@ extension FindEqualProtocol {
 }
 
 #if false
-// 辞書型用、作業中
-@usableFromInline
-protocol NodeFindEqual2Protocol: FindEqualProtocol
-    & BeginNodeProtocol
-    & BeginProtocol
-{}
+  // 辞書型用、作業中
+  @usableFromInline
+  protocol NodeFindEqual2Protocol: FindEqualProtocol
+      & BeginNodeProtocol
+      & BeginProtocol
+  {}
 
-extension NodeFindEqual2Protocol {
-  
-  // TODO: implement __find_equal(,,,)
-  
-}
+  extension NodeFindEqual2Protocol {
+
+    // TODO: implement __find_equal(,,,)
+
+  }
 #endif
 
 @usableFromInline

@@ -40,7 +40,7 @@ extension EraseProtocol {
 
   @inlinable
   func
-  erase(_ ___destroy: (_NodePtr) -> Void, _ __p: _NodePtr) -> _NodePtr
+    erase(_ ___destroy: (_NodePtr) -> Void, _ __p: _NodePtr) -> _NodePtr
   {
     let __np = __get_np(__p)
     let __r = __remove_node_pointer(__np)
@@ -50,7 +50,7 @@ extension EraseProtocol {
 
   @inlinable
   func
-    erase(_ ___destroy: (_NodePtr) -> Void,_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
+    erase(_ ___destroy: (_NodePtr) -> Void, _ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
   {
     var __f = __f
     while __f != __l {
@@ -62,7 +62,7 @@ extension EraseProtocol {
 
 @usableFromInline
 protocol StorageEraseProtocol: AnyObject {
-  
+
   func destroy(_ p: _NodePtr)
 
   func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr

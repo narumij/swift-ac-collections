@@ -189,6 +189,7 @@ extension ___RedBlackTreeStorageLifetime {
   @inline(__always)
   mutating func _ensureUniqueAndCapacity() {
     _ensureUniqueAndCapacity(minimumCapacity: _storage.count + 1)
+    assert(_storage.capacity > 0)
   }
 
   @inlinable

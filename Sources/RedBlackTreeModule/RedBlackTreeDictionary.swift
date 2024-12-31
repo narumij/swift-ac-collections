@@ -47,14 +47,18 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   typealias _Value = Value
 
   @usableFromInline
-  var _tree: Tree
+  var _storage: Tree.Storage
   
-  @usableFromInline
-  var _storage: Tree.Storage = .create(withCapacity: 0)
+  @inlinable
+  @inline(__always)
+  var _tree: Tree {
+    get { _storage.tree }
+    _modify { yield &_storage.tree }
+  }
 }
 
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
-extension RedBlackTreeDictionary: ___RedBlackTreeNonStorageLifetime {}
+extension RedBlackTreeDictionary: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 
 extension RedBlackTreeDictionary {
@@ -66,7 +70,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
-    _tree = .create(withCapacity: minimumCapacity)
+    _storage = .create(withCapacity: minimumCapacity)
   }
 }
 
@@ -224,6 +228,7 @@ extension RedBlackTreeDictionary {
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
         _ensureUniqueAndCapacity()
+        assert(_tree.header.capacity > _tree.count)
         __ptr = _tree.__construct_node((key, defaultValue()))
         _tree.__insert_node_at(__parent, __child, __ptr)
       } else {

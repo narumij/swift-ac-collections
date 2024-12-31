@@ -37,14 +37,18 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
   typealias _Key = Element
 
   @usableFromInline
-  var _tree: Tree
+  var _storage: Tree.Storage
   
-  @usableFromInline
-  var _storage: Tree.Storage = .create(withCapacity: 0)
+  @inlinable
+  @inline(__always)
+  var _tree: Tree {
+    get { _storage.tree }
+    _modify { yield &_storage.tree }
+  }
 }
 
 extension RedBlackTreeMultiset: ___RedBlackTreeBase {}
-extension RedBlackTreeMultiset: ___RedBlackTreeNonStorageLifetime {}
+extension RedBlackTreeMultiset: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeMultiset: ScalarValueComparer {}
 
 extension RedBlackTreeMultiset {
@@ -56,7 +60,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
-    _tree = .create(withCapacity: minimumCapacity)
+    _storage = .create(withCapacity: minimumCapacity)
   }
 }
 

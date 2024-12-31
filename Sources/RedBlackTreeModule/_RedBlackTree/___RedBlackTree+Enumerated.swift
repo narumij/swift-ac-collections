@@ -26,6 +26,7 @@ import Foundation
 protocol SimpleIndexBuilder { }
 
 extension SimpleIndexBuilder {
+  
   public typealias EnumeratedIndex = ___RedBlackTree.SimpleIndex
   
   @inlinable
@@ -52,7 +53,6 @@ extension TreePointerBuilder {
     .init(__tree: _tree, lifeStorage: _lifeStorage, pointer: p)
   }
 }
-
 
 extension ___RedBlackTree.___Tree {
 

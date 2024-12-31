@@ -187,7 +187,7 @@ RedBlackTreeMultisetのremove(:)は、enumerated()やforEach(:)の削除時対�
 var multiset: RedBlackTreeMultiet<Int> = [0,0,1,1,2,2]
 for member in multiset {
   // この時点でイテレータが有効で、イテレータの破壊を予防するために内部コピーを行う
-  // この場合、5回の内部コピーが行われる
+  // この場合、1回内部コピーが行われる
   multiset.remove(member)
 }
 ```

@@ -73,15 +73,18 @@ extension RedBlackTreeMultiset {
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-
-    self.init()
+    let count = (sequence as? (any Collection))?.count
+    var tree: Tree = .create(withCapacity: count ?? 0)
     for __k in sequence {
-      Tree.ensureCapacity(tree: &_tree, minimumCapacity: _tree.count + 1)
-      let __h = _tree.__construct_node(__k)
+      if count == nil {
+        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+      }
+      let __h = tree.__construct_node(__k)
       var __parent = _NodePtr.nullptr
-      let __child = _tree.__find_leaf_high(&__parent, __k)
-      _tree.__insert_node_at(__parent, __child, __h)
+      let __child = tree.__find_leaf_high(&__parent, __k)
+      tree.__insert_node_at(__parent, __child, __h)
     }
+    self._storage = .init(__tree: tree)
   }
 }
 

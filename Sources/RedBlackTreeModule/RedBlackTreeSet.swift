@@ -189,10 +189,12 @@ extension RedBlackTreeSet {
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-
-    var tree: Tree = .create(withCapacity: 0)
+    let count = (sequence as? (any Collection))?.count
+    var tree: Tree = .create(withCapacity: count ?? 0)
     for __k in sequence {
-      Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+      if count == nil {
+        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+      }
       var __parent = _NodePtr.nullptr
       let __child = tree.__find_equal(&__parent, __k)
       if tree.__ref_(__child) == .nullptr {
@@ -200,7 +202,6 @@ extension RedBlackTreeSet {
         tree.__insert_node_at(__parent, __child, __h)
       }
     }
-
     self._storage = .init(__tree: tree)
   }
 }

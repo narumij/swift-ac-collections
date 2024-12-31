@@ -3,6 +3,7 @@
 import Foundation
 import RedBlackTreeModule
 //import Collections
+//import SortedCollections
 
 print("start job")
 
@@ -15,6 +16,23 @@ let count = 2_000_000
 #endif
 
 #if false
+var tree = SortedSet<Int>()
+for i in 0 ..< count {
+  _ = tree.insert(i)
+//  print("tree.capacity",tree.capacity)
+}
+print("tree.count",tree.count)
+#elseif false
+var tree = SortedSet<Int>(0 ..< count * 2)
+for v in 0 ..< count * 2 {
+  tree.remove(v)
+}
+#elseif true
+var tree = RedBlackTreeSet<Int>(0 ..< count * 2)
+for v in 0 ..< count * 2 {
+  tree.remove(v)
+}
+#elseif false
 var tree = RedBlackTreeSet<Int>()
 for i in 0 ..< count {
   _ = tree.insert(i)

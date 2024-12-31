@@ -49,6 +49,12 @@ extension _NodePtr {
   static func node(_ p: Int) -> Self { p }
 }
 
+@inlinable
+@inline(__always)
+func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
+  ptr < 0
+}
+
 /// 赤黒木の参照型を表す内部enum
 public
   enum _NodeRef: Equatable

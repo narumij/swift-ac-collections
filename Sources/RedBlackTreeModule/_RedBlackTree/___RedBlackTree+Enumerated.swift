@@ -23,11 +23,11 @@
 import Foundation
 
 @usableFromInline
-protocol SimpleIndexBuilder { }
+protocol RawPointerBuilderProtocol { }
 
-extension SimpleIndexBuilder {
+extension RawPointerBuilderProtocol {
   
-  public typealias EnumeratedIndex = ___RedBlackTree.SimpleIndex
+  public typealias EnumeratedIndex = ___RedBlackTree.RawPointer
   
   @inlinable
   @inline(__always)
@@ -37,12 +37,12 @@ extension SimpleIndexBuilder {
 }
 
 @usableFromInline
-protocol TreePointerBuilder {
+protocol TreePointerBuilderProtocol {
   associatedtype VC: ValueComparer
   var _tree: Tree { get }
 }
 
-extension TreePointerBuilder {
+extension TreePointerBuilderProtocol {
   public typealias Tree = ___RedBlackTree.___Tree<VC>
   public typealias EnumeratedIndex = ___RedBlackTree.___Tree<VC>.TreePointer
   
@@ -56,10 +56,10 @@ extension TreePointerBuilder {
 extension ___RedBlackTree.___Tree {
 
 #if true
-  typealias EnumIndexMaker = SimpleIndexBuilder
-  public typealias EnumIndex = ___RedBlackTree.SimpleIndex
+  typealias EnumIndexMaker = RawPointerBuilderProtocol
+  public typealias EnumIndex = ___RedBlackTree.RawPointer
 #else
-  typealias EnumIndexMaker = TreePointerBuilder
+  typealias EnumIndexMaker = TreePointerBuilderProtocol
   public typealias EnumIndex = TreePointer
 #endif
 

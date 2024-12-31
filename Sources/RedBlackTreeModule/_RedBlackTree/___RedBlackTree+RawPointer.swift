@@ -26,14 +26,10 @@ extension ___RedBlackTree {
 
   /// enumerated()用のインデックス
   ///
-  /// ManagedBufferに対する参照カウントの増加と、それに伴うコピーを避けるためにサルベージして利用している。
-  ///
-  /// 元々はメインの外部インデックスだった。
-  ///
   /// nullptrはオプショナルで表現する想定で、nullptrを保持しない
   public
-  // 名前は、取り急ぎのものなので、変えたい
-    enum SimpleIndex
+    // 名前は、取り急ぎのものなので、変えたい
+    enum RawPointer
   {
     case node(_NodePtr)
     case end
@@ -47,7 +43,7 @@ extension ___RedBlackTree {
       self = node == .end ? .end : .node(node)
     }
 
-      // 検査用の便利アクセサ
+    // 検査用の便利アクセサ
     @usableFromInline
     var rawValue: _NodePtr {
       switch self {
@@ -61,13 +57,13 @@ extension ___RedBlackTree {
   }
 }
 
-extension Optional where Wrapped == ___RedBlackTree.SimpleIndex {
-  
+extension Optional where Wrapped == ___RedBlackTree.RawPointer {
+
   @inlinable
   init(_ ptr: _NodePtr) {
-    self = ptr == .nullptr ? .none : .some(___RedBlackTree.SimpleIndex(ptr))
+    self = ptr == .nullptr ? .none : .some(___RedBlackTree.RawPointer(ptr))
   }
-  
+
   @usableFromInline
   var _pointer: _NodePtr {
     switch self {
@@ -80,7 +76,5 @@ extension Optional where Wrapped == ___RedBlackTree.SimpleIndex {
 }
 
 #if swift(>=5.5)
-extension ___RedBlackTree.SimpleIndex: @unchecked Sendable {}
+  extension ___RedBlackTree.RawPointer: @unchecked Sendable {}
 #endif
-
-

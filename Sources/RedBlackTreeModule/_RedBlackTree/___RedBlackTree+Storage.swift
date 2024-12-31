@@ -215,33 +215,3 @@ extension ___RedBlackTreeStorageLifetime {
     assert(_storage.tree.header.initializedCount <= _storage.capacity)
   }
 }
-
-#if false
-@usableFromInline
-protocol ___RedBlackTreeNonStorageLifetime: ValueComparer {
-  var _tree: Tree { get set }
-}
-
-extension ___RedBlackTreeNonStorageLifetime {
-  
-  @inlinable
-  public mutating func _isKnownUniquelyReferenced() -> Bool {
-    Tree._isKnownUniquelyReferenced(tree: &_tree)
-  }
-
-  @inlinable
-  public mutating func _ensureUnique() {
-    Tree.ensureUnique(tree: &_tree)
-  }
-
-  @inlinable
-  mutating func _ensureUniqueAndCapacity() {
-    Tree.ensureUniqueAndCapacity(tree: &_tree)
-  }
-  
-  @inlinable
-  mutating func _ensureUniqueAndCapacity(minimumCapacity: Int) {
-    Tree.ensureUniqueAndCapacity(tree: &_tree, minimumCapacity: minimumCapacity)
-  }
-}
-#endif

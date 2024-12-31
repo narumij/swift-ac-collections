@@ -261,7 +261,7 @@ extension RedBlackTreeSet {
 
   @inlinable
   @discardableResult
-  public mutating func remove(at index: ___RedBlackTree.SimpleIndex) -> Element {
+  public mutating func remove(at index: ___RedBlackTree.RawPointer) -> Element {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
@@ -493,7 +493,7 @@ extension RedBlackTreeSet: Sequence {
     return Iterator(_base: self)
   }
 
-#if true
+#if false
     @inlinable
     @inline(__always)
     public func enumerated() -> AnySequence<EnumElement> {
@@ -590,7 +590,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: ___RedBlackTree.SimpleIndex) -> Element {
+  public subscript(position: ___RedBlackTree.RawPointer) -> Element {
     return _tree[position.rawValue]
   }
 
@@ -669,7 +669,7 @@ extension RedBlackTreeSet.SubSequence: Sequence {
     Iterator(_subSequence.makeIterator())
   }
 
-#if true
+#if false
     @inlinable
     @inline(__always)
     public func enumerated() -> AnySequence<EnumElement> {
@@ -771,7 +771,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: ___RedBlackTree.SimpleIndex) -> Element {
+  public subscript(position: ___RedBlackTree.RawPointer) -> Element {
     return tree[position.rawValue]
   }
 
@@ -859,7 +859,7 @@ extension RedBlackTreeSet {
   
   @inlinable
   @inline(__always)
-  public func isValid(index: ___RedBlackTree.SimpleIndex) -> Bool {
+  public func isValid(index: ___RedBlackTree.RawPointer) -> Bool {
     ___is_valid_index(index.rawValue)
   }
 }

@@ -31,8 +31,8 @@ extension ValueComparer {
 @usableFromInline
 protocol ___RedBlackTreeBase: ValueComparer {
   associatedtype Element
-  var _tree: Tree { get set }
-  var _storage: Tree.Storage { get }
+  var _tree: Tree { get }
+  var _storage: Tree.Storage { get set }
 }
 
 extension ___RedBlackTreeBase {
@@ -52,7 +52,7 @@ extension ___RedBlackTreeBase {
     // tree.capacityはバイトサイズになるので注意
     _tree.header.capacity
   }
-  
+
   @inlinable @inline(__always)
   public var ___raw_capacity: Int {
     // tree.capacityはバイトサイズになるので注意
@@ -66,12 +66,12 @@ extension ___RedBlackTreeBase {
 
   @usableFromInline
   typealias ___Index = Tree.TreePointer
-  
+
   @inlinable @inline(__always)
   func ___index(_ p: _NodePtr) -> ___Index {
     .init(__storage: _storage, pointer: p)
   }
-  
+
   @inlinable @inline(__always)
   func ___index_or_nil(_ p: _NodePtr) -> ___Index? {
     p == .nullptr ? nil : ___index(p)
@@ -79,7 +79,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___index_or_nil(_ p: _NodePtr?) -> ___Index? {
-    p.map{ ___index($0) }
+    p.map { ___index($0) }
   }
 
   @inlinable @inline(__always)
@@ -91,7 +91,7 @@ extension ___RedBlackTreeBase {
   func ___index_end() -> ___Index {
     ___index(_tree.___end())
   }
-  
+
   @inlinable @inline(__always)
   func ___ptr_start() -> _NodePtr {
     _tree.___begin()
@@ -114,7 +114,7 @@ extension ___RedBlackTreeBase {
   public func ___ptr_upper_bound(_ __k: _Key) -> _NodePtr {
     _tree.upper_bound(__k)
   }
-  
+
   @inlinable @inline(__always)
   public func ___index_lower_bound(_ __k: _Key) -> ___Index {
     ___index(___ptr_lower_bound(__k))
@@ -149,7 +149,8 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   func ___index(
-    _ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> ___Index? {
+    _ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr
+  ) -> ___Index? {
     ___index_or_nil(_tree.index(i, offsetBy: distance, limitedBy: limit))
   }
 }
@@ -194,12 +195,8 @@ extension ___RedBlackTreeBase {
   @discardableResult
   mutating func ___remove(at ptr: _NodePtr) -> Element? {
     guard
-      // 下二つのコメントアウトと等価
-      0 <= ptr,
-      // ptr != .nullptr,
-      // ptr != .end,
-      _tree.___is_valid(ptr)
-      //        ___nodes[ptr].isValid
+      !___is_null_or_end(ptr),
+      ___is_valid_index(ptr)
     else {
       return nil
     }
@@ -215,7 +212,10 @@ extension ___RedBlackTreeBase {
     guard from != .end else {
       return .end
     }
-    guard _tree.___is_valid(from), to == .end || _tree.___is_valid(to) else {
+    guard
+      ___is_valid_index(from),
+      ___is_valid_index(to)
+    else {
       fatalError(.invalidIndex)
     }
     return _tree.erase(from, to)
@@ -223,13 +223,18 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  public mutating func ___remove(from: _NodePtr, to: _NodePtr, forEach action: (Element) throws -> Void)
+  public mutating func ___remove(
+    from: _NodePtr, to: _NodePtr, forEach action: (Element) throws -> Void
+  )
     rethrows
   {
     guard from != .end else {
       return
     }
-    guard _tree.___is_valid(from), to == .end || _tree.___is_valid(to) else {
+    guard
+      ___is_valid_index(from),
+      ___is_valid_index(to)
+    else {
       fatalError(.invalidIndex)
     }
     return try _tree.___erase(from, to, action)
@@ -245,7 +250,10 @@ extension ___RedBlackTreeBase {
     guard from != .end else {
       return initialResult
     }
-    guard _tree.___is_valid(from), to == .end || _tree.___is_valid(to) else {
+    guard
+      ___is_valid_index(from),
+      ___is_valid_index(to)
+    else {
       fatalError(.invalidIndex)
     }
     return try _tree.___erase(from, to, into: initialResult, updateAccumulatingResult)
@@ -261,7 +269,10 @@ extension ___RedBlackTreeBase {
     guard from != .end else {
       return initialResult
     }
-    guard _tree.___is_valid(from), to == .end || _tree.___is_valid(to) else {
+    guard
+      ___is_valid_index(from),
+      ___is_valid_index(to)
+    else {
       fatalError(.invalidIndex)
     }
     return try _tree.___erase(from, to, initialResult, nextPartialResult)
@@ -276,7 +287,7 @@ extension ___RedBlackTreeBase {
     if keepCapacity {
       _tree.__eraseAll()
     } else {
-      _tree = .create(withCapacity: 0)
+      _storage = .create(withCapacity: 0)
     }
   }
 }
@@ -287,15 +298,13 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   func ___equal_with(_ rhs: Self) -> Bool where Self: Sequence, Element: Equatable {
-    _tree === rhs._tree ||
-    (___count == rhs.___count && zip(_tree, rhs._tree).allSatisfy(==))
+    _tree === rhs._tree || (___count == rhs.___count && zip(_tree, rhs._tree).allSatisfy(==))
   }
 
   @inlinable
   func ___equal_with<K, V>(_ rhs: Self) -> Bool
   where Self: Sequence, K: Equatable, V: Equatable, Element == (key: K, value: V) {
-    _tree === rhs._tree ||
-    (___count == rhs.___count && zip(_tree, rhs._tree).allSatisfy(==))
+    _tree === rhs._tree || (___count == rhs.___count && zip(_tree, rhs._tree).allSatisfy(==))
   }
 }
 
@@ -327,7 +336,7 @@ extension ___RedBlackTreeBase {
   @inlinable @inline(__always)
   func ___value_for(_ __k: _Key) -> Element? {
     let __ptr = _tree.find(__k)
-    return __ptr < 0 ? nil : _tree[__ptr]
+    return ___is_null_or_end(__ptr) ? nil : _tree[__ptr]
   }
 }
 
@@ -352,11 +361,11 @@ extension ___RedBlackTreeBase {
   public func ___tree_invariant() -> Bool {
     _tree.__tree_invariant(_tree.__root())
   }
-  
+
   @inlinable
   func ___is_valid_index(_ i: _NodePtr) -> Bool {
     if i == .end { return true }
-    if !(0 ..< _tree.header.initializedCount ~= i) { return false }
+    if !(0..<_tree.header.initializedCount ~= i) { return false }
     return _tree.___is_valid(i)
   }
 }
@@ -373,9 +382,12 @@ extension ___RedBlackTreeBase {
       set { _storage.tree.copyCount = newValue }
     }
 
+  }
+
+  extension ___RedBlackTreeStorageLifetime {
     @inlinable
     public mutating func _checkUnique() -> Bool {
-      Tree._isKnownUniquelyReferenced(tree: &_tree)
+      _isKnownUniquelyReferenced_LV2()
     }
   }
 #endif

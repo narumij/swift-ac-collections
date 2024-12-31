@@ -216,7 +216,7 @@ extension ___RedBlackTree.___Tree {
     
     @inlinable
     public subscript(bounds: Range<TreePointer>) -> EnumSequence {
-      .init(tree: _tree, start: bounds.lowerBound._pointer, end: bounds.upperBound._pointer)
+      .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
     }
   }
 }
@@ -233,22 +233,3 @@ extension ___RedBlackTree.___Tree {
     .init(tree: self, start: from, end: to)
   }
 }
-
-//extension ___RedBlackTree.___Tree {
-//  public typealias _EnumSequence = EnumSequence
-//}
-//
-//extension ___RedBlackTree.___Tree.Storage {
-//  
-//  public typealias EnumSequence = ___RedBlackTree.___Tree<VC>.EnumSequence
-//  
-//  @inlinable
-//  func enumeratedSubsequence() -> EnumSequence {
-//    .init(tree: tree, start: tree.__begin_node, end: tree.__end_node())
-//  }
-//
-//  @inlinable
-//  func enumeratedSubsequence(from: _NodePtr, to: _NodePtr) -> EnumSequence {
-//    .init(tree: tree, start: from, end: to)
-//  }
-//}

@@ -352,6 +352,13 @@ extension ___RedBlackTreeBase {
   public func ___tree_invariant() -> Bool {
     _tree.__tree_invariant(_tree.__root())
   }
+  
+  @inlinable
+  public func ___is_valid_index(_ i: _NodePtr) -> Bool {
+    if i == .end { return true }
+    if !(0 ..< _tree.header.initializedCount ~= i) { return false }
+    return _tree.___is_valid(i)
+  }
 }
 
 #if DEBUG || true

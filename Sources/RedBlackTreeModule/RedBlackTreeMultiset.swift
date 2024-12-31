@@ -139,7 +139,7 @@ extension RedBlackTreeMultiset {
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    guard let element = ___remove(at: index._pointer) else {
+    guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
     return element
@@ -165,7 +165,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   public mutating func removeSubrange(_ range: Range<Index>) {
-    ___remove(from: range.lowerBound._pointer, to: range.upperBound._pointer)
+    ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
   }
 
   @inlinable
@@ -357,50 +357,50 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    return _tree.distance(from: start._pointer, to: end._pointer)
+    return _tree.distance(from: start.rawValue, to: end.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__storage: _storage, pointer: _tree.index(after: i._pointer))
+    return Index(__storage: _storage, pointer: _tree.index(after: i.rawValue))
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
-    return _tree.formIndex(after: &i._pointer)
+    return _tree.formIndex(after: &i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__storage: _storage, pointer: _tree.index(before: i._pointer))
+    return Index(__storage: _storage, pointer: _tree.index(before: i.rawValue))
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
-    _tree.formIndex(before: &i._pointer)
+    _tree.formIndex(before: &i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__storage: _storage, pointer: _tree.index(i._pointer, offsetBy: distance))
+    return Index(__storage: _storage, pointer: _tree.index(i.rawValue, offsetBy: distance))
   }
 
   @inlinable
   @inline(__always)
   internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    _tree.formIndex(&i._pointer, offsetBy: distance)
+    _tree.formIndex(&i.rawValue, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
 
-    if let i = _tree.index(i._pointer, offsetBy: distance, limitedBy: limit._pointer) {
+    if let i = _tree.index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue) {
       return Index(__storage: _storage, pointer: i)
     } else {
       return nil
@@ -412,13 +412,13 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
     -> Bool
   {
-    return _tree.formIndex(&i._pointer, offsetBy: distance, limitedBy: limit._pointer)
+    return _tree.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
-    return _tree[position._pointer]
+    return _tree[position.rawValue]
   }
 
   @inlinable
@@ -431,7 +431,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   public subscript(bounds: Range<Index>) -> SubSequence {
     SubSequence(
       _subSequence:
-        _tree.subsequence(from: bounds.lowerBound._pointer, to: bounds.upperBound._pointer)
+        _tree.subsequence(from: bounds.lowerBound.rawValue, to: bounds.upperBound.rawValue)
     )
   }
   
@@ -472,7 +472,7 @@ extension RedBlackTreeMultiset.SubSequence: Sequence {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try tree.___for_each_(__p: startIndex._pointer, __l: endIndex._pointer, body: body)
+    try tree.___for_each_(__p: startIndex.rawValue, __l: endIndex.rawValue, body: body)
   }
   
   public typealias Element = RedBlackTreeMultiset.Element
@@ -506,7 +506,7 @@ extension RedBlackTreeMultiset.SubSequence: Sequence {
     @inlinable
     @inline(__always)
     public func enumerated() -> AnySequence<EnumElement> {
-      AnySequence { tree.makeEnumeratedIterator(start: startIndex._pointer, end: endIndex._pointer) }
+      AnySequence { tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue) }
     }
   #else
     @inlinable
@@ -544,50 +544,50 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    return _subSequence.distance(from: start._pointer, to: end._pointer)
+    return _subSequence.distance(from: start.rawValue, to: end.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(after: i._pointer))
+    return Index(__tree: tree, pointer: _subSequence.index(after: i.rawValue))
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
-    return _subSequence.formIndex(after: &i._pointer)
+    return _subSequence.formIndex(after: &i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(before: i._pointer))
+    return Index(__tree: tree, pointer: _subSequence.index(before: i.rawValue))
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
-    _subSequence.formIndex(before: &i._pointer)
+    _subSequence.formIndex(before: &i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(i._pointer, offsetBy: distance))
+    return Index(__tree: tree, pointer: _subSequence.index(i.rawValue, offsetBy: distance))
   }
 
   @inlinable
   @inline(__always)
   internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    _subSequence.formIndex(&i._pointer, offsetBy: distance)
+    _subSequence.formIndex(&i.rawValue, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
 
-    if let i = _subSequence.index(i._pointer, offsetBy: distance, limitedBy: limit._pointer) {
+    if let i = _subSequence.index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue) {
       return Index(__tree: tree, pointer: i)
     } else {
       return nil
@@ -599,13 +599,13 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
   internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
     -> Bool
   {
-    return _subSequence.formIndex(&i._pointer, offsetBy: distance, limitedBy: limit._pointer)
+    return _subSequence.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
-    return _subSequence[position._pointer]
+    return _subSequence[position.rawValue]
   }
 
   @inlinable

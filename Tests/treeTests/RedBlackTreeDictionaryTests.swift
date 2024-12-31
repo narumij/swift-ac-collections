@@ -418,11 +418,11 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
 
   func testIndexLimit3() throws {
     let set = [0:0, 1:10, 2:20, 3:30, 4:40] as RedBlackTreeDictionary<Int,Int>
-    XCTAssertEqual(set.startIndex._pointer, .node(0))
-    XCTAssertEqual(set.index(before: set.endIndex)._pointer, .node(4))
-    XCTAssertEqual(set.index(set.endIndex, offsetBy: -1)._pointer, .node(4))
-    XCTAssertEqual(set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?._pointer, .node(4))
-    XCTAssertEqual(set.index(set.endIndex, offsetBy: -5)._pointer, .node(0))
+    XCTAssertEqual(set.startIndex.rawValue, .node(0))
+    XCTAssertEqual(set.index(before: set.endIndex).rawValue, .node(4))
+    XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).rawValue, .node(4))
+    XCTAssertEqual(set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.rawValue, .node(4))
+    XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).rawValue, .node(0))
     XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
     XCTAssertNotEqual(
       set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),

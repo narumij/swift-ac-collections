@@ -137,8 +137,8 @@ extension ___RedBlackTree.___Tree {
     public subscript(bounds: Range<TreePointer>) -> SubSequence {
       .init(
         ___tree: _tree,
-        start: bounds.lowerBound._pointer,
-        end: bounds.upperBound._pointer)
+        start: bounds.lowerBound.rawValue,
+        end: bounds.upperBound.rawValue)
     }
   }
 }

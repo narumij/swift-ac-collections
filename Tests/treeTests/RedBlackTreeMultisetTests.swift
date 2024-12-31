@@ -408,11 +408,11 @@
 
     func testIndexLimit3() throws {
       let set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set.startIndex._pointer, .node(0))
-      XCTAssertEqual(set.index(before: set.endIndex)._pointer, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1)._pointer, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?._pointer, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5)._pointer, .node(0))
+      XCTAssertEqual(set.startIndex.rawValue, .node(0))
+      XCTAssertEqual(set.index(before: set.endIndex).rawValue, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).rawValue, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.rawValue, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).rawValue, .node(0))
       XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
       XCTAssertNotEqual(
         set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),
@@ -670,12 +670,12 @@
 
     func testRedBlackTreeSetLowerBound() throws {
       let numbers: RedBlackTreeMultiset = [1, 3, 5, 7, 9]
-      XCTAssertEqual(numbers.lowerBound(4)._pointer, 2)
+      XCTAssertEqual(numbers.lowerBound(4).rawValue, 2)
     }
 
     func testRedBlackTreeSetUpperBound() throws {
       let numbers: RedBlackTreeMultiset = [1, 3, 5, 7, 9]
-      XCTAssertEqual(numbers.upperBound(7)._pointer, 4)
+      XCTAssertEqual(numbers.upperBound(7).rawValue, 4)
     }
 
     func testRedBlackTreeConveniences() throws {
@@ -694,9 +694,9 @@
 
     func testRedBlackTreeSetFirstIndex() throws {
       var members: RedBlackTreeMultiset = [1, 3, 5, 7, 9]
-      XCTAssertEqual(members.firstIndex(of: 3)?._pointer, .init(1))
+      XCTAssertEqual(members.firstIndex(of: 3)?.rawValue, .init(1))
       XCTAssertEqual(members.firstIndex(of: 2), nil)
-      XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?._pointer, .init(2))
+      XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?.rawValue, .init(2))
       XCTAssertEqual(members.firstIndex(where: { $0 > 9 }), nil)
       XCTAssertEqual(members.sorted(), [1, 3, 5, 7, 9])
       XCTAssertEqual(members.removeFirst(), 1)

@@ -339,12 +339,12 @@
 
       func testIndexLimit3() throws {
         let set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-        XCTAssertEqual(set.startIndex._pointer, .node(0))
-        XCTAssertEqual(set.index(before: set.endIndex)._pointer, .node(4))
-        XCTAssertEqual(set.index(set.endIndex, offsetBy: -1)._pointer, .node(4))
+        XCTAssertEqual(set.startIndex.rawValue, .node(0))
+        XCTAssertEqual(set.index(before: set.endIndex).rawValue, .node(4))
+        XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).rawValue, .node(4))
         XCTAssertEqual(
-          set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?._pointer, .node(4))
-        XCTAssertEqual(set.index(set.endIndex, offsetBy: -5)._pointer, .node(0))
+          set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.rawValue, .node(4))
+        XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).rawValue, .node(0))
         XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
         XCTAssertNotEqual(
           set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),
@@ -589,31 +589,31 @@
 
       func testLowerBound() throws {
         let numbers: RedBlackTreeSet = [1, 3, 5]
-        XCTAssertEqual(numbers.lowerBound(0)._pointer, 0)
-        XCTAssertEqual(numbers.lowerBound(1)._pointer, 0)
-        XCTAssertEqual(numbers.lowerBound(2)._pointer, 1)
-        XCTAssertEqual(numbers.lowerBound(3)._pointer, 1)
-        XCTAssertEqual(numbers.lowerBound(4)._pointer, 2)
-        XCTAssertEqual(numbers.lowerBound(5)._pointer, 2)
-        XCTAssertEqual(numbers.lowerBound(6)._pointer, .end)
+        XCTAssertEqual(numbers.lowerBound(0).rawValue, 0)
+        XCTAssertEqual(numbers.lowerBound(1).rawValue, 0)
+        XCTAssertEqual(numbers.lowerBound(2).rawValue, 1)
+        XCTAssertEqual(numbers.lowerBound(3).rawValue, 1)
+        XCTAssertEqual(numbers.lowerBound(4).rawValue, 2)
+        XCTAssertEqual(numbers.lowerBound(5).rawValue, 2)
+        XCTAssertEqual(numbers.lowerBound(6).rawValue, .end)
       }
 
       func testUpperBound() throws {
         let numbers: RedBlackTreeSet = [1, 3, 5]
-        XCTAssertEqual(numbers.upperBound(0)._pointer, 0)
-        XCTAssertEqual(numbers.upperBound(1)._pointer, 1)
-        XCTAssertEqual(numbers.upperBound(2)._pointer, 1)
-        XCTAssertEqual(numbers.upperBound(3)._pointer, 2)
-        XCTAssertEqual(numbers.upperBound(4)._pointer, 2)
-        XCTAssertEqual(numbers.upperBound(5)._pointer, .end)
-        XCTAssertEqual(numbers.upperBound(6)._pointer, .end)
+        XCTAssertEqual(numbers.upperBound(0).rawValue, 0)
+        XCTAssertEqual(numbers.upperBound(1).rawValue, 1)
+        XCTAssertEqual(numbers.upperBound(2).rawValue, 1)
+        XCTAssertEqual(numbers.upperBound(3).rawValue, 2)
+        XCTAssertEqual(numbers.upperBound(4).rawValue, 2)
+        XCTAssertEqual(numbers.upperBound(5).rawValue, .end)
+        XCTAssertEqual(numbers.upperBound(6).rawValue, .end)
       }
 
       func testFirstIndex() throws {
         var members: RedBlackTreeSet = [1, 3, 5, 7, 9]
-        XCTAssertEqual(members.firstIndex(of: 3)?._pointer, .init(1))
+        XCTAssertEqual(members.firstIndex(of: 3)?.rawValue, .init(1))
         XCTAssertEqual(members.firstIndex(of: 2), nil)
-        XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?._pointer, .init(2))
+        XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?.rawValue, .init(2))
         XCTAssertEqual(members.firstIndex(where: { $0 > 9 }), nil)
         XCTAssertEqual(members.sorted(), [1, 3, 5, 7, 9])
         XCTAssertEqual(members.removeFirst(), 1)
@@ -683,12 +683,12 @@
       func testIndexAfter() throws {
         do {
           let s: RedBlackTreeSet<Int> = []
-          XCTAssertEqual(s.startIndex._pointer, .end)
+          XCTAssertEqual(s.startIndex.rawValue, .end)
         }
         do {
           let s: RedBlackTreeSet<Int> = [1]
-          XCTAssertEqual(s.startIndex._pointer, .node(0))
-          XCTAssertEqual(s.index(after: s.startIndex)._pointer, .end)
+          XCTAssertEqual(s.startIndex.rawValue, .node(0))
+          XCTAssertEqual(s.index(after: s.startIndex).rawValue, .end)
         }
       }
 

@@ -82,6 +82,107 @@ dict["banana"] = 3
 print(dict) // 例: [apple: 5, banana: 3]
 ```
 
+## 削除時のインデックス（ポインタ）無効化と安全な範囲削除方法
+
+削除操作を行うことで、対象のノードとインデックスは無効となります。ツリーから外れ、再利用管理リンクリストの一部となります。
+
+範囲削除を行う際は、この挙動には十分に注意を払う必要があります。
+
+- 削除されたノードへの参照を使い続けると、クラッシュします。有効無効の確認が必要な場合、isValid(index:)を使ってください。
+
+- `enumerated()` は単なる連番ではなく、実際のノードインデックスを返すように挙動が変更されています。
+
+- endIndexは例外で、常に不変です。
+
+### 範囲削除方法の例
+
+1. whileループで削除する
+
+```Swift
+var b: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+var i = b.startIndex
+while i != b.endIndex { // endIndexは不変
+  let j = i
+  i = b.index(after: i)
+  b.remove(at: j) // jはこの時点で無効になる
+  XCTAssertFalse(b.isValid(index: j))
+}
+XCTAssertEqual(b.count, 0)
+```
+
+2. enumerated()で削除する
+
+enumerated()の挙動が変更されていて、単調増加の整数との組み合わせでは無く、ノードインデックスと値を返します。
+削除のための対策が施してあり、内部的には値を返した時点で次の値を持っています。このため、以下のように書いて問題ありません。
+
+
+```Swift
+var b: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+for (i,_) in b[b.startIndex ..< b.endIndex].enumerated() {
+  b.remove(at: i) // iはこの時点で無効
+  print(b.isValid(index: i)) // false
+}
+print(b.count) // 0
+```
+
+3. removeSubrange()で削除する
+
+範囲削除メソッドのremoveSubrange(...)もあります。削除動作のオーバーヘッドが一番少なく、他の方法と比べて一番速いです。
+
+```Swift
+var b: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+b.removeSubrange(b.startIndex ..< b.endIndex)
+XCTAssertEqual(b.count, 0)
+```
+
+4. erase()を自作して削除する
+
+標準ライブラリに寄せた作りにしたため、eraseは非公開となっていますが、C++のsetと同じような削除コードを書くことも可能です。
+
+```Swift
+extension RedBlackTreeSet {
+  mutating func erase(at position: Index) -> Index {
+    defer { remove(at: position) }
+    return index(after: position)
+  }
+}
+
+var tree3: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
+var idx = tree3.startIndex
+while idx != tree3.endIndex {
+  idx = tree3.erase(at: idx)
+}
+```
+
+5. removeSubrange(:Range<Element>)を自作して削除する。
+
+インデックスを操作するコードは、インデックスが整数ではない場合、煩雑になりがちで負担が大きいモノです。
+単に値と値の間の削除をしたい場合、以下のようにすることで可能です。
+
+
+```Swift
+extension RedBlackTreeSet {
+  mutating func removeSubrange(_ range: Range<Element>) {
+    let lower = lowerBound(range.lowerBound)
+    let upper = upperBound(range.upperBound)
+    var it = lower
+    while it != upper {
+      it = erase(at: it)
+    }
+  }
+}
+
+var tree4: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
+tree4.removeSubrange(0 ..< 6)
+// 0〜5が削除され、結果は空
+```
+
+### Multisetのremove(:)
+
+RedBlackTreeMultisetのremove(:)は、enumerated()やforEach(:)の削除時対策が効かないため、通常のコピーオンライトとくらべて、さらにコピーが発生しやすい挙動としています。
+
+このため、要素数が多い場合には注意を必要とします。具体的には、削除時に有効なイテレータやサブシーケンスが存在しない状態にする必要があります。削除に必要な情報は一度map関数で配列にする等。
+
 ## アンダースコア付き宣言について
 
 「アンダースコア付き宣言」は、完全修飾名のどこかにアンダースコア (`_`) で始まる部分が含まれる宣言のことを指します。たとえば、以下のような名前は技術的に `public` として宣言されていても、パブリックAPIには含まれません：

@@ -113,6 +113,54 @@ final class EtcTests: XCTestCase {
     let a = [1,2,3]
     XCTAssertEqual(a.index(before: a.startIndex), -1)
   }
+  
+  func testRemoving() throws {
+    
+    do {
+      var b: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+      for (i,_) in b[b.startIndex ..< b.endIndex].enumerated() {
+        b.remove(at: i) // iはこの時点で無効になる
+        XCTAssertFalse(b.isValid(index: i))
+      }
+      XCTAssertEqual(b.count, 0)
+    }
+    
+    do {
+      var b: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+      var i = b.startIndex // 都度異なる値となる
+      while i != b.endIndex { // endIndexは特殊な値なので、不変です。
+        let j = i
+        i = b.index(after: i)
+        b.remove(at: j) // jはこの時点で無効になる
+        XCTAssertFalse(b.isValid(index: j))
+      }
+      XCTAssertEqual(b.count, 0)
+    }
+    
+    do {
+      var b: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+      b.removeSubrange(b.startIndex ..< b.endIndex) // startIndexからendIndex -1までが無効になる
+      XCTAssertEqual(b.count, 0)
+    }
+    
+    do {
+      var b: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+      var i = b.startIndex // 都度異なる値となる
+      while i != b.endIndex { // endIndexは特殊な値なので、不変です。
+        // extensionを書けばこのように利用可能
+        i = b.erase(at: i)
+        XCTAssertTrue(b.isValid(index: i)) // 次を指しているの有効
+      }
+      XCTAssertEqual(b.count, 0)
+    }
+    
+    do {
+      var b: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+      // extensionを書けばこのように利用可能
+//      b.removeSubrange(0 ..< 6)
+//      XCTAssertEqual(b.count, 0)
+    }
+  }
 
 #if false
   func testCapacity() throws {

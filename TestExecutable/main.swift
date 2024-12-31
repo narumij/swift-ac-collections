@@ -14,7 +14,7 @@ let count = 2_000_000
 //let count = 1_000_000
 #endif
 
-#if true
+#if false
 var tree = RedBlackTreeSet<Int>()
 for i in 0 ..< count {
   _ = tree.insert(i)
@@ -38,15 +38,15 @@ var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 for v in 0..<10_000_000 {
   tree.remove(v)
 }
-#elseif false
+#elseif true
 var tree = RedBlackTreeSet<Int>(0 ..< count)
-tree.copyCount = 0
+tree._copyCount = 0
 print(tree.count)
 for v in tree {
   tree.remove(v)
 }
 print("tree.count",tree.count)
-print("tree._copyCount",tree.copyCount)
+print("tree._copyCount",tree._copyCount)
 #elseif false
 var tree = RedBlackTreeSet<Int>(0 ..< count)
 for i in tree[tree.startIndex ..< tree.endIndex] {

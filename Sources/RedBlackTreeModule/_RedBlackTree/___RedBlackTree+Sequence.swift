@@ -22,11 +22,12 @@
 
 import Foundation
 
+// 性能変化の反応が過敏なので、慎重さが必要っぽい。
+
 // 単発削除対策型のイテレータ実装
 @usableFromInline
 protocol RedBlackTreeIteratorNextProtocol: IteratorProtocol {
-  associatedtype VC: ValueComparer
-  associatedtype _Tree: ___RedBlackTree.___Tree<VC>
+  associatedtype _Tree: MemberProtocol
   var _tree: _Tree { get }
   var _current: _NodePtr { get set }
   var _next: _NodePtr { get set }
@@ -44,9 +45,15 @@ extension RedBlackTreeIteratorNextProtocol {
     }
     return _current
   }
+  
+  @inlinable
+  @inline(__always)
+  public func _re_initialize(_ start: _NodePtr) -> (next:_NodePtr, nextnext:_NodePtr) {
+    (start == .end ? .end : _tree.__tree_next(start), _end)
+  }
 }
 
-// 同一値複数削除対策型のイテレータ実装
+// 同一値一括削除対策型のイテレータ実装
 @usableFromInline
 protocol RedBlackTreeIteratorNextProtocol2: IteratorProtocol {
   associatedtype VC: ValueComparer
@@ -64,6 +71,7 @@ protocol RedBlackTreeIteratorNextProtocol2: IteratorProtocol {
 
 extension RedBlackTreeIteratorNextProtocol2 {
   
+  // 性能低下する予想だったが、キャッシュの効きがいいのか、手元計測ではむしろ速い
   @inlinable
   @inline(__always)
   public mutating func _next() -> _NodePtr? {
@@ -107,6 +115,14 @@ extension RedBlackTreeIteratorNextProtocol2 {
     }
     return _next_next
   }
+  
+  @inlinable
+  @inline(__always)
+  public func _re_initialize(_ start: _NodePtr) -> (next:_NodePtr,nextnext:_NodePtr) {
+    let next = _next(start)
+    let nextnext = _next_next(start)
+    return (next,nextnext)
+  }
 }
 
 extension ___RedBlackTree.___Tree: Sequence {
@@ -117,6 +133,7 @@ extension ___RedBlackTree.___Tree: Sequence {
     public typealias Element = Tree.Element
 
     @inlinable
+    @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self._tree = tree
       self._current = start

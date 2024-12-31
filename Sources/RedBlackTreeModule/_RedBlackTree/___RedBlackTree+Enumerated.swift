@@ -71,6 +71,7 @@ extension ___RedBlackTree.___Tree {
   public struct EnumIterator: RedBlackTreeIteratorNextProtocol, EnumIndexMaker {
 
     @inlinable
+    @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self._tree = tree
       self._current = start

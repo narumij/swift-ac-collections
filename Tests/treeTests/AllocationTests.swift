@@ -22,24 +22,18 @@ final class AllocationTests: XCTestCase {
       XCTAssertEqual(storage.capacity, 0)
       XCTAssertEqual(storage.tree.header.capacity, 0)
       XCTAssertEqual(storage.tree.capacity, 0)
-      // Bufferの内部コードでのサイズと、外部コードでのサイズが異なるので、注意が必要みたい
-      //        XCTAssertEqual(storage.tree.capacity, MemoryLayout<Header>.size * 0)
     }
     do {
       let storage: Storage = .create(withCapacity: 1)
       XCTAssertEqual(storage.capacity, 1)
       XCTAssertEqual(storage.tree.header.capacity, 1)
       XCTAssertEqual(storage.tree.capacity, 1)
-      // Bufferの内部コードでのサイズと、外部コードでのサイズが異なるので、注意が必要みたい
-      //        XCTAssertEqual(storage.tree.capacity, MemoryLayout<Header>.size * 1)
     }
     do {
       let storage: Storage = .create(withCapacity: 2)
       XCTAssertEqual(storage.capacity, 2)
       XCTAssertEqual(storage.tree.header.capacity, 2)
       XCTAssertEqual(storage.tree.capacity, 2)
-      // Bufferの内部コードでのサイズと、外部コードでのサイズが異なるので、注意が必要みたい
-      //        XCTAssertEqual(storage.tree.capacity, MemoryLayout<Header>.size * 2)
     }
   }
 

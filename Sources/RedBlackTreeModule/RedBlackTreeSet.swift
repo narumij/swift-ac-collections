@@ -220,7 +220,7 @@ extension RedBlackTreeSet {
   
   @inlinable
   public var ___rawCapacity: Int {
-    ___raw_capacity
+    ___header_capacity
   }
 }
 

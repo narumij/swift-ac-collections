@@ -49,14 +49,12 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public var ___capacity: Int {
-    // tree.capacityはバイトサイズになるので注意
-    _tree.header.capacity
+    _tree.capacity
   }
 
   @inlinable @inline(__always)
-  public var ___raw_capacity: Int {
-    // tree.capacityはバイトサイズになるので注意
-    _tree.capacity
+  public var ___header_capacity: Int {
+    _tree.header.capacity
   }
 }
 

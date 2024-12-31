@@ -54,6 +54,8 @@ extension TreePointerBuilderProtocol {
 }
 
 extension ___RedBlackTree.___Tree {
+  
+  public typealias RawPointer = ___RedBlackTree.RawPointer
 
   #if true
     typealias EnumIndexMaker = RawPointerBuilderProtocol

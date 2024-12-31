@@ -310,7 +310,8 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @discardableResult
-  public mutating func remove(at index: Index) -> KeyValue {
+  public mutating func remove(at index: TreePointer) -> KeyValue {
+    _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
@@ -318,7 +319,18 @@ extension RedBlackTreeDictionary {
   }
 
   @inlinable
+  @discardableResult
+  public mutating func remove(at index: RawPointer) -> KeyValue {
+    _ensureUnique()
+    guard let element = ___remove(at: index.rawValue) else {
+      fatalError(.invalidIndex)
+    }
+    return element
+  }
+  
+  @inlinable
   public mutating func removeSubrange(_ range: Range<Index>) {
+    _ensureUnique()
     ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
   }
 

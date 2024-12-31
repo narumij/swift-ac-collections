@@ -129,7 +129,8 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   @discardableResult
-  public mutating func remove(at index: ___RedBlackTree.RawPointer) -> Element {
+  public mutating func remove(at index: RawPointer) -> Element {
+    _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
@@ -139,6 +140,7 @@ extension RedBlackTreeMultiset {
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
+    _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
@@ -165,6 +167,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   public mutating func removeSubrange(_ range: Range<Index>) {
+    _ensureUnique()
     ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
   }
 

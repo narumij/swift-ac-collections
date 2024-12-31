@@ -26,6 +26,8 @@ public enum ___RedBlackTree {}
 
 extension ValueComparer {
   public typealias Tree = ___RedBlackTree.___Tree<Self>
+  public typealias TreePointer = Tree.TreePointer
+  public typealias RawPointer = Tree.RawPointer
 }
 
 @usableFromInline

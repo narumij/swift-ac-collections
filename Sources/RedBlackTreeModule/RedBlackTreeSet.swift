@@ -261,7 +261,7 @@ extension RedBlackTreeSet {
 
   @inlinable
   @discardableResult
-  public mutating func remove(at index: ___RedBlackTree.RawPointer) -> Element {
+  public mutating func remove(at index: TreePointer) -> Element {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
@@ -271,7 +271,7 @@ extension RedBlackTreeSet {
 
   @inlinable
   @discardableResult
-  public mutating func remove(at index: Index) -> Element {
+  public mutating func remove(at index: RawPointer) -> Element {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)

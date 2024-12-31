@@ -259,6 +259,7 @@ extension ___RedBlackTree.___Tree {
   }
   
 #if DEBUG || true
+  @inlinable
   var copyCount: UInt {
     get { __header_ptr.pointee.copyCount }
     set { __header_ptr.pointee.copyCount = newValue }

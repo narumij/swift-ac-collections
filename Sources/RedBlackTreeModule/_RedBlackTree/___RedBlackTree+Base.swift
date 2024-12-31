@@ -354,7 +354,7 @@ extension ___RedBlackTreeBase {
   }
   
   @inlinable
-  public func ___is_valid_index(_ i: _NodePtr) -> Bool {
+  func ___is_valid_index(_ i: _NodePtr) -> Bool {
     if i == .end { return true }
     if !(0 ..< _tree.header.initializedCount ~= i) { return false }
     return _tree.___is_valid(i)
@@ -367,30 +367,15 @@ extension ___RedBlackTreeBase {
   // 不具合調査用
   extension ___RedBlackTreeBase {
 
-    public var copyCount: UInt {
+    @inlinable
+    public var _copyCount: UInt {
       get { _storage.tree.copyCount }
       set { _storage.tree.copyCount = newValue }
     }
 
     @inlinable
-    public mutating func checkUnique() -> Bool {
+    public mutating func _checkUnique() -> Bool {
       Tree._isKnownUniquelyReferenced(tree: &_tree)
     }
-
-    //  @inlinable
-    //  public mutating func checkUnique2() -> Bool {
-    //    var a = Tree.Manager(unsafeBufferObject: tree)
-    //    return a.isUniqueReference()
-    //  }
-
-//    @inlinable
-//    public func _ptr_lowerBound(_ member: Element) -> _NodePtr {
-//      ___ptr_lower_bound(member)
-//    }
-//
-//    @inlinable
-//    public func _idx_lowerBound(_ member: Element) -> ___RedBlackTree.SimpleIndex {
-//      .init(___ptr_lower_bound(member))
-//    }
   }
 #endif

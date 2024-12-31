@@ -20,7 +20,7 @@ for i in 0 ..< count {
 //  print("tree.capacity",tree.capacity)
 }
 print("tree.count",tree.count)
-print("tree.copyCount",tree.copyCount)
+print("tree._copyCount",tree._copyCount)
 print("tree.___rawCapacity",tree.___rawCapacity)
 #elseif false
 var tree = RedBlackTreeSet<Int>()
@@ -45,7 +45,7 @@ for v in tree {
   tree.remove(v)
 }
 print("tree.count",tree.count)
-print("tree.copyCount",tree.copyCount)
+print("tree._copyCount",tree.copyCount)
 #elseif false
 var tree = RedBlackTreeSet<Int>(0 ..< count)
 for i in tree[tree.startIndex ..< tree.endIndex] {
@@ -119,7 +119,7 @@ print("initialized")
 let N = 1000
 for i in 0 ..< 10_000 / N {
   
-//  print("1)",xy[1]?.checkUnique() != true ? "NG" : "OK") // OK
+//  print("1)",xy[1]?._checkUnique() != true ? "NG" : "OK") // OK
   
 //  let lo = xy[1]?._ptr_lowerBound(i * N) // OK
 
@@ -157,13 +157,13 @@ for i in 0 ..< count / N {
 //  let a = xy[1]?[(i * N) ..< (i * N + N)]
 //  let a = xy[1]?[(i * N) ..< (i * N + N)].enumerated()
 
-//  print("0)", xy[1]?.checkUnique() != true ? "NG" : "OK") // NG
+//  print("0)", xy[1]?._checkUnique() != true ? "NG" : "OK") // NG
 
 //  for _ in xy[1, default: []][0 ..< i].enumerated() {
 //  for (i,v) in xy[1]![(i * N) ..< (i * N + N)].enumerated() {
   xy[1]?[(i * N) ..< (i * N + N)].enumerated().forEach { i, v in
 //  xy[1, default: []][(i * N) ..< (i * N + N)].forEach { v in
-//    print("0)", xy[1]?.checkUnique() != true ? "NG" : "OK") // NG
+//    print("0)", xy[1]?._checkUnique() != true ? "NG" : "OK") // NG
 //    xy[1]?.___checkUnique()
 //    xy[1]?.ensureUnique()
     xy[1]?.remove(at: i)
@@ -175,7 +175,7 @@ for i in 0 ..< count / N {
 }
 print("tree.unique", xy[1]!.checkUnique())
 print("tree.count", xy[1]!.count)
-print("tree.copyCount", xy[1]!.copyCount)
+print("tree._copyCount", xy[1]!.copyCount)
 print("loopCount", loopCount)
 #elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: []]
@@ -204,7 +204,7 @@ xy[1]?.copyCount = 0
 }
 print("tree.unique", xy[1]!.checkUnique())
 print("tree.count", xy[1]!.count)
-print("tree.copyCount", xy[1]!.copyCount)
+print("tree._copyCount", xy[1]!.copyCount)
 #elseif false
 var xy: [Int:RedBlackTreeSet<Int>] = [1: .init(0 ..< 2_000_000)]
 xy[1]?.copyCount = 0
@@ -214,7 +214,7 @@ xy[1]?.copyCount = 0
 }
 print("tree.unique", xy[1]!.checkUnique())
 print("tree.count", xy[1]!.count)
-print("tree.copyCount", xy[1]!.copyCount)
+print("tree._copyCount", xy[1]!.copyCount)
 #elseif false
 var xy: [Int:RedBlackTreeSet<Int>] = [1: .init(0 ..< 2_000_000)]
 xy[1]?.copyCount = 0
@@ -222,7 +222,7 @@ xy[1]?[0 ..< 2_000_000].enumerated().forEach { i, v in
   xy[1]?.remove(at: i)
 }
 print("tree.count",xy[1]!.count)
-print("tree.copyCount",xy[1]!.copyCount)
+print("tree._copyCount",xy[1]!.copyCount)
 #elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
 for i in 0 ..< 2_000_000 {

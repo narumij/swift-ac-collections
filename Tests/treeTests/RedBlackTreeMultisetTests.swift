@@ -488,7 +488,7 @@
       XCTAssertEqual(set.map{ $0 }, set[set.startIndex ..< set.endIndex].map{ $0 })
       print("set",set)
       print("set.count",set.count)
-      print("set.copyCount",set.copyCount)
+      print("set._copyCount",set._copyCount)
       for i in set[set.startIndex ..< set.endIndex] {
         // erase multiなので、CoWなしだと、ポインタが破壊される
         set.remove(i)

@@ -459,6 +459,7 @@
       }
     }
     
+#if AC_COLLECTIONS_INTERNAL_CHECKS
     func testRandom2() throws {
       var set = RedBlackTreeMultiset<Int>()
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -487,13 +488,16 @@
       }
       XCTAssertEqual(set.map{ $0 }, set[set.startIndex ..< set.endIndex].map{ $0 })
       print("set.count",set.count)
+#if AC_COLLECTIONS_INTERNAL_CHECKS
       print("set._copyCount",set._copyCount)
+#endif
       for i in set[set.startIndex ..< set.endIndex] {
         // erase multiなので、CoWなしだと、ポインタが破壊される
         set.remove(i)
         XCTAssertTrue(set.___tree_invariant())
       }
     }
+#endif
     
     func testRandom3() throws {
       var set = RedBlackTreeMultiset<Int>()

@@ -60,6 +60,7 @@ final class ManagedBufferTests: XCTestCase {
   }
   
   func testDestroyStack() async throws {
+#if AC_COLLECTIONS_INTERNAL_CHECKS
     let storage = ___RedBlackTree.___Tree<VC>.create(withCapacity: 4)
     storage.header.initializedCount = 4
     XCTAssertEqual(storage.header.destroyNode, .nullptr)
@@ -91,9 +92,11 @@ final class ManagedBufferTests: XCTestCase {
     XCTAssertEqual(storage.___popDetroy(), 0)
     XCTAssertEqual(storage.___destroyNodes, [])
     XCTAssertEqual(storage.header.destroyCount, 0)
+#endif
   }
 
   func testConstructDestroy() async throws {
+#if AC_COLLECTIONS_INTERNAL_CHECKS
     let storage = ___RedBlackTree.___Tree<VC>.create(withCapacity: 4)
     do {
       let p = storage.__construct_node(-1)
@@ -159,6 +162,7 @@ final class ManagedBufferTests: XCTestCase {
       XCTAssertEqual(storage.header.destroyCount, 3)
       XCTAssertEqual(storage[node : 2].__left_, .nullptr)
     }
+#endif
   }
 }
 #endif

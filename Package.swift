@@ -3,6 +3,12 @@
 
 import PackageDescription
 
+var defines: [String] = [
+  "AC_COLLECTIONS_INTERNAL_CHECKS",
+]
+
+var _settings: [SwiftSetting] = defines.map { .define($0) }
+
 let package = Package(
   name: "swift-ac-collections",
   products: [
@@ -22,15 +28,18 @@ let package = Package(
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
       name: "AcCollections",
-      dependencies: ["RedBlackTreeModule"]
+      dependencies: ["RedBlackTreeModule"],
+      swiftSettings: _settings
     ),
     .target(
       name: "RedBlackTreeModule",
-      dependencies: []
+      dependencies: [],
+      swiftSettings: _settings
     ),
     .testTarget(
       name: "treeTests",
-      dependencies: ["RedBlackTreeModule"]
+      dependencies: ["RedBlackTreeModule"],
+      swiftSettings: _settings
     ),
     .executableTarget(
       name: "Executable",
@@ -38,7 +47,8 @@ let package = Package(
 //        .product(name: "Collections", package: "swift-collections"),
         "RedBlackTreeModule"
       ], 
-      path: "TestExecutable"
+      path: "TestExecutable",
+      swiftSettings: _settings
     ),
   ]
 )

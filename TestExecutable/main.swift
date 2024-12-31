@@ -6,6 +6,7 @@ import RedBlackTreeModule
 
 print("start job")
 
+#if AC_COLLECTIONS_INTERNAL_CHECKS
 #if DEBUG
 let count = 500_000
 #else
@@ -256,6 +257,8 @@ var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]
     _ = 1 + (xy[1]?[i / 2] ?? 0)
   }
 #endif
+#endif
+
 print("Hola!")
 
 

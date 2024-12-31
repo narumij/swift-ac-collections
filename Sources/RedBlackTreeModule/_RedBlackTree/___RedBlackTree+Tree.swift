@@ -69,7 +69,7 @@ extension ___RedBlackTree.___Tree {
     let __initialized_count = self.header.initializedCount
     let __destroy_count = self.header.destroyCount
     let __destroy_node = self.header.destroyNode
-    #if DEBUG || true
+    #if AC_COLLECTIONS_INTERNAL_CHECKS
       let copyCount = self.header.copyCount
     #endif
 
@@ -81,7 +81,7 @@ extension ___RedBlackTree.___Tree {
     newStorage.header.initializedCount = __initialized_count
     newStorage.header.destroyCount = __destroy_count
     newStorage.header.destroyNode = __destroy_node
-    #if DEBUG || true
+    #if AC_COLLECTIONS_INTERNAL_CHECKS
       newStorage.header.copyCount = copyCount &+ 1
     #endif
 
@@ -178,7 +178,7 @@ extension ___RedBlackTree.___Tree {
     @usableFromInline
     var destroyNode: _NodePtr = .end
 
-    #if DEBUG || true
+    #if AC_COLLECTIONS_INTERNAL_CHECKS
       @usableFromInline
       var copyCount: UInt = 0
     #endif
@@ -258,7 +258,7 @@ extension ___RedBlackTree.___Tree {
     }
   }
 
-  #if DEBUG || true
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
     @inlinable
     var copyCount: UInt {
       get { __header_ptr.pointee.copyCount }
@@ -303,7 +303,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-#if DEBUG || true
+#if AC_COLLECTIONS_INTERNAL_CHECKS
   extension ___RedBlackTree.___Tree {
 
     /// O(*k*)

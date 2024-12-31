@@ -8,6 +8,7 @@
 import RedBlackTreeModule
 import XCTest
 
+#if AC_COLLECTIONS_INTERNAL_CHECKS
 final class MultisetCopyOnWriteTests: XCTestCase {
 
   let count = 2_000_000
@@ -132,3 +133,4 @@ final class MultisetCopyOnWriteTests: XCTestCase {
     XCTAssertEqual(loopCount, count / N)
   }
 }
+#endif

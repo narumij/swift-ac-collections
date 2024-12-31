@@ -355,10 +355,12 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
 
-  @inlinable
-  public func ___tree_invariant() -> Bool {
-    _tree.__tree_invariant(_tree.__root())
-  }
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    @inlinable
+    public func ___tree_invariant() -> Bool {
+      _tree.__tree_invariant(_tree.__root())
+    }
+  #endif
 
   @inlinable
   func ___is_valid_index(_ i: _NodePtr) -> Bool {
@@ -366,22 +368,20 @@ extension ___RedBlackTreeBase {
     if !(0..<_tree.header.initializedCount ~= i) { return false }
     return _tree.___is_valid(i)
   }
-}
 
-#if DEBUG || true
-  // TODO: CoWの挙動についてテストーコードを書くこと
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    // TODO: CoWの挙動についてテストーコードを書くこと
 
-  // 不具合調査用
-  extension ___RedBlackTreeBase {
-
+    // 不具合調査用
     @inlinable
     public var _copyCount: UInt {
       get { _storage.tree.copyCount }
       set { _storage.tree.copyCount = newValue }
     }
+  #endif
+}
 
-  }
-
+#if AC_COLLECTIONS_INTERNAL_CHECKS
   extension ___RedBlackTreeStorageLifetime {
     @inlinable
     public mutating func _checkUnique() -> Bool {

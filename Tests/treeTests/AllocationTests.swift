@@ -102,6 +102,7 @@ final class AllocationTests: XCTestCase {
       XCTAssertTrue(A._storage !== B._storage)
     }
 
+#if AC_COLLECTIONS_INTERNAL_CHECKS
     do {
       var A = RedBlackTreeSet<Int>()
       XCTAssertEqual(A._copyCount, 0)
@@ -115,5 +116,6 @@ final class AllocationTests: XCTestCase {
       // 強ユニーク化は発火すること
       XCTAssertEqual(A._copyCount, 1)
     }
+#endif
   }
 }

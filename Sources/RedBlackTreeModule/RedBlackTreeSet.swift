@@ -217,6 +217,11 @@ extension RedBlackTreeSet {
   public var capacity: Int {
     ___capacity
   }
+  
+  @inlinable
+  public var ___rawCapacity: Int {
+    ___raw_capacity
+  }
 }
 
 extension RedBlackTreeSet {

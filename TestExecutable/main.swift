@@ -13,7 +13,16 @@ let count = 2_000_000
 //let count = 1_000_000
 #endif
 
-#if false
+#if true
+var tree = RedBlackTreeSet<Int>()
+for i in 0 ..< count {
+  _ = tree.insert(i)
+//  print("tree.capacity",tree.capacity)
+}
+print("tree.count",tree.count)
+print("tree.copyCount",tree.copyCount)
+print("tree.___rawCapacity",tree.___rawCapacity)
+#elseif false
 var tree = RedBlackTreeSet<Int>()
 //let tree = RedBlackTree.Storage<Int>()
 tree.reserveCapacity(count)

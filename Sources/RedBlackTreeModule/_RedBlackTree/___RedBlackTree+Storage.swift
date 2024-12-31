@@ -80,6 +80,8 @@ extension ___RedBlackTree.___Tree {
 
 extension ___RedBlackTree.___Tree {
   
+  // 救命ボート
+  // これに参加するには、treeに対してリードオンリーであることが条件
   @usableFromInline
   class LifeStorage {
     
@@ -153,6 +155,8 @@ extension ___RedBlackTree.___Tree {
       isKnownUniquelyReferenced(&tree)
     }
     deinit {
+      // 救命ボートに参加している各種インスタンスが使用しているtreeは
+      // そのインスタンスが生きている限り生き残る
       lifeStorage.set(_tree: tree)
     }
   }

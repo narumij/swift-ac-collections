@@ -175,7 +175,7 @@ extension ___RedBlackTreeStorageLifetime {
 
   @inlinable
   @inline(__always)
-  mutating func ___ensureUnique() {
+  mutating func _ensureUnique() {
     if !_isKnownUniquelyReferenced() {
       storage = storage.copy()
     }

@@ -26,7 +26,7 @@ extension ___RedBlackTree.___Tree {
 
   public typealias EnumeratedIndex = ___RedBlackTree.SimpleIndex
 
-  public typealias EnumeratedElement = (offset: EnumeratedIndex, element: Element)
+  public typealias EnumElement = (offset: EnumeratedIndex, element: Element)
   
   @frozen
   public struct EnumIterator: RedBlackTreeIteratorNextProtocol {
@@ -47,7 +47,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> EnumeratedElement? {
+    public mutating func next() -> EnumElement? {
       _next().map { (.init($0), _tree[$0]) }
     }
   }
@@ -71,7 +71,7 @@ extension ___RedBlackTree.___Tree {
   @frozen
   public struct EnumSequence: Sequence {
 
-    public typealias Element = Tree.EnumeratedElement
+    public typealias Element = Tree.EnumElement
     public typealias Index = _NodePtr
 
     @inlinable
@@ -107,7 +107,7 @@ extension ___RedBlackTree.___Tree {
     
     @inlinable
     @inline(__always)
-    public func forEach(_ body: @escaping (EnumeratedElement) throws -> Void) rethrows {
+    public func forEach(_ body: @escaping (EnumElement) throws -> Void) rethrows {
       var __p = startIndex
       while __p != endIndex {
         let __c = __p
@@ -177,7 +177,7 @@ extension ___RedBlackTree.___Tree {
     
     @inlinable
     @inline(__always)
-    public subscript(position: Index) -> EnumeratedElement {
+    public subscript(position: Index) -> EnumElement {
       (.init(position),base[position])
     }
     

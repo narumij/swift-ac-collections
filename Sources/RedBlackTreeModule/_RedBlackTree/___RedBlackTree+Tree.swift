@@ -519,7 +519,7 @@ extension ___RedBlackTree.___Tree {
   
   @inlinable
   @inline(__always)
-  public func ___for_each__(__p: _NodePtr, __l: _NodePtr, body: (EnumeratedElement) throws -> Void)
+  public func ___for_each__(__p: _NodePtr, __l: _NodePtr, body: (EnumElement) throws -> Void)
     rethrows
   {
     var __p = __p

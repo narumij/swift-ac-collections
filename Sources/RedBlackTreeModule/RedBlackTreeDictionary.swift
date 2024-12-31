@@ -346,7 +346,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : self[index(before: .end(tree2))]
+    isEmpty ? nil : self[index(before: .end(storage))]
   }
 
   @inlinable
@@ -436,7 +436,7 @@ extension RedBlackTreeDictionary: Sequence {
   
   @inlinable
   @inline(__always)
-  public func enumerated() -> AnySequence<Tree.EnumeratedElement> {
+  public func enumerated() -> AnySequence<Tree.EnumElement> {
 //    AnySequence { tree.makeEnumIterator(lifeStorage: lifeStorage) }
     fatalError()
   }
@@ -446,11 +446,11 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   
   @inlinable
   @inline(__always)
-  public var startIndex: Index { Index(__tree: tree2, pointer: tree.startIndex) }
+  public var startIndex: Index { Index(__storage: storage, pointer: tree.startIndex) }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__tree: tree2, pointer: tree.endIndex) }
+  public var endIndex: Index { Index(__storage: storage, pointer: tree.endIndex) }
 
   @inlinable
   @inline(__always)
@@ -465,7 +465,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__tree: tree2, pointer: tree.index(after: i.pointer))
+    return Index(__storage: storage, pointer: tree.index(after: i.pointer))
   }
 
   @inlinable
@@ -477,7 +477,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__tree: tree2, pointer: tree.index(before: i.pointer))
+    return Index(__storage: storage, pointer: tree.index(before: i.pointer))
   }
 
   @inlinable
@@ -489,7 +489,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__tree: tree2, pointer: tree.index(i.pointer, offsetBy: distance))
+    return Index(__storage: storage, pointer: tree.index(i.pointer, offsetBy: distance))
   }
 
   @inlinable
@@ -503,7 +503,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
 
     if let i = tree.index(i.pointer, offsetBy: distance, limitedBy: limit.pointer) {
-      return Index(__tree: tree2, pointer: i)
+      return Index(__storage: storage, pointer: i)
     } else {
       return nil
     }
@@ -565,6 +565,10 @@ extension RedBlackTreeDictionary {
     @inlinable
     @inline(__always)
     internal var tree: Tree { _subSequence.base }
+    
+    @inlinable
+    @inline(__always)
+    internal var lifeStorage: Tree.LifeStorage { _subSequence.lifeStorage }
   }
 }
 
@@ -577,7 +581,7 @@ extension RedBlackTreeDictionary.SubSequence: Sequence {
   }
   
   public typealias Element = RedBlackTreeDictionary.Element
-  public typealias EnumeratedElement = RedBlackTreeDictionary.Tree.EnumeratedElement
+  public typealias EnumeratedElement = RedBlackTreeDictionary.Tree.EnumElement
 
   public struct Iterator: IteratorProtocol {
     @usableFromInline
@@ -617,11 +621,11 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public var startIndex: Index { Index(__tree: tree2, pointer: _subSequence.startIndex) }
+  public var startIndex: Index { Index(__tree: tree, __storage: lifeStorage, pointer: _subSequence.startIndex) }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__tree: tree2, pointer: _subSequence.endIndex) }
+  public var endIndex: Index { Index(__tree: tree, __storage: lifeStorage, pointer: _subSequence.endIndex) }
 
   @inlinable
   @inline(__always)
@@ -636,7 +640,7 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__tree: tree2, pointer: _subSequence.index(after: i.pointer))
+    return Index(__tree: tree, __storage: lifeStorage, pointer: _subSequence.index(after: i.pointer))
   }
 
   @inlinable
@@ -648,7 +652,7 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__tree: tree2, pointer: _subSequence.index(before: i.pointer))
+    return Index(__tree: tree, __storage: lifeStorage, pointer: _subSequence.index(before: i.pointer))
   }
 
   @inlinable
@@ -660,7 +664,7 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__tree: tree2, pointer: _subSequence.index(i.pointer, offsetBy: distance))
+    return Index(__tree: tree, __storage: lifeStorage, pointer: _subSequence.index(i.pointer, offsetBy: distance))
   }
 
   @inlinable
@@ -674,7 +678,7 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
 
     if let i = _subSequence.index(i.pointer, offsetBy: distance, limitedBy: limit.pointer) {
-      return Index(__tree: tree2, pointer: i)
+      return Index(__tree: tree, __storage: lifeStorage, pointer: i)
     } else {
       return nil
     }

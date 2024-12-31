@@ -65,17 +65,17 @@ extension ___RedBlackTree.___Tree {
       self.lifeStorage = __storage
     }
 
-    @inlinable
-    @inline(__always)
-    init(__tree t: (Tree, Tree.LifeStorage), pointer: _NodePtr) {
-      self.init(__tree: t.0, __storage: t.1, pointer: pointer)
-    }
+//    @inlinable
+//    @inline(__always)
+//    init(__tree t: (Tree, Tree.LifeStorage), pointer: _NodePtr) {
+//      self.init(__tree: t.0, __storage: t.1, pointer: pointer)
+//    }
 
-    @inlinable
-    @inline(__always)
-    static func end(_ tree: (Tree, Tree.LifeStorage)) -> Pointer {
-      .init(__tree: tree, pointer: .end)
-    }
+//    @inlinable
+//    @inline(__always)
+//    static func end(_ tree: (Tree, Tree.LifeStorage)) -> Pointer {
+//      .init(__tree: tree, pointer: .end)
+//    }
     
     @inlinable
     @inline(__always)

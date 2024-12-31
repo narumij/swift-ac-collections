@@ -22,18 +22,57 @@
 
 import Foundation
 
+@usableFromInline
+protocol SimpleIndexBuilder { }
+
+extension SimpleIndexBuilder {
+  public typealias EnumeratedIndex = ___RedBlackTree.SimpleIndex
+  
+  @inlinable
+  @inline(__always)
+  public func ___index(_ p: _NodePtr) -> EnumeratedIndex {
+    .init(p)
+  }
+}
+
+@usableFromInline
+protocol TreePointerBuilder {
+  associatedtype VC: ValueComparer
+  var _tree: Tree { get }
+  var _lifeStorage: Tree.LifeStorage { get }
+}
+
+extension TreePointerBuilder {
+  public typealias Tree = ___RedBlackTree.___Tree<VC>
+  public typealias EnumeratedIndex = ___RedBlackTree.___Tree<VC>.TreePointer
+  
+  @inlinable
+  @inline(__always)
+  public func ___index(_ p: _NodePtr) -> EnumeratedIndex {
+    .init(__tree: _tree, lifeStorage: _lifeStorage, pointer: p)
+  }
+}
+
+
 extension ___RedBlackTree.___Tree {
 
-  public typealias EnumeratedIndex = ___RedBlackTree.SimpleIndex
+#if false
+  typealias EnumIndexMaker = SimpleIndexBuilder
+  public typealias EnumIndex = ___RedBlackTree.SimpleIndex
+#else
+  typealias EnumIndexMaker = TreePointerBuilder
+  public typealias EnumIndex = TreePointer
+#endif
 
-  public typealias EnumElement = (offset: EnumeratedIndex, element: Element)
+  public typealias EnumElement = (offset: EnumIndex, element: Element)
   
   @frozen
-  public struct EnumIterator: RedBlackTreeIteratorNextProtocol {
+  public struct EnumIterator: RedBlackTreeIteratorNextProtocol, EnumIndexMaker {
     
     @inlinable
     internal init(tree: Tree, lifeStorage: LifeStorage, start: _NodePtr, end: _NodePtr) {
       self._tree = tree
+      self._lifeStorage = lifeStorage
       self._current = start
       self._end = end
       self._next = start == .end ? .end : tree.__tree_next(start)
@@ -43,12 +82,15 @@ extension ___RedBlackTree.___Tree {
     unowned let _tree: Tree
     
     @usableFromInline
+    let _lifeStorage: Tree.LifeStorage
+    
+    @usableFromInline
     var _current, _next, _end: _NodePtr
 
     @inlinable
     @inline(__always)
     public mutating func next() -> EnumElement? {
-      _next().map { (.init($0), _tree[$0]) }
+      _next().map { (___index($0), _tree[$0]) }
     }
   }
 }
@@ -69,24 +111,24 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @frozen
-  public struct EnumSequence: Sequence {
+  public struct EnumSequence: Sequence, EnumIndexMaker {
 
     public typealias Element = Tree.EnumElement
     public typealias Index = _NodePtr
 
     @inlinable
     init(tree: Tree, lifeStorage: LifeStorage, start: Index, end: Index) {
-      self.base = tree
-      self.lifeStorage = lifeStorage
+      self._tree = tree
+      self._lifeStorage = lifeStorage
       self.startIndex = start
       self.endIndex = end
     }
 
     @usableFromInline
-    let base: Tree
+    unowned let _tree: Tree
     
     @usableFromInline
-    let lifeStorage: LifeStorage
+    let _lifeStorage: LifeStorage
 
     public
       var startIndex: Index
@@ -96,23 +138,23 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     public func makeIterator() -> EnumIterator {
-      base.makeEnumeratedIterator(lifeStorage: lifeStorage, start: startIndex, end: endIndex)
+      _tree.makeEnumeratedIterator(lifeStorage: _lifeStorage, start: startIndex, end: endIndex)
     }
     
     @inlinable
     @inline(__always)
     public var count: Int {
-      base.distance(from: startIndex, to: endIndex)
+      _tree.distance(from: startIndex, to: endIndex)
     }
     
     @inlinable
     @inline(__always)
-    public func forEach(_ body: @escaping (EnumElement) throws -> Void) rethrows {
+    public func forEach(_ body: (Element) throws -> Void) rethrows {
       var __p = startIndex
       while __p != endIndex {
         let __c = __p
-        __p = base.__tree_next(__p)
-        try body((.init(__c), base[__c]))
+        __p = _tree.__tree_next(__p)
+        try body((___index(__c), _tree[__c]))
       }
     }
     
@@ -120,49 +162,49 @@ extension ___RedBlackTree.___Tree {
     @inlinable
     @inline(__always)
     public func distance(from start: Index, to end: Index) -> Int {
-      base.distance(from: start, to: end)
+      _tree.distance(from: start, to: end)
     }
     
     @inlinable
     @inline(__always)
     public func index(after i: Index) -> Index {
-      base.index(after: i)
+      _tree.index(after: i)
     }
     
     @inlinable
     @inline(__always)
     public func formIndex(after i: inout Index) {
-      base.formIndex(after: &i)
+      _tree.formIndex(after: &i)
     }
     
     @inlinable
     @inline(__always)
     public func index(before i: Index) -> Index {
-      base.index(before: i)
+      _tree.index(before: i)
     }
     
     @inlinable
     @inline(__always)
     public func formIndex(before i: inout Index) {
-      base.formIndex(before: &i)
+      _tree.formIndex(before: &i)
     }
     
     @inlinable
     @inline(__always)
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
-      base.index(i, offsetBy: distance)
+      _tree.index(i, offsetBy: distance)
     }
     
     @inlinable
     @inline(__always)
     internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
-      base.formIndex(&i, offsetBy: distance)
+      _tree.formIndex(&i, offsetBy: distance)
     }
     
     @inlinable
     @inline(__always)
     public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-      base.index(i, offsetBy: distance, limitedBy: limit)
+      _tree.index(i, offsetBy: distance, limitedBy: limit)
     }
     
     @inlinable
@@ -178,12 +220,12 @@ extension ___RedBlackTree.___Tree {
     @inlinable
     @inline(__always)
     public subscript(position: Index) -> EnumElement {
-      (.init(position),base[position])
+      (___index(position),_tree[position])
     }
     
     @inlinable
     public subscript(bounds: Range<TreePointer>) -> EnumSequence {
-      .init(tree: base, lifeStorage: lifeStorage, start: bounds.lowerBound._pointer, end: bounds.upperBound._pointer)
+      .init(tree: _tree, lifeStorage: _lifeStorage, start: bounds.lowerBound._pointer, end: bounds.upperBound._pointer)
     }
   }
 }

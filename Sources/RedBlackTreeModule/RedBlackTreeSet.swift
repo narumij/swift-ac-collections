@@ -670,7 +670,7 @@ extension RedBlackTreeSet.SubSequence: Sequence {
     Iterator(_subSequence.makeIterator())
   }
 
-#if true
+#if false
     @inlinable
     @inline(__always)
     public func enumerated() -> AnySequence<EnumElement> {
@@ -681,7 +681,7 @@ extension RedBlackTreeSet.SubSequence: Sequence {
     @inline(__always)
     public func enumerated() -> EnumSequence {
       EnumSequence(
-        _subSequence: tree.enumeratedSubsequence(lifeStorage: _subSequence.lifeStorage, from: startIndex.pointer, to: endIndex.pointer))
+        _subSequence: tree.enumeratedSubsequence(lifeStorage: lifeStorage, from: startIndex._pointer, to: endIndex._pointer))
     }
   #endif
 }
@@ -808,7 +808,7 @@ extension RedBlackTreeSet {
 
     @inlinable
     @inline(__always)
-    internal var tree: Tree { _subSequence.base }
+    internal var _tree: Tree { _subSequence._tree }
   }
 }
 
@@ -843,20 +843,23 @@ extension RedBlackTreeSet.EnumSequence: Sequence {
 
 extension RedBlackTreeSet.EnumSequence {
 
-#if false
+#if true
   @inlinable
   @inline(__always)
   public func forEach(_ body: (_Element) throws -> Void) rethrows {
 //    try _subSequence.base.___for_each__(__p: _subSequence.startIndex, __l: _subSequence.endIndex, body: body)
 //    var base = _subSequence.base
-    let base = _subSequence.base
-    defer { _fixLifetime(base) }
-    var __p = _subSequence.startIndex
-    while __p != _subSequence.endIndex {
-      let __c = __p
-      __p = base.__tree_next(__p)
-      try body((.init(__c), base[__c]))
-    }
+//    let base = _subSequence.base
+//    defer { _fixLifetime(base) }
+    
+//    var __p = _subSequence.startIndex
+//    while __p != _subSequence.endIndex {
+//      let __c = __p
+//      __p = _tree.__tree_next(__p)
+//      try body((.init(__c), _tree[__c]))
+//    }
+    
+    try _subSequence.forEach(body)
   }
 #endif
 }

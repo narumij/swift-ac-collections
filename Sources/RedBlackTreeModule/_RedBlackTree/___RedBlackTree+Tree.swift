@@ -516,18 +516,6 @@ extension ___RedBlackTree.___Tree {
       __p = __tree_next(__p)
     }
   }
-  
-  @inlinable
-  @inline(__always)
-  public func ___for_each__(__p: _NodePtr, __l: _NodePtr, body: (EnumElement) throws -> Void)
-    rethrows
-  {
-    var __p = __p
-    while __p != __l {
-      try body((.init(__p), self[__p]))
-      __p = __tree_next(__p)
-    }
-  }
 }
 
 extension ___RedBlackTree.___Tree {

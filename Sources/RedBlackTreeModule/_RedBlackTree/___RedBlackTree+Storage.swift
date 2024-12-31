@@ -22,6 +22,43 @@
 
 import Foundation
 
+@usableFromInline
+enum StorageCapacity {
+  
+  @inlinable
+  @inline(__always)
+  public static var growthFactor: Double { 1.618 } // Golden Ratio
+//  public static var growthFactor: Double { 1.75 }
+//  public static var growthFactor: Double { 2.0 }
+//  public static var growthFactor: Double { 2.414 } // Silver Ratio
+
+  @inlinable
+  @inline(__always)
+  public static func growthFormula(count: Int) -> Int {
+    Int((Self.growthFactor * Double(count)).rounded(.up))
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func _growCapacity(
+    tree: (count: Int, initializedCount: Int),
+    to minimumCapacity: Int,
+    linearly: Bool
+  ) -> Int {
+
+    if linearly {
+      return Swift.max(
+        tree.initializedCount,
+        minimumCapacity)
+    }
+
+    return Swift.max(
+      tree.initializedCount,
+      growthFormula(count: tree.count),
+      minimumCapacity)
+  }
+}
+
 extension ___RedBlackTree.___Tree {
 
   @inlinable
@@ -70,26 +107,17 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
-  @inline(__always)
-  internal static var growthFactor: Double { 1.75 }
-
-  @inlinable
   internal static func _growCapacity(
     tree: inout Tree,
     to minimumCapacity: Int,
     linearly: Bool
   ) -> Int {
-
-    if linearly {
-      return Swift.max(
-        tree.header.initializedCount,
-        minimumCapacity)
-    }
-
-    return Swift.max(
-      tree.header.initializedCount,
-      Int((Self.growthFactor * Double(tree.count)).rounded(.up)),
-      minimumCapacity)
+    
+    StorageCapacity
+      ._growCapacity(
+        tree: (tree.count, tree.header.initializedCount),
+        to: minimumCapacity,
+        linearly: linearly)
   }
 }
 

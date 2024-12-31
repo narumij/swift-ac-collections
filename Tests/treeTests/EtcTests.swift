@@ -5,7 +5,7 @@
 //  Created by narumij on 2024/12/15.
 //
 
-import RedBlackTreeModule
+@testable import RedBlackTreeModule
 import XCTest
 
 final class EtcTests: XCTestCase {
@@ -113,4 +113,39 @@ final class EtcTests: XCTestCase {
     let a = [1,2,3]
     XCTAssertEqual(a.index(before: a.startIndex), -1)
   }
+
+#if false
+  func testCapacity() throws {
+    
+    for i in 0 ..< 10 {
+      let s = Set<Int>(minimumCapacity: i)
+      let r = RedBlackTreeSet<Int>(minimumCapacity: i)
+      XCTAssertEqual(
+        s.capacity,
+        r.capacity,
+        "minimumCapacity=\(i)"
+      )
+      if s.capacity != r.capacity {
+        break
+      }
+    }
+  }
+  
+  func testCapacity2() throws {
+    
+    for i in 2 ..< 4 {
+      let s = Set<Int>(minimumCapacity: i)
+//      let r = StorageCapacity._growCapacity(tree: (0,0), to: i, linearly: false)
+      let r = StorageCapacity.growthFormula(count: i)
+      XCTAssertEqual(
+        s.capacity,
+        r,
+        "minimumCapacity=\(i)"
+      )
+//      if s.capacity != r {
+//        break
+//      }
+    }
+  }
+#endif
 }

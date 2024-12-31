@@ -31,18 +31,14 @@ extension ___RedBlackTree.___Tree {
     public typealias Index = _NodePtr
     
     @inlinable
-    init(___tree: Tree, lifeStorage: LifeStorage, start: Index, end: Index) {
+    init(___tree: Tree, start: Index, end: Index) {
       self._tree = ___tree
-      self._lifeStorage = lifeStorage
       self.startIndex = start
       self.endIndex = end
     }
     
     @usableFromInline
     let _tree: Tree
-    
-    @usableFromInline
-    let _lifeStorage: LifeStorage
     
     public
     var startIndex: Index
@@ -141,7 +137,6 @@ extension ___RedBlackTree.___Tree {
     public subscript(bounds: Range<TreePointer>) -> SubSequence {
       .init(
         ___tree: _tree,
-        lifeStorage: _lifeStorage,
         start: bounds.lowerBound._pointer,
         end: bounds.upperBound._pointer)
     }
@@ -151,10 +146,9 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
   
   @inlinable
-  func subsequence(lifeStorage: LifeStorage, from: _NodePtr, to: _NodePtr) -> SubSequence {
+  func subsequence(from: _NodePtr, to: _NodePtr) -> SubSequence {
     .init(
       ___tree: self,
-      lifeStorage: lifeStorage,
       start: from,
       end: to)
   }

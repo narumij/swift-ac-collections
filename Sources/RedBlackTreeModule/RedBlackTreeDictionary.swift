@@ -538,7 +538,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   public subscript(bounds: Range<Index>) -> SubSequence {
     SubSequence(
       _subSequence:
-        _tree.subsequence(lifeStorage: _storage.lifeStorage, from: bounds.lowerBound._pointer, to: bounds.upperBound._pointer)
+        _tree.subsequence(from: bounds.lowerBound._pointer, to: bounds.upperBound._pointer)
     )
   }
   
@@ -570,10 +570,6 @@ extension RedBlackTreeDictionary {
     @inlinable
     @inline(__always)
     internal var tree: Tree { _subSequence._tree }
-    
-    @inlinable
-    @inline(__always)
-    internal var lifeStorage: Tree.LifeStorage { _subSequence._lifeStorage }
   }
 }
 
@@ -714,21 +710,5 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
     SubSequence(
       _subSequence:
         _subSequence[bounds.lowerBound..<bounds.upperBound])
-  }
-}
-
-extension RedBlackTreeDictionary {
-  
-  @usableFromInline
-  var tree2: (Tree, Tree.LifeStorage) {
-    (_tree, _storage.lifeStorage)
-  }
-}
-
-extension RedBlackTreeDictionary.SubSequence {
-  
-  @usableFromInline
-  var tree2: (_Tree, _Tree.LifeStorage) {
-    (tree, .init())
   }
 }

@@ -493,11 +493,11 @@ extension RedBlackTreeSet: Sequence {
     return Iterator(_base: self)
   }
 
-  #if false
+#if true
     @inlinable
     @inline(__always)
     public func enumerated() -> AnySequence<EnumElement> {
-      AnySequence { tree.makeEnumIterator() }
+      AnySequence { _tree.makeEnumIterator() }
     }
   #else
     @inlinable
@@ -599,7 +599,6 @@ extension RedBlackTreeSet: BidirectionalCollection {
     SubSequence(
       _subSequence:
         _tree.subsequence(
-          lifeStorage: _storage.lifeStorage,
           from: bounds.lowerBound._pointer,
           to: bounds.upperBound._pointer)
     )
@@ -610,7 +609,6 @@ extension RedBlackTreeSet: BidirectionalCollection {
     SubSequence(
       _subSequence:
         _tree.subsequence(
-          lifeStorage: _storage.lifeStorage,
           from: ___ptr_lower_bound(bounds.lowerBound),
           to: ___ptr_upper_bound(bounds.upperBound)))
   }
@@ -638,10 +636,6 @@ extension RedBlackTreeSet {
     @inlinable
     @inline(__always)
     internal var tree: Tree { _subSequence._tree }
-    
-    @inlinable
-    @inline(__always)
-    internal var lifeStorage: Tree.LifeStorage { _subSequence._lifeStorage }
   }
 }
 
@@ -675,11 +669,11 @@ extension RedBlackTreeSet.SubSequence: Sequence {
     Iterator(_subSequence.makeIterator())
   }
 
-#if false
+#if true
     @inlinable
     @inline(__always)
     public func enumerated() -> AnySequence<EnumElement> {
-      AnySequence { tree.makeEnumeratedIterator(lifeStorage: _subSequence._lifeStorage, start: startIndex._pointer, end: endIndex._pointer) }
+      AnySequence { tree.makeEnumeratedIterator(start: startIndex._pointer, end: endIndex._pointer) }
     }
   #else
     @inlinable

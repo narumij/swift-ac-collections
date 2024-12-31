@@ -431,7 +431,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   public subscript(bounds: Range<Index>) -> SubSequence {
     SubSequence(
       _subSequence:
-        _tree.subsequence(lifeStorage: _storage.lifeStorage, from: bounds.lowerBound._pointer, to: bounds.upperBound._pointer)
+        _tree.subsequence(from: bounds.lowerBound._pointer, to: bounds.upperBound._pointer)
     )
   }
   
@@ -464,10 +464,6 @@ extension RedBlackTreeMultiset {
     @inlinable
     @inline(__always)
     internal var tree: Tree { _subSequence._tree }
-    
-    @inlinable
-    @inline(__always)
-    internal var lifeStorage: Tree.LifeStorage { _subSequence._lifeStorage }
   }
 }
 
@@ -626,20 +622,3 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
   }
 }
 
-extension RedBlackTreeMultiset {
-  
-  @usableFromInline
-  var tree2: (Tree, Tree.LifeStorage) {
-//    fatalError()
-    (_tree, _storage.lifeStorage)
-  }
-}
-
-extension RedBlackTreeMultiset.SubSequence {
-  
-  @usableFromInline
-  var tree2: (_Tree, _Tree.LifeStorage) {
-//    fatalError()
-    (tree, .init())
-  }
-}

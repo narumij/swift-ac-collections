@@ -55,7 +55,7 @@ extension TreePointerBuilder {
 
 extension ___RedBlackTree.___Tree {
 
-#if false
+#if true
   typealias EnumIndexMaker = SimpleIndexBuilder
   public typealias EnumIndex = ___RedBlackTree.SimpleIndex
 #else

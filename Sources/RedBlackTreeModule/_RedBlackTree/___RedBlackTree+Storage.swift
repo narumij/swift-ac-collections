@@ -78,25 +78,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
-  
-  // 救命ボート
-  // これに参加するには、treeに対してリードオンリーであることが条件
-  //
-  // Treeの参照数を気にしていたので、これが必要だったが、気にしなくなれば、不要になりそう。
-  @usableFromInline
-  class LifeStorage {
-    
-    private var _tree: Tree?
-    
-    @inlinable init() { }
-    
-    @usableFromInline
-    func set(_tree: Tree) {
-      self._tree = _tree
-    }
-  }
-}
+extension ___RedBlackTree.___Tree { }
 
 extension ___RedBlackTree.___Tree {
   
@@ -121,9 +103,6 @@ extension ___RedBlackTree.___Tree {
     typealias _Tree = Tree
     @usableFromInline
     final var tree: Tree
-    @nonobjc
-    @usableFromInline
-    final var lifeStorage: Tree.LifeStorage = .init()
     @nonobjc
     @usableFromInline
     final var count: Int { tree.count }
@@ -156,17 +135,6 @@ extension ___RedBlackTree.___Tree {
     final func isKnownUniquelyReferenced_tree() -> Bool {
       isKnownUniquelyReferenced(&tree)
     }
-    @nonobjc
-    @inlinable
-    @inline(__always)
-    final func isKnownUniquelyReferenced_lifeStorage() -> Bool {
-      isKnownUniquelyReferenced(&lifeStorage)
-    }
-    deinit {
-      // 救命ボートに参加している各種インスタンスが使用しているtreeは
-      // そのインスタンスが生きている限り生き残る
-      lifeStorage.set(_tree: tree)
-    }
   }
 }
 
@@ -180,10 +148,7 @@ extension ___RedBlackTreeStorageLifetime {
   @inlinable
   @inline(__always)
   mutating func _isKnownUniquelyReferenced_LV2() -> Bool {
-    if !isKnownUniquelyReferenced(&_storage) {
-      return false
-    }
-    if !_storage.isKnownUniquelyReferenced_lifeStorage() {
+    if !_isKnownUniquelyReferenced_LV1() {
       return false
     }
     if !_storage.isKnownUniquelyReferenced_tree() {
@@ -195,13 +160,7 @@ extension ___RedBlackTreeStorageLifetime {
   @inlinable
   @inline(__always)
   mutating func _isKnownUniquelyReferenced_LV1() -> Bool {
-    if !isKnownUniquelyReferenced(&_storage) {
-      return false
-    }
-//    if !_storage.isKnownUniquelyReferenced_tree() {
-//      return false
-//    }
-    return true
+    isKnownUniquelyReferenced(&_storage)
   }
 
   @inlinable
@@ -257,6 +216,7 @@ extension ___RedBlackTreeStorageLifetime {
   }
 }
 
+#if false
 @usableFromInline
 protocol ___RedBlackTreeNonStorageLifetime: ValueComparer {
   var _tree: Tree { get set }
@@ -284,3 +244,4 @@ extension ___RedBlackTreeNonStorageLifetime {
     Tree.ensureUniqueAndCapacity(tree: &_tree, minimumCapacity: minimumCapacity)
   }
 }
+#endif

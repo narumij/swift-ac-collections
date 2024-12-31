@@ -62,7 +62,7 @@ extension ___RedBlackTree.___Tree {
     }
     
     @usableFromInline
-    unowned let _tree: Tree
+    let _tree: Tree
     
     @usableFromInline
     let _lifeStorage: Tree.LifeStorage

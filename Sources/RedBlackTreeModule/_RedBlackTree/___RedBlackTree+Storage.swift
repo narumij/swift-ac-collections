@@ -82,6 +82,8 @@ extension ___RedBlackTree.___Tree {
   
   // 救命ボート
   // これに参加するには、treeに対してリードオンリーであることが条件
+  //
+  // Treeの参照数を気にしていたので、これが必要だったが、気にしなくなれば、不要になりそう。
   @usableFromInline
   class LifeStorage {
     
@@ -196,9 +198,9 @@ extension ___RedBlackTreeStorageLifetime {
     if !isKnownUniquelyReferenced(&_storage) {
       return false
     }
-    if !_storage.isKnownUniquelyReferenced_tree() {
-      return false
-    }
+//    if !_storage.isKnownUniquelyReferenced_tree() {
+//      return false
+//    }
     return true
   }
 

@@ -848,24 +848,9 @@ extension RedBlackTreeSet.EnumSequence: Sequence {
 
 extension RedBlackTreeSet.EnumSequence {
 
-#if true
   @inlinable
   @inline(__always)
   public func forEach(_ body: (_Element) throws -> Void) rethrows {
-//    try _subSequence.base.___for_each__(__p: _subSequence.startIndex, __l: _subSequence.endIndex, body: body)
-//    var base = _subSequence.base
-//    let base = _subSequence.base
-//    defer { _fixLifetime(base) }
-    
-//    var __p = _subSequence.startIndex
-//    while __p != _subSequence.endIndex {
-//      let __c = __p
-//      __p = _tree.__tree_next(__p)
-//      try body((.init(__c), _tree[__c]))
-//    }
-    
     try _subSequence.forEach(body)
   }
-#endif
 }
-

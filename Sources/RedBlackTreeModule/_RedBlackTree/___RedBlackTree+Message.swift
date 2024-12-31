@@ -26,19 +26,23 @@ extension String {
 
   @usableFromInline
   static var invalidIndex: String {
-    "Attempting to access RedBlackTree elements using an invalid index" }
+    "Attempting to access RedBlackTree elements using an invalid index"
+  }
 
   @usableFromInline
   static var outOfBounds: String {
-    "RedBlackTree index is out of Bound." }
-  
+    "RedBlackTree index is out of Bound."
+  }
+
   @usableFromInline
   static var emptyFirst: String {
-    "Can't removeFirst from an empty RedBlackTree" }
-  
+    "Can't removeFirst from an empty RedBlackTree"
+  }
+
   @usableFromInline
   static var emptyLast: String {
-    "Can't removeLast from an empty RedBlackTree" }
+    "Can't removeLast from an empty RedBlackTree"
+  }
 }
 
 // メッセージをマッサージに空見するぐらい疲れている

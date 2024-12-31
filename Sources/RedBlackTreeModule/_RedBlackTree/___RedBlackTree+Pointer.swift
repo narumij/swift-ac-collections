@@ -60,18 +60,18 @@ extension ___RedBlackTree.___Tree {
     static func end(_ storage: Tree.Storage) -> Self {
       .init(__tree: storage.tree, pointer: .end)
     }
-    
+
     // MARK: -
 
     @inlinable
     public var isEnd: Bool {
       rawValue == .end
     }
-    
+
     @inlinable
     public var isValid: Bool {
       if rawValue == .end { return true }
-      if !(0 ..< _tree.header.initializedCount ~= rawValue) { return false }
+      if !(0..<_tree.header.initializedCount ~= rawValue) { return false }
       return _tree.___is_valid(rawValue)
     }
 
@@ -92,7 +92,7 @@ extension ___RedBlackTree.___Tree {
     public mutating func ___prev() {
       rawValue = _tree.__tree_prev_iter(rawValue)
     }
-    
+
     public static func == (lhs: Self, rhs: Self) -> Bool {
       // Rangeで正しく動けばいいので、これ以外の比較は行わない
       lhs.rawValue == rhs.rawValue
@@ -100,7 +100,7 @@ extension ___RedBlackTree.___Tree {
 
     // 本来の目的のための、大事な比較演算子
     public static func < (lhs: Self, rhs: Self) -> Bool {
-      
+
       guard
         lhs.rawValue != rhs.rawValue,
         lhs.isValid, rhs.isValid
@@ -113,10 +113,10 @@ extension ___RedBlackTree.___Tree {
       }
 
       let tree = lhs._tree
-      
+
       return tree.value_comp(tree[key: lhs.rawValue], tree[key: rhs.rawValue])
     }
-    
+
     // nullとendとそれ以外をざっくりまとめた比較値
     @inlinable
     internal static func __rank(_ rhs: Self) -> Int {

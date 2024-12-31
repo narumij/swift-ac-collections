@@ -34,8 +34,7 @@ protocol RedBlackTreeIteratorNextProtocol: IteratorProtocol {
 extension RedBlackTreeIteratorNextProtocol {
   @inlinable
   @inline(__always)
-  public mutating func _next() -> _NodePtr?
-  {
+  public mutating func _next() -> _NodePtr? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
@@ -46,12 +45,12 @@ extension RedBlackTreeIteratorNextProtocol {
 }
 
 extension ___RedBlackTree.___Tree: Sequence {
-  
+
   @frozen
   public struct Iterator: RedBlackTreeIteratorNextProtocol {
-    
+
     public typealias Element = Tree.Element
-    
+
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self._tree = tree
@@ -59,44 +58,44 @@ extension ___RedBlackTree.___Tree: Sequence {
       self._end = end
       self._next = start == .end ? .end : tree.__tree_next(start)
     }
-    
+
     @usableFromInline
     let _tree: Tree
-    
+
     @usableFromInline
     var _current, _next, _end: _NodePtr
-    
+
     @inlinable
     @inline(__always)
     public mutating func next() -> Element? {
-      _next().map{ _tree[$0] }
+      _next().map { _tree[$0] }
     }
   }
-  
+
   @inlinable
   public __consuming func makeIterator() -> Iterator {
     .init(tree: self, start: __begin_node, end: __end_node())
   }
 }
 
-extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalCollectionには適合できない
-  
+extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalCollectionには適合できない
+
   public var startIndex: _NodePtr {
     __begin_node
   }
-  
+
   public var endIndex: _NodePtr {
     __end_node()
   }
-  
+
   public typealias Index = _NodePtr
-  
+
   // この実装がないと、迷子になる
   @inlinable
   public func distance(from start: Index, to end: Index) -> Int {
     ___signed_distance(start, end)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
@@ -105,13 +104,13 @@ extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalColle
     }
     return __tree_next(i)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     i = __tree_next(i)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
@@ -120,13 +119,13 @@ extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalColle
     }
     return __tree_prev_iter(i)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     i = __tree_prev_iter(i)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
@@ -142,8 +141,7 @@ extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalColle
         }
         i = index(after: i)
         distance -= 1
-      }
-      else {
+      } else {
         guard i != __begin_node else {
           fatalError(.outOfBounds)
         }
@@ -153,13 +151,13 @@ extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalColle
     }
     return i
   }
-  
+
   @inlinable
   @inline(__always)
   internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
     i = index(i, offsetBy: distance)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
@@ -178,8 +176,7 @@ extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalColle
         }
         i = index(after: i)
         distance -= 1
-      }
-      else {
+      } else {
         guard i != __begin_node else {
           fatalError(.outOfBounds)
         }
@@ -189,10 +186,11 @@ extension ___RedBlackTree.___Tree { // SubSequence不一致でBidirectionalColle
     }
     return i
   }
-  
+
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index) -> Bool {
+  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index) -> Bool
+  {
     if let ii = index(i, offsetBy: distance, limitedBy: limit) {
       i = ii
       return true

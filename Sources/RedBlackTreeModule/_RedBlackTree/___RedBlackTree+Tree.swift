@@ -62,17 +62,17 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   internal func copy(newCapacity: Int? = nil) -> Tree {
-    
+
     let capacity = newCapacity ?? self.header.capacity
     let __left_ = self.header.__left_
     let __begin_node = self.header.__begin_node
     let __initialized_count = self.header.initializedCount
     let __destroy_count = self.header.destroyCount
     let __destroy_node = self.header.destroyNode
-#if DEBUG || true
-    let copyCount = self.header.copyCount
-#endif
-    
+    #if DEBUG || true
+      let copyCount = self.header.copyCount
+    #endif
+
     let newStorage = Tree.create(withCapacity: capacity)
 
     newStorage.header.capacity = capacity
@@ -81,9 +81,9 @@ extension ___RedBlackTree.___Tree {
     newStorage.header.initializedCount = __initialized_count
     newStorage.header.destroyCount = __destroy_count
     newStorage.header.destroyNode = __destroy_node
-#if DEBUG || true
-    newStorage.header.copyCount = copyCount &+ 1
-#endif
+    #if DEBUG || true
+      newStorage.header.copyCount = copyCount &+ 1
+    #endif
 
     self.withUnsafeMutablePointerToElements { oldNodes in
       newStorage.withUnsafeMutablePointerToElements { newNodes in
@@ -177,11 +177,11 @@ extension ___RedBlackTree.___Tree {
 
     @usableFromInline
     var destroyNode: _NodePtr = .end
-    
-#if DEBUG || true
-    @usableFromInline
-    var copyCount: UInt = 0
-#endif
+
+    #if DEBUG || true
+      @usableFromInline
+      var copyCount: UInt = 0
+    #endif
   }
 }
 
@@ -224,8 +224,8 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   @inline(__always)
   subscript(key pointer: _NodePtr) -> _Key {
-      assert(0 <= pointer && pointer < header.initializedCount)
-      return __key(__node_ptr[pointer].__value_)
+    assert(0 <= pointer && pointer < header.initializedCount)
+    return __key(__node_ptr[pointer].__value_)
   }
 
   @inlinable
@@ -257,14 +257,14 @@ extension ___RedBlackTree.___Tree {
       yield &__node_ptr[pointer].__value_
     }
   }
-  
-#if DEBUG || true
-  @inlinable
-  var copyCount: UInt {
-    get { __header_ptr.pointee.copyCount }
-    set { __header_ptr.pointee.copyCount = newValue }
-  }
-#endif
+
+  #if DEBUG || true
+    @inlinable
+    var copyCount: UInt {
+      get { __header_ptr.pointee.copyCount }
+      set { __header_ptr.pointee.copyCount = newValue }
+    }
+  #endif
 }
 
 extension ___RedBlackTree.___Tree {
@@ -428,7 +428,7 @@ extension ___RedBlackTree.___Tree: InsertUniqueProtocol {
   }
 }
 
-extension ___RedBlackTree.___Tree: DistanceProtocol & CountProtocol { }
+extension ___RedBlackTree.___Tree: DistanceProtocol & CountProtocol {}
 
 extension ___RedBlackTree.___Tree: MemberProtocol & RootImpl & RefSetImpl & RootPtrImpl {
   @inlinable
@@ -483,7 +483,7 @@ extension ___RedBlackTree.___Tree {
 }
 
 extension ___RedBlackTree.___Tree {
-  
+
   @inlinable
   @inline(__always)
   public func ___for_each(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void)
@@ -497,7 +497,7 @@ extension ___RedBlackTree.___Tree {
       try body(__c, &cont)
     }
   }
-  
+
   @inlinable
   @inline(__always)
   public func ___for_each_(_ body: (Element) throws -> Void) rethrows {
@@ -627,7 +627,7 @@ extension ___RedBlackTree.___Tree {
 }
 
 extension ___RedBlackTree.___Tree {
-  
+
   @inlinable @inline(__always)
   public var ___sorted: [Element] {
     var result = [Element]()
@@ -637,4 +637,3 @@ extension ___RedBlackTree.___Tree {
     return result
   }
 }
-

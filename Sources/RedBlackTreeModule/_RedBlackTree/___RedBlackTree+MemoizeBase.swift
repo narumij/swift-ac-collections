@@ -72,7 +72,7 @@ where CustomKey: CustomKeyProtocol {
     get { _storage.tree }
     _modify { yield &_storage.tree }
   }
-  
+
   @usableFromInline
   var _storage: Tree.Storage
 

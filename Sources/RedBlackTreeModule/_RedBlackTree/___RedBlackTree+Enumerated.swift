@@ -23,12 +23,12 @@
 import Foundation
 
 @usableFromInline
-protocol RawPointerBuilderProtocol { }
+protocol RawPointerBuilderProtocol {}
 
 extension RawPointerBuilderProtocol {
-  
+
   public typealias EnumeratedIndex = ___RedBlackTree.RawPointer
-  
+
   @inlinable
   @inline(__always)
   public func ___index(_ p: _NodePtr) -> EnumeratedIndex {
@@ -45,7 +45,7 @@ protocol TreePointerBuilderProtocol {
 extension TreePointerBuilderProtocol {
   public typealias Tree = ___RedBlackTree.___Tree<VC>
   public typealias EnumeratedIndex = ___RedBlackTree.___Tree<VC>.TreePointer
-  
+
   @inlinable
   @inline(__always)
   public func ___index(_ p: _NodePtr) -> EnumeratedIndex {
@@ -55,19 +55,19 @@ extension TreePointerBuilderProtocol {
 
 extension ___RedBlackTree.___Tree {
 
-#if true
-  typealias EnumIndexMaker = RawPointerBuilderProtocol
-  public typealias EnumIndex = ___RedBlackTree.RawPointer
-#else
-  typealias EnumIndexMaker = TreePointerBuilderProtocol
-  public typealias EnumIndex = TreePointer
-#endif
+  #if true
+    typealias EnumIndexMaker = RawPointerBuilderProtocol
+    public typealias EnumIndex = ___RedBlackTree.RawPointer
+  #else
+    typealias EnumIndexMaker = TreePointerBuilderProtocol
+    public typealias EnumIndex = TreePointer
+  #endif
 
   public typealias EnumElement = (offset: EnumIndex, element: Element)
-  
+
   @frozen
   public struct EnumIterator: RedBlackTreeIteratorNextProtocol, EnumIndexMaker {
-    
+
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self._tree = tree
@@ -75,10 +75,10 @@ extension ___RedBlackTree.___Tree {
       self._end = end
       self._next = start == .end ? .end : tree.__tree_next(start)
     }
-    
+
     @usableFromInline
     let _tree: Tree
-    
+
     @usableFromInline
     var _current, _next, _end: _NodePtr
 
@@ -91,12 +91,12 @@ extension ___RedBlackTree.___Tree {
 }
 
 extension ___RedBlackTree.___Tree {
-  
+
   @inlinable
   __consuming func makeEnumIterator() -> EnumIterator {
     .init(tree: self, start: __begin_node, end: __end_node())
   }
-  
+
   @inlinable
   __consuming func makeEnumeratedIterator(start: _NodePtr, end: _NodePtr) -> EnumIterator {
     .init(tree: self, start: start, end: end)
@@ -120,10 +120,10 @@ extension ___RedBlackTree.___Tree {
 
     @usableFromInline
     let _tree: Tree
-    
+
     public
       var startIndex: Index
-    
+
     public
       var endIndex: Index
 
@@ -131,13 +131,13 @@ extension ___RedBlackTree.___Tree {
     public func makeIterator() -> EnumIterator {
       _tree.makeEnumeratedIterator(start: startIndex, end: endIndex)
     }
-    
+
     @inlinable
     @inline(__always)
     public var count: Int {
       _tree.distance(from: startIndex, to: endIndex)
     }
-    
+
     @inlinable
     @inline(__always)
     public func forEach(_ body: (Element) throws -> Void) rethrows {
@@ -148,72 +148,74 @@ extension ___RedBlackTree.___Tree {
         try body((___index(__c), _tree[__c]))
       }
     }
-    
+
     // この実装がないと、迷子になる
     @inlinable
     @inline(__always)
     public func distance(from start: Index, to end: Index) -> Int {
       _tree.distance(from: start, to: end)
     }
-    
+
     @inlinable
     @inline(__always)
     public func index(after i: Index) -> Index {
       _tree.index(after: i)
     }
-    
+
     @inlinable
     @inline(__always)
     public func formIndex(after i: inout Index) {
       _tree.formIndex(after: &i)
     }
-    
+
     @inlinable
     @inline(__always)
     public func index(before i: Index) -> Index {
       _tree.index(before: i)
     }
-    
+
     @inlinable
     @inline(__always)
     public func formIndex(before i: inout Index) {
       _tree.formIndex(before: &i)
     }
-    
+
     @inlinable
     @inline(__always)
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
       _tree.index(i, offsetBy: distance)
     }
-    
+
     @inlinable
     @inline(__always)
     internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
       _tree.formIndex(&i, offsetBy: distance)
     }
-    
+
     @inlinable
     @inline(__always)
     public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
       _tree.index(i, offsetBy: distance, limitedBy: limit)
     }
-    
+
     @inlinable
     @inline(__always)
-    internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index) -> Bool {
+    internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+      -> Bool
+    {
       if let ii = index(i, offsetBy: distance, limitedBy: limit) {
         i = ii
         return true
       }
       return false
     }
-    
+
     @inlinable
     @inline(__always)
     public subscript(position: Index) -> EnumElement {
-      (___index(position),_tree[position])
+      (___index(position), _tree[position])
     }
-    
+
     @inlinable
     public subscript(bounds: Range<TreePointer>) -> EnumSequence {
       .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)

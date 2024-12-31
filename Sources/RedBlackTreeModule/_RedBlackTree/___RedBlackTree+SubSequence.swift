@@ -23,40 +23,40 @@
 import Foundation
 
 extension ___RedBlackTree.___Tree {
-  
+
   @frozen
   public struct SubSequence: Sequence {
-    
+
     public typealias Element = Tree.Element
     public typealias Index = _NodePtr
-    
+
     @inlinable
     init(___tree: Tree, start: Index, end: Index) {
       self._tree = ___tree
       self.startIndex = start
       self.endIndex = end
     }
-    
+
     @usableFromInline
     let _tree: Tree
-    
+
     public
-    var startIndex: Index
-    
+      var startIndex: Index
+
     public
-    var endIndex: Index
-    
+      var endIndex: Index
+
     @inlinable
     public __consuming func makeIterator() -> Iterator {
       Iterator(tree: _tree, start: startIndex, end: endIndex)
     }
-    
+
     @inlinable
     @inline(__always)
     var count: Int {
       _tree.distance(from: startIndex, to: endIndex)
     }
-    
+
     // 断念
     //    @inlinable
     //    public func lowerBound(_ member: Element) -> Index {
@@ -67,72 +67,85 @@ extension ___RedBlackTree.___Tree {
     //    public func upperBound(_ member: Element) -> Index {
     //      base.__upper_bound(base.__key(member), base.__root(), endIndex)
     //    }
-    
+
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Element) throws -> Void) rethrows {
+      var __p = startIndex
+      while __p != endIndex {
+        let __c = __p
+        __p = _tree.__tree_next(__p)
+        try body(_tree[__c])
+      }
+    }
+
     // この実装がないと、迷子になる
     @inlinable
     @inline(__always)
     public func distance(from start: Index, to end: Index) -> Int {
       _tree.distance(from: start, to: end)
     }
-    
+
     @inlinable
     @inline(__always)
     public func index(after i: Index) -> Index {
       _tree.index(after: i)
     }
-    
+
     @inlinable
     @inline(__always)
     public func formIndex(after i: inout Index) {
       _tree.formIndex(after: &i)
     }
-    
+
     @inlinable
     @inline(__always)
     public func index(before i: Index) -> Index {
       _tree.index(before: i)
     }
-    
+
     @inlinable
     @inline(__always)
     public func formIndex(before i: inout Index) {
       _tree.formIndex(before: &i)
     }
-    
+
     @inlinable
     @inline(__always)
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
       _tree.index(i, offsetBy: distance)
     }
-    
+
     @inlinable
     @inline(__always)
     internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
       _tree.formIndex(&i, offsetBy: distance)
     }
-    
+
     @inlinable
     @inline(__always)
     public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
       _tree.index(i, offsetBy: distance, limitedBy: limit)
     }
-    
+
     @inlinable
     @inline(__always)
-    internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index) -> Bool {
+    internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+      -> Bool
+    {
       if let ii = index(i, offsetBy: distance, limitedBy: limit) {
         i = ii
         return true
       }
       return false
     }
-    
+
     @inlinable
     @inline(__always)
     public subscript(position: Index) -> Element {
       _tree[position]
     }
-    
+
     @inlinable
     public subscript(bounds: Range<TreePointer>) -> SubSequence {
       .init(
@@ -144,7 +157,7 @@ extension ___RedBlackTree.___Tree {
 }
 
 extension ___RedBlackTree.___Tree {
-  
+
   @inlinable
   func subsequence(from: _NodePtr, to: _NodePtr) -> SubSequence {
     .init(

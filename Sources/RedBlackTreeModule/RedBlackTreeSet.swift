@@ -137,7 +137,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
   public
     typealias EnumElement = Tree.EnumElement
-  
+
   /// `Index` は `RedBlackTreeSet` 内の要素を参照するための型です。
   ///
   /// `Collection` プロトコルに準拠するために用意されており、
@@ -158,7 +158,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
   @usableFromInline
   var _storage: Tree.Storage
-  
+
   @inlinable
   @inline(__always)
   var _tree: Tree {
@@ -217,7 +217,7 @@ extension RedBlackTreeSet {
   public var capacity: Int {
     ___capacity
   }
-  
+
   @inlinable
   public var ___rawCapacity: Int {
     ___header_capacity
@@ -493,7 +493,7 @@ extension RedBlackTreeSet: Sequence {
     return Iterator(_base: self)
   }
 
-#if false
+  #if false
     @inlinable
     @inline(__always)
     public func enumerated() -> AnySequence<EnumElement> {
@@ -643,7 +643,6 @@ extension RedBlackTreeSet.SubSequence: Sequence {
 
   public typealias Element = RedBlackTreeSet.Element
   public typealias EnumElement = RedBlackTreeSet.Tree.EnumElement
-  //  public typealias EnumeratedSequence = RedBlackTreeSet.Tree.EnumeratedSequence
   public typealias EnumSequence = RedBlackTreeSet.EnumSequence
 
   public struct Iterator: IteratorProtocol {
@@ -669,11 +668,13 @@ extension RedBlackTreeSet.SubSequence: Sequence {
     Iterator(_subSequence.makeIterator())
   }
 
-#if false
+  #if false
     @inlinable
     @inline(__always)
     public func enumerated() -> AnySequence<EnumElement> {
-      AnySequence { tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue) }
+      AnySequence {
+        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
+      }
     }
   #else
     @inlinable
@@ -701,6 +702,12 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public var count: Int { _subSequence.count }
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (Element) throws -> Void) rethrows {
+    try _subSequence.forEach(body)
+  }
 
   @inlinable
   @inline(__always)
@@ -856,7 +863,7 @@ extension RedBlackTreeSet {
   public func isValid(index: Tree.TreePointer) -> Bool {
     ___is_valid_index(index.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func isValid(index: ___RedBlackTree.RawPointer) -> Bool {

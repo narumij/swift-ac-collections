@@ -183,7 +183,7 @@ extension ___RedBlackTree.___Tree {
     
     @inlinable
     public subscript(bounds: Range<TreePointer>) -> EnumSequence {
-      .init(tree: base, lifeStorage: lifeStorage, start: bounds.lowerBound.pointer, end: bounds.upperBound.pointer)
+      .init(tree: base, lifeStorage: lifeStorage, start: bounds.lowerBound._pointer, end: bounds.upperBound._pointer)
     }
   }
 }

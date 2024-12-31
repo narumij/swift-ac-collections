@@ -83,10 +83,14 @@ extension ___RedBlackTree.___Tree {
   @usableFromInline
   class LifeStorage {
     
-    @inlinable
-    init() { }
+    private var _tree: Tree?
     
-    var _tree: Tree?
+    @inlinable init() { }
+    
+    @usableFromInline
+    func set(_tree: Tree) {
+      self._tree = _tree
+    }
   }
 }
 
@@ -149,7 +153,7 @@ extension ___RedBlackTree.___Tree {
       isKnownUniquelyReferenced(&tree)
     }
     deinit {
-      lifeStorage._tree = tree
+      lifeStorage.set(_tree: tree)
     }
   }
 }
@@ -198,7 +202,6 @@ extension ___RedBlackTreeStorageLifetime {
     assert(storage.tree.header.initializedCount <= storage.capacity)
   }
 }
-
 
 @usableFromInline
 protocol ___RedBlackTreeNonStorageLifetime: ValueComparer {

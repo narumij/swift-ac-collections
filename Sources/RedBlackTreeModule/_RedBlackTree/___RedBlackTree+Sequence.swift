@@ -45,10 +45,12 @@ extension RedBlackTreeIteratorNextProtocol {
   }
 }
 
-extension ___RedBlackTree.___Tree { // Sequence
+extension ___RedBlackTree.___Tree: Sequence {
   
   @frozen
   public struct Iterator: RedBlackTreeIteratorNextProtocol {
+    
+    public typealias Element = Tree.Element
     
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {

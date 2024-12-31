@@ -25,21 +25,22 @@ import Foundation
 extension ___RedBlackTree.___Tree {
 
   /// Range<Bound>の左右のサイズ違いでクラッシュすることを避けるためのもの
+  @frozen
   public struct TreePointer: Comparable {
 
     public typealias Pointer = Self
 
     @usableFromInline
-    unowned let tree: Tree
+    unowned let _tree: Tree
 
     @usableFromInline
-    let lifeStorage: Tree.LifeStorage
+    let _lifeStorage: Tree.LifeStorage
 
     @usableFromInline
-    var pointer: _NodePtr
+    var _pointer: _NodePtr
 
     @inlinable
-    public var rawValue: Int { pointer }
+    public var rawValue: Int { _pointer }
 
     // MARK: -
 
@@ -49,79 +50,67 @@ extension ___RedBlackTree.___Tree {
       guard pointer != .nullptr else {
         preconditionFailure("_NodePtr is nullptr")
       }
-      self.tree = __storage.tree
-      self.pointer = pointer
-      self.lifeStorage = __storage.lifeStorage
+      self._tree = __storage.tree
+      self._pointer = pointer
+      self._lifeStorage = __storage.lifeStorage
     }
 
     @inlinable
     @inline(__always)
-    internal init(__tree: Tree, __storage: Tree.LifeStorage, pointer: _NodePtr) {
+    internal init(__tree: Tree, lifeStorage: Tree.LifeStorage, pointer: _NodePtr) {
       guard pointer != .nullptr else {
         preconditionFailure("_NodePtr is nullptr")
       }
-      self.tree = __tree
-      self.pointer = pointer
-      self.lifeStorage = __storage
+      self._tree = __tree
+      self._pointer = pointer
+      self._lifeStorage = lifeStorage
     }
 
-//    @inlinable
-//    @inline(__always)
-//    init(__tree t: (Tree, Tree.LifeStorage), pointer: _NodePtr) {
-//      self.init(__tree: t.0, __storage: t.1, pointer: pointer)
-//    }
-
-//    @inlinable
-//    @inline(__always)
-//    static func end(_ tree: (Tree, Tree.LifeStorage)) -> Pointer {
-//      .init(__tree: tree, pointer: .end)
-//    }
-    
     @inlinable
     @inline(__always)
     static func end(_ storage: Tree.Storage) -> Pointer {
-      .init(__tree: storage.tree,__storage: storage.lifeStorage, pointer: .end)
+      .init(__tree: storage.tree, lifeStorage: storage.lifeStorage, pointer: .end)
     }
     
     // MARK: -
 
     @inlinable
-    public var isNull: Bool {
-      pointer == .nullptr
+    public var ___isNull: Bool {
+      _pointer == .nullptr
     }
 
     @inlinable
     public var isEnd: Bool {
-      pointer == .end
+      _pointer == .end
     }
 
     // どうしてもSwiftらしい書き方が難しいときの必殺技用
     @inlinable
     public var ___pointee: Element {
-      tree[pointer]
+      _tree[_pointer]
     }
 
     // どうしてもSwiftらしい書き方が難しいときの必殺技用
     @inlinable
     public mutating func ___next() {
-      pointer = tree.__tree_next_iter(pointer)
+      _pointer = _tree.__tree_next_iter(_pointer)
     }
 
     // どうしてもSwiftらしい書き方が難しいときの必殺技用
     @inlinable
     public mutating func ___prev() {
-      pointer = tree.__tree_prev_iter(pointer)
+      _pointer = _tree.__tree_prev_iter(_pointer)
     }
     
     public static func == (lhs: Pointer, rhs: Pointer) -> Bool {
       // Rangeで正しく動けばいいので、これ以外の比較は行わない
-      lhs.pointer == rhs.pointer
+      lhs._pointer == rhs._pointer
     }
 
     // 本来の目的のための、大事な比較演算子
     public static func < (lhs: Pointer, rhs: Pointer) -> Bool {
 
-      if lhs.pointer == rhs.pointer {
+      if lhs._pointer == rhs._pointer {
         return false
       }
 
@@ -129,16 +118,16 @@ extension ___RedBlackTree.___Tree {
         return rank(lhs) < rank(rhs)
       }
 
-      let tree = lhs.tree
+      let tree = lhs._tree
       
-      return tree.value_comp(tree[key: lhs.pointer], tree[key: rhs.pointer])
+      return tree.value_comp(tree[key: lhs._pointer], tree[key: rhs._pointer])
     }
     
     // nullとendとそれ以外をざっくりまとめた比較値
     @inlinable
     internal static func rank(_ rhs: Pointer) -> Int {
       //      rhs.pointer != .end ? rhs.pointer : Int.max
-      switch rhs.pointer {
+      switch rhs._pointer {
       case .nullptr: return 3
       case .end: return 2
       default: return 1

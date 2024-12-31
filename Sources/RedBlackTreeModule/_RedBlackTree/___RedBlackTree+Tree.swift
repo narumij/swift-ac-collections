@@ -82,7 +82,7 @@ extension ___RedBlackTree.___Tree {
     newStorage.header.destroyCount = __destroy_count
     newStorage.header.destroyNode = __destroy_node
 #if DEBUG || true
-    newStorage.header.copyCount = copyCount + 1
+    newStorage.header.copyCount = copyCount &+ 1
 #endif
 
     self.withUnsafeMutablePointerToElements { oldNodes in
@@ -180,7 +180,7 @@ extension ___RedBlackTree.___Tree {
     
 #if DEBUG || true
     @usableFromInline
-    var copyCount: Int = 0
+    var copyCount: UInt = 0
 #endif
   }
 }
@@ -259,7 +259,7 @@ extension ___RedBlackTree.___Tree {
   }
   
 #if DEBUG || true
-  var copyCount: Int {
+  var copyCount: UInt {
     get { __header_ptr.pointee.copyCount }
     set { __header_ptr.pointee.copyCount = newValue }
   }

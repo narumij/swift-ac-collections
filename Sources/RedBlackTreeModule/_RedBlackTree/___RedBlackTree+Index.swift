@@ -69,7 +69,7 @@ extension Optional where Wrapped == ___RedBlackTree.SimpleIndex {
   }
   
   @usableFromInline
-  var pointer: _NodePtr {
+  var _pointer: _NodePtr {
     switch self {
     case .none:
       return .nullptr

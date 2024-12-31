@@ -870,7 +870,7 @@ extension RedBlackTreeSet.EnumSequence {
   // 不具合調査用
   extension RedBlackTreeSet {
 
-    public var copyCount: Int {
+    public var copyCount: UInt {
       get { _storage.tree.copyCount }
       set { _storage.tree.copyCount = newValue }
     }

@@ -463,27 +463,36 @@
       var set = RedBlackTreeMultiset<Int>()
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
         set.insert(i)
-        XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
+        XCTAssertTrue(set.___tree_invariant())
       }
+      XCTAssertEqual(set.map{ $0 }, set[set.startIndex ..< set.endIndex].map{ $0 })
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
         set.remove(i)
-        XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
+        XCTAssertTrue(set.___tree_invariant())
       }
+      XCTAssertEqual(set.map{ $0 }, set[set.startIndex ..< set.endIndex].map{ $0 })
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
         set.insert(i)
-        XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
+        XCTAssertTrue(set.___tree_invariant())
       }
+      XCTAssertEqual(set.map{ $0 }, set[set.startIndex ..< set.endIndex].map{ $0 })
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
         set.remove(i)
-        XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
+        XCTAssertTrue(set.___tree_invariant())
       }
+      XCTAssertEqual(set.map{ $0 }, set[set.startIndex ..< set.endIndex].map{ $0 })
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
         set.insert(i)
-        XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
+        XCTAssertTrue(set.___tree_invariant())
       }
+      XCTAssertEqual(set.map{ $0 }, set[set.startIndex ..< set.endIndex].map{ $0 })
+      print("set",set)
+      print("set.count",set.count)
+      print("set.copyCount",set.copyCount)
       for i in set[set.startIndex ..< set.endIndex] {
+        // erase multiなので、CoWなしだと、ポインタが破壊される
         set.remove(i)
-        XCTAssertTrue(set._tree.__tree_invariant(set._tree.__root()))
+        XCTAssertTrue(set.___tree_invariant())
       }
     }
     

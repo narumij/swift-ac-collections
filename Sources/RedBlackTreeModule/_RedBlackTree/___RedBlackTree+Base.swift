@@ -288,14 +288,14 @@ extension ___RedBlackTreeBase {
   @inlinable
   func ___equal_with(_ rhs: Self) -> Bool where Self: Sequence, Element: Equatable {
     _tree === rhs._tree ||
-    (___count == rhs.___count && zip(self._tree, rhs._tree).allSatisfy(==))
+    (___count == rhs.___count && zip(self, rhs).allSatisfy(==))
   }
 
   @inlinable
   func ___equal_with<K, V>(_ rhs: Self) -> Bool
   where Self: Sequence, K: Equatable, V: Equatable, Element == (key: K, value: V) {
     _tree === rhs._tree ||
-    (___count == rhs.___count && zip(self._tree, rhs._tree).allSatisfy(==))
+    (___count == rhs.___count && zip(self, rhs).allSatisfy(==))
   }
 }
 
@@ -346,3 +346,44 @@ extension ___RedBlackTreeBase {
   }
 }
 
+extension ___RedBlackTreeBase {
+
+  @inlinable
+  public func ___tree_invariant() -> Bool {
+    _tree.__tree_invariant(_tree.__root())
+  }
+}
+
+#if DEBUG || true
+  // TODO: CoWの挙動についてテストーコードを書くこと
+
+  // 不具合調査用
+  extension ___RedBlackTreeBase {
+
+    public var copyCount: UInt {
+      get { _storage.tree.copyCount }
+      set { _storage.tree.copyCount = newValue }
+    }
+
+    @inlinable
+    public mutating func checkUnique() -> Bool {
+      Tree._isKnownUniquelyReferenced(tree: &_tree)
+    }
+
+    //  @inlinable
+    //  public mutating func checkUnique2() -> Bool {
+    //    var a = Tree.Manager(unsafeBufferObject: tree)
+    //    return a.isUniqueReference()
+    //  }
+
+//    @inlinable
+//    public func _ptr_lowerBound(_ member: Element) -> _NodePtr {
+//      ___ptr_lower_bound(member)
+//    }
+//
+//    @inlinable
+//    public func _idx_lowerBound(_ member: Element) -> ___RedBlackTree.SimpleIndex {
+//      .init(___ptr_lower_bound(member))
+//    }
+  }
+#endif

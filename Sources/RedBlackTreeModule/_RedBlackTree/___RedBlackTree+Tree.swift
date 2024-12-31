@@ -485,27 +485,24 @@ extension ___RedBlackTree.___Tree {
   
   @inlinable
   @inline(__always)
-  public func ___for_each_(_ body: (Element) throws -> Void) rethrows {
-    var __p = startIndex
-    while __p != endIndex {
-      try body(self[__p])
-      __p = __tree_next(__p)
-    }
-  }
-
-  @inlinable
-  @inline(__always)
   public func ___for_each(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void)
     rethrows
   {
     var __p = __p
     var cont = true
     while cont, __p != __l {
-      try body(__p, &cont)
+      let __c = __p
       __p = __tree_next(__p)
+      try body(__c, &cont)
     }
   }
   
+  @inlinable
+  @inline(__always)
+  public func ___for_each_(_ body: (Element) throws -> Void) rethrows {
+    try ___for_each_(__p: __begin_node, __l: __end_node(), body: body)
+  }
+
   @inlinable
   @inline(__always)
   public func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (Element) throws -> Void)
@@ -513,8 +510,9 @@ extension ___RedBlackTree.___Tree {
   {
     var __p = __p
     while __p != __l {
-      try body(self[__p])
+      let __c = __p
       __p = __tree_next(__p)
+      try body(self[__c])
     }
   }
 }

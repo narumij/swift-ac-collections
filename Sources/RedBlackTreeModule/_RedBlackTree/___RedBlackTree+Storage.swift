@@ -154,6 +154,12 @@ extension ___RedBlackTree.___Tree {
     final func isKnownUniquelyReferenced_tree() -> Bool {
       isKnownUniquelyReferenced(&tree)
     }
+    @nonobjc
+    @inlinable
+    @inline(__always)
+    final func isKnownUniquelyReferenced_lifeStorage() -> Bool {
+      isKnownUniquelyReferenced(&lifeStorage)
+    }
     deinit {
       // 救命ボートに参加している各種インスタンスが使用しているtreeは
       // そのインスタンスが生きている限り生き残る
@@ -168,10 +174,25 @@ protocol ___RedBlackTreeStorageLifetime: ValueComparer {
 }
 
 extension ___RedBlackTreeStorageLifetime {
-  
+
   @inlinable
   @inline(__always)
-  mutating func _isKnownUniquelyReferenced() -> Bool {
+  mutating func _isKnownUniquelyReferenced_LV2() -> Bool {
+    if !isKnownUniquelyReferenced(&_storage) {
+      return false
+    }
+    if !_storage.isKnownUniquelyReferenced_lifeStorage() {
+      return false
+    }
+    if !_storage.isKnownUniquelyReferenced_tree() {
+      return false
+    }
+    return true
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func _isKnownUniquelyReferenced_LV1() -> Bool {
     if !isKnownUniquelyReferenced(&_storage) {
       return false
     }
@@ -183,8 +204,34 @@ extension ___RedBlackTreeStorageLifetime {
 
   @inlinable
   @inline(__always)
+  mutating func _strongEnsureUnique() {
+    if !_isKnownUniquelyReferenced_LV2() {
+      _storage = _storage.copy()
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func _strongEnsureUniqueAndCapacity() {
+    _ensureUniqueAndCapacity(minimumCapacity: _storage.count + 1)
+    assert(_storage.capacity > 0)
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func _strongEnsureUniqueAndCapacity(minimumCapacity: Int) {
+    let shouldExpand = _storage.capacity < minimumCapacity
+    if shouldExpand || !_isKnownUniquelyReferenced_LV2() {
+      _storage = _storage.copy(minimumCapacity: Tree._growCapacity(tree: &_storage.tree, to: minimumCapacity, linearly: false))
+    }
+    assert(_storage.capacity >= minimumCapacity)
+    assert(_storage.tree.header.initializedCount <= _storage.capacity)
+  }
+
+  @inlinable
+  @inline(__always)
   mutating func _ensureUnique() {
-    if !_isKnownUniquelyReferenced() {
+    if !_isKnownUniquelyReferenced_LV1() {
       _storage = _storage.copy()
     }
   }
@@ -200,7 +247,7 @@ extension ___RedBlackTreeStorageLifetime {
   @inline(__always)
   mutating func _ensureUniqueAndCapacity(minimumCapacity: Int) {
     let shouldExpand = _storage.capacity < minimumCapacity
-    if shouldExpand || !_isKnownUniquelyReferenced() {
+    if shouldExpand || !_isKnownUniquelyReferenced_LV1() {
       _storage = _storage.copy(minimumCapacity: Tree._growCapacity(tree: &_storage.tree, to: minimumCapacity, linearly: false))
     }
     assert(_storage.capacity >= minimumCapacity)

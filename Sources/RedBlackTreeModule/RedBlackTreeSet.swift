@@ -477,7 +477,7 @@ extension RedBlackTreeSet: Sequence {
     @inlinable
     @inline(__always)
     internal init(_base: RedBlackTreeSet) {
-      self._iterator = _base._tree.makeIterator()
+      self._iterator = _base._tree.makeIterator(lifeStorage: _base._storage.lifeStorage)
     }
 
     @inlinable
@@ -869,36 +869,3 @@ extension RedBlackTreeSet.EnumSequence {
 #endif
 }
 
-#if DEBUG || true
-  // TODO: CoWの挙動についてテストーコードを書くこと
-
-  // 不具合調査用
-  extension RedBlackTreeSet {
-
-    public var copyCount: UInt {
-      get { _storage.tree.copyCount }
-      set { _storage.tree.copyCount = newValue }
-    }
-
-    @inlinable
-    public mutating func checkUnique() -> Bool {
-      Tree._isKnownUniquelyReferenced(tree: &_tree)
-    }
-
-    //  @inlinable
-    //  public mutating func checkUnique2() -> Bool {
-    //    var a = Tree.Manager(unsafeBufferObject: tree)
-    //    return a.isUniqueReference()
-    //  }
-
-    @inlinable
-    public func _ptr_lowerBound(_ member: Element) -> _NodePtr {
-      ___ptr_lower_bound(member)
-    }
-
-    @inlinable
-    public func _idx_lowerBound(_ member: Element) -> ___RedBlackTree.SimpleIndex {
-      .init(___ptr_lower_bound(member))
-    }
-  }
-#endif

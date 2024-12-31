@@ -29,6 +29,9 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
 
   public
     typealias Element = Element
+  
+  public
+    typealias EnumElement = Tree.EnumElement
 
   public
   typealias Index = Tree.TreePointer
@@ -120,7 +123,7 @@ extension RedBlackTreeMultiset {
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
-    _ensureUnique()
+    _strongEnsureUnique()
     return _tree.___erase_multi(member) != 0 ? member : nil
   }
 
@@ -299,7 +302,7 @@ extension RedBlackTreeMultiset: Sequence {
     @inlinable
     @inline(__always)
     internal init(_base: RedBlackTreeMultiset) {
-      self._iterator = _base._tree.makeIterator()
+      self._iterator = _base._tree.makeIterator(lifeStorage: _base._storage.lifeStorage)
       self.tree = _base._tree
     }
 
@@ -316,12 +319,25 @@ extension RedBlackTreeMultiset: Sequence {
     Iterator(_base: self)
   }
   
+#if true
   @inlinable
   @inline(__always)
-  public func enumerated() -> AnySequence<Tree.EnumElement> {
-//    AnySequence { tree.makeEnumIterator(lifeStorage: lifeStorage) }
-    fatalError()
+  public func enumerated() -> AnySequence<EnumElement> {
+    AnySequence { _tree.makeEnumIterator(lifeStorage: _storage.lifeStorage) }
   }
+#else
+  @inlinable
+  @inline(__always)
+  public func enumerated() -> EnumSequence {
+    EnumSequence(_subSequence: _storage.enumeratedSubsequence())
+  }
+#endif
+//  @inlinable
+//  @inline(__always)
+//  public func enumerated() -> AnySequence<Tree.EnumElement> {
+////    AnySequence { tree.makeEnumIterator(lifeStorage: lifeStorage) }
+//    fatalError()
+//  }
 }
 
 extension RedBlackTreeMultiset: BidirectionalCollection {
@@ -464,7 +480,8 @@ extension RedBlackTreeMultiset.SubSequence: Sequence {
   }
   
   public typealias Element = RedBlackTreeMultiset.Element
-  public typealias EnumeratedElement = RedBlackTreeMultiset.Tree.EnumElement
+  public typealias EnumElement = RedBlackTreeMultiset.Tree.EnumElement
+//  public typealias EnumeratedElement = RedBlackTreeMultiset.Tree.EnumElement
 
   public struct Iterator: IteratorProtocol {
     @usableFromInline
@@ -489,12 +506,26 @@ extension RedBlackTreeMultiset.SubSequence: Sequence {
     Iterator(_subSequence.makeIterator())
   }
 
-  @inlinable
-  @inline(__always)
-  public func enumerated() -> AnySequence<EnumeratedElement> {
-//    AnySequence { tree.makeEnumeratedIterator(lifeStorage: lifeStorage, start: startIndex.pointer, end: endIndex.pointer) }
-    fatalError()
-  }
+#if true
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> AnySequence<EnumElement> {
+      AnySequence { tree.makeEnumeratedIterator(lifeStorage: _subSequence._lifeStorage, start: startIndex._pointer, end: endIndex._pointer) }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> EnumSequence {
+      EnumSequence(
+        _subSequence: tree.enumeratedSubsequence(lifeStorage: lifeStorage, from: startIndex._pointer, to: endIndex._pointer))
+    }
+  #endif
+//  @inlinable
+//  @inline(__always)
+//  public func enumerated() -> AnySequence<EnumeratedElement> {
+////    AnySequence { tree.makeEnumeratedIterator(lifeStorage: lifeStorage, start: startIndex.pointer, end: endIndex.pointer) }
+//    fatalError()
+//  }
 }
 
 extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {

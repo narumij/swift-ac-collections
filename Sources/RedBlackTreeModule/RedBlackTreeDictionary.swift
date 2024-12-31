@@ -422,7 +422,7 @@ extension RedBlackTreeDictionary: Sequence {
     @inlinable
     @inline(__always)
     internal init(_base: RedBlackTreeDictionary) {
-      self._iterator = _base._tree.makeIterator()
+      self._iterator = _base._tree.makeIterator(lifeStorage: _base._storage.lifeStorage)
       self.tree = _base._tree
     }
 

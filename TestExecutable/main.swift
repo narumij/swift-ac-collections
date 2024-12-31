@@ -2,6 +2,7 @@
 
 import Foundation
 import RedBlackTreeModule
+import Collections
 
 print("start job")
 
@@ -27,7 +28,7 @@ var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 for v in 0..<10_000_000 {
   tree.remove(v)
 }
-#elseif true
+#elseif false
 var tree = RedBlackTreeSet<Int>(0 ..< count)
 tree.copyCount = 0
 print(tree.count)
@@ -185,7 +186,7 @@ for i in 0 ..< 2_000_000 {
   xy[1]?.remove(i)
 //  xy[1, default: []].remove(i)
 }
-#elseif true
+#elseif false
 var xy: [Int:RedBlackTreeSet<Int>] = [:]
 xy[1]?.copyCount = 0
 (0 ..< 100_000).forEach { i in
@@ -205,7 +206,7 @@ xy[1]?.copyCount = 0
 print("tree.unique", xy[1]!.checkUnique())
 print("tree.count", xy[1]!.count)
 print("tree.copyCount", xy[1]!.copyCount)
-#elseif true
+#elseif false
 var xy: [Int:RedBlackTreeSet<Int>] = [1: .init(0 ..< 2_000_000)]
 xy[1]?.copyCount = 0
 xy[1]?[0 ..< 2_000_000].enumerated().forEach { i, v in
@@ -221,6 +222,24 @@ for i in 0 ..< 2_000_000 {
     _ = e + 1
   }
 }
+#elseif false
+var xy: [Int] = (0 ..< 200_000_000) + []
+  for _ in 0 ..< 200_000_000 {
+    // 配列の場合、CoWチェックは走ってるが、コピーは起きてない
+    for _ in xy {
+      xy.removeLast()
+      continue
+    }
+  }
+#elseif true
+var xy: Deque<Int> = (0 ..< 200_000_000) + []
+  for _ in 0 ..< 200_000_000 {
+    // Dequeの場合、一度だけ、コピーが発生している
+    for i in xy {
+      xy.removeFirst()
+      continue
+    }
+  }
 #else
 var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]
   for i in 0 ..< 2_000_000 {

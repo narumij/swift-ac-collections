@@ -29,29 +29,26 @@ extension ___RedBlackTree.___Tree {
   public typealias EnumeratedElement = (offset: EnumeratedIndex, element: Element)
   
   @frozen
-  public struct EnumIterator: IteratorProtocol {
+  public struct EnumIterator: RedBlackTreeIteratorNextProtocol {
     
     @inlinable
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.tree = tree
-      self.current = start
-      self.end = end
+    internal init(tree: Tree, lifeStorage: LifeStorage, start: _NodePtr, end: _NodePtr) {
+      self._tree = tree
+      self._current = start
+      self._end = end
+      self._next = start == .end ? .end : tree.__tree_next(start)
     }
     
-    // AnySequenceにキャプチャされるため、ownedでは過剰と理解している
     @usableFromInline
-    let tree: Tree
+    unowned let _tree: Tree
     
     @usableFromInline
-    var current, end: _NodePtr
-    
+    var _current, _next, _end: _NodePtr
+
     @inlinable
     @inline(__always)
-    public mutating func next() -> EnumeratedElement?
-    {
-      guard current != end else { return nil }
-      defer { current = tree.__tree_next(current) }
-      return (.init(current), tree[current])
+    public mutating func next() -> EnumeratedElement? {
+      _next().map { (.init($0), _tree[$0]) }
     }
   }
 }
@@ -59,13 +56,13 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
   
   @inlinable
-  public __consuming func makeEnumIterator() -> EnumIterator {
-    .init(tree: self, start: __begin_node, end: __end_node())
+  __consuming func makeEnumIterator(lifeStorage: LifeStorage) -> EnumIterator {
+    .init(tree: self, lifeStorage: lifeStorage, start: __begin_node, end: __end_node())
   }
   
   @inlinable
-  public __consuming func makeEnumeratedIterator(start: _NodePtr, end: _NodePtr) -> EnumIterator {
-    .init(tree: self, start: start, end: end)
+  __consuming func makeEnumeratedIterator(lifeStorage: LifeStorage, start: _NodePtr, end: _NodePtr) -> EnumIterator {
+    .init(tree: self, lifeStorage: lifeStorage, start: start, end: end)
   }
 }
 
@@ -78,14 +75,18 @@ extension ___RedBlackTree.___Tree {
     public typealias Index = _NodePtr
 
     @inlinable
-    public init(tree: Tree, start: Index, end: Index) {
+    init(tree: Tree, lifeStorage: LifeStorage, start: Index, end: Index) {
       self.base = tree
+      self.lifeStorage = lifeStorage
       self.startIndex = start
       self.endIndex = end
     }
 
     @usableFromInline
     let base: Tree
+    
+    @usableFromInline
+    let lifeStorage: LifeStorage
 
     public
       var startIndex: Index
@@ -95,7 +96,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     public func makeIterator() -> EnumIterator {
-      base.makeEnumeratedIterator(start: startIndex, end: endIndex)
+      base.makeEnumeratedIterator(lifeStorage: lifeStorage, start: startIndex, end: endIndex)
     }
     
     @inlinable
@@ -182,7 +183,7 @@ extension ___RedBlackTree.___Tree {
     
     @inlinable
     public subscript(bounds: Range<TreePointer>) -> EnumSequence {
-      .init(tree: base, start: bounds.lowerBound.pointer, end: bounds.upperBound.pointer)
+      .init(tree: base, lifeStorage: lifeStorage, start: bounds.lowerBound.pointer, end: bounds.upperBound.pointer)
     }
   }
 }
@@ -190,12 +191,31 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
+  func enumeratedSubsequence(lifeStorage: LifeStorage) -> EnumSequence {
+    .init(tree: self, lifeStorage: lifeStorage, start: __begin_node, end: __end_node())
+  }
+
+  @inlinable
+  func enumeratedSubsequence(lifeStorage: LifeStorage, from: _NodePtr, to: _NodePtr) -> EnumSequence {
+    .init(tree: self, lifeStorage: lifeStorage, start: from, end: to)
+  }
+}
+
+extension ___RedBlackTree.___Tree {
+  public typealias _EnumSequence = EnumSequence
+}
+
+extension ___RedBlackTree.___Tree.Storage {
+  
+  public typealias EnumSequence = ___RedBlackTree.___Tree<VC>.EnumSequence
+  
+  @inlinable
   func enumeratedSubsequence() -> EnumSequence {
-    .init(tree: self, start: __begin_node, end: __end_node())
+    .init(tree: tree, lifeStorage: lifeStorage, start: tree.__begin_node, end: tree.__end_node())
   }
 
   @inlinable
   func enumeratedSubsequence(from: _NodePtr, to: _NodePtr) -> EnumSequence {
-    .init(tree: self, start: from, end: to)
+    .init(tree: tree, lifeStorage: lifeStorage, start: from, end: to)
   }
 }

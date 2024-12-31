@@ -53,7 +53,7 @@ where CustomKey: CustomKeyProtocol {
     typealias _Value = Value
 
   public init() {
-    tree = .create(withCapacity: 0)
+    storage = .create(withCapacity: 0)
   }
 
   public subscript(key: Key) -> Value? {
@@ -68,10 +68,13 @@ where CustomKey: CustomKeyProtocol {
   }
 
   @usableFromInline
-  var tree: Tree
+  var tree: Tree {
+    get { storage.tree }
+    _modify { yield &storage.tree }
+  }
   
   @usableFromInline
-  var lifeStorage: Tree.LifeStorage = .init()
+  var storage: Tree.Storage
 
   public var count: Int { tree.size }
   public var isEmpty: Bool { count == 0 }

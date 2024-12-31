@@ -163,9 +163,9 @@ public struct RedBlackTreeSet<Element: Comparable> {
     _modify { yield &storage.tree }
   }
 
-  @inlinable
-  @inline(__always)
-  var lifeStorage: Tree.LifeStorage { storage.lifeStorage }
+//  @inlinable
+//  @inline(__always)
+//  var lifeStorage: Tree.LifeStorage { storage.lifeStorage }
 
   @usableFromInline
   var storage: Tree.Storage
@@ -227,7 +227,7 @@ extension RedBlackTreeSet {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    ___ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
+    _ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
   }
 }
 
@@ -237,14 +237,14 @@ extension RedBlackTreeSet {
   @inlinable public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    ___ensureUniqueAndCapacity()
+    _ensureUniqueAndCapacity()
     let (__r, __inserted) = tree.__insert_unique(newMember)
     return (__inserted, __inserted ? newMember : tree[ref: __r])
   }
 
   @discardableResult
   @inlinable public mutating func update(with newMember: Element) -> Element? {
-    ___ensureUniqueAndCapacity()
+    _ensureUniqueAndCapacity()
     let (__r, __inserted) = tree.__insert_unique(newMember)
     guard !__inserted else { return nil }
     let oldMember = tree[ref: __r]
@@ -409,7 +409,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)。
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : self[index(before: .end(tree2))]
+    isEmpty ? nil : self[index(before: .end(storage))]
   }
 
   @inlinable
@@ -502,7 +502,7 @@ extension RedBlackTreeSet: Sequence {
     @inlinable
     @inline(__always)
     public func enumerated() -> EnumSequence {
-      EnumSequence(_subSequence: tree.enumeratedSubsequence())
+      EnumSequence(_subSequence: storage.enumeratedSubsequence())
     }
   #endif
 }
@@ -511,11 +511,11 @@ extension RedBlackTreeSet: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public var startIndex: Index { Index(__tree: tree2, pointer: tree.startIndex) }
+  public var startIndex: Index { Index(__storage: storage, pointer: tree.startIndex) }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__tree: tree2, pointer: tree.endIndex) }
+  public var endIndex: Index { Index(__storage: storage, pointer: tree.endIndex) }
 
   @inlinable
   @inline(__always)
@@ -530,7 +530,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__tree: tree2, pointer: tree.index(after: i.pointer))
+    return Index(__storage: storage, pointer: tree.index(after: i.pointer))
   }
 
   @inlinable
@@ -542,7 +542,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__tree: tree2, pointer: tree.index(before: i.pointer))
+    return Index(__storage: storage, pointer: tree.index(before: i.pointer))
   }
 
   @inlinable
@@ -554,7 +554,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__tree: tree2, pointer: tree.index(i.pointer, offsetBy: distance))
+    return Index(__storage: storage, pointer: tree.index(i.pointer, offsetBy: distance))
   }
 
   @inlinable
@@ -566,9 +566,8 @@ extension RedBlackTreeSet: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-
     if let i = tree.index(i.pointer, offsetBy: distance, limitedBy: limit.pointer) {
-      return Index(__tree: tree2, pointer: i)
+      return Index(__storage: storage, pointer: i)
     } else {
       return nil
     }
@@ -599,6 +598,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
     SubSequence(
       _subSequence:
         tree.subsequence(
+          lifeStorage: storage.lifeStorage,
           from: bounds.lowerBound.pointer,
           to: bounds.upperBound.pointer)
     )
@@ -609,6 +609,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
     SubSequence(
       _subSequence:
         tree.subsequence(
+          lifeStorage: storage.lifeStorage,
           from: ___ptr_lower_bound(bounds.lowerBound),
           to: ___ptr_upper_bound(bounds.upperBound)))
   }
@@ -669,18 +670,18 @@ extension RedBlackTreeSet.SubSequence: Sequence {
     Iterator(_subSequence.makeIterator())
   }
 
-  #if false
+#if true
     @inlinable
     @inline(__always)
-    public func enumerated() -> AnySequence<EnumeratedElement> {
-      AnySequence { tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer) }
+    public func enumerated() -> AnySequence<EnumElement> {
+      AnySequence { tree.makeEnumeratedIterator(lifeStorage: _subSequence.lifeStorage, start: startIndex.pointer, end: endIndex.pointer) }
     }
   #else
     @inlinable
     @inline(__always)
     public func enumerated() -> EnumSequence {
       EnumSequence(
-        _subSequence: tree.enumeratedSubsequence(from: startIndex.pointer, to: endIndex.pointer))
+        _subSequence: tree.enumeratedSubsequence(lifeStorage: _subSequence.lifeStorage, from: startIndex.pointer, to: endIndex.pointer))
     }
   #endif
 }
@@ -692,11 +693,11 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public var startIndex: Index { Index(__tree: tree2, pointer: _subSequence.startIndex) }
+  public var startIndex: Index { Index(__tree: tree, __storage: _subSequence.lifeStorage, pointer: _subSequence.startIndex) }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__tree: tree2, pointer: _subSequence.endIndex) }
+  public var endIndex: Index { Index(__tree: tree, __storage: _subSequence.lifeStorage, pointer: _subSequence.endIndex) }
 
   @inlinable
   @inline(__always)
@@ -711,7 +712,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__tree: tree2, pointer: _subSequence.index(after: i.pointer))
+    return Index(__tree: tree, __storage: _subSequence.lifeStorage, pointer: _subSequence.index(after: i.pointer))
   }
 
   @inlinable
@@ -723,7 +724,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__tree: tree2, pointer: _subSequence.index(before: i.pointer))
+    return Index(__tree: tree, __storage: _subSequence.lifeStorage, pointer: _subSequence.index(before: i.pointer))
   }
 
   @inlinable
@@ -735,7 +736,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__tree: tree2, pointer: _subSequence.index(i.pointer, offsetBy: distance))
+    return Index(__tree: tree, __storage: _subSequence.lifeStorage, pointer: _subSequence.index(i.pointer, offsetBy: distance))
   }
 
   @inlinable
@@ -749,7 +750,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
 
     if let i = _subSequence.index(i.pointer, offsetBy: distance, limitedBy: limit.pointer) {
-      return Index(__tree: tree2, pointer: i)
+      return Index(__tree: tree, __storage: _subSequence.lifeStorage, pointer: i)
     } else {
       return nil
     }
@@ -817,22 +818,6 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   }
 #endif
 
-extension RedBlackTreeSet {
-
-  @usableFromInline
-  var tree2: (Tree, Tree.LifeStorage) {
-    (tree, lifeStorage)
-  }
-}
-
-extension RedBlackTreeSet.SubSequence {
-
-  @usableFromInline
-  var tree2: (_Tree, _Tree.LifeStorage) {
-    (tree, .init())
-  }
-}
-
 // MARK: - Enumerated Sequence
 
 extension RedBlackTreeSet {
@@ -892,6 +877,7 @@ extension RedBlackTreeSet.EnumSequence: Sequence {
 
 extension RedBlackTreeSet.EnumSequence {
 
+#if false
   @inlinable
   @inline(__always)
   public func forEach(_ body: (_Element) throws -> Void) rethrows {
@@ -906,4 +892,5 @@ extension RedBlackTreeSet.EnumSequence {
       try body((.init(__c), base[__c]))
     }
   }
+#endif
 }

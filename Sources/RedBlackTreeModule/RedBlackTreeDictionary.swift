@@ -50,10 +50,11 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   var tree: Tree
   
   @usableFromInline
-  var lifeStorage: Tree.LifeStorage = .init()
+  var storage: Tree.Storage = .create(withCapacity: 0)
 }
 
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
+extension RedBlackTreeDictionary: ___RedBlackTreeNonStorageLifetime {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 
 extension RedBlackTreeDictionary {
@@ -436,7 +437,8 @@ extension RedBlackTreeDictionary: Sequence {
   @inlinable
   @inline(__always)
   public func enumerated() -> AnySequence<Tree.EnumeratedElement> {
-    AnySequence { tree.makeEnumIterator() }
+//    AnySequence { tree.makeEnumIterator(lifeStorage: lifeStorage) }
+    fatalError()
   }
 }
 
@@ -531,7 +533,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   public subscript(bounds: Range<Index>) -> SubSequence {
     SubSequence(
       _subSequence:
-        tree.subsequence(from: bounds.lowerBound.pointer, to: bounds.upperBound.pointer)
+        tree.subsequence(lifeStorage: storage.lifeStorage, from: bounds.lowerBound.pointer, to: bounds.upperBound.pointer)
     )
   }
   
@@ -603,7 +605,8 @@ extension RedBlackTreeDictionary.SubSequence: Sequence {
   @inlinable
   @inline(__always)
   public func enumerated() -> AnySequence<EnumeratedElement> {
-    AnySequence { tree.makeEnumeratedIterator(start: startIndex.pointer, end: endIndex.pointer) }
+//    AnySequence { tree.makeEnumeratedIterator(lifeStorage: lifeStorage, start: startIndex.pointer, end: endIndex.pointer) }
+    fatalError()
   }
 }
 
@@ -709,7 +712,7 @@ extension RedBlackTreeDictionary {
   
   @usableFromInline
   var tree2: (Tree, Tree.LifeStorage) {
-    (tree, lifeStorage)
+    (tree, storage.lifeStorage)
   }
 }
 

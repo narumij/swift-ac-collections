@@ -22,31 +22,52 @@
 
 import Foundation
 
-extension ___RedBlackTree.___Tree: Sequence {
+@usableFromInline
+protocol RedBlackTreeIteratorNextProtocol: IteratorProtocol {
+  associatedtype _Tree: MemberProtocol
+  var _tree: _Tree { get }
+  var _current: _NodePtr { get set }
+  var _next: _NodePtr { get set }
+  var _end: _NodePtr { get set }
+}
+
+extension RedBlackTreeIteratorNextProtocol {
+  @inlinable
+  @inline(__always)
+  public mutating func _next() -> _NodePtr?
+  {
+    guard _current != _end else { return nil }
+    defer {
+      _current = _next
+      _next = _next == .end ? .end : _tree.__tree_next(_next)
+    }
+    return _current
+  }
+}
+
+extension ___RedBlackTree.___Tree { // Sequence
   
   @frozen
-  public struct Iterator: IteratorProtocol {
+  public struct Iterator: RedBlackTreeIteratorNextProtocol {
     
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.tree = tree
-      self.current = start
-      self.end = end
+      self._tree = tree
+      self._current = start
+      self._end = end
+      self._next = start == .end ? .end : tree.__tree_next(start)
     }
     
     @usableFromInline
-    let tree: Tree
+    unowned let _tree: Tree
     
     @usableFromInline
-    var current, end: _NodePtr
+    var _current, _next, _end: _NodePtr
     
     @inlinable
     @inline(__always)
-    public mutating func next() -> Element?
-    {
-      guard current != end else { return nil }
-      defer { current = tree.__tree_next(current) }
-      return tree[current]
+    public mutating func next() -> Element? {
+      _next().map{ _tree[$0] }
     }
   }
   

@@ -6,7 +6,7 @@ import PackageDescription
 var defines: [String] = [
 //  "AC_COLLECTIONS_INTERNAL_CHECKS",
 //  "TREE_INVARIANT_CHECKS",
-//  "GRAPHVIZ_DEBUG"
+//  "GRAPHVIZ_DEBUG",
 ]
 
 var _settings: [SwiftSetting] = defines.map { .define($0) }

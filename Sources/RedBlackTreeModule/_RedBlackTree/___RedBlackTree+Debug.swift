@@ -173,6 +173,9 @@ extension ___RedBlackTree.___Tree {
     func isRed(_ i: Int) -> Bool {
       !self[node: i].__is_black_
     }
+    func isBlack(_ i: Int) -> Bool {
+      self[node: i].__is_black_
+    }
     func hasLeft(_ i: Int) -> Bool {
       self[node: i].__left_ != .nullptr
     }
@@ -202,13 +205,14 @@ extension ___RedBlackTree.___Tree {
         return "\(i)"
       }
     }
-    let reds = (0..<header.initializedCount).filter { !self[node: $0].__is_black_ }.map { "\($0)" }
+    let reds = (0..<header.initializedCount).filter(isRed).map(node)
+    let blacks = (0..<header.initializedCount).filter(isBlack).map(node)
     let lefts: [(Int, Int)] = (0..<header.initializedCount).filter(hasLeft).map(leftPair)
     let rights: [(Int, Int)] = (0..<header.initializedCount).filter(hasRight).map(rightPair)
     var digraph = Graphviz.Digraph()
     digraph.nodes.append((.red, reds))
     digraph.nodes.append((.blue, ["begin","stack","end"]))
-    digraph.nodes.append((.black, []))
+    digraph.nodes.append((.black, blacks))
     if __root() != .nullptr {
       digraph.edges.append(.init(from: node(.end), to: node(__root()), properties: .left))
     }

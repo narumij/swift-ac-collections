@@ -56,6 +56,10 @@ import AcCollections
 - 連想配列リテラル（`ExpressibleByDictionaryLiteral`）にも対応しています。
 - Swift 5.8.1では標準辞書に及びませんが、Swift 6.0ではこちらの方が速い場合もあります。
 
+### PermutationModule
+
+後述
+
 ## 簡単な使用例
 
 ```Swift
@@ -199,6 +203,32 @@ for member in multiset.map({ $0 }) {
   multiset.remove(member)
 }
 ```
+
+## PermutationModule
+
+### 使い方
+
+```Swift
+import AcCollections
+
+for p in [1,2].unsafePermutations() {
+  print(p.map{$0})
+  // [1,2]
+  // [2,1]
+}
+```
+
+### 説明
+
+これの何が嬉しいかというと、データコピーにまつわるオーバーヘッドが極端に少なくなっています。データのコピーは最初の一回のみです。
+
+RandamAccessCollectionに適合した独自のコンテナを返しており、要素アクセスも各種標準操作も利用できますが、コピーが発生しません。
+
+謹製のpermutations()は配列を返す設計となっていることで、データのコピーが避けられません。
+
+このため、正しく書けているにも関わらずTLEしてしまうことが起きがちです。
+
+TLEで苦しんだ際に、あるいはTLEに苦しまないよう、お試しください。
 
 ## アンダースコア付き宣言について
 

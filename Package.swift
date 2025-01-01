@@ -4,7 +4,7 @@
 import PackageDescription
 
 var defines: [String] = [
-  "AC_COLLECTIONS_INTERNAL_CHECKS",
+//  "AC_COLLECTIONS_INTERNAL_CHECKS",
 //  "TREE_INVARIANT_CHECKS",
 ]
 
@@ -18,21 +18,21 @@ let package = Package(
       name: "AcCollections",
       targets: ["AcCollections"])
   ],
-  dependencies: [
-    .package(
-      url: "https://github.com/apple/swift-collections.git",
-      branch: "main"
-    ),
-    .package(
-      url: "https://github.com/apple/swift-algorithms.git",
-      from: "1.2.0"),
-  ],
+//  dependencies: [
+//    .package(
+//      url: "https://github.com/apple/swift-collections.git",
+//      branch: "main"
+//    ),
+//    .package(
+//      url: "https://github.com/apple/swift-algorithms.git",
+//      from: "1.2.0"),
+//  ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
       name: "AcCollections",
-      dependencies: ["RedBlackTreeModule"],
+      dependencies: ["RedBlackTreeModule", "PermutationModule"],
       swiftSettings: _settings
     ),
     .target(
@@ -48,7 +48,7 @@ let package = Package(
     .executableTarget(
       name: "Executable",
       dependencies: [
-        .product(name: "Collections", package: "swift-collections"),
+//        .product(name: "Collections", package: "swift-collections"),
         "RedBlackTreeModule",
         "PermutationModule"
       ],

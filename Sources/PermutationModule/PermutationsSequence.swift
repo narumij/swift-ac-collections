@@ -1,32 +1,78 @@
 import Foundation
 
+// TODO: 名前がモロかぶりなので、別のモノにする
 public
-  struct PermutationSequence<Element: Comparable>
+  struct PermutationsSequence<Element: Comparable>
 {
+  @usableFromInline
+  var _source: [Element]
 
-  var source: [Element]
-  public init<S>(_ s: S) where S: Sequence, S.Element == Element {
-    source = s.sorted()
+  @usableFromInline
+  var _unsafe: Bool
+
+  @inlinable
+  @inline(__always)
+  public init<S>(_ uniqueSequence: S) where S: Sequence, S.Element == Element {
+    _source = uniqueSequence.sorted()
+    _unsafe = false
+  }
+
+  @inlinable
+  @inline(__always)
+  public init<S>(_unsafe uniqueSequence: S) where S: Sequence, S.Element == Element {
+    _source = uniqueSequence.sorted()
+    _unsafe = true
   }
 }
 
-extension PermutationSequence: Sequence {
+extension PermutationsSequence: Sequence {
 
+  @inlinable
+  @inline(__always)
   public func makeIterator() -> Iterator {
-    .init(buffer: .prepare(source))
+    .init(buffer: .prepare(_source), _unsafe: _unsafe)
   }
 
   public
     struct Iterator: IteratorProtocol
   {
+    @inlinable
+    @inline(__always)
+    internal init(
+      buffer: PermutationsSequence<Element>.Buffer,
+      _unsafe: Bool
+    ) {
+      self.buffer = buffer
+      self._unsafe = _unsafe
+    }
+
+    @usableFromInline
     var buffer: Buffer
+    @usableFromInline
     var start = true
+    @usableFromInline
     var end = false
+    @usableFromInline
+    var _unsafe: Bool
+
+    @inlinable
+    @inline(__always)
+    mutating func ensureUnique() {
+      if !isKnownUniquelyReferenced(&buffer) {
+        buffer = buffer.copy()
+      }
+    }
+
+    @inlinable
+    @inline(__always)
     public mutating func next() -> SubSequence? {
       guard !end else { return nil }
       if start {
         start = false
       } else {
+        if !_unsafe {
+          ensureUnique()
+        }
         end = !buffer.nextPermutation()
       }
       return end ? nil : SubSequence(buffer: buffer)
@@ -34,7 +80,7 @@ extension PermutationSequence: Sequence {
   }
 }
 
-extension PermutationSequence {
+extension PermutationsSequence {
 
   @usableFromInline
   struct Header {
@@ -68,33 +114,50 @@ extension PermutationSequence {
   public
     struct SubSequence
   {
+    @inlinable
+    @inline(__always)
+    internal init(
+      buffer: PermutationsSequence<Element>.Buffer
+    ) {
+      self.buffer = buffer
+    }
+
     @usableFromInline
-    var buffer: PermutationSequence.Buffer
+    var buffer: PermutationsSequence.Buffer
   }
 }
 
-extension PermutationSequence.SubSequence: RandomAccessCollection {
+extension PermutationsSequence.SubSequence: RandomAccessCollection {
+  @inlinable
+  @inline(__always)
   public var startIndex: Int { buffer.startIndex }
+  @inlinable
+  @inline(__always)
   public var endIndex: Int { buffer.endIndex }
   public typealias Index = Int
   public typealias Element = Element
+  @inlinable
+  @inline(__always)
   public subscript(position: Int) -> Element { buffer[position] }
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    public var _copyCount: UInt { buffer.header.copyCount }
+  #endif
 }
 
-extension PermutationSequence.Buffer {
+extension PermutationsSequence.Buffer {
 
   @inlinable
   internal static func create(
     withCapacity capacity: Int
   ) -> Self {
-    let storage = PermutationSequence.Buffer.create(minimumCapacity: capacity) { _ in
-      PermutationSequence.Header(capacity: capacity, count: 0)
+    let storage = PermutationsSequence.Buffer.create(minimumCapacity: capacity) { _ in
+      PermutationsSequence.Header(capacity: capacity, count: 0)
     }
     return unsafeDowncast(storage, to: Self.self)
   }
 
   @inlinable
-  internal func copy(newCapacity: Int? = nil) -> PermutationSequence.Buffer {
+  internal func copy(newCapacity: Int? = nil) -> PermutationsSequence.Buffer {
 
     let capacity = newCapacity ?? self.header.capacity
     let count = self.header.count
@@ -102,7 +165,7 @@ extension PermutationSequence.Buffer {
       let copyCount = self.header.copyCount
     #endif
 
-    let newStorage = PermutationSequence.Buffer.create(withCapacity: capacity)
+    let newStorage = PermutationsSequence.Buffer.create(withCapacity: capacity)
 
     newStorage.header.capacity = capacity
     newStorage.header.count = count
@@ -120,15 +183,16 @@ extension PermutationSequence.Buffer {
   }
 }
 
-extension PermutationSequence.Buffer {
+extension PermutationsSequence.Buffer {
 
   @inlinable
-  static func prepare(_ source: [Element]) -> PermutationSequence.Buffer {
+  @inline(__always)
+  static func prepare(_ source: [Element]) -> PermutationsSequence.Buffer {
 
     let capacity = source.count
     let count = source.count
 
-    let newStorage = PermutationSequence.Buffer.create(withCapacity: capacity)
+    let newStorage = PermutationsSequence.Buffer.create(withCapacity: capacity)
     newStorage.header.capacity = capacity
     newStorage.header.count = count
     #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -143,9 +207,16 @@ extension PermutationSequence.Buffer {
   }
 }
 
-extension PermutationSequence.Buffer {
+extension PermutationsSequence.Buffer {
 
   @inlinable
+  @inline(__always)
+  var __header_ptr: UnsafeMutablePointer<PermutationsSequence.Header> {
+    withUnsafeMutablePointerToHeader({ $0 })
+  }
+
+  @inlinable
+  @inline(__always)
   var __storage_ptr: UnsafeMutablePointer<Element> {
     withUnsafeMutablePointerToElements({ $0 })
   }
@@ -153,26 +224,35 @@ extension PermutationSequence.Buffer {
   @usableFromInline
   typealias Index = Int
 
-  @usableFromInline
-  var isEmpty: Bool { header.count == 0 }
-  @usableFromInline
+  @inlinable
+  @inline(__always)
+  var isEmpty: Bool { __header_ptr.pointee.count == 0 }
+  @inlinable
+  @inline(__always)
   var startIndex: Index { 0 }
-  @usableFromInline
-  var endIndex: Index { header.count }
+  @inlinable
+  @inline(__always)
+  var endIndex: Index { __header_ptr.pointee.count }
 
   @inlinable
+  @inline(__always)
   func formIndex(before i: inout Index) { i -= 1 }
   @inlinable
+  @inline(__always)
   func formIndex(after i: inout Index) { i += 1 }
   @inlinable
+  @inline(__always)
   func index(before i: Index) -> Index { i - 1 }
   @inlinable
+  @inline(__always)
   func swapAt(_ a: Index, _ b: Index) { swap(&self[a], &self[b]) }
   @inlinable
+  @inline(__always)
   func lastIndex(where predicate: (Element) -> Bool) -> Index? {
     (startIndex..<endIndex).last(where: { predicate(self[$0]) })
   }
   @inlinable
+  @inline(__always)
   subscript(position: Index) -> Element {
     get { __storage_ptr[position] }
     _modify { yield &__storage_ptr[position] }

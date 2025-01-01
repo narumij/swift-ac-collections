@@ -63,26 +63,26 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   internal func copy(newCapacity: Int? = nil) -> Tree {
 
-    let capacity = newCapacity ?? self.header.capacity
-    let __left_ = self.header.__left_
-    let __begin_node = self.header.__begin_node
-    let __initialized_count = self.header.initializedCount
-    let __destroy_count = self.header.destroyCount
-    let __destroy_node = self.header.destroyNode
+    let capacity = newCapacity ?? self._header.capacity
+    let __left_ = self._header.__left_
+    let __begin_node = self._header.__begin_node
+    let __initialized_count = self._header.initializedCount
+    let __destroy_count = self._header.destroyCount
+    let __destroy_node = self._header.destroyNode
     #if AC_COLLECTIONS_INTERNAL_CHECKS
-      let copyCount = self.header.copyCount
+      let copyCount = self._header.copyCount
     #endif
 
     let newStorage = Tree.create(withCapacity: capacity)
 
-    newStorage.header.capacity = capacity
-    newStorage.header.__left_ = __left_
-    newStorage.header.__begin_node = __begin_node
-    newStorage.header.initializedCount = __initialized_count
-    newStorage.header.destroyCount = __destroy_count
-    newStorage.header.destroyNode = __destroy_node
+    newStorage._header.capacity = capacity
+    newStorage._header.__left_ = __left_
+    newStorage._header.__begin_node = __begin_node
+    newStorage._header.initializedCount = __initialized_count
+    newStorage._header.destroyCount = __destroy_count
+    newStorage._header.destroyNode = __destroy_node
     #if AC_COLLECTIONS_INTERNAL_CHECKS
-      newStorage.header.copyCount = copyCount &+ 1
+      newStorage._header.copyCount = copyCount &+ 1
     #endif
 
     self.withUnsafeMutablePointerToElements { oldNodes in
@@ -208,15 +208,23 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
+  var _header: Header {
+    @inline(__always)
+    get { __header_ptr.pointee }
+    @inline(__always)
+    _modify { yield &__header_ptr.pointee }
+  }
+
+  @inlinable
   subscript(node pointer: _NodePtr) -> Node {
     @inline(__always)
     get {
-      assert(0 <= pointer && pointer < header.initializedCount)
+      assert(0 <= pointer && pointer < _header.initializedCount)
       return __node_ptr[pointer]
     }
     @inline(__always)
     _modify {
-      assert(0 <= pointer && pointer < header.initializedCount)
+      assert(0 <= pointer && pointer < _header.initializedCount)
       yield &__node_ptr[pointer]
     }
   }
@@ -224,7 +232,7 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   @inline(__always)
   subscript(key pointer: _NodePtr) -> _Key {
-    assert(0 <= pointer && pointer < header.initializedCount)
+    assert(0 <= pointer && pointer < _header.initializedCount)
     return __key(__node_ptr[pointer].__value_)
   }
 
@@ -232,12 +240,12 @@ extension ___RedBlackTree.___Tree {
   public subscript(_ pointer: _NodePtr) -> Element {
     @inline(__always)
     get {
-      assert(0 <= pointer && pointer < header.initializedCount)
+      assert(0 <= pointer && pointer < _header.initializedCount)
       return __node_ptr[pointer].__value_
     }
     @inline(__always)
     _modify {
-      assert(0 <= pointer && pointer < header.initializedCount)
+      assert(0 <= pointer && pointer < _header.initializedCount)
       yield &__node_ptr[pointer].__value_
     }
   }
@@ -247,13 +255,13 @@ extension ___RedBlackTree.___Tree {
     @inline(__always)
     get {
       let pointer = __ref_(ref)
-      assert(0 <= pointer && pointer < header.initializedCount)
+      assert(0 <= pointer && pointer < _header.initializedCount)
       return __node_ptr[pointer].__value_
     }
     @inline(__always)
     _modify {
       let pointer = __ref_(ref)
-      assert(0 <= pointer && pointer < header.initializedCount)
+      assert(0 <= pointer && pointer < _header.initializedCount)
       yield &__node_ptr[pointer].__value_
     }
   }
@@ -275,31 +283,31 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   @inline(__always)
   func ___pushDestroy(_ p: _NodePtr) {
-    assert(header.destroyNode != p)
-    assert(header.initializedCount <= header.capacity)
-    assert(header.destroyCount <= header.capacity)
-    assert(header.destroyNode != p)
-    __node_ptr[p].__left_ = header.destroyNode
+    assert(_header.destroyNode != p)
+    assert(_header.initializedCount <= _header.capacity)
+    assert(_header.destroyCount <= _header.capacity)
+    assert(_header.destroyNode != p)
+    __node_ptr[p].__left_ = _header.destroyNode
     __node_ptr[p].__right_ = p
     __node_ptr[p].__is_black_ = false
-    header.destroyNode = p
-    header.destroyCount += 1
+    _header.destroyNode = p
+    _header.destroyCount += 1
   }
   /// O(1)
   @inlinable
   @inline(__always)
   func ___popDetroy() -> _NodePtr {
-    assert(header.destroyCount > 0)
-    let p = __node_ptr[header.destroyNode].__right_
-    header.destroyNode = __node_ptr[p].__left_
-    header.destroyCount -= 1
+    assert(_header.destroyCount > 0)
+    let p = __node_ptr[_header.destroyNode].__right_
+    _header.destroyNode = __node_ptr[p].__left_
+    _header.destroyCount -= 1
     return p
   }
   /// O(1)
   @inlinable
   func ___clearDestroy() {
-    header.destroyNode = .nullptr
-    header.destroyCount = 0
+    _header.destroyNode = .nullptr
+    _header.destroyCount = 0
   }
 }
 
@@ -308,10 +316,10 @@ extension ___RedBlackTree.___Tree {
 
     /// O(*k*)
     var ___destroyNodes: [_NodePtr] {
-      if header.destroyNode == .nullptr {
+      if _header.destroyNode == .nullptr {
         return []
       }
-      var nodes: [_NodePtr] = [header.destroyNode]
+      var nodes: [_NodePtr] = [_header.destroyNode]
       while let l = nodes.last, self[node: l].__left_ != .nullptr {
         nodes.append(self[node: l].__left_)
       }
@@ -337,15 +345,15 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   func __construct_node(_ k: Element) -> _NodePtr {
-    if header.destroyCount > 0 {
+    if _header.destroyCount > 0 {
       let p = ___popDetroy()
       __node_ptr[p].__value_ = k
       return p
     }
-    let index = header.initializedCount
+    let index = _header.initializedCount
     (__node_ptr + index).initialize(to: Node(__value_: k))
-    header.initializedCount += 1
-    assert(header.initializedCount <= header.capacity)
+    _header.initializedCount += 1
+    assert(_header.initializedCount <= _header.capacity)
     return index
   }
 
@@ -593,7 +601,7 @@ extension ___RedBlackTree.___Tree {
   /// O(1)
   @inlinable
   func __eraseAll() {
-    header.clear()
+    _header.clear()
     ___clearDestroy()
   }
 }
@@ -612,12 +620,12 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
   public var ___capacity: Int {
-    header.capacity
+    _header.capacity
   }
 
   @inlinable @inline(__always)
   public func ___begin() -> _NodePtr {
-    header.__begin_node
+    _header.__begin_node
   }
 
   @inlinable @inline(__always)
@@ -631,7 +639,7 @@ extension ___RedBlackTree.___Tree {
   @inlinable @inline(__always)
   public var ___sorted: [Element] {
     var result = [Element]()
-    ___for_each_() { member in
+    ___for_each_ { member in
       result.append(member)
     }
     return result

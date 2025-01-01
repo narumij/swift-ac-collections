@@ -3,7 +3,8 @@
 import Foundation
 import RedBlackTreeModule
 //import Collections
-//import SortedCollections
+import SortedCollections
+import PermutationModule
 
 print("start job")
 
@@ -15,7 +16,31 @@ let count = 2_000_000
 //let count = 1_000_000
 #endif
 
-#if false
+#if true
+#if DEBUG
+  let s = (0..<9) + []
+#else
+  let s = (0..<12) + []
+#endif
+var ans = 0
+for p in PermutationsSequence(_unsafe: s) {
+    ans = p.count
+  }
+print(ans)
+#elseif true
+#if DEBUG
+  let s = (0..<9) + []
+#else
+  let s = (0..<12) + []
+#endif
+var ans = 0
+var p = s
+//  for p in PermutationsSequence(s) {
+repeat {
+    ans = p.count
+} while p.nextPermutation()
+print(ans)
+#elseif false
 var tree = SortedSet<Int>()
 for i in 0 ..< count {
   _ = tree.insert(i)

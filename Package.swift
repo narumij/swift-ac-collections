@@ -4,7 +4,7 @@
 import PackageDescription
 
 var defines: [String] = [
-//  "AC_COLLECTIONS_INTERNAL_CHECKS",
+  "AC_COLLECTIONS_INTERNAL_CHECKS",
 //  "TREE_INVARIANT_CHECKS",
 ]
 
@@ -48,9 +48,10 @@ let package = Package(
     .executableTarget(
       name: "Executable",
       dependencies: [
-//        .product(name: "Collections", package: "swift-collections"),
-        "RedBlackTreeModule"
-      ], 
+        .product(name: "Collections", package: "swift-collections"),
+        "RedBlackTreeModule",
+        "PermutationModule"
+      ],
       path: "TestExecutable",
       swiftSettings: _settings
     ),

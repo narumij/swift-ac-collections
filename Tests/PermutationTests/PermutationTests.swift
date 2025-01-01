@@ -11,14 +11,6 @@ import XCTest
 
 final class PermutationTests: XCTestCase {
 
-  override func setUpWithError() throws {
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-  }
-
-  override func tearDownWithError() throws {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-  }
-
   func testExample0() throws {
     do {
       let a = [1, 2]
@@ -32,6 +24,12 @@ final class PermutationTests: XCTestCase {
         a.permutations().map { $0 },
         [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
     }
+    do {
+      let a = [0, 0, 1]
+      XCTAssertEqual(
+        a.permutations().map { $0 },
+        [[0, 0, 1], [0, 1, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 0, 0]])
+    }
   }
 
   func testExample() throws {
@@ -39,23 +37,75 @@ final class PermutationTests: XCTestCase {
       let a = [1, 2]
       XCTAssertEqual(
         // アルゴリズムとの衝突をさけた使い方にする
-        PermutationSequence(a).map { $0.map { $0 } },
+        PermutationsSequence(a).map { $0.map { $0 } },
         [[1, 2], [2, 1]])
     }
     do {
       let a = [1, 2, 3]
       XCTAssertEqual(
         // アルゴリズムとの衝突をさけた使い方にする
-        PermutationSequence(a).map { $0.map { $0 } },
+        PermutationsSequence(a).map { $0.map { $0 } },
         [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
     }
-  }
-
-  func testPerformanceExample() throws {
-    // This is an example of a performance test case.
-    self.measure {
-      // Put the code you want to measure the time of here.
+    do {
+      let a = [0, 0, 1]
+      // 挙動が異なるので一致しない
+      XCTAssertNotEqual(
+        PermutationsSequence(a).map { $0.map { $0 } },
+        [[0, 0, 1], [0, 1, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 0, 0]])
+    }
+    do {
+#if AC_COLLECTIONS_INTERNAL_CHECKS
+      for p in PermutationsSequence(0 ..< 4) {
+        XCTAssertEqual(p._copyCount, 0)
+      }
+#endif
     }
   }
 
+  func testPerformance00() throws {
+    #if DEBUG
+      var s = (0..<9) + []
+    #else
+      var s = (0..<10) + []
+    #endif
+    var ans = 0
+    self.measure {
+      var p = s
+      repeat {
+        ans += p.count
+      } while p.nextPermutation()
+    }
+    print(ans)
+  }
+
+  func testPerformance0() throws {
+    #if DEBUG
+      let s = (0..<9) + []
+    #else
+      let s = (0..<10) + []
+    #endif
+    var ans = 0
+    self.measure {
+      for p in s.permutations() {
+        ans += p.count
+      }
+    }
+    print(ans)
+  }
+
+  func testPerformance1() throws {
+    #if DEBUG
+      let s = (0..<9) + []
+    #else
+      let s = (0..<10) + []
+    #endif
+    var ans = 0
+    self.measure {
+      for p in PermutationsSequence(s) {
+        ans += p.count
+      }
+    }
+    print(ans)
+  }
 }

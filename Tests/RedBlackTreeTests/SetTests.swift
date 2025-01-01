@@ -327,7 +327,7 @@ final class SetTests: XCTestCase {
       nil)
   }
 
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if TREE_INVARIANT_CHECKS
     func testRandom() throws {
       var set = RedBlackTreeSet<Int>()
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {

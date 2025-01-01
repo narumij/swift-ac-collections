@@ -5,63 +5,100 @@
 //  Created by narumij on 2025/01/01.
 //
 
-import Algorithms
 import PermutationModule
 import XCTest
 
+#if USING_ALGORITHMS
+  import Algorithms
+#endif
+
 final class PermutationTests: XCTestCase {
 
-#if false
-  func testExample0() throws {
+  #if USING_ALGORITHMS
+  // 挙動比較用
+    func testExample0() throws {
+      do {
+        let a = [1, 2]
+        XCTAssertEqual(
+          a.permutations().map { $0 },
+          [[1, 2], [2, 1]])
+      }
+      do {
+        let a = [1, 2, 3]
+        XCTAssertEqual(
+          a.permutations().map { $0 },
+          [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
+      }
+      do {
+        let a = [0, 0, 1]
+        XCTAssertEqual(
+          a.permutations().map { $0 },
+          [[0, 0, 1], [0, 1, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 0, 0]])
+      }
+    }
+  #endif
+
+  func testUnsafePermutations() throws {
     do {
       let a = [1, 2]
       XCTAssertEqual(
-        a.permutations().map { $0 },
+        a.unsafePermutations().map { $0.map { $0 } },
         [[1, 2], [2, 1]])
     }
     do {
       let a = [1, 2, 3]
       XCTAssertEqual(
-        a.permutations().map { $0 },
+        a.unsafePermutations().map { $0.map { $0 } },
         [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
     }
     do {
       let a = [0, 0, 1]
       XCTAssertEqual(
-        a.permutations().map { $0 },
+        a.unsafePermutations().map { $0.map { $0 } },
         [[0, 0, 1], [0, 1, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 0, 0]])
+    }
+    do {
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        for p in (0..<4).unsafePermutations() {
+          XCTAssertEqual(p._copyCount, 0)
+        }
+      #endif
     }
   }
-#endif
 
-  func testExample() throws {
+  func testNextPermutations() throws {
     do {
       let a = [1, 2]
       XCTAssertEqual(
-        // アルゴリズムとの衝突をさけた使い方にする
-        a.unsafePermutations().map { $0.map { $0 } },
+        a.nextPermutations().map { $0.map { $0 } },
         [[1, 2], [2, 1]])
     }
     do {
       let a = [1, 2, 3]
       XCTAssertEqual(
-        // アルゴリズムとの衝突をさけた使い方にする
-        a.unsafePermutations().map { $0.map { $0 } },
+        a.nextPermutations().map { $0.map { $0 } },
         [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
     }
     do {
-      let a = [0, 0, 1]
-      // 挙動が異なるので一致しない
+      let a = [0, 0]
+      // 辞書順では変化しようがないので、最初の一回で終了となる
       XCTAssertEqual(
-        a.unsafePermutations().map { $0.map { $0 } },
-        [[0, 0, 1], [0, 1, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 0, 0]])
+        a.nextPermutations().map { $0.map { $0 } },
+        [[0, 0]])
     }
     do {
-#if AC_COLLECTIONS_INTERNAL_CHECKS
-      for p in (0 ..< 4).unsafePermutations() {
-        XCTAssertEqual(p._copyCount, 0)
-      }
-#endif
+      let a = [4, 3, 2, 1]
+      // 辞書順で最後なので、最初の一回で終了となる
+      XCTAssertEqual(
+        a.nextPermutations().map { $0.map { $0 } },
+        [[4, 3, 2, 1]])
+    }
+    do {
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        for p in (0..<4).nextPermutations() {
+          XCTAssertEqual(p._copyCount, 0)
+        }
+      #endif
     }
   }
 
@@ -81,22 +118,22 @@ final class PermutationTests: XCTestCase {
     print(ans)
   }
 
-#if true
-  func testPerformance0() throws {
-    #if DEBUG
-      let s = (0..<9) + []
-    #else
-      let s = (0..<10) + []
-    #endif
-    var ans = 0
-    self.measure {
-      for p in s.permutations() {
-        ans += p.count
+  #if USING_ALGORITHMS
+    func testPerformance0() throws {
+      #if DEBUG
+        let s = (0..<9) + []
+      #else
+        let s = (0..<10) + []
+      #endif
+      var ans = 0
+      self.measure {
+        for p in s.permutations() {
+          ans += p.count
+        }
       }
+      print(ans)
     }
-    print(ans)
-  }
-#endif
+  #endif
 
   func testPerformance1() throws {
     #if DEBUG

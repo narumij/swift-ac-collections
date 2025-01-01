@@ -2,9 +2,12 @@
 
 import Foundation
 import RedBlackTreeModule
-//import Collections
-//import SortedCollections
 import PermutationModule
+
+#if USING_COLLECTIONS
+import Collections
+import SortedCollections
+#endif
 
 print("start job")
 
@@ -20,10 +23,10 @@ let count = 2_000_000
 #if DEBUG
   let s = (0..<9) + []
 #else
-  let s = (0..<12) + []
+  let s = (0..<28) + []
 #endif
 var ans = 0
-for p in PermutationsSequence(unsafe: s) {
+for p in Permutations.All(unsafe: s) {
     ans = p.count
   }
 print(ans)

@@ -4,9 +4,11 @@
 import PackageDescription
 
 var defines: [String] = [
-  "AC_COLLECTIONS_INTERNAL_CHECKS",
+//  "AC_COLLECTIONS_INTERNAL_CHECKS",
 //  "TREE_INVARIANT_CHECKS",
 //  "GRAPHVIZ_DEBUG",
+//  "USING_ALGORITHMS",
+//  "USING_COLLECTIONS",
 ]
 
 var _settings: [SwiftSetting] = defines.map { .define($0) }
@@ -20,13 +22,13 @@ let package = Package(
       targets: ["AcCollections"])
   ],
   dependencies: [
-    .package(
-      url: "https://github.com/apple/swift-collections.git",
-      branch: "main"
-    ),
-    .package(
-      url: "https://github.com/apple/swift-algorithms.git",
-      from: "1.2.0"),
+//    .package(
+//      url: "https://github.com/apple/swift-collections.git",
+//      branch: "main"
+//    ),
+//    .package(
+//      url: "https://github.com/apple/swift-algorithms.git",
+//      from: "1.2.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -64,7 +66,7 @@ let package = Package(
     .testTarget(
       name: "PermutationTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
+//        .product(name: "Algorithms", package: "swift-algorithms"),
         "PermutationModule"
       ],
       swiftSettings: _settings

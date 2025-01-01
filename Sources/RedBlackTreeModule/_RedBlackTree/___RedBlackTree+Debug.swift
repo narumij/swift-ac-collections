@@ -207,7 +207,7 @@ extension ___RedBlackTree.___Tree {
     let rights: [(Int, Int)] = (0..<header.initializedCount).filter(hasRight).map(rightPair)
     var digraph = Graphviz.Digraph()
     digraph.nodes.append((.red, reds))
-    digraph.nodes.append((.blue, ["begin","stack"]))
+    digraph.nodes.append((.blue, ["begin","stack","end"]))
     digraph.nodes.append((.black, []))
     if __root() != .nullptr {
       digraph.edges.append(.init(from: node(.end), to: node(__root()), properties: .left))

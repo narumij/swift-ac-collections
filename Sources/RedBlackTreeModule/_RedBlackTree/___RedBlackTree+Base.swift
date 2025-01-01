@@ -357,7 +357,7 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
 
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if TREE_INVARIANT_CHECKS
     @inlinable
     public func ___tree_invariant() -> Bool {
       _tree.__tree_invariant(_tree.__root())

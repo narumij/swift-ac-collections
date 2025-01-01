@@ -47,7 +47,7 @@ let package = Package(
       swiftSettings: _settings
     ),
     .executableTarget(
-      name: "Executable",
+      name: "TestExecutable",
       dependencies: [
 //        .product(name: "Collections", package: "swift-collections"),
         "RedBlackTreeModule",

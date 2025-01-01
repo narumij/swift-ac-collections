@@ -160,10 +160,23 @@ final class EtcTests: XCTestCase {
     }
     
     do {
-      var b: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+      var b: RedBlackTreeSet<Int> = .init()
+      var lo = 0
+      var hi = 32
+      while lo < hi {
+        b.insert(hi)
+        b.insert(lo)
+        lo += 1
+        hi -= 1
+      }
       // extensionを書けばこのように利用可能
 //      b.removeSubrange(0 ..< 6)
 //      XCTAssertEqual(b.count, 0)
+      (12 ..< 16).forEach {
+        b.remove($0)
+      }
+      
+      print("end")
     }
   }
 

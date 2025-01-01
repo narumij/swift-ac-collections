@@ -125,6 +125,7 @@ import XCTest
   final class ___RedBlackTreeContainerTests: XCTestCase {
 
     func fixtureEmpty(_ tree: inout RedBlackTreeSet<Int>) {
+      tree._tree.___clearDestroy()
       tree.___nodes = []
       //        print(tree.___nodes.graphviz())
       tree.__root(.nullptr)
@@ -132,6 +133,7 @@ import XCTest
     }
 
     func fixture0_10_20(_ tree: inout RedBlackTreeSet<Int>) {
+      tree._tree.___clearDestroy()
       tree.___nodes = [
         .init(__is_black_: true, __left_: 1, __right_: 2, __parent_: .end),
         .init(__is_black_: false, __left_: nil, __right_: nil, __parent_: 0),
@@ -148,6 +150,7 @@ import XCTest
     }
 
     func fixture0_1_2_3_4_5_6(_ tree: inout RedBlackTreeSet<Int>) {
+      tree._tree.___clearDestroy()
       tree.___nodes = [
         .init(__is_black_: true, __left_: 1, __right_: 4, __parent_: .end),
         .init(__is_black_: false, __left_: 2, __right_: 3, __parent_: 0),
@@ -183,7 +186,7 @@ import XCTest
 
     func testRootInvaliant() throws {
 
-      var tree = RedBlackTreeSet<Int>()
+      var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       XCTAssertTrue(tree.__tree_invariant(tree.__root()))
 
       tree.___nodes = [
@@ -209,14 +212,14 @@ import XCTest
 
     func testFixtures() {
 
-      var tree = RedBlackTreeSet<Int>()
+      var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       fixtureEmpty(&tree)
       fixture0_10_20(&tree)
       fixture0_1_2_3_4_5_6(&tree)
     }
 
     func testMin() {
-      var tree = RedBlackTreeSet<Int>()
+      var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       fixture0_10_20(&tree)
       XCTAssertEqual(tree.__tree_min(tree.__root()), 1)
       fixture0_1_2_3_4_5_6(&tree)
@@ -224,7 +227,7 @@ import XCTest
     }
 
     func testMax() {
-      var tree = RedBlackTreeSet<Int>()
+      var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       fixture0_10_20(&tree)
       XCTAssertEqual(tree.__tree_max(tree.__root()), 2)
       fixture0_1_2_3_4_5_6(&tree)

@@ -34,6 +34,10 @@ import Foundation
 public
   typealias _NodePtr = Int
 
+public
+  typealias _Pointer = Int
+
+
 extension _NodePtr {
 
   /// 赤黒木のIndexで、nullを表す
@@ -65,6 +69,32 @@ public
   /// 左ノードへの参照
   case __left_(_NodePtr)
 }
+
+// ルートノード相当の機能
+protocol TreeEndNodeProtocol {
+  func __left_(_: pointer) -> pointer
+}
+
+extension TreeEndNodeProtocol {
+  typealias pointer = _Pointer
+}
+
+// 一般ノード相当の機能
+protocol TreeNodeBaseProtocol: TreeEndNodeProtocol {
+  func __right_(_: _NodePtr) -> _NodePtr
+  func __parent_(_: _NodePtr) -> _NodePtr
+  func __is_black_(_: _NodePtr) -> Bool
+  func __parent_unsafe(_: _NodePtr) -> _NodePtr
+  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr)
+}
+
+extension TreeNodeBaseProtocol {
+  typealias pointer = _NodePtr
+  typealias __parent_pointer = _NodePtr
+}
+
+// 以下は、現在の設計に至る過程で、readハンドルとupdateハンドルに分けていた名残で、
+// getとsetが分かれている
 
 @usableFromInline
 protocol MemberProtocol {

@@ -63,7 +63,7 @@ let package = Package(
     .testTarget(
       name: "PermutationTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
+//        .product(name: "Algorithms", package: "swift-algorithms"),
         "PermutationModule"
       ],
       swiftSettings: _settings

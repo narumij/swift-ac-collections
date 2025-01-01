@@ -5,12 +5,13 @@
 //  Created by narumij on 2025/01/01.
 //
 
-import Algorithms
+//import Algorithms
 import PermutationModule
 import XCTest
 
 final class PermutationTests: XCTestCase {
 
+#if false
   func testExample0() throws {
     do {
       let a = [1, 2]
@@ -31,6 +32,7 @@ final class PermutationTests: XCTestCase {
         [[0, 0, 1], [0, 1, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 0, 0]])
     }
   }
+#endif
 
   func testExample() throws {
     do {
@@ -79,6 +81,7 @@ final class PermutationTests: XCTestCase {
     print(ans)
   }
 
+#if false
   func testPerformance0() throws {
     #if DEBUG
       let s = (0..<9) + []
@@ -93,6 +96,7 @@ final class PermutationTests: XCTestCase {
     }
     print(ans)
   }
+#endif
 
   func testPerformance1() throws {
     #if DEBUG

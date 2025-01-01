@@ -104,35 +104,6 @@ enum VC: ScalarValueComparer {
       return c
     }
   }
-
-  extension RedBlackTree___Tree {
-
-    func graphviz() -> String {
-      let header = """
-        digraph {
-        """
-      let red = "node [shape = circle style=filled fillcolor=red];"
-      let black = """
-        node [shape = circle fillcolor=black fontcolor=white];
-        """
-      let hooter = """
-        }
-        """
-
-      let reds: String = (0..<count).filter { !self[node: $0].__is_black_ }.map { "\($0)" }.joined(
-        separator: " ")
-
-      let lefts: String = (0..<count).filter { self[node: $0].__left_ != nil }.map {
-        "\($0) -> \(self[node : $0].__left_.offset ?? -1) [label = \"left\"];"
-      }.joined(separator: "\n")
-
-      let rights: String = (0..<count).filter { self[node: $0].__right_ != nil }.map {
-        "\($0) -> \(self[node : $0].__right_.offset ?? -1) [label = \"right\"];"
-      }.joined(separator: "\n")
-
-      return header + red + reds + "\n" + black + "\n" + lefts + "\n" + rights + "\n" + hooter
-    }
-  }
 #endif
 
 final class ___RedBlackTree___TreeTests: XCTestCase {
@@ -140,7 +111,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
   #if DEBUG
     func fixtureEmpty(_ tree: inout RedBlackTree___Tree) {
       tree.nodes = []
-      print(tree.graphviz())
+//      print(tree.graphviz())
       tree.__root(.nullptr)
       XCTAssertTrue(tree.__tree_invariant(tree.__root()))
     }
@@ -156,7 +127,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
         0,
         20,
       ]
-      print(tree.nodes.graphviz())
+//      print(tree.graphviz())
       tree.__root(0)
       XCTAssertTrue(tree.__tree_invariant(tree.__root()))
     }
@@ -180,7 +151,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
         5,
         6,
       ]
-      print(tree.nodes.graphviz())
+//      print(tree.graphviz())
       tree.__root(0)
       tree.size = tree.nodes.count
       tree.header.__begin_node = 2
@@ -254,11 +225,11 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
 
       let initial = tree.nodes
 
-      print(tree.nodes.graphviz())
+//      print(tree.graphviz())
       XCTAssertFalse(tree.__tree_invariant(tree.__root()))
 
       tree.__tree_left_rotate(tree.__root())
-      print(tree.nodes.graphviz())
+//      print(tree.graphviz())
 
       var next = initial
       next[0] = .init(__is_black_: true, __left_: 1, __right_: 3, __parent_: 2)
@@ -273,7 +244,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
       XCTAssertEqual(tree.nodes[4], next[4])
 
       tree.__tree_right_rotate(2)
-      print(tree.nodes.graphviz())
+//      print(tree.graphviz())
 
       XCTAssertEqual(tree.nodes, initial)
     }
@@ -307,7 +278,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
       XCTAssertEqual(tree.__tree_min(tree.__root()), tree.header.__begin_node)
       for i in 0..<3 {
         _ = tree.___erase_unique(i)
-        print(tree.nodes.graphviz())
+//        print(tree.graphviz())
         if tree.__root() != .nullptr {
           XCTAssertEqual(tree.__tree_min(tree.__root()), tree.header.__begin_node)
         }
@@ -325,10 +296,11 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
       }
       //        fixture0_1_2_3_4_5_6(&tree)
       XCTAssertEqual(tree.__tree_min(tree.__root()), tree.header.__begin_node)
-      print(tree.nodes.graphviz())
+//      print(tree.nodes.graphviz())
+//      print(tree.graphviz())
       for i in 0..<2 {
         XCTAssertTrue(tree.___erase_unique(i) == true, "i = \(i)")
-        print(tree.nodes.graphviz())
+//        print(tree.graphviz())
         print("__root():", tree.__root())
         XCTAssertTrue(tree.__tree_invariant(tree.__root()))
         XCTAssertEqual(
@@ -348,10 +320,10 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
       }
       //        fixture0_1_2_3_4_5_6(&tree)
       XCTAssertEqual(tree.__tree_min(tree.__root()), tree.header.__begin_node)
-      print(tree.nodes.graphviz())
+//      print(tree.graphviz())
       for i in 0..<7 {
         XCTAssertTrue(tree.___erase_unique(i) == true, "i = \(i)")
-        print(tree.nodes.graphviz())
+//        print(tree.graphviz())
         print("__root():", tree.__root())
         XCTAssertTrue(tree.__tree_invariant(tree.__root()))
         XCTAssertEqual(

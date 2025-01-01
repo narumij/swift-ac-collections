@@ -8,9 +8,9 @@
 import XCTest
 
 #if DEBUG
-@testable import RedBlackTreeModule
+  @testable import RedBlackTreeModule
 #else
-import RedBlackTreeModule
+  import RedBlackTreeModule
 #endif
 
 final class SetRemoveTests: XCTestCase {
@@ -39,22 +39,22 @@ final class SetRemoveTests: XCTestCase {
     XCTAssertTrue(set.elements.isEmpty)
   }
 
-#if DEBUG
-  func testRemoveAt() throws {
-    var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-    XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 0)
-    XCTAssertEqual(set.elements, [1, 2, 3, 4])
-    XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 1)
-    XCTAssertEqual(set.elements, [2, 3, 4])
-    XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 2)
-    XCTAssertEqual(set.elements, [3, 4])
-    XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 3)
-    XCTAssertEqual(set.elements, [4])
-    XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 4)
-    XCTAssertEqual(set.elements, [])
-    XCTAssertEqual(set.___remove(at: set._tree.__begin_node), nil)
-  }
-#endif
+  #if DEBUG
+    func testRemoveAt() throws {
+      var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
+      XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 0)
+      XCTAssertEqual(set.elements, [1, 2, 3, 4])
+      XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 1)
+      XCTAssertEqual(set.elements, [2, 3, 4])
+      XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 2)
+      XCTAssertEqual(set.elements, [3, 4])
+      XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 3)
+      XCTAssertEqual(set.elements, [4])
+      XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 4)
+      XCTAssertEqual(set.elements, [])
+      XCTAssertEqual(set.___remove(at: set._tree.__begin_node), nil)
+    }
+  #endif
 
   func testRemove0() throws {
     var s: RedBlackTreeSet<Int> = [1, 2, 3, 4]

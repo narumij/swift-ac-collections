@@ -23,7 +23,7 @@ let count = 2_000_000
   let s = (0..<12) + []
 #endif
 var ans = 0
-for p in PermutationsSequence(_unsafe: s) {
+for p in PermutationsSequence(unsafe: s) {
     ans = p.count
   }
 print(ans)

@@ -37,26 +37,26 @@ final class PermutationTests: XCTestCase {
       let a = [1, 2]
       XCTAssertEqual(
         // アルゴリズムとの衝突をさけた使い方にする
-        PermutationsSequence(a).map { $0.map { $0 } },
+        a.unsafePermutations().map { $0.map { $0 } },
         [[1, 2], [2, 1]])
     }
     do {
       let a = [1, 2, 3]
       XCTAssertEqual(
         // アルゴリズムとの衝突をさけた使い方にする
-        PermutationsSequence(a).map { $0.map { $0 } },
+        a.unsafePermutations().map { $0.map { $0 } },
         [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
     }
     do {
       let a = [0, 0, 1]
       // 挙動が異なるので一致しない
       XCTAssertNotEqual(
-        PermutationsSequence(a).map { $0.map { $0 } },
+        a.unsafePermutations().map { $0.map { $0 } },
         [[0, 0, 1], [0, 1, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 0, 0]])
     }
     do {
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-      for p in PermutationsSequence(0 ..< 4) {
+      for p in (0 ..< 4).unsafePermutations() {
         XCTAssertEqual(p._copyCount, 0)
       }
 #endif
@@ -102,7 +102,7 @@ final class PermutationTests: XCTestCase {
     #endif
     var ans = 0
     self.measure {
-      for p in PermutationsSequence(s) {
+      for p in s.unsafePermutations() {
         ans += p.count
       }
     }

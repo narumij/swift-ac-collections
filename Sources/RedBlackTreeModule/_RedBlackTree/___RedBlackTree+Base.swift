@@ -372,9 +372,6 @@ extension ___RedBlackTreeBase {
   }
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
-    // TODO: CoWの挙動についてテストーコードを書くこと
-
-    // 不具合調査用
     @inlinable
     public var _copyCount: UInt {
       get { _storage.tree.copyCount }

@@ -80,7 +80,7 @@ extension Permutations {
 
     @inlinable
     @inline(__always)
-    public __consuming func makeIterator() -> IteratorR {
+    public __consuming func makeIterator() -> IteratorN {
       .init(
         elementBuffer: .prepare(source: source),
         _unsafe: _unsafe)
@@ -138,7 +138,7 @@ extension Permutations {
   }
 
   public
-    struct IteratorR: IteratorProtocol where C.Element: Comparable
+    struct IteratorN: IteratorProtocol where C.Element: Comparable
   {
     @inlinable
     @inline(__always)
@@ -169,7 +169,7 @@ extension Permutations {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> SubSequenceR? {
+    public mutating func next() -> SubSequenceN? {
       guard !end else { return nil }
       if start {
         start = false
@@ -179,7 +179,7 @@ extension Permutations {
         }
         end = !elementBuffer.nextPermutation()
       }
-      return end ? nil : SubSequenceR(elementBuffer: elementBuffer)
+      return end ? nil : SubSequenceN(elementBuffer: elementBuffer)
     }
   }
 }
@@ -237,7 +237,7 @@ extension Permutations {
   }
 
   public
-    struct SubSequenceR
+    struct SubSequenceN
   {
     @inlinable
     @inline(__always)
@@ -271,7 +271,7 @@ extension Permutations.SubSequenceA: RandomAccessCollection {
   #endif
 }
 
-extension Permutations.SubSequenceR: RandomAccessCollection {
+extension Permutations.SubSequenceN: RandomAccessCollection {
   @inlinable
   @inline(__always)
   public var startIndex: Int { elementBuffer.startIndex }

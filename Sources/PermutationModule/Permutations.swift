@@ -14,7 +14,7 @@ extension Collection where Index == Int {
   /// C++のnext_permutationの挙動が欲しい場合はこちら。
   @inlinable
   @inline(__always)
-  public __consuming func nextPermutations() -> Permutations<Self>.Resume
+  public __consuming func nextPermutations() -> Permutations<Self>.Nexts
   where Element: Comparable {
     .init(unsafe: self)
   }
@@ -57,7 +57,7 @@ extension Permutations {
     }
   }
 
-  public struct Resume: Sequence where C.Element: Comparable {
+  public struct Nexts: Sequence where C.Element: Comparable {
     @usableFromInline
     let source: C
 

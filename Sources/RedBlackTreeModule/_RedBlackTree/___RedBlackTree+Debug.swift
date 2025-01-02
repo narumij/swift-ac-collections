@@ -8,225 +8,339 @@
 import Foundation
 
 #if GRAPHVIZ_DEBUG
-extension ___RedBlackTree.___Tree {
+  extension ___RedBlackTree.___Tree {
 
-  /// グラフビズオブジェクトを生成します
-  func ___graphviz() -> Graphviz.Digraph {
-    buildGraphviz()
+    /// グラフビズオブジェクトを生成します
+    func ___graphviz() -> Graphviz.Digraph {
+      buildGraphviz()
+    }
   }
-}
 
-extension ___RedBlackTreeBase {
-  
-  /// グラフビズオブジェクトを生成します
-  ///
-  /// デバッガで、以下のようにすると、Graphvizのソースをコンソールに出力できます。
-  ///
-  /// ```
-  /// p print(set.___graphviz())
-  /// ```
-  ///
-  /// ```
-  /// digraph {
-  /// node [shape = circle style = filled fillcolor = red]; 1 4
-  /// node [shape = circle style = filled fillcolor = blue fontcolor = white]; begin stack
-  /// node [shape = circle style = filled fillcolor = black fontcolor = white];
-  /// end -> 2 [label = "left"]
-  /// begin -> 0 [label = "left"]
-  /// stack -> 1 [label = "left"]
-  /// 2 -> 0 [label = "left"]
-  /// 1 -> 1 [label = "right"]
-  /// 2 -> 3 [label = "right"]
-  /// 3 -> 4 [label = "right"]
-  /// }
-  /// ```
-  ///
-  /// 上のソースは、以下のような操作をした直後のものです。
-  /// ```
-  /// var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-  /// set.remove(1)
-  /// ```
-  /// 
-  public func ___graphviz() -> Graphviz.Digraph {
-    _tree.___graphviz()
+  extension ___RedBlackTreeBase {
+
+    /// グラフビズオブジェクトを生成します
+    ///
+    /// デバッガで、以下のようにすると、Graphvizのソースをコンソールに出力できます。
+    ///
+    /// ```
+    /// p print(set.___graphviz())
+    /// ```
+    ///
+    /// ```
+    /// digraph {
+    /// node [shape = circle style = filled fillcolor = red]; 1 4
+    /// node [shape = circle style = filled fillcolor = blue fontcolor = white]; begin stack
+    /// node [shape = circle style = filled fillcolor = black fontcolor = white];
+    /// end -> 2 [label = "left"]
+    /// begin -> 0 [label = "left"]
+    /// stack -> 1 [label = "left"]
+    /// 2 -> 0 [label = "left"]
+    /// 1 -> 1 [label = "right"]
+    /// 2 -> 3 [label = "right"]
+    /// 3 -> 4 [label = "right"]
+    /// }
+    /// ```
+    ///
+    /// 上のソースは、以下のような操作をした直後のものです。
+    /// ```
+    /// var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
+    /// set.remove(1)
+    /// ```
+    ///
+    public func ___graphviz() -> Graphviz.Digraph {
+      _tree.___graphviz()
+    }
   }
-}
 #endif
 
 #if GRAPHVIZ_DEBUG
-enum Graphviz {}
+  enum Graphviz {}
 
-extension Graphviz {
+  extension Graphviz {
 
-  struct Digraph {
-    var nodes: [Node] = []
-    var edges: [Edge] = []
-  }
+    struct Digraph {
+      var options: [Option] = []
+      var nodes: [Node] = []
+      var edges: [Edge] = []
+    }
 
-  typealias Node = ([NodeProperty], [String])
+    typealias Node = ([NodeProperty], [String])
 
-  enum Shape: String {
-    case circle
-  }
+    enum Shape: String {
+      case circle
+      case note
+    }
 
-  enum Style: String {
-    case filled
-  }
+    enum Style: String {
+      case filled
+    }
 
-  enum Color: String {
-    case white
-    case black
-    case red
-    case blue
-  }
+    enum Color: String {
+      case white
+      case black
+      case red
+      case blue
+      case lightYellow
+    }
 
-  enum NodeProperty {
-    case shape(Shape)
-    case style(Style)
-    case fillColor(Color)
-    case fontColor(Color)
-  }
+    enum LabelJust: String {
+      case l
+      case r
+    }
 
-  struct Edge {
-    var from: String
-    var to: String
-    var properties: [EdgeProperty]
-  }
+    enum Port: String {
+      case n
+      case nw
+      case w
+      case sw
+      case s
+      case se
+      case e
+      case ne
+      case none
+    }
 
-  enum EdgeProperty {
-    case label(String)
-  }
-}
+    enum Spline: String {
+      case line
+    }
 
-extension Array where Element == Graphviz.NodeProperty {
-  static var red: [Graphviz.NodeProperty] {
-    [.shape(.circle), .style(.filled), .fillColor(.red)]
-  }
-  static var black: Self {
-    [.shape(.circle), .style(.filled), .fillColor(.black), .fontColor(.white)]
-  }
-  static var blue: Self {
-    [.shape(.circle), .style(.filled), .fillColor(.blue), .fontColor(.white)]
-  }
-  var description: String {
-    "[\(map(\.description).joined(separator: " "))]"
-  }
-}
+    enum Option {
+      case splines(Spline)
+    }
 
-extension Array where Element == Graphviz.EdgeProperty {
-  static var left: [Graphviz.EdgeProperty] {
-    [.label("left")]
-  }
-  static var right: [Graphviz.EdgeProperty] {
-    [.label("right")]
-  }
-}
+    enum NodeProperty {
+      case shape(Shape)
+      case style(Style)
+      case fillColor(Color)
+      case fontColor(Color)
+      case label(String)
+      case labelJust(LabelJust)
+    }
 
-extension Graphviz.NodeProperty {
-  var description: String {
-    switch self {
-    case .shape(let shape):
-      return "shape = \(shape.rawValue)"
-    case .style(let style):
-      return "style = \(style.rawValue)"
-    case .fillColor(let color):
-      return "fillcolor = \(color.rawValue)"
-    case .fontColor(let color):
-      return "fontcolor = \(color.rawValue)"
+    struct Edge {
+      var from: (String, Port)
+      var to: (String, Port)
+      var properties: [EdgeProperty]
+    }
+
+    enum EdgeProperty {
+      case label(String)
+      case labelAngle(Double)
     }
   }
-}
 
-extension Graphviz.EdgeProperty {
-  var description: String {
-    switch self {
-    case .label(let label):
-      return "label = \"\(label)\""
+  extension Array where Element == Graphviz.NodeProperty {
+    static var red: [Graphviz.NodeProperty] {
+      [.shape(.circle), .style(.filled), .fillColor(.red)]
+    }
+    static var black: Self {
+      [.shape(.circle), .style(.filled), .fillColor(.black), .fontColor(.white)]
+    }
+    static var blue: Self {
+      [.shape(.circle), .style(.filled), .fillColor(.blue), .fontColor(.white)]
+    }
+    var description: String {
+      "[\(map(\.description).joined(separator: " "))]"
     }
   }
-}
 
-extension Graphviz.Edge {
-  var description: String {
-    "\(from) -> \(to) [\(properties.map(\.description).joined(separator: " "))]"
+  extension Array where Element == Graphviz.EdgeProperty {
+    static var left: [Graphviz.EdgeProperty] {
+      [.label("left"),.labelAngle(45)]
+    }
+    static var right: [Graphviz.EdgeProperty] {
+      [.label("right"),.labelAngle(-45)]
+    }
   }
-}
 
-extension Graphviz.Digraph: CustomStringConvertible {
-  var description: String {
-    func description(_ properties: [Graphviz.NodeProperty], _ nodes: [String]) -> String {
-      "node \(properties.description); \(nodes.joined(separator: " "))"
-    }
-    return
-      """
-      digraph {
-      \(nodes.map(description).joined(separator: "\n"))
-      \(edges.map(\.description).joined(separator: "\n"))
-      }
-      """
-  }
-}
-
-extension ___RedBlackTree.___Tree {
-  
-  func buildGraphviz() -> Graphviz.Digraph {
-    func isRed(_ i: Int) -> Bool {
-      !self[node: i].__is_black_
-    }
-    func isBlack(_ i: Int) -> Bool {
-      self[node: i].__is_black_
-    }
-    func hasLeft(_ i: Int) -> Bool {
-      self[node: i].__left_ != .nullptr
-    }
-    func hasRight(_ i: Int) -> Bool {
-      self[node: i].__right_ != .nullptr
-    }
-    func offset(_ i: Int) -> Int? {
-      switch i {
-      case .end:
-        return nil
-      case .nullptr:
-        return nil
-      default:
-        return i
+  extension Graphviz.NodeProperty {
+    var description: String {
+      switch self {
+      case .shape(let shape):
+        return "shape = \(shape.rawValue)"
+      case .style(let style):
+        return "style = \(style.rawValue)"
+      case .fillColor(let color):
+        return "fillcolor = \(color.rawValue)"
+      case .fontColor(let color):
+        return "fontcolor = \(color.rawValue)"
+      case .label(let s):
+        return "label = \"\(s)\""
+      case .labelJust(let l):
+        return "labeljust = \(l)"
       }
     }
-    func leftPair(_ i: Int) -> (Int, Int) {
-      (i, offset(self[node: i].__left_) ?? -1)
-    }
-    func rightPair(_ i: Int) -> (Int, Int) {
-      (i, offset(self[node: i].__right_) ?? -1)
-    }
-    func node(_ i: Int) -> String {
-      if i == .end {
-        return "end"
-      } else {
-        return "\(i)"
+  }
+
+  extension Graphviz.EdgeProperty {
+    var description: String {
+      switch self {
+      case .label(let label):
+        return "label = \"\(label)\""
+      case .labelAngle(let angle):
+        return "labelangle = \(angle)"
       }
     }
-    let reds = (0..<header.initializedCount).filter(isRed).map(node)
-    let blacks = (0..<header.initializedCount).filter(isBlack).map(node)
-    let lefts: [(Int, Int)] = (0..<header.initializedCount).filter(hasLeft).map(leftPair)
-    let rights: [(Int, Int)] = (0..<header.initializedCount).filter(hasRight).map(rightPair)
-    var digraph = Graphviz.Digraph()
-    digraph.nodes.append((.red, reds))
-    digraph.nodes.append((.blue, ["begin","stack","end"]))
-    digraph.nodes.append((.black, blacks))
-    if __root() != .nullptr {
-      digraph.edges.append(.init(from: node(.end), to: node(__root()), properties: .left))
-    }
-    if __begin_node != .nullptr {
-      digraph.edges.append(.init(from: "begin", to: node(__begin_node), properties: .left))
-    }
-    if header.destroyNode != .nullptr {
-      digraph.edges.append(.init(from: "stack", to: node(header.destroyNode), properties: .left))
-    }
-    digraph.edges.append(
-      contentsOf: lefts.map { .init(from: node($0), to: node($1), properties: .left) })
-    digraph.edges.append(
-      contentsOf: rights.map { .init(from: node($0), to: node($1), properties: .right) })
-    return digraph
   }
-}
+
+  extension Graphviz.Option {
+    var description: String {
+      switch self {
+      case .splines(let s):
+        return "splines = \(s)"
+      }
+    }
+  }
+
+  extension Graphviz.Edge {
+
+    func node(_ p: (String, Graphviz.Port)) -> String {
+      if p.1 == .none {
+        return p.0
+      }
+      return "\(p.0):\(p.1)"
+    }
+
+    var description: String {
+      "\(node(from)) -> \(node(to)) [\(properties.map(\.description).joined(separator: " "))]"
+    }
+  }
+
+  extension Graphviz.Digraph: CustomStringConvertible {
+    var description: String {
+      func description(_ properties: [Graphviz.NodeProperty], _ nodes: [String]) -> String {
+        "node \(properties.description); \(nodes.joined(separator: " "))"
+      }
+      return
+        """
+        digraph {
+        \(options.map(\.description).joined(separator: ";\n"))
+        \(nodes.map(description).joined(separator: "\n"))
+        \(edges.map(\.description).joined(separator: "\n"))
+        }
+        """
+    }
+  }
+
+  extension ___RedBlackTree.___Tree {
+
+    func buildGraphviz() -> Graphviz.Digraph {
+      func isRed(_ i: Int) -> Bool {
+        !self[node: i].__is_black_
+      }
+      func isBlack(_ i: Int) -> Bool {
+        self[node: i].__is_black_
+      }
+      func hasLeft(_ i: Int) -> Bool {
+        self[node: i].__left_ != .nullptr
+      }
+      func hasRight(_ i: Int) -> Bool {
+        self[node: i].__right_ != .nullptr
+      }
+      func offset(_ i: Int) -> Int? {
+        switch i {
+        case .end:
+          return nil
+        case .nullptr:
+          return nil
+        default:
+          return i
+        }
+      }
+      func leftPair(_ i: Int) -> (Int, Int) {
+        (i, offset(self[node: i].__left_) ?? -1)
+      }
+      func rightPair(_ i: Int) -> (Int, Int) {
+        (i, offset(self[node: i].__right_) ?? -1)
+      }
+      func node(_ i: Int) -> String {
+        switch i {
+        case .end:
+          return "end"
+        default:
+          return "\(i)"
+        }
+      }
+      func nodeN(_ i: Int) -> String {
+        switch i {
+        case .nullptr:
+          return "-"
+        case .end:
+          return "end"
+        default:
+          return "#\(i)"
+        }
+      }
+      func nodeV(_ i: Int) -> String {
+        if i == .end {
+          return "end"
+        } else {
+          let c = String("\(self[i])".flatMap { $0 == "\n" ? ["\n", "n"] : [$0] })
+          //          let l: String = "\\\"\(c)\\\"\\n#\(i)"
+          let l: String = "\(c)\\n\\n#\(i)"
+          return "\(i) [label = \"\(l)\"];"
+        }
+      }
+      func headerNote() -> [Graphviz.NodeProperty] {
+        // let h = "\(_header)"
+        // let l = "header\\n\(String(h.flatMap{ $0 == "\n" ? ["\\","n"] : [$0] }))"
+        var ll: [String] = []
+        ll.append(contentsOf: [
+          "[Header]",
+          "capacity: \(_header.capacity)",
+          "__left_: \(nodeN(_header.__left_))",
+          "__begin_node: \(nodeN(_header.__begin_node))",
+          "initializedCount: \(_header.initializedCount)",
+          "destroyCount: \(_header.destroyCount)",
+          "destroyNode: \(nodeN(_header.destroyNode))",
+          "[etc]",
+          "__tree_invariant: \(__tree_invariant(__root()))",
+        ])
+        #if AC_COLLECTIONS_INTERNAL_CHECKS
+          ll.append("- copyCount: \(_header.copyCount)")
+        #endif
+
+        let l = ll.joined(separator: "\\n")
+        return [
+          .shape(.note),
+          .label(l),
+          .labelJust(.l),
+          .style(.filled),
+          .fillColor(.lightYellow),
+          .fontColor(.black),
+        ]
+      }
+      let reds = (0..<header.initializedCount).filter(isRed).map(nodeV)
+      let blacks = (0..<header.initializedCount).filter(isBlack).map(nodeV)
+      let lefts: [(Int, Int)] = (0..<header.initializedCount).filter(hasLeft).map(leftPair)
+      let rights: [(Int, Int)] = (0..<header.initializedCount).filter(hasRight).map(rightPair)
+      var digraph = Graphviz.Digraph()
+      digraph.options.append(.splines(.line))
+      digraph.nodes.append((.red, reds))
+      digraph.nodes.append((.blue, ["begin", "stack", "end"]))
+      digraph.nodes.append((.black, blacks))
+      digraph.nodes.append((headerNote(), ["header"]))
+      if __root() != .nullptr {
+        digraph.edges.append(
+          .init(from: (node(.end), .sw), to: (node(__root()), .n), properties: .left))
+      }
+      if __begin_node != .nullptr {
+        digraph.edges.append(
+          .init(from: ("begin", .s), to: (node(__begin_node), .n), properties: .left))
+      }
+      if header.destroyNode != .nullptr {
+        digraph.edges.append(
+          .init(from: ("stack", .s), to: (node(header.destroyNode), .n), properties: .left))
+      }
+      digraph.edges.append(
+        contentsOf: lefts.map {
+          .init(from: (node($0), .sw), to: (node($1), .n), properties: .left)
+        })
+      digraph.edges.append(
+        contentsOf: rights.map {
+          .init(from: (node($0), .se), to: (node($1), .n), properties: .right)
+        })
+      return digraph
+    }
+  }
 #endif

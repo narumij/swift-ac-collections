@@ -24,13 +24,13 @@ import Foundation
 
 @usableFromInline
 enum StorageCapacity {
-  
+
   @inlinable
   @inline(__always)
-  public static var growthFactor: Double { 1.618 } // Golden Ratio
-//  public static var growthFactor: Double { 1.75 }
-//  public static var growthFactor: Double { 2.0 }
-//  public static var growthFactor: Double { 2.414 } // Silver Ratio
+  public static var growthFactor: Double { 1.618 }  // Golden Ratio
+  //  public static var growthFactor: Double { 1.75 }
+  //  public static var growthFactor: Double { 2.0 }
+  //  public static var growthFactor: Double { 2.414 } // Silver Ratio
 
   @inlinable
   @inline(__always)
@@ -112,7 +112,7 @@ extension ___RedBlackTree.___Tree {
     to minimumCapacity: Int,
     linearly: Bool
   ) -> Int {
-    
+
     StorageCapacity
       ._growCapacity(
         tree: (tree.count, tree.header.initializedCount),
@@ -209,56 +209,68 @@ extension ___RedBlackTreeStorageLifetime {
   @inlinable
   @inline(__always)
   mutating func _strongEnsureUnique() {
-    if !_isKnownUniquelyReferenced_LV2() {
-      _storage = _storage.copy()
-    }
+    #if !DISABLE_COPY_ON_WRITE
+      if !_isKnownUniquelyReferenced_LV2() {
+        _storage = _storage.copy()
+      }
+    #endif
   }
 
   @inlinable
   @inline(__always)
   mutating func _strongEnsureUniqueAndCapacity() {
-    _ensureUniqueAndCapacity(minimumCapacity: _storage.count + 1)
-    assert(_storage.capacity > 0)
+    #if !DISABLE_COPY_ON_WRITE
+      _ensureUniqueAndCapacity(minimumCapacity: _storage.count + 1)
+      assert(_storage.capacity > 0)
+    #endif
   }
 
   @inlinable
   @inline(__always)
   mutating func _strongEnsureUniqueAndCapacity(minimumCapacity: Int) {
-    let shouldExpand = _storage.capacity < minimumCapacity
-    if shouldExpand || !_isKnownUniquelyReferenced_LV2() {
-      _storage = _storage.copy(
-        minimumCapacity: Tree._growCapacity(
-          tree: &_storage.tree, to: minimumCapacity, linearly: false))
-    }
-    assert(_storage.capacity >= minimumCapacity)
-    assert(_storage.tree.header.initializedCount <= _storage.capacity)
+    #if !DISABLE_COPY_ON_WRITE
+      let shouldExpand = _storage.capacity < minimumCapacity
+      if shouldExpand || !_isKnownUniquelyReferenced_LV2() {
+        _storage = _storage.copy(
+          minimumCapacity: Tree._growCapacity(
+            tree: &_storage.tree, to: minimumCapacity, linearly: false))
+      }
+      assert(_storage.capacity >= minimumCapacity)
+      assert(_storage.tree.header.initializedCount <= _storage.capacity)
+    #endif
   }
 
   @inlinable
   @inline(__always)
   mutating func _ensureUnique() {
-    if !_isKnownUniquelyReferenced_LV1() {
-      _storage = _storage.copy()
-    }
+    #if !DISABLE_COPY_ON_WRITE
+      if !_isKnownUniquelyReferenced_LV1() {
+        _storage = _storage.copy()
+      }
+    #endif
   }
 
   @inlinable
   @inline(__always)
   mutating func _ensureUniqueAndCapacity() {
-    _ensureUniqueAndCapacity(minimumCapacity: _storage.count + 1)
-    assert(_storage.capacity > 0)
+    #if !DISABLE_COPY_ON_WRITE
+      _ensureUniqueAndCapacity(minimumCapacity: _storage.count + 1)
+      assert(_storage.capacity > 0)
+    #endif
   }
 
   @inlinable
   @inline(__always)
   mutating func _ensureUniqueAndCapacity(minimumCapacity: Int) {
-    let shouldExpand = _storage.capacity < minimumCapacity
-    if shouldExpand || !_isKnownUniquelyReferenced_LV1() {
-      _storage = _storage.copy(
-        minimumCapacity: Tree._growCapacity(
-          tree: &_storage.tree, to: minimumCapacity, linearly: false))
-    }
-    assert(_storage.capacity >= minimumCapacity)
-    assert(_storage.tree.header.initializedCount <= _storage.capacity)
+    #if !DISABLE_COPY_ON_WRITE
+      let shouldExpand = _storage.capacity < minimumCapacity
+      if shouldExpand || !_isKnownUniquelyReferenced_LV1() {
+        _storage = _storage.copy(
+          minimumCapacity: Tree._growCapacity(
+            tree: &_storage.tree, to: minimumCapacity, linearly: false))
+      }
+      assert(_storage.capacity >= minimumCapacity)
+      assert(_storage.tree.header.initializedCount <= _storage.capacity)
+    #endif
   }
 }

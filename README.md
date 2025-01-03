@@ -99,6 +99,8 @@ print(dict) // 例: [apple: 5, banana: 3]
 
 1. whileループで削除する
 
+この問題を迂回する、標準APIによるベーシックな方法です。
+
 ```Swift
 var b: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
 var i = b.startIndex
@@ -106,9 +108,9 @@ while i != b.endIndex { // endIndexは不変
   let j = i
   i = b.index(after: i)
   b.remove(at: j) // jはこの時点で無効になる
-  XCTAssertFalse(b.isValid(index: j))
+  print(b.isValid(index: j)) // false
 }
-XCTAssertEqual(b.count, 0)
+print(b.count) // 0
 ```
 
 2. enumerated()で削除する

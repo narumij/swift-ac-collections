@@ -1,6 +1,6 @@
 # swift-ac-collections
 
-`swift-ac-collections` は、Swift で実装された赤黒木（Red-Black Tree）ベースのコレクションライブラリです。  
+`swift-ac-collections` は、[AtCoder][atcodef]での利用を想定したデータ構造等のオープソース・パッケージです。
 
 ## 利用方法
 
@@ -32,7 +32,8 @@ import AcCollections
 
 ### RedBlackTreeModule
 
-本ライブラリでは、赤黒木（Red-Black Tree）を用いて以下のコレクションを提供しています。
+本モジュールでは平衡二分探索木の一種、赤黒木（Red-Black Tree）を用いたコンテナを提供しています。
+具体的には以下で、それぞれ、C++のstd::set, std::multiset, std::mapに相当します。
 
 #### 1. RedBlackTreeSet
 
@@ -251,3 +252,5 @@ ABC328Eという問題がありまして、C++で書かれた解説コードを�
 
 不具合報告や機能追加の要望は、Issue または Pull Request をお寄せください。  
 ご利用いただきありがとうございます！
+
+[atcoder]: https://atcoder.jp/

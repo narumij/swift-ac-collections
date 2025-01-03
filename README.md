@@ -1,6 +1,6 @@
 # swift-ac-collections
 
-`swift-ac-collections` は、[AtCoder][atcodef]での利用を想定したデータ構造等のオープソース・パッケージです。
+`swift-ac-collections` は、[AtCoder][atcoder]での利用を想定したデータ構造等のオープソース・パッケージです。
 
 ## 利用方法
 

@@ -57,11 +57,7 @@ import AcCollections
 - 連想配列リテラル（`ExpressibleByDictionaryLiteral`）にも対応しています。
 - Swift 5.8.1では標準辞書に及びませんが、Swift 6.0ではこちらの方が速い場合もあります。
 
-### PermutationModule
-
-後述
-
-## 簡単な使用例
+#### 簡単な使用例
 
 ```Swift
 import AcCollections
@@ -87,7 +83,7 @@ dict["banana"] = 3
 print(dict) // 例: [apple: 5, banana: 3]
 ```
 
-## 削除時のインデックス（ポインタ）無効化と安全な範囲削除方法
+#### 削除時のインデックス（ポインタ）無効化と安全な範囲削除方法
 
 削除操作を行うことで、対象のノードとインデックスは無効となります。ツリーから外れ、再利用管理リンクリストの一部となります。
 
@@ -99,7 +95,7 @@ print(dict) // 例: [apple: 5, banana: 3]
 
 - endIndexは例外で、常に不変です。
 
-### 範囲削除方法の例
+##### 範囲削除方法の例
 
 1. whileループで削除する
 
@@ -182,7 +178,7 @@ tree4.removeSubrange(0 ..< 6)
 // 0〜5が削除され、結果は空
 ```
 
-### Multisetのremove(:)
+#### Multisetのremove(:)
 
 RedBlackTreeMultisetのremove(:)は、enumerated()やforEach(:)の削除時対策が効かないため、通常のコピーオンライトとくらべて、さらにコピーが発生しやすい挙動としています。
 
@@ -209,9 +205,9 @@ for member in multiset.map({ $0 }) {
 }
 ```
 
-## PermutationModule
+### PermutationModule
 
-### 使い方
+#### 使い方
 
 ```Swift
 import AcCollections
@@ -223,7 +219,7 @@ for p in [1,2].nextPermutations() {
 }
 ```
 
-### 説明
+#### 説明
 
 これの何が嬉しいかというと、辞書順での残りを列挙します。終了条件はソート済みと変わらない並びとなることで、その直前までが出力されます。
 

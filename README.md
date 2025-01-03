@@ -190,7 +190,7 @@ RedBlackTreeMultisetのremove(:)は、enumerated()やforEach(:)の削除時対�
 
 これを避けるには、削除時に有効なイテレータやサブシーケンスやインデックスが消費済みの状態にする必要があります。
 
-削除に必要な情報は一度map関数で配列にする等。
+具体的には、削除に必要な情報は一度map関数で配列にする等です。
 
 ```Swift
 var multiset: RedBlackTreeMultiet<Int> = [0,0,1,1,2,2]

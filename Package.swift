@@ -14,6 +14,11 @@ var defines: [String] = [
 
 var _settings: [SwiftSetting] = defines.map { .define($0) }
 
+let unchecked: [SwiftSetting] = [
+  // -Ounchecked フラグを追加
+  .unsafeFlags(["-Ounchecked"], .when(configuration: .release))
+]
+
 let package = Package(
   name: "swift-ac-collections",
   products: [
@@ -42,7 +47,7 @@ let package = Package(
     .target(
       name: "RedBlackTreeModule",
       dependencies: [],
-      swiftSettings: _settings
+      swiftSettings: _settings + unchecked
     ),
     .testTarget(
       name: "RedBlackTreeTests",
@@ -62,7 +67,7 @@ let package = Package(
     .target(
       name: "PermutationModule",
       dependencies: [],
-      swiftSettings: _settings
+      swiftSettings: _settings + unchecked
     ),
     .testTarget(
       name: "PermutationTests",

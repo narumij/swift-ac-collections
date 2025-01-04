@@ -208,6 +208,20 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  @inlinable
+  public init<R>(_ range: __owned R)
+  where R: RangeExpression, R: Collection, R.Element == Element {
+    precondition(range is Range<Element> || range is ClosedRange<Element>)
+    let tree: Tree = .create(withCapacity: range.count)
+    for __k in range {
+      _ = tree.___emplace_last(__k)
+    }
+    self._storage = .init(__tree: tree)
+  }
+}
+
+extension RedBlackTreeSet {
+
   /// - 計算量: O(1)
   @inlinable
   public var isEmpty: Bool {

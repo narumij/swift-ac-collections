@@ -425,22 +425,31 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree: FindProtocol & FindEqualProtocol & FindLeafProtocol {}
+extension ___RedBlackTree.___Tree: FindProtocol {}
+extension ___RedBlackTree.___Tree: FindEqualProtocol {}
+extension ___RedBlackTree.___Tree: FindLeafProtocol {}
 extension ___RedBlackTree.___Tree: EqualProtocol {}
 extension ___RedBlackTree.___Tree: InsertNodeAtProtocol {}
 extension ___RedBlackTree.___Tree: InsertMultiProtocol {}
+extension ___RedBlackTree.___Tree: InsertLastProtocol {}
 extension ___RedBlackTree.___Tree: RemoveProtocol {}
-extension ___RedBlackTree.___Tree: MergeProtocol { }
-extension ___RedBlackTree.___Tree: HandleProtocol {
+extension ___RedBlackTree.___Tree: MergeProtocol {}
+extension ___RedBlackTree.___Tree: HandleProtocol {}
+extension ___RedBlackTree.___Tree: StorageEraseProtocol {}
+extension ___RedBlackTree.___Tree: BoundProtocol {}
+extension ___RedBlackTree.___Tree: InsertUniqueProtocol {}
+extension ___RedBlackTree.___Tree: DistanceProtocol {}
+extension ___RedBlackTree.___Tree: CountProtocol {}
+extension ___RedBlackTree.___Tree: MemberProtocol {}
+extension ___RedBlackTree.___Tree: RootImpl & RefSetImpl & RootPtrImpl {}
+extension ___RedBlackTree.___Tree {
+
   @inlinable
   @inline(__always)
   func ___element(_ p: _NodePtr) -> VC.Element {
     self[p]
   }
-}
-extension ___RedBlackTree.___Tree: StorageEraseProtocol {}
-extension ___RedBlackTree.___Tree: BoundProtocol {}
-extension ___RedBlackTree.___Tree: InsertUniqueProtocol {
+  
   @inlinable
   @inline(__always)
   func __key(_ e: VC.Element) -> VC._Key {
@@ -448,9 +457,7 @@ extension ___RedBlackTree.___Tree: InsertUniqueProtocol {
   }
 }
 
-extension ___RedBlackTree.___Tree: DistanceProtocol & CountProtocol {}
-
-extension ___RedBlackTree.___Tree: MemberProtocol & RootImpl & RefSetImpl & RootPtrImpl {
+extension ___RedBlackTree.___Tree {
   @inlinable
   @inline(__always)
   func __parent_(_ p: _NodePtr) -> _NodePtr {
@@ -658,15 +665,3 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
-  
-  @inlinable
-  @inline(__always)
-  func ___emplace_last(_ __k: Element) -> _NodePtr {
-    let __parent = __root() == .nullptr ? __end_node() : __tree_max(__root())
-    let __child = __parent == .end ? __left_ref(__parent) : __right_ref(__parent)
-    let __p = __construct_node(__k)
-    __insert_node_at(__parent, __child, __p)
-    return __p
-  }
-}

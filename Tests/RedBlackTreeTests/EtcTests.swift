@@ -185,6 +185,52 @@ final class EtcTests: XCTestCase {
     print("!")
     _fixLifetime(set)
   }
+  
+  func loop(
+    condition: @escaping () -> Bool,
+    expression: @escaping () -> Void) -> UnfoldFirstSequence<Void> {
+    Swift.sequence(first: (), next: { expression(); return condition() ? () : nil })
+  }
+
+  func loop(condition: @escaping () -> Bool) -> UnfoldFirstSequence<Void> {
+    Swift.sequence(first: (), next: { condition() ? () : nil })
+  }
+
+  func forLoop<I>(initial: I, condition: (inout I) -> Bool, expression: (inout I) -> Void, body: (inout I) -> Void) {
+    var i = initial
+    while condition(&i) {
+      body(&i)
+      expression(&i)
+    }
+  }
+
+  func forLoop(condition: () -> Bool, expression: () -> Void, body: () -> Void) {
+    while condition() {
+      body()
+      expression()
+    }
+  }
+
+  func testLoop() throws {
+    do {
+      var a: [Int] = []
+      forLoop(initial: 0, condition: { $0 < 10 }, expression: { $0 += 1}) { i in
+        a.append(i)
+      }
+//      forLoop(condition: { i < 10}, expression: { i += 1 }) {
+//        a.append(i)
+//      }
+      XCTAssertEqual(a, (0 ..< 10) + [])
+    }
+    do {
+      var a: [Int] = []
+      var i = 0
+      forLoop(condition: { i < 0}, expression: { i += 1 }) {
+        a.append(i)
+      }
+      XCTAssertEqual(a, [])
+    }
+  }
 
 #if false
   func testCapacity() throws {

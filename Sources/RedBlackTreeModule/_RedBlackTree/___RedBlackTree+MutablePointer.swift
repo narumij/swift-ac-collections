@@ -25,18 +25,21 @@ import Foundation
 extension ___RedBlackTree.___Tree {
   
   @frozen
-  public struct MutablePointer {
+  @usableFromInline
+  struct ___MutablePointer {
 
     @usableFromInline
     let _storage: Storage
+
+    public var rawValue: Int
 
     // MARK: -
 
     @inlinable
     @inline(__always)
-    internal init(_storage: Tree.Storage) {
+    internal init(_storage: Tree.Storage, pointer: _NodePtr? = nil) {
       self._storage = _storage
-      ___next()
+      self.rawValue = pointer ?? _storage.tree.__begin_node
     }
     
     @inlinable
@@ -49,13 +52,27 @@ extension ___RedBlackTree.___Tree {
     public var pointee: Element {
       get { _tree[_tree.__tree_max(_tree.__root())] }
       set {
-        Tree.ensureUniqueAndCapacity(tree: &_tree, minimumCapacity: _tree.count + 1)
-        _tree.___emplace_last(newValue)
+        assert(rawValue == .end)
+        if rawValue == .end {
+          Tree.ensureUniqueAndCapacity(tree: &_tree, minimumCapacity: _tree.count + 1)
+          rawValue = _tree.___emplace_last(newValue)
+        }
+        else {
+          _tree[rawValue] = newValue
+        }
       }
     }
     
     @inlinable
-    public mutating func ___next() { }
+    public mutating func ___next() {
+      assert(rawValue != .end)
+      rawValue = rawValue == .end ? .nullptr : _tree.__tree_next_iter(rawValue)
+    }
+    
+    @inlinable
+    public mutating func ___prev() {
+      rawValue = _tree.__tree_prev_iter(rawValue)
+    }
   }
 }
 

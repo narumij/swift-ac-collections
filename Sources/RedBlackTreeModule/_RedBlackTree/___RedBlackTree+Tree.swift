@@ -662,10 +662,11 @@ extension ___RedBlackTree.___Tree {
   
   @inlinable
   @inline(__always)
-  func ___emplace_last(_ __k: Element) {
+  func ___emplace_last(_ __k: Element) -> _NodePtr {
     let __parent = __root() == .nullptr ? __end_node() : __tree_max(__root())
     let __child = __parent == .end ? __left_ref(__parent) : __right_ref(__parent)
     let __p = __construct_node(__k)
     __insert_node_at(__parent, __child, __p)
+    return __p
   }
 }

@@ -51,30 +51,27 @@ extension RedBlackTreeSet: SetAlgebra {
   }
   
   @inlinable
-  func ___set_result(_ f: inout Index, _ l: Index, _ r: inout Tree.MutablePointer) {
+  func ___set_result(_ f: inout Index, _ l: Index, _ r: inout Tree.___MutablePointer) {
     while f != l {
       r.pointee = f.___pointee
       r.___next()
       f.___next()
     }
   }
-
+  
   @inlinable
   public mutating func formUnion(_ other: __owned RedBlackTreeSet<Element>) {
     let ___storage: Tree.Storage = .create(withCapacity: 0)
-    var __result: Tree.MutablePointer = .init(_storage: ___storage)
+    var __result: Tree.___MutablePointer = .init(_storage: ___storage)
     var (__first1, __last1) = (___index_start(), ___index_end())
     var (__first2, __last2) = (other.___index_start(), other.___index_end())
-
     while __first1 != __last1 {
-      defer { __result.___next() }
-
       if __first2 == __last2 {
         ___set_result(&__first1, __last1, &__result)
         _storage = ___storage
         return
       }
-
+      defer { __result.___next() }
       if _tree.___comp(__first2.___pointee, __first1.___pointee) {
         __result.pointee = __first2.___pointee
         __first2.___next()
@@ -94,7 +91,7 @@ extension RedBlackTreeSet: SetAlgebra {
   public mutating func formIntersection(_ other: RedBlackTreeSet<Element>) {
     // lower_boundを使う方法があるが、一旦楽に実装できそうな方からにしている
     let ___storage: Tree.Storage = .create(withCapacity: 0)
-    var __result: Tree.MutablePointer = .init(_storage: ___storage)
+    var __result: Tree.___MutablePointer = .init(_storage: ___storage)
     var (__first1, __last1) = (___index_start(), ___index_end())
     var (__first2, __last2) = (other.___index_start(), other.___index_end())
     while __first1 != __last1, __first2 != __last2 {
@@ -115,7 +112,7 @@ extension RedBlackTreeSet: SetAlgebra {
   @inlinable
   public mutating func formSymmetricDifference(_ other: __owned RedBlackTreeSet<Element>) {
     let ___storage: Tree.Storage = .create(withCapacity: 0)
-    var __result: Tree.MutablePointer = .init(_storage: ___storage)
+    var __result: Tree.___MutablePointer = .init(_storage: ___storage)
     var (__first1, __last1) = (___index_start(), ___index_end())
     var (__first2, __last2) = (other.___index_start(), other.___index_end())
     while __first1 != __last1 {

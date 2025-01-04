@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.1] - 2025-?-?
 ### Changed
 - コンパイラフラグ-Ouncheckedの追加
+- remove(contesntsOf:)を追加
+- insert(contesntsOf:)を追加
 
 ## [0.1.0] - 2025-1-2
 ### Changed

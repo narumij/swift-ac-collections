@@ -30,30 +30,45 @@ public
 }
 
 /// メモ化用途向け
+///
+/// CustomKeyProtocolで比較方法を供給することで、
+/// Comparableプロトコル未適合の型を使うことができる
+///
+/// 辞書としての機能は削いである
 @frozen
-public struct ___RedBlackTreeMemoizeBase<CustomKey, Value>
+public struct ___RedBlackTreeMapBase<CustomKey, Value>
 where CustomKey: CustomKeyProtocol {
-
+  
   public
-    typealias Key = CustomKey.Key
-
+  typealias Key = CustomKey.Key
+  
   public
-    typealias Value = Value
-
+  typealias Value = Value
+  
   public
-    typealias KeyValue = (key: Key, value: Value)
-
+  typealias KeyValue = (key: Key, value: Value)
+  
   public
-    typealias Element = KeyValue
-
+  typealias Element = KeyValue
+  
   public
-    typealias _Key = Key
-
+  typealias _Key = Key
+  
   public
-    typealias _Value = Value
+  typealias _Value = Value
+  
+  @usableFromInline
+  var _storage: Tree.Storage
+}
+
+extension ___RedBlackTreeMapBase {
 
   public init() {
     _storage = .create(withCapacity: 0)
+  }
+
+  public init(minimumCapacity: Int) {
+    _storage = .create(withCapacity: minimumCapacity)
   }
 
   public subscript(key: Key) -> Value? {
@@ -66,22 +81,16 @@ where CustomKey: CustomKeyProtocol {
       }
     }
   }
-
-  @usableFromInline
+  
+  public
   var _tree: Tree {
     get { _storage.tree }
     _modify { yield &_storage.tree }
   }
-
-  @usableFromInline
-  var _storage: Tree.Storage
-
-  public var count: Int { _tree.size }
-  public var isEmpty: Bool { count == 0 }
 }
 
-extension ___RedBlackTreeMemoizeBase: ___RedBlackTreeBase {}
-extension ___RedBlackTreeMemoizeBase: KeyValueComparer {
+extension ___RedBlackTreeMapBase: ___RedBlackTreeBase {}
+extension ___RedBlackTreeMapBase: KeyValueComparer {
 
   @inlinable
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {

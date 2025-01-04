@@ -148,6 +148,22 @@ extension InsertMultiProtocol {
 //}
 
 @usableFromInline
+protocol InsertFirstProtocol: InsertNodeAtProtocol & AllocatorProtocol & RootProtocol & EndNodeProtocol { }
+
+extension InsertFirstProtocol {
+  
+  @inlinable
+  @inline(__always)
+  func ___emplace_head(_ __k: Element) -> _NodePtr {
+    let __parent = __root() == .nullptr ? __end_node() : __tree_max(__root())
+    let __child = __left_ref(__parent)
+    let __p = __construct_node(__k)
+    __insert_node_at(__parent, __child, __p)
+    return __p
+  }
+}
+
+@usableFromInline
 protocol InsertLastProtocol: InsertNodeAtProtocol & AllocatorProtocol & RootProtocol & EndNodeProtocol { }
 
 extension InsertLastProtocol {

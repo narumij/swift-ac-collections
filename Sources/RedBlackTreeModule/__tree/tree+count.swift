@@ -40,7 +40,7 @@ extension CountProtocol {
   }
 
   @inlinable
-  func __count_multi(__k: _Key) -> size_type {
+  func __count_multi(_ __k: _Key) -> size_type {
     var __result: __iter_pointer = __end_node()
     var __rt: __node_pointer = __root()
     while __rt != .nullptr {

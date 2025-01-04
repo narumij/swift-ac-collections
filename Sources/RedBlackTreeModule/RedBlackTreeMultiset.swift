@@ -98,6 +98,7 @@ extension RedBlackTreeMultiset {
     for __k in range {
       _ = tree.___emplace_last(__k)
     }
+    assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(__tree: tree)
   }
 }
@@ -217,7 +218,7 @@ extension RedBlackTreeMultiset {
 
   /// - Complexity: O(*n*), ここで *n* はマルチセット内の要素数。
   @inlinable public func contains(_ member: Element) -> Bool {
-    ___contains(member)
+    ___contains_unique(member)
   }
 
   /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
@@ -296,7 +297,7 @@ extension RedBlackTreeMultiset {
 
   /// - Complexity: O(log *n* + *k*), ここで *n* はマルチセット内の要素数、*k* は指定された要素の出現回数。
   @inlinable public func count(_ element: Element) -> Int {
-    _tree.__count_multi(__k: element)
+    _tree.__count_multi(element)
   }
 }
 

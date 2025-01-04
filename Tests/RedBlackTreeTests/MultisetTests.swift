@@ -662,6 +662,15 @@ final class MultisetTests: XCTestCase {
     XCTAssertTrue(dict.allSatisfy({ $0 > 0 }))
     XCTAssertFalse(dict.allSatisfy({ $0 > 1 }))
   }
+  
+  func testContains2() throws {
+    let multiset: RedBlackTreeMultiset<Int> = [1,1,2,2,2,3,3]
+    XCTAssertFalse(multiset.contains(0))
+    XCTAssertTrue(multiset.contains(1))
+    XCTAssertTrue(multiset.contains(2))
+    XCTAssertTrue(multiset.contains(3))
+    XCTAssertFalse(multiset.contains(4))
+  }
 
   func testForEach() throws {
     let dict = [1, 2, 2, 3] as RedBlackTreeMultiset<Int>

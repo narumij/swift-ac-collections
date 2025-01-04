@@ -216,6 +216,7 @@ extension RedBlackTreeSet {
     for __k in range {
       _ = tree.___emplace_last(__k)
     }
+    assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(__tree: tree)
   }
 }
@@ -367,7 +368,7 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(*n*), ここで *n* はセット内の要素数。
   @inlinable public func contains(_ member: Element) -> Bool {
-    ___contains(member)
+    ___contains_unique(member)
   }
 
   /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。

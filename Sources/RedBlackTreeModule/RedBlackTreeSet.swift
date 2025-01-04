@@ -338,6 +338,18 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
+  
+  @inlinable
+  @inline(__always)
+  mutating func remove(contentsOf elementRange: Range<Element>) {
+    _ensureUnique()
+    let lower = lowerBound(elementRange.lowerBound).rawValue
+    let upper = upperBound(elementRange.upperBound).rawValue
+    ___remove(from: lower, to: upper)
+  }
+}
+
+extension RedBlackTreeSet {
 
   /// - Complexity: O(*n*), ここで *n* はセット内の要素数。
   @inlinable public func contains(_ member: Element) -> Bool {
@@ -876,5 +888,30 @@ extension RedBlackTreeSet {
   @inline(__always)
   public func isValid(index: ___RedBlackTree.RawPointer) -> Bool {
     ___is_valid_index(index.rawValue)
+  }
+}
+
+// MARK: -
+
+extension RedBlackTreeSet {
+  
+  @inlinable
+  @inline(__always)
+  public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
+    _ensureUniqueAndCapacity(minimumCapacity: count + other.count)
+    _tree.__node_handle_merge_unique(other._tree)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public mutating func insert(contentsOf other: RedBlackTreeMultiset<Element>) {
+    _ensureUniqueAndCapacity(minimumCapacity: count + other.count)
+    _tree.__node_handle_merge_unique(other._tree)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public mutating func insert<S>(contentsOf other: S) where S:Sequence, S.Element == Element {
+    other.forEach { insert($0) }
   }
 }

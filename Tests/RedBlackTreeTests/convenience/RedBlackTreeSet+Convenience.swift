@@ -54,23 +54,30 @@ extension RedBlackTreeSet {
   /// }
   /// print(treeSet) // 出力: [1, 6]
   /// ```
-  @inlinable
-  public mutating func erase(at position: Index) -> Index {
-    defer { remove(at: position) }
-    return index(after: position)
-  }
+  #if true
+    @inlinable
+    public mutating func erase(at position: Index) -> Index {
+      defer { remove(at: position) }
+      return index(after: position)
+    }
+  #else
+    @inlinable
+    public mutating func erase(at position: Index) -> Index {
+      ___std_erase(position)
+    }
+  #endif
 }
 
 extension RedBlackTreeSet {
 
   @inlinable
   public subscript(bounds: Range<Element>) -> SubSequence {
-    self[lowerBound(bounds.lowerBound) ..< upperBound(bounds.upperBound)]
+    self[lowerBound(bounds.lowerBound)..<upperBound(bounds.upperBound)]
   }
 }
 
 //extension RedBlackTreeSet {
-//  
+//
 //  @inlinable
 //  public func enumerated(lowerBound from: Element, upperBound to: Element) -> EnumeratedSequence {
 //    ___enumerated_sequence__(from: ___ptr_lower_bound(from), to: ___ptr_upper_bound(to))
@@ -96,7 +103,8 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func removeAndForEach(
     _ range: Range<Element>,
-    _ action: (Element) throws -> ()) rethrows {
+    _ action: (Element) throws -> Void
+  ) rethrows {
     try ___remove(
       from: ___ptr_lower_bound(range.lowerBound),
       to: ___ptr_upper_bound(range.upperBound),

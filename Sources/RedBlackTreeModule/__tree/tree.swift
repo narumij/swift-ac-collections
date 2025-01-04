@@ -209,6 +209,7 @@ protocol AllocatorProtocol {
   associatedtype Element
   func __construct_node(_ k: Element) -> _NodePtr
   func destroy(_ p: _NodePtr)
+  func ___element(_ p: _NodePtr) -> Element
 }
 
 // MARK: common

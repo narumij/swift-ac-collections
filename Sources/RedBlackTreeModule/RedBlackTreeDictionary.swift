@@ -342,6 +342,17 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary {
+  
+  @inlinable
+  @inline(__always)
+  mutating func remove(contentsOf keyRange: Range<Key>) {
+    let lower = lowerBound(keyRange.lowerBound)
+    let upper = upperBound(keyRange.upperBound)
+    removeSubrange(lower ..< upper)
+  }
+}
+
+extension RedBlackTreeDictionary {
 
   @inlinable
   public func lowerBound(_ p: Key) -> Index {
@@ -831,3 +842,16 @@ extension RedBlackTreeDictionary {
     ___is_valid_index(index.rawValue)
   }
 }
+
+// MARK: -
+
+extension RedBlackTreeDictionary {
+  
+  @inlinable
+  @inline(__always)
+  public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key,Value>) {
+    _ensureUniqueAndCapacity(minimumCapacity: count + other.count)
+    _tree.__node_handle_merge_unique(other._tree)
+  }
+}
+

@@ -132,6 +132,9 @@ extension ___RedBlackTree.___Tree {
   public
     typealias Tree = ___RedBlackTree.___Tree<VC>
 
+  @usableFromInline
+  typealias _Tree = ___RedBlackTree.___Tree<VC>
+
   public
     typealias VC = VC
 
@@ -426,6 +429,14 @@ extension ___RedBlackTree.___Tree: EqualProtocol {}
 extension ___RedBlackTree.___Tree: InsertNodeAtProtocol {}
 extension ___RedBlackTree.___Tree: InsertMultiProtocol {}
 extension ___RedBlackTree.___Tree: RemoveProtocol {}
+extension ___RedBlackTree.___Tree: MergeProtocol { }
+extension ___RedBlackTree.___Tree: HandleProtocol {
+  @inlinable
+  @inline(__always)
+  func ___element(_ p: _NodePtr) -> VC.Element {
+    self[p]
+  }
+}
 extension ___RedBlackTree.___Tree: StorageEraseProtocol {}
 extension ___RedBlackTree.___Tree: BoundProtocol {}
 extension ___RedBlackTree.___Tree: InsertUniqueProtocol {
@@ -645,3 +656,4 @@ extension ___RedBlackTree.___Tree {
     return result
   }
 }
+

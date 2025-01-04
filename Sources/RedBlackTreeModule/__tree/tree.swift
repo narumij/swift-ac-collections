@@ -147,6 +147,11 @@ extension ValueProtocol {
   func ___value_equal(_ a: _Key, _ b: _Key) -> Bool {
     !value_comp(a, b) && !value_comp(b, a)
   }
+  
+  @inlinable @inline(__always)
+  func ___comp(_ a: _Key, _ b: _Key) -> Bool {
+    value_comp(a, b)
+  }
 }
 
 @usableFromInline
@@ -226,6 +231,19 @@ extension ValueComparer where _Key: Comparable {
   @inlinable @inline(__always)
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     a < b
+  }
+}
+
+extension ValueComparer {
+  
+  @inlinable @inline(__always)
+  static func ___value_equal(_ a: _Key, _ b: _Key) -> Bool {
+    !value_comp(a, b) && !value_comp(b, a)
+  }
+
+  @inlinable @inline(__always)
+  static func ___comp(_ a: _Key, _ b: _Key) -> Bool {
+    value_comp(a,b)
   }
 }
 

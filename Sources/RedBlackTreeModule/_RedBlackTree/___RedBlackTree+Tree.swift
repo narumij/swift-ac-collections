@@ -353,6 +353,7 @@ extension ___RedBlackTree.___Tree {
       __node_ptr[p].__value_ = k
       return p
     }
+    assert(capacity - count >= 1)
     let index = _header.initializedCount
     (__node_ptr + index).initialize(to: Node(__value_: k))
     _header.initializedCount += 1
@@ -657,3 +658,14 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
+extension ___RedBlackTree.___Tree {
+  
+  @inlinable
+  @inline(__always)
+  func ___emplace_last(_ __k: Element) {
+    let __parent = __root() == .nullptr ? __end_node() : __tree_max(__root())
+    let __child = __parent == .end ? __left_ref(__parent) : __right_ref(__parent)
+    let __p = __construct_node(__k)
+    __insert_node_at(__parent, __child, __p)
+  }
+}

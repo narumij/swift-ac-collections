@@ -186,8 +186,9 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// - Complexity: O(log *n*)
   @inlinable
-  public init<Source>(_ sequence: __owned Source)
+  public init<Source>(_sequence sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
     let count = (sequence as? (any Collection))?.count
     var tree: Tree = .create(withCapacity: count ?? 0)
@@ -196,10 +197,33 @@ extension RedBlackTreeSet {
         Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
       }
       var __parent = _NodePtr.nullptr
+      // 検索の計算量がO(log *n*)
       let __child = tree.__find_equal(&__parent, __k)
       if tree.__ref_(__child) == .nullptr {
         let __h = tree.__construct_node(__k)
+        // バランシングの計算量がO(log *n*)
         tree.__insert_node_at(__parent, __child, __h)
+      }
+    }
+    self._storage = .init(__tree: tree)
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public init<Source>(_ sequence: __owned Source)
+  where Element == Source.Element, Source: Sequence {
+    let count = (sequence as? (any Collection))?.count
+    var tree: Tree = .create(withCapacity: count ?? 0)
+    // 初期化直後はO(1)
+    var (__parent,__child) = tree.___max_ref()
+    // ソートの計算量がO(*n* log *n*)
+    for __k in sequence.sorted() {
+      if count == nil {
+        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+      }
+      if __parent == .end || tree[__parent] != __k {
+        // バランシングの計算量がO(log *n*)
+        (__parent, __child) = tree.___emplace(__parent, __child, __k)
       }
     }
     self._storage = .init(__tree: tree)
@@ -213,8 +237,11 @@ extension RedBlackTreeSet {
   where R: RangeExpression, R: Collection, R.Element == Element {
     precondition(range is Range<Element> || range is ClosedRange<Element>)
     let tree: Tree = .create(withCapacity: range.count)
+    // 初期化直後はO(1)
+    var (__parent,__child) = tree.___max_ref()
     for __k in range {
-      _ = tree.___emplace_last(__k)
+      // バランシングの計算量がO(log *n*)
+      (__parent, __child) = tree.___emplace(__parent, __child, __k)
     }
     assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(__tree: tree)
@@ -223,17 +250,19 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - 計算量: O(1)
+  /// - Complexity: O(1)
   @inlinable
   public var isEmpty: Bool {
     ___isEmpty
   }
 
+  /// - Complexity: O(1)
   @inlinable
   public var capacity: Int {
     ___capacity
   }
 
+  /// - Complexity: O(1)
   @inlinable
   public var ___rawCapacity: Int {
     ___header_capacity
@@ -242,6 +271,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// - Complexity: O(*n*)
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     _ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
@@ -250,6 +280,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// - Complexity: O(log *n*)
   @discardableResult
   @inlinable public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -259,6 +290,7 @@ extension RedBlackTreeSet {
     return (__inserted, __inserted ? newMember : _tree[ref: __r])
   }
 
+  /// - Complexity: O(log *n*)
   @discardableResult
   @inlinable public mutating func update(with newMember: Element) -> Element? {
     _ensureUniqueAndCapacity()
@@ -269,12 +301,16 @@ extension RedBlackTreeSet {
     return oldMember
   }
 
+  /// - Complexity: O(log *n*)
   @discardableResult
   @inlinable public mutating func remove(_ member: Element) -> Element? {
     _ensureUnique()
     return _tree.___erase_unique(member) ? member : nil
   }
 
+  /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
+  ///
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func remove(at index: TreePointer) -> Element {
@@ -285,6 +321,9 @@ extension RedBlackTreeSet {
     return element
   }
 
+  /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
+  ///
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func remove(at index: RawPointer) -> Element {
@@ -295,7 +334,7 @@ extension RedBlackTreeSet {
     return element
   }
 
-  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
@@ -305,6 +344,7 @@ extension RedBlackTreeSet {
     return remove(at: startIndex)
   }
 
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
@@ -321,13 +361,9 @@ extension RedBlackTreeSet {
   ///   範囲が逆転している場合（`lhs >= rhs`）や、木の要素範囲外を指している場合などの
   ///   “無効な” 状態では動作が未定義となります。
   ///
-  /// ## 計算量
-  /// - 削除する要素数を *k* とすると、単発的なノード削除が **O(log n)** 程度かかったとしても、
-  ///   連続した削除操作では共通処理が再利用されるため、**償却計算量は O(k)** に近いパフォーマンス
-  ///   が見込まれます。（実装によっては最大 **O(k log n)** となる可能性もあります）
+  /// - Complexity: O(log *n* + *k*)
   ///
-  /// - Important: 削除後は、これまで使用していたインデックスが無効になる場合があります。
-  ///   引き続き同じインデックスを利用する際は、事前に再取得してください。
+  /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
   ///
   /// ### 使用例
   /// ```swift
@@ -353,7 +389,8 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-  
+
+  /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
   mutating func remove(contentsOf elementRange: Range<Element>) {
@@ -366,20 +403,18 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(*n*), ここで *n* はセット内の要素数。
+  /// - Complexity: O(log *n*)
   @inlinable public func contains(_ member: Element) -> Bool {
     ___contains_unique(member)
   }
 
-  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  /// - Complexity: O(log *n*)
   @inlinable public func min() -> Element? {
-    // O(1)にできるが、オリジナルにならい、一旦このまま
     ___min()
   }
 
-  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  /// - Complexity: O(log *n*)
   @inlinable public func max() -> Element? {
-    // O(1)にできるが、オリジナルにならい、一旦このまま
     ___max()
   }
 }
@@ -404,7 +439,7 @@ extension RedBlackTreeSet {
   ///
   /// - Parameter member: 二分探索で検索したい要素
   /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
-  /// - Complexity: 平均 O(log *n*)
+  /// - Complexity: O(log *n*)
   @inlinable public func lowerBound(_ member: Element) -> Index {
     ___index_lower_bound(member)
   }
@@ -421,7 +456,7 @@ extension RedBlackTreeSet {
   ///
   /// - Parameter member: 二分探索で検索したい要素
   /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
-  /// - Complexity: 平均 O(log *n*)
+  /// - Complexity: O(log *n*)
   @inlinable public func upperBound(_ member: Element) -> Index {
     ___index_upper_bound(member)
   }
@@ -429,30 +464,31 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(1)。
+  /// - Complexity: O(1)
   @inlinable
   public var first: Element? {
     isEmpty ? nil : self[startIndex]
   }
 
-  /// - Complexity: O(1)。
+  /// - Complexity: O(log *n*)
   @inlinable
   public var last: Element? {
     isEmpty ? nil : self[index(before: .end(_storage))]
   }
 
+  /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first(where: predicate)
   }
 
-  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  /// - Complexity: O(log *n*)
   @inlinable
   public func firstIndex(of member: Element) -> Index? {
     ___first_index(of: member)
   }
 
-  /// - Complexity: O(*n*), ここで *n* はセット内の要素数。
+  /// - Complexity: O(*n*)
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     try ___first_index(where: predicate)
@@ -461,7 +497,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(*n*), ここで *n* はセット内の要素数。
+  /// - Complexity: O(*n*)
   @inlinable
   func sorted() -> [Element] {
     _tree.___sorted
@@ -485,13 +521,14 @@ extension RedBlackTreeSet: CustomStringConvertible, CustomDebugStringConvertible
 
 extension RedBlackTreeSet: Equatable {
 
+  /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.___equal_with(rhs)
   }
 }
 
-// MARK: - Sequence, BidirectionalCollection
+// MARK: - Sequence
 
 extension RedBlackTreeSet: Sequence {
 
@@ -539,6 +576,8 @@ extension RedBlackTreeSet: Sequence {
     }
   #endif
 }
+
+// MARK: - BidirectionalCollection
 
 extension RedBlackTreeSet: BidirectionalCollection {
 
@@ -646,6 +685,8 @@ extension RedBlackTreeSet: BidirectionalCollection {
   }
 }
 
+// MARK: - SubSequence
+
 extension RedBlackTreeSet {
 
   @frozen
@@ -672,7 +713,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet.SubSequence: Sequence {
-  
+
   public typealias Base = RedBlackTreeSet
   public typealias Element = Base.Element
   public typealias EnumElement = Base.Tree.EnumElement
@@ -909,25 +950,24 @@ extension RedBlackTreeSet {
 // MARK: -
 
 extension RedBlackTreeSet {
-  
+
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
     _ensureUniqueAndCapacity(minimumCapacity: count + other.count)
     _tree.__node_handle_merge_unique(other._tree)
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiset<Element>) {
     _ensureUniqueAndCapacity(minimumCapacity: count + other.count)
     _tree.__node_handle_merge_unique(other._tree)
   }
-  
+
   @inlinable
   @inline(__always)
-  public mutating func insert<S>(contentsOf other: S) where S:Sequence, S.Element == Element {
+  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
     other.forEach { insert($0) }
   }
 }
-

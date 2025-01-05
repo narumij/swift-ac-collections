@@ -125,7 +125,8 @@ extension FindEqualProtocol {
     var __nd_ptr = __root_ptr()
     if __nd != .nullptr {
       while true {
-        if value_comp(__v, __value_(__nd)) {
+        let __value__nd = __value_(__nd)
+        if value_comp(__v, __value__nd) {
           if __left_(__nd) != .nullptr {
             __nd_ptr = addressof(__left_ref(__nd))
             __nd = static_cast__node_pointer(__left_(__nd))
@@ -133,7 +134,7 @@ extension FindEqualProtocol {
             __parent = static_cast__parent_pointer(__nd)
             return __left_ref(__parent)
           }
-        } else if value_comp(__value_(__nd), __v) {
+        } else if value_comp(__value__nd, __v) {
           if __right_(__nd) != .nullptr {
             __nd_ptr = addressof(__right_ref(__nd))
             __nd = static_cast__node_pointer(__right_(__nd))

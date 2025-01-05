@@ -85,4 +85,20 @@ final class SetPerformanceTests: XCTestCase {
       XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
     }
   }
+  
+  let random: [Int] = (0 ..< 2_000_000).shuffled()
+  
+  func testPerformanceInit0() throws {
+//    throw XCTSkip()
+    self.measure {
+      let _ = RedBlackTreeSet<Int>(random)
+    }
+  }
+  
+  func testPerformanceInit1() throws {
+//    throw XCTSkip()
+    self.measure {
+      let _ = RedBlackTreeSet<Int>(_sequence: random)
+    }
+  }
 }

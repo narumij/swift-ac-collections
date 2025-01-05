@@ -55,7 +55,7 @@ extension ___RedBlackTree.___Tree {
         assert(rawValue == .end)
         if rawValue == .end {
           Tree.ensureUniqueAndCapacity(tree: &_tree, minimumCapacity: _tree.count + 1)
-          rawValue = _tree.___emplace_last(newValue)
+          rawValue = _tree.___emplace_last(newValue).__parent
         }
         else {
           _tree[rawValue] = newValue

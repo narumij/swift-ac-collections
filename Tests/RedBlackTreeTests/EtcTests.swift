@@ -122,7 +122,7 @@ final class EtcTests: XCTestCase {
   func testRemoving() throws {
     
     do {
-      var b: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+      var b: RedBlackTreeSet<Int> = .init(0 ..< 10)
       for (i,_) in b[b.startIndex ..< b.endIndex].enumerated() {
         b.remove(at: i) // iはこの時点で無効になる
         XCTAssertFalse(b.isValid(index: i))

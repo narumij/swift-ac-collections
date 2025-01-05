@@ -167,14 +167,30 @@ extension InsertFirstProtocol {
 protocol InsertLastProtocol: InsertNodeAtProtocol & AllocatorProtocol & RootProtocol & EndNodeProtocol { }
 
 extension InsertLastProtocol {
-  
+
   @inlinable
   @inline(__always)
-  func ___emplace_last(_ __k: Element) -> _NodePtr {
+  func ___max_ref() -> (__parent:_NodePtr,__child:_NodeRef) {
+    let __parent = __root() == .nullptr ? __end_node() : __tree_max(__root())
+    let __child = __parent == .end ? __left_ref(__parent) : __right_ref(__parent)
+    return (__parent,__child)
+  }
+
+  @inlinable
+  @inline(__always)
+  func ___emplace(_ __parent:_NodePtr,_ __child:_NodeRef,_ __k: Element) -> (__parent:_NodePtr,__child:_NodeRef) {
+    let __p = __construct_node(__k)
+    __insert_node_at(__parent, __child, __p)
+    return (__p,__right_ref(__p))
+  }
+
+  @inlinable
+  @inline(__always)
+  func ___emplace_last(_ __k: Element) -> (__parent:_NodePtr,__child:_NodeRef) {
     let __parent = __root() == .nullptr ? __end_node() : __tree_max(__root())
     let __child = __parent == .end ? __left_ref(__parent) : __right_ref(__parent)
     let __p = __construct_node(__k)
     __insert_node_at(__parent, __child, __p)
-    return __p
+    return (__p,__right_ref(__p))
   }
 }

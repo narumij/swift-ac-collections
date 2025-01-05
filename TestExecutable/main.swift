@@ -19,7 +19,7 @@ let count = 2_000_000
 //let count = 1_000_000
 #endif
 
-#if true
+#if false
 #if DEBUG
   let s = (0..<9) + []
 #else
@@ -30,7 +30,7 @@ for p in Permutations.All(unsafe: s) {
     ans = p.count
   }
 print(ans)
-#elseif true
+#elseif false
 #if DEBUG
   let s = (0..<9) + []
 #else
@@ -79,7 +79,7 @@ for i in 0 ..< count {
 for i in 0 ..< count {
   _ = tree.remove(i)
 }
-#elseif false
+#elseif true
 var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 for v in 0..<10_000_000 {
   tree.remove(v)

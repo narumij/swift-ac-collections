@@ -178,7 +178,7 @@ extension InsertLastProtocol {
 
   @inlinable
   @inline(__always)
-  func ___emplace_hint(_ __parent:_NodePtr,_ __child:_NodeRef,_ __k: Element) -> (__parent:_NodePtr,__child:_NodeRef) {
+  func ___emplace_hint_right(_ __parent:_NodePtr,_ __child:_NodeRef,_ __k: Element) -> (__parent:_NodePtr,__child:_NodeRef) {
     let __p = __construct_node(__k)
     __insert_node_at(__parent, __child, __p)
     return (__p,__right_ref(__p))

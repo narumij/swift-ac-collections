@@ -83,7 +83,7 @@ extension RedBlackTreeMultiset {
         Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
       }
       // バランシングの計算量がO(log *n*)
-      (__parent, __child) = tree.___emplace_hint(__parent, __child, __k)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
       assert(tree.__tree_invariant(tree.__root()))
     }
     self._storage = .init(__tree: tree)

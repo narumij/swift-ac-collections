@@ -414,6 +414,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
       }
     }
 
+#if ENABLE_PERFORMANCE_TESTING
     func testInsert0() throws {
 
       throw XCTSkip("slow")
@@ -446,5 +447,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
         }
       }
     }
+#endif
+  
   #endif
 }

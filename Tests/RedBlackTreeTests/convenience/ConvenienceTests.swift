@@ -18,7 +18,6 @@ final class ConvenienceTests: XCTestCase {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
   
-#if DEBUG
   func test_set_LT_GT() throws {
     var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set.count, 5)
@@ -326,7 +325,6 @@ final class ConvenienceTests: XCTestCase {
     XCTAssertEqual(set.greaterThanOrEqual(5), nil)
     XCTAssertEqual(set.elements, [])
   }
-#endif
   
   func testRedBlackTreeConveniences() throws {
     let numbers: RedBlackTreeSet = [1, 3, 5, 7, 9]

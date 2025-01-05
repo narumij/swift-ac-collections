@@ -33,21 +33,6 @@ protocol InsertNodeAtProtocol: MemberSetProtocol
 extension InsertNodeAtProtocol {
 
   @inlinable
-  @inline(__always)
-  func
-    static_cast__iter_pointer(_ p: _NodePtr) -> _NodePtr
-  { p }
-
-  @inlinable
-  @inline(__always)
-  func __tree_balance_after_insert(_ lhs: _NodePtr, _ rhs: _NodeRef) {
-    __tree_balance_after_insert(lhs, __ref_(rhs))
-  }
-}
-
-extension InsertNodeAtProtocol {
-
-  @inlinable
   func
     __insert_node_at(
       _ __parent: _NodePtr, _ __child: _NodeRef,
@@ -60,9 +45,9 @@ extension InsertNodeAtProtocol {
     // __new_node->__is_black_ is initialized in __tree_balance_after_insert
     __ref_(__child, __new_node)
     if __left_(__begin_node) != .nullptr {
-      __begin_node = static_cast__iter_pointer(__left_(__begin_node))
+      __begin_node = __left_(__begin_node)
     }
-    __tree_balance_after_insert(__left_(__end_node()), __child)
+    __tree_balance_after_insert(__left_(__end_node()), __ref_(__child))
     size += 1
   }
 }
@@ -70,8 +55,13 @@ extension InsertNodeAtProtocol {
 @usableFromInline
 protocol InsertUniqueProtocol: AllocatorProtocol, KeyProtocol {
   func __ref_(_ rhs: _NodeRef) -> _NodePtr
+
   func
-    __find_equal(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
+    __find_equal(
+      _ __parent: inout _NodePtr,
+      _ __v: _Key
+    ) -> _NodeRef
+
   func
     __insert_node_at(
       _ __parent: _NodePtr, _ __child: _NodeRef,
@@ -117,9 +107,6 @@ protocol InsertMultiProtocol: AllocatorProtocol, KeyProtocol {
 
 extension InsertMultiProtocol {
 
-  //  _LIBCPP_HIDE_FROM_ABI iterator __insert_multi(__container_value_type&& __v) {
-  //    return __emplace_multi(std::move(__v));
-  //  }
   @inlinable
   @inline(__always)
   public mutating func __insert_multi(_ x: Element) -> _NodePtr {
@@ -138,59 +125,51 @@ extension InsertMultiProtocol {
   }
 }
 
-//@usableFromInline
-//protocol InsertOrAssignProtocol: StorageProtocol {
-//  associatedtype Key
-//  associatedtype Value
-//}
-//
-//extension InsertOrAssignProtocol {
-//}
-
 @usableFromInline
-protocol InsertFirstProtocol: InsertNodeAtProtocol & AllocatorProtocol & RootProtocol & EndNodeProtocol { }
-
-extension InsertFirstProtocol {
-  
-  @inlinable
-  @inline(__always)
-  func ___emplace_head(_ __k: Element) -> _NodePtr {
-    let __parent = __root() == .nullptr ? __end_node() : __tree_max(__root())
-    let __child = __left_ref(__parent)
-    let __p = __construct_node(__k)
-    __insert_node_at(__parent, __child, __p)
-    return __p
-  }
-}
-
-@usableFromInline
-protocol InsertLastProtocol: InsertNodeAtProtocol & AllocatorProtocol & RootProtocol & EndNodeProtocol { }
+protocol InsertLastProtocol: InsertNodeAtProtocol & AllocatorProtocol & RootProtocol
+    & EndNodeProtocol
+{}
 
 extension InsertLastProtocol {
 
   @inlinable
   @inline(__always)
-  func ___max_ref() -> (__parent:_NodePtr,__child:_NodeRef) {
-    let __parent = __root() == .nullptr ? __end_node() : __tree_max(__root())
-    let __child = __parent == .end ? __left_ref(__parent) : __right_ref(__parent)
-    return (__parent,__child)
+  func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef) {
+    if __root() == .nullptr {
+      return (__end_node(), __left_ref(__end_node()))
+    }
+    let __parent = __tree_max(__root())
+    return (__parent, __right_ref(__parent))
   }
 
   @inlinable
   @inline(__always)
-  func ___emplace_hint_right(_ __parent:_NodePtr,_ __child:_NodeRef,_ __k: Element) -> (__parent:_NodePtr,__child:_NodeRef) {
+  func ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: Element) -> (
+    __parent: _NodePtr, __child: _NodeRef
+  ) {
     let __p = __construct_node(__k)
     __insert_node_at(__parent, __child, __p)
-    return (__p,__right_ref(__p))
+    return (__p, __right_ref(__p))
   }
-
+  
+  // こちらのほうがAPIとしては収まりがいいが、かすかに上のモノの方が速い
+  // 分岐の有無の差だとおもわれる
   @inlinable
   @inline(__always)
-  func ___emplace_last(_ __k: Element) -> (__parent:_NodePtr,__child:_NodeRef) {
-    let __parent = __root() == .nullptr ? __end_node() : __tree_max(__root())
-    let __child = __parent == .end ? __left_ref(__parent) : __right_ref(__parent)
-    let __p = __construct_node(__k)
-    __insert_node_at(__parent, __child, __p)
-    return (__p,__right_ref(__p))
+  func ___emplace_hint_right(_ __p: _NodePtr,_ __k: Element) -> _NodePtr {
+    let __child = __p == .end ? __left_ref(__p) : __right_ref(__p)
+    //                        ^--- これの差
+    let __h = __construct_node(__k)
+    __insert_node_at(__p, __child, __h)
+    return __h
+  }
+  
+  @inlinable
+  @inline(__always)
+  func ___emplace_hint_left(_ __p: _NodePtr,_ __k: Element) -> _NodePtr {
+    let __child = __left_ref(__p)
+    let __h = __construct_node(__k)
+    __insert_node_at(__p, __child, __h)
+    return __h
   }
 }

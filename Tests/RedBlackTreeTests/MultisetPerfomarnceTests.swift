@@ -1,16 +1,9 @@
-//
-//  SortedSetTests.swift
-//  swift-ac-collections
-//
-//  Created by narumij on 2024/09/16.
-//
-
-#if DEBUG
-  import XCTest
-  @testable import RedBlackTreeModule
+import RedBlackTreeModule
+import XCTest
 
 final class MultisetPerfomarnceTests: XCTestCase {
 
+  #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceDistanceFromTo() throws {
       throw XCTSkip()
       let s: RedBlackTreeMultiset<Int> = .init(0..<1_000_000)
@@ -85,5 +78,5 @@ final class MultisetPerfomarnceTests: XCTestCase {
         XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
       }
     }
-  }
-#endif
+  #endif
+}

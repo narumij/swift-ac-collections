@@ -211,6 +211,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// - Complexity: O(*n* log *n*)
   @inlinable
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {

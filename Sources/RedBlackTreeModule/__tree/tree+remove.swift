@@ -32,32 +32,14 @@ protocol RemoveProtocol: MemberSetProtocol
 extension RemoveProtocol {
 
   @inlinable
-  @inline(__always)
-  func next(_ p: _NodePtr) -> _NodePtr {
-    __tree_next_iter(p)
-  }
-
-  @inlinable
-  @inline(__always)
-  func __ptr_(_ p: _NodePtr) -> _NodePtr { p }
-
-  @inlinable
-  @inline(__always)
-  func iterator(_ p: _NodePtr) -> _NodePtr { p }
-
-  @inlinable
-  @inline(__always)
-  func static_cast__node_base_pointer(_ p: _NodePtr) -> _NodePtr { p }
-
-  @inlinable
   func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {
-    var __r = iterator(__ptr)
-    __r = next(__r)
+    var __r = __ptr
+    __r = __tree_next_iter(__r)
     if __begin_node == __ptr {
-      __begin_node = __ptr_(__r)
+      __begin_node = __r
     }
     size -= 1
-    __tree_remove(__left_(__end_node()), static_cast__node_base_pointer(__ptr))
+    __tree_remove(__left_(__end_node()), __ptr)
     return __r
   }
 }

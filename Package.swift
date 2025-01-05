@@ -3,6 +3,13 @@
 
 import PackageDescription
 
+// 5つのビルド設定でテストをしている
+// DEBUG + [AC_COLLECTIONS_INTERNAL_CHECKS, TREE_INVARIANT_CHECKS] + checked
+// RELEASE + [AC_COLLECTIONS_INTERNAL_CHECKS, TREE_INVARIANT_CHECKS] + checked
+// DEBUG + [] + checked
+// RELEASE + [] + checked
+// RELEASE + unchecked
+
 var defines: [String] = [
 //  "AC_COLLECTIONS_INTERNAL_CHECKS",
 //  "TREE_INVARIANT_CHECKS",
@@ -10,6 +17,7 @@ var defines: [String] = [
 //  "USING_ALGORITHMS",
 //  "USING_COLLECTIONS",
 //  "DISABLE_COPY_ON_WRITE", // 危険
+//  "ENABLE_PERFORMANCE_TESTING"
 ]
 
 var _settings: [SwiftSetting] = defines.map { .define($0) }

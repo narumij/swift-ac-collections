@@ -8,7 +8,6 @@
 import RedBlackTreeModule
 import XCTest
 
-#if true
 final class RedBlackTreePerformaces: XCTestCase {
 
   override func setUpWithError() throws {
@@ -17,6 +16,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   override func tearDownWithError() throws {
   }
 
+#if ENABLE_PERFORMANCE_TESTING
   func testPerformanceExample00() throws {
     throw XCTSkip()
     self.measure {
@@ -156,6 +156,5 @@ final class RedBlackTreePerformaces: XCTestCase {
       XCTAssertNotEqual(set.map{ $0 + 1 }, [])
     }
   }
-
-}
 #endif
+}

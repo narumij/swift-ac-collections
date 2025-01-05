@@ -92,13 +92,17 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset {
 
+  /// - Complexity: O(*n* log *n*)
   @inlinable
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {
     precondition(range is Range<Element> || range is ClosedRange<Element>)
     let tree: Tree = .create(withCapacity: range.count)
+    // 初期化直後はO(1)
+    var (__parent,__child) = tree.___max_ref()
     for __k in range {
-      _ = tree.___emplace_last(__k)
+      // バランシングの計算量がO(log *n*)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
     }
     assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(__tree: tree)

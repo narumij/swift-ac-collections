@@ -57,14 +57,6 @@ final class MergeTests: XCTestCase {
     XCTAssertEqual(lhs.dictionary, ["イートハーブの香る":"なんとか","foo":"bar"])
     XCTAssertEqual(rhs.dictionary, ["foo":"bar"])
   }
-
-  func testPerformanceExample() throws {
-    // This is an example of a performance test case.
-    self.measure {
-      // Put the code you want to measure the time of here.
-    }
-  }
-
 }
 
 extension RedBlackTreeDictionary where Key: Hashable {

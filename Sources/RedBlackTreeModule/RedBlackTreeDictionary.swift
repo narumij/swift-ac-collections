@@ -128,16 +128,29 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  // naive
   @inlinable
   public init<S: Sequence>(
-    grouping values_: __owned S,
+    grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == [S.Element] {
-    self.init()
-    for v in values_ {
-      self[try keyForValue(v), default: []].append(v)
+    let count = (values as? (any Collection))?.count
+    var tree: Tree = .create(withCapacity: count ?? 0)
+    // 初期化直後はO(1)
+    var (__parent, __child) = tree.___max_ref()
+    // ソートの計算量がO(*n* log *n*)
+    for (__k,__v) in try values.map({ (try keyForValue($0), $0) }).sorted(by: { $0.0 < $1.0 }) {
+      if count == nil {
+        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+      }
+      if __parent == .end || tree[__parent].0 != __k {
+        // バランシングの計算量がO(log *n*)
+        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k, [__v]))
+        assert(tree.__tree_invariant(tree.__root()))
+      } else {
+        tree[__parent].value.append(__v)
+      }
     }
+    self._storage = .init(__tree: tree)
   }
 }
 

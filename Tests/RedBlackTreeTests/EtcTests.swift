@@ -267,6 +267,7 @@ final class EtcTests: XCTestCase {
   }
 #endif
   
+#if ENABLE_PERFORMANCE_TESTING
   func testPerformanceSuffix1() throws {
     throw XCTSkip()
     let s: String = (0 ..< 10_000_000).map { _ in "a" }.joined()
@@ -282,5 +283,5 @@ final class EtcTests: XCTestCase {
       _ = s.suffix(10)
     }
   }
-
+#endif
 }

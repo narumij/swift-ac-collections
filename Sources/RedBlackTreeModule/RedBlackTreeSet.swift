@@ -186,29 +186,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public init<Source>(_sequence sequence: __owned Source)
-  where Element == Source.Element, Source: Sequence {
-    let count = (sequence as? (any Collection))?.count
-    var tree: Tree = .create(withCapacity: count ?? 0)
-    for __k in sequence {
-      if count == nil {
-        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
-      }
-      var __parent = _NodePtr.nullptr
-      // 検索の計算量がO(log *n*)
-      let __child = tree.__find_equal(&__parent, __k)
-      if tree.__ref_(__child) == .nullptr {
-        let __h = tree.__construct_node(__k)
-        // バランシングの計算量がO(log *n*)
-        tree.__insert_node_at(__parent, __child, __h)
-      }
-    }
-    self._storage = .init(__tree: tree)
-  }
-
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(*n* log *n*)
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
@@ -224,6 +202,7 @@ extension RedBlackTreeSet {
       if __parent == .end || tree[__parent] != __k {
         // バランシングの計算量がO(log *n*)
         (__parent, __child) = tree.___emplace(__parent, __child, __k)
+        assert(tree.__tree_invariant(tree.__root()))
       }
     }
     self._storage = .init(__tree: tree)
@@ -271,7 +250,6 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(*n*)
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     _ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
@@ -971,3 +949,32 @@ extension RedBlackTreeSet {
     other.forEach { insert($0) }
   }
 }
+
+extension RedBlackTreeSet {
+  
+  // 旧初期化実装
+  // 性能比較用にのこしてある
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public init<Source>(_sequence sequence: __owned Source)
+  where Element == Source.Element, Source: Sequence {
+    let count = (sequence as? (any Collection))?.count
+    var tree: Tree = .create(withCapacity: count ?? 0)
+    for __k in sequence {
+      if count == nil {
+        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+      }
+      var __parent = _NodePtr.nullptr
+      // 検索の計算量がO(log *n*)
+      let __child = tree.__find_equal(&__parent, __k)
+      if tree.__ref_(__child) == .nullptr {
+        let __h = tree.__construct_node(__k)
+        // バランシングの計算量がO(log *n*)
+        tree.__insert_node_at(__parent, __child, __h)
+      }
+    }
+    self._storage = .init(__tree: tree)
+  }
+}
+

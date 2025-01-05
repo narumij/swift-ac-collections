@@ -89,31 +89,7 @@ extension FindLeafProtocol {
 }
 
 @usableFromInline
-protocol FindEqualProtocol: FindProtocol
-    & RefProtocol
-    & RootPtrProrototol
-{}
-
-extension FindEqualProtocol {
-
-  @inlinable
-  @inline(__always)
-  func
-    addressof(_ p: _NodeRef) -> _NodeRef
-  { p }
-
-  @inlinable
-  @inline(__always)
-  func
-    static_cast__node_pointer(_ p: _NodePtr) -> _NodePtr
-  { p }
-
-  @inlinable
-  @inline(__always)
-  func
-    static_cast__parent_pointer(_ p: _NodePtr) -> _NodePtr
-  { p }
-}
+protocol FindEqualProtocol: FindProtocol & RefProtocol & RootPtrProrototol {}
 
 extension FindEqualProtocol {
 
@@ -128,45 +104,30 @@ extension FindEqualProtocol {
         let __value__nd = __value_(__nd)
         if value_comp(__v, __value__nd) {
           if __left_(__nd) != .nullptr {
-            __nd_ptr = addressof(__left_ref(__nd))
-            __nd = static_cast__node_pointer(__left_(__nd))
+            __nd_ptr = __left_ref(__nd)
+            __nd = __left_(__nd)
           } else {
-            __parent = static_cast__parent_pointer(__nd)
+            __parent = __nd
             return __left_ref(__parent)
           }
         } else if value_comp(__value__nd, __v) {
           if __right_(__nd) != .nullptr {
-            __nd_ptr = addressof(__right_ref(__nd))
-            __nd = static_cast__node_pointer(__right_(__nd))
+            __nd_ptr = __right_ref(__nd)
+            __nd = __right_(__nd)
           } else {
-            __parent = static_cast__parent_pointer(__nd)
+            __parent = __nd
             return __right_ref(__nd)
           }
         } else {
-          __parent = static_cast__parent_pointer(__nd)
+          __parent = __nd
           return __nd_ptr
         }
       }
     }
-    __parent = static_cast__parent_pointer(__end_node())
+    __parent = __end_node()
     return __left_ref(__parent)
   }
 }
-
-#if false
-  // 辞書型用、作業中
-  @usableFromInline
-  protocol NodeFindEqual2Protocol: FindEqualProtocol
-      & BeginNodeProtocol
-      & BeginProtocol
-  {}
-
-  extension NodeFindEqual2Protocol {
-
-    // TODO: implement __find_equal(,,,)
-
-  }
-#endif
 
 @usableFromInline
 protocol FindProtocol: ValueProtocol

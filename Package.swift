@@ -5,8 +5,8 @@ import PackageDescription
 
 var defines: [String] = [
   "AC_COLLECTIONS_INTERNAL_CHECKS",
-//  "TREE_INVARIANT_CHECKS",
-  "GRAPHVIZ_DEBUG",
+  "TREE_INVARIANT_CHECKS",
+//  "GRAPHVIZ_DEBUG",
 //  "USING_ALGORITHMS",
 //  "USING_COLLECTIONS",
 //  "DISABLE_COPY_ON_WRITE", // 危険

@@ -23,7 +23,7 @@
 import Foundation
 
 extension ___RedBlackTree.___Tree {
-  
+
   @frozen
   @usableFromInline
   struct ___MutablePointer {
@@ -31,17 +31,21 @@ extension ___RedBlackTree.___Tree {
     @usableFromInline
     let _storage: Storage
 
-    public var rawValue: Int
+    // __tree_max()を削るとO(1)動作となることが分かったので、
+    // 一旦それ以外の動作について削っている。
+    
+    public var __parent: _NodePtr
+    public var __child: _NodeRef
 
     // MARK: -
 
     @inlinable
     @inline(__always)
-    internal init(_storage: Tree.Storage, pointer: _NodePtr? = nil) {
+    internal init(_storage: Tree.Storage) {
       self._storage = _storage
-      self.rawValue = pointer ?? _storage.tree.__begin_node
+      (__parent, __child) = _storage.tree.___max_ref()
     }
-    
+
     @inlinable
     var _tree: Tree {
       get { _storage.tree }
@@ -52,27 +56,20 @@ extension ___RedBlackTree.___Tree {
     public var pointee: Element {
       get { _tree[_tree.__tree_max(_tree.__root())] }
       set {
-        assert(rawValue == .end)
-        if rawValue == .end {
-          Tree.ensureUniqueAndCapacity(tree: &_tree, minimumCapacity: _tree.count + 1)
-          rawValue = _tree.___emplace_last(newValue).__parent
-        }
-        else {
-          _tree[rawValue] = newValue
-        }
+        Tree.ensureUniqueAndCapacity(tree: &_tree, minimumCapacity: _tree.count + 1)
+        (__parent, __child) = _tree.___emplace(__parent, __child, newValue)
+        assert(_tree.__tree_invariant(_tree.__root()))
       }
     }
-    
+
     @inlinable
     public mutating func ___next() {
-      assert(rawValue != .end)
-      rawValue = rawValue == .end ? .nullptr : _tree.__tree_next_iter(rawValue)
+      // 未実装
     }
-    
+
     @inlinable
     public mutating func ___prev() {
-      rawValue = _tree.__tree_prev_iter(rawValue)
+      // 未実装
     }
   }
 }
-

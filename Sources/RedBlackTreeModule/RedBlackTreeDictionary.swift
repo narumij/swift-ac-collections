@@ -26,7 +26,7 @@ import Foundation
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   public
-  typealias Index = Tree.TreePointer
+    typealias Index = Tree.TreePointer
 
   public
     typealias KeyValue = (key: Key, value: Value)
@@ -35,20 +35,20 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias Element = KeyValue
 
   public
-  typealias Keys = [Key]
+    typealias Keys = [Key]
 
   public
-  typealias Values = [Value]
+    typealias Values = [Value]
 
   public
-  typealias _Key = Key
+    typealias _Key = Key
 
   public
-  typealias _Value = Value
+    typealias _Value = Value
 
   @usableFromInline
   var _storage: Tree.Storage
-  
+
   @inlinable
   @inline(__always)
   var _tree: Tree {
@@ -78,18 +78,24 @@ extension RedBlackTreeDictionary {
 
   @inlinable public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
-    self.init()
-    for __k in keysAndValues {
-      Tree.ensureCapacity(tree: &_tree, minimumCapacity: _tree.count + 1)
-      var __parent = _NodePtr.nullptr
-      let __child = _tree.__find_equal(&__parent, __k.0)
-      if _tree.__ref_(__child) == .nullptr {
-        let __h = _tree.__construct_node(__k)
-        _tree.__insert_node_at(__parent, __child, __h)
+    let count = (keysAndValues as? (any Collection))?.count
+    var tree: Tree = .create(withCapacity: count ?? 0)
+    // 初期化直後はO(1)
+    var (__parent, __child) = tree.___max_ref()
+    // ソートの計算量がO(*n* log *n*)
+    for __k in keysAndValues.sorted(by: { $0.0 < $1.0 }) {
+      if count == nil {
+        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+      }
+      if __parent == .end || tree[__parent].0 != __k.0 {
+        // バランシングの計算量がO(log *n*)
+        (__parent, __child) = tree.___emplace(__parent, __child, __k)
+        assert(tree.__tree_invariant(tree.__root()))
       } else {
         fatalError("Dupricate values for key: '\(__k.0)'")
       }
     }
+    self._storage = .init(__tree: tree)
   }
 }
 
@@ -99,19 +105,24 @@ extension RedBlackTreeDictionary {
     _ keysAndValues: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
-    self.init()
-    for __k in keysAndValues {
-      Tree.ensureCapacity(tree: &_tree, minimumCapacity: _tree.count + 1)
-      var __parent = _NodePtr.nullptr
-      let __child = _tree.__find_equal(&__parent, __k.0)
-      if _tree.__ref_(__child) == .nullptr {
-        let __h = _tree.__construct_node(__k)
-        _tree.__insert_node_at(__parent, __child, __h)
+    let count = (keysAndValues as? (any Collection))?.count
+    var tree: Tree = .create(withCapacity: count ?? 0)
+    // 初期化直後はO(1)
+    var (__parent, __child) = tree.___max_ref()
+    // ソートの計算量がO(*n* log *n*)
+    for __k in keysAndValues.sorted(by: { $0.0 < $1.0 }) {
+      if count == nil {
+        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+      }
+      if __parent == .end || tree[__parent].0 != __k.0 {
+        // バランシングの計算量がO(log *n*)
+        (__parent, __child) = tree.___emplace(__parent, __child, __k)
+        assert(tree.__tree_invariant(tree.__root()))
       } else {
-        _tree[node: _tree.__ref_(__child)].__value_.value = try combine(
-          _tree[node: _tree.__ref_(__child)].__value_.value, __k.1)
+        tree[__parent].value = try combine(tree[__parent].value, __k.1)
       }
     }
+    self._storage = .init(__tree: tree)
   }
 }
 
@@ -327,7 +338,7 @@ extension RedBlackTreeDictionary {
     }
     return element
   }
-  
+
   @inlinable
   public mutating func removeSubrange(_ range: Range<Index>) {
     _ensureUnique()
@@ -342,13 +353,13 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary {
-  
+
   @inlinable
   @inline(__always)
   mutating func remove(contentsOf keyRange: Range<Key>) {
     let lower = lowerBound(keyRange.lowerBound)
     let upper = upperBound(keyRange.upperBound)
-    removeSubrange(lower ..< upper)
+    removeSubrange(lower..<upper)
   }
 }
 
@@ -609,7 +620,7 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary.SubSequence: Sequence {
-  
+
   public typealias Base = RedBlackTreeDictionary
   public typealias Element = Base.Element
   public typealias EnumElement = Base.Tree.EnumElement
@@ -846,12 +857,11 @@ extension RedBlackTreeDictionary {
 // MARK: -
 
 extension RedBlackTreeDictionary {
-  
+
   @inlinable
   @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key,Value>) {
+  public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
     _ensureUniqueAndCapacity(minimumCapacity: count + other.count)
     _tree.__node_handle_merge_unique(other._tree)
   }
 }
-

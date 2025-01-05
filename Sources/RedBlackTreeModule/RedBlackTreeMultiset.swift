@@ -29,19 +29,19 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
 
   public
     typealias Element = Element
-  
+
   public
     typealias EnumElement = Tree.EnumElement
 
   public
-  typealias Index = Tree.TreePointer
+    typealias Index = Tree.TreePointer
 
   public
-  typealias _Key = Element
+    typealias _Key = Element
 
   @usableFromInline
   var _storage: Tree.Storage
-  
+
   @inlinable
   @inline(__always)
   var _tree: Tree {
@@ -69,20 +69,22 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset {
 
-  /// - Complexity: O(*n* log *n*), ここで *n* はシーケンスの要素数。
+  /// - Complexity: O(*n* log *n*)
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
     let count = (sequence as? (any Collection))?.count
     var tree: Tree = .create(withCapacity: count ?? 0)
-    for __k in sequence {
+    // 初期化直後はO(1)
+    var (__parent, __child) = tree.___max_ref()
+    // ソートの計算量がO(*n* log *n*)
+    for __k in sequence.sorted() {
       if count == nil {
         Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
       }
-      let __h = tree.__construct_node(__k)
-      var __parent = _NodePtr.nullptr
-      let __child = tree.__find_leaf_high(&__parent, __k)
-      tree.__insert_node_at(__parent, __child, __h)
+      // バランシングの計算量がO(log *n*)
+      (__parent, __child) = tree.___emplace(__parent, __child, __k)
+      assert(tree.__tree_invariant(tree.__root()))
     }
     self._storage = .init(__tree: tree)
   }
@@ -128,6 +130,7 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset {
 
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
@@ -138,13 +141,15 @@ extension RedBlackTreeMultiset {
     return (true, newMember)
   }
 
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     _strongEnsureUnique()
     return _tree.___erase_multi(member) != 0 ? member : nil
   }
-  
+
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func remove(_unsafe member: Element) -> Element? {
@@ -152,6 +157,9 @@ extension RedBlackTreeMultiset {
     return _tree.___erase_multi(member) != 0 ? member : nil
   }
 
+  /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
+  ///
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func remove(at index: RawPointer) -> Element {
@@ -162,6 +170,9 @@ extension RedBlackTreeMultiset {
     return element
   }
 
+  /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
+  ///
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
@@ -172,6 +183,7 @@ extension RedBlackTreeMultiset {
     return element
   }
 
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
@@ -181,6 +193,7 @@ extension RedBlackTreeMultiset {
     return remove(at: startIndex)
   }
 
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
@@ -190,12 +203,16 @@ extension RedBlackTreeMultiset {
     return remove(at: index(before: endIndex))
   }
 
+  /// - Complexity: O(log *n* + *k*)
+  ///
+  /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
   @inlinable
   public mutating func removeSubrange(_ range: Range<Index>) {
     _ensureUnique()
     ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
   }
 
+  /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     _ensureUnique()
@@ -204,29 +221,30 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset {
-  
+
+  /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
   mutating func remove(contentsOf elementRange: Range<Element>) {
     let lower = lowerBound(elementRange.lowerBound)
     let upper = upperBound(elementRange.upperBound)
-    removeSubrange(lower ..< upper)
+    removeSubrange(lower..<upper)
   }
 }
 
 extension RedBlackTreeMultiset {
 
-  /// - Complexity: O(*n*), ここで *n* はマルチセット内の要素数。
+  /// - Complexity: O(*n*)
   @inlinable public func contains(_ member: Element) -> Bool {
     ___contains_unique(member)
   }
 
-  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  /// - Complexity: O(*n*)
   @inlinable public func min() -> Element? {
     ___min()
   }
 
-  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  /// - Complexity: O(*n*)
   @inlinable public func max() -> Element? {
     ___max()
   }
@@ -234,7 +252,6 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
 
-  /// - Complexity: O(*n* log *n*), ここで *n* は配列リテラル内の要素数。
   @inlinable public init(arrayLiteral elements: Element...) {
     self.init(elements)
   }
@@ -242,12 +259,12 @@ extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
 
 extension RedBlackTreeMultiset {
 
-  /// - Complexity: O(log *n*), ここで *n* はマルチセット内の要素数。
+  /// - Complexity: O(log *n*)
   @inlinable public func lowerBound(_ member: Element) -> Index {
     ___index_lower_bound(member)
   }
 
-  /// - Complexity: O(log *n*), ここで *n* はマルチセット内の要素数。
+  /// - Complexity: O(log *n*)
   @inlinable public func upperBound(_ member: Element) -> Index {
     ___index_upper_bound(member)
   }
@@ -261,24 +278,25 @@ extension RedBlackTreeMultiset {
     isEmpty ? nil : self[startIndex]
   }
 
-  /// - Complexity: O(1)。
+  /// - Complexity: O(log *n*)
   @inlinable
   public var last: Element? {
     isEmpty ? nil : self[index(before: .end(_storage))]
   }
-
+  
+  /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first(where: predicate)
   }
 
-  /// - Complexity: O(log *n*), ここで *n* はセット内の要素数。
+  /// - Complexity: O(log *n*)
   @inlinable
   public func firstIndex(of member: Element) -> Index? {
     ___first_index(of: member)
   }
 
-  /// - Complexity: O(*n*), ここで *n* はセット内の要素数。
+  /// - Complexity: O(*n*)
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     try ___first_index(where: predicate)
@@ -295,7 +313,7 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset {
 
-  /// - Complexity: O(log *n* + *k*), ここで *n* はマルチセット内の要素数、*k* は指定された要素の出現回数。
+  /// - Complexity: O(log *n* + *k*)
   @inlinable public func count(_ element: Element) -> Int {
     _tree.__count_multi(element)
   }
@@ -505,7 +523,7 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset.SubSequence: Sequence {
-  
+
   public typealias Base = RedBlackTreeMultiset
   public typealias Element = Base.Element
   public typealias EnumElement = Base.Tree.EnumElement
@@ -740,24 +758,24 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset {
-  
+
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
     _ensureUniqueAndCapacity(minimumCapacity: count + other.count)
     _tree.__node_handle_merge_multi(other._tree)
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiset<Element>) {
     _ensureUniqueAndCapacity(minimumCapacity: count + other.count)
     _tree.__node_handle_merge_multi(other._tree)
   }
-  
+
   @inlinable
   @inline(__always)
-  public mutating func insert<S>(contentsOf other: S) where S:Sequence, S.Element == Element {
+  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
     other.forEach { insert($0) }
   }
 }

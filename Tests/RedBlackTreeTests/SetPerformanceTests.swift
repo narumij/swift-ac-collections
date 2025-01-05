@@ -11,6 +11,19 @@ import RedBlackTreeModule
 
 final class SetPerformanceTests: XCTestCase {
 
+  var random: [Int] = []
+  var sequence: [Int] = []
+
+  override func setUpWithError() throws {
+      // Put setup code here. This method is called before the invocation of each test method in the class.
+    random = (0 ..< 2_000_000).shuffled()
+    sequence = (0 ..< 2_000_000) + []
+  }
+
+  override func tearDownWithError() throws {
+      // Put teardown code here. This method is called after the invocation of each test method in the class.
+  }
+
   func testPerformanceDistanceFromTo() throws {
     throw XCTSkip()
     let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
@@ -86,17 +99,29 @@ final class SetPerformanceTests: XCTestCase {
     }
   }
   
-  let random: [Int] = (0 ..< 2_000_000).shuffled()
-  
   func testPerformanceInit0() throws {
-//    throw XCTSkip()
+    throw XCTSkip()
+    self.measure {
+      let _ = RedBlackTreeSet<Int>(sequence)
+    }
+  }
+  
+  func testPerformanceInit1() throws {
+    throw XCTSkip()
+    self.measure {
+      let _ = RedBlackTreeSet<Int>(_sequence: sequence)
+    }
+  }
+  
+  func testPerformanceInit2() throws {
+    throw XCTSkip()
     self.measure {
       let _ = RedBlackTreeSet<Int>(random)
     }
   }
   
-  func testPerformanceInit1() throws {
-//    throw XCTSkip()
+  func testPerformanceInit3() throws {
+    throw XCTSkip()
     self.measure {
       let _ = RedBlackTreeSet<Int>(_sequence: random)
     }

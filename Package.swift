@@ -28,13 +28,13 @@ let package = Package(
       targets: ["AcCollections"])
   ],
   dependencies: [
-//    .package(
-//      url: "https://github.com/apple/swift-collections.git",
-//      branch: "main"
-//    ),
-//    .package(
-//      url: "https://github.com/apple/swift-algorithms.git",
-//      from: "1.2.0"),
+    // .package(
+    //   url: "https://github.com/apple/swift-collections.git",
+    //   branch: "main"
+    // ),
+    // .package(
+    //   url: "https://github.com/apple/swift-algorithms.git",
+    //   from: "1.2.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -54,16 +54,6 @@ let package = Package(
       dependencies: ["RedBlackTreeModule"],
       swiftSettings: _settings
     ),
-    .executableTarget(
-      name: "TestExecutable",
-      dependencies: [
-//        .product(name: "Collections", package: "swift-collections"),
-        "RedBlackTreeModule",
-        "PermutationModule"
-      ],
-      path: "TestExecutable",
-      swiftSettings: _settings
-    ),
     .target(
       name: "PermutationModule",
       dependencies: [],
@@ -72,9 +62,19 @@ let package = Package(
     .testTarget(
       name: "PermutationTests",
       dependencies: [
-//        .product(name: "Algorithms", package: "swift-algorithms"),
+        // .product(name: "Algorithms", package: "swift-algorithms"),
         "PermutationModule"
       ],
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "Executable",
+      dependencies: [
+        // .product(name: "Collections", package: "swift-collections"),
+        "RedBlackTreeModule",
+        "PermutationModule"
+      ],
+      path: "Tests/Executable",
       swiftSettings: _settings
     ),
   ]

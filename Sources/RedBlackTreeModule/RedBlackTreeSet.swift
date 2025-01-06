@@ -167,6 +167,11 @@ public struct RedBlackTreeSet<Element: Comparable> {
   }
 }
 
+extension RedBlackTreeSet {
+  public typealias TreePointer = Tree.TreePointer
+  public typealias RawPointer = Tree.RawPointer
+}
+
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
 extension RedBlackTreeSet: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeSet: ScalarValueComparer {}
@@ -193,7 +198,7 @@ extension RedBlackTreeSet {
     let count = (sequence as? (any Collection))?.count
     var tree: Tree = .create(withCapacity: count ?? 0)
     // 初期化直後はO(1)
-    var (__parent,__child) = tree.___max_ref()
+    var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
     for __k in sequence.sorted() {
       if count == nil {
@@ -218,7 +223,7 @@ extension RedBlackTreeSet {
     precondition(range is Range<Element> || range is ClosedRange<Element>)
     let tree: Tree = .create(withCapacity: range.count)
     // 初期化直後はO(1)
-    var (__parent,__child) = tree.___max_ref()
+    var (__parent, __child) = tree.___max_ref()
     for __k in range {
       // バランシングの計算量がO(log *n*)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
@@ -640,7 +645,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: ___RedBlackTree.RawPointer) -> Element {
+  public subscript(position: RawPointer) -> Element {
     return _tree[position.rawValue]
   }
 
@@ -691,12 +696,19 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet.SubSequence: Sequence {
-
+extension RedBlackTreeSet.SubSequence {
+  
   public typealias Base = RedBlackTreeSet
+  public typealias SubSequence = Self
+  public typealias Index = Base.Index
+  public typealias TreePointer = Base.TreePointer
+  public typealias RawPointer = Base.RawPointer
   public typealias Element = Base.Element
   public typealias EnumElement = Base.Tree.EnumElement
   public typealias EnumSequence = Base.EnumSequence
+}
+
+extension RedBlackTreeSet.SubSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
     @usableFromInline
@@ -740,9 +752,6 @@ extension RedBlackTreeSet.SubSequence: Sequence {
 }
 
 extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
-
-  public typealias Index = Base.Index
-  public typealias SubSequence = Self
 
   @inlinable
   @inline(__always)
@@ -831,7 +840,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: ___RedBlackTree.RawPointer) -> Element {
+  public subscript(position: RawPointer) -> Element {
     return tree[position.rawValue]
   }
 
@@ -878,8 +887,6 @@ extension RedBlackTreeSet.EnumSequence: Sequence {
     @usableFromInline
     internal var _iterator: _TreeEnumSequence.Iterator
 
-    public typealias Element = _Element
-
     @inlinable
     @inline(__always)
     internal init(_ _iterator: _TreeEnumSequence.Iterator) {
@@ -888,7 +895,7 @@ extension RedBlackTreeSet.EnumSequence: Sequence {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> Element? {
+    public mutating func next() -> _Element? {
       _iterator.next()
     }
   }
@@ -915,13 +922,13 @@ extension RedBlackTreeSet {
 
   @inlinable
   @inline(__always)
-  public func isValid(index: Tree.TreePointer) -> Bool {
+  public func isValid(index: TreePointer) -> Bool {
     ___is_valid_index(index.rawValue)
   }
 
   @inlinable
   @inline(__always)
-  public func isValid(index: ___RedBlackTree.RawPointer) -> Bool {
+  public func isValid(index: RawPointer) -> Bool {
     ___is_valid_index(index.rawValue)
   }
 }
@@ -952,10 +959,10 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-  
+
   // 旧初期化実装
   // 性能比較用にのこしてある
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   public init<Source>(_sequence sequence: __owned Source)
@@ -978,4 +985,3 @@ extension RedBlackTreeSet {
     self._storage = .init(__tree: tree)
   }
 }
-

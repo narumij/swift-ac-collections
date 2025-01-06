@@ -301,6 +301,7 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(set.index(set.endIndex, offsetBy: 6, limitedBy: set.endIndex), nil)
   }
 
+#if DEBUG
   func testIndexLimit3() throws {
     let set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set.startIndex.rawValue, .node(0))
@@ -326,7 +327,8 @@ final class SetTests: XCTestCase {
       set.index(set.startIndex, offsetBy: -6, limitedBy: set.startIndex),
       nil)
   }
-
+#endif
+  
   #if TREE_INVARIANT_CHECKS
     func testRandom() throws {
       var set = RedBlackTreeSet<Int>()
@@ -491,6 +493,7 @@ final class SetTests: XCTestCase {
     }
   }
 
+#if DEBUG
   func testLowerBound() throws {
     let numbers: RedBlackTreeSet = [1, 3, 5]
     XCTAssertEqual(numbers.lowerBound(0).rawValue, 0)
@@ -526,6 +529,7 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(members.removeFirst(), 7)
     XCTAssertEqual(members.removeFirst(), 9)
   }
+#endif
 
   func testContainsAllSatisfy() throws {
     let dict = [1, 2, 2, 2, 3, 3, 4, 5] as RedBlackTreeSet<Int>
@@ -569,6 +573,7 @@ final class SetTests: XCTestCase {
     f(s.lowerBound(target)..<s.upperBound(target))
   }
 
+#if DEBUG
   func testIndexAfter() throws {
     do {
       let s: RedBlackTreeSet<Int> = []
@@ -580,4 +585,5 @@ final class SetTests: XCTestCase {
       XCTAssertEqual(s.index(after: s.startIndex).rawValue, .end)
     }
   }
+#endif
 }

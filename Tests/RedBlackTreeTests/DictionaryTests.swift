@@ -439,6 +439,7 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(set.index(set.endIndex, offsetBy: 6, limitedBy: set.endIndex), nil)
   }
 
+#if DEBUG
   func testIndexLimit3() throws {
     let set = [0:0, 1:10, 2:20, 3:30, 4:40] as RedBlackTreeDictionary<Int,Int>
     XCTAssertEqual(set.startIndex.rawValue, .node(0))
@@ -463,6 +464,7 @@ final class DictionaryTests: XCTestCase {
       set.index(set.startIndex, offsetBy: -6, limitedBy: set.startIndex),
       nil)
   }
+#endif
   
   func testEqualtable() throws {
     XCTAssertEqual(RedBlackTreeDictionary<Int,Int>(), [:])

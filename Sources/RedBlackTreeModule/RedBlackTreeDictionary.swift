@@ -57,6 +57,11 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   }
 }
 
+extension RedBlackTreeDictionary {
+  public typealias TreePointer = Tree.TreePointer
+  public typealias RawPointer = Tree.RawPointer
+}
+
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
@@ -583,7 +588,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: ___RedBlackTree.RawPointer) -> Element {
+  public subscript(position: RawPointer) -> Element {
     return _tree[position.rawValue]
   }
 
@@ -632,12 +637,19 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary.SubSequence: Sequence {
-
+extension RedBlackTreeDictionary.SubSequence {
+  
   public typealias Base = RedBlackTreeDictionary
+  public typealias SubSequence = Self
+  public typealias Index = Base.Index
+  public typealias TreePointer = Base.TreePointer
+  public typealias RawPointer = Base.RawPointer
   public typealias Element = Base.Element
   public typealias EnumElement = Base.Tree.EnumElement
   public typealias EnumSequence = Base.EnumSequence
+}
+
+extension RedBlackTreeDictionary.SubSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
     @usableFromInline
@@ -681,9 +693,6 @@ extension RedBlackTreeDictionary.SubSequence: Sequence {
 }
 
 extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
-
-  public typealias Index = Base.Index
-  public typealias SubSequence = Self
 
   @inlinable
   @inline(__always)
@@ -772,7 +781,7 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: ___RedBlackTree.RawPointer) -> Element {
+  public subscript(position: RawPointer) -> Element {
     return tree[position.rawValue]
   }
 
@@ -819,8 +828,6 @@ extension RedBlackTreeDictionary.EnumSequence: Sequence {
     @usableFromInline
     internal var _iterator: _TreeEnumSequence.Iterator
 
-    public typealias Element = _Element
-
     @inlinable
     @inline(__always)
     internal init(_ _iterator: _TreeEnumSequence.Iterator) {
@@ -829,7 +836,7 @@ extension RedBlackTreeDictionary.EnumSequence: Sequence {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> Element? {
+    public mutating func next() -> _Element? {
       _iterator.next()
     }
   }
@@ -862,7 +869,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @inline(__always)
-  public func isValid(index: ___RedBlackTree.RawPointer) -> Bool {
+  public func isValid(index: RawPointer) -> Bool {
     ___is_valid_index(index.rawValue)
   }
 }

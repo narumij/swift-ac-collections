@@ -31,7 +31,8 @@ extension ___RedBlackTree.___Tree {
     @usableFromInline
     let _tree: Tree
 
-    public var rawValue: Int
+    @usableFromInline
+    var rawValue: Int
 
     // MARK: -
 
@@ -100,31 +101,15 @@ extension ___RedBlackTree.___Tree {
 
     // 本来の目的のための、大事な比較演算子
     public static func < (lhs: Self, rhs: Self) -> Bool {
-
       guard
         lhs.rawValue != rhs.rawValue,
-        lhs.isValid, rhs.isValid
+        rhs.rawValue != .end,
+        lhs.rawValue != .end
       else {
-        return false
+        return lhs.rawValue != .end && rhs.rawValue == .end
       }
-
-      guard __rank(lhs) == __rank(rhs) else {
-        return __rank(lhs) < __rank(rhs)
-      }
-
       let tree = lhs._tree
-
-      return tree.value_comp(tree[key: lhs.rawValue], tree[key: rhs.rawValue])
-    }
-
-    // nullとendとそれ以外をざっくりまとめた比較値
-    @inlinable
-    internal static func __rank(_ rhs: Self) -> Int {
-      switch rhs.rawValue {
-      case .nullptr: return 3
-      case .end: return 2
-      default: return 1
-      }
+      return Tree.VC.value_comp(tree[key: lhs.rawValue], tree[key: rhs.rawValue])
     }
   }
 }

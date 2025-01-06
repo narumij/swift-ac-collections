@@ -50,6 +50,11 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
   }
 }
 
+extension RedBlackTreeMultiset {
+  public typealias TreePointer = Tree.TreePointer
+  public typealias RawPointer = Tree.RawPointer
+}
+
 extension RedBlackTreeMultiset: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiset: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeMultiset: ScalarValueComparer {}
@@ -477,7 +482,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: ___RedBlackTree.RawPointer) -> Element {
+  public subscript(position: RawPointer) -> Element {
     return _tree[position.rawValue]
   }
 
@@ -526,12 +531,19 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset.SubSequence: Sequence {
-
+extension RedBlackTreeMultiset.SubSequence {
+  
   public typealias Base = RedBlackTreeMultiset
+  public typealias SubSequence = Self
+  public typealias Index = Base.Index
+  public typealias TreePointer = Base.TreePointer
+  public typealias RawPointer = Base.RawPointer
   public typealias Element = Base.Element
   public typealias EnumElement = Base.Tree.EnumElement
   public typealias EnumSequence = Base.EnumSequence
+}
+
+extension RedBlackTreeMultiset.SubSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
     @usableFromInline
@@ -575,9 +587,6 @@ extension RedBlackTreeMultiset.SubSequence: Sequence {
 }
 
 extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
-
-  public typealias Index = Base.Index
-  public typealias SubSequence = Self
 
   @inlinable
   @inline(__always)
@@ -666,7 +675,7 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: ___RedBlackTree.RawPointer) -> Element {
+  public subscript(position: RawPointer) -> Element {
     return tree[position.rawValue]
   }
 
@@ -713,8 +722,6 @@ extension RedBlackTreeMultiset.EnumSequence: Sequence {
     @usableFromInline
     internal var _iterator: _TreeEnumSequence.Iterator
 
-    public typealias Element = _Element
-
     @inlinable
     @inline(__always)
     internal init(_ _iterator: _TreeEnumSequence.Iterator) {
@@ -723,7 +730,7 @@ extension RedBlackTreeMultiset.EnumSequence: Sequence {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> Element? {
+    public mutating func next() -> _Element? {
       _iterator.next()
     }
   }
@@ -756,7 +763,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   @inline(__always)
-  public func isValid(index: ___RedBlackTree.RawPointer) -> Bool {
+  public func isValid(index: RawPointer) -> Bool {
     ___is_valid_index(index.rawValue)
   }
 }

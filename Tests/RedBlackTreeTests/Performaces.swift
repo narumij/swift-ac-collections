@@ -19,9 +19,9 @@ final class Performaces: XCTestCase {
 
   func testPerformanceExample05() throws {
 //    throw XCTSkip()
-    var set = Set<Int>(0..<5_000_000)
     self.measure {
-      for v in 0..<5_000_000 {
+      var seed = Set<Int>(0..<10_000_000)
+      for v in 0..<10_000_000 {
         set.remove(v)
       }
     }
@@ -72,9 +72,9 @@ final class Performaces: XCTestCase {
   
   func testPerformanceExample5() throws {
 //    throw XCTSkip()
-    var set = RedBlackTreeSet<Int>(0..<5_000_000)
     self.measure {
-      for v in 0..<5_000_000 {
+      var set = RedBlackTreeSet<Int>(0..<10_000_000)
+      for v in 0..<10_000_000 {
         set.remove(v)
       }
     }

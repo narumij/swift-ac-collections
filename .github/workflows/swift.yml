@@ -20,12 +20,9 @@ jobs:
     - name: Set up Swift
       uses: SwiftyLab/setup-swift@latest
     
-    - name: Debug Build
-      run: swift build -v -c debug
-    - name: Run tests
-      run: swift test -v -c debug
-
-    - name: Release Build
+    - name: Build
       run: swift build -v -c release
-    - name: Run tests
+    - name: Run tests (debug)
+      run: swift test -v -c debug
+    - name: Run tests (release)
       run: swift test -v -c release

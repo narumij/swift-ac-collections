@@ -107,8 +107,8 @@ final class Performaces: XCTestCase {
 
   func testPerformanceExample9() throws {
 //    throw XCTSkip()
-    var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
     self.measure {
+      var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
       for i in 0 ..< 2_000_000 {
         xy[1]?.remove(i)
       }

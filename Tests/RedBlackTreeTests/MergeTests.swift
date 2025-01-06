@@ -1,10 +1,3 @@
-//
-//  MergeTests.swift
-//  swift-ac-collections
-//
-//  Created by narumij on 2025/01/04.
-//
-
 import RedBlackTreeModule
 import XCTest
 

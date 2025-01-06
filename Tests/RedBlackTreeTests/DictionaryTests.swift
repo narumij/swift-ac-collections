@@ -1,10 +1,3 @@
-//
-//  RedBlackTreeMapTests.swift
-//  swift-tree
-//
-//  Created by narumij on 2024/09/23.
-//
-
 import XCTest
 
 #if DEBUG

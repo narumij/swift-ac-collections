@@ -1,10 +1,3 @@
-//
-//  EtcTests.swift
-//  swift-ac-collections
-//
-//  Created by narumij on 2024/12/15.
-//
-
 import XCTest
 
 #if DEBUG

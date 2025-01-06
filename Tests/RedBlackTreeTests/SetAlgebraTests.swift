@@ -1,10 +1,3 @@
-//
-//  SetAlgebraTests.swift
-//  swift-ac-collections
-//
-//  Created by narumij on 2025/01/05.
-//
-
 import RedBlackTreeModule
 import XCTest
 

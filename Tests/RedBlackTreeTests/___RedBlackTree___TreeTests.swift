@@ -1,10 +1,3 @@
-//
-//  RedBlackTreeStorageTests.swift
-//  swift-tree
-//
-//  Created by narumij on 2024/09/19.
-//
-
 import XCTest
 
 #if DEBUG

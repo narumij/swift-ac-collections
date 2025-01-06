@@ -1,10 +1,3 @@
-//
-//  RedBlackTreePerformaces.swift
-//  swift-ac-collections
-//
-//  Created by narumij on 2024/12/22.
-//
-
 import RedBlackTreeModule
 import XCTest
 
@@ -26,9 +19,9 @@ final class Performaces: XCTestCase {
 
   func testPerformanceExample05() throws {
 //    throw XCTSkip()
-    var set = Set<Int>(0..<10_000_000)
+    var set = Set<Int>(0..<5_000_000)
     self.measure {
-      for v in 0..<10_000_000 {
+      for v in 0..<5_000_000 {
         set.remove(v)
       }
     }
@@ -79,9 +72,9 @@ final class Performaces: XCTestCase {
   
   func testPerformanceExample5() throws {
 //    throw XCTSkip()
-    var set = RedBlackTreeSet<Int>(0..<10_000_000)
+    var set = RedBlackTreeSet<Int>(0..<5_000_000)
     self.measure {
-      for v in 0..<10_000_000 {
+      for v in 0..<5_000_000 {
         set.remove(v)
       }
     }

@@ -1,10 +1,3 @@
-//
-//  AllocationTests.swift
-//  swift-ac-collections
-//
-//  Created by narumij on 2024/12/31.
-//
-
 import XCTest
 
 #if DEBUG

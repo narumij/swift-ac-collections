@@ -1,10 +1,3 @@
-//
-//  ManagedBufferTests.swift
-//  swift-ac-collections
-//
-//  Created by narumij on 2024/12/27.
-//
-
 import XCTest
 
 #if DEBUG

@@ -22,78 +22,8 @@
 
 import Foundation
 
-// AC https://atcoder.jp/contests/abc370/submissions/57922896
-// AC https://atcoder.jp/contests/abc385/submissions/61134983
-
-// このセットがメインコンテナで、残りはおまけです。
-
-// 以下の書き方を標準形としてチューニングしています。
-// AC https://atcoder.jp/contests/abc385/submissions/61235111
-
-// ある時点からCoWを実装しています。コピー・オン・ライトです。
-// このコピーオンライトの過剰発火が残る問題となっています。
-// イテレーターやサブシーケンスやインデックスを組み合わせた場合、
-// 組み合わせによりSwiftのARCが参照カウントありと判断します。
-// この参照カウントありの状態で変更する操作をしたとき、
-// このセットのCowは標準動作として全体のコピー操作を行います。
-// 全体のコピーは非常に重たい操作なので、不用意に発火してしまうと、
-// パフォーマスに著しい影響を与えます。クソおせーです。
-
-// 過剰発火について、ある書き方ではまだ過剰発火があることが確認されています。
-// こういった問題に関して、なにか発見がありましたら、イシュー等に記載いただけると助かります。
-
 /// `RedBlackTreeSet` は、`Element` 型の要素を一意に格納するための
 /// 赤黒木（Red-Black Tree）ベースの集合型です。
-///
-/// 要素の挿入、削除、検索（`contains(_:)` など）が平均して **O(log *n*)**
-/// （*n* は格納されている要素数）で実行されるように設計されており、
-/// 高速かつ効率的にデータを扱うことが可能です。
-///
-/// 同じ要素を重複して挿入しようとした場合、既存の要素が返され、新たに挿入はされません。
-///
-/// ## トピックス
-///
-/// ### 生成方法
-/// - ``init()``
-/// - ``init(minimumCapacity:)``
-/// - ``init<Source>(_:)``
-/// - `ExpressibleByArrayLiteral` 対応
-///
-/// ### 要素操作
-/// - ``insert(_:)``
-/// - ``update(with:)``
-/// - ``remove(_:)``
-/// - ``remove(at:)``
-/// - ``removeFirst()``
-/// - ``removeLast()``
-/// - ``removeSubrange(_:)``
-/// - ``removeAll(keepingCapacity:)``
-///
-/// ### 集合の状態確認
-/// - ``isEmpty``
-/// - ``count``
-/// - ``capacity``
-/// - ``contains(_:)``
-/// - ``min()``
-/// - ``max()``
-///
-/// ### インデックス操作
-/// - ``startIndex``
-/// - ``endIndex``
-/// - ``index(before:)``
-/// - ``index(after:)``
-/// - ``lowerBound(_:)``
-/// - ``upperBound(_:)``
-/// - ``firstIndex(of:)``
-/// - ``firstIndex(where:)``
-///
-/// ### 各種変換
-/// - ``map(_:)``
-/// - ``filter(_:)``
-/// - ``reduce(into:_:)``
-/// - ``reduce(_:_:)``
-/// - ``sorted()``
-/// - ``enumerated()``
 ///
 /// ### 使用例
 /// ```swift
@@ -112,23 +42,7 @@ import Foundation
 ///     print(element)
 /// }
 /// ```
-///
-/// ## 適合しているプロトコル
-///
-/// - `Collection`
-///   シーケンシャルに要素を列挙するためのメソッド・プロパティを提供します。
-/// - `ExpressibleByArrayLiteral`
-///   配列リテラル (`[...]`) から直接初期化するための機能を提供します。
-/// - `Equatable`
-///   `==` 演算子により、他の `RedBlackTreeSet` と要素を比較して等価判定ができます。
-/// - `CustomStringConvertible`, `CustomDebugStringConvertible`
-///   デバッグや文字列表現が必要な場面で、コレクションの内容を文字列として取得できます。
-///
-/// **Note**: この実装では、ノード管理に内部配列や付加的なメタデータを使用しています。
-/// 将来的に内部実装が変わる可能性はありますが、計算量や基本メソッドのインターフェースは変わりません。
-///
-/// - Important: `RedBlackTreeSet` はスレッドセーフではありません。複数のスレッドから同時に
-///   アクセスする場合は、適切なロックや同期を行う必要があります。
+/// - Important: `RedBlackTreeSet` はスレッドセーフではありません。
 @frozen
 public struct RedBlackTreeSet<Element: Comparable> {
 
@@ -340,7 +254,7 @@ extension RedBlackTreeSet {
 
   /// 指定した半開区間（`lhs ..< rhs`）に含まれる要素をすべて削除します。
   ///
-  /// - Parameter range: `lhs`（含む）から `rhs`（含まない）までを表す `___RedBlackTree.Range`
+  /// - Parameter range: `lhs`（含む）から `rhs`（含まない）までを表す `Range`
   ///   で、削除対象の要素範囲を示します。
   ///   範囲が逆転している場合（`lhs >= rhs`）や、木の要素範囲外を指している場合などの
   ///   “無効な” 状態では動作が未定義となります。

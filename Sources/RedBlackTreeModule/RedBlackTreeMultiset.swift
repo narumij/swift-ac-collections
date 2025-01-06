@@ -22,8 +22,6 @@
 
 import Foundation
 
-// AC https://atcoder.jp/contests/abc358/submissions/59018223
-
 @frozen
 public struct RedBlackTreeMultiset<Element: Comparable> {
 

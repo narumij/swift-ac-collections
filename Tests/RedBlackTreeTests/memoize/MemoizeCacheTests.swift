@@ -48,14 +48,15 @@ final class MemoizeCacheTests: XCTestCase {
 }
 
 enum Naive {
-  static func tarai(x: Int, y: Int, z: Int) -> Int {
+  static
+  func tarai(_ x: Int, y: Int, z: Int) -> Int {
     if x <= y {
       return y
     } else {
       return tarai(
-        x: tarai(x: x - 1, y: y, z: z),
-        y: tarai(x: y - 1, y: z, z: x),
-        z: tarai(x: z - 1, y: x, z: y))
+        tarai(x - 1, y: y, z: z),
+        y: tarai(y - 1, y: z, z: x),
+        z: tarai(z - 1, y: x, z: y))
     }
   }
 }
@@ -72,13 +73,14 @@ enum Memoized {
     
     var storage: ___RedBlackTreeMapBase<Key, Int> = .init()
     
-    func memoized(x: Int, y: Int, z: Int) -> Int {
-      if let result = storage[(x, y, z)] {
+    func tarai(x: Int, y: Int, z: Int) -> Int {
+      let args = (x,y,z)
+      if let result = storage[args] {
         return result
       }
-      let result = body(x: x, y: y, z: z)
-      storage[(x,y,z)] = result
-      return result
+      let r = body(x: x, y: y, z: z)
+      storage[args] = r
+      return r
     }
     
     func body(x: Int, y: Int, z: Int) -> Int {
@@ -86,13 +88,13 @@ enum Memoized {
         return y
       } else {
         return tarai(
-          x: memoized(x: x - 1, y: z, z: z),
-          y: memoized(x: y - 1, y: z, z: x),
-          z: memoized(x: z - 1, y: x, z: y))
+          x: tarai(x: x - 1, y: z, z: z),
+          y: tarai(x: y - 1, y: z, z: x),
+          z: tarai(x: z - 1, y: x, z: y))
       }
     }
     
-    return memoized(x: x, y: y, z: z)
+    return tarai(x: x, y: y, z: z)
   }
 }
 

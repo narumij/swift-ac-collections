@@ -32,7 +32,8 @@ var _settings: [SwiftSetting] =
   + defines.map { .define($0) }
 
 let Ounchecked: [SwiftSetting] = [
-  .unsafeFlags(["-Ounchecked"], .when(configuration: .release))
+  // unsafeフラグがあると、actionsではじかれたので、一旦けずることに
+//  .unsafeFlags(["-Ounchecked"], .when(configuration: .release))
 ]
 
 let package = Package(

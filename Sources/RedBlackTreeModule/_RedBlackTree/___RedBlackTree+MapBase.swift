@@ -75,6 +75,7 @@ extension ___RedBlackTreeMapBase {
     get { ___value_for(key)?.value }
     set {
       if let newValue {
+        _ensureUniqueAndCapacity()
         _ = _tree.__insert_unique((key, newValue))
       } else {
         _ = _tree.___erase_unique(key)
@@ -90,6 +91,7 @@ extension ___RedBlackTreeMapBase {
 }
 
 extension ___RedBlackTreeMapBase: ___RedBlackTreeBase {}
+extension ___RedBlackTreeMapBase: ___RedBlackTreeStorageLifetime { }
 extension ___RedBlackTreeMapBase: KeyValueComparer {
 
   @inlinable
@@ -97,3 +99,4 @@ extension ___RedBlackTreeMapBase: KeyValueComparer {
     CustomKey.value_comp(a, b)
   }
 }
+

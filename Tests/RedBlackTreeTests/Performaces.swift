@@ -20,7 +20,7 @@ final class Performaces: XCTestCase {
   func testPerformanceExample05() throws {
 //    throw XCTSkip()
     self.measure {
-      var seed = Set<Int>(0..<10_000_000)
+      var set = Set<Int>(0..<10_000_000)
       for v in 0..<10_000_000 {
         set.remove(v)
       }

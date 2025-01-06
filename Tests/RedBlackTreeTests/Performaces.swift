@@ -8,7 +8,7 @@
 import RedBlackTreeModule
 import XCTest
 
-final class RedBlackTreePerformaces: XCTestCase {
+final class Performaces: XCTestCase {
 
   override func setUpWithError() throws {
   }
@@ -18,14 +18,14 @@ final class RedBlackTreePerformaces: XCTestCase {
 
 #if ENABLE_PERFORMANCE_TESTING
   func testPerformanceExample00() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     self.measure {
-      let set = Set<Int>(0..<10_000_000)
+      let _ = Set<Int>(0..<10_000_000)
     }
   }
 
   func testPerformanceExample05() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     var set = Set<Int>(0..<10_000_000)
     self.measure {
       for v in 0..<10_000_000 {
@@ -35,14 +35,14 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample0() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     self.measure {
       let set = RedBlackTreeSet<Int>(0..<10_000_000)
     }
   }
 
   func testPerformanceExample1() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     let set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       XCTAssertNotEqual(set[set.startIndex ..< set.endIndex] + [], [])
@@ -50,7 +50,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample2() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     let set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       XCTAssertNotEqual(
@@ -59,7 +59,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample3() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     var set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       set.removeSubrange(set.startIndex ..< set.endIndex)
@@ -67,7 +67,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample4() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     var set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       set.enumerated()
@@ -78,7 +78,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
   
   func testPerformanceExample5() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     var set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       for v in 0..<10_000_000 {
@@ -88,7 +88,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample6() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     var set1 = RedBlackTreeSet<Int>(0..<10_000_000)
     var set2 = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
@@ -97,7 +97,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample7() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     var set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       _ = set.firstIndex { $0 > 10_000_000 }
@@ -105,7 +105,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample8() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     var set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       _ = set.first { $0 > 10_000_000 }
@@ -113,7 +113,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample9() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
     self.measure {
       for i in 0 ..< 2_000_000 {
@@ -123,7 +123,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample10() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]
     self.measure {
       for i in 0 ..< 2_000_000 {
@@ -134,7 +134,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
   
   func testPerformanceExample11() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]
     self.measure {
       for i in 0 ..< 2_000_000 {
@@ -147,7 +147,7 @@ final class RedBlackTreePerformaces: XCTestCase {
   }
 
   func testPerformanceExample12() throws {
-    throw XCTSkip()
+//    throw XCTSkip()
     let set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       // func 0.125 sec

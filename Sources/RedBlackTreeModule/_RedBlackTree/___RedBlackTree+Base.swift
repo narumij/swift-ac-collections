@@ -362,12 +362,10 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
 
-  #if TREE_INVARIANT_CHECKS
-    @inlinable
-    public func ___tree_invariant() -> Bool {
-      _tree.__tree_invariant(_tree.__root())
-    }
-  #endif
+  @inlinable
+  public func ___tree_invariant() -> Bool {
+    _tree.__tree_invariant(_tree.__root())
+  }
 
   @inlinable
   func ___is_valid_index(_ i: _NodePtr) -> Bool {
@@ -395,7 +393,7 @@ extension ___RedBlackTreeBase {
 #endif
 
 extension ___RedBlackTreeBase {
-  
+
   // C++風の削除コードが書きたい場合にこっそりつかうもの
   @inlinable
   @inline(__always)
@@ -403,7 +401,7 @@ extension ___RedBlackTreeBase {
   public mutating func ___std_erase(_ ptr: RawPointer) -> RawPointer {
     RawPointer(_tree.erase(ptr.rawValue))
   }
-  
+
   // C++風の削除コードが書きたい場合にこっそりつかうもの
   @inlinable
   @inline(__always)

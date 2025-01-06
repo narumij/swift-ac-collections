@@ -75,12 +75,6 @@ import XCTest
     }
     @inlinable
     func
-      __tree_invariant(_ __root: _NodePtr) -> Bool
-    {
-      _tree.__tree_invariant(__root)
-    }
-    @inlinable
-    func
       __tree_min(_ __x: _NodePtr) -> _NodePtr
     {
       _tree.__tree_min(__x)
@@ -116,9 +110,7 @@ import XCTest
     func fixtureEmpty(_ tree: inout RedBlackTreeSet<Int>) {
       tree.__nodes = []
       tree.__root(.nullptr)
-      #if TREE_INVARIANT_CHECKS
-        XCTAssertTrue(tree.__tree_invariant(tree.__root()))
-      #endif
+      XCTAssertTrue(tree.___tree_invariant())
     }
 
     func fixture0_10_20(_ tree: inout RedBlackTreeSet<Int>) {
@@ -133,9 +125,7 @@ import XCTest
         20,
       ]
       tree.__root(0)
-      #if TREE_INVARIANT_CHECKS
-        XCTAssertTrue(tree.__tree_invariant(tree.__root()))
-      #endif
+      XCTAssertTrue(tree.___tree_invariant())
     }
 
     func fixture0_1_2_3_4_5_6(_ tree: inout RedBlackTreeSet<Int>) {
@@ -161,38 +151,34 @@ import XCTest
       //        tree.___header.size = tree.___nodes.count
       XCTAssertEqual(tree.___header.initializedCount, 7)
       tree.___header.__begin_node = 2
-      #if TREE_INVARIANT_CHECKS
-        XCTAssertTrue(tree.__tree_invariant(tree.__root()))
-      #endif
+      XCTAssertTrue(tree.___tree_invariant())
     }
 
-    #if TREE_INVARIANT_CHECKS
-      func testRootInvaliant() throws {
+    func testRootInvaliant() throws {
 
-        var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
-        XCTAssertTrue(tree.__tree_invariant(tree.__root()))
+      var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
+      XCTAssertTrue(tree.___tree_invariant())
 
-        tree.__nodes = [
-          .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: .end)
-        ]
+      tree.__nodes = [
+        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: .end)
+      ]
 
-        tree.__root(.nullptr)
-        XCTAssertFalse(tree.__tree_invariant(0))
+      tree.__root(.nullptr)
+      XCTAssertFalse(tree._tree.__tree_invariant(0))
 
-        tree.__root(0)
-        XCTAssertTrue(tree.__tree_invariant(tree.__root()))
+      tree.__root(0)
+      XCTAssertTrue(tree._tree.__tree_invariant(tree.__root()))
 
-        tree.__nodes = [
-          .init(__is_black_: false, __left_: nil, __right_: nil, __parent_: .end)
-        ]
-        XCTAssertFalse(tree.__tree_invariant(tree.__root()))
+      tree.__nodes = [
+        .init(__is_black_: false, __left_: nil, __right_: nil, __parent_: .end)
+      ]
+      XCTAssertFalse(tree._tree.__tree_invariant(tree.__root()))
 
-        tree.__nodes = [
-          .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: nil)
-        ]
-        XCTAssertFalse(tree.__tree_invariant(tree.__root()))
-      }
-    #endif
+      tree.__nodes = [
+        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: nil)
+      ]
+      XCTAssertFalse(tree._tree.__tree_invariant(tree.__root()))
+    }
 
     func testFixtures() {
 
@@ -235,7 +221,7 @@ import XCTest
       let initial = tree.__nodes
 
       #if TREE_INVARIANT_CHECKS
-        XCTAssertFalse(tree.__tree_invariant(tree.__root()))
+        XCTAssertFalse(tree.___tree_invariant())
       #endif
 
       tree.__tree_left_rotate(tree.__root())
@@ -269,11 +255,11 @@ import XCTest
       XCTAssertEqual(tree.__left_(tree.__root()), nil)
       XCTAssertEqual(tree.__right_(tree.__root()), nil)
       #if TREE_INVARIANT_CHECKS
-        XCTAssertFalse(tree.__tree_invariant(tree.__root()))
+        XCTAssertFalse(tree.___tree_invariant())
       #endif
       tree.__tree_balance_after_insert(tree.__root(), 0)
       #if TREE_INVARIANT_CHECKS
-        XCTAssertTrue(tree.__tree_invariant(tree.__root()))
+        XCTAssertTrue(tree.___tree_invariant())
       #endif
     }
 
@@ -304,7 +290,7 @@ import XCTest
       for i in 0..<2 {
         XCTAssertTrue(tree._tree.___erase_unique(i), "i = \(i)")
         print("__root():", tree.__root())
-        XCTAssertTrue(tree.__tree_invariant(tree.__root()))
+        XCTAssertTrue(tree.___tree_invariant())
         XCTAssertEqual(
           tree.__root() == .nullptr ? .end : tree._tree.__tree_min(tree._tree.__root()),
           tree.___header.__begin_node)
@@ -323,7 +309,7 @@ import XCTest
       for i in 0..<7 {
         XCTAssertTrue(tree._tree.___erase_unique(i), "i = \(i)")
         print("__root():", tree.__root())
-        XCTAssertTrue(tree.__tree_invariant(tree.__root()))
+        XCTAssertTrue(tree.___tree_invariant())
         XCTAssertEqual(
           tree.__root() == .nullptr ? .end : tree._tree.__tree_min(tree._tree.__root()),
           tree.___header.__begin_node)
@@ -419,9 +405,10 @@ import XCTest
       for i in 0..<10000 {
         XCTAssertTrue(tree._tree.__insert_unique(i).__inserted)
       }
-      XCTAssertTrue(tree.__tree_invariant(tree.__root()))
+      XCTAssertTrue(tree.___tree_invariant())
     }
 
+#if ENABLE_PERFORMANCE_TESTING
     func testPerformanceExample() throws {
 
       throw XCTSkip()
@@ -440,5 +427,6 @@ import XCTest
         }
       }
     }
+#endif
   }
 #endif

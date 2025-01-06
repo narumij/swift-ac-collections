@@ -417,7 +417,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
 #if ENABLE_PERFORMANCE_TESTING
     func testInsert0() throws {
 
-      throw XCTSkip("slow")
+//      throw XCTSkip("slow")
 
       var tree = RedBlackTree___Tree.create(withCapacity: 10000 + 1)
       fixtureEmpty(&tree)
@@ -429,7 +429,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
 
     func testPerformanceExample() throws {
 
-      throw XCTSkip()
+//      throw XCTSkip()
 
       // 分解前 1.04 sec
       // 分解後 1.82 sec (ただしリリースビルドでの速度変化なし)

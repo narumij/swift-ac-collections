@@ -3,13 +3,6 @@
 
 import PackageDescription
 
-// 2つのビルド設定でテストする
-// DEBUG + [AC_COLLECTIONS_INTERNAL_CHECKS, TREE_INVARIANT_CHECKS] + checked
-// RELEASE + [AC_COLLECTIONS_INTERNAL_CHECKS, TREE_INVARIANT_CHECKS] + checked
-
-// 2025/1/6現在、リリースは以下の設定
-// RELEASE + [] + unchecked
-
 var defines: [String] = [
 //  "AC_COLLECTIONS_INTERNAL_CHECKS",
 //  "TREE_INVARIANT_CHECKS",
@@ -20,10 +13,25 @@ var defines: [String] = [
 //  "ENABLE_PERFORMANCE_TESTING"
 ]
 
-var _settings: [SwiftSetting] = defines.map { .define($0) }
+var _settings: [SwiftSetting] =
+  [
+    .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),
+    // CoWの挙動チェックを可能にするマクロ定義
+    // アロケーション関連のテストを走らせるために必要
+    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
+    // ツリーの不変性チェックの有効無効を切り替えるマクロ定義
+    // デバッグビルド時のテストが遅いため用意した
+    // 消すことではやくなる
+    // 対象のメソッドは必ずassertかXCTAssert...を介して利用する。
+    // このため、リリース時はどちらにせよ無効になる
+    .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
+    // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
+    // デバッグでのパフォーマンステストが絶望的に遅いため、用意した
+    // 残すことではやくなる
+  ]
+  + defines.map { .define($0) }
 
-let unchecked: [SwiftSetting] = [
-  // -Ounchecked フラグを追加
+let Ounchecked: [SwiftSetting] = [
   .unsafeFlags(["-Ounchecked"], .when(configuration: .release))
 ]
 
@@ -55,7 +63,7 @@ let package = Package(
     .target(
       name: "RedBlackTreeModule",
       dependencies: [],
-      swiftSettings: _settings + unchecked
+      swiftSettings: _settings + Ounchecked
     ),
     .testTarget(
       name: "RedBlackTreeTests",
@@ -65,7 +73,7 @@ let package = Package(
     .target(
       name: "PermutationModule",
       dependencies: [],
-      swiftSettings: _settings + unchecked
+      swiftSettings: _settings + Ounchecked
     ),
     .testTarget(
       name: "PermutationTests",
@@ -80,7 +88,7 @@ let package = Package(
       dependencies: [
         // .product(name: "Collections", package: "swift-collections"),
         "RedBlackTreeModule",
-        "PermutationModule"
+        "PermutationModule",
       ],
       path: "Tests/Executable",
       swiftSettings: _settings

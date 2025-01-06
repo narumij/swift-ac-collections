@@ -22,6 +22,25 @@
 
 import Foundation
 
+/// `RedBlackTreeDictionary` は、`Key` 型のキーと `Value` 型の値のペアを一意に格納するための
+/// 赤黒木（Red-Black Tree）ベースの辞書型です。
+///
+/// ### 使用例
+/// ```swift
+/// /// `RedBlackTreeDictionary` を使用する例
+/// var dictionary = RedBlackTreeDictionary<String, Int>()
+/// dictionary.insert(key: "apple", value: 5)
+/// dictionary.insert(key: "banana", value: 3)
+/// dictionary.insert(key: "cherry", value: 7)
+///
+/// // キーを使用して値にアクセス
+/// if let value = dictionary.value(forKey: "banana") {
+///     print("banana の値は \(value) です。") // 出力例: banana の値は 3 です。
+/// }
+///
+/// // キーと値のペアを削除
+/// dictionary.remove(key: "apple")
+/// ```
 @frozen
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 

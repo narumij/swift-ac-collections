@@ -686,4 +686,12 @@ final class MultisetTests: XCTestCase {
     }
     XCTAssertEqual(d, [1, 2, 2, 3])
   }
+  
+  func testCount() throws {
+    let b: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3]
+    XCTAssertEqual(b.count, 6)
+    XCTAssertEqual(b.count(of: 1), 2)
+    XCTAssertEqual(b.count(of: 2), 3)
+    XCTAssertEqual(b.count(of: 3), 1)
+  }
 }

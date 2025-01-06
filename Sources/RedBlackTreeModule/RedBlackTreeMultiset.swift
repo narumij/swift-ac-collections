@@ -22,6 +22,20 @@
 
 import Foundation
 
+/// `RedBlackTreeMultiset` は、`Element` 型の要素を複数格納するための
+/// 赤黒木（Red-Black Tree）ベースのマルチセット型です。
+///
+/// ### 使用例
+/// ```swift
+/// var multiset = RedBlackTreeMultiset<Int>()
+/// multiset.insert(5)
+/// multiset.insert(3)
+/// multiset.insert(5) // 重複した要素の挿入
+///
+/// // 要素の出現回数を確認
+/// print(multiset.count(of: 5)) // 出力例: 2
+/// print(multiset.count(of: 3)) // 出力例: 1
+/// ```
 @frozen
 public struct RedBlackTreeMultiset<Element: Comparable> {
 
@@ -321,7 +335,7 @@ extension RedBlackTreeMultiset {
 extension RedBlackTreeMultiset {
 
   /// - Complexity: O(log *n* + *k*)
-  @inlinable public func count(_ element: Element) -> Int {
+  @inlinable public func count(of element: Element) -> Int {
     _tree.__count_multi(element)
   }
 }

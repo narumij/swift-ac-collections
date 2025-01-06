@@ -27,18 +27,18 @@ import Foundation
 ///
 /// ### 使用例
 /// ```swift
-/// var treeSet: RedBlackTreeSet = [3, 1, 4, 1, 5, 9]
-/// print(treeSet)              // "[1, 3, 4, 5, 9]"
+/// var set: RedBlackTreeSet = [3, 1, 4, 1, 5, 9]
+/// print(set) // 出力例: [1, 3, 4, 5, 9]
 ///
-/// treeSet.insert(2)
-/// print(treeSet.contains(2))  // true
+/// set.insert(2)
+/// print(set.contains(2)) // 出力例: true
 ///
 /// // 要素の削除
-/// treeSet.remove(9)
-/// print(treeSet)              // "[1, 2, 3, 4, 5]"
+/// set.remove(9)
+/// print(set) // 出力例: [1, 2, 3, 4, 5]
 ///
 /// // イテレーション
-/// for element in treeSet {
+/// for element in set {
 ///     print(element)
 /// }
 /// ```

@@ -3,12 +3,12 @@
 
 import PackageDescription
 
-// 5つのビルド設定でテストをしている
+// 2つのビルド設定でテストする
 // DEBUG + [AC_COLLECTIONS_INTERNAL_CHECKS, TREE_INVARIANT_CHECKS] + checked
 // RELEASE + [AC_COLLECTIONS_INTERNAL_CHECKS, TREE_INVARIANT_CHECKS] + checked
-// DEBUG + [] + checked
-// RELEASE + [] + checked
-// RELEASE + unchecked
+
+// 2025/1/6現在、リリースは以下の設定
+// RELEASE + [] + unchecked
 
 var defines: [String] = [
 //  "AC_COLLECTIONS_INTERNAL_CHECKS",

@@ -12,16 +12,16 @@ final class MemoizeCacheTests: XCTestCase {
 
 #if true || ENABLE_PERFORMANCE_TESTING
   func testTak0() throws {
-    XCTAssertEqual(Naive.tarai(x: 2, y: 1, z: 0), 2)
-    XCTAssertEqual(Naive.tarai(x: 4, y: 2, z: 0), 4)
-    XCTAssertEqual(Naive.tarai(x: 6, y: 3, z: 0), 6)
-    XCTAssertEqual(Naive.tarai(x: 8, y: 4, z: 0), 8)
-    XCTAssertEqual(Naive.tarai(x: 10, y: 5, z: 0), 10)
-    XCTAssertEqual(Naive.tarai(x: 12, y: 6, z: 0), 12)
+    XCTAssertEqual(Naive.tarai(2, y: 1, z: 0), 2)
+    XCTAssertEqual(Naive.tarai(4, y: 2, z: 0), 4)
+    XCTAssertEqual(Naive.tarai(6, y: 3, z: 0), 6)
+    XCTAssertEqual(Naive.tarai(8, y: 4, z: 0), 8)
+    XCTAssertEqual(Naive.tarai(10, y: 5, z: 0), 10)
+    XCTAssertEqual(Naive.tarai(12, y: 6, z: 0), 12)
   }
 
   func testTak1() throws {
-    XCTAssertEqual(Naive.tarai(x: 14, y: 7, z: 0), 14)
+    XCTAssertEqual(Naive.tarai(14, y: 7, z: 0), 14)
   }
 
   func testPerformanceTak0() throws {

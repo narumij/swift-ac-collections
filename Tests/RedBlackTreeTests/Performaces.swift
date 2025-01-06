@@ -53,16 +53,16 @@ final class Performaces: XCTestCase {
 
   func testPerformanceExample3() throws {
 //    throw XCTSkip()
-    var set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
+      var set = RedBlackTreeSet<Int>(0..<10_000_000)
       set.removeSubrange(set.startIndex ..< set.endIndex)
     }
   }
 
   func testPerformanceExample4() throws {
 //    throw XCTSkip()
-    var set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
+      var set = RedBlackTreeSet<Int>(0..<10_000_000)
       set.enumerated()
         .forEach { i, v in
           set.remove(at: i)

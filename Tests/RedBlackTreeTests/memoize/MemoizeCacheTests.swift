@@ -9,6 +9,16 @@ import RedBlackTreeModule
 import XCTest
 
 final class MemoizeCacheTests: XCTestCase {
+  
+  enum TestKey: CustomKeyProtocol {
+    @inlinable @inline(__always)
+    static func value_comp(_ a: Int, _ b: Int) -> Bool { a < b }
+  }
+  
+  func testMaximum() throws {
+    var cache = ___RedBlackTreeMapBase(minimumCapacity: 0, maximumCapacity: 100)
+  }
+
 
 #if true || ENABLE_PERFORMANCE_TESTING
   func testTak0() throws {

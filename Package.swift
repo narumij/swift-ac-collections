@@ -2,6 +2,7 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
+import Foundation
 
 var defines: [String] = [
 //  "AC_COLLECTIONS_INTERNAL_CHECKS",
@@ -31,9 +32,15 @@ var _settings: [SwiftSetting] =
   ]
   + defines.map { .define($0) }
 
-let Ounchecked: [SwiftSetting] = [
-  // unsafeフラグがあると、actionsではじかれたので、一旦けずることに
-//  .unsafeFlags(["-Ounchecked"], .when(configuration: .release))
+// 環境変数 "NOT_ATCODER_JUDGE_ENV" が "true" に設定されているか確認
+// フラグが原因でトラブるようなケースへの迂回策として環境変数での対処を盛り込んでいる
+let isNotAtCoderJudge = ProcessInfo.processInfo.environment["NOT_ATCODER_JUDGE_ENV"] == "true"
+
+let Ounchecked: [SwiftSetting] = isNotAtCoderJudge ? [] : [
+  // unsafeフラグがあるとコンパイルではじかれる場合がある。
+  // tag指定の場合そうなるが、revisions指定の場合通るようなので、再度トライすることに。
+  // https://github.com/ggerganov/whisper.spm/issues/4
+  .unsafeFlags(["-Ounchecked"], .when(configuration: .release))
 ]
 
 let package = Package(

@@ -5,8 +5,13 @@
 //  Created by narumij on 2025/01/06.
 //
 
-import RedBlackTreeModule
 import XCTest
+
+#if DEBUG
+@testable import RedBlackTreeModule
+#else
+import RedBlackTreeModule
+#endif
 
 final class MemoizeCacheTests: XCTestCase {
   
@@ -15,10 +20,29 @@ final class MemoizeCacheTests: XCTestCase {
     static func value_comp(_ a: Int, _ b: Int) -> Bool { a < b }
   }
   
-  func testMaximum() throws {
-    var cache = ___RedBlackTreeMapBase(minimumCapacity: 0, maximumCapacity: 100)
+#if DEBUG
+  func testMinimum() throws {
+    var cache = ___RedBlackTreeMapBase<TestKey,Int>(minimumCapacity: 10)
+    XCTAssertEqual(cache._tree.count, 0)
+    XCTAssertEqual(cache._tree.capacity, 10)
   }
 
+  func testMaximum() throws {
+    var cache = ___RedBlackTreeMapBase<TestKey,Int>(minimumCapacity: 0, maximumCapacity: 100)
+    XCTAssertEqual(cache._tree.count, 0)
+    XCTAssertEqual(cache._tree.capacity, 0)
+    var over: Int? = nil
+    for i in 0 ..< 200 {
+      cache[i] = i
+      if over == nil, cache._tree.capacity >= 100 {
+        over = cache._tree.capacity
+      }
+      if let over {
+        XCTAssertLessThanOrEqual(cache._tree.capacity, over, "\(i)")
+      }
+    }
+  }
+#endif
 
 #if true || ENABLE_PERFORMANCE_TESTING
   func testTak0() throws {

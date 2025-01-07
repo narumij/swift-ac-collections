@@ -103,7 +103,7 @@ extension RedBlackTreeDictionary {
   @inlinable public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
     let count = (keysAndValues as? (any Collection))?.count
-    var tree: Tree = .create(withCapacity: count ?? 0)
+    var tree: Tree = .create(minimumCapacity: count ?? 0)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
@@ -130,7 +130,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
     let count = (keysAndValues as? (any Collection))?.count
-    var tree: Tree = .create(withCapacity: count ?? 0)
+    var tree: Tree = .create(minimumCapacity: count ?? 0)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
@@ -158,7 +158,7 @@ extension RedBlackTreeDictionary {
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == [S.Element] {
     let count = (values as? (any Collection))?.count
-    var tree: Tree = .create(withCapacity: count ?? 0)
+    var tree: Tree = .create(minimumCapacity: count ?? 0)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)

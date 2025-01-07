@@ -38,60 +38,61 @@ public
 @frozen
 public struct ___RedBlackTreeMapBase<CustomKey, Value>
 where CustomKey: CustomKeyProtocol {
-  
+
   public
-  typealias Key = CustomKey.Key
-  
+    typealias Key = CustomKey.Key
+
   public
-  typealias Value = Value
-  
+    typealias Value = Value
+
   public
-  typealias KeyValue = (key: Key, value: Value)
-  
+    typealias KeyValue = (key: Key, value: Value)
+
   public
-  typealias Element = KeyValue
-  
+    typealias Element = KeyValue
+
   public
-  typealias _Key = Key
-  
+    typealias _Key = Key
+
   public
-  typealias _Value = Value
-  
+    typealias _Value = Value
+
   @usableFromInline
   var _storage: Tree.Storage
+
+  @usableFromInline
+  let maximumCapacity: Int
 }
 
 extension ___RedBlackTreeMapBase {
 
-  public init() {
-    _storage = .create(withCapacity: 0)
-  }
-
-  public init(minimumCapacity: Int) {
+  public init(minimumCapacity: Int = 0, maximumCapacity: Int = Int.max) {
     _storage = .create(withCapacity: minimumCapacity)
+    self.maximumCapacity = maximumCapacity
   }
 
   public subscript(key: Key) -> Value? {
     get { ___value_for(key)?.value }
     set {
-      if let newValue {
-        _ensureUniqueAndCapacity()
+      if let newValue, _tree.count < maximumCapacity {
+        _ensureUniqueAndCapacity(
+          minimumCapacity: _tree.count + 1,
+          maximumCapacity: maximumCapacity)
         _ = _tree.__insert_unique((key, newValue))
-      } else {
-        _ = _tree.___erase_unique(key)
       }
     }
   }
-  
+
   public
-  var _tree: Tree {
+    var _tree: Tree
+  {
     get { _storage.tree }
     _modify { yield &_storage.tree }
   }
 }
 
 extension ___RedBlackTreeMapBase: ___RedBlackTreeBase {}
-extension ___RedBlackTreeMapBase: ___RedBlackTreeStorageLifetime { }
+extension ___RedBlackTreeMapBase: ___RedBlackTreeStorageLifetime {}
 extension ___RedBlackTreeMapBase: KeyValueComparer {
 
   @inlinable
@@ -100,3 +101,27 @@ extension ___RedBlackTreeMapBase: KeyValueComparer {
   }
 }
 
+extension ___RedBlackTreeStorageLifetime {
+  @inlinable
+  @inline(__always)
+  mutating func _ensureUniqueAndCapacity(minimumCapacity: Int, maximumCapacity: Int) {
+    #if !DISABLE_COPY_ON_WRITE
+    print(minimumCapacity, maximumCapacity)
+    print(min(
+      maximumCapacity,
+      Tree._growCapacity(
+        tree: &_storage.tree, to: minimumCapacity, linearly: false)))
+      let shouldExpand = _storage.capacity < minimumCapacity
+      if shouldExpand || !_isKnownUniquelyReferenced_LV1() {
+        let actualNewCapacity = min(
+          maximumCapacity,
+          Tree._growCapacity(
+            tree: &_storage.tree, to: minimumCapacity, linearly: false))
+        _storage = _storage.copy(newCapacity: actualNewCapacity)
+        assert(_storage.capacity == actualNewCapacity)
+      }
+      assert(_storage.capacity >= minimumCapacity)
+      assert(_storage.tree.header.initializedCount <= _storage.capacity)
+    #endif
+  }
+}

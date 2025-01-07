@@ -44,7 +44,7 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   internal static func create(
-    withCapacity capacity: Int
+    minimumCapacity capacity: Int
   ) -> Tree {
 
     let storage = Tree.create(minimumCapacity: capacity) { _ in
@@ -61,9 +61,9 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
-  internal func copy(newCapacity: Int? = nil) -> Tree {
+  internal func copy(minimumCapacity: Int? = nil) -> Tree {
 
-    let capacity = newCapacity ?? self._header.capacity
+    let capacity = minimumCapacity ?? self._header.capacity
     let __left_ = self._header.__left_
     let __begin_node = self._header.__begin_node
     let __initialized_count = self._header.initializedCount
@@ -73,9 +73,9 @@ extension ___RedBlackTree.___Tree {
       let copyCount = self._header.copyCount
     #endif
 
-    let newStorage = Tree.create(withCapacity: capacity)
+    let newStorage = Tree.create(minimumCapacity: capacity)
 
-    newStorage._header.capacity = capacity
+    newStorage._header.capacity = newStorage.header.capacity
     newStorage._header.__left_ = __left_
     newStorage._header.__begin_node = __begin_node
     newStorage._header.initializedCount = __initialized_count

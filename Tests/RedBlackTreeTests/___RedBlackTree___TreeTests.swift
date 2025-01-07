@@ -181,14 +181,14 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
 
     func testFixtures() {
 
-      var tree = RedBlackTree___Tree.create(withCapacity: 8)
+      var tree = RedBlackTree___Tree.create(minimumCapacity: 8)
       fixtureEmpty(&tree)
       fixture0_10_20(&tree)
       fixture0_1_2_3_4_5_6(&tree)
     }
 
     func testMin() {
-      var tree = RedBlackTree___Tree.create(withCapacity: 8)
+      var tree = RedBlackTree___Tree.create(minimumCapacity: 8)
       fixture0_10_20(&tree)
       XCTAssertEqual(tree.__tree_min(tree.__root()), 1)
       fixture0_1_2_3_4_5_6(&tree)
@@ -196,7 +196,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
     }
 
     func testMax() {
-      var tree = RedBlackTree___Tree.create(withCapacity: 8)
+      var tree = RedBlackTree___Tree.create(minimumCapacity: 8)
       fixture0_10_20(&tree)
       XCTAssertEqual(tree.__tree_max(tree.__root()), 2)
       fixture0_1_2_3_4_5_6(&tree)
@@ -264,7 +264,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
 
       //        throw XCTSkip("Not implemented")
 
-      let tree = RedBlackTree___Tree.create(withCapacity: 8)
+      let tree = RedBlackTree___Tree.create(minimumCapacity: 8)
       _ = tree.__insert_unique(0)
       _ = tree.__insert_unique(1)
       _ = tree.__insert_unique(2)
@@ -283,7 +283,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
 
       //        throw XCTSkip("Not implemented")
 
-      let tree = RedBlackTree___Tree.create(withCapacity: 8)
+      let tree = RedBlackTree___Tree.create(minimumCapacity: 8)
       for i in 0..<2 {
         _ = tree.__insert_unique(i)
       }
@@ -307,7 +307,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
 
       //        throw XCTSkip("Not implemented")
 
-      let tree = RedBlackTree___Tree.create(withCapacity: 16)
+      let tree = RedBlackTree___Tree.create(minimumCapacity: 16)
       for i in 0..<7 {
         _ = tree.__insert_unique(i)
       }
@@ -327,7 +327,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
     }
 
     func testFindEqual0() throws {
-      var tree = RedBlackTree___Tree.create(withCapacity: 16)
+      var tree = RedBlackTree___Tree.create(minimumCapacity: 16)
       fixtureEmpty(&tree)
       do {
         var __parent: _NodePtr = .nullptr
@@ -347,7 +347,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
     }
 
     func testFindEqual1() throws {
-      var tree = RedBlackTree___Tree.create(withCapacity: 16)
+      var tree = RedBlackTree___Tree.create(minimumCapacity: 16)
       fixture0_10_20(&tree)
       do {
         var __parent: _NodePtr = .nullptr

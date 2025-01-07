@@ -117,5 +117,15 @@ final class AllocationTests: XCTestCase {
 #endif
   }
   
+  func test3() throws {
+    for i in 0..<1000 {
+      let src = RedBlackTreeSet<Int>.Tree.create(minimumCapacity: i)
+      for _ in 0 ..< 100 {
+        let dst = src.copy()
+        XCTAssertEqual(src.capacity, dst.capacity)
+      }
+    }
+  }
+  
 #endif // DEBUG
 }

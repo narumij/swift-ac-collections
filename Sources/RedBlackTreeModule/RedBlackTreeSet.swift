@@ -110,7 +110,7 @@ extension RedBlackTreeSet {
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
     let count = (sequence as? (any Collection))?.count
-    var tree: Tree = .create(withCapacity: count ?? 0)
+    var tree: Tree = .create(minimumCapacity: count ?? 0)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
@@ -135,7 +135,7 @@ extension RedBlackTreeSet {
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {
     precondition(range is Range<Element> || range is ClosedRange<Element>)
-    let tree: Tree = .create(withCapacity: range.count)
+    let tree: Tree = .create(minimumCapacity: range.count)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     for __k in range {
@@ -882,7 +882,7 @@ extension RedBlackTreeSet {
   public init<Source>(_sequence sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
     let count = (sequence as? (any Collection))?.count
-    var tree: Tree = .create(withCapacity: count ?? 0)
+    var tree: Tree = .create(minimumCapacity: count ?? 0)
     for __k in sequence {
       if count == nil {
         Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)

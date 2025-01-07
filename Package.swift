@@ -32,9 +32,10 @@ var _settings: [SwiftSetting] =
   ]
   + defines.map { .define($0) }
 
-// 環境変数 "NOT_ATCODER_JUDGE_ENV" が "true" に設定されているか確認
 // フラグが原因でトラブるようなケースへの迂回策として環境変数での対処を盛り込んでいる
+// 環境変数 "NOT_ATCODER_JUDGE_ENV" または "XCODE_VERSION_ACTUAL" が存在するか確認
 let isNotAtCoderJudge = ProcessInfo.processInfo.environment["NOT_ATCODER_JUDGE_ENV"] == "true"
+  || ProcessInfo.processInfo.environment["XCODE_VERSION_ACTUAL"] != nil
 
 let Ounchecked: [SwiftSetting] = isNotAtCoderJudge ? [] : [
   // unsafeフラグがあるとコンパイルではじかれる場合がある。

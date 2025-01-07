@@ -188,6 +188,13 @@ extension ___RedBlackTree.___Tree {
 }
 
 extension ___RedBlackTree.___Tree.Header {
+  
+  @inlinable
+  @inline(__always)
+  public var count: Int {
+    initializedCount - destroyCount
+  }
+
   @inlinable
   @inline(__always)
   mutating func clear() {
@@ -209,7 +216,6 @@ extension ___RedBlackTree.___Tree {
     withUnsafeMutablePointerToElements({ $0 })
   }
 
-  // Tree内部では._headerが速いが、外部では.headerの方が速い
   @inlinable
   var _header: Header {
     @inline(__always)
@@ -372,28 +378,28 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   public var count: Int {
-    __header_ptr.pointee.initializedCount - __header_ptr.pointee.destroyCount
+    _header.count
   }
 
   @inlinable
   var size: Int {
-    get { count }
+    get { _header.count }
     set { /* NOP */  }
   }
 
   @inlinable
   var __left_: _NodePtr {
-    get { __header_ptr.pointee.__left_ }
+    get { _header.__left_ }
     _modify {
-      yield &__header_ptr.pointee.__left_
+      yield &_header.__left_
     }
   }
 
   @inlinable
   var __begin_node: _NodePtr {
-    get { __header_ptr.pointee.__begin_node }
+    get { _header.__begin_node }
     _modify {
-      yield &__header_ptr.pointee.__begin_node
+      yield &_header.__begin_node
     }
   }
 }

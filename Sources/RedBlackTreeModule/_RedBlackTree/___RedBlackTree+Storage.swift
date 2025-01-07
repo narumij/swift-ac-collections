@@ -34,29 +34,27 @@ enum StorageCapacity {
   //  public static var growthFactor: Double { 1.75 }
   //  public static var growthFactor: Double { 1.8 }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public static func growthFormula(count: Int) -> Int {
-    Int((Self.growthFactor * Double(count)).rounded(.up))
+    Int((growthFactor * Double(count)).rounded(.up))
   }
+}
 
+extension ___RedBlackTree.___Tree {
+  
   @inlinable
   @inline(__always)
-  public static func _growCapacity(
-    tree: (count: Int, initializedCount: Int),
-    to minimumCapacity: Int,
-    linearly: Bool
-  ) -> Int {
+  func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
 
     if linearly {
       return Swift.max(
-        tree.initializedCount,
+        _header.initializedCount,
         minimumCapacity)
     }
 
     return Swift.max(
-      tree.initializedCount,
-      growthFormula(count: tree.count),
+      _header.initializedCount,
+      StorageCapacity.growthFormula(count: _header.count),
       minimumCapacity)
   }
 }
@@ -104,22 +102,8 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   static func makeEnsureUniqueAndCapacity(tree: inout Tree, minimumCapacity: Int) {
     tree = tree.copy(
-      minimumCapacity: _growCapacity(tree: &tree, to: minimumCapacity, linearly: false))
+      minimumCapacity: tree.growCapacity(to: minimumCapacity, linearly: false))
     assert(minimumCapacity <= tree._header.capacity)
-  }
-
-  @inlinable
-  internal static func _growCapacity(
-    tree: inout Tree,
-    to minimumCapacity: Int,
-    linearly: Bool
-  ) -> Int {
-
-    StorageCapacity
-      ._growCapacity(
-        tree: (tree.count, tree.header.initializedCount),
-        to: minimumCapacity,
-        linearly: linearly)
   }
 }
 
@@ -234,8 +218,7 @@ extension ___RedBlackTreeStorageLifetime {
       let shouldExpand = _storage.capacity < minimumCapacity
       if shouldExpand || !_isKnownUniquelyReferenced_LV2() {
         _storage = _storage.copy(
-          newCapacity: Tree._growCapacity(
-            tree: &_storage.tree, to: minimumCapacity, linearly: false))
+          newCapacity: _storage.tree.growCapacity(to: minimumCapacity, linearly: false))
       }
       assert(_storage.tree.capacity == _storage.tree.header.capacity)
       assert(_storage.capacity == _storage.tree.header.capacity)
@@ -270,8 +253,7 @@ extension ___RedBlackTreeStorageLifetime {
       let shouldExpand = _storage.capacity < minimumCapacity
       if shouldExpand || !_isKnownUniquelyReferenced_LV1() {
         _storage = _storage.copy(
-          newCapacity: Tree._growCapacity(
-            tree: &_storage.tree, to: minimumCapacity, linearly: false))
+          newCapacity: _storage.tree.growCapacity(to: minimumCapacity, linearly: false))
       }
       assert(_storage.tree.capacity == _storage.tree.header.capacity)
       assert(_storage.capacity == _storage.tree.header.capacity)

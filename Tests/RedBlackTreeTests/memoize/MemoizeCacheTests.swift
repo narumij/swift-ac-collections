@@ -61,14 +61,16 @@ enum Naive {
   }
 }
 // ↑を↓に変換するマクロがあれば、メモ化が楽になる
+// できました。 https://github.com/narumij/swift-ac-memoize
 enum Memoized {
   
   static func tarai(x: Int, y: Int, z: Int) -> Int {
     
-    typealias Arg = (x: Int, y: Int, z: Int)
+    typealias Args = (x: Int, y: Int, z: Int)
     
     enum Key: CustomKeyProtocol {
-      static func value_comp(_ a: Arg, _ b: Arg) -> Bool { a < b }
+      @inlinable @inline(__always)
+      static func value_comp(_ a: Args, _ b: Args) -> Bool { a < b }
     }
     
     var storage: ___RedBlackTreeMapBase<Key, Int> = .init()

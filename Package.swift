@@ -34,15 +34,18 @@ var _settings: [SwiftSetting] =
 
 // フラグが原因でトラブるようなケースへの迂回策として環境変数での対処を盛り込んでいる
 // 環境変数 "NOT_ATCODER_JUDGE_ENV" または "XCODE_VERSION_ACTUAL" が存在するか確認
-let isNotAtCoderJudge = ProcessInfo.processInfo.environment["NOT_ATCODER_JUDGE_ENV"] == "true"
-  || ProcessInfo.processInfo.environment["XCODE_VERSION_ACTUAL"] != nil
+func isUncheckedModeEnabled() -> Bool {
+    let flag = ProcessInfo.processInfo.environment["SWIFT_USE_UNCHECKED"] == "true"
+    print("SWIFT_USE_UNCHECKED is \(flag ? "enabled" : "disabled")")
+    return flag
+}
 
-let Ounchecked: [SwiftSetting] = isNotAtCoderJudge ? [] : [
+let Ounchecked: [SwiftSetting] = isUncheckedModeEnabled() ? [
   // unsafeフラグがあるとコンパイルではじかれる場合がある。
   // tag指定の場合そうなるが、revisions指定の場合通るようなので、再度トライすることに。
   // https://github.com/ggerganov/whisper.spm/issues/4
   .unsafeFlags(["-Ounchecked"], .when(configuration: .release))
-]
+] : []
 
 let package = Package(
   name: "swift-ac-collections",

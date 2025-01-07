@@ -378,28 +378,28 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   public var count: Int {
-    _header.count
+    __header_ptr.pointee.count
   }
 
   @inlinable
   var size: Int {
-    get { _header.count }
+    get { __header_ptr.pointee.count }
     set { /* NOP */  }
   }
 
   @inlinable
   var __left_: _NodePtr {
-    get { _header.__left_ }
+    get { __header_ptr.pointee.__left_ }
     _modify {
-      yield &_header.__left_
+      yield &__header_ptr.pointee.__left_
     }
   }
 
   @inlinable
   var __begin_node: _NodePtr {
-    get { _header.__begin_node }
+    get { __header_ptr.pointee.__begin_node }
     _modify {
-      yield &_header.__begin_node
+      yield &__header_ptr.pointee.__begin_node
     }
   }
 }
@@ -494,14 +494,17 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
+  @inline(__always)
   func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
     __node_ptr[lhs].__is_black_ = rhs
   }
   @inlinable
+  @inline(__always)
   func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
     __node_ptr[lhs].__parent_ = rhs
   }
   @inlinable
+  @inline(__always)
   func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
     if lhs == .end {
       __left_ = rhs
@@ -510,6 +513,7 @@ extension ___RedBlackTree.___Tree {
     }
   }
   @inlinable
+  @inline(__always)
   func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
     __node_ptr[lhs].__right_ = rhs
   }

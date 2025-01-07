@@ -276,7 +276,7 @@ extension RedBlackTreeDictionary {
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
         _ensureUniqueAndCapacity()
-        assert(_tree._header.capacity > _tree.count)
+        assert(_tree.header.capacity > _tree.count)
         __ptr = _tree.__construct_node((key, defaultValue()))
         _tree.__insert_node_at(__parent, __child, __ptr)
       } else {

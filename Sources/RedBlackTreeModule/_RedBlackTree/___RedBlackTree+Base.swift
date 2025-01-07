@@ -51,7 +51,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public var ___header_capacity: Int {
-    _tree._header.capacity
+    _tree.header.capacity
   }
 }
 
@@ -365,7 +365,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   func ___is_valid_index(_ i: _NodePtr) -> Bool {
     if i == .end { return true }
-    if !(0..<_tree._header.initializedCount ~= i) { return false }
+    if !(0..<_tree.header.initializedCount ~= i) { return false }
     return _tree.___is_valid(i)
   }
 

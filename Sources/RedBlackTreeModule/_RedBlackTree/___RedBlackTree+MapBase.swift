@@ -116,7 +116,7 @@ extension ___RedBlackTreeStorageLifetime {
                 tree: &_storage.tree, to: minimumCapacity, linearly: false)))
       }
       assert(_storage.capacity >= minimumCapacity)
-      assert(_storage.tree._header.initializedCount <= _storage.capacity)
+      assert(_storage.tree.header.initializedCount <= _storage.capacity)
     #endif
   }
 }

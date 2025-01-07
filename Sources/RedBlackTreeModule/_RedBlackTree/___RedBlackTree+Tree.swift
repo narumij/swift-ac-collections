@@ -209,6 +209,7 @@ extension ___RedBlackTree.___Tree {
     withUnsafeMutablePointerToElements({ $0 })
   }
 
+  // Tree内部では._headerが速いが、外部では.headerの方が速い
   @inlinable
   var _header: Header {
     @inline(__always)

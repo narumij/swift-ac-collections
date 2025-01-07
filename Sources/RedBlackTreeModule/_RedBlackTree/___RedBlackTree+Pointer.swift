@@ -72,7 +72,7 @@ extension ___RedBlackTree.___Tree {
     @inlinable
     public var isValid: Bool {
       if rawValue == .end { return true }
-      if !(0..<_tree.header.initializedCount ~= rawValue) { return false }
+      if !(0..<_tree._header.initializedCount ~= rawValue) { return false }
       return _tree.___is_valid(rawValue)
     }
 

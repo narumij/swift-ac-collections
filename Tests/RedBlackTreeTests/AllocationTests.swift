@@ -18,19 +18,16 @@ final class AllocationTests: XCTestCase {
     do {
       let storage: Storage = .create(withCapacity: 0)
       XCTAssertEqual(storage.capacity, 0)
-      XCTAssertEqual(storage.tree.header.capacity, 0)
       XCTAssertEqual(storage.tree.capacity, 0)
     }
     do {
       let storage: Storage = .create(withCapacity: 1)
       XCTAssertEqual(storage.capacity, 1)
-      XCTAssertEqual(storage.tree.header.capacity, 1)
       XCTAssertEqual(storage.tree.capacity, 1)
     }
     do {
       let storage: Storage = .create(withCapacity: 2)
       XCTAssertEqual(storage.capacity, 2)
-      XCTAssertEqual(storage.tree.header.capacity, 2)
       XCTAssertEqual(storage.tree.capacity, 2)
     }
   }

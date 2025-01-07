@@ -47,9 +47,9 @@ extension ___RedBlackTree.___Tree {
     minimumCapacity capacity: Int
   ) -> Tree {
 
-    let storage = Tree.create(minimumCapacity: capacity) { _ in
+    let storage = Tree.create(minimumCapacity: capacity) { managedBuffer in
       Header(
-        capacity: capacity,
+        capacity: managedBuffer.capacity,
         __left_: .nullptr,
         __begin_node: .end,
         __initialized_count: 0,
@@ -75,7 +75,6 @@ extension ___RedBlackTree.___Tree {
 
     let newStorage = Tree.create(minimumCapacity: capacity)
 
-    newStorage._header.capacity = newStorage.capacity
     newStorage._header.__left_ = __left_
     newStorage._header.__begin_node = __begin_node
     newStorage._header.initializedCount = __initialized_count

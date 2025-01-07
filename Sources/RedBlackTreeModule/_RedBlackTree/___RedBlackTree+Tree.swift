@@ -75,7 +75,7 @@ extension ___RedBlackTree.___Tree {
 
     let newStorage = Tree.create(minimumCapacity: capacity)
 
-    newStorage._header.capacity = newStorage.header.capacity
+    newStorage._header.capacity = newStorage.capacity
     newStorage._header.__left_ = __left_
     newStorage._header.__begin_node = __begin_node
     newStorage._header.initializedCount = __initialized_count

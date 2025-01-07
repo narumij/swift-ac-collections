@@ -27,10 +27,12 @@ enum StorageCapacity {
 
   @inlinable
   @inline(__always)
-  public static var growthFactor: Double { 1.618 }  // Golden Ratio
+  //  public static var growthFactor: Double { 1.5 }
+  //  public static var growthFactor: Double { 1.618 }  // Golden Ratio
+  //  public static var growthFactor: Double { 1.7 }
+  public static var growthFactor: Double { 1.7320508075688772 } // root 3
   //  public static var growthFactor: Double { 1.75 }
-  //  public static var growthFactor: Double { 2.0 }
-  //  public static var growthFactor: Double { 2.414 } // Silver Ratio
+  //  public static var growthFactor: Double { 1.8 }
 
   @inlinable
   @inline(__always)
@@ -235,6 +237,8 @@ extension ___RedBlackTreeStorageLifetime {
           newCapacity: Tree._growCapacity(
             tree: &_storage.tree, to: minimumCapacity, linearly: false))
       }
+      assert(_storage.tree.capacity == _storage.tree.header.capacity)
+      assert(_storage.capacity == _storage.tree.header.capacity)
       assert(_storage.capacity >= minimumCapacity)
       assert(_storage.tree.header.initializedCount <= _storage.capacity)
     #endif
@@ -269,15 +273,16 @@ extension ___RedBlackTreeStorageLifetime {
           newCapacity: Tree._growCapacity(
             tree: &_storage.tree, to: minimumCapacity, linearly: false))
       }
+      assert(_storage.tree.capacity == _storage.tree.header.capacity)
+      assert(_storage.capacity == _storage.tree.header.capacity)
       assert(_storage.capacity >= minimumCapacity)
       assert(_storage.tree.header.initializedCount <= _storage.capacity)
     #endif
   }
-  
+
   @inlinable
   @inline(__always)
   mutating func ___shrinkCapacity() {
     _storage = _storage.copy(newCapacity: _storage.tree.header.initializedCount)
   }
 }
-

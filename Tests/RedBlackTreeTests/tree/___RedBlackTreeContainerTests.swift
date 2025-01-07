@@ -163,12 +163,15 @@ import XCTest
         .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: .end)
       ]
 
+#if TREE_INVARIANT_CHECKS
       tree.__root(.nullptr)
       XCTAssertFalse(tree._tree.__tree_invariant(0))
 
       tree.__root(0)
       XCTAssertTrue(tree._tree.__tree_invariant(tree.__root()))
-
+#endif
+      
+#if TREE_INVARIANT_CHECKS
       tree.__nodes = [
         .init(__is_black_: false, __left_: nil, __right_: nil, __parent_: .end)
       ]
@@ -178,6 +181,7 @@ import XCTest
         .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: nil)
       ]
       XCTAssertFalse(tree._tree.__tree_invariant(tree.__root()))
+#endif
     }
 
     func testFixtures() {

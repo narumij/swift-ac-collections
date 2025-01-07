@@ -154,7 +154,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
 #if TREE_INVARIANT_CHECKS
     func testRootInvaliant() throws {
 
-      let tree = RedBlackTree___Tree.create(withCapacity: 8)
+      let tree = RedBlackTree___Tree.create(minimumCapacity: 8)
       XCTAssertTrue(tree.__tree_invariant(tree.__root()))
 
       tree.nodes = [
@@ -205,7 +205,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
 
 #if TREE_INVARIANT_CHECKS
     func testRotate() throws {
-      let tree = RedBlackTree___Tree.create(withCapacity: 8)
+      let tree = RedBlackTree___Tree.create(minimumCapacity: 8)
 
       tree.nodes = [
         .init(__is_black_: true, __left_: 1, __right_: 2, __parent_: .end),
@@ -245,7 +245,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
 
 #if TREE_INVARIANT_CHECKS
     func testBalancing0() throws {
-      var tree = RedBlackTree___Tree.create(withCapacity: 8)
+      var tree = RedBlackTree___Tree.create(minimumCapacity: 8)
       fixtureEmpty(&tree)
       tree.__left_ = .node(tree.nodes.count)
       tree.nodes.append(.init(__is_black_: false, __left_: nil, __right_: nil, __parent_: .end))

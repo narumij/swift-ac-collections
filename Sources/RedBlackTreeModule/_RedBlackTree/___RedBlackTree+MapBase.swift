@@ -83,8 +83,8 @@ extension ___RedBlackTreeMapBase {
     }
   }
 
-  public
-    var _tree: Tree
+  @usableFromInline
+  var _tree: Tree
   {
     get { _storage.tree }
     _modify { yield &_storage.tree }
@@ -106,19 +106,14 @@ extension ___RedBlackTreeStorageLifetime {
   @inline(__always)
   mutating func _ensureUniqueAndCapacity(minimumCapacity: Int, maximumCapacity: Int) {
     #if !DISABLE_COPY_ON_WRITE
-    print(minimumCapacity, maximumCapacity)
-    print(min(
-      maximumCapacity,
-      Tree._growCapacity(
-        tree: &_storage.tree, to: minimumCapacity, linearly: false)))
       let shouldExpand = _storage.capacity < minimumCapacity
       if shouldExpand || !_isKnownUniquelyReferenced_LV1() {
-        let actualNewCapacity = min(
-          maximumCapacity,
-          Tree._growCapacity(
-            tree: &_storage.tree, to: minimumCapacity, linearly: false))
-        _storage = _storage.copy(newCapacity: actualNewCapacity)
-        assert(_storage.capacity == actualNewCapacity)
+        _storage = _storage.copy(
+          newCapacity:
+            min(
+              maximumCapacity,
+              Tree._growCapacity(
+                tree: &_storage.tree, to: minimumCapacity, linearly: false)))
       }
       assert(_storage.capacity >= minimumCapacity)
       assert(_storage.tree.header.initializedCount <= _storage.capacity)

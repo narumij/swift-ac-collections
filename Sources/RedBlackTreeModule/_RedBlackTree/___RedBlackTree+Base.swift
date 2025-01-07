@@ -50,11 +50,6 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable @inline(__always)
-  public var ___capacity: Int {
-    _tree.capacity
-  }
-
-  @inlinable @inline(__always)
   public var ___header_capacity: Int {
     _tree._header.capacity
   }

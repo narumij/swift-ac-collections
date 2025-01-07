@@ -158,12 +158,6 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   public var capacity: Int {
-    ___capacity
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var ___rawCapacity: Int {
     ___header_capacity
   }
 }

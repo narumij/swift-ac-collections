@@ -189,7 +189,7 @@ extension RedBlackTreeDictionary {
   /// - 計算量: O(1)
   @inlinable
   public var capacity: Int {
-    ___capacity
+    ___header_capacity
   }
 }
 

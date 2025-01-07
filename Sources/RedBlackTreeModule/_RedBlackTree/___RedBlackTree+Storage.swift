@@ -105,7 +105,7 @@ extension ___RedBlackTree.___Tree {
   static func makeEnsureUniqueAndCapacity(tree: inout Tree, minimumCapacity: Int) {
     tree = tree.copy(
       minimumCapacity: _growCapacity(tree: &tree, to: minimumCapacity, linearly: false))
-    assert(minimumCapacity <= tree.capacity)
+    assert(minimumCapacity <= tree.header.capacity)
   }
 
   @inlinable

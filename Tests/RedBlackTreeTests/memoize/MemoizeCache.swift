@@ -154,10 +154,10 @@ enum Memoized_Ver2 {
 
     struct GlobalCache {
       enum Memoize: MemoizationCacheProtocol {
-        typealias Key = (x: Int, y: Int, z: Int)
-        typealias Result = Int
+        typealias Parameter = (x: Int, y: Int, z: Int)
+        typealias Return = Int
         @inlinable @inline(__always)
-        static func value_comp(_ a: Key, _ b: Key) -> Bool { a < b }
+        static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool { a < b }
       }
       nonisolated(unsafe) static var cache: Memoize.Cache = .init()
       var memo: Memoize.Cache {
@@ -168,15 +168,15 @@ enum Memoized_Ver2 {
 
     struct LocalCache {
       enum Memoize: MemoizationCacheProtocol {
-        typealias Key = (x: Int, y: Int, z: Int)
-        typealias Result = Int
+        typealias Parameter = (x: Int, y: Int, z: Int)
+        typealias Return = Int
         @inlinable @inline(__always)
-        static func value_comp(_ a: Key, _ b: Key) -> Bool { a < b }
+        static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool { a < b }
       }
       var memo: Memoize.Cache = .init()
     }
 
-    var cache = GlobalCache()
+    var cache = LocalCache()
     
     func tarai(x: Int, y: Int, z: Int) -> Int {
       let args = (x, y, z)
@@ -211,10 +211,10 @@ struct Memoized_Ver3 {
   // ユーザーコードと衝突しない名前を生成する工夫が必要そう
   private class LocalCache_Memoized_Ver3_tarai {
     enum Memoize: MemoizationCacheProtocol {
-      typealias Key = (x: Int, y: Int, z: Int)
-      typealias Result = Int
+      typealias Parameter = (x: Int, y: Int, z: Int)
+      typealias Return = Int
       @inlinable @inline(__always)
-      static func value_comp(_ a: Key, _ b: Key) -> Bool { a < b }
+      static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool { a < b }
     }
     var memo: Memoize.Cache = .init()
   }

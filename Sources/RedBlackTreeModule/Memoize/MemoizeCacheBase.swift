@@ -25,17 +25,18 @@ import Foundation
 public
   protocol KeyCustomProtocol
 {
-  associatedtype Key
-  static func value_comp(_ a: Key, _ b: Key) -> Bool
+  associatedtype Parameter
+  static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool
 }
 
 public
-protocol MemoizationCacheProtocol: KeyCustomProtocol {
-  associatedtype Result
+  protocol MemoizationCacheProtocol: KeyCustomProtocol
+{
+  associatedtype Return
 }
 
 extension MemoizationCacheProtocol {
-  public typealias Cache = MemoizeCacheBase<Self, Result>
+  public typealias Cache = MemoizeCacheBase<Self, Return>
 }
 
 /// メモ化用途向け
@@ -49,7 +50,7 @@ public struct MemoizeCacheBase<CustomKey, Value>
 where CustomKey: KeyCustomProtocol {
 
   public
-    typealias Key = CustomKey.Key
+    typealias Key = CustomKey.Parameter
 
   public
     typealias Value = Value
@@ -71,7 +72,7 @@ where CustomKey: KeyCustomProtocol {
 
   @usableFromInline
   let maximumCapacity: Int
-  
+
   @usableFromInline
   var oldestNode: _NodePtr
 }

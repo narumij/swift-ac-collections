@@ -109,7 +109,7 @@ extension RedBlackTreeDictionary {
     // ソートの計算量がO(*n* log *n*)
     for __k in keysAndValues.sorted(by: { $0.0 < $1.0 }) {
       if count == nil {
-        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+        Tree.ensureCapacity(tree: &tree)
       }
       if __parent == .end || tree[__parent].0 != __k.0 {
         // バランシングの計算量がO(log *n*)
@@ -136,7 +136,7 @@ extension RedBlackTreeDictionary {
     // ソートの計算量がO(*n* log *n*)
     for __k in keysAndValues.sorted(by: { $0.0 < $1.0 }) {
       if count == nil {
-        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+        Tree.ensureCapacity(tree: &tree)
       }
       if __parent == .end || tree[__parent].0 != __k.0 {
         // バランシングの計算量がO(log *n*)
@@ -164,7 +164,7 @@ extension RedBlackTreeDictionary {
     // ソートの計算量がO(*n* log *n*)
     for (__k,__v) in try values.map({ (try keyForValue($0), $0) }).sorted(by: { $0.0 < $1.0 }) {
       if count == nil {
-        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+        Tree.ensureCapacity(tree: &tree)
       }
       if __parent == .end || tree[__parent].0 != __k {
         // バランシングの計算量がO(log *n*)

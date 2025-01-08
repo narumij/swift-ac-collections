@@ -97,7 +97,7 @@ extension RedBlackTreeMultiset {
     // ソートの計算量がO(*n* log *n*)
     for __k in sequence.sorted() {
       if count == nil {
-        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+        Tree.ensureCapacity(tree: &tree)
       }
       // バランシングの計算量がO(log *n*)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)

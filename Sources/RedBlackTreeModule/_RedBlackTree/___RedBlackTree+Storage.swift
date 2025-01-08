@@ -61,53 +61,49 @@ extension ___RedBlackTree.___Tree {
       _header.initializedCount,
       StorageCapacity.growthFormula(count: minimumCapacity))
   }
+  
+  @inlinable
+  @inline(__always)
+  func copy(to minimumCapacity: Int, linearly: Bool) -> Tree {
+    copy(minimumCapacity: growCapacity(to: minimumCapacity, linearly: false))
+  }
 }
 
 extension ___RedBlackTree.___Tree {
 
   @inlinable
+  @inline(__always)
   static func _isKnownUniquelyReferenced(tree: inout Tree) -> Bool {
     isKnownUniquelyReferenced(&tree)
   }
 
   @inlinable
-  static func ensureUnique(tree: inout Tree) {
-    if !isKnownUniquelyReferenced(&tree) {
-      makeEnsureUnique(tree: &tree)
-    }
-  }
-
-  @inlinable
+  @inline(__always)
   static func ensureUniqueAndCapacity(tree: inout Tree) {
-    ensureUniqueAndCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+    ensureUniqueAndCapacity(tree: &tree, minimumCapacity: tree._header.count + 1)
   }
 
   @inlinable
+  @inline(__always)
   static func ensureUniqueAndCapacity(tree: inout Tree, minimumCapacity: Int) {
-    let shouldExpand = tree.header.capacity < minimumCapacity
+    let shouldExpand = tree._header.capacity < minimumCapacity
     if shouldExpand || !isKnownUniquelyReferenced(&tree) {
-      makeEnsureUniqueAndCapacity(tree: &tree, minimumCapacity: minimumCapacity)
+      tree = tree.copy(to: minimumCapacity, linearly: false)
     }
   }
 
   @inlinable
+  @inline(__always)
+  static func ensureCapacity(tree: inout Tree) {
+    ensureCapacity(tree: &tree, minimumCapacity: tree._header.count + 1)
+  }
+
+  @inlinable
+  @inline(__always)
   static func ensureCapacity(tree: inout Tree, minimumCapacity: Int) {
-    if tree.header.capacity < minimumCapacity {
-      makeEnsureUniqueAndCapacity(tree: &tree, minimumCapacity: minimumCapacity)
+    if tree._header.capacity < minimumCapacity {
+      tree = tree.copy(to: minimumCapacity, linearly: false)
     }
-  }
-
-  @inlinable
-  static func makeEnsureUnique(tree: inout Tree) {
-    tree = tree.copy(
-      minimumCapacity: tree.header.capacity)
-  }
-
-  @inlinable
-  static func makeEnsureUniqueAndCapacity(tree: inout Tree, minimumCapacity: Int) {
-    tree = tree.copy(
-      minimumCapacity: tree.growCapacity(to: minimumCapacity, linearly: false))
-    assert(minimumCapacity <= tree._header.capacity)
   }
 }
 
@@ -159,8 +155,13 @@ extension ___RedBlackTree.___Tree {
     @nonobjc
     @inlinable
     @inline(__always)
-    final func copy(newCapacity: Int) -> Storage {
-      .init(__tree: tree.copy(minimumCapacity: newCapacity))
+    final func copy(minimumCapacity: Int) -> Storage {
+      .init(__tree: tree.copy(minimumCapacity: minimumCapacity))
+    }
+    @inlinable
+    @inline(__always)
+    final func copy(to minimumCapacity: Int, linearly: Bool) -> Storage {
+      .init(__tree: tree.copy(to: minimumCapacity, linearly: linearly))
     }
     @nonobjc
     @inlinable
@@ -221,8 +222,7 @@ extension ___RedBlackTreeStorageLifetime {
     #if !DISABLE_COPY_ON_WRITE
       let shouldExpand = _storage.capacity < minimumCapacity
       if shouldExpand || !_isKnownUniquelyReferenced_LV2() {
-        _storage = _storage.copy(
-          newCapacity: _storage.tree.growCapacity(to: minimumCapacity, linearly: false))
+        _storage = _storage.copy(to: minimumCapacity, linearly: false)
       }
       assert(_storage.tree.capacity == _storage.tree.header.capacity)
       assert(_storage.capacity == _storage.tree.header.capacity)
@@ -256,8 +256,7 @@ extension ___RedBlackTreeStorageLifetime {
     #if !DISABLE_COPY_ON_WRITE
       let shouldExpand = _storage.capacity < minimumCapacity
       if shouldExpand || !_isKnownUniquelyReferenced_LV1() {
-        _storage = _storage.copy(
-          newCapacity: _storage.tree.growCapacity(to: minimumCapacity, linearly: false))
+        _storage = _storage.copy(to: minimumCapacity, linearly: false)
       }
       assert(_storage.tree.capacity == _storage.tree.header.capacity)
       assert(_storage.capacity == _storage.tree.header.capacity)
@@ -269,6 +268,6 @@ extension ___RedBlackTreeStorageLifetime {
   @inlinable
   @inline(__always)
   mutating func ___shrinkCapacity() {
-    _storage = _storage.copy(newCapacity: _storage.tree.header.initializedCount)
+    _storage = _storage.copy(minimumCapacity: 0)
   }
 }

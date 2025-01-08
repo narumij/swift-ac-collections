@@ -109,7 +109,7 @@ extension ___RedBlackTreeStorageLifetime {
       let shouldExpand = _storage.capacity < minimumCapacity
       if shouldExpand || !_isKnownUniquelyReferenced_LV1() {
         _storage = _storage.copy(
-          newCapacity:
+          minimumCapacity:
             min(
               maximumCapacity,
               _storage.tree.growCapacity(to: minimumCapacity, linearly: false)))

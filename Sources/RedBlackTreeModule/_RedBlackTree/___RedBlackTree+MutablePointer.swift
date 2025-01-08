@@ -56,7 +56,7 @@ extension ___RedBlackTree.___Tree {
     public var pointee: Element {
       get { _tree[_tree.__tree_max(_tree.__root())] }
       set {
-        Tree.ensureUniqueAndCapacity(tree: &_tree, minimumCapacity: _tree.count + 1)
+        Tree.ensureUniqueAndCapacity(tree: &_tree)
         (__parent, __child) = _tree.___emplace_hint_right(__parent, __child, newValue)
         assert(_tree.__tree_invariant(_tree.__root()))
       }

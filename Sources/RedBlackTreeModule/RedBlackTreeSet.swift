@@ -116,7 +116,7 @@ extension RedBlackTreeSet {
     // ソートの計算量がO(*n* log *n*)
     for __k in sequence.sorted() {
       if count == nil {
-        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+        Tree.ensureCapacity(tree: &tree)
       }
       if __parent == .end || tree[__parent] != __k {
         // バランシングの計算量がO(log *n*)
@@ -879,7 +879,7 @@ extension RedBlackTreeSet {
     var tree: Tree = .create(minimumCapacity: count ?? 0)
     for __k in sequence {
       if count == nil {
-        Tree.ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+        Tree.ensureCapacity(tree: &tree)
       }
       var __parent = _NodePtr.nullptr
       // 検索の計算量がO(log *n*)

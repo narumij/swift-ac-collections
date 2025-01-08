@@ -66,9 +66,9 @@ where CustomKey: CustomKeyProtocol {
 
 extension ___RedBlackTreeMapBase {
 
-  public init(minimumCapacity: Int = 0, maximumCapacity: Int = Int.max) {
+  public init(minimumCapacity: Int = 0, maximumCapacity: Int? = nil) {
     _storage = .create(withCapacity: minimumCapacity)
-    self.maximumCapacity = maximumCapacity
+    self.maximumCapacity = maximumCapacity ?? Int.max
   }
 
   public subscript(key: Key) -> Value? {

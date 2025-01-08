@@ -10,7 +10,7 @@ var defines: [String] = [
 //  "GRAPHVIZ_DEBUG",
 //  "USING_ALGORITHMS",
 //  "USING_COLLECTIONS",
-//  "DISABLE_COPY_ON_WRITE", // 危険
+//  "DISABLE_COPY_ON_WRITE", // やや危険。クラッシュは減った
 //  "ENABLE_PERFORMANCE_TESTING"
 ]
 
@@ -19,7 +19,7 @@ var _settings: [SwiftSetting] =
     .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),
     // CoWの挙動チェックを可能にするマクロ定義
     // アロケーション関連のテストを走らせるために必要
-    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
+//    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
     // ツリーの不変性チェックの有効無効を切り替えるマクロ定義
     // デバッグビルド時のテストが遅いため用意した
     // 消すことではやくなる

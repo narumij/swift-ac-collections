@@ -145,7 +145,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
+    _ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -785,14 +785,14 @@ extension RedBlackTreeMultiset {
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
-    _ensureUniqueAndCapacity(minimumCapacity: count + other.count)
+    _ensureUniqueAndCapacity(to: count + other.count)
     _tree.__node_handle_merge_multi(other._tree)
   }
 
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiset<Element>) {
-    _ensureUniqueAndCapacity(minimumCapacity: count + other.count)
+    _ensureUniqueAndCapacity(to: count + other.count)
     _tree.__node_handle_merge_multi(other._tree)
   }
 

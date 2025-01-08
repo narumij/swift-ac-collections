@@ -197,7 +197,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(minimumCapacity: minimumCapacity)
+    _ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -900,7 +900,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
-    _ensureUniqueAndCapacity(minimumCapacity: count + other.count)
+    _ensureUniqueAndCapacity(to: count + other.count)
     _tree.__node_handle_merge_unique(other._tree)
   }
 }

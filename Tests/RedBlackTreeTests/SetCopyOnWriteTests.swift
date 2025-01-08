@@ -2,7 +2,7 @@ import RedBlackTreeModule
 import XCTest
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-final class RedBlackTreeCopyOnWriteTests: XCTestCase {
+final class SetCopyOnWriteTests: XCTestCase {
 
   let count = 2_000_000
 
@@ -11,11 +11,14 @@ final class RedBlackTreeCopyOnWriteTests: XCTestCase {
     XCTAssertEqual(set._copyCount, 0)
     set.insert(0)
     XCTAssertEqual(set._copyCount, 1) // 挿入に備えた分増える
+    while set.count < set.capacity {
+      set.insert((2 ..< Int.max).randomElement()!)
+      XCTAssertEqual(set._copyCount, 1) // 挿入に備えた分増える
+    }
     set.insert(0)
-    throw XCTSkip("capacityが1確保でサイズ1とは限らなくなった")
-    XCTAssertEqual(set._copyCount, 2) // 挿入に備えた分増える
+    XCTAssertEqual(set._copyCount, 2) // 挿入に備えた分増えるが消費していない
     set.insert(0)
-    XCTAssertEqual(set._copyCount, 2) // 挿入に備えた必要分が変化していない
+    XCTAssertEqual(set._copyCount, 2) // 挿入に備えた必要分をまだ消費していない
     set.insert(1)
     XCTAssertEqual(set._copyCount, 2) // 挿入に備えた必要分を消費したところ
   }

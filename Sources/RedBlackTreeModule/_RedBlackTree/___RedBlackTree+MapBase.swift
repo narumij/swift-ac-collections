@@ -75,9 +75,7 @@ extension ___RedBlackTreeMapBase {
     get { ___value_for(key)?.value }
     set {
       if let newValue, _tree.count < maximumCapacity {
-        _ensureUniqueAndCapacity(
-          minimumCapacity: _tree.count + 1,
-          maximumCapacity: maximumCapacity)
+        _ensureCapacity(to: _tree.count + 1, limit: maximumCapacity)
         _ = _tree.__insert_unique((key, newValue))
       }
     }
@@ -98,24 +96,5 @@ extension ___RedBlackTreeMapBase: KeyValueComparer {
   @inlinable
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     CustomKey.value_comp(a, b)
-  }
-}
-
-extension ___RedBlackTreeStorageLifetime {
-  @inlinable
-  @inline(__always)
-  mutating func _ensureUniqueAndCapacity(minimumCapacity: Int, maximumCapacity: Int) {
-    #if !DISABLE_COPY_ON_WRITE
-      let shouldExpand = _storage.capacity < minimumCapacity
-      if shouldExpand || !_isKnownUniquelyReferenced_LV1() {
-        _storage = _storage.copy(
-          minimumCapacity:
-            min(
-              maximumCapacity,
-              _storage.tree.growCapacity(to: minimumCapacity, linearly: false)))
-      }
-      assert(_storage.capacity >= minimumCapacity)
-      assert(_storage.tree.header.initializedCount <= _storage.capacity)
-    #endif
   }
 }

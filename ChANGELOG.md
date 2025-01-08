@@ -5,13 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.4] - 2025-1-?
+## [0.1.4] - 2025-1-8
 ### Added
-- `___RedBlackTreeMapBase`にキャパシティ上限機能を追加
-- `___RedBlackTreeMapBase`のinitにキャパシティ上限値パラメータを追加
+- `_MemoizeCacheBase`にキャパシティ上限機能を追加
+- `_MemoizeCacheBase`のinitにキャパシティ上限値パラメータを追加
 ### Changed
 - ManagedBufferの期待確保サイズではなく、実確保サイズをキャパシティ値として用いるよう変更
-- バッファの成長サイズ係数を変更
+- バッファの成長サイズ計算式と係数を変更
+- `___RedBlackTreeMapBase`を`_MemoizeCacheBase`に名称変更
+
 ### Fixed
 - `___RedBlackTreeMapBase`の`_tree`メンバーをinternalに変更
 

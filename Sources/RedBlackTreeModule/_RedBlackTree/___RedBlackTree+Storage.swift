@@ -28,20 +28,25 @@ enum StorageCapacity {
   @inlinable
   @inline(__always)
   //  public static var growthFactor: Double { 1.5 }
-  //  public static var growthFactor: Double { 1.618 }  // Golden Ratio
+  public static var growthFactor: Double { 1.618 }  // Golden Ratio
   //  public static var growthFactor: Double { 1.7 }
-  public static var growthFactor: Double { 1.7320508075688772 } // root 3
+  //  public static var growthFactor: Double { 1.7320508075688772 } // root 3
   //  public static var growthFactor: Double { 1.75 }
   //  public static var growthFactor: Double { 1.8 }
 
   @inlinable @inline(__always)
-  public static func growthFormula(count: Int) -> Int {
+  public static func growthFormula(growthFactor: Double, count: Int) -> Int {
     Int((growthFactor * Double(count)).rounded(.up))
+  }
+
+  @inlinable @inline(__always)
+  public static func growthFormula(count: Int) -> Int {
+    return growthFormula(growthFactor: growthFactor, count: count)
   }
 }
 
 extension ___RedBlackTree.___Tree {
-  
+
   @inlinable
   @inline(__always)
   func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
@@ -54,8 +59,7 @@ extension ___RedBlackTree.___Tree {
 
     return Swift.max(
       _header.initializedCount,
-      StorageCapacity.growthFormula(count: _header.count),
-      minimumCapacity)
+      StorageCapacity.growthFormula(count: minimumCapacity))
   }
 }
 

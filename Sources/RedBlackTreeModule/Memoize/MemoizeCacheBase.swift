@@ -29,6 +29,15 @@ public
   static func value_comp(_ a: Key, _ b: Key) -> Bool
 }
 
+public
+protocol MemoizationCacheProtocol: KeyCustomProtocol {
+  associatedtype Result
+}
+
+extension MemoizationCacheProtocol {
+  public typealias Cache = MemoizeCacheBase<Self, Result>
+}
+
 /// メモ化用途向け
 ///
 /// CustomKeyProtocolで比較方法を供給することで、
@@ -36,7 +45,7 @@ public
 ///
 /// 辞書としての機能は削いである
 @frozen
-public struct ___RedBlackTreeMapBase<CustomKey, Value>
+public struct MemoizeCacheBase<CustomKey, Value>
 where CustomKey: KeyCustomProtocol {
 
   public
@@ -67,7 +76,7 @@ where CustomKey: KeyCustomProtocol {
   var oldestNode: _NodePtr
 }
 
-extension ___RedBlackTreeMapBase {
+extension MemoizeCacheBase {
 
   public init(minimumCapacity: Int = 0, maximumCapacity: Int? = nil) {
     _storage = .create(withCapacity: minimumCapacity)
@@ -101,9 +110,9 @@ extension ___RedBlackTreeMapBase {
   }
 }
 
-extension ___RedBlackTreeMapBase: ___RedBlackTreeBase {}
-extension ___RedBlackTreeMapBase: ___RedBlackTreeStorageLifetime {}
-extension ___RedBlackTreeMapBase: KeyValueComparer {
+extension MemoizeCacheBase: ___RedBlackTreeBase {}
+extension MemoizeCacheBase: ___RedBlackTreeStorageLifetime {}
+extension MemoizeCacheBase: KeyValueComparer {
 
   @inlinable
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {

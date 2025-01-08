@@ -30,13 +30,13 @@ public
 }
 
 public
-  protocol MemoizationCacheProtocol: KeyCustomProtocol
+  protocol MemoizationProtocol: KeyCustomProtocol
 {
   associatedtype Return
 }
 
-extension MemoizationCacheProtocol {
-  public typealias Cache = MemoizeCacheBase<Self, Return>
+extension MemoizationProtocol {
+  public typealias Tree = MemoizeCacheBase<Self, Return>
 }
 
 /// メモ化用途向け
@@ -108,6 +108,13 @@ extension MemoizeCacheBase {
   {
     get { _storage.tree }
     _modify { yield &_storage.tree }
+  }
+  
+  public var count: Int { ___count }
+  public var capacity: Int { ___header_capacity }  
+  public
+  mutating func clear() {
+    _storage = .create(withCapacity: 0)
   }
 }
 

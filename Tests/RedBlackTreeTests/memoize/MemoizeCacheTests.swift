@@ -31,18 +31,49 @@ final class MemoizeCacheTests: XCTestCase {
       var cache = MemoizeCacheBase<TestKey, Int>(minimumCapacity: 0, maximumCapacity: 100)
       XCTAssertEqual(cache._tree.count, 0)
       XCTAssertEqual(cache._tree.capacity, 0)
-      var over: Int? = nil
+      var finalCapacity: Int? = nil
       for i in 0..<200 {
         cache[i] = i
-        if over == nil, cache._tree.capacity >= 100 {
-          over = cache._tree.capacity
+        if finalCapacity == nil, cache._tree.capacity >= 100 {
+          finalCapacity = cache._tree.capacity
         }
-        if let over {
-          XCTAssertLessThanOrEqual(cache._tree.capacity, over, "\(i)")
+        if let finalCapacity {
+          // 最終的に定まったキャパシティが変化しない
+          XCTAssertEqual(cache._tree.capacity, finalCapacity, "\(i)")
         }
       }
     }
   #endif
+  
+  func testMaximum2() throws {
+    var cache = MemoizeCacheBase<TestKey, Int>(minimumCapacity: 0, maximumCapacity: 5)
+    cache[0] = 0
+    XCTAssertEqual(cache[0], 0)
+    cache[1] = 1
+    XCTAssertEqual(cache[0], 0)
+    cache[2] = 2
+    XCTAssertEqual(cache[0], 0)
+    cache[3] = 3
+    XCTAssertEqual(cache[0], 0)
+    cache[4] = 4
+    XCTAssertEqual(cache[0], 0)
+    var i = 5
+    while cache.count < cache.capacity {
+      cache[i] = i
+      i += 1
+      XCTAssertEqual(cache[0], 0)
+    }
+    cache[i] = i
+    XCTAssertNil(cache[0]) // 1番古いモノが消える
+    XCTAssertEqual(cache[1], 1)
+    XCTAssertEqual(cache[i], i) // 新しいモノが登録されている
+    i += 1
+    cache[i] = i
+    XCTAssertNil(cache[0]) // 1番古いモノはすでに消えている
+    XCTAssertNil(cache[1]) // 2番目に古いモノが消える
+    XCTAssertEqual(cache[i], i) // 新しいモノが登録されている
+    i += 1
+  }
 
   #if true || ENABLE_PERFORMANCE_TESTING
     func testTak0() throws {
@@ -75,7 +106,7 @@ final class MemoizeCacheTests: XCTestCase {
     func testPerformanceTak2() throws {
       //    let tarai = Tak()
       self.measure {
-        XCTAssertEqual(Memoized_Ver2.tarai(x: 24, y: 12, z: 0), 24)
+        XCTAssertEqual(Memoized_Ver4.tarai(x: 24, y: 12, z: 0), 24)
       }
     }
   #endif

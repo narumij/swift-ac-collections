@@ -62,6 +62,9 @@ where CustomKey: KeyCustomProtocol {
 
   @usableFromInline
   let maximumCapacity: Int
+  
+  @usableFromInline
+  var oldestNode: _NodePtr
 }
 
 extension ___RedBlackTreeMapBase {
@@ -69,13 +72,22 @@ extension ___RedBlackTreeMapBase {
   public init(minimumCapacity: Int = 0, maximumCapacity: Int? = nil) {
     _storage = .create(withCapacity: minimumCapacity)
     self.maximumCapacity = maximumCapacity ?? Int.max
+    self.oldestNode = 0
   }
 
   public subscript(key: Key) -> Value? {
     get { ___value_for(key)?.value }
     set {
-      if let newValue, _tree.count < maximumCapacity {
-        _ensureCapacity(to: _tree.count + 1, limit: maximumCapacity)
+      if let newValue {
+        if _tree.count < maximumCapacity {
+          // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
+          _ensureCapacity(to: _tree.count + 1, limit: maximumCapacity)
+        }
+        if _tree.count == maximumCapacity {
+          ___remove(at: oldestNode)
+          oldestNode += 1
+          oldestNode %= maximumCapacity
+        }
         _ = _tree.__insert_unique((key, newValue))
       }
     }

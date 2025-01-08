@@ -23,7 +23,7 @@
 import Foundation
 
 public
-  protocol CustomKeyProtocol
+  protocol KeyCustomProtocol
 {
   associatedtype Key
   static func value_comp(_ a: Key, _ b: Key) -> Bool
@@ -37,7 +37,7 @@ public
 /// 辞書としての機能は削いである
 @frozen
 public struct ___RedBlackTreeMapBase<CustomKey, Value>
-where CustomKey: CustomKeyProtocol {
+where CustomKey: KeyCustomProtocol {
 
   public
     typealias Key = CustomKey.Key

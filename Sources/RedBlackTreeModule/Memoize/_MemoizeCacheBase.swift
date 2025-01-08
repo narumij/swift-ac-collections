@@ -23,20 +23,20 @@
 import Foundation
 
 public
-  protocol KeyCustomProtocol
+  protocol _KeyCustomProtocol
 {
   associatedtype Parameter
   static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool
 }
 
 public
-  protocol MemoizationProtocol: KeyCustomProtocol
+  protocol _MemoizationProtocol: _KeyCustomProtocol
 {
   associatedtype Return
 }
 
-extension MemoizationProtocol {
-  public typealias Tree = MemoizeCacheBase<Self, Return>
+extension _MemoizationProtocol {
+  public typealias Tree = _MemoizeCacheBase<Self, Return>
 }
 
 /// メモ化用途向け
@@ -46,11 +46,11 @@ extension MemoizationProtocol {
 ///
 /// 辞書としての機能は削いである
 @frozen
-public struct MemoizeCacheBase<CustomKey, Value>
-where CustomKey: KeyCustomProtocol {
+public struct _MemoizeCacheBase<Custom, Value>
+where Custom: _KeyCustomProtocol {
 
   public
-    typealias Key = CustomKey.Parameter
+    typealias Key = Custom.Parameter
 
   public
     typealias Value = Value
@@ -77,7 +77,7 @@ where CustomKey: KeyCustomProtocol {
   var oldestNode: _NodePtr
 }
 
-extension MemoizeCacheBase {
+extension _MemoizeCacheBase {
 
   public init(minimumCapacity: Int = 0, maximumCapacity: Int? = nil) {
     _storage = .create(withCapacity: minimumCapacity)
@@ -118,12 +118,12 @@ extension MemoizeCacheBase {
   }
 }
 
-extension MemoizeCacheBase: ___RedBlackTreeBase {}
-extension MemoizeCacheBase: ___RedBlackTreeStorageLifetime {}
-extension MemoizeCacheBase: KeyValueComparer {
+extension _MemoizeCacheBase: ___RedBlackTreeBase {}
+extension _MemoizeCacheBase: ___RedBlackTreeStorageLifetime {}
+extension _MemoizeCacheBase: KeyValueComparer {
 
   @inlinable
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    CustomKey.value_comp(a, b)
+    Custom.value_comp(a, b)
   }
 }

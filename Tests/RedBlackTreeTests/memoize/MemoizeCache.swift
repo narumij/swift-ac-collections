@@ -4,18 +4,18 @@ import RedBlackTreeModule
 struct MemoizeCache1<A, B>
 where A: Comparable, B: Comparable {
   @usableFromInline
-  enum Key: KeyCustomProtocol {
+  enum Key: _KeyCustomProtocol {
     @inlinable
     static func value_comp(_ a: A, _ b: A) -> Bool {
       a < b
     }
   }
   @usableFromInline
-  init(__memo: MemoizeCacheBase<Key, B> = .init()) {
+  init(__memo: _MemoizeCacheBase<Key, B> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: MemoizeCacheBase<Key, B> = .init()
+  var __memo: _MemoizeCacheBase<Key, B> = .init()
   @inlinable
   subscript(a: A) -> B? {
     get { __memo[a] }
@@ -27,18 +27,18 @@ where A: Comparable, B: Comparable {
 struct MemoizeCache2<A, B, C>
 where A: Comparable, B: Comparable {
   @usableFromInline
-  enum Key: KeyCustomProtocol {
+  enum Key: _KeyCustomProtocol {
     @inlinable
     static func value_comp(_ a: (A, B), _ b: (A, B)) -> Bool {
       a < b
     }
   }
   @usableFromInline
-  init(__memo: MemoizeCacheBase<Key, C> = .init()) {
+  init(__memo: _MemoizeCacheBase<Key, C> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: MemoizeCacheBase<Key, C> = .init()
+  var __memo: _MemoizeCacheBase<Key, C> = .init()
   @inlinable
   subscript(a: A, b: B) -> C? {
     get { __memo[(a, b)] }
@@ -50,18 +50,18 @@ where A: Comparable, B: Comparable {
 struct MemoizeCache3<A, B, C, D>
 where A: Comparable, B: Comparable, C: Comparable {
   @usableFromInline
-  enum Key: KeyCustomProtocol {
+  enum Key: _KeyCustomProtocol {
     @inlinable
     static func value_comp(_ a: (A, B, C), _ b: (A, B, C)) -> Bool {
       a < b
     }
   }
   @usableFromInline
-  init(__memo: MemoizeCacheBase<Key, D> = .init()) {
+  init(__memo: _MemoizeCacheBase<Key, D> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: MemoizeCacheBase<Key, D> = .init()
+  var __memo: _MemoizeCacheBase<Key, D> = .init()
   @inlinable
   subscript(a: A, b: B, c: C) -> D? {
     get { __memo[(a, b, c)] }
@@ -73,18 +73,18 @@ where A: Comparable, B: Comparable, C: Comparable {
 struct MemoizeCache4<A, B, C, D, E>
 where A: Comparable, B: Comparable, C: Comparable, D: Comparable {
   @usableFromInline
-  enum Key: KeyCustomProtocol {
+  enum Key: _KeyCustomProtocol {
     @inlinable
     static func value_comp(_ a: (A, B, C, D), _ b: (A, B, C, D)) -> Bool {
       a < b
     }
   }
   @usableFromInline
-  init(__memo: MemoizeCacheBase<Key, E> = .init()) {
+  init(__memo: _MemoizeCacheBase<Key, E> = .init()) {
     self.__memo = __memo
   }
   @usableFromInline
-  var __memo: MemoizeCacheBase<Key, E> = .init()
+  var __memo: _MemoizeCacheBase<Key, E> = .init()
   @inlinable
   subscript(a: A, b: B, c: C, d: D) -> E? {
     get { __memo[(a, b, c, d)] }
@@ -116,12 +116,12 @@ enum Memoized_Ver1 {
 
     typealias Key = (x: Int, y: Int, z: Int)
 
-    enum KeyCustom: KeyCustomProtocol {
+    enum KeyCustom: _KeyCustomProtocol {
       @inlinable @inline(__always)
       static func value_comp(_ a: Key, _ b: Key) -> Bool { a < b }
     }
 
-    var storage: MemoizeCacheBase<KeyCustom, Int> = .init()
+    var storage: _MemoizeCacheBase<KeyCustom, Int> = .init()
 
     func tarai(x: Int, y: Int, z: Int) -> Int {
       let args = (x, y, z)
@@ -156,7 +156,7 @@ enum Memoized_Ver2 {
     // swift-ac-memoizeとしてはキャンセル
     // デコレータ版が優先するので、参考実装にとどまる
     class GlobalCache {
-      enum Memoize: MemoizationProtocol {
+      enum Memoize: _MemoizationProtocol {
         typealias Parameter = (x: Int, y: Int, z: Int)
         typealias Return = Int
         @inlinable @inline(__always)
@@ -170,7 +170,7 @@ enum Memoized_Ver2 {
     }
 
     class Cache {
-      enum Memoize: MemoizationProtocol {
+      enum Memoize: _MemoizationProtocol {
         typealias Parameter = (x: Int, y: Int, z: Int)
         typealias Return = Int
         @inlinable @inline(__always)
@@ -213,7 +213,7 @@ struct Memoized_Ver3 {
 
   // ユーザーコードと衝突しない名前を生成する工夫が必要そう
   private class LocalCache_Memoized_Ver3_tarai {
-    enum Memoize: MemoizationProtocol {
+    enum Memoize: _MemoizationProtocol {
       typealias Parameter = (x: Int, y: Int, z: Int)
       typealias Return = Int
       @inlinable @inline(__always)
@@ -259,7 +259,7 @@ enum Memoized_Ver4 {
   // こちらは将来的に欲しいが、未可決課題が多いことと仕様未考慮が多いこともあり、
   // swift-ac-memoizeとしては、一旦キャンセル
   @dynamicCallable
-  class Decorate: MemoizationProtocol {
+  class Decorate: _MemoizationProtocol {
 
     func dynamicallyCall(withKeywordArguments args: KeyValuePairs<String, Int>) -> Int {
       tarai(x: args[0].value, y: args[1].value, z: args[2].value)

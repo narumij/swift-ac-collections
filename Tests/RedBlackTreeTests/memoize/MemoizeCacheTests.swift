@@ -15,20 +15,20 @@ import XCTest
 
 final class MemoizeCacheTests: XCTestCase {
 
-  enum TestKey: KeyCustomProtocol {
+  enum TestKey: _KeyCustomProtocol {
     @inlinable @inline(__always)
     static func value_comp(_ a: Int, _ b: Int) -> Bool { a < b }
   }
 
   #if DEBUG
     func testMinimum() throws {
-      var cache = MemoizeCacheBase<TestKey, Int>(minimumCapacity: 10)
+      var cache = _MemoizeCacheBase<TestKey, Int>(minimumCapacity: 10)
       XCTAssertEqual(cache._tree.count, 0)
       XCTAssertEqual(cache._tree.capacity, 10)
     }
 
     func testMaximum() throws {
-      var cache = MemoizeCacheBase<TestKey, Int>(minimumCapacity: 0, maximumCapacity: 100)
+      var cache = _MemoizeCacheBase<TestKey, Int>(minimumCapacity: 0, maximumCapacity: 100)
       XCTAssertEqual(cache._tree.count, 0)
       XCTAssertEqual(cache._tree.capacity, 0)
       var finalCapacity: Int? = nil
@@ -46,7 +46,7 @@ final class MemoizeCacheTests: XCTestCase {
   #endif
   
   func testMaximum2() throws {
-    var cache = MemoizeCacheBase<TestKey, Int>(minimumCapacity: 0, maximumCapacity: 5)
+    var cache = _MemoizeCacheBase<TestKey, Int>(minimumCapacity: 0, maximumCapacity: 5)
     cache[0] = 0
     XCTAssertEqual(cache[0], 0)
     cache[1] = 1

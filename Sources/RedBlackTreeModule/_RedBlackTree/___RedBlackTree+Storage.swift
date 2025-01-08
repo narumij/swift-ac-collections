@@ -65,16 +65,17 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   @inline(__always)
   func copy(to minimumCapacity: Int, linearly: Bool) -> Tree {
-    copy(minimumCapacity: growCapacity(to: minimumCapacity, linearly: false))
+    copy(minimumCapacity:
+          growCapacity(to: minimumCapacity, linearly: false))
   }
 
   @inlinable
   @inline(__always)
   func copy(to minimumCapacity: Int, limit maximumCapacity: Int, linearly: Bool) -> Tree {
-    copy(
-      minimumCapacity: Swift.min(
-        growCapacity(to: minimumCapacity, linearly: false),
-        maximumCapacity))
+    copy(minimumCapacity:
+          Swift.min(
+            growCapacity(to: minimumCapacity, linearly: false),
+            maximumCapacity))
   }
 }
 

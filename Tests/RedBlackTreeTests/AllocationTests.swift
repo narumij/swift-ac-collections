@@ -60,7 +60,7 @@ final class AllocationTests: XCTestCase {
         XCTAssertEqual(set._storage.tree.header.initializedCount, 5)
         XCTAssertEqual(set._storage.tree.count, 0)
         XCTAssertEqual(set._storage.tree.header.destroyCount, 5)
-        set._ensureUniqueAndCapacity(minimumCapacity: 1)
+        set._ensureUniqueAndCapacity(to: 1)
         // リファレンスが2なので、CoWが発火する
         XCTAssertFalse(storage === set._storage)
         // ノードの配置はバラバラになりうるので、初期化されたサイズを下回ると、壊れる
@@ -77,7 +77,7 @@ final class AllocationTests: XCTestCase {
         XCTAssertEqual(set._storage.tree.header.initializedCount, 5)
         XCTAssertEqual(set._storage.tree.count, 0)
         XCTAssertEqual(set._storage.tree.header.destroyCount, 5)
-        set._ensureUniqueAndCapacity(minimumCapacity: 15)
+        set._ensureUniqueAndCapacity(to: 15)
         // リファレンスが2なので、CoWが発火する
         XCTAssertFalse(storage === set._storage)
         // ノードの配置はバラバラになりうるので、初期化されたサイズを下回ると、壊れる

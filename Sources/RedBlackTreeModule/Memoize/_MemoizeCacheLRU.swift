@@ -22,12 +22,8 @@
 
 import Foundation
 
-/// メモ化用途向け
-///
-/// CustomKeyProtocolで比較方法を供給することで、
-/// Comparableプロトコル未適合の型を使うことができる
-///
-/// 辞書としての機能は削いである
+/// メモ化用途向け、LRU (least recently used) cache 動作
+/// https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_(LRU)
 @frozen
 public struct _MemoizeCacheLRU<Custom, Value>
 where Custom: _KeyCustomProtocol {
@@ -39,7 +35,7 @@ where Custom: _KeyCustomProtocol {
     typealias Value = Value
 
   public
-  typealias KeyValue = (key: Key, prev: _NodePtr, next: _NodePtr, value: Value)
+    typealias KeyValue = (key: Key, prev: _NodePtr, next: _NodePtr, value: Value)
 
   public
     typealias Element = KeyValue
@@ -53,160 +49,155 @@ where Custom: _KeyCustomProtocol {
   @usableFromInline
   var _storage: Tree.Storage
 
-  @usableFromInline
-  let maximumCapacity: Int
+  public let maxCount: Int
 
   @usableFromInline
-  var lru_start: _NodePtr
-  
+  var _rankHighest: _NodePtr
+
   @usableFromInline
-  var lru_end: _NodePtr
-  
+  var _rankLowest: _NodePtr
+
   @usableFromInline
-  var hits: Int
-  
+  var _hits: Int
+
   @usableFromInline
-  var miss: Int
+  var _miss: Int
 }
 
 extension _MemoizeCacheLRU {
 
-  public init(minimumCapacity: Int = 0, maximumCapacity: Int? = nil) {
+  @inlinable
+  public init(minimumCapacity: Int = 0, maxCount: Int? = nil) {
     _storage = .create(withCapacity: minimumCapacity)
-    self.maximumCapacity = maximumCapacity ?? Int.max
-    (lru_start, lru_end) = (.nullptr, .nullptr)
-    (hits, miss) = (0,0)
+    self.maxCount = maxCount ?? Int.max
+    (_rankHighest, _rankLowest) = (.nullptr, .nullptr)
+    (_hits, _miss) = (0, 0)
   }
 
+  @inlinable
   public subscript(key: Key) -> Value? {
     mutating get {
       let __ptr = _tree.find(key)
       if ___is_null_or_end(__ptr) {
-        miss += 1
+        _miss += 1
         return nil
       }
-      hits += 1
+      _hits += 1
       ___prepend(___pop(__ptr))
       return _tree[__ptr].value
     }
     set {
       if let newValue {
-        if _tree.count < maximumCapacity {
+        if _tree.count < maxCount {
           // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
-          _ensureCapacity(to: _tree.count + 1, limit: maximumCapacity)
+          _ensureCapacity(to: _tree.count + 1, limit: maxCount)
         }
-        if _tree.count == maximumCapacity {
-          ___remove(at: ___popLast())
+        if _tree.count == maxCount {
+          ___remove(at: ___popRankLowest())
         }
         var __parent = _NodePtr.nullptr
         let __child = _tree.__find_equal(&__parent, key)
         if _tree.__ref_(__child) == .nullptr {
-          let __h = _tree.__construct_node((key, -1, -1, newValue))
+          let __h = _tree.__construct_node((key, .nullptr, .nullptr, newValue))
           _tree.__insert_node_at(__parent, __child, __h)
-          ___prepend(___pop(__h))
+          ___prepend(__h)
         }
       }
     }
   }
 
-  @usableFromInline
-  var _tree: Tree
+  @inlinable var _tree: Tree
   {
-    get { _storage.tree }
-    _modify { yield &_storage.tree }
+    @inline(__always) get { _storage.tree }
+    @inline(__always) _modify { yield &_storage.tree }
   }
-  
-  public var count: Int { ___count }
-  public var capacity: Int { ___header_capacity }
-  public
-  mutating func clear() {
-    _storage = .create(withCapacity: 0)
-  }
+
+  @inlinable public var count: Int { ___count }
+  @inlinable public var capacity: Int { ___header_capacity }
 }
 
-extension _MemoizeCacheLRU: ___RedBlackTreeBase {}
-extension _MemoizeCacheLRU: ___RedBlackTreeStorageLifetime {}
 extension _MemoizeCacheLRU {
 
-  public static func __key(_ element: KeyValue) -> Key {
-    element.key
-  }
-  
+  /// statistics
+  ///
+  /// 確保できたcapacity目一杯使う仕様となってます。
+  /// このため、currentCountはmaxCountを越える場合があります。
   @inlinable
-  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    Custom.value_comp(a, b)
+  public var info: (hits: Int, miss: Int, maxCount: Int, currentCount: Int) {
+    (_hits, _miss, maxCount, count)
   }
-}
-
-extension _MemoizeCacheLRU {
 
   @inlinable
   public mutating func clear(keepingCapacity keepCapacity: Bool = false) {
-    (hits, miss) = (0,0)
+    (_hits, _miss) = (0, 0)
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }
 
+extension _MemoizeCacheLRU: ___RedBlackTreeBase {
+  @inlinable @inline(__always)
+  public static func __key(_ element: Element) -> Key {
+    element.key
+  }
+}
+extension _MemoizeCacheLRU: ___RedBlackTreeStorageLifetime {}
+extension _MemoizeCacheLRU: CustomComparer {}
 extension _MemoizeCacheLRU {
-  
+
   @inlinable
   mutating func ___prepend(_ __p: _NodePtr) {
-    if lru_start == .nullptr {
+    if _rankHighest == .nullptr {
       _tree[__p].next = .nullptr
       _tree[__p].prev = .nullptr
-      lru_end = __p
-      lru_start = __p
-    }
-    else {
-      _tree[lru_start].prev = __p
-      _tree[__p].next = lru_start
+      _rankLowest = __p
+      _rankHighest = __p
+    } else {
+      _tree[_rankHighest].prev = __p
+      _tree[__p].next = _rankHighest
       _tree[__p].prev = .nullptr
-      lru_start = __p
+      _rankHighest = __p
     }
   }
-  
+
   @inlinable
   mutating func ___pop(_ __p: _NodePtr) -> _NodePtr {
-    if _tree[__p].prev == .nullptr, _tree[__p].next == .nullptr, lru_start != __p {
-      return __p
-    }
+
+    assert(
+      __p == _rankHighest || _tree[__p].next != .nullptr || _tree[__p].prev != .nullptr,
+      "did not contain \(__p) ptr.")
+
     defer {
       let prev = _tree[__p].prev
       let next = _tree[__p].next
       if prev != .nullptr {
         _tree[prev].next = next
       } else {
-        lru_start = next
+        _rankHighest = next
       }
       if next != .nullptr {
         _tree[next].prev = prev
       } else {
-        lru_end = prev
+        _rankLowest = prev
       }
     }
+
     return __p
   }
-  
+
   @inlinable
-  mutating func ___popLast() -> _NodePtr {
-    if lru_end == .nullptr {
-      return .nullptr
-    }
+  mutating func ___popRankLowest() -> _NodePtr {
+
     defer {
-      lru_end = _tree[lru_end].prev
-      if lru_end != .nullptr {
-        _tree[lru_end].next = .nullptr
+      if _rankLowest != .nullptr {
+        _rankLowest = _tree[_rankLowest].prev
+      }
+      if _rankLowest != .nullptr {
+        _tree[_rankLowest].next = .nullptr
       } else {
-        lru_start = .nullptr
+        _rankHighest = .nullptr
       }
     }
-    return lru_end
-  }
-}
 
-extension _MemoizeCacheLRU {
-  
-  public var info: (hits: Int, miss: Int, maxCount: Int, currentCount: Int) {
-    (hits, miss, maximumCapacity, count)
+    return _rankLowest
   }
 }

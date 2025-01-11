@@ -29,6 +29,18 @@ public
   static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool
 }
 
+protocol CustomComparer where _Key == Custom.Parameter {
+  associatedtype Custom: _KeyCustomProtocol
+  associatedtype _Key
+}
+
+extension CustomComparer {
+  @inlinable @inline(__always)
+  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
+    Custom.value_comp(a, b)
+  }
+}
+
 public
   protocol _MemoizationProtocol: _KeyCustomProtocol
 {
@@ -74,10 +86,12 @@ where Custom: _KeyCustomProtocol {
 
 extension _MemoizeCacheBase {
 
+  @inlinable
   public init(minimumCapacity: Int = 0) {
     _storage = .create(withCapacity: minimumCapacity)
   }
 
+  @inlinable
   public subscript(key: Key) -> Value? {
     get { ___value_for(key)?.value }
     set {
@@ -88,25 +102,17 @@ extension _MemoizeCacheBase {
     }
   }
 
-  @usableFromInline
-  var _tree: Tree
+  @inlinable var _tree: Tree
   {
-    get { _storage.tree }
-    _modify { yield &_storage.tree }
+    @inline(__always) get { _storage.tree }
+    @inline(__always) _modify { yield &_storage.tree }
   }
-  
-  public var count: Int { ___count }
-  public var capacity: Int { ___header_capacity }  
-}
-
-extension _MemoizeCacheBase: ___RedBlackTreeBase {}
-extension _MemoizeCacheBase: ___RedBlackTreeStorageLifetime {}
-extension _MemoizeCacheBase: KeyValueComparer {
 
   @inlinable
-  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    Custom.value_comp(a, b)
-  }
+  public var count: Int { ___count }
+
+  @inlinable
+  public var capacity: Int { ___header_capacity }
 }
 
 extension _MemoizeCacheBase {
@@ -116,3 +122,12 @@ extension _MemoizeCacheBase {
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }
+
+extension _MemoizeCacheBase: ___RedBlackTreeBase {
+  @inlinable @inline(__always)
+  public static func __key(_ element: Element) -> Key {
+    element.key
+  }
+}
+extension _MemoizeCacheBase: ___RedBlackTreeStorageLifetime {}
+extension _MemoizeCacheBase: CustomComparer {}

@@ -57,13 +57,10 @@ where Custom: _KeyCustomProtocol {
   let maximumCapacity: Int
 
   @usableFromInline
-  var oldestNode: _NodePtr
+  var lru_start: _NodePtr
   
   @usableFromInline
-  var lru_start: _NodePtr = -1
-  
-  @usableFromInline
-  var lru_end: _NodePtr = -1
+  var lru_end: _NodePtr
 }
 
 extension _MemoizeCacheLRU {
@@ -71,12 +68,15 @@ extension _MemoizeCacheLRU {
   public init(minimumCapacity: Int = 0, maximumCapacity: Int? = nil) {
     _storage = .create(withCapacity: minimumCapacity)
     self.maximumCapacity = maximumCapacity ?? Int.max
-    self.oldestNode = 0
+    (lru_start, lru_end) = (.nullptr, .nullptr)
   }
 
   public subscript(key: Key) -> Value? {
-    get {
-      ___value_for(key)?.value
+    mutating get {
+      let __ptr = _tree.find(key)
+      if ___is_null_or_end(__ptr) { return nil }
+      ___prepend(___pop(__ptr))
+      return _tree[__ptr].value
     }
     set {
       if let newValue {
@@ -85,12 +85,10 @@ extension _MemoizeCacheLRU {
           _ensureCapacity(to: _tree.count + 1, limit: maximumCapacity)
         }
         if _tree.count == maximumCapacity {
-          ___remove(at: oldestNode)
-          oldestNode += 1
-          oldestNode %= maximumCapacity
+          ___remove(at: ___popLast())
         }
-        let (__r, __inserted) = _tree.__insert_unique((key, -1, -1, newValue))
-        prepend(pop(_tree.__ref_(__r)))
+        let (__r, _) = _tree.__insert_unique((key, -1, -1, newValue))
+        ___prepend(___pop(_tree.__ref_(__r)))
       }
     }
   }
@@ -135,7 +133,7 @@ extension _MemoizeCacheLRU {
 extension _MemoizeCacheLRU {
   
   @inlinable
-  mutating func prepend(_ __p: _NodePtr) {
+  mutating func ___prepend(_ __p: _NodePtr) {
     if lru_start == .nullptr {
       _tree[__p].next = .nullptr
       _tree[__p].prev = .nullptr
@@ -151,7 +149,7 @@ extension _MemoizeCacheLRU {
   }
   
   @inlinable
-  mutating func pop(_ __p: _NodePtr) -> _NodePtr {
+  mutating func ___pop(_ __p: _NodePtr) -> _NodePtr {
     if _tree[__p].prev == .nullptr, _tree[__p].next == .nullptr, lru_start != __p {
       return __p
     }
@@ -173,7 +171,7 @@ extension _MemoizeCacheLRU {
   }
   
   @inlinable
-  mutating func popLast() -> _NodePtr {
+  mutating func ___popLast() -> _NodePtr {
     if lru_end == .nullptr {
       return .nullptr
     }

@@ -82,6 +82,12 @@ where Custom: _KeyCustomProtocol {
 
   @usableFromInline
   var _storage: Tree.Storage
+  
+  @usableFromInline
+  var _hits: Int
+
+  @usableFromInline
+  var _miss: Int
 }
 
 extension _MemoizeCacheBase {
@@ -89,11 +95,20 @@ extension _MemoizeCacheBase {
   @inlinable
   public init(minimumCapacity: Int = 0) {
     _storage = .create(withCapacity: minimumCapacity)
+    (_hits, _miss) = (0, 0)
   }
 
   @inlinable
   public subscript(key: Key) -> Value? {
-    get { ___value_for(key)?.value }
+    mutating get {
+      if let v = ___value_for(key)?.value {
+        _hits &+= 1
+        return v
+      } else {
+        _miss &+= 1
+        return nil
+      }
+    }
     set {
       if let newValue {
         _ensureCapacity(to: _tree.count + 1)
@@ -116,6 +131,15 @@ extension _MemoizeCacheBase {
 }
 
 extension _MemoizeCacheBase {
+
+  /// statistics
+  ///
+  /// 確保できたcapacity目一杯使う仕様となってます。
+  /// このため、currentCountはmaxCountを越える場合があります。
+  @inlinable
+  public var info: (hits: Int, miss: Int, maxCount: Int?, currentCount: Int) {
+    (_hits, _miss, nil, count)
+  }
 
   @inlinable
   public mutating func clear(keepingCapacity keepCapacity: Bool = false) {

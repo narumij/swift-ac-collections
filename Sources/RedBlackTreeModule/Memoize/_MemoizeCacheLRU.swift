@@ -49,7 +49,7 @@ where Custom: _KeyCustomProtocol {
   @usableFromInline
   var _storage: Tree.Storage
 
-  public let maxCount: Int
+  public let maxCount: Int?
 
   @usableFromInline
   var _rankHighest: _NodePtr
@@ -69,7 +69,7 @@ extension _MemoizeCacheLRU {
   @inlinable
   public init(minimumCapacity: Int = 0, maxCount: Int? = nil) {
     _storage = .create(withCapacity: minimumCapacity)
-    self.maxCount = maxCount ?? Int.max
+    self.maxCount = maxCount
     (_rankHighest, _rankLowest) = (.nullptr, .nullptr)
     (_hits, _miss) = (0, 0)
   }
@@ -79,18 +79,20 @@ extension _MemoizeCacheLRU {
     mutating get {
       let __ptr = _tree.find(key)
       if ___is_null_or_end(__ptr) {
-        _miss += 1
+        _miss &+= 1
         return nil
       }
-      _hits += 1
+      _hits &+= 1
       ___prepend(___pop(__ptr))
       return _tree[__ptr].value
     }
     set {
       if let newValue {
-        if _tree.count < maxCount {
+        if let maxCount, _tree.count < maxCount {
           // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
           _ensureCapacity(to: _tree.count + 1, limit: maxCount)
+        } else if maxCount == nil {
+          _ensureCapacity(to: _tree.count + 1)
         }
         if _tree.count == maxCount {
           ___remove(at: ___popRankLowest())
@@ -123,7 +125,7 @@ extension _MemoizeCacheLRU {
   /// 確保できたcapacity目一杯使う仕様となってます。
   /// このため、currentCountはmaxCountを越える場合があります。
   @inlinable
-  public var info: (hits: Int, miss: Int, maxCount: Int, currentCount: Int) {
+  public var info: (hits: Int, miss: Int, maxCount: Int?, currentCount: Int) {
     (_hits, _miss, maxCount, count)
   }
 

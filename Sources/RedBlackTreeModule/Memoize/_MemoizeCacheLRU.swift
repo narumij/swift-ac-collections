@@ -87,8 +87,15 @@ extension _MemoizeCacheLRU {
         if _tree.count == maximumCapacity {
           ___remove(at: ___popLast())
         }
-        let (__r, _) = _tree.__insert_unique((key, -1, -1, newValue))
-        ___prepend(___pop(_tree.__ref_(__r)))
+        var __parent = _NodePtr.nullptr
+        let __child = _tree.__find_equal(&__parent, key)
+        if _tree.__ref_(__child) == .nullptr {
+          let __h = _tree.__construct_node((key, -1, -1, newValue))
+          _tree.__insert_node_at(__parent, __child, __h)
+          ___prepend(___pop(__h))
+        } else {
+          ___prepend(___pop(_tree.__ref_(__child)))
+        }
       }
     }
   }

@@ -162,8 +162,8 @@ enum Memoized_Ver2 {
         @inlinable @inline(__always)
         static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool { a < b }
       }
-      nonisolated(unsafe) static var cache: Memoize.Tree = .init()
-      var memo: Memoize.Tree {
+      nonisolated(unsafe) static var cache: Memoize.Base = .init()
+      var memo: Memoize.Base {
         get { Self.cache }
         _modify { yield &Self.cache }
       }
@@ -176,7 +176,7 @@ enum Memoized_Ver2 {
         @inlinable @inline(__always)
         static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool { a < b }
       }
-      var memo: Memoize.Tree = .init()
+      var memo: Memoize.Base = .init()
     }
 
     let cache = Cache()
@@ -219,7 +219,7 @@ struct Memoized_Ver3 {
       @inlinable @inline(__always)
       static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool { a < b }
     }
-    var memo: Memoize.Tree = .init()
+    var memo: Memoize.Base = .init()
   }
 
   // ユーザーコードと衝突しない名前を生成する工夫が必要そう
@@ -269,7 +269,7 @@ enum Memoized_Ver4 {
     typealias Return = Int
     static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool { a < b }
 
-    var memo: Tree = .init()
+    var memo: LRU = .init()
 
     func tarai(x: Int, y: Int, z: Int) -> Int {
 
@@ -298,7 +298,7 @@ enum Memoized_Ver4 {
     }
 
     func cachClear() {
-      memo.clear()
+//      memo.clear()
     }
 
     func cacheInfo() -> [String:Any] {

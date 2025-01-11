@@ -254,7 +254,17 @@ extension ___RedBlackTreeStorageLifetime {
     assert(_storage.capacity >= minimumCapacity)
     assert(_storage.tree.header.initializedCount <= _storage.capacity)
   }
-  
+
+  @inlinable
+  @inline(__always)
+  mutating func _ensureCapacity(to minimumCapacity: Int) {
+    if _storage.capacity < minimumCapacity {
+      _storage = _storage.copy(to: minimumCapacity, linearly: false)
+    }
+    assert(_storage.capacity >= minimumCapacity)
+    assert(_storage.tree.header.initializedCount <= _storage.capacity)
+  }
+
   @inlinable
   @inline(__always)
   mutating func _ensureCapacity(to minimumCapacity: Int, limit maximumCapacity: Int) {

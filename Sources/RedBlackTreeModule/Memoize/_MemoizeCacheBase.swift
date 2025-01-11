@@ -36,7 +36,8 @@ public
 }
 
 extension _MemoizationProtocol {
-  public typealias Tree = _MemoizeCacheBase<Self, Return>
+  public typealias Base = _MemoizeCacheBase<Self, Return>
+  public typealias LRU = _MemoizeCacheLRU<Self, Return>
 }
 
 /// メモ化用途向け
@@ -69,35 +70,19 @@ where Custom: _KeyCustomProtocol {
 
   @usableFromInline
   var _storage: Tree.Storage
-
-  @usableFromInline
-  let maximumCapacity: Int
-
-  @usableFromInline
-  var oldestNode: _NodePtr
 }
 
 extension _MemoizeCacheBase {
 
-  public init(minimumCapacity: Int = 0, maximumCapacity: Int? = nil) {
+  public init(minimumCapacity: Int = 0) {
     _storage = .create(withCapacity: minimumCapacity)
-    self.maximumCapacity = maximumCapacity ?? Int.max
-    self.oldestNode = 0
   }
 
   public subscript(key: Key) -> Value? {
     get { ___value_for(key)?.value }
     set {
       if let newValue {
-        if _tree.count < maximumCapacity {
-          // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
-          _ensureCapacity(to: _tree.count + 1, limit: maximumCapacity)
-        }
-        if _tree.count == maximumCapacity {
-          ___remove(at: oldestNode)
-          oldestNode += 1
-          oldestNode %= maximumCapacity
-        }
+        _ensureCapacity(to: _tree.count + 1)
         _ = _tree.__insert_unique((key, newValue))
       }
     }
@@ -112,10 +97,6 @@ extension _MemoizeCacheBase {
   
   public var count: Int { ___count }
   public var capacity: Int { ___header_capacity }  
-  public
-  mutating func clear() {
-    _storage = .create(withCapacity: 0)
-  }
 }
 
 extension _MemoizeCacheBase: ___RedBlackTreeBase {}

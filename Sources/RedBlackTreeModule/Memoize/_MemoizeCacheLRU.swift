@@ -141,7 +141,7 @@ extension _MemoizeCacheLRU {
 extension _MemoizeCacheLRU {
 
   @inlinable
-  mutating func clear(keepingCapacity keepCapacity: Bool = false) {
+  public mutating func clear(keepingCapacity keepCapacity: Bool = false) {
     (hits, miss) = (0,0)
     ___removeAll(keepingCapacity: keepCapacity)
   }

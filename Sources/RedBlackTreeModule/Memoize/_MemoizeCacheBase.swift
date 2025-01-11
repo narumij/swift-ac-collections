@@ -112,7 +112,7 @@ extension _MemoizeCacheBase: KeyValueComparer {
 extension _MemoizeCacheBase {
 
   @inlinable
-  mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+  public mutating func clear(keepingCapacity keepCapacity: Bool = false) {
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }

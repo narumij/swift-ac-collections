@@ -81,7 +81,11 @@ extension _MemoizeCacheLRU {
   public subscript(key: Key) -> Value? {
     mutating get {
       let __ptr = _tree.find(key)
-      if ___is_null_or_end(__ptr) { return nil }
+      if ___is_null_or_end(__ptr) {
+        miss += 1
+        return nil
+      }
+      hits += 1
       ___prepend(___pop(__ptr))
       return _tree[__ptr].value
     }

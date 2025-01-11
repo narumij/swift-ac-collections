@@ -61,6 +61,12 @@ where Custom: _KeyCustomProtocol {
   
   @usableFromInline
   var lru_end: _NodePtr
+  
+  @usableFromInline
+  var hits: Int
+  
+  @usableFromInline
+  var miss: Int
 }
 
 extension _MemoizeCacheLRU {
@@ -69,6 +75,7 @@ extension _MemoizeCacheLRU {
     _storage = .create(withCapacity: minimumCapacity)
     self.maximumCapacity = maximumCapacity ?? Int.max
     (lru_start, lru_end) = (.nullptr, .nullptr)
+    (hits, miss) = (0,0)
   }
 
   public subscript(key: Key) -> Value? {
@@ -93,8 +100,6 @@ extension _MemoizeCacheLRU {
           let __h = _tree.__construct_node((key, -1, -1, newValue))
           _tree.__insert_node_at(__parent, __child, __h)
           ___prepend(___pop(__h))
-        } else {
-          ___prepend(___pop(_tree.__ref_(__child)))
         }
       }
     }
@@ -132,7 +137,8 @@ extension _MemoizeCacheLRU {
 extension _MemoizeCacheLRU {
 
   @inlinable
-  mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+  mutating func clear(keepingCapacity keepCapacity: Bool = false) {
+    (hits, miss) = (0,0)
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }
@@ -191,5 +197,12 @@ extension _MemoizeCacheLRU {
       }
     }
     return lru_end
+  }
+}
+
+extension _MemoizeCacheLRU {
+  
+  var info: (hits: Int, miss: Int, maxCount: Int, currentCount: Int) {
+    (hits, miss, maximumCapacity, count)
   }
 }

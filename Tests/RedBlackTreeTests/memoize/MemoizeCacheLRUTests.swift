@@ -156,8 +156,6 @@ final class MemoizeCacheLRUTests: XCTestCase {
     }
   }
 
-#endif
-
   func testMaximum2() throws {
     var cache = _MemoizeCacheLRU<TestKey, Int>(minimumCapacity: 0, maximumCapacity: 5)
     cache[0] = 0
@@ -192,7 +190,8 @@ final class MemoizeCacheLRUTests: XCTestCase {
     XCTAssertEqual(cache[i], i) // 新しいモノが登録されている
     i += 1
   }
-  
+#endif
+
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
     self.measure {

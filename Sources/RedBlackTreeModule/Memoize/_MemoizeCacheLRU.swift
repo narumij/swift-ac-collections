@@ -206,7 +206,7 @@ extension _MemoizeCacheLRU {
 
 extension _MemoizeCacheLRU {
   
-  var info: (hits: Int, miss: Int, maxCount: Int, currentCount: Int) {
+  public var info: (hits: Int, miss: Int, maxCount: Int, currentCount: Int) {
     (hits, miss, maximumCapacity, count)
   }
 }

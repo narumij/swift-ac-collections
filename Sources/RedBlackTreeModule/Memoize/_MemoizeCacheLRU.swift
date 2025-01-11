@@ -58,6 +58,12 @@ where Custom: _KeyCustomProtocol {
 
   @usableFromInline
   var oldestNode: _NodePtr
+  
+  @usableFromInline
+  var lru_start: _NodePtr = -1
+  
+  @usableFromInline
+  var lru_end: _NodePtr = -1
 }
 
 extension _MemoizeCacheLRU {
@@ -69,7 +75,9 @@ extension _MemoizeCacheLRU {
   }
 
   public subscript(key: Key) -> Value? {
-    get { ___value_for(key)?.value }
+    get {
+      ___value_for(key)?.value
+    }
     set {
       if let newValue {
         if _tree.count < maximumCapacity {
@@ -82,6 +90,7 @@ extension _MemoizeCacheLRU {
           oldestNode %= maximumCapacity
         }
         let (__r, __inserted) = _tree.__insert_unique((key, -1, -1, newValue))
+        prepend(pop(_tree.__ref_(__r)))
       }
     }
   }
@@ -120,5 +129,62 @@ extension _MemoizeCacheLRU {
   @inlinable
   mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     ___removeAll(keepingCapacity: keepCapacity)
+  }
+}
+
+extension _MemoizeCacheLRU {
+  
+  @inlinable
+  mutating func prepend(_ __p: _NodePtr) {
+    if lru_start == .nullptr {
+      _tree[__p].next = .nullptr
+      _tree[__p].prev = .nullptr
+      lru_end = __p
+      lru_start = __p
+    }
+    else {
+      _tree[lru_start].prev = __p
+      _tree[__p].next = lru_start
+      _tree[__p].prev = .nullptr
+      lru_start = __p
+    }
+  }
+  
+  @inlinable
+  mutating func pop(_ __p: _NodePtr) -> _NodePtr {
+    if _tree[__p].prev == .nullptr, _tree[__p].next == .nullptr, lru_start != __p {
+      return __p
+    }
+    defer {
+      let prev = _tree[__p].prev
+      let next = _tree[__p].next
+      if prev != .nullptr {
+        _tree[prev].next = next
+      } else {
+        lru_start = next
+      }
+      if next != .nullptr {
+        _tree[next].prev = prev
+      } else {
+        lru_end = prev
+      }
+    }
+    return __p
+  }
+  
+  @inlinable
+  mutating func popLast() -> _NodePtr {
+    if lru_end == .nullptr {
+      return .nullptr
+    }
+    defer {
+      lru_end = _tree[lru_end].prev
+      if lru_end != .nullptr {
+        _tree[lru_end].next = .nullptr
+      } else {
+        lru_start = .nullptr
+      }
+    }
+    return lru_end
   }
 }

@@ -179,7 +179,7 @@ extension RedBlackTreeSet {
   ) {
     _ensureUniqueAndCapacity()
     let (__r, __inserted) = _tree.__insert_unique(newMember)
-    return (__inserted, __inserted ? newMember : _tree[ref: __r])
+    return (__inserted, __inserted ? newMember : _tree[__r])
   }
 
   /// - Complexity: O(log *n*)
@@ -188,8 +188,8 @@ extension RedBlackTreeSet {
     _ensureUniqueAndCapacity()
     let (__r, __inserted) = _tree.__insert_unique(newMember)
     guard !__inserted else { return nil }
-    let oldMember = _tree[ref: __r]
-    _tree[ref: __r] = newMember
+    let oldMember = _tree[__r]
+    _tree[__r] = newMember
     return oldMember
   }
 

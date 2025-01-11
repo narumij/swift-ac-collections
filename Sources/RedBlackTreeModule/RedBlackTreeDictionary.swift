@@ -320,8 +320,8 @@ extension RedBlackTreeDictionary {
     _ensureUniqueAndCapacity()
     let (__r, __inserted) = _tree.__insert_unique((key, value))
     guard !__inserted else { return nil }
-    let oldMember = _tree[ref: __r]
-    _tree[ref: __r] = (key, value)
+    let oldMember = _tree[__r]
+    _tree[__r] = (key, value)
     return oldMember.value
   }
 

@@ -259,6 +259,8 @@ extension ___RedBlackTree.___Tree {
     }
   }
 
+#if false
+  // refが破損するケースが見つかったため、念のため利用停止中
   @inlinable
   subscript(ref ref: _NodeRef) -> Element {
     @inline(__always)
@@ -274,6 +276,7 @@ extension ___RedBlackTree.___Tree {
       yield &__node_ptr[pointer].__value_
     }
   }
+#endif
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
     @inlinable

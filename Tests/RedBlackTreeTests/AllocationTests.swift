@@ -135,9 +135,11 @@ final class AllocationTests: XCTestCase {
       capacities.append(tree.growCapacity(to: l + 1, linearly: false))
     }
     // [0, 1, 2, 3, 4, 6, 8, 10, 12, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576]
+    // [0, 1, 2, 3, 4, 6, 8, 10, 12, 25, 51, 102, 204, 409, 819, 1638, 3276, 6553, 13107, 26214, 52428, 104857, 209715, 419430, 838860, 1677721]
+    // [0, 1, 2, 3, 4, 6, 8, 10, 12, 24, 49, 101, 203, 408, 817, 1637, 3275, 6552, 13105, 26213, 52427, 104856, 209713, 419429, 838859, 1677720]
     XCTAssertNotEqual(capacities, [])
     XCTAssertEqual(capacities.count, 26)
-    XCTAssertEqual(capacities.last, 1048576)
+    XCTAssertEqual(capacities.last, 1677720)
   }
 
 #endif // DEBUG

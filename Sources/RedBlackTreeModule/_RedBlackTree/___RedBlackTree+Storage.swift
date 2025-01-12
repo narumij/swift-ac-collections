@@ -22,17 +22,22 @@
 
 import Foundation
 
-@usableFromInline
-enum StorageCapacity {
-
-  @inlinable @inline(__always)
-  public static func growthFormula(count n: Int) -> Int {
-    n <= 1 ? 1 : 1 << (Int.bitWidth - (n - 1).leadingZeroBitCount)
-  }
-}
-
 extension ___RedBlackTree.___Tree {
   
+  @inlinable @inline(__always)
+  public func bitCeil(_ n: Int) -> Int {
+    n <= 1 ? 1 : 1 << (Int.bitWidth - (n - 1).leadingZeroBitCount)
+  }
+  
+  @inlinable @inline(__always)
+  public func growthFormula(count: Int) -> Int {
+    // アロケーターにとって負担が軽そうな、2のべき付近を要求することにした。
+    // ヘッダー込みで確保するべきかどうかは、ManagedBufferのソースをみておらず不明。
+    // はみ出して大量に無駄にするよりはましなので、ヘッダー込みでサイズ計算することにしている。
+    let rawSize = bitCeil(MemoryLayout<Header>.stride + MemoryLayout<Node>.stride * count)
+    return (rawSize - MemoryLayout<Header>.stride) / MemoryLayout<Node>.stride
+  }
+
   @inlinable
   @inline(__always)
   func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
@@ -57,9 +62,13 @@ extension ___RedBlackTree.___Tree {
       )
     }
     
+    // 手元の環境だと、サイズ24まではピタリのサイズを確保することができる
+    // 小さなサイズの成長を抑制すると、ABC385Dでの使用メモリが抑えられやすい
+    // 実行時間も抑制されやすいが、なぜなのかはまだ不明
+    
     return Swift.max(
       _header.initializedCount,
-      StorageCapacity.growthFormula(count: minimumCapacity))
+      growthFormula(count: minimumCapacity))
   }
 
   @inlinable

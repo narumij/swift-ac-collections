@@ -18,7 +18,7 @@ where A: Comparable, B: Comparable {
   var __memo: _MemoizeCacheBase<Key, B> = .init()
   @inlinable
   subscript(a: A) -> B? {
-    get { __memo[a] }
+    mutating get { __memo[a] }
     _modify { yield &__memo[a] }
   }
 }
@@ -41,7 +41,7 @@ where A: Comparable, B: Comparable {
   var __memo: _MemoizeCacheBase<Key, C> = .init()
   @inlinable
   subscript(a: A, b: B) -> C? {
-    get { __memo[(a, b)] }
+    mutating get { __memo[(a, b)] }
     _modify { yield &__memo[(a, b)] }
   }
 }
@@ -64,7 +64,7 @@ where A: Comparable, B: Comparable, C: Comparable {
   var __memo: _MemoizeCacheBase<Key, D> = .init()
   @inlinable
   subscript(a: A, b: B, c: C) -> D? {
-    get { __memo[(a, b, c)] }
+    mutating get { __memo[(a, b, c)] }
     _modify { yield &__memo[(a, b, c)] }
   }
 }
@@ -87,7 +87,7 @@ where A: Comparable, B: Comparable, C: Comparable, D: Comparable {
   var __memo: _MemoizeCacheBase<Key, E> = .init()
   @inlinable
   subscript(a: A, b: B, c: C, d: D) -> E? {
-    get { __memo[(a, b, c, d)] }
+    mutating get { __memo[(a, b, c, d)] }
     _modify { yield &__memo[(a, b, c, d)] }
   }
 }

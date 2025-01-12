@@ -66,6 +66,8 @@ extension ___RedBlackTree.___Tree {
     // 小さなサイズの成長を抑制すると、ABC385Dでの使用メモリが抑えられやすい
     // 実行時間も抑制されやすいが、なぜなのかはまだ不明
     
+    // ABC385Dの場合、アロケータープールなんかで使いまわしが効きやすいからなのではと予想している。
+    
     return Swift.max(
       _header.initializedCount,
       growthFormula(count: minimumCapacity))

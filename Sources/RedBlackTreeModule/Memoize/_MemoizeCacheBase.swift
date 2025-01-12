@@ -93,6 +93,7 @@ where Custom: _KeyCustomProtocol {
 extension _MemoizeCacheBase {
 
   @inlinable
+  @inline(__always)
   public init(minimumCapacity: Int = 0) {
     _storage = .create(withCapacity: minimumCapacity)
     (_hits, _miss) = (0, 0)
@@ -100,6 +101,7 @@ extension _MemoizeCacheBase {
 
   @inlinable
   public subscript(key: Key) -> Value? {
+    @inline(__always)
     mutating get {
       if let v = ___value_for(key)?.value {
         _hits &+= 1
@@ -109,6 +111,7 @@ extension _MemoizeCacheBase {
         return nil
       }
     }
+    @inline(__always)
     set {
       if let newValue {
         _ensureCapacity(to: _tree.count + 1)

@@ -67,6 +67,7 @@ where Custom: _KeyCustomProtocol {
 extension _MemoizeCacheLRU {
 
   @inlinable
+  @inline(__always)
   public init(minimumCapacity: Int = 0, maxCount: Int? = nil) {
     _storage = .create(withCapacity: minimumCapacity)
     self.maxCount = maxCount
@@ -76,6 +77,7 @@ extension _MemoizeCacheLRU {
 
   @inlinable
   public subscript(key: Key) -> Value? {
+    @inline(__always)
     mutating get {
       let __ptr = _tree.find(key)
       if ___is_null_or_end(__ptr) {
@@ -86,6 +88,7 @@ extension _MemoizeCacheLRU {
       ___prepend(___pop(__ptr))
       return _tree[__ptr].value
     }
+    @inline(__always)
     set {
       if let newValue {
         if let maxCount, _tree.count < maxCount {

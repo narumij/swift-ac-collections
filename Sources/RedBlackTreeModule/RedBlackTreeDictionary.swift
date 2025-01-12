@@ -70,10 +70,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   @inlinable
   @inline(__always)
-  var _tree: Tree {
-    @inline(__always) get { _storage.tree }
-    @inline(__always) _modify { yield &_storage.tree }
-  }
+  var _tree: Tree { _storage.tree }
 }
 
 extension RedBlackTreeDictionary {

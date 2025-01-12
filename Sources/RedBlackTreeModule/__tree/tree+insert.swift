@@ -120,7 +120,7 @@ protocol InsertMultiProtocol: AllocatorProtocol, KeyProtocol {
   func __ref_(_ rhs: _NodeRef) -> _NodePtr
   func
     __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
-  mutating func
+  func
     __insert_node_at(
       _ __parent: _NodePtr, _ __child: _NodeRef,
       _ __new_node: _NodePtr)
@@ -130,12 +130,12 @@ extension InsertMultiProtocol {
 
   @inlinable
   @inline(__always)
-  public mutating func __insert_multi(_ x: Element) -> _NodePtr {
+  public func __insert_multi(_ x: Element) -> _NodePtr {
     __emplace_multi(x)
   }
 
   @inlinable
-  mutating func
+  func
     __emplace_multi(_ __k: Element) -> _NodePtr
   {
     let __h = __construct_node(__k)

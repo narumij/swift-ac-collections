@@ -25,29 +25,14 @@ import Foundation
 @usableFromInline
 enum StorageCapacity {
 
-  @inlinable
-  @inline(__always)
-  //  public static var growthFactor: Double { 1.5 }
-  //  public static var growthFactor: Double { 1.618 }  // Golden Ratio
-  //  public static var growthFactor: Double { 1.7 }
-  public static var growthFactor: Double { 1.7320508075688772 } // root 3
-  //  public static var growthFactor: Double { 1.75 }
-  //  public static var growthFactor: Double { 1.8 }
-  //  public static var growthFactor: Double { 2.0 }
-
   @inlinable @inline(__always)
-  public static func growthFormula(growthFactor: Double, count: Int) -> Int {
-    Int((growthFactor * Double(count)).rounded(.up))
-  }
-
-  @inlinable @inline(__always)
-  public static func growthFormula(count: Int) -> Int {
-    return growthFormula(growthFactor: growthFactor, count: count)
+  public static func growthFormula(count n: Int) -> Int {
+    n <= 1 ? 1 : 1 << (Int.bitWidth - (n - 1).leadingZeroBitCount)
   }
 }
 
 extension ___RedBlackTree.___Tree {
-
+  
   @inlinable
   @inline(__always)
   func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
@@ -58,9 +43,29 @@ extension ___RedBlackTree.___Tree {
         minimumCapacity)
     }
 
+    if minimumCapacity <= 4 {
+      return Swift.max(
+      _header.initializedCount,
+      minimumCapacity
+      )
+    }
+
+    if minimumCapacity <= 12 {
+      return Swift.max(
+      _header.initializedCount,
+      _header.capacity + (minimumCapacity - _header.capacity) * 2
+      )
+    }
+    
     return Swift.max(
       _header.initializedCount,
       StorageCapacity.growthFormula(count: minimumCapacity))
+  }
+
+  @inlinable
+  @inline(__always)
+  func copy() -> Tree {
+    copy(minimumCapacity: _header.initializedCount)
   }
 
   @inlinable
@@ -165,7 +170,7 @@ extension ___RedBlackTree.___Tree {
     @inlinable
     @inline(__always)
     final func copy() -> Storage {
-      .init(__tree: tree.copy(growthCapacityTo: 0, linearly: true))
+      .init(__tree: tree.copy())
     }
     @inlinable
     @inline(__always)

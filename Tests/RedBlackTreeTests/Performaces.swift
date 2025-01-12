@@ -150,4 +150,60 @@ final class Performaces: XCTestCase {
     }
   }
 #endif
+  
+#if false
+  func testPerformanceCopy1() throws {
+    let set = RedBlackTreeSet<Int>(0 ..< 1)
+    var a = set._storage
+//    self.measure {
+      for _ in 0 ..< 1_000_000 {
+        a = a.copy()
+      }
+//    }
+    print("a.capacity",a.capacity)
+  }
+
+  func testPerformanceCopy32() throws {
+    let set = RedBlackTreeSet<Int>(0 ..< 24)
+    var a = set._storage
+//    self.measure {
+      for _ in 0 ..< 1_000_000 {
+        a = a.copy()
+      }
+//    }
+    print("a.capacity",a.capacity)
+  }
+
+  func testPerformanceCopy64() throws {
+    let set = RedBlackTreeSet<Int>(0 ..< 64)
+    var a = set._storage
+//    self.measure {
+      for _ in 0 ..< 1_000_000 {
+        a = a.copy()
+      }
+//    }
+    print("a.capacity",a.capacity)
+  }
+  
+  func testPerformanceCopy128() throws {
+    let set = RedBlackTreeSet<Int>(0 ..< 128)
+    var a = set._storage
+//    self.measure {
+      for _ in 0 ..< 1_000_000 {
+        a = a.copy()
+      }
+//    }
+    print("a.capacity",a.capacity)
+  }
+  
+  func testPerformanceCopy256() throws {
+    let set = RedBlackTreeSet<Int>(0 ..< 256)
+    var a = set._storage
+    self.measure {
+      for _ in 0 ..< 1_000_000 {
+        a = a.copy()
+      }
+    }
+  }
+#endif
 }

@@ -62,6 +62,9 @@ where Custom: _KeyCustomProtocol {
 
   @usableFromInline
   var _miss: Int
+  
+  public
+  var growthLinearly: Bool = false
 }
 
 extension _MemoizeCacheLRU {
@@ -93,9 +96,9 @@ extension _MemoizeCacheLRU {
       if let newValue {
         if let maxCount, _tree.count < maxCount {
           // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
-          _ensureCapacity(to: _tree.count + 1, limit: maxCount)
+          _ensureCapacity(to: _tree.count + 1, limit: maxCount, linearly: growthLinearly)
         } else if maxCount == nil {
-          _ensureCapacity(to: _tree.count + 1)
+          _ensureCapacity(to: _tree.count + 1, linearly: growthLinearly)
         }
         if _tree.count == maxCount {
           ___remove(at: ___popRankLowest())

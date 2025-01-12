@@ -88,6 +88,9 @@ where Custom: _KeyCustomProtocol {
 
   @usableFromInline
   var _miss: Int
+  
+  public
+  var growthLinearly: Bool = false
 }
 
 extension _MemoizeCacheBase {
@@ -114,7 +117,7 @@ extension _MemoizeCacheBase {
     @inline(__always)
     set {
       if let newValue {
-        _ensureCapacity(to: _tree.count + 1)
+        _ensureCapacity(to: _tree.count + 1, linearly: growthLinearly)
         _ = _tree.__insert_unique((key, newValue))
       }
     }

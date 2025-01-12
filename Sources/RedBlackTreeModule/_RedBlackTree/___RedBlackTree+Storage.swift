@@ -28,11 +28,12 @@ enum StorageCapacity {
   @inlinable
   @inline(__always)
   //  public static var growthFactor: Double { 1.5 }
-  public static var growthFactor: Double { 1.618 }  // Golden Ratio
+  //  public static var growthFactor: Double { 1.618 }  // Golden Ratio
   //  public static var growthFactor: Double { 1.7 }
-  //  public static var growthFactor: Double { 1.7320508075688772 } // root 3
+  public static var growthFactor: Double { 1.7320508075688772 } // root 3
   //  public static var growthFactor: Double { 1.75 }
   //  public static var growthFactor: Double { 1.8 }
+  //  public static var growthFactor: Double { 2.0 }
 
   @inlinable @inline(__always)
   public static func growthFormula(growthFactor: Double, count: Int) -> Int {

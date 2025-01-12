@@ -79,7 +79,6 @@ extension InsertUniqueProtocol {
   
 #if true
   @inlinable
-  @inline(__always)
   func
     __emplace_unique_key_args(_ __k: Element) -> (__r: _NodePtr, __inserted: Bool)
   {
@@ -99,7 +98,6 @@ extension InsertUniqueProtocol {
   }
 #else
   @inlinable
-  @inline(__always)
   func
     __emplace_unique_key_args(_ __k: Element) -> (__r: _NodeRef, __inserted: Bool)
   {

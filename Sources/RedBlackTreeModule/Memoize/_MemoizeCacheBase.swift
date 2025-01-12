@@ -106,13 +106,13 @@ extension _MemoizeCacheBase {
   public subscript(key: Key) -> Value? {
     @inline(__always)
     mutating get {
-      let __ptr = _tree.find(key)
-      if ___is_null_or_end(__ptr) {
+      if let v = ___value_for(key)?.value {
+        _hits &+= 1
+        return v
+      } else {
         _miss &+= 1
         return nil
       }
-      _hits &+= 1
-      return _tree[__ptr].value
     }
     @inline(__always)
     set {

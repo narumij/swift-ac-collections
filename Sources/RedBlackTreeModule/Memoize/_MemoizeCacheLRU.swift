@@ -29,7 +29,7 @@ public struct _MemoizeCacheLRU<Custom, Value>
 where Custom: _KeyCustomProtocol {
 
   public
-    typealias Key = Custom.Parameter
+    typealias Key = Custom.Parameters
 
   public
     typealias Value = Value

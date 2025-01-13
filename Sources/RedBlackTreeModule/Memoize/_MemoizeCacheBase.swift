@@ -25,11 +25,11 @@ import Foundation
 public
   protocol _KeyCustomProtocol
 {
-  associatedtype Parameter
-  static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool
+  associatedtype Parameters
+  static func value_comp(_ a: Parameters, _ b: Parameters) -> Bool
 }
 
-protocol CustomComparer where _Key == Custom.Parameter {
+protocol CustomComparer where _Key == Custom.Parameters {
   associatedtype Custom: _KeyCustomProtocol
   associatedtype _Key
 }
@@ -61,7 +61,7 @@ public struct _MemoizeCacheBase<Custom, Value>
 where Custom: _KeyCustomProtocol {
 
   public
-    typealias Key = Custom.Parameter
+    typealias Key = Custom.Parameters
 
   public
     typealias Value = Value

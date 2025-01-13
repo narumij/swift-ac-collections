@@ -48,6 +48,7 @@ public
 extension _ComparableMemoizationCacheProtocol {
   public typealias Base = _MemoizeCacheBase<Self, Return>
   public typealias LRU = _MemoizeCacheLRU<Self, Return>
+  public typealias CoW = _MemoizeCacheCoW<Self, Return>
 }
 
 /// メモ化用途向け
@@ -112,7 +113,7 @@ extension _MemoizeCacheBase {
     @inline(__always)
     set {
       if let newValue {
-        _ensureCapacity(to: _tree.count + 1)
+        _ensureCapacity()
         _ = _tree.__insert_unique((key, newValue))
       }
     }

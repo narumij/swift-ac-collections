@@ -24,6 +24,8 @@ import Foundation
 
 /// メモ化用途向け、LRU (least recently used) cache 動作
 /// https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_(LRU)
+///
+/// InlineMemoize動作用。CoWがないので注意
 @frozen
 public struct _MemoizeCacheLRU<Custom, Value>
 where Custom: _KeyCustomProtocol {
@@ -93,7 +95,7 @@ extension _MemoizeCacheLRU {
       if let newValue {
         if _tree.count < maxCount {
           // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
-          _ensureUniqueAndCapacity(to: _tree.count + 1, limit: maxCount)
+          _ensureCapacity(limit: maxCount)
         }
         if _tree.count == maxCount {
           ___remove(at: ___popRankLowest())
@@ -109,14 +111,14 @@ extension _MemoizeCacheLRU {
     }
   }
 
-  @inlinable var _tree: Tree
-  {
-    @inline(__always) get { _storage.tree }
-    @inline(__always) _modify { yield &_storage.tree }
-  }
-
-  @inlinable public var count: Int { ___count }
-  @inlinable public var capacity: Int { ___header_capacity }
+  @inlinable @inline(__always)
+  var _tree: Tree { _storage.tree }
+  
+  @inlinable
+  public var count: Int { ___count }
+  
+  @inlinable
+  public var capacity: Int { ___header_capacity }
 }
 
 extension _MemoizeCacheLRU {
@@ -127,80 +129,15 @@ extension _MemoizeCacheLRU {
   /// このため、currentCountはmaxCountを越える場合があります。
   @inlinable
   public var info: (hits: Int, miss: Int, maxCount: Int?, currentCount: Int) {
-    (_hits, _miss, maxCount != Int.max ? maxCount : nil, count)
+    ___info
   }
 
   @inlinable
   public mutating func clear(keepingCapacity keepCapacity: Bool = false) {
-    (_hits, _miss) = (0, 0)
-    ___removeAll(keepingCapacity: keepCapacity)
+    ___clear(keepingCapacity: keepCapacity)
   }
 }
 
-extension _MemoizeCacheLRU: ___RedBlackTreeBase {
-  @inlinable @inline(__always)
-  public static func __key(_ element: Element) -> Key {
-    element.key
-  }
-}
+extension _MemoizeCacheLRU: _LRULinkList {}
 extension _MemoizeCacheLRU: ___RedBlackTreeStorageLifetime {}
 extension _MemoizeCacheLRU: CustomComparer {}
-extension _MemoizeCacheLRU {
-
-  @inlinable
-  mutating func ___prepend(_ __p: _NodePtr) {
-    if _rankHighest == .nullptr {
-      _tree[__p].next = .nullptr
-      _tree[__p].prev = .nullptr
-      _rankLowest = __p
-      _rankHighest = __p
-    } else {
-      _tree[_rankHighest].prev = __p
-      _tree[__p].next = _rankHighest
-      _tree[__p].prev = .nullptr
-      _rankHighest = __p
-    }
-  }
-
-  @inlinable
-  mutating func ___pop(_ __p: _NodePtr) -> _NodePtr {
-
-    assert(
-      __p == _rankHighest || _tree[__p].next != .nullptr || _tree[__p].prev != .nullptr,
-      "did not contain \(__p) ptr.")
-
-    defer {
-      let prev = _tree[__p].prev
-      let next = _tree[__p].next
-      if prev != .nullptr {
-        _tree[prev].next = next
-      } else {
-        _rankHighest = next
-      }
-      if next != .nullptr {
-        _tree[next].prev = prev
-      } else {
-        _rankLowest = prev
-      }
-    }
-
-    return __p
-  }
-
-  @inlinable
-  mutating func ___popRankLowest() -> _NodePtr {
-
-    defer {
-      if _rankLowest != .nullptr {
-        _rankLowest = _tree[_rankLowest].prev
-      }
-      if _rankLowest != .nullptr {
-        _tree[_rankLowest].next = .nullptr
-      } else {
-        _rankHighest = .nullptr
-      }
-    }
-
-    return _rankLowest
-  }
-}

@@ -93,7 +93,7 @@ extension _MemoizeCacheLRU {
       if let newValue {
         if _tree.count < maxCount {
           // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
-          _ensureCapacity(to: _tree.count + 1, limit: maxCount)
+          _ensureUniqueAndCapacity(to: _tree.count + 1, limit: maxCount)
         }
         if _tree.count == maxCount {
           ___remove(at: ___popRankLowest())

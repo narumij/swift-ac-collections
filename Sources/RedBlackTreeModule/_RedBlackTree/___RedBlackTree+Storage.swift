@@ -161,13 +161,16 @@ extension ___RedBlackTree.___Tree {
     }
     @usableFromInline
     typealias _Tree = Tree
+    @nonobjc
     @usableFromInline
     final var tree: Tree
     @nonobjc
-    @usableFromInline
+    @inlinable
+    @inline(__always)
     final var count: Int { tree.count }
     @nonobjc
-    @usableFromInline
+    @inlinable
+    @inline(__always)
     final var capacity: Int { tree.header.capacity }
     @nonobjc
     @inlinable
@@ -183,6 +186,7 @@ extension ___RedBlackTree.___Tree {
     final func copy() -> Storage {
       .init(__tree: tree.copy())
     }
+    @nonobjc
     @inlinable
     @inline(__always)
     final func copy(growthCapacityTo capacity: Int,
@@ -191,6 +195,7 @@ extension ___RedBlackTree.___Tree {
       .init(__tree: tree.copy(growthCapacityTo: capacity,
                               linearly: linearly))
     }
+    @nonobjc
     @inlinable
     @inline(__always)
     final func copy(growthCapacityTo capacity: Int,

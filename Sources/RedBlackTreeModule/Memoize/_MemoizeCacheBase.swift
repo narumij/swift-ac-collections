@@ -42,10 +42,10 @@ extension CustomComparer {
 }
 
 public
-  protocol _ComparableMemoizationProtocol: _MemoizationProtocol, _KeyCustomProtocol
+  protocol _ComparableMemoizationCacheProtocol: _MemoizationCacheProtocol, _KeyCustomProtocol
 {}
 
-extension _ComparableMemoizationProtocol {
+extension _ComparableMemoizationCacheProtocol {
   public typealias Base = _MemoizeCacheBase<Self, Return>
   public typealias LRU = _MemoizeCacheLRU<Self, Return>
 }

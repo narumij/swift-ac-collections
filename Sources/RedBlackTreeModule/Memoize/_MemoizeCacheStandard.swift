@@ -1,14 +1,14 @@
 import Foundation
 
-public protocol _MemoizationProtocol {
+public protocol _MemoizationCacheProtocol {
   associatedtype Parameters
   associatedtype Return
 }
 
-public protocol _HashableMemoizationProtocol: _MemoizationProtocol
+public protocol _HashableMemoizationCacheProtocol: _MemoizationCacheProtocol
 where Parameters: Hashable {}
 
-extension _HashableMemoizationProtocol {
+extension _HashableMemoizationCacheProtocol {
   public typealias Standard = _MemoizeCacheStandard<Parameters, Return>
 }
 
@@ -48,5 +48,11 @@ public
   @inlinable
   public var info: (hits: Int, miss: Int, maxCount: Int?, currentCount: Int) {
     (_hits, _miss, nil, _cache.count)
+  }
+
+  @inlinable
+  public mutating func clear(keepingCapacity keepCapacity: Bool = false) {
+    (_hits, _miss) = (0, 0)
+    _cache.removeAll(keepingCapacity: keepCapacity)
   }
 }

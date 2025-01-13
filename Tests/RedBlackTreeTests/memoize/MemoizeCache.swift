@@ -156,11 +156,11 @@ enum Memoized_Ver2 {
     // swift-ac-memoizeとしてはキャンセル
     // デコレータ版が優先するので、参考実装にとどまる
     class GlobalCache {
-      enum Memoize: _ComparableMemoizationProtocol {
-        typealias Parameter = (x: Int, y: Int, z: Int)
+      enum Memoize: _ComparableMemoizationCacheProtocol {
+        typealias Parameters = (x: Int, y: Int, z: Int)
         typealias Return = Int
         @inlinable @inline(__always)
-        static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool { a < b }
+        static func value_comp(_ a: Parameters, _ b: Parameters) -> Bool { a < b }
       }
       nonisolated(unsafe) static var cache: Memoize.Base = .init()
       var memo: Memoize.Base {
@@ -170,11 +170,11 @@ enum Memoized_Ver2 {
     }
 
     class Cache {
-      enum Memoize: _ComparableMemoizationProtocol {
-        typealias Parameter = (x: Int, y: Int, z: Int)
+      enum Memoize: _ComparableMemoizationCacheProtocol {
+        typealias Parameters = (x: Int, y: Int, z: Int)
         typealias Return = Int
         @inlinable @inline(__always)
-        static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool { a < b }
+        static func value_comp(_ a: Parameters, _ b: Parameters) -> Bool { a < b }
       }
       var memo: Memoize.Base = .init()
     }
@@ -213,11 +213,11 @@ struct Memoized_Ver3 {
 
   // ユーザーコードと衝突しない名前を生成する工夫が必要そう
   private class LocalCache_Memoized_Ver3_tarai {
-    enum Memoize: _ComparableMemoizationProtocol {
-      typealias Parameter = (x: Int, y: Int, z: Int)
+    enum Memoize: _ComparableMemoizationCacheProtocol {
+      typealias Parameters = (x: Int, y: Int, z: Int)
       typealias Return = Int
       @inlinable @inline(__always)
-      static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool { a < b }
+      static func value_comp(_ a: Parameters, _ b: Parameters) -> Bool { a < b }
     }
     var memo: Memoize.Base = .init()
   }
@@ -259,15 +259,15 @@ enum Memoized_Ver4 {
   // こちらは将来的に欲しいが、未可決課題が多いことと仕様未考慮が多いこともあり、
   // swift-ac-memoizeとしては、一旦キャンセル
   @dynamicCallable
-  class Decorate: _ComparableMemoizationProtocol {
+  class Decorate: _ComparableMemoizationCacheProtocol {
 
     func dynamicallyCall(withKeywordArguments args: KeyValuePairs<String, Int>) -> Int {
       tarai(x: args[0].value, y: args[1].value, z: args[2].value)
     }
 
-    typealias Parameter = (x: Int, y: Int, z: Int)
+    typealias Parameters = (x: Int, y: Int, z: Int)
     typealias Return = Int
-    static func value_comp(_ a: Parameter, _ b: Parameter) -> Bool { a < b }
+    static func value_comp(_ a: Parameters, _ b: Parameters) -> Bool { a < b }
 
     var memo: LRU = .init()
 

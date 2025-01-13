@@ -156,7 +156,7 @@ enum Memoized_Ver2 {
     // swift-ac-memoizeとしてはキャンセル
     // デコレータ版が優先するので、参考実装にとどまる
     class GlobalCache {
-      enum Memoize: _MemoizationProtocol {
+      enum Memoize: _ComparableMemoizationProtocol {
         typealias Parameter = (x: Int, y: Int, z: Int)
         typealias Return = Int
         @inlinable @inline(__always)
@@ -170,7 +170,7 @@ enum Memoized_Ver2 {
     }
 
     class Cache {
-      enum Memoize: _MemoizationProtocol {
+      enum Memoize: _ComparableMemoizationProtocol {
         typealias Parameter = (x: Int, y: Int, z: Int)
         typealias Return = Int
         @inlinable @inline(__always)
@@ -213,7 +213,7 @@ struct Memoized_Ver3 {
 
   // ユーザーコードと衝突しない名前を生成する工夫が必要そう
   private class LocalCache_Memoized_Ver3_tarai {
-    enum Memoize: _MemoizationProtocol {
+    enum Memoize: _ComparableMemoizationProtocol {
       typealias Parameter = (x: Int, y: Int, z: Int)
       typealias Return = Int
       @inlinable @inline(__always)
@@ -259,7 +259,7 @@ enum Memoized_Ver4 {
   // こちらは将来的に欲しいが、未可決課題が多いことと仕様未考慮が多いこともあり、
   // swift-ac-memoizeとしては、一旦キャンセル
   @dynamicCallable
-  class Decorate: _MemoizationProtocol {
+  class Decorate: _ComparableMemoizationProtocol {
 
     func dynamicallyCall(withKeywordArguments args: KeyValuePairs<String, Int>) -> Int {
       tarai(x: args[0].value, y: args[1].value, z: args[2].value)

@@ -127,7 +127,7 @@ extension _MemoizeCacheLRU {
   /// このため、currentCountはmaxCountを越える場合があります。
   @inlinable
   public var info: (hits: Int, miss: Int, maxCount: Int?, currentCount: Int) {
-    (_hits, _miss, maxCount, count)
+    (_hits, _miss, maxCount != Int.max ? maxCount : nil, count)
   }
 
   @inlinable

@@ -42,10 +42,8 @@ extension CustomComparer {
 }
 
 public
-  protocol _ComparableMemoizationProtocol: _KeyCustomProtocol
-{
-  associatedtype Return
-}
+  protocol _ComparableMemoizationProtocol: _MemoizationProtocol, _KeyCustomProtocol
+{}
 
 extension _ComparableMemoizationProtocol {
   public typealias Base = _MemoizeCacheBase<Self, Return>
@@ -82,7 +80,7 @@ where Custom: _KeyCustomProtocol {
 
   @usableFromInline
   var _storage: Tree.Storage
-  
+
   @usableFromInline
   var _hits: Int
 

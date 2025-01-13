@@ -145,6 +145,7 @@ extension _MemoizeCacheBase {
 
   @inlinable
   public mutating func clear(keepingCapacity keepCapacity: Bool = false) {
+    (_hits, _miss) = (0,0)
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }

@@ -11,7 +11,10 @@ extension _HashableMemoizationProtocol {
 
 public
 struct _MemoizeCacheStandard<Parameters: Hashable, Return> {
+  
+  @inlinable @inline(__always)
   public init() {}
+  
   @inlinable
   public subscript(key: Parameters) -> Return? {
     @inline(__always)
@@ -28,12 +31,16 @@ struct _MemoizeCacheStandard<Parameters: Hashable, Return> {
       _cache[key] = newValue
     }
   }
+  
   @usableFromInline
   var _cache: [Parameters: Return] = [:]
+  
   @usableFromInline
   var _hits: Int = 0
+  
   @usableFromInline
   var _miss: Int = 0
+  
   @inlinable
   public var info: (hits: Int, miss: Int, maxCount: Int?, currentCount: Int) {
     (_hits, _miss, nil, _cache.count)

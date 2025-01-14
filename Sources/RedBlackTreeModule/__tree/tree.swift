@@ -261,13 +261,27 @@ extension ScalarValueComparer {
 
 public protocol KeyValueComparer: ValueComparer {
   associatedtype _Value
+  static func __key(_ element: Element) -> _Key
 }
 
 extension KeyValueComparer {
-  public typealias _KeyValue = (key: _Key, value: _Value)
+  public typealias _KeyValueTuple = (key: _Key, value: _Value)
 }
 
-extension KeyValueComparer where Element == _KeyValue {
+extension KeyValueComparer where Element == _KeyValueTuple {
+
+  @inlinable @inline(__always)
+  public static func __key(_ element: Element) -> _Key { element.key }
+
+  @inlinable @inline(__always)
+  static func __value(_ element: Element) -> _Value { element.value }
+}
+
+extension KeyValueComparer {
+  public typealias _LinkingKeyValueTuple = (key: _Key, prev: _NodePtr, next: _NodePtr, value: _Value)
+}
+
+extension KeyValueComparer where Element == _LinkingKeyValueTuple {
 
   @inlinable @inline(__always)
   public static func __key(_ element: Element) -> _Key { element.key }

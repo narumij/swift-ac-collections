@@ -1,4 +1,4 @@
-// Copyright 2024 narumij
+// Copyright 2025 narumij
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ where Custom: _KeyCustomProtocol {
     typealias Value = Value
 
   public
-    typealias KeyValue = (key: Key, prev: _NodePtr, next: _NodePtr, value: Value)
+  typealias KeyValue = _LinkingKeyValueTuple
 
   public
     typealias Element = KeyValue
@@ -134,4 +134,5 @@ extension _MemoizeCacheCoW {
 
 extension _MemoizeCacheCoW: _LRULinkList {}
 extension _MemoizeCacheCoW: ___RedBlackTreeStorageLifetime {}
-extension _MemoizeCacheCoW: CustomComparer {}
+extension _MemoizeCacheCoW: CustomKeyValueComparer {}
+extension _MemoizeCacheCoW: _MemoizeCacheLRUMiscellaneous {}

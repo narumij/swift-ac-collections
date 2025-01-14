@@ -1,4 +1,4 @@
-// Copyright 2024 narumij
+// Copyright 2024-2025 narumij
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,25 +21,6 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 import Foundation
-
-public
-  protocol _KeyCustomProtocol
-{
-  associatedtype Parameters
-  static func value_comp(_ a: Parameters, _ b: Parameters) -> Bool
-}
-
-protocol CustomComparer where _Key == Custom.Parameters {
-  associatedtype Custom: _KeyCustomProtocol
-  associatedtype _Key
-}
-
-extension CustomComparer {
-  @inlinable @inline(__always)
-  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    Custom.value_comp(a, b)
-  }
-}
 
 public
   protocol _ComparableMemoizationCacheProtocol: _MemoizationCacheProtocol, _KeyCustomProtocol
@@ -68,10 +49,7 @@ where Custom: _KeyCustomProtocol {
     typealias Value = Value
 
   public
-    typealias KeyValue = (key: Key, value: Value)
-
-  public
-    typealias Element = KeyValue
+    typealias Element = _KeyValueTuple
 
   public
     typealias _Key = Key
@@ -140,21 +118,16 @@ extension _MemoizeCacheBase {
   /// このため、currentCountはmaxCountを越える場合があります。
   @inlinable
   public var info: (hits: Int, miss: Int, maxCount: Int?, currentCount: Int) {
-    (_hits, _miss, nil, count)
+    ___info
   }
 
   @inlinable
   public mutating func clear(keepingCapacity keepCapacity: Bool = false) {
-    (_hits, _miss) = (0,0)
-    ___removeAll(keepingCapacity: keepCapacity)
+    ___clear(keepingCapacity: keepCapacity)
   }
 }
 
-extension _MemoizeCacheBase: ___RedBlackTreeBase {
-  @inlinable @inline(__always)
-  public static func __key(_ element: Element) -> Key {
-    element.key
-  }
-}
+extension _MemoizeCacheBase: ___RedBlackTreeBase {}
 extension _MemoizeCacheBase: ___RedBlackTreeStorageLifetime {}
-extension _MemoizeCacheBase: CustomComparer {}
+extension _MemoizeCacheBase: CustomKeyValueComparer {}
+extension _MemoizeCacheBase: MemoizeCacheMiscellaneous {}

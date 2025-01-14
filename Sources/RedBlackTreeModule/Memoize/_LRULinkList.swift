@@ -22,6 +22,19 @@
 
 import Foundation
 
+extension KeyValueComparer {
+  public typealias _LinkingKeyValueTuple = (key: _Key, prev: _NodePtr, next: _NodePtr, value: _Value)
+}
+
+extension KeyValueComparer where Element == _LinkingKeyValueTuple {
+
+  @inlinable @inline(__always)
+  public static func __key(_ element: Element) -> _Key { element.key }
+
+  @inlinable @inline(__always)
+  static func __value(_ element: Element) -> _Value { element.value }
+}
+
 @usableFromInline
 protocol _LRULinkList: ___RedBlackTreeBase, KeyValueComparer
 where Element == _LinkingKeyValueTuple {
@@ -95,46 +108,3 @@ extension _LRULinkList {
   }
 }
 
-@usableFromInline
-protocol MemoizeCacheMiscellaneous {
-  var _hits: Int { get set }
-  var _miss: Int { get set }
-  var count: Int { get }
-  mutating func ___removeAll(keepingCapacity keepCapacity: Bool)
-}
-
-extension MemoizeCacheMiscellaneous {
-  
-  @inlinable
-  var ___info: (hits: Int, miss: Int, maxCount: Int?, currentCount: Int) {
-    (_hits, _miss, nil, count)
-  }
-
-  @inlinable
-  mutating func ___clear(keepingCapacity keepCapacity: Bool) {
-    (_hits, _miss) = (0, 0)
-    ___removeAll(keepingCapacity: keepCapacity)
-  }
-}
-
-@usableFromInline
-protocol _MemoizeCacheLRUMiscellaneous: ___RedBlackTreeBase {
-  var _hits: Int { get set }
-  var _miss: Int { get set }
-  var maxCount: Int { get }
-  var count: Int { get }
-}
-
-extension _MemoizeCacheLRUMiscellaneous {
-  
-  @inlinable
-  var ___info: (hits: Int, miss: Int, maxCount: Int?, currentCount: Int) {
-    (_hits, _miss, maxCount != Int.max ? maxCount : nil, count)
-  }
-
-  @inlinable
-  mutating func ___clear(keepingCapacity keepCapacity: Bool) {
-    (_hits, _miss) = (0, 0)
-    ___removeAll(keepingCapacity: keepCapacity)
-  }
-}

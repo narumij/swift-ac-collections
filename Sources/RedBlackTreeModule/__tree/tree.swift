@@ -269,7 +269,7 @@ extension KeyValueComparer {
 }
 
 extension KeyValueComparer where Element == _KeyValueTuple {
-
+  
   @inlinable @inline(__always)
   public static func __key(_ element: Element) -> _Key { element.key }
 
@@ -277,15 +277,23 @@ extension KeyValueComparer where Element == _KeyValueTuple {
   static func __value(_ element: Element) -> _Value { element.value }
 }
 
-extension KeyValueComparer {
-  public typealias _LinkingKeyValueTuple = (key: _Key, prev: _NodePtr, next: _NodePtr, value: _Value)
+// MARK: key value
+
+public
+  protocol _KeyCustomProtocol
+{
+  associatedtype Parameters
+  static func value_comp(_ a: Parameters, _ b: Parameters) -> Bool
 }
 
-extension KeyValueComparer where Element == _LinkingKeyValueTuple {
+protocol CustomKeyValueComparer: KeyValueComparer where _Key == Custom.Parameters {
+  associatedtype Custom: _KeyCustomProtocol
+}
 
+extension CustomKeyValueComparer {
+  
   @inlinable @inline(__always)
-  public static func __key(_ element: Element) -> _Key { element.key }
-
-  @inlinable @inline(__always)
-  static func __value(_ element: Element) -> _Value { element.value }
+  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
+    Custom.value_comp(a, b)
+  }
 }

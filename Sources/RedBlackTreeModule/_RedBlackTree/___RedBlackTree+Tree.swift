@@ -188,7 +188,7 @@ extension ___RedBlackTree.___Tree {
 }
 
 extension ___RedBlackTree.___Tree.Header {
-  
+
   @inlinable
   @inline(__always)
   public var count: Int {
@@ -411,7 +411,7 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
   func __value_(_ p: _NodePtr) -> _Key {
-    __value_(__node_ptr[p].__value_)
+    __key(__node_ptr[p].__value_)
   }
 }
 
@@ -420,17 +420,21 @@ extension ___RedBlackTree.___Tree {
   @usableFromInline
   typealias _Key = VC._Key
 
-  public
-    typealias Element = VC.Element
-
-  @inlinable @inline(__always)
-  func __value_(_ e: VC.Element) -> _Key {
-    VC.__key(e)
-  }
+  public typealias Element = VC.Element
 
   @inlinable @inline(__always)
   func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     VC.value_comp(a, b)
+  }
+
+  @inlinable @inline(__always)
+  func __key(_ e: VC.Element) -> VC._Key {
+    VC.__key(e)
+  }
+
+  @inlinable @inline(__always)
+  func ___element(_ p: _NodePtr) -> VC.Element {
+    __node_ptr[p].__value_
   }
 }
 
@@ -451,20 +455,6 @@ extension ___RedBlackTree.___Tree: DistanceProtocol {}
 extension ___RedBlackTree.___Tree: CountProtocol {}
 extension ___RedBlackTree.___Tree: MemberProtocol {}
 extension ___RedBlackTree.___Tree: RootImpl & RefSetImpl & RootPtrImpl {}
-extension ___RedBlackTree.___Tree {
-
-  @inlinable
-  @inline(__always)
-  func ___element(_ p: _NodePtr) -> VC.Element {
-    self[p]
-  }
-  
-  @inlinable
-  @inline(__always)
-  func __key(_ e: VC.Element) -> VC._Key {
-    VC.__key(e)
-  }
-}
 
 extension ___RedBlackTree.___Tree {
   @inlinable
@@ -677,4 +667,3 @@ extension ___RedBlackTree.___Tree {
     return result
   }
 }
-

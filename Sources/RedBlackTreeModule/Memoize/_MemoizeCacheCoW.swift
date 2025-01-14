@@ -132,7 +132,7 @@ extension _MemoizeCacheCoW {
   }
 }
 
-extension _MemoizeCacheCoW: _LRULinkList {}
 extension _MemoizeCacheCoW: ___RedBlackTreeStorageLifetime {}
-extension _MemoizeCacheCoW: CustomKeyValueComparer {}
+extension _MemoizeCacheCoW: ___LRULinkList {}
 extension _MemoizeCacheCoW: _MemoizeCacheLRUMiscellaneous {}
+extension _MemoizeCacheCoW: CustomKeyValueComparer {}

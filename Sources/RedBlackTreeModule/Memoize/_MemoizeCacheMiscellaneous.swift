@@ -23,14 +23,14 @@
 import Foundation
 
 @usableFromInline
-protocol MemoizeCacheMiscellaneous {
+protocol _MemoizeCacheMiscellaneous {
   var _hits: Int { get set }
   var _miss: Int { get set }
   var count: Int { get }
   mutating func ___removeAll(keepingCapacity keepCapacity: Bool)
 }
 
-extension MemoizeCacheMiscellaneous {
+extension _MemoizeCacheMiscellaneous {
   
   @inlinable
   var ___info: (hits: Int, miss: Int, maxCount: Int?, currentCount: Int) {

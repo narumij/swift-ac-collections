@@ -36,7 +36,7 @@ extension KeyValueComparer where Element == _LinkingKeyValueTuple {
 }
 
 @usableFromInline
-protocol _LRULinkList: ___RedBlackTreeBase, KeyValueComparer
+protocol ___LRULinkList: ___RedBlackTreeBase, KeyValueComparer
 where Element == _LinkingKeyValueTuple {
   associatedtype Value
   var _tree: Tree { get }
@@ -48,7 +48,7 @@ where Element == _LinkingKeyValueTuple {
   var count: Int { get }
 }
 
-extension _LRULinkList {
+extension ___LRULinkList {
   
   @inlinable
   mutating func ___prepend(_ __p: _NodePtr) {

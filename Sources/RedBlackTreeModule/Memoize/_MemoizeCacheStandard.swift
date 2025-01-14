@@ -78,7 +78,7 @@ public
   }
 }
 
-extension _MemoizeCacheStandard: MemoizeCacheMiscellaneous {
+extension _MemoizeCacheStandard: _MemoizeCacheMiscellaneous {
   
   @usableFromInline
   var count: Int { _cache.count }

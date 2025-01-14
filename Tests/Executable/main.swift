@@ -56,8 +56,8 @@ for v in 0 ..< count * 2 {
   tree.remove(v)
 }
 #elseif true
-var tree = RedBlackTreeSet<Int>(0 ..< count * 2)
-//var tree = RedBlackTreeSet<Int>(_sequence: 0 ..< count * 2)
+//var tree = RedBlackTreeSet<Int>(0 ..< count * 2)
+var tree = RedBlackTreeSet<Int>(_sequence: 0 ..< count * 2)
 //var tree = Set<Int>(0 ..< count * 2)
 for v in 0 ..< count * 2 {
   tree.remove(v)

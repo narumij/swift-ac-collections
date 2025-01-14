@@ -57,6 +57,7 @@ enum VC: ScalarValueComparer {
 
   extension ___RedBlackTree.___Tree {
 
+#if false
     @inlinable
     var nodes: [___RedBlackTree.___Node] {
       get {
@@ -82,6 +83,46 @@ enum VC: ScalarValueComparer {
         }
       }
     }
+#else
+    @inlinable
+    var nodes: [___RedBlackTree.___Node] {
+      get {
+        (0..<_header.initializedCount).map {
+          .init(__is_black_: __is_black_($0),
+                __left_: __left_($0),
+                __right_: __right_($0),
+                __parent_: __parent_($0))
+        }
+      }
+      set {
+        ___clearDestroy()
+        _header.initializedCount = newValue.count
+        newValue.enumerated().forEach {
+          i, v in
+          __is_black_(i, v.__is_black_)
+          __left_(i, v.__left_)
+          __right_(i, v.__right_)
+          __parent_(i, v.__parent_)
+        }
+      }
+    }
+    
+    @inlinable
+    var values: [Element] {
+      get {
+        (0..<_header.initializedCount).map {
+          ___element($0)
+        }
+      }
+      set {
+        _header.initializedCount = newValue.count
+        newValue.enumerated().forEach {
+          i, v in
+          ___element(i, v)
+        }
+      }
+    }
+#endif
 
     @inlinable
     func __root(_ p: _NodePtr) {

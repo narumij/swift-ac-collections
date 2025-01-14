@@ -329,7 +329,7 @@ extension RedBlackTreeDictionary {
     if __i == _tree.end() {
       return nil
     }
-    let value = _tree[node: __i].__value_.value
+    let value = _tree.___element(__i).value
     _ensureUnique()
     _ = _tree.erase(__i)
     return value

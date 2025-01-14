@@ -46,8 +46,7 @@ extension ValueProtocol {
   func
     __lower_bound(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
   {
-    var __root = __root
-    var __result = __result
+    var (__root, __result) = (__root, __result)
 
     while __root != .nullptr {
       if !value_comp(__value_(__root), __v) {
@@ -64,8 +63,7 @@ extension ValueProtocol {
   func
     __upper_bound(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
   {
-    var __root = __root
-    var __result = __result
+    var (__root, __result) = (__root, __result)
 
     while __root != .nullptr {
       if value_comp(__v, __value_(__root)) {

@@ -224,19 +224,19 @@ extension ___RedBlackTree.___Tree {
     _modify { yield &__header_ptr.pointee }
   }
 
-  @inlinable
-  subscript(node pointer: _NodePtr) -> Node {
-    @inline(__always)
-    get {
-      assert(0 <= pointer && pointer < _header.initializedCount)
-      return __node_ptr[pointer]
-    }
-    @inline(__always)
-    _modify {
-      assert(0 <= pointer && pointer < _header.initializedCount)
-      yield &__node_ptr[pointer]
-    }
-  }
+//  @inlinable
+//  subscript(node pointer: _NodePtr) -> Node {
+//    @inline(__always)
+//    get {
+//      assert(0 <= pointer && pointer < _header.initializedCount)
+//      return __node_ptr[pointer]
+//    }
+//    @inline(__always)
+//    _modify {
+//      assert(0 <= pointer && pointer < _header.initializedCount)
+//      yield &__node_ptr[pointer]
+//    }
+//  }
 
   @inlinable
   @inline(__always)
@@ -332,8 +332,8 @@ extension ___RedBlackTree.___Tree {
         return []
       }
       var nodes: [_NodePtr] = [_header.destroyNode]
-      while let l = nodes.last, self[node: l].__left_ != .nullptr {
-        nodes.append(self[node: l].__left_)
+      while let l = nodes.last, __left_(l) != .nullptr {
+        nodes.append(__left_(l))
       }
       return nodes
     }
@@ -435,6 +435,11 @@ extension ___RedBlackTree.___Tree {
   @inlinable @inline(__always)
   func ___element(_ p: _NodePtr) -> VC.Element {
     __node_ptr[p].__value_
+  }
+  
+  @inlinable @inline(__always)
+  func ___element(_ p: _NodePtr,_ __v: VC.Element) {
+    __node_ptr[p].__value_ = __v
   }
 }
 

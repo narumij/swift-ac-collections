@@ -199,7 +199,7 @@ final class MemoizeCacheLRUTests: XCTestCase {
     let cache1 = cache0
     XCTAssertEqual(cache0._copyCount, 0)
     cache0[0] = 0
-    XCTAssertEqual(cache0._copyCount, 0) // キャパシティ以外でコピーが発生しない
+    XCTAssertEqual(cache0._copyCount, 0) // キャパシティ変化以外でコピーが発生しない
     _fixLifetime(cache1)
 #endif
   }

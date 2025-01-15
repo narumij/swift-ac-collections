@@ -117,10 +117,10 @@ extension ___RedBlackTree.___Tree {
       __parent_: _NodePtr = .nullptr,
       __value_: Element
     ) {
-      self.__right_ = __right_
-      self.__left_ = __left_
-      self.__parent_ = __parent_
       self.__is_black_ = __is_black_
+      self.__left_ = __left_
+      self.__right_ = __right_
+      self.__parent_ = __parent_
       self.__value_ = __value_
     }
   }

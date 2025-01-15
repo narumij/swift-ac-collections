@@ -14,7 +14,7 @@ final class ManagedBufferTests: XCTestCase {
     let storage = ___RedBlackTree.___Tree<VC>.create(minimumCapacity: 0)
     XCTAssertEqual(storage.capacity, 0)
     XCTAssertEqual(storage.count, 0)
-    XCTAssertEqual(storage.__left_, .nullptr)
+    XCTAssertEqual(storage.__root(), .nullptr)
     XCTAssertEqual(storage.__begin_node, .end)
   }
 
@@ -22,7 +22,7 @@ final class ManagedBufferTests: XCTestCase {
     let storage = ___RedBlackTree.___Tree<VC>.create(minimumCapacity: 4)
     XCTAssertEqual(storage.capacity, 4)
     XCTAssertEqual(storage.count, 0)
-    XCTAssertEqual(storage.__left_, .nullptr)
+    XCTAssertEqual(storage.__root(), .nullptr)
     XCTAssertEqual(storage.__begin_node, .end)
   }
 

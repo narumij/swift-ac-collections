@@ -23,10 +23,10 @@ import XCTest
     //        return c
     //      }
 
-    @inlinable var __left_: _NodePtr {
-      get { _tree.__left_ }
-      set { _tree.__left_ = newValue }
-    }
+//    @inlinable var __left_: _NodePtr {
+//      get { _tree.__left_ }
+//      set { _tree.__left_ = newValue }
+//    }
 
     @inlinable func __left_(_ p: _NodePtr) -> _NodePtr {
       _tree.__left_(p)
@@ -38,11 +38,11 @@ import XCTest
 
     @inlinable
     func __root() -> _NodePtr {
-      __left_
+      _tree.__root()
     }
     @inlinable
     mutating func __root(_ p: _NodePtr) {
-      __left_ = p
+      _tree.__root(p)
     }
     @inlinable
     func

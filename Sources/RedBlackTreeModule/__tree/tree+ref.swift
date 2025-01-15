@@ -22,10 +22,7 @@
 
 import Foundation
 
-@usableFromInline
-protocol RefImpl: MemberProtocol {}
-
-extension RefImpl {
+extension MemberProtocol {
 
   @inlinable
   func __ref_(_ rhs: _NodeRef) -> _NodePtr {
@@ -52,10 +49,7 @@ extension RefImpl {
   }
 }
 
-@usableFromInline
-protocol RefSetImpl: MemberSetProtocol & RefImpl {}
-
-extension RefSetImpl {
+extension MemberSetProtocol {
 
   @inlinable
   func __ref_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
@@ -71,20 +65,3 @@ extension RefSetImpl {
 
 }
 
-@usableFromInline
-protocol RootImpl: MemberProtocol & EndNodeProtocol {}
-
-extension RootImpl {
-  @inlinable
-  @inline(__always)
-  func __root() -> _NodePtr { __left_(__end_node()) }
-}
-
-@usableFromInline
-protocol RootPtrImpl: RefProtocol & EndNodeProtocol {}
-
-extension RootPtrImpl {
-  @inlinable
-  @inline(__always)
-  func __root_ptr() -> _NodeRef { __left_ref(__end_node()) }
-}

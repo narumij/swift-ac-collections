@@ -79,7 +79,7 @@ extension ___RedBlackTree.___Tree.UnsafeHandle {
   }
 }
 
-extension ___RedBlackTree.___Tree.UnsafeHandle: MemberProtocol & RootImpl & RefImpl & RootPtrImpl { }
+extension ___RedBlackTree.___Tree.UnsafeHandle: MemberProtocol & RootProtocol & RootPtrProrototol { }
 extension ___RedBlackTree.___Tree.UnsafeHandle: ValueProtocol { }
 
 extension ___RedBlackTree.___Tree.UnsafeHandle {

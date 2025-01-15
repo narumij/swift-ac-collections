@@ -126,7 +126,7 @@ enum VC: ScalarValueComparer {
 
     @inlinable
     func __root(_ p: _NodePtr) {
-      __left_ = p
+      __header_ptr.pointee.__left_ = p
     }
 
     @inlinable
@@ -270,7 +270,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
       next[2] = .init(__is_black_: false, __left_: 0, __right_: 4, __parent_: .end)
       next[3] = .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: 0)
 
-      XCTAssertEqual(tree.__left_, 2)
+      XCTAssertEqual(tree.__root(), 2)
       XCTAssertEqual(tree.nodes[0], next[0])
       XCTAssertEqual(tree.nodes[1], next[1])
       XCTAssertEqual(tree.nodes[2], next[2])
@@ -288,7 +288,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
     func testBalancing0() throws {
       var tree = RedBlackTree___Tree.create(minimumCapacity: 8)
       fixtureEmpty(&tree)
-      tree.__left_ = .node(tree.nodes.count)
+      tree.__root(.node(tree.nodes.count))
       tree.nodes.append(.init(__is_black_: false, __left_: nil, __right_: nil, __parent_: .end))
       XCTAssertEqual(tree.nodes.count, 1)
       XCTAssertNotEqual(tree.__root(), nil)
@@ -378,7 +378,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
         XCTAssertEqual(__child, .__left_(.end))
       }
       do {
-        tree.__left_ = nil
+        tree.__root(nil)
         var __parent: _NodePtr = .nullptr
         let __k = 5
         let __child = tree.__find_equal(&__parent, __k)

@@ -35,7 +35,7 @@ public
   typealias _NodePtr = Int
 
 public
-  typealias _Pointer = Int
+  typealias _Pointer = _NodePtr
 
 
 extension _NodePtr {
@@ -71,26 +71,32 @@ public
 }
 
 // ルートノード相当の機能
+@usableFromInline
 protocol TreeEndNodeProtocol {
   func __left_(_: pointer) -> pointer
+  func __left_(_ lhs: pointer, _ rhs: pointer)
 }
 
 extension TreeEndNodeProtocol {
+  @usableFromInline
   typealias pointer = _Pointer
 }
 
 // 一般ノード相当の機能
+@usableFromInline
 protocol TreeNodeBaseProtocol: TreeEndNodeProtocol {
-  func __right_(_: _NodePtr) -> _NodePtr
-  func __parent_(_: _NodePtr) -> _NodePtr
-  func __is_black_(_: _NodePtr) -> Bool
-  func __parent_unsafe(_: _NodePtr) -> _NodePtr
-  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr)
+  func __right_(_: pointer) -> pointer
+  func __right_(_ lhs: pointer, _ rhs: pointer)
+  func __parent_(_: pointer) -> pointer
+  func __parent_(_ lhs: pointer, _ rhs: pointer)
+  func __is_black_(_: pointer) -> Bool
+  func __parent_unsafe(_: pointer) -> __parent_pointer
+  func __is_black_(_ lhs: pointer, _ rhs: Bool)
 }
 
 extension TreeNodeBaseProtocol {
-  typealias pointer = _NodePtr
-  typealias __parent_pointer = _NodePtr
+  @usableFromInline
+  typealias __parent_pointer = _Pointer
 }
 
 // 以下は、現在の設計に至る過程で、readハンドルとupdateハンドルに分けていた名残で、
@@ -160,13 +166,14 @@ protocol BeginNodeProtocol {
 }
 
 @usableFromInline
-protocol RootProtocol {
-  func __root() -> _NodePtr
+protocol BeginProtocol: BeginNodeProtocol {
+  func begin() -> _NodePtr
 }
 
-@usableFromInline
-protocol RootPtrProrototol {
-  func __root_ptr() -> _NodeRef
+extension BeginProtocol {
+  @inlinable
+  @inline(__always)
+  func begin() -> _NodePtr { __begin_node }
 }
 
 @usableFromInline
@@ -181,17 +188,6 @@ extension EndNodeProtocol {
 }
 
 @usableFromInline
-protocol BeginProtocol: BeginNodeProtocol {
-  func begin() -> _NodePtr
-}
-
-extension BeginProtocol {
-  @inlinable
-  @inline(__always)
-  func begin() -> _NodePtr { __begin_node }
-}
-
-@usableFromInline
 protocol EndProtocol: EndNodeProtocol {
   func end() -> _NodePtr
 }
@@ -200,6 +196,28 @@ extension EndProtocol {
   @inlinable
   @inline(__always)
   func end() -> _NodePtr { __end_node() }
+}
+
+@usableFromInline
+protocol RootProtocol: MemberProtocol & EndProtocol {
+  func __root() -> _NodePtr
+}
+
+extension RootProtocol {
+  @inlinable
+  @inline(__always)
+  func __root() -> _NodePtr { __left_(__end_node()) }
+}
+
+@usableFromInline
+protocol RootPtrProrototol: RootProtocol {
+  func __root_ptr() -> _NodeRef
+}
+
+extension RootPtrProrototol {
+  @inlinable
+  @inline(__always)
+  func __root_ptr() -> _NodeRef { __left_ref(__end_node()) }
 }
 
 @usableFromInline

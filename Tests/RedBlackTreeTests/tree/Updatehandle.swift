@@ -35,7 +35,7 @@ extension _UnsafeUpdateHandle: FindProtocol & FindEqualProtocol {
 }
 extension _UnsafeUpdateHandle: InsertNodeAtProtocol {}
 extension _UnsafeUpdateHandle: RemoveProtocol {}
-extension _UnsafeUpdateHandle: RefSetImpl & RootImpl & RootPtrImpl & ValueProtocol { }
+extension _UnsafeUpdateHandle: RootProtocol & ValueProtocol { }
 
 extension _UnsafeUpdateHandle {
 

@@ -87,11 +87,11 @@ extension TreeEndNodeProtocol {
 protocol TreeNodeBaseProtocol: TreeEndNodeProtocol {
   func __right_(_: pointer) -> pointer
   func __right_(_ lhs: pointer, _ rhs: pointer)
+  func __is_black_(_: pointer) -> Bool
+  func __is_black_(_ lhs: pointer, _ rhs: Bool)
   func __parent_(_: pointer) -> pointer
   func __parent_(_ lhs: pointer, _ rhs: pointer)
-  func __is_black_(_: pointer) -> Bool
   func __parent_unsafe(_: pointer) -> __parent_pointer
-  func __is_black_(_ lhs: pointer, _ rhs: Bool)
 }
 
 extension TreeNodeBaseProtocol {
@@ -104,19 +104,19 @@ extension TreeNodeBaseProtocol {
 
 @usableFromInline
 protocol MemberProtocol {
-  func __parent_(_: _NodePtr) -> _NodePtr
   func __left_(_: _NodePtr) -> _NodePtr
   func __right_(_: _NodePtr) -> _NodePtr
   func __is_black_(_: _NodePtr) -> Bool
+  func __parent_(_: _NodePtr) -> _NodePtr
   func __parent_unsafe(_: _NodePtr) -> _NodePtr
 }
 
 @usableFromInline
 protocol MemberSetProtocol: MemberProtocol {
-  func __is_black_(_ lhs: _NodePtr, _ rhs: Bool)
-  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr)
   func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr)
   func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr)
+  func __is_black_(_ lhs: _NodePtr, _ rhs: Bool)
+  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr)
 }
 
 @usableFromInline

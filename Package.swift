@@ -5,7 +5,7 @@ import PackageDescription
 import Foundation
 
 var defines: [String] = [
-  "AC_COLLECTIONS_INTERNAL_CHECKS",
+//  "AC_COLLECTIONS_INTERNAL_CHECKS",
 //  "TREE_INVARIANT_CHECKS",
 //  "GRAPHVIZ_DEBUG",
 //  "USING_ALGORITHMS",

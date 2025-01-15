@@ -27,24 +27,12 @@ import Foundation
 
 extension ___RedBlackTree {
 
-  public struct ___Node {
+  public struct ___Node: ___tree_base_node {
 
-    @usableFromInline
-    var __right_: _NodePtr
-    @usableFromInline
-    var __left_: _NodePtr
-    @usableFromInline
-    var __parent_: _NodePtr
-    @usableFromInline
-    var __is_black_: Bool
-
-    @inlinable
-    mutating func clear() {
-      __right_ = .nullptr
-      __left_ = .nullptr
-      __parent_ = .nullptr
-      __is_black_ = false
-    }
+    public var __right_: _NodePtr
+    public var __left_: _NodePtr
+    public var __parent_: _NodePtr
+    public var __is_black_: Bool
 
     @inlinable
     init(

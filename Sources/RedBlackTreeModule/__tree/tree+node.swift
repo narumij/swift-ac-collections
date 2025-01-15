@@ -22,30 +22,29 @@
 
 import Foundation
 
-#if DEBUG
-@testable import RedBlackTreeModule
+@usableFromInline
+protocol ___tree_root_node {
+  var __left_: _pointer { get set }
+}
 
-extension ___RedBlackTree {
+extension ___tree_root_node {
+  public typealias _pointer = _NodePtr
+}
 
-  @frozen
-  @usableFromInline
-  struct ___Header {
+@usableFromInline
+protocol ___tree_base_node: ___tree_root_node {
+  var __right_: _pointer { get set }
+  var __parent_: _pointer { get set }
+  var __is_black_: Bool { get set }
+}
 
-    @inlinable
-    @inline(__always)
-    init() {}
-
-    @usableFromInline
-    var __left_: _NodePtr = .nullptr
-
-    @usableFromInline
-    var __begin_node: _NodePtr = .end
-
-    @usableFromInline
-    var size: Int = 0
-
-    @usableFromInline
-    static let zero: Self = .init()
+extension ___tree_base_node {
+  
+  @inlinable @inline(__always)
+  public mutating func clear() {
+    __left_ = .nullptr
+    __right_ = .nullptr
+    __parent_ = .nullptr
+    __is_black_ = false
   }
 }
-#endif

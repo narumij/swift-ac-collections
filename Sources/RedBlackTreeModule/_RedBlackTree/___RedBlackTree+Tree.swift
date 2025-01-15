@@ -96,7 +96,7 @@ extension ___RedBlackTree.___Tree {
 
 extension ___RedBlackTree.___Tree {
 
-  public struct Node {
+  public struct Node: ___tree_base_node {
 
     @usableFromInline
     var __value_: Element
@@ -143,7 +143,7 @@ extension ___RedBlackTree.___Tree {
 
 extension ___RedBlackTree.___Tree {
 
-  public struct Header {
+  public struct Header: ___tree_root_node {
 
     @inlinable
     init(

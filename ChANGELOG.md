@@ -5,14 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.6] - 2025-1-?
+### Added
+- `_MemoizeCacheCoW`を追加
+### Changed
+- Nodeのレイアウトを変更
+
 ## [0.1.5] - 2025-1-13
 ### Added
 - `_MemoizeCacheLRU`を追加
 - `_MemoizeCacheStandard`を追加
 - `_MemoizeCacheBase`にinfoを追加
 - バッファの成長サイズ計算式を変更
-### Changed
-- Nodeのレイアウトを変更
 
 ## [0.1.4] - 2025-1-8
 ### Added

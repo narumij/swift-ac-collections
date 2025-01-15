@@ -290,7 +290,7 @@ extension RedBlackTreeDictionary {
   ) -> (__parent: _NodePtr, __child: _NodeRef, __ptr: _NodePtr) {
     var __parent = _NodePtr.nullptr
     let __child = _tree.__find_equal(&__parent, key)
-    let __ptr = _tree.__ref_(__child)
+    let __ptr = _tree.__ptr_(__child)
     return (__parent, __child, __ptr)
   }
 }

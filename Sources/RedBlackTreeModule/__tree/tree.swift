@@ -123,13 +123,12 @@ protocol MemberSetProtocol: MemberProtocol {
 protocol RefProtocol: MemberProtocol {
   func __left_ref(_: _NodePtr) -> _NodeRef
   func __right_ref(_: _NodePtr) -> _NodeRef
-  // 名前が良くないが、かといって変わりも浮かばない
-  func __ref_(_ rhs: _NodeRef) -> _NodePtr
+  func __ptr_(_ rhs: _NodeRef) -> _NodePtr
 }
 
 @usableFromInline
 protocol RefSetProtocol: RefProtocol {
-  func __ref_(_ lhs: _NodeRef, _ rhs: _NodePtr)
+  func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr)
 }
 
 @usableFromInline

@@ -100,7 +100,7 @@ extension _MemoizeCacheCoW {
         }
         var __parent = _NodePtr.nullptr
         let __child = _tree.__find_equal(&__parent, key)
-        if _tree.__ref_(__child) == .nullptr {
+        if _tree.__ptr_(__child) == .nullptr {
           let __h = _tree.__construct_node((key, .nullptr, .nullptr, newValue))
           _tree.__insert_node_at(__parent, __child, __h)
           ___prepend(__h)

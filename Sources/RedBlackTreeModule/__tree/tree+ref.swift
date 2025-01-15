@@ -25,7 +25,7 @@ import Foundation
 extension MemberProtocol {
 
   @inlinable
-  func __ref_(_ rhs: _NodeRef) -> _NodePtr {
+  func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
     switch rhs {
     case .nullptr:
       return .nullptr
@@ -52,7 +52,7 @@ extension MemberProtocol {
 extension MemberSetProtocol {
 
   @inlinable
-  func __ref_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
+  func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
     switch lhs {
     case .nullptr:
       fatalError()

@@ -881,7 +881,7 @@ extension RedBlackTreeSet {
       var __parent = _NodePtr.nullptr
       // 検索の計算量がO(log *n*)
       let __child = tree.__find_equal(&__parent, __k)
-      if tree.__ref_(__child) == .nullptr {
+      if tree.__ptr_(__child) == .nullptr {
         let __h = tree.__construct_node(__k)
         // バランシングの計算量がO(log *n*)
         tree.__insert_node_at(__parent, __child, __h)

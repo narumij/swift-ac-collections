@@ -59,7 +59,7 @@ extension MergeProtocol {
       print(__source.__get_key(__source.__value_(__src_ptr)))
       let __child = __find_equal(&__parent, __source.__get_key(__source.__value_(__src_ptr)))
       __i = __source.__tree_next_iter(__i)
-      if (__ref_(__child) != .nullptr) {
+      if (__ptr_(__child) != .nullptr) {
         continue; }
 #if false
       // C++では本物のポインタで動作し、挿入後はノードがポインタを介して共有されるため、削除が行われる

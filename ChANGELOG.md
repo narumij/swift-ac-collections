@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `_MemoizeCacheStandard`を追加
 - `_MemoizeCacheBase`にinfoを追加
 - バッファの成長サイズ計算式を変更
+### Changed
+- Nodeのレイアウトを変更
 
 ## [0.1.4] - 2025-1-8
 ### Added

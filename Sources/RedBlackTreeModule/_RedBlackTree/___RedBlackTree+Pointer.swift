@@ -109,7 +109,7 @@ extension ___RedBlackTree.___Tree {
         return lhs.rawValue != .end && rhs.rawValue == .end
       }
       let tree = lhs._tree
-      return Tree.VC.value_comp(tree[key: lhs.rawValue], tree[key: rhs.rawValue])
+      return Tree.VC.value_comp(tree.___key(lhs.rawValue), tree.___key(rhs.rawValue))
     }
   }
 }

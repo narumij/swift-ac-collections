@@ -6,7 +6,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class MemoizeCacheLRUTests: XCTestCase {
+final class MemoizeCacheCoWTests: XCTestCase {
 
   enum TestKey: _KeyCustomProtocol {
     @inlinable @inline(__always)
@@ -31,13 +31,13 @@ final class MemoizeCacheLRUTests: XCTestCase {
   
 #if DEBUG
   func testInit() throws {
-    let cache = _MemoizeCacheLRU<TestKey, Int>(minimumCapacity: 10)
+    let cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 10)
     XCTAssertEqual(cache._tree.count, 0)
     XCTAssertEqual(cache._tree.capacity, 10)
   }
 
   func testQueue() throws {
-    var cache = _MemoizeCacheLRU<TestKey, Int>(minimumCapacity: 10)
+    var cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 10)
     cache[0] = 0
 //    cache.prepend(0)
     XCTAssertEqual(cache._rankHighest, 0)
@@ -57,7 +57,7 @@ final class MemoizeCacheLRUTests: XCTestCase {
   }
 
   func testQueue2() throws {
-    var cache = _MemoizeCacheLRU<TestKey, Int>(minimumCapacity: 10)
+    var cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 10)
     cache[0] = 0
 //    cache.prepend(0)
     cache[1] = 1
@@ -84,7 +84,7 @@ final class MemoizeCacheLRUTests: XCTestCase {
   }
 
   func testQueue3() throws {
-    var cache = _MemoizeCacheLRU<TestKey, Int>(minimumCapacity: 10)
+    var cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 10)
     cache[0] = 0
 //    cache.prepend(0)
     cache[1] = 1
@@ -109,7 +109,7 @@ final class MemoizeCacheLRUTests: XCTestCase {
   }
 
   func testQueue4() throws {
-    var cache = _MemoizeCacheLRU<TestKey, Int>(minimumCapacity: 10)
+    var cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 10)
     cache[0] = 0
     cache.___prepend(cache.___pop(0))
     cache[1] = 1
@@ -140,7 +140,7 @@ final class MemoizeCacheLRUTests: XCTestCase {
   }
 
   func testMaximum() throws {
-    var cache = _MemoizeCacheLRU<TestKey, Int>(minimumCapacity: 0, maxCount: 100)
+    var cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 0, maxCount: 100)
     XCTAssertEqual(cache._tree.count, 0)
     XCTAssertEqual(cache._tree.capacity, 0)
     var finalCapacity: Int? = nil
@@ -157,7 +157,7 @@ final class MemoizeCacheLRUTests: XCTestCase {
   }
 
   func testMaximum2() throws {
-    var cache = _MemoizeCacheLRU<TestKey, Int>(minimumCapacity: 0, maxCount: 5)
+    var cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 0, maxCount: 5)
     cache[0] = 0
     XCTAssertEqual(cache[0], 0)
     cache[1] = 1
@@ -194,16 +194,16 @@ final class MemoizeCacheLRUTests: XCTestCase {
 
   func testCopyOnWrite() throws {
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-    var cache0 = _MemoizeCacheLRU<TestKey, Int>(minimumCapacity: 2)
+    var cache0 = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 2)
     XCTAssertEqual(cache0._copyCount, 0)
     let cache1 = cache0
     XCTAssertEqual(cache0._copyCount, 0)
     cache0[0] = 0
-    XCTAssertEqual(cache0._copyCount, 0) // キャパシティ変化以外でコピーが発生しない
+    XCTAssertEqual(cache0._copyCount, 1) // キャパシティ以外でコピーが発生する
     _fixLifetime(cache1)
 #endif
   }
-
+  
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
     self.measure {

@@ -96,18 +96,18 @@ extension ___RedBlackTree.___Tree {
 
 extension ___RedBlackTree.___Tree {
 
-  public struct Node {
+  public struct Node: ___tree_base_node {
 
     @usableFromInline
-    var __right_: _NodePtr
+    var __value_: Element
     @usableFromInline
     var __left_: _NodePtr
+    @usableFromInline
+    var __right_: _NodePtr
     @usableFromInline
     var __parent_: _NodePtr
     @usableFromInline
     var __is_black_: Bool
-    @usableFromInline
-    var __value_: Element
 
     @inlinable
     init(
@@ -117,10 +117,10 @@ extension ___RedBlackTree.___Tree {
       __parent_: _NodePtr = .nullptr,
       __value_: Element
     ) {
-      self.__right_ = __right_
-      self.__left_ = __left_
-      self.__parent_ = __parent_
       self.__is_black_ = __is_black_
+      self.__left_ = __left_
+      self.__right_ = __right_
+      self.__parent_ = __parent_
       self.__value_ = __value_
     }
   }
@@ -143,7 +143,7 @@ extension ___RedBlackTree.___Tree {
 
 extension ___RedBlackTree.___Tree {
 
-  public struct Header {
+  public struct Header: ___tree_root_node {
 
     @inlinable
     init(
@@ -188,7 +188,7 @@ extension ___RedBlackTree.___Tree {
 }
 
 extension ___RedBlackTree.___Tree.Header {
-  
+
   @inlinable
   @inline(__always)
   public var count: Int {
@@ -225,27 +225,6 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
-  subscript(node pointer: _NodePtr) -> Node {
-    @inline(__always)
-    get {
-      assert(0 <= pointer && pointer < _header.initializedCount)
-      return __node_ptr[pointer]
-    }
-    @inline(__always)
-    _modify {
-      assert(0 <= pointer && pointer < _header.initializedCount)
-      yield &__node_ptr[pointer]
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  subscript(key pointer: _NodePtr) -> _Key {
-    assert(0 <= pointer && pointer < _header.initializedCount)
-    return __key(__node_ptr[pointer].__value_)
-  }
-
-  @inlinable
   public subscript(_ pointer: _NodePtr) -> Element {
     @inline(__always)
     get {
@@ -259,25 +238,6 @@ extension ___RedBlackTree.___Tree {
     }
   }
 
-#if false
-  // refが破損するケースが見つかったため、念のため利用停止中
-  @inlinable
-  subscript(ref ref: _NodeRef) -> Element {
-    @inline(__always)
-    get {
-      let pointer = __ref_(ref)
-      assert(0 <= pointer && pointer < _header.initializedCount)
-      return __node_ptr[pointer].__value_
-    }
-    @inline(__always)
-    _modify {
-      let pointer = __ref_(ref)
-      assert(0 <= pointer && pointer < _header.initializedCount)
-      yield &__node_ptr[pointer].__value_
-    }
-  }
-#endif
-
   #if AC_COLLECTIONS_INTERNAL_CHECKS
     @inlinable
     var copyCount: UInt {
@@ -288,9 +248,6 @@ extension ___RedBlackTree.___Tree {
 }
 
 extension ___RedBlackTree.___Tree {
-  // コンスセルでイメージすると、右に伸ばしていく方がイメージ通りだったが、
-  // leftを伸ばしていく方が意味が通じやすいので、そちらにした
-
   /// O(1)
   @inlinable
   @inline(__always)
@@ -332,8 +289,8 @@ extension ___RedBlackTree.___Tree {
         return []
       }
       var nodes: [_NodePtr] = [_header.destroyNode]
-      while let l = nodes.last, self[node: l].__left_ != .nullptr {
-        nodes.append(self[node: l].__left_)
+      while let l = nodes.last, __left_(l) != .nullptr {
+        nodes.append(__left_(l))
       }
       return nodes
     }
@@ -391,14 +348,6 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
-  var __left_: _NodePtr {
-    get { __header_ptr.pointee.__left_ }
-    _modify {
-      yield &__header_ptr.pointee.__left_
-    }
-  }
-
-  @inlinable
   var __begin_node: _NodePtr {
     get { __header_ptr.pointee.__begin_node }
     _modify {
@@ -411,7 +360,7 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
   func __value_(_ p: _NodePtr) -> _Key {
-    __value_(__node_ptr[p].__value_)
+    __key(__node_ptr[p].__value_)
   }
 }
 
@@ -420,17 +369,33 @@ extension ___RedBlackTree.___Tree {
   @usableFromInline
   typealias _Key = VC._Key
 
-  public
-    typealias Element = VC.Element
-
-  @inlinable @inline(__always)
-  func __value_(_ e: VC.Element) -> _Key {
-    VC.__key(e)
-  }
+  public typealias Element = VC.Element
 
   @inlinable @inline(__always)
   func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     VC.value_comp(a, b)
+  }
+
+  @inlinable @inline(__always)
+  func __key(_ e: VC.Element) -> VC._Key {
+    VC.__key(e)
+  }
+
+  @inlinable
+  @inline(__always)
+  func ___key(_ pointer: _NodePtr) -> _Key {
+    assert(0 <= pointer && pointer < _header.initializedCount)
+    return __key(__node_ptr[pointer].__value_)
+  }
+
+  @inlinable @inline(__always)
+  func ___element(_ p: _NodePtr) -> VC.Element {
+    __node_ptr[p].__value_
+  }
+  
+  @inlinable @inline(__always)
+  func ___element(_ p: _NodePtr,_ __v: VC.Element) {
+    __node_ptr[p].__value_ = __v
   }
 }
 
@@ -444,27 +409,12 @@ extension ___RedBlackTree.___Tree: InsertLastProtocol {}
 extension ___RedBlackTree.___Tree: RemoveProtocol {}
 extension ___RedBlackTree.___Tree: MergeProtocol {}
 extension ___RedBlackTree.___Tree: HandleProtocol {}
-extension ___RedBlackTree.___Tree: StorageEraseProtocol {}
+extension ___RedBlackTree.___Tree: EraseProtocol {}
 extension ___RedBlackTree.___Tree: BoundProtocol {}
 extension ___RedBlackTree.___Tree: InsertUniqueProtocol {}
 extension ___RedBlackTree.___Tree: DistanceProtocol {}
 extension ___RedBlackTree.___Tree: CountProtocol {}
 extension ___RedBlackTree.___Tree: MemberProtocol {}
-extension ___RedBlackTree.___Tree: RootImpl & RefSetImpl & RootPtrImpl {}
-extension ___RedBlackTree.___Tree {
-
-  @inlinable
-  @inline(__always)
-  func ___element(_ p: _NodePtr) -> VC.Element {
-    self[p]
-  }
-  
-  @inlinable
-  @inline(__always)
-  func __key(_ e: VC.Element) -> VC._Key {
-    VC.__key(e)
-  }
-}
 
 extension ___RedBlackTree.___Tree {
   @inlinable
@@ -475,7 +425,7 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   @inline(__always)
   func __left_(_ p: _NodePtr) -> _NodePtr {
-    p == .end ? __left_ : __node_ptr[p].__left_
+    p == .end ? _header.__left_ : __node_ptr[p].__left_
   }
   @inlinable
   @inline(__always)
@@ -510,7 +460,7 @@ extension ___RedBlackTree.___Tree {
   @inline(__always)
   func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
     if lhs == .end {
-      __left_ = rhs
+      _header.__left_ = rhs
     } else {
       __node_ptr[lhs].__left_ = rhs
     }
@@ -677,4 +627,3 @@ extension ___RedBlackTree.___Tree {
     return result
   }
 }
-

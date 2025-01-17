@@ -57,6 +57,7 @@ enum VC: ScalarValueComparer {
 
   extension ___RedBlackTree.___Tree {
 
+#if false
     @inlinable
     var nodes: [___RedBlackTree.___Node] {
       get {
@@ -82,10 +83,50 @@ enum VC: ScalarValueComparer {
         }
       }
     }
+#else
+    @inlinable
+    var nodes: [___RedBlackTree.___Node] {
+      get {
+        (0..<_header.initializedCount).map {
+          .init(__is_black_: __is_black_($0),
+                __left_: __left_($0),
+                __right_: __right_($0),
+                __parent_: __parent_($0))
+        }
+      }
+      set {
+        ___clearDestroy()
+        _header.initializedCount = newValue.count
+        newValue.enumerated().forEach {
+          i, v in
+          __is_black_(i, v.__is_black_)
+          __left_(i, v.__left_)
+          __right_(i, v.__right_)
+          __parent_(i, v.__parent_)
+        }
+      }
+    }
+    
+    @inlinable
+    var values: [Element] {
+      get {
+        (0..<_header.initializedCount).map {
+          ___element($0)
+        }
+      }
+      set {
+        _header.initializedCount = newValue.count
+        newValue.enumerated().forEach {
+          i, v in
+          ___element(i, v)
+        }
+      }
+    }
+#endif
 
     @inlinable
     func __root(_ p: _NodePtr) {
-      __left_ = p
+      __header_ptr.pointee.__left_ = p
     }
 
     @inlinable
@@ -229,7 +270,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
       next[2] = .init(__is_black_: false, __left_: 0, __right_: 4, __parent_: .end)
       next[3] = .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: 0)
 
-      XCTAssertEqual(tree.__left_, 2)
+      XCTAssertEqual(tree.__root(), 2)
       XCTAssertEqual(tree.nodes[0], next[0])
       XCTAssertEqual(tree.nodes[1], next[1])
       XCTAssertEqual(tree.nodes[2], next[2])
@@ -247,7 +288,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
     func testBalancing0() throws {
       var tree = RedBlackTree___Tree.create(minimumCapacity: 8)
       fixtureEmpty(&tree)
-      tree.__left_ = .node(tree.nodes.count)
+      tree.__root(.node(tree.nodes.count))
       tree.nodes.append(.init(__is_black_: false, __left_: nil, __right_: nil, __parent_: .end))
       XCTAssertEqual(tree.nodes.count, 1)
       XCTAssertNotEqual(tree.__root(), nil)
@@ -337,7 +378,7 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
         XCTAssertEqual(__child, .__left_(.end))
       }
       do {
-        tree.__left_ = nil
+        tree.__root(nil)
         var __parent: _NodePtr = .nullptr
         let __k = 5
         let __child = tree.__find_equal(&__parent, __k)

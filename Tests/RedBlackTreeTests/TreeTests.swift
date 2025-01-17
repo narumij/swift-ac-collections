@@ -22,7 +22,7 @@ import XCTest
 #endif
 
 #if DEBUG
-  final class TreeTests: XCTestCase, MemberProtocol, RootImpl, EndNodeProtocol {
+  final class TreeTests: XCTestCase, MemberProtocol, RootProtocol, EndNodeProtocol {
 
     var __nodes: [___RedBlackTree.___Node] = []
     var __end_left: _NodePtr = .nullptr

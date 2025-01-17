@@ -155,7 +155,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   public func ___first_index(of member: _Key) -> ___Index? {
     var __parent = _NodePtr.nullptr
-    let ptr = _tree.__ref_(_tree.__find_equal(&__parent, member))
+    let ptr = _tree.__ptr_(_tree.__find_equal(&__parent, member))
     return ___index_or_nil(ptr)
   }
 

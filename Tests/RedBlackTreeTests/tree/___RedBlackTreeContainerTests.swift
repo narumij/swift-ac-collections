@@ -15,25 +15,38 @@ import XCTest
     @inlinable
     var __nodes: [___RedBlackTree.___Node] {
       get {
-        (0..<_tree._header.initializedCount).map { .init(_tree[node: $0]) }
+        (0..<_tree._header.initializedCount).map {
+          .init(__is_black_: _tree.__is_black_($0),
+                __left_: _tree.__left_($0),
+                __right_: _tree.__right_($0),
+                __parent_: _tree.__parent_($0))
+        }
       }
       set {
         _tree.___clearDestroy()
         _tree._header.initializedCount = newValue.count
         newValue.enumerated().forEach {
-          i, v in _tree[node: i].node = v
+          i, v in
+          _tree.__is_black_(i, v.__is_black_)
+          _tree.__left_(i, v.__left_)
+          _tree.__right_(i, v.__right_)
+          _tree.__parent_(i, v.__parent_)
         }
       }
     }
+    
     @inlinable
     var ___elements: [Element] {
       get {
-        (0..<_tree._header.initializedCount).map { _tree[node: $0].__value_ }
+        (0..<_tree._header.initializedCount).map {
+          _tree.___element($0)
+        }
       }
       set {
         _tree._header.initializedCount = newValue.count
         newValue.enumerated().forEach {
-          i, v in _tree[node: i].__value_ = v
+          i, v in
+          _tree.___element(i, v)
         }
       }
     }

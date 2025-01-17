@@ -1,4 +1,4 @@
-// Copyright 2024-2025 narumij
+// Copyright 2025 narumij
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,24 +22,10 @@
 
 import Foundation
 
-public
-  protocol _ComparableMemoizationCacheProtocol: _MemoizationCacheProtocol, _KeyCustomProtocol
-{}
-
-extension _ComparableMemoizationCacheProtocol {
-  public typealias Base = _MemoizeCacheBase<Self, Return>
-  public typealias LRU = _MemoizeCacheLRU<Self, Return>
-  public typealias CoW = _MemoizeCacheCoW<Self, Return>
-}
-
-/// メモ化用途向け
-///
-/// CustomKeyProtocolで比較方法を供給することで、
-/// Comparableプロトコル未適合の型を使うことができる
-///
-/// 辞書としての機能は削いである
+/// メモ化用途向け、LRU (least recently used) cache 動作
+/// https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_(LRU)
 @frozen
-public struct _MemoizeCacheBase<Custom, Value>
+public struct _MemoizeCacheCoW<Custom, Value>
 where Custom: _KeyCustomProtocol {
 
   public
@@ -49,7 +35,10 @@ where Custom: _KeyCustomProtocol {
     typealias Value = Value
 
   public
-    typealias Element = _KeyValueTuple
+  typealias KeyValue = _LinkingKeyValueTuple
+
+  public
+    typealias Element = KeyValue
 
   public
     typealias _Key = Key
@@ -60,6 +49,14 @@ where Custom: _KeyCustomProtocol {
   @usableFromInline
   var _storage: Tree.Storage
 
+  public let maxCount: Int
+
+  @usableFromInline
+  var _rankHighest: _NodePtr
+
+  @usableFromInline
+  var _rankLowest: _NodePtr
+
   @usableFromInline
   var _hits: Int
 
@@ -67,12 +64,14 @@ where Custom: _KeyCustomProtocol {
   var _miss: Int
 }
 
-extension _MemoizeCacheBase {
+extension _MemoizeCacheCoW {
 
   @inlinable
   @inline(__always)
-  public init(minimumCapacity: Int = 0) {
+  public init(minimumCapacity: Int = 0, maxCount: Int = Int.max) {
     _storage = .create(withCapacity: minimumCapacity)
+    self.maxCount = maxCount
+    (_rankHighest, _rankLowest) = (.nullptr, .nullptr)
     (_hits, _miss) = (0, 0)
   }
 
@@ -80,37 +79,43 @@ extension _MemoizeCacheBase {
   public subscript(key: Key) -> Value? {
     @inline(__always)
     mutating get {
-      if let v = ___value_for(key)?.value {
-        _hits &+= 1
-        return v
-      } else {
+      let __ptr = _tree.find(key)
+      if ___is_null_or_end(__ptr) {
         _miss &+= 1
         return nil
       }
+      _hits &+= 1
+      ___prepend(___pop(__ptr))
+      return _tree[__ptr].value
     }
     @inline(__always)
     set {
       if let newValue {
-        _ensureCapacity()
-        _ = _tree.__insert_unique((key, newValue))
+        if _tree.count < maxCount {
+          // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
+          _ensureUniqueAndCapacity(limit: maxCount)
+        }
+        if _tree.count == maxCount {
+          ___remove(at: ___popRankLowest())
+        }
+        var __parent = _NodePtr.nullptr
+        let __child = _tree.__find_equal(&__parent, key)
+        if _tree.__ptr_(__child) == .nullptr {
+          let __h = _tree.__construct_node((key, .nullptr, .nullptr, newValue))
+          _tree.__insert_node_at(__parent, __child, __h)
+          ___prepend(__h)
+        }
       }
     }
   }
 
-  @inlinable var _tree: Tree
-  {
-    @inline(__always) get { _storage.tree }
-    @inline(__always) _modify { yield &_storage.tree }
-  }
-
-  @inlinable
-  public var count: Int { ___count }
-
-  @inlinable
-  public var capacity: Int { ___header_capacity }
+  @inlinable @inline(__always) var _tree: Tree { _storage.tree }
+  
+  @inlinable public var count: Int { ___count }
+  @inlinable public var capacity: Int { ___header_capacity }
 }
 
-extension _MemoizeCacheBase {
+extension _MemoizeCacheCoW {
 
   /// statistics
   ///
@@ -127,7 +132,7 @@ extension _MemoizeCacheBase {
   }
 }
 
-extension _MemoizeCacheBase: ___RedBlackTreeBase {}
-extension _MemoizeCacheBase: ___RedBlackTreeStorageLifetime {}
-extension _MemoizeCacheBase: _MemoizeCacheMiscellaneous {}
-extension _MemoizeCacheBase: CustomKeyValueComparer {}
+extension _MemoizeCacheCoW: ___RedBlackTreeStorageLifetime {}
+extension _MemoizeCacheCoW: ___LRULinkList {}
+extension _MemoizeCacheCoW: _MemoizeCacheLRUMiscellaneous {}
+extension _MemoizeCacheCoW: CustomKeyValueComparer {}

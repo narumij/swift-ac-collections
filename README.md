@@ -179,7 +179,7 @@ RedBlackTreeMultisetのremove(:)は、enumerated()やforEach(:)の削除時対�
 
 このため、この操作をさらにループして使う場合には、注意が必要となります。安直に行うとループ毎に全体のコピーが発生するためです。
 
-これを避けるには、削除時に有効なイテレータやサブシーケンスやインデックスが消費済みの状態にする必要があります。
+これを避けるには、削除時に有効なイテレータやサブシーケンスが消費済みの状態にする必要があります。
 
 具体的には、削除に必要な情報は一度map関数で配列にする等です。
 
@@ -242,8 +242,12 @@ ABC328Eという問題がありまして、C++で書かれた解説コードを�
 ## ライセンス
 
 このライブラリは [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) に基づいて配布しています。  
-本コードは LLVM による実装をもとに改変したものであり、オリジナルのライセンスに関しては  
+
+RedBlackTreeModuleは LLVM による実装をもとに改変したものであり、オリジナルのライセンスに関しては  
 [https://llvm.org/LICENSE.txt](https://llvm.org/LICENSE.txt) をご参照ください。
+
+PermutationModuleは swift-algorithms による実装をもとに改変したものであり、オリジナルのライセンスに関しては  
+[https://github.com/apple/swift-algorithms/blob/main/LICENSE.txt](https://github.com/apple/swift-algorithms/blob/main/LICENSE.txt) をご参照ください。
 
 ---
 

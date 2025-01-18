@@ -97,7 +97,8 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  @inlinable public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
+  @inlinable
+  public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
     let count = (keysAndValues as? (any Collection))?.count
     var tree: Tree = .create(minimumCapacity: count ?? 0)
@@ -122,7 +123,8 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  @inlinable public init<S>(
+  @inlinable
+  public init<S>(
     _ keysAndValues: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
@@ -448,7 +450,8 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
 
-  @inlinable public init(dictionaryLiteral elements: (Key, Value)...) {
+  @inlinable
+  public init(dictionaryLiteral elements: (Key, Value)...) {
     self.init(uniqueKeysWithValues: elements)
   }
 }
@@ -598,7 +601,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
     return _tree.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
@@ -783,7 +786,7 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     _subSequence.formIndex(&i.rawValue, offsetBy: distance)
   }
 
@@ -800,7 +803,7 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
     return _subSequence.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)

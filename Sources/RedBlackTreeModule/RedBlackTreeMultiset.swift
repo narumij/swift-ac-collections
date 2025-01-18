@@ -261,24 +261,28 @@ extension RedBlackTreeMultiset {
 extension RedBlackTreeMultiset {
 
   /// - Complexity: O(*n*)
-  @inlinable public func contains(_ member: Element) -> Bool {
+  @inlinable
+  public func contains(_ member: Element) -> Bool {
     ___contains_unique(member)
   }
 
   /// - Complexity: O(*n*)
-  @inlinable public func min() -> Element? {
+  @inlinable
+  public func min() -> Element? {
     ___min()
   }
 
   /// - Complexity: O(*n*)
-  @inlinable public func max() -> Element? {
+  @inlinable
+  public func max() -> Element? {
     ___max()
   }
 }
 
 extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
 
-  @inlinable public init(arrayLiteral elements: Element...) {
+  @inlinable
+  public init(arrayLiteral elements: Element...) {
     self.init(elements)
   }
 }
@@ -286,12 +290,14 @@ extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
 extension RedBlackTreeMultiset {
 
   /// - Complexity: O(log *n*)
-  @inlinable public func lowerBound(_ member: Element) -> Index {
+  @inlinable
+  public func lowerBound(_ member: Element) -> Index {
     ___index_lower_bound(member)
   }
 
   /// - Complexity: O(log *n*)
-  @inlinable public func upperBound(_ member: Element) -> Index {
+  @inlinable
+  public func upperBound(_ member: Element) -> Index {
     ___index_upper_bound(member)
   }
 }
@@ -332,7 +338,7 @@ extension RedBlackTreeMultiset {
 extension RedBlackTreeMultiset {
 
   @inlinable
-  func sorted() -> [Element] {
+  public func sorted() -> [Element] {
     _tree.___sorted
   }
 }
@@ -340,7 +346,8 @@ extension RedBlackTreeMultiset {
 extension RedBlackTreeMultiset {
 
   /// - Complexity: O(log *n* + *k*)
-  @inlinable public func count(of element: Element) -> Int {
+  @inlinable
+  public func count(of element: Element) -> Int {
     _tree.__count_multi(element)
   }
 }
@@ -469,7 +476,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     _tree.formIndex(&i.rawValue, offsetBy: distance)
   }
 
@@ -485,7 +492,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
     -> Bool
   {
     return _tree.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)

@@ -499,5 +499,33 @@ final class DictionaryTests: XCTestCase {
     }
   }
 
+  func testSubsequence() throws {
+    var set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
+    let sub = set[2 ..< 4]
+    XCTAssertEqual(sub[set.lowerBound(2)].value, "b")
+    XCTAssertEqual(sub[set.lowerBound(4)].value, "d")
+    XCTAssertEqual(set.lowerBound(6), set.endIndex)
+    XCTAssertEqual(sub.count, 2)
+    XCTAssertEqual(sub.map{ $0.key }, [2, 3])
+    XCTAssertEqual(sub.map{ $0.value }, ["b", "c"])
+    set.remove(contentsOf: 2 ..< 4)
+    XCTAssertEqual(set.map{ $0.key }, [1, 4, 5])
+    XCTAssertEqual(set.map{ $0.value }, ["a", "d", "e"])
+  }
+  
+  func testSubsequence2() throws {
+    var set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
+    let sub = set[2 ... 4]
+    XCTAssertEqual(sub[set.lowerBound(2)].value, "b")
+    XCTAssertEqual(sub[set.upperBound(4)].value, "e")
+    XCTAssertEqual(set.lowerBound(6), set.endIndex)
+    XCTAssertEqual(sub.count, 3)
+    XCTAssertEqual(sub.map{ $0.key }, [2, 3, 4])
+    XCTAssertEqual(sub.map{ $0.value }, ["b", "c", "d"])
+    set.remove(contentsOf: 2 ... 4)
+    XCTAssertEqual(set.map{ $0.key }, [1, 5])
+    XCTAssertEqual(set.map{ $0.value }, ["a", "e"])
+  }
+
 }
 #endif

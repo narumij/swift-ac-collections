@@ -245,6 +245,14 @@ extension RedBlackTreeMultiset {
   @inline(__always)
   mutating func remove(contentsOf elementRange: Range<Element>) {
     let lower = lowerBound(elementRange.lowerBound)
+    let upper = lowerBound(elementRange.upperBound)
+    removeSubrange(lower..<upper)
+  }
+  
+  @inlinable
+  @inline(__always)
+  mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
+    let lower = lowerBound(elementRange.lowerBound)
     let upper = upperBound(elementRange.upperBound)
     removeSubrange(lower..<upper)
   }
@@ -507,6 +515,15 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
 
   @inlinable
   public subscript(bounds: Range<Element>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: ___ptr_lower_bound(bounds.lowerBound),
+          to: ___ptr_lower_bound(bounds.upperBound)))
+  }
+  
+  @inlinable
+  public subscript(bounds: ClosedRange<Element>) -> SubSequence {
     SubSequence(
       _subSequence:
         _tree.subsequence(

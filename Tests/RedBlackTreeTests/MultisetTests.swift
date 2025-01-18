@@ -679,4 +679,29 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(b.count(of: 2), 3)
     XCTAssertEqual(b.count(of: 3), 1)
   }
+  
+  func testSubsequence() throws {
+    var set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    let sub = set[2 ..< 4]
+    XCTAssertEqual(sub[set.lowerBound(2)], 2)
+    XCTAssertEqual(sub[set.lowerBound(4)], 4)
+    XCTAssertEqual(set.lowerBound(6), set.endIndex)
+    XCTAssertEqual(sub.count, 2)
+    XCTAssertEqual(sub.map{ $0 }, [2, 3])
+    set.remove(contentsOf: 2 ..< 4)
+    XCTAssertEqual(set.map{ $0 }, [1, 4, 5])
+  }
+  
+  func testSubsequence2() throws {
+    var set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    let sub = set[2 ... 4]
+    XCTAssertEqual(sub[set.lowerBound(2)], 2)
+    XCTAssertEqual(sub[set.upperBound(4)], 5)
+    XCTAssertEqual(set.lowerBound(6), set.endIndex)
+    XCTAssertEqual(sub.count, 3)
+    XCTAssertEqual(sub.map{ $0 }, [2, 3, 4])
+    set.remove(contentsOf: 2 ... 4)
+    XCTAssertEqual(set.map{ $0 }, [1, 5])
+  }
 }
+

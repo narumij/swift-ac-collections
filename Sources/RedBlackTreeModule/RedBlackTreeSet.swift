@@ -285,6 +285,15 @@ extension RedBlackTreeSet {
   mutating func remove(contentsOf elementRange: Range<Element>) {
     _ensureUnique()
     let lower = lowerBound(elementRange.lowerBound).rawValue
+    let upper = lowerBound(elementRange.upperBound).rawValue
+    ___remove(from: lower, to: upper)
+  }
+  
+  @inlinable
+  @inline(__always)
+  mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
+    _ensureUnique()
+    let lower = lowerBound(elementRange.lowerBound).rawValue
     let upper = upperBound(elementRange.upperBound).rawValue
     ___remove(from: lower, to: upper)
   }
@@ -566,6 +575,15 @@ extension RedBlackTreeSet: BidirectionalCollection {
 
   @inlinable
   public subscript(bounds: Range<Element>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: ___ptr_lower_bound(bounds.lowerBound),
+          to: ___ptr_lower_bound(bounds.upperBound)))
+  }
+  
+  @inlinable
+  public subscript(bounds: ClosedRange<Element>) -> SubSequence {
     SubSequence(
       _subSequence:
         _tree.subsequence(

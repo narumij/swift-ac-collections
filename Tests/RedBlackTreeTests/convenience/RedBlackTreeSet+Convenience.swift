@@ -68,13 +68,13 @@ extension RedBlackTreeSet {
   #endif
 }
 
-extension RedBlackTreeSet {
-
-  @inlinable
-  public subscript(bounds: Range<Element>) -> SubSequence {
-    self[lowerBound(bounds.lowerBound)..<upperBound(bounds.upperBound)]
-  }
-}
+//extension RedBlackTreeSet {
+//
+//  @inlinable
+//  public subscript(bounds: Range<Element>) -> SubSequence {
+//    self[lowerBound(bounds.lowerBound) ..< lowerBound(bounds.upperBound)]
+//  }
+//}
 
 //extension RedBlackTreeSet {
 //

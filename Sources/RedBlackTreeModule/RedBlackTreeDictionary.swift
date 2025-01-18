@@ -392,6 +392,14 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   mutating func remove(contentsOf keyRange: Range<Key>) {
     let lower = lowerBound(keyRange.lowerBound)
+    let upper = lowerBound(keyRange.upperBound)
+    removeSubrange(lower..<upper)
+  }
+  
+  @inlinable
+  @inline(__always)
+  mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
+    let lower = lowerBound(keyRange.lowerBound)
     let upper = upperBound(keyRange.upperBound)
     removeSubrange(lower..<upper)
   }
@@ -620,6 +628,15 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
 
   @inlinable
   public subscript(bounds: Range<Key>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: ___ptr_lower_bound(bounds.lowerBound),
+          to: ___ptr_lower_bound(bounds.upperBound)))
+  }
+  
+  @inlinable
+  public subscript(bounds: ClosedRange<Key>) -> SubSequence {
     SubSequence(
       _subSequence:
         _tree.subsequence(

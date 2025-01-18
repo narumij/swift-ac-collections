@@ -587,6 +587,8 @@ final class SetTests: XCTestCase {
   
   func testSubsequence() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    XCTAssertEqual(set[set.startIndex ..< set.endIndex].map{ $0 }, [1,2,3,4,5])
+    XCTAssertEqual(set[set.lowerBound(2) ..< set.lowerBound(4)].map{ $0 }, [2,3])
     let sub = set[2 ..< 4]
     XCTAssertEqual(sub[set.lowerBound(2)], 2)
     XCTAssertEqual(sub[set.lowerBound(4)], 4)
@@ -608,4 +610,17 @@ final class SetTests: XCTestCase {
     set.remove(contentsOf: 2 ... 4)
     XCTAssertEqual(set.map{ $0 }, [1, 5])
   }
+  
+  func testSubsequence3() throws {
+    var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    let sub = set[2 ..< 4]
+    XCTAssertEqual(sub[set.lowerBound(2)], 2)
+    XCTAssertEqual(sub[set.lowerBound(4)], 4)
+    XCTAssertEqual(set.lowerBound(6), set.endIndex)
+    XCTAssertEqual(sub.count, 2)
+    XCTAssertEqual(sub.map{ $0 }, [2, 3])
+    set.remove(contentsOf: 2 ..< 4)
+    XCTAssertEqual(set.map{ $0 }, [1, 4, 5])
+  }
+
 }

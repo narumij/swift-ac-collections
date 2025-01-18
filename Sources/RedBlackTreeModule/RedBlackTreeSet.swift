@@ -171,7 +171,8 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*)
   @discardableResult
-  @inlinable public mutating func insert(_ newMember: Element) -> (
+  @inlinable
+  public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
@@ -181,7 +182,8 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*)
   @discardableResult
-  @inlinable public mutating func update(with newMember: Element) -> Element? {
+  @inlinable
+  public mutating func update(with newMember: Element) -> Element? {
     _ensureUniqueAndCapacity()
     let (__r, __inserted) = _tree.__insert_unique(newMember)
     guard !__inserted else { return nil }
@@ -192,7 +194,8 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*)
   @discardableResult
-  @inlinable public mutating func remove(_ member: Element) -> Element? {
+  @inlinable
+  public mutating func remove(_ member: Element) -> Element? {
     _ensureUnique()
     return _tree.___erase_unique(member) ? member : nil
   }
@@ -302,24 +305,28 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*)
-  @inlinable public func contains(_ member: Element) -> Bool {
+  @inlinable
+  public func contains(_ member: Element) -> Bool {
     ___contains_unique(member)
   }
 
   /// - Complexity: O(log *n*)
-  @inlinable public func min() -> Element? {
+  @inlinable
+  public func min() -> Element? {
     ___min()
   }
 
   /// - Complexity: O(log *n*)
-  @inlinable public func max() -> Element? {
+  @inlinable
+  public func max() -> Element? {
     ___max()
   }
 }
 
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 
-  @inlinable public init(arrayLiteral elements: Element...) {
+  @inlinable
+  public init(arrayLiteral elements: Element...) {
     self.init(elements)
   }
 }
@@ -338,7 +345,8 @@ extension RedBlackTreeSet {
   /// - Parameter member: 二分探索で検索したい要素
   /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
   /// - Complexity: O(log *n*)
-  @inlinable public func lowerBound(_ member: Element) -> Index {
+  @inlinable
+  public func lowerBound(_ member: Element) -> Index {
     ___index_lower_bound(member)
   }
 
@@ -355,7 +363,8 @@ extension RedBlackTreeSet {
   /// - Parameter member: 二分探索で検索したい要素
   /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
   /// - Complexity: O(log *n*)
-  @inlinable public func upperBound(_ member: Element) -> Index {
+  @inlinable
+  public func upperBound(_ member: Element) -> Index {
     ___index_upper_bound(member)
   }
 }
@@ -397,7 +406,7 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(*n*)
   @inlinable
-  func sorted() -> [Element] {
+  public func sorted() -> [Element] {
     _tree.___sorted
   }
 }
@@ -545,7 +554,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
     return _tree.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
@@ -749,7 +758,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
     return _subSequence.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)

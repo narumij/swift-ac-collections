@@ -703,5 +703,19 @@ final class MultisetTests: XCTestCase {
     set.remove(contentsOf: 2 ... 4)
     XCTAssertEqual(set.map{ $0 }, [1, 5])
   }
+  
+  func testSubsequence4() throws {
+    var set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    let sub = set[1 ..< 3]
+    throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
+    XCTAssertNotEqual(sub[set.startIndex ..< set.endIndex].map{ $0 }, [1, 2, 3, 4, 5])
+  }
+
+  func testSubsequence5() throws {
+    let set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    let sub = set[1 ..< 3]
+    XCTAssertEqual(sub[set.lowerBound(1) ..< set.lowerBound(3)].map{ $0 }, [1, 2])
+  }
+
 }
 

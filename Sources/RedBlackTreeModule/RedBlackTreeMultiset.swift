@@ -714,7 +714,11 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-    SubSequence(
+    guard tree.___signed_distance(startIndex.rawValue, bounds.lowerBound.rawValue) >= 0,
+          tree.___signed_distance(endIndex.rawValue, bounds.upperBound.rawValue) <= 0 else {
+      fatalError(.outOfRange)
+    }
+    return SubSequence(
       _subSequence:
         _subSequence[bounds.lowerBound..<bounds.upperBound])
   }

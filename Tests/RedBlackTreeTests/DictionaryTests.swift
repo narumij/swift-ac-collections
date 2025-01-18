@@ -527,5 +527,17 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(set.map{ $0.value }, ["a", "e"])
   }
 
+  func testSubsequence4() throws {
+    var set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
+    let sub = set[1 ..< 3]
+//    throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
+    XCTAssertNotEqual(sub[set.startIndex ..< set.endIndex].map{ $0.key }, [1, 2, 3, 4, 5])
+  }
+
+  func testSubsequence5() throws {
+    var set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
+    let sub = set[1 ..< 3]
+    XCTAssertEqual(sub[set.lowerBound(1) ..< set.lowerBound(3)].map{ $0.key }, [1, 2])
+  }
 }
 #endif

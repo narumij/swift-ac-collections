@@ -390,7 +390,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @inline(__always)
-  mutating func remove(contentsOf keyRange: Range<Key>) {
+  public mutating func remove(contentsOf keyRange: Range<Key>) {
     let lower = lowerBound(keyRange.lowerBound)
     let upper = lowerBound(keyRange.upperBound)
     removeSubrange(lower..<upper)
@@ -398,7 +398,7 @@ extension RedBlackTreeDictionary {
   
   @inlinable
   @inline(__always)
-  mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
+  public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
     let lower = lowerBound(keyRange.lowerBound)
     let upper = upperBound(keyRange.upperBound)
     removeSubrange(lower..<upper)

@@ -243,7 +243,7 @@ extension RedBlackTreeMultiset {
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
-  mutating func remove(contentsOf elementRange: Range<Element>) {
+  public mutating func remove(contentsOf elementRange: Range<Element>) {
     let lower = lowerBound(elementRange.lowerBound)
     let upper = lowerBound(elementRange.upperBound)
     removeSubrange(lower..<upper)
@@ -251,7 +251,7 @@ extension RedBlackTreeMultiset {
   
   @inlinable
   @inline(__always)
-  mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
+  public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
     let lower = lowerBound(elementRange.lowerBound)
     let upper = upperBound(elementRange.upperBound)
     removeSubrange(lower..<upper)

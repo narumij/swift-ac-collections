@@ -282,7 +282,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
-  mutating func remove(contentsOf elementRange: Range<Element>) {
+  public mutating func remove(contentsOf elementRange: Range<Element>) {
     _ensureUnique()
     let lower = lowerBound(elementRange.lowerBound).rawValue
     let upper = lowerBound(elementRange.upperBound).rawValue
@@ -291,7 +291,7 @@ extension RedBlackTreeSet {
   
   @inlinable
   @inline(__always)
-  mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
+  public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
     _ensureUnique()
     let lower = lowerBound(elementRange.lowerBound).rawValue
     let upper = upperBound(elementRange.upperBound).rawValue

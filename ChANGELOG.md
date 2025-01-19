@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.7] - 2025-1-?
 ### Added
 - ClosedRangeを利用するメソッドの追加
+- SubsequenceにisValid(index:)を追加
 ### Changed
 - Rangeの範囲間違いを修正
 

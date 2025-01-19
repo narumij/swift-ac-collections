@@ -166,3 +166,20 @@ extension ___RedBlackTree.___Tree {
       end: to)
   }
 }
+
+extension ___RedBlackTree.___Tree.SubSequence {
+
+  @inlinable
+  @inline(__always)
+  public func ___is_valid_index(index i: _NodePtr) -> Bool {
+    
+    guard i != .nullptr,
+          _tree.___is_valid(i)
+    else {
+      return false
+    }
+    
+    return _tree.___signed_distance(startIndex, i) >= 0 &&
+    _tree.___signed_distance(i, endIndex) >= 0
+  }
+}

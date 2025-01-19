@@ -872,21 +872,13 @@ extension RedBlackTreeSet.SubSequence {
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    guard tree.___is_valid_index(i.rawValue) else {
-      return false
-    }
-    return tree.___signed_distance(startIndex.rawValue, i.rawValue) >= 0 &&
-    tree.___signed_distance(i.rawValue, endIndex.rawValue) >= 0
+    _subSequence.___is_valid_index(index: i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func isValid(index i: RawIndex) -> Bool {
-    guard tree.___is_valid_index(i.rawValue) else {
-      return false
-    }
-    return tree.___signed_distance(startIndex.rawValue, i.rawValue) >= 0 &&
-    tree.___signed_distance(i.rawValue, endIndex.rawValue) >= 0
+    _subSequence.___is_valid_index(index: i.rawValue)
   }
 }
 

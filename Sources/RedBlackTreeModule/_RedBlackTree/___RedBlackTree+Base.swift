@@ -189,7 +189,7 @@ extension ___RedBlackTreeBase {
   mutating func ___remove(at ptr: _NodePtr) -> Element? {
     guard
       !___is_null_or_end(ptr),
-      ___is_valid_index(ptr)
+      _tree.___is_valid_index(ptr)
     else {
       return nil
     }
@@ -206,8 +206,8 @@ extension ___RedBlackTreeBase {
       return .end
     }
     guard
-      ___is_valid_index(from),
-      ___is_valid_index(to)
+      _tree.___is_valid_index(from),
+      _tree.___is_valid_index(to)
     else {
       fatalError(.invalidIndex)
     }
@@ -225,8 +225,8 @@ extension ___RedBlackTreeBase {
       return
     }
     guard
-      ___is_valid_index(from),
-      ___is_valid_index(to)
+      _tree.___is_valid_index(from),
+      _tree.___is_valid_index(to)
     else {
       fatalError(.invalidIndex)
     }
@@ -244,8 +244,8 @@ extension ___RedBlackTreeBase {
       return initialResult
     }
     guard
-      ___is_valid_index(from),
-      ___is_valid_index(to)
+      _tree.___is_valid_index(from),
+      _tree.___is_valid_index(to)
     else {
       fatalError(.invalidIndex)
     }
@@ -263,8 +263,8 @@ extension ___RedBlackTreeBase {
       return initialResult
     }
     guard
-      ___is_valid_index(from),
-      ___is_valid_index(to)
+      _tree.___is_valid_index(from),
+      _tree.___is_valid_index(to)
     else {
       fatalError(.invalidIndex)
     }
@@ -358,11 +358,6 @@ extension ___RedBlackTreeBase {
   @inlinable
   public func ___tree_invariant() -> Bool {
     _tree.__tree_invariant(_tree.__root())
-  }
-
-  @inlinable
-  func ___is_valid_index(_ i: _NodePtr) -> Bool {
-    _tree.___is_valid_index(i)
   }
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS

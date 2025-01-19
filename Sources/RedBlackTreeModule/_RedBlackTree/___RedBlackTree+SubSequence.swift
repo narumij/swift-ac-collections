@@ -147,7 +147,7 @@ extension ___RedBlackTree.___Tree {
     }
 
     @inlinable
-    public subscript(bounds: Range<TreePointer>) -> SubSequence {
+    public subscript(bounds: Range<Pointer>) -> SubSequence {
       .init(
         ___tree: _tree,
         start: bounds.lowerBound.rawValue,

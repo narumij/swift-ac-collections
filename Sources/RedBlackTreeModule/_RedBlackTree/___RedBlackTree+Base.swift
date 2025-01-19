@@ -26,8 +26,6 @@ public enum ___RedBlackTree {}
 
 extension ValueComparer {
   public typealias Tree = ___RedBlackTree.___Tree<Self>
-  public typealias TreePointer = Tree.TreePointer
-  public typealias RawPointer = Tree.RawPointer
 }
 
 @usableFromInline
@@ -60,7 +58,7 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @usableFromInline
-  typealias ___Index = Tree.TreePointer
+  typealias ___Index = Tree.Pointer
 
   @inlinable @inline(__always)
   func ___index(_ p: _NodePtr) -> ___Index {
@@ -393,15 +391,15 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func ___std_erase(_ ptr: RawPointer) -> RawPointer {
-    RawPointer(_tree.erase(ptr.rawValue))
+  public mutating func ___std_erase(_ ptr: Tree.RawPointer) -> Tree.RawPointer {
+    Tree.RawPointer(_tree.erase(ptr.rawValue))
   }
 
   // C++風の削除コードが書きたい場合にこっそりつかうもの
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func ___std_erase(_ ptr: TreePointer) -> TreePointer {
-    TreePointer(__storage: _storage, pointer: _tree.erase(ptr.rawValue))
+  public mutating func ___std_erase(_ ptr: Tree.Pointer) -> Tree.Pointer {
+    Tree.Pointer(__storage: _storage, pointer: _tree.erase(ptr.rawValue))
   }
 }

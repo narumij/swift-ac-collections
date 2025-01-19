@@ -65,7 +65,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   ///
   /// - SeeAlso: `startIndex`, `endIndex`, `index(before:)`, `index(after:)`
   public
-    typealias Index = Tree.TreePointer
+    typealias Index = Tree.Pointer
 
   public
     typealias _Key = Element
@@ -79,8 +79,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
 }
 
 extension RedBlackTreeSet {
-  public typealias TreePointer = Tree.TreePointer
-  public typealias RawPointer = Tree.RawPointer
+  public typealias RawIndex = Tree.RawPointer
 }
 
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
@@ -205,7 +204,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
-  public mutating func remove(at index: TreePointer) -> Element {
+  public mutating func remove(at index: Index) -> Element {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
@@ -218,7 +217,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
-  public mutating func remove(at index: RawPointer) -> Element {
+  public mutating func remove(at index: RawIndex) -> Element {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
@@ -568,7 +567,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: RawPointer) -> Element {
+  public subscript(position: RawIndex) -> Element {
     return _tree[position.rawValue]
   }
 
@@ -633,8 +632,7 @@ extension RedBlackTreeSet.SubSequence {
   public typealias Base = RedBlackTreeSet
   public typealias SubSequence = Self
   public typealias Index = Base.Index
-  public typealias TreePointer = Base.TreePointer
-  public typealias RawPointer = Base.RawPointer
+  public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
   public typealias EnumElement = Base.Tree.EnumElement
   public typealias EnumSequence = Base.EnumSequence
@@ -772,7 +770,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: RawPointer) -> Element {
+  public subscript(position: RawIndex) -> Element {
     return tree[position.rawValue]
   }
 
@@ -858,13 +856,13 @@ extension RedBlackTreeSet {
 
   @inlinable
   @inline(__always)
-  public func isValid(index: TreePointer) -> Bool {
+  public func isValid(index: Index) -> Bool {
     ___is_valid_index(index.rawValue)
   }
 
   @inlinable
   @inline(__always)
-  public func isValid(index: RawPointer) -> Bool {
+  public func isValid(index: RawIndex) -> Bool {
     ___is_valid_index(index.rawValue)
   }
 }

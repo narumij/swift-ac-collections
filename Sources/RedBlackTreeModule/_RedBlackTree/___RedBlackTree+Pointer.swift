@@ -26,7 +26,7 @@ extension ___RedBlackTree.___Tree {
 
   /// Range<Bound>の左右のサイズ違いでクラッシュすることを避けるためのもの
   @frozen
-  public struct TreePointer: Comparable {
+  public struct Pointer: Comparable {
 
     @usableFromInline
     let _tree: Tree

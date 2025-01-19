@@ -45,7 +45,7 @@ import Foundation
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   public
-    typealias Index = Tree.TreePointer
+    typealias Index = Tree.Pointer
 
   public
     typealias KeyValue = (key: Key, value: Value)
@@ -74,8 +74,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 }
 
 extension RedBlackTreeDictionary {
-  public typealias TreePointer = Tree.TreePointer
-  public typealias RawPointer = Tree.RawPointer
+  public typealias RawIndex = Tree.RawPointer
 }
 
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
@@ -357,7 +356,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @discardableResult
-  public mutating func remove(at index: TreePointer) -> KeyValue {
+  public mutating func remove(at index: Index) -> KeyValue {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
@@ -367,7 +366,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @discardableResult
-  public mutating func remove(at index: RawPointer) -> KeyValue {
+  public mutating func remove(at index: RawIndex) -> KeyValue {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
@@ -615,7 +614,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: RawPointer) -> Element {
+  public subscript(position: RawIndex) -> Element {
     return _tree[position.rawValue]
   }
 
@@ -678,8 +677,7 @@ extension RedBlackTreeDictionary.SubSequence {
   public typealias Base = RedBlackTreeDictionary
   public typealias SubSequence = Self
   public typealias Index = Base.Index
-  public typealias TreePointer = Base.TreePointer
-  public typealias RawPointer = Base.RawPointer
+  public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
   public typealias EnumElement = Base.Tree.EnumElement
   public typealias EnumSequence = Base.EnumSequence
@@ -817,7 +815,7 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: RawPointer) -> Element {
+  public subscript(position: RawIndex) -> Element {
     return tree[position.rawValue]
   }
 
@@ -903,13 +901,13 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @inline(__always)
-  public func isValid(index: Tree.TreePointer) -> Bool {
+  public func isValid(index: Index) -> Bool {
     ___is_valid_index(index.rawValue)
   }
 
   @inlinable
   @inline(__always)
-  public func isValid(index: RawPointer) -> Bool {
+  public func isValid(index: RawIndex) -> Bool {
     ___is_valid_index(index.rawValue)
   }
 }

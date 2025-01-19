@@ -716,6 +716,7 @@ final class MultisetTests: XCTestCase {
     let sub = set[1 ..< 3]
     XCTAssertEqual(sub[set.lowerBound(1) ..< set.lowerBound(3)].map{ $0 }, [1, 2])
     XCTAssertEqual(sub[sub.startIndex ..< sub.endIndex].map{ $0 }, [1, 2])
+    XCTAssertEqual(sub[sub.startIndex ..< sub.index(before: sub.endIndex)].map{ $0 }, [1])
   }
 
   func testSorted() throws {

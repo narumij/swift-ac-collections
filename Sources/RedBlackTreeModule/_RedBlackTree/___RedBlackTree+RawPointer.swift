@@ -47,7 +47,6 @@ extension ___RedBlackTree {
     var rawValue: _NodePtr {
       switch self {
       case .node(let _NodePtr):
-//        assert(_NodePtr != .nullptr)
         return _NodePtr
       case .end:
         return .end

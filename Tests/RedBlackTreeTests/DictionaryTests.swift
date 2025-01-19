@@ -535,11 +535,40 @@ final class DictionaryTests: XCTestCase {
   }
 
   func testSubsequence5() throws {
-    var set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
+    let set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
     let sub = set[1 ..< 3]
     XCTAssertEqual(sub[set.lowerBound(1) ..< set.lowerBound(3)].map{ $0.key }, [1, 2])
     XCTAssertEqual(sub[sub.startIndex ..< sub.endIndex].map{ $0.key }, [1, 2])
   }
 
+  func testIndexValidation() throws {
+    let set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
+    XCTAssertTrue(set.isValid(index: set.startIndex))
+    XCTAssertTrue(set.isValid(index: set.endIndex))
+    typealias Index = RedBlackTreeDictionary<Int,String>.Index
+    typealias RawIndex = RedBlackTreeDictionary<Int,String>.RawIndex
+#if DEBUG
+    XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
+    XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
+    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: -1).rawValue, -1)
+    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: 5).rawValue, 5)
+
+    XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
+    XCTAssertTrue(set.isValid(index: .unsafe(0)))
+    XCTAssertTrue(set.isValid(index: .unsafe(1)))
+    XCTAssertTrue(set.isValid(index: .unsafe(2)))
+    XCTAssertTrue(set.isValid(index: .unsafe(3)))
+    XCTAssertTrue(set.isValid(index: .unsafe(4)))
+    XCTAssertFalse(set.isValid(index: .unsafe(5)))
+
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: .nullptr)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 0)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 1)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 2)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 3)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 4)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: 5)))
+#endif
+  }
 }
 #endif

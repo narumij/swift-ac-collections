@@ -62,6 +62,12 @@ extension ___RedBlackTree.___Tree {
       .init(__tree: storage.tree, pointer: .end)
     }
 
+    @inlinable
+    @inline(__always)
+    static func end(_ tree: Tree) -> Self {
+      .init(__tree: tree, pointer: .end)
+    }
+
     // MARK: -
 
     @inlinable
@@ -114,4 +120,19 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
+
+#if DEBUG
+fileprivate extension ___RedBlackTree.___Tree.Pointer {
+  init(_tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) {
+    self._tree = _tree
+    self.rawValue = rawValue
+  }
+}
+
+extension ___RedBlackTree.___Tree.Pointer {
+  static func unsafe(tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) -> Self {
+    rawValue == .end ? .end(tree) : .init(_tree: tree, rawValue: rawValue)
+  }
+}
+#endif
 

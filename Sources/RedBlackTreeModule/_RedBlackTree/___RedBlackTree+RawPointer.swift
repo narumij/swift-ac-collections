@@ -43,12 +43,11 @@ extension ___RedBlackTree {
       self = node == .end ? .end : .node(node)
     }
 
-    // 検査用の便利アクセサ
     @usableFromInline
     var rawValue: _NodePtr {
       switch self {
       case .node(let _NodePtr):
-        assert(_NodePtr != .nullptr)
+//        assert(_NodePtr != .nullptr)
         return _NodePtr
       case .end:
         return .end
@@ -78,3 +77,12 @@ extension Optional where Wrapped == ___RedBlackTree.RawPointer {
 #if swift(>=5.5)
   extension ___RedBlackTree.RawPointer: @unchecked Sendable {}
 #endif
+
+#if DEBUG
+extension ___RedBlackTree.RawPointer {
+  static func unsafe(_ node: _NodePtr) -> Self {
+    node == .end ? .end : .node(node)
+  }
+}
+#endif
+

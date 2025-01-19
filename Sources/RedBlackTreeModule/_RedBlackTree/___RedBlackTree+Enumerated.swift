@@ -44,7 +44,7 @@ protocol TreePointerBuilderProtocol {
 
 extension TreePointerBuilderProtocol {
   public typealias Tree = ___RedBlackTree.___Tree<VC>
-  public typealias EnumeratedIndex = ___RedBlackTree.___Tree<VC>.TreePointer
+  public typealias EnumeratedIndex = ___RedBlackTree.___Tree<VC>.Pointer
 
   @inlinable
   @inline(__always)
@@ -220,7 +220,7 @@ extension ___RedBlackTree.___Tree {
     }
 
     @inlinable
-    public subscript(bounds: Range<TreePointer>) -> EnumSequence {
+    public subscript(bounds: Range<Pointer>) -> EnumSequence {
       .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
     }
   }

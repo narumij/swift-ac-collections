@@ -26,8 +26,6 @@ public enum ___RedBlackTree {}
 
 extension ValueComparer {
   public typealias Tree = ___RedBlackTree.___Tree<Self>
-  public typealias TreePointer = Tree.TreePointer
-  public typealias RawPointer = Tree.RawPointer
 }
 
 @usableFromInline
@@ -60,7 +58,7 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @usableFromInline
-  typealias ___Index = Tree.TreePointer
+  typealias ___Index = Tree.Pointer
 
   @inlinable @inline(__always)
   func ___index(_ p: _NodePtr) -> ___Index {
@@ -191,7 +189,7 @@ extension ___RedBlackTreeBase {
   mutating func ___remove(at ptr: _NodePtr) -> Element? {
     guard
       !___is_null_or_end(ptr),
-      ___is_valid_index(ptr)
+      _tree.___is_valid_index(ptr)
     else {
       return nil
     }
@@ -208,8 +206,8 @@ extension ___RedBlackTreeBase {
       return .end
     }
     guard
-      ___is_valid_index(from),
-      ___is_valid_index(to)
+      _tree.___is_valid_index(from),
+      _tree.___is_valid_index(to)
     else {
       fatalError(.invalidIndex)
     }
@@ -227,8 +225,8 @@ extension ___RedBlackTreeBase {
       return
     }
     guard
-      ___is_valid_index(from),
-      ___is_valid_index(to)
+      _tree.___is_valid_index(from),
+      _tree.___is_valid_index(to)
     else {
       fatalError(.invalidIndex)
     }
@@ -246,8 +244,8 @@ extension ___RedBlackTreeBase {
       return initialResult
     }
     guard
-      ___is_valid_index(from),
-      ___is_valid_index(to)
+      _tree.___is_valid_index(from),
+      _tree.___is_valid_index(to)
     else {
       fatalError(.invalidIndex)
     }
@@ -265,8 +263,8 @@ extension ___RedBlackTreeBase {
       return initialResult
     }
     guard
-      ___is_valid_index(from),
-      ___is_valid_index(to)
+      _tree.___is_valid_index(from),
+      _tree.___is_valid_index(to)
     else {
       fatalError(.invalidIndex)
     }
@@ -362,13 +360,6 @@ extension ___RedBlackTreeBase {
     _tree.__tree_invariant(_tree.__root())
   }
 
-  @inlinable
-  func ___is_valid_index(_ i: _NodePtr) -> Bool {
-    if i == .end { return true }
-    if !(0..<_tree.header.initializedCount ~= i) { return false }
-    return _tree.___is_valid(i)
-  }
-
   #if AC_COLLECTIONS_INTERNAL_CHECKS
     @inlinable
     public var _copyCount: UInt {
@@ -393,15 +384,15 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func ___std_erase(_ ptr: RawPointer) -> RawPointer {
-    RawPointer(_tree.erase(ptr.rawValue))
+  public mutating func ___std_erase(_ ptr: Tree.RawPointer) -> Tree.RawPointer {
+    Tree.RawPointer(_tree.erase(ptr.rawValue))
   }
 
   // C++風の削除コードが書きたい場合にこっそりつかうもの
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func ___std_erase(_ ptr: TreePointer) -> TreePointer {
-    TreePointer(__storage: _storage, pointer: _tree.erase(ptr.rawValue))
+  public mutating func ___std_erase(_ ptr: Tree.Pointer) -> Tree.Pointer {
+    Tree.Pointer(__storage: _storage, pointer: _tree.erase(ptr.rawValue))
   }
 }

@@ -55,7 +55,7 @@ var tree = SortedSet<Int>(0 ..< count * 2)
 for v in 0 ..< count * 2 {
   tree.remove(v)
 }
-#elseif true
+#elseif false
 //var tree = RedBlackTreeSet<Int>(0 ..< count * 2)
 var tree = RedBlackTreeSet<Int>(_sequence: 0 ..< count * 2)
 //var tree = Set<Int>(0 ..< count * 2)
@@ -81,12 +81,12 @@ for i in 0 ..< count {
 for i in 0 ..< count {
   _ = tree.remove(i)
 }
-#elseif true
+#elseif false
 var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 for v in 0..<10_000_000 {
   tree.remove(v)
 }
-#elseif true
+#elseif false
 var tree = RedBlackTreeSet<Int>(0 ..< count)
 tree._copyCount = 0
 print(tree.count)
@@ -130,12 +130,13 @@ var tree = RedBlackTreeSet<Int>(0 ..< count)
 tree[0 ..< count].enumerated().forEach { i, v in
   tree.remove(at: i)
 }
-#elseif false
+#elseif true
 var xy: [Int:RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]
 for i in xy[1, default: []] {
   xy[1, default: []].remove(i)
 //  xy[1, default: []].remove(i)
 }
+print("[section ?]")
 #elseif false
 var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [:]
 for i in 0 ..< 2_000_000 {

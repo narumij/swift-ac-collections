@@ -35,6 +35,11 @@ extension String {
   }
 
   @usableFromInline
+  static var outOfRange: String {
+    "RedBlackTree index is out of range."
+  }
+  
+  @usableFromInline
   static var emptyFirst: String {
     "Can't removeFirst from an empty RedBlackTree"
   }

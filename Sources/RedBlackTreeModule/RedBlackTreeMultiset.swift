@@ -46,7 +46,7 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
     typealias EnumElement = Tree.EnumElement
 
   public
-    typealias Index = Tree.TreePointer
+    typealias Index = Tree.Pointer
 
   public
     typealias _Key = Element
@@ -60,8 +60,7 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
 }
 
 extension RedBlackTreeMultiset {
-  public typealias TreePointer = Tree.TreePointer
-  public typealias RawPointer = Tree.RawPointer
+  public typealias RawIndex = Tree.RawPointer
 }
 
 extension RedBlackTreeMultiset: ___RedBlackTreeBase {}
@@ -180,7 +179,7 @@ extension RedBlackTreeMultiset {
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
-  public mutating func remove(at index: RawPointer) -> Element {
+  public mutating func remove(at index: RawIndex) -> Element {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
@@ -243,7 +242,15 @@ extension RedBlackTreeMultiset {
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
-  mutating func remove(contentsOf elementRange: Range<Element>) {
+  public mutating func remove(contentsOf elementRange: Range<Element>) {
+    let lower = lowerBound(elementRange.lowerBound)
+    let upper = lowerBound(elementRange.upperBound)
+    removeSubrange(lower..<upper)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
     let lower = lowerBound(elementRange.lowerBound)
     let upper = upperBound(elementRange.upperBound)
     removeSubrange(lower..<upper)
@@ -253,24 +260,28 @@ extension RedBlackTreeMultiset {
 extension RedBlackTreeMultiset {
 
   /// - Complexity: O(*n*)
-  @inlinable public func contains(_ member: Element) -> Bool {
+  @inlinable
+  public func contains(_ member: Element) -> Bool {
     ___contains_unique(member)
   }
 
   /// - Complexity: O(*n*)
-  @inlinable public func min() -> Element? {
+  @inlinable
+  public func min() -> Element? {
     ___min()
   }
 
   /// - Complexity: O(*n*)
-  @inlinable public func max() -> Element? {
+  @inlinable
+  public func max() -> Element? {
     ___max()
   }
 }
 
 extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
 
-  @inlinable public init(arrayLiteral elements: Element...) {
+  @inlinable
+  public init(arrayLiteral elements: Element...) {
     self.init(elements)
   }
 }
@@ -278,12 +289,14 @@ extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
 extension RedBlackTreeMultiset {
 
   /// - Complexity: O(log *n*)
-  @inlinable public func lowerBound(_ member: Element) -> Index {
+  @inlinable
+  public func lowerBound(_ member: Element) -> Index {
     ___index_lower_bound(member)
   }
 
   /// - Complexity: O(log *n*)
-  @inlinable public func upperBound(_ member: Element) -> Index {
+  @inlinable
+  public func upperBound(_ member: Element) -> Index {
     ___index_upper_bound(member)
   }
 }
@@ -324,7 +337,7 @@ extension RedBlackTreeMultiset {
 extension RedBlackTreeMultiset {
 
   @inlinable
-  func sorted() -> [Element] {
+  public func sorted() -> [Element] {
     _tree.___sorted
   }
 }
@@ -332,7 +345,8 @@ extension RedBlackTreeMultiset {
 extension RedBlackTreeMultiset {
 
   /// - Complexity: O(log *n* + *k*)
-  @inlinable public func count(of element: Element) -> Int {
+  @inlinable
+  public func count(of element: Element) -> Int {
     _tree.__count_multi(element)
   }
 }
@@ -461,7 +475,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     _tree.formIndex(&i.rawValue, offsetBy: distance)
   }
 
@@ -477,7 +491,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
     -> Bool
   {
     return _tree.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
@@ -491,7 +505,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: RawPointer) -> Element {
+  public subscript(position: RawIndex) -> Element {
     return _tree[position.rawValue]
   }
 
@@ -507,6 +521,15 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
 
   @inlinable
   public subscript(bounds: Range<Element>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: ___ptr_lower_bound(bounds.lowerBound),
+          to: ___ptr_lower_bound(bounds.upperBound)))
+  }
+  
+  @inlinable
+  public subscript(bounds: ClosedRange<Element>) -> SubSequence {
     SubSequence(
       _subSequence:
         _tree.subsequence(
@@ -545,8 +568,7 @@ extension RedBlackTreeMultiset.SubSequence {
   public typealias Base = RedBlackTreeMultiset
   public typealias SubSequence = Self
   public typealias Index = Base.Index
-  public typealias TreePointer = Base.TreePointer
-  public typealias RawPointer = Base.RawPointer
+  public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
   public typealias EnumElement = Base.Tree.EnumElement
   public typealias EnumSequence = Base.EnumSequence
@@ -684,13 +706,17 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: RawPointer) -> Element {
+  public subscript(position: RawIndex) -> Element {
     return tree[position.rawValue]
   }
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-    SubSequence(
+    guard tree.___signed_distance(startIndex.rawValue, bounds.lowerBound.rawValue) >= 0,
+          tree.___signed_distance(endIndex.rawValue, bounds.upperBound.rawValue) <= 0 else {
+      fatalError(.outOfRange)
+    }
+    return SubSequence(
       _subSequence:
         _subSequence[bounds.lowerBound..<bounds.upperBound])
   }
@@ -766,14 +792,29 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   @inline(__always)
-  public func isValid(index: Tree.TreePointer) -> Bool {
-    ___is_valid_index(index.rawValue)
+  public func isValid(index: Index) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
   }
 
   @inlinable
   @inline(__always)
-  public func isValid(index: RawPointer) -> Bool {
-    ___is_valid_index(index.rawValue)
+  public func isValid(index: RawIndex) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
+  }
+}
+
+extension RedBlackTreeMultiset.SubSequence {
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index i: Index) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index i: RawIndex) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
   }
 }
 

@@ -301,7 +301,7 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
   func ___is_valid(_ p: _NodePtr) -> Bool {
-    __node_ptr[p].__parent_ != .nullptr
+    0 ..< _header.initializedCount ~= p && __node_ptr[p].__parent_ != .nullptr
   }
 
   @inlinable @inline(__always)
@@ -613,6 +613,15 @@ extension ___RedBlackTree.___Tree {
   @inlinable @inline(__always)
   public func ___end() -> _NodePtr {
     .end
+  }
+}
+
+extension ___RedBlackTree.___Tree {
+  @inlinable
+  func ___is_valid_index(_ i: _NodePtr) -> Bool {
+    if i == .nullptr { return false }
+    if i == .end { return true }
+    return ___is_valid(i)
   }
 }
 

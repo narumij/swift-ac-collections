@@ -45,7 +45,7 @@ import Foundation
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   public
-    typealias Index = Tree.TreePointer
+    typealias Index = Tree.Pointer
 
   public
     typealias KeyValue = (key: Key, value: Value)
@@ -74,8 +74,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 }
 
 extension RedBlackTreeDictionary {
-  public typealias TreePointer = Tree.TreePointer
-  public typealias RawPointer = Tree.RawPointer
+  public typealias RawIndex = Tree.RawPointer
 }
 
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
@@ -97,7 +96,8 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  @inlinable public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
+  @inlinable
+  public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
     let count = (keysAndValues as? (any Collection))?.count
     var tree: Tree = .create(minimumCapacity: count ?? 0)
@@ -122,7 +122,8 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  @inlinable public init<S>(
+  @inlinable
+  public init<S>(
     _ keysAndValues: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
@@ -355,7 +356,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @discardableResult
-  public mutating func remove(at index: TreePointer) -> KeyValue {
+  public mutating func remove(at index: Index) -> KeyValue {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
@@ -365,7 +366,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @discardableResult
-  public mutating func remove(at index: RawPointer) -> KeyValue {
+  public mutating func remove(at index: RawIndex) -> KeyValue {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
@@ -390,7 +391,15 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @inline(__always)
-  mutating func remove(contentsOf keyRange: Range<Key>) {
+  public mutating func remove(contentsOf keyRange: Range<Key>) {
+    let lower = lowerBound(keyRange.lowerBound)
+    let upper = lowerBound(keyRange.upperBound)
+    removeSubrange(lower..<upper)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
     let lower = lowerBound(keyRange.lowerBound)
     let upper = upperBound(keyRange.upperBound)
     removeSubrange(lower..<upper)
@@ -440,7 +449,8 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
 
-  @inlinable public init(dictionaryLiteral elements: (Key, Value)...) {
+  @inlinable
+  public init(dictionaryLiteral elements: (Key, Value)...) {
     self.init(uniqueKeysWithValues: elements)
   }
 }
@@ -590,7 +600,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
     return _tree.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
@@ -604,7 +614,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: RawPointer) -> Element {
+  public subscript(position: RawIndex) -> Element {
     return _tree[position.rawValue]
   }
 
@@ -620,6 +630,15 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
 
   @inlinable
   public subscript(bounds: Range<Key>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: ___ptr_lower_bound(bounds.lowerBound),
+          to: ___ptr_lower_bound(bounds.upperBound)))
+  }
+  
+  @inlinable
+  public subscript(bounds: ClosedRange<Key>) -> SubSequence {
     SubSequence(
       _subSequence:
         _tree.subsequence(
@@ -658,8 +677,7 @@ extension RedBlackTreeDictionary.SubSequence {
   public typealias Base = RedBlackTreeDictionary
   public typealias SubSequence = Self
   public typealias Index = Base.Index
-  public typealias TreePointer = Base.TreePointer
-  public typealias RawPointer = Base.RawPointer
+  public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
   public typealias EnumElement = Base.Tree.EnumElement
   public typealias EnumSequence = Base.EnumSequence
@@ -766,7 +784,7 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     _subSequence.formIndex(&i.rawValue, offsetBy: distance)
   }
 
@@ -783,7 +801,7 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
     return _subSequence.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
@@ -797,13 +815,17 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: RawPointer) -> Element {
+  public subscript(position: RawIndex) -> Element {
     return tree[position.rawValue]
   }
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-    SubSequence(
+    guard tree.___signed_distance(startIndex.rawValue, bounds.lowerBound.rawValue) >= 0,
+          tree.___signed_distance(endIndex.rawValue, bounds.upperBound.rawValue) <= 0 else {
+      fatalError(.outOfRange)
+    }
+    return SubSequence(
       _subSequence:
         _subSequence[bounds.lowerBound..<bounds.upperBound])
   }
@@ -879,14 +901,29 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @inline(__always)
-  public func isValid(index: Tree.TreePointer) -> Bool {
-    ___is_valid_index(index.rawValue)
+  public func isValid(index: Index) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
   }
 
   @inlinable
   @inline(__always)
-  public func isValid(index: RawPointer) -> Bool {
-    ___is_valid_index(index.rawValue)
+  public func isValid(index: RawIndex) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
+  }
+}
+
+extension RedBlackTreeDictionary.SubSequence {
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index i: Index) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index i: RawIndex) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
   }
 }
 

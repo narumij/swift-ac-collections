@@ -26,7 +26,7 @@ extension ___RedBlackTree.___Tree {
 
   /// Range<Bound>の左右のサイズ違いでクラッシュすることを避けるためのもの
   @frozen
-  public struct TreePointer: Comparable {
+  public struct Pointer: Comparable {
 
     @usableFromInline
     let _tree: Tree
@@ -60,6 +60,12 @@ extension ___RedBlackTree.___Tree {
     @inline(__always)
     static func end(_ storage: Tree.Storage) -> Self {
       .init(__tree: storage.tree, pointer: .end)
+    }
+
+    @inlinable
+    @inline(__always)
+    static func end(_ tree: Tree) -> Self {
+      .init(__tree: tree, pointer: .end)
     }
 
     // MARK: -
@@ -114,4 +120,19 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
+
+#if DEBUG
+fileprivate extension ___RedBlackTree.___Tree.Pointer {
+  init(_tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) {
+    self._tree = _tree
+    self.rawValue = rawValue
+  }
+}
+
+extension ___RedBlackTree.___Tree.Pointer {
+  static func unsafe(tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) -> Self {
+    rawValue == .end ? .end(tree) : .init(_tree: tree, rawValue: rawValue)
+  }
+}
+#endif
 

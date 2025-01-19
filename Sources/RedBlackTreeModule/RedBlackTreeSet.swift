@@ -65,7 +65,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   ///
   /// - SeeAlso: `startIndex`, `endIndex`, `index(before:)`, `index(after:)`
   public
-    typealias Index = Tree.TreePointer
+    typealias Index = Tree.Pointer
 
   public
     typealias _Key = Element
@@ -79,8 +79,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
 }
 
 extension RedBlackTreeSet {
-  public typealias TreePointer = Tree.TreePointer
-  public typealias RawPointer = Tree.RawPointer
+  public typealias RawIndex = Tree.RawPointer
 }
 
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
@@ -171,7 +170,8 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*)
   @discardableResult
-  @inlinable public mutating func insert(_ newMember: Element) -> (
+  @inlinable
+  public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
@@ -181,7 +181,8 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*)
   @discardableResult
-  @inlinable public mutating func update(with newMember: Element) -> Element? {
+  @inlinable
+  public mutating func update(with newMember: Element) -> Element? {
     _ensureUniqueAndCapacity()
     let (__r, __inserted) = _tree.__insert_unique(newMember)
     guard !__inserted else { return nil }
@@ -192,7 +193,8 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*)
   @discardableResult
-  @inlinable public mutating func remove(_ member: Element) -> Element? {
+  @inlinable
+  public mutating func remove(_ member: Element) -> Element? {
     _ensureUnique()
     return _tree.___erase_unique(member) ? member : nil
   }
@@ -202,7 +204,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
-  public mutating func remove(at index: TreePointer) -> Element {
+  public mutating func remove(at index: Index) -> Element {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
@@ -215,7 +217,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
-  public mutating func remove(at index: RawPointer) -> Element {
+  public mutating func remove(at index: RawIndex) -> Element {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
@@ -282,7 +284,16 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
-  mutating func remove(contentsOf elementRange: Range<Element>) {
+  public mutating func remove(contentsOf elementRange: Range<Element>) {
+    _ensureUnique()
+    let lower = lowerBound(elementRange.lowerBound).rawValue
+    let upper = lowerBound(elementRange.upperBound).rawValue
+    ___remove(from: lower, to: upper)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
     _ensureUnique()
     let lower = lowerBound(elementRange.lowerBound).rawValue
     let upper = upperBound(elementRange.upperBound).rawValue
@@ -293,24 +304,28 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*)
-  @inlinable public func contains(_ member: Element) -> Bool {
+  @inlinable
+  public func contains(_ member: Element) -> Bool {
     ___contains_unique(member)
   }
 
   /// - Complexity: O(log *n*)
-  @inlinable public func min() -> Element? {
+  @inlinable
+  public func min() -> Element? {
     ___min()
   }
 
   /// - Complexity: O(log *n*)
-  @inlinable public func max() -> Element? {
+  @inlinable
+  public func max() -> Element? {
     ___max()
   }
 }
 
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 
-  @inlinable public init(arrayLiteral elements: Element...) {
+  @inlinable
+  public init(arrayLiteral elements: Element...) {
     self.init(elements)
   }
 }
@@ -329,7 +344,8 @@ extension RedBlackTreeSet {
   /// - Parameter member: 二分探索で検索したい要素
   /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
   /// - Complexity: O(log *n*)
-  @inlinable public func lowerBound(_ member: Element) -> Index {
+  @inlinable
+  public func lowerBound(_ member: Element) -> Index {
     ___index_lower_bound(member)
   }
 
@@ -346,7 +362,8 @@ extension RedBlackTreeSet {
   /// - Parameter member: 二分探索で検索したい要素
   /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
   /// - Complexity: O(log *n*)
-  @inlinable public func upperBound(_ member: Element) -> Index {
+  @inlinable
+  public func upperBound(_ member: Element) -> Index {
     ___index_upper_bound(member)
   }
 }
@@ -388,7 +405,7 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(*n*)
   @inlinable
-  func sorted() -> [Element] {
+  public func sorted() -> [Element] {
     _tree.___sorted
   }
 }
@@ -536,7 +553,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
     return _tree.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
@@ -550,7 +567,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: RawPointer) -> Element {
+  public subscript(position: RawIndex) -> Element {
     return _tree[position.rawValue]
   }
 
@@ -566,6 +583,15 @@ extension RedBlackTreeSet: BidirectionalCollection {
 
   @inlinable
   public subscript(bounds: Range<Element>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: ___ptr_lower_bound(bounds.lowerBound),
+          to: ___ptr_lower_bound(bounds.upperBound)))
+  }
+  
+  @inlinable
+  public subscript(bounds: ClosedRange<Element>) -> SubSequence {
     SubSequence(
       _subSequence:
         _tree.subsequence(
@@ -606,8 +632,7 @@ extension RedBlackTreeSet.SubSequence {
   public typealias Base = RedBlackTreeSet
   public typealias SubSequence = Self
   public typealias Index = Base.Index
-  public typealias TreePointer = Base.TreePointer
-  public typealias RawPointer = Base.RawPointer
+  public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
   public typealias EnumElement = Base.Tree.EnumElement
   public typealias EnumSequence = Base.EnumSequence
@@ -731,7 +756,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
     return _subSequence.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
@@ -745,13 +770,17 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public subscript(position: RawPointer) -> Element {
+  public subscript(position: RawIndex) -> Element {
     return tree[position.rawValue]
   }
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-    SubSequence(
+    guard tree.___signed_distance(startIndex.rawValue, bounds.lowerBound.rawValue) >= 0,
+          tree.___signed_distance(endIndex.rawValue, bounds.upperBound.rawValue) <= 0 else {
+      fatalError(.outOfRange)
+    }
+    return SubSequence(
       _subSequence:
         _subSequence[bounds.lowerBound..<bounds.upperBound])
   }
@@ -827,14 +856,29 @@ extension RedBlackTreeSet {
 
   @inlinable
   @inline(__always)
-  public func isValid(index: TreePointer) -> Bool {
-    ___is_valid_index(index.rawValue)
+  public func isValid(index: Index) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
   }
 
   @inlinable
   @inline(__always)
-  public func isValid(index: RawPointer) -> Bool {
-    ___is_valid_index(index.rawValue)
+  public func isValid(index: RawIndex) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
+  }
+}
+
+extension RedBlackTreeSet.SubSequence {
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index i: Index) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index i: RawIndex) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
   }
 }
 

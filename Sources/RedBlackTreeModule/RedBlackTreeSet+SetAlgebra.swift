@@ -130,7 +130,7 @@ extension RedBlackTreeSet: SetAlgebra {
           __result.pointee = __first2.___pointee
           __result.___next()
         } else {
-          let i: RawPointer = RawPointer(__first1.rawValue)
+          let i: Tree.RawPointer = Tree.RawPointer(__first1.rawValue)
           __first1.___next()
           remove(at: i)
         }

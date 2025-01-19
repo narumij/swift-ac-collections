@@ -617,6 +617,16 @@ extension ___RedBlackTree.___Tree {
 }
 
 extension ___RedBlackTree.___Tree {
+  @inlinable
+  func ___is_valid_index(_ i: _NodePtr) -> Bool {
+    if i == .nullptr { return false }
+    if i == .end { return true }
+    if !(0..<header.initializedCount ~= i) { return false }
+    return ___is_valid(i)
+  }
+}
+
+extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
   public var ___sorted: [Element] {

@@ -362,10 +362,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   func ___is_valid_index(_ i: _NodePtr) -> Bool {
-    if i == .nullptr { return false }
-    if i == .end { return true }
-    if !(0..<_tree.header.initializedCount ~= i) { return false }
-    return _tree.___is_valid(i)
+    _tree.___is_valid_index(i)
   }
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS

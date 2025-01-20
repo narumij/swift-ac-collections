@@ -39,65 +39,14 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset {
-  /// 範囲削除を行う場合に使用する
-  ///
-  /// remove(at:)後のIndexは不正となり、利用できなくなる
-  /// このメソッドを使うことでその不便を解消し、C++のような範囲削除が可能となる
-  ///
-  /// ```swift
-  /// var treeMultiset: RedBlackTreeMultiset<Int> = [1, 2, 2, 2, 3, 4]
-  /// var it = treeMultiset.lowerBound(2)
-  /// let end = treeMultiset.upperBound(2)
-  /// while it != end {
-  ///   it = treeMultiset.erase(at: it)
-  /// }
-  /// print(treeMultiset) // 出力: [1,3,4]
-  /// ```
-  @inlinable
-  public mutating func erase(at position: Index) -> Index {
-    defer { remove(at: position) }
-    return index(after: position)
-  }
-}
 
-extension RedBlackTreeMultiset {
+  @inlinable
+  public mutating func removeSubrange(_ range: Range<Element>) {
+    removeSubrange(lowerBound(range.lowerBound) ..< lowerBound(range.upperBound))
+  }
   
   @inlinable
-  func forEach(in range: Range<Element>, _ body: (Index, Element) throws -> Void) rethrows {
-    var it = lowerBound(range.lowerBound)
-    let end = upperBound(range.upperBound)
-    while it != end {
-      let o = it
-      it = index(after: it)
-      try body(o, self[o])
-    }
-  }
-
-  @inlinable
-  public mutating func remove(in range: Range<Element>) {
-    let lower = lowerBound(range.lowerBound)
-    let upper = upperBound(range.upperBound)
-    var it = lower
-    while it != upper {
-      it = erase(at: it)
-    }
-  }
-
-  @inlinable
-  public mutating func remove(in range: Range<Element>, perform body: ((Element) throws -> Void) = { _ in }) rethrows {
-    let lower = lowerBound(range.lowerBound)
-    let upper = upperBound(range.upperBound)
-    var it = lower
-    while it != upper {
-      try body(self[it])
-      it = erase(at: it)
-    }
+  public mutating func removeSubrange(_ range: ClosedRange<Element>) {
+    removeSubrange(lowerBound(range.lowerBound) ..< upperBound(range.upperBound))
   }
 }
-
-extension RedBlackTreeMultiset {
-  var elements: [Element] {
-    map { $0 }
-  }
-}
-

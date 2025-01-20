@@ -39,6 +39,15 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
+  
+  @inlinable
+  public mutating func erase(at position: Index) -> Index {
+    defer { remove(at: position) }
+    return index(after: position)
+  }
+}
+
+extension RedBlackTreeSet {
 
   @inlinable
   public mutating func removeSubrange(_ range: Range<Element>) {

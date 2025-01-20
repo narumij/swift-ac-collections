@@ -90,7 +90,7 @@ final class MultisetTests: XCTestCase {
 
   func testInitEmtpy() throws {
     let set = RedBlackTreeMultiset<Int>()
-    XCTAssertEqual(set.elements, [])
+    XCTAssertEqual(set.sorted(), [])
     XCTAssertEqual(set.count, 0)
     XCTAssertTrue(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
@@ -105,7 +105,7 @@ final class MultisetTests: XCTestCase {
 
   func testInitRange() throws {
     let set = RedBlackTreeMultiset<Int>(0..<10000)
-    XCTAssertEqual(set.elements, (0..<10000) + [])
+    XCTAssertEqual(set.sorted(), (0..<10000) + [])
     XCTAssertEqual(set.count, 10000)
     XCTAssertFalse(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 10000)
@@ -113,7 +113,7 @@ final class MultisetTests: XCTestCase {
 
   func testInitCollection1() throws {
     let set = RedBlackTreeMultiset<Int>(0..<10000)
-    XCTAssertEqual(set.elements, (0..<10000) + [])
+    XCTAssertEqual(set.sorted(), (0..<10000) + [])
     XCTAssertEqual(set.count, 10000)
     XCTAssertFalse(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 10000)
@@ -121,7 +121,7 @@ final class MultisetTests: XCTestCase {
 
   func testInitCollection2() throws {
     let set = RedBlackTreeMultiset<Int>([2, 3, 3, 0, 0, 1, 1, 1])
-    XCTAssertEqual(set.elements, [0, 0, 1, 1, 1, 2, 3, 3])
+    XCTAssertEqual(set.sorted(), [0, 0, 1, 1, 1, 2, 3, 3])
     XCTAssertEqual(set.count, 8)
     XCTAssertFalse(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
@@ -141,40 +141,40 @@ final class MultisetTests: XCTestCase {
   func testRemove() throws {
     var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set.remove(0), 0)
-    XCTAssertFalse(set.elements.isEmpty)
+    XCTAssertFalse(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(1), 1)
-    XCTAssertFalse(set.elements.isEmpty)
+    XCTAssertFalse(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(2), 2)
-    XCTAssertFalse(set.elements.isEmpty)
+    XCTAssertFalse(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(3), 3)
-    XCTAssertFalse(set.elements.isEmpty)
+    XCTAssertFalse(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(4), 4)
-    XCTAssertTrue(set.elements.isEmpty)
+    XCTAssertTrue(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(0), nil)
-    XCTAssertTrue(set.elements.isEmpty)
+    XCTAssertTrue(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(1), nil)
-    XCTAssertTrue(set.elements.isEmpty)
+    XCTAssertTrue(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(2), nil)
-    XCTAssertTrue(set.elements.isEmpty)
+    XCTAssertTrue(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(3), nil)
-    XCTAssertTrue(set.elements.isEmpty)
+    XCTAssertTrue(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(4), nil)
-    XCTAssertTrue(set.elements.isEmpty)
+    XCTAssertTrue(set.sorted().isEmpty)
   }
 
   #if DEBUG
     func testRemoveAt() throws {
       var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
       XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 0)
-      XCTAssertEqual(set.elements, [1, 2, 3, 4])
+      XCTAssertEqual(set.sorted(), [1, 2, 3, 4])
       XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 1)
-      XCTAssertEqual(set.elements, [2, 3, 4])
+      XCTAssertEqual(set.sorted(), [2, 3, 4])
       XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 2)
-      XCTAssertEqual(set.elements, [3, 4])
+      XCTAssertEqual(set.sorted(), [3, 4])
       XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 3)
-      XCTAssertEqual(set.elements, [4])
+      XCTAssertEqual(set.sorted(), [4])
       XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 4)
-      XCTAssertEqual(set.elements, [])
+      XCTAssertEqual(set.sorted(), [])
       XCTAssertEqual(set.___remove(at: set._tree.__begin_node), nil)
     }
   #endif
@@ -207,7 +207,7 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.remove(3), 3)
     XCTAssertEqual(set.remove(1), nil)
     XCTAssertEqual(set.remove(3), nil)
-    XCTAssertEqual(set.elements, [0, 2, 4])
+    XCTAssertEqual(set.sorted(), [0, 2, 4])
     XCTAssertEqual(set.contains(-1), false)
     XCTAssertEqual(set.contains(0), true)
     XCTAssertEqual(set.contains(1), false)
@@ -219,7 +219,7 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.remove(1), nil)
     XCTAssertEqual(set.remove(2), nil)
     XCTAssertEqual(set.remove(3), nil)
-    XCTAssertEqual(set.elements, [0, 4])
+    XCTAssertEqual(set.sorted(), [0, 4])
     XCTAssertEqual(set.contains(-1), false)
     XCTAssertEqual(set.contains(0), true)
     XCTAssertEqual(set.contains(1), false)
@@ -239,7 +239,7 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.contains(3), false)
     XCTAssertEqual(set.contains(4), false)
     XCTAssertEqual(set.contains(5), false)
-    XCTAssertEqual(set.elements, [])
+    XCTAssertEqual(set.sorted(), [])
   }
 
   func testLeftRight() throws {
@@ -271,7 +271,7 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.remove(3), 3)
     XCTAssertEqual(set.remove(1), nil)
     XCTAssertEqual(set.remove(3), nil)
-    XCTAssertEqual(set.elements, [0, 2, 4])
+    XCTAssertEqual(set.sorted(), [0, 2, 4])
     XCTAssertEqual(set.left(-1).index, 0)
     XCTAssertEqual(set.left(0).index, 0)
     XCTAssertEqual(set.left(1).index, 1)
@@ -290,7 +290,7 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.remove(1), nil)
     XCTAssertEqual(set.remove(2), nil)
     XCTAssertEqual(set.remove(3), nil)
-    XCTAssertEqual(set.elements, [0, 4])
+    XCTAssertEqual(set.sorted(), [0, 4])
     XCTAssertEqual(set.left(-1).index, 0)
     XCTAssertEqual(set.left(0).index, 0)
     XCTAssertEqual(set.left(1).index, 1)
@@ -324,7 +324,7 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.right(3).index, 0)
     XCTAssertEqual(set.right(4).index, 0)
     XCTAssertEqual(set.right(5).index, 0)
-    XCTAssertEqual(set.elements, [])
+    XCTAssertEqual(set.sorted(), [])
   }
 
   func testMinMax() throws {

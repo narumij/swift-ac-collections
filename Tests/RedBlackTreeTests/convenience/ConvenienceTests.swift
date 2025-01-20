@@ -193,7 +193,7 @@ final class ConvenienceTests: XCTestCase {
     XCTAssertEqual(set.remove(3), 3)
     XCTAssertEqual(set.remove(1), nil)
     XCTAssertEqual(set.remove(3), nil)
-    XCTAssertEqual(set.elements, [0, 2, 4])
+    XCTAssertEqual(set.sorted(), [0, 2, 4])
     XCTAssertEqual(set.lessThan(-1), nil)
     XCTAssertEqual(set.greaterThan(-1), 0)
     XCTAssertEqual(set.lessThan(0), nil)
@@ -212,7 +212,7 @@ final class ConvenienceTests: XCTestCase {
     XCTAssertEqual(set.remove(1), nil)
     XCTAssertEqual(set.remove(2), nil)
     XCTAssertEqual(set.remove(3), nil)
-    XCTAssertEqual(set.elements, [0, 4])
+    XCTAssertEqual(set.sorted(), [0, 4])
     XCTAssertEqual(set.lessThan(-1), nil)
     XCTAssertEqual(set.greaterThan(-1), 0)
     XCTAssertEqual(set.lessThan(0), nil)
@@ -246,7 +246,7 @@ final class ConvenienceTests: XCTestCase {
     XCTAssertEqual(set.greaterThan(4), nil)
     XCTAssertEqual(set.lessThan(5), nil)
     XCTAssertEqual(set.greaterThan(5), nil)
-    XCTAssertEqual(set.elements, [])
+    XCTAssertEqual(set.sorted(), [])
   }
 
   func test_Multiset_LE_GE() throws {
@@ -270,7 +270,7 @@ final class ConvenienceTests: XCTestCase {
     XCTAssertEqual(set.remove(3), 3)
     XCTAssertEqual(set.remove(1), nil)
     XCTAssertEqual(set.remove(3), nil)
-    XCTAssertEqual(set.elements, [0, 2, 4])
+    XCTAssertEqual(set.sorted(), [0, 2, 4])
     XCTAssertEqual(set.lessThanOrEqual(-1), nil)
     XCTAssertEqual(set.greaterThanOrEqual(-1), 0)
     XCTAssertEqual(set.lessThanOrEqual(0), 0)
@@ -289,7 +289,7 @@ final class ConvenienceTests: XCTestCase {
     XCTAssertEqual(set.remove(1), nil)
     XCTAssertEqual(set.remove(2), nil)
     XCTAssertEqual(set.remove(3), nil)
-    XCTAssertEqual(set.elements, [0, 4])
+    XCTAssertEqual(set.sorted(), [0, 4])
     XCTAssertEqual(set.lessThanOrEqual(-1), nil)
     XCTAssertEqual(set.greaterThanOrEqual(-1), 0)
     XCTAssertEqual(set.lessThanOrEqual(0), 0)
@@ -323,7 +323,7 @@ final class ConvenienceTests: XCTestCase {
     XCTAssertEqual(set.greaterThanOrEqual(4), nil)
     XCTAssertEqual(set.lessThanOrEqual(5), nil)
     XCTAssertEqual(set.greaterThanOrEqual(5), nil)
-    XCTAssertEqual(set.elements, [])
+    XCTAssertEqual(set.sorted(), [])
   }
   
   func testRedBlackTreeConveniences() throws {
@@ -345,7 +345,9 @@ final class ConvenienceTests: XCTestCase {
     var it = set.lowerBound(2)
     let end = set.upperBound(5)
     while it != end {
-      it = set.erase(at: it)
+      let i = it
+      defer { set.remove(at: i) }
+      it = set.index(after: it)
     }
     XCTAssertEqual(set, [1,6])
   }
@@ -355,7 +357,9 @@ final class ConvenienceTests: XCTestCase {
     var it = set.lowerBound(2)
     let end = set.upperBound(2)
     while it != end {
-      it = set.erase(at: it)
+      let i = it
+      defer { set.remove(at: i) }
+      it = set.index(after: it)
     }
     XCTAssertEqual(set, [1,3,4])
   }

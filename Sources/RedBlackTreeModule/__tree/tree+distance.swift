@@ -47,3 +47,42 @@ extension DistanceProtocol {
     return sign * __distance(__first, __last)
   }
 }
+
+extension DistanceProtocol {
+
+  @inlinable
+  @inline(__always)
+  func ___ptr_less_than(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
+    return ___pointer_comp(l, r)
+  }
+
+  @inlinable
+  @inline(__always)
+  func ___ptr_less_than_or_equal(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
+    return l == r || ___pointer_comp(l, r)
+  }
+  
+  @inlinable
+  @inline(__always)
+  func ___ptr_greator_than(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
+    return l != r && !___pointer_comp(l, r)
+  }
+
+  @inlinable
+  @inline(__always)
+  func ___ptr_greator_than_or_equal(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
+    return !___pointer_comp(l, r)
+  }
+
+  @inlinable
+  @inline(__always)
+  func ___ptr_range_contains(_ l: _NodePtr,_ r: _NodePtr,_ p: _NodePtr) -> Bool {
+    ___ptr_less_than_or_equal(l, p) && ___ptr_less_than(p, r)
+  }
+
+  @inlinable
+  @inline(__always)
+  func ___ptr_closed_range_contains(_ l: _NodePtr,_ r: _NodePtr,_ p: _NodePtr) -> Bool {
+    ___ptr_less_than_or_equal(l, p) && ___ptr_less_than_or_equal(p, r)
+  }
+}

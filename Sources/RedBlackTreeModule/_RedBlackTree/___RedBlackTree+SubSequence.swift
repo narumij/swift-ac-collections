@@ -143,9 +143,12 @@ extension ___RedBlackTree.___Tree {
     @inlinable
     @inline(__always)
     internal subscript(position: Index) -> Element {
-      // TODO: FIX THIS
-//      assert(_tree.___ptr_less_than_or_equal(startIndex, position))
-      assert(_tree.___ptr_less_than_or_equal(position, endIndex))
+      assert(_tree.___ptr_less_than_or_equal(startIndex, position))
+      assert(_tree.___ptr_less_than(position, endIndex))
+      guard _tree.___ptr_less_than_or_equal(startIndex, position),
+            _tree.___ptr_less_than(position, endIndex) else {
+        fatalError(.outOfRange)
+      }
       return _tree[position]
     }
 

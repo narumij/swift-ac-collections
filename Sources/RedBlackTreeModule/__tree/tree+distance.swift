@@ -1,7 +1,7 @@
 import Foundation
 
 @usableFromInline
-protocol DistanceProtocol: MemberProtocol & BeginNodeProtocol & EndNodeProtocol & ValueProtocol {}
+protocol DistanceProtocol: MemberProtocol & BeginNodeProtocol & EndNodeProtocol & ValueProtocol & RootProtocol {}
 
 extension DistanceProtocol {
 
@@ -25,6 +25,7 @@ extension DistanceProtocol {
   @inlinable
   @inline(__always)
   func ___pointer_comp(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
+#if false
     guard
       l != r,
       r != .end,
@@ -33,6 +34,9 @@ extension DistanceProtocol {
       return l != .end && r == .end
     }
     return value_comp(__value_(l), __value_(r))
+#else
+    return ___ptr_less_than(l, r)
+#endif
   }
 
   @inlinable
@@ -49,29 +53,63 @@ extension DistanceProtocol {
 }
 
 extension DistanceProtocol {
+  
+  @inlinable
+  func ___ptr_height(_ __p: _NodePtr) -> Int {
+    var height = 0
+    var __p = __p
+    while __p != __root(), __p != .end {
+      __p = __parent_(__p)
+      height += 1
+    }
+    return height
+  }
 
   @inlinable
   @inline(__always)
   func ___ptr_less_than(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
-    return ___pointer_comp(l, r)
+    guard
+      l != .end,
+      r != .end,
+      l != r else {
+      return l != .end && r == .end
+    }
+    var (l, lh) = (l, ___ptr_height(l))
+    var (r, rh) = (r, ___ptr_height(r))
+    while lh > rh {
+      if __parent_(l) == r {
+        return __tree_is_left_child(l)
+      }
+      (l, lh) = (__parent_(l), lh - 1)
+    }
+    while lh < rh {
+      if __parent_(r) == l {
+        return !__tree_is_left_child(r)
+      }
+      (r, rh) = (__parent_(r), rh - 1)
+    }
+    while __parent_(l) != __parent_(r) {
+      (l, r) = (__parent_(l), __parent_(r))
+    }
+    return  __tree_is_left_child(l)
   }
 
   @inlinable
   @inline(__always)
   func ___ptr_less_than_or_equal(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
-    return l == r || ___pointer_comp(l, r)
+    return l == r || ___ptr_less_than(l, r)
   }
   
   @inlinable
   @inline(__always)
   func ___ptr_greator_than(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
-    return l != r && !___pointer_comp(l, r)
+    return l != r && !___ptr_less_than(l, r)
   }
 
   @inlinable
   @inline(__always)
   func ___ptr_greator_than_or_equal(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
-    return !___pointer_comp(l, r)
+    return !___ptr_less_than(l, r)
   }
 
   @inlinable

@@ -684,8 +684,9 @@ final class MultisetTests: XCTestCase {
     var set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
     let sub = set[2 ..< 4]
     XCTAssertEqual(sub[set.lowerBound(2)], 2)
-    XCTAssertEqual(sub[set.lowerBound(4)], 4)
-    XCTAssertEqual(set.lowerBound(6), set.endIndex)
+    XCTAssertEqual(sub[set.lowerBound(3)], 3)
+    XCTAssertEqual(set.upperBound(3), sub.endIndex)
+    XCTAssertEqual(set.lowerBound(4), sub.endIndex)
     XCTAssertEqual(sub.count, 2)
     XCTAssertEqual(sub.map{ $0 }, [2, 3])
     set.remove(contentsOf: 2 ..< 4)
@@ -696,8 +697,9 @@ final class MultisetTests: XCTestCase {
     var set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
     let sub = set[2 ... 4]
     XCTAssertEqual(sub[set.lowerBound(2)], 2)
-    XCTAssertEqual(sub[set.upperBound(4)], 5)
-    XCTAssertEqual(set.lowerBound(6), set.endIndex)
+    XCTAssertEqual(sub[set.lowerBound(4)], 4)
+    XCTAssertEqual(set.upperBound(4), sub.endIndex)
+    XCTAssertEqual(set.lowerBound(5), sub.endIndex)
     XCTAssertEqual(sub.count, 3)
     XCTAssertEqual(sub.map{ $0 }, [2, 3, 4])
     set.remove(contentsOf: 2 ... 4)
@@ -717,6 +719,28 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(sub[set.lowerBound(1) ..< set.lowerBound(3)].map{ $0 }, [1, 2])
     XCTAssertEqual(sub[sub.startIndex ..< sub.endIndex].map{ $0 }, [1, 2])
     XCTAssertEqual(sub[sub.startIndex ..< sub.index(before: sub.endIndex)].map{ $0 }, [1])
+    XCTAssertEqual(sub.map{ $0 }, [1,2])
+    XCTAssertEqual(set[1 ..< 3].map{ $0 }, [1,2])
+  }
+
+  func testSubsequence6() throws {
+    let set: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3, 4]
+    let sub = set[2 ..< 3]
+    XCTAssertEqual(sub.map{ $0 }, [2, 2, 2])
+    XCTAssertEqual(sub[set.lowerBound(2) ..< set.lowerBound(3)].map{ $0 }, [2, 2, 2])
+    XCTAssertEqual(sub[sub.startIndex ..< sub.endIndex].map{ $0 }, [2, 2, 2])
+    XCTAssertEqual(sub[sub.startIndex ..< sub.index(before: sub.endIndex)].map{ $0 }, [2, 2])
+    XCTAssertEqual(set[2 ..< 3].map{ $0 }, [2, 2, 2])
+  }
+
+  func testSubsequence7() throws {
+    let set: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3, 4]
+    let sub = set[2 ... 2]
+    XCTAssertEqual(sub.map{ $0 }, [2, 2, 2])
+    XCTAssertEqual(sub[set.lowerBound(2) ..< set.upperBound(2)].map{ $0 }, [2, 2, 2])
+    XCTAssertEqual(sub[sub.startIndex ..< sub.endIndex].map{ $0 }, [2, 2, 2])
+    XCTAssertEqual(sub[sub.startIndex ..< sub.index(before: sub.endIndex)].map{ $0 }, [2, 2])
+    XCTAssertEqual(set[2 ..< 3].map{ $0 }, [2, 2, 2])
   }
 
   func testSorted() throws {

@@ -11,25 +11,25 @@ final class MultisetRemoveTests: XCTestCase {
   func testRemove() throws {
     var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set.remove(0), 0)
-    XCTAssertFalse(set.elements.isEmpty)
+    XCTAssertFalse(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(1), 1)
-    XCTAssertFalse(set.elements.isEmpty)
+    XCTAssertFalse(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(2), 2)
-    XCTAssertFalse(set.elements.isEmpty)
+    XCTAssertFalse(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(3), 3)
-    XCTAssertFalse(set.elements.isEmpty)
+    XCTAssertFalse(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(4), 4)
-    XCTAssertTrue(set.elements.isEmpty)
+    XCTAssertTrue(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(0), nil)
-    XCTAssertTrue(set.elements.isEmpty)
+    XCTAssertTrue(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(1), nil)
-    XCTAssertTrue(set.elements.isEmpty)
+    XCTAssertTrue(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(2), nil)
-    XCTAssertTrue(set.elements.isEmpty)
+    XCTAssertTrue(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(3), nil)
-    XCTAssertTrue(set.elements.isEmpty)
+    XCTAssertTrue(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(4), nil)
-    XCTAssertTrue(set.elements.isEmpty)
+    XCTAssertTrue(set.sorted().isEmpty)
   }
 
 #if false
@@ -61,6 +61,7 @@ final class MultisetRemoveTests: XCTestCase {
 
   func testSmokeRemove0() throws {
     var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0, $0] })
+    XCTAssertEqual(s.map { $0 }, (0..<2_000).flatMap { [$0, $0] })
     for i in s {
       s.remove(i)
     }
@@ -68,6 +69,10 @@ final class MultisetRemoveTests: XCTestCase {
 
   func testSmokeRemove1() throws {
     var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0, $0] })
+    let b = s.lowerBound(0)
+    let e = s.lowerBound(10_000)
+    XCTAssertEqual(s[b ..< e].map { $0 }, (0..<2_000).flatMap { [$0, $0] })
+    XCTAssertEqual(s[0..<10_000].map { $0 }, (0..<2_000).flatMap { [$0, $0] })
     for i in s[0..<10_000] {
       s.remove(i)
     }

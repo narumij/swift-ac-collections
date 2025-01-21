@@ -143,27 +143,24 @@ extension ___RedBlackTree.___Tree {
     @inlinable
     @inline(__always)
     internal subscript(position: Index) -> Element {
-      _tree[position]
+      // TODO: FIX THIS
+//      assert(_tree.___ptr_less_than_or_equal(startIndex, position))
+      assert(_tree.___ptr_less_than_or_equal(position, endIndex))
+      return _tree[position]
     }
 
     @inlinable
+    @inline(__always)
     internal subscript(bounds: Range<Pointer>) -> SubSequence {
-      .init(
+      guard _tree.___ptr_less_than_or_equal(startIndex, bounds.lowerBound.rawValue),
+            _tree.___ptr_less_than_or_equal(bounds.upperBound.rawValue, endIndex) else {
+        fatalError(.outOfRange)
+      }
+      return .init(
         ___tree: _tree,
         start: bounds.lowerBound.rawValue,
         end: bounds.upperBound.rawValue)
     }
-  }
-}
-
-extension ___RedBlackTree.___Tree {
-
-  @inlinable
-  internal func subsequence(from: _NodePtr, to: _NodePtr) -> SubSequence {
-    .init(
-      ___tree: self,
-      start: from,
-      end: to)
   }
 }
 
@@ -175,12 +172,17 @@ extension ___RedBlackTree.___Tree.SubSequence {
     guard i != .nullptr, _tree.___is_valid(i) else {
       return false
     }
-    return ___contains(index: i)
+    return _tree.___ptr_closed_range_contains(startIndex, endIndex, i)
   }
-  
+}
+
+extension ___RedBlackTree.___Tree {
+
   @inlinable
-  @inline(__always)
-  internal func ___contains(index i: _NodePtr) -> Bool {
-    _tree.___ptr_closed_range_contains(startIndex, endIndex, i)
+  internal func subsequence(from: _NodePtr, to: _NodePtr) -> SubSequence {
+    .init(
+      ___tree: self,
+      start: from,
+      end: to)
   }
 }

@@ -37,6 +37,7 @@ protocol CompareMultiProtocol: MemberProtocol & RootProtocol & EndProtocol {}
 
 extension CompareMultiProtocol {
 
+  // ノードの高さを数える
   @inlinable
   @inline(__always)
   func ___ptr_height(_ __p: _NodePtr) -> Int {
@@ -50,6 +51,7 @@ extension CompareMultiProtocol {
     return __h
   }
   
+  // ノードの大小を比較する
   @inlinable
   @inline(__always)
   func ___ptr_comp_multi(_ __l: _NodePtr,_ __r: _NodePtr) -> Bool {
@@ -63,21 +65,30 @@ extension CompareMultiProtocol {
     }
     var (__l, __lh) = (__l, ___ptr_height(__l))
     var (__r, __rh) = (__r, ___ptr_height(__r))
+    // __lの高さを詰める
     while __lh > __rh {
+      // 共通祖先が__rだった場合
       if __parent_(__l) == __r {
+        // __lが左であれば、__lが小さい
         return __tree_is_left_child(__l)
       }
       (__l, __lh) = (__parent_(__l), __lh - 1)
     }
+    // __rの高さを詰める
     while __lh < __rh {
+      // 共通祖先が__lだった場合
       if __parent_(__r) == __l {
+        // __rが右であれば(左ではない)、__lが小さい
         return !__tree_is_left_child(__r)
       }
       (__r, __rh) = (__parent_(__r), __rh - 1)
     }
+    // 親が一致するまで、両方の高さを詰める
     while __parent_(__l) != __parent_(__r) {
       (__l, __r) = (__parent_(__l), __parent_(__r))
     }
+    // 共通祖先が__lと__r以外だった場合
+    // 共通祖先の左が__lであれば、__lが小さい
     return  __tree_is_left_child(__l)
   }
   

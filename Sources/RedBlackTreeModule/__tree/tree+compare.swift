@@ -131,6 +131,7 @@ extension CompareProtocol {
   @inlinable
   @inline(__always)
   func ___ptr_closed_range_contains(_ l: _NodePtr,_ r: _NodePtr,_ p: _NodePtr) -> Bool {
-    l == p || r == p || (___ptr_comp(l, p) && ___ptr_comp(p, r))
+//    l == p || r == p || (___ptr_comp(l, p) && ___ptr_comp(p, r))
+    l == p || (___ptr_comp(l, p) && !___ptr_comp(r, p))
   }
 }

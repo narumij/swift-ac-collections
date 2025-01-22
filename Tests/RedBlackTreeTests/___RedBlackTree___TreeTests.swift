@@ -601,5 +601,25 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
     XCTAssertTrue(tree.___ptr_greator_than_or_equal(tree.lower_bound(5), tree.lower_bound(4)))
     XCTAssertTrue(tree.___ptr_greator_than_or_equal(.end, tree.lower_bound(5)))
   }
+  
+  func testMisc5() throws {
+    let tree = RedBlackTree___Tree.create(minimumCapacity: 16)
+    _ = tree.__insert_unique(0)
+    _ = tree.__insert_unique(1)
+    _ = tree.__insert_unique(2)
+    _ = tree.__insert_unique(3)
+    _ = tree.__insert_unique(4)
+    _ = tree.__insert_unique(5)
+    XCTAssertFalse(tree.___ptr_closed_range_contains(tree.lower_bound(1), tree.lower_bound(4), tree.lower_bound(0)))
+    XCTAssertTrue(tree.___ptr_closed_range_contains(tree.lower_bound(1), tree.lower_bound(4), tree.lower_bound(1)))
+    XCTAssertTrue(tree.___ptr_closed_range_contains(tree.lower_bound(1), tree.lower_bound(4), tree.lower_bound(4)))
+    XCTAssertFalse(tree.___ptr_closed_range_contains(tree.lower_bound(1), tree.lower_bound(4), tree.lower_bound(5)))
+    XCTAssertFalse(tree.___ptr_closed_range_contains(tree.lower_bound(1), tree.lower_bound(4), tree.endIndex))
+    XCTAssertFalse(tree.___ptr_closed_range_contains(tree.lower_bound(2), tree.lower_bound(3), tree.lower_bound(1)))
+    XCTAssertTrue(tree.___ptr_closed_range_contains(tree.lower_bound(2), tree.lower_bound(3), tree.lower_bound(2)))
+    XCTAssertTrue(tree.___ptr_closed_range_contains(tree.lower_bound(2), tree.lower_bound(3), tree.lower_bound(3)))
+    XCTAssertFalse(tree.___ptr_closed_range_contains(tree.lower_bound(2), tree.lower_bound(3), tree.lower_bound(4)))
+    XCTAssertFalse(tree.___ptr_closed_range_contains(tree.lower_bound(2), tree.lower_bound(3), tree.endIndex))
+  }
 #endif
 }

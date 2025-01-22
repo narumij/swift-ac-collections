@@ -8,6 +8,7 @@ protocol CompareUniqueProtocol: ValueProtocol {}
 
 extension CompareUniqueProtocol {
   
+  /// multisetでも、インデックス比較に関して不正な結果だが、レンジで使う限り落ちはしない
   @inlinable
   @inline(__always)
   func ___ptr_comp_unique(_ l: _NodePtr,_ r: _NodePtr) -> Bool {

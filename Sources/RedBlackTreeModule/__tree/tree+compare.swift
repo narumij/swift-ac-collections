@@ -36,42 +36,45 @@ extension CompareMultiProtocol {
   @inlinable
   @inline(__always)
   func ___ptr_height(_ __p: _NodePtr) -> Int {
-    var height = 0
+    assert(__p != .nullptr, "Node shouldn't be null")
+    var __h = 0
     var __p = __p
     while __p != __root(), __p != end() {
       __p = __parent_(__p)
-      height += 1
+      __h += 1
     }
-    return height
+    return __h
   }
   
   @inlinable
   @inline(__always)
-  func ___ptr_comp_multi(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
+  func ___ptr_comp_multi(_ __l: _NodePtr,_ __r: _NodePtr) -> Bool {
+    assert(__l != .nullptr, "Left node shouldn't be null")
+    assert(__r != .nullptr, "Right node shouldn't be null")
     guard
-      l != end(),
-      r != end(),
-      l != r else {
-      return l != end() && r == end()
+      __l != end(),
+      __r != end(),
+      __l != __r else {
+      return __l != end() && __r == end()
     }
-    var (l, lh) = (l, ___ptr_height(l))
-    var (r, rh) = (r, ___ptr_height(r))
-    while lh > rh {
-      if __parent_(l) == r {
-        return __tree_is_left_child(l)
+    var (__l, __lh) = (__l, ___ptr_height(__l))
+    var (__r, __rh) = (__r, ___ptr_height(__r))
+    while __lh > __rh {
+      if __parent_(__l) == __r {
+        return __tree_is_left_child(__l)
       }
-      (l, lh) = (__parent_(l), lh - 1)
+      (__l, __lh) = (__parent_(__l), __lh - 1)
     }
-    while lh < rh {
-      if __parent_(r) == l {
-        return !__tree_is_left_child(r)
+    while __lh < __rh {
+      if __parent_(__r) == __l {
+        return !__tree_is_left_child(__r)
       }
-      (r, rh) = (__parent_(r), rh - 1)
+      (__r, __rh) = (__parent_(__r), __rh - 1)
     }
-    while __parent_(l) != __parent_(r) {
-      (l, r) = (__parent_(l), __parent_(r))
+    while __parent_(__l) != __parent_(__r) {
+      (__l, __r) = (__parent_(__l), __parent_(__r))
     }
-    return  __tree_is_left_child(l)
+    return  __tree_is_left_child(__l)
   }
   
   @inlinable

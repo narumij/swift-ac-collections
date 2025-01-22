@@ -11,7 +11,8 @@ var defines: [String] = [
 //  "USING_ALGORITHMS",
 //  "USING_COLLECTIONS",
 //  "DISABLE_COPY_ON_WRITE", // やや危険。クラッシュは減った
-//  "ENABLE_PERFORMANCE_TESTING"
+//  "ENABLE_PERFORMANCE_TESTING",
+  "SKIP_MULTISET_INDEX_BUG",
 ]
 
 var _settings: [SwiftSetting] =

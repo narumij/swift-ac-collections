@@ -636,6 +636,55 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(sub.map{ $0 }, [1,2])
     XCTAssertEqual(set[1 ..< 3].map{ $0 }, [1,2])
   }
+  
+  func testIndex0() throws {
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    var i = set.startIndex
+    for _ in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.index(after: i)), 1)
+      i = set.index(after: i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for _ in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.index(before: i)), -1)
+      i = set.index(before: i)
+    }
+    XCTAssertEqual(i, set.startIndex)
+    for _ in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.index(after: i), to: i), -1)
+      i = set.index(after: i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for _ in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.index(before: i), to: i), 1)
+      i = set.index(before: i)
+    }
+  }
+  
+  func testIndex00() throws {
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    var i = set.startIndex
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.startIndex, to: i), j)
+      i = set.index(after: i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.endIndex, to: i), -j)
+      i = set.index(before: i)
+    }
+    XCTAssertEqual(i, set.startIndex)
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.startIndex), -j)
+      i = set.index(after: i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.endIndex), j)
+      i = set.index(before: i)
+    }
+    XCTAssertEqual(i, set.startIndex)
+  }
 
   func testSorted() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]

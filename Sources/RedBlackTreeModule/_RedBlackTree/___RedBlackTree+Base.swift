@@ -380,7 +380,7 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
 
-  // C++風の削除コードが書きたい場合にこっそりつかうもの
+  // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの
   @inlinable
   @inline(__always)
   @discardableResult
@@ -388,7 +388,7 @@ extension ___RedBlackTreeBase {
     Tree.RawPointer(_tree.erase(ptr.rawValue))
   }
 
-  // C++風の削除コードが書きたい場合にこっそりつかうもの
+  // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの
   @inlinable
   @inline(__always)
   @discardableResult

@@ -89,42 +89,49 @@ extension ___RedBlackTree.___Tree {
     @inlinable
     @inline(__always)
     internal func index(after i: Index) -> Index {
+      // 標準のArrayが単純に加算することにならい、範囲チェックをしない
       _tree.index(after: i)
     }
 
     @inlinable
     @inline(__always)
     internal func formIndex(after i: inout Index) {
+      // 標準のArrayが単純に加算することにならい、範囲チェックをしない
       _tree.formIndex(after: &i)
     }
 
     @inlinable
     @inline(__always)
     internal func index(before i: Index) -> Index {
+      // 標準のArrayが単純に減算することにならい、範囲チェックをしない
       _tree.index(before: i)
     }
 
     @inlinable
     @inline(__always)
     internal func formIndex(before i: inout Index) {
+      // 標準のArrayが単純に減算することにならい、範囲チェックをしない
       _tree.formIndex(before: &i)
     }
 
     @inlinable
     @inline(__always)
     internal func index(_ i: Index, offsetBy distance: Int) -> Index {
+      // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
       _tree.index(i, offsetBy: distance)
     }
 
     @inlinable
     @inline(__always)
     internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+      // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
       _tree.formIndex(&i, offsetBy: distance)
     }
 
     @inlinable
     @inline(__always)
     internal func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+      // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
       _tree.index(i, offsetBy: distance, limitedBy: limit)
     }
 
@@ -133,6 +140,7 @@ extension ___RedBlackTree.___Tree {
     internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
       -> Bool
     {
+      // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
       if let ii = index(i, offsetBy: distance, limitedBy: limit) {
         i = ii
         return true
@@ -143,8 +151,6 @@ extension ___RedBlackTree.___Tree {
     @inlinable
     @inline(__always)
     internal subscript(position: Index) -> Element {
-      assert(_tree.___ptr_less_than_or_equal(startIndex, position))
-      assert(_tree.___ptr_less_than(position, endIndex))
       guard _tree.___ptr_less_than_or_equal(startIndex, position),
             _tree.___ptr_less_than(position, endIndex) else {
         fatalError(.outOfRange)

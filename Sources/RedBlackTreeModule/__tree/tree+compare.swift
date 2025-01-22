@@ -1,8 +1,11 @@
 import Foundation
 
+@usableFromInline
+protocol PointerCompareProtocol: ValueProtocol {
+  func ___ptr_comp(_ l: _NodePtr,_ r: _NodePtr) -> Bool
+}
+
 // 現状使っていない
-// multiと比べて速いため、multiset以外ではこちらを使いたい
-// だが、インジェクションが難しいので一旦保留にしている
 @usableFromInline
 protocol CompareUniqueProtocol: ValueProtocol {}
 
@@ -86,9 +89,7 @@ extension CompareMultiProtocol {
 }
 
 @usableFromInline
-protocol CompareProtocol {
-  func ___ptr_comp(_ l: _NodePtr,_ r: _NodePtr) -> Bool
-}
+protocol CompareProtocol: PointerCompareProtocol { }
 
 extension CompareProtocol {
   

@@ -1,7 +1,7 @@
 import Foundation
 
 @usableFromInline
-protocol DistanceProtocol: MemberProtocol & CompareMultiProtocol {}
+protocol DistanceProtocol: MemberProtocol & PointerCompareProtocol {}
 
 extension DistanceProtocol {
 

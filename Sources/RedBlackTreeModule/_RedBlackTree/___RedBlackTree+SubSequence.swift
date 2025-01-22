@@ -53,7 +53,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    var count: Int {
+    internal var count: Int {
       _tree.distance(from: startIndex, to: endIndex)
     }
 
@@ -70,7 +70,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    public func forEach(_ body: (Element) throws -> Void) rethrows {
+    internal func forEach(_ body: (Element) throws -> Void) rethrows {
       var __p = startIndex
       while __p != endIndex {
         let __c = __p
@@ -82,37 +82,37 @@ extension ___RedBlackTree.___Tree {
     // この実装がないと、迷子になる
     @inlinable
     @inline(__always)
-    public func distance(from start: Index, to end: Index) -> Int {
+    internal func distance(from start: Index, to end: Index) -> Int {
       _tree.distance(from: start, to: end)
     }
 
     @inlinable
     @inline(__always)
-    public func index(after i: Index) -> Index {
+    internal func index(after i: Index) -> Index {
       _tree.index(after: i)
     }
 
     @inlinable
     @inline(__always)
-    public func formIndex(after i: inout Index) {
+    internal func formIndex(after i: inout Index) {
       _tree.formIndex(after: &i)
     }
 
     @inlinable
     @inline(__always)
-    public func index(before i: Index) -> Index {
+    internal func index(before i: Index) -> Index {
       _tree.index(before: i)
     }
 
     @inlinable
     @inline(__always)
-    public func formIndex(before i: inout Index) {
+    internal func formIndex(before i: inout Index) {
       _tree.formIndex(before: &i)
     }
 
     @inlinable
     @inline(__always)
-    public func index(_ i: Index, offsetBy distance: Int) -> Index {
+    internal func index(_ i: Index, offsetBy distance: Int) -> Index {
       _tree.index(i, offsetBy: distance)
     }
 
@@ -124,7 +124,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+    internal func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
       _tree.index(i, offsetBy: distance, limitedBy: limit)
     }
 
@@ -142,13 +142,24 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    public subscript(position: Index) -> Element {
-      _tree[position]
+    internal subscript(position: Index) -> Element {
+      assert(_tree.___ptr_less_than_or_equal(startIndex, position))
+      assert(_tree.___ptr_less_than(position, endIndex))
+      guard _tree.___ptr_less_than_or_equal(startIndex, position),
+            _tree.___ptr_less_than(position, endIndex) else {
+        fatalError(.outOfRange)
+      }
+      return _tree[position]
     }
 
     @inlinable
-    public subscript(bounds: Range<Pointer>) -> SubSequence {
-      .init(
+    @inline(__always)
+    internal subscript(bounds: Range<Pointer>) -> SubSequence {
+      guard _tree.___ptr_less_than_or_equal(startIndex, bounds.lowerBound.rawValue),
+            _tree.___ptr_less_than_or_equal(bounds.upperBound.rawValue, endIndex) else {
+        fatalError(.outOfRange)
+      }
+      return .init(
         ___tree: _tree,
         start: bounds.lowerBound.rawValue,
         end: bounds.upperBound.rawValue)
@@ -156,30 +167,25 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
-
-  @inlinable
-  func subsequence(from: _NodePtr, to: _NodePtr) -> SubSequence {
-    .init(
-      ___tree: self,
-      start: from,
-      end: to)
-  }
-}
-
 extension ___RedBlackTree.___Tree.SubSequence {
 
   @inlinable
   @inline(__always)
-  public func ___is_valid_index(index i: _NodePtr) -> Bool {
-    
-    guard i != .nullptr,
-          _tree.___is_valid(i)
-    else {
+  internal func ___is_valid_index(index i: _NodePtr) -> Bool {
+    guard i != .nullptr, _tree.___is_valid(i) else {
       return false
     }
-    
-    return _tree.___signed_distance(startIndex, i) >= 0 &&
-    _tree.___signed_distance(i, endIndex) >= 0
+    return _tree.___ptr_closed_range_contains(startIndex, endIndex, i)
+  }
+}
+
+extension ___RedBlackTree.___Tree {
+
+  @inlinable
+  internal func subsequence(from: _NodePtr, to: _NodePtr) -> SubSequence {
+    .init(
+      ___tree: self,
+      start: from,
+      end: to)
   }
 }

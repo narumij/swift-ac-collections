@@ -412,9 +412,11 @@ extension ___RedBlackTree.___Tree: HandleProtocol {}
 extension ___RedBlackTree.___Tree: EraseProtocol {}
 extension ___RedBlackTree.___Tree: BoundProtocol {}
 extension ___RedBlackTree.___Tree: InsertUniqueProtocol {}
-extension ___RedBlackTree.___Tree: DistanceProtocol {}
 extension ___RedBlackTree.___Tree: CountProtocol {}
 extension ___RedBlackTree.___Tree: MemberProtocol {}
+extension ___RedBlackTree.___Tree: DistanceProtocol {}
+extension ___RedBlackTree.___Tree: CompareProtocol {}
+extension ___RedBlackTree.___Tree: CompareMultiProtocol {}
 
 extension ___RedBlackTree.___Tree {
   @inlinable

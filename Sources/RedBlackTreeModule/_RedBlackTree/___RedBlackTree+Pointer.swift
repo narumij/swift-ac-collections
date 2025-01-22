@@ -107,6 +107,7 @@ extension ___RedBlackTree.___Tree {
 
     // 本来の目的のための、大事な比較演算子
     public static func < (lhs: Self, rhs: Self) -> Bool {
+#if false
       guard
         lhs.rawValue != rhs.rawValue,
         rhs.rawValue != .end,
@@ -116,10 +117,12 @@ extension ___RedBlackTree.___Tree {
       }
       let tree = lhs._tree
       return Tree.VC.value_comp(tree.___key(lhs.rawValue), tree.___key(rhs.rawValue))
+#else
+      lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
+#endif
     }
   }
 }
-
 
 #if DEBUG
 fileprivate extension ___RedBlackTree.___Tree.Pointer {

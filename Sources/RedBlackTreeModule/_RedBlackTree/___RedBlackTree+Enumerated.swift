@@ -27,11 +27,12 @@ protocol RawPointerBuilderProtocol {}
 
 extension RawPointerBuilderProtocol {
 
-  public typealias EnumeratedIndex = ___RedBlackTree.RawPointer
+  @usableFromInline
+  internal typealias EnumeratedIndex = ___RedBlackTree.RawPointer
 
   @inlinable
   @inline(__always)
-  public func ___index(_ p: _NodePtr) -> EnumeratedIndex {
+  internal func ___index(_ p: _NodePtr) -> EnumeratedIndex {
     .init(p)
   }
 }
@@ -43,12 +44,15 @@ protocol TreePointerBuilderProtocol {
 }
 
 extension TreePointerBuilderProtocol {
-  public typealias Tree = ___RedBlackTree.___Tree<VC>
-  public typealias EnumeratedIndex = ___RedBlackTree.___Tree<VC>.Pointer
+  @usableFromInline
+  internal typealias Tree = ___RedBlackTree.___Tree<VC>
+  
+  @usableFromInline
+  internal typealias EnumeratedIndex = ___RedBlackTree.___Tree<VC>.Pointer
 
   @inlinable
   @inline(__always)
-  public func ___index(_ p: _NodePtr) -> EnumeratedIndex {
+  internal func ___index(_ p: _NodePtr) -> EnumeratedIndex {
     .init(__tree: _tree, pointer: p)
   }
 }
@@ -112,7 +116,9 @@ extension ___RedBlackTree.___Tree {
   public struct EnumSequence: Sequence, EnumIndexMaker {
 
     public typealias Element = Tree.EnumElement
-    public typealias Index = _NodePtr
+    
+    @usableFromInline
+    typealias Index = _NodePtr
 
     @inlinable
     init(tree: Tree, start: Index, end: Index) {
@@ -124,10 +130,10 @@ extension ___RedBlackTree.___Tree {
     @usableFromInline
     let _tree: Tree
 
-    public
+    @usableFromInline
       var startIndex: Index
 
-    public
+    @usableFromInline
       var endIndex: Index
 
     @inlinable
@@ -137,13 +143,13 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    public var count: Int {
+    internal var count: Int {
       _tree.distance(from: startIndex, to: endIndex)
     }
 
     @inlinable
     @inline(__always)
-    public func forEach(_ body: (Element) throws -> Void) rethrows {
+    internal func forEach(_ body: (Element) throws -> Void) rethrows {
       var __p = startIndex
       while __p != endIndex {
         let __c = __p
@@ -155,37 +161,37 @@ extension ___RedBlackTree.___Tree {
     // この実装がないと、迷子になる
     @inlinable
     @inline(__always)
-    public func distance(from start: Index, to end: Index) -> Int {
+    internal func distance(from start: Index, to end: Index) -> Int {
       _tree.distance(from: start, to: end)
     }
 
     @inlinable
     @inline(__always)
-    public func index(after i: Index) -> Index {
+    internal func index(after i: Index) -> Index {
       _tree.index(after: i)
     }
 
     @inlinable
     @inline(__always)
-    public func formIndex(after i: inout Index) {
+    internal func formIndex(after i: inout Index) {
       _tree.formIndex(after: &i)
     }
 
     @inlinable
     @inline(__always)
-    public func index(before i: Index) -> Index {
+    internal func index(before i: Index) -> Index {
       _tree.index(before: i)
     }
 
     @inlinable
     @inline(__always)
-    public func formIndex(before i: inout Index) {
+    internal func formIndex(before i: inout Index) {
       _tree.formIndex(before: &i)
     }
 
     @inlinable
     @inline(__always)
-    public func index(_ i: Index, offsetBy distance: Int) -> Index {
+    internal func index(_ i: Index, offsetBy distance: Int) -> Index {
       _tree.index(i, offsetBy: distance)
     }
 
@@ -197,7 +203,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+    internal func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
       _tree.index(i, offsetBy: distance, limitedBy: limit)
     }
 
@@ -215,12 +221,12 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    public subscript(position: Index) -> EnumElement {
+    internal subscript(position: Index) -> EnumElement {
       (___index(position), _tree[position])
     }
 
     @inlinable
-    public subscript(bounds: Range<Pointer>) -> EnumSequence {
+    internal subscript(bounds: Range<Pointer>) -> EnumSequence {
       .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
     }
   }
@@ -229,12 +235,12 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
-  func enumeratedSubsequence() -> EnumSequence {
+  internal func enumeratedSubsequence() -> EnumSequence {
     .init(tree: self, start: __begin_node, end: __end_node())
   }
 
   @inlinable
-  func enumeratedSubsequence(from: _NodePtr, to: _NodePtr) -> EnumSequence {
+  internal func enumeratedSubsequence(from: _NodePtr, to: _NodePtr) -> EnumSequence {
     .init(tree: self, start: from, end: to)
   }
 }

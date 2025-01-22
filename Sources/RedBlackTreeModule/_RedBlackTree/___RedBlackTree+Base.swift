@@ -38,17 +38,17 @@ protocol ___RedBlackTreeBase: ValueComparer {
 extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
-  public var ___count: Int {
+  var ___count: Int {
     _tree.count
   }
 
   @inlinable @inline(__always)
-  public var ___isEmpty: Bool {
+  var ___isEmpty: Bool {
     _tree.count == 0
   }
 
   @inlinable @inline(__always)
-  public var ___header_capacity: Int {
+  var ___header_capacity: Int {
     _tree.header.capacity
   }
 }
@@ -122,12 +122,12 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
-  func ___index(before i: _NodePtr) -> ___Index {
+  public func ___index(before i: _NodePtr) -> ___Index {
     ___index(_tree.index(before: i))
   }
 
   @inlinable @inline(__always)
-  func ___index(after i: _NodePtr) -> ___Index {
+  public func ___index(after i: _NodePtr) -> ___Index {
     ___index(_tree.index(after: i))
   }
 }
@@ -136,12 +136,12 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  func ___index(_ i: _NodePtr, offsetBy distance: Int) -> ___Index {
+  public func ___index(_ i: _NodePtr, offsetBy distance: Int) -> ___Index {
     ___index(_tree.index(i, offsetBy: distance))
   }
 
   @inlinable
-  func ___index(
+  public func ___index(
     _ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr
   ) -> ___Index? {
     ___index_or_nil(_tree.index(i, offsetBy: distance, limitedBy: limit))
@@ -151,14 +151,14 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @inlinable
-  public func ___first_index(of member: _Key) -> ___Index? {
+  func ___first_index(of member: _Key) -> ___Index? {
     var __parent = _NodePtr.nullptr
     let ptr = _tree.__ptr_(_tree.__find_equal(&__parent, member))
     return ___index_or_nil(ptr)
   }
 
   @inlinable
-  public func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> ___Index? {
+  func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> ___Index? {
     var result: ___Index?
     try _tree.___for_each(__p: _tree.__begin_node, __l: _tree.__end_node()) { __p, cont in
       if try predicate(_tree[__p]) {

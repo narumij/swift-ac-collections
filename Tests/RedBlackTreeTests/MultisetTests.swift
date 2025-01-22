@@ -755,6 +755,16 @@ final class MultisetTests: XCTestCase {
       XCTAssertEqual(set.distance(from: i, to: set.index(before: i)), -1)
       i = set.index(before: i)
     }
+    XCTAssertEqual(i, set.startIndex)
+    for _ in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.index(after: i), to: i), -1)
+      i = set.index(after: i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for _ in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.index(before: i), to: i), 1)
+      i = set.index(before: i)
+    }
   }
   
   func testIndex00() throws {

@@ -813,6 +813,20 @@ final class MultisetTests: XCTestCase {
     XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.index(before: set.upperBound(2)))
   }
 
+  func testIndex10() throws {
+    let set: RedBlackTreeMultiset<Int> = [1,2,3,4,5,6]
+    XCTAssertNotNil(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex))
+    XCTAssertNil(set.index(set.startIndex, offsetBy: 7, limitedBy: set.endIndex))
+    XCTAssertNotNil(set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex))
+    XCTAssertNil(set.index(set.endIndex, offsetBy: -7, limitedBy: set.startIndex))
+    let sub = set[2..<5]
+    XCTAssertEqual(sub.map{ $0 }, [2,3,4])
+    XCTAssertNotNil(sub.index(sub.startIndex, offsetBy: 3, limitedBy: sub.endIndex))
+    XCTAssertNil(sub.index(sub.startIndex, offsetBy: 4, limitedBy: sub.endIndex))
+    XCTAssertNotNil(sub.index(sub.endIndex, offsetBy: -3, limitedBy: sub.startIndex))
+    XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
+  }
+
   func testSorted() throws {
     let set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
     XCTAssertEqual(set.sorted(), [1, 2, 3, 4, 5])

@@ -120,13 +120,13 @@ extension RedBlackTreeMultiset {
   /// - 計算量: O(1)
   @inlinable
   public var isEmpty: Bool {
-    ___isEmpty
+    ___is_empty
   }
 
   /// - 計算量: O(1)
   @inlinable
   public var capacity: Int {
-    ___header_capacity
+    ___capacity
   }
 }
 

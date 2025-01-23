@@ -141,13 +141,13 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   public var isEmpty: Bool {
-    ___isEmpty
+    ___is_empty
   }
 
   /// - Complexity: O(1)
   @inlinable
   public var capacity: Int {
-    ___header_capacity
+    ___capacity
   }
 }
 

@@ -600,7 +600,7 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable @inline(__always)
-  internal var ___isEmpty: Bool {
+  internal var ___is_empty: Bool {
     count == 0
   }
 

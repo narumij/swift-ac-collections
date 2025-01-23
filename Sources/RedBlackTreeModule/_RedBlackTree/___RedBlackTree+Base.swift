@@ -45,17 +45,17 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   var ___count: Int {
-    _tree.count
+    _tree.___count
   }
 
   @inlinable @inline(__always)
-  var ___isEmpty: Bool {
-    _tree.count == 0
+  var ___is_empty: Bool {
+    _tree.___is_empty
   }
 
   @inlinable @inline(__always)
-  var ___header_capacity: Int {
-    _tree.header.capacity
+  var ___capacity: Int {
+    _tree.___capacity
   }
 }
 

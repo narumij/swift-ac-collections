@@ -144,27 +144,24 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
   
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   func ___index(_ i: _NodePtr, offsetBy distance: Int) -> ___Index {
     ___index(_tree.index(i, offsetBy: distance))
   }
   
-  @inlinable
+  @inlinable @inline(__always)
   func ___index(
     _ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr
   ) -> ___Index? {
     ___index_or_nil(_tree.index(i, offsetBy: distance, limitedBy: limit))
   }
   
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public func ___form_index(_ i: inout _NodePtr, offsetBy distance: Int) {
     _tree.formIndex(&i, offsetBy: distance)
   }
   
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public func ___form_index(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
   -> Bool {
     _tree.formIndex(&i, offsetBy: distance, limitedBy: limit)
@@ -195,8 +192,7 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int {
     _tree.___signed_distance(start, end)
   }

@@ -84,6 +84,32 @@ final class MultisetRemoveTests: XCTestCase {
       s.remove(i)
     }
   }
+  
+  func testSmokeRemove00() throws {
+    var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0, $0] })
+    XCTAssertEqual(s.map { $0 }, (0..<2_000).flatMap { [$0, $0] })
+    for i in s {
+      s.remove(_unsafe: i)
+    }
+  }
+
+  func testSmokeRemove10() throws {
+    var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0, $0] })
+    let b = s.lowerBound(0)
+    let e = s.lowerBound(10_000)
+    XCTAssertEqual(s[b ..< e].map { $0 }, (0..<2_000).flatMap { [$0, $0] })
+    XCTAssertEqual(s[0..<10_000].map { $0 }, (0..<2_000).flatMap { [$0, $0] })
+    for i in s[0..<10_000] {
+      s.remove(_unsafe: i)
+    }
+  }
+
+  func testSmokeRemove20() throws {
+    var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0, $0] })
+    for i in s[0..<10_000].map({ $0 }) {
+      s.remove(_unsafe: i)
+    }
+  }
 
   func testSmokeRemove3() throws {
     var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0, $0] })
@@ -127,5 +153,14 @@ final class MultisetRemoveTests: XCTestCase {
     XCTAssertEqual(members.count, 2)
     members.remove(Int.max)
     XCTAssertEqual(members.count, 0)
+  }
+  
+  func testRemoveLast() throws {
+    var members: RedBlackTreeMultiset = [1, 3, 5, 7, 9]
+    XCTAssertEqual(members.removeLast(), 9)
+    XCTAssertEqual(members.removeLast(), 7)
+    XCTAssertEqual(members.removeLast(), 5)
+    XCTAssertEqual(members.removeLast(), 3)
+    XCTAssertEqual(members.removeLast(), 1)
   }
 }

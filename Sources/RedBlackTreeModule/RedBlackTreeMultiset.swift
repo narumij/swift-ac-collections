@@ -557,7 +557,7 @@ extension RedBlackTreeMultiset.SubSequence {
   public typealias Index = Base.Index
   public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
-  public typealias EnumSequence = Base.EnumuratedSequence
+  public typealias EnumuratedSequence = Base.EnumuratedSequence
 }
 
 extension RedBlackTreeMultiset.SubSequence: Sequence {
@@ -596,8 +596,8 @@ extension RedBlackTreeMultiset.SubSequence: Sequence {
   #else
     @inlinable
     @inline(__always)
-    public func enumerated() -> EnumSequence {
-      EnumSequence(
+    public func enumerated() -> EnumuratedSequence {
+      EnumuratedSequence(
         _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
     }
   #endif

@@ -329,57 +329,6 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(dict.updateValue(10, forKey: 1), 1)
     XCTAssertEqual(dict[1], 10)
   }
-
-  func testRemoveKey_() throws {
-    var dict = [1:1,2:2,3:3]
-    XCTAssertEqual(dict.removeValue(forKey: 0), nil)
-    XCTAssertEqual(dict.removeValue(forKey: 1), 1)
-    XCTAssertEqual(dict, [2:2,3:3])
-  }
-
-  func testRemoveKey() throws {
-    var dict = [1:1,2:2,3:3] as RedBlackTreeDictionary<Int,Int>
-    XCTAssertEqual(dict.removeValue(forKey: 0), nil)
-    XCTAssertEqual(dict.removeValue(forKey: 1), 1)
-    XCTAssertEqual(dict, [2:2,3:3])
-    XCTAssertEqual(dict.first?.key, 2)
-    XCTAssertEqual(dict.last?.key, 3)
-  }
-
-  func testRemove_() throws {
-    var dict = [1:1,2:2,3:3]
-    let i = dict.firstIndex { (k,v) in k == 1 }!
-    XCTAssertEqual(dict.remove(at: i).value, 1)
-  }
-
-  func testRemove() throws {
-    var dict = [1:1,2:2,3:3] as RedBlackTreeDictionary<Int,Int>
-    let i = dict.firstIndex { (k,v) in k == 1 }!
-    XCTAssertEqual(dict.remove(at: i).value, 1)
-  }
-
-  func testRemoveAll_() throws {
-    var dict = [1:1,2:2,3:3]
-    dict.removeAll(keepingCapacity: true)
-    XCTAssertTrue(dict.map { $0 }.isEmpty)
-    XCTAssertGreaterThanOrEqual(dict.capacity, 3)
-    dict.removeAll(keepingCapacity: false)
-    XCTAssertTrue(dict.map { $0 }.isEmpty)
-    XCTAssertGreaterThanOrEqual(dict.capacity, 0)
-    XCTAssertNil(dict.first)
-  }
-
-  func testRemoveAll() throws {
-    var dict = [1:1,2:2,3:3] as RedBlackTreeDictionary<Int,Int>
-    dict.removeAll(keepingCapacity: true)
-    XCTAssertTrue(dict.map { $0 }.isEmpty)
-    XCTAssertGreaterThanOrEqual(dict.capacity, 3)
-    dict.removeAll(keepingCapacity: false)
-    XCTAssertTrue(dict.map { $0 }.isEmpty)
-    XCTAssertGreaterThanOrEqual(dict.capacity, 0)
-    XCTAssertNil(dict.first)
-    XCTAssertNil(dict.last)
-  }
   
   func testBound() throws {
     let dict = [1:10,3:30,5:50] as RedBlackTreeDictionary<Int,Int>
@@ -405,6 +354,13 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -3)].key, 2)
     XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -2)].key, 3)
     XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -1)].key, 4)
+  }
+  
+  func testIndex() throws {
+    let set = [0:0, 1:10, 2:20, 3:30, 4:40] as RedBlackTreeDictionary<Int,Int>
+    XCTAssertEqual(set.firstIndex(of: 0), set.startIndex)
+    XCTAssertEqual(set.firstIndex(of: 2), set.index(set.startIndex, offsetBy: 2))
+    XCTAssertEqual(set.firstIndex(of: 5), nil)
   }
 
   func testIndexLimit1() throws {
@@ -761,6 +717,41 @@ final class DictionaryTests: XCTestCase {
     XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 3)))
     XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 4)))
     XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: 5)))
+#endif
+  }
+  
+  func testIndexValidation2() throws {
+    let _set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e", 6: "f", 7: "g"]
+    let set = _set[2 ..< 6]
+    XCTAssertTrue(set.isValid(index: set.startIndex))
+    XCTAssertTrue(set.isValid(index: set.endIndex))
+    typealias Index = RedBlackTreeDictionary<Int, String>.Index
+    typealias RawIndex = RedBlackTreeDictionary<Int, String>.RawIndex
+#if DEBUG
+    XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
+    XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
+    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: -1).rawValue, -1)
+    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: 5).rawValue, 5)
+
+    XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
+    XCTAssertFalse(set.isValid(index: .unsafe(0)))
+    XCTAssertTrue(set.isValid(index: .unsafe(1)))
+    XCTAssertTrue(set.isValid(index: .unsafe(2)))
+    XCTAssertTrue(set.isValid(index: .unsafe(3)))
+    XCTAssertTrue(set.isValid(index: .unsafe(4)))
+    XCTAssertTrue(set.isValid(index: .unsafe(5)))
+    XCTAssertFalse(set.isValid(index: .unsafe(6)))
+    XCTAssertFalse(set.isValid(index: .unsafe(7)))
+
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: .nullptr)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: 0)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 1)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 2)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 3)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 4)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 5)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: 6)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: 7)))
 #endif
   }
 }

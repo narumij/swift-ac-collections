@@ -24,7 +24,7 @@ import Foundation
 
 extension ___RedBlackTree {
 
-  public class ___Tree<VC>: ManagedBuffer<
+  public final class ___Tree<VC>: ManagedBuffer<
     ___RedBlackTree.___Tree<VC>.Header,
     ___RedBlackTree.___Tree<VC>.Node
   >
@@ -99,15 +99,15 @@ extension ___RedBlackTree.___Tree {
   public struct Node: ___tree_base_node {
 
     @usableFromInline
-    var __value_: Element
+    internal var __value_: Element
     @usableFromInline
-    var __left_: _NodePtr
+    internal var __left_: _NodePtr
     @usableFromInline
-    var __right_: _NodePtr
+    internal var __right_: _NodePtr
     @usableFromInline
-    var __parent_: _NodePtr
+    internal var __parent_: _NodePtr
     @usableFromInline
-    var __is_black_: Bool
+    internal var __is_black_: Bool
 
     @inlinable
     init(
@@ -132,13 +132,10 @@ extension ___RedBlackTree.___Tree {
     typealias Tree = ___RedBlackTree.___Tree<VC>
 
   @usableFromInline
-  typealias _Tree = ___RedBlackTree.___Tree<VC>
-
-  public
-    typealias VC = VC
+  internal typealias VC = VC
 
   @usableFromInline
-  typealias Manager = ManagedBufferPointer<Header, Node>
+  internal typealias Manager = ManagedBufferPointer<Header, Node>
 }
 
 extension ___RedBlackTree.___Tree {
@@ -163,22 +160,22 @@ extension ___RedBlackTree.___Tree {
     }
 
     @usableFromInline
-    var capacity: Int
+    internal var capacity: Int
 
     @usableFromInline
-    var __left_: _NodePtr = .nullptr
+    internal var __left_: _NodePtr = .nullptr
 
     @usableFromInline
-    var __begin_node: _NodePtr = .end
+    internal var __begin_node: _NodePtr = .end
 
     @usableFromInline
-    var initializedCount: Int
+    internal var initializedCount: Int
 
     @usableFromInline
-    var destroyCount: Int
+    internal var destroyCount: Int
 
     @usableFromInline
-    var destroyNode: _NodePtr = .end
+    internal var destroyNode: _NodePtr = .end
 
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       @usableFromInline
@@ -191,13 +188,13 @@ extension ___RedBlackTree.___Tree.Header {
 
   @inlinable
   @inline(__always)
-  public var count: Int {
+  internal var count: Int {
     initializedCount - destroyCount
   }
 
   @inlinable
   @inline(__always)
-  mutating func clear() {
+  internal mutating func clear() {
     __begin_node = .end
     __left_ = .nullptr
     initializedCount = 0
@@ -207,17 +204,17 @@ extension ___RedBlackTree.___Tree.Header {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
-  var __header_ptr: UnsafeMutablePointer<Header> {
+  internal var __header_ptr: UnsafeMutablePointer<Header> {
     withUnsafeMutablePointerToHeader({ $0 })
   }
 
   @inlinable
-  var __node_ptr: UnsafeMutablePointer<Node> {
+  internal var __node_ptr: UnsafeMutablePointer<Node> {
     withUnsafeMutablePointerToElements({ $0 })
   }
 
   @inlinable
-  var _header: Header {
+  internal var _header: Header {
     @inline(__always)
     get { __header_ptr.pointee }
     @inline(__always)
@@ -225,7 +222,7 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
-  public subscript(_ pointer: _NodePtr) -> Element {
+  internal subscript(_ pointer: _NodePtr) -> Element {
     @inline(__always)
     get {
       assert(0 <= pointer && pointer < _header.initializedCount)
@@ -240,7 +237,7 @@ extension ___RedBlackTree.___Tree {
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
     @inlinable
-    var copyCount: UInt {
+    internal var copyCount: UInt {
       get { __header_ptr.pointee.copyCount }
       set { __header_ptr.pointee.copyCount = newValue }
     }
@@ -251,7 +248,7 @@ extension ___RedBlackTree.___Tree {
   /// O(1)
   @inlinable
   @inline(__always)
-  func ___pushDestroy(_ p: _NodePtr) {
+  internal func ___pushDestroy(_ p: _NodePtr) {
     assert(_header.destroyNode != p)
     assert(_header.initializedCount <= _header.capacity)
     assert(_header.destroyCount <= _header.capacity)
@@ -265,7 +262,7 @@ extension ___RedBlackTree.___Tree {
   /// O(1)
   @inlinable
   @inline(__always)
-  func ___popDetroy() -> _NodePtr {
+  internal func ___popDetroy() -> _NodePtr {
     assert(_header.destroyCount > 0)
     let p = __node_ptr[_header.destroyNode].__right_
     _header.destroyNode = __node_ptr[p].__left_
@@ -274,7 +271,7 @@ extension ___RedBlackTree.___Tree {
   }
   /// O(1)
   @inlinable
-  func ___clearDestroy() {
+  internal func ___clearDestroy() {
     _header.destroyNode = .nullptr
     _header.destroyCount = 0
   }
@@ -300,12 +297,12 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
-  func ___is_valid(_ p: _NodePtr) -> Bool {
-    0 ..< _header.initializedCount ~= p && __node_ptr[p].__parent_ != .nullptr
+  internal func ___is_valid(_ p: _NodePtr) -> Bool {
+    0..<_header.initializedCount ~= p && __node_ptr[p].__parent_ != .nullptr
   }
 
   @inlinable @inline(__always)
-  func ___invalidate(_ p: _NodePtr) {
+  internal func ___invalidate(_ p: _NodePtr) {
     __node_ptr[p].__parent_ = .nullptr
   }
 }
@@ -313,7 +310,7 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
-  func __construct_node(_ k: Element) -> _NodePtr {
+  internal func __construct_node(_ k: Element) -> _NodePtr {
     if _header.destroyCount > 0 {
       let p = ___popDetroy()
       __node_ptr[p].__value_ = k
@@ -328,7 +325,7 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
-  func destroy(_ p: _NodePtr) {
+  internal func destroy(_ p: _NodePtr) {
     ___invalidate(p)
     ___pushDestroy(p)
   }
@@ -337,18 +334,18 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
-  public var count: Int {
+  internal var count: Int {
     __header_ptr.pointee.count
   }
 
   @inlinable
-  var size: Int {
+  internal var size: Int {
     get { __header_ptr.pointee.count }
     set { /* NOP */  }
   }
 
   @inlinable
-  var __begin_node: _NodePtr {
+  internal var __begin_node: _NodePtr {
     get { __header_ptr.pointee.__begin_node }
     _modify {
       yield &__header_ptr.pointee.__begin_node
@@ -359,42 +356,42 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
-  func __value_(_ p: _NodePtr) -> _Key {
+  internal func __value_(_ p: _NodePtr) -> _Key {
     __key(__node_ptr[p].__value_)
   }
 }
 
 extension ___RedBlackTree.___Tree {
 
-  @usableFromInline
-  typealias _Key = VC._Key
-
   public typealias Element = VC.Element
 
+  @usableFromInline
+  internal typealias _Key = VC._Key
+
   @inlinable @inline(__always)
-  func value_comp(_ a: _Key, _ b: _Key) -> Bool {
+  internal func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     VC.value_comp(a, b)
   }
 
   @inlinable @inline(__always)
-  func __key(_ e: VC.Element) -> VC._Key {
+  internal func __key(_ e: VC.Element) -> VC._Key {
     VC.__key(e)
   }
 
   @inlinable
   @inline(__always)
-  func ___key(_ pointer: _NodePtr) -> _Key {
+  internal func ___key(_ pointer: _NodePtr) -> _Key {
     assert(0 <= pointer && pointer < _header.initializedCount)
     return __key(__node_ptr[pointer].__value_)
   }
 
   @inlinable @inline(__always)
-  func ___element(_ p: _NodePtr) -> VC.Element {
+  internal func ___element(_ p: _NodePtr) -> VC.Element {
     __node_ptr[p].__value_
   }
-  
+
   @inlinable @inline(__always)
-  func ___element(_ p: _NodePtr,_ __v: VC.Element) {
+  internal func ___element(_ p: _NodePtr, _ __v: VC.Element) {
     __node_ptr[p].__value_ = __v
   }
 }
@@ -412,34 +409,36 @@ extension ___RedBlackTree.___Tree: HandleProtocol {}
 extension ___RedBlackTree.___Tree: EraseProtocol {}
 extension ___RedBlackTree.___Tree: BoundProtocol {}
 extension ___RedBlackTree.___Tree: InsertUniqueProtocol {}
-extension ___RedBlackTree.___Tree: DistanceProtocol {}
 extension ___RedBlackTree.___Tree: CountProtocol {}
 extension ___RedBlackTree.___Tree: MemberProtocol {}
+extension ___RedBlackTree.___Tree: DistanceProtocol {}
+extension ___RedBlackTree.___Tree: CompareProtocol {}
+extension ___RedBlackTree.___Tree: CompareMultiProtocol {}
 
 extension ___RedBlackTree.___Tree {
   @inlinable
   @inline(__always)
-  func __parent_(_ p: _NodePtr) -> _NodePtr {
+  internal func __parent_(_ p: _NodePtr) -> _NodePtr {
     __node_ptr[p].__parent_
   }
   @inlinable
   @inline(__always)
-  func __left_(_ p: _NodePtr) -> _NodePtr {
+  internal func __left_(_ p: _NodePtr) -> _NodePtr {
     p == .end ? _header.__left_ : __node_ptr[p].__left_
   }
   @inlinable
   @inline(__always)
-  func __right_(_ p: _NodePtr) -> _NodePtr {
+  internal func __right_(_ p: _NodePtr) -> _NodePtr {
     __node_ptr[p].__right_
   }
   @inlinable
   @inline(__always)
-  func __is_black_(_ p: _NodePtr) -> Bool {
+  internal func __is_black_(_ p: _NodePtr) -> Bool {
     __node_ptr[p].__is_black_
   }
   @inlinable
   @inline(__always)
-  func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
+  internal func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
     __parent_(p)
   }
 }
@@ -448,17 +447,17 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   @inline(__always)
-  func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
+  internal func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
     __node_ptr[lhs].__is_black_ = rhs
   }
   @inlinable
   @inline(__always)
-  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+  internal func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
     __node_ptr[lhs].__parent_ = rhs
   }
   @inlinable
   @inline(__always)
-  func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+  internal func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
     if lhs == .end {
       _header.__left_ = rhs
     } else {
@@ -467,7 +466,7 @@ extension ___RedBlackTree.___Tree {
   }
   @inlinable
   @inline(__always)
-  func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+  internal func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
     __node_ptr[lhs].__right_ = rhs
   }
 }
@@ -476,7 +475,9 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   @inline(__always)
-  public func ___for_each(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void)
+  internal func ___for_each(
+    __p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void
+  )
     rethrows
   {
     var __p = __p
@@ -490,13 +491,13 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   @inline(__always)
-  public func ___for_each_(_ body: (Element) throws -> Void) rethrows {
+  internal func ___for_each_(_ body: (Element) throws -> Void) rethrows {
     try ___for_each_(__p: __begin_node, __l: __end_node(), body: body)
   }
 
   @inlinable
   @inline(__always)
-  public func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (Element) throws -> Void)
+  internal func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (Element) throws -> Void)
     rethrows
   {
     var __p = __p
@@ -511,7 +512,7 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
-  func ___erase_unique(_ __k: VC._Key) -> Bool {
+  internal func ___erase_unique(_ __k: VC._Key) -> Bool {
     let __i = find(__k)
     if __i == end() {
       return false
@@ -521,7 +522,7 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
-  func ___erase_multi(_ __k: VC._Key) -> Int {
+  internal func ___erase_multi(_ __k: VC._Key) -> Int {
     var __p = __equal_range_multi(__k)
     var __r = 0
     while __p.0 != __p.1 {
@@ -535,7 +536,7 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
-  func
+  internal func
     ___erase(_ __f: _NodePtr, _ __l: _NodePtr, _ action: (Element) throws -> Void) rethrows
   {
     var __f = __f
@@ -546,7 +547,7 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
-  func
+  internal func
     ___erase<Result>(
       _ __f: _NodePtr, _ __l: _NodePtr, _ initialResult: Result,
       _ nextPartialResult: (Result, Element) throws -> Result
@@ -562,7 +563,7 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
-  func
+  internal func
     ___erase<Result>(
       _ __f: _NodePtr, _ __l: _NodePtr, into initialResult: Result,
       _ updateAccumulatingResult: (inout Result, Element) throws -> Void
@@ -582,7 +583,7 @@ extension ___RedBlackTree.___Tree {
 
   /// O(1)
   @inlinable
-  func __eraseAll() {
+  internal func __eraseAll() {
     _header.clear()
     ___clearDestroy()
   }
@@ -591,34 +592,34 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
-  public var ___count: Int {
+  internal var ___count: Int {
     count
   }
 
   @inlinable @inline(__always)
-  public var ___isEmpty: Bool {
+  internal var ___isEmpty: Bool {
     count == 0
   }
 
   @inlinable @inline(__always)
-  public var ___capacity: Int {
+  internal var ___capacity: Int {
     _header.capacity
   }
 
   @inlinable @inline(__always)
-  public func ___begin() -> _NodePtr {
+  internal func ___begin() -> _NodePtr {
     _header.__begin_node
   }
 
   @inlinable @inline(__always)
-  public func ___end() -> _NodePtr {
+  internal func ___end() -> _NodePtr {
     .end
   }
 }
 
 extension ___RedBlackTree.___Tree {
   @inlinable
-  func ___is_valid_index(_ i: _NodePtr) -> Bool {
+  internal func ___is_valid_index(_ i: _NodePtr) -> Bool {
     if i == .nullptr { return false }
     if i == .end { return true }
     return ___is_valid(i)
@@ -628,7 +629,7 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
-  public var ___sorted: [Element] {
+  internal var ___sorted: [Element] {
     var result = [Element]()
     ___for_each_ { member in
       result.append(member)

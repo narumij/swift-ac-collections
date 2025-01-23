@@ -591,8 +591,9 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(set[set.lowerBound(2) ..< set.lowerBound(4)].map{ $0 }, [2,3])
     let sub = set[2 ..< 4]
     XCTAssertEqual(sub[set.lowerBound(2)], 2)
-    XCTAssertEqual(sub[set.lowerBound(4)], 4)
-    XCTAssertEqual(set.lowerBound(6), set.endIndex)
+    XCTAssertEqual(sub[set.lowerBound(3)], 3)
+    XCTAssertEqual(set.upperBound(3), sub.endIndex)
+    XCTAssertEqual(set.lowerBound(4), sub.endIndex)
     XCTAssertEqual(sub.count, 2)
     XCTAssertEqual(sub.map{ $0 }, [2, 3])
     set.remove(contentsOf: 2 ..< 4)
@@ -603,8 +604,9 @@ final class SetTests: XCTestCase {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     let sub = set[2 ... 4]
     XCTAssertEqual(sub[set.lowerBound(2)], 2)
-    XCTAssertEqual(sub[set.upperBound(4)], 5)
-    XCTAssertEqual(set.lowerBound(6), set.endIndex)
+    XCTAssertEqual(sub[set.lowerBound(4)], 4)
+    XCTAssertEqual(set.upperBound(4), sub.endIndex)
+    XCTAssertEqual(set.lowerBound(5), sub.endIndex)
     XCTAssertEqual(sub.count, 3)
     XCTAssertEqual(sub.map{ $0 }, [2, 3, 4])
     set.remove(contentsOf: 2 ... 4)
@@ -631,8 +633,73 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(sub[set.lowerBound(1) ..< set.lowerBound(3)].map{ $0 }, [1, 2])
     XCTAssertEqual(sub[sub.startIndex ..< sub.endIndex].map{ $0 }, [1, 2])
     XCTAssertEqual(sub[sub.startIndex ..< sub.index(before: sub.endIndex)].map{ $0 }, [1])
+    XCTAssertEqual(sub.map{ $0 }, [1,2])
+    XCTAssertEqual(set[1 ..< 3].map{ $0 }, [1,2])
+  }
+  
+  func testIndex0() throws {
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    var i = set.startIndex
+    for _ in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.index(after: i)), 1)
+      i = set.index(after: i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for _ in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.index(before: i)), -1)
+      i = set.index(before: i)
+    }
+    XCTAssertEqual(i, set.startIndex)
+    for _ in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.index(after: i), to: i), -1)
+      i = set.index(after: i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for _ in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.index(before: i), to: i), 1)
+      i = set.index(before: i)
+    }
+  }
+  
+  func testIndex00() throws {
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    var i = set.startIndex
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.startIndex, to: i), j)
+      i = set.index(after: i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.endIndex, to: i), -j)
+      i = set.index(before: i)
+    }
+    XCTAssertEqual(i, set.startIndex)
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.startIndex), -j)
+      i = set.index(after: i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.endIndex), j)
+      i = set.index(before: i)
+    }
+    XCTAssertEqual(i, set.startIndex)
   }
 
+  func testIndex10() throws {
+    let set: RedBlackTreeSet<Int> = [1,2,3,4,5,6]
+    XCTAssertNotNil(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex))
+    XCTAssertNil(set.index(set.startIndex, offsetBy: 7, limitedBy: set.endIndex))
+    XCTAssertNotNil(set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex))
+    XCTAssertNil(set.index(set.endIndex, offsetBy: -7, limitedBy: set.startIndex))
+    let sub = set[2..<5]
+    XCTAssertEqual(sub.map{ $0 }, [2,3,4])
+    XCTAssertNotNil(sub.index(sub.startIndex, offsetBy: 3, limitedBy: sub.endIndex))
+    XCTAssertNil(sub.index(sub.startIndex, offsetBy: 4, limitedBy: sub.endIndex))
+    XCTAssertNotNil(sub.index(sub.endIndex, offsetBy: -3, limitedBy: sub.startIndex))
+    XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
+  }
+  
   func testSorted() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     XCTAssertEqual(set.sorted(), [1, 2, 3, 4, 5])

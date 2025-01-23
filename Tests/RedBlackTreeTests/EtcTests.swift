@@ -269,4 +269,17 @@ final class EtcTests: XCTestCase {
     }
   }
 #endif
+  
+  func testSubArrayIndex() throws {
+    let set: [Int] = [1,2,3,4,5,6]
+    let sub = set[2 ..< 5]
+    XCTAssertEqual(sub.startIndex, 2)
+    XCTAssertEqual(sub.endIndex, 5)
+    XCTAssertEqual(sub.index(after: sub.endIndex), 6)
+    XCTAssertEqual(sub.index(before: sub.startIndex), 1)
+    XCTAssertNotNil(sub.index(sub.startIndex, offsetBy: 3, limitedBy: sub.endIndex))
+    XCTAssertNil(sub.index(sub.startIndex, offsetBy: 4, limitedBy: sub.endIndex))
+    XCTAssertNotNil(sub.index(sub.endIndex, offsetBy: -3, limitedBy: sub.startIndex))
+    XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
+  }
 }

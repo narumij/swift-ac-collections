@@ -65,6 +65,15 @@ extension CompareMultiProtocol {
     }
     var (__l, __lh) = (__l, ___ptr_height(__l))
     var (__r, __rh) = (__r, ___ptr_height(__r))
+    // __rの高さを詰める
+    while __lh < __rh {
+      // 共通祖先が__lだった場合
+      if __parent_(__r) == __l {
+        // __rが左でなければ（つまり右）、__lが小さい
+        return !__tree_is_left_child(__r)
+      }
+      (__r, __rh) = (__parent_(__r), __rh - 1)
+    }
     // __lの高さを詰める
     while __lh > __rh {
       // 共通祖先が__rだった場合
@@ -73,15 +82,6 @@ extension CompareMultiProtocol {
         return __tree_is_left_child(__l)
       }
       (__l, __lh) = (__parent_(__l), __lh - 1)
-    }
-    // __rの高さを詰める
-    while __lh < __rh {
-      // 共通祖先が__lだった場合
-      if __parent_(__r) == __l {
-        // __rが右であれば(左ではない)、__lが小さい
-        return !__tree_is_left_child(__r)
-      }
-      (__r, __rh) = (__parent_(__r), __rh - 1)
     }
     // 親が一致するまで、両方の高さを詰める
     while __parent_(__l) != __parent_(__r) {

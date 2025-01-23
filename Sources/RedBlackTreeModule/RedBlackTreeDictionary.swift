@@ -831,7 +831,7 @@ extension RedBlackTreeDictionary {
   @frozen
   public struct EnumSequence {
 
-    public typealias Element = Tree.EnumElement
+    public typealias Enumurated = Tree.EnumElement
 
     @usableFromInline
     internal typealias _SubSequence = Tree.EnumSequence
@@ -861,7 +861,7 @@ extension RedBlackTreeDictionary.EnumSequence: Sequence {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> Element? {
+    public mutating func next() -> Enumurated? {
       _iterator.next()
     }
   }
@@ -877,7 +877,7 @@ extension RedBlackTreeDictionary.EnumSequence {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (Element) throws -> Void) rethrows {
+  public func forEach(_ body: (Enumurated) throws -> Void) rethrows {
     try _subSequence.forEach(body)
   }
 }

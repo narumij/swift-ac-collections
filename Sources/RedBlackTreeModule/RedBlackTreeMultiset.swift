@@ -564,7 +564,6 @@ extension RedBlackTreeMultiset.SubSequence {
   public typealias Index = Base.Index
   public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
-  public typealias EnumElement = Base.Tree.EnumElement
   public typealias EnumSequence = Base.EnumSequence
 }
 
@@ -699,13 +698,13 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
-    return _subSequence[position.rawValue]
+    _subSequence[position.rawValue]
   }
 
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
-    return _tree[position.rawValue]
+    _subSequence[position.rawValue]
   }
 
   @inlinable

@@ -610,22 +610,15 @@ extension RedBlackTreeSet {
   public struct SubSequence {
 
     @usableFromInline
-    internal typealias _Tree = Tree
+    internal typealias _SubSequence = Tree.SubSequence
 
     @usableFromInline
-    internal typealias _TreeSubSequence = Tree.SubSequence
-
-    @usableFromInline
-    internal let _subSequence: _TreeSubSequence
+    internal let _subSequence: _SubSequence
 
     @inlinable
-    init(_subSequence: _TreeSubSequence) {
+    init(_subSequence: _SubSequence) {
       self._subSequence = _subSequence
     }
-
-    @inlinable
-    @inline(__always)
-    internal var _tree: Tree { _subSequence._tree }
   }
 }
 
@@ -644,11 +637,11 @@ extension RedBlackTreeSet.SubSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
     @usableFromInline
-    internal var _iterator: _TreeSubSequence.Iterator
+    internal var _iterator: _SubSequence.Iterator
 
     @inlinable
     @inline(__always)
-    internal init(_ _iterator: _TreeSubSequence.Iterator) {
+    internal init(_ _iterator: _SubSequence.Iterator) {
       self._iterator = _iterator
     }
 
@@ -794,18 +787,16 @@ extension RedBlackTreeSet {
   @frozen
   public struct EnumSequence {
 
-    public typealias _Element = Tree.EnumElement
-
-    public typealias Element = Tree.EnumElement
+    public typealias Enumurated = Tree.EnumElement
 
     @usableFromInline
-    internal typealias _TreeEnumSequence = Tree.EnumSequence
+    internal typealias _SubSequence = Tree.EnumSequence
 
     @usableFromInline
-    internal let _subSequence: _TreeEnumSequence
+    internal let _subSequence: _SubSequence
 
     @inlinable
-    init(_subSequence: _TreeEnumSequence) {
+    init(_subSequence: _SubSequence) {
       self._subSequence = _subSequence
     }
   }
@@ -813,27 +804,27 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet.EnumSequence: Sequence {
 
-  public struct EnumIterator: IteratorProtocol {
+  public struct Iterator: IteratorProtocol {
 
     @usableFromInline
-    internal var _iterator: _TreeEnumSequence.Iterator
+    internal var _iterator: _SubSequence.Iterator
 
     @inlinable
     @inline(__always)
-    internal init(_ _iterator: _TreeEnumSequence.Iterator) {
+    internal init(_ _iterator: _SubSequence.Iterator) {
       self._iterator = _iterator
     }
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> _Element? {
+    public mutating func next() -> Enumurated? {
       _iterator.next()
     }
   }
 
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> EnumIterator {
+  public __consuming func makeIterator() -> Iterator {
     Iterator(_subSequence.makeIterator())
   }
 }
@@ -842,7 +833,7 @@ extension RedBlackTreeSet.EnumSequence {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (_Element) throws -> Void) rethrows {
+  public func forEach(_ body: (Enumurated) throws -> Void) rethrows {
     try _subSequence.forEach(body)
   }
 }

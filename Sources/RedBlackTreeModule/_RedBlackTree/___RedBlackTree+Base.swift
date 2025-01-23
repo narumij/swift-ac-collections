@@ -422,8 +422,13 @@ extension ___RedBlackTreeBase {
 @usableFromInline
 protocol ___RedBlackTreeSubSequenceBase {
   associatedtype Base: ValueComparer
-  var _tree: ___Tree { get }
   var _subSequence: Base.Tree.SubSequence { get }
+}
+
+extension ___RedBlackTreeSubSequenceBase {
+  @inlinable
+  @inline(__always)
+  internal var _tree: ___Tree { _subSequence._tree }
 }
 
 extension ___RedBlackTreeSubSequenceBase {
@@ -431,16 +436,12 @@ extension ___RedBlackTreeSubSequenceBase {
   @usableFromInline
   typealias ___Tree = Base.Tree
   @usableFromInline
-  typealias ___Index = ___Tree.Pointer
+  typealias ___Index = Base.Tree.Pointer
   @usableFromInline
-  typealias ___SubSequence = ___Tree.SubSequence
+  typealias ___SubSequence = Base.Tree.SubSequence
   @usableFromInline
-  typealias ___Element = ___Tree.SubSequence.Element
+  typealias ___Element = Base.Tree.SubSequence.Element
   
-  @inlinable
-  @inline(__always)
-  internal var _tree: ___Tree { _subSequence._tree }
-
   @inlinable @inline(__always)
   internal var ___start_index: ___Index {
     ___Index(__tree: _tree, pointer: _subSequence.startIndex)

@@ -796,6 +796,31 @@ final class MultisetTests: XCTestCase {
   }
 #endif
 
+  func testIndex000() throws {
+    let set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    var i = set.startIndex
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.startIndex, to: i), j)
+      set.formIndex(after: &i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.endIndex, to: i), -j)
+      set.formIndex(before: &i)
+    }
+    XCTAssertEqual(i, set.startIndex)
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.startIndex), -j)
+      set.formIndex(after: &i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.endIndex), j)
+      set.formIndex(before: &i)
+    }
+    XCTAssertEqual(i, set.startIndex)
+  }
+
   func testIndex1() throws {
     let set: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3, 4]
     let sub = set[set.lowerBound(2) ..< set.index(before: set.upperBound(2))]
@@ -829,6 +854,28 @@ final class MultisetTests: XCTestCase {
     XCTAssertNil(sub.index(sub.startIndex, offsetBy: 4, limitedBy: sub.endIndex))
     XCTAssertNotNil(sub.index(sub.endIndex, offsetBy: -3, limitedBy: sub.startIndex))
     XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
+  }
+
+  func testIndex11() throws {
+    let set: RedBlackTreeMultiset<Int> = [1,2,3,4,5,6]
+    var i = set.startIndex
+    XCTAssertTrue(set.formIndex(&i, offsetBy: 6, limitedBy: set.endIndex))
+    i = set.startIndex
+    XCTAssertFalse(set.formIndex(&i, offsetBy: 7, limitedBy: set.endIndex))
+    i = set.endIndex
+    XCTAssertTrue(set.formIndex(&i, offsetBy: -6, limitedBy: set.startIndex))
+    i = set.endIndex
+    XCTAssertFalse(set.formIndex(&i, offsetBy: -7, limitedBy: set.startIndex))
+    let sub = set[2..<5]
+    XCTAssertEqual(sub.map{ $0 }, [2,3,4])
+    i = sub.startIndex
+    XCTAssertTrue(sub.formIndex(&i, offsetBy: 3, limitedBy: sub.endIndex))
+    i = sub.startIndex
+    XCTAssertFalse(sub.formIndex(&i, offsetBy: 4, limitedBy: sub.endIndex))
+    i = sub.endIndex
+    XCTAssertTrue(sub.formIndex(&i, offsetBy: -3, limitedBy: sub.startIndex))
+    i = sub.endIndex
+    XCTAssertFalse(sub.formIndex(&i, offsetBy: -4, limitedBy: sub.startIndex))
   }
 
   func testSorted() throws {

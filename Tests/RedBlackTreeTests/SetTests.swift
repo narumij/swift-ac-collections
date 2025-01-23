@@ -685,6 +685,31 @@ final class SetTests: XCTestCase {
     }
     XCTAssertEqual(i, set.startIndex)
   }
+  
+  func testIndex000() throws {
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    var i = set.startIndex
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.startIndex, to: i), j)
+      set.formIndex(after: &i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: set.endIndex, to: i), -j)
+      set.formIndex(before: &i)
+    }
+    XCTAssertEqual(i, set.startIndex)
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.startIndex), -j)
+      set.formIndex(after: &i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for j in 0 ..< set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.endIndex), j)
+      set.formIndex(before: &i)
+    }
+    XCTAssertEqual(i, set.startIndex)
+  }
 
   func testIndex10() throws {
     let set: RedBlackTreeSet<Int> = [1,2,3,4,5,6]
@@ -700,6 +725,28 @@ final class SetTests: XCTestCase {
     XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
   }
   
+  func testIndex11() throws {
+    let set: RedBlackTreeSet<Int> = [1,2,3,4,5,6]
+    var i = set.startIndex
+    XCTAssertTrue(set.formIndex(&i, offsetBy: 6, limitedBy: set.endIndex))
+    i = set.startIndex
+    XCTAssertFalse(set.formIndex(&i, offsetBy: 7, limitedBy: set.endIndex))
+    i = set.endIndex
+    XCTAssertTrue(set.formIndex(&i, offsetBy: -6, limitedBy: set.startIndex))
+    i = set.endIndex
+    XCTAssertFalse(set.formIndex(&i, offsetBy: -7, limitedBy: set.startIndex))
+    let sub = set[2..<5]
+    XCTAssertEqual(sub.map{ $0 }, [2,3,4])
+    i = sub.startIndex
+    XCTAssertTrue(sub.formIndex(&i, offsetBy: 3, limitedBy: sub.endIndex))
+    i = sub.startIndex
+    XCTAssertFalse(sub.formIndex(&i, offsetBy: 4, limitedBy: sub.endIndex))
+    i = sub.endIndex
+    XCTAssertTrue(sub.formIndex(&i, offsetBy: -3, limitedBy: sub.startIndex))
+    i = sub.endIndex
+    XCTAssertFalse(sub.formIndex(&i, offsetBy: -4, limitedBy: sub.startIndex))
+  }
+
   func testSorted() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     XCTAssertEqual(set.sorted(), [1, 2, 3, 4, 5])

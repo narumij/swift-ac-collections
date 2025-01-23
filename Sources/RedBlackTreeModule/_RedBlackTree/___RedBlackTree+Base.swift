@@ -417,9 +417,12 @@ extension ___RedBlackTreeBase {
   }
 }
 
-public protocol ___RedBlackTreeSubSequenceBase {
+// MARK: -
+
+@usableFromInline
+protocol ___RedBlackTreeSubSequenceBase {
   associatedtype Base: ValueComparer
-  var _tree: Base.Tree { get }
+  var _tree: ___Tree { get }
   var _subSequence: Base.Tree.SubSequence { get }
 }
 
@@ -430,40 +433,48 @@ extension ___RedBlackTreeSubSequenceBase {
   @usableFromInline
   typealias ___Index = ___Tree.Pointer
   @usableFromInline
+  typealias ___SubSequence = ___Tree.SubSequence
+  @usableFromInline
   typealias ___Element = ___Tree.SubSequence.Element
 
   @inlinable @inline(__always)
-  internal var ___start_index: ___Index { ___Index(__tree: _tree, pointer: _subSequence.startIndex) }
+  internal var ___start_index: ___Index {
+    ___Index(__tree: _tree, pointer: _subSequence.startIndex)
+  }
 
   @inlinable @inline(__always)
-  internal var ___end_index: ___Index { ___Index(__tree: _tree, pointer: _subSequence.endIndex) }
+  internal var ___end_index: ___Index {
+    ___Index(__tree: _tree, pointer: _subSequence.endIndex)
+  }
 
   @inlinable @inline(__always)
-  internal var ___count: Int { _subSequence.count }
+  internal var ___count: Int {
+    _subSequence.count
+  }
 
   @inlinable @inline(__always)
-  internal func forEach(_ body: (___Element) throws -> Void) rethrows {
+  internal func ___for_each(_ body: (___Element) throws -> Void) rethrows {
     try _subSequence.forEach(body)
   }
 
   @inlinable @inline(__always)
   internal func ___distance(from start: ___Index, to end: ___Index) -> Int {
-    return _subSequence.distance(from: start.rawValue, to: end.rawValue)
+    _subSequence.distance(from: start.rawValue, to: end.rawValue)
   }
 
   @inlinable @inline(__always)
   internal func ___index(after i: ___Index) -> ___Index {
-    return ___Index(__tree: _tree, pointer: _subSequence.index(after: i.rawValue))
+    ___Index(__tree: _tree, pointer: _subSequence.index(after: i.rawValue))
   }
 
   @inlinable @inline(__always)
   internal func ___form_index(after i: inout ___Index) {
-    return _subSequence.formIndex(after: &i.rawValue)
+    _subSequence.formIndex(after: &i.rawValue)
   }
 
   @inlinable @inline(__always)
   internal func ___index(before i: ___Index) -> ___Index {
-    return ___Index(__tree: _tree, pointer: _subSequence.index(before: i.rawValue))
+    ___Index(__tree: _tree, pointer: _subSequence.index(before: i.rawValue))
   }
 
   @inlinable @inline(__always)
@@ -473,7 +484,7 @@ extension ___RedBlackTreeSubSequenceBase {
 
   @inlinable @inline(__always)
   internal func ___index(_ i: ___Index, offsetBy distance: Int) -> ___Index {
-    return ___Index(__tree: _tree, pointer: _subSequence.index(i.rawValue, offsetBy: distance))
+    ___Index(__tree: _tree, pointer: _subSequence.index(i.rawValue, offsetBy: distance))
   }
 
   @inlinable @inline(__always)

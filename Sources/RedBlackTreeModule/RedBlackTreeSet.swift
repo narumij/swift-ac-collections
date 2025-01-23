@@ -501,7 +501,9 @@ extension RedBlackTreeSet: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public var count: Int { _tree.count }
+  public var count: Int {
+    ___count
+  }
 
   @inlinable
   @inline(__always)

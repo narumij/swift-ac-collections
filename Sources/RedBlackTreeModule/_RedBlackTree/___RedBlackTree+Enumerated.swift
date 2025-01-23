@@ -28,11 +28,11 @@ protocol RawPointerBuilderProtocol {}
 extension RawPointerBuilderProtocol {
 
   @usableFromInline
-  internal typealias EnumeratedIndex = ___RedBlackTree.RawPointer
+  internal typealias Index = ___RedBlackTree.RawPointer
 
   @inlinable
   @inline(__always)
-  internal func ___index(_ p: _NodePtr) -> EnumeratedIndex {
+  internal func ___index(_ p: _NodePtr) -> Index {
     .init(p)
   }
 }
@@ -48,11 +48,11 @@ extension TreePointerBuilderProtocol {
   internal typealias Tree = ___RedBlackTree.___Tree<VC>
   
   @usableFromInline
-  internal typealias EnumeratedIndex = ___RedBlackTree.___Tree<VC>.Pointer
+  internal typealias Index = ___RedBlackTree.___Tree<VC>.Pointer
 
   @inlinable
   @inline(__always)
-  internal func ___index(_ p: _NodePtr) -> EnumeratedIndex {
+  internal func ___index(_ p: _NodePtr) -> Index {
     .init(__tree: _tree, pointer: p)
   }
 }

@@ -160,7 +160,7 @@ extension RedBlackTreeDictionary {
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
-    for (__k,__v) in try values.map({ (try keyForValue($0), $0) }).sorted(by: { $0.0 < $1.0 }) {
+    for (__k, __v) in try values.map({ (try keyForValue($0), $0) }).sorted(by: { $0.0 < $1.0 }) {
       if count == nil {
         Tree.ensureCapacity(tree: &tree)
       }
@@ -396,7 +396,7 @@ extension RedBlackTreeDictionary {
     let upper = lowerBound(keyRange.upperBound)
     removeSubrange(lower..<upper)
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
@@ -545,7 +545,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   public var endIndex: Index {
     ___index_end()
   }
-  
+
   @inlinable
   @inline(__always)
   public var count: Int { _tree.count }
@@ -636,7 +636,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
           from: ___ptr_lower_bound(bounds.lowerBound),
           to: ___ptr_lower_bound(bounds.upperBound)))
   }
-  
+
   @inlinable
   public subscript(bounds: ClosedRange<Key>) -> SubSequence {
     SubSequence(
@@ -673,7 +673,7 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary.SubSequence {
-  
+
   public typealias Base = RedBlackTreeDictionary
   public typealias SubSequence = Self
   public typealias Index = Base.Index

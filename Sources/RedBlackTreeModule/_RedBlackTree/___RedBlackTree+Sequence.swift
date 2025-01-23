@@ -45,10 +45,10 @@ extension RedBlackTreeIteratorNextProtocol {
     }
     return _current
   }
-  
+
   @inlinable
   @inline(__always)
-  internal func _re_initialize(_ start: _NodePtr) -> (next:_NodePtr, nextnext:_NodePtr) {
+  internal func _re_initialize(_ start: _NodePtr) -> (next: _NodePtr, nextnext: _NodePtr) {
     (start == .end ? .end : _tree.__tree_next(start), _end)
   }
 }
@@ -70,7 +70,7 @@ protocol RedBlackTreeIteratorNextProtocol2: IteratorProtocol {
 }
 
 extension RedBlackTreeIteratorNextProtocol2 {
-  
+
   // 性能低下する予想だったが、キャッシュの効きがいいのか、手元計測ではむしろ速い
   @inlinable
   @inline(__always)
@@ -91,7 +91,7 @@ extension RedBlackTreeIteratorNextProtocol2 {
 
   @inlinable
   @inline(__always)
-  internal func _next(_ _next: _NodePtr,_ _next_next: _NodePtr) -> _NodePtr {
+  internal func _next(_ _next: _NodePtr, _ _next_next: _NodePtr) -> _NodePtr {
     _next != _end && _tree.___is_valid(_next) ? _next : _next_next
   }
 
@@ -107,21 +107,21 @@ extension RedBlackTreeIteratorNextProtocol2 {
     var _next_next = _next
     // _nextと_next_nextの値が異なるところまで、_next_nextを進める
     while _next_next != _end,
-          _tree.___value_equal(
-            _tree.__value_(_next),
-            _tree.__value_(_next_next))
+      _tree.___value_equal(
+        _tree.__value_(_next),
+        _tree.__value_(_next_next))
     {
       _next_next = _tree.__tree_next(_next_next)
     }
     return _next_next
   }
-  
+
   @inlinable
   @inline(__always)
-  internal func _re_initialize(_ start: _NodePtr) -> (next:_NodePtr,nextnext:_NodePtr) {
+  internal func _re_initialize(_ start: _NodePtr) -> (next: _NodePtr, nextnext: _NodePtr) {
     let next = _next(start)
     let nextnext = _next_next(start)
-    return (next,nextnext)
+    return (next, nextnext)
   }
 }
 

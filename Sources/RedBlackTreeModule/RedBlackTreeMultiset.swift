@@ -112,7 +112,7 @@ extension RedBlackTreeMultiset {
     precondition(range is Range<Element> || range is ClosedRange<Element>)
     let tree: Tree = .create(minimumCapacity: range.count)
     // 初期化直後はO(1)
-    var (__parent,__child) = tree.___max_ref()
+    var (__parent, __child) = tree.___max_ref()
     for __k in range {
       // バランシングの計算量がO(log *n*)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
@@ -247,7 +247,7 @@ extension RedBlackTreeMultiset {
     let upper = lowerBound(elementRange.upperBound)
     removeSubrange(lower..<upper)
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
@@ -314,7 +314,7 @@ extension RedBlackTreeMultiset {
   public var last: Element? {
     isEmpty ? nil : self[index(before: .end(_storage))]
   }
-  
+
   /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
@@ -436,7 +436,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   public var endIndex: Index {
     ___index_end()
   }
-  
+
   @inlinable
   @inline(__always)
   public var count: Int { _tree.count }
@@ -527,7 +527,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
           from: ___ptr_lower_bound(bounds.lowerBound),
           to: ___ptr_lower_bound(bounds.upperBound)))
   }
-  
+
   @inlinable
   public subscript(bounds: ClosedRange<Element>) -> SubSequence {
     SubSequence(
@@ -564,7 +564,7 @@ extension RedBlackTreeMultiset {
 }
 
 extension RedBlackTreeMultiset.SubSequence {
-  
+
   public typealias Base = RedBlackTreeMultiset
   public typealias SubSequence = Self
   public typealias Index = Base.Index

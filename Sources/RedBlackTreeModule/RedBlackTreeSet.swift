@@ -290,7 +290,7 @@ extension RedBlackTreeSet {
     let upper = lowerBound(elementRange.upperBound).rawValue
     ___remove(from: lower, to: upper)
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
@@ -589,7 +589,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
           from: ___ptr_lower_bound(bounds.lowerBound),
           to: ___ptr_lower_bound(bounds.upperBound)))
   }
-  
+
   @inlinable
   public subscript(bounds: ClosedRange<Element>) -> SubSequence {
     SubSequence(
@@ -628,7 +628,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet.SubSequence {
-  
+
   public typealias Base = RedBlackTreeSet
   public typealias SubSequence = Self
   public typealias Index = Base.Index

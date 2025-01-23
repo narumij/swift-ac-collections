@@ -104,12 +104,14 @@ final class SetPerformanceTests: XCTestCase {
       }
     }
 
+#if PERFOMANCE_CHECK
     func testPerformanceInit1() throws {
 //      throw XCTSkip()
       self.measure {
         let _ = RedBlackTreeSet<Int>(_sequence: sequence)
       }
     }
+#endif
 
     func testPerformanceInit2() throws {
 //      throw XCTSkip()
@@ -118,12 +120,14 @@ final class SetPerformanceTests: XCTestCase {
       }
     }
 
+#if PERFOMANCE_CHECK
     func testPerformanceInit3() throws {
 //      throw XCTSkip()
       self.measure {
         let _ = RedBlackTreeSet<Int>(_sequence: random)
       }
     }
+#endif
   
   func testPerformanceDistance0() throws {
 //    throw XCTSkip()

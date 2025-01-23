@@ -132,11 +132,13 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), b.count)
   }
 
+#if DEBUG
   func testSubscript() throws {
     let b: RedBlackTreeMultiset<Int> = [1, 2, 3]
     XCTAssertEqual(b[b.startIndex], 1)
     XCTAssertEqual(b[RedBlackTreeSet<Int>.RawIndex(0)], 1)
   }
+#endif
 
   func testSmoke() throws {
     let b: RedBlackTreeMultiset<Int> = [1, 2, 3]
@@ -969,6 +971,7 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.sorted(), [1, 2, 3, 4, 5])
   }
 
+#if DEBUG
   func testSubSeqSubscript() throws {
     let set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
     XCTAssertEqual(set[2 ..< 4][.init(2)], 3)
@@ -978,6 +981,7 @@ final class MultisetTests: XCTestCase {
     }
     XCTAssertEqual(a, 2 + 3 + 4)
   }
+#endif
 
   func testIndexValidation() throws {
     let set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]

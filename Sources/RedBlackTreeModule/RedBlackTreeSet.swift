@@ -470,8 +470,8 @@ extension RedBlackTreeSet: Sequence {
   #else
     @inlinable
     @inline(__always)
-    public func enumerated() -> EnumSequence {
-      EnumSequence(_subSequence: _tree.enumeratedSubsequence())
+    public func enumerated() -> EnumuratedSequence {
+      EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
     }
   #endif
 }
@@ -622,7 +622,7 @@ extension RedBlackTreeSet.SubSequence {
   public typealias Index = Base.Index
   public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
-  public typealias EnumSequence = Base.EnumSequence
+  public typealias EnumSequence = Base.EnumuratedSequence
 }
 
 extension RedBlackTreeSet.SubSequence: Sequence {
@@ -777,7 +777,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 extension RedBlackTreeSet {
 
   @frozen
-  public struct EnumSequence {
+  public struct EnumuratedSequence {
 
     public typealias Enumurated = Tree.Enumrated
 
@@ -794,7 +794,7 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet.EnumSequence: Sequence {
+extension RedBlackTreeSet.EnumuratedSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
 
@@ -821,7 +821,7 @@ extension RedBlackTreeSet.EnumSequence: Sequence {
   }
 }
 
-extension RedBlackTreeSet.EnumSequence {
+extension RedBlackTreeSet.EnumuratedSequence {
 
   @inlinable
   @inline(__always)

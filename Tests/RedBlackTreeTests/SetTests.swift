@@ -81,6 +81,12 @@ final class SetTests: XCTestCase {
     let b: RedBlackTreeSet<Int> = [1, 2, 3]
     XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), b.count)
   }
+  
+  func testSubscript() throws {
+    let b: RedBlackTreeSet<Int> = [1, 2, 3]
+    XCTAssertEqual(b[b.startIndex], 1)
+    XCTAssertEqual(b[RedBlackTreeSet<Int>.RawIndex(0)], 1)
+  }
 
   func testSmoke() throws {
     let b: RedBlackTreeSet<Int> = [1, 2, 3]
@@ -745,6 +751,24 @@ final class SetTests: XCTestCase {
     XCTAssertTrue(sub.formIndex(&i, offsetBy: -3, limitedBy: sub.startIndex))
     i = sub.endIndex
     XCTAssertFalse(sub.formIndex(&i, offsetBy: -4, limitedBy: sub.startIndex))
+  }
+
+  func testIndex12() throws {
+    let set: RedBlackTreeSet<Int> = [1,2,3,4,5,6]
+    var i = set.startIndex
+    set.formIndex(&i, offsetBy: 6)
+    XCTAssertEqual(i, set.endIndex)
+    i = set.endIndex
+    set.formIndex(&i, offsetBy: -6)
+    XCTAssertEqual(i, set.startIndex)
+    let sub = set[2..<5]
+    XCTAssertEqual(sub.map{ $0 }, [2,3,4])
+    i = sub.startIndex
+    sub.formIndex(&i, offsetBy: 3)
+    XCTAssertEqual(i, sub.endIndex)
+    i = sub.endIndex
+    sub.formIndex(&i, offsetBy: -3)
+    XCTAssertEqual(i, sub.startIndex)
   }
 
   func testSorted() throws {

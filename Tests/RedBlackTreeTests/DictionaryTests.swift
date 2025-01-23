@@ -655,6 +655,24 @@ final class DictionaryTests: XCTestCase {
     XCTAssertFalse(sub.formIndex(&i, offsetBy: -4, limitedBy: sub.startIndex))
   }
   
+  func testIndex12() throws {
+    let set: RedBlackTreeDictionary<Int,Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
+    var i = set.startIndex
+    set.formIndex(&i, offsetBy: 6)
+    XCTAssertEqual(i, set.endIndex)
+    i = set.endIndex
+    set.formIndex(&i, offsetBy: -6)
+    XCTAssertEqual(i, set.startIndex)
+    let sub = set[2..<5]
+    XCTAssertEqual(sub.map{ $0.key }, [2,3,4])
+    i = sub.startIndex
+    sub.formIndex(&i, offsetBy: 3)
+    XCTAssertEqual(i, sub.endIndex)
+    i = sub.endIndex
+    sub.formIndex(&i, offsetBy: -3)
+    XCTAssertEqual(i, sub.startIndex)
+  }
+
   func testIndexValidation() throws {
     let set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
     XCTAssertTrue(set.isValid(index: set.startIndex))

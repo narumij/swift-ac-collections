@@ -43,9 +43,6 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
     typealias Element = Element
 
   public
-    typealias EnumElement = Tree.EnumElement
-
-  public
     typealias Index = Tree.Pointer
 
   public
@@ -721,7 +718,7 @@ extension RedBlackTreeMultiset {
   @frozen
   public struct EnumSequence {
 
-    public typealias Enumurated = Tree.EnumElement
+    public typealias Enumurated = Tree.Enumrated
 
     @usableFromInline
     internal typealias _SubSequence = Tree.EnumSequence

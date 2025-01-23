@@ -131,6 +131,9 @@ extension ___RedBlackTree.___Tree {
   public
     typealias Tree = ___RedBlackTree.___Tree<VC>
 
+  public
+    typealias RawPointer = ___RedBlackTree.RawPointer
+
   @usableFromInline
   internal typealias VC = VC
 

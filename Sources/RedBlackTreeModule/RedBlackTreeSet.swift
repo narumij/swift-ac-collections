@@ -49,9 +49,6 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias Element = Element
 
-  public
-    typealias EnumElement = Tree.EnumElement
-
   /// `Index` は `RedBlackTreeSet` 内の要素を参照するための型です。
   ///
   /// `Collection` プロトコルに準拠するために用意されており、
@@ -786,7 +783,7 @@ extension RedBlackTreeSet {
   @frozen
   public struct EnumSequence {
 
-    public typealias Enumurated = Tree.EnumElement
+    public typealias Enumurated = Tree.Enumrated
 
     @usableFromInline
     internal typealias _SubSequence = Tree.EnumSequence

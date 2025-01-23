@@ -614,7 +614,6 @@ extension RedBlackTreeMultiset.SubSequence: ___RedBlackTreeSubSequenceBase { }
 
 extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
 
-
   @inlinable
   @inline(__always)
   public var startIndex: Index {
@@ -677,7 +676,7 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     ___form_index(&i, offsetBy: distance)
   }
 

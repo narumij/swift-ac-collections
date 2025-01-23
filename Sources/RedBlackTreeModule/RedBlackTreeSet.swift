@@ -303,7 +303,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   public func contains(_ member: Element) -> Bool {
-    ___contains_unique(member)
+    ___contains(member)
   }
 
   /// - Complexity: O(log *n*)

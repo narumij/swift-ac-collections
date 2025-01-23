@@ -326,13 +326,8 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
-  func ___contains_unique(_ __k: _Key) -> Bool where _Key: Equatable {
+  func ___contains(_ __k: _Key) -> Bool where _Key: Equatable {
     _tree.__count_unique(__k) != 0
-  }
-
-  @inlinable @inline(__always)
-  func ___contains_multi(_ __k: _Key) -> Bool where _Key: Equatable {
-    _tree.__count_multi(__k) != 0
   }
 }
 

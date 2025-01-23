@@ -728,77 +728,79 @@ extension RedBlackTreeDictionary.SubSequence: Sequence {
   #endif
 }
 
+extension RedBlackTreeDictionary.SubSequence: ___RedBlackTreeSubSequenceBase { }
+
 extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
+  @inlinable
+  @inline(__always)
+  public var startIndex: Index {
+    ___start_index
+  }
 
   @inlinable
   @inline(__always)
-  public var startIndex: Index { Index(__tree: tree, pointer: _subSequence.startIndex) }
+  public var endIndex: Index {
+    ___end_index
+  }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__tree: tree, pointer: _subSequence.endIndex) }
-
-  @inlinable
-  @inline(__always)
-  public var count: Int { _subSequence.count }
+  public var count: Int {
+    ___count
+  }
 
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _subSequence.forEach(body)
+    try ___for_each(body)
   }
 
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    return _subSequence.distance(from: start.rawValue, to: end.rawValue)
+    ___distance(from: start, to: end)
   }
 
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(after: i.rawValue))
+    ___index(after: i)
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
-    return _subSequence.formIndex(after: &i.rawValue)
+    ___form_index(after: &i)
   }
 
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(before: i.rawValue))
+    ___index(before: i)
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
-    _subSequence.formIndex(before: &i.rawValue)
+    ___form_index(before: &i)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(i.rawValue, offsetBy: distance))
+    ___index(i, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    _subSequence.formIndex(&i.rawValue, offsetBy: distance)
+  internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    ___form_index(&i, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-
-    if let i = _subSequence.index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue) {
-      return Index(__tree: tree, pointer: i)
-    } else {
-      return nil
-    }
+    ___index(i, offsetBy: distance, limitedBy: limit)
   }
 
   @inlinable
@@ -806,7 +808,7 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
-    return _subSequence.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
+    ___form_index(&i, offsetBy: distance, limitedBy: limit)
   }
 
   @inlinable

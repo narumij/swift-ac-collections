@@ -436,6 +436,10 @@ extension ___RedBlackTreeSubSequenceBase {
   typealias ___SubSequence = ___Tree.SubSequence
   @usableFromInline
   typealias ___Element = ___Tree.SubSequence.Element
+  
+  @inlinable
+  @inline(__always)
+  internal var _tree: ___Tree { _subSequence._tree }
 
   @inlinable @inline(__always)
   internal var ___start_index: ___Index {

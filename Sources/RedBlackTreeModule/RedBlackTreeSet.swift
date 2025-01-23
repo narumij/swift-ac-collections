@@ -640,8 +640,6 @@ extension RedBlackTreeSet.SubSequence {
   public typealias EnumSequence = Base.EnumSequence
 }
 
-extension RedBlackTreeSet.SubSequence: ___RedBlackTreeSubSequenceBase { }
-
 extension RedBlackTreeSet.SubSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
@@ -684,6 +682,8 @@ extension RedBlackTreeSet.SubSequence: Sequence {
     }
   #endif
 }
+
+extension RedBlackTreeSet.SubSequence: ___RedBlackTreeSubSequenceBase { }
 
 extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 

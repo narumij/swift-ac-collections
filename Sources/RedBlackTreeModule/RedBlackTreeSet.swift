@@ -69,10 +69,6 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
   @usableFromInline
   var _storage: Tree.Storage
-
-  @inlinable
-  @inline(__always)
-  var _tree: Tree { _storage.tree }
 }
 
 extension RedBlackTreeSet {
@@ -891,6 +887,7 @@ extension RedBlackTreeSet {
   }
 }
 
+#if PERFOMANCE_CHECK
 extension RedBlackTreeSet {
 
   // 旧初期化実装
@@ -918,3 +915,4 @@ extension RedBlackTreeSet {
     self._storage = .init(__tree: tree)
   }
 }
+#endif

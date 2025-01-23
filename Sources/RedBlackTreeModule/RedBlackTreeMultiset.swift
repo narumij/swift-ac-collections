@@ -50,10 +50,6 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
 
   @usableFromInline
   var _storage: Tree.Storage
-
-  @inlinable
-  @inline(__always)
-  var _tree: Tree { _storage.tree }
 }
 
 extension RedBlackTreeMultiset {

@@ -31,8 +31,14 @@ extension ValueComparer {
 @usableFromInline
 protocol ___RedBlackTreeBase: ValueComparer {
   associatedtype Element
-  var _tree: Tree { get }
   var _storage: Tree.Storage { get set }
+  var _tree: Tree { get }
+}
+
+extension ___RedBlackTreeBase {
+  
+  @inlinable @inline(__always)
+  var _tree: Tree { _storage.tree }
 }
 
 extension ___RedBlackTreeBase {

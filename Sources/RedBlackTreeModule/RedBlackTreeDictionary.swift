@@ -67,10 +67,6 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   @usableFromInline
   var _storage: Tree.Storage
-
-  @inlinable
-  @inline(__always)
-  var _tree: Tree { _storage.tree }
 }
 
 extension RedBlackTreeDictionary {

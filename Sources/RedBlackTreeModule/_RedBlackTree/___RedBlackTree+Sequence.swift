@@ -178,7 +178,10 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   // この実装がないと、迷子になる
   @inlinable
   internal func distance(from start: Index, to end: Index) -> Int {
-    ___signed_distance(start, end)
+    guard start == __end_node() || ___is_valid(start), end == __end_node() || ___is_valid(end) else {
+      fatalError(.invalidIndex)
+    }
+    return ___signed_distance(start, end)
   }
 
   @inlinable
@@ -193,6 +196,7 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   @inlinable
   @inline(__always)
   internal func formIndex(after i: inout Index) {
+    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
     i = __tree_next(i)
   }
 
@@ -208,6 +212,7 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   @inlinable
   @inline(__always)
   internal func formIndex(before i: inout Index) {
+    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
     i = __tree_prev_iter(i)
   }
 
@@ -240,6 +245,7 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   @inlinable
   @inline(__always)
   internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
     i = index(i, offsetBy: distance)
   }
 
@@ -276,6 +282,8 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   @inline(__always)
   internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index) -> Bool
   {
+    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
+
     if let ii = index(i, offsetBy: distance, limitedBy: limit) {
       i = ii
       return true

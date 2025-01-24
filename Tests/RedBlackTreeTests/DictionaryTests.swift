@@ -234,6 +234,7 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(map[1], [2])
   }
   
+#if DEBUG
   func testSubscript1() throws {
     var map: RedBlackTreeDictionary<Int, Int> = [1:10,2:10,3:10]
     typealias RawIndex = RedBlackTreeDictionary<Int, Int>.RawIndex
@@ -242,6 +243,7 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(map[2 ..< 3][RawIndex(1)].key, 2)
     XCTAssertEqual(map[2 ..< 3][RawIndex(1)].value, 10)
   }
+#endif
 
   func testSmoke() throws {
     let b: RedBlackTreeDictionary<Int,[Int]> = [1: [1,2], 2: [2,3], 3: [3, 4]]
@@ -522,6 +524,7 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(set.map{ $0.value }, ["?","?","?","?","?"])
   }
 
+#if DEBUG
   func testEnumeratedSequence1() throws {
     let set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c"]
     var d: [String:Int] = [:]
@@ -557,6 +560,7 @@ final class DictionaryTests: XCTestCase {
     }
     XCTAssertEqual(d, ["b": 1, "c": 2])
   }
+#endif
 
   func testIndex0() throws {
     let set: RedBlackTreeDictionary<Int,Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]

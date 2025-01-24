@@ -43,6 +43,12 @@ final class MergeTests: XCTestCase {
     XCTAssertEqual(rhs.map { $0 }, [4, 4, 5, 5, 6, 6])
   }
   
+  func testMultietAndClosedRange() throws {
+    var lhs: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5, 6]
+    lhs.insert(contentsOf: 1 ... 6)
+    XCTAssertEqual(lhs.map { $0 }, [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6])
+  }
+  
   func testDictionaryAndDictionary() throws {
     var lhs: RedBlackTreeDictionary<String,String> = ["イートハーブの香る":"なんとか"]
     let rhs: RedBlackTreeDictionary<String,String> = ["foo":"bar"]

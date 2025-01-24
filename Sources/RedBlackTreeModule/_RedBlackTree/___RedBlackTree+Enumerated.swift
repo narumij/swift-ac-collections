@@ -28,11 +28,11 @@ protocol RawPointerBuilderProtocol {}
 extension RawPointerBuilderProtocol {
 
   @usableFromInline
-  internal typealias EnumeratedIndex = ___RedBlackTree.RawPointer
+  internal typealias Index = ___RedBlackTree.RawPointer
 
   @inlinable
   @inline(__always)
-  internal func ___index(_ p: _NodePtr) -> EnumeratedIndex {
+  internal func ___index(_ p: _NodePtr) -> Index {
     .init(p)
   }
 }
@@ -48,28 +48,26 @@ extension TreePointerBuilderProtocol {
   internal typealias Tree = ___RedBlackTree.___Tree<VC>
   
   @usableFromInline
-  internal typealias EnumeratedIndex = ___RedBlackTree.___Tree<VC>.Pointer
+  internal typealias Index = ___RedBlackTree.___Tree<VC>.Pointer
 
   @inlinable
   @inline(__always)
-  internal func ___index(_ p: _NodePtr) -> EnumeratedIndex {
+  internal func ___index(_ p: _NodePtr) -> Index {
     .init(__tree: _tree, pointer: p)
   }
 }
 
 extension ___RedBlackTree.___Tree {
   
-  public typealias RawPointer = ___RedBlackTree.RawPointer
-
   #if true
     typealias EnumIndexMaker = RawPointerBuilderProtocol
-    public typealias EnumIndex = ___RedBlackTree.RawPointer
+    public typealias EnumuratedIndex = ___RedBlackTree.RawPointer
   #else
     typealias EnumIndexMaker = TreePointerBuilderProtocol
     public typealias EnumIndex = TreePointer
   #endif
 
-  public typealias EnumElement = (offset: EnumIndex, element: Element)
+  public typealias Enumerated = (offset: EnumuratedIndex, element: Element)
 
   @frozen
   public struct EnumIterator: RedBlackTreeIteratorNextProtocol, EnumIndexMaker {
@@ -91,7 +89,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> EnumElement? {
+    public mutating func next() -> Enumerated? {
       _next().map { (___index($0), _tree[$0]) }
     }
   }
@@ -115,7 +113,7 @@ extension ___RedBlackTree.___Tree {
   @frozen
   public struct EnumSequence: Sequence, EnumIndexMaker {
 
-    public typealias Element = Tree.EnumElement
+    public typealias Element = Tree.Enumerated
     
     @usableFromInline
     typealias Index = _NodePtr
@@ -221,7 +219,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    internal subscript(position: Index) -> EnumElement {
+    internal subscript(position: Index) -> Enumerated {
       (___index(position), _tree[position])
     }
 

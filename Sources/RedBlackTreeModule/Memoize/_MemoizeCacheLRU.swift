@@ -118,7 +118,7 @@ extension _MemoizeCacheLRU {
   public var count: Int { ___count }
   
   @inlinable
-  public var capacity: Int { ___header_capacity }
+  public var capacity: Int { ___capacity }
 }
 
 extension _MemoizeCacheLRU {

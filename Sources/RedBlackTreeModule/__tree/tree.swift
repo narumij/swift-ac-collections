@@ -37,7 +37,6 @@ public
 public
   typealias _Pointer = _NodePtr
 
-
 extension _NodePtr {
 
   /// 赤黒木のIndexで、nullを表す
@@ -152,7 +151,7 @@ extension ValueProtocol {
   func ___value_equal(_ a: _Key, _ b: _Key) -> Bool {
     !value_comp(a, b) && !value_comp(b, a)
   }
-  
+
   @inlinable @inline(__always)
   func ___comp(_ a: _Key, _ b: _Key) -> Bool {
     value_comp(a, b)
@@ -252,7 +251,7 @@ extension ValueComparer where _Key: Comparable {
 }
 
 extension ValueComparer {
-  
+
   @inlinable @inline(__always)
   static func ___value_equal(_ a: _Key, _ b: _Key) -> Bool {
     !value_comp(a, b) && !value_comp(b, a)
@@ -260,7 +259,7 @@ extension ValueComparer {
 
   @inlinable @inline(__always)
   static func ___comp(_ a: _Key, _ b: _Key) -> Bool {
-    value_comp(a,b)
+    value_comp(a, b)
   }
 }
 
@@ -286,7 +285,7 @@ extension KeyValueComparer {
 }
 
 extension KeyValueComparer where Element == _KeyValueTuple {
-  
+
   @inlinable @inline(__always)
   public static func __key(_ element: Element) -> _Key { element.key }
 
@@ -308,7 +307,7 @@ protocol CustomKeyValueComparer: KeyValueComparer where _Key == Custom.Parameter
 }
 
 extension CustomKeyValueComparer {
-  
+
   @inlinable @inline(__always)
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     Custom.value_comp(a, b)

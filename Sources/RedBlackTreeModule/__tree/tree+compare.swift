@@ -2,7 +2,7 @@ import Foundation
 
 @usableFromInline
 protocol PointerCompareProtocol: ValueProtocol {
-  func ___ptr_comp(_ l: _NodePtr,_ r: _NodePtr) -> Bool
+  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }
 
 // 現状使っていない
@@ -10,11 +10,11 @@ protocol PointerCompareProtocol: ValueProtocol {
 protocol CompareUniqueProtocol: ValueProtocol {}
 
 extension CompareUniqueProtocol {
-  
+
   /// multisetでも、インデックス比較に関して不正な結果だが、レンジで使う限り落ちはしない
   @inlinable
   @inline(__always)
-  func ___ptr_comp_unique(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
+  func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     guard
       l != r,
       r != .end,
@@ -24,10 +24,10 @@ extension CompareUniqueProtocol {
     }
     return value_comp(__value_(l), __value_(r))
   }
-  
+
   @inlinable
   @inline(__always)
-  func ___ptr_comp(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
+  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     ___ptr_comp_unique(l, r)
   }
 }
@@ -50,17 +50,18 @@ extension CompareMultiProtocol {
     }
     return __h
   }
-  
+
   // ノードの大小を比較する
   @inlinable
   @inline(__always)
-  func ___ptr_comp_multi(_ __l: _NodePtr,_ __r: _NodePtr) -> Bool {
+  func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
     assert(__l != .nullptr, "Left node shouldn't be null")
     assert(__r != .nullptr, "Right node shouldn't be null")
     guard
       __l != end(),
       __r != end(),
-      __l != __r else {
+      __l != __r
+    else {
       return __l != end() && __r == end()
     }
     var (__l, __lh) = (__l, ___ptr_height(__l))
@@ -89,48 +90,48 @@ extension CompareMultiProtocol {
     }
     // 共通祖先が__lと__r以外だった場合
     // 共通祖先の左が__lであれば、__lが小さい
-    return  __tree_is_left_child(__l)
+    return __tree_is_left_child(__l)
   }
-  
+
   @inlinable
   @inline(__always)
-  func ___ptr_comp(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
+  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     ___ptr_comp_multi(l, r)
   }
 }
 
 @usableFromInline
-protocol CompareProtocol: PointerCompareProtocol { }
+protocol CompareProtocol: PointerCompareProtocol {}
 
 extension CompareProtocol {
-  
+
   @inlinable
   @inline(__always)
-  func ___ptr_less_than(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
+  func ___ptr_less_than(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     ___ptr_comp(l, r)
   }
 
   @inlinable
   @inline(__always)
-  func ___ptr_less_than_or_equal(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
+  func ___ptr_less_than_or_equal(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     return l == r || ___ptr_comp(l, r)
   }
-  
+
   @inlinable
   @inline(__always)
-  func ___ptr_greator_than(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
+  func ___ptr_greator_than(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     return l != r && !___ptr_comp(l, r)
   }
 
   @inlinable
   @inline(__always)
-  func ___ptr_greator_than_or_equal(_ l: _NodePtr,_ r: _NodePtr) -> Bool {
+  func ___ptr_greator_than_or_equal(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     return !___ptr_comp(l, r)
   }
 
   @inlinable
   @inline(__always)
-  func ___ptr_closed_range_contains(_ l: _NodePtr,_ r: _NodePtr,_ p: _NodePtr) -> Bool {
+  func ___ptr_closed_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool {
     l == p || (___ptr_comp(l, p) && !___ptr_comp(r, p))
   }
 }

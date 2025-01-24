@@ -43,9 +43,6 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
     typealias Element = Element
 
   public
-    typealias EnumElement = Tree.EnumElement
-
-  public
     typealias Index = Tree.Pointer
 
   public
@@ -53,10 +50,6 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
 
   @usableFromInline
   var _storage: Tree.Storage
-
-  @inlinable
-  @inline(__always)
-  var _tree: Tree { _storage.tree }
 }
 
 extension RedBlackTreeMultiset {
@@ -112,7 +105,7 @@ extension RedBlackTreeMultiset {
     precondition(range is Range<Element> || range is ClosedRange<Element>)
     let tree: Tree = .create(minimumCapacity: range.count)
     // 初期化直後はO(1)
-    var (__parent,__child) = tree.___max_ref()
+    var (__parent, __child) = tree.___max_ref()
     for __k in range {
       // バランシングの計算量がO(log *n*)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
@@ -127,13 +120,13 @@ extension RedBlackTreeMultiset {
   /// - 計算量: O(1)
   @inlinable
   public var isEmpty: Bool {
-    ___isEmpty
+    ___is_empty
   }
 
   /// - 計算量: O(1)
   @inlinable
   public var capacity: Int {
-    ___header_capacity
+    ___capacity
   }
 }
 
@@ -247,7 +240,7 @@ extension RedBlackTreeMultiset {
     let upper = lowerBound(elementRange.upperBound)
     removeSubrange(lower..<upper)
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
@@ -262,7 +255,7 @@ extension RedBlackTreeMultiset {
   /// - Complexity: O(*n*)
   @inlinable
   public func contains(_ member: Element) -> Bool {
-    ___contains_unique(member)
+    ___contains(member)
   }
 
   /// - Complexity: O(*n*)
@@ -314,7 +307,7 @@ extension RedBlackTreeMultiset {
   public var last: Element? {
     isEmpty ? nil : self[index(before: .end(_storage))]
   }
-  
+
   /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
@@ -417,8 +410,8 @@ extension RedBlackTreeMultiset: Sequence {
   #else
     @inlinable
     @inline(__always)
-    public func enumerated() -> EnumSequence {
-      EnumSequence(_subSequence: _tree.enumeratedSubsequence())
+    public func enumerated() -> EnumuratedSequence {
+      EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
     }
   #endif
 }
@@ -427,66 +420,67 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public var startIndex: Index { Index(__storage: _storage, pointer: _tree.startIndex) }
+  public var startIndex: Index {
+    ___index_start()
+  }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__storage: _storage, pointer: _tree.endIndex) }
+  public var endIndex: Index {
+    ___index_end()
+  }
 
   @inlinable
   @inline(__always)
-  public var count: Int { _tree.count }
+  public var count: Int {
+    ___count }
 
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    return _tree.distance(from: start.rawValue, to: end.rawValue)
+    ___distance(from: start.rawValue, to: end.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__storage: _storage, pointer: _tree.index(after: i.rawValue))
+    ___index(after: i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
-    return _tree.formIndex(after: &i.rawValue)
+    ___form_index(after: &i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__storage: _storage, pointer: _tree.index(before: i.rawValue))
+    ___index(before: i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
-    _tree.formIndex(before: &i.rawValue)
+    ___form_index(before: &i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__storage: _storage, pointer: _tree.index(i.rawValue, offsetBy: distance))
+    ___index(i.rawValue, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    _tree.formIndex(&i.rawValue, offsetBy: distance)
+    ___form_index(&i.rawValue, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    if let i = _tree.index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue) {
-      return Index(__storage: _storage, pointer: i)
-    } else {
-      return nil
-    }
+    ___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
 
   @inlinable
@@ -494,7 +488,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
     -> Bool
   {
-    return _tree.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
+    ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
 
   @inlinable
@@ -527,7 +521,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
           from: ___ptr_lower_bound(bounds.lowerBound),
           to: ___ptr_lower_bound(bounds.upperBound)))
   }
-  
+
   @inlinable
   public subscript(bounds: ClosedRange<Element>) -> SubSequence {
     SubSequence(
@@ -544,45 +538,37 @@ extension RedBlackTreeMultiset {
   public struct SubSequence {
 
     @usableFromInline
-    internal typealias _Tree = Tree
+    internal typealias _SubSequence = Tree.SubSequence
 
     @usableFromInline
-    internal typealias _TreeSubSequence = Tree.SubSequence
-
-    @usableFromInline
-    internal let _subSequence: _TreeSubSequence
+    internal let _subSequence: _SubSequence
 
     @inlinable
-    init(_subSequence: _TreeSubSequence) {
+    init(_subSequence: _SubSequence) {
       self._subSequence = _subSequence
     }
-
-    @inlinable
-    @inline(__always)
-    internal var tree: Tree { _subSequence._tree }
   }
 }
 
 extension RedBlackTreeMultiset.SubSequence {
-  
+
   public typealias Base = RedBlackTreeMultiset
   public typealias SubSequence = Self
   public typealias Index = Base.Index
   public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
-  public typealias EnumElement = Base.Tree.EnumElement
-  public typealias EnumSequence = Base.EnumSequence
+  public typealias EnumuratedSequence = Base.EnumuratedSequence
 }
 
 extension RedBlackTreeMultiset.SubSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
     @usableFromInline
-    internal var _iterator: _TreeSubSequence.Iterator
+    internal var _iterator: _SubSequence.Iterator
 
     @inlinable
     @inline(__always)
-    internal init(_ _iterator: _TreeSubSequence.Iterator) {
+    internal init(_ _iterator: _SubSequence.Iterator) {
       self._iterator = _iterator
     }
 
@@ -610,104 +596,107 @@ extension RedBlackTreeMultiset.SubSequence: Sequence {
   #else
     @inlinable
     @inline(__always)
-    public func enumerated() -> EnumSequence {
-      EnumSequence(
-        _subSequence: tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+    public func enumerated() -> EnumuratedSequence {
+      EnumuratedSequence(
+        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
     }
   #endif
 }
+
+extension RedBlackTreeMultiset.SubSequence: ___RedBlackTreeSubSequenceBase { }
 
 extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public var startIndex: Index { Index(__tree: tree, pointer: _subSequence.startIndex) }
+  public var startIndex: Index {
+    ___start_index
+  }
 
   @inlinable
   @inline(__always)
-  public var endIndex: Index { Index(__tree: tree, pointer: _subSequence.endIndex) }
+  public var endIndex: Index {
+    ___end_index
+  }
 
   @inlinable
   @inline(__always)
-  public var count: Int { _subSequence.count }
+  public var count: Int {
+    ___count
+  }
 
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _subSequence.forEach(body)
+    try ___for_each(body)
   }
 
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    return _subSequence.distance(from: start.rawValue, to: end.rawValue)
+    ___distance(from: start, to: end)
   }
 
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(after: i.rawValue))
+    ___index(after: i)
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
-    return _subSequence.formIndex(after: &i.rawValue)
+    ___form_index(after: &i)
   }
 
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(before: i.rawValue))
+    ___index(before: i)
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
-    _subSequence.formIndex(before: &i.rawValue)
+    ___form_index(before: &i)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    return Index(__tree: tree, pointer: _subSequence.index(i.rawValue, offsetBy: distance))
+    ___index(i, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    _subSequence.formIndex(&i.rawValue, offsetBy: distance)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    ___form_index(&i, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-
-    if let i = _subSequence.index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue) {
-      return Index(__tree: tree, pointer: i)
-    } else {
-      return nil
-    }
+    ___index(i, offsetBy: distance, limitedBy: limit)
   }
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
-    return _subSequence.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
+    ___form_index(&i, offsetBy: distance, limitedBy: limit)
   }
 
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
-    return _subSequence[position.rawValue]
+    _subSequence[position.rawValue]
   }
 
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
-    return tree[position.rawValue]
+    _subSequence[position.rawValue]
   }
 
   @inlinable
@@ -723,61 +712,55 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
 extension RedBlackTreeMultiset {
 
   @frozen
-  public struct EnumSequence {
+  public struct EnumuratedSequence {
 
-    public typealias _Element = Tree.EnumElement
-
-    public typealias Element = Tree.EnumElement
+    public typealias Enumurated = Tree.Enumerated
 
     @usableFromInline
-    internal typealias _TreeEnumSequence = Tree.EnumSequence
+    internal typealias _SubSequence = Tree.EnumSequence
 
     @usableFromInline
-    internal let _subSequence: _TreeEnumSequence
+    internal let _subSequence: _SubSequence
 
     @inlinable
-    init(_subSequence: _TreeEnumSequence) {
+    init(_subSequence: _SubSequence) {
       self._subSequence = _subSequence
     }
-
-    @inlinable
-    @inline(__always)
-    internal var _tree: Tree { _subSequence._tree }
   }
 }
 
-extension RedBlackTreeMultiset.EnumSequence: Sequence {
+extension RedBlackTreeMultiset.EnumuratedSequence: Sequence {
 
-  public struct EnumIterator: IteratorProtocol {
+  public struct Iterator: IteratorProtocol {
 
     @usableFromInline
-    internal var _iterator: _TreeEnumSequence.Iterator
+    internal var _iterator: _SubSequence.Iterator
 
     @inlinable
     @inline(__always)
-    internal init(_ _iterator: _TreeEnumSequence.Iterator) {
+    internal init(_ _iterator: _SubSequence.Iterator) {
       self._iterator = _iterator
     }
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> _Element? {
+    public mutating func next() -> Enumurated? {
       _iterator.next()
     }
   }
 
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> EnumIterator {
+  public __consuming func makeIterator() -> Iterator {
     Iterator(_subSequence.makeIterator())
   }
 }
 
-extension RedBlackTreeMultiset.EnumSequence {
+extension RedBlackTreeMultiset.EnumuratedSequence {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (_Element) throws -> Void) rethrows {
+  public func forEach(_ body: (Enumurated) throws -> Void) rethrows {
     try _subSequence.forEach(body)
   }
 }

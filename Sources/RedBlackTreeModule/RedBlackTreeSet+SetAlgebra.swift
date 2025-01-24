@@ -49,7 +49,7 @@ extension RedBlackTreeSet: SetAlgebra {
     result.formSymmetricDifference(other)
     return result
   }
-  
+
   @inlinable
   func ___set_result(_ f: inout Index, _ l: Index, _ r: inout Tree.___MutablePointer) {
     while f != l {
@@ -58,7 +58,7 @@ extension RedBlackTreeSet: SetAlgebra {
       f.___next()
     }
   }
-  
+
   @inlinable
   public mutating func formUnion(_ other: __owned RedBlackTreeSet<Element>) {
     let ___storage: Tree.Storage = .create(withCapacity: 0)

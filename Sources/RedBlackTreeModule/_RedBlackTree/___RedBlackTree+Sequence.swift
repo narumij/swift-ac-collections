@@ -45,10 +45,10 @@ extension RedBlackTreeIteratorNextProtocol {
     }
     return _current
   }
-  
+
   @inlinable
   @inline(__always)
-  internal func _re_initialize(_ start: _NodePtr) -> (next:_NodePtr, nextnext:_NodePtr) {
+  internal func _re_initialize(_ start: _NodePtr) -> (next: _NodePtr, nextnext: _NodePtr) {
     (start == .end ? .end : _tree.__tree_next(start), _end)
   }
 }
@@ -70,7 +70,7 @@ protocol RedBlackTreeIteratorNextProtocol2: IteratorProtocol {
 }
 
 extension RedBlackTreeIteratorNextProtocol2 {
-  
+
   // 性能低下する予想だったが、キャッシュの効きがいいのか、手元計測ではむしろ速い
   @inlinable
   @inline(__always)
@@ -91,7 +91,7 @@ extension RedBlackTreeIteratorNextProtocol2 {
 
   @inlinable
   @inline(__always)
-  internal func _next(_ _next: _NodePtr,_ _next_next: _NodePtr) -> _NodePtr {
+  internal func _next(_ _next: _NodePtr, _ _next_next: _NodePtr) -> _NodePtr {
     _next != _end && _tree.___is_valid(_next) ? _next : _next_next
   }
 
@@ -107,21 +107,21 @@ extension RedBlackTreeIteratorNextProtocol2 {
     var _next_next = _next
     // _nextと_next_nextの値が異なるところまで、_next_nextを進める
     while _next_next != _end,
-          _tree.___value_equal(
-            _tree.__value_(_next),
-            _tree.__value_(_next_next))
+      _tree.___value_equal(
+        _tree.__value_(_next),
+        _tree.__value_(_next_next))
     {
       _next_next = _tree.__tree_next(_next_next)
     }
     return _next_next
   }
-  
+
   @inlinable
   @inline(__always)
-  internal func _re_initialize(_ start: _NodePtr) -> (next:_NodePtr,nextnext:_NodePtr) {
+  internal func _re_initialize(_ start: _NodePtr) -> (next: _NodePtr, nextnext: _NodePtr) {
     let next = _next(start)
     let nextnext = _next_next(start)
-    return (next,nextnext)
+    return (next, nextnext)
   }
 }
 
@@ -178,7 +178,12 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   // この実装がないと、迷子になる
   @inlinable
   internal func distance(from start: Index, to end: Index) -> Int {
-    ___signed_distance(start, end)
+    guard start == __end_node() || ___is_valid(start),
+          end == __end_node() || ___is_valid(end)
+    else {
+      fatalError(.invalidIndex)
+    }
+    return ___signed_distance(start, end)
   }
 
   @inlinable
@@ -193,6 +198,7 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   @inlinable
   @inline(__always)
   internal func formIndex(after i: inout Index) {
+    guard i != __end_node(), ___is_valid(i) else { fatalError(.invalidIndex) }
     i = __tree_next(i)
   }
 
@@ -208,15 +214,14 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   @inlinable
   @inline(__always)
   internal func formIndex(before i: inout Index) {
+    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
     i = __tree_prev_iter(i)
   }
 
   @inlinable
   @inline(__always)
   internal func index(_ i: Index, offsetBy distance: Int) -> Index {
-    guard i == ___end() || ___is_valid(i) else {
-      fatalError(.invalidIndex)
-    }
+    guard i == ___end() || ___is_valid(i) else { fatalError(.invalidIndex) }
     var distance = distance
     var i = i
     while distance != 0 {
@@ -240,15 +245,14 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   @inlinable
   @inline(__always)
   internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
     i = index(i, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
   internal func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    guard i == ___end() || ___is_valid(i) else {
-      fatalError(.invalidIndex)
-    }
+    guard i == ___end() || ___is_valid(i) else { fatalError(.invalidIndex) }
     var distance = distance
     var i = i
     while distance != 0 {
@@ -276,6 +280,7 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   @inline(__always)
   internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index) -> Bool
   {
+    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
     if let ii = index(i, offsetBy: distance, limitedBy: limit) {
       i = ii
       return true

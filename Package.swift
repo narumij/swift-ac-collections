@@ -13,6 +13,7 @@ var defines: [String] = [
 //  "DISABLE_COPY_ON_WRITE", // やや危険。クラッシュは減った
 //  "ENABLE_PERFORMANCE_TESTING",
 //  "SKIP_MULTISET_INDEX_BUG",
+//  "PERFOMANCE_CHECK",
 ]
 
 var _settings: [SwiftSetting] =

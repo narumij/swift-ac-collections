@@ -614,12 +614,12 @@ final class ___RedBlackTree___TreeTests: XCTestCase {
     XCTAssertTrue(tree.___ptr_closed_range_contains(tree.lower_bound(1), tree.lower_bound(4), tree.lower_bound(1)))
     XCTAssertTrue(tree.___ptr_closed_range_contains(tree.lower_bound(1), tree.lower_bound(4), tree.lower_bound(4)))
     XCTAssertFalse(tree.___ptr_closed_range_contains(tree.lower_bound(1), tree.lower_bound(4), tree.lower_bound(5)))
-    XCTAssertFalse(tree.___ptr_closed_range_contains(tree.lower_bound(1), tree.lower_bound(4), tree.endIndex))
+    XCTAssertFalse(tree.___ptr_closed_range_contains(tree.lower_bound(1), tree.lower_bound(4), tree.__end_node()))
     XCTAssertFalse(tree.___ptr_closed_range_contains(tree.lower_bound(2), tree.lower_bound(3), tree.lower_bound(1)))
     XCTAssertTrue(tree.___ptr_closed_range_contains(tree.lower_bound(2), tree.lower_bound(3), tree.lower_bound(2)))
     XCTAssertTrue(tree.___ptr_closed_range_contains(tree.lower_bound(2), tree.lower_bound(3), tree.lower_bound(3)))
     XCTAssertFalse(tree.___ptr_closed_range_contains(tree.lower_bound(2), tree.lower_bound(3), tree.lower_bound(4)))
-    XCTAssertFalse(tree.___ptr_closed_range_contains(tree.lower_bound(2), tree.lower_bound(3), tree.endIndex))
+    XCTAssertFalse(tree.___ptr_closed_range_contains(tree.lower_bound(2), tree.lower_bound(3), tree.__end_node()))
   }
 #endif
 }

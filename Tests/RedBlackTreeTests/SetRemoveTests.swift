@@ -141,4 +141,20 @@ final class SetRemoveTests: XCTestCase {
     members.remove(Int.max)
     XCTAssertEqual(members.count, 0)
   }
+  
+  func testRemoveWithIndices() throws {
+    var members = RedBlackTreeSet(0 ..< 10)
+    for i in members.indices() {
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [])
+  }
+  
+  func testRemoveWithSubIndices() throws {
+    var members =  RedBlackTreeSet(0 ..< 10)
+    for i in members[2 ..< 8].indices() {
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [0,1,8,9])
+  }
 }

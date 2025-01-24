@@ -414,6 +414,12 @@ extension RedBlackTreeMultiset: Sequence {
       EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
     }
   #endif
+  
+  @inlinable
+  @inline(__always)
+  public func indices() -> IndexSequence {
+    IndexSequence(_subSequence: _tree.indexSubsequence())
+  }
 }
 
 extension RedBlackTreeMultiset: BidirectionalCollection {
@@ -558,6 +564,7 @@ extension RedBlackTreeMultiset.SubSequence {
   public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
   public typealias EnumuratedSequence = Base.EnumuratedSequence
+  public typealias IndexSequence = Base.IndexSequence
 }
 
 extension RedBlackTreeMultiset.SubSequence: Sequence {
@@ -601,6 +608,13 @@ extension RedBlackTreeMultiset.SubSequence: Sequence {
         _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
     }
   #endif
+  
+  @inlinable
+  @inline(__always)
+  public func indices() -> IndexSequence {
+    IndexSequence(
+      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+  }
 }
 
 extension RedBlackTreeMultiset.SubSequence: ___RedBlackTreeSubSequenceBase { }
@@ -761,6 +775,64 @@ extension RedBlackTreeMultiset.EnumuratedSequence {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Enumurated) throws -> Void) rethrows {
+    try _subSequence.forEach(body)
+  }
+}
+
+// MARK: - Index Sequence
+
+extension RedBlackTreeMultiset {
+
+  @frozen
+  public struct IndexSequence {
+    
+    public typealias RawPointer = Tree.RawPointer
+
+    @usableFromInline
+    internal typealias _SubSequence = Tree.IndexSequence
+
+    @usableFromInline
+    internal let _subSequence: _SubSequence
+
+    @inlinable
+    init(_subSequence: _SubSequence) {
+      self._subSequence = _subSequence
+    }
+  }
+}
+
+extension RedBlackTreeMultiset.IndexSequence: Sequence {
+
+  public struct Iterator: IteratorProtocol {
+
+    @usableFromInline
+    internal var _iterator: _SubSequence.Iterator
+
+    @inlinable
+    @inline(__always)
+    internal init(_ _iterator: _SubSequence.Iterator) {
+      self._iterator = _iterator
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> RawPointer? {
+      _iterator.next()
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> Iterator {
+    Iterator(_subSequence.makeIterator())
+  }
+}
+
+extension RedBlackTreeMultiset.IndexSequence {
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (RawPointer) throws -> Void) rethrows {
     try _subSequence.forEach(body)
   }
 }

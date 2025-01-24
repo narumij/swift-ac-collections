@@ -132,6 +132,18 @@ for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].enumerated() { i, _ in
 print(tree2.count) // 0
 ```
 
+indices()がノードインデクスを返すので、そちらでも同様のことができます。
+
+```Swift
+var tree2: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].indices() { i in
+  tree2.remove(at: i) // この時点でiは無効だが、イテレータは内部で次のインデックスを保持している
+  print(tree2.isValid(index: i)) // false
+  // iはRedBlackTreeSet<Int>.RawIndex型
+}
+print(tree2.count) // 0
+```
+
 3. removeSubrange(_:Range<Index>)で削除する
 
 範囲削除メソッドのremoveSubrange(...)もあります。削除動作のオーバーヘッドが一番少なく、他の方法と比べて一番速いです。

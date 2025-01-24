@@ -118,15 +118,16 @@ print(tree1.count) // 0
 
 2. enumerated()で削除する
 
-enumerated()の挙動が変更されていて、単調増加の整数との組み合わせでは無く、ノードインデックスと値を返します。
+enumerated()のオーバーロードメンバ関数があり、型推論によりノードインデックスが利用できます。
 さらに削除時のインデックス無効対策がイテレータに施してあり、1のループと同じような動作をします。このため、以下のように書いて問題ありません。
 
 
 ```Swift
 var tree2: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
-for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].enumerated() {
+for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].enumerated() { i, _ in
   tree2.remove(at: i) // この時点でiは無効だが、イテレータは内部で次のインデックスを保持している
   print(tree2.isValid(index: i)) // false
+  // iはRedBlackTreeSet<Int>.RawIndex型
 }
 print(tree2.count) // 0
 ```

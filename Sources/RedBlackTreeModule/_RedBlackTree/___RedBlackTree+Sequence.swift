@@ -178,7 +178,9 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   // この実装がないと、迷子になる
   @inlinable
   internal func distance(from start: Index, to end: Index) -> Int {
-    guard start == __end_node() || ___is_valid(start), end == __end_node() || ___is_valid(end) else {
+    guard start == __end_node() || ___is_valid(start),
+          end == __end_node() || ___is_valid(end)
+    else {
       fatalError(.invalidIndex)
     }
     return ___signed_distance(start, end)
@@ -196,7 +198,7 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   @inlinable
   @inline(__always)
   internal func formIndex(after i: inout Index) {
-    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
+    guard i != __end_node(), ___is_valid(i) else { fatalError(.invalidIndex) }
     i = __tree_next(i)
   }
 
@@ -219,9 +221,7 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   @inlinable
   @inline(__always)
   internal func index(_ i: Index, offsetBy distance: Int) -> Index {
-    guard i == ___end() || ___is_valid(i) else {
-      fatalError(.invalidIndex)
-    }
+    guard i == ___end() || ___is_valid(i) else { fatalError(.invalidIndex) }
     var distance = distance
     var i = i
     while distance != 0 {
@@ -252,9 +252,7 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   @inlinable
   @inline(__always)
   internal func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    guard i == ___end() || ___is_valid(i) else {
-      fatalError(.invalidIndex)
-    }
+    guard i == ___end() || ___is_valid(i) else { fatalError(.invalidIndex) }
     var distance = distance
     var i = i
     while distance != 0 {
@@ -283,7 +281,6 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
   internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index) -> Bool
   {
     guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
-
     if let ii = index(i, offsetBy: distance, limitedBy: limit) {
       i = ii
       return true

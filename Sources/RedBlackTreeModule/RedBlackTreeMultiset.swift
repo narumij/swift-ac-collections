@@ -714,7 +714,7 @@ extension RedBlackTreeMultiset {
   @frozen
   public struct EnumuratedSequence {
 
-    public typealias Enumurated = Tree.Enumrated
+    public typealias Enumurated = Tree.Enumerated
 
     @usableFromInline
     internal typealias _SubSequence = Tree.EnumSequence

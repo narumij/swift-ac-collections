@@ -50,6 +50,16 @@ final class DictionaryRemoveTests: XCTestCase {
     let i = dict.firstIndex { (k,v) in k == 1 }!
     XCTAssertEqual(dict.remove(at: i).value, 1)
   }
+  
+#if DEBUG
+  func testRemoveAt() throws {
+    var s = [1:1,2:2,3:3,4:4] as RedBlackTreeDictionary<Int,Int>
+    typealias RawIndex = RedBlackTreeDictionary<Int,Int>.RawIndex
+    let i = s.firstIndex(of: 2)!
+    s.remove(at: RawIndex(i.rawValue))
+    XCTAssertEqual(s.map { $0.key }, [1, 3, 4])
+  }
+#endif
 
   func testRemoveFirst() throws {
     var members: RedBlackTreeDictionary<Int,Int> = [1:2, 3:4, 5:6, 7:8, 9:10]

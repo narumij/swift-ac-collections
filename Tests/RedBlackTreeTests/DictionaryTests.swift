@@ -233,6 +233,15 @@ final class DictionaryTests: XCTestCase {
     _ = map[1]?.removeFirst()
     XCTAssertEqual(map[1], [2])
   }
+  
+  func testSubscript1() throws {
+    var map: RedBlackTreeDictionary<Int, Int> = [1:10,2:10,3:10]
+    typealias RawIndex = RedBlackTreeDictionary<Int, Int>.RawIndex
+    XCTAssertEqual(map[RawIndex(0)].key, 1)
+    XCTAssertEqual(map[RawIndex(0)].value, 10)
+    XCTAssertEqual(map[2 ..< 3][RawIndex(1)].key, 2)
+    XCTAssertEqual(map[2 ..< 3][RawIndex(1)].value, 10)
+  }
 
   func testSmoke() throws {
     let b: RedBlackTreeDictionary<Int,[Int]> = [1: [1,2], 2: [2,3], 3: [3, 4]]
@@ -448,13 +457,6 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(d, [1:11,2:22,3:33])
   }
 
-  func testPerformanceExample() throws {
-    // This is an example of a performance test case.
-    self.measure {
-      // Put the code you want to measure the time of here.
-    }
-  }
-
   func testSubsequence() throws {
     var set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
     let sub = set[2 ..< 4]
@@ -498,6 +500,62 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(sub[set.lowerBound(1) ..< set.lowerBound(3)].map{ $0.key }, [1, 2])
     XCTAssertEqual(sub[sub.startIndex ..< sub.endIndex].map{ $0.key }, [1, 2])
     XCTAssertEqual(sub[sub.startIndex ..< sub.index(before: sub.endIndex)].map{ $0.key }, [1])
+  }
+
+  func testSubsequence6() throws {
+    let set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
+    let sub = set[set.startIndex ..< set.endIndex]
+    XCTAssertEqual(sub.map{ $0.key }, [1,2,3,4,5])
+  }
+  
+  func testSubsequence7() throws {
+    var set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
+    let sub = set[set.startIndex ..< set.endIndex]
+    var a: [String] = []
+    for (key, value) in sub {
+      a.append(value)
+    }
+    XCTAssertEqual(a, ["a","b","c","d","e"])
+    sub.forEach { key, value in
+      set[key] = "?"
+    }
+    XCTAssertEqual(set.map{ $0.value }, ["?","?","?","?","?"])
+  }
+
+  func testEnumeratedSequence1() throws {
+    let set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c"]
+    var d: [String:Int] = [:]
+    set.enumerated().forEach {
+      d[$0.element.value] = $0.offset.rawValue
+    }
+    XCTAssertEqual(d, ["a": 0, "b": 1, "c": 2])
+  }
+
+  func testEnumeratedSequence2() throws {
+    let set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c"]
+    var d: [String:Int] = [:]
+    set[2 ... 3].enumerated().forEach {
+      d[$0.element.value] = $0.offset.rawValue
+    }
+    XCTAssertEqual(d, ["b": 1, "c": 2])
+  }
+
+  func testEnumeratedSequence3() throws {
+    let set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c"]
+    var d: [String:Int] = [:]
+    for (o,e) in set.enumerated() {
+      d[e.value] = o.rawValue
+    }
+    XCTAssertEqual(d, ["a": 0, "b": 1, "c": 2])
+  }
+
+  func testEnumeratedSequence4() throws {
+    let set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c"]
+    var d: [String:Int] = [:]
+    for (o,e) in set[2 ... 3].enumerated() {
+      d[e.value] = o.rawValue
+    }
+    XCTAssertEqual(d, ["b": 1, "c": 2])
   }
 
   func testIndex0() throws {

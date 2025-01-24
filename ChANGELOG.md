@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - IndexSequenceを追加
 
-## [0.1.9] - 2025-?-?
+## [0.1.9] - 2025-1-24
+### Fixed
+- コードカバレッジの改善
 
 ## [0.1.8] - 2025-1-24
 ### Changed

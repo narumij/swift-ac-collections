@@ -138,7 +138,7 @@ extension ___RedBlackTree.___Tree {
       var endIndex: Index
 
     @inlinable
-    public func makeIterator() -> EnumIterator {
+    public __consuming func makeIterator() -> EnumIterator {
       _tree.makeEnumeratedIterator(start: startIndex, end: endIndex)
     }
   }

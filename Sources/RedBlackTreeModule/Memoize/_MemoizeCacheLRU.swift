@@ -111,9 +111,6 @@ extension _MemoizeCacheLRU {
     }
   }
 
-  @inlinable @inline(__always)
-  var _tree: Tree { _storage.tree }
-  
   @inlinable
   public var count: Int { ___count }
   

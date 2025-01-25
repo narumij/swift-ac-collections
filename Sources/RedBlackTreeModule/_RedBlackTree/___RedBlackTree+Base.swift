@@ -32,7 +32,6 @@ extension ValueComparer {
 protocol ___RedBlackTreeBase: ValueComparer {
   associatedtype Element
   var _storage: Tree.Storage { get set }
-  var _tree: Tree { get }
 }
 
 extension ___RedBlackTreeBase {

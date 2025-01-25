@@ -53,11 +53,6 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
-  __consuming func makeIndexIterator() -> IndexIterator {
-    .init(tree: self, start: __begin_node, end: __end_node())
-  }
-
-  @inlinable
   __consuming func makeIndexIterator(start: _NodePtr, end: _NodePtr) -> IndexIterator {
     .init(tree: self, start: start, end: end)
   }
@@ -92,12 +87,6 @@ extension ___RedBlackTree.___Tree {
     @inlinable
     public func makeIterator() -> IndexIterator {
       _tree.makeIndexIterator(start: startIndex, end: endIndex)
-    }
-
-    @inlinable
-    @inline(__always)
-    internal var count: Int {
-      _tree.distance(from: startIndex, to: endIndex)
     }
 
     @inlinable

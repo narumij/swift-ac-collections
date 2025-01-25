@@ -68,7 +68,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___index(_ p: _NodePtr) -> ___Index {
-    .init(__storage: _storage, pointer: p)
+    .init(__tree: _tree, pointer: p)
   }
 
   @inlinable @inline(__always)
@@ -414,7 +414,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___std_erase(_ ptr: Tree.Pointer) -> Tree.Pointer {
-    Tree.Pointer(__storage: _storage, pointer: _tree.erase(ptr.rawValue))
+    Tree.Pointer(__tree: _tree, pointer: _tree.erase(ptr.rawValue))
   }
 }
 

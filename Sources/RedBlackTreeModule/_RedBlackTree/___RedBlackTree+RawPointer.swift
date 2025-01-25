@@ -24,11 +24,10 @@ import Foundation
 
 extension ___RedBlackTree {
 
-  /// enumerated()用のインデックス
+  /// enumerated()やindices()用のインデックス
   ///
   /// nullptrはオプショナルで表現する想定で、nullptrを保持しない
   public
-    // 名前は、取り急ぎのものなので、変えたい
     enum RawPointer
   {
     case node(_NodePtr)
@@ -37,7 +36,6 @@ extension ___RedBlackTree {
     @usableFromInline
     init(_ node: _NodePtr) {
       guard node != .nullptr else {
-        // null相当の数値で初期化すると、おこです。
         preconditionFailure("_NodePtr is nullptr")
       }
       self = node == .end ? .end : .node(node)

@@ -376,13 +376,6 @@ extension ___RedBlackTree.___Tree {
     VC.__key(e)
   }
 
-  @inlinable
-  @inline(__always)
-  internal func ___key(_ pointer: _NodePtr) -> _Key {
-    assert(0 <= pointer && pointer < _header.initializedCount)
-    return __key(__node_ptr[pointer].__value_)
-  }
-
   @inlinable @inline(__always)
   internal func ___element(_ p: _NodePtr) -> VC.Element {
     __node_ptr[p].__value_

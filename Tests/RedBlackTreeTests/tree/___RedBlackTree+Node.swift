@@ -63,4 +63,15 @@ extension ___RedBlackTree.___Node {
     .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
   }
 }
+
+extension ___tree_base_node {
+  
+  @inlinable @inline(__always)
+  public mutating func clear() {
+    __left_ = .nullptr
+    __right_ = .nullptr
+    __parent_ = .nullptr
+    __is_black_ = false
+  }
+}
 #endif

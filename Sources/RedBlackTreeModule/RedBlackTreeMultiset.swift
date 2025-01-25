@@ -305,7 +305,7 @@ extension RedBlackTreeMultiset {
   /// - Complexity: O(log *n*)
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : self[index(before: .end(_storage))]
+    isEmpty ? nil : self[index(before: .end(_tree))]
   }
 
   /// - Complexity: O(*n*)

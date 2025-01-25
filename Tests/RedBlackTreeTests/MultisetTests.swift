@@ -7,6 +7,15 @@ import XCTest
 #endif
 
 #if DEBUG
+extension ___RedBlackTree.___Tree {
+  @inlinable
+  func __root(_ p: _NodePtr) {
+    __header_ptr.pointee.__left_ = p
+  }
+}
+#endif
+
+#if DEBUG
   extension RedBlackTreeMultiset {
 
     //      @inlinable

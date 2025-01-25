@@ -258,6 +258,7 @@ extension ___RedBlackTree.___Tree {
     assert(_header.destroyNode != p)
     __node_ptr[p].__left_ = _header.destroyNode
     __node_ptr[p].__right_ = p
+    __node_ptr[p].__parent_ = .nullptr
     __node_ptr[p].__is_black_ = false
     _header.destroyNode = p
     _header.destroyCount += 1
@@ -303,11 +304,6 @@ extension ___RedBlackTree.___Tree {
   internal func ___is_valid(_ p: _NodePtr) -> Bool {
     0..<_header.initializedCount ~= p && __node_ptr[p].__parent_ != .nullptr
   }
-
-  @inlinable @inline(__always)
-  internal func ___invalidate(_ p: _NodePtr) {
-    __node_ptr[p].__parent_ = .nullptr
-  }
 }
 
 extension ___RedBlackTree.___Tree {
@@ -329,7 +325,6 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   internal func destroy(_ p: _NodePtr) {
-    ___invalidate(p)
     ___pushDestroy(p)
   }
 }

@@ -5,16 +5,6 @@ protocol CountProtocol: ValueProtocol & RootProtocol & EndNodeProtocol & Distanc
 
 extension CountProtocol {
 
-  @inlinable @inline(__always)
-  func
-    static_cast__node_pointer(_ p: _NodePtr) -> _NodePtr
-  { p }
-
-  @inlinable @inline(__always)
-  func
-    static_cast__iter_pointer(_ p: _NodePtr) -> _NodePtr
-  { p }
-
   @usableFromInline
   typealias size_type = Int
 
@@ -29,9 +19,9 @@ extension CountProtocol {
     var __rt: __node_pointer = __root()
     while __rt != .nullptr {
       if value_comp(__k, __value_(__rt)) {
-        __rt = static_cast__node_pointer(__left_(__rt))
+        __rt = __left_(__rt)
       } else if value_comp(__value_(__rt), __k) {
-        __rt = static_cast__node_pointer(__right_(__rt))
+        __rt = __right_(__rt)
       } else {
         return 1
       }
@@ -45,15 +35,14 @@ extension CountProtocol {
     var __rt: __node_pointer = __root()
     while __rt != .nullptr {
       if value_comp(__k, __value_(__rt)) {
-        __result = static_cast__iter_pointer(__rt)
-        __rt = static_cast__node_pointer(__left_(__rt))
+        __result = __rt
+        __rt = __left_(__rt)
       } else if value_comp(__value_(__rt), __k) {
-        __rt = static_cast__node_pointer(__right_(__rt))
+        __rt = __right_(__rt)
       } else {
         return __distance(
-          __lower_bound(
-            __k, static_cast__node_pointer(__left_(__rt)), static_cast__iter_pointer(__rt)),
-          __upper_bound(__k, static_cast__node_pointer(__right_(__rt)), __result))
+          __lower_bound(__k, __left_(__rt), __rt),
+          __upper_bound(__k, __right_(__rt), __result))
       }
     }
     return 0

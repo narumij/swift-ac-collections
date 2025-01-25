@@ -405,6 +405,8 @@ extension ___RedBlackTree.___Tree: RemoveProtocol {}
 extension ___RedBlackTree.___Tree: MergeProtocol {}
 extension ___RedBlackTree.___Tree: HandleProtocol {}
 extension ___RedBlackTree.___Tree: EraseProtocol {}
+extension ___RedBlackTree.___Tree: EraseUniqueProtocol {}
+extension ___RedBlackTree.___Tree: EraseMultiProtocol {}
 extension ___RedBlackTree.___Tree: BoundProtocol {}
 extension ___RedBlackTree.___Tree: InsertUniqueProtocol {}
 extension ___RedBlackTree.___Tree: CountProtocol {}
@@ -504,30 +506,6 @@ extension ___RedBlackTree.___Tree {
       __p = __tree_next(__p)
       try body(self[__c])
     }
-  }
-}
-
-extension ___RedBlackTree.___Tree {
-
-  @inlinable
-  internal func ___erase_unique(_ __k: VC._Key) -> Bool {
-    let __i = find(__k)
-    if __i == end() {
-      return false
-    }
-    _ = erase(__i)
-    return true
-  }
-
-  @inlinable
-  internal func ___erase_multi(_ __k: VC._Key) -> Int {
-    var __p = __equal_range_multi(__k)
-    var __r = 0
-    while __p.0 != __p.1 {
-      defer { __r += 1 }
-      __p.0 = erase(__p.0)
-    }
-    return __r
   }
 }
 

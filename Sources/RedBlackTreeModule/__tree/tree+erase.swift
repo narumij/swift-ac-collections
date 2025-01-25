@@ -24,9 +24,7 @@ import Foundation
 
 @usableFromInline
 protocol EraseProtocol: AnyObject {
-
   func destroy(_ p: _NodePtr)
-
   func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
 }
 
@@ -50,5 +48,38 @@ extension EraseProtocol {
       __f = erase(__f)
     }
     return __l
+  }
+}
+
+@usableFromInline
+protocol EraseUniqueProtocol: FindProtocol, EraseProtocol { }
+
+extension EraseUniqueProtocol {
+  
+  @inlinable
+  internal func ___erase_unique(_ __k: _Key) -> Bool {
+    let __i = find(__k)
+    if __i == end() {
+      return false
+    }
+    _ = erase(__i)
+    return true
+  }
+}
+
+@usableFromInline
+protocol EraseMultiProtocol: EqualProtocol, EraseProtocol { }
+
+extension EraseMultiProtocol {
+  
+  @inlinable
+  internal func ___erase_multi(_ __k: _Key) -> Int {
+    var __p = __equal_range_multi(__k)
+    var __r = 0
+    while __p.0 != __p.1 {
+      defer { __r += 1 }
+      __p.0 = erase(__p.0)
+    }
+    return __r
   }
 }

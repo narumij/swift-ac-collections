@@ -24,19 +24,6 @@ import Foundation
 
 extension MemberProtocol {
 
-  @inlinable @inline(__always)
-  func
-    static_cast_EndNodePtr(_ p: _NodePtr) -> _NodePtr
-  { p }
-
-  @inlinable @inline(__always)
-  func
-    static_cast_NodePtr(_ p: _NodePtr) -> _NodePtr
-  { p }
-}
-
-extension MemberProtocol {
-
   @inlinable
   @inline(__always)
   func
@@ -160,12 +147,12 @@ extension MemberProtocol {
     assert(__x != .nullptr, "node shouldn't be null")
     var __x = __x
     if __right_(__x) != .nullptr {
-      return static_cast_EndNodePtr(__tree_min(__right_(__x)))
+      return __tree_min(__right_(__x))
     }
     while !__tree_is_left_child(__x) {
       __x = __parent_unsafe(__x)
     }
-    return static_cast_EndNodePtr(__parent_(__x))
+    return __parent_(__x)
   }
 
   @inlinable
@@ -176,7 +163,7 @@ extension MemberProtocol {
     if __left_(__x) != .nullptr {
       return __tree_max(__left_(__x))
     }
-    var __xx = static_cast_NodePtr(__x)
+    var __xx = __x
     while __tree_is_left_child(__xx) {
       __xx = __parent_unsafe(__xx)
     }

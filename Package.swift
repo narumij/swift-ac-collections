@@ -23,18 +23,12 @@ var _settings: [SwiftSetting] =
     // アロケーション関連のテストを走らせるために必要
     .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
     // ツリーの不変性チェックの有効無効を切り替えるマクロ定義
-    // デバッグビルド時のテストが遅いため用意した
-    // 消すことではやくなる
     // 対象のメソッドは必ずassertかXCTAssert...を介して利用する。
     // このため、リリース時はどちらにせよ無効になる
     .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
-    // デバッグでのパフォーマンステストが絶望的に遅いため、用意した
-    // 残すことではやくなる
   ]
   + defines.map { .define($0) }
-
-// -Ouncheckedで性能が伸びる可能性が割と低いパッケージなので、面倒を避けて-Ouncheckedはキャンセルとする
 
 let package = Package(
   name: "swift-ac-collections",

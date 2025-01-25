@@ -94,7 +94,9 @@ print(dict) // 例: [apple: 5, banana: 3]
 
 - 削除されたノードへの参照を使い続けると、クラッシュします。有効無効の確認が必要な場合、isValid(index:)を使ってください。
 
-- `enumerated()` は単なる連番ではなく、実際のノードインデックスを返すように挙動が変更されています。
+- `enumerated()`にオーバーロードメンバー関数があります。このメンバー関数は、ノードインデックスと値のペアを返します。 このノードインデックスは削除操作に利用可能です。
+
+- `indices()` メンバー関数は、ノードインデックスを返します。 このノードインデックスは削除操作に利用可能です。
 
 - endIndexは例外で、常に不変です。
 
@@ -118,8 +120,8 @@ print(tree1.count) // 0
 
 2. enumerated()で削除する
 
-enumerated()のオーバーロードメンバ関数があり、型推論によりノードインデックスが利用できます。
-さらに削除時のインデックス無効対策がイテレータに施してあり、1のループと同じような動作をします。このため、以下のように書いて問題ありません。
+値とノードインデックスを列挙して、削除操作を行うことができます。
+削除時のインデックス無効対策がイテレータに施してあるので、以下のように書いて問題ありません。
 
 
 ```Swift
@@ -132,44 +134,46 @@ for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].enumerated() { i, _ in
 print(tree2.count) // 0
 ```
 
-indices()がノードインデクスを返すので、そちらでも同様のことができます。
+3. indices()で削除する
 
-```Swift
-var tree2: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
-for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].indices() { i in
-  tree2.remove(at: i) // この時点でiは無効だが、イテレータは内部で次のインデックスを保持している
-  print(tree2.isValid(index: i)) // false
-  // iはRedBlackTreeSet<Int>.RawIndex型
-}
-print(tree2.count) // 0
-```
-
-3. removeSubrange(_:Range<Index>)で削除する
-
-範囲削除メソッドのremoveSubrange(...)もあります。削除動作のオーバーヘッドが一番少なく、他の方法と比べて一番速いです。
+ノードインデクスだけを列挙して、削除操作を行うことができます。
+削除時のインデックス無効対策がイテレータに施してあるので、以下のように書いて問題ありません。
 
 ```Swift
 var tree3: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
-tree3.removeSubrange(tree3.startIndex ..< tree3.endIndex)
-XCTAssertEqual(tree3.count, 0)
+for (i,_) in tree3[tree3.startIndex ..< tree3.endIndex].indices() { i in
+  tree3.remove(at: i) // この時点でiは無効だが、イテレータは内部で次のインデックスを保持している
+  print(tree3.isValid(index: i)) // false
+  // iはRedBlackTreeSet<Int>.RawIndex型
+}
+print(tree3.count) // 0
 ```
 
-4. remove(contentsOf:Range<Element>)を使用して削除する。
+4. removeSubrange(_:Range<Index>)で削除する
 
-インデックスを操作するコードは、インデックスが整数ではない場合、煩雑になりがちで負担が大きいモノです。
-単に値と値の間の削除をしたい場合、以下のようにすることで可能です。
+インデックスの区間で削除対象を指定することが可能です。オーバーヘッドが一番少なく、他の方法と比べて一番速いです。
+
+```Swift
+var tree4: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+tree4.removeSubrange(tree4.startIndex ..< tree3.endIndex)
+XCTAssertEqual(tree4.count, 0)
+```
+
+5. remove(contentsOf:Range<Element>)を使用して削除する。
+
+値の区間で削除対象を指定することが可能です。
 
 
 ```Swift
-var tree4: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
-tree4.remove(contensOf: 0 ..< 6)
+var tree5: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
+tree5.remove(contensOf: 0 ..< 6)
 // 0〜5が削除され、結果は空
 
 ```
 
-5. erase()を自作して削除する
+6. erase()を自作して削除する
 
-標準ライブラリに寄せた作りにしたため、eraseは非公開となっていますが、C++のsetと同じような削除コードを書くことも可能です。
+C++のsetと同じような削除コードを書くことも可能です。
 
 ```Swift
 extension RedBlackTreeSet {
@@ -179,10 +183,10 @@ extension RedBlackTreeSet {
   }
 }
 
-var tree5: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
-var idx = tree5.startIndex
-while idx != tree5.endIndex {
-  idx = tree5.erase(at: idx)
+var tree6: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
+var idx = tree6.startIndex
+while idx != tree6.endIndex {
+  idx = tree6.erase(at: idx)
 }
 ```
 

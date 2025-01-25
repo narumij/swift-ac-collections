@@ -71,11 +71,11 @@ final class SetRemoveTests: XCTestCase {
   }
 
   func testRedBlackTreeSetRemove() throws {
-    XCTAssertEqual(members.first, 1)
+    XCTAssertEqual(members.first, 0)
     let i = members.firstIndex(of: 2)!
     XCTAssertEqual(members.last, 4)
     members.remove(at: i)
-    XCTAssertEqual(members.map { $0 }, [1, 3, 4])
+    XCTAssertEqual(members.map { $0 }, [0, 1, 3, 4])
     members.removeAll(keepingCapacity: true)
     XCTAssertEqual(members.map { $0 }, [])
     XCTAssertGreaterThanOrEqual(members.capacity, 3)

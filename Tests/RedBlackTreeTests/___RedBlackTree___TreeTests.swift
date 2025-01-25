@@ -7,14 +7,6 @@ import XCTest
 #endif
 
 @usableFromInline
-protocol NodeBase {
-  var __right_: _NodePtr { get set }
-  var __left_: _NodePtr { get set }
-  var __parent_: _NodePtr { get set }
-  var __is_black_: Bool { get set }
-}
-
-@usableFromInline
 enum VC: ScalarValueComparer {
   @usableFromInline
   typealias _Key = Int
@@ -23,29 +15,12 @@ enum VC: ScalarValueComparer {
 }
 
 #if DEBUG
-  extension NodeBase {
-
-    @inlinable
-    var node: ___RedBlackTree.___Node {
-      get { .init(self) }
-      set {
-        __is_black_ = newValue.__is_black_
-        __left_ = newValue.__left_
-        __right_ = newValue.__right_
-        __parent_ = newValue.__parent_
-      }
-    }
-  }
-  extension ___RedBlackTree.___Tree.Node: NodeBase {}
-#endif
-
-#if DEBUG
   typealias RedBlackTree___Tree = ___RedBlackTree.___Tree<VC>
 
   extension ___RedBlackTree.___Node {
 
     @inlinable
-    init<Node: NodeBase>(_ node: Node) {
+    init<Node: ___tree_base_node>(_ node: Node) {
       self.init(
         __is_black_: node.__is_black_,
         __left_: node.__left_,

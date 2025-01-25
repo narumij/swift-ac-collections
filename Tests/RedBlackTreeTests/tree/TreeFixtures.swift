@@ -7,14 +7,6 @@ import XCTest
 #endif
 
 #if DEBUG
-  extension ___RedBlackTree.___Node {
-    static var node: Self {
-      .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
-    }
-  }
-#endif
-
-#if DEBUG
   class TreeFixtureBase<Element>:
     XCTestCase,
     ___tree_root_node, MemberProtocol, RootProtocol, EndNodeProtocol,

@@ -213,6 +213,87 @@ import XCTest
     }
   }
 
+  final class TreeTests0_10_20: TreeFixture0_10_20 {
+
+    func testMin() {
+      XCTAssertEqual(__tree_min(__root()), 1)
+    }
+
+    func testMax() {
+      XCTAssertEqual(__tree_max(__root()), 2)
+    }
+
+    func testFindEqual1() throws {
+      do {
+        var __parent: _NodePtr = .nullptr
+        let __k = -1
+        let __child = __find_equal(&__parent, __k)
+        XCTAssertEqual(__parent.index, __child.index)
+        XCTAssertEqual(__parent, 1)
+        XCTAssertEqual(__child, .__left_(1))
+      }
+      do {
+        var __parent: _NodePtr = .nullptr
+        let __k = 0
+        let __child = __find_equal(&__parent, __k)
+        XCTAssertNotEqual(__parent.index, __child.index)
+        XCTAssertEqual(__parent, 1)
+        XCTAssertEqual(__child, .__left_(0))
+      }
+      do {
+        var __parent: _NodePtr = .nullptr
+        let __k = 5
+        let __child = __find_equal(&__parent, __k)
+        XCTAssertEqual(__parent.index, __child.index)
+        XCTAssertEqual(__parent, 1)
+        XCTAssertEqual(__child, .__right_(1))
+      }
+      do {
+        var __parent: _NodePtr = .nullptr
+        let __k = 10
+        let __child = __find_equal(&__parent, __k)
+        XCTAssertNotEqual(__parent.index, __child.index)
+        XCTAssertEqual(__parent, 0)
+        XCTAssertEqual(__child, .__left_(.end))
+      }
+      do {
+        var __parent: _NodePtr = .nullptr
+        let __k = 15
+        let __child = __find_equal(&__parent, __k)
+        XCTAssertEqual(__parent.index, __child.index)
+        XCTAssertEqual(__parent, 2)
+        XCTAssertEqual(__child, .__left_(2))
+      }
+      do {
+        var __parent: _NodePtr = .nullptr
+        let __k = 20
+        let __child = __find_equal(&__parent, __k)
+        XCTAssertNotEqual(__parent.index, __child.index)
+        XCTAssertEqual(__parent, 2)
+        XCTAssertEqual(__child, .__right_(0))
+      }
+      do {
+        var __parent: _NodePtr = .nullptr
+        let __k = 21
+        let __child = __find_equal(&__parent, __k)
+        XCTAssertEqual(__parent.index, __child.index)
+        XCTAssertEqual(__parent, 2)
+        XCTAssertEqual(__child, .__right_(2))
+      }
+    }
+  }
+
+  final class TreeTests0_1_2_3_4_5_6: TreeFixture0_1_2_3_4_5_6 {
+
+    func testMin() {
+      XCTAssertEqual(__tree_min(__root()), 2)
+    }
+
+    func testMax() {
+      XCTAssertEqual(__tree_max(__root()), 6)
+    }
+  }
+
   final class TreeTests_EmptyNode_Misc: TreeFixture<Int> {
 
     override func setUpWithError() throws {
@@ -330,87 +411,6 @@ import XCTest
       XCTAssertTrue(___ptr_closed_range_contains(lower_bound(2), lower_bound(3), lower_bound(3)))
       XCTAssertFalse(___ptr_closed_range_contains(lower_bound(2), lower_bound(3), lower_bound(4)))
       XCTAssertFalse(___ptr_closed_range_contains(lower_bound(2), lower_bound(3), __end_node()))
-    }
-  }
-
-  final class TreeTests0_10_20: TreeFixture0_10_20 {
-
-    func testMin() {
-      XCTAssertEqual(__tree_min(__root()), 1)
-    }
-
-    func testMax() {
-      XCTAssertEqual(__tree_max(__root()), 2)
-    }
-
-    func testFindEqual1() throws {
-      do {
-        var __parent: _NodePtr = .nullptr
-        let __k = -1
-        let __child = __find_equal(&__parent, __k)
-        XCTAssertEqual(__parent.index, __child.index)
-        XCTAssertEqual(__parent, 1)
-        XCTAssertEqual(__child, .__left_(1))
-      }
-      do {
-        var __parent: _NodePtr = .nullptr
-        let __k = 0
-        let __child = __find_equal(&__parent, __k)
-        XCTAssertNotEqual(__parent.index, __child.index)
-        XCTAssertEqual(__parent, 1)
-        XCTAssertEqual(__child, .__left_(0))
-      }
-      do {
-        var __parent: _NodePtr = .nullptr
-        let __k = 5
-        let __child = __find_equal(&__parent, __k)
-        XCTAssertEqual(__parent.index, __child.index)
-        XCTAssertEqual(__parent, 1)
-        XCTAssertEqual(__child, .__right_(1))
-      }
-      do {
-        var __parent: _NodePtr = .nullptr
-        let __k = 10
-        let __child = __find_equal(&__parent, __k)
-        XCTAssertNotEqual(__parent.index, __child.index)
-        XCTAssertEqual(__parent, 0)
-        XCTAssertEqual(__child, .__left_(.end))
-      }
-      do {
-        var __parent: _NodePtr = .nullptr
-        let __k = 15
-        let __child = __find_equal(&__parent, __k)
-        XCTAssertEqual(__parent.index, __child.index)
-        XCTAssertEqual(__parent, 2)
-        XCTAssertEqual(__child, .__left_(2))
-      }
-      do {
-        var __parent: _NodePtr = .nullptr
-        let __k = 20
-        let __child = __find_equal(&__parent, __k)
-        XCTAssertNotEqual(__parent.index, __child.index)
-        XCTAssertEqual(__parent, 2)
-        XCTAssertEqual(__child, .__right_(0))
-      }
-      do {
-        var __parent: _NodePtr = .nullptr
-        let __k = 21
-        let __child = __find_equal(&__parent, __k)
-        XCTAssertEqual(__parent.index, __child.index)
-        XCTAssertEqual(__parent, 2)
-        XCTAssertEqual(__child, .__right_(2))
-      }
-    }
-  }
-
-  final class TreeTests0_1_2_3_4_5_6: TreeFixture0_1_2_3_4_5_6 {
-
-    func testMin() {
-      XCTAssertEqual(__tree_min(__root()), 2)
-    }
-
-    func testMax() {
-      XCTAssertEqual(__tree_max(__root()), 6)
     }
   }
 #endif

@@ -561,11 +561,6 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
-  internal var ___count: Int {
-    count
-  }
-
-  @inlinable @inline(__always)
   internal var ___is_empty: Bool {
     count == 0
   }

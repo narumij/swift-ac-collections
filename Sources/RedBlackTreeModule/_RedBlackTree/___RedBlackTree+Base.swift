@@ -44,7 +44,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   var ___count: Int {
-    _tree.___count
+    _tree.count
   }
 
   @inlinable @inline(__always)

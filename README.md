@@ -44,7 +44,7 @@ import AcCollections
 - 要素の挿入・削除・探索を平均的に `O(log n)` で行えます。  
 - `Collection` に適合しており、インデックスによる要素アクセスや `startIndex` / `endIndex` などが利用可能です。  
 - 境界探索メソッド（`lowerBound` / `upperBound`）なども提供しています。  
-- 使用例: [AtCoder 提出例 (ABC370D)](https://atcoder.jp/contests/abc370/submissions/62143368) / [AtCoder 提出例 (ABC385D)](https://atcoder.jp/contests/abc385/submissions/61848462) など。
+- 使用例: [AtCoder 提出例 (ABC370D)](https://atcoder.jp/contests/abc370/submissions/62143443) / [AtCoder 提出例 (ABC385D)](https://atcoder.jp/contests/abc385/submissions/61848462) など。
 
 #### 2. RedBlackTreeMultiSet
 

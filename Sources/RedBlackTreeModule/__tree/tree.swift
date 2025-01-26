@@ -146,11 +146,6 @@ protocol ValueProtocol: MemberProtocol {
 }
 
 extension ValueProtocol {
-  @inlinable
-  @inline(__always)
-  func ___value_equal(_ a: _Key, _ b: _Key) -> Bool {
-    !value_comp(a, b) && !value_comp(b, a)
-  }
 
   @inlinable @inline(__always)
   func ___comp(_ a: _Key, _ b: _Key) -> Bool {
@@ -253,11 +248,6 @@ extension ValueComparer where _Key: Comparable {
 extension ValueComparer {
 
   @inlinable @inline(__always)
-  static func ___value_equal(_ a: _Key, _ b: _Key) -> Bool {
-    !value_comp(a, b) && !value_comp(b, a)
-  }
-
-  @inlinable @inline(__always)
   static func ___comp(_ a: _Key, _ b: _Key) -> Bool {
     value_comp(a, b)
   }
@@ -288,9 +278,6 @@ extension KeyValueComparer where Element == _KeyValueTuple {
 
   @inlinable @inline(__always)
   public static func __key(_ element: Element) -> _Key { element.key }
-
-  @inlinable @inline(__always)
-  static func __value(_ element: Element) -> _Value { element.value }
 }
 
 // MARK: key value

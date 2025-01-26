@@ -38,28 +38,12 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    internal init(__storage: Tree.Storage, pointer: _NodePtr) {
-      guard pointer != .nullptr else {
-        preconditionFailure("_NodePtr is nullptr")
-      }
-      self._tree = __storage.tree
-      self.rawValue = pointer
-    }
-
-    @inlinable
-    @inline(__always)
     internal init(__tree: Tree, pointer: _NodePtr) {
       guard pointer != .nullptr else {
         preconditionFailure("_NodePtr is nullptr")
       }
       self._tree = __tree
       self.rawValue = pointer
-    }
-
-    @inlinable
-    @inline(__always)
-    static func end(_ storage: Tree.Storage) -> Self {
-      .init(__tree: storage.tree, pointer: .end)
     }
 
     @inlinable

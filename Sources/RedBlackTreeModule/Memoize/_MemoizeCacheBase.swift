@@ -97,12 +97,6 @@ extension _MemoizeCacheBase {
     }
   }
 
-  @inlinable var _tree: Tree
-  {
-    @inline(__always) get { _storage.tree }
-    @inline(__always) _modify { yield &_storage.tree }
-  }
-
   @inlinable
   public var count: Int { ___count }
 

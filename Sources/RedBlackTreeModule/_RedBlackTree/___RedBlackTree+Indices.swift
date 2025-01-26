@@ -22,57 +22,10 @@
 
 import Foundation
 
-@usableFromInline
-protocol RawPointerBuilderProtocol {}
-
-extension RawPointerBuilderProtocol {
-
-  @usableFromInline
-  internal typealias Index = ___RedBlackTree.RawPointer
-
-  @inlinable
-  @inline(__always)
-  internal func ___index(_ p: _NodePtr) -> Index {
-    .init(p)
-  }
-}
-
-#if false
-@usableFromInline
-protocol TreePointerBuilderProtocol {
-  associatedtype VC: ValueComparer
-  var _tree: Tree { get }
-}
-
-extension TreePointerBuilderProtocol {
-  @usableFromInline
-  internal typealias Tree = ___RedBlackTree.___Tree<VC>
-  
-  @usableFromInline
-  internal typealias Index = ___RedBlackTree.___Tree<VC>.Pointer
-
-  @inlinable
-  @inline(__always)
-  internal func ___index(_ p: _NodePtr) -> Index {
-    .init(__tree: _tree, pointer: p)
-  }
-}
-#endif
-
 extension ___RedBlackTree.___Tree {
-  
-  #if true
-    typealias EnumIndexMaker = RawPointerBuilderProtocol
-    public typealias EnumuratedIndex = ___RedBlackTree.RawPointer
-  #else
-    typealias EnumIndexMaker = TreePointerBuilderProtocol
-    public typealias EnumIndex = TreePointer
-  #endif
-
-  public typealias Enumerated = (offset: EnumuratedIndex, element: Element)
 
   @frozen
-  public struct EnumIterator: RedBlackTreeIteratorNextProtocol, EnumIndexMaker {
+  public struct IndexIterator: RawPointerBuilderProtocol, RedBlackTreeIteratorNextProtocol {
 
     @inlinable
     @inline(__always)
@@ -91,22 +44,16 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> Enumerated? {
-      _next().map { (___index($0), _tree[$0]) }
+    public mutating func next() -> RawPointer? {
+      _next().map { .init($0) }
     }
   }
 }
 
 extension ___RedBlackTree.___Tree {
 
-  // AnySequence用
   @inlinable
-  __consuming func makeEnumIterator() -> EnumIterator {
-    .init(tree: self, start: __begin_node, end: __end_node())
-  }
-
-  @inlinable
-  __consuming func makeEnumeratedIterator(start: _NodePtr, end: _NodePtr) -> EnumIterator {
+  __consuming func makeIndexIterator(start: _NodePtr, end: _NodePtr) -> IndexIterator {
     .init(tree: self, start: start, end: end)
   }
 }
@@ -114,10 +61,10 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @frozen
-  public struct EnumSequence: Sequence, EnumIndexMaker {
+  public struct IndexSequence: Sequence {
 
-    public typealias Element = Tree.Enumerated
-    
+    public typealias Element = Tree.RawPointer
+
     @usableFromInline
     typealias Index = _NodePtr
 
@@ -132,14 +79,25 @@ extension ___RedBlackTree.___Tree {
     let _tree: Tree
 
     @usableFromInline
-      var startIndex: Index
+    var startIndex: Index
 
     @usableFromInline
-      var endIndex: Index
+    var endIndex: Index
 
     @inlinable
-    public __consuming func makeIterator() -> EnumIterator {
-      _tree.makeEnumeratedIterator(start: startIndex, end: endIndex)
+    public func makeIterator() -> IndexIterator {
+      _tree.makeIndexIterator(start: startIndex, end: endIndex)
+    }
+
+    @inlinable
+    @inline(__always)
+    internal func forEach(_ body: (Element) throws -> Void) rethrows {
+      var __p = startIndex
+      while __p != endIndex {
+        let __c = __p
+        __p = _tree.__tree_next(__p)
+        try body(.init(__c))
+      }
     }
   }
 }
@@ -147,12 +105,12 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
-  internal func enumeratedSubsequence() -> EnumSequence {
+  internal func indexSubsequence() -> IndexSequence {
     .init(tree: self, start: __begin_node, end: __end_node())
   }
 
   @inlinable
-  internal func enumeratedSubsequence(from: _NodePtr, to: _NodePtr) -> EnumSequence {
+  internal func indexSubsequence(from: _NodePtr, to: _NodePtr) -> IndexSequence {
     .init(tree: self, start: from, end: to)
   }
 }

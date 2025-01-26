@@ -57,4 +57,21 @@ extension ___RedBlackTree.___Node: Equatable {}
 #if swift(>=5.5)
 extension ___RedBlackTree.___Node: @unchecked Sendable {}
 #endif
+
+extension ___RedBlackTree.___Node {
+  static var node: Self {
+    .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
+  }
+}
+
+extension ___tree_base_node {
+  
+  @inlinable @inline(__always)
+  public mutating func clear() {
+    __left_ = .nullptr
+    __right_ = .nullptr
+    __parent_ = .nullptr
+    __is_black_ = false
+  }
+}
 #endif

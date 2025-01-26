@@ -258,6 +258,7 @@ extension ___RedBlackTree.___Tree {
     assert(_header.destroyNode != p)
     __node_ptr[p].__left_ = _header.destroyNode
     __node_ptr[p].__right_ = p
+    __node_ptr[p].__parent_ = .nullptr
     __node_ptr[p].__is_black_ = false
     _header.destroyNode = p
     _header.destroyCount += 1
@@ -303,11 +304,6 @@ extension ___RedBlackTree.___Tree {
   internal func ___is_valid(_ p: _NodePtr) -> Bool {
     0..<_header.initializedCount ~= p && __node_ptr[p].__parent_ != .nullptr
   }
-
-  @inlinable @inline(__always)
-  internal func ___invalidate(_ p: _NodePtr) {
-    __node_ptr[p].__parent_ = .nullptr
-  }
 }
 
 extension ___RedBlackTree.___Tree {
@@ -329,7 +325,6 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   internal func destroy(_ p: _NodePtr) {
-    ___invalidate(p)
     ___pushDestroy(p)
   }
 }
@@ -381,13 +376,6 @@ extension ___RedBlackTree.___Tree {
     VC.__key(e)
   }
 
-  @inlinable
-  @inline(__always)
-  internal func ___key(_ pointer: _NodePtr) -> _Key {
-    assert(0 <= pointer && pointer < _header.initializedCount)
-    return __key(__node_ptr[pointer].__value_)
-  }
-
   @inlinable @inline(__always)
   internal func ___element(_ p: _NodePtr) -> VC.Element {
     __node_ptr[p].__value_
@@ -410,6 +398,8 @@ extension ___RedBlackTree.___Tree: RemoveProtocol {}
 extension ___RedBlackTree.___Tree: MergeProtocol {}
 extension ___RedBlackTree.___Tree: HandleProtocol {}
 extension ___RedBlackTree.___Tree: EraseProtocol {}
+extension ___RedBlackTree.___Tree: EraseUniqueProtocol {}
+extension ___RedBlackTree.___Tree: EraseMultiProtocol {}
 extension ___RedBlackTree.___Tree: BoundProtocol {}
 extension ___RedBlackTree.___Tree: InsertUniqueProtocol {}
 extension ___RedBlackTree.___Tree: CountProtocol {}
@@ -515,30 +505,6 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
-  internal func ___erase_unique(_ __k: VC._Key) -> Bool {
-    let __i = find(__k)
-    if __i == end() {
-      return false
-    }
-    _ = erase(__i)
-    return true
-  }
-
-  @inlinable
-  internal func ___erase_multi(_ __k: VC._Key) -> Int {
-    var __p = __equal_range_multi(__k)
-    var __r = 0
-    while __p.0 != __p.1 {
-      defer { __r += 1 }
-      __p.0 = erase(__p.0)
-    }
-    return __r
-  }
-}
-
-extension ___RedBlackTree.___Tree {
-
-  @inlinable
   internal func
     ___erase(_ __f: _NodePtr, _ __l: _NodePtr, _ action: (Element) throws -> Void) rethrows
   {
@@ -593,11 +559,6 @@ extension ___RedBlackTree.___Tree {
 }
 
 extension ___RedBlackTree.___Tree {
-
-  @inlinable @inline(__always)
-  internal var ___count: Int {
-    count
-  }
 
   @inlinable @inline(__always)
   internal var ___is_empty: Bool {

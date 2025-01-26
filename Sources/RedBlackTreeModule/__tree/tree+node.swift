@@ -37,14 +37,3 @@ protocol ___tree_base_node: ___tree_root_node {
   var __parent_: _pointer { get set }
   var __is_black_: Bool { get set }
 }
-
-extension ___tree_base_node {
-  
-  @inlinable @inline(__always)
-  public mutating func clear() {
-    __left_ = .nullptr
-    __right_ = .nullptr
-    __parent_ = .nullptr
-    __is_black_ = false
-  }
-}

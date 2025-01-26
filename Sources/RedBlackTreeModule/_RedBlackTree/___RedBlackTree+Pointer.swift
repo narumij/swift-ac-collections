@@ -93,34 +93,77 @@ extension ___RedBlackTree.___Tree.Pointer {
 }
 
 extension ___RedBlackTree.___Tree.Pointer {
-
+  
   @inlinable
-  public var ___pointee: Element {
+  public var _pointee: Element? {
+    guard !___is_null_or_end(rawValue), isValid else {
+      return nil
+    }
+    return ___pointee
+  }
+  
+  @inlinable
+  public func _next() -> Self? {
+    guard !___is_null_or_end(rawValue), isValid else {
+      return nil
+    }
+    var next = self
+    next.___next()
+    return next
+  }
+  
+  @inlinable
+  public func _prev() -> Self? {
+    guard rawValue != .nullptr, rawValue != _tree.begin(), isValid else {
+      return nil
+    }
+    var prev = self
+    prev.___prev()
+    return prev
+  }
+}
+
+extension ___RedBlackTree.___Tree.Pointer {
+  
+  @inlinable
+  @inline(__always)
+  public func _offset(by distance: Int) -> Self? {
+    var distance = distance
+    var result: Self? = self
+    while distance != 0 {
+      if 0 < distance {
+        result = result?._next()
+        distance -= 1
+      } else {
+        result = result?._prev()
+        distance += 1
+      }
+    }
+    return result
+  }
+//  
+//  public static func + (lhs: Self, rhs: Int) -> Self? {
+//    lhs.offset(by: rhs)
+//  }
+//  
+//  public static func - (lhs: Self, rhs: Int) -> Self? {
+//    lhs.offset(by: -rhs)
+//  }
+}
+
+extension ___RedBlackTree.___Tree.Pointer {
+
+  @inlinable @inline(__always)
+  var ___pointee: Element {
     _tree[rawValue]
   }
 
-  @inlinable
-  public func _next() -> Self? {
-    guard isValid else {
-      fatalError(.invalidIndex)
-    }
-    return .init(__tree: _tree, pointer: _tree.__tree_next_iter(rawValue))
-  }
-
-  @inlinable
-  public func _prev() -> Self? {
-    guard isValid else {
-      fatalError(.invalidIndex)
-    }
-    return .init(__tree: _tree, pointer: _tree.__tree_next_iter(rawValue))
-  }
-
-  @inlinable
+  @inlinable @inline(__always)
   mutating func ___next() {
     rawValue = _tree.__tree_next_iter(rawValue)
   }
 
-  @inlinable
+  @inlinable @inline(__always)
   mutating func ___prev() {
     rawValue = _tree.__tree_prev_iter(rawValue)
   }

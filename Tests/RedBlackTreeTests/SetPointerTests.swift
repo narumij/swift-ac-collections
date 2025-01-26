@@ -18,6 +18,13 @@ final class SetPointerTests: XCTestCase {
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
+  
+  func testPointer() throws {
+    XCTAssertTrue(members.startIndex.isStart)
+    XCTAssertFalse(members.endIndex.isStart)
+    XCTAssertFalse(members.startIndex.isEnd)
+    XCTAssertTrue(members.endIndex.isEnd)
+  }
 
   func testPointerNext() throws {
     XCTAssertEqual(members.startIndex.pointee, 0)

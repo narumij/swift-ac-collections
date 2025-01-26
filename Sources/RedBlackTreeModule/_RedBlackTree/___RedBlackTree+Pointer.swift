@@ -81,6 +81,12 @@ extension ___RedBlackTree.___Tree.Pointer {
   
   @inlinable
   @inline(__always)
+  internal var isStart: Bool {
+    rawValue == _tree.__begin_node
+  }
+  
+  @inlinable
+  @inline(__always)
   internal static func end(_ tree: _Tree) -> Self {
     .init(__tree: tree, pointer: .end)
   }

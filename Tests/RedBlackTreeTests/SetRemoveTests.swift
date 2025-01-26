@@ -29,14 +29,19 @@ final class SetRemoveTests: XCTestCase {
   func testRemove() throws {
     XCTAssertEqual(members.remove(0), 0)
     XCTAssertFalse(members.elements.isEmpty)
+    XCTAssertEqual(members.count, 4)
     XCTAssertEqual(members.remove(1), 1)
     XCTAssertFalse(members.elements.isEmpty)
+    XCTAssertEqual(members.count, 3)
     XCTAssertEqual(members.remove(2), 2)
     XCTAssertFalse(members.elements.isEmpty)
+    XCTAssertEqual(members.count, 2)
     XCTAssertEqual(members.remove(3), 3)
     XCTAssertFalse(members.elements.isEmpty)
+    XCTAssertEqual(members.count, 1)
     XCTAssertEqual(members.remove(4), 4)
     XCTAssertTrue(members.elements.isEmpty)
+    XCTAssertEqual(members.count, 0)
     XCTAssertEqual(members.remove(0), nil)
     XCTAssertTrue(members.elements.isEmpty)
     XCTAssertEqual(members.remove(1), nil)
@@ -53,14 +58,19 @@ final class SetRemoveTests: XCTestCase {
     func testRemoveAt() throws {
       XCTAssertEqual(members.___remove(at: members._tree.__begin_node), 0)
       XCTAssertEqual(members.elements, [1, 2, 3, 4])
+      XCTAssertEqual(members.count, 4)
       XCTAssertEqual(members.___remove(at: members._tree.__begin_node), 1)
       XCTAssertEqual(members.elements, [2, 3, 4])
+      XCTAssertEqual(members.count, 3)
       XCTAssertEqual(members.___remove(at: members._tree.__begin_node), 2)
       XCTAssertEqual(members.elements, [3, 4])
+      XCTAssertEqual(members.count, 2)
       XCTAssertEqual(members.___remove(at: members._tree.__begin_node), 3)
       XCTAssertEqual(members.elements, [4])
+      XCTAssertEqual(members.count, 1)
       XCTAssertEqual(members.___remove(at: members._tree.__begin_node), 4)
       XCTAssertEqual(members.elements, [])
+      XCTAssertEqual(members.count, 0)
       XCTAssertEqual(members.___remove(at: members._tree.__begin_node), nil)
     }
   #endif
@@ -90,19 +100,42 @@ final class SetRemoveTests: XCTestCase {
     //      s.removeFirst()
   }
 
+  func testRemoveFirst() throws {
+    members = [1, 3, 5, 7, 9]
+    XCTAssertEqual(members.removeFirst(), 1)
+    XCTAssertEqual(members.count, 4)
+    XCTAssertEqual(members.removeFirst(), 3)
+    XCTAssertEqual(members.count, 3)
+    XCTAssertEqual(members.removeFirst(), 5)
+    XCTAssertEqual(members.count, 2)
+    XCTAssertEqual(members.removeFirst(), 7)
+    XCTAssertEqual(members.count, 1)
+    XCTAssertEqual(members.removeFirst(), 9)
+    XCTAssertEqual(members.count, 0)
+  }
+
   func testRemoveLast() throws {
     members = [1, 3, 5, 7, 9]
     XCTAssertEqual(members.removeLast(), 9)
+    XCTAssertEqual(members.count, 4)
     XCTAssertEqual(members.removeLast(), 7)
+    XCTAssertEqual(members.count, 3)
     XCTAssertEqual(members.removeLast(), 5)
+    XCTAssertEqual(members.count, 2)
     XCTAssertEqual(members.removeLast(), 3)
+    XCTAssertEqual(members.count, 1)
     XCTAssertEqual(members.removeLast(), 1)
+    XCTAssertEqual(members.count, 0)
   }
 
   func testRemoveSubrange() throws {
-    members = [1, 3, 5, 7, 9]
-    members.removeSubrange(members.lowerBound(2)..<members.upperBound(6))
-    XCTAssertEqual(members, [1, 7, 9])
+    for l in 0 ..< 10 {
+      for h in l ... 10 {
+        members = [1, 3, 5, 7, 9]
+        members.removeSubrange(members.lowerBound(l) ..< members.upperBound(h))
+        XCTAssertEqual(members.map{ $0 }, [1, 3, 5, 7, 9].filter { !(l ... h).contains($0) })
+      }
+    }
   }
 
   func testRemoveLimit() throws {

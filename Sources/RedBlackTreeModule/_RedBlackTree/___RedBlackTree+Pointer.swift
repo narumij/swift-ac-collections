@@ -122,7 +122,7 @@ extension ___RedBlackTree.___Tree.Pointer {
   
   @inlinable
   @inline(__always)
-  public var prev: Self? {
+  public var previous: Self? {
     guard rawValue != .nullptr, rawValue != _tree.begin(), isValid else {
       return nil
     }
@@ -141,7 +141,7 @@ extension ___RedBlackTree.___Tree.Pointer {
         result = result?.next
         distance -= 1
       } else {
-        result = result?.prev
+        result = result?.previous
         distance += 1
       }
     }

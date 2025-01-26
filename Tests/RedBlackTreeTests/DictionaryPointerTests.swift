@@ -33,14 +33,14 @@ final class DictionaryPointerTests: XCTestCase {
 
   func testPointerPrev() throws {
     XCTAssertNil(members.endIndex.pointee)
-    XCTAssertEqual(members.endIndex.prev?.pointee?.key, 4)
-    XCTAssertEqual(members.endIndex.prev?.prev?.pointee?.key, 3)
-    XCTAssertEqual(members.endIndex.prev?.prev?.prev?.pointee?.key, 2)
-    XCTAssertEqual(members.endIndex.prev?.prev?.prev?.prev?.pointee?.key, 1)
-    XCTAssertEqual(members.endIndex.prev?.prev?.prev?.prev?.prev?.pointee?.key, 0)
-    XCTAssertEqual(members.endIndex.prev?.prev?.prev?.prev?.prev, members.startIndex)
-    XCTAssertNil(members.endIndex.prev?.prev?.prev?.prev?.prev?.prev)
-    XCTAssertNil(members.startIndex.prev)
+    XCTAssertEqual(members.endIndex.previous?.pointee?.key, 4)
+    XCTAssertEqual(members.endIndex.previous?.previous?.pointee?.key, 3)
+    XCTAssertEqual(members.endIndex.previous?.previous?.previous?.pointee?.key, 2)
+    XCTAssertEqual(members.endIndex.previous?.previous?.previous?.previous?.pointee?.key, 1)
+    XCTAssertEqual(members.endIndex.previous?.previous?.previous?.previous?.previous?.pointee?.key, 0)
+    XCTAssertEqual(members.endIndex.previous?.previous?.previous?.previous?.previous, members.startIndex)
+    XCTAssertNil(members.endIndex.previous?.previous?.previous?.previous?.previous?.previous)
+    XCTAssertNil(members.startIndex.previous)
   }
   
   func testPointerOffset0() throws {

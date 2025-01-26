@@ -32,14 +32,14 @@ final class MultisetPointerTests: XCTestCase {
 
   func testPointerPrev() throws {
     XCTAssertNil(members.endIndex.pointee)
-    XCTAssertEqual(members.endIndex.prev?.pointee, 2)
-    XCTAssertEqual(members.endIndex.prev?.prev?.pointee, 2)
-    XCTAssertEqual(members.endIndex.prev?.prev?.prev?.pointee, 1)
-    XCTAssertEqual(members.endIndex.prev?.prev?.prev?.prev?.pointee, 0)
-    XCTAssertEqual(members.endIndex.prev?.prev?.prev?.prev?.prev?.pointee, 0)
-    XCTAssertEqual(members.endIndex.prev?.prev?.prev?.prev?.prev, members.startIndex)
-    XCTAssertNil(members.endIndex.prev?.prev?.prev?.prev?.prev?.prev)
-    XCTAssertNil(members.startIndex.prev)
+    XCTAssertEqual(members.endIndex.previous?.pointee, 2)
+    XCTAssertEqual(members.endIndex.previous?.previous?.pointee, 2)
+    XCTAssertEqual(members.endIndex.previous?.previous?.previous?.pointee, 1)
+    XCTAssertEqual(members.endIndex.previous?.previous?.previous?.previous?.pointee, 0)
+    XCTAssertEqual(members.endIndex.previous?.previous?.previous?.previous?.previous?.pointee, 0)
+    XCTAssertEqual(members.endIndex.previous?.previous?.previous?.previous?.previous, members.startIndex)
+    XCTAssertNil(members.endIndex.previous?.previous?.previous?.previous?.previous?.previous)
+    XCTAssertNil(members.startIndex.previous)
   }
   
   func testPointerOffset0() throws {

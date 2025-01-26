@@ -83,7 +83,7 @@ extension ___RedBlackTree.___Tree.Pointer {
   
   @inlinable
   @inline(__always)
-  public var isStart: Bool {
+  public var isStartIndex: Bool {
     rawValue == _tree.__begin_node
   }
   
@@ -95,14 +95,14 @@ extension ___RedBlackTree.___Tree.Pointer {
 
   @inlinable
   @inline(__always)
-  public var isEnd: Bool {
+  public var isEndIndex: Bool {
     rawValue == .end
   }
   
   // 利用上価値はないが、おまけで。
   @inlinable
   @inline(__always)
-  public var isRoot: Bool {
+  public var isRootIndex: Bool {
     rawValue == _tree.__root()
   }
 }

@@ -65,6 +65,9 @@ extension ___RedBlackTreeBase {
   @usableFromInline
   typealias ___Index = Tree.Pointer
 
+  @usableFromInline
+  typealias ___RawIndex = Tree.RawPointer
+
   @inlinable @inline(__always)
   func ___index(_ p: _NodePtr) -> ___Index {
     .init(__tree: _tree, rawValue: p)
@@ -111,6 +114,16 @@ extension ___RedBlackTreeBase {
   @inlinable @inline(__always)
   public func ___ptr_upper_bound(_ __k: _Key) -> _NodePtr {
     _tree.upper_bound(__k)
+  }
+
+  @inlinable @inline(__always)
+  public func ___raw_index_lower_bound(_ __k: _Key) -> ___RawIndex {
+    .init(_tree.lower_bound(__k))
+  }
+
+  @inlinable @inline(__always)
+  public func ___raw_index_upper_bound(_ __k: _Key) -> ___RawIndex {
+    .init(_tree.upper_bound(__k))
   }
 
   @inlinable @inline(__always)

@@ -28,7 +28,7 @@ extension ___RedBlackTree {
   ///
   /// nullptrはオプショナルで表現する想定で、nullptrを保持しない
   public
-    enum RawPointer
+    enum RawPointer: Equatable
   {
     case node(_NodePtr)
     case end

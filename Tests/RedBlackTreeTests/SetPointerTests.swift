@@ -20,10 +20,10 @@ final class SetPointerTests: XCTestCase {
   }
   
   func testPointer() throws {
-    XCTAssertTrue(members.startIndex.isStart)
-    XCTAssertFalse(members.endIndex.isStart)
-    XCTAssertFalse(members.startIndex.isEnd)
-    XCTAssertTrue(members.endIndex.isEnd)
+    XCTAssertTrue(members.startIndex.isStartIndex)
+    XCTAssertFalse(members.endIndex.isStartIndex)
+    XCTAssertFalse(members.startIndex.isEndIndex)
+    XCTAssertTrue(members.endIndex.isEndIndex)
   }
 
   func testPointerNext() throws {

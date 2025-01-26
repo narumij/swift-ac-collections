@@ -67,7 +67,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___index(_ p: _NodePtr) -> ___Index {
-    .init(__tree: _tree, pointer: p)
+    .init(__tree: _tree, rawValue: p)
   }
 
   @inlinable @inline(__always)
@@ -413,7 +413,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___std_erase(_ ptr: Tree.Pointer) -> Tree.Pointer {
-    Tree.Pointer(__tree: _tree, pointer: _tree.erase(ptr.rawValue))
+    Tree.Pointer(__tree: _tree, rawValue: _tree.erase(ptr.rawValue))
   }
 }
 
@@ -444,12 +444,12 @@ extension ___RedBlackTreeSubSequenceBase {
   
   @inlinable @inline(__always)
   internal var ___start_index: ___Index {
-    ___Index(__tree: _tree, pointer: _subSequence.startIndex)
+    ___Index(__tree: _tree, rawValue: _subSequence.startIndex)
   }
 
   @inlinable @inline(__always)
   internal var ___end_index: ___Index {
-    ___Index(__tree: _tree, pointer: _subSequence.endIndex)
+    ___Index(__tree: _tree, rawValue: _subSequence.endIndex)
   }
 
   @inlinable @inline(__always)
@@ -469,7 +469,7 @@ extension ___RedBlackTreeSubSequenceBase {
 
   @inlinable @inline(__always)
   internal func ___index(after i: ___Index) -> ___Index {
-    ___Index(__tree: _tree, pointer: _subSequence.index(after: i.rawValue))
+    ___Index(__tree: _tree, rawValue: _subSequence.index(after: i.rawValue))
   }
 
   @inlinable @inline(__always)
@@ -479,7 +479,7 @@ extension ___RedBlackTreeSubSequenceBase {
 
   @inlinable @inline(__always)
   internal func ___index(before i: ___Index) -> ___Index {
-    ___Index(__tree: _tree, pointer: _subSequence.index(before: i.rawValue))
+    ___Index(__tree: _tree, rawValue: _subSequence.index(before: i.rawValue))
   }
 
   @inlinable @inline(__always)
@@ -489,7 +489,7 @@ extension ___RedBlackTreeSubSequenceBase {
 
   @inlinable @inline(__always)
   internal func ___index(_ i: ___Index, offsetBy distance: Int) -> ___Index {
-    ___Index(__tree: _tree, pointer: _subSequence.index(i.rawValue, offsetBy: distance))
+    ___Index(__tree: _tree, rawValue: _subSequence.index(i.rawValue, offsetBy: distance))
   }
 
   @inlinable @inline(__always)
@@ -501,7 +501,7 @@ extension ___RedBlackTreeSubSequenceBase {
   internal func ___index(_ i: ___Index, offsetBy distance: Int, limitedBy limit: ___Index) -> ___Index? {
 
     if let i = _subSequence.index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue) {
-      return ___Index(__tree: _tree, pointer: i)
+      return ___Index(__tree: _tree, rawValue: i)
     } else {
       return nil
     }

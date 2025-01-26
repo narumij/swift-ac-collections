@@ -42,10 +42,12 @@ extension ___RedBlackTree.___Tree {
     // MARK: -
     
     public static func == (lhs: Self, rhs: Self) -> Bool {
+      // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
       lhs.rawValue == rhs.rawValue
     }
 
     public static func < (lhs: Self, rhs: Self) -> Bool {
+      // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
       lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
     }
 
@@ -53,12 +55,12 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    internal init(__tree: Tree, pointer: _NodePtr) {
-      guard pointer != .nullptr else {
+    internal init(__tree: Tree, rawValue: _NodePtr) {
+      guard rawValue != .nullptr else {
         preconditionFailure("_NodePtr is nullptr")
       }
       self._tree = __tree
-      self.rawValue = pointer
+      self.rawValue = rawValue
     }
 
     // MARK: -
@@ -81,25 +83,33 @@ extension ___RedBlackTree.___Tree.Pointer {
   
   @inlinable
   @inline(__always)
-  internal var isStart: Bool {
+  public var isStart: Bool {
     rawValue == _tree.__begin_node
   }
   
   @inlinable
   @inline(__always)
   internal static func end(_ tree: _Tree) -> Self {
-    .init(__tree: tree, pointer: .end)
+    .init(__tree: tree, rawValue: .end)
   }
 
   @inlinable
   @inline(__always)
-  internal var isEnd: Bool {
+  public var isEnd: Bool {
     rawValue == .end
+  }
+  
+  // 利用上価値はないが、おまけで。
+  @inlinable
+  @inline(__always)
+  public var isRoot: Bool {
+    rawValue == _tree.__root()
   }
 }
 
 extension ___RedBlackTree.___Tree.Pointer {
   
+  // 名前について検討中
   @inlinable
   @inline(__always)
   public var pointee: Element? {
@@ -109,6 +119,7 @@ extension ___RedBlackTree.___Tree.Pointer {
     return ___pointee
   }
   
+  // 名前はXMLNodeを参考にした
   @inlinable
   @inline(__always)
   public var next: Self? {
@@ -120,6 +131,7 @@ extension ___RedBlackTree.___Tree.Pointer {
     return next
   }
   
+  // 名前はXMLNodeを参考にした
   @inlinable
   @inline(__always)
   public var previous: Self? {
@@ -131,6 +143,7 @@ extension ___RedBlackTree.___Tree.Pointer {
     return prev
   }
   
+  // 名前はIntの同名を参考にした
   @inlinable
   @inline(__always)
   public func advanced(by distance: Int) -> Self? {
@@ -169,15 +182,15 @@ extension ___RedBlackTree.___Tree.Pointer {
 
 #if DEBUG
 fileprivate extension ___RedBlackTree.___Tree.Pointer {
-  init(_tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) {
-    self._tree = _tree
+  init(_unsafe_tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) {
+    self._tree = _unsafe_tree
     self.rawValue = rawValue
   }
 }
 
 extension ___RedBlackTree.___Tree.Pointer {
   static func unsafe(tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) -> Self {
-    rawValue == .end ? .end(tree) : .init(_tree: tree, rawValue: rawValue)
+    rawValue == .end ? .end(tree) : .init(_unsafe_tree: tree, rawValue: rawValue)
   }
 }
 #endif

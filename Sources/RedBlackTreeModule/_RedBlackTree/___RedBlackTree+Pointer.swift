@@ -42,10 +42,12 @@ extension ___RedBlackTree.___Tree {
     // MARK: -
     
     public static func == (lhs: Self, rhs: Self) -> Bool {
+      // TODO: CoW時に予期せぬ挙動をしないかどうか確認
       lhs._tree === rhs._tree && lhs.rawValue == rhs.rawValue
     }
 
     public static func < (lhs: Self, rhs: Self) -> Bool {
+      // TODO: CoW時に予期せぬ挙動をしないかどうか確認
       lhs._tree === rhs._tree && lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
     }
 
@@ -69,6 +71,10 @@ extension ___RedBlackTree.___Tree {
       if !(0..<_tree.header.initializedCount ~= rawValue) { return false }
       return _tree.___is_valid(rawValue)
     }
+    
+    /*
+     invalidなポインタでの削除は、だんまりがいいように思う
+     */
   }
 }
 

@@ -27,12 +27,27 @@ extension ___RedBlackTree.___Tree {
   /// Range<Bound>の左右のサイズ違いでクラッシュすることを避けるためのもの
   @frozen
   public struct Pointer: Comparable {
+    
+    public typealias Element = Tree.Element
+    
+    @usableFromInline
+    typealias _Tree = Tree
 
     @usableFromInline
     let _tree: Tree
 
     @usableFromInline
     var rawValue: Int
+
+    // MARK: -
+    
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+      lhs._tree === rhs._tree && lhs.rawValue == rhs.rawValue
+    }
+
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+      lhs._tree === rhs._tree && lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
+    }
 
     // MARK: -
 
@@ -46,18 +61,7 @@ extension ___RedBlackTree.___Tree {
       self.rawValue = pointer
     }
 
-    @inlinable
-    @inline(__always)
-    static func end(_ tree: Tree) -> Self {
-      .init(__tree: tree, pointer: .end)
-    }
-
     // MARK: -
-
-    @inlinable
-    public var isEnd: Bool {
-      rawValue == .end
-    }
 
     @inlinable
     public var isValid: Bool {
@@ -65,46 +69,54 @@ extension ___RedBlackTree.___Tree {
       if !(0..<_tree.header.initializedCount ~= rawValue) { return false }
       return _tree.___is_valid(rawValue)
     }
+  }
+}
 
-    // どうしてもSwiftらしい書き方が難しいときの必殺技用
-    @inlinable
-    public var ___pointee: Element {
-      _tree[rawValue]
-    }
+extension ___RedBlackTree.___Tree.Pointer {
+  
+  @inlinable
+  @inline(__always)
+  static func end(_ tree: _Tree) -> Self {
+    .init(__tree: tree, pointer: .end)
+  }
 
-    // どうしてもSwiftらしい書き方が難しいときの必殺技用
-    @inlinable
-    public mutating func ___next() {
-      rawValue = _tree.__tree_next_iter(rawValue)
-    }
+  @inlinable
+  public var isEnd: Bool {
+    rawValue == .end
+  }
+}
 
-    // どうしてもSwiftらしい書き方が難しいときの必殺技用
-    @inlinable
-    public mutating func ___prev() {
-      rawValue = _tree.__tree_prev_iter(rawValue)
-    }
+extension ___RedBlackTree.___Tree.Pointer {
 
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-      // Rangeで正しく動けばいいので、これ以外の比較は行わない
-      lhs.rawValue == rhs.rawValue
-    }
+  @inlinable
+  public var ___pointee: Element {
+    _tree[rawValue]
+  }
 
-    // 本来の目的のための、大事な比較演算子
-    public static func < (lhs: Self, rhs: Self) -> Bool {
-#if false
-      guard
-        lhs.rawValue != rhs.rawValue,
-        rhs.rawValue != .end,
-        lhs.rawValue != .end
-      else {
-        return lhs.rawValue != .end && rhs.rawValue == .end
-      }
-      let tree = lhs._tree
-      return Tree.VC.value_comp(tree.___key(lhs.rawValue), tree.___key(rhs.rawValue))
-#else
-      lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
-#endif
+  @inlinable
+  public func _next() -> Self? {
+    guard isValid else {
+      fatalError(.invalidIndex)
     }
+    return .init(__tree: _tree, pointer: _tree.__tree_next_iter(rawValue))
+  }
+
+  @inlinable
+  public func _prev() -> Self? {
+    guard isValid else {
+      fatalError(.invalidIndex)
+    }
+    return .init(__tree: _tree, pointer: _tree.__tree_next_iter(rawValue))
+  }
+
+  @inlinable
+  mutating func ___next() {
+    rawValue = _tree.__tree_next_iter(rawValue)
+  }
+
+  @inlinable
+  mutating func ___prev() {
+    rawValue = _tree.__tree_prev_iter(rawValue)
   }
 }
 

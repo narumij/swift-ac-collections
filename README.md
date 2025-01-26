@@ -44,14 +44,14 @@ import AcCollections
 - 要素の挿入・削除・探索を平均的に `O(log n)` で行えます。  
 - `Collection` に適合しており、インデックスによる要素アクセスや `startIndex` / `endIndex` などが利用可能です。  
 - 境界探索メソッド（`lowerBound` / `upperBound`）なども提供しています。  
-- 使用例: [AtCoder 提出例 (ABC370D)](https://atcoder.jp/contests/abc370/submissions/57922896) / [AtCoder 提出例 (ABC385D)](https://atcoder.jp/contests/abc385/submissions/61848462) など。
+- 使用例: [AtCoder 提出例 (ABC370D)](https://atcoder.jp/contests/abc370/submissions/62143368) / [AtCoder 提出例 (ABC385D)](https://atcoder.jp/contests/abc385/submissions/61848462) など。
 
 #### 2. RedBlackTreeMultiSet
 
 - **重複あり** の要素を管理する MultiSet。  
 - `count(_:)` により、特定の要素が何個含まれるかを取得できます。  
 - その他の特性や使い方は `RedBlackTreeSet` に準じます。  
-- 使用例: [AtCoder 提出例 (ABC358D)](https://atcoder.jp/contests/abc358/submissions/59018223) など。
+- 使用例: [AtCoder 提出例 (ABC358D)](https://atcoder.jp/contests/abc358/submissions/62143179) など。
 
 #### 3. RedBlackTreeDictionary
 

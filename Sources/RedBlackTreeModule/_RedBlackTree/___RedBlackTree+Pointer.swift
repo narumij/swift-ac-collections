@@ -66,6 +66,7 @@ extension ___RedBlackTree.___Tree {
     // MARK: -
 
     @inlinable
+    @inline(__always)
     public var isValid: Bool {
       if rawValue == .end { return true }
       if !(0..<_tree.header.initializedCount ~= rawValue) { return false }
@@ -87,6 +88,7 @@ extension ___RedBlackTree.___Tree.Pointer {
   }
 
   @inlinable
+  @inline(__always)
   internal var isEnd: Bool {
     rawValue == .end
   }
@@ -95,7 +97,8 @@ extension ___RedBlackTree.___Tree.Pointer {
 extension ___RedBlackTree.___Tree.Pointer {
   
   @inlinable
-  public var _pointee: Element? {
+  @inline(__always)
+  public var pointee: Element? {
     guard !___is_null_or_end(rawValue), isValid else {
       return nil
     }
@@ -103,7 +106,8 @@ extension ___RedBlackTree.___Tree.Pointer {
   }
   
   @inlinable
-  public func _next() -> Self? {
+  @inline(__always)
+  public func next() -> Self? {
     guard !___is_null_or_end(rawValue), isValid else {
       return nil
     }
@@ -113,7 +117,8 @@ extension ___RedBlackTree.___Tree.Pointer {
   }
   
   @inlinable
-  public func _prev() -> Self? {
+  @inline(__always)
+  public func prev() -> Self? {
     guard rawValue != .nullptr, rawValue != _tree.begin(), isValid else {
       return nil
     }
@@ -124,15 +129,15 @@ extension ___RedBlackTree.___Tree.Pointer {
   
   @inlinable
   @inline(__always)
-  public func _offset(by distance: Int) -> Self? {
+  public func offset(by distance: Int) -> Self? {
     var distance = distance
     var result: Self? = self
     while distance != 0 {
       if 0 < distance {
-        result = result?._next()
+        result = result?.next()
         distance -= 1
       } else {
-        result = result?._prev()
+        result = result?.prev()
         distance += 1
       }
     }

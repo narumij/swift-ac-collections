@@ -20,49 +20,49 @@ final class SetPointerTests: XCTestCase {
   }
 
   func testPointerNext() throws {
-    XCTAssertEqual(members.startIndex._pointee, 0)
-    XCTAssertEqual(members.startIndex._next()?._pointee, 1)
-    XCTAssertEqual(members.startIndex._next()?._next()?._pointee, 2)
-    XCTAssertEqual(members.startIndex._next()?._next()?._next()?._pointee, 3)
-    XCTAssertEqual(members.startIndex._next()?._next()?._next()?._next()?._pointee, 4)
-    XCTAssertNil(members.startIndex._next()?._next()?._next()?._next()?._next()?._pointee)
-    XCTAssertEqual(members.startIndex._next()?._next()?._next()?._next()?._next(), members.endIndex)
-    XCTAssertNil(members.startIndex._next()?._next()?._next()?._next()?._next()?._next())
-    XCTAssertNil(members.endIndex._next())
+    XCTAssertEqual(members.startIndex.pointee, 0)
+    XCTAssertEqual(members.startIndex.next()?.pointee, 1)
+    XCTAssertEqual(members.startIndex.next()?.next()?.pointee, 2)
+    XCTAssertEqual(members.startIndex.next()?.next()?.next()?.pointee, 3)
+    XCTAssertEqual(members.startIndex.next()?.next()?.next()?.next()?.pointee, 4)
+    XCTAssertNil(members.startIndex.next()?.next()?.next()?.next()?.next()?.pointee)
+    XCTAssertEqual(members.startIndex.next()?.next()?.next()?.next()?.next(), members.endIndex)
+    XCTAssertNil(members.startIndex.next()?.next()?.next()?.next()?.next()?.next())
+    XCTAssertNil(members.endIndex.next())
   }
 
   func testPointerPrev() throws {
-    XCTAssertNil(members.endIndex._pointee)
-    XCTAssertEqual(members.endIndex._prev()?._pointee, 4)
-    XCTAssertEqual(members.endIndex._prev()?._prev()?._pointee, 3)
-    XCTAssertEqual(members.endIndex._prev()?._prev()?._prev()?._pointee, 2)
-    XCTAssertEqual(members.endIndex._prev()?._prev()?._prev()?._prev()?._pointee, 1)
-    XCTAssertEqual(members.endIndex._prev()?._prev()?._prev()?._prev()?._prev()?._pointee, 0)
-    XCTAssertEqual(members.endIndex._prev()?._prev()?._prev()?._prev()?._prev(), members.startIndex)
-    XCTAssertNil(members.endIndex._prev()?._prev()?._prev()?._prev()?._prev()?._prev())
-    XCTAssertNil(members.startIndex._prev())
+    XCTAssertNil(members.endIndex.pointee)
+    XCTAssertEqual(members.endIndex.prev()?.pointee, 4)
+    XCTAssertEqual(members.endIndex.prev()?.prev()?.pointee, 3)
+    XCTAssertEqual(members.endIndex.prev()?.prev()?.prev()?.pointee, 2)
+    XCTAssertEqual(members.endIndex.prev()?.prev()?.prev()?.prev()?.pointee, 1)
+    XCTAssertEqual(members.endIndex.prev()?.prev()?.prev()?.prev()?.prev()?.pointee, 0)
+    XCTAssertEqual(members.endIndex.prev()?.prev()?.prev()?.prev()?.prev(), members.startIndex)
+    XCTAssertNil(members.endIndex.prev()?.prev()?.prev()?.prev()?.prev()?.prev())
+    XCTAssertNil(members.startIndex.prev())
   }
   
   func testPointerOffset0() throws {
-    XCTAssertEqual((members.startIndex)._pointee, 0)
-    XCTAssertEqual(members.startIndex._offset(by: 1)?._pointee, 1)
-    XCTAssertEqual(members.startIndex._offset(by: 2)?._pointee, 2)
-    XCTAssertEqual(members.startIndex._offset(by: 3)?._pointee, 3)
-    XCTAssertEqual(members.startIndex._offset(by: 4)?._pointee, 4)
-    XCTAssertNil(members.startIndex._offset(by: 5)?._pointee)
-    XCTAssertEqual(members.startIndex._offset(by: 5), members.endIndex)
-    XCTAssertNil(members.startIndex._offset(by: 6))
+    XCTAssertEqual((members.startIndex).pointee, 0)
+    XCTAssertEqual(members.startIndex.offset(by: 1)?.pointee, 1)
+    XCTAssertEqual(members.startIndex.offset(by: 2)?.pointee, 2)
+    XCTAssertEqual(members.startIndex.offset(by: 3)?.pointee, 3)
+    XCTAssertEqual(members.startIndex.offset(by: 4)?.pointee, 4)
+    XCTAssertNil(members.startIndex.offset(by: 5)?.pointee)
+    XCTAssertEqual(members.startIndex.offset(by: 5), members.endIndex)
+    XCTAssertNil(members.startIndex.offset(by: 6))
   }
 
   func testPointerOffset2() throws {
-    XCTAssertNil((members.endIndex)._pointee)
-    XCTAssertEqual(members.endIndex._offset(by: -1)?._pointee, 4)
-    XCTAssertEqual(members.endIndex._offset(by: -2)?._pointee, 3)
-    XCTAssertEqual(members.endIndex._offset(by: -3)?._pointee, 2)
-    XCTAssertEqual(members.endIndex._offset(by: -4)?._pointee, 1)
-    XCTAssertEqual(members.endIndex._offset(by: -5)?._pointee, 0)
-    XCTAssertEqual(members.endIndex._offset(by: -5), members.startIndex)
-    XCTAssertNil(members.startIndex._offset(by: -6))
+    XCTAssertNil((members.endIndex).pointee)
+    XCTAssertEqual(members.endIndex.offset(by: -1)?.pointee, 4)
+    XCTAssertEqual(members.endIndex.offset(by: -2)?.pointee, 3)
+    XCTAssertEqual(members.endIndex.offset(by: -3)?.pointee, 2)
+    XCTAssertEqual(members.endIndex.offset(by: -4)?.pointee, 1)
+    XCTAssertEqual(members.endIndex.offset(by: -5)?.pointee, 0)
+    XCTAssertEqual(members.endIndex.offset(by: -5), members.startIndex)
+    XCTAssertNil(members.startIndex.offset(by: -6))
   }
 
   func testPerformanceExample() throws {

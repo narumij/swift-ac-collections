@@ -111,7 +111,7 @@ extension ___RedBlackTree.___Tree.Pointer {
   
   @inlinable
   @inline(__always)
-  public func next() -> Self? {
+  public var next: Self? {
     guard !___is_null_or_end(rawValue), isValid else {
       return nil
     }
@@ -122,7 +122,7 @@ extension ___RedBlackTree.___Tree.Pointer {
   
   @inlinable
   @inline(__always)
-  public func prev() -> Self? {
+  public var prev: Self? {
     guard rawValue != .nullptr, rawValue != _tree.begin(), isValid else {
       return nil
     }
@@ -133,15 +133,15 @@ extension ___RedBlackTree.___Tree.Pointer {
   
   @inlinable
   @inline(__always)
-  public func offset(by distance: Int) -> Self? {
+  public func advanced(by distance: Int) -> Self? {
     var distance = distance
     var result: Self? = self
     while distance != 0 {
       if 0 < distance {
-        result = result?.next()
+        result = result?.next
         distance -= 1
       } else {
-        result = result?.prev()
+        result = result?.prev
         distance += 1
       }
     }

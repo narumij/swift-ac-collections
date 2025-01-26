@@ -156,15 +156,7 @@ extension RedBlackTreeMultiset {
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     _strongEnsureUnique()
-    return _tree.___erase_multi(member) != 0 ? member : nil
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @discardableResult
-  public mutating func remove(_unsafe member: Element) -> Element? {
-    _ensureUnique()
-    return _tree.___erase_multi(member) != 0 ? member : nil
+    return _tree.___erase_unique(member) ? member : nil
   }
 
   /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
@@ -220,6 +212,22 @@ extension RedBlackTreeMultiset {
   public mutating func removeSubrange(_ range: Range<Index>) {
     _ensureUnique()
     ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @discardableResult
+  public mutating func removeAll(_ member: Element) -> Element? {
+    _strongEnsureUnique()
+    return _tree.___erase_multi(member) != 0 ? member : nil
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @discardableResult
+  public mutating func removeAll(_unsafe member: Element) -> Element? {
+    _ensureUnique()
+    return _tree.___erase_multi(member) != 0 ? member : nil
   }
 
   /// - Complexity: O(1)

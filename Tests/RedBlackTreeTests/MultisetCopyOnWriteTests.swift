@@ -30,7 +30,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
     XCTAssertEqual(set._copyCount, 0)
     set.insert(0)
     XCTAssertEqual(set._copyCount, 0)
-    set.remove(0)
+    set.removeAll(0)
     XCTAssertEqual(set._copyCount, 0)
     _ = set.lowerBound(0)
     _ = set.upperBound(0)
@@ -51,7 +51,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
     var tree = RedBlackTreeMultiset<Int>(0 ..< 20)
     tree._copyCount = 0
     for v in tree {
-      tree.remove(v) // strong ensure unique
+      tree.removeAll(v) // strong ensure unique
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 1) // multi setの場合、インデックスを破壊するので1とする
@@ -61,7 +61,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
     var tree = RedBlackTreeMultiset<Int>(0 ..< 20)
     tree._copyCount = 0
     for v in tree.map({ $0 }) {
-      tree.remove(v) // strong ensure unique
+      tree.removeAll(v) // strong ensure unique
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 0) // mapで操作が済んでいるので、インデックス破壊の心配がない
@@ -71,7 +71,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
     var tree = RedBlackTreeMultiset<Int>(0 ..< 20)
     tree._copyCount = 0
     tree.forEach { v in
-      tree.remove(v)
+      tree.removeAll(v)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 1)
@@ -81,7 +81,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
     var tree = RedBlackTreeMultiset<Int>(0 ..< 20)
     tree._copyCount = 0
     for v in tree.map({ $0}) {
-      tree.remove(v)
+      tree.removeAll(v)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 0)
@@ -91,7 +91,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
     var tree = RedBlackTreeMultiset<Int>(0 ..< 20)
     tree._copyCount = 0
     for v in tree.filter({ _ in true }) {
-      tree.remove(v)
+      tree.removeAll(v)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 0)

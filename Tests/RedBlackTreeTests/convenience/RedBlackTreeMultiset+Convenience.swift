@@ -7,34 +7,21 @@ import RedBlackTreeModule
 extension RedBlackTreeMultiset {
 
   @inlinable public func lessThan(_ p: Element) -> Element? {
-    var lo = lowerBound(p)
-    guard lo != startIndex else { return nil }
-    lo = index(before: lo)
-    return self[lo]
+    return lowerBound(p).previous?.pointee
   }
 
   @inlinable public func lessThanOrEqual(_ p: Element) -> Element? {
-    var lo = lowerBound(p)
-    if lo == endIndex || p < self[lo] {
-      if lo == startIndex { return nil }
-      lo = index(before: lo)
-    }
-    return self[lo]
+    let lo = lowerBound(p)
+    return (lo.pointee.map { p < $0 } ?? true) ? lo.previous?.pointee : lo.pointee
   }
 
   @inlinable public func greaterThan(_ p: Element) -> Element? {
-    let hi = upperBound(p)
-    guard hi != endIndex else { return nil }
-    return self[hi]
+    return upperBound(p).pointee
   }
 
   @inlinable public func greaterThanOrEqual(_ p: Element) -> Element? {
     let lo = lowerBound(p)
-    guard lo != endIndex else { return nil }
-    if self[lo] == p { return p }
-    let hi = upperBound(p)
-    guard hi != endIndex else { return nil }
-    return self[hi]
+    return (lo.pointee.map { p == $0 } ?? false) ? lo.pointee : upperBound(p).pointee
   }
 }
 

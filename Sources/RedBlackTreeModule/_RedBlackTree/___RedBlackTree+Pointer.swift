@@ -82,12 +82,12 @@ extension ___RedBlackTree.___Tree.Pointer {
   
   @inlinable
   @inline(__always)
-  static func end(_ tree: _Tree) -> Self {
+  internal static func end(_ tree: _Tree) -> Self {
     .init(__tree: tree, pointer: .end)
   }
 
   @inlinable
-  public var isEnd: Bool {
+  internal var isEnd: Bool {
     rawValue == .end
   }
 }
@@ -121,9 +121,6 @@ extension ___RedBlackTree.___Tree.Pointer {
     prev.___prev()
     return prev
   }
-}
-
-extension ___RedBlackTree.___Tree.Pointer {
   
   @inlinable
   @inline(__always)
@@ -141,14 +138,6 @@ extension ___RedBlackTree.___Tree.Pointer {
     }
     return result
   }
-//  
-//  public static func + (lhs: Self, rhs: Int) -> Self? {
-//    lhs.offset(by: rhs)
-//  }
-//  
-//  public static func - (lhs: Self, rhs: Int) -> Self? {
-//    lhs.offset(by: -rhs)
-//  }
 }
 
 extension ___RedBlackTree.___Tree.Pointer {

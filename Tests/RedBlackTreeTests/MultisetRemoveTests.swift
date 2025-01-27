@@ -8,17 +8,17 @@ import XCTest
 
 final class MultisetRemoveTests: XCTestCase {
 
-  func testRemove() throws {
-    var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
+  func testRemove1() throws {
+    var set = RedBlackTreeMultiset<Int>([0, 0, 1, 1, 2])
+    XCTAssertEqual(set.remove(0), 0)
+    XCTAssertFalse(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(0), 0)
     XCTAssertFalse(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(1), 1)
     XCTAssertFalse(set.sorted().isEmpty)
+    XCTAssertEqual(set.remove(1), 1)
+    XCTAssertFalse(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(2), 2)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(3), 3)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(4), 4)
     XCTAssertTrue(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(0), nil)
     XCTAssertTrue(set.sorted().isEmpty)
@@ -29,6 +29,20 @@ final class MultisetRemoveTests: XCTestCase {
     XCTAssertEqual(set.remove(3), nil)
     XCTAssertTrue(set.sorted().isEmpty)
     XCTAssertEqual(set.remove(4), nil)
+    XCTAssertTrue(set.sorted().isEmpty)
+  }
+  
+  func testRemoveAll() throws {
+    var set = RedBlackTreeMultiset<Int>([0, 0, 1, 1, 2])
+    XCTAssertEqual(set.removeAll(0), 0)
+    XCTAssertFalse(set.sorted().isEmpty)
+    XCTAssertEqual(set.removeAll(0), nil)
+    XCTAssertFalse(set.sorted().isEmpty)
+    XCTAssertEqual(set.removeAll(1), 1)
+    XCTAssertFalse(set.sorted().isEmpty)
+    XCTAssertEqual(set.removeAll(1), nil)
+    XCTAssertFalse(set.sorted().isEmpty)
+    XCTAssertEqual(set.removeAll(2), 2)
     XCTAssertTrue(set.sorted().isEmpty)
   }
 
@@ -63,7 +77,7 @@ final class MultisetRemoveTests: XCTestCase {
     var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0, $0] })
     XCTAssertEqual(s.map { $0 }, (0..<2_000).flatMap { [$0, $0] })
     for i in s {
-      s.remove(i)
+      s.removeAll(i)
     }
   }
 
@@ -74,14 +88,14 @@ final class MultisetRemoveTests: XCTestCase {
     XCTAssertEqual(s[b ..< e].map { $0 }, (0..<2_000).flatMap { [$0, $0] })
     XCTAssertEqual(s[0..<10_000].map { $0 }, (0..<2_000).flatMap { [$0, $0] })
     for i in s[0..<10_000] {
-      s.remove(i)
+      s.removeAll(i)
     }
   }
 
   func testSmokeRemove2() throws {
     var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0, $0] })
     for i in s[0..<10_000].map({ $0 }) {
-      s.remove(i)
+      s.removeAll(i)
     }
   }
   
@@ -89,7 +103,7 @@ final class MultisetRemoveTests: XCTestCase {
     var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0, $0] })
     XCTAssertEqual(s.map { $0 }, (0..<2_000).flatMap { [$0, $0] })
     for i in s {
-      s.remove(_unsafe: i)
+      s.removeAll(_unsafe: i)
     }
   }
 
@@ -100,14 +114,14 @@ final class MultisetRemoveTests: XCTestCase {
     XCTAssertEqual(s[b ..< e].map { $0 }, (0..<2_000).flatMap { [$0, $0] })
     XCTAssertEqual(s[0..<10_000].map { $0 }, (0..<2_000).flatMap { [$0, $0] })
     for i in s[0..<10_000] {
-      s.remove(_unsafe: i)
+      s.removeAll(_unsafe: i)
     }
   }
 
   func testSmokeRemove20() throws {
     var s: RedBlackTreeMultiset<Int> = .init((0..<2_000).flatMap { [$0, $0] })
     for i in s[0..<10_000].map({ $0 }) {
-      s.remove(_unsafe: i)
+      s.removeAll(_unsafe: i)
     }
   }
 
@@ -149,21 +163,49 @@ final class MultisetRemoveTests: XCTestCase {
   func testRemoveLimit() throws {
     var members: RedBlackTreeMultiset = [Int.min, Int.min, Int.max, Int.max]
     XCTAssertEqual(members.count, 4)
-    members.remove(Int.min)
+    members.removeAll(Int.min)
     XCTAssertEqual(members.count, 2)
-    members.remove(Int.max)
+    members.removeAll(Int.max)
     XCTAssertEqual(members.count, 0)
   }
   
+  func testRemoveFirst() throws {
+    var members: RedBlackTreeMultiset = [1, 3, 5, 7, 9]
+    XCTAssertEqual(members.removeFirst(), 1)
+    XCTAssertEqual(members.count, 4)
+    XCTAssertEqual(members.removeFirst(), 3)
+    XCTAssertEqual(members.count, 3)
+    XCTAssertEqual(members.removeFirst(), 5)
+    XCTAssertEqual(members.count, 2)
+    XCTAssertEqual(members.removeFirst(), 7)
+    XCTAssertEqual(members.count, 1)
+    XCTAssertEqual(members.removeFirst(), 9)
+    XCTAssertEqual(members.count, 0)
+  }
+
   func testRemoveLast() throws {
     var members: RedBlackTreeMultiset = [1, 3, 5, 7, 9]
     XCTAssertEqual(members.removeLast(), 9)
+    XCTAssertEqual(members.count, 4)
     XCTAssertEqual(members.removeLast(), 7)
+    XCTAssertEqual(members.count, 3)
     XCTAssertEqual(members.removeLast(), 5)
+    XCTAssertEqual(members.count, 2)
     XCTAssertEqual(members.removeLast(), 3)
+    XCTAssertEqual(members.count, 1)
     XCTAssertEqual(members.removeLast(), 1)
+    XCTAssertEqual(members.count, 0)
   }
   
+  func testRemoveSubrange() throws {
+    for l in 0 ..< 10 {
+      for h in l ... 10 {
+        var members: RedBlackTreeMultiset = [1, 1, 3, 3, 5, 7, 9, 9]
+        members.removeSubrange(members.lowerBound(l) ..< members.upperBound(h))
+        XCTAssertEqual(members.map{ $0 }, [1, 1, 3, 3, 5, 7, 9, 9].filter { !(l ... h).contains($0) })
+      }
+    }
+  }
   
   func testRemoveWithIndices() throws {
     var members = RedBlackTreeMultiset(0 ..< 10)

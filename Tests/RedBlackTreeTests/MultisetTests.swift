@@ -157,25 +157,25 @@ final class MultisetTests: XCTestCase {
 
   func testRemove() throws {
     var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
-    XCTAssertEqual(set.remove(0), 0)
+    XCTAssertEqual(set.removeAll(0), 0)
     XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(1), 1)
+    XCTAssertEqual(set.removeAll(1), 1)
     XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(2), 2)
+    XCTAssertEqual(set.removeAll(2), 2)
     XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(3), 3)
+    XCTAssertEqual(set.removeAll(3), 3)
     XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(4), 4)
+    XCTAssertEqual(set.removeAll(4), 4)
     XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(0), nil)
+    XCTAssertEqual(set.removeAll(0), nil)
     XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(1), nil)
+    XCTAssertEqual(set.removeAll(1), nil)
     XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(2), nil)
+    XCTAssertEqual(set.removeAll(2), nil)
     XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(3), nil)
+    XCTAssertEqual(set.removeAll(3), nil)
     XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(4), nil)
+    XCTAssertEqual(set.removeAll(4), nil)
     XCTAssertTrue(set.sorted().isEmpty)
   }
 
@@ -220,10 +220,10 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.contains(3), true)
     XCTAssertEqual(set.contains(4), true)
     XCTAssertEqual(set.contains(5), false)
-    XCTAssertEqual(set.remove(1), 1)
-    XCTAssertEqual(set.remove(3), 3)
-    XCTAssertEqual(set.remove(1), nil)
-    XCTAssertEqual(set.remove(3), nil)
+    XCTAssertEqual(set.removeAll(1), 1)
+    XCTAssertEqual(set.removeAll(3), 3)
+    XCTAssertEqual(set.removeAll(1), nil)
+    XCTAssertEqual(set.removeAll(3), nil)
     XCTAssertEqual(set.sorted(), [0, 2, 4])
     XCTAssertEqual(set.contains(-1), false)
     XCTAssertEqual(set.contains(0), true)
@@ -232,10 +232,10 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.contains(3), false)
     XCTAssertEqual(set.contains(4), true)
     XCTAssertEqual(set.contains(5), false)
-    XCTAssertEqual(set.remove(2), 2)
-    XCTAssertEqual(set.remove(1), nil)
-    XCTAssertEqual(set.remove(2), nil)
-    XCTAssertEqual(set.remove(3), nil)
+    XCTAssertEqual(set.removeAll(2), 2)
+    XCTAssertEqual(set.removeAll(1), nil)
+    XCTAssertEqual(set.removeAll(2), nil)
+    XCTAssertEqual(set.removeAll(3), nil)
     XCTAssertEqual(set.sorted(), [0, 4])
     XCTAssertEqual(set.contains(-1), false)
     XCTAssertEqual(set.contains(0), true)
@@ -244,11 +244,11 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.contains(3), false)
     XCTAssertEqual(set.contains(4), true)
     XCTAssertEqual(set.contains(5), false)
-    XCTAssertEqual(set.remove(0), 0)
-    XCTAssertEqual(set.remove(1), nil)
-    XCTAssertEqual(set.remove(2), nil)
-    XCTAssertEqual(set.remove(3), nil)
-    XCTAssertEqual(set.remove(4), 4)
+    XCTAssertEqual(set.removeAll(0), 0)
+    XCTAssertEqual(set.removeAll(1), nil)
+    XCTAssertEqual(set.removeAll(2), nil)
+    XCTAssertEqual(set.removeAll(3), nil)
+    XCTAssertEqual(set.removeAll(4), 4)
     XCTAssertEqual(set.contains(-1), false)
     XCTAssertEqual(set.contains(0), false)
     XCTAssertEqual(set.contains(1), false)
@@ -284,10 +284,10 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.right(4).index, 5)
     XCTAssertEqual(set.right(5).index, 5)
     XCTAssertEqual(set.right(6).index, 5)
-    XCTAssertEqual(set.remove(1), 1)
-    XCTAssertEqual(set.remove(3), 3)
-    XCTAssertEqual(set.remove(1), nil)
-    XCTAssertEqual(set.remove(3), nil)
+    XCTAssertEqual(set.removeAll(1), 1)
+    XCTAssertEqual(set.removeAll(3), 3)
+    XCTAssertEqual(set.removeAll(1), nil)
+    XCTAssertEqual(set.removeAll(3), nil)
     XCTAssertEqual(set.sorted(), [0, 2, 4])
     XCTAssertEqual(set.left(-1).index, 0)
     XCTAssertEqual(set.left(0).index, 0)
@@ -303,10 +303,10 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.right(3).index, 2)
     XCTAssertEqual(set.right(4).index, 3)
     XCTAssertEqual(set.right(5).index, 3)
-    XCTAssertEqual(set.remove(2), 2)
-    XCTAssertEqual(set.remove(1), nil)
-    XCTAssertEqual(set.remove(2), nil)
-    XCTAssertEqual(set.remove(3), nil)
+    XCTAssertEqual(set.removeAll(2), 2)
+    XCTAssertEqual(set.removeAll(1), nil)
+    XCTAssertEqual(set.removeAll(2), nil)
+    XCTAssertEqual(set.removeAll(3), nil)
     XCTAssertEqual(set.sorted(), [0, 4])
     XCTAssertEqual(set.left(-1).index, 0)
     XCTAssertEqual(set.left(0).index, 0)
@@ -322,11 +322,11 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.right(3).index, 1)
     XCTAssertEqual(set.right(4).index, 2)
     XCTAssertEqual(set.right(5).index, 2)
-    XCTAssertEqual(set.remove(0), 0)
-    XCTAssertEqual(set.remove(1), nil)
-    XCTAssertEqual(set.remove(2), nil)
-    XCTAssertEqual(set.remove(3), nil)
-    XCTAssertEqual(set.remove(4), 4)
+    XCTAssertEqual(set.removeAll(0), 0)
+    XCTAssertEqual(set.removeAll(1), nil)
+    XCTAssertEqual(set.removeAll(2), nil)
+    XCTAssertEqual(set.removeAll(3), nil)
+    XCTAssertEqual(set.removeAll(4), 4)
     XCTAssertEqual(set.left(-1).index, 0)
     XCTAssertEqual(set.left(0).index, 0)
     XCTAssertEqual(set.left(1).index, 0)
@@ -442,7 +442,7 @@ final class MultisetTests: XCTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.remove(i)
+      set.removeAll(i)
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -450,7 +450,7 @@ final class MultisetTests: XCTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.remove(i)
+      set.removeAll(i)
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -458,7 +458,7 @@ final class MultisetTests: XCTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in set {
-      set.remove(i)
+      set.removeAll(i)
       XCTAssertTrue(set.___tree_invariant())
     }
   }
@@ -471,7 +471,7 @@ final class MultisetTests: XCTestCase {
     }
     XCTAssertEqual(set.map { $0 }, set[set.startIndex..<set.endIndex].map { $0 })
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.remove(i)
+      set.removeAll(i)
       XCTAssertTrue(set.___tree_invariant())
     }
     XCTAssertEqual(set.map { $0 }, set[set.startIndex..<set.endIndex].map { $0 })
@@ -481,7 +481,7 @@ final class MultisetTests: XCTestCase {
     }
     XCTAssertEqual(set.map { $0 }, set[set.startIndex..<set.endIndex].map { $0 })
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.remove(i)
+      set.removeAll(i)
       XCTAssertTrue(set.___tree_invariant())
     }
     XCTAssertEqual(set.map { $0 }, set[set.startIndex..<set.endIndex].map { $0 })
@@ -496,7 +496,7 @@ final class MultisetTests: XCTestCase {
     #endif
     for i in set[set.startIndex..<set.endIndex] {
       // erase multiなので、CoWなしだと、ポインタが破壊される
-      set.remove(i)
+      set.removeAll(i)
       XCTAssertTrue(set.___tree_invariant())
     }
   }
@@ -508,7 +508,7 @@ final class MultisetTests: XCTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.remove(i)
+      set.removeAll(i)
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -516,7 +516,7 @@ final class MultisetTests: XCTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.remove(i)
+      set.removeAll(i)
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -536,7 +536,7 @@ final class MultisetTests: XCTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.remove(i)
+      set.removeAll(i)
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -544,7 +544,7 @@ final class MultisetTests: XCTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.remove(i)
+      set.removeAll(i)
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {

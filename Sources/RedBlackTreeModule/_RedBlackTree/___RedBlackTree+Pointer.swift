@@ -63,16 +63,6 @@ extension ___RedBlackTree.___Tree {
       self.rawValue = rawValue
     }
 
-    // MARK: -
-
-    @inlinable
-    @inline(__always)
-    public var isValid: Bool {
-      if rawValue == .end { return true }
-      if !(0..<_tree.header.initializedCount ~= rawValue) { return false }
-      return _tree.___is_valid(rawValue)
-    }
-    
     /*
      invalidなポインタでの削除は、だんまりがいいように思う
      */
@@ -83,16 +73,18 @@ extension ___RedBlackTree.___Tree.Pointer {
   
   @inlinable
   @inline(__always)
-  public var isStartIndex: Bool {
-    rawValue == _tree.__begin_node
+  public var isValid: Bool {
+    if rawValue == .end { return true }
+    if !(0..<_tree.header.initializedCount ~= rawValue) { return false }
+    return _tree.___is_valid(rawValue)
   }
   
   @inlinable
   @inline(__always)
-  internal static func end(_ tree: _Tree) -> Self {
-    .init(__tree: tree, rawValue: .end)
+  public var isStartIndex: Bool {
+    rawValue == _tree.__begin_node
   }
-
+  
   @inlinable
   @inline(__always)
   public var isEndIndex: Bool {
@@ -190,7 +182,7 @@ fileprivate extension ___RedBlackTree.___Tree.Pointer {
 
 extension ___RedBlackTree.___Tree.Pointer {
   static func unsafe(tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) -> Self {
-    rawValue == .end ? .end(tree) : .init(_unsafe_tree: tree, rawValue: rawValue)
+    .init(_unsafe_tree: tree, rawValue: rawValue)
   }
 }
 #endif

@@ -352,6 +352,16 @@ final class ConvenienceTests: XCTestCase {
     XCTAssertEqual(set, [1,6])
   }
   
+  func testSetErase2() throws {
+    var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+    var it = set.lowerBound(2)
+    let end = set.upperBound(5)
+    while it < end {
+      it = set.erase(at: it)
+    }
+    XCTAssertEqual(set, [1,6])
+  }
+  
   func testMultietErase() throws {
     var set: RedBlackTreeMultiset<Int> = [1, 2, 2, 2, 3, 4]
     var it = set.lowerBound(2)

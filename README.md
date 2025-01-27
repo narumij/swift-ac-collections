@@ -190,6 +190,16 @@ while idx != tree6.endIndex {
 }
 ```
 
+速度が必要な場合おすすめできませんが、C++のイテレータとは異なり比較でループを回すこともできます。 
+
+```Swift
+var tree6: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
+var idx = tree6.startIndex
+while idx < tree6.endIndex {
+  idx = tree6.erase(at: idx)
+}
+```
+
 #### Multisetのremove(:)
 
 RedBlackTreeMultisetのremove(:)は、enumerated()やforEach(:)の削除時対策が効かないため、通常のコピーオンライトとくらべて、さらにコピーが発生しやすい挙動としています。

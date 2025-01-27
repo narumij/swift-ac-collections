@@ -25,6 +25,20 @@ final class SetPointerTests: XCTestCase {
     XCTAssertFalse(members.startIndex.isEndIndex)
     XCTAssertTrue(members.endIndex.isEndIndex)
   }
+  
+  func testPointer2() throws {
+    if let it = members.startIndex.next {
+      XCTAssertTrue(it.isValid)
+      XCTAssertEqual(it.pointee, 1)
+      XCTAssertNotNil(it.previous)
+      XCTAssertNotNil(it.next)
+      members.remove(at: it)
+      XCTAssertFalse(it.isValid)
+      XCTAssertNil(it.pointee)
+      XCTAssertNil(it.previous)
+      XCTAssertNil(it.next)
+    }
+  }
 
   func testPointerNext() throws {
     XCTAssertEqual(members.startIndex.pointee, 0)

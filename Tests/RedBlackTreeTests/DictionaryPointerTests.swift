@@ -18,6 +18,20 @@ final class DictionaryPointerTests: XCTestCase {
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
+  
+  func testPointer2() throws {
+    if let it = members.startIndex.next {
+      XCTAssertTrue(it.isValid)
+      XCTAssertEqual(it.pointee?.key, 1)
+      XCTAssertNotNil(it.previous)
+      XCTAssertNotNil(it.next)
+      members.remove(at: it)
+      XCTAssertFalse(it.isValid)
+      XCTAssertNil(it.pointee)
+      XCTAssertNil(it.previous)
+      XCTAssertNil(it.next)
+    }
+  }
 
   func testPointerNext() throws {
     XCTAssertEqual(members.startIndex.pointee?.key, 0)

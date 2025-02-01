@@ -22,7 +22,7 @@ final class MemoizeCacheTests: XCTestCase {
 
   #if DEBUG
     func testMinimum() throws {
-      var cache = _MemoizeCacheBase<TestKey, Int>(minimumCapacity: 10)
+      let cache = _MemoizeCacheBase<TestKey, Int>(minimumCapacity: 10)
       XCTAssertEqual(cache._tree.count, 0)
       XCTAssertEqual(cache._tree.capacity, 10)
     }

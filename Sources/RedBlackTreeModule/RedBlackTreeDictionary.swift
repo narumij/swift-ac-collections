@@ -424,7 +424,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : self[index(before: .end(_tree))]
+    isEmpty ? nil : self[index(before: endIndex)]
   }
 
   @inlinable

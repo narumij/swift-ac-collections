@@ -105,9 +105,9 @@ final class PermutationTests: XCTestCase {
 #if ENABLE_PERFORMANCE_TESTING
   func testPerformance00() throws {
     #if DEBUG
-      var s = (0..<9) + []
+    let s = (0..<9) + []
     #else
-      var s = (0..<10) + []
+    let s = (0..<10) + []
     #endif
     var ans = 0
     self.measure {

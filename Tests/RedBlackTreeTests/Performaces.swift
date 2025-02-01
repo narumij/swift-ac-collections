@@ -30,7 +30,7 @@ final class Performaces: XCTestCase {
   func testPerformanceExample0() throws {
 //    throw XCTSkip()
     self.measure {
-      let set = RedBlackTreeSet<Int>(0..<10_000_000)
+      let _ = RedBlackTreeSet<Int>(0..<10_000_000)
     }
   }
 
@@ -82,8 +82,8 @@ final class Performaces: XCTestCase {
 
   func testPerformanceExample6() throws {
 //    throw XCTSkip()
-    var set1 = RedBlackTreeSet<Int>(0..<10_000_000)
-    var set2 = RedBlackTreeSet<Int>(0..<10_000_000)
+    let set1 = RedBlackTreeSet<Int>(0..<10_000_000)
+    let set2 = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       _ = set1 == set2
     }
@@ -91,7 +91,7 @@ final class Performaces: XCTestCase {
 
   func testPerformanceExample7() throws {
 //    throw XCTSkip()
-    var set = RedBlackTreeSet<Int>(0..<10_000_000)
+    let set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       _ = set.firstIndex { $0 > 10_000_000 }
     }
@@ -99,7 +99,7 @@ final class Performaces: XCTestCase {
 
   func testPerformanceExample8() throws {
 //    throw XCTSkip()
-    var set = RedBlackTreeSet<Int>(0..<10_000_000)
+    let set = RedBlackTreeSet<Int>(0..<10_000_000)
     self.measure {
       _ = set.first { $0 > 10_000_000 }
     }

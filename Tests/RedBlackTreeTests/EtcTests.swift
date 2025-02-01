@@ -166,7 +166,7 @@ final class EtcTests: XCTestCase {
   }
   
   func testSome() throws {
-    var set = RedBlackTreeSet<Int>((0 ..< 50).shuffled())
+    let set = RedBlackTreeSet<Int>((0 ..< 50).shuffled())
     print("!")
     _fixLifetime(set)
   }

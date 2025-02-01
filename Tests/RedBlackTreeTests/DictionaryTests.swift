@@ -236,7 +236,7 @@ final class DictionaryTests: XCTestCase {
   
 #if DEBUG
   func testSubscript1() throws {
-    var map: RedBlackTreeDictionary<Int, Int> = [1:10,2:10,3:10]
+    let map: RedBlackTreeDictionary<Int, Int> = [1:10,2:10,3:10]
     typealias RawIndex = RedBlackTreeDictionary<Int, Int>.RawIndex
     XCTAssertEqual(map[RawIndex(0)].key, 1)
     XCTAssertEqual(map[RawIndex(0)].value, 10)
@@ -490,7 +490,7 @@ final class DictionaryTests: XCTestCase {
   }
 
   func testSubsequence4() throws {
-    var set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
+    let set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
     let sub = set[1 ..< 3]
     throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
     XCTAssertNotEqual(sub[set.startIndex ..< set.endIndex].map{ $0.key }, [1, 2, 3, 4, 5])
@@ -514,7 +514,7 @@ final class DictionaryTests: XCTestCase {
     var set: RedBlackTreeDictionary<Int,String> = [1:"a", 2: "b", 3: "c", 4: "d", 5: "e"]
     let sub = set[set.startIndex ..< set.endIndex]
     var a: [String] = []
-    for (key, value) in sub {
+    for (_, value) in sub {
       a.append(value)
     }
     XCTAssertEqual(a, ["a","b","c","d","e"])

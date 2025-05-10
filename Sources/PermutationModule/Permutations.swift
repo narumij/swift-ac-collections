@@ -2,20 +2,30 @@ import Foundation
 
 extension Collection where Index == Int {
 
-  /// 全通りをしっかりpermutationsするが、CoWをさっぱりしないもの
-  @inlinable
-  @inline(__always)
-  public __consuming func unsafePermutations() -> Permutations<Self>.All {
-    .init(unsafe: self)
-  }
-
   /// 単に辞書順の操作をするだけのもの
   ///
-  /// C++のnext_permutationの挙動が欲しい場合はこちら。
+  /// C++のnext_permutationの挙動をmapやfilterで使う場合はこちら。
   @inlinable
   @inline(__always)
   public __consuming func nextPermutations() -> Permutations<Self>.Nexts
   where Element: Comparable {
+    .init(safe: self)
+  }
+  
+  /// 単に辞書順の操作をするだけのもの
+  ///
+  /// C++のnext_permutationの挙動をfor文で使う場合はこちらも利用できます。
+  @inlinable
+  @inline(__always)
+  public __consuming func unsafeNextPermutations() -> Permutations<Self>.Nexts
+  where Element: Comparable {
+    .init(unsafe: self)
+  }
+  
+  /// 全通りをしっかりpermutationsするが、CoWをさっぱりしないもの
+  @inlinable
+  @inline(__always)
+  public __consuming func unsafePermutations() -> Permutations<Self>.All {
     .init(unsafe: self)
   }
 }

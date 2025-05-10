@@ -72,30 +72,82 @@ final class PermutationTests: XCTestCase {
       XCTAssertEqual(
         a.nextPermutations().map { $0.map { $0 } },
         [[1, 2], [2, 1]])
+      XCTAssertEqual(
+        a.nextPermutations().map { $0 }.map { $0.map { $0 } },
+        [[1, 2], [2, 1]])
+    }
+    do {
+      let a = [1, 2, 3]
+      let aa = a.nextPermutations().map { $0 }
+      XCTAssertEqual(
+        aa.map { $0.map { $0 } },
+        [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
+    }
+    do {
+      let a = [0, 0]
+      let aa = a.nextPermutations().map { $0 }
+      // 辞書順では変化しようがないので、最初の一回で終了となる
+      XCTAssertEqual(
+        aa.map { $0.map { $0 } },
+        [[0, 0]])
+    }
+    do {
+      let a = [4, 3, 2, 1]
+      let aa = a.nextPermutations().map { $0 }
+      // 辞書順で最後なので、最初の一回で終了となる
+      XCTAssertEqual(
+        aa.map { $0.map { $0 } },
+        [[4, 3, 2, 1]])
+    }
+    do {
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        for p in (0..<4).nextPermutations() {
+          XCTAssertEqual(p._copyCount, 0)
+        }
+      #endif
+    }
+  }
+  
+  func testUnsafeNextPermutations() throws {
+    do {
+      let a = [1, 2]
+      // 単にmapしただけではコピーが行われず、原本への参照だけが返る、
+      // このためその後利用する場合結果が全て初期状態で同一となる
+      XCTAssertEqual(
+        a.unsafeNextPermutations().map { $0 }.map { $0.map { $0 } },
+        [[1, 2], [1, 2]])
+      // つまり素直な期待動作とは異なるので注意が必要
+      XCTAssertNotEqual(
+        a.unsafeNextPermutations().map { $0 }.map { $0.map { $0 } },
+        [[1, 2], [2, 1]])
+      // すぐに配列に変換するなどの対応をすると期待通りとなる
+      XCTAssertEqual(
+        a.unsafeNextPermutations().map { $0.map { $0 } },
+        [[1, 2], [2, 1]])
     }
     do {
       let a = [1, 2, 3]
       XCTAssertEqual(
-        a.nextPermutations().map { $0.map { $0 } },
+        a.unsafeNextPermutations().map { $0.map { $0 } },
         [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
     }
     do {
       let a = [0, 0]
       // 辞書順では変化しようがないので、最初の一回で終了となる
       XCTAssertEqual(
-        a.nextPermutations().map { $0.map { $0 } },
+        a.unsafeNextPermutations().map { $0.map { $0 } },
         [[0, 0]])
     }
     do {
       let a = [4, 3, 2, 1]
       // 辞書順で最後なので、最初の一回で終了となる
       XCTAssertEqual(
-        a.nextPermutations().map { $0.map { $0 } },
+        a.unsafeNextPermutations().map { $0.map { $0 } },
         [[4, 3, 2, 1]])
     }
     do {
       #if AC_COLLECTIONS_INTERNAL_CHECKS
-        for p in (0..<4).nextPermutations() {
+        for p in (0..<4).unsafeNextPermutations() {
           XCTAssertEqual(p._copyCount, 0)
         }
       #endif

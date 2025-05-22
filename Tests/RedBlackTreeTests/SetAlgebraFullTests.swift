@@ -17,7 +17,7 @@ final class RedBlackTreeSetAlgebraFullTests: XCTestCase {
         _ rhs: RedBlackTreeSet<T>,
         file: StaticString = #file, line: UInt = #line
     ) {
-        XCTAssertEqual(lhs.sorted(), rhs.sorted(), file: file, line: line)
+      XCTAssertEqual(lhs.sorted(), rhs.sorted(), file: (file), line: line)
     }
 
     /// 2 つの `RedBlackTreeSet` と対応する `Set` を生成

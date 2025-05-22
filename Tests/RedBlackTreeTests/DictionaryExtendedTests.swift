@@ -15,10 +15,10 @@ final class RedBlackTreeDictionaryExtendedTests: XCTestCase {
         _ swift: [K: V],
         file: StaticString = #file, line: UInt = #line)
     {
-        XCTAssertEqual(rb.count, swift.count, file: file, line: line)
+      XCTAssertEqual(rb.count, swift.count, file: (file), line: line)
         for (k, v) in swift {
             XCTAssertEqual(rb[k], v, "Mismatch at key: \(k)",
-                           file: file, line: line)
+                           file: (file), line: line)
         }
     }
 
@@ -116,7 +116,7 @@ final class RedBlackTreeDictionaryExtendedTests: XCTestCase {
                     _ = std.sorted { $0.key < $1.key }.first
                         .map { std.removeValue(forKey: $0.key) }
                 case 2:                                      // merge 1 要素
-                    try! rb.merge([(k, 1)]) { $0 + $1 }
+                    rb.merge([(k, 1)]) { $0 + $1 }
                     std.merge([k: 1]) { $0 + $1 }
                 case 3:                                      // mapValues chain
                     rb = rb.mapValues { $0 + 1 }

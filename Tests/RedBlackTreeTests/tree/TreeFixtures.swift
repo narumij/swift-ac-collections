@@ -109,8 +109,8 @@ import XCTest
       try super.setUpWithError()
       __nodes = [
         .init(__is_black_: true, __left_: 1, __right_: 2, __parent_: .end),
-        .init(__is_black_: false, __left_: nil, __right_: nil, __parent_: 0),
-        .init(__is_black_: false, __left_: nil, __right_: nil, __parent_: 0),
+        .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: 0),
+        .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: 0),
       ]
       __values = [
         10,
@@ -136,11 +136,11 @@ import XCTest
       __nodes = [
         .init(__is_black_: true, __left_: 1, __right_: 4, __parent_: .end),
         .init(__is_black_: false, __left_: 2, __right_: 3, __parent_: 0),
-        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: 1),
-        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: 1),
+        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 1),
+        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 1),
         .init(__is_black_: false, __left_: 5, __right_: 6, __parent_: 0),
-        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: 4),
-        .init(__is_black_: true, __left_: nil, __right_: nil, __parent_: 4),
+        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 4),
+        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 4),
       ]
       __values = [
         3,

@@ -988,3 +988,13 @@ extension RedBlackTreeSet {
   }
 }
 #endif
+
+// MARK: -
+
+extension RedBlackTreeSet {
+  @inlinable
+  public mutating func popFirst() -> Element? {
+    guard !isEmpty else { return nil }
+    return remove(at: startIndex)
+  }
+}

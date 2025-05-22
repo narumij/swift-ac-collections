@@ -422,7 +422,7 @@ extension RedBlackTreeMultiset: Sequence {
       EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
     }
   #endif
-  
+
   @inlinable
   @inline(__always)
   public func indices() -> IndexSequence {
@@ -447,7 +447,8 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   @inlinable
   @inline(__always)
   public var count: Int {
-    ___count }
+    ___count
+  }
 
   @inlinable
   @inline(__always)
@@ -616,7 +617,7 @@ extension RedBlackTreeMultiset.SubSequence: Sequence {
         _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
     }
   #endif
-  
+
   @inlinable
   @inline(__always)
   public func indices() -> IndexSequence {
@@ -625,7 +626,7 @@ extension RedBlackTreeMultiset.SubSequence: Sequence {
   }
 }
 
-extension RedBlackTreeMultiset.SubSequence: ___RedBlackTreeSubSequenceBase { }
+extension RedBlackTreeMultiset.SubSequence: ___RedBlackTreeSubSequenceBase {}
 
 extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
 
@@ -793,7 +794,7 @@ extension RedBlackTreeMultiset {
 
   @frozen
   public struct IndexSequence {
-    
+
     public typealias RawPointer = Tree.RawPointer
 
     @usableFromInline
@@ -897,5 +898,15 @@ extension RedBlackTreeMultiset {
   @inline(__always)
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
     other.forEach { insert($0) }
+  }
+}
+
+// MARK: -
+
+extension RedBlackTreeMultiset {
+  @inlinable
+  public mutating func popFirst() -> Element? {
+    guard !isEmpty else { return nil }
+    return remove(at: startIndex)
   }
 }

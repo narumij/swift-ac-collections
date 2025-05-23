@@ -58,7 +58,6 @@ import AcCollections
 - **キーと値** を管理する Dictionary。  
 - 基本的なキー検索・挿入・削除などの操作を `O(log n)` で行えます。  
 - 連想配列リテラル（`ExpressibleByDictionaryLiteral`）にも対応しています。
-- Swift 5.8.1では標準辞書に及びませんが、Swift 6.0ではこちらの方が速い場合もあります。
 
 #### 簡単な使用例
 

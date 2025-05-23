@@ -474,7 +474,7 @@ extension RedBlackTreeSet: Sequence {
       EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
     }
   #endif
-  
+
   @inlinable
   @inline(__always)
   public func indices() -> IndexSequence {
@@ -485,93 +485,93 @@ extension RedBlackTreeSet: Sequence {
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeSet: BidirectionalCollection {
-
+  
   @inlinable
   @inline(__always)
   public var startIndex: Index {
     ___index_start()
   }
-
+  
   @inlinable
   @inline(__always)
   public var endIndex: Index {
     ___index_end()
   }
-
+  
   @inlinable
   @inline(__always)
   public var count: Int {
     ___count
   }
-
+  
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     ___distance(from: start.rawValue, to: end.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     ___index(after: i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     ___form_index(after: &i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     ___index(before: i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     ___form_index(before: &i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i.rawValue, offsetBy: distance)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     ___form_index(&i.rawValue, offsetBy: distance)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Bool
+  -> Bool
   {
     ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
     return _tree[position.rawValue]
   }
-
+  
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
     return _tree[position.rawValue]
   }
-
+  
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
     SubSequence(
@@ -581,23 +581,50 @@ extension RedBlackTreeSet: BidirectionalCollection {
           to: bounds.upperBound.rawValue)
     )
   }
+}
 
+extension RedBlackTreeSet {
+
+  /// 範囲 `[lower, upper)` に含まれる要素を返します。
+  /// 
+  /// index範囲ではないことに留意
+  /// **Deprecated – `elements(in:)` を使ってください。**
+  @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
   public subscript(bounds: Range<Element>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: ___ptr_lower_bound(bounds.lowerBound),
-          to: ___ptr_lower_bound(bounds.upperBound)))
+    elements(in: bounds)
   }
 
+  /// 範囲 `[lower, upper]` に含まれる要素を返します。
+  ///
+  /// index範囲ではないことに留意
+  /// **Deprecated – `elements(in:)` を使ってください。**
+  @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
   public subscript(bounds: ClosedRange<Element>) -> SubSequence {
+    elements(in: bounds)
+  }
+}
+
+extension RedBlackTreeSet {
+  /// 値レンジ `[lower, upper)` に含まれる要素のスライス
+  @inlinable
+  public func elements(in range: Range<Element>) -> SubSequence {
     SubSequence(
       _subSequence:
         _tree.subsequence(
-          from: ___ptr_lower_bound(bounds.lowerBound),
-          to: ___ptr_upper_bound(bounds.upperBound)))
+          from: ___ptr_lower_bound(range.lowerBound),
+          to: ___ptr_lower_bound(range.upperBound)))
+  }
+
+  /// 値レンジ `[lower, upper]` に含まれる要素のスライス
+  @inlinable
+  public func elements(in range: ClosedRange<Element>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: ___ptr_lower_bound(range.lowerBound),
+          to: ___ptr_upper_bound(range.upperBound)))
   }
 }
 
@@ -673,7 +700,7 @@ extension RedBlackTreeSet.SubSequence: Sequence {
         _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
     }
   #endif
-  
+
   @inlinable
   @inline(__always)
   public func indices() -> IndexSequence {
@@ -682,7 +709,7 @@ extension RedBlackTreeSet.SubSequence: Sequence {
   }
 }
 
-extension RedBlackTreeSet.SubSequence: ___RedBlackTreeSubSequenceBase { }
+extension RedBlackTreeSet.SubSequence: ___RedBlackTreeSubSequenceBase {}
 
 extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 
@@ -850,7 +877,7 @@ extension RedBlackTreeSet {
 
   @frozen
   public struct IndexSequence {
-    
+
     public typealias RawPointer = Tree.RawPointer
 
     @usableFromInline
@@ -960,33 +987,33 @@ extension RedBlackTreeSet {
 }
 
 #if PERFOMANCE_CHECK
-extension RedBlackTreeSet {
+  extension RedBlackTreeSet {
 
-  // 旧初期化実装
-  // 性能比較用にのこしてある
+    // 旧初期化実装
+    // 性能比較用にのこしてある
 
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public init<Source>(_sequence sequence: __owned Source)
-  where Element == Source.Element, Source: Sequence {
-    let count = (sequence as? (any Collection))?.count
-    var tree: Tree = .create(minimumCapacity: count ?? 0)
-    for __k in sequence {
-      if count == nil {
-        Tree.ensureCapacity(tree: &tree)
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public init<Source>(_sequence sequence: __owned Source)
+    where Element == Source.Element, Source: Sequence {
+      let count = (sequence as? (any Collection))?.count
+      var tree: Tree = .create(minimumCapacity: count ?? 0)
+      for __k in sequence {
+        if count == nil {
+          Tree.ensureCapacity(tree: &tree)
+        }
+        var __parent = _NodePtr.nullptr
+        // 検索の計算量がO(log *n*)
+        let __child = tree.__find_equal(&__parent, __k)
+        if tree.__ptr_(__child) == .nullptr {
+          let __h = tree.__construct_node(__k)
+          // バランシングの計算量がO(log *n*)
+          tree.__insert_node_at(__parent, __child, __h)
+        }
       }
-      var __parent = _NodePtr.nullptr
-      // 検索の計算量がO(log *n*)
-      let __child = tree.__find_equal(&__parent, __k)
-      if tree.__ptr_(__child) == .nullptr {
-        let __h = tree.__construct_node(__k)
-        // バランシングの計算量がO(log *n*)
-        tree.__insert_node_at(__parent, __child, __h)
-      }
+      self._storage = .init(__tree: tree)
     }
-    self._storage = .init(__tree: tree)
   }
-}
 #endif
 
 // MARK: -

@@ -8,10 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.15] - 2025-5-?
 ### Added
 - popFirstメソッドを追加
+- elements(in:)メソッドを追加
 - 辞書にmergeとmergingメソッドを追加
 - 辞書にmapValuesとcompactMapValuesメソッドを追加
 - 辞書にfilterメソッドを追加
 - 辞書にExpressibleByArrayLiteral適用を追加
+### Changed
+- setやmultisetの添え字による要素範囲取得をdeprecatedに変更
 
 ## [0.1.14] - 2025-5-10
 ### Changed

@@ -558,93 +558,93 @@ extension RedBlackTreeDictionary: Sequence {
 }
 
 extension RedBlackTreeDictionary: BidirectionalCollection {
-
+  
   @inlinable
   @inline(__always)
   public var startIndex: Index {
     ___index_start()
   }
-
+  
   @inlinable
   @inline(__always)
   public var endIndex: Index {
     ___index_end()
   }
-
+  
   @inlinable
   @inline(__always)
   public var count: Int {
     ___count
   }
-
+  
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     ___distance(from: start.rawValue, to: end.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     ___index(after: i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     ___form_index(after: &i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     ___index(before: i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     ___form_index(before: &i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i.rawValue, offsetBy: distance)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     ___form_index(&i.rawValue, offsetBy: distance)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Bool
+  -> Bool
   {
     ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
     return _tree[position.rawValue]
   }
-
+  
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
     return _tree[position.rawValue]
   }
-
+  
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
     SubSequence(
@@ -654,23 +654,44 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
           to: bounds.upperBound.rawValue)
     )
   }
+}
 
+extension RedBlackTreeDictionary {
+
+  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
+  /// 範囲 `[lower, upper)` に含まれる要素を返します。
   @inlinable
   public subscript(bounds: Range<Key>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: ___ptr_lower_bound(bounds.lowerBound),
-          to: ___ptr_lower_bound(bounds.upperBound)))
+    elements(in: bounds)
   }
 
+  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
+  /// 範囲 `[lower, upper]` に含まれる要素を返します。
   @inlinable
   public subscript(bounds: ClosedRange<Key>) -> SubSequence {
+    elements(in: bounds)
+  }
+}
+
+extension RedBlackTreeDictionary {
+  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
+  @inlinable
+  public func elements(in range: Range<Key>) -> SubSequence {
     SubSequence(
       _subSequence:
         _tree.subsequence(
-          from: ___ptr_lower_bound(bounds.lowerBound),
-          to: ___ptr_upper_bound(bounds.upperBound)))
+          from: ___ptr_lower_bound(range.lowerBound),
+          to: ___ptr_lower_bound(range.upperBound)))
+  }
+
+  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
+  @inlinable
+  public func elements(in range: ClosedRange<Key>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: ___ptr_lower_bound(range.lowerBound),
+          to: ___ptr_upper_bound(range.upperBound)))
   }
 }
 

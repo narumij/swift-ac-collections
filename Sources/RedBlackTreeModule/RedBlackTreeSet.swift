@@ -586,7 +586,7 @@ extension RedBlackTreeSet: BidirectionalCollection {
 extension RedBlackTreeSet {
 
   /// 範囲 `[lower, upper)` に含まれる要素を返します。
-  /// 
+  ///
   /// index範囲ではないことに留意
   /// **Deprecated – `elements(in:)` を使ってください。**
   @available(*, deprecated, renamed: "elements(in:)")

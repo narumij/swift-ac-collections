@@ -530,6 +530,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
 }
 
 extension RedBlackTreeMultiset {
+  // 割と注意喚起の為のdeprecatedなだけで、実際にいつ消すのかは不明です。
 
   /// 範囲 `[lower, upper)` に含まれる要素を返します。
   ///

@@ -165,7 +165,7 @@ XCTAssertEqual(tree4.count, 0)
 
 ```Swift
 var tree5: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
-tree5.remove(contensOf: 0 ..< 6)
+tree5.remove(contentsOf: 0 ..< 6)
 // 0〜5が削除され、結果は空
 
 ```
@@ -210,7 +210,7 @@ RedBlackTreeMultisetのremove(:)は、enumerated()やforEach(:)の削除時対�
 具体的には、削除に必要な情報は一度map関数で配列にする等です。
 
 ```Swift
-var multiset: RedBlackTreeMultiet<Int> = [0,0,1,1,2,2]
+var multiset: RedBlackTreeMultiset<Int> = [0,0,1,1,2,2]
 for member in multiset {
   // この時点でイテレータが有効で、イテレータの破壊を予防するために内部コピーを行う
   // この場合、1回内部コピーが行われる
@@ -219,7 +219,7 @@ for member in multiset {
 ```
 
 ```Swift
-var multiset: RedBlackTreeMultiet<Int> = [0,0,1,1,2,2]
+var multiset: RedBlackTreeMultiset<Int> = [0,0,1,1,2,2]
 for member in multiset.map({ $0 }) {
   // イテレータが消費済みなため、コピーが発生しない
   multiset.remove(member)

@@ -72,8 +72,8 @@ set.insert(5)    // 重複は無視される
 print(set)       // 例: [5, 10]
 print(set.min()) // 例: Optional(5)
 
-// RedBlackTreeMultiSet の例
-var multiset = RedBlackTreeMultiSet<Int>([1, 2, 2, 3])
+// RedBlackTreeMultiset の例
+var multiset = RedBlackTreeMultiset<Int>([1, 2, 2, 3])
 multiset.insert(2)
 print(multiset)       // 例: [1, 2, 2, 2, 3]
 print(multiset.count(2))  // 例: 3

@@ -13,7 +13,7 @@
 
 ```Swift
 dependencies: [
-  .package(url: "https://github.com/narumij/swift-ac-collections.git", from: "0.0.1"),
+  .package(url: "https://github.com/narumij/swift-ac-collections", from: "0.0.1"),
 ]
 ```
 

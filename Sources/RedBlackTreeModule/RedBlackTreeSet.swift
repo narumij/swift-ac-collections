@@ -406,12 +406,19 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet: CustomStringConvertible, CustomDebugStringConvertible {
+// MARK: - CustomStringConvertible
 
+extension RedBlackTreeSet: CustomStringConvertible {
+  
   @inlinable
   public var description: String {
     "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
   }
+}
+
+// MARK: - CustomDebugStringConvertible
+
+extension RedBlackTreeSet: CustomDebugStringConvertible {
 
   @inlinable
   public var debugDescription: String {

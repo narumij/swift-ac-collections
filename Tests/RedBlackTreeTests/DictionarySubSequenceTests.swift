@@ -10,7 +10,11 @@
 
 import XCTest
 
-@testable import RedBlackTreeModule  // ←モジュール名を書き換えてください
+#if DEBUG
+  @testable import RedBlackTreeModule
+#else
+  import RedBlackTreeModule
+#endif
 
 final class RedBlackTreeDictionarySubSequenceTests: XCTestCase {
 

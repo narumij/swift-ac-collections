@@ -8,7 +8,11 @@
 
 import XCTest
 
-@testable import RedBlackTreeModule  // ← モジュール名を書き換える
+#if DEBUG
+  @testable import RedBlackTreeModule
+#else
+  import RedBlackTreeModule
+#endif
 
 final class RedBlackTreeMultisetSubSequenceTests: XCTestCase {
 

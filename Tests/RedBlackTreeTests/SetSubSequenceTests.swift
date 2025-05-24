@@ -6,7 +6,11 @@
 
 import XCTest
 
-@testable import RedBlackTreeModule
+#if DEBUG
+  @testable import RedBlackTreeModule
+#else
+  import RedBlackTreeModule
+#endif
 
 final class RedBlackTreeSetSubSequenceTests: XCTestCase {
 

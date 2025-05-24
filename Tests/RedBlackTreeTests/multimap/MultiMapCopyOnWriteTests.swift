@@ -60,7 +60,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet3() throws {
     tree._copyCount = 0
     for v in tree {
-      tree.removeAll(forKey: v.key) // strong ensure unique
+      tree.removeFirst(forKey: v.key) // strong ensure unique
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 1) // multi setの場合、インデックスを破壊するので1とする
@@ -69,7 +69,16 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet3_2() throws {
     tree._copyCount = 0
     for v in tree.map({ $0 }) {
-      tree.removeAll(forKey: v.key) // strong ensure unique
+      tree.removeFirst(forKey: v.key) // strong ensure unique
+    }
+    XCTAssertEqual(tree.count, 0)
+    XCTAssertEqual(tree._copyCount, 0) // mapで操作が済んでいるので、インデックス破壊の心配がない
+  }
+  
+  func testSet3_3() throws {
+    tree._copyCount = 0
+    for v in tree.map({ $0 }) {
+      tree.removeFirst(_unsafeForKey: v.key) // strong ensure unique
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 0) // mapで操作が済んでいるので、インデックス破壊の心配がない
@@ -78,7 +87,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet4() throws {
     tree._copyCount = 0
     tree.forEach { v in
-      tree.removeAll(forKey: v.key)
+      tree.removeFirst(forKey: v.key)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 1)
@@ -87,7 +96,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet5() throws {
     tree._copyCount = 0
     for v in tree.map({ $0}) {
-      tree.removeAll(forKey: v.key)
+      tree.removeFirst(forKey: v.key)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 0)
@@ -146,6 +155,16 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 0)
   }
+  
+  func testSet12() throws {
+    tree._copyCount = 0
+    for v in tree.filter({ _ in true }) {
+      tree.removeAll(_unsafeForKey: v.key)
+    }
+    XCTAssertEqual(tree.count, 0)
+    XCTAssertEqual(tree._copyCount, 0)
+  }
+
 
   func testSet3000() throws {
     let count = 1500

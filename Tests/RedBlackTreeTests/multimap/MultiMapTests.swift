@@ -40,7 +40,7 @@ import XCTest
     override func tearDownWithError() throws {
       // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-    
+
     typealias Target = RedBlackTreeMultiMap
 
     func testInitEmtpy() throws {
@@ -63,144 +63,76 @@ import XCTest
     func testUsage1() throws {
       // 意外と普通のユースケースでバグがあることが判明
       var map = Target<Int, Int>()
-      XCTAssertEqual(map[0].first?.value, nil)
-      map.insert((0,1))
+      XCTAssertEqual(map[0].map(\.value), [])
+      map.insert((0, 1))
       //    map.updateValue(1, forKey: 0)
-      XCTAssertEqual(map[0].first?.value, 1)
-      XCTAssertEqual(map[1].first?.value, nil)
+      XCTAssertEqual(map[0].map(\.value), [1])
+      XCTAssertEqual(map[1].map(\.value), [])
       XCTAssertTrue(zip(map.map { ($0.0, $0.1) }, [(0, 1)]).allSatisfy(==))
       map.removeAll(forKey: 0)
       //    map.removeValue(forKey: 0)
-      XCTAssertEqual(map[0].first?.value, nil)
-      XCTAssertEqual(map[1].first?.value, nil)
+      XCTAssertEqual(map[0].map(\.value), [])
+      XCTAssertEqual(map[1].map(\.value), [])
       XCTAssertTrue(zip(map.map { ($0.0, $0.1) }, []).allSatisfy(==))
-      map.insert((1,2))
+      map.insert((1, 2))
       //    map.updateValue(20, forKey: 10)
-      XCTAssertEqual(map[0].first?.value, nil)
-      XCTAssertEqual(map[1].first?.value, 2)
+      XCTAssertEqual(map[0].map(\.value), [])
+      XCTAssertEqual(map[1].map(\.value), [2])
       XCTAssertEqual(map.map(\.key), [1])
       XCTAssertEqual(map.map(\.value), [2])
       map.removeAll(forKey: 1)
       //    map.removeValue(forKey: 10)
-      XCTAssertEqual(map[0].first?.value, nil)
-      XCTAssertEqual(map[1].first?.value, nil)
+      XCTAssertEqual(map[0].map(\.value), [])
+      XCTAssertEqual(map[1].map(\.value), [])
       XCTAssertEqual(map.map(\.key), [])
       XCTAssertEqual(map.map(\.value), [])
     }
-#if false
 
     func testUsage2() throws {
-      var map = RedBlackTreeDictionary<Int, Int>()
-      XCTAssertEqual(map[0], nil)
-      map[0] = 0
-      XCTAssertEqual(map[0], 0)
-      XCTAssertEqual(map[1], nil)
-      map[1] = 2
-      XCTAssertEqual(map[0], 0)
-      XCTAssertEqual(map[1], 2)
-      map[0] = nil
-      XCTAssertEqual(map[0], nil)
-      XCTAssertEqual(map[1], 2)
-      map[1] = nil
-      XCTAssertEqual(map[0], nil)
-      XCTAssertEqual(map[1], nil)
-      map[1] = 3
-      XCTAssertEqual(map[0], nil)
-      XCTAssertEqual(map[1], 3)
+      var map = Target<Int, Int>()
+      XCTAssertEqual(map[0].map(\.value), [])
+      map.insert((0, 0))
+      XCTAssertEqual(map[0].map(\.value), [0])
+      XCTAssertEqual(map[1].map(\.value), [])
+      map.insert((1, 2))
+      XCTAssertEqual(map[0].map(\.value), [0])
+      XCTAssertEqual(map[1].map(\.value), [2])
+      map.removeAll(forKey: 0)
+      XCTAssertEqual(map[0].map(\.value), [])
+      XCTAssertEqual(map[1].map(\.value), [2])
+      map.removeAll(forKey: 1)
+      XCTAssertEqual(map[0].map(\.value), [])
+      XCTAssertEqual(map[1].map(\.value), [])
+      map.insert((1, 3))
+      XCTAssertEqual(map[0].map(\.value), [])
+      XCTAssertEqual(map[1].map(\.value), [3])
     }
 
     func testUsage3() throws {
-      var map = RedBlackTreeDictionary<Int, Int>()
-      map[0] = 0
-      XCTAssertEqual(map[0], 0)
+      var map = Target<Int, Int>()
+      map.insert((0, 0))
+      XCTAssertEqual(map[0].map(\.value), [0])
       map.remove(at: map.startIndex)
-      XCTAssertEqual(map[0], nil)
+      XCTAssertEqual(map[0].map(\.value), [])
       XCTAssertTrue(map.isEmpty)
-      map[0] = 0
-      XCTAssertEqual(map[0], 0)
+      map.insert((0, 0))
+      XCTAssertEqual(map[0].map(\.value), [0])
       map.remove(at: map.startIndex)
-      XCTAssertEqual(map[0], nil)
+      XCTAssertEqual(map[0].map(\.value), [])
       XCTAssertTrue(map.isEmpty)
     }
-    #endif
 
     func testLiteral() throws {
-      let map: RedBlackTreeDictionary<Int, Int> = [1: 2, 3: 4, 5: 6]
-      XCTAssertEqual(map[1], 2)
-      XCTAssertEqual(map[3], 4)
-      XCTAssertEqual(map[5], 6)
+      let map: Target<Int, Int> = [1: 0, 1: 2, 3: 4, 5: 6, 5: 7]
+      XCTAssertEqual(map[1].map(\.value), [0, 2])
+      XCTAssertEqual(map[3].map(\.value), [4])
+      XCTAssertEqual(map[5].map(\.value), [6, 7])
     }
-
-    #if false
-    func testSubscriptDefault0() throws {
-      var map: [Int: [Int]] = [:]
-      _ = map[1, default: []]
-      XCTAssertEqual(map[1], nil)
-      map[1, default: []].append(1)
-      XCTAssertEqual(map[1], [1])
-      map[1, default: []].append(2)
-      XCTAssertEqual(map[1], [1, 2])
-      map[2, default: []] = [3, 4]
-      XCTAssertEqual(map[2, default: []], [3, 4])
-      XCTAssertEqual(map[3, default: []], [])
-    }
-
-    func testSubscriptDefault() throws {
-      var map: RedBlackTreeDictionary<Int, [Int]> = [:]
-      _ = map[1, default: []]
-      XCTAssertEqual(map[1], nil)
-      map[1, default: []].append(1)
-      XCTAssertEqual(map[1], [1])
-      map[1, default: []].append(2)
-      XCTAssertEqual(map[1], [1, 2])
-      map[2, default: []] = [3, 4]
-      XCTAssertEqual(map[2, default: []], [3, 4])
-      XCTAssertEqual(map[3, default: []], [])
-    }
-
-    func testSubscriptDefault__1() throws {
-      var map: [Int: Int] = [:]
-      map[1].hoge()
-      XCTAssertEqual(map[1], 1515)
-      map[1] = nil
-      XCTAssertEqual(map[1], nil)
-    }
-
-    func testSubscriptDefault__2() throws {
-      var map: RedBlackTreeDictionary<Int, Int> = [:]
-      map[1].hoge()
-      XCTAssertEqual(map[1], 1515)
-      map[1] = nil
-      XCTAssertEqual(map[1], nil)
-    }
-
-    func testSubscriptDefault1() throws {
-      var map: [Int: [Int]] = [:]
-      map[1]?.append(1)
-      XCTAssertEqual(map[1], nil)
-      map[1] = [1]
-      XCTAssertEqual(map[1], [1])
-      map[1]?.append(2)
-      XCTAssertEqual(map[1], [1, 2])
-    }
-
-    func testSubscriptDefault3() throws {
-      var map: RedBlackTreeDictionary<Int, [Int]> = [:]
-      map[1]?.append(1)
-      XCTAssertEqual(map[1], nil)
-      map[1] = [1]
-      XCTAssertEqual(map[1], [1])
-      map[1]?.append(2)
-      XCTAssertEqual(map[1], [1, 2])
-      _ = map[1]?.removeFirst()
-      XCTAssertEqual(map[1], [2])
-    }
-#endif
 
     #if DEBUG
       func testSubscript1() throws {
         let map: Target<Int, Int> = [1: 10, 2: 10, 3: 10]
-        typealias RawIndex = RedBlackTreeDictionary<Int, Int>.RawIndex
+        typealias RawIndex = Target<Int, Int>.RawIndex
         XCTAssertEqual(map[RawIndex(0)].key, 1)
         XCTAssertEqual(map[RawIndex(0)].value, 10)
         XCTAssertEqual(map[2..<3][RawIndex(1)].key, 2)
@@ -224,93 +156,105 @@ import XCTest
       XCTAssertEqual(dict[3], nil)
     }
 
-#if false
     func testInitUniqueKeysWithValues() throws {
-      let dict = Target(uniqueKeysWithValues: [(1, 10), (2, 20)])
+      let dict = Target(keysWithValues: [(1, 10), (2, 20)])
       XCTAssertEqual(dict.keys.sorted(), [1, 2])
       XCTAssertEqual(dict.values.sorted(), [10, 20])
-      XCTAssertEqual(dict[0], nil)
-      XCTAssertEqual(dict[1], 10)
-      XCTAssertEqual(dict[2], 20)
-      XCTAssertEqual(dict[3], nil)
+      XCTAssertEqual(dict[0].map(\.value), [])
+      XCTAssertEqual(dict[1].map(\.value), [10])
+      XCTAssertEqual(dict[2].map(\.value), [20])
+      XCTAssertEqual(dict[3].map(\.value), [])
     }
 
-    func testInitUniquingKeysWith_() throws {
-      do {
-        let dict = [Int: Int](
-          [(1, 10), (1, 11), (2, 20), (2, 22)], uniquingKeysWith: { _, b in b })
-        XCTAssertEqual(dict.keys.sorted(), [1, 2])
-        XCTAssertEqual(dict.values.sorted(), [11, 22])
-        XCTAssertEqual(dict[0], nil)
-        XCTAssertEqual(dict[1], 11)
-        XCTAssertEqual(dict[2], 22)
-        XCTAssertEqual(dict[3], nil)
+    #if false
+      func testInitUniquingKeysWith_() throws {
+        do {
+          let dict = [Int: Int](
+            [(1, 10), (1, 11), (2, 20), (2, 22)], uniquingKeysWith: { _, b in b })
+          XCTAssertEqual(dict.keys.sorted(), [1, 2])
+          XCTAssertEqual(dict.values.sorted(), [11, 22])
+          XCTAssertEqual(dict[0], nil)
+          XCTAssertEqual(dict[1], 11)
+          XCTAssertEqual(dict[2], 22)
+          XCTAssertEqual(dict[3], nil)
+        }
+        do {
+          let dict = [Int: Int](
+            [(1, 10), (1, 11), (2, 20), (2, 22)], uniquingKeysWith: { a, _ in a })
+          XCTAssertEqual(dict.keys.sorted(), [1, 2])
+          XCTAssertEqual(dict.values.sorted(), [10, 20])
+          XCTAssertEqual(dict[0], nil)
+          XCTAssertEqual(dict[1], 10)
+          XCTAssertEqual(dict[2], 20)
+          XCTAssertEqual(dict[3], nil)
+        }
       }
-      do {
-        let dict = [Int: Int](
-          [(1, 10), (1, 11), (2, 20), (2, 22)], uniquingKeysWith: { a, _ in a })
-        XCTAssertEqual(dict.keys.sorted(), [1, 2])
-        XCTAssertEqual(dict.values.sorted(), [10, 20])
-        XCTAssertEqual(dict[0], nil)
-        XCTAssertEqual(dict[1], 10)
-        XCTAssertEqual(dict[2], 20)
-        XCTAssertEqual(dict[3], nil)
-      }
-    }
-    
+    #endif
+
     func testInitUniquingKeysWith() throws {
       do {
-        let dict = RedBlackTreeDictionary(
-          [(1, 10), (1, 11), (2, 20), (2, 22)], uniquingKeysWith: { _, b in b })
-        XCTAssertEqual(dict.keys.sorted(), [1, 2])
-        XCTAssertEqual(dict.values.sorted(), [11, 22])
-        XCTAssertEqual(dict[0], nil)
-        XCTAssertEqual(dict[1], 11)
-        XCTAssertEqual(dict[2], 22)
-        XCTAssertEqual(dict[3], nil)
-      }
-      do {
-        let dict = RedBlackTreeDictionary(
-          [(1, 10), (1, 11), (2, 20), (2, 22)], uniquingKeysWith: { a, _ in a })
-        XCTAssertEqual(dict.keys.sorted(), [1, 2])
-        XCTAssertEqual(dict.values.sorted(), [10, 20])
-        XCTAssertEqual(dict[0], nil)
-        XCTAssertEqual(dict[1], 10)
-        XCTAssertEqual(dict[2], 20)
-        XCTAssertEqual(dict[3], nil)
+        let dict = Target(
+          keysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
+        XCTAssertEqual(dict.keys.sorted(), [1, 1, 2, 2])
+        XCTAssertEqual(dict.values.sorted(), [10, 11, 20, 22])
+        XCTAssertEqual(dict[0].map(\.value), [])
+        XCTAssertEqual(dict[1].map(\.value), [10, 11])
+        XCTAssertEqual(dict[2].map(\.value), [20, 22])
+        XCTAssertEqual(dict[3].map(\.value), [])
       }
     }
 
-    func testInitGroupingBy_() throws {
-      let students = ["Kofi", "Abena", "Efua", "Kweku", "Akosua"]
-      let studentsByLetter = Dictionary(grouping: students, by: { $0.first! })
-      XCTAssertEqual(
-        studentsByLetter, ["E": ["Efua"], "K": ["Kofi", "Kweku"], "A": ["Abena", "Akosua"]])
-    }
+    #if false
+      func testInitGroupingBy_() throws {
+        let students = ["Kofi", "Abena", "Efua", "Kweku", "Akosua"]
+        let studentsByLetter = Dictionary(grouping: students, by: { $0.first! })
+        XCTAssertEqual(
+          studentsByLetter, ["E": ["Efua"], "K": ["Kofi", "Kweku"], "A": ["Abena", "Akosua"]])
+      }
+    #endif
 
     func testInitGroupingBy() throws {
       let students = ["Kofi", "Abena", "Efua", "Kweku", "Akosua"]
-      let studentsByLetter = RedBlackTreeDictionary(grouping: students, by: { $0.first! })
+      let studentsByLetter = Target(keysWithValues: students.map { ($0.first!, $0) })
       XCTAssertEqual(
-        studentsByLetter, ["E": ["Efua"], "K": ["Kofi", "Kweku"], "A": ["Abena", "Akosua"]])
+        studentsByLetter, ["E": "Efua", "K": "Kofi", "K": "Kweku", "A": "Abena", "A": "Akosua"])
     }
 
-    func testUpdate_() throws {
-      var dict = [1: 1, 2: 2, 3: 3]
-      XCTAssertEqual(dict.updateValue(0, forKey: 0), nil)
-      XCTAssertEqual(dict[1], 1)
-      XCTAssertEqual(dict.updateValue(10, forKey: 1), 1)
-      XCTAssertEqual(dict[1], 10)
-    }
+    #if false
+      func testUpdate_() throws {
+        var dict = [1: 1, 2: 2, 3: 3]
+        XCTAssertEqual(dict.updateValue(0, forKey: 0), nil)
+        XCTAssertEqual(dict[1], 1)
+        XCTAssertEqual(dict.updateValue(10, forKey: 1), 1)
+        XCTAssertEqual(dict[1], 10)
+      }
+    #endif
 
     func testUpdate() throws {
       var dict = [1: 1, 2: 2, 3: 3] as Target<Int, Int>
-      XCTAssertEqual(dict.updateValue(0, forKey: 0), nil)
-      XCTAssertEqual(dict[1], 1)
-      XCTAssertEqual(dict.updateValue(10, forKey: 1), 1)
-      XCTAssertEqual(dict[1], 10)
+      #if DEBUG
+        XCTAssertEqual(
+          dict.updateValue(
+            0,
+            at: Target<Int, Int>.Index.unsafe(tree: dict._tree, rawValue: .nullptr))?.value,
+          nil)
+      #endif
+      XCTAssertEqual(dict.updateValue(0, at: dict.endIndex)?.value, nil)
+      XCTAssertEqual(dict[1].map(\.value), [1])
+      XCTAssertEqual(dict.updateValue(10, at: dict.firstIndex(of: 1)!)?.value, 1)
+      XCTAssertEqual(dict[1].map(\.value), [10])
     }
-#endif
+
+    func testUpdate2() throws {
+      var dict = [1: 1, 2: 2, 3: 3] as Target<Int, Int>
+      #if DEBUG
+        XCTAssertEqual(dict.updateValue(0, at: .unsafe(.nullptr))?.value, nil)
+        XCTAssertEqual(dict.updateValue(0, at: .init(.end))?.value, nil)
+      #endif
+      XCTAssertEqual(dict[1].map(\.value), [1])
+      XCTAssertEqual(dict.updateValue(10, at: .init(dict.startIndex.rawValue))?.value, 1)
+      XCTAssertEqual(dict[1].map(\.value), [10])
+    }
 
     func testBound() throws {
       let dict = [1: 10, 3: 30, 5: 50] as Target<Int, Int>
@@ -484,9 +428,8 @@ import XCTest
       XCTAssertEqual(sub.map { $0.key }, [1, 2, 3, 4, 5])
     }
 
-#if false
     func testSubsequence7() throws {
-      var set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      var set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
       let sub = set[set.startIndex..<set.endIndex]
       var a: [String] = []
       for (_, value) in sub {
@@ -494,49 +437,46 @@ import XCTest
       }
       XCTAssertEqual(a, ["a", "b", "c", "d", "e"])
       sub.forEach { key, value in
-        set[key] = "?"
+        set.insert(key: key, value: "?")
       }
-      XCTAssertEqual(set.map { $0.value }, ["?", "?", "?", "?", "?"])
+      XCTAssertEqual(set.map(\.value), ["a", "?", "b", "?", "c", "?", "d", "?", "e", "?"])
     }
-    #endif
 
-    #if DEBUG && false
-      func testEnumeratedSequence1() throws {
-        let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
-        var d: [String: Int] = [:]
-        set.enumerated().forEach {
-          d[$0.element.value] = $0.offset.rawValue
-        }
-        XCTAssertEqual(d, ["a": 0, "b": 1, "c": 2])
+    func testEnumeratedSequence1() throws {
+      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var d: [String: Int] = [:]
+      set.enumerated().forEach {
+        d[$0.element.value] = $0.offset.rawValue
       }
+      XCTAssertEqual(d, ["a": 0, "b": 1, "c": 2])
+    }
 
-      func testEnumeratedSequence2() throws {
-        let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
-        var d: [String: Int] = [:]
-        set[2...3].enumerated().forEach {
-          d[$0.element.value] = $0.offset.rawValue
-        }
-        XCTAssertEqual(d, ["b": 1, "c": 2])
+    func testEnumeratedSequence2() throws {
+      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var d: [String: Int] = [:]
+      set[2...3].enumerated().forEach {
+        d[$0.element.value] = $0.offset.rawValue
       }
+      XCTAssertEqual(d, ["b": 1, "c": 2])
+    }
 
-      func testEnumeratedSequence3() throws {
-        let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
-        var d: [String: Int] = [:]
-        for (o, e) in set.enumerated() {
-          d[e.value] = o.rawValue
-        }
-        XCTAssertEqual(d, ["a": 0, "b": 1, "c": 2])
+    func testEnumeratedSequence3() throws {
+      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var d: [String: Int] = [:]
+      for (o, e) in set.enumerated() {
+        d[e.value] = o.rawValue
       }
+      XCTAssertEqual(d, ["a": 0, "b": 1, "c": 2])
+    }
 
-      func testEnumeratedSequence4() throws {
-        let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
-        var d: [String: Int] = [:]
-        for (o, e) in set[2...3].enumerated() {
-          d[e.value] = o.rawValue
-        }
-        XCTAssertEqual(d, ["b": 1, "c": 2])
+    func testEnumeratedSequence4() throws {
+      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var d: [String: Int] = [:]
+      for (o, e) in set[2...3].enumerated() {
+        d[e.value] = o.rawValue
       }
-    #endif
+      XCTAssertEqual(d, ["b": 1, "c": 2])
+    }
 
     func testIndex0() throws {
       let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]

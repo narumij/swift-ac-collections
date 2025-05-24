@@ -136,16 +136,14 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
 
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    _ensureUniqueAndCapacity()
-    _ = _tree.__insert_multi((key, value))
-    return (true, (key, value))
+    insert((key, value))
   }
 
-  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
@@ -169,8 +167,9 @@ extension RedBlackTreeMultiMap {
       return nil
     }
     _ensureUnique()
+    let old = _tree[ptr.rawValue]
     _tree[ptr.rawValue].value = newValue
-    return _tree[ptr.rawValue]
+    return old
   }
 
   @discardableResult
@@ -183,8 +182,9 @@ extension RedBlackTreeMultiMap {
       return nil
     }
     _ensureUnique()
+    let old = _tree[ptr.rawValue]
     _tree[ptr.rawValue].value = newValue
-    return _tree[ptr.rawValue]
+    return old
   }
 }
 
@@ -194,6 +194,13 @@ extension RedBlackTreeMultiMap {
   @discardableResult
   public mutating func removeFirst(forKey key: Key) -> Bool {
     _strongEnsureUnique()
+    return _tree.___erase_unique(key)
+  }
+  
+  @inlinable
+  @discardableResult
+  public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
+    _ensureUnique()
     return _tree.___erase_unique(key)
   }
 
@@ -995,6 +1002,14 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
     _ensureUniqueAndCapacity(to: count + other.count)
     _tree.__node_handle_merge_multi(other._tree)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public mutating func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
   }
 
   @inlinable

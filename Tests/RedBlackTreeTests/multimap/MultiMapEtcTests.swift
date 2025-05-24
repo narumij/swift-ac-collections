@@ -65,7 +65,7 @@ final class MultiMapEtcTests: XCTestCase {
   }
 
   func testMultiMapAndMultiMap4() throws {
-    var lhs: RedBlackTreeMultiMap<String, String> = ["イートハーブの香る": "なんとか"]
+    let lhs: RedBlackTreeMultiMap<String, String> = ["イートハーブの香る": "なんとか"]
     XCTAssertEqual(
       lhs.inserting([("foo", "bar")]), ["イートハーブの香る": "なんとか", "foo": "bar"])
     XCTAssertEqual(lhs, ["イートハーブの香る": "なんとか"])
@@ -91,11 +91,27 @@ final class MultiMapEtcTests: XCTestCase {
   
   func testSorted() throws {
     XCTAssertEqual(
-      target1.sorted().map{ $0.0 },
+      target1.map{ $0.0 },
       [(0, 0), (0, 1), (0, 2), (1, 5), (1, 4), (1, 3), (2, 6), (2, 7), (2, 8)].map{ $0.0 })
     XCTAssertEqual(
-      target1.sorted().map{ $0.1 },
+      target1.map{ $0.1 },
       [(0, 0), (0, 1), (0, 2), (1, 5), (1, 4), (1, 3), (2, 6), (2, 7), (2, 8)].map{ $0.1 })
+  }
+  
+  func testSome() throws {
+    
+    var hoge = Target1()
+    
+    for k in 0 ..< 100_000 {
+      hoge.insert(key: k / 100, value: k)
+    }
+    
+    XCTAssertEqual(
+      hoge.map{ $0.0 },
+      (0 ..< 100_000).map{ $0 / 100 })
+    XCTAssertEqual(
+      hoge.map{ $0.1 },
+      (0 ..< 100_000).map{ $0 })
   }
 
   func testPerformanceExample() throws {

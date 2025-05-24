@@ -357,14 +357,6 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  @inlinable
-  public func sorted() -> [Element] {
-    _tree.___sorted
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   public func count(forKey key: Key) -> Int {
@@ -576,16 +568,24 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
+  // 割と注意喚起の為のdeprecatedなだけで、実際にいつ消すのかは不明です。
+  // 分かってると便利なため、競技プログラミングにこのシンタックスシュガーは有用と考えているからです。
 
-  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
   /// 範囲 `[lower, upper)` に含まれる要素を返します。
+  ///
+  /// index範囲ではないことに留意
+  /// **Deprecated – `elements(in:)` を使ってください。**
+  @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
   public subscript(bounds: Range<Key>) -> SubSequence {
     elements(in: bounds)
   }
 
-  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
   /// 範囲 `[lower, upper]` に含まれる要素を返します。
+  ///
+  /// index範囲ではないことに留意
+  /// **Deprecated – `elements(in:)` を使ってください。**
+  @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
   public subscript(bounds: ClosedRange<Key>) -> SubSequence {
     elements(in: bounds)

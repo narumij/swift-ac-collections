@@ -354,6 +354,133 @@ import XCTest
           nil)
       }
     #endif
+    
+    func testRandom() throws {
+      var set = Target<Int,Int>()
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert((i,i))
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.removeAll(forKey:i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert((i,i))
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.removeAll(forKey:i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert((i,i))
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in set {
+        set.removeAll(forKey:i.key)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+    }
+    
+    func testRandom2() throws {
+      var set = Target<Int,Int>()
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert((i,i))
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
+      XCTAssertEqual(set.map { $0.value }, set[set.startIndex..<set.endIndex].map { $0.value })
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.removeAll(forKey: i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
+      XCTAssertEqual(set.map { $0.value }, set[set.startIndex..<set.endIndex].map { $0.value })
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert((i,i))
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
+      XCTAssertEqual(set.map { $0.value }, set[set.startIndex..<set.endIndex].map { $0.value })
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.removeAll(forKey: i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
+      XCTAssertEqual(set.map { $0.value }, set[set.startIndex..<set.endIndex].map { $0.value })
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert((i,i))
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
+      XCTAssertEqual(set.map { $0.value }, set[set.startIndex..<set.endIndex].map { $0.value })
+      print("set.count", set.count)
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        print("set._copyCount", set._copyCount)
+      #endif
+      for i in set[set.startIndex..<set.endIndex] {
+        // erase multiなので、CoWなしだと、ポインタが破壊される
+        set.removeAll(forKey: i.key)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+    }
+    
+    func testRandom3() throws {
+      var set = Target<Int,Int>()
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert((i,i))
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.removeAll(forKey: i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert((i,i))
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.removeAll(forKey: i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert((i,i))
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for (i, _) in set.enumerated() {
+        set.remove(at: i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+    }
+
+    func testRandom4() throws {
+      var set = Target<Int,Int>()
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert((i,i))
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.removeAll(forKey: i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert((i,i))
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.removeAll(forKey: i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert((i,i))
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for (i, _) in set[set.startIndex..<set.endIndex].enumerated() {
+        set.remove(at: i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+    }
 
     func testEqualtable() throws {
       XCTAssertEqual(Target<Int, Int>(), [:])

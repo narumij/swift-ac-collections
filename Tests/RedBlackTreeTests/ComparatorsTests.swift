@@ -66,4 +66,23 @@ final class RedBlackTreeComparatorsTests: XCTestCase {
     XCTAssertEqual(dict[lo].key, "b")
     XCTAssertEqual(dict.distance(from: lo, to: hi), 1)
   }
+  
+  
+  func testMultiMapKeyValueCompAndEqualRange() {
+    let dict: RedBlackTreeMultiMap = ["a": 1, "b": 2, "c": 3]
+
+    let keyComp = dict.___key_comp
+    let valueComp = dict.___value_comp
+
+    XCTAssertTrue(keyComp("a", "b"))
+    XCTAssertFalse(keyComp("c", "b"))
+
+    XCTAssertTrue(valueComp(("a", 1), ("b", 2)))
+    XCTAssertFalse(valueComp(("c", 3), ("b", 2)))
+
+    let (lo, hi) = dict.equalRange("b")
+    XCTAssertEqual(dict[lo].key, "b")
+    XCTAssertEqual(dict.distance(from: lo, to: hi), 1)
+  }
+
 }

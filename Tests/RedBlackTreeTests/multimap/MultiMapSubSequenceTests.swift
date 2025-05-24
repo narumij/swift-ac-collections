@@ -16,12 +16,14 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class RedBlackTreeDictionarySubSequenceTests: XCTestCase {
+final class MultiMapSubSequenceTests: XCTestCase {
+
+  typealias Target = RedBlackTreeMultiMap
 
   // MARK: 基本プロパティ -------------------------------------------------
 
   func testSliceCountFirstLast() {
-    let base: RedBlackTreeDictionary = [
+    let base: Target = [
       "a": 1, "b": 2, "c": 3, "d": 4, "e": 5,
     ]
     let slice = base.elements(in: "b"..<"e")  // b,c,d
@@ -34,7 +36,7 @@ final class RedBlackTreeDictionarySubSequenceTests: XCTestCase {
   // MARK: forward / backward イテレーション ------------------------------
 
   func testBidirectionalIteration() {
-    let dict: RedBlackTreeDictionary = [
+    let dict: Target = [
       1: "one", 2: "two", 3: "three", 4: "four",
     ]
     let slice = dict.elements(in: 2...3)  // 2,3
@@ -49,7 +51,7 @@ final class RedBlackTreeDictionarySubSequenceTests: XCTestCase {
   // MARK: offsetBy / limitedBy ------------------------------------------
 
   func testSliceIndexOffsetting() {
-    let dict: RedBlackTreeDictionary = [
+    let dict: Target = [
       10: 0, 11: 1, 12: 2, 13: 3, 14: 4,
     ]
     let slice = dict.elements(in: 11...13)  // 11,12,13
@@ -67,7 +69,7 @@ final class RedBlackTreeDictionarySubSequenceTests: XCTestCase {
   // MARK: 距離の対称性 ---------------------------------------------------
 
   func testDistanceSymmetry() {
-    let dict: RedBlackTreeDictionary = [
+    let dict: Target = [
       0: "zero", 1: "one", 2: "two",
       3: "three", 4: "four", 5: "five",
     ]
@@ -83,18 +85,17 @@ final class RedBlackTreeDictionarySubSequenceTests: XCTestCase {
   // MARK: CoW 後の index 無効化 -----------------------------------------
 
   func testIndexInvalidationAfterCoWMutation() {
-    var base: RedBlackTreeDictionary = [
+    var base: Target = [
       "x": 1, "y": 2, "z": 3,
     ]
     let slice = base.elements(in: "x"..."y")  // x,y
 
     let idx = slice.firstIndex(where: { $0.key == "x" })!
 
-    // CoW 発動しない
-    _ = base.removeValue(forKey: "x")
+    // CoW 発動
+    _ = base.removeAll(forKey: "x")
 
-    // 共有ストレージの木が差し替わらないので、双方Valid
     XCTAssertFalse(base.isValid(index: idx))
-    XCTAssertFalse(slice.isValid(index: idx))
+    XCTAssertTrue(slice.isValid(index: idx))
   }
 }

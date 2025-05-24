@@ -36,7 +36,7 @@ import AcCollections
 ### RedBlackTreeModule
 
 本モジュールでは平衡二分探索木の一種、赤黒木（Red-Black Tree）を用いたコンテナを提供しています。
-具体的には以下で、それぞれ、C++のstd::set, std::multiset, std::mapに相当します。
+具体的には以下で、それぞれ、C++のstd::set, std::multiset, std::map, std::multimapに相当します。
 
 #### 1. RedBlackTreeSet
 
@@ -58,6 +58,11 @@ import AcCollections
 - **キーと値** を管理する Dictionary。  
 - 基本的なキー検索・挿入・削除などの操作を `O(log n)` で行えます。  
 - 連想配列リテラル（`ExpressibleByDictionaryLiteral`）にも対応しています。
+
+#### 4. RedBlackTreeMultiMap
+- **重複ありのキーと値** の要素を管理する Map。  
+- `count(forKey:)` により、特定キーの要素が何個含まれるかを取得できます。  
+- MultiSetやDictionaryをベースに、なるべくSwiftに寄せたAPIとなっています。
 
 #### 簡単な使用例
 

@@ -282,14 +282,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-extension RedBlackTreeMultiSet: ExpressibleByArrayLiteral {
-
-  @inlinable
-  public init(arrayLiteral elements: Element...) {
-    self.init(elements)
-  }
-}
-
 extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(log *n*)
@@ -355,12 +347,29 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-extension RedBlackTreeMultiSet: CustomStringConvertible, CustomDebugStringConvertible {
+// MARK: - ExpressibleByArrayLiteral
 
+extension RedBlackTreeMultiSet: ExpressibleByArrayLiteral {
+
+  @inlinable
+  public init(arrayLiteral elements: Element...) {
+    self.init(elements)
+  }
+}
+
+// MARK: - CustomStringConvertible
+
+extension RedBlackTreeMultiSet: CustomStringConvertible {
+  
   @inlinable
   public var description: String {
     "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
   }
+}
+
+// MARK: - CustomDebugStringConvertible
+
+extension RedBlackTreeMultiSet: CustomDebugStringConvertible {
 
   @inlinable
   public var debugDescription: String {

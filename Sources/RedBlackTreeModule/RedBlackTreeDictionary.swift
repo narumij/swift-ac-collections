@@ -472,6 +472,8 @@ extension RedBlackTreeDictionary {
   }
 }
 
+// MARK: - ExpressibleByDictionaryLiteral
+
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
 
   @inlinable
@@ -479,6 +481,8 @@ extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
     self.init(uniqueKeysWithValues: elements)
   }
 }
+
+// MARK: - ExpressibleByArrayLiteral
 
 extension RedBlackTreeDictionary: ExpressibleByArrayLiteral {
 
@@ -498,17 +502,20 @@ extension RedBlackTreeDictionary: ExpressibleByArrayLiteral {
   }
 }
 
-extension RedBlackTreeDictionary: CustomStringConvertible, CustomDebugStringConvertible {
+// MARK: - CustomStringConvertible
 
-  // MARK: - CustomStringConvertible
-
+extension RedBlackTreeDictionary: CustomStringConvertible {
+  
   @inlinable
   public var description: String {
     let pairs = map { "\($0.key): \($0.value)" }
     return "[\(pairs.joined(separator: ", "))]"
   }
+}
 
-  // MARK: - CustomDebugStringConvertible
+// MARK: - CustomDebugStringConvertible
+
+extension RedBlackTreeDictionary: CustomDebugStringConvertible {
 
   @inlinable
   public var debugDescription: String {

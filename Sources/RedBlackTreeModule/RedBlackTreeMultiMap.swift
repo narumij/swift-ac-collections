@@ -511,6 +511,21 @@ extension RedBlackTreeMultiMap {
 // MARK: - SubSequence
 
 extension RedBlackTreeMultiMap {
+  
+  @inlinable
+  @inline(__always)
+  public subscript(key: Key) -> SubSequence {
+    let (lo,hi) = self.___equal_range(key)
+    return SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: lo.rawValue,
+          to: hi.rawValue)
+    )
+  }
+}
+
+extension RedBlackTreeMultiMap {
 
   @frozen
   public struct SubSequence {

@@ -19,14 +19,14 @@ final class RedBlackTreeComparatorsTests: XCTestCase {
 
   func testSetEqualRange() {
     let set: RedBlackTreeSet = [1, 2, 3, 4, 5]
-    let (lo, hi) = set.___equal_range(3)
+    let (lo, hi) = set.equalRange(3)
     XCTAssertEqual(set[lo], 3)
     XCTAssertEqual(set.distance(from: lo, to: hi), 1)
   }
 
   func testMultisetEqualRange() {
     let multi: RedBlackTreeMultiSet = [1, 2, 2, 2, 3, 4]
-    let (lo, hi) = multi.___equal_range(2)
+    let (lo, hi) = multi.equalRange(2)
 
     var count = 0
     var idx = lo
@@ -62,7 +62,7 @@ final class RedBlackTreeComparatorsTests: XCTestCase {
     XCTAssertTrue(valueComp(("a", 1), ("b", 2)))
     XCTAssertFalse(valueComp(("c", 3), ("b", 2)))
 
-    let (lo, hi) = dict.___equal_range("b")
+    let (lo, hi) = dict.equalRange("b")
     XCTAssertEqual(dict[lo].key, "b")
     XCTAssertEqual(dict.distance(from: lo, to: hi), 1)
   }

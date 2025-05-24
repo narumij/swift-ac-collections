@@ -1185,3 +1185,13 @@ extension RedBlackTreeDictionary {
     return remove(at: startIndex)
   }
 }
+
+// MARK: -
+
+extension RedBlackTreeDictionary {
+
+  @inlinable
+  public func equalRange(_ key: Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+    ___equal_range(key)
+  }
+}

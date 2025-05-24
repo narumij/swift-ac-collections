@@ -1049,3 +1049,13 @@ extension RedBlackTreeSet {
     return remove(at: startIndex)
   }
 }
+
+// MARK: -
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  public func equalRange(_ element: Element) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+    ___equal_range(element)
+  }
+}

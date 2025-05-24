@@ -410,6 +410,29 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func contains(key: Key) -> Bool {
+    ___contains(key)
+  }
+
+  /// - Complexity: O(log *n*)
+  ///
+  /// O(1)が欲しい場合、firstが等価でO(1)
+  @inlinable
+  public func min() -> Element? {
+    ___min()
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func max() -> Element? {
+    ___max()
+  }
+}
+
+extension RedBlackTreeDictionary {
+
   @inlinable
   public func lowerBound(_ p: Key) -> Index {
     ___index_lower_bound(p)

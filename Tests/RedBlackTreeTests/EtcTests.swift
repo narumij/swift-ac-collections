@@ -218,8 +218,8 @@ final class EtcTests: XCTestCase {
   }
   
   func testHoge() throws {
-    var s = Set<String>()
-    var d = Dictionary<String,String>()
+    _ = Set<String>()
+    _ = Dictionary<String,String>()
   }
 
 #if false

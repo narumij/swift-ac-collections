@@ -66,7 +66,7 @@ final class RedBlackTreeSetAlgebraFullTests: XCTestCase {
         var rng = SplitMix64(seed: 0xCAFEBABE)
 
         for _ in 0..<80 {
-            var (lhs, rhs, sL, sR) = makeRandomPair(seed: &rng)
+            let (lhs, rhs, sL, sR) = makeRandomPair(seed: &rng)
 
             // formUnion
             var lhsU = lhs; lhsU.formUnion(rhs)
@@ -114,15 +114,15 @@ final class RedBlackTreeSetAlgebraFullTests: XCTestCase {
     // MARK: ── 恒等律・吸収律・交換律など ────────────────────────────────
 
     func testAlgebraicLaws() {
-        var a: RedBlackTreeSet = [1, 2, 3]
-        var b: RedBlackTreeSet = [3, 4]
+      let a: RedBlackTreeSet = [1, 2, 3]
+      let b: RedBlackTreeSet = [3, 4]
 
         // 交換律（commutative）
         XCTAssertEqual(a.union(b), b.union(a))
         XCTAssertEqual(a.intersection(b), b.intersection(a))
 
         // 結合律（associative）
-        var c: RedBlackTreeSet = [3, 5]
+      let c: RedBlackTreeSet = [3, 5]
         XCTAssertEqual(a.union(b).union(c), a.union(b.union(c)))
         XCTAssertEqual(a.intersection(b).intersection(c),
                        a.intersection(b.intersection(c)))

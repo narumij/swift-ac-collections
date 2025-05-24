@@ -44,7 +44,7 @@ final class RedBlackTreeDictionaryExtendedTests: XCTestCase {
         let seq = [("v", 100), ("z", 3)]
 
         // 破壊的 merge (Sequence)
-        try! d1.merge(seq) { old, new in old + new }
+        d1.merge(seq) { old, new in old + new }
         XCTAssertEqual(d1["v"], 102)
         XCTAssertEqual(d1["z"], 3)
 

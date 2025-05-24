@@ -168,13 +168,13 @@ final class SetRemoveTest_5000: XCTestCase {
   }
 
   func testSmokeRemove1() throws {
-    for i in members[0..<10_000] {
+    for i in members.elements(in: 0..<10_000) {
       members.remove(i)
     }
   }
 
   func testSmokeRemove2() throws {
-    for i in members[0..<10_000].map({ $0 }) {
+    for i in members.elements(in: 0..<10_000).map({ $0 }) {
       members.remove(i)
     }
   }
@@ -186,7 +186,7 @@ final class SetRemoveTest_5000: XCTestCase {
   }
 
   func testSmokeRemove4() throws {
-    for (i, _) in members[0..<10_000].enumerated() {
+    for (i, _) in members.elements(in: 0..<10_000).enumerated() {
       members.remove(at: i)
     }
   }
@@ -213,7 +213,7 @@ final class SetRemoveTest_10: XCTestCase {
   }
 
   func testRemoveWithSubIndices() throws {
-    for i in members[2..<8].indices() {
+    for i in members.elements(in: 2..<8).indices() {
       members.remove(at: i)
     }
     XCTAssertEqual(members.map { $0 }, [0, 1, 8, 9])
@@ -227,7 +227,7 @@ final class SetRemoveTest_10: XCTestCase {
   }
 
   func testRemoveWithSubIndices2() throws {
-    members[2..<8].indices().forEach { i in
+    members.elements(in: 2..<8).indices().forEach { i in
       members.remove(at: i)
     }
     XCTAssertEqual(members.map { $0 }, [0, 1, 8, 9])
@@ -241,7 +241,7 @@ final class SetRemoveTest_10: XCTestCase {
   }
 
   func testRemoveWithSubIndices4() throws {
-    members[2..<8].indices().reversed().forEach { i in
+    members.elements(in: 2..<8).indices().reversed().forEach { i in
       members.remove(at: i)
     }
     XCTAssertEqual(members.map { $0 }, [0, 1, 8, 9])

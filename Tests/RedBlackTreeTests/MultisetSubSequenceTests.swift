@@ -92,6 +92,6 @@ final class RedBlackTreeMultisetSubSequenceTests: XCTestCase {
 
     throw XCTSkip("setと統一の動作ならばFalseだが、multiset特有の事情でCoWが発生するため、未対応")
 
-    XCTAssertFalse(slice.isValid(index: idx))
+//    XCTAssertFalse(slice.isValid(index: idx))
   }
 }

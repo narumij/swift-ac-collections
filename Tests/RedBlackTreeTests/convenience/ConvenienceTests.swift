@@ -452,7 +452,7 @@ final class ConvenienceTests: XCTestCase {
       // 数値比較で大小が逆転している場合、標準のdistance実装では迷子になってクラッシュする
       // distanceを実装することで、クラッシュせずに動く
 //      let seq: RedBlackTreeSet<Int>.___SubSequence = set[a ..< b]
-      let seq = set[a ..< b]
+      let seq = set.elements(in: a ..< b)
       XCTAssertNotEqual(seq + [], [])
       XCTAssertEqual(seq + [], seq.sorted())
       XCTAssertTrue(seq.allSatisfy { $0 >= a })

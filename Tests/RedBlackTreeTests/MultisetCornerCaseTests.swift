@@ -59,7 +59,7 @@ final class RedBlackTreeMultisetCornerCaseTests: XCTestCase {
     }
 
     func testCopyOnWriteBehavior() {
-        var original: RedBlackTreeMultiSet = [1, 1]
+      let original: RedBlackTreeMultiSet = [1, 1]
         var copy = original
         copy.insert(2)
         XCTAssertTrue(copy.contains(2))

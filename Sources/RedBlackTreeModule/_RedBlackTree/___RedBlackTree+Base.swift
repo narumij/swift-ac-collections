@@ -430,6 +430,21 @@ extension ___RedBlackTreeBase {
   }
 }
 
+extension ___RedBlackTreeBase {
+  
+  @inlinable
+  @inline(__always)
+  public var ___key_comp: (_Key, _Key) -> Bool {
+    _tree.value_comp
+  }
+  
+  @inlinable
+  @inline(__always)
+  public var ___value_comp: (Element, Element) -> Bool {
+    { _tree.value_comp(_tree.__key($0), _tree.__key($1)) }
+  }
+}
+
 // MARK: -
 
 @usableFromInline
@@ -527,3 +542,36 @@ extension ___RedBlackTreeSubSequenceBase {
     return _subSequence.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
 }
+
+@usableFromInline
+protocol ___RedBlackTreeEqualRangeUnique: ValueComparer {
+  var _tree: Tree { get }
+}
+
+@usableFromInline
+protocol ___RedBlackTreeEqualRangeMulti: ValueComparer {
+  var _tree: Tree { get }
+}
+
+extension ___RedBlackTreeEqualRangeUnique {
+  
+  ///（重複なし）
+  @inlinable
+  @inline(__always)
+  public func ___equal_range(_ k: _Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+    let (lo,hi) = _tree.__equal_range_unique(k)
+    return (.init(__tree: _tree, rawValue: lo), .init(__tree: _tree, rawValue: hi))
+  }
+}
+
+extension ___RedBlackTreeEqualRangeMulti {
+
+  /// （重複あり）
+  @inlinable
+  @inline(__always)
+  public func ___equal_range(_ k: _Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+    let (lo,hi) = _tree.__equal_range_multi(k)
+    return (.init(__tree: _tree, rawValue: lo), .init(__tree: _tree, rawValue: hi))
+  }
+}
+

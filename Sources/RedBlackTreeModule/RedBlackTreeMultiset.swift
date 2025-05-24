@@ -58,6 +58,7 @@ extension RedBlackTreeMultiset {
 
 extension RedBlackTreeMultiset: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiset: ___RedBlackTreeStorageLifetime {}
+extension RedBlackTreeMultiset: ___RedBlackTreeEqualRangeMulti {}
 extension RedBlackTreeMultiset: ScalarValueComparer {}
 
 extension RedBlackTreeMultiset {

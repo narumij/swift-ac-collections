@@ -77,6 +77,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
 extension RedBlackTreeSet: ___RedBlackTreeStorageLifetime {}
+extension RedBlackTreeSet: ___RedBlackTreeEqualRangeUnique {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 
 extension RedBlackTreeSet {

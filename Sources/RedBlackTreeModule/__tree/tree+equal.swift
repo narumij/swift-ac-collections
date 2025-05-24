@@ -29,6 +29,30 @@ extension EqualProtocol {
 
   @inlinable
   func
+    __equal_range_unique(_ __k: _Key) -> (_NodePtr, _NodePtr)
+  {
+    var __result = __end_node()
+    var __rt = __root()
+    while __rt != .nullptr {
+      if value_comp(__k, __value_(__rt)) {
+        __result = __rt
+        __rt = __left_(__rt)
+      } else if value_comp(__value_(__rt), __k) {
+        __rt = __right_(__rt)
+      } else {
+        return (
+          __rt,
+          __right_(__rt) != .nullptr
+            ? __tree_min(__right_(__rt))
+            : __result
+        )
+      }
+    }
+    return (__result, __result)
+  }
+
+  @inlinable
+  func
     __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)
   {
     var __result = __end_node()

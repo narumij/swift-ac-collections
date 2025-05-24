@@ -80,6 +80,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeStorageLifetime {}
+extension RedBlackTreeDictionary: ___RedBlackTreeEqualRangeUnique {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 
 extension RedBlackTreeDictionary {

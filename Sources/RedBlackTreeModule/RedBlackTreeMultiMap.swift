@@ -134,7 +134,7 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
-  
+
   @inlinable
   @discardableResult
   public mutating func insert(key: Key, value: Value) -> (
@@ -144,7 +144,7 @@ extension RedBlackTreeMultiMap {
     _ = _tree.__insert_multi((key, value))
     return (true, (key, value))
   }
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -158,35 +158,61 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
+  
+  @discardableResult
+  @inlinable
+  public mutating func updateValue(_ newValue: Value, at ptr: RawIndex) -> Element? {
+    guard
+      !___is_null_or_end(ptr.rawValue),
+      _tree.___is_valid_index(ptr.rawValue)
+    else {
+      return nil
+    }
+    _ensureUnique()
+    _tree[ptr.rawValue].value = newValue
+    return _tree[ptr.rawValue]
+  }
+
+  @discardableResult
+  @inlinable
+  public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
+    guard
+      !___is_null_or_end(ptr.rawValue),
+      _tree.___is_valid_index(ptr.rawValue)
+    else {
+      return nil
+    }
+    _ensureUnique()
+    _tree[ptr.rawValue].value = newValue
+    return _tree[ptr.rawValue]
+  }
+}
+
+extension RedBlackTreeMultiMap {
 
   @inlinable
   @discardableResult
-  public mutating func removeValues(forKey key: Key) -> Int {
+  public mutating func removeFirst(forKey key: Key) -> Bool {
+    _strongEnsureUnique()
+    return _tree.___erase_unique(key)
+  }
+
+  @inlinable
+  @discardableResult
+  public mutating func removeAll(forKey key: Key) -> Int {
     _strongEnsureUnique()
     return _tree.___erase_multi(key)
   }
-  
+
   @inlinable
   @discardableResult
-  public mutating func removeValues(_unsafeForKey key: Key) -> Int {
+  public mutating func removeAll(_unsafeForKey key: Key) -> Int {
     _ensureUnique()
     return _tree.___erase_multi(key)
   }
+}
 
-  @inlinable
-  @discardableResult
-  public mutating func remove(_ member: Element) -> Element? where Value: Equatable {
-    _strongEnsureUnique()
-    var (lo,hi) = _tree.__equal_range_multi(member.key)
-    while lo != hi {
-      if _tree[lo].value == member.value {
-        _ = _tree.erase(lo)
-        return member
-      }
-      lo = _tree.__tree_next(lo)
-    }
-    return nil
-  }
+extension RedBlackTreeMultiMap {
 
   @inlinable
   @discardableResult
@@ -372,13 +398,13 @@ extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
 // MARK: - CustomStringConvertible
 
 extension RedBlackTreeMultiMap: CustomStringConvertible {
-  
+
   @inlinable
   public var description: String {
     let pairs = map { "\($0.key): \($0.value)" }
     return "[\(pairs.joined(separator: ", "))]"
   }
-  
+
 }
 
 // MARK: - CustomDebugStringConvertible
@@ -970,13 +996,13 @@ extension RedBlackTreeMultiMap {
     _ensureUniqueAndCapacity(to: count + other.count)
     _tree.__node_handle_merge_multi(other._tree)
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
     other.forEach { insert($0) }
   }
-  
+
   @inlinable
   public func inserting<S>(_ other: __owned S) -> Self where S: Sequence, S.Element == Element {
     var result = self

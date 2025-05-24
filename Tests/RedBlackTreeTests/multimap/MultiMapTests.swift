@@ -60,71 +60,34 @@ import XCTest
       XCTAssertEqual(numbers.distance(from: numbers.startIndex, to: numbers.endIndex), 0)
     }
 
-    func testUsage_1() throws {
-      var map: [Int: Int] = [:]
-      XCTAssertEqual(map[0], nil)
-      map[0] = 1
-      XCTAssertEqual(map[0], 1)
-      XCTAssertEqual(map[1], nil)
-      map[0] = nil
-      XCTAssertEqual(map[0], nil)
-      XCTAssertEqual(map[1], nil)
-      map[1] = 2
-      XCTAssertEqual(map[0], nil)
-      XCTAssertEqual(map[1], 2)
-      map[1] = nil
-      XCTAssertEqual(map[0], nil)
-      XCTAssertEqual(map[1], nil)
-    }
-
-    func testUsage_2() throws {
-      var map: [Int: Int] = [:]
-      XCTAssertEqual(map[0], nil)
-      map[0] = 0
-      XCTAssertEqual(map[0], 0)
-      XCTAssertEqual(map[1], nil)
-      map[1] = 2
-      XCTAssertEqual(map[0], 0)
-      XCTAssertEqual(map[1], 2)
-      map[0] = nil
-      XCTAssertEqual(map[0], nil)
-      XCTAssertEqual(map[1], 2)
-      map[1] = nil
-      XCTAssertEqual(map[0], nil)
-      XCTAssertEqual(map[1], nil)
-      map[1] = 3
-      XCTAssertEqual(map[0], nil)
-      XCTAssertEqual(map[1], 3)
-    }
-
-    #if false
     func testUsage1() throws {
       // 意外と普通のユースケースでバグがあることが判明
-      var map = RedBlackTreeDictionary<Int, Int>()
-      XCTAssertEqual(map[0], nil)
-      map[0] = 1
+      var map = Target<Int, Int>()
+      XCTAssertEqual(map[0].first?.value, nil)
+      map.insert((0,1))
       //    map.updateValue(1, forKey: 0)
-      XCTAssertEqual(map[0], 1)
-      XCTAssertEqual(map[1], nil)
+      XCTAssertEqual(map[0].first?.value, 1)
+      XCTAssertEqual(map[1].first?.value, nil)
       XCTAssertTrue(zip(map.map { ($0.0, $0.1) }, [(0, 1)]).allSatisfy(==))
-      map[0] = nil
+      map.removeAll(forKey: 0)
       //    map.removeValue(forKey: 0)
-      XCTAssertEqual(map[0], nil)
-      XCTAssertEqual(map[1], nil)
+      XCTAssertEqual(map[0].first?.value, nil)
+      XCTAssertEqual(map[1].first?.value, nil)
       XCTAssertTrue(zip(map.map { ($0.0, $0.1) }, []).allSatisfy(==))
-      map[1] = 2
+      map.insert((1,2))
       //    map.updateValue(20, forKey: 10)
-      XCTAssertEqual(map[0], nil)
-      XCTAssertEqual(map[1], 2)
+      XCTAssertEqual(map[0].first?.value, nil)
+      XCTAssertEqual(map[1].first?.value, 2)
       XCTAssertEqual(map.map(\.key), [1])
       XCTAssertEqual(map.map(\.value), [2])
-      map[1] = nil
+      map.removeAll(forKey: 1)
       //    map.removeValue(forKey: 10)
-      XCTAssertEqual(map[0], nil)
-      XCTAssertEqual(map[1], nil)
+      XCTAssertEqual(map[0].first?.value, nil)
+      XCTAssertEqual(map[1].first?.value, nil)
       XCTAssertEqual(map.map(\.key), [])
       XCTAssertEqual(map.map(\.value), [])
     }
+#if false
 
     func testUsage2() throws {
       var map = RedBlackTreeDictionary<Int, Int>()

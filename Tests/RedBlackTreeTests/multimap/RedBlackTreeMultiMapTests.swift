@@ -70,7 +70,7 @@ final class RedBlackTreeMultiMapTests: XCTestCase {
     
     func testRemoveValuesForKey() {
         var map: RedBlackTreeMultiMap = [("k1", 1), ("k1", 2), ("k2", 3)]
-        let removedCount = map.removeValues(forKey: "k1")
+        let removedCount = map.removeAll(forKey: "k1")
         XCTAssertEqual(removedCount, 2)
         XCTAssertFalse(map.contains(key: "k1"))
     }

@@ -220,6 +220,7 @@ final class EtcTests: XCTestCase {
   func testHoge() throws {
     var s = Set<String>()
     var d = Dictionary<String,String>()
+    d.updateValue(<#T##value: String##String#>, forKey: <#T##String#>)
   }
 
 #if false

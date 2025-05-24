@@ -40,7 +40,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
     XCTAssertEqual(set._copyCount, 0)
     set.insert(key: 0,value: 0)
     XCTAssertEqual(set._copyCount, 0)
-    set.removeValues(forKey: 0)
+    set.removeAll(forKey: 0)
     XCTAssertEqual(set._copyCount, 0)
     _ = set.lowerBound(0)
     _ = set.upperBound(0)
@@ -60,7 +60,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet3() throws {
     tree._copyCount = 0
     for v in tree {
-      tree.removeValues(forKey: v.key) // strong ensure unique
+      tree.removeAll(forKey: v.key) // strong ensure unique
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 1) // multi setの場合、インデックスを破壊するので1とする
@@ -69,7 +69,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet3_2() throws {
     tree._copyCount = 0
     for v in tree.map({ $0 }) {
-      tree.removeValues(forKey: v.key) // strong ensure unique
+      tree.removeAll(forKey: v.key) // strong ensure unique
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 0) // mapで操作が済んでいるので、インデックス破壊の心配がない
@@ -78,7 +78,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet4() throws {
     tree._copyCount = 0
     tree.forEach { v in
-      tree.removeValues(forKey: v.key)
+      tree.removeAll(forKey: v.key)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 1)
@@ -87,7 +87,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet5() throws {
     tree._copyCount = 0
     for v in tree.map({ $0}) {
-      tree.removeValues(forKey: v.key)
+      tree.removeAll(forKey: v.key)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 0)
@@ -96,7 +96,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet6() throws {
     tree._copyCount = 0
     for v in tree.filter({ _ in true }) {
-      tree.removeValues(forKey: v.key)
+      tree.removeAll(forKey: v.key)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 0)
@@ -105,7 +105,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet7() throws {
     tree._copyCount = 0
     for v in tree {
-      tree.remove(v)
+      tree.removeAll(forKey: v.key)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 1) // multi setの場合、インデックスを破壊するので1とする
@@ -114,7 +114,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet8() throws {
     tree._copyCount = 0
     for v in tree.map({ $0 }) {
-      tree.remove(v)
+      tree.removeAll(forKey: v.key)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 0) // mapで操作が済んでいるので、インデックス破壊の心配がない
@@ -123,7 +123,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet9() throws {
     tree._copyCount = 0
     tree.forEach { v in
-      tree.remove(v)
+      tree.removeAll(forKey: v.key)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 1)
@@ -132,7 +132,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet10() throws {
     tree._copyCount = 0
     for v in tree.map({ $0}) {
-      tree.remove(v)
+      tree.removeAll(forKey: v.key)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 0)
@@ -141,7 +141,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet11() throws {
     tree._copyCount = 0
     for v in tree.filter({ _ in true }) {
-      tree.remove(v)
+      tree.removeAll(forKey: v.key)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 0)

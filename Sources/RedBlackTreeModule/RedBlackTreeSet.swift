@@ -463,118 +463,98 @@ extension RedBlackTreeSet: Sequence {
   public __consuming func makeIterator() -> Iterator {
     return Iterator(_base: self)
   }
-
-  #if false
-    @inlinable
-    @inline(__always)
-    public func enumerated() -> AnySequence<EnumElement> {
-      AnySequence { _tree.makeEnumIterator() }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
-    }
-  #endif
-
-  @inlinable
-  @inline(__always)
-  public func indices() -> IndexSequence {
-    IndexSequence(_subSequence: _tree.indexSubsequence())
-  }
 }
 
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeSet: BidirectionalCollection {
-  
+
   @inlinable
   @inline(__always)
   public var startIndex: Index {
     ___index_start()
   }
-  
+
   @inlinable
   @inline(__always)
   public var endIndex: Index {
     ___index_end()
   }
-  
+
   @inlinable
   @inline(__always)
   public var count: Int {
     ___count
   }
-  
+
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     ___distance(from: start.rawValue, to: end.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     ___index(after: i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     ___form_index(after: &i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     ___index(before: i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     ___form_index(before: &i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i.rawValue, offsetBy: distance)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     ___form_index(&i.rawValue, offsetBy: distance)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-  -> Bool
+    -> Bool
   {
     ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
     return _tree[position.rawValue]
   }
-  
+
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
     return _tree[position.rawValue]
   }
-  
+
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
     SubSequence(
@@ -822,6 +802,23 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 
 extension RedBlackTreeSet {
 
+  #if false
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> AnySequence<EnumElement> {
+      AnySequence { _tree.makeEnumIterator() }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> EnumuratedSequence {
+      EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
+    }
+  #endif
+}
+
+extension RedBlackTreeSet {
+
   @frozen
   public struct EnumuratedSequence {
 
@@ -877,6 +874,15 @@ extension RedBlackTreeSet.EnumuratedSequence {
 }
 
 // MARK: - Index Sequence
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  @inline(__always)
+  public func indices() -> IndexSequence {
+    IndexSequence(_subSequence: _tree.indexSubsequence())
+  }
+}
 
 extension RedBlackTreeSet {
 

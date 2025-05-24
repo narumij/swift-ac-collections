@@ -977,7 +977,7 @@ extension RedBlackTreeSet {
 
   @inlinable
   @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeMultiset<Element>) {
+  public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
     _tree.__node_handle_merge_unique(other._tree)
   }

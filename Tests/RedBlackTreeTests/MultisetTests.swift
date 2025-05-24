@@ -16,7 +16,7 @@ extension ___RedBlackTree.___Tree {
 #endif
 
 #if DEBUG
-  extension RedBlackTreeMultiset {
+  extension RedBlackTreeMultiSet {
 
     //      @inlinable
     //      var _count: Int {
@@ -86,7 +86,7 @@ extension ___RedBlackTree.___Tree {
   }
 #endif
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
   func left(_ p: Element) -> Int {
     distance(from: startIndex, to: lowerBound(p))
   }
@@ -98,7 +98,7 @@ extension RedBlackTreeMultiset {
 final class MultisetTests: XCTestCase {
 
   func testInitEmtpy() throws {
-    let set = RedBlackTreeMultiset<Int>()
+    let set = RedBlackTreeMultiSet<Int>()
     XCTAssertEqual(set.sorted(), [])
     XCTAssertEqual(set.count, 0)
     XCTAssertTrue(set.isEmpty)
@@ -106,14 +106,14 @@ final class MultisetTests: XCTestCase {
   }
 
   func testRedBlackTreeCapacity() throws {
-    var numbers: RedBlackTreeMultiset<Int> = .init(minimumCapacity: 3)
+    var numbers: RedBlackTreeMultiSet<Int> = .init(minimumCapacity: 3)
     XCTAssertGreaterThanOrEqual(numbers.capacity, 3)
     numbers.reserveCapacity(4)
     XCTAssertGreaterThanOrEqual(numbers.capacity, 4)
   }
 
   func testInitRange() throws {
-    let set = RedBlackTreeMultiset<Int>(0..<10000)
+    let set = RedBlackTreeMultiSet<Int>(0..<10000)
     XCTAssertEqual(set.sorted(), (0..<10000) + [])
     XCTAssertEqual(set.count, 10000)
     XCTAssertFalse(set.isEmpty)
@@ -121,7 +121,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testInitCollection1() throws {
-    let set = RedBlackTreeMultiset<Int>(0..<10000)
+    let set = RedBlackTreeMultiSet<Int>(0..<10000)
     XCTAssertEqual(set.sorted(), (0..<10000) + [])
     XCTAssertEqual(set.count, 10000)
     XCTAssertFalse(set.isEmpty)
@@ -129,7 +129,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testInitCollection2() throws {
-    let set = RedBlackTreeMultiset<Int>([2, 3, 3, 0, 0, 1, 1, 1])
+    let set = RedBlackTreeMultiSet<Int>([2, 3, 3, 0, 0, 1, 1, 1])
     XCTAssertEqual(set.sorted(), [0, 0, 1, 1, 1, 2, 3, 3])
     XCTAssertEqual(set.count, 8)
     XCTAssertFalse(set.isEmpty)
@@ -137,26 +137,26 @@ final class MultisetTests: XCTestCase {
   }
 
   func testExample3() throws {
-    let b: RedBlackTreeMultiset<Int> = [1, 2, 3]
+    let b: RedBlackTreeMultiSet<Int> = [1, 2, 3]
     XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), b.count)
   }
 
 #if DEBUG
   func testSubscript() throws {
-    let b: RedBlackTreeMultiset<Int> = [1, 2, 3]
+    let b: RedBlackTreeMultiSet<Int> = [1, 2, 3]
     XCTAssertEqual(b[b.startIndex], 1)
     XCTAssertEqual(b[RedBlackTreeSet<Int>.RawIndex(0)], 1)
   }
 #endif
 
   func testSmoke() throws {
-    let b: RedBlackTreeMultiset<Int> = [1, 2, 3]
+    let b: RedBlackTreeMultiSet<Int> = [1, 2, 3]
     print(b)
     debugPrint(b)
   }
 
   func testRemove() throws {
-    var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
+    var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set.removeAll(0), 0)
     XCTAssertFalse(set.sorted().isEmpty)
     XCTAssertEqual(set.removeAll(1), 1)
@@ -181,7 +181,7 @@ final class MultisetTests: XCTestCase {
 
   #if DEBUG
     func testRemoveAt() throws {
-      var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
+      var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
       XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 0)
       XCTAssertEqual(set.sorted(), [1, 2, 3, 4])
       XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 1)
@@ -197,7 +197,7 @@ final class MultisetTests: XCTestCase {
   #endif
 
   func testInsert() throws {
-    var set = RedBlackTreeMultiset<Int>([])
+    var set = RedBlackTreeMultiSet<Int>([])
     XCTAssertEqual(set.insert(0).inserted, true)
     XCTAssertEqual(set.insert(1).inserted, true)
     XCTAssertEqual(set.insert(2).inserted, true)
@@ -211,7 +211,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testContains() throws {
-    var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
+    var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set.count, 5)
     XCTAssertEqual(set.contains(-1), false)
     XCTAssertEqual(set.contains(0), true)
@@ -260,7 +260,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testLeftRight() throws {
-    var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
+    var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set.count, 5)
     XCTAssertEqual(set.left(-1).index, 0)
     //      XCTAssertEqual(set.elements.count { $0 < -1 }, 0)
@@ -346,24 +346,24 @@ final class MultisetTests: XCTestCase {
 
   func testMinMax() throws {
     do {
-      let set = RedBlackTreeMultiset<Int>([5, 2, 3, 1, 0])
+      let set = RedBlackTreeMultiSet<Int>([5, 2, 3, 1, 0])
       XCTAssertEqual(set.max(), 5)
       XCTAssertEqual(set.min(), 0)
     }
     do {
-      let set = RedBlackTreeMultiset<Int>()
+      let set = RedBlackTreeMultiSet<Int>()
       XCTAssertEqual(set.max(), nil)
       XCTAssertEqual(set.min(), nil)
     }
   }
 
   func testSequence() throws {
-    let set = RedBlackTreeMultiset<Int>([5, 2, 3, 1, 0])
+    let set = RedBlackTreeMultiSet<Int>([5, 2, 3, 1, 0])
     XCTAssertEqual(set.map { $0 }, [0, 1, 2, 3, 5])
   }
 
   func testArrayAccess1() throws {
-    let set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
+    let set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 0)], 0)
     XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 1)], 1)
     XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 2)], 2)
@@ -372,7 +372,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testArrayAccess2() throws {
-    let set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
+    let set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -5)], 0)
     XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -4)], 1)
     XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -3)], 2)
@@ -395,7 +395,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testIndexLimit2() throws {
-    let set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
+    let set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
     XCTAssertNotEqual(
       set.index(set.startIndex, offsetBy: 4, limitedBy: set.index(set.startIndex, offsetBy: 4)),
       nil)
@@ -409,7 +409,7 @@ final class MultisetTests: XCTestCase {
 
   #if DEBUG
     func testIndexLimit3() throws {
-      let set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
+      let set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
       XCTAssertEqual(set.startIndex.rawValue, .node(0))
       XCTAssertEqual(set.index(before: set.endIndex).rawValue, .node(4))
       XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).rawValue, .node(4))
@@ -436,7 +436,7 @@ final class MultisetTests: XCTestCase {
   #endif
 
   func testRandom() throws {
-    var set = RedBlackTreeMultiset<Int>()
+    var set = RedBlackTreeMultiSet<Int>()
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
       set.insert(i)
       XCTAssertTrue(set.___tree_invariant())
@@ -464,7 +464,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testRandom2() throws {
-    var set = RedBlackTreeMultiset<Int>()
+    var set = RedBlackTreeMultiSet<Int>()
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
       set.insert(i)
       XCTAssertTrue(set.___tree_invariant())
@@ -502,7 +502,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testRandom3() throws {
-    var set = RedBlackTreeMultiset<Int>()
+    var set = RedBlackTreeMultiSet<Int>()
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
       set.insert(i)
       XCTAssertTrue(set.___tree_invariant())
@@ -530,7 +530,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testRandom4() throws {
-    var set = RedBlackTreeMultiset<Int>()
+    var set = RedBlackTreeMultiSet<Int>()
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
       set.insert(i)
       XCTAssertTrue(set.___tree_invariant())
@@ -558,7 +558,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testLiteral() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
+    let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
     XCTAssertEqual(set.map { $0 }, [1, 1, 2, 2, 3, 3, 4, 4, 5, 5])
   }
 
@@ -583,7 +583,7 @@ final class MultisetTests: XCTestCase {
   //    func testRedBlackTreeSetUpdate() throws {
   //      let a = A(x: 3, label: "a")
   //      let b = A(x: 3, label: "b")
-  //      var s: RedBlackTreeMultiset<A> = [a]
+  //      var s: RedBlackTreeMultiSet<A> = [a]
   //      XCTAssertFalse(a === b)
   //      XCTAssertTrue(s.update(with: b) === a)
   //      XCTAssertTrue(s.update(with: a) === b)
@@ -592,7 +592,7 @@ final class MultisetTests: XCTestCase {
   func testRedBlackTreeSetInsert() throws {
     let a = A(x: 3, label: "a")
     let b = A(x: 3, label: "b")
-    var s: RedBlackTreeMultiset<A> = []
+    var s: RedBlackTreeMultiSet<A> = []
     XCTAssertFalse(a === b)
     do {
       let r = s.insert(a)
@@ -609,18 +609,18 @@ final class MultisetTests: XCTestCase {
 
   #if DEBUG
     func testRedBlackTreeSetLowerBound() throws {
-      let numbers: RedBlackTreeMultiset = [1, 3, 5, 7, 9]
+      let numbers: RedBlackTreeMultiSet = [1, 3, 5, 7, 9]
       XCTAssertEqual(numbers.lowerBound(4).rawValue, 2)
     }
 
     func testRedBlackTreeSetUpperBound() throws {
-      let numbers: RedBlackTreeMultiset = [1, 3, 5, 7, 9]
+      let numbers: RedBlackTreeMultiSet = [1, 3, 5, 7, 9]
       XCTAssertEqual(numbers.upperBound(7).rawValue, 4)
     }
   #endif
 
   func testRedBlackTreeConveniences() throws {
-    let numbers: RedBlackTreeMultiset = [1, 3, 5, 7, 9]
+    let numbers: RedBlackTreeMultiSet = [1, 3, 5, 7, 9]
 
     XCTAssertEqual(numbers.lessThan(4), 3)
     XCTAssertEqual(numbers.lessThanOrEqual(4), 3)
@@ -635,7 +635,7 @@ final class MultisetTests: XCTestCase {
 
   #if DEBUG
     func testRedBlackTreeSetFirstIndex() throws {
-      var members: RedBlackTreeMultiset = [1, 3, 5, 7, 9]
+      var members: RedBlackTreeMultiSet = [1, 3, 5, 7, 9]
       XCTAssertEqual(members.firstIndex(of: 3)?.rawValue, .init(1))
       XCTAssertEqual(members.firstIndex(of: 2), nil)
       XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?.rawValue, .init(2))
@@ -650,15 +650,15 @@ final class MultisetTests: XCTestCase {
   #endif
 
   func testEqualtable() throws {
-    XCTAssertEqual(RedBlackTreeMultiset<Int>(), [])
-    XCTAssertNotEqual(RedBlackTreeMultiset<Int>(), [1])
-    XCTAssertEqual([1] as RedBlackTreeMultiset<Int>, [1])
-    XCTAssertNotEqual([1, 1] as RedBlackTreeMultiset<Int>, [1])
-    XCTAssertNotEqual([1, 2] as RedBlackTreeMultiset<Int>, [1, 1])
+    XCTAssertEqual(RedBlackTreeMultiSet<Int>(), [])
+    XCTAssertNotEqual(RedBlackTreeMultiSet<Int>(), [1])
+    XCTAssertEqual([1] as RedBlackTreeMultiSet<Int>, [1])
+    XCTAssertNotEqual([1, 1] as RedBlackTreeMultiSet<Int>, [1])
+    XCTAssertNotEqual([1, 2] as RedBlackTreeMultiSet<Int>, [1, 1])
   }
 
   func testContainsAllSatisfy() throws {
-    let dict = [1, 2, 2, 2, 3, 3, 4, 5] as RedBlackTreeMultiset<Int>
+    let dict = [1, 2, 2, 2, 3, 3, 4, 5] as RedBlackTreeMultiSet<Int>
     XCTAssertEqual(dict.first, 1)
     XCTAssertEqual(dict.last, 5)
     XCTAssertEqual(dict.first(where: { $0 > 4 }), 5)
@@ -672,7 +672,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testContains2() throws {
-    let multiset: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3, 3]
+    let multiset: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 3]
     XCTAssertFalse(multiset.contains(0))
     XCTAssertTrue(multiset.contains(1))
     XCTAssertTrue(multiset.contains(2))
@@ -681,7 +681,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testForEach() throws {
-    let dict = [1, 2, 2, 3] as RedBlackTreeMultiset<Int>
+    let dict = [1, 2, 2, 3] as RedBlackTreeMultiSet<Int>
     var d: [Int] = []
     dict.forEach { v in
       d.append(v)
@@ -690,7 +690,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testCount() throws {
-    let b: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3]
+    let b: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3]
     XCTAssertEqual(b.count, 6)
     XCTAssertEqual(b.count(of: 1), 2)
     XCTAssertEqual(b.count(of: 2), 3)
@@ -698,7 +698,7 @@ final class MultisetTests: XCTestCase {
   }
   
   func testSubsequence() throws {
-    var set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    var set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     let sub = set[2 ..< 4]
     XCTAssertEqual(sub[set.lowerBound(2)], 2)
     XCTAssertEqual(sub[set.lowerBound(3)], 3)
@@ -711,7 +711,7 @@ final class MultisetTests: XCTestCase {
   }
   
   func testSubsequence2() throws {
-    var set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    var set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     let sub = set[2 ... 4]
     XCTAssertEqual(sub[set.lowerBound(2)], 2)
     XCTAssertEqual(sub[set.lowerBound(4)], 4)
@@ -724,14 +724,14 @@ final class MultisetTests: XCTestCase {
   }
   
   func testSubsequence4() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     let sub = set[1 ..< 3]
     throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
     XCTAssertNotEqual(sub[set.startIndex ..< set.endIndex].map{ $0 }, [1, 2, 3, 4, 5])
   }
 
   func testSubsequence5() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     let sub = set[1 ..< 3]
     XCTAssertEqual(sub[set.lowerBound(1) ..< set.lowerBound(3)].map{ $0 }, [1, 2])
     XCTAssertEqual(sub[sub.startIndex ..< sub.endIndex].map{ $0 }, [1, 2])
@@ -741,7 +741,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testSubsequence6() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3, 4]
+    let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
     let sub = set[2 ..< 3]
     XCTAssertEqual(sub.map{ $0 }, [2, 2, 2])
     XCTAssertEqual(sub[set.lowerBound(2) ..< set.lowerBound(3)].map{ $0 }, [2, 2, 2])
@@ -751,7 +751,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testSubsequence7() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3, 4]
+    let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
     let sub = set[2 ... 2]
     XCTAssertEqual(sub.map{ $0 }, [2, 2, 2])
     XCTAssertEqual(sub[set.lowerBound(2) ..< set.upperBound(2)].map{ $0 }, [2, 2, 2])
@@ -762,7 +762,7 @@ final class MultisetTests: XCTestCase {
 
 #if !SKIP_MULTISET_INDEX_BUG
   func testIndex0() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3, 4]
+    let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
     var i = set.startIndex
     for _ in 0 ..< set.count {
       XCTAssertEqual(set.distance(from: i, to: set.index(after: i)), 1)
@@ -788,7 +788,7 @@ final class MultisetTests: XCTestCase {
   
 #if !SKIP_MULTISET_INDEX_BUG
   func testIndex00() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     do {
       var i = set.startIndex
       for j in 0 ..< set.count {
@@ -840,7 +840,7 @@ final class MultisetTests: XCTestCase {
 #endif
 
   func testIndex000() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     do {
       var i = set.startIndex
       for j in 0 ..< set.count {
@@ -891,28 +891,28 @@ final class MultisetTests: XCTestCase {
   }
 
   func testIndex1() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3, 4]
+    let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
     let sub = set[set.lowerBound(2) ..< set.index(before: set.upperBound(2))]
     XCTAssertEqual(sub.map{ $0 }, [2, 2])
     XCTAssertTrue(set.lowerBound(2) < set.index(before: set.upperBound(2)))
   }
 
   func testIndex2() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3, 4]
+    let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
     let sub = set[set.index(after: set.lowerBound(2)) ..< set.upperBound(2)]
     XCTAssertEqual(sub.map{ $0 }, [2, 2])
     XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.upperBound(2))
   }
 
   func testIndex3() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 1, 2, 2, 2, 3, 4]
+    let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
     let sub = set[set.index(after: set.lowerBound(2)) ... set.index(before: set.upperBound(2))]
     XCTAssertEqual(sub.map{ $0 }, [2, 2])
     XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.index(before: set.upperBound(2)))
   }
 
   func testIndex100() throws {
-    let set: RedBlackTreeMultiset<Int> = [1,2,3,4,5,6]
+    let set: RedBlackTreeMultiSet<Int> = [1,2,3,4,5,6]
     XCTAssertEqual(set.index(set.startIndex, offsetBy: 6), set.endIndex)
     XCTAssertEqual(set.index(set.endIndex, offsetBy: -6), set.startIndex)
     let sub = set[2..<5]
@@ -922,7 +922,7 @@ final class MultisetTests: XCTestCase {
   }
   
   func testIndex10() throws {
-    let set: RedBlackTreeMultiset<Int> = [1,2,3,4,5,6]
+    let set: RedBlackTreeMultiSet<Int> = [1,2,3,4,5,6]
     XCTAssertNotNil(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex))
     XCTAssertNil(set.index(set.startIndex, offsetBy: 7, limitedBy: set.endIndex))
     XCTAssertNotNil(set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex))
@@ -936,7 +936,7 @@ final class MultisetTests: XCTestCase {
   }
 
   func testIndex11() throws {
-    let set: RedBlackTreeMultiset<Int> = [1,2,3,4,5,6]
+    let set: RedBlackTreeMultiSet<Int> = [1,2,3,4,5,6]
     var i = set.startIndex
     XCTAssertTrue(set.formIndex(&i, offsetBy: 6, limitedBy: set.endIndex))
     i = set.startIndex
@@ -958,7 +958,7 @@ final class MultisetTests: XCTestCase {
   }
   
   func testIndex12() throws {
-    let set: RedBlackTreeMultiset<Int> = [1,2,3,4,5,6]
+    let set: RedBlackTreeMultiSet<Int> = [1,2,3,4,5,6]
     var i = set.startIndex
     set.formIndex(&i, offsetBy: 6)
     XCTAssertEqual(i, set.endIndex)
@@ -976,13 +976,13 @@ final class MultisetTests: XCTestCase {
   }
 
   func testSorted() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     XCTAssertEqual(set.sorted(), [1, 2, 3, 4, 5])
   }
 
 #if DEBUG
   func testSubSeqSubscript() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     XCTAssertEqual(set[2 ..< 4][.init(2)], 3)
     var a = 0
     set[2 ... 4].forEach {
@@ -993,11 +993,11 @@ final class MultisetTests: XCTestCase {
 #endif
 
   func testIndexValidation() throws {
-    let set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5]
+    let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     XCTAssertTrue(set.isValid(index: set.startIndex))
     XCTAssertTrue(set.isValid(index: set.endIndex))
-    typealias Index = RedBlackTreeMultiset<Int>.Index
-    typealias RawIndex = RedBlackTreeMultiset<Int>.RawIndex
+    typealias Index = RedBlackTreeMultiSet<Int>.Index
+    typealias RawIndex = RedBlackTreeMultiSet<Int>.RawIndex
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
     XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
@@ -1023,12 +1023,12 @@ final class MultisetTests: XCTestCase {
   }
   
   func testIndexValidation2() throws {
-    let _set: RedBlackTreeMultiset<Int> = [1, 2, 3, 4, 5, 6, 7]
+    let _set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6, 7]
     let set = _set[2 ..< 6]
     XCTAssertTrue(set.isValid(index: set.startIndex))
     XCTAssertTrue(set.isValid(index: set.endIndex))
-    typealias Index = RedBlackTreeMultiset<Int>.Index
-    typealias RawIndex = RedBlackTreeMultiset<Int>.RawIndex
+    typealias Index = RedBlackTreeMultiSet<Int>.Index
+    typealias RawIndex = RedBlackTreeMultiSet<Int>.RawIndex
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
     XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)

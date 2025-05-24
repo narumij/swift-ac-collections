@@ -16,7 +16,7 @@ final class RedBlackTreeMultisetSubSequenceTests: XCTestCase {
 
   func testSliceCountFirstLast() {
     // 0 1 1 2 3 3 3 4
-    let base: RedBlackTreeMultiset = [0, 1, 1, 2, 3, 3, 3, 4]
+    let base: RedBlackTreeMultiSet = [0, 1, 1, 2, 3, 3, 3, 4]
     let slice = base.elements(in: 1...3)  // 1,1,2,3,3,3
 
     XCTAssertEqual(slice.count, 6)
@@ -31,7 +31,7 @@ final class RedBlackTreeMultisetSubSequenceTests: XCTestCase {
   // MARK: forward / backward イテレーション ------------------------------
 
   func testBidirectionalIterationWithDuplicates() {
-    let base: RedBlackTreeMultiset = [1, 1, 2, 3, 3]
+    let base: RedBlackTreeMultiSet = [1, 1, 2, 3, 3]
     let slice = base.elements(in: 1..<3)  // 1,1,2
 
     // forward
@@ -44,7 +44,7 @@ final class RedBlackTreeMultisetSubSequenceTests: XCTestCase {
   // MARK: offsetBy / limitedBy ------------------------------------------
 
   func testSliceIndexOffsetting() {
-    let m: RedBlackTreeMultiset = [5, 5, 6, 7, 7, 8]
+    let m: RedBlackTreeMultiSet = [5, 5, 6, 7, 7, 8]
     let slice = m.elements(in: 5...7)  // 5,5,6,7,7
 
     let idx = slice.index(slice.startIndex, offsetBy: 3)
@@ -67,7 +67,7 @@ final class RedBlackTreeMultisetSubSequenceTests: XCTestCase {
   // MARK: 距離の対称性 ---------------------------------------------------
 
   func testDistanceSymmetry() {
-    let ms: RedBlackTreeMultiset = [0, 1, 1, 2, 3, 3, 4, 4, 4]
+    let ms: RedBlackTreeMultiSet = [0, 1, 1, 2, 3, 3, 4, 4, 4]
     let slice = ms.elements(in: 1...3)  // 1,1,2,3,3
     let i = slice.index(slice.startIndex, offsetBy: 1)  // 2番目 (1)
     let j = slice.index(slice.startIndex, offsetBy: 4)  // 5番目 (3)
@@ -78,7 +78,7 @@ final class RedBlackTreeMultisetSubSequenceTests: XCTestCase {
   // MARK: index invalidation after base mutation ------------------------
 
   func testIndexInvalidationAfterBaseMutation() throws {
-    var base: RedBlackTreeMultiset = [1, 1, 2, 2, 3]
+    var base: RedBlackTreeMultiSet = [1, 1, 2, 2, 3]
     let slice = base.elements(in: 1...2)  // 1,1,2,2
 
     let idx = slice.firstIndex(of: 1)!  // 指すノードは 1

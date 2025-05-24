@@ -7,7 +7,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
   let count = 2_000_000
 
   func testSet1() throws {
-    var multiset = RedBlackTreeMultiset<Int>()
+    var multiset = RedBlackTreeMultiSet<Int>()
     XCTAssertEqual(multiset._copyCount, 0)
     multiset.insert(0)
     XCTAssertGreaterThanOrEqual(multiset._copyCount, 1) // 挿入に備え、かつ消費
@@ -26,7 +26,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
   }
 
   func testSet2() throws {
-    var set = RedBlackTreeMultiset<Int>(minimumCapacity: 1)
+    var set = RedBlackTreeMultiSet<Int>(minimumCapacity: 1)
     XCTAssertEqual(set._copyCount, 0)
     set.insert(0)
     XCTAssertEqual(set._copyCount, 0)
@@ -48,7 +48,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
   }
   
   func testSet3() throws {
-    var tree = RedBlackTreeMultiset<Int>(0 ..< 20)
+    var tree = RedBlackTreeMultiSet<Int>(0 ..< 20)
     tree._copyCount = 0
     for v in tree {
       tree.removeAll(v) // strong ensure unique
@@ -58,7 +58,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
   }
   
   func testSet3_2() throws {
-    var tree = RedBlackTreeMultiset<Int>(0 ..< 20)
+    var tree = RedBlackTreeMultiSet<Int>(0 ..< 20)
     tree._copyCount = 0
     for v in tree.map({ $0 }) {
       tree.removeAll(v) // strong ensure unique
@@ -68,7 +68,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
   }
 
   func testSet4() throws {
-    var tree = RedBlackTreeMultiset<Int>(0 ..< 20)
+    var tree = RedBlackTreeMultiSet<Int>(0 ..< 20)
     tree._copyCount = 0
     tree.forEach { v in
       tree.removeAll(v)
@@ -78,7 +78,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
   }
 
   func testSet5() throws {
-    var tree = RedBlackTreeMultiset<Int>(0 ..< 20)
+    var tree = RedBlackTreeMultiSet<Int>(0 ..< 20)
     tree._copyCount = 0
     for v in tree.map({ $0}) {
       tree.removeAll(v)
@@ -88,7 +88,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
   }
   
   func testSet6() throws {
-    var tree = RedBlackTreeMultiset<Int>(0 ..< 20)
+    var tree = RedBlackTreeMultiSet<Int>(0 ..< 20)
     tree._copyCount = 0
     for v in tree.filter({ _ in true }) {
       tree.removeAll(v)
@@ -100,7 +100,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
   func testSet3000() throws {
     let count = 1500
     var loopCount = 0
-    var xy: [Int: RedBlackTreeMultiset<Int>] = [1: .init(0 ..< count)]
+    var xy: [Int: RedBlackTreeMultiSet<Int>] = [1: .init(0 ..< count)]
     xy[1]?._copyCount = 0
     let N = 100
     for i in 0 ..< count / N {
@@ -118,7 +118,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
 
   func testSet4000() throws {
     let count = 1500
-    var xy: [Int: RedBlackTreeMultiset<Int>] = [1: .init(0 ..< count)]
+    var xy: [Int: RedBlackTreeMultiSet<Int>] = [1: .init(0 ..< count)]
     xy[1]?._copyCount = 0
     let N = 100
     var loopCount = 0

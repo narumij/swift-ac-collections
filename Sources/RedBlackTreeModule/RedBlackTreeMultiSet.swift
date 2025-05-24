@@ -22,12 +22,12 @@
 
 import Foundation
 
-/// `RedBlackTreeMultiset` は、`Element` 型の要素を複数格納するための
+/// `RedBlackTreeMultiSet` は、`Element` 型の要素を複数格納するための
 /// 赤黒木（Red-Black Tree）ベースのマルチセット型です。
 ///
 /// ### 使用例
 /// ```swift
-/// var multiset = RedBlackTreeMultiset<Int>()
+/// var multiset = RedBlackTreeMultiSet<Int>()
 /// multiset.insert(5)
 /// multiset.insert(3)
 /// multiset.insert(5) // 重複した要素の挿入
@@ -37,7 +37,7 @@ import Foundation
 /// print(multiset.count(of: 3)) // 出力例: 1
 /// ```
 @frozen
-public struct RedBlackTreeMultiset<Element: Comparable> {
+public struct RedBlackTreeMultiSet<Element: Comparable> {
 
   public
     typealias Element = Element
@@ -52,16 +52,16 @@ public struct RedBlackTreeMultiset<Element: Comparable> {
   var _storage: Tree.Storage
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
   public typealias RawIndex = Tree.RawPointer
 }
 
-extension RedBlackTreeMultiset: ___RedBlackTreeBase {}
-extension RedBlackTreeMultiset: ___RedBlackTreeStorageLifetime {}
-extension RedBlackTreeMultiset: ___RedBlackTreeEqualRangeMulti {}
-extension RedBlackTreeMultiset: ScalarValueComparer {}
+extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
+extension RedBlackTreeMultiSet: ___RedBlackTreeStorageLifetime {}
+extension RedBlackTreeMultiSet: ___RedBlackTreeEqualRangeMulti {}
+extension RedBlackTreeMultiSet: ScalarValueComparer {}
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   @inlinable @inline(__always)
   public init() {
@@ -74,7 +74,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(*n* log *n*)
   @inlinable
@@ -97,7 +97,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(*n* log *n*)
   @inlinable
@@ -116,7 +116,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   /// - 計算量: O(1)
   @inlinable
@@ -131,7 +131,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
@@ -139,7 +139,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(log *n*)
   @inlinable
@@ -239,7 +239,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -259,7 +259,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(*n*)
   @inlinable
@@ -280,7 +280,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
+extension RedBlackTreeMultiSet: ExpressibleByArrayLiteral {
 
   @inlinable
   public init(arrayLiteral elements: Element...) {
@@ -288,7 +288,7 @@ extension RedBlackTreeMultiset: ExpressibleByArrayLiteral {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(log *n*)
   @inlinable
@@ -303,7 +303,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(1)。
   @inlinable
@@ -336,7 +336,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   @inlinable
   public func sorted() -> [Element] {
@@ -344,7 +344,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -353,7 +353,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset: CustomStringConvertible, CustomDebugStringConvertible {
+extension RedBlackTreeMultiSet: CustomStringConvertible, CustomDebugStringConvertible {
 
   @inlinable
   public var description: String {
@@ -362,13 +362,13 @@ extension RedBlackTreeMultiset: CustomStringConvertible, CustomDebugStringConver
 
   @inlinable
   public var debugDescription: String {
-    "RedBlackTreeMultiset(\(description))"
+    "RedBlackTreeMultiSet(\(description))"
   }
 }
 
 // MARK: - Equatable
 
-extension RedBlackTreeMultiset: Equatable {
+extension RedBlackTreeMultiSet: Equatable {
 
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -378,7 +378,7 @@ extension RedBlackTreeMultiset: Equatable {
 
 // MARK: - Sequence, BidirectionalCollection
 
-extension RedBlackTreeMultiset: Sequence {
+extension RedBlackTreeMultiSet: Sequence {
 
   @inlinable
   @inline(__always)
@@ -393,7 +393,7 @@ extension RedBlackTreeMultiset: Sequence {
 
     @inlinable
     @inline(__always)
-    internal init(_base: RedBlackTreeMultiset) {
+    internal init(_base: RedBlackTreeMultiSet) {
       self._iterator = _base._tree.makeIterator()
     }
 
@@ -431,7 +431,7 @@ extension RedBlackTreeMultiset: Sequence {
   }
 }
 
-extension RedBlackTreeMultiset: BidirectionalCollection {
+extension RedBlackTreeMultiSet: BidirectionalCollection {
   
   @inlinable
   @inline(__always)
@@ -530,7 +530,7 @@ extension RedBlackTreeMultiset: BidirectionalCollection {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
   // 割と注意喚起の為のdeprecatedなだけで、実際にいつ消すのかは不明です。
   // 分かってると便利なため、競技プログラミングにこのシンタックスシュガーは有用と考えているからです。
 
@@ -555,7 +555,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
   /// 値レンジ `[lower, upper)` に含まれる要素のスライス
   @inlinable
   public func elements(in range: Range<Element>) -> SubSequence {
@@ -577,7 +577,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   @frozen
   public struct SubSequence {
@@ -595,9 +595,9 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset.SubSequence {
+extension RedBlackTreeMultiSet.SubSequence {
 
-  public typealias Base = RedBlackTreeMultiset
+  public typealias Base = RedBlackTreeMultiSet
   public typealias SubSequence = Self
   public typealias Index = Base.Index
   public typealias RawIndex = Base.RawIndex
@@ -606,7 +606,7 @@ extension RedBlackTreeMultiset.SubSequence {
   public typealias IndexSequence = Base.IndexSequence
 }
 
-extension RedBlackTreeMultiset.SubSequence: Sequence {
+extension RedBlackTreeMultiSet.SubSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
     @usableFromInline
@@ -656,9 +656,9 @@ extension RedBlackTreeMultiset.SubSequence: Sequence {
   }
 }
 
-extension RedBlackTreeMultiset.SubSequence: ___RedBlackTreeSubSequenceBase {}
+extension RedBlackTreeMultiSet.SubSequence: ___RedBlackTreeSubSequenceBase {}
 
-extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
+extension RedBlackTreeMultiSet.SubSequence: BidirectionalCollection {
 
   @inlinable
   @inline(__always)
@@ -762,7 +762,7 @@ extension RedBlackTreeMultiset.SubSequence: BidirectionalCollection {
 
 // MARK: - Enumerated Sequence
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   @frozen
   public struct EnumuratedSequence {
@@ -782,7 +782,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset.EnumuratedSequence: Sequence {
+extension RedBlackTreeMultiSet.EnumuratedSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
 
@@ -809,7 +809,7 @@ extension RedBlackTreeMultiset.EnumuratedSequence: Sequence {
   }
 }
 
-extension RedBlackTreeMultiset.EnumuratedSequence {
+extension RedBlackTreeMultiSet.EnumuratedSequence {
 
   @inlinable
   @inline(__always)
@@ -820,7 +820,7 @@ extension RedBlackTreeMultiset.EnumuratedSequence {
 
 // MARK: - Index Sequence
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   @frozen
   public struct IndexSequence {
@@ -840,7 +840,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset.IndexSequence: Sequence {
+extension RedBlackTreeMultiSet.IndexSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
 
@@ -867,7 +867,7 @@ extension RedBlackTreeMultiset.IndexSequence: Sequence {
   }
 }
 
-extension RedBlackTreeMultiset.IndexSequence {
+extension RedBlackTreeMultiSet.IndexSequence {
 
   @inlinable
   @inline(__always)
@@ -878,7 +878,7 @@ extension RedBlackTreeMultiset.IndexSequence {
 
 // MARK: -
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   @inlinable
   @inline(__always)
@@ -893,7 +893,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset.SubSequence {
+extension RedBlackTreeMultiSet.SubSequence {
 
   @inlinable
   @inline(__always)
@@ -908,7 +908,7 @@ extension RedBlackTreeMultiset.SubSequence {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   @inlinable
   @inline(__always)
@@ -919,7 +919,7 @@ extension RedBlackTreeMultiset {
 
   @inlinable
   @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeMultiset<Element>) {
+  public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
     _tree.__node_handle_merge_multi(other._tree)
   }
@@ -933,7 +933,7 @@ extension RedBlackTreeMultiset {
 
 // MARK: -
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
   @inlinable
   public mutating func popFirst() -> Element? {
     guard !isEmpty else { return nil }

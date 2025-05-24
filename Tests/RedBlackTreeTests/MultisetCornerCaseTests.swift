@@ -19,7 +19,7 @@ final class RedBlackTreeMultisetCornerCaseTests: XCTestCase {
     // MARK: ── 基本動作 ──────────────────────────────────────────────
 
     func testDuplicateInsertAndCount() {
-        var ms = RedBlackTreeMultiset<Int>()
+        var ms = RedBlackTreeMultiSet<Int>()
         ms.insert(7); ms.insert(7); ms.insert(3)
         XCTAssertEqual(ms.count(of: 7), 2)
         XCTAssertEqual(ms.count(of: 3), 1)
@@ -27,7 +27,7 @@ final class RedBlackTreeMultisetCornerCaseTests: XCTestCase {
     }
 
     func testRemoveOneVersusRemoveAll() {
-        var ms: RedBlackTreeMultiset = [5, 5, 5]
+        var ms: RedBlackTreeMultiSet = [5, 5, 5]
         XCTAssertNotNil(ms.remove(5))        // 1 個だけ
         XCTAssertEqual(ms.count(of: 5), 2)
 
@@ -37,7 +37,7 @@ final class RedBlackTreeMultisetCornerCaseTests: XCTestCase {
     }
 
     func testLowerUpperBoundsWithDuplicates() {
-        let ms: RedBlackTreeMultiset = [1, 2, 2, 2, 3]
+        let ms: RedBlackTreeMultiSet = [1, 2, 2, 2, 3]
         let lb = ms.lowerBound(2)
         let ub = ms.upperBound(2)
         XCTAssertEqual(ms.distance(from: ms.startIndex, to: lb), 1)   // 2 より前は 1 つ
@@ -47,14 +47,14 @@ final class RedBlackTreeMultisetCornerCaseTests: XCTestCase {
     // MARK: ── インデックス無効化・CoW ──────────────────────────────────
 
     func testIndexInvalidationAfterErase() {
-        var ms: RedBlackTreeMultiset = [9, 9, 9]
+        var ms: RedBlackTreeMultiSet = [9, 9, 9]
         let idx = ms.firstIndex(of: 9)!
         ms.remove(at: idx)
         XCTAssertFalse(ms.isValid(index: idx))
     }
 
     func testCopyOnWriteBehavior() {
-        var original: RedBlackTreeMultiset = [1, 1]
+        var original: RedBlackTreeMultiSet = [1, 1]
         var copy = original
         copy.insert(2)
         XCTAssertTrue(copy.contains(2))
@@ -64,7 +64,7 @@ final class RedBlackTreeMultisetCornerCaseTests: XCTestCase {
     // MARK: ── Subrange Removal ──────────────────────────────────────
 
     func testRemoveSubrange() {
-        var ms: RedBlackTreeMultiset = [0, 1, 2, 2, 3, 4]
+        var ms: RedBlackTreeMultiSet = [0, 1, 2, 2, 3, 4]
         let l = ms.lowerBound(2)
         let r = ms.upperBound(2)   // 半開なので 2 のみ消す
         ms.removeSubrange(l..<r)
@@ -79,7 +79,7 @@ final class RedBlackTreeMultisetCornerCaseTests: XCTestCase {
         let opsPerRound = 400
 
         for _ in 0..<rounds {
-            var ms = RedBlackTreeMultiset<Int>()
+            var ms = RedBlackTreeMultiSet<Int>()
             var ref = ReferenceMultiset()
 
             for _ in 0..<opsPerRound {
@@ -102,7 +102,7 @@ final class RedBlackTreeMultisetCornerCaseTests: XCTestCase {
     }
   
   func testPopFirstDuplicates() {
-      var ms: RedBlackTreeMultiset = [1, 1, 2]
+      var ms: RedBlackTreeMultiSet = [1, 1, 2]
       XCTAssertEqual(ms.popFirst(), 1)
       XCTAssertEqual(ms.count(of: 1), 1)
       XCTAssertEqual(ms.popFirst(), 1)

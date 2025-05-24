@@ -4,7 +4,7 @@ import RedBlackTreeModule
 // https://github.com/tatyam-prime/SortedSet
 //
 // 標準コンテナに寄せた結果、メソッドとして浮き始めてきたので、盆栽対象とすることにした
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   @inlinable public func lessThan(_ p: Element) -> Element? {
     return lowerBound(p).previous?.pointee
@@ -25,7 +25,7 @@ extension RedBlackTreeMultiset {
   }
 }
 
-extension RedBlackTreeMultiset {
+extension RedBlackTreeMultiSet {
 
   @inlinable
   public mutating func removeSubrange(_ range: Range<Element>) {

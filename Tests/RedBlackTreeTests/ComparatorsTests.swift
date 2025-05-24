@@ -25,7 +25,7 @@ final class RedBlackTreeComparatorsTests: XCTestCase {
   }
 
   func testMultisetEqualRange() {
-    let multi: RedBlackTreeMultiset = [1, 2, 2, 2, 3, 4]
+    let multi: RedBlackTreeMultiSet = [1, 2, 2, 2, 3, 4]
     let (lo, hi) = multi.___equal_range(2)
 
     var count = 0
@@ -39,7 +39,7 @@ final class RedBlackTreeComparatorsTests: XCTestCase {
   }
 
   func testMultisetKeyAndValueComp() {
-    let multi: RedBlackTreeMultiset = [1, 2, 3]
+    let multi: RedBlackTreeMultiSet = [1, 2, 3]
     let keyComp = multi.___key_comp
     let valueComp = multi.___value_comp
 

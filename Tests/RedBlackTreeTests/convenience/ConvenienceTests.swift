@@ -173,7 +173,7 @@ final class ConvenienceTests: XCTestCase {
   }
 
   func test_Multiset_LT_GT() throws {
-    var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
+    var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set.count, 5)
     XCTAssertEqual(set.lessThan(-1), nil)
     XCTAssertEqual(set.greaterThan(-1), 0)
@@ -250,7 +250,7 @@ final class ConvenienceTests: XCTestCase {
   }
 
   func test_Multiset_LE_GE() throws {
-    var set = RedBlackTreeMultiset<Int>([0, 1, 2, 3, 4])
+    var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set.count, 5)
     XCTAssertEqual(set.lessThanOrEqual(-1), nil)
     XCTAssertEqual(set.greaterThanOrEqual(-1), 0)
@@ -363,7 +363,7 @@ final class ConvenienceTests: XCTestCase {
   }
   
   func testMultietErase() throws {
-    var set: RedBlackTreeMultiset<Int> = [1, 2, 2, 2, 3, 4]
+    var set: RedBlackTreeMultiSet<Int> = [1, 2, 2, 2, 3, 4]
     var it = set.lowerBound(2)
     let end = set.upperBound(2)
     while it != end {

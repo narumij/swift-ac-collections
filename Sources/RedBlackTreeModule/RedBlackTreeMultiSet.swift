@@ -378,7 +378,7 @@ extension RedBlackTreeMultiSet: Equatable {
   }
 }
 
-// MARK: - Sequence, BidirectionalCollection
+// MARK: - Sequence
 
 extension RedBlackTreeMultiSet: Sequence {
 
@@ -412,6 +412,8 @@ extension RedBlackTreeMultiSet: Sequence {
     return Iterator(_base: self)
   }
 }
+
+// MARK: - BidirectionalCollection
 
 extension RedBlackTreeMultiSet: BidirectionalCollection {
 
@@ -612,30 +614,6 @@ extension RedBlackTreeMultiSet.SubSequence: Sequence {
   public __consuming func makeIterator() -> Iterator {
     Iterator(_subSequence.makeIterator())
   }
-
-  #if false
-    @inlinable
-    @inline(__always)
-    public func enumerated() -> AnySequence<EnumElement> {
-      AnySequence {
-        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
-      }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(
-        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
-    }
-  #endif
-
-  @inlinable
-  @inline(__always)
-  public func indices() -> IndexSequence {
-    IndexSequence(
-      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
-  }
 }
 
 extension RedBlackTreeMultiSet.SubSequence: ___RedBlackTreeSubSequenceBase {}
@@ -761,6 +739,26 @@ extension RedBlackTreeMultiSet {
   #endif
 }
 
+extension RedBlackTreeMultiSet.SubSequence {
+
+  #if false
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> AnySequence<EnumElement> {
+      AnySequence {
+        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
+      }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> EnumuratedSequence {
+      EnumuratedSequence(
+        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+    }
+  #endif
+}
+
 extension RedBlackTreeMultiSet {
 
   @frozen
@@ -825,6 +823,16 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public func indices() -> IndexSequence {
     IndexSequence(_subSequence: _tree.indexSubsequence())
+  }
+}
+
+extension RedBlackTreeMultiSet.SubSequence {
+
+  @inlinable
+  @inline(__always)
+  public func indices() -> IndexSequence {
+    IndexSequence(
+      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
   }
 }
 

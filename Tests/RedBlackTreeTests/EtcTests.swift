@@ -216,6 +216,11 @@ final class EtcTests: XCTestCase {
       XCTAssertEqual(a, [])
     }
   }
+  
+  func testHoge() throws {
+    var s = Set<String>()
+    var d = Dictionary<String,String>()
+  }
 
 #if false
   func testCapacity() throws {

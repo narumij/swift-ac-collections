@@ -668,30 +668,6 @@ extension RedBlackTreeSet.SubSequence: Sequence {
   public __consuming func makeIterator() -> Iterator {
     Iterator(_subSequence.makeIterator())
   }
-
-  #if false
-    @inlinable
-    @inline(__always)
-    public func enumerated() -> AnySequence<EnumElement> {
-      AnySequence {
-        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
-      }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(
-        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
-    }
-  #endif
-
-  @inlinable
-  @inline(__always)
-  public func indices() -> IndexSequence {
-    IndexSequence(
-      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
-  }
 }
 
 extension RedBlackTreeSet.SubSequence: ___RedBlackTreeSubSequenceBase {}
@@ -817,6 +793,26 @@ extension RedBlackTreeSet {
   #endif
 }
 
+extension RedBlackTreeSet.SubSequence {
+
+  #if false
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> AnySequence<EnumElement> {
+      AnySequence {
+        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
+      }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> EnumuratedSequence {
+      EnumuratedSequence(
+        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+    }
+  #endif
+}
+
 extension RedBlackTreeSet {
 
   @frozen
@@ -881,6 +877,16 @@ extension RedBlackTreeSet {
   @inline(__always)
   public func indices() -> IndexSequence {
     IndexSequence(_subSequence: _tree.indexSubsequence())
+  }
+}
+
+extension RedBlackTreeSet.SubSequence {
+
+  @inlinable
+  @inline(__always)
+  public func indices() -> IndexSequence {
+    IndexSequence(
+      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
   }
 }
 

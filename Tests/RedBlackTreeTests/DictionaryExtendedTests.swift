@@ -4,7 +4,12 @@
 // YourPackageNameTests target に追加して `swift test` で実行
 
 import XCTest
-@testable import RedBlackTreeModule   // ← モジュール名を合わせてください
+
+#if DEBUG
+  @testable import RedBlackTreeModule
+#else
+  import RedBlackTreeModule
+#endif
 
 final class RedBlackTreeDictionaryExtendedTests: XCTestCase {
   

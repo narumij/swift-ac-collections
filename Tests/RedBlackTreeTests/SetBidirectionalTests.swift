@@ -5,7 +5,11 @@
 
 import XCTest
 
-@testable import RedBlackTreeModule  // ←パッケージ名に合わせてください
+#if DEBUG
+  @testable import RedBlackTreeModule
+#else
+  import RedBlackTreeModule
+#endif
 
 final class RedBlackTreeSetBidirectionalTests: XCTestCase {
 

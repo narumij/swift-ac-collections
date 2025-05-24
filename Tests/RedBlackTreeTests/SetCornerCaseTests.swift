@@ -2,7 +2,12 @@
 // swift-tools-version:5.10
 
 import XCTest
-@testable import RedBlackTreeModule
+
+#if DEBUG
+  @testable import RedBlackTreeModule
+#else
+  import RedBlackTreeModule
+#endif
 
 final class RedBlackTreeSetCornerCaseTests: XCTestCase {
 

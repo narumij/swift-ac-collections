@@ -268,6 +268,8 @@ extension RedBlackTreeMultiSet {
   }
 
   /// - Complexity: O(*n*)
+  ///
+  /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
   public func min() -> Element? {
     ___min()

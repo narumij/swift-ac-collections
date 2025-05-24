@@ -558,7 +558,7 @@ extension ___RedBlackTreeEqualRangeUnique {
   ///（重複なし）
   @inlinable
   @inline(__always)
-  public func ___equal_range(_ k: _Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+  internal func ___equal_range(_ k: _Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
     let (lo,hi) = _tree.__equal_range_unique(k)
     return (.init(__tree: _tree, rawValue: lo), .init(__tree: _tree, rawValue: hi))
   }
@@ -569,7 +569,7 @@ extension ___RedBlackTreeEqualRangeMulti {
   /// （重複あり）
   @inlinable
   @inline(__always)
-  public func ___equal_range(_ k: _Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+  internal func ___equal_range(_ k: _Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
     let (lo,hi) = _tree.__equal_range_multi(k)
     return (.init(__tree: _tree, rawValue: lo), .init(__tree: _tree, rawValue: hi))
   }

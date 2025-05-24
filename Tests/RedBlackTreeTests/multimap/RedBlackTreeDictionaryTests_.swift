@@ -44,9 +44,9 @@ final class RedBlackTreeMultiMapTests_: XCTestCase {
         var result: [Int] = []
         var it = lower
         while it != upper {
-            if let val = multiDict.value(at: it) {
-                result.append(val)
-            }
+//            if let val = multiDict[it] {
+          result.append(multiDict[it].value)
+//            }
             it = multiDict.index(after: it)
         }
         XCTAssertEqual(Set(result), Set([1, 3]))

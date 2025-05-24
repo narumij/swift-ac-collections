@@ -97,7 +97,7 @@ final class MultiMapAdvancedTest: XCTestCase {
     func testValueAt() {
         let map: RedBlackTreeMultiMap = [("x", 10), ("x", 20)]
         let idx = map.lowerBound("x")
-        XCTAssertNotNil(map.value(at: idx))
+      XCTAssertNotNil(map[idx].value)
     }
     
     func testRemoveContentsOfRange() {

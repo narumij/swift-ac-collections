@@ -134,6 +134,17 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @discardableResult
+  public mutating func insert(_ newMember: Element) -> (
+    inserted: Bool, memberAfterInsert: Element
+  ) {
+    _ensureUniqueAndCapacity()
+    _ = _tree.__insert_multi(newMember)
+    return (true, newMember)
+  }
 
   @inlinable
   @discardableResult
@@ -221,6 +232,8 @@ extension RedBlackTreeMultiMap {
   }
 
   /// - Complexity: O(log *n*)
+  ///
+  /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
   public func min() -> Element? {
     ___min()
@@ -897,6 +910,19 @@ extension RedBlackTreeMultiMap {
     _ensureUniqueAndCapacity(to: count + other.count)
     _tree.__node_handle_merge_multi(other._tree)
   }
+  
+  @inlinable
+  @inline(__always)
+  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
+    other.forEach { insert($0) }
+  }
+  
+  @inlinable
+  public func inserting<S>(_ other: __owned S) -> Self where S: Sequence, S.Element == Element {
+    var result = self
+    result.merge(other)
+    return result
+  }
 }
 
 // MARK: -
@@ -922,9 +948,9 @@ extension RedBlackTreeMultiMap {
 
   @inlinable
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
-    -> RedBlackTreeDictionary<Key, T>
+    -> RedBlackTreeMultiMap<Key, T>
   {
-    typealias Tree = RedBlackTreeDictionary<Key, T>.Tree
+    typealias Tree = RedBlackTreeMultiMap<Key, T>.Tree
     let tree: Tree = .create(minimumCapacity: count)
     var (__parent, __child) = tree.___max_ref()
     for (k, v) in self {
@@ -936,9 +962,9 @@ extension RedBlackTreeMultiMap {
 
   @inlinable
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
-    rethrows -> RedBlackTreeDictionary<Key, T>
+    rethrows -> RedBlackTreeMultiMap<Key, T>
   {
-    typealias Tree = RedBlackTreeDictionary<Key, T>.Tree
+    typealias Tree = RedBlackTreeMultiMap<Key, T>.Tree
     var tree: Tree = .create(minimumCapacity: count)
     var (__parent, __child) = tree.___max_ref()
     for (k, v) in self {
@@ -955,34 +981,20 @@ extension RedBlackTreeMultiMap {
 // MARK: -
 
 extension RedBlackTreeMultiMap {
-
-  //  /// 辞書に `other` の要素をマージします。
-  //  /// キーが重複したときは `combine` の戻り値を採用します。
-  //  @inlinable
-  //  public mutating func merge<S>(
-  //    _ other: __owned S,
-  //    uniquingKeysWith combine: (Value, Value) throws -> Value
-  //  ) rethrows where S: Sequence, S.Element == KeyValue {
-  //
-  //    for (k, v) in other {
-  //      if let old = self[k] {
-  //        self[k] = try combine(old, v)
-  //      } else {
-  //        self[k] = v
-  //      }
-  //    }
-  //  }
-  //
-  //  /// `self` と `other` をマージした新しい辞書を返します。
-  //  @inlinable
-  //  public func merging<S>(
-  //    _ other: __owned S,
-  //    uniquingKeysWith combine: (Value, Value) throws -> Value
-  //  ) rethrows -> Self where S: Sequence, S.Element == KeyValue {
-  //    var result = self
-  //    try result.merge(other, uniquingKeysWith: combine)
-  //    return result
-  //  }
+  
+  /// multimapに `other` の要素をマージします。
+  @inlinable
+  public mutating func merge<S>(_ other: __owned S) where S: Sequence, S.Element == Element {
+    other.forEach { insert($0) }
+  }
+  
+  /// `self` と `other` をマージした新しいmultimapを返します。
+  @inlinable
+  public func merging<S>(_ other: __owned S) -> Self where S: Sequence, S.Element == Element {
+    var result = self
+    result.merge(other)
+    return result
+  }
 }
 
 // MARK: -
@@ -1031,10 +1043,5 @@ extension RedBlackTreeMultiMap {
       lo = _tree.__tree_next(lo)
     }
     return result
-  }
-
-  @inlinable
-  public func value(at ptr: Index) -> Value? {
-    return _tree[ptr.rawValue].value
   }
 }

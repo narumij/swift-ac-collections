@@ -72,8 +72,8 @@ set.insert(5)    // 重複は無視される
 print(set)       // 例: [5, 10]
 print(set.min()) // 例: Optional(5)
 
-// RedBlackTreeMultiset の例
-var multiset = RedBlackTreeMultiset<Int>([1, 2, 2, 3])
+// RedBlackTreeMultiSet の例
+var multiset = RedBlackTreeMultiSet<Int>([1, 2, 2, 3])
 multiset.insert(2)
 print(multiset)       // 例: [1, 2, 2, 2, 3]
 print(multiset.count(2))  // 例: 3
@@ -201,7 +201,7 @@ while idx < tree6.endIndex {
 
 #### Multisetのremove(:)
 
-RedBlackTreeMultisetのremove(:)は、enumerated()やforEach(:)の削除時対策が効かないため、通常のコピーオンライトとくらべて、さらにコピーが発生しやすい挙動としています。
+RedBlackTreeMultiSetのremove(:)は、enumerated()やforEach(:)の削除時対策が効かないため、通常のコピーオンライトとくらべて、さらにコピーが発生しやすい挙動としています。
 
 このため、この操作をさらにループして使う場合には、注意が必要となります。安直に行うとループ毎に全体のコピーが発生するためです。
 
@@ -210,7 +210,7 @@ RedBlackTreeMultisetのremove(:)は、enumerated()やforEach(:)の削除時対�
 具体的には、削除に必要な情報は一度map関数で配列にする等です。
 
 ```Swift
-var multiset: RedBlackTreeMultiset<Int> = [0,0,1,1,2,2]
+var multiset: RedBlackTreeMultiSet<Int> = [0,0,1,1,2,2]
 for member in multiset {
   // この時点でイテレータが有効で、イテレータの破壊を予防するために内部コピーを行う
   // この場合、1回内部コピーが行われる
@@ -219,7 +219,7 @@ for member in multiset {
 ```
 
 ```Swift
-var multiset: RedBlackTreeMultiset<Int> = [0,0,1,1,2,2]
+var multiset: RedBlackTreeMultiSet<Int> = [0,0,1,1,2,2]
 for member in multiset.map({ $0 }) {
   // イテレータが消費済みなため、コピーが発生しない
   multiset.remove(member)

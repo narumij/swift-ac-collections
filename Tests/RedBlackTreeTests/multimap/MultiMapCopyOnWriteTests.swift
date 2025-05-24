@@ -3,8 +3,18 @@ import XCTest
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
 final class MultiMapCopyOnWriteTests: XCTestCase {
+  
+  typealias Target = RedBlackTreeMultiMap<Int,Int>
 
   let count = 2_000_000
+  var tree: Target = .init()
+
+  override func setUpWithError() throws {
+    tree = .init(keysWithValues: (0 ..< 20).map{ ($0,$0) })
+  }
+
+  override func tearDownWithError() throws {
+  }
 
   func testSet1() throws {
     var multiset = RedBlackTreeMultiMap<Int,Int>()
@@ -48,7 +58,6 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   }
   
   func testSet3() throws {
-    var tree = RedBlackTreeMultiMap<Int,Int>(keysWithValues: (0 ..< 20).map{ ($0,$0) })
     tree._copyCount = 0
     for v in tree {
       tree.removeValues(forKey: v.key) // strong ensure unique
@@ -58,7 +67,6 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   }
   
   func testSet3_2() throws {
-    var tree = RedBlackTreeMultiMap<Int,Int>(keysWithValues: (0 ..< 20).map{ ($0,$0) })
     tree._copyCount = 0
     for v in tree.map({ $0 }) {
       tree.removeValues(forKey: v.key) // strong ensure unique
@@ -68,7 +76,6 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   }
 
   func testSet4() throws {
-    var tree = RedBlackTreeMultiMap<Int,Int>(keysWithValues: (0 ..< 20).map{ ($0,$0) })
     tree._copyCount = 0
     tree.forEach { v in
       tree.removeValues(forKey: v.key)
@@ -78,7 +85,6 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   }
 
   func testSet5() throws {
-    var tree = RedBlackTreeMultiMap<Int,Int>(keysWithValues: (0 ..< 20).map{ ($0,$0) })
     tree._copyCount = 0
     for v in tree.map({ $0}) {
       tree.removeValues(forKey: v.key)
@@ -88,10 +94,54 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   }
   
   func testSet6() throws {
-    var tree = RedBlackTreeMultiMap<Int,Int>(keysWithValues: (0 ..< 20).map{ ($0,$0) })
     tree._copyCount = 0
     for v in tree.filter({ _ in true }) {
       tree.removeValues(forKey: v.key)
+    }
+    XCTAssertEqual(tree.count, 0)
+    XCTAssertEqual(tree._copyCount, 0)
+  }
+  
+  func testSet7() throws {
+    tree._copyCount = 0
+    for v in tree {
+      tree.remove(v)
+    }
+    XCTAssertEqual(tree.count, 0)
+    XCTAssertEqual(tree._copyCount, 1) // multi setの場合、インデックスを破壊するので1とする
+  }
+  
+  func testSet8() throws {
+    tree._copyCount = 0
+    for v in tree.map({ $0 }) {
+      tree.remove(v)
+    }
+    XCTAssertEqual(tree.count, 0)
+    XCTAssertEqual(tree._copyCount, 0) // mapで操作が済んでいるので、インデックス破壊の心配がない
+  }
+
+  func testSet9() throws {
+    tree._copyCount = 0
+    tree.forEach { v in
+      tree.remove(v)
+    }
+    XCTAssertEqual(tree.count, 0)
+    XCTAssertEqual(tree._copyCount, 1)
+  }
+
+  func testSet10() throws {
+    tree._copyCount = 0
+    for v in tree.map({ $0}) {
+      tree.remove(v)
+    }
+    XCTAssertEqual(tree.count, 0)
+    XCTAssertEqual(tree._copyCount, 0)
+  }
+  
+  func testSet11() throws {
+    tree._copyCount = 0
+    for v in tree.filter({ _ in true }) {
+      tree.remove(v)
     }
     XCTAssertEqual(tree.count, 0)
     XCTAssertEqual(tree._copyCount, 0)

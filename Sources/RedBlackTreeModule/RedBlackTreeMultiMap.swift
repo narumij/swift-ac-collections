@@ -168,6 +168,7 @@ extension RedBlackTreeMultiMap {
     while lo != hi {
       if _tree[lo].value == member.value {
         _ = _tree.__remove_node_pointer(lo)
+        _tree.destroy(lo)
         return member
       }
       lo = _tree.__tree_next(lo)

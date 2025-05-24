@@ -503,7 +503,7 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
   }
 }
 
-// MARK: - Sequence, BidirectionalCollection
+// MARK: - Sequence
 
 extension RedBlackTreeDictionary: Sequence {
 
@@ -557,6 +557,8 @@ extension RedBlackTreeDictionary: Sequence {
     IndexSequence(_subSequence: _tree.indexSubsequence())
   }
 }
+
+// MARK: - BidirectionalCollection
 
 extension RedBlackTreeDictionary: BidirectionalCollection {
   
@@ -645,6 +647,11 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   public subscript(position: RawIndex) -> Element {
     return _tree[position.rawValue]
   }
+}
+
+// MARK: - Range Access
+
+extension RedBlackTreeDictionary {
   
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
@@ -695,6 +702,8 @@ extension RedBlackTreeDictionary {
           to: ___ptr_upper_bound(range.upperBound)))
   }
 }
+
+// MARK: - SubSequence
 
 extension RedBlackTreeDictionary {
 

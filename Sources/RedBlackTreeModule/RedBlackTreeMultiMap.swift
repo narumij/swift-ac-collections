@@ -137,14 +137,14 @@ extension RedBlackTreeMultiMap {
   
   @inlinable
   @discardableResult
-  public mutating func insert(key: _Key, value: Value) -> (
+  public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
     _ = _tree.__insert_multi((key, value))
     return (true, (key, value))
   }
-
+  
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -155,7 +155,10 @@ extension RedBlackTreeMultiMap {
     _ = _tree.__insert_multi(newMember)
     return (true, newMember)
   }
-  
+}
+
+extension RedBlackTreeMultiMap {
+
   @inlinable
   @discardableResult
   public mutating func removeValues(forKey key: Key) -> Int {

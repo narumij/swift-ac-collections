@@ -1129,7 +1129,7 @@ extension RedBlackTreeDictionary {
     rethrows -> RedBlackTreeDictionary<Key, T>
   {
     typealias Tree = RedBlackTreeDictionary<Key, T>.Tree
-    var tree: Tree = .create(minimumCapacity: count)
+    var tree: Tree = .create(minimumCapacity: 0)
     var (__parent, __child) = tree.___max_ref()
     for (k, v) in self {
       if let new = try transform(v) {

@@ -920,7 +920,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public func inserting<S>(_ other: __owned S) -> Self where S: Sequence, S.Element == Element {
     var result = self
-    result.merge(other)
+    result.insert(contentsOf: other)
     return result
   }
 }
@@ -975,25 +975,6 @@ extension RedBlackTreeMultiMap {
       }
     }
     return .init(_storage: .init(__tree: tree))
-  }
-}
-
-// MARK: -
-
-extension RedBlackTreeMultiMap {
-  
-  /// multimapに `other` の要素をマージします。
-  @inlinable
-  public mutating func merge<S>(_ other: __owned S) where S: Sequence, S.Element == Element {
-    other.forEach { insert($0) }
-  }
-  
-  /// `self` と `other` をマージした新しいmultimapを返します。
-  @inlinable
-  public func merging<S>(_ other: __owned S) -> Self where S: Sequence, S.Element == Element {
-    var result = self
-    result.merge(other)
-    return result
   }
 }
 

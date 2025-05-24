@@ -6,7 +6,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class RedBlackTreeMultiMapTests: XCTestCase {
+final class RedBlackTreeMultiMapTests_: XCTestCase {
 
     func testRedBlackTreeDictionary_basic() {
         var dict = RedBlackTreeDictionary<String, Int>()

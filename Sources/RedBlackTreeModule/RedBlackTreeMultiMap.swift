@@ -24,7 +24,7 @@ import Foundation
 
 @frozen
 public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
-  
+
   public
     typealias Index = Tree.Pointer
 
@@ -91,11 +91,9 @@ extension RedBlackTreeMultiMap {
       if count == nil {
         Tree.ensureCapacity(tree: &tree)
       }
-      if __parent == .end {
-        // バランシングの計算量がO(log *n*)
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
-        assert(tree.__tree_invariant(tree.__root()))
-      }
+      // バランシングの計算量がO(log *n*)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
+      assert(tree.__tree_invariant(tree.__root()))
     }
     self._storage = .init(__tree: tree)
   }
@@ -139,16 +137,9 @@ extension RedBlackTreeMultiMap {
 
   @inlinable
   @discardableResult
-  public mutating func removeValue(forKey __k: Key) -> Value? {
-    // TODO: FIX ME!
-    let __i = _tree.find(__k)
-    if __i == _tree.end() {
-      return nil
-    }
-    let value = _tree.___element(__i).value
+  public mutating func removeValues(forKey key: Key) -> Int {
     _ensureUnique()
-    _ = _tree.erase(__i)
-    return value
+    return _tree.___erase_multi(key)
   }
 
   @inlinable
@@ -375,87 +366,87 @@ extension RedBlackTreeMultiMap: Sequence {
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeMultiMap: BidirectionalCollection {
-  
+
   @inlinable
   @inline(__always)
   public var startIndex: Index {
     ___index_start()
   }
-  
+
   @inlinable
   @inline(__always)
   public var endIndex: Index {
     ___index_end()
   }
-  
+
   @inlinable
   @inline(__always)
   public var count: Int {
     ___count
   }
-  
+
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     ___distance(from: start.rawValue, to: end.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     ___index(after: i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     ___form_index(after: &i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     ___index(before: i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     ___form_index(before: &i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i.rawValue, offsetBy: distance)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     ___form_index(&i.rawValue, offsetBy: distance)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-  -> Bool
+    -> Bool
   {
     ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
     return _tree[position.rawValue]
   }
-  
+
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
@@ -463,10 +454,531 @@ extension RedBlackTreeMultiMap: BidirectionalCollection {
   }
 }
 
+// MARK: - Range Access
+
+extension RedBlackTreeMultiMap {
+
+  @inlinable
+  public subscript(bounds: Range<Index>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: bounds.lowerBound.rawValue,
+          to: bounds.upperBound.rawValue)
+    )
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
+  /// 範囲 `[lower, upper)` に含まれる要素を返します。
+  @inlinable
+  public subscript(bounds: Range<Key>) -> SubSequence {
+    elements(in: bounds)
+  }
+
+  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
+  /// 範囲 `[lower, upper]` に含まれる要素を返します。
+  @inlinable
+  public subscript(bounds: ClosedRange<Key>) -> SubSequence {
+    elements(in: bounds)
+  }
+}
+
+extension RedBlackTreeMultiMap {
+  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
+  @inlinable
+  public func elements(in range: Range<Key>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: ___ptr_lower_bound(range.lowerBound),
+          to: ___ptr_lower_bound(range.upperBound)))
+  }
+
+  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
+  @inlinable
+  public func elements(in range: ClosedRange<Key>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: ___ptr_lower_bound(range.lowerBound),
+          to: ___ptr_upper_bound(range.upperBound)))
+  }
+}
+
+// MARK: - SubSequence
+
+extension RedBlackTreeMultiMap {
+
+  @frozen
+  public struct SubSequence {
+
+    @usableFromInline
+    internal typealias _SubSequence = Tree.SubSequence
+
+    @usableFromInline
+    internal let _subSequence: _SubSequence
+
+    @inlinable
+    init(_subSequence: _SubSequence) {
+      self._subSequence = _subSequence
+    }
+  }
+}
+
+extension RedBlackTreeMultiMap.SubSequence {
+
+  public typealias Base = RedBlackTreeMultiMap
+  public typealias SubSequence = Self
+  public typealias Index = Base.Index
+  public typealias RawIndex = Base.RawIndex
+  public typealias Element = Base.Element
+  public typealias EnumuratedSequence = Base.EnumuratedSequence
+  public typealias IndexSequence = Base.IndexSequence
+}
+
+extension RedBlackTreeMultiMap.SubSequence: Sequence {
+
+  public struct Iterator: IteratorProtocol {
+    @usableFromInline
+    internal var _iterator: _SubSequence.Iterator
+
+    @inlinable
+    @inline(__always)
+    internal init(_ _iterator: _SubSequence.Iterator) {
+      self._iterator = _iterator
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> Element? {
+      _iterator.next()
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> Iterator {
+    Iterator(_subSequence.makeIterator())
+  }
+
+  #if false
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> AnySequence<EnumElement> {
+      AnySequence {
+        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
+      }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> EnumuratedSequence {
+      EnumuratedSequence(
+        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+    }
+  #endif
+
+  @inlinable
+  @inline(__always)
+  public func indices() -> IndexSequence {
+    IndexSequence(
+      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+  }
+}
+
+extension RedBlackTreeMultiMap.SubSequence: ___RedBlackTreeSubSequenceBase {}
+
+extension RedBlackTreeMultiMap.SubSequence: BidirectionalCollection {
+  @inlinable
+  @inline(__always)
+  public var startIndex: Index {
+    ___start_index
+  }
+
+  @inlinable
+  @inline(__always)
+  public var endIndex: Index {
+    ___end_index
+  }
+
+  @inlinable
+  @inline(__always)
+  public var count: Int {
+    ___count
+  }
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (Element) throws -> Void) rethrows {
+    try ___for_each(body)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func distance(from start: Index, to end: Index) -> Int {
+    ___distance(from: start, to: end)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(after i: Index) -> Index {
+    ___index(after: i)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func formIndex(after i: inout Index) {
+    ___form_index(after: &i)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(before i: Index) -> Index {
+    ___index(before: i)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func formIndex(before i: inout Index) {
+    ___form_index(before: &i)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int) -> Index {
+    ___index(i, offsetBy: distance)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    ___form_index(&i, offsetBy: distance)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+    ___index(i, offsetBy: distance, limitedBy: limit)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
+    -> Bool
+  {
+    ___form_index(&i, offsetBy: distance, limitedBy: limit)
+  }
+
+  @inlinable
+  @inline(__always)
+  public subscript(position: Index) -> Element {
+    _subSequence[position.rawValue]
+  }
+
+  @inlinable
+  @inline(__always)
+  public subscript(position: RawIndex) -> Element {
+    _subSequence[position.rawValue]
+  }
+
+  @inlinable
+  public subscript(bounds: Range<Index>) -> SubSequence {
+    SubSequence(
+      _subSequence:
+        _subSequence[bounds.lowerBound..<bounds.upperBound])
+  }
+}
+
+// MARK: - Enumerated Sequence
+
+extension RedBlackTreeMultiMap {
+
+  #if false
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> AnySequence<EnumElement> {
+      AnySequence { _tree.makeEnumIterator() }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> EnumuratedSequence {
+      EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
+    }
+  #endif
+}
+
+extension RedBlackTreeMultiMap {
+
+  @frozen
+  public struct EnumuratedSequence {
+
+    public typealias Enumurated = Tree.Enumerated
+
+    @usableFromInline
+    internal typealias _SubSequence = Tree.EnumSequence
+
+    @usableFromInline
+    internal let _subSequence: _SubSequence
+
+    @inlinable
+    init(_subSequence: _SubSequence) {
+      self._subSequence = _subSequence
+    }
+  }
+}
+
+extension RedBlackTreeMultiMap.EnumuratedSequence: Sequence {
+
+  public struct Iterator: IteratorProtocol {
+
+    @usableFromInline
+    internal var _iterator: _SubSequence.Iterator
+
+    @inlinable
+    @inline(__always)
+    internal init(_ _iterator: _SubSequence.Iterator) {
+      self._iterator = _iterator
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> Enumurated? {
+      _iterator.next()
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> Iterator {
+    Iterator(_subSequence.makeIterator())
+  }
+}
+
+extension RedBlackTreeMultiMap.EnumuratedSequence {
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (Enumurated) throws -> Void) rethrows {
+    try _subSequence.forEach(body)
+  }
+}
+
+// MARK: - Index Sequence
+
+extension RedBlackTreeMultiMap {
+
+  @inlinable
+  @inline(__always)
+  public func indices() -> IndexSequence {
+    IndexSequence(_subSequence: _tree.indexSubsequence())
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  @frozen
+  public struct IndexSequence {
+
+    public typealias RawPointer = Tree.RawPointer
+
+    @usableFromInline
+    internal typealias _SubSequence = Tree.IndexSequence
+
+    @usableFromInline
+    internal let _subSequence: _SubSequence
+
+    @inlinable
+    init(_subSequence: _SubSequence) {
+      self._subSequence = _subSequence
+    }
+  }
+}
+
+extension RedBlackTreeMultiMap.IndexSequence: Sequence {
+
+  public struct Iterator: IteratorProtocol {
+
+    @usableFromInline
+    internal var _iterator: _SubSequence.Iterator
+
+    @inlinable
+    @inline(__always)
+    internal init(_ _iterator: _SubSequence.Iterator) {
+      self._iterator = _iterator
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> RawPointer? {
+      _iterator.next()
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> Iterator {
+    Iterator(_subSequence.makeIterator())
+  }
+}
+
+extension RedBlackTreeMultiMap.IndexSequence {
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (RawPointer) throws -> Void) rethrows {
+    try _subSequence.forEach(body)
+  }
+}
+
 // MARK: -
 
 extension RedBlackTreeMultiMap {
-  
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index: Index) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index: RawIndex) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
+  }
+}
+
+extension RedBlackTreeMultiMap.SubSequence {
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index i: Index) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index i: RawIndex) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
+  }
+}
+
+// MARK: -
+
+extension RedBlackTreeMultiMap {
+
+  @inlinable
+  @inline(__always)
+  public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
+    _ensureUniqueAndCapacity(to: count + other.count)
+    _tree.__node_handle_merge_multi(other._tree)
+  }
+}
+
+// MARK: -
+
+extension RedBlackTreeMultiMap {
+
+  @inlinable
+  public func filter(
+    _ isIncluded: (Element) throws -> Bool
+  ) rethrows -> Self {
+    var tree: Tree = .create(minimumCapacity: 0)
+    var (__parent, __child) = tree.___max_ref()
+    for pair in self where try isIncluded(pair) {
+      Tree.ensureCapacity(tree: &tree)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, pair)
+      assert(tree.__tree_invariant(tree.__root()))
+    }
+    return Self(_storage: .init(__tree: tree))
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  @inlinable
+  public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
+    -> RedBlackTreeDictionary<Key, T>
+  {
+    typealias Tree = RedBlackTreeDictionary<Key, T>.Tree
+    let tree: Tree = .create(minimumCapacity: count)
+    var (__parent, __child) = tree.___max_ref()
+    for (k, v) in self {
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, try transform(v)))
+      assert(tree.__tree_invariant(tree.__root()))
+    }
+    return .init(_storage: .init(__tree: tree))
+  }
+
+  @inlinable
+  public func compactMapValues<T>(_ transform: (Value) throws -> T?)
+    rethrows -> RedBlackTreeDictionary<Key, T>
+  {
+    typealias Tree = RedBlackTreeDictionary<Key, T>.Tree
+    var tree: Tree = .create(minimumCapacity: count)
+    var (__parent, __child) = tree.___max_ref()
+    for (k, v) in self {
+      if let new = try transform(v) {
+        Tree.ensureCapacity(tree: &tree)
+        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, new))
+        assert(tree.__tree_invariant(tree.__root()))
+      }
+    }
+    return .init(_storage: .init(__tree: tree))
+  }
+}
+
+// MARK: -
+
+extension RedBlackTreeMultiMap {
+
+//  /// 辞書に `other` の要素をマージします。
+//  /// キーが重複したときは `combine` の戻り値を採用します。
+//  @inlinable
+//  public mutating func merge<S>(
+//    _ other: __owned S,
+//    uniquingKeysWith combine: (Value, Value) throws -> Value
+//  ) rethrows where S: Sequence, S.Element == KeyValue {
+//
+//    for (k, v) in other {
+//      if let old = self[k] {
+//        self[k] = try combine(old, v)
+//      } else {
+//        self[k] = v
+//      }
+//    }
+//  }
+//
+//  /// `self` と `other` をマージした新しい辞書を返します。
+//  @inlinable
+//  public func merging<S>(
+//    _ other: __owned S,
+//    uniquingKeysWith combine: (Value, Value) throws -> Value
+//  ) rethrows -> Self where S: Sequence, S.Element == KeyValue {
+//    var result = self
+//    try result.merge(other, uniquingKeysWith: combine)
+//    return result
+//  }
+}
+
+// MARK: -
+
+extension RedBlackTreeMultiMap {
+  /// 最小キーのペアを取り出して削除
+  @inlinable
+  public mutating func popFirst() -> KeyValue? {
+    guard !isEmpty else { return nil }
+    return remove(at: startIndex)
+  }
+}
+
+// MARK: -
+
+extension RedBlackTreeMultiMap {
+
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -491,7 +1003,7 @@ extension RedBlackTreeMultiMap {
 
   @inlinable
   public func values(forKey key: Key) -> [Value] {
-    var (lo,hi) = _tree.__equal_range_multi(key)
+    var (lo, hi) = _tree.__equal_range_multi(key)
     var result = [Value]()
     while lo != hi {
       result.append(_tree.___element(lo).value)
@@ -499,10 +1011,9 @@ extension RedBlackTreeMultiMap {
     }
     return result
   }
-  
+
   @inlinable
   public func value(at ptr: Index) -> Value? {
     return _tree[ptr.rawValue].value
   }
 }
-

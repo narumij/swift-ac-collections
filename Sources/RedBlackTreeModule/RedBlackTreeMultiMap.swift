@@ -1014,14 +1014,14 @@ extension RedBlackTreeMultiMap {
 
   @inlinable
   @inline(__always)
-  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
+  public mutating func insert<S>(_ other: S) where S: Sequence, S.Element == Element {
     other.forEach { insert($0) }
   }
 
   @inlinable
   public func inserting<S>(_ other: __owned S) -> Self where S: Sequence, S.Element == Element {
     var result = self
-    result.insert(contentsOf: other)
+    result.insert(other)
     return result
   }
 }
@@ -1066,7 +1066,7 @@ extension RedBlackTreeMultiMap {
     rethrows -> RedBlackTreeMultiMap<Key, T>
   {
     typealias Tree = RedBlackTreeMultiMap<Key, T>.Tree
-    var tree: Tree = .create(minimumCapacity: count)
+    var tree: Tree = .create(minimumCapacity: 0)
     var (__parent, __child) = tree.___max_ref()
     for (k, v) in self {
       if let new = try transform(v) {

@@ -162,20 +162,6 @@ extension RedBlackTreeMultiDictionary {
 
 extension RedBlackTreeMultiDictionary {
 
-  @discardableResult
-  @inlinable
-  public mutating func updateValue(
-    _ value: Value,
-    forKey key: Key
-  ) -> Value? {
-    _ensureUniqueAndCapacity()
-    let (__r, __inserted) = _tree.__insert_unique((key, value))
-    guard !__inserted else { return nil }
-    let oldMember = _tree[__r]
-    _tree[__r] = (key, value)
-    return oldMember.value
-  }
-
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
@@ -256,6 +242,27 @@ extension RedBlackTreeMultiDictionary {
     let lower = lowerBound(keyRange.lowerBound)
     let upper = upperBound(keyRange.upperBound)
     removeSubrange(lower..<upper)
+  }
+}
+
+extension RedBlackTreeMultiDictionary {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func contains(key: Key) -> Bool {
+    ___contains(key)
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func min() -> Element? {
+    ___min()
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func max() -> Element? {
+    ___max()
   }
 }
 

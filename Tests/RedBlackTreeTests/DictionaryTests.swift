@@ -365,6 +365,13 @@ import XCTest
       XCTAssertEqual(
         studentsByLetter, ["E": ["Efua"], "K": ["Kofi", "Kweku"], "A": ["Abena", "Akosua"]])
     }
+    
+    func testInitGroupingBy2() throws {
+      let students = AnySequence(["Kofi", "Abena", "Efua", "Kweku", "Akosua"])
+      let studentsByLetter = RedBlackTreeDictionary(grouping: students, by: { $0.first! })
+      XCTAssertEqual(
+        studentsByLetter, ["E": ["Efua"], "K": ["Kofi", "Kweku"], "A": ["Abena", "Akosua"]])
+    }
 
     func testUpdate_() throws {
       var dict = [1: 1, 2: 2, 3: 3]
@@ -531,6 +538,11 @@ import XCTest
       set.remove(contentsOf: 2...4)
       XCTAssertEqual(set.map { $0.key }, [1, 5])
       XCTAssertEqual(set.map { $0.value }, ["a", "e"])
+    }
+    
+    func testSubsequence3() throws {
+      let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      XCTAssertEqual(set[1 ... 5].map { $0.key }, [1, 2, 3, 4, 5])
     }
 
     func testSubsequence4() throws {
@@ -886,6 +898,17 @@ import XCTest
       let maxPair = dict.max()
       XCTAssertEqual(maxPair?.key, "c")
       XCTAssertEqual(maxPair?.value, 3)
+    }
+    
+    func testPopFirst() {
+      do {
+        var d = RedBlackTreeDictionary<Int,Int>()
+        XCTAssertNil(d.popFirst())
+      }
+      do {
+        var d: RedBlackTreeDictionary<Int,Int> = [1:1]
+        XCTAssertEqual(d.popFirst()?.value, 1)
+      }
     }
   }
 #endif

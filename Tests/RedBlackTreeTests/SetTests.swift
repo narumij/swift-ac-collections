@@ -622,12 +622,10 @@ final class SetTests: XCTestCase {
   }
   
   func testSubsequence3() throws {
-//    let set = [1, 2, 3, 4, 5]
-//    let sub = set[1 ..< 3]
-    throw XCTSkip("Fatal error: ArraySlice index is out of range (before startIndex)")
-//    XCTAssertNotEqual(sub[0 ..< 6], [1, 2, 3, 4, 5])
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    XCTAssertEqual(set[1 ... 5].map { $0 }, [1, 2, 3, 4, 5])
   }
-  
+
   func testSubsequence4() throws {
 //    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
 //    let sub = set.elements(in: 1 ..< 3)
@@ -915,6 +913,17 @@ final class SetTests: XCTestCase {
     XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: 6)))
     XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: 7)))
 #endif
+  }
+  
+  func testPopFirst() {
+    do {
+      var d = RedBlackTreeSet<Int>()
+      XCTAssertNil(d.popFirst())
+    }
+    do {
+      var d: RedBlackTreeSet<Int> = [1]
+      XCTAssertEqual(d.popFirst(), 1)
+    }
   }
 }
 

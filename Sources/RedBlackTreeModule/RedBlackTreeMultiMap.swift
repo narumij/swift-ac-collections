@@ -511,11 +511,11 @@ extension RedBlackTreeMultiMap {
 // MARK: - SubSequence
 
 extension RedBlackTreeMultiMap {
-  
+
   @inlinable
   @inline(__always)
   public subscript(key: Key) -> SubSequence {
-    let (lo,hi) = self.___equal_range(key)
+    let (lo, hi) = self.___equal_range(key)
     return SubSequence(
       _subSequence:
         _tree.subsequence(
@@ -577,30 +577,6 @@ extension RedBlackTreeMultiMap.SubSequence: Sequence {
   @inline(__always)
   public __consuming func makeIterator() -> Iterator {
     Iterator(_subSequence.makeIterator())
-  }
-
-  #if false
-    @inlinable
-    @inline(__always)
-    public func enumerated() -> AnySequence<EnumElement> {
-      AnySequence {
-        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
-      }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(
-        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
-    }
-  #endif
-
-  @inlinable
-  @inline(__always)
-  public func indices() -> IndexSequence {
-    IndexSequence(
-      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
   }
 }
 
@@ -726,6 +702,26 @@ extension RedBlackTreeMultiMap {
   #endif
 }
 
+extension RedBlackTreeMultiMap.SubSequence {
+
+  #if false
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> AnySequence<EnumElement> {
+      AnySequence {
+        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
+      }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> EnumuratedSequence {
+      EnumuratedSequence(
+        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+    }
+  #endif
+}
+
 extension RedBlackTreeMultiMap {
 
   @frozen
@@ -790,6 +786,16 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   public func indices() -> IndexSequence {
     IndexSequence(_subSequence: _tree.indexSubsequence())
+  }
+}
+
+extension RedBlackTreeMultiMap.SubSequence {
+
+  @inlinable
+  @inline(__always)
+  public func indices() -> IndexSequence {
+    IndexSequence(
+      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
   }
 }
 
@@ -950,33 +956,33 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-//  /// 辞書に `other` の要素をマージします。
-//  /// キーが重複したときは `combine` の戻り値を採用します。
-//  @inlinable
-//  public mutating func merge<S>(
-//    _ other: __owned S,
-//    uniquingKeysWith combine: (Value, Value) throws -> Value
-//  ) rethrows where S: Sequence, S.Element == KeyValue {
-//
-//    for (k, v) in other {
-//      if let old = self[k] {
-//        self[k] = try combine(old, v)
-//      } else {
-//        self[k] = v
-//      }
-//    }
-//  }
-//
-//  /// `self` と `other` をマージした新しい辞書を返します。
-//  @inlinable
-//  public func merging<S>(
-//    _ other: __owned S,
-//    uniquingKeysWith combine: (Value, Value) throws -> Value
-//  ) rethrows -> Self where S: Sequence, S.Element == KeyValue {
-//    var result = self
-//    try result.merge(other, uniquingKeysWith: combine)
-//    return result
-//  }
+  //  /// 辞書に `other` の要素をマージします。
+  //  /// キーが重複したときは `combine` の戻り値を採用します。
+  //  @inlinable
+  //  public mutating func merge<S>(
+  //    _ other: __owned S,
+  //    uniquingKeysWith combine: (Value, Value) throws -> Value
+  //  ) rethrows where S: Sequence, S.Element == KeyValue {
+  //
+  //    for (k, v) in other {
+  //      if let old = self[k] {
+  //        self[k] = try combine(old, v)
+  //      } else {
+  //        self[k] = v
+  //      }
+  //    }
+  //  }
+  //
+  //  /// `self` と `other` をマージした新しい辞書を返します。
+  //  @inlinable
+  //  public func merging<S>(
+  //    _ other: __owned S,
+  //    uniquingKeysWith combine: (Value, Value) throws -> Value
+  //  ) rethrows -> Self where S: Sequence, S.Element == KeyValue {
+  //    var result = self
+  //    try result.merge(other, uniquingKeysWith: combine)
+  //    return result
+  //  }
 }
 
 // MARK: -

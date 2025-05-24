@@ -270,6 +270,16 @@ import XCTest
       XCTAssertEqual(dict[2], 20)
       XCTAssertEqual(dict[3], nil)
     }
+    
+    func testInitUniqueKeysWithValues2() throws {
+      let dict = RedBlackTreeDictionary(uniqueKeysWithValues: AnySequence([(1, 10), (2, 20)]))
+      XCTAssertEqual(dict.keys.sorted(), [1, 2])
+      XCTAssertEqual(dict.values.sorted(), [10, 20])
+      XCTAssertEqual(dict[0], nil)
+      XCTAssertEqual(dict[1], 10)
+      XCTAssertEqual(dict[2], 20)
+      XCTAssertEqual(dict[3], nil)
+    }
 
     func testInitUniquingKeysWith_() throws {
       do {
@@ -308,6 +318,31 @@ import XCTest
       do {
         let dict = RedBlackTreeDictionary(
           [(1, 10), (1, 11), (2, 20), (2, 22)], uniquingKeysWith: { a, _ in a })
+        XCTAssertEqual(dict.keys.sorted(), [1, 2])
+        XCTAssertEqual(dict.values.sorted(), [10, 20])
+        XCTAssertEqual(dict[0], nil)
+        XCTAssertEqual(dict[1], 10)
+        XCTAssertEqual(dict[2], 20)
+        XCTAssertEqual(dict[3], nil)
+      }
+    }
+    
+    func testInitUniquingKeysWith2() throws {
+      do {
+        let dict = RedBlackTreeDictionary(
+          AnySequence([(1, 10), (1, 11), (2, 20), (2, 22)]),
+          uniquingKeysWith: { _, b in b })
+        XCTAssertEqual(dict.keys.sorted(), [1, 2])
+        XCTAssertEqual(dict.values.sorted(), [11, 22])
+        XCTAssertEqual(dict[0], nil)
+        XCTAssertEqual(dict[1], 11)
+        XCTAssertEqual(dict[2], 22)
+        XCTAssertEqual(dict[3], nil)
+      }
+      do {
+        let dict = RedBlackTreeDictionary(
+          AnySequence([(1, 10), (1, 11), (2, 20), (2, 22)]),
+          uniquingKeysWith: { a, _ in a })
         XCTAssertEqual(dict.keys.sorted(), [1, 2])
         XCTAssertEqual(dict.values.sorted(), [10, 20])
         XCTAssertEqual(dict[0], nil)
@@ -499,10 +534,10 @@ import XCTest
     }
 
     func testSubsequence4() throws {
-      let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-      let sub = set[1..<3]
+//      let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+//      let sub = set[1..<3]
       throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
-      XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
+//      XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
     }
 
     func testSubsequence5() throws {

@@ -135,6 +135,16 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
   
+  @inlinable
+  @discardableResult
+  public mutating func insert(key: _Key, value: Value) -> (
+    inserted: Bool, memberAfterInsert: Element
+  ) {
+    _ensureUniqueAndCapacity()
+    _ = _tree.__insert_multi((key, value))
+    return (true, (key, value))
+  }
+
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -145,7 +155,7 @@ extension RedBlackTreeMultiMap {
     _ = _tree.__insert_multi(newMember)
     return (true, newMember)
   }
-
+  
   @inlinable
   @discardableResult
   public mutating func removeValues(forKey key: Key) -> Int {
@@ -167,8 +177,7 @@ extension RedBlackTreeMultiMap {
     var (lo,hi) = _tree.__equal_range_multi(member.key)
     while lo != hi {
       if _tree[lo].value == member.value {
-        _ = _tree.__remove_node_pointer(lo)
-        _tree.destroy(lo)
+        _ = _tree.erase(lo)
         return member
       }
       lo = _tree.__tree_next(lo)
@@ -1041,20 +1050,6 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @discardableResult
-  public mutating func insert(key: _Key, value: Value) -> (
-    inserted: Bool, memberAfterInsert: Element
-  ) {
-    _ensureUniqueAndCapacity()
-    _ = _tree.__insert_multi((key, value))
-    return (true, (key, value))
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
   @inlinable
   public func values(forKey key: Key) -> [Value] {
     var (lo, hi) = _tree.__equal_range_multi(key)
@@ -1064,5 +1059,15 @@ extension RedBlackTreeMultiMap {
       lo = _tree.__tree_next(lo)
     }
     return result
+  }
+}
+
+// MARK: -
+
+extension RedBlackTreeMultiMap {
+
+  @inlinable
+  public func equalRange(_ key: Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+    ___equal_range(key)
   }
 }

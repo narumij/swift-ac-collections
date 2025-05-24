@@ -6,24 +6,6 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-#if DEBUG
-#else
-  extension _NodePtr {
-
-    /// 赤黒木のIndexで、nullを表す
-    @inlinable
-    static var nullptr: Self { -1 }
-
-    /// 赤黒木のIndexで、終端を表す
-    @inlinable
-    static var end: Self { -2 }
-
-    /// 数値を直接扱うことを避けるための初期化メソッド
-    @inlinable
-    static func node(_ p: Int) -> Self { p }
-  }
-#endif
-
 #if true
   extension Optional where Wrapped == Int {
     fileprivate mutating func hoge() {

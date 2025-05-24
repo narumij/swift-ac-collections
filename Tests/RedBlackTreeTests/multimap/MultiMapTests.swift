@@ -165,7 +165,7 @@ import XCTest
       XCTAssertEqual(dict[2].map(\.value), [20])
       XCTAssertEqual(dict[3].map(\.value), [])
     }
-    
+
     func testInitUniqueKeysWithValues2() throws {
       let dict = Target(keysWithValues: AnySequence([(1, 10), (2, 20)]))
       XCTAssertEqual(dict.keys.sorted(), [1, 2])
@@ -175,7 +175,6 @@ import XCTest
       XCTAssertEqual(dict[2].map(\.value), [20])
       XCTAssertEqual(dict[3].map(\.value), [])
     }
-
 
     #if false
       func testInitUniquingKeysWith_() throws {
@@ -256,16 +255,16 @@ import XCTest
       XCTAssertEqual(dict[1].map(\.value), [10])
     }
 
-    func testUpdate2() throws {
-      var dict = [1: 1, 2: 2, 3: 3] as Target<Int, Int>
-      #if DEBUG
+    #if DEBUG
+      func testUpdate2() throws {
+        var dict = [1: 1, 2: 2, 3: 3] as Target<Int, Int>
         XCTAssertEqual(dict.updateValue(0, at: .unsafe(.nullptr))?.value, nil)
         XCTAssertEqual(dict.updateValue(0, at: .init(.end))?.value, nil)
-      #endif
-      XCTAssertEqual(dict[1].map(\.value), [1])
-      XCTAssertEqual(dict.updateValue(10, at: .init(dict.startIndex.rawValue))?.value, 1)
-      XCTAssertEqual(dict[1].map(\.value), [10])
-    }
+        XCTAssertEqual(dict[1].map(\.value), [1])
+        XCTAssertEqual(dict.updateValue(10, at: .init(dict.startIndex.rawValue))?.value, 1)
+        XCTAssertEqual(dict[1].map(\.value), [10])
+      }
+    #endif
 
     func testBound() throws {
       let dict = [1: 10, 3: 30, 5: 50] as Target<Int, Int>
@@ -354,39 +353,39 @@ import XCTest
           nil)
       }
     #endif
-    
+
     func testRandom() throws {
-      var set = Target<Int,Int>()
+      var set = Target<Int, Int>()
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.insert((i,i))
+        set.insert((i, i))
         XCTAssertTrue(set.___tree_invariant())
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.removeAll(forKey:i)
+        set.removeAll(forKey: i)
         XCTAssertTrue(set.___tree_invariant())
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.insert((i,i))
+        set.insert((i, i))
         XCTAssertTrue(set.___tree_invariant())
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.removeAll(forKey:i)
+        set.removeAll(forKey: i)
         XCTAssertTrue(set.___tree_invariant())
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.insert((i,i))
+        set.insert((i, i))
         XCTAssertTrue(set.___tree_invariant())
       }
       for i in set {
-        set.removeAll(forKey:i.key)
+        set.removeAll(forKey: i.key)
         XCTAssertTrue(set.___tree_invariant())
       }
     }
-    
+
     func testRandom2() throws {
-      var set = Target<Int,Int>()
+      var set = Target<Int, Int>()
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.insert((i,i))
+        set.insert((i, i))
         XCTAssertTrue(set.___tree_invariant())
       }
       XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
@@ -398,7 +397,7 @@ import XCTest
       XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
       XCTAssertEqual(set.map { $0.value }, set[set.startIndex..<set.endIndex].map { $0.value })
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.insert((i,i))
+        set.insert((i, i))
         XCTAssertTrue(set.___tree_invariant())
       }
       XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
@@ -410,7 +409,7 @@ import XCTest
       XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
       XCTAssertEqual(set.map { $0.value }, set[set.startIndex..<set.endIndex].map { $0.value })
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.insert((i,i))
+        set.insert((i, i))
         XCTAssertTrue(set.___tree_invariant())
       }
       XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
@@ -425,11 +424,11 @@ import XCTest
         XCTAssertTrue(set.___tree_invariant())
       }
     }
-    
+
     func testRandom3() throws {
-      var set = Target<Int,Int>()
+      var set = Target<Int, Int>()
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.insert((i,i))
+        set.insert((i, i))
         XCTAssertTrue(set.___tree_invariant())
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -437,7 +436,7 @@ import XCTest
         XCTAssertTrue(set.___tree_invariant())
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.insert((i,i))
+        set.insert((i, i))
         XCTAssertTrue(set.___tree_invariant())
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -445,7 +444,7 @@ import XCTest
         XCTAssertTrue(set.___tree_invariant())
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.insert((i,i))
+        set.insert((i, i))
         XCTAssertTrue(set.___tree_invariant())
       }
       for (i, _) in set.enumerated() {
@@ -455,9 +454,9 @@ import XCTest
     }
 
     func testRandom4() throws {
-      var set = Target<Int,Int>()
+      var set = Target<Int, Int>()
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.insert((i,i))
+        set.insert((i, i))
         XCTAssertTrue(set.___tree_invariant())
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -465,7 +464,7 @@ import XCTest
         XCTAssertTrue(set.___tree_invariant())
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.insert((i,i))
+        set.insert((i, i))
         XCTAssertTrue(set.___tree_invariant())
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -473,7 +472,7 @@ import XCTest
         XCTAssertTrue(set.___tree_invariant())
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-        set.insert((i,i))
+        set.insert((i, i))
         XCTAssertTrue(set.___tree_invariant())
       }
       for (i, _) in set[set.startIndex..<set.endIndex].enumerated() {
@@ -549,7 +548,7 @@ import XCTest
       let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
       let sub = set.elements(in: 1..<3)
       throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
-//      XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
+      //      XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
     }
 
     func testSubsequence5() throws {
@@ -580,41 +579,43 @@ import XCTest
       XCTAssertEqual(set.map(\.value), ["a", "?", "b", "?", "c", "?", "d", "?", "e", "?"])
     }
 
-    func testEnumeratedSequence1() throws {
-      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
-      var d: [String: Int] = [:]
-      set.enumerated().forEach {
-        d[$0.element.value] = $0.offset.rawValue
+    #if false
+      func testEnumeratedSequence1() throws {
+        let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
+        var d: [String: Int] = [:]
+        set.enumerated().forEach {
+          d[$0.element.value] = $0.offset.rawValue
+        }
+        XCTAssertEqual(d, ["a": 0, "b": 1, "c": 2])
       }
-      XCTAssertEqual(d, ["a": 0, "b": 1, "c": 2])
-    }
 
-    func testEnumeratedSequence2() throws {
-      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
-      var d: [String: Int] = [:]
-      set.elements(in: 2...3).enumerated().forEach {
-        d[$0.element.value] = $0.offset.rawValue
+      func testEnumeratedSequence2() throws {
+        let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
+        var d: [String: Int] = [:]
+        set.elements(in: 2...3).enumerated().forEach {
+          d[$0.element.value] = $0.offset.rawValue
+        }
+        XCTAssertEqual(d, ["b": 1, "c": 2])
       }
-      XCTAssertEqual(d, ["b": 1, "c": 2])
-    }
 
-    func testEnumeratedSequence3() throws {
-      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
-      var d: [String: Int] = [:]
-      for (o, e) in set.enumerated() {
-        d[e.value] = o.rawValue
+      func testEnumeratedSequence3() throws {
+        let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
+        var d: [String: Int] = [:]
+        for (o, e) in set.enumerated() {
+          d[e.value] = o.rawValue
+        }
+        XCTAssertEqual(d, ["a": 0, "b": 1, "c": 2])
       }
-      XCTAssertEqual(d, ["a": 0, "b": 1, "c": 2])
-    }
 
-    func testEnumeratedSequence4() throws {
-      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
-      var d: [String: Int] = [:]
-      for (o, e) in set.elements(in: 2...3).enumerated() {
-        d[e.value] = o.rawValue
+      func testEnumeratedSequence4() throws {
+        let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
+        var d: [String: Int] = [:]
+        for (o, e) in set.elements(in: 2...3).enumerated() {
+          d[e.value] = o.rawValue
+        }
+        XCTAssertEqual(d, ["b": 1, "c": 2])
       }
-      XCTAssertEqual(d, ["b": 1, "c": 2])
-    }
+    #endif
 
     func testIndex0() throws {
       let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]

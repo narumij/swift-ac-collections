@@ -40,7 +40,7 @@ final class RedBlackTreeMultiMapTests_: XCTestCase {
         multiDict.insert(key: "apple", value: 3)
         multiDict.insert(key: "banana", value: 2)
 
-        let (lower, upper) = multiDict.___equal_range("apple")
+        let (lower, upper) = multiDict.equalRange("apple")
         var result: [Int] = []
         var it = lower
         while it != upper {

@@ -136,7 +136,7 @@ import XCTest
         XCTAssertEqual(map[RawIndex(0)].key, 1)
         XCTAssertEqual(map[RawIndex(0)].value, 10)
         XCTAssertEqual(map[2..<3][RawIndex(1)].key, 2)
-        XCTAssertEqual(map[2..<3][RawIndex(1)].value, 10)
+        XCTAssertEqual(map.elements(in: 2..<3)[RawIndex(1)].value, 10)
       }
     #endif
 
@@ -165,6 +165,17 @@ import XCTest
       XCTAssertEqual(dict[2].map(\.value), [20])
       XCTAssertEqual(dict[3].map(\.value), [])
     }
+    
+    func testInitUniqueKeysWithValues2() throws {
+      let dict = Target(keysWithValues: AnySequence([(1, 10), (2, 20)]))
+      XCTAssertEqual(dict.keys.sorted(), [1, 2])
+      XCTAssertEqual(dict.values.sorted(), [10, 20])
+      XCTAssertEqual(dict[0].map(\.value), [])
+      XCTAssertEqual(dict[1].map(\.value), [10])
+      XCTAssertEqual(dict[2].map(\.value), [20])
+      XCTAssertEqual(dict[3].map(\.value), [])
+    }
+
 
     #if false
       func testInitUniquingKeysWith_() throws {
@@ -379,7 +390,7 @@ import XCTest
 
     func testSubsequence() throws {
       var set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-      let sub = set[2..<4]
+      let sub = set.elements(in: 2..<4)
       XCTAssertEqual(sub[set.lowerBound(2)].value, "b")
       XCTAssertEqual(sub[set.lowerBound(3)].value, "c")
       XCTAssertEqual(set.lowerBound(4), sub.endIndex)
@@ -394,7 +405,7 @@ import XCTest
 
     func testSubsequence2() throws {
       var set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-      let sub = set[2...4]
+      let sub = set.elements(in: 2...4)
       XCTAssertEqual(sub[set.lowerBound(2)].value, "b")
       XCTAssertEqual(sub[set.upperBound(3)].value, "d")
       XCTAssertEqual(set.lowerBound(5), sub.endIndex)
@@ -409,14 +420,14 @@ import XCTest
 
     func testSubsequence4() throws {
       let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-      let sub = set[1..<3]
+      let sub = set.elements(in: 1..<3)
       throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
-      XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
+//      XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
     }
 
     func testSubsequence5() throws {
       let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-      let sub = set[1..<3]
+      let sub = set.elements(in: 1..<3)
       XCTAssertEqual(sub[set.lowerBound(1)..<set.lowerBound(3)].map { $0.key }, [1, 2])
       XCTAssertEqual(sub[sub.startIndex..<sub.endIndex].map { $0.key }, [1, 2])
       XCTAssertEqual(sub[sub.startIndex..<sub.index(before: sub.endIndex)].map { $0.key }, [1])
@@ -454,7 +465,7 @@ import XCTest
     func testEnumeratedSequence2() throws {
       let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
       var d: [String: Int] = [:]
-      set[2...3].enumerated().forEach {
+      set.elements(in: 2...3).enumerated().forEach {
         d[$0.element.value] = $0.offset.rawValue
       }
       XCTAssertEqual(d, ["b": 1, "c": 2])
@@ -472,7 +483,7 @@ import XCTest
     func testEnumeratedSequence4() throws {
       let set: Target<Int, String> = [1: "a", 2: "b", 3: "c"]
       var d: [String: Int] = [:]
-      for (o, e) in set[2...3].enumerated() {
+      for (o, e) in set.elements(in: 2...3).enumerated() {
         d[e.value] = o.rawValue
       }
       XCTAssertEqual(d, ["b": 1, "c": 2])
@@ -527,7 +538,7 @@ import XCTest
         }
         XCTAssertEqual(i, set.startIndex)
       }
-      let sub = set[2..<5]
+      let sub = set.elements(in: 2..<5)
       do {
         var i = sub.startIndex
         for j in 0..<sub.count {
@@ -578,7 +589,7 @@ import XCTest
         }
         XCTAssertEqual(i, set.startIndex)
       }
-      let sub = set[2..<5]
+      let sub = set.elements(in: 2..<5)
       do {
         var i = sub.startIndex
         for j in 0..<sub.count {
@@ -608,7 +619,7 @@ import XCTest
       let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
       XCTAssertEqual(set.index(set.startIndex, offsetBy: 6), set.endIndex)
       XCTAssertEqual(set.index(set.endIndex, offsetBy: -6), set.startIndex)
-      let sub = set[2..<5]
+      let sub = set.elements(in: 2..<5)
       XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
       XCTAssertEqual(sub.index(sub.startIndex, offsetBy: 3), sub.endIndex)
       XCTAssertEqual(sub.index(sub.endIndex, offsetBy: -3), sub.startIndex)
@@ -620,7 +631,7 @@ import XCTest
       XCTAssertNil(set.index(set.startIndex, offsetBy: 7, limitedBy: set.endIndex))
       XCTAssertNotNil(set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex))
       XCTAssertNil(set.index(set.endIndex, offsetBy: -7, limitedBy: set.startIndex))
-      let sub = set[2..<5]
+      let sub = set.elements(in: 2..<5)
       XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
       XCTAssertNotNil(sub.index(sub.startIndex, offsetBy: 3, limitedBy: sub.endIndex))
       XCTAssertNil(sub.index(sub.startIndex, offsetBy: 4, limitedBy: sub.endIndex))
@@ -638,7 +649,7 @@ import XCTest
       XCTAssertTrue(set.formIndex(&i, offsetBy: -6, limitedBy: set.startIndex))
       i = set.endIndex
       XCTAssertFalse(set.formIndex(&i, offsetBy: -7, limitedBy: set.startIndex))
-      let sub = set[2..<5]
+      let sub = set.elements(in: 2..<5)
       XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
       i = sub.startIndex
       XCTAssertTrue(sub.formIndex(&i, offsetBy: 3, limitedBy: sub.endIndex))
@@ -658,7 +669,7 @@ import XCTest
       i = set.endIndex
       set.formIndex(&i, offsetBy: -6)
       XCTAssertEqual(i, set.startIndex)
-      let sub = set[2..<5]
+      let sub = set.elements(in: 2..<5)
       XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
       i = sub.startIndex
       sub.formIndex(&i, offsetBy: 3)
@@ -702,7 +713,7 @@ import XCTest
       let _set: Target<Int, String> = [
         1: "a", 2: "b", 3: "c", 4: "d", 5: "e", 6: "f", 7: "g",
       ]
-      let set = _set[2..<6]
+      let set = _set.elements(in: 2..<6)
       XCTAssertTrue(set.isValid(index: set.startIndex))
       XCTAssertTrue(set.isValid(index: set.endIndex))
       typealias Index = Target<Int, String>.Index

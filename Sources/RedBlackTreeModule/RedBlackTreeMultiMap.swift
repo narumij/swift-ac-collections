@@ -23,7 +23,7 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeMultiDictionary<Key: Comparable, Value> {
+public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
   
   public
     typealias Index = Tree.Pointer
@@ -55,16 +55,16 @@ public struct RedBlackTreeMultiDictionary<Key: Comparable, Value> {
   }
 }
 
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
   public typealias RawIndex = Tree.RawPointer
 }
 
-extension RedBlackTreeMultiDictionary: ___RedBlackTreeBase {}
-extension RedBlackTreeMultiDictionary: ___RedBlackTreeStorageLifetime {}
-extension RedBlackTreeMultiDictionary: ___RedBlackTreeEqualRangeMulti {}
-extension RedBlackTreeMultiDictionary: KeyValueComparer {}
+extension RedBlackTreeMultiMap: ___RedBlackTreeBase {}
+extension RedBlackTreeMultiMap: ___RedBlackTreeStorageLifetime {}
+extension RedBlackTreeMultiMap: ___RedBlackTreeEqualRangeMulti {}
+extension RedBlackTreeMultiMap: KeyValueComparer {}
 
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
 
   @inlinable @inline(__always)
   public init() {
@@ -77,7 +77,7 @@ extension RedBlackTreeMultiDictionary {
   }
 }
 
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
 
   @inlinable
   public init<S>(keysWithValues keysAndValues: __owned S)
@@ -101,32 +101,7 @@ extension RedBlackTreeMultiDictionary {
   }
 }
 
-extension RedBlackTreeMultiDictionary {
-
-  @inlinable
-  public init<S>(
-    _ keysAndValues: __owned S
-  ) where S: Sequence, S.Element == (Key, Value) {
-    let count = (keysAndValues as? (any Collection))?.count
-    var tree: Tree = .create(minimumCapacity: count ?? 0)
-    // 初期化直後はO(1)
-    var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
-    for __k in keysAndValues.sorted(by: { $0.0 < $1.0 }) {
-      if count == nil {
-        Tree.ensureCapacity(tree: &tree)
-      }
-      if __parent == .end {
-        // バランシングの計算量がO(log *n*)
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
-        assert(tree.__tree_invariant(tree.__root()))
-      }
-    }
-    self._storage = .init(__tree: tree)
-  }
-}
-
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
 
   /// - 計算量: O(1)
   @inlinable
@@ -141,7 +116,7 @@ extension RedBlackTreeMultiDictionary {
   }
 }
 
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
@@ -149,7 +124,7 @@ extension RedBlackTreeMultiDictionary {
   }
 }
 
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
 
   public var keys: Keys {
     map(\.key)
@@ -160,11 +135,12 @@ extension RedBlackTreeMultiDictionary {
   }
 }
 
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
 
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
+    // TODO: FIX ME!
     let __i = _tree.find(__k)
     if __i == _tree.end() {
       return nil
@@ -226,7 +202,7 @@ extension RedBlackTreeMultiDictionary {
   }
 }
 
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
 
   @inlinable
   @inline(__always)
@@ -245,7 +221,7 @@ extension RedBlackTreeMultiDictionary {
   }
 }
 
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(log *n*)
   @inlinable
@@ -266,7 +242,7 @@ extension RedBlackTreeMultiDictionary {
   }
 }
 
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
 
   @inlinable
   public func lowerBound(_ p: Key) -> Index {
@@ -279,7 +255,7 @@ extension RedBlackTreeMultiDictionary {
   }
 }
 
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
 
   @inlinable
   public var first: Element? {
@@ -307,7 +283,7 @@ extension RedBlackTreeMultiDictionary {
   }
 }
 
-extension RedBlackTreeMultiDictionary: ExpressibleByDictionaryLiteral {
+extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
 
   @inlinable
   public init(dictionaryLiteral elements: (Key, Value)...) {
@@ -315,7 +291,7 @@ extension RedBlackTreeMultiDictionary: ExpressibleByDictionaryLiteral {
   }
 }
 
-extension RedBlackTreeMultiDictionary: ExpressibleByArrayLiteral {
+extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
 
   /// `[("key", value), ...]` 形式のリテラルから辞書を生成します。
   ///
@@ -333,7 +309,7 @@ extension RedBlackTreeMultiDictionary: ExpressibleByArrayLiteral {
   }
 }
 
-extension RedBlackTreeMultiDictionary: CustomStringConvertible, CustomDebugStringConvertible {
+extension RedBlackTreeMultiMap: CustomStringConvertible, CustomDebugStringConvertible {
 
   // MARK: - CustomStringConvertible
 
@@ -353,7 +329,7 @@ extension RedBlackTreeMultiDictionary: CustomStringConvertible, CustomDebugStrin
 
 // MARK: - Equatable
 
-extension RedBlackTreeMultiDictionary: Equatable where Value: Equatable {
+extension RedBlackTreeMultiMap: Equatable where Value: Equatable {
 
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -363,7 +339,7 @@ extension RedBlackTreeMultiDictionary: Equatable where Value: Equatable {
 
 // MARK: - Sequence
 
-extension RedBlackTreeMultiDictionary: Sequence {
+extension RedBlackTreeMultiMap: Sequence {
 
   @inlinable
   @inline(__always)
@@ -378,7 +354,7 @@ extension RedBlackTreeMultiDictionary: Sequence {
 
     @inlinable
     @inline(__always)
-    internal init(_base: RedBlackTreeMultiDictionary) {
+    internal init(_base: RedBlackTreeMultiMap) {
       self._iterator = _base._tree.makeIterator()
     }
 
@@ -394,33 +370,11 @@ extension RedBlackTreeMultiDictionary: Sequence {
   public __consuming func makeIterator() -> Iterator {
     return Iterator(_base: self)
   }
-
-#if false
-  #if false
-    @inlinable
-    @inline(__always)
-    public func enumerated() -> AnySequence<EnumElement> {
-      AnySequence { _tree.makeEnumIterator() }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
-    }
-  #endif
-
-  @inlinable
-  @inline(__always)
-  public func indices() -> IndexSequence {
-    IndexSequence(_subSequence: _tree.indexSubsequence())
-  }
-#endif
 }
 
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeMultiDictionary: BidirectionalCollection {
+extension RedBlackTreeMultiMap: BidirectionalCollection {
   
   @inlinable
   @inline(__always)
@@ -511,7 +465,7 @@ extension RedBlackTreeMultiDictionary: BidirectionalCollection {
 
 // MARK: -
 
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
   
   /// - Complexity: O(log *n*)
   @inlinable
@@ -525,7 +479,7 @@ extension RedBlackTreeMultiDictionary {
   }
 }
 
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
 
   @inlinable
   public func count(forKey key: Key) -> Int {
@@ -533,7 +487,7 @@ extension RedBlackTreeMultiDictionary {
   }
 }
 
-extension RedBlackTreeMultiDictionary {
+extension RedBlackTreeMultiMap {
 
   @inlinable
   public func values(forKey key: Key) -> [Value] {

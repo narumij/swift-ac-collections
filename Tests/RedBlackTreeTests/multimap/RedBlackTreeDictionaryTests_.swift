@@ -6,7 +6,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class RedBlackTreeDictionaryTests: XCTestCase {
+final class RedBlackTreeMultiMapTests: XCTestCase {
 
     func testRedBlackTreeDictionary_basic() {
         var dict = RedBlackTreeDictionary<String, Int>()
@@ -20,7 +20,7 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     }
 
     func testRedBlackTreeMultiDictionary_basic() {
-        var multiDict = RedBlackTreeMultiDictionary<String, Int>()
+        var multiDict = RedBlackTreeMultiMap<String, Int>()
         multiDict.insert(key: "apple", value: 1)
         multiDict.insert(key: "apple", value: 3)
         multiDict.insert(key: "banana", value: 2)
@@ -35,7 +35,7 @@ final class RedBlackTreeDictionaryTests: XCTestCase {
     }
 
     func testRedBlackTreeMultiDictionary_equalRange() {
-        var multiDict = RedBlackTreeMultiDictionary<String, Int>()
+        var multiDict = RedBlackTreeMultiMap<String, Int>()
         multiDict.insert(key: "apple", value: 1)
         multiDict.insert(key: "apple", value: 3)
         multiDict.insert(key: "banana", value: 2)

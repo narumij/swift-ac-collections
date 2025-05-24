@@ -149,8 +149,30 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @discardableResult
   public mutating func removeValues(forKey key: Key) -> Int {
+    _strongEnsureUnique()
+    return _tree.___erase_multi(key)
+  }
+  
+  @inlinable
+  @discardableResult
+  public mutating func removeValues(_unsafeForKey key: Key) -> Int {
     _ensureUnique()
     return _tree.___erase_multi(key)
+  }
+
+  @inlinable
+  @discardableResult
+  public mutating func remove(_ member: Element) -> Element? where Value: Equatable {
+    _strongEnsureUnique()
+    var (lo,hi) = _tree.__equal_range_multi(member.key)
+    while lo != hi {
+      if _tree[lo].value == member.value {
+        _ = _tree.__remove_node_pointer(lo)
+        return member
+      }
+      lo = _tree.__tree_next(lo)
+    }
+    return nil
   }
 
   @inlinable
@@ -287,6 +309,25 @@ extension RedBlackTreeMultiMap {
   }
 }
 
+extension RedBlackTreeMultiMap {
+
+  @inlinable
+  public func sorted() -> [Element] {
+    _tree.___sorted
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(log *n* + *k*)
+  @inlinable
+  public func count(forKey key: Key) -> Int {
+    _tree.__count_multi(key)
+  }
+}
+
+// MARK: - ExpressibleByDictionaryLiteral
+
 extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
 
   @inlinable
@@ -294,6 +335,8 @@ extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
     self.init(keysWithValues: elements)
   }
 }
+
+// MARK: - ExpressibleByArrayLiteral
 
 extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
 
@@ -313,17 +356,21 @@ extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
   }
 }
 
-extension RedBlackTreeMultiMap: CustomStringConvertible, CustomDebugStringConvertible {
+// MARK: - CustomStringConvertible
 
-  // MARK: - CustomStringConvertible
-
+extension RedBlackTreeMultiMap: CustomStringConvertible {
+  
   @inlinable
   public var description: String {
     let pairs = map { "\($0.key): \($0.value)" }
     return "[\(pairs.joined(separator: ", "))]"
   }
+  
+}
 
-  // MARK: - CustomDebugStringConvertible
+// MARK: - CustomDebugStringConvertible
+
+extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
 
   @inlinable
   public var debugDescription: String {
@@ -1002,14 +1049,6 @@ extension RedBlackTreeMultiMap {
     _ensureUniqueAndCapacity()
     _ = _tree.__insert_multi((key, value))
     return (true, (key, value))
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
-  @inlinable
-  public func count(forKey key: Key) -> Int {
-    _tree.__count_multi(key)
   }
 }
 

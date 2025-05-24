@@ -761,30 +761,6 @@ extension RedBlackTreeDictionary.SubSequence: Sequence {
   public __consuming func makeIterator() -> Iterator {
     Iterator(_subSequence.makeIterator())
   }
-
-  #if false
-    @inlinable
-    @inline(__always)
-    public func enumerated() -> AnySequence<EnumElement> {
-      AnySequence {
-        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
-      }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(
-        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
-    }
-  #endif
-
-  @inlinable
-  @inline(__always)
-  public func indices() -> IndexSequence {
-    IndexSequence(
-      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
-  }
 }
 
 extension RedBlackTreeDictionary.SubSequence: ___RedBlackTreeSubSequenceBase {}
@@ -909,6 +885,26 @@ extension RedBlackTreeDictionary {
   #endif
 }
 
+extension RedBlackTreeDictionary.SubSequence {
+
+  #if false
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> AnySequence<EnumElement> {
+      AnySequence {
+        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
+      }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func enumerated() -> EnumuratedSequence {
+      EnumuratedSequence(
+        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+    }
+  #endif
+}
+
 extension RedBlackTreeDictionary {
 
   @frozen
@@ -973,6 +969,16 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   public func indices() -> IndexSequence {
     IndexSequence(_subSequence: _tree.indexSubsequence())
+  }
+}
+
+extension RedBlackTreeDictionary.SubSequence {
+
+  @inlinable
+  @inline(__always)
+  public func indices() -> IndexSequence {
+    IndexSequence(
+      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
   }
 }
 

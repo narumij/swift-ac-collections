@@ -876,7 +876,6 @@ extension RedBlackTreeSet.EnumuratedSequence: Sequence {
 extension RedBlackTreeSet.EnumuratedSequence {
 
   @inlinable
-  @inline(__always)
   public func forEach(_ body: (Enumurated) throws -> Void) rethrows {
     try _subSequence.forEach(body)
   }

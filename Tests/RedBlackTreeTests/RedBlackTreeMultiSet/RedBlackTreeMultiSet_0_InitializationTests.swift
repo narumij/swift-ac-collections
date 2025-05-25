@@ -8,7 +8,7 @@ import XCTest
 
 final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
 
-  // MARK: - 「空は空である」と「空でないものは空ではない」のトートロジー
+  // MARK: - 「空なものは空である」と「空でないものは空ではない」のトートロジー
 
   /// 空の初期化が成功し、isEmptyがtrueであること
   func test_emptyInitialization() {

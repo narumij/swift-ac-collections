@@ -8,7 +8,7 @@ import XCTest
 
 final class RedBlackTreeDictionaryInitializationTests: XCTestCase {
 
-  // MARK: - 「空は空である」と「空でないものは空ではない」のトートロジー
+  // MARK: - 「空なものは空である」と「空でないものは空ではない」のトートロジー
 
   let elements = [("apple", 1), ("cherry", 3), ("banana", 2)]
   let duplicate = [("apple", 1), ("banana", 2), ("apple", 3)]

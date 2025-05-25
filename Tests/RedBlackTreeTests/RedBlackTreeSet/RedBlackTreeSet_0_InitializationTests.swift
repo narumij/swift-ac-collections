@@ -34,7 +34,7 @@ final class RedBlackTreeSetInitializationTests: XCTestCase {
     // 事前条件: Sequence [3, 1, 2, 1, 3]
     let set = RedBlackTreeSet([3, 1, 2, 1, 3])
 
-    // 事後条件: 重複含めソート済み [1, 2, 3]
+    // 事後条件: 重複含まずソート済み [1, 2, 3]
     let expected = [1, 2, 3]
     XCTAssertFalse(set.isEmpty, "空でではないこと")
     XCTAssertEqual(set.count, expected.count, "要素数が期待値通りであること")

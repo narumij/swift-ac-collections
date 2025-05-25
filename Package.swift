@@ -21,7 +21,7 @@ var _settings: [SwiftSetting] =
     .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),
     // CoWの挙動チェックを可能にするマクロ定義
     // アロケーション関連のテストを走らせるために必要
-//    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
+    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
     // ツリーの不変性チェックの有効無効を切り替えるマクロ定義
     // 対象のメソッドは必ずassertかXCTAssert...を介して利用する。
     // このため、リリース時はどちらにせよ無効になる

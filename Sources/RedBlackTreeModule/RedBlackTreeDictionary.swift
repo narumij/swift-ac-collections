@@ -83,6 +83,8 @@ extension RedBlackTreeDictionary: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeDictionary: ___RedBlackTreeEqualRangeUnique {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 
+// MARK: - Initialization（初期化）
+
 extension RedBlackTreeDictionary {
 
   @inlinable @inline(__always)
@@ -180,26 +182,169 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - 計算量: O(1)
   @inlinable
-  public var isEmpty: Bool {
-    ___is_empty
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    _ensureUniqueAndCapacity(to: minimumCapacity)
   }
+}
 
-  /// - 計算量: O(1)
+// MARK: - Insert（挿入）
+
+extension RedBlackTreeDictionary {
+
+  @discardableResult
   @inlinable
-  public var capacity: Int {
-    ___capacity
+  public mutating func updateValue(
+    _ value: Value,
+    forKey key: Key
+  ) -> Value? {
+    _ensureUniqueAndCapacity()
+    let (__r, __inserted) = _tree.__insert_unique((key, value))
+    guard !__inserted else { return nil }
+    let oldMember = _tree[__r]
+    _tree[__r] = (key, value)
+    return oldMember.value
   }
 }
 
 extension RedBlackTreeDictionary {
 
   @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
+  @inline(__always)
+  public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
+    _ensureUniqueAndCapacity(to: count + other.count)
+    _tree.__node_handle_merge_unique(other._tree)
   }
 }
+
+extension RedBlackTreeDictionary {
+
+  /// 辞書に `other` の要素をマージします。
+  /// キーが重複したときは `combine` の戻り値を採用します。
+  @inlinable
+  public mutating func merge<S>(
+    _ other: __owned S,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows where S: Sequence, S.Element == KeyValue {
+
+    for (k, v) in other {
+      if let old = self[k] {
+        self[k] = try combine(old, v)
+      } else {
+        self[k] = v
+      }
+    }
+  }
+
+  /// `self` と `other` をマージした新しい辞書を返します。
+  @inlinable
+  public func merging<S>(
+    _ other: __owned S,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows -> Self where S: Sequence, S.Element == KeyValue {
+    var result = self
+    try result.merge(other, uniquingKeysWith: combine)
+    return result
+  }
+}
+
+// MARK: - Remove（削除）
+
+extension RedBlackTreeDictionary {
+  /// 最小キーのペアを取り出して削除
+  @inlinable
+  public mutating func popFirst() -> KeyValue? {
+    guard !isEmpty else { return nil }
+    return remove(at: startIndex)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  @inlinable
+  @discardableResult
+  public mutating func removeValue(forKey __k: Key) -> Value? {
+    let __i = _tree.find(__k)
+    if __i == _tree.end() {
+      return nil
+    }
+    let value = _tree.___element(__i).value
+    _ensureUnique()
+    _ = _tree.erase(__i)
+    return value
+  }
+
+  @inlinable
+  @discardableResult
+  public mutating func removeFirst() -> Element {
+    guard !isEmpty else {
+      preconditionFailure(.emptyFirst)
+    }
+    return remove(at: startIndex)
+  }
+
+  @inlinable
+  @discardableResult
+  public mutating func removeLast() -> Element {
+    guard !isEmpty else {
+      preconditionFailure(.emptyLast)
+    }
+    return remove(at: index(before: endIndex))
+  }
+
+  @inlinable
+  @discardableResult
+  public mutating func remove(at index: Index) -> KeyValue {
+    _ensureUnique()
+    guard let element = ___remove(at: index.rawValue) else {
+      fatalError(.invalidIndex)
+    }
+    return element
+  }
+
+  @inlinable
+  @discardableResult
+  public mutating func remove(at index: RawIndex) -> KeyValue {
+    _ensureUnique()
+    guard let element = ___remove(at: index.rawValue) else {
+      fatalError(.invalidIndex)
+    }
+    return element
+  }
+
+  @inlinable
+  public mutating func removeSubrange(_ range: Range<Index>) {
+    _ensureUnique()
+    ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
+  }
+
+  @inlinable
+  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    _ensureUnique()
+    ___removeAll(keepingCapacity: keepCapacity)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  @inlinable
+  @inline(__always)
+  public mutating func remove(contentsOf keyRange: Range<Key>) {
+    let lower = lowerBound(keyRange.lowerBound)
+    let upper = lowerBound(keyRange.upperBound)
+    removeSubrange(lower..<upper)
+  }
+
+  @inlinable
+  @inline(__always)
+  public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
+    let lower = lowerBound(keyRange.lowerBound)
+    let upper = upperBound(keyRange.upperBound)
+    removeSubrange(lower..<upper)
+  }
+}
+
+// MARK: - Search（検索・探索）
 
 extension RedBlackTreeDictionary {
 
@@ -300,116 +445,6 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  public var keys: Keys {
-    map(\.key)
-  }
-
-  public var values: Values {
-    map(\.value)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  @discardableResult
-  @inlinable
-  public mutating func updateValue(
-    _ value: Value,
-    forKey key: Key
-  ) -> Value? {
-    _ensureUniqueAndCapacity()
-    let (__r, __inserted) = _tree.__insert_unique((key, value))
-    guard !__inserted else { return nil }
-    let oldMember = _tree[__r]
-    _tree[__r] = (key, value)
-    return oldMember.value
-  }
-
-  @inlinable
-  @discardableResult
-  public mutating func removeValue(forKey __k: Key) -> Value? {
-    let __i = _tree.find(__k)
-    if __i == _tree.end() {
-      return nil
-    }
-    let value = _tree.___element(__i).value
-    _ensureUnique()
-    _ = _tree.erase(__i)
-    return value
-  }
-
-  @inlinable
-  @discardableResult
-  public mutating func removeFirst() -> Element {
-    guard !isEmpty else {
-      preconditionFailure(.emptyFirst)
-    }
-    return remove(at: startIndex)
-  }
-
-  @inlinable
-  @discardableResult
-  public mutating func removeLast() -> Element {
-    guard !isEmpty else {
-      preconditionFailure(.emptyLast)
-    }
-    return remove(at: index(before: endIndex))
-  }
-
-  @inlinable
-  @discardableResult
-  public mutating func remove(at index: Index) -> KeyValue {
-    _ensureUnique()
-    guard let element = ___remove(at: index.rawValue) else {
-      fatalError(.invalidIndex)
-    }
-    return element
-  }
-
-  @inlinable
-  @discardableResult
-  public mutating func remove(at index: RawIndex) -> KeyValue {
-    _ensureUnique()
-    guard let element = ___remove(at: index.rawValue) else {
-      fatalError(.invalidIndex)
-    }
-    return element
-  }
-
-  @inlinable
-  public mutating func removeSubrange(_ range: Range<Index>) {
-    _ensureUnique()
-    ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
-  }
-
-  @inlinable
-  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    _ensureUnique()
-    ___removeAll(keepingCapacity: keepCapacity)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  @inlinable
-  @inline(__always)
-  public mutating func remove(contentsOf keyRange: Range<Key>) {
-    let lower = lowerBound(keyRange.lowerBound)
-    let upper = lowerBound(keyRange.upperBound)
-    removeSubrange(lower..<upper)
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
-    let lower = lowerBound(keyRange.lowerBound)
-    let upper = upperBound(keyRange.upperBound)
-    removeSubrange(lower..<upper)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
   /// - Complexity: O(log *n*)
   @inlinable
   public func contains(key: Key) -> Bool {
@@ -472,66 +507,126 @@ extension RedBlackTreeDictionary {
   }
 }
 
-// MARK: - ExpressibleByDictionaryLiteral
-
-extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
+extension RedBlackTreeDictionary {
 
   @inlinable
-  public init(dictionaryLiteral elements: (Key, Value)...) {
-    self.init(uniqueKeysWithValues: elements)
+  public func equalRange(_ key: Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+    ___equal_range(key)
   }
 }
 
-// MARK: - ExpressibleByArrayLiteral
+// MARK: - Transformation
 
-extension RedBlackTreeDictionary: ExpressibleByArrayLiteral {
+extension RedBlackTreeDictionary {
 
-  /// `[("key", value), ...]` 形式のリテラルから辞書を生成します。
-  ///
-  /// - Important: キーが重複していた場合は
-  ///   `Dictionary(uniqueKeysWithValues:)` と同じく **ランタイムエラー** になります。
-  ///   （重複を許容してマージしたい場合は `merge` / `merging` を使ってください）
-  ///
-  /// 使用例
-  /// ```swift
-  /// let d: RedBlackTreeDictionary = [("a", 1), ("b", 2)]
-  /// ```
   @inlinable
-  public init(arrayLiteral elements: (Key, Value)...) {
-    self.init(uniqueKeysWithValues: elements)
+  public func filter(
+    _ isIncluded: (Element) throws -> Bool
+  ) rethrows -> Self {
+    var tree: Tree = .create(minimumCapacity: 0)
+    var (__parent, __child) = tree.___max_ref()
+    for pair in self where try isIncluded(pair) {
+      Tree.ensureCapacity(tree: &tree)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, pair)
+      assert(tree.__tree_invariant(tree.__root()))
+    }
+    return Self(_storage: .init(__tree: tree))
   }
 }
 
-// MARK: - CustomStringConvertible
+extension RedBlackTreeDictionary {
 
-extension RedBlackTreeDictionary: CustomStringConvertible {
-  
   @inlinable
-  public var description: String {
-    let pairs = map { "\($0.key): \($0.value)" }
-    return "[\(pairs.joined(separator: ", "))]"
+  public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
+    -> RedBlackTreeDictionary<Key, T>
+  {
+    typealias Tree = RedBlackTreeDictionary<Key, T>.Tree
+    let tree: Tree = .create(minimumCapacity: count)
+    var (__parent, __child) = tree.___max_ref()
+    for (k, v) in self {
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, try transform(v)))
+      assert(tree.__tree_invariant(tree.__root()))
+    }
+    return .init(_storage: .init(__tree: tree))
+  }
+
+  @inlinable
+  public func compactMapValues<T>(_ transform: (Value) throws -> T?)
+    rethrows -> RedBlackTreeDictionary<Key, T>
+  {
+    typealias Tree = RedBlackTreeDictionary<Key, T>.Tree
+    var tree: Tree = .create(minimumCapacity: 0)
+    var (__parent, __child) = tree.___max_ref()
+    for (k, v) in self {
+      if let new = try transform(v) {
+        Tree.ensureCapacity(tree: &tree)
+        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, new))
+        assert(tree.__tree_invariant(tree.__root()))
+      }
+    }
+    return .init(_storage: .init(__tree: tree))
   }
 }
 
-// MARK: - CustomDebugStringConvertible
+// MARK: - Utility（ユーティリティ、isEmptyやcapacityなど）
 
-extension RedBlackTreeDictionary: CustomDebugStringConvertible {
+extension RedBlackTreeDictionary {
 
+  /// - 計算量: O(1)
   @inlinable
-  public var debugDescription: String {
-    return "RedBlackTreeDictionary(\(description))"
+  public var isEmpty: Bool {
+    ___is_empty
+  }
+
+  /// - 計算量: O(1)
+  @inlinable
+  public var capacity: Int {
+    ___capacity
   }
 }
 
-// MARK: - Equatable
-
-extension RedBlackTreeDictionary: Equatable where Value: Equatable {
+extension RedBlackTreeDictionary {
 
   @inlinable
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.___equal_with(rhs)
+  @inline(__always)
+  public func isValid(index: Index) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index: RawIndex) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
   }
 }
+
+extension RedBlackTreeDictionary.SubSequence {
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index i: Index) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index i: RawIndex) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  public var keys: Keys {
+    map(\.key)
+  }
+
+  public var values: Values {
+    map(\.value)
+  }
+}
+
+// MARK: - Collection Conformance（コレクション適合系）
 
 // MARK: - Sequence
 
@@ -1045,153 +1140,63 @@ extension RedBlackTreeDictionary.IndexSequence {
   }
 }
 
-// MARK: -
+// MARK: - ExpressibleByDictionaryLiteral
 
-extension RedBlackTreeDictionary {
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index: Index) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
-  }
+extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
 
   @inlinable
-  @inline(__always)
-  public func isValid(index: RawIndex) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
+  public init(dictionaryLiteral elements: (Key, Value)...) {
+    self.init(uniqueKeysWithValues: elements)
   }
 }
 
-extension RedBlackTreeDictionary.SubSequence {
+// MARK: - ExpressibleByArrayLiteral
 
+extension RedBlackTreeDictionary: ExpressibleByArrayLiteral {
+
+  /// `[("key", value), ...]` 形式のリテラルから辞書を生成します。
+  ///
+  /// - Important: キーが重複していた場合は
+  ///   `Dictionary(uniqueKeysWithValues:)` と同じく **ランタイムエラー** になります。
+  ///   （重複を許容してマージしたい場合は `merge` / `merging` を使ってください）
+  ///
+  /// 使用例
+  /// ```swift
+  /// let d: RedBlackTreeDictionary = [("a", 1), ("b", 2)]
+  /// ```
   @inlinable
-  @inline(__always)
-  public func isValid(index i: Index) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index i: RawIndex) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
-  }
-}
-
-// MARK: -
-
-extension RedBlackTreeDictionary {
-
-  @inlinable
-  @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    _tree.__node_handle_merge_unique(other._tree)
+  public init(arrayLiteral elements: (Key, Value)...) {
+    self.init(uniqueKeysWithValues: elements)
   }
 }
 
-// MARK: -
+// MARK: - CustomStringConvertible
 
-extension RedBlackTreeDictionary {
+extension RedBlackTreeDictionary: CustomStringConvertible {
 
   @inlinable
-  public func filter(
-    _ isIncluded: (Element) throws -> Bool
-  ) rethrows -> Self {
-    var tree: Tree = .create(minimumCapacity: 0)
-    var (__parent, __child) = tree.___max_ref()
-    for pair in self where try isIncluded(pair) {
-      Tree.ensureCapacity(tree: &tree)
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, pair)
-      assert(tree.__tree_invariant(tree.__root()))
-    }
-    return Self(_storage: .init(__tree: tree))
+  public var description: String {
+    let pairs = map { "\($0.key): \($0.value)" }
+    return "[\(pairs.joined(separator: ", "))]"
   }
 }
 
-extension RedBlackTreeDictionary {
+// MARK: - CustomDebugStringConvertible
+
+extension RedBlackTreeDictionary: CustomDebugStringConvertible {
 
   @inlinable
-  public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
-    -> RedBlackTreeDictionary<Key, T>
-  {
-    typealias Tree = RedBlackTreeDictionary<Key, T>.Tree
-    let tree: Tree = .create(minimumCapacity: count)
-    var (__parent, __child) = tree.___max_ref()
-    for (k, v) in self {
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, try transform(v)))
-      assert(tree.__tree_invariant(tree.__root()))
-    }
-    return .init(_storage: .init(__tree: tree))
-  }
-
-  @inlinable
-  public func compactMapValues<T>(_ transform: (Value) throws -> T?)
-    rethrows -> RedBlackTreeDictionary<Key, T>
-  {
-    typealias Tree = RedBlackTreeDictionary<Key, T>.Tree
-    var tree: Tree = .create(minimumCapacity: 0)
-    var (__parent, __child) = tree.___max_ref()
-    for (k, v) in self {
-      if let new = try transform(v) {
-        Tree.ensureCapacity(tree: &tree)
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, new))
-        assert(tree.__tree_invariant(tree.__root()))
-      }
-    }
-    return .init(_storage: .init(__tree: tree))
+  public var debugDescription: String {
+    return "RedBlackTreeDictionary(\(description))"
   }
 }
 
-// MARK: -
+// MARK: - Equatable
 
-extension RedBlackTreeDictionary {
-
-  /// 辞書に `other` の要素をマージします。
-  /// キーが重複したときは `combine` の戻り値を採用します。
-  @inlinable
-  public mutating func merge<S>(
-    _ other: __owned S,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows where S: Sequence, S.Element == KeyValue {
-
-    for (k, v) in other {
-      if let old = self[k] {
-        self[k] = try combine(old, v)
-      } else {
-        self[k] = v
-      }
-    }
-  }
-
-  /// `self` と `other` をマージした新しい辞書を返します。
-  @inlinable
-  public func merging<S>(
-    _ other: __owned S,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows -> Self where S: Sequence, S.Element == KeyValue {
-    var result = self
-    try result.merge(other, uniquingKeysWith: combine)
-    return result
-  }
-}
-
-// MARK: -
-
-extension RedBlackTreeDictionary {
-  /// 最小キーのペアを取り出して削除
-  @inlinable
-  public mutating func popFirst() -> KeyValue? {
-    guard !isEmpty else { return nil }
-    return remove(at: startIndex)
-  }
-}
-
-// MARK: -
-
-extension RedBlackTreeDictionary {
+extension RedBlackTreeDictionary: Equatable where Value: Equatable {
 
   @inlinable
-  public func equalRange(_ key: Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
-    ___equal_range(key)
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.___equal_with(rhs)
   }
 }

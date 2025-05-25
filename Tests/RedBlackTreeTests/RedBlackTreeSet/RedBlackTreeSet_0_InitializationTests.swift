@@ -52,9 +52,8 @@ final class RedBlackTreeSetInitializationTests: XCTestCase {
   }
   
   /// reserveCapacityにより容量が指定値以上に増加し、要素数を指すプロパティが変化しないこと
-  func test_reserveCapacity_shouldIncreaseCapacity() {
+  func test_empty_reserveCapacity_shouldIncreaseCapacity() {
     var set = RedBlackTreeSet<Int>()
-    let initialCapacity = set.capacity
     let initialCount = set.count
 
     // 事前条件:
@@ -72,9 +71,8 @@ final class RedBlackTreeSetInitializationTests: XCTestCase {
   }
   
   /// reserveCapacityにより容量が指定値以上に増加し、要素数を指すプロパティが変化しないこと
-  func test_reserveCapacity_shouldIncreaseCapacity2() {
+  func test_reserveCapacity_shouldIncreaseCapacity() {
     var set = RedBlackTreeSet<Int>(1...3)
-    let initialCapacity = set.capacity
     let initialCount = set.count
 
     // 事前条件:

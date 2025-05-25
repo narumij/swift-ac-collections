@@ -23,7 +23,7 @@ final class RedBlackTreeDictionaryInitializationTests: XCTestCase {
 
   /// シーケンスで初期化（配列使用）
   func testInitWithUniqueKeysFromArray() {
-    let dict = RedBlackTreeDictionary(uniqueKeysWithValues: elements)
+    let dict = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: elements)
     
     let expected = [("apple", 1), ("banana", 2), ("cherry", 3)]
 
@@ -34,7 +34,7 @@ final class RedBlackTreeDictionaryInitializationTests: XCTestCase {
 
   /// シーケンスで初期化（AnySequence使用）
   func testInitWithUniqueKeysFromAnySequence() {
-    let dict = RedBlackTreeDictionary(uniqueKeysWithValues: AnySequence(elements))
+    let dict = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: AnySequence(elements))
     
     let expected = [("apple", 1), ("banana", 2), ("cherry", 3)]
 
@@ -45,7 +45,7 @@ final class RedBlackTreeDictionaryInitializationTests: XCTestCase {
 
   /// 重複キーあり（マージルール適用）配列使用
   func testInitWithDuplicateKeysMergingValues() throws {
-    let dict = RedBlackTreeDictionary(duplicate, uniquingKeysWith: +)
+    let dict = RedBlackTreeDictionary<String, Int>(duplicate, uniquingKeysWith: +)
 
     let expect = [("apple", 4), ("banana", 2)]
 
@@ -56,7 +56,7 @@ final class RedBlackTreeDictionaryInitializationTests: XCTestCase {
 
   /// 重複キーあり（マージルール適用）AnySequence使用
   func testInitWithDuplicateKeysMergingValuesAnySequence() throws {
-    let dict = RedBlackTreeDictionary(AnySequence(duplicate), uniquingKeysWith: +)
+    let dict = RedBlackTreeDictionary<String, Int>(AnySequence(duplicate), uniquingKeysWith: +)
 
     let expect = [("apple", 4), ("banana", 2)]
 
@@ -67,7 +67,7 @@ final class RedBlackTreeDictionaryInitializationTests: XCTestCase {
 
   /// グルーピング初期化（配列使用）
   func testInitGroupingValuesByFirstCharacter() throws {
-    let dict = RedBlackTreeDictionary(grouping: items, by: { String($0.first!) })
+    let dict = RedBlackTreeDictionary<String, [String]>(grouping: items, by: { String($0.first!) })
 
     let expect = [("a", ["apple", "apricot"]), ("b", ["banana", "blueberry"])]
 
@@ -78,7 +78,7 @@ final class RedBlackTreeDictionaryInitializationTests: XCTestCase {
 
   /// グルーピング初期化（AnySequence使用）
   func testInitGroupingValuesByFirstCharacterAnySequence() throws {
-    let dict = RedBlackTreeDictionary(grouping: AnySequence(items), by: { String($0.first!) })
+    let dict = RedBlackTreeDictionary<String, [String]>(grouping: AnySequence(items), by: { String($0.first!) })
 
     let expect = [("a", ["apple", "apricot"]), ("b", ["banana", "blueberry"])]
 

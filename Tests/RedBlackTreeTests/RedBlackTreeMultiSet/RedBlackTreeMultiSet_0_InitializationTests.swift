@@ -17,7 +17,7 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
 
     // 事後条件: 空であること
     XCTAssertTrue(multiset.isEmpty, "空であること")
-    XCTAssertEqual(multiset.count, 0, "空であること")
+    XCTAssertEqual(multiset.count, 0, "要素数0であること")
   }
 
   /// 最小容量指定初期化が成功し、空であること
@@ -38,8 +38,8 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
 
     // 事後条件: 重複含めソート済み [1, 1, 2, 3, 3]
     let expected = [1, 1, 2, 3, 3]
-    XCTAssertFalse(multiset.isEmpty, "空でではないこと")
-    XCTAssertEqual(multiset.count, expected.count, "要素数が期待値通りであること")
+    XCTAssertFalse(multiset.isEmpty, "空ではないこと")
+    XCTAssertEqual(multiset.count, expected.count, "要素数が期待通りであること")
   }
 
   /// Rangeからの初期化が範囲通りの要素を正しく保持すること
@@ -49,8 +49,8 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
 
     // 事後条件: ソート済み [1, 2, 3]
     let expected = [1, 2, 3]
-    XCTAssertFalse(multiset.isEmpty, "空でではないこと")
-    XCTAssertEqual(multiset.count, expected.count, "要素数が期待値通りであること")
+    XCTAssertFalse(multiset.isEmpty, "空ではないこと")
+    XCTAssertEqual(multiset.count, expected.count, "要素数が期待通りであること")
   }
   
   /// Rangeからの初期化が範囲通りの要素を正しく保持すること
@@ -60,8 +60,8 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
 
     // 事後条件: ソート済み [1, 2, 3]
     let expected = [1, 2, 3]
-    XCTAssertFalse(multiset.isEmpty, "空でではないこと")
-    XCTAssertEqual(multiset.count, expected.count, "要素数が期待値通りであること")
+    XCTAssertFalse(multiset.isEmpty, "空ではないこと")
+    XCTAssertEqual(multiset.count, expected.count, "要素数が期待通りであること")
   }
   
   // MARK: - キャパシティは別腹

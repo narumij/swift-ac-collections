@@ -17,7 +17,7 @@ final class RedBlackTreeSetInitializationTests: XCTestCase {
 
     // 事後条件: 空であること
     XCTAssertTrue(set.isEmpty, "空であること")
-    XCTAssertEqual(set.count, 0, "空であること")
+    XCTAssertEqual(set.count, 0, "要素数0であること")
   }
 
   /// 最小容量指定初期化が成功し、プロパティが空を示していること
@@ -34,34 +34,34 @@ final class RedBlackTreeSetInitializationTests: XCTestCase {
   /// Sequenceからの初期化が重複を含まない要素数を、プロパティが示していること
   func test_sequenceInitialization() {
     // 事前条件: Sequence [3, 1, 2, 1, 3]
-    let set = RedBlackTreeSet([3, 1, 2, 1, 3])
+    let set = RedBlackTreeSet<Int>([3, 1, 2, 1, 3])
 
     // 事後条件: 重複含まずソート済み [1, 2, 3]
     let expected = [1, 2, 3]
     XCTAssertFalse(set.isEmpty, "空でではないこと")
-    XCTAssertEqual(set.count, expected.count, "要素数が期待値通りであること")
+    XCTAssertEqual(set.count, expected.count, "要素数が期待通りであること")
   }
 
   /// Rangeからの初期化が範囲通りの要素数を、プロパティが示していること
   func test_rangeInitialization() {
     // 事前条件: Range [1...3]
-    let set = RedBlackTreeSet(1...3)
+    let set = RedBlackTreeSet<Int>(1...3)
 
     // 事後条件: ソート済み [1, 2, 3]
     let expected = [1, 2, 3]
     XCTAssertFalse(set.isEmpty, "空でではないこと")
-    XCTAssertEqual(set.count, expected.count, "要素数が期待値通りであること")
+    XCTAssertEqual(set.count, expected.count, "要素数が期待通りであること")
   }
   
   /// Rangeからの初期化が範囲通りの要素数を、プロパティが示していること
   func test_reverseRangeInitialization() {
     // 事前条件: for(i = 3; i >= 0; --i) { }
-    let set = RedBlackTreeSet(stride(from: 3, through: 1, by: -1))
+    let set = RedBlackTreeSet<Int>(stride(from: 3, through: 1, by: -1))
 
     // 事後条件: ソート済み [1, 2, 3]
     let expected = [1, 2, 3]
     XCTAssertFalse(set.isEmpty, "空でではないこと")
-    XCTAssertEqual(set.count, expected.count, "要素数が期待値通りであること")
+    XCTAssertEqual(set.count, expected.count, "要素数が期待通りであること")
   }
   
   // MARK: - キャパシティは別腹

@@ -8,124 +8,86 @@ import XCTest
 
 final class RedBlackTreeSetInitializationTests: XCTestCase {
 
-  /// 空集合は要素が存在せず、要素数は0であること
-  func test_initialization_emptySet() {
-    // 事前条件: 空集合を生成
+  /// 空の初期化が成功し、プロパティが空を示していること
+  func test_emptyInitialization() {
+    // 事前条件: 空のマルチセットを初期化
     let set = RedBlackTreeSet<Int>()
 
-    // 実行: 操作なし
-
-    // 事後条件:
-    // - isEmpty == true
-    // - count == 0
-    // - map { $0 } == []
-    XCTAssertTrue(set.isEmpty)
-    XCTAssertEqual(set.count, 0)
-    XCTAssertEqual(set.map { $0 }, [])
+    // 事後条件: 空であること
+    XCTAssertTrue(set.isEmpty, "空であること")
+    XCTAssertEqual(set.count, 0, "空であること")
   }
 
-  /// 最小容量を指定した初期化では、要素は存在せず容量は指定値以上であること
-  func test_initialization_withMinimumCapacity() {
-    // 事前条件: 容量10指定で集合を生成
+  /// 最小容量指定初期化が成功し、プロパティが空を示していること
+  func test_minimumCapacityInitialization() {
+    // 事前条件: 最小容量10で初期化
     let set = RedBlackTreeSet<Int>(minimumCapacity: 10)
 
-    // 実行: 操作なし
-
-    // 事後条件:
-    // - isEmpty == true
-    // - count == 0
-    // - map { $0 } == []
-    // - capacity >= 10
-    XCTAssertTrue(set.isEmpty)
-    XCTAssertEqual(set.count, 0)
-    XCTAssertEqual(set.map { $0 }, [])
-    XCTAssertGreaterThanOrEqual(set.capacity, 10)
-  }
-
-  /// シーケンス初期化では、要素は重複を除外し昇順に配置されること（順序保証仕様）
-  func test_initialization_withSequence() {
-    // 事前条件: [3,1,4,1,5,9] のシーケンスを与える
-    let sequence = [3, 1, 4, 1, 5, 9]
-    let set = RedBlackTreeSet(sequence)
-
-    // 実行: 操作なし
-
-    // 事後条件:
-    // - count == Set(sequence).count
-    // - 要素は昇順に並ぶ（順序保証仕様）
-    let expected = Array(Set(sequence)).sorted()
-    XCTAssertEqual(set.count, expected.count)
-    XCTAssertEqual(set.map { $0 }, expected)
-  }
-
-  /// AnySequence初期化でも、要素は重複を除外し昇順に配置されること（順序保証仕様）
-  func test_initialization_withAnySequence() {
-    // 事前条件: AnySequence([3,1,4,1,5,9])を与える
-    let sequence = [3, 1, 4, 1, 5, 9]
-    let anySeq = AnySequence(sequence)
-    let set = RedBlackTreeSet(anySeq)
-
-    // 実行: 操作なし
-
-    // 事後条件:
-    // - count == Set(sequence).count
-    // - 要素は昇順に並ぶ（順序保証仕様）
-    let expected = Array(Set(sequence)).sorted()
-    XCTAssertEqual(set.count, expected.count)
-    XCTAssertEqual(set.map { $0 }, expected)
-  }
-
-  /// Range初期化では、範囲内の要素が昇順に配置されること（順序保証仕様）
-  func test_initialization_withRange() {
-    // 事前条件: 1..<5 の範囲を与える
-    let range = 1..<5
-    let set = RedBlackTreeSet(range)
-
-    // 実行: 操作なし
-
-    // 事後条件:
-    // - count == range.count
-    // - 要素は昇順に並ぶ（順序保証仕様）
-    let expected = Array(range)
-    XCTAssertEqual(set.count, expected.count)
-    XCTAssertEqual(set.map { $0 }, expected)
-  }
-
-  /// ClosedRange初期化では、範囲内の要素が昇順に配置されること（順序保証仕様）
-  func test_initialization_withClosedRange() {
-    // 事前条件: 1...5 の範囲を与える
-    let range = 1...5
-    let set = RedBlackTreeSet(range)
-
-    // 実行: 操作なし
-
-    // 事後条件:
-    // - count == range.count
-    // - 要素は昇順に並ぶ（順序保証仕様）
-    let expected = Array(range)
-    XCTAssertEqual(set.count, expected.count)
-    XCTAssertEqual(set.map { $0 }, expected)
-  }
-
-  /// 最小容量指定で初期化
-  func testInitWithMinimumCapacity() {
-    let set = RedBlackTreeSet<Int>(minimumCapacity: 10)
+    // 事後条件: 空であること、容量が最低10以上
+    XCTAssertTrue(set.isEmpty, "空であること")
+    XCTAssertEqual(set.count, 0, "要素数0であること")
     XCTAssertGreaterThanOrEqual(set.capacity, 10, "指定したサイズ以上であること")
-    XCTAssertTrue(set.isEmpty, "最小容量指定後も空であること")
   }
 
-  /// reserveCapacityにより容量が指定値以上に増加すること
+  /// Sequenceからの初期化が重複を含まない要素数を、プロパティが示していること
+  func test_sequenceInitialization() {
+    // 事前条件: Sequence [3, 1, 2, 1, 3]
+    let set = RedBlackTreeSet([3, 1, 2, 1, 3])
+
+    // 事後条件: 重複含めソート済み [1, 2, 3]
+    let expected = [1, 2, 3]
+    XCTAssertFalse(set.isEmpty, "空でではないこと")
+    XCTAssertEqual(set.count, expected.count, "要素数が期待値通りであること")
+  }
+
+  /// Rangeからの初期化が範囲通りの要素数を、プロパティが示していること
+  func test_rangeInitialization() {
+    // 事前条件: Range [1...3]
+    let set = RedBlackTreeSet(1...3)
+
+    // 事後条件: ソート済み [1, 2, 3]
+    let expected = [1, 2, 3]
+    XCTAssertFalse(set.isEmpty, "空でではないこと")
+    XCTAssertEqual(set.count, expected.count, "要素数が期待値通りであること")
+  }
+  
+  /// reserveCapacityにより容量が指定値以上に増加し、要素数を指すプロパティが変化しないこと
   func test_reserveCapacity_shouldIncreaseCapacity() {
-    // 事前条件: 空集合を生成
     var set = RedBlackTreeSet<Int>()
     let initialCapacity = set.capacity
+    let initialCount = set.count
+
+    // 事前条件:
+    XCTAssertTrue(set.isEmpty, "空であること")
+    XCTAssertEqual(set.count, 0, "要素数0であること")
+    XCTAssertEqual(set.count, initialCount)
 
     // 実行: reserveCapacity(20)
     set.reserveCapacity(20)
 
     // 事後条件:
     XCTAssertGreaterThanOrEqual(set.capacity, 20, "指定したサイズ以上であること")
-    XCTAssertGreaterThanOrEqual(set.capacity, initialCapacity, "初期サイズ以上であること")
-    XCTAssertTrue(set.isEmpty, "容量予約後も要素は追加されないこと")
+    XCTAssertTrue(set.isEmpty, "容量予約後も空のまま変化しないこと")
+    XCTAssertEqual(set.count, 0, "最小容量指定後も要素数0のまま変化しないこと")
+  }
+  
+  /// reserveCapacityにより容量が指定値以上に増加し、要素数を指すプロパティが変化しないこと
+  func test_reserveCapacity_shouldIncreaseCapacity2() {
+    var set = RedBlackTreeSet<Int>(1...3)
+    let initialCapacity = set.capacity
+    let initialCount = set.count
+
+    // 事前条件:
+    XCTAssertFalse(set.isEmpty, "空では無いこと")
+    XCTAssertEqual(set.count, 3, "要素数3であること")
+    XCTAssertEqual(set.count, initialCount)
+
+    // 実行: reserveCapacity(20)
+    set.reserveCapacity(20)
+
+    // 事後条件:
+    XCTAssertGreaterThanOrEqual(set.capacity, 20, "指定したサイズ以上であること")
+    XCTAssertFalse(set.isEmpty, "空ではないまま変化しないこと")
+    XCTAssertEqual(set.count, initialCount, "要素数3のまま変化しないこと")
   }
 }

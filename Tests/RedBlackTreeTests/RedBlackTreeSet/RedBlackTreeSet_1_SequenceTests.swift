@@ -8,6 +8,44 @@ import XCTest
 
 final class RedBlackTreeSetSequenceTests: XCTestCase {
 
+  /// 空の初期化が成功し、内容が空であること
+  func test_emptyInitialization() {
+    // 事前条件: 空のマルチセットを初期化
+    let set = RedBlackTreeSet<Int>()
+
+    // 事後条件: 空のものは空をかえすこと
+    XCTAssertEqual(set.map{ $0 }, [], "空をかえすこと")
+  }
+
+  /// 最小容量指定初期化が成功し、内容が空であること
+  func test_minimumCapacityInitialization() {
+    // 事前条件: 最小容量10で初期化
+    let set = RedBlackTreeSet<Int>(minimumCapacity: 10)
+
+    // 事後条件: 空のものは空をかえすこと
+    XCTAssertEqual(set.map{ $0 }, [], "空をかえすこと")
+  }
+
+  /// Sequenceからの初期化が重複なく順序通りの要素を正しく保持すること
+  func test_sequenceInitialization() {
+    // 事前条件: Sequence [3, 1, 2, 1, 3]
+    let set = RedBlackTreeSet([3, 1, 2, 1, 3])
+
+    // 事後条件: 重複含めソート済み [1, 2, 3]
+    let expected = [1, 2, 3]
+    XCTAssertEqual(set.map { $0 }, expected, "要素が重複無くソート済みであること")
+  }
+
+  /// Rangeからの初期化が範囲通りの要素を正しく保持すること
+  func test_rangeInitialization() {
+    // 事前条件: Range [1...3]
+    let set = RedBlackTreeSet(1...3)
+
+    // 事後条件: ソート済み [1, 2, 3]
+    let expected = [1, 2, 3]
+    XCTAssertEqual(set.map { $0 }, expected, "要素が重複無くソート済みであること")
+  }
+  
   // Sequenceのmap { $0 }が全要素を昇順で返す
   func test_sequence_mapYieldsAllElementsInSortedOrder() {
     // 事前条件: 初期化

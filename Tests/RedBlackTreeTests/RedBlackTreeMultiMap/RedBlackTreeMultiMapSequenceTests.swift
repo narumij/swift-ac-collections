@@ -9,10 +9,10 @@ import XCTest
 final class RedBlackTreeMultiMapSequenceTests: XCTestCase {
 
   let elements: [(String, Int)] = [
-    ("apple", 1),
-    ("apple", 3),
-    ("banana", 2),
     ("cherry", 4),
+    ("apple", 1),
+    ("banana", 2),
+    ("apple", 3),
   ]
 
   func testSequenceConformance() {
@@ -31,6 +31,7 @@ final class RedBlackTreeMultiMapSequenceTests: XCTestCase {
       ("banana", 2),
       ("cherry", 4),
     ]
+
     XCTAssertEqual(collectedPairs.map { $0.0 }, expectedPairs.map { $0.0 })
     XCTAssertEqual(collectedPairs.map { $0.1 }, expectedPairs.map { $0.1 })
   }

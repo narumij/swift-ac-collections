@@ -10,8 +10,10 @@ final class RedBlackTreeMultiMapInitializationTests: XCTestCase {
 
   /// 共通テストデータ
   let elements: [(String, Int)] = [
-    ("apple", 1), ("banana", 2),
-    ("apple", 3), ("cherry", 4),
+    ("cherry", 4),
+    ("apple", 1),
+    ("banana", 2),
+    ("apple", 3),
   ]
 
   /// 空初期化テスト

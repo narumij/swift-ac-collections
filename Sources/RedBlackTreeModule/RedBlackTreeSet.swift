@@ -80,6 +80,8 @@ extension RedBlackTreeSet: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeSet: ___RedBlackTreeEqualRangeUnique {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 
+// MARK: - Initialization
+
 extension RedBlackTreeSet {
 
   @inlinable @inline(__always)
@@ -139,29 +141,16 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(1)
-  @inlinable
-  public var isEmpty: Bool {
-    ___is_empty
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var capacity: Int {
-    ___capacity
-  }
-}
-
-extension RedBlackTreeSet {
-
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     _ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
-extension RedBlackTreeSet {
+// MARK: - Insert
 
+extension RedBlackTreeSet {
+  
   /// - Complexity: O(log *n*)
   @discardableResult
   @inlinable
@@ -172,7 +161,7 @@ extension RedBlackTreeSet {
     let (__r, __inserted) = _tree.__insert_unique(newMember)
     return (__inserted, __inserted ? newMember : _tree[__r])
   }
-
+  
   /// - Complexity: O(log *n*)
   @discardableResult
   @inlinable
@@ -184,6 +173,42 @@ extension RedBlackTreeSet {
     _tree[__r] = newMember
     return oldMember
   }
+}
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  @inline(__always)
+  public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
+    _ensureUniqueAndCapacity(to: count + other.count)
+    _tree.__node_handle_merge_unique(other._tree)
+  }
+
+  @inlinable
+  @inline(__always)
+  public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
+    _ensureUniqueAndCapacity(to: count + other.count)
+    _tree.__node_handle_merge_unique(other._tree)
+  }
+
+  @inlinable
+  @inline(__always)
+  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
+    other.forEach { insert($0) }
+  }
+}
+
+// MARK: - Remove
+
+extension RedBlackTreeSet {
+  @inlinable
+  public mutating func popFirst() -> Element? {
+    guard !isEmpty else { return nil }
+    return remove(at: startIndex)
+  }
+}
+
+extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*)
   @discardableResult
@@ -295,34 +320,47 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet {
+// MARK: - Search
 
+extension RedBlackTreeSet {
+  
   /// - Complexity: O(log *n*)
   @inlinable
   public func contains(_ member: Element) -> Bool {
     ___contains(member)
   }
-
-  /// - Complexity: O(log *n*)
-  ///
-  /// O(1)が欲しい場合、firstが等価でO(1)
-  @inlinable
-  public func min() -> Element? {
-    ___min()
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func max() -> Element? {
-    ___max()
-  }
 }
 
-extension RedBlackTreeSet: ExpressibleByArrayLiteral {
+extension RedBlackTreeSet {
 
+  /// - Complexity: O(1)
   @inlinable
-  public init(arrayLiteral elements: Element...) {
-    self.init(elements)
+  public var first: Element? {
+    isEmpty ? nil : self[startIndex]
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public var last: Element? {
+    isEmpty ? nil : self[index(before: endIndex)]
+  }
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+    try ___first(where: predicate)
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func firstIndex(of member: Element) -> Index? {
+    ___first_index(of: member)
+  }
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    try ___first_index(where: predicate)
   }
 }
 
@@ -366,36 +404,30 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(1)
   @inlinable
-  public var first: Element? {
-    isEmpty ? nil : self[startIndex]
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public var last: Element? {
-    isEmpty ? nil : self[index(before: endIndex)]
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___first(where: predicate)
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func firstIndex(of member: Element) -> Index? {
-    ___first_index(of: member)
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
+  public func equalRange(_ element: Element) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+    ___equal_range(element)
   }
 }
+
+extension RedBlackTreeSet {
+
+  /// - Complexity: O(log *n*)
+  ///
+  /// O(1)が欲しい場合、firstが等価でO(1)
+  @inlinable
+  public func min() -> Element? {
+    ___min()
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func max() -> Element? {
+    ___max()
+  }
+}
+
+// MARK: - Iteration
 
 extension RedBlackTreeSet {
 
@@ -403,37 +435,6 @@ extension RedBlackTreeSet {
   @inlinable
   public func sorted() -> [Element] {
     _tree.___sorted
-  }
-}
-
-// MARK: - CustomStringConvertible
-
-extension RedBlackTreeSet: CustomStringConvertible {
-  
-  @inlinable
-  public var description: String {
-    "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
-  }
-}
-
-// MARK: - CustomDebugStringConvertible
-
-extension RedBlackTreeSet: CustomDebugStringConvertible {
-
-  @inlinable
-  public var debugDescription: String {
-    "RedBlackTreeSet(\(description))"
-  }
-}
-
-// MARK: - Equatable
-
-extension RedBlackTreeSet: Equatable {
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.___equal_with(rhs)
   }
 }
 
@@ -953,7 +954,22 @@ extension RedBlackTreeSet.IndexSequence {
   }
 }
 
-// MARK: -
+// MARK: - Utility
+
+extension RedBlackTreeSet {
+
+  /// - Complexity: O(1)
+  @inlinable
+  public var isEmpty: Bool {
+    ___is_empty
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  public var capacity: Int {
+    ___capacity
+  }
+}
 
 extension RedBlackTreeSet {
 
@@ -985,30 +1001,48 @@ extension RedBlackTreeSet.SubSequence {
   }
 }
 
-// MARK: -
+// MARK: - Protocol Adaption
 
-extension RedBlackTreeSet {
-
-  @inlinable
-  @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    _tree.__node_handle_merge_unique(other._tree)
-  }
+extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 
   @inlinable
-  @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    _tree.__node_handle_merge_unique(other._tree)
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
-    other.forEach { insert($0) }
+  public init(arrayLiteral elements: Element...) {
+    self.init(elements)
   }
 }
+
+// MARK: - CustomStringConvertible
+
+extension RedBlackTreeSet: CustomStringConvertible {
+  
+  @inlinable
+  public var description: String {
+    "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
+  }
+}
+
+// MARK: - CustomDebugStringConvertible
+
+extension RedBlackTreeSet: CustomDebugStringConvertible {
+
+  @inlinable
+  public var debugDescription: String {
+    "RedBlackTreeSet(\(description))"
+  }
+}
+
+// MARK: - Equatable
+
+extension RedBlackTreeSet: Equatable {
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.___equal_with(rhs)
+  }
+}
+
+// MARK: -
 
 #if PERFOMANCE_CHECK
   extension RedBlackTreeSet {
@@ -1040,22 +1074,3 @@ extension RedBlackTreeSet {
   }
 #endif
 
-// MARK: -
-
-extension RedBlackTreeSet {
-  @inlinable
-  public mutating func popFirst() -> Element? {
-    guard !isEmpty else { return nil }
-    return remove(at: startIndex)
-  }
-}
-
-// MARK: -
-
-extension RedBlackTreeSet {
-
-  @inlinable
-  public func equalRange(_ element: Element) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
-    ___equal_range(element)
-  }
-}

@@ -9,10 +9,8 @@ import XCTest
 final class RedBlackTreeDictionaryInitializationTests: XCTestCase {
 
   let elements = [("apple", 1), ("cherry", 3), ("banana", 2)]
-
   let duplicate = [("apple", 1), ("banana", 2), ("apple", 3)]
-
-  let items = ["apple", "banana", "apricot", "blueberry"]
+  let items = ["banana", "apple", "blueberry", "apricot"]
 
   /// 空の辞書を初期化したときの動作を確認
   func testInitEmptyDictionary() {

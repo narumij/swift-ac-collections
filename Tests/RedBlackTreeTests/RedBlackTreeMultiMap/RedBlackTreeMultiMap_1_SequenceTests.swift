@@ -35,6 +35,27 @@ final class RedBlackTreeMultiMapSequenceTests: XCTestCase {
     XCTAssertEqual(collectedPairs.map { $0.0 }, expectedPairs.map { $0.0 })
     XCTAssertEqual(collectedPairs.map { $0.1 }, expectedPairs.map { $0.1 })
   }
+  
+  func testSequenceConformance2() {
+    let multiMap = RedBlackTreeMultiMap<String, Int>(keysWithValues: elements)
+
+    var collectedPairs = [(String, Int)]()
+
+    multiMap.forEach { element in
+      collectedPairs.append((element.key, element.value))
+    }
+
+    // 含まれるキーと値の組を確認（重複あり）
+    let expectedPairs: [(String, Int)] = [
+      ("apple", 1),
+      ("apple", 3),
+      ("banana", 2),
+      ("cherry", 4),
+    ]
+
+    XCTAssertEqual(collectedPairs.map { $0.0 }, expectedPairs.map { $0.0 })
+    XCTAssertEqual(collectedPairs.map { $0.1 }, expectedPairs.map { $0.1 })
+  }
 
   func testEmptyMultiMap() {
     let multiMap = RedBlackTreeMultiMap<String, Int>()

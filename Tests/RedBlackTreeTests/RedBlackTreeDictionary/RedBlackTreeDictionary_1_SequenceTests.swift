@@ -26,6 +26,22 @@ final class RedBlackTreeDictionarySequenceTests: XCTestCase {
     XCTAssertEqual(collectedPairs.map { $0.1 }, expected.map { $0.1 })
   }
 
+  func testSequenceConformance2() {
+    let dict = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: elements)
+
+    var collectedPairs = [(String, Int)]()
+
+    dict.forEach { element in
+      collectedPairs.append((element.key, element.value))
+    }
+
+    let expected = [("apple", 1), ("banana", 2), ("cherry", 3)]
+
+    // キーと値が含まれていることを確認
+    XCTAssertEqual(collectedPairs.map { $0.0 }, expected.map { $0.0 })
+    XCTAssertEqual(collectedPairs.map { $0.1 }, expected.map { $0.1 })
+  }
+
   func testEmptyDictionary() {
     let dict = RedBlackTreeDictionary<String, Int>()
     var count = 0

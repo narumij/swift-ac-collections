@@ -46,4 +46,26 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
     // 事後条件: ソート済み [1, 2, 3]
     XCTAssertEqual(Array(multiset), [1, 2, 3])
   }
+  
+  /// 最小容量指定で初期化
+  func testInitWithMinimumCapacity() {
+    let multiset = RedBlackTreeMultiSet<Int>(minimumCapacity: 10)
+    XCTAssertGreaterThanOrEqual(multiset.capacity, 10, "指定したサイズ以上であること")
+    XCTAssertTrue(multiset.isEmpty, "最小容量指定後も空であること")
+  }
+  
+  /// reserveCapacityにより容量が指定値以上に増加すること
+  func test_reserveCapacity_shouldIncreaseCapacity() {
+    // 事前条件: 空集合を生成
+    var multiset = RedBlackTreeMultiSet<Int>()
+    let initialCapacity = multiset.capacity
+
+    // 実行: reserveCapacity(20)
+    multiset.reserveCapacity(20)
+
+    // 事後条件:
+    XCTAssertGreaterThanOrEqual(multiset.capacity, 20, "指定したサイズ以上であること")
+    XCTAssertGreaterThanOrEqual(multiset.capacity, initialCapacity, "初期サイズ以上であること")
+    XCTAssertTrue(multiset.isEmpty, "容量予約後も要素は追加されないこと")
+  }
 }

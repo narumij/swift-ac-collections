@@ -95,13 +95,22 @@ final class RedBlackTreeDictionaryInitializationTests: XCTestCase {
   /// 最小容量指定で初期化
   func testInitWithMinimumCapacity() {
     let dict = RedBlackTreeDictionary<String, Int>(minimumCapacity: 10)
-    XCTAssertTrue(dict.isEmpty, "最小容量指定後も空であるべき")
+    XCTAssertGreaterThanOrEqual(dict.capacity, 10, "指定したサイズ以上であること")
+    XCTAssertTrue(dict.isEmpty, "最小容量指定後も空であること")
   }
 
-  /// 容量予約後の状態を確認
-  func testReserveCapacityOnEmptyDictionary() {
+  /// reserveCapacityにより容量が指定値以上に増加すること
+  func test_reserveCapacity_shouldIncreaseCapacity() {
+    // 事前条件: 空集合を生成
     var dict = RedBlackTreeDictionary<String, Int>()
+    let initialCapacity = dict.capacity
+
+    // 実行: reserveCapacity(20)
     dict.reserveCapacity(20)
+
+    // 事後条件:
+    XCTAssertGreaterThanOrEqual(dict.capacity, 20, "指定したサイズ以上であること")
+    XCTAssertGreaterThanOrEqual(dict.capacity, initialCapacity, "初期サイズ以上であること")
     XCTAssertTrue(dict.isEmpty, "容量予約後も要素は追加されない")
   }
 }

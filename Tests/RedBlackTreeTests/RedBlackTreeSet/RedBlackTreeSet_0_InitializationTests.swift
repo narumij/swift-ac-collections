@@ -107,6 +107,13 @@ final class RedBlackTreeSetInitializationTests: XCTestCase {
     XCTAssertEqual(set.map { $0 }, expected)
   }
 
+  /// 最小容量指定で初期化
+  func testInitWithMinimumCapacity() {
+    let set = RedBlackTreeSet<Int>(minimumCapacity: 10)
+    XCTAssertGreaterThanOrEqual(set.capacity, 10, "指定したサイズ以上であること")
+    XCTAssertTrue(set.isEmpty, "最小容量指定後も空であること")
+  }
+
   /// reserveCapacityにより容量が指定値以上に増加すること
   func test_reserveCapacity_shouldIncreaseCapacity() {
     // 事前条件: 空集合を生成
@@ -117,9 +124,8 @@ final class RedBlackTreeSetInitializationTests: XCTestCase {
     set.reserveCapacity(20)
 
     // 事後条件:
-    // - capacity >= 20
-    // - capacity >= initialCapacity
-    XCTAssertGreaterThanOrEqual(set.capacity, 20)
-    XCTAssertGreaterThanOrEqual(set.capacity, initialCapacity)
+    XCTAssertGreaterThanOrEqual(set.capacity, 20, "指定したサイズ以上であること")
+    XCTAssertGreaterThanOrEqual(set.capacity, initialCapacity, "初期サイズ以上であること")
+    XCTAssertTrue(set.isEmpty, "容量予約後も要素は追加されないこと")
   }
 }

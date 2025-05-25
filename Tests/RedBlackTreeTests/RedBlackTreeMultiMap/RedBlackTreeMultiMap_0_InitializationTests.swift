@@ -55,10 +55,25 @@ final class RedBlackTreeMultiMapInitializationTests: XCTestCase {
     XCTAssertEqual(multiMap.map { $0.value }, expected.map { $0.1 })
   }
 
-  /// 容量予約の動作を確認
-  func testReserveCapacity() {
+  /// 最小容量指定で初期化
+  func testInitWithMinimumCapacity() {
+    let multiMap = RedBlackTreeMultiMap<String, Int>(minimumCapacity: 10)
+    XCTAssertGreaterThanOrEqual(multiMap.capacity, 10, "指定したサイズ以上であること")
+    XCTAssertTrue(multiMap.isEmpty, "最小容量指定後も空であるべき")
+  }
+
+  /// reserveCapacityにより容量が指定値以上に増加すること
+  func test_reserveCapacity_shouldIncreaseCapacity() {
+    // 事前条件: 空集合を生成
     var multiMap = RedBlackTreeMultiMap<String, Int>()
+    let initialCapacity = multiMap.capacity
+
+    // 実行: reserveCapacity(20)
     multiMap.reserveCapacity(20)
-    XCTAssertTrue(multiMap.isEmpty, "容量予約後も空であるべき")
+
+    // 事後条件:
+    XCTAssertGreaterThanOrEqual(multiMap.capacity, 20, "指定したサイズ以上であること")
+    XCTAssertGreaterThanOrEqual(multiMap.capacity, initialCapacity, "初期サイズ以上であること")
+    XCTAssertTrue(multiMap.isEmpty, "容量予約後も要素は追加されない")
   }
 }

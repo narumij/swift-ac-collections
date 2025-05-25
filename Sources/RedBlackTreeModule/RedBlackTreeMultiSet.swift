@@ -61,6 +61,8 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeEqualRangeMulti {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 
+// MARK: - Initialization（初期化）
+
 extension RedBlackTreeMultiSet {
 
   @inlinable @inline(__always)
@@ -118,29 +120,17 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - 計算量: O(1)
-  @inlinable
-  public var isEmpty: Bool {
-    ___is_empty
-  }
-
-  /// - 計算量: O(1)
-  @inlinable
-  public var capacity: Int {
-    ___capacity
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     _ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
-extension RedBlackTreeMultiSet {
+// MARK: - Insert（挿入）
 
+
+extension RedBlackTreeMultiSet {
+  
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -151,6 +141,42 @@ extension RedBlackTreeMultiSet {
     _ = _tree.__insert_multi(newMember)
     return (true, newMember)
   }
+}
+
+extension RedBlackTreeMultiSet {
+
+  @inlinable
+  @inline(__always)
+  public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
+    _ensureUniqueAndCapacity(to: count + other.count)
+    _tree.__node_handle_merge_multi(other._tree)
+  }
+
+  @inlinable
+  @inline(__always)
+  public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
+    _ensureUniqueAndCapacity(to: count + other.count)
+    _tree.__node_handle_merge_multi(other._tree)
+  }
+
+  @inlinable
+  @inline(__always)
+  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
+    other.forEach { insert($0) }
+  }
+}
+
+// MARK: - Remove（削除）
+
+extension RedBlackTreeMultiSet {
+  @inlinable
+  public mutating func popFirst() -> Element? {
+    guard !isEmpty else { return nil }
+    return remove(at: startIndex)
+  }
+}
+
+extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(log *n*)
   @inlinable
@@ -259,6 +285,8 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+// MARK: - Search（検索・探索）
+
 extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(*n*)
@@ -333,8 +361,25 @@ extension RedBlackTreeMultiSet {
 extension RedBlackTreeMultiSet {
 
   @inlinable
-  public func sorted() -> [Element] {
-    _tree.___sorted
+  public func equalRange(_ element: Element) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+    ___equal_range(element)
+  }
+}
+
+// MARK: - Utility（ユーティリティ、isEmptyやcapacityなど）
+
+extension RedBlackTreeMultiSet {
+
+  /// - 計算量: O(1)
+  @inlinable
+  public var isEmpty: Bool {
+    ___is_empty
+  }
+
+  /// - 計算量: O(1)
+  @inlinable
+  public var capacity: Int {
+    ___capacity
   }
 }
 
@@ -347,45 +392,47 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-// MARK: - ExpressibleByArrayLiteral
-
-extension RedBlackTreeMultiSet: ExpressibleByArrayLiteral {
+extension RedBlackTreeMultiSet {
 
   @inlinable
-  public init(arrayLiteral elements: Element...) {
-    self.init(elements)
+  @inline(__always)
+  public func isValid(index: Index) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index: RawIndex) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
   }
 }
 
-// MARK: - CustomStringConvertible
+extension RedBlackTreeMultiSet.SubSequence {
 
-extension RedBlackTreeMultiSet: CustomStringConvertible {
-  
   @inlinable
-  public var description: String {
-    "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
+  @inline(__always)
+  public func isValid(index i: Index) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index i: RawIndex) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
   }
 }
 
-// MARK: - CustomDebugStringConvertible
+// MARK: - Iteration
 
-extension RedBlackTreeMultiSet: CustomDebugStringConvertible {
+extension RedBlackTreeMultiSet {
 
   @inlinable
-  public var debugDescription: String {
-    "RedBlackTreeMultiSet(\(description))"
+  public func sorted() -> [Element] {
+    _tree.___sorted
   }
 }
 
-// MARK: - Equatable
-
-extension RedBlackTreeMultiSet: Equatable {
-
-  @inlinable
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.___equal_with(rhs)
-  }
-}
+// MARK: - Collection Conformance（コレクション適合系）
 
 // MARK: - Sequence
 
@@ -425,92 +472,97 @@ extension RedBlackTreeMultiSet: Sequence {
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeMultiSet: BidirectionalCollection {
-
+  
   @inlinable
   @inline(__always)
   public var startIndex: Index {
     ___index_start()
   }
-
+  
   @inlinable
   @inline(__always)
   public var endIndex: Index {
     ___index_end()
   }
-
+  
   @inlinable
   @inline(__always)
   public var count: Int {
     ___count
   }
-
+  
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     ___distance(from: start.rawValue, to: end.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     ___index(after: i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     ___form_index(after: &i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     ___index(before: i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     ___form_index(before: &i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i.rawValue, offsetBy: distance)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     ___form_index(&i.rawValue, offsetBy: distance)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
-    -> Bool
+  -> Bool
   {
     ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
     return _tree[position.rawValue]
   }
-
+  
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
     return _tree[position.rawValue]
   }
+}
+
+// MARK: - SubSequence（部分コレクション）
+
+extension RedBlackTreeMultiSet {
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
@@ -570,6 +622,8 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+// MARK: - SubSequence: Sequence
+
 extension RedBlackTreeMultiSet {
 
   @frozen
@@ -626,6 +680,8 @@ extension RedBlackTreeMultiSet.SubSequence: Sequence {
 }
 
 extension RedBlackTreeMultiSet.SubSequence: ___RedBlackTreeSubSequenceBase {}
+
+// MARK: - SubSequence: BidirectionalCollection
 
 extension RedBlackTreeMultiSet.SubSequence: BidirectionalCollection {
 
@@ -768,6 +824,8 @@ extension RedBlackTreeMultiSet.SubSequence {
   #endif
 }
 
+// MARK: - Enumerated Sequence（列挙系）
+
 extension RedBlackTreeMultiSet {
 
   @frozen
@@ -824,7 +882,7 @@ extension RedBlackTreeMultiSet.EnumuratedSequence {
   }
 }
 
-// MARK: - Index Sequence
+// MARK: - Index Sequence（インデックス系）
 
 extension RedBlackTreeMultiSet {
 
@@ -901,77 +959,45 @@ extension RedBlackTreeMultiSet.IndexSequence {
   }
 }
 
-// MARK: -
+// MARK: - Protocol Conformance（プロトコル適合）
 
-extension RedBlackTreeMultiSet {
+// MARK: - ExpressibleByArrayLiteral
 
-  @inlinable
-  @inline(__always)
-  public func isValid(index: Index) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
-  }
+extension RedBlackTreeMultiSet: ExpressibleByArrayLiteral {
 
   @inlinable
-  @inline(__always)
-  public func isValid(index: RawIndex) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
+  public init(arrayLiteral elements: Element...) {
+    self.init(elements)
   }
 }
 
-extension RedBlackTreeMultiSet.SubSequence {
+// MARK: - CustomStringConvertible
 
+extension RedBlackTreeMultiSet: CustomStringConvertible {
+  
   @inlinable
-  @inline(__always)
-  public func isValid(index i: Index) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index i: RawIndex) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
+  public var description: String {
+    "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
   }
 }
 
-extension RedBlackTreeMultiSet {
+// MARK: - CustomDebugStringConvertible
+
+extension RedBlackTreeMultiSet: CustomDebugStringConvertible {
 
   @inlinable
-  @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    _tree.__node_handle_merge_multi(other._tree)
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    _tree.__node_handle_merge_multi(other._tree)
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
-    other.forEach { insert($0) }
+  public var debugDescription: String {
+    "RedBlackTreeMultiSet(\(description))"
   }
 }
 
-// MARK: -
+// MARK: - Equatable
 
-extension RedBlackTreeMultiSet {
+extension RedBlackTreeMultiSet: Equatable {
+
   @inlinable
-  public mutating func popFirst() -> Element? {
-    guard !isEmpty else { return nil }
-    return remove(at: startIndex)
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.___equal_with(rhs)
   }
 }
 
-// MARK: -
-
-extension RedBlackTreeMultiSet {
-
-  @inlinable
-  public func equalRange(_ element: Element) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
-    ___equal_range(element)
-  }
-}

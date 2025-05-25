@@ -201,6 +201,7 @@ extension RedBlackTreeSet {
 // MARK: - Remove
 
 extension RedBlackTreeSet {
+  
   @inlinable
   public mutating func popFirst() -> Element? {
     guard !isEmpty else { return nil }
@@ -209,7 +210,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-
+  
   /// - Complexity: O(log *n*)
   @discardableResult
   @inlinable
@@ -217,7 +218,7 @@ extension RedBlackTreeSet {
     _ensureUnique()
     return _tree.___erase_unique(member) ? member : nil
   }
-
+  
   /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
   ///
   /// - Complexity: O(log *n*)
@@ -230,7 +231,7 @@ extension RedBlackTreeSet {
     }
     return element
   }
-
+  
   /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
   ///
   /// - Complexity: O(log *n*)
@@ -243,7 +244,7 @@ extension RedBlackTreeSet {
     }
     return element
   }
-
+  
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -253,7 +254,7 @@ extension RedBlackTreeSet {
     }
     return remove(at: startIndex)
   }
-
+  
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -263,7 +264,7 @@ extension RedBlackTreeSet {
     }
     return remove(at: index(before: endIndex))
   }
-
+  
   /// 指定した半開区間（`lhs ..< rhs`）に含まれる要素をすべて削除します。
   ///
   /// - Parameter range: `lhs`（含む）から `rhs`（含まない）までを表す `Range`
@@ -289,13 +290,6 @@ extension RedBlackTreeSet {
     _ensureUnique()
     ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
   }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    _ensureUnique()
-    ___removeAll(keepingCapacity: keepCapacity)
-  }
 }
 
 extension RedBlackTreeSet {
@@ -310,6 +304,7 @@ extension RedBlackTreeSet {
     ___remove(from: lower, to: upper)
   }
 
+  /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
@@ -317,6 +312,16 @@ extension RedBlackTreeSet {
     let lower = lowerBound(elementRange.lowerBound).rawValue
     let upper = upperBound(elementRange.upperBound).rawValue
     ___remove(from: lower, to: upper)
+  }
+}
+
+extension RedBlackTreeSet {
+
+  /// - Complexity: O(1)
+  @inlinable
+  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    _ensureUnique()
+    ___removeAll(keepingCapacity: keepCapacity)
   }
 }
 
@@ -1005,6 +1010,7 @@ extension RedBlackTreeSet.SubSequence {
 
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 
+  /// - Complexity: O(*n* log *n*)
   @inlinable
   public init(arrayLiteral elements: Element...) {
     self.init(elements)

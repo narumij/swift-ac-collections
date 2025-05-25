@@ -10,7 +10,7 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
 
   // MARK: - 「空なものは空である」と「空でないものは空ではない」のトートロジー
 
-  /// 空の初期化が成功し、isEmptyがtrueであること
+  /// 空の初期化が成功し、プロパティが空を示していること
   func test_emptyInitialization() {
     // 事前条件: 空のマルチセットを初期化
     let multiset = RedBlackTreeMultiSet<Int>()
@@ -20,7 +20,7 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
     XCTAssertEqual(multiset.count, 0, "要素数0であること")
   }
 
-  /// 最小容量指定初期化が成功し、空であること
+  /// 最小容量指定初期化が成功し、プロパティが空を示していること
   func test_minimumCapacityInitialization() {
     // 事前条件: 最小容量10で初期化
     let multiset = RedBlackTreeMultiSet<Int>(minimumCapacity: 10)
@@ -31,7 +31,7 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
     XCTAssertGreaterThanOrEqual(multiset.capacity, 10, "指定したサイズ以上であること")
   }
 
-  /// Sequenceからの初期化が重複を含め順序通りの要素を正しく保持すること
+  /// Sequenceからの初期化がそのままの要素数を、プロパティが示していること
   func test_sequenceInitialization() {
     // 事前条件: Sequence [3, 1, 2, 1, 3]
     let multiset = RedBlackTreeMultiSet<Int>([3, 1, 2, 1, 3])
@@ -42,7 +42,7 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
     XCTAssertEqual(multiset.count, expected.count, "要素数が期待通りであること")
   }
 
-  /// Rangeからの初期化が範囲通りの要素を正しく保持すること
+  /// Rangeからの初期化が範囲通りの要素数を、プロパティが示していること
   func test_rangeInitialization() {
     // 事前条件: Range [1...3]
     let multiset = RedBlackTreeMultiSet<Int>(1...3)
@@ -53,7 +53,7 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
     XCTAssertEqual(multiset.count, expected.count, "要素数が期待通りであること")
   }
   
-  /// Rangeからの初期化が範囲通りの要素を正しく保持すること
+  /// Rangeからの初期化が範囲通りの要素数を、プロパティが示していること
   func test_reverseRangeInitialization() {
     // 事前条件: Range [1...3]
     let multiset = RedBlackTreeMultiSet<Int>(stride(from: 3, through: 1, by: -1))
@@ -66,7 +66,7 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
   
   // MARK: - キャパシティは別腹
   
-  /// reserveCapacityにより容量が指定値以上に増加すること
+  /// reserveCapacityにより容量が指定値以上に増加し、要素数を指すプロパティが変化しないこと
   func test_reserveCapacity_shouldIncreaseCapacity() {
     var multiset = RedBlackTreeMultiSet<Int>()
     let initialCount = multiset.count
@@ -86,7 +86,7 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
     XCTAssertEqual(multiset.count, 0, "最小容量指定後も要素数0のまま変化しないこと")
   }
   
-  /// reserveCapacityにより容量が指定値以上に増加すること
+  /// reserveCapacityにより容量が指定値以上に増加し、要素数を指すプロパティが変化しないこと
   func test_reserveCapacity_shouldIncreaseCapacity2() {
     var multiset = RedBlackTreeMultiSet<Int>(1...3)
     let initialCount = multiset.count

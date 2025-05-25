@@ -19,7 +19,7 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     let mappedElements = set.map { $0 }
 
     // 事後条件:
-    XCTAssertEqual(mappedElements, [], "空の配列をかえすこと")
+    XCTAssertEqual(mappedElements, [], "要素が無いこと")
   }
 
   /// 最小容量指定初期化しても空のセットの内容が空であること
@@ -31,7 +31,7 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     let mappedElements = set.map { $0 }
 
     // 事後条件:
-    XCTAssertEqual(mappedElements, [], "空をかえすこと")
+    XCTAssertEqual(mappedElements, [], "要素が無いこと")
   }
 
   /// 内容が重複なく昇順であること(Array)

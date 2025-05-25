@@ -19,7 +19,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
     let mappedElements = multiset.map { $0 }
 
     // 事後条件: 空であること
-    XCTAssertEqual(mappedElements, [], "空であること")
+    XCTAssertEqual(mappedElements, [], "要素が無いこと")
   }
 
   /// 最小容量指定初期化が成功し、空であること
@@ -31,7 +31,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
     let mappedElements = multiset.map { $0 }
 
     // 事後条件: 空であること、容量が最低10以上
-    XCTAssertEqual(mappedElements, [], "空であること")
+    XCTAssertEqual(mappedElements, [], "要素が無いこと")
   }
 
   /// Sequenceからの初期化が重複を含め順序通りの要素を正しく保持すること

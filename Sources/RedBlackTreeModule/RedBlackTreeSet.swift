@@ -147,7 +147,7 @@ extension RedBlackTreeSet {
   }
 }
 
-// MARK: - Insert
+// MARK: - Insertion
 
 extension RedBlackTreeSet {
   
@@ -198,7 +198,7 @@ extension RedBlackTreeSet {
   }
 }
 
-// MARK: - Remove
+// MARK: - Removal
 
 extension RedBlackTreeSet {
   

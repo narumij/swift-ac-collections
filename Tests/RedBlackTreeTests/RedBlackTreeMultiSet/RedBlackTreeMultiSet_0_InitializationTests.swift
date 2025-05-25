@@ -8,6 +8,8 @@ import XCTest
 
 final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
 
+  // MARK: - 「空は空である」と「空でないものは空ではない」のトートロジー
+
   /// 空の初期化が成功し、isEmptyがtrueであること
   func test_emptyInitialization() {
     // 事前条件: 空のマルチセットを初期化

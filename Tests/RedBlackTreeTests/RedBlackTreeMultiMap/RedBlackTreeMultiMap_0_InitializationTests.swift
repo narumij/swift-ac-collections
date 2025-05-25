@@ -8,6 +8,8 @@ import XCTest
 
 final class RedBlackTreeMultiMapInitializationTests: XCTestCase {
 
+  // MARK: - 「空は空である」と「空でないものは空ではない」のトートロジー
+
   /// 共通テストデータ
   let elements: [(String, Int)] = [
     ("cherry", 4),

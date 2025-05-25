@@ -53,6 +53,17 @@ final class RedBlackTreeSetInitializationTests: XCTestCase {
     XCTAssertEqual(set.count, expected.count, "要素数が期待値通りであること")
   }
   
+  /// Rangeからの初期化が範囲通りの要素数を、プロパティが示していること
+  func test_reverseRangeInitialization() {
+    // 事前条件: for(i = 3; i >= 0; --i) { }
+    let set = RedBlackTreeSet(stride(from: 3, through: 1, by: -1))
+
+    // 事後条件: ソート済み [1, 2, 3]
+    let expected = [1, 2, 3]
+    XCTAssertFalse(set.isEmpty, "空でではないこと")
+    XCTAssertEqual(set.count, expected.count, "要素数が期待値通りであること")
+  }
+  
   /// reserveCapacityにより容量が指定値以上に増加し、要素数を指すプロパティが変化しないこと
   func test_empty_reserveCapacity_shouldIncreaseCapacity() {
     var set = RedBlackTreeSet<Int>()

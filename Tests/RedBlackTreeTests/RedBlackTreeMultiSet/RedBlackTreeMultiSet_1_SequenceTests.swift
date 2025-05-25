@@ -105,7 +105,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
   
   /// forでRedBlackTreeSetの要素を正しく列挙できること
   func test_set_for() {
-    // 事前条件: 集合に[1, 2, 3, 4, 5]を用意すること
+    // 事前条件: 集合に[1, 2, 2, 3, 4, 5, 5]を用意すること
     let set = RedBlackTreeMultiSet([1, 2, 2, 3, 4, 5, 5])
 
     // 実行: forで要素を列挙する
@@ -133,7 +133,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
 
   /// forEachでRedBlackTreeSetの要素を正しく列挙できること
   func test_set_forEach() {
-    // 事前条件: 集合に[1, 2, 3, 4, 5]を用意すること
+    // 事前条件: 集合に[1, 2, 2, 3, 4, 5, 5]を用意すること
     let set = RedBlackTreeMultiSet([1, 2, 2, 3, 4, 5, 5])
 
     // 実行: forEachで要素を列挙すること
@@ -158,7 +158,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
 
   /// filterでRedBlackTreeSetの要素を正しく絞り込めること
   func test_set_filter() {
-    // 事前条件: 集合に[1, 2, 3, 4, 5]を用意すること
+    // 事前条件: 集合に[1, 2, 2, 3, 4, 5, 5]を用意すること
     let set = RedBlackTreeMultiSet([1, 2, 2, 3, 4, 5, 5])
 
     // 実行: filterで要素を偶数に絞り込む
@@ -182,7 +182,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
 
   /// reduceでRedBlackTreeSetの要素を正しくたたみこめること
   func test_set_reduce() {
-    // 事前条件: 集合に[1, 2, 3, 4, 5]を用意すること
+    // 事前条件: 集合に[1, 2, 2, 3, 4, 5, 5]を用意すること
     let set = RedBlackTreeMultiSet([1, 2, 2, 3, 4, 5, 5])
 
     // 実行: reduceで要素を合算すると

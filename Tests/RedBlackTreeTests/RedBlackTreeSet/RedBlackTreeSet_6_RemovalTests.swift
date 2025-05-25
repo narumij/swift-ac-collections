@@ -204,7 +204,7 @@ extension RedBlackTreeSetRemoveTests {
       // 事前条件: 集合に[1, 2, 3, 4, 5]
       var set = RedBlackTreeSet([1, 2, 3, 4, 5])
       let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
-      var subIndex = sub.startIndex  // index pointing to 2
+      let subIndex = sub.startIndex  // index pointing to 2
 
       // 実行: 削除（2を削除する）
       let element = sub[subIndex]

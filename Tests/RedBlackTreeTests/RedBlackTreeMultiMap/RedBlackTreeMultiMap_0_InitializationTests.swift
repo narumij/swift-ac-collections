@@ -64,6 +64,8 @@ final class RedBlackTreeMultiMapInitializationTests: XCTestCase {
     XCTAssertTrue(multiMap.isEmpty, "最小容量指定後も空であるべき")
   }
 
+  // MARK: - キャパシティは別腹
+
   /// reserveCapacityにより容量が指定値以上に増加すること
   func test_reserveCapacity_shouldIncreaseCapacity() {
     // 事前条件: 空集合を生成

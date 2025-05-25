@@ -64,6 +64,8 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
     XCTAssertEqual(multiset.count, expected.count, "要素数が期待値通りであること")
   }
   
+  // MARK: - キャパシティは別腹
+  
   /// reserveCapacityにより容量が指定値以上に増加すること
   func test_reserveCapacity_shouldIncreaseCapacity() {
     var multiset = RedBlackTreeMultiSet<Int>()

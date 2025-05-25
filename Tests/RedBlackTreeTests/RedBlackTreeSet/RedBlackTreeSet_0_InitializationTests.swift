@@ -64,6 +64,8 @@ final class RedBlackTreeSetInitializationTests: XCTestCase {
     XCTAssertEqual(set.count, expected.count, "要素数が期待値通りであること")
   }
   
+  // MARK: - キャパシティは別腹
+
   /// reserveCapacityにより容量が指定値以上に増加し、要素数を指すプロパティが変化しないこと
   func test_empty_reserveCapacity_shouldIncreaseCapacity() {
     var set = RedBlackTreeSet<Int>()

@@ -1,5 +1,10 @@
 import XCTest
+
+#if DEBUG
 @testable import RedBlackTreeModule
+#else
+import RedBlackTreeModule
+#endif
 
 final class RedBlackTreeSetProtocolConformanceTests: XCTestCase {}
 

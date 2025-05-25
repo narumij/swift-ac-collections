@@ -37,7 +37,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
   /// Sequenceからの初期化が重複を含め順序通りの要素を正しく保持すること
   func test_sequenceInitialization() {
     // 事前条件: Sequence [3, 1, 2, 1, 3]
-    let multiset = RedBlackTreeMultiSet([3, 1, 2, 1, 3])
+    let multiset = RedBlackTreeMultiSet<Int>([3, 1, 2, 1, 3])
 
     // 実行: mapで全要素取得
     let mappedElements = multiset.map { $0 }
@@ -50,7 +50,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
   /// AnySequenceSequenceからの初期化が重複を含め順序通りの要素を正しく保持すること
   func test_anySequenceInitialization() {
     // 事前条件: Sequence [3, 1, 2, 1, 3]
-    let multiset = RedBlackTreeMultiSet(AnySequence([3, 1, 2, 1, 3]))
+    let multiset = RedBlackTreeMultiSet<Int>(AnySequence([3, 1, 2, 1, 3]))
 
     // 実行: mapで全要素取得
     let mappedElements = multiset.map { $0 }
@@ -63,7 +63,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
   /// Rangeからの初期化が範囲通りの要素を正しく保持すること
   func test_rangeInitialization() {
     // 事前条件: Range [1...3]
-    let multiset = RedBlackTreeMultiSet(1...3)
+    let multiset = RedBlackTreeMultiSet<Int>(1...3)
 
     // 実行: mapで全要素取得
     let mappedElements = multiset.map { $0 }
@@ -76,7 +76,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
   /// Rangeからの初期化が範囲通りの要素を正しく保持すること
   func test_reverseRangeInitialization() {
     // 事前条件: Range [1...3]
-    let multiset = RedBlackTreeMultiSet(stride(from: 3, through: 1, by: -1))
+    let multiset = RedBlackTreeMultiSet<Int>(stride(from: 3, through: 1, by: -1))
 
     // 実行: mapで全要素取得
     let mappedElements = multiset.map { $0 }
@@ -106,7 +106,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
   /// forでRedBlackTreeSetの要素を正しく列挙できること
   func test_set_for() {
     // 事前条件: 集合に[1, 2, 2, 3, 4, 5, 5]を用意すること
-    let set = RedBlackTreeMultiSet([1, 2, 2, 3, 4, 5, 5])
+    let set = RedBlackTreeMultiSet<Int>([1, 2, 2, 3, 4, 5, 5])
 
     // 実行: forで要素を列挙する
     var elements: [Int] = []
@@ -134,7 +134,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
   /// forEachでRedBlackTreeSetの要素を正しく列挙できること
   func test_set_forEach() {
     // 事前条件: 集合に[1, 2, 2, 3, 4, 5, 5]を用意すること
-    let set = RedBlackTreeMultiSet([1, 2, 2, 3, 4, 5, 5])
+    let set = RedBlackTreeMultiSet<Int>([1, 2, 2, 3, 4, 5, 5])
 
     // 実行: forEachで要素を列挙すること
     var elements: [Int] = []
@@ -159,7 +159,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
   /// filterでRedBlackTreeSetの要素を正しく絞り込めること
   func test_set_filter() {
     // 事前条件: 集合に[1, 2, 2, 3, 4, 5, 5]を用意すること
-    let set = RedBlackTreeMultiSet([1, 2, 2, 3, 4, 5, 5])
+    let set = RedBlackTreeMultiSet<Int>([1, 2, 2, 3, 4, 5, 5])
 
     // 実行: filterで要素を偶数に絞り込む
     let elements: [Int] = set.filter{ $0 % 2 == 0 }
@@ -183,7 +183,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
   /// reduceでRedBlackTreeSetの要素を正しくたたみこめること
   func test_set_reduce() {
     // 事前条件: 集合に[1, 2, 2, 3, 4, 5, 5]を用意すること
-    let set = RedBlackTreeMultiSet([1, 2, 2, 3, 4, 5, 5])
+    let set = RedBlackTreeMultiSet<Int>([1, 2, 2, 3, 4, 5, 5])
 
     // 実行: reduceで要素を合算すると
     let element = set.reduce(0, +)

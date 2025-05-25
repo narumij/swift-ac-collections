@@ -34,7 +34,7 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
   /// Sequenceからの初期化が重複を含め順序通りの要素を正しく保持すること
   func test_sequenceInitialization() {
     // 事前条件: Sequence [3, 1, 2, 1, 3]
-    let multiset = RedBlackTreeMultiSet([3, 1, 2, 1, 3])
+    let multiset = RedBlackTreeMultiSet<Int>([3, 1, 2, 1, 3])
 
     // 事後条件: 重複含めソート済み [1, 1, 2, 3, 3]
     let expected = [1, 1, 2, 3, 3]
@@ -45,7 +45,7 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
   /// Rangeからの初期化が範囲通りの要素を正しく保持すること
   func test_rangeInitialization() {
     // 事前条件: Range [1...3]
-    let multiset = RedBlackTreeMultiSet(1...3)
+    let multiset = RedBlackTreeMultiSet<Int>(1...3)
 
     // 事後条件: ソート済み [1, 2, 3]
     let expected = [1, 2, 3]
@@ -56,7 +56,7 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
   /// Rangeからの初期化が範囲通りの要素を正しく保持すること
   func test_reverseRangeInitialization() {
     // 事前条件: Range [1...3]
-    let multiset = RedBlackTreeMultiSet(stride(from: 3, through: 1, by: -1))
+    let multiset = RedBlackTreeMultiSet<Int>(stride(from: 3, through: 1, by: -1))
 
     // 事後条件: ソート済み [1, 2, 3]
     let expected = [1, 2, 3]

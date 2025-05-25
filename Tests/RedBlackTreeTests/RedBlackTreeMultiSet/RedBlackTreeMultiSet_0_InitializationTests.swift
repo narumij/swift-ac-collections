@@ -53,10 +53,20 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
     XCTAssertEqual(multiset.count, expected.count, "要素数が期待値通りであること")
   }
   
+  /// Rangeからの初期化が範囲通りの要素を正しく保持すること
+  func test_reverseRangeInitialization() {
+    // 事前条件: Range [1...3]
+    let multiset = RedBlackTreeMultiSet(stride(from: 3, through: 1, by: -1))
+
+    // 事後条件: ソート済み [1, 2, 3]
+    let expected = [1, 2, 3]
+    XCTAssertFalse(multiset.isEmpty, "空でではないこと")
+    XCTAssertEqual(multiset.count, expected.count, "要素数が期待値通りであること")
+  }
+  
   /// reserveCapacityにより容量が指定値以上に増加すること
   func test_reserveCapacity_shouldIncreaseCapacity() {
     var multiset = RedBlackTreeMultiSet<Int>()
-    let initialCapacity = multiset.capacity
     let initialCount = multiset.count
 
     // 事前条件:
@@ -77,7 +87,6 @@ final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
   /// reserveCapacityにより容量が指定値以上に増加すること
   func test_reserveCapacity_shouldIncreaseCapacity2() {
     var multiset = RedBlackTreeMultiSet<Int>(1...3)
-    let initialCapacity = multiset.capacity
     let initialCount = multiset.count
 
     // 事前条件:

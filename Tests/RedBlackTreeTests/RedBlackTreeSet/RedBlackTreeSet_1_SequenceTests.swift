@@ -15,6 +15,7 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     // 事前条件: 空のマルチセットを初期化
     let set = RedBlackTreeSet<Int>()
 
+    // 実行: mapで全要素取得
     let mappedElements = set.map { $0 }
 
     // 事後条件:
@@ -26,6 +27,7 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     // 事前条件: 最小容量10で初期化
     let set = RedBlackTreeSet<Int>(minimumCapacity: 10)
 
+    // 実行: mapで全要素取得
     let mappedElements = set.map { $0 }
 
     // 事後条件:
@@ -37,6 +39,20 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     // 事前条件: Sequence [3, 1, 2, 1, 3]
     let set = RedBlackTreeSet([3, 1, 2, 1, 3, 4, 4, 5])
 
+    // 実行: mapで全要素取得
+    let mappedElements = set.map { $0 }
+
+    // 事後条件:
+    let expected = [1, 2, 3, 4, 5]
+    XCTAssertEqual(mappedElements, expected, "要素が重複無くソート済みであること")
+  }
+  
+  /// 内容が重複なく昇順であること(AnySequence)
+  func test_anySequenceInitialization() {
+    // 事前条件: Sequence [3, 1, 2, 1, 3]
+    let set = RedBlackTreeSet(AnySequence([3, 1, 2, 1, 3, 4, 4, 5]))
+
+    // 実行: mapで全要素取得
     let mappedElements = set.map { $0 }
 
     // 事後条件:
@@ -49,6 +65,7 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     // 事前条件: Range [1...3]
     let set = RedBlackTreeSet(1...4)
 
+    // 実行: mapで全要素取得
     let mappedElements = set.map { $0 }
 
     // 事後条件:
@@ -56,18 +73,17 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     XCTAssertEqual(mappedElements, expected, "要素が重複無くソート済みであること")
   }
   
-  /// 内容が重複なく昇順であること(AnySequence)
-  func test_sequence_mapYieldsAllElementsInSortedOrder() {
-    // 事前条件: 初期化
-    let elements = [3, 1, 4, 1, 5, 9]
-    let set = RedBlackTreeSet(AnySequence(elements))
+  /// 内容が重複なく昇順であること(逆Range)
+  func test_reverseRangeInitialization() {
+    // 事前条件: for(i = 3; i >= 0; --i) { }
+    let set = RedBlackTreeSet(stride(from: 3, through: 1, by: -1))
 
     // 実行: mapで全要素取得
     let mappedElements = set.map { $0 }
 
-    // 事後条件:
-    let expected = Array(Set(elements)).sorted()
-    XCTAssertEqual(mappedElements, expected, "昇順かつ重複なしであること")
+    // 事後条件: ソート済み [1, 2, 3]
+    let expected = [1, 2, 3]
+    XCTAssertEqual(mappedElements, expected, "要素が重複無くソート済みであること")
   }
 
   /// 内容が重複なく昇順であること(Arrayを初期化)
@@ -97,9 +113,6 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     // 事後条件:
     XCTAssertEqual(mappedElements, sortedElements, "一致すること")
   }
-}
-
-extension RedBlackTreeSetSequenceTests {
   
   // MARK: - map以外の動作チェック
 

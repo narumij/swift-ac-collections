@@ -8,26 +8,22 @@ import XCTest
 
 final class RedBlackTreeDictionarySequenceTests: XCTestCase {
 
-  let elements = [("apple", 1), ("banana", 2), ("cherry", 3)]
+  let elements = [("apple", 1), ("cherry", 3), ("banana", 2)]
 
   func testSequenceConformance() {
     let dict = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: elements)
 
-    var collectedKeys = [String]()
-    var collectedValues = [Int]()
+    var collectedPairs = [(String, Int)]()
 
     for element in dict {
-      collectedKeys.append(element.key)
-      collectedValues.append(element.value)
+      collectedPairs.append((element.key, element.value))
     }
 
-    // キーと値が含まれていることを確認
-    XCTAssertEqual(Set(collectedKeys), Set(["apple", "banana", "cherry"]))
-    XCTAssertEqual(Set(collectedValues), Set([1, 2, 3]))
+    let expected = [("apple", 1), ("banana", 2), ("cherry", 3)]
 
-    // 並び順が保証されている場合（例: ソート済みの辞書ならテストできる）
-    let sortedKeys = dict.map { $0.key }
-    XCTAssertEqual(sortedKeys, ["apple", "banana", "cherry"].sorted())
+    // キーと値が含まれていることを確認
+    XCTAssertEqual(collectedPairs.map { $0.0 }, expected.map { $0.0 })
+    XCTAssertEqual(collectedPairs.map { $0.1 }, expected.map { $0.1 })
   }
 
   func testEmptyDictionary() {

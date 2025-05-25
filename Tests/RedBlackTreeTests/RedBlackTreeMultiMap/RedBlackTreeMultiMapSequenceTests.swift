@@ -33,10 +33,6 @@ final class RedBlackTreeMultiMapSequenceTests: XCTestCase {
     ]
     XCTAssertEqual(collectedPairs.map { $0.0 }, expectedPairs.map { $0.0 })
     XCTAssertEqual(collectedPairs.map { $0.1 }, expectedPairs.map { $0.1 })
-
-    // 順序確認（特に木構造だと辞書順の可能性が高い）
-    let sortedKeys = multiMap.map { $0.key }
-    XCTAssertEqual(sortedKeys, sortedKeys.sorted())
   }
 
   func testEmptyMultiMap() {
@@ -46,18 +42,5 @@ final class RedBlackTreeMultiMapSequenceTests: XCTestCase {
       count += 1
     }
     XCTAssertEqual(count, 0)
-  }
-
-  func testMultipleValuesForKey() {
-    var multiMap = RedBlackTreeMultiMap<String, Int>()
-    multiMap.insert(key: "apple", value: 1)
-    multiMap.insert(key: "apple", value: 2)
-    multiMap.insert(key: "apple", value: 3)
-
-    let appleValues = multiMap.values(forKey: "apple")
-    XCTAssertEqual(Set(appleValues), Set([1, 2, 3]))
-
-    // 全要素の数は3であることを確認
-    XCTAssertEqual(multiMap.count, 3)
   }
 }

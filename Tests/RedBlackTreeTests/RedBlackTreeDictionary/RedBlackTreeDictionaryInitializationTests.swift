@@ -8,7 +8,11 @@ import XCTest
 
 final class RedBlackTreeDictionaryInitializationTests: XCTestCase {
 
-  let elements = [("apple", 1), ("banana", 2), ("cherry", 3)]
+  let elements = [("apple", 1), ("cherry", 3), ("banana", 2)]
+
+  let duplicate = [("apple", 1), ("banana", 2), ("apple", 3)]
+
+  let items = ["apple", "banana", "apricot", "blueberry"]
 
   /// 空の辞書を初期化したときの動作を確認
   func testInitEmptyDictionary() {
@@ -20,53 +24,67 @@ final class RedBlackTreeDictionaryInitializationTests: XCTestCase {
   /// シーケンスで初期化（配列使用）
   func testInitWithUniqueKeysFromArray() {
     let dict = RedBlackTreeDictionary(uniqueKeysWithValues: elements)
+    
+    let expected = [("apple", 1), ("banana", 2), ("cherry", 3)]
+
     XCTAssertEqual(dict.count, elements.count)
-    XCTAssertEqual(dict["apple"], 1)
-    XCTAssertEqual(dict["banana"], 2)
-    XCTAssertEqual(dict["cherry"], 3)
+    XCTAssertEqual(dict.map { $0.key }, expected.map { $0.0 })
+    XCTAssertEqual(dict.map { $0.value }, expected.map { $0.1 })
   }
 
   /// シーケンスで初期化（AnySequence使用）
   func testInitWithUniqueKeysFromAnySequence() {
     let dict = RedBlackTreeDictionary(uniqueKeysWithValues: AnySequence(elements))
+    
+    let expected = [("apple", 1), ("banana", 2), ("cherry", 3)]
+
     XCTAssertEqual(dict.count, elements.count)
-    XCTAssertEqual(dict["apple"], 1)
-    XCTAssertEqual(dict["banana"], 2)
-    XCTAssertEqual(dict["cherry"], 3)
+    XCTAssertEqual(dict.map { $0.key }, expected.map { $0.0 })
+    XCTAssertEqual(dict.map { $0.value }, expected.map { $0.1 })
   }
 
   /// 重複キーあり（マージルール適用）配列使用
   func testInitWithDuplicateKeysMergingValues() throws {
-    let dict = RedBlackTreeDictionary(elements, uniquingKeysWith: +)
+    let dict = RedBlackTreeDictionary(duplicate, uniquingKeysWith: +)
+
+    let expect = [("apple", 4), ("banana", 2)]
+
     XCTAssertEqual(dict.count, 2)
-    XCTAssertEqual(dict["apple"], 4)
-    XCTAssertEqual(dict["banana"], 2)
+    XCTAssertEqual(dict.map { $0.key }, expect.map { $0.0 })
+    XCTAssertEqual(dict.map { $0.value }, expect.map { $0.1 })
   }
 
   /// 重複キーあり（マージルール適用）AnySequence使用
   func testInitWithDuplicateKeysMergingValuesAnySequence() throws {
-    let dict = RedBlackTreeDictionary(AnySequence(elements), uniquingKeysWith: +)
+    let dict = RedBlackTreeDictionary(AnySequence(duplicate), uniquingKeysWith: +)
+
+    let expect = [("apple", 4), ("banana", 2)]
+
     XCTAssertEqual(dict.count, 2)
-    XCTAssertEqual(dict["apple"], 4)
-    XCTAssertEqual(dict["banana"], 2)
+    XCTAssertEqual(dict.map { $0.key }, expect.map { $0.0 })
+    XCTAssertEqual(dict.map { $0.value }, expect.map { $0.1 })
   }
 
   /// グルーピング初期化（配列使用）
   func testInitGroupingValuesByFirstCharacter() throws {
-    let items = ["apple", "banana", "apricot", "blueberry"]
     let dict = RedBlackTreeDictionary(grouping: items, by: { String($0.first!) })
+
+    let expect = [("a", ["apple", "apricot"]), ("b", ["banana", "blueberry"])]
+
     XCTAssertEqual(dict.count, 2)
-    XCTAssertEqual(Set(dict["a"]!), Set(["apple", "apricot"]))
-    XCTAssertEqual(Set(dict["b"]!), Set(["banana", "blueberry"]))
+    XCTAssertEqual(dict.map { $0.key }, expect.map { $0.0 })
+    XCTAssertEqual(dict.map { $0.value }, expect.map { $0.1 })
   }
 
   /// グルーピング初期化（AnySequence使用）
   func testInitGroupingValuesByFirstCharacterAnySequence() throws {
-    let items = ["apple", "banana", "apricot", "blueberry"]
     let dict = RedBlackTreeDictionary(grouping: AnySequence(items), by: { String($0.first!) })
+
+    let expect = [("a", ["apple", "apricot"]), ("b", ["banana", "blueberry"])]
+
     XCTAssertEqual(dict.count, 2)
-    XCTAssertEqual(Set(dict["a"]!), Set(["apple", "apricot"]))
-    XCTAssertEqual(Set(dict["b"]!), Set(["banana", "blueberry"]))
+    XCTAssertEqual(dict.map { $0.key }, expect.map { $0.0 })
+    XCTAssertEqual(dict.map { $0.value }, expect.map { $0.1 })
   }
 
   /// 重複キー初期化（fatalErrorなので実テスト不可）

@@ -8,7 +8,7 @@ import XCTest
 
 final class RedBlackTreeSetSequenceTests: XCTestCase {
   
-  // MARK: - 初期化内容とmap動作のチェック
+  // MARK: - map動作チェックと併せて、初期化内容のチェック
 
   /// 空のセットの内容が空であること
   func test_emptyInitialization() {
@@ -101,7 +101,7 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
 
 extension RedBlackTreeSetSequenceTests {
   
-  // MARK: - その他Sequence動作のチェック
+  // MARK: - map以外の動作チェック
 
   /// forでRedBlackTreeSetの要素を正しく列挙できること
   func test_empty_set_for() {

@@ -50,6 +50,11 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 
   @usableFromInline
   var _storage: Tree.Storage
+  
+  @inlinable @inline(__always)
+  init(_storage: Tree.Storage) {
+    self._storage = _storage
+  }
 }
 
 extension RedBlackTreeMultiSet {

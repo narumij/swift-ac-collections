@@ -904,9 +904,17 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet.SubSequence {
 
+  public typealias Indices = Range<Index>
+
   @inlinable
   @inline(__always)
-  public func indices() -> IndexSequence {
+  public var indices: Indices {
+    startIndex ..< endIndex
+  }
+
+  @inlinable
+  @inline(__always)
+  public func ___indices() -> IndexSequence {
     IndexSequence(
       _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
   }

@@ -65,7 +65,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    static func underOver(_ lhs: _NodePtr, _ rhs: _NodePtr) -> Bool? {
+    static func lessThanWhenContainsUnderOrOver(_ lhs: _NodePtr, _ rhs: _NodePtr) -> Bool? {
       if lhs == .under {
         return rhs != .under
       }
@@ -85,7 +85,7 @@ extension ___RedBlackTree.___Tree {
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
 
-      if let underOver = underOver(lhs.rawValue, rhs.rawValue) {
+      if let underOver = lessThanWhenContainsUnderOrOver(lhs.rawValue, rhs.rawValue) {
         return underOver
       }
 
@@ -93,14 +93,16 @@ extension ___RedBlackTree.___Tree {
         let next = lhs.remnant.next
       {
         return next == rhs.rawValue
-          || (underOver(next, rhs.rawValue) ?? rhs._tree.___ptr_comp(next, rhs.rawValue))
+          || (lessThanWhenContainsUnderOrOver(next, rhs.rawValue)
+            ?? rhs._tree.___ptr_comp(next, rhs.rawValue))
       }
 
       if rhs.remnant.rawValue == rhs.rawValue,
         let prev = rhs.remnant.prev
       {
         return lhs.rawValue == prev
-          || (underOver(lhs.rawValue, prev) ?? lhs._tree.___ptr_comp(lhs.rawValue, prev))
+          || (lessThanWhenContainsUnderOrOver(lhs.rawValue, prev)
+            ?? lhs._tree.___ptr_comp(lhs.rawValue, prev))
       }
 
       assert(lhs.isValid)
@@ -283,7 +285,7 @@ extension ___RedBlackTree.___Tree.Pointer: Strideable {
   public var isOver: Bool {
     rawValue == .over
   }
-  
+
   /// 削除操作で無効になりつつ、がんばって（？）隣を記録し、比較操作にまだ耐えているポインタ
   @inlinable
   @inline(__always)

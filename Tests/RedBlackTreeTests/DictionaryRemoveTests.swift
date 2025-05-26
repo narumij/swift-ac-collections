@@ -120,6 +120,14 @@ final class DictionaryRemoveTests: XCTestCase {
   
   func testRemoveWithIndices3() throws {
     var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
+    for i in members.indices.reversed() {
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0.key }, [])
+  }
+  
+  func testRemoveWithIndices4() throws {
+    var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     members.indices.reversed().forEach { i in
       members.remove(at: i)
     }
@@ -161,6 +169,14 @@ final class DictionaryRemoveTests: XCTestCase {
   func testRemoveWithSubIndices2() throws {
     var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     members[2 ..< 8].indices.forEach { i in
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0.key }, [0,1,8,9])
+  }
+  
+  func testRemoveWithSubIndices3() throws {
+      var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
+    for i in members[2 ..< 8].indices.reversed() {
       members.remove(at: i)
     }
     XCTAssertEqual(members.map { $0.key }, [0,1,8,9])

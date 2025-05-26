@@ -208,7 +208,7 @@ final class MultisetRemoveTests: XCTestCase {
   }
   
   func testRemoveWithIndices() throws {
-    var members = RedBlackTreeMultiSet(0 ..< 10)
+    var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
     for i in members.indices {
       members.remove(at: i)
     }
@@ -216,7 +216,7 @@ final class MultisetRemoveTests: XCTestCase {
   }
   
   func testRemoveWithIndices2() throws {
-    var members = RedBlackTreeMultiSet(0 ..< 10)
+    var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
     members.indices.forEach { i in
       members.remove(at: i)
     }
@@ -224,7 +224,15 @@ final class MultisetRemoveTests: XCTestCase {
   }
   
   func testRemoveWithIndices3() throws {
-    var members = RedBlackTreeMultiSet(0 ..< 10)
+    var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
+    for i in members.indices.reversed() {
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [])
+  }
+
+  func testRemoveWithIndices4() throws {
+    var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
     members.indices.reversed().forEach { i in
       members.remove(at: i)
     }
@@ -232,7 +240,7 @@ final class MultisetRemoveTests: XCTestCase {
   }
   
   func testRemoveWith___Indices() throws {
-    var members = RedBlackTreeMultiSet(0 ..< 10)
+    var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
     for i in members.___indices() {
       members.remove(at: i)
     }
@@ -240,7 +248,7 @@ final class MultisetRemoveTests: XCTestCase {
   }
   
   func testRemoveWith___Indices2() throws {
-    var members = RedBlackTreeMultiSet(0 ..< 10)
+    var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
     members.___indices().forEach { i in
       members.remove(at: i)
     }
@@ -248,7 +256,7 @@ final class MultisetRemoveTests: XCTestCase {
   }
   
   func testRemoveWith___Indices3() throws {
-    var members = RedBlackTreeMultiSet(0 ..< 10)
+    var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
     members.___indices().reversed().forEach { i in
       members.remove(at: i)
     }
@@ -256,7 +264,7 @@ final class MultisetRemoveTests: XCTestCase {
   }
 
   func testRemoveWithSubIndices() throws {
-    var members = RedBlackTreeMultiSet(0 ..< 10)
+    var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
     for i in members.elements(in: 2 ..< 8).indices {
       members.remove(at: i)
     }
@@ -264,15 +272,23 @@ final class MultisetRemoveTests: XCTestCase {
   }
   
   func testRemoveWithSubIndices2() throws {
-    var members =  RedBlackTreeMultiSet(0 ..< 10)
+    var members =  RedBlackTreeMultiSet<Int>(0 ..< 10)
     members.elements(in: 2 ..< 8).indices.forEach { i in
       members.remove(at: i)
     }
     XCTAssertEqual(members.map { $0 }, [0,1,8,9])
   }
   
+  func testRemoveWithSubIndices3() throws {
+    var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
+    for i in members.elements(in: 2 ..< 8).indices.reversed() {
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [0,1,8,9])
+  }
+  
   func testRemoveWithSubIndices4() throws {
-    var members =  RedBlackTreeMultiSet(0 ..< 10)
+    var members =  RedBlackTreeMultiSet<Int>(0 ..< 10)
     members.elements(in: 2 ..< 8).indices.reversed().forEach { i in
       members.remove(at: i)
     }
@@ -280,7 +296,7 @@ final class MultisetRemoveTests: XCTestCase {
   }
   
   func testRemoveWithSub___Indices() throws {
-    var members = RedBlackTreeMultiSet(0 ..< 10)
+    var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
     for i in members.elements(in: 2 ..< 8).___indices() {
       members.remove(at: i)
     }
@@ -288,7 +304,7 @@ final class MultisetRemoveTests: XCTestCase {
   }
   
   func testRemoveWithSub___Indices2() throws {
-    var members =  RedBlackTreeMultiSet(0 ..< 10)
+    var members =  RedBlackTreeMultiSet<Int>(0 ..< 10)
     members.elements(in: 2 ..< 8).___indices().forEach { i in
       members.remove(at: i)
     }
@@ -296,7 +312,7 @@ final class MultisetRemoveTests: XCTestCase {
   }
   
   func testRemoveWithSub___Indices4() throws {
-    var members =  RedBlackTreeMultiSet(0 ..< 10)
+    var members =  RedBlackTreeMultiSet<Int>(0 ..< 10)
     members.elements(in: 2 ..< 8).___indices().reversed().forEach { i in
       members.remove(at: i)
     }

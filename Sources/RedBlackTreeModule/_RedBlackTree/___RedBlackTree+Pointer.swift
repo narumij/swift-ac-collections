@@ -22,6 +22,35 @@
 
 import Foundation
 
+@inlinable
+func _description(_ p: _NodePtr) -> String {
+  switch p {
+  case .nullptr: ".nullptr"
+  case .end: ".end"
+  case .under: ".under"
+  case .over: ".over"
+  default: "\(p)"
+  }
+}
+
+@inlinable
+@inline(__always)
+func lessThanWhenContainsUnderOrOver(_ lhs: _NodePtr, _ rhs: _NodePtr) -> Bool? {
+  if lhs == .under {
+    return rhs != .under
+  }
+  if lhs == .over {
+    return false
+  }
+  if rhs == .under {
+    return false
+  }
+  if rhs == .over {
+    return lhs != .over
+  }
+  return nil
+}
+
 extension ___RedBlackTree.___Tree {
 
   /// Range<Bound>の左右のサイズ違いでクラッシュすることを避けるためのもの
@@ -63,24 +92,7 @@ extension ___RedBlackTree.___Tree {
       lhs.rawValue == rhs.rawValue
     }
 
-    @inlinable
-    @inline(__always)
-    static func lessThanWhenContainsUnderOrOver(_ lhs: _NodePtr, _ rhs: _NodePtr) -> Bool? {
-      if lhs == .under {
-        return rhs != .under
-      }
-      if lhs == .over {
-        return false
-      }
-      if rhs == .under {
-        return false
-      }
-      if rhs == .over {
-        return lhs != .over
-      }
-      return nil
-    }
-
+#if true
     @inlinable
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -111,6 +123,81 @@ extension ___RedBlackTree.___Tree {
       // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
       return lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
     }
+#else
+    @inlinable
+    @inline(__always)
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+      let result = less(lhs: lhs, rhs: rhs)
+      print(_description(lhs.rawValue), _description(rhs.rawValue), "=", result)
+      return result
+    }
+    
+    @inlinable
+    @inline(__always)
+    public static func less(lhs: Self, rhs: Self) -> Bool {
+      
+//      if let underOver = lessThanWhenContainsUnderOrOver(lhs.rawValue, rhs.rawValue) {
+//        return underOver
+//      }
+      if let underOver = lessThanWhenContainsUnderOrOver(lhs.rawValue, rhs.rawValue) {
+        print("underOver", _description(lhs.rawValue), _description(rhs.rawValue), "=", underOver)
+        return underOver
+      }
+
+//      if lhs.remnant.rawValue == lhs.rawValue,
+//        let next = lhs.remnant.next
+//      {
+//        return next == rhs.rawValue
+//          || (lessThanWhenContainsUnderOrOver(next, rhs.rawValue)
+//            ?? rhs._tree.___ptr_comp(next, rhs.rawValue))
+//      }
+      if lhs.remnant.rawValue == lhs.rawValue,
+        let next = lhs.remnant.next
+      {
+        if next == rhs.rawValue {
+          print("lhs phantom \(_description(next)) == \(_description(rhs.rawValue))")
+          return true
+        }
+        if let result = lessThanWhenContainsUnderOrOver(next, rhs.rawValue) {
+          print("lhs phantom underOrOver(\(_description(next)), \(_description(rhs.rawValue))")
+          return result
+        }
+        
+        print("lhs phantom rhs._tree.___ptr_comp(\(_description(next)), \(_description(rhs.rawValue)))")
+        return rhs._tree.___ptr_comp(next, rhs.rawValue)
+      }
+
+//      if rhs.remnant.rawValue == rhs.rawValue,
+//        let prev = rhs.remnant.prev
+//      {
+//        return lhs.rawValue == prev
+//          || (lessThanWhenContainsUnderOrOver(lhs.rawValue, prev)
+//            ?? lhs._tree.___ptr_comp(lhs.rawValue, prev))
+//      }
+      if rhs.remnant.rawValue == rhs.rawValue,
+         let prev = rhs.remnant.prev
+      {
+        if lhs.rawValue == prev {
+          print("rhs phantom \(_description(lhs.rawValue)) != \(_description(prev))")
+          return true
+        }
+        
+        if let result = lessThanWhenContainsUnderOrOver(lhs.rawValue, prev) {
+          print("rhs phantom underOrOver(\(_description(lhs.rawValue)), \(_description(prev)))")
+          return result
+        }
+
+        print("rhs phantom lhs._tree.___ptr_comp(\(_description(lhs.rawValue)), \(_description(prev)))")
+        return lhs._tree.___ptr_comp(lhs.rawValue, prev)
+      }
+
+      assert(lhs.isValid)
+      assert(rhs.isValid)
+
+      // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
+      return lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
+    }
+#endif
 
     // MARK: -
 
@@ -130,6 +217,7 @@ extension ___RedBlackTree.___Tree {
 
     @usableFromInline
     func phantomMark() {
+      print("remove \(_description(rawValue))")
       remnant.rawValue = rawValue
       remnant.prev = rawValue == _tree.___begin() ? .under : _tree.__tree_prev_iter(rawValue)
       remnant.next = _tree.__tree_next_iter(rawValue)

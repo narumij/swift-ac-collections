@@ -62,7 +62,7 @@ extension _NodePtr {
   /// 特殊なnullptr
   /// 範囲の上限を上回っていることを表す
   @inlinable
-  static var over: Self { -2 }
+  static var over: Self { -4 }
 }
 
 @inlinable

@@ -268,6 +268,13 @@ final class SetRemoveTest_10: XCTestCase {
     XCTAssertEqual(members.map { $0 }, [0, 1, 8, 9])
   }
 
+  func testRemoveWithSubIndices3() throws {
+    for i in members.elements(in: 2..<8).indices.reversed() {
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [0, 1, 8, 9])
+  }
+  
   func testRemoveWithSubIndices4() throws {
     members.elements(in: 2..<8).indices.reversed().forEach { i in
       members.remove(at: i)

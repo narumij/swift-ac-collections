@@ -56,34 +56,52 @@ extension ___RedBlackTree.___Tree {
 
     // MARK: -
     
+    @inlinable
+    @inline(__always)
     public static func == (lhs: Self, rhs: Self) -> Bool {
       // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
       lhs.rawValue == rhs.rawValue
     }
+    
+    @inlinable
+    @inline(__always)
+    static func underOver(_ lhs: _NodePtr, _ rhs: _NodePtr) -> Bool? {
+      if lhs == .under {
+        return rhs != .under
+      }
+      if lhs == .over {
+        return false
+      }
+      if rhs == .under {
+        return false
+      }
+      if rhs == .over {
+        return lhs != .over
+      }
+      return nil
+    }
 
+    @inlinable
+    @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
-      if lhs.rawValue == .under {
-        return rhs.rawValue != .under
+      
+      if let underOver = underOver(lhs.rawValue, rhs.rawValue) {
+        return underOver
       }
-      if lhs.rawValue == .over {
-        return false
-      }
-      if rhs.rawValue == .under {
-        return false
-      }
-      if rhs.rawValue == .over {
-        return lhs.rawValue != .over
-      }
+      
       if lhs.ghost.rawValue == lhs.rawValue,
          let next = lhs.ghost.next {
-        return next == rhs.rawValue || rhs._tree.___ptr_comp(next, rhs.rawValue)
+        return next == rhs.rawValue || (underOver(next, rhs.rawValue) ?? rhs._tree.___ptr_comp(next, rhs.rawValue))
       }
+      
       if rhs.ghost.rawValue == rhs.rawValue,
          let prev = rhs.ghost.prev {
-        return lhs.rawValue == prev || lhs._tree.___ptr_comp(lhs.rawValue, prev)
+        return lhs.rawValue == prev || (underOver(lhs.rawValue, prev) ?? lhs._tree.___ptr_comp(lhs.rawValue, prev))
       }
+      
       assert(lhs.isValid)
-      assert(lhs.isValid)
+      assert(rhs.isValid)
+      
       // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
       return lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
     }
@@ -284,7 +302,7 @@ extension ___RedBlackTree.___Tree.Pointer: Strideable {
       fatalError(.invalidIndex)
     }
     var distance = n
-    var result: Self = self
+    var result: Self = .init(__tree: _tree, rawValue: rawValue)
     while distance != 0 {
       if 0 < distance {
         result = result.next ?? over

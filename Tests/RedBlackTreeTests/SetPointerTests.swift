@@ -91,6 +91,7 @@ final class SetPointerTests: XCTestCase {
   func testGhostBehavior1() throws {
     let indices = members.indices.map { $0 }
     members.remove(at: indices[2])
+    XCTAssertFalse(indices[2].isValid)
     XCTAssertLessThan(indices[0].advanced(by: -2), indices[2])
     XCTAssertLessThan(indices[0].advanced(by: -1), indices[2])
     XCTAssertTrue(indices[0] < indices[2])
@@ -105,6 +106,7 @@ final class SetPointerTests: XCTestCase {
   func testGhostBehavior2() throws {
     let indices = members.indices.map { $0 }
     members.remove(at: indices[0])
+    XCTAssertFalse(indices[0].isValid)
     XCTAssertLessThan(indices[0].advanced(by: -2), indices[0])
     XCTAssertLessThan(indices[0].advanced(by: -1), indices[0])
     XCTAssertEqual(indices[0], indices[0])
@@ -119,6 +121,7 @@ final class SetPointerTests: XCTestCase {
   func testGhostBehavior3() throws {
     let indices = members.indices.map { $0 }
     members.remove(at: indices[4])
+    XCTAssertFalse(indices[4].isValid)
     XCTAssertLessThan(indices[0].advanced(by: -2), indices[4])
     XCTAssertLessThan(indices[0].advanced(by: -1), indices[4])
     XCTAssertLessThan(indices[0], indices[4])
@@ -129,6 +132,32 @@ final class SetPointerTests: XCTestCase {
     XCTAssertGreaterThan(indices[4].advanced(by: 1), indices[4])
     XCTAssertEqual(indices[4].advanced(by: 1), members.endIndex)
     XCTAssertGreaterThan(indices[4].advanced(by: 2), indices[4])
+  }
+  
+  func testValidBehavior1() throws {
+    let indices = members.indices.map { $0 }
+    for i in indices.indices {
+      members.remove(at: indices[i])
+      for j in indices.startIndex ..< i {
+        XCTAssertFalse(indices[j].isValid)
+      }
+      for j in i.advanced(by: 1) ..< indices.endIndex {
+        XCTAssertTrue(indices[j].isValid)
+      }
+    }
+  }
+
+  func testValidBehavior2() throws {
+    let indices = members.indices.map { $0 }
+    for i in indices.indices.reversed() {
+      members.remove(at: indices[i])
+      for j in indices.startIndex ..< i {
+        XCTAssertTrue(indices[j].isValid)
+      }
+      for j in i.advanced(by: 1) ..< indices.endIndex {
+        XCTAssertFalse(indices[j].isValid)
+      }
+    }
   }
 
   func testPerformanceExample() throws {

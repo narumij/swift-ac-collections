@@ -85,17 +85,20 @@ extension ___RedBlackTree.___Tree {
 
     // MARK: -
 
+#if false
     @inlinable
     @inline(__always)
     public static func == (lhs: Self, rhs: Self) -> Bool {
+      print(_description(lhs.rawValue), "==", _description(rhs.rawValue))
       // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-      lhs.rawValue == rhs.rawValue
+      return lhs.rawValue == rhs.rawValue
     }
-
-#if true
+    
     @inlinable
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
+
+      print(_description(lhs.rawValue), "<", _description(rhs.rawValue))
 
       if let underOver = lessThanWhenContainsUnderOrOver(lhs.rawValue, rhs.rawValue) {
         return underOver
@@ -127,15 +130,58 @@ extension ___RedBlackTree.___Tree {
     @inlinable
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
+      print(_description(lhs.rawValue), "<", _description(rhs.rawValue))
       let result = less(lhs: lhs, rhs: rhs)
-      print(_description(lhs.rawValue), _description(rhs.rawValue), "=", result)
+      print(_description(lhs.rawValue), "<", _description(rhs.rawValue), "=", result)
       return result
     }
     
     @inlinable
     @inline(__always)
+    public static func <= (lhs: Self, rhs: Self) -> Bool {
+      print(_description(lhs.rawValue), "<=", _description(rhs.rawValue))
+      let result = !less(lhs: rhs, rhs: lhs)
+      print(_description(lhs.rawValue), "<=", _description(rhs.rawValue), "=", result)
+      return result
+    }
+    
+    @inlinable
+    @inline(__always)
+    public static func > (lhs: Self, rhs: Self) -> Bool {
+      print(_description(lhs.rawValue), ">", _description(rhs.rawValue))
+      let result = less(lhs: rhs, rhs: lhs)
+      print(_description(lhs.rawValue), ">", _description(rhs.rawValue), "=", result)
+      return result
+    }
+
+    @inlinable
+    @inline(__always)
+    public static func >= (lhs: Self, rhs: Self) -> Bool {
+      print(_description(lhs.rawValue), "=>", _description(rhs.rawValue))
+      let result = !less(lhs: lhs, rhs: rhs)
+      print(_description(lhs.rawValue), "=>", _description(rhs.rawValue), "=", result)
+      return result
+    }
+    
+    @inlinable
+    @inline(__always)
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+      print(_description(lhs.rawValue), "==", _description(rhs.rawValue))
+      // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
+      return equal(lhs: lhs, rhs: rhs)
+    }
+
+    @inlinable
+    @inline(__always)
+    public static func equal(lhs: Self, rhs: Self) -> Bool {
+      // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
+      lhs.rawValue == rhs.rawValue
+    }
+
+    @inlinable
+    @inline(__always)
     public static func less(lhs: Self, rhs: Self) -> Bool {
-      
+
 //      if let underOver = lessThanWhenContainsUnderOrOver(lhs.rawValue, rhs.rawValue) {
 //        return underOver
 //      }
@@ -155,15 +201,16 @@ extension ___RedBlackTree.___Tree {
         let next = lhs.remnant.next
       {
         if next == rhs.rawValue {
-          print("lhs phantom \(_description(next)) == \(_description(rhs.rawValue))")
+          print("lhs(\(lhs.rawValue)) phantom \(_description(next)) == \(_description(rhs.rawValue))")
           return true
         }
+        
         if let result = lessThanWhenContainsUnderOrOver(next, rhs.rawValue) {
-          print("lhs phantom underOrOver(\(_description(next)), \(_description(rhs.rawValue))")
+          print("lhs(\(lhs.rawValue)) phantom underOrOver(\(_description(next)), \(_description(rhs.rawValue))")
           return result
         }
         
-        print("lhs phantom rhs._tree.___ptr_comp(\(_description(next)), \(_description(rhs.rawValue)))")
+        print("lhs(\(lhs.rawValue)) phantom rhs._tree.___ptr_comp(\(_description(next)), \(_description(rhs.rawValue)))")
         return rhs._tree.___ptr_comp(next, rhs.rawValue)
       }
 
@@ -178,16 +225,16 @@ extension ___RedBlackTree.___Tree {
          let prev = rhs.remnant.prev
       {
         if lhs.rawValue == prev {
-          print("rhs phantom \(_description(lhs.rawValue)) != \(_description(prev))")
+          print("rhs(\(rhs.rawValue)) phantom \(_description(lhs.rawValue)) != \(_description(prev))")
           return true
         }
         
         if let result = lessThanWhenContainsUnderOrOver(lhs.rawValue, prev) {
-          print("rhs phantom underOrOver(\(_description(lhs.rawValue)), \(_description(prev)))")
+          print("rhs(\(rhs.rawValue)) phantom underOrOver(\(_description(lhs.rawValue)), \(_description(prev)))")
           return result
         }
 
-        print("rhs phantom lhs._tree.___ptr_comp(\(_description(lhs.rawValue)), \(_description(prev)))")
+        print("rhs(\(rhs.rawValue)) phantom lhs._tree.___ptr_comp(\(_description(lhs.rawValue)), \(_description(prev)))")
         return lhs._tree.___ptr_comp(lhs.rawValue, prev)
       }
 

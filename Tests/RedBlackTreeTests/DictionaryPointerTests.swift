@@ -59,24 +59,26 @@ final class DictionaryPointerTests: XCTestCase {
   
   func testPointerOffset0() throws {
     XCTAssertEqual((members.startIndex).pointee?.key, 0)
-    XCTAssertEqual(members.startIndex.advanced(by: 1)?.pointee?.key, 1)
-    XCTAssertEqual(members.startIndex.advanced(by: 2)?.pointee?.key, 2)
-    XCTAssertEqual(members.startIndex.advanced(by: 3)?.pointee?.key, 3)
-    XCTAssertEqual(members.startIndex.advanced(by: 4)?.pointee?.key, 4)
-    XCTAssertNil(members.startIndex.advanced(by: 5)?.pointee)
+    XCTAssertEqual(members.startIndex.advanced(by: 1).pointee?.key, 1)
+    XCTAssertEqual(members.startIndex.advanced(by: 2).pointee?.key, 2)
+    XCTAssertEqual(members.startIndex.advanced(by: 3).pointee?.key, 3)
+    XCTAssertEqual(members.startIndex.advanced(by: 4).pointee?.key, 4)
+    XCTAssertNil(members.startIndex.advanced(by: 5).pointee)
     XCTAssertEqual(members.startIndex.advanced(by: 5), members.endIndex)
-    XCTAssertNil(members.startIndex.advanced(by: 6))
+    XCTAssertTrue(members.startIndex.advanced(by: 6).isOver)
+    XCTAssertNil(members.startIndex.advanced(by: 6).pointee)
   }
 
   func testPointerOffset2() throws {
     XCTAssertNil((members.endIndex).pointee)
-    XCTAssertEqual(members.endIndex.advanced(by: -1)?.pointee?.key, 4)
-    XCTAssertEqual(members.endIndex.advanced(by: -2)?.pointee?.key, 3)
-    XCTAssertEqual(members.endIndex.advanced(by: -3)?.pointee?.key, 2)
-    XCTAssertEqual(members.endIndex.advanced(by: -4)?.pointee?.key, 1)
-    XCTAssertEqual(members.endIndex.advanced(by: -5)?.pointee?.key, 0)
+    XCTAssertEqual(members.endIndex.advanced(by: -1).pointee?.key, 4)
+    XCTAssertEqual(members.endIndex.advanced(by: -2).pointee?.key, 3)
+    XCTAssertEqual(members.endIndex.advanced(by: -3).pointee?.key, 2)
+    XCTAssertEqual(members.endIndex.advanced(by: -4).pointee?.key, 1)
+    XCTAssertEqual(members.endIndex.advanced(by: -5).pointee?.key, 0)
     XCTAssertEqual(members.endIndex.advanced(by: -5), members.startIndex)
-    XCTAssertNil(members.startIndex.advanced(by: -6))
+    XCTAssertTrue(members.startIndex.advanced(by: -6).isUnder)
+    XCTAssertNil(members.startIndex.advanced(by: -6).pointee)
   }
 
   func testPerformanceExample() throws {

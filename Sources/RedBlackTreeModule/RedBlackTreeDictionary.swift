@@ -296,6 +296,7 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
     _ensureUnique()
+    index.prepareRemove()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
@@ -1067,9 +1068,17 @@ extension RedBlackTreeDictionary.EnumuratedSequence {
 
 extension RedBlackTreeDictionary {
 
+  public typealias Indices = Range<Index>
+
   @inlinable
   @inline(__always)
-  public func indices() -> IndexSequence {
+  public var indices: Indices {
+    startIndex ..< endIndex
+  }
+
+  @inlinable
+  @inline(__always)
+  public func ___indices() -> IndexSequence {
     IndexSequence(_subSequence: _tree.indexSubsequence())
   }
 }

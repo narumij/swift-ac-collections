@@ -52,6 +52,19 @@ extension _NodePtr {
   static func node(_ p: Int) -> Self { p }
 }
 
+extension _NodePtr {
+  
+  /// 特殊なnullptr
+  /// 範囲の下限を下回っていることを表す
+  @inlinable
+  static var under: Self { -3 }
+  
+  /// 特殊なnullptr
+  /// 範囲の上限を上回っていることを表す
+  @inlinable
+  static var over: Self { -2 }
+}
+
 @inlinable
 @inline(__always)
 func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {

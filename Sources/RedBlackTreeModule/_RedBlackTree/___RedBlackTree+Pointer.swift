@@ -38,6 +38,19 @@ extension ___RedBlackTree.___Tree {
 
     @usableFromInline
     var rawValue: Int
+    
+    @usableFromInline
+    class Ghost {
+      @usableFromInline
+      var prev: Int?
+      @usableFromInline
+      var next: Int?
+      @inlinable @inline(__always)
+      init() { }
+    }
+    
+    @usableFromInline
+    var ghost: Ghost = .init()
 
     // MARK: -
     
@@ -47,8 +60,26 @@ extension ___RedBlackTree.___Tree {
     }
 
     public static func < (lhs: Self, rhs: Self) -> Bool {
+      if lhs.rawValue == .under {
+        return rhs.rawValue != .under
+      }
+      if lhs.rawValue == .over {
+        return false
+      }
+      if rhs.rawValue == .under {
+        return false
+      }
+      if rhs.rawValue == .over {
+        return lhs.rawValue != .over
+      }
+      if let next = lhs.ghost.next {
+        return next <= rhs.rawValue
+      }
+      if let prev = rhs.ghost.prev {
+        return lhs.rawValue <= prev
+      }
       // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-      lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
+      return lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
     }
 
     // MARK: -
@@ -66,6 +97,12 @@ extension ___RedBlackTree.___Tree {
     /*
      invalidなポインタでの削除は、だんまりがいいように思う
      */
+    
+    @usableFromInline
+    func prepareRemove() {
+      ghost.prev = rawValue == _tree.___begin() ? .under : _tree.__tree_prev_iter(rawValue)
+      ghost.next = _tree.__tree_next_iter(rawValue)
+    }
   }
 }
 
@@ -75,7 +112,7 @@ extension ___RedBlackTree.___Tree.Pointer {
   @inline(__always)
   public var isValid: Bool {
     if rawValue == .end { return true }
-    if !(0..<_tree.header.initializedCount ~= rawValue) { return false }
+//    if !(0..<_tree.header.initializedCount ~= rawValue) { return false }
     return _tree.___is_valid(rawValue)
   }
   
@@ -135,23 +172,23 @@ extension ___RedBlackTree.___Tree.Pointer {
     return prev
   }
   
-  // 名前はIntの同名を参考にした
-  @inlinable
-  @inline(__always)
-  public func advanced(by distance: Int) -> Self? {
-    var distance = distance
-    var result: Self? = self
-    while distance != 0 {
-      if 0 < distance {
-        result = result?.next
-        distance -= 1
-      } else {
-        result = result?.previous
-        distance += 1
-      }
-    }
-    return result
-  }
+//  // 名前はIntの同名を参考にした
+//  @inlinable
+//  @inline(__always)
+//  public func ___advanced(by distance: Int) -> Self? {
+//    var distance = distance
+//    var result: Self? = self
+//    while distance != 0 {
+//      if 0 < distance {
+//        result = result?.next
+//        distance -= 1
+//      } else {
+//        result = result?.previous
+//        distance += 1
+//      }
+//    }
+//    return result
+//  }
 }
 
 extension ___RedBlackTree.___Tree.Pointer {
@@ -187,3 +224,66 @@ extension ___RedBlackTree.___Tree.Pointer {
 }
 #endif
 
+extension ___RedBlackTree.___Tree.Pointer: Strideable {
+  
+  @inlinable
+  @inline(__always)
+  public func distance(to other: Self) -> Int {
+    _tree.___signed_distance(rawValue, other.rawValue)
+  }
+  
+  /// 特殊なnullptr
+  /// 範囲の下限を下回っていることを表す
+  @inlinable
+  @inline(__always)
+  var under: Self {
+    .init(__tree: _tree, rawValue: .under)
+  }
+  
+  /// 特殊なnullptr
+  /// 範囲の上限を上回っていることを表す
+  @inlinable
+  @inline(__always)
+  var over: Self {
+    .init(__tree: _tree, rawValue: .over)
+  }
+  
+  /// 範囲の下限を超えて操作されたポインタ
+  @inlinable
+  @inline(__always)
+  public var isUnder: Bool {
+    rawValue == .under
+  }
+
+  /// 範囲の上限を超えて操作されたポインタ
+  @inlinable
+  @inline(__always)
+  public var isOver: Bool {
+    rawValue == .over
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func advanced(by n: Int) -> Self {
+    if n == -1, let prev = ghost.prev {
+      return .init(__tree: _tree, rawValue: prev)
+    }
+    guard
+      isUnder || isOver || _tree.___is_valid_index(rawValue)
+    else {
+      fatalError(.invalidIndex)
+    }
+    var distance = n
+    var result: Self = self
+    while distance != 0 {
+      if 0 < distance {
+        result = result.next ?? over
+        distance -= 1
+      } else {
+        result = result.previous ?? under
+        distance += 1
+      }
+    }
+    return result
+  }
+}

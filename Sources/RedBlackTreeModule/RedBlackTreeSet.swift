@@ -226,6 +226,7 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     _ensureUnique()
+    index.prepareRemove()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
@@ -884,10 +885,18 @@ extension RedBlackTreeSet.EnumuratedSequence {
 // MARK: - Index Sequence
 
 extension RedBlackTreeSet {
+  
+  public typealias Indices = Range<Index>
 
   @inlinable
   @inline(__always)
-  public func indices() -> IndexSequence {
+  public var indices: Indices {
+    startIndex ..< endIndex
+  }
+
+  @inlinable
+  @inline(__always)
+  public func ___indices() -> IndexSequence {
     IndexSequence(_subSequence: _tree.indexSubsequence())
   }
 }
@@ -896,7 +905,13 @@ extension RedBlackTreeSet.SubSequence {
 
   @inlinable
   @inline(__always)
-  public func indices() -> IndexSequence {
+  public var indices: AnySequence<RawIndex> {
+    AnySequence(___indices())
+  }
+
+  @inlinable
+  @inline(__always)
+  public func ___indices() -> IndexSequence {
     IndexSequence(
       _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
   }

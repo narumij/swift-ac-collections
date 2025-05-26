@@ -799,6 +799,7 @@ extension RedBlackTreeSet {
       AnySequence { _tree.makeEnumIterator() }
     }
   #else
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
     @inlinable
     @inline(__always)
     public func enumerated() -> EnumuratedSequence {
@@ -818,6 +819,7 @@ extension RedBlackTreeSet.SubSequence {
       }
     }
   #else
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
     @inlinable
     @inline(__always)
     public func enumerated() -> EnumuratedSequence {

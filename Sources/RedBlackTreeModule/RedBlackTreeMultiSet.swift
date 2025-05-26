@@ -897,8 +897,8 @@ extension RedBlackTreeMultiSet {
 
   @inlinable
   @inline(__always)
-  public func ___indices() -> IndexSequence {
-    IndexSequence(_subSequence: _tree.indexSubsequence())
+  public func ___indices() -> AnySequence<RawIndex> {
+    AnySequence(IndexSequence(_subSequence: _tree.indexSubsequence()))
   }
 }
 
@@ -914,9 +914,9 @@ extension RedBlackTreeMultiSet.SubSequence {
 
   @inlinable
   @inline(__always)
-  public func ___indices() -> IndexSequence {
-    IndexSequence(
-      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+  public func ___indices() -> AnySequence<RawIndex> {
+    AnySequence(IndexSequence(
+      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
   }
 }
 

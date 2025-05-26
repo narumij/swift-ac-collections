@@ -226,7 +226,7 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     _ensureUnique()
-    index.prepareRemove()
+    index.phantomMark()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }

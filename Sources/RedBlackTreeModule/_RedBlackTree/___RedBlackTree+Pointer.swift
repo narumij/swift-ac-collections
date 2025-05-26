@@ -27,9 +27,9 @@ extension ___RedBlackTree.___Tree {
   /// Range<Bound>の左右のサイズ違いでクラッシュすることを避けるためのもの
   @frozen
   public struct Pointer: Comparable {
-    
+
     public typealias Element = Tree.Element
-    
+
     @usableFromInline
     typealias _Tree = Tree
 
@@ -38,9 +38,9 @@ extension ___RedBlackTree.___Tree {
 
     @usableFromInline
     var rawValue: Int
-    
+
     @usableFromInline
-    class Ghost {
+    class Remnant {
       @usableFromInline
       var rawValue: Int?
       @usableFromInline
@@ -48,21 +48,21 @@ extension ___RedBlackTree.___Tree {
       @usableFromInline
       var next: Int?
       @inlinable @inline(__always)
-      init() { }
+      init() {}
     }
-    
+
     @usableFromInline
-    var ghost: Ghost = .init()
+    var remnant: Remnant = .init()
 
     // MARK: -
-    
+
     @inlinable
     @inline(__always)
     public static func == (lhs: Self, rhs: Self) -> Bool {
       // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
       lhs.rawValue == rhs.rawValue
     }
-    
+
     @inlinable
     @inline(__always)
     static func underOver(_ lhs: _NodePtr, _ rhs: _NodePtr) -> Bool? {
@@ -84,24 +84,28 @@ extension ___RedBlackTree.___Tree {
     @inlinable
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
-      
+
       if let underOver = underOver(lhs.rawValue, rhs.rawValue) {
         return underOver
       }
-      
-      if lhs.ghost.rawValue == lhs.rawValue,
-         let next = lhs.ghost.next {
-        return next == rhs.rawValue || (underOver(next, rhs.rawValue) ?? rhs._tree.___ptr_comp(next, rhs.rawValue))
+
+      if lhs.remnant.rawValue == lhs.rawValue,
+        let next = lhs.remnant.next
+      {
+        return next == rhs.rawValue
+          || (underOver(next, rhs.rawValue) ?? rhs._tree.___ptr_comp(next, rhs.rawValue))
       }
-      
-      if rhs.ghost.rawValue == rhs.rawValue,
-         let prev = rhs.ghost.prev {
-        return lhs.rawValue == prev || (underOver(lhs.rawValue, prev) ?? lhs._tree.___ptr_comp(lhs.rawValue, prev))
+
+      if rhs.remnant.rawValue == rhs.rawValue,
+        let prev = rhs.remnant.prev
+      {
+        return lhs.rawValue == prev
+          || (underOver(lhs.rawValue, prev) ?? lhs._tree.___ptr_comp(lhs.rawValue, prev))
       }
-      
+
       assert(lhs.isValid)
       assert(rhs.isValid)
-      
+
       // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
       return lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
     }
@@ -121,38 +125,39 @@ extension ___RedBlackTree.___Tree {
     /*
      invalidなポインタでの削除は、だんまりがいいように思う
      */
-    
+
     @usableFromInline
-    func prepareRemove() {
-      ghost.rawValue = rawValue
-      ghost.prev = rawValue == _tree.___begin() ? .under : _tree.__tree_prev_iter(rawValue)
-      ghost.next = _tree.__tree_next_iter(rawValue)
+    func phantomMark() {
+      remnant.rawValue = rawValue
+      remnant.prev = rawValue == _tree.___begin() ? .under : _tree.__tree_prev_iter(rawValue)
+      remnant.next = _tree.__tree_next_iter(rawValue)
     }
   }
 }
 
 extension ___RedBlackTree.___Tree.Pointer {
-  
+
   @inlinable
   @inline(__always)
   public var isValid: Bool {
     if rawValue == .end { return true }
-//    if !(0..<_tree.header.initializedCount ~= rawValue) { return false }
+    // いつのまにか、___is_validが等価な操作を行っているので、コメントアウトで様子見
+    //    if !(0..<_tree.header.initializedCount ~= rawValue) { return false }
     return _tree.___is_valid(rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public var isStartIndex: Bool {
     rawValue == _tree.__begin_node
   }
-  
+
   @inlinable
   @inline(__always)
   public var isEndIndex: Bool {
     rawValue == .end
   }
-  
+
   // 利用上価値はないが、おまけで。
   @inlinable
   @inline(__always)
@@ -162,7 +167,7 @@ extension ___RedBlackTree.___Tree.Pointer {
 }
 
 extension ___RedBlackTree.___Tree.Pointer {
-  
+
   // 名前について検討中
   @inlinable
   @inline(__always)
@@ -172,13 +177,15 @@ extension ___RedBlackTree.___Tree.Pointer {
     }
     return ___pointee
   }
-  
+
   // 名前はXMLNodeを参考にした
   @inlinable
   @inline(__always)
   public var next: Self? {
-    if ghost.rawValue == rawValue {
-      return .init(__tree: _tree, rawValue: ghost.next!)
+    if remnant.rawValue == rawValue,
+      let next = remnant.next
+    {
+      return .init(__tree: _tree, rawValue: next)
     }
     guard !___is_null_or_end(rawValue), isValid else {
       return nil
@@ -187,16 +194,15 @@ extension ___RedBlackTree.___Tree.Pointer {
     next.___next()
     return next
   }
-  
+
   // 名前はXMLNodeを参考にした
   @inlinable
   @inline(__always)
   public var previous: Self? {
-    if ghost.rawValue == rawValue {
-      if ghost.prev == .under {
-        return nil
-      }
-      return .init(__tree: _tree, rawValue: ghost.prev!)
+    if remnant.rawValue == rawValue,
+      let prev = remnant.prev
+    {
+      return prev == .under ? nil : .init(__tree: _tree, rawValue: prev)
     }
     guard rawValue != .nullptr, rawValue != _tree.begin(), isValid else {
       return nil
@@ -205,24 +211,6 @@ extension ___RedBlackTree.___Tree.Pointer {
     prev.___prev()
     return prev
   }
-  
-//  // 名前はIntの同名を参考にした
-//  @inlinable
-//  @inline(__always)
-//  public func ___advanced(by distance: Int) -> Self? {
-//    var distance = distance
-//    var result: Self? = self
-//    while distance != 0 {
-//      if 0 < distance {
-//        result = result?.next
-//        distance -= 1
-//      } else {
-//        result = result?.previous
-//        distance += 1
-//      }
-//    }
-//    return result
-//  }
 }
 
 extension ___RedBlackTree.___Tree.Pointer {
@@ -244,28 +232,28 @@ extension ___RedBlackTree.___Tree.Pointer {
 }
 
 #if DEBUG
-fileprivate extension ___RedBlackTree.___Tree.Pointer {
-  init(_unsafe_tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) {
-    self._tree = _unsafe_tree
-    self.rawValue = rawValue
+  extension ___RedBlackTree.___Tree.Pointer {
+    fileprivate init(_unsafe_tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) {
+      self._tree = _unsafe_tree
+      self.rawValue = rawValue
+    }
   }
-}
 
-extension ___RedBlackTree.___Tree.Pointer {
-  static func unsafe(tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) -> Self {
-    .init(_unsafe_tree: tree, rawValue: rawValue)
+  extension ___RedBlackTree.___Tree.Pointer {
+    static func unsafe(tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) -> Self {
+      .init(_unsafe_tree: tree, rawValue: rawValue)
+    }
   }
-}
 #endif
 
 extension ___RedBlackTree.___Tree.Pointer: Strideable {
-  
+
   @inlinable
   @inline(__always)
   public func distance(to other: Self) -> Int {
     _tree.___signed_distance(rawValue, other.rawValue)
   }
-  
+
   /// 特殊なnullptr
   /// 範囲の下限を下回っていることを表す
   @inlinable
@@ -273,7 +261,7 @@ extension ___RedBlackTree.___Tree.Pointer: Strideable {
   var under: Self {
     .init(__tree: _tree, rawValue: .under)
   }
-  
+
   /// 特殊なnullptr
   /// 範囲の上限を上回っていることを表す
   @inlinable
@@ -281,7 +269,7 @@ extension ___RedBlackTree.___Tree.Pointer: Strideable {
   var over: Self {
     .init(__tree: _tree, rawValue: .over)
   }
-  
+
   /// 範囲の下限を超えて操作されたポインタ
   @inlinable
   @inline(__always)
@@ -296,13 +284,20 @@ extension ___RedBlackTree.___Tree.Pointer: Strideable {
     rawValue == .over
   }
   
+  /// 削除操作で無効になりつつ、がんばって（？）隣を記録し、比較操作にまだ耐えているポインタ
+  @inlinable
+  @inline(__always)
+  public var isPhantom: Bool {
+    remnant.rawValue == rawValue
+  }
+
   @inlinable
   @inline(__always)
   public func advanced(by n: Int) -> Self {
-    if n < 0, ghost.rawValue == rawValue, let prev = ghost.prev {
+    if n < 0, remnant.rawValue == rawValue, let prev = remnant.prev {
       return .init(__tree: _tree, rawValue: prev).advanced(by: n + 1)
     }
-    if n > 0, ghost.rawValue == rawValue, let next = ghost.next {
+    if n > 0, remnant.rawValue == rawValue, let next = remnant.next {
       return .init(__tree: _tree, rawValue: next).advanced(by: n - 1)
     }
     guard

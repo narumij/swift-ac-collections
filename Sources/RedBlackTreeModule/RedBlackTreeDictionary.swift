@@ -296,7 +296,7 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
     _ensureUnique()
-    index.prepareRemove()
+    index.phantomMark()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }

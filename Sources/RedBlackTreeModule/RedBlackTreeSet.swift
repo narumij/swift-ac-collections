@@ -894,6 +894,7 @@ extension RedBlackTreeSet {
     startIndex ..< endIndex
   }
 
+  // 独自の型だと学習コストが高くなるので、速度を少し犠牲にして読みやすそうな型に変更
   @inlinable
   @inline(__always)
   public func ___indices() -> AnySequence<RawIndex> {
@@ -911,6 +912,7 @@ extension RedBlackTreeSet.SubSequence {
     startIndex ..< endIndex
   }
 
+  // 独自の型だと学習コストが高くなるので、速度を少し犠牲にして読みやすそうな型に変更
   @inlinable
   @inline(__always)
   public func ___indices() -> AnySequence<RawIndex> {

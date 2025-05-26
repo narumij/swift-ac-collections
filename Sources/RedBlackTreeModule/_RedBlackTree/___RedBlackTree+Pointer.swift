@@ -177,6 +177,9 @@ extension ___RedBlackTree.___Tree.Pointer {
   @inlinable
   @inline(__always)
   public var next: Self? {
+    if ghost.rawValue == rawValue {
+      return .init(__tree: _tree, rawValue: ghost.next!)
+    }
     guard !___is_null_or_end(rawValue), isValid else {
       return nil
     }
@@ -189,6 +192,12 @@ extension ___RedBlackTree.___Tree.Pointer {
   @inlinable
   @inline(__always)
   public var previous: Self? {
+    if ghost.rawValue == rawValue {
+      if ghost.prev == .under {
+        return nil
+      }
+      return .init(__tree: _tree, rawValue: ghost.prev!)
+    }
     guard rawValue != .nullptr, rawValue != _tree.begin(), isValid else {
       return nil
     }

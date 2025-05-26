@@ -159,6 +159,28 @@ final class SetPointerTests: XCTestCase {
       }
     }
   }
+  
+  func testGhostPrevNextBehavior1() throws {
+    let indices = members.indices.map { $0 }
+    let prev = indices[0].previous
+    members.remove(at: indices[0])
+    XCTAssertEqual(prev, indices[0].previous)
+    XCTAssertEqual(indices[1], indices[0].next)
+  }
+  
+  func testGhostPrevNextBehavior2() throws {
+    let indices = members.indices.map { $0 }
+    members.remove(at: indices[2])
+    XCTAssertEqual(indices[1], indices[2].previous)
+    XCTAssertEqual(indices[3], indices[2].next)
+  }
+
+  func testGhostPrevNextBehavior3() throws {
+    let indices = members.indices.map { $0 }
+    members.remove(at: indices[4])
+    XCTAssertEqual(indices[3], indices[4].previous)
+    XCTAssertEqual(members.endIndex, indices[4].next)
+  }
 
   func testPerformanceExample() throws {
     // This is an example of a performance test case.

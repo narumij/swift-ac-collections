@@ -893,6 +893,7 @@ extension RedBlackTreeMultiMap {
       AnySequence { _tree.makeEnumIterator() }
     }
   #else
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
     @inlinable
     @inline(__always)
     public func enumerated() -> EnumuratedSequence {
@@ -912,6 +913,7 @@ extension RedBlackTreeMultiMap.SubSequence {
       }
     }
   #else
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
     @inlinable
     @inline(__always)
     public func enumerated() -> EnumuratedSequence {
@@ -981,6 +983,7 @@ extension RedBlackTreeMultiMap.EnumuratedSequence {
 
 extension RedBlackTreeMultiMap {
 
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
   @inlinable
   @inline(__always)
   public func indices() -> IndexSequence {
@@ -990,6 +993,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap.SubSequence {
 
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
   @inlinable
   @inline(__always)
   public func indices() -> IndexSequence {

@@ -27,9 +27,10 @@ final class DictionaryPointerTests: XCTestCase {
       XCTAssertNotNil(it.next)
       members.remove(at: it)
       XCTAssertFalse(it.isValid)
+      XCTAssertTrue(it.isPhantom)
       XCTAssertNil(it.pointee)
-      XCTAssertNil(it.previous)
-      XCTAssertNil(it.next)
+      XCTAssertEqual(it.previous?.pointee?.key, 0)
+      XCTAssertEqual(it.next?.pointee?.key, 2)
     }
   }
 

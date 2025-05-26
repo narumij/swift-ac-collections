@@ -903,10 +903,12 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet.SubSequence {
 
+  public typealias Indices = Range<Index>
+
   @inlinable
   @inline(__always)
-  public var indices: AnySequence<RawIndex> {
-    AnySequence(___indices())
+  public var indices: Indices {
+    startIndex ..< endIndex
   }
 
   @inlinable

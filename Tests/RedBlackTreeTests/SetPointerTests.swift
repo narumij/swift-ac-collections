@@ -87,6 +87,49 @@ final class SetPointerTests: XCTestCase {
     XCTAssertTrue(members.startIndex.advanced(by: -6).isUnder)
     XCTAssertNil(members.startIndex.advanced(by: -6).pointee)
   }
+  
+  func testGhostBehavior1() throws {
+    let indices = members.indices.map { $0 }
+    members.remove(at: indices[2])
+    XCTAssertLessThan(indices[0].advanced(by: -2), indices[2])
+    XCTAssertLessThan(indices[0].advanced(by: -1), indices[2])
+    XCTAssertTrue(indices[0] < indices[2])
+    XCTAssertLessThan(indices[1], indices[2])
+    XCTAssertEqual(indices[2], indices[2])
+    XCTAssertGreaterThan(indices[3], indices[2])
+    XCTAssertGreaterThan(indices[4], indices[2])
+    XCTAssertGreaterThan(indices[4].advanced(by: 1), indices[2])
+    XCTAssertGreaterThan(indices[4].advanced(by: 2), indices[2])
+  }
+  
+  func testGhostBehavior2() throws {
+    let indices = members.indices.map { $0 }
+    members.remove(at: indices[0])
+    XCTAssertLessThan(indices[0].advanced(by: -2), indices[0])
+    XCTAssertLessThan(indices[0].advanced(by: -1), indices[0])
+    XCTAssertEqual(indices[0], indices[0])
+    XCTAssertGreaterThan(indices[1], indices[0])
+    XCTAssertGreaterThan(indices[2], indices[0])
+    XCTAssertGreaterThan(indices[3], indices[0])
+    XCTAssertGreaterThan(indices[4], indices[0])
+    XCTAssertGreaterThan(indices[4].advanced(by: 1), indices[0])
+    XCTAssertGreaterThan(indices[4].advanced(by: 2), indices[0])
+  }
+  
+  func testGhostBehavior3() throws {
+    let indices = members.indices.map { $0 }
+    members.remove(at: indices[4])
+    XCTAssertLessThan(indices[0].advanced(by: -2), indices[4])
+    XCTAssertLessThan(indices[0].advanced(by: -1), indices[4])
+    XCTAssertLessThan(indices[0], indices[4])
+    XCTAssertLessThan(indices[1], indices[4])
+    XCTAssertLessThan(indices[2], indices[4])
+    XCTAssertLessThan(indices[3], indices[4])
+    XCTAssertEqual(indices[4], indices[4])
+    XCTAssertGreaterThan(indices[4].advanced(by: 1), indices[4])
+    XCTAssertEqual(indices[4].advanced(by: 1), members.endIndex)
+    XCTAssertGreaterThan(indices[4].advanced(by: 2), indices[4])
+  }
 
   func testPerformanceExample() throws {
     // This is an example of a performance test case.

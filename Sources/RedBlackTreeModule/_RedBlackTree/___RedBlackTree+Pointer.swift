@@ -42,6 +42,8 @@ extension ___RedBlackTree.___Tree {
     @usableFromInline
     class Ghost {
       @usableFromInline
+      var rawValue: Int?
+      @usableFromInline
       var prev: Int?
       @usableFromInline
       var next: Int?
@@ -72,12 +74,16 @@ extension ___RedBlackTree.___Tree {
       if rhs.rawValue == .over {
         return lhs.rawValue != .over
       }
-      if let next = lhs.ghost.next {
-        return next <= rhs.rawValue
+      if lhs.ghost.rawValue == lhs.rawValue,
+         let next = lhs.ghost.next {
+        return next == rhs.rawValue || rhs._tree.___ptr_comp(next, rhs.rawValue)
       }
-      if let prev = rhs.ghost.prev {
-        return lhs.rawValue <= prev
+      if rhs.ghost.rawValue == rhs.rawValue,
+         let prev = rhs.ghost.prev {
+        return lhs.rawValue == prev || lhs._tree.___ptr_comp(lhs.rawValue, prev)
       }
+      assert(lhs.isValid)
+      assert(lhs.isValid)
       // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
       return lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
     }
@@ -100,6 +106,7 @@ extension ___RedBlackTree.___Tree {
     
     @usableFromInline
     func prepareRemove() {
+      ghost.rawValue = rawValue
       ghost.prev = rawValue == _tree.___begin() ? .under : _tree.__tree_prev_iter(rawValue)
       ghost.next = _tree.__tree_next_iter(rawValue)
     }
@@ -265,8 +272,11 @@ extension ___RedBlackTree.___Tree.Pointer: Strideable {
   @inlinable
   @inline(__always)
   public func advanced(by n: Int) -> Self {
-    if n == -1, let prev = ghost.prev {
-      return .init(__tree: _tree, rawValue: prev)
+    if n < 0, ghost.rawValue == rawValue, let prev = ghost.prev {
+      return .init(__tree: _tree, rawValue: prev).advanced(by: n + 1)
+    }
+    if n > 0, ghost.rawValue == rawValue, let next = ghost.next {
+      return .init(__tree: _tree, rawValue: next).advanced(by: n - 1)
     }
     guard
       isUnder || isOver || _tree.___is_valid_index(rawValue)

@@ -64,6 +64,8 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeEqualRangeMulti {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 
+// MARK: - Initialization（初期化）
+
 extension RedBlackTreeMultiMap {
 
   @inlinable @inline(__always)
@@ -101,37 +103,13 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - 計算量: O(1)
-  @inlinable
-  public var isEmpty: Bool {
-    ___is_empty
-  }
-
-  /// - 計算量: O(1)
-  @inlinable
-  public var capacity: Int {
-    ___capacity
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     _ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
-extension RedBlackTreeMultiMap {
-
-  public var keys: Keys {
-    map(\.key)
-  }
-
-  public var values: Values {
-    map(\.value)
-  }
-}
+// MARK: - Insert（挿入）
 
 extension RedBlackTreeMultiMap {
 
@@ -185,6 +163,48 @@ extension RedBlackTreeMultiMap {
     let old = _tree[ptr.rawValue]
     _tree[ptr.rawValue].value = newValue
     return old
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  @inlinable
+  @inline(__always)
+  public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
+    _ensureUniqueAndCapacity(to: count + other.count)
+    _tree.__node_handle_merge_multi(other._tree)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public mutating func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+
+  @inlinable
+  @inline(__always)
+  public mutating func insert<S>(_ other: S) where S: Sequence, S.Element == Element {
+    other.forEach { insert($0) }
+  }
+
+  @inlinable
+  public func inserting<S>(_ other: __owned S) -> Self where S: Sequence, S.Element == Element {
+    var result = self
+    result.insert(other)
+    return result
+  }
+}
+
+// MARK: - Remove（削除）
+
+extension RedBlackTreeMultiMap {
+  /// 最小キーのペアを取り出して削除
+  @inlinable
+  public mutating func popFirst() -> KeyValue? {
+    guard !isEmpty else { return nil }
+    return remove(at: startIndex)
   }
 }
 
@@ -291,6 +311,8 @@ extension RedBlackTreeMultiMap {
   }
 }
 
+// MARK: - Search（検索・探索）
+
 extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(log *n*)
@@ -364,65 +386,136 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: - ExpressibleByDictionaryLiteral
-
-extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
+extension RedBlackTreeMultiMap {
 
   @inlinable
-  public init(dictionaryLiteral elements: (Key, Value)...) {
-    self.init(keysWithValues: elements)
+  public func equalRange(_ key: Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+    ___equal_range(key)
   }
 }
 
-// MARK: - ExpressibleByArrayLiteral
+// MARK: - Transformation
 
-extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
+extension RedBlackTreeMultiMap {
 
-  /// `[("key", value), ...]` 形式のリテラルから辞書を生成します。
-  ///
-  /// - Important: キーが重複していた場合は
-  ///   `Dictionary(uniqueKeysWithValues:)` と同じく **ランタイムエラー** になります。
-  ///   （重複を許容してマージしたい場合は `merge` / `merging` を使ってください）
-  ///
-  /// 使用例
-  /// ```swift
-  /// let d: RedBlackTreeDictionary = [("a", 1), ("b", 2)]
-  /// ```
   @inlinable
-  public init(arrayLiteral elements: (Key, Value)...) {
-    self.init(keysWithValues: elements)
+  public func filter(
+    _ isIncluded: (Element) throws -> Bool
+  ) rethrows -> Self {
+    var tree: Tree = .create(minimumCapacity: 0)
+    var (__parent, __child) = tree.___max_ref()
+    for pair in self where try isIncluded(pair) {
+      Tree.ensureCapacity(tree: &tree)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, pair)
+      assert(tree.__tree_invariant(tree.__root()))
+    }
+    return Self(_storage: .init(__tree: tree))
   }
 }
 
-// MARK: - CustomStringConvertible
-
-extension RedBlackTreeMultiMap: CustomStringConvertible {
+extension RedBlackTreeMultiMap {
 
   @inlinable
-  public var description: String {
-    let pairs = map { "\($0.key): \($0.value)" }
-    return "[\(pairs.joined(separator: ", "))]"
+  public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
+    -> RedBlackTreeMultiMap<Key, T>
+  {
+    typealias Tree = RedBlackTreeMultiMap<Key, T>.Tree
+    let tree: Tree = .create(minimumCapacity: count)
+    var (__parent, __child) = tree.___max_ref()
+    for (k, v) in self {
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, try transform(v)))
+      assert(tree.__tree_invariant(tree.__root()))
+    }
+    return .init(_storage: .init(__tree: tree))
   }
 
-}
-
-// MARK: - CustomDebugStringConvertible
-
-extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
-
   @inlinable
-  public var debugDescription: String {
-    return "RedBlackTreeDictionary(\(description))"
+  public func compactMapValues<T>(_ transform: (Value) throws -> T?)
+    rethrows -> RedBlackTreeMultiMap<Key, T>
+  {
+    typealias Tree = RedBlackTreeMultiMap<Key, T>.Tree
+    var tree: Tree = .create(minimumCapacity: 0)
+    var (__parent, __child) = tree.___max_ref()
+    for (k, v) in self {
+      if let new = try transform(v) {
+        Tree.ensureCapacity(tree: &tree)
+        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, new))
+        assert(tree.__tree_invariant(tree.__root()))
+      }
+    }
+    return .init(_storage: .init(__tree: tree))
   }
 }
 
-// MARK: - Equatable
+// MARK: - Utility（ユーティリティ、isEmptyやcapacityなど）
 
-extension RedBlackTreeMultiMap: Equatable where Value: Equatable {
+extension RedBlackTreeMultiMap {
+
+  /// - 計算量: O(1)
+  @inlinable
+  public var isEmpty: Bool {
+    ___is_empty
+  }
+
+  /// - 計算量: O(1)
+  @inlinable
+  public var capacity: Int {
+    ___capacity
+  }
+}
+
+extension RedBlackTreeMultiMap {
 
   @inlinable
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.___equal_with(rhs)
+  @inline(__always)
+  public func isValid(index: Index) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index: RawIndex) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
+  }
+}
+
+extension RedBlackTreeMultiMap.SubSequence {
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index i: Index) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index i: RawIndex) -> Bool {
+    _subSequence.___is_valid_index(index: i.rawValue)
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  public var keys: Keys {
+    map(\.key)
+  }
+
+  public var values: Values {
+    map(\.value)
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  @inlinable
+  public func values(forKey key: Key) -> [Value] {
+    var (lo, hi) = _tree.__equal_range_multi(key)
+    var result = [Value]()
+    while lo != hi {
+      result.append(_tree.___element(lo).value)
+      lo = _tree.__tree_next(lo)
+    }
+    return result
   }
 }
 
@@ -961,157 +1054,64 @@ extension RedBlackTreeMultiMap.IndexSequence {
   }
 }
 
-// MARK: -
+// MARK: - ExpressibleByDictionaryLiteral
 
-extension RedBlackTreeMultiMap {
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index: Index) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
-  }
+extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
 
   @inlinable
-  @inline(__always)
-  public func isValid(index: RawIndex) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
+  public init(dictionaryLiteral elements: (Key, Value)...) {
+    self.init(keysWithValues: elements)
   }
 }
 
-extension RedBlackTreeMultiMap.SubSequence {
+// MARK: - ExpressibleByArrayLiteral
 
+extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
+
+  /// `[("key", value), ...]` 形式のリテラルから辞書を生成します。
+  ///
+  /// - Important: キーが重複していた場合は
+  ///   `Dictionary(uniqueKeysWithValues:)` と同じく **ランタイムエラー** になります。
+  ///   （重複を許容してマージしたい場合は `merge` / `merging` を使ってください）
+  ///
+  /// 使用例
+  /// ```swift
+  /// let d: RedBlackTreeDictionary = [("a", 1), ("b", 2)]
+  /// ```
   @inlinable
-  @inline(__always)
-  public func isValid(index i: Index) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index i: RawIndex) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
-  }
-}
-
-// MARK: -
-
-extension RedBlackTreeMultiMap {
-
-  @inlinable
-  @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    _tree.__node_handle_merge_multi(other._tree)
-  }
-  
-  @inlinable
-  @inline(__always)
-  public mutating func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
-    var result = self
-    result.insert(contentsOf: other)
-    return result
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func insert<S>(_ other: S) where S: Sequence, S.Element == Element {
-    other.forEach { insert($0) }
-  }
-
-  @inlinable
-  public func inserting<S>(_ other: __owned S) -> Self where S: Sequence, S.Element == Element {
-    var result = self
-    result.insert(other)
-    return result
+  public init(arrayLiteral elements: (Key, Value)...) {
+    self.init(keysWithValues: elements)
   }
 }
 
-// MARK: -
+// MARK: - CustomStringConvertible
 
-extension RedBlackTreeMultiMap {
+extension RedBlackTreeMultiMap: CustomStringConvertible {
 
   @inlinable
-  public func filter(
-    _ isIncluded: (Element) throws -> Bool
-  ) rethrows -> Self {
-    var tree: Tree = .create(minimumCapacity: 0)
-    var (__parent, __child) = tree.___max_ref()
-    for pair in self where try isIncluded(pair) {
-      Tree.ensureCapacity(tree: &tree)
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, pair)
-      assert(tree.__tree_invariant(tree.__root()))
-    }
-    return Self(_storage: .init(__tree: tree))
+  public var description: String {
+    let pairs = map { "\($0.key): \($0.value)" }
+    return "[\(pairs.joined(separator: ", "))]"
+  }
+
+}
+
+// MARK: - CustomDebugStringConvertible
+
+extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
+
+  @inlinable
+  public var debugDescription: String {
+    return "RedBlackTreeDictionary(\(description))"
   }
 }
 
-extension RedBlackTreeMultiMap {
+// MARK: - Equatable
+
+extension RedBlackTreeMultiMap: Equatable where Value: Equatable {
 
   @inlinable
-  public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
-    -> RedBlackTreeMultiMap<Key, T>
-  {
-    typealias Tree = RedBlackTreeMultiMap<Key, T>.Tree
-    let tree: Tree = .create(minimumCapacity: count)
-    var (__parent, __child) = tree.___max_ref()
-    for (k, v) in self {
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, try transform(v)))
-      assert(tree.__tree_invariant(tree.__root()))
-    }
-    return .init(_storage: .init(__tree: tree))
-  }
-
-  @inlinable
-  public func compactMapValues<T>(_ transform: (Value) throws -> T?)
-    rethrows -> RedBlackTreeMultiMap<Key, T>
-  {
-    typealias Tree = RedBlackTreeMultiMap<Key, T>.Tree
-    var tree: Tree = .create(minimumCapacity: 0)
-    var (__parent, __child) = tree.___max_ref()
-    for (k, v) in self {
-      if let new = try transform(v) {
-        Tree.ensureCapacity(tree: &tree)
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, new))
-        assert(tree.__tree_invariant(tree.__root()))
-      }
-    }
-    return .init(_storage: .init(__tree: tree))
-  }
-}
-
-// MARK: -
-
-extension RedBlackTreeMultiMap {
-  /// 最小キーのペアを取り出して削除
-  @inlinable
-  public mutating func popFirst() -> KeyValue? {
-    guard !isEmpty else { return nil }
-    return remove(at: startIndex)
-  }
-}
-
-// MARK: -
-
-extension RedBlackTreeMultiMap {
-
-  @inlinable
-  public func values(forKey key: Key) -> [Value] {
-    var (lo, hi) = _tree.__equal_range_multi(key)
-    var result = [Value]()
-    while lo != hi {
-      result.append(_tree.___element(lo).value)
-      lo = _tree.__tree_next(lo)
-    }
-    return result
-  }
-}
-
-// MARK: -
-
-extension RedBlackTreeMultiMap {
-
-  @inlinable
-  public func equalRange(_ key: Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
-    ___equal_range(key)
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.___equal_with(rhs)
   }
 }

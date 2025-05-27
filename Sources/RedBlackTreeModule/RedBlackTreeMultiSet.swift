@@ -128,9 +128,8 @@ extension RedBlackTreeMultiSet {
 
 // MARK: - Insert（挿入）
 
-
 extension RedBlackTreeMultiSet {
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -473,87 +472,87 @@ extension RedBlackTreeMultiSet: Sequence {
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeMultiSet: BidirectionalCollection {
-  
+
   @inlinable
   @inline(__always)
   public var startIndex: Index {
     ___index_start()
   }
-  
+
   @inlinable
   @inline(__always)
   public var endIndex: Index {
     ___index_end()
   }
-  
+
   @inlinable
   @inline(__always)
   public var count: Int {
     ___count
   }
-  
+
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     ___distance(from: start.rawValue, to: end.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     ___index(after: i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     ___form_index(after: &i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     ___index(before: i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     ___form_index(before: &i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i.rawValue, offsetBy: distance)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     ___form_index(&i.rawValue, offsetBy: distance)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
-  -> Bool
+    -> Bool
   {
     ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
     return _tree[position.rawValue]
   }
-  
+
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
@@ -651,7 +650,7 @@ extension RedBlackTreeMultiSet.SubSequence {
   public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
   public typealias EnumuratedSequence = Base.EnumuratedSequence
-  public typealias IndexSequence = Base.IndexSequence
+  public typealias IndexSequence = Base.RawIndexSequence
 }
 
 extension RedBlackTreeMultiSet.SubSequence: Sequence {
@@ -789,24 +788,106 @@ extension RedBlackTreeMultiSet.SubSequence: BidirectionalCollection {
 // MARK: - Index Range
 
 extension RedBlackTreeMultiSet {
-  
+
   public typealias Indices = Range<Index>
 
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    startIndex ..< endIndex
+    startIndex..<endIndex
   }
 }
 
 extension RedBlackTreeMultiSet.SubSequence {
-  
+
   public typealias Indices = Range<Index>
 
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    startIndex ..< endIndex
+    startIndex..<endIndex
+  }
+}
+
+// MARK: - Raw Index Sequence（インデックス系）
+
+extension RedBlackTreeMultiSet {
+
+  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
+  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
+  @inlinable
+  @inline(__always)
+  public var rawIndices: AnySequence<RawIndex> {
+    AnySequence(RawIndexSequence(_subSequence: _tree.indexSubsequence()))
+  }
+}
+
+extension RedBlackTreeMultiSet.SubSequence {
+
+  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
+  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
+  @inlinable
+  @inline(__always)
+  public var rawIndices: AnySequence<RawIndex> {
+    AnySequence(
+      IndexSequence(
+        _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
+  }
+}
+
+extension RedBlackTreeMultiSet {
+
+  @frozen
+  public struct RawIndexSequence {
+
+    public typealias RawPointer = Tree.RawPointer
+
+    @usableFromInline
+    internal typealias _SubSequence = Tree.IndexSequence
+
+    @usableFromInline
+    internal let _subSequence: _SubSequence
+
+    @inlinable
+    init(_subSequence: _SubSequence) {
+      self._subSequence = _subSequence
+    }
+  }
+}
+
+extension RedBlackTreeMultiSet.RawIndexSequence: Sequence {
+
+  public struct Iterator: IteratorProtocol {
+
+    @usableFromInline
+    internal var _iterator: _SubSequence.Iterator
+
+    @inlinable
+    @inline(__always)
+    internal init(_ _iterator: _SubSequence.Iterator) {
+      self._iterator = _iterator
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> RawPointer? {
+      _iterator.next()
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> Iterator {
+    Iterator(_subSequence.makeIterator())
+  }
+}
+
+extension RedBlackTreeMultiSet.RawIndexSequence {
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (RawPointer) throws -> Void) rethrows {
+    try _subSequence.forEach(body)
   }
 }
 
@@ -814,17 +895,34 @@ extension RedBlackTreeMultiSet.SubSequence {
 
 extension RedBlackTreeMultiSet {
 
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。") @inlinable
+  @inline(__always)
+  public func enumerated() -> EnumuratedSequence {
+    ___enumerated()
+  }
+}
+
+extension RedBlackTreeMultiSet.SubSequence {
+
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。") @inlinable
+  @inline(__always)
+  public func enumerated() -> EnumuratedSequence {
+    ___enumerated()
+  }
+}
+
+extension RedBlackTreeMultiSet {
+
   #if false
     @inlinable
     @inline(__always)
-    public func enumerated() -> AnySequence<EnumElement> {
+    public func ___enumerated() -> AnySequence<EnumElement> {
       AnySequence { _tree.makeEnumIterator() }
     }
   #else
-  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
     @inlinable
     @inline(__always)
-    public func enumerated() -> EnumuratedSequence {
+    public func ___enumerated() -> EnumuratedSequence {
       EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
     }
   #endif
@@ -835,16 +933,15 @@ extension RedBlackTreeMultiSet.SubSequence {
   #if false
     @inlinable
     @inline(__always)
-    public func enumerated() -> AnySequence<EnumElement> {
+    public func ___enumerated() -> AnySequence<EnumElement> {
       AnySequence {
         tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
       }
     }
   #else
-  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
     @inlinable
     @inline(__always)
-    public func enumerated() -> EnumuratedSequence {
+    public func ___enumerated() -> EnumuratedSequence {
       EnumuratedSequence(
         _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
     }
@@ -909,87 +1006,6 @@ extension RedBlackTreeMultiSet.EnumuratedSequence {
   }
 }
 
-// MARK: - Raw Index Sequence（インデックス系）
-
-extension RedBlackTreeMultiSet {
-
-  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
-  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
-  @inlinable
-  @inline(__always)
-  public var rawIndices: AnySequence<RawIndex> {
-    AnySequence(IndexSequence(_subSequence: _tree.indexSubsequence()))
-  }
-}
-
-extension RedBlackTreeMultiSet.SubSequence {
-
-  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
-  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
-  @inlinable
-  @inline(__always)
-  public var rawIndices: AnySequence<RawIndex> {
-    AnySequence(IndexSequence(
-      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
-  @frozen
-  public struct IndexSequence {
-
-    public typealias RawPointer = Tree.RawPointer
-
-    @usableFromInline
-    internal typealias _SubSequence = Tree.IndexSequence
-
-    @usableFromInline
-    internal let _subSequence: _SubSequence
-
-    @inlinable
-    init(_subSequence: _SubSequence) {
-      self._subSequence = _subSequence
-    }
-  }
-}
-
-extension RedBlackTreeMultiSet.IndexSequence: Sequence {
-
-  public struct Iterator: IteratorProtocol {
-
-    @usableFromInline
-    internal var _iterator: _SubSequence.Iterator
-
-    @inlinable
-    @inline(__always)
-    internal init(_ _iterator: _SubSequence.Iterator) {
-      self._iterator = _iterator
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> RawPointer? {
-      _iterator.next()
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func makeIterator() -> Iterator {
-    Iterator(_subSequence.makeIterator())
-  }
-}
-
-extension RedBlackTreeMultiSet.IndexSequence {
-
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (RawPointer) throws -> Void) rethrows {
-    try _subSequence.forEach(body)
-  }
-}
-
 // MARK: - Protocol Conformance（プロトコル適合）
 
 // MARK: - ExpressibleByArrayLiteral
@@ -1005,7 +1021,7 @@ extension RedBlackTreeMultiSet: ExpressibleByArrayLiteral {
 // MARK: - CustomStringConvertible
 
 extension RedBlackTreeMultiSet: CustomStringConvertible {
-  
+
   @inlinable
   public var description: String {
     "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
@@ -1031,4 +1047,3 @@ extension RedBlackTreeMultiSet: Equatable {
     lhs.___equal_with(rhs)
   }
 }
-

@@ -166,17 +166,17 @@ while i != tree1.endIndex { // endIndexは不変
 print(tree1.count) // 0
 ```
 
-2. enumerated()で削除する
+~~2. enumerated()で削除する~~
 
-**破壊的変更を検討中です**
+~~値とノードインデックスを列挙して、削除操作を行うことができます。
+削除時のインデックス無効対策がイテレータに施してあるので、以下のように書いて問題ありません。~~
 
-値とノードインデックスを列挙して、削除操作を行うことができます。
-削除時のインデックス無効対策がイテレータに施してあるので、以下のように書いて問題ありません。
-
+enumerated()の型が原義に沿っていないことから、誤用の懸念があり、廃止します。
+`___enumerated`()と別の名前で残していますが、名前から推察できるとおり、半非公開扱いとします。
 
 ```Swift
 var tree2: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
-for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].enumerated() { i, _ in
+for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].___enumerated() { i, _ in
   tree2.remove(at: i) // この時点でiは無効だが、イテレータは内部で次のインデックスを保持している
   print(tree2.isValid(index: i)) // false
   // iはRedBlackTreeSet<Int>.RawIndex型

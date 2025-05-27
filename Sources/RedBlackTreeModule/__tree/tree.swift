@@ -53,14 +53,18 @@ extension _NodePtr {
 }
 
 extension _NodePtr {
-  
+ 
   /// 特殊なnullptr
   /// 範囲の下限を下回っていることを表す
+  /// underやoverは幽霊化の補助としての利用に限定している
+  /// このため、RangeやStridableに関連しないところでは、underやoverは使わないし対応しない
   @inlinable
   static var under: Self { -3 }
   
   /// 特殊なnullptr
   /// 範囲の上限を上回っていることを表す
+  /// underやoverは幽霊化の補助としての利用に限定している
+  /// このため、RangeやStridableに関連しないところでは、underやoverは使わないし対応しない
   @inlinable
   static var over: Self { -4 }
 }
@@ -71,6 +75,8 @@ func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
   ptr < 0
 }
 
+/// underやoverは幽霊化の補助としての利用に限定している
+/// このため、RangeやStridableに関連しないところでは、underやoverは使わないし対応しない
 @inlinable
 @inline(__always)
 func ___is_under_or_over(_ ptr: _NodePtr) -> Bool {

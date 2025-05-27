@@ -898,7 +898,7 @@ extension RedBlackTreeMultiSet {
   #if false
     @inlinable
     @inline(__always)
-    public func enumerated() -> AnySequence<EnumElement> {
+    public func ___enumerated() -> AnySequence<EnumElement> {
       AnySequence { _tree.makeEnumIterator() }
     }
   #else
@@ -916,7 +916,7 @@ extension RedBlackTreeMultiSet.SubSequence {
   #if false
     @inlinable
     @inline(__always)
-    public func enumerated() -> AnySequence<EnumElement> {
+    public func ___enumerated() -> AnySequence<EnumElement> {
       AnySequence {
         tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
       }

@@ -908,24 +908,28 @@ extension RedBlackTreeSet.EnumuratedSequence {
   }
 }
 
-// MARK: - Index Sequence
+// MARK: - Raw Index Sequence
+
+// 独自の型だと学習コストが高くなるので、速度を少し犠牲にして読みやすそうな型に変更
 
 extension RedBlackTreeSet {
   
-  // 独自の型だと学習コストが高くなるので、速度を少し犠牲にして読みやすそうな型に変更
+  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
+  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
   @inline(__always)
-  public func ___indices() -> AnySequence<RawIndex> {
+  public var rawIndices: AnySequence<RawIndex> {
     AnySequence(IndexSequence(_subSequence: _tree.indexSubsequence()))
   }
 }
 
 extension RedBlackTreeSet.SubSequence {
 
-  // 独自の型だと学習コストが高くなるので、速度を少し犠牲にして読みやすそうな型に変更
+  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
+  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
   @inline(__always)
-  public func ___indices() -> AnySequence<RawIndex> {
+  public var rawIndices: AnySequence<RawIndex> {
     AnySequence(IndexSequence(
       _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
   }

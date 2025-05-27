@@ -24,7 +24,13 @@ import Foundation
 
 extension ___RedBlackTree.___Tree {
 
-  /// Range<Bound>の左右のサイズ違いでクラッシュすることを避けるためのもの
+  /// 赤黒木のノードへのポインタ
+  ///
+  /// 各データ構造で代表的なインデックスとして用いられる
+  ///
+  /// 各種プロトコルや範囲検査に対応するため、単独で様々な事ができる
+  ///
+  /// 他に軽量なポインタもあります。
   @frozen
   public struct Pointer {
 
@@ -321,17 +327,16 @@ extension ___RedBlackTree.___Tree.Pointer {
     rawValue == .end
   }
 
-  // 利用上価値はないが、おまけで。
+  // 利用価値はないが、おまけ。
   @inlinable
   @inline(__always)
-  public var isRootIndex: Bool {
+  public var isRoot: Bool {
     rawValue == _tree.__root()
   }
 }
 
 extension ___RedBlackTree.___Tree.Pointer {
 
-  // 名前はXMLNodeを参考にした
   @inlinable
   @inline(__always)
   public var next: Self? {
@@ -344,7 +349,6 @@ extension ___RedBlackTree.___Tree.Pointer {
     return next
   }
 
-  // 名前はXMLNodeを参考にした
   @inlinable
   @inline(__always)
   public var previous: Self? {
@@ -360,7 +364,6 @@ extension ___RedBlackTree.___Tree.Pointer {
 
 extension ___RedBlackTree.___Tree.Pointer {
   
-  // 名前について検討中
   @inlinable
   @inline(__always)
   public var pointee: Element? {

@@ -104,14 +104,15 @@ print(dict) // 例: [apple: 5, banana: 3]
 
 - endIndexは例外で、常に不変です。
 
-##### 範囲削除方法の例
+##### 範囲削除の例
 
 0. 普通に削除する
 
 この問題を迂回しない楽な使い方です。
 Rangeシーケンスの厳しい検査に耐える回避コードの追加により可能になりました。
-書き急ぐ際に重宝する方法ですが、他と比べて**遅い**です。
-
+書き急ぐ際に重宝する方法ですが、オーバーヘッドが大きく、他と比べて**遅い**です。
+標準的な操作でありながら、Swiftの標準ライブラリに対するハック的な実装となっています。
+Swiftのアップデートにともなって不安定になる可能性もあり、一般利用には適しません。
 
 ```Swift
 var tree0: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
@@ -183,17 +184,14 @@ for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].enumerated() { i, _ in
 print(tree2.count) // 0
 ```
 
-3. `___indices`()で削除する
+3. `rawIndices`で削除する
 
-**indicesプロパティが追加になり、メソッド名が変更になっています。**
-**さらに破壊的変更を検討中です**
-
-軽量ノードインデクスを列挙して、削除操作を行うことができます。
-削除時のインデックス無効対策がイテレータに施してあるので、以下のように書いて問題ありません。
+RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
+削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
 
 ```Swift
 var tree3: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
-for (i,_) in tree3[tree3.startIndex ..< tree3.endIndex].___indices() { i in
+for (i,_) in tree3[tree3.startIndex ..< tree3.endIndex].rawIndices { i in
   tree3.remove(at: i) // この時点でiは無効だが、イテレータは内部で次のインデックスを保持している
   print(tree3.isValid(index: i)) // false
   // iはRedBlackTreeSet<Int>.RawIndex型

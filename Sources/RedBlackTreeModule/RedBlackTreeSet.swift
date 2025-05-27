@@ -917,7 +917,7 @@ extension RedBlackTreeSet {
     AnySequence([])
   }
   
-  public func rawIndexedElements() -> AnySequence<(ptr: RawIndex, element: Element)> {
+  public func rawIndexedElements() -> AnySequence<(rawIndex: RawIndex, element: Element)> {
     AnySequence([])
   }
 }

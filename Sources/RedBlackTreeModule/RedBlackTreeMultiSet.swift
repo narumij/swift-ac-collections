@@ -649,7 +649,7 @@ extension RedBlackTreeMultiSet.SubSequence {
   public typealias Index = Base.Index
   public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
-  public typealias EnumuratedSequence = Base.EnumuratedSequence
+  public typealias EnumuratedSequence = Base.RawIndexedSequence
   public typealias IndexSequence = Base.RawIndexSequence
 }
 
@@ -895,57 +895,41 @@ extension RedBlackTreeMultiSet.RawIndexSequence {
 
 extension RedBlackTreeMultiSet {
 
-  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。") @inlinable
+  @inlinable
   @inline(__always)
-  public func enumerated() -> EnumuratedSequence {
-    ___enumerated()
+  public var rawIndexedElements: RawIndexedSequence {
+    RawIndexedSequence(_subSequence: _tree.enumeratedSubsequence())
   }
 }
 
 extension RedBlackTreeMultiSet.SubSequence {
 
-  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。") @inlinable
+  @inlinable
   @inline(__always)
-  public func enumerated() -> EnumuratedSequence {
-    ___enumerated()
+  public var rawIndexedElements: EnumuratedSequence {
+    EnumuratedSequence(
+      _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
   }
 }
 
 extension RedBlackTreeMultiSet {
 
-  #if false
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> AnySequence<EnumElement> {
-      AnySequence { _tree.makeEnumIterator() }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
-    }
-  #endif
+  @available(*, deprecated, renamed: "rawIndexedElements")
+  @inlinable
+  @inline(__always)
+  public func enumerated() -> RawIndexedSequence {
+    rawIndexedElements
+  }
 }
 
 extension RedBlackTreeMultiSet.SubSequence {
 
-  #if false
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> AnySequence<EnumElement> {
-      AnySequence {
-        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
-      }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(
-        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
-    }
-  #endif
+  @available(*, deprecated, renamed: "rawIndexedElements")
+  @inlinable
+  @inline(__always)
+  public func enumerated() -> EnumuratedSequence {
+    rawIndexedElements
+  }
 }
 
 // MARK: - Enumerated Sequence（列挙系）
@@ -953,7 +937,7 @@ extension RedBlackTreeMultiSet.SubSequence {
 extension RedBlackTreeMultiSet {
 
   @frozen
-  public struct EnumuratedSequence {
+  public struct RawIndexedSequence {
 
     public typealias Enumurated = Tree.RawIndexed
 
@@ -970,7 +954,7 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-extension RedBlackTreeMultiSet.EnumuratedSequence: Sequence {
+extension RedBlackTreeMultiSet.RawIndexedSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
 
@@ -997,7 +981,7 @@ extension RedBlackTreeMultiSet.EnumuratedSequence: Sequence {
   }
 }
 
-extension RedBlackTreeMultiSet.EnumuratedSequence {
+extension RedBlackTreeMultiSet.RawIndexedSequence {
 
   @inlinable
   @inline(__always)

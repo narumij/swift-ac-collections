@@ -891,7 +891,7 @@ extension RedBlackTreeMultiSet.RawIndexSequence {
   }
 }
 
-// MARK: - Enumerated Sequence
+// MARK: - Raw Indexed Sequence
 
 extension RedBlackTreeMultiSet {
 
@@ -931,8 +931,6 @@ extension RedBlackTreeMultiSet.SubSequence {
     rawIndexedElements
   }
 }
-
-// MARK: - Enumerated Sequence（列挙系）
 
 extension RedBlackTreeMultiSet {
 

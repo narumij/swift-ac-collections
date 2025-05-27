@@ -128,9 +128,8 @@ extension RedBlackTreeMultiSet {
 
 // MARK: - Insert（挿入）
 
-
 extension RedBlackTreeMultiSet {
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -473,87 +472,87 @@ extension RedBlackTreeMultiSet: Sequence {
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeMultiSet: BidirectionalCollection {
-  
+
   @inlinable
   @inline(__always)
   public var startIndex: Index {
     ___index_start()
   }
-  
+
   @inlinable
   @inline(__always)
   public var endIndex: Index {
     ___index_end()
   }
-  
+
   @inlinable
   @inline(__always)
   public var count: Int {
     ___count
   }
-  
+
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     ___distance(from: start.rawValue, to: end.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     ___index(after: i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     ___form_index(after: &i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     ___index(before: i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     ___form_index(before: &i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i.rawValue, offsetBy: distance)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     ___form_index(&i.rawValue, offsetBy: distance)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
-  -> Bool
+    -> Bool
   {
     ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
     return _tree[position.rawValue]
   }
-  
+
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
@@ -789,24 +788,24 @@ extension RedBlackTreeMultiSet.SubSequence: BidirectionalCollection {
 // MARK: - Index Range
 
 extension RedBlackTreeMultiSet {
-  
+
   public typealias Indices = Range<Index>
 
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    startIndex ..< endIndex
+    startIndex..<endIndex
   }
 }
 
 extension RedBlackTreeMultiSet.SubSequence {
-  
+
   public typealias Indices = Range<Index>
 
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    startIndex ..< endIndex
+    startIndex..<endIndex
   }
 }
 
@@ -830,8 +829,9 @@ extension RedBlackTreeMultiSet.SubSequence {
   @inlinable
   @inline(__always)
   public var rawIndices: AnySequence<RawIndex> {
-    AnySequence(IndexSequence(
-      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
+    AnySequence(
+      IndexSequence(
+        _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
   }
 }
 
@@ -892,6 +892,24 @@ extension RedBlackTreeMultiSet.RawIndexSequence {
 }
 
 // MARK: - Enumerated Sequence
+
+extension RedBlackTreeMultiSet {
+
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。") @inlinable
+  @inline(__always)
+  public func enumerated() -> EnumuratedSequence {
+    ___enumerated()
+  }
+}
+
+extension RedBlackTreeMultiSet.SubSequence {
+
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。") @inlinable
+  @inline(__always)
+  public func enumerated() -> EnumuratedSequence {
+    ___enumerated()
+  }
+}
 
 extension RedBlackTreeMultiSet {
 
@@ -1003,7 +1021,7 @@ extension RedBlackTreeMultiSet: ExpressibleByArrayLiteral {
 // MARK: - CustomStringConvertible
 
 extension RedBlackTreeMultiSet: CustomStringConvertible {
-  
+
   @inlinable
   public var description: String {
     "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
@@ -1029,4 +1047,3 @@ extension RedBlackTreeMultiSet: Equatable {
     lhs.___equal_with(rhs)
   }
 }
-

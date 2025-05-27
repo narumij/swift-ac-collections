@@ -150,7 +150,7 @@ extension RedBlackTreeSet {
 // MARK: - Insertion
 
 extension RedBlackTreeSet {
-  
+
   /// - Complexity: O(log *n*)
   @discardableResult
   @inlinable
@@ -161,7 +161,7 @@ extension RedBlackTreeSet {
     let (__r, __inserted) = _tree.__insert_unique(newMember)
     return (__inserted, __inserted ? newMember : _tree[__r])
   }
-  
+
   /// - Complexity: O(log *n*)
   @discardableResult
   @inlinable
@@ -201,7 +201,7 @@ extension RedBlackTreeSet {
 // MARK: - Removal
 
 extension RedBlackTreeSet {
-  
+
   @inlinable
   public mutating func popFirst() -> Element? {
     guard !isEmpty else { return nil }
@@ -210,7 +210,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-  
+
   /// - Complexity: O(log *n*)
   @discardableResult
   @inlinable
@@ -218,7 +218,7 @@ extension RedBlackTreeSet {
     _ensureUnique()
     return _tree.___erase_unique(member) ? member : nil
   }
-  
+
   /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
   ///
   /// - Complexity: O(log *n*)
@@ -232,7 +232,7 @@ extension RedBlackTreeSet {
     }
     return element
   }
-  
+
   /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
   ///
   /// - Complexity: O(log *n*)
@@ -245,7 +245,7 @@ extension RedBlackTreeSet {
     }
     return element
   }
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -255,7 +255,7 @@ extension RedBlackTreeSet {
     }
     return remove(at: startIndex)
   }
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -265,7 +265,7 @@ extension RedBlackTreeSet {
     }
     return remove(at: index(before: endIndex))
   }
-  
+
   /// 指定した半開区間（`lhs ..< rhs`）に含まれる要素をすべて削除します。
   ///
   /// - Parameter range: `lhs`（含む）から `rhs`（含まない）までを表す `Range`
@@ -329,7 +329,7 @@ extension RedBlackTreeSet {
 // MARK: - Search
 
 extension RedBlackTreeSet {
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   public func contains(_ member: Element) -> Bool {
@@ -791,24 +791,24 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
 // MARK: - Index Range
 
 extension RedBlackTreeSet {
-  
+
   public typealias Indices = Range<Index>
 
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    startIndex ..< endIndex
+    startIndex..<endIndex
   }
 }
 
 extension RedBlackTreeSet.SubSequence {
-  
+
   public typealias Indices = Range<Index>
 
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    startIndex ..< endIndex
+    startIndex..<endIndex
   }
 }
 
@@ -817,7 +817,7 @@ extension RedBlackTreeSet.SubSequence {
 // 独自の型だと学習コストが高くなるので、速度を少し犠牲にして読みやすそうな型に変更
 
 extension RedBlackTreeSet {
-  
+
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
@@ -834,8 +834,9 @@ extension RedBlackTreeSet.SubSequence {
   @inlinable
   @inline(__always)
   public var rawIndices: AnySequence<RawIndex> {
-    AnySequence(IndexSequence(
-      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
+    AnySequence(
+      IndexSequence(
+        _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
   }
 }
 
@@ -896,6 +897,24 @@ extension RedBlackTreeSet.RawIndexSequence {
 }
 
 // MARK: - Enumerated Sequence
+
+extension RedBlackTreeSet {
+
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")  @inlinable
+  @inline(__always)
+  public func enumerated() -> EnumuratedSequence {
+    ___enumerated()
+  }
+}
+
+extension RedBlackTreeSet.SubSequence {
+
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")  @inlinable
+  @inline(__always)
+  public func enumerated() -> EnumuratedSequence {
+    ___enumerated()
+  }
+}
 
 extension RedBlackTreeSet {
 
@@ -1050,7 +1069,7 @@ extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 // MARK: - CustomStringConvertible
 
 extension RedBlackTreeSet: CustomStringConvertible {
-  
+
   @inlinable
   public var description: String {
     "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
@@ -1109,4 +1128,3 @@ extension RedBlackTreeSet: Equatable {
     }
   }
 #endif
-

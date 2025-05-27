@@ -253,6 +253,30 @@ final class EtcTests: XCTestCase {
     _ = Set<String>()
     _ = Dictionary<String,String>()
   }
+  
+  func testReEnumerated2_1() throws {
+    var s = RedBlackTreeSet<Int>()
+    for (offset, (ptr, value)) in s._enumerated() {
+      print(value * Int(1), offset + Int(1))
+      s.remove(at: ptr)
+    }
+  }
+  
+  func testReEnumerated2_2() throws {
+    var s = RedBlackTreeSet<Int>()
+    for (offset, ptr, value) in s._enumerated2() {
+      print(value * Int(1), offset + Int(1))
+      s.remove(at: ptr)
+    }
+  }
+  
+  func testReEnumerated2_3() throws {
+    var s = RedBlackTreeSet<Int>()
+    for (ptr, value) in s._enumerated3() {
+      print(value * Int(1))
+      s.remove(at: ptr)
+    }
+  }
 
 #if false
   func testCapacity() throws {

@@ -908,6 +908,18 @@ extension RedBlackTreeSet {
   public func enumerated() -> EnumuratedSequence {
     ___enumerated()
   }
+  
+  public func _enumerated() -> EnumeratedSequence<AnySequence<(RawIndex, Element)>> {
+    AnySequence([]).enumerated()
+  }
+  
+  public func _enumerated2() -> AnySequence<(offset: Int, ptr: RawIndex, element: Element)> {
+    AnySequence([])
+  }
+  
+  public func _enumerated3() -> AnySequence<(ptr: RawIndex, element: Element)> {
+    AnySequence([])
+  }
 }
 
 extension RedBlackTreeSet.SubSequence {

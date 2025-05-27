@@ -106,6 +106,47 @@ print(dict) // 例: [apple: 5, banana: 3]
 
 ##### 範囲削除方法の例
 
+0. 普通にSwiftっぽく削除する
+
+全く迂回しない楽な使い方です。
+ノードインデックスのStridable対応と、Rangeの厳しい検査に耐える回避コードの追加により可能になりました。
+
+```Swift
+var tree0: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+for i in tree0.startIndex ..< tree0.endIndex {
+  tree0.remove(at: i) // iはこの時点で無効になる
+  print(tree0.isValid(index: i)) // false
+}
+print(tree0.count) // 0
+```
+
+```Swift
+var tree0: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+for i in tree0.indices {
+  tree0.remove(at: i) // iはこの時点で無効になる
+  print(tree0.isValid(index: i)) // false
+}
+print(tree0.count) // 0
+```
+
+```Swift
+var tree0: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+for i in (tree0.startIndex ..< tree0.endIndex).reversed() {
+  tree0.remove(at: i) // iはこの時点で無効になる
+  print(tree0.isValid(index: i)) // false
+}
+print(tree0.count) // 0
+```
+
+```Swift
+var tree0: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+for i in tree0.indices.reversed() {
+  tree0.remove(at: i) // iはこの時点で無効になる
+  print(tree0.isValid(index: i)) // false
+}
+print(tree0.count) // 0
+```
+
 1. whileループで削除する
 
 この問題を迂回する、標準APIによるベーシックな方法です。

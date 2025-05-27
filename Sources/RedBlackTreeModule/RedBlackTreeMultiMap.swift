@@ -263,6 +263,7 @@ extension RedBlackTreeMultiMap {
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
     _ensureUnique()
+    index.phantomMark()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
@@ -882,6 +883,30 @@ extension RedBlackTreeMultiMap.SubSequence: BidirectionalCollection {
   }
 }
 
+// MARK: - Index Range
+
+extension RedBlackTreeMultiMap {
+  
+  public typealias Indices = Range<Index>
+
+  @inlinable
+  @inline(__always)
+  public var indices: Indices {
+    startIndex ..< endIndex
+  }
+}
+
+extension RedBlackTreeMultiMap.SubSequence {
+  
+  public typealias Indices = Range<Index>
+
+  @inlinable
+  @inline(__always)
+  public var indices: Indices {
+    startIndex ..< endIndex
+  }
+}
+
 // MARK: - Enumerated Sequence
 
 extension RedBlackTreeMultiMap {
@@ -893,6 +918,7 @@ extension RedBlackTreeMultiMap {
       AnySequence { _tree.makeEnumIterator() }
     }
   #else
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
     @inlinable
     @inline(__always)
     public func enumerated() -> EnumuratedSequence {
@@ -912,6 +938,7 @@ extension RedBlackTreeMultiMap.SubSequence {
       }
     }
   #else
+  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
     @inlinable
     @inline(__always)
     public func enumerated() -> EnumuratedSequence {
@@ -977,24 +1004,28 @@ extension RedBlackTreeMultiMap.EnumuratedSequence {
   }
 }
 
-// MARK: - Index Sequence
+// MARK: - Raw Index Sequence
 
 extension RedBlackTreeMultiMap {
 
+  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
+  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
   @inline(__always)
-  public func indices() -> IndexSequence {
-    IndexSequence(_subSequence: _tree.indexSubsequence())
+  public var rawIndices: AnySequence<RawIndex> {
+    AnySequence(IndexSequence(_subSequence: _tree.indexSubsequence()))
   }
 }
 
 extension RedBlackTreeMultiMap.SubSequence {
 
+  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
+  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
   @inline(__always)
-  public func indices() -> IndexSequence {
-    IndexSequence(
-      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+  public var rawIndices: AnySequence<RawIndex> {
+    AnySequence(IndexSequence(
+      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
   }
 }
 

@@ -55,6 +55,38 @@ final class EtcTests: XCTestCase {
     XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), 3)
   }
   
+#if true
+  func testExample4() throws {
+    let b: RedBlackTreeSet<Int> = [1,2,3,4]
+    XCTAssertEqual(b.endIndex.distance(to: b.startIndex), -4)
+    var result = [Int]()
+    for p in b.startIndex ..< b.endIndex {
+      result.append(p.pointee!)
+    }
+    XCTAssertEqual(result, [1,2,3,4])
+    for p in stride(from: b.startIndex, to: b.endIndex, by: 1) {
+      result.append(p.pointee!)
+    }
+    XCTAssertEqual(result, [1,2,3,4] + [1,2,3,4])
+    for p in stride(from: b.endIndex.previous!, through: b.startIndex, by: -1) {
+      result.append(p.pointee!)
+    }
+    XCTAssertEqual(result, [1,2,3,4] + [1,2,3,4] + [4,3,2,1])
+    
+    for p in (b.startIndex ..< b.endIndex).reversed() {
+      result.append(p.pointee!)
+    }
+
+//    XCTAssertEqual(b.endIndex.rawValue, .end)
+//    XCTAssertEqual(b.endIndex.advanced(by: 1).rawValue, .nullptr)
+//    XCTAssertEqual(b[b.endIndex.advanced(by: 1)], 0)
+//    let b = Array<Int>()
+//    var c = b.startIndex
+//    c = c.advanced(by: -1)
+//    print(b[c])
+  }
+#endif
+  
   class A: Hashable, Comparable {
     static func < (lhs: A, rhs: A) -> Bool {
       lhs.x < rhs.x

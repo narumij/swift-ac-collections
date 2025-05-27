@@ -788,6 +788,30 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
   }
 }
 
+// MARK: - Index Range
+
+extension RedBlackTreeSet {
+  
+  public typealias Indices = Range<Index>
+
+  @inlinable
+  @inline(__always)
+  public var indices: Indices {
+    startIndex ..< endIndex
+  }
+}
+
+extension RedBlackTreeSet.SubSequence {
+  
+  public typealias Indices = Range<Index>
+
+  @inlinable
+  @inline(__always)
+  public var indices: Indices {
+    startIndex ..< endIndex
+  }
+}
+
 // MARK: - Enumerated Sequence
 
 extension RedBlackTreeSet {
@@ -888,14 +912,6 @@ extension RedBlackTreeSet.EnumuratedSequence {
 
 extension RedBlackTreeSet {
   
-  public typealias Indices = Range<Index>
-
-  @inlinable
-  @inline(__always)
-  public var indices: Indices {
-    startIndex ..< endIndex
-  }
-
   // 独自の型だと学習コストが高くなるので、速度を少し犠牲にして読みやすそうな型に変更
   @inlinable
   @inline(__always)
@@ -905,14 +921,6 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet.SubSequence {
-
-  public typealias Indices = Range<Index>
-
-  @inlinable
-  @inline(__always)
-  public var indices: Indices {
-    startIndex ..< endIndex
-  }
 
   // 独自の型だと学習コストが高くなるので、速度を少し犠牲にして読みやすそうな型に変更
   @inlinable

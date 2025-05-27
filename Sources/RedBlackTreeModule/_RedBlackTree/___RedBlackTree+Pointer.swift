@@ -82,8 +82,29 @@ extension ___RedBlackTree.___Tree.Pointer: Comparable {
   @usableFromInline
   func phantomMark() {
     remnant.rawValue = rawValue
-    remnant.prev = rawValue == _tree.___begin() ? .under : _tree.__tree_prev_iter(rawValue)
-    remnant.next = rawValue == .end ? .over : _tree.__tree_next_iter(rawValue)
+    
+    // Treeが空の場合、削除自体が発生しないので、考慮していない
+    
+    if rawValue == _tree.begin() {
+      remnant.prev = .under
+      remnant.next = _tree.__tree_next_iter(rawValue)
+      return
+    }
+    
+    if rawValue == .end {
+      remnant.prev = _tree.__tree_prev_iter(rawValue)
+      remnant.next = .over
+      return
+    }
+    
+    if ___is_under_or_over(rawValue) {
+      remnant.prev = rawValue
+      remnant.next = rawValue
+      return
+    }
+    
+    remnant.prev = _tree.__tree_prev_iter(rawValue)
+    remnant.next = _tree.__tree_next_iter(rawValue)
   }
 
   @inlinable

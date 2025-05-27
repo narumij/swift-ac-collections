@@ -106,10 +106,12 @@ print(dict) // 例: [apple: 5, banana: 3]
 
 ##### 範囲削除方法の例
 
-0. 普通にSwiftっぽく削除する
+0. 普通に削除する
 
-全く迂回しない楽な使い方です。
-ノードインデックスのStridable対応と、Rangeの厳しい検査に耐える回避コードの追加により可能になりました。
+この問題を迂回しない楽な使い方です。
+Rangeシーケンスの厳しい検査に耐える回避コードの追加により可能になりました。
+書き急ぐ際に重宝する方法ですが、他と比べて**遅い**です。
+
 
 ```Swift
 var tree0: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
@@ -165,6 +167,8 @@ print(tree1.count) // 0
 
 2. enumerated()で削除する
 
+**破壊的変更を検討中です**
+
 値とノードインデックスを列挙して、削除操作を行うことができます。
 削除時のインデックス無効対策がイテレータに施してあるので、以下のように書いて問題ありません。
 
@@ -179,14 +183,17 @@ for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].enumerated() { i, _ in
 print(tree2.count) // 0
 ```
 
-3. indices()で削除する
+3. `___indices`()で削除する
 
-ノードインデクスだけを列挙して、削除操作を行うことができます。
+**indicesプロパティが追加になり、メソッド名が変更になっています。**
+**さらに破壊的変更を検討中です**
+
+軽量ノードインデクスを列挙して、削除操作を行うことができます。
 削除時のインデックス無効対策がイテレータに施してあるので、以下のように書いて問題ありません。
 
 ```Swift
 var tree3: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
-for (i,_) in tree3[tree3.startIndex ..< tree3.endIndex].indices() { i in
+for (i,_) in tree3[tree3.startIndex ..< tree3.endIndex].___indices() { i in
   tree3.remove(at: i) // この時点でiは無効だが、イテレータは内部で次のインデックスを保持している
   print(tree3.isValid(index: i)) // false
   // iはRedBlackTreeSet<Int>.RawIndex型
@@ -196,7 +203,7 @@ print(tree3.count) // 0
 
 4. removeSubrange(_:Range<Index>)で削除する
 
-インデックスの区間で削除対象を指定することが可能です。オーバーヘッドが一番少なく、他の方法と比べて一番速いです。
+インデックスの区間で削除対象を指定することが可能です。
 
 ```Swift
 var tree4: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
@@ -235,7 +242,7 @@ while idx != tree6.endIndex {
 }
 ```
 
-おすすめできませんが、速度が必要な場合、C++のイテレータとは異なり比較でループを回すこともできます。 
+おすすめできませんが、C++のイテレータとは異なり比較でループを回すこともできます。 
 
 ```Swift
 var tree6: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]

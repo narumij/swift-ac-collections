@@ -889,6 +889,9 @@ extension RedBlackTreeSet.RawIndexSequence: Sequence {
 
 extension RedBlackTreeSet.RawIndexSequence {
 
+  // AnySequence化した結果呼ばれなくなっている
+  // 性能差があった記憶なので、どこかのタイミングで計測が必要
+
   @inlinable
   @inline(__always)
   public func forEach(_ body: (RawPointer) throws -> Void) rethrows {

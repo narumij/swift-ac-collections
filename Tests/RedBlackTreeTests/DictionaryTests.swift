@@ -566,7 +566,7 @@ import XCTest
       func testEnumeratedSequence1() throws {
         let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
         var d: [String: Int] = [:]
-        set.___enumerated().forEach {
+        set.rawIndexedElements.forEach {
           d[$0.element.value] = $0.rawIndex.rawValue
         }
         XCTAssertEqual(d, ["a": 0, "b": 1, "c": 2])
@@ -575,7 +575,7 @@ import XCTest
       func testEnumeratedSequence2() throws {
         let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
         var d: [String: Int] = [:]
-        set[2...3].___enumerated().forEach {
+        set[2...3].rawIndexedElements.forEach {
           d[$0.element.value] = $0.rawIndex.rawValue
         }
         XCTAssertEqual(d, ["b": 1, "c": 2])
@@ -584,7 +584,7 @@ import XCTest
       func testEnumeratedSequence3() throws {
         let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
         var d: [String: Int] = [:]
-        for (o, e) in set.___enumerated() {
+        for (o, e) in set.rawIndexedElements {
           d[e.value] = o.rawValue
         }
         XCTAssertEqual(d, ["a": 0, "b": 1, "c": 2])
@@ -593,7 +593,7 @@ import XCTest
       func testEnumeratedSequence4() throws {
         let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
         var d: [String: Int] = [:]
-        for (o, e) in set[2...3].___enumerated() {
+        for (o, e) in set[2...3].rawIndexedElements {
           d[e.value] = o.rawValue
         }
         XCTAssertEqual(d, ["b": 1, "c": 2])

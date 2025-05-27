@@ -836,7 +836,7 @@ extension RedBlackTreeDictionary.SubSequence {
   public typealias Index = Base.Index
   public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
-  public typealias EnumuratedSequence = Base.EnumuratedSequence
+  public typealias EnumuratedSequence = Base.RawIndexedSequence
   public typealias IndexSequence = Base.RawIndexSequence
 }
 
@@ -972,24 +972,24 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
 // MARK: - Index Range
 
 extension RedBlackTreeDictionary {
-  
+
   public typealias Indices = Range<Index>
 
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    startIndex ..< endIndex
+    startIndex..<endIndex
   }
 }
 
 extension RedBlackTreeDictionary.SubSequence {
-  
+
   public typealias Indices = Range<Index>
 
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    startIndex ..< endIndex
+    startIndex..<endIndex
   }
 }
 
@@ -1013,8 +1013,9 @@ extension RedBlackTreeDictionary.SubSequence {
   @inlinable
   @inline(__always)
   public var rawIndices: AnySequence<RawIndex> {
-    AnySequence(IndexSequence(
-      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
+    AnySequence(
+      IndexSequence(
+        _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
   }
 }
 
@@ -1078,45 +1079,32 @@ extension RedBlackTreeDictionary.RawIndexSequence {
 
 extension RedBlackTreeDictionary {
 
-  #if false
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> AnySequence<EnumElement> {
-      AnySequence { _tree.makeEnumIterator() }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
-    }
-  #endif
+  @inlinable
+  @inline(__always)
+  public var rawIndexedElements: RawIndexedSequence {
+    RawIndexedSequence(
+      _subSequence:
+        _tree.enumeratedSubsequence())
+  }
 }
 
 extension RedBlackTreeDictionary.SubSequence {
 
-  #if false
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> AnySequence<EnumElement> {
-      AnySequence {
-        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
-      }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(
-        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
-    }
-  #endif
+  @inlinable
+  @inline(__always)
+  public var rawIndexedElements: EnumuratedSequence {
+    EnumuratedSequence(
+      _subSequence:
+        _tree.enumeratedSubsequence(
+          from: startIndex.rawValue,
+          to: endIndex.rawValue))
+  }
 }
 
 extension RedBlackTreeDictionary {
 
   @frozen
-  public struct EnumuratedSequence {
+  public struct RawIndexedSequence {
 
     public typealias Enumurated = Tree.RawIndexed
 
@@ -1133,7 +1121,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary.EnumuratedSequence: Sequence {
+extension RedBlackTreeDictionary.RawIndexedSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
 
@@ -1160,7 +1148,7 @@ extension RedBlackTreeDictionary.EnumuratedSequence: Sequence {
   }
 }
 
-extension RedBlackTreeDictionary.EnumuratedSequence {
+extension RedBlackTreeDictionary.RawIndexedSequence {
 
   @inlinable
   @inline(__always)

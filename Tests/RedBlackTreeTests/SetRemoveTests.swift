@@ -180,13 +180,13 @@ final class SetRemoveTest_5000: XCTestCase {
   }
 
   func testSmokeRemove3() throws {
-    for (i, _) in members.___enumerated() {
+    for (i, _) in members.rawIndexedElements {
       members.remove(at: i)
     }
   }
 
   func testSmokeRemove4() throws {
-    for (i, _) in members.elements(in: 0..<10_000).___enumerated() {
+    for (i, _) in members.elements(in: 0..<10_000).rawIndexedElements {
       members.remove(at: i)
     }
   }

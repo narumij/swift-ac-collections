@@ -415,7 +415,7 @@ final class SetTests: XCTestCase {
       set.insert(i)
       XCTAssertTrue(set.___tree_invariant())
     }
-    for (i, _) in set.___enumerated() {
+    for (i, _) in set.rawIndexedElements {
       set.remove(at: i)
       XCTAssertTrue(set.___tree_invariant())
     }
@@ -443,7 +443,7 @@ final class SetTests: XCTestCase {
       set.insert(i)
       XCTAssertTrue(set.___tree_invariant())
     }
-    for (i, _) in set[set.startIndex..<set.endIndex].___enumerated() {
+    for (i, _) in set[set.startIndex..<set.endIndex].rawIndexedElements {
       set.remove(at: i)
       XCTAssertTrue(set.___tree_invariant())
     }

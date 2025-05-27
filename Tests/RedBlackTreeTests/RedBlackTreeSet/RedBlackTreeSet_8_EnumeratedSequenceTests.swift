@@ -13,7 +13,7 @@ final class RedBlackTreeSetEnumeratedSequenceTests: XCTestCase {
     func test_enumeratedSequence_forEach() {
       // 事前条件: 集合に[10, 20, 30]
       let set = RedBlackTreeSet([10, 20, 30])
-      let enumerated = set.___enumerated()
+      let enumerated = set.rawIndexedElements
 
       var elements: [(offset: RedBlackTreeSet<Int>.RawIndex, element: Int)] = []
       enumerated.forEach { pair in
@@ -32,7 +32,7 @@ final class RedBlackTreeSetEnumeratedSequenceTests: XCTestCase {
       // 事前条件: 集合に[10, 20, 30, 40, 50]
       let set = RedBlackTreeSet([10, 20, 30, 40, 50])
       let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [20,30,40]
-      let enumerated = sub.___enumerated()
+      let enumerated = sub.rawIndexedElements
 
       var elements: [(offset: RedBlackTreeSet<Int>.RawIndex, element: Int)] = []
       enumerated.forEach { pair in
@@ -54,7 +54,7 @@ extension RedBlackTreeSetEnumeratedSequenceTests {
     /// EnumuratedSequenceのmakeIterator()で順序通りに列挙できること
     func test_enumeratedSequence_makeIterator() {
       let set = RedBlackTreeSet([10, 20, 30])
-      let enumerated = set.___enumerated()
+      let enumerated = set.rawIndexedElements
 
       var iterator = enumerated.makeIterator()
       var elements: [(offset: RedBlackTreeSet<Int>.RawIndex, element: Int)] = []
@@ -72,7 +72,7 @@ extension RedBlackTreeSetEnumeratedSequenceTests {
     func test_subSequence_enumeratedSequence_makeIterator() {
       let set = RedBlackTreeSet([10, 20, 30, 40, 50])
       let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [20,30,40]
-      let enumerated = sub.___enumerated()
+      let enumerated = sub.rawIndexedElements
 
       var iterator = enumerated.makeIterator()
       var elements: [(offset: RedBlackTreeSet<Int>.RawIndex, element: Int)] = []

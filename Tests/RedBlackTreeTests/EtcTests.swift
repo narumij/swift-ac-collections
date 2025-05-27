@@ -140,7 +140,7 @@ final class EtcTests: XCTestCase {
     
     do {
       var b: RedBlackTreeSet<Int> = .init(0 ..< 10)
-      for (i,_) in b[b.startIndex ..< b.endIndex].___enumerated() {
+      for (i,_) in b[b.startIndex ..< b.endIndex].rawIndexedElements {
         b.remove(at: i) // iはこの時点で無効になる
         XCTAssertFalse(b.isValid(index: i))
       }
@@ -252,22 +252,6 @@ final class EtcTests: XCTestCase {
   func testHoge() throws {
     _ = Set<String>()
     _ = Dictionary<String,String>()
-  }
-  
-  func testReEnumerated2_1() throws {
-    var s = RedBlackTreeSet<Int>()
-    for (offset, (ptr, value)) in s._enumerated() {
-      print(value * Int(1), offset + Int(1))
-      s.remove(at: ptr)
-    }
-  }
-  
-  func testReEnumerated2_2() throws {
-    var s = RedBlackTreeSet<Int>()
-    for (offset, ptr, value) in s._enumerated2() {
-      print(value * Int(1), offset + Int(1))
-      s.remove(at: ptr)
-    }
   }
   
   func testReEnumerated2_3() throws {

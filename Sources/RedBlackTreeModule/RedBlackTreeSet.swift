@@ -654,7 +654,7 @@ extension RedBlackTreeSet.SubSequence {
   public typealias Index = Base.Index
   public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
-  public typealias EnumuratedSequence = Base.RawIndexedSequence
+  public typealias RawIndexedSequence = Base.RawIndexedSequence
   public typealias IndexSequence = Base.RawIndexSequence
 }
 
@@ -902,33 +902,36 @@ extension RedBlackTreeSet.RawIndexSequence {
 // MARK: - Raw Indexed Sequence
 
 extension RedBlackTreeSet {
+  
+  public var rawIndexedElements: RawIndexedSequence {
+    RawIndexedSequence(_subSequence: _tree.enumeratedSubsequence())
+  }
+}
 
-  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
-  @inlinable
-  @inline(__always)
+extension RedBlackTreeSet.SubSequence {
+  
+  @inlinable @inline(__always)
+  public var rawIndexedElements: RawIndexedSequence {
+    RawIndexedSequence(
+      _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+  }
+}
+
+extension RedBlackTreeSet {
+
+  @available(*, deprecated, renamed: "rawIndexedElements")
+  @inlinable @inline(__always)
   public func enumerated() -> RawIndexedSequence {
-    ___enumerated()
-  }
-  
-  public func _enumerated() -> EnumeratedSequence<AnySequence<(RawIndex, Element)>> {
-    AnySequence([]).enumerated()
-  }
-  
-  public func _enumerated2() -> AnySequence<(offset: Int, ptr: RawIndex, element: Element)> {
-    AnySequence([])
-  }
-  
-  public var rawIndexedElements: AnySequence<(rawIndex: RawIndex, element: Element)> {
-    AnySequence([])
+    rawIndexedElements
   }
 }
 
 extension RedBlackTreeSet.SubSequence {
 
-  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")  @inlinable
-  @inline(__always)
-  public func enumerated() -> EnumuratedSequence {
-    ___enumerated()
+  @available(*, deprecated, renamed: "rawIndexedElements")
+  @inlinable @inline(__always)
+  public func enumerated() -> RawIndexedSequence {
+    rawIndexedElements
   }
 }
 
@@ -941,10 +944,11 @@ extension RedBlackTreeSet {
       AnySequence { _tree.makeEnumIterator() }
     }
   #else
+    @available(*, deprecated, renamed: "rawIndexedElements")
     @inlinable
     @inline(__always)
     public func ___enumerated() -> RawIndexedSequence {
-      RawIndexedSequence(_subSequence: _tree.enumeratedSubsequence())
+      rawIndexedElements
     }
   #endif
 }
@@ -960,11 +964,11 @@ extension RedBlackTreeSet.SubSequence {
       }
     }
   #else
+    @available(*, deprecated, renamed: "rawIndexedElements")
     @inlinable
     @inline(__always)
-    public func ___enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(
-        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+    public func ___enumerated() -> RawIndexedSequence {
+      rawIndexedElements
     }
   #endif
 }

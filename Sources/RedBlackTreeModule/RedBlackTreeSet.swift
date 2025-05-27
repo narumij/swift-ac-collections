@@ -812,102 +812,6 @@ extension RedBlackTreeSet.SubSequence {
   }
 }
 
-// MARK: - Enumerated Sequence
-
-extension RedBlackTreeSet {
-
-  #if false
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> AnySequence<EnumElement> {
-      AnySequence { _tree.makeEnumIterator() }
-    }
-  #else
-  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
-    }
-  #endif
-}
-
-extension RedBlackTreeSet.SubSequence {
-
-  #if false
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> AnySequence<EnumElement> {
-      AnySequence {
-        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
-      }
-    }
-  #else
-  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(
-        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
-    }
-  #endif
-}
-
-extension RedBlackTreeSet {
-
-  @frozen
-  public struct EnumuratedSequence {
-
-    public typealias Enumurated = Tree.Enumerated
-
-    @usableFromInline
-    internal typealias _SubSequence = Tree.EnumSequence
-
-    @usableFromInline
-    internal let _subSequence: _SubSequence
-
-    @inlinable
-    init(_subSequence: _SubSequence) {
-      self._subSequence = _subSequence
-    }
-  }
-}
-
-extension RedBlackTreeSet.EnumuratedSequence: Sequence {
-
-  public struct Iterator: IteratorProtocol {
-
-    @usableFromInline
-    internal var _iterator: _SubSequence.Iterator
-
-    @inlinable
-    @inline(__always)
-    internal init(_ _iterator: _SubSequence.Iterator) {
-      self._iterator = _iterator
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> Enumurated? {
-      _iterator.next()
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func makeIterator() -> Iterator {
-    Iterator(_subSequence.makeIterator())
-  }
-}
-
-extension RedBlackTreeSet.EnumuratedSequence {
-
-  @inlinable
-  public func forEach(_ body: (Enumurated) throws -> Void) rethrows {
-    try _subSequence.forEach(body)
-  }
-}
-
 // MARK: - Raw Index Sequence
 
 // 独自の型だと学習コストが高くなるので、速度を少し犠牲にして読みやすそうな型に変更
@@ -987,6 +891,100 @@ extension RedBlackTreeSet.IndexSequence {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (RawPointer) throws -> Void) rethrows {
+    try _subSequence.forEach(body)
+  }
+}
+
+// MARK: - Enumerated Sequence
+
+extension RedBlackTreeSet {
+
+  #if false
+    @inlinable
+    @inline(__always)
+    public func ___enumerated() -> AnySequence<EnumElement> {
+      AnySequence { _tree.makeEnumIterator() }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func ___enumerated() -> EnumuratedSequence {
+      EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
+    }
+  #endif
+}
+
+extension RedBlackTreeSet.SubSequence {
+
+  #if false
+    @inlinable
+    @inline(__always)
+    public func ___enumerated() -> AnySequence<EnumElement> {
+      AnySequence {
+        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
+      }
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public func ___enumerated() -> EnumuratedSequence {
+      EnumuratedSequence(
+        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+    }
+  #endif
+}
+
+extension RedBlackTreeSet {
+
+  @frozen
+  public struct EnumuratedSequence {
+
+    public typealias Enumurated = Tree.Enumerated
+
+    @usableFromInline
+    internal typealias _SubSequence = Tree.EnumSequence
+
+    @usableFromInline
+    internal let _subSequence: _SubSequence
+
+    @inlinable
+    init(_subSequence: _SubSequence) {
+      self._subSequence = _subSequence
+    }
+  }
+}
+
+extension RedBlackTreeSet.EnumuratedSequence: Sequence {
+
+  public struct Iterator: IteratorProtocol {
+
+    @usableFromInline
+    internal var _iterator: _SubSequence.Iterator
+
+    @inlinable
+    @inline(__always)
+    internal init(_ _iterator: _SubSequence.Iterator) {
+      self._iterator = _iterator
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> Enumurated? {
+      _iterator.next()
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> Iterator {
+    Iterator(_subSequence.makeIterator())
+  }
+}
+
+extension RedBlackTreeSet.EnumuratedSequence {
+
+  @inlinable
+  public func forEach(_ body: (Enumurated) throws -> Void) rethrows {
     try _subSequence.forEach(body)
   }
 }

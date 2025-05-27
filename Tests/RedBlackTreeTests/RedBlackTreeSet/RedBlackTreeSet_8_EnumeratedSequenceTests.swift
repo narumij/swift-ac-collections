@@ -17,7 +17,7 @@ final class RedBlackTreeSetEnumeratedSequenceTests: XCTestCase {
 
       var elements: [(offset: RedBlackTreeSet<Int>.RawIndex, element: Int)] = []
       enumerated.forEach { pair in
-        elements.append((pair.offset, pair.element))
+        elements.append((pair.rawIndex, pair.element))
       }
 
       // 事後条件: offsetは順序どおり、elementも順序どおり
@@ -36,7 +36,7 @@ final class RedBlackTreeSetEnumeratedSequenceTests: XCTestCase {
 
       var elements: [(offset: RedBlackTreeSet<Int>.RawIndex, element: Int)] = []
       enumerated.forEach { pair in
-        elements.append((pair.offset, pair.element))
+        elements.append((pair.rawIndex, pair.element))
       }
 
       // 事後条件: offsetは順序どおり、elementも順序どおり
@@ -59,7 +59,7 @@ extension RedBlackTreeSetEnumeratedSequenceTests {
       var iterator = enumerated.makeIterator()
       var elements: [(offset: RedBlackTreeSet<Int>.RawIndex, element: Int)] = []
       while let pair = iterator.next() {
-        elements.append((pair.offset, pair.element))
+        elements.append((pair.rawIndex, pair.element))
       }
 
       XCTAssertEqual(
@@ -77,7 +77,7 @@ extension RedBlackTreeSetEnumeratedSequenceTests {
       var iterator = enumerated.makeIterator()
       var elements: [(offset: RedBlackTreeSet<Int>.RawIndex, element: Int)] = []
       while let pair = iterator.next() {
-        elements.append((pair.offset, pair.element))
+        elements.append((pair.rawIndex, pair.element))
       }
 
       XCTAssertEqual(

@@ -106,7 +106,7 @@ extension ___RedBlackTree.___Tree {
       //      print("remove \(_description(rawValue))")
       remnant.rawValue = rawValue
       remnant.prev = rawValue == _tree.___begin() ? .under : _tree.__tree_prev_iter(rawValue)
-      remnant.next = _tree.__tree_next_iter(rawValue)
+      remnant.next = rawValue == .end ? .over : _tree.__tree_next_iter(rawValue)
     }
   }
 }

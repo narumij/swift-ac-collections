@@ -651,7 +651,7 @@ extension RedBlackTreeMultiSet.SubSequence {
   public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
   public typealias EnumuratedSequence = Base.EnumuratedSequence
-  public typealias IndexSequence = Base.IndexSequence
+  public typealias IndexSequence = Base.RawIndexSequence
 }
 
 extension RedBlackTreeMultiSet.SubSequence: Sequence {
@@ -810,6 +810,87 @@ extension RedBlackTreeMultiSet.SubSequence {
   }
 }
 
+// MARK: - Raw Index Sequence（インデックス系）
+
+extension RedBlackTreeMultiSet {
+
+  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
+  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
+  @inlinable
+  @inline(__always)
+  public var rawIndices: AnySequence<RawIndex> {
+    AnySequence(RawIndexSequence(_subSequence: _tree.indexSubsequence()))
+  }
+}
+
+extension RedBlackTreeMultiSet.SubSequence {
+
+  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
+  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
+  @inlinable
+  @inline(__always)
+  public var rawIndices: AnySequence<RawIndex> {
+    AnySequence(IndexSequence(
+      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
+  }
+}
+
+extension RedBlackTreeMultiSet {
+
+  @frozen
+  public struct RawIndexSequence {
+
+    public typealias RawPointer = Tree.RawPointer
+
+    @usableFromInline
+    internal typealias _SubSequence = Tree.IndexSequence
+
+    @usableFromInline
+    internal let _subSequence: _SubSequence
+
+    @inlinable
+    init(_subSequence: _SubSequence) {
+      self._subSequence = _subSequence
+    }
+  }
+}
+
+extension RedBlackTreeMultiSet.RawIndexSequence: Sequence {
+
+  public struct Iterator: IteratorProtocol {
+
+    @usableFromInline
+    internal var _iterator: _SubSequence.Iterator
+
+    @inlinable
+    @inline(__always)
+    internal init(_ _iterator: _SubSequence.Iterator) {
+      self._iterator = _iterator
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> RawPointer? {
+      _iterator.next()
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> Iterator {
+    Iterator(_subSequence.makeIterator())
+  }
+}
+
+extension RedBlackTreeMultiSet.RawIndexSequence {
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (RawPointer) throws -> Void) rethrows {
+    try _subSequence.forEach(body)
+  }
+}
+
 // MARK: - Enumerated Sequence
 
 extension RedBlackTreeMultiSet {
@@ -824,7 +905,7 @@ extension RedBlackTreeMultiSet {
   @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
     @inlinable
     @inline(__always)
-    public func enumerated() -> EnumuratedSequence {
+    public func ___enumerated() -> EnumuratedSequence {
       EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
     }
   #endif
@@ -844,7 +925,7 @@ extension RedBlackTreeMultiSet.SubSequence {
   @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
     @inlinable
     @inline(__always)
-    public func enumerated() -> EnumuratedSequence {
+    public func ___enumerated() -> EnumuratedSequence {
       EnumuratedSequence(
         _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
     }
@@ -905,87 +986,6 @@ extension RedBlackTreeMultiSet.EnumuratedSequence {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Enumurated) throws -> Void) rethrows {
-    try _subSequence.forEach(body)
-  }
-}
-
-// MARK: - Raw Index Sequence（インデックス系）
-
-extension RedBlackTreeMultiSet {
-
-  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
-  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
-  @inlinable
-  @inline(__always)
-  public var rawIndices: AnySequence<RawIndex> {
-    AnySequence(IndexSequence(_subSequence: _tree.indexSubsequence()))
-  }
-}
-
-extension RedBlackTreeMultiSet.SubSequence {
-
-  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
-  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
-  @inlinable
-  @inline(__always)
-  public var rawIndices: AnySequence<RawIndex> {
-    AnySequence(IndexSequence(
-      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
-  @frozen
-  public struct IndexSequence {
-
-    public typealias RawPointer = Tree.RawPointer
-
-    @usableFromInline
-    internal typealias _SubSequence = Tree.IndexSequence
-
-    @usableFromInline
-    internal let _subSequence: _SubSequence
-
-    @inlinable
-    init(_subSequence: _SubSequence) {
-      self._subSequence = _subSequence
-    }
-  }
-}
-
-extension RedBlackTreeMultiSet.IndexSequence: Sequence {
-
-  public struct Iterator: IteratorProtocol {
-
-    @usableFromInline
-    internal var _iterator: _SubSequence.Iterator
-
-    @inlinable
-    @inline(__always)
-    internal init(_ _iterator: _SubSequence.Iterator) {
-      self._iterator = _iterator
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> RawPointer? {
-      _iterator.next()
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func makeIterator() -> Iterator {
-    Iterator(_subSequence.makeIterator())
-  }
-}
-
-extension RedBlackTreeMultiSet.IndexSequence {
-
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (RawPointer) throws -> Void) rethrows {
     try _subSequence.forEach(body)
   }
 }

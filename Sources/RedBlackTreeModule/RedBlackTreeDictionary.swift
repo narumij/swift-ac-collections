@@ -1118,7 +1118,7 @@ extension RedBlackTreeDictionary {
   @frozen
   public struct EnumuratedSequence {
 
-    public typealias Enumurated = Tree.Enumerated
+    public typealias Enumurated = Tree.RawIndexed
 
     @usableFromInline
     internal typealias _SubSequence = Tree.EnumSequence

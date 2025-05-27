@@ -63,13 +63,13 @@ extension ___RedBlackTree.___Tree {
   
   #if true
     typealias EnumIndexMaker = RawPointerBuilderProtocol
-    public typealias EnumuratedIndex = ___RedBlackTree.RawPointer
+    public typealias RawIndex = ___RedBlackTree.RawPointer
   #else
     typealias EnumIndexMaker = TreePointerBuilderProtocol
     public typealias EnumIndex = TreePointer
   #endif
 
-  public typealias Enumerated = (offset: EnumuratedIndex, element: Element)
+  public typealias RawIndexed = (rawIndex: RawIndex, element: Element)
 
   @frozen
   public struct EnumIterator: RedBlackTreeIteratorNextProtocol, EnumIndexMaker {
@@ -91,7 +91,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> Enumerated? {
+    public mutating func next() -> RawIndexed? {
       _next().map { (___index($0), _tree[$0]) }
     }
   }
@@ -116,7 +116,7 @@ extension ___RedBlackTree.___Tree {
   @frozen
   public struct EnumSequence: Sequence, EnumIndexMaker {
 
-    public typealias Element = Tree.Enumerated
+    public typealias Element = Tree.RawIndexed
     
     @usableFromInline
     typealias Index = _NodePtr

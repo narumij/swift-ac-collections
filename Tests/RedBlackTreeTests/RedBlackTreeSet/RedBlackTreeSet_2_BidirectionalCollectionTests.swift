@@ -343,7 +343,7 @@ extension RedBlackTreeSetBidirectionalCollectionTests {
     let set = RedBlackTreeSet([1, 2, 3, 4, 5])
     let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
 
-    let indices = sub.indices().map { sub[$0] }
+    let indices = sub.indices.map { sub[$0] }
 
     XCTAssertEqual(indices, [2, 3, 4])
   }

@@ -71,6 +71,12 @@ func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
   ptr < 0
 }
 
+@inlinable
+@inline(__always)
+func ___is_under_or_over(_ ptr: _NodePtr) -> Bool {
+  ptr < -2
+}
+
 /// 赤黒木の参照型を表す内部enum
 public
   enum _NodeRef: Equatable

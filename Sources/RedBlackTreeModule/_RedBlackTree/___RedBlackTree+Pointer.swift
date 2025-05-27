@@ -22,42 +22,11 @@
 
 import Foundation
 
-#if false
-@inlinable
-func _description(_ p: _NodePtr) -> String {
-  switch p {
-  case .nullptr: ".nullptr"
-  case .end: ".end"
-  case .under: ".under"
-  case .over: ".over"
-  default: "\(p)"
-  }
-}
-#endif
-
-@inlinable
-@inline(__always)
-func lessThanContainsUnderOrOver(_ lhs: _NodePtr, _ rhs: _NodePtr) -> Bool? {
-  if lhs == .under {
-    return rhs != .under
-  }
-  if lhs == .over {
-    return false
-  }
-  if rhs == .under {
-    return false
-  }
-  if rhs == .over {
-    return lhs != .over
-  }
-  return nil
-}
-
 extension ___RedBlackTree.___Tree {
 
   /// Range<Bound>の左右のサイズ違いでクラッシュすることを避けるためのもの
   @frozen
-  public struct Pointer: Comparable {
+  public struct Pointer {
 
     public typealias Element = Tree.Element
 
@@ -82,6 +51,7 @@ extension ___RedBlackTree.___Tree {
       init() {}
     }
 
+    /// 幽霊化した際の記憶の残滓
     @usableFromInline
     var remnant: Remnant = .init()
 
@@ -100,18 +70,21 @@ extension ___RedBlackTree.___Tree {
     /*
      invalidなポインタでの削除は、だんまりがいいように思う
      */
-
-    @usableFromInline
-    func phantomMark() {
-      //      print("remove \(_description(rawValue))")
-      remnant.rawValue = rawValue
-      remnant.prev = rawValue == _tree.___begin() ? .under : _tree.__tree_prev_iter(rawValue)
-      remnant.next = rawValue == .end ? .over : _tree.__tree_next_iter(rawValue)
-    }
   }
 }
 
-extension ___RedBlackTree.___Tree.Pointer {
+// underやoverは幽霊化の補助としての利用に限定している
+// このため、RangeやStridableに関連しないところでは、underやoverは使わないし対応しない
+
+extension ___RedBlackTree.___Tree.Pointer: Comparable {
+  
+  // ポインタを利用して削除した場合に、Range<Index>の厳しい検査に耐えるための準備
+  @usableFromInline
+  func phantomMark() {
+    remnant.rawValue = rawValue
+    remnant.prev = rawValue == _tree.___begin() ? .under : _tree.__tree_prev_iter(rawValue)
+    remnant.next = rawValue == .end ? .over : _tree.__tree_next_iter(rawValue)
+  }
 
   @inlinable
   @inline(__always)
@@ -123,11 +96,18 @@ extension ___RedBlackTree.___Tree.Pointer {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
+    // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
 
     // 通常の特殊null比較が成立する場合 <
     if let underOver = lessThanContainsUnderOrOver(lhs.rawValue, rhs.rawValue) {
       return underOver
     }
+    
+    // 幽霊判定はRange<Index>のシーケンス動作の為のもの
+    // それ以外のユースケースでバグが生じても仕様とする
+    
+    // そもそもSwift標準が削除済みのインデックスに対して検査をスキップしてくれたらいいが
+    // それを実施するとパフォーマンスが落ちる懸念があり責任がとれないのでそういうPRはしない
 
     // 左が幽霊化しているケース
     if lhs.remnant.rawValue == lhs.rawValue,
@@ -217,113 +197,9 @@ extension ___RedBlackTree.___Tree.Pointer {
     }
 
     // 通常の木の比較を行う
-    // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
     return lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
   }
 }
-
-extension ___RedBlackTree.___Tree.Pointer {
-
-  @inlinable
-  @inline(__always)
-  public var isValid: Bool {
-    if rawValue == .end { return true }
-    // いつのまにか、___is_validが等価な操作を行っているので、コメントアウトで様子見
-    //    if !(0..<_tree.header.initializedCount ~= rawValue) { return false }
-    return _tree.___is_valid(rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public var isStartIndex: Bool {
-    rawValue == _tree.__begin_node
-  }
-
-  @inlinable
-  @inline(__always)
-  public var isEndIndex: Bool {
-    rawValue == .end
-  }
-
-  // 利用上価値はないが、おまけで。
-  @inlinable
-  @inline(__always)
-  public var isRootIndex: Bool {
-    rawValue == _tree.__root()
-  }
-}
-
-extension ___RedBlackTree.___Tree.Pointer {
-
-  // 名前について検討中
-  @inlinable
-  @inline(__always)
-  public var pointee: Element? {
-    guard !___is_null_or_end(rawValue), isValid else {
-      return nil
-    }
-    return ___pointee
-  }
-
-  // 名前はXMLNodeを参考にした
-  @inlinable
-  @inline(__always)
-  public var next: Self? {
-    // 幽霊化はあくまでRange<Index>対応なので、next返却能力はあるが、未対応のままにする
-    guard !___is_null_or_end(rawValue), isValid else {
-      return nil
-    }
-    var next = self
-    next.___next()
-    return next
-  }
-
-  // 名前はXMLNodeを参考にした
-  @inlinable
-  @inline(__always)
-  public var previous: Self? {
-    // 幽霊化はあくまでRange<Index>対応なので、previous返却能力はあるが、未対応のままにする
-    guard rawValue != .nullptr, rawValue != _tree.begin(), isValid else {
-      return nil
-    }
-    var prev = self
-    prev.___prev()
-    return prev
-  }
-}
-
-extension ___RedBlackTree.___Tree.Pointer {
-
-  @inlinable @inline(__always)
-  var ___pointee: Element {
-    _tree[rawValue]
-  }
-
-  @inlinable @inline(__always)
-  mutating func ___next() {
-    rawValue = _tree.__tree_next_iter(rawValue)
-  }
-
-  @inlinable @inline(__always)
-  mutating func ___prev() {
-    rawValue = _tree.__tree_prev_iter(rawValue)
-  }
-}
-
-#if DEBUG
-  extension ___RedBlackTree.___Tree.Pointer {
-    fileprivate init(_unsafe_tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) {
-      self._tree = _unsafe_tree
-      self.rawValue = rawValue
-    }
-  }
-
-  extension ___RedBlackTree.___Tree.Pointer {
-    static func unsafe(tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) -> Self {
-      .init(_unsafe_tree: tree, rawValue: rawValue)
-    }
-  }
-#endif
 
 extension ___RedBlackTree.___Tree.Pointer: Strideable {
 
@@ -380,7 +256,7 @@ extension ___RedBlackTree.___Tree.Pointer: Strideable {
       return .init(__tree: _tree, rawValue: next).advanced(by: n - 1)
     }
     guard
-      isUnder || isOver || _tree.___is_valid_index(rawValue)
+      ___is_under_or_over(rawValue) || _tree.___is_valid_index(rawValue)
     else {
       fatalError(.invalidIndex)
     }
@@ -398,3 +274,139 @@ extension ___RedBlackTree.___Tree.Pointer: Strideable {
     return result
   }
 }
+
+extension ___RedBlackTree.___Tree.Pointer {
+
+  @inlinable
+  @inline(__always)
+  public var isValid: Bool {
+    if rawValue == .end { return true }
+    return _tree.___is_valid(rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public var isStart: Bool {
+    rawValue == _tree.__begin_node
+  }
+
+  @inlinable
+  @inline(__always)
+  public var isEnd: Bool {
+    rawValue == .end
+  }
+
+  // 利用上価値はないが、おまけで。
+  @inlinable
+  @inline(__always)
+  public var isRootIndex: Bool {
+    rawValue == _tree.__root()
+  }
+}
+
+extension ___RedBlackTree.___Tree.Pointer {
+
+  // 名前はXMLNodeを参考にした
+  @inlinable
+  @inline(__always)
+  public var next: Self? {
+    // 幽霊化はあくまでRange<Index>対応なので、next返却能力はあるが、未対応のままにする
+    guard !___is_null_or_end(rawValue), isValid else {
+      return nil
+    }
+    var next = self
+    next.___next()
+    return next
+  }
+
+  // 名前はXMLNodeを参考にした
+  @inlinable
+  @inline(__always)
+  public var previous: Self? {
+    // 幽霊化はあくまでRange<Index>対応なので、previous返却能力はあるが、未対応のままにする
+    guard rawValue != .nullptr, rawValue != _tree.begin(), isValid else {
+      return nil
+    }
+    var prev = self
+    prev.___prev()
+    return prev
+  }
+}
+
+extension ___RedBlackTree.___Tree.Pointer {
+  
+  // 名前について検討中
+  @inlinable
+  @inline(__always)
+  public var pointee: Element? {
+    guard !___is_null_or_end(rawValue), isValid else {
+      return nil
+    }
+    return ___pointee
+  }
+}
+
+extension ___RedBlackTree.___Tree.Pointer {
+
+  @inlinable @inline(__always)
+  var ___pointee: Element {
+    _tree[rawValue]
+  }
+
+  @inlinable @inline(__always)
+  mutating func ___next() {
+    rawValue = _tree.__tree_next_iter(rawValue)
+  }
+
+  @inlinable @inline(__always)
+  mutating func ___prev() {
+    rawValue = _tree.__tree_prev_iter(rawValue)
+  }
+}
+
+#if DEBUG
+  extension ___RedBlackTree.___Tree.Pointer {
+    fileprivate init(_unsafe_tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) {
+      self._tree = _unsafe_tree
+      self.rawValue = rawValue
+    }
+  }
+
+  extension ___RedBlackTree.___Tree.Pointer {
+    static func unsafe(tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) -> Self {
+      .init(_unsafe_tree: tree, rawValue: rawValue)
+    }
+  }
+#endif
+
+#if false
+@inlinable
+func _description(_ p: _NodePtr) -> String {
+  switch p {
+  case .nullptr: ".nullptr"
+  case .end: ".end"
+  case .under: ".under"
+  case .over: ".over"
+  default: "\(p)"
+  }
+}
+#endif
+
+@inlinable
+@inline(__always)
+func lessThanContainsUnderOrOver(_ lhs: _NodePtr, _ rhs: _NodePtr) -> Bool? {
+  if lhs == .under {
+    return rhs != .under
+  }
+  if lhs == .over {
+    return false
+  }
+  if rhs == .under {
+    return false
+  }
+  if rhs == .over {
+    return lhs != .over
+  }
+  return nil
+}
+

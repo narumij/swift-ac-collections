@@ -36,8 +36,8 @@ final class SetPointerTests: XCTestCase {
       XCTAssertFalse(it.isValid)
       XCTAssertTrue(it.isPhantom)
       XCTAssertNil(it.pointee)
-      XCTAssertEqual(it.previous?.pointee, 0)
-      XCTAssertEqual(it.next?.pointee, 2)
+      XCTAssertNil(it.previous)
+      XCTAssertNil(it.next)
     }
   }
 
@@ -135,6 +135,41 @@ final class SetPointerTests: XCTestCase {
     XCTAssertGreaterThan(indices[4].advanced(by: 2), indices[4])
   }
   
+  func testGhostBehavior4() throws {
+    let indices = members.indices.map { $0 }
+    XCTAssertLessThanOrEqual(indices[0], members.endIndex)
+    XCTAssertGreaterThanOrEqual(members.endIndex, indices[0])
+    members.remove(at: indices[0])
+    XCTAssertLessThanOrEqual(indices[0], members.endIndex)
+    XCTAssertLessThanOrEqual(indices[0], indices[1])
+    XCTAssertLessThanOrEqual(indices[1], members.endIndex)
+    XCTAssertGreaterThanOrEqual(members.endIndex, indices[0])
+    XCTAssertGreaterThanOrEqual(indices[1], indices[0])
+    XCTAssertGreaterThanOrEqual(members.endIndex, indices[1])
+    members.remove(at: indices[1])
+    XCTAssertLessThanOrEqual(indices[0], members.endIndex)
+    XCTAssertLessThanOrEqual(indices[0], indices[2])
+    XCTAssertLessThanOrEqual(indices[2], members.endIndex)
+    XCTAssertGreaterThanOrEqual(members.endIndex, indices[0])
+    XCTAssertGreaterThanOrEqual(indices[2], indices[0])
+    XCTAssertGreaterThanOrEqual(members.endIndex, indices[2])
+    members.remove(at: indices[2])
+    XCTAssertLessThanOrEqual(indices[0], members.endIndex)
+    XCTAssertLessThanOrEqual(indices[0], indices[3])
+    XCTAssertLessThanOrEqual(indices[3], members.endIndex)
+    XCTAssertGreaterThanOrEqual(members.endIndex, indices[0])
+    XCTAssertGreaterThanOrEqual(indices[3], indices[0])
+    XCTAssertGreaterThanOrEqual(members.endIndex, indices[3])
+    members.remove(at: indices[3])
+    XCTAssertLessThanOrEqual(indices[0], members.endIndex)
+    XCTAssertLessThanOrEqual(indices[0], indices[4])
+    XCTAssertLessThanOrEqual(indices[4], members.endIndex)
+    XCTAssertGreaterThanOrEqual(members.endIndex, indices[0])
+    XCTAssertGreaterThanOrEqual(indices[4], indices[0])
+    XCTAssertGreaterThanOrEqual(members.endIndex, indices[4])
+    members.remove(at: indices[4])
+  }
+  
   func testValidBehavior1() throws {
     let indices = members.indices.map { $0 }
     for i in indices.indices {
@@ -161,27 +196,27 @@ final class SetPointerTests: XCTestCase {
     }
   }
   
-  func testGhostPrevNextBehavior1() throws {
-    let indices = members.indices.map { $0 }
-    let prev = indices[0].previous
-    members.remove(at: indices[0])
-    XCTAssertEqual(prev, indices[0].previous)
-    XCTAssertEqual(indices[1], indices[0].next)
-  }
-  
-  func testGhostPrevNextBehavior2() throws {
-    let indices = members.indices.map { $0 }
-    members.remove(at: indices[2])
-    XCTAssertEqual(indices[1], indices[2].previous)
-    XCTAssertEqual(indices[3], indices[2].next)
-  }
-
-  func testGhostPrevNextBehavior3() throws {
-    let indices = members.indices.map { $0 }
-    members.remove(at: indices[4])
-    XCTAssertEqual(indices[3], indices[4].previous)
-    XCTAssertEqual(members.endIndex, indices[4].next)
-  }
+//  func testGhostPrevNextBehavior1() throws {
+//    let indices = members.indices.map { $0 }
+//    let prev = indices[0].previous
+//    members.remove(at: indices[0])
+//    XCTAssertEqual(prev, indices[0].previous)
+//    XCTAssertEqual(indices[1], indices[0].next)
+//  }
+//  
+//  func testGhostPrevNextBehavior2() throws {
+//    let indices = members.indices.map { $0 }
+//    members.remove(at: indices[2])
+//    XCTAssertEqual(indices[1], indices[2].previous)
+//    XCTAssertEqual(indices[3], indices[2].next)
+//  }
+//
+//  func testGhostPrevNextBehavior3() throws {
+//    let indices = members.indices.map { $0 }
+//    members.remove(at: indices[4])
+//    XCTAssertEqual(indices[3], indices[4].previous)
+//    XCTAssertEqual(members.endIndex, indices[4].next)
+//  }
 
   func testPerformanceExample() throws {
     // This is an example of a performance test case.

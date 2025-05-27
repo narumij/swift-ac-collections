@@ -85,15 +85,142 @@ extension ___RedBlackTree.___Tree {
 
     // MARK: -
 
-#if false
+    @inlinable
+    @inline(__always)
+    internal init(__tree: Tree, rawValue: _NodePtr) {
+      guard rawValue != .nullptr else {
+        preconditionFailure("_NodePtr is nullptr")
+      }
+      self._tree = __tree
+      self.rawValue = rawValue
+    }
+
+    /*
+     invalidなポインタでの削除は、だんまりがいいように思う
+     */
+
+    @usableFromInline
+    func phantomMark() {
+      //      print("remove \(_description(rawValue))")
+      remnant.rawValue = rawValue
+      remnant.prev = rawValue == _tree.___begin() ? .under : _tree.__tree_prev_iter(rawValue)
+      remnant.next = _tree.__tree_next_iter(rawValue)
+    }
+  }
+}
+
+extension ___RedBlackTree.___Tree.Pointer {
+
+  #if true
     @inlinable
     @inline(__always)
     public static func == (lhs: Self, rhs: Self) -> Bool {
-      print(_description(lhs.rawValue), "==", _description(rhs.rawValue))
       // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
       return lhs.rawValue == rhs.rawValue
     }
-    
+  
+    @inlinable
+    @inline(__always)
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+
+      // 通常の特殊null比較が成立する場合 <
+      if let underOver = lessThanWhenContainsUnderOrOver(lhs.rawValue, rhs.rawValue) {
+        return underOver
+      }
+
+      // 左が幽霊化しているケース
+      if lhs.remnant.rawValue == lhs.rawValue,
+        let next = lhs.remnant.next,
+        let prev = lhs.remnant.prev
+      {
+        // 右側と双方幽霊化してるケースは未実装
+        guard rhs.remnant.rawValue != rhs.rawValue else {
+          fatalError(.invalidIndex)
+        }
+
+        // 左幽霊の右隣と等しい場合<
+        if next == rhs.rawValue {
+          return true
+        }
+
+        // 左幽霊の右隣と特殊null比較が成立する場合<
+        if let result = lessThanWhenContainsUnderOrOver(next, rhs.rawValue) {
+          return result
+        }
+
+        // 左幽霊の右隣が無効化してない場合、木の比較をする
+        if next == .end || rhs._tree.___is_valid(next) {
+          return rhs._tree.___ptr_comp(next, rhs.rawValue)
+        }
+
+        // 左幽霊の左隣と一致せず、特殊null比較が成立する場合<
+        if prev != rhs.rawValue, let _ = lessThanWhenContainsUnderOrOver(prev, rhs.rawValue) {
+          return true
+        }
+
+        // 左幽霊の左隣も無効な場合、木の比較ができないので不正操作
+        guard prev == .end || rhs._tree.___is_valid(prev) else {
+          // 不正なポインタを木の比較に送ると無限ループとなるので注意
+          fatalError(.invalidIndex)
+        }
+
+        // 左幽霊の左隣と一致しない場合、木の比較をする
+        return prev != rhs.rawValue && rhs._tree.___ptr_comp(prev, rhs.rawValue)
+      }
+
+      // 右が幽霊化しているケース
+      if rhs.remnant.rawValue == rhs.rawValue,
+        let prev = rhs.remnant.prev,
+        let next = rhs.remnant.next
+      {
+        // 右幽霊の左隣と等しい場合<
+        if lhs.rawValue == prev {
+          return true
+        }
+
+        // 右幽霊の左隣と特殊null比較が成立する場合<
+        if let result = lessThanWhenContainsUnderOrOver(lhs.rawValue, prev) {
+          return result
+        }
+
+        // 右幽霊の左隣が無効化してない場合、木の比較をする
+        if prev == .end || lhs._tree.___is_valid(prev) {
+          return lhs._tree.___ptr_comp(lhs.rawValue, prev)
+        }
+
+        // 右幽霊の右隣と一致せず、特殊null比較が成立する場合<
+        if next != lhs.rawValue,
+          let _ = lessThanWhenContainsUnderOrOver(lhs.rawValue, next)
+        {
+          return true
+        }
+
+        // 右幽霊の右隣も無効な場合、木の比較ができないので不正操作
+        guard next == .end || lhs._tree.___is_valid(next) else {
+          // 不正なポインタを木の比較に送ると無限ループとなるので注意
+          fatalError(.invalidIndex)
+        }
+
+        // 右幽霊の右隣と一致しない場合、木の比較をする
+        return next != rhs.rawValue && lhs._tree.___ptr_comp(lhs.rawValue, next)
+      }
+
+      assert(lhs.isValid)
+      assert(rhs.isValid)
+
+      guard lhs.rawValue == .end || lhs._tree.___is_valid(lhs.rawValue),
+        rhs.rawValue == .end || rhs._tree.___is_valid(rhs.rawValue)
+      else {
+        // 不正なポインタを木の比較に送ると無限ループとなるので注意
+        fatalError(.invalidIndex)
+      }
+
+      // 通常の木の比較を行う
+      // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
+      return lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
+    }
+  #elseif false
+    // これらの中では一番古く、弱点が残る
     @inlinable
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -126,7 +253,9 @@ extension ___RedBlackTree.___Tree {
       // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
       return lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
     }
-#else
+  #else
+  // 最終版の検査用
+
     @inlinable
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -135,16 +264,17 @@ extension ___RedBlackTree.___Tree {
       print(_description(lhs.rawValue), "<", _description(rhs.rawValue), "=", result)
       return result
     }
-    
+
     @inlinable
     @inline(__always)
     public static func <= (lhs: Self, rhs: Self) -> Bool {
       print(_description(lhs.rawValue), "<=", _description(rhs.rawValue))
-      let result = !less(lhs: rhs, rhs: lhs)
+      //      let result = !less(lhs: rhs, rhs: lhs)
+      let result = equal(lhs: lhs, rhs: rhs) || less(lhs: lhs, rhs: rhs)
       print(_description(lhs.rawValue), "<=", _description(rhs.rawValue), "=", result)
       return result
     }
-    
+
     @inlinable
     @inline(__always)
     public static func > (lhs: Self, rhs: Self) -> Bool {
@@ -162,7 +292,7 @@ extension ___RedBlackTree.___Tree {
       print(_description(lhs.rawValue), "=>", _description(rhs.rawValue), "=", result)
       return result
     }
-    
+
     @inlinable
     @inline(__always)
     public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -182,94 +312,138 @@ extension ___RedBlackTree.___Tree {
     @inline(__always)
     public static func less(lhs: Self, rhs: Self) -> Bool {
 
-//      if let underOver = lessThanWhenContainsUnderOrOver(lhs.rawValue, rhs.rawValue) {
-//        return underOver
-//      }
+      //      if let underOver = lessThanWhenContainsUnderOrOver(lhs.rawValue, rhs.rawValue) {
+      //        return underOver
+      //      }
+      // 通常の特殊null比較が成立する場合 <
       if let underOver = lessThanWhenContainsUnderOrOver(lhs.rawValue, rhs.rawValue) {
         print("underOver", _description(lhs.rawValue), _description(rhs.rawValue), "=", underOver)
         return underOver
       }
 
-//      if lhs.remnant.rawValue == lhs.rawValue,
-//        let next = lhs.remnant.next
-//      {
-//        return next == rhs.rawValue
-//          || (lessThanWhenContainsUnderOrOver(next, rhs.rawValue)
-//            ?? rhs._tree.___ptr_comp(next, rhs.rawValue))
-//      }
+      //      if lhs.remnant.rawValue == lhs.rawValue,
+      //        let next = lhs.remnant.next
+      //      {
+      //        return next == rhs.rawValue
+      //          || (lessThanWhenContainsUnderOrOver(next, rhs.rawValue)
+      //            ?? rhs._tree.___ptr_comp(next, rhs.rawValue))
+      //      }
+      // 左が幽霊化しているケース
       if lhs.remnant.rawValue == lhs.rawValue,
-        let next = lhs.remnant.next
+        let next = lhs.remnant.next,
+        let prev = lhs.remnant.prev
       {
+        // 右側と双方幽霊化してるケースは未実装
+        guard rhs.remnant.rawValue != rhs.rawValue else {
+          fatalError(.invalidIndex)
+        }
+
+        // 左幽霊の右隣と等しい場合<
         if next == rhs.rawValue {
-          print("lhs(\(lhs.rawValue)) phantom \(_description(next)) == \(_description(rhs.rawValue))")
+          print(
+            "lhs(\(lhs.rawValue)) phantom \(_description(next)) == \(_description(rhs.rawValue))")
           return true
         }
-        
+
+        // 左幽霊の右隣と特殊null比較が成立する場合<
         if let result = lessThanWhenContainsUnderOrOver(next, rhs.rawValue) {
-          print("lhs(\(lhs.rawValue)) phantom underOrOver(\(_description(next)), \(_description(rhs.rawValue))")
+          print(
+            "lhs(\(lhs.rawValue)) phantom underOrOver(\(_description(next)), \(_description(rhs.rawValue))"
+          )
           return result
         }
-        
-        print("lhs(\(lhs.rawValue)) phantom rhs._tree.___ptr_comp(\(_description(next)), \(_description(rhs.rawValue)))")
-        return rhs._tree.___ptr_comp(next, rhs.rawValue)
+
+        // 左幽霊の右隣が無効化してない場合、木の比較をする
+        if next == .end || rhs._tree.___is_valid(next) {
+          print(
+            "lhs(\(lhs.rawValue)) phantom rhs._tree.___ptr_comp(\(_description(next)), \(_description(rhs.rawValue)))"
+          )
+          return rhs._tree.___ptr_comp(next, rhs.rawValue)
+        }
+
+        // 左幽霊の左隣と一致せず、特殊null比較が成立する場合<
+        if prev != rhs.rawValue, let _ = lessThanWhenContainsUnderOrOver(prev, rhs.rawValue) {
+          return true
+        }
+
+        // 左幽霊の左隣も無効な場合、木の比較ができないので不正操作
+        guard prev == .end || rhs._tree.___is_valid(prev) else {
+          // 不正なポインタを木の比較に送ると無限ループとなるので注意
+          fatalError(.invalidIndex)
+        }
+
+        // 左幽霊の左隣と一致しない場合、木の比較をする
+        return prev != rhs.rawValue && rhs._tree.___ptr_comp(prev, rhs.rawValue)
       }
 
-//      if rhs.remnant.rawValue == rhs.rawValue,
-//        let prev = rhs.remnant.prev
-//      {
-//        return lhs.rawValue == prev
-//          || (lessThanWhenContainsUnderOrOver(lhs.rawValue, prev)
-//            ?? lhs._tree.___ptr_comp(lhs.rawValue, prev))
-//      }
+      //      if rhs.remnant.rawValue == rhs.rawValue,
+      //        let prev = rhs.remnant.prev
+      //      {
+      //        return lhs.rawValue == prev
+      //          || (lessThanWhenContainsUnderOrOver(lhs.rawValue, prev)
+      //            ?? lhs._tree.___ptr_comp(lhs.rawValue, prev))
+      //      }
+      // 右が幽霊化しているケース
       if rhs.remnant.rawValue == rhs.rawValue,
-         let prev = rhs.remnant.prev
+        let prev = rhs.remnant.prev,
+        let next = rhs.remnant.next
       {
+        // 右幽霊の左隣と等しい場合<
         if lhs.rawValue == prev {
-          print("rhs(\(rhs.rawValue)) phantom \(_description(lhs.rawValue)) != \(_description(prev))")
+          print(
+            "rhs(\(rhs.rawValue)) phantom \(_description(lhs.rawValue)) != \(_description(prev))")
           return true
         }
-        
+
+        // 右幽霊の左隣と特殊null比較が成立する場合<
         if let result = lessThanWhenContainsUnderOrOver(lhs.rawValue, prev) {
-          print("rhs(\(rhs.rawValue)) phantom underOrOver(\(_description(lhs.rawValue)), \(_description(prev)))")
+          print(
+            "rhs(\(rhs.rawValue)) phantom underOrOver(\(_description(lhs.rawValue)), \(_description(prev)))"
+          )
           return result
         }
 
-        print("rhs(\(rhs.rawValue)) phantom lhs._tree.___ptr_comp(\(_description(lhs.rawValue)), \(_description(prev)))")
-        return lhs._tree.___ptr_comp(lhs.rawValue, prev)
+        // 右幽霊の左隣が無効化してない場合、木の比較をする
+        if prev == .end || lhs._tree.___is_valid(prev) {
+
+          print(
+            "rhs(\(rhs.rawValue)) phantom lhs._tree.___ptr_comp(\(_description(lhs.rawValue)), \(_description(prev)))"
+          )
+          return lhs._tree.___ptr_comp(lhs.rawValue, prev)
+        }
+
+        // 右幽霊の右隣と一致せず、特殊null比較が成立する場合<
+        if next != lhs.rawValue,
+          let _ = lessThanWhenContainsUnderOrOver(lhs.rawValue, next)
+        {
+          return true
+        }
+
+        // 右幽霊の右隣も無効な場合、木の比較ができないので不正操作
+        guard next == .end || lhs._tree.___is_valid(next) else {
+          // 不正なポインタを木の比較に送ると無限ループとなるので注意
+          fatalError(.invalidIndex)
+        }
+
+        // 右幽霊の右隣と一致しない場合、木の比較をする
+        return next != rhs.rawValue && lhs._tree.___ptr_comp(lhs.rawValue, next)
       }
 
       assert(lhs.isValid)
       assert(rhs.isValid)
 
+      guard lhs.rawValue == .end || lhs._tree.___is_valid(lhs.rawValue),
+        rhs.rawValue == .end || rhs._tree.___is_valid(rhs.rawValue)
+      else {
+        // 不正なポインタを木の比較に送ると無限ループとなるので注意
+        fatalError(.invalidIndex)
+      }
+
+      // 通常の木の比較を行う
       // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
       return lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
     }
-#endif
-
-    // MARK: -
-
-    @inlinable
-    @inline(__always)
-    internal init(__tree: Tree, rawValue: _NodePtr) {
-      guard rawValue != .nullptr else {
-        preconditionFailure("_NodePtr is nullptr")
-      }
-      self._tree = __tree
-      self.rawValue = rawValue
-    }
-
-    /*
-     invalidなポインタでの削除は、だんまりがいいように思う
-     */
-
-    @usableFromInline
-    func phantomMark() {
-      print("remove \(_description(rawValue))")
-      remnant.rawValue = rawValue
-      remnant.prev = rawValue == _tree.___begin() ? .under : _tree.__tree_prev_iter(rawValue)
-      remnant.next = _tree.__tree_next_iter(rawValue)
-    }
-  }
+  #endif
 }
 
 extension ___RedBlackTree.___Tree.Pointer {
@@ -319,11 +493,12 @@ extension ___RedBlackTree.___Tree.Pointer {
   @inlinable
   @inline(__always)
   public var next: Self? {
-    if remnant.rawValue == rawValue,
-      let next = remnant.next
-    {
-      return .init(__tree: _tree, rawValue: next)
-    }
+    // 幽霊化はあくまでRange<Index>対応なので、next返却能力はあるが、未対応のままにする
+    //    if remnant.rawValue == rawValue,
+    //      let next = remnant.next
+    //    {
+    //      return .init(__tree: _tree, rawValue: next)
+    //    }
     guard !___is_null_or_end(rawValue), isValid else {
       return nil
     }
@@ -336,11 +511,12 @@ extension ___RedBlackTree.___Tree.Pointer {
   @inlinable
   @inline(__always)
   public var previous: Self? {
-    if remnant.rawValue == rawValue,
-      let prev = remnant.prev
-    {
-      return prev == .under ? nil : .init(__tree: _tree, rawValue: prev)
-    }
+    // 幽霊化はあくまでRange<Index>対応なので、previous返却能力はあるが、未対応のままにする
+    //    if remnant.rawValue == rawValue,
+    //      let prev = remnant.prev
+    //    {
+    //      return prev == .under ? nil : .init(__tree: _tree, rawValue: prev)
+    //    }
     guard rawValue != .nullptr, rawValue != _tree.begin(), isValid else {
       return nil
     }

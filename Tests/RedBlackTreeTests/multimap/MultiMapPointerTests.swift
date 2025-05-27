@@ -29,8 +29,8 @@ final class MultiMapPointerTests: XCTestCase {
       XCTAssertFalse(it.isValid)
       XCTAssertTrue(it.isPhantom)
       XCTAssertNil(it.pointee)
-      XCTAssertEqual(it.previous?.pointee?.key, 0)
-      XCTAssertEqual(it.next?.pointee?.key, 2)
+      XCTAssertNil(it.previous)
+      XCTAssertNil(it.next)
     }
   }
 

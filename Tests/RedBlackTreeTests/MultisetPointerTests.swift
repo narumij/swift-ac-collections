@@ -40,8 +40,8 @@ final class MultisetPointerTests: XCTestCase {
       XCTAssertFalse(it.isValid)
       XCTAssertTrue(it.isPhantom)
       XCTAssertNil(it.pointee)
-      XCTAssertEqual(it.previous?.pointee, 0)
-      XCTAssertEqual(it.next?.pointee, 1)
+      XCTAssertNil(it.previous)
+      XCTAssertNil(it.next)
     }
   }
 

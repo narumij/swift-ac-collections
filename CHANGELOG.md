@@ -5,13 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.17] - 2025-?-?
+## [0.1.17] - 2025-5-27
 ### Added
 - over及びunderを追加
 - Pointerにover及びunderの判定を追加
 ### Changed
 - Pointer(Index)をStridableに対応
 - BidirectionalCollection適合のIndexがIntからPointerに変更
+- enumerated()を`___enumerated`()にリネームし、非公開扱いに変更
 
 ## [0.1.16] - 2025-5-27
 ### Added

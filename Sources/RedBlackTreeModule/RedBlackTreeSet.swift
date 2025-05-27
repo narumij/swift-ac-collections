@@ -655,7 +655,7 @@ extension RedBlackTreeSet.SubSequence {
   public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
   public typealias EnumuratedSequence = Base.EnumuratedSequence
-  public typealias IndexSequence = Base.IndexSequence
+  public typealias IndexSequence = Base.RawIndexSequence
 }
 
 extension RedBlackTreeSet.SubSequence: Sequence {
@@ -823,7 +823,7 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public var rawIndices: AnySequence<RawIndex> {
-    AnySequence(IndexSequence(_subSequence: _tree.indexSubsequence()))
+    AnySequence(RawIndexSequence(_subSequence: _tree.indexSubsequence()))
   }
 }
 
@@ -842,7 +842,7 @@ extension RedBlackTreeSet.SubSequence {
 extension RedBlackTreeSet {
 
   @frozen
-  public struct IndexSequence {
+  public struct RawIndexSequence {
 
     public typealias RawPointer = Tree.RawPointer
 
@@ -859,7 +859,7 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet.IndexSequence: Sequence {
+extension RedBlackTreeSet.RawIndexSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
 
@@ -886,7 +886,7 @@ extension RedBlackTreeSet.IndexSequence: Sequence {
   }
 }
 
-extension RedBlackTreeSet.IndexSequence {
+extension RedBlackTreeSet.RawIndexSequence {
 
   @inlinable
   @inline(__always)

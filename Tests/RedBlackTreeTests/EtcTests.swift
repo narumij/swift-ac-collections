@@ -140,7 +140,7 @@ final class EtcTests: XCTestCase {
     
     do {
       var b: RedBlackTreeSet<Int> = .init(0 ..< 10)
-      for (i,_) in b[b.startIndex ..< b.endIndex].enumerated() {
+      for (i,_) in b[b.startIndex ..< b.endIndex].___enumerated() {
         b.remove(at: i) // iはこの時点で無効になる
         XCTAssertFalse(b.isValid(index: i))
       }

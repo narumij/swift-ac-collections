@@ -819,14 +819,14 @@ extension RedBlackTreeSet {
   #if false
     @inlinable
     @inline(__always)
-    public func enumerated() -> AnySequence<EnumElement> {
+    public func ___enumerated() -> AnySequence<EnumElement> {
       AnySequence { _tree.makeEnumIterator() }
     }
   #else
   @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
     @inlinable
     @inline(__always)
-    public func enumerated() -> EnumuratedSequence {
+    public func ___enumerated() -> EnumuratedSequence {
       EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
     }
   #endif
@@ -837,7 +837,7 @@ extension RedBlackTreeSet.SubSequence {
   #if false
     @inlinable
     @inline(__always)
-    public func enumerated() -> AnySequence<EnumElement> {
+    public func ___enumerated() -> AnySequence<EnumElement> {
       AnySequence {
         tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
       }
@@ -846,7 +846,7 @@ extension RedBlackTreeSet.SubSequence {
   @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")
     @inlinable
     @inline(__always)
-    public func enumerated() -> EnumuratedSequence {
+    public func ___enumerated() -> EnumuratedSequence {
       EnumuratedSequence(
         _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
     }

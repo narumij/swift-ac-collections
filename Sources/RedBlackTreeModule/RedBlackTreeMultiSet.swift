@@ -649,7 +649,7 @@ extension RedBlackTreeMultiSet.SubSequence {
   public typealias Index = Base.Index
   public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
-  public typealias EnumuratedSequence = Base.RawIndexedSequence
+  public typealias RawIndexedSequence = Base.RawIndexedSequence
   public typealias IndexSequence = Base.RawIndexSequence
 }
 
@@ -906,8 +906,8 @@ extension RedBlackTreeMultiSet.SubSequence {
 
   @inlinable
   @inline(__always)
-  public var rawIndexedElements: EnumuratedSequence {
-    EnumuratedSequence(
+  public var rawIndexedElements: RawIndexedSequence {
+    RawIndexedSequence(
       _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
   }
 }
@@ -927,7 +927,7 @@ extension RedBlackTreeMultiSet.SubSequence {
   @available(*, deprecated, renamed: "rawIndexedElements")
   @inlinable
   @inline(__always)
-  public func enumerated() -> EnumuratedSequence {
+  public func enumerated() -> RawIndexedSequence {
     rawIndexedElements
   }
 }

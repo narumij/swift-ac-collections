@@ -134,7 +134,7 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
-  
+
   @discardableResult
   @inlinable
   public mutating func updateValue(_ newValue: Value, at ptr: RawIndex) -> Element? {
@@ -174,7 +174,7 @@ extension RedBlackTreeMultiMap {
     _ensureUniqueAndCapacity(to: count + other.count)
     _tree.__node_handle_merge_multi(other._tree)
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
@@ -216,7 +216,7 @@ extension RedBlackTreeMultiMap {
     _strongEnsureUnique()
     return _tree.___erase_unique(key)
   }
-  
+
   @inlinable
   @discardableResult
   public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
@@ -750,7 +750,7 @@ extension RedBlackTreeMultiMap.SubSequence {
   public typealias Index = Base.Index
   public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
-  public typealias EnumuratedSequence = Base.EnumuratedSequence
+  public typealias RawIndexedSequence = Base.RawIndexedSequence
   public typealias IndexSequence = Base.RawIndexSequence
 }
 
@@ -886,24 +886,24 @@ extension RedBlackTreeMultiMap.SubSequence: BidirectionalCollection {
 // MARK: - Index Range
 
 extension RedBlackTreeMultiMap {
-  
+
   public typealias Indices = Range<Index>
 
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    startIndex ..< endIndex
+    startIndex..<endIndex
   }
 }
 
 extension RedBlackTreeMultiMap.SubSequence {
-  
+
   public typealias Indices = Range<Index>
 
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    startIndex ..< endIndex
+    startIndex..<endIndex
   }
 }
 
@@ -927,8 +927,9 @@ extension RedBlackTreeMultiMap.SubSequence {
   @inlinable
   @inline(__always)
   public var rawIndices: AnySequence<RawIndex> {
-    AnySequence(IndexSequence(
-      _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
+    AnySequence(
+      IndexSequence(
+        _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
   }
 }
 
@@ -992,45 +993,27 @@ extension RedBlackTreeMultiMap.RawIndexSequence {
 
 extension RedBlackTreeMultiMap {
 
-  #if false
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> AnySequence<EnumElement> {
-      AnySequence { _tree.makeEnumIterator() }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
-    }
-  #endif
+  @inlinable
+  @inline(__always)
+  public var rawIndexedElements: RawIndexedSequence {
+    RawIndexedSequence(_subSequence: _tree.enumeratedSubsequence())
+  }
 }
 
 extension RedBlackTreeMultiMap.SubSequence {
 
-  #if false
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> AnySequence<EnumElement> {
-      AnySequence {
-        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
-      }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(
-        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
-    }
-  #endif
+  @inlinable
+  @inline(__always)
+  public var rawIndexedElements: RawIndexedSequence {
+    RawIndexedSequence(
+      _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+  }
 }
 
 extension RedBlackTreeMultiMap {
 
   @frozen
-  public struct EnumuratedSequence {
+  public struct RawIndexedSequence {
 
     public typealias Enumurated = Tree.RawIndexed
 
@@ -1047,7 +1030,7 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-extension RedBlackTreeMultiMap.EnumuratedSequence: Sequence {
+extension RedBlackTreeMultiMap.RawIndexedSequence: Sequence {
 
   public struct Iterator: IteratorProtocol {
 
@@ -1074,7 +1057,7 @@ extension RedBlackTreeMultiMap.EnumuratedSequence: Sequence {
   }
 }
 
-extension RedBlackTreeMultiMap.EnumuratedSequence {
+extension RedBlackTreeMultiMap.RawIndexedSequence {
 
   @inlinable
   @inline(__always)

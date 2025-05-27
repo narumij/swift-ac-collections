@@ -901,6 +901,10 @@ extension RedBlackTreeSet.RawIndexSequence {
 
 // MARK: - Raw Indexed Sequence
 
+// 元々、ポインタと値同時に列挙できたら実行時間短くなるんじゃね？
+// ぐらいのノリでつくったものを、雰囲気でenumerated()として本流っぽくしていたけれども
+// やはりおまけポジでした
+
 extension RedBlackTreeSet {
   
   public var rawIndexedElements: RawIndexedSequence {

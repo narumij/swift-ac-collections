@@ -85,11 +85,15 @@ extension ___RedBlackTree.___Tree.Pointer: Comparable {
     
     // Treeが空の場合、削除自体が発生しないので、考慮していない
     
-    if rawValue == _tree.begin() {
-      remnant.prev = .under
-      remnant.next = _tree.__tree_next_iter(rawValue)
+    if ___is_under_or_over(rawValue) {
+      remnant.prev = rawValue
+      remnant.next = rawValue
       return
     }
+    
+    // ユーザーの操作でポインタ不正が発生するようであればguardにする必要があるが、
+    // 今のところ思い当たらないので様子見
+    assert(rawValue == .end || _tree.___is_valid(rawValue))
     
     if rawValue == .end {
       remnant.prev = _tree.__tree_prev_iter(rawValue)
@@ -97,9 +101,9 @@ extension ___RedBlackTree.___Tree.Pointer: Comparable {
       return
     }
     
-    if ___is_under_or_over(rawValue) {
-      remnant.prev = rawValue
-      remnant.next = rawValue
+    if rawValue == _tree.begin() {
+      remnant.prev = .under
+      remnant.next = _tree.__tree_next_iter(rawValue)
       return
     }
     

@@ -6,9 +6,9 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class DictionaryPointerTests: XCTestCase {
+final class MultiMapPointerTests: XCTestCase {
 
-  var members: RedBlackTreeDictionary<Int, String> = [:]
+  var members: RedBlackTreeMultiMap<Int, String> = [:]
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.

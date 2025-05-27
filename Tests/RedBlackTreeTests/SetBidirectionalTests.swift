@@ -38,7 +38,7 @@ final class RedBlackTreeSetBidirectionalTests: XCTestCase {
     let s: RedBlackTreeSet = [1, 3, 5, 7, 9]
     // forward
     var fwd: [Int] = []
-    for idx in s.indices() { fwd.append(s[idx]) }
+    for idx in s.indices { fwd.append(s[idx]) }
     // backward
     var bwd: [Int] = []
     var i = s.index(before: s.endIndex)

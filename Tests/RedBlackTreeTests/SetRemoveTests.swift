@@ -206,42 +206,98 @@ final class SetRemoveTest_10: XCTestCase {
   }
 
   func testRemoveWithIndices() throws {
-    for i in members.indices() {
+    for i in members.indices {
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [])
+  }
+
+  func testRemoveWithIndices2() throws {
+    members.indices.forEach { i in
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [])
+  }
+  
+  func testRemoveWithIndices3() throws {
+    for i in members.indices.reversed() {
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [])
+  }
+  
+  func testRemoveWithIndices4() throws {
+    members.indices.reversed().forEach { i in
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [])
+  }
+
+  func testRemoveWith___Indices() throws {
+    for i in members.rawIndices {
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [])
+  }
+
+  func testRemoveWith___Indices2() throws {
+    members.rawIndices.forEach { i in
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [])
+  }
+  
+  func testRemoveWith___Indices3() throws {
+    members.rawIndices.reversed().forEach { i in
       members.remove(at: i)
     }
     XCTAssertEqual(members.map { $0 }, [])
   }
 
   func testRemoveWithSubIndices() throws {
-    for i in members.elements(in: 2..<8).indices() {
+    for i in members.elements(in: 2..<8).indices {
       members.remove(at: i)
     }
     XCTAssertEqual(members.map { $0 }, [0, 1, 8, 9])
-  }
-
-  func testRemoveWithIndices2() throws {
-    members.indices().forEach { i in
-      members.remove(at: i)
-    }
-    XCTAssertEqual(members.map { $0 }, [])
   }
 
   func testRemoveWithSubIndices2() throws {
-    members.elements(in: 2..<8).indices().forEach { i in
+    members.elements(in: 2..<8).indices.forEach { i in
       members.remove(at: i)
     }
     XCTAssertEqual(members.map { $0 }, [0, 1, 8, 9])
   }
 
-  func testRemoveWithIndices3() throws {
-    members.indices().reversed().forEach { i in
+  func testRemoveWithSubIndices3() throws {
+    for i in members.elements(in: 2..<8).indices.reversed() {
       members.remove(at: i)
     }
-    XCTAssertEqual(members.map { $0 }, [])
+    XCTAssertEqual(members.map { $0 }, [0, 1, 8, 9])
+  }
+  
+  func testRemoveWithSubIndices4() throws {
+    members.elements(in: 2..<8).indices.reversed().forEach { i in
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [0, 1, 8, 9])
+  }
+  
+  func testRemoveWithSub___Indices() throws {
+    for i in members.elements(in: 2..<8).rawIndices {
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [0, 1, 8, 9])
   }
 
-  func testRemoveWithSubIndices4() throws {
-    members.elements(in: 2..<8).indices().reversed().forEach { i in
+  func testRemoveWithSub___Indices2() throws {
+    members.elements(in: 2..<8).rawIndices.forEach { i in
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [0, 1, 8, 9])
+  }
+
+  func testRemoveWithSub___Indices4() throws {
+    members.elements(in: 2..<8).rawIndices.reversed().forEach { i in
       members.remove(at: i)
     }
     XCTAssertEqual(members.map { $0 }, [0, 1, 8, 9])

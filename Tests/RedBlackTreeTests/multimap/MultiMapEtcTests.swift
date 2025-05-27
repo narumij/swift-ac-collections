@@ -22,25 +22,47 @@ final class MultiMapEtcTests: XCTestCase {
   }
 
   func testExample0() throws {
-    for i in target1.indices() {
+    for i in target1.indices {
       target1.remove(at: i)
     }
     XCTAssertTrue(target1.isEmpty)
   }
 
   func testExample1() throws {
-    target1.indices().forEach { i in
+    target1.indices.forEach { i in
+      target1.remove(at: i)
+    }
+    XCTAssertTrue(target1.isEmpty)
+  }
+  
+  func testExample___0() throws {
+    for i in target1.rawIndices {
+      target1.remove(at: i)
+    }
+    XCTAssertTrue(target1.isEmpty)
+  }
+
+  func testExample___1() throws {
+    target1.rawIndices.forEach { i in
       target1.remove(at: i)
     }
     XCTAssertTrue(target1.isEmpty)
   }
 
   func testExample2() throws {
-    for i in target1[target1.startIndex..<target1.endIndex].indices() {
+    for i in target1[target1.startIndex..<target1.endIndex].indices {
       target1.remove(at: i)
     }
     XCTAssertTrue(target1.isEmpty)
   }
+  
+  func testExample3() throws {
+    for i in target1[target1.startIndex..<target1.endIndex].rawIndices {
+      target1.remove(at: i)
+    }
+    XCTAssertTrue(target1.isEmpty)
+  }
+
 
   func testMultiMapAndMultiMap1() throws {
     var lhs: RedBlackTreeMultiMap<String, String> = ["イートハーブの香る": "なんとか"]

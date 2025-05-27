@@ -38,6 +38,7 @@ final class MultisetPointerTests: XCTestCase {
       XCTAssertNotNil(it.next)
       members.remove(at: it)
       XCTAssertFalse(it.isValid)
+      XCTAssertTrue(it.isPhantom)
       XCTAssertNil(it.pointee)
       XCTAssertNil(it.previous)
       XCTAssertNil(it.next)
@@ -58,24 +59,26 @@ final class MultisetPointerTests: XCTestCase {
   
   func testPointerOffset0() throws {
     XCTAssertEqual((members.startIndex).pointee, 0)
-    XCTAssertEqual(members.startIndex.advanced(by: 1)?.pointee, 0)
-    XCTAssertEqual(members.startIndex.advanced(by: 2)?.pointee, 1)
-    XCTAssertEqual(members.startIndex.advanced(by: 3)?.pointee, 2)
-    XCTAssertEqual(members.startIndex.advanced(by: 4)?.pointee, 2)
-    XCTAssertNil(members.startIndex.advanced(by: 5)?.pointee)
+    XCTAssertEqual(members.startIndex.advanced(by: 1).pointee, 0)
+    XCTAssertEqual(members.startIndex.advanced(by: 2).pointee, 1)
+    XCTAssertEqual(members.startIndex.advanced(by: 3).pointee, 2)
+    XCTAssertEqual(members.startIndex.advanced(by: 4).pointee, 2)
+    XCTAssertNil(members.startIndex.advanced(by: 5).pointee)
     XCTAssertEqual(members.startIndex.advanced(by: 5), members.endIndex)
-    XCTAssertNil(members.startIndex.advanced(by: 6))
+    XCTAssertTrue(members.startIndex.advanced(by: 6).isOver)
+    XCTAssertNil(members.startIndex.advanced(by: 6).pointee)
   }
 
   func testPointerOffset2() throws {
     XCTAssertNil((members.endIndex).pointee)
-    XCTAssertEqual(members.endIndex.advanced(by: -1)?.pointee, 2)
-    XCTAssertEqual(members.endIndex.advanced(by: -2)?.pointee, 2)
-    XCTAssertEqual(members.endIndex.advanced(by: -3)?.pointee, 1)
-    XCTAssertEqual(members.endIndex.advanced(by: -4)?.pointee, 0)
-    XCTAssertEqual(members.endIndex.advanced(by: -5)?.pointee, 0)
+    XCTAssertEqual(members.endIndex.advanced(by: -1).pointee, 2)
+    XCTAssertEqual(members.endIndex.advanced(by: -2).pointee, 2)
+    XCTAssertEqual(members.endIndex.advanced(by: -3).pointee, 1)
+    XCTAssertEqual(members.endIndex.advanced(by: -4).pointee, 0)
+    XCTAssertEqual(members.endIndex.advanced(by: -5).pointee, 0)
     XCTAssertEqual(members.endIndex.advanced(by: -5), members.startIndex)
-    XCTAssertNil(members.startIndex.advanced(by: -6))
+    XCTAssertTrue(members.startIndex.advanced(by: -6).isUnder)
+    XCTAssertNil(members.startIndex.advanced(by: -6).pointee)
   }
 
   func testPerformanceExample() throws {

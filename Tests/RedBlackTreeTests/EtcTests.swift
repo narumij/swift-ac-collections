@@ -272,7 +272,7 @@ final class EtcTests: XCTestCase {
   
   func testReEnumerated2_3() throws {
     var s = RedBlackTreeSet<Int>()
-    for (ptr, value) in s._enumerated3() {
+    for (ptr, value) in s.rawIndexedElements() {
       print(value * Int(1))
       s.remove(at: ptr)
     }

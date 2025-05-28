@@ -847,7 +847,7 @@ extension RedBlackTreeSet {
   
   @inlinable @inline(__always)
   public var rawIndexedElements: RawIndexedSequence<RedBlackTreeSet> {
-    RawIndexedSequence<RedBlackTreeSet>(tree: _tree)
+    RawIndexedSequence(tree: _tree)
   }
 }
 
@@ -855,7 +855,7 @@ extension RedBlackTreeSet.SubSequence {
   
   @inlinable @inline(__always)
   public var rawIndexedElements: RawIndexedSequence<RedBlackTreeSet> {
-    RawIndexedSequence<RedBlackTreeSet>(
+    RawIndexedSequence(
       tree: _tree,
       start: startIndex.rawValue,
       end: endIndex.rawValue)

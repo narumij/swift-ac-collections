@@ -460,92 +460,95 @@ extension RedBlackTreeSet: Sequence {
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeSet: BidirectionalCollection {
-
+  
   @inlinable
   @inline(__always)
   public var startIndex: Index {
     ___index_start()
   }
-
+  
   @inlinable
   @inline(__always)
   public var endIndex: Index {
     ___index_end()
   }
-
+  
   @inlinable
   @inline(__always)
   public var count: Int {
     ___count
   }
-
+  
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     ___distance(from: start.rawValue, to: end.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     ___index(after: i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     ___form_index(after: &i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     ___index(before: i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     ___form_index(before: &i.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i.rawValue, offsetBy: distance)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     ___form_index(&i.rawValue, offsetBy: distance)
   }
-
+  
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Bool
+  -> Bool
   {
     ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-
+  
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
     return _tree[position.rawValue]
   }
-
+  
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
     return _tree[position.rawValue]
   }
+}
+
+extension RedBlackTreeSet {
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
@@ -607,6 +610,7 @@ extension RedBlackTreeSet {
 
 // MARK: - SubSequence
 
+#if true
 extension RedBlackTreeSet {
 
   @frozen
@@ -745,6 +749,7 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
         _subSequence[bounds.lowerBound..<bounds.upperBound])
   }
 }
+#endif
 
 // MARK: - Index Range
 
@@ -759,6 +764,7 @@ extension RedBlackTreeSet {
   }
 }
 
+#if false
 extension RedBlackTreeSet.SubSequence {
 
   public typealias Indices = Range<Index>
@@ -769,6 +775,7 @@ extension RedBlackTreeSet.SubSequence {
     startIndex..<endIndex
   }
 }
+#endif
 
 // MARK: - Raw Index Sequence
 

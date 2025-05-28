@@ -6,7 +6,7 @@
 //
 
 public
-struct RawIndexedIterator<Base: RedBlackTreeIteratable>: IteratorProtocol {
+struct RawIndexedIterator<Base: RedBlackTreeRawIndexIteratable>: IteratorProtocol {
 
   @usableFromInline
   let _tree: Base.Tree
@@ -25,7 +25,7 @@ struct RawIndexedIterator<Base: RedBlackTreeIteratable>: IteratorProtocol {
   
   @inlinable
   @inline(__always)
-  public mutating func next() -> (RawIndex, Base.Tree.Element)? {
+  public mutating func next() -> (rawIndex: RawIndex, element: Base.Tree.Element)? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
@@ -36,7 +36,7 @@ struct RawIndexedIterator<Base: RedBlackTreeIteratable>: IteratorProtocol {
 }
 
 public
-struct RawIndexedSequence<Base: RedBlackTreeIteratable>: Sequence {
+struct RawIndexedSequence<Base: RedBlackTreeRawIndexIteratable>: Sequence {
   
   @usableFromInline
   let _tree: Base.Tree

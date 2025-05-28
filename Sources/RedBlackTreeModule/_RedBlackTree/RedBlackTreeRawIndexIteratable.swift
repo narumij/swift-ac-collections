@@ -5,6 +5,6 @@
 //  Created by narumij on 2025/05/28.
 //
 
-public protocol RedBlackTreeIteratable {
+public protocol RedBlackTreeRawIndexIteratable {
   associatedtype Tree: IteratableProtocol
 }

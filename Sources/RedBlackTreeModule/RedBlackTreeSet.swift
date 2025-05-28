@@ -649,7 +649,6 @@ extension RedBlackTreeSet.SubSequence {
   public typealias SubSequence = Self
   public typealias Index = Base.Index
   public typealias Element = Base.Element
-  public typealias ___RawIndexedSequence = Base.___RawIndexedSequence
 }
 
 extension RedBlackTreeSet.SubSequence: Sequence {
@@ -811,7 +810,7 @@ extension RedBlackTreeSet.SubSequence {
 // 独自の型だと学習コストが高くなるので、速度を少し犠牲にして読みやすそうな型に変更
 // forEachが呼ばれないので、計測結果次第で元に戻します。名前も少しましに改名しましたし
 
-extension RedBlackTreeSet: RedBlackTreeIteratable { }
+extension RedBlackTreeSet: RedBlackTreeRawIndexIteratable { }
 
 extension RedBlackTreeSet {
 
@@ -846,22 +845,19 @@ extension RedBlackTreeSet.SubSequence {
 
 extension RedBlackTreeSet {
   
-  public var rawIndexedElements: ___RawIndexedSequence {
-    ___RawIndexedSequence(
-      _subSequence:
-        _tree.enumeratedSubsequence())
+  public var rawIndexedElements: RawIndexedSequence<RedBlackTreeSet> {
+    RawIndexedSequence<RedBlackTreeSet>(tree: _tree)
   }
 }
 
 extension RedBlackTreeSet.SubSequence {
   
   @inlinable @inline(__always)
-  public var rawIndexedElements: ___RawIndexedSequence {
-    ___RawIndexedSequence(
-      _subSequence:
-        _tree.enumeratedSubsequence(
-          from: startIndex.rawValue,
-          to: endIndex.rawValue))
+  public var rawIndexedElements: RawIndexedSequence<RedBlackTreeSet> {
+    RawIndexedSequence<RedBlackTreeSet>(
+      tree: _tree,
+      start: startIndex.rawValue,
+      end: endIndex.rawValue)
   }
 }
 
@@ -869,7 +865,7 @@ extension RedBlackTreeSet {
 
   @available(*, deprecated, renamed: "rawIndexedElements")
   @inlinable @inline(__always)
-  public func enumerated() -> ___RawIndexedSequence {
+  public func enumerated() -> RawIndexedSequence<RedBlackTreeSet> {
     rawIndexedElements
   }
 }
@@ -878,63 +874,8 @@ extension RedBlackTreeSet.SubSequence {
 
   @available(*, deprecated, renamed: "rawIndexedElements")
   @inlinable @inline(__always)
-  public func enumerated() -> ___RawIndexedSequence {
+  public func enumerated() -> RawIndexedSequence<RedBlackTreeSet> {
     rawIndexedElements
-  }
-}
-
-extension RedBlackTreeSet {
-
-  @frozen
-  public struct ___RawIndexedSequence {
-
-    public typealias RawIndexed = Tree.RawIndexed
-
-    @usableFromInline
-    internal typealias _SubSequence = Tree.EnumSequence
-
-    @usableFromInline
-    internal let _subSequence: _SubSequence
-
-    @inlinable
-    init(_subSequence: _SubSequence) {
-      self._subSequence = _subSequence
-    }
-  }
-}
-
-extension RedBlackTreeSet.___RawIndexedSequence: Sequence {
-
-  public struct Iterator: IteratorProtocol {
-
-    @usableFromInline
-    internal var _iterator: _SubSequence.Iterator
-
-    @inlinable
-    @inline(__always)
-    internal init(_ _iterator: _SubSequence.Iterator) {
-      self._iterator = _iterator
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> RawIndexed? {
-      _iterator.next()
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func makeIterator() -> Iterator {
-    Iterator(_subSequence.makeIterator())
-  }
-}
-
-extension RedBlackTreeSet.___RawIndexedSequence {
-
-  @inlinable
-  public func forEach(_ body: (RawIndexed) throws -> Void) rethrows {
-    try _subSequence.forEach(body)
   }
 }
 

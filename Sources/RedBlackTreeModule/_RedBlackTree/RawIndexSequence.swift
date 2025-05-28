@@ -6,7 +6,7 @@
 //
 
 public
-struct RawIndexIterator<Base: RedBlackTreeIteratable>: IteratorProtocol {
+struct RawIndexIterator<Base: RedBlackTreeRawIndexIteratable>: IteratorProtocol {
 
   @usableFromInline
   let _tree: Base.Tree
@@ -36,7 +36,7 @@ struct RawIndexIterator<Base: RedBlackTreeIteratable>: IteratorProtocol {
 }
 
 public
-struct RawIndexSequence<Base: RedBlackTreeIteratable>: Sequence {
+struct RawIndexSequence<Base: RedBlackTreeRawIndexIteratable>: Sequence {
   
   @usableFromInline
   let _tree: Base.Tree

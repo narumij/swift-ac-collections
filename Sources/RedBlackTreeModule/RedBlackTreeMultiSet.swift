@@ -52,10 +52,6 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
   var _storage: Tree.Storage
 }
 
-extension RedBlackTreeMultiSet {
-  public typealias RawIndex = Tree.RawPointer
-}
-
 extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeEqualRangeMulti {}
@@ -647,7 +643,6 @@ extension RedBlackTreeMultiSet.SubSequence {
   public typealias Base = RedBlackTreeMultiSet
   public typealias SubSequence = Self
   public typealias Index = Base.Index
-  public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
   public typealias RawIndexedSequence = Base.RawIndexedSequence
   public typealias IndexSequence = Base.RawIndexSequence
@@ -840,8 +835,6 @@ extension RedBlackTreeMultiSet {
   @frozen
   public struct RawIndexSequence {
 
-    public typealias RawPointer = Tree.RawPointer
-
     @usableFromInline
     internal typealias _SubSequence = Tree.IndexSequence
 
@@ -870,7 +863,7 @@ extension RedBlackTreeMultiSet.RawIndexSequence: Sequence {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> RawPointer? {
+    public mutating func next() -> RawIndex? {
       _iterator.next()
     }
   }
@@ -886,7 +879,7 @@ extension RedBlackTreeMultiSet.RawIndexSequence {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (RawPointer) throws -> Void) rethrows {
+  public func forEach(_ body: (RawIndex) throws -> Void) rethrows {
     try _subSequence.forEach(body)
   }
 }

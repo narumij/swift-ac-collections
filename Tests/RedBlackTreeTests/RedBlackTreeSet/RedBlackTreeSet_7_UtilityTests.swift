@@ -45,14 +45,14 @@ final class RedBlackTreeSetUtilityTests: XCTestCase {
     func test_isValid_rawIndex_valid() {
       let set = RedBlackTreeSet([1, 2, 3])
       let rawValue = set.startIndex.rawValue
-      XCTAssertTrue(set.isValid(index: RedBlackTreeSet<Int>.RawIndex.unsafe(rawValue)))
+      XCTAssertTrue(set.isValid(index: RawIndex.unsafe(rawValue)))
     }
 
     /// isValid(rawIndex:) が無効インデックスを正しく判定すること
     func test_isValid_rawIndex_invalid() {
       let set = RedBlackTreeSet([1, 2, 3])
       let rawValue = set.endIndex.rawValue
-      XCTAssertTrue(set.isValid(index: RedBlackTreeSet<Int>.RawIndex.unsafe(rawValue)))
+      XCTAssertTrue(set.isValid(index: RawIndex.unsafe(rawValue)))
     }
   #endif
 }

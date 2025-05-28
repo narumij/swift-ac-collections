@@ -219,7 +219,6 @@ import XCTest
     #if DEBUG
       func testSubscript1() throws {
         let map: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 10, 3: 10]
-        typealias RawIndex = RedBlackTreeDictionary<Int, Int>.RawIndex
         XCTAssertEqual(map[RawIndex(0)].key, 1)
         XCTAssertEqual(map[RawIndex(0)].value, 10)
         XCTAssertEqual(map[2..<3][RawIndex(1)].key, 2)
@@ -795,7 +794,6 @@ import XCTest
       XCTAssertTrue(set.isValid(index: set.startIndex))
       XCTAssertTrue(set.isValid(index: set.endIndex))
       typealias Index = RedBlackTreeDictionary<Int, String>.Index
-      typealias RawIndex = RedBlackTreeDictionary<Int, String>.RawIndex
       #if DEBUG
         XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
         XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
@@ -828,7 +826,6 @@ import XCTest
       XCTAssertTrue(set.isValid(index: set.startIndex))
       XCTAssertTrue(set.isValid(index: set.endIndex))
       typealias Index = RedBlackTreeDictionary<Int, String>.Index
-      typealias RawIndex = RedBlackTreeDictionary<Int, String>.RawIndex
       #if DEBUG
         XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
         XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)

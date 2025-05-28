@@ -74,10 +74,6 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   }
 }
 
-extension RedBlackTreeDictionary {
-  public typealias RawIndex = Tree.RawPointer
-}
-
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeDictionary: ___RedBlackTreeEqualRangeUnique {}
@@ -834,7 +830,6 @@ extension RedBlackTreeDictionary.SubSequence {
   public typealias Base = RedBlackTreeDictionary
   public typealias SubSequence = Self
   public typealias Index = Base.Index
-  public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
   public typealias RawIndexedSequence = Base.RawIndexedSequence
   public typealias IndexSequence = Base.RawIndexSequence
@@ -1024,8 +1019,6 @@ extension RedBlackTreeDictionary {
   @frozen
   public struct RawIndexSequence {
 
-    public typealias RawPointer = Tree.RawPointer
-
     @usableFromInline
     internal typealias _SubSequence = Tree.IndexSequence
 
@@ -1054,7 +1047,7 @@ extension RedBlackTreeDictionary.RawIndexSequence: Sequence {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> RawPointer? {
+    public mutating func next() -> RawIndex? {
       _iterator.next()
     }
   }
@@ -1070,7 +1063,7 @@ extension RedBlackTreeDictionary.RawIndexSequence {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (RawPointer) throws -> Void) rethrows {
+  public func forEach(_ body: (RawIndex) throws -> Void) rethrows {
     try _subSequence.forEach(body)
   }
 }

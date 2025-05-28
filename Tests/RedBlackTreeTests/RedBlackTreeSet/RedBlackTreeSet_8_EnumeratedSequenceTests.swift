@@ -15,7 +15,7 @@ final class RedBlackTreeSetEnumeratedSequenceTests: XCTestCase {
       let set = RedBlackTreeSet([10, 20, 30])
       let enumerated = set.rawIndexedElements
 
-      var elements: [(offset: RedBlackTreeSet<Int>.RawIndex, element: Int)] = []
+      var elements: [(offset: RawIndex, element: Int)] = []
       enumerated.forEach { pair in
         elements.append((pair.rawIndex, pair.element))
       }
@@ -34,7 +34,7 @@ final class RedBlackTreeSetEnumeratedSequenceTests: XCTestCase {
       let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [20,30,40]
       let enumerated = sub.rawIndexedElements
 
-      var elements: [(offset: RedBlackTreeSet<Int>.RawIndex, element: Int)] = []
+      var elements: [(offset: RawIndex, element: Int)] = []
       enumerated.forEach { pair in
         elements.append((pair.rawIndex, pair.element))
       }
@@ -57,7 +57,7 @@ extension RedBlackTreeSetEnumeratedSequenceTests {
       let enumerated = set.rawIndexedElements
 
       var iterator = enumerated.makeIterator()
-      var elements: [(offset: RedBlackTreeSet<Int>.RawIndex, element: Int)] = []
+      var elements: [(offset: RawIndex, element: Int)] = []
       while let pair = iterator.next() {
         elements.append((pair.rawIndex, pair.element))
       }
@@ -75,7 +75,7 @@ extension RedBlackTreeSetEnumeratedSequenceTests {
       let enumerated = sub.rawIndexedElements
 
       var iterator = enumerated.makeIterator()
-      var elements: [(offset: RedBlackTreeSet<Int>.RawIndex, element: Int)] = []
+      var elements: [(offset: RawIndex, element: Int)] = []
       while let pair = iterator.next() {
         elements.append((pair.rawIndex, pair.element))
       }

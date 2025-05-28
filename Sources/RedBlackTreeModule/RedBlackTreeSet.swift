@@ -797,8 +797,8 @@ extension RedBlackTreeSet.SubSequence {
   public var rawIndices: RawIndexSequence<RedBlackTreeSet> {
     RawIndexSequence(
       tree: _tree,
-      start: startIndex.rawValue,
-      end: endIndex.rawValue)
+      start: _subSequence.startIndex,
+      end: _subSequence.endIndex)
   }
 }
 
@@ -822,8 +822,8 @@ extension RedBlackTreeSet.SubSequence {
   public var rawIndexedElements: RawIndexedSequence<RedBlackTreeSet> {
     RawIndexedSequence(
       tree: _tree,
-      start: startIndex.rawValue,
-      end: endIndex.rawValue)
+      start: _subSequence.startIndex,
+      end: _subSequence.endIndex)
   }
 }
 

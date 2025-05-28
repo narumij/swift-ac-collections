@@ -992,8 +992,8 @@ extension RedBlackTreeDictionary.SubSequence {
   public var rawIndices: RawIndexSequence<RedBlackTreeDictionary> {
     RawIndexSequence(
       tree: _tree,
-      start: startIndex.rawValue,
-      end: endIndex.rawValue)
+      start: _subSequence.startIndex,
+      end: _subSequence.endIndex)
   }
 }
 
@@ -1013,8 +1013,8 @@ extension RedBlackTreeDictionary.SubSequence {
   public var rawIndexedElements: RawIndexedSequence<RedBlackTreeDictionary> {
     RawIndexedSequence(
       tree: _tree,
-      start: startIndex.rawValue,
-      end: endIndex.rawValue)
+      start: _subSequence.startIndex,
+      end: _subSequence.endIndex)
   }
 }
 

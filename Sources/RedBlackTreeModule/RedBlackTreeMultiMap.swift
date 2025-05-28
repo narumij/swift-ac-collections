@@ -906,8 +906,8 @@ extension RedBlackTreeMultiMap.SubSequence {
   public var rawIndices: RawIndexSequence<RedBlackTreeMultiMap> {
     RawIndexSequence(
       tree: _tree,
-      start: startIndex.rawValue,
-      end: endIndex.rawValue)
+      start: _subSequence.startIndex,
+      end: _subSequence.endIndex)
   }
 }
 
@@ -927,8 +927,8 @@ extension RedBlackTreeMultiMap.SubSequence {
   public var rawIndexedElements: RawIndexedSequence<RedBlackTreeMultiMap> {
     RawIndexedSequence(
       tree: _tree,
-      start: startIndex.rawValue,
-      end: endIndex.rawValue)
+      start: _subSequence.startIndex,
+      end: _subSequence.endIndex)
   }
 }
 

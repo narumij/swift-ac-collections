@@ -36,7 +36,7 @@ extension CompareUniqueProtocol {
 protocol CompareMultiProtocol: MemberProtocol & RootProtocol & EndProtocol {}
 
 extension CompareMultiProtocol {
-
+  
   // ノードの高さを数える
   @inlinable
   @inline(__always)
@@ -50,7 +50,7 @@ extension CompareMultiProtocol {
     }
     return __h
   }
-
+  
   // ノードの大小を比較する
   @inlinable
   @inline(__always)
@@ -92,11 +92,13 @@ extension CompareMultiProtocol {
     // 共通祖先の左が__lであれば、__lが小さい
     return __tree_is_left_child(__l)
   }
-
+  
   @inlinable
   @inline(__always)
   func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    ___ptr_comp_multi(l, r)
+    assert(l == .end || __parent_(l) != .nullptr)
+    assert(r == .end || __parent_(r) != .nullptr)
+    return ___ptr_comp_multi(l, r)
   }
 }
 

@@ -71,10 +71,6 @@ public struct RedBlackTreeSet<Element: Comparable> {
   var _storage: Tree.Storage
 }
 
-extension RedBlackTreeSet {
-  public typealias RawIndex = RawPointer
-}
-
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
 extension RedBlackTreeSet: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeSet: ___RedBlackTreeEqualRangeUnique {}
@@ -652,7 +648,6 @@ extension RedBlackTreeSet.SubSequence {
   public typealias Base = RedBlackTreeSet
   public typealias SubSequence = Self
   public typealias Index = Base.Index
-  public typealias RawIndex = Base.RawIndex
   public typealias Element = Base.Element
   public typealias EnumuratedSequence = Base.EnumuratedSequence
   public typealias IndexSequence = Base.RawIndexSequence
@@ -873,7 +868,7 @@ extension RedBlackTreeSet.RawIndexSequence: Sequence {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> RawPointer? {
+    public mutating func next() -> RawIndex? {
       _iterator.next()
     }
   }
@@ -892,7 +887,7 @@ extension RedBlackTreeSet.RawIndexSequence {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (RawPointer) throws -> Void) rethrows {
+  public func forEach(_ body: (RawIndex) throws -> Void) rethrows {
     try _subSequence.forEach(body)
   }
 }

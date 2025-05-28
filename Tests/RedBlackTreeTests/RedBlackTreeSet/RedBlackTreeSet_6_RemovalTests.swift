@@ -56,7 +56,7 @@ final class RedBlackTreeSetRemoveTests: XCTestCase {
     func test_remove_at_raw() {
       var set = RedBlackTreeSet([1, 2, 3])
       let index = set.index(after: set.startIndex)
-      let removed = set.remove(at: RedBlackTreeSet<Int>.RawIndex.unsafe(index.rawValue))
+      let removed = set.remove(at: RawIndex.unsafe(index.rawValue))
       XCTAssertEqual(removed, 2, "指定インデックスの要素を正しく削除すること")
       XCTAssertFalse(set.contains(2), "指定インデックスの要素は削除されること")
     }
@@ -214,7 +214,7 @@ extension RedBlackTreeSetRemoveTests {
       // 事後条件:
       // - 削除したindexは無効になること
       XCTAssertFalse(
-        sub.isValid(index: RedBlackTreeSet<Int>.RawIndex.unsafe(subIndex.rawValue)),
+        sub.isValid(index: RawIndex.unsafe(subIndex.rawValue)),
         "削除後、SubSequenceのindexは無効になること")
     }
   #endif

@@ -66,7 +66,7 @@ extension ___RedBlackTreeBase {
   typealias ___Index = Tree.Pointer
 
   @usableFromInline
-  typealias ___RawIndex = RawPointer
+  typealias ___RawIndex = RawIndex
 
   @inlinable @inline(__always)
   func ___index(_ p: _NodePtr) -> ___Index {
@@ -417,8 +417,8 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func ___std_erase(_ ptr: RawPointer) -> RawPointer {
-    RawPointer(_tree.erase(ptr.rawValue))
+  public mutating func ___std_erase(_ ptr: RawIndex) -> RawIndex {
+    RawIndex(_tree.erase(ptr.rawValue))
   }
 
   // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの

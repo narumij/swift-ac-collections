@@ -30,7 +30,7 @@ import Foundation
 ///
 /// 本当の生ポインタはIntのtypealiasだが、それを晒すと間違いのもとなので、ラップしてある
 public
-  enum RawPointer: Equatable
+  enum RawIndex: Equatable
 {
   case node(_NodePtr)
   case end
@@ -54,11 +54,11 @@ public
   }
 }
 
-extension Optional where Wrapped == RawPointer {
+extension Optional where Wrapped == RawIndex {
 
   @inlinable
   init(_ ptr: _NodePtr) {
-    self = ptr == .nullptr ? .none : .some(RawPointer(ptr))
+    self = ptr == .nullptr ? .none : .some(RawIndex(ptr))
   }
 
   @usableFromInline
@@ -73,11 +73,11 @@ extension Optional where Wrapped == RawPointer {
 }
 
 #if swift(>=5.5)
-  extension RawPointer: @unchecked Sendable {}
+  extension RawIndex: @unchecked Sendable {}
 #endif
 
 #if DEBUG
-  extension RawPointer {
+  extension RawIndex {
     static func unsafe(_ node: _NodePtr) -> Self {
       node == .end ? .end : .node(node)
     }

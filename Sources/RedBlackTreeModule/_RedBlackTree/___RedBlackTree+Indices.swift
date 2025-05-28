@@ -44,7 +44,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> RawPointer? {
+    public mutating func next() -> RawIndex? {
       _next().map { .init($0) }
     }
   }
@@ -63,7 +63,7 @@ extension ___RedBlackTree.___Tree {
   @frozen
   public struct IndexSequence: Sequence {
 
-    public typealias Element = RawPointer
+    public typealias Element = RawIndex
 
     @usableFromInline
     typealias Index = _NodePtr

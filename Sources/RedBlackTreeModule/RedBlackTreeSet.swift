@@ -548,16 +548,26 @@ extension RedBlackTreeSet: BidirectionalCollection {
   }
 }
 
+extension RedBlackTreeSet: RedBlackTreeCollectionable {
+  public static func index(tree: Tree, rawValue: _NodePtr) -> Index {
+    .init(__tree: tree, rawValue: rawValue)
+  }
+  public typealias SubSequence = ElementCollection<RedBlackTreeSet>
+}
+
 extension RedBlackTreeSet {
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: bounds.lowerBound.rawValue,
-          to: bounds.upperBound.rawValue)
-    )
+//    SubSequence(
+//      _subSequence:
+//        _tree.subsequence(
+//          from: bounds.lowerBound.rawValue,
+//          to: bounds.upperBound.rawValue)
+//    )
+    .init(tree: _tree,
+          start: bounds.lowerBound.rawValue,
+          end: bounds.upperBound.rawValue)
   }
 }
 
@@ -590,27 +600,33 @@ extension RedBlackTreeSet {
   /// 値レンジ `[lower, upper)` に含まれる要素のスライス
   @inlinable
   public func elements(in range: Range<Element>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: ___ptr_lower_bound(range.lowerBound),
-          to: ___ptr_lower_bound(range.upperBound)))
+//    SubSequence(
+//      _subSequence:
+//        _tree.subsequence(
+//          from: ___ptr_lower_bound(range.lowerBound),
+//          to: ___ptr_lower_bound(range.upperBound)))
+    .init(tree: _tree,
+          start: ___ptr_lower_bound(range.lowerBound),
+          end: ___ptr_lower_bound(range.upperBound))
   }
 
   /// 値レンジ `[lower, upper]` に含まれる要素のスライス
   @inlinable
   public func elements(in range: ClosedRange<Element>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: ___ptr_lower_bound(range.lowerBound),
-          to: ___ptr_upper_bound(range.upperBound)))
+//    SubSequence(
+//      _subSequence:
+//        _tree.subsequence(
+//          from: ___ptr_lower_bound(range.lowerBound),
+//          to: ___ptr_upper_bound(range.upperBound)))
+    .init(tree: _tree,
+          start: ___ptr_lower_bound(range.lowerBound),
+          end: ___ptr_upper_bound(range.upperBound))
   }
 }
 
 // MARK: - SubSequence
 
-#if true
+#if false
 extension RedBlackTreeSet {
 
   @frozen
@@ -795,19 +811,21 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet.SubSequence {
+#if true
+extension ElementCollection {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
   @inline(__always)
-  public var rawIndices: RawIndexSequence<RedBlackTreeSet> {
+  public var rawIndices: RawIndexSequence<Self> {
     RawIndexSequence(
       tree: _tree,
-      start: _subSequence.startIndex,
-      end: _subSequence.endIndex)
+      start: _start,
+      end: _end)
   }
 }
+#endif
 
 // MARK: - Raw Indexed Sequence
 
@@ -823,16 +841,18 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet.SubSequence {
+#if true
+extension ElementCollection {
   
   @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<RedBlackTreeSet> {
+  public var rawIndexedElements: RawIndexedSequence<Self> {
     RawIndexedSequence(
       tree: _tree,
-      start: _subSequence.startIndex,
-      end: _subSequence.endIndex)
+      start: _start,
+      end: _end)
   }
 }
+#endif
 
 extension RedBlackTreeSet {
 
@@ -843,6 +863,7 @@ extension RedBlackTreeSet {
   }
 }
 
+#if false
 extension RedBlackTreeSet.SubSequence {
 
   @available(*, deprecated, renamed: "rawIndexedElements")
@@ -851,6 +872,7 @@ extension RedBlackTreeSet.SubSequence {
     rawIndexedElements
   }
 }
+#endif
 
 // MARK: - Utility
 
@@ -884,20 +906,22 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet.SubSequence {
+#if true
+extension ElementCollection {
 
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
+    ___is_valid_index(index: i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func isValid(index i: RawIndex) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
+    ___is_valid_index(index: i.rawValue)
   }
 }
+#endif
 
 // MARK: - Protocol Adaption
 

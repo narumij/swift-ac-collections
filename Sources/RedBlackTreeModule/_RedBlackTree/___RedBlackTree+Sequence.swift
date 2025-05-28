@@ -183,12 +183,12 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
     __end_node()
   }
 
-  @usableFromInline
-  typealias Index = _NodePtr
+//  @usableFromInline
+  public typealias Index = _NodePtr
 
   // この実装がないと、迷子になる
   @inlinable
-  internal func distance(from start: Index, to end: Index) -> Int {
+  public func distance(from start: Index, to end: Index) -> Int {
     guard start == __end_node() || ___is_valid(start),
       end == __end_node() || ___is_valid(end)
     else {
@@ -199,7 +199,7 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
 
   @inlinable
   @inline(__always)
-  internal func index(after i: Index) -> Index {
+  public func index(after i: Index) -> Index {
     guard i != __end_node(), ___is_valid(i) else {
       fatalError(.invalidIndex)
     }
@@ -215,7 +215,7 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
 
   @inlinable
   @inline(__always)
-  internal func index(before i: Index) -> Index {
+  public func index(before i: Index) -> Index {
     guard i != __begin_node, i == __end_node() || ___is_valid(i) else {
       fatalError(.invalidIndex)
     }
@@ -262,7 +262,7 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
 
   @inlinable
   @inline(__always)
-  internal func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     guard i == ___end() || ___is_valid(i) else { fatalError(.invalidIndex) }
     var distance = distance
     var i = i

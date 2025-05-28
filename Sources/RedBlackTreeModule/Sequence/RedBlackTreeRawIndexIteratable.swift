@@ -10,12 +10,16 @@ public protocol RedBlackTreeRawIndexIteratable {
 }
 
 public protocol RedBlackTreeCollectionable: RedBlackTreeRawIndexIteratable
-where Tree: CollectionableProtocol
+where Tree: CollectionableProtocol, Index.Tree == Tree
 {
-  associatedtype Index: RedBlackTreeCollectionIndex
-  static func index(tree: Tree, rawValue: _NodePtr) -> Index
+  associatedtype Index: RedBlackTreeIndex
 }
 
-public protocol RedBlackTreeCollectionIndex: Strideable where Stride == Int {
+public protocol RedBlackTreeIndex: Strideable & RedBlackTreeRawValue where Stride == Int {
+  associatedtype Tree
+  init(__tree: Tree, rawValue: _NodePtr)
+}
+
+public protocol RedBlackTreeRawValue {
   var rawValue: _NodePtr { get }
 }

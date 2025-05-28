@@ -298,7 +298,7 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
-  internal func ___is_valid(_ p: _NodePtr) -> Bool {
+  public func ___is_valid(_ p: _NodePtr) -> Bool {
     0..<_header.initializedCount ~= p && __node_ptr[p].__parent_ != .nullptr
   }
 }
@@ -405,6 +405,7 @@ extension ___RedBlackTree.___Tree: DistanceProtocol {}
 extension ___RedBlackTree.___Tree: CompareProtocol {}
 extension ___RedBlackTree.___Tree: CompareMultiProtocol {}
 extension ___RedBlackTree.___Tree: IteratableProtocol {}
+extension ___RedBlackTree.___Tree: CollectionableProtocol {}
 
 extension ___RedBlackTree.___Tree {
   @inlinable

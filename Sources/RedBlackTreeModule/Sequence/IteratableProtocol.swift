@@ -14,6 +14,12 @@ public protocol IteratableProtocol {
 public protocol CollectionableProtocol {
   // この実装がないと、迷子になる
   func distance(from start: _NodePtr, to end: _NodePtr) -> Int
+  
   func index(after i: _NodePtr) -> _NodePtr
   func index(before i: _NodePtr) -> _NodePtr
+  
+  func index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> _NodePtr?
+
+  func ___is_valid(_ p: _NodePtr) -> Bool
+  func ___ptr_closed_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool
 }

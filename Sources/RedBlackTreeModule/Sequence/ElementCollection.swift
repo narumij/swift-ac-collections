@@ -16,15 +16,6 @@ struct ElementCollection<Base: RedBlackTreeCollectionable>: Sequence {
 
   @inlinable
   @inline(__always)
-  internal init(tree: Base.Tree) where Base.Tree: BeginNodeProtocol & EndNodeProtocol {
-    self.init(
-      tree: tree,
-      start: tree.__begin_node,
-      end: tree.__end_node())
-  }
-
-  @inlinable
-  @inline(__always)
   internal init(tree: Base.Tree, start: _NodePtr, end: _NodePtr) {
     _tree = tree
     _start = start
@@ -57,11 +48,11 @@ extension ElementCollection: Collection {
   }
   
   public var startIndex: Index {
-    Base.index(tree: _tree, rawValue: _start)
+    .init(__tree: _tree, rawValue: _start)
   }
   
   public var endIndex: Index {
-    Base.index(tree: _tree, rawValue: _end)
+    .init(__tree: _tree, rawValue: _end)
   }
   
   public typealias Index = Base.Index
@@ -82,7 +73,9 @@ extension ElementCollection {
   
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-    .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+    .init(tree: _tree,
+          start: bounds.lowerBound.rawValue,
+          end: bounds.upperBound.rawValue)
   }
 }
 
@@ -102,14 +95,39 @@ extension ElementCollection: BidirectionalCollection {
   @inlinable @inline(__always)
   public func index(before i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    Base.index(tree: _tree, rawValue: _tree.index(before: i.rawValue))
+    .init(__tree: _tree, rawValue: _tree.index(before: i.rawValue))
   }
   
   @inlinable @inline(__always)
   public func index(after i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    Base.index(tree: _tree, rawValue: _tree.index(after: i.rawValue))
+    .init(__tree: _tree, rawValue: _tree.index(after: i.rawValue))
   }
+  
+#if false
+  @inlinable
+  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+    // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
+    _tree.index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
+      .map { Base.index(tree: _tree, rawValue: $0) }
+  }
+#endif
+  
+#if false
+  @inlinable
+  @inline(__always)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
+    -> Bool
+  {
+    // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
+    if let ii = index(i, offsetBy: distance, limitedBy: limit) {
+      i = ii
+      return true
+    }
+    return false
+  }
+#endif
 }
 
 extension ElementCollection {
@@ -120,5 +138,18 @@ extension ElementCollection {
   @inline(__always)
   public var indices: Indices {
     startIndex..<endIndex
+  }
+}
+
+extension ElementCollection: RedBlackTreeRawIndexIteratable {
+  public typealias Tree = Base.Tree
+  
+  @inlinable
+  @inline(__always)
+  internal func ___is_valid_index(index i: _NodePtr) -> Bool {
+    guard i != .nullptr, _tree.___is_valid(i) else {
+      return false
+    }
+    return _tree.___ptr_closed_range_contains(_start, _end, i)
   }
 }

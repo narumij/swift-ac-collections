@@ -35,6 +35,7 @@ protocol RedBlackTreeIteratorNextProtocol: IteratorProtocol {
 }
 
 extension RedBlackTreeIteratorNextProtocol {
+  
   @inlinable
   @inline(__always)
   internal mutating func _next() -> _NodePtr? {

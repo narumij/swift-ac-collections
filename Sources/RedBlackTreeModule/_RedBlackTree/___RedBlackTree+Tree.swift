@@ -222,7 +222,7 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
-  internal subscript(_ pointer: _NodePtr) -> Element {
+  public subscript(_ pointer: _NodePtr) -> Element {
     @inline(__always)
     get {
       assert(0 <= pointer && pointer < _header.initializedCount)
@@ -404,6 +404,7 @@ extension ___RedBlackTree.___Tree: MemberProtocol {}
 extension ___RedBlackTree.___Tree: DistanceProtocol {}
 extension ___RedBlackTree.___Tree: CompareProtocol {}
 extension ___RedBlackTree.___Tree: CompareMultiProtocol {}
+extension ___RedBlackTree.___Tree: IteratableProtocol {}
 
 extension ___RedBlackTree.___Tree {
   @inlinable

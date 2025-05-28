@@ -526,28 +526,10 @@ extension RedBlackTreeMultiMap: Sequence {
     try _tree.___for_each_(body)
   }
 
-  @frozen
-  public struct Iterator: IteratorProtocol {
-    @usableFromInline
-    internal var _iterator: Tree.Iterator
-
-    @inlinable
-    @inline(__always)
-    internal init(_base: RedBlackTreeMultiMap) {
-      self._iterator = _base._tree.makeIterator()
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> Element? {
-      return self._iterator.next()
-    }
-  }
-
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Iterator {
-    return Iterator(_base: self)
+  public __consuming func makeIterator() -> ElementIterator<RedBlackTreeMultiMap> {
+    ElementIterator(tree: _tree, start: _tree.__begin_node, end: _tree.__end_node())
   }
 }
 

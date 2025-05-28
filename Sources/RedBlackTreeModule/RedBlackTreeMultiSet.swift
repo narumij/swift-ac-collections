@@ -644,7 +644,6 @@ extension RedBlackTreeMultiSet.SubSequence {
   public typealias SubSequence = Self
   public typealias Index = Base.Index
   public typealias Element = Base.Element
-  public typealias RawIndexedSequence = Base.RawIndexedSequence
 }
 
 extension RedBlackTreeMultiSet.SubSequence: Sequence {
@@ -836,20 +835,20 @@ extension RedBlackTreeMultiSet.SubSequence {
 
 extension RedBlackTreeMultiSet {
 
-  @inlinable
-  @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence {
-    RawIndexedSequence(_subSequence: _tree.enumeratedSubsequence())
+  @inlinable @inline(__always)
+  public var rawIndexedElements: RawIndexedSequence<RedBlackTreeMultiSet> {
+    RawIndexedSequence<RedBlackTreeMultiSet>(tree: _tree)
   }
 }
 
 extension RedBlackTreeMultiSet.SubSequence {
 
-  @inlinable
-  @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence {
-    RawIndexedSequence(
-      _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
+  @inlinable @inline(__always)
+  public var rawIndexedElements: RawIndexedSequence<RedBlackTreeMultiSet> {
+    RawIndexedSequence<RedBlackTreeMultiSet>(
+      tree: _tree,
+      start: startIndex.rawValue,
+      end: endIndex.rawValue)
   }
 }
 
@@ -858,7 +857,7 @@ extension RedBlackTreeMultiSet {
   @available(*, deprecated, renamed: "rawIndexedElements")
   @inlinable
   @inline(__always)
-  public func enumerated() -> RawIndexedSequence {
+  public func enumerated() -> RawIndexedSequence<RedBlackTreeMultiSet> {
     rawIndexedElements
   }
 }
@@ -868,64 +867,8 @@ extension RedBlackTreeMultiSet.SubSequence {
   @available(*, deprecated, renamed: "rawIndexedElements")
   @inlinable
   @inline(__always)
-  public func enumerated() -> RawIndexedSequence {
+  public func enumerated() -> RawIndexedSequence<RedBlackTreeMultiSet> {
     rawIndexedElements
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
-  @frozen
-  public struct RawIndexedSequence {
-
-    public typealias Enumurated = Tree.RawIndexed
-
-    @usableFromInline
-    internal typealias _SubSequence = Tree.EnumSequence
-
-    @usableFromInline
-    internal let _subSequence: _SubSequence
-
-    @inlinable
-    init(_subSequence: _SubSequence) {
-      self._subSequence = _subSequence
-    }
-  }
-}
-
-extension RedBlackTreeMultiSet.RawIndexedSequence: Sequence {
-
-  public struct Iterator: IteratorProtocol {
-
-    @usableFromInline
-    internal var _iterator: _SubSequence.Iterator
-
-    @inlinable
-    @inline(__always)
-    internal init(_ _iterator: _SubSequence.Iterator) {
-      self._iterator = _iterator
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> Enumurated? {
-      _iterator.next()
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func makeIterator() -> Iterator {
-    Iterator(_subSequence.makeIterator())
-  }
-}
-
-extension RedBlackTreeMultiSet.RawIndexedSequence {
-
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Enumurated) throws -> Void) rethrows {
-    try _subSequence.forEach(body)
   }
 }
 

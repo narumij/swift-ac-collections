@@ -746,7 +746,6 @@ extension RedBlackTreeMultiMap.SubSequence {
   public typealias Index = Base.Index
   public typealias Element = Base.Element
   public typealias RawIndexedSequence = Base.RawIndexedSequence
-  public typealias IndexSequence = Base.RawIndexSequence
 }
 
 extension RedBlackTreeMultiMap.SubSequence: Sequence {
@@ -904,14 +903,16 @@ extension RedBlackTreeMultiMap.SubSequence {
 
 // MARK: - Raw Index Sequence
 
+extension RedBlackTreeMultiMap: RedBlackTreeRawIndexIteratable { }
+
 extension RedBlackTreeMultiMap {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
   @inline(__always)
-  public var rawIndices: AnySequence<RawIndex> {
-    AnySequence(RawIndexSequence(_subSequence: _tree.indexSubsequence()))
+  public var rawIndices: RawIndexSequence<RedBlackTreeMultiMap> {
+    RawIndexSequence(tree: _tree)
   }
 }
 
@@ -921,64 +922,11 @@ extension RedBlackTreeMultiMap.SubSequence {
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
   @inline(__always)
-  public var rawIndices: AnySequence<RawIndex> {
-    AnySequence(
-      IndexSequence(
-        _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
-  @frozen
-  public struct RawIndexSequence {
-
-    @usableFromInline
-    internal typealias _SubSequence = Tree.IndexSequence
-
-    @usableFromInline
-    internal let _subSequence: _SubSequence
-
-    @inlinable
-    init(_subSequence: _SubSequence) {
-      self._subSequence = _subSequence
-    }
-  }
-}
-
-extension RedBlackTreeMultiMap.RawIndexSequence: Sequence {
-
-  public struct Iterator: IteratorProtocol {
-
-    @usableFromInline
-    internal var _iterator: _SubSequence.Iterator
-
-    @inlinable
-    @inline(__always)
-    internal init(_ _iterator: _SubSequence.Iterator) {
-      self._iterator = _iterator
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> RawIndex? {
-      _iterator.next()
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func makeIterator() -> Iterator {
-    Iterator(_subSequence.makeIterator())
-  }
-}
-
-extension RedBlackTreeMultiMap.RawIndexSequence {
-
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (RawIndex) throws -> Void) rethrows {
-    try _subSequence.forEach(body)
+  public var rawIndices: RawIndexSequence<RedBlackTreeMultiMap> {
+    RawIndexSequence(
+      tree: _tree,
+      start: startIndex.rawValue,
+      end: endIndex.rawValue)
   }
 }
 

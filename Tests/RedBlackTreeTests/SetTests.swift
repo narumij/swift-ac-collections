@@ -86,7 +86,7 @@ final class SetTests: XCTestCase {
   func testSubscript() throws {
     let b: RedBlackTreeSet<Int> = [1, 2, 3]
     XCTAssertEqual(b[b.startIndex], 1)
-    XCTAssertEqual(b[RedBlackTreeSet<Int>.RawIndex(0)], 1)
+    XCTAssertEqual(b[RawIndex(0)], 1)
   }
 #endif
   
@@ -855,7 +855,6 @@ final class SetTests: XCTestCase {
     XCTAssertTrue(set.isValid(index: set.startIndex))
     XCTAssertTrue(set.isValid(index: set.endIndex))
     typealias Index = RedBlackTreeSet<Int>.Index
-    typealias RawIndex = RedBlackTreeSet<Int>.RawIndex
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
     XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
@@ -886,7 +885,6 @@ final class SetTests: XCTestCase {
     XCTAssertTrue(set.isValid(index: set.startIndex))
     XCTAssertTrue(set.isValid(index: set.endIndex))
     typealias Index = RedBlackTreeSet<Int>.Index
-    typealias RawIndex = RedBlackTreeSet<Int>.RawIndex
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
     XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)

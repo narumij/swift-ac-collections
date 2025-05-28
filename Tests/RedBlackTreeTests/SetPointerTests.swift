@@ -28,12 +28,12 @@ final class SetPointerTests: XCTestCase {
 
   func testPointer2() throws {
     if let it = members.startIndex.next {
-      XCTAssertTrue(it.isValid)
+      XCTAssertTrue(it.___isValid)
       XCTAssertEqual(it.pointee, 1)
       XCTAssertNotNil(it.previous)
       XCTAssertNotNil(it.next)
       members.remove(at: it)
-      XCTAssertFalse(it.isValid)
+      XCTAssertFalse(it.___isValid)
       XCTAssertTrue(it.isPhantom)
       XCTAssertNil(it.pointee)
       XCTAssertNil(it.previous)
@@ -93,7 +93,7 @@ final class SetPointerTests: XCTestCase {
   func testGhostBehavior1() throws {
     let indices = members.indices.map { $0 }
     members.remove(at: indices[2])
-    XCTAssertFalse(indices[2].isValid)
+    XCTAssertFalse(indices[2].___isValid)
     XCTAssertLessThan(indices[0].advanced(by: -2), indices[2])
     XCTAssertLessThan(indices[0].advanced(by: -1), indices[2])
     XCTAssertTrue(indices[0] < indices[2])
@@ -108,7 +108,7 @@ final class SetPointerTests: XCTestCase {
   func testGhostBehavior2() throws {
     let indices = members.indices.map { $0 }
     members.remove(at: indices[0])
-    XCTAssertFalse(indices[0].isValid)
+    XCTAssertFalse(indices[0].___isValid)
     XCTAssertLessThan(indices[0].advanced(by: -2), indices[0])
     XCTAssertLessThan(indices[0].advanced(by: -1), indices[0])
     XCTAssertEqual(indices[0], indices[0])
@@ -123,7 +123,7 @@ final class SetPointerTests: XCTestCase {
   func testGhostBehavior3() throws {
     let indices = members.indices.map { $0 }
     members.remove(at: indices[4])
-    XCTAssertFalse(indices[4].isValid)
+    XCTAssertFalse(indices[4].___isValid)
     XCTAssertLessThan(indices[0].advanced(by: -2), indices[4])
     XCTAssertLessThan(indices[0].advanced(by: -1), indices[4])
     XCTAssertLessThan(indices[0], indices[4])
@@ -261,10 +261,10 @@ final class SetPointerTests: XCTestCase {
     for i in indices.indices {
       members.remove(at: indices[i])
       for j in indices.startIndex..<i {
-        XCTAssertFalse(indices[j].isValid)
+        XCTAssertFalse(indices[j].___isValid)
       }
       for j in i.advanced(by: 1)..<indices.endIndex {
-        XCTAssertTrue(indices[j].isValid)
+        XCTAssertTrue(indices[j].___isValid)
       }
     }
   }
@@ -274,10 +274,10 @@ final class SetPointerTests: XCTestCase {
     for i in indices.indices.reversed() {
       members.remove(at: indices[i])
       for j in indices.startIndex..<i {
-        XCTAssertTrue(indices[j].isValid)
+        XCTAssertTrue(indices[j].___isValid)
       }
       for j in i.advanced(by: 1)..<indices.endIndex {
-        XCTAssertFalse(indices[j].isValid)
+        XCTAssertFalse(indices[j].___isValid)
       }
     }
   }

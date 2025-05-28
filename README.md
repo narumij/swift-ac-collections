@@ -240,7 +240,8 @@ while idx != tree6.endIndex {
 }
 ```
 
-おすすめできませんが、C++のイテレータとは異なり比較でループを回すこともできます。 
+比較演算子の計算量がそこそこあるためおすすめできませんが、
+C++のイテレータとは異なり比較でループを回すこともできます。 
 
 ```Swift
 var tree6: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
@@ -250,7 +251,7 @@ while idx < tree6.endIndex {
 }
 ```
 
-#### Multisetのremove(:)
+#### MultiSetのremove(:)
 
 RedBlackTreeMultiSetのremove(:)は、enumerated()やforEach(:)の削除時対策が効かないため、通常のコピーオンライトとくらべて、さらにコピーが発生しやすい挙動としています。
 

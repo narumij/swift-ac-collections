@@ -220,8 +220,8 @@ extension ___RedBlackTree.___Tree.Pointer: Comparable {
       return next != rhs.rawValue && lhs._tree.___ptr_comp(lhs.rawValue, next)
     }
 
-    assert(lhs.isValid)
-    assert(rhs.isValid)
+    assert(lhs.___isValid)
+    assert(rhs.___isValid)
 
     guard lhs.rawValue == .end || lhs._tree.___is_valid(lhs.rawValue),
       rhs.rawValue == .end || rhs._tree.___is_valid(rhs.rawValue)
@@ -311,9 +311,13 @@ extension ___RedBlackTree.___Tree.Pointer: Strideable {
 
 extension ___RedBlackTree.___Tree.Pointer {
 
+  /// 参照している木に対してポインタがValidかどうか
+  ///
+  /// CoWが発生すると結果が乖離するため注意
   @inlinable
   @inline(__always)
-  public var isValid: Bool {
+  public var ___isValid: Bool {
+    // TODO: 余力があるときにinternalに変更するかも
     if rawValue == .end { return true }
     return _tree.___is_valid(rawValue)
   }
@@ -344,7 +348,7 @@ extension ___RedBlackTree.___Tree.Pointer {
   @inline(__always)
   public var next: Self? {
     // 幽霊化はあくまでRange<Index>対応なので、next返却能力はあるが、未対応のままにする
-    guard !___is_null_or_end(rawValue), isValid else {
+    guard !___is_null_or_end(rawValue), ___isValid else {
       return nil
     }
     var next = self
@@ -356,7 +360,7 @@ extension ___RedBlackTree.___Tree.Pointer {
   @inline(__always)
   public var previous: Self? {
     // 幽霊化はあくまでRange<Index>対応なので、previous返却能力はあるが、未対応のままにする
-    guard rawValue != .nullptr, rawValue != _tree.begin(), isValid else {
+    guard rawValue != .nullptr, rawValue != _tree.begin(), ___isValid else {
       return nil
     }
     var prev = self
@@ -370,7 +374,7 @@ extension ___RedBlackTree.___Tree.Pointer {
   @inlinable
   @inline(__always)
   public var pointee: Element? {
-    guard !___is_null_or_end(rawValue), isValid else {
+    guard !___is_null_or_end(rawValue), ___isValid else {
       return nil
     }
     return ___pointee

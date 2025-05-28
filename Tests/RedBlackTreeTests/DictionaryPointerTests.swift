@@ -21,12 +21,12 @@ final class DictionaryPointerTests: XCTestCase {
   
   func testPointer2() throws {
     if let it = members.startIndex.next {
-      XCTAssertTrue(it.isValid)
+      XCTAssertTrue(it.___isValid)
       XCTAssertEqual(it.pointee?.key, 1)
       XCTAssertNotNil(it.previous)
       XCTAssertNotNil(it.next)
       members.remove(at: it)
-      XCTAssertFalse(it.isValid)
+      XCTAssertFalse(it.___isValid)
       XCTAssertTrue(it.isPhantom)
       XCTAssertNil(it.pointee)
       XCTAssertNil(it.previous)

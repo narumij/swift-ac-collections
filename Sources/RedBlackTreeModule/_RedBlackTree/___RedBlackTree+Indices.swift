@@ -63,7 +63,7 @@ extension ___RedBlackTree.___Tree {
   @frozen
   public struct IndexSequence: Sequence {
 
-    public typealias Element = Tree.RawPointer
+    public typealias Element = RawPointer
 
     @usableFromInline
     typealias Index = _NodePtr

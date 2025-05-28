@@ -75,7 +75,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 }
 
 extension RedBlackTreeDictionary {
-  public typealias RawIndex = Tree.RawPointer
+  public typealias RawIndex = RawPointer
 }
 
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
@@ -1022,8 +1022,6 @@ extension RedBlackTreeDictionary {
 
   @frozen
   public struct RawIndexSequence {
-
-    public typealias RawPointer = Tree.RawPointer
 
     @usableFromInline
     internal typealias _SubSequence = Tree.IndexSequence

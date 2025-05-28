@@ -22,46 +22,43 @@
 
 import Foundation
 
-extension ___RedBlackTree {
+/// 赤黒木のノードへの軽量なポインタ
+///
+/// 各データ構造では軽量インデックスとして用いられる
+///
+/// nullptrはオプショナルで表現する想定で、nullptrを保持しない
+///
+/// 本当の生ポインタはIntのtypealiasだが、それを晒すと間違いのもとなので、ラップしてある
+public
+  enum RawPointer: Equatable
+{
+  case node(_NodePtr)
+  case end
 
-  /// 赤黒木のノードへの軽量なポインタ
-  ///
-  /// 各データ構造では軽量インデックスとして用いられる
-  ///
-  /// nullptrはオプショナルで表現する想定で、nullptrを保持しない
-  ///
-  /// 本当の生ポインタはIntのtypealiasだが、それを晒すと間違いのもとなので、ラップしてある
-  public
-    enum RawPointer: Equatable
-  {
-    case node(_NodePtr)
-    case end
-
-    @usableFromInline
-    init(_ node: _NodePtr) {
-      guard node != .nullptr else {
-        preconditionFailure("_NodePtr is nullptr")
-      }
-      self = node == .end ? .end : .node(node)
+  @usableFromInline
+  init(_ node: _NodePtr) {
+    guard node != .nullptr else {
+      preconditionFailure("_NodePtr is nullptr")
     }
+    self = node == .end ? .end : .node(node)
+  }
 
-    @usableFromInline
-    var rawValue: _NodePtr {
-      switch self {
-      case .node(let _NodePtr):
-        return _NodePtr
-      case .end:
-        return .end
-      }
+  @usableFromInline
+  var rawValue: _NodePtr {
+    switch self {
+    case .node(let _NodePtr):
+      return _NodePtr
+    case .end:
+      return .end
     }
   }
 }
 
-extension Optional where Wrapped == ___RedBlackTree.RawPointer {
+extension Optional where Wrapped == RawPointer {
 
   @inlinable
   init(_ ptr: _NodePtr) {
-    self = ptr == .nullptr ? .none : .some(___RedBlackTree.RawPointer(ptr))
+    self = ptr == .nullptr ? .none : .some(RawPointer(ptr))
   }
 
   @usableFromInline
@@ -76,14 +73,13 @@ extension Optional where Wrapped == ___RedBlackTree.RawPointer {
 }
 
 #if swift(>=5.5)
-  extension ___RedBlackTree.RawPointer: @unchecked Sendable {}
+  extension RawPointer: @unchecked Sendable {}
 #endif
 
 #if DEBUG
-extension ___RedBlackTree.RawPointer {
-  static func unsafe(_ node: _NodePtr) -> Self {
-    node == .end ? .end : .node(node)
+  extension RawPointer {
+    static func unsafe(_ node: _NodePtr) -> Self {
+      node == .end ? .end : .node(node)
+    }
   }
-}
 #endif
-

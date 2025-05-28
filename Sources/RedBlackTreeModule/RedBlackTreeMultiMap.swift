@@ -56,7 +56,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 }
 
 extension RedBlackTreeMultiMap {
-  public typealias RawIndex = Tree.RawPointer
+  public typealias RawIndex = RawPointer
 }
 
 extension RedBlackTreeMultiMap: ___RedBlackTreeBase {}
@@ -936,8 +936,6 @@ extension RedBlackTreeMultiMap {
 
   @frozen
   public struct RawIndexSequence {
-
-    public typealias RawPointer = Tree.RawPointer
 
     @usableFromInline
     internal typealias _SubSequence = Tree.IndexSequence

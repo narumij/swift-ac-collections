@@ -53,7 +53,7 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 }
 
 extension RedBlackTreeMultiSet {
-  public typealias RawIndex = Tree.RawPointer
+  public typealias RawIndex = RawPointer
 }
 
 extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
@@ -839,8 +839,6 @@ extension RedBlackTreeMultiSet {
 
   @frozen
   public struct RawIndexSequence {
-
-    public typealias RawPointer = Tree.RawPointer
 
     @usableFromInline
     internal typealias _SubSequence = Tree.IndexSequence

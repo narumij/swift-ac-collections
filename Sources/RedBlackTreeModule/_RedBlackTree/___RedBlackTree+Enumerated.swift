@@ -28,7 +28,7 @@ protocol RawPointerBuilderProtocol {}
 extension RawPointerBuilderProtocol {
 
   @usableFromInline
-  internal typealias Index = ___RedBlackTree.RawPointer
+  internal typealias Index = RawPointer
 
   @inlinable
   @inline(__always)
@@ -63,7 +63,7 @@ extension ___RedBlackTree.___Tree {
   
   #if true
     typealias EnumIndexMaker = RawPointerBuilderProtocol
-    public typealias EnumuratedIndex = ___RedBlackTree.RawPointer
+    public typealias EnumuratedIndex = RawPointer
   #else
     typealias EnumIndexMaker = TreePointerBuilderProtocol
     public typealias EnumIndex = TreePointer

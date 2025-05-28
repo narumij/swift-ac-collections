@@ -72,7 +72,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
 }
 
 extension RedBlackTreeSet {
-  public typealias RawIndex = Tree.RawPointer
+  public typealias RawIndex = RawPointer
 }
 
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
@@ -844,8 +844,6 @@ extension RedBlackTreeSet {
 
   @frozen
   public struct RawIndexSequence {
-
-    public typealias RawPointer = Tree.RawPointer
 
     @usableFromInline
     internal typealias _SubSequence = Tree.IndexSequence

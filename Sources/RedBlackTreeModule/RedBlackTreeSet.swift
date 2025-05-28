@@ -49,18 +49,18 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias Element = Element
 
-  /// `Index` は `RedBlackTreeSet` 内の要素を参照するための型です。
+  /// `Index`は赤黒木ノードへの標準インデックスです
   ///
-  /// `Collection` プロトコルに準拠するために用意されており、
-  /// `startIndex` から `endIndex` の範囲でシーケンシャルに要素を走査できます。
-  /// また、`index(before:)` や `index(after:)` などのメソッドを使用することで、
-  /// インデックスを前後に移動できます。
+  /// プロパティや探索系メソッドから取得できます。
   ///
-  /// - Important: `Index` はコレクションの状態が変化（挿入・削除など）すると無効に
-  ///   なる場合があります。無効なインデックスを使用するとランタイムエラーや
-  ///   不正な参照が発生する可能性があるため注意してください。
+  /// 要素取得、要素削除、範囲取得、範囲削除等、様々な操作に用いる事ができます。
   ///
-  /// - SeeAlso: `startIndex`, `endIndex`, `index(before:)`, `index(after:)`
+  /// `Index`は`Collection`や`BidirectionalCollection`
+  /// 準拠に用いられていて、様々な操作が可能です。
+  ///
+  /// - Important:
+  ///  要素及びノードが削除された場合、インデックスは無効になります。
+  /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
   public
     typealias Index = Tree.Pointer
 
@@ -72,6 +72,15 @@ public struct RedBlackTreeSet<Element: Comparable> {
 }
 
 extension RedBlackTreeSet {
+  /// `RawIndex`は赤黒木ノードへの軽量インデックスです
+  ///
+  /// 要素取得や要素削除に用いる事ができます。
+  ///
+  /// - Important:
+  ///  要素及びノードが削除された場合、インデックスは無効になります。
+  /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+  ///
+  /// - SeeAlso: `subscript(position:)`, `remove(at index:)`
   public typealias RawIndex = Tree.RawPointer
 }
 

@@ -635,27 +635,10 @@ extension RedBlackTreeSet.SubSequence {
 
 extension RedBlackTreeSet.SubSequence: Sequence {
 
-  public struct Iterator: IteratorProtocol {
-    @usableFromInline
-    internal var _iterator: _SubSequence.Iterator
-
-    @inlinable
-    @inline(__always)
-    internal init(_ _iterator: _SubSequence.Iterator) {
-      self._iterator = _iterator
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> Element? {
-      _iterator.next()
-    }
-  }
-
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Iterator {
-    Iterator(_subSequence.makeIterator())
+  public __consuming func makeIterator() -> ElementIterator<RedBlackTreeSet> {
+    ElementIterator(tree: _tree, start: _subSequence.startIndex, end: _subSequence.endIndex)
   }
 }
 

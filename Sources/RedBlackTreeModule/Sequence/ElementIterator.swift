@@ -7,6 +7,8 @@
 
 public
 struct ElementIterator<Base: RedBlackTreeRawIndexIteratable>: IteratorProtocol {
+  
+  public typealias Element = Base.Tree.Element
 
   @usableFromInline
   let _tree: Base.Tree
@@ -25,7 +27,7 @@ struct ElementIterator<Base: RedBlackTreeRawIndexIteratable>: IteratorProtocol {
   
   @inlinable
   @inline(__always)
-  public mutating func next() -> Base.Tree.Element? {
+  public mutating func next() -> Element? {
     guard _current != _end else { return nil }
     defer {
       _current = _next

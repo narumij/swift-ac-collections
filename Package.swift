@@ -39,13 +39,13 @@ let package = Package(
       targets: ["AcCollections"])
   ],
   dependencies: [
-    // .package(
-    //   url: "https://github.com/apple/swift-collections.git",
-    //   branch: "main"
-    // ),
-    // .package(
-    //   url: "https://github.com/apple/swift-algorithms.git",
-    //   from: "1.2.0"),
+//     .package(
+//       url: "https://github.com/apple/swift-collections.git",
+//       branch: "main"
+//     ),
+//     .package(
+//       url: "https://github.com/apple/swift-algorithms.git",
+//       from: "1.2.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.

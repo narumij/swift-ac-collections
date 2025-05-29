@@ -356,13 +356,13 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   public func firstIndex(of member: Element) -> Index? {
-    ___first_index(of: member)
+    ___first_iter(of: member)
   }
 
   /// - Complexity: O(*n*)
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
+    try ___first_iter(where: predicate)
   }
 }
 
@@ -382,7 +382,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   public func lowerBound(_ member: Element) -> Index {
-    ___index_lower_bound(member)
+    ___iter_lower_bound(member)
   }
 
   /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
@@ -400,7 +400,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   public func upperBound(_ member: Element) -> Index {
-    ___index_upper_bound(member)
+    ___iter_upper_bound(member)
   }
 }
 

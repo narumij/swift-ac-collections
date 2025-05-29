@@ -467,12 +467,12 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public func lowerBound(_ p: Key) -> Index {
-    ___index_lower_bound(p)
+    ___iter_lower_bound(p)
   }
 
   @inlinable
   public func upperBound(_ p: Key) -> Index {
-    ___index_upper_bound(p)
+    ___iter_upper_bound(p)
   }
 }
 
@@ -495,12 +495,12 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public func firstIndex(of key: Key) -> Index? {
-    ___first_index(of: key)
+    ___first_iter(of: key)
   }
 
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
+    try ___first_iter(where: predicate)
   }
 }
 

@@ -622,8 +622,6 @@ extension RedBlackTreeMultiSet {
 
 // MARK: - Raw Index Sequence（インデックス系）
 
-extension RedBlackTreeMultiSet: RedBlackTreeRawIndexIteratable { }
-
 extension RedBlackTreeMultiSet {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。

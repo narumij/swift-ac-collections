@@ -718,8 +718,6 @@ extension RedBlackTreeMultiMap {
 
 // MARK: - Raw Index Sequence
 
-extension RedBlackTreeMultiMap: RedBlackTreeRawIndexIteratable { }
-
 extension RedBlackTreeMultiMap {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。

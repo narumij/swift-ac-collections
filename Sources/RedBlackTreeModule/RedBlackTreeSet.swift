@@ -645,8 +645,6 @@ extension RedBlackTreeSet {
 // 独自の型だと学習コストが高くなるので、速度を少し犠牲にして読みやすそうな型に変更
 // forEachが呼ばれないので、計測結果次第で元に戻します。名前も少しましに改名しましたし
 
-extension RedBlackTreeSet: RedBlackTreeRawIndexIteratable { }
-
 extension RedBlackTreeSet {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。

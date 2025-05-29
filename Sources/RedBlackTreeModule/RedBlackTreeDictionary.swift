@@ -809,8 +809,6 @@ extension RedBlackTreeDictionary {
 
 // MARK: - Raw Index Sequence
 
-extension RedBlackTreeDictionary: RedBlackTreeRawIndexIteratable { }
-
 extension RedBlackTreeDictionary {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。

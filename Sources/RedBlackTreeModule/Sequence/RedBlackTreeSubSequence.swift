@@ -94,7 +94,7 @@ extension RedBlackTreeSubSequence {
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    startIndex..<endIndex
+    startIndex ..< endIndex
   }
 }
 

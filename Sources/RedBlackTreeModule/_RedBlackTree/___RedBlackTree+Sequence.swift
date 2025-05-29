@@ -22,6 +22,7 @@
 
 import Foundation
 
+#if false
 // 性能変化の反応が過敏なので、慎重さが必要っぽい。
 
 // 単発削除対策型のイテレータ実装
@@ -53,6 +54,7 @@ extension RedBlackTreeIteratorNextProtocol {
     (start == .end ? .end : _tree.__tree_next(start), _end)
   }
 }
+#endif
 
 #if false
   // 同一値一括削除対策型のイテレータ実装
@@ -138,35 +140,35 @@ extension RedBlackTreeIteratorNextProtocol {
 
 extension ___RedBlackTree.___Tree: Sequence {
 
-  @frozen
-  public struct Iterator: RedBlackTreeIteratorNextProtocol {
-
-    public typealias Element = Tree.Element
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self._tree = tree
-      self._current = start
-      self._end = end
-      self._next = start == .end ? .end : tree.__tree_next(start)
-    }
-
-    @usableFromInline
-    let _tree: Tree
-
-    @usableFromInline
-    var _current, _next, _end: _NodePtr
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> Element? {
-      _next().map { _tree[$0] }
-    }
-  }
+//  @frozen
+//  public struct Iterator: RedBlackTreeIteratorNextProtocol {
+//
+//    public typealias Element = Tree.Element
+//
+//    @inlinable
+//    @inline(__always)
+//    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+//      self._tree = tree
+//      self._current = start
+//      self._end = end
+//      self._next = start == .end ? .end : tree.__tree_next(start)
+//    }
+//
+//    @usableFromInline
+//    let _tree: Tree
+//
+//    @usableFromInline
+//    var _current, _next, _end: _NodePtr
+//
+//    @inlinable
+//    @inline(__always)
+//    public mutating func next() -> Element? {
+//      _next().map { _tree[$0] }
+//    }
+//  }
 
   @inlinable
-  public __consuming func makeIterator() -> Iterator {
+  public __consuming func makeIterator() -> ElementIterator<Tree> {
     .init(tree: self, start: __begin_node, end: __end_node())
   }
 }
@@ -198,7 +200,7 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
 
   @inlinable
   @inline(__always)
-  internal func index(after i: _NodePtr) -> _NodePtr {
+  internal func ___index(after i: _NodePtr) -> _NodePtr {
     guard i != __end_node(), ___is_valid(i) else {
       fatalError(.invalidIndex)
     }
@@ -207,14 +209,14 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
 
   @inlinable
   @inline(__always)
-  internal func formIndex(after i: inout _NodePtr) {
+  internal func ___formIndex(after i: inout _NodePtr) {
     guard i != __end_node(), ___is_valid(i) else { fatalError(.invalidIndex) }
     i = __tree_next(i)
   }
 
   @inlinable
   @inline(__always)
-  internal func index(before i: _NodePtr) -> _NodePtr {
+  internal func ___index(before i: _NodePtr) -> _NodePtr {
     guard i != __begin_node, i == __end_node() || ___is_valid(i) else {
       fatalError(.invalidIndex)
     }
@@ -223,14 +225,14 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
 
   @inlinable
   @inline(__always)
-  internal func formIndex(before i: inout _NodePtr) {
+  internal func ___formIndex(before i: inout _NodePtr) {
     guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
     i = __tree_prev_iter(i)
   }
 
   @inlinable
   @inline(__always)
-  internal func index(_ i: _NodePtr, offsetBy distance: Int) -> _NodePtr {
+  internal func ___index(_ i: _NodePtr, offsetBy distance: Int) -> _NodePtr {
     guard i == ___end() || ___is_valid(i) else { fatalError(.invalidIndex) }
     var distance = distance
     var i = i
@@ -239,13 +241,13 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
         guard i != __end_node() else {
           fatalError(.outOfBounds)
         }
-        i = index(after: i)
+        i = ___index(after: i)
         distance -= 1
       } else {
         guard i != __begin_node else {
           fatalError(.outOfBounds)
         }
-        i = index(before: i)
+        i = ___index(before: i)
         distance += 1
       }
     }
@@ -254,14 +256,14 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout _NodePtr, offsetBy distance: Int) {
+  internal func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int) {
     guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
-    i = index(i, offsetBy: distance)
+    i = ___index(i, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
-  internal func index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> _NodePtr? {
+  internal func ___index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> _NodePtr? {
     guard i == ___end() || ___is_valid(i) else { fatalError(.invalidIndex) }
     var distance = distance
     var i = i
@@ -273,13 +275,13 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
         guard i != __end_node() else {
           fatalError(.outOfBounds)
         }
-        i = index(after: i)
+        i = ___index(after: i)
         distance -= 1
       } else {
         guard i != __begin_node else {
           fatalError(.outOfBounds)
         }
-        i = index(before: i)
+        i = ___index(before: i)
         distance += 1
       }
     }
@@ -288,10 +290,10 @@ extension ___RedBlackTree.___Tree {  // SubSequence不一致でBidirectionalColl
 
   @inlinable
   @inline(__always)
-  internal func formIndex(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> Bool
+  internal func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> Bool
   {
     guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
-    if let ii = index(i, offsetBy: distance, limitedBy: limit) {
+    if let ii = ___index(i, offsetBy: distance, limitedBy: limit) {
       i = ii
       return true
     }

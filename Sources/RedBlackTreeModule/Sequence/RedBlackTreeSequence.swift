@@ -22,7 +22,7 @@ extension RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> ElementIterator<Self> {
+  public __consuming func makeIterator() -> ElementIterator<Self.Tree> {
     ElementIterator(tree: _tree, start: _tree.__begin_node, end: _tree.__end_node())
   }
 }
@@ -82,43 +82,43 @@ extension RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    ___index(_tree.index(after: i.rawValue))
+    ___index(_tree.___index(after: i.rawValue))
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
-    _tree.formIndex(after: &i.rawValue)
+    _tree.___formIndex(after: &i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    ___index(_tree.index(before: i.rawValue))
+    ___index(_tree.___index(before: i.rawValue))
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
-    _tree.formIndex(before: &i.rawValue)
+    _tree.___formIndex(before: &i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(_tree.index(i.rawValue, offsetBy: distance))
+    ___index(_tree.___index(i.rawValue, offsetBy: distance))
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    _tree.formIndex(&i.rawValue, offsetBy: distance)
+    _tree.___formIndex(&i.rawValue, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    ___index_or_nil(_tree.index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue))
+    ___index_or_nil(_tree.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue))
   }
 
   @inlinable
@@ -126,7 +126,7 @@ extension RedBlackTreeSequence {
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
-    _tree.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
+    _tree.___formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
 
 #if false

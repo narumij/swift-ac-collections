@@ -12,7 +12,7 @@ where
   Index == Base.Index,
   Indices == Range<Index>,
   Element == Tree.Element,
-  Iterator == ElementIterator<Base>,
+  Iterator == ElementIterator<Base.Tree>,
   Self: RedBlackTreeRawIndexIteratable,
   SubSequence == Self
 {
@@ -26,7 +26,7 @@ where
 extension RedBlackTreeSubSequence {
 
   @inlinable
-  public func makeIterator() -> ElementIterator<Base> {
+  public func makeIterator() -> ElementIterator<Base.Tree> {
     .init(tree: _tree, start: _start, end: _end)
   }
 }
@@ -149,20 +149,20 @@ extension RedBlackTreeSubSequence {
   @inlinable @inline(__always)
   public func index(before i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    index(rawValue: _tree.index(before: i.rawValue))
+    index(rawValue: _tree.___index(before: i.rawValue))
   }
 
   @inlinable @inline(__always)
   public func index(after i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    index(rawValue: _tree.index(after: i.rawValue))
+    index(rawValue: _tree.___index(after: i.rawValue))
   }
 
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-    _tree.index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
+    _tree.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
       .map { index(rawValue: $0) }
   }
 }
@@ -173,21 +173,21 @@ extension RedBlackTreeSubSequence {
   @inline(__always)
   public func formIndex(after i: inout Index) {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    _tree.formIndex(after: &i.rawValue)
+    _tree.___formIndex(after: &i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     // 標準のArrayが単純に減算することにならい、範囲チェックをしない
-    _tree.formIndex(before: &i.rawValue)
+    _tree.___formIndex(before: &i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-    _tree.formIndex(&i.rawValue, offsetBy: distance)
+    _tree.___formIndex(&i.rawValue, offsetBy: distance)
   }
 
   @inlinable

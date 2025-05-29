@@ -26,7 +26,7 @@ public protocol RedBlackTreeRawIndexIteratable {
 
 @usableFromInline
 protocol RedBlackTreeCollectionable: RedBlackTreeRawIndexIteratable
-where Tree: CollectionableProtocol, Index.Tree == Tree
+where Tree: CollectionableProtocol & ForEachProtocol, Index.Tree == Tree
 {
   associatedtype Index: RedBlackTreeIndex
 }

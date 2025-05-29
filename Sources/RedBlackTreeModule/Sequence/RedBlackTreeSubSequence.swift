@@ -58,12 +58,7 @@ extension RedBlackTreeSubSequence {
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
-    var __p = _start
-    while __p != _end {
-      let __c = __p
-      __p = _tree.__tree_next(__p)
-      try body(_tree[__c])
-    }
+    try _tree.___for_each_(__p: _start, __l: _end, body: body)
   }
 }
 

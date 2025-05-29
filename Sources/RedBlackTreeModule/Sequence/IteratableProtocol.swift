@@ -44,3 +44,15 @@ protocol CollectionableProtocol: CompareProtocol {
 
   func ___is_valid(_ p: _NodePtr) -> Bool
 }
+
+@usableFromInline
+protocol ForEachProtocol {
+  
+  associatedtype Element
+  
+  func ___for_each(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void) rethrows
+  
+  func ___for_each_(_ body: (Element) throws -> Void) rethrows
+
+  func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (Element) throws -> Void) rethrows
+}

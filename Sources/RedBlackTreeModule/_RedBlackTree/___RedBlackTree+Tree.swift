@@ -461,44 +461,6 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable
-  @inline(__always)
-  internal func ___for_each(
-    __p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void
-  )
-    rethrows
-  {
-    var __p = __p
-    var cont = true
-    while cont, __p != __l {
-      let __c = __p
-      __p = __tree_next(__p)
-      try body(__c, &cont)
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___for_each_(_ body: (Element) throws -> Void) rethrows {
-    try ___for_each_(__p: __begin_node, __l: __end_node(), body: body)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (Element) throws -> Void)
-    rethrows
-  {
-    var __p = __p
-    while __p != __l {
-      let __c = __p
-      __p = __tree_next(__p)
-      try body(self[__c])
-    }
-  }
-}
-
-extension ___RedBlackTree.___Tree {
-
-  @inlinable
   internal func
     ___erase(_ __f: _NodePtr, _ __l: _NodePtr, _ action: (Element) throws -> Void) rethrows
   {
@@ -591,3 +553,172 @@ extension ___RedBlackTree.___Tree {
     return ___is_valid(i)
   }
 }
+
+// MARK: -
+
+extension ___RedBlackTree.___Tree {
+
+  @inlinable
+  @inline(__always)
+  internal func ___for_each(
+    __p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void
+  )
+    rethrows
+  {
+    var __p = __p
+    var cont = true
+    while cont, __p != __l {
+      let __c = __p
+      __p = __tree_next(__p)
+      try body(__c, &cont)
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___for_each_(_ body: (Element) throws -> Void) rethrows {
+    try ___for_each_(__p: __begin_node, __l: __end_node(), body: body)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (Element) throws -> Void)
+    rethrows
+  {
+    var __p = __p
+    while __p != __l {
+      let __c = __p
+      __p = __tree_next(__p)
+      try body(self[__c])
+    }
+  }
+}
+
+// MARK: -
+
+extension ___RedBlackTree.___Tree {
+
+  // この実装がないと、迷子になる?
+  @inlinable
+  internal func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int {
+    guard start == __end_node() || ___is_valid(start),
+      end == __end_node() || ___is_valid(end)
+    else {
+      fatalError(.invalidIndex)
+    }
+    return ___signed_distance(start, end)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___index(after i: _NodePtr) -> _NodePtr {
+    guard i != __end_node(), ___is_valid(i) else {
+      fatalError(.invalidIndex)
+    }
+    return __tree_next(i)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___formIndex(after i: inout _NodePtr) {
+    guard i != __end_node(), ___is_valid(i) else { fatalError(.invalidIndex) }
+    i = __tree_next(i)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___index(before i: _NodePtr) -> _NodePtr {
+    guard i != __begin_node, i == __end_node() || ___is_valid(i) else {
+      fatalError(.invalidIndex)
+    }
+    return __tree_prev_iter(i)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___formIndex(before i: inout _NodePtr) {
+    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
+    i = __tree_prev_iter(i)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___index(_ i: _NodePtr, offsetBy distance: Int) -> _NodePtr {
+    guard i == ___end() || ___is_valid(i) else { fatalError(.invalidIndex) }
+    var distance = distance
+    var i = i
+    while distance != 0 {
+      if 0 < distance {
+        guard i != __end_node() else {
+          fatalError(.outOfBounds)
+        }
+        i = ___index(after: i)
+        distance -= 1
+      } else {
+        guard i != __begin_node else {
+          fatalError(.outOfBounds)
+        }
+        i = ___index(before: i)
+        distance += 1
+      }
+    }
+    return i
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int) {
+    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
+    i = ___index(i, offsetBy: distance)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> _NodePtr? {
+    guard i == ___end() || ___is_valid(i) else { fatalError(.invalidIndex) }
+    var distance = distance
+    var i = i
+    while distance != 0 {
+      if i == limit {
+        return nil
+      }
+      if 0 < distance {
+        guard i != __end_node() else {
+          fatalError(.outOfBounds)
+        }
+        i = ___index(after: i)
+        distance -= 1
+      } else {
+        guard i != __begin_node else {
+          fatalError(.outOfBounds)
+        }
+        i = ___index(before: i)
+        distance += 1
+      }
+    }
+    return i
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> Bool
+  {
+    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
+    if let ii = ___index(i, offsetBy: distance, limitedBy: limit) {
+      i = ii
+      return true
+    }
+    return false
+  }
+}
+
+// MARK: -
+
+extension ___RedBlackTree.___Tree: Sequence {
+
+  @inlinable
+  public __consuming func makeIterator() -> ElementIterator<Tree> {
+    .init(tree: self, start: __begin_node, end: __end_node())
+  }
+}
+

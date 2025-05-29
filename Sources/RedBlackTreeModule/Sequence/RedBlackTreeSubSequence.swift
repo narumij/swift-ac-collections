@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol ElementCollection: Sequence & Collection & BidirectionalCollection
+protocol RedBlackTreeSubSequence: Sequence & Collection & BidirectionalCollection
 where
   Tree == Base.Tree,
   Index == Base.Index,
@@ -23,7 +23,7 @@ where
   init(tree: Base.Tree, start: _NodePtr, end: _NodePtr)
 }
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   @inlinable
   public func makeIterator() -> ElementIterator<Base> {
@@ -31,7 +31,7 @@ extension ElementCollection {
   }
 }
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   @inlinable @inline(__always)
   public var count: Int {
@@ -39,7 +39,7 @@ extension ElementCollection {
   }
 }
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
   
   // 断念
   //    @inlinable
@@ -53,7 +53,7 @@ extension ElementCollection {
   //    }
 }
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   @inlinable
   @inline(__always)
@@ -67,7 +67,7 @@ extension ElementCollection {
   }
 }
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   //  public typealias Index = Index
 
@@ -77,7 +77,7 @@ extension ElementCollection {
   }
 }
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   @inlinable
   @inline(__always)
@@ -94,7 +94,7 @@ extension ElementCollection {
   }
 }
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   @inlinable
   @inline(__always)
@@ -103,7 +103,7 @@ extension ElementCollection {
   }
 }
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   public var startIndex: Index {
     index(rawValue: _start)
@@ -114,7 +114,7 @@ extension ElementCollection {
   }
 }
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   @inlinable
   public subscript(position: RawIndex) -> Element {
@@ -123,7 +123,7 @@ extension ElementCollection {
   }
 }
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   @inlinable
   @inline(__always)
@@ -140,7 +140,7 @@ extension ElementCollection {
   }
 }
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   // この実装がないと、迷子になる?
   @inlinable @inline(__always)
@@ -149,7 +149,7 @@ extension ElementCollection {
   }
 }
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   @inlinable @inline(__always)
   public func index(before i: Index) -> Index {
@@ -172,7 +172,7 @@ extension ElementCollection {
   }
 }
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   @inlinable
   @inline(__always)
@@ -211,7 +211,7 @@ extension ElementCollection {
 
 // MARK: - Raw Index Sequence
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
@@ -227,7 +227,7 @@ extension ElementCollection {
 
 // MARK: - Raw Indexed Sequence
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   @inlinable @inline(__always)
   public var rawIndexedElements: RawIndexedSequence<Self> {
@@ -246,7 +246,7 @@ extension ElementCollection {
 
 // MARK: - Utility
 
-extension ElementCollection {
+extension RedBlackTreeSubSequence {
 
   @inlinable
   @inline(__always)

@@ -693,7 +693,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap: RedBlackTreeCollectionable { }
 
-extension RedBlackTreeMultiMap.SubSequence: ElementCollection {
+extension RedBlackTreeMultiMap.SubSequence: RedBlackTreeSubSequence {
   public typealias Base = RedBlackTreeMultiMap
   public typealias Element = Tree.Element
 }

@@ -784,7 +784,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: RedBlackTreeCollectionable { }
 
-extension RedBlackTreeDictionary.SubSequence: ElementCollection {
+extension RedBlackTreeDictionary.SubSequence: RedBlackTreeSubSequence {
   public typealias Base = RedBlackTreeDictionary
   public typealias Element = Tree.Element
 }

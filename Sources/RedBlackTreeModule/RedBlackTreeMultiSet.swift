@@ -597,7 +597,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet: RedBlackTreeCollectionable { }
 
-extension RedBlackTreeMultiSet.SubSequence: ElementCollection {
+extension RedBlackTreeMultiSet.SubSequence: RedBlackTreeSubSequence {
   public typealias Base = RedBlackTreeMultiSet
   public typealias Element = Tree.Element
 }

@@ -705,7 +705,7 @@ extension RedBlackTreeMultiMap.SubSequence: RedBlackTreeSubSequence {
   public typealias Element = Tree.Element
 }
 
-extension RedBlackTreeMultiMap.SubSequence: Sequence, Collection, BidirectionalCollection {
+extension RedBlackTreeMultiMap.SubSequence: Sequence, Collection, BidirectionalCollection, RandomAccessCollection {
   public typealias Index = RedBlackTreeMultiMap.Index
   public typealias SubSequence = Self
 }

@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol RedBlackTreeSubSequence: Sequence & Collection & BidirectionalCollection
+protocol RedBlackTreeSubSequence: Sequence & Collection & BidirectionalCollection & RandomAccessCollection
 where
   Tree == Base.Tree,
   Index == Base.Index,

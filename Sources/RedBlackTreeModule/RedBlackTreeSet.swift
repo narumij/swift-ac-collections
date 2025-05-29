@@ -629,7 +629,7 @@ extension RedBlackTreeSet.SubSequence: RedBlackTreeSubSequence {
   public typealias Element = Tree.Element
 }
 
-extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollection {
+extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollection, RandomAccessCollection {
   public typealias Index = RedBlackTreeSet.Index
   public typealias SubSequence = Self
 }

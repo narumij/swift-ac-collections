@@ -796,7 +796,7 @@ extension RedBlackTreeDictionary.SubSequence: RedBlackTreeSubSequence {
   public typealias Element = Tree.Element
 }
 
-extension RedBlackTreeDictionary.SubSequence: Sequence, Collection, BidirectionalCollection {
+extension RedBlackTreeDictionary.SubSequence: Sequence, Collection, BidirectionalCollection, RandomAccessCollection {
   public typealias Index = RedBlackTreeDictionary.Index
   public typealias SubSequence = Self
 }

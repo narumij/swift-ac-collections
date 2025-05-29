@@ -29,7 +29,7 @@ public protocol IteratableProtocol {
 @usableFromInline
 protocol CollectionableProtocol: CompareProtocol {
   // この実装がないと、迷子になる?
-  func distance(from start: _NodePtr, to end: _NodePtr) -> Int
+  func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int
   
   func index(after i: _NodePtr) -> _NodePtr
   func index(before i: _NodePtr) -> _NodePtr

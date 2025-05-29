@@ -35,7 +35,7 @@ extension RedBlackTreeSubSequence {
 
   @inlinable @inline(__always)
   public var count: Int {
-    _tree.distance(from: _start, to: _end)
+    _tree.___distance(from: _start, to: _end)
   }
 }
 
@@ -140,7 +140,7 @@ extension RedBlackTreeSubSequence {
   // この実装がないと、迷子になる?
   @inlinable @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    _tree.distance(from: start.rawValue, to: end.rawValue)
+    _tree.___distance(from: start.rawValue, to: end.rawValue)
   }
 }
 

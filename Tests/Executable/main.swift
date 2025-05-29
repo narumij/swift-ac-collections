@@ -5,8 +5,8 @@ import RedBlackTreeModule
 import PermutationModule
 
 #if USING_COLLECTIONS
-import Collections
-import SortedCollections
+//import Collections
+//import SortedCollections
 #endif
 
 print("start job")

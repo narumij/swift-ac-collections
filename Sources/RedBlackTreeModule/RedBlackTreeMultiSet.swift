@@ -403,6 +403,7 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+#if false
 extension RedBlackTreeMultiSet.SubSequence {
 
   @inlinable
@@ -417,6 +418,7 @@ extension RedBlackTreeMultiSet.SubSequence {
     _subSequence.___is_valid_index(index: i.rawValue)
   }
 }
+#endif
 
 // MARK: - Iteration
 
@@ -544,12 +546,13 @@ extension RedBlackTreeMultiSet {
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: bounds.lowerBound.rawValue,
-          to: bounds.upperBound.rawValue)
-    )
+//    SubSequence(
+//      _subSequence:
+//        _tree.subsequence(
+//          from: bounds.lowerBound.rawValue,
+//          to: bounds.upperBound.rawValue)
+//    )
+    .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }
 }
 
@@ -582,26 +585,63 @@ extension RedBlackTreeMultiSet {
   /// 値レンジ `[lower, upper)` に含まれる要素のスライス
   @inlinable
   public func elements(in range: Range<Element>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: ___ptr_lower_bound(range.lowerBound),
-          to: ___ptr_lower_bound(range.upperBound)))
+//    SubSequence(
+//      _subSequence:
+//        _tree.subsequence(
+//          from: ___ptr_lower_bound(range.lowerBound),
+//          to: ___ptr_lower_bound(range.upperBound)))
+    .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_lower_bound(range.upperBound))
   }
 
   /// 値レンジ `[lower, upper]` に含まれる要素のスライス
   @inlinable
   public func elements(in range: ClosedRange<Element>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: ___ptr_lower_bound(range.lowerBound),
-          to: ___ptr_upper_bound(range.upperBound)))
+//    SubSequence(
+//      _subSequence:
+//        _tree.subsequence(
+//          from: ___ptr_lower_bound(range.lowerBound),
+//          to: ___ptr_upper_bound(range.upperBound)))
+    .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_upper_bound(range.upperBound))
   }
 }
 
 // MARK: - SubSequence: Sequence
 
+extension RedBlackTreeMultiSet {
+
+  @frozen
+  public struct SubSequence {
+
+    @usableFromInline
+    let _tree: Tree
+
+    @usableFromInline
+    var _start, _end: _NodePtr
+
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      _tree = tree
+      _start = start
+      _end = end
+    }
+  }
+}
+
+extension RedBlackTreeMultiSet: RedBlackTreeCollectionable { }
+
+extension RedBlackTreeMultiSet.SubSequence: ElementCollection {
+  public typealias Base = RedBlackTreeMultiSet
+  public typealias Element = Tree.Element
+}
+
+extension RedBlackTreeMultiSet.SubSequence: Sequence, Collection, BidirectionalCollection {
+  public typealias Index = RedBlackTreeMultiSet.Index
+  public typealias SubSequence = Self
+}
+
+
+#if false
 extension RedBlackTreeMultiSet {
 
   @frozen
@@ -742,6 +782,7 @@ extension RedBlackTreeMultiSet.SubSequence: BidirectionalCollection {
         _subSequence[bounds.lowerBound..<bounds.upperBound])
   }
 }
+#endif
 
 // MARK: - Index Range
 
@@ -756,6 +797,7 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+#if false
 extension RedBlackTreeMultiSet.SubSequence {
 
   public typealias Indices = Range<Index>
@@ -766,6 +808,7 @@ extension RedBlackTreeMultiSet.SubSequence {
     startIndex..<endIndex
   }
 }
+#endif
 
 // MARK: - Raw Index Sequence（インデックス系）
 
@@ -782,6 +825,7 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+#if false
 extension RedBlackTreeMultiSet.SubSequence {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
@@ -795,6 +839,7 @@ extension RedBlackTreeMultiSet.SubSequence {
       end: _subSequence.endIndex)
   }
 }
+#endif
 
 // MARK: - Raw Indexed Sequence
 
@@ -806,6 +851,7 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+#if false
 extension RedBlackTreeMultiSet.SubSequence {
 
   @inlinable @inline(__always)
@@ -816,6 +862,7 @@ extension RedBlackTreeMultiSet.SubSequence {
       end: _subSequence.endIndex)
   }
 }
+#endif
 
 extension RedBlackTreeMultiSet {
 
@@ -827,6 +874,7 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+#if false
 extension RedBlackTreeMultiSet.SubSequence {
 
   @available(*, deprecated, renamed: "rawIndexedElements")
@@ -836,6 +884,7 @@ extension RedBlackTreeMultiSet.SubSequence {
     rawIndexedElements
   }
 }
+#endif
 
 // MARK: - Protocol Conformance（プロトコル適合）
 

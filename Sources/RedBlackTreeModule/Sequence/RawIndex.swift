@@ -83,3 +83,4 @@ extension Optional where Wrapped == RawIndex {
     }
   }
 #endif
+

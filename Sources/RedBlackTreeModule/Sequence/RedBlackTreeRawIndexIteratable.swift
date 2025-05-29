@@ -17,12 +17,17 @@ where Tree: CollectionableProtocol, Index.Tree == Tree
 }
 
 @usableFromInline
-protocol RedBlackTreeIndex: Strideable & RedBlackTreeRawValue where Stride == Int {
+protocol RedBlackTreeIndex: Strideable & RedBlackTreeMutableRawValue where Stride == Int {
   associatedtype Tree
   init(__tree: Tree, rawValue: _NodePtr)
 }
 
 @usableFromInline
 protocol RedBlackTreeRawValue {
+  var rawValue: _NodePtr { get }
+}
+
+@usableFromInline
+protocol RedBlackTreeMutableRawValue: RedBlackTreeRawValue {
   var rawValue: _NodePtr { get set }
 }

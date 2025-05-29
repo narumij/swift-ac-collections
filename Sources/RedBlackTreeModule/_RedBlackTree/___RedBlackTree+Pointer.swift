@@ -399,6 +399,9 @@ extension ___RedBlackTree.___Tree.Pointer {
   }
 }
 
+extension ___RedBlackTree.___Tree.Pointer: RedBlackTreeIndex, RedBlackTreeMutableRawValue {
+}
+
 #if DEBUG
   extension ___RedBlackTree.___Tree.Pointer {
     fileprivate init(_unsafe_tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) {

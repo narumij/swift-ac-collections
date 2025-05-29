@@ -49,3 +49,32 @@ struct RawIndexedIterator<Tree: ___IterateNextProtocol>: IteratorProtocol {
     return (RawIndex(_current), _tree[_current])
   }
 }
+
+public
+struct ReversedRawIndexedIterator<Tree: ___IterateNextProtocol>: IteratorProtocol {
+  
+  @usableFromInline
+  let _tree: Tree
+  
+  @usableFromInline
+  var _current, _next, _start, _begin: _NodePtr
+  
+  @inlinable
+  @inline(__always)
+  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+    self._tree = tree
+    self._current = end
+    self._next = _tree.__tree_prev_iter(end)
+    self._start = start
+    self._begin = _tree.__begin_node
+  }
+  
+  @inlinable
+  @inline(__always)
+  public mutating func next() -> (rawIndex: RawIndex, element: Tree.Element)? {
+    guard _current != _start else { return nil }
+    _current = _next
+    _next = _current != _begin ? _tree.__tree_prev_iter(_current) : .nullptr
+    return (RawIndex(_current), _tree[_current])
+  }
+}

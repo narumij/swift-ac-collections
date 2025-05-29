@@ -329,7 +329,7 @@ print(total)
 #else
 var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 var total = 0
-for i in tree.startIndex ..< tree.endIndex {
+for i in (tree.startIndex ..< tree.endIndex) {
   total &+= tree[i]
 }
 print(total)

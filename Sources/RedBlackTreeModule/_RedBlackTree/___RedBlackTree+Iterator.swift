@@ -42,12 +42,16 @@ extension ___RedBlackTree.___Tree {
     @usableFromInline
     final class Remnant {
       @usableFromInline
+      @nonobjc
       var rawValue: Int?
       @usableFromInline
+      @nonobjc
       var prev: Int?
       @usableFromInline
+      @nonobjc
       var next: Int?
       @inlinable @inline(__always)
+      @nonobjc
       init() {}
     }
 
@@ -275,7 +279,7 @@ extension ___RedBlackTree.___Tree.___Iterator: Strideable {
   }
 
   @inlinable
-  @inline(__always)
+  @inline(never)
   public func advanced(by n: Int) -> Self {
     if n < 0, remnant.rawValue == rawValue, let prev = remnant.prev {
       return .init(__tree: _tree, rawValue: prev).advanced(by: n + 1)
@@ -292,12 +296,13 @@ extension ___RedBlackTree.___Tree.___Iterator: Strideable {
     var result: Self = .init(__tree: _tree, rawValue: rawValue)
     while distance != 0 {
       if 0 < distance {
-        result = result.next ?? over
+//        result = result.next ?? over
+        result = result.___next_
         distance -= 1
       } else {
-        result = result.previous ?? under
+//        result = result.previous ?? under
 //        result.rawValue = result.rawValue != _tree.begin() || _tree.___is_valid_index(result.rawValue) ? _tree.__tree_prev_iter(result.rawValue) : .under
-//        result = result.___prev_
+        result = result.___prev_
         distance += 1
       }
     }
@@ -463,3 +468,25 @@ func lessThanContainsUnderOrOver(_ lhs: _NodePtr, _ rhs: _NodePtr) -> Bool? {
   return nil
 }
 
+public protocol _RedBlackTreeIterator: RedBlackTreeSequenceBase {
+  func observed(to: Self) -> RawIndexSequence<Self>
+  func reversed(to: Self) -> ReversedSequence<RawIndexSequence<Self>>
+}
+
+extension ___RedBlackTree.___Tree.___Iterator: _RedBlackTreeIterator {
+  public func observed(to: Self) -> RawIndexSequence<Self> {
+    .init(tree: _tree, start: rawValue, end: to.rawValue)
+  }
+  public func reversed(to: Self) -> ReversedSequence<RawIndexSequence<Self>> {
+    .init(base: observed(to: to))
+  }
+}
+
+extension Range where Bound: _RedBlackTreeIterator {
+  public func obversed() -> RawIndexSequence<Bound> {
+    lowerBound.observed(to: upperBound)
+  }
+  public func reversed() -> ReversedSequence<RawIndexSequence<Bound>> {
+    lowerBound.reversed(to: upperBound)
+  }
+}

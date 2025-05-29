@@ -205,7 +205,35 @@ final class SetRemoveTest_10: XCTestCase {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
 
-  func testRemoveWithIndices() throws {
+  func testRemoveWithRange1() throws {
+    for i in members.startIndex ..< members.endIndex {
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [])
+  }
+  
+  func testRemoveWithRange2() throws {
+    (members.startIndex ..< members.endIndex).forEach { i in
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [])
+  }
+  
+  func testRemoveWithRange3() throws {
+    for i in (members.startIndex ..< members.endIndex).reversed() {
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [])
+  }
+
+  func testRemoveWithRange4() throws {
+    (members.startIndex ..< members.endIndex).reversed().forEach { i in
+      members.remove(at: i)
+    }
+    XCTAssertEqual(members.map { $0 }, [])
+  }
+
+  func testRemoveWithIndices1() throws {
     for i in members.indices {
       members.remove(at: i)
     }

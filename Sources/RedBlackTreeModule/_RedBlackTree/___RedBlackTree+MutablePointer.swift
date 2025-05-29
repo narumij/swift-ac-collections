@@ -26,7 +26,7 @@ extension ___RedBlackTree.___Tree {
 
   @frozen
   @usableFromInline
-  struct ___MutablePointer {
+  struct ___MutableIterator {
 
     @usableFromInline
     let _storage: Storage

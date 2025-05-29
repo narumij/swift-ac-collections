@@ -416,25 +416,9 @@ extension RedBlackTreeMultiSet {
 // MARK: - Collection Conformance（コレクション適合系）
 
 // MARK: - Sequence
-
-#if false
-extension RedBlackTreeMultiSet: Sequence {
-
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _tree.___for_each_(body)
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func makeIterator() -> ElementIterator<RedBlackTreeMultiSet> {
-    ElementIterator(tree: _tree, start: _tree.__begin_node, end: _tree.__end_node())
-  }
-}
-#endif
-
+// MARK: - Collection
 // MARK: - BidirectionalCollection
+// MARK: - RandomAccessCollection
 
 extension RedBlackTreeMultiSet: RedBlackTreeSequence { }
 extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
@@ -458,64 +442,6 @@ extension RedBlackTreeMultiSet {
   public var count: Int {
     ___count
   }
-
-#if false
-  @inlinable
-  @inline(__always)
-  public func distance(from start: Index, to end: Index) -> Int {
-    ___distance(from: start.rawValue, to: end.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(after i: Index) -> Index {
-    ___index(after: i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(after i: inout Index) {
-    ___form_index(after: &i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(before i: Index) -> Index {
-    ___index(before: i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(before i: inout Index) {
-    ___form_index(before: &i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(i.rawValue, offsetBy: distance)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    ___form_index(&i.rawValue, offsetBy: distance)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    ___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
-    -> Bool
-  {
-    ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
-  }
-  #endif
 
   @inlinable
   @inline(__always)

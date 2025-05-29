@@ -10,10 +10,11 @@ protocol ElementCollection:
   RedBlackTreeRawIndexIteratable & Sequence & Collection & BidirectionalCollection
 where
   Tree == Base.Tree,
-  Iterator == ElementIterator<Base>,
-  Indices == Range<Index>,
   Index == Base.Index,
-  Element == Tree.Element, SubSequence == Self
+  Indices == Range<Index>,
+  Element == Tree.Element,
+  Iterator == ElementIterator<Base>,
+  SubSequence == Self
 {
   associatedtype Base: RedBlackTreeCollectionable
   var _tree: Base.Tree { get }
@@ -67,7 +68,7 @@ extension ElementCollection {
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
-    
+
     _read {
       guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
         _tree.___ptr_less_than(position.rawValue, _end)

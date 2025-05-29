@@ -633,12 +633,18 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet: RedBlackTreeCollectionable { }
+extension RedBlackTreeSet: RedBlackTreeCollectionable {
+  
+}
 
-extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollection, ElementCollection {
+extension RedBlackTreeSet.SubSequence: ElementCollection {
   public typealias Base = RedBlackTreeSet
+  public typealias Element = Tree.Element
+}
+
+extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollection {
+  public typealias Index = RedBlackTreeSet.Index
   public typealias SubSequence = Self
-  public typealias Index = Base.Index
 }
 
 #if false

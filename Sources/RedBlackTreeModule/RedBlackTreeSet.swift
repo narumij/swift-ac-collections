@@ -450,6 +450,7 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection, Random
 
 extension RedBlackTreeSet {
 
+  #if false
   @inlinable
   @inline(__always)
   public var startIndex: Index {
@@ -461,6 +462,7 @@ extension RedBlackTreeSet {
   public var endIndex: Index {
     ___index_end()
   }
+  #endif
 
   @inlinable
   @inline(__always)
@@ -548,7 +550,7 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet: RedBlackTreeCollectionable { }
+extension RedBlackTreeSet: RedBlackTreeSubSequenceBase { }
 
 extension RedBlackTreeSet.SubSequence: RedBlackTreeSubSequence {
   public typealias Base = RedBlackTreeSet

@@ -513,18 +513,6 @@ extension RedBlackTreeMultiMap {
 
   @inlinable
   @inline(__always)
-  public var startIndex: Index {
-    ___index_start()
-  }
-
-  @inlinable
-  @inline(__always)
-  public var endIndex: Index {
-    ___index_end()
-  }
-
-  @inlinable
-  @inline(__always)
   public var count: Int {
     ___count
   }
@@ -624,7 +612,7 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-extension RedBlackTreeMultiMap: RedBlackTreeCollectionable { }
+extension RedBlackTreeMultiMap: RedBlackTreeSubSequenceBase { }
 
 extension RedBlackTreeMultiMap.SubSequence: RedBlackTreeSubSequence {
   public typealias Base = RedBlackTreeMultiMap

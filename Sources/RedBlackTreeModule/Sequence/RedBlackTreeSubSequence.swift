@@ -13,10 +13,10 @@ where
   Indices == Range<Index>,
   Element == Tree.Element,
   Iterator == ElementIterator<Base.Tree>,
-  Self: RedBlackTreeRawIndexIteratable,
+  Self: RedBlackTreeSequenceBase,
   SubSequence == Self
 {
-  associatedtype Base: RedBlackTreeCollectionable
+  associatedtype Base: RedBlackTreeSubSequenceBase
   var _tree: Base.Tree { get }
   var _start: _NodePtr { get set }
   var _end: _NodePtr { get set }

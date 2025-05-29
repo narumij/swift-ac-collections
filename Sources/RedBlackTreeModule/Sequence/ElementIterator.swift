@@ -6,7 +6,7 @@
 //
 
 public
-struct ElementIterator<Tree: IteratableProtocol>: IteratorProtocol {
+struct ElementIterator<Tree: ___IterateNextProtocol>: IteratorProtocol {
   
   public typealias Tree = Tree
   public typealias Element = Tree.Element

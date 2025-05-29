@@ -622,18 +622,6 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @inline(__always)
-  public var startIndex: Index {
-    ___index_start()
-  }
-
-  @inlinable
-  @inline(__always)
-  public var endIndex: Index {
-    ___index_end()
-  }
-
-  @inlinable
-  @inline(__always)
   public var count: Int {
     ___count
   }
@@ -715,7 +703,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary: RedBlackTreeCollectionable { }
+extension RedBlackTreeDictionary: RedBlackTreeSubSequenceBase { }
 
 extension RedBlackTreeDictionary.SubSequence: RedBlackTreeSubSequence {
   public typealias Base = RedBlackTreeDictionary

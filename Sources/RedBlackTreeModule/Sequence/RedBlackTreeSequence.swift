@@ -6,9 +6,9 @@
 //
 
 @usableFromInline
-protocol RedBlackTreeSequence: RedBlackTreeRawIndexIteratable, Sequence & Collection & BidirectionalCollection, RandomAccessCollection
+protocol RedBlackTreeSequence: RedBlackTreeSequenceBase, Sequence & Collection & BidirectionalCollection, RandomAccessCollection
 where
-  Tree: BeginNodeProtocol & EndNodeProtocol & ForEachProtocol & DistanceProtocol & CollectionableProtocol,
+  Tree: BeginNodeProtocol & EndNodeProtocol & ___ForEachProtocol & DistanceProtocol & ___CollectionProtocol,
   Element == Tree.Element,
   Index: RedBlackTreeIndex, Index.Tree == Tree
 {
@@ -53,7 +53,6 @@ extension RedBlackTreeSequence {
 
 extension RedBlackTreeSequence {
 
-#if false
   @inlinable
   @inline(__always)
   public var startIndex: Index {
@@ -66,6 +65,7 @@ extension RedBlackTreeSequence {
     ___index(_tree.__end_node())
   }
 
+#if false
   @inlinable
   @inline(__always)
   public var count: Int {

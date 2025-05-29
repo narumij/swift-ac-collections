@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct RawIndexIterator<Tree: IteratableProtocol>: IteratorProtocol {
+struct RawIndexIterator<Tree: ___IterateNextProtocol>: IteratorProtocol {
 
   @usableFromInline
   let _tree: Tree

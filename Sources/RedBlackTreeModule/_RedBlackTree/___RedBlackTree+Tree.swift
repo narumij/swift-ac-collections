@@ -404,9 +404,9 @@ extension ___RedBlackTree.___Tree: MemberProtocol {}
 extension ___RedBlackTree.___Tree: DistanceProtocol {}
 extension ___RedBlackTree.___Tree: CompareProtocol {}
 extension ___RedBlackTree.___Tree: CompareMultiProtocol {}
-extension ___RedBlackTree.___Tree: IteratableProtocol {}
-extension ___RedBlackTree.___Tree: CollectionableProtocol {}
-extension ___RedBlackTree.___Tree: ForEachProtocol {}
+extension ___RedBlackTree.___Tree: ___IterateNextProtocol {}
+extension ___RedBlackTree.___Tree: ___CollectionProtocol {}
+extension ___RedBlackTree.___Tree: ___ForEachProtocol {}
 //extension ___RedBlackTree.___Tree: ___CountProtocol {}
 
 extension ___RedBlackTree.___Tree {

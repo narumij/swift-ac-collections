@@ -20,45 +20,9 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public
-struct RawIndexedSequence<Base: RedBlackTreeSequenceBase>: Sequence {
-  
-  @usableFromInline
-  let _tree: Base.Tree
-
-  @usableFromInline
-  var _start, _end: _NodePtr
-
-  @inlinable
-  @inline(__always)
-  internal init(tree: Base.Tree) where Base.Tree: BeginNodeProtocol & EndNodeProtocol {
-    self.init(
-      tree: tree,
-      start: tree.__begin_node,
-      end: tree.__end_node())
-  }
-
-  @inlinable
-  @inline(__always)
-  internal init(tree: Base.Tree, start: _NodePtr, end: _NodePtr) {
-    _tree = tree
-    _start = start
-    _end = end
-  }
-
-  @inlinable
-  public func makeIterator() -> RawIndexedIterator<Base.Tree> {
-    .init(tree: _tree, start: _start, end: _end)
-  }
-  
-  @inlinable
-  @inline(__always)
-  internal func forEach(_ body: (RawIndex, Base.Tree.Element) throws -> Void) rethrows {
-    var __p = _start
-    while __p != _end {
-      let __c = __p
-      __p = _tree.__tree_next(__p)
-      try body(RawIndex(__c), _tree[__c])
-    }
-  }
+public protocol ___IterateNextProtocol {
+  associatedtype Element
+  func __tree_next(_ __x: _NodePtr) -> _NodePtr
+  subscript(_ pointer: _NodePtr) -> Element { get }
 }
+

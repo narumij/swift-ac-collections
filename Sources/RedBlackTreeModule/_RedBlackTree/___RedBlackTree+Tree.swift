@@ -298,7 +298,7 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
-  public func ___is_valid(_ p: _NodePtr) -> Bool {
+  internal func ___is_valid(_ p: _NodePtr) -> Bool {
     0..<_header.initializedCount ~= p && __node_ptr[p].__parent_ != .nullptr
   }
 }

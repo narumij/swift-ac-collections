@@ -137,6 +137,7 @@ extension ___RedBlackTreeBase {
   }
 }
 
+#if false
 extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
@@ -186,6 +187,7 @@ extension ___RedBlackTreeBase {
     _tree.formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
 }
+#endif
 
 extension ___RedBlackTreeBase {
 

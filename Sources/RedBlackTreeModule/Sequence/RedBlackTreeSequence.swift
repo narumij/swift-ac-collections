@@ -18,22 +18,8 @@ where
   var _tree: Tree { get }
 }
 
-#if true
-//@usableFromInline
-//protocol RedBlackTreeSequence: RedBlackTreeRawIndexIteratable, Sequence & Collection & BidirectionalCollection
-//where Tree: BeginNodeProtocol & EndNodeProtocol & ForEachProtocol & ___CountProtocol & DistanceProtocol & CollectionableProtocol,
-//      Tree.Element == Element,
-//      Index: RedBlackTreeIndex, Index.Tree == Tree
-//{
-//  associatedtype Tree
-//  associatedtype Index
-//  var _tree: Tree { get }
-//}
-
 extension RedBlackTreeSequence {
   
-//  public typealias Indices = Range<Index>
-
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
@@ -159,4 +145,3 @@ extension RedBlackTreeSequence {
   }
   #endif
 }
-#endif

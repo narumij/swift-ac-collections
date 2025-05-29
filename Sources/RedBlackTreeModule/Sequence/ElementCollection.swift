@@ -5,7 +5,6 @@
 //  Created by narumij on 2025/05/28.
 //
 
-public
 struct ElementCollection<Base: RedBlackTreeCollectionable>: Sequence {
   
   @usableFromInline
@@ -141,8 +140,7 @@ extension ElementCollection {
   }
 }
 
-extension ElementCollection: RedBlackTreeRawIndexIteratable {
-  public typealias Tree = Base.Tree
+extension ElementCollection {
   
   @inlinable
   @inline(__always)

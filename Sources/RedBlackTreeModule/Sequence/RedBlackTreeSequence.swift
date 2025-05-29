@@ -142,7 +142,6 @@ extension RedBlackTreeSequence {
     _tree.___formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
 
-#if false
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
@@ -155,6 +154,7 @@ extension RedBlackTreeSequence {
     return _tree[position.rawValue]
   }
 
+#if false
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
     .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)

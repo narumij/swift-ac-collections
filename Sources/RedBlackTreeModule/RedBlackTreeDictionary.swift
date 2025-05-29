@@ -610,21 +610,6 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary: RedBlackTreeSequence { }
 extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
 
-extension RedBlackTreeDictionary {
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: Index) -> Element {
-    return _tree[position.rawValue]
-  }
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: RawIndex) -> Element {
-    return _tree[position.rawValue]
-  }
-}
-
 // MARK: - Range Access
 
 extension RedBlackTreeDictionary {

@@ -405,22 +405,7 @@ extension RedBlackTreeMultiSet {
 extension RedBlackTreeMultiSet: RedBlackTreeSequence { }
 extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
 
-extension RedBlackTreeMultiSet {
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: Index) -> Element {
-    return _tree[position.rawValue]
-  }
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: RawIndex) -> Element {
-    return _tree[position.rawValue]
-  }
-}
-
-// MARK: - SubSequence（部分コレクション）
+// MARK: - Range Access
 
 extension RedBlackTreeMultiSet {
 

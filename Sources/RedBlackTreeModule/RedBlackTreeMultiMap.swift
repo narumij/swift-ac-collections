@@ -501,21 +501,6 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap: RedBlackTreeSequence { }
 extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
 
-extension RedBlackTreeMultiMap {
-  
-  @inlinable
-  @inline(__always)
-  public subscript(position: Index) -> Element {
-    return _tree[position.rawValue]
-  }
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: RawIndex) -> Element {
-    return _tree[position.rawValue]
-  }
-}
-
 // MARK: - Range Access
 
 extension RedBlackTreeMultiMap {

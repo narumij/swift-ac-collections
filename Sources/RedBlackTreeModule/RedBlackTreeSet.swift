@@ -437,19 +437,9 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet: RedBlackTreeSequence { }
 extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
 
+// MARK: - Range Access
+
 extension RedBlackTreeSet {
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: Index) -> Element {
-    return _tree[position.rawValue]
-  }
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: RawIndex) -> Element {
-    return _tree[position.rawValue]
-  }
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {

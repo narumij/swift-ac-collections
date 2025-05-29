@@ -597,6 +597,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
+#if false
 extension RedBlackTreeDictionary.SubSequence {
 
   @inlinable
@@ -611,6 +612,7 @@ extension RedBlackTreeDictionary.SubSequence {
     _subSequence.___is_valid_index(index: i.rawValue)
   }
 }
+#endif
 
 extension RedBlackTreeDictionary {
 
@@ -739,12 +741,13 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: bounds.lowerBound.rawValue,
-          to: bounds.upperBound.rawValue)
-    )
+//    SubSequence(
+//      _subSequence:
+//        _tree.subsequence(
+//          from: bounds.lowerBound.rawValue,
+//          to: bounds.upperBound.rawValue)
+//    )
+    .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }
 }
 
@@ -769,26 +772,62 @@ extension RedBlackTreeDictionary {
   /// キーレンジ `[lower, upper)` に含まれる要素のスライス
   @inlinable
   public func elements(in range: Range<Key>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: ___ptr_lower_bound(range.lowerBound),
-          to: ___ptr_lower_bound(range.upperBound)))
+//    SubSequence(
+//      _subSequence:
+//        _tree.subsequence(
+//          from: ___ptr_lower_bound(range.lowerBound),
+//          to: ___ptr_lower_bound(range.upperBound)))
+    .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_lower_bound(range.upperBound))
   }
 
   /// キーレンジ `[lower, upper]` に含まれる要素のスライス
   @inlinable
   public func elements(in range: ClosedRange<Key>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: ___ptr_lower_bound(range.lowerBound),
-          to: ___ptr_upper_bound(range.upperBound)))
+//    SubSequence(
+//      _subSequence:
+//        _tree.subsequence(
+//          from: ___ptr_lower_bound(range.lowerBound),
+//          to: ___ptr_upper_bound(range.upperBound)))
+    .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_upper_bound(range.upperBound))
   }
 }
 
 // MARK: - SubSequence
 
+extension RedBlackTreeDictionary {
+
+  @frozen
+  public struct SubSequence {
+
+    @usableFromInline
+    let _tree: Tree
+
+    @usableFromInline
+    var _start, _end: _NodePtr
+
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      _tree = tree
+      _start = start
+      _end = end
+    }
+  }
+}
+
+extension RedBlackTreeDictionary: RedBlackTreeCollectionable { }
+
+extension RedBlackTreeDictionary.SubSequence: ElementCollection {
+  public typealias Base = RedBlackTreeDictionary
+  public typealias Element = Tree.Element
+}
+
+extension RedBlackTreeDictionary.SubSequence: Sequence, Collection, BidirectionalCollection {
+  public typealias Index = RedBlackTreeDictionary.Index
+  public typealias SubSequence = Self
+}
+
+#if false
 extension RedBlackTreeDictionary {
 
   @frozen
@@ -926,6 +965,7 @@ extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
         _subSequence[bounds.lowerBound..<bounds.upperBound])
   }
 }
+#endif
 
 // MARK: - Index Range
 
@@ -940,6 +980,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
+#if false
 extension RedBlackTreeDictionary.SubSequence {
 
   public typealias Indices = Range<Index>
@@ -950,6 +991,7 @@ extension RedBlackTreeDictionary.SubSequence {
     startIndex..<endIndex
   }
 }
+#endif
 
 // MARK: - Raw Index Sequence
 
@@ -966,6 +1008,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
+#if false
 extension RedBlackTreeDictionary.SubSequence {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
@@ -979,6 +1022,7 @@ extension RedBlackTreeDictionary.SubSequence {
       end: _subSequence.endIndex)
   }
 }
+#endif
 
 // MARK: - Enumerated Sequence
 
@@ -990,6 +1034,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
+#if false
 extension RedBlackTreeDictionary.SubSequence {
 
   @inlinable @inline(__always)
@@ -1000,6 +1045,7 @@ extension RedBlackTreeDictionary.SubSequence {
       end: _subSequence.endIndex)
   }
 }
+#endif
 
 // MARK: - ExpressibleByDictionaryLiteral
 

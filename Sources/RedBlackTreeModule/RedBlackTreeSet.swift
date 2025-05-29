@@ -62,7 +62,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   ///  要素及びノードが削除された場合、インデックスは無効になります。
   /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
   public
-    typealias Index = Tree.Pointer
+    typealias Index = Tree.___Iterator
 
   public
     typealias _Key = Element
@@ -407,7 +407,7 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   @inlinable
-  public func equalRange(_ element: Element) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+  public func equalRange(_ element: Element) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
     ___equal_range(element)
   }
 }

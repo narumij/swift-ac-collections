@@ -24,15 +24,9 @@ import Foundation
 
 extension ___RedBlackTree.___Tree {
 
-  /// 赤黒木のノードへのポインタ
-  ///
-  /// 各データ構造で代表的なインデックスとして用いられる
-  ///
-  /// 各種プロトコルや範囲検査に対応するため、単独で様々な事ができる
-  ///
-  /// 他に軽量なポインタもあります。
+  /// 赤黒木のノードへのイテレータ
   @frozen
-  public struct Pointer {
+  public struct ___Iterator {
 
     public typealias Element = Tree.Element
 
@@ -85,7 +79,7 @@ extension ___RedBlackTree.___Tree {
 // underやoverは幽霊化の補助としての利用に限定している
 // このため、RangeやStridableに関連しないところでは、underやoverは使わないし対応しない
 
-extension ___RedBlackTree.___Tree.Pointer: Comparable {
+extension ___RedBlackTree.___Tree.___Iterator: Comparable {
   
   // ポインタを利用して削除した場合に、Range<Index>の厳しい検査に耐えるための準備
   @usableFromInline
@@ -235,7 +229,7 @@ extension ___RedBlackTree.___Tree.Pointer: Comparable {
   }
 }
 
-extension ___RedBlackTree.___Tree.Pointer: Strideable {
+extension ___RedBlackTree.___Tree.___Iterator: Strideable {
 
   @inlinable
   @inline(__always)
@@ -309,7 +303,7 @@ extension ___RedBlackTree.___Tree.Pointer: Strideable {
   }
 }
 
-extension ___RedBlackTree.___Tree.Pointer {
+extension ___RedBlackTree.___Tree.___Iterator {
 
   /// 参照している木に対してポインタがValidかどうか
   ///
@@ -342,7 +336,7 @@ extension ___RedBlackTree.___Tree.Pointer {
   }
 }
 
-extension ___RedBlackTree.___Tree.Pointer {
+extension ___RedBlackTree.___Tree.___Iterator {
 
   @inlinable
   @inline(__always)
@@ -369,7 +363,7 @@ extension ___RedBlackTree.___Tree.Pointer {
   }
 }
 
-extension ___RedBlackTree.___Tree.Pointer {
+extension ___RedBlackTree.___Tree.___Iterator {
   
   @inlinable
   @inline(__always)
@@ -381,7 +375,7 @@ extension ___RedBlackTree.___Tree.Pointer {
   }
 }
 
-extension ___RedBlackTree.___Tree.Pointer {
+extension ___RedBlackTree.___Tree.___Iterator {
 
   @inlinable @inline(__always)
   var ___pointee: Element {
@@ -399,18 +393,18 @@ extension ___RedBlackTree.___Tree.Pointer {
   }
 }
 
-extension ___RedBlackTree.___Tree.Pointer: RedBlackTreeIndex, RedBlackTreeMutableRawValue {
+extension ___RedBlackTree.___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMutableRawValue {
 }
 
 #if DEBUG
-  extension ___RedBlackTree.___Tree.Pointer {
+  extension ___RedBlackTree.___Tree.___Iterator {
     fileprivate init(_unsafe_tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) {
       self._tree = _unsafe_tree
       self.rawValue = rawValue
     }
   }
 
-  extension ___RedBlackTree.___Tree.Pointer {
+  extension ___RedBlackTree.___Tree.___Iterator {
     static func unsafe(tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue)
     }

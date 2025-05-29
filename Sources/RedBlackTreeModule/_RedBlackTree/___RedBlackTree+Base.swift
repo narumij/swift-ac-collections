@@ -63,7 +63,7 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @usableFromInline
-  typealias ___Index = Tree.Pointer
+  typealias ___Index = Tree.___Iterator
 
   @usableFromInline
   typealias ___RawIndex = RawIndex
@@ -375,8 +375,8 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func ___std_erase(_ ptr: Tree.Pointer) -> Tree.Pointer {
-    Tree.Pointer(__tree: _tree, rawValue: _tree.erase(ptr.rawValue))
+  public mutating func ___std_erase(_ ptr: Tree.___Iterator) -> Tree.___Iterator {
+    Tree.___Iterator(__tree: _tree, rawValue: _tree.erase(ptr.rawValue))
   }
 }
 

@@ -45,7 +45,7 @@ import Foundation
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   public
-    typealias Index = Tree.Pointer
+    typealias Index = Tree.___Iterator
 
   public
     typealias KeyValue = (key: Key, value: Value)
@@ -507,7 +507,7 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   @inlinable
-  public func equalRange(_ key: Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+  public func equalRange(_ key: Key) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
     ___equal_range(key)
   }
 }

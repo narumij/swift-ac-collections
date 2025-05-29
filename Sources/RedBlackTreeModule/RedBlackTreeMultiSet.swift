@@ -43,7 +43,7 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
     typealias Element = Element
 
   public
-    typealias Index = Tree.Pointer
+    typealias Index = Tree.___Iterator
 
   public
     typealias _Key = Element
@@ -357,7 +357,7 @@ extension RedBlackTreeMultiSet {
 extension RedBlackTreeMultiSet {
 
   @inlinable
-  public func equalRange(_ element: Element) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+  public func equalRange(_ element: Element) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
     ___equal_range(element)
   }
 }

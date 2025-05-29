@@ -6,14 +6,14 @@
 //
 
 @usableFromInline
-protocol ElementCollection:
-  RedBlackTreeRawIndexIteratable & Sequence & Collection & BidirectionalCollection
+protocol ElementCollection: Sequence & Collection & BidirectionalCollection
 where
   Tree == Base.Tree,
   Index == Base.Index,
   Indices == Range<Index>,
   Element == Tree.Element,
   Iterator == ElementIterator<Base>,
+  Self: RedBlackTreeRawIndexIteratable,
   SubSequence == Self
 {
   associatedtype Base: RedBlackTreeCollectionable
@@ -37,6 +37,20 @@ extension ElementCollection {
   public var count: Int {
     _tree.distance(from: _start, to: _end)
   }
+}
+
+extension ElementCollection {
+  
+  // 断念
+  //    @inlinable
+  //    public func lowerBound(_ member: Element) -> Index {
+  //      base.__lower_bound(base.__key(member), base.__root(), endIndex)
+  //    }
+  //
+  //    @inlinable
+  //    public func upperBound(_ member: Element) -> Index {
+  //      base.__upper_bound(base.__key(member), base.__root(), endIndex)
+  //    }
 }
 
 extension ElementCollection {

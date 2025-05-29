@@ -209,6 +209,8 @@ extension ElementCollection {
   }
 }
 
+// MARK: - Raw Index Sequence
+
 extension ElementCollection {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
@@ -222,6 +224,8 @@ extension ElementCollection {
       end: _end)
   }
 }
+
+// MARK: - Raw Indexed Sequence
 
 extension ElementCollection {
 
@@ -239,6 +243,8 @@ extension ElementCollection {
     rawIndexedElements
   }
 }
+
+// MARK: - Utility
 
 extension ElementCollection {
 

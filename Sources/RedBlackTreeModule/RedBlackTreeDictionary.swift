@@ -569,18 +569,19 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - 計算量: O(1)
+  /// - Complexity: O(1)
   @inlinable
   public var isEmpty: Bool {
     ___is_empty
   }
 
-  /// - 計算量: O(1)
+  /// - Complexity: O(1)
   @inlinable
   public var capacity: Int {
     ___capacity
   }
   
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var count: Int {

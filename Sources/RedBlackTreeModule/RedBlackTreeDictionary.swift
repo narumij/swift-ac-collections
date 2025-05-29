@@ -632,7 +632,7 @@ extension RedBlackTreeDictionary: Sequence {
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeDictionary: RedBlackTreeSequence { }
-extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection { }
+extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
 
 extension RedBlackTreeDictionary {
 

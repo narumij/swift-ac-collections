@@ -462,7 +462,7 @@ extension RedBlackTreeSet: Sequence {
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeSet: RedBlackTreeSequence { }
-extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection { }
+extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
 
 extension RedBlackTreeSet {
 

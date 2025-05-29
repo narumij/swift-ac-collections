@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol RedBlackTreeSequence: RedBlackTreeRawIndexIteratable, Sequence & Collection & BidirectionalCollection
+protocol RedBlackTreeSequence: RedBlackTreeRawIndexIteratable, Sequence & Collection & BidirectionalCollection, RandomAccessCollection
 where
   Tree: BeginNodeProtocol & EndNodeProtocol & ForEachProtocol & DistanceProtocol & CollectionableProtocol,
   Element == Tree.Element,

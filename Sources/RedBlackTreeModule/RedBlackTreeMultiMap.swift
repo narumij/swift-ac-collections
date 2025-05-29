@@ -523,7 +523,7 @@ extension RedBlackTreeMultiMap: Sequence {
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeMultiMap: RedBlackTreeSequence { }
-extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection { }
+extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
 
 extension RedBlackTreeMultiMap {
 

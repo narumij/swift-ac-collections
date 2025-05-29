@@ -21,17 +21,17 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct RawIndexedIterator<Base: RedBlackTreeRawIndexIteratable>: IteratorProtocol {
+struct RawIndexedIterator<Tree: IteratableProtocol>: IteratorProtocol {
 
   @usableFromInline
-  let _tree: Base.Tree
+  let _tree: Tree
 
   @usableFromInline
   var _current, _next, _end: _NodePtr
   
   @inlinable
   @inline(__always)
-  internal init(tree: Base.Tree, start: _NodePtr, end: _NodePtr) {
+  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
     self._tree = tree
     self._current = start
     self._end = end
@@ -40,7 +40,7 @@ struct RawIndexedIterator<Base: RedBlackTreeRawIndexIteratable>: IteratorProtoco
   
   @inlinable
   @inline(__always)
-  public mutating func next() -> (rawIndex: RawIndex, element: Base.Tree.Element)? {
+  public mutating func next() -> (rawIndex: RawIndex, element: Tree.Element)? {
     guard _current != _end else { return nil }
     defer {
       _current = _next

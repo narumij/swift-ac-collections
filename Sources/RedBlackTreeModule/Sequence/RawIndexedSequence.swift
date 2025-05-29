@@ -47,7 +47,7 @@ struct RawIndexedSequence<Base: RedBlackTreeRawIndexIteratable>: Sequence {
   }
 
   @inlinable
-  public func makeIterator() -> RawIndexedIterator<Base> {
+  public func makeIterator() -> RawIndexedIterator<Base.Tree> {
     .init(tree: _tree, start: _start, end: _end)
   }
   

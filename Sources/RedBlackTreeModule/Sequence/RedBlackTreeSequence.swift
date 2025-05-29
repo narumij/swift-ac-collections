@@ -19,17 +19,20 @@ where
 }
 
 extension RedBlackTreeSequence {
-  
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _tree.___for_each_(body)
-  }
 
   @inlinable
   @inline(__always)
   public __consuming func makeIterator() -> ElementIterator<Self> {
     ElementIterator(tree: _tree, start: _tree.__begin_node, end: _tree.__end_node())
+  }
+}
+
+extension RedBlackTreeSequence {
+  
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (Element) throws -> Void) rethrows {
+    try _tree.___for_each_(body)
   }
 }
 

@@ -21,14 +21,14 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct RawIndexSequence<Base: RedBlackTreeSequenceBase>: Sequence {
+struct RawIndexSequence<Base: RedBlackTreeSequenceBase>: Sequence, ReversableSequence {
   
   @usableFromInline
   let _tree: Base.Tree
-
+  
   @usableFromInline
   var _start, _end: _NodePtr
-
+  
   @inlinable
   @inline(__always)
   internal init(tree: Base.Tree) where Base.Tree: BeginNodeProtocol & EndNodeProtocol {
@@ -37,7 +37,7 @@ struct RawIndexSequence<Base: RedBlackTreeSequenceBase>: Sequence {
       start: tree.__begin_node,
       end: tree.__end_node())
   }
-
+  
   @inlinable
   @inline(__always)
   internal init(tree: Base.Tree, start: _NodePtr, end: _NodePtr) {
@@ -45,7 +45,7 @@ struct RawIndexSequence<Base: RedBlackTreeSequenceBase>: Sequence {
     _start = start
     _end = end
   }
-
+  
   @inlinable
   public func makeIterator() -> RawIndexIterator<Base.Tree> {
     .init(tree: _tree, start: _start, end: _end)
@@ -60,6 +60,16 @@ struct RawIndexSequence<Base: RedBlackTreeSequenceBase>: Sequence {
       __p = _tree.__tree_next(__p)
       try body(RawIndex(__c))
     }
+  }
+  
+  @inlinable
+  public
+  func makeReversedIterator() -> ReversedRawIndexIterator<Base.Tree> {
+    .init(tree: _tree, start: _start, end: _end)
+  }
+
+  public func reversed() -> ReversedSequence<Self> {
+    .init(base: self)
   }
 }
 

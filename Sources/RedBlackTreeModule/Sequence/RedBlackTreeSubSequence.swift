@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol RedBlackTreeSubSequence: Sequence & Collection & BidirectionalCollection & RandomAccessCollection
+protocol RedBlackTreeSubSequence: Sequence & Collection & BidirectionalCollection
 where
   Tree == Base.Tree,
   Index == Base.Index,

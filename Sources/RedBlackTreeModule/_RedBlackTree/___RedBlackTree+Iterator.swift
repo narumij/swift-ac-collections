@@ -40,7 +40,7 @@ extension ___RedBlackTree.___Tree {
     var rawValue: Int
 
     @usableFromInline
-    class Remnant {
+    final class Remnant {
       @usableFromInline
       var rawValue: Int?
       @usableFromInline
@@ -296,6 +296,8 @@ extension ___RedBlackTree.___Tree.___Iterator: Strideable {
         distance -= 1
       } else {
         result = result.previous ?? under
+//        result.rawValue = result.rawValue != _tree.begin() || _tree.___is_valid_index(result.rawValue) ? _tree.__tree_prev_iter(result.rawValue) : .under
+//        result = result.___prev_
         distance += 1
       }
     }
@@ -348,19 +350,38 @@ extension ___RedBlackTree.___Tree.___Iterator {
     var next = self
     next.___next()
     return next
+//    return .init(__tree: _tree, rawValue: _tree.__tree_next_iter(rawValue))
   }
 
   @inlinable
   @inline(__always)
   public var previous: Self? {
     // 幽霊化はあくまでRange<Index>対応なので、previous返却能力はあるが、未対応のままにする
-    guard rawValue != .nullptr, rawValue != _tree.begin(), ___isValid else {
+    guard rawValue != _tree.begin(), ___isValid else {
       return nil
     }
     var prev = self
     prev.___prev()
     return prev
+//    return .init(__tree: _tree, rawValue: _tree.__tree_prev_iter(rawValue))
   }
+
+  @inlinable
+  @inline(__always)
+  var ___next_: Self {
+    var prev = self
+    prev.rawValue = !___is_null_or_end(rawValue) && _tree.___is_valid_index(rawValue) ? _tree.__tree_next_iter(rawValue) : .over
+    return prev
+  }
+
+  @inlinable
+  @inline(__always)
+  var ___prev_: Self {
+    var prev = self
+    prev.rawValue = rawValue != _tree.begin() && _tree.___is_valid_index(rawValue) ? _tree.__tree_prev_iter(rawValue) : .under
+    return prev
+  }
+
 }
 
 extension ___RedBlackTree.___Tree.___Iterator {

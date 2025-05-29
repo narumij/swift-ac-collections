@@ -496,10 +496,9 @@ extension RedBlackTreeMultiMap {
 // MARK: - Sequence
 // MARK: - Collection
 // MARK: - BidirectionalCollection
-// MARK: - RandomAccessCollection
 
 extension RedBlackTreeMultiMap: RedBlackTreeSequence { }
-extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
+extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection { }
 
 // MARK: - Range Access
 
@@ -590,7 +589,7 @@ extension RedBlackTreeMultiMap.SubSequence: RedBlackTreeSubSequence {
   public typealias Element = Tree.Element
 }
 
-extension RedBlackTreeMultiMap.SubSequence: Sequence, Collection, BidirectionalCollection, RandomAccessCollection {
+extension RedBlackTreeMultiMap.SubSequence: Sequence, Collection, BidirectionalCollection {
   public typealias Index = RedBlackTreeMultiMap.Index
   public typealias SubSequence = Self
 }

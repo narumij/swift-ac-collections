@@ -6,6 +6,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
+#if true
 final class SetPointerTests: XCTestCase {
 
   var members: RedBlackTreeSet<Int> = []
@@ -289,3 +290,4 @@ final class SetPointerTests: XCTestCase {
     }
   }
 }
+#endif

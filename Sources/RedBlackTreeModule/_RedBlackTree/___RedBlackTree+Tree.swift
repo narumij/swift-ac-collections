@@ -332,7 +332,7 @@ extension ___RedBlackTree.___Tree {
   }
 
   @inlinable
-  internal var __begin_node: _NodePtr {
+  public var __begin_node: _NodePtr {
     get { __header_ptr.pointee.__begin_node }
     _modify {
       yield &__header_ptr.pointee.__begin_node

@@ -156,7 +156,7 @@ extension MemberProtocol {
   }
 
   @inlinable
-  func
+  public func
     __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   {
     assert(__x != .nullptr, "node shouldn't be null")

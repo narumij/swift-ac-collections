@@ -22,7 +22,16 @@
 
 public protocol ___IterateNextProtocol {
   associatedtype Element
+  var __begin_node: _NodePtr { get }
   func __tree_next(_ __x: _NodePtr) -> _NodePtr
+  func __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   subscript(_ pointer: _NodePtr) -> Element { get }
 }
 
+@usableFromInline
+protocol ___IterateNextProtocol2 {
+  associatedtype Element
+  associatedtype Pointer: RedBlackTreeIndex
+  func __tree_next(_ __x: _NodePtr) -> _NodePtr
+  subscript(_ pointer: _NodePtr) -> Element { get }
+}

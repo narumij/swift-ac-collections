@@ -432,10 +432,9 @@ extension RedBlackTreeSet {
 // MARK: - Sequence
 // MARK: - Collection
 // MARK: - BidirectionalCollection
-// MARK: - RandomAccessCollection
 
 extension RedBlackTreeSet: RedBlackTreeSequence { }
-extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
+extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection { }
 
 // MARK: - Range Access
 
@@ -516,21 +515,24 @@ extension RedBlackTreeSet.SubSequence: RedBlackTreeSubSequence {
   public typealias Element = Tree.Element
 }
 
-extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollection, RandomAccessCollection {
+extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollection {
   public typealias Index = RedBlackTreeSet.Index
   public typealias SubSequence = Self
 }
 
 // MARK: - Index Range
 
+extension RedBlackTreeSet: RedBlackTreeSequenceBase2 { }
+
 extension RedBlackTreeSet {
 
-  public typealias Indices = Range<Index>
+  public typealias Indices = Tree.IterSequence
 
   @inlinable
   @inline(__always)
-  public var indices: Indices {
-    startIndex..<endIndex
+  public var indices: Tree.IterSequence {
+//    startIndex ..< endIndex
+    .init(tree: _tree, start: ___ptr_start(), end: ___ptr_end())
   }
 }
 

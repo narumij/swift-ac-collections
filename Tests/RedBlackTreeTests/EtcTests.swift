@@ -360,4 +360,24 @@ final class EtcTests: XCTestCase {
     XCTAssertNotNil(sub.index(sub.endIndex, offsetBy: -3, limitedBy: sub.startIndex))
     XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
   }
+  
+  #if DEBUG
+  func testBackwordIterator1() throws {
+    var set: RedBlackTreeSet<Int> = [1,2,3,4,5]
+    var seq = AnySequence{ RedBlackTreeSet<Int>.Tree.BackwordIterator(tree: set._tree, start: set.startIndex.rawValue, end: set.endIndex.rawValue) }
+    var result : [Int] = []
+    for i in seq {
+      result.append(set[i])
+    }
+    XCTAssertEqual(set.reversed(), result)
+  }
+  func testBackwordIterator2() throws {
+    var set: RedBlackTreeSet<Int> = [1,2,3,4,5]
+    var seq = AnySequence{ RedBlackTreeSet<Int>.Tree.BackwordIterator(tree: set._tree, start: set.startIndex.rawValue, end: set.endIndex.rawValue) }
+    for i in seq {
+      set.remove(at: i)
+    }
+    XCTAssertTrue(set.isEmpty)
+  }
+  #endif
 }

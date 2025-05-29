@@ -605,10 +605,9 @@ extension RedBlackTreeDictionary {
 // MARK: - Sequence
 // MARK: - Collection
 // MARK: - BidirectionalCollection
-// MARK: - RandomAccessCollection
 
 extension RedBlackTreeDictionary: RedBlackTreeSequence { }
-extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
+extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection { }
 
 // MARK: - Range Access
 
@@ -681,7 +680,7 @@ extension RedBlackTreeDictionary.SubSequence: RedBlackTreeSubSequence {
   public typealias Element = Tree.Element
 }
 
-extension RedBlackTreeDictionary.SubSequence: Sequence, Collection, BidirectionalCollection, RandomAccessCollection {
+extension RedBlackTreeDictionary.SubSequence: Sequence, Collection, BidirectionalCollection {
   public typealias Index = RedBlackTreeDictionary.Index
   public typealias SubSequence = Self
 }

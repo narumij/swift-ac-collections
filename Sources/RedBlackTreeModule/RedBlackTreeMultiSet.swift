@@ -400,10 +400,9 @@ extension RedBlackTreeMultiSet {
 // MARK: - Sequence
 // MARK: - Collection
 // MARK: - BidirectionalCollection
-// MARK: - RandomAccessCollection
 
 extension RedBlackTreeMultiSet: RedBlackTreeSequence { }
-extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
+extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection { }
 
 // MARK: - Range Access
 
@@ -484,7 +483,7 @@ extension RedBlackTreeMultiSet.SubSequence: RedBlackTreeSubSequence {
   public typealias Element = Tree.Element
 }
 
-extension RedBlackTreeMultiSet.SubSequence: Sequence, Collection, BidirectionalCollection, RandomAccessCollection {
+extension RedBlackTreeMultiSet.SubSequence: Sequence, Collection, BidirectionalCollection {
   public typealias Index = RedBlackTreeMultiSet.Index
   public typealias SubSequence = Self
 }

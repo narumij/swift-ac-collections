@@ -48,9 +48,29 @@ extension RedBlackTreeSubSequence {
 
 extension RedBlackTreeSubSequence {
 
+  @inlinable
+  @inline(__always)
+  internal func forEach(_ body: (Element) throws -> Void) rethrows {
+    try _tree.___for_each_(__p: _start, __l: _end, body: body)
+  }
+}
+
+extension RedBlackTreeSubSequence {
+
   @inlinable @inline(__always)
   public var count: Int {
     _tree.___distance(from: _start, to: _end)
+  }
+}
+
+extension RedBlackTreeSubSequence {
+
+  public var startIndex: Index {
+    index(rawValue: _start)
+  }
+
+  public var endIndex: Index {
+    index(rawValue: _end)
   }
 }
 
@@ -70,37 +90,11 @@ extension RedBlackTreeSubSequence {
 
 extension RedBlackTreeSubSequence {
 
-  @inlinable
-  @inline(__always)
-  internal func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _tree.___for_each_(__p: _start, __l: _end, body: body)
-  }
-}
-
-extension RedBlackTreeSubSequence {
-
   //  public typealias Index = Index
 
   @inlinable
   func index(rawValue: _NodePtr) -> Index {
     .init(__tree: _tree, rawValue: rawValue)
-  }
-}
-
-extension RedBlackTreeSubSequence {
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: Index) -> Element {
-
-    _read {
-      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
-        _tree.___ptr_less_than(position.rawValue, _end)
-      else {
-        fatalError(.outOfRange)
-      }
-      yield _tree[position.rawValue]
-    }
   }
 }
 
@@ -115,12 +109,18 @@ extension RedBlackTreeSubSequence {
 
 extension RedBlackTreeSubSequence {
 
-  public var startIndex: Index {
-    index(rawValue: _start)
-  }
+  @inlinable
+  @inline(__always)
+  public subscript(position: Index) -> Element {
 
-  public var endIndex: Index {
-    index(rawValue: _end)
+    _read {
+//      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
+//        _tree.___ptr_less_than(position.rawValue, _end)
+//      else {
+//        fatalError(.outOfRange)
+//      }
+      yield _tree[position.rawValue]
+    }
   }
 }
 
@@ -129,7 +129,14 @@ extension RedBlackTreeSubSequence {
   @inlinable
   public subscript(position: RawIndex) -> Element {
     @inline(__always)
-    _read { yield _tree[position.rawValue] }
+    _read {
+//      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
+//        _tree.___ptr_less_than(position.rawValue, _end)
+//      else {
+//        fatalError(.outOfRange)
+//      }
+      yield _tree[position.rawValue]
+    }
   }
 }
 

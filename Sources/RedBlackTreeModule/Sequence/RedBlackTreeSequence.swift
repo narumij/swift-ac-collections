@@ -93,14 +93,6 @@ extension RedBlackTreeSequence {
     ___index(_tree.__end_node())
   }
 
-#if false
-  @inlinable
-  @inline(__always)
-  public var count: Int {
-    _tree.count
-  }
-#endif
-
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
@@ -160,13 +152,13 @@ extension RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
-    return _tree[position.rawValue]
+    _read { yield _tree[position.rawValue] }
   }
 
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
-    return _tree[position.rawValue]
+    _read { yield _tree[position.rawValue] }
   }
 
 #if false

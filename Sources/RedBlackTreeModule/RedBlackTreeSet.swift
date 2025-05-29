@@ -429,17 +429,6 @@ extension RedBlackTreeSet {
   }
 }
 
-// MARK: - Iteration
-
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func sorted() -> [Element] {
-    _tree.___sorted
-  }
-}
-
 // MARK: - Sequence
 // MARK: - Collection
 // MARK: - BidirectionalCollection
@@ -449,12 +438,6 @@ extension RedBlackTreeSet: RedBlackTreeSequence { }
 extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
 
 extension RedBlackTreeSet {
-
-  @inlinable
-  @inline(__always)
-  public var count: Int {
-    ___count
-  }
 
   @inlinable
   @inline(__always)
@@ -615,20 +598,12 @@ extension RedBlackTreeSet {
   public var capacity: Int {
     ___capacity
   }
-}
-
-extension RedBlackTreeSet {
-
+  
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func isValid(index: Index) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index: RawIndex) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
+  public var count: Int {
+    ___count
   }
 }
 

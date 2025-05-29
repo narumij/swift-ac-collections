@@ -297,14 +297,6 @@ extension ___RedBlackTree.___Tree {
 
 extension ___RedBlackTree.___Tree {
 
-  @inlinable @inline(__always)
-  internal func ___is_valid(_ p: _NodePtr) -> Bool {
-    0..<_header.initializedCount ~= p && __node_ptr[p].__parent_ != .nullptr
-  }
-}
-
-extension ___RedBlackTree.___Tree {
-
   @inlinable
   internal func __construct_node(_ k: Element) -> _NodePtr {
     if _header.destroyCount > 0 {
@@ -407,7 +399,6 @@ extension ___RedBlackTree.___Tree: CompareMultiProtocol {}
 extension ___RedBlackTree.___Tree: ___IterateNextProtocol {}
 extension ___RedBlackTree.___Tree: ___CollectionProtocol {}
 extension ___RedBlackTree.___Tree: ___ForEachProtocol {}
-//extension ___RedBlackTree.___Tree: ___CountProtocol {}
 
 extension ___RedBlackTree.___Tree {
   @inlinable
@@ -585,22 +576,18 @@ extension ___RedBlackTree.___Tree {
 }
 
 extension ___RedBlackTree.___Tree {
+
+  @inlinable @inline(__always)
+  internal func ___is_valid(_ p: _NodePtr) -> Bool {
+    0..<_header.initializedCount ~= p && __node_ptr[p].__parent_ != .nullptr
+  }
+}
+
+extension ___RedBlackTree.___Tree {
   @inlinable
   internal func ___is_valid_index(_ i: _NodePtr) -> Bool {
     if i == .nullptr { return false }
     if i == .end { return true }
     return ___is_valid(i)
-  }
-}
-
-extension ___RedBlackTree.___Tree {
-
-  @inlinable @inline(__always)
-  internal var ___sorted: [Element] {
-    var result = [Element]()
-    ___for_each_ { member in
-      result.append(member)
-    }
-    return result
   }
 }

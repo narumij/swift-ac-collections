@@ -23,5 +23,6 @@ protocol ___CollectionProtocol: CompareProtocol {
   func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> Bool
 
   func ___is_valid(_ p: _NodePtr) -> Bool
+  func ___is_valid_index(_ i: _NodePtr) -> Bool
 }
 

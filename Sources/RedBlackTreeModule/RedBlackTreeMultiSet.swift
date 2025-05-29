@@ -366,16 +366,23 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - 計算量: O(1)
+  /// - Complexity: O(1)
   @inlinable
   public var isEmpty: Bool {
     ___is_empty
   }
 
-  /// - 計算量: O(1)
+  /// - Complexity: O(1)
   @inlinable
   public var capacity: Int {
     ___capacity
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var count: Int {
+    ___count
   }
 }
 
@@ -385,31 +392,6 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public func count(of element: Element) -> Int {
     _tree.__count_multi(element)
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index: Index) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index: RawIndex) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
-  }
-}
-
-// MARK: - Iteration
-
-extension RedBlackTreeMultiSet {
-
-  @inlinable
-  public func sorted() -> [Element] {
-    _tree.___sorted
   }
 }
 
@@ -424,12 +406,6 @@ extension RedBlackTreeMultiSet: RedBlackTreeSequence { }
 extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
 
 extension RedBlackTreeMultiSet {
-
-  @inlinable
-  @inline(__always)
-  public var count: Int {
-    ___count
-  }
 
   @inlinable
   @inline(__always)

@@ -459,20 +459,11 @@ extension RedBlackTreeMultiMap {
   public var capacity: Int {
     ___capacity
   }
-}
-
-extension RedBlackTreeMultiMap {
-
+  
   @inlinable
   @inline(__always)
-  public func isValid(index: Index) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index: RawIndex) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
+  public var count: Int {
+    ___count
   }
 }
 
@@ -510,12 +501,6 @@ extension RedBlackTreeMultiMap: RedBlackTreeSequence { }
 extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection, RandomAccessCollection { }
 
 extension RedBlackTreeMultiMap {
-
-  @inlinable
-  @inline(__always)
-  public var count: Int {
-    ___count
-  }
   
   @inlinable
   @inline(__always)

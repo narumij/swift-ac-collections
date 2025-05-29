@@ -52,6 +52,19 @@ extension RedBlackTreeSequence {
 }
 
 extension RedBlackTreeSequence {
+  
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func sorted() -> [Element] {
+    var result = [Element]()
+    _tree.___for_each_ { member in
+      result.append(member)
+    }
+    return result
+  }
+}
+
+extension RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)
@@ -147,4 +160,19 @@ extension RedBlackTreeSequence {
     .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }
   #endif
+}
+
+extension RedBlackTreeSequence {
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index: Index) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func isValid(index: RawIndex) -> Bool {
+    _tree.___is_valid_index(index.rawValue)
+  }
 }

@@ -312,10 +312,24 @@ for i in tree.indices {
   total &+= tree[i]
 }
 print(total)
-#else
+#elseif false
 var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 var total = 0
 for i in tree.indices.reversed() {
+  total &+= tree[i]
+}
+print(total)
+#elseif false
+var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
+var total = 0
+for i in tree.reversed() {
+  total &+= i
+}
+print(total)
+#else
+var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
+var total = 0
+for i in tree.startIndex ..< tree.endIndex {
   total &+= tree[i]
 }
 print(total)

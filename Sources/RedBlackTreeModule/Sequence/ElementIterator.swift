@@ -54,3 +54,35 @@ struct ElementIterator<Tree: ___IterateNextProtocol>: IteratorProtocol {
     return _tree[_current]
   }
 }
+
+public
+struct ReversedElementIterator<Tree: ___IterateNextProtocol>: IteratorProtocol {
+  
+  public typealias Tree = Tree
+  public typealias Element = Tree.Element
+
+  @usableFromInline
+  let _tree: Tree
+
+  @usableFromInline
+  var _current, _next, _start, _begin: _NodePtr
+
+  @inlinable
+  @inline(__always)
+  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+    self._tree = tree
+    self._current = end
+    self._next = _tree.__tree_prev_iter(end)
+    self._start = start
+    self._begin = _tree.__begin_node
+  }
+  
+  @inlinable
+  @inline(__always)
+  public mutating func next() -> Element? {
+    guard _current != _start else { return nil }
+    _current = _next
+    _next = _current != _begin ? _tree.__tree_prev_iter(_current) : .nullptr
+    return _tree[_current]
+  }
+}

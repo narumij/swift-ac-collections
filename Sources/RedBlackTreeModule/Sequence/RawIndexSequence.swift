@@ -68,6 +68,7 @@ struct RawIndexSequence<Base: RedBlackTreeSequenceBase>: Sequence, ReversableSeq
     .init(tree: _tree, start: _start, end: _end)
   }
 
+  @inlinable
   public func reversed() -> ReversedSequence<Self> {
     .init(base: self)
   }

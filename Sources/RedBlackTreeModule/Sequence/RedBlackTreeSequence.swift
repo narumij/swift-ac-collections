@@ -21,7 +21,8 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol RedBlackTreeSequence: RedBlackTreeSequenceBase, Sequence & Collection & BidirectionalCollection
+protocol RedBlackTreeSequence: RedBlackTreeSequenceBase, Sequence & Collection & BidirectionalCollection,
+ReversableSequence
 where
   Tree: BeginNodeProtocol & EndNodeProtocol & ___ForEachProtocol & DistanceProtocol & ___CollectionProtocol,
   Element == Tree.Element,
@@ -40,6 +41,12 @@ extension RedBlackTreeSequence {
   @inline(__always)
   public __consuming func makeIterator() -> ElementIterator<Self.Tree> {
     ElementIterator(tree: _tree, start: _tree.__begin_node, end: _tree.__end_node())
+  }
+  
+  @inlinable
+  @inline(__always)
+  public __consuming func makeReversedIterator() -> ReversedElementIterator<Self.Tree> {
+    ReversedElementIterator(tree: _tree, start: _tree.__begin_node, end: _tree.__end_node())
   }
 }
 
@@ -182,5 +189,13 @@ extension RedBlackTreeSequence {
   @inline(__always)
   public func isValid(index: RawIndex) -> Bool {
     _tree.___is_valid_index(index.rawValue)
+  }
+}
+
+extension RedBlackTreeSequence {
+  
+  @inlinable
+  public func reversed() -> ReversedSequence<Self> {
+    .init(base: self)
   }
 }

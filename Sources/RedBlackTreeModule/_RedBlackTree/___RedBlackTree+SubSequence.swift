@@ -28,10 +28,9 @@ extension ___RedBlackTree.___Tree {
   public struct SubSequence: Sequence {
 
     public typealias Element = Tree.Element
-    public typealias Index = _NodePtr
 
     @inlinable
-    init(___tree: Tree, start: Index, end: Index) {
+    init(___tree: Tree, start: _NodePtr, end: _NodePtr) {
       self._tree = ___tree
       self.startIndex = start
       self.endIndex = end
@@ -41,10 +40,10 @@ extension ___RedBlackTree.___Tree {
     let _tree: Tree
 
     public
-      var startIndex: Index
+      var startIndex: _NodePtr
 
     public
-      var endIndex: Index
+      var endIndex: _NodePtr
 
     @inlinable
     public __consuming func makeIterator() -> Iterator {
@@ -82,62 +81,62 @@ extension ___RedBlackTree.___Tree {
     // この実装がないと、迷子になる
     @inlinable
     @inline(__always)
-    internal func distance(from start: Index, to end: Index) -> Int {
+    internal func distance(from start: _NodePtr, to end: _NodePtr) -> Int {
       _tree.distance(from: start, to: end)
     }
 
     @inlinable
     @inline(__always)
-    internal func index(after i: Index) -> Index {
+    internal func index(after i: _NodePtr) -> _NodePtr {
       // 標準のArrayが単純に加算することにならい、範囲チェックをしない
       _tree.index(after: i)
     }
 
     @inlinable
     @inline(__always)
-    internal func formIndex(after i: inout Index) {
+    internal func formIndex(after i: inout _NodePtr) {
       // 標準のArrayが単純に加算することにならい、範囲チェックをしない
       _tree.formIndex(after: &i)
     }
 
     @inlinable
     @inline(__always)
-    internal func index(before i: Index) -> Index {
+    internal func index(before i: _NodePtr) -> _NodePtr {
       // 標準のArrayが単純に減算することにならい、範囲チェックをしない
       _tree.index(before: i)
     }
 
     @inlinable
     @inline(__always)
-    internal func formIndex(before i: inout Index) {
+    internal func formIndex(before i: inout _NodePtr) {
       // 標準のArrayが単純に減算することにならい、範囲チェックをしない
       _tree.formIndex(before: &i)
     }
 
     @inlinable
     @inline(__always)
-    internal func index(_ i: Index, offsetBy distance: Int) -> Index {
+    internal func index(_ i: _NodePtr, offsetBy distance: Int) -> _NodePtr {
       // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
       _tree.index(i, offsetBy: distance)
     }
 
     @inlinable
     @inline(__always)
-    internal func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    internal func formIndex(_ i: inout _NodePtr, offsetBy distance: Int) {
       // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
       _tree.formIndex(&i, offsetBy: distance)
     }
 
     @inlinable
     @inline(__always)
-    internal func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+    internal func index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> _NodePtr? {
       // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
       _tree.index(i, offsetBy: distance, limitedBy: limit)
     }
 
     @inlinable
     @inline(__always)
-    internal func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Self.Index)
+    internal func formIndex(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
       -> Bool
     {
       // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
@@ -150,7 +149,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    internal subscript(position: Index) -> Element {
+    internal subscript(position: _NodePtr) -> Element {
       guard _tree.___ptr_less_than_or_equal(startIndex, position),
             _tree.___ptr_less_than(position, endIndex) else {
         fatalError(.outOfRange)

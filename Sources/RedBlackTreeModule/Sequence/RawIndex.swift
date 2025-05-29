@@ -43,9 +43,8 @@ public
     self = node == .end ? .end : .node(node)
   }
 
-//  @usableFromInline
-  public
-    var rawValue: _NodePtr {
+  @usableFromInline
+  var rawValue: _NodePtr {
     switch self {
     case .node(let _NodePtr):
       return _NodePtr
@@ -84,5 +83,3 @@ extension Optional where Wrapped == RawIndex {
     }
   }
 #endif
-
-extension RawIndex: RedBlackTreeRawValue { }

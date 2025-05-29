@@ -42,8 +42,7 @@ extension ___RedBlackTree.___Tree {
     @usableFromInline
     let _tree: Tree
 
-//    @usableFromInline
-    public
+    @usableFromInline
     var rawValue: Int
 
     @usableFromInline
@@ -66,7 +65,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    public init(__tree: Tree, rawValue: _NodePtr) {
+    internal init(__tree: Tree, rawValue: _NodePtr) {
       guard rawValue != .nullptr else {
         preconditionFailure("_NodePtr is nullptr")
       }
@@ -414,9 +413,6 @@ extension ___RedBlackTree.___Tree.Pointer {
     }
   }
 #endif
-
-extension ___RedBlackTree.___Tree.Pointer: RedBlackTreeIndex { }
-extension ___RedBlackTree.___Tree.Pointer: RedBlackTreeRawValue { }
 
 #if false
 @inlinable

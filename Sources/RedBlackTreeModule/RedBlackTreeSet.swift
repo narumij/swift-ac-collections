@@ -460,114 +460,101 @@ extension RedBlackTreeSet: Sequence {
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeSet: BidirectionalCollection {
-  
+
   @inlinable
   @inline(__always)
   public var startIndex: Index {
     ___index_start()
   }
-  
+
   @inlinable
   @inline(__always)
   public var endIndex: Index {
     ___index_end()
   }
-  
+
   @inlinable
   @inline(__always)
   public var count: Int {
     ___count
   }
-  
+
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     ___distance(from: start.rawValue, to: end.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     ___index(after: i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     ___form_index(after: &i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     ___index(before: i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     ___form_index(before: &i.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(i.rawValue, offsetBy: distance)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     ___form_index(&i.rawValue, offsetBy: distance)
   }
-  
+
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-  -> Bool
+    -> Bool
   {
     ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
     return _tree[position.rawValue]
   }
-  
+
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
     return _tree[position.rawValue]
   }
-}
-
-extension RedBlackTreeSet: RedBlackTreeCollectionable {
-  public static func index(tree: Tree, rawValue: _NodePtr) -> Index {
-    .init(__tree: tree, rawValue: rawValue)
-  }
-  public typealias SubSequence = ElementCollection<RedBlackTreeSet>
-}
-
-extension RedBlackTreeSet {
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-//    SubSequence(
-//      _subSequence:
-//        _tree.subsequence(
-//          from: bounds.lowerBound.rawValue,
-//          to: bounds.upperBound.rawValue)
-//    )
-    .init(tree: _tree,
-          start: bounds.lowerBound.rawValue,
-          end: bounds.upperBound.rawValue)
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: bounds.lowerBound.rawValue,
+          to: bounds.upperBound.rawValue)
+    )
   }
 }
 
@@ -600,33 +587,26 @@ extension RedBlackTreeSet {
   /// 値レンジ `[lower, upper)` に含まれる要素のスライス
   @inlinable
   public func elements(in range: Range<Element>) -> SubSequence {
-//    SubSequence(
-//      _subSequence:
-//        _tree.subsequence(
-//          from: ___ptr_lower_bound(range.lowerBound),
-//          to: ___ptr_lower_bound(range.upperBound)))
-    .init(tree: _tree,
-          start: ___ptr_lower_bound(range.lowerBound),
-          end: ___ptr_lower_bound(range.upperBound))
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: ___ptr_lower_bound(range.lowerBound),
+          to: ___ptr_lower_bound(range.upperBound)))
   }
 
   /// 値レンジ `[lower, upper]` に含まれる要素のスライス
   @inlinable
   public func elements(in range: ClosedRange<Element>) -> SubSequence {
-//    SubSequence(
-//      _subSequence:
-//        _tree.subsequence(
-//          from: ___ptr_lower_bound(range.lowerBound),
-//          to: ___ptr_upper_bound(range.upperBound)))
-    .init(tree: _tree,
-          start: ___ptr_lower_bound(range.lowerBound),
-          end: ___ptr_upper_bound(range.upperBound))
+    SubSequence(
+      _subSequence:
+        _tree.subsequence(
+          from: ___ptr_lower_bound(range.lowerBound),
+          to: ___ptr_upper_bound(range.upperBound)))
   }
 }
 
 // MARK: - SubSequence
 
-#if false
 extension RedBlackTreeSet {
 
   @frozen
@@ -765,7 +745,6 @@ extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
         _subSequence[bounds.lowerBound..<bounds.upperBound])
   }
 }
-#endif
 
 // MARK: - Index Range
 
@@ -780,7 +759,6 @@ extension RedBlackTreeSet {
   }
 }
 
-#if false
 extension RedBlackTreeSet.SubSequence {
 
   public typealias Indices = Range<Index>
@@ -791,7 +769,6 @@ extension RedBlackTreeSet.SubSequence {
     startIndex..<endIndex
   }
 }
-#endif
 
 // MARK: - Raw Index Sequence
 
@@ -811,21 +788,19 @@ extension RedBlackTreeSet {
   }
 }
 
-#if true
-extension ElementCollection {
+extension RedBlackTreeSet.SubSequence {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
   @inline(__always)
-  public var rawIndices: RawIndexSequence<Self> {
+  public var rawIndices: RawIndexSequence<RedBlackTreeSet> {
     RawIndexSequence(
       tree: _tree,
-      start: _start,
-      end: _end)
+      start: _subSequence.startIndex,
+      end: _subSequence.endIndex)
   }
 }
-#endif
 
 // MARK: - Raw Indexed Sequence
 
@@ -841,18 +816,16 @@ extension RedBlackTreeSet {
   }
 }
 
-#if true
-extension ElementCollection {
+extension RedBlackTreeSet.SubSequence {
   
   @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<Self> {
+  public var rawIndexedElements: RawIndexedSequence<RedBlackTreeSet> {
     RawIndexedSequence(
       tree: _tree,
-      start: _start,
-      end: _end)
+      start: _subSequence.startIndex,
+      end: _subSequence.endIndex)
   }
 }
-#endif
 
 extension RedBlackTreeSet {
 
@@ -863,7 +836,6 @@ extension RedBlackTreeSet {
   }
 }
 
-#if false
 extension RedBlackTreeSet.SubSequence {
 
   @available(*, deprecated, renamed: "rawIndexedElements")
@@ -872,7 +844,6 @@ extension RedBlackTreeSet.SubSequence {
     rawIndexedElements
   }
 }
-#endif
 
 // MARK: - Utility
 
@@ -906,22 +877,20 @@ extension RedBlackTreeSet {
   }
 }
 
-#if true
-extension ElementCollection {
+extension RedBlackTreeSet.SubSequence {
 
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    ___is_valid_index(index: i.rawValue)
+    _subSequence.___is_valid_index(index: i.rawValue)
   }
 
   @inlinable
   @inline(__always)
   public func isValid(index i: RawIndex) -> Bool {
-    ___is_valid_index(index: i.rawValue)
+    _subSequence.___is_valid_index(index: i.rawValue)
   }
 }
-#endif
 
 // MARK: - Protocol Adaption
 

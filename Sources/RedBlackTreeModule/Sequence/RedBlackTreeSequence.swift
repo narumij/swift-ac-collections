@@ -7,16 +7,32 @@
 
 @usableFromInline
 protocol RedBlackTreeSequence: RedBlackTreeRawIndexIteratable, Sequence & Collection & BidirectionalCollection
-where Tree: BeginNodeProtocol & EndNodeProtocol & ForEachProtocol & ___CountProtocol & DistanceProtocol & CollectionableProtocol,
-      Tree.Element == Element,
-      Index: RedBlackTreeIndex, Index.Tree == Tree
+where
+  Tree: BeginNodeProtocol & EndNodeProtocol & ForEachProtocol & DistanceProtocol & CollectionableProtocol,
+  Element == Tree.Element,
+  Index: RedBlackTreeIndex, Index.Tree == Tree
 {
   associatedtype Tree
   associatedtype Index
+  associatedtype Element
   var _tree: Tree { get }
 }
 
+#if true
+//@usableFromInline
+//protocol RedBlackTreeSequence: RedBlackTreeRawIndexIteratable, Sequence & Collection & BidirectionalCollection
+//where Tree: BeginNodeProtocol & EndNodeProtocol & ForEachProtocol & ___CountProtocol & DistanceProtocol & CollectionableProtocol,
+//      Tree.Element == Element,
+//      Index: RedBlackTreeIndex, Index.Tree == Tree
+//{
+//  associatedtype Tree
+//  associatedtype Index
+//  var _tree: Tree { get }
+//}
+
 extension RedBlackTreeSequence {
+  
+//  public typealias Indices = Range<Index>
 
   @inlinable
   @inline(__always)
@@ -48,6 +64,7 @@ extension RedBlackTreeSequence {
 
 extension RedBlackTreeSequence {
 
+#if false
   @inlinable
   @inline(__always)
   public var startIndex: Index {
@@ -63,8 +80,9 @@ extension RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public var count: Int {
-    _tree.___count
+    _tree.count
   }
+#endif
 
   @inlinable
   @inline(__always)
@@ -141,3 +159,4 @@ extension RedBlackTreeSequence {
   }
   #endif
 }
+#endif

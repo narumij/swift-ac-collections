@@ -417,6 +417,7 @@ extension RedBlackTreeMultiSet {
 
 // MARK: - Sequence
 
+#if false
 extension RedBlackTreeMultiSet: Sequence {
 
   @inlinable
@@ -431,10 +432,14 @@ extension RedBlackTreeMultiSet: Sequence {
     ElementIterator(tree: _tree, start: _tree.__begin_node, end: _tree.__end_node())
   }
 }
+#endif
 
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeMultiSet: BidirectionalCollection {
+extension RedBlackTreeMultiSet: RedBlackTreeSequence { }
+extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection { }
+
+extension RedBlackTreeMultiSet {
 
   @inlinable
   @inline(__always)
@@ -454,6 +459,7 @@ extension RedBlackTreeMultiSet: BidirectionalCollection {
     ___count
   }
 
+#if false
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
@@ -509,6 +515,7 @@ extension RedBlackTreeMultiSet: BidirectionalCollection {
   {
     ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
+  #endif
 
   @inlinable
   @inline(__always)

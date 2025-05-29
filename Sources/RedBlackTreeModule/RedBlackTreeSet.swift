@@ -442,6 +442,7 @@ extension RedBlackTreeSet {
 
 // MARK: - Sequence
 
+#if false
 extension RedBlackTreeSet: Sequence {
 
   @inlinable
@@ -456,8 +457,12 @@ extension RedBlackTreeSet: Sequence {
     ElementIterator(tree: _tree, start: _tree.__begin_node, end: _tree.__end_node())
   }
 }
+#endif
 
 // MARK: - BidirectionalCollection
+
+extension RedBlackTreeSet: RedBlackTreeSequence { }
+extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection { }
 
 extension RedBlackTreeSet {
 
@@ -479,6 +484,7 @@ extension RedBlackTreeSet {
     ___count
   }
 
+#if false
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
@@ -534,6 +540,7 @@ extension RedBlackTreeSet {
   {
     ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
+  #endif
 
   @inlinable
   @inline(__always)
@@ -710,23 +717,6 @@ extension RedBlackTreeSet {
     _tree.___is_valid_index(index.rawValue)
   }
 }
-
-#if false
-extension RedBlackTreeSet.SubSequence {
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index i: Index) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index i: RawIndex) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
-  }
-}
-#endif
 
 // MARK: - Protocol Adaption
 

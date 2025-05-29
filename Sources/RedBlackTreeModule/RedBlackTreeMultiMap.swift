@@ -503,6 +503,7 @@ extension RedBlackTreeMultiMap {
 
 // MARK: - Sequence
 
+#if false
 extension RedBlackTreeMultiMap: Sequence {
 
   @inlinable
@@ -517,10 +518,14 @@ extension RedBlackTreeMultiMap: Sequence {
     ElementIterator(tree: _tree, start: _tree.__begin_node, end: _tree.__end_node())
   }
 }
+#endif
 
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeMultiMap: BidirectionalCollection {
+extension RedBlackTreeMultiMap: RedBlackTreeSequence { }
+extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection { }
+
+extension RedBlackTreeMultiMap {
 
   @inlinable
   @inline(__always)
@@ -540,6 +545,7 @@ extension RedBlackTreeMultiMap: BidirectionalCollection {
     ___count
   }
 
+#if false
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
@@ -595,7 +601,8 @@ extension RedBlackTreeMultiMap: BidirectionalCollection {
   {
     ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
-
+  #endif
+  
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {

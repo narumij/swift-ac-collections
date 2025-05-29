@@ -612,6 +612,7 @@ extension RedBlackTreeDictionary {
 
 // MARK: - Sequence
 
+#if false
 extension RedBlackTreeDictionary: Sequence {
 
   @inlinable
@@ -626,10 +627,14 @@ extension RedBlackTreeDictionary: Sequence {
     ElementIterator(tree: _tree, start: _tree.__begin_node, end: _tree.__end_node())
   }
 }
+#endif
 
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeDictionary: BidirectionalCollection {
+extension RedBlackTreeDictionary: RedBlackTreeSequence { }
+extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection { }
+
+extension RedBlackTreeDictionary {
 
   @inlinable
   @inline(__always)
@@ -649,6 +654,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
     ___count
   }
 
+  #if false
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
@@ -704,6 +710,7 @@ extension RedBlackTreeDictionary: BidirectionalCollection {
   {
     ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
+  #endif
 
   @inlinable
   @inline(__always)

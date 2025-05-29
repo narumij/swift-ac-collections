@@ -48,8 +48,7 @@ protocol CollectionableProtocol: CompareProtocol {
 
 @usableFromInline
 protocol ___CountProtocol {
-//  var count: Int { get }
-  var ___count: Int { get }
+  var count: Int { get }
 }
 
 @usableFromInline

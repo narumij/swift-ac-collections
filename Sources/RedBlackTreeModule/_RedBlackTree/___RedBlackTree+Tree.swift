@@ -407,6 +407,7 @@ extension ___RedBlackTree.___Tree: CompareMultiProtocol {}
 extension ___RedBlackTree.___Tree: IteratableProtocol {}
 extension ___RedBlackTree.___Tree: CollectionableProtocol {}
 extension ___RedBlackTree.___Tree: ForEachProtocol {}
+//extension ___RedBlackTree.___Tree: ___CountProtocol {}
 
 extension ___RedBlackTree.___Tree {
   @inlinable

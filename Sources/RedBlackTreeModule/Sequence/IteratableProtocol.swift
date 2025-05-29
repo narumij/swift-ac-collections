@@ -41,8 +41,15 @@ protocol CollectionableProtocol: CompareProtocol {
   func index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> _NodePtr?
 
   func formIndex(_ i: inout _NodePtr, offsetBy distance: Int)
+  func formIndex(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> Bool
 
   func ___is_valid(_ p: _NodePtr) -> Bool
+}
+
+@usableFromInline
+protocol ___CountProtocol {
+//  var count: Int { get }
+  var ___count: Int { get }
 }
 
 @usableFromInline

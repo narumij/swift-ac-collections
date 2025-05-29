@@ -597,23 +597,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if false
-extension RedBlackTreeDictionary.SubSequence {
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index i: Index) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index i: RawIndex) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
-  }
-}
-#endif
-
 extension RedBlackTreeDictionary {
 
   public var keys: Keys {
@@ -741,12 +724,6 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-//    SubSequence(
-//      _subSequence:
-//        _tree.subsequence(
-//          from: bounds.lowerBound.rawValue,
-//          to: bounds.upperBound.rawValue)
-//    )
     .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }
 }
@@ -772,22 +749,12 @@ extension RedBlackTreeDictionary {
   /// キーレンジ `[lower, upper)` に含まれる要素のスライス
   @inlinable
   public func elements(in range: Range<Key>) -> SubSequence {
-//    SubSequence(
-//      _subSequence:
-//        _tree.subsequence(
-//          from: ___ptr_lower_bound(range.lowerBound),
-//          to: ___ptr_lower_bound(range.upperBound)))
     .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_lower_bound(range.upperBound))
   }
 
   /// キーレンジ `[lower, upper]` に含まれる要素のスライス
   @inlinable
   public func elements(in range: ClosedRange<Key>) -> SubSequence {
-//    SubSequence(
-//      _subSequence:
-//        _tree.subsequence(
-//          from: ___ptr_lower_bound(range.lowerBound),
-//          to: ___ptr_upper_bound(range.upperBound)))
     .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_upper_bound(range.upperBound))
   }
 }
@@ -827,146 +794,6 @@ extension RedBlackTreeDictionary.SubSequence: Sequence, Collection, Bidirectiona
   public typealias SubSequence = Self
 }
 
-#if false
-extension RedBlackTreeDictionary {
-
-  @frozen
-  public struct SubSequence {
-
-    @usableFromInline
-    internal typealias _SubSequence = Tree.SubSequence
-
-    @usableFromInline
-    internal let _subSequence: _SubSequence
-
-    @inlinable
-    init(_subSequence: _SubSequence) {
-      self._subSequence = _subSequence
-    }
-  }
-}
-
-extension RedBlackTreeDictionary.SubSequence {
-
-  public typealias Base = RedBlackTreeDictionary
-  public typealias SubSequence = Self
-  public typealias Index = Base.Index
-  public typealias Element = Base.Element
-}
-
-extension RedBlackTreeDictionary.SubSequence: Sequence {
-
-  @inlinable
-  @inline(__always)
-  public __consuming func makeIterator() -> ElementIterator<RedBlackTreeDictionary> {
-    ElementIterator(tree: _tree, start: _subSequence.startIndex, end: _subSequence.endIndex)
-  }
-}
-
-extension RedBlackTreeDictionary.SubSequence: ___RedBlackTreeSubSequenceBase {}
-
-extension RedBlackTreeDictionary.SubSequence: BidirectionalCollection {
-  @inlinable
-  @inline(__always)
-  public var startIndex: Index {
-    ___start_index
-  }
-
-  @inlinable
-  @inline(__always)
-  public var endIndex: Index {
-    ___end_index
-  }
-
-  @inlinable
-  @inline(__always)
-  public var count: Int {
-    ___count
-  }
-
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try ___for_each(body)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func distance(from start: Index, to end: Index) -> Int {
-    ___distance(from: start, to: end)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(after i: Index) -> Index {
-    ___index(after: i)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(after i: inout Index) {
-    ___form_index(after: &i)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(before i: Index) -> Index {
-    ___index(before: i)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(before i: inout Index) {
-    ___form_index(before: &i)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(i, offsetBy: distance)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    ___form_index(&i, offsetBy: distance)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    ___index(i, offsetBy: distance, limitedBy: limit)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Bool
-  {
-    ___form_index(&i, offsetBy: distance, limitedBy: limit)
-  }
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: Index) -> Element {
-    _subSequence[position.rawValue]
-  }
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: RawIndex) -> Element {
-    _subSequence[position.rawValue]
-  }
-
-  @inlinable
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _subSequence[bounds.lowerBound..<bounds.upperBound])
-  }
-}
-#endif
-
 // MARK: - Index Range
 
 extension RedBlackTreeDictionary {
@@ -979,19 +806,6 @@ extension RedBlackTreeDictionary {
     startIndex..<endIndex
   }
 }
-
-#if false
-extension RedBlackTreeDictionary.SubSequence {
-
-  public typealias Indices = Range<Index>
-
-  @inlinable
-  @inline(__always)
-  public var indices: Indices {
-    startIndex..<endIndex
-  }
-}
-#endif
 
 // MARK: - Raw Index Sequence
 
@@ -1008,22 +822,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if false
-extension RedBlackTreeDictionary.SubSequence {
-
-  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
-  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
-  @inlinable
-  @inline(__always)
-  public var rawIndices: RawIndexSequence<RedBlackTreeDictionary> {
-    RawIndexSequence(
-      tree: _tree,
-      start: _subSequence.startIndex,
-      end: _subSequence.endIndex)
-  }
-}
-#endif
-
 // MARK: - Enumerated Sequence
 
 extension RedBlackTreeDictionary {
@@ -1033,19 +831,6 @@ extension RedBlackTreeDictionary {
     RawIndexedSequence(tree: _tree)
   }
 }
-
-#if false
-extension RedBlackTreeDictionary.SubSequence {
-
-  @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<RedBlackTreeDictionary> {
-    RawIndexedSequence(
-      tree: _tree,
-      start: _subSequence.startIndex,
-      end: _subSequence.endIndex)
-  }
-}
-#endif
 
 // MARK: - ExpressibleByDictionaryLiteral
 

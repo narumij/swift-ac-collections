@@ -76,6 +76,7 @@ extension ___RedBlackTree.___Tree {
 
 extension ___RedBlackTree.___Tree.___Iterator: Comparable {
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -88,6 +89,11 @@ extension ___RedBlackTree.___Tree.___Iterator: Comparable {
     return lhs._rawValue == rhs._rawValue
   }
 
+  /// - Complexity: RedBlackTreeSet, RedBlackTreeDictionaryの場合O(1)
+  ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n*)
+  ///
+  ///   内部動作がユニークな場合、値の比較で解決できますが、
+  ///   内部動作がマルチの場合、ノード位置での比較となるので重くなります。
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -101,6 +107,8 @@ extension ___RedBlackTree.___Tree.___Iterator: Comparable {
   }
 }
 
+// Stridableできるが、Range<Index>に標準実装が生えることと、
+// その実装が要素アクセスのたびに範囲チェックを行うことを嫌って、Stridableをやめている
 extension ___RedBlackTree.___Tree.___Iterator {
 
   @inlinable
@@ -217,7 +225,11 @@ extension ___RedBlackTree.___Tree.___Iterator {
   @inlinable
   @inline(__always)
   public var pointee: Element? {
-    guard _tree.__parent_(_rawValue) != .nullptr, _tree.___contains(_rawValue) else {
+    guard
+      _tree.__parent_(_rawValue) != .nullptr,
+      rawValue != .end,
+      _tree.___contains(_rawValue)
+    else {
       return nil
     }
     return ___pointee

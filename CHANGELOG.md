@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - `Range<Index>`相当のシーケンスを追加
 ### Removed
-- Pointer(Index)をStridable対応を削除
+- Pointer(Index)のStridable対応を削除
 - over,underを削除
 
 ## [0.1.17] - 2025-5-27

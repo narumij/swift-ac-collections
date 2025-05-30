@@ -23,24 +23,21 @@
 extension ___RedBlackTree.___Tree {
   
   public
-  struct ForwardIterator: Sequence & Collection & BidirectionalCollection, IteratorProtocol {
+  struct ForwardIterator: IteratorProtocol {
     
     public typealias Element = ___Iterator
-    
-    public typealias Index = ___Iterator
     
     @usableFromInline
     let _tree: Tree
     
     @usableFromInline
-    var _current, _start, _next, _end: _NodePtr
+    var _current, _next, _end: _NodePtr
     
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self._tree = tree
       self._current = start
-      self._start = start
       self._end = end
       self._next = start == .end ? .end : tree.__tree_next(start)
     }
@@ -57,15 +54,83 @@ extension ___RedBlackTree.___Tree {
       }
       return _tree.makeIndex(rawValue: _current)
     }
+  }
+  
+  public
+  struct BackwordIterator: Sequence, IteratorProtocol {
+    
+    public typealias Element = ___Iterator
+    
+    @usableFromInline
+    let _tree: Tree
+    
+    @usableFromInline
+    var _current, _next, _start, _begin: _NodePtr
+
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      self._tree = tree
+      self._current = end
+      self._next = _tree.__tree_prev_iter(end)
+      self._start = start
+      self._begin = _tree.__begin_node
+    }
     
     @inlinable
-    public func reversed() -> BackwordIterator {
+    @inline(__always)
+    public mutating func next() -> ___Iterator? {
+      guard _current != _start else { return nil }
+      _current = _next
+      _next = _current != _begin ? _tree.__tree_prev_iter(_current) : .nullptr
+      return _tree.makeIndex(rawValue: _current)
+    }
+  }
+  
+  public
+  struct IterSequence: Sequence {
+    
+    public
+    typealias _Tree = Tree
+    
+    @usableFromInline
+    let _tree: Tree
+    
+    @usableFromInline
+    var _start, _end: _NodePtr
+    
+    public typealias Index = ___Iterator
+    
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree) {
+      self.init(
+        tree: tree,
+        start: tree.__begin_node,
+        end: tree.__end_node())
+    }
+    
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      _tree = tree
+      _start = start
+      _end = end
+    }
+    
+    @inlinable
+    public __consuming func makeIterator() -> ForwardIterator {
+      .init(tree: _tree, start: _start, end: _end)
+    }
+    
+    @inlinable
+    public __consuming func reversed() -> BackwordIterator {
       .init(tree: _tree, start: _start, end: _end)
     }
   }
 }
 
-extension ___RedBlackTree.___Tree.ForwardIterator {
+extension ___RedBlackTree.___Tree.IterSequence: Collection, BidirectionalCollection {
   
   public
   func index(after i: Index) -> Index {
@@ -99,90 +164,4 @@ extension ___RedBlackTree.___Tree.ForwardIterator {
   public subscript(bounds: Range<Index>) -> SubSequence {
     .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }
-  
-//  public func reversed() -> ReversedSequence<Self> {
-//    .init(base: self)
-//  }
 }
-
-extension ___RedBlackTree.___Tree {
-
-  public
-  struct BackwordIterator: Sequence, IteratorProtocol {
-    
-    public typealias Element = ___Iterator
-    
-    @usableFromInline
-    let _tree: Tree
-    
-    @usableFromInline
-    var _current, _next, _start, _begin: _NodePtr
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self._tree = tree
-      self._current = end
-      self._next = _tree.__tree_prev_iter(end)
-      self._start = start
-      self._begin = _tree.__begin_node
-    }
-    
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> ___Iterator? {
-      guard _current != _start else { return nil }
-      _current = _next
-      _next = _current != _begin ? _tree.__tree_prev_iter(_current) : .nullptr
-      return _tree.makeIndex(rawValue: _current)
-    }
-  }
-  
-//  public
-//  struct IterSequence: Sequence, ReversableSequence {
-//    
-//    public
-//    typealias _Tree = Tree
-//    
-//    @usableFromInline
-//    let _tree: Tree
-//    
-//    @usableFromInline
-//    var _start, _end: _NodePtr
-//    
-//    public typealias Index = ___Iterator
-//    
-//    @inlinable
-//    @inline(__always)
-//    internal init(tree: Tree) {
-//      self.init(
-//        tree: tree,
-//        start: tree.__begin_node,
-//        end: tree.__end_node())
-//    }
-//    
-//    @inlinable
-//    @inline(__always)
-//    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-//      _tree = tree
-//      _start = start
-//      _end = end
-//    }
-//    
-//    @inlinable
-//    public func makeIterator() -> ForwardIterator {
-//      .init(tree: _tree, start: _start, end: _end)
-//    }
-//    
-//    @inlinable
-//    public func makeReversedIterator() -> BackwordIterator {
-//      .init(tree: _tree, start: _start, end: _end)
-//    }
-//  }
-}
-
-extension ___RedBlackTree.___Tree {
-  public typealias IterSequence = ForwardIterator
-}
-
-

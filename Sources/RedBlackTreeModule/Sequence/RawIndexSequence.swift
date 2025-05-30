@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct RawIndexSequence<Base: RedBlackTreeSequenceBase>: Sequence, ReversableSequence {
+struct RawIndexSequence<Base: RedBlackTreeSequenceBase>: Sequence {
   
   @usableFromInline
   let _tree: Base.Tree
@@ -47,7 +47,7 @@ struct RawIndexSequence<Base: RedBlackTreeSequenceBase>: Sequence, ReversableSeq
   }
   
   @inlinable
-  public func makeIterator() -> RawIndexIterator<Base.Tree> {
+  public __consuming func makeIterator() -> RawIndexIterator<Base.Tree> {
     .init(tree: _tree, start: _start, end: _end)
   }
   
@@ -63,16 +63,7 @@ struct RawIndexSequence<Base: RedBlackTreeSequenceBase>: Sequence, ReversableSeq
   }
   
   @inlinable
-  public
-  func makeReversedIterator() -> ReversedRawIndexIterator<Base.Tree> {
+  public __consuming func reversed() -> ReversedRawIndexIterator<Base.Tree> {
     .init(tree: _tree, start: _start, end: _end)
   }
-
-  @inlinable
-  public func reversed() -> ReversedSequence<Self> {
-    .init(base: self)
-  }
 }
-
-
-

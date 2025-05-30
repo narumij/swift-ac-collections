@@ -359,7 +359,7 @@ extension RedBlackTreeDictionary {
     @inlinable
     var value: Value? {
       @inline(__always)
-      get { isNil ? nil : pointer.pointee }
+      _read { yield isNil ? nil : pointer.pointee }
       @inline(__always)
       _modify {
         var value: Value? = pointer.move()
@@ -379,7 +379,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   public subscript(key: Key) -> Value? {
     @inline(__always)
-    get { ___value_for(key)?.value }
+    _read { yield ___value_for(key)?.value }
     @inline(__always)
     _modify {
       // TODO: もうすこしライフタイム管理に明るくなったら、再度ここのチューニングに取り組む
@@ -412,7 +412,7 @@ extension RedBlackTreeDictionary {
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
     @inline(__always)
-    get { ___value_for(key)?.value ?? defaultValue() }
+    _read { yield ___value_for(key)?.value ?? defaultValue() }
     @inline(__always)
     _modify {
       defer { _fixLifetime(self) }

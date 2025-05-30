@@ -26,7 +26,7 @@ import Foundation
 public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 
   public
-    typealias Index = Tree.___Iterator
+    typealias Index = Tree.Index
 
   public
     typealias KeyValue = (key: Key, value: Value)

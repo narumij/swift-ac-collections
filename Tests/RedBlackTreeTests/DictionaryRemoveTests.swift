@@ -156,7 +156,7 @@ final class DictionaryRemoveTests: XCTestCase {
     XCTAssertEqual(members.map { $0.key }, [])
   }
 
-#if false
+#if true
   func testRemoveWithSubIndices() throws {
       var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     for i in members[2 ..< 8].indices {

@@ -52,7 +52,6 @@ extension ___RedBlackTree.___Tree {
         _current = _next
         _next = _next == _end ? _end : _tree.__tree_next(_next)
       }
-//      return .init(__tree: _tree, rawValue: _current)
       return _tree.makeIndex(rawValue: _current)
     }
   }
@@ -84,7 +83,6 @@ extension ___RedBlackTree.___Tree {
       guard _current != _start else { return nil }
       _current = _next
       _next = _current != _begin ? _tree.__tree_prev_iter(_current) : .nullptr
-//      return .init(__tree: _tree, rawValue: _current)
       return _tree.makeIndex(rawValue: _current)
     }
   }
@@ -148,20 +146,16 @@ extension ___RedBlackTree.___Tree.IterSequence: Collection, BidirectionalCollect
   
   public
   subscript(position: Index) -> Index {
-//    return position
-//    return .init(__tree: _tree, rawValue: position.rawValue)
     _tree.makeIndex(rawValue: position.rawValue)
   }
   
   public
   var startIndex: Index {
-//    .init(__tree: _tree, rawValue: _start)
     _tree.makeIndex(rawValue: _start)
   }
   
   public
   var endIndex: Index {
-//    .init(__tree: _tree, rawValue: _end)
     _tree.makeIndex(rawValue: _end)
   }
   

@@ -284,7 +284,7 @@ final class SetRemoveTest_10: XCTestCase {
     XCTAssertEqual(members.map { $0 }, [])
   }
 
-  #if false
+  #if true
     func testRemoveWithSubIndices() throws {
       for i in members.elements(in: 2..<8).indices {
         members.remove(at: i)

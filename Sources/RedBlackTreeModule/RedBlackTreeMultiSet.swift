@@ -43,7 +43,7 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
     typealias Element = Element
 
   public
-    typealias Index = Tree.___Iterator
+    typealias Index = Tree.Index
 
   public
     typealias _Key = Element

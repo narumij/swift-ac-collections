@@ -160,10 +160,14 @@ protocol BeginNodeProtocol {
 
 @usableFromInline
 protocol BeginProtocol: BeginNodeProtocol {
+  // __begin_nodeが圧倒的に速いため
+  @available(*, deprecated, renamed: "__begin_node")
   func begin() -> _NodePtr
 }
 
 extension BeginProtocol {
+  // __begin_nodeが圧倒的に速いため
+  @available(*, deprecated, renamed: "__begin_node")
   @inlinable
   @inline(__always)
   func begin() -> _NodePtr { __begin_node }

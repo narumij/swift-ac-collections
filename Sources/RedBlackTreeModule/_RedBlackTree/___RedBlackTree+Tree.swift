@@ -532,6 +532,7 @@ extension ___RedBlackTree.___Tree {
     _header.capacity
   }
 
+  @available(*, deprecated, renamed: "__begin_node")
   @inlinable @inline(__always)
   internal func ___begin() -> _NodePtr {
     _header.__begin_node

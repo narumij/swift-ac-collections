@@ -52,7 +52,7 @@ extension MergeProtocol {
   public func __node_handle_merge_unique<_Tree>(_ __source: _Tree)
   where _Tree: HandleProtocol, _Tree._Key == _Key, _Tree.Element == Element {
     
-    var __i = __source.begin(); while __i != __source.end() {
+    var __i = __source.__begin_node; while __i != __source.end() {
       var __src_ptr: _Tree.__node_pointer = __get_np(__i)
       var __parent: __parent_pointer = .zero
       print(__source.__value_(__src_ptr))
@@ -77,7 +77,7 @@ extension MergeProtocol {
   public func __node_handle_merge_multi<_Tree>(_ __source: _Tree)
   where _Tree: HandleProtocol, _Tree._Key == _Key, _Tree.Element == Element {
 
-    var __i = __source.begin(); while __i != __source.end() {
+    var __i = __source.__begin_node; while __i != __source.end() {
       var __src_ptr: _Tree.__node_pointer = __get_np(__i)
       var __parent: __parent_pointer = .zero
       let __child = __find_leaf_high(&__parent, __source.__get_key(__source.__value_(__src_ptr)))

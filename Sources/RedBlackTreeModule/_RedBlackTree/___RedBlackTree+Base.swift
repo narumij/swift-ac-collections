@@ -86,7 +86,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___iter_start() -> ___Iterator {
-    ___iter(_tree.___begin())
+    ___iter(_tree.__begin_node)
   }
 
   @inlinable @inline(__always)
@@ -96,7 +96,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public func ___ptr_start() -> _NodePtr {
-    _tree.___begin()
+    _tree.__begin_node
   }
 
   @inlinable @inline(__always)

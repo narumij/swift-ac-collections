@@ -127,7 +127,8 @@ extension ___RedBlackTree.___Tree.___Iterator {
         distance -= 1
       } else {
         if result.isStart {
-          result._rawValue = .nullptr
+          // 後ろと区別したくてnullptrにしてたが、一周回るとendなのでendにしてみる
+          result._rawValue = .end
           return result
         }
         result.___prev()
@@ -170,6 +171,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
 
   @inlinable @inline(__always)
   mutating func ___prev() {
+    assert(_rawValue != _tree.__begin_node)
     _rawValue = _tree.__tree_prev_iter(_rawValue)
   }
 }

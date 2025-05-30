@@ -5,6 +5,42 @@ protocol PointerCompareProtocol: ValueProtocol {
   func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }
 
+@usableFromInline
+protocol PointerCompareHogeProtocol: ValueProtocol {
+  func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
+  func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
+}
+
+extension ___RedBlackTree.___Tree {
+  @inlinable @inline(__always)
+  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+    VC.isMulti ? ___ptr_comp_multi(l, r) : ___ptr_comp_unique(l, r)
+  }
+}
+
+public protocol CompareTrait {
+  static var isMulti: Bool { get }
+}
+
+public protocol CompareUniqueTrait: CompareTrait { }
+
+extension CompareUniqueTrait {
+  @inlinable @inline(__always)
+  public static var isMulti: Bool { false }
+}
+
+public protocol CompareMultiTrait: CompareTrait { }
+
+extension CompareMultiTrait {
+  @inlinable @inline(__always)
+  public static var isMulti: Bool { true }
+}
+
+//@usableFromInline
+//protocol CompareTrait {
+//  func ___ptr_comp<P: PointerCompareHogeProtocol>(_ type: P.Type,_ l:_NodePtr,_ r: _NodePtr) -> Bool
+//}
+
 // 現状使っていない
 @usableFromInline
 protocol CompareUniqueProtocol: ValueProtocol {}
@@ -25,21 +61,20 @@ extension CompareUniqueProtocol {
     return value_comp(__value_(l), __value_(r))
   }
 
-  @inlinable
-  @inline(__always)
-  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    ___ptr_comp_unique(l, r)
-  }
+//  @inlinable
+//  @inline(__always)
+//  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+//    ___ptr_comp_unique(l, r)
+//  }
 }
 
 @usableFromInline
 protocol CompareMultiProtocol: MemberProtocol & RootProtocol & EndProtocol {}
 
 extension CompareMultiProtocol {
-  
+
   // ノードの高さを数える
   @inlinable
-  @inline(__always)
   func ___ptr_height(_ __p: _NodePtr) -> Int {
     assert(__p != .nullptr, "Node shouldn't be null")
     var __h = 0
@@ -53,7 +88,7 @@ extension CompareMultiProtocol {
   
   // ノードの大小を比較する
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
     assert(__l != .nullptr, "Left node shouldn't be null")
     assert(__r != .nullptr, "Right node shouldn't be null")
@@ -93,13 +128,13 @@ extension CompareMultiProtocol {
     return __tree_is_left_child(__l)
   }
   
-  @inlinable
-  @inline(__always)
-  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    assert(l == .end || __parent_(l) != .nullptr)
-    assert(r == .end || __parent_(r) != .nullptr)
-    return ___ptr_comp_multi(l, r)
-  }
+//  @inlinable
+//  @inline(__always)
+//  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+//    assert(l == .end || __parent_(l) != .nullptr)
+//    assert(r == .end || __parent_(r) != .nullptr)
+//    return ___ptr_comp_multi(l, r)
+//  }
 }
 
 @usableFromInline
@@ -116,13 +151,14 @@ extension CompareProtocol {
   @inlinable
   @inline(__always)
   func ___ptr_less_than_or_equal(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    return l == r || ___ptr_comp(l, r)
+//    return l == r || ___ptr_comp(l, r)
+    return !___ptr_comp(r, l)
   }
 
   @inlinable
   @inline(__always)
   func ___ptr_greator_than(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    return l != r && !___ptr_comp(l, r)
+    return ___ptr_comp(r, l)
   }
 
   @inlinable

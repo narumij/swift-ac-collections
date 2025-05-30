@@ -134,14 +134,14 @@ extension ___RedBlackTree.___Tree.IterSequence: Collection, BidirectionalCollect
   
   public
   func index(after i: Index) -> Index {
-//    return i.advanced(by: 1)
-    i.___next_
+    return i.advanced(by: 1)
+//    i.___next_
   }
   
   public
   func index(before i: Index) -> Index {
-//    return i.advanced(by: -1)
-    i.___prev_
+    return i.advanced(by: -1)
+//    i.___prev_
   }
   
   public

@@ -100,6 +100,10 @@ import XCTest
     func value_comp(_ l: Element, _ r: Element) -> Bool {
       l < r
     }
+    
+    func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+      ___ptr_comp_multi(l, r)
+    }
   }
 
   class TreeFixture0_10_20: TreeFixture<Int> {

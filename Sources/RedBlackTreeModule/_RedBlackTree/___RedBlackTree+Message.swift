@@ -23,6 +23,11 @@
 import Foundation
 
 extension String {
+  
+  @usableFromInline
+  static var garbagedIndex: String {
+    "開放されたインデックスの使用がありました。startIndex ..< endIndex等をお使いの場合、等価なSliceでのindicesで代替してください。"
+  }
 
   @usableFromInline
   static var invalidIndex: String {

@@ -6,7 +6,6 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-#if true
 final class SetPointerTests: XCTestCase {
 
   var members: RedBlackTreeSet<Int> = []
@@ -35,7 +34,6 @@ final class SetPointerTests: XCTestCase {
       XCTAssertNotNil(it.next)
       members.remove(at: it)
       XCTAssertFalse(it.___isValid)
-      XCTAssertTrue(it.isPhantom)
       XCTAssertNil(it.pointee)
       XCTAssertNil(it.previous)
       XCTAssertNil(it.next)
@@ -75,7 +73,6 @@ final class SetPointerTests: XCTestCase {
     XCTAssertEqual(members.startIndex.advanced(by: 4).pointee, 4)
     XCTAssertNil(members.startIndex.advanced(by: 5).pointee)
     XCTAssertEqual(members.startIndex.advanced(by: 5), members.endIndex)
-    XCTAssertTrue(members.startIndex.advanced(by: 6).isOver)
     XCTAssertNil(members.startIndex.advanced(by: 6).pointee)
   }
 
@@ -87,175 +84,8 @@ final class SetPointerTests: XCTestCase {
     XCTAssertEqual(members.endIndex.advanced(by: -4).pointee, 1)
     XCTAssertEqual(members.endIndex.advanced(by: -5).pointee, 0)
     XCTAssertEqual(members.endIndex.advanced(by: -5), members.startIndex)
-    XCTAssertTrue(members.startIndex.advanced(by: -6).isUnder)
     XCTAssertNil(members.startIndex.advanced(by: -6).pointee)
   }
-
-  func testGhostBehavior1() throws {
-    let indices = members.indices.map { $0 }
-    members.remove(at: indices[2])
-    XCTAssertFalse(indices[2].___isValid)
-    XCTAssertLessThan(indices[0].advanced(by: -2), indices[2])
-    XCTAssertLessThan(indices[0].advanced(by: -1), indices[2])
-    XCTAssertTrue(indices[0] < indices[2])
-    XCTAssertLessThan(indices[1], indices[2])
-    XCTAssertEqual(indices[2], indices[2])
-    XCTAssertGreaterThan(indices[3], indices[2])
-    XCTAssertGreaterThan(indices[4], indices[2])
-    XCTAssertGreaterThan(indices[4].advanced(by: 1), indices[2])
-    XCTAssertGreaterThan(indices[4].advanced(by: 2), indices[2])
-  }
-
-  func testGhostBehavior2() throws {
-    let indices = members.indices.map { $0 }
-    members.remove(at: indices[0])
-    XCTAssertFalse(indices[0].___isValid)
-    XCTAssertLessThan(indices[0].advanced(by: -2), indices[0])
-    XCTAssertLessThan(indices[0].advanced(by: -1), indices[0])
-    XCTAssertEqual(indices[0], indices[0])
-    XCTAssertGreaterThan(indices[1], indices[0])
-    XCTAssertGreaterThan(indices[2], indices[0])
-    XCTAssertGreaterThan(indices[3], indices[0])
-    XCTAssertGreaterThan(indices[4], indices[0])
-    XCTAssertGreaterThan(indices[4].advanced(by: 1), indices[0])
-    XCTAssertGreaterThan(indices[4].advanced(by: 2), indices[0])
-  }
-
-  func testGhostBehavior3() throws {
-    let indices = members.indices.map { $0 }
-    members.remove(at: indices[4])
-    XCTAssertFalse(indices[4].___isValid)
-    XCTAssertLessThan(indices[0].advanced(by: -2), indices[4])
-    XCTAssertLessThan(indices[0].advanced(by: -1), indices[4])
-    XCTAssertLessThan(indices[0], indices[4])
-    XCTAssertLessThan(indices[1], indices[4])
-    XCTAssertLessThan(indices[2], indices[4])
-    XCTAssertLessThan(indices[3], indices[4])
-    XCTAssertEqual(indices[4], indices[4])
-    XCTAssertGreaterThan(indices[4].advanced(by: 1), indices[4])
-    XCTAssertEqual(indices[4].advanced(by: 1), members.endIndex)
-    XCTAssertGreaterThan(indices[4].advanced(by: 2), indices[4])
-  }
-
-  func testGhostBehavior4() throws {
-    let indices = members.indices.map { $0 }
-    XCTAssertLessThanOrEqual(indices[0], members.endIndex)
-    XCTAssertGreaterThanOrEqual(members.endIndex, indices[0])
-    members.remove(at: indices[0])
-    XCTAssertLessThanOrEqual(indices[0], members.endIndex)
-    XCTAssertLessThanOrEqual(indices[0], indices[1])
-    XCTAssertLessThanOrEqual(indices[1], members.endIndex)
-    XCTAssertGreaterThanOrEqual(members.endIndex, indices[0])
-    XCTAssertGreaterThanOrEqual(indices[1], indices[0])
-    XCTAssertGreaterThanOrEqual(members.endIndex, indices[1])
-    members.remove(at: indices[1])
-    XCTAssertLessThanOrEqual(indices[0], members.endIndex)
-    XCTAssertLessThanOrEqual(indices[0], indices[2])
-    XCTAssertLessThanOrEqual(indices[2], members.endIndex)
-    XCTAssertGreaterThanOrEqual(members.endIndex, indices[0])
-    XCTAssertGreaterThanOrEqual(indices[2], indices[0])
-    XCTAssertGreaterThanOrEqual(members.endIndex, indices[2])
-    members.remove(at: indices[2])
-    XCTAssertLessThanOrEqual(indices[0], members.endIndex)
-    XCTAssertLessThanOrEqual(indices[0], indices[3])
-    XCTAssertLessThanOrEqual(indices[3], members.endIndex)
-    XCTAssertGreaterThanOrEqual(members.endIndex, indices[0])
-    XCTAssertGreaterThanOrEqual(indices[3], indices[0])
-    XCTAssertGreaterThanOrEqual(members.endIndex, indices[3])
-    members.remove(at: indices[3])
-    XCTAssertLessThanOrEqual(indices[0], members.endIndex)
-    XCTAssertLessThanOrEqual(indices[0], indices[4])
-    XCTAssertLessThanOrEqual(indices[4], members.endIndex)
-    XCTAssertGreaterThanOrEqual(members.endIndex, indices[0])
-    XCTAssertGreaterThanOrEqual(indices[4], indices[0])
-    XCTAssertGreaterThanOrEqual(members.endIndex, indices[4])
-    members.remove(at: indices[4])
-  }
-
-  #if DEBUG
-    func testGhostBehavior5() throws {
-      let indices = members.indices.map { $0 }
-      let end = members.endIndex
-      end.phantomMark()
-      XCTAssertTrue(indices[0] < end)
-      XCTAssertFalse(end < indices[0])
-    }
-  #endif
-
-  func testGhostBehavior6_0() throws {
-    let indices = members.indices.map { $0 }
-    let index0 = indices[0]
-    members.remove(at: indices[0])
-    members.remove(at: indices[1])
-    XCTAssertTrue(index0 < indices[2])
-    XCTAssertFalse(indices[2] < index0)
-    XCTAssertTrue(index0 < indices[3])
-    XCTAssertFalse(indices[3] < index0)
-    XCTAssertTrue(index0 < indices[4])
-    XCTAssertFalse(indices[4] < index0)
-    XCTAssertFalse(members.endIndex < index0)
-    XCTAssertTrue(index0 < members.endIndex)
-  }
-
-  func testGhostBehavior6_1() throws {
-    let indices = members.indices.map { $0 }
-    let index1 = indices[1]
-    members.remove(at: indices[1])
-    members.remove(at: indices[2])
-    XCTAssertFalse(index1 < indices[0])
-    XCTAssertTrue(indices[0] < index1)
-    XCTAssertTrue(index1 < indices[3])
-    XCTAssertFalse(indices[3] < index1)
-    XCTAssertTrue(index1 < indices[4])
-    XCTAssertFalse(indices[4] < index1)
-    XCTAssertFalse(members.endIndex < index1)
-    XCTAssertTrue(index1 < members.endIndex)
-  }
-
-  func testGhostBehavior6_3() throws {
-    let indices = members.indices.map { $0 }
-    let index3 = indices[3]
-    members.remove(at: indices[3])
-    members.remove(at: indices[2])
-    XCTAssertTrue(indices[0] < index3)
-    XCTAssertFalse(index3 < indices[0])
-    XCTAssertTrue(indices[1] < index3)
-    XCTAssertFalse(index3 < indices[1])
-    XCTAssertFalse(indices[4] < index3)
-    XCTAssertTrue(index3 < indices[4])
-    XCTAssertFalse(members.endIndex < index3)
-    XCTAssertTrue(index3 < members.endIndex)
-  }
-
-  #if DEBUG
-    func testGhostBehavior8() throws {
-      let indices = members.indices.map { $0 }
-      let under = indices[0].advanced(by: -1)
-      under.phantomMark()
-      members.remove(at: indices[0])
-      members.remove(at: indices[1])
-      XCTAssertLessThan(under, indices[2])
-      XCTAssertFalse(indices[2] < under)
-    }
-
-    func testGhostBehavior9() throws {
-      let indices = members.indices.map { $0 }
-      let end = members.endIndex
-      end.phantomMark()
-      members.remove(at: indices[4])
-      XCTAssertLessThan(indices[0], end)
-      XCTAssertFalse(end < indices[0])
-    }
-
-    func testGhostBehavior10() throws {
-      let indices = members.indices.map { $0 }
-      let over = members.endIndex.advanced(by: -1)
-      over.phantomMark()
-      members.remove(at: indices[4])
-      XCTAssertLessThan(indices[0], over)
-      XCTAssertFalse(over < indices[0])
-    }
-  #endif
 
   func testValidBehavior1() throws {
     let indices = members.indices.map { $0 }
@@ -290,4 +120,3 @@ final class SetPointerTests: XCTestCase {
     }
   }
 }
-#endif

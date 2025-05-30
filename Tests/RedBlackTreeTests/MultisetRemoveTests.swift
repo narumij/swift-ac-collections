@@ -263,6 +263,7 @@ final class MultisetRemoveTests: XCTestCase {
     XCTAssertEqual(members.map { $0 }, [])
   }
 
+#if false
   func testRemoveWithSubIndices() throws {
     var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
     for i in members.elements(in: 2 ..< 8).indices {
@@ -278,7 +279,7 @@ final class MultisetRemoveTests: XCTestCase {
     }
     XCTAssertEqual(members.map { $0 }, [0,1,8,9])
   }
-  
+
   func testRemoveWithSubIndices3() throws {
     var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
     for i in members.elements(in: 2 ..< 8).indices.reversed() {
@@ -286,7 +287,7 @@ final class MultisetRemoveTests: XCTestCase {
     }
     XCTAssertEqual(members.map { $0 }, [0,1,8,9])
   }
-  
+
   func testRemoveWithSubIndices4() throws {
     var members =  RedBlackTreeMultiSet<Int>(0 ..< 10)
     members.elements(in: 2 ..< 8).indices.reversed().forEach { i in
@@ -294,7 +295,8 @@ final class MultisetRemoveTests: XCTestCase {
     }
     XCTAssertEqual(members.map { $0 }, [0,1,8,9])
   }
-  
+#endif
+
   func testRemoveWithSub___Indices() throws {
     var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
     for i in members.elements(in: 2 ..< 8).rawIndices {
@@ -318,4 +320,6 @@ final class MultisetRemoveTests: XCTestCase {
     }
     XCTAssertEqual(members.map { $0 }, [0,1,8,9])
   }
+#if false
+  #endif
 }

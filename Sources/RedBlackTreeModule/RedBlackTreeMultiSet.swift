@@ -57,6 +57,8 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeEqualRangeMulti {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 
+extension RedBlackTreeMultiSet: CompareMultiTrait {}
+
 // MARK: - Initialization（初期化）
 
 extension RedBlackTreeMultiSet {
@@ -201,7 +203,6 @@ extension RedBlackTreeMultiSet {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     _ensureUnique()
-    index.phantomMark()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
@@ -492,12 +493,20 @@ extension RedBlackTreeMultiSet.SubSequence: Sequence, Collection, BidirectionalC
 
 extension RedBlackTreeMultiSet {
 
-  public typealias Indices = Range<Index>
+//  public typealias Indices = Range<Index>
+//
+//  @inlinable
+//  @inline(__always)
+//  public var indices: Indices {
+//    startIndex..<endIndex
+//  }
+  
+  public typealias Indices = Tree.IterSequence
 
   @inlinable
   @inline(__always)
-  public var indices: Indices {
-    startIndex..<endIndex
+  public var indices: Tree.IterSequence {
+    .init(tree: _tree, start: ___ptr_start(), end: ___ptr_end())
   }
 }
 

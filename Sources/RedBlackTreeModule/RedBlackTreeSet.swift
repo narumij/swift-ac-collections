@@ -76,6 +76,8 @@ extension RedBlackTreeSet: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeSet: ___RedBlackTreeEqualRangeUnique {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 
+extension RedBlackTreeSet: CompareUniqueTrait {}
+
 // MARK: - Initialization
 
 extension RedBlackTreeSet {
@@ -222,7 +224,6 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     _ensureUnique()
-    index.phantomMark()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
@@ -531,7 +532,6 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public var indices: Tree.IterSequence {
-//    startIndex ..< endIndex
     .init(tree: _tree, start: ___ptr_start(), end: ___ptr_end())
   }
 }

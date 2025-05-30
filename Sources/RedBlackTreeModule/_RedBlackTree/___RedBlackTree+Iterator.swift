@@ -39,26 +39,6 @@ extension ___RedBlackTree.___Tree {
     @usableFromInline
     var rawValue: Int
 
-    @usableFromInline
-    final class Remnant {
-      @usableFromInline
-      @nonobjc
-      var rawValue: Int?
-      @usableFromInline
-      @nonobjc
-      var prev: Int?
-      @usableFromInline
-      @nonobjc
-      var next: Int?
-      @inlinable @inline(__always)
-      @nonobjc
-      init() {}
-    }
-
-    /// 幽霊化した際の記憶の残滓
-    @usableFromInline
-    var remnant: Remnant = .init()
-
     // MARK: -
 
     @inlinable
@@ -80,48 +60,17 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-// underやoverは幽霊化の補助としての利用に限定している
-// このため、RangeやStridableに関連しないところでは、underやoverは使わないし対応しない
-
 extension ___RedBlackTree.___Tree.___Iterator: Comparable {
   
-  // ポインタを利用して削除した場合に、Range<Index>の厳しい検査に耐えるための準備
-  @usableFromInline
-  func phantomMark() {
-    remnant.rawValue = rawValue
-    
-    // Treeが空の場合、削除自体が発生しないので、考慮していない
-    
-    if ___is_under_or_over(rawValue) {
-      remnant.prev = rawValue
-      remnant.next = rawValue
-      return
-    }
-    
-    // ユーザーの操作でポインタ不正が発生するようであればguardにする必要があるが、
-    // 今のところ思い当たらないので様子見
-    assert(rawValue == .end || _tree.___is_valid(rawValue))
-    
-    if rawValue == .end {
-      remnant.prev = _tree.__tree_prev_iter(rawValue)
-      remnant.next = .over
-      return
-    }
-    
-    if rawValue == _tree.begin() {
-      remnant.prev = .under
-      remnant.next = _tree.__tree_next_iter(rawValue)
-      return
-    }
-    
-    remnant.prev = _tree.__tree_prev_iter(rawValue)
-    remnant.next = _tree.__tree_next_iter(rawValue)
-  }
-
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
+    
+    guard !lhs.isGarbaged, !rhs.isGarbaged else {
+      preconditionFailure(.garbagedIndex)
+    }
+    
     return lhs.rawValue == rhs.rawValue
   }
 
@@ -129,106 +78,11 @@ extension ___RedBlackTree.___Tree.___Iterator: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-
-    // 通常の特殊null比較が成立する場合 <
-    if let underOver = lessThanContainsUnderOrOver(lhs.rawValue, rhs.rawValue) {
-      return underOver
+    
+    guard !lhs.isGarbaged, !rhs.isGarbaged else {
+      preconditionFailure(.garbagedIndex)
     }
     
-    // 幽霊判定はRange<Index>のシーケンス動作の為のもの
-    // それ以外のユースケースでバグが生じても仕様とする
-    
-    // そもそもSwift標準が削除済みのインデックスに対して検査をスキップしてくれたらいいが
-    // それを実施するとパフォーマンスが落ちる懸念があり責任がとれないのでそういうPRはしない
-
-    // 左が幽霊化しているケース
-    if lhs.remnant.rawValue == lhs.rawValue,
-      let next = lhs.remnant.next,
-      let prev = lhs.remnant.prev
-    {
-      // 右側と双方幽霊化してるケースは未実装
-      guard rhs.remnant.rawValue != rhs.rawValue else {
-        fatalError(.invalidIndex)
-      }
-
-      // 左幽霊の右隣と等しい場合<
-      if next == rhs.rawValue {
-        return true
-      }
-
-      // 左幽霊の右隣と特殊null比較が成立する場合<
-      if let result = lessThanContainsUnderOrOver(next, rhs.rawValue) {
-        return result
-      }
-
-      // 左幽霊の右隣が無効化してない場合、木の比較をする
-      if next == .end || rhs._tree.___is_valid(next) {
-        return rhs._tree.___ptr_comp(next, rhs.rawValue)
-      }
-
-      // 左幽霊の左隣と一致せず、特殊null比較が成立する場合<
-      if prev != rhs.rawValue, let _ = lessThanContainsUnderOrOver(prev, rhs.rawValue) {
-        return true
-      }
-
-      // 左幽霊の左隣も無効な場合、木の比較ができないので不正操作
-      guard prev == .end || rhs._tree.___is_valid(prev) else {
-        // 不正なポインタを木の比較に送ると無限ループとなるので注意
-        fatalError(.invalidIndex)
-      }
-
-      // 左幽霊の左隣と一致しない場合、木の比較をする
-      return prev != rhs.rawValue && rhs._tree.___ptr_comp(prev, rhs.rawValue)
-    }
-
-    // 右が幽霊化しているケース
-    if rhs.remnant.rawValue == rhs.rawValue,
-      let prev = rhs.remnant.prev,
-      let next = rhs.remnant.next
-    {
-      // 右幽霊の左隣と等しい場合<
-      if lhs.rawValue == prev {
-        return true
-      }
-
-      // 右幽霊の左隣と特殊null比較が成立する場合<
-      if let result = lessThanContainsUnderOrOver(lhs.rawValue, prev) {
-        return result
-      }
-
-      // 右幽霊の左隣が無効化してない場合、木の比較をする
-      if prev == .end || lhs._tree.___is_valid(prev) {
-        return lhs._tree.___ptr_comp(lhs.rawValue, prev)
-      }
-
-      // 右幽霊の右隣と一致せず、特殊null比較が成立する場合<
-      if next != lhs.rawValue,
-        let _ = lessThanContainsUnderOrOver(lhs.rawValue, next)
-      {
-        return true
-      }
-
-      // 右幽霊の右隣も無効な場合、木の比較ができないので不正操作
-      guard next == .end || lhs._tree.___is_valid(next) else {
-        // 不正なポインタを木の比較に送ると無限ループとなるので注意
-        fatalError(.invalidIndex)
-      }
-
-      // 右幽霊の右隣と一致しない場合、木の比較をする
-      return next != rhs.rawValue && lhs._tree.___ptr_comp(lhs.rawValue, next)
-    }
-
-    assert(lhs.___isValid)
-    assert(rhs.___isValid)
-
-    guard lhs.rawValue == .end || lhs._tree.___is_valid(lhs.rawValue),
-      rhs.rawValue == .end || rhs._tree.___is_valid(rhs.rawValue)
-    else {
-      // 不正なポインタを木の比較に送ると無限ループとなるので注意
-      fatalError(.invalidIndex)
-    }
-
-    // 通常の木の比較を行う
     return lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
   }
 }
@@ -238,71 +92,31 @@ extension ___RedBlackTree.___Tree.___Iterator: Strideable {
   @inlinable
   @inline(__always)
   public func distance(to other: Self) -> Int {
-    _tree.___signed_distance(rawValue, other.rawValue)
+    guard !isGarbaged, !other.isGarbaged else {
+      preconditionFailure(.garbagedIndex)
+    }
+    return _tree.___signed_distance(rawValue, other.rawValue)
   }
 
-  /// 特殊なnullptr
-  /// 範囲の下限を下回っていることを表す
   @inlinable
   @inline(__always)
-  var under: Self {
-    .init(__tree: _tree, rawValue: .under)
-  }
-
-  /// 特殊なnullptr
-  /// 範囲の上限を上回っていることを表す
-  @inlinable
-  @inline(__always)
-  var over: Self {
-    .init(__tree: _tree, rawValue: .over)
-  }
-
-  /// 範囲の下限を超えて操作されたポインタ
-  @inlinable
-  @inline(__always)
-  public var isUnder: Bool {
-    rawValue == .under
-  }
-
-  /// 範囲の上限を超えて操作されたポインタ
-  @inlinable
-  @inline(__always)
-  public var isOver: Bool {
-    rawValue == .over
-  }
-
-  /// 削除操作で無効になりつつ、がんばって（？）隣を記録し、比較操作にまだ耐えているポインタ
-  @inlinable
-  @inline(__always)
-  public var isPhantom: Bool {
-    remnant.rawValue == rawValue
-  }
-
-  @inlinable
-  @inline(never)
   public func advanced(by n: Int) -> Self {
-    if n < 0, remnant.rawValue == rawValue, let prev = remnant.prev {
-      return .init(__tree: _tree, rawValue: prev).advanced(by: n + 1)
-    }
-    if n > 0, remnant.rawValue == rawValue, let next = remnant.next {
-      return .init(__tree: _tree, rawValue: next).advanced(by: n - 1)
-    }
-    guard
-      ___is_under_or_over(rawValue) || _tree.___is_valid_index(rawValue)
-    else {
-      fatalError(.invalidIndex)
+    guard !isGarbaged else {
+      preconditionFailure(.garbagedIndex)
     }
     var distance = n
-    var result: Self = .init(__tree: _tree, rawValue: rawValue)
+    var result: Self = self
     while distance != 0 {
       if 0 < distance {
-//        result = result.next ?? over
-        result = result.___next_
+        if result.isEnd { return result }
+        result.___next__()
         distance -= 1
       } else {
-//        result = result.previous ?? under
-//        result.rawValue = result.rawValue != _tree.begin() || _tree.___is_valid_index(result.rawValue) ? _tree.__tree_prev_iter(result.rawValue) : .under
-        result = result.___prev_
+        if result.isStart {
+          result.rawValue = .nullptr
+          return result
+        }
+        result.___prev__()
         distance += 1
       }
     }
@@ -312,15 +126,66 @@ extension ___RedBlackTree.___Tree.___Iterator: Strideable {
 
 extension ___RedBlackTree.___Tree.___Iterator {
 
-  /// 参照している木に対してポインタがValidかどうか
-  ///
-  /// CoWが発生すると結果が乖離するため注意
   @inlinable
   @inline(__always)
-  public var ___isValid: Bool {
-    // TODO: 余力があるときにinternalに変更するかも
+  public var next: Self? {
+    guard !isEnd, !isGarbaged else {
+      return nil
+    }
+    var next = self
+    next.___next()
+    return next
+  }
+
+  @inlinable
+  @inline(__always)
+  public var previous: Self? {
+    guard !isStart, !isGarbaged else {
+      return nil
+    }
+    var prev = self
+    prev.___prev()
+    return prev
+  }
+
+  @inlinable @inline(__always)
+  mutating func ___next__() {
+    guard !isEnd else { preconditionFailure(.outOfBounds) }
+    ___next()
+  }
+
+  @inlinable @inline(__always)
+  mutating func ___prev__() {
+    guard !isStart else { preconditionFailure(.outOfBounds) }
+    ___prev()
+  }
+  
+  @inlinable @inline(__always)
+  mutating func ___next() {
+    assert(rawValue != .end)
+    rawValue = _tree.__tree_next_iter(rawValue)
+  }
+
+  @inlinable @inline(__always)
+  mutating func ___prev() {
+    rawValue = _tree.__tree_prev_iter(rawValue)
+  }
+}
+
+extension ___RedBlackTree.___Tree.___Iterator {
+
+  // CoWが発生すると結果が乖離する
+  @inlinable
+  @inline(__always)
+  var ___isValid: Bool {
     if rawValue == .end { return true }
     return _tree.___is_valid(rawValue)
+  }
+  
+  @inlinable
+  @inline(__always)
+  var isGarbaged: Bool {
+    _tree.___is_garbaged(rawValue)
   }
 
   @inlinable
@@ -344,57 +209,11 @@ extension ___RedBlackTree.___Tree.___Iterator {
 }
 
 extension ___RedBlackTree.___Tree.___Iterator {
-
-  @inlinable
-  @inline(__always)
-  public var next: Self? {
-    // 幽霊化はあくまでRange<Index>対応なので、next返却能力はあるが、未対応のままにする
-    guard !___is_null_or_end(rawValue), ___isValid else {
-      return nil
-    }
-    var next = self
-    next.___next()
-    return next
-//    return .init(__tree: _tree, rawValue: _tree.__tree_next_iter(rawValue))
-  }
-
-  @inlinable
-  @inline(__always)
-  public var previous: Self? {
-    // 幽霊化はあくまでRange<Index>対応なので、previous返却能力はあるが、未対応のままにする
-    guard rawValue != _tree.begin(), ___isValid else {
-      return nil
-    }
-    var prev = self
-    prev.___prev()
-    return prev
-//    return .init(__tree: _tree, rawValue: _tree.__tree_prev_iter(rawValue))
-  }
-
-  @inlinable
-  @inline(__always)
-  var ___next_: Self {
-    var prev = self
-    prev.rawValue = !___is_null_or_end(rawValue) && _tree.___is_valid_index(rawValue) ? _tree.__tree_next_iter(rawValue) : .over
-    return prev
-  }
-
-  @inlinable
-  @inline(__always)
-  var ___prev_: Self {
-    var prev = self
-    prev.rawValue = rawValue != _tree.begin() && _tree.___is_valid_index(rawValue) ? _tree.__tree_prev_iter(rawValue) : .under
-    return prev
-  }
-
-}
-
-extension ___RedBlackTree.___Tree.___Iterator {
   
   @inlinable
   @inline(__always)
   public var pointee: Element? {
-    guard !___is_null_or_end(rawValue), ___isValid else {
+    guard _tree.__parent_(rawValue) != .nullptr, _tree.___contains(rawValue) else {
       return nil
     }
     return ___pointee
@@ -404,23 +223,17 @@ extension ___RedBlackTree.___Tree.___Iterator {
 extension ___RedBlackTree.___Tree.___Iterator {
 
   @inlinable @inline(__always)
+  var ___key: VC._Key {
+    _tree.__key(___pointee)
+  }
+
+  @inlinable @inline(__always)
   var ___pointee: Element {
     _tree[rawValue]
   }
-
-  @inlinable @inline(__always)
-  mutating func ___next() {
-    rawValue = _tree.__tree_next_iter(rawValue)
-  }
-
-  @inlinable @inline(__always)
-  mutating func ___prev() {
-    rawValue = _tree.__tree_prev_iter(rawValue)
-  }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMutableRawValue {
-}
+extension ___RedBlackTree.___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMutableRawValue { }
 
 #if DEBUG
   extension ___RedBlackTree.___Tree.___Iterator {
@@ -449,44 +262,3 @@ func _description(_ p: _NodePtr) -> String {
   }
 }
 #endif
-
-@inlinable
-@inline(__always)
-func lessThanContainsUnderOrOver(_ lhs: _NodePtr, _ rhs: _NodePtr) -> Bool? {
-  if lhs == .under {
-    return rhs != .under
-  }
-  if lhs == .over {
-    return false
-  }
-  if rhs == .under {
-    return false
-  }
-  if rhs == .over {
-    return lhs != .over
-  }
-  return nil
-}
-
-public protocol _RedBlackTreeIterator: RedBlackTreeSequenceBase {
-  func observed(to: Self) -> RawIndexSequence<Self>
-  func reversed(to: Self) -> ReversedSequence<RawIndexSequence<Self>>
-}
-
-extension ___RedBlackTree.___Tree.___Iterator: _RedBlackTreeIterator {
-  public func observed(to: Self) -> RawIndexSequence<Self> {
-    .init(tree: _tree, start: rawValue, end: to.rawValue)
-  }
-  public func reversed(to: Self) -> ReversedSequence<RawIndexSequence<Self>> {
-    .init(base: observed(to: to))
-  }
-}
-
-extension Range where Bound: _RedBlackTreeIterator {
-  public func obversed() -> RawIndexSequence<Bound> {
-    lowerBound.observed(to: upperBound)
-  }
-  public func reversed() -> ReversedSequence<RawIndexSequence<Bound>> {
-    lowerBound.reversed(to: upperBound)
-  }
-}

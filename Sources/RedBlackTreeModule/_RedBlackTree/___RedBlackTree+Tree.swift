@@ -28,7 +28,7 @@ extension ___RedBlackTree {
     ___RedBlackTree.___Tree<VC>.Header,
     ___RedBlackTree.___Tree<VC>.Node
   >
-  where VC: ValueComparer {
+  where VC: ValueComparer & CompareTrait {
 
     @inlinable
     deinit {
@@ -216,7 +216,8 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   internal var _header: Header {
     @inline(__always)
-    get { __header_ptr.pointee }
+//    get { __header_ptr.pointee }
+    _read { yield __header_ptr.pointee }
     @inline(__always)
     _modify { yield &__header_ptr.pointee }
   }
@@ -224,9 +225,13 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   public subscript(_ pointer: _NodePtr) -> Element {
     @inline(__always)
-    get {
+//    get {
+//      assert(0 <= pointer && pointer < _header.initializedCount)
+//      return __node_ptr[pointer].__value_
+//    }
+    _read {
       assert(0 <= pointer && pointer < _header.initializedCount)
-      return __node_ptr[pointer].__value_
+      yield __node_ptr[pointer].__value_
     }
     @inline(__always)
     _modify {
@@ -333,7 +338,7 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   public var __begin_node: _NodePtr {
-    get { __header_ptr.pointee.__begin_node }
+    _read { yield __header_ptr.pointee.__begin_node }
     _modify {
       yield &__header_ptr.pointee.__begin_node
     }
@@ -395,6 +400,7 @@ extension ___RedBlackTree.___Tree: CountProtocol {}
 extension ___RedBlackTree.___Tree: MemberProtocol {}
 extension ___RedBlackTree.___Tree: DistanceProtocol {}
 extension ___RedBlackTree.___Tree: CompareProtocol {}
+extension ___RedBlackTree.___Tree: CompareUniqueProtocol {}
 extension ___RedBlackTree.___Tree: CompareMultiProtocol {}
 extension ___RedBlackTree.___Tree: ___IterateNextProtocol {}
 extension ___RedBlackTree.___Tree: ___CollectionProtocol {}
@@ -540,8 +546,18 @@ extension ___RedBlackTree.___Tree {
 extension ___RedBlackTree.___Tree {
 
   @inlinable @inline(__always)
+  internal func ___contains(_ p: _NodePtr) -> Bool {
+    0..<_header.initializedCount ~= p
+  }
+  
+  @inlinable @inline(__always)
+  internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
+    __node_ptr[p].__parent_ == .nullptr
+  }
+
+  @inlinable @inline(__always)
   internal func ___is_valid(_ p: _NodePtr) -> Bool {
-    0..<_header.initializedCount ~= p && __node_ptr[p].__parent_ != .nullptr
+    ___contains(p) && !___is_garbaged(p)
   }
 }
 

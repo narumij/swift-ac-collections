@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol RedBlackTreeIndex: RedBlackTreeMutableRawValue {
+protocol RedBlackTreeIndex: RedBlackTreeMutableRawValue, RedBlackTreeUncheckedRawValue {
   associatedtype Tree
   associatedtype Element // クリーンビルド時に一度失敗するケースの回避
   init(__tree: Tree, rawValue: _NodePtr)

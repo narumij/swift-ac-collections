@@ -283,7 +283,7 @@ extension RedBlackTreeSubSequence {
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    ___is_valid_index(index: i.rawValue)
+    ___is_valid_index(index: i.___unchecked_rawValue)
   }
 
   @inlinable

@@ -29,3 +29,8 @@ protocol RedBlackTreeRawValue {
 protocol RedBlackTreeMutableRawValue: RedBlackTreeRawValue {
   var rawValue: _NodePtr { get set }
 }
+
+@usableFromInline
+protocol RedBlackTreeUncheckedRawValue: RedBlackTreeRawValue {
+  var ___unchecked_rawValue: _NodePtr { get }
+}

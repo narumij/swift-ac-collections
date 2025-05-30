@@ -37,7 +37,21 @@ extension ___RedBlackTree.___Tree {
     let _tree: Tree
 
     @usableFromInline
-    var rawValue: Int
+    var _rawValue: Int
+    
+    @inlinable
+    var rawValue: _NodePtr {
+      @inline(__always)
+      _read {
+        guard !isGarbaged else {
+          preconditionFailure(.garbagedIndex)
+        }
+        yield _rawValue
+      }
+      _modify { yield &_rawValue }
+    }
+    
+    public var ___unchecked_rawValue: _NodePtr { _rawValue }
 
     // MARK: -
 
@@ -48,7 +62,7 @@ extension ___RedBlackTree.___Tree {
         preconditionFailure("_NodePtr is nullptr")
       }
       self._tree = __tree
-      self.rawValue = rawValue
+      self._rawValue = rawValue
     }
 
     /*
@@ -71,7 +85,7 @@ extension ___RedBlackTree.___Tree.___Iterator: Comparable {
       preconditionFailure(.garbagedIndex)
     }
 
-    return lhs.rawValue == rhs.rawValue
+    return lhs._rawValue == rhs._rawValue
   }
 
   @inlinable
@@ -83,7 +97,7 @@ extension ___RedBlackTree.___Tree.___Iterator: Comparable {
       preconditionFailure(.garbagedIndex)
     }
 
-    return lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
+    return lhs._tree.___ptr_comp(lhs._rawValue, rhs._rawValue)
   }
 }
 
@@ -95,7 +109,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
     guard !isGarbaged, !other.isGarbaged else {
       preconditionFailure(.garbagedIndex)
     }
-    return _tree.___signed_distance(rawValue, other.rawValue)
+    return _tree.___signed_distance(_rawValue, other._rawValue)
   }
 
   @inlinable
@@ -113,7 +127,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
         distance -= 1
       } else {
         if result.isStart {
-          result.rawValue = .nullptr
+          result._rawValue = .nullptr
           return result
         }
         result.___prev__()
@@ -162,13 +176,13 @@ extension ___RedBlackTree.___Tree.___Iterator {
 
   @inlinable @inline(__always)
   mutating func ___next() {
-    assert(rawValue != .end)
-    rawValue = _tree.__tree_next_iter(rawValue)
+    assert(_rawValue != .end)
+    _rawValue = _tree.__tree_next_iter(_rawValue)
   }
 
   @inlinable @inline(__always)
   mutating func ___prev() {
-    rawValue = _tree.__tree_prev_iter(rawValue)
+    _rawValue = _tree.__tree_prev_iter(_rawValue)
   }
 }
 
@@ -178,33 +192,33 @@ extension ___RedBlackTree.___Tree.___Iterator {
   @inlinable
   @inline(__always)
   var ___isValid: Bool {
-    if rawValue == .end { return true }
-    return _tree.___is_valid(rawValue)
+    if _rawValue == .end { return true }
+    return _tree.___is_valid(_rawValue)
   }
 
   @inlinable
   @inline(__always)
   var isGarbaged: Bool {
-    _tree.___is_garbaged(rawValue)
+    _tree.___is_garbaged(_rawValue)
   }
 
   @inlinable
   @inline(__always)
   public var isStart: Bool {
-    rawValue == _tree.__begin_node
+    _rawValue == _tree.__begin_node
   }
 
   @inlinable
   @inline(__always)
   public var isEnd: Bool {
-    rawValue == .end
+    _rawValue == .end
   }
 
   // 利用価値はないが、おまけ。
   @inlinable
   @inline(__always)
   public var isRoot: Bool {
-    rawValue == _tree.__root()
+    _rawValue == _tree.__root()
   }
 }
 
@@ -213,7 +227,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
   @inlinable
   @inline(__always)
   public var pointee: Element? {
-    guard _tree.__parent_(rawValue) != .nullptr, _tree.___contains(rawValue) else {
+    guard _tree.__parent_(_rawValue) != .nullptr, _tree.___contains(_rawValue) else {
       return nil
     }
     return ___pointee
@@ -229,7 +243,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
 
   @inlinable @inline(__always)
   var ___pointee: Element {
-    _tree[rawValue]
+    _tree[_rawValue]
   }
 }
 
@@ -239,7 +253,7 @@ extension ___RedBlackTree.___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMu
   extension ___RedBlackTree.___Tree.___Iterator {
     fileprivate init(_unsafe_tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) {
       self._tree = _unsafe_tree
-      self.rawValue = rawValue
+      self._rawValue = rawValue
     }
   }
 
@@ -267,5 +281,5 @@ public func ..< <VC>(
   lhs: ___RedBlackTree.___Tree<VC>.Index,
   rhs: ___RedBlackTree.___Tree<VC>.Index
 ) -> ___RedBlackTree.___Tree<VC>.Indices {
-  lhs._tree.makeIndices(start: lhs.rawValue, end: rhs.rawValue)
+  lhs._tree.makeIndices(start: lhs._rawValue, end: rhs._rawValue)
 }

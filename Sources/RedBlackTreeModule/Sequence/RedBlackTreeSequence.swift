@@ -175,7 +175,7 @@ extension RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public func isValid(index: Index) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
+    _tree.___is_valid_index(index.___unchecked_rawValue)
   }
 
   @inlinable

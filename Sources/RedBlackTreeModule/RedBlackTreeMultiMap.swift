@@ -152,8 +152,8 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
     guard
-      !___is_null_or_end(ptr.rawValue),
-      _tree.___is_valid_index(ptr.rawValue)
+      !___is_null_or_end(ptr._rawValue),
+      _tree.___is_valid_index(ptr._rawValue)
     else {
       return nil
     }

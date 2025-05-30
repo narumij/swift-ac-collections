@@ -140,6 +140,8 @@ IndexをStridableにした場合とても遅かったのですが
 
 普通に書いて普通に動かない場合があるという事態が解消しているので、残りの例は参考程度に眺めてください。
 
+用意した対策が効かないケースもあり、そういった場合は、残りの例を参考に対策してみてください。
+
 ```Swift
 var tree0: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
 for i in tree0.startIndex ..< tree0.endIndex {

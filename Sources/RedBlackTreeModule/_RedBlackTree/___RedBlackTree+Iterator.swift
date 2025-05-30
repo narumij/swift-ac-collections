@@ -262,3 +262,7 @@ func _description(_ p: _NodePtr) -> String {
   }
 }
 #endif
+
+public func ..< <VC>(lhs: ___RedBlackTree.___Tree<VC>.Index, rhs: ___RedBlackTree.___Tree<VC>.Index) -> ___RedBlackTree.___Tree<VC>.Indices {
+  lhs._tree.makeIndices(start: lhs.rawValue, end: rhs.rawValue)
+}

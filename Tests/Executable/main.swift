@@ -305,7 +305,7 @@ var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]
     _ = xy[1]?[i] = 100
     _ = 1 + (xy[1]?[i / 2] ?? 0)
   }
-#elseif true
+#elseif false
 var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 var total = 0
 for i in tree.indices {
@@ -329,7 +329,7 @@ print(total)
 #else
 var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 var total = 0
-for i in (tree.startIndex ..< tree.endIndex) {
+for i in (tree.startIndex ..< tree.endIndex).reversed() {
   total &+= tree[i]
 }
 print(total)

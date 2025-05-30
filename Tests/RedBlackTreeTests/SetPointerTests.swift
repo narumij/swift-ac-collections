@@ -26,6 +26,7 @@ final class SetPointerTests: XCTestCase {
     XCTAssertTrue(members.endIndex.isEnd)
   }
 
+#if DEBUG
   func testPointer2() throws {
     if let it = members.startIndex.next {
       XCTAssertTrue(it.___isValid)
@@ -39,7 +40,8 @@ final class SetPointerTests: XCTestCase {
       XCTAssertNil(it.next)
     }
   }
-
+#endif
+  
   func testPointerNext() throws {
     XCTAssertEqual(members.startIndex.pointee, 0)
     XCTAssertEqual(members.startIndex.next?.pointee, 1)
@@ -87,6 +89,7 @@ final class SetPointerTests: XCTestCase {
     XCTAssertNil(members.startIndex.advanced(by: -6).pointee)
   }
 
+#if DEBUG
   func testValidBehavior1() throws {
     let indices = members.indices.map { $0 }
     for i in indices.indices {
@@ -112,6 +115,7 @@ final class SetPointerTests: XCTestCase {
       }
     }
   }
+#endif
 
   func testPerformanceExample() throws {
     // This is an example of a performance test case.

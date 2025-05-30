@@ -30,6 +30,7 @@ final class MultisetPointerTests: XCTestCase {
     XCTAssertNil(members.endIndex.next)
   }
   
+#if DEBUG
   func testPointer2() throws {
     if let it = members.startIndex.next {
       XCTAssertTrue(it.___isValid)
@@ -43,7 +44,8 @@ final class MultisetPointerTests: XCTestCase {
       XCTAssertNil(it.next)
     }
   }
-
+#endif
+  
   func testPointerPrev() throws {
     XCTAssertNil(members.endIndex.pointee)
     XCTAssertEqual(members.endIndex.previous?.pointee, 2)

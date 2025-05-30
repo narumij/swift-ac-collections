@@ -73,6 +73,10 @@ final class EtcTests: XCTestCase {
 //    }
 //    XCTAssertEqual(result, [1,2,3,4] + [1,2,3,4] + [4,3,2,1])
     
+    XCTAssertEqual(b.endIndex - b.startIndex, 4)
+    XCTAssertEqual(b.startIndex + 4, b.endIndex)
+    XCTAssertEqual(b.endIndex - 4, b.startIndex)
+    
     for p in (b.startIndex ..< b.endIndex).reversed() {
       result.append(p.pointee!)
     }

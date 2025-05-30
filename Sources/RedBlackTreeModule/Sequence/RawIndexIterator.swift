@@ -21,19 +21,20 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct RawIndexIterator<Tree: ___IterateNextProtocol & ___RawIndexProtocol>: IteratorProtocol {
+struct RawIndexIterator<Tree: ___IterateNextProtocol & ___RawIndexProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
   let _tree: Tree
 
   @usableFromInline
-  var _current, _next, _end: _NodePtr
+  var _current, _start, _next, _end: _NodePtr
   
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
     self._tree = tree
     self._current = start
+    self._start = start
     self._end = end
     self._next = start == .end ? .end : tree.__tree_next(start)
   }
@@ -48,10 +49,15 @@ struct RawIndexIterator<Tree: ___IterateNextProtocol & ___RawIndexProtocol>: Ite
     }
     return _tree.makeRawIndex(rawValue: _current)
   }
+  
+  @inlinable
+  public func reversed() -> ReversedRawIndexIterator<Tree> {
+    .init(tree: _tree, start: _start, end: _end)
+  }
 }
 
 public
-struct ReversedRawIndexIterator<Tree: ___IterateNextProtocol & ___RawIndexProtocol>: IteratorProtocol {
+struct ReversedRawIndexIterator<Tree: ___IterateNextProtocol & ___RawIndexProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
   let _tree: Tree

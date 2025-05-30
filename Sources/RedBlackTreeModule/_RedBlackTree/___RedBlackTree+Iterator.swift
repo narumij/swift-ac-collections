@@ -123,14 +123,14 @@ extension ___RedBlackTree.___Tree.___Iterator {
     while distance != 0 {
       if 0 < distance {
         if result.isEnd { return result }
-        result.___next__()
+        result.___next()
         distance -= 1
       } else {
         if result.isStart {
           result._rawValue = .nullptr
           return result
         }
-        result.___prev__()
+        result.___prev()
         distance += 1
       }
     }
@@ -160,18 +160,6 @@ extension ___RedBlackTree.___Tree.___Iterator {
     var prev = self
     prev.___prev()
     return prev
-  }
-
-  @inlinable @inline(__always)
-  mutating func ___next__() {
-    guard !isEnd else { preconditionFailure(.outOfBounds) }
-    ___next()
-  }
-
-  @inlinable @inline(__always)
-  mutating func ___prev__() {
-    guard !isStart else { preconditionFailure(.outOfBounds) }
-    ___prev()
   }
 
   @inlinable @inline(__always)
@@ -277,9 +265,34 @@ extension ___RedBlackTree.___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMu
   }
 #endif
 
+@inlinable
 public func ..< <VC>(
   lhs: ___RedBlackTree.___Tree<VC>.Index,
   rhs: ___RedBlackTree.___Tree<VC>.Index
 ) -> ___RedBlackTree.___Tree<VC>.Indices {
   lhs._tree.makeIndices(start: lhs._rawValue, end: rhs._rawValue)
+}
+
+@inlinable
+public func + <VC>(
+  lhs: ___RedBlackTree.___Tree<VC>.Index,
+  rhs: Int
+) -> ___RedBlackTree.___Tree<VC>.Index {
+  lhs.advanced(by: rhs)
+}
+
+@inlinable
+public func - <VC>(
+  lhs: ___RedBlackTree.___Tree<VC>.Index,
+  rhs: Int
+) -> ___RedBlackTree.___Tree<VC>.Index {
+  lhs.advanced(by: -rhs)
+}
+
+@inlinable
+public func - <VC>(
+  lhs: ___RedBlackTree.___Tree<VC>.Index,
+  rhs: ___RedBlackTree.___Tree<VC>.Index
+) -> Int {
+  rhs.distance(to: lhs)
 }

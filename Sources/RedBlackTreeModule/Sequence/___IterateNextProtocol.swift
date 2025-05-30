@@ -34,7 +34,7 @@ public protocol ___IteratorProtocol {
 }
 
 extension ___RedBlackTree.___Tree: ___IteratorProtocol {
-  @inlinable
+  @inlinable @inline(__always)
   public func makeIndex(rawValue: _NodePtr) -> ___Iterator {
     .init(__tree: self, rawValue: rawValue)
   }
@@ -46,8 +46,42 @@ public protocol ___IteratorSequcenceProtocol {
 }
 
 extension ___RedBlackTree.___Tree: ___IteratorSequcenceProtocol {
-  @inlinable
+  @inlinable @inline(__always)
   public func makeIndices(start: _NodePtr, end: _NodePtr) -> IterSequence {
     .init(tree: self, start: start, end: end)
   }
 }
+
+public protocol ___RawIndexProtocol {
+  func makeRawIndex(rawValue: _NodePtr) -> RawIndex
+}
+
+extension ___RedBlackTree.___Tree: ___RawIndexProtocol {
+  @inlinable @inline(__always)
+  public func makeRawIndex(rawValue: _NodePtr) -> RawIndex {
+    .init(rawValue)
+  }
+}
+
+#if false
+public protocol ___RawIndicesProtocol: RedBlackTreeSequenceBase {
+//  func makeRawIndices<Base: RedBlackTreeSequenceBase>(start: _NodePtr, end: _NodePtr) -> RawIndexSequence<Base>
+  func makeRawIndices<Base: RedBlackTreeSequenceBase>() -> RawIndexSequence<Base>
+  func makeRawIndices<Base: RedBlackTreeSequenceBase>(start: _NodePtr, end: _NodePtr) -> RawIndexSequence<Base>
+}
+
+extension ___RedBlackTree.___Tree {
+
+  public typealias RawIndices = RawIndexSequence<___RedBlackTree.___Tree<VC>>
+  
+  @inlinable @inline(__always)
+  public func makeRawIndices<Base: RedBlackTreeSequenceBase>() -> RawIndexSequence<Base> where Base.Tree == ___RedBlackTree.___Tree<VC> {
+    .init(tree: self, start: __begin_node, end: __end_node())
+  }
+
+  @inlinable @inline(__always)
+  public func makeRawIndices<Base: RedBlackTreeSequenceBase>(start: _NodePtr, end: _NodePtr) -> RawIndexSequence<Base> where Base.Tree == ___RedBlackTree.___Tree<VC> {
+    .init(tree: self, start: start, end: end)
+  }
+}
+#endif

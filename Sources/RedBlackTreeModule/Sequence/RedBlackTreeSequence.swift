@@ -168,13 +168,6 @@ extension RedBlackTreeSequence {
   public subscript(position: RawIndex) -> Element {
     _read { yield _tree[position.rawValue] }
   }
-
-#if false
-  @inlinable
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
-  }
-  #endif
 }
 
 extension RedBlackTreeSequence {

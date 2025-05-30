@@ -119,12 +119,12 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public func ___raw_index_lower_bound(_ __k: _Key) -> ___RawIndex {
-    .init(_tree.lower_bound(__k))
+    _tree.makeRawIndex(rawValue: _tree.lower_bound(__k))
   }
 
   @inlinable @inline(__always)
   public func ___raw_index_upper_bound(_ __k: _Key) -> ___RawIndex {
-    .init(_tree.upper_bound(__k))
+    _tree.makeRawIndex(rawValue: _tree.upper_bound(__k))
   }
 
   @inlinable @inline(__always)
@@ -361,7 +361,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___std_erase(_ ptr: RawIndex) -> RawIndex {
-    RawIndex(_tree.erase(ptr.rawValue))
+    _tree.makeRawIndex(rawValue: _tree.erase(ptr.rawValue))
   }
 
   // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの

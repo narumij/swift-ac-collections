@@ -307,7 +307,7 @@ for member in multiset.map({ $0 }) {
 赤黒木モジュールの標準コンテナとの比較やSTLとの比較で漏れを潰していて未実装に気付いたため用意しました。
 このコンテナを対象とする問題を知らないため、AC実績もなく、APIやチューニングが甘い状態ですが、ここまでの他のコンテナをベースとしてるため、そこそこの性能には仕上がっています。
 辞書がマルチセットに退化したようなAPIとなっており、キーアクセスでの返却がサブシーケンスなこととあわせて、辞書と思うと絶望的に使いにくいものとなっています。
-lowerBound, upperBound, equalRange, indices, enumeratedを駆使する必要がありそうです。
+現状、lowerBound, upperBound, equalRange, indices, enumeratedを駆使して使う必要があります。
 
 ### PermutationModule
 

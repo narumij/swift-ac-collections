@@ -482,6 +482,7 @@ extension RedBlackTreeMultiSet: RedBlackTreeSubSequenceBase { }
 extension RedBlackTreeMultiSet.SubSequence: RedBlackTreeSubSequence {
   public typealias Base = RedBlackTreeMultiSet
   public typealias Element = Tree.Element
+  public typealias Indices = Tree.Indices
 }
 
 extension RedBlackTreeMultiSet.SubSequence: Sequence, Collection, BidirectionalCollection {

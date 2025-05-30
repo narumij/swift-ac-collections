@@ -679,6 +679,7 @@ extension RedBlackTreeDictionary: RedBlackTreeSubSequenceBase { }
 extension RedBlackTreeDictionary.SubSequence: RedBlackTreeSubSequence {
   public typealias Base = RedBlackTreeDictionary
   public typealias Element = Tree.Element
+  public typealias Indices = Tree.Indices
 }
 
 extension RedBlackTreeDictionary.SubSequence: Sequence, Collection, BidirectionalCollection {

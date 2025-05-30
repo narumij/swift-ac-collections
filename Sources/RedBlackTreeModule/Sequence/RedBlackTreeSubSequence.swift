@@ -25,7 +25,7 @@ protocol RedBlackTreeSubSequence: Sequence & Collection & BidirectionalCollectio
 where
   Tree == Base.Tree,
   Index == Base.Index,
-  Indices == Range<Index>,
+  Indices == Tree.Indices,
   Element == Tree.Element,
   Iterator == ElementIterator<Base.Tree>,
   Self: RedBlackTreeSequenceBase,
@@ -106,11 +106,11 @@ extension RedBlackTreeSubSequence {
 
 extension RedBlackTreeSubSequence {
 
-  @inlinable
-  @inline(__always)
-  public var indices: Indices {
-    startIndex ..< endIndex
-  }
+//  @inlinable
+//  @inline(__always)
+//  public var indices: Indices {
+//    startIndex ..< endIndex
+//  }
 }
 
 extension RedBlackTreeSubSequence {
@@ -298,5 +298,14 @@ extension RedBlackTreeSubSequence {
   @inlinable
   public func reversed() -> ReversedSequence<Self> {
     .init(base: self)
+  }
+}
+
+extension RedBlackTreeSubSequence {
+  
+  @inlinable
+  @inline(__always)
+  public var indices: Indices {
+    _tree.makeIndices(start: _start, end: _end)
   }
 }

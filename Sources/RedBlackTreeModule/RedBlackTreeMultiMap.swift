@@ -588,6 +588,7 @@ extension RedBlackTreeMultiMap: RedBlackTreeSubSequenceBase { }
 extension RedBlackTreeMultiMap.SubSequence: RedBlackTreeSubSequence {
   public typealias Base = RedBlackTreeMultiMap
   public typealias Element = Tree.Element
+  public typealias Indices = Tree.Indices
 }
 
 extension RedBlackTreeMultiMap.SubSequence: Sequence, Collection, BidirectionalCollection {

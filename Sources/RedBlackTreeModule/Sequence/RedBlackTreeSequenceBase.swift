@@ -23,12 +23,3 @@
 public protocol RedBlackTreeSequenceBase {
   associatedtype Tree: ___IterateNextProtocol
 }
-
-@usableFromInline
-protocol RedBlackTreeSequenceBase2: RedBlackTreeSequenceBase where Tree: ___IterateNextProtocol2 {
-}
-
-extension ___RedBlackTree.___Tree: ___IterateNextProtocol2 {
-  @usableFromInline
-  typealias Pointer = ___Iterator
-}

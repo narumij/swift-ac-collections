@@ -87,7 +87,7 @@ extension ___RedBlackTree.___Tree.___Iterator: Comparable {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator: Strideable {
+extension ___RedBlackTree.___Tree.___Iterator {
 
   @inlinable
   @inline(__always)

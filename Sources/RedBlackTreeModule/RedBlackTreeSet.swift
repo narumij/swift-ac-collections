@@ -514,6 +514,7 @@ extension RedBlackTreeSet: RedBlackTreeSubSequenceBase { }
 extension RedBlackTreeSet.SubSequence: RedBlackTreeSubSequence {
   public typealias Base = RedBlackTreeSet
   public typealias Element = Tree.Element
+  public typealias Indices = Tree.Indices
 }
 
 extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollection {
@@ -523,17 +524,17 @@ extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollec
 
 // MARK: - Index Range
 
-extension RedBlackTreeSet: RedBlackTreeSequenceBase2 { }
+extension RedBlackTreeSet: RedBlackTreeSequenceBase { }
 
 extension RedBlackTreeSet {
 
-  public typealias Indices = Tree.IterSequence
+  public typealias Indices = Tree.Indices
 
-  @inlinable
-  @inline(__always)
-  public var indices: Tree.IterSequence {
-    .init(tree: _tree, start: ___ptr_start(), end: ___ptr_end())
-  }
+//  @inlinable
+//  @inline(__always)
+//  public var indices: Tree.IterSequence {
+//    .init(tree: _tree, start: ___ptr_start(), end: ___ptr_end())
+//  }
 }
 
 // MARK: - Raw Index Sequence

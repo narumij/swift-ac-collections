@@ -24,7 +24,7 @@
 protocol RedBlackTreeSequence: RedBlackTreeSequenceBase, Sequence & Collection & BidirectionalCollection,
 ReversableSequence
 where
-  Tree: BeginNodeProtocol & EndNodeProtocol & ___ForEachProtocol & DistanceProtocol & ___CollectionProtocol,
+  Tree: BeginNodeProtocol & EndNodeProtocol & ___ForEachProtocol & DistanceProtocol & ___CollectionProtocol & ___IteratorSequcenceProtocol,
   Element == Tree.Element,
   Index: RedBlackTreeIndex,
 Index.Tree == Tree
@@ -197,5 +197,14 @@ extension RedBlackTreeSequence {
   @inlinable
   public func reversed() -> ReversedSequence<Self> {
     .init(base: self)
+  }
+}
+
+extension RedBlackTreeSequence {
+  
+  @inlinable
+  @inline(__always)
+  public var indices: Tree.Indices {
+    _tree.makeIndices(start: _tree.__begin_node, end: _tree.__end_node())
   }
 }

@@ -37,7 +37,8 @@ extension ___RedBlackTreeEqualRangeUnique {
   @inline(__always)
   internal func ___equal_range(_ k: _Key) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
     let (lo,hi) = _tree.__equal_range_unique(k)
-    return (.init(__tree: _tree, rawValue: lo), .init(__tree: _tree, rawValue: hi))
+//    return (.init(__tree: _tree, rawValue: lo), .init(__tree: _tree, rawValue: hi))
+    return (_tree.makeIndex(rawValue: lo), _tree.makeIndex(rawValue: hi))
   }
 }
 
@@ -48,7 +49,8 @@ extension ___RedBlackTreeEqualRangeMulti {
   @inline(__always)
   internal func ___equal_range(_ k: _Key) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
     let (lo,hi) = _tree.__equal_range_multi(k)
-    return (.init(__tree: _tree, rawValue: lo), .init(__tree: _tree, rawValue: hi))
+//    return (.init(__tree: _tree, rawValue: lo), .init(__tree: _tree, rawValue: hi))
+    return (_tree.makeIndex(rawValue: lo), _tree.makeIndex(rawValue: hi))
   }
 }
 

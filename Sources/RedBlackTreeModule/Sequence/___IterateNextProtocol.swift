@@ -28,10 +28,26 @@ public protocol ___IterateNextProtocol {
   subscript(_ pointer: _NodePtr) -> Element { get }
 }
 
-@usableFromInline
-protocol ___IterateNextProtocol2 {
-  associatedtype Element
-  associatedtype Pointer: RedBlackTreeIndex
-  func __tree_next(_ __x: _NodePtr) -> _NodePtr
-  subscript(_ pointer: _NodePtr) -> Element { get }
+public protocol ___IteratorProtocol {
+  associatedtype Index
+  func makeIndex(rawValue: _NodePtr) -> Index
+}
+
+extension ___RedBlackTree.___Tree: ___IteratorProtocol {
+  @inlinable
+  public func makeIndex(rawValue: _NodePtr) -> ___Iterator {
+    .init(__tree: self, rawValue: rawValue)
+  }
+}
+
+public protocol ___IteratorSequcenceProtocol {
+  associatedtype Indices
+  func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices
+}
+
+extension ___RedBlackTree.___Tree: ___IteratorSequcenceProtocol {
+  @inlinable
+  public func makeIndices(start: _NodePtr, end: _NodePtr) -> IterSequence {
+    .init(tree: self, start: start, end: end)
+  }
 }

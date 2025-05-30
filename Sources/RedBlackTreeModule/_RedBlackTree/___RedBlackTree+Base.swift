@@ -70,7 +70,8 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___iter(_ p: _NodePtr) -> ___Iterator {
-    .init(__tree: _tree, rawValue: p)
+//    .init(__tree: _tree, rawValue: p)
+    _tree.makeIndex(rawValue: p)
   }
 
   @inlinable @inline(__always)
@@ -368,7 +369,8 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___std_erase(_ ptr: ___Iterator) -> ___Iterator {
-    Tree.___Iterator(__tree: _tree, rawValue: _tree.erase(ptr.rawValue))
+//    Tree.___Iterator(__tree: _tree, rawValue: _tree.erase(ptr.rawValue))
+    _tree.makeIndex(rawValue: _tree.erase(ptr.rawValue))
   }
 }
 

@@ -54,23 +54,23 @@ extension ___RedBlackTree.___Tree {
     /*
      invalidなポインタでの削除は、だんまりがいいように思う
      */
-    
+
     // 性能上の問題でCoWに関与できない設計としている
     // CoWに関与できないので、Treeに対する破壊的変更は行わないこと
   }
 }
 
 extension ___RedBlackTree.___Tree.___Iterator: Comparable {
-  
+
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-    
+
     guard !lhs.isGarbaged, !rhs.isGarbaged else {
       preconditionFailure(.garbagedIndex)
     }
-    
+
     return lhs.rawValue == rhs.rawValue
   }
 
@@ -78,11 +78,11 @@ extension ___RedBlackTree.___Tree.___Iterator: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-    
+
     guard !lhs.isGarbaged, !rhs.isGarbaged else {
       preconditionFailure(.garbagedIndex)
     }
-    
+
     return lhs._tree.___ptr_comp(lhs.rawValue, rhs.rawValue)
   }
 }
@@ -159,7 +159,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
     guard !isStart else { preconditionFailure(.outOfBounds) }
     ___prev()
   }
-  
+
   @inlinable @inline(__always)
   mutating func ___next() {
     assert(rawValue != .end)
@@ -181,7 +181,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
     if rawValue == .end { return true }
     return _tree.___is_valid(rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   var isGarbaged: Bool {
@@ -209,7 +209,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
 }
 
 extension ___RedBlackTree.___Tree.___Iterator {
-  
+
   @inlinable
   @inline(__always)
   public var pointee: Element? {
@@ -233,7 +233,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMutableRawValue { }
+extension ___RedBlackTree.___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMutableRawValue {}
 
 #if DEBUG
   extension ___RedBlackTree.___Tree.___Iterator {
@@ -251,18 +251,21 @@ extension ___RedBlackTree.___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMu
 #endif
 
 #if false
-@inlinable
-func _description(_ p: _NodePtr) -> String {
-  switch p {
-  case .nullptr: ".nullptr"
-  case .end: ".end"
-  case .under: ".under"
-  case .over: ".over"
-  default: "\(p)"
+  @inlinable
+  func _description(_ p: _NodePtr) -> String {
+    switch p {
+    case .nullptr: ".nullptr"
+    case .end: ".end"
+    case .under: ".under"
+    case .over: ".over"
+    default: "\(p)"
+    }
   }
-}
 #endif
 
-public func ..< <VC>(lhs: ___RedBlackTree.___Tree<VC>.Index, rhs: ___RedBlackTree.___Tree<VC>.Index) -> ___RedBlackTree.___Tree<VC>.Indices {
+public func ..< <VC>(
+  lhs: ___RedBlackTree.___Tree<VC>.Index,
+  rhs: ___RedBlackTree.___Tree<VC>.Index
+) -> ___RedBlackTree.___Tree<VC>.Indices {
   lhs._tree.makeIndices(start: lhs.rawValue, end: rhs.rawValue)
 }

@@ -20,39 +20,17 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
-
-extension String {
-  
-  @usableFromInline
-  static var garbagedIndex: String {
-    "開放されたインデックスの使用がありました。startIndex ..< endIndex等をお使いの場合、等価なSliceでのindicesで代替してください。"
-  }
-
-  @usableFromInline
-  static var invalidIndex: String {
-    "Attempting to access RedBlackTree elements using an invalid index"
-  }
-
-  @usableFromInline
-  static var outOfBounds: String {
-    "RedBlackTree index is out of Bound."
-  }
-
-  @usableFromInline
-  static var outOfRange: String {
-    "RedBlackTree index is out of range."
-  }
-  
-  @usableFromInline
-  static var emptyFirst: String {
-    "Can't removeFirst from an empty RedBlackTree"
-  }
-
-  @usableFromInline
-  static var emptyLast: String {
-    "Can't removeLast from an empty RedBlackTree"
-  }
+@usableFromInline
+protocol RedBlackTreeRawValue {
+  var rawValue: _NodePtr { get }
 }
 
-// メッセージをマッサージに空見するぐらい疲れている
+@usableFromInline
+protocol RedBlackTreeMutableRawValue: RedBlackTreeRawValue {
+  var rawValue: _NodePtr { get set }
+}
+
+@usableFromInline
+protocol RedBlackTreeUncheckedRawValue: RedBlackTreeRawValue {
+  var ___unchecked_rawValue: _NodePtr { get }
+}

@@ -19,6 +19,7 @@ final class DictionaryPointerTests: XCTestCase {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
   
+#if DEBUG
   func testPointer2() throws {
     if let it = members.startIndex.next {
       XCTAssertTrue(it.___isValid)
@@ -27,12 +28,12 @@ final class DictionaryPointerTests: XCTestCase {
       XCTAssertNotNil(it.next)
       members.remove(at: it)
       XCTAssertFalse(it.___isValid)
-      XCTAssertTrue(it.isPhantom)
       XCTAssertNil(it.pointee)
       XCTAssertNil(it.previous)
       XCTAssertNil(it.next)
     }
   }
+#endif
 
   func testPointerNext() throws {
     XCTAssertEqual(members.startIndex.pointee?.key, 0)
@@ -66,7 +67,6 @@ final class DictionaryPointerTests: XCTestCase {
     XCTAssertEqual(members.startIndex.advanced(by: 4).pointee?.key, 4)
     XCTAssertNil(members.startIndex.advanced(by: 5).pointee)
     XCTAssertEqual(members.startIndex.advanced(by: 5), members.endIndex)
-    XCTAssertTrue(members.startIndex.advanced(by: 6).isOver)
     XCTAssertNil(members.startIndex.advanced(by: 6).pointee)
   }
 
@@ -78,7 +78,6 @@ final class DictionaryPointerTests: XCTestCase {
     XCTAssertEqual(members.endIndex.advanced(by: -4).pointee?.key, 1)
     XCTAssertEqual(members.endIndex.advanced(by: -5).pointee?.key, 0)
     XCTAssertEqual(members.endIndex.advanced(by: -5), members.startIndex)
-    XCTAssertTrue(members.startIndex.advanced(by: -6).isUnder)
     XCTAssertNil(members.startIndex.advanced(by: -6).pointee)
   }
 

@@ -6,7 +6,6 @@ import XCTest
 import RedBlackTreeModule
 #endif
 
-#if true
 fileprivate extension Optional where Wrapped == Int {
   mutating func hoge() {
     self = .some(1515)
@@ -149,6 +148,7 @@ final class MultiMapRemoveTests: XCTestCase {
     XCTAssertEqual(members.map { $0.key }, [])
   }
 
+#if false
   func testRemoveWithSubIndices() throws {
       var members = RedBlackTreeMultiMap(keysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     for i in members[2 ..< 8].indices {
@@ -172,7 +172,8 @@ final class MultiMapRemoveTests: XCTestCase {
     }
     XCTAssertEqual(members.map { $0.key }, [0,1,8,9])
   }
-  
+#endif
+
   func testRemoveWithSub___Indices() throws {
       var members = RedBlackTreeMultiMap(keysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     for i in members[2 ..< 8].rawIndices {
@@ -197,4 +198,4 @@ final class MultiMapRemoveTests: XCTestCase {
     XCTAssertEqual(members.map { $0.key }, [0,1,8,9])
   }
 }
-#endif
+

@@ -6,7 +6,6 @@ import XCTest
 import RedBlackTreeModule
 #endif
 
-#if true
 fileprivate extension Optional where Wrapped == Int {
   mutating func hoge() {
     self = .some(1515)
@@ -116,7 +115,7 @@ final class DictionaryRemoveTests: XCTestCase {
     }
     XCTAssertEqual(members.map { $0.key }, [])
   }
-  
+
   func testRemoveWithIndices3() throws {
     var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     for i in members.indices.reversed() {
@@ -124,7 +123,7 @@ final class DictionaryRemoveTests: XCTestCase {
     }
     XCTAssertEqual(members.map { $0.key }, [])
   }
-  
+
   func testRemoveWithIndices4() throws {
     var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     members.indices.reversed().forEach { i in
@@ -157,6 +156,7 @@ final class DictionaryRemoveTests: XCTestCase {
     XCTAssertEqual(members.map { $0.key }, [])
   }
 
+#if true
   func testRemoveWithSubIndices() throws {
       var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     for i in members[2 ..< 8].indices {
@@ -172,7 +172,7 @@ final class DictionaryRemoveTests: XCTestCase {
     }
     XCTAssertEqual(members.map { $0.key }, [0,1,8,9])
   }
-  
+
   func testRemoveWithSubIndices3() throws {
       var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     for i in members[2 ..< 8].indices.reversed() {
@@ -180,7 +180,7 @@ final class DictionaryRemoveTests: XCTestCase {
     }
     XCTAssertEqual(members.map { $0.key }, [0,1,8,9])
   }
-  
+
   func testRemoveWithSubIndices4() throws {
     var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     members[2 ..< 8].indices.reversed().forEach { i in
@@ -188,7 +188,8 @@ final class DictionaryRemoveTests: XCTestCase {
     }
     XCTAssertEqual(members.map { $0.key }, [0,1,8,9])
   }
-  
+#endif
+
   func testRemoveWithSub___Indices() throws {
       var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     for i in members[2 ..< 8].rawIndices {
@@ -213,4 +214,4 @@ final class DictionaryRemoveTests: XCTestCase {
     XCTAssertEqual(members.map { $0.key }, [0,1,8,9])
   }
 }
-#endif
+

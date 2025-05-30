@@ -63,39 +63,40 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @usableFromInline
-  typealias ___Index = Tree.Pointer
+  typealias ___Iterator = Tree.___Iterator
 
   @usableFromInline
   typealias ___RawIndex = RawIndex
 
   @inlinable @inline(__always)
-  func ___index(_ p: _NodePtr) -> ___Index {
-    .init(__tree: _tree, rawValue: p)
+  func ___iter(_ p: _NodePtr) -> ___Iterator {
+//    .init(__tree: _tree, rawValue: p)
+    _tree.makeIndex(rawValue: p)
   }
 
   @inlinable @inline(__always)
-  func ___index_or_nil(_ p: _NodePtr) -> ___Index? {
-    p == .nullptr ? nil : ___index(p)
+  func ___iter_or_nil(_ p: _NodePtr) -> ___Iterator? {
+    p == .nullptr ? nil : ___iter(p)
   }
 
   @inlinable @inline(__always)
-  func ___index_or_nil(_ p: _NodePtr?) -> ___Index? {
-    p.map { ___index($0) }
+  func ___iter_or_nil(_ p: _NodePtr?) -> ___Iterator? {
+    p.map { ___iter($0) }
   }
 
   @inlinable @inline(__always)
-  func ___index_start() -> ___Index {
-    ___index(_tree.___begin())
+  func ___iter_start() -> ___Iterator {
+    ___iter(_tree.__begin_node)
   }
 
   @inlinable @inline(__always)
-  func ___index_end() -> ___Index {
-    ___index(_tree.___end())
+  func ___iter_end() -> ___Iterator {
+    ___iter(_tree.___end())
   }
 
   @inlinable @inline(__always)
   public func ___ptr_start() -> _NodePtr {
-    _tree.___begin()
+    _tree.__begin_node
   }
 
   @inlinable @inline(__always)
@@ -118,102 +119,44 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public func ___raw_index_lower_bound(_ __k: _Key) -> ___RawIndex {
-    .init(_tree.lower_bound(__k))
+    _tree.makeRawIndex(rawValue: _tree.lower_bound(__k))
   }
 
   @inlinable @inline(__always)
   public func ___raw_index_upper_bound(_ __k: _Key) -> ___RawIndex {
-    .init(_tree.upper_bound(__k))
+    _tree.makeRawIndex(rawValue: _tree.upper_bound(__k))
   }
 
   @inlinable @inline(__always)
-  public func ___index_lower_bound(_ __k: _Key) -> ___Index {
-    ___index(___ptr_lower_bound(__k))
+  public func ___iter_lower_bound(_ __k: _Key) -> ___Iterator {
+    ___iter(___ptr_lower_bound(__k))
   }
 
   @inlinable @inline(__always)
-  public func ___index_upper_bound(_ __k: _Key) -> ___Index {
-    ___index(___ptr_upper_bound(__k))
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable @inline(__always)
-  func ___index(before i: _NodePtr) -> ___Index {
-    ___index(_tree.index(before: i))
-  }
-
-  @inlinable @inline(__always)
-  func ___index(after i: _NodePtr) -> ___Index {
-    ___index(_tree.index(after: i))
-  }
-
-  @inlinable @inline(__always)
-  public func ___form_index(before i: inout _NodePtr) {
-    _tree.formIndex(before: &i)
-  }
-
-  @inlinable @inline(__always)
-  public func ___form_index(after i: inout _NodePtr) {
-    _tree.formIndex(after: &i)
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable @inline(__always)
-  func ___index(_ i: _NodePtr, offsetBy distance: Int) -> ___Index {
-    ___index(_tree.index(i, offsetBy: distance))
-  }
-
-  @inlinable @inline(__always)
-  func ___index(
-    _ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr
-  ) -> ___Index? {
-    ___index_or_nil(_tree.index(i, offsetBy: distance, limitedBy: limit))
-  }
-
-  @inlinable @inline(__always)
-  public func ___form_index(_ i: inout _NodePtr, offsetBy distance: Int) {
-    _tree.formIndex(&i, offsetBy: distance)
-  }
-
-  @inlinable @inline(__always)
-  public func ___form_index(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
-    -> Bool
-  {
-    _tree.formIndex(&i, offsetBy: distance, limitedBy: limit)
+  public func ___iter_upper_bound(_ __k: _Key) -> ___Iterator {
+    ___iter(___ptr_upper_bound(__k))
   }
 }
 
 extension ___RedBlackTreeBase {
 
   @inlinable
-  func ___first_index(of member: _Key) -> ___Index? {
+  func ___first_iter(of member: _Key) -> ___Iterator? {
     var __parent = _NodePtr.nullptr
     let ptr = _tree.__ptr_(_tree.__find_equal(&__parent, member))
-    return ___index_or_nil(ptr)
+    return ___iter_or_nil(ptr)
   }
 
   @inlinable
-  func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> ___Index? {
-    var result: ___Index?
+  func ___first_iter(where predicate: (Element) throws -> Bool) rethrows -> ___Iterator? {
+    var result: ___Iterator?
     try _tree.___for_each(__p: _tree.__begin_node, __l: _tree.__end_node()) { __p, cont in
       if try predicate(_tree[__p]) {
-        result = ___index(__p)
+        result = ___iter(__p)
         cont = false
       }
     }
     return result
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable @inline(__always)
-  public func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int {
-    _tree.___signed_distance(start, end)
   }
 }
 
@@ -418,15 +361,16 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___std_erase(_ ptr: RawIndex) -> RawIndex {
-    RawIndex(_tree.erase(ptr.rawValue))
+    _tree.makeRawIndex(rawValue: _tree.erase(ptr.rawValue))
   }
 
   // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func ___std_erase(_ ptr: Tree.Pointer) -> Tree.Pointer {
-    Tree.Pointer(__tree: _tree, rawValue: _tree.erase(ptr.rawValue))
+  public mutating func ___std_erase(_ ptr: ___Iterator) -> ___Iterator {
+//    Tree.___Iterator(__tree: _tree, rawValue: _tree.erase(ptr.rawValue))
+    _tree.makeIndex(rawValue: _tree.erase(ptr.rawValue))
   }
 }
 
@@ -444,134 +388,3 @@ extension ___RedBlackTreeBase {
     { _tree.value_comp(_tree.__key($0), _tree.__key($1)) }
   }
 }
-
-// MARK: -
-
-@usableFromInline
-protocol ___RedBlackTreeSubSequenceBase {
-  associatedtype Base: ValueComparer
-  var _subSequence: Base.Tree.SubSequence { get }
-}
-
-extension ___RedBlackTreeSubSequenceBase {
-  @inlinable
-  @inline(__always)
-  internal var _tree: ___Tree { _subSequence._tree }
-}
-
-extension ___RedBlackTreeSubSequenceBase {
-  
-  @usableFromInline
-  typealias ___Tree = Base.Tree
-  @usableFromInline
-  typealias ___Index = Base.Tree.Pointer
-  @usableFromInline
-  typealias ___SubSequence = Base.Tree.SubSequence
-  @usableFromInline
-  typealias ___Element = Base.Tree.SubSequence.Element
-  
-  @inlinable @inline(__always)
-  internal var ___start_index: ___Index {
-    ___Index(__tree: _tree, rawValue: _subSequence.startIndex)
-  }
-
-  @inlinable @inline(__always)
-  internal var ___end_index: ___Index {
-    ___Index(__tree: _tree, rawValue: _subSequence.endIndex)
-  }
-
-  @inlinable @inline(__always)
-  internal var ___count: Int {
-    _subSequence.count
-  }
-
-  @inlinable @inline(__always)
-  internal func ___for_each(_ body: (___Element) throws -> Void) rethrows {
-    try _subSequence.forEach(body)
-  }
-
-  @inlinable @inline(__always)
-  internal func ___distance(from start: ___Index, to end: ___Index) -> Int {
-    _subSequence.distance(from: start.rawValue, to: end.rawValue)
-  }
-
-  @inlinable @inline(__always)
-  internal func ___index(after i: ___Index) -> ___Index {
-    ___Index(__tree: _tree, rawValue: _subSequence.index(after: i.rawValue))
-  }
-
-  @inlinable @inline(__always)
-  internal func ___form_index(after i: inout ___Index) {
-    _subSequence.formIndex(after: &i.rawValue)
-  }
-
-  @inlinable @inline(__always)
-  internal func ___index(before i: ___Index) -> ___Index {
-    ___Index(__tree: _tree, rawValue: _subSequence.index(before: i.rawValue))
-  }
-
-  @inlinable @inline(__always)
-  internal func ___form_index(before i: inout ___Index) {
-    _subSequence.formIndex(before: &i.rawValue)
-  }
-
-  @inlinable @inline(__always)
-  internal func ___index(_ i: ___Index, offsetBy distance: Int) -> ___Index {
-    ___Index(__tree: _tree, rawValue: _subSequence.index(i.rawValue, offsetBy: distance))
-  }
-
-  @inlinable @inline(__always)
-  internal func ___form_index(_ i: inout ___Index, offsetBy distance: Int) {
-    _subSequence.formIndex(&i.rawValue, offsetBy: distance)
-  }
-
-  @inlinable @inline(__always)
-  internal func ___index(_ i: ___Index, offsetBy distance: Int, limitedBy limit: ___Index) -> ___Index? {
-
-    if let i = _subSequence.index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue) {
-      return ___Index(__tree: _tree, rawValue: i)
-    } else {
-      return nil
-    }
-  }
-
-  @inlinable @inline(__always)
-  internal func ___form_index(_ i: inout ___Index, offsetBy distance: Int, limitedBy limit: ___Index)
-    -> Bool
-  {
-    return _subSequence.formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
-  }
-}
-
-@usableFromInline
-protocol ___RedBlackTreeEqualRangeUnique: ValueComparer {
-  var _tree: Tree { get }
-}
-
-@usableFromInline
-protocol ___RedBlackTreeEqualRangeMulti: ValueComparer {
-  var _tree: Tree { get }
-}
-
-extension ___RedBlackTreeEqualRangeUnique {
-  
-  ///（重複なし）
-  @inlinable
-  @inline(__always)
-  internal func ___equal_range(_ k: _Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
-    let (lo,hi) = _tree.__equal_range_unique(k)
-    return (.init(__tree: _tree, rawValue: lo), .init(__tree: _tree, rawValue: hi))
-  }
-}
-
-extension ___RedBlackTreeEqualRangeMulti {
-
-  /// （重複あり）
-  @inlinable
-  @inline(__always)
-  internal func ___equal_range(_ k: _Key) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
-    let (lo,hi) = _tree.__equal_range_multi(k)
-    return (.init(__tree: _tree, rawValue: lo), .init(__tree: _tree, rawValue: hi))
-  }
-}
-

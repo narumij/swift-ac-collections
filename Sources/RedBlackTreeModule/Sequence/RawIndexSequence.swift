@@ -20,39 +20,50 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
-
-extension String {
+public
+struct RawIndexSequence<Base: RedBlackTreeSequenceBase>: Sequence {
   
   @usableFromInline
-  static var garbagedIndex: String {
-    "開放されたインデックスの使用がありました。startIndex ..< endIndex等をお使いの場合、等価なSliceでのindicesで代替してください。"
-  }
-
-  @usableFromInline
-  static var invalidIndex: String {
-    "Attempting to access RedBlackTree elements using an invalid index"
-  }
-
-  @usableFromInline
-  static var outOfBounds: String {
-    "RedBlackTree index is out of Bound."
-  }
-
-  @usableFromInline
-  static var outOfRange: String {
-    "RedBlackTree index is out of range."
-  }
+  let _tree: Base.Tree
   
   @usableFromInline
-  static var emptyFirst: String {
-    "Can't removeFirst from an empty RedBlackTree"
+  var _start, _end: _NodePtr
+  
+  @inlinable
+  @inline(__always)
+  internal init(tree: Base.Tree) where Base.Tree: BeginNodeProtocol & EndNodeProtocol {
+    self.init(
+      tree: tree,
+      start: tree.__begin_node,
+      end: tree.__end_node())
   }
-
-  @usableFromInline
-  static var emptyLast: String {
-    "Can't removeLast from an empty RedBlackTree"
+  
+  @inlinable
+  @inline(__always)
+  internal init(tree: Base.Tree, start: _NodePtr, end: _NodePtr) {
+    _tree = tree
+    _start = start
+    _end = end
+  }
+  
+  @inlinable
+  public __consuming func makeIterator() -> RawIndexIterator<Base.Tree> {
+    .init(tree: _tree, start: _start, end: _end)
+  }
+  
+  @inlinable
+  @inline(__always)
+  internal func forEach(_ body: (Element) throws -> Void) rethrows {
+    var __p = _start
+    while __p != _end {
+      let __c = __p
+      __p = _tree.__tree_next(__p)
+      try body(RawIndex(__c))
+    }
+  }
+  
+  @inlinable
+  public __consuming func reversed() -> ReversedRawIndexIterator<Base.Tree> {
+    .init(tree: _tree, start: _start, end: _end)
   }
 }
-
-// メッセージをマッサージに空見するぐらい疲れている

@@ -20,39 +20,14 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
-
-extension String {
+@usableFromInline
+protocol ___ForEachProtocol {
   
-  @usableFromInline
-  static var garbagedIndex: String {
-    "開放されたインデックスの使用がありました。startIndex ..< endIndex等をお使いの場合、等価なSliceでのindicesで代替してください。"
-  }
-
-  @usableFromInline
-  static var invalidIndex: String {
-    "Attempting to access RedBlackTree elements using an invalid index"
-  }
-
-  @usableFromInline
-  static var outOfBounds: String {
-    "RedBlackTree index is out of Bound."
-  }
-
-  @usableFromInline
-  static var outOfRange: String {
-    "RedBlackTree index is out of range."
-  }
+  associatedtype Element
   
-  @usableFromInline
-  static var emptyFirst: String {
-    "Can't removeFirst from an empty RedBlackTree"
-  }
+  func ___for_each(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void) rethrows
+  
+  func ___for_each_(_ body: (Element) throws -> Void) rethrows
 
-  @usableFromInline
-  static var emptyLast: String {
-    "Can't removeLast from an empty RedBlackTree"
-  }
+  func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (Element) throws -> Void) rethrows
 }
-
-// メッセージをマッサージに空見するぐらい疲れている

@@ -49,20 +49,20 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias Element = Element
 
-  /// `Index` は `RedBlackTreeSet` 内の要素を参照するための型です。
+  /// `Index`は赤黒木ノードへの標準インデックスです
   ///
-  /// `Collection` プロトコルに準拠するために用意されており、
-  /// `startIndex` から `endIndex` の範囲でシーケンシャルに要素を走査できます。
-  /// また、`index(before:)` や `index(after:)` などのメソッドを使用することで、
-  /// インデックスを前後に移動できます。
+  /// プロパティや探索系メソッドから取得できます。
   ///
-  /// - Important: `Index` はコレクションの状態が変化（挿入・削除など）すると無効に
-  ///   なる場合があります。無効なインデックスを使用するとランタイムエラーや
-  ///   不正な参照が発生する可能性があるため注意してください。
+  /// 要素取得、要素削除、範囲取得、範囲削除等、様々な操作に用いる事ができます。
   ///
-  /// - SeeAlso: `startIndex`, `endIndex`, `index(before:)`, `index(after:)`
+  /// `Index`は`Collection`や`BidirectionalCollection`
+  /// 準拠に用いられていて、様々な操作が可能です。
+  ///
+  /// - Important:
+  ///  要素及びノードが削除された場合、インデックスは無効になります。
+  /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
   public
-    typealias Index = Tree.Pointer
+    typealias Index = Tree.Index
 
   public
     typealias _Key = Element
@@ -75,6 +75,8 @@ extension RedBlackTreeSet: ___RedBlackTreeBase {}
 extension RedBlackTreeSet: ___RedBlackTreeStorageLifetime {}
 extension RedBlackTreeSet: ___RedBlackTreeEqualRangeUnique {}
 extension RedBlackTreeSet: ScalarValueComparer {}
+
+extension RedBlackTreeSet: CompareUniqueTrait {}
 
 // MARK: - Initialization
 
@@ -222,7 +224,6 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     _ensureUnique()
-    index.phantomMark()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
@@ -356,13 +357,13 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   public func firstIndex(of member: Element) -> Index? {
-    ___first_index(of: member)
+    ___first_iter(of: member)
   }
 
   /// - Complexity: O(*n*)
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
+    try ___first_iter(where: predicate)
   }
 }
 
@@ -382,7 +383,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   public func lowerBound(_ member: Element) -> Index {
-    ___index_lower_bound(member)
+    ___iter_lower_bound(member)
   }
 
   /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
@@ -400,14 +401,14 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   public func upperBound(_ member: Element) -> Index {
-    ___index_upper_bound(member)
+    ___iter_upper_bound(member)
   }
 }
 
 extension RedBlackTreeSet {
 
   @inlinable
-  public func equalRange(_ element: Element) -> (lower: Tree.Pointer, upper: Tree.Pointer) {
+  public func equalRange(_ element: Element) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
     ___equal_range(element)
   }
 }
@@ -429,150 +430,20 @@ extension RedBlackTreeSet {
   }
 }
 
-// MARK: - Iteration
+// MARK: - Sequence
+// MARK: - Collection
+// MARK: - BidirectionalCollection
+
+extension RedBlackTreeSet: RedBlackTreeSequence { }
+extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection { }
+
+// MARK: - Range Access
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func sorted() -> [Element] {
-    _tree.___sorted
-  }
-}
-
-// MARK: - Sequence
-
-extension RedBlackTreeSet: Sequence {
-
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _tree.___for_each_(body)
-  }
-
-  @frozen
-  public struct Iterator: IteratorProtocol {
-    @usableFromInline
-    internal var _iterator: Tree.Iterator
-
-    @inlinable
-    @inline(__always)
-    internal init(_base: RedBlackTreeSet) {
-      self._iterator = _base._tree.makeIterator()
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> Element? {
-      return self._iterator.next()
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func makeIterator() -> Iterator {
-    return Iterator(_base: self)
-  }
-}
-
-// MARK: - BidirectionalCollection
-
-extension RedBlackTreeSet: BidirectionalCollection {
-
-  @inlinable
-  @inline(__always)
-  public var startIndex: Index {
-    ___index_start()
-  }
-
-  @inlinable
-  @inline(__always)
-  public var endIndex: Index {
-    ___index_end()
-  }
-
-  @inlinable
-  @inline(__always)
-  public var count: Int {
-    ___count
-  }
-
-  @inlinable
-  @inline(__always)
-  public func distance(from start: Index, to end: Index) -> Int {
-    ___distance(from: start.rawValue, to: end.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(after i: Index) -> Index {
-    ___index(after: i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(after i: inout Index) {
-    ___form_index(after: &i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(before i: Index) -> Index {
-    ___index(before: i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(before i: inout Index) {
-    ___form_index(before: &i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(i.rawValue, offsetBy: distance)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    ___form_index(&i.rawValue, offsetBy: distance)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    ___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Bool
-  {
-    ___form_index(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: Index) -> Element {
-    return _tree[position.rawValue]
-  }
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: RawIndex) -> Element {
-    return _tree[position.rawValue]
-  }
-
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: bounds.lowerBound.rawValue,
-          to: bounds.upperBound.rawValue)
-    )
+    .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }
 }
 
@@ -605,21 +476,13 @@ extension RedBlackTreeSet {
   /// 値レンジ `[lower, upper)` に含まれる要素のスライス
   @inlinable
   public func elements(in range: Range<Element>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: ___ptr_lower_bound(range.lowerBound),
-          to: ___ptr_lower_bound(range.upperBound)))
+    .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_lower_bound(range.upperBound))
   }
 
   /// 値レンジ `[lower, upper]` に含まれる要素のスライス
   @inlinable
   public func elements(in range: ClosedRange<Element>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _tree.subsequence(
-          from: ___ptr_lower_bound(range.lowerBound),
-          to: ___ptr_upper_bound(range.upperBound)))
+    .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_upper_bound(range.upperBound))
   }
 }
 
@@ -631,185 +494,53 @@ extension RedBlackTreeSet {
   public struct SubSequence {
 
     @usableFromInline
-    internal typealias _SubSequence = Tree.SubSequence
+    let _tree: Tree
 
     @usableFromInline
-    internal let _subSequence: _SubSequence
+    var _start, _end: _NodePtr
 
     @inlinable
-    init(_subSequence: _SubSequence) {
-      self._subSequence = _subSequence
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      _tree = tree
+      _start = start
+      _end = end
     }
   }
 }
 
-extension RedBlackTreeSet.SubSequence {
+extension RedBlackTreeSet: RedBlackTreeSubSequenceBase { }
 
+extension RedBlackTreeSet.SubSequence: RedBlackTreeSubSequence {
   public typealias Base = RedBlackTreeSet
+  public typealias Element = Tree.Element
+  public typealias Indices = Tree.Indices
+}
+
+extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollection {
+  public typealias Index = RedBlackTreeSet.Index
   public typealias SubSequence = Self
-  public typealias Index = Base.Index
-  public typealias Element = Base.Element
-  public typealias EnumuratedSequence = Base.EnumuratedSequence
-  public typealias IndexSequence = Base.RawIndexSequence
-}
-
-extension RedBlackTreeSet.SubSequence: Sequence {
-
-  public struct Iterator: IteratorProtocol {
-    @usableFromInline
-    internal var _iterator: _SubSequence.Iterator
-
-    @inlinable
-    @inline(__always)
-    internal init(_ _iterator: _SubSequence.Iterator) {
-      self._iterator = _iterator
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> Element? {
-      _iterator.next()
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func makeIterator() -> Iterator {
-    Iterator(_subSequence.makeIterator())
-  }
-}
-
-extension RedBlackTreeSet.SubSequence: ___RedBlackTreeSubSequenceBase {}
-
-extension RedBlackTreeSet.SubSequence: BidirectionalCollection {
-
-  @inlinable
-  @inline(__always)
-  public var startIndex: Index {
-    ___start_index
-  }
-
-  @inlinable
-  @inline(__always)
-  public var endIndex: Index {
-    ___end_index
-  }
-
-  @inlinable
-  @inline(__always)
-  public var count: Int {
-    ___count
-  }
-
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try ___for_each(body)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func distance(from start: Index, to end: Index) -> Int {
-    ___distance(from: start, to: end)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(after i: Index) -> Index {
-    ___index(after: i)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(after i: inout Index) {
-    ___form_index(after: &i)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(before i: Index) -> Index {
-    ___index(before: i)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(before i: inout Index) {
-    ___form_index(before: &i)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(i, offsetBy: distance)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    ___form_index(&i, offsetBy: distance)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    ___index(i, offsetBy: distance, limitedBy: limit)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Bool
-  {
-    ___form_index(&i, offsetBy: distance, limitedBy: limit)
-  }
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: Index) -> Element {
-    _subSequence[position.rawValue]
-  }
-
-  @inlinable
-  @inline(__always)
-  public subscript(position: RawIndex) -> Element {
-    _subSequence[position.rawValue]
-  }
-
-  @inlinable
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    SubSequence(
-      _subSequence:
-        _subSequence[bounds.lowerBound..<bounds.upperBound])
-  }
 }
 
 // MARK: - Index Range
 
+extension RedBlackTreeSet: RedBlackTreeSequenceBase { }
+
 extension RedBlackTreeSet {
 
-  public typealias Indices = Range<Index>
+  public typealias Indices = Tree.Indices
 
-  @inlinable
-  @inline(__always)
-  public var indices: Indices {
-    startIndex..<endIndex
-  }
-}
-
-extension RedBlackTreeSet.SubSequence {
-
-  public typealias Indices = Range<Index>
-
-  @inlinable
-  @inline(__always)
-  public var indices: Indices {
-    startIndex..<endIndex
-  }
+//  @inlinable
+//  @inline(__always)
+//  public var indices: Tree.IterSequence {
+//    .init(tree: _tree, start: ___ptr_start(), end: ___ptr_end())
+//  }
 }
 
 // MARK: - Raw Index Sequence
 
 // 独自の型だと学習コストが高くなるので、速度を少し犠牲にして読みやすそうな型に変更
+// forEachが呼ばれないので、計測結果次第で元に戻します。名前も少しましに改名しましたし
 
 extension RedBlackTreeSet {
 
@@ -817,190 +548,31 @@ extension RedBlackTreeSet {
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
   @inline(__always)
-  public var rawIndices: AnySequence<RawIndex> {
-    AnySequence(RawIndexSequence(_subSequence: _tree.indexSubsequence()))
+  public var rawIndices: RawIndexSequence<RedBlackTreeSet> {
+    RawIndexSequence(tree: _tree)
   }
 }
 
-extension RedBlackTreeSet.SubSequence {
+// MARK: - Raw Indexed Sequence
 
-  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
-  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
-  @inlinable
-  @inline(__always)
-  public var rawIndices: AnySequence<RawIndex> {
-    AnySequence(
-      IndexSequence(
-        _subSequence: _tree.indexSubsequence(from: startIndex.rawValue, to: endIndex.rawValue)))
+// 元々、ポインタと値同時に列挙できたら実行時間短くなるんじゃね？
+// ぐらいのノリでつくったものを、雰囲気でenumerated()として本流っぽくしていたけれども
+// やはりおまけポジでした
+
+extension RedBlackTreeSet {
+  
+  @inlinable @inline(__always)
+  public var rawIndexedElements: RawIndexedSequence<RedBlackTreeSet> {
+    RawIndexedSequence(tree: _tree)
   }
 }
 
 extension RedBlackTreeSet {
 
-  @frozen
-  public struct RawIndexSequence {
-
-    @usableFromInline
-    internal typealias _SubSequence = Tree.IndexSequence
-
-    @usableFromInline
-    internal let _subSequence: _SubSequence
-
-    @inlinable
-    init(_subSequence: _SubSequence) {
-      self._subSequence = _subSequence
-    }
-  }
-}
-
-extension RedBlackTreeSet.RawIndexSequence: Sequence {
-
-  public struct Iterator: IteratorProtocol {
-
-    @usableFromInline
-    internal var _iterator: _SubSequence.Iterator
-
-    @inlinable
-    @inline(__always)
-    internal init(_ _iterator: _SubSequence.Iterator) {
-      self._iterator = _iterator
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> RawIndex? {
-      _iterator.next()
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func makeIterator() -> Iterator {
-    Iterator(_subSequence.makeIterator())
-  }
-}
-
-extension RedBlackTreeSet.RawIndexSequence {
-
-  // AnySequence化した結果呼ばれなくなっている
-  // 性能差があった記憶なので、どこかのタイミングで計測が必要
-
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (RawIndex) throws -> Void) rethrows {
-    try _subSequence.forEach(body)
-  }
-}
-
-// MARK: - Enumerated Sequence
-
-extension RedBlackTreeSet {
-
-  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")  @inlinable
-  @inline(__always)
-  public func enumerated() -> EnumuratedSequence {
-    ___enumerated()
-  }
-}
-
-extension RedBlackTreeSet.SubSequence {
-
-  @available(*, deprecated, message: "このメソッドは変更を検討しています。将来的に破壊的な変更があることをご承知ください。")  @inlinable
-  @inline(__always)
-  public func enumerated() -> EnumuratedSequence {
-    ___enumerated()
-  }
-}
-
-extension RedBlackTreeSet {
-
-  #if false
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> AnySequence<EnumElement> {
-      AnySequence { _tree.makeEnumIterator() }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(_subSequence: _tree.enumeratedSubsequence())
-    }
-  #endif
-}
-
-extension RedBlackTreeSet.SubSequence {
-
-  #if false
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> AnySequence<EnumElement> {
-      AnySequence {
-        tree.makeEnumeratedIterator(start: startIndex.rawValue, end: endIndex.rawValue)
-      }
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public func ___enumerated() -> EnumuratedSequence {
-      EnumuratedSequence(
-        _subSequence: _tree.enumeratedSubsequence(from: startIndex.rawValue, to: endIndex.rawValue))
-    }
-  #endif
-}
-
-extension RedBlackTreeSet {
-
-  @frozen
-  public struct EnumuratedSequence {
-
-    public typealias Enumurated = Tree.Enumerated
-
-    @usableFromInline
-    internal typealias _SubSequence = Tree.EnumSequence
-
-    @usableFromInline
-    internal let _subSequence: _SubSequence
-
-    @inlinable
-    init(_subSequence: _SubSequence) {
-      self._subSequence = _subSequence
-    }
-  }
-}
-
-extension RedBlackTreeSet.EnumuratedSequence: Sequence {
-
-  public struct Iterator: IteratorProtocol {
-
-    @usableFromInline
-    internal var _iterator: _SubSequence.Iterator
-
-    @inlinable
-    @inline(__always)
-    internal init(_ _iterator: _SubSequence.Iterator) {
-      self._iterator = _iterator
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> Enumurated? {
-      _iterator.next()
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func makeIterator() -> Iterator {
-    Iterator(_subSequence.makeIterator())
-  }
-}
-
-extension RedBlackTreeSet.EnumuratedSequence {
-
-  @inlinable
-  public func forEach(_ body: (Enumurated) throws -> Void) rethrows {
-    try _subSequence.forEach(body)
+  @available(*, deprecated, renamed: "rawIndexedElements")
+  @inlinable @inline(__always)
+  public func enumerated() -> RawIndexedSequence<RedBlackTreeSet> {
+    rawIndexedElements
   }
 }
 
@@ -1019,35 +591,12 @@ extension RedBlackTreeSet {
   public var capacity: Int {
     ___capacity
   }
-}
-
-extension RedBlackTreeSet {
-
+  
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func isValid(index: Index) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index: RawIndex) -> Bool {
-    _tree.___is_valid_index(index.rawValue)
-  }
-}
-
-extension RedBlackTreeSet.SubSequence {
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index i: Index) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func isValid(index i: RawIndex) -> Bool {
-    _subSequence.___is_valid_index(index: i.rawValue)
+  public var count: Int {
+    ___count
   }
 }
 

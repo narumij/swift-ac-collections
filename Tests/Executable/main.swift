@@ -5,8 +5,8 @@ import RedBlackTreeModule
 import PermutationModule
 
 #if USING_COLLECTIONS
-import Collections
-import SortedCollections
+//import Collections
+//import SortedCollections
 #endif
 
 print("start job")
@@ -130,7 +130,7 @@ var tree = RedBlackTreeSet<Int>(0 ..< count)
 tree[0 ..< count].enumerated().forEach { i, v in
   tree.remove(at: i)
 }
-#elseif true
+#elseif false
 var xy: [Int:RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]
 for i in xy[1, default: []] {
   xy[1, default: []].remove(i)
@@ -194,7 +194,7 @@ for i in 0 ..< count / N {
 //    xy[1, default: []].removeSubrange(lo ..< hi)
 //  }
 }
-#elseif true
+#elseif false
 // これもまだ
 //var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0 ..< count)]
 var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0 ..< count)]
@@ -290,7 +290,7 @@ var xy: [Int] = (0 ..< 200_000_000) + []
       continue
     }
   }
-#elseif true
+#elseif false
 var xy: Deque<Int> = (0 ..< 200_000_000) + []
   for _ in 0 ..< 200_000_000 {
     // Dequeの場合、一度だけ、コピーが発生している
@@ -299,12 +299,40 @@ var xy: Deque<Int> = (0 ..< 200_000_000) + []
       continue
     }
   }
-#else
+#elseif false
 var xy: [Int:[Int]] = [1:(0 ..< 2_000_000) + []]
   for i in 0 ..< 2_000_000 {
     _ = xy[1]?[i] = 100
     _ = 1 + (xy[1]?[i / 2] ?? 0)
   }
+#elseif false
+var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
+var total = 0
+for i in tree.indices {
+  total &+= tree[i]
+}
+print(total)
+#elseif false
+var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
+var total = 0
+for i in tree.indices.reversed() {
+  total &+= tree[i]
+}
+print(total)
+#elseif false
+var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
+var total = 0
+for i in tree.reversed() {
+  total &+= i
+}
+print(total)
+#else
+var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
+var total = 0
+for i in (tree.startIndex ..< tree.endIndex).reversed() {
+  total &+= tree[i]
+}
+print(total)
 #endif
 //#endif
 

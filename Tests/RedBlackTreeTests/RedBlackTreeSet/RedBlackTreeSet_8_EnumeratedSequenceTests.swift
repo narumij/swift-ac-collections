@@ -13,11 +13,11 @@ final class RedBlackTreeSetEnumeratedSequenceTests: XCTestCase {
     func test_enumeratedSequence_forEach() {
       // 事前条件: 集合に[10, 20, 30]
       let set = RedBlackTreeSet([10, 20, 30])
-      let enumerated = set.___enumerated()
+      let enumerated = set.rawIndexedElements
 
       var elements: [(offset: RawIndex, element: Int)] = []
       enumerated.forEach { pair in
-        elements.append((pair.offset, pair.element))
+        elements.append((pair.rawIndex, pair.element))
       }
 
       // 事後条件: offsetは順序どおり、elementも順序どおり
@@ -32,11 +32,11 @@ final class RedBlackTreeSetEnumeratedSequenceTests: XCTestCase {
       // 事前条件: 集合に[10, 20, 30, 40, 50]
       let set = RedBlackTreeSet([10, 20, 30, 40, 50])
       let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [20,30,40]
-      let enumerated = sub.___enumerated()
+      let enumerated = sub.rawIndexedElements
 
       var elements: [(offset: RawIndex, element: Int)] = []
       enumerated.forEach { pair in
-        elements.append((pair.offset, pair.element))
+        elements.append((pair.rawIndex, pair.element))
       }
 
       // 事後条件: offsetは順序どおり、elementも順序どおり
@@ -54,12 +54,12 @@ extension RedBlackTreeSetEnumeratedSequenceTests {
     /// EnumuratedSequenceのmakeIterator()で順序通りに列挙できること
     func test_enumeratedSequence_makeIterator() {
       let set = RedBlackTreeSet([10, 20, 30])
-      let enumerated = set.___enumerated()
+      let enumerated = set.rawIndexedElements
 
       var iterator = enumerated.makeIterator()
       var elements: [(offset: RawIndex, element: Int)] = []
       while let pair = iterator.next() {
-        elements.append((pair.offset, pair.element))
+        elements.append((pair.rawIndex, pair.element))
       }
 
       XCTAssertEqual(
@@ -72,12 +72,12 @@ extension RedBlackTreeSetEnumeratedSequenceTests {
     func test_subSequence_enumeratedSequence_makeIterator() {
       let set = RedBlackTreeSet([10, 20, 30, 40, 50])
       let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [20,30,40]
-      let enumerated = sub.___enumerated()
+      let enumerated = sub.rawIndexedElements
 
       var iterator = enumerated.makeIterator()
       var elements: [(offset: RawIndex, element: Int)] = []
       while let pair = iterator.next() {
-        elements.append((pair.offset, pair.element))
+        elements.append((pair.rawIndex, pair.element))
       }
 
       XCTAssertEqual(

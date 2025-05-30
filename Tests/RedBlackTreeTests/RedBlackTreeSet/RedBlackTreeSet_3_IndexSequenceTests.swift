@@ -65,7 +65,7 @@ final class RedBlackTreeSetRawIndexSequenceTests: XCTestCase {
   func test_indices_makeIterator() {
     // 事前条件: 集合に[1,2,3,4]
     let set = RedBlackTreeSet([1, 2, 3, 4])
-    let iter = set.rawIndices.makeIterator()
+    var iter = set.rawIndices.makeIterator()
 
     var collected: [Int] = []
     while let rawIndex = iter.next() {

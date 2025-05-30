@@ -52,35 +52,10 @@ extension _NodePtr {
   static func node(_ p: Int) -> Self { p }
 }
 
-extension _NodePtr {
- 
-  /// 特殊なnullptr
-  /// 範囲の下限を下回っていることを表す
-  /// underやoverは幽霊化の補助としての利用に限定している
-  /// このため、RangeやStridableに関連しないところでは、underやoverは使わないし対応しない
-  @inlinable
-  static var under: Self { -3 }
-  
-  /// 特殊なnullptr
-  /// 範囲の上限を上回っていることを表す
-  /// underやoverは幽霊化の補助としての利用に限定している
-  /// このため、RangeやStridableに関連しないところでは、underやoverは使わないし対応しない
-  @inlinable
-  static var over: Self { -4 }
-}
-
 @inlinable
 @inline(__always)
 func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
   ptr < 0
-}
-
-/// underやoverは幽霊化の補助としての利用に限定している
-/// このため、RangeやStridableに関連しないところでは、underやoverは使わないし対応しない
-@inlinable
-@inline(__always)
-func ___is_under_or_over(_ ptr: _NodePtr) -> Bool {
-  ptr < -2
 }
 
 /// 赤黒木の参照型を表す内部enum
@@ -185,10 +160,14 @@ protocol BeginNodeProtocol {
 
 @usableFromInline
 protocol BeginProtocol: BeginNodeProtocol {
+  // __begin_nodeが圧倒的に速いため
+  @available(*, deprecated, renamed: "__begin_node")
   func begin() -> _NodePtr
 }
 
 extension BeginProtocol {
+  // __begin_nodeが圧倒的に速いため
+  @available(*, deprecated, renamed: "__begin_node")
   @inlinable
   @inline(__always)
   func begin() -> _NodePtr { __begin_node }
@@ -255,7 +234,7 @@ protocol AllocatorProtocol {
 
 // MARK: common
 
-public protocol ValueComparer {
+public protocol ValueComparer: CompareTrait {
   associatedtype _Key
   associatedtype Element
   static func __key(_: Element) -> _Key

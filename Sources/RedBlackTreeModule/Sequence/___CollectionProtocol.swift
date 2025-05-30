@@ -20,39 +20,24 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
-
-extension String {
+@usableFromInline
+protocol ___CollectionProtocol: CompareProtocol {
+  // この実装がないと、迷子になる?
+  func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int
   
-  @usableFromInline
-  static var garbagedIndex: String {
-    "開放されたインデックスの使用がありました。startIndex ..< endIndex等をお使いの場合、等価なSliceでのindicesで代替してください。"
-  }
-
-  @usableFromInline
-  static var invalidIndex: String {
-    "Attempting to access RedBlackTree elements using an invalid index"
-  }
-
-  @usableFromInline
-  static var outOfBounds: String {
-    "RedBlackTree index is out of Bound."
-  }
-
-  @usableFromInline
-  static var outOfRange: String {
-    "RedBlackTree index is out of range."
-  }
+  func ___index(after i: _NodePtr) -> _NodePtr
+  func ___index(before i: _NodePtr) -> _NodePtr
   
-  @usableFromInline
-  static var emptyFirst: String {
-    "Can't removeFirst from an empty RedBlackTree"
-  }
+  func ___formIndex(after i: inout _NodePtr)
+  func ___formIndex(before i: inout _NodePtr)
 
-  @usableFromInline
-  static var emptyLast: String {
-    "Can't removeLast from an empty RedBlackTree"
-  }
+  func ___index(_ i: _NodePtr, offsetBy distance: Int) -> _NodePtr
+  func ___index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> _NodePtr?
+
+  func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int)
+  func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> Bool
+
+  func ___is_valid(_ p: _NodePtr) -> Bool
+  func ___is_valid_index(_ i: _NodePtr) -> Bool
 }
 
-// メッセージをマッサージに空見するぐらい疲れている

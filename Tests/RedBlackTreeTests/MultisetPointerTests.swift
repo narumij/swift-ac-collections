@@ -30,6 +30,7 @@ final class MultisetPointerTests: XCTestCase {
     XCTAssertNil(members.endIndex.next)
   }
   
+#if DEBUG
   func testPointer2() throws {
     if let it = members.startIndex.next {
       XCTAssertTrue(it.___isValid)
@@ -38,13 +39,13 @@ final class MultisetPointerTests: XCTestCase {
       XCTAssertNotNil(it.next)
       members.remove(at: it)
       XCTAssertFalse(it.___isValid)
-      XCTAssertTrue(it.isPhantom)
       XCTAssertNil(it.pointee)
       XCTAssertNil(it.previous)
       XCTAssertNil(it.next)
     }
   }
-
+#endif
+  
   func testPointerPrev() throws {
     XCTAssertNil(members.endIndex.pointee)
     XCTAssertEqual(members.endIndex.previous?.pointee, 2)
@@ -65,7 +66,6 @@ final class MultisetPointerTests: XCTestCase {
     XCTAssertEqual(members.startIndex.advanced(by: 4).pointee, 2)
     XCTAssertNil(members.startIndex.advanced(by: 5).pointee)
     XCTAssertEqual(members.startIndex.advanced(by: 5), members.endIndex)
-    XCTAssertTrue(members.startIndex.advanced(by: 6).isOver)
     XCTAssertNil(members.startIndex.advanced(by: 6).pointee)
   }
 
@@ -77,7 +77,6 @@ final class MultisetPointerTests: XCTestCase {
     XCTAssertEqual(members.endIndex.advanced(by: -4).pointee, 0)
     XCTAssertEqual(members.endIndex.advanced(by: -5).pointee, 0)
     XCTAssertEqual(members.endIndex.advanced(by: -5), members.startIndex)
-    XCTAssertTrue(members.startIndex.advanced(by: -6).isUnder)
     XCTAssertNil(members.startIndex.advanced(by: -6).pointee)
   }
 

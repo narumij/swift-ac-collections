@@ -124,7 +124,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
     var loopCount = 0
     for i in 0 ..< count / N {
       loopCount += 1
-      xy[1]?.elements(in: (i * N) ..< (i * N + N)).___enumerated().forEach { i, v in
+      xy[1]?.elements(in: (i * N) ..< (i * N + N)).rawIndexedElements.forEach { i, v in
         xy[1]?.remove(at: i)
       }
     }

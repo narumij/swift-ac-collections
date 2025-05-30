@@ -5,7 +5,7 @@ import XCTest
 
 final class ManagedBufferTests: XCTestCase {
 
-  enum VC: ScalarValueComparer {
+  enum VC: ScalarValueComparer & CompareUniqueTrait {
     typealias _Key = Int
     typealias Element = Int
   }

@@ -415,7 +415,7 @@ final class SetTests: XCTestCase {
       set.insert(i)
       XCTAssertTrue(set.___tree_invariant())
     }
-    for (i, _) in set.___enumerated() {
+    for (i, _) in set.rawIndexedElements {
       set.remove(at: i)
       XCTAssertTrue(set.___tree_invariant())
     }
@@ -443,7 +443,7 @@ final class SetTests: XCTestCase {
       set.insert(i)
       XCTAssertTrue(set.___tree_invariant())
     }
-    for (i, _) in set[set.startIndex..<set.endIndex].___enumerated() {
+    for (i, _) in set[set.startIndex..<set.endIndex].rawIndexedElements {
       set.remove(at: i)
       XCTAssertTrue(set.___tree_invariant())
     }
@@ -858,8 +858,8 @@ final class SetTests: XCTestCase {
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
     XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
-    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: -1).rawValue, -1)
-    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: 5).rawValue, 5)
+    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: -1).___unchecked_rawValue, -1)
+    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: 5).___unchecked_rawValue, 5)
 
     XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
     XCTAssertTrue(set.isValid(index: .unsafe(0)))
@@ -888,8 +888,8 @@ final class SetTests: XCTestCase {
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
     XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
-    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: -1).rawValue, -1)
-    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: 5).rawValue, 5)
+    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: -1).___unchecked_rawValue, -1)
+    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: 5).___unchecked_rawValue, 5)
 
     XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
     XCTAssertFalse(set.isValid(index: .unsafe(0)))

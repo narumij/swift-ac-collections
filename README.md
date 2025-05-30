@@ -96,7 +96,7 @@ print(dict) // 例: [apple: 5, banana: 3]
 この内部配列のインデックス同士を比較した場合、順序と結果が一致しません。
 
 Swift標準のプロトコルではインデックス比較と順序の一致を要求するため、抽象化されたインデックスを用いています。
-これが`Index`です。実際的にはノードへのポインタやC++のイテレータのような働きをします。
+これが`Index`です。実際的にはC++のイテレータのような働きをします。
 赤黒木モジュールの大半のAPIではこの抽象化された`Index`を用いています。
 
 他に`RawIndex`があります、`RawIndex`同士の比較はできませんが軽量で、要素アクセスや要素削除に利用できます。
@@ -176,9 +176,9 @@ for i in tree0.indices.reversed() {
 print(tree0.count) // 0
 ```
 
-1. whileループで削除する
+1. 削除の前に次のインデックスを取得する
 
-この問題を迂回する、標準APIによるベーシックな方法です。
+この問題を迂回する、ベーシックな方法です。対策済みイテレータも内部で同じ事をしています。
 
 ```Swift
 var tree1: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
@@ -191,29 +191,11 @@ while i != tree1.endIndex { // endIndexは不変
 }
 print(tree1.count) // 0
 ```
-
-~~2. enumerated()で削除する~~
-
-~~値とノードインデックスを列挙して、削除操作を行うことができます。
-削除時のインデックス無効対策がイテレータに施してあるので、以下のように書いて問題ありません。~~
-
-enumerated()の型が原義に沿っていないことから、誤用の懸念があり、廃止します。
-`___enumerated`()と別の名前で残していますが、名前から推察できるとおり、半非公開扱いとします。
-
-```Swift
-var tree2: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
-for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].___enumerated() { i, _ in
-  tree2.remove(at: i) // この時点でiは無効だが、イテレータは内部で次のインデックスを保持している
-  print(tree2.isValid(index: i)) // false
-  // iはRedBlackTreeSet<Int>.RawIndex型
-}
-print(tree2.count) // 0
-```
-
-3. `rawIndices`で削除する
+2. `indices`または`rawIndices`で削除する
 
 RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
+`indices`での削除はケース0と等価です。
 
 ```Swift
 var tree3: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
@@ -225,9 +207,26 @@ for (i,_) in tree3[tree3.startIndex ..< tree3.endIndex].rawIndices { i in
 print(tree3.count) // 0
 ```
 
+3. rawIndexedElementsでループして削除する
+
+値とインデックスを列挙して、削除操作を行うことができます。
+削除以外に何か処理が必要な場合に使います。たとえばABC385D等。
+
+```Swift
+var tree2: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].rawIndexedElements {
+  tree2.remove(at: i) // この時点でiは無効だが、イテレータは内部で次のインデックスを保持している
+  print(tree2.isValid(index: i)) // false
+  // iはRedBlackTreeSet<Int>.RawIndex型
+}
+print(tree2.count) // 0
+```
+
 4. removeSubrange(_:Range<Index>)で削除する
 
 インデックスの区間で削除対象を指定することが可能です。
+基本的にループを回すよりも、この方法で消す方が実行速度としては(定数倍の面で)速いです。
+計算量としては余り変わりません。
 
 ```Swift
 var tree4: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
@@ -238,7 +237,7 @@ XCTAssertEqual(tree4.count, 0)
 5. remove(contentsOf:Range<Element>)を使用して削除する。
 
 値の区間で削除対象を指定することが可能です。
-
+境界を探索する分すこし実行時間はかさみますが、これも速いです。
 
 ```Swift
 var tree5: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
@@ -266,7 +265,7 @@ while idx != tree6.endIndex {
 }
 ```
 
-比較演算子の計算量がそこそこあるためおすすめできませんが、
+比較演算子の計算量が（特に重複保持型の場合に）そこそこあるためおすすめできませんが、
 C++のイテレータとは異なり比較でループを回すこともできます。 
 
 ```Swift

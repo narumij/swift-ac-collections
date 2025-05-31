@@ -672,7 +672,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary: RedBlackTreeSubSequenceBase { }
+extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence { }
 
 extension RedBlackTreeDictionary.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeDictionary
@@ -713,7 +713,7 @@ extension RedBlackTreeDictionary {
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
   @inline(__always)
-  public var rawIndices: RawIndexSequence<RedBlackTreeDictionary> {
+  public var rawIndices: RawIndexSequence<Tree> {
     RawIndexSequence(tree: _tree)
   }
 }
@@ -723,7 +723,7 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<RedBlackTreeDictionary> {
+  public var rawIndexedElements: RawIndexedSequence<Tree> {
     RawIndexedSequence(tree: _tree)
   }
 }

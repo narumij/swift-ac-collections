@@ -28,6 +28,10 @@ extension ValueComparer {
   public typealias Tree = ___Tree<Self>
 }
 
+public protocol ___RedBlackTreeBaseType {
+  associatedtype Tree
+}
+
 @usableFromInline
 protocol ___RedBlackTreeBase: ValueComparer {
   associatedtype Element

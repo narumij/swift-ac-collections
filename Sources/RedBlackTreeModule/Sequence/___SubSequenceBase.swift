@@ -21,17 +21,18 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___SubSequenceBase: Sequence & Collection & BidirectionalCollection
+protocol ___SubSequenceBase: ___RedBlackTreeBaseType & Sequence & Collection
+    & BidirectionalCollection
 where
+  Base: ___RedBlackTreeSubSequence,
   Tree == Base.Tree,
   Index == Base.Index,
   Indices == Tree.Indices,
   Element == Tree.Element,
   Iterator == ElementIterator<Base.Tree>,
-  Self: RedBlackTreeSequence,
   SubSequence == Self
 {
-  associatedtype Base: RedBlackTreeSubSequenceBase
+  associatedtype Base
   var _tree: Base.Tree { get }
   var _start: _NodePtr { get set }
   var _end: _NodePtr { get set }
@@ -75,7 +76,7 @@ extension ___SubSequenceBase {
 }
 
 extension ___SubSequenceBase {
-  
+
   // 断念
   //    @inlinable
   //    public func lowerBound(_ member: Element) -> Index {
@@ -105,11 +106,11 @@ extension ___SubSequenceBase {
   public subscript(position: Index) -> Element {
 
     _read {
-//      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
-//        _tree.___ptr_less_than(position.rawValue, _end)
-//      else {
-//        fatalError(.outOfRange)
-//      }
+      //      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
+      //        _tree.___ptr_less_than(position.rawValue, _end)
+      //      else {
+      //        fatalError(.outOfRange)
+      //      }
       yield _tree[position.rawValue]
     }
   }
@@ -121,11 +122,11 @@ extension ___SubSequenceBase {
   public subscript(position: RawIndex) -> Element {
     @inline(__always)
     _read {
-//      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
-//        _tree.___ptr_less_than(position.rawValue, _end)
-//      else {
-//        fatalError(.outOfRange)
-//      }
+      //      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
+      //        _tree.___ptr_less_than(position.rawValue, _end)
+      //      else {
+      //        fatalError(.outOfRange)
+      //      }
       yield _tree[position.rawValue]
     }
   }
@@ -225,7 +226,7 @@ extension ___SubSequenceBase {
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
   @inline(__always)
-  public var rawIndices: RawIndexSequence<Self> {
+  public var rawIndices: RawIndexSequence<Tree> {
     RawIndexSequence(
       tree: _tree,
       start: _start,
@@ -238,7 +239,7 @@ extension ___SubSequenceBase {
 extension ___SubSequenceBase {
 
   @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<Self> {
+  public var rawIndexedElements: RawIndexedSequence<Tree> {
     RawIndexedSequence(
       tree: _tree,
       start: _start,
@@ -247,7 +248,7 @@ extension ___SubSequenceBase {
 
   @available(*, deprecated, renamed: "rawIndexedElements")
   @inlinable @inline(__always)
-  public func enumerated() -> RawIndexedSequence<Self> {
+  public func enumerated() -> RawIndexedSequence<Tree> {
     rawIndexedElements
   }
 }
@@ -279,7 +280,7 @@ extension ___SubSequenceBase {
 }
 
 extension ___SubSequenceBase {
-  
+
   @inlinable
   @inline(__always)
   public __consuming func reversed() -> ReversedElementIterator<Self.Tree> {
@@ -288,7 +289,7 @@ extension ___SubSequenceBase {
 }
 
 extension ___SubSequenceBase {
-  
+
   @inlinable
   @inline(__always)
   public var indices: Indices {

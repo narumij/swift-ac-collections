@@ -581,7 +581,7 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-extension RedBlackTreeMultiMap: RedBlackTreeSubSequenceBase { }
+extension RedBlackTreeMultiMap: ___RedBlackTreeSubSequence { }
 
 extension RedBlackTreeMultiMap.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeMultiMap
@@ -623,7 +623,7 @@ extension RedBlackTreeMultiMap {
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
   @inline(__always)
-  public var rawIndices: RawIndexSequence<RedBlackTreeMultiMap> {
+  public var rawIndices: RawIndexSequence<Tree> {
     RawIndexSequence(tree: _tree)
   }
 }
@@ -633,7 +633,7 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
 
   @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<RedBlackTreeMultiMap> {
+  public var rawIndexedElements: RawIndexedSequence<Tree> {
     RawIndexedSequence(tree: _tree)
   }
 }

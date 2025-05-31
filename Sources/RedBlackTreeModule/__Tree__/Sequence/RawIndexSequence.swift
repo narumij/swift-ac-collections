@@ -21,49 +21,49 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct RawIndexedSequence<Base: RedBlackTreeSequence>: Sequence {
+struct RawIndexSequence<Tree: Tree_IterateProtocol & Tree_RawIndexProtocol>: Sequence {
   
   @usableFromInline
-  let _tree: Base.Tree
-
+  let _tree: Tree
+  
   @usableFromInline
   var _start, _end: _NodePtr
-
+  
   @inlinable
   @inline(__always)
-  internal init(tree: Base.Tree) where Base.Tree: BeginNodeProtocol & EndNodeProtocol {
+  internal init(tree: Tree) where Tree: BeginNodeProtocol & EndNodeProtocol {
     self.init(
       tree: tree,
       start: tree.__begin_node,
       end: tree.__end_node())
   }
-
+  
   @inlinable
   @inline(__always)
-  internal init(tree: Base.Tree, start: _NodePtr, end: _NodePtr) {
+  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
     _tree = tree
     _start = start
     _end = end
   }
-
+  
   @inlinable
-  public __consuming func makeIterator() -> RawIndexedIterator<Base.Tree> {
+  public __consuming func makeIterator() -> RawIndexIterator<Tree> {
     .init(tree: _tree, start: _start, end: _end)
   }
   
   @inlinable
-  public __consuming func reversed() -> ReversedRawIndexedIterator<Base.Tree> {
-    .init(tree: _tree, start: _start, end: _end)
-  }
-
-  @inlinable
   @inline(__always)
-  internal func forEach(_ body: (RawIndex, Base.Tree.Element) throws -> Void) rethrows {
+  internal func forEach(_ body: (Element) throws -> Void) rethrows {
     var __p = _start
     while __p != _end {
       let __c = __p
       __p = _tree.__tree_next_iter(__p)
-      try body(RawIndex(__c), _tree[__c])
+      try body(RawIndex(__c))
     }
+  }
+  
+  @inlinable
+  public __consuming func reversed() -> ReversedRawIndexIterator<Tree> {
+    .init(tree: _tree, start: _start, end: _end)
   }
 }

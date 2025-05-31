@@ -21,10 +21,10 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeSequence: RedBlackTreeSequence,
+protocol ___RedBlackTreeSequence: ___RedBlackTreeBaseType,
   Sequence & Collection & BidirectionalCollection
 where
-  Tree: Tree_ForEachProtocol & Tree_BidirectionalCollectionProtocol & Tree_IndicesProtocol
+  Tree: Tree_IterateProtocol & Tree_RawIndexProtocol & Tree_ForEachProtocol & Tree_BidirectionalCollectionProtocol & Tree_IndicesProtocol
     & Tree_NodeValidationProtocol & BeginNodeProtocol & EndNodeProtocol & DistanceProtocol,
   Element == Tree.Element,
   Index: RedBlackTreeIndex,

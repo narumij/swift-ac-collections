@@ -21,12 +21,14 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeUnique: ValueComparer, CompareUniqueTrait {
+protocol ___RedBlackTreeUnique: CompareUniqueTrait {
+  associatedtype Tree: ValueProtocol & EqualProtocol & Tree_IndexProtocol
   var _tree: Tree { get }
 }
 
 @usableFromInline
-protocol ___RedBlackTreeMulti: ValueComparer, CompareMultiTrait {
+protocol ___RedBlackTreeMulti: CompareMultiTrait {
+  associatedtype Tree: ValueProtocol & EqualProtocol & Tree_IndexProtocol
   var _tree: Tree { get }
 }
 
@@ -35,7 +37,7 @@ extension ___RedBlackTreeUnique {
   ///（重複なし）
   @inlinable
   @inline(__always)
-  internal func ___equal_range(_ k: _Key) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
+  internal func ___equal_range(_ k: Tree._Key) -> (lower: Tree.Index, upper: Tree.Index) {
     let (lo,hi) = _tree.__equal_range_unique(k)
 //    return (.init(__tree: _tree, rawValue: lo), .init(__tree: _tree, rawValue: hi))
     return (_tree.makeIndex(rawValue: lo), _tree.makeIndex(rawValue: hi))
@@ -47,7 +49,7 @@ extension ___RedBlackTreeMulti {
   /// （重複あり）
   @inlinable
   @inline(__always)
-  internal func ___equal_range(_ k: _Key) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
+  internal func ___equal_range(_ k: Tree._Key) -> (lower: Tree.Index, upper: Tree.Index) {
     let (lo,hi) = _tree.__equal_range_multi(k)
 //    return (.init(__tree: _tree, rawValue: lo), .init(__tree: _tree, rawValue: hi))
     return (_tree.makeIndex(rawValue: lo), _tree.makeIndex(rawValue: hi))

@@ -475,7 +475,7 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-extension RedBlackTreeMultiSet: RedBlackTreeSubSequenceBase { }
+extension RedBlackTreeMultiSet: ___RedBlackTreeSubSequence { }
 
 extension RedBlackTreeMultiSet.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeMultiSet
@@ -517,7 +517,7 @@ extension RedBlackTreeMultiSet {
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
   @inlinable
   @inline(__always)
-  public var rawIndices: RawIndexSequence<RedBlackTreeMultiSet> {
+  public var rawIndices: RawIndexSequence<Tree> {
     RawIndexSequence(tree: _tree)
   }
 }
@@ -527,7 +527,7 @@ extension RedBlackTreeMultiSet {
 extension RedBlackTreeMultiSet {
 
   @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<RedBlackTreeMultiSet> {
+  public var rawIndexedElements: RawIndexedSequence<Tree> {
     RawIndexedSequence(tree: _tree)
   }
 }
@@ -537,7 +537,7 @@ extension RedBlackTreeMultiSet {
   @available(*, deprecated, renamed: "rawIndexedElements")
   @inlinable
   @inline(__always)
-  public func enumerated() -> RawIndexedSequence<RedBlackTreeMultiSet> {
+  public func enumerated() -> RawIndexedSequence<Tree> {
     rawIndexedElements
   }
 }

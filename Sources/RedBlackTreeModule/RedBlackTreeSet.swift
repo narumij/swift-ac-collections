@@ -307,8 +307,8 @@ extension RedBlackTreeSet {
   @inline(__always)
   public mutating func remove(contentsOf elementRange: Range<Element>) {
     _strongEnsureUnique()
-    let lower = ___ptr_lower_bound(elementRange.lowerBound)
-    let upper = ___ptr_lower_bound(elementRange.upperBound)
+    let lower = ___lower_bound(elementRange.lowerBound)
+    let upper = ___lower_bound(elementRange.upperBound)
     ___remove(from: lower, to: upper)
   }
 
@@ -318,8 +318,8 @@ extension RedBlackTreeSet {
   @inline(__always)
   public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
     _strongEnsureUnique()
-    let lower = ___ptr_lower_bound(elementRange.lowerBound)
-    let upper = ___ptr_upper_bound(elementRange.upperBound)
+    let lower = ___lower_bound(elementRange.lowerBound)
+    let upper = ___upper_bound(elementRange.upperBound)
     ___remove(from: lower, to: upper)
   }
 }
@@ -491,7 +491,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   public func elements(in range: Range<Element>) -> SubSequence {
-    .init(tree: _tree_, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_lower_bound(range.upperBound))
+    .init(tree: _tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
   }
 
   /// 値レンジ `[lower, upper]` に含まれる要素のスライス
@@ -499,7 +499,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   public func elements(in range: ClosedRange<Element>) -> SubSequence {
-    .init(tree: _tree_, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_upper_bound(range.upperBound))
+    .init(tree: _tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
   }
 }
 

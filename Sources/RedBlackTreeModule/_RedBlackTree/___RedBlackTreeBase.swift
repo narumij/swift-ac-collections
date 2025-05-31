@@ -99,23 +99,23 @@ extension ___RedBlackTreeBase {
   }
 
   @inlinable @inline(__always)
-  public func ___ptr_start() -> _NodePtr {
+  public func ___start() -> _NodePtr {
     _tree_.__begin_node
   }
 
   @inlinable @inline(__always)
-  public func ___ptr_end() -> _NodePtr {
+  public func ___end() -> _NodePtr {
     _tree_.___end()
   }
 
   @inlinable @inline(__always)
   public func ___raw_index_start() -> RawIndex {
-    ___raw(___ptr_start())
+    ___raw(___start())
   }
 
   @inlinable @inline(__always)
   public func ___raw_index_end() -> RawIndex {
-    ___raw(___ptr_end())
+    ___raw(___end())
   }
 
   @inlinable @inline(__always)
@@ -132,12 +132,12 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
-  public func ___ptr_lower_bound(_ __k: _Key) -> _NodePtr {
+  public func ___lower_bound(_ __k: _Key) -> _NodePtr {
     _tree_.lower_bound(__k)
   }
 
   @inlinable @inline(__always)
-  public func ___ptr_upper_bound(_ __k: _Key) -> _NodePtr {
+  public func ___upper_bound(_ __k: _Key) -> _NodePtr {
     _tree_.upper_bound(__k)
   }
 
@@ -153,12 +153,12 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___iter_lower_bound(_ __k: _Key) -> Index {
-    ___iter(___ptr_lower_bound(__k))
+    ___iter(___lower_bound(__k))
   }
 
   @inlinable @inline(__always)
   func ___iter_upper_bound(_ __k: _Key) -> Index {
-    ___iter(___ptr_upper_bound(__k))
+    ___iter(___upper_bound(__k))
   }
 }
 
@@ -379,6 +379,14 @@ extension ___RedBlackTreeBase {
 #endif
 
 extension ___RedBlackTreeBase {
+  
+  // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func ___erase(_ ptr: _NodePtr) -> _NodePtr {
+    _tree_.erase(ptr)
+  }
 
   // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの
   @inlinable
@@ -413,16 +421,16 @@ extension ___RedBlackTreeBase {
   }
 }
 
-extension ___RedBlackTreeBase {
-  
-  func ___convert(_ rawIndex: RawIndex) -> Index {
-    _tree_.makeIndex(rawValue: rawIndex.rawValue)
-  }
-  
-  func ___convert(_ rawIndex: Index) -> RawIndex {
-    _tree_.makeRawIndex(rawValue: rawIndex.rawValue)
-  }
-}
+//extension ___RedBlackTreeBase {
+//  
+//  func ___convert(_ rawIndex: RawIndex) -> Index {
+//    _tree_.makeIndex(rawValue: rawIndex.rawValue)
+//  }
+//  
+//  func ___convert(_ rawIndex: Index) -> RawIndex {
+//    _tree_.makeRawIndex(rawValue: rawIndex.rawValue)
+//  }
+//}
 
 extension ___RedBlackTreeBase {
   

@@ -354,8 +354,8 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   public mutating func remove(contentsOf keyRange: Range<Key>) {
     _strongEnsureUnique()
-    let lower = ___ptr_lower_bound(keyRange.lowerBound)
-    let upper = ___ptr_lower_bound(keyRange.upperBound)
+    let lower = ___lower_bound(keyRange.lowerBound)
+    let upper = ___lower_bound(keyRange.upperBound)
     ___remove(from: lower, to: upper)
   }
 
@@ -365,8 +365,8 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
     _strongEnsureUnique()
-    let lower = ___ptr_lower_bound(keyRange.lowerBound)
-    let upper = ___ptr_upper_bound(keyRange.upperBound)
+    let lower = ___lower_bound(keyRange.lowerBound)
+    let upper = ___upper_bound(keyRange.upperBound)
     ___remove(from: lower, to: upper)
   }
 }
@@ -687,14 +687,14 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log *n*)
   @inlinable
   public func elements(in range: Range<Key>) -> SubSequence {
-    .init(tree: _tree_, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_lower_bound(range.upperBound))
+    .init(tree: _tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
   }
 
   /// キーレンジ `[lower, upper]` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
   @inlinable
   public func elements(in range: ClosedRange<Key>) -> SubSequence {
-    .init(tree: _tree_, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_upper_bound(range.upperBound))
+    .init(tree: _tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
   }
 }
 

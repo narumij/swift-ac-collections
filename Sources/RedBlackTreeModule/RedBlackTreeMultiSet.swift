@@ -192,7 +192,7 @@ extension RedBlackTreeMultiSet {
   }
 
   /// - Important: 削除後は、インデックスが無効になります。
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(1)
   @inlinable
   @discardableResult
   public mutating func remove(at index: RawIndex) -> Element {
@@ -204,7 +204,7 @@ extension RedBlackTreeMultiSet {
   }
 
   /// - Important: 削除後は、インデックスが無効になります。
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(1)
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
@@ -216,7 +216,7 @@ extension RedBlackTreeMultiSet {
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(1)
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {

@@ -59,6 +59,7 @@ extension RedBlackTreeSet: SetAlgebra {
     }
   }
 
+  /// - Complexity: O(*n* + *m*)
   @inlinable
   public mutating func formUnion(_ other: __owned RedBlackTreeSet<Element>) {
     let ___storage: Storage = .create(withCapacity: 0)
@@ -87,6 +88,7 @@ extension RedBlackTreeSet: SetAlgebra {
     _storage = ___storage
   }
 
+  /// - Complexity: O(*n* + *m*)
   @inlinable
   public mutating func formIntersection(_ other: RedBlackTreeSet<Element>) {
     // lower_boundを使う方法があるが、一旦楽に実装できそうな方からにしている
@@ -109,6 +111,7 @@ extension RedBlackTreeSet: SetAlgebra {
     _storage = ___storage
   }
 
+  /// - Complexity: O(*n* + *m*)
   @inlinable
   public mutating func formSymmetricDifference(_ other: __owned RedBlackTreeSet<Element>) {
     let ___storage: Storage = .create(withCapacity: 0)

@@ -26,7 +26,7 @@ where Tree.Element == _KeyValueTuple_<K,Value>
 {
 
   @usableFromInline
-  let _tree_: Tree
+  let __tree_: Tree
 
   @usableFromInline
   var _current, _start, _next, _end: _NodePtr
@@ -34,7 +34,7 @@ where Tree.Element == _KeyValueTuple_<K,Value>
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self._tree_ = tree
+    self.__tree_ = tree
     self._current = start
     self._start = start
     self._end = end
@@ -47,14 +47,14 @@ where Tree.Element == _KeyValueTuple_<K,Value>
     guard _current != _end else { return nil }
     defer {
       _current = _next
-      _next = _next == _end ? _end : _tree_.__tree_next_iter(_next)
+      _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return _tree_[_current].value
+    return __tree_[_current].value
   }
   
   @inlinable
   public __consuming func reversed() -> ReversedValueIterator<Tree,K,Value> {
-    .init(tree: _tree_, start: _start, end: _end)
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }
 

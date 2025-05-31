@@ -24,7 +24,7 @@ public
 struct RawIndexedIterator<Tree: Tree_IterateProtocol>: IteratorProtocol {
 
   @usableFromInline
-  let _tree_: Tree
+  let __tree_: Tree
 
   @usableFromInline
   var _current, _next, _end: _NodePtr
@@ -32,7 +32,7 @@ struct RawIndexedIterator<Tree: Tree_IterateProtocol>: IteratorProtocol {
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self._tree_ = tree
+    self.__tree_ = tree
     self._current = start
     self._end = end
     self._next = start == .end ? .end : tree.__tree_next_iter(start)
@@ -44,9 +44,9 @@ struct RawIndexedIterator<Tree: Tree_IterateProtocol>: IteratorProtocol {
     guard _current != _end else { return nil }
     defer {
       _current = _next
-      _next = _next == _end ? _end : _tree_.__tree_next_iter(_next)
+      _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return (RawIndex(_current), _tree_[_current])
+    return (RawIndex(_current), __tree_[_current])
   }
 }
 
@@ -54,7 +54,7 @@ public
 struct ReversedRawIndexedIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
   
   @usableFromInline
-  let _tree_: Tree
+  let __tree_: Tree
   
   @usableFromInline
   var _current, _next, _start, _begin: _NodePtr
@@ -62,11 +62,11 @@ struct ReversedRawIndexedIterator<Tree: Tree_IterateProtocol>: Sequence, Iterato
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self._tree_ = tree
+    self.__tree_ = tree
     self._current = end
-    self._next = _tree_.__tree_prev_iter(end)
+    self._next = __tree_.__tree_prev_iter(end)
     self._start = start
-    self._begin = _tree_.__begin_node
+    self._begin = __tree_.__begin_node
   }
   
   @inlinable
@@ -74,7 +74,7 @@ struct ReversedRawIndexedIterator<Tree: Tree_IterateProtocol>: Sequence, Iterato
   public mutating func next() -> (rawIndex: RawIndex, element: Tree.Element)? {
     guard _current != _start else { return nil }
     _current = _next
-    _next = _current != _begin ? _tree_.__tree_prev_iter(_current) : .nullptr
-    return (RawIndex(_current), _tree_[_current])
+    _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
+    return (RawIndex(_current), __tree_[_current])
   }
 }

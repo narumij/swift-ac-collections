@@ -33,7 +33,7 @@ where
   SubSequence == Self
 {
   associatedtype Base
-  var _tree_: Tree { get }
+  var __tree_: Tree { get }
   var _start: _NodePtr { get set }
   var _end: _NodePtr { get set }
   init(tree: Tree, start: _NodePtr, end: _NodePtr)
@@ -44,7 +44,7 @@ extension ___SubSequenceBase {
   /// - Complexity: O(1)
   @inlinable
   public func makeIterator() -> ElementIterator<Tree> {
-    .init(tree: _tree_, start: _start, end: _end)
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
@@ -54,7 +54,7 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _tree_.___for_each_(__p: _start, __l: _end, body: body)
+    try __tree_.___for_each_(__p: _start, __l: _end, body: body)
   }
 }
 
@@ -63,7 +63,7 @@ extension ___SubSequenceBase {
   /// - Complexity: O(log *n* + *k*)
   @inlinable @inline(__always)
   public var count: Int {
-    _tree_.___distance(from: _start, to: _end)
+    __tree_.___distance(from: _start, to: _end)
   }
 }
 
@@ -100,7 +100,7 @@ extension ___SubSequenceBase {
 
   @inlinable
   func index(rawValue: _NodePtr) -> Index {
-    .init(__tree: _tree_, rawValue: rawValue)
+    .init(__tree: __tree_, rawValue: rawValue)
   }
 }
 
@@ -117,7 +117,7 @@ extension ___SubSequenceBase {
       //      else {
       //        fatalError(.outOfRange)
       //      }
-      yield _tree_[position.rawValue]
+      yield __tree_[position.rawValue]
     }
   }
 }
@@ -134,7 +134,7 @@ extension ___SubSequenceBase {
       //      else {
       //        fatalError(.outOfRange)
       //      }
-      yield _tree_[position.rawValue]
+      yield __tree_[position.rawValue]
     }
   }
 }
@@ -145,13 +145,13 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
-    guard _tree_.___ptr_less_than_or_equal(_start, bounds.lowerBound.rawValue),
-      _tree_.___ptr_less_than_or_equal(bounds.upperBound.rawValue, _end)
+    guard __tree_.___ptr_less_than_or_equal(_start, bounds.lowerBound.rawValue),
+      __tree_.___ptr_less_than_or_equal(bounds.upperBound.rawValue, _end)
     else {
       fatalError(.outOfRange)
     }
     return .init(
-      tree: _tree_,
+      tree: __tree_,
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
   }
@@ -162,7 +162,7 @@ extension ___SubSequenceBase {
   /// - Complexity: O(log *n* + *k*)
   @inlinable @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    _tree_.___distance(from: start.rawValue, to: end.rawValue)
+    __tree_.___distance(from: start.rawValue, to: end.rawValue)
   }
 }
 
@@ -172,14 +172,14 @@ extension ___SubSequenceBase {
   @inlinable @inline(__always)
   public func index(before i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    index(rawValue: _tree_.___index(before: i.rawValue))
+    index(rawValue: __tree_.___index(before: i.rawValue))
   }
 
   /// - Complexity: O(1)
   @inlinable @inline(__always)
   public func index(after i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    index(rawValue: _tree_.___index(after: i.rawValue))
+    index(rawValue: __tree_.___index(after: i.rawValue))
   }
 
   /// - Complexity: O(*d*)
@@ -187,7 +187,7 @@ extension ___SubSequenceBase {
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-    _tree_.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
+    __tree_.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
       .map { index(rawValue: $0) }
   }
 }
@@ -199,7 +199,7 @@ extension ___SubSequenceBase {
   @inline(__always)
   public func formIndex(after i: inout Index) {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    _tree_.___formIndex(after: &i.rawValue)
+    __tree_.___formIndex(after: &i.rawValue)
   }
 
   /// - Complexity: O(1)
@@ -207,7 +207,7 @@ extension ___SubSequenceBase {
   @inline(__always)
   public func formIndex(before i: inout Index) {
     // 標準のArrayが単純に減算することにならい、範囲チェックをしない
-    _tree_.___formIndex(before: &i.rawValue)
+    __tree_.___formIndex(before: &i.rawValue)
   }
 
   /// - Complexity: O(*d*)
@@ -215,7 +215,7 @@ extension ___SubSequenceBase {
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-    _tree_.___formIndex(&i.rawValue, offsetBy: distance)
+    __tree_.___formIndex(&i.rawValue, offsetBy: distance)
   }
 
   /// - Complexity: O(*d*)
@@ -245,7 +245,7 @@ extension ___SubSequenceBase {
   @inline(__always)
   public var rawIndices: RawIndexSequence<Tree> {
     RawIndexSequence(
-      tree: _tree_,
+      tree: __tree_,
       start: _start,
       end: _end)
   }
@@ -259,7 +259,7 @@ extension ___SubSequenceBase {
   @inlinable @inline(__always)
   public var rawIndexedElements: RawIndexedSequence<Tree> {
     RawIndexedSequence(
-      tree: _tree_,
+      tree: __tree_,
       start: _start,
       end: _end)
   }
@@ -278,10 +278,10 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   func ___is_valid_index(index i: _NodePtr) -> Bool {
-    guard i != .nullptr, _tree_.___is_valid(i) else {
+    guard i != .nullptr, __tree_.___is_valid(i) else {
       return false
     }
-    return _tree_.___ptr_closed_range_contains(_start, _end, i)
+    return __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
 
   /// - Complexity: O(lon *n*)
@@ -305,7 +305,7 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   public __consuming func reversed() -> ReversedElementIterator<Self.Tree> {
-    .init(tree: _tree_, start: _start, end: _end)
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
@@ -315,7 +315,7 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    _tree_.makeIndices(start: _start, end: _end)
+    __tree_.makeIndices(start: _start, end: _end)
   }
 }
 
@@ -326,22 +326,22 @@ extension ___SubSequenceBase {
   mutating func ___element(at ptr: _NodePtr) -> Element? {
     guard
       !___is_null_or_end(ptr),
-      _tree_.___is_valid_index(ptr)
+      __tree_.___is_valid_index(ptr)
     else {
       return nil
     }
-    return _tree_[ptr]
+    return __tree_[ptr]
   }
 
   @inlinable
   @inline(__always)
   public __consuming func ___makeIterator() -> NodeIterator<Tree> {
-    NodeIterator(tree: _tree_, start: _start, end: _end)
+    NodeIterator(tree: __tree_, start: _start, end: _end)
   }
   
   @inlinable
   @inline(__always)
   public __consuming func ___makeIterator() -> NodeElementIterator<Tree> {
-    NodeElementIterator(tree: _tree_, start: _tree_.__begin_node, end: _tree_.__end_node())
+    NodeElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }

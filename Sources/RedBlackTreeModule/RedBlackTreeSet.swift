@@ -513,7 +513,7 @@ extension RedBlackTreeSet {
   public struct SubSequence {
 
     @usableFromInline
-    let _tree_: Tree
+    let __tree_: Tree
 
     @usableFromInline
     var _start, _end: _NodePtr
@@ -521,7 +521,7 @@ extension RedBlackTreeSet {
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      _tree_ = tree
+      __tree_ = tree
       _start = start
       _end = end
     }
@@ -533,9 +533,9 @@ extension RedBlackTreeSet.SubSequence: Equatable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs._tree_.___tree_equiv(
+    lhs.__tree_.___tree_equiv(
       start: lhs._start, end: lhs._end,
-      other: (rhs._tree_, rhs._start, rhs._end))
+      other: (rhs.__tree_, rhs._start, rhs._end))
   }
 }
 
@@ -544,9 +544,9 @@ extension RedBlackTreeSet.SubSequence: Comparable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs._tree_.___tree_compare(
+    lhs.__tree_.___tree_compare(
       start: lhs._start, end: lhs._end,
-      other: (rhs._tree_, rhs._start, rhs._end))
+      other: (rhs.__tree_, rhs._start, rhs._end))
   }
 }
 

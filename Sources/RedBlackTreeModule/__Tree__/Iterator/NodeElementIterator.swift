@@ -9,7 +9,7 @@ public
 struct NodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
-  let _tree_: Tree
+  let __tree_: Tree
 
   @usableFromInline
   var _current, _start, _next, _end: _NodePtr
@@ -17,7 +17,7 @@ struct NodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtoc
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self._tree_ = tree
+    self.__tree_ = tree
     self._current = start
     self._start = start
     self._end = end
@@ -30,14 +30,14 @@ struct NodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtoc
     guard _current != _end else { return nil }
     defer {
       _current = _next
-      _next = _next == _end ? _end : _tree_.__tree_next_iter(_next)
+      _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return (_current, _tree_[_current])
+    return (_current, __tree_[_current])
   }
   
   @inlinable
   public __consuming func reversed() -> ReversedNodeElementIterator<Tree> {
-    .init(tree: _tree_, start: _start, end: _end)
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
@@ -45,7 +45,7 @@ public
 struct ReversedNodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
-  let _tree_: Tree
+  let __tree_: Tree
 
   @usableFromInline
   var _current, _next, _start, _begin: _NodePtr
@@ -53,11 +53,11 @@ struct ReversedNodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, Iterat
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self._tree_ = tree
+    self.__tree_ = tree
     self._current = end
-    self._next = _tree_.__tree_prev_iter(end)
+    self._next = __tree_.__tree_prev_iter(end)
     self._start = start
-    self._begin = _tree_.__begin_node
+    self._begin = __tree_.__begin_node
   }
   
   @inlinable
@@ -65,7 +65,7 @@ struct ReversedNodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, Iterat
   public mutating func next() -> (_NodePtr, Tree.Element)? {
     guard _current != _start else { return nil }
     _current = _next
-    _next = _current != _begin ? _tree_.__tree_prev_iter(_current) : .nullptr
-    return (_current, _tree_[_current])
+    _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
+    return (_current, __tree_[_current])
   }
 }

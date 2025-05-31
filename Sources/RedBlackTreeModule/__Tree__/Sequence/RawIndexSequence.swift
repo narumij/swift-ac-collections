@@ -24,7 +24,7 @@ public
 struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
   
   @usableFromInline
-  let _tree_: Tree
+  let __tree_: Tree
   
   @usableFromInline
   var _start, _end: _NodePtr
@@ -41,14 +41,14 @@ struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    _tree_ = tree
+    __tree_ = tree
     _start = start
     _end = end
   }
   
   @inlinable
   public __consuming func makeIterator() -> RawIndexIterator<Tree> {
-    .init(tree: _tree_, start: _start, end: _end)
+    .init(tree: __tree_, start: _start, end: _end)
   }
   
   @inlinable
@@ -57,13 +57,13 @@ struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
     var __p = _start
     while __p != _end {
       let __c = __p
-      __p = _tree_.__tree_next_iter(__p)
+      __p = __tree_.__tree_next_iter(__p)
       try body(RawIndex(__c))
     }
   }
   
   @inlinable
   public __consuming func reversed() -> ReversedRawIndexIterator<Tree> {
-    .init(tree: _tree_, start: _start, end: _end)
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }

@@ -1043,8 +1043,8 @@ final class MultisetTests: XCTestCase {
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
     XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
-    XCTAssertEqual(Index.unsafe(tree: set._tree_, rawValue: -1).___unchecked_rawValue, -1)
-    XCTAssertEqual(Index.unsafe(tree: set._tree_, rawValue: 5).___unchecked_rawValue, 5)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).___unchecked_rawValue, -1)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).___unchecked_rawValue, 5)
 
     XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
     XCTAssertFalse(set.isValid(index: .unsafe(0)))
@@ -1056,15 +1056,15 @@ final class MultisetTests: XCTestCase {
     XCTAssertFalse(set.isValid(index: .unsafe(6)))
     XCTAssertFalse(set.isValid(index: .unsafe(7)))
 
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree_, rawValue: .nullptr)))
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 0)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 1)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 2)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 3)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 4)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 5)))
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 6)))
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 7)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 2)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 3)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 6)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
 #endif
   }
   

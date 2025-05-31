@@ -7,13 +7,13 @@ import Foundation
 var defines: [String] = [
 //  "AC_COLLECTIONS_INTERNAL_CHECKS",
 //  "TREE_INVARIANT_CHECKS",
-  "GRAPHVIZ_DEBUG",
-  "USING_ALGORITHMS",
-  "USING_COLLECTIONS",
+//  "GRAPHVIZ_DEBUG",
+//  "USING_ALGORITHMS",
+//  "USING_COLLECTIONS",
 //  "DISABLE_COPY_ON_WRITE", // やや危険。クラッシュは減った。Unit Testが通らない箇所が増える
 //  "ENABLE_PERFORMANCE_TESTING",
-  "SKIP_MULTISET_INDEX_BUG",
-  "PERFOMANCE_CHECK",
+//  "SKIP_MULTISET_INDEX_BUG",
+//  "PERFOMANCE_CHECK",
 ]
 
 var _settings: [SwiftSetting] =

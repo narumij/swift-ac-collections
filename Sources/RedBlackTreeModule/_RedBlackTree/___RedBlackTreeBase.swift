@@ -27,21 +27,20 @@ public protocol ___RedBlackTree {
   associatedtype Tree
 }
 
-// 旅のお供にストレージ
-public protocol ___RedBlackTreeWithStorage {
+public protocol ___RedBlackTree___ {
   associatedtype Tree
-  associatedtype Storage
 }
 
 @usableFromInline
 protocol ___RedBlackTreeBase:
-  ___RedBlackTreeWithStorage,
+  ___RedBlackTree___,
   ValueComparer
 where
   Tree == ___Tree<Self>,
   Storage == ___Storage<Self>
 {
   associatedtype Element
+  associatedtype Storage
   var _storage: Tree.Storage { get set }
 }
 

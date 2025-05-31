@@ -21,13 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol NodeValidationProtocol {
-  func ___is_valid(_ p: _NodePtr) -> Bool
-  func ___is_valid_index(_ i: _NodePtr) -> Bool
-}
-
-@usableFromInline
-protocol CollectionProtocol {
+protocol Tree_CollectionProtocol {
   // この実装がないと、迷子になる?
   func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int
   
@@ -35,7 +29,7 @@ protocol CollectionProtocol {
 }
 
 @usableFromInline
-protocol BidirectionalCollectionProtocol: CollectionProtocol {
+protocol Tree_BidirectionalCollectionProtocol: Tree_CollectionProtocol {
   // この実装がないと、迷子になる?
   func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int
   

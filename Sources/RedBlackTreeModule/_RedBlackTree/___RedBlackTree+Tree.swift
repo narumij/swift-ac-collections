@@ -411,8 +411,8 @@ extension ___RedBlackTree.___Tree: CompareProtocol {}
 extension ___RedBlackTree.___Tree: CompareUniqueProtocol {}
 extension ___RedBlackTree.___Tree: CompareMultiProtocol {}
 extension ___RedBlackTree.___Tree: Tree_IterateProtocol {}
-extension ___RedBlackTree.___Tree: BidirectionalCollectionProtocol {}
-extension ___RedBlackTree.___Tree: ___ForEachProtocol {}
+extension ___RedBlackTree.___Tree: Tree_BidirectionalCollectionProtocol {}
+extension ___RedBlackTree.___Tree: Tree_ForEachProtocol {}
 
 extension ___RedBlackTree.___Tree {
   @inlinable
@@ -559,7 +559,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree: NodeValidationProtocol {
+extension ___RedBlackTree.___Tree: Tree_NodeValidationProtocol {
 
   @inlinable @inline(__always)
   internal func ___contains(_ p: _NodePtr) -> Bool {
@@ -749,21 +749,21 @@ extension ___RedBlackTree.___Tree: Sequence {
 
 // MARK: -
 
-extension ___RedBlackTree.___Tree: ___IndexProtocol {
+extension ___RedBlackTree.___Tree: Tree_IndexProtocol {
   @inlinable @inline(__always)
   public func makeIndex(rawValue: _NodePtr) -> ___Iterator {
     .init(__tree: self, rawValue: rawValue)
   }
 }
 
-extension ___RedBlackTree.___Tree: ___IndicesProtocol {
+extension ___RedBlackTree.___Tree: Tree_IndicesProtocol {
   @inlinable @inline(__always)
   public func makeIndices(start: _NodePtr, end: _NodePtr) -> ___IteratorSequence {
     .init(tree: self, start: start, end: end)
   }
 }
 
-extension ___RedBlackTree.___Tree: ___RawIndexProtocol {
+extension ___RedBlackTree.___Tree: Tree_RawIndexProtocol {
   @inlinable @inline(__always)
   public func makeRawIndex(rawValue: _NodePtr) -> RawIndex {
     .init(rawValue)

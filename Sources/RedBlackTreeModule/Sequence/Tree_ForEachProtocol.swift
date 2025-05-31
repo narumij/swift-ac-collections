@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___ForEachProtocol {
+protocol Tree_ForEachProtocol {
   
   associatedtype Element
   

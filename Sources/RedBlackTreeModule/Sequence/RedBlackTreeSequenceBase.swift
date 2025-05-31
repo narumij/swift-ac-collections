@@ -21,7 +21,5 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public protocol RedBlackTreeSequenceBase {
-  associatedtype Tree: Tree_IterateProtocol & ___RawIndexProtocol
+  associatedtype Tree: Tree_IterateProtocol & Tree_RawIndexProtocol
 }
-
-extension ___RedBlackTree.___Tree: RedBlackTreeSequenceBase { }

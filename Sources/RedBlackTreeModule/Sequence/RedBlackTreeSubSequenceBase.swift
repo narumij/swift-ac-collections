@@ -22,7 +22,7 @@
 
 @usableFromInline
 protocol RedBlackTreeSubSequenceBase: RedBlackTreeSequenceBase
-where Tree: BidirectionalCollectionProtocol & ___ForEachProtocol & ___IndicesProtocol & EndNodeProtocol & CompareProtocol & NodeValidationProtocol, Index.Tree == Tree
+where Tree: Tree_BidirectionalCollectionProtocol & Tree_ForEachProtocol & Tree_IndicesProtocol & Tree_NodeValidationProtocol & EndNodeProtocol & CompareProtocol, Index.Tree == Tree
 {
   associatedtype Index: RedBlackTreeIndex
 }

@@ -21,12 +21,14 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol RedBlackTreeSequence: RedBlackTreeSequenceBase, Sequence & Collection & BidirectionalCollection
+protocol RedBlackTreeSequence: RedBlackTreeSequenceBase,
+  Sequence & Collection & BidirectionalCollection
 where
-  Tree: BeginNodeProtocol & EndNodeProtocol & ___ForEachProtocol & DistanceProtocol & BidirectionalCollectionProtocol & ___IndicesProtocol & NodeValidationProtocol,
+  Tree: Tree_ForEachProtocol & Tree_BidirectionalCollectionProtocol & Tree_IndicesProtocol
+    & Tree_NodeValidationProtocol & BeginNodeProtocol & EndNodeProtocol & DistanceProtocol,
   Element == Tree.Element,
   Index: RedBlackTreeIndex,
-Index.Tree == Tree
+  Index.Tree == Tree
 {
   associatedtype Tree
   associatedtype Index
@@ -44,7 +46,7 @@ extension RedBlackTreeSequence {
 }
 
 extension RedBlackTreeSequence {
-  
+
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
@@ -59,7 +61,7 @@ extension RedBlackTreeSequence {
   func ___index(_ rawValue: _NodePtr) -> Index {
     .init(__tree: _tree, rawValue: rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   func ___index_or_nil(_ p: _NodePtr?) -> Index? {
@@ -68,7 +70,7 @@ extension RedBlackTreeSequence {
 }
 
 extension RedBlackTreeSequence {
-  
+
   /// - Complexity: O(*n*)
   @inlinable
   public func sorted() -> [Element] {
@@ -179,7 +181,7 @@ extension RedBlackTreeSequence {
 }
 
 extension RedBlackTreeSequence {
-  
+
   @inlinable
   @inline(__always)
   public __consuming func reversed() -> ReversedElementIterator<Self.Tree> {
@@ -188,7 +190,7 @@ extension RedBlackTreeSequence {
 }
 
 extension RedBlackTreeSequence {
-  
+
   @inlinable
   @inline(__always)
   public var indices: Tree.Indices {

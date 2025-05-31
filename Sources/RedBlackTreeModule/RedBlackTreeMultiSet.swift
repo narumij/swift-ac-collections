@@ -22,7 +22,7 @@
 
 import Foundation
 
-/// `RedBlackTreeMultiSet` は、`Element` 型の要素を複数格納するための
+/// `RedBlackTreeMultiSet` は、`Element` 型の要素を格納するための
 /// 赤黒木（Red-Black Tree）ベースのマルチセット型です。
 ///
 /// ### 使用例

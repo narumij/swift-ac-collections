@@ -20,8 +20,30 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+
 import Foundation
 
+/// `RedBlackTreeMultiMap` は、`Key` 型のキーと `Value` 型の値のペアを格納するための
+/// 赤黒木（Red-Black Tree）ベースのマルチマップ型です。
+///
+/// ### 使用例
+/// ```swift
+/// /// `RedBlackTreeMultiMap` を使用する例
+/// var multimap = RedBlackTreeMultiMap<String, Int>()
+/// multimap.insert(key: "apple", value: 5)
+/// multimap.insert(key: "banana", value: 3)
+/// multimap.insert(key: "cherry", value: 7)
+///
+/// // キーを使用して値にアクセス
+/// let values = multimap.values(forKey: "banana")
+///
+/// values.forEach { value in
+///   print("banana の値は \(value) です。") // 出力例: banana の値は 3 です。
+/// }
+///
+/// // キーと値のペアを一つ削除
+/// multimap.removeFirst(forKey: "apple")
+/// ```
 @frozen
 public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 

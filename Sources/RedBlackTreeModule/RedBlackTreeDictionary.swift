@@ -22,16 +22,16 @@
 
 import Foundation
 
-/// `RedBlackTreeDictionary` は、`Key` 型のキーと `Value` 型の値のペアを一意に格納するための
+/// `RedBlackTreeDictionary` は、`Key` 型のキーと `Value` 型の値のペアをキーに対して一意に格納するための
 /// 赤黒木（Red-Black Tree）ベースの辞書型です。
 ///
 /// ### 使用例
 /// ```swift
 /// /// `RedBlackTreeDictionary` を使用する例
 /// var dictionary = RedBlackTreeDictionary<String, Int>()
-/// dictionary.insert(key: "apple", value: 5)
-/// dictionary.insert(key: "banana", value: 3)
-/// dictionary.insert(key: "cherry", value: 7)
+/// dictionary["apple"] = 5
+/// dictionary["banana"] = 3
+/// dictionary["cherry"] = 7
 ///
 /// // キーを使用して値にアクセス
 /// if let value = dictionary.value(forKey: "banana") {

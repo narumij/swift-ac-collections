@@ -27,7 +27,7 @@ struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
   public typealias Element = Tree.Element
 
   @usableFromInline
-  let _tree: Tree
+  let _tree_: Tree
 
   @usableFromInline
   var _current, _next, _end: _NodePtr
@@ -35,7 +35,7 @@ struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self._tree = tree
+    self._tree_ = tree
     self._current = start
     self._end = end
     self._next = start == .end ? .end : tree.__tree_next_iter(start)
@@ -49,9 +49,9 @@ struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
     guard _current != _end else { return nil }
     defer {
       _current = _next
-      _next = _next == _end ? _end : _tree.__tree_next_iter(_next)
+      _next = _next == _end ? _end : _tree_.__tree_next_iter(_next)
     }
-    return _tree[_current]
+    return _tree_[_current]
   }
 }
 

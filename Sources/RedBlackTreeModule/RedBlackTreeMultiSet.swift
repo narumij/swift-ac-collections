@@ -136,7 +136,7 @@ extension RedBlackTreeMultiSet {
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
-    _ = _tree.__insert_multi(newMember)
+    _ = _tree_.__insert_multi(newMember)
     return (true, newMember)
   }
 }
@@ -148,7 +148,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    _tree.__node_handle_merge_multi(other._tree)
+    _tree_.__node_handle_merge_multi(other._tree_)
   }
 
   /// - Complexity: O(*k* log *k*)
@@ -156,7 +156,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    _tree.__node_handle_merge_multi(other._tree)
+    _tree_.__node_handle_merge_multi(other._tree_)
   }
 
   /// - Complexity: O(*k* log *k*)
@@ -188,7 +188,7 @@ extension RedBlackTreeMultiSet {
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     _strongEnsureUnique()
-    return _tree.___erase_unique(member) ? member : nil
+    return _tree_.___erase_unique(member) ? member : nil
   }
 
   /// - Important: 削除後は、インデックスが無効になります。
@@ -251,7 +251,7 @@ extension RedBlackTreeMultiSet {
   @discardableResult
   public mutating func removeAll(_ member: Element) -> Element? {
     _strongEnsureUnique()
-    return _tree.___erase_multi(member) != 0 ? member : nil
+    return _tree_.___erase_multi(member) != 0 ? member : nil
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -260,7 +260,7 @@ extension RedBlackTreeMultiSet {
   @discardableResult
   public mutating func removeAll(_unsafe member: Element) -> Element? {
     _ensureUnique()
-    return _tree.___erase_multi(member) != 0 ? member : nil
+    return _tree_.___erase_multi(member) != 0 ? member : nil
   }
 
   /// - Complexity: O(1)
@@ -406,7 +406,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   public func count(of element: Element) -> Int {
-    _tree.__count_multi(element)
+    _tree_.__count_multi(element)
   }
 }
 
@@ -425,7 +425,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(1)
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-    .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+    .init(tree: _tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }
 }
 
@@ -459,14 +459,14 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(log *n*)
   @inlinable
   public func elements(in range: Range<Element>) -> SubSequence {
-    .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_lower_bound(range.upperBound))
+    .init(tree: _tree_, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_lower_bound(range.upperBound))
   }
 
   /// 値レンジ `[lower, upper]` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
   @inlinable
   public func elements(in range: ClosedRange<Element>) -> SubSequence {
-    .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_upper_bound(range.upperBound))
+    .init(tree: _tree_, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_upper_bound(range.upperBound))
   }
 }
 
@@ -478,7 +478,7 @@ extension RedBlackTreeMultiSet {
   public struct SubSequence {
 
     @usableFromInline
-    let _tree: Tree
+    let _tree_: Tree
 
     @usableFromInline
     var _start, _end: _NodePtr
@@ -486,7 +486,7 @@ extension RedBlackTreeMultiSet {
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      _tree = tree
+      _tree_ = tree
       _start = start
       _end = end
     }
@@ -523,7 +523,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @inline(__always)
   public var rawIndices: RawIndexSequence<Tree> {
-    RawIndexSequence(tree: _tree)
+    RawIndexSequence(tree: _tree_)
   }
 }
 
@@ -534,7 +534,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(1)
   @inlinable @inline(__always)
   public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(tree: _tree)
+    RawIndexedSequence(tree: _tree_)
   }
 }
 

@@ -79,30 +79,30 @@ extension _MemoizeCacheCoW {
   public subscript(key: Key) -> Value? {
     @inline(__always)
     mutating get {
-      let __ptr = _tree.find(key)
+      let __ptr = _tree_.find(key)
       if ___is_null_or_end(__ptr) {
         _miss &+= 1
         return nil
       }
       _hits &+= 1
       ___prepend(___pop(__ptr))
-      return _tree[__ptr].value
+      return _tree_[__ptr].value
     }
     @inline(__always)
     set {
       if let newValue {
-        if _tree.count < maxCount {
+        if _tree_.count < maxCount {
           // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
           _ensureUniqueAndCapacity(limit: maxCount)
         }
-        if _tree.count == maxCount {
+        if _tree_.count == maxCount {
           ___remove(at: ___popRankLowest())
         }
         var __parent = _NodePtr.nullptr
-        let __child = _tree.__find_equal(&__parent, key)
-        if _tree.__ptr_(__child) == .nullptr {
-          let __h = _tree.__construct_node((key, .nullptr, .nullptr, newValue))
-          _tree.__insert_node_at(__parent, __child, __h)
+        let __child = _tree_.__find_equal(&__parent, key)
+        if _tree_.__ptr_(__child) == .nullptr {
+          let __h = _tree_.__construct_node((key, .nullptr, .nullptr, newValue))
+          _tree_.__insert_node_at(__parent, __child, __h)
           ___prepend(__h)
         }
       }

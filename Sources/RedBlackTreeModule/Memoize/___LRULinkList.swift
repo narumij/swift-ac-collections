@@ -39,7 +39,7 @@ extension KeyValueComparer where Element == _LinkingKeyValueTuple {
 protocol ___LRULinkList: ___RedBlackTreeBase, KeyValueComparer
 where Element == _LinkingKeyValueTuple {
   associatedtype Value
-  var _tree: Tree { get }
+  var _tree_: Tree { get }
   var _rankHighest: _NodePtr { get set }
   var _rankLowest: _NodePtr { get set }
   var _hits: Int { get set }
@@ -53,14 +53,14 @@ extension ___LRULinkList {
   @inlinable
   mutating func ___prepend(_ __p: _NodePtr) {
     if _rankHighest == .nullptr {
-      _tree[__p].next = .nullptr
-      _tree[__p].prev = .nullptr
+      _tree_[__p].next = .nullptr
+      _tree_[__p].prev = .nullptr
       _rankLowest = __p
       _rankHighest = __p
     } else {
-      _tree[_rankHighest].prev = __p
-      _tree[__p].next = _rankHighest
-      _tree[__p].prev = .nullptr
+      _tree_[_rankHighest].prev = __p
+      _tree_[__p].next = _rankHighest
+      _tree_[__p].prev = .nullptr
       _rankHighest = __p
     }
   }
@@ -69,19 +69,19 @@ extension ___LRULinkList {
   mutating func ___pop(_ __p: _NodePtr) -> _NodePtr {
 
     assert(
-      __p == _rankHighest || _tree[__p].next != .nullptr || _tree[__p].prev != .nullptr,
+      __p == _rankHighest || _tree_[__p].next != .nullptr || _tree_[__p].prev != .nullptr,
       "did not contain \(__p) ptr.")
 
     defer {
-      let prev = _tree[__p].prev
-      let next = _tree[__p].next
+      let prev = _tree_[__p].prev
+      let next = _tree_[__p].next
       if prev != .nullptr {
-        _tree[prev].next = next
+        _tree_[prev].next = next
       } else {
         _rankHighest = next
       }
       if next != .nullptr {
-        _tree[next].prev = prev
+        _tree_[next].prev = prev
       } else {
         _rankLowest = prev
       }
@@ -95,10 +95,10 @@ extension ___LRULinkList {
 
     defer {
       if _rankLowest != .nullptr {
-        _rankLowest = _tree[_rankLowest].prev
+        _rankLowest = _tree_[_rankLowest].prev
       }
       if _rankLowest != .nullptr {
-        _tree[_rankLowest].next = .nullptr
+        _tree_[_rankLowest].next = .nullptr
       } else {
         _rankHighest = .nullptr
       }

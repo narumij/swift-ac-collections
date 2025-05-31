@@ -73,11 +73,11 @@ extension RedBlackTreeSet: SetAlgebra {
         return
       }
       defer { __result.___next() }
-      if _tree.___comp(__first2.___pointee, __first1.___pointee) {
+      if _tree_.___comp(__first2.___pointee, __first1.___pointee) {
         __result.pointee = __first2.___pointee
         __first2.___next()
       } else {
-        if !_tree.___comp(__first1.___pointee, __first2.___pointee) {
+        if !_tree_.___comp(__first1.___pointee, __first2.___pointee) {
           __first2.___next()
         }
         __result.pointee = __first1.___pointee
@@ -97,10 +97,10 @@ extension RedBlackTreeSet: SetAlgebra {
     var (__first1, __last1) = (___iter_start(), ___iter_end())
     var (__first2, __last2) = (other.___iter_start(), other.___iter_end())
     while __first1 != __last1, __first2 != __last2 {
-      if _tree.___comp(__first1.___pointee, __first2.___pointee) {
+      if _tree_.___comp(__first1.___pointee, __first2.___pointee) {
         __first1.___next()
       } else {
-        if !_tree.___comp(__first2.___pointee, __first1.___pointee) {
+        if !_tree_.___comp(__first2.___pointee, __first1.___pointee) {
           __result.pointee = __first1.___pointee
           __result.___next()
           __first1.___next()

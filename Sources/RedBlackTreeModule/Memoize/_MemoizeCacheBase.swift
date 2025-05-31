@@ -92,7 +92,7 @@ extension _MemoizeCacheBase {
     set {
       if let newValue {
         _ensureCapacity()
-        _ = _tree.__insert_unique((key, newValue))
+        _ = _tree_.__insert_unique((key, newValue))
       }
     }
   }

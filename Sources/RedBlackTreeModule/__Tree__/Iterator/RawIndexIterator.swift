@@ -24,7 +24,7 @@ public
 struct RawIndexIterator<Tree: Tree_IterateProtocol>: IteratorProtocol {
 
   @usableFromInline
-  let _tree: Tree
+  let _tree_: Tree
 
   @usableFromInline
   var _current, _next, _end: _NodePtr
@@ -32,7 +32,7 @@ struct RawIndexIterator<Tree: Tree_IterateProtocol>: IteratorProtocol {
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self._tree = tree
+    self._tree_ = tree
     self._current = start
     self._end = end
     self._next = start == .end ? .end : tree.__tree_next_iter(start)
@@ -44,7 +44,7 @@ struct RawIndexIterator<Tree: Tree_IterateProtocol>: IteratorProtocol {
     guard _current != _end else { return nil }
     defer {
       _current = _next
-      _next = _next == _end ? _end : _tree.__tree_next_iter(_next)
+      _next = _next == _end ? _end : _tree_.__tree_next_iter(_next)
     }
     return .init(_current)
   }

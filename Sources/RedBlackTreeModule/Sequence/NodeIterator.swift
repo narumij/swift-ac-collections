@@ -56,10 +56,10 @@ struct ReversedNodeIterator<Tree: ___IterateNextProtocol>: Sequence, IteratorPro
   
   @inlinable
   @inline(__always)
-  public mutating func next() -> (rawIndex: RawIndex, element: Tree.Element)? {
+  public mutating func next() -> _NodePtr? {
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? _tree.__tree_prev_iter(_current) : .nullptr
-    return (RawIndex(_current), _tree[_current])
+    return _current
   }
 }

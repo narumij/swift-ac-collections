@@ -41,6 +41,7 @@ where
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable
   public func makeIterator() -> ElementIterator<Tree> {
     .init(tree: _tree, start: _start, end: _end)
@@ -58,6 +59,7 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(log *n* + *k*)
   @inlinable @inline(__always)
   public var count: Int {
     _tree.___distance(from: _start, to: _end)
@@ -66,10 +68,12 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   public var startIndex: Index {
     index(rawValue: _start)
   }
 
+  /// - Complexity: O(1)
   public var endIndex: Index {
     index(rawValue: _end)
   }
@@ -134,6 +138,7 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
@@ -151,7 +156,7 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
-  // この実装がないと、迷子になる?
+  /// - Complexity: O(log *n* + *k*)
   @inlinable @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     _tree.___distance(from: start.rawValue, to: end.rawValue)
@@ -160,18 +165,21 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable @inline(__always)
   public func index(before i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
     index(rawValue: _tree.___index(before: i.rawValue))
   }
 
+  /// - Complexity: O(1)
   @inlinable @inline(__always)
   public func index(after i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
     index(rawValue: _tree.___index(after: i.rawValue))
   }
 
+  /// - Complexity: O(*d*)
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
@@ -183,6 +191,7 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
@@ -190,6 +199,7 @@ extension ___SubSequenceBase {
     _tree.___formIndex(after: &i.rawValue)
   }
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
@@ -197,6 +207,7 @@ extension ___SubSequenceBase {
     _tree.___formIndex(before: &i.rawValue)
   }
 
+  /// - Complexity: O(*d*)
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
@@ -204,6 +215,7 @@ extension ___SubSequenceBase {
     _tree.___formIndex(&i.rawValue, offsetBy: distance)
   }
 
+  /// - Complexity: O(*d*)
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
@@ -224,6 +236,8 @@ extension ___SubSequenceBase {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
+  ///
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var rawIndices: RawIndexSequence<Tree> {
@@ -238,6 +252,7 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable @inline(__always)
   public var rawIndexedElements: RawIndexedSequence<Tree> {
     RawIndexedSequence(
@@ -266,12 +281,14 @@ extension ___SubSequenceBase {
     return _tree.___ptr_closed_range_contains(_start, _end, i)
   }
 
+  /// - Complexity: O(lon *n*)
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
     ___is_valid_index(index: i.___unchecked_rawValue)
   }
 
+  /// - Complexity: O(lon *n*)
   @inlinable
   @inline(__always)
   public func isValid(index i: RawIndex) -> Bool {
@@ -281,6 +298,7 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public __consuming func reversed() -> ReversedElementIterator<Self.Tree> {
@@ -290,6 +308,7 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var indices: Indices {

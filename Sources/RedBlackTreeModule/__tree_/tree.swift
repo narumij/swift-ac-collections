@@ -274,8 +274,10 @@ public protocol KeyValueComparer: ValueComparer {
   static func __key(_ element: Element) -> _Key
 }
 
+public typealias _KeyValueTuple_<_Key,_Value> = (key: _Key, value: _Value)
+
 extension KeyValueComparer {
-  public typealias _KeyValueTuple = (key: _Key, value: _Value)
+  public typealias _KeyValueTuple = _KeyValueTuple_<_Key,_Value>
 }
 
 extension KeyValueComparer where Element == _KeyValueTuple {

@@ -56,10 +56,10 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Element = KeyValue
 
   public
-    typealias Keys = [Key]
+    typealias Keys = KeyIterator<Tree,Key,Value>
 
   public
-    typealias Values = [Value]
+    typealias Values = ValueIterator<Tree,Key,Value>
 
   public
     typealias _Key = Key
@@ -536,14 +536,14 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(*n*)
-  public var keys: Keys {
-    map(\.key)
+  /// - Complexity: O(1)
+  public var keys: KeyIterator<Tree,Key,Value> {
+    .init(tree: _tree_, start: _tree_.__begin_node, end: _tree_.__end_node())
   }
 
-  /// - Complexity: O(*n*)
-  public var values: Values {
-    map(\.value)
+  /// - Complexity: O(1)
+  public var values: ValueIterator<Tree,Key,Value> {
+    .init(tree: _tree_, start: _tree_.__begin_node, end: _tree_.__end_node())
   }
 }
 

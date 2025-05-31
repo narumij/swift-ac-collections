@@ -21,8 +21,8 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct KeyIterator<Tree: Tree_IterateProtocol,Key,V>: Sequence, IteratorProtocol
-where Tree.Element == _KeyValueTuple_<Key,V>
+struct ValueIterator<Tree: Tree_IterateProtocol,K,Value>: Sequence, IteratorProtocol
+where Tree.Element == _KeyValueTuple_<K,Value>
 {
 
   @usableFromInline
@@ -43,24 +43,24 @@ where Tree.Element == _KeyValueTuple_<Key,V>
   
   @inlinable
   @inline(__always)
-  public mutating func next() -> Key? {
+  public mutating func next() -> Value? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
       _next = _next == _end ? _end : _tree_.__tree_next_iter(_next)
     }
-    return _tree_[_current].key
+    return _tree_[_current].value
   }
   
   @inlinable
-  public __consuming func reversed() -> ReversedKeyIterator<Tree,Key,V> {
+  public __consuming func reversed() -> ReversedValueIterator<Tree,K,Value> {
     .init(tree: _tree_, start: _start, end: _end)
   }
 }
 
 public
-struct ReversedKeyIterator<Tree: Tree_IterateProtocol,Key,V>: Sequence, IteratorProtocol
-where Tree.Element == _KeyValueTuple_<Key,V>
+struct ReversedValueIterator<Tree: Tree_IterateProtocol,K,Value>: Sequence, IteratorProtocol
+where Tree.Element == _KeyValueTuple_<K,Value>
 {
 
   @usableFromInline
@@ -81,10 +81,10 @@ where Tree.Element == _KeyValueTuple_<Key,V>
   
   @inlinable
   @inline(__always)
-  public mutating func next() -> Key? {
+  public mutating func next() -> Value? {
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? _tree_.__tree_prev_iter(_current) : .nullptr
-    return _tree_[_current].key
+    return _tree_[_current].value
   }
 }

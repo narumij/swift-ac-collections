@@ -769,3 +769,83 @@ extension ___Tree: Tree_RawIndexProtocol {
     .init(rawValue)
   }
 }
+
+extension ___Tree {
+  
+  @inlinable
+  public func ___equiv(_ lhs: Element,_ rhs: Element) -> Bool {
+    !value_comp(__key(lhs), __key(rhs)) &&
+    !value_comp(__key(rhs), __key(lhs))
+  }
+
+  @inlinable
+  public func ___tree_equiv(start: _NodePtr, end: _NodePtr, other: (tree: Tree, start: _NodePtr, end: _NodePtr)) -> Bool {
+    var (l, r) = (start, other.start)
+    if l == end { return r == other.end }
+    while r != other.end,
+          ___equiv(other.tree[r], self[l])
+    {
+      r = other.tree.__tree_next_iter(r)
+      l = __tree_next_iter(l)
+      if l == end {
+        return r == other.end
+      }
+    }
+    return false
+  }
+  
+  @inlinable
+  func ___tree_equiv(_ other: Tree) -> Bool {
+    ___tree_equiv(start: __begin_node, end: __end_node(),
+                  other: (other, other.__begin_node, other.__end_node()))
+  }
+
+  @inlinable
+  func ___tree_equiv_key_value<Key,Value>(start: _NodePtr, end: _NodePtr, other: (tree: Tree, start: _NodePtr, end: _NodePtr)) -> Bool
+  where Element == _KeyValueTuple_<Key,Value>, Value: Equatable
+  {
+    var (l, r) = (start, other.start)
+    if l == end { return r == other.end }
+    while r != other.end,
+          ___equiv(other.tree[r], self[l]),
+          other.tree[r].value == self[l].value
+    {
+      r = other.tree.__tree_next_iter(r)
+      l = __tree_next_iter(l)
+      if l == end {
+        return r == other.end
+      }
+    }
+    return false
+  }
+
+  @inlinable
+  func ___tree_equiv_key_value<Key,Value>(_ other: Tree) -> Bool
+  where Element == _KeyValueTuple_<Key,Value>, Value: Equatable
+  {
+    ___tree_equiv_key_value(start: __begin_node, end: __end_node(),
+                            other: (other, other.__begin_node, other.__end_node()))
+  }
+  
+  @inlinable
+  func ___tree_equiv<Other>(start: _NodePtr, end: _NodePtr, other r: Other) -> Bool
+  where Other: Sequence, Other.Element == VC.Element
+  {
+    var l = start
+    var r = r.makeIterator()
+    if l == end { return r.next() == nil }
+    while let rv = r.next(), ___equiv(self[l], rv)
+    {
+      l = __tree_next_iter(l)
+      if l == end { return r.next() == nil }
+    }
+    return false
+  }
+
+  @inlinable
+  func ___tree_equiv<Other>(with r: Other) -> Bool
+  where Other: Sequence, Other.Element == VC.Element
+  {
+    ___tree_equiv(start: __begin_node, end: __end_node(), other: r)
+  }
+}

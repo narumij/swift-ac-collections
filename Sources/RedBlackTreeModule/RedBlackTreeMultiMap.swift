@@ -80,6 +80,7 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSequence { }
+extension RedBlackTreeMultiMap: ___RedBlackTreeSubSequence { }
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 
 // MARK: - Initialization（初期化）
@@ -551,14 +552,9 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
-  public func values(forKey key: Key) -> [Value] {
-    var (lo, hi) = _tree_.__equal_range_multi(key)
-    var result = [Value]()
-    while lo != hi {
-      result.append(_tree_.___element(lo).value)
-      lo = _tree_.__tree_next(lo)
-    }
-    return result
+  public func values(forKey key: Key) -> ValueIterator<Tree,Key,Value> {
+    let (lo, hi) = _tree_.__equal_range_multi(key)
+    return .init(tree: _tree_, start: lo, end: hi)
   }
 }
 
@@ -654,7 +650,15 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-extension RedBlackTreeMultiMap: ___RedBlackTreeSubSequence { }
+extension RedBlackTreeMultiMap.SubSequence: Equatable where Value: Equatable {
+  
+  /// - Complexity: O(*n*)
+  @inlinable
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs._tree_.___tree_equiv_key_value(start: lhs._start, end: lhs._end,
+                             other: (rhs._tree_, rhs._start, rhs._end))
+  }
+}
 
 extension RedBlackTreeMultiMap.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeMultiMap
@@ -747,9 +751,9 @@ extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
 
 extension RedBlackTreeMultiMap: Equatable where Value: Equatable {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.___equal_with(rhs)
+    lhs._tree_.___tree_equiv_key_value(rhs._tree_)
   }
 }

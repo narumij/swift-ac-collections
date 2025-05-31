@@ -26,6 +26,9 @@ public protocol Tree_IterateProtocol {
   func __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
   func __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   subscript(_ pointer: _NodePtr) -> Element { get }
+  
+  func ___tree_equiv(start: _NodePtr, end: _NodePtr,
+                     other: (tree: Self, start: _NodePtr, end: _NodePtr)) -> Bool
 }
 
 @usableFromInline

@@ -78,6 +78,7 @@ extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSequence { }
+extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence { }
 extension RedBlackTreeDictionary: KeyValueComparer {}
 
 // MARK: - Initialization（初期化）
@@ -721,7 +722,15 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence { }
+extension RedBlackTreeDictionary.SubSequence: Equatable where Value: Equatable {
+  
+  /// - Complexity: O(*n*)
+  @inlinable
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs._tree_.___tree_equiv_key_value(start: lhs._start, end: lhs._end,
+                             other: (rhs._tree_, rhs._start, rhs._end))
+  }
+}
 
 extension RedBlackTreeDictionary.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeDictionary
@@ -826,6 +835,6 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.___equal_with(rhs)
+    lhs._tree_.___tree_equiv_key_value(rhs._tree_)
   }
 }

@@ -56,6 +56,7 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeSequence { }
+extension RedBlackTreeMultiSet: ___RedBlackTreeSubSequence { }
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 
 // MARK: - Initialization（初期化）
@@ -493,7 +494,15 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-extension RedBlackTreeMultiSet: ___RedBlackTreeSubSequence { }
+extension RedBlackTreeMultiSet.SubSequence: Equatable {
+  
+  /// - Complexity: O(*n*)
+  @inlinable
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs._tree_.___tree_equiv(start: lhs._start, end: lhs._end,
+                             other: (rhs._tree_, rhs._start, rhs._end))
+  }
+}
 
 extension RedBlackTreeMultiSet.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeMultiSet
@@ -584,10 +593,10 @@ extension RedBlackTreeMultiSet: CustomDebugStringConvertible {
 // MARK: - Equatable
 
 extension RedBlackTreeMultiSet: Equatable {
-
+  
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.___equal_with(rhs)
+    lhs._tree_.___tree_equiv(rhs._tree_)
   }
 }

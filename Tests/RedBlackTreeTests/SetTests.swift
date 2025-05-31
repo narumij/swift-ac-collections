@@ -858,8 +858,8 @@ final class SetTests: XCTestCase {
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
     XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
-    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: -1).___unchecked_rawValue, -1)
-    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: 5).___unchecked_rawValue, 5)
+    XCTAssertEqual(Index.unsafe(tree: set._tree_, rawValue: -1).___unchecked_rawValue, -1)
+    XCTAssertEqual(Index.unsafe(tree: set._tree_, rawValue: 5).___unchecked_rawValue, 5)
 
     XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
     XCTAssertTrue(set.isValid(index: .unsafe(0)))
@@ -869,13 +869,13 @@ final class SetTests: XCTestCase {
     XCTAssertTrue(set.isValid(index: .unsafe(4)))
     XCTAssertFalse(set.isValid(index: .unsafe(5)))
 
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: .nullptr)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 0)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 1)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 2)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 3)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 4)))
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: 5)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree_, rawValue: .nullptr)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 0)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 1)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 2)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 3)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 4)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 5)))
 #endif
   }
   
@@ -921,6 +921,119 @@ final class SetTests: XCTestCase {
     do {
       var d: RedBlackTreeSet<Int> = [1]
       XCTAssertEqual(d.popFirst(), 1)
+    }
+  }
+  
+  func testEqual1() throws {
+    do {
+      let a = RedBlackTreeSet<Int>()
+      let b = RedBlackTreeSet<Int>()
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>()
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0])
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0,1])
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0,1])
+      let b = RedBlackTreeSet<Int>([0,1])
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+  }
+  
+  func testEqual2() throws {
+    let aa = RedBlackTreeSet<Int>([0,1,2,3,4,5])
+    let bb = RedBlackTreeSet<Int>([3,4,5,6,7,8])
+    do {
+      let a = aa[0 ..< 0]
+      let b = bb[3 ..< 3]
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+    do {
+      let a = aa[3 ..< 6]
+      let b = bb[3 ..< 6]
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+    do {
+      let a = aa[2 ..< 6]
+      let b = bb[3 ..< 6]
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+    do {
+      let a = aa[3 ..< 6]
+      let b = bb[3 ..< 7]
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+  }
+  
+  func testSeqEqual() throws {
+    do {
+      let a = [Int]()
+      let b = RedBlackTreeSet<Int>()
+      XCTAssertTrue(a == b)
+      XCTAssertTrue(b == a)
+      XCTAssertFalse(a != b)
+      XCTAssertFalse(b != a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>()
+      let b = [0]
+      XCTAssertFalse(a == b)
+      XCTAssertFalse(b == a)
+      XCTAssertTrue(a != b)
+      XCTAssertTrue(b != a)
+    }
+    do {
+      let a = [0]
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertTrue(a == b)
+      XCTAssertTrue(b == a)
+      XCTAssertFalse(a != b)
+      XCTAssertFalse(b != a)
+    }
+    do {
+      let a = [0,1]
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertFalse(a == b)
+      XCTAssertFalse(b == a)
+      XCTAssertTrue(a != b)
+      XCTAssertTrue(b != a)
+    }
+    do {
+      let a = [0]
+      let b = RedBlackTreeSet<Int>([0,1])
+      XCTAssertFalse(a == b)
+      XCTAssertFalse(b == a)
+      XCTAssertTrue(a != b)
+      XCTAssertTrue(b != a)
+    }
+    do {
+      let a = [0,1]
+      let b = RedBlackTreeSet<Int>([0,1])
+      XCTAssertTrue(a == b)
+      XCTAssertTrue(b == a)
+      XCTAssertFalse(a != b)
+      XCTAssertFalse(b != a)
     }
   }
 }

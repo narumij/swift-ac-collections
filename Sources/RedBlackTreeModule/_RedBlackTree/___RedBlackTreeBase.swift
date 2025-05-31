@@ -290,22 +290,6 @@ extension ___RedBlackTreeBase {
   }
 }
 
-// MARK: - Equatable
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  func ___equal_with(_ rhs: Self) -> Bool where Self: Sequence, Element: Equatable {
-    _tree_ === rhs._tree_ || (___count == rhs.___count && zip(_tree_, rhs._tree_).allSatisfy(==))
-  }
-
-  @inlinable
-  func ___equal_with<K, V>(_ rhs: Self) -> Bool
-  where Self: Sequence, K: Equatable, V: Equatable, Element == (key: K, value: V) {
-    _tree_ === rhs._tree_ || (___count == rhs.___count && zip(_tree_, rhs._tree_).allSatisfy(==))
-  }
-}
-
 // MARK: - Etc
 
 extension ___RedBlackTreeBase {
@@ -355,6 +339,7 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
 
+  /// releaseビルドでは無効化されています
   @inlinable
   public func ___tree_invariant() -> Bool {
     _tree_.__tree_invariant(_tree_.__root())
@@ -393,7 +378,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___std_erase(_ ptr: RawIndex) -> RawIndex {
-    _tree_.makeRawIndex(rawValue: _tree_.erase(ptr.rawValue))
+    ___raw(_tree_.erase(ptr.rawValue))
   }
 
   // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの
@@ -401,8 +386,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___std_erase(_ ptr: Index) -> Index {
-    //    Tree.___Iterator(__tree: _tree, rawValue: _tree.erase(ptr.rawValue))
-    _tree_.makeIndex(rawValue: _tree_.erase(ptr.rawValue))
+    ___iter(_tree_.erase(ptr.rawValue))
   }
 }
 
@@ -421,19 +405,29 @@ extension ___RedBlackTreeBase {
   }
 }
 
-//extension ___RedBlackTreeBase {
-//  
-//  func ___convert(_ rawIndex: RawIndex) -> Index {
-//    _tree_.makeIndex(rawValue: rawIndex.rawValue)
-//  }
-//  
-//  func ___convert(_ rawIndex: Index) -> RawIndex {
-//    _tree_.makeRawIndex(rawValue: rawIndex.rawValue)
-//  }
-//}
+extension ___RedBlackTreeBase {
+  
+  @inlinable
+  @inline(__always)
+  public func ___convert(_ rawIndex: RawIndex) -> Index {
+    _tree_.makeIndex(rawValue: rawIndex.rawValue)
+  }
+  
+  @inlinable
+  @inline(__always)
+  func ___convert(_ rawIndex: Index) -> RawIndex {
+    _tree_.makeRawIndex(rawValue: rawIndex.rawValue)
+  }
+}
 
 extension ___RedBlackTreeBase {
   
+  @inlinable
+  @inline(__always)
+  public func ___is_valid(_ index: _NodePtr) -> Bool {
+    _tree_.___is_valid_index(index)
+  }
+
   @inlinable
   @inline(__always)
   public mutating func ___element(at ptr: _NodePtr) -> Element? {

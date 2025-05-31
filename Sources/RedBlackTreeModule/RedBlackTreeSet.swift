@@ -526,6 +526,16 @@ extension RedBlackTreeSet {
   }
 }
 
+extension RedBlackTreeSet.SubSequence: Equatable {
+  
+  /// - Complexity: O(*n*)
+  @inlinable
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs._tree_.___tree_equiv(start: lhs._start, end: lhs._end,
+                             other: (rhs._tree_, rhs._start, rhs._end))
+  }
+}
+
 extension RedBlackTreeSet.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeSet
   public typealias Element = Tree.Element
@@ -645,11 +655,38 @@ extension RedBlackTreeSet: CustomDebugStringConvertible {
 // MARK: - Equatable
 
 extension RedBlackTreeSet: Equatable {
-
+  
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.___equal_with(rhs)
+    lhs._tree_.___tree_equiv(rhs._tree_)
+  }
+}
+
+extension RedBlackTreeSet {
+  
+  public static func == <R>(lhs: Self, rhs: R) -> Bool
+  where R: Sequence, R.Element == Element
+  {
+    lhs._tree_.___tree_equiv(with: rhs)
+  }
+
+  public static func == <L>(lhs: L, rhs: Self) -> Bool
+  where L: Sequence, L.Element == Element
+  {
+    rhs._tree_.___tree_equiv(with: lhs)
+  }
+  
+  public static func != <R>(lhs: Self, rhs: R) -> Bool
+  where R: Sequence, R.Element == Element
+  {
+    !(lhs == rhs)
+  }
+
+  public static func != <L>(lhs: L, rhs: Self) -> Bool
+  where L: Sequence, L.Element == Element
+  {
+    !(lhs == rhs)
   }
 }
 

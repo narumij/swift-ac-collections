@@ -74,12 +74,8 @@ extension ___RedBlackTreeSequence {
 
   /// - Complexity: O(*n*)
   @inlinable
-  public func sorted() -> [Element] {
-    var result = [Element]()
-    _tree_.___for_each_ { member in
-      result.append(member)
-    }
-    return result
+  public __consuming func sorted() -> ElementIterator<Tree> {
+    .init(tree: _tree_, start: _tree_.__begin_node, end: _tree_.__end_node())
   }
 }
 

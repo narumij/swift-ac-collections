@@ -38,50 +38,50 @@ extension ___Tree {
 //    }
 
     @inlinable func __left_(_ p: _NodePtr) -> _NodePtr {
-      _tree.__left_(p)
+      _tree_.__left_(p)
     }
 
     @inlinable func __right_(_ p: _NodePtr) -> _NodePtr {
-      _tree.__right_(p)
+      _tree_.__right_(p)
     }
 
     @inlinable
     func __root() -> _NodePtr {
-      _tree.__root()
+      _tree_.__root()
     }
     @inlinable
     mutating func __root(_ p: _NodePtr) {
-      _tree.__root(p)
+      _tree_.__root(p)
     }
     @inlinable
     func
       __tree_min(_ __x: _NodePtr) -> _NodePtr
     {
-      _tree.__tree_min(__x)
+      _tree_.__tree_min(__x)
     }
     @inlinable
     func
       __tree_max(_ __x: _NodePtr) -> _NodePtr
     {
-      _tree.__tree_max(__x)
+      _tree_.__tree_max(__x)
     }
     @inlinable
     mutating func
       __tree_left_rotate(_ __x: _NodePtr)
     {
-      _tree.__tree_left_rotate(__x)
+      _tree_.__tree_left_rotate(__x)
     }
     @inlinable
     mutating func
       __tree_right_rotate(_ __x: _NodePtr)
     {
-      _tree.__tree_right_rotate(__x)
+      _tree_.__tree_right_rotate(__x)
     }
     @inlinable
     mutating func
       __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
     {
-      _tree.__tree_balance_after_insert(__root, __x)
+      _tree_.__tree_balance_after_insert(__root, __x)
     }
   }
 #endif
@@ -190,17 +190,17 @@ final class MultisetTests: XCTestCase {
   #if DEBUG
     func testRemoveAt() throws {
       var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 0)
+      XCTAssertEqual(set.___remove(at: set._tree_.__begin_node), 0)
       XCTAssertEqual(set.sorted(), [1, 2, 3, 4])
-      XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 1)
+      XCTAssertEqual(set.___remove(at: set._tree_.__begin_node), 1)
       XCTAssertEqual(set.sorted(), [2, 3, 4])
-      XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 2)
+      XCTAssertEqual(set.___remove(at: set._tree_.__begin_node), 2)
       XCTAssertEqual(set.sorted(), [3, 4])
-      XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 3)
+      XCTAssertEqual(set.___remove(at: set._tree_.__begin_node), 3)
       XCTAssertEqual(set.sorted(), [4])
-      XCTAssertEqual(set.___remove(at: set._tree.__begin_node), 4)
+      XCTAssertEqual(set.___remove(at: set._tree_.__begin_node), 4)
       XCTAssertEqual(set.sorted(), [])
-      XCTAssertEqual(set.___remove(at: set._tree.__begin_node), nil)
+      XCTAssertEqual(set.___remove(at: set._tree_.__begin_node), nil)
     }
   #endif
 
@@ -1013,8 +1013,8 @@ final class MultisetTests: XCTestCase {
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
     XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
-    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: -1).___unchecked_rawValue, -1)
-    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: 5).___unchecked_rawValue, 5)
+    XCTAssertEqual(Index.unsafe(tree: set._tree_, rawValue: -1).___unchecked_rawValue, -1)
+    XCTAssertEqual(Index.unsafe(tree: set._tree_, rawValue: 5).___unchecked_rawValue, 5)
 
     XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
     XCTAssertTrue(set.isValid(index: .unsafe(0)))
@@ -1024,13 +1024,13 @@ final class MultisetTests: XCTestCase {
     XCTAssertTrue(set.isValid(index: .unsafe(4)))
     XCTAssertFalse(set.isValid(index: .unsafe(5)))
 
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: .nullptr)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 0)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 1)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 2)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 3)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 4)))
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: 5)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree_, rawValue: .nullptr)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 0)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 1)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 2)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 3)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 4)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree_, rawValue: 5)))
 #endif
   }
   

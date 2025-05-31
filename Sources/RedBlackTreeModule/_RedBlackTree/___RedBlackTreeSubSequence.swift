@@ -21,9 +21,13 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeSubSequence: ___RedBlackTree
-where Tree: Tree_IterateProtocol & Tree_RawIndexProtocol & Tree_BidirectionalCollectionProtocol & Tree_ForEachProtocol & Tree_IndicesProtocol & Tree_NodeValidationProtocol & EndNodeProtocol & CompareProtocol, Index.Tree == Tree
+protocol ___RedBlackTreeSubSequence
+where
+  Self: ___RedBlackTree,
+  Tree: Tree_IterateProtocol & Tree_RawIndexProtocol & Tree_BidirectionalCollectionProtocol
+    & Tree_ForEachProtocol & Tree_IndicesProtocol & Tree_NodeValidationProtocol & EndNodeProtocol
+    & CompareProtocol,
+  Index.Tree == Tree
 {
   associatedtype Index: RedBlackTreeIndex
 }
-

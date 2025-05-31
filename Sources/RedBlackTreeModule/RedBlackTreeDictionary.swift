@@ -76,10 +76,8 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeStorageLifetime {}
-extension RedBlackTreeDictionary: ___RedBlackTreeEqualRangeUnique {}
+extension RedBlackTreeDictionary: ___RedBlackTreeBaseUnique {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
-
-extension RedBlackTreeDictionary: CompareUniqueTrait {}
 
 // MARK: - Initialization（初期化）
 

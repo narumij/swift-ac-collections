@@ -21,16 +21,16 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeEqualRangeUnique: ValueComparer {
+protocol ___RedBlackTreeBaseUnique: ValueComparer, CompareUniqueTrait {
   var _tree: Tree { get }
 }
 
 @usableFromInline
-protocol ___RedBlackTreeEqualRangeMulti: ValueComparer {
+protocol ___RedBlackTreeBaseMulti: ValueComparer, CompareMultiTrait {
   var _tree: Tree { get }
 }
 
-extension ___RedBlackTreeEqualRangeUnique {
+extension ___RedBlackTreeBaseUnique {
   
   ///（重複なし）
   @inlinable
@@ -42,7 +42,7 @@ extension ___RedBlackTreeEqualRangeUnique {
   }
 }
 
-extension ___RedBlackTreeEqualRangeMulti {
+extension ___RedBlackTreeBaseMulti {
 
   /// （重複あり）
   @inlinable

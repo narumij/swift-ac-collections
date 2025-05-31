@@ -54,10 +54,8 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 
 extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeStorageLifetime {}
-extension RedBlackTreeMultiSet: ___RedBlackTreeEqualRangeMulti {}
+extension RedBlackTreeMultiSet: ___RedBlackTreeBaseMulti {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
-
-extension RedBlackTreeMultiSet: CompareMultiTrait {}
 
 // MARK: - Initialization（初期化）
 

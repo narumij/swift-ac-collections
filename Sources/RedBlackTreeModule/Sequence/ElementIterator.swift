@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct ElementIterator<Tree: ___IterateNextProtocol>: Sequence, IteratorProtocol {
+struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
   
   public typealias Tree = Tree
   public typealias Element = Tree.Element
@@ -56,7 +56,7 @@ struct ElementIterator<Tree: ___IterateNextProtocol>: Sequence, IteratorProtocol
 }
 
 public
-struct ReversedElementIterator<Tree: ___IterateNextProtocol>: Sequence, IteratorProtocol {
+struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
   
   public typealias Tree = Tree
   public typealias Element = Tree.Element

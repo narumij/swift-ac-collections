@@ -6,7 +6,7 @@
 //
 
 public
-struct NodeIterator<Tree: ___IterateNextProtocol>: Sequence, IteratorProtocol {
+struct NodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
   let _tree: Tree
@@ -36,7 +36,7 @@ struct NodeIterator<Tree: ___IterateNextProtocol>: Sequence, IteratorProtocol {
 }
 
 public
-struct ReversedNodeIterator<Tree: ___IterateNextProtocol>: Sequence, IteratorProtocol {
+struct ReversedNodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
   let _tree: Tree

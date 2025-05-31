@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct RawIndexedIterator<Tree: ___IterateNextProtocol>: IteratorProtocol {
+struct RawIndexedIterator<Tree: Tree_IterateProtocol>: IteratorProtocol {
 
   @usableFromInline
   let _tree: Tree
@@ -51,7 +51,7 @@ struct RawIndexedIterator<Tree: ___IterateNextProtocol>: IteratorProtocol {
 }
 
 public
-struct ReversedRawIndexedIterator<Tree: ___IterateNextProtocol>: Sequence, IteratorProtocol {
+struct ReversedRawIndexedIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
   
   @usableFromInline
   let _tree: Tree

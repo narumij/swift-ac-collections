@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public protocol ___IterateNextProtocol {
+public protocol Tree_IterateProtocol {
   associatedtype Element
   var __begin_node: _NodePtr { get }
   func __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
@@ -28,18 +28,18 @@ public protocol ___IterateNextProtocol {
   subscript(_ pointer: _NodePtr) -> Element { get }
 }
 
-public protocol ___IteratorProtocol {
+public protocol ___IndexProtocol {
   associatedtype Index
   func makeIndex(rawValue: _NodePtr) -> Index
 }
 
-public protocol ___IteratorSequcenceProtocol {
-  associatedtype Indices
-  func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices
-}
-
 public protocol ___RawIndexProtocol {
   func makeRawIndex(rawValue: _NodePtr) -> RawIndex
+}
+
+public protocol ___IndicesProtocol {
+  associatedtype Indices
+  func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices
 }
 
 #if false

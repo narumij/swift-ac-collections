@@ -410,7 +410,7 @@ extension ___RedBlackTree.___Tree: DistanceProtocol {}
 extension ___RedBlackTree.___Tree: CompareProtocol {}
 extension ___RedBlackTree.___Tree: CompareUniqueProtocol {}
 extension ___RedBlackTree.___Tree: CompareMultiProtocol {}
-extension ___RedBlackTree.___Tree: ___IterateNextProtocol {}
+extension ___RedBlackTree.___Tree: Tree_IterateProtocol {}
 extension ___RedBlackTree.___Tree: BidirectionalCollectionProtocol {}
 extension ___RedBlackTree.___Tree: ___ForEachProtocol {}
 
@@ -749,14 +749,14 @@ extension ___RedBlackTree.___Tree: Sequence {
 
 // MARK: -
 
-extension ___RedBlackTree.___Tree: ___IteratorProtocol {
+extension ___RedBlackTree.___Tree: ___IndexProtocol {
   @inlinable @inline(__always)
   public func makeIndex(rawValue: _NodePtr) -> ___Iterator {
     .init(__tree: self, rawValue: rawValue)
   }
 }
 
-extension ___RedBlackTree.___Tree: ___IteratorSequcenceProtocol {
+extension ___RedBlackTree.___Tree: ___IndicesProtocol {
   @inlinable @inline(__always)
   public func makeIndices(start: _NodePtr, end: _NodePtr) -> ___IteratorSequence {
     .init(tree: self, start: start, end: end)

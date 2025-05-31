@@ -8,7 +8,7 @@
 import Foundation
 
 #if GRAPHVIZ_DEBUG
-  extension ___RedBlackTree.___Tree {
+  extension ___Tree {
 
     /// グラフビズオブジェクトを生成します
     func ___graphviz() -> Graphviz.Digraph {
@@ -222,7 +222,7 @@ import Foundation
     }
   }
 
-  extension ___RedBlackTree.___Tree {
+  extension ___Tree {
 
     func buildGraphviz() -> Graphviz.Digraph {
       func isRed(_ i: Int) -> Bool {

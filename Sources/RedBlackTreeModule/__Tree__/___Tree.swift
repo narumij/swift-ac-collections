@@ -22,25 +22,22 @@
 
 import Foundation
 
-extension ___RedBlackTree {
+public final class ___Tree<VC>: ManagedBuffer<
+  ___Tree<VC>.Header,
+  ___Tree<VC>.Node
+>
+where VC: ValueComparer & CompareTrait {
 
-  public final class ___Tree<VC>: ManagedBuffer<
-    ___RedBlackTree.___Tree<VC>.Header,
-    ___RedBlackTree.___Tree<VC>.Node
-  >
-  where VC: ValueComparer & CompareTrait {
-
-    @inlinable
-    deinit {
-      self.withUnsafeMutablePointers { header, elements in
-        elements.deinitialize(count: header.pointee.initializedCount)
-        header.deinitialize(count: 1)
-      }
+  @inlinable
+  deinit {
+    self.withUnsafeMutablePointers { header, elements in
+      elements.deinitialize(count: header.pointee.initializedCount)
+      header.deinitialize(count: 1)
     }
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   @inlinable
   internal static func create(
@@ -94,7 +91,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   public struct Node: ___tree_base_node {
 
@@ -126,10 +123,10 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   public
-    typealias Tree = ___RedBlackTree.___Tree<VC>
+    typealias Tree = ___Tree<VC>
 
   @usableFromInline
   internal typealias VC = VC
@@ -138,7 +135,7 @@ extension ___RedBlackTree.___Tree {
   internal typealias Manager = ManagedBufferPointer<Header, Node>
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   public struct Header: ___tree_root_node {
 
@@ -184,7 +181,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree.Header {
+extension ___Tree.Header {
 
   @inlinable
   @inline(__always)
@@ -201,7 +198,7 @@ extension ___RedBlackTree.___Tree.Header {
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   @inlinable
   internal var __header_ptr: UnsafeMutablePointer<Header> {
@@ -216,7 +213,7 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   internal var _header: Header {
     @inline(__always)
-//    get { __header_ptr.pointee }
+    //    get { __header_ptr.pointee }
     _read { yield __header_ptr.pointee }
     @inline(__always)
     _modify { yield &__header_ptr.pointee }
@@ -225,10 +222,10 @@ extension ___RedBlackTree.___Tree {
   @inlinable
   public subscript(_ pointer: _NodePtr) -> Element {
     @inline(__always)
-//    get {
-//      assert(0 <= pointer && pointer < _header.initializedCount)
-//      return __node_ptr[pointer].__value_
-//    }
+    //    get {
+    //      assert(0 <= pointer && pointer < _header.initializedCount)
+    //      return __node_ptr[pointer].__value_
+    //    }
     _read {
       assert(0 <= pointer && pointer < _header.initializedCount)
       yield __node_ptr[pointer].__value_
@@ -249,7 +246,7 @@ extension ___RedBlackTree.___Tree {
   #endif
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
   /// O(1)
   @inlinable
   @inline(__always)
@@ -283,8 +280,8 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
-  
+extension ___Tree {
+
   @inlinable @inline(__always)
   internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
     __node_ptr[p].__parent_ == .nullptr
@@ -292,7 +289,7 @@ extension ___RedBlackTree.___Tree {
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-  extension ___RedBlackTree.___Tree {
+  extension ___Tree {
 
     /// O(*k*)
     var ___destroyNodes: [_NodePtr] {
@@ -308,7 +305,7 @@ extension ___RedBlackTree.___Tree {
   }
 #endif
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   @inlinable
   internal func __construct_node(_ k: Element) -> _NodePtr {
@@ -331,7 +328,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   @inlinable
   internal var count: Int {
@@ -353,7 +350,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   @inlinable @inline(__always)
   internal func __value_(_ p: _NodePtr) -> _Key {
@@ -361,7 +358,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   public typealias Element = VC.Element
 
@@ -389,32 +386,32 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree: FindProtocol {}
-extension ___RedBlackTree.___Tree: FindEqualProtocol {}
-extension ___RedBlackTree.___Tree: FindLeafProtocol {}
-extension ___RedBlackTree.___Tree: EqualProtocol {}
-extension ___RedBlackTree.___Tree: InsertNodeAtProtocol {}
-extension ___RedBlackTree.___Tree: InsertMultiProtocol {}
-extension ___RedBlackTree.___Tree: InsertLastProtocol {}
-extension ___RedBlackTree.___Tree: RemoveProtocol {}
-extension ___RedBlackTree.___Tree: MergeProtocol {}
-extension ___RedBlackTree.___Tree: HandleProtocol {}
-extension ___RedBlackTree.___Tree: EraseProtocol {}
-extension ___RedBlackTree.___Tree: EraseUniqueProtocol {}
-extension ___RedBlackTree.___Tree: EraseMultiProtocol {}
-extension ___RedBlackTree.___Tree: BoundProtocol {}
-extension ___RedBlackTree.___Tree: InsertUniqueProtocol {}
-extension ___RedBlackTree.___Tree: CountProtocol {}
-extension ___RedBlackTree.___Tree: MemberProtocol {}
-extension ___RedBlackTree.___Tree: DistanceProtocol {}
-extension ___RedBlackTree.___Tree: CompareProtocol {}
-extension ___RedBlackTree.___Tree: CompareUniqueProtocol {}
-extension ___RedBlackTree.___Tree: CompareMultiProtocol {}
-extension ___RedBlackTree.___Tree: Tree_IterateProtocol {}
-extension ___RedBlackTree.___Tree: Tree_BidirectionalCollectionProtocol {}
-extension ___RedBlackTree.___Tree: Tree_ForEachProtocol {}
+extension ___Tree: FindProtocol {}
+extension ___Tree: FindEqualProtocol {}
+extension ___Tree: FindLeafProtocol {}
+extension ___Tree: EqualProtocol {}
+extension ___Tree: InsertNodeAtProtocol {}
+extension ___Tree: InsertMultiProtocol {}
+extension ___Tree: InsertLastProtocol {}
+extension ___Tree: RemoveProtocol {}
+extension ___Tree: MergeProtocol {}
+extension ___Tree: HandleProtocol {}
+extension ___Tree: EraseProtocol {}
+extension ___Tree: EraseUniqueProtocol {}
+extension ___Tree: EraseMultiProtocol {}
+extension ___Tree: BoundProtocol {}
+extension ___Tree: InsertUniqueProtocol {}
+extension ___Tree: CountProtocol {}
+extension ___Tree: MemberProtocol {}
+extension ___Tree: DistanceProtocol {}
+extension ___Tree: CompareProtocol {}
+extension ___Tree: CompareUniqueProtocol {}
+extension ___Tree: CompareMultiProtocol {}
+extension ___Tree: Tree_IterateProtocol {}
+extension ___Tree: Tree_BidirectionalCollectionProtocol {}
+extension ___Tree: Tree_ForEachProtocol {}
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
   @inlinable
   @inline(__always)
   internal func __parent_(_ p: _NodePtr) -> _NodePtr {
@@ -442,7 +439,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   @inlinable
   @inline(__always)
@@ -471,7 +468,7 @@ extension ___RedBlackTree.___Tree {
 }
 
 // MARK: -
-extension ___RedBlackTree.___Tree: CompareBothProtocol {
+extension ___Tree: CompareBothProtocol {
   @inlinable
   @inline(__always)
   var isMulti: Bool { VC.isMulti }
@@ -479,7 +476,7 @@ extension ___RedBlackTree.___Tree: CompareBothProtocol {
 
 // MARK: -
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   @inlinable
   internal func
@@ -525,7 +522,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   /// O(1)
   @inlinable
@@ -535,7 +532,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   @inlinable @inline(__always)
   internal var ___is_empty: Bool {
@@ -559,7 +556,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree: Tree_NodeValidationProtocol {
+extension ___Tree: Tree_NodeValidationProtocol {
 
   @inlinable @inline(__always)
   internal func ___contains(_ p: _NodePtr) -> Bool {
@@ -570,7 +567,7 @@ extension ___RedBlackTree.___Tree: Tree_NodeValidationProtocol {
   internal func ___is_valid(_ p: _NodePtr) -> Bool {
     ___contains(p) && !___is_garbaged(p)
   }
-  
+
   @inlinable
   internal func ___is_valid_index(_ i: _NodePtr) -> Bool {
     if i == .nullptr { return false }
@@ -581,7 +578,7 @@ extension ___RedBlackTree.___Tree: Tree_NodeValidationProtocol {
 
 // MARK: -
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   @inlinable
   @inline(__always)
@@ -621,7 +618,7 @@ extension ___RedBlackTree.___Tree {
 
 // MARK: -
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   // この実装がないと、迷子になる?
   @inlinable
@@ -699,7 +696,9 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   @inline(__always)
-  internal func ___index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> _NodePtr? {
+  internal func ___index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
+    -> _NodePtr?
+  {
     guard i == ___end() || ___is_valid(i) else { fatalError(.invalidIndex) }
     var distance = distance
     var i = i
@@ -726,7 +725,8 @@ extension ___RedBlackTree.___Tree {
 
   @inlinable
   @inline(__always)
-  internal func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr) -> Bool
+  internal func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
+    -> Bool
   {
     guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
     if let ii = ___index(i, offsetBy: distance, limitedBy: limit) {
@@ -739,7 +739,7 @@ extension ___RedBlackTree.___Tree {
 
 // MARK: -
 
-extension ___RedBlackTree.___Tree: Sequence {
+extension ___Tree: Sequence {
 
   @inlinable
   public __consuming func makeIterator() -> ElementIterator<Tree> {
@@ -749,21 +749,21 @@ extension ___RedBlackTree.___Tree: Sequence {
 
 // MARK: -
 
-extension ___RedBlackTree.___Tree: Tree_IndexProtocol {
+extension ___Tree: Tree_IndexProtocol {
   @inlinable @inline(__always)
   public func makeIndex(rawValue: _NodePtr) -> ___Iterator {
     .init(__tree: self, rawValue: rawValue)
   }
 }
 
-extension ___RedBlackTree.___Tree: Tree_IndicesProtocol {
+extension ___Tree: Tree_IndicesProtocol {
   @inlinable @inline(__always)
   public func makeIndices(start: _NodePtr, end: _NodePtr) -> ___IteratorSequence {
     .init(tree: self, start: start, end: end)
   }
 }
 
-extension ___RedBlackTree.___Tree: Tree_RawIndexProtocol {
+extension ___Tree: Tree_RawIndexProtocol {
   @inlinable @inline(__always)
   public func makeRawIndex(rawValue: _NodePtr) -> RawIndex {
     .init(rawValue)

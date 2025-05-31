@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   /// 赤黒木のノードへのイテレータ
   @frozen
@@ -74,7 +74,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator: Comparable {
+extension ___Tree.___Iterator: Comparable {
 
   /// - Complexity: O(1)
   @inlinable
@@ -109,7 +109,7 @@ extension ___RedBlackTree.___Tree.___Iterator: Comparable {
 
 // Stridableできるが、Range<Index>に標準実装が生えることと、
 // その実装が要素アクセスのたびに範囲チェックを行うことを嫌って、Stridableをやめている
-extension ___RedBlackTree.___Tree.___Iterator {
+extension ___Tree.___Iterator {
 
   @inlinable
   @inline(__always)
@@ -147,7 +147,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator {
+extension ___Tree.___Iterator {
 
   @inlinable
   @inline(__always)
@@ -184,7 +184,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator {
+extension ___Tree.___Iterator {
 
   // CoWが発生すると結果が乖離する
   @inlinable
@@ -220,7 +220,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator {
+extension ___Tree.___Iterator {
 
   @inlinable
   @inline(__always)
@@ -236,7 +236,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator {
+extension ___Tree.___Iterator {
 
   @inlinable @inline(__always)
   var ___key: VC._Key {
@@ -249,18 +249,18 @@ extension ___RedBlackTree.___Tree.___Iterator {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMutableRawValue {}
+extension ___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMutableRawValue {}
 
 #if DEBUG
-  extension ___RedBlackTree.___Tree.___Iterator {
-    fileprivate init(_unsafe_tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) {
+  extension ___Tree.___Iterator {
+    fileprivate init(_unsafe_tree: ___Tree<VC>, rawValue: _NodePtr) {
       self._tree = _unsafe_tree
       self._rawValue = rawValue
     }
   }
 
-  extension ___RedBlackTree.___Tree.___Iterator {
-    static func unsafe(tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) -> Self {
+  extension ___Tree.___Iterator {
+    static func unsafe(tree: ___Tree<VC>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue)
     }
   }
@@ -281,32 +281,32 @@ extension ___RedBlackTree.___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMu
 
 @inlinable
 public func ..< <VC>(
-  lhs: ___RedBlackTree.___Tree<VC>.Index,
-  rhs: ___RedBlackTree.___Tree<VC>.Index
-) -> ___RedBlackTree.___Tree<VC>.Indices {
+  lhs: ___Tree<VC>.Index,
+  rhs: ___Tree<VC>.Index
+) -> ___Tree<VC>.Indices {
   lhs._tree.makeIndices(start: lhs._rawValue, end: rhs._rawValue)
 }
 
 @inlinable
 public func + <VC>(
-  lhs: ___RedBlackTree.___Tree<VC>.Index,
+  lhs: ___Tree<VC>.Index,
   rhs: Int
-) -> ___RedBlackTree.___Tree<VC>.Index {
+) -> ___Tree<VC>.Index {
   lhs.advanced(by: rhs)
 }
 
 @inlinable
 public func - <VC>(
-  lhs: ___RedBlackTree.___Tree<VC>.Index,
+  lhs: ___Tree<VC>.Index,
   rhs: Int
-) -> ___RedBlackTree.___Tree<VC>.Index {
+) -> ___Tree<VC>.Index {
   lhs.advanced(by: -rhs)
 }
 
 @inlinable
 public func - <VC>(
-  lhs: ___RedBlackTree.___Tree<VC>.Index,
-  rhs: ___RedBlackTree.___Tree<VC>.Index
+  lhs: ___Tree<VC>.Index,
+  rhs: ___Tree<VC>.Index
 ) -> Int {
   rhs.distance(to: lhs)
 }

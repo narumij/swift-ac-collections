@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
   
   @inlinable @inline(__always)
   public func bitCeil(_ n: Int) -> Int {
@@ -98,7 +98,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   @inlinable
   @inline(__always)
@@ -140,7 +140,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   // コンテナに対するCoW責任をカバーする
   // それ以外はTree側の保持の仕方で管理する

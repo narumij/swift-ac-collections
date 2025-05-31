@@ -158,8 +158,8 @@ extension RedBlackTreeSet {
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
-    let (__r, __inserted) = _tree_.__insert_unique(newMember)
-    return (__inserted, __inserted ? newMember : _tree_[__r])
+    let (__r, __inserted) = __tree_.__insert_unique(newMember)
+    return (__inserted, __inserted ? newMember : __tree_[__r])
   }
 
   /// - Complexity: O(log *n*)
@@ -167,10 +167,10 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func update(with newMember: Element) -> Element? {
     _ensureUniqueAndCapacity()
-    let (__r, __inserted) = _tree_.__insert_unique(newMember)
+    let (__r, __inserted) = __tree_.__insert_unique(newMember)
     guard !__inserted else { return nil }
-    let oldMember = _tree_[__r]
-    _tree_[__r] = newMember
+    let oldMember = __tree_[__r]
+    __tree_[__r] = newMember
     return oldMember
   }
 }
@@ -182,7 +182,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    _tree_.__node_handle_merge_unique(other._tree_)
+    __tree_.__node_handle_merge_unique(other.__tree_)
   }
 
   /// - Complexity: O(*k* log *k*)
@@ -190,7 +190,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    _tree_.__node_handle_merge_unique(other._tree_)
+    __tree_.__node_handle_merge_unique(other.__tree_)
   }
 
   /// - Complexity: O(*k* log *k*)
@@ -222,7 +222,7 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func remove(_ member: Element) -> Element? {
     _ensureUnique()
-    return _tree_.___erase_unique(member) ? member : nil
+    return __tree_.___erase_unique(member) ? member : nil
   }
 
   /// - Important: 削除後は、インデックスが無効になります。
@@ -456,7 +456,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-    .init(tree: _tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+    .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }
 }
 
@@ -492,7 +492,7 @@ extension RedBlackTreeSet {
   @inlinable
   public func elements(in range: Range<Element>) -> SubSequence {
     .init(
-      tree: _tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
   }
 
   /// 値レンジ `[lower, upper]` に含まれる要素のスライス
@@ -501,7 +501,7 @@ extension RedBlackTreeSet {
   @inlinable
   public func elements(in range: ClosedRange<Element>) -> SubSequence {
     .init(
-      tree: _tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
   }
 }
 
@@ -581,7 +581,7 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public var rawIndices: RawIndexSequence<Tree> {
-    RawIndexSequence(tree: _tree_)
+    RawIndexSequence(tree: __tree_)
   }
 }
 
@@ -596,7 +596,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable @inline(__always)
   public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(tree: _tree_)
+    RawIndexedSequence(tree: __tree_)
   }
 }
 
@@ -673,7 +673,7 @@ extension RedBlackTreeSet: Equatable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.count == rhs.count && lhs._tree_.___tree_equiv(rhs._tree_)
+    lhs.count == rhs.count && lhs.__tree_.___tree_equiv(rhs.__tree_)
   }
 }
 
@@ -682,7 +682,7 @@ extension RedBlackTreeSet: Comparable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs._tree_.___tree_compare(rhs._tree_)
+    lhs.__tree_.___tree_compare(rhs.__tree_)
   }
 }
 
@@ -690,12 +690,12 @@ extension RedBlackTreeSet {
 
   public static func == <R>(lhs: Self, rhs: R) -> Bool
   where R: Sequence, R.Element == Element {
-    lhs._tree_.___tree_equiv(with: rhs)
+    lhs.__tree_.___tree_equiv(with: rhs)
   }
 
   public static func == <L>(lhs: L, rhs: Self) -> Bool
   where L: Sequence, L.Element == Element {
-    rhs._tree_.___tree_equiv(with: lhs)
+    rhs.__tree_.___tree_equiv(with: lhs)
   }
 
   public static func != <R>(lhs: Self, rhs: R) -> Bool

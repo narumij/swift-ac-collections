@@ -23,13 +23,13 @@
 @usableFromInline
 protocol ___RedBlackTreeUnique: CompareUniqueTrait {
   associatedtype Tree: ValueProtocol & EqualProtocol
-  var _tree_: Tree { get }
+  var __tree_: Tree { get }
 }
 
 @usableFromInline
 protocol ___RedBlackTreeMulti: CompareMultiTrait {
   associatedtype Tree: ValueProtocol & EqualProtocol
-  var _tree_: Tree { get }
+  var __tree_: Tree { get }
 }
 
 extension ___RedBlackTreeUnique {
@@ -38,7 +38,7 @@ extension ___RedBlackTreeUnique {
   @inlinable
   @inline(__always)
   internal func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
-    _tree_.__equal_range_unique(k)
+    __tree_.__equal_range_unique(k)
   }
 }
 
@@ -48,7 +48,7 @@ extension ___RedBlackTreeMulti {
   @inlinable
   @inline(__always)
   internal func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
-    _tree_.__equal_range_multi(k)
+    __tree_.__equal_range_multi(k)
   }
 }
 

@@ -50,24 +50,24 @@ where
 extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
-  var _tree_: Tree { _storage.tree }
+  var __tree_: Tree { _storage.tree }
 }
 
 extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   var ___count: Int {
-    _tree_.count
+    __tree_.count
   }
 
   @inlinable @inline(__always)
   var ___is_empty: Bool {
-    _tree_.___is_empty
+    __tree_.___is_empty
   }
 
   @inlinable @inline(__always)
   var ___capacity: Int {
-    _tree_.___capacity
+    __tree_.___capacity
   }
 }
 
@@ -80,12 +80,12 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___iter(_ p: _NodePtr) -> Index {
-    _tree_.makeIndex(rawValue: p)
+    __tree_.makeIndex(rawValue: p)
   }
 
   @inlinable @inline(__always)
   func ___raw(_ p: _NodePtr) -> RawIndex {
-    _tree_.makeRawIndex(rawValue: p)
+    __tree_.makeRawIndex(rawValue: p)
   }
 
   @inlinable @inline(__always)
@@ -100,12 +100,12 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public func ___start() -> _NodePtr {
-    _tree_.__begin_node
+    __tree_.__begin_node
   }
 
   @inlinable @inline(__always)
   public func ___end() -> _NodePtr {
-    _tree_.___end()
+    __tree_.___end()
   }
 
   @inlinable @inline(__always)
@@ -120,12 +120,12 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___iter_start() -> Index {
-    ___iter(_tree_.__begin_node)
+    ___iter(__tree_.__begin_node)
   }
 
   @inlinable @inline(__always)
   func ___iter_end() -> Index {
-    ___iter(_tree_.___end())
+    ___iter(__tree_.___end())
   }
 }
 
@@ -133,22 +133,22 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public func ___lower_bound(_ __k: _Key) -> _NodePtr {
-    _tree_.lower_bound(__k)
+    __tree_.lower_bound(__k)
   }
 
   @inlinable @inline(__always)
   public func ___upper_bound(_ __k: _Key) -> _NodePtr {
-    _tree_.upper_bound(__k)
+    __tree_.upper_bound(__k)
   }
 
   @inlinable @inline(__always)
   public func ___raw_index_lower_bound(_ __k: _Key) -> RawIndex {
-    ___raw(_tree_.lower_bound(__k))
+    ___raw(__tree_.lower_bound(__k))
   }
 
   @inlinable @inline(__always)
   public func ___raw_index_upper_bound(_ __k: _Key) -> RawIndex {
-    ___raw(_tree_.upper_bound(__k))
+    ___raw(__tree_.upper_bound(__k))
   }
 
   @inlinable @inline(__always)
@@ -167,15 +167,15 @@ extension ___RedBlackTreeBase {
   @inlinable
   func ___first_iter(of member: _Key) -> Index? {
     var __parent = _NodePtr.nullptr
-    let ptr = _tree_.__ptr_(_tree_.__find_equal(&__parent, member))
+    let ptr = __tree_.__ptr_(__tree_.__find_equal(&__parent, member))
     return ___iter_or_nil(ptr)
   }
 
   @inlinable
   func ___first_iter(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     var result: Index?
-    try _tree_.___for_each(__p: _tree_.__begin_node, __l: _tree_.__end_node()) { __p, cont in
-      if try predicate(_tree_[__p]) {
+    try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
+      if try predicate(__tree_[__p]) {
         result = ___iter(__p)
         cont = false
       }
@@ -194,12 +194,12 @@ extension ___RedBlackTreeBase {
   public mutating func ___remove(at ptr: _NodePtr) -> Element? {
     guard
       !___is_null_or_end(ptr),
-      _tree_.___is_valid_index(ptr)
+      __tree_.___is_valid_index(ptr)
     else {
       return nil
     }
-    let e = _tree_[ptr]
-    _ = _tree_.erase(ptr)
+    let e = __tree_[ptr]
+    _ = __tree_.erase(ptr)
     return e
   }
 
@@ -211,12 +211,12 @@ extension ___RedBlackTreeBase {
       return .end
     }
     guard
-      _tree_.___is_valid_index(from),
-      _tree_.___is_valid_index(to)
+      __tree_.___is_valid_index(from),
+      __tree_.___is_valid_index(to)
     else {
       fatalError(.invalidIndex)
     }
-    return _tree_.erase(from, to)
+    return __tree_.erase(from, to)
   }
 
   @inlinable
@@ -230,12 +230,12 @@ extension ___RedBlackTreeBase {
       return
     }
     guard
-      _tree_.___is_valid_index(from),
-      _tree_.___is_valid_index(to)
+      __tree_.___is_valid_index(from),
+      __tree_.___is_valid_index(to)
     else {
       fatalError(.invalidIndex)
     }
-    return try _tree_.___erase(from, to, action)
+    return try __tree_.___erase(from, to, action)
   }
 
   @inlinable
@@ -249,12 +249,12 @@ extension ___RedBlackTreeBase {
       return initialResult
     }
     guard
-      _tree_.___is_valid_index(from),
-      _tree_.___is_valid_index(to)
+      __tree_.___is_valid_index(from),
+      __tree_.___is_valid_index(to)
     else {
       fatalError(.invalidIndex)
     }
-    return try _tree_.___erase(from, to, into: initialResult, updateAccumulatingResult)
+    return try __tree_.___erase(from, to, into: initialResult, updateAccumulatingResult)
   }
 
   @inlinable
@@ -268,12 +268,12 @@ extension ___RedBlackTreeBase {
       return initialResult
     }
     guard
-      _tree_.___is_valid_index(from),
-      _tree_.___is_valid_index(to)
+      __tree_.___is_valid_index(from),
+      __tree_.___is_valid_index(to)
     else {
       fatalError(.invalidIndex)
     }
-    return try _tree_.___erase(from, to, initialResult, nextPartialResult)
+    return try __tree_.___erase(from, to, initialResult, nextPartialResult)
   }
 }
 
@@ -283,7 +283,7 @@ extension ___RedBlackTreeBase {
   mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
 
     if keepCapacity {
-      _tree_.__eraseAll()
+      __tree_.__eraseAll()
     } else {
       _storage = .create(withCapacity: 0)
     }
@@ -296,7 +296,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___contains(_ __k: _Key) -> Bool where _Key: Equatable {
-    _tree_.__count_unique(__k) != 0
+    __tree_.__count_unique(__k) != 0
   }
 }
 
@@ -304,12 +304,12 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___min() -> Element? {
-    _tree_.__root() == .nullptr ? nil : _tree_[_tree_.__tree_min(_tree_.__root())]
+    __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_min(__tree_.__root())]
   }
 
   @inlinable @inline(__always)
   func ___max() -> Element? {
-    _tree_.__root() == .nullptr ? nil : _tree_[_tree_.__tree_max(_tree_.__root())]
+    __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_max(__tree_.__root())]
   }
 }
 
@@ -317,8 +317,8 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___value_for(_ __k: _Key) -> Element? {
-    let __ptr = _tree_.find(__k)
-    return ___is_null_or_end(__ptr) ? nil : _tree_[__ptr]
+    let __ptr = __tree_.find(__k)
+    return ___is_null_or_end(__ptr) ? nil : __tree_[__ptr]
   }
 }
 
@@ -327,9 +327,9 @@ extension ___RedBlackTreeBase {
   @inlinable
   public func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     var result: Element?
-    try _tree_.___for_each(__p: _tree_.__begin_node, __l: _tree_.__end_node()) { __p, cont in
-      if try predicate(_tree_[__p]) {
-        result = _tree_[__p]
+    try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
+      if try predicate(__tree_[__p]) {
+        result = __tree_[__p]
         cont = false
       }
     }
@@ -342,7 +342,7 @@ extension ___RedBlackTreeBase {
   /// releaseビルドでは無効化されています
   @inlinable
   public func ___tree_invariant() -> Bool {
-    _tree_.__tree_invariant(_tree_.__root())
+    __tree_.__tree_invariant(__tree_.__root())
   }
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -370,7 +370,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___erase(_ ptr: _NodePtr) -> _NodePtr {
-    _tree_.erase(ptr)
+    __tree_.erase(ptr)
   }
 
   // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの
@@ -378,7 +378,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___std_erase(_ ptr: RawIndex) -> RawIndex {
-    ___raw(_tree_.erase(ptr.rawValue))
+    ___raw(__tree_.erase(ptr.rawValue))
   }
 
   // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの
@@ -386,7 +386,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___std_erase(_ ptr: Index) -> Index {
-    ___iter(_tree_.erase(ptr.rawValue))
+    ___iter(__tree_.erase(ptr.rawValue))
   }
 }
 
@@ -395,13 +395,13 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public var ___key_comp: (_Key, _Key) -> Bool {
-    _tree_.value_comp
+    __tree_.value_comp
   }
 
   @inlinable
   @inline(__always)
   public var ___value_comp: (Element, Element) -> Bool {
-    { _tree_.value_comp(_tree_.__key($0), _tree_.__key($1)) }
+    { __tree_.value_comp(__tree_.__key($0), __tree_.__key($1)) }
   }
 }
 
@@ -410,13 +410,13 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public func ___convert(_ rawIndex: RawIndex) -> Index {
-    _tree_.makeIndex(rawValue: rawIndex.rawValue)
+    __tree_.makeIndex(rawValue: rawIndex.rawValue)
   }
   
   @inlinable
   @inline(__always)
   func ___convert(_ rawIndex: Index) -> RawIndex {
-    _tree_.makeRawIndex(rawValue: rawIndex.rawValue)
+    __tree_.makeRawIndex(rawValue: rawIndex.rawValue)
   }
 }
 
@@ -425,7 +425,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public func ___is_valid(_ index: _NodePtr) -> Bool {
-    _tree_.___is_valid_index(index)
+    __tree_.___is_valid_index(index)
   }
 
   @inlinable
@@ -433,22 +433,22 @@ extension ___RedBlackTreeBase {
   public mutating func ___element(at ptr: _NodePtr) -> Element? {
     guard
       !___is_null_or_end(ptr),
-      _tree_.___is_valid_index(ptr)
+      __tree_.___is_valid_index(ptr)
     else {
       return nil
     }
-    return _tree_[ptr]
+    return __tree_[ptr]
   }
   
   @inlinable
   @inline(__always)
   public __consuming func ___makeIterator() -> NodeIterator<Tree> {
-    NodeIterator(tree: _tree_, start: _tree_.__begin_node, end: _tree_.__end_node())
+    NodeIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
   
   @inlinable
   @inline(__always)
   public __consuming func ___makeIterator() -> NodeElementIterator<Tree> {
-    NodeElementIterator(tree: _tree_, start: _tree_.__begin_node, end: _tree_.__end_node())
+    NodeElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }

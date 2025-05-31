@@ -152,7 +152,7 @@ extension RedBlackTreeMultiMap {
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
-    _ = _tree_.__insert_multi(newMember)
+    _ = __tree_.__insert_multi(newMember)
     return (true, newMember)
   }
 }
@@ -165,13 +165,13 @@ extension RedBlackTreeMultiMap {
   public mutating func updateValue(_ newValue: Value, at ptr: RawIndex) -> Element? {
     guard
       !___is_null_or_end(ptr.rawValue),
-      _tree_.___is_valid_index(ptr.rawValue)
+      __tree_.___is_valid_index(ptr.rawValue)
     else {
       return nil
     }
     _ensureUnique()
-    let old = _tree_[ptr.rawValue]
-    _tree_[ptr.rawValue].value = newValue
+    let old = __tree_[ptr.rawValue]
+    __tree_[ptr.rawValue].value = newValue
     return old
   }
 
@@ -181,13 +181,13 @@ extension RedBlackTreeMultiMap {
   public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
     guard
       !___is_null_or_end(ptr._rawValue),
-      _tree_.___is_valid_index(ptr._rawValue)
+      __tree_.___is_valid_index(ptr._rawValue)
     else {
       return nil
     }
     _ensureUnique()
-    let old = _tree_[ptr.rawValue]
-    _tree_[ptr.rawValue].value = newValue
+    let old = __tree_[ptr.rawValue]
+    __tree_[ptr.rawValue].value = newValue
     return old
   }
 }
@@ -199,7 +199,7 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    _tree_.__node_handle_merge_multi(other._tree_)
+    __tree_.__node_handle_merge_multi(other.__tree_)
   }
 
   /// - Complexity: O(*n* log *n*)
@@ -248,7 +248,7 @@ extension RedBlackTreeMultiMap {
   @discardableResult
   public mutating func removeFirst(forKey key: Key) -> Bool {
     _strongEnsureUnique()
-    return _tree_.___erase_unique(key)
+    return __tree_.___erase_unique(key)
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -257,7 +257,7 @@ extension RedBlackTreeMultiMap {
   @discardableResult
   public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
     _ensureUnique()
-    return _tree_.___erase_unique(key)
+    return __tree_.___erase_unique(key)
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -266,7 +266,7 @@ extension RedBlackTreeMultiMap {
   @discardableResult
   public mutating func removeAll(forKey key: Key) -> Int {
     _strongEnsureUnique()
-    return _tree_.___erase_multi(key)
+    return __tree_.___erase_multi(key)
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -275,7 +275,7 @@ extension RedBlackTreeMultiMap {
   @discardableResult
   public mutating func removeAll(_unsafeForKey key: Key) -> Int {
     _ensureUnique()
-    return _tree_.___erase_multi(key)
+    return __tree_.___erase_multi(key)
   }
 }
 
@@ -443,7 +443,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   public func count(forKey key: Key) -> Int {
-    _tree_.__count_multi(key)
+    __tree_.__count_multi(key)
   }
 }
 
@@ -539,12 +539,12 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(1)
   public var keys: KeyIterator<Tree,Key,Value> {
-    .init(tree: _tree_, start: _tree_.__begin_node, end: _tree_.__end_node())
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 
   /// - Complexity: O(1)
   public var values: ValueIterator<Tree,Key,Value> {
-    .init(tree: _tree_, start: _tree_.__begin_node, end: _tree_.__end_node())
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 
@@ -553,8 +553,8 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   public func values(forKey key: Key) -> ValueIterator<Tree,Key,Value> {
-    let (lo, hi) = _tree_.__equal_range_multi(key)
-    return .init(tree: _tree_, start: lo, end: hi)
+    let (lo, hi) = __tree_.__equal_range_multi(key)
+    return .init(tree: __tree_, start: lo, end: hi)
   }
 }
 
@@ -571,7 +571,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(1)
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-    .init(tree: _tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+    .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }
 }
 
@@ -605,14 +605,14 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(log *n*)
   @inlinable
   public func elements(in range: Range<Key>) -> SubSequence {
-    .init(tree: _tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
+    .init(tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
   }
 
   /// キーレンジ `[lower, upper]` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
   @inlinable
   public func elements(in range: ClosedRange<Key>) -> SubSequence {
-    .init(tree: _tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
+    .init(tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
   }
 }
 
@@ -625,7 +625,7 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   public subscript(key: Key) -> SubSequence {
     let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
-    return .init(tree: _tree_, start: lo, end: hi)
+    return .init(tree: __tree_, start: lo, end: hi)
   }
 }
 
@@ -688,7 +688,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public var rawIndices: RawIndexSequence<Tree> {
-    RawIndexSequence(tree: _tree_)
+    RawIndexSequence(tree: __tree_)
   }
 }
 
@@ -699,7 +699,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(1)
   @inlinable @inline(__always)
   public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(tree: _tree_)
+    RawIndexedSequence(tree: __tree_)
   }
 }
 
@@ -754,6 +754,6 @@ extension RedBlackTreeMultiMap: Equatable where Value: Equatable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs._tree_.___tree_equiv_key_value(rhs._tree_)
+    lhs.__tree_.___tree_equiv_key_value(rhs.__tree_)
   }
 }

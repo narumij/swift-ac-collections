@@ -63,7 +63,7 @@ import Foundation
     /// ```
     ///
     public func ___graphviz() -> Graphviz.Digraph {
-      _tree_.___graphviz()
+      __tree_.___graphviz()
     }
   }
 #endif

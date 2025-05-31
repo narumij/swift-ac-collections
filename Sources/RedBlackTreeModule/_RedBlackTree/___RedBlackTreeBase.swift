@@ -25,6 +25,9 @@ import Foundation
 // 全ての道はツリーに通ずる?
 public protocol ___RedBlackTree {
   associatedtype Tree
+//  associatedtype Element
+//  associatedtype Index
+//  associatedtype Indices
 }
 
 public protocol ___RedBlackTree___ {

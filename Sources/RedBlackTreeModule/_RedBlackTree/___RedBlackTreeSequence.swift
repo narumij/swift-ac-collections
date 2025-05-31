@@ -21,17 +21,19 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeSequence: ___RedBlackTree,
-  Sequence & Collection & BidirectionalCollection
+protocol ___RedBlackTreeSequence
 where
-  Tree: Tree_IterateProtocol & Tree_RawIndexProtocol & Tree_ForEachProtocol & Tree_BidirectionalCollectionProtocol & Tree_IndicesProtocol
-    & Tree_NodeValidationProtocol & BeginNodeProtocol & EndNodeProtocol & DistanceProtocol,
+  Self: ___RedBlackTree,
+  Self: Sequence & Collection & BidirectionalCollection,
+  Tree == ___Tree<VC>,
   Element == Tree.Element,
-  Index: RedBlackTreeIndex,
-  Index.Tree == Tree
+  Index == Tree.Index,
+  Indices == Tree.Indices
 {
+  associatedtype VC: ValueComparer
   associatedtype Tree
   associatedtype Index
+  associatedtype Indices
   associatedtype Element
   var _tree: Tree { get }
 }
@@ -193,7 +195,7 @@ extension ___RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)
-  public var indices: Tree.Indices {
+  public var indices: Indices {
     _tree.makeIndices(start: _tree.__begin_node, end: _tree.__end_node())
   }
 }

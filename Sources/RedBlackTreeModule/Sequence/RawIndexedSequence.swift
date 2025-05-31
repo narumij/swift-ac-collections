@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct RawIndexedSequence<Base: RedBlackTreeSequenceBase>: Sequence {
+struct RawIndexedSequence<Base: RedBlackTreeSequence>: Sequence {
   
   @usableFromInline
   let _tree: Base.Tree

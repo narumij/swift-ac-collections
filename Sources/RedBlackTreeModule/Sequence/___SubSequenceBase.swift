@@ -28,7 +28,7 @@ where
   Indices == Tree.Indices,
   Element == Tree.Element,
   Iterator == ElementIterator<Base.Tree>,
-  Self: RedBlackTreeSequenceBase,
+  Self: RedBlackTreeSequence,
   SubSequence == Self
 {
   associatedtype Base: RedBlackTreeSubSequenceBase

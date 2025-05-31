@@ -20,6 +20,6 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public protocol RedBlackTreeSequenceBase {
+public protocol RedBlackTreeSequence {
   associatedtype Tree: Tree_IterateProtocol & Tree_RawIndexProtocol
 }

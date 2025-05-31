@@ -522,7 +522,7 @@ extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollec
 
 // MARK: - Index Range
 
-extension RedBlackTreeSet: RedBlackTreeSequenceBase { }
+extension RedBlackTreeSet: RedBlackTreeSequence { }
 
 extension RedBlackTreeSet {
 

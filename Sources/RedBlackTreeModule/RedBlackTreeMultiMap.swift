@@ -20,7 +20,6 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-
 import Foundation
 
 /// `RedBlackTreeMultiMap` は、`Key` 型のキーと `Value` 型の値のペアを格納するための

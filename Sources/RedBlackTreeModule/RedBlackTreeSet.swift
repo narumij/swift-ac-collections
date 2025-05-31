@@ -205,6 +205,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
   public mutating func popFirst() -> Element? {
@@ -215,6 +216,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @discardableResult
   @inlinable
@@ -223,8 +225,7 @@ extension RedBlackTreeSet {
     return _tree.___erase_unique(member) ? member : nil
   }
 
-  /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
-  ///
+  /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -236,8 +237,7 @@ extension RedBlackTreeSet {
     return element
   }
 
-  /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
-  ///
+  /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -249,6 +249,7 @@ extension RedBlackTreeSet {
     return element
   }
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -259,6 +260,7 @@ extension RedBlackTreeSet {
     return remove(at: startIndex)
   }
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -299,6 +301,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
@@ -309,6 +312,7 @@ extension RedBlackTreeSet {
     ___remove(from: lower, to: upper)
   }
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)

@@ -248,7 +248,9 @@ extension RedBlackTreeDictionary {
 // MARK: - Remove（削除）
 
 extension RedBlackTreeDictionary {
+  
   /// 最小キーのペアを取り出して削除
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   @inlinable
   public mutating func popFirst() -> KeyValue? {
     guard !isEmpty else { return nil }
@@ -258,6 +260,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
@@ -271,6 +274,7 @@ extension RedBlackTreeDictionary {
     return value
   }
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
@@ -280,6 +284,7 @@ extension RedBlackTreeDictionary {
     return remove(at: startIndex)
   }
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
@@ -289,6 +294,7 @@ extension RedBlackTreeDictionary {
     return remove(at: index(before: endIndex))
   }
 
+  /// - Important: 削除後は、インデックスが無効になります。
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
@@ -299,6 +305,7 @@ extension RedBlackTreeDictionary {
     return element
   }
 
+  /// - Important: 削除後は、インデックスが無効になります。
   @inlinable
   @discardableResult
   public mutating func remove(at index: RawIndex) -> KeyValue {
@@ -309,6 +316,7 @@ extension RedBlackTreeDictionary {
     return element
   }
 
+  /// - Important: 削除後は、インデックスが無効になります。
   @inlinable
   public mutating func removeSubrange(_ range: Range<Index>) {
     _ensureUnique()
@@ -324,6 +332,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf keyRange: Range<Key>) {
@@ -332,6 +341,7 @@ extension RedBlackTreeDictionary {
     removeSubrange(lower..<upper)
   }
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
@@ -689,20 +699,7 @@ extension RedBlackTreeDictionary.SubSequence: Sequence, Collection, Bidirectiona
 
 extension RedBlackTreeDictionary {
   
-  //  public typealias Indices = Range<Index>
-  //
-  //  @inlinable
-  //  @inline(__always)
-  //  public var indices: Indices {
-  //    startIndex..<endIndex
-  //  }
   public typealias Indices = Tree.___IteratorSequence
-  
-  @inlinable
-  @inline(__always)
-  public var indices: Tree.___IteratorSequence {
-    .init(tree: _tree, start: ___ptr_start(), end: ___ptr_end())
-  }
 }
 
 // MARK: - Raw Index Sequence

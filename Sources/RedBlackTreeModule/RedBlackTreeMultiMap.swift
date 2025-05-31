@@ -198,6 +198,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
   /// 最小キーのペアを取り出して削除
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   @inlinable
   public mutating func popFirst() -> KeyValue? {
     guard !isEmpty else { return nil }
@@ -207,6 +208,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   @inlinable
   @discardableResult
   public mutating func removeFirst(forKey key: Key) -> Bool {
@@ -214,6 +216,7 @@ extension RedBlackTreeMultiMap {
     return _tree.___erase_unique(key)
   }
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   @inlinable
   @discardableResult
   public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
@@ -221,6 +224,7 @@ extension RedBlackTreeMultiMap {
     return _tree.___erase_unique(key)
   }
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   @inlinable
   @discardableResult
   public mutating func removeAll(forKey key: Key) -> Int {
@@ -228,6 +232,7 @@ extension RedBlackTreeMultiMap {
     return _tree.___erase_multi(key)
   }
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   @inlinable
   @discardableResult
   public mutating func removeAll(_unsafeForKey key: Key) -> Int {
@@ -238,6 +243,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
@@ -247,6 +253,7 @@ extension RedBlackTreeMultiMap {
     return remove(at: startIndex)
   }
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
@@ -256,6 +263,7 @@ extension RedBlackTreeMultiMap {
     return remove(at: index(before: endIndex))
   }
 
+  /// - Important: 削除後は、インデックスが無効になります。
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
@@ -266,6 +274,7 @@ extension RedBlackTreeMultiMap {
     return element
   }
 
+  /// - Important: 削除後は、インデックスが無効になります。
   @inlinable
   @discardableResult
   public mutating func remove(at index: RawIndex) -> KeyValue {
@@ -276,6 +285,7 @@ extension RedBlackTreeMultiMap {
     return element
   }
 
+  /// - Important: 削除後は、インデックスが無効になります。
   @inlinable
   public mutating func removeSubrange(_ range: Range<Index>) {
     _ensureUnique()

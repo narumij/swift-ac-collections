@@ -191,7 +191,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   @discardableResult
-  mutating func ___remove(at ptr: _NodePtr) -> Element? {
+  public mutating func ___remove(at ptr: _NodePtr) -> Element? {
     guard
       !___is_null_or_end(ptr),
       _tree_.___is_valid_index(ptr)
@@ -206,7 +206,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   @discardableResult
-  mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
+  public mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
     guard from != .end else {
       return .end
     }
@@ -414,12 +414,39 @@ extension ___RedBlackTreeBase {
 }
 
 extension ___RedBlackTreeBase {
-
+  
   func ___convert(_ rawIndex: RawIndex) -> Index {
     _tree_.makeIndex(rawValue: rawIndex.rawValue)
   }
-
+  
   func ___convert(_ rawIndex: Index) -> RawIndex {
     _tree_.makeRawIndex(rawValue: rawIndex.rawValue)
+  }
+}
+
+extension ___RedBlackTreeBase {
+  
+  @inlinable
+  @inline(__always)
+  public mutating func ___element(at ptr: _NodePtr) -> Element? {
+    guard
+      !___is_null_or_end(ptr),
+      _tree_.___is_valid_index(ptr)
+    else {
+      return nil
+    }
+    return _tree_[ptr]
+  }
+  
+  @inlinable
+  @inline(__always)
+  public __consuming func ___makeIterator() -> NodeIterator<Tree> {
+    NodeIterator(tree: _tree_, start: _tree_.__begin_node, end: _tree_.__end_node())
+  }
+  
+  @inlinable
+  @inline(__always)
+  public __consuming func ___makeIterator() -> NodeElementIterator<Tree> {
+    NodeElementIterator(tree: _tree_, start: _tree_.__begin_node, end: _tree_.__end_node())
   }
 }

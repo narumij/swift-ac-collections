@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct NodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
+struct KeyIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
   let _tree_: Tree
@@ -51,13 +51,13 @@ struct NodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
   }
   
   @inlinable
-  public __consuming func reversed() -> ReversedNodeIterator<Tree> {
+  public __consuming func reversed() -> ReversedKeyIterator<Tree> {
     .init(tree: _tree_, start: _start, end: _end)
   }
 }
 
 public
-struct ReversedNodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
+struct ReversedKeyIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
   let _tree_: Tree

@@ -318,3 +318,30 @@ extension ___SubSequenceBase {
     _tree_.makeIndices(start: _start, end: _end)
   }
 }
+
+extension ___SubSequenceBase {
+  
+  @inlinable
+  @inline(__always)
+  mutating func ___element(at ptr: _NodePtr) -> Element? {
+    guard
+      !___is_null_or_end(ptr),
+      _tree_.___is_valid_index(ptr)
+    else {
+      return nil
+    }
+    return _tree_[ptr]
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func ___makeIterator() -> NodeIterator<Tree> {
+    NodeIterator(tree: _tree_, start: _start, end: _end)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public __consuming func ___makeIterator() -> NodeElementIterator<Tree> {
+    NodeElementIterator(tree: _tree_, start: _tree_.__begin_node, end: _tree_.__end_node())
+  }
+}

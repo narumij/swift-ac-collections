@@ -62,7 +62,7 @@ struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorPr
   public typealias Element = Tree.Element
 
   @usableFromInline
-  let _tree: Tree
+  let _tree_: Tree
 
   @usableFromInline
   var _current, _next, _start, _begin: _NodePtr
@@ -70,11 +70,11 @@ struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorPr
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self._tree = tree
+    self._tree_ = tree
     self._current = end
-    self._next = _tree.__tree_prev_iter(end)
+    self._next = _tree_.__tree_prev_iter(end)
     self._start = start
-    self._begin = _tree.__begin_node
+    self._begin = _tree_.__begin_node
   }
   
   @inlinable
@@ -82,7 +82,7 @@ struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorPr
   public mutating func next() -> Element? {
     guard _current != _start else { return nil }
     _current = _next
-    _next = _current != _begin ? _tree.__tree_prev_iter(_current) : .nullptr
-    return _tree[_current]
+    _next = _current != _begin ? _tree_.__tree_prev_iter(_current) : .nullptr
+    return _tree_[_current]
   }
 }

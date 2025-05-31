@@ -21,16 +21,16 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeBaseUnique: ValueComparer, CompareUniqueTrait {
+protocol ___RedBlackTreeUnique: ValueComparer, CompareUniqueTrait {
   var _tree: Tree { get }
 }
 
 @usableFromInline
-protocol ___RedBlackTreeBaseMulti: ValueComparer, CompareMultiTrait {
+protocol ___RedBlackTreeMulti: ValueComparer, CompareMultiTrait {
   var _tree: Tree { get }
 }
 
-extension ___RedBlackTreeBaseUnique {
+extension ___RedBlackTreeUnique {
   
   ///（重複なし）
   @inlinable
@@ -42,7 +42,7 @@ extension ___RedBlackTreeBaseUnique {
   }
 }
 
-extension ___RedBlackTreeBaseMulti {
+extension ___RedBlackTreeMulti {
 
   /// （重複あり）
   @inlinable

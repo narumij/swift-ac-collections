@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol RedBlackTreeSequence: RedBlackTreeSequenceBase,
+protocol ___RedBlackTreeSequence: RedBlackTreeSequenceBase,
   Sequence & Collection & BidirectionalCollection
 where
   Tree: Tree_ForEachProtocol & Tree_BidirectionalCollectionProtocol & Tree_IndicesProtocol
@@ -36,7 +36,7 @@ where
   var _tree: Tree { get }
 }
 
-extension RedBlackTreeSequence {
+extension ___RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)
@@ -45,7 +45,7 @@ extension RedBlackTreeSequence {
   }
 }
 
-extension RedBlackTreeSequence {
+extension ___RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)
@@ -54,7 +54,7 @@ extension RedBlackTreeSequence {
   }
 }
 
-extension RedBlackTreeSequence {
+extension ___RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)
@@ -69,7 +69,7 @@ extension RedBlackTreeSequence {
   }
 }
 
-extension RedBlackTreeSequence {
+extension ___RedBlackTreeSequence {
 
   /// - Complexity: O(*n*)
   @inlinable
@@ -82,7 +82,7 @@ extension RedBlackTreeSequence {
   }
 }
 
-extension RedBlackTreeSequence {
+extension ___RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)
@@ -165,7 +165,7 @@ extension RedBlackTreeSequence {
   }
 }
 
-extension RedBlackTreeSequence {
+extension ___RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)
@@ -180,7 +180,7 @@ extension RedBlackTreeSequence {
   }
 }
 
-extension RedBlackTreeSequence {
+extension ___RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)
@@ -189,7 +189,7 @@ extension RedBlackTreeSequence {
   }
 }
 
-extension RedBlackTreeSequence {
+extension ___RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)

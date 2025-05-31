@@ -57,8 +57,9 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 
 extension RedBlackTreeMultiMap: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeStorageLifetime {}
-extension RedBlackTreeMultiMap: ___RedBlackTreeBaseMulti {}
+extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
+extension RedBlackTreeMultiMap: ___RedBlackTreeSequence { }
 
 // MARK: - Initialization（初期化）
 
@@ -496,7 +497,6 @@ extension RedBlackTreeMultiMap {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeMultiMap: RedBlackTreeSequence { }
 extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection { }
 
 // MARK: - Range Access
@@ -583,7 +583,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap: RedBlackTreeSubSequenceBase { }
 
-extension RedBlackTreeMultiMap.SubSequence: RedBlackTreeSubSequence {
+extension RedBlackTreeMultiMap.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeMultiMap
   public typealias Element = Tree.Element
   public typealias Indices = Tree.Indices

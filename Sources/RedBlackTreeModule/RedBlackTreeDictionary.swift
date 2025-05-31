@@ -76,8 +76,9 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeStorageLifetime {}
-extension RedBlackTreeDictionary: ___RedBlackTreeBaseUnique {}
+extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
+extension RedBlackTreeDictionary: ___RedBlackTreeSequence { }
 
 // MARK: - Initialization（初期化）
 
@@ -605,7 +606,6 @@ extension RedBlackTreeDictionary {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeDictionary: RedBlackTreeSequence { }
 extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection { }
 
 // MARK: - Range Access
@@ -674,7 +674,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: RedBlackTreeSubSequenceBase { }
 
-extension RedBlackTreeDictionary.SubSequence: RedBlackTreeSubSequence {
+extension RedBlackTreeDictionary.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeDictionary
   public typealias Element = Tree.Element
   public typealias Indices = Tree.Indices

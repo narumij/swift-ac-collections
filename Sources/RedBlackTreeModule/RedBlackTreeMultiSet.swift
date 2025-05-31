@@ -54,8 +54,9 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 
 extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeStorageLifetime {}
-extension RedBlackTreeMultiSet: ___RedBlackTreeBaseMulti {}
+extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
+extension RedBlackTreeMultiSet: ___RedBlackTreeSequence { }
 
 // MARK: - Initialization（初期化）
 
@@ -400,7 +401,6 @@ extension RedBlackTreeMultiSet {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeMultiSet: RedBlackTreeSequence { }
 extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection { }
 
 // MARK: - Range Access
@@ -477,7 +477,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet: RedBlackTreeSubSequenceBase { }
 
-extension RedBlackTreeMultiSet.SubSequence: RedBlackTreeSubSequence {
+extension RedBlackTreeMultiSet.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeMultiSet
   public typealias Element = Tree.Element
   public typealias Indices = Tree.Indices

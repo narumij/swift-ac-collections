@@ -758,7 +758,7 @@ extension ___RedBlackTree.___Tree: ___IteratorProtocol {
 
 extension ___RedBlackTree.___Tree: ___IteratorSequcenceProtocol {
   @inlinable @inline(__always)
-  public func makeIndices(start: _NodePtr, end: _NodePtr) -> IterSequence {
+  public func makeIndices(start: _NodePtr, end: _NodePtr) -> ___IteratorSequence {
     .init(tree: self, start: start, end: end)
   }
 }

@@ -502,11 +502,11 @@ extension RedBlackTreeMultiSet {
 //    startIndex..<endIndex
 //  }
   
-  public typealias Indices = Tree.IterSequence
+  public typealias Indices = Tree.___IteratorSequence
 
   @inlinable
   @inline(__always)
-  public var indices: Tree.IterSequence {
+  public var indices: Tree.___IteratorSequence {
     .init(tree: _tree, start: ___ptr_start(), end: ___ptr_end())
   }
 }

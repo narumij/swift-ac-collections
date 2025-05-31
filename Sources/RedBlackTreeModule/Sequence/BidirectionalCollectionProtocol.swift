@@ -22,7 +22,6 @@
 
 @usableFromInline
 protocol NodeValidationProtocol {
-
   func ___is_valid(_ p: _NodePtr) -> Bool
   func ___is_valid_index(_ i: _NodePtr) -> Bool
 }

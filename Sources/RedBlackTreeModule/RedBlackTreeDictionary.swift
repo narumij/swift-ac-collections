@@ -353,9 +353,10 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf keyRange: Range<Key>) {
-    let lower = lowerBound(keyRange.lowerBound)
-    let upper = lowerBound(keyRange.upperBound)
-    removeSubrange(lower..<upper)
+    _strongEnsureUnique()
+    let lower = ___ptr_lower_bound(keyRange.lowerBound)
+    let upper = ___ptr_lower_bound(keyRange.upperBound)
+    ___remove(from: lower, to: upper)
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -363,9 +364,10 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
-    let lower = lowerBound(keyRange.lowerBound)
-    let upper = upperBound(keyRange.upperBound)
-    removeSubrange(lower..<upper)
+    _strongEnsureUnique()
+    let lower = ___ptr_lower_bound(keyRange.lowerBound)
+    let upper = ___ptr_upper_bound(keyRange.upperBound)
+    ___remove(from: lower, to: upper)
   }
 }
 

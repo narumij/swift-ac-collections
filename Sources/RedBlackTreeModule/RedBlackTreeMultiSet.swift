@@ -277,18 +277,20 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf elementRange: Range<Element>) {
-    let lower = lowerBound(elementRange.lowerBound)
-    let upper = lowerBound(elementRange.upperBound)
-    removeSubrange(lower..<upper)
+    _strongEnsureUnique()
+    let lower = ___ptr_lower_bound(elementRange.lowerBound)
+    let upper = ___ptr_lower_bound(elementRange.upperBound)
+    ___remove(from: lower, to: upper)
   }
 
   /// - Complexity: O(log *n* : *k*)
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
-    let lower = lowerBound(elementRange.lowerBound)
-    let upper = upperBound(elementRange.upperBound)
-    removeSubrange(lower..<upper)
+    _strongEnsureUnique()
+    let lower = ___ptr_lower_bound(elementRange.lowerBound)
+    let upper = ___ptr_upper_bound(elementRange.upperBound)
+    ___remove(from: lower, to: upper)
   }
 }
 

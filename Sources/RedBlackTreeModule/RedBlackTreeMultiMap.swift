@@ -347,18 +347,20 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf keyRange: Range<Key>) {
-    let lower = lowerBound(keyRange.lowerBound)
-    let upper = lowerBound(keyRange.upperBound)
-    removeSubrange(lower..<upper)
+    _strongEnsureUnique()
+    let lower = ___ptr_lower_bound(keyRange.lowerBound)
+    let upper = ___ptr_lower_bound(keyRange.upperBound)
+    ___remove(from: lower, to: upper)
   }
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
-    let lower = lowerBound(keyRange.lowerBound)
-    let upper = upperBound(keyRange.upperBound)
-    removeSubrange(lower..<upper)
+    _strongEnsureUnique()
+    let lower = ___ptr_lower_bound(keyRange.lowerBound)
+    let upper = ___ptr_upper_bound(keyRange.upperBound)
+    ___remove(from: lower, to: upper)
   }
 }
 

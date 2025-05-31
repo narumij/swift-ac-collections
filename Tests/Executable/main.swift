@@ -326,10 +326,10 @@ for i in tree.reversed() {
   total &+= i
 }
 print(total)
-#else
+#elseif true
 var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 var total = 0
-for i in (tree.startIndex ..< tree.endIndex).reversed() {
+for i in tree[tree.startIndex ..< tree.endIndex].indices {
   total &+= tree[i]
 }
 print(total)

@@ -22,15 +22,28 @@
 
 import Foundation
 
-public enum ___RedBlackTree {}
-
-extension ValueComparer {
-  public typealias Tree = ___RedBlackTree.___Tree<Self>
+// 単に公開可能なTreeを知っているというだけの状態
+// 下のモノと混ぜたかったが混ぜるとなぜかコンパイルエラーとなるのでわけてある
+public protocol ___RedBlackTree {
+  associatedtype Tree
 }
 
+// コレクション実装の基点
+public protocol ___RedBlackTree___ {
+  associatedtype Tree
+}
+
+// コレクションの内部実装
 @usableFromInline
-protocol ___RedBlackTreeBase: ValueComparer {
+protocol ___RedBlackTreeBase:
+  ___RedBlackTree___,
+  ValueComparer
+where
+  Tree == ___Tree<Self>,
+  Storage == ___Storage<Self>
+{
   associatedtype Element
+  associatedtype Storage
   var _storage: Tree.Storage { get set }
 }
 
@@ -70,7 +83,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___iter(_ p: _NodePtr) -> ___Iterator {
-//    .init(__tree: _tree, rawValue: p)
+    //    .init(__tree: _tree, rawValue: p)
     _tree.makeIndex(rawValue: p)
   }
 
@@ -346,7 +359,7 @@ extension ___RedBlackTreeBase {
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-  extension ___RedBlackTreeStorageLifetime {
+  extension ___RedBlackTreeCopyOnWrite {
     @inlinable
     public mutating func _checkUnique() -> Bool {
       _isKnownUniquelyReferenced_LV2()
@@ -369,19 +382,19 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___std_erase(_ ptr: ___Iterator) -> ___Iterator {
-//    Tree.___Iterator(__tree: _tree, rawValue: _tree.erase(ptr.rawValue))
+    //    Tree.___Iterator(__tree: _tree, rawValue: _tree.erase(ptr.rawValue))
     _tree.makeIndex(rawValue: _tree.erase(ptr.rawValue))
   }
 }
 
 extension ___RedBlackTreeBase {
-  
+
   @inlinable
   @inline(__always)
   public var ___key_comp: (_Key, _Key) -> Bool {
     _tree.value_comp
   }
-  
+
   @inlinable
   @inline(__always)
   public var ___value_comp: (Element, Element) -> Bool {

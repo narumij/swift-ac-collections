@@ -1,3 +1,25 @@
+// Copyright 2024 narumij
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2024 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+
 import Foundation
 
 @usableFromInline
@@ -6,17 +28,18 @@ protocol PointerCompareProtocol: ValueProtocol {
 }
 
 @usableFromInline
-protocol PointerCompareHogeProtocol: ValueProtocol {
+protocol CompareBothProtocol: CompareUniqueProtocol, CompareMultiProtocol {
+  var isMulti: Bool { get }
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
   func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
 }
 
-extension ___RedBlackTree.___Tree {
+extension CompareBothProtocol {
   @inlinable @inline(__always)
   func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     assert(l == .end || __parent_(l) != .nullptr)
     assert(r == .end || __parent_(r) != .nullptr)
-    return VC.isMulti ? ___ptr_comp_multi(l, r) : ___ptr_comp_unique(l, r)
+    return isMulti ? ___ptr_comp_multi(l, r) : ___ptr_comp_unique(l, r)
   }
 }
 
@@ -149,6 +172,13 @@ extension CompareProtocol {
     !___ptr_comp(l, r)
   }
 
+  @inlinable
+  @inline(__always)
+  func ___ptr_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool {
+//    l == p || (___ptr_comp(l, p) && !___ptr_comp(r, p))
+    ___ptr_less_than_or_equal(l, p) && ___ptr_less_than(p, r)
+  }
+  
   @inlinable
   @inline(__always)
   func ___ptr_closed_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool {

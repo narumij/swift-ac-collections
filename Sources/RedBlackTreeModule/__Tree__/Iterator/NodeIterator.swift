@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct RawIndexIterator<Tree: ___IterateNextProtocol & ___RawIndexProtocol>: IteratorProtocol {
+struct NodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
   let _tree: Tree
@@ -35,30 +35,30 @@ struct RawIndexIterator<Tree: ___IterateNextProtocol & ___RawIndexProtocol>: Ite
     self._tree = tree
     self._current = start
     self._end = end
-    self._next = start == .end ? .end : tree.__tree_next(start)
+    self._next = start == .end ? .end : tree.__tree_next_iter(start)
   }
   
   @inlinable
   @inline(__always)
-  public mutating func next() -> RawIndex? {
+  public mutating func next() -> _NodePtr? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
-      _next = _next == _end ? _end : _tree.__tree_next(_next)
+      _next = _next == _end ? _end : _tree.__tree_next_iter(_next)
     }
-    return _tree.makeRawIndex(rawValue: _current)
+    return _current
   }
 }
 
 public
-struct ReversedRawIndexIterator<Tree: ___IterateNextProtocol & ___RawIndexProtocol>: Sequence, IteratorProtocol {
+struct ReversedNodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
   let _tree: Tree
 
   @usableFromInline
   var _current, _next, _start, _begin: _NodePtr
-
+  
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -71,10 +71,10 @@ struct ReversedRawIndexIterator<Tree: ___IterateNextProtocol & ___RawIndexProtoc
   
   @inlinable
   @inline(__always)
-  public mutating func next() -> RawIndex? {
+  public mutating func next() -> _NodePtr? {
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? _tree.__tree_prev_iter(_current) : .nullptr
-    return _tree.makeRawIndex(rawValue: _current)
+    return _current
   }
 }

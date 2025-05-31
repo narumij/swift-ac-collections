@@ -96,10 +96,10 @@ print(dict) // 例: [apple: 5, banana: 3]
 この内部配列のインデックス同士を比較した場合、順序と結果が一致しません。
 
 Swift標準のプロトコルではインデックス比較と順序の一致を要求するため、抽象化されたインデックスを用いています。
-これが`Index`です。実際的にはノードへのポインタやC++のイテレータのような働きをします。
+これが`Index`です。実際的にはC++のイテレータのような働きをします。
 赤黒木モジュールの大半のAPIではこの抽象化された`Index`を用いています。
 
-他に`RawIndex`があります、`RawIndex`同士の比較はできませんが軽量で、要素アクセスや要素削除に利用できます。
+他に`RawIndex`があります。`RawIndex`同士の比較はできませんが軽量で、要素アクセスや要素削除に利用できます。
 一部のAPIは`RawIndex`を用いています。
 
 どちらも単なるIntによるIndexとは異なることと、RawIndexは限られた目的にしか使えないことに注意してください。
@@ -128,10 +128,17 @@ Swift標準のプロトコルではインデックス比較と順序の一致を
 0. 普通に削除する
 
 この問題を迂回しない楽な使い方です。
-Rangeシーケンスの厳しい検査に耐える回避コードの追加により可能になりました。
-書き急ぐ際に重宝する方法ですが、オーバーヘッドが大きく、他と比べて**遅い**です。
-標準的な操作でありながら、Swiftの標準ライブラリに対するハック的な実装となっています。
-Swiftのアップデートにともなって不安定になる可能性もあり、一般利用には適しません。
+紆余曲折のすえに、安定してできるようになりました。
+
+IndexをStridableにした場合とても遅かったのですが（1要素毎にO(log *n*)等）、
+イテレータやシーケンスに別途用意したモノを利用することで速度を稼いでいます。
+
+`..<` 演算子は通常Rangeを生成しますが、型推論次第で別のシーケンスとなります。
+
+つまり、削除対策済みのシーケンスやイテレータに置き換わるため、意識せずに使えます。
+
+しかし、対策済みのシーケンスやイテレータから外れた使い方をする場合、
+このあとの1~6のいずれかが役に立つと思います。
 
 ```Swift
 var tree0: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
@@ -169,9 +176,9 @@ for i in tree0.indices.reversed() {
 print(tree0.count) // 0
 ```
 
-1. whileループで削除する
+1. 削除の前に次のインデックスを取得する
 
-この問題を迂回する、標準APIによるベーシックな方法です。
+この問題を迂回する、ベーシックな方法です。対策済みイテレータも内部で同じ事をしています。
 
 ```Swift
 var tree1: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
@@ -184,29 +191,11 @@ while i != tree1.endIndex { // endIndexは不変
 }
 print(tree1.count) // 0
 ```
-
-~~2. enumerated()で削除する~~
-
-~~値とノードインデックスを列挙して、削除操作を行うことができます。
-削除時のインデックス無効対策がイテレータに施してあるので、以下のように書いて問題ありません。~~
-
-enumerated()の型が原義に沿っていないことから、誤用の懸念があり、廃止します。
-`___enumerated`()と別の名前で残していますが、名前から推察できるとおり、半非公開扱いとします。
-
-```Swift
-var tree2: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
-for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].___enumerated() { i, _ in
-  tree2.remove(at: i) // この時点でiは無効だが、イテレータは内部で次のインデックスを保持している
-  print(tree2.isValid(index: i)) // false
-  // iはRedBlackTreeSet<Int>.RawIndex型
-}
-print(tree2.count) // 0
-```
-
-3. `rawIndices`で削除する
+2. `indices`または`rawIndices`で削除する
 
 RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
+`indices`での削除はケース0と等価です。
 
 ```Swift
 var tree3: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
@@ -218,9 +207,26 @@ for (i,_) in tree3[tree3.startIndex ..< tree3.endIndex].rawIndices { i in
 print(tree3.count) // 0
 ```
 
+3. rawIndexedElementsでループして削除する
+
+値とインデックス(RawIndex)を列挙して、削除操作を行うことができます。
+削除以外に何か処理が必要な場合に使います。たとえばABC385D等。
+
+```Swift
+var tree2: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+for (i,_) in tree2[tree2.startIndex ..< tree2.endIndex].rawIndexedElements {
+  tree2.remove(at: i) // この時点でiは無効だが、イテレータは内部で次のインデックスを保持している
+  print(tree2.isValid(index: i)) // false
+  // iはRedBlackTreeSet<Int>.RawIndex型
+}
+print(tree2.count) // 0
+```
+
 4. removeSubrange(_:Range<Index>)で削除する
 
 インデックスの区間で削除対象を指定することが可能です。
+基本的にループを回すよりも、この方法で消す方が実行速度としては(定数倍の面で)速いです。
+計算量としては余り変わりません。
 
 ```Swift
 var tree4: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
@@ -231,7 +237,7 @@ XCTAssertEqual(tree4.count, 0)
 5. remove(contentsOf:Range<Element>)を使用して削除する。
 
 値の区間で削除対象を指定することが可能です。
-
+境界を探索する分すこし実行時間はかさみますが、これも速いです。
 
 ```Swift
 var tree5: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
@@ -259,8 +265,7 @@ while idx != tree6.endIndex {
 }
 ```
 
-比較演算子の計算量がそこそこあるためおすすめできませんが、
-C++のイテレータとは異なり比較でループを回すこともできます。 
+比較演算子の計算量が（特に重複保持型の場合に）そこそこあるためおすすめできませんが、比較でループを回すこともできます。 
 
 ```Swift
 var tree6: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
@@ -302,7 +307,7 @@ for member in multiset.map({ $0 }) {
 赤黒木モジュールの標準コンテナとの比較やSTLとの比較で漏れを潰していて未実装に気付いたため用意しました。
 このコンテナを対象とする問題を知らないため、AC実績もなく、APIやチューニングが甘い状態ですが、ここまでの他のコンテナをベースとしてるため、そこそこの性能には仕上がっています。
 辞書がマルチセットに退化したようなAPIとなっており、キーアクセスでの返却がサブシーケンスなこととあわせて、辞書と思うと絶望的に使いにくいものとなっています。
-lowerBound, upperBound, equalRange, indices, enumeratedを駆使する必要がありそうです。
+現状、lowerBound, upperBound, equalRange, indices, enumeratedを駆使して使う必要があります。
 
 ### PermutationModule
 
@@ -326,7 +331,7 @@ ABC328Eという問題がありまして、C++で書かれた解説コードを�
 
 28!を2秒で用意できるかどうかはライブラリの問題では無く、そもそも論でした。
 
-勘違いの結果、オーバーヘッドが少ない実装を追い求め、結果としてとても軽量な実装を生み出すこととなりました。おまけでunsafePermutationsというものもありますが、どちらもコピーオンライトをキャンセルして行わない動作となっています。
+勘違いの結果、オーバーヘッドが少ない実装を追い求め、結果としてとても軽量な実装を生み出すこととなりました。おまけでunsafePermutationsとunsafeNextPermutationsというものもありますが、コピーオンライトをキャンセルして行わない動作となっています。
 
 ## アンダースコア付き宣言について
 

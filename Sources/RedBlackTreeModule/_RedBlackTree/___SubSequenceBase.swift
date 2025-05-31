@@ -21,33 +21,36 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol RedBlackTreeSubSequence: Sequence & Collection & BidirectionalCollection
+protocol ___SubSequenceBase: ___RedBlackTree & Sequence & Collection
+    & BidirectionalCollection
 where
-  Tree == Base.Tree,
-  Index == Base.Index,
+  Base: ___RedBlackTreeSubSequence,
+  Tree == ___Tree<Base>,
+  Index == Tree.Index,
   Indices == Tree.Indices,
   Element == Tree.Element,
-  Iterator == ElementIterator<Base.Tree>,
-  Self: RedBlackTreeSequenceBase,
+  Iterator == ElementIterator<Tree>,
   SubSequence == Self
 {
-  associatedtype Base: RedBlackTreeSubSequenceBase
-  var _tree: Base.Tree { get }
+  associatedtype Base
+  var _tree: Tree { get }
   var _start: _NodePtr { get set }
   var _end: _NodePtr { get set }
-  init(tree: Base.Tree, start: _NodePtr, end: _NodePtr)
+  init(tree: Tree, start: _NodePtr, end: _NodePtr)
 }
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable
-  public func makeIterator() -> ElementIterator<Base.Tree> {
+  public func makeIterator() -> ElementIterator<Tree> {
     .init(tree: _tree, start: _start, end: _end)
   }
 }
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
+  /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
@@ -55,27 +58,30 @@ extension RedBlackTreeSubSequence {
   }
 }
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
+  /// - Complexity: O(log *n* + *k*)
   @inlinable @inline(__always)
   public var count: Int {
     _tree.___distance(from: _start, to: _end)
   }
 }
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   public var startIndex: Index {
     index(rawValue: _start)
   }
 
+  /// - Complexity: O(1)
   public var endIndex: Index {
     index(rawValue: _end)
   }
 }
 
-extension RedBlackTreeSubSequence {
-  
+extension ___SubSequenceBase {
+
   // 断念
   //    @inlinable
   //    public func lowerBound(_ member: Element) -> Index {
@@ -88,7 +94,7 @@ extension RedBlackTreeSubSequence {
   //    }
 }
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
   //  public typealias Index = Index
 
@@ -98,41 +104,44 @@ extension RedBlackTreeSubSequence {
   }
 }
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
 
     _read {
-//      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
-//        _tree.___ptr_less_than(position.rawValue, _end)
-//      else {
-//        fatalError(.outOfRange)
-//      }
+      //      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
+      //        _tree.___ptr_less_than(position.rawValue, _end)
+      //      else {
+      //        fatalError(.outOfRange)
+      //      }
       yield _tree[position.rawValue]
     }
   }
 }
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: RawIndex) -> Element {
     @inline(__always)
     _read {
-//      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
-//        _tree.___ptr_less_than(position.rawValue, _end)
-//      else {
-//        fatalError(.outOfRange)
-//      }
+      //      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
+      //        _tree.___ptr_less_than(position.rawValue, _end)
+      //      else {
+      //        fatalError(.outOfRange)
+      //      }
       yield _tree[position.rawValue]
     }
   }
 }
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
+  /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
@@ -148,29 +157,32 @@ extension RedBlackTreeSubSequence {
   }
 }
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
-  // この実装がないと、迷子になる?
+  /// - Complexity: O(log *n* + *k*)
   @inlinable @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     _tree.___distance(from: start.rawValue, to: end.rawValue)
   }
 }
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable @inline(__always)
   public func index(before i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
     index(rawValue: _tree.___index(before: i.rawValue))
   }
 
+  /// - Complexity: O(1)
   @inlinable @inline(__always)
   public func index(after i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
     index(rawValue: _tree.___index(after: i.rawValue))
   }
 
+  /// - Complexity: O(*d*)
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
@@ -180,8 +192,9 @@ extension RedBlackTreeSubSequence {
   }
 }
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
@@ -189,6 +202,7 @@ extension RedBlackTreeSubSequence {
     _tree.___formIndex(after: &i.rawValue)
   }
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
@@ -196,6 +210,7 @@ extension RedBlackTreeSubSequence {
     _tree.___formIndex(before: &i.rawValue)
   }
 
+  /// - Complexity: O(*d*)
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
@@ -203,6 +218,7 @@ extension RedBlackTreeSubSequence {
     _tree.___formIndex(&i.rawValue, offsetBy: distance)
   }
 
+  /// - Complexity: O(*d*)
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
@@ -219,13 +235,15 @@ extension RedBlackTreeSubSequence {
 
 // MARK: - Raw Index Sequence
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
+  ///
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var rawIndices: RawIndexSequence<Self> {
+  public var rawIndices: RawIndexSequence<Tree> {
     RawIndexSequence(
       tree: _tree,
       start: _start,
@@ -235,10 +253,11 @@ extension RedBlackTreeSubSequence {
 
 // MARK: - Raw Indexed Sequence
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<Self> {
+  public var rawIndexedElements: RawIndexedSequence<Tree> {
     RawIndexedSequence(
       tree: _tree,
       start: _start,
@@ -247,14 +266,14 @@ extension RedBlackTreeSubSequence {
 
   @available(*, deprecated, renamed: "rawIndexedElements")
   @inlinable @inline(__always)
-  public func enumerated() -> RawIndexedSequence<Self> {
+  public func enumerated() -> RawIndexedSequence<Tree> {
     rawIndexedElements
   }
 }
 
 // MARK: - Utility
 
-extension RedBlackTreeSubSequence {
+extension ___SubSequenceBase {
 
   @inlinable
   @inline(__always)
@@ -265,12 +284,14 @@ extension RedBlackTreeSubSequence {
     return _tree.___ptr_closed_range_contains(_start, _end, i)
   }
 
+  /// - Complexity: O(lon *n*)
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
     ___is_valid_index(index: i.___unchecked_rawValue)
   }
 
+  /// - Complexity: O(lon *n*)
   @inlinable
   @inline(__always)
   public func isValid(index i: RawIndex) -> Bool {
@@ -278,8 +299,9 @@ extension RedBlackTreeSubSequence {
   }
 }
 
-extension RedBlackTreeSubSequence {
-  
+extension ___SubSequenceBase {
+
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public __consuming func reversed() -> ReversedElementIterator<Self.Tree> {
@@ -287,8 +309,9 @@ extension RedBlackTreeSubSequence {
   }
 }
 
-extension RedBlackTreeSubSequence {
-  
+extension ___SubSequenceBase {
+
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var indices: Indices {

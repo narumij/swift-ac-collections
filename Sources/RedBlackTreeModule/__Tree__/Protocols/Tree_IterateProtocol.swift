@@ -20,9 +20,24 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@usableFromInline
-protocol RedBlackTreeIndex: RedBlackTreeMutableRawValue, RedBlackTreeUncheckedRawValue {
-  associatedtype Tree
-  associatedtype Element // クリーンビルド時に一度失敗するケースの回避
-  init(__tree: Tree, rawValue: _NodePtr)
+public protocol Tree_IterateProtocol {
+  associatedtype Element
+  var __begin_node: _NodePtr { get }
+  func __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
+  func __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
+  subscript(_ pointer: _NodePtr) -> Element { get }
+}
+
+public protocol Tree_IndexProtocol {
+  associatedtype Index
+  func makeIndex(rawValue: _NodePtr) -> Index
+}
+
+public protocol Tree_RawIndexProtocol {
+  func makeRawIndex(rawValue: _NodePtr) -> RawIndex
+}
+
+public protocol Tree_IndicesProtocol {
+  associatedtype Indices
+  func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices
 }

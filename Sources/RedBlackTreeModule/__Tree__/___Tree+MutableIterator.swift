@@ -22,8 +22,11 @@
 
 import Foundation
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
+  @usableFromInline
+  typealias Storage = ___Storage<VC>
+  
   @frozen
   @usableFromInline
   struct ___MutableIterator {
@@ -41,7 +44,7 @@ extension ___RedBlackTree.___Tree {
 
     @inlinable
     @inline(__always)
-    internal init(_storage: Tree.Storage) {
+    internal init(_storage: ___Storage<VC>) {
       self._storage = _storage
       (__parent, __child) = _storage.tree.___max_ref()
     }

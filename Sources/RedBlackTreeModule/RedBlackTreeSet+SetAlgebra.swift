@@ -59,9 +59,10 @@ extension RedBlackTreeSet: SetAlgebra {
     }
   }
 
+  /// - Complexity: O(*n* + *m*)
   @inlinable
   public mutating func formUnion(_ other: __owned RedBlackTreeSet<Element>) {
-    let ___storage: Tree.Storage = .create(withCapacity: 0)
+    let ___storage: Storage = .create(withCapacity: 0)
     var __result: Tree.___MutableIterator = .init(_storage: ___storage)
     var (__first1, __last1) = (___iter_start(), ___iter_end())
     var (__first2, __last2) = (other.___iter_start(), other.___iter_end())
@@ -87,10 +88,11 @@ extension RedBlackTreeSet: SetAlgebra {
     _storage = ___storage
   }
 
+  /// - Complexity: O(*n* + *m*)
   @inlinable
   public mutating func formIntersection(_ other: RedBlackTreeSet<Element>) {
     // lower_boundを使う方法があるが、一旦楽に実装できそうな方からにしている
-    let ___storage: Tree.Storage = .create(withCapacity: 0)
+    let ___storage: Storage = .create(withCapacity: 0)
     var __result: Tree.___MutableIterator = .init(_storage: ___storage)
     var (__first1, __last1) = (___iter_start(), ___iter_end())
     var (__first2, __last2) = (other.___iter_start(), other.___iter_end())
@@ -109,9 +111,10 @@ extension RedBlackTreeSet: SetAlgebra {
     _storage = ___storage
   }
 
+  /// - Complexity: O(*n* + *m*)
   @inlinable
   public mutating func formSymmetricDifference(_ other: __owned RedBlackTreeSet<Element>) {
-    let ___storage: Tree.Storage = .create(withCapacity: 0)
+    let ___storage: Storage = .create(withCapacity: 0)
     var __result: Tree.___MutableIterator = .init(_storage: ___storage)
     var (__first1, __last1) = (___iter_start(), ___iter_end())
     var (__first2, __last2) = (other.___iter_start(), other.___iter_end())

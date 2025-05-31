@@ -126,7 +126,7 @@ extension MemberProtocol {
   }
 
   @inlinable
-  public func
+  func
     __tree_next(_ __x: _NodePtr) -> _NodePtr
   {
     assert(__x != .nullptr, "node shouldn't be null")
@@ -141,7 +141,7 @@ extension MemberProtocol {
   }
 
   @inlinable
-  func
+  public func
     __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
   {
     assert(__x != .nullptr, "node shouldn't be null")

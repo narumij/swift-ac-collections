@@ -244,6 +244,24 @@ final class MultiMapEtcTests: XCTestCase {
       hoge.map { $0.1 },
       (0..<100_000).map { $0 })
   }
+  
+  func testComment() throws {
+    /// `RedBlackTreeMultiMap` を使用する例
+    var multimap = RedBlackTreeMultiMap<String, Int>()
+    multimap.insert(key: "apple", value: 5)
+    multimap.insert(key: "banana", value: 3)
+    multimap.insert(key: "cherry", value: 7)
+    
+    // キーを使用して値にアクセス
+    let values = multimap.values(forKey: "banana")
+    
+    values.forEach { value in
+      print("banana の値は \(value) です。") // 出力例: banana の値は 3 です。
+    }
+    
+    // キーと値のペアを削除
+    multimap.removeFirst(forKey: "apple")
+  }
 
   func testPerformanceExample() throws {
     // This is an example of a performance test case.

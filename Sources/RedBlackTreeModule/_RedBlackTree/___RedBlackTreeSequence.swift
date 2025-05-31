@@ -21,30 +21,33 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol RedBlackTreeSequence: RedBlackTreeSequenceBase, Sequence & Collection & BidirectionalCollection
+protocol ___RedBlackTreeSequence: ___RedBlackTree, ValueComparer, Sequence & Collection & BidirectionalCollection
 where
-  Tree: BeginNodeProtocol & EndNodeProtocol & ___ForEachProtocol & DistanceProtocol & ___CollectionProtocol & ___IteratorSequcenceProtocol,
-  Element == Tree.Element,
-  Index: RedBlackTreeIndex,
-Index.Tree == Tree
+  Tree == ___Tree<Self>,
+  Index == Tree.Index,
+  Indices == Tree.Indices,
+  Element == Tree.Element
 {
   associatedtype Tree
   associatedtype Index
+  associatedtype Indices
   associatedtype Element
   var _tree: Tree { get }
 }
 
-extension RedBlackTreeSequence {
+extension ___RedBlackTreeSequence {
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> ElementIterator<Self.Tree> {
+  public __consuming func makeIterator() -> ElementIterator<Tree> {
     ElementIterator(tree: _tree, start: _tree.__begin_node, end: _tree.__end_node())
   }
 }
 
-extension RedBlackTreeSequence {
-  
+extension ___RedBlackTreeSequence {
+
+  /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
@@ -52,14 +55,14 @@ extension RedBlackTreeSequence {
   }
 }
 
-extension RedBlackTreeSequence {
+extension ___RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)
   func ___index(_ rawValue: _NodePtr) -> Index {
     .init(__tree: _tree, rawValue: rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   func ___index_or_nil(_ p: _NodePtr?) -> Index? {
@@ -67,8 +70,8 @@ extension RedBlackTreeSequence {
   }
 }
 
-extension RedBlackTreeSequence {
-  
+extension ___RedBlackTreeSequence {
+
   /// - Complexity: O(*n*)
   @inlinable
   public func sorted() -> [Element] {
@@ -80,68 +83,79 @@ extension RedBlackTreeSequence {
   }
 }
 
-extension RedBlackTreeSequence {
+extension ___RedBlackTreeSequence {
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var startIndex: Index {
     ___index(_tree.__begin_node)
   }
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var endIndex: Index {
     ___index(_tree.__end_node())
   }
 
+  /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     _tree.___signed_distance(start.rawValue, end.rawValue)
   }
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     ___index(_tree.___index(after: i.rawValue))
   }
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     _tree.___formIndex(after: &i.rawValue)
   }
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     ___index(_tree.___index(before: i.rawValue))
   }
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     _tree.___formIndex(before: &i.rawValue)
   }
 
+  /// - Complexity: O(*d*)
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(_tree.___index(i.rawValue, offsetBy: distance))
   }
 
+  /// - Complexity: O(*d*)
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     _tree.___formIndex(&i.rawValue, offsetBy: distance)
   }
 
+  /// - Complexity: O(*d*)
   @inlinable
   @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index_or_nil(_tree.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue))
   }
 
+  /// - Complexity: O(*d*)
   @inlinable
   @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
@@ -150,12 +164,14 @@ extension RedBlackTreeSequence {
     _tree.___formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
     _read { yield _tree[position.rawValue] }
   }
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
@@ -163,14 +179,16 @@ extension RedBlackTreeSequence {
   }
 }
 
-extension RedBlackTreeSequence {
+extension ___RedBlackTreeSequence {
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func isValid(index: Index) -> Bool {
     _tree.___is_valid_index(index.___unchecked_rawValue)
   }
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func isValid(index: RawIndex) -> Bool {
@@ -178,20 +196,22 @@ extension RedBlackTreeSequence {
   }
 }
 
-extension RedBlackTreeSequence {
-  
+extension ___RedBlackTreeSequence {
+
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> ReversedElementIterator<Self.Tree> {
+  public __consuming func reversed() -> ReversedElementIterator<Tree> {
     ReversedElementIterator(tree: _tree, start: _tree.__begin_node, end: _tree.__end_node())
   }
 }
 
-extension RedBlackTreeSequence {
-  
+extension ___RedBlackTreeSequence {
+
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var indices: Tree.Indices {
+  public var indices: Indices {
     _tree.makeIndices(start: _tree.__begin_node, end: _tree.__end_node())
   }
 }

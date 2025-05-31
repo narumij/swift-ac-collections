@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
   
   public
   struct ForwardIterator: IteratorProtocol {
@@ -88,7 +88,7 @@ extension ___RedBlackTree.___Tree {
   }
   
   public
-  struct IterSequence: Sequence {
+  struct ___IteratorSequence: Sequence {
     
     public
     typealias _Tree = Tree
@@ -130,7 +130,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree.IterSequence: Collection, BidirectionalCollection {
+extension ___Tree.___IteratorSequence: Collection, BidirectionalCollection {
   
   public
   func index(after i: Index) -> Index {

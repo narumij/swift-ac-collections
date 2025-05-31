@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension ___RedBlackTree.___Tree {
+extension ___Tree {
 
   /// 赤黒木のノードへのイテレータ
   @frozen
@@ -74,8 +74,9 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator: Comparable {
+extension ___Tree.___Iterator: Comparable {
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -88,6 +89,11 @@ extension ___RedBlackTree.___Tree.___Iterator: Comparable {
     return lhs._rawValue == rhs._rawValue
   }
 
+  /// - Complexity: RedBlackTreeSet, RedBlackTreeDictionaryの場合O(1)
+  ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n*)
+  ///
+  ///   内部動作がユニークな場合、値の比較で解決できますが、
+  ///   内部動作がマルチの場合、ノード位置での比較となるので重くなります。
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -101,7 +107,9 @@ extension ___RedBlackTree.___Tree.___Iterator: Comparable {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator {
+// Stridableできるが、Range<Index>に標準実装が生えることと、
+// その実装が要素アクセスのたびに範囲チェックを行うことを嫌って、Stridableをやめている
+extension ___Tree.___Iterator {
 
   @inlinable
   @inline(__always)
@@ -139,7 +147,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator {
+extension ___Tree.___Iterator {
 
   @inlinable
   @inline(__always)
@@ -176,7 +184,7 @@ extension ___RedBlackTree.___Tree.___Iterator {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator {
+extension ___Tree.___Iterator {
 
   // CoWが発生すると結果が乖離する
   @inlinable
@@ -212,19 +220,23 @@ extension ___RedBlackTree.___Tree.___Iterator {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator {
+extension ___Tree.___Iterator {
 
   @inlinable
   @inline(__always)
   public var pointee: Element? {
-    guard _tree.__parent_(_rawValue) != .nullptr, _tree.___contains(_rawValue) else {
+    guard
+      _tree.__parent_(_rawValue) != .nullptr,
+      rawValue != .end,
+      _tree.___contains(_rawValue)
+    else {
       return nil
     }
     return ___pointee
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator {
+extension ___Tree.___Iterator {
 
   @inlinable @inline(__always)
   var ___key: VC._Key {
@@ -237,18 +249,16 @@ extension ___RedBlackTree.___Tree.___Iterator {
   }
 }
 
-extension ___RedBlackTree.___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMutableRawValue {}
-
 #if DEBUG
-  extension ___RedBlackTree.___Tree.___Iterator {
-    fileprivate init(_unsafe_tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) {
+  extension ___Tree.___Iterator {
+    fileprivate init(_unsafe_tree: ___Tree<VC>, rawValue: _NodePtr) {
       self._tree = _unsafe_tree
       self._rawValue = rawValue
     }
   }
 
-  extension ___RedBlackTree.___Tree.___Iterator {
-    static func unsafe(tree: ___RedBlackTree.___Tree<VC>, rawValue: _NodePtr) -> Self {
+  extension ___Tree.___Iterator {
+    static func unsafe(tree: ___Tree<VC>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue)
     }
   }
@@ -269,32 +279,32 @@ extension ___RedBlackTree.___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMu
 
 @inlinable
 public func ..< <VC>(
-  lhs: ___RedBlackTree.___Tree<VC>.Index,
-  rhs: ___RedBlackTree.___Tree<VC>.Index
-) -> ___RedBlackTree.___Tree<VC>.Indices {
+  lhs: ___Tree<VC>.Index,
+  rhs: ___Tree<VC>.Index
+) -> ___Tree<VC>.Indices {
   lhs._tree.makeIndices(start: lhs._rawValue, end: rhs._rawValue)
 }
 
 @inlinable
 public func + <VC>(
-  lhs: ___RedBlackTree.___Tree<VC>.Index,
+  lhs: ___Tree<VC>.Index,
   rhs: Int
-) -> ___RedBlackTree.___Tree<VC>.Index {
+) -> ___Tree<VC>.Index {
   lhs.advanced(by: rhs)
 }
 
 @inlinable
 public func - <VC>(
-  lhs: ___RedBlackTree.___Tree<VC>.Index,
+  lhs: ___Tree<VC>.Index,
   rhs: Int
-) -> ___RedBlackTree.___Tree<VC>.Index {
+) -> ___Tree<VC>.Index {
   lhs.advanced(by: -rhs)
 }
 
 @inlinable
 public func - <VC>(
-  lhs: ___RedBlackTree.___Tree<VC>.Index,
-  rhs: ___RedBlackTree.___Tree<VC>.Index
+  lhs: ___Tree<VC>.Index,
+  rhs: ___Tree<VC>.Index
 ) -> Int {
   rhs.distance(to: lhs)
 }

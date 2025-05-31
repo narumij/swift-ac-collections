@@ -72,21 +72,23 @@ public struct RedBlackTreeSet<Element: Comparable> {
 }
 
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
-extension RedBlackTreeSet: ___RedBlackTreeStorageLifetime {}
-extension RedBlackTreeSet: ___RedBlackTreeEqualRangeUnique {}
+extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
+extension RedBlackTreeSet: ___RedBlackTreeUnique {}
+extension RedBlackTreeSet: ___RedBlackTreeSequence { }
+extension RedBlackTreeSet: ___RedBlackTreeSubSequence { }
 extension RedBlackTreeSet: ScalarValueComparer {}
-
-extension RedBlackTreeSet: CompareUniqueTrait {}
 
 // MARK: - Initialization
 
 extension RedBlackTreeSet {
 
+  /// - Complexity: O(1)
   @inlinable @inline(__always)
   public init() {
     self.init(minimumCapacity: 0)
   }
 
+  /// - Complexity: O(1)
   @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
     _storage = .create(withCapacity: minimumCapacity)
@@ -175,6 +177,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// - Complexity: O(*k* log *k*)
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
@@ -182,6 +185,7 @@ extension RedBlackTreeSet {
     _tree.__node_handle_merge_unique(other._tree)
   }
 
+  /// - Complexity: O(*k* log *k*)
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
@@ -189,6 +193,7 @@ extension RedBlackTreeSet {
     _tree.__node_handle_merge_unique(other._tree)
   }
 
+  /// - Complexity: O(*k* log *k*)
   @inlinable
   @inline(__always)
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
@@ -200,6 +205,8 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(1)
   @inlinable
   public mutating func popFirst() -> Element? {
     guard !isEmpty else { return nil }
@@ -209,6 +216,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @discardableResult
   @inlinable
@@ -217,9 +225,8 @@ extension RedBlackTreeSet {
     return _tree.___erase_unique(member) ? member : nil
   }
 
-  /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
-  ///
-  /// - Complexity: O(log *n*)
+  /// - Important: 削除後は、インデックスが無効になります。
+  /// - Complexity: O(1)
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
@@ -230,9 +237,8 @@ extension RedBlackTreeSet {
     return element
   }
 
-  /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
-  ///
-  /// - Complexity: O(log *n*)
+  /// - Important: 削除後は、インデックスが無効になります。
+  /// - Complexity: O(1)
   @inlinable
   @discardableResult
   public mutating func remove(at index: RawIndex) -> Element {
@@ -243,7 +249,8 @@ extension RedBlackTreeSet {
     return element
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(1)
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
@@ -253,6 +260,7 @@ extension RedBlackTreeSet {
     return remove(at: startIndex)
   }
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -283,6 +291,7 @@ extension RedBlackTreeSet {
   /// treeSet.removeSubrange(.init(lhs: startIdx, rhs: endIdx))
   /// // 結果: treeSet = [0,1,5,6]
   /// ```
+  /// - Complexity: O(*k*)
   @inlinable
   public mutating func removeSubrange(_ range: Range<Index>) {
     _ensureUnique()
@@ -292,6 +301,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
@@ -302,6 +312,7 @@ extension RedBlackTreeSet {
     ___remove(from: lower, to: upper)
   }
 
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
@@ -407,6 +418,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// - Complexity: O(log *n*)
   @inlinable
   public func equalRange(_ element: Element) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
     ___equal_range(element)
@@ -434,13 +446,13 @@ extension RedBlackTreeSet {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeSet: RedBlackTreeSequence { }
 extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection { }
 
 // MARK: - Range Access
 
 extension RedBlackTreeSet {
 
+  /// - Complexity: O(1)
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
     .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
@@ -474,12 +486,16 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
   /// 値レンジ `[lower, upper)` に含まれる要素のスライス
+  ///
+  /// - Complexity: O(1)
   @inlinable
   public func elements(in range: Range<Element>) -> SubSequence {
     .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_lower_bound(range.upperBound))
   }
 
   /// 値レンジ `[lower, upper]` に含まれる要素のスライス
+  ///
+  /// - Complexity: O(1)
   @inlinable
   public func elements(in range: ClosedRange<Element>) -> SubSequence {
     .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_upper_bound(range.upperBound))
@@ -509,9 +525,7 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet: RedBlackTreeSubSequenceBase { }
-
-extension RedBlackTreeSet.SubSequence: RedBlackTreeSubSequence {
+extension RedBlackTreeSet.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeSet
   public typealias Element = Tree.Element
   public typealias Indices = Tree.Indices
@@ -524,17 +538,8 @@ extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollec
 
 // MARK: - Index Range
 
-extension RedBlackTreeSet: RedBlackTreeSequenceBase { }
-
 extension RedBlackTreeSet {
-
   public typealias Indices = Tree.Indices
-
-//  @inlinable
-//  @inline(__always)
-//  public var indices: Tree.IterSequence {
-//    .init(tree: _tree, start: ___ptr_start(), end: ___ptr_end())
-//  }
 }
 
 // MARK: - Raw Index Sequence
@@ -546,9 +551,11 @@ extension RedBlackTreeSet {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
+  ///
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var rawIndices: RawIndexSequence<RedBlackTreeSet> {
+  public var rawIndices: RawIndexSequence<Tree> {
     RawIndexSequence(tree: _tree)
   }
 }
@@ -561,8 +568,9 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
   
+  /// - Complexity: O(1)
   @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<RedBlackTreeSet> {
+  public var rawIndexedElements: RawIndexedSequence<Tree> {
     RawIndexedSequence(tree: _tree)
   }
 }
@@ -571,7 +579,7 @@ extension RedBlackTreeSet {
 
   @available(*, deprecated, renamed: "rawIndexedElements")
   @inlinable @inline(__always)
-  public func enumerated() -> RawIndexedSequence<RedBlackTreeSet> {
+  public func enumerated() -> RawIndexedSequence<Tree> {
     rawIndexedElements
   }
 }
@@ -601,6 +609,8 @@ extension RedBlackTreeSet {
 }
 
 // MARK: - Protocol Adaption
+
+// MARK: - ExpressibleByArrayLiteral
 
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 

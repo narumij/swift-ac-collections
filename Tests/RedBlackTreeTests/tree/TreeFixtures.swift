@@ -15,7 +15,7 @@ import XCTest
     var __left_: _NodePtr = .nullptr
     var __begin_node: _NodePtr = .end
 
-    var __nodes: [___RedBlackTree.___Node] = []
+    var __nodes: [___Node] = []
     var __values: [Element] = []
 
     var ___destroy_node: RedBlackTreeModule._NodePtr = .nullptr

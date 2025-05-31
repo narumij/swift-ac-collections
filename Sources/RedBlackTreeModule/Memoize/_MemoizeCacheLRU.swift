@@ -136,7 +136,7 @@ extension _MemoizeCacheLRU {
 }
 
 extension _MemoizeCacheLRU: ___LRULinkList {}
-extension _MemoizeCacheLRU: ___RedBlackTreeStorageLifetime {}
+extension _MemoizeCacheLRU: ___RedBlackTreeCopyOnWrite {}
 extension _MemoizeCacheLRU: _MemoizeCacheLRUMiscellaneous {}
 extension _MemoizeCacheLRU: CustomKeyValueComparer {}
 

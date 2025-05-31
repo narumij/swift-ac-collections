@@ -401,3 +401,11 @@ extension ___RedBlackTreeBase {
     { _tree.value_comp(_tree.__key($0), _tree.__key($1)) }
   }
 }
+
+extension ___RedBlackTreeBase {
+  
+//  func convert(_ rawIndex: RawIndex) -> Index {
+//    _tree.makeIndex(rawValue: rawIndex)
+//  }
+  
+}

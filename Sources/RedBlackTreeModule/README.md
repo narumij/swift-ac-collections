@@ -7,6 +7,10 @@
 - RedBlackTreeDictionary
 - RedBlackTreeMultiMap
 
+- SequenceやCollectionやBidirectionalCollection対応はプロトコルで実装をまとめています。
+- それ以外は実装してはいますが、チェックか中継ばかりでほとんどの実装は内部にあります。
+- コメントちゃんと書くようにメソッド生やしている感じです。
+
 ## `__tree_`ディレクトリ
 
 - LLVMの移植部分

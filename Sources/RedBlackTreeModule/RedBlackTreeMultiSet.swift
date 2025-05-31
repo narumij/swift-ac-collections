@@ -504,6 +504,17 @@ extension RedBlackTreeMultiSet.SubSequence: Equatable {
   }
 }
 
+extension RedBlackTreeMultiSet.SubSequence: Comparable {
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs._tree_.___tree_compare(
+      start: lhs._start, end: lhs._end,
+      other: (rhs._tree_, rhs._start, rhs._end))
+  }
+}
+
 extension RedBlackTreeMultiSet.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeMultiSet
   public typealias Element = Tree.Element
@@ -597,6 +608,15 @@ extension RedBlackTreeMultiSet: Equatable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs._tree_.___tree_equiv(rhs._tree_)
+    lhs.count == rhs.count && lhs._tree_.___tree_equiv(rhs._tree_)
+  }
+}
+
+extension RedBlackTreeMultiSet: Comparable {
+  
+  /// - Complexity: O(*n*)
+  @inlinable
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs._tree_.___tree_compare(rhs._tree_)
   }
 }

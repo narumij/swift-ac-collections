@@ -1036,5 +1036,50 @@ final class SetTests: XCTestCase {
       XCTAssertFalse(b != a)
     }
   }
+  
+  func testCompare1() throws {
+    do {
+      let a = RedBlackTreeSet<Int>()
+      let b = RedBlackTreeSet<Int>()
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>()
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0])
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0])
+      let b = RedBlackTreeSet<Int>([1])
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0,1])
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertFalse(a < b)
+      XCTAssertTrue(b < a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0,1])
+      let b = RedBlackTreeSet<Int>([0,1])
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0,1,2])
+      let b = RedBlackTreeSet<Int>([0,1,3])
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+  }
 }
 

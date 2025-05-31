@@ -74,8 +74,8 @@ public struct RedBlackTreeSet<Element: Comparable> {
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
 extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeSet: ___RedBlackTreeUnique {}
-extension RedBlackTreeSet: ___RedBlackTreeSequence { }
-extension RedBlackTreeSet: ___RedBlackTreeSubSequence { }
+extension RedBlackTreeSet: ___RedBlackTreeSequence {}
+extension RedBlackTreeSet: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 
 // MARK: - Initialization
@@ -421,7 +421,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
-    let (lo,hi) = ___equal_range(element)
+    let (lo, hi) = ___equal_range(element)
     return (___iter(lo), ___iter(hi))
   }
 }
@@ -447,7 +447,7 @@ extension RedBlackTreeSet {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection { }
+extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {}
 
 // MARK: - Range Access
 
@@ -491,7 +491,8 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   public func elements(in range: Range<Element>) -> SubSequence {
-    .init(tree: _tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
+    .init(
+      tree: _tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
   }
 
   /// 値レンジ `[lower, upper]` に含まれる要素のスライス
@@ -499,7 +500,8 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   public func elements(in range: ClosedRange<Element>) -> SubSequence {
-    .init(tree: _tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
+    .init(
+      tree: _tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
   }
 }
 
@@ -527,12 +529,24 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet.SubSequence: Equatable {
-  
+
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs._tree_.___tree_equiv(start: lhs._start, end: lhs._end,
-                             other: (rhs._tree_, rhs._start, rhs._end))
+    lhs._tree_.___tree_equiv(
+      start: lhs._start, end: lhs._end,
+      other: (rhs._tree_, rhs._start, rhs._end))
+  }
+}
+
+extension RedBlackTreeSet.SubSequence: Comparable {
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs._tree_.___tree_compare(
+      start: lhs._start, end: lhs._end,
+      other: (rhs._tree_, rhs._start, rhs._end))
   }
 }
 
@@ -578,7 +592,7 @@ extension RedBlackTreeSet {
 // やはりおまけポジでした
 
 extension RedBlackTreeSet {
-  
+
   /// - Complexity: O(1)
   @inlinable @inline(__always)
   public var rawIndexedElements: RawIndexedSequence<Tree> {
@@ -610,7 +624,7 @@ extension RedBlackTreeSet {
   public var capacity: Int {
     ___capacity
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -655,37 +669,42 @@ extension RedBlackTreeSet: CustomDebugStringConvertible {
 // MARK: - Equatable
 
 extension RedBlackTreeSet: Equatable {
-  
+
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs._tree_.___tree_equiv(rhs._tree_)
+    lhs.count == rhs.count && lhs._tree_.___tree_equiv(rhs._tree_)
+  }
+}
+
+extension RedBlackTreeSet: Comparable {
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs._tree_.___tree_compare(rhs._tree_)
   }
 }
 
 extension RedBlackTreeSet {
-  
+
   public static func == <R>(lhs: Self, rhs: R) -> Bool
-  where R: Sequence, R.Element == Element
-  {
+  where R: Sequence, R.Element == Element {
     lhs._tree_.___tree_equiv(with: rhs)
   }
 
   public static func == <L>(lhs: L, rhs: Self) -> Bool
-  where L: Sequence, L.Element == Element
-  {
+  where L: Sequence, L.Element == Element {
     rhs._tree_.___tree_equiv(with: lhs)
   }
-  
+
   public static func != <R>(lhs: Self, rhs: R) -> Bool
-  where R: Sequence, R.Element == Element
-  {
+  where R: Sequence, R.Element == Element {
     !(lhs == rhs)
   }
 
   public static func != <L>(lhs: L, rhs: Self) -> Bool
-  where L: Sequence, L.Element == Element
-  {
+  where L: Sequence, L.Element == Element {
     !(lhs == rhs)
   }
 }

@@ -849,3 +849,34 @@ extension ___Tree {
     ___tree_equiv(start: __begin_node, end: __end_node(), other: r)
   }
 }
+
+extension ___Tree {
+  
+  @inlinable
+  func ___element_key_comp(_ lhs: Element,_ rhs: Element) -> Bool {
+    value_comp(__key(lhs), __key(rhs))
+  }
+
+  @inlinable
+  public func ___tree_compare(start: _NodePtr, end: _NodePtr, other: (tree: Tree, start: _NodePtr, end: _NodePtr)) -> Bool {
+    var (l, r) = (start, other.start)
+    while r != other.end
+    {
+      if l == end || ___element_key_comp(self[l], other.tree[r]) {
+        return true
+      }
+      if ___element_key_comp(other.tree[r], self[l]) {
+        return false
+      }
+      r = other.tree.__tree_next_iter(r)
+      l = __tree_next_iter(l)
+    }
+    return false
+  }
+  
+  @inlinable
+  func ___tree_compare(_ other: Tree) -> Bool {
+    ___tree_compare(start: __begin_node, end: __end_node(),
+                    other: (other, other.__begin_node, other.__end_node()))
+  }
+}

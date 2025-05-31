@@ -26,18 +26,24 @@ public protocol Tree_IterateProtocol {
   func __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
   func __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   subscript(_ pointer: _NodePtr) -> Element { get }
+  
+  func ___tree_equiv(start: _NodePtr, end: _NodePtr,
+                     other: (tree: Self, start: _NodePtr, end: _NodePtr)) -> Bool
 }
 
-public protocol Tree_IndexProtocol {
+@usableFromInline
+protocol Tree_IndexProtocol {
   associatedtype Index
   func makeIndex(rawValue: _NodePtr) -> Index
 }
 
-public protocol Tree_RawIndexProtocol {
+@usableFromInline
+protocol Tree_RawIndexProtocol {
   func makeRawIndex(rawValue: _NodePtr) -> RawIndex
 }
 
-public protocol Tree_IndicesProtocol {
+@usableFromInline
+protocol Tree_IndicesProtocol {
   associatedtype Indices
   func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices
 }

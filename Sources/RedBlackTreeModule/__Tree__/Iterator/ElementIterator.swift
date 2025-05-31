@@ -22,21 +22,22 @@
 
 public
 struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
-  
+    
   public typealias Tree = Tree
   public typealias Element = Tree.Element
 
   @usableFromInline
-  let _tree: Tree
+  let __tree_: Tree
 
   @usableFromInline
-  var _current, _next, _end: _NodePtr
+  var _current, _next, _start, _end: _NodePtr
   
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self._tree = tree
+    self.__tree_ = tree
     self._current = start
+    self._start = start
     self._end = end
     self._next = start == .end ? .end : tree.__tree_next_iter(start)
   }
@@ -49,9 +50,14 @@ struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
     guard _current != _end else { return nil }
     defer {
       _current = _next
-      _next = _next == _end ? _end : _tree.__tree_next_iter(_next)
+      _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return _tree[_current]
+    return __tree_[_current]
+  }
+  
+  @inlinable
+  public __consuming func reversed() -> ReversedElementIterator<Tree> {
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
@@ -62,7 +68,7 @@ struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorPr
   public typealias Element = Tree.Element
 
   @usableFromInline
-  let _tree: Tree
+  let __tree_: Tree
 
   @usableFromInline
   var _current, _next, _start, _begin: _NodePtr
@@ -70,11 +76,11 @@ struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorPr
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self._tree = tree
+    self.__tree_ = tree
     self._current = end
-    self._next = _tree.__tree_prev_iter(end)
+    self._next = __tree_.__tree_prev_iter(end)
     self._start = start
-    self._begin = _tree.__begin_node
+    self._begin = __tree_.__begin_node
   }
   
   @inlinable
@@ -82,7 +88,7 @@ struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorPr
   public mutating func next() -> Element? {
     guard _current != _start else { return nil }
     _current = _next
-    _next = _current != _begin ? _tree.__tree_prev_iter(_current) : .nullptr
-    return _tree[_current]
+    _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
+    return __tree_[_current]
   }
 }

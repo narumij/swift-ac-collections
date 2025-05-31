@@ -750,7 +750,7 @@ extension ___Tree: Sequence {
 extension ___Tree: Tree_IndexProtocol {
   public typealias Index = ___Iterator
   @inlinable @inline(__always)
-  public func makeIndex(rawValue: _NodePtr) -> ___Iterator {
+  func makeIndex(rawValue: _NodePtr) -> ___Iterator {
     .init(__tree: self, rawValue: rawValue)
   }
 }
@@ -758,7 +758,7 @@ extension ___Tree: Tree_IndexProtocol {
 extension ___Tree: Tree_IndicesProtocol {
   public typealias Indices = ___IteratorSequence
   @inlinable @inline(__always)
-  public func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices {
+  func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices {
     .init(tree: self, start: start, end: end)
   }
 }
@@ -767,5 +767,116 @@ extension ___Tree: Tree_RawIndexProtocol {
   @inlinable @inline(__always)
   public func makeRawIndex(rawValue: _NodePtr) -> RawIndex {
     .init(rawValue)
+  }
+}
+
+extension ___Tree {
+  
+  @inlinable
+  public func ___equiv(_ lhs: Element,_ rhs: Element) -> Bool {
+    !value_comp(__key(lhs), __key(rhs)) &&
+    !value_comp(__key(rhs), __key(lhs))
+  }
+
+  @inlinable
+  public func ___tree_equiv(start: _NodePtr, end: _NodePtr, other: (tree: Tree, start: _NodePtr, end: _NodePtr)) -> Bool {
+    var (l, r) = (start, other.start)
+    if l == end { return r == other.end }
+    while r != other.end,
+          ___equiv(other.tree[r], self[l])
+    {
+      r = other.tree.__tree_next_iter(r)
+      l = __tree_next_iter(l)
+      if l == end {
+        return r == other.end
+      }
+    }
+    return false
+  }
+  
+  @inlinable
+  func ___tree_equiv(_ other: Tree) -> Bool {
+    ___tree_equiv(start: __begin_node, end: __end_node(),
+                  other: (other, other.__begin_node, other.__end_node()))
+  }
+
+  @inlinable
+  func ___tree_equiv_key_value<Key,Value>(start: _NodePtr, end: _NodePtr, other: (tree: Tree, start: _NodePtr, end: _NodePtr)) -> Bool
+  where Element == _KeyValueTuple_<Key,Value>, Value: Equatable
+  {
+    var (l, r) = (start, other.start)
+    if l == end { return r == other.end }
+    while r != other.end,
+          ___equiv(other.tree[r], self[l]),
+          other.tree[r].value == self[l].value
+    {
+      r = other.tree.__tree_next_iter(r)
+      l = __tree_next_iter(l)
+      if l == end {
+        return r == other.end
+      }
+    }
+    return false
+  }
+
+  @inlinable
+  func ___tree_equiv_key_value<Key,Value>(_ other: Tree) -> Bool
+  where Element == _KeyValueTuple_<Key,Value>, Value: Equatable
+  {
+    ___tree_equiv_key_value(start: __begin_node, end: __end_node(),
+                            other: (other, other.__begin_node, other.__end_node()))
+  }
+  
+  @inlinable
+  func ___tree_equiv<Other>(start: _NodePtr, end: _NodePtr, other r: Other) -> Bool
+  where Other: Sequence, Other.Element == VC.Element
+  {
+    var l = start
+    var r = r.makeIterator()
+    if l == end { return r.next() == nil }
+    while let rv = r.next(), ___equiv(self[l], rv)
+    {
+      l = __tree_next_iter(l)
+      if l == end { return r.next() == nil }
+    }
+    return false
+  }
+
+  @inlinable
+  func ___tree_equiv<Other>(with r: Other) -> Bool
+  where Other: Sequence, Other.Element == VC.Element
+  {
+    ___tree_equiv(start: __begin_node, end: __end_node(), other: r)
+  }
+}
+
+extension ___Tree {
+  
+  @inlinable
+  func ___element_key_comp(_ lhs: Element,_ rhs: Element) -> Bool {
+    value_comp(__key(lhs), __key(rhs))
+  }
+
+  @inlinable
+  public func ___tree_compare(start: _NodePtr, end: _NodePtr, other: (tree: Tree, start: _NodePtr, end: _NodePtr)) -> Bool {
+    var (l, r) = (start, other.start)
+    while r != other.end
+    {
+      if l == end || ___element_key_comp(self[l], other.tree[r]) {
+        return true
+      }
+      if ___element_key_comp(other.tree[r], self[l]) {
+        return false
+      }
+      r = other.tree.__tree_next_iter(r)
+      l = __tree_next_iter(l)
+    }
+    return false
+  }
+  
+  @inlinable
+  func ___tree_compare(_ other: Tree) -> Bool {
+    ___tree_compare(start: __begin_node, end: __end_node(),
+                    other: (other, other.__begin_node, other.__end_node()))
   }
 }

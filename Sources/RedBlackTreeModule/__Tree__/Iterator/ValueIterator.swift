@@ -21,60 +21,70 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct RawIndexedIterator<Tree: Tree_IterateProtocol>: IteratorProtocol {
+struct ValueIterator<Tree: Tree_IterateProtocol,K,Value>: Sequence, IteratorProtocol
+where Tree.Element == _KeyValueTuple_<K,Value>
+{
 
   @usableFromInline
   let __tree_: Tree
 
   @usableFromInline
-  var _current, _next, _end: _NodePtr
+  var _current, _start, _next, _end: _NodePtr
   
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
     self.__tree_ = tree
     self._current = start
+    self._start = start
     self._end = end
     self._next = start == .end ? .end : tree.__tree_next_iter(start)
   }
   
   @inlinable
   @inline(__always)
-  public mutating func next() -> (rawIndex: RawIndex, element: Tree.Element)? {
+  public mutating func next() -> Value? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
       _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return (RawIndex(_current), __tree_[_current])
+    return __tree_[_current].value
+  }
+  
+  @inlinable
+  public __consuming func reversed() -> ReversedValueIterator<Tree,K,Value> {
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
 public
-struct ReversedRawIndexedIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
-  
+struct ReversedValueIterator<Tree: Tree_IterateProtocol,K,Value>: Sequence, IteratorProtocol
+where Tree.Element == _KeyValueTuple_<K,Value>
+{
+
   @usableFromInline
-  let __tree_: Tree
-  
+  let _tree_: Tree
+
   @usableFromInline
   var _current, _next, _start, _begin: _NodePtr
   
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self.__tree_ = tree
+    self._tree_ = tree
     self._current = end
-    self._next = __tree_.__tree_prev_iter(end)
+    self._next = _tree_.__tree_prev_iter(end)
     self._start = start
-    self._begin = __tree_.__begin_node
+    self._begin = _tree_.__begin_node
   }
   
   @inlinable
   @inline(__always)
-  public mutating func next() -> (rawIndex: RawIndex, element: Tree.Element)? {
+  public mutating func next() -> Value? {
     guard _current != _start else { return nil }
     _current = _next
-    _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-    return (RawIndex(_current), __tree_[_current])
+    _next = _current != _begin ? _tree_.__tree_prev_iter(_current) : .nullptr
+    return _tree_[_current].value
   }
 }

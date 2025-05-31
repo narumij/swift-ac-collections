@@ -29,7 +29,7 @@ final class RedBlackTreeMultiMapTests_: XCTestCase {
         let bananaValues = multiDict.values(forKey: "banana")
         
         XCTAssertEqual(Set(appleValues), Set([1, 3]))
-        XCTAssertEqual(bananaValues, [2])
+      XCTAssertEqual(bananaValues.map { $0 }, [2])
         XCTAssertEqual(multiDict.count(forKey: "apple"), 2)
         XCTAssertEqual(multiDict.count(forKey: "banana"), 1)
     }

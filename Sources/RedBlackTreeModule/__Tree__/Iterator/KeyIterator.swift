@@ -21,41 +21,51 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct RawIndexedIterator<Tree: Tree_IterateProtocol>: IteratorProtocol {
+struct KeyIterator<Tree: Tree_IterateProtocol,Key,V>: Sequence, IteratorProtocol
+where Tree.Element == _KeyValueTuple_<Key,V>
+{
 
   @usableFromInline
   let __tree_: Tree
 
   @usableFromInline
-  var _current, _next, _end: _NodePtr
+  var _current, _start, _next, _end: _NodePtr
   
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
     self.__tree_ = tree
     self._current = start
+    self._start = start
     self._end = end
     self._next = start == .end ? .end : tree.__tree_next_iter(start)
   }
   
   @inlinable
   @inline(__always)
-  public mutating func next() -> (rawIndex: RawIndex, element: Tree.Element)? {
+  public mutating func next() -> Key? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
       _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return (RawIndex(_current), __tree_[_current])
+    return __tree_[_current].key
+  }
+  
+  @inlinable
+  public __consuming func reversed() -> ReversedKeyIterator<Tree,Key,V> {
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
 public
-struct ReversedRawIndexedIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
-  
+struct ReversedKeyIterator<Tree: Tree_IterateProtocol,Key,V>: Sequence, IteratorProtocol
+where Tree.Element == _KeyValueTuple_<Key,V>
+{
+
   @usableFromInline
   let __tree_: Tree
-  
+
   @usableFromInline
   var _current, _next, _start, _begin: _NodePtr
   
@@ -71,10 +81,10 @@ struct ReversedRawIndexedIterator<Tree: Tree_IterateProtocol>: Sequence, Iterato
   
   @inlinable
   @inline(__always)
-  public mutating func next() -> (rawIndex: RawIndex, element: Tree.Element)? {
+  public mutating func next() -> Key? {
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-    return (RawIndex(_current), __tree_[_current])
+    return __tree_[_current].key
   }
 }

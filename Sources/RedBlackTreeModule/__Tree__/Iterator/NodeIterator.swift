@@ -27,13 +27,14 @@ struct NodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
   let _tree_: Tree
 
   @usableFromInline
-  var _current, _next, _end: _NodePtr
+  var _current, _start, _next, _end: _NodePtr
   
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
     self._tree_ = tree
     self._current = start
+    self._start = start
     self._end = end
     self._next = start == .end ? .end : tree.__tree_next_iter(start)
   }
@@ -47,6 +48,11 @@ struct NodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
       _next = _next == _end ? _end : _tree_.__tree_next_iter(_next)
     }
     return _current
+  }
+  
+  @inlinable
+  public __consuming func reversed() -> ReversedNodeIterator<Tree> {
+    .init(tree: _tree_, start: _start, end: _end)
   }
 }
 

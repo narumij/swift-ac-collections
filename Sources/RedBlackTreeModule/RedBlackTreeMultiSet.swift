@@ -507,7 +507,7 @@ extension RedBlackTreeMultiSet.SubSequence: Sequence, Collection, BidirectionalC
 
 extension RedBlackTreeMultiSet {
 
-  public typealias Indices = Tree.___IteratorSequence
+  public typealias Indices = Tree.Indices
 }
 
 // MARK: - Raw Index Sequence（インデックス系）
@@ -545,7 +545,7 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-// MARK: - Protocol Conformance（プロトコル適合）
+// MARK: - Protocol Conformance
 
 // MARK: - ExpressibleByArrayLiteral
 

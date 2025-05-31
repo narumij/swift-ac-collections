@@ -554,6 +554,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+  /// - Complexity: O(*n*)
   @inlinable
   public func filter(
     _ isIncluded: (Element) throws -> Bool
@@ -734,7 +735,7 @@ extension RedBlackTreeDictionary.SubSequence: Sequence, Collection, Bidirectiona
 
 extension RedBlackTreeDictionary {
   
-  public typealias Indices = Tree.___IteratorSequence
+  public typealias Indices = Tree.Indices
 }
 
 // MARK: - Raw Index Sequence

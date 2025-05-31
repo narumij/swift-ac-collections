@@ -50,6 +50,7 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
@@ -105,6 +106,7 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Element {
@@ -122,6 +124,7 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: RawIndex) -> Element {
     @inline(__always)

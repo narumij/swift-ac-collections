@@ -87,11 +87,13 @@ extension RedBlackTreeMultiMap: KeyValueComparer {}
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(1)
   @inlinable @inline(__always)
   public init() {
     self.init(minimumCapacity: 0)
   }
 
+  /// - Complexity: O(1)
   @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
     _storage = .create(withCapacity: minimumCapacity)
@@ -100,6 +102,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(*n* log *n*)
   @inlinable
   public init<S>(keysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
@@ -132,6 +135,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
   @discardableResult
@@ -141,6 +145,7 @@ extension RedBlackTreeMultiMap {
     insert((key, value))
   }
 
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
@@ -154,6 +159,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(log *n*)
   @discardableResult
   @inlinable
   public mutating func updateValue(_ newValue: Value, at ptr: RawIndex) -> Element? {
@@ -169,6 +175,7 @@ extension RedBlackTreeMultiMap {
     return old
   }
 
+  /// - Complexity: O(log *n*)
   @discardableResult
   @inlinable
   public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
@@ -187,6 +194,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(*n* log *n*)
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
@@ -194,6 +202,7 @@ extension RedBlackTreeMultiMap {
     _tree.__node_handle_merge_multi(other._tree)
   }
 
+  /// - Complexity: O(*n* log *n*)
   @inlinable
   @inline(__always)
   public mutating func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
@@ -202,12 +211,14 @@ extension RedBlackTreeMultiMap {
     return result
   }
 
+  /// - Complexity: O(*n* log *n*)
   @inlinable
   @inline(__always)
   public mutating func insert<S>(_ other: S) where S: Sequence, S.Element == Element {
     other.forEach { insert($0) }
   }
 
+  /// - Complexity: O(*n* log *n*)
   @inlinable
   public func inserting<S>(_ other: __owned S) -> Self where S: Sequence, S.Element == Element {
     var result = self
@@ -221,6 +232,7 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
   /// 最小キーのペアを取り出して削除
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(1)
   @inlinable
   public mutating func popFirst() -> KeyValue? {
     guard !isEmpty else { return nil }
@@ -231,6 +243,7 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func removeFirst(forKey key: Key) -> Bool {
@@ -239,6 +252,7 @@ extension RedBlackTreeMultiMap {
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
@@ -247,6 +261,7 @@ extension RedBlackTreeMultiMap {
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(log *n* + *k*)
   @inlinable
   @discardableResult
   public mutating func removeAll(forKey key: Key) -> Int {
@@ -255,6 +270,7 @@ extension RedBlackTreeMultiMap {
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(log *n* + *k*)
   @inlinable
   @discardableResult
   public mutating func removeAll(_unsafeForKey key: Key) -> Int {
@@ -266,6 +282,7 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(1)
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
@@ -276,6 +293,7 @@ extension RedBlackTreeMultiMap {
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
@@ -286,6 +304,7 @@ extension RedBlackTreeMultiMap {
   }
 
   /// - Important: 削除後は、インデックスが無効になります。
+  /// - Complexity: O(1)
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
@@ -297,6 +316,7 @@ extension RedBlackTreeMultiMap {
   }
 
   /// - Important: 削除後は、インデックスが無効になります。
+  /// - Complexity: O(1)
   @inlinable
   @discardableResult
   public mutating func remove(at index: RawIndex) -> KeyValue {
@@ -308,6 +328,7 @@ extension RedBlackTreeMultiMap {
   }
 
   /// - Important: 削除後は、インデックスが無効になります。
+  /// - Complexity: O(*k*)
   @inlinable
   public mutating func removeSubrange(_ range: Range<Index>) {
     _ensureUnique()
@@ -323,6 +344,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf keyRange: Range<Key>) {
@@ -331,6 +353,7 @@ extension RedBlackTreeMultiMap {
     removeSubrange(lower..<upper)
   }
 
+  /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
@@ -367,11 +390,13 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(log *n*)
   @inlinable
   public func lowerBound(_ p: Key) -> Index {
     ___iter_lower_bound(p)
   }
 
+  /// - Complexity: O(log *n*)
   @inlinable
   public func upperBound(_ p: Key) -> Index {
     ___iter_upper_bound(p)
@@ -380,26 +405,31 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(1)
   @inlinable
   public var first: Element? {
     isEmpty ? nil : self[startIndex]
   }
 
+  /// - Complexity: O(log *n*)
   @inlinable
   public var last: Element? {
     isEmpty ? nil : self[index(before: endIndex)]
   }
 
+  /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first(where: predicate)
   }
 
+  /// - Complexity: O(log *n*)
   @inlinable
   public func firstIndex(of key: Key) -> Index? {
     ___first_iter(of: key)
   }
 
+  /// - Complexity: O(*n*)
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     try ___first_iter(where: predicate)
@@ -417,6 +447,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(log *n*)
   @inlinable
   public func equalRange(_ key: Key) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
     ___equal_range(key)
@@ -427,6 +458,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(*n*)
   @inlinable
   public func filter(
     _ isIncluded: (Element) throws -> Bool
@@ -502,10 +534,12 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(*n*)
   public var keys: Keys {
     map(\.key)
   }
 
+  /// - Complexity: O(*n*)
   public var values: Values {
     map(\.value)
   }
@@ -513,6 +547,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(log *n* + *k*)
   @inlinable
   public func values(forKey key: Key) -> [Value] {
     var (lo, hi) = _tree.__equal_range_multi(key)
@@ -535,6 +570,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection { 
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(1)
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
     .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
@@ -568,12 +604,14 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
   /// キーレンジ `[lower, upper)` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
   @inlinable
   public func elements(in range: Range<Key>) -> SubSequence {
     .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_lower_bound(range.upperBound))
   }
 
   /// キーレンジ `[lower, upper]` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
   @inlinable
   public func elements(in range: ClosedRange<Key>) -> SubSequence {
     .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_upper_bound(range.upperBound))
@@ -584,6 +622,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
   public subscript(key: Key) -> SubSequence {
@@ -630,21 +669,7 @@ extension RedBlackTreeMultiMap.SubSequence: Sequence, Collection, BidirectionalC
 
 extension RedBlackTreeMultiMap {
 
-//  public typealias Indices = Range<Index>
-//
-//  @inlinable
-//  @inline(__always)
-//  public var indices: Indices {
-//    startIndex..<endIndex
-//  }
-  
-  public typealias Indices = Tree.___IteratorSequence
-
-  @inlinable
-  @inline(__always)
-  public var indices: Tree.___IteratorSequence {
-    .init(tree: _tree, start: ___ptr_start(), end: ___ptr_end())
-  }
+  public typealias Indices = Tree.Indices
 }
 
 // MARK: - Raw Index Sequence
@@ -653,6 +678,7 @@ extension RedBlackTreeMultiMap {
 
   /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
   /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var rawIndices: RawIndexSequence<Tree> {
@@ -664,6 +690,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(1)
   @inlinable @inline(__always)
   public var rawIndexedElements: RawIndexedSequence<Tree> {
     RawIndexedSequence(tree: _tree)
@@ -674,6 +701,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
 
+  /// - Complexity: O(*n* log *n*)
   @inlinable
   public init(dictionaryLiteral elements: (Key, Value)...) {
     self.init(keysWithValues: elements)
@@ -684,16 +712,7 @@ extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
 
 extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
 
-  /// `[("key", value), ...]` 形式のリテラルから辞書を生成します。
-  ///
-  /// - Important: キーが重複していた場合は
-  ///   `Dictionary(uniqueKeysWithValues:)` と同じく **ランタイムエラー** になります。
-  ///   （重複を許容してマージしたい場合は `merge` / `merging` を使ってください）
-  ///
-  /// 使用例
-  /// ```swift
-  /// let d: RedBlackTreeDictionary = [("a", 1), ("b", 2)]
-  /// ```
+  /// - Complexity: O(*n* log *n*)
   @inlinable
   public init(arrayLiteral elements: (Key, Value)...) {
     self.init(keysWithValues: elements)
@@ -726,6 +745,7 @@ extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
 
 extension RedBlackTreeMultiMap: Equatable where Value: Equatable {
 
+  /// - Complexity: O(*n* log *n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.___equal_with(rhs)

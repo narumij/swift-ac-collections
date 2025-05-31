@@ -610,6 +610,8 @@ extension RedBlackTreeSet {
 
 // MARK: - Protocol Adaption
 
+// MARK: - ExpressibleByArrayLiteral
+
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 
   /// - Complexity: O(*n* log *n*)

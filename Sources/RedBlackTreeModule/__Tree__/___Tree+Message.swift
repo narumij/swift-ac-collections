@@ -26,7 +26,7 @@ extension String {
   
   @usableFromInline
   static var garbagedIndex: String {
-    "開放されたインデックスの使用がありました。startIndex ..< endIndex等をお使いの場合、等価なSliceでのindicesで代替してください。"
+    "A dangling node reference was used. Consider using a valid range or slice."
   }
 
   @usableFromInline

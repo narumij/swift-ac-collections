@@ -346,7 +346,7 @@ extension ___RedBlackTreeBase {
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-  extension ___RedBlackTreeStorageLifetime {
+  extension ___RedBlackTreeCopyOnWrite {
     @inlinable
     public mutating func _checkUnique() -> Bool {
       _isKnownUniquelyReferenced_LV2()

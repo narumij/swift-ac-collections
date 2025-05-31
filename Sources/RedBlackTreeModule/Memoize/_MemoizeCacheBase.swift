@@ -122,7 +122,7 @@ extension _MemoizeCacheBase {
 }
 
 extension _MemoizeCacheBase: ___RedBlackTreeBase {}
-extension _MemoizeCacheBase: ___RedBlackTreeStorageLifetime {}
+extension _MemoizeCacheBase: ___RedBlackTreeCopyOnWrite {}
 extension _MemoizeCacheBase: _MemoizeCacheMiscellaneous {}
 extension _MemoizeCacheBase: CustomKeyValueComparer {}
 

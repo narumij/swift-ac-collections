@@ -56,10 +56,10 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 }
 
 extension RedBlackTreeMultiMap: ___RedBlackTreeBase {}
-extension RedBlackTreeMultiMap: ___RedBlackTreeStorageLifetime {}
+extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
-extension RedBlackTreeMultiMap: KeyValueComparer {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSequence { }
+extension RedBlackTreeMultiMap: KeyValueComparer {}
 
 // MARK: - Initialization（初期化）
 

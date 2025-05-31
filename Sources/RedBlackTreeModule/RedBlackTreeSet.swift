@@ -72,10 +72,10 @@ public struct RedBlackTreeSet<Element: Comparable> {
 }
 
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
-extension RedBlackTreeSet: ___RedBlackTreeStorageLifetime {}
+extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeSet: ___RedBlackTreeUnique {}
-extension RedBlackTreeSet: ScalarValueComparer {}
 extension RedBlackTreeSet: ___RedBlackTreeSequence { }
+extension RedBlackTreeSet: ScalarValueComparer {}
 
 // MARK: - Initialization
 

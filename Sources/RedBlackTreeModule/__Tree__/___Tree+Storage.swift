@@ -220,11 +220,11 @@ extension ___Tree {
 }
 
 @usableFromInline
-protocol ___RedBlackTreeStorageLifetime: ValueComparer {
+protocol ___RedBlackTreeCopyOnWrite: ValueComparer {
   var _storage: Tree.Storage { get set }
 }
 
-extension ___RedBlackTreeStorageLifetime {
+extension ___RedBlackTreeCopyOnWrite {
 
   @inlinable
   @inline(__always)

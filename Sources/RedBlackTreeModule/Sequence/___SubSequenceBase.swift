@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___SubSequenceBase: ___RedBlackTreeBaseType & Sequence & Collection
+protocol ___SubSequenceBase: ___RedBlackTree & Sequence & Collection
     & BidirectionalCollection
 where
   Base: ___RedBlackTreeSubSequence,

@@ -23,9 +23,7 @@
 import Foundation
 
 #if DEBUG
-@testable import RedBlackTreeModule
-
-extension ___RedBlackTree {
+  @testable import RedBlackTreeModule
 
   public struct ___Node: ___tree_base_node {
 
@@ -50,28 +48,27 @@ extension ___RedBlackTree {
     @usableFromInline
     static let zero: Self = .init(__is_black_: false, __left_: 0, __right_: 0, __parent_: 0)
   }
-}
 
-extension ___RedBlackTree.___Node: Equatable {}
+  extension ___Node: Equatable {}
 
-#if swift(>=5.5)
-extension ___RedBlackTree.___Node: @unchecked Sendable {}
-#endif
+  #if swift(>=5.5)
+    extension ___Node: @unchecked Sendable {}
+  #endif
 
-extension ___RedBlackTree.___Node {
-  static var node: Self {
-    .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
+  extension ___Node {
+    static var node: Self {
+      .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
+    }
   }
-}
 
-extension ___tree_base_node {
-  
-  @inlinable @inline(__always)
-  public mutating func clear() {
-    __left_ = .nullptr
-    __right_ = .nullptr
-    __parent_ = .nullptr
-    __is_black_ = false
+  extension ___tree_base_node {
+
+    @inlinable @inline(__always)
+    public mutating func clear() {
+      __left_ = .nullptr
+      __right_ = .nullptr
+      __parent_ = .nullptr
+      __is_black_ = false
+    }
   }
-}
 #endif

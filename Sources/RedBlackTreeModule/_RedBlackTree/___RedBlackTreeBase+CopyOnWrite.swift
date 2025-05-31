@@ -6,8 +6,9 @@
 //
 
 @usableFromInline
-protocol ___RedBlackTreeCopyOnWrite: ValueComparer {
-  var _storage: Tree.Storage { get set }
+protocol ___RedBlackTreeCopyOnWrite {
+  associatedtype VC: ValueComparer
+  var _storage: ___Storage<VC> { get set }
 }
 
 extension ___RedBlackTreeCopyOnWrite {

@@ -75,6 +75,7 @@ extension RedBlackTreeSet: ___RedBlackTreeBase {}
 extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeSet: ___RedBlackTreeUnique {}
 extension RedBlackTreeSet: ___RedBlackTreeSequence { }
+extension RedBlackTreeSet: ___RedBlackTreeSubSequence { }
 extension RedBlackTreeSet: ScalarValueComparer {}
 
 // MARK: - Initialization
@@ -507,8 +508,6 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet: ___RedBlackTreeSubSequence { }
-
 extension RedBlackTreeSet.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeSet
   public typealias Element = Tree.Element
@@ -522,17 +521,8 @@ extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollec
 
 // MARK: - Index Range
 
-extension RedBlackTreeSet: ___RedBlackTreeBaseType { }
-
 extension RedBlackTreeSet {
-
   public typealias Indices = Tree.Indices
-
-//  @inlinable
-//  @inline(__always)
-//  public var indices: Tree.IterSequence {
-//    .init(tree: _tree, start: ___ptr_start(), end: ___ptr_end())
-//  }
 }
 
 // MARK: - Raw Index Sequence

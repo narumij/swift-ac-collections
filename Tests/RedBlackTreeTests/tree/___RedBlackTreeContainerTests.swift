@@ -13,7 +13,7 @@ import XCTest
   extension RedBlackTreeSet {
 
     @inlinable
-    var __nodes: [___RedBlackTree.___Node] {
+    var __nodes: [___Node] {
       get {
         (0..<_tree._header.initializedCount).map {
           .init(__is_black_: _tree.__is_black_($0),

@@ -22,18 +22,25 @@
 
 import Foundation
 
-public enum ___RedBlackTree {}
-
-extension ValueComparer {
-  public typealias Tree = ___Tree<Self>
-}
-
-public protocol ___RedBlackTreeBaseType {
+// 全ての道はツリーに通ずる?
+public protocol ___RedBlackTree {
   associatedtype Tree
 }
 
+// 旅のお供にストレージ
+public protocol ___RedBlackTreeWithStorage {
+  associatedtype Tree
+  associatedtype Storage
+}
+
 @usableFromInline
-protocol ___RedBlackTreeBase: ValueComparer {
+protocol ___RedBlackTreeBase:
+  ___RedBlackTreeWithStorage,
+  ValueComparer
+where
+  Tree == ___Tree<Self>,
+  Storage == ___Storage<Self>
+{
   associatedtype Element
   var _storage: Tree.Storage { get set }
 }
@@ -74,7 +81,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   func ___iter(_ p: _NodePtr) -> ___Iterator {
-//    .init(__tree: _tree, rawValue: p)
+    //    .init(__tree: _tree, rawValue: p)
     _tree.makeIndex(rawValue: p)
   }
 
@@ -373,19 +380,19 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___std_erase(_ ptr: ___Iterator) -> ___Iterator {
-//    Tree.___Iterator(__tree: _tree, rawValue: _tree.erase(ptr.rawValue))
+    //    Tree.___Iterator(__tree: _tree, rawValue: _tree.erase(ptr.rawValue))
     _tree.makeIndex(rawValue: _tree.erase(ptr.rawValue))
   }
 }
 
 extension ___RedBlackTreeBase {
-  
+
   @inlinable
   @inline(__always)
   public var ___key_comp: (_Key, _Key) -> Bool {
     _tree.value_comp
   }
-  
+
   @inlinable
   @inline(__always)
   public var ___value_comp: (Element, Element) -> Bool {

@@ -10,7 +10,7 @@ final class AllocationTests: XCTestCase {
 
 #if DEBUG
   typealias Tree = RedBlackTreeSet<Int>.Tree
-  typealias Storage = RedBlackTreeSet<Int>.Tree.Storage
+  typealias Storage = RedBlackTreeSet<Int>.Storage
   typealias Header = RedBlackTreeSet<Int>.Tree.Header
   typealias Node = RedBlackTreeSet<Int>.Tree.Node
 

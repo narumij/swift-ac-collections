@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeSequence: ___RedBlackTreeBaseType,
+protocol ___RedBlackTreeSequence: ___RedBlackTree,
   Sequence & Collection & BidirectionalCollection
 where
   Tree: Tree_IterateProtocol & Tree_RawIndexProtocol & Tree_ForEachProtocol & Tree_BidirectionalCollectionProtocol & Tree_IndicesProtocol

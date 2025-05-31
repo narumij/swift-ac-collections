@@ -22,18 +22,18 @@
 
 import Foundation
 
-// 全ての道はツリーに通ずる?
+// 単に公開可能なTreeを知っているというだけの状態
+// 下のモノと混ぜたかったが混ぜるとなぜかコンパイルエラーとなるのでわけてある
 public protocol ___RedBlackTree {
   associatedtype Tree
-//  associatedtype Element
-//  associatedtype Index
-//  associatedtype Indices
 }
 
+// コレクション実装の基点
 public protocol ___RedBlackTree___ {
   associatedtype Tree
 }
 
+// コレクションの内部実装
 @usableFromInline
 protocol ___RedBlackTreeBase:
   ___RedBlackTree___,

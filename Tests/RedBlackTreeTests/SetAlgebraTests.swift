@@ -9,7 +9,7 @@ final class SetAlgebraTests: XCTestCase {
     lhs.formUnion(rhs)
     XCTAssertEqual(lhs, [1, 2, 3, 4, 5, 6])
   }
-  
+
   func testUnion1() throws {
     var lhs: RedBlackTreeSet<Int> = [3, 4, 5, 6]
     let rhs: RedBlackTreeSet<Int> = [1, 2, 3, 4]
@@ -23,13 +23,13 @@ final class SetAlgebraTests: XCTestCase {
     lhs.formUnion(rhs)
     XCTAssertEqual(lhs, [1, 2, 3, 4, 5, 6])
   }
-  
+
   func testUnion3() throws {
     let lhs: RedBlackTreeSet<Int> = [1, 2, 3, 4]
     let rhs: RedBlackTreeSet<Int> = [3, 4, 5, 6]
     XCTAssertEqual(lhs.union(rhs), [1, 2, 3, 4, 5, 6])
   }
-  
+
   func testSymm0() throws {
     var lhs: RedBlackTreeSet<Int> = [1, 2, 3, 4]
     let rhs: RedBlackTreeSet<Int> = [3, 4, 5, 6]
@@ -50,27 +50,27 @@ final class SetAlgebraTests: XCTestCase {
     lhs.formSymmetricDifference(rhs)
     XCTAssertEqual(lhs, [1, 3])
   }
-  
+
   func testSymm3() throws {
     var lhs: RedBlackTreeSet<Int> = [1, 3]
     let rhs: RedBlackTreeSet<Int> = [2, 4]
     lhs.formSymmetricDifference(rhs)
     XCTAssertEqual(lhs, [1, 2, 3, 4])
   }
-  
+
   func testSymm4() throws {
     let lhs: RedBlackTreeSet<Int> = [1, 2, 3, 4]
     let rhs: RedBlackTreeSet<Int> = [3, 4, 5, 6]
     XCTAssertEqual(lhs.symmetricDifference(rhs), [1, 2, 5, 6])
   }
-  
+
   func testInter0() throws {
     var lhs: RedBlackTreeSet<Int> = [1, 2, 3, 4]
     let rhs: RedBlackTreeSet<Int> = [3, 4, 5, 6]
     lhs.formIntersection(rhs)
     XCTAssertEqual(lhs, [3, 4])
   }
-  
+
   func testInter1() throws {
     let lhs: RedBlackTreeSet<Int> = [1, 2, 3, 4]
     let rhs: RedBlackTreeSet<Int> = [3, 4, 5, 6]

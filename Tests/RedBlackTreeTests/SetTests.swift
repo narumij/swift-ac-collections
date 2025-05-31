@@ -1081,5 +1081,14 @@ final class SetTests: XCTestCase {
       XCTAssertFalse(b < a)
     }
   }
+  
+  func testSwap() {
+    
+    var a = RedBlackTreeSet<Int>([0])
+    var b = RedBlackTreeSet<Int>([0,1])
+    swap(&a, &b)
+    XCTAssertEqual(a, [0,1])
+    XCTAssertEqual(b, [0])
+  }
 }
 

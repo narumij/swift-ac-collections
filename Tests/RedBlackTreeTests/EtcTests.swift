@@ -385,4 +385,8 @@ final class EtcTests: XCTestCase {
   }
   
   #endif
+  
+  func testCompare() throws {
+    XCTAssertTrue([0] < [0,1])
+  }
 }

@@ -23,7 +23,7 @@
 @usableFromInline
 protocol RedBlackTreeSequence: RedBlackTreeSequenceBase, Sequence & Collection & BidirectionalCollection
 where
-  Tree: BeginNodeProtocol & EndNodeProtocol & ___ForEachProtocol & DistanceProtocol & ___CollectionProtocol & ___IteratorSequcenceProtocol,
+  Tree: BeginNodeProtocol & EndNodeProtocol & ___ForEachProtocol & DistanceProtocol & BidirectionalCollectionProtocol & ___IteratorSequcenceProtocol & NodeValidationProtocol,
   Element == Tree.Element,
   Index: RedBlackTreeIndex,
 Index.Tree == Tree

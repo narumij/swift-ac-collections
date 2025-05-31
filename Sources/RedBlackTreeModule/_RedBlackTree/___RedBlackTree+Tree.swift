@@ -411,7 +411,7 @@ extension ___RedBlackTree.___Tree: CompareProtocol {}
 extension ___RedBlackTree.___Tree: CompareUniqueProtocol {}
 extension ___RedBlackTree.___Tree: CompareMultiProtocol {}
 extension ___RedBlackTree.___Tree: ___IterateNextProtocol {}
-extension ___RedBlackTree.___Tree: ___CollectionProtocol {}
+extension ___RedBlackTree.___Tree: BidirectionalCollectionProtocol {}
 extension ___RedBlackTree.___Tree: ___ForEachProtocol {}
 
 extension ___RedBlackTree.___Tree {
@@ -559,7 +559,7 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
-extension ___RedBlackTree.___Tree {
+extension ___RedBlackTree.___Tree: NodeValidationProtocol {
 
   @inlinable @inline(__always)
   internal func ___contains(_ p: _NodePtr) -> Bool {
@@ -570,9 +570,7 @@ extension ___RedBlackTree.___Tree {
   internal func ___is_valid(_ p: _NodePtr) -> Bool {
     ___contains(p) && !___is_garbaged(p)
   }
-}
-
-extension ___RedBlackTree.___Tree {
+  
   @inlinable
   internal func ___is_valid_index(_ i: _NodePtr) -> Bool {
     if i == .nullptr { return false }

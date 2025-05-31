@@ -41,26 +41,3 @@ public protocol Tree_IndicesProtocol {
   associatedtype Indices
   func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices
 }
-
-#if false
-public protocol ___RawIndicesProtocol: RedBlackTreeSequenceBase {
-//  func makeRawIndices<Base: RedBlackTreeSequenceBase>(start: _NodePtr, end: _NodePtr) -> RawIndexSequence<Base>
-  func makeRawIndices<Base: RedBlackTreeSequenceBase>() -> RawIndexSequence<Base>
-  func makeRawIndices<Base: RedBlackTreeSequenceBase>(start: _NodePtr, end: _NodePtr) -> RawIndexSequence<Base>
-}
-
-extension ___RedBlackTree.___Tree {
-
-  public typealias RawIndices = RawIndexSequence<___RedBlackTree.___Tree<VC>>
-  
-  @inlinable @inline(__always)
-  public func makeRawIndices<Base: RedBlackTreeSequenceBase>() -> RawIndexSequence<Base> where Base.Tree == ___RedBlackTree.___Tree<VC> {
-    .init(tree: self, start: __begin_node, end: __end_node())
-  }
-
-  @inlinable @inline(__always)
-  public func makeRawIndices<Base: RedBlackTreeSequenceBase>(start: _NodePtr, end: _NodePtr) -> RawIndexSequence<Base> where Base.Tree == ___RedBlackTree.___Tree<VC> {
-    .init(tree: self, start: start, end: end)
-  }
-}
-#endif

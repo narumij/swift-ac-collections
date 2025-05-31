@@ -249,8 +249,6 @@ extension ___Tree.___Iterator {
   }
 }
 
-extension ___Tree.___Iterator: RedBlackTreeIndex, RedBlackTreeMutableRawValue {}
-
 #if DEBUG
   extension ___Tree.___Iterator {
     fileprivate init(_unsafe_tree: ___Tree<VC>, rawValue: _NodePtr) {

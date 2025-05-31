@@ -408,8 +408,6 @@ extension ___Tree: CompareProtocol {}
 extension ___Tree: CompareUniqueProtocol {}
 extension ___Tree: CompareMultiProtocol {}
 extension ___Tree: Tree_IterateProtocol {}
-extension ___Tree: Tree_BidirectionalCollectionProtocol {}
-extension ___Tree: Tree_ForEachProtocol {}
 
 extension ___Tree {
   @inlinable
@@ -556,7 +554,7 @@ extension ___Tree {
   }
 }
 
-extension ___Tree: Tree_NodeValidationProtocol {
+extension ___Tree {
 
   @inlinable @inline(__always)
   internal func ___contains(_ p: _NodePtr) -> Bool {

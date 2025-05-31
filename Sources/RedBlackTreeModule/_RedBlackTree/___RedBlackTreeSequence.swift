@@ -21,16 +21,13 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeSequence
+protocol ___RedBlackTreeSequence: ___RedBlackTree, ValueComparer, Sequence & Collection & BidirectionalCollection
 where
-  Self: ___RedBlackTree,
-  Self: Sequence & Collection & BidirectionalCollection,
-  Tree == ___Tree<VC>,
-  Element == Tree.Element,
+  Tree == ___Tree<Self>,
   Index == Tree.Index,
-  Indices == Tree.Indices
+  Indices == Tree.Indices,
+  Element == Tree.Element
 {
-  associatedtype VC: ValueComparer
   associatedtype Tree
   associatedtype Index
   associatedtype Indices

@@ -25,24 +25,24 @@ protocol ___SubSequenceBase: ___RedBlackTree & Sequence & Collection
     & BidirectionalCollection
 where
   Base: ___RedBlackTreeSubSequence,
-  Tree == Base.Tree,
-  Index == Base.Index,
+  Tree == ___Tree<Base>,
+  Index == Tree.Index,
   Indices == Tree.Indices,
   Element == Tree.Element,
-  Iterator == ElementIterator<Base.Tree>,
+  Iterator == ElementIterator<Tree>,
   SubSequence == Self
 {
   associatedtype Base
-  var _tree: Base.Tree { get }
+  var _tree: Tree { get }
   var _start: _NodePtr { get set }
   var _end: _NodePtr { get set }
-  init(tree: Base.Tree, start: _NodePtr, end: _NodePtr)
+  init(tree: Tree, start: _NodePtr, end: _NodePtr)
 }
 
 extension ___SubSequenceBase {
 
   @inlinable
-  public func makeIterator() -> ElementIterator<Base.Tree> {
+  public func makeIterator() -> ElementIterator<Tree> {
     .init(tree: _tree, start: _start, end: _end)
   }
 }

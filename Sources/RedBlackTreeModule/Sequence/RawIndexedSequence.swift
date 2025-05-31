@@ -62,7 +62,7 @@ struct RawIndexedSequence<Base: RedBlackTreeSequenceBase>: Sequence {
     var __p = _start
     while __p != _end {
       let __c = __p
-      __p = _tree.__tree_next(__p)
+      __p = _tree.__tree_next_iter(__p)
       try body(RawIndex(__c), _tree[__c])
     }
   }

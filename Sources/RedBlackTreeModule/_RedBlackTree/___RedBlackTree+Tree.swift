@@ -283,6 +283,14 @@ extension ___RedBlackTree.___Tree {
   }
 }
 
+extension ___RedBlackTree.___Tree {
+  
+  @inlinable @inline(__always)
+  internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
+    __node_ptr[p].__parent_ == .nullptr
+  }
+}
+
 #if AC_COLLECTIONS_INTERNAL_CHECKS
   extension ___RedBlackTree.___Tree {
 
@@ -463,6 +471,13 @@ extension ___RedBlackTree.___Tree {
 }
 
 // MARK: -
+extension ___RedBlackTree.___Tree: CompareBothProtocol {
+  @inlinable
+  @inline(__always)
+  var isMulti: Bool { VC.isMulti }
+}
+
+// MARK: -
 
 extension ___RedBlackTree.___Tree {
 
@@ -549,11 +564,6 @@ extension ___RedBlackTree.___Tree {
   @inlinable @inline(__always)
   internal func ___contains(_ p: _NodePtr) -> Bool {
     0..<_header.initializedCount ~= p
-  }
-  
-  @inlinable @inline(__always)
-  internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
-    __node_ptr[p].__parent_ == .nullptr
   }
 
   @inlinable @inline(__always)
@@ -739,3 +749,25 @@ extension ___RedBlackTree.___Tree: Sequence {
   }
 }
 
+// MARK: -
+
+extension ___RedBlackTree.___Tree: ___IteratorProtocol {
+  @inlinable @inline(__always)
+  public func makeIndex(rawValue: _NodePtr) -> ___Iterator {
+    .init(__tree: self, rawValue: rawValue)
+  }
+}
+
+extension ___RedBlackTree.___Tree: ___IteratorSequcenceProtocol {
+  @inlinable @inline(__always)
+  public func makeIndices(start: _NodePtr, end: _NodePtr) -> IterSequence {
+    .init(tree: self, start: start, end: end)
+  }
+}
+
+extension ___RedBlackTree.___Tree: ___RawIndexProtocol {
+  @inlinable @inline(__always)
+  public func makeRawIndex(rawValue: _NodePtr) -> RawIndex {
+    .init(rawValue)
+  }
+}

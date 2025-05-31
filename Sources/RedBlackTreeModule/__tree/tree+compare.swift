@@ -6,17 +6,18 @@ protocol PointerCompareProtocol: ValueProtocol {
 }
 
 @usableFromInline
-protocol PointerCompareHogeProtocol: ValueProtocol {
+protocol CompareBothProtocol: CompareUniqueProtocol, CompareMultiProtocol {
+  var isMulti: Bool { get }
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
   func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
 }
 
-extension ___RedBlackTree.___Tree {
+extension CompareBothProtocol {
   @inlinable @inline(__always)
   func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     assert(l == .end || __parent_(l) != .nullptr)
     assert(r == .end || __parent_(r) != .nullptr)
-    return VC.isMulti ? ___ptr_comp_multi(l, r) : ___ptr_comp_unique(l, r)
+    return isMulti ? ___ptr_comp_multi(l, r) : ___ptr_comp_unique(l, r)
   }
 }
 
@@ -149,6 +150,13 @@ extension CompareProtocol {
     !___ptr_comp(l, r)
   }
 
+  @inlinable
+  @inline(__always)
+  func ___ptr_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool {
+//    l == p || (___ptr_comp(l, p) && !___ptr_comp(r, p))
+    ___ptr_less_than_or_equal(l, p) && ___ptr_less_than(p, r)
+  }
+  
   @inlinable
   @inline(__always)
   func ___ptr_closed_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool {

@@ -38,7 +38,7 @@ struct ElementIterator<Tree: ___IterateNextProtocol>: Sequence, IteratorProtocol
     self._tree = tree
     self._current = start
     self._end = end
-    self._next = start == .end ? .end : tree.__tree_next(start)
+    self._next = start == .end ? .end : tree.__tree_next_iter(start)
   }
   
   // 性能変化の反応が過敏なので、慎重さが必要っぽい。
@@ -49,7 +49,7 @@ struct ElementIterator<Tree: ___IterateNextProtocol>: Sequence, IteratorProtocol
     guard _current != _end else { return nil }
     defer {
       _current = _next
-      _next = _next == _end ? _end : _tree.__tree_next(_next)
+      _next = _next == _end ? _end : _tree.__tree_next_iter(_next)
     }
     return _tree[_current]
   }

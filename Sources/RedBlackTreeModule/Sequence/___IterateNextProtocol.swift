@@ -23,7 +23,7 @@
 public protocol ___IterateNextProtocol {
   associatedtype Element
   var __begin_node: _NodePtr { get }
-  func __tree_next(_ __x: _NodePtr) -> _NodePtr
+  func __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
   func __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   subscript(_ pointer: _NodePtr) -> Element { get }
 }
@@ -33,34 +33,13 @@ public protocol ___IteratorProtocol {
   func makeIndex(rawValue: _NodePtr) -> Index
 }
 
-extension ___RedBlackTree.___Tree: ___IteratorProtocol {
-  @inlinable @inline(__always)
-  public func makeIndex(rawValue: _NodePtr) -> ___Iterator {
-    .init(__tree: self, rawValue: rawValue)
-  }
-}
-
 public protocol ___IteratorSequcenceProtocol {
   associatedtype Indices
   func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices
 }
 
-extension ___RedBlackTree.___Tree: ___IteratorSequcenceProtocol {
-  @inlinable @inline(__always)
-  public func makeIndices(start: _NodePtr, end: _NodePtr) -> IterSequence {
-    .init(tree: self, start: start, end: end)
-  }
-}
-
 public protocol ___RawIndexProtocol {
   func makeRawIndex(rawValue: _NodePtr) -> RawIndex
-}
-
-extension ___RedBlackTree.___Tree: ___RawIndexProtocol {
-  @inlinable @inline(__always)
-  public func makeRawIndex(rawValue: _NodePtr) -> RawIndex {
-    .init(rawValue)
-  }
 }
 
 #if false

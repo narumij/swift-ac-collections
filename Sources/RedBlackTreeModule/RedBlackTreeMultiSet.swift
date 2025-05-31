@@ -371,8 +371,9 @@ extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(log *n*)
   @inlinable
-  public func equalRange(_ element: Element) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
-    ___equal_range(element)
+  public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
+    let (lo,hi) = ___equal_range(element)
+    return (___iter(lo), ___iter(hi))
   }
 }
 

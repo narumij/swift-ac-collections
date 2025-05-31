@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct RawIndexSequence<Tree: Tree_IterateProtocol & Tree_RawIndexProtocol>: Sequence {
+struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
   
   @usableFromInline
   let _tree: Tree

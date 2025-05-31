@@ -28,16 +28,19 @@ public protocol Tree_IterateProtocol {
   subscript(_ pointer: _NodePtr) -> Element { get }
 }
 
-public protocol Tree_IndexProtocol {
+@usableFromInline
+protocol Tree_IndexProtocol {
   associatedtype Index
   func makeIndex(rawValue: _NodePtr) -> Index
 }
 
-public protocol Tree_RawIndexProtocol {
+@usableFromInline
+protocol Tree_RawIndexProtocol {
   func makeRawIndex(rawValue: _NodePtr) -> RawIndex
 }
 
-public protocol Tree_IndicesProtocol {
+@usableFromInline
+protocol Tree_IndicesProtocol {
   associatedtype Indices
   func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices
 }

@@ -750,7 +750,7 @@ extension ___Tree: Sequence {
 extension ___Tree: Tree_IndexProtocol {
   public typealias Index = ___Iterator
   @inlinable @inline(__always)
-  public func makeIndex(rawValue: _NodePtr) -> ___Iterator {
+  func makeIndex(rawValue: _NodePtr) -> ___Iterator {
     .init(__tree: self, rawValue: rawValue)
   }
 }
@@ -758,7 +758,7 @@ extension ___Tree: Tree_IndexProtocol {
 extension ___Tree: Tree_IndicesProtocol {
   public typealias Indices = ___IteratorSequence
   @inlinable @inline(__always)
-  public func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices {
+  func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices {
     .init(tree: self, start: start, end: end)
   }
 }

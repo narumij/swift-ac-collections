@@ -547,8 +547,9 @@ extension RedBlackTreeDictionary {
 
   /// - Complexity: O(log *n*)
   @inlinable
-  public func equalRange(_ key: Key) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
-    ___equal_range(key)
+  public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
+    let (lo,hi) = ___equal_range(key)
+    return (___iter(lo), ___iter(hi))
   }
 }
 

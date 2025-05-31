@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct RawIndexIterator<Tree: Tree_IterateProtocol & Tree_RawIndexProtocol>: IteratorProtocol {
+struct RawIndexIterator<Tree: Tree_IterateProtocol>: IteratorProtocol {
 
   @usableFromInline
   let _tree: Tree
@@ -46,12 +46,12 @@ struct RawIndexIterator<Tree: Tree_IterateProtocol & Tree_RawIndexProtocol>: Ite
       _current = _next
       _next = _next == _end ? _end : _tree.__tree_next_iter(_next)
     }
-    return _tree.makeRawIndex(rawValue: _current)
+    return .init(_current)
   }
 }
 
 public
-struct ReversedRawIndexIterator<Tree: Tree_IterateProtocol & Tree_RawIndexProtocol>: Sequence, IteratorProtocol {
+struct ReversedRawIndexIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
   let _tree: Tree
@@ -75,6 +75,6 @@ struct ReversedRawIndexIterator<Tree: Tree_IterateProtocol & Tree_RawIndexProtoc
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? _tree.__tree_prev_iter(_current) : .nullptr
-    return _tree.makeRawIndex(rawValue: _current)
+    return .init(_current)
   }
 }

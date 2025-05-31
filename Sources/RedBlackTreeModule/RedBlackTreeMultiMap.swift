@@ -450,8 +450,9 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(log *n*)
   @inlinable
-  public func equalRange(_ key: Key) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
-    ___equal_range(key)
+  public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
+    let (lo,hi) = ___equal_range(key)
+    return (___iter(lo),___iter(hi))
   }
 }
 
@@ -627,8 +628,8 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public subscript(key: Key) -> SubSequence {
-    let (lo, hi) = self.___equal_range(key)
-    return .init(tree: _tree, start: lo.rawValue, end: hi.rawValue)
+    let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
+    return .init(tree: _tree, start: lo, end: hi)
   }
 }
 

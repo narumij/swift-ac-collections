@@ -407,8 +407,6 @@ extension ___Tree: DistanceProtocol {}
 extension ___Tree: CompareProtocol {}
 extension ___Tree: CompareUniqueProtocol {}
 extension ___Tree: CompareMultiProtocol {}
-extension ___Tree: Tree_IterateProtocol {}
-extension ___Tree: Tree_KeyCompare {}
 
 extension ___Tree {
   @inlinable
@@ -748,6 +746,8 @@ extension ___Tree: Sequence {
 
 // MARK: -
 
+extension ___Tree: Tree_IterateProtocol {}
+
 extension ___Tree: Tree_IndexProtocol {
   public typealias Index = ___Iterator
   @inlinable @inline(__always)
@@ -771,7 +771,7 @@ extension ___Tree: Tree_RawIndexProtocol {
   }
 }
 
-extension ___Tree {
+extension ___Tree: Tree_KeyCompare {
   
   public typealias Key = VC._Key
 

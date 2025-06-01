@@ -20,11 +20,9 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public protocol Tree_IterateProtocol {
-  associatedtype Element
-  var __begin_node: _NodePtr { get }
-  func __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
-  func __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
-  subscript(_ pointer: _NodePtr) -> Element { get }
-  
+
+@usableFromInline
+protocol Tree_IndexProtocol {
+  associatedtype Index
+  func makeIndex(rawValue: _NodePtr) -> Index
 }

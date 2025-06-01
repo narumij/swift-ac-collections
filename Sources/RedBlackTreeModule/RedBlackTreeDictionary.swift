@@ -727,8 +727,20 @@ extension RedBlackTreeDictionary.SubSequence: Equatable where Value: Equatable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.__tree_.___tree_equiv_key_value(start: lhs._start, end: lhs._end,
-                             other: (rhs.__tree_, rhs._start, rhs._end))
+    lhs.__tree_.___tree_equiv_key_value(
+      start: lhs._start, end: lhs._end,
+      other: (rhs.__tree_, rhs._start, rhs._end))
+  }
+}
+
+extension RedBlackTreeDictionary.SubSequence: Comparable where Value: Comparable {
+  
+  /// - Complexity: O(*n*)
+  @inlinable
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.__tree_.___tree_compare_key_value(
+      start: lhs._start, end: lhs._end,
+      other: (rhs.__tree_, rhs._start, rhs._end))
   }
 }
 
@@ -836,5 +848,14 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.__tree_.___tree_equiv_key_value(rhs.__tree_)
+  }
+}
+
+extension RedBlackTreeDictionary: Comparable where Value: Comparable {
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.__tree_.___tree_compare_key_value(rhs.__tree_)
   }
 }

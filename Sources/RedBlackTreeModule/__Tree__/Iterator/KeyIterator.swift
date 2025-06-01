@@ -58,6 +58,22 @@ where Tree.Element == _KeyValueTuple_<Key,V>
   }
 }
 
+extension KeyIterator: Equatable {
+  
+  public static func == (lhs: KeyIterator<Tree, Key, V>, rhs: KeyIterator<Tree, Key, V>) -> Bool {
+    lhs.__tree_.___tree_equiv(start: lhs._start, end: lhs._end,
+                              other: (rhs.__tree_, rhs._start, rhs._end))
+  }
+}
+
+extension KeyIterator: Comparable {
+  
+  public static func < (lhs: KeyIterator<Tree, Key, V>, rhs: KeyIterator<Tree, Key, V>) -> Bool {
+    lhs.__tree_.___tree_equiv(start: lhs._start, end: lhs._end,
+                              other: (rhs.__tree_, rhs._start, rhs._end))
+  }
+}
+
 public
 struct ReversedKeyIterator<Tree: Tree_IterateProtocol,Key,V>: Sequence, IteratorProtocol
 where Tree.Element == _KeyValueTuple_<Key,V>

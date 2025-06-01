@@ -856,7 +856,7 @@ extension ___Tree {
   func ___element_key_comp(_ lhs: Element,_ rhs: Element) -> Bool {
     value_comp(__key(lhs), __key(rhs))
   }
-
+  
   @inlinable
   public func ___tree_compare(start: _NodePtr, end: _NodePtr, other: (tree: Tree, start: _NodePtr, end: _NodePtr)) -> Bool {
     var (l, r) = (start, other.start)
@@ -878,5 +878,39 @@ extension ___Tree {
   func ___tree_compare(_ other: Tree) -> Bool {
     ___tree_compare(start: __begin_node, end: __end_node(),
                     other: (other, other.__begin_node, other.__end_node()))
+  }
+  
+  @inlinable
+  func ___element_key_value_comp<Key,Value>(_ lhs: Element,_ rhs: Element) -> Bool
+  where Element == _KeyValueTuple_<Key,Value>, Value: Comparable
+  {
+    value_comp(__key(lhs), __key(rhs)) || (!value_comp(__key(lhs), __key(rhs)) && lhs.value < rhs.value)
+  }
+
+  @inlinable
+  public func ___tree_compare_key_value<Key,Value>(start: _NodePtr, end: _NodePtr, other: (tree: Tree, start: _NodePtr, end: _NodePtr)) -> Bool
+  where Element == _KeyValueTuple_<Key,Value>, Value: Comparable
+  {
+    var (l, r) = (start, other.start)
+    while r != other.end
+    {
+      if l == end || ___element_key_value_comp(self[l], other.tree[r]) {
+        return true
+      }
+      if ___element_key_value_comp(other.tree[r], self[l]) {
+        return false
+      }
+      r = other.tree.__tree_next_iter(r)
+      l = __tree_next_iter(l)
+    }
+    return false
+  }
+
+  @inlinable
+  func ___tree_compare_key_value<Key,Value>(_ other: Tree) -> Bool
+  where Element == _KeyValueTuple_<Key,Value>, Value: Comparable
+  {
+    ___tree_compare_key_value(start: __begin_node, end: __end_node(),
+                              other: (other, other.__begin_node, other.__end_node()))
   }
 }

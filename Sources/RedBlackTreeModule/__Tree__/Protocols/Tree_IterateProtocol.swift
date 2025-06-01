@@ -29,6 +29,9 @@ public protocol Tree_IterateProtocol {
   
   func ___tree_equiv(start: _NodePtr, end: _NodePtr,
                      other: (tree: Self, start: _NodePtr, end: _NodePtr)) -> Bool
+  
+  func ___tree_compare(start: _NodePtr, end: _NodePtr,
+                       other: (tree: Self, start: _NodePtr, end: _NodePtr)) -> Bool
 }
 
 @usableFromInline

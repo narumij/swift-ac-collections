@@ -5,15 +5,15 @@ import PackageDescription
 import Foundation
 
 var defines: [String] = [
-  "AC_COLLECTIONS_INTERNAL_CHECKS",
-  "TREE_INVARIANT_CHECKS",
-  "GRAPHVIZ_DEBUG",
-  "USING_ALGORITHMS",
-  "USING_COLLECTIONS",
+//  "AC_COLLECTIONS_INTERNAL_CHECKS",
+//  "TREE_INVARIANT_CHECKS",
+//  "GRAPHVIZ_DEBUG",
+//  "USING_ALGORITHMS",
+//  "USING_COLLECTIONS",
 //  "DISABLE_COPY_ON_WRITE", // やや危険。クラッシュは減った。Unit Testが通らない箇所が増える
-  "ENABLE_PERFORMANCE_TESTING",
-  "SKIP_MULTISET_INDEX_BUG",
-  "PERFOMANCE_CHECK",
+//  "ENABLE_PERFORMANCE_TESTING",
+//  "SKIP_MULTISET_INDEX_BUG",
+//  "PERFOMANCE_CHECK",
 ]
 
 var _settings: [SwiftSetting] =
@@ -41,13 +41,13 @@ let package = Package(
       targets: ["AcCollections"])
   ],
   dependencies: [
-     .package(
-       url: "https://github.com/apple/swift-collections.git",
-       branch: "main"
-     ),
-     .package(
-       url: "https://github.com/apple/swift-algorithms.git",
-       from: "1.2.0"),
+//     .package(
+//       url: "https://github.com/apple/swift-collections.git",
+//       branch: "main"
+//     ),
+//     .package(
+//       url: "https://github.com/apple/swift-algorithms.git",
+//       from: "1.2.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -75,7 +75,7 @@ let package = Package(
     .testTarget(
       name: "PermutationTests",
       dependencies: [
-         .product(name: "Algorithms", package: "swift-algorithms"),
+//         .product(name: "Algorithms", package: "swift-algorithms"),
         "PermutationModule"
       ],
       swiftSettings: _settings
@@ -83,7 +83,7 @@ let package = Package(
     .executableTarget(
       name: "Executable",
       dependencies: [
-         .product(name: "Collections", package: "swift-collections"),
+//         .product(name: "Collections", package: "swift-collections"),
         "RedBlackTreeModule",
         "PermutationModule",
       ],

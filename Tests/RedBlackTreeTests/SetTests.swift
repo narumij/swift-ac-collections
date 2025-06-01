@@ -985,60 +985,7 @@ final class SetTests: XCTestCase {
       XCTAssertNotEqual(b, a)
     }
   }
-  
-#if false
-  func testSeqEqual() throws {
-    do {
-      let a = [Int]()
-      let b = RedBlackTreeSet<Int>()
-      XCTAssertTrue(a == b)
-      XCTAssertTrue(b == a)
-      XCTAssertFalse(a != b)
-      XCTAssertFalse(b != a)
-    }
-    do {
-      let a = RedBlackTreeSet<Int>()
-      let b = [0]
-      XCTAssertFalse(a == b)
-      XCTAssertFalse(b == a)
-      XCTAssertTrue(a != b)
-      XCTAssertTrue(b != a)
-    }
-    do {
-      let a = [0]
-      let b = RedBlackTreeSet<Int>([0])
-      XCTAssertTrue(a == b)
-      XCTAssertTrue(b == a)
-      XCTAssertFalse(a != b)
-      XCTAssertFalse(b != a)
-    }
-    do {
-      let a = [0,1]
-      let b = RedBlackTreeSet<Int>([0])
-      XCTAssertFalse(a == b)
-      XCTAssertFalse(b == a)
-      XCTAssertTrue(a != b)
-      XCTAssertTrue(b != a)
-    }
-    do {
-      let a = [0]
-      let b = RedBlackTreeSet<Int>([0,1])
-      XCTAssertFalse(a == b)
-      XCTAssertFalse(b == a)
-      XCTAssertTrue(a != b)
-      XCTAssertTrue(b != a)
-    }
-    do {
-      let a = [0,1]
-      let b = RedBlackTreeSet<Int>([0,1])
-      XCTAssertTrue(a == b)
-      XCTAssertTrue(b == a)
-      XCTAssertFalse(a != b)
-      XCTAssertFalse(b != a)
-    }
-  }
-  #endif
-  
+    
   func testCompare1() throws {
     do {
       let a = RedBlackTreeSet<Int>()

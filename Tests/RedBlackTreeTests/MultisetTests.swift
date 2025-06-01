@@ -1078,5 +1078,112 @@ final class MultisetTests: XCTestCase {
       XCTAssertEqual(d.popFirst(), 1)
     }
   }
+  
+  func testEqual1() throws {
+    do {
+      let a = RedBlackTreeMultiSet<Int>()
+      let b = RedBlackTreeMultiSet<Int>()
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>()
+      let b = RedBlackTreeMultiSet<Int>([0])
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>([0])
+      let b = RedBlackTreeMultiSet<Int>([0])
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>([0,1])
+      let b = RedBlackTreeMultiSet<Int>([0])
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>([0,1])
+      let b = RedBlackTreeMultiSet<Int>([0,1])
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+  }
+  
+  func testEqual2() throws {
+    let aa = RedBlackTreeMultiSet<Int>([0,1,2,3,4,5])
+    let bb = RedBlackTreeMultiSet<Int>([3,4,5,6,7,8])
+    do {
+      let a = aa[0 ..< 0]
+      let b = bb[3 ..< 3]
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+    do {
+      let a = aa[3 ..< 6]
+      let b = bb[3 ..< 6]
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+    do {
+      let a = aa[2 ..< 6]
+      let b = bb[3 ..< 6]
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+    do {
+      let a = aa[3 ..< 6]
+      let b = bb[3 ..< 7]
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+  }
+    
+  func testCompare1() throws {
+    do {
+      let a = RedBlackTreeMultiSet<Int>()
+      let b = RedBlackTreeMultiSet<Int>()
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>()
+      let b = RedBlackTreeMultiSet<Int>([0])
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>([0])
+      let b = RedBlackTreeMultiSet<Int>([0])
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>([0])
+      let b = RedBlackTreeMultiSet<Int>([1])
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>([0,1])
+      let b = RedBlackTreeMultiSet<Int>([0])
+      XCTAssertFalse(a < b)
+      XCTAssertTrue(b < a)
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>([0,1])
+      let b = RedBlackTreeMultiSet<Int>([0,1])
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>([0,1,2])
+      let b = RedBlackTreeMultiSet<Int>([0,1,3])
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+  }
 }
 

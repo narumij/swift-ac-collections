@@ -724,7 +724,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary.SubSequence: Equatable where Value: Equatable {
   
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.elementsEqual(rhs)
@@ -733,7 +733,7 @@ extension RedBlackTreeDictionary.SubSequence: Equatable where Value: Equatable {
 
 extension RedBlackTreeDictionary.SubSequence: Comparable where Value: Comparable {
   
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
@@ -742,6 +742,8 @@ extension RedBlackTreeDictionary.SubSequence: Comparable where Value: Comparable
 
 extension RedBlackTreeDictionary.SubSequence where Value: Equatable {
   
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
   @inlinable
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence : Sequence, Element == OtherSequence.Element
@@ -752,6 +754,8 @@ extension RedBlackTreeDictionary.SubSequence where Value: Equatable {
 
 extension RedBlackTreeDictionary.SubSequence where Value: Comparable {
   
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
   @inlinable
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence : Sequence, Element == OtherSequence.Element
@@ -860,7 +864,7 @@ extension RedBlackTreeDictionary: CustomDebugStringConvertible {
 
 extension RedBlackTreeDictionary: Equatable where Value: Equatable {
 
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.count == rhs.count && lhs.elementsEqual(rhs)
@@ -869,7 +873,7 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
 
 extension RedBlackTreeDictionary: Comparable where Value: Comparable {
 
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
@@ -878,6 +882,8 @@ extension RedBlackTreeDictionary: Comparable where Value: Comparable {
 
 extension RedBlackTreeDictionary where Value: Equatable {
   
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
   @inlinable
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence : Sequence, Element == OtherSequence.Element
@@ -888,6 +894,8 @@ extension RedBlackTreeDictionary where Value: Equatable {
 
 extension RedBlackTreeDictionary where Value: Comparable {
   
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
   @inlinable
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence : Sequence, Element == OtherSequence.Element

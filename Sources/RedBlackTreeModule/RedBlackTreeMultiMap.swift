@@ -652,7 +652,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap.SubSequence: Equatable where Value: Equatable {
   
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.elementsEqual(rhs)
@@ -661,7 +661,7 @@ extension RedBlackTreeMultiMap.SubSequence: Equatable where Value: Equatable {
 
 extension RedBlackTreeMultiMap.SubSequence: Comparable where Value: Comparable {
   
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
@@ -670,6 +670,8 @@ extension RedBlackTreeMultiMap.SubSequence: Comparable where Value: Comparable {
 
 extension RedBlackTreeMultiMap.SubSequence where Value: Equatable {
   
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
   @inlinable
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence : Sequence, Element == OtherSequence.Element
@@ -680,6 +682,8 @@ extension RedBlackTreeMultiMap.SubSequence where Value: Equatable {
 
 extension RedBlackTreeMultiMap.SubSequence where Value: Comparable {
   
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
   @inlinable
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence : Sequence, Element == OtherSequence.Element
@@ -779,7 +783,7 @@ extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
 
 extension RedBlackTreeMultiMap: Equatable where Value: Equatable {
 
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.count == rhs.count && lhs.elementsEqual(rhs)
@@ -788,7 +792,7 @@ extension RedBlackTreeMultiMap: Equatable where Value: Equatable {
 
 extension RedBlackTreeMultiMap: Comparable where Value: Comparable {
 
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
@@ -797,6 +801,8 @@ extension RedBlackTreeMultiMap: Comparable where Value: Comparable {
 
 extension RedBlackTreeMultiMap where Value: Equatable {
   
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
   @inlinable
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence : Sequence, Element == OtherSequence.Element
@@ -807,6 +813,8 @@ extension RedBlackTreeMultiMap where Value: Equatable {
 
 extension RedBlackTreeMultiMap where Value: Comparable {
   
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
   @inlinable
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence : Sequence, Element == OtherSequence.Element

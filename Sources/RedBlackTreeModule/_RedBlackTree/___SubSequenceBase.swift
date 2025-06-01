@@ -345,3 +345,19 @@ extension ___SubSequenceBase {
     NodeElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
+
+extension ___SubSequenceBase {
+  
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence {
+    try makeIterator().elementsEqual(other, by: areEquivalent)
+  }
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence, Element == OtherSequence.Element {
+    try makeIterator().lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+  }
+}

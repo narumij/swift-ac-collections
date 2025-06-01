@@ -655,9 +655,7 @@ extension RedBlackTreeMultiMap.SubSequence: Equatable where Value: Equatable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.__tree_.___tree_equiv_key_value(
-      start: lhs._start, end: lhs._end,
-      other: (rhs.__tree_, rhs._start, rhs._end))
+    lhs.elementsEqual(rhs)
   }
 }
 
@@ -666,9 +664,27 @@ extension RedBlackTreeMultiMap.SubSequence: Comparable where Value: Comparable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.__tree_.___tree_compare_key_value(
-      start: lhs._start, end: lhs._end,
-      other: (rhs.__tree_, rhs._start, rhs._end))
+    lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
+extension RedBlackTreeMultiMap.SubSequence where Value: Equatable {
+  
+  @inlinable
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence : Sequence, Element == OtherSequence.Element
+  {
+    elementsEqual(other, by: Tree.___key_value_equiv)
+  }
+}
+
+extension RedBlackTreeMultiMap.SubSequence where Value: Comparable {
+  
+  @inlinable
+  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence : Sequence, Element == OtherSequence.Element
+  {
+      lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
   }
 }
 
@@ -766,7 +782,7 @@ extension RedBlackTreeMultiMap: Equatable where Value: Equatable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.__tree_.___tree_equiv_key_value(rhs.__tree_)
+    lhs.count == rhs.count && lhs.elementsEqual(rhs)
   }
 }
 
@@ -775,6 +791,26 @@ extension RedBlackTreeMultiMap: Comparable where Value: Comparable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.__tree_.___tree_compare_key_value(rhs.__tree_)
+    lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
+extension RedBlackTreeMultiMap where Value: Equatable {
+  
+  @inlinable
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence : Sequence, Element == OtherSequence.Element
+  {
+    elementsEqual(other, by: Tree.___key_value_equiv)
+  }
+}
+
+extension RedBlackTreeMultiMap where Value: Comparable {
+  
+  @inlinable
+  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence : Sequence, Element == OtherSequence.Element
+  {
+      lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
   }
 }

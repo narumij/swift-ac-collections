@@ -61,34 +61,14 @@ where Tree.Element == _KeyValueTuple_<K,Value>
 extension ValueIterator: Equatable where Value: Equatable {
   
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    var (l,r) = (lhs._start, rhs._start)
-    if l == lhs._end { return r == rhs._end }
-    while r != rhs._end, lhs.__tree_[l].value == rhs.__tree_[r].value
-    {
-      l = lhs.__tree_.__tree_next_iter(l)
-      r = rhs.__tree_.__tree_next_iter(r)
-      if l == lhs._end { return r == rhs._end }
-    }
-    return false
+    lhs.elementsEqual(rhs)
   }
 }
 
 extension ValueIterator: Comparable where Value: Comparable {
   
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    var (l, r) = (lhs._start, rhs._start)
-    while r != rhs._end
-    {
-      if l == lhs._end || lhs.__tree_[l].value < rhs.__tree_[r].value {
-        return true
-      }
-      if rhs.__tree_[r].value < lhs.__tree_[l].value {
-        return false
-      }
-      l = lhs.__tree_.__tree_next_iter(l)
-      r = rhs.__tree_.__tree_next_iter(r)
-    }
-    return false
+    lhs.lexicographicallyPrecedes(rhs)
   }
 }
 

@@ -21,8 +21,8 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public
-struct KeyIterator<Tree: Tree_IterateProtocol,Key,V>: Sequence, IteratorProtocol
-where Tree.Element == _KeyValueTuple_<Key,V>
+struct KeyIterator<Tree: Tree_IterateProtocol & Tree_KeyCompare,Key,V>: Sequence, IteratorProtocol
+where Tree.Element == _KeyValueTuple_<Key,V>, Tree.Key == Key
 {
 
   @usableFromInline
@@ -61,16 +61,14 @@ where Tree.Element == _KeyValueTuple_<Key,V>
 extension KeyIterator: Equatable {
   
   public static func == (lhs: KeyIterator<Tree, Key, V>, rhs: KeyIterator<Tree, Key, V>) -> Bool {
-    lhs.__tree_.___tree_equiv(start: lhs._start, end: lhs._end,
-                              other: (rhs.__tree_, rhs._start, rhs._end))
+    lhs.elementsEqual(rhs, by: { !Tree.value_comp($0,$1) && !Tree.value_comp($1,$0) })
   }
 }
 
 extension KeyIterator: Comparable {
   
   public static func < (lhs: KeyIterator<Tree, Key, V>, rhs: KeyIterator<Tree, Key, V>) -> Bool {
-    lhs.__tree_.___tree_equiv(start: lhs._start, end: lhs._end,
-                              other: (rhs.__tree_, rhs._start, rhs._end))
+    lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
   }
 }
 

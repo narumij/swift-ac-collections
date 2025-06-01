@@ -389,5 +389,9 @@ final class EtcTests: XCTestCase {
   func testCompare() throws {
     XCTAssertTrue([0] < [0,1])
     XCTAssertTrue((0,0) < (0,1))
+    XCTAssertTrue(AnySequence([0]).elementsEqual([0]))
+    XCTAssertFalse(AnySequence([0]).elementsEqual([0],by: !=))
+    XCTAssertTrue(AnySequence([0]).lexicographicallyPrecedes([0,1]))
+    XCTAssertFalse(AnySequence([0,0]).lexicographicallyPrecedes([0,1], by: >))
   }
 }

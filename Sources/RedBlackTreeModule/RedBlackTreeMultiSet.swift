@@ -499,8 +499,7 @@ extension RedBlackTreeMultiSet.SubSequence: Equatable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.__tree_.___tree_equiv(start: lhs._start, end: lhs._end,
-                             other: (rhs.__tree_, rhs._start, rhs._end))
+    lhs.elementsEqual(rhs)
   }
 }
 
@@ -509,9 +508,24 @@ extension RedBlackTreeMultiSet.SubSequence: Comparable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.__tree_.___tree_compare(
-      start: lhs._start, end: lhs._end,
-      other: (rhs.__tree_, rhs._start, rhs._end))
+    lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
+extension RedBlackTreeMultiSet.SubSequence {
+  
+  @inlinable
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence : Sequence, Element == OtherSequence.Element
+  {
+      elementsEqual(other, by: Tree.___key_equiv)
+  }
+  
+  @inlinable
+  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence : Sequence, Element == OtherSequence.Element
+  {
+      lexicographicallyPrecedes(other, by: Tree.___key_comp)
   }
 }
 
@@ -608,7 +622,7 @@ extension RedBlackTreeMultiSet: Equatable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.count == rhs.count && lhs.__tree_.___tree_equiv(rhs.__tree_)
+    lhs.count == rhs.count && lhs.elementsEqual(rhs)
   }
 }
 
@@ -617,6 +631,23 @@ extension RedBlackTreeMultiSet: Comparable {
   /// - Complexity: O(*n*)
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.__tree_.___tree_compare(rhs.__tree_)
+    lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
+extension RedBlackTreeMultiSet {
+  
+  @inlinable
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence : Sequence, Element == OtherSequence.Element
+  {
+      elementsEqual(other, by: Tree.___key_equiv)
+  }
+  
+  @inlinable
+  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence : Sequence, Element == OtherSequence.Element
+  {
+      lexicographicallyPrecedes(other, by: Tree.___key_comp)
   }
 }

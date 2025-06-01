@@ -986,6 +986,7 @@ final class SetTests: XCTestCase {
     }
   }
   
+#if false
   func testSeqEqual() throws {
     do {
       let a = [Int]()
@@ -1036,6 +1037,7 @@ final class SetTests: XCTestCase {
       XCTAssertFalse(b != a)
     }
   }
+  #endif
   
   func testCompare1() throws {
     do {

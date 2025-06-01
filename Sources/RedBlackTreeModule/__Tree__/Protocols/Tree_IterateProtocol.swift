@@ -27,11 +27,11 @@ public protocol Tree_IterateProtocol {
   func __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   subscript(_ pointer: _NodePtr) -> Element { get }
   
-  func ___tree_equiv(start: _NodePtr, end: _NodePtr,
-                     other: (tree: Self, start: _NodePtr, end: _NodePtr)) -> Bool
-  
-  func ___tree_compare(start: _NodePtr, end: _NodePtr,
-                       other: (tree: Self, start: _NodePtr, end: _NodePtr)) -> Bool
+}
+
+public protocol Tree_KeyCompare {
+  associatedtype Key
+  static func value_comp(_ lhs: Key,_ rhs: Key) -> Bool
 }
 
 @usableFromInline

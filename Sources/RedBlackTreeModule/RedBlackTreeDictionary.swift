@@ -194,6 +194,31 @@ extension RedBlackTreeDictionary {
 // MARK: - Insert（挿入）
 
 extension RedBlackTreeDictionary {
+  // multi mapとの統一感のために復活
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func insert(key: Key, value: Value) -> (
+    inserted: Bool, memberAfterInsert: Element
+  ) {
+    insert((key, value))
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @discardableResult
+  public mutating func insert(_ newMember: Element) -> (
+    inserted: Bool, memberAfterInsert: Element
+  ) {
+    _ensureUniqueAndCapacity()
+    _ = __tree_.__insert_unique(newMember)
+    return (true, newMember)
+  }
+}
+
+extension RedBlackTreeDictionary {
 
   /// - Complexity: O(log *n*)
   @discardableResult

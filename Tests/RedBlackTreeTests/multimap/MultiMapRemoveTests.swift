@@ -101,7 +101,7 @@ final class MultiMapRemoveTests: XCTestCase {
   }
   
   func testRemoveWithIndices() throws {
-    var members = RedBlackTreeMultiMap(multingKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
+    var members = RedBlackTreeMultiMap(multiKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     for i in members.indices {
       members.remove(at: i)
     }
@@ -109,7 +109,7 @@ final class MultiMapRemoveTests: XCTestCase {
   }
   
   func testRemoveWithIndices2() throws {
-    var members = RedBlackTreeMultiMap(multingKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
+    var members = RedBlackTreeMultiMap(multiKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     members.indices.forEach { i in
       members.remove(at: i)
     }
@@ -117,7 +117,7 @@ final class MultiMapRemoveTests: XCTestCase {
   }
   
   func testRemoveWithIndices3() throws {
-    var members = RedBlackTreeMultiMap(multingKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
+    var members = RedBlackTreeMultiMap(multiKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     members.indices.reversed().forEach { i in
       members.remove(at: i)
     }
@@ -125,7 +125,7 @@ final class MultiMapRemoveTests: XCTestCase {
   }
   
   func testRemoveWith___Indices() throws {
-    var members = RedBlackTreeMultiMap(multingKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
+    var members = RedBlackTreeMultiMap(multiKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     for i in members.rawIndices {
       members.remove(at: i)
     }
@@ -133,7 +133,7 @@ final class MultiMapRemoveTests: XCTestCase {
   }
   
   func testRemoveWith___Indices2() throws {
-    var members = RedBlackTreeMultiMap(multingKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
+    var members = RedBlackTreeMultiMap(multiKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     members.rawIndices.forEach { i in
       members.remove(at: i)
     }
@@ -141,7 +141,7 @@ final class MultiMapRemoveTests: XCTestCase {
   }
   
   func testRemoveWith___Indices3() throws {
-    var members = RedBlackTreeMultiMap(multingKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
+    var members = RedBlackTreeMultiMap(multiKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     members.rawIndices.reversed().forEach { i in
       members.remove(at: i)
     }
@@ -175,7 +175,7 @@ final class MultiMapRemoveTests: XCTestCase {
 #endif
 
   func testRemoveWithSub___Indices() throws {
-      var members = RedBlackTreeMultiMap(multingKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
+      var members = RedBlackTreeMultiMap(multiKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     for i in members[2 ..< 8].rawIndices {
       members.remove(at: i)
     }
@@ -183,7 +183,7 @@ final class MultiMapRemoveTests: XCTestCase {
   }
 
   func testRemoveWithSub___Indices2() throws {
-    var members = RedBlackTreeMultiMap(multingKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
+    var members = RedBlackTreeMultiMap(multiKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     members[2 ..< 8].rawIndices.forEach { i in
       members.remove(at: i)
     }
@@ -191,7 +191,7 @@ final class MultiMapRemoveTests: XCTestCase {
   }
   
   func testRemoveWithSub___Indices4() throws {
-    var members = RedBlackTreeMultiMap(multingKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
+    var members = RedBlackTreeMultiMap(multiKeysWithValues: (0 ..< 10).map { ($0, $0 * 10) })
     members[2 ..< 8].rawIndices.reversed().forEach { i in
       members.remove(at: i)
     }

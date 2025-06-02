@@ -56,6 +56,7 @@ extension ___RedBlackTreeSequence {
 }
 
 extension ___RedBlackTreeSequence {
+  // 型推論が絡まりそうなので一旦非公開扱いだが、公開扱いにしたい
 
   /// - Complexity: O(*n*)
   @inlinable

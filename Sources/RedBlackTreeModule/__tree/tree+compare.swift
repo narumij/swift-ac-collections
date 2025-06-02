@@ -156,7 +156,6 @@ extension CompareProtocol {
   @inlinable
   @inline(__always)
   func ___ptr_less_than_or_equal(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-//    return l == r || ___ptr_comp(l, r)
     !___ptr_comp(r, l)
   }
 
@@ -175,14 +174,12 @@ extension CompareProtocol {
   @inlinable
   @inline(__always)
   func ___ptr_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool {
-//    l == p || (___ptr_comp(l, p) && !___ptr_comp(r, p))
     ___ptr_less_than_or_equal(l, p) && ___ptr_less_than(p, r)
   }
   
   @inlinable
   @inline(__always)
   func ___ptr_closed_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool {
-//    l == p || (___ptr_comp(l, p) && !___ptr_comp(r, p))
     ___ptr_less_than_or_equal(l, p) && ___ptr_less_than_or_equal(p, r)
   }
 }

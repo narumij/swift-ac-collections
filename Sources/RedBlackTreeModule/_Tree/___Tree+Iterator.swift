@@ -121,27 +121,7 @@ extension ___Tree.___Iterator {
   @inlinable
   @inline(__always)
   public func advanced(by n: Int) -> Self {
-    guard !isGarbaged else {
-      preconditionFailure(.garbagedIndex)
-    }
-    var distance = n
-    var result: Self = self
-    while distance != 0 {
-      if 0 < distance {
-        if result.isEnd { return result }
-        result.___next()
-        distance -= 1
-      } else {
-        if result.isStart {
-          // 後ろと区別したくてnullptrにしてたが、一周回るとendなのでendにしてみる
-          result._rawValue = .end
-          return result
-        }
-        result.___prev()
-        distance += 1
-      }
-    }
-    return result
+    .init(tree: __tree_, rawValue: __tree_.___advanced(rawValue, by: n))
   }
 }
 
@@ -226,7 +206,7 @@ extension ___Tree.___Iterator {
     guard
       __tree_.__parent_(_rawValue) != .nullptr,
       rawValue != .end,
-      __tree_.___contains(_rawValue)
+      __tree_.___initialized_contains(_rawValue)
     else {
       return nil
     }

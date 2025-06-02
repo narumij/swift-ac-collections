@@ -376,7 +376,6 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
   
-  // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの
   @inlinable
   @inline(__always)
   @discardableResult
@@ -384,19 +383,17 @@ extension ___RedBlackTreeBase {
     __tree_.erase(ptr)
   }
 
-  // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func ___std_erase(_ ptr: RawIndex) -> RawIndex {
+  public mutating func ___erase(_ ptr: RawIndex) -> RawIndex {
     ___raw_index(__tree_.erase(ptr.rawValue))
   }
 
-  // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func ___std_erase(_ ptr: Index) -> Index {
+  public mutating func ___erase(_ ptr: Index) -> Index {
     ___index(__tree_.erase(ptr.rawValue))
   }
 }
@@ -435,13 +432,34 @@ extension ___RedBlackTreeBase {
   
   @inlinable
   @inline(__always)
+  public func ___prev(_ i: _NodePtr) -> _NodePtr {
+    __tree_.__tree_prev_iter(i)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func ___next(_ i: _NodePtr) -> _NodePtr {
+    __tree_.__tree_next_iter(i)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func ___advanced(_ i: _NodePtr, by distance: Int) -> _NodePtr {
+    __tree_.___advanced(i, by: distance)
+  }
+}
+
+extension ___RedBlackTreeBase {
+  
+  @inlinable
+  @inline(__always)
   public func ___is_valid(_ index: _NodePtr) -> Bool {
     __tree_.___is_valid_index(index)
   }
 }
 
 extension ___RedBlackTreeBase {
-
+  
   @inlinable
   @inline(__always)
   public mutating func ___element(at ptr: _NodePtr) -> Element? {
@@ -453,6 +471,9 @@ extension ___RedBlackTreeBase {
     }
     return __tree_[ptr]
   }
+}
+
+extension ___RedBlackTreeBase {
   
   @inlinable
   @inline(__always)

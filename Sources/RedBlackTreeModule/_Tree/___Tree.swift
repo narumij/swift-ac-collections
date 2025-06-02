@@ -556,13 +556,13 @@ extension ___Tree {
 extension ___Tree {
 
   @inlinable @inline(__always)
-  internal func ___contains(_ p: _NodePtr) -> Bool {
+  internal func ___initialized_contains(_ p: _NodePtr) -> Bool {
     0..<_header.initializedCount ~= p
   }
 
   @inlinable @inline(__always)
   internal func ___is_valid(_ p: _NodePtr) -> Bool {
-    ___contains(p) && !___is_garbaged(p)
+    ___initialized_contains(p) && !___is_garbaged(p)
   }
 
   @inlinable
@@ -741,6 +741,37 @@ extension ___Tree: Sequence {
   @inlinable
   public __consuming func makeIterator() -> ElementIterator<Tree> {
     .init(tree: self, start: __begin_node, end: __end_node())
+  }
+}
+
+// MARK: -
+
+extension ___Tree {
+  
+  @inlinable
+  @inline(__always)
+  public func ___advanced(_ i: _NodePtr, by distance: Int) -> _NodePtr {
+    guard i == ___end() || ___is_valid(i) else {
+      preconditionFailure(.invalidIndex)
+    }
+    var distance = distance
+    var result: _NodePtr = i
+    while distance != 0 {
+      if 0 < distance {
+        if result == __end_node() { return result }
+        result = __tree_next_iter(result)
+        distance -= 1
+      } else {
+        if result == __begin_node {
+          // 後ろと区別したくてnullptrにしてたが、一周回るとendなのでendにしてみる
+          result = .end
+          return result
+        }
+        result = __tree_prev_iter(result)
+        distance += 1
+      }
+    }
+    return result
   }
 }
 

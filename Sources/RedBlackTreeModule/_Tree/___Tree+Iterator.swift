@@ -57,11 +57,11 @@ extension ___Tree {
 
     @inlinable
     @inline(__always)
-    internal init(__tree: Tree, rawValue: _NodePtr) {
+    internal init(tree: Tree, rawValue: _NodePtr) {
       guard rawValue != .nullptr else {
         preconditionFailure("_NodePtr is nullptr")
       }
-      self._tree = __tree
+      self._tree = tree
       self._rawValue = rawValue
     }
 

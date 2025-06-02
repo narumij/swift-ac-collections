@@ -100,7 +100,7 @@ extension ___SubSequenceBase {
 
   @inlinable
   func index(rawValue: _NodePtr) -> Index {
-    .init(__tree: __tree_, rawValue: rawValue)
+    .init(tree: __tree_, rawValue: rawValue)
   }
 }
 

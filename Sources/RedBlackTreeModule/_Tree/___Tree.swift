@@ -752,7 +752,7 @@ extension ___Tree: Tree_IndexProtocol {
   public typealias Index = ___Iterator
   @inlinable @inline(__always)
   func makeIndex(rawValue: _NodePtr) -> ___Iterator {
-    .init(__tree: self, rawValue: rawValue)
+    .init(tree: self, rawValue: rawValue)
   }
 }
 

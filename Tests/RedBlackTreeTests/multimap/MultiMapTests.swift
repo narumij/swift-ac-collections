@@ -895,5 +895,113 @@ import XCTest
       XCTAssertEqual(maxPair?.key, "c")
       XCTAssertEqual(maxPair?.value, 3)
     }
+    
+    func testEqual1() throws {
+      do {
+        let a = Target<Int,Int>()
+        let b = Target<Int,Int>()
+        XCTAssertEqual(a, b)
+        XCTAssertEqual(b, a)
+      }
+      do {
+        let a = Target<Int,Int>()
+        let b: Target<Int,Int> = [(0,0)]
+        XCTAssertNotEqual(a, b)
+        XCTAssertNotEqual(b, a)
+      }
+      do {
+        let a: Target<Int,Int> = [(0,0)]
+        let b: Target<Int,Int> = [(0,0)]
+        XCTAssertEqual(a, b)
+        XCTAssertEqual(b, a)
+      }
+      do {
+        let a: Target<Int,Int> = [(0,0),(1,1)]
+        let b: Target<Int,Int> = [(0,0)]
+        XCTAssertNotEqual(a, b)
+        XCTAssertNotEqual(b, a)
+      }
+      do {
+        let a: Target<Int,Int> = [(0,0),(1,1)]
+        let b: Target<Int,Int> = [(0,0),(1,1)]
+        XCTAssertEqual(a, b)
+        XCTAssertEqual(b, a)
+      }
+    }
+    
+    func testEqual2() throws {
+      let aa = Target<Int,Int>(keysWithValues: [0,1,2,3,4,5].map{ ($0,$0) })
+      let bb = Target<Int,Int>(keysWithValues: [3,4,5,6,7,8].map{ ($0,$0) })
+      do {
+        let a = aa[0 ..< 0]
+        let b = bb[3 ..< 3]
+        XCTAssertEqual(a, b)
+        XCTAssertEqual(b, a)
+      }
+      do {
+        let a = aa[3 ..< 6]
+        let b = bb[3 ..< 6]
+        XCTAssertEqual(a, b)
+        XCTAssertEqual(b, a)
+      }
+      do {
+        let a = aa[2 ..< 6]
+        let b = bb[3 ..< 6]
+        XCTAssertNotEqual(a, b)
+        XCTAssertNotEqual(b, a)
+      }
+      do {
+        let a = aa[3 ..< 6]
+        let b = bb[3 ..< 7]
+        XCTAssertNotEqual(a, b)
+        XCTAssertNotEqual(b, a)
+      }
+    }
+      
+    func testCompare1() throws {
+      do {
+        let a: Target<Int,Int> = []
+        let b: Target<Int,Int> = []
+        XCTAssertFalse(a < b)
+        XCTAssertFalse(b < a)
+      }
+      do {
+        let a: Target<Int,Int> = []
+        let b: Target<Int,Int> = [(0,0)]
+        XCTAssertTrue(a < b)
+        XCTAssertFalse(b < a)
+      }
+      do {
+        let a: Target<Int,Int> = [(0,0)]
+        let b: Target<Int,Int> = [(0,0)]
+        XCTAssertFalse(a < b)
+        XCTAssertFalse(b < a)
+      }
+      do {
+        let a: Target<Int,Int> = [(0,0)]
+        let b: Target<Int,Int> = [(1,1)]
+        XCTAssertTrue(a < b)
+        XCTAssertFalse(b < a)
+      }
+      do {
+        let a: Target<Int,Int> = [(0,0),(1,1)]
+        let b: Target<Int,Int> = [(0,0)]
+        XCTAssertFalse(a < b)
+        XCTAssertTrue(b < a)
+      }
+      do {
+        let a: Target<Int,Int> = [(0,0),(1,1)]
+        let b: Target<Int,Int> = [(0,0),(1,1)]
+        XCTAssertFalse(a < b)
+        XCTAssertFalse(b < a)
+      }
+      do {
+        let a: Target<Int,Int> = [(0,0),(1,1),(2,2)]
+        let b: Target<Int,Int> = [(0,0),(1,1),(3,3)]
+        XCTAssertTrue(a < b)
+        XCTAssertFalse(b < a)
+      }
+    }
+
   }
 #endif

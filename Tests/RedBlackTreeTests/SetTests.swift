@@ -858,8 +858,8 @@ final class SetTests: XCTestCase {
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
     XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
-    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: -1).___unchecked_rawValue, -1)
-    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: 5).___unchecked_rawValue, 5)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).___unchecked_rawValue, -1)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).___unchecked_rawValue, 5)
 
     XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
     XCTAssertTrue(set.isValid(index: .unsafe(0)))
@@ -869,13 +869,13 @@ final class SetTests: XCTestCase {
     XCTAssertTrue(set.isValid(index: .unsafe(4)))
     XCTAssertFalse(set.isValid(index: .unsafe(5)))
 
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: .nullptr)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 0)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 1)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 2)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 3)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 4)))
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: 5)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 2)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 3)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
 #endif
   }
   
@@ -888,8 +888,8 @@ final class SetTests: XCTestCase {
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
     XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
-    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: -1).___unchecked_rawValue, -1)
-    XCTAssertEqual(Index.unsafe(tree: set._tree, rawValue: 5).___unchecked_rawValue, 5)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).___unchecked_rawValue, -1)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).___unchecked_rawValue, 5)
 
     XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
     XCTAssertFalse(set.isValid(index: .unsafe(0)))
@@ -901,15 +901,15 @@ final class SetTests: XCTestCase {
     XCTAssertFalse(set.isValid(index: .unsafe(6)))
     XCTAssertFalse(set.isValid(index: .unsafe(7)))
 
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: .nullptr)))
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: 0)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 1)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 2)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 3)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 4)))
-    XCTAssertTrue(set.isValid(index: .unsafe(tree: set._tree, rawValue: 5)))
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: 6)))
-    XCTAssertFalse(set.isValid(index: .unsafe(tree: set._tree, rawValue: 7)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 2)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 3)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
+    XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 6)))
+    XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
 #endif
   }
   
@@ -922,6 +922,122 @@ final class SetTests: XCTestCase {
       var d: RedBlackTreeSet<Int> = [1]
       XCTAssertEqual(d.popFirst(), 1)
     }
+  }
+  
+  func testEqual1() throws {
+    do {
+      let a = RedBlackTreeSet<Int>()
+      let b = RedBlackTreeSet<Int>()
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>()
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0])
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0,1])
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0,1])
+      let b = RedBlackTreeSet<Int>([0,1])
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+  }
+  
+  func testEqual2() throws {
+    let aa = RedBlackTreeSet<Int>([0,1,2,3,4,5])
+    let bb = RedBlackTreeSet<Int>([3,4,5,6,7,8])
+    do {
+      let a = aa[0 ..< 0]
+      let b = bb[3 ..< 3]
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+    do {
+      let a = aa[3 ..< 6]
+      let b = bb[3 ..< 6]
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+    do {
+      let a = aa[2 ..< 6]
+      let b = bb[3 ..< 6]
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+    do {
+      let a = aa[3 ..< 6]
+      let b = bb[3 ..< 7]
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+  }
+    
+  func testCompare1() throws {
+    do {
+      let a = RedBlackTreeSet<Int>()
+      let b = RedBlackTreeSet<Int>()
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>()
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0])
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0])
+      let b = RedBlackTreeSet<Int>([1])
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0,1])
+      let b = RedBlackTreeSet<Int>([0])
+      XCTAssertFalse(a < b)
+      XCTAssertTrue(b < a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0,1])
+      let b = RedBlackTreeSet<Int>([0,1])
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = RedBlackTreeSet<Int>([0,1,2])
+      let b = RedBlackTreeSet<Int>([0,1,3])
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+  }
+  
+  func testSwap() {
+    
+    var a = RedBlackTreeSet<Int>([0])
+    var b = RedBlackTreeSet<Int>([0,1])
+    swap(&a, &b)
+    XCTAssertEqual(a, [0,1])
+    XCTAssertEqual(b, [0])
   }
 }
 

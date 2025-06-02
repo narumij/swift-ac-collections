@@ -23,23 +23,23 @@ final class MemoizeCacheTests: XCTestCase {
   #if DEBUG
     func testMinimum() throws {
       let cache = _MemoizeCacheBase<TestKey, Int>(minimumCapacity: 10)
-      XCTAssertEqual(cache._tree.count, 0)
-      XCTAssertEqual(cache._tree.capacity, 10)
+      XCTAssertEqual(cache.__tree_.count, 0)
+      XCTAssertEqual(cache.__tree_.capacity, 10)
     }
 
     func testMaximum() throws {
       var cache = _MemoizeCacheBase<TestKey, Int>(minimumCapacity: 0)
-      XCTAssertEqual(cache._tree.count, 0)
-      XCTAssertEqual(cache._tree.capacity, 0)
+      XCTAssertEqual(cache.__tree_.count, 0)
+      XCTAssertEqual(cache.__tree_.capacity, 0)
       var finalCapacity: Int? = nil
       for i in 0..<200 {
         cache[i] = i
-        if finalCapacity == nil, cache._tree.capacity >= 100 {
-          finalCapacity = cache._tree.capacity
+        if finalCapacity == nil, cache.__tree_.capacity >= 100 {
+          finalCapacity = cache.__tree_.capacity
         }
         if let finalCapacity {
           // 最終的に定まったキャパシティが変化しない
-          XCTAssertGreaterThanOrEqual(cache._tree.capacity, finalCapacity, "\(i)")
+          XCTAssertGreaterThanOrEqual(cache.__tree_.capacity, finalCapacity, "\(i)")
         }
       }
     }

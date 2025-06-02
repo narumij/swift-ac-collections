@@ -346,8 +346,8 @@ extension RedBlackTreeSet {
     _ range: Range<Element>,
     _ action: (Element) throws -> ()) rethrows {
     try ___remove(
-      from: ___ptr_lower_bound(range.lowerBound),
-      to: ___ptr_upper_bound(range.upperBound),
+      from: ___lower_bound(range.lowerBound),
+      to: ___upper_bound(range.upperBound),
       forEach: action)
   }
 }

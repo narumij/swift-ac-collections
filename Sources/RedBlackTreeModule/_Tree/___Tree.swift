@@ -781,13 +781,13 @@ extension ___Tree: Tree_KeyCompare {
   }
 
   @inlinable @inline(__always)
-  public static func ___value_equiv(_ lhs: Key,_ rhs: Key) -> Bool {
+  public static func value_equiv(_ lhs: Key,_ rhs: Key) -> Bool {
     !value_comp(lhs, rhs) && !value_comp(rhs, lhs)
   }
 
   @inlinable @inline(__always)
   public static func ___key_equiv(_ lhs: Element,_ rhs: Element) -> Bool {
-    ___value_equiv(VC.__key(lhs), VC.__key(rhs))
+    value_equiv(VC.__key(lhs), VC.__key(rhs))
   }
 
   @inlinable @inline(__always)

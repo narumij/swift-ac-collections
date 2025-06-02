@@ -29,8 +29,8 @@ where Tree.Element == _KeyValueTuple_<K,Value>
   let __tree_: Tree
 
   @usableFromInline
-  var _current, _start, _next, _end: _NodePtr
-  
+  var _start, _end, _current, _next: _NodePtr
+
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -81,7 +81,7 @@ where Tree.Element == _KeyValueTuple_<K,Value>
   let _tree_: Tree
 
   @usableFromInline
-  var _current, _next, _start, _begin: _NodePtr
+  var _start, _begin, _current, _next: _NodePtr
   
   @inlinable
   @inline(__always)

@@ -26,5 +26,4 @@ public protocol Tree_IterateProtocol {
   func __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
   func __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   subscript(_ pointer: _NodePtr) -> Element { get }
-  
 }

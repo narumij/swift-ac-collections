@@ -27,7 +27,7 @@ struct RawIndexedIterator<Tree: Tree_IterateProtocol>: IteratorProtocol {
   let __tree_: Tree
 
   @usableFromInline
-  var _current, _next, _end: _NodePtr
+  var _end, _current, _next: _NodePtr
   
   @inlinable
   @inline(__always)
@@ -57,7 +57,7 @@ struct ReversedRawIndexedIterator<Tree: Tree_IterateProtocol>: Sequence, Iterato
   let __tree_: Tree
   
   @usableFromInline
-  var _current, _next, _start, _begin: _NodePtr
+  var _start, _begin, _current, _next: _NodePtr
   
   @inlinable
   @inline(__always)

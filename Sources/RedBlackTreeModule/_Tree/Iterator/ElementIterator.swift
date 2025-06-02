@@ -23,15 +23,12 @@
 public
 struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
     
-  public typealias Tree = Tree
-  public typealias Element = Tree.Element
-
   @usableFromInline
   let __tree_: Tree
 
   @usableFromInline
-  var _current, _next, _start, _end: _NodePtr
-  
+  var _start, _end, _current, _next: _NodePtr
+
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -46,7 +43,7 @@ struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> Element? {
+  public mutating func next() -> Tree.Element? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
@@ -64,14 +61,11 @@ struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 public
 struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
   
-  public typealias Tree = Tree
-  public typealias Element = Tree.Element
-
   @usableFromInline
   let __tree_: Tree
 
   @usableFromInline
-  var _current, _next, _start, _begin: _NodePtr
+  var _start, _begin, _current, _next: _NodePtr
 
   @inlinable
   @inline(__always)
@@ -85,7 +79,7 @@ struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorPr
   
   @inlinable
   @inline(__always)
-  public mutating func next() -> Element? {
+  public mutating func next() -> Tree.Element? {
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr

@@ -407,6 +407,16 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
+    let (lo,hi) = ___equal_range(key)
+    return (___index(lo),___index(hi))
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
   /// - Complexity: O(1)
   @inlinable
   public var first: Element? {
@@ -435,25 +445,6 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     try ___first_index(where: predicate)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  public func count(forKey key: Key) -> Int {
-    __tree_.__count_multi(key)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
-    let (lo,hi) = ___equal_range(key)
-    return (___index(lo),___index(hi))
   }
 }
 
@@ -537,22 +528,31 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(log *n* + *k*)
+  @inlinable
+  public func count(forKey key: Key) -> Int {
+    __tree_.__count_multi(key)
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
   /// - Complexity: O(1)
-  public var keys: KeyIterator<Tree,Key,Value> {
+  public var keys: Keys {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 
   /// - Complexity: O(1)
-  public var values: ValueIterator<Tree,Key,Value> {
+  public var values: Values {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(log *n* + *k*)
+  /// - Complexity: O(log *n*)
   @inlinable
-  public func values(forKey key: Key) -> ValueIterator<Tree,Key,Value> {
+  public func values(forKey key: Key) -> Values {
     let (lo, hi) = __tree_.__equal_range_multi(key)
     return .init(tree: __tree_, start: lo, end: hi)
   }

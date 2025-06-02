@@ -337,6 +337,16 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
+    let (lo,hi) = ___equal_range(element)
+    return (___index(lo), ___index(hi))
+  }
+}
+
+extension RedBlackTreeMultiSet {
+
   /// - Complexity: O(1)。
   @inlinable
   public var first: Element? {
@@ -365,16 +375,6 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     try ___first_index(where: predicate)
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
-    let (lo,hi) = ___equal_range(element)
-    return (___index(lo), ___index(hi))
   }
 }
 

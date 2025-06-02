@@ -513,6 +513,16 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
+    let (lo,hi) = ___equal_range(key)
+    return (___index(lo), ___index(hi))
+  }
+}
+
+extension RedBlackTreeDictionary {
+
   /// - Complexity: O(1)
   @inlinable
   public var first: Element? {
@@ -541,16 +551,6 @@ extension RedBlackTreeDictionary {
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     try ___first_index(where: predicate)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
-    let (lo,hi) = ___equal_range(key)
-    return (___index(lo), ___index(hi))
   }
 }
 
@@ -635,12 +635,12 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   /// - Complexity: O(1)
-  public var keys: KeyIterator<Tree,Key,Value> {
+  public var keys: Keys {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 
   /// - Complexity: O(1)
-  public var values: ValueIterator<Tree,Key,Value> {
+  public var values: Values {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }

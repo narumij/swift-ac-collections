@@ -492,7 +492,9 @@ extension RedBlackTreeSet {
   @inlinable
   public func elements(in range: Range<Element>) -> SubSequence {
     .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
+      tree: __tree_,
+      start: ___lower_bound(range.lowerBound),
+      end: ___lower_bound(range.upperBound))
   }
 
   /// 値レンジ `[lower, upper]` に含まれる要素のスライス
@@ -501,7 +503,9 @@ extension RedBlackTreeSet {
   @inlinable
   public func elements(in range: ClosedRange<Element>) -> SubSequence {
     .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
+      tree: __tree_,
+      start: ___lower_bound(range.lowerBound),
+      end: ___upper_bound(range.upperBound))
   }
 }
 

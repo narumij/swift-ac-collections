@@ -121,7 +121,7 @@ extension RedBlackTreeDictionary {
         fatalError("Dupricate values for key: '\(__k.0)'")
       }
     }
-    self._storage = .init(__tree: tree)
+    self._storage = .init(tree: tree)
   }
 }
 
@@ -150,7 +150,7 @@ extension RedBlackTreeDictionary {
         tree[__parent].value = try combine(tree[__parent].value, __k.1)
       }
     }
-    self._storage = .init(__tree: tree)
+    self._storage = .init(tree: tree)
   }
 }
 
@@ -179,7 +179,7 @@ extension RedBlackTreeDictionary {
         tree[__parent].value.append(__v)
       }
     }
-    self._storage = .init(__tree: tree)
+    self._storage = .init(tree: tree)
   }
 }
 
@@ -590,14 +590,7 @@ extension RedBlackTreeDictionary {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    var tree: Tree = .create(minimumCapacity: 0)
-    var (__parent, __child) = tree.___max_ref()
-    for pair in self where try isIncluded(pair) {
-      Tree.ensureCapacity(tree: &tree)
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, pair)
-      assert(tree.__tree_invariant(tree.__root()))
-    }
-    return Self(_storage: .init(__tree: tree))
+    .init(_storage: .init(tree: try __tree_.___filter(isIncluded)))
   }
 }
 
@@ -605,33 +598,14 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
-    -> RedBlackTreeDictionary<Key, T>
-  {
-    typealias Tree = RedBlackTreeDictionary<Key, T>.Tree
-    let tree: Tree = .create(minimumCapacity: count)
-    var (__parent, __child) = tree.___max_ref()
-    for (k, v) in self {
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, try transform(v)))
-      assert(tree.__tree_invariant(tree.__root()))
-    }
-    return .init(_storage: .init(__tree: tree))
+    -> RedBlackTreeDictionary<Key, T> {
+    .init(_storage: .init(tree: try __tree_.___mapValues(transform)))
   }
 
   @inlinable
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
-    rethrows -> RedBlackTreeDictionary<Key, T>
-  {
-    typealias Tree = RedBlackTreeDictionary<Key, T>.Tree
-    var tree: Tree = .create(minimumCapacity: 0)
-    var (__parent, __child) = tree.___max_ref()
-    for (k, v) in self {
-      if let new = try transform(v) {
-        Tree.ensureCapacity(tree: &tree)
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, new))
-        assert(tree.__tree_invariant(tree.__root()))
-      }
-    }
-    return .init(_storage: .init(__tree: tree))
+    rethrows -> RedBlackTreeDictionary<Key, T> {
+    .init(_storage: .init(tree: try __tree_.___compactMapValues(transform)))
   }
 }
 

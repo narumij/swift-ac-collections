@@ -842,3 +842,56 @@ extension ___Tree: Tree_KeyCompare {
     ___key_comp(lhs, rhs) || (!___key_comp(lhs, rhs) && lhs.value < rhs.value)
   }
 }
+
+extension ___Tree {
+  
+  @inlinable
+  public func ___filter(
+    _ isIncluded: (Element) throws -> Bool
+  ) rethrows -> ___Tree {
+    var tree: Tree = .create(minimumCapacity: 0)
+    var (__parent, __child) = tree.___max_ref()
+    for pair in self where try isIncluded(pair) {
+      Tree.ensureCapacity(tree: &tree)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, pair)
+      assert(tree.__tree_invariant(tree.__root()))
+    }
+    return tree
+  }
+}
+
+extension ___Tree {
+  
+  @inlinable
+  public func ___mapValues<Other,Key,Value,T>(_ transform: (Value) throws -> T) rethrows
+  -> ___Tree<Other>
+  where Element == _KeyValueTuple_<Key,Value>,
+        Other.Element == _KeyValueTuple_<Key,T>
+  {
+    let tree = ___Tree<Other>.create(minimumCapacity: count)
+    var (__parent, __child) = tree.___max_ref()
+    for (k, v) in self {
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, try transform(v)))
+      assert(tree.__tree_invariant(tree.__root()))
+    }
+    return tree
+  }
+  
+  @inlinable
+  public func ___compactMapValues<Other,Key,Value, T>(_ transform: (Value) throws -> T?)
+    rethrows -> ___Tree<Other>
+  where Element == _KeyValueTuple_<Key,Value>,
+        Other.Element == _KeyValueTuple_<Key,T>
+  {
+    var tree = ___Tree<Other>.create(minimumCapacity: count)
+    var (__parent, __child) = tree.___max_ref()
+    for (k, v) in self {
+      if let new = try transform(v) {
+        ___Tree<Other>.ensureCapacity(tree: &tree)
+        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, new))
+        assert(tree.__tree_invariant(tree.__root()))
+      }
+    }
+    return tree
+  }
+}

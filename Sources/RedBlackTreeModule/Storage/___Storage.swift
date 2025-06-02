@@ -14,8 +14,8 @@ final class ___Storage<VC: ValueComparer & CompareTrait> {
   @nonobjc
   @inlinable
   @inline(__always)
-  init(__tree: Tree) {
-    tree = __tree
+  init(tree: Tree) {
+    self.tree = tree
   }
   @nonobjc
   @inlinable
@@ -48,7 +48,7 @@ final class ___Storage<VC: ValueComparer & CompareTrait> {
   @inlinable
   @inline(__always)
   final func copy() -> ___Storage {
-    .init(__tree: tree.copy())
+    .init(tree: tree.copy())
   }
   @nonobjc
   @inlinable
@@ -58,7 +58,7 @@ final class ___Storage<VC: ValueComparer & CompareTrait> {
     linearly: Bool
   ) -> ___Storage {
     .init(
-      __tree: tree.copy(
+      tree: tree.copy(
         growthCapacityTo: capacity,
         linearly: linearly))
   }
@@ -71,7 +71,7 @@ final class ___Storage<VC: ValueComparer & CompareTrait> {
     linearly: Bool
   ) -> ___Storage {
     .init(
-      __tree: tree.copy(
+      tree: tree.copy(
         growthCapacityTo: capacity,
         limit: limit,
         linearly: linearly))

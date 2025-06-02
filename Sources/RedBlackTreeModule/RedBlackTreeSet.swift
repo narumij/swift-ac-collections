@@ -343,38 +343,19 @@ extension RedBlackTreeSet {
   public func contains(_ member: Element) -> Bool {
     ___contains(member)
   }
-}
 
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(1)
+  /// - Complexity: O(log *n*)
+  ///
+  /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
-  public var first: Element? {
-    isEmpty ? nil : self[startIndex]
+  public func min() -> Element? {
+    ___min()
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
-  public var last: Element? {
-    isEmpty ? nil : self[index(before: endIndex)]
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___first(where: predicate)
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func firstIndex(of member: Element) -> Index? {
-    ___first_index(of: member)
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
+  public func max() -> Element? {
+    ___max()
   }
 }
 
@@ -428,18 +409,34 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(log *n*)
-  ///
-  /// O(1)が欲しい場合、firstが等価でO(1)
+  /// - Complexity: O(1)
   @inlinable
-  public func min() -> Element? {
-    ___min()
+  public var first: Element? {
+    isEmpty ? nil : self[startIndex]
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
-  public func max() -> Element? {
-    ___max()
+  public var last: Element? {
+    isEmpty ? nil : self[index(before: endIndex)]
+  }
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+    try ___first(where: predicate)
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func firstIndex(of member: Element) -> Index? {
+    ___first_index(of: member)
+  }
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    try ___first_index(where: predicate)
   }
 }
 

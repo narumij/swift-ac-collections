@@ -15,22 +15,22 @@ import XCTest
     @inlinable
     var __nodes: [___Node] {
       get {
-        (0..<_tree._header.initializedCount).map {
-          .init(__is_black_: _tree.__is_black_($0),
-                __left_: _tree.__left_($0),
-                __right_: _tree.__right_($0),
-                __parent_: _tree.__parent_($0))
+        (0..<__tree_._header.initializedCount).map {
+          .init(__is_black_: __tree_.__is_black_($0),
+                __left_: __tree_.__left_($0),
+                __right_: __tree_.__right_($0),
+                __parent_: __tree_.__parent_($0))
         }
       }
       set {
-        _tree.___clearDestroy()
-        _tree._header.initializedCount = newValue.count
+        __tree_.___clearDestroy()
+        __tree_._header.initializedCount = newValue.count
         newValue.enumerated().forEach {
           i, v in
-          _tree.__is_black_(i, v.__is_black_)
-          _tree.__left_(i, v.__left_)
-          _tree.__right_(i, v.__right_)
-          _tree.__parent_(i, v.__parent_)
+          __tree_.__is_black_(i, v.__is_black_)
+          __tree_.__left_(i, v.__left_)
+          __tree_.__right_(i, v.__right_)
+          __tree_.__parent_(i, v.__parent_)
         }
       }
     }
@@ -38,22 +38,22 @@ import XCTest
     @inlinable
     var ___elements: [Element] {
       get {
-        (0..<_tree._header.initializedCount).map {
-          _tree.___element($0)
+        (0..<__tree_._header.initializedCount).map {
+          __tree_.___element($0)
         }
       }
       set {
-        _tree._header.initializedCount = newValue.count
+        __tree_._header.initializedCount = newValue.count
         newValue.enumerated().forEach {
           i, v in
-          _tree.___element(i, v)
+          __tree_.___element(i, v)
         }
       }
     }
     @inlinable
     var ___header: Tree.Header {
-      get { _tree._header }
-      set { _tree._header = newValue }
+      get { __tree_._header }
+      set { __tree_._header = newValue }
     }
     @inlinable
     var _count: Int {
@@ -64,7 +64,7 @@ import XCTest
       var c = 0
       repeat {
         c += 1
-        it = _tree.__tree_next_iter(it)
+        it = __tree_.__tree_next_iter(it)
       } while it != .end
       return c
     }
@@ -73,10 +73,10 @@ import XCTest
       set { ___header.__left_ = newValue }
     }
     @inlinable func __left_(_ p: _NodePtr) -> _NodePtr {
-      _tree.__left_(p)
+      __tree_.__left_(p)
     }
     @inlinable func __right_(_ p: _NodePtr) -> _NodePtr {
-      _tree.__right_(p)
+      __tree_.__right_(p)
     }
     @inlinable
     func __root() -> _NodePtr {
@@ -90,31 +90,31 @@ import XCTest
     func
       __tree_min(_ __x: _NodePtr) -> _NodePtr
     {
-      _tree.__tree_min(__x)
+      __tree_.__tree_min(__x)
     }
     @inlinable
     func
       __tree_max(_ __x: _NodePtr) -> _NodePtr
     {
-      _tree.__tree_max(__x)
+      __tree_.__tree_max(__x)
     }
     @inlinable
     mutating func
       __tree_left_rotate(_ __x: _NodePtr)
     {
-      _tree.__tree_left_rotate(__x)
+      __tree_.__tree_left_rotate(__x)
     }
     @inlinable
     mutating func
       __tree_right_rotate(_ __x: _NodePtr)
     {
-      _tree.__tree_right_rotate(__x)
+      __tree_.__tree_right_rotate(__x)
     }
     @inlinable
     mutating func
       __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
     {
-      _tree.__tree_balance_after_insert(__root, __x)
+      __tree_.__tree_balance_after_insert(__root, __x)
     }
   }
 
@@ -178,22 +178,22 @@ import XCTest
 
 #if TREE_INVARIANT_CHECKS
       tree.__root(.nullptr)
-      XCTAssertFalse(tree._tree.__tree_invariant(0))
+      XCTAssertFalse(tree.__tree_.__tree_invariant(0))
 
       tree.__root(0)
-      XCTAssertTrue(tree._tree.__tree_invariant(tree.__root()))
+      XCTAssertTrue(tree.__tree_.__tree_invariant(tree.__root()))
 #endif
       
 #if TREE_INVARIANT_CHECKS
       tree.__nodes = [
         .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .end)
       ]
-      XCTAssertFalse(tree._tree.__tree_invariant(tree.__root()))
+      XCTAssertFalse(tree.__tree_.__tree_invariant(tree.__root()))
 
       tree.__nodes = [
         .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
       ]
-      XCTAssertFalse(tree._tree.__tree_invariant(tree.__root()))
+      XCTAssertFalse(tree.__tree_.__tree_invariant(tree.__root()))
 #endif
     }
 
@@ -268,7 +268,7 @@ import XCTest
         .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .end))
       XCTAssertEqual(tree.__nodes.count, 1)
       XCTAssertNotEqual(tree.__root(), nil)
-      XCTAssertNotEqual(tree._tree.__parent_(tree.__root()), nil)
+      XCTAssertNotEqual(tree.__tree_.__parent_(tree.__root()), nil)
       XCTAssertEqual(tree.__left_(tree.__root()), .nullptr)
       XCTAssertEqual(tree.__right_(tree.__root()), .nullptr)
       #if TREE_INVARIANT_CHECKS
@@ -283,14 +283,14 @@ import XCTest
     func testRemove3() throws {
 
       let tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
-      _ = tree._tree.__insert_unique(0)
-      _ = tree._tree.__insert_unique(1)
-      _ = tree._tree.__insert_unique(2)
-      XCTAssertEqual(tree._tree.__tree_min(tree._tree.__root()), tree.___header.__begin_node)
+      _ = tree.__tree_.__insert_unique(0)
+      _ = tree.__tree_.__insert_unique(1)
+      _ = tree.__tree_.__insert_unique(2)
+      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root()), tree.___header.__begin_node)
       for i in 0..<3 {
-        _ = tree._tree.___erase_unique(i)
+        _ = tree.__tree_.___erase_unique(i)
         if tree.__root() != .nullptr {
-          XCTAssertEqual(tree._tree.__tree_min(tree._tree.__root()), tree.___header.__begin_node)
+          XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root()), tree.___header.__begin_node)
         }
         XCTAssertEqual(tree._count, 2 - i)
       }
@@ -300,16 +300,16 @@ import XCTest
 
       let tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       for i in 0..<2 {
-        _ = tree._tree.__insert_unique(i)
+        _ = tree.__tree_.__insert_unique(i)
       }
       //        fixture0_1_2_3_4_5_6(&tree)
-      XCTAssertEqual(tree._tree.__tree_min(tree._tree.__root()), tree.___header.__begin_node)
+      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root()), tree.___header.__begin_node)
       for i in 0..<2 {
-        XCTAssertTrue(tree._tree.___erase_unique(i), "i = \(i)")
+        XCTAssertTrue(tree.__tree_.___erase_unique(i), "i = \(i)")
         print("__root():", tree.__root())
         XCTAssertTrue(tree.___tree_invariant())
         XCTAssertEqual(
-          tree.__root() == .nullptr ? .end : tree._tree.__tree_min(tree._tree.__root()),
+          tree.__root() == .nullptr ? .end : tree.__tree_.__tree_min(tree.__tree_.__root()),
           tree.___header.__begin_node)
         XCTAssertEqual(tree._count, 1 - i, "i = \(i)")
       }
@@ -319,16 +319,16 @@ import XCTest
 
       let tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       for i in 0..<7 {
-        _ = tree._tree.__insert_unique(i)
+        _ = tree.__tree_.__insert_unique(i)
       }
       //        fixture0_1_2_3_4_5_6(&tree)
-      XCTAssertEqual(tree._tree.__tree_min(tree._tree.__root()), tree.___header.__begin_node)
+      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root()), tree.___header.__begin_node)
       for i in 0..<7 {
-        XCTAssertTrue(tree._tree.___erase_unique(i), "i = \(i)")
+        XCTAssertTrue(tree.__tree_.___erase_unique(i), "i = \(i)")
         print("__root():", tree.__root())
         XCTAssertTrue(tree.___tree_invariant())
         XCTAssertEqual(
-          tree.__root() == .nullptr ? .end : tree._tree.__tree_min(tree._tree.__root()),
+          tree.__root() == .nullptr ? .end : tree.__tree_.__tree_min(tree.__tree_.__root()),
           tree.___header.__begin_node)
         XCTAssertEqual(tree._count, 6 - i, "i = \(i)")
       }
@@ -340,7 +340,7 @@ import XCTest
       do {
         var __parent: _NodePtr = .nullptr
         let __k = 5
-        let __child = tree._tree.__find_equal(&__parent, __k)
+        let __child = tree.__tree_.__find_equal(&__parent, __k)
         XCTAssertEqual(__parent, .end)
         XCTAssertEqual(__child, .__left_(.end))
       }
@@ -348,7 +348,7 @@ import XCTest
         tree.__left_ = .nullptr
         var __parent: _NodePtr = .nullptr
         let __k = 5
-        let __child = tree._tree.__find_equal(&__parent, __k)
+        let __child = tree.__tree_.__find_equal(&__parent, __k)
         XCTAssertEqual(__parent, .end)
         XCTAssertEqual(__child, .__left_(.end))
       }
@@ -360,7 +360,7 @@ import XCTest
       do {
         var __parent: _NodePtr = .nullptr
         let __k = -1
-        let __child = tree._tree.__find_equal(&__parent, __k)
+        let __child = tree.__tree_.__find_equal(&__parent, __k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 1)
         XCTAssertEqual(__child, .__left_(1))
@@ -368,7 +368,7 @@ import XCTest
       do {
         var __parent: _NodePtr = .nullptr
         let __k = 0
-        let __child = tree._tree.__find_equal(&__parent, __k)
+        let __child = tree.__tree_.__find_equal(&__parent, __k)
         XCTAssertNotEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 1)
         XCTAssertEqual(__child, .__left_(0))
@@ -376,7 +376,7 @@ import XCTest
       do {
         var __parent: _NodePtr = .nullptr
         let __k = 5
-        let __child = tree._tree.__find_equal(&__parent, __k)
+        let __child = tree.__tree_.__find_equal(&__parent, __k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 1)
         XCTAssertEqual(__child, .__right_(1))
@@ -384,7 +384,7 @@ import XCTest
       do {
         var __parent: _NodePtr = .nullptr
         let __k = 10
-        let __child = tree._tree.__find_equal(&__parent, __k)
+        let __child = tree.__tree_.__find_equal(&__parent, __k)
         XCTAssertNotEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 0)
         XCTAssertEqual(__child, .__left_(.end))
@@ -392,7 +392,7 @@ import XCTest
       do {
         var __parent: _NodePtr = .nullptr
         let __k = 15
-        let __child = tree._tree.__find_equal(&__parent, __k)
+        let __child = tree.__tree_.__find_equal(&__parent, __k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 2)
         XCTAssertEqual(__child, .__left_(2))
@@ -400,7 +400,7 @@ import XCTest
       do {
         var __parent: _NodePtr = .nullptr
         let __k = 20
-        let __child = tree._tree.__find_equal(&__parent, __k)
+        let __child = tree.__tree_.__find_equal(&__parent, __k)
         XCTAssertNotEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 2)
         XCTAssertEqual(__child, .__right_(0))
@@ -408,7 +408,7 @@ import XCTest
       do {
         var __parent: _NodePtr = .nullptr
         let __k = 21
-        let __child = tree._tree.__find_equal(&__parent, __k)
+        let __child = tree.__tree_.__find_equal(&__parent, __k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 2)
         XCTAssertEqual(__child, .__right_(2))
@@ -420,7 +420,7 @@ import XCTest
       let tree = RedBlackTreeSet<Int>(minimumCapacity: 10000)
       //      fixtureEmpty(&tree)
       for i in 0..<10000 {
-        XCTAssertTrue(tree._tree.__insert_unique(i).__inserted)
+        XCTAssertTrue(tree.__tree_.__insert_unique(i).__inserted)
       }
       XCTAssertTrue(tree.___tree_invariant())
     }
@@ -440,7 +440,7 @@ import XCTest
       self.measure {
         // Put the code you want to measure the time of here.
         for i in 0..<1_000_000 {
-          _ = tree._tree.__insert_unique(i)
+          _ = tree.__tree_.__insert_unique(i)
         }
       }
     }

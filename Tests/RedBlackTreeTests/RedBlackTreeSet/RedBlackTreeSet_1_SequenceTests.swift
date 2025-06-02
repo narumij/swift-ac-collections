@@ -108,7 +108,7 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
 
     // 実行
     let mappedElements = set.map { $0 }
-    let sortedElements = set.sorted()
+    let sortedElements = set.sorted().map { $0 }
 
     // 事後条件:
     XCTAssertEqual(mappedElements, sortedElements, "一致すること")

@@ -54,10 +54,10 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias Element = KeyValue
 
   public
-    typealias Keys = [Key]
+    typealias Keys = KeyIterator<Tree, Key, Value>
 
   public
-    typealias Values = [Value]
+    typealias Values = ValueIterator<Tree, Key, Value>
 
   public
     typealias _Key = Key
@@ -76,8 +76,9 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
-extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
-extension RedBlackTreeDictionary: ___RedBlackTreeSequence { }
+extension RedBlackTreeDictionary: ___RedBlackTreeUnique_ {}
+extension RedBlackTreeDictionary: ___RedBlackTreeSequence {}
+extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 
 // MARK: - Initialization（初期化）
@@ -120,7 +121,7 @@ extension RedBlackTreeDictionary {
         fatalError("Dupricate values for key: '\(__k.0)'")
       }
     }
-    self._storage = .init(__tree: tree)
+    self._storage = .init(tree: tree)
   }
 }
 
@@ -149,7 +150,7 @@ extension RedBlackTreeDictionary {
         tree[__parent].value = try combine(tree[__parent].value, __k.1)
       }
     }
-    self._storage = .init(__tree: tree)
+    self._storage = .init(tree: tree)
   }
 }
 
@@ -178,7 +179,7 @@ extension RedBlackTreeDictionary {
         tree[__parent].value.append(__v)
       }
     }
-    self._storage = .init(__tree: tree)
+    self._storage = .init(tree: tree)
   }
 }
 
@@ -193,6 +194,31 @@ extension RedBlackTreeDictionary {
 // MARK: - Insert（挿入）
 
 extension RedBlackTreeDictionary {
+  // multi mapとの統一感のために復活
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func insert(key: Key, value: Value) -> (
+    inserted: Bool, memberAfterInsert: Element
+  ) {
+    insert((key, value))
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @discardableResult
+  public mutating func insert(_ newMember: Element) -> (
+    inserted: Bool, memberAfterInsert: Element
+  ) {
+    _ensureUniqueAndCapacity()
+    _ = __tree_.__insert_unique(newMember)
+    return (true, newMember)
+  }
+}
+
+extension RedBlackTreeDictionary {
 
   /// - Complexity: O(log *n*)
   @discardableResult
@@ -202,10 +228,10 @@ extension RedBlackTreeDictionary {
     forKey key: Key
   ) -> Value? {
     _ensureUniqueAndCapacity()
-    let (__r, __inserted) = _tree.__insert_unique((key, value))
+    let (__r, __inserted) = __tree_.__insert_unique((key, value))
     guard !__inserted else { return nil }
-    let oldMember = _tree[__r]
-    _tree[__r] = (key, value)
+    let oldMember = __tree_[__r]
+    __tree_[__r] = (key, value)
     return oldMember.value
   }
 }
@@ -217,7 +243,7 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    _tree.__node_handle_merge_unique(other._tree)
+    __tree_.__node_handle_merge_unique(other.__tree_)
   }
 }
 
@@ -257,7 +283,7 @@ extension RedBlackTreeDictionary {
 // MARK: - Remove（削除）
 
 extension RedBlackTreeDictionary {
-  
+
   /// 最小キーのペアを取り出して削除
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
@@ -275,13 +301,13 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
-    let __i = _tree.find(__k)
-    if __i == _tree.end() {
+    let __i = __tree_.find(__k)
+    if __i == __tree_.end() {
       return nil
     }
-    let value = _tree.___element(__i).value
+    let value = __tree_.___element(__i).value
     _ensureUnique()
-    _ = _tree.erase(__i)
+    _ = __tree_.erase(__i)
     return value
   }
 
@@ -338,12 +364,6 @@ extension RedBlackTreeDictionary {
     _ensureUnique()
     ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
   }
-
-  @inlinable
-  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    _ensureUnique()
-    ___removeAll(keepingCapacity: keepCapacity)
-  }
 }
 
 extension RedBlackTreeDictionary {
@@ -353,9 +373,10 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf keyRange: Range<Key>) {
-    let lower = lowerBound(keyRange.lowerBound)
-    let upper = lowerBound(keyRange.upperBound)
-    removeSubrange(lower..<upper)
+    _strongEnsureUnique()
+    let lower = ___lower_bound(keyRange.lowerBound)
+    let upper = ___lower_bound(keyRange.upperBound)
+    ___remove(from: lower, to: upper)
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -363,9 +384,19 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
-    let lower = lowerBound(keyRange.lowerBound)
-    let upper = upperBound(keyRange.upperBound)
-    removeSubrange(lower..<upper)
+    _strongEnsureUnique()
+    let lower = ___lower_bound(keyRange.lowerBound)
+    let upper = ___upper_bound(keyRange.upperBound)
+    ___remove(from: lower, to: upper)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  @inlinable
+  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    _ensureUnique()
+    ___removeAll(keepingCapacity: keepCapacity)
   }
 }
 
@@ -417,17 +448,17 @@ extension RedBlackTreeDictionary {
         defer {
           if let value {
             _ensureUniqueAndCapacity()
-            let __h = _tree.__construct_node((key, value))
-            _tree.__insert_node_at(__parent, __child, __h)
+            let __h = __tree_.__construct_node((key, value))
+            __tree_.__insert_node_at(__parent, __child, __h)
           }
         }
         yield &value
       } else {
         _ensureUnique()
-        var helper = ___ModifyHelper(pointer: &_tree[__ptr].value)
+        var helper = ___ModifyHelper(pointer: &__tree_[__ptr].value)
         defer {
           if helper.isNil {
-            _ = _tree.erase(__ptr)
+            _ = __tree_.erase(__ptr)
           }
         }
         yield &helper.value
@@ -448,13 +479,13 @@ extension RedBlackTreeDictionary {
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == .nullptr {
         _ensureUniqueAndCapacity()
-        assert(_tree.header.capacity > _tree.count)
-        __ptr = _tree.__construct_node((key, defaultValue()))
-        _tree.__insert_node_at(__parent, __child, __ptr)
+        assert(__tree_.header.capacity > __tree_.count)
+        __ptr = __tree_.__construct_node((key, defaultValue()))
+        __tree_.__insert_node_at(__parent, __child, __ptr)
       } else {
         _ensureUnique()
       }
-      yield &_tree[__ptr].value
+      yield &__tree_[__ptr].value
     }
   }
 
@@ -464,8 +495,8 @@ extension RedBlackTreeDictionary {
     _ key: Key
   ) -> (__parent: _NodePtr, __child: _NodeRef, __ptr: _NodePtr) {
     var __parent = _NodePtr.nullptr
-    let __child = _tree.__find_equal(&__parent, key)
-    let __ptr = _tree.__ptr_(__child)
+    let __child = __tree_.__find_equal(&__parent, key)
+    let __ptr = __tree_.__ptr_(__child)
     return (__parent, __child, __ptr)
   }
 }
@@ -498,13 +529,22 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log *n*)
   @inlinable
   public func lowerBound(_ p: Key) -> Index {
-    ___iter_lower_bound(p)
+    ___index_lower_bound(p)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public func upperBound(_ p: Key) -> Index {
-    ___iter_upper_bound(p)
+    ___index_upper_bound(p)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
+    ___index_equal_range(key)
   }
 }
 
@@ -531,22 +571,13 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log *n*)
   @inlinable
   public func firstIndex(of key: Key) -> Index? {
-    ___first_iter(of: key)
+    ___first_index(of: key)
   }
 
   /// - Complexity: O(*n*)
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_iter(where: predicate)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func equalRange(_ key: Key) -> (lower: Tree.___Iterator, upper: Tree.___Iterator) {
-    ___equal_range(key)
+    try ___first_index(where: predicate)
   }
 }
 
@@ -559,14 +590,7 @@ extension RedBlackTreeDictionary {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    var tree: Tree = .create(minimumCapacity: 0)
-    var (__parent, __child) = tree.___max_ref()
-    for pair in self where try isIncluded(pair) {
-      Tree.ensureCapacity(tree: &tree)
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, pair)
-      assert(tree.__tree_invariant(tree.__root()))
-    }
-    return Self(_storage: .init(__tree: tree))
+    .init(_storage: .init(tree: try __tree_.___filter(isIncluded)))
   }
 }
 
@@ -576,31 +600,14 @@ extension RedBlackTreeDictionary {
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
     -> RedBlackTreeDictionary<Key, T>
   {
-    typealias Tree = RedBlackTreeDictionary<Key, T>.Tree
-    let tree: Tree = .create(minimumCapacity: count)
-    var (__parent, __child) = tree.___max_ref()
-    for (k, v) in self {
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, try transform(v)))
-      assert(tree.__tree_invariant(tree.__root()))
-    }
-    return .init(_storage: .init(__tree: tree))
+    .init(_storage: .init(tree: try __tree_.___mapValues(transform)))
   }
 
   @inlinable
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
     rethrows -> RedBlackTreeDictionary<Key, T>
   {
-    typealias Tree = RedBlackTreeDictionary<Key, T>.Tree
-    var tree: Tree = .create(minimumCapacity: 0)
-    var (__parent, __child) = tree.___max_ref()
-    for (k, v) in self {
-      if let new = try transform(v) {
-        Tree.ensureCapacity(tree: &tree)
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, new))
-        assert(tree.__tree_invariant(tree.__root()))
-      }
-    }
-    return .init(_storage: .init(__tree: tree))
+    .init(_storage: .init(tree: try __tree_.___compactMapValues(transform)))
   }
 }
 
@@ -619,7 +626,7 @@ extension RedBlackTreeDictionary {
   public var capacity: Int {
     ___capacity
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -630,14 +637,14 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(1)
   public var keys: Keys {
-    map(\.key)
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(1)
   public var values: Values {
-    map(\.value)
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 
@@ -647,7 +654,7 @@ extension RedBlackTreeDictionary {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection { }
+extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection {}
 
 // MARK: - Range Access
 
@@ -656,7 +663,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(1)
   @inlinable
   public subscript(bounds: Range<Index>) -> SubSequence {
-    .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+    .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }
 }
 
@@ -684,14 +691,16 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log *n*)
   @inlinable
   public func elements(in range: Range<Key>) -> SubSequence {
-    .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_lower_bound(range.upperBound))
+    .init(
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
   }
 
   /// キーレンジ `[lower, upper]` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
   @inlinable
   public func elements(in range: ClosedRange<Key>) -> SubSequence {
-    .init(tree: _tree, start: ___ptr_lower_bound(range.lowerBound), end: ___ptr_upper_bound(range.upperBound))
+    .init(
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
   }
 }
 
@@ -703,7 +712,7 @@ extension RedBlackTreeDictionary {
   public struct SubSequence {
 
     @usableFromInline
-    let _tree: Tree
+    let __tree_: Tree
 
     @usableFromInline
     var _start, _end: _NodePtr
@@ -711,14 +720,52 @@ extension RedBlackTreeDictionary {
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      _tree = tree
+      __tree_ = tree
       _start = start
       _end = end
     }
   }
 }
 
-extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence { }
+extension RedBlackTreeDictionary.SubSequence: Equatable where Value: Equatable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.elementsEqual(rhs)
+  }
+}
+
+extension RedBlackTreeDictionary.SubSequence: Comparable where Value: Comparable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
+extension RedBlackTreeDictionary.SubSequence where Value: Equatable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    elementsEqual(other, by: Tree.___key_value_equiv)
+  }
+}
+
+extension RedBlackTreeDictionary.SubSequence where Value: Comparable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
+  }
+}
 
 extension RedBlackTreeDictionary.SubSequence: ___SubSequenceBase {
   public typealias Base = RedBlackTreeDictionary
@@ -734,7 +781,7 @@ extension RedBlackTreeDictionary.SubSequence: Sequence, Collection, Bidirectiona
 // MARK: - Index Range
 
 extension RedBlackTreeDictionary {
-  
+
   public typealias Indices = Tree.Indices
 }
 
@@ -748,7 +795,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public var rawIndices: RawIndexSequence<Tree> {
-    RawIndexSequence(tree: _tree)
+    RawIndexSequence(tree: __tree_)
   }
 }
 
@@ -759,7 +806,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(1)
   @inlinable @inline(__always)
   public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(tree: _tree)
+    RawIndexedSequence(tree: __tree_)
   }
 }
 
@@ -820,9 +867,40 @@ extension RedBlackTreeDictionary: CustomDebugStringConvertible {
 
 extension RedBlackTreeDictionary: Equatable where Value: Equatable {
 
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.___equal_with(rhs)
+    lhs.count == rhs.count && lhs.elementsEqual(rhs)
+  }
+}
+
+extension RedBlackTreeDictionary: Comparable where Value: Comparable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
+extension RedBlackTreeDictionary where Value: Equatable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    elementsEqual(other, by: Tree.___key_value_equiv)
+  }
+}
+
+extension RedBlackTreeDictionary where Value: Comparable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
   }
 }

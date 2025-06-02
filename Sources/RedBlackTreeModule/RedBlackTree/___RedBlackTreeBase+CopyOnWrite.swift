@@ -140,6 +140,38 @@ extension ___RedBlackTreeCopyOnWrite {
 extension ___RedBlackTreeCopyOnWrite {
   
   @inlinable
+  mutating func ___tree_merge_unique<_Tree>(_ __source: _Tree)
+  where _Tree: HandleProtocol, _Tree._Key == VC._Key, _Tree.Element == VC.Element {
+    
+    var __parent: _NodePtr = .nullptr
+    var __i = __source.__begin_node; while __i != __source.end() {
+      var __src_ptr: _NodePtr = __i
+      let __child = _storage.tree.__find_equal(&__parent, __source.__value_(__src_ptr))
+      __i = __source.__tree_next_iter(__i)
+      if (_storage.tree.__ptr_(__child) != .nullptr) {
+        continue }
+      _ensureCapacity()
+      __src_ptr = _storage.tree.__construct_node(__source.___element(__src_ptr))
+      _storage.tree.__insert_node_at(__parent, __child, __src_ptr)
+    }
+  }
+  
+  @inlinable
+  mutating func ___tree_merge_multi<_Tree>(_ __source: _Tree)
+  where _Tree: HandleProtocol, _Tree._Key == VC._Key, _Tree.Element == VC.Element {
+    
+    var __parent: _NodePtr = .nullptr
+    var __i = __source.__begin_node; while __i != __source.end() {
+      var __src_ptr: _NodePtr = __i
+      let __child = _storage.tree.__find_equal(&__parent, __source.__value_(__src_ptr))
+      __i = __source.__tree_next_iter(__i)
+      _ensureCapacity()
+      __src_ptr = _storage.tree.__construct_node(__source.___element(__src_ptr))
+      _storage.tree.__insert_node_at(__parent, __child, __src_ptr)
+    }
+  }
+  
+  @inlinable
   mutating func ___merge_unique<S>(_ __source: S)
   where S: Sequence, S.Element == VC.Element {
     var __parent: _NodePtr = .zero

@@ -340,11 +340,19 @@ print(tree.count)
 var a: RedBlackTreeSet<Int> = .init((0 ..< 100).map { $0 * 100})
 var b: RedBlackTreeSet<Int> = .init((1 ..< 10_000_000).map { $0 * 3 })
 a.insert(contentsOf: b.makeIterator())
+//a.insert(contentsOf: b)
 print(a.count)
-#elseif true
+#elseif false
 var a: RedBlackTreeSet<Int> = .init((0 ..< 100).map { $0 * 100})
 var b: RedBlackTreeSet<Int> = .init((1 ..< 10_000_000).map { $0 * 3 })
-b.insert(contentsOf: a.makeIterator())
+//b.insert(contentsOf: a.makeIterator())
+b.insert(contentsOf: a)
+print(b.count)
+#elseif true
+var a: RedBlackTreeSet<Int> = .init((0 ..< 10).map { $0 * 100})
+var b: RedBlackTreeSet<Int> = .init((1 ..< 1000).map { $0 * 3 })
+//b.insert(contentsOf: a.makeIterator())
+b.insert(contentsOf: a)
 print(b.count)
 #elseif true
 var a: RedBlackTreeSet<Int> = .init((0 ..< 100).map { $0 * 100})

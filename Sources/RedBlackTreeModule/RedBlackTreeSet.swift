@@ -183,16 +183,17 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    __tree_.__node_handle_merge_unique(other.__tree_)
+    _ensureUnique()
+    ___tree_merge_unique(other.__tree_)
   }
 
   /// - Complexity: O(*k* log *n*)
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    __tree_.__node_handle_merge_unique(other.__tree_)
+//    _ensureUniqueAndCapacity(to: count + other.count)
+    _ensureUnique()
+    ___tree_merge_unique(other.__tree_)
   }
 
   /// - Complexity: O(*k* log *n*)

@@ -123,6 +123,34 @@ extension RedBlackTreeMultiMap {
   }
 }
 
+
+extension RedBlackTreeMultiMap {
+  // Dictionaryからぱくってきたが、割と様子見
+
+  /// - Complexity: O(*n* log *n*)
+  @inlinable
+  public init<S: Sequence>(
+    ___grouping values: __owned S,
+    by keyForValue: (S.Element) throws -> Key
+  ) rethrows where Value == S.Element {
+    let count = (values as? (any Collection))?.count
+    var tree: Tree = .create(minimumCapacity: count ?? 0)
+    // 初期化直後はO(1)
+    var (__parent, __child) = tree.___max_ref()
+    // ソートの計算量がO(*n* log *n*)
+    for __v in try values.sorted(by: { try keyForValue($0) < keyForValue($1) }) {
+      let __k = try keyForValue(__v)
+      if count == nil {
+        Tree.ensureCapacity(tree: &tree)
+      }
+      // バランシングの計算量がO(log *n*)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k,__v))
+      assert(tree.__tree_invariant(tree.__root()))
+    }
+    self._storage = .init(tree: tree)
+  }
+}
+
 extension RedBlackTreeMultiMap {
 
   @inlinable

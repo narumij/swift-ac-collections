@@ -22,7 +22,7 @@
 
 @usableFromInline
 protocol ___RedBlackTreeCopyOnWrite {
-  associatedtype VC: ValueComparer
+  associatedtype VC: ValueComparer & CompareTrait
   var _storage: ___Storage<VC> { get set }
 }
 

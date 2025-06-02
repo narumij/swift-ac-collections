@@ -234,7 +234,7 @@ protocol AllocatorProtocol {
 
 // MARK: common
 
-public protocol ValueComparer: CompareTrait {
+public protocol ValueComparer {
   associatedtype _Key
   associatedtype Element
   static func __key(_: Element) -> _Key

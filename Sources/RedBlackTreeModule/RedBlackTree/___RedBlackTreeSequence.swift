@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeSequence: ___RedBlackTree, ValueComparer, Sequence & Collection & BidirectionalCollection
+protocol ___RedBlackTreeSequence: ___RedBlackTree, ValueComparer & CompareTrait, Sequence & Collection & BidirectionalCollection
 where
   Tree == ___Tree<Self>,
   Index == Tree.Index,

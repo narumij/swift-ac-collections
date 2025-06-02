@@ -37,7 +37,7 @@ public protocol ___RedBlackTree___ {
 @usableFromInline
 protocol ___RedBlackTreeBase:
   ___RedBlackTree___,
-  ValueComparer
+  ValueComparer & CompareTrait
 where
   Tree == ___Tree<Self>,
   Storage == ___Storage<Self>

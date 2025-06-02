@@ -671,7 +671,18 @@ extension RedBlackTreeSet: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
+    var result = "["
+    var first = true
+    for element in self {
+      if first {
+        first = false
+      } else {
+        result += ", "
+      }
+      print(element, terminator: "", to: &result)
+    }
+    result += "]"
+    return result
   }
 }
 
@@ -681,7 +692,28 @@ extension RedBlackTreeSet: CustomDebugStringConvertible {
 
   @inlinable
   public var debugDescription: String {
-    "RedBlackTreeSet<\(String(describing: Element.self))>(\(description))"
+    var result = "RedBlackTreeSet<\(Element.self)>(["
+    var first = true
+    for element in self {
+      if first {
+        first = false
+      } else {
+        result += ", "
+      }
+      
+      debugPrint(element, terminator: "", to: &result)
+    }
+    result += "])"
+    return result
+  }
+}
+
+// MARK: - CustomReflectable
+
+extension RedBlackTreeSet: CustomReflectable {
+  /// The custom mirror for this instance.
+  public var customMirror: Mirror {
+    Mirror(self, unlabeledChildren: self, displayStyle: .set)
   }
 }
 

@@ -848,8 +848,19 @@ extension RedBlackTreeDictionary: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    let pairs = map { "\($0.key): \($0.value)" }
-    return "[\(pairs.joined(separator: ", "))]"
+    if isEmpty { return "[:]" }
+    var result = "["
+    var first = true
+    for (key, value) in self {
+      if first {
+        first = false
+      } else {
+        result += ", "
+      }
+      result += "\(key): \(value)"
+    }
+    result += "]"
+    return result
   }
 }
 
@@ -859,7 +870,34 @@ extension RedBlackTreeDictionary: CustomDebugStringConvertible {
 
   @inlinable
   public var debugDescription: String {
-    return "RedBlackTreeDictionary<\(String(describing: Key.self)),\(String(describing: Value.self))>(\(description))"
+    var result = "RedBlackTreeDictionary<\(Key.self), \(Value.self)>("
+    if isEmpty {
+      result += "[:]"
+    } else {
+      result += "["
+      var first = true
+      for (key, value) in self {
+        if first {
+          first = false
+        } else {
+          result += ", "
+        }
+        
+        debugPrint(key, value, separator: ": ", terminator: "", to: &result)
+      }
+      result += "]"
+    }
+    result += ")"
+    return result
+  }
+}
+
+// MARK: - CustomReflectable
+
+extension RedBlackTreeDictionary: CustomReflectable {
+  /// The custom mirror for this instance.
+  public var customMirror: Mirror {
+    Mirror(self, unlabeledChildren: self, displayStyle: .dictionary)
   }
 }
 

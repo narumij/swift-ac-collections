@@ -637,7 +637,7 @@ extension RedBlackTreeSet: CustomDebugStringConvertible {
 
   @inlinable
   public var debugDescription: String {
-    "RedBlackTreeSet(\(description))"
+    "RedBlackTreeSet<\(String(describing: Element.self))>(\(description))"
   }
 }
 

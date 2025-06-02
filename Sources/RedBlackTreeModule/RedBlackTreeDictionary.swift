@@ -812,7 +812,7 @@ extension RedBlackTreeDictionary: CustomDebugStringConvertible {
 
   @inlinable
   public var debugDescription: String {
-    return "RedBlackTreeDictionary(\(description))"
+    return "RedBlackTreeDictionary<\(String(describing: Key.self)),\(String(describing: Value.self))>(\(description))"
   }
 }
 

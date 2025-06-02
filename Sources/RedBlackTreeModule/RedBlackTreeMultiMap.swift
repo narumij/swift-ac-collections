@@ -736,7 +736,7 @@ extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
 
   @inlinable
   public var debugDescription: String {
-    return "RedBlackTreeDictionary(\(description))"
+    return "RedBlackTreeMultiMap<\(String(describing: Key.self)),\(String(describing: Value.self))>(\(description))"
   }
 }
 

@@ -750,7 +750,7 @@ extension ___Tree {
   
   @inlinable
   @inline(__always)
-  public func ___advanced(_ i: _NodePtr, by distance: Int) -> _NodePtr {
+  public func ___tree_adv_iter(_ i: _NodePtr, by distance: Int) -> _NodePtr {
     guard i == ___end() || ___is_valid(i) else {
       preconditionFailure(.invalidIndex)
     }

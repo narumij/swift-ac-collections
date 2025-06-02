@@ -121,7 +121,7 @@ extension ___Tree.___Iterator {
   @inlinable
   @inline(__always)
   public func advanced(by n: Int) -> Self {
-    .init(tree: __tree_, rawValue: __tree_.___advanced(rawValue, by: n))
+    .init(tree: __tree_, rawValue: __tree_.___tree_adv_iter(rawValue, by: n))
   }
 }
 

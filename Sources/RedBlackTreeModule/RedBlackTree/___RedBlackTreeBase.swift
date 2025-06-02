@@ -445,7 +445,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public func ___advanced(_ i: _NodePtr, by distance: Int) -> _NodePtr {
-    __tree_.___advanced(i, by: distance)
+    __tree_.___tree_adv_iter(i, by: distance)
   }
 }
 

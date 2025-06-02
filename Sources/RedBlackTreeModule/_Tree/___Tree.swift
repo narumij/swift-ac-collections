@@ -559,7 +559,7 @@ extension ___Tree {
   internal func ___initialized_contains(_ p: _NodePtr) -> Bool {
     0..<_header.initializedCount ~= p
   }
-  
+
   // 割と雑に使っていて、意味がぼやっとしている
   @inlinable @inline(__always)
   internal func ___is_valid(_ p: _NodePtr) -> Bool {
@@ -749,7 +749,7 @@ extension ___Tree: Sequence {
 // MARK: -
 
 extension ___Tree {
-  
+
   @inlinable
   @inline(__always)
   public func ___tree_adv_iter(_ i: _NodePtr, by distance: Int) -> _NodePtr {
@@ -805,50 +805,48 @@ extension ___Tree: Tree_RawIndexProtocol {
 }
 
 extension ___Tree: Tree_KeyCompare {
-  
+
   public typealias Key = VC._Key
 
   @inlinable @inline(__always)
-  public static func value_comp(_ lhs: Key,_ rhs: Key) -> Bool {
+  public static func value_comp(_ lhs: Key, _ rhs: Key) -> Bool {
     VC.value_comp(lhs, rhs)
   }
 
   @inlinable @inline(__always)
-  public static func value_equiv(_ lhs: Key,_ rhs: Key) -> Bool {
+  public static func value_equiv(_ lhs: Key, _ rhs: Key) -> Bool {
     !value_comp(lhs, rhs) && !value_comp(rhs, lhs)
   }
 
   @inlinable @inline(__always)
-  public static func ___key_equiv(_ lhs: Element,_ rhs: Element) -> Bool {
+  public static func ___key_equiv(_ lhs: Element, _ rhs: Element) -> Bool {
     value_equiv(VC.__key(lhs), VC.__key(rhs))
   }
 
   @inlinable @inline(__always)
-  public static func ___key_value_equiv<Key,Value>(_ lhs: Element,_ rhs: Element) -> Bool
-  where Element == _KeyValueTuple_<Key,Value>, Value: Equatable
-  {
+  public static func ___key_value_equiv<Key, Value>(_ lhs: Element, _ rhs: Element) -> Bool
+  where Element == _KeyValueTuple_<Key, Value>, Value: Equatable {
     ___key_equiv(lhs, rhs) && lhs.value == rhs.value
   }
-  
+
   @inlinable @inline(__always)
-  static func ___key_comp(_ lhs: Element,_ rhs: Element) -> Bool {
+  static func ___key_comp(_ lhs: Element, _ rhs: Element) -> Bool {
     value_comp(VC.__key(lhs), VC.__key(rhs))
   }
-  
+
   @inlinable @inline(__always)
-  static func ___key_value_comp<Key,Value>(_ lhs: Element,_ rhs: Element) -> Bool
-  where Element == _KeyValueTuple_<Key,Value>, Value: Comparable
-  {
+  static func ___key_value_comp<Key, Value>(_ lhs: Element, _ rhs: Element) -> Bool
+  where Element == _KeyValueTuple_<Key, Value>, Value: Comparable {
     ___key_comp(lhs, rhs) || (!___key_comp(lhs, rhs) && lhs.value < rhs.value)
   }
 }
 
 extension ___Tree {
-  
+
   @inlinable
-  public func ___filter(
-    _ isIncluded: (Element) throws -> Bool
-  ) rethrows -> ___Tree {
+  public func ___filter(_ isIncluded: (Element) throws -> Bool)
+    rethrows -> ___Tree
+  {
     var tree: Tree = .create(minimumCapacity: 0)
     var (__parent, __child) = tree.___max_ref()
     for pair in self where try isIncluded(pair) {
@@ -861,12 +859,13 @@ extension ___Tree {
 }
 
 extension ___Tree {
-  
+
   @inlinable
-  public func ___mapValues<Other,Key,Value,T>(_ transform: (Value) throws -> T) rethrows
-  -> ___Tree<Other>
-  where Element == _KeyValueTuple_<Key,Value>,
-        Other.Element == _KeyValueTuple_<Key,T>
+  public func ___mapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T)
+    rethrows -> ___Tree<Other>
+  where
+    Element == _KeyValueTuple_<Key, Value>,
+    Other.Element == _KeyValueTuple_<Key, T>
   {
     let tree = ___Tree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = tree.___max_ref()
@@ -876,12 +875,13 @@ extension ___Tree {
     }
     return tree
   }
-  
+
   @inlinable
-  public func ___compactMapValues<Other,Key,Value, T>(_ transform: (Value) throws -> T?)
+  public func ___compactMapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T?)
     rethrows -> ___Tree<Other>
-  where Element == _KeyValueTuple_<Key,Value>,
-        Other.Element == _KeyValueTuple_<Key,T>
+  where
+    Element == _KeyValueTuple_<Key, Value>,
+    Other.Element == _KeyValueTuple_<Key, T>
   {
     var tree = ___Tree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = tree.___max_ref()

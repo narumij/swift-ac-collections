@@ -56,10 +56,10 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Element = KeyValue
 
   public
-    typealias Keys = KeyIterator<Tree,Key,Value>
+    typealias Keys = KeyIterator<Tree, Key, Value>
 
   public
-    typealias Values = ValueIterator<Tree,Key,Value>
+    typealias Values = ValueIterator<Tree, Key, Value>
 
   public
     typealias _Key = Key
@@ -79,8 +79,8 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 extension RedBlackTreeMultiMap: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
-extension RedBlackTreeMultiMap: ___RedBlackTreeSequence { }
-extension RedBlackTreeMultiMap: ___RedBlackTreeSubSequence { }
+extension RedBlackTreeMultiMap: ___RedBlackTreeSequence {}
+extension RedBlackTreeMultiMap: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 
 // MARK: - Initialization（初期化）
@@ -280,7 +280,7 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
-  
+
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -291,7 +291,7 @@ extension RedBlackTreeMultiMap {
     }
     return remove(at: startIndex)
   }
-  
+
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
@@ -302,7 +302,7 @@ extension RedBlackTreeMultiMap {
     }
     return remove(at: index(before: endIndex))
   }
-  
+
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -314,7 +314,7 @@ extension RedBlackTreeMultiMap {
     }
     return element
   }
-  
+
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -326,7 +326,7 @@ extension RedBlackTreeMultiMap {
     }
     return element
   }
-  
+
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(*k*)
   @inlinable
@@ -467,13 +467,15 @@ extension RedBlackTreeMultiMap {
 
   @inlinable
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
-    -> RedBlackTreeMultiMap<Key, T> {
+    -> RedBlackTreeMultiMap<Key, T>
+  {
     .init(_storage: .init(tree: try __tree_.___mapValues(transform)))
   }
 
   @inlinable
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
-    rethrows -> RedBlackTreeMultiMap<Key, T> {
+    rethrows -> RedBlackTreeMultiMap<Key, T>
+  {
     .init(_storage: .init(tree: try __tree_.___compactMapValues(transform)))
   }
 }
@@ -493,7 +495,7 @@ extension RedBlackTreeMultiMap {
   public var capacity: Int {
     ___capacity
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -538,7 +540,7 @@ extension RedBlackTreeMultiMap {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection { }
+extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {}
 
 // MARK: - Range Access
 
@@ -581,14 +583,16 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(log *n*)
   @inlinable
   public func elements(in range: Range<Key>) -> SubSequence {
-    .init(tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
+    .init(
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
   }
 
   /// キーレンジ `[lower, upper]` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
   @inlinable
   public func elements(in range: ClosedRange<Key>) -> SubSequence {
-    .init(tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
+    .init(
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
   }
 }
 
@@ -627,7 +631,7 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap.SubSequence: Equatable where Value: Equatable {
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -636,7 +640,7 @@ extension RedBlackTreeMultiMap.SubSequence: Equatable where Value: Equatable {
 }
 
 extension RedBlackTreeMultiMap.SubSequence: Comparable where Value: Comparable {
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -645,26 +649,24 @@ extension RedBlackTreeMultiMap.SubSequence: Comparable where Value: Comparable {
 }
 
 extension RedBlackTreeMultiMap.SubSequence where Value: Equatable {
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence : Sequence, Element == OtherSequence.Element
-  {
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
     elementsEqual(other, by: Tree.___key_value_equiv)
   }
 }
 
 extension RedBlackTreeMultiMap.SubSequence where Value: Comparable {
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence : Sequence, Element == OtherSequence.Element
-  {
-      lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
   }
 }
 
@@ -776,25 +778,23 @@ extension RedBlackTreeMultiMap: Comparable where Value: Comparable {
 }
 
 extension RedBlackTreeMultiMap where Value: Equatable {
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence : Sequence, Element == OtherSequence.Element
-  {
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
     elementsEqual(other, by: Tree.___key_value_equiv)
   }
 }
 
 extension RedBlackTreeMultiMap where Value: Comparable {
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence : Sequence, Element == OtherSequence.Element
-  {
-      lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
   }
 }

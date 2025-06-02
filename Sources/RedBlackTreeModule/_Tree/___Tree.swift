@@ -559,12 +559,14 @@ extension ___Tree {
   internal func ___initialized_contains(_ p: _NodePtr) -> Bool {
     0..<_header.initializedCount ~= p
   }
-
+  
+  // 割と雑に使っていて、意味がぼやっとしている
   @inlinable @inline(__always)
   internal func ___is_valid(_ p: _NodePtr) -> Bool {
     ___initialized_contains(p) && !___is_garbaged(p)
   }
 
+  // 割と雑に使っていて、意味がぼやっとしている
   @inlinable
   internal func ___is_valid_index(_ i: _NodePtr) -> Bool {
     if i == .nullptr { return false }

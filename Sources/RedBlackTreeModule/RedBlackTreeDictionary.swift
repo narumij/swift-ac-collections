@@ -270,7 +270,7 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary {
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
@@ -285,7 +285,7 @@ extension RedBlackTreeDictionary {
     _ = __tree_.erase(__i)
     return value
   }
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -296,7 +296,7 @@ extension RedBlackTreeDictionary {
     }
     return remove(at: startIndex)
   }
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
@@ -307,7 +307,7 @@ extension RedBlackTreeDictionary {
     }
     return remove(at: index(before: endIndex))
   }
-
+  
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -319,7 +319,7 @@ extension RedBlackTreeDictionary {
     }
     return element
   }
-
+  
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -331,19 +331,13 @@ extension RedBlackTreeDictionary {
     }
     return element
   }
-
+  
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(*k*)
   @inlinable
   public mutating func removeSubrange(_ range: Range<Index>) {
     _ensureUnique()
     ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
-  }
-
-  @inlinable
-  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    _ensureUnique()
-    ___removeAll(keepingCapacity: keepCapacity)
   }
 }
 
@@ -369,6 +363,15 @@ extension RedBlackTreeDictionary {
     let lower = ___lower_bound(keyRange.lowerBound)
     let upper = ___upper_bound(keyRange.upperBound)
     ___remove(from: lower, to: upper)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  @inlinable
+  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    _ensureUnique()
+    ___removeAll(keepingCapacity: keepCapacity)
   }
 }
 

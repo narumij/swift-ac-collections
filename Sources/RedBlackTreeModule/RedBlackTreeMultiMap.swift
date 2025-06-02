@@ -280,7 +280,7 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -291,7 +291,7 @@ extension RedBlackTreeMultiMap {
     }
     return remove(at: startIndex)
   }
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
@@ -302,7 +302,7 @@ extension RedBlackTreeMultiMap {
     }
     return remove(at: index(before: endIndex))
   }
-
+  
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -314,7 +314,7 @@ extension RedBlackTreeMultiMap {
     }
     return element
   }
-
+  
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -326,19 +326,13 @@ extension RedBlackTreeMultiMap {
     }
     return element
   }
-
+  
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(*k*)
   @inlinable
   public mutating func removeSubrange(_ range: Range<Index>) {
     _ensureUnique()
     ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
-  }
-
-  @inlinable
-  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    _ensureUnique()
-    ___removeAll(keepingCapacity: keepCapacity)
   }
 }
 
@@ -362,6 +356,15 @@ extension RedBlackTreeMultiMap {
     let lower = ___lower_bound(keyRange.lowerBound)
     let upper = ___upper_bound(keyRange.upperBound)
     ___remove(from: lower, to: upper)
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  @inlinable
+  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    _ensureUnique()
+    ___removeAll(keepingCapacity: keepCapacity)
   }
 }
 

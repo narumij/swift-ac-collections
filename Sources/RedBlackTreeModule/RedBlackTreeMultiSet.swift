@@ -182,7 +182,7 @@ extension RedBlackTreeMultiSet {
 }
 
 extension RedBlackTreeMultiSet {
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
@@ -191,7 +191,7 @@ extension RedBlackTreeMultiSet {
     _strongEnsureUnique()
     return __tree_.___erase_unique(member) ? member : nil
   }
-
+  
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -203,7 +203,7 @@ extension RedBlackTreeMultiSet {
     }
     return element
   }
-
+  
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -215,7 +215,7 @@ extension RedBlackTreeMultiSet {
     }
     return element
   }
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -226,7 +226,7 @@ extension RedBlackTreeMultiSet {
     }
     return remove(at: startIndex)
   }
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
@@ -237,7 +237,7 @@ extension RedBlackTreeMultiSet {
     }
     return remove(at: index(before: endIndex))
   }
-
+  
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(*k*)
   @inlinable
@@ -245,7 +245,7 @@ extension RedBlackTreeMultiSet {
     _ensureUnique()
     ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
   }
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n* : *k*)
   @inlinable
@@ -254,7 +254,7 @@ extension RedBlackTreeMultiSet {
     _strongEnsureUnique()
     return __tree_.___erase_multi(member) != 0 ? member : nil
   }
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n* : *k*)
   @inlinable
@@ -262,13 +262,6 @@ extension RedBlackTreeMultiSet {
   public mutating func removeAll(_unsafe member: Element) -> Element? {
     _ensureUnique()
     return __tree_.___erase_multi(member) != 0 ? member : nil
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    _ensureUnique()
-    ___removeAll(keepingCapacity: keepCapacity)
   }
 }
 
@@ -292,6 +285,16 @@ extension RedBlackTreeMultiSet {
     let lower = ___lower_bound(elementRange.lowerBound)
     let upper = ___upper_bound(elementRange.upperBound)
     ___remove(from: lower, to: upper)
+  }
+}
+
+extension RedBlackTreeMultiSet {
+
+  /// - Complexity: O(1)
+  @inlinable
+  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    _ensureUnique()
+    ___removeAll(keepingCapacity: keepCapacity)
   }
 }
 

@@ -785,7 +785,7 @@ extension RedBlackTreeSet {
           tree.__insert_node_at(__parent, __child, __h)
         }
       }
-      self._storage = .init(__tree: tree)
+      self._storage = .init(tree: tree)
     }
   }
 #endif

@@ -947,8 +947,8 @@ import XCTest
     }
     
     func testEqual2() throws {
-      let aa = Target<Int,Int>(keysWithValues: [0,1,2,3,4,5].map{ ($0,$0) })
-      let bb = Target<Int,Int>(keysWithValues: [3,4,5,6,7,8].map{ ($0,$0) })
+      let aa = Target<Int,Int>(multiKeysWithValues: [0,1,2,3,4,5].map{ ($0,$0) })
+      let bb = Target<Int,Int>(multiKeysWithValues: [3,4,5,6,7,8].map{ ($0,$0) })
       do {
         let a = aa[0 ..< 0]
         let b = bb[3 ..< 3]

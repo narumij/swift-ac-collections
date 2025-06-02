@@ -31,7 +31,7 @@ final class MultiMapBasicTest: XCTestCase {
     }
     
     func testRemovalOperations() {
-        var multiMap = RedBlackTreeMultiMap<String, Int>(keysWithValues: [("apple", 1), ("banana", 2), ("apple", 3)])
+        var multiMap = RedBlackTreeMultiMap<String, Int>(multiKeysWithValues: [("apple", 1), ("banana", 2), ("apple", 3)])
         
         XCTAssertEqual(multiMap.removeAll(forKey: "apple"), 2)
         XCTAssertFalse(multiMap.contains(key: "apple"))

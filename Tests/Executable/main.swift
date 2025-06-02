@@ -333,9 +333,29 @@ for i in tree[tree.startIndex ..< tree.endIndex].indices {
   total &+= tree[i]
 }
 print(total)
-#else
+#elseif false
 let tree = RedBlackTreeDictionary<Int, [Int]>(grouping: 0..<10_000_000, by: { $0 })
 print(tree.count)
+#elseif false
+var a: RedBlackTreeSet<Int> = .init(0 ..< 100)
+var b: RedBlackTreeSet<Int> = .init(100 ..< 10_000_000)
+a.insert(contentsOf: b)
+print(a.count)
+#elseif false
+var a: RedBlackTreeSet<Int> = .init((0 ..< 100).map { $0 * 100})
+var b: RedBlackTreeSet<Int> = .init((1 ..< 10_000_000).map { $0 * 3 })
+b.insert(contentsOf: a)
+print(b.count)
+#elseif true
+var a: RedBlackTreeSet<Int> = .init((0 ..< 100).map { $0 * 100})
+var b: RedBlackTreeSet<Int> = .init((1 ..< 10_000_000).map { $0 * 3 })
+let c = a.union(b)
+print(c.count)
+#elseif true
+var a: RedBlackTreeSet<Int> = .init(0 ..< 100)
+var b: RedBlackTreeSet<Int> = .init(100 ..< 10_000_000)
+let c = b.union(a)
+print(c.count)
 #endif
 //#endif
 

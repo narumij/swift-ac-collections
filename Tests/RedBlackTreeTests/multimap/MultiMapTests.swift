@@ -156,7 +156,7 @@ import XCTest
     }
 
     func testInitUniqueKeysWithValues() throws {
-      let dict = Target(keysWithValues: [(1, 10), (2, 20)])
+      let dict = Target(multingKeysWithValues: [(1, 10), (2, 20)])
       XCTAssertEqual(dict.keys.sorted(), [1, 2])
       XCTAssertEqual(dict.values.sorted(), [10, 20])
       XCTAssertEqual(dict[0].map(\.value), [])
@@ -166,7 +166,7 @@ import XCTest
     }
 
     func testInitUniqueKeysWithValues2() throws {
-      let dict = Target(keysWithValues: AnySequence([(1, 10), (2, 20)]))
+      let dict = Target(multingKeysWithValues: AnySequence([(1, 10), (2, 20)]))
       XCTAssertEqual(dict.keys.sorted(), [1, 2])
       XCTAssertEqual(dict.values.sorted(), [10, 20])
       XCTAssertEqual(dict[0].map(\.value), [])
@@ -203,7 +203,7 @@ import XCTest
     func testInitUniquingKeysWith() throws {
       do {
         let dict = Target(
-          keysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
+          multingKeysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
         XCTAssertEqual(dict.keys.sorted(), [1, 1, 2, 2])
         XCTAssertEqual(dict.values.sorted(), [10, 11, 20, 22])
         XCTAssertEqual(dict[0].map(\.value), [])

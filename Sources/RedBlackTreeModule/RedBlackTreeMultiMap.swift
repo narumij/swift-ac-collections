@@ -104,7 +104,7 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(*n* log *n*)
   @inlinable
-  public init<S>(keysWithValues keysAndValues: __owned S)
+  public init<S>(multingKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
     let count = (keysAndValues as? (any Collection))?.count
     var tree: Tree = .create(minimumCapacity: count ?? 0)
@@ -748,7 +748,7 @@ extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
   /// - Complexity: O(*n* log *n*)
   @inlinable
   public init(dictionaryLiteral elements: (Key, Value)...) {
-    self.init(keysWithValues: elements)
+    self.init(multingKeysWithValues: elements)
   }
 }
 
@@ -759,7 +759,7 @@ extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
   /// - Complexity: O(*n* log *n*)
   @inlinable
   public init(arrayLiteral elements: (Key, Value)...) {
-    self.init(keysWithValues: elements)
+    self.init(multingKeysWithValues: elements)
   }
 }
 

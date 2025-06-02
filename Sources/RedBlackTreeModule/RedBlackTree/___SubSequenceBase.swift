@@ -41,6 +41,14 @@ where
 
 extension ___SubSequenceBase {
 
+  @inlinable
+  func ___index(_ rawValue: _NodePtr) -> Index {
+    .init(tree: __tree_, rawValue: rawValue)
+  }
+}
+
+extension ___SubSequenceBase {
+
   /// - Complexity: O(1)
   @inlinable
   public func makeIterator() -> ElementIterator<Tree> {
@@ -105,16 +113,6 @@ extension ___SubSequenceBase {
   //    public func upperBound(_ member: Element) -> Index {
   //      base.__upper_bound(base.__key(member), base.__root(), endIndex)
   //    }
-}
-
-extension ___SubSequenceBase {
-
-  //  public typealias Index = Index
-
-  @inlinable
-  func ___index(_ rawValue: _NodePtr) -> Index {
-    .init(tree: __tree_, rawValue: rawValue)
-  }
 }
 
 extension ___SubSequenceBase {

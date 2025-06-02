@@ -25,18 +25,16 @@ extension ___Tree {
   public
   struct ForwardIterator: IteratorProtocol {
     
-    public typealias Element = ___Iterator
-    
     @usableFromInline
-    let _tree: Tree
+    let __tree_: ___Tree
     
     @usableFromInline
     var _current, _next, _end: _NodePtr
     
     @inlinable
     @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self._tree = tree
+    internal init(tree: ___Tree, start: _NodePtr, end: _NodePtr) {
+      self.__tree_ = tree
       self._current = start
       self._end = end
       self._next = start == .end ? .end : tree.__tree_next(start)
@@ -50,31 +48,29 @@ extension ___Tree {
       guard _current != _end else { return nil }
       defer {
         _current = _next
-        _next = _next == _end ? _end : _tree.__tree_next(_next)
+        _next = _next == _end ? _end : __tree_.__tree_next(_next)
       }
-      return _tree.makeIndex(rawValue: _current)
+      return __tree_.makeIndex(rawValue: _current)
     }
   }
   
   public
   struct BackwordIterator: Sequence, IteratorProtocol {
     
-    public typealias Element = ___Iterator
-    
     @usableFromInline
-    let _tree: Tree
+    let __tree_: ___Tree
     
     @usableFromInline
     var _current, _next, _start, _begin: _NodePtr
 
     @inlinable
     @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self._tree = tree
+    internal init(tree: ___Tree, start: _NodePtr, end: _NodePtr) {
+      self.__tree_ = tree
       self._current = end
-      self._next = _tree.__tree_prev_iter(end)
+      self._next = __tree_.__tree_prev_iter(end)
       self._start = start
-      self._begin = _tree.__begin_node
+      self._begin = __tree_.__begin_node
     }
     
     @inlinable
@@ -82,19 +78,16 @@ extension ___Tree {
     public mutating func next() -> ___Iterator? {
       guard _current != _start else { return nil }
       _current = _next
-      _next = _current != _begin ? _tree.__tree_prev_iter(_current) : .nullptr
-      return _tree.makeIndex(rawValue: _current)
+      _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
+      return __tree_.makeIndex(rawValue: _current)
     }
   }
   
   public
   struct ___IteratorSequence: Sequence {
     
-    public
-    typealias _Tree = Tree
-    
     @usableFromInline
-    let _tree: Tree
+    let __tree_: ___Tree
     
     @usableFromInline
     var _start, _end: _NodePtr
@@ -103,7 +96,7 @@ extension ___Tree {
     
     @inlinable
     @inline(__always)
-    internal init(tree: Tree) {
+    internal init(tree: ___Tree) {
       self.init(
         tree: tree,
         start: tree.__begin_node,
@@ -113,19 +106,19 @@ extension ___Tree {
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      _tree = tree
+      __tree_ = tree
       _start = start
       _end = end
     }
     
     @inlinable
     public __consuming func makeIterator() -> ForwardIterator {
-      .init(tree: _tree, start: _start, end: _end)
+      .init(tree: __tree_, start: _start, end: _end)
     }
     
     @inlinable
     public __consuming func reversed() -> BackwordIterator {
-      .init(tree: _tree, start: _start, end: _end)
+      .init(tree: __tree_, start: _start, end: _end)
     }
   }
 }
@@ -146,22 +139,22 @@ extension ___Tree.___IteratorSequence: Collection, BidirectionalCollection {
   
   public
   subscript(position: Index) -> Index {
-    _tree.makeIndex(rawValue: position.rawValue)
+    __tree_.makeIndex(rawValue: position.rawValue)
   }
   
   public
   var startIndex: Index {
-    _tree.makeIndex(rawValue: _start)
+    __tree_.makeIndex(rawValue: _start)
   }
   
   public
   var endIndex: Index {
-    _tree.makeIndex(rawValue: _end)
+    __tree_.makeIndex(rawValue: _end)
   }
   
   public typealias SubSequence = Self
   
   public subscript(bounds: Range<Index>) -> SubSequence {
-    .init(tree: _tree, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+    .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }
 }

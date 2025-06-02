@@ -167,11 +167,12 @@ extension RedBlackTreeDictionary {
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
-    for (__k, __v) in try values.map({ (try keyForValue($0), $0) }).sorted(by: { $0.0 < $1.0 }) {
+    for __v in try values.sorted(by: { try keyForValue($0) < keyForValue($1) }) {
+      let __k = try keyForValue(__v)
       if count == nil {
         Tree.ensureCapacity(tree: &tree)
       }
-      if __parent == .end || tree[__parent].0 != __k {
+      if __parent == .end || tree[__parent].key != __k {
         // バランシングの計算量がO(log *n*)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k, [__v]))
         assert(tree.__tree_invariant(tree.__root()))

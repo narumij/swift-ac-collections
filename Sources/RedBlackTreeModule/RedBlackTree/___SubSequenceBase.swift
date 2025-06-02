@@ -60,6 +60,18 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(*n*)
+  @inlinable
+  @inline(__always)
+  public func ___forEach(_ body: (Index, Element) throws -> Void) rethrows {
+    try __tree_.___for_each_(__p: _start, __l: _end) {
+      try body(___index($0),__tree_[$0])
+    }
+  }
+}
+
+extension ___SubSequenceBase {
+
   /// - Complexity: O(log *n* + *k*)
   @inlinable @inline(__always)
   public var count: Int {
@@ -71,12 +83,12 @@ extension ___SubSequenceBase {
 
   /// - Complexity: O(1)
   public var startIndex: Index {
-    index(rawValue: _start)
+    ___index(_start)
   }
 
   /// - Complexity: O(1)
   public var endIndex: Index {
-    index(rawValue: _end)
+    ___index(_end)
   }
 }
 
@@ -99,7 +111,7 @@ extension ___SubSequenceBase {
   //  public typealias Index = Index
 
   @inlinable
-  func index(rawValue: _NodePtr) -> Index {
+  func ___index(_ rawValue: _NodePtr) -> Index {
     .init(tree: __tree_, rawValue: rawValue)
   }
 }
@@ -172,14 +184,14 @@ extension ___SubSequenceBase {
   @inlinable @inline(__always)
   public func index(before i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    index(rawValue: __tree_.___index(before: i.rawValue))
+    ___index(__tree_.___index(before: i.rawValue))
   }
 
   /// - Complexity: O(1)
   @inlinable @inline(__always)
   public func index(after i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    index(rawValue: __tree_.___index(after: i.rawValue))
+    ___index(__tree_.___index(after: i.rawValue))
   }
 
   /// - Complexity: O(*d*)
@@ -188,7 +200,7 @@ extension ___SubSequenceBase {
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
     __tree_.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
-      .map { index(rawValue: $0) }
+      .map { ___index($0) }
   }
 }
 

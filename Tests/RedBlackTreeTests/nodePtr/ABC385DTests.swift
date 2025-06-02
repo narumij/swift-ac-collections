@@ -18,7 +18,7 @@ final class ABC385DTests: XCTestCase {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
 
-  #if false
+  #if true
     func testABC385D(N: Int, M: Int, x: Int, y: Int, _xy: [(Int, Int)], _dc: [(String, Int)]) throws
     {
       //    var (N, M, x, y) = (Int.stdin, Int.stdin, Int.stdin, Int.stdin)
@@ -34,7 +34,7 @@ final class ABC385DTests: XCTestCase {
         switch c {
         case "U":
           let new_y = y + d
-          xy[x]?[y...new_y].enumerated().forEach { (i, v) in
+          xy[x]?[y...new_y].___forEach { (i, v) in
             ans += 1
             yx[v]?.remove(x)
             xy[x]?.remove(at: i)
@@ -42,7 +42,7 @@ final class ABC385DTests: XCTestCase {
           y = new_y
         case "D":
           let new_y = y - d
-          xy[x]?[new_y...y].enumerated().forEach { (i, v) in
+          xy[x]?[new_y...y].___forEach { (i, v) in
             ans += 1
             yx[v]?.remove(x)
             xy[x]?.remove(at: i)
@@ -50,7 +50,7 @@ final class ABC385DTests: XCTestCase {
           y = new_y
         case "L":
           let new_x = x - d
-          yx[y]?[new_x...x].enumerated().forEach { (i, v) in
+          yx[y]?[new_x...x].___forEach { (i, v) in
             ans += 1
             xy[v]?.remove(y)
             yx[y]?.remove(at: i)
@@ -58,7 +58,7 @@ final class ABC385DTests: XCTestCase {
           x = new_x
         case "R":
           let new_x = x + d
-          yx[y]?[x...new_x].enumerated().forEach { (i, v) in
+          yx[y]?[x...new_x].___forEach { (i, v) in
             ans += 1
             xy[v]?.remove(y)
             yx[y]?.remove(at: i)

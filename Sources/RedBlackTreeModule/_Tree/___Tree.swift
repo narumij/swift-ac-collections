@@ -613,6 +613,19 @@ extension ___Tree {
       try body(self[__c])
     }
   }
+  
+  @inlinable
+  @inline(__always)
+  internal func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
+    rethrows
+  {
+    var __p = __p
+    while __p != __l {
+      let __c = __p
+      __p = __tree_next(__p)
+      try body(__c)
+    }
+  }
 }
 
 // MARK: -

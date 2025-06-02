@@ -59,6 +59,18 @@ extension ___RedBlackTreeSequence {
 
   /// - Complexity: O(*n*)
   @inlinable
+  @inline(__always)
+  public func ___forEach(_ body: (Index, Element) throws -> Void) rethrows {
+    try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
+      try body(___index($0),__tree_[$0])
+    }
+  }
+}
+
+extension ___RedBlackTreeSequence {
+
+  /// - Complexity: O(*n*)
+  @inlinable
   public __consuming func sorted() -> ElementIterator<Tree> {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }

@@ -130,7 +130,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n* log *n*)
   @inlinable
   public init<S: Sequence>(
-    ___grouping values: __owned S,
+    grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == S.Element {
     let count = (values as? (any Collection))?.count

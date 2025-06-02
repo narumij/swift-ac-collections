@@ -79,23 +79,23 @@ extension ___RedBlackTreeBase {
   typealias Index = Tree.Index
 
   @inlinable @inline(__always)
-  func ___iter(_ p: _NodePtr) -> Index {
+  func ___index(_ p: _NodePtr) -> Index {
     __tree_.makeIndex(rawValue: p)
   }
+  
+  @inlinable @inline(__always)
+  func ___index_or_nil(_ p: _NodePtr) -> Index? {
+    p == .nullptr ? nil : ___index(p)
+  }
 
   @inlinable @inline(__always)
-  func ___raw(_ p: _NodePtr) -> RawIndex {
+  func ___index_or_nil(_ p: _NodePtr?) -> Index? {
+    p.map { ___index($0) }
+  }
+  
+  @inlinable @inline(__always)
+  func ___raw_index(_ p: _NodePtr) -> RawIndex {
     __tree_.makeRawIndex(rawValue: p)
-  }
-
-  @inlinable @inline(__always)
-  func ___iter_or_nil(_ p: _NodePtr) -> Index? {
-    p == .nullptr ? nil : ___iter(p)
-  }
-
-  @inlinable @inline(__always)
-  func ___iter_or_nil(_ p: _NodePtr?) -> Index? {
-    p.map { ___iter($0) }
   }
 
   @inlinable @inline(__always)
@@ -110,22 +110,22 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public func ___raw_index_start() -> RawIndex {
-    ___raw(___start())
+    ___raw_index(___start())
   }
 
   @inlinable @inline(__always)
   public func ___raw_index_end() -> RawIndex {
-    ___raw(___end())
+    ___raw_index(___end())
   }
 
   @inlinable @inline(__always)
-  func ___iter_start() -> Index {
-    ___iter(__tree_.__begin_node)
+  func ___index_start() -> Index {
+    ___index(__tree_.__begin_node)
   }
 
   @inlinable @inline(__always)
-  func ___iter_end() -> Index {
-    ___iter(__tree_.___end())
+  func ___index_end() -> Index {
+    ___index(__tree_.___end())
   }
 }
 
@@ -143,40 +143,40 @@ extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public func ___raw_index_lower_bound(_ __k: _Key) -> RawIndex {
-    ___raw(__tree_.lower_bound(__k))
+    ___raw_index(__tree_.lower_bound(__k))
   }
 
   @inlinable @inline(__always)
   public func ___raw_index_upper_bound(_ __k: _Key) -> RawIndex {
-    ___raw(__tree_.upper_bound(__k))
+    ___raw_index(__tree_.upper_bound(__k))
   }
 
   @inlinable @inline(__always)
-  func ___iter_lower_bound(_ __k: _Key) -> Index {
-    ___iter(___lower_bound(__k))
+  func ___index_lower_bound(_ __k: _Key) -> Index {
+    ___index(___lower_bound(__k))
   }
 
   @inlinable @inline(__always)
-  func ___iter_upper_bound(_ __k: _Key) -> Index {
-    ___iter(___upper_bound(__k))
+  func ___index_upper_bound(_ __k: _Key) -> Index {
+    ___index(___upper_bound(__k))
   }
 }
 
 extension ___RedBlackTreeBase {
 
   @inlinable
-  func ___first_iter(of member: _Key) -> Index? {
+  func ___first_index(of member: _Key) -> Index? {
     var __parent = _NodePtr.nullptr
     let ptr = __tree_.__ptr_(__tree_.__find_equal(&__parent, member))
-    return ___iter_or_nil(ptr)
+    return ___index_or_nil(ptr)
   }
 
   @inlinable
-  func ___first_iter(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+  func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     var result: Index?
     try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
       if try predicate(__tree_[__p]) {
-        result = ___iter(__p)
+        result = ___index(__p)
         cont = false
       }
     }
@@ -378,7 +378,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___std_erase(_ ptr: RawIndex) -> RawIndex {
-    ___raw(__tree_.erase(ptr.rawValue))
+    ___raw_index(__tree_.erase(ptr.rawValue))
   }
 
   // C++風の削除コードが書きたい場合にこっそり(!?)つかうもの
@@ -386,7 +386,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___std_erase(_ ptr: Index) -> Index {
-    ___iter(__tree_.erase(ptr.rawValue))
+    ___index(__tree_.erase(ptr.rawValue))
   }
 }
 

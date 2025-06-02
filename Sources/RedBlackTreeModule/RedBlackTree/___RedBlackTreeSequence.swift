@@ -33,6 +33,9 @@ where
   associatedtype Indices
   associatedtype Element
   var __tree_: Tree { get }
+  
+  func ___index(_ rawValue: _NodePtr) -> Index
+  func ___index_or_nil(_ p: _NodePtr?) -> Index?
 }
 
 extension ___RedBlackTreeSequence {
@@ -52,21 +55,6 @@ extension ___RedBlackTreeSequence {
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
     try __tree_.___for_each_(body)
-  }
-}
-
-extension ___RedBlackTreeSequence {
-
-  @inlinable
-  @inline(__always)
-  func ___index(_ rawValue: _NodePtr) -> Index {
-    .init(__tree: __tree_, rawValue: rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  func ___index_or_nil(_ p: _NodePtr?) -> Index? {
-    p.map { ___index($0) }
   }
 }
 

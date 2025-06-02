@@ -501,13 +501,13 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log *n*)
   @inlinable
   public func lowerBound(_ p: Key) -> Index {
-    ___iter_lower_bound(p)
+    ___index_lower_bound(p)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public func upperBound(_ p: Key) -> Index {
-    ___iter_upper_bound(p)
+    ___index_upper_bound(p)
   }
 }
 
@@ -534,13 +534,13 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log *n*)
   @inlinable
   public func firstIndex(of key: Key) -> Index? {
-    ___first_iter(of: key)
+    ___first_index(of: key)
   }
 
   /// - Complexity: O(*n*)
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_iter(where: predicate)
+    try ___first_index(where: predicate)
   }
 }
 
@@ -550,7 +550,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
     let (lo,hi) = ___equal_range(key)
-    return (___iter(lo), ___iter(hi))
+    return (___index(lo), ___index(hi))
   }
 }
 

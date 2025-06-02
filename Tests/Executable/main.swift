@@ -336,15 +336,15 @@ print(total)
 #elseif false
 let tree = RedBlackTreeDictionary<Int, [Int]>(grouping: 0..<10_000_000, by: { $0 })
 print(tree.count)
-#elseif false
-var a: RedBlackTreeSet<Int> = .init(0 ..< 100)
-var b: RedBlackTreeSet<Int> = .init(100 ..< 10_000_000)
-a.insert(contentsOf: b)
-print(a.count)
-#elseif false
+#elseif true
 var a: RedBlackTreeSet<Int> = .init((0 ..< 100).map { $0 * 100})
 var b: RedBlackTreeSet<Int> = .init((1 ..< 10_000_000).map { $0 * 3 })
-b.insert(contentsOf: a)
+a.insert(contentsOf: b.makeIterator())
+print(a.count)
+#elseif true
+var a: RedBlackTreeSet<Int> = .init((0 ..< 100).map { $0 * 100})
+var b: RedBlackTreeSet<Int> = .init((1 ..< 10_000_000).map { $0 * 3 })
+b.insert(contentsOf: a.makeIterator())
 print(b.count)
 #elseif true
 var a: RedBlackTreeSet<Int> = .init((0 ..< 100).map { $0 * 100})

@@ -246,6 +246,14 @@ extension RedBlackTreeDictionary {
     _ensureUniqueAndCapacity(to: count + other.count)
     __tree_.__node_handle_merge_unique(other.__tree_)
   }
+  
+  /// - Complexity: O(*k* log *n*)
+  @inlinable
+  @inline(__always)
+  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
+    _ensureUnique()
+    ___merge_unique(other)
+  }
 }
 
 extension RedBlackTreeDictionary {

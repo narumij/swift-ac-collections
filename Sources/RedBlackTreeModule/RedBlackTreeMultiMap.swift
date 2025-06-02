@@ -239,11 +239,12 @@ extension RedBlackTreeMultiMap {
     return result
   }
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*k* log *k*)
   @inlinable
   @inline(__always)
   public mutating func insert<S>(_ other: S) where S: Sequence, S.Element == Element {
-    other.forEach { insert($0) }
+    _ensureUnique()
+    ___merge_multi(other)
   }
 
   /// - Complexity: O(*n* log *n*)

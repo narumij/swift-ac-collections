@@ -179,7 +179,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(*k* log *k*)
+  /// - Complexity: O(*k* log *n*)
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
@@ -187,7 +187,7 @@ extension RedBlackTreeSet {
     __tree_.__node_handle_merge_unique(other.__tree_)
   }
 
-  /// - Complexity: O(*k* log *k*)
+  /// - Complexity: O(*k* log *n*)
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
@@ -195,11 +195,12 @@ extension RedBlackTreeSet {
     __tree_.__node_handle_merge_unique(other.__tree_)
   }
 
-  /// - Complexity: O(*k* log *k*)
+  /// - Complexity: O(*k* log *n*)
   @inlinable
   @inline(__always)
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
-    other.forEach { insert($0) }
+    _ensureUnique()
+    ___merge_unique(other)
   }
 }
 

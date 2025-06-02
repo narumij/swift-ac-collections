@@ -136,3 +136,32 @@ extension ___RedBlackTreeCopyOnWrite {
     assert(_storage.tree.header.initializedCount <= _storage.capacity)
   }
 }
+
+extension ___RedBlackTreeCopyOnWrite {
+  
+  @inlinable
+  mutating func ___merge_unique<S>(_ __source: S)
+  where S: Sequence, S.Element == VC.Element {
+    var __parent: _NodePtr = .zero
+    for __element in __source {
+      let __child = _storage.tree.__find_equal(&__parent, _storage.tree.__key(__element))
+      if (_storage.tree.__ptr_(__child) != .nullptr) {
+        continue }
+      _ensureCapacity()
+      let __src_ptr = _storage.tree.__construct_node(__element)
+      _storage.tree.__insert_node_at(__parent, __child, __src_ptr)
+    }
+  }
+  
+  @inlinable
+  mutating func ___merge_multi<S>(_ __source: S)
+  where S: Sequence, S.Element == VC.Element {
+    var __parent: _NodePtr = .zero
+    for __element in __source {
+      let __child = _storage.tree.__find_leaf_high(&__parent, _storage.tree.__key(__element))
+      _ensureCapacity()
+      let __src_ptr = _storage.tree.__construct_node(__element)
+      _storage.tree.__insert_node_at(__parent, __child, __src_ptr);
+    }
+  }
+}

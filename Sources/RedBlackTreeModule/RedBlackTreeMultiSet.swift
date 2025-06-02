@@ -164,7 +164,8 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @inline(__always)
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
-    other.forEach { insert($0) }
+    _ensureUnique()
+    ___merge_multi(other)
   }
 }
 

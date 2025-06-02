@@ -33,6 +33,14 @@ public protocol ___RedBlackTree___ {
   associatedtype Tree
 }
 
+@usableFromInline
+protocol ___RedBlackTreeIndexing {
+  associatedtype Index
+  func ___index(_ rawValue: _NodePtr) -> Index
+  func ___index_or_nil(_ p: _NodePtr?) -> Index?
+  func ___raw_index(_ p: _NodePtr) -> RawIndex
+}
+
 // コレクションの内部実装
 @usableFromInline
 protocol ___RedBlackTreeBase:
@@ -74,10 +82,10 @@ extension ___RedBlackTreeBase {
 // MARK: - Index
 
 extension ___RedBlackTreeBase {
-
+  
   @usableFromInline
   typealias Index = Tree.Index
-
+  
   @inlinable @inline(__always)
   func ___index(_ p: _NodePtr) -> Index {
     __tree_.makeIndex(rawValue: p)
@@ -87,7 +95,7 @@ extension ___RedBlackTreeBase {
   func ___index_or_nil(_ p: _NodePtr) -> Index? {
     p == .nullptr ? nil : ___index(p)
   }
-
+  
   @inlinable @inline(__always)
   func ___index_or_nil(_ p: _NodePtr?) -> Index? {
     p.map { ___index($0) }
@@ -97,6 +105,9 @@ extension ___RedBlackTreeBase {
   func ___raw_index(_ p: _NodePtr) -> RawIndex {
     __tree_.makeRawIndex(rawValue: p)
   }
+}
+
+extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
   public func ___start() -> _NodePtr {
@@ -126,6 +137,27 @@ extension ___RedBlackTreeBase {
   @inlinable @inline(__always)
   func ___index_end() -> Index {
     ___index(__tree_.___end())
+  }
+}
+
+extension ___RedBlackTreeBase {
+
+  @inlinable @inline(__always)
+  func ___contains(_ __k: _Key) -> Bool where _Key: Equatable {
+    __tree_.__count_unique(__k) != 0
+  }
+}
+
+extension ___RedBlackTreeBase {
+
+  @inlinable @inline(__always)
+  func ___min() -> Element? {
+    __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_min(__tree_.__root())]
+  }
+
+  @inlinable @inline(__always)
+  func ___max() -> Element? {
+    __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_max(__tree_.__root())]
   }
 }
 
@@ -177,6 +209,21 @@ extension ___RedBlackTreeBase {
     try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
       if try predicate(__tree_[__p]) {
         result = ___index(__p)
+        cont = false
+      }
+    }
+    return result
+  }
+}
+
+extension ___RedBlackTreeBase {
+
+  @inlinable
+  public func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+    var result: Element?
+    try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
+      if try predicate(__tree_[__p]) {
+        result = __tree_[__p]
         cont = false
       }
     }
@@ -295,45 +342,9 @@ extension ___RedBlackTreeBase {
 extension ___RedBlackTreeBase {
 
   @inlinable @inline(__always)
-  func ___contains(_ __k: _Key) -> Bool where _Key: Equatable {
-    __tree_.__count_unique(__k) != 0
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable @inline(__always)
-  func ___min() -> Element? {
-    __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_min(__tree_.__root())]
-  }
-
-  @inlinable @inline(__always)
-  func ___max() -> Element? {
-    __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_max(__tree_.__root())]
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable @inline(__always)
   func ___value_for(_ __k: _Key) -> Element? {
     let __ptr = __tree_.find(__k)
     return ___is_null_or_end(__ptr) ? nil : __tree_[__ptr]
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  public func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    var result: Element?
-    try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
-      if try predicate(__tree_[__p]) {
-        result = __tree_[__p]
-        cont = false
-      }
-    }
-    return result
   }
 }
 
@@ -427,6 +438,9 @@ extension ___RedBlackTreeBase {
   public func ___is_valid(_ index: _NodePtr) -> Bool {
     __tree_.___is_valid_index(index)
   }
+}
+
+extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)

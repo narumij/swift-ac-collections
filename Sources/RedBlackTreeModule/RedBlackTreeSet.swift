@@ -73,10 +73,12 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
 extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
-extension RedBlackTreeSet: ___RedBlackTreeUnique {}
+//extension RedBlackTreeSet: ___RedBlackTreeUnique {}
 extension RedBlackTreeSet: ___RedBlackTreeSequence {}
 extension RedBlackTreeSet: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeSet: ScalarValueComparer {}
+
+extension RedBlackTreeSet: ___RedBlackTreeUnique_ {}
 
 // MARK: - Initialization
 
@@ -402,8 +404,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
-    let (lo, hi) = ___equal_range(element)
-    return (___index(lo), ___index(hi))
+    ___index_equal_range(element)
   }
 }
 

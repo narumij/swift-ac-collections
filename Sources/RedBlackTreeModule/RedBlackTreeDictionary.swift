@@ -76,7 +76,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
-extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
+extension RedBlackTreeDictionary: ___RedBlackTreeUnique_ {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSequence { }
 extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence { }
 extension RedBlackTreeDictionary: KeyValueComparer {}
@@ -544,8 +544,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log *n*)
   @inlinable
   public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
-    let (lo,hi) = ___equal_range(key)
-    return (___index(lo), ___index(hi))
+    ___index_equal_range(key)
   }
 }
 

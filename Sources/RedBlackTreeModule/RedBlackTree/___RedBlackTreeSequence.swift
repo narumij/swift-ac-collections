@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeSequence: ___RedBlackTree, ValueComparer & CompareTrait, Sequence & Collection & BidirectionalCollection
+protocol ___RedBlackTreeSequence: ___RedBlackTree & ___RedBlackTreeIndexing & ValueComparer & CompareTrait, Sequence & Collection & BidirectionalCollection
 where
   Tree == ___Tree<Self>,
   Index == Tree.Index,
@@ -33,9 +33,6 @@ where
   associatedtype Indices
   associatedtype Element
   var __tree_: Tree { get }
-  
-  func ___index(_ rawValue: _NodePtr) -> Index
-  func ___index_or_nil(_ p: _NodePtr?) -> Index?
 }
 
 extension ___RedBlackTreeSequence {

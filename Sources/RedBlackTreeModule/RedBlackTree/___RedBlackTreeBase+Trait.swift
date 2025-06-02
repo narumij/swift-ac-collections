@@ -21,25 +21,47 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeUnique: CompareUniqueTrait {
-  associatedtype Tree: ValueProtocol & EqualProtocol
+protocol ___RedBlackTreeUnique_: ___RedBlackTreeIndexing & ValueComparer & CompareUniqueTrait
+where Tree == ___Tree<Self>,
+      Index == Tree.Index
+{
+  associatedtype Tree
+  associatedtype Index
   var __tree_: Tree { get }
 }
 
-@usableFromInline
-protocol ___RedBlackTreeMulti: CompareMultiTrait {
-  associatedtype Tree: ValueProtocol & EqualProtocol
-  var __tree_: Tree { get }
-}
-
-extension ___RedBlackTreeUnique {
-
+extension ___RedBlackTreeUnique_ {
+  
   ///（重複なし）
   @inlinable
   @inline(__always)
-  internal func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
+  public func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
     __tree_.__equal_range_unique(k)
   }
+  
+  @inlinable
+  @inline(__always)
+  func ___raw_index_equal_range(_ k: Tree._Key) -> (lower: RawIndex, upper: RawIndex) {
+    let (lo,hi) = __tree_.__equal_range_unique(k)
+    return (___raw_index(lo),___raw_index(hi))
+  }
+  
+  @inlinable
+  @inline(__always)
+  func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
+    let (lo,hi) = __tree_.__equal_range_unique(k)
+    return (___index(lo),___index(hi))
+  }
+}
+
+@usableFromInline
+protocol ___RedBlackTreeMulti: ___RedBlackTreeIndexing & ValueComparer & CompareMultiTrait
+where Tree == ___Tree<Self>,
+      Index == Tree.Index
+{
+  associatedtype Tree
+  associatedtype Index
+  var __tree_: Tree { get }
 }
 
 extension ___RedBlackTreeMulti {
@@ -47,8 +69,22 @@ extension ___RedBlackTreeMulti {
   /// （重複あり）
   @inlinable
   @inline(__always)
-  internal func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
+  public func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
     __tree_.__equal_range_multi(k)
+  }
+  
+  @inlinable
+  @inline(__always)
+  func ___raw_index_equal_range(_ k: Tree._Key) -> (lower: RawIndex, upper: RawIndex) {
+    let (lo,hi) = __tree_.__equal_range_multi(k)
+    return (___raw_index(lo),___raw_index(hi))
+  }
+
+  @inlinable
+  @inline(__always)
+  func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
+    let (lo,hi) = __tree_.__equal_range_multi(k)
+    return (___index(lo),___index(hi))
   }
 }
 

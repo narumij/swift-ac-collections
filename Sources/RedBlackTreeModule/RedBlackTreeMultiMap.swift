@@ -413,8 +413,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(log *n*)
   @inlinable
   public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
-    let (lo,hi) = ___equal_range(key)
-    return (___index(lo),___index(hi))
+    ___index_equal_range(key)
   }
 }
 

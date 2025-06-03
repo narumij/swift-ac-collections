@@ -5,8 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.18] - 2025-?-?
+## [0.1.21] - 2025-?-?
+### Added
+- forEachを追加
 ### Removed
+- RawIndexedItetator及びRawIndexedSequenceと関連プロパティの削除
+### Changed
+- 内部APIの整理改変
+
+## [0.1.20] - 2025-?-?
+- タグミス
+
+## [0.1.19] - 2025-?-?
+- タグミス
+
+## [0.1.18] - 2025-?-?
+- タグミス
+### Added
 - `Range<Index>`相当のシーケンスを追加
 ### Removed
 - Pointer(Index)のStridable対応を削除

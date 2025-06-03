@@ -103,7 +103,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S>(multiKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
@@ -128,7 +128,7 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
   // Dictionaryからぱくってきたが、割と様子見
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S: Sequence>(
     grouping values: __owned S,

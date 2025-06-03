@@ -101,7 +101,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
@@ -128,7 +128,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S>(
     _ keysAndValues: __owned S,
@@ -157,7 +157,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S: Sequence>(
     grouping values: __owned S,

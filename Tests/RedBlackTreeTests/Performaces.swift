@@ -63,7 +63,7 @@ final class Performaces: XCTestCase {
 //    throw XCTSkip()
     self.measure {
       var set = RedBlackTreeSet<Int>(0..<10_000_000)
-      set.rawIndexedElements
+      set
         .forEach { i, v in
           set.remove(at: i)
         }

@@ -18,7 +18,7 @@ final class ABC385DTests: XCTestCase {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
 
-  #if true
+  #if false
     func testABC385D(N: Int, M: Int, x: Int, y: Int, _xy: [(Int, Int)], _dc: [(String, Int)]) throws
     {
       //    var (N, M, x, y) = (Int.stdin, Int.stdin, Int.stdin, Int.stdin)
@@ -71,57 +71,57 @@ final class ABC385DTests: XCTestCase {
       print(x, y, ans)
     }
   #else
-    func testABC385D(N: Int, M: Int, x: Int, y: Int, _xy: [(Int, Int)], _dc: [(String, Int)]) throws
-    {
-      //    var (N, M, x, y) = (Int.stdin, Int.stdin, Int.stdin, Int.stdin)
-      var (x, y) = (x, y)
-      var xy: [Int: RedBlackTreeSet<Int>] = [:]
-      var yx: [Int: RedBlackTreeSet<Int>] = [:]
-      for (xx, yy) in _xy {
-        xy[xx, default: []].insert(yy)
-        yx[yy, default: []].insert(xx)
-      }
-      var ans = 0
-      for (c, d) in _dc {
-        switch c {
-        case "U":
-          let new_y = y + d
-          xy[x]?[y...new_y].___makeIterator().forEach { (i, v) in
-            ans += 1
-            yx[v]?.remove(x)
-            xy[x]?.___remove(at: i)
-          }
-          y = new_y
-        case "D":
-          let new_y = y - d
-          xy[x]?[new_y...y].___makeIterator().forEach { (i, v) in
-            ans += 1
-            yx[v]?.remove(x)
-            xy[x]?.___remove(at: i)
-          }
-          y = new_y
-        case "L":
-          let new_x = x - d
-          yx[y]?[new_x...x].___makeIterator().forEach { (i, v) in
-            ans += 1
-            xy[v]?.remove(y)
-            yx[y]?.___remove(at: i)
-          }
-          x = new_x
-        case "R":
-          let new_x = x + d
-          yx[y]?[x...new_x].___makeIterator().forEach { (i, v) in
-            ans += 1
-            xy[v]?.remove(y)
-            yx[y]?.___remove(at: i)
-          }
-          x = new_x
-        default:
-          break
-        }
-      }
-      print(x, y, ans)
+  func testABC385D(N: Int, M: Int, x: Int, y: Int, _xy: [(Int, Int)], _dc: [(String, Int)]) throws
+  {
+    //    var (N, M, x, y) = (Int.stdin, Int.stdin, Int.stdin, Int.stdin)
+    var (x, y) = (x, y)
+    var xy: [Int: RedBlackTreeSet<Int>] = [:]
+    var yx: [Int: RedBlackTreeSet<Int>] = [:]
+    for (xx, yy) in _xy {
+      xy[xx, default: []].insert(yy)
+      yx[yy, default: []].insert(xx)
     }
+    var ans = 0
+    for (c, d) in _dc {
+      switch c {
+      case "U":
+        let new_y = y + d
+        xy[x]?[y...new_y].___forEach { (i, v) in
+          ans += 1
+          yx[v]?.remove(x)
+          xy[x]?.___remove(at: i)
+        }
+        y = new_y
+      case "D":
+        let new_y = y - d
+        xy[x]?[new_y...y].___forEach { (i, v) in
+          ans += 1
+          yx[v]?.remove(x)
+          xy[x]?.___remove(at: i)
+        }
+        y = new_y
+      case "L":
+        let new_x = x - d
+        yx[y]?[new_x...x].___forEach { (i, v) in
+          ans += 1
+          xy[v]?.remove(y)
+          yx[y]?.___remove(at: i)
+        }
+        x = new_x
+      case "R":
+        let new_x = x + d
+        yx[y]?[x...new_x].___forEach { (i, v) in
+          ans += 1
+          xy[v]?.remove(y)
+          yx[y]?.___remove(at: i)
+        }
+        x = new_x
+      default:
+        break
+      }
+    }
+    print(x, y, ans)
+  }
   #endif
 
 #if false

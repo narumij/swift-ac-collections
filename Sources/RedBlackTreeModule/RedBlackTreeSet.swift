@@ -287,6 +287,41 @@ extension RedBlackTreeSet {
   }
 }
 
+// MARK: - Combining Set
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  public static func + <Other>(lhs: Other, rhs: Self) -> Self where Other : Sequence, Element == Other.Element
+  {
+    rhs.merging(lhs)
+  }
+  
+  @inlinable
+  static func + <Other>(lhs: Self, rhs: Other) -> Self where Other : Sequence, Element == Other.Element
+  {
+    lhs.merging(rhs)
+  }
+  
+  @inlinable
+  static func + (lhs: Self, rhs: Self) -> Self {
+    lhs.merging(rhs)
+  }
+
+  @inlinable
+  static func + <Other>(lhs: Self, rhs: Other) -> Self where Other : RangeReplaceableCollection, Self.Element == Other.Element {
+    lhs.merging(rhs)
+  }
+
+  static func += <Other>(lhs: inout Self, rhs: Other) where Other : Sequence, Element == Other.Element {
+    lhs = lhs.merging(rhs)
+  }
+
+  static func += (lhs: inout Self, rhs: Self) {
+    lhs = lhs.merging(rhs)
+  }
+}
+
 // MARK: - Removal
 
 extension RedBlackTreeSet {
@@ -769,37 +804,3 @@ extension RedBlackTreeSet {
   }
 }
 
-// MARK: - Combining Set
-
-extension RedBlackTreeSet {
-
-  @inlinable
-  public static func + <Other>(lhs: Other, rhs: Self) -> Self where Other : Sequence, Element == Other.Element
-  {
-    rhs.merging(lhs)
-  }
-  
-  @inlinable
-  static func + <Other>(lhs: Self, rhs: Other) -> Self where Other : Sequence, Element == Other.Element
-  {
-    lhs.merging(rhs)
-  }
-  
-  @inlinable
-  static func + (lhs: Self, rhs: Self) -> Self {
-    lhs.merging(rhs)
-  }
-
-  @inlinable
-  static func + <Other>(lhs: Self, rhs: Other) -> Self where Other : RangeReplaceableCollection, Self.Element == Other.Element {
-    lhs.merging(rhs)
-  }
-
-  static func += <Other>(lhs: inout Self, rhs: Other) where Other : Sequence, Element == Other.Element {
-    lhs = lhs.merging(rhs)
-  }
-
-  static func += (lhs: inout Self, rhs: Self) {
-    lhs = lhs.merging(rhs)
-  }
-}

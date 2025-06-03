@@ -837,17 +837,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-// MARK: - Enumerated Sequence
-
-extension RedBlackTreeDictionary {
-
-  @available(*, deprecated, renamed: "forEach")
-  @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(tree: __tree_)
-  }
-}
-
 // MARK: - ExpressibleByDictionaryLiteral
 
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {

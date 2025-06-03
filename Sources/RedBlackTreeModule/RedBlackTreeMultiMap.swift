@@ -757,17 +757,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: - Enumerated Sequence
-
-extension RedBlackTreeMultiMap {
-
-  @available(*, deprecated, renamed: "forEach")
-  @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(tree: __tree_)
-  }
-}
-
 // MARK: - ExpressibleByDictionaryLiteral
 
 extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {

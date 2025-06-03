@@ -261,26 +261,6 @@ extension ___SubSequenceBase {
   }
 }
 
-// MARK: - Raw Indexed Sequence
-
-extension ___SubSequenceBase {
-
-  @available(*, deprecated, renamed: "forEach")
-  @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(
-      tree: __tree_,
-      start: _start,
-      end: _end)
-  }
-
-  @available(*, deprecated, renamed: "forEach")
-  @inlinable @inline(__always)
-  public func enumerated() -> RawIndexedSequence<Tree> {
-    rawIndexedElements
-  }
-}
-
 // MARK: - Utility
 
 extension ___SubSequenceBase {

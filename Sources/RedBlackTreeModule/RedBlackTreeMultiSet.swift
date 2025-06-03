@@ -601,27 +601,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-// MARK: - Raw Indexed Sequence
-
-extension RedBlackTreeMultiSet {
-
-  @available(*, deprecated, renamed: "forEach")
-  @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(tree: __tree_)
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
-  @available(*, deprecated, renamed: "forEach")
-  @inlinable
-  @inline(__always)
-  public func enumerated() -> RawIndexedSequence<Tree> {
-    rawIndexedElements
-  }
-}
-
 // MARK: - Protocol Conformance
 
 // MARK: - ExpressibleByArrayLiteral

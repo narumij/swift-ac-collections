@@ -636,30 +636,6 @@ extension RedBlackTreeSet {
   }
 }
 
-// MARK: - Raw Indexed Sequence
-
-// 元々、ポインタと値同時に列挙できたら実行時間短くなるんじゃね？
-// ぐらいのノリでつくったものを、雰囲気でenumerated()として本流っぽくしていたけれども
-// やはりおまけポジでした
-
-extension RedBlackTreeSet {
-
-  @available(*, deprecated, renamed: "forEach")
-  @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(tree: __tree_)
-  }
-}
-
-extension RedBlackTreeSet {
-
-  @available(*, deprecated, renamed: "forEach")
-  @inlinable @inline(__always)
-  public func enumerated() -> RawIndexedSequence<Tree> {
-    rawIndexedElements
-  }
-}
-
 // MARK: - Utility
 
 extension RedBlackTreeSet {

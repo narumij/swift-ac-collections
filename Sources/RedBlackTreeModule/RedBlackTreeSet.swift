@@ -292,13 +292,15 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   @inlinable
-  public static func + <Other>(lhs: Other, rhs: Self) -> Self where Other : Sequence, Element == Other.Element
+  public static func + <Other>(lhs: Other, rhs: Self) -> Self
+  where Other : Sequence, Element == Other.Element
   {
     rhs.merging(lhs)
   }
   
   @inlinable
-  static func + <Other>(lhs: Self, rhs: Other) -> Self where Other : Sequence, Element == Other.Element
+  static func + <Other>(lhs: Self, rhs: Other) -> Self
+  where Other : Sequence, Element == Other.Element
   {
     lhs.merging(rhs)
   }
@@ -309,11 +311,13 @@ extension RedBlackTreeSet {
   }
 
   @inlinable
-  static func + <Other>(lhs: Self, rhs: Other) -> Self where Other : RangeReplaceableCollection, Self.Element == Other.Element {
+  static func + <Other>(lhs: Self, rhs: Other) -> Self
+  where Other : RangeReplaceableCollection, Self.Element == Other.Element {
     lhs.merging(rhs)
   }
 
-  static func += <Other>(lhs: inout Self, rhs: Other) where Other : Sequence, Element == Other.Element {
+  static func += <Other>(lhs: inout Self, rhs: Other)
+  where Other : Sequence, Element == Other.Element {
     lhs = lhs.merging(rhs)
   }
 

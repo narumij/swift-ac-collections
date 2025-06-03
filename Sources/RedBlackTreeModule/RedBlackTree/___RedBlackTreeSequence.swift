@@ -56,13 +56,14 @@ extension ___RedBlackTreeSequence {
 }
 
 extension ___RedBlackTreeSequence {
+  
 
   /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+  public func forEach(_ body: (RawIndex, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
-      try body(___index($0),__tree_[$0])
+      try body(___raw_index($0),__tree_[$0])
     }
   }
 }

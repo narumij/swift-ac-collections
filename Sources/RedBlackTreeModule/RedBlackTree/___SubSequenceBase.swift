@@ -45,6 +45,11 @@ extension ___SubSequenceBase {
   func ___index(_ rawValue: _NodePtr) -> Index {
     .init(tree: __tree_, rawValue: rawValue)
   }
+  
+  @inlinable @inline(__always)
+  func ___raw_index(_ p: _NodePtr) -> RawIndex {
+    __tree_.makeRawIndex(rawValue: p)
+  }
 }
 
 extension ___SubSequenceBase {
@@ -71,9 +76,9 @@ extension ___SubSequenceBase {
   /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+  public func forEach(_ body: (RawIndex, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0),__tree_[$0])
+      try body(___raw_index($0),__tree_[$0])
     }
   }
 }

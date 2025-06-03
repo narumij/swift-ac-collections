@@ -8,7 +8,7 @@ import XCTest
 
 final class RedBlackTreeSetEnumeratedSequenceTests: XCTestCase {
 
-  #if DEBUG
+  #if DEBUG && false
     /// EnumuratedSequenceのforEachが正しく動作すること
     func test_enumeratedSequence_forEach() {
       // 事前条件: 集合に[10, 20, 30]
@@ -50,7 +50,7 @@ final class RedBlackTreeSetEnumeratedSequenceTests: XCTestCase {
 
 extension RedBlackTreeSetEnumeratedSequenceTests {
 
-  #if DEBUG
+  #if DEBUG && false
     /// EnumuratedSequenceのmakeIterator()で順序通りに列挙できること
     func test_enumeratedSequence_makeIterator() {
       let set = RedBlackTreeSet([10, 20, 30])

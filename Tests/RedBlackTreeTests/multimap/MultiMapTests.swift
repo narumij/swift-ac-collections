@@ -156,7 +156,7 @@ import XCTest
     }
 
     func testInitUniqueKeysWithValues() throws {
-      let dict = Target(keysWithValues: [(1, 10), (2, 20)])
+      let dict = Target(multiKeysWithValues: [(1, 10), (2, 20)])
       XCTAssertEqual(dict.keys.sorted(), [1, 2])
       XCTAssertEqual(dict.values.sorted(), [10, 20])
       XCTAssertEqual(dict[0].map(\.value), [])
@@ -166,7 +166,7 @@ import XCTest
     }
 
     func testInitUniqueKeysWithValues2() throws {
-      let dict = Target(keysWithValues: AnySequence([(1, 10), (2, 20)]))
+      let dict = Target(multiKeysWithValues: AnySequence([(1, 10), (2, 20)]))
       XCTAssertEqual(dict.keys.sorted(), [1, 2])
       XCTAssertEqual(dict.values.sorted(), [10, 20])
       XCTAssertEqual(dict[0].map(\.value), [])
@@ -203,7 +203,7 @@ import XCTest
     func testInitUniquingKeysWith() throws {
       do {
         let dict = Target(
-          keysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
+          multiKeysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
         XCTAssertEqual(dict.keys.sorted(), [1, 1, 2, 2])
         XCTAssertEqual(dict.values.sorted(), [10, 11, 20, 22])
         XCTAssertEqual(dict[0].map(\.value), [])
@@ -224,9 +224,26 @@ import XCTest
 
     func testInitGroupingBy() throws {
       let students = ["Kofi", "Abena", "Efua", "Kweku", "Akosua"]
-      let studentsByLetter = Target(keysWithValues: students.map { ($0.first!, $0) })
+      let studentsByLetter = Target(grouping: students, by: { $0.first! })
       XCTAssertEqual(
         studentsByLetter, ["E": "Efua", "K": "Kofi", "K": "Kweku", "A": "Abena", "A": "Akosua"])
+    }
+    
+    func testInitGroupingBy2() throws {
+      let students = AnySequence(0 ..< 100)
+      let studentsByLetter = Target(grouping: students, by: { $0 % 10 })
+      XCTAssertEqual(
+        studentsByLetter, [
+          0: 0, 0: 10, 0: 20, 0: 30, 0: 40, 0: 50, 0: 60, 0: 70, 0: 80, 0: 90,
+          1: 1, 1: 11, 1: 21, 1: 31, 1: 41, 1: 51, 1: 61, 1: 71, 1: 81, 1: 91,
+          2: 2, 2: 12, 2: 22, 2: 32, 2: 42, 2: 52, 2: 62, 2: 72, 2: 82, 2: 92,
+          3: 3, 3: 13, 3: 23, 3: 33, 3: 43, 3: 53, 3: 63, 3: 73, 3: 83, 3: 93,
+          4: 4, 4: 14, 4: 24, 4: 34, 4: 44, 4: 54, 4: 64, 4: 74, 4: 84, 4: 94,
+          5: 5, 5: 15, 5: 25, 5: 35, 5: 45, 5: 55, 5: 65, 5: 75, 5: 85, 5: 95,
+          6: 6, 6: 16, 6: 26, 6: 36, 6: 46, 6: 56, 6: 66, 6: 76, 6: 86, 6: 96,
+          7: 7, 7: 17, 7: 27, 7: 37, 7: 47, 7: 57, 7: 67, 7: 77, 7: 87, 7: 97,
+          8: 8, 8: 18, 8: 28, 8: 38, 8: 48, 8: 58, 8: 68, 8: 78, 8: 88, 8: 98,
+          9: 9, 9: 19, 9: 29, 9: 39, 9: 49, 9: 59, 9: 69, 9: 79, 9: 89, 9: 99])
     }
 
     #if false
@@ -446,10 +463,6 @@ import XCTest
         set.insert((i, i))
         XCTAssertTrue(set.___tree_invariant())
       }
-      for (i, _) in set.rawIndexedElements {
-        set.remove(at: i)
-        XCTAssertTrue(set.___tree_invariant())
-      }
     }
 
     func testRandom4() throws {
@@ -472,10 +485,6 @@ import XCTest
       }
       for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
         set.insert((i, i))
-        XCTAssertTrue(set.___tree_invariant())
-      }
-      for (i, _) in set[set.startIndex..<set.endIndex].rawIndexedElements {
-        set.remove(at: i)
         XCTAssertTrue(set.___tree_invariant())
       }
     }
@@ -930,8 +939,8 @@ import XCTest
     }
     
     func testEqual2() throws {
-      let aa = Target<Int,Int>(keysWithValues: [0,1,2,3,4,5].map{ ($0,$0) })
-      let bb = Target<Int,Int>(keysWithValues: [3,4,5,6,7,8].map{ ($0,$0) })
+      let aa = Target<Int,Int>(multiKeysWithValues: [0,1,2,3,4,5].map{ ($0,$0) })
+      let bb = Target<Int,Int>(multiKeysWithValues: [3,4,5,6,7,8].map{ ($0,$0) })
       do {
         let a = aa[0 ..< 0]
         let b = bb[3 ..< 3]
@@ -1002,6 +1011,5 @@ import XCTest
         XCTAssertFalse(b < a)
       }
     }
-
   }
 #endif

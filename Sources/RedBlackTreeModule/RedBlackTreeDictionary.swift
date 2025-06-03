@@ -76,12 +76,13 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
-extension RedBlackTreeDictionary: ___RedBlackTreeUnique_ {}
+extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
+extension RedBlackTreeDictionary: ___RedBlackTreeMerge {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSequence {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 
-// MARK: - Initialization（初期化）
+// MARK: - Initialization
 
 extension RedBlackTreeDictionary {
 
@@ -100,7 +101,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
@@ -127,7 +128,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S>(
     _ keysAndValues: __owned S,
@@ -156,7 +157,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S: Sequence>(
     grouping values: __owned S,
@@ -167,11 +168,12 @@ extension RedBlackTreeDictionary {
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
-    for (__k, __v) in try values.map({ (try keyForValue($0), $0) }).sorted(by: { $0.0 < $1.0 }) {
+    for __v in try values.sorted(by: { try keyForValue($0) < keyForValue($1) }) {
+      let __k = try keyForValue(__v)
       if count == nil {
         Tree.ensureCapacity(tree: &tree)
       }
-      if __parent == .end || tree[__parent].0 != __k {
+      if __parent == .end || tree[__parent].key != __k {
         // バランシングの計算量がO(log *n*)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k, [__v]))
         assert(tree.__tree_invariant(tree.__root()))
@@ -237,43 +239,77 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(*n* log *n*)
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    __tree_.__node_handle_merge_unique(other.__tree_)
+  public mutating func merge(
+    _ other: RedBlackTreeDictionary<Key, Value>,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows {
+    _ensureUnique()
+    try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
   }
-}
-
-extension RedBlackTreeDictionary {
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public mutating func merge(
+    _ other: RedBlackTreeMultiMap<Key, Value>,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows {
+    _ensureUnique()
+    try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
+  }
 
   /// 辞書に `other` の要素をマージします。
   /// キーが重複したときは `combine` の戻り値を採用します。
-  /// - Complexity: O(*n* log *n*)
+  ///
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge<S>(
     _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows where S: Sequence, S.Element == KeyValue {
+  ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    for (k, v) in other {
-      if let old = self[k] {
-        self[k] = try combine(old, v)
-      } else {
-        self[k] = v
-      }
-    }
+    _ensureUnique()
+    try ___merge_unique(other, uniquingKeysWith: combine)
   }
-
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func merging(
+    _ other: RedBlackTreeDictionary<Key, Value>,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows -> Self {
+    var result = self
+    try result.merge(other, uniquingKeysWith: combine)
+    return result
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func merging(
+    _ other: RedBlackTreeMultiMap<Key, Value>,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows -> Self {
+    var result = self
+    try result.merge(other, uniquingKeysWith: combine)
+    return result
+  }
+  
   /// `self` と `other` をマージした新しい辞書を返します。
-  /// - Complexity: O(*n* log *n*)
+  ///
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   public func merging<S>(
     _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows -> Self where S: Sequence, S.Element == KeyValue {
+  ) rethrows -> Self where S: Sequence, S.Element == (Key, Value) {
     var result = self
     try result.merge(other, uniquingKeysWith: combine)
     return result
@@ -285,6 +321,7 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   /// 最小キーのペアを取り出して削除
+  ///
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -393,6 +430,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+  /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     _ensureUnique()
@@ -799,17 +837,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-// MARK: - Enumerated Sequence
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(1)
-  @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(tree: __tree_)
-  }
-}
-
 // MARK: - ExpressibleByDictionaryLiteral
 
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
@@ -848,8 +875,19 @@ extension RedBlackTreeDictionary: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    let pairs = map { "\($0.key): \($0.value)" }
-    return "[\(pairs.joined(separator: ", "))]"
+    if isEmpty { return "[:]" }
+    var result = "["
+    var first = true
+    for (key, value) in self {
+      if first {
+        first = false
+      } else {
+        result += ", "
+      }
+      result += "\(key): \(value)"
+    }
+    result += "]"
+    return result
   }
 }
 
@@ -859,7 +897,34 @@ extension RedBlackTreeDictionary: CustomDebugStringConvertible {
 
   @inlinable
   public var debugDescription: String {
-    return "RedBlackTreeDictionary(\(description))"
+    var result = "RedBlackTreeDictionary<\(Key.self), \(Value.self)>("
+    if isEmpty {
+      result += "[:]"
+    } else {
+      result += "["
+      var first = true
+      for (key, value) in self {
+        if first {
+          first = false
+        } else {
+          result += ", "
+        }
+        
+        debugPrint(key, value, separator: ": ", terminator: "", to: &result)
+      }
+      result += "]"
+    }
+    result += ")"
+    return result
+  }
+}
+
+// MARK: - CustomReflectable
+
+extension RedBlackTreeDictionary: CustomReflectable {
+  /// The custom mirror for this instance.
+  public var customMirror: Mirror {
+    Mirror(self, unlabeledChildren: self, displayStyle: .dictionary)
   }
 }
 

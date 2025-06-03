@@ -79,11 +79,12 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 extension RedBlackTreeMultiMap: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
+extension RedBlackTreeMultiMap: ___RedBlackTreeMerge {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSequence {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 
-// MARK: - Initialization（初期化）
+// MARK: - Initialization
 
 extension RedBlackTreeMultiMap {
 
@@ -102,9 +103,9 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
-  public init<S>(keysWithValues keysAndValues: __owned S)
+  public init<S>(multiKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
     let count = (keysAndValues as? (any Collection))?.count
     var tree: Tree = .create(minimumCapacity: count ?? 0)
@@ -117,6 +118,34 @@ extension RedBlackTreeMultiMap {
       }
       // バランシングの計算量がO(log *n*)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
+      assert(tree.__tree_invariant(tree.__root()))
+    }
+    self._storage = .init(tree: tree)
+  }
+}
+
+
+extension RedBlackTreeMultiMap {
+  // Dictionaryからぱくってきたが、割と様子見
+
+  /// - Complexity: O(*n* log *n* + *n*)
+  @inlinable
+  public init<S: Sequence>(
+    grouping values: __owned S,
+    by keyForValue: (S.Element) throws -> Key
+  ) rethrows where Value == S.Element {
+    let count = (values as? (any Collection))?.count
+    var tree: Tree = .create(minimumCapacity: count ?? 0)
+    // 初期化直後はO(1)
+    var (__parent, __child) = tree.___max_ref()
+    // ソートの計算量がO(*n* log *n*)
+    for __v in try values.sorted(by: { try keyForValue($0) < keyForValue($1) }) {
+      let __k = try keyForValue(__v)
+      if count == nil {
+        Tree.ensureCapacity(tree: &tree)
+      }
+      // バランシングの計算量がO(log *n*)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k,__v))
       assert(tree.__tree_invariant(tree.__root()))
     }
     self._storage = .init(tree: tree)
@@ -194,15 +223,35 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    __tree_.__node_handle_merge_multi(other.__tree_)
+    ___tree_merge_multi(other.__tree_)
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
+    _ensureUniqueAndCapacity(to: count + other.count)
+    ___tree_merge_multi(other.__tree_)
   }
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
+    _ensureUnique()
+    ___merge_multi(other)
+  }
+
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
@@ -210,19 +259,23 @@ extension RedBlackTreeMultiMap {
     result.insert(contentsOf: other)
     return result
   }
-
-  /// - Complexity: O(*n* log *n*)
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func insert<S>(_ other: S) where S: Sequence, S.Element == Element {
-    other.forEach { insert($0) }
+  public mutating func inserting(contentsOf other: RedBlackTreeDictionary<Key, Value>) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
   }
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
-  public func inserting<S>(_ other: __owned S) -> Self where S: Sequence, S.Element == Element {
+  public func inserting<S>(contentsOf other: __owned S) -> Self where S: Sequence, S.Element == Element {
     var result = self
-    result.insert(other)
+    result.insert(contentsOf: other)
     return result
   }
 }
@@ -231,6 +284,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
   /// 最小キーのペアを取り出して削除
+  ///
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -361,6 +415,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     _ensureUnique()
@@ -702,17 +757,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: - Enumerated Sequence
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(1)
-  @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(tree: __tree_)
-  }
-}
-
 // MARK: - ExpressibleByDictionaryLiteral
 
 extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
@@ -720,7 +764,7 @@ extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
   /// - Complexity: O(*n* log *n*)
   @inlinable
   public init(dictionaryLiteral elements: (Key, Value)...) {
-    self.init(keysWithValues: elements)
+    self.init(multiKeysWithValues: elements)
   }
 }
 
@@ -731,7 +775,7 @@ extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
   /// - Complexity: O(*n* log *n*)
   @inlinable
   public init(arrayLiteral elements: (Key, Value)...) {
-    self.init(keysWithValues: elements)
+    self.init(multiKeysWithValues: elements)
   }
 }
 
@@ -741,10 +785,20 @@ extension RedBlackTreeMultiMap: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    let pairs = map { "\($0.key): \($0.value)" }
-    return "[\(pairs.joined(separator: ", "))]"
+    if isEmpty { return "[:]" }
+    var result = "["
+    var first = true
+    for (key, value) in self {
+      if first {
+        first = false
+      } else {
+        result += ", "
+      }
+      result += "\(key): \(value)"
+    }
+    result += "]"
+    return result
   }
-
 }
 
 // MARK: - CustomDebugStringConvertible
@@ -753,7 +807,34 @@ extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
 
   @inlinable
   public var debugDescription: String {
-    return "RedBlackTreeDictionary(\(description))"
+    var result = "RedBlackTreeMultiMap<\(Key.self), \(Value.self)>("
+    if isEmpty {
+      result += "[:]"
+    } else {
+      result += "["
+      var first = true
+      for (key, value) in self {
+        if first {
+          first = false
+        } else {
+          result += ", "
+        }
+        
+        debugPrint(key, value, separator: ": ", terminator: "", to: &result)
+      }
+      result += "]"
+    }
+    result += ")"
+    return result
+  }
+}
+
+// MARK: - CustomReflectable
+
+extension RedBlackTreeMultiMap: CustomReflectable {
+  /// The custom mirror for this instance.
+  public var customMirror: Mirror {
+    Mirror(self, unlabeledChildren: self, displayStyle: .dictionary)
   }
 }
 

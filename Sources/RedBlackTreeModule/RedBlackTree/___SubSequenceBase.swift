@@ -45,6 +45,11 @@ extension ___SubSequenceBase {
   func ___index(_ rawValue: _NodePtr) -> Index {
     .init(tree: __tree_, rawValue: rawValue)
   }
+  
+  @inlinable @inline(__always)
+  func ___raw_index(_ p: _NodePtr) -> RawIndex {
+    __tree_.makeRawIndex(rawValue: p)
+  }
 }
 
 extension ___SubSequenceBase {
@@ -58,7 +63,6 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
-  /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
@@ -67,14 +71,20 @@ extension ___SubSequenceBase {
 }
 
 extension ___SubSequenceBase {
-  // 型推論が絡まりそうなので一旦非公開扱いだが、公開扱いにしたい
 
-  /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
-  public func ___forEach(_ body: (Index, Element) throws -> Void) rethrows {
+  public func forEach(_ body: (RawIndex, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0),__tree_[$0])
+      try body(___raw_index($0),__tree_[$0])
+    }
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
+    try __tree_.___for_each_(__p: _start, __l: _end) {
+      try body($0,__tree_[$0])
     }
   }
 }
@@ -259,26 +269,6 @@ extension ___SubSequenceBase {
       tree: __tree_,
       start: _start,
       end: _end)
-  }
-}
-
-// MARK: - Raw Indexed Sequence
-
-extension ___SubSequenceBase {
-
-  /// - Complexity: O(1)
-  @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(
-      tree: __tree_,
-      start: _start,
-      end: _end)
-  }
-
-  @available(*, deprecated, renamed: "rawIndexedElements")
-  @inlinable @inline(__always)
-  public func enumerated() -> RawIndexedSequence<Tree> {
-    rawIndexedElements
   }
 }
 

@@ -402,7 +402,6 @@ final class ConvenienceTests: XCTestCase {
   func testEnumerate() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
     set
-      .rawIndexedElements
       .forEach { i, v in
       set.remove(at: i)
     }

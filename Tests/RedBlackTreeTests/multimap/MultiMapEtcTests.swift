@@ -83,14 +83,14 @@ final class MultiMapEtcTests: XCTestCase {
 
   func testMultiMapAndMultiMap3() throws {
     var lhs: RedBlackTreeMultiMap<String, String> = ["イートハーブの香る": "なんとか"]
-    lhs.insert([("foo", "bar")])
+    lhs.insert(contentsOf: [("foo", "bar")])
     XCTAssertEqual(lhs, ["イートハーブの香る": "なんとか", "foo": "bar"])
   }
 
   func testMultiMapAndMultiMap4() throws {
     let lhs: RedBlackTreeMultiMap<String, String> = ["イートハーブの香る": "なんとか"]
     XCTAssertEqual(
-      lhs.inserting([("foo", "bar")]), ["イートハーブの香る": "なんとか", "foo": "bar"])
+      lhs.inserting(contentsOf: AnySequence([("foo", "bar")])), ["イートハーブの香る": "なんとか", "foo": "bar"])
     XCTAssertEqual(lhs, ["イートハーブの香る": "なんとか"])
   }
 

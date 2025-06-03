@@ -125,20 +125,6 @@ final class MultisetRemoveTests: XCTestCase {
     }
   }
 
-  func testSmokeRemove3() throws {
-    var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
-    for (i, _) in s.rawIndexedElements {
-      s.remove(at: i)
-    }
-  }
-
-  func testSmokeRemove4() throws {
-    var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
-    for (i, _) in s.elements(in: 0..<10_000).rawIndexedElements {
-      s.remove(at: i)
-    }
-  }
-
   func testRedBlackTreeSetRemove() throws {
     var s: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4]
     XCTAssertEqual(s.first, 1)

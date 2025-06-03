@@ -55,11 +55,12 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
+extension RedBlackTreeMultiSet: ___RedBlackTreeMerge {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeSequence { }
 extension RedBlackTreeMultiSet: ___RedBlackTreeSubSequence { }
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 
-// MARK: - Initialization（初期化）
+// MARK: - Initialization
 
 extension RedBlackTreeMultiSet {
 
@@ -78,7 +79,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
@@ -101,7 +102,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {
@@ -144,27 +145,60 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(*k* log *k*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    __tree_.__node_handle_merge_multi(other.__tree_)
+    ___tree_merge_multi(other.__tree_)
   }
 
-  /// - Complexity: O(*k* log *k*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    __tree_.__node_handle_merge_multi(other.__tree_)
+    ___tree_merge_multi(other.__tree_)
   }
-
-  /// - Complexity: O(*k* log *k*)
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
-    other.forEach { insert($0) }
+    _ensureUnique()
+    ___merge_multi(other)
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func inserting(contentsOf other: RedBlackTreeSet<Element>) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func inserting(contentsOf other: RedBlackTreeMultiSet<Element>) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func inserting<S>(contentsOf other: __owned S) -> Self where S: Sequence, S.Element == Element {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
   }
 }
 
@@ -567,27 +601,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-// MARK: - Raw Indexed Sequence
-
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(1)
-  @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(tree: __tree_)
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
-  @available(*, deprecated, renamed: "rawIndexedElements")
-  @inlinable
-  @inline(__always)
-  public func enumerated() -> RawIndexedSequence<Tree> {
-    rawIndexedElements
-  }
-}
-
 // MARK: - Protocol Conformance
 
 // MARK: - ExpressibleByArrayLiteral
@@ -607,7 +620,27 @@ extension RedBlackTreeMultiSet: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
+    var result = "["
+    var first = true
+    for element in self {
+      if first {
+        first = false
+      } else {
+        result += ", "
+      }
+      print(element, terminator: "", to: &result)
+    }
+    result += "]"
+    return result
+  }
+}
+
+// MARK: - CustomReflectable
+
+extension RedBlackTreeMultiSet: CustomReflectable {
+  /// The custom mirror for this instance.
+  public var customMirror: Mirror {
+    Mirror(self, unlabeledChildren: self, displayStyle: .set)
   }
 }
 
@@ -617,7 +650,19 @@ extension RedBlackTreeMultiSet: CustomDebugStringConvertible {
 
   @inlinable
   public var debugDescription: String {
-    "RedBlackTreeMultiSet(\(description))"
+    var result = "RedBlackTreeMultiSet<\(Element.self)>(["
+    var first = true
+    for element in self {
+      if first {
+        first = false
+      } else {
+        result += ", "
+      }
+      
+      debugPrint(element, terminator: "", to: &result)
+    }
+    result += "])"
+    return result
   }
 }
 

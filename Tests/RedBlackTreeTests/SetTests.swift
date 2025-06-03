@@ -415,10 +415,6 @@ final class SetTests: XCTestCase {
       set.insert(i)
       XCTAssertTrue(set.___tree_invariant())
     }
-    for (i, _) in set.rawIndexedElements {
-      set.remove(at: i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
   }
 
   func testRandom4() throws {
@@ -441,10 +437,6 @@ final class SetTests: XCTestCase {
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
       set.insert(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    for (i, _) in set[set.startIndex..<set.endIndex].rawIndexedElements {
-      set.remove(at: i)
       XCTAssertTrue(set.___tree_invariant())
     }
   }

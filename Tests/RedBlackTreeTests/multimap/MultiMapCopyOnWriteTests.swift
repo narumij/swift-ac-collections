@@ -10,7 +10,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   var tree: Target = .init()
 
   override func setUpWithError() throws {
-    tree = .init(keysWithValues: (0 ..< 20).map{ ($0,$0) })
+    tree = .init(multiKeysWithValues: (0 ..< 20).map{ ($0,$0) })
   }
 
   override func tearDownWithError() throws {
@@ -169,7 +169,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   func testSet3000() throws {
     let count = 1500
     var loopCount = 0
-    var xy: [Int: RedBlackTreeMultiMap<Int,Int>] = [1: .init(keysWithValues: (0 ..< count).map{ ($0,$0) })]
+    var xy: [Int: RedBlackTreeMultiMap<Int,Int>] = [1: .init(multiKeysWithValues: (0 ..< count).map{ ($0,$0) })]
     xy[1]?._copyCount = 0
     let N = 100
     for i in 0 ..< count / N {
@@ -187,13 +187,13 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
 
   func testSet4000() throws {
     let count = 1500
-    var xy: [Int: RedBlackTreeMultiMap<Int,Int>] = [1: .init(keysWithValues: (0 ..< count).map{ ($0,$0) })]
+    var xy: [Int: RedBlackTreeMultiMap<Int,Int>] = [1: .init(multiKeysWithValues: (0 ..< count).map{ ($0,$0) })]
     xy[1]?._copyCount = 0
     let N = 100
     var loopCount = 0
     for i in 0 ..< count / N {
       loopCount += 1
-      xy[1]?[(i * N) ..< (i * N + N)].rawIndexedElements.forEach { i, v in
+      xy[1]?[(i * N) ..< (i * N + N)].forEach { i, v in
         xy[1]?.remove(at: i)
       }
     }

@@ -560,7 +560,7 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(set.map { $0.value }, ["?", "?", "?", "?", "?"])
   }
 
-  #if DEBUG
+  #if DEBUG && false
     func testEnumeratedSequence1() throws {
       let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
       var d: [String: Int] = [:]

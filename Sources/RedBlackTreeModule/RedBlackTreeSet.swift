@@ -73,12 +73,11 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
 extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
-//extension RedBlackTreeSet: ___RedBlackTreeUnique {}
+extension RedBlackTreeSet: ___RedBlackTreeUnique {}
+extension RedBlackTreeSet: ___RedBlackTreeMerge {}
 extension RedBlackTreeSet: ___RedBlackTreeSequence {}
 extension RedBlackTreeSet: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeSet: ScalarValueComparer {}
-
-extension RedBlackTreeSet: ___RedBlackTreeUnique_ {}
 
 // MARK: - Initialization
 
@@ -99,7 +98,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
@@ -124,7 +123,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {
@@ -153,7 +152,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @discardableResult
   @inlinable
   public mutating func insert(_ newMember: Element) -> (
@@ -164,7 +163,7 @@ extension RedBlackTreeSet {
     return (__inserted, __inserted ? newMember : __tree_[__r])
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @discardableResult
   @inlinable
   public mutating func update(with newMember: Element) -> Element? {
@@ -179,27 +178,60 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(*k* log *k*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    __tree_.__node_handle_merge_unique(other.__tree_)
+  public mutating func merge(_ other: RedBlackTreeSet<Element>) {
+    _ensureUnique()
+    ___tree_merge_unique(other.__tree_)
   }
 
-  /// - Complexity: O(*k* log *k*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    __tree_.__node_handle_merge_unique(other.__tree_)
+  public mutating func merge(_ other: RedBlackTreeMultiSet<Element>) {
+    _ensureUnique()
+    ___tree_merge_unique(other.__tree_)
   }
-
-  /// - Complexity: O(*k* log *k*)
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
-    other.forEach { insert($0) }
+  public mutating func merge<S>(_ other: S) where S: Sequence, S.Element == Element {
+    _ensureUnique()
+    ___merge_unique(other)
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func merging(_ other: RedBlackTreeMultiSet<Element>) -> Self {
+    var result = self
+    result.merge(other)
+    return result
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func merging(_ other: RedBlackTreeSet<Element>) -> Self {
+    var result = self
+    result.merge(other)
+    return result
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func merging<S>(_ other: __owned S) -> Self where S: Sequence, S.Element == Element {
+    var result = self
+    result.merge(other)
+    return result
   }
 }
 
@@ -219,7 +251,7 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @discardableResult
   @inlinable
   public mutating func remove(_ member: Element) -> Element? {
@@ -263,7 +295,7 @@ extension RedBlackTreeSet {
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
@@ -340,13 +372,13 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func contains(_ member: Element) -> Bool {
     ___contains(member)
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   ///
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
@@ -354,7 +386,7 @@ extension RedBlackTreeSet {
     ___min()
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func max() -> Element? {
     ___max()
@@ -374,7 +406,7 @@ extension RedBlackTreeSet {
   ///
   /// - Parameter member: 二分探索で検索したい要素
   /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func lowerBound(_ member: Element) -> Index {
     ___index_lower_bound(member)
@@ -392,7 +424,7 @@ extension RedBlackTreeSet {
   ///
   /// - Parameter member: 二分探索で検索したい要素
   /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func upperBound(_ member: Element) -> Index {
     ___index_upper_bound(member)
@@ -401,7 +433,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
     ___index_equal_range(element)
@@ -416,25 +448,25 @@ extension RedBlackTreeSet {
     isEmpty ? nil : self[startIndex]
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public var last: Element? {
     isEmpty ? nil : self[index(before: endIndex)]
   }
 
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first(where: predicate)
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func firstIndex(of member: Element) -> Index? {
     ___first_index(of: member)
   }
 
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     try ___first_index(where: predicate)
@@ -604,30 +636,6 @@ extension RedBlackTreeSet {
   }
 }
 
-// MARK: - Raw Indexed Sequence
-
-// 元々、ポインタと値同時に列挙できたら実行時間短くなるんじゃね？
-// ぐらいのノリでつくったものを、雰囲気でenumerated()として本流っぽくしていたけれども
-// やはりおまけポジでした
-
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(1)
-  @inlinable @inline(__always)
-  public var rawIndexedElements: RawIndexedSequence<Tree> {
-    RawIndexedSequence(tree: __tree_)
-  }
-}
-
-extension RedBlackTreeSet {
-
-  @available(*, deprecated, renamed: "rawIndexedElements")
-  @inlinable @inline(__always)
-  public func enumerated() -> RawIndexedSequence<Tree> {
-    rawIndexedElements
-  }
-}
-
 // MARK: - Utility
 
 extension RedBlackTreeSet {
@@ -658,7 +666,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init(arrayLiteral elements: Element...) {
     self.init(elements)
@@ -671,7 +679,18 @@ extension RedBlackTreeSet: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    "[\((map {"\($0)"} as [String]).joined(separator: ", "))]"
+    var result = "["
+    var first = true
+    for element in self {
+      if first {
+        first = false
+      } else {
+        result += ", "
+      }
+      print(element, terminator: "", to: &result)
+    }
+    result += "]"
+    return result
   }
 }
 
@@ -681,7 +700,28 @@ extension RedBlackTreeSet: CustomDebugStringConvertible {
 
   @inlinable
   public var debugDescription: String {
-    "RedBlackTreeSet(\(description))"
+    var result = "RedBlackTreeSet<\(Element.self)>(["
+    var first = true
+    for element in self {
+      if first {
+        first = false
+      } else {
+        result += ", "
+      }
+      
+      debugPrint(element, terminator: "", to: &result)
+    }
+    result += "])"
+    return result
+  }
+}
+
+// MARK: - CustomReflectable
+
+extension RedBlackTreeSet: CustomReflectable {
+  /// The custom mirror for this instance.
+  public var customMirror: Mirror {
+    Mirror(self, unlabeledChildren: self, displayStyle: .set)
   }
 }
 
@@ -753,7 +793,7 @@ extension RedBlackTreeSet {
           tree.__insert_node_at(__parent, __child, __h)
         }
       }
-      self._storage = .init(__tree: tree)
+      self._storage = .init(tree: tree)
     }
   }
 #endif

@@ -152,7 +152,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @discardableResult
   @inlinable
   public mutating func insert(_ newMember: Element) -> (
@@ -163,7 +163,7 @@ extension RedBlackTreeSet {
     return (__inserted, __inserted ? newMember : __tree_[__r])
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @discardableResult
   @inlinable
   public mutating func update(with newMember: Element) -> Element? {
@@ -251,7 +251,7 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @discardableResult
   @inlinable
   public mutating func remove(_ member: Element) -> Element? {
@@ -295,7 +295,7 @@ extension RedBlackTreeSet {
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
@@ -372,13 +372,13 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func contains(_ member: Element) -> Bool {
     ___contains(member)
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   ///
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
@@ -386,7 +386,7 @@ extension RedBlackTreeSet {
     ___min()
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func max() -> Element? {
     ___max()
@@ -406,7 +406,7 @@ extension RedBlackTreeSet {
   ///
   /// - Parameter member: 二分探索で検索したい要素
   /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func lowerBound(_ member: Element) -> Index {
     ___index_lower_bound(member)
@@ -424,7 +424,7 @@ extension RedBlackTreeSet {
   ///
   /// - Parameter member: 二分探索で検索したい要素
   /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func upperBound(_ member: Element) -> Index {
     ___index_upper_bound(member)
@@ -433,7 +433,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
     ___index_equal_range(element)
@@ -448,25 +448,25 @@ extension RedBlackTreeSet {
     isEmpty ? nil : self[startIndex]
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public var last: Element? {
     isEmpty ? nil : self[index(before: endIndex)]
   }
 
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first(where: predicate)
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func firstIndex(of member: Element) -> Index? {
     ___first_index(of: member)
   }
 
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     try ___first_index(where: predicate)
@@ -690,7 +690,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init(arrayLiteral elements: Element...) {
     self.init(elements)

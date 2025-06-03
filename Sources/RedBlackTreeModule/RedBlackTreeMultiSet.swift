@@ -55,9 +55,11 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
+extension RedBlackTreeMultiSet: ___RedBlackTreeMerge {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeSequence { }
 extension RedBlackTreeMultiSet: ___RedBlackTreeSubSequence { }
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
+
 
 // MARK: - Initialization（初期化）
 
@@ -149,7 +151,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    __tree_.__node_handle_merge_multi(other.__tree_)
+    ___tree_merge_multi(other.__tree_)
   }
 
   /// - Complexity: O(*k* log *k*)
@@ -157,7 +159,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    __tree_.__node_handle_merge_multi(other.__tree_)
+    ___tree_merge_multi(other.__tree_)
   }
 
   /// - Complexity: O(*k* log *k*)

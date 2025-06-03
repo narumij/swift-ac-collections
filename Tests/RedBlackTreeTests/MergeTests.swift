@@ -43,6 +43,15 @@ final class MergeTests: XCTestCase {
     XCTAssertEqual(rhs.map { $0 }, [4, 4, 5, 5, 6, 6])
   }
   
+  func testMultietAndSequence() throws {
+    var lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6]
+    let rhs: RedBlackTreeMultiSet<Int> = [4, 4, 5, 5, 6, 6]
+    lhs.insert(contentsOf: rhs.makeIterator())
+    XCTAssertEqual(lhs.map { $0 }, [1, 2, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6])
+    XCTAssertEqual(rhs.map { $0 }, [4, 4, 5, 5, 6, 6])
+  }
+
+  
   func testMultietAndClosedRange() throws {
     var lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6]
     lhs.insert(contentsOf: 1 ... 6)

@@ -394,8 +394,8 @@ extension ___Tree: InsertNodeAtProtocol {}
 extension ___Tree: InsertMultiProtocol {}
 extension ___Tree: InsertLastProtocol {}
 extension ___Tree: RemoveProtocol {}
-extension ___Tree: MergeProtocol {}
-extension ___Tree: HandleProtocol {}
+//extension ___Tree: MergeProtocol {}
+//extension ___Tree: HandleProtocol {}
 extension ___Tree: EraseProtocol {}
 extension ___Tree: EraseUniqueProtocol {}
 extension ___Tree: EraseMultiProtocol {}
@@ -407,6 +407,7 @@ extension ___Tree: DistanceProtocol {}
 extension ___Tree: CompareProtocol {}
 extension ___Tree: CompareUniqueProtocol {}
 extension ___Tree: CompareMultiProtocol {}
+extension ___Tree: MergeSourceProtocol {}
 
 extension ___Tree {
   @inlinable

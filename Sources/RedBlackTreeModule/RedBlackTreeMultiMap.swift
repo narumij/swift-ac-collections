@@ -79,9 +79,11 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 extension RedBlackTreeMultiMap: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
+extension RedBlackTreeMultiMap: ___RedBlackTreeMerge {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSequence {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
+
 
 // MARK: - Initialization（初期化）
 
@@ -227,7 +229,7 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    __tree_.__node_handle_merge_multi(other.__tree_)
+    ___tree_merge_multi(other.__tree_)
   }
 
   /// - Complexity: O(*n* log *n*)

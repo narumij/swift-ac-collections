@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeUnique_: ___RedBlackTreeIndexing & ValueComparer & CompareUniqueTrait
+protocol ___RedBlackTreeUnique: ___RedBlackTreeIndexing & ValueComparer & CompareUniqueTrait
 where Tree == ___Tree<Self>,
       Index == Tree.Index
 {
@@ -30,7 +30,7 @@ where Tree == ___Tree<Self>,
   var __tree_: Tree { get }
 }
 
-extension ___RedBlackTreeUnique_ {
+extension ___RedBlackTreeUnique {
   
   ///（重複なし）
   @inlinable

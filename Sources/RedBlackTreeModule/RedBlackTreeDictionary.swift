@@ -76,10 +76,12 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
-extension RedBlackTreeDictionary: ___RedBlackTreeUnique_ {}
+extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
+extension RedBlackTreeDictionary: ___RedBlackTreeMerge {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSequence {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
+
 
 // MARK: - Initialization（初期化）
 
@@ -243,8 +245,8 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    __tree_.__node_handle_merge_unique(other.__tree_)
+    _ensureUnique()
+    ___tree_merge_unique(other.__tree_)
   }
   
   /// - Complexity: O(*k* log *n*)

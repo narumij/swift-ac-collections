@@ -74,10 +74,10 @@ public struct RedBlackTreeSet<Element: Comparable> {
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
 extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeSet: ___RedBlackTreeUnique {}
+extension RedBlackTreeSet: ___RedBlackTreeMerge {}
 extension RedBlackTreeSet: ___RedBlackTreeSequence {}
 extension RedBlackTreeSet: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeSet: ScalarValueComparer {}
-extension RedBlackTreeSet: ___RedBlackTreeMerge {}
 
 // MARK: - Initialization
 
@@ -178,7 +178,8 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(*k* log *n*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
@@ -186,20 +187,51 @@ extension RedBlackTreeSet {
     ___tree_merge_unique(other.__tree_)
   }
 
-  /// - Complexity: O(*k* log *n*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
     _ensureUnique()
     ___tree_merge_unique(other.__tree_)
   }
-
-  /// - Complexity: O(*k* log *n*)
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
     _ensureUnique()
     ___merge_unique(other)
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func inserting(contentsOf other: RedBlackTreeMultiSet<Element>) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func inserting(contentsOf other: RedBlackTreeSet<Element>) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func inserting<S>(contentsOf other: __owned S) -> Self where S: Sequence, S.Element == Element {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
   }
 }
 

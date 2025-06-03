@@ -60,8 +60,7 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeSequence { }
 extension RedBlackTreeMultiSet: ___RedBlackTreeSubSequence { }
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 
-
-// MARK: - Initialization（初期化）
+// MARK: - Initialization
 
 extension RedBlackTreeMultiSet {
 
@@ -146,7 +145,8 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(*k* log *k*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
@@ -154,20 +154,51 @@ extension RedBlackTreeMultiSet {
     ___tree_merge_multi(other.__tree_)
   }
 
-  /// - Complexity: O(*k* log *k*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
     ___tree_merge_multi(other.__tree_)
   }
-
-  /// - Complexity: O(*k* log *k*)
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
     _ensureUnique()
     ___merge_multi(other)
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func inserting(contentsOf other: RedBlackTreeSet<Element>) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func inserting(contentsOf other: RedBlackTreeMultiSet<Element>) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func inserting<S>(contentsOf other: __owned S) -> Self where S: Sequence, S.Element == Element {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
   }
 }
 

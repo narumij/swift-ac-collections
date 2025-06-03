@@ -82,8 +82,7 @@ extension RedBlackTreeDictionary: ___RedBlackTreeSequence {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 
-
-// MARK: - Initialization（初期化）
+// MARK: - Initialization
 
 extension RedBlackTreeDictionary {
 
@@ -241,7 +240,8 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
@@ -249,12 +249,52 @@ extension RedBlackTreeDictionary {
     ___tree_merge_unique(other.__tree_)
   }
   
-  /// - Complexity: O(*k* log *n*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
+    _ensureUnique()
+    ___tree_merge_unique(other.__tree_)
+  }
+  
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
     _ensureUnique()
     ___merge_unique(other)
+  }
+
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func inserting(contentsOf other: RedBlackTreeDictionary<Key, Value>) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func inserting<S>(contentsOf other: __owned S) -> Self where S: Sequence, S.Element == Element {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
   }
 }
 

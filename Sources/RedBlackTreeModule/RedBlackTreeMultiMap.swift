@@ -84,8 +84,7 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeSequence {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 
-
-// MARK: - Initialization（初期化）
+// MARK: - Initialization
 
 extension RedBlackTreeMultiMap {
 
@@ -224,15 +223,35 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
     _ensureUniqueAndCapacity(to: count + other.count)
     ___tree_merge_multi(other.__tree_)
   }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
+    _ensureUniqueAndCapacity(to: count + other.count)
+    ___tree_merge_multi(other.__tree_)
+  }
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  @inline(__always)
+  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
+    _ensureUnique()
+    ___merge_multi(other)
+  }
+
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
   public mutating func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
@@ -240,20 +259,23 @@ extension RedBlackTreeMultiMap {
     result.insert(contentsOf: other)
     return result
   }
-
-  /// - Complexity: O(*k* log *k*)
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func insert<S>(_ other: S) where S: Sequence, S.Element == Element {
-    _ensureUnique()
-    ___merge_multi(other)
+  public mutating func inserting(contentsOf other: RedBlackTreeDictionary<Key, Value>) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
   }
 
-  /// - Complexity: O(*n* log *n*)
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
-  public func inserting<S>(_ other: __owned S) -> Self where S: Sequence, S.Element == Element {
+  public func inserting<S>(contentsOf other: __owned S) -> Self where S: Sequence, S.Element == Element {
     var result = self
-    result.insert(other)
+    result.insert(contentsOf: other)
     return result
   }
 }

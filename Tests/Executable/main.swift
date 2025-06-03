@@ -339,7 +339,7 @@ print(tree.count)
 #elseif true
 var a: RedBlackTreeSet<Int> = .init((0 ..< 100).map { $0 * 100})
 var b: RedBlackTreeSet<Int> = .init((1 ..< 10_000_000).map { $0 * 3 })
-a.insert(contentsOf: b.makeIterator())
+a.merge(b.makeIterator())
 //a.insert(contentsOf: b)
 print(a.count)
 #elseif false

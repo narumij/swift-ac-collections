@@ -182,7 +182,7 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
+  public mutating func merge(_ other: RedBlackTreeSet<Element>) {
     _ensureUnique()
     ___tree_merge_unique(other.__tree_)
   }
@@ -191,7 +191,7 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
+  public mutating func merge(_ other: RedBlackTreeMultiSet<Element>) {
     _ensureUnique()
     ___tree_merge_unique(other.__tree_)
   }
@@ -200,7 +200,7 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
+  public mutating func merge<S>(_ other: S) where S: Sequence, S.Element == Element {
     _ensureUnique()
     ___merge_unique(other)
   }
@@ -209,9 +209,9 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func inserting(contentsOf other: RedBlackTreeMultiSet<Element>) -> Self {
+  public mutating func merging(_ other: RedBlackTreeMultiSet<Element>) -> Self {
     var result = self
-    result.insert(contentsOf: other)
+    result.merge(other)
     return result
   }
   
@@ -219,18 +219,18 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func inserting(contentsOf other: RedBlackTreeSet<Element>) -> Self {
+  public mutating func merging(_ other: RedBlackTreeSet<Element>) -> Self {
     var result = self
-    result.insert(contentsOf: other)
+    result.merge(other)
     return result
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  public func inserting<S>(contentsOf other: __owned S) -> Self where S: Sequence, S.Element == Element {
+  public func merging<S>(_ other: __owned S) -> Self where S: Sequence, S.Element == Element {
     var result = self
-    result.insert(contentsOf: other)
+    result.merge(other)
     return result
   }
 }

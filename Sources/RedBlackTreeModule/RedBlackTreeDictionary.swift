@@ -239,68 +239,28 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary {
-
-#if false
+  
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
+  public mutating func merge(
+    _ other: RedBlackTreeDictionary<Key, Value>,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows {
     _ensureUnique()
-    ___tree_merge_unique(other.__tree_)
+    try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
-  public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
+  public mutating func merge(
+    _ other: RedBlackTreeMultiMap<Key, Value>,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows {
     _ensureUnique()
-    ___tree_merge_unique(other.__tree_)
+    try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
   }
-  
-  
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  @inline(__always)
-  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
-    _ensureUnique()
-    ___merge_unique(other)
-  }
-
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  @inline(__always)
-  public mutating func inserting(contentsOf other: RedBlackTreeDictionary<Key, Value>) -> Self {
-    var result = self
-    result.insert(contentsOf: other)
-    return result
-  }
-
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  @inline(__always)
-  public mutating func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
-    var result = self
-    result.insert(contentsOf: other)
-    return result
-  }
-  
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  public func inserting<S>(contentsOf other: __owned S) -> Self where S: Sequence, S.Element == Element {
-    var result = self
-    result.insert(contentsOf: other)
-    return result
-  }
-#endif
-}
-
-extension RedBlackTreeDictionary {
 
   /// 辞書に `other` の要素をマージします。
   /// キーが重複したときは `combine` の戻り値を採用します。
@@ -311,15 +271,34 @@ extension RedBlackTreeDictionary {
   public mutating func merge<S>(
     _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows where S: Sequence, S.Element == KeyValue {
+  ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    for (k, v) in other {
-      if let old = self[k] {
-        self[k] = try combine(old, v)
-      } else {
-        self[k] = v
-      }
-    }
+    _ensureUnique()
+    try ___merge_unique(other, uniquingKeysWith: combine)
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func merging(
+    _ other: RedBlackTreeDictionary<Key, Value>,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows -> Self {
+    var result = self
+    try result.merge(other, uniquingKeysWith: combine)
+    return result
+  }
+  
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func merging(
+    _ other: RedBlackTreeMultiMap<Key, Value>,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows -> Self {
+    var result = self
+    try result.merge(other, uniquingKeysWith: combine)
+    return result
   }
   
   /// `self` と `other` をマージした新しい辞書を返します。
@@ -330,7 +309,7 @@ extension RedBlackTreeDictionary {
   public func merging<S>(
     _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows -> Self where S: Sequence, S.Element == KeyValue {
+  ) rethrows -> Self where S: Sequence, S.Element == (Key, Value) {
     var result = self
     try result.merge(other, uniquingKeysWith: combine)
     return result

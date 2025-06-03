@@ -48,7 +48,7 @@ final class RedBlackTreeSetInsertionTests: XCTestCase {
     var set = RedBlackTreeSet<Int>()
 
     // 実行: [1,2,3,4,5]を挿入
-    set.insert(contentsOf: [1, 2, 3, 4, 5])
+    set.merge([1, 2, 3, 4, 5])
 
     // 事後条件:
     // - 要素数 == 5
@@ -64,7 +64,7 @@ final class RedBlackTreeSetInsertionTests: XCTestCase {
     let setB = RedBlackTreeSet([2, 4])
 
     // 実行: setAにsetBの要素を挿入
-    setA.insert(contentsOf: setB)
+    setA.merge(setB)
 
     // 事後条件:
     // - 要素数 == 4
@@ -80,7 +80,7 @@ final class RedBlackTreeSetInsertionTests: XCTestCase {
     let multiSet = RedBlackTreeMultiSet([2, 4, 4])
 
     // 実行: setにmultiSetの要素を挿入
-    set.insert(contentsOf: multiSet)
+    set.merge(multiSet)
 
     // 事後条件:
     // - 要素数 == 4（重複要素は無視）

@@ -84,7 +84,7 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeSequence {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 
-// MARK: - Initialization
+// MARK: - Creating a MultiMap
 
 extension RedBlackTreeMultiMap {
 
@@ -152,11 +152,36 @@ extension RedBlackTreeMultiMap {
   }
 }
 
+// MARK: - Inspecting a MultiMap
+
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(1)
   @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
+  public var isEmpty: Bool {
+    ___is_empty
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  public var capacity: Int {
+    ___capacity
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var count: Int {
+    ___count
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(log *n* + *k*)
+  @inlinable
+  public func count(forKey key: Key) -> Int {
+    __tree_.__count_multi(key)
   }
 }
 
@@ -277,6 +302,14 @@ extension RedBlackTreeMultiMap {
     var result = self
     result.insert(contentsOf: other)
     return result
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    _ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -536,37 +569,6 @@ extension RedBlackTreeMultiMap {
 }
 
 // MARK: - Utility（ユーティリティ、isEmptyやcapacityなど）
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var isEmpty: Bool {
-    ___is_empty
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var capacity: Int {
-    ___capacity
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var count: Int {
-    ___count
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  public func count(forKey key: Key) -> Int {
-    __tree_.__count_multi(key)
-  }
-}
 
 extension RedBlackTreeMultiMap {
 

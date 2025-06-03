@@ -79,7 +79,7 @@ extension RedBlackTreeSet: ___RedBlackTreeSequence {}
 extension RedBlackTreeSet: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 
-// MARK: - Initialization
+// MARK: - Creating a Set
 
 extension RedBlackTreeSet {
 
@@ -140,11 +140,27 @@ extension RedBlackTreeSet {
   }
 }
 
+// MARK: - Inspecting a Set
+
 extension RedBlackTreeSet {
 
+  /// - Complexity: O(1)
   @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
+  public var isEmpty: Bool {
+    ___is_empty
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  public var capacity: Int {
+    ___capacity
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var count: Int {
+    ___count
   }
 }
 
@@ -232,6 +248,14 @@ extension RedBlackTreeSet {
     var result = self
     result.merge(other)
     return result
+  }
+}
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    _ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -630,30 +654,6 @@ extension RedBlackTreeSet {
   @inline(__always)
   public var rawIndices: RawIndexSequence<Tree> {
     RawIndexSequence(tree: __tree_)
-  }
-}
-
-// MARK: - Utility
-
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var isEmpty: Bool {
-    ___is_empty
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var capacity: Int {
-    ___capacity
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var count: Int {
-    ___count
   }
 }
 

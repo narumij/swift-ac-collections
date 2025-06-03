@@ -60,7 +60,7 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeSequence { }
 extension RedBlackTreeMultiSet: ___RedBlackTreeSubSequence { }
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 
-// MARK: - Initialization
+// MARK: - Creating a MultSet
 
 extension RedBlackTreeMultiSet {
 
@@ -119,15 +119,40 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+// MARK: - Inspecting a MultiSet
+
 extension RedBlackTreeMultiSet {
 
+  /// - Complexity: O(1)
   @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
+  public var isEmpty: Bool {
+    ___is_empty
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  public var capacity: Int {
+    ___capacity
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var count: Int {
+    ___count
   }
 }
 
-// MARK: - Insert（挿入）
+extension RedBlackTreeMultiSet {
+
+  /// - Complexity: O(log *n* + *k*)
+  @inlinable
+  public func count(of element: Element) -> Int {
+    __tree_.__count_multi(element)
+  }
+}
+
+// MARK: - Insert
 
 extension RedBlackTreeMultiSet {
 
@@ -202,7 +227,15 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-// MARK: - Remove（削除）
+extension RedBlackTreeMultiSet {
+
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    _ensureUniqueAndCapacity(to: minimumCapacity)
+  }
+}
+
+// MARK: - Remove
 
 extension RedBlackTreeMultiSet {
   
@@ -332,7 +365,7 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-// MARK: - Search（検索・探索）
+// MARK: - Search
 
 extension RedBlackTreeMultiSet {
 
@@ -414,40 +447,7 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-// MARK: - Utility（ユーティリティ、isEmptyやcapacityなど）
-
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var isEmpty: Bool {
-    ___is_empty
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var capacity: Int {
-    ___capacity
-  }
-  
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var count: Int {
-    ___count
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  public func count(of element: Element) -> Int {
-    __tree_.__count_multi(element)
-  }
-}
-
-// MARK: - Collection Conformance（コレクション適合系）
+// MARK: - Collection Conformance
 
 // MARK: - Sequence
 // MARK: - Collection
@@ -587,7 +587,7 @@ extension RedBlackTreeMultiSet {
   public typealias Indices = Tree.Indices
 }
 
-// MARK: - Raw Index Sequence（インデックス系）
+// MARK: - Raw Index Sequence
 
 extension RedBlackTreeMultiSet {
 

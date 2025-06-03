@@ -82,7 +82,7 @@ extension RedBlackTreeDictionary: ___RedBlackTreeSequence {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 
-// MARK: - Initialization
+// MARK: - Creating a Dictionay
 
 extension RedBlackTreeDictionary {
 
@@ -185,11 +185,27 @@ extension RedBlackTreeDictionary {
   }
 }
 
+// MARK: - Inspecting a MultiMap
+
 extension RedBlackTreeDictionary {
 
+  /// - Complexity: O(1)
   @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
+  public var isEmpty: Bool {
+    ___is_empty
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  public var capacity: Int {
+    ___capacity
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var count: Int {
+    ___count
   }
 }
 
@@ -313,6 +329,14 @@ extension RedBlackTreeDictionary {
     var result = self
     try result.merge(other, uniquingKeysWith: combine)
     return result
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    _ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -650,28 +674,6 @@ extension RedBlackTreeDictionary {
 }
 
 // MARK: - Utility（ユーティリティ、isEmptyやcapacityなど）
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var isEmpty: Bool {
-    ___is_empty
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var capacity: Int {
-    ___capacity
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var count: Int {
-    ___count
-  }
-}
 
 extension RedBlackTreeDictionary {
 

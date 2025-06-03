@@ -731,3 +731,38 @@ extension RedBlackTreeMultiSet {
       lexicographicallyPrecedes(other, by: Tree.___key_comp)
   }
 }
+
+// MARK: - Combining MultiSet
+
+extension RedBlackTreeMultiSet {
+
+  @inlinable
+  public static func + <Other>(lhs: Other, rhs: Self) -> Self where Other : Sequence, Element == Other.Element
+  {
+    rhs.inserting(contentsOf: lhs)
+  }
+  
+  @inlinable
+  static func + <Other>(lhs: Self, rhs: Other) -> Self where Other : Sequence, Element == Other.Element
+  {
+    lhs.inserting(contentsOf: rhs)
+  }
+  
+  @inlinable
+  static func + (lhs: Self, rhs: Self) -> Self {
+    lhs.inserting(contentsOf: rhs)
+  }
+
+  @inlinable
+  static func + <Other>(lhs: Self, rhs: Other) -> Self where Other : RangeReplaceableCollection, Self.Element == Other.Element {
+    lhs.inserting(contentsOf: rhs)
+  }
+
+  static func += <Other>(lhs: inout Self, rhs: Other) where Other : Sequence, Element == Other.Element {
+    lhs = lhs.inserting(contentsOf: rhs)
+  }
+
+  static func += (lhs: inout Self, rhs: Self) {
+    lhs = lhs.inserting(contentsOf: rhs)
+  }
+}

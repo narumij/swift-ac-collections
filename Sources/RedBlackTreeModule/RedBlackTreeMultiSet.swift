@@ -267,6 +267,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
+  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
   @inlinable
   public static func + <Other>(lhs: Other, rhs: Self) -> Self
   where Other : Sequence, Element == Other.Element
@@ -274,6 +275,7 @@ extension RedBlackTreeMultiSet {
     rhs.inserting(contentsOf: lhs)
   }
   
+  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
   @inlinable
   static func + <Other>(lhs: Self, rhs: Other) -> Self
   where Other : Sequence, Element == Other.Element
@@ -281,22 +283,26 @@ extension RedBlackTreeMultiSet {
     lhs.inserting(contentsOf: rhs)
   }
   
+  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
   @inlinable
   static func + (lhs: Self, rhs: Self) -> Self {
     lhs.inserting(contentsOf: rhs)
   }
 
+  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
   @inlinable
   static func + <Other>(lhs: Self, rhs: Other) -> Self
   where Other : RangeReplaceableCollection, Self.Element == Other.Element {
     lhs.inserting(contentsOf: rhs)
   }
 
+  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
   static func += <Other>(lhs: inout Self, rhs: Other)
   where Other : Sequence, Element == Other.Element {
     lhs = lhs.inserting(contentsOf: rhs)
   }
 
+  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
   static func += (lhs: inout Self, rhs: Self) {
     lhs = lhs.inserting(contentsOf: rhs)
   }

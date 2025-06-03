@@ -284,6 +284,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
   /// 最小キーのペアを取り出して削除
+  ///
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable

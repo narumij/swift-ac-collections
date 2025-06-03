@@ -302,7 +302,9 @@ extension RedBlackTreeDictionary {
 
   /// 辞書に `other` の要素をマージします。
   /// キーが重複したときは `combine` の戻り値を採用します。
-  /// - Complexity: O(*n* log *n*)
+  ///
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge<S>(
     _ other: __owned S,
@@ -317,9 +319,11 @@ extension RedBlackTreeDictionary {
       }
     }
   }
-
+  
   /// `self` と `other` をマージした新しい辞書を返します。
-  /// - Complexity: O(*n* log *n*)
+  ///
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
   @inlinable
   public func merging<S>(
     _ other: __owned S,
@@ -336,6 +340,7 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   /// 最小キーのペアを取り出して削除
+  ///
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable

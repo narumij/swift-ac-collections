@@ -240,6 +240,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+#if false
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -296,6 +297,7 @@ extension RedBlackTreeDictionary {
     result.insert(contentsOf: other)
     return result
   }
+#endif
 }
 
 extension RedBlackTreeDictionary {

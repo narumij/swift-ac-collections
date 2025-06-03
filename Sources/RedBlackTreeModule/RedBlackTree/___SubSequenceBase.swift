@@ -67,12 +67,11 @@ extension ___SubSequenceBase {
 }
 
 extension ___SubSequenceBase {
-  // 型推論が絡まりそうなので一旦非公開扱いだが、公開扱いにしたい
 
   /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
-  public func ___forEach(_ body: (Index, Element) throws -> Void) rethrows {
+  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(___index($0),__tree_[$0])
     }

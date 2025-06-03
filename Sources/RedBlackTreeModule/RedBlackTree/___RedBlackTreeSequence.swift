@@ -56,12 +56,11 @@ extension ___RedBlackTreeSequence {
 }
 
 extension ___RedBlackTreeSequence {
-  // 型推論が絡まりそうなので一旦非公開扱いだが、公開扱いにしたい
 
   /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
-  public func ___forEach(_ body: (Index, Element) throws -> Void) rethrows {
+  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
       try body(___index($0),__tree_[$0])
     }

@@ -394,6 +394,17 @@ extension RedBlackTreeDictionary {
   }
 }
 
+
+extension RedBlackTreeDictionary {
+
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    _ensureUniqueAndCapacity(to: minimumCapacity)
+  }
+}
+
+// MARK: - Combining Dictionary
+
 extension RedBlackTreeDictionary {
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
@@ -469,14 +480,6 @@ extension RedBlackTreeDictionary {
     var result = self
     try result.merge(other, uniquingKeysWith: combine)
     return result
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -570,7 +573,7 @@ extension RedBlackTreeDictionary {
     _ bounds: R
   ) where R.Bound == Index {
     
-    let bounds = bounds.relative(to: self)    
+    let bounds = bounds.relative(to: self)
     _ensureUnique()
     ___remove(from: bounds.lowerBound.rawValue,
               to:  bounds.upperBound.rawValue)

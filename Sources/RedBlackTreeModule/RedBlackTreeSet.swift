@@ -221,6 +221,16 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
+
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    _ensureUniqueAndCapacity(to: minimumCapacity)
+  }
+}
+
+// MARK: - Combining Set
+
+extension RedBlackTreeSet {
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
@@ -278,16 +288,6 @@ extension RedBlackTreeSet {
     return result
   }
 }
-
-extension RedBlackTreeSet {
-
-  @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
-  }
-}
-
-// MARK: - Combining Set
 
 extension RedBlackTreeSet {
 

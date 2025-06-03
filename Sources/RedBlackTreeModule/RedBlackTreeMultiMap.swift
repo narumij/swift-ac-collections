@@ -299,6 +299,16 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    _ensureUniqueAndCapacity(to: minimumCapacity)
+  }
+}
+
+// MARK: - Combining MultiMap
+
+extension RedBlackTreeMultiMap {
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -355,16 +365,6 @@ extension RedBlackTreeMultiMap {
     return result
   }
 }
-
-extension RedBlackTreeMultiMap {
-
-  @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
-  }
-}
-
-// MARK: - Combining MultiSet
 
 extension RedBlackTreeMultiMap {
 

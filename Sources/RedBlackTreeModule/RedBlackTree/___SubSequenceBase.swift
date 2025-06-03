@@ -265,7 +265,7 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
-  /// - Complexity: O(1)
+  @available(*, deprecated, renamed: "forEach")
   @inlinable @inline(__always)
   public var rawIndexedElements: RawIndexedSequence<Tree> {
     RawIndexedSequence(
@@ -274,7 +274,7 @@ extension ___SubSequenceBase {
       end: _end)
   }
 
-  @available(*, deprecated, renamed: "rawIndexedElements")
+  @available(*, deprecated, renamed: "forEach")
   @inlinable @inline(__always)
   public func enumerated() -> RawIndexedSequence<Tree> {
     rawIndexedElements

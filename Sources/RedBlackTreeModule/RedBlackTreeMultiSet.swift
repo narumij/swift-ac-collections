@@ -605,7 +605,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(1)
+  @available(*, deprecated, renamed: "forEach")
   @inlinable @inline(__always)
   public var rawIndexedElements: RawIndexedSequence<Tree> {
     RawIndexedSequence(tree: __tree_)
@@ -614,7 +614,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  @available(*, deprecated, renamed: "rawIndexedElements")
+  @available(*, deprecated, renamed: "forEach")
   @inlinable
   @inline(__always)
   public func enumerated() -> RawIndexedSequence<Tree> {

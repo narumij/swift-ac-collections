@@ -765,35 +765,3 @@ extension RedBlackTreeSet {
       lexicographicallyPrecedes(other, by: Tree.___key_comp)
   }
 }
-
-// MARK: -
-
-#if PERFOMANCE_CHECK
-  extension RedBlackTreeSet {
-
-    // 旧初期化実装
-    // 性能比較用にのこしてある
-
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public init<Source>(_sequence sequence: __owned Source)
-    where Element == Source.Element, Source: Sequence {
-      let count = (sequence as? (any Collection))?.count
-      var tree: Tree = .create(minimumCapacity: count ?? 0)
-      for __k in sequence {
-        if count == nil {
-          Tree.ensureCapacity(tree: &tree)
-        }
-        var __parent = _NodePtr.nullptr
-        // 検索の計算量がO(log *n*)
-        let __child = tree.__find_equal(&__parent, __k)
-        if tree.__ptr_(__child) == .nullptr {
-          let __h = tree.__construct_node(__k)
-          // バランシングの計算量がO(log *n*)
-          tree.__insert_node_at(__parent, __child, __h)
-        }
-      }
-      self._storage = .init(tree: tree)
-    }
-  }
-#endif

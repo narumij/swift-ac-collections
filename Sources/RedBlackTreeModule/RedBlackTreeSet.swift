@@ -312,6 +312,7 @@ extension RedBlackTreeSet {
   static func + (lhs: Self, rhs: Self) -> Self {
     lhs.merging(rhs)
   }
+  
   /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
   @inlinable
   static func + <Other>(lhs: Self, rhs: Other) -> Self

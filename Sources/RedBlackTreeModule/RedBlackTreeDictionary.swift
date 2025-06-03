@@ -480,7 +480,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
-// MARK: - Remove（削除）
+// MARK: - Remove
 
 extension RedBlackTreeDictionary {
 

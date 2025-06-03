@@ -202,8 +202,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: - Range Accessing Keys and Values
-
 extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(1)
@@ -226,6 +224,8 @@ extension RedBlackTreeMultiMap {
     return .init(tree: __tree_, start: lo, end: hi)
   }
 }
+
+// MARK: - Range Accessing Keys and Values
 
 extension RedBlackTreeMultiMap {
 

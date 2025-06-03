@@ -185,7 +185,118 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: - Insert（挿入）
+// MARK: - Accessing Keys and Values
+
+extension RedBlackTreeMultiMap {
+  
+  /// - Complexity: O(1)
+  @inlinable
+  public var first: Element? {
+    isEmpty ? nil : self[startIndex]
+  }
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public var last: Element? {
+    isEmpty ? nil : self[index(before: endIndex)]
+  }
+}
+
+// MARK: - Range Accessing Keys and Values
+
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(log *n*)
+  ///
+  /// O(1)が欲しい場合、firstが等価でO(1)
+  @inlinable
+  public func min() -> Element? {
+    ___min()
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func max() -> Element? {
+    ___max()
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(1)
+  public var keys: Keys {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+
+  /// - Complexity: O(1)
+  public var values: Values {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func values(forKey key: Key) -> Values {
+    let (lo, hi) = __tree_.__equal_range_multi(key)
+    return .init(tree: __tree_, start: lo, end: hi)
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(1)
+  @inlinable
+  public subscript(bounds: Range<Index>) -> SubSequence {
+    .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+  }
+}
+
+extension RedBlackTreeMultiMap {
+  // 割と注意喚起の為のdeprecatedなだけで、実際にいつ消すのかは不明です。
+  // 分かってると便利なため、競技プログラミングにこのシンタックスシュガーは有用と考えているからです。
+
+  /// 範囲 `[lower, upper)` に含まれる要素を返します。
+  ///
+  /// index範囲ではないことに留意
+  /// **Deprecated – `elements(in:)` を使ってください。**
+  @available(*, deprecated, renamed: "elements(in:)")
+  @inlinable
+  public subscript(bounds: Range<Key>) -> SubSequence {
+    elements(in: bounds)
+  }
+
+  /// 範囲 `[lower, upper]` に含まれる要素を返します。
+  ///
+  /// index範囲ではないことに留意
+  /// **Deprecated – `elements(in:)` を使ってください。**
+  @available(*, deprecated, renamed: "elements(in:)")
+  @inlinable
+  public subscript(bounds: ClosedRange<Key>) -> SubSequence {
+    elements(in: bounds)
+  }
+}
+
+extension RedBlackTreeMultiMap {
+  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func elements(in range: Range<Key>) -> SubSequence {
+    .init(
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
+  }
+
+  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func elements(in range: ClosedRange<Key>) -> SubSequence {
+    .init(
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
+  }
+}
+
+// MARK: - Insert
 
 extension RedBlackTreeMultiMap {
 
@@ -459,25 +570,11 @@ extension RedBlackTreeMultiMap {
 // MARK: - Search（検索・探索）
 
 extension RedBlackTreeMultiMap {
-
+  
   /// - Complexity: O(log *n*)
   @inlinable
   public func contains(key: Key) -> Bool {
     ___contains(key)
-  }
-
-  /// - Complexity: O(log *n*)
-  ///
-  /// O(1)が欲しい場合、firstが等価でO(1)
-  @inlinable
-  public func min() -> Element? {
-    ___min()
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func max() -> Element? {
-    ___max()
   }
 }
 
@@ -506,18 +603,6 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var first: Element? {
-    isEmpty ? nil : self[startIndex]
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public var last: Element? {
-    isEmpty ? nil : self[index(before: endIndex)]
-  }
 
   /// - Complexity: O(*n*)
   @inlinable
@@ -568,31 +653,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: - Utility（ユーティリティ、isEmptyやcapacityなど）
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(1)
-  public var keys: Keys {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-
-  /// - Complexity: O(1)
-  public var values: Values {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func values(forKey key: Key) -> Values {
-    let (lo, hi) = __tree_.__equal_range_multi(key)
-    return .init(tree: __tree_, start: lo, end: hi)
-  }
-}
-
 // MARK: - Sequence
 // MARK: - Collection
 // MARK: - BidirectionalCollection
@@ -600,58 +660,6 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {}
 
 // MARK: - Range Access
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-  // 割と注意喚起の為のdeprecatedなだけで、実際にいつ消すのかは不明です。
-  // 分かってると便利なため、競技プログラミングにこのシンタックスシュガーは有用と考えているからです。
-
-  /// 範囲 `[lower, upper)` に含まれる要素を返します。
-  ///
-  /// index範囲ではないことに留意
-  /// **Deprecated – `elements(in:)` を使ってください。**
-  @available(*, deprecated, renamed: "elements(in:)")
-  @inlinable
-  public subscript(bounds: Range<Key>) -> SubSequence {
-    elements(in: bounds)
-  }
-
-  /// 範囲 `[lower, upper]` に含まれる要素を返します。
-  ///
-  /// index範囲ではないことに留意
-  /// **Deprecated – `elements(in:)` を使ってください。**
-  @available(*, deprecated, renamed: "elements(in:)")
-  @inlinable
-  public subscript(bounds: ClosedRange<Key>) -> SubSequence {
-    elements(in: bounds)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: Range<Key>) -> SubSequence {
-    .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
-  }
-
-  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: ClosedRange<Key>) -> SubSequence {
-    .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
-  }
-}
 
 // MARK: - SubSequence
 
@@ -851,6 +859,8 @@ extension RedBlackTreeMultiMap: Equatable where Value: Equatable {
   }
 }
 
+// MARK: - Comparable
+
 extension RedBlackTreeMultiMap: Comparable where Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
@@ -859,6 +869,8 @@ extension RedBlackTreeMultiMap: Comparable where Value: Comparable {
     lhs.lexicographicallyPrecedes(rhs)
   }
 }
+
+// MARK: -
 
 extension RedBlackTreeMultiMap where Value: Equatable {
 

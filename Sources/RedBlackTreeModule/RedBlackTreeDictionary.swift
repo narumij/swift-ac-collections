@@ -209,7 +209,201 @@ extension RedBlackTreeDictionary {
   }
 }
 
-// MARK: - Insert（挿入）
+// MARK: - Accessing Keys and Values
+
+extension RedBlackTreeDictionary {
+  
+  /// - Complexity: O(1)
+  @inlinable
+  public var first: Element? {
+    isEmpty ? nil : self[startIndex]
+  }
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public var last: Element? {
+    isEmpty ? nil : self[index(before: endIndex)]
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(log *n*)
+  ///
+  /// O(1)が欲しい場合、firstが等価でO(1)
+  @inlinable
+  public func min() -> Element? {
+    ___min()
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func max() -> Element? {
+    ___max()
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  @usableFromInline
+  struct ___ModifyHelper {
+    @inlinable @inline(__always)
+    init(pointer: UnsafeMutablePointer<Value>) {
+      self.pointer = pointer
+    }
+    @usableFromInline
+    var isNil: Bool = false
+    @usableFromInline
+    var pointer: UnsafeMutablePointer<Value>
+    @inlinable
+    var value: Value? {
+      @inline(__always)
+      _read { yield isNil ? nil : pointer.pointee }
+      @inline(__always)
+      _modify {
+        var value: Value? = pointer.move()
+        defer {
+          if let value {
+            isNil = false
+            pointer.initialize(to: value)
+          } else {
+            isNil = true
+          }
+        }
+        yield &value
+      }
+    }
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public subscript(key: Key) -> Value? {
+    @inline(__always)
+    _read { yield ___value_for(key)?.value }
+    @inline(__always)
+    _modify {
+      // TODO: もうすこしライフタイム管理に明るくなったら、再度ここのチューニングに取り組む
+      let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
+      if __ptr == .nullptr {
+        var value: Value?
+        defer {
+          if let value {
+            _ensureUniqueAndCapacity()
+            let __h = __tree_.__construct_node((key, value))
+            __tree_.__insert_node_at(__parent, __child, __h)
+          }
+        }
+        yield &value
+      } else {
+        _ensureUnique()
+        var helper = ___ModifyHelper(pointer: &__tree_[__ptr].value)
+        defer {
+          if helper.isNil {
+            _ = __tree_.erase(__ptr)
+          }
+        }
+        yield &helper.value
+      }
+    }
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public subscript(
+    key: Key, default defaultValue: @autoclosure () -> Value
+  ) -> Value {
+    @inline(__always)
+    _read { yield ___value_for(key)?.value ?? defaultValue() }
+    @inline(__always)
+    _modify {
+      defer { _fixLifetime(self) }
+      var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
+      if __ptr == .nullptr {
+        _ensureUniqueAndCapacity()
+        assert(__tree_.header.capacity > __tree_.count)
+        __ptr = __tree_.__construct_node((key, defaultValue()))
+        __tree_.__insert_node_at(__parent, __child, __ptr)
+      } else {
+        _ensureUnique()
+      }
+      yield &__tree_[__ptr].value
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func _prepareForKeyingModify(
+    _ key: Key
+  ) -> (__parent: _NodePtr, __child: _NodeRef, __ptr: _NodePtr) {
+    var __parent = _NodePtr.nullptr
+    let __child = __tree_.__find_equal(&__parent, key)
+    let __ptr = __tree_.__ptr_(__child)
+    return (__parent, __child, __ptr)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(1)
+  public var keys: Keys {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+
+  /// - Complexity: O(1)
+  public var values: Values {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+}
+
+// MARK: - Range Accessing Keys and Values
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(1)
+  @inlinable
+  public subscript(bounds: Range<Index>) -> SubSequence {
+    .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
+  /// 範囲 `[lower, upper)` に含まれる要素を返します。
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public subscript(bounds: Range<Key>) -> SubSequence {
+    elements(in: bounds)
+  }
+
+  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
+  /// 範囲 `[lower, upper]` に含まれる要素を返します。
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public subscript(bounds: ClosedRange<Key>) -> SubSequence {
+    elements(in: bounds)
+  }
+}
+
+extension RedBlackTreeDictionary {
+  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func elements(in range: Range<Key>) -> SubSequence {
+    .init(
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
+  }
+
+  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func elements(in range: ClosedRange<Key>) -> SubSequence {
+    .init(
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
+  }
+}
+
+// MARK: - Insert
 
 extension RedBlackTreeDictionary {
   // multi mapとの統一感のために復活
@@ -465,124 +659,11 @@ extension RedBlackTreeDictionary {
 // MARK: - Search（検索・探索）
 
 extension RedBlackTreeDictionary {
-
-  @usableFromInline
-  struct ___ModifyHelper {
-    @inlinable @inline(__always)
-    init(pointer: UnsafeMutablePointer<Value>) {
-      self.pointer = pointer
-    }
-    @usableFromInline
-    var isNil: Bool = false
-    @usableFromInline
-    var pointer: UnsafeMutablePointer<Value>
-    @inlinable
-    var value: Value? {
-      @inline(__always)
-      _read { yield isNil ? nil : pointer.pointee }
-      @inline(__always)
-      _modify {
-        var value: Value? = pointer.move()
-        defer {
-          if let value {
-            isNil = false
-            pointer.initialize(to: value)
-          } else {
-            isNil = true
-          }
-        }
-        yield &value
-      }
-    }
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public subscript(key: Key) -> Value? {
-    @inline(__always)
-    _read { yield ___value_for(key)?.value }
-    @inline(__always)
-    _modify {
-      // TODO: もうすこしライフタイム管理に明るくなったら、再度ここのチューニングに取り組む
-      let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
-      if __ptr == .nullptr {
-        var value: Value?
-        defer {
-          if let value {
-            _ensureUniqueAndCapacity()
-            let __h = __tree_.__construct_node((key, value))
-            __tree_.__insert_node_at(__parent, __child, __h)
-          }
-        }
-        yield &value
-      } else {
-        _ensureUnique()
-        var helper = ___ModifyHelper(pointer: &__tree_[__ptr].value)
-        defer {
-          if helper.isNil {
-            _ = __tree_.erase(__ptr)
-          }
-        }
-        yield &helper.value
-      }
-    }
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public subscript(
-    key: Key, default defaultValue: @autoclosure () -> Value
-  ) -> Value {
-    @inline(__always)
-    _read { yield ___value_for(key)?.value ?? defaultValue() }
-    @inline(__always)
-    _modify {
-      defer { _fixLifetime(self) }
-      var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
-      if __ptr == .nullptr {
-        _ensureUniqueAndCapacity()
-        assert(__tree_.header.capacity > __tree_.count)
-        __ptr = __tree_.__construct_node((key, defaultValue()))
-        __tree_.__insert_node_at(__parent, __child, __ptr)
-      } else {
-        _ensureUnique()
-      }
-      yield &__tree_[__ptr].value
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func _prepareForKeyingModify(
-    _ key: Key
-  ) -> (__parent: _NodePtr, __child: _NodeRef, __ptr: _NodePtr) {
-    var __parent = _NodePtr.nullptr
-    let __child = __tree_.__find_equal(&__parent, key)
-    let __ptr = __tree_.__ptr_(__child)
-    return (__parent, __child, __ptr)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
+  
   /// - Complexity: O(log *n*)
   @inlinable
   public func contains(key: Key) -> Bool {
     ___contains(key)
-  }
-
-  /// - Complexity: O(log *n*)
-  ///
-  /// O(1)が欲しい場合、firstが等価でO(1)
-  @inlinable
-  public func min() -> Element? {
-    ___min()
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func max() -> Element? {
-    ___max()
   }
 }
 
@@ -611,18 +692,6 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var first: Element? {
-    isEmpty ? nil : self[startIndex]
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public var last: Element? {
-    isEmpty ? nil : self[index(before: endIndex)]
-  }
 
   /// - Complexity: O(*n*)
   @inlinable
@@ -673,76 +742,13 @@ extension RedBlackTreeDictionary {
   }
 }
 
-// MARK: - Utility（ユーティリティ、isEmptyやcapacityなど）
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(1)
-  public var keys: Keys {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-
-  /// - Complexity: O(1)
-  public var values: Values {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-}
-
-// MARK: - Collection Conformance（コレクション適合系）
+// MARK: - Collection Conformance
 
 // MARK: - Sequence
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection {}
-
-// MARK: - Range Access
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
-  /// 範囲 `[lower, upper)` に含まれる要素を返します。
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public subscript(bounds: Range<Key>) -> SubSequence {
-    elements(in: bounds)
-  }
-
-  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
-  /// 範囲 `[lower, upper]` に含まれる要素を返します。
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public subscript(bounds: ClosedRange<Key>) -> SubSequence {
-    elements(in: bounds)
-  }
-}
-
-extension RedBlackTreeDictionary {
-  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: Range<Key>) -> SubSequence {
-    .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
-  }
-
-  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: ClosedRange<Key>) -> SubSequence {
-    .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
-  }
-}
 
 // MARK: - SubSequence
 
@@ -941,6 +947,8 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
   }
 }
 
+// MARK: - Comparable
+
 extension RedBlackTreeDictionary: Comparable where Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
@@ -949,6 +957,8 @@ extension RedBlackTreeDictionary: Comparable where Value: Comparable {
     lhs.lexicographicallyPrecedes(rhs)
   }
 }
+
+// MARK: -
 
 extension RedBlackTreeDictionary where Value: Equatable {
 

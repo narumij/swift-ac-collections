@@ -152,6 +152,92 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+// MARK: - Accessing Elements
+
+extension RedBlackTreeMultiSet {
+  
+  /// - Complexity: O(1)。
+  @inlinable
+  public var first: Element? {
+    isEmpty ? nil : self[startIndex]
+  }
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public var last: Element? {
+    isEmpty ? nil : self[index(before: endIndex)]
+  }
+}
+
+extension RedBlackTreeMultiSet {
+
+  /// - Complexity: O(*n*)
+  ///
+  /// O(1)が欲しい場合、firstが等価でO(1)
+  @inlinable
+  public func min() -> Element? {
+    ___min()
+  }
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func max() -> Element? {
+    ___max()
+  }
+}
+
+// MARK: - Range Accessing Elements
+
+extension RedBlackTreeMultiSet {
+
+  /// - Complexity: O(1)
+  @inlinable
+  public subscript(bounds: Range<Index>) -> SubSequence {
+    .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+  }
+}
+
+extension RedBlackTreeMultiSet {
+  // 割と注意喚起の為のdeprecatedなだけで、実際にいつ消すのかは不明です。
+  // 分かってると便利なため、競技プログラミングにこのシンタックスシュガーは有用と考えているからです。
+
+  /// 範囲 `[lower, upper)` に含まれる要素を返します。
+  ///
+  /// index範囲ではないことに留意
+  /// **Deprecated – `elements(in:)` を使ってください。**
+  @available(*, deprecated, renamed: "elements(in:)")
+  @inlinable
+  public subscript(bounds: Range<Element>) -> SubSequence {
+    elements(in: bounds)
+  }
+
+  /// 範囲 `[lower, upper]` に含まれる要素を返します。
+  ///
+  /// index範囲ではないことに留意
+  /// **Deprecated – `elements(in:)` を使ってください。**
+  @available(*, deprecated, renamed: "elements(in:)")
+  @inlinable
+  public subscript(bounds: ClosedRange<Element>) -> SubSequence {
+    elements(in: bounds)
+  }
+}
+
+extension RedBlackTreeMultiSet {
+  /// 値レンジ `[lower, upper)` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func elements(in range: Range<Element>) -> SubSequence {
+    .init(tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
+  }
+
+  /// 値レンジ `[lower, upper]` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func elements(in range: ClosedRange<Element>) -> SubSequence {
+    .init(tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
+  }
+}
+
 // MARK: - Insert
 
 extension RedBlackTreeMultiSet {
@@ -368,25 +454,11 @@ extension RedBlackTreeMultiSet {
 // MARK: - Search
 
 extension RedBlackTreeMultiSet {
-
+  
   /// - Complexity: O(*n*)
   @inlinable
   public func contains(_ member: Element) -> Bool {
     ___contains(member)
-  }
-
-  /// - Complexity: O(*n*)
-  ///
-  /// O(1)が欲しい場合、firstが等価でO(1)
-  @inlinable
-  public func min() -> Element? {
-    ___min()
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func max() -> Element? {
-    ___max()
   }
 }
 
@@ -416,18 +488,6 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(1)。
-  @inlinable
-  public var first: Element? {
-    isEmpty ? nil : self[startIndex]
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public var last: Element? {
-    isEmpty ? nil : self[index(before: endIndex)]
-  }
-
   /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
@@ -454,58 +514,6 @@ extension RedBlackTreeMultiSet {
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection { }
-
-// MARK: - Range Access
-
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
-  }
-}
-
-extension RedBlackTreeMultiSet {
-  // 割と注意喚起の為のdeprecatedなだけで、実際にいつ消すのかは不明です。
-  // 分かってると便利なため、競技プログラミングにこのシンタックスシュガーは有用と考えているからです。
-
-  /// 範囲 `[lower, upper)` に含まれる要素を返します。
-  ///
-  /// index範囲ではないことに留意
-  /// **Deprecated – `elements(in:)` を使ってください。**
-  @available(*, deprecated, renamed: "elements(in:)")
-  @inlinable
-  public subscript(bounds: Range<Element>) -> SubSequence {
-    elements(in: bounds)
-  }
-
-  /// 範囲 `[lower, upper]` に含まれる要素を返します。
-  ///
-  /// index範囲ではないことに留意
-  /// **Deprecated – `elements(in:)` を使ってください。**
-  @available(*, deprecated, renamed: "elements(in:)")
-  @inlinable
-  public subscript(bounds: ClosedRange<Element>) -> SubSequence {
-    elements(in: bounds)
-  }
-}
-
-extension RedBlackTreeMultiSet {
-  /// 値レンジ `[lower, upper)` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: Range<Element>) -> SubSequence {
-    .init(tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
-  }
-
-  /// 値レンジ `[lower, upper]` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: ClosedRange<Element>) -> SubSequence {
-    .init(tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
-  }
-}
 
 // MARK: - SubSequence: Sequence
 
@@ -677,6 +685,8 @@ extension RedBlackTreeMultiSet: Equatable {
   }
 }
 
+// MARK: - Comparable
+
 extension RedBlackTreeMultiSet: Comparable {
   
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
@@ -685,6 +695,8 @@ extension RedBlackTreeMultiSet: Comparable {
     lhs.lexicographicallyPrecedes(rhs)
   }
 }
+
+// MARK: -
 
 extension RedBlackTreeMultiSet {
   

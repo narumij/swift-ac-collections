@@ -265,6 +265,28 @@ final class EtcTests: XCTestCase {
     let s = RedBlackTreeSet<Int>()
     _ = s[s.startIndex ..< s.endIndex].indices
   }
+  
+  func testRange() throws {
+    let a = [0, 1, 2]
+    let b = RedBlackTreeSet<Int>([0,1,2])
+    _ = a[0...]
+    XCTAssertTrue(b[b.startIndex.advanced(by: 1)...].elementsEqual([1,2]))
+    XCTAssertEqual(b.endIndex.pointee, nil)
+    XCTAssertEqual(b.endIndex.advanced(by: -1).pointee, 2)
+    XCTAssertEqual(b.endIndex.advanced(by: -2).pointee, 1)
+    XCTAssertEqual(a[...a.endIndex.advanced(by: -1)].map { $0 }, [0,1,2])
+    XCTAssertEqual(a[..<a.endIndex.advanced(by: -1)].map { $0 }, [0,1])
+    XCTAssertEqual(b[...b.endIndex.advanced(by: -1)].map { $0 }, [0,1,2])
+    XCTAssertEqual(b[..<b.endIndex.advanced(by: -1)].map { $0 }, [0,1])
+    XCTAssertTrue(b[(b.startIndex + 1)...].elementsEqual([1,2]))
+    XCTAssertTrue(b[..<(b.endIndex - 1)].elementsEqual([0,1]))
+    XCTAssertTrue(b[...].elementsEqual([0,1,2]))
+  }
+  
+  func testRanges() throws {
+    let b = RedBlackTreeSet<Int>([0,1,2])
+    XCTAssertEqual(b.elements(in: 0...).map { $0 }, [])
+  }
 
   #if false
     func testCapacity() throws {

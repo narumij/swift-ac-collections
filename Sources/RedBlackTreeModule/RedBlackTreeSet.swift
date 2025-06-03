@@ -357,31 +357,22 @@ extension RedBlackTreeSet {
     return remove(at: index(before: endIndex))
   }
 
-  /// 指定した半開区間（`lhs ..< rhs`）に含まれる要素をすべて削除します。
+  /// Removes the specified subrange of elements from the collection.
   ///
-  /// - Parameter range: `lhs`（含む）から `rhs`（含まない）までを表す `Range`
-  ///   で、削除対象の要素範囲を示します。
-  ///   範囲が逆転している場合（`lhs >= rhs`）や、木の要素範囲外を指している場合などの
-  ///   “無効な” 状態では動作が未定義となります。
-  ///
-  /// - Complexity: O(log *n* + *k*)
-  ///
-  /// - Important: 削除後は、これまで使用していたインデックスが無効になります。
-  ///
-  /// ### 使用例
-  /// ```swift
-  /// var treeSet = RedBlackTreeSet([0,1,2,3,4,5,6])
-  /// let startIdx = treeSet.lowerBound(2)
-  /// let endIdx   = treeSet.lowerBound(5)
-  /// // [2, 3, 4] の範囲を削除したい
-  /// treeSet.removeSubrange(.init(lhs: startIdx, rhs: endIdx))
-  /// // 結果: treeSet = [0,1,5,6]
-  /// ```
-  /// - Complexity: O(*k*)
+  /// - Important: 削除後は、subrangeのインデックスが無効になります。
+  /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
+  ///     range must be valid indices of the collection.
+  /// - Returns: The key-value pair that correspond to `index`.
+  /// - Complexity: O(`m ) where  `m` is the size of `bounds`
   @inlinable
-  public mutating func removeSubrange(_ range: Range<Index>) {
+  public mutating func removeSubrange<R: RangeExpression>(
+    _ bounds: R
+  ) where R.Bound == Index {
+    
+    let bounds = bounds.relative(to: self)
     _ensureUnique()
-    ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
+    ___remove(from: bounds.lowerBound.rawValue,
+              to:  bounds.upperBound.rawValue)
   }
 }
 

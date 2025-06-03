@@ -418,7 +418,7 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -429,7 +429,7 @@ extension RedBlackTreeMultiMap {
     }
     return remove(at: startIndex)
   }
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
@@ -440,7 +440,7 @@ extension RedBlackTreeMultiMap {
     }
     return remove(at: index(before: endIndex))
   }
-
+  
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -452,7 +452,7 @@ extension RedBlackTreeMultiMap {
     }
     return element
   }
-
+  
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -464,13 +464,23 @@ extension RedBlackTreeMultiMap {
     }
     return element
   }
-
-  /// - Important: 削除後は、インデックスが無効になります。
-  /// - Complexity: O(*k*)
+  
+  /// Removes the specified subrange of elements from the collection.
+  ///
+  /// - Important: 削除後は、subrangeのインデックスが無効になります。
+  /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
+  ///     range must be valid indices of the collection.
+  /// - Returns: The key-value pair that correspond to `index`.
+  /// - Complexity: O(`m ) where  `m` is the size of `bounds`
   @inlinable
-  public mutating func removeSubrange(_ range: Range<Index>) {
+  public mutating func removeSubrange<R: RangeExpression>(
+    _ bounds: R
+  ) where R.Bound == Index {
+    
+    let bounds = bounds.relative(to: self)
     _ensureUnique()
-    ___remove(from: range.lowerBound.rawValue, to: range.upperBound.rawValue)
+    ___remove(from: bounds.lowerBound.rawValue,
+              to:  bounds.upperBound.rawValue)
   }
 }
 

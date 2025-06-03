@@ -507,7 +507,16 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: - Search
+// MARK: Finding Elements
+
+extension RedBlackTreeMultiMap {
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func contains(key: Key) -> Bool {
+    ___contains(key)
+  }
+}
 
 extension RedBlackTreeMultiMap {
 
@@ -536,32 +545,6 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(log *n*)
-  @inlinable
-  public func firstIndex(of key: Key) -> Index? {
-    ___first_index(of: key)
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
-  }
-}
-
-// MARK: Finding Elements
-
-extension RedBlackTreeMultiMap {
-  
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func contains(key: Key) -> Bool {
-    ___contains(key)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(log *n*)
   ///
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
@@ -582,6 +565,21 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first(where: predicate)
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func firstIndex(of key: Key) -> Index? {
+    ___first_index(of: key)
+  }
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    try ___first_index(where: predicate)
   }
 }
 

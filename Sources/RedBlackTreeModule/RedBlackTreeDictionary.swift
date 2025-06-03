@@ -602,7 +602,16 @@ extension RedBlackTreeDictionary {
   }
 }
 
-// MARK: - Search
+// MARK: Finding Elements
+
+extension RedBlackTreeDictionary {
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func contains(key: Key) -> Bool {
+    ___contains(key)
+  }
+}
 
 extension RedBlackTreeDictionary {
 
@@ -631,32 +640,6 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   /// - Complexity: O(log *n*)
-  @inlinable
-  public func firstIndex(of key: Key) -> Index? {
-    ___first_index(of: key)
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
-  }
-}
-
-// MARK: Finding Elements
-
-extension RedBlackTreeDictionary {
-  
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func contains(key: Key) -> Bool {
-    ___contains(key)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(log *n*)
   ///
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
@@ -677,6 +660,21 @@ extension RedBlackTreeDictionary {
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first(where: predicate)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func firstIndex(of key: Key) -> Index? {
+    ___first_index(of: key)
+  }
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    try ___first_index(where: predicate)
   }
 }
 

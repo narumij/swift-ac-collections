@@ -393,7 +393,16 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-// MARK: - Search
+// MARK: Finding Elements
+
+extension RedBlackTreeMultiSet {
+  
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func contains(_ member: Element) -> Bool {
+    ___contains(member)
+  }
+}
 
 extension RedBlackTreeMultiSet {
 
@@ -421,32 +430,6 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func firstIndex(of member: Element) -> Index? {
-    ___first_index(of: member)
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
-  }
-}
-
-// MARK: Finding Elements
-
-extension RedBlackTreeMultiSet {
-  
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func contains(_ member: Element) -> Bool {
-    ___contains(member)
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
   /// - Complexity: O(*n*)
   ///
   /// O(1)が欲しい場合、firstが等価でO(1)
@@ -468,6 +451,21 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first(where: predicate)
+  }
+}
+
+extension RedBlackTreeMultiSet {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func firstIndex(of member: Element) -> Index? {
+    ___first_index(of: member)
+  }
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    try ___first_index(where: predicate)
   }
 }
 

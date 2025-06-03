@@ -349,43 +349,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary {
-
-  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
-  /// 範囲 `[lower, upper)` に含まれる要素を返します。
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public subscript(bounds: Range<Key>) -> SubSequence {
-    elements(in: bounds)
-  }
-
-  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
-  /// 範囲 `[lower, upper]` に含まれる要素を返します。
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public subscript(bounds: ClosedRange<Key>) -> SubSequence {
-    elements(in: bounds)
-  }
-}
-
-extension RedBlackTreeDictionary {
-  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: Range<Key>) -> SubSequence {
-    .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
-  }
-
-  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: ClosedRange<Key>) -> SubSequence {
-    .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
-  }
-}
-
 // MARK: - Insert
 
 extension RedBlackTreeDictionary {
@@ -639,16 +602,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
-// MARK: - Search（検索・探索）
-
-extension RedBlackTreeDictionary {
-  
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func contains(key: Key) -> Bool {
-    ___contains(key)
-  }
-}
+// MARK: - Search
 
 extension RedBlackTreeDictionary {
 
@@ -677,6 +631,32 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   /// - Complexity: O(log *n*)
+  @inlinable
+  public func firstIndex(of key: Key) -> Index? {
+    ___first_index(of: key)
+  }
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    try ___first_index(where: predicate)
+  }
+}
+
+// MARK: Finding Elements
+
+extension RedBlackTreeDictionary {
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func contains(key: Key) -> Bool {
+    ___contains(key)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(log *n*)
   ///
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
@@ -691,26 +671,49 @@ extension RedBlackTreeDictionary {
   }
 }
 
-// MARK: -
-
 extension RedBlackTreeDictionary {
-
+  
   /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first(where: predicate)
   }
+}
 
+extension RedBlackTreeDictionary {
+
+  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
+  /// 範囲 `[lower, upper)` に含まれる要素を返します。
   /// - Complexity: O(log *n*)
   @inlinable
-  public func firstIndex(of key: Key) -> Index? {
-    ___first_index(of: key)
+  public subscript(bounds: Range<Key>) -> SubSequence {
+    elements(in: bounds)
   }
 
-  /// - Complexity: O(*n*)
+  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
+  /// 範囲 `[lower, upper]` に含まれる要素を返します。
+  /// - Complexity: O(log *n*)
   @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
+  public subscript(bounds: ClosedRange<Key>) -> SubSequence {
+    elements(in: bounds)
+  }
+}
+
+extension RedBlackTreeDictionary {
+  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func elements(in range: Range<Key>) -> SubSequence {
+    .init(
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
+  }
+
+  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func elements(in range: ClosedRange<Key>) -> SubSequence {
+    .init(
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
   }
 }
 

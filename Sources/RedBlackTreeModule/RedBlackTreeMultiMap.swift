@@ -236,49 +236,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-extension RedBlackTreeMultiMap {
-  // 割と注意喚起の為のdeprecatedなだけで、実際にいつ消すのかは不明です。
-  // 分かってると便利なため、競技プログラミングにこのシンタックスシュガーは有用と考えているからです。
-
-  /// 範囲 `[lower, upper)` に含まれる要素を返します。
-  ///
-  /// index範囲ではないことに留意
-  /// **Deprecated – `elements(in:)` を使ってください。**
-  @available(*, deprecated, renamed: "elements(in:)")
-  @inlinable
-  public subscript(bounds: Range<Key>) -> SubSequence {
-    elements(in: bounds)
-  }
-
-  /// 範囲 `[lower, upper]` に含まれる要素を返します。
-  ///
-  /// index範囲ではないことに留意
-  /// **Deprecated – `elements(in:)` を使ってください。**
-  @available(*, deprecated, renamed: "elements(in:)")
-  @inlinable
-  public subscript(bounds: ClosedRange<Key>) -> SubSequence {
-    elements(in: bounds)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: Range<Key>) -> SubSequence {
-    .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
-  }
-
-  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: ClosedRange<Key>) -> SubSequence {
-    .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
-  }
-}
-
 // MARK: - Insert
 
 extension RedBlackTreeMultiMap {
@@ -553,15 +510,6 @@ extension RedBlackTreeMultiMap {
 // MARK: - Search
 
 extension RedBlackTreeMultiMap {
-  
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func contains(key: Key) -> Bool {
-    ___contains(key)
-  }
-}
-
-extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(log *n*)
   @inlinable
@@ -588,6 +536,32 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(log *n*)
+  @inlinable
+  public func firstIndex(of key: Key) -> Index? {
+    ___first_index(of: key)
+  }
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    try ___first_index(where: predicate)
+  }
+}
+
+// MARK: Finding Elements
+
+extension RedBlackTreeMultiMap {
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func contains(key: Key) -> Bool {
+    ___contains(key)
+  }
+}
+
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(log *n*)
   ///
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
@@ -602,26 +576,55 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: -
-
 extension RedBlackTreeMultiMap {
-
+  
   /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first(where: predicate)
   }
+}
 
-  /// - Complexity: O(log *n*)
+extension RedBlackTreeMultiMap {
+  // 割と注意喚起の為のdeprecatedなだけで、実際にいつ消すのかは不明です。
+  // 分かってると便利なため、競技プログラミングにこのシンタックスシュガーは有用と考えているからです。
+
+  /// 範囲 `[lower, upper)` に含まれる要素を返します。
+  ///
+  /// index範囲ではないことに留意
+  /// **Deprecated – `elements(in:)` を使ってください。**
+  @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
-  public func firstIndex(of key: Key) -> Index? {
-    ___first_index(of: key)
+  public subscript(bounds: Range<Key>) -> SubSequence {
+    elements(in: bounds)
   }
 
-  /// - Complexity: O(*n*)
+  /// 範囲 `[lower, upper]` に含まれる要素を返します。
+  ///
+  /// index範囲ではないことに留意
+  /// **Deprecated – `elements(in:)` を使ってください。**
+  @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
+  public subscript(bounds: ClosedRange<Key>) -> SubSequence {
+    elements(in: bounds)
+  }
+}
+
+extension RedBlackTreeMultiMap {
+  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func elements(in range: Range<Key>) -> SubSequence {
+    .init(
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
+  }
+
+  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func elements(in range: ClosedRange<Key>) -> SubSequence {
+    .init(
+      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
   }
 }
 

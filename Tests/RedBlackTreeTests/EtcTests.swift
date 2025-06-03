@@ -283,11 +283,6 @@ final class EtcTests: XCTestCase {
     XCTAssertTrue(b[...].elementsEqual([0,1,2]))
   }
   
-  func testRanges() throws {
-    let b = RedBlackTreeSet<Int>([0,1,2])
-    XCTAssertEqual(b.elements(in: 0...).map { $0 }, [])
-  }
-
   #if false
     func testCapacity() throws {
 

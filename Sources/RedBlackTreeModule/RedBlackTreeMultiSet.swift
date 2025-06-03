@@ -169,23 +169,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(*n*)
-  ///
-  /// O(1)が欲しい場合、firstが等価でO(1)
-  @inlinable
-  public func min() -> Element? {
-    ___min()
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func max() -> Element? {
-    ___max()
-  }
-}
-
 // MARK: - Range Accessing Elements
 
 extension RedBlackTreeMultiSet {
@@ -485,6 +468,25 @@ extension RedBlackTreeMultiSet {
     ___index_equal_range(element)
   }
 }
+
+extension RedBlackTreeMultiSet {
+
+  /// - Complexity: O(*n*)
+  ///
+  /// O(1)が欲しい場合、firstが等価でO(1)
+  @inlinable
+  public func min() -> Element? {
+    ___min()
+  }
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func max() -> Element? {
+    ___max()
+  }
+}
+
+// MARK: -
 
 extension RedBlackTreeMultiSet {
 

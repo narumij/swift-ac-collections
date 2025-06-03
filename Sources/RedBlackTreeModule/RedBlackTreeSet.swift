@@ -181,23 +181,6 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  ///
-  /// O(1)が欲しい場合、firstが等価でO(1)
-  @inlinable
-  public func min() -> Element? {
-    ___min()
-  }
-
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  public func max() -> Element? {
-    ___max()
-  }
-}
-
 // MARK: - Range Accessing Elements
 
 extension RedBlackTreeSet {
@@ -543,6 +526,25 @@ extension RedBlackTreeSet {
     ___index_equal_range(element)
   }
 }
+
+extension RedBlackTreeSet {
+
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
+  ///
+  /// O(1)が欲しい場合、firstが等価でO(1)
+  @inlinable
+  public func min() -> Element? {
+    ___min()
+  }
+
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
+  @inlinable
+  public func max() -> Element? {
+    ___max()
+  }
+}
+
+// MARK: -
 
 extension RedBlackTreeSet {
 

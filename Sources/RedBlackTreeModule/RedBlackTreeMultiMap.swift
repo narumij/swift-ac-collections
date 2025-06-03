@@ -206,23 +206,6 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(log *n*)
-  ///
-  /// O(1)が欲しい場合、firstが等価でO(1)
-  @inlinable
-  public func min() -> Element? {
-    ___min()
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func max() -> Element? {
-    ___max()
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
   /// - Complexity: O(1)
   public var keys: Keys {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
@@ -567,7 +550,7 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: - Search（検索・探索）
+// MARK: - Search
 
 extension RedBlackTreeMultiMap {
   
@@ -601,6 +584,25 @@ extension RedBlackTreeMultiMap {
     ___index_equal_range(key)
   }
 }
+
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(log *n*)
+  ///
+  /// O(1)が欲しい場合、firstが等価でO(1)
+  @inlinable
+  public func min() -> Element? {
+    ___min()
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func max() -> Element? {
+    ___max()
+  }
+}
+
+// MARK: -
 
 extension RedBlackTreeMultiMap {
 

@@ -6,11 +6,6 @@
 //
 
 @usableFromInline
-protocol MergeSourceProtocol: AllocatorProtocol & BeginNodeProtocol & EndNodeProtocol & ValueProtocol {
-  
-}
-
-@usableFromInline
 protocol ___RedBlackTreeMerge: ___RedBlackTree & ValueComparer & CompareTrait
 where
   Tree == ___Tree<Self>,

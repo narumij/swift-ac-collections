@@ -13,10 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - 内部APIの整理改変
 
-## [0.1.20] - 2025-?-?
+## [0.1.19] - 2025-?-?
 - タグミス
 
-## [0.1.19] - 2025-?-?
+## [0.1.20] - 2025-?-?
 - タグミス
 
 ## [0.1.18] - 2025-?-?

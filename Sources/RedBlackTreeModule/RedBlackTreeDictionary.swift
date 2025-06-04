@@ -999,6 +999,11 @@ extension RedBlackTreeDictionary where Value: Comparable {
 }
 
 #if swift(>=5.5)
+extension RedBlackTreeDictionary: @unchecked Sendable
+where Element: Sendable {}
+#endif
+
+#if swift(>=5.5)
 extension RedBlackTreeDictionary.SubSequence: @unchecked Sendable
 where Key: Sendable, Value: Sendable {}
 #endif

@@ -768,7 +768,10 @@ extension RedBlackTreeSet {
   }
 }
 
-// TODO: 本体をSendableにできるかどうか悩む
+#if swift(>=5.5)
+extension RedBlackTreeSet: @unchecked Sendable
+where Element: Sendable {}
+#endif
 
 #if swift(>=5.5)
 extension RedBlackTreeSet.SubSequence: @unchecked Sendable

@@ -926,6 +926,11 @@ extension RedBlackTreeMultiMap where Value: Comparable {
 }
 
 #if swift(>=5.5)
+extension RedBlackTreeMultiMap: @unchecked Sendable
+where Element: Sendable {}
+#endif
+
+#if swift(>=5.5)
 extension RedBlackTreeMultiMap.SubSequence: @unchecked Sendable
 where Element: Sendable {}
 #endif

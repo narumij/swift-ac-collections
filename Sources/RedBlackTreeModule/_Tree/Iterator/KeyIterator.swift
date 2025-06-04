@@ -21,10 +21,9 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public
-struct KeyIterator<Tree: Tree_IterateProtocol & Tree_KeyCompare,Key,V>: Sequence, IteratorProtocol
-where Tree.Element == _KeyValueTuple_<Key,V>, Tree.Key == Key
-{
+public struct KeyIterator<Tree: Tree_IterateProtocol & Tree_KeyCompare, Key, V>: Sequence,
+  IteratorProtocol
+where Tree.Element == _KeyValueTuple_<Key, V>, Tree.Key == Key {
 
   @usableFromInline
   let __tree_: Tree
@@ -41,7 +40,7 @@ where Tree.Element == _KeyValueTuple_<Key,V>, Tree.Key == Key
     self._end = end
     self._next = start == .end ? .end : tree.__tree_next_iter(start)
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func next() -> Key? {
@@ -52,32 +51,32 @@ where Tree.Element == _KeyValueTuple_<Key,V>, Tree.Key == Key
     }
     return __tree_[_current].key
   }
-  
+
   @inlinable
-  public __consuming func reversed() -> ReversedKeyIterator<Tree,Key,V> {
+  public __consuming func reversed() -> ReversedKeyIterator<Tree, Key, V> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
 extension KeyIterator: Equatable {
-  
+
+  @inlinable
   public static func == (lhs: KeyIterator<Tree, Key, V>, rhs: KeyIterator<Tree, Key, V>) -> Bool {
-    lhs.elementsEqual(rhs, by: { !Tree.value_comp($0,$1) && !Tree.value_comp($1,$0) })
+    lhs.elementsEqual(rhs, by: { !Tree.value_comp($0, $1) && !Tree.value_comp($1, $0) })
   }
 }
 
 extension KeyIterator: Comparable {
-  
+
+  @inlinable
   public static func < (lhs: KeyIterator<Tree, Key, V>, rhs: KeyIterator<Tree, Key, V>) -> Bool {
     lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
   }
 }
 
 @frozen
-public
-struct ReversedKeyIterator<Tree: Tree_IterateProtocol,Key,V>: Sequence, IteratorProtocol
-where Tree.Element == _KeyValueTuple_<Key,V>
-{
+public struct ReversedKeyIterator<Tree: Tree_IterateProtocol, Key, V>: Sequence, IteratorProtocol
+where Tree.Element == _KeyValueTuple_<Key, V> {
 
   @usableFromInline
   let __tree_: Tree
@@ -94,7 +93,7 @@ where Tree.Element == _KeyValueTuple_<Key,V>
     self._start = start
     self._begin = __tree_.__begin_node
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func next() -> Key? {

@@ -61,3 +61,11 @@
 
 - `Index`及び`___Iterator`は、Stridableにしない。した場合、標準のSequence実装が生えるし、標準のSequence実装は毎要素アクセス毎に範囲チェックをし、これが毎度O(log n)かかるため、性能が悲惨になる。この問題を回避する標準的な方法が見つかるまで、Stridableにはしない。
 
+- コレクションのinitは軽めのモノについて、inlinable, inline alwaysにする。
+- 内部データ構造のinitは全てinlinable, inline alwaysにする
+
+- それ以外の部分についてinline alwaysにするかどうかの方針は定まっていません。
+- 頻繁に呼ばれている箇所が計測で見つかり、そこをinline alwaysにすることで速くなることが確認できた上でするのが望ましいです。
+- 正直感覚的にinline alwaysにしてしまう場合があったりしますが、しない方が速いケースもあるのでなんとも言いがたいです。
+
+

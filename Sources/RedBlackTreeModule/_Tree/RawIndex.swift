@@ -29,6 +29,7 @@ import Foundation
 /// nullptrはオプショナルで表現する想定で、nullptrを保持しない
 ///
 /// 本当の生ポインタはIntのtypealiasだが、それを晒すと間違いのもとなので、ラップしてある
+@frozen
 public
   enum RawIndex: Equatable
 {

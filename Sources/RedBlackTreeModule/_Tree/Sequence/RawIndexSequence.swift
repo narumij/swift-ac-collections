@@ -20,6 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+@frozen
 public
 struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
   

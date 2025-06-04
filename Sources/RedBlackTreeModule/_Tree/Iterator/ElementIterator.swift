@@ -20,6 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+@frozen
 public
 struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
     
@@ -58,6 +59,7 @@ struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
   }
 }
 
+@frozen
 public
 struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
   

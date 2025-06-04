@@ -20,6 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+@frozen
 public
 struct KeyIterator<Tree: Tree_IterateProtocol & Tree_KeyCompare,Key,V>: Sequence, IteratorProtocol
 where Tree.Element == _KeyValueTuple_<Key,V>, Tree.Key == Key
@@ -72,6 +73,7 @@ extension KeyIterator: Comparable {
   }
 }
 
+@frozen
 public
 struct ReversedKeyIterator<Tree: Tree_IterateProtocol,Key,V>: Sequence, IteratorProtocol
 where Tree.Element == _KeyValueTuple_<Key,V>

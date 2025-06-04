@@ -24,11 +24,13 @@ import Foundation
 
 extension ___Tree {
   
+  @nonobjc
   @inlinable @inline(__always)
   public func bitCeil(_ n: Int) -> Int {
     n <= 1 ? 1 : 1 << (Int.bitWidth - (n - 1).leadingZeroBitCount)
   }
   
+  @nonobjc
   @inlinable @inline(__always)
   public func growthFormula(count: Int) -> Int {
     // アロケーターにとって負担が軽そうな、2のべき付近を要求することにした。
@@ -38,6 +40,7 @@ extension ___Tree {
     return (rawSize - MemoryLayout<Header>.stride) / MemoryLayout<Node>.stride
   }
 
+  @nonobjc
   @inlinable
   @inline(__always)
   func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
@@ -73,12 +76,14 @@ extension ___Tree {
       growthFormula(count: minimumCapacity))
   }
 
+  @nonobjc
   @inlinable
   @inline(__always)
   func copy() -> Tree {
     copy(minimumCapacity: _header.initializedCount)
   }
 
+  @nonobjc
   @inlinable
   @inline(__always)
   func copy(growthCapacityTo capacity: Int, linearly: Bool) -> Tree {
@@ -87,6 +92,7 @@ extension ___Tree {
         growCapacity(to: capacity, linearly: linearly))
   }
 
+  @nonobjc
   @inlinable
   @inline(__always)
   func copy(growthCapacityTo capacity: Int, limit: Int, linearly: Bool) -> Tree {
@@ -100,6 +106,7 @@ extension ___Tree {
 
 extension ___Tree {
 
+  @nonobjc
   @inlinable
   @inline(__always)
   static func _isKnownUniquelyReferenced(tree: inout Tree) -> Bool {
@@ -110,12 +117,14 @@ extension ___Tree {
     #endif
   }
 
+  @nonobjc
   @inlinable
   @inline(__always)
   static func ensureUniqueAndCapacity(tree: inout Tree) {
     ensureUniqueAndCapacity(tree: &tree, minimumCapacity: tree._header.count + 1)
   }
 
+  @nonobjc
   @inlinable
   @inline(__always)
   static func ensureUniqueAndCapacity(tree: inout Tree, minimumCapacity: Int) {
@@ -125,12 +134,14 @@ extension ___Tree {
     }
   }
 
+  @nonobjc
   @inlinable
   @inline(__always)
   static func ensureCapacity(tree: inout Tree) {
     ensureCapacity(tree: &tree, minimumCapacity: tree._header.count + 1)
   }
 
+  @nonobjc
   @inlinable
   @inline(__always)
   static func ensureCapacity(tree: inout Tree, minimumCapacity: Int) {

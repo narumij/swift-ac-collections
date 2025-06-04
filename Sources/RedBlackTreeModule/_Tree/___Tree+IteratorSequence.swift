@@ -22,6 +22,7 @@
 
 extension ___Tree {
   
+  @frozen
   public
   struct ForwardIterator: IteratorProtocol {
     
@@ -54,6 +55,7 @@ extension ___Tree {
     }
   }
   
+  @frozen
   public
   struct BackwordIterator: Sequence, IteratorProtocol {
     
@@ -83,6 +85,7 @@ extension ___Tree {
     }
   }
   
+  @frozen
   public
   struct ___IteratorSequence: Sequence {
     

@@ -212,13 +212,13 @@ extension RedBlackTreeDictionary {
 // MARK: - Accessing Keys and Values
 
 extension RedBlackTreeDictionary {
-  
+
   /// - Complexity: O(1)
   @inlinable
   public var first: Element? {
     isEmpty ? nil : self[startIndex]
   }
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   public var last: Element? {
@@ -394,7 +394,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-
 extension RedBlackTreeDictionary {
 
   @inlinable
@@ -406,7 +405,7 @@ extension RedBlackTreeDictionary {
 // MARK: - Combining Dictionary
 
 extension RedBlackTreeDictionary {
-  
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -417,7 +416,7 @@ extension RedBlackTreeDictionary {
     _ensureUnique()
     try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -443,7 +442,7 @@ extension RedBlackTreeDictionary {
     _ensureUnique()
     try ___merge_unique(other, uniquingKeysWith: combine)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -455,7 +454,7 @@ extension RedBlackTreeDictionary {
     try result.merge(other, uniquingKeysWith: combine)
     return result
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -467,7 +466,7 @@ extension RedBlackTreeDictionary {
     try result.merge(other, uniquingKeysWith: combine)
     return result
   }
-  
+
   /// `self` と `other` をマージした新しい辞書を返します。
   ///
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
@@ -499,7 +498,7 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary {
-  
+
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
@@ -514,7 +513,7 @@ extension RedBlackTreeDictionary {
     _ = __tree_.erase(__i)
     return value
   }
-  
+
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -525,7 +524,7 @@ extension RedBlackTreeDictionary {
     }
     return remove(at: startIndex)
   }
-  
+
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
@@ -536,7 +535,7 @@ extension RedBlackTreeDictionary {
     }
     return remove(at: index(before: endIndex))
   }
-  
+
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -548,7 +547,7 @@ extension RedBlackTreeDictionary {
     }
     return element
   }
-  
+
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -560,7 +559,7 @@ extension RedBlackTreeDictionary {
     }
     return element
   }
-  
+
   /// Removes the specified subrange of elements from the collection.
   ///
   /// - Important: 削除後は、subrangeのインデックスが無効になります。
@@ -572,11 +571,12 @@ extension RedBlackTreeDictionary {
   public mutating func removeSubrange<R: RangeExpression>(
     _ bounds: R
   ) where R.Bound == Index {
-    
+
     let bounds = bounds.relative(to: self)
     _ensureUnique()
-    ___remove(from: bounds.lowerBound.rawValue,
-              to:  bounds.upperBound.rawValue)
+    ___remove(
+      from: bounds.lowerBound.rawValue,
+      to: bounds.upperBound.rawValue)
   }
 }
 
@@ -618,7 +618,7 @@ extension RedBlackTreeDictionary {
 // MARK: Finding Elements
 
 extension RedBlackTreeDictionary {
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   public func contains(key: Key) -> Bool {
@@ -668,7 +668,7 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary {
-  
+
   /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
@@ -933,7 +933,7 @@ extension RedBlackTreeDictionary: CustomDebugStringConvertible {
         } else {
           result += ", "
         }
-        
+
         debugPrint(key, value, separator: ": ", terminator: "", to: &result)
       }
       result += "]"

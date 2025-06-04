@@ -124,7 +124,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-
 extension RedBlackTreeMultiMap {
   // Dictionaryからぱくってきたが、割と様子見
 
@@ -145,7 +144,7 @@ extension RedBlackTreeMultiMap {
         Tree.ensureCapacity(tree: &tree)
       }
       // バランシングの計算量がO(log *n*)
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k,__v))
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k, __v))
       assert(tree.__tree_invariant(tree.__root()))
     }
     self._storage = .init(tree: tree)
@@ -188,13 +187,13 @@ extension RedBlackTreeMultiMap {
 // MARK: - Accessing Keys and Values
 
 extension RedBlackTreeMultiMap {
-  
+
   /// - Complexity: O(1)
   @inlinable
   public var first: Element? {
     isEmpty ? nil : self[startIndex]
   }
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   public var last: Element? {
@@ -317,7 +316,7 @@ extension RedBlackTreeMultiMap {
     _ensureUniqueAndCapacity(to: count + other.count)
     ___tree_merge_multi(other.__tree_)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -331,7 +330,7 @@ extension RedBlackTreeMultiMap {
   ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key,Value) {
+  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
     _ensureUnique()
     ___merge_multi(other)
   }
@@ -345,7 +344,7 @@ extension RedBlackTreeMultiMap {
     result.insert(contentsOf: other)
     return result
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -359,7 +358,8 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  public func inserting<S>(contentsOf other: __owned S) -> Self where S: Sequence, S.Element == (Key,Value) {
+  public func inserting<S>(contentsOf other: __owned S) -> Self
+  where S: Sequence, S.Element == (Key, Value) {
     var result = self
     result.insert(contentsOf: other)
     return result
@@ -367,43 +367,41 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
-  
+
   /// - Complexity: O(*n* log *n* + *n* log(*m + n*))
   @inlinable
   public static func + <Other>(lhs: Other, rhs: Self) -> Self
-  where Other : Sequence, Other.Element == (Key,Value)
-  {
+  where Other: Sequence, Other.Element == (Key, Value) {
     .init(multiKeysWithValues: lhs).inserting(contentsOf: rhs)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + <Other>(lhs: Self, rhs: Other) -> Self
-  where Other : Sequence, Other.Element == (Key,Value)
-  {
+  where Other: Sequence, Other.Element == (Key, Value) {
     lhs.inserting(contentsOf: rhs)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + (lhs: Self, rhs: Self) -> Self {
     lhs.inserting(contentsOf: rhs)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + <Other>(lhs: Self, rhs: Other) -> Self
-  where Other : RangeReplaceableCollection, Other.Element == (Key,Value) {
+  where Other: RangeReplaceableCollection, Other.Element == (Key, Value) {
     lhs.inserting(contentsOf: rhs)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func += <Other>(lhs: inout Self, rhs: Other)
-  where Other : Sequence, Other.Element == (Key,Value) {
+  where Other: Sequence, Other.Element == (Key, Value) {
     lhs.insert(contentsOf: rhs)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func += (lhs: inout Self, rhs: Self) {
@@ -465,7 +463,7 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
-  
+
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -476,7 +474,7 @@ extension RedBlackTreeMultiMap {
     }
     return remove(at: startIndex)
   }
-  
+
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
@@ -487,7 +485,7 @@ extension RedBlackTreeMultiMap {
     }
     return remove(at: index(before: endIndex))
   }
-  
+
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -499,7 +497,7 @@ extension RedBlackTreeMultiMap {
     }
     return element
   }
-  
+
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -511,7 +509,7 @@ extension RedBlackTreeMultiMap {
     }
     return element
   }
-  
+
   /// Removes the specified subrange of elements from the collection.
   ///
   /// - Important: 削除後は、subrangeのインデックスが無効になります。
@@ -523,11 +521,12 @@ extension RedBlackTreeMultiMap {
   public mutating func removeSubrange<R: RangeExpression>(
     _ bounds: R
   ) where R.Bound == Index {
-    
+
     let bounds = bounds.relative(to: self)
     _ensureUnique()
-    ___remove(from: bounds.lowerBound.rawValue,
-              to:  bounds.upperBound.rawValue)
+    ___remove(
+      from: bounds.lowerBound.rawValue,
+      to: bounds.upperBound.rawValue)
   }
 }
 
@@ -567,7 +566,7 @@ extension RedBlackTreeMultiMap {
 // MARK: Finding Elements
 
 extension RedBlackTreeMultiMap {
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   public func contains(key: Key) -> Bool {
@@ -617,7 +616,7 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
-  
+
   /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
@@ -889,7 +888,7 @@ extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
         } else {
           result += ", "
         }
-        
+
         debugPrint(key, value, separator: ": ", terminator: "", to: &result)
       }
       result += "]"

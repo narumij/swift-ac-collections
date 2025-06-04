@@ -82,25 +82,25 @@ extension ___RedBlackTreeBase {
 // MARK: - Index
 
 extension ___RedBlackTreeBase {
-  
+
   @usableFromInline
   typealias Index = Tree.Index
-  
+
   @inlinable @inline(__always)
   func ___index(_ p: _NodePtr) -> Index {
     __tree_.makeIndex(rawValue: p)
   }
-  
+
   @inlinable @inline(__always)
   func ___index_or_nil(_ p: _NodePtr) -> Index? {
     p == .nullptr ? nil : ___index(p)
   }
-  
+
   @inlinable @inline(__always)
   func ___index_or_nil(_ p: _NodePtr?) -> Index? {
     p.map { ___index($0) }
   }
-  
+
   @inlinable @inline(__always)
   func ___raw_index(_ p: _NodePtr) -> RawIndex {
     __tree_.makeRawIndex(rawValue: p)
@@ -375,7 +375,7 @@ extension ___RedBlackTreeBase {
 #endif
 
 extension ___RedBlackTreeBase {
-  
+
   @inlinable
   @inline(__always)
   @discardableResult
@@ -414,13 +414,13 @@ extension ___RedBlackTreeBase {
 }
 
 extension ___RedBlackTreeBase {
-  
+
   @inlinable
   @inline(__always)
   public func ___convert(_ rawIndex: RawIndex) -> Index {
     __tree_.makeIndex(rawValue: rawIndex.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   func ___convert(_ rawIndex: Index) -> RawIndex {
@@ -429,19 +429,19 @@ extension ___RedBlackTreeBase {
 }
 
 extension ___RedBlackTreeBase {
-  
+
   @inlinable
   @inline(__always)
   public func ___prev(_ i: _NodePtr) -> _NodePtr {
     __tree_.__tree_prev_iter(i)
   }
-  
+
   @inlinable
   @inline(__always)
   public func ___next(_ i: _NodePtr) -> _NodePtr {
     __tree_.__tree_next_iter(i)
   }
-  
+
   @inlinable
   @inline(__always)
   public func ___advanced(_ i: _NodePtr, by distance: Int) -> _NodePtr {
@@ -450,7 +450,7 @@ extension ___RedBlackTreeBase {
 }
 
 extension ___RedBlackTreeBase {
-  
+
   @inlinable
   @inline(__always)
   public func ___is_valid(_ index: _NodePtr) -> Bool {
@@ -459,7 +459,7 @@ extension ___RedBlackTreeBase {
 }
 
 extension ___RedBlackTreeBase {
-  
+
   @inlinable
   @inline(__always)
   public mutating func ___element(at ptr: _NodePtr) -> Element? {
@@ -474,13 +474,13 @@ extension ___RedBlackTreeBase {
 }
 
 extension ___RedBlackTreeBase {
-  
+
   @inlinable
   @inline(__always)
   public __consuming func ___makeIterator() -> NodeIterator<Tree> {
     NodeIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
-  
+
   @inlinable
   @inline(__always)
   public __consuming func ___makeIterator() -> NodeElementIterator<Tree> {

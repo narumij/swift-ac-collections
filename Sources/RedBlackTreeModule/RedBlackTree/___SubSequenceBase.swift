@@ -45,7 +45,7 @@ extension ___SubSequenceBase {
   func ___index(_ rawValue: _NodePtr) -> Index {
     .init(tree: __tree_, rawValue: rawValue)
   }
-  
+
   @inlinable @inline(__always)
   func ___raw_index(_ p: _NodePtr) -> RawIndex {
     __tree_.makeRawIndex(rawValue: p)
@@ -76,15 +76,15 @@ extension ___SubSequenceBase {
   @inline(__always)
   public func forEach(_ body: (RawIndex, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___raw_index($0),__tree_[$0])
+      try body(___raw_index($0), __tree_[$0])
     }
   }
-  
+
   @inlinable
   @inline(__always)
   public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body($0,__tree_[$0])
+      try body($0, __tree_[$0])
     }
   }
 }
@@ -321,7 +321,7 @@ extension ___SubSequenceBase {
 }
 
 extension ___SubSequenceBase {
-  
+
   @inlinable
   @inline(__always)
   mutating func ___element(at ptr: _NodePtr) -> Element? {
@@ -339,7 +339,7 @@ extension ___SubSequenceBase {
   public __consuming func ___makeIterator() -> NodeIterator<Tree> {
     NodeIterator(tree: __tree_, start: _start, end: _end)
   }
-  
+
   @inlinable
   @inline(__always)
   public __consuming func ___makeIterator() -> NodeElementIterator<Tree> {
@@ -348,17 +348,21 @@ extension ___SubSequenceBase {
 }
 
 extension ___SubSequenceBase {
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence {
+  public func elementsEqual<OtherSequence>(
+    _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence {
     try makeIterator().elementsEqual(other, by: areEquivalent)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
-  @inlinable public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence, Element == OtherSequence.Element {
+  @inlinable public func lexicographicallyPrecedes<OtherSequence>(
+    _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
     try makeIterator().lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }

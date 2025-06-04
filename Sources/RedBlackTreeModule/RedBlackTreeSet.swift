@@ -167,13 +167,13 @@ extension RedBlackTreeSet {
 // MARK: - Accessing Elements
 
 extension RedBlackTreeSet {
-  
+
   /// - Complexity: O(1)
   @inlinable
   public var first: Element? {
     isEmpty ? nil : self[startIndex]
   }
-  
+
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public var last: Element? {
@@ -231,7 +231,7 @@ extension RedBlackTreeSet {
 // MARK: - Combining Set
 
 extension RedBlackTreeSet {
-  
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -240,7 +240,7 @@ extension RedBlackTreeSet {
     _ensureUnique()
     ___tree_merge_unique(other.__tree_)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -249,7 +249,7 @@ extension RedBlackTreeSet {
     _ensureUnique()
     ___tree_merge_unique(other.__tree_)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -258,7 +258,7 @@ extension RedBlackTreeSet {
     _ensureUnique()
     ___merge_unique(other)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -268,7 +268,7 @@ extension RedBlackTreeSet {
     result.merge(other)
     return result
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -278,7 +278,7 @@ extension RedBlackTreeSet {
     result.merge(other)
     return result
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -294,36 +294,34 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*n* log *n* + *n* log(*m + n*))
   @inlinable
   public static func + <Other>(lhs: Other, rhs: Self) -> Self
-  where Other : Sequence, Element == Other.Element
-  {
+  where Other: Sequence, Element == Other.Element {
     .init(lhs).merging(rhs)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + <Other>(lhs: Self, rhs: Other) -> Self
-  where Other : Sequence, Element == Other.Element
-  {
+  where Other: Sequence, Element == Other.Element {
     lhs.merging(rhs)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + (lhs: Self, rhs: Self) -> Self {
     lhs.merging(rhs)
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + <Other>(lhs: Self, rhs: Other) -> Self
-  where Other : RangeReplaceableCollection, Self.Element == Other.Element {
+  where Other: RangeReplaceableCollection, Self.Element == Other.Element {
     lhs.merging(rhs)
   }
 
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func += <Other>(lhs: inout Self, rhs: Other)
-  where Other : Sequence, Element == Other.Element {
+  where Other: Sequence, Element == Other.Element {
     lhs.merge(rhs)
   }
 
@@ -415,11 +413,12 @@ extension RedBlackTreeSet {
   public mutating func removeSubrange<R: RangeExpression>(
     _ bounds: R
   ) where R.Bound == Index {
-    
+
     let bounds = bounds.relative(to: self)
     _ensureUnique()
-    ___remove(from: bounds.lowerBound.rawValue,
-              to:  bounds.upperBound.rawValue)
+    ___remove(
+      from: bounds.lowerBound.rawValue,
+      to: bounds.upperBound.rawValue)
   }
 }
 
@@ -461,7 +460,7 @@ extension RedBlackTreeSet {
 // MARK: Finding Elements
 
 extension RedBlackTreeSet {
-  
+
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func contains(_ member: Element) -> Bool {
@@ -534,7 +533,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-  
+
   /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
@@ -654,23 +653,21 @@ extension RedBlackTreeSet.SubSequence: Comparable {
 }
 
 extension RedBlackTreeSet.SubSequence {
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence : Sequence, Element == OtherSequence.Element
-  {
-      elementsEqual(other, by: Tree.___key_equiv)
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    elementsEqual(other, by: Tree.___key_equiv)
   }
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence : Sequence, Element == OtherSequence.Element
-  {
-      lexicographicallyPrecedes(other, by: Tree.___key_comp)
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    lexicographicallyPrecedes(other, by: Tree.___key_comp)
   }
 }
 
@@ -754,7 +751,7 @@ extension RedBlackTreeSet: CustomDebugStringConvertible {
       } else {
         result += ", "
       }
-      
+
       debugPrint(element, terminator: "", to: &result)
     }
     result += "])"
@@ -796,23 +793,20 @@ extension RedBlackTreeSet: Comparable {
 // MARK: -
 
 extension RedBlackTreeSet {
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence : Sequence, Element == OtherSequence.Element
-  {
-      elementsEqual(other, by: Tree.___key_equiv)
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    elementsEqual(other, by: Tree.___key_equiv)
   }
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence : Sequence, Element == OtherSequence.Element
-  {
-      lexicographicallyPrecedes(other, by: Tree.___key_comp)
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    lexicographicallyPrecedes(other, by: Tree.___key_comp)
   }
 }
-

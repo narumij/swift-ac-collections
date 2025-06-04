@@ -21,4 +21,4 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeSubSequence: ___RedBlackTree, ValueComparer & CompareTrait { }
+protocol ___RedBlackTreeSubSequence: ___RedBlackTree, ValueComparer & CompareTrait {}

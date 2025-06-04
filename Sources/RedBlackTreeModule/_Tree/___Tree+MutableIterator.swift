@@ -26,7 +26,7 @@ extension ___Tree {
 
   @usableFromInline
   typealias Storage = ___Storage<VC>
-  
+
   @frozen
   @usableFromInline
   struct ___MutableIterator {
@@ -36,15 +36,17 @@ extension ___Tree {
 
     // __tree_max()を削るとO(1)動作となることが分かったので、
     // 一旦それ以外の動作について削っている。
-    
-    public var __parent: _NodePtr
-    public var __child: _NodeRef
+
+    @usableFromInline
+    var __parent: _NodePtr
+    @usableFromInline
+    var __child: _NodeRef
 
     // MARK: -
 
     @inlinable
     @inline(__always)
-    internal init(_storage: ___Storage<VC>) {
+    init(_storage: ___Storage<VC>) {
       self._storage = _storage
       (__parent, __child) = _storage.tree.___max_ref()
     }
@@ -56,7 +58,7 @@ extension ___Tree {
     }
 
     @inlinable
-    public var pointee: Element {
+    var pointee: Element {
       get { _tree[_tree.__tree_max(_tree.__root())] }
       set {
         Tree.ensureUniqueAndCapacity(tree: &_tree)
@@ -66,12 +68,12 @@ extension ___Tree {
     }
 
     @inlinable
-    public mutating func ___next() {
+    mutating func ___next() {
       // 未実装
     }
 
     @inlinable
-    public mutating func ___prev() {
+    mutating func ___prev() {
       // 未実装
     }
   }

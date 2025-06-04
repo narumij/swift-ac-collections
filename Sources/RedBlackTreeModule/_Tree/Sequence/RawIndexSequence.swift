@@ -21,15 +21,14 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public
-struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
-  
+public struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
+
   @usableFromInline
   let __tree_: Tree
-  
+
   @usableFromInline
   var _start, _end: _NodePtr
-  
+
   @inlinable
   @inline(__always)
   internal init(tree: Tree) where Tree: BeginNodeProtocol & EndNodeProtocol {
@@ -38,7 +37,7 @@ struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
       start: tree.__begin_node,
       end: tree.__end_node())
   }
-  
+
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -46,12 +45,12 @@ struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
     _start = start
     _end = end
   }
-  
+
   @inlinable
   public __consuming func makeIterator() -> RawIndexIterator<Tree> {
     .init(tree: __tree_, start: _start, end: _end)
   }
-  
+
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
@@ -62,7 +61,7 @@ struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
       try body(RawIndex(__c))
     }
   }
-  
+
   @inlinable
   public __consuming func reversed() -> ReversedRawIndexIterator<Tree> {
     .init(tree: __tree_, start: _start, end: _end)

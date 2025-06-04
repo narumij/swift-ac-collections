@@ -21,17 +21,16 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 extension ___Tree {
-  
+
   @frozen
-  public
-  struct ForwardIterator: IteratorProtocol {
-    
+  public struct ForwardIterator: IteratorProtocol {
+
     @usableFromInline
     let __tree_: ___Tree
-    
+
     @usableFromInline
     var _current, _next, _end: _NodePtr
-    
+
     @inlinable
     @inline(__always)
     internal init(tree: ___Tree, start: _NodePtr, end: _NodePtr) {
@@ -40,9 +39,9 @@ extension ___Tree {
       self._end = end
       self._next = start == .end ? .end : tree.__tree_next(start)
     }
-    
+
     // 性能変化の反応が過敏なので、慎重さが必要っぽい。
-    
+
     @inlinable
     @inline(__always)
     public mutating func next() -> ___Iterator? {
@@ -54,14 +53,13 @@ extension ___Tree {
       return __tree_.makeIndex(rawValue: _current)
     }
   }
-  
+
   @frozen
-  public
-  struct BackwordIterator: Sequence, IteratorProtocol {
-    
+  public struct BackwordIterator: Sequence, IteratorProtocol {
+
     @usableFromInline
     let __tree_: ___Tree
-    
+
     @usableFromInline
     var _current, _next, _start, _begin: _NodePtr
 
@@ -74,7 +72,7 @@ extension ___Tree {
       self._start = start
       self._begin = __tree_.__begin_node
     }
-    
+
     @inlinable
     @inline(__always)
     public mutating func next() -> ___Iterator? {
@@ -84,19 +82,18 @@ extension ___Tree {
       return __tree_.makeIndex(rawValue: _current)
     }
   }
-  
+
   @frozen
-  public
-  struct ___IteratorSequence: Sequence {
-    
+  public struct ___IteratorSequence: Sequence {
+
     @usableFromInline
     let __tree_: ___Tree
-    
+
     @usableFromInline
     var _start, _end: _NodePtr
-    
+
     public typealias Index = ___Iterator
-    
+
     @inlinable
     @inline(__always)
     internal init(tree: ___Tree) {
@@ -105,7 +102,7 @@ extension ___Tree {
         start: tree.__begin_node,
         end: tree.__end_node())
     }
-    
+
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -113,12 +110,12 @@ extension ___Tree {
       _start = start
       _end = end
     }
-    
+
     @inlinable
     public __consuming func makeIterator() -> ForwardIterator {
       .init(tree: __tree_, start: _start, end: _end)
     }
-    
+
     @inlinable
     public __consuming func reversed() -> BackwordIterator {
       .init(tree: __tree_, start: _start, end: _end)
@@ -127,36 +124,31 @@ extension ___Tree {
 }
 
 extension ___Tree.___IteratorSequence: Collection, BidirectionalCollection {
-  
-  public
-  func index(after i: Index) -> Index {
+
+  public func index(after i: Index) -> Index {
     return i.advanced(by: 1)
-//    i.___next_
+    //    i.___next_
   }
-  
-  public
-  func index(before i: Index) -> Index {
+
+  public func index(before i: Index) -> Index {
     return i.advanced(by: -1)
-//    i.___prev_
+    //    i.___prev_
   }
-  
-  public
-  subscript(position: Index) -> Index {
+
+  public subscript(position: Index) -> Index {
     __tree_.makeIndex(rawValue: position.rawValue)
   }
-  
-  public
-  var startIndex: Index {
+
+  public var startIndex: Index {
     __tree_.makeIndex(rawValue: _start)
   }
-  
-  public
-  var endIndex: Index {
+
+  public var endIndex: Index {
     __tree_.makeIndex(rawValue: _end)
   }
-  
+
   public typealias SubSequence = Self
-  
+
   public subscript(bounds: Range<Index>) -> SubSequence {
     .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }

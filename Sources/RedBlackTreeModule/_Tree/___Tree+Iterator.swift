@@ -35,7 +35,7 @@ extension ___Tree {
 
     @usableFromInline
     var _rawValue: Int
-    
+
     @inlinable
     var rawValue: _NodePtr {
       @inline(__always)
@@ -47,9 +47,12 @@ extension ___Tree {
       }
       _modify { yield &_rawValue }
     }
-    
+
     @inlinable
-    var ___unchecked_rawValue: _NodePtr { _rawValue }
+    var ___unchecked_rawValue: _NodePtr {
+      @inline(__always)
+      _read { yield _rawValue }
+    }
 
     // MARK: -
 
@@ -149,13 +152,15 @@ extension ___Tree.___Iterator {
     return prev
   }
 
-  @inlinable @inline(__always)
+  @inlinable
+  @inline(__always)
   mutating func ___next() {
     assert(_rawValue != .end)
     _rawValue = __tree_.__tree_next_iter(_rawValue)
   }
 
-  @inlinable @inline(__always)
+  @inlinable
+  @inline(__always)
   mutating func ___prev() {
     assert(_rawValue != __tree_.__begin_node)
     _rawValue = __tree_.__tree_prev_iter(_rawValue)
@@ -203,14 +208,17 @@ extension ___Tree.___Iterator {
   @inlinable
   @inline(__always)
   public var pointee: Element? {
-    guard
-      __tree_.__parent_(_rawValue) != .nullptr,
-      rawValue != .end,
-      __tree_.___initialized_contains(_rawValue)
-    else {
-      return nil
+    _read {
+      guard
+        __tree_.__parent_(_rawValue) != .nullptr,
+        rawValue != .end,
+        __tree_.___initialized_contains(_rawValue)
+      else {
+        yield nil
+        return
+      }
+      yield ___pointee
     }
-    return ___pointee
   }
 }
 
@@ -221,9 +229,10 @@ extension ___Tree.___Iterator {
     __tree_.__key(___pointee)
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   var ___pointee: Element {
-    __tree_[_rawValue]
+    @inline(__always)
+    _read { yield __tree_[_rawValue] }
   }
 }
 
@@ -288,6 +297,6 @@ public func - <VC>(
 }
 
 #if swift(>=5.5)
-extension ___Tree.___Iterator: @unchecked Sendable
-where Element: Sendable {}
+  extension ___Tree.___Iterator: @unchecked Sendable
+  where Element: Sendable {}
 #endif

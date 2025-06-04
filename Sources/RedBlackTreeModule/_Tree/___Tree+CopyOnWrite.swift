@@ -23,15 +23,13 @@
 import Foundation
 
 extension ___Tree {
-  
-  @nonobjc
-  @inlinable @inline(__always)
+
+  @nonobjc @inlinable @inline(__always)
   public func bitCeil(_ n: Int) -> Int {
     n <= 1 ? 1 : 1 << (Int.bitWidth - (n - 1).leadingZeroBitCount)
   }
-  
-  @nonobjc
-  @inlinable @inline(__always)
+
+  @nonobjc @inlinable @inline(__always)
   public func growthFormula(count: Int) -> Int {
     // アロケーターにとって負担が軽そうな、2のべき付近を要求することにした。
     // ヘッダー込みで確保するべきかどうかは、ManagedBufferのソースをみておらず不明。
@@ -53,24 +51,24 @@ extension ___Tree {
 
     if minimumCapacity <= 4 {
       return Swift.max(
-      _header.initializedCount,
-      minimumCapacity
+        _header.initializedCount,
+        minimumCapacity
       )
     }
 
     if minimumCapacity <= 12 {
       return Swift.max(
-      _header.initializedCount,
-      _header.capacity + (minimumCapacity - _header.capacity) * 2
+        _header.initializedCount,
+        _header.capacity + (minimumCapacity - _header.capacity) * 2
       )
     }
-    
+
     // 手元の環境だと、サイズ24まではピタリのサイズを確保することができる
     // 小さなサイズの成長を抑制すると、ABC385Dでの使用メモリが抑えられやすい
     // 実行時間も抑制されやすいが、なぜなのかはまだ不明
-    
+
     // ABC385Dの場合、アロケータープールなんかで使いまわしが効きやすいからなのではと予想している。
-    
+
     return Swift.max(
       _header.initializedCount,
       growthFormula(count: minimumCapacity))

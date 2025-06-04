@@ -132,8 +132,7 @@ extension ___Tree {
 
 extension ___Tree {
 
-  public
-    typealias Tree = ___Tree<VC>
+  public typealias Tree = ___Tree<VC>
 
   @usableFromInline
   internal typealias VC = VC

@@ -289,49 +289,6 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(*n* log *n* + *n* log(*m + n*))
-  @inlinable
-  public static func &+ <Other>(lhs: Other, rhs: Self) -> Self
-  where Other: Sequence, Element == Other.Element {
-    .init(lhs).merging(rhs)
-  }
-
-  /// - Complexity: O(*n* log(*m + n*))
-  @inlinable
-  static func &+ <Other>(lhs: Self, rhs: Other) -> Self
-  where Other: Sequence, Element == Other.Element {
-    lhs.merging(rhs)
-  }
-
-  /// - Complexity: O(*n* log(*m + n*))
-  @inlinable
-  static func &+ (lhs: Self, rhs: Self) -> Self {
-    lhs.merging(rhs)
-  }
-
-  /// - Complexity: O(*n* log(*m + n*))
-  @inlinable
-  static func &+ <Other>(lhs: Self, rhs: Other) -> Self
-  where Other: RangeReplaceableCollection, Self.Element == Other.Element {
-    lhs.merging(rhs)
-  }
-
-  /// - Complexity: O(*n* log(*m + n*))
-  @inlinable
-  static func &+= <Other>(lhs: inout Self, rhs: Other)
-  where Other: Sequence, Element == Other.Element {
-    lhs.merge(rhs)
-  }
-
-  /// - Complexity: O(*n* log(*m + n*))
-  @inlinable
-  static func &+= (lhs: inout Self, rhs: Self) {
-    lhs.merge(rhs)
-  }
-}
-
 // MARK: - Removal
 
 extension RedBlackTreeSet {

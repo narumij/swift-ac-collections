@@ -370,14 +370,14 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(*n* log *n* + *n* log(*m + n*))
   @inlinable
-  public static func + <Other>(lhs: Other, rhs: Self) -> Self
+  public static func &+ <Other>(lhs: Other, rhs: Self) -> Self
   where Other: Sequence, Other.Element == (Key, Value) {
     .init(multiKeysWithValues: lhs).inserting(contentsOf: rhs)
   }
 
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
-  static func + <Other>(lhs: Self, rhs: Other) -> Self
+  static func &+ <Other>(lhs: Self, rhs: Other) -> Self
   where Other: Sequence, Other.Element == (Key, Value) {
     lhs.inserting(contentsOf: rhs)
   }
@@ -390,14 +390,14 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
-  static func + <Other>(lhs: Self, rhs: Other) -> Self
+  static func &+ <Other>(lhs: Self, rhs: Other) -> Self
   where Other: RangeReplaceableCollection, Other.Element == (Key, Value) {
     lhs.inserting(contentsOf: rhs)
   }
 
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
-  static func += <Other>(lhs: inout Self, rhs: Other)
+  static func &+= <Other>(lhs: inout Self, rhs: Other)
   where Other: Sequence, Other.Element == (Key, Value) {
     lhs.insert(contentsOf: rhs)
   }

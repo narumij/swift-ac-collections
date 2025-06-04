@@ -749,6 +749,8 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+// MARK: - Sendable
+
 #if swift(>=5.5)
 extension RedBlackTreeMultiSet: @unchecked Sendable
 where Element: Sendable {}

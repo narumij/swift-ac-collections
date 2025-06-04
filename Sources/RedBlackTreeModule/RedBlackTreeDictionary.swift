@@ -998,6 +998,8 @@ extension RedBlackTreeDictionary where Value: Comparable {
   }
 }
 
+// MARK: - Sendable
+
 #if swift(>=5.5)
 extension RedBlackTreeDictionary: @unchecked Sendable
 where Element: Sendable {}

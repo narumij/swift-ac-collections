@@ -103,7 +103,7 @@ final class RedBlackTreeSetBidirectionalCollectionTests: XCTestCase {
 
     // 事後条件:
     // - slice.map { $0 } == [2,3,4]
-    XCTAssertEqual(slice.map { $0 }, [2, 3, 4])
+    XCTAssertEqual(slice + [], [2, 3, 4])
   }
 
   /// formIndex(after:)とformIndex(before:)が正しく動作すること

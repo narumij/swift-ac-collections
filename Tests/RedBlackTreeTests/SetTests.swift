@@ -259,7 +259,7 @@ final class SetTests: XCTestCase {
 
   func testSequence() throws {
     let set = RedBlackTreeSet<Int>([5, 2, 3, 1, 0])
-    XCTAssertEqual(set.map { $0 }, [0, 1, 2, 3, 5])
+    XCTAssertEqual(set + [], [0, 1, 2, 3, 5])
   }
 
   func testArrayAccess1() throws {
@@ -443,7 +443,7 @@ final class SetTests: XCTestCase {
 
   func testLiteral() throws {
     let set: RedBlackTreeSet<Int> = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
-    XCTAssertEqual(set.map { $0 }, [1, 2, 3, 4, 5])
+    XCTAssertEqual(set + [], [1, 2, 3, 4, 5])
   }
 
   class A: Hashable, Comparable {
@@ -615,7 +615,7 @@ final class SetTests: XCTestCase {
   
   func testSubsequence3() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-    XCTAssertEqual(set[1 ... 5].map { $0 }, [1, 2, 3, 4, 5])
+    XCTAssertEqual(set[1 ... 5] + [], [1, 2, 3, 4, 5])
   }
 
   func testSubsequence4() throws {

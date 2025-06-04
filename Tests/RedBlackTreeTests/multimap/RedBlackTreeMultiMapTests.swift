@@ -25,7 +25,7 @@ final class RedBlackTreeMultiMapTests: XCTestCase {
     let valuesX = map.values(forKey: "x")
     XCTAssertEqual(valuesX.sorted(), [10, 20])
     let valuesY = map.values(forKey: "y")
-    XCTAssertEqual(valuesY.map { $0 }, [30])
+    XCTAssertEqual(valuesY + [], [30])
     XCTAssertEqual(map.count(forKey: "x"), 2)
   }
 

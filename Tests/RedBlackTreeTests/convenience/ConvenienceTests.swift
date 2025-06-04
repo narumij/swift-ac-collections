@@ -461,12 +461,12 @@ final class ConvenienceTests: XCTestCase {
   func testRemoveSubrange1() throws {
     var set: RedBlackTreeSet<Int> = [2,4,6,8,10]
     set.removeSubrange(3 ..< 8)
-    XCTAssertEqual(set.map { $0 }, [2,8,10])
+    XCTAssertEqual(set + [], [2,8,10])
   }
   
   func testRemoveSubrange2() throws {
     var set: RedBlackTreeSet<Int> = [2,4,6,8,10]
     set.removeSubrange(3 ... 8)
-    XCTAssertEqual(set.map { $0 }, [2,10])
+    XCTAssertEqual(set + [], [2,10])
   }
 }

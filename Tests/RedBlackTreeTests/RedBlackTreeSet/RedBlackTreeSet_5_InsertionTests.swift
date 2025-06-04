@@ -22,7 +22,7 @@ final class RedBlackTreeSetInsertionTests: XCTestCase {
     // - map { $0 } == [3]
     XCTAssertTrue(result.inserted)
     XCTAssertEqual(set.count, 1)
-    XCTAssertEqual(set.map { $0 }, [3])
+    XCTAssertEqual(set + [], [3])
   }
 
   /// 同じ要素を再挿入した場合、挿入結果.insertedがfalseであり集合に重複はないこと
@@ -39,7 +39,7 @@ final class RedBlackTreeSetInsertionTests: XCTestCase {
     // - map { $0 } == [3]
     XCTAssertFalse(result.inserted)
     XCTAssertEqual(set.count, 1)
-    XCTAssertEqual(set.map { $0 }, [3])
+    XCTAssertEqual(set + [], [3])
   }
 
   /// 複数要素をinsert(contentsOf:)で挿入した場合、全要素が含まれること
@@ -54,7 +54,7 @@ final class RedBlackTreeSetInsertionTests: XCTestCase {
     // - 要素数 == 5
     // - 要素は昇順（順序保証仕様）
     XCTAssertEqual(set.count, 5)
-    XCTAssertEqual(set.map { $0 }, [1, 2, 3, 4, 5])
+    XCTAssertEqual(set + [], [1, 2, 3, 4, 5])
   }
 
   /// 別のRedBlackTreeSetの要素をinsert(contentsOf:)で追加できること
@@ -70,7 +70,7 @@ final class RedBlackTreeSetInsertionTests: XCTestCase {
     // - 要素数 == 4
     // - 要素は昇順（順序保証仕様）
     XCTAssertEqual(setA.count, 4)
-    XCTAssertEqual(setA.map { $0 }, [1, 2, 3, 4])
+    XCTAssertEqual(setA + [], [1, 2, 3, 4])
   }
 
   /// 別のRedBlackTreeMultiSetの要素をinsert(contentsOf:)で追加できること
@@ -86,7 +86,7 @@ final class RedBlackTreeSetInsertionTests: XCTestCase {
     // - 要素数 == 4（重複要素は無視）
     // - 要素は昇順（順序保証仕様）
     XCTAssertEqual(set.count, 4)
-    XCTAssertEqual(set.map { $0 }, [1, 2, 3, 4])
+    XCTAssertEqual(set + [], [1, 2, 3, 4])
   }
 
   /// update(with:)で既存要素が更新されず、新規要素は追加されること
@@ -106,6 +106,6 @@ final class RedBlackTreeSetInsertionTests: XCTestCase {
     XCTAssertNil(updateNew)
     XCTAssertEqual(updateExisting, 3)
     XCTAssertEqual(set.count, 3)
-    XCTAssertEqual(set.map { $0 }, [1, 2, 3])
+    XCTAssertEqual(set + [], [1, 2, 3])
   }
 }

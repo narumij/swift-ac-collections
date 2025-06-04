@@ -331,7 +331,7 @@ extension RedBlackTreeMultiMap {
   ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
+  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key,Value) {
     _ensureUnique()
     ___merge_multi(other)
   }
@@ -340,7 +340,7 @@ extension RedBlackTreeMultiMap {
   ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
+  public func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
     var result = self
     result.insert(contentsOf: other)
     return result
@@ -350,7 +350,7 @@ extension RedBlackTreeMultiMap {
   ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func inserting(contentsOf other: RedBlackTreeDictionary<Key, Value>) -> Self {
+  public func inserting(contentsOf other: RedBlackTreeDictionary<Key, Value>) -> Self {
     var result = self
     result.insert(contentsOf: other)
     return result
@@ -359,7 +359,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  public func inserting<S>(contentsOf other: __owned S) -> Self where S: Sequence, S.Element == Element {
+  public func inserting<S>(contentsOf other: __owned S) -> Self where S: Sequence, S.Element == (Key,Value) {
     var result = self
     result.insert(contentsOf: other)
     return result
@@ -367,45 +367,47 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
-
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  
+  /// - Complexity: O(*n* log *n* + *n* log(*m + n*))
   @inlinable
   public static func + <Other>(lhs: Other, rhs: Self) -> Self
-  where Other : Sequence, Element == Other.Element
+  where Other : Sequence, Other.Element == (Key,Value)
   {
-    rhs.inserting(contentsOf: lhs)
+    .init(multiKeysWithValues: lhs).inserting(contentsOf: rhs)
   }
   
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + <Other>(lhs: Self, rhs: Other) -> Self
-  where Other : Sequence, Element == Other.Element
+  where Other : Sequence, Other.Element == (Key,Value)
   {
     lhs.inserting(contentsOf: rhs)
   }
   
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + (lhs: Self, rhs: Self) -> Self {
     lhs.inserting(contentsOf: rhs)
   }
-
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  
+  /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + <Other>(lhs: Self, rhs: Other) -> Self
-  where Other : RangeReplaceableCollection, Self.Element == Other.Element {
+  where Other : RangeReplaceableCollection, Other.Element == (Key,Value) {
     lhs.inserting(contentsOf: rhs)
   }
-
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  
+  /// - Complexity: O(*n* log(*m + n*))
+  @inlinable
   static func += <Other>(lhs: inout Self, rhs: Other)
-  where Other : Sequence, Element == Other.Element {
-    lhs = lhs.inserting(contentsOf: rhs)
+  where Other : Sequence, Other.Element == (Key,Value) {
+    lhs.insert(contentsOf: rhs)
   }
-
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  
+  /// - Complexity: O(*n* log(*m + n*))
+  @inlinable
   static func += (lhs: inout Self, rhs: Self) {
-    lhs = lhs.inserting(contentsOf: rhs)
+    lhs.insert(contentsOf: rhs)
   }
 }
 

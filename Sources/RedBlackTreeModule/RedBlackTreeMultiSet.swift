@@ -239,7 +239,7 @@ extension RedBlackTreeMultiSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func inserting(contentsOf other: RedBlackTreeSet<Element>) -> Self {
+  public func inserting(contentsOf other: RedBlackTreeSet<Element>) -> Self {
     var result = self
     result.insert(contentsOf: other)
     return result
@@ -249,7 +249,7 @@ extension RedBlackTreeMultiSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func inserting(contentsOf other: RedBlackTreeMultiSet<Element>) -> Self {
+  public func inserting(contentsOf other: RedBlackTreeMultiSet<Element>) -> Self {
     var result = self
     result.insert(contentsOf: other)
     return result
@@ -267,15 +267,15 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log *n* + *n* log(*m + n*))
   @inlinable
   public static func + <Other>(lhs: Other, rhs: Self) -> Self
   where Other : Sequence, Element == Other.Element
   {
-    rhs.inserting(contentsOf: lhs)
+    .init(lhs).inserting(contentsOf: rhs)
   }
   
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + <Other>(lhs: Self, rhs: Other) -> Self
   where Other : Sequence, Element == Other.Element
@@ -283,28 +283,30 @@ extension RedBlackTreeMultiSet {
     lhs.inserting(contentsOf: rhs)
   }
   
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + (lhs: Self, rhs: Self) -> Self {
     lhs.inserting(contentsOf: rhs)
   }
 
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + <Other>(lhs: Self, rhs: Other) -> Self
   where Other : RangeReplaceableCollection, Self.Element == Other.Element {
     lhs.inserting(contentsOf: rhs)
   }
 
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log(*m + n*))
+  @inlinable
   static func += <Other>(lhs: inout Self, rhs: Other)
   where Other : Sequence, Element == Other.Element {
-    lhs = lhs.inserting(contentsOf: rhs)
+    lhs.insert(contentsOf: rhs)
   }
 
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log(*m + n*))
+  @inlinable
   static func += (lhs: inout Self, rhs: Self) {
-    lhs = lhs.inserting(contentsOf: rhs)
+    lhs.insert(contentsOf: rhs)
   }
 }
 

@@ -263,7 +263,7 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func merging(_ other: RedBlackTreeMultiSet<Element>) -> Self {
+  public func merging(_ other: RedBlackTreeMultiSet<Element>) -> Self {
     var result = self
     result.merge(other)
     return result
@@ -273,7 +273,7 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   @inline(__always)
-  public mutating func merging(_ other: RedBlackTreeSet<Element>) -> Self {
+  public func merging(_ other: RedBlackTreeSet<Element>) -> Self {
     var result = self
     result.merge(other)
     return result
@@ -291,15 +291,15 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log *n* + *n* log(*m + n*))
   @inlinable
   public static func + <Other>(lhs: Other, rhs: Self) -> Self
   where Other : Sequence, Element == Other.Element
   {
-    rhs.merging(lhs)
+    .init(lhs).merging(rhs)
   }
   
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + <Other>(lhs: Self, rhs: Other) -> Self
   where Other : Sequence, Element == Other.Element
@@ -307,28 +307,30 @@ extension RedBlackTreeSet {
     lhs.merging(rhs)
   }
   
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + (lhs: Self, rhs: Self) -> Self {
     lhs.merging(rhs)
   }
   
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   static func + <Other>(lhs: Self, rhs: Other) -> Self
   where Other : RangeReplaceableCollection, Self.Element == Other.Element {
     lhs.merging(rhs)
   }
 
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log(*m + n*))
+  @inlinable
   static func += <Other>(lhs: inout Self, rhs: Other)
   where Other : Sequence, Element == Other.Element {
-    lhs = lhs.merging(rhs)
+    lhs.merge(rhs)
   }
 
-  /// ⚠️ Caution: 計算量が想定通りなのか、注意が必要です。
+  /// - Complexity: O(*n* log(*m + n*))
+  @inlinable
   static func += (lhs: inout Self, rhs: Self) {
-    lhs = lhs.merging(rhs)
+    lhs.merge(rhs)
   }
 }
 

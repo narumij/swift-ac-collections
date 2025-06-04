@@ -924,3 +924,8 @@ extension RedBlackTreeMultiMap where Value: Comparable {
     lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
   }
 }
+
+#if swift(>=5.5)
+extension RedBlackTreeMultiMap.SubSequence: @unchecked Sendable
+where Element: Sendable {}
+#endif

@@ -997,3 +997,8 @@ extension RedBlackTreeDictionary where Value: Comparable {
     lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
   }
 }
+
+#if swift(>=5.5)
+extension RedBlackTreeDictionary.SubSequence: @unchecked Sendable
+where Key: Sendable, Value: Sendable {}
+#endif

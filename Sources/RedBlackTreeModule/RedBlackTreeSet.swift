@@ -767,3 +767,10 @@ extension RedBlackTreeSet {
     lexicographicallyPrecedes(other, by: Tree.___key_comp)
   }
 }
+
+// TODO: 本体をSendableにできるかどうか悩む
+
+#if swift(>=5.5)
+extension RedBlackTreeSet.SubSequence: @unchecked Sendable
+where Element: Sendable {}
+#endif

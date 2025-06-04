@@ -286,3 +286,8 @@ public func - <VC>(
 ) -> Int {
   rhs.distance(to: lhs)
 }
+
+#if swift(>=5.5)
+extension ___Tree.___Iterator: @unchecked Sendable
+where Element: Sendable {}
+#endif

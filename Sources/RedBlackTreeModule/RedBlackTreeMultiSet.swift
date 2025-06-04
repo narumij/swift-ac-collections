@@ -748,3 +748,8 @@ extension RedBlackTreeMultiSet {
     lexicographicallyPrecedes(other, by: Tree.___key_comp)
   }
 }
+
+#if swift(>=5.5)
+extension RedBlackTreeMultiSet.SubSequence: @unchecked Sendable
+where Element: Sendable {}
+#endif

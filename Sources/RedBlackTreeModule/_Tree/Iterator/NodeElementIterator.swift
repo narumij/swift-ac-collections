@@ -36,6 +36,7 @@ public struct NodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, Iterato
   }
 
   @inlinable
+  @inline(__always)
   public __consuming func reversed() -> ReversedNodeElementIterator<Tree> {
     .init(tree: __tree_, start: _start, end: _end)
   }

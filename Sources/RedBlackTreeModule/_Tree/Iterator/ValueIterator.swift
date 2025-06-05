@@ -52,6 +52,7 @@ where Tree.Element == _KeyValueTuple_<K, Value> {
   }
 
   @inlinable
+  @inline(__always)
   public __consuming func reversed() -> ReversedValueIterator<Tree, K, Value> {
     .init(tree: __tree_, start: _start, end: _end)
   }

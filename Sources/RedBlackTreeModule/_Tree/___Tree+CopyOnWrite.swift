@@ -24,12 +24,16 @@ import Foundation
 
 extension ___Tree {
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   public func bitCeil(_ n: Int) -> Int {
     n <= 1 ? 1 : 1 << (Int.bitWidth - (n - 1).leadingZeroBitCount)
   }
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   public func growthFormula(count: Int) -> Int {
     // アロケーターにとって負担が軽そうな、2のべき付近を要求することにした。
     // ヘッダー込みで確保するべきかどうかは、ManagedBufferのソースをみておらず不明。

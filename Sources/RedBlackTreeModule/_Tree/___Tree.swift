@@ -252,8 +252,7 @@ extension ___Tree {
   }
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
-    @nonobjc
-    @inlinable
+  @usableFromInline
     internal var copyCount: UInt {
       get { __header_ptr.pointee.copyCount }
       set { __header_ptr.pointee.copyCount = newValue }
@@ -292,6 +291,7 @@ extension ___Tree {
   /// O(1)
   @nonobjc
   @inlinable
+  @inline(__always)
   internal func ___clearDestroy() {
     _header.destroyNode = .nullptr
     _header.destroyCount = 0
@@ -300,7 +300,9 @@ extension ___Tree {
 
 extension ___Tree {
 
-  @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
     __node_ptr[p].__parent_ == .nullptr
   }
@@ -310,6 +312,7 @@ extension ___Tree {
   extension ___Tree {
 
     /// O(*k*)
+    @usableFromInline
     var ___destroyNodes: [_NodePtr] {
       if _header.destroyNode == .nullptr {
         return []
@@ -327,6 +330,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
+  @inline(__always)
   internal func __construct_node(_ k: Element) -> _NodePtr {
     if _header.destroyCount > 0 {
       let p = ___popDetroy()
@@ -343,6 +347,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
+  @inline(__always)
   internal func destroy(_ p: _NodePtr) {
     ___pushDestroy(p)
   }
@@ -352,12 +357,14 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
+  @inline(__always)
   internal var count: Int {
     __header_ptr.pointee.count
   }
 
   @nonobjc
   @inlinable
+  @inline(__always)
   internal var size: Int {
     get { __header_ptr.pointee.count }
     set { /* NOP */  }
@@ -377,7 +384,9 @@ extension ___Tree {
 
 extension ___Tree {
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal func __value_(_ p: _NodePtr) -> _Key {
     __key(__node_ptr[p].__value_)
   }
@@ -390,22 +399,30 @@ extension ___Tree {
   @usableFromInline
   internal typealias _Key = VC._Key
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     VC.value_comp(a, b)
   }
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal func __key(_ e: VC.Element) -> VC._Key {
     VC.__key(e)
   }
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal func ___element(_ p: _NodePtr) -> VC.Element {
     __node_ptr[p].__value_
   }
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal func ___element(_ p: _NodePtr, _ __v: VC.Element) {
     __node_ptr[p].__value_ = __v
   }
@@ -511,6 +528,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
+  @inline(__always)
   internal func
     ___erase(_ __f: _NodePtr, _ __l: _NodePtr, _ action: (Element) throws -> Void) rethrows
   {
@@ -523,6 +541,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
+  @inline(__always)
   internal func
     ___erase<Result>(
       _ __f: _NodePtr, _ __l: _NodePtr, _ initialResult: Result,
@@ -540,6 +559,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
+  @inline(__always)
   internal func
     ___erase<Result>(
       _ __f: _NodePtr, _ __l: _NodePtr, into initialResult: Result,
@@ -561,6 +581,7 @@ extension ___Tree {
   /// O(1)
   @nonobjc
   @inlinable
+  @inline(__always)
   internal func __eraseAll() {
     _header.clear()
     ___clearDestroy()
@@ -569,23 +590,31 @@ extension ___Tree {
 
 extension ___Tree {
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal var ___is_empty: Bool {
     count == 0
   }
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal var ___capacity: Int {
     _header.capacity
   }
 
   @available(*, deprecated, renamed: "__begin_node")
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal func ___begin() -> _NodePtr {
     _header.__begin_node
   }
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal func ___end() -> _NodePtr {
     .end
   }
@@ -678,6 +707,7 @@ extension ___Tree {
   // この実装がないと、迷子になる?
   @nonobjc
   @inlinable
+  @inline(__always)
   internal func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int {
     guard start == __end_node() || ___is_valid(start),
       end == __end_node() || ___is_valid(end)
@@ -807,6 +837,7 @@ extension ___Tree: Sequence {
 
   @nonobjc
   @inlinable
+  @inline(__always)
   public __consuming func makeIterator() -> ElementIterator<Tree> {
     .init(tree: self, start: __begin_node, end: __end_node())
   }
@@ -850,7 +881,10 @@ extension ___Tree: Tree_IterateProtocol {}
 
 extension ___Tree: Tree_IndexProtocol {
   public typealias Index = ___Iterator
-  @nonobjc @inlinable @inline(__always)
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
   func makeIndex(rawValue: _NodePtr) -> ___Iterator {
     .init(tree: self, rawValue: rawValue)
   }
@@ -858,14 +892,20 @@ extension ___Tree: Tree_IndexProtocol {
 
 extension ___Tree: Tree_IndicesProtocol {
   public typealias Indices = ___IteratorSequence
-  @nonobjc @inlinable @inline(__always)
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
   func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices {
     .init(tree: self, start: start, end: end)
   }
 }
 
 extension ___Tree: Tree_RawIndexProtocol {
-  @nonobjc @inlinable @inline(__always)
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
   public func makeRawIndex(rawValue: _NodePtr) -> RawIndex {
     .init(rawValue)
   }
@@ -875,33 +915,45 @@ extension ___Tree: Tree_KeyCompare {
 
   public typealias Key = VC._Key
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   public static func value_comp(_ lhs: Key, _ rhs: Key) -> Bool {
     VC.value_comp(lhs, rhs)
   }
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   public static func value_equiv(_ lhs: Key, _ rhs: Key) -> Bool {
     !value_comp(lhs, rhs) && !value_comp(rhs, lhs)
   }
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   public static func ___key_equiv(_ lhs: Element, _ rhs: Element) -> Bool {
     value_equiv(VC.__key(lhs), VC.__key(rhs))
   }
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   public static func ___key_value_equiv<Key, Value>(_ lhs: Element, _ rhs: Element) -> Bool
   where Element == _KeyValueTuple_<Key, Value>, Value: Equatable {
     ___key_equiv(lhs, rhs) && lhs.value == rhs.value
   }
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   static func ___key_comp(_ lhs: Element, _ rhs: Element) -> Bool {
     value_comp(VC.__key(lhs), VC.__key(rhs))
   }
 
-  @nonobjc @inlinable @inline(__always)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   static func ___key_value_comp<Key, Value>(_ lhs: Element, _ rhs: Element) -> Bool
   where Element == _KeyValueTuple_<Key, Value>, Value: Comparable {
     ___key_comp(lhs, rhs) || (!___key_comp(lhs, rhs) && lhs.value < rhs.value)

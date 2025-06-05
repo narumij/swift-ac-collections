@@ -60,7 +60,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
   func testSet3_2() throws {
     var tree = RedBlackTreeMultiSet<Int>(0 ..< 20)
     tree._copyCount = 0
-    for v in tree.map({ $0 }) {
+    for v in tree + [] {
       tree.removeAll(v) // strong ensure unique
     }
     XCTAssertEqual(tree.count, 0)
@@ -80,7 +80,7 @@ final class MultisetCopyOnWriteTests: XCTestCase {
   func testSet5() throws {
     var tree = RedBlackTreeMultiSet<Int>(0 ..< 20)
     tree._copyCount = 0
-    for v in tree.map({ $0}) {
+    for v in tree + [] {
       tree.removeAll(v)
     }
     XCTAssertEqual(tree.count, 0)

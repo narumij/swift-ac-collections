@@ -91,7 +91,7 @@ final class SetPointerTests: XCTestCase {
 
 #if DEBUG
   func testValidBehavior1() throws {
-    let indices = members.indices.map { $0 }
+    let indices = members.indices + []
     for i in indices.indices {
       members.remove(at: indices[i])
       for j in indices.startIndex..<i {
@@ -104,7 +104,7 @@ final class SetPointerTests: XCTestCase {
   }
 
   func testValidBehavior2() throws {
-    let indices = members.indices.map { $0 }
+    let indices = members.indices + []
     for i in indices.indices.reversed() {
       members.remove(at: indices[i])
       for j in indices.startIndex..<i {

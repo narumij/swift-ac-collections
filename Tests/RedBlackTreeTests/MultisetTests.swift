@@ -367,7 +367,7 @@ final class MultisetTests: XCTestCase {
 
   func testSequence() throws {
     let set = RedBlackTreeMultiSet<Int>([5, 2, 3, 1, 0])
-    XCTAssertEqual(set.map { $0 }, [0, 1, 2, 3, 5])
+    XCTAssertEqual(set + [], [0, 1, 2, 3, 5])
   }
 
   func testArrayAccess1() throws {
@@ -477,27 +477,27 @@ final class MultisetTests: XCTestCase {
       set.insert(i)
       XCTAssertTrue(set.___tree_invariant())
     }
-    XCTAssertEqual(set.map { $0 }, set[set.startIndex..<set.endIndex].map { $0 })
+    XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
       set.removeAll(i)
       XCTAssertTrue(set.___tree_invariant())
     }
-    XCTAssertEqual(set.map { $0 }, set[set.startIndex..<set.endIndex].map { $0 })
+    XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
       set.insert(i)
       XCTAssertTrue(set.___tree_invariant())
     }
-    XCTAssertEqual(set.map { $0 }, set[set.startIndex..<set.endIndex].map { $0 })
+    XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
       set.removeAll(i)
       XCTAssertTrue(set.___tree_invariant())
     }
-    XCTAssertEqual(set.map { $0 }, set[set.startIndex..<set.endIndex].map { $0 })
+    XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
       set.insert(i)
       XCTAssertTrue(set.___tree_invariant())
     }
-    XCTAssertEqual(set.map { $0 }, set[set.startIndex..<set.endIndex].map { $0 })
+    XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
     print("set.count", set.count)
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       print("set._copyCount", set._copyCount)
@@ -559,7 +559,7 @@ final class MultisetTests: XCTestCase {
 
   func testLiteral() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
-    XCTAssertEqual(set.map { $0 }, [1, 1, 2, 2, 3, 3, 4, 4, 5, 5])
+    XCTAssertEqual(set + [], [1, 1, 2, 2, 3, 3, 4, 4, 5, 5])
   }
 
   class A: Hashable, Comparable {
@@ -725,7 +725,7 @@ final class MultisetTests: XCTestCase {
   
   func testSubsequence3() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
-    XCTAssertEqual(set[1 ... 5].map { $0 }, [1, 2, 3, 4, 5])
+    XCTAssertEqual(set[1 ... 5] + [], [1, 2, 3, 4, 5])
   }
 
   func testSubsequence4() throws {

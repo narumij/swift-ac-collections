@@ -20,15 +20,15 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public
-struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
-  
+@frozen
+public struct RawIndexSequence<Tree: Tree_IterateProtocol & Tree_ForEach>: Sequence {
+
   @usableFromInline
   let __tree_: Tree
-  
+
   @usableFromInline
   var _start, _end: _NodePtr
-  
+
   @inlinable
   @inline(__always)
   internal init(tree: Tree) where Tree: BeginNodeProtocol & EndNodeProtocol {
@@ -37,7 +37,7 @@ struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
       start: tree.__begin_node,
       end: tree.__end_node())
   }
-  
+
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -45,24 +45,21 @@ struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
     _start = start
     _end = end
   }
-  
+
   @inlinable
+  @inline(__always)
   public __consuming func makeIterator() -> RawIndexIterator<Tree> {
     .init(tree: __tree_, start: _start, end: _end)
   }
-  
+
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
-    var __p = _start
-    while __p != _end {
-      let __c = __p
-      __p = __tree_.__tree_next_iter(__p)
-      try body(RawIndex(__c))
-    }
+    try __tree_.___for_each_(__p: _start, __l: _end) { try body(RawIndex($0)) }
   }
-  
+
   @inlinable
+  @inline(__always)
   public __consuming func reversed() -> ReversedRawIndexIterator<Tree> {
     .init(tree: __tree_, start: _start, end: _end)
   }

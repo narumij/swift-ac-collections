@@ -48,7 +48,7 @@ final class MultiMapAdvancedTest: XCTestCase {
         let map: RedBlackTreeMultiMap = [("a", 1), ("a", 2), ("b", 3)]
         let valuesA = map.values(forKey: "a")
         XCTAssertEqual(valuesA.sorted(), [1, 2])
-      XCTAssertEqual(map.values(forKey: "z").map { $0 }, [])
+      XCTAssertEqual(map.values(forKey: "z") + [], [])
     }
     
     func testRemoveValuesForKey() {

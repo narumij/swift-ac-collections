@@ -47,6 +47,7 @@ extension MemberSetProtocol {
   }
 
   @inlinable
+  @inline(__always)
   func
     __tree_right_rotate(_ __x: _NodePtr)
   {
@@ -68,6 +69,7 @@ extension MemberSetProtocol {
   }
 
   @inlinable
+  //  @inline(__always)
   func
     __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
   {
@@ -122,6 +124,7 @@ extension MemberSetProtocol {
   }
 
   @inlinable
+  //  @inline(__always)
   func
     __tree_remove(_ __root: _NodePtr, _ __z: _NodePtr)
   {

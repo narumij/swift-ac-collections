@@ -39,7 +39,7 @@ final class EtcTests: XCTestCase {
 
     _ = b.remove(at: b.index(before: b.lowerBound(2)))
 
-    XCTAssertEqual(b.map { $0 }, [2, 3])
+    XCTAssertEqual(b + [], [2, 3])
 
     XCTAssertEqual(b.distance(from: b.lowerBound(2), to: b.lowerBound(3)), 1)
     XCTAssertEqual(b.distance(from: b.lowerBound(3), to: b.lowerBound(2)), -1)
@@ -265,7 +265,24 @@ final class EtcTests: XCTestCase {
     let s = RedBlackTreeSet<Int>()
     _ = s[s.startIndex ..< s.endIndex].indices
   }
-
+  
+  func testRange() throws {
+    let a = [0, 1, 2]
+    let b = RedBlackTreeSet<Int>([0,1,2])
+    _ = a[0...]
+    XCTAssertTrue(b[b.startIndex.advanced(by: 1)...].elementsEqual([1,2]))
+    XCTAssertEqual(b.endIndex.pointee, nil)
+    XCTAssertEqual(b.endIndex.advanced(by: -1).pointee, 2)
+    XCTAssertEqual(b.endIndex.advanced(by: -2).pointee, 1)
+    XCTAssertEqual(a[...a.endIndex.advanced(by: -1)] + [], [0,1,2])
+    XCTAssertEqual(a[..<a.endIndex.advanced(by: -1)] + [], [0,1])
+    XCTAssertEqual(b[...b.endIndex.advanced(by: -1)] + [], [0,1,2])
+    XCTAssertEqual(b[..<b.endIndex.advanced(by: -1)] + [], [0,1])
+    XCTAssertTrue(b[(b.startIndex + 1)...].elementsEqual([1,2]))
+    XCTAssertTrue(b[..<(b.endIndex - 1)].elementsEqual([0,1]))
+    XCTAssertTrue(b[...].elementsEqual([0,1,2]))
+  }
+  
   #if false
     func testCapacity() throws {
 

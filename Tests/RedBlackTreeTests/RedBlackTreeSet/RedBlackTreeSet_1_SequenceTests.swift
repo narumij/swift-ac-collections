@@ -16,7 +16,7 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     let set = RedBlackTreeSet<Int>()
 
     // 実行: mapで全要素取得
-    let mappedElements = set.map { $0 }
+    let mappedElements = set + []
 
     // 事後条件:
     XCTAssertEqual(mappedElements, [], "要素が無いこと")
@@ -28,7 +28,7 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     let set = RedBlackTreeSet<Int>(minimumCapacity: 10)
 
     // 実行: mapで全要素取得
-    let mappedElements = set.map { $0 }
+    let mappedElements = set + []
 
     // 事後条件:
     XCTAssertEqual(mappedElements, [], "要素が無いこと")
@@ -40,7 +40,7 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     let set = RedBlackTreeSet<Int>([3, 1, 2, 1, 3, 4, 4, 5])
 
     // 実行: mapで全要素取得
-    let mappedElements = set.map { $0 }
+    let mappedElements = set + []
 
     // 事後条件:
     let expected = [1, 2, 3, 4, 5]
@@ -53,7 +53,7 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     let set = RedBlackTreeSet<Int>(AnySequence([3, 1, 2, 1, 3, 4, 4, 5]))
 
     // 実行: mapで全要素取得
-    let mappedElements = set.map { $0 }
+    let mappedElements = set + []
 
     // 事後条件:
     let expected = [1, 2, 3, 4, 5]
@@ -66,7 +66,7 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     let set = RedBlackTreeSet<Int>(1...4)
 
     // 実行: mapで全要素取得
-    let mappedElements = set.map { $0 }
+    let mappedElements = set + []
 
     // 事後条件:
     let expected = [1, 2, 3, 4]
@@ -79,7 +79,7 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     let set = RedBlackTreeSet<Int>(stride(from: 3, through: 1, by: -1))
 
     // 実行: mapで全要素取得
-    let mappedElements = set.map { $0 }
+    let mappedElements = set + []
 
     // 事後条件: ソート済み [1, 2, 3]
     let expected = [1, 2, 3]
@@ -107,8 +107,8 @@ final class RedBlackTreeSetSequenceTests: XCTestCase {
     let set = RedBlackTreeSet<Int>(elements)
 
     // 実行
-    let mappedElements = set.map { $0 }
-    let sortedElements = set.sorted().map { $0 }
+    let mappedElements = set + []
+    let sortedElements = set.sorted() + []
 
     // 事後条件:
     XCTAssertEqual(mappedElements, sortedElements, "一致すること")

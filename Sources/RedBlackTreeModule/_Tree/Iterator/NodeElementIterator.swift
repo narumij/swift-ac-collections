@@ -5,15 +5,15 @@
 //  Created by narumij on 2025/06/01.
 //
 
-public
-struct NodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
+@frozen
+public struct NodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
   let __tree_: Tree
 
   @usableFromInline
   var _start, _end, _current, _next: _NodePtr
-  
+
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -23,7 +23,7 @@ struct NodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtoc
     self._end = end
     self._next = start == .end ? .end : tree.__tree_next_iter(start)
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func next() -> (_NodePtr, Tree.Element)? {
@@ -34,15 +34,16 @@ struct NodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtoc
     }
     return (_current, __tree_[_current])
   }
-  
+
   @inlinable
+  @inline(__always)
   public __consuming func reversed() -> ReversedNodeElementIterator<Tree> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-public
-struct ReversedNodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
+@frozen
+public struct ReversedNodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
   let __tree_: Tree
@@ -59,7 +60,7 @@ struct ReversedNodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, Iterat
     self._start = start
     self._begin = __tree_.__begin_node
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func next() -> (_NodePtr, Tree.Element)? {

@@ -16,7 +16,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
     let multiset = RedBlackTreeMultiSet<Int>()
 
     // 実行: mapで全要素取得
-    let mappedElements = multiset.map { $0 }
+    let mappedElements = multiset + []
 
     // 事後条件: 空であること
     XCTAssertEqual(mappedElements, [], "要素が無いこと")
@@ -28,7 +28,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
     let multiset = RedBlackTreeMultiSet<Int>(minimumCapacity: 10)
 
     // 実行: mapで全要素取得
-    let mappedElements = multiset.map { $0 }
+    let mappedElements = multiset + []
 
     // 事後条件: 空であること、容量が最低10以上
     XCTAssertEqual(mappedElements, [], "要素が無いこと")
@@ -40,7 +40,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
     let multiset = RedBlackTreeMultiSet<Int>([3, 1, 2, 1, 3])
 
     // 実行: mapで全要素取得
-    let mappedElements = multiset.map { $0 }
+    let mappedElements = multiset + []
 
     // 事後条件: 重複含めソート済み [1, 1, 2, 3, 3]
     let expected = [1, 1, 2, 3, 3]
@@ -53,7 +53,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
     let multiset = RedBlackTreeMultiSet<Int>(AnySequence([3, 1, 2, 1, 3]))
 
     // 実行: mapで全要素取得
-    let mappedElements = multiset.map { $0 }
+    let mappedElements = multiset + []
 
     // 事後条件: 重複含めソート済み [1, 1, 2, 3, 3]
     let expected = [1, 1, 2, 3, 3]
@@ -66,7 +66,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
     let multiset = RedBlackTreeMultiSet<Int>(1...3)
 
     // 実行: mapで全要素取得
-    let mappedElements = multiset.map { $0 }
+    let mappedElements = multiset + []
 
     // 事後条件: ソート済み [1, 2, 3]
     let expected = [1, 2, 3]
@@ -79,7 +79,7 @@ final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
     let multiset = RedBlackTreeMultiSet<Int>(stride(from: 3, through: 1, by: -1))
 
     // 実行: mapで全要素取得
-    let mappedElements = multiset.map { $0 }
+    let mappedElements = multiset + []
 
     // 事後条件: ソート済み [1, 2, 3]
     let expected = [1, 2, 3]

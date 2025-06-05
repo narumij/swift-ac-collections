@@ -68,7 +68,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   
   func testSet3_2() throws {
     tree._copyCount = 0
-    for v in tree.map({ $0 }) {
+    for v in tree + [] {
       tree.removeFirst(forKey: v.key) // strong ensure unique
     }
     XCTAssertEqual(tree.count, 0)
@@ -77,7 +77,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   
   func testSet3_3() throws {
     tree._copyCount = 0
-    for v in tree.map({ $0 }) {
+    for v in tree + [] {
       tree.removeFirst(_unsafeForKey: v.key) // strong ensure unique
     }
     XCTAssertEqual(tree.count, 0)
@@ -95,7 +95,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
 
   func testSet5() throws {
     tree._copyCount = 0
-    for v in tree.map({ $0}) {
+    for v in tree + [] {
       tree.removeFirst(forKey: v.key)
     }
     XCTAssertEqual(tree.count, 0)
@@ -122,7 +122,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
   
   func testSet8() throws {
     tree._copyCount = 0
-    for v in tree.map({ $0 }) {
+    for v in tree + [] {
       tree.removeAll(forKey: v.key)
     }
     XCTAssertEqual(tree.count, 0)
@@ -140,7 +140,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
 
   func testSet10() throws {
     tree._copyCount = 0
-    for v in tree.map({ $0}) {
+    for v in tree + [] {
       tree.removeAll(forKey: v.key)
     }
     XCTAssertEqual(tree.count, 0)

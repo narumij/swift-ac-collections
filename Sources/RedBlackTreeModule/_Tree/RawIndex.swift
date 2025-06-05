@@ -29,13 +29,13 @@ import Foundation
 /// nullptrはオプショナルで表現する想定で、nullptrを保持しない
 ///
 /// 本当の生ポインタはIntのtypealiasだが、それを晒すと間違いのもとなので、ラップしてある
-public
-  enum RawIndex: Equatable
-{
+@frozen
+public enum RawIndex: Equatable {
   case node(_NodePtr)
   case end
 
-  @usableFromInline
+  @inlinable
+  @inline(__always)
   init(_ node: _NodePtr) {
     guard node != .nullptr else {
       preconditionFailure("_NodePtr is nullptr")
@@ -43,7 +43,8 @@ public
     self = node == .end ? .end : .node(node)
   }
 
-  @usableFromInline
+  @inlinable
+  @inline(__always)
   var rawValue: _NodePtr {
     switch self {
     case .node(let _NodePtr):
@@ -57,11 +58,13 @@ public
 extension Optional where Wrapped == RawIndex {
 
   @inlinable
+  @inline(__always)
   init(_ ptr: _NodePtr) {
     self = ptr == .nullptr ? .none : .some(RawIndex(ptr))
   }
 
-  @usableFromInline
+  @inlinable
+  @inline(__always)
   var _pointer: _NodePtr {
     switch self {
     case .none:
@@ -83,4 +86,3 @@ extension Optional where Wrapped == RawIndex {
     }
   }
 #endif
-

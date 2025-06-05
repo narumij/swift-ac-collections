@@ -80,10 +80,10 @@ final class DictionaryRemoveTests: XCTestCase {
   func testRemoveAll_() throws {
     var dict = [1: 1, 2: 2, 3: 3]
     dict.removeAll(keepingCapacity: true)
-    XCTAssertTrue(dict.map { $0 }.isEmpty)
+    XCTAssertTrue((dict + []).isEmpty)
     XCTAssertGreaterThanOrEqual(dict.capacity, 3)
     dict.removeAll(keepingCapacity: false)
-    XCTAssertTrue(dict.map { $0 }.isEmpty)
+    XCTAssertTrue((dict + []).isEmpty)
     XCTAssertGreaterThanOrEqual(dict.capacity, 0)
     XCTAssertNil(dict.first)
   }
@@ -91,10 +91,10 @@ final class DictionaryRemoveTests: XCTestCase {
   func testRemoveAll() throws {
     var dict = [1: 1, 2: 2, 3: 3] as RedBlackTreeDictionary<Int, Int>
     dict.removeAll(keepingCapacity: true)
-    XCTAssertTrue(dict.map { $0 }.isEmpty)
+    XCTAssertTrue((dict + []).isEmpty)
     XCTAssertGreaterThanOrEqual(dict.capacity, 3)
     dict.removeAll(keepingCapacity: false)
-    XCTAssertTrue(dict.map { $0 }.isEmpty)
+    XCTAssertTrue((dict + []).isEmpty)
     XCTAssertGreaterThanOrEqual(dict.capacity, 0)
     XCTAssertNil(dict.first)
     XCTAssertNil(dict.last)

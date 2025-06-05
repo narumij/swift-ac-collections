@@ -24,6 +24,7 @@ import Foundation
 extension RedBlackTreeSet: SetAlgebra {
 
   @inlinable
+  @inline(__always)
   public func union(_ other: __owned RedBlackTreeSet<Element>)
     -> RedBlackTreeSet<Element>
   {
@@ -33,6 +34,7 @@ extension RedBlackTreeSet: SetAlgebra {
   }
 
   @inlinable
+  @inline(__always)
   public func intersection(_ other: RedBlackTreeSet<Element>)
     -> RedBlackTreeSet<Element>
   {
@@ -42,6 +44,7 @@ extension RedBlackTreeSet: SetAlgebra {
   }
 
   @inlinable
+  @inline(__always)
   public func symmetricDifference(_ other: __owned RedBlackTreeSet<Element>)
     -> RedBlackTreeSet<Element>
   {
@@ -51,6 +54,7 @@ extension RedBlackTreeSet: SetAlgebra {
   }
 
   @inlinable
+  @inline(__always)
   func ___set_result(_ f: inout Index, _ l: Index, _ r: inout Tree.___MutableIterator) {
     while f != l {
       r.pointee = f.___pointee
@@ -61,6 +65,7 @@ extension RedBlackTreeSet: SetAlgebra {
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
+  //  @inline(__always)
   public mutating func formUnion(_ other: __owned RedBlackTreeSet<Element>) {
     let ___storage: Storage = .create(withCapacity: 0)
     var __result: Tree.___MutableIterator = .init(_storage: ___storage)
@@ -90,6 +95,7 @@ extension RedBlackTreeSet: SetAlgebra {
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
+  //  @inline(__always)
   public mutating func formIntersection(_ other: RedBlackTreeSet<Element>) {
     // lower_boundを使う方法があるが、一旦楽に実装できそうな方からにしている
     let ___storage: Storage = .create(withCapacity: 0)
@@ -113,6 +119,7 @@ extension RedBlackTreeSet: SetAlgebra {
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
+  //  @inline(__always)
   public mutating func formSymmetricDifference(_ other: __owned RedBlackTreeSet<Element>) {
     let ___storage: Storage = .create(withCapacity: 0)
     var __result: Tree.___MutableIterator = .init(_storage: ___storage)

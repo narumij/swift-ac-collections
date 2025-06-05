@@ -326,7 +326,7 @@ for i in tree.reversed() {
   total &+= i
 }
 print(total)
-#elseif false
+#elseif true
 var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 var total = 0
 for i in tree[tree.startIndex ..< tree.endIndex].indices {
@@ -336,7 +336,7 @@ print(total)
 #elseif false
 let tree = RedBlackTreeDictionary<Int, [Int]>(grouping: 0..<10_000_000, by: { $0 })
 print(tree.count)
-#elseif true
+#elseif false
 var a: RedBlackTreeSet<Int> = .init((0 ..< 100).map { $0 * 100})
 var b: RedBlackTreeSet<Int> = .init((1 ..< 10_000_000).map { $0 * 3 })
 a.merge(b.makeIterator())
@@ -348,22 +348,26 @@ var b: RedBlackTreeSet<Int> = .init((1 ..< 10_000_000).map { $0 * 3 })
 //b.insert(contentsOf: a.makeIterator())
 b.insert(contentsOf: a)
 print(b.count)
-#elseif true
+#elseif false
 var a: RedBlackTreeSet<Int> = .init((0 ..< 10).map { $0 * 100})
 var b: RedBlackTreeSet<Int> = .init((1 ..< 1000).map { $0 * 3 })
 //b.insert(contentsOf: a.makeIterator())
 b.insert(contentsOf: a)
 print(b.count)
-#elseif true
+#elseif false
 var a: RedBlackTreeSet<Int> = .init((0 ..< 100).map { $0 * 100})
 var b: RedBlackTreeSet<Int> = .init((1 ..< 10_000_000).map { $0 * 3 })
 let c = a.union(b)
 print(c.count)
-#elseif true
+#elseif false
 var a: RedBlackTreeSet<Int> = .init(0 ..< 100)
 var b: RedBlackTreeSet<Int> = .init(100 ..< 10_000_000)
 let c = b.union(a)
 print(c.count)
+#elseif true
+var a: RedBlackTreeSet<Int> = .init(100 ..< 10_000_000)
+a.removeSubrange(a.startIndex...)
+print(a.count)
 #endif
 //#endif
 

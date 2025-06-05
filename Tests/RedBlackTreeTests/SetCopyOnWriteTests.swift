@@ -68,7 +68,7 @@ final class SetCopyOnWriteTests: XCTestCase {
   func testSet5() throws {
     var tree = RedBlackTreeSet<Int>(0 ..< 20)
     tree._copyCount = 0
-    for v in tree.map({ $0}) {
+    for v in tree + [] {
       tree.remove(v)
     }
     XCTAssertEqual(tree.count, 0)

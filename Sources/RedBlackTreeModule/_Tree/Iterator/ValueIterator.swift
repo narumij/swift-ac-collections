@@ -20,10 +20,9 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public
-struct ValueIterator<Tree: Tree_IterateProtocol,K,Value>: Sequence, IteratorProtocol
-where Tree.Element == _KeyValueTuple_<K,Value>
-{
+@frozen
+public struct ValueIterator<Tree: Tree_IterateProtocol, K, Value>: Sequence, IteratorProtocol
+where Tree.Element == _KeyValueTuple_<K, Value> {
 
   @usableFromInline
   let __tree_: Tree
@@ -40,7 +39,7 @@ where Tree.Element == _KeyValueTuple_<K,Value>
     self._end = end
     self._next = start == .end ? .end : tree.__tree_next_iter(start)
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func next() -> Value? {
@@ -51,38 +50,43 @@ where Tree.Element == _KeyValueTuple_<K,Value>
     }
     return __tree_[_current].value
   }
-  
+
   @inlinable
-  public __consuming func reversed() -> ReversedValueIterator<Tree,K,Value> {
+  @inline(__always)
+  public __consuming func reversed() -> ReversedValueIterator<Tree, K, Value> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
 extension ValueIterator: Equatable where Value: Equatable {
-  
+
+  @inlinable
+  @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.elementsEqual(rhs)
   }
 }
 
 extension ValueIterator: Comparable where Value: Comparable {
-  
+
+  @inlinable
+  @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
   }
 }
 
-public
-struct ReversedValueIterator<Tree: Tree_IterateProtocol,K,Value>: Sequence, IteratorProtocol
-where Tree.Element == _KeyValueTuple_<K,Value>
-{
+@frozen
+public struct ReversedValueIterator<Tree: Tree_IterateProtocol, K, Value>: Sequence,
+  IteratorProtocol
+where Tree.Element == _KeyValueTuple_<K, Value> {
 
   @usableFromInline
   let _tree_: Tree
 
   @usableFromInline
   var _start, _begin, _current, _next: _NodePtr
-  
+
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -92,7 +96,7 @@ where Tree.Element == _KeyValueTuple_<K,Value>
     self._start = start
     self._begin = _tree_.__begin_node
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func next() -> Value? {

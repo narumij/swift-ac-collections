@@ -35,7 +35,7 @@ extension ___Tree {
 
     @usableFromInline
     var _rawValue: Int
-    
+
     @inlinable
     var rawValue: _NodePtr {
       @inline(__always)
@@ -47,9 +47,13 @@ extension ___Tree {
       }
       _modify { yield &_rawValue }
     }
-    
+
     @inlinable
-    var ___unchecked_rawValue: _NodePtr { _rawValue }
+    var ___unchecked_rawValue: _NodePtr {
+      @inline(__always) _read {
+        yield _rawValue
+      }
+    }
 
     // MARK: -
 
@@ -110,7 +114,7 @@ extension ___Tree.___Iterator: Comparable {
 extension ___Tree.___Iterator {
 
   @inlinable
-  @inline(__always)
+  //  @inline(__always)
   public func distance(to other: Self) -> Int {
     guard !isGarbaged, !other.isGarbaged else {
       preconditionFailure(.garbagedIndex)
@@ -119,7 +123,7 @@ extension ___Tree.___Iterator {
   }
 
   @inlinable
-  @inline(__always)
+  //  @inline(__always)
   public func advanced(by n: Int) -> Self {
     .init(tree: __tree_, rawValue: __tree_.___tree_adv_iter(rawValue, by: n))
   }
@@ -149,13 +153,15 @@ extension ___Tree.___Iterator {
     return prev
   }
 
-  @inlinable @inline(__always)
+  @inlinable
+  @inline(__always)
   mutating func ___next() {
     assert(_rawValue != .end)
     _rawValue = __tree_.__tree_next_iter(_rawValue)
   }
 
-  @inlinable @inline(__always)
+  @inlinable
+  @inline(__always)
   mutating func ___prev() {
     assert(_rawValue != __tree_.__begin_node)
     _rawValue = __tree_.__tree_prev_iter(_rawValue)
@@ -203,27 +209,32 @@ extension ___Tree.___Iterator {
   @inlinable
   @inline(__always)
   public var pointee: Element? {
-    guard
-      __tree_.__parent_(_rawValue) != .nullptr,
-      rawValue != .end,
-      __tree_.___initialized_contains(_rawValue)
-    else {
-      return nil
+    _read {
+      guard
+        __tree_.__parent_(_rawValue) != .nullptr,
+        rawValue != .end,
+        __tree_.___initialized_contains(_rawValue)
+      else {
+        yield nil
+        return
+      }
+      yield ___pointee
     }
-    return ___pointee
   }
 }
 
 extension ___Tree.___Iterator {
 
-  @inlinable @inline(__always)
+  @inlinable
+  @inline(__always)
   var ___key: VC._Key {
     __tree_.__key(___pointee)
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   var ___pointee: Element {
-    __tree_[_rawValue]
+    @inline(__always)
+    _read { yield __tree_[_rawValue] }
   }
 }
 
@@ -256,6 +267,7 @@ extension ___Tree.___Iterator {
 #endif
 
 @inlinable
+@inline(__always)
 public func ..< <VC>(
   lhs: ___Tree<VC>.Index,
   rhs: ___Tree<VC>.Index
@@ -264,6 +276,7 @@ public func ..< <VC>(
 }
 
 @inlinable
+@inline(__always)
 public func + <VC>(
   lhs: ___Tree<VC>.Index,
   rhs: Int
@@ -272,6 +285,7 @@ public func + <VC>(
 }
 
 @inlinable
+@inline(__always)
 public func - <VC>(
   lhs: ___Tree<VC>.Index,
   rhs: Int
@@ -280,9 +294,15 @@ public func - <VC>(
 }
 
 @inlinable
+@inline(__always)
 public func - <VC>(
   lhs: ___Tree<VC>.Index,
   rhs: ___Tree<VC>.Index
 ) -> Int {
   rhs.distance(to: lhs)
 }
+
+#if swift(>=5.5)
+  extension ___Tree.___Iterator: @unchecked Sendable
+  where Element: Sendable {}
+#endif

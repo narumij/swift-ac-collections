@@ -20,8 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public
-struct NodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
+@frozen
+public struct NodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
   let __tree_: Tree
@@ -38,7 +38,7 @@ struct NodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
     self._end = end
     self._next = start == .end ? .end : tree.__tree_next_iter(start)
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func next() -> _NodePtr? {
@@ -49,15 +49,16 @@ struct NodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
     }
     return _current
   }
-  
+
   @inlinable
+  @inline(__always)
   public __consuming func reversed() -> ReversedNodeIterator<Tree> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-public
-struct ReversedNodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
+@frozen
+public struct ReversedNodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
   @usableFromInline
   let __tree_: Tree
@@ -74,7 +75,7 @@ struct ReversedNodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProto
     self._start = start
     self._begin = __tree_.__begin_node
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func next() -> _NodePtr? {

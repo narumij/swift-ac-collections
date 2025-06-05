@@ -43,6 +43,7 @@ extension BoundProtocol {
 extension ValueProtocol {
 
   @inlinable
+  @inline(__always)
   func
     __lower_bound(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
   {
@@ -60,6 +61,7 @@ extension ValueProtocol {
   }
 
   @inlinable
+  @inline(__always)
   func
     __upper_bound(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
   {

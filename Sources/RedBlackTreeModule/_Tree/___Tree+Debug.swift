@@ -26,7 +26,7 @@ import Foundation
   extension ___Tree {
 
     /// グラフビズオブジェクトを生成します
-    func ___graphviz() -> Graphviz.Digraph {
+    public func ___graphviz() -> Graphviz.Digraph {
       buildGraphviz()
     }
   }
@@ -69,11 +69,11 @@ import Foundation
 #endif
 
 #if GRAPHVIZ_DEBUG
-  enum Graphviz {}
+  public enum Graphviz {}
 
   extension Graphviz {
 
-    struct Digraph {
+    public struct Digraph {
       var options: [Option] = []
       var nodes: [Node] = []
       var edges: [Edge] = []
@@ -222,7 +222,7 @@ import Foundation
   }
 
   extension Graphviz.Digraph: CustomStringConvertible {
-    var description: String {
+    public var description: String {
       func description(_ properties: [Graphviz.NodeProperty], _ nodes: [String]) -> String {
         "node \(properties.description); \(nodes.joined(separator: " "))"
       }

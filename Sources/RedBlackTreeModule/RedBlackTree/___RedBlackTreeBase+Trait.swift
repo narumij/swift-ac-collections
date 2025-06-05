@@ -22,8 +22,9 @@
 
 @usableFromInline
 protocol ___RedBlackTreeUnique: ___RedBlackTreeIndexing & ValueComparer & CompareUniqueTrait
-where Tree == ___Tree<Self>,
-      Index == Tree.Index
+where
+  Tree == ___Tree<Self>,
+  Index == Tree.Index
 {
   associatedtype Tree
   associatedtype Index
@@ -31,33 +32,34 @@ where Tree == ___Tree<Self>,
 }
 
 extension ___RedBlackTreeUnique {
-  
+
   ///（重複なし）
   @inlinable
   @inline(__always)
   public func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
     __tree_.__equal_range_unique(k)
   }
-  
+
   @inlinable
   @inline(__always)
   func ___raw_index_equal_range(_ k: Tree._Key) -> (lower: RawIndex, upper: RawIndex) {
-    let (lo,hi) = __tree_.__equal_range_unique(k)
-    return (___raw_index(lo),___raw_index(hi))
+    let (lo, hi) = __tree_.__equal_range_unique(k)
+    return (___raw_index(lo), ___raw_index(hi))
   }
-  
+
   @inlinable
   @inline(__always)
   func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
-    let (lo,hi) = __tree_.__equal_range_unique(k)
-    return (___index(lo),___index(hi))
+    let (lo, hi) = __tree_.__equal_range_unique(k)
+    return (___index(lo), ___index(hi))
   }
 }
 
 @usableFromInline
 protocol ___RedBlackTreeMulti: ___RedBlackTreeIndexing & ValueComparer & CompareMultiTrait
-where Tree == ___Tree<Self>,
-      Index == Tree.Index
+where
+  Tree == ___Tree<Self>,
+  Index == Tree.Index
 {
   associatedtype Tree
   associatedtype Index
@@ -72,19 +74,18 @@ extension ___RedBlackTreeMulti {
   public func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
     __tree_.__equal_range_multi(k)
   }
-  
+
   @inlinable
   @inline(__always)
   func ___raw_index_equal_range(_ k: Tree._Key) -> (lower: RawIndex, upper: RawIndex) {
-    let (lo,hi) = __tree_.__equal_range_multi(k)
-    return (___raw_index(lo),___raw_index(hi))
+    let (lo, hi) = __tree_.__equal_range_multi(k)
+    return (___raw_index(lo), ___raw_index(hi))
   }
 
   @inlinable
   @inline(__always)
   func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
-    let (lo,hi) = __tree_.__equal_range_multi(k)
-    return (___index(lo),___index(hi))
+    let (lo, hi) = __tree_.__equal_range_multi(k)
+    return (___index(lo), ___index(hi))
   }
 }
-

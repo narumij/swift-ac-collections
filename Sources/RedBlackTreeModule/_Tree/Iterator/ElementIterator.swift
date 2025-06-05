@@ -20,9 +20,9 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public
-struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
-    
+@frozen
+public struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
+
   @usableFromInline
   let __tree_: Tree
 
@@ -38,7 +38,7 @@ struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
     self._end = end
     self._next = start == .end ? .end : tree.__tree_next_iter(start)
   }
-  
+
   // 性能変化の反応が過敏なので、慎重さが必要っぽい。
 
   @inlinable
@@ -51,16 +51,17 @@ struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
     }
     return __tree_[_current]
   }
-  
+
   @inlinable
+  @inline(__always)
   public __consuming func reversed() -> ReversedElementIterator<Tree> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-public
-struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
-  
+@frozen
+public struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
+
   @usableFromInline
   let __tree_: Tree
 
@@ -76,7 +77,7 @@ struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorPr
     self._start = start
     self._begin = __tree_.__begin_node
   }
-  
+
   @inlinable
   @inline(__always)
   public mutating func next() -> Tree.Element? {

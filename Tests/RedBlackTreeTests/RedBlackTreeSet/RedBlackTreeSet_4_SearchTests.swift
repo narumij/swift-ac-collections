@@ -127,27 +127,27 @@ extension RedBlackTreeSetSearchTests {
   func test_elementsInRange() {
     let set = RedBlackTreeSet([1, 2, 3, 4, 5, 6, 7])
     let sub = set.elements(in: 3..<6)
-    XCTAssertEqual(sub.map { $0 }, [3, 4, 5])
+    XCTAssertEqual(sub + [], [3, 4, 5])
   }
 
   /// elements(in:) が指定範囲の要素を正しく返すこと (閉区間)
   func test_elementsInClosedRange() {
     let set = RedBlackTreeSet([1, 2, 3, 4, 5, 6, 7])
     let sub = set.elements(in: 3...6)
-    XCTAssertEqual(sub.map { $0 }, [3, 4, 5, 6])
+    XCTAssertEqual(sub + [], [3, 4, 5, 6])
   }
 
   /// deprecated subscript(range) が正しく動作すること
   func test_deprecatedSubscriptRange() {
     let set = RedBlackTreeSet([1, 2, 3, 4, 5, 6, 7])
     let sub = set[3..<6]
-    XCTAssertEqual(sub.map { $0 }, [3, 4, 5])
+    XCTAssertEqual(sub + [], [3, 4, 5])
   }
 
   /// deprecated subscript(closedRange) が正しく動作すること
   func test_deprecatedSubscriptClosedRange() {
     let set = RedBlackTreeSet([1, 2, 3, 4, 5, 6, 7])
     let sub = set[3...6]
-    XCTAssertEqual(sub.map { $0 }, [3, 4, 5, 6])
+    XCTAssertEqual(sub + [], [3, 4, 5, 6])
   }
 }

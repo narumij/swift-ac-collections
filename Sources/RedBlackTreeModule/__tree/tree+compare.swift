@@ -88,6 +88,7 @@ extension CompareMultiProtocol {
 
   // ノードの高さを数える
   @inlinable
+  @inline(__always)
   func ___ptr_height(_ __p: _NodePtr) -> Int {
     assert(__p != .nullptr, "Node shouldn't be null")
     var __h = 0

@@ -32,6 +32,7 @@ protocol FindLeafProtocol: ValueProtocol
 extension FindLeafProtocol {
 
   @inlinable
+  @inline(__always)
   func
     __find_leaf_low(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
   {
@@ -60,6 +61,7 @@ extension FindLeafProtocol {
   }
 
   @inlinable
+  @inline(__always)
   func
     __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
   {
@@ -94,6 +96,7 @@ protocol FindEqualProtocol: FindProtocol & RefProtocol & RootPtrProrototol {}
 extension FindEqualProtocol {
 
   @inlinable
+  @inline(__always)
   func
     __find_equal(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
   {
@@ -139,6 +142,7 @@ protocol FindProtocol: ValueProtocol
 extension FindProtocol {
 
   @inlinable
+  @inline(__always)
   func find(_ __v: _Key) -> _NodePtr {
     let __p = __lower_bound(__v, __root(), __end_node())
     if __p != end(), !value_comp(__v, __value_(__p)) {

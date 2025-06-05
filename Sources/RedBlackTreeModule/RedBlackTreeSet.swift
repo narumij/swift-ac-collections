@@ -146,12 +146,14 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   public var isEmpty: Bool {
     ___is_empty
   }
 
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   public var capacity: Int {
     ___capacity
   }
@@ -170,14 +172,15 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   public var first: Element? {
-    isEmpty ? nil : self[startIndex]
+    ___first
   }
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : self[index(before: endIndex)]
+    ___last
   }
 }
 
@@ -187,6 +190,7 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }

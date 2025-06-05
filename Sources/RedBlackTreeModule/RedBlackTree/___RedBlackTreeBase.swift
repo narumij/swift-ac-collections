@@ -195,6 +195,19 @@ extension ___RedBlackTreeBase {
 }
 
 extension ___RedBlackTreeBase {
+  
+  @inlinable @inline(__always)
+  var ___first: Element? {
+    ___is_empty ? nil : __tree_[__tree_.__begin_node]
+  }
+  
+  @inlinable @inline(__always)
+  var ___last: Element? {
+    ___is_empty ? nil : __tree_[__tree_.__tree_prev_iter(__tree_.__end_node())]
+  }
+}
+
+extension ___RedBlackTreeBase {
 
   @inlinable
   func ___first_index(of member: _Key) -> Index? {

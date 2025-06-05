@@ -48,7 +48,8 @@ extension ___RedBlackTreeSequence {
 
 extension ___RedBlackTreeSequence {
 
-  @inlinable @inline(__always)
+  @inlinable
+  @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
     try __tree_.___for_each_(body)
   }
@@ -56,14 +57,16 @@ extension ___RedBlackTreeSequence {
 
 extension ___RedBlackTreeSequence {
 
-  @inlinable @inline(__always)
+  @inlinable
+  @inline(__always)
   public func forEach(_ body: (RawIndex, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
       try body(___raw_index($0), __tree_[$0])
     }
   }
 
-  @inlinable @inline(__always)
+  @inlinable
+  @inline(__always)
   public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
       try body($0, __tree_[$0])
@@ -99,6 +102,7 @@ extension ___RedBlackTreeSequence {
 
   /// - Complexity: O(log *n*)
   @inlinable
+  //  @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     __tree_.___signed_distance(start.rawValue, end.rawValue)
   }
@@ -133,24 +137,28 @@ extension ___RedBlackTreeSequence {
 
   /// - Complexity: O(*d*)
   @inlinable
+  //  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(__tree_.___index(i.rawValue, offsetBy: distance))
   }
 
   /// - Complexity: O(*d*)
   @inlinable
+  //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     __tree_.___formIndex(&i.rawValue, offsetBy: distance)
   }
 
   /// - Complexity: O(*d*)
   @inlinable
+  //  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index_or_nil(__tree_.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue))
   }
 
   /// - Complexity: O(*d*)
   @inlinable
+  //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
@@ -214,6 +222,7 @@ extension ___RedBlackTreeSequence {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
+  @inline(__always)
   public func elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
@@ -223,6 +232,7 @@ extension ___RedBlackTreeSequence {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
+  @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {

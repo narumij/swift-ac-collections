@@ -975,6 +975,7 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
+  @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.count == rhs.count && lhs.elementsEqual(rhs)
   }
@@ -986,6 +987,7 @@ extension RedBlackTreeDictionary: Comparable where Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
+  @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
   }
@@ -998,6 +1000,7 @@ extension RedBlackTreeDictionary where Value: Equatable {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
+  @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     elementsEqual(other, by: Tree.___key_value_equiv)
@@ -1009,6 +1012,7 @@ extension RedBlackTreeDictionary where Value: Comparable {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
+  @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
@@ -1018,11 +1022,11 @@ extension RedBlackTreeDictionary where Value: Comparable {
 // MARK: - Sendable
 
 #if swift(>=5.5)
-extension RedBlackTreeDictionary: @unchecked Sendable
-where Element: Sendable {}
+  extension RedBlackTreeDictionary: @unchecked Sendable
+  where Element: Sendable {}
 #endif
 
 #if swift(>=5.5)
-extension RedBlackTreeDictionary.SubSequence: @unchecked Sendable
-where Key: Sendable, Value: Sendable {}
+  extension RedBlackTreeDictionary.SubSequence: @unchecked Sendable
+  where Key: Sendable, Value: Sendable {}
 #endif

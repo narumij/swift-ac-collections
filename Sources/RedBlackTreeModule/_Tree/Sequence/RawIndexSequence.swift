@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
+public struct RawIndexSequence<Tree: Tree_IterateProtocol & Tree_ForEach>: Sequence {
 
   @usableFromInline
   let __tree_: Tree
@@ -55,12 +55,7 @@ public struct RawIndexSequence<Tree: Tree_IterateProtocol>: Sequence {
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
-    var __p = _start
-    while __p != _end {
-      let __c = __p
-      __p = __tree_.__tree_next_iter(__p)
-      try body(RawIndex(__c))
-    }
+    try __tree_.___for_each_(__p: _start, __l: _end) { try body(RawIndex($0)) }
   }
 
   @inlinable

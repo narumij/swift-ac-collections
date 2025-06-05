@@ -252,7 +252,7 @@ extension ___Tree {
   }
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
-  @usableFromInline
+    @usableFromInline
     internal var copyCount: UInt {
       get { __header_ptr.pointee.copyCount }
       set { __header_ptr.pointee.copyCount = newValue }
@@ -622,20 +622,28 @@ extension ___Tree {
 
 extension ___Tree {
 
-  @nonobjc @inlinable @inline(__always)
+  // O(1)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal func ___initialized_contains(_ p: _NodePtr) -> Bool {
     0..<_header.initializedCount ~= p
   }
 
   // 割と雑に使っていて、意味がぼやっとしている
-  @nonobjc @inlinable @inline(__always)
+  // O(1)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal func ___is_valid(_ p: _NodePtr) -> Bool {
     ___initialized_contains(p) && !___is_garbaged(p)
   }
 
   // 割と雑に使っていて、意味がぼやっとしている
+  // O(1)
   @nonobjc
   @inlinable
+  @inline(__always)
   internal func ___is_valid_index(_ i: _NodePtr) -> Bool {
     if i == .nullptr { return false }
     if i == .end { return true }
@@ -645,7 +653,21 @@ extension ___Tree {
 
 // MARK: -
 
-extension ___Tree {
+extension ___Tree: Tree_ForEach {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
+    rethrows
+  {
+    var __p = __p
+    while __p != __l {
+      let __c = __p
+      __p = __tree_next(__p)
+      try body(__c)
+    }
+  }
 
   @nonobjc
   @inlinable
@@ -682,20 +704,6 @@ extension ___Tree {
       let __c = __p
       __p = __tree_next(__p)
       try body(self[__c])
-    }
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
-    rethrows
-  {
-    var __p = __p
-    while __p != __l {
-      let __c = __p
-      __p = __tree_next(__p)
-      try body(__c)
     }
   }
 }
@@ -881,7 +889,7 @@ extension ___Tree: Tree_IterateProtocol {}
 
 extension ___Tree: Tree_IndexProtocol {
   public typealias Index = ___Iterator
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -892,7 +900,7 @@ extension ___Tree: Tree_IndexProtocol {
 
 extension ___Tree: Tree_IndicesProtocol {
   public typealias Indices = ___IteratorSequence
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -902,7 +910,7 @@ extension ___Tree: Tree_IndicesProtocol {
 }
 
 extension ___Tree: Tree_RawIndexProtocol {
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -964,6 +972,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
+  @inline(__always)
   public func ___filter(_ isIncluded: (Element) throws -> Bool)
     rethrows -> ___Tree
   {
@@ -982,6 +991,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
+  @inline(__always)
   public func ___mapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T)
     rethrows -> ___Tree<Other>
   where
@@ -999,6 +1009,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
+  @inline(__always)
   public func ___compactMapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T?)
     rethrows -> ___Tree<Other>
   where

@@ -31,11 +31,9 @@ import Foundation
 /// endはルートノードを保持するオブジェクトを指すかわりに、-2で表現している
 ///
 /// `__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
-public
-  typealias _NodePtr = Int
+public typealias _NodePtr = Int
 
-public
-  typealias _Pointer = _NodePtr
+public typealias _Pointer = _NodePtr
 
 extension _NodePtr {
 
@@ -281,10 +279,10 @@ public protocol KeyValueComparer: ValueComparer {
   static func __key(_ element: Element) -> _Key
 }
 
-public typealias _KeyValueTuple_<_Key,_Value> = (key: _Key, value: _Value)
+public typealias _KeyValueTuple_<_Key, _Value> = (key: _Key, value: _Value)
 
 extension KeyValueComparer {
-  public typealias _KeyValueTuple = _KeyValueTuple_<_Key,_Value>
+  public typealias _KeyValueTuple = _KeyValueTuple_<_Key, _Value>
 }
 
 extension KeyValueComparer where Element == _KeyValueTuple {

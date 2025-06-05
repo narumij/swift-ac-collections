@@ -41,7 +41,7 @@ where
 
 extension ___SubSequenceBase {
 
-  @inlinable
+  @inlinable @inline(__always)
   func ___index(_ rawValue: _NodePtr) -> Index {
     .init(tree: __tree_, rawValue: rawValue)
   }
@@ -55,8 +55,8 @@ extension ___SubSequenceBase {
 extension ___SubSequenceBase {
 
   /// - Complexity: O(1)
-  @inlinable
-  public func makeIterator() -> ElementIterator<Tree> {
+  @inlinable @inline(__always)
+  public __consuming func makeIterator() -> ElementIterator<Tree> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -64,7 +64,6 @@ extension ___SubSequenceBase {
 extension ___SubSequenceBase {
 
   @inlinable
-  @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end, body: body)
   }
@@ -73,7 +72,6 @@ extension ___SubSequenceBase {
 extension ___SubSequenceBase {
 
   @inlinable
-  @inline(__always)
   public func forEach(_ body: (RawIndex, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(___raw_index($0), __tree_[$0])
@@ -81,7 +79,6 @@ extension ___SubSequenceBase {
   }
 
   @inlinable
-  @inline(__always)
   public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body($0, __tree_[$0])
@@ -101,11 +98,13 @@ extension ___SubSequenceBase {
 extension ___SubSequenceBase {
 
   /// - Complexity: O(1)
+  @inlinable @inline(__always)
   public var startIndex: Index {
     ___index(_start)
   }
 
   /// - Complexity: O(1)
+  @inlinable @inline(__always)
   public var endIndex: Index {
     ___index(_end)
   }
@@ -147,6 +146,7 @@ extension ___SubSequenceBase {
 
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   public subscript(position: RawIndex) -> Element {
     @inline(__always)
     _read {
@@ -164,7 +164,6 @@ extension ___SubSequenceBase {
 
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     guard __tree_.___ptr_less_than_or_equal(_start, bounds.lowerBound.rawValue),
       __tree_.___ptr_less_than_or_equal(bounds.upperBound.rawValue, _end)
@@ -181,7 +180,7 @@ extension ___SubSequenceBase {
 extension ___SubSequenceBase {
 
   /// - Complexity: O(log *n* + *k*)
-  @inlinable @inline(__always)
+  @inlinable
   public func distance(from start: Index, to end: Index) -> Int {
     __tree_.___distance(from: start.rawValue, to: end.rawValue)
   }
@@ -205,7 +204,6 @@ extension ___SubSequenceBase {
 
   /// - Complexity: O(*d*)
   @inlinable
-  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
     __tree_.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
@@ -217,7 +215,6 @@ extension ___SubSequenceBase {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public func formIndex(after i: inout Index) {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
     __tree_.___formIndex(after: &i.rawValue)
@@ -225,7 +222,6 @@ extension ___SubSequenceBase {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public func formIndex(before i: inout Index) {
     // 標準のArrayが単純に減算することにならい、範囲チェックをしない
     __tree_.___formIndex(before: &i.rawValue)
@@ -233,7 +229,6 @@ extension ___SubSequenceBase {
 
   /// - Complexity: O(*d*)
   @inlinable
-  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
     __tree_.___formIndex(&i.rawValue, offsetBy: distance)
@@ -275,6 +270,7 @@ extension ___SubSequenceBase {
 // MARK: - Utility
 
 extension ___SubSequenceBase {
+  // TODO: 計算量
 
   @inlinable
   @inline(__always)
@@ -285,14 +281,12 @@ extension ___SubSequenceBase {
     return __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
 
-  /// - Complexity: O(lon *n*)
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
     ___is_valid_index(index: i.___unchecked_rawValue)
   }
 
-  /// - Complexity: O(lon *n*)
   @inlinable
   @inline(__always)
   public func isValid(index i: RawIndex) -> Bool {
@@ -360,7 +354,8 @@ extension ___SubSequenceBase {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
-  @inlinable public func lexicographicallyPrecedes<OtherSequence>(
+  @inlinable
+  public func lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
     try makeIterator().lexicographicallyPrecedes(other, by: areInIncreasingOrder)

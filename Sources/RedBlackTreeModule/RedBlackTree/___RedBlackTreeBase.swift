@@ -209,14 +209,14 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
 
-  @inlinable
+  @inlinable @inline(__always)
   func ___first_index(of member: _Key) -> Index? {
     var __parent = _NodePtr.nullptr
     let ptr = __tree_.__ptr_(__tree_.__find_equal(&__parent, member))
     return ___index_or_nil(ptr)
   }
 
-  @inlinable
+  @inlinable @inline(__always)
   func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     var result: Index?
     try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
@@ -231,7 +231,7 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
 
-  @inlinable
+  @inlinable @inline(__always)
   public func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     var result: Element?
     try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
@@ -339,7 +339,7 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
 
-  @inlinable
+  @inlinable @inline(__always)
   mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
 
     if keepCapacity {

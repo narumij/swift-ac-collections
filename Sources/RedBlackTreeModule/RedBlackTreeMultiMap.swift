@@ -815,6 +815,7 @@ extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
 
   /// - Complexity: O(*n* log *n*)
   @inlinable
+  @inline(__always)
   public init(dictionaryLiteral elements: (Key, Value)...) {
     self.init(multiKeysWithValues: elements)
   }
@@ -826,6 +827,7 @@ extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
 
   /// - Complexity: O(*n* log *n*)
   @inlinable
+  @inline(__always)
   public init(arrayLiteral elements: (Key, Value)...) {
     self.init(multiKeysWithValues: elements)
   }
@@ -857,7 +859,6 @@ extension RedBlackTreeMultiMap: CustomStringConvertible {
 
 extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
 
-  @inlinable
   public var debugDescription: String {
     var result = "RedBlackTreeMultiMap<\(Key.self), \(Value.self)>("
     if isEmpty {

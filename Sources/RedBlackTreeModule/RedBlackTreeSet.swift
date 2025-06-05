@@ -530,6 +530,7 @@ extension RedBlackTreeSet {
   /// **Deprecated – `elements(in:)` を使ってください。**
   @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
+  @inline(__always)
   public subscript(bounds: Range<Element>) -> SubSequence {
     elements(in: bounds)
   }
@@ -540,6 +541,7 @@ extension RedBlackTreeSet {
   /// **Deprecated – `elements(in:)` を使ってください。**
   @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
+  @inline(__always)
   public subscript(bounds: ClosedRange<Element>) -> SubSequence {
     elements(in: bounds)
   }
@@ -550,6 +552,7 @@ extension RedBlackTreeSet {
   ///
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   public func elements(in range: Range<Element>) -> SubSequence {
     .init(
       tree: __tree_,
@@ -561,6 +564,7 @@ extension RedBlackTreeSet {
   ///
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   public func elements(in range: ClosedRange<Element>) -> SubSequence {
     .init(
       tree: __tree_,
@@ -675,6 +679,7 @@ extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 
   /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
+  @inline(__always)
   public init(arrayLiteral elements: Element...) {
     self.init(elements)
   }
@@ -705,7 +710,6 @@ extension RedBlackTreeSet: CustomStringConvertible {
 
 extension RedBlackTreeSet: CustomDebugStringConvertible {
 
-  @inlinable
   public var debugDescription: String {
     var result = "RedBlackTreeSet<\(Element.self)>(["
     var first = true

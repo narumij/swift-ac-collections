@@ -653,6 +653,7 @@ extension RedBlackTreeMultiSet: ExpressibleByArrayLiteral {
 
   /// - Complexity: O(*n* log *n*)
   @inlinable
+  @inline(__always)
   public init(arrayLiteral elements: Element...) {
     self.init(elements)
   }
@@ -679,20 +680,10 @@ extension RedBlackTreeMultiSet: CustomStringConvertible {
   }
 }
 
-// MARK: - CustomReflectable
-
-extension RedBlackTreeMultiSet: CustomReflectable {
-  /// The custom mirror for this instance.
-  public var customMirror: Mirror {
-    Mirror(self, unlabeledChildren: self, displayStyle: .set)
-  }
-}
-
 // MARK: - CustomDebugStringConvertible
 
 extension RedBlackTreeMultiSet: CustomDebugStringConvertible {
 
-  @inlinable
   public var debugDescription: String {
     var result = "RedBlackTreeMultiSet<\(Element.self)>(["
     var first = true
@@ -707,6 +698,15 @@ extension RedBlackTreeMultiSet: CustomDebugStringConvertible {
     }
     result += "])"
     return result
+  }
+}
+
+// MARK: - CustomReflectable
+
+extension RedBlackTreeMultiSet: CustomReflectable {
+  /// The custom mirror for this instance.
+  public var customMirror: Mirror {
+    Mirror(self, unlabeledChildren: self, displayStyle: .set)
   }
 }
 

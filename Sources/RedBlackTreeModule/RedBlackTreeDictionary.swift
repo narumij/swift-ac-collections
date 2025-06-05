@@ -883,6 +883,7 @@ extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
 
   /// - Complexity: O(*n* log *n*)
   @inlinable
+  @inline(__always)
   public init(dictionaryLiteral elements: (Key, Value)...) {
     self.init(uniqueKeysWithValues: elements)
   }
@@ -904,6 +905,7 @@ extension RedBlackTreeDictionary: ExpressibleByArrayLiteral {
   /// ```
   /// - Complexity: O(*n* log *n*)
   @inlinable
+  @inline(__always)
   public init(arrayLiteral elements: (Key, Value)...) {
     self.init(uniqueKeysWithValues: elements)
   }
@@ -935,7 +937,6 @@ extension RedBlackTreeDictionary: CustomStringConvertible {
 
 extension RedBlackTreeDictionary: CustomDebugStringConvertible {
 
-  @inlinable
   public var debugDescription: String {
     var result = "RedBlackTreeDictionary<\(Key.self), \(Value.self)>("
     if isEmpty {

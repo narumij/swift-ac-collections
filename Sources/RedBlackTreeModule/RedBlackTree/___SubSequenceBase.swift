@@ -236,7 +236,7 @@ extension ___SubSequenceBase {
 
   /// - Complexity: O(*d*)
   @inlinable
-  @inline(__always)
+  @inline(__always) // コールスタック無駄があるのでalways
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {

@@ -50,8 +50,9 @@ extension ___Tree {
 
     @inlinable
     var ___unchecked_rawValue: _NodePtr {
-      @inline(__always)
-      _read { yield _rawValue }
+      @inline(__always) _read {
+        yield _rawValue
+      }
     }
 
     // MARK: -

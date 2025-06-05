@@ -34,6 +34,7 @@ extension DistanceProtocol {
   typealias _InputIter = Int
 
   @inlinable
+  @inline(__always)
   func __distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type {
     var __first = __first
     var __r = 0
@@ -45,6 +46,7 @@ extension DistanceProtocol {
   }
 
   @inlinable
+  @inline(__always)
   func ___signed_distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type {
     guard __first != __last else { return 0 }
     var (__first, __last) = (__first, __last)

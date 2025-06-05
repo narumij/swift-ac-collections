@@ -30,6 +30,7 @@ protocol InsertNodeAtProtocol:
 extension InsertNodeAtProtocol {
 
   @inlinable
+  @inline(__always)
   func
     __insert_node_at(
       _ __parent: _NodePtr, _ __child: _NodeRef,
@@ -77,6 +78,7 @@ extension InsertUniqueProtocol {
 
   #if true
     @inlinable
+    @inline(__always)
     func
       __emplace_unique_key_args(_ __k: Element) -> (__r: _NodePtr, __inserted: Bool)
     {
@@ -135,6 +137,7 @@ extension InsertMultiProtocol {
   }
 
   @inlinable
+  @inline(__always)
   func
     __emplace_multi(_ __k: Element) -> _NodePtr
   {

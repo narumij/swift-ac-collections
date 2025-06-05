@@ -203,6 +203,7 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -214,6 +215,7 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func update(with newMember: Element) -> Element? {
     _ensureUniqueAndCapacity()
@@ -776,11 +778,11 @@ extension RedBlackTreeSet {
 // MARK: - Sendable
 
 #if swift(>=5.5)
-extension RedBlackTreeSet: @unchecked Sendable
-where Element: Sendable {}
+  extension RedBlackTreeSet: @unchecked Sendable
+  where Element: Sendable {}
 #endif
 
 #if swift(>=5.5)
-extension RedBlackTreeSet.SubSequence: @unchecked Sendable
-where Element: Sendable {}
+  extension RedBlackTreeSet.SubSequence: @unchecked Sendable
+  where Element: Sendable {}
 #endif

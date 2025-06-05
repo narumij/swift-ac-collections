@@ -191,6 +191,7 @@ extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(log *n*)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -755,11 +756,11 @@ extension RedBlackTreeMultiSet {
 // MARK: - Sendable
 
 #if swift(>=5.5)
-extension RedBlackTreeMultiSet: @unchecked Sendable
-where Element: Sendable {}
+  extension RedBlackTreeMultiSet: @unchecked Sendable
+  where Element: Sendable {}
 #endif
 
 #if swift(>=5.5)
-extension RedBlackTreeMultiSet.SubSequence: @unchecked Sendable
-where Element: Sendable {}
+  extension RedBlackTreeMultiSet.SubSequence: @unchecked Sendable
+  where Element: Sendable {}
 #endif

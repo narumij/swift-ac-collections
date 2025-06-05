@@ -260,6 +260,7 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(log *n*)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -273,8 +274,9 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(log *n*)
-  @discardableResult
   @inlinable
+  @inline(__always)
+  @discardableResult
   public mutating func updateValue(_ newValue: Value, at ptr: RawIndex) -> Element? {
     guard
       !___is_null_or_end(ptr.rawValue),
@@ -289,8 +291,9 @@ extension RedBlackTreeMultiMap {
   }
 
   /// - Complexity: O(log *n*)
-  @discardableResult
   @inlinable
+  @inline(__always)
+  @discardableResult
   public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
     guard
       !___is_null_or_end(ptr._rawValue),
@@ -320,7 +323,6 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
     _ensureUniqueAndCapacity(to: count + other.count)
     ___tree_merge_multi(other.__tree_)
@@ -329,7 +331,6 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
     _ensureUniqueAndCapacity(to: count + other.count)
     ___tree_merge_multi(other.__tree_)
@@ -338,7 +339,6 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
     _ensureUnique()
     ___merge_multi(other)
@@ -347,7 +347,6 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
     var result = self
     result.insert(contentsOf: other)
@@ -357,7 +356,6 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public func inserting(contentsOf other: RedBlackTreeDictionary<Key, Value>) -> Self {
     var result = self
     result.insert(contentsOf: other)
@@ -398,6 +396,7 @@ extension RedBlackTreeMultiMap {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   public mutating func popFirst() -> KeyValue? {
     guard !isEmpty else { return nil }
     return remove(at: startIndex)
@@ -448,6 +447,7 @@ extension RedBlackTreeMultiMap {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
     guard !isEmpty else {
@@ -470,6 +470,7 @@ extension RedBlackTreeMultiMap {
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
     _ensureUnique()
@@ -482,6 +483,7 @@ extension RedBlackTreeMultiMap {
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func remove(at index: RawIndex) -> KeyValue {
     _ensureUnique()

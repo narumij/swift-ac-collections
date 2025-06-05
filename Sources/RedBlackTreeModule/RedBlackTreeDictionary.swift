@@ -375,6 +375,7 @@ extension RedBlackTreeDictionary {
 
   /// - Complexity: O(log *n*)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -388,8 +389,9 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   /// - Complexity: O(log *n*)
-  @discardableResult
   @inlinable
+  @inline(__always)
+  @discardableResult
   public mutating func updateValue(
     _ value: Value,
     forKey key: Key
@@ -500,6 +502,7 @@ extension RedBlackTreeDictionary {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   public mutating func popFirst() -> KeyValue? {
     guard !isEmpty else { return nil }
     return remove(at: startIndex)
@@ -511,6 +514,7 @@ extension RedBlackTreeDictionary {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
     let __i = __tree_.find(__k)
@@ -526,6 +530,7 @@ extension RedBlackTreeDictionary {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
     guard !isEmpty else {
@@ -548,6 +553,7 @@ extension RedBlackTreeDictionary {
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
     _ensureUnique()
@@ -560,6 +566,7 @@ extension RedBlackTreeDictionary {
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func remove(at index: RawIndex) -> KeyValue {
     _ensureUnique()

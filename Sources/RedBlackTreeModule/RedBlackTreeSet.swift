@@ -344,6 +344,7 @@ extension RedBlackTreeSet {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
     guard !isEmpty else {

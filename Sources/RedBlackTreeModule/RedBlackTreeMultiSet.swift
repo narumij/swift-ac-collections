@@ -216,7 +216,6 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
     ___tree_merge_multi(other.__tree_)
@@ -225,7 +224,6 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
     ___tree_merge_multi(other.__tree_)
@@ -234,7 +232,6 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
     _ensureUnique()
     ___merge_multi(other)
@@ -243,7 +240,6 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public func inserting(contentsOf other: RedBlackTreeSet<Element>) -> Self {
     var result = self
     result.insert(contentsOf: other)
@@ -253,7 +249,6 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public func inserting(contentsOf other: RedBlackTreeMultiSet<Element>) -> Self {
     var result = self
     result.insert(contentsOf: other)
@@ -293,6 +288,7 @@ extension RedBlackTreeMultiSet {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   public mutating func popFirst() -> Element? {
     guard !isEmpty else { return nil }
     return remove(at: startIndex)
@@ -304,6 +300,7 @@ extension RedBlackTreeMultiSet {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     _strongEnsureUnique()
@@ -313,6 +310,7 @@ extension RedBlackTreeMultiSet {
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func remove(at index: RawIndex) -> Element {
     _ensureUnique()
@@ -325,6 +323,7 @@ extension RedBlackTreeMultiSet {
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     _ensureUnique()
@@ -337,6 +336,7 @@ extension RedBlackTreeMultiSet {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
     guard !isEmpty else {
@@ -398,7 +398,6 @@ extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
-  @inline(__always)
   public mutating func remove(contentsOf elementRange: Range<Element>) {
     _strongEnsureUnique()
     let lower = ___lower_bound(elementRange.lowerBound)
@@ -408,7 +407,6 @@ extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(log *n* : *k*)
   @inlinable
-  @inline(__always)
   public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
     _strongEnsureUnique()
     let lower = ___lower_bound(elementRange.lowerBound)

@@ -20,6 +20,7 @@ where
 extension ___RedBlackTreeMerge {
 
   @inlinable
+  @inline(__always)
   mutating func ___tree_merge_unique<Source>(_ __source: Source)
   where Source: MergeSourceProtocol, Source._Key == _Key, Source.Element == Element {
     var __i = __source.__begin_node
@@ -38,6 +39,7 @@ extension ___RedBlackTreeMerge {
   }
 
   @inlinable
+  @inline(__always)
   mutating func ___tree_merge_multi<Source>(_ __source: Source)
   where Source: MergeSourceProtocol, Source._Key == _Key, Source.Element == Element {
     var __i = __source.__begin_node
@@ -53,6 +55,7 @@ extension ___RedBlackTreeMerge {
   }
 
   @inlinable
+  @inline(__always)
   mutating func ___tree_merge_unique<Source, Key, Value>(
     _ __source: Source, uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows
@@ -80,6 +83,7 @@ extension ___RedBlackTreeMerge {
   }
 
   @inlinable
+  @inline(__always)
   mutating func ___merge_unique<S>(_ __source: S)
   where S: Sequence, S.Element == Element {
     for __element in __source {
@@ -95,6 +99,7 @@ extension ___RedBlackTreeMerge {
   }
 
   @inlinable
+  @inline(__always)
   mutating func ___merge_multi<S>(_ __source: S)
   where S: Sequence, S.Element == Element {
     for __element in __source {
@@ -107,6 +112,7 @@ extension ___RedBlackTreeMerge {
   }
 
   @inlinable
+  @inline(__always)
   mutating func ___merge_multi<S, Key, Value>(_ __source: S)
   where
     Element == _KeyValueTuple_<Key, Value>,
@@ -122,6 +128,7 @@ extension ___RedBlackTreeMerge {
   }
 
   @inlinable
+  @inline(__always)
   mutating func ___merge_unique<S, Key, Value>(
     _ __source: S, uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows

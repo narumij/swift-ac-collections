@@ -31,6 +31,7 @@ protocol EraseProtocol: AnyObject {
 extension EraseProtocol {
 
   @inlinable
+  @inline(__always)
   func
     erase(_ __p: _NodePtr) -> _NodePtr
   {
@@ -40,6 +41,7 @@ extension EraseProtocol {
   }
 
   @inlinable
+  @inline(__always)
   func
     erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
   {
@@ -57,6 +59,7 @@ protocol EraseUniqueProtocol: FindProtocol, EraseProtocol { }
 extension EraseUniqueProtocol {
   
   @inlinable
+  @inline(__always)
   internal func ___erase_unique(_ __k: _Key) -> Bool {
     let __i = find(__k)
     if __i == end() {
@@ -73,6 +76,7 @@ protocol EraseMultiProtocol: EqualProtocol, EraseProtocol { }
 extension EraseMultiProtocol {
   
   @inlinable
+  @inline(__always)
   internal func ___erase_multi(_ __k: _Key) -> Int {
     var __p = __equal_range_multi(__k)
     var __r = 0

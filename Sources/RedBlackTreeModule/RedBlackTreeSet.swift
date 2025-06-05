@@ -202,8 +202,8 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @discardableResult
   @inlinable
+  @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
@@ -213,8 +213,8 @@ extension RedBlackTreeSet {
   }
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @discardableResult
   @inlinable
+  @discardableResult
   public mutating func update(with newMember: Element) -> Element? {
     _ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(newMember)
@@ -240,7 +240,6 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public mutating func merge(_ other: RedBlackTreeSet<Element>) {
     _ensureUnique()
     ___tree_merge_unique(other.__tree_)
@@ -249,7 +248,6 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public mutating func merge(_ other: RedBlackTreeMultiSet<Element>) {
     _ensureUnique()
     ___tree_merge_unique(other.__tree_)
@@ -258,7 +256,6 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public mutating func merge<S>(_ other: S) where S: Sequence, S.Element == Element {
     _ensureUnique()
     ___merge_unique(other)
@@ -267,7 +264,6 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public func merging(_ other: RedBlackTreeMultiSet<Element>) -> Self {
     var result = self
     result.merge(other)
@@ -277,7 +273,6 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  @inline(__always)
   public func merging(_ other: RedBlackTreeSet<Element>) -> Self {
     var result = self
     result.merge(other)
@@ -301,6 +296,7 @@ extension RedBlackTreeSet {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   public mutating func popFirst() -> Element? {
     guard !isEmpty else { return nil }
     return remove(at: startIndex)
@@ -311,8 +307,9 @@ extension RedBlackTreeSet {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @discardableResult
   @inlinable
+  @inline(__always)
+  @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     _ensureUnique()
     return __tree_.___erase_unique(member) ? member : nil
@@ -321,6 +318,7 @@ extension RedBlackTreeSet {
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     _ensureUnique()
@@ -333,6 +331,7 @@ extension RedBlackTreeSet {
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func remove(at index: RawIndex) -> Element {
     _ensureUnique()

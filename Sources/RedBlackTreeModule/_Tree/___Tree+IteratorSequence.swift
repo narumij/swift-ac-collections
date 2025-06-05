@@ -112,11 +112,13 @@ extension ___Tree {
     }
 
     @inlinable
+    @inline(__always)
     public __consuming func makeIterator() -> ForwardIterator {
       .init(tree: __tree_, start: _start, end: _end)
     }
 
     @inlinable
+    @inline(__always)
     public __consuming func reversed() -> BackwordIterator {
       .init(tree: __tree_, start: _start, end: _end)
     }
@@ -125,30 +127,42 @@ extension ___Tree {
 
 extension ___Tree.___IteratorSequence: Collection, BidirectionalCollection {
 
+  @inlinable
+  @inline(__always)
   public func index(after i: Index) -> Index {
     return i.advanced(by: 1)
     //    i.___next_
   }
 
+  @inlinable
+  @inline(__always)
   public func index(before i: Index) -> Index {
     return i.advanced(by: -1)
     //    i.___prev_
   }
 
+  @inlinable
+  @inline(__always)
   public subscript(position: Index) -> Index {
     __tree_.makeIndex(rawValue: position.rawValue)
   }
 
+  @inlinable
+  @inline(__always)
   public var startIndex: Index {
     __tree_.makeIndex(rawValue: _start)
   }
 
+  @inlinable
+  @inline(__always)
   public var endIndex: Index {
     __tree_.makeIndex(rawValue: _end)
   }
 
   public typealias SubSequence = Self
 
+  @inlinable
+  @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
   }

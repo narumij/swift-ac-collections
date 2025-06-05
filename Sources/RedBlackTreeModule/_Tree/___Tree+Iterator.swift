@@ -113,7 +113,6 @@ extension ___Tree.___Iterator: Comparable {
 extension ___Tree.___Iterator {
 
   @inlinable
-  @inline(__always)
   public func distance(to other: Self) -> Int {
     guard !isGarbaged, !other.isGarbaged else {
       preconditionFailure(.garbagedIndex)
@@ -122,7 +121,6 @@ extension ___Tree.___Iterator {
   }
 
   @inlinable
-  @inline(__always)
   public func advanced(by n: Int) -> Self {
     .init(tree: __tree_, rawValue: __tree_.___tree_adv_iter(rawValue, by: n))
   }
@@ -224,7 +222,8 @@ extension ___Tree.___Iterator {
 
 extension ___Tree.___Iterator {
 
-  @inlinable @inline(__always)
+  @inlinable
+  @inline(__always)
   var ___key: VC._Key {
     __tree_.__key(___pointee)
   }
@@ -265,6 +264,7 @@ extension ___Tree.___Iterator {
 #endif
 
 @inlinable
+@inline(__always)
 public func ..< <VC>(
   lhs: ___Tree<VC>.Index,
   rhs: ___Tree<VC>.Index
@@ -273,6 +273,7 @@ public func ..< <VC>(
 }
 
 @inlinable
+@inline(__always)
 public func + <VC>(
   lhs: ___Tree<VC>.Index,
   rhs: Int
@@ -281,6 +282,7 @@ public func + <VC>(
 }
 
 @inlinable
+@inline(__always)
 public func - <VC>(
   lhs: ___Tree<VC>.Index,
   rhs: Int
@@ -289,6 +291,7 @@ public func - <VC>(
 }
 
 @inlinable
+@inline(__always)
 public func - <VC>(
   lhs: ___Tree<VC>.Index,
   rhs: ___Tree<VC>.Index

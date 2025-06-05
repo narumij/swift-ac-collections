@@ -39,6 +39,7 @@ extension ___Tree {
 
     @usableFromInline
     var __parent: _NodePtr
+
     @usableFromInline
     var __child: _NodeRef
 
@@ -53,14 +54,20 @@ extension ___Tree {
 
     @inlinable
     var _tree: Tree {
-      get { _storage.tree }
-      _modify { yield &_storage.tree }
+      @inline(__always) get {
+        _storage.tree
+      }
+      @inline(__always) _modify {
+        yield &_storage.tree
+      }
     }
 
     @inlinable
     var pointee: Element {
-      get { _tree[_tree.__tree_max(_tree.__root())] }
-      set {
+      @inline(__always) get {
+        _tree[_tree.__tree_max(_tree.__root())]
+      }
+      @inline(__always) set {
         Tree.ensureUniqueAndCapacity(tree: &_tree)
         (__parent, __child) = _tree.___emplace_hint_right(__parent, __child, newValue)
         assert(_tree.__tree_invariant(_tree.__root()))

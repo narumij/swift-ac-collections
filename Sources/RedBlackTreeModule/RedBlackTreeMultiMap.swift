@@ -377,12 +377,14 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
+  @inline(__always)
   static func + (lhs: Self, rhs: Self) -> Self {
     lhs.inserting(contentsOf: rhs)
   }
 
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
+  @inline(__always)
   static func += (lhs: inout Self, rhs: Self) {
     lhs.insert(contentsOf: rhs)
   }
@@ -632,6 +634,7 @@ extension RedBlackTreeMultiMap {
   /// **Deprecated – `elements(in:)` を使ってください。**
   @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
+  @inline(__always)
   public subscript(bounds: Range<Key>) -> SubSequence {
     elements(in: bounds)
   }
@@ -642,6 +645,7 @@ extension RedBlackTreeMultiMap {
   /// **Deprecated – `elements(in:)` を使ってください。**
   @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
+  @inline(__always)
   public subscript(bounds: ClosedRange<Key>) -> SubSequence {
     elements(in: bounds)
   }
@@ -653,7 +657,9 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public func elements(in range: Range<Key>) -> SubSequence {
     .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
+      tree: __tree_,
+      start: ___lower_bound(range.lowerBound),
+      end: ___lower_bound(range.upperBound))
   }
 
   /// キーレンジ `[lower, upper]` に含まれる要素のスライス
@@ -661,7 +667,9 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public func elements(in range: ClosedRange<Key>) -> SubSequence {
     .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
+      tree: __tree_,
+      start: ___lower_bound(range.lowerBound),
+      end: ___upper_bound(range.upperBound))
   }
 }
 
@@ -741,6 +749,7 @@ extension RedBlackTreeMultiMap.SubSequence: Equatable where Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
+  @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.elementsEqual(rhs)
   }
@@ -750,6 +759,7 @@ extension RedBlackTreeMultiMap.SubSequence: Comparable where Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
+  @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
   }
@@ -760,6 +770,7 @@ extension RedBlackTreeMultiMap.SubSequence where Value: Equatable {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
+  @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     elementsEqual(other, by: Tree.___key_value_equiv)
@@ -771,6 +782,7 @@ extension RedBlackTreeMultiMap.SubSequence where Value: Comparable {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
+  @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     lexicographicallyPrecedes(other, by: Tree.___key_value_comp)

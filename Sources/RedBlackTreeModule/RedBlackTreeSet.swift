@@ -84,13 +84,15 @@ extension RedBlackTreeSet: ScalarValueComparer {}
 extension RedBlackTreeSet {
 
   /// - Complexity: O(1)
-  @inlinable @inline(__always)
+  @inlinable
+  @inline(__always)
   public init() {
     self.init(minimumCapacity: 0)
   }
 
   /// - Complexity: O(1)
-  @inlinable @inline(__always)
+  @inlinable
+  @inline(__always)
   public init(minimumCapacity: Int) {
     _storage = .create(withCapacity: minimumCapacity)
   }
@@ -549,10 +551,8 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
   /// 値レンジ `[lower, upper)` に含まれる要素のスライス
-  ///
-  /// - Complexity: O(1)
+  /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   public func elements(in range: Range<Element>) -> SubSequence {
     .init(
       tree: __tree_,
@@ -561,10 +561,8 @@ extension RedBlackTreeSet {
   }
 
   /// 値レンジ `[lower, upper]` に含まれる要素のスライス
-  ///
-  /// - Complexity: O(1)
+  /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   public func elements(in range: ClosedRange<Element>) -> SubSequence {
     .init(
       tree: __tree_,
@@ -606,6 +604,7 @@ extension RedBlackTreeSet.SubSequence: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
+  @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.elementsEqual(rhs)
   }
@@ -615,6 +614,7 @@ extension RedBlackTreeSet.SubSequence: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
+  @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
   }
@@ -625,6 +625,7 @@ extension RedBlackTreeSet.SubSequence {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
+  @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     elementsEqual(other, by: Tree.___key_equiv)
@@ -633,6 +634,7 @@ extension RedBlackTreeSet.SubSequence {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
+  @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     lexicographicallyPrecedes(other, by: Tree.___key_comp)

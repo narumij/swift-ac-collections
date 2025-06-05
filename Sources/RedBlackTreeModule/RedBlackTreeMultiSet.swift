@@ -512,6 +512,7 @@ extension RedBlackTreeMultiSet {
   /// **Deprecated – `elements(in:)` を使ってください。**
   @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
+  @inline(__always)
   public subscript(bounds: Range<Element>) -> SubSequence {
     elements(in: bounds)
   }
@@ -522,6 +523,7 @@ extension RedBlackTreeMultiSet {
   /// **Deprecated – `elements(in:)` を使ってください。**
   @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
+  @inline(__always)
   public subscript(bounds: ClosedRange<Element>) -> SubSequence {
     elements(in: bounds)
   }
@@ -533,7 +535,9 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public func elements(in range: Range<Element>) -> SubSequence {
     .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___lower_bound(range.upperBound))
+      tree: __tree_,
+      start: ___lower_bound(range.lowerBound),
+      end: ___lower_bound(range.upperBound))
   }
 
   /// 値レンジ `[lower, upper]` に含まれる要素のスライス
@@ -541,7 +545,9 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public func elements(in range: ClosedRange<Element>) -> SubSequence {
     .init(
-      tree: __tree_, start: ___lower_bound(range.lowerBound), end: ___upper_bound(range.upperBound))
+      tree: __tree_,
+      start: ___lower_bound(range.lowerBound),
+      end: ___upper_bound(range.upperBound))
   }
 }
 
@@ -580,6 +586,7 @@ extension RedBlackTreeMultiSet.SubSequence: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
+  @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.elementsEqual(rhs)
   }
@@ -589,6 +596,7 @@ extension RedBlackTreeMultiSet.SubSequence: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
+  @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
   }
@@ -599,6 +607,7 @@ extension RedBlackTreeMultiSet.SubSequence {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
+  @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     elementsEqual(other, by: Tree.___key_equiv)
@@ -607,6 +616,7 @@ extension RedBlackTreeMultiSet.SubSequence {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
+  @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     lexicographicallyPrecedes(other, by: Tree.___key_comp)

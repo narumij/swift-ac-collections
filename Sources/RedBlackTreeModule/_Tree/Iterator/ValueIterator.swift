@@ -61,6 +61,7 @@ where Tree.Element == _KeyValueTuple_<K, Value> {
 extension ValueIterator: Equatable where Value: Equatable {
 
   @inlinable
+  @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.elementsEqual(rhs)
   }
@@ -69,6 +70,7 @@ extension ValueIterator: Equatable where Value: Equatable {
 extension ValueIterator: Comparable where Value: Comparable {
 
   @inlinable
+  @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
   }

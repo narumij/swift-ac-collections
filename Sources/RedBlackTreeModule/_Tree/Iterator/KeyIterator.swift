@@ -62,6 +62,7 @@ where Tree.Element == _KeyValueTuple_<Key, V>, Tree.Key == Key {
 extension KeyIterator: Equatable {
 
   @inlinable
+  @inline(__always)
   public static func == (lhs: KeyIterator<Tree, Key, V>, rhs: KeyIterator<Tree, Key, V>) -> Bool {
     lhs.elementsEqual(rhs, by: { !Tree.value_comp($0, $1) && !Tree.value_comp($1, $0) })
   }
@@ -70,6 +71,7 @@ extension KeyIterator: Equatable {
 extension KeyIterator: Comparable {
 
   @inlinable
+  @inline(__always)
   public static func < (lhs: KeyIterator<Tree, Key, V>, rhs: KeyIterator<Tree, Key, V>) -> Bool {
     lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
   }

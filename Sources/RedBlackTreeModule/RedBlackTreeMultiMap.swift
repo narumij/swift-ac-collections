@@ -116,7 +116,7 @@ extension RedBlackTreeMultiMap {
       if count == nil {
         Tree.ensureCapacity(tree: &tree)
       }
-      // バランシングの計算量がO(log *n*)
+      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
       assert(tree.__tree_invariant(tree.__root()))
     }
@@ -143,7 +143,7 @@ extension RedBlackTreeMultiMap {
       if count == nil {
         Tree.ensureCapacity(tree: &tree)
       }
-      // バランシングの計算量がO(log *n*)
+      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k, __v))
       assert(tree.__tree_invariant(tree.__root()))
     }

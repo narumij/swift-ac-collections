@@ -115,7 +115,7 @@ extension RedBlackTreeDictionary {
         Tree.ensureCapacity(tree: &tree)
       }
       if __parent == .end || tree[__parent].0 != __k.0 {
-        // バランシングの計算量がO(log *n*)
+        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
         assert(tree.__tree_invariant(tree.__root()))
       } else {
@@ -144,7 +144,7 @@ extension RedBlackTreeDictionary {
         Tree.ensureCapacity(tree: &tree)
       }
       if __parent == .end || tree[__parent].0 != __k.0 {
-        // バランシングの計算量がO(log *n*)
+        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
         assert(tree.__tree_invariant(tree.__root()))
       } else {

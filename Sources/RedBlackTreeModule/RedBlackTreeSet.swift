@@ -112,7 +112,7 @@ extension RedBlackTreeSet {
         Tree.ensureCapacity(tree: &tree)
       }
       if __parent == .end || tree[__parent] != __k {
-        // バランシングの計算量がO(log *n*)
+        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
         assert(tree.__tree_invariant(tree.__root()))
       }
@@ -123,7 +123,8 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(*n* log *n* + *n*)
+  /// - Important: 昇順を想定して処理を省いている。降順に用いた場合未定義とする。
+  /// - Complexity: O(*n*)
   @inlinable
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {
@@ -132,7 +133,7 @@ extension RedBlackTreeSet {
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     for __k in range {
-      // バランシングの計算量がO(log *n*)
+      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
     }
     assert(tree.__tree_invariant(tree.__root()))

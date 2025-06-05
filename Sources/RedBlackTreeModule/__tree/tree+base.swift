@@ -33,7 +33,7 @@ extension MemberProtocol {
   }
 
   #if TREE_INVARIANT_CHECKS
-    @inlinable
+    @usableFromInline
     func
       __tree_sub_invariant(_ __x: _NodePtr) -> UInt
     {
@@ -74,7 +74,7 @@ extension MemberProtocol {
   #endif
 
   #if TREE_INVARIANT_CHECKS
-    @inlinable
+    @usableFromInline
     func
       __tree_invariant(_ __root: _NodePtr) -> Bool
     {
@@ -102,6 +102,7 @@ extension MemberProtocol {
   #endif
 
   @inlinable
+  @inline(__always)
   func
     __tree_min(_ __x: _NodePtr) -> _NodePtr
   {
@@ -114,6 +115,7 @@ extension MemberProtocol {
   }
 
   @inlinable
+  @inline(__always)
   func
     __tree_max(_ __x: _NodePtr) -> _NodePtr
   {
@@ -126,6 +128,7 @@ extension MemberProtocol {
   }
 
   @inlinable
+  @inline(__always)
   func
     __tree_next(_ __x: _NodePtr) -> _NodePtr
   {
@@ -141,6 +144,7 @@ extension MemberProtocol {
   }
 
   @inlinable
+  @inline(__always)
   public func
     __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
   {
@@ -156,6 +160,7 @@ extension MemberProtocol {
   }
 
   @inlinable
+  @inline(__always)
   public func
     __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   {
@@ -171,6 +176,7 @@ extension MemberProtocol {
   }
 
   @inlinable
+  @inline(__always)
   func
     __tree_leaf(_ __x: _NodePtr) -> _NodePtr
   {

@@ -37,6 +37,7 @@ extension CountProtocol {
   typealias __iter_pointer = _NodePtr
 
   @inlinable
+  @inline(__always)
   func __count_unique(_ __k: _Key) -> size_type {
     var __rt: __node_pointer = __root()
     while __rt != .nullptr {
@@ -52,6 +53,7 @@ extension CountProtocol {
   }
 
   @inlinable
+  @inline(__always)
   func __count_multi(_ __k: _Key) -> size_type {
     var __result: __iter_pointer = __end_node()
     var __rt: __node_pointer = __root()

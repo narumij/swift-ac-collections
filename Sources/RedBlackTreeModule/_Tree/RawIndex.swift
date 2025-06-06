@@ -36,10 +36,8 @@ public enum RawIndex: Equatable {
 
   @inlinable
   @inline(__always)
-  init(_ node: _NodePtr) {
-    guard node != .nullptr else {
-      preconditionFailure("_NodePtr is nullptr")
-    }
+  internal init(_ node: _NodePtr) {
+    assert(node != .nullptr)
     self = node == .end ? .end : .node(node)
   }
 

@@ -167,16 +167,43 @@ extension ___RedBlackTreeSequence {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public subscript(position: Index) -> Element {
-    _read { yield __tree_[position.rawValue] }
+    @inline(__always) _read {
+//      guard !__tree_.___is_subscript_null(position.rawValue) else {
+//        fatalError(.invalidIndex)
+//      }
+      __tree_.___ensureValid(subscript: position.rawValue)
+      yield __tree_[position.rawValue]
+    }
   }
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public subscript(position: RawIndex) -> Element {
-    _read { yield __tree_[position.rawValue] }
+    @inline(__always) _read {
+//      guard !__tree_.___is_subscript_null(position.rawValue) else {
+//        fatalError(.invalidIndex)
+//      }
+      __tree_.___ensureValid(subscript: position.rawValue)
+      yield __tree_[position.rawValue]
+    }
+  }
+}
+
+extension ___RedBlackTreeSequence {
+  
+  @inlinable
+  public subscript(___unsafe position: Index) -> Element {
+    @inline(__always) _read {
+      yield __tree_[position.rawValue]
+    }
+  }
+  
+  @inlinable
+  public subscript(___unsafe position: RawIndex) -> Element {
+    @inline(__always) _read {
+      yield __tree_[position.rawValue]
+    }
   }
 }
 
@@ -186,7 +213,7 @@ extension ___RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public func isValid(index: Index) -> Bool {
-    __tree_.___is_valid_index(index.___unchecked_rawValue)
+    __tree_.___is_valid_index(index.rawValue)
   }
 
   /// - Complexity: O(1)

@@ -850,8 +850,8 @@ final class SetTests: XCTestCase {
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
     XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).___unchecked_rawValue, -1)
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).___unchecked_rawValue, 5)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawValue, -1)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawValue, 5)
 
     XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
     XCTAssertTrue(set.isValid(index: .unsafe(0)))
@@ -880,8 +880,8 @@ final class SetTests: XCTestCase {
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
     XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).___unchecked_rawValue, -1)
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).___unchecked_rawValue, 5)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawValue, -1)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawValue, 5)
 
     XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
     XCTAssertFalse(set.isValid(index: .unsafe(0)))

@@ -279,8 +279,9 @@ extension RedBlackTreeMultiMap {
   @discardableResult
   public mutating func updateValue(_ newValue: Value, at ptr: RawIndex) -> Element? {
     guard
-      !___is_null_or_end(ptr.rawValue),
-      __tree_.___is_valid_index(ptr.rawValue)
+//      !___is_null_or_end(ptr.rawValue),
+//      __tree_.___is_valid_index(ptr.rawValue)
+      !__tree_.___is_subscript_null(ptr.rawValue)
     else {
       return nil
     }
@@ -296,8 +297,9 @@ extension RedBlackTreeMultiMap {
   @discardableResult
   public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
     guard
-      !___is_null_or_end(ptr._rawValue),
-      __tree_.___is_valid_index(ptr._rawValue)
+//      !___is_null_or_end(ptr.rawValue),
+//      __tree_.___is_valid_index(ptr.rawValue)
+      !__tree_.___is_subscript_null(ptr.rawValue)
     else {
       return nil
     }

@@ -195,7 +195,16 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
-    .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+    guard
+      !__tree_.___is_garbaged(bounds.lowerBound.rawValue),
+      !__tree_.___is_garbaged(bounds.upperBound.rawValue)
+    else {
+      fatalError(.garbagedIndex)
+    }
+    return .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
   }
 }
 

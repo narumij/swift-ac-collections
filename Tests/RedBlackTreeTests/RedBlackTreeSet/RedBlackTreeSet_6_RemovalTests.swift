@@ -214,7 +214,7 @@ extension RedBlackTreeSetRemoveTests {
       // 事後条件:
       // - 削除したindexは無効になること
       XCTAssertFalse(
-        sub.isValid(index: RawIndex.unsafe(subIndex.___unchecked_rawValue)),
+        sub.isValid(index: RawIndex.unsafe(subIndex.rawValue)),
         "削除後、SubSequenceのindexは無効になること")
     }
   #endif

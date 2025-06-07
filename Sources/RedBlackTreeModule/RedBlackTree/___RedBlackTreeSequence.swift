@@ -85,85 +85,88 @@ extension ___RedBlackTreeSequence {
 }
 
 extension ___RedBlackTreeSequence {
-
+  
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var startIndex: Index {
     ___index(__tree_.__begin_node)
   }
-
+  
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var endIndex: Index {
     ___index(__tree_.__end_node())
   }
-
+  
   /// - Complexity: O(log *n*)
   @inlinable
   //  @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     __tree_.___distance(from: start.rawValue, to: end.rawValue)
   }
-
+  
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     ___index(__tree_.___index(after: i.rawValue))
   }
-
+  
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     __tree_.___formIndex(after: &i.rawValue)
   }
-
+  
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     ___index(__tree_.___index(before: i.rawValue))
   }
-
+  
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     __tree_.___formIndex(before: &i.rawValue)
   }
-
+  
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(__tree_.___index(i.rawValue, offsetBy: distance))
   }
-
+  
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     __tree_.___formIndex(&i.rawValue, offsetBy: distance)
   }
-
+  
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index_or_nil(__tree_.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue))
   }
-
+  
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Bool
+  -> Bool
   {
     __tree_.___formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
   }
+}
+
+extension ___RedBlackTreeSequence {
 
   /// - Complexity: O(1)
   @inlinable
@@ -186,6 +189,7 @@ extension ___RedBlackTreeSequence {
 
 extension ___RedBlackTreeSequence {
 
+  /// - Complexity: O(1)
   @inlinable
   public subscript(_unsafe position: Index) -> Element {
     @inline(__always) _read {
@@ -193,6 +197,7 @@ extension ___RedBlackTreeSequence {
     }
   }
 
+  /// - Complexity: O(1)
   @inlinable
   public subscript(_unsafe position: RawIndex) -> Element {
     @inline(__always) _read {
@@ -203,6 +208,8 @@ extension ___RedBlackTreeSequence {
 
 extension ___RedBlackTreeSequence {
 
+  /// Indexがsubscriptやremoveで利用可能か判別します
+  ///
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -210,6 +217,8 @@ extension ___RedBlackTreeSequence {
     !__tree_.___is_subscript_null(index.rawValue)
   }
 
+  /// Indexがsubscriptやremoveで利用可能か判別します
+  ///
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -220,7 +229,11 @@ extension ___RedBlackTreeSequence {
 
 extension ___RedBlackTreeSequence {
 
+  /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+  ///
+  /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   public func isValid<R: RangeExpression>(
     _ bounds: R
   ) -> Bool where R.Bound == Index {

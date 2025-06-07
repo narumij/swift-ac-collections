@@ -170,6 +170,7 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable
   public subscript(_unsafe position: Index) -> Element {
     @inline(__always) _read {
@@ -177,6 +178,7 @@ extension ___SubSequenceBase {
     }
   }
 
+  /// - Complexity: O(1)
   @inlinable
   public subscript(_unsafe position: RawIndex) -> Element {
     @inline(__always) _read {
@@ -316,34 +318,39 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
-  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  func ___is_valid_index(index i: _NodePtr) -> Bool {
-    guard !__tree_.___is_subscript_null(i) else {
-      return false
-    }
-    return __tree_.___ptr_closed_range_contains(_start, _end, i)
+  func ___contains(_ i: _NodePtr) -> Bool {
+    !__tree_.___is_subscript_null(i) &&
+    __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
 
+  /// Indexがsubscriptやremoveで利用可能か判別します
+  ///
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    ___is_valid_index(index: i.rawValue)
+    ___contains(i.rawValue)
   }
 
+  /// Indexがsubscriptやremoveで利用可能か判別します
+  ///
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func isValid(index i: RawIndex) -> Bool {
-    ___is_valid_index(index: i.rawValue)
+    ___contains(i.rawValue)
   }
 }
 
 extension ___SubSequenceBase {
 
+  /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+  ///
+  /// - Complexity: O(1)
   @inlinable
+  @inline(__always)
   public func isValid<R: RangeExpression>(
     _ bounds: R
   ) -> Bool where R.Bound == Index {

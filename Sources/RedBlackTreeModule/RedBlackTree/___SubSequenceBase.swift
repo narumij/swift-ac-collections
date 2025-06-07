@@ -137,10 +137,9 @@ extension ___SubSequenceBase {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public subscript(position: Index) -> Element {
-
-    _read {
+    @inline(__always) _read {
+      __tree_.___ensureValid(subscript: position.rawValue)
       //      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
       //        _tree.___ptr_less_than(position.rawValue, _end)
       //      else {
@@ -157,8 +156,8 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
-    @inline(__always)
-    _read {
+    @inline(__always) _read {
+      __tree_.___ensureValid(subscript: position.rawValue)
       //      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
       //        _tree.___ptr_less_than(position.rawValue, _end)
       //      else {
@@ -171,16 +170,45 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  @inlinable
+  public subscript(_unsafe position: Index) -> Element {
+    @inline(__always) _read {
+      yield __tree_[position.rawValue]
+    }
+  }
+
+  @inlinable
+  public subscript(_unsafe position: RawIndex) -> Element {
+    @inline(__always) _read {
+      yield __tree_[position.rawValue]
+    }
+  }
+}
+
+extension ___SubSequenceBase {
+
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
-    guard __tree_.___ptr_less_than_or_equal(_start, bounds.lowerBound.rawValue),
-      __tree_.___ptr_less_than_or_equal(bounds.upperBound.rawValue, _end)
-    else {
-      fatalError(.outOfRange)
-    }
+    __tree_.___ensureValidRange(
+      begin: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+    //    guard __tree_.___ptr_less_than_or_equal(_start, bounds.lowerBound.rawValue),
+    //      __tree_.___ptr_less_than_or_equal(bounds.upperBound.rawValue, _end)
+    //    else {
+    //      fatalError(.outOfRange)
+    //    }
     return .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
+    .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
@@ -292,7 +320,7 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   func ___is_valid_index(index i: _NodePtr) -> Bool {
-    guard i != .nullptr, __tree_.___is_valid(i) else {
+    guard !__tree_.___is_subscript_null(i) else {
       return false
     }
     return __tree_.___ptr_closed_range_contains(_start, _end, i)
@@ -302,7 +330,7 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    ___is_valid_index(index: i.___unchecked_rawValue)
+    ___is_valid_index(index: i.rawValue)
   }
 
   /// - Complexity: O(1)
@@ -310,6 +338,19 @@ extension ___SubSequenceBase {
   @inline(__always)
   public func isValid(index i: RawIndex) -> Bool {
     ___is_valid_index(index: i.rawValue)
+  }
+}
+
+extension ___SubSequenceBase {
+
+  @inlinable
+  public func isValid<R: RangeExpression>(
+    _ bounds: R
+  ) -> Bool where R.Bound == Index {
+    let bounds = bounds.relative(to: self)
+    return !__tree_.___is_range_null(
+      bounds.lowerBound.rawValue,
+      bounds.upperBound.rawValue)
   }
 }
 
@@ -338,10 +379,7 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   mutating func ___element(at ptr: _NodePtr) -> Element? {
-    guard
-      !___is_null_or_end(ptr),
-      __tree_.___is_valid_index(ptr)
-    else {
+    guard !__tree_.___is_subscript_null(ptr) else {
       return nil
     }
     return __tree_[ptr]

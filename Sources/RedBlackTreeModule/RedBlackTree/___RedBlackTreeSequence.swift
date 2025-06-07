@@ -104,7 +104,7 @@ extension ___RedBlackTreeSequence {
   @inlinable
   //  @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    __tree_.___signed_distance(start.rawValue, end.rawValue)
+    __tree_.___distance(from: start.rawValue, to: end.rawValue)
   }
 
   /// - Complexity: O(1)
@@ -167,16 +167,37 @@ extension ___RedBlackTreeSequence {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public subscript(position: Index) -> Element {
-    _read { yield __tree_[position.rawValue] }
+    @inline(__always) _read {
+      __tree_.___ensureValid(subscript: position.rawValue)
+      yield __tree_[position.rawValue]
+    }
   }
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public subscript(position: RawIndex) -> Element {
-    _read { yield __tree_[position.rawValue] }
+    @inline(__always) _read {
+      __tree_.___ensureValid(subscript: position.rawValue)
+      yield __tree_[position.rawValue]
+    }
+  }
+}
+
+extension ___RedBlackTreeSequence {
+
+  @inlinable
+  public subscript(_unsafe position: Index) -> Element {
+    @inline(__always) _read {
+      yield __tree_[position.rawValue]
+    }
+  }
+
+  @inlinable
+  public subscript(_unsafe position: RawIndex) -> Element {
+    @inline(__always) _read {
+      yield __tree_[position.rawValue]
+    }
   }
 }
 
@@ -186,14 +207,27 @@ extension ___RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public func isValid(index: Index) -> Bool {
-    __tree_.___is_valid_index(index.___unchecked_rawValue)
+    !__tree_.___is_subscript_null(index.rawValue)
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func isValid(index: RawIndex) -> Bool {
-    __tree_.___is_valid_index(index.rawValue)
+    !__tree_.___is_subscript_null(index.rawValue)
+  }
+}
+
+extension ___RedBlackTreeSequence {
+
+  @inlinable
+  public func isValid<R: RangeExpression>(
+    _ bounds: R
+  ) -> Bool where R.Bound == Index {
+    let bounds = bounds.relative(to: self)
+    return !__tree_.___is_range_null(
+      bounds.lowerBound.rawValue,
+      bounds.upperBound.rawValue)
   }
 }
 

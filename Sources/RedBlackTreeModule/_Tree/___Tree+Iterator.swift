@@ -34,37 +34,16 @@ extension ___Tree {
     let __tree_: ___Tree
 
     @usableFromInline
-    var _rawValue: Int
-
-    @inlinable
-    var rawValue: _NodePtr {
-      @inline(__always)
-      _read {
-        guard !isGarbaged else {
-          preconditionFailure(.garbagedIndex)
-        }
-        yield _rawValue
-      }
-      _modify { yield &_rawValue }
-    }
-
-    @inlinable
-    var ___unchecked_rawValue: _NodePtr {
-      @inline(__always) _read {
-        yield _rawValue
-      }
-    }
+    var rawValue: Int
 
     // MARK: -
 
     @inlinable
     @inline(__always)
     internal init(tree: ___Tree, rawValue: _NodePtr) {
-      guard rawValue != .nullptr else {
-        preconditionFailure("_NodePtr is nullptr")
-      }
+      assert(rawValue != .nullptr)
       self.__tree_ = tree
-      self._rawValue = rawValue
+      self.rawValue = rawValue
     }
 
     /*
@@ -83,12 +62,7 @@ extension ___Tree.___Iterator: Comparable {
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-
-    guard !lhs.isGarbaged, !rhs.isGarbaged else {
-      preconditionFailure(.garbagedIndex)
-    }
-
-    return lhs._rawValue == rhs._rawValue
+    lhs.rawValue == rhs.rawValue
   }
 
   /// - Complexity: RedBlackTreeSet, RedBlackTreeDictionaryの場合O(1)
@@ -100,12 +74,15 @@ extension ___Tree.___Iterator: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
+    
+    let __tree_ = lhs.__tree_
 
-    guard !lhs.isGarbaged, !rhs.isGarbaged else {
+    guard !__tree_.___is_garbaged(lhs.rawValue),
+          !__tree_.___is_garbaged(rhs.rawValue) else {
       preconditionFailure(.garbagedIndex)
     }
 
-    return lhs.__tree_.___ptr_comp(lhs._rawValue, rhs._rawValue)
+    return lhs.__tree_.___ptr_comp(lhs.rawValue, rhs.rawValue)
   }
 }
 
@@ -116,16 +93,17 @@ extension ___Tree.___Iterator {
   @inlinable
   //  @inline(__always)
   public func distance(to other: Self) -> Int {
-    guard !isGarbaged, !other.isGarbaged else {
+    guard !__tree_.___is_garbaged(rawValue),
+          !__tree_.___is_garbaged(other.rawValue) else {
       preconditionFailure(.garbagedIndex)
     }
-    return __tree_.___signed_distance(_rawValue, other._rawValue)
+    return __tree_.___signed_distance(rawValue, other.rawValue)
   }
 
   @inlinable
   //  @inline(__always)
   public func advanced(by n: Int) -> Self {
-    .init(tree: __tree_, rawValue: __tree_.___tree_adv_iter(rawValue, by: n))
+    return .init(tree: __tree_, rawValue: __tree_.___tree_adv_iter(rawValue, by: n))
   }
 }
 
@@ -134,7 +112,7 @@ extension ___Tree.___Iterator {
   @inlinable
   @inline(__always)
   public var next: Self? {
-    guard !isEnd, !isGarbaged else {
+    guard !__tree_.___is_next_null(rawValue) else {
       return nil
     }
     var next = self
@@ -145,7 +123,7 @@ extension ___Tree.___Iterator {
   @inlinable
   @inline(__always)
   public var previous: Self? {
-    guard !isStart, !isGarbaged else {
+    guard !__tree_.___is_prev_null(rawValue) else {
       return nil
     }
     var prev = self
@@ -156,69 +134,48 @@ extension ___Tree.___Iterator {
   @inlinable
   @inline(__always)
   mutating func ___next() {
-    assert(_rawValue != .end)
-    _rawValue = __tree_.__tree_next_iter(_rawValue)
+    assert(!__tree_.___is_garbaged(rawValue))
+    assert(!__tree_.___is_end(rawValue))
+    rawValue = __tree_.__tree_next_iter(rawValue)
   }
 
   @inlinable
   @inline(__always)
   mutating func ___prev() {
-    assert(_rawValue != __tree_.__begin_node)
-    _rawValue = __tree_.__tree_prev_iter(_rawValue)
+    assert(!__tree_.___is_garbaged(rawValue))
+    assert(!__tree_.___is_begin(rawValue))
+    rawValue = __tree_.__tree_prev_iter(rawValue)
   }
 }
 
 extension ___Tree.___Iterator {
 
-  // CoWが発生すると結果が乖離する
-  @inlinable
-  @inline(__always)
-  var ___isValid: Bool {
-    if _rawValue == .end { return true }
-    return __tree_.___is_valid(_rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  var isGarbaged: Bool {
-    __tree_.___is_garbaged(_rawValue)
-  }
-
   @inlinable
   @inline(__always)
   public var isStart: Bool {
-    _rawValue == __tree_.__begin_node
+    __tree_.___is_begin(rawValue)
   }
 
   @inlinable
   @inline(__always)
   public var isEnd: Bool {
-    _rawValue == .end
+    __tree_.___is_end(rawValue)
   }
 
   // 利用価値はないが、おまけ。
   @inlinable
   @inline(__always)
   public var isRoot: Bool {
-    _rawValue == __tree_.__root()
+    __tree_.___is_root(rawValue)
   }
 }
 
 extension ___Tree.___Iterator {
 
   @inlinable
-  @inline(__always)
   public var pointee: Element? {
-    _read {
-      guard
-        __tree_.__parent_(_rawValue) != .nullptr,
-        rawValue != .end,
-        __tree_.___initialized_contains(_rawValue)
-      else {
-        yield nil
-        return
-      }
-      yield ___pointee
+    @inline(__always) _read {
+      yield __tree_.___is_subscript_null(rawValue) ? nil : ___pointee
     }
   }
 }
@@ -233,8 +190,9 @@ extension ___Tree.___Iterator {
 
   @inlinable
   var ___pointee: Element {
-    @inline(__always)
-    _read { yield __tree_[_rawValue] }
+    @inline(__always) _read {
+      yield __tree_[rawValue]
+    }
   }
 }
 
@@ -242,7 +200,7 @@ extension ___Tree.___Iterator {
   extension ___Tree.___Iterator {
     fileprivate init(_unsafe_tree: ___Tree<VC>, rawValue: _NodePtr) {
       self.__tree_ = _unsafe_tree
-      self._rawValue = rawValue
+      self.rawValue = rawValue
     }
   }
 
@@ -272,7 +230,7 @@ public func ..< <VC>(
   lhs: ___Tree<VC>.Index,
   rhs: ___Tree<VC>.Index
 ) -> ___Tree<VC>.Indices {
-  lhs.__tree_.makeIndices(start: lhs._rawValue, end: rhs._rawValue)
+  lhs.__tree_.makeIndices(start: lhs.rawValue, end: rhs.rawValue)
 }
 
 @inlinable

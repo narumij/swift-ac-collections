@@ -37,7 +37,7 @@ final class RedBlackTreeSetUtilityTests: XCTestCase {
   func test_isValid_index_invalid() {
     let set = RedBlackTreeSet([1, 2, 3])
     let invalidIndex = set.endIndex
-    XCTAssertTrue(set.isValid(index: invalidIndex))
+    XCTAssertFalse(set.isValid(index: invalidIndex))
   }
 
   #if DEBUG
@@ -52,7 +52,7 @@ final class RedBlackTreeSetUtilityTests: XCTestCase {
     func test_isValid_rawIndex_invalid() {
       let set = RedBlackTreeSet([1, 2, 3])
       let rawValue = set.endIndex.rawValue
-      XCTAssertTrue(set.isValid(index: RawIndex.unsafe(rawValue)))
+      XCTAssertFalse(set.isValid(index: RawIndex.unsafe(rawValue)))
     }
   #endif
 }

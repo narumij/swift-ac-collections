@@ -626,28 +626,120 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
+  internal func ___is_begin(_ p: _NodePtr) -> Bool {
+    p == __begin_node
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal func ___is_end(_ p: _NodePtr) -> Bool {
+    p == .end
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal func ___is_root(_ p: _NodePtr) -> Bool {
+    p == __root()
+  }
+
+  // O(1)
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal func ___initialized_contains(_ p: _NodePtr) -> Bool {
     0..<_header.initializedCount ~= p
   }
 
-  // 割と雑に使っていて、意味がぼやっとしている
   // O(1)
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___is_valid(_ p: _NodePtr) -> Bool {
-    ___initialized_contains(p) && !___is_garbaged(p)
+  internal func ___is_subscript_null(_ p: _NodePtr) -> Bool {
+    // 初期化済みチェックでnullptrとendは除外される
+    //    return !___initialized_contains(p) || ___is_garbaged(p)
+    // begin -> false
+    // end -> true
+    return p < 0 || _header.initializedCount <= p || ___is_garbaged(p)
   }
 
-  // 割と雑に使っていて、意味がぼやっとしている
-  // O(1)
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___is_valid_index(_ i: _NodePtr) -> Bool {
-    if i == .nullptr { return false }
-    if i == .end { return true }
-    return ___is_valid(i)
+  internal func ___is_next_null(_ p: _NodePtr) -> Bool {
+    ___is_subscript_null(p)
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal func ___is_prev_null(_ p: _NodePtr) -> Bool {
+    // begin -> true
+    // end -> false
+    return p == .nullptr || _header.initializedCount <= p || ___is_begin(p) || ___is_garbaged(p)
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal func ___is_offset_null(_ p: _NodePtr) -> Bool {
+    return p == .nullptr || _header.initializedCount <= p || ___is_garbaged(p)
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal func ___is_range_null(_ p: _NodePtr, _ l: _NodePtr) -> Bool {
+    ___is_offset_null(p) || ___is_offset_null(l)
+  }
+}
+
+extension ___Tree {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func ___ensureValid(after i: _NodePtr) {
+    if ___is_next_null(i) {
+      fatalError(.invalidIndex)
+    }
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func ___ensureValid(before i: _NodePtr) {
+    if ___is_prev_null(i) {
+      fatalError(.invalidIndex)
+    }
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func ___ensureValid(offset i: _NodePtr) {
+    if ___is_offset_null(i) {
+      fatalError(.invalidIndex)
+    }
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func ___ensureValid(subscript i: _NodePtr) {
+    if ___is_subscript_null(i) {
+      fatalError(.invalidIndex)
+    }
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func ___ensureValidRange(begin i: _NodePtr, end j: _NodePtr) {
+    if ___is_range_null(i, j) {
+      fatalError(.invalidIndex)
+    }
   }
 }
 
@@ -717,8 +809,9 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int {
-    guard start == __end_node() || ___is_valid(start),
-      end == __end_node() || ___is_valid(end)
+    guard
+      !___is_offset_null(start),
+      !___is_offset_null(end)
     else {
       fatalError(.invalidIndex)
     }
@@ -729,9 +822,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___index(after i: _NodePtr) -> _NodePtr {
-    guard i != __end_node(), ___is_valid(i) else {
-      fatalError(.invalidIndex)
-    }
+    ___ensureValid(after: i)
     return __tree_next(i)
   }
 
@@ -739,17 +830,14 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___formIndex(after i: inout _NodePtr) {
-    guard i != __end_node(), ___is_valid(i) else { fatalError(.invalidIndex) }
-    i = __tree_next(i)
+    i = ___index(after: i)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   internal func ___index(before i: _NodePtr) -> _NodePtr {
-    guard i != __begin_node, i == __end_node() || ___is_valid(i) else {
-      fatalError(.invalidIndex)
-    }
+    ___ensureValid(before: i)
     return __tree_prev_iter(i)
   }
 
@@ -757,15 +845,14 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___formIndex(before i: inout _NodePtr) {
-    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
-    i = __tree_prev_iter(i)
+    i = ___index(before: i)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   internal func ___index(_ i: _NodePtr, offsetBy distance: Int) -> _NodePtr {
-    guard i == ___end() || ___is_valid(i) else { fatalError(.invalidIndex) }
+    ___ensureValid(offset: i)
     var distance = distance
     var i = i
     while distance != 0 {
@@ -790,7 +877,6 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int) {
-    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
     i = ___index(i, offsetBy: distance)
   }
 
@@ -800,7 +886,7 @@ extension ___Tree {
   internal func ___index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
     -> _NodePtr?
   {
-    guard i == ___end() || ___is_valid(i) else { fatalError(.invalidIndex) }
+    ___ensureValid(offset: i)
     var distance = distance
     var i = i
     while distance != 0 {
@@ -830,7 +916,6 @@ extension ___Tree {
   internal func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
     -> Bool
   {
-    guard i == __end_node() || ___is_valid(i) else { fatalError(.invalidIndex) }
     if let ii = ___index(i, offsetBy: distance, limitedBy: limit) {
       i = ii
       return true
@@ -859,9 +944,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   public func ___tree_adv_iter(_ i: _NodePtr, by distance: Int) -> _NodePtr {
-    guard i == ___end() || ___is_valid(i) else {
-      preconditionFailure(.invalidIndex)
-    }
+    ___ensureValid(offset: i)
     var distance = distance
     var result: _NodePtr = i
     while distance != 0 {

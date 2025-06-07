@@ -33,12 +33,12 @@ final class MultisetPointerTests: XCTestCase {
 #if DEBUG
   func testPointer2() throws {
     if let it = members.startIndex.next {
-      XCTAssertTrue(it.___isValid)
+      XCTAssertFalse(members.___is_garbaged(it.rawValue))
       XCTAssertEqual(it.pointee, 0)
       XCTAssertNotNil(it.previous)
       XCTAssertNotNil(it.next)
       members.remove(at: it)
-      XCTAssertFalse(it.___isValid)
+      XCTAssertTrue(members.___is_garbaged(it.rawValue))
       XCTAssertNil(it.pointee)
       XCTAssertNil(it.previous)
       XCTAssertNil(it.next)

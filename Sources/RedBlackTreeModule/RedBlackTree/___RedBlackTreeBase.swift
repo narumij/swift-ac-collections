@@ -283,10 +283,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___remove(at ptr: _NodePtr) -> Element? {
-    guard
-      !___is_null_or_end(ptr),
-      __tree_.___is_valid_index(ptr)
-    else {
+    guard !__tree_.___is_subscript_null(ptr) else {
       return nil
     }
     let e = __tree_[ptr]
@@ -298,15 +295,10 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   @discardableResult
   public mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
-    guard from != .end else {
+    guard !__tree_.___is_end(from) else {
       return .end
     }
-    guard
-      __tree_.___is_valid_index(from),
-      __tree_.___is_valid_index(to)
-    else {
-      fatalError(.invalidIndex)
-    }
+    __tree_.___ensureValidRange(begin: from, end: to)
     return __tree_.erase(from, to)
   }
 
@@ -317,15 +309,10 @@ extension ___RedBlackTreeBase {
   )
     rethrows
   {
-    guard from != .end else {
+    guard !__tree_.___is_end(from) else {
       return
     }
-    guard
-      __tree_.___is_valid_index(from),
-      __tree_.___is_valid_index(to)
-    else {
-      fatalError(.invalidIndex)
-    }
+    __tree_.___ensureValidRange(begin: from, end: to)
     return try __tree_.___erase(from, to, action)
   }
 
@@ -336,15 +323,10 @@ extension ___RedBlackTreeBase {
     into initialResult: Result,
     _ updateAccumulatingResult: (inout Result, Element) throws -> Void
   ) rethrows -> Result {
-    guard from != .end else {
+    guard !__tree_.___is_end(from) else {
       return initialResult
     }
-    guard
-      __tree_.___is_valid_index(from),
-      __tree_.___is_valid_index(to)
-    else {
-      fatalError(.invalidIndex)
-    }
+    __tree_.___ensureValidRange(begin: from, end: to)
     return try __tree_.___erase(from, to, into: initialResult, updateAccumulatingResult)
   }
 
@@ -355,15 +337,10 @@ extension ___RedBlackTreeBase {
     _ initialResult: Result,
     _ nextPartialResult: (Result, Element) throws -> Result
   ) rethrows -> Result {
-    guard from != .end else {
+    guard !__tree_.___is_end(from) else {
       return initialResult
     }
-    guard
-      __tree_.___is_valid_index(from),
-      __tree_.___is_valid_index(to)
-    else {
-      fatalError(.invalidIndex)
-    }
+    __tree_.___ensureValidRange(begin: from, end: to)
     return try __tree_.___erase(from, to, initialResult, nextPartialResult)
   }
 }
@@ -499,7 +476,19 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public func ___is_valid(_ index: _NodePtr) -> Bool {
-    __tree_.___is_valid_index(index)
+    !__tree_.___is_subscript_null(index)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func ___is_valid_range(_ p: _NodePtr,_ l: _NodePtr) -> Bool {
+    !__tree_.___is_range_null(p, l)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func ___is_garbaged(_ index: _NodePtr) -> Bool {
+    __tree_.___is_garbaged(index)
   }
 }
 
@@ -509,8 +498,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   public mutating func ___element(at ptr: _NodePtr) -> Element? {
     guard
-      !___is_null_or_end(ptr),
-      __tree_.___is_valid_index(ptr)
+      !__tree_.___is_subscript_null(ptr)
     else {
       return nil
     }

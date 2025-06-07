@@ -240,7 +240,24 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
-    .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+    __tree_.___ensureValidRange(
+      begin: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+
+    return .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
+    .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
   }
 }
 
@@ -278,10 +295,7 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   @discardableResult
   public mutating func updateValue(_ newValue: Value, at ptr: RawIndex) -> Element? {
-    guard
-      !___is_null_or_end(ptr.rawValue),
-      __tree_.___is_valid_index(ptr.rawValue)
-    else {
+    guard !__tree_.___is_subscript_null(ptr.rawValue) else {
       return nil
     }
     _ensureUnique()
@@ -295,10 +309,7 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   @discardableResult
   public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
-    guard
-      !___is_null_or_end(ptr._rawValue),
-      __tree_.___is_valid_index(ptr._rawValue)
-    else {
+    guard !__tree_.___is_subscript_null(ptr.rawValue) else {
       return nil
     }
     _ensureUnique()
@@ -817,7 +828,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public var rawIndices: RawIndexSequence<Tree> {
-    RawIndexSequence(tree: __tree_)
+    RawIndexSequence(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 

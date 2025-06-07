@@ -164,9 +164,9 @@ final class EtcTests: XCTestCase {
       var b: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
       var i = b.startIndex  // 都度異なる値となる
       while i != b.endIndex {  // endIndexは特殊な値なので、不変です。
+        XCTAssertTrue(b.isValid(index: i))  // 次を指しているの有効
         // extensionを書けばこのように利用可能
         i = b.erase(at: i)
-        XCTAssertTrue(b.isValid(index: i))  // 次を指しているの有効
       }
       XCTAssertEqual(b.count, 0)
     }

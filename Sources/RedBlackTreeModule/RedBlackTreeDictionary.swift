@@ -357,7 +357,24 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
-    .init(tree: __tree_, start: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+    __tree_.___ensureValidRange(
+      begin: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+
+    return .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
+    .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
   }
 }
 
@@ -888,7 +905,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public var rawIndices: RawIndexSequence<Tree> {
-    RawIndexSequence(tree: __tree_)
+    RawIndexSequence(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 

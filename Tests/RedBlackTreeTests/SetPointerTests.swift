@@ -29,12 +29,12 @@ final class SetPointerTests: XCTestCase {
 #if DEBUG
   func testPointer2() throws {
     if let it = members.startIndex.next {
-      XCTAssertTrue(it.___isValid)
+      XCTAssertFalse(members.___is_garbaged(it.rawValue))
       XCTAssertEqual(it.pointee, 1)
       XCTAssertNotNil(it.previous)
       XCTAssertNotNil(it.next)
       members.remove(at: it)
-      XCTAssertFalse(it.___isValid)
+      XCTAssertTrue(members.___is_garbaged(it.rawValue))
       XCTAssertNil(it.pointee)
       XCTAssertNil(it.previous)
       XCTAssertNil(it.next)
@@ -95,10 +95,10 @@ final class SetPointerTests: XCTestCase {
     for i in indices.indices {
       members.remove(at: indices[i])
       for j in indices.startIndex..<i {
-        XCTAssertFalse(indices[j].___isValid)
+        XCTAssertTrue(members.___is_garbaged(indices[j].rawValue))
       }
       for j in i.advanced(by: 1)..<indices.endIndex {
-        XCTAssertTrue(indices[j].___isValid)
+        XCTAssertFalse(members.___is_garbaged(indices[j].rawValue))
       }
     }
   }
@@ -108,10 +108,10 @@ final class SetPointerTests: XCTestCase {
     for i in indices.indices.reversed() {
       members.remove(at: indices[i])
       for j in indices.startIndex..<i {
-        XCTAssertTrue(indices[j].___isValid)
+        XCTAssertFalse(members.___is_garbaged(indices[j].rawValue))
       }
       for j in i.advanced(by: 1)..<indices.endIndex {
-        XCTAssertFalse(indices[j].___isValid)
+        XCTAssertTrue(members.___is_garbaged(indices[j].rawValue))
       }
     }
   }

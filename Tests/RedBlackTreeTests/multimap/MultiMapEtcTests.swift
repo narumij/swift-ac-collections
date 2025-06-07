@@ -36,15 +36,15 @@ final class MultiMapEtcTests: XCTestCase {
   }
 
   func testExample___0() throws {
-    for i in target1.rawIndices {
-      target1.remove(at: i)
+    for i in target1.___node_positions() {
+      target1.___remove(at: i)
     }
     XCTAssertTrue(target1.isEmpty)
   }
 
   func testExample___1() throws {
-    target1.rawIndices.forEach { i in
-      target1.remove(at: i)
+    target1.___node_positions().forEach { i in
+      target1.___remove(at: i)
     }
     XCTAssertTrue(target1.isEmpty)
   }

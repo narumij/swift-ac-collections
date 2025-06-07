@@ -6,6 +6,5 @@
 //
 
 public protocol Tree_ForEach {
-  func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
-    rethrows
+  func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void) rethrows
 }

@@ -88,6 +88,13 @@ var dict = RedBlackTreeDictionary<String, Int>()
 dict["apple"] = 5
 dict["banana"] = 3
 print(dict) // 例: [apple: 5, banana: 3]
+
+// RedBlackTreeMultiMap の例
+var multimap = RedBlackTreeMultiMap<String, Int>()
+multimap.insert(key: "apple", value: 5)
+multimap.insert(key: "apple", value: 2)
+multimap.insert(key: "banana", value: 3)
+print(multimap)  // 例: [apple: 5, apple: 2, banana: 3]
 ```
 
 #### IndexとRawIndex

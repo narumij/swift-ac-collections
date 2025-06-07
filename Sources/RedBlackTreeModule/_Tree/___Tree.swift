@@ -772,7 +772,7 @@ extension ___Tree: Tree_ForEach {
     var __l = __tree_prev_iter(__l)
     repeat {
       __c = __l
-      __l = __tree_prev_iter(__l)
+      __l = __l == __begin_node ? __l : __tree_prev_iter(__l)
       try body(__c)
     } while __c != __p
   }

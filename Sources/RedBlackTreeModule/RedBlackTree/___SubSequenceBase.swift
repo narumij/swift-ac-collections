@@ -29,7 +29,7 @@ where
   Index == Tree.Index,
   Indices == Tree.Indices,
   Element == Tree.Element,
-  Iterator == ElementIterator<Tree>,
+  Iterator == Tree.ElementIterator,
   SubSequence == Self
 {
   associatedtype Base
@@ -59,7 +59,7 @@ extension ___SubSequenceBase {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> ElementIterator<Tree> {
+  public __consuming func makeIterator() -> Tree.ElementIterator {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -69,7 +69,10 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end, body: body)
+    //    try __tree_.___for_each_(__p: _start, __l: _end, body: body)
+    try __tree_.___for_each_(__p: _start, __l: _end) {
+      try body(__tree_[$0])
+    }
   }
 }
 
@@ -213,7 +216,7 @@ extension ___SubSequenceBase {
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -329,8 +332,7 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   func ___contains(_ i: _NodePtr) -> Bool {
-    !__tree_.___is_subscript_null(i) &&
-    __tree_.___ptr_closed_range_contains(_start, _end, i)
+    !__tree_.___is_subscript_null(i) && __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
 
   /// Indexがsubscriptやremoveで利用可能か判別します
@@ -374,7 +376,7 @@ extension ___SubSequenceBase {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> ReversedElementIterator<Self.Tree> {
+  public __consuming func reversed() -> Tree.ReversedElementIterator {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -402,14 +404,8 @@ extension ___SubSequenceBase {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___makeIterator() -> NodeIterator<Tree> {
+  public __consuming func ___node_positions() -> NodeIterator<Tree> {
     NodeIterator(tree: __tree_, start: _start, end: _end)
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func ___makeIterator() -> NodeElementIterator<Tree> {
-    NodeElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 

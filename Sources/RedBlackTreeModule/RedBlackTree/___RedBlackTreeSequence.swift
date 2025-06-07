@@ -41,8 +41,8 @@ extension ___RedBlackTreeSequence {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> ElementIterator<Tree> {
-    ElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  public __consuming func makeIterator() -> Tree.ElementIterator {
+    Tree.ElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 
@@ -51,7 +51,9 @@ extension ___RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(body)
+    try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
+      try body(__tree_[$0])
+    }
   }
 }
 
@@ -87,7 +89,7 @@ extension ___RedBlackTreeSequence {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func sorted() -> ElementIterator<Tree> {
+  public __consuming func sorted() -> Tree.ElementIterator {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
@@ -257,8 +259,8 @@ extension ___RedBlackTreeSequence {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> ReversedElementIterator<Tree> {
-    ReversedElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  public __consuming func reversed() -> Tree.ReversedElementIterator {
+    Tree.ReversedElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 

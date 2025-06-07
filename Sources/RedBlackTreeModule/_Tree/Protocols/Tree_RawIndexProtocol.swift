@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@usableFromInline
-protocol Tree_RawIndexProtocol {
-  func makeRawIndex(rawValue: _NodePtr) -> RawIndex
-}
+//@usableFromInline
+//protocol Tree_RawIndexProtocol {
+//  func makeRawIndex(rawValue: _NodePtr) -> RawIndex
+//}

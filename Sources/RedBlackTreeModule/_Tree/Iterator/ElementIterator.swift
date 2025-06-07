@@ -20,70 +20,104 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@frozen
-public struct ElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
-
-  @usableFromInline
-  let __tree_: Tree
-
-  @usableFromInline
-  var _start, _end, _current, _next: _NodePtr
-
-  @inlinable
-  @inline(__always)
-  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self.__tree_ = tree
-    self._current = start
-    self._start = start
-    self._end = end
-    self._next = start == .end ? .end : tree.__tree_next_iter(start)
-  }
-
-  // 性能変化の反応が過敏なので、慎重さが必要っぽい。
-
-  @inlinable
-  @inline(__always)
-  public mutating func next() -> Tree.Element? {
-    guard _current != _end else { return nil }
-    defer {
-      _current = _next
-      _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
+extension ___Tree {
+  
+  @frozen
+  public struct ElementIterator: Sequence, IteratorProtocol {
+    
+    @usableFromInline
+    let __tree_: Tree
+    
+    @usableFromInline
+    var _start, _end, _current, _next: _NodePtr
+    
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      self.__tree_ = tree
+      self._current = start
+      self._start = start
+      self._end = end
+      self._next = start == .end ? .end : tree.__tree_next_iter(start)
     }
-    return __tree_[_current]
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func reversed() -> ReversedElementIterator<Tree> {
-    .init(tree: __tree_, start: _start, end: _end)
+    
+    // 性能変化の反応が過敏なので、慎重さが必要っぽい。
+    
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> Tree.Element? {
+      guard _current != _end else { return nil }
+      defer {
+        _current = _next
+        _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
+      }
+      return __tree_[_current]
+    }
+    
+    @inlinable
+    @inline(__always)
+    public __consuming func reversed() -> ___Tree.ReversedElementIterator {
+      .init(tree: __tree_, start: _start, end: _end)
+    }
   }
 }
 
-@frozen
-public struct ReversedElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
+extension ___Tree {
+  
+  @frozen
+  public struct ReversedElementIterator: Sequence, IteratorProtocol {
+    
+    @usableFromInline
+    let __tree_: Tree
+    
+    @usableFromInline
+    var _start, _end, _begin, _current, _next: _NodePtr
+    
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      self.__tree_ = tree
+      self._current = end
+      self._next = __tree_.__tree_prev_iter(end)
+      self._start = start
+      self._end = end
+      self._begin = __tree_.__begin_node
+    }
+    
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> Tree.Element? {
+      guard _current != _start else { return nil }
+      _current = _next
+      _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
+      return __tree_[_current]
+    }
+  }
+}
 
-  @usableFromInline
-  let __tree_: Tree
-
-  @usableFromInline
-  var _start, _begin, _current, _next: _NodePtr
-
+extension ___Tree.ReversedElementIterator {
+  
   @inlinable
   @inline(__always)
-  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self.__tree_ = tree
-    self._current = end
-    self._next = __tree_.__tree_prev_iter(end)
-    self._start = start
-    self._begin = __tree_.__begin_node
+  public func forEach(_ body: (___Tree.Index, Element) throws -> Void) rethrows {
+    try __tree_.___for_each_(__p: _start, __l: _end) {
+      try body(__tree_.makeIndex(rawValue: $0), __tree_[$0])
+    }
   }
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> Tree.Element? {
-    guard _current != _start else { return nil }
-    _current = _next
-    _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-    return __tree_[_current]
+  public func ___forEach(_ body: (RawIndex, Element) throws -> Void) rethrows {
+    try __tree_.___for_each_(__p: _start, __l: _end) {
+      try body(__tree_.makeRawIndex(rawValue: $0), __tree_[$0])
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
+    try __tree_.___rev_for_each_(__p: _start, __l: _end) {
+      try body($0, __tree_[$0])
+    }
   }
 }

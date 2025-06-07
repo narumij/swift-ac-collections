@@ -5,6 +5,7 @@
 //  Created by narumij on 2025/06/01.
 //
 
+#if false
 @frozen
 public struct NodeElementIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
@@ -70,3 +71,4 @@ public struct ReversedNodeElementIterator<Tree: Tree_IterateProtocol>: Sequence,
     return (_current, __tree_[_current])
   }
 }
+#endif

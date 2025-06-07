@@ -764,6 +764,25 @@ extension ___Tree: Tree_ForEach {
   @nonobjc
   @inlinable
   @inline(__always)
+  public func ___rev_for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
+    rethrows
+  {
+    if __l == __p { return }
+    var __c = __l
+    var __l = __tree_prev_iter(__l)
+    repeat {
+      __c = __l
+      __l = __tree_prev_iter(__l)
+      try body(__c)
+    } while __c != __p
+  }
+}
+
+extension ___Tree {
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal func ___for_each(
     __p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void
   )
@@ -775,27 +794,6 @@ extension ___Tree: Tree_ForEach {
       let __c = __p
       __p = __tree_next(__p)
       try body(__c, &cont)
-    }
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func ___for_each_(_ body: (Element) throws -> Void) rethrows {
-    try ___for_each_(__p: __begin_node, __l: __end_node(), body: body)
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (Element) throws -> Void)
-    rethrows
-  {
-    var __p = __p
-    while __p != __l {
-      let __c = __p
-      __p = __tree_next(__p)
-      try body(self[__c])
     }
   }
 }
@@ -931,7 +929,7 @@ extension ___Tree: Sequence {
   @nonobjc
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> ElementIterator<Tree> {
+  public __consuming func makeIterator() -> ElementIterator {
     .init(tree: self, start: __begin_node, end: __end_node())
   }
 }
@@ -992,7 +990,7 @@ extension ___Tree: Tree_IndicesProtocol {
   }
 }
 
-extension ___Tree: Tree_RawIndexProtocol {
+extension ___Tree {
 
   @nonobjc
   @inlinable

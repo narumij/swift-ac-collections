@@ -417,4 +417,15 @@ final class EtcTests: XCTestCase {
     XCTAssertTrue(AnySequence([0]).lexicographicallyPrecedes([0, 1]))
     XCTAssertFalse(AnySequence([0, 0]).lexicographicallyPrecedes([0, 1], by: >))
   }
+  
+#if DEBUG
+  func testRev() throws {
+    let a = RedBlackTreeSet<Int>([0,1,2])
+    var result = [Int]()
+    a.__tree_.___rev_for_each_(__p: a.startIndex.rawValue, __l: a.endIndex.rawValue) { p in
+      result.append(p)
+    }
+    XCTAssertEqual(result, [2,1,0])
+  }
+#endif
 }

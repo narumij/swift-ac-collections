@@ -510,14 +510,8 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___makeIterator() -> NodeIterator<Tree> {
+  public __consuming func ___node_positions() -> NodeIterator<Tree> {
     NodeIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func ___makeIterator() -> NodeElementIterator<Tree> {
-    NodeElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 

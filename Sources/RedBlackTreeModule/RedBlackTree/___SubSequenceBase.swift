@@ -77,7 +77,15 @@ extension ___SubSequenceBase {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (RawIndex, Element) throws -> Void) rethrows {
+  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+    try __tree_.___for_each_(__p: _start, __l: _end) {
+      try body(___index($0), __tree_[$0])
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public func ___forEach(_ body: (RawIndex, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(___raw_index($0), __tree_[$0])
     }
@@ -306,7 +314,7 @@ extension ___SubSequenceBase {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var rawIndices: RawIndexSequence<Tree> {
+  public var ___rawIndices: RawIndexSequence<Tree> {
     RawIndexSequence(
       tree: __tree_,
       start: _start,

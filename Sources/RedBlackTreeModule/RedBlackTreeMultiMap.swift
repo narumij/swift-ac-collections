@@ -818,20 +818,6 @@ extension RedBlackTreeMultiMap {
   public typealias Indices = Tree.Indices
 }
 
-// MARK: - Raw Index Sequence
-
-extension RedBlackTreeMultiMap {
-
-  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
-  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var rawIndices: RawIndexSequence<Tree> {
-    RawIndexSequence(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-}
-
 // MARK: - ExpressibleByDictionaryLiteral
 
 extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {

@@ -520,3 +520,12 @@ extension ___RedBlackTreeBase {
     NodeElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
+
+extension ___RedBlackTreeBase {
+
+  @inlinable
+  @inline(__always)
+  public var ___rawIndices: RawIndexSequence<Tree> {
+    RawIndexSequence(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+}

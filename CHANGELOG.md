@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.23] - 2025-6-7
+### Added
+- RangeExpression用のisValidメソッドを追加
+### Changed
+- isValidメソッドの判定条件をsubscriptやremoveで利用可能な範囲に限定する変更
+
 ## [0.1.22] - 2025-6-5
 ### Changed
 - チューニング

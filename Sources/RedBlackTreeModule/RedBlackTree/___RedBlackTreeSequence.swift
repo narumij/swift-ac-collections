@@ -187,14 +187,14 @@ extension ___RedBlackTreeSequence {
 extension ___RedBlackTreeSequence {
 
   @inlinable
-  public subscript(___unsafe position: Index) -> Element {
+  public subscript(_unsafe position: Index) -> Element {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
   }
 
   @inlinable
-  public subscript(___unsafe position: RawIndex) -> Element {
+  public subscript(_unsafe position: RawIndex) -> Element {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }

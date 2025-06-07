@@ -249,6 +249,16 @@ extension RedBlackTreeMultiMap {
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
   }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
+    return .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+  }
 }
 
 // MARK: - Insert

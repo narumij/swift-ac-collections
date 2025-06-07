@@ -171,14 +171,14 @@ extension ___SubSequenceBase {
 extension ___SubSequenceBase {
 
   @inlinable
-  public subscript(___unsafe position: Index) -> Element {
+  public subscript(_unsafe position: Index) -> Element {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
   }
 
   @inlinable
-  public subscript(___unsafe position: RawIndex) -> Element {
+  public subscript(_unsafe position: RawIndex) -> Element {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
@@ -198,6 +198,16 @@ extension ___SubSequenceBase {
     //    else {
     //      fatalError(.outOfRange)
     //    }
+    return .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
     return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,

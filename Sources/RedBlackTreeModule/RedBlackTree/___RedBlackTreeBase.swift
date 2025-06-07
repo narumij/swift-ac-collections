@@ -478,6 +478,12 @@ extension ___RedBlackTreeBase {
   public func ___is_valid(_ index: _NodePtr) -> Bool {
     !__tree_.___is_subscript_null(index)
   }
+  
+  @inlinable
+  @inline(__always)
+  public func ___is_valid_range(_ p: _NodePtr,_ l: _NodePtr) -> Bool {
+    !__tree_.___is_range_null(p, l)
+  }
 
   @inlinable
   @inline(__always)

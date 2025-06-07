@@ -88,14 +88,6 @@ extension ___SubSequenceBase {
 
   @inlinable
   @inline(__always)
-  public func ___forEach(_ body: (RawIndex, Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___raw_index($0), __tree_[$0])
-    }
-  }
-
-  @inlinable
-  @inline(__always)
   public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body($0, __tree_[$0])

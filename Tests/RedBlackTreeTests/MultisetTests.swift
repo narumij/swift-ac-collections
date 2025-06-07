@@ -1000,7 +1000,7 @@ final class MultisetTests: XCTestCase {
   func testIndexValidation() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     XCTAssertTrue(set.isValid(index: set.startIndex))
-    XCTAssertTrue(set.isValid(index: set.endIndex))
+    XCTAssertFalse(set.isValid(index: set.endIndex)) // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = RedBlackTreeMultiSet<Int>.Index
 #if DEBUG
     XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)

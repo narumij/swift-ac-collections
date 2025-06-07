@@ -195,12 +195,10 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
-    guard
-      !__tree_.___is_garbaged(bounds.lowerBound.rawValue),
-      !__tree_.___is_garbaged(bounds.upperBound.rawValue)
-    else {
-      fatalError(.garbagedIndex)
-    }
+    __tree_.___ensureValidRange(
+      begin: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+
     return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,

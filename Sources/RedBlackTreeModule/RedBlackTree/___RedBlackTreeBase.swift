@@ -298,7 +298,7 @@ extension ___RedBlackTreeBase {
     guard !__tree_.___is_end(from) else {
       return .end
     }
-    __tree_.___ensureValid(range: from, to)
+    __tree_.___ensureValidRange(begin: from, end: to)
     return __tree_.erase(from, to)
   }
 
@@ -312,7 +312,7 @@ extension ___RedBlackTreeBase {
     guard !__tree_.___is_end(from) else {
       return
     }
-    __tree_.___ensureValid(range: from, to)
+    __tree_.___ensureValidRange(begin: from, end: to)
     return try __tree_.___erase(from, to, action)
   }
 
@@ -326,7 +326,7 @@ extension ___RedBlackTreeBase {
     guard !__tree_.___is_end(from) else {
       return initialResult
     }
-    __tree_.___ensureValid(range: from, to)
+    __tree_.___ensureValidRange(begin: from, end: to)
     return try __tree_.___erase(from, to, into: initialResult, updateAccumulatingResult)
   }
 
@@ -340,7 +340,7 @@ extension ___RedBlackTreeBase {
     guard !__tree_.___is_end(from) else {
       return initialResult
     }
-    __tree_.___ensureValid(range: from, to)
+    __tree_.___ensureValidRange(begin: from, end: to)
     return try __tree_.___erase(from, to, initialResult, nextPartialResult)
   }
 }
@@ -476,9 +476,9 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public func ___is_valid(_ index: _NodePtr) -> Bool {
-    __tree_.___is_valid_index(index)
+    !__tree_.___is_subscript_null(index)
   }
-  
+
   @inlinable
   @inline(__always)
   public func ___is_garbaged(_ index: _NodePtr) -> Bool {

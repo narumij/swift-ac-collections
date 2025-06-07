@@ -185,14 +185,14 @@ extension ___RedBlackTreeSequence {
 }
 
 extension ___RedBlackTreeSequence {
-  
+
   @inlinable
   public subscript(___unsafe position: Index) -> Element {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
   }
-  
+
   @inlinable
   public subscript(___unsafe position: RawIndex) -> Element {
     @inline(__always) _read {
@@ -207,14 +207,27 @@ extension ___RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public func isValid(index: Index) -> Bool {
-    __tree_.___is_valid_index(index.rawValue)
+    !__tree_.___is_subscript_null(index.rawValue)
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func isValid(index: RawIndex) -> Bool {
-    __tree_.___is_valid_index(index.rawValue)
+    !__tree_.___is_subscript_null(index.rawValue)
+  }
+}
+
+extension ___RedBlackTreeSequence {
+
+  @inlinable
+  public func isValid<R: RangeExpression>(
+    _ bounds: R
+  ) -> Bool where R.Bound == Index {
+    let bounds = bounds.relative(to: self)
+    return !__tree_.___is_range_null(
+      bounds.lowerBound.rawValue,
+      bounds.upperBound.rawValue)
   }
 }
 

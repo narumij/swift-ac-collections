@@ -621,7 +621,7 @@ extension ___Tree {
 }
 
 extension ___Tree {
-  
+
   // O(1)
   @nonobjc
   @inlinable
@@ -636,26 +636,34 @@ extension ___Tree {
   internal func ___is_end(_ p: _NodePtr) -> Bool {
     p == .end
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
   internal func ___is_root(_ p: _NodePtr) -> Bool {
     p == __root()
   }
-  
+
+  // O(1)
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal func ___initialized_contains(_ p: _NodePtr) -> Bool {
+    0..<_header.initializedCount ~= p
+  }
+
   // O(1)
   @nonobjc
   @inlinable
   @inline(__always)
   internal func ___is_subscript_null(_ p: _NodePtr) -> Bool {
     // 初期化済みチェックでnullptrとendは除外される
-//    return !___initialized_contains(p) || ___is_garbaged(p)
+    //    return !___initialized_contains(p) || ___is_garbaged(p)
     // begin -> false
     // end -> true
     return p < 0 || _header.initializedCount <= p || ___is_garbaged(p)
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -669,9 +677,9 @@ extension ___Tree {
   internal func ___is_prev_null(_ p: _NodePtr) -> Bool {
     // begin -> true
     // end -> false
-    return p == .nullptr || _header.initializedCount <= p || ___is_begin(p) ||  ___is_garbaged(p)
+    return p == .nullptr || _header.initializedCount <= p || ___is_begin(p) || ___is_garbaged(p)
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -679,32 +687,59 @@ extension ___Tree {
     return p == .nullptr || _header.initializedCount <= p || ___is_garbaged(p)
   }
 
-  // O(1)
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___initialized_contains(_ p: _NodePtr) -> Bool {
-    0 ..< _header.initializedCount ~= p
+  internal func ___is_range_null(_ p: _NodePtr, _ l: _NodePtr) -> Bool {
+    ___is_offset_null(p) || ___is_offset_null(l)
+  }
+}
+
+extension ___Tree {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func ___ensureValid(after i: _NodePtr) {
+    if ___is_next_null(i) {
+      fatalError(.invalidIndex)
+    }
   }
 
-  // 割と雑に使っていて、意味がぼやっとしている
-  // O(1)
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___is_valid(_ p: _NodePtr) -> Bool {
-    ___initialized_contains(p) && !___is_garbaged(p)
+  func ___ensureValid(before i: _NodePtr) {
+    if ___is_prev_null(i) {
+      fatalError(.invalidIndex)
+    }
   }
 
-  // 割と雑に使っていて、意味がぼやっとしている
-  // O(1)
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___is_valid_index(_ i: _NodePtr) -> Bool {
-    if i == .nullptr { return false }
-    if i == .end { return true }
-    return ___is_valid(i)
+  func ___ensureValid(offset i: _NodePtr) {
+    if ___is_offset_null(i) {
+      fatalError(.invalidIndex)
+    }
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func ___ensureValid(subscript i: _NodePtr) {
+    if ___is_subscript_null(i) {
+      fatalError(.invalidIndex)
+    }
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func ___ensureValidRange(begin i: _NodePtr, end j: _NodePtr) {
+    if ___is_range_null(i, j) {
+      fatalError(.invalidIndex)
+    }
   }
 }
 
@@ -766,54 +801,6 @@ extension ___Tree: Tree_ForEach {
 }
 
 // MARK: -
-
-extension ___Tree {
-  
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func ___ensureValid(after i: _NodePtr) {
-    if ___is_next_null(i) {
-      fatalError(.invalidIndex)
-    }
-  }
-  
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func ___ensureValid(before i: _NodePtr) {
-    if ___is_prev_null(i) {
-      fatalError(.invalidIndex)
-    }
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func ___ensureValid(offset i: _NodePtr) {
-    if ___is_offset_null(i) {
-      fatalError(.invalidIndex)
-    }
-  }
-  
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func ___ensureValid(subscript i: _NodePtr) {
-    if ___is_subscript_null(i) {
-      fatalError(.invalidIndex)
-    }
-  }
-  
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func ___ensureValid(range i: _NodePtr,_ j: _NodePtr) {
-    if ___is_offset_null(i) || ___is_offset_null(j) {
-      fatalError(.invalidIndex)
-    }
-  }
-}
 
 extension ___Tree {
 

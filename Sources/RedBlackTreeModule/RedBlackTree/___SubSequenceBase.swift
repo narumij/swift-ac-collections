@@ -168,16 +168,15 @@ extension ___SubSequenceBase {
   }
 }
 
-
 extension ___SubSequenceBase {
-  
+
   @inlinable
   public subscript(___unsafe position: Index) -> Element {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
   }
-  
+
   @inlinable
   public subscript(___unsafe position: RawIndex) -> Element {
     @inline(__always) _read {
@@ -192,17 +191,13 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
-    guard
-      !__tree_.___is_garbaged(bounds.lowerBound.rawValue),
-      !__tree_.___is_garbaged(bounds.upperBound.rawValue)
-    else {
-      fatalError(.garbagedIndex)
-    }
-//    guard __tree_.___ptr_less_than_or_equal(_start, bounds.lowerBound.rawValue),
-//      __tree_.___ptr_less_than_or_equal(bounds.upperBound.rawValue, _end)
-//    else {
-//      fatalError(.outOfRange)
-//    }
+    __tree_.___ensureValidRange(
+      begin: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+    //    guard __tree_.___ptr_less_than_or_equal(_start, bounds.lowerBound.rawValue),
+    //      __tree_.___ptr_less_than_or_equal(bounds.upperBound.rawValue, _end)
+    //    else {
+    //      fatalError(.outOfRange)
+    //    }
     return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
@@ -315,7 +310,7 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   func ___is_valid_index(index i: _NodePtr) -> Bool {
-    guard i != .nullptr, __tree_.___is_valid(i) else {
+    guard !__tree_.___is_subscript_null(i) else {
       return false
     }
     return __tree_.___ptr_closed_range_contains(_start, _end, i)
@@ -333,6 +328,19 @@ extension ___SubSequenceBase {
   @inline(__always)
   public func isValid(index i: RawIndex) -> Bool {
     ___is_valid_index(index: i.rawValue)
+  }
+}
+
+extension ___SubSequenceBase {
+
+  @inlinable
+  public func isValid<R: RangeExpression>(
+    _ bounds: R
+  ) -> Bool where R.Bound == Index {
+    let bounds = bounds.relative(to: self)
+    return !__tree_.___is_range_null(
+      bounds.lowerBound.rawValue,
+      bounds.upperBound.rawValue)
   }
 }
 

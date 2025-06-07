@@ -60,6 +60,7 @@ let package = Package(
     .target(
       name: "RedBlackTreeModule",
       dependencies: [],
+      exclude: ["README.md"],
       swiftSettings: _settings
     ),
     .testTarget(

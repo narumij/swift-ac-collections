@@ -42,7 +42,7 @@ extension ___RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public __consuming func makeIterator() -> Tree.ElementIterator {
-    Tree.ElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 
@@ -260,7 +260,7 @@ extension ___RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public __consuming func reversed() -> Tree.ReversedElementIterator {
-    Tree.ReversedElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 

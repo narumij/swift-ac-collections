@@ -100,7 +100,7 @@ extension ___Tree.ReversedElementIterator {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (___Tree.Index, Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
+    try __tree_.___rev_for_each_(__p: _start, __l: _end) {
       try body(__tree_.makeIndex(rawValue: $0), __tree_[$0])
     }
   }
@@ -108,7 +108,7 @@ extension ___Tree.ReversedElementIterator {
   @inlinable
   @inline(__always)
   public func ___forEach(_ body: (RawIndex, Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
+    try __tree_.___rev_for_each_(__p: _start, __l: _end) {
       try body(__tree_.makeRawIndex(rawValue: $0), __tree_[$0])
     }
   }

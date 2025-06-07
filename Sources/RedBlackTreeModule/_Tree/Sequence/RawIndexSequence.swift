@@ -20,6 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+@available(*, deprecated, message: "out of service")
 @frozen
 public struct RawIndexSequence<Tree: Tree_IterateProtocol & Tree_ForEach>: Sequence {
 

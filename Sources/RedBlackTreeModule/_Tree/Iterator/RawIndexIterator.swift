@@ -20,6 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+@available(*, deprecated, message: "out of service")
 @frozen
 public struct RawIndexIterator<Tree: Tree_IterateProtocol>: IteratorProtocol {
 
@@ -50,6 +51,7 @@ public struct RawIndexIterator<Tree: Tree_IterateProtocol>: IteratorProtocol {
   }
 }
 
+@available(*, deprecated, message: "out of service")
 @frozen
 public struct ReversedRawIndexIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 

@@ -402,7 +402,7 @@ final class ConvenienceTests: XCTestCase {
   func testEnumerate() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
     set
-      .___forEach { i, v in
+      .forEach { i, v in
       set.remove(at: i)
     }
     XCTAssertEqual(set, [])

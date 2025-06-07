@@ -104,7 +104,7 @@ extension ___RedBlackTreeSequence {
   @inlinable
   //  @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    __tree_.___signed_distance(start.rawValue, end.rawValue)
+    __tree_.___distance(from: start.rawValue, to: end.rawValue)
   }
 
   /// - Complexity: O(1)

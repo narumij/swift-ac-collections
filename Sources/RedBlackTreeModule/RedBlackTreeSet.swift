@@ -209,7 +209,7 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
-    return .init(
+    .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)

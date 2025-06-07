@@ -38,7 +38,6 @@ protocol ___RedBlackTreeIndexing {
   associatedtype Index
   func ___index(_ rawValue: _NodePtr) -> Index
   func ___index_or_nil(_ p: _NodePtr?) -> Index?
-//  func ___raw_index(_ p: _NodePtr) -> RawIndex
 }
 
 // コレクションの内部実装
@@ -404,13 +403,6 @@ extension ___RedBlackTreeBase {
   public mutating func ___erase(_ ptr: _NodePtr) -> _NodePtr {
     __tree_.erase(ptr)
   }
-
-//  @inlinable
-//  @inline(__always)
-//  @discardableResult
-//  public mutating func ___erase(_ ptr: RawIndex) -> RawIndex {
-//    ___raw_index(__tree_.erase(ptr.rawValue))
-//  }
 
   @inlinable
   @inline(__always)

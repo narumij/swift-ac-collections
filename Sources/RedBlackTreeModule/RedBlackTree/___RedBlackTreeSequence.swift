@@ -178,15 +178,6 @@ extension ___RedBlackTreeSequence {
       yield __tree_[position.rawValue]
     }
   }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: RawIndex) -> Element {
-    @inline(__always) _read {
-      __tree_.___ensureValid(subscript: position.rawValue)
-      yield __tree_[position.rawValue]
-    }
-  }
 }
 
 extension ___RedBlackTreeSequence {
@@ -194,14 +185,6 @@ extension ___RedBlackTreeSequence {
   /// - Complexity: O(1)
   @inlinable
   public subscript(_unsafe position: Index) -> Element {
-    @inline(__always) _read {
-      yield __tree_[position.rawValue]
-    }
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(_unsafe position: RawIndex) -> Element {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
@@ -216,15 +199,6 @@ extension ___RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public func isValid(index: Index) -> Bool {
-    !__tree_.___is_subscript_null(index.rawValue)
-  }
-
-  /// Indexがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid(index: RawIndex) -> Bool {
     !__tree_.___is_subscript_null(index.rawValue)
   }
 }

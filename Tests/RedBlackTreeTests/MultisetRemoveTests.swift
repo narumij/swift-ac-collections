@@ -227,24 +227,24 @@ final class MultisetRemoveTests: XCTestCase {
   
   func testRemoveWith___Indices() throws {
     var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
-    for i in members.___rawIndices {
-      members.remove(at: i)
+    for i in members.___node_positions() {
+      members.___remove(at: i)
     }
     XCTAssertEqual(members + [], [])
   }
   
   func testRemoveWith___Indices2() throws {
     var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
-    members.___rawIndices.forEach { i in
-      members.remove(at: i)
+    members.___node_positions().forEach { i in
+      members.___remove(at: i)
     }
     XCTAssertEqual(members + [], [])
   }
   
   func testRemoveWith___Indices3() throws {
     var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
-    members.___rawIndices.reversed().forEach { i in
-      members.remove(at: i)
+    members.___node_positions().reversed().forEach { i in
+      members.___remove(at: i)
     }
     XCTAssertEqual(members + [], [])
   }
@@ -283,24 +283,24 @@ final class MultisetRemoveTests: XCTestCase {
 
   func testRemoveWithSub___Indices() throws {
     var members = RedBlackTreeMultiSet<Int>(0 ..< 10)
-    for i in members.elements(in: 2 ..< 8).___rawIndices {
-      members.remove(at: i)
+    for i in members.elements(in: 2 ..< 8).___node_positions() {
+      members.___remove(at: i)
     }
     XCTAssertEqual(members + [], [0,1,8,9])
   }
   
   func testRemoveWithSub___Indices2() throws {
     var members =  RedBlackTreeMultiSet<Int>(0 ..< 10)
-    members.elements(in: 2 ..< 8).___rawIndices.forEach { i in
-      members.remove(at: i)
+    members.elements(in: 2 ..< 8).___node_positions().forEach { i in
+      members.___remove(at: i)
     }
     XCTAssertEqual(members + [], [0,1,8,9])
   }
   
   func testRemoveWithSub___Indices4() throws {
     var members =  RedBlackTreeMultiSet<Int>(0 ..< 10)
-    members.elements(in: 2 ..< 8).___rawIndices.reversed().forEach { i in
-      members.remove(at: i)
+    members.elements(in: 2 ..< 8).___node_positions().reversed().forEach { i in
+      members.___remove(at: i)
     }
     XCTAssertEqual(members + [], [0,1,8,9])
   }

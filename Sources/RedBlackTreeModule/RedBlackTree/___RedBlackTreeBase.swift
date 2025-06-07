@@ -38,7 +38,7 @@ protocol ___RedBlackTreeIndexing {
   associatedtype Index
   func ___index(_ rawValue: _NodePtr) -> Index
   func ___index_or_nil(_ p: _NodePtr?) -> Index?
-  func ___raw_index(_ p: _NodePtr) -> RawIndex
+//  func ___raw_index(_ p: _NodePtr) -> RawIndex
 }
 
 // コレクションの内部実装
@@ -111,11 +111,11 @@ extension ___RedBlackTreeBase {
     p.map { ___index($0) }
   }
 
-  @inlinable
-  @inline(__always)
-  func ___raw_index(_ p: _NodePtr) -> RawIndex {
-    __tree_.makeRawIndex(rawValue: p)
-  }
+//  @inlinable
+//  @inline(__always)
+//  func ___raw_index(_ p: _NodePtr) -> RawIndex {
+//    __tree_.makeRawIndex(rawValue: p)
+//  }
 }
 
 extension ___RedBlackTreeBase {
@@ -132,17 +132,17 @@ extension ___RedBlackTreeBase {
     __tree_.___end()
   }
 
-  @inlinable
-  @inline(__always)
-  public func ___raw_index_start() -> RawIndex {
-    ___raw_index(___start())
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___raw_index_end() -> RawIndex {
-    ___raw_index(___end())
-  }
+//  @inlinable
+//  @inline(__always)
+//  public func ___raw_index_start() -> RawIndex {
+//    ___raw_index(___start())
+//  }
+//
+//  @inlinable
+//  @inline(__always)
+//  public func ___raw_index_end() -> RawIndex {
+//    ___raw_index(___end())
+//  }
 
   @inlinable
   @inline(__always)
@@ -195,17 +195,17 @@ extension ___RedBlackTreeBase {
     __tree_.upper_bound(__k)
   }
 
-  @inlinable
-  @inline(__always)
-  public func ___raw_index_lower_bound(_ __k: _Key) -> RawIndex {
-    ___raw_index(__tree_.lower_bound(__k))
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___raw_index_upper_bound(_ __k: _Key) -> RawIndex {
-    ___raw_index(__tree_.upper_bound(__k))
-  }
+//  @inlinable
+//  @inline(__always)
+//  public func ___raw_index_lower_bound(_ __k: _Key) -> RawIndex {
+//    ___raw_index(__tree_.lower_bound(__k))
+//  }
+//
+//  @inlinable
+//  @inline(__always)
+//  public func ___raw_index_upper_bound(_ __k: _Key) -> RawIndex {
+//    ___raw_index(__tree_.upper_bound(__k))
+//  }
 
   @inlinable
   @inline(__always)
@@ -405,12 +405,12 @@ extension ___RedBlackTreeBase {
     __tree_.erase(ptr)
   }
 
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func ___erase(_ ptr: RawIndex) -> RawIndex {
-    ___raw_index(__tree_.erase(ptr.rawValue))
-  }
+//  @inlinable
+//  @inline(__always)
+//  @discardableResult
+//  public mutating func ___erase(_ ptr: RawIndex) -> RawIndex {
+//    ___raw_index(__tree_.erase(ptr.rawValue))
+//  }
 
   @inlinable
   @inline(__always)
@@ -432,21 +432,6 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   public var ___value_comp: (Element, Element) -> Bool {
     { __tree_.value_comp(__tree_.__key($0), __tree_.__key($1)) }
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  public func ___convert(_ rawIndex: RawIndex) -> Index {
-    __tree_.makeIndex(rawValue: rawIndex.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  func ___convert(_ rawIndex: Index) -> RawIndex {
-    __tree_.makeRawIndex(rawValue: rawIndex.rawValue)
   }
 }
 
@@ -515,11 +500,3 @@ extension ___RedBlackTreeBase {
   }
 }
 
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  public var ___rawIndices: RawIndexSequence<Tree> {
-    RawIndexSequence(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-}

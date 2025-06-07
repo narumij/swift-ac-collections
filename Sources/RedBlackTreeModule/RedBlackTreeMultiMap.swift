@@ -294,20 +294,6 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func updateValue(_ newValue: Value, at ptr: RawIndex) -> Element? {
-    guard !__tree_.___is_subscript_null(ptr.rawValue) else {
-      return nil
-    }
-    _ensureUnique()
-    let old = __tree_[ptr.rawValue]
-    __tree_[ptr.rawValue].value = newValue
-    return old
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @inline(__always)
-  @discardableResult
   public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
     guard !__tree_.___is_subscript_null(ptr.rawValue) else {
       return nil
@@ -486,19 +472,6 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
-    _ensureUnique()
-    guard let element = ___remove(at: index.rawValue) else {
-      fatalError(.invalidIndex)
-    }
-    return element
-  }
-
-  /// - Important: 削除後は、インデックスが無効になります。
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func remove(at index: RawIndex) -> KeyValue {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)

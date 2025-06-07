@@ -140,9 +140,8 @@ extension RedBlackTreeSet: SetAlgebra {
           __result.pointee = __first2.___pointee
           __result.___next()
         } else {
-          let i = RawIndex(__first1.rawValue)
           __first1.___next()
-          remove(at: i)
+          ___remove(at: __first1.rawValue)
         }
         __first2.___next()
       }

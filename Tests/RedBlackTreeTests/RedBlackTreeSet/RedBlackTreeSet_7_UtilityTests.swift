@@ -39,20 +39,4 @@ final class RedBlackTreeSetUtilityTests: XCTestCase {
     let invalidIndex = set.endIndex
     XCTAssertFalse(set.isValid(index: invalidIndex))
   }
-
-  #if DEBUG
-    /// isValid(rawIndex:) が有効インデックスを正しく判定すること
-    func test_isValid_rawIndex_valid() {
-      let set = RedBlackTreeSet([1, 2, 3])
-      let rawValue = set.startIndex.rawValue
-      XCTAssertTrue(set.isValid(index: RawIndex.unsafe(rawValue)))
-    }
-
-    /// isValid(rawIndex:) が無効インデックスを正しく判定すること
-    func test_isValid_rawIndex_invalid() {
-      let set = RedBlackTreeSet([1, 2, 3])
-      let rawValue = set.endIndex.rawValue
-      XCTAssertFalse(set.isValid(index: RawIndex.unsafe(rawValue)))
-    }
-  #endif
 }

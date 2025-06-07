@@ -40,12 +40,12 @@ extension ___RedBlackTreeUnique {
     __tree_.__equal_range_unique(k)
   }
 
-  @inlinable
-  @inline(__always)
-  func ___raw_index_equal_range(_ k: Tree._Key) -> (lower: RawIndex, upper: RawIndex) {
-    let (lo, hi) = __tree_.__equal_range_unique(k)
-    return (___raw_index(lo), ___raw_index(hi))
-  }
+//  @inlinable
+//  @inline(__always)
+//  func ___raw_index_equal_range(_ k: Tree._Key) -> (lower: RawIndex, upper: RawIndex) {
+//    let (lo, hi) = __tree_.__equal_range_unique(k)
+//    return (___raw_index(lo), ___raw_index(hi))
+//  }
 
   @inlinable
   @inline(__always)
@@ -73,13 +73,6 @@ extension ___RedBlackTreeMulti {
   @inline(__always)
   public func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
     __tree_.__equal_range_multi(k)
-  }
-
-  @inlinable
-  @inline(__always)
-  func ___raw_index_equal_range(_ k: Tree._Key) -> (lower: RawIndex, upper: RawIndex) {
-    let (lo, hi) = __tree_.__equal_range_multi(k)
-    return (___raw_index(lo), ___raw_index(hi))
   }
 
   @inlinable

@@ -349,19 +349,6 @@ extension RedBlackTreeSet {
     return element
   }
 
-  /// - Important: 削除後は、インデックスが無効になります。
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func remove(at index: RawIndex) -> Element {
-    _ensureUnique()
-    guard let element = ___remove(at: index.rawValue) else {
-      fatalError(.invalidIndex)
-    }
-    return element
-  }
-
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable

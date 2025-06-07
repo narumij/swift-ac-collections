@@ -583,19 +583,6 @@ extension RedBlackTreeDictionary {
     return element
   }
 
-  /// - Important: 削除後は、インデックスが無効になります。
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func remove(at index: RawIndex) -> KeyValue {
-    _ensureUnique()
-    guard let element = ___remove(at: index.rawValue) else {
-      fatalError(.invalidIndex)
-    }
-    return element
-  }
-
   /// Removes the specified subrange of elements from the collection.
   ///
   /// - Important: 削除後は、subrangeのインデックスが無効になります。

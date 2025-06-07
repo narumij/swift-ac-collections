@@ -129,16 +129,6 @@ import XCTest
       XCTAssertEqual(map[5].map(\.value), [6, 7])
     }
 
-    #if DEBUG
-      func testSubscript1() throws {
-        let map: Target<Int, Int> = [1: 10, 2: 10, 3: 10]
-        XCTAssertEqual(map[RawIndex(0)].key, 1)
-        XCTAssertEqual(map[RawIndex(0)].value, 10)
-        XCTAssertEqual(map[2..<3][RawIndex(1)].key, 2)
-        XCTAssertEqual(map.elements(in: 2..<3)[RawIndex(1)].value, 10)
-      }
-    #endif
-
     func testSmoke() throws {
       let b: Target<Int, [Int]> = [1: [1, 2], 2: [2, 3], 3: [3, 4]]
       print(b)
@@ -270,17 +260,6 @@ import XCTest
       XCTAssertEqual(dict.updateValue(10, at: dict.firstIndex(of: 1)!)?.value, 1)
       XCTAssertEqual(dict[1].map(\.value), [10])
     }
-
-    #if DEBUG
-      func testUpdate2() throws {
-        var dict = [1: 1, 2: 2, 3: 3] as Target<Int, Int>
-        XCTAssertEqual(dict.updateValue(0, at: .unsafe(.nullptr))?.value, nil)
-        XCTAssertEqual(dict.updateValue(0, at: .init(.end))?.value, nil)
-        XCTAssertEqual(dict[1].map(\.value), [1])
-        XCTAssertEqual(dict.updateValue(10, at: .init(dict.startIndex.rawValue))?.value, 1)
-        XCTAssertEqual(dict[1].map(\.value), [10])
-      }
-    #endif
 
     func testBound() throws {
       let dict = [1: 10, 3: 30, 5: 50] as Target<Int, Int>
@@ -821,18 +800,8 @@ import XCTest
       XCTAssertFalse(set.isValid(index: set.endIndex)) // 仕様変更。subscriptやremoveにつかえないので
       typealias Index = Target<Int, String>.Index
       #if DEBUG
-        XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
-        XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawValue, -1)
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawValue, 5)
-
-        XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
-        XCTAssertTrue(set.isValid(index: .unsafe(0)))
-        XCTAssertTrue(set.isValid(index: .unsafe(1)))
-        XCTAssertTrue(set.isValid(index: .unsafe(2)))
-        XCTAssertTrue(set.isValid(index: .unsafe(3)))
-        XCTAssertTrue(set.isValid(index: .unsafe(4)))
-        XCTAssertFalse(set.isValid(index: .unsafe(5)))
 
         XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
         XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
@@ -853,20 +822,8 @@ import XCTest
       XCTAssertTrue(set.isValid(index: set.endIndex))
       typealias Index = Target<Int, String>.Index
       #if DEBUG
-        XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
-        XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawValue, -1)
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawValue, 5)
-
-        XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
-        XCTAssertFalse(set.isValid(index: .unsafe(0)))
-        XCTAssertTrue(set.isValid(index: .unsafe(1)))
-        XCTAssertTrue(set.isValid(index: .unsafe(2)))
-        XCTAssertTrue(set.isValid(index: .unsafe(3)))
-        XCTAssertTrue(set.isValid(index: .unsafe(4)))
-        XCTAssertTrue(set.isValid(index: .unsafe(5)))
-        XCTAssertFalse(set.isValid(index: .unsafe(6)))
-        XCTAssertFalse(set.isValid(index: .unsafe(7)))
 
         XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
         XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))

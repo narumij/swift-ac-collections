@@ -990,16 +990,6 @@ extension ___Tree: Tree_IndicesProtocol {
   }
 }
 
-extension ___Tree {
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public func makeRawIndex(rawValue: _NodePtr) -> RawIndex {
-    .init(rawValue)
-  }
-}
-
 extension ___Tree: Tree_KeyCompare {
 
   public typealias Key = VC._Key

@@ -46,12 +46,6 @@ extension ___SubSequenceBase {
   func ___index(_ rawValue: _NodePtr) -> Index {
     .init(tree: __tree_, rawValue: rawValue)
   }
-
-  @inlinable
-  @inline(__always)
-  func ___raw_index(_ p: _NodePtr) -> RawIndex {
-    __tree_.makeRawIndex(rawValue: p)
-  }
 }
 
 extension ___SubSequenceBase {
@@ -157,33 +151,7 @@ extension ___SubSequenceBase {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
-  public subscript(position: RawIndex) -> Element {
-    @inline(__always) _read {
-      __tree_.___ensureValid(subscript: position.rawValue)
-      //      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
-      //        _tree.___ptr_less_than(position.rawValue, _end)
-      //      else {
-      //        fatalError(.outOfRange)
-      //      }
-      yield __tree_[position.rawValue]
-    }
-  }
-}
-
-extension ___SubSequenceBase {
-
-  /// - Complexity: O(1)
-  @inlinable
   public subscript(_unsafe position: Index) -> Element {
-    @inline(__always) _read {
-      yield __tree_[position.rawValue]
-    }
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(_unsafe position: RawIndex) -> Element {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
@@ -299,24 +267,6 @@ extension ___SubSequenceBase {
   }
 }
 
-// MARK: - Raw Index Sequence
-
-extension ___SubSequenceBase {
-
-  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
-  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var ___rawIndices: RawIndexSequence<Tree> {
-    RawIndexSequence(
-      tree: __tree_,
-      start: _start,
-      end: _end)
-  }
-}
-
 // MARK: - Utility
 
 extension ___SubSequenceBase {
@@ -333,15 +283,6 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    ___contains(i.rawValue)
-  }
-
-  /// Indexがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid(index i: RawIndex) -> Bool {
     ___contains(i.rawValue)
   }
 }

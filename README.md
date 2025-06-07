@@ -97,7 +97,7 @@ multimap.insert(key: "banana", value: 3)
 print(multimap)  // 例: [apple: 5, apple: 2, banana: 3]
 ```
 
-#### IndexとRawIndex
+#### Index
 
 赤黒木モジュールの各データ構造は木のノードを配列に格納しています。
 この内部配列のインデックス同士を比較した場合、順序と結果が一致しません。
@@ -106,13 +106,9 @@ Swift標準のプロトコルではインデックス比較と順序の一致を
 これが`Index`です。実際的にはC++のイテレータのような働きをします。
 赤黒木モジュールの大半のAPIではこの抽象化された`Index`を用いています。
 
-他に`RawIndex`があります。`RawIndex`同士の比較はできませんが軽量で、要素アクセスや要素削除に利用できます。
-一部のAPIは`RawIndex`を用いています。
-
-どちらも単なるIntによるIndexとは異なることと、RawIndexは限られた目的にしか使えないことに注意してください。
+単なるIntによるIndexとは異なることに注意してください。
 
 - indicesプロパティはIndexのシーケンスを返します。
-- rawIndicesプロパティはRawIndexのシーケンスを返します。
 
 #### 削除時のIndex無効化と安全な範囲削除
 
@@ -198,25 +194,22 @@ while i != tree1.endIndex { // endIndexは不変
 }
 print(tree1.count) // 0
 ```
-2. `indices`または`rawIndices`で削除する
+2. `indices`で削除する
 
-RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
-削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
 `indices`での削除はケース0と等価です。
 
 ```Swift
 var tree3: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
-for (i,_) in tree3[tree3.startIndex ..< tree3.endIndex].rawIndices { i in
+for (i,_) in tree3[tree3.startIndex ..< tree3.endIndex].indices { i in
   tree3.remove(at: i) // この時点でiは無効だが、イテレータは内部で次のインデックスを保持している
   print(tree3.isValid(index: i)) // false
-  // iはRedBlackTreeSet<Int>.RawIndex型
 }
 print(tree3.count) // 0
 ```
 
 3. 特殊なforEachで削除する
 
-インデックス(RawIndex)と値でループでき、これを削除操作に利用できます。
+インデックスと値でループでき、これを削除操作に利用できます。
 削除以外に何か処理が必要な場合に使います。たとえばABC385D等。
 
 ```Swift

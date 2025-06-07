@@ -139,11 +139,6 @@ extension ___SubSequenceBase {
   @inlinable
   public subscript(position: Index) -> Element {
     @inline(__always) _read {
-//      guard
-//        !__tree_.___is_subscript_null(position.rawValue)
-//      else {
-//        fatalError(.invalidIndex)
-//      }
       __tree_.___ensureValid(subscript: position.rawValue)
       //      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
       //        _tree.___ptr_less_than(position.rawValue, _end)
@@ -162,11 +157,6 @@ extension ___SubSequenceBase {
   @inline(__always)
   public subscript(position: RawIndex) -> Element {
     @inline(__always) _read {
-//      guard
-//        !__tree_.___is_subscript_null(position.rawValue)
-//      else {
-//        fatalError(.invalidIndex)
-//      }
       __tree_.___ensureValid(subscript: position.rawValue)
       //      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
       //        _tree.___ptr_less_than(position.rawValue, _end)
@@ -371,11 +361,7 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   mutating func ___element(at ptr: _NodePtr) -> Element? {
-    guard
-//      !___is_null_or_end(ptr),
-//      __tree_.___is_valid_index(ptr)
-      !__tree_.___is_subscript_null(ptr)
-    else {
+    guard !__tree_.___is_subscript_null(ptr) else {
       return nil
     }
     return __tree_[ptr]

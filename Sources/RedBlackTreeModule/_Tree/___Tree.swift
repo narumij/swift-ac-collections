@@ -823,8 +823,6 @@ extension ___Tree {
   @inline(__always)
   internal func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int {
     guard
-//      start == __end_node() || ___is_valid(start),
-//      end == __end_node() || ___is_valid(end)
       !___is_offset_null(start),
       !___is_offset_null(end)
     else {
@@ -837,9 +835,6 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___index(after i: _NodePtr) -> _NodePtr {
-//    guard !___is_next_null(i) else {
-//      fatalError(.invalidIndex)
-//    }
     ___ensureValid(after: i)
     return __tree_next(i)
   }
@@ -855,11 +850,6 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___index(before i: _NodePtr) -> _NodePtr {
-//    guard
-//      !___is_prev_null(i)
-//    else {
-//      fatalError(.invalidIndex)
-//    }
     ___ensureValid(before: i)
     return __tree_prev_iter(i)
   }
@@ -875,11 +865,6 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___index(_ i: _NodePtr, offsetBy distance: Int) -> _NodePtr {
-//    guard
-//      !___is_offset_null(i)
-//    else {
-//      fatalError(.invalidIndex)
-//    }
     ___ensureValid(offset: i)
     var distance = distance
     var i = i
@@ -914,11 +899,6 @@ extension ___Tree {
   internal func ___index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
     -> _NodePtr?
   {
-//    guard
-//      !___is_offset_null(i)
-//    else {
-//      fatalError(.invalidIndex)
-//    }
     ___ensureValid(offset: i)
     var distance = distance
     var i = i
@@ -977,10 +957,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   public func ___tree_adv_iter(_ i: _NodePtr, by distance: Int) -> _NodePtr {
-//    guard i == ___end() || ___is_valid(i) else {
-//      preconditionFailure(.invalidIndex)
-//    }
-    // 使用箇所が少ないので検査割愛
+    ___ensureValid(offset: i)
     var distance = distance
     var result: _NodePtr = i
     while distance != 0 {

@@ -169,9 +169,6 @@ extension ___RedBlackTreeSequence {
   @inlinable
   public subscript(position: Index) -> Element {
     @inline(__always) _read {
-//      guard !__tree_.___is_subscript_null(position.rawValue) else {
-//        fatalError(.invalidIndex)
-//      }
       __tree_.___ensureValid(subscript: position.rawValue)
       yield __tree_[position.rawValue]
     }
@@ -181,9 +178,6 @@ extension ___RedBlackTreeSequence {
   @inlinable
   public subscript(position: RawIndex) -> Element {
     @inline(__always) _read {
-//      guard !__tree_.___is_subscript_null(position.rawValue) else {
-//        fatalError(.invalidIndex)
-//      }
       __tree_.___ensureValid(subscript: position.rawValue)
       yield __tree_[position.rawValue]
     }

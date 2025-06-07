@@ -103,9 +103,6 @@ extension ___Tree.___Iterator {
   @inlinable
   //  @inline(__always)
   public func advanced(by n: Int) -> Self {
-    guard !__tree_.___is_garbaged(rawValue) else {
-      preconditionFailure(.garbagedIndex)
-    }
     return .init(tree: __tree_, rawValue: __tree_.___tree_adv_iter(rawValue, by: n))
   }
 }

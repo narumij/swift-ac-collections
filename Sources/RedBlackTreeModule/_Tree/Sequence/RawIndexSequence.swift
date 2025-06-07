@@ -31,15 +31,6 @@ public struct RawIndexSequence<Tree: Tree_IterateProtocol & Tree_ForEach>: Seque
 
   @inlinable
   @inline(__always)
-  internal init(tree: Tree) where Tree: BeginNodeProtocol & EndNodeProtocol {
-    self.init(
-      tree: tree,
-      start: tree.__begin_node,
-      end: tree.__end_node())
-  }
-
-  @inlinable
-  @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
     __tree_ = tree
     _start = start

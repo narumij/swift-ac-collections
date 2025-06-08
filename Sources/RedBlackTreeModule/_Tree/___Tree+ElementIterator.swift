@@ -113,6 +113,16 @@ extension ___Tree.ReversedElementIterator {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
+  public var indices: ___Tree.BackwordIterator {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+}
+
+extension ___Tree.ReversedElementIterator {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
   public __consuming func keys<Key, Value>() -> ReversedKeyIterator<___Tree, Key, Value>
   where Element == _KeyValueTuple_<Key, Value> {
     .init(tree: __tree_, start: _start, end: _end)

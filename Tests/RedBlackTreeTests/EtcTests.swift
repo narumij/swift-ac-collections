@@ -654,6 +654,61 @@ final class EtcTests: XCTestCase {
     }
   }
 
+  func testSubRev15() throws {
+    let a = RedBlackTreeDictionary<String,Int>(uniqueKeysWithValues: [("a",0),("b",1),("c",2)])
+    do {
+      var result = [RedBlackTreeDictionary<String,Int>.Index]()
+      a[a.endIndex ..< a.endIndex].reversed().indices.forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+    do {
+      var result = [RedBlackTreeDictionary<String,Int>.Index]()
+      a[a.endIndex ..< a.endIndex].indices.reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+  }
+
+  func testSubRev16() throws {
+    let a = RedBlackTreeDictionary<String,Int>(uniqueKeysWithValues: [("a",0),("b",1),("c",2)])
+    do {
+      var result = [RedBlackTreeDictionary<String,Int>.Index]()
+      a[a.startIndex ..< a.startIndex].reversed().indices.forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+    do {
+      var result = [RedBlackTreeDictionary<String,Int>.Index]()
+      a[a.startIndex ..< a.startIndex].indices.reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+  }
+  
+  func testSubRev17() throws {
+    let a = RedBlackTreeDictionary<String,Int>(uniqueKeysWithValues: [("a",0),("b",1),("c",2)])
+    do {
+      var result = [RedBlackTreeDictionary<String,Int>.Index]()
+      a[a.startIndex ..< a.endIndex].reversed().indices.forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [2,1,0].map { a.startIndex + $0 })
+    }
+    do {
+      var result = [RedBlackTreeDictionary<String,Int>.Index]()
+      a[a.startIndex ..< a.endIndex].indices.reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [2,1,0].map { a.startIndex + $0 })
+    }
+  }
+
+
 
 // __tree_prev_iterの不定動作を解消する場合、以下となるが、性能上の問題で保留となっている
 //  func testPtr5() throws {

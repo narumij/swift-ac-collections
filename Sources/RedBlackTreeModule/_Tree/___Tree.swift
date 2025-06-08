@@ -225,28 +225,23 @@ extension ___Tree {
   @nonobjc
   @inlinable
   internal var _header: Header {
-    @inline(__always)
-    //    get { __header_ptr.pointee }
-    _read { yield __header_ptr.pointee }
-    @inline(__always)
-    _modify { yield &__header_ptr.pointee }
+    @inline(__always) _read {
+      yield __header_ptr.pointee
+    }
+    @inline(__always) _modify {
+      yield &__header_ptr.pointee
+    }
   }
 
   @nonobjc
   @inlinable
   public subscript(_ pointer: _NodePtr) -> Element {
-    @inline(__always)
-    //    get {
-    //      assert(0 <= pointer && pointer < _header.initializedCount)
-    //      return __node_ptr[pointer].__value_
-    //    }
-    _read {
-      assert(0 <= pointer && pointer < _header.initializedCount)
+    @inline(__always) _read {
+      assert(___initialized_contains(pointer))
       yield __node_ptr[pointer].__value_
     }
-    @inline(__always)
-    _modify {
-      assert(0 <= pointer && pointer < _header.initializedCount)
+    @inline(__always) _modify {
+      assert(___initialized_contains(pointer))
       yield &__node_ptr[pointer].__value_
     }
   }

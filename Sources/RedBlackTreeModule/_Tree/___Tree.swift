@@ -454,31 +454,43 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func __parent_(_ p: _NodePtr) -> _NodePtr {
-    __node_ptr[p].__parent_
+    assert(!___is_null_or_end(p))
+    assert(___initialized_contains(p))
+    return __node_ptr[p].__parent_
   }
   @nonobjc
   @inlinable
   @inline(__always)
   internal func __left_(_ p: _NodePtr) -> _NodePtr {
-    p == .end ? _header.__left_ : __node_ptr[p].__left_
+    ___is_null_or_end(p) ? _header.__left_ : __node_ptr[p].__left_
   }
   @nonobjc
   @inlinable
   @inline(__always)
   internal func __right_(_ p: _NodePtr) -> _NodePtr {
-    __node_ptr[p].__right_
+    assert(!___is_null_or_end(p))
+    assert(___initialized_contains(p))
+    return __node_ptr[p].__right_
   }
   @nonobjc
   @inlinable
   @inline(__always)
   internal func __is_black_(_ p: _NodePtr) -> Bool {
-    __node_ptr[p].__is_black_
+    assert(!___is_null_or_end(p))
+    assert(___initialized_contains(p))
+    return __node_ptr[p].__is_black_
   }
   @nonobjc
   @inlinable
   @inline(__always)
   internal func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
-    __parent_(p)
+    // 現在、beginに対する__tree_prev_iter(..)が不定動作となっている
+    // 以下のコードで修正は可能だが、バランシングへの性能影響が大きいので
+    // 呼び出し側でチェックする運用となっている
+    // ___is_null_or_end(p) ? .nullptr : __parent_(p)
+    assert(!___is_null_or_end(p))
+    assert(___initialized_contains(p))
+    return __parent_(p)
   }
 }
 
@@ -488,12 +500,16 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
+    assert(!___is_null_or_end(lhs))
+    assert(___initialized_contains(lhs))
     __node_ptr[lhs].__is_black_ = rhs
   }
   @nonobjc
   @inlinable
   @inline(__always)
   internal func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+    assert(!___is_null_or_end(lhs))
+    assert(___initialized_contains(lhs))
     __node_ptr[lhs].__parent_ = rhs
   }
   @nonobjc
@@ -503,6 +519,7 @@ extension ___Tree {
     if lhs == .end {
       _header.__left_ = rhs
     } else {
+      assert(___initialized_contains(lhs))
       __node_ptr[lhs].__left_ = rhs
     }
   }
@@ -510,6 +527,8 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+    assert(!___is_null_or_end(lhs))
+    assert(___initialized_contains(lhs))
     __node_ptr[lhs].__right_ = rhs
   }
 }
@@ -764,17 +783,17 @@ extension ___Tree: Tree_ForEach {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___rev_for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
+  public func ___rev_for_each_(__p _end: _NodePtr, __l _start: _NodePtr, body: (_NodePtr) throws -> Void)
     rethrows
   {
-    if __l == __p { return }
-    var __c = __l
-    var __l = __tree_prev_iter(__l)
-    repeat {
-      __c = __l
-      __l = __l == __p ? __p : __tree_prev_iter(__l)
-      try body(__c)
-    } while __c != __p
+    var _current = _start
+    // __begin_nodeでの__tree_prev_iterは不定動作なので注意が必要
+    var _next = _start == _end ? _end : __tree_prev_iter(_start)
+    while _current != _end {
+      _current = _next
+      _next =  _next == _end ? _end : __tree_prev_iter(_next)
+      try body(_current)
+    }
   }
 }
 

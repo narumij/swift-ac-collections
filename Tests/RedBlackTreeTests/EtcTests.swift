@@ -464,4 +464,48 @@ final class EtcTests: XCTestCase {
     }
     XCTAssertEqual(result, [a.startIndex + 2, a.startIndex + 1, a.startIndex + 0])
   }
+  
+  func testSubRev3() throws {
+    let a = RedBlackTreeSet<Int>([0,1,2])
+    var result = [RedBlackTreeSet<Int>.Index]()
+    a[a.endIndex ..< a.endIndex].reversed().forEach { i, p in
+      result.append(i)
+    }
+    XCTAssertEqual(result, [])
+  }
+
+  func testSubRev4() throws {
+    let a = RedBlackTreeSet<Int>([0,1,2])
+    var result = [RedBlackTreeSet<Int>.Index]()
+    a[a.startIndex ..< a.startIndex].reversed().forEach { i, p in
+      result.append(i)
+    }
+    XCTAssertEqual(result, [])
+  }
+  
+  func testSubRev5() throws {
+    let a = RedBlackTreeSet<Int>([0])
+    var result = [RedBlackTreeSet<Int>.Index]()
+    a[a.startIndex ..< a.endIndex].reversed().forEach { i, p in
+      result.append(i)
+    }
+    XCTAssertEqual(result, [a.startIndex])
+  }
+  
+// __tree_prev_iterの不定動作を解消する場合、以下となるが、性能上の問題で保留となっている
+//  func testPtr5() throws {
+//    do {
+//      let a = RedBlackTreeSet<Int>([0])
+//      XCTAssertEqual(a.__tree_.__tree_prev_iter(a.startIndex.rawValue), .nullptr)
+//    }
+//    do {
+//      let a = RedBlackTreeSet<Int>([0,1])
+//      XCTAssertEqual(a.__tree_.__tree_prev_iter(a.startIndex.rawValue), .nullptr)
+//    }
+//    do {
+//      let a = RedBlackTreeSet<Int>([0,1,2])
+//      XCTAssertEqual(a.__tree_.__tree_prev_iter(a.startIndex.rawValue), .nullptr)
+//    }
+//  }
+
 }

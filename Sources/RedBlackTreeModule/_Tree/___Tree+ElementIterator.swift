@@ -72,7 +72,7 @@ extension ___Tree {
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.__tree_ = tree
       self._current = end
-      self._next = __tree_.__tree_prev_iter(end)
+      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
       self._start = start
       self._end = end
       self._begin = __tree_.__begin_node

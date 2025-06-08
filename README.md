@@ -207,7 +207,7 @@ tree[tree.startIndex ..< tree.endIndex].forEach { i, e in
   print(e) // 各要素
   print(tree.isValid(index: i)) // false
 }
-print(tree2.count) // 0
+print(tree.count) // 0
 ```
 
 3. removeSubrange(_:Range`<Index>`)で削除する
@@ -217,9 +217,9 @@ print(tree2.count) // 0
 計算量としては余り変わりません。
 
 ```Swift
-var tree4: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
-tree4.removeSubrange(tree4.startIndex ..< tree3.endIndex)
-XCTAssertEqual(tree4.count, 0)
+var tree: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
+tree.removeSubrange(tree.startIndex ..< tree.endIndex)
+XCTAssertEqual(tree.count, 0)
 ```
 
 4. remove(contentsOf:Range`<Element>`)を使用して削除する。
@@ -228,8 +228,8 @@ XCTAssertEqual(tree4.count, 0)
 境界を探索する分すこし実行時間はかさみますが、これも速いです。
 
 ```Swift
-var tree5: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
-tree5.remove(contentsOf: 0 ..< 6)
+var tree: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
+tree.remove(contentsOf: 0 ..< 6)
 // 0〜5が削除され、結果は空
 
 ```
@@ -246,20 +246,20 @@ extension RedBlackTreeSet {
   }
 }
 
-var tree6: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
-var idx = tree6.startIndex
-while idx != tree6.endIndex {
-  idx = tree6.erase(at: idx)
+var tree: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
+var idx = tree.startIndex
+while idx != tree.endIndex {
+  idx = tree.erase(at: idx)
 }
 ```
 
 x. 比較演算子の計算量がO(1)ではないためおすすめできませんが、比較でループを回すこともできます。 
 
 ```Swift
-var tree6: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
-var idx = tree6.startIndex
-while idx < tree6.endIndex {
-  idx = tree6.erase(at: idx)
+var tree: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
+var idx = tree.startIndex
+while idx < tree.endIndex {
+  idx = tree.erase(at: idx)
 }
 ```
 

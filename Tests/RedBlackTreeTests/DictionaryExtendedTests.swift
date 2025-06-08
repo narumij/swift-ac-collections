@@ -61,7 +61,7 @@ final class RedBlackTreeDictionaryExtendedTests: XCTestCase {
         var d: RedBlackTreeDictionary = [("b", 2), ("a", 1), ("c", 3)]
         let first = d.popFirst()
         XCTAssertEqual(first?.key, "a")
-        XCTAssertEqual(Set(d.keys), ["b", "c"])
+        XCTAssertEqual(Set(d.keys()), ["b", "c"])
         XCTAssertEqual(d.popFirst()?.key, "b")
         _ = d.popFirst()
         XCTAssertTrue(d.isEmpty)

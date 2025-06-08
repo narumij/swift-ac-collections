@@ -345,24 +345,6 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
-  @inlinable
-  @inline(__always)
-  mutating func ___element(at ptr: _NodePtr) -> Element? {
-    guard !__tree_.___is_subscript_null(ptr) else {
-      return nil
-    }
-    return __tree_[ptr]
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func ___node_positions() -> NodeIterator<Tree> {
-    NodeIterator(tree: __tree_, start: _start, end: _end)
-  }
-}
-
-extension ___SubSequenceBase {
-
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
@@ -383,3 +365,22 @@ extension ___SubSequenceBase {
     try makeIterator().lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
+
+extension ___SubSequenceBase {
+
+  @inlinable
+  @inline(__always)
+  mutating func ___element(at ptr: _NodePtr) -> Element? {
+    guard !__tree_.___is_subscript_null(ptr) else {
+      return nil
+    }
+    return __tree_[ptr]
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func ___node_positions() -> NodeIterator<Tree> {
+    NodeIterator(tree: __tree_, start: _start, end: _end)
+  }
+}
+

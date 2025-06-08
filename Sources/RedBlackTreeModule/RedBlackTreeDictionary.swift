@@ -332,23 +332,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var keys: Keys {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var values: Values {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-}
-
 // MARK: - Range Accessing Keys and Values
 
 extension RedBlackTreeDictionary {

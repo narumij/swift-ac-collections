@@ -492,6 +492,169 @@ final class EtcTests: XCTestCase {
     XCTAssertEqual(result, [a.startIndex])
   }
   
+  func testSubRev6() throws {
+    let a = RedBlackTreeSet<Int>([0,1,2])
+    do {
+      var result = [_NodePtr]()
+      a[a.endIndex ..< a.endIndex].reversed().___node_positions().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+    do {
+      var result = [_NodePtr]()
+      a[a.endIndex ..< a.endIndex].___node_positions().reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+  }
+
+  func testSubRev7() throws {
+    let a = RedBlackTreeSet<Int>([0,1,2])
+    do {
+      var result = [_NodePtr]()
+      a[a.startIndex ..< a.startIndex].reversed().___node_positions().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+    do {
+      var result = [_NodePtr]()
+      a[a.startIndex ..< a.startIndex].___node_positions().reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+  }
+  
+  func testSubRev8() throws {
+    let a = RedBlackTreeSet<Int>([0,1,2])
+    do {
+      var result = [_NodePtr]()
+      a[a.startIndex ..< a.endIndex].reversed().___node_positions().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [2,1,0])
+    }
+    do {
+      var result = [_NodePtr]()
+      a[a.startIndex ..< a.endIndex].___node_positions().reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [2,1,0])
+    }
+  }
+  
+  func testSubRev9() throws {
+    let a = RedBlackTreeDictionary<String,Int>(uniqueKeysWithValues: [("a",0),("b",1),("c",2)])
+    do {
+      var result = [String]()
+      a[a.endIndex ..< a.endIndex].reversed().keys().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+    do {
+      var result = [String]()
+      a[a.endIndex ..< a.endIndex].keys().reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+  }
+
+  func testSubRev10() throws {
+    let a = RedBlackTreeDictionary<String,Int>(uniqueKeysWithValues: [("a",0),("b",1),("c",2)])
+    do {
+      var result = [String]()
+      a[a.startIndex ..< a.startIndex].reversed().keys().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+    do {
+      var result = [String]()
+      a[a.startIndex ..< a.startIndex].keys().reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+  }
+
+  func testSubRev11() throws {
+    let a = RedBlackTreeDictionary<String,Int>(uniqueKeysWithValues: [("a",0),("b",1),("c",2)])
+    do {
+      var result = [String]()
+      a[a.startIndex ..< a.endIndex].reversed().keys().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, ["c","b","a"])
+    }
+    do {
+      var result = [String]()
+      a[a.startIndex ..< a.endIndex].keys().reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, ["c","b","a"])
+    }
+  }
+
+  func testSubRev12() throws {
+    let a = RedBlackTreeDictionary<String,Int>(uniqueKeysWithValues: [("a",0),("b",1),("c",2)])
+    do {
+      var result = [Int]()
+      a[a.endIndex ..< a.endIndex].reversed().values().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+    do {
+      var result = [Int]()
+      a[a.endIndex ..< a.endIndex].values().reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+  }
+
+  func testSubRev13() throws {
+    let a = RedBlackTreeDictionary<String,Int>(uniqueKeysWithValues: [("a",0),("b",1),("c",2)])
+    do {
+      var result = [Int]()
+      a[a.startIndex ..< a.startIndex].reversed().values().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+    do {
+      var result = [Int]()
+      a[a.startIndex ..< a.startIndex].values().reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+  }
+  
+  func testSubRev14() throws {
+    let a = RedBlackTreeDictionary<String,Int>(uniqueKeysWithValues: [("a",0),("b",1),("c",2)])
+    do {
+      var result = [Int]()
+      a[a.startIndex ..< a.endIndex].reversed().values().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [2,1,0])
+    }
+    do {
+      var result = [Int]()
+      a[a.startIndex ..< a.endIndex].values().reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [2,1,0])
+    }
+  }
+
+
 // __tree_prev_iterの不定動作を解消する場合、以下となるが、性能上の問題で保留となっている
 //  func testPtr5() throws {
 //    do {

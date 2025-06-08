@@ -82,7 +82,7 @@ public struct ReversedValueIterator<Tree: Tree_IterateProtocol, K, Value>: Seque
 where Tree.Element == _KeyValueTuple_<K, Value> {
 
   @usableFromInline
-  let _tree_: Tree
+  let __tree_: Tree
 
   @usableFromInline
   var _start, _begin, _current, _next: _NodePtr
@@ -90,11 +90,11 @@ where Tree.Element == _KeyValueTuple_<K, Value> {
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self._tree_ = tree
+    self.__tree_ = tree
     self._current = end
-    self._next = _tree_.__tree_prev_iter(end)
+    self._next = end == start ? end : __tree_.__tree_prev_iter(end)
     self._start = start
-    self._begin = _tree_.__begin_node
+    self._begin = __tree_.__begin_node
   }
 
   @inlinable
@@ -102,7 +102,7 @@ where Tree.Element == _KeyValueTuple_<K, Value> {
   public mutating func next() -> Value? {
     guard _current != _start else { return nil }
     _current = _next
-    _next = _current != _begin ? _tree_.__tree_prev_iter(_current) : .nullptr
-    return _tree_[_current].value
+    _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
+    return __tree_[_current].value
   }
 }

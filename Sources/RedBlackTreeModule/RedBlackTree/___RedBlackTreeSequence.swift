@@ -242,6 +242,43 @@ extension ___RedBlackTreeSequence {
 
 extension ___RedBlackTreeSequence {
 
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func keys<Key, Value>() -> KeyIterator<Tree, Key, Value>
+  where Element == _KeyValueTuple_<Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func values<Key, Value>() -> ValueIterator<Tree, Key, Value>
+  where Element == _KeyValueTuple_<Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+}
+
+extension ___RedBlackTreeBase {
+
+  @inlinable
+  @inline(__always)
+  public mutating func ___element(at ptr: _NodePtr) -> Element? {
+    guard !__tree_.___is_subscript_null(ptr) else {
+      return nil
+    }
+    return __tree_[ptr]
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func ___node_positions() -> NodeIterator<Tree> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+}
+
+extension ___RedBlackTreeSequence {
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable

@@ -21,16 +21,16 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 extension ___Tree {
-  
+
   @frozen
   public struct ElementIterator: Sequence, IteratorProtocol {
-    
+
     @usableFromInline
     let __tree_: Tree
-    
+
     @usableFromInline
     var _start, _end, _current, _next: _NodePtr
-    
+
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -40,9 +40,9 @@ extension ___Tree {
       self._end = end
       self._next = start == .end ? .end : tree.__tree_next_iter(start)
     }
-    
+
     // 性能変化の反応が過敏なので、慎重さが必要っぽい。
-    
+
     @inlinable
     @inline(__always)
     public mutating func next() -> Tree.Element? {
@@ -57,16 +57,16 @@ extension ___Tree {
 }
 
 extension ___Tree {
-  
+
   @frozen
   public struct ReversedElementIterator: Sequence, IteratorProtocol {
-    
+
     @usableFromInline
     let __tree_: Tree
-    
+
     @usableFromInline
     var _start, _end, _begin, _current, _next: _NodePtr
-    
+
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -77,7 +77,7 @@ extension ___Tree {
       self._end = end
       self._begin = __tree_.__begin_node
     }
-    
+
     @inlinable
     @inline(__always)
     public mutating func next() -> Tree.Element? {
@@ -90,7 +90,7 @@ extension ___Tree {
 }
 
 extension ___Tree.ReversedElementIterator {
-  
+
   @inlinable
   @inline(__always)
   public func forEach(_ body: (___Tree.Index, Element) throws -> Void) rethrows {
@@ -105,5 +105,33 @@ extension ___Tree.ReversedElementIterator {
     try __tree_.___rev_for_each_(__p: _start, __l: _end) {
       try body($0, __tree_[$0])
     }
+  }
+}
+
+extension ___Tree.ReversedElementIterator {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func keys<Key, Value>() -> ReversedKeyIterator<___Tree, Key, Value>
+  where Element == _KeyValueTuple_<Key, Value> {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func values<Key, Value>() -> ReversedValueIterator<___Tree, Key, Value>
+  where Element == _KeyValueTuple_<Key, Value> {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+}
+
+extension ___Tree.ReversedElementIterator {
+
+  @inlinable
+  @inline(__always)
+  public __consuming func ___node_positions() -> ReversedNodeIterator<___Tree> {
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }

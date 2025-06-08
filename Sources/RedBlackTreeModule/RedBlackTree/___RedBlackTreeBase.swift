@@ -468,27 +468,3 @@ extension ___RedBlackTreeBase {
     __tree_.___is_garbaged(index)
   }
 }
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  public mutating func ___element(at ptr: _NodePtr) -> Element? {
-    guard
-      !__tree_.___is_subscript_null(ptr)
-    else {
-      return nil
-    }
-    return __tree_[ptr]
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  public __consuming func ___node_positions() -> NodeIterator<Tree> {
-    NodeIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-}
-

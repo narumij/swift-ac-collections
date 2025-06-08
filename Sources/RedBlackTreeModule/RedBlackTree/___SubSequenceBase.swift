@@ -326,6 +326,25 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func keys<Key, Value>() -> KeyIterator<Tree, Key, Value>
+  where Element == _KeyValueTuple_<Key, Value> {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func values<Key, Value>() -> ValueIterator<Tree, Key, Value>
+  where Element == _KeyValueTuple_<Key, Value> {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+}
+
+extension ___SubSequenceBase {
+
   @inlinable
   @inline(__always)
   mutating func ___element(at ptr: _NodePtr) -> Element? {

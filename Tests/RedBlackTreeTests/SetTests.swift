@@ -86,7 +86,6 @@ final class SetTests: XCTestCase {
   func testSubscript() throws {
     let b: RedBlackTreeSet<Int> = [1, 2, 3]
     XCTAssertEqual(b[b.startIndex], 1)
-    XCTAssertEqual(b[RawIndex(0)], 1)
   }
 #endif
   
@@ -833,7 +832,7 @@ final class SetTests: XCTestCase {
 #if DEBUG
   func testSubSeqSubscript() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-    XCTAssertEqual(set.elements(in: 2 ..< 4)[.init(2)], 3)
+    XCTAssertEqual(set.elements(in: 2 ..< 4)[set.startIndex + 2], 3)
     var a = 0
     set.elements(in: 2 ... 4).forEach {
       a += $0
@@ -848,18 +847,8 @@ final class SetTests: XCTestCase {
     XCTAssertFalse(set.isValid(index: set.endIndex)) // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = RedBlackTreeSet<Int>.Index
 #if DEBUG
-    XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
-    XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
     XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawValue, -1)
     XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawValue, 5)
-
-    XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
-    XCTAssertTrue(set.isValid(index: .unsafe(0)))
-    XCTAssertTrue(set.isValid(index: .unsafe(1)))
-    XCTAssertTrue(set.isValid(index: .unsafe(2)))
-    XCTAssertTrue(set.isValid(index: .unsafe(3)))
-    XCTAssertTrue(set.isValid(index: .unsafe(4)))
-    XCTAssertFalse(set.isValid(index: .unsafe(5)))
 
     XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
     XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
@@ -878,20 +867,8 @@ final class SetTests: XCTestCase {
     XCTAssertTrue(set.isValid(index: set.endIndex))
     typealias Index = RedBlackTreeSet<Int>.Index
 #if DEBUG
-    XCTAssertEqual(RawIndex.unsafe(-1).rawValue, -1)
-    XCTAssertEqual(RawIndex.unsafe(5).rawValue, 5)
     XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawValue, -1)
     XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawValue, 5)
-
-    XCTAssertFalse(set.isValid(index: .unsafe(.nullptr)))
-    XCTAssertFalse(set.isValid(index: .unsafe(0)))
-    XCTAssertTrue(set.isValid(index: .unsafe(1)))
-    XCTAssertTrue(set.isValid(index: .unsafe(2)))
-    XCTAssertTrue(set.isValid(index: .unsafe(3)))
-    XCTAssertTrue(set.isValid(index: .unsafe(4)))
-    XCTAssertTrue(set.isValid(index: .unsafe(5)))
-    XCTAssertFalse(set.isValid(index: .unsafe(6)))
-    XCTAssertFalse(set.isValid(index: .unsafe(7)))
 
     XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
     XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))

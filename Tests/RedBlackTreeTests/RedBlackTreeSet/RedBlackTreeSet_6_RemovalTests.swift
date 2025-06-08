@@ -51,17 +51,6 @@ final class RedBlackTreeSetRemoveTests: XCTestCase {
     XCTAssertFalse(set.contains(2), "指定インデックスの要素は削除されること")
   }
 
-  #if DEBUG
-    /// remove(at:) が指定インデックスの要素を削除すること
-    func test_remove_at_raw() {
-      var set = RedBlackTreeSet([1, 2, 3])
-      let index = set.index(after: set.startIndex)
-      let removed = set.remove(at: RawIndex.unsafe(index.rawValue))
-      XCTAssertEqual(removed, 2, "指定インデックスの要素を正しく削除すること")
-      XCTAssertFalse(set.contains(2), "指定インデックスの要素は削除されること")
-    }
-  #endif
-
   /// removeFirst() が最初の要素を削除すること
   func test_removeFirst() {
     var set = RedBlackTreeSet([1, 2, 3])
@@ -197,25 +186,4 @@ extension RedBlackTreeSetRemoveTests {
     // - 削除したindexは無効になること
     XCTAssertFalse(sub.isValid(index: subIndex), "削除後、SubSequenceのindexは無効になること")
   }
-
-  #if DEBUG
-    /// SubSequence内で削除後にrawIndexが無効化されること
-    func test_isValid_rawIndex_inSubSequence_afterRemoval() {
-      // 事前条件: 集合に[1, 2, 3, 4, 5]
-      var set = RedBlackTreeSet([1, 2, 3, 4, 5])
-      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
-      let subIndex = sub.startIndex  // index pointing to 2
-
-      // 実行: 削除（2を削除する）
-      let element = sub[subIndex]
-      XCTAssertEqual(element, 2)
-      _ = set.remove(element)
-
-      // 事後条件:
-      // - 削除したindexは無効になること
-      XCTAssertFalse(
-        sub.isValid(index: RawIndex.unsafe(subIndex.rawValue)),
-        "削除後、SubSequenceのindexは無効になること")
-    }
-  #endif
 }

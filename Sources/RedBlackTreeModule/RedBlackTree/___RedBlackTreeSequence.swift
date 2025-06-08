@@ -41,8 +41,8 @@ extension ___RedBlackTreeSequence {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> ElementIterator<Tree> {
-    ElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  public __consuming func makeIterator() -> Tree.ElementIterator {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 
@@ -51,7 +51,9 @@ extension ___RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(body)
+    try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
+      try body(__tree_[$0])
+    }
   }
 }
 
@@ -59,12 +61,12 @@ extension ___RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (RawIndex, Element) throws -> Void) rethrows {
+  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
-      try body(___raw_index($0), __tree_[$0])
+      try body(___index($0), __tree_[$0])
     }
   }
-
+  
   @inlinable
   @inline(__always)
   public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
@@ -79,7 +81,7 @@ extension ___RedBlackTreeSequence {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func sorted() -> ElementIterator<Tree> {
+  public __consuming func sorted() -> Tree.ElementIterator {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
@@ -176,15 +178,6 @@ extension ___RedBlackTreeSequence {
       yield __tree_[position.rawValue]
     }
   }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: RawIndex) -> Element {
-    @inline(__always) _read {
-      __tree_.___ensureValid(subscript: position.rawValue)
-      yield __tree_[position.rawValue]
-    }
-  }
 }
 
 extension ___RedBlackTreeSequence {
@@ -192,14 +185,6 @@ extension ___RedBlackTreeSequence {
   /// - Complexity: O(1)
   @inlinable
   public subscript(_unsafe position: Index) -> Element {
-    @inline(__always) _read {
-      yield __tree_[position.rawValue]
-    }
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(_unsafe position: RawIndex) -> Element {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
@@ -214,15 +199,6 @@ extension ___RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public func isValid(index: Index) -> Bool {
-    !__tree_.___is_subscript_null(index.rawValue)
-  }
-
-  /// Indexがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid(index: RawIndex) -> Bool {
     !__tree_.___is_subscript_null(index.rawValue)
   }
 }
@@ -249,8 +225,8 @@ extension ___RedBlackTreeSequence {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> ReversedElementIterator<Tree> {
-    ReversedElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  public __consuming func reversed() -> Tree.ReversedElementIterator {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 
@@ -261,6 +237,25 @@ extension ___RedBlackTreeSequence {
   @inline(__always)
   public var indices: Indices {
     __tree_.makeIndices(start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+}
+
+extension ___RedBlackTreeSequence {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func keys<Key, Value>() -> KeyIterator<Tree, Key, Value>
+  where Element == _KeyValueTuple_<Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func values<Key, Value>() -> ValueIterator<Tree, Key, Value>
+  where Element == _KeyValueTuple_<Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 
@@ -284,5 +279,23 @@ extension ___RedBlackTreeSequence {
     _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
     try makeIterator().lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+  }
+}
+
+extension ___RedBlackTreeBase {
+
+  @inlinable
+  @inline(__always)
+  public mutating func ___element(at ptr: _NodePtr) -> Element? {
+    guard !__tree_.___is_subscript_null(ptr) else {
+      return nil
+    }
+    return __tree_[ptr]
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func ___node_positions() -> NodeIterator<Tree> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }

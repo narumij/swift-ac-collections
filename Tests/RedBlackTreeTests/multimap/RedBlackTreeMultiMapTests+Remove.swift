@@ -30,13 +30,13 @@ extension RedBlackTreeMultiMapTests {
         let start = map.lowerBound("b")
         let end = map.lowerBound("d")
         map.removeSubrange(start..<end)  // remove b and c
-        XCTAssertEqual(map.keys.sorted(), ["a", "d"])
+        XCTAssertEqual(map.keys() + [], ["a", "d"])
     }
 
     func testRemoveContentsOfRange() {
         var map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("c", 3), ("d", 4)]
         map.remove(contentsOf: "b"..<"d")
-        XCTAssertEqual(map.keys.sorted(), ["a", "d"])
+        XCTAssertEqual(map.keys() + [], ["a", "d"])
         
         map.remove(contentsOf: "a"..."d")
         XCTAssertTrue(map.isEmpty)

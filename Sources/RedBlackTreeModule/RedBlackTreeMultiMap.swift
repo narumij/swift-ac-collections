@@ -207,23 +207,6 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var keys: Keys {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var values: Values {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
   /// - Complexity: O(log *n*)
   @inlinable
   public func values(forKey key: Key) -> Values {
@@ -289,20 +272,6 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func updateValue(_ newValue: Value, at ptr: RawIndex) -> Element? {
-    guard !__tree_.___is_subscript_null(ptr.rawValue) else {
-      return nil
-    }
-    _ensureUnique()
-    let old = __tree_[ptr.rawValue]
-    __tree_[ptr.rawValue].value = newValue
-    return old
-  }
 
   /// - Complexity: O(log *n*)
   @inlinable
@@ -486,19 +455,6 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
-    _ensureUnique()
-    guard let element = ___remove(at: index.rawValue) else {
-      fatalError(.invalidIndex)
-    }
-    return element
-  }
-
-  /// - Important: 削除後は、インデックスが無効になります。
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func remove(at index: RawIndex) -> KeyValue {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
@@ -816,20 +772,6 @@ extension RedBlackTreeMultiMap.SubSequence: Sequence, Collection, BidirectionalC
 extension RedBlackTreeMultiMap {
 
   public typealias Indices = Tree.Indices
-}
-
-// MARK: - Raw Index Sequence
-
-extension RedBlackTreeMultiMap {
-
-  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
-  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var rawIndices: RawIndexSequence<Tree> {
-    RawIndexSequence(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
 }
 
 // MARK: - ExpressibleByDictionaryLiteral

@@ -121,6 +121,7 @@ extension RedBlackTreeSet: SetAlgebra {
   @inlinable
   //  @inline(__always)
   public mutating func formSymmetricDifference(_ other: __owned RedBlackTreeSet<Element>) {
+    _ensureUnique()
     let ___storage: Storage = .create(withCapacity: 0)
     var __result: Tree.___MutableIterator = .init(_storage: ___storage)
     var (__first1, __last1) = (___index_start(), ___index_end())
@@ -140,9 +141,9 @@ extension RedBlackTreeSet: SetAlgebra {
           __result.pointee = __first2.___pointee
           __result.___next()
         } else {
-          let i = RawIndex(__first1.rawValue)
+          let i = __first1.rawValue
           __first1.___next()
-          remove(at: i)
+          ___remove(at: i)
         }
         __first2.___next()
       }

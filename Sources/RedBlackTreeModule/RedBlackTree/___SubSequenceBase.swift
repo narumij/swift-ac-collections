@@ -29,7 +29,7 @@ where
   Index == Tree.Index,
   Indices == Tree.Indices,
   Element == Tree.Element,
-  Iterator == ElementIterator<Tree>,
+  Iterator == Tree.ElementIterator,
   SubSequence == Self
 {
   associatedtype Base
@@ -46,12 +46,6 @@ extension ___SubSequenceBase {
   func ___index(_ rawValue: _NodePtr) -> Index {
     .init(tree: __tree_, rawValue: rawValue)
   }
-
-  @inlinable
-  @inline(__always)
-  func ___raw_index(_ p: _NodePtr) -> RawIndex {
-    __tree_.makeRawIndex(rawValue: p)
-  }
 }
 
 extension ___SubSequenceBase {
@@ -59,7 +53,7 @@ extension ___SubSequenceBase {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> ElementIterator<Tree> {
+  public __consuming func makeIterator() -> Tree.ElementIterator {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -69,7 +63,10 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end, body: body)
+    //    try __tree_.___for_each_(__p: _start, __l: _end, body: body)
+    try __tree_.___for_each_(__p: _start, __l: _end) {
+      try body(__tree_[$0])
+    }
   }
 }
 
@@ -77,9 +74,9 @@ extension ___SubSequenceBase {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (RawIndex, Element) throws -> Void) rethrows {
+  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___raw_index($0), __tree_[$0])
+      try body(___index($0), __tree_[$0])
     }
   }
 
@@ -154,33 +151,7 @@ extension ___SubSequenceBase {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
-  public subscript(position: RawIndex) -> Element {
-    @inline(__always) _read {
-      __tree_.___ensureValid(subscript: position.rawValue)
-      //      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
-      //        _tree.___ptr_less_than(position.rawValue, _end)
-      //      else {
-      //        fatalError(.outOfRange)
-      //      }
-      yield __tree_[position.rawValue]
-    }
-  }
-}
-
-extension ___SubSequenceBase {
-
-  /// - Complexity: O(1)
-  @inlinable
   public subscript(_unsafe position: Index) -> Element {
-    @inline(__always) _read {
-      yield __tree_[position.rawValue]
-    }
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(_unsafe position: RawIndex) -> Element {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
@@ -205,7 +176,7 @@ extension ___SubSequenceBase {
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -296,24 +267,6 @@ extension ___SubSequenceBase {
   }
 }
 
-// MARK: - Raw Index Sequence
-
-extension ___SubSequenceBase {
-
-  /// RawIndexは赤黒木ノードへの軽量なポインタとなっていて、rawIndicesはRawIndexのシーケンスを返します。
-  /// 削除時のインデックス無効対策がイテレータに施してあり、削除操作に利用することができます。
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var rawIndices: RawIndexSequence<Tree> {
-    RawIndexSequence(
-      tree: __tree_,
-      start: _start,
-      end: _end)
-  }
-}
-
 // MARK: - Utility
 
 extension ___SubSequenceBase {
@@ -321,8 +274,7 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   func ___contains(_ i: _NodePtr) -> Bool {
-    !__tree_.___is_subscript_null(i) &&
-    __tree_.___ptr_closed_range_contains(_start, _end, i)
+    !__tree_.___is_subscript_null(i) && __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
 
   /// Indexがsubscriptやremoveで利用可能か判別します
@@ -331,15 +283,6 @@ extension ___SubSequenceBase {
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    ___contains(i.rawValue)
-  }
-
-  /// Indexがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid(index i: RawIndex) -> Bool {
     ___contains(i.rawValue)
   }
 }
@@ -366,7 +309,7 @@ extension ___SubSequenceBase {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> ReversedElementIterator<Self.Tree> {
+  public __consuming func reversed() -> Tree.ReversedElementIterator {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -383,25 +326,20 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  mutating func ___element(at ptr: _NodePtr) -> Element? {
-    guard !__tree_.___is_subscript_null(ptr) else {
-      return nil
-    }
-    return __tree_[ptr]
+  public __consuming func keys<Key, Value>() -> KeyIterator<Tree, Key, Value>
+  where Element == _KeyValueTuple_<Key, Value> {
+    .init(tree: __tree_, start: _start, end: _end)
   }
 
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func ___makeIterator() -> NodeIterator<Tree> {
-    NodeIterator(tree: __tree_, start: _start, end: _end)
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func ___makeIterator() -> NodeElementIterator<Tree> {
-    NodeElementIterator(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  public __consuming func values<Key, Value>() -> ValueIterator<Tree, Key, Value>
+  where Element == _KeyValueTuple_<Key, Value> {
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
@@ -427,3 +365,22 @@ extension ___SubSequenceBase {
     try makeIterator().lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
+
+extension ___SubSequenceBase {
+
+  @inlinable
+  @inline(__always)
+  mutating func ___element(at ptr: _NodePtr) -> Element? {
+    guard !__tree_.___is_subscript_null(ptr) else {
+      return nil
+    }
+    return __tree_[ptr]
+  }
+
+  @inlinable
+  @inline(__always)
+  public __consuming func ___node_positions() -> NodeIterator<Tree> {
+    NodeIterator(tree: __tree_, start: _start, end: _end)
+  }
+}
+

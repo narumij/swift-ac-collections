@@ -65,7 +65,7 @@ final class MultiMapBasicTest: XCTestCase {
   func testExpressibleByLiteralAndSequence() {
     let multiMap: RedBlackTreeMultiMap = [("x", 10), ("y", 20), ("x", 30)]
     XCTAssertEqual(multiMap.count, 3)
-    XCTAssertEqual(Set(multiMap.keys), ["x", "y"])
+    XCTAssertEqual(Set(multiMap.keys()), ["x", "y"])
     XCTAssertEqual(multiMap.values(forKey: "x").sorted(), [10, 30])
 
     var collected: [String: [Int]] = [:]

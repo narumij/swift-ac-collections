@@ -86,10 +86,10 @@ final class RedBlackTreeMultiMapTests: XCTestCase {
 
   func testKeysAndValues() {
     let map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("a", 3)]
-    let keys = map.keys.sorted()
-    let values = map.values.sorted()
+    let keys = map.keys() + []
+    let values = map.values() + []
     XCTAssertEqual(keys, ["a", "a", "b"])
-    XCTAssertEqual(values, [1, 2, 3])
+    XCTAssertEqual(values, [1, 3, 2])
   }
 
   // rawIndexに関するテストは将来追加予定、未対応

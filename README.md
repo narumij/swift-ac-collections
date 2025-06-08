@@ -222,7 +222,7 @@ tree[tree.startIndex ..< tree.endIndex].forEach { i, e in
 print(tree2.count) // 0
 ```
 
-4. removeSubrange(_:Range<Index>)で削除する
+4. removeSubrange(_:Range`<Index>`)で削除する
 
 インデックスの区間で削除対象を指定することが可能です。
 基本的にループを回すよりも、この方法で消す方が実行速度としては(定数倍の面で)速いです。
@@ -234,7 +234,7 @@ tree4.removeSubrange(tree4.startIndex ..< tree3.endIndex)
 XCTAssertEqual(tree4.count, 0)
 ```
 
-5. remove(contentsOf:Range<Element>)を使用して削除する。
+5. remove(contentsOf:Range`<Element>`)を使用して削除する。
 
 値の区間で削除対象を指定することが可能です。
 境界を探索する分すこし実行時間はかさみますが、これも速いです。

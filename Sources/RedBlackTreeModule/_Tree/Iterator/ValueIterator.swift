@@ -106,3 +106,21 @@ where Tree.Element == _KeyValueTuple_<K, Value> {
     return __tree_[_current].value
   }
 }
+
+extension ReversedValueIterator: Equatable where Value: Equatable {
+
+  @inlinable
+  @inline(__always)
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.elementsEqual(rhs)
+  }
+}
+
+extension ReversedValueIterator: Comparable where Value: Comparable {
+
+  @inlinable
+  @inline(__always)
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.lexicographicallyPrecedes(rhs)
+  }
+}

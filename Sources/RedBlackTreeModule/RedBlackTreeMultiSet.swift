@@ -42,6 +42,9 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
   public
     typealias Element = Element
 
+  /// - Important:
+  ///  要素及びノードが削除された場合、インデックスは無効になります。
+  /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
   public
     typealias Index = Tree.Index
 

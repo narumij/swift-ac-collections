@@ -49,15 +49,6 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias Element = Element
 
-  /// `Index`は赤黒木ノードへの標準インデックスです
-  ///
-  /// プロパティや探索系メソッドから取得できます。
-  ///
-  /// 要素取得、要素削除、範囲取得、範囲削除等、様々な操作に用いる事ができます。
-  ///
-  /// `Index`は`Collection`や`BidirectionalCollection`
-  /// 準拠に用いられていて、様々な操作が可能です。
-  ///
   /// - Important:
   ///  要素及びノードが削除された場合、インデックスは無効になります。
   /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。

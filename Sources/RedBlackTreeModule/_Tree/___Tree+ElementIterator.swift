@@ -56,6 +56,24 @@ extension ___Tree {
   }
 }
 
+extension ___Tree.ElementIterator: Equatable where Element: Equatable {
+
+  @inlinable
+  @inline(__always)
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.elementsEqual(rhs)
+  }
+}
+
+extension ___Tree.ElementIterator: Comparable where Element: Comparable {
+
+  @inlinable
+  @inline(__always)
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
 extension ___Tree {
 
   @frozen
@@ -143,5 +161,23 @@ extension ___Tree.ReversedElementIterator {
   @inline(__always)
   public __consuming func ___node_positions() -> ReversedNodeIterator<___Tree> {
     .init(tree: __tree_, start: _start, end: _end)
+  }
+}
+
+extension ___Tree.ReversedElementIterator: Equatable where Element: Equatable {
+
+  @inlinable
+  @inline(__always)
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.elementsEqual(rhs)
+  }
+}
+
+extension ___Tree.ReversedElementIterator: Comparable where Element: Comparable {
+
+  @inlinable
+  @inline(__always)
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.lexicographicallyPrecedes(rhs)
   }
 }

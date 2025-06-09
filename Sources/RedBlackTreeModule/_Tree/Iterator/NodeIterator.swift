@@ -57,6 +57,24 @@ public struct NodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtoc
   }
 }
 
+extension NodeIterator: Equatable {
+
+  @inlinable
+  @inline(__always)
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.elementsEqual(rhs)
+  }
+}
+
+extension NodeIterator: Comparable {
+
+  @inlinable
+  @inline(__always)
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
 @frozen
 public struct ReversedNodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
 
@@ -83,5 +101,23 @@ public struct ReversedNodeIterator<Tree: Tree_IterateProtocol>: Sequence, Iterat
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
     return _current
+  }
+}
+
+extension ReversedNodeIterator: Equatable {
+
+  @inlinable
+  @inline(__always)
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.elementsEqual(rhs)
+  }
+}
+
+extension ReversedNodeIterator: Comparable {
+
+  @inlinable
+  @inline(__always)
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.lexicographicallyPrecedes(rhs)
   }
 }

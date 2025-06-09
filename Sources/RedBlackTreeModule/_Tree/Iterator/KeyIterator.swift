@@ -63,7 +63,7 @@ extension KeyIterator: Equatable {
 
   @inlinable
   @inline(__always)
-  public static func == (lhs: KeyIterator<Tree, Key, V>, rhs: KeyIterator<Tree, Key, V>) -> Bool {
+  public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.elementsEqual(rhs, by: { !Tree.value_comp($0, $1) && !Tree.value_comp($1, $0) })
   }
 }
@@ -72,14 +72,14 @@ extension KeyIterator: Comparable {
 
   @inlinable
   @inline(__always)
-  public static func < (lhs: KeyIterator<Tree, Key, V>, rhs: KeyIterator<Tree, Key, V>) -> Bool {
+  public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
   }
 }
 
 @frozen
-public struct ReversedKeyIterator<Tree: Tree_IterateProtocol, Key, V>: Sequence, IteratorProtocol
-where Tree.Element == _KeyValueTuple_<Key, V> {
+public struct ReversedKeyIterator<Tree: Tree_IterateProtocol & Tree_KeyCompare, Key, V>: Sequence, IteratorProtocol
+where Tree.Element == _KeyValueTuple_<Key, V>, Tree.Key == Key {
 
   @usableFromInline
   let __tree_: Tree
@@ -104,5 +104,23 @@ where Tree.Element == _KeyValueTuple_<Key, V> {
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
     return __tree_[_current].key
+  }
+}
+
+extension ReversedKeyIterator: Equatable {
+
+  @inlinable
+  @inline(__always)
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.elementsEqual(rhs, by: { !Tree.value_comp($0, $1) && !Tree.value_comp($1, $0) })
+  }
+}
+
+extension ReversedKeyIterator: Comparable {
+
+  @inlinable
+  @inline(__always)
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
   }
 }

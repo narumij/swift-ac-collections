@@ -1154,5 +1154,77 @@ final class MultisetTests: XCTestCase {
       XCTAssertFalse(b < a)
     }
   }
+  
+  func testMeld() throws {
+    do {
+      var a = RedBlackTreeMultiSet<Int>([0,1])
+      let b = RedBlackTreeMultiSet<Int>([0,1])
+      a.meld(b)
+      XCTAssertEqual(a + [], [0,0,1,1])
+    }
+    do {
+      var a = RedBlackTreeMultiSet<Int>([0,1])
+      let b = RedBlackTreeMultiSet<Int>([1,2])
+      a.meld(b)
+      XCTAssertEqual(a + [], [0,1,1,2])
+    }
+    do {
+      var a = RedBlackTreeMultiSet<Int>([0,1])
+      let b = RedBlackTreeMultiSet<Int>([2,3])
+      a.meld(b)
+      XCTAssertEqual(a + [], [0,1,2,3])
+    }
+    do {
+      var a = RedBlackTreeMultiSet<Int>([0,1])
+      let b = RedBlackTreeMultiSet<Int>([0,1])
+      a.meld(b)
+      XCTAssertEqual(a + [], [0,0,1,1])
+    }
+    do {
+      var a = RedBlackTreeMultiSet<Int>([1,2])
+      let b = RedBlackTreeMultiSet<Int>([0,1])
+      a.meld(b)
+      XCTAssertEqual(a + [], [0,1,1,2])
+    }
+    do {
+      var a = RedBlackTreeMultiSet<Int>([2,3])
+      let b = RedBlackTreeMultiSet<Int>([0,1])
+      a.meld(b)
+      XCTAssertEqual(a + [], [0,1,2,3])
+    }
+  }
+  
+  func testMelding() throws {
+    do {
+      let a = RedBlackTreeMultiSet<Int>([0,1])
+      let b = RedBlackTreeMultiSet<Int>([0,1])
+      XCTAssertEqual(a.melding(b) + [], [0,0,1,1])
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>([0,1])
+      let b = RedBlackTreeMultiSet<Int>([1,2])
+      XCTAssertEqual(a.melding(b) + [], [0,1,1,2])
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>([0,1])
+      let b = RedBlackTreeMultiSet<Int>([2,3])
+      XCTAssertEqual(a.melding(b) + [], [0,1,2,3])
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>([0,1])
+      let b = RedBlackTreeMultiSet<Int>([0,1])
+      XCTAssertEqual(a.melding(b) + [], [0,0,1,1])
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>([1,2])
+      let b = RedBlackTreeMultiSet<Int>([0,1])
+      XCTAssertEqual(a.melding(b) + [], [0,1,1,2])
+    }
+    do {
+      let a = RedBlackTreeMultiSet<Int>([2,3])
+      let b = RedBlackTreeMultiSet<Int>([0,1])
+      XCTAssertEqual(a.melding(b) + [], [0,1,2,3])
+    }
+  }
 }
 

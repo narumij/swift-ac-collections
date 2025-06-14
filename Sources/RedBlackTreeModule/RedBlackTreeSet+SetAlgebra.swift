@@ -53,102 +53,24 @@ extension RedBlackTreeSet: SetAlgebra {
     return result
   }
 
-  @inlinable
-  @inline(__always)
-  func ___set_result(_ f: inout Index, _ l: Index, _ r: inout Tree.___MutableIterator) {
-    while f != l {
-      r.pointee = f.___pointee
-      r.___next()
-      f.___next()
-    }
-  }
-
   /// - Complexity: O(*n* + *m*)
   @inlinable
   //  @inline(__always)
   public mutating func formUnion(_ other: __owned RedBlackTreeSet<Element>) {
-    let ___storage: Storage = .create(withCapacity: 0)
-    var __result: Tree.___MutableIterator = .init(_storage: ___storage)
-    var (__first1, __last1) = (___index_start(), ___index_end())
-    var (__first2, __last2) = (other.___index_start(), other.___index_end())
-    while __first1 != __last1 {
-      if __first2 == __last2 {
-        ___set_result(&__first1, __last1, &__result)
-        _storage = ___storage
-        return
-      }
-      defer { __result.___next() }
-      if __tree_.___comp(__first2.___pointee, __first1.___pointee) {
-        __result.pointee = __first2.___pointee
-        __first2.___next()
-      } else {
-        if !__tree_.___comp(__first1.___pointee, __first2.___pointee) {
-          __first2.___next()
-        }
-        __result.pointee = __first1.___pointee
-        __first1.___next()
-      }
-    }
-    ___set_result(&__first2, __last2, &__result)
-    _storage = ___storage
+    _storage = .init(tree: __tree_.___meld_unique(other.__tree_))
   }
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
   //  @inline(__always)
   public mutating func formIntersection(_ other: RedBlackTreeSet<Element>) {
-    // lower_boundを使う方法があるが、一旦楽に実装できそうな方からにしている
-    let ___storage: Storage = .create(withCapacity: 0)
-    var __result: Tree.___MutableIterator = .init(_storage: ___storage)
-    var (__first1, __last1) = (___index_start(), ___index_end())
-    var (__first2, __last2) = (other.___index_start(), other.___index_end())
-    while __first1 != __last1, __first2 != __last2 {
-      if __tree_.___comp(__first1.___pointee, __first2.___pointee) {
-        __first1.___next()
-      } else {
-        if !__tree_.___comp(__first2.___pointee, __first1.___pointee) {
-          __result.pointee = __first1.___pointee
-          __result.___next()
-          __first1.___next()
-        }
-        __first2.___next()
-      }
-    }
-    _storage = ___storage
+    _storage = .init(tree: __tree_.___intersection(other.__tree_))
   }
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
   //  @inline(__always)
   public mutating func formSymmetricDifference(_ other: __owned RedBlackTreeSet<Element>) {
-    _ensureUnique()
-    let ___storage: Storage = .create(withCapacity: 0)
-    var __result: Tree.___MutableIterator = .init(_storage: ___storage)
-    var (__first1, __last1) = (___index_start(), ___index_end())
-    var (__first2, __last2) = (other.___index_start(), other.___index_end())
-    while __first1 != __last1 {
-      if __first2 == __last2 {
-        ___set_result(&__first1, __last1, &__result)
-        _storage = ___storage
-        return
-      }
-      if Self.___comp(__first1.___pointee, __first2.___pointee) {
-        __result.pointee = __first1.___pointee
-        __result.___next()
-        __first1.___next()
-      } else {
-        if Self.___comp(__first2.___pointee, __first1.___pointee) {
-          __result.pointee = __first2.___pointee
-          __result.___next()
-        } else {
-          let i = __first1.rawValue
-          __first1.___next()
-          ___remove(at: i)
-        }
-        __first2.___next()
-      }
-    }
-    ___set_result(&__first2, __last2, &__result)
-    _storage = ___storage
+    _storage = .init(tree: __tree_.___symmetric_difference(other.__tree_))
   }
 }

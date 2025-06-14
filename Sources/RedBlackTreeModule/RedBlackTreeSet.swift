@@ -281,7 +281,7 @@ extension RedBlackTreeSet {
   /// - Important: 空間計算量に余裕がある場合、unionの使用を推奨します
   @inlinable
   public func merging(_ other: RedBlackTreeSet<Element>) -> Self {
-    var result = self
+    var result: Self = self
     result.merge(other)
     return result
   }

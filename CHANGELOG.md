@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.27] - 2025-6-14
 ### Added
 - MultiSetにmeld及びmeldingメソッドを追加
+- MultiMapにmeld及びmeldingメソッドを追加
 
 ## [0.1.26] - 2025-6-9
 ### Changed

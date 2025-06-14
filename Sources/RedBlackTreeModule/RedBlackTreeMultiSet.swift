@@ -236,6 +236,8 @@ extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
+  ///
+  /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
     _ensureUniqueAndCapacity(to: count + other.count)
@@ -269,6 +271,8 @@ extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
+  ///
+  /// - Important: 空間計算量に余裕がある場合、meldingの使用を推奨します
   @inlinable
   public func inserting(contentsOf other: RedBlackTreeMultiSet<Element>) -> Self {
     var result = self
@@ -283,6 +287,27 @@ extension RedBlackTreeMultiSet {
   where S: Sequence, S.Element == Element {
     var result = self
     result.insert(contentsOf: other)
+    return result
+  }
+}
+
+extension RedBlackTreeMultiSet {
+
+  /// - Complexity: O(*n* + *m*)
+  @inlinable
+  @inline(__always)
+  public mutating func meld(_ other: __owned RedBlackTreeMultiSet<Element>) {
+    _storage = .init(tree: __tree_.___meld_multi(other.__tree_))
+  }
+  
+  /// - Complexity: O(*n* + *m*)
+  @inlinable
+  @inline(__always)
+  public func melding(_ other: __owned RedBlackTreeMultiSet<Element>)
+    -> RedBlackTreeMultiSet<Element>
+  {
+    var result = self
+    result.meld(other)
     return result
   }
 }

@@ -195,7 +195,7 @@ extension RedBlackTreeSet {
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -251,6 +251,8 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
+  ///
+  /// - Important: 空間計算量に余裕がある場合、formUnionの使用を推奨します
   @inlinable
   public mutating func merge(_ other: RedBlackTreeSet<Element>) {
     _ensureUnique()
@@ -275,9 +277,11 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
+  ///
+  /// - Important: 空間計算量に余裕がある場合、unionの使用を推奨します
   @inlinable
-  public func merging(_ other: RedBlackTreeMultiSet<Element>) -> Self {
-    var result = self
+  public func merging(_ other: RedBlackTreeSet<Element>) -> Self {
+    var result: Self = self
     result.merge(other)
     return result
   }
@@ -285,7 +289,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  public func merging(_ other: RedBlackTreeSet<Element>) -> Self {
+  public func merging(_ other: RedBlackTreeMultiSet<Element>) -> Self {
     var result = self
     result.merge(other)
     return result

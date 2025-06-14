@@ -109,12 +109,6 @@ extension ___RedBlackTreeBase {
   func ___index_or_nil(_ p: _NodePtr?) -> Index? {
     p.map { ___index($0) }
   }
-
-//  @inlinable
-//  @inline(__always)
-//  func ___raw_index(_ p: _NodePtr) -> RawIndex {
-//    __tree_.makeRawIndex(rawValue: p)
-//  }
 }
 
 extension ___RedBlackTreeBase {
@@ -130,18 +124,6 @@ extension ___RedBlackTreeBase {
   public func ___end() -> _NodePtr {
     __tree_.___end()
   }
-
-//  @inlinable
-//  @inline(__always)
-//  public func ___raw_index_start() -> RawIndex {
-//    ___raw_index(___start())
-//  }
-//
-//  @inlinable
-//  @inline(__always)
-//  public func ___raw_index_end() -> RawIndex {
-//    ___raw_index(___end())
-//  }
 
   @inlinable
   @inline(__always)
@@ -193,18 +175,6 @@ extension ___RedBlackTreeBase {
   public func ___upper_bound(_ __k: _Key) -> _NodePtr {
     __tree_.upper_bound(__k)
   }
-
-//  @inlinable
-//  @inline(__always)
-//  public func ___raw_index_lower_bound(_ __k: _Key) -> RawIndex {
-//    ___raw_index(__tree_.lower_bound(__k))
-//  }
-//
-//  @inlinable
-//  @inline(__always)
-//  public func ___raw_index_upper_bound(_ __k: _Key) -> RawIndex {
-//    ___raw_index(__tree_.upper_bound(__k))
-//  }
 
   @inlinable
   @inline(__always)
@@ -455,10 +425,10 @@ extension ___RedBlackTreeBase {
   public func ___is_valid(_ index: _NodePtr) -> Bool {
     !__tree_.___is_subscript_null(index)
   }
-  
+
   @inlinable
   @inline(__always)
-  public func ___is_valid_range(_ p: _NodePtr,_ l: _NodePtr) -> Bool {
+  public func ___is_valid_range(_ p: _NodePtr, _ l: _NodePtr) -> Bool {
     !__tree_.___is_range_null(p, l)
   }
 

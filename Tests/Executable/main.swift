@@ -326,7 +326,7 @@ for i in tree.reversed() {
   total &+= i
 }
 print(total)
-#elseif true
+#elseif false
 var tree = RedBlackTreeSet<Int>(0 ..< 10_000_000)
 var total = 0
 //for i in tree[tree.startIndex ..< tree.endIndex].___node_positions() {
@@ -367,9 +367,21 @@ var a: RedBlackTreeSet<Int> = .init(0 ..< 100)
 var b: RedBlackTreeSet<Int> = .init(100 ..< 10_000_000)
 let c = b.union(a)
 print(c.count)
-#elseif true
+#elseif false
 var a: RedBlackTreeSet<Int> = .init(100 ..< 10_000_000)
 a.removeSubrange(a.startIndex...)
+print(a.count)
+#elseif false
+var a: RedBlackTreeSet<Int> = .init(0 ..< 10_000_000)
+var b: RedBlackTreeSet<Int> = .init(2 ..< 10_000_000)
+//let c = a.merging(b)
+a.formUnion(b)
+print(a.count)
+#elseif true
+var a: RedBlackTreeMultiSet<Int> = .init(0 ..< 10_000_000)
+var b: RedBlackTreeMultiSet<Int> = .init(2 ..< 10_000_000)
+//let c = a.merging(b)
+a.meld(b)
 print(a.count)
 #endif
 //#endif

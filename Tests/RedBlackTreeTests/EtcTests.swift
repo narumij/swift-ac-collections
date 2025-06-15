@@ -707,8 +707,45 @@ final class EtcTests: XCTestCase {
       XCTAssertEqual(result, [2,1,0].map { a.startIndex + $0 })
     }
   }
+  
+  struct VC_<A,B,C, Value>: ValueComparer
+  where A: Comparable, B: Comparable, C: Comparable
+  {
+    static func __key(_ v: Element) -> (A, B, C) {
+      v.key
+    }
+    static func value_comp(_ l: (A, B, C), _ r: (A, B, C)) -> Bool {
+      l < r
+    }
+    typealias _Key = (A,B,C)
+    typealias Element = (key: _Key, value: Value)
+  }
+  
+  struct VC<each A: Comparable, Value>: ValueComparer {
+    typealias _Key    = (repeat each A)
+    typealias Element = (key: _Key, value: Value)
+    static func __key(_ v: Element) -> _Key {
+      v.key
+    }
+    static func value_comp(_ lhs: _Key, _ rhs: _Key) -> Bool {
+      // 各要素をタプルでペアにしてループ
+      for (l, r) in repeat (each lhs, each rhs) {
+        if l != r {
+          return l < r      // 最初に異なる要素で順序判定
+        }
+      }
+      return false         // 完全一致なら false
+    }
+  }
+  
+  func testHogehoge() throws {
+    typealias v = VC<Int,Int>
+    XCTAssertTrue(v.value_comp(1, 2))
+    
+    typealias v2 = VC<Int,Int,Int>
+    XCTAssertTrue(v2.value_comp((1,2), (3,4)))
 
-
+  }
 
 // __tree_prev_iterの不定動作を解消する場合、以下となるが、性能上の問題で保留となっている
 //  func testPtr5() throws {

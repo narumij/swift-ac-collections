@@ -525,7 +525,7 @@ extension RedBlackTreeTupleMap where Value: Comparable {
 extension RedBlackTreeTupleMap {
 
   // 旧初期化実装
-  // 性能比較用にのこしてある
+  // 迂回実装が必要になったため、サルベージ
 
   /// - Complexity: O(log *n*)
   @inlinable

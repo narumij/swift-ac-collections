@@ -44,7 +44,7 @@ public struct RedBlackTreeTupleMap<each K: Comparable, Value> {
   }
 }
 
-extension RedBlackTreeTupleMap: ___RedBlackTreeBase {
+extension RedBlackTreeTupleMap {
   public static func __key(_ v: Element) -> _Key {
     v.key
   }
@@ -57,6 +57,8 @@ extension RedBlackTreeTupleMap: ___RedBlackTreeBase {
     return false
   }
 }
+
+extension RedBlackTreeTupleMap: ___RedBlackTreeBase {}
 extension RedBlackTreeTupleMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeTupleMap: ___RedBlackTreeUnique {}
 extension RedBlackTreeTupleMap: ___RedBlackTreeSequence {}
@@ -155,18 +157,22 @@ extension RedBlackTreeTupleMap {
 extension RedBlackTreeTupleMap {
 
   /// - Complexity: O(log *n*)
-  @inlinable @inline(__always)
+  @inlinable
   public subscript(key: Key) -> Value? {
-    ___value_for(key)?.value
+    get {
+      ___value_for(key)?.value
+    }
     // コンパイラのクラッシュに見舞われて、セッターがつけられない
   }
 
   /// - Complexity: O(log *n*)
-  @inlinable @inline(__always)
+  @inlinable
   public subscript(
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
-    ___value_for(key)?.value ?? defaultValue()
+    get {
+      ___value_for(key)?.value ?? defaultValue()
+    }
     // コンパイラのクラッシュに見舞われて、セッターがつけられない
   }
 }
@@ -208,6 +214,21 @@ extension RedBlackTreeTupleMap {
   @inline(__always)
   @discardableResult
   public mutating func updateValue(
+    _ value: Value,
+    forKey key: Key
+  ) -> Value? {
+    _ensureUniqueAndCapacity()
+    let (__r, __inserted) = __tree_.__insert_unique((key, value))
+    guard !__inserted else { return nil }
+    let oldMember = __tree_[__r]
+    __tree_[__r] = (key, value)
+    return oldMember.value
+  }
+  
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func set(
     _ value: Value,
     forKey key: Key
   ) -> Value? {

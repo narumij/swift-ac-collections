@@ -28,6 +28,17 @@ final class TupleMapTests: XCTestCase {
     XCTAssertEqual(b[(1, 1)], 1)
     XCTAssertEqual(c[(1, 1, 1)], 1)
     XCTAssertEqual(d[(1, 1, 1, 1)], 1)
+    let e: RedBlackTreeTupleMap<Int, UInt, String, Int, Int> = [(1, 1, "", 1): 1]
+  }
+
+  func test2() throws {
+    var b: RedBlackTreeTupleMap<Int, Int, Int> = [:]
+    b.set(1, forKey: (1, 2))
+    b.set(2, forKey: (3, 4))
+    b.set(3, forKey: (5, 6))
+    XCTAssertEqual(b[(1, 2)], 1)
+    XCTAssertEqual(b[(3, 4)], 2)
+    XCTAssertEqual(b[(5, 6)], 3)
   }
 
   func testPerformanceExample() throws {
@@ -36,5 +47,4 @@ final class TupleMapTests: XCTestCase {
       // Put the code you want to measure the time of here.
     }
   }
-
 }

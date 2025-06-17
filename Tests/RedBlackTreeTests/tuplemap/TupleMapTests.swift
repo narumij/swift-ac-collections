@@ -7,8 +7,82 @@
 
 import XCTest
 
+#if DEBUG
 @testable import RedBlackTreeModule
+#else
+import RedBlackTreeModule
+#endif
 
+@usableFromInline
+struct Parameter<each T> {
+  
+  public
+    typealias Tuple = (repeat each T)
+
+  @usableFromInline
+  var tuple: Tuple
+  
+  @inlinable @inline(__always)
+  public init(values: (repeat each T)) {
+    self.tuple = (repeat each values)
+  }
+  
+  @inlinable @inline(__always)
+  public init(_ values: repeat each T) {
+    self.tuple = (repeat each values)
+  }
+}
+
+extension Parameter: Equatable where repeat each T: Equatable {
+  
+  @inlinable
+  static func == (lhs: Parameter<repeat each T>, rhs: Parameter<repeat each T>) -> Bool {
+    for (l, r) in repeat (each lhs.tuple, each rhs.tuple) {
+      if l != r {
+        return false
+      }
+    }
+    return true
+  }
+}
+
+extension Parameter: Comparable where repeat each T: Comparable {
+  
+  @inlinable
+  static func < (lhs: Parameter<repeat each T>, rhs: Parameter<repeat each T>) -> Bool {
+    for (l, r) in repeat (each lhs.tuple, each rhs.tuple) {
+      if l != r {
+        return l < r
+      }
+    }
+    return false
+  }
+}
+
+extension Parameter: _KeyCustomProtocol where repeat each T: Comparable {
+
+  @inlinable
+  static func value_comp(_ lhs: Parameter<repeat each T>, _ rhs: Parameter<repeat each T>) -> Bool {
+    for (l, r) in repeat (each lhs.tuple, each rhs.tuple) {
+      if l != r {
+        return l < r
+      }
+    }
+    return false
+  }
+}
+
+extension Parameter: Hashable where repeat each T: Hashable {
+  
+  @inlinable
+  func hash(into hasher: inout Hasher) {
+    for l in repeat (each tuple) {
+      hasher.combine(l)
+    }
+  }
+}
+
+#if DEBUG
 final class TupleMapTests: XCTestCase {
 
   override func setUpWithError() throws {
@@ -30,6 +104,18 @@ final class TupleMapTests: XCTestCase {
     XCTAssertEqual(d[(1, 1, 1, 1)], 1)
     let e: RedBlackTreeTupleMap<Int, UInt, String, Int, Int> = [(1, 1, "", 1): 1]
   }
+  
+  func testInit2() throws {
+    let a: [Parameter<Int>: Int] = [.init(1): 1]
+    let b: [Parameter<Int,Int>: Int] = [.init(1, 1): 1]
+    let c: [Parameter<Int,Int,Int>: Int] = [.init(1, 1, 1): 1]
+    let d: [Parameter<Int,Int,Int,Int>: Int] = [.init(1, 1, 1, 1): 1]
+    XCTAssertEqual(a[.init(1)], 1)
+    XCTAssertEqual(b[.init(1, 1)], 1)
+    XCTAssertEqual(c[.init(1, 1, 1)], 1)
+    XCTAssertEqual(d[.init(1, 1, 1, 1)], 1)
+    let e: [Parameter<Int, UInt, String, Int>: Int] = [.init(1, 1, "", 1): 1]
+  }
 
   func test2() throws {
     var b: RedBlackTreeTupleMap<Int, Int, Int> = [:]
@@ -48,3 +134,4 @@ final class TupleMapTests: XCTestCase {
     }
   }
 }
+#endif

@@ -92,6 +92,28 @@ where A: Comparable, B: Comparable, C: Comparable, D: Comparable {
   }
 }
 
+@usableFromInline
+struct MemoizeCacheX<each T: Comparable, Result>  {
+  
+  @usableFromInline
+  init(__memo: _MemoizeCacheBase<Parameter<repeat each T>, Result> = .init()) {
+    self.__memo = __memo
+  }
+  
+  @usableFromInline
+  var __memo: _MemoizeCacheBase<Parameter<repeat each T>, Result> = .init()
+  
+  @inlinable
+  subscript(parameter: Parameter<repeat each T>) -> Result? {
+    mutating get {
+      __memo[parameter]
+    }
+    _modify {
+      yield &__memo[parameter]
+    }
+  }
+}
+
 // MARK: -
 
 enum Naive {
@@ -304,5 +326,38 @@ enum Memoized_Ver4 {
     func cacheInfo() -> [String:Any] {
       [:]
     }
+  }
+}
+
+enum Memoized_Ver5 {
+
+  static func tarai(x: Int, y: Int, z: Int) -> Int {
+
+    typealias Param = Parameter<Int,Int,Int>
+    
+    var storage: _MemoizeCacheBase<Param, Int> = .init()
+
+    func tarai(x: Int, y: Int, z: Int) -> Int {
+      let args = Param(x, y, z)
+      if let result = storage[args] {
+        return result
+      }
+      let r = body(x: x, y: y, z: z)
+      storage[args] = r
+      return r
+    }
+
+    func body(x: Int, y: Int, z: Int) -> Int {
+      if x <= y {
+        return y
+      } else {
+        return tarai(
+          x: tarai(x: x - 1, y: z, z: z),
+          y: tarai(x: y - 1, y: z, z: x),
+          z: tarai(x: z - 1, y: x, z: y))
+      }
+    }
+
+    return tarai(x: x, y: y, z: z)
   }
 }

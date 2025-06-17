@@ -158,9 +158,9 @@ extension RedBlackTreeTupleMap {
 
   /// - Complexity: O(log *n*)
   @inlinable
-  public subscript(key: Key) -> Value? {
+  public subscript(key: (repeat each K)) -> Value? {
     get {
-      ___value_for(key)?.value
+      ___value_for((repeat each key))?.value
     }
     // コンパイラのクラッシュに見舞われて、セッターがつけられない
   }
@@ -168,10 +168,11 @@ extension RedBlackTreeTupleMap {
   /// - Complexity: O(log *n*)
   @inlinable
   public subscript(
-    key: Key, default defaultValue: @autoclosure () -> Value
+    key: (repeat each K),
+    default defaultValue: @autoclosure () -> Value
   ) -> Value {
     get {
-      ___value_for(key)?.value ?? defaultValue()
+      ___value_for((repeat each key))?.value ?? defaultValue()
     }
     // コンパイラのクラッシュに見舞われて、セッターがつけられない
   }

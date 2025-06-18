@@ -14,7 +14,7 @@ import RedBlackTreeModule
 #endif
 
 @usableFromInline
-struct Parameter<each T> {
+struct Pack<each T> {
   
   public
     typealias Tuple = (repeat each T)
@@ -33,10 +33,10 @@ struct Parameter<each T> {
   }
 }
 
-extension Parameter: Equatable where repeat each T: Equatable {
+extension Pack: Equatable where repeat each T: Equatable {
   
   @inlinable
-  static func == (lhs: Parameter<repeat each T>, rhs: Parameter<repeat each T>) -> Bool {
+  static func == (lhs: Pack<repeat each T>, rhs: Pack<repeat each T>) -> Bool {
     for (l, r) in repeat (each lhs.tuple, each rhs.tuple) {
       if l != r {
         return false
@@ -46,10 +46,10 @@ extension Parameter: Equatable where repeat each T: Equatable {
   }
 }
 
-extension Parameter: Comparable where repeat each T: Comparable {
+extension Pack: Comparable where repeat each T: Comparable {
   
   @inlinable
-  static func < (lhs: Parameter<repeat each T>, rhs: Parameter<repeat each T>) -> Bool {
+  static func < (lhs: Pack<repeat each T>, rhs: Pack<repeat each T>) -> Bool {
     for (l, r) in repeat (each lhs.tuple, each rhs.tuple) {
       if l != r {
         return l < r
@@ -59,10 +59,10 @@ extension Parameter: Comparable where repeat each T: Comparable {
   }
 }
 
-extension Parameter: _KeyCustomProtocol where repeat each T: Comparable {
+extension Pack: _KeyCustomProtocol where repeat each T: Comparable {
 
   @inlinable
-  static func value_comp(_ lhs: Parameter<repeat each T>, _ rhs: Parameter<repeat each T>) -> Bool {
+  static func value_comp(_ lhs: Pack<repeat each T>, _ rhs: Pack<repeat each T>) -> Bool {
     for (l, r) in repeat (each lhs.tuple, each rhs.tuple) {
       if l != r {
         return l < r
@@ -72,7 +72,7 @@ extension Parameter: _KeyCustomProtocol where repeat each T: Comparable {
   }
 }
 
-extension Parameter: Hashable where repeat each T: Hashable {
+extension Pack: Hashable where repeat each T: Hashable {
   
   @inlinable
   func hash(into hasher: inout Hasher) {
@@ -106,15 +106,19 @@ final class TupleMapTests: XCTestCase {
   }
   
   func testInit2() throws {
-    let a: [Parameter<Int>: Int] = [.init(1): 1]
-    let b: [Parameter<Int,Int>: Int] = [.init(1, 1): 1]
-    let c: [Parameter<Int,Int,Int>: Int] = [.init(1, 1, 1): 1]
-    let d: [Parameter<Int,Int,Int,Int>: Int] = [.init(1, 1, 1, 1): 1]
+    let p: Pack<Int,Int,Int> = .init(1,2,3)
+    XCTAssertEqual(p.tuple.0, 1)
+    XCTAssertEqual(p.tuple.1, 2)
+    XCTAssertEqual(p.tuple.2, 3)
+    let a: [Pack<Int>: Int] = [.init(1): 1]
+    let b: [Pack<Int,Int>: Int] = [.init(1, 1): 1]
+    let c: [Pack<Int,Int,Int>: Int] = [.init(1, 1, 1): 1]
+    let d: [Pack<Int,Int,Int,Int>: Int] = [.init(1, 1, 1, 1): 1]
     XCTAssertEqual(a[.init(1)], 1)
     XCTAssertEqual(b[.init(1, 1)], 1)
     XCTAssertEqual(c[.init(1, 1, 1)], 1)
     XCTAssertEqual(d[.init(1, 1, 1, 1)], 1)
-    let e: [Parameter<Int, UInt, String, Int>: Int] = [.init(1, 1, "", 1): 1]
+    let e: [Pack<Int, UInt, String, Int>: Int] = [.init(1, 1, "", 1): 1]
   }
 
   func test2() throws {

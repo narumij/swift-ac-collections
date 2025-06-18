@@ -164,11 +164,30 @@ extension RedBlackTreeTupleMap {
     }
     // コンパイラのクラッシュに見舞われて、セッターがつけられない
   }
+  
+  @inlinable
+  public subscript(key: repeat each K) -> Value? {
+    get {
+      ___value_for((repeat each key))?.value
+    }
+    // コンパイラのクラッシュに見舞われて、セッターがつけられない
+  }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public subscript(
     key: (repeat each K),
+    default defaultValue: @autoclosure () -> Value
+  ) -> Value {
+    get {
+      ___value_for((repeat each key))?.value ?? defaultValue()
+    }
+    // コンパイラのクラッシュに見舞われて、セッターがつけられない
+  }
+  
+  @inlinable
+  public subscript(
+    key: repeat each K,
     default defaultValue: @autoclosure () -> Value
   ) -> Value {
     get {

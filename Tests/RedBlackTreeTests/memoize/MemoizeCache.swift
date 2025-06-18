@@ -96,15 +96,15 @@ where A: Comparable, B: Comparable, C: Comparable, D: Comparable {
 struct MemoizeCacheX<each T: Comparable, Result>  {
   
   @usableFromInline
-  init(__memo: _MemoizeCacheBase<Parameter<repeat each T>, Result> = .init()) {
+  init(__memo: _MemoizeCacheBase<Pack<repeat each T>, Result> = .init()) {
     self.__memo = __memo
   }
   
   @usableFromInline
-  var __memo: _MemoizeCacheBase<Parameter<repeat each T>, Result> = .init()
+  var __memo: _MemoizeCacheBase<Pack<repeat each T>, Result> = .init()
   
   @inlinable
-  subscript(parameter: Parameter<repeat each T>) -> Result? {
+  subscript(parameter: Pack<repeat each T>) -> Result? {
     mutating get {
       __memo[parameter]
     }
@@ -333,7 +333,7 @@ enum Memoized_Ver5 {
 
   static func tarai(x: Int, y: Int, z: Int) -> Int {
 
-    typealias Param = Parameter<Int,Int,Int>
+    typealias Param = Pack<Int,Int,Int>
     
     var storage: _MemoizeCacheBase<Param, Int> = .init()
 

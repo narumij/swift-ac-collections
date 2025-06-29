@@ -110,15 +110,13 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public init<S>(multiKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
-    let count = (keysAndValues as? (any Collection))?.count
-    var tree: Tree = .create(minimumCapacity: count ?? 0)
+    let elements = keysAndValues.sorted(by: { $0.0 < $1.0 })
+    let count = elements.count
+    let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
-    for __k in keysAndValues.sorted(by: { $0.0 < $1.0 }) {
-      if count == nil {
-        Tree.ensureCapacity(tree: &tree)
-      }
+    for __k in elements {
       // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
       assert(tree.__tree_invariant(tree.__root()))
@@ -136,16 +134,14 @@ extension RedBlackTreeMultiMap {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == S.Element {
-    let count = (values as? (any Collection))?.count
-    var tree: Tree = .create(minimumCapacity: count ?? 0)
+    let values = try values.sorted(by: { try keyForValue($0) < keyForValue($1) })
+    let count = values.count
+    let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
-    for __v in try values.sorted(by: { try keyForValue($0) < keyForValue($1) }) {
+    for __v in values {
       let __k = try keyForValue(__v)
-      if count == nil {
-        Tree.ensureCapacity(tree: &tree)
-      }
       // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k, __v))
       assert(tree.__tree_invariant(tree.__root()))

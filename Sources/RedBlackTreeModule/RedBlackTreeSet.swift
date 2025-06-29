@@ -95,15 +95,13 @@ extension RedBlackTreeSet {
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    let count = (sequence as? (any Collection))?.count
-    var tree: Tree = .create(minimumCapacity: count ?? 0)
+    let elements = sequence.sorted()
+    let count = elements.count
+    let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
-    for __k in sequence.sorted() {
-      if count == nil {
-        Tree.ensureCapacity(tree: &tree)
-      }
+    for __k in elements {
       if __parent == .end || tree[__parent] != __k {
         // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)

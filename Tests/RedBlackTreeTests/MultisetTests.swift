@@ -143,6 +143,14 @@ final class MultisetTests: XCTestCase {
     XCTAssertFalse(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
   }
+  
+  func testInitCollection4() throws {
+    let set = RedBlackTreeMultiSet<Int>(naive: [2, 3, 3, 0, 0, 1, 1, 1])
+    XCTAssertEqual(set.sorted(), [0, 0, 1, 1, 1, 2, 3, 3])
+    XCTAssertEqual(set.count, 8)
+    XCTAssertFalse(set.isEmpty)
+    XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
+  }
 
   func testExample3() throws {
     let b: RedBlackTreeMultiSet<Int> = [1, 2, 3]

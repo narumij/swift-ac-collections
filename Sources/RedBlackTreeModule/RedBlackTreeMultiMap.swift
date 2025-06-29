@@ -110,15 +110,13 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public init<S>(multiKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
-    let count = (keysAndValues as? (any Collection))?.count
-    var tree: Tree = .create(minimumCapacity: count ?? 0)
+    let elements = keysAndValues.sorted(by: { $0.0 < $1.0 })
+    let count = elements.count
+    let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
-    for __k in keysAndValues.sorted(by: { $0.0 < $1.0 }) {
-      if count == nil {
-        Tree.ensureCapacity(tree: &tree)
-      }
+    for __k in elements {
       // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
       assert(tree.__tree_invariant(tree.__root()))
@@ -136,16 +134,14 @@ extension RedBlackTreeMultiMap {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == S.Element {
-    let count = (values as? (any Collection))?.count
-    var tree: Tree = .create(minimumCapacity: count ?? 0)
+    let values = try values.sorted(by: { try keyForValue($0) < keyForValue($1) })
+    let count = values.count
+    let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
-    for __v in try values.sorted(by: { try keyForValue($0) < keyForValue($1) }) {
+    for __v in values {
       let __k = try keyForValue(__v)
-      if count == nil {
-        Tree.ensureCapacity(tree: &tree)
-      }
       // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k, __v))
       assert(tree.__tree_invariant(tree.__root()))
@@ -945,3 +941,36 @@ extension RedBlackTreeMultiMap where Value: Comparable {
   extension RedBlackTreeMultiMap.SubSequence: @unchecked Sendable
   where Element: Sendable {}
 #endif
+
+extension RedBlackTreeMultiMap {
+
+  // 旧初期化実装
+  // メモリ制限がきつい場合に備えて復活
+
+  /// - Complexity: O(*n* log *n*)
+  ///
+  /// 標準のイニシャライザはメモリを余分につかう面がある。
+  /// メモリ制限がきつい場合、こちらをお試しください
+  ///
+  /// それでもメモリでダメだった場合、ごめんなさい
+  @inlinable
+  public init<Source>(naive sequence: __owned Source)
+  where Element == Source.Element, Source: Sequence {
+    let count = (sequence as? (any Collection))?.count
+    var tree: Tree = .create(minimumCapacity: count ?? 0)
+    for __k in sequence {
+      if count == nil {
+        Tree.ensureCapacity(tree: &tree)
+      }
+      var __parent = _NodePtr.nullptr
+      // 検索の計算量がO(log *n*)
+      let __child = tree.__find_leaf_high(&__parent, tree.__key(__k))
+      if tree.__ptr_(__child) == .nullptr {
+        let __h = tree.__construct_node(__k)
+        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
+        tree.__insert_node_at(__parent, __child, __h)
+      }
+    }
+    self._storage = .init(tree: tree)
+  }
+}

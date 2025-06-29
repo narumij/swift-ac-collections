@@ -796,3 +796,36 @@ extension RedBlackTreeMultiSet {
   extension RedBlackTreeMultiSet.SubSequence: @unchecked Sendable
   where Element: Sendable {}
 #endif
+
+// MARK: - Init naive
+
+extension RedBlackTreeMultiSet {
+
+  // 旧初期化実装
+  // メモリ制限がきつい場合に備えて復活
+
+  /// - Complexity: O(*n* log *n*)
+  ///
+  /// 標準のイニシャライザはメモリを余分につかう面がある。
+  /// メモリ制限がきつい場合、こちらをお試しください
+  @inlinable
+  public init<Source>(naive sequence: __owned Source)
+  where Element == Source.Element, Source: Sequence {
+    let count = (sequence as? (any Collection))?.count
+    var tree: Tree = .create(minimumCapacity: count ?? 0)
+    for __k in sequence {
+      if count == nil {
+        Tree.ensureCapacity(tree: &tree)
+      }
+      var __parent = _NodePtr.nullptr
+      // 検索の計算量がO(log *n*)
+      let __child = tree.__find_leaf_high(&__parent, __k)
+      if tree.__ptr_(__child) == .nullptr {
+        let __h = tree.__construct_node(__k)
+        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
+        tree.__insert_node_at(__parent, __child, __h)
+      }
+    }
+    self._storage = .init(tree: tree)
+  }
+}

@@ -76,6 +76,14 @@ final class SetTests: XCTestCase {
     XCTAssertFalse(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
   }
+  
+  func testInitCollection3() throws {
+    let set = RedBlackTreeSet<Int>(naive: [2, 3, 3, 0, 0, 1, 1, 1])
+    XCTAssertEqual(set.elements, [0, 1, 2, 3])
+    XCTAssertEqual(set.count, 4)
+    XCTAssertFalse(set.isEmpty)
+    XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
+  }
 
   func testExample3() throws {
     let b: RedBlackTreeSet<Int> = [1, 2, 3]

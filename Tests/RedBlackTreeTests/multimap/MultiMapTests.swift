@@ -202,6 +202,19 @@ import XCTest
         XCTAssertEqual(dict[3].map(\.value), [])
       }
     }
+    
+    func testInitNaive() throws {
+      do {
+        let dict = Target(
+          naive: [(1, 10), (1, 11), (2, 20), (2, 22)].map { ($0,$1) })
+        XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
+        XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
+        XCTAssertEqual(dict[0].map(\.value), [])
+        XCTAssertEqual(dict[1].map(\.value), [10, 11])
+        XCTAssertEqual(dict[2].map(\.value), [20, 22])
+        XCTAssertEqual(dict[3].map(\.value), [])
+      }
+    }
 
     #if false
       func testInitGroupingBy_() throws {

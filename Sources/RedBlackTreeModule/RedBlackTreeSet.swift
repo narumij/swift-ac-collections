@@ -792,6 +792,8 @@ extension RedBlackTreeSet {
   ///
   /// 標準のイニシャライザはメモリを余分につかう面がある。
   /// メモリ制限がきつい場合、こちらをお試しください
+  ///
+  /// それでもメモリでダメだった場合、ごめんなさい
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {

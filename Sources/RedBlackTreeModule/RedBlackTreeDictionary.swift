@@ -120,11 +120,11 @@ extension RedBlackTreeDictionary {
       if __parent == .end || tree[__parent].0 != __k.0 {
         // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
-        assert(tree.__tree_invariant(tree.__root()))
       } else {
         fatalError("Dupricate values for key: '\(__k.0)'")
       }
     }
+    assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(tree: tree)
   }
 }
@@ -147,11 +147,11 @@ extension RedBlackTreeDictionary {
       if __parent == .end || tree[__parent].0 != __k.0 {
         // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
-        assert(tree.__tree_invariant(tree.__root()))
       } else {
         tree[__parent].value = try combine(tree[__parent].value, __k.1)
       }
     }
+    assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(tree: tree)
   }
 }
@@ -175,11 +175,11 @@ extension RedBlackTreeDictionary {
       if __parent == .end || tree[__parent].key != __k {
         // バランシングの計算量がO(log *n*)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k, [__v]))
-        assert(tree.__tree_invariant(tree.__root()))
       } else {
         tree[__parent].value.append(__v)
       }
     }
+    assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(tree: tree)
   }
 }

@@ -173,7 +173,7 @@ extension RedBlackTreeDictionary {
     for __v in values {
       let __k = try keyForValue(__v)
       if __parent == .end || tree[__parent].key != __k {
-        // バランシングの計算量がO(log *n*)
+        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k, [__v]))
       } else {
         tree[__parent].value.append(__v)

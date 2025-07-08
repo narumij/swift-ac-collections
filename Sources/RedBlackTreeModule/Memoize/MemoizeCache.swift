@@ -37,6 +37,11 @@ extension MemoizeCache {
         return r
       }
     }
+
+    @inlinable
+    public func clear(keepingCapacity keepCapacity: Bool = false) {
+      storage.removeAll(keepingCapacity: keepCapacity)
+    }
   }
 }
 
@@ -72,6 +77,11 @@ extension MemoizeCache {
         storage[key] = r
         return r
       }
+    }
+
+    @inlinable
+    public func clear(keepingCapacity keepCapacity: Bool = false) {
+      storage.clear(keepingCapacity: keepCapacity)
     }
 
     @inlinable
@@ -116,6 +126,11 @@ extension MemoizeCache {
     }
 
     @inlinable
+    public func clear(keepingCapacity keepCapacity: Bool = false) {
+      storage.clear(keepingCapacity: keepCapacity)
+    }
+
+    @inlinable
     public var info: (hits: Int, miss: Int, maxCount: Int?, currentCount: Int) {
       storage.___info
     }
@@ -154,6 +169,11 @@ extension MemoizeCache {
         storage[key] = r
         return r
       }
+    }
+
+    @inlinable
+    public func clear(keepingCapacity keepCapacity: Bool = false) {
+      storage.clear(keepingCapacity: keepCapacity)
     }
 
     @inlinable

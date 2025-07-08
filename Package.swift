@@ -34,6 +34,7 @@ var _settings: [SwiftSetting] =
 
 let package = Package(
   name: "swift-ac-collections",
+  platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v17), .watchOS(.v10), .macCatalyst(.v17)],
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(

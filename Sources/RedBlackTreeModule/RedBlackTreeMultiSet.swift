@@ -95,8 +95,8 @@ extension RedBlackTreeMultiSet {
     for __k in elements {
       // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
-      assert(tree.__tree_invariant(tree.__root()))
     }
+    assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(tree: tree)
   }
 }

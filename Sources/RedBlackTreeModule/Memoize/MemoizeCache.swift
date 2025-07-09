@@ -18,7 +18,7 @@ extension MemoizeCache {
     }
 
     @usableFromInline
-    var storage: [MemoizePack<repeat each T>: Result] = .init()
+    var storage: [MemoizePack<repeat each T>: Result]
 
     @nonobjc
     @inlinable
@@ -59,7 +59,7 @@ extension MemoizeCache {
     }
 
     @usableFromInline
-    var storage: _MemoizeCacheBase<MemoizePack<repeat each T>, Result> = .init()
+    var storage: _MemoizeCacheBase<MemoizePack<repeat each T>, Result>
 
     @nonobjc
     @inlinable
@@ -105,7 +105,7 @@ extension MemoizeCache {
     }
 
     @usableFromInline
-    var storage: _MemoizeCacheLRU<MemoizePack<repeat each T>, Result> = .init()
+    var storage: _MemoizeCacheLRU<MemoizePack<repeat each T>, Result>
 
     @nonobjc
     @inlinable
@@ -151,7 +151,7 @@ extension MemoizeCache {
     }
 
     @usableFromInline
-    var storage: _MemoizeCacheCoW<MemoizePack<repeat each T>, Result> = .init()
+    var storage: _MemoizeCacheCoW<MemoizePack<repeat each T>, Result>
 
     @nonobjc
     @inlinable

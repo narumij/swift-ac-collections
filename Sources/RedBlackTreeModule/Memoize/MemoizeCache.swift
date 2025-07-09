@@ -45,6 +45,9 @@ import Foundation
 /// Standardは標準辞書を用いています。LRUは`__tree`を用いています。
 /// BaseはLRUへの過渡期のものです。
 /// CoWはコピーオンライト付きです。
+///
+/// DP問題では、辞書でのメモ化ではTLEになりがちです。どちらかというと素数や階乗やフィボナッチ数列みたいな類いのものをどうしても使いたい場合の予備といった位置づけです。
+///
 /// 
 public
   struct MemoizeCache<each T, Result>

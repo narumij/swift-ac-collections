@@ -211,7 +211,7 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-  @inline(__always)
+  @inline(never)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -223,7 +223,7 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-  @inline(__always)
+  @inline(never)
   @discardableResult
   public mutating func update(with newMember: Element) -> Element? {
     _ensureUniqueAndCapacity()
@@ -322,7 +322,7 @@ extension RedBlackTreeSet {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-  @inline(__always)
+  @inline(never)
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     _ensureUnique()
@@ -332,7 +332,7 @@ extension RedBlackTreeSet {
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
+  @inline(never)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     _ensureUnique()

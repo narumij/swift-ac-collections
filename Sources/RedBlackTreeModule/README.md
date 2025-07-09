@@ -87,6 +87,10 @@
 - 内部メソッドはコールスタックとコンパイラ最適化のバランスでnon alwaysを任意選択
 - always忘れと区別するためにコメントアウトした`@inlinable(__always)`を残す
 
+### inline(never)
+- insert(_:)とupdate(_:)はnever
+- remove(_:)とremove(at:)はnever
+
 ### 補足
 
 - 特殊化されず関数テーブルに載ったメソッドはオーバーヘッドが競プロ用としては耐えがたく遅い

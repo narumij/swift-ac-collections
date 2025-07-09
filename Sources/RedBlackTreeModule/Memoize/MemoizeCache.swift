@@ -1,5 +1,51 @@
 import Foundation
 
+/// 辞書による再帰メモ化用のキャッシュ
+///
+/// 以下のような再帰関数に用いる場合
+/// ```
+/// func tarai(x: Int, y: Int, z: Int) -> Int {
+///   if x <= y {
+///     return y
+///   } else {
+///     return tarai(
+///       x: tarai(x: x - 1, y: y, z: z),
+///       y: tarai(x: y - 1, y: z, z: x),
+///       z: tarai(x: z - 1, y: x, z: y))
+///   }
+/// }
+/// ```
+///
+/// 以下のようにキャッシュを定義及び初期化します。
+/// ```
+/// nonisolated(unsafe) let ___tarai_memo: MemoizeCache<Int, Int, Int, Int>.Standard = .init()
+/// ```
+///
+/// 実装を以下のように書き換えることでメモ化再帰となります。
+/// ```
+/// func tarai(x: Int, y: Int, z: Int) -> Int {
+///   func tarai(x: Int, y: Int, z: Int) -> Int {
+///     ___tarai_memo[.init(x,y,z), fallBacking: ___body]
+///   }
+///   func ___body(x: Int, y: Int, z: Int) -> Int {
+///     if x <= y {
+///       return y
+///     } else {
+///       return tarai(
+///         x: tarai(x: x - 1, y: z, z: z),
+///         y: tarai(x: y - 1, y: z, z: x),
+///         z: tarai(x: z - 1, y: x, z: y))
+///     }
+///   }
+///   return tarai(x: x, y: y, z: z)
+/// }
+/// ```
+/// ボディに元の内容が入り、内部同名メソッドでキャッシュを使い、末尾で内部同名メソッドを呼んでいます。
+///
+/// Standardは標準辞書を用いています。LRUは`__tree`を用いています。
+/// BaseはLRUへの過渡期のものです。
+/// CoWはコピーオンライト付きです。
+/// 
 public
   struct MemoizeCache<each T, Result>
 {}

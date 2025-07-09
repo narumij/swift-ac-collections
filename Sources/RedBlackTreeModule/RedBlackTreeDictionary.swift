@@ -375,7 +375,7 @@ extension RedBlackTreeDictionary {
 
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
+  @inline(never)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -390,7 +390,7 @@ extension RedBlackTreeDictionary {
 
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
+  @inline(never)
   @discardableResult
   public mutating func updateValue(
     _ value: Value,
@@ -514,7 +514,7 @@ extension RedBlackTreeDictionary {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
+  @inline(never)
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
     let __i = __tree_.find(__k)
@@ -553,7 +553,7 @@ extension RedBlackTreeDictionary {
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
+  @inline(never)
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
     _ensureUnique()

@@ -259,7 +259,7 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
+  @inline(never)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -476,7 +476,7 @@ extension RedBlackTreeMultiMap {
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
+  @inline(never)
   @discardableResult
   public mutating func remove(at index: Index) -> KeyValue {
     _ensureUnique()

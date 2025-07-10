@@ -385,16 +385,10 @@ a.meld(b)
 print(a.count)
 #elseif true
 var a: RedBlackTreeSet<Int> = .init()
-for i in 0 ..< 10_000_000 {
+for i in (0 ..< 10_000_000).shuffled() {
   a.insert(i)
 }
-for i in 0 ..< 10_000_000 {
-  a.remove(i)
-}
-for i in 0 ..< 10_000_000 {
-  a.insert(i)
-}
-for i in 0 ..< 10_000_000 {
+for i in (0 ..< 10_000_000).shuffled() {
   a.remove(i)
 }
 print(a.count)

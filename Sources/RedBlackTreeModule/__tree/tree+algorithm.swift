@@ -25,7 +25,7 @@ import Foundation
 extension MemberSetProtocol {
 
   @inlinable
-  @inline(__always)
+  @inline(never)
   func
     __tree_left_rotate(_ __x: _NodePtr)
   {

@@ -1,5 +1,6 @@
 import RedBlackTreeModule
 
+#if false
 @usableFromInline
 struct MemoizeCache1<A, B>
 where A: Comparable, B: Comparable {
@@ -306,3 +307,4 @@ enum Memoized_Ver4 {
     }
   }
 }
+#endif

@@ -23,7 +23,9 @@
 import Foundation
 
 extension KeyValueComparer {
-  public typealias _LinkingKeyValueTuple = (key: _Key, prev: _NodePtr, next: _NodePtr, value: _Value)
+  public typealias _LinkingKeyValueTuple = (
+    key: _Key, prev: _NodePtr, next: _NodePtr, value: _Value
+  )
 }
 
 extension KeyValueComparer where Element == _LinkingKeyValueTuple {
@@ -42,14 +44,10 @@ where Element == _LinkingKeyValueTuple {
   var __tree_: Tree { get }
   var _rankHighest: _NodePtr { get set }
   var _rankLowest: _NodePtr { get set }
-  var _hits: Int { get set }
-  var _miss: Int { get set }
-  var maxCount: Int { get }
-  var count: Int { get }
 }
 
 extension ___LRULinkList {
-  
+
   @inlinable
   mutating func ___prepend(_ __p: _NodePtr) {
     if _rankHighest == .nullptr {
@@ -107,4 +105,3 @@ extension ___LRULinkList {
     return _rankLowest
   }
 }
-

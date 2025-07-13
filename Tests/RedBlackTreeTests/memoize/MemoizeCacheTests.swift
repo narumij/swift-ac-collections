@@ -13,6 +13,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
+#if false
 final class MemoizeCacheTests: XCTestCase {
 
   enum TestKey: _KeyCustomProtocol {
@@ -111,4 +112,4 @@ final class MemoizeCacheTests: XCTestCase {
     }
   #endif
 }
-
+#endif

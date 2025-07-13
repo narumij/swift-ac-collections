@@ -35,7 +35,7 @@ where Custom: _KeyCustomProtocol {
     typealias Value = Value
 
   public
-  typealias KeyValue = _LinkingKeyValueTuple
+    typealias KeyValue = _LinkingKeyValueTuple
 
   public
     typealias Element = KeyValue
@@ -56,12 +56,6 @@ where Custom: _KeyCustomProtocol {
 
   @usableFromInline
   var _rankLowest: _NodePtr
-
-  @usableFromInline
-  var _hits: Int
-
-  @usableFromInline
-  var _miss: Int
 }
 
 extension _MemoizeCacheCoW {
@@ -72,7 +66,6 @@ extension _MemoizeCacheCoW {
     _storage = .create(withCapacity: minimumCapacity)
     self.maxCount = maxCount
     (_rankHighest, _rankLowest) = (.nullptr, .nullptr)
-    (_hits, _miss) = (0, 0)
   }
 
   @inlinable
@@ -81,10 +74,8 @@ extension _MemoizeCacheCoW {
     mutating get {
       let __ptr = __tree_.find(key)
       if ___is_null_or_end(__ptr) {
-        _miss &+= 1
         return nil
       }
-      _hits &+= 1
       ___prepend(___pop(__ptr))
       return __tree_[__ptr].value
     }
@@ -115,24 +106,13 @@ extension _MemoizeCacheCoW {
 
 extension _MemoizeCacheCoW {
 
-  /// statistics
-  ///
-  /// 確保できたcapacity目一杯使う仕様となってます。
-  /// このため、currentCountはmaxCountを越える場合があります。
   @inlinable
-  public var info: (hits: Int, miss: Int, maxCount: Int?, currentCount: Int) {
-    ___info
-  }
-
-  @inlinable
-  public mutating func clear(keepingCapacity keepCapacity: Bool = false) {
-    ___clear(keepingCapacity: keepCapacity)
+  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    ___removeAll(keepingCapacity: keepCapacity)
   }
 }
 
 extension _MemoizeCacheCoW: ___RedBlackTreeCopyOnWrite {}
 extension _MemoizeCacheCoW: ___LRULinkList {}
-extension _MemoizeCacheCoW: _MemoizeCacheLRUMiscellaneous {}
 extension _MemoizeCacheCoW: CustomKeyValueComparer {}
-
 extension _MemoizeCacheCoW: CompareUniqueTrait {}

@@ -143,7 +143,7 @@ extension MemoizeCache {
     }
 
     @usableFromInline
-    var storage: _MemoizeCacheLRU<MemoizePack<repeat each T>, Result>
+    var storage: ___LRUMemoizeStorage<MemoizePack<repeat each T>, Result>
 
     @usableFromInline
     var _hits: Int = 0
@@ -198,7 +198,7 @@ extension MemoizeCache {
     }
 
     @usableFromInline
-    var storage: _MemoizeCacheCoW<MemoizePack<repeat each T>, Result>
+    var storage: ___CoWMemoizeStorage<MemoizePack<repeat each T>, Result>
 
     @usableFromInline
     var _hits: Int = 0

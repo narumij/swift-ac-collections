@@ -31,13 +31,13 @@ final class MemoizeCacheCoWTests: XCTestCase {
   
 #if DEBUG
   func testInit() throws {
-    let cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 10)
+    let cache = _CoWMemoizeStorage<TestKey, Int>(minimumCapacity: 10)
     XCTAssertEqual(cache.__tree_.count, 0)
     XCTAssertEqual(cache.__tree_.capacity, 10)
   }
 
   func testQueue() throws {
-    var cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 10)
+    var cache = _CoWMemoizeStorage<TestKey, Int>(minimumCapacity: 10)
     cache[0] = 0
 //    cache.prepend(0)
     XCTAssertEqual(cache._rankHighest, 0)
@@ -57,7 +57,7 @@ final class MemoizeCacheCoWTests: XCTestCase {
   }
 
   func testQueue2() throws {
-    var cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 10)
+    var cache = _CoWMemoizeStorage<TestKey, Int>(minimumCapacity: 10)
     cache[0] = 0
 //    cache.prepend(0)
     cache[1] = 1
@@ -84,7 +84,7 @@ final class MemoizeCacheCoWTests: XCTestCase {
   }
 
   func testQueue3() throws {
-    var cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 10)
+    var cache = _CoWMemoizeStorage<TestKey, Int>(minimumCapacity: 10)
     cache[0] = 0
 //    cache.prepend(0)
     cache[1] = 1
@@ -109,7 +109,7 @@ final class MemoizeCacheCoWTests: XCTestCase {
   }
 
   func testQueue4() throws {
-    var cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 10)
+    var cache = _CoWMemoizeStorage<TestKey, Int>(minimumCapacity: 10)
     cache[0] = 0
     cache.___prepend(cache.___pop(0))
     cache[1] = 1
@@ -140,7 +140,7 @@ final class MemoizeCacheCoWTests: XCTestCase {
   }
 
   func testMaximum() throws {
-    var cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 0, maxCount: 100)
+    var cache = _CoWMemoizeStorage<TestKey, Int>(minimumCapacity: 0, maxCount: 100)
     XCTAssertEqual(cache.__tree_.count, 0)
     XCTAssertEqual(cache.__tree_.capacity, 0)
     var finalCapacity: Int? = nil
@@ -157,7 +157,7 @@ final class MemoizeCacheCoWTests: XCTestCase {
   }
 
   func testMaximum2() throws {
-    var cache = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 0, maxCount: 5)
+    var cache = _CoWMemoizeStorage<TestKey, Int>(minimumCapacity: 0, maxCount: 5)
     cache[0] = 0
     XCTAssertEqual(cache[0], 0)
     cache[1] = 1
@@ -194,7 +194,7 @@ final class MemoizeCacheCoWTests: XCTestCase {
 
   func testCopyOnWrite() throws {
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-    var cache0 = _MemoizeCacheCoW<TestKey, Int>(minimumCapacity: 2)
+    var cache0 = _CoWMemoizeStorage<TestKey, Int>(minimumCapacity: 2)
     XCTAssertEqual(cache0._copyCount, 0)
     let cache1 = cache0
     XCTAssertEqual(cache0._copyCount, 0)

@@ -27,7 +27,8 @@ import Foundation
 ///
 /// InlineMemoize動作用。CoWがないので注意
 @frozen
-public struct _MemoizeCacheLRU<Custom, Value>
+@usableFromInline
+internal struct ___LRUMemoizeStorage<Custom, Value>
 where Custom: _KeyCustomProtocol {
 
   public
@@ -60,7 +61,7 @@ where Custom: _KeyCustomProtocol {
   var _rankLowest: _NodePtr
 }
 
-extension _MemoizeCacheLRU {
+extension ___LRUMemoizeStorage {
 
   @inlinable
   @inline(__always)
@@ -109,7 +110,7 @@ extension _MemoizeCacheLRU {
   public var capacity: Int { ___capacity }
 }
 
-extension _MemoizeCacheLRU {
+extension ___LRUMemoizeStorage {
 
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -117,7 +118,7 @@ extension _MemoizeCacheLRU {
   }
 }
 
-extension _MemoizeCacheLRU: ___LRULinkList {}
-extension _MemoizeCacheLRU: ___RedBlackTreeCopyOnWrite {}
-extension _MemoizeCacheLRU: CustomKeyValueComparer {}
-extension _MemoizeCacheLRU: CompareUniqueTrait {}
+extension ___LRUMemoizeStorage: ___LRULinkList {}
+extension ___LRUMemoizeStorage: ___RedBlackTreeCopyOnWrite {}
+extension ___LRUMemoizeStorage: CustomKeyValueComparer {}
+extension ___LRUMemoizeStorage: CompareUniqueTrait {}

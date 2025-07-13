@@ -25,7 +25,8 @@ import Foundation
 /// メモ化用途向け、LRU (least recently used) cache 動作
 /// https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_(LRU)
 @frozen
-public struct _MemoizeCacheCoW<Custom, Value>
+@usableFromInline
+internal struct ___CoWMemoizeStorage<Custom, Value>
 where Custom: _KeyCustomProtocol {
 
   public
@@ -58,7 +59,7 @@ where Custom: _KeyCustomProtocol {
   var _rankLowest: _NodePtr
 }
 
-extension _MemoizeCacheCoW {
+extension ___CoWMemoizeStorage {
 
   @inlinable
   @inline(__always)
@@ -104,7 +105,7 @@ extension _MemoizeCacheCoW {
   @inlinable public var capacity: Int { ___capacity }
 }
 
-extension _MemoizeCacheCoW {
+extension ___CoWMemoizeStorage {
 
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -112,7 +113,7 @@ extension _MemoizeCacheCoW {
   }
 }
 
-extension _MemoizeCacheCoW: ___RedBlackTreeCopyOnWrite {}
-extension _MemoizeCacheCoW: ___LRULinkList {}
-extension _MemoizeCacheCoW: CustomKeyValueComparer {}
-extension _MemoizeCacheCoW: CompareUniqueTrait {}
+extension ___CoWMemoizeStorage: ___RedBlackTreeCopyOnWrite {}
+extension ___CoWMemoizeStorage: ___LRULinkList {}
+extension ___CoWMemoizeStorage: CustomKeyValueComparer {}
+extension ___CoWMemoizeStorage: CompareUniqueTrait {}

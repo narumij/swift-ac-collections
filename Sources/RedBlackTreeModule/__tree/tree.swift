@@ -301,6 +301,7 @@ public
   static func value_comp(_ a: Parameters, _ b: Parameters) -> Bool
 }
 
+@usableFromInline
 protocol CustomKeyValueComparer: KeyValueComparer where _Key == Custom.Parameters {
   associatedtype Custom: _KeyCustomProtocol
 }

@@ -24,8 +24,11 @@ import Foundation
 
 /// メモ化用途向け、LRU (least recently used) cache 動作
 /// https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_(LRU)
+///
+/// InlineMemoize動作用。CoWがないので注意
 @frozen
-public struct _MemoizeCacheCoW<Custom, Value>
+@usableFromInline
+internal struct ___LRUMemoizeStorage<Custom, Value>
 where Custom: _KeyCustomProtocol {
 
   public
@@ -58,7 +61,7 @@ where Custom: _KeyCustomProtocol {
   var _rankLowest: _NodePtr
 }
 
-extension _MemoizeCacheCoW {
+extension ___LRUMemoizeStorage {
 
   @inlinable
   @inline(__always)
@@ -84,7 +87,7 @@ extension _MemoizeCacheCoW {
       if let newValue {
         if __tree_.count < maxCount {
           // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
-          _ensureUniqueAndCapacity(limit: maxCount)
+          _ensureCapacity(limit: maxCount)
         }
         if __tree_.count == maxCount {
           ___remove(at: ___popRankLowest())
@@ -100,11 +103,14 @@ extension _MemoizeCacheCoW {
     }
   }
 
-  @inlinable public var count: Int { ___count }
-  @inlinable public var capacity: Int { ___capacity }
+  @inlinable
+  public var count: Int { ___count }
+  
+  @inlinable
+  public var capacity: Int { ___capacity }
 }
 
-extension _MemoizeCacheCoW {
+extension ___LRUMemoizeStorage {
 
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -112,7 +118,7 @@ extension _MemoizeCacheCoW {
   }
 }
 
-extension _MemoizeCacheCoW: ___RedBlackTreeCopyOnWrite {}
-extension _MemoizeCacheCoW: ___LRULinkList {}
-extension _MemoizeCacheCoW: CustomKeyValueComparer {}
-extension _MemoizeCacheCoW: CompareUniqueTrait {}
+extension ___LRUMemoizeStorage: ___LRULinkList {}
+extension ___LRUMemoizeStorage: ___RedBlackTreeCopyOnWrite {}
+extension ___LRUMemoizeStorage: CustomKeyValueComparer {}
+extension ___LRUMemoizeStorage: CompareUniqueTrait {}

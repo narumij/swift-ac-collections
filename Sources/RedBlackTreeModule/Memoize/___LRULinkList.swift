@@ -34,7 +34,7 @@ extension KeyValueComparer where Element == _LinkingKeyValueTuple {
   public static func __key(_ element: Element) -> _Key { element.key }
 
   @inlinable @inline(__always)
-  static func __value(_ element: Element) -> _Value { element.value }
+  public static func __value(_ element: Element) -> _Value { element.value }
 }
 
 @usableFromInline

@@ -66,7 +66,6 @@ import Foundation
 ///
 /// Standardは標準辞書を用いています。
 /// LRUは赤黒木を用いていて、保持量を制限できます。
-/// CoWはLRUのコピーオンライト付きです。
 ///
 /// DP問題では、辞書でのメモ化ではTLEになりがちです。どちらかというと素数や階乗やフィボナッチ数列みたいな類いのものをどうしても使いたい場合の予備といった位置づけです。
 ///
@@ -144,61 +143,6 @@ extension MemoizeCache {
 
     @usableFromInline
     var storage: ___LRUMemoizeStorage<MemoizePack<repeat each T>, Result>
-
-    @usableFromInline
-    var _hits: Int = 0
-
-    @usableFromInline
-    var _miss: Int = 0
-
-    @nonobjc
-    @inlinable
-    public subscript(
-      key: MemoizePack<repeat each T>,
-      fallBacking _fallback: (repeat each T) -> Result
-    ) -> Result
-    {
-      @inline(__always)
-      get {
-        if let result = storage[key] {
-          _hits &+= 1
-          return result
-        }
-        _miss &+= 1
-        let r = _fallback(repeat each key.rawValue)
-        storage[key] = r
-        return r
-      }
-    }
-
-    @inlinable
-    public func clear(keepingCapacity keepCapacity: Bool = false) {
-      (_hits, _miss) = (0, 0)
-      storage.removeAll(keepingCapacity: keepCapacity)
-    }
-
-    @inlinable
-    public var info: (hits: Int, miss: Int, maxCount: Int?, currentCount: Int) {
-      (_hits, _miss, storage.maxCount, storage.count)
-    }
-  }
-}
-
-extension MemoizeCache {
-
-  public
-    final class CoW where repeat each T: Comparable
-  {
-
-    @nonobjc
-    @inlinable
-    @inline(__always)
-    public init(maxCount: Int) {
-      self.storage = .init(maxCount: maxCount)
-    }
-
-    @usableFromInline
-    var storage: ___CoWMemoizeStorage<MemoizePack<repeat each T>, Result>
 
     @usableFromInline
     var _hits: Int = 0

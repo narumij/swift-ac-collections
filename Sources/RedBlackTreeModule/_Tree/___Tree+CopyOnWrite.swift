@@ -35,7 +35,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   public func growthFormula(count: Int) -> Int {
-#if false
+#if true
     // アロケーターにとって負担が軽そうな、2のべき付近を要求することにした。
     // ヘッダー込みで確保するべきかどうかは、ManagedBufferのソースをみておらず不明。
     // はみ出して大量に無駄にするよりはましなので、ヘッダー込みでサイズ計算することにしている。

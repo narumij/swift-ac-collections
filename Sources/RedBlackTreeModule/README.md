@@ -88,8 +88,6 @@
 - always忘れと区別するためにコメントアウトした`@inlinable(__always)`を残す
 
 ### inline(never)
-- insert(_:)とupdate(_:)はnever
-- remove(_:)とremove(at:)はnever
 
 ### 補足
 

@@ -37,6 +37,7 @@ import XCTest
     func __is_black_(_ p: _NodePtr) -> Bool { __nodes[p].__is_black_ }
     func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) { __nodes[lhs].__is_black_ = rhs }
     func __parent_unsafe(_ p: _NodePtr) -> _NodePtr { __nodes[p].__parent_ }
+    func __root() -> _NodePtr { __left_ }
 
     func ___initialize(_ e: Element) -> _NodePtr {
       let n = __nodes.count

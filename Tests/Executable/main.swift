@@ -367,8 +367,8 @@ var a: RedBlackTreeSet<Int> = .init(0 ..< 100)
 var b: RedBlackTreeSet<Int> = .init(100 ..< 10_000_000)
 let c = b.union(a)
 print(c.count)
-#elseif false
-var a: RedBlackTreeSet<Int> = .init(100 ..< 10_000_000)
+#elseif true
+var a: RedBlackTreeSet<Int> = .init(100 ..< 100_000_000)
 a.removeSubrange(a.startIndex...)
 print(a.count)
 #elseif false
@@ -383,7 +383,7 @@ var b: RedBlackTreeMultiSet<Int> = .init(2 ..< 10_000_000)
 //let c = a.merging(b)
 a.meld(b)
 print(a.count)
-#elseif true
+#elseif false
 var a: RedBlackTreeSet<Int> = .init()
 for i in (0 ..< 10_000_000).shuffled() {
   a.insert(i)

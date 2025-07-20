@@ -203,11 +203,11 @@ protocol RootProtocol: MemberProtocol & EndProtocol {
   func __root() -> _NodePtr
 }
 
-extension RootProtocol {
-  @inlinable
-  @inline(__always)
-  func __root() -> _NodePtr { __left_(__end_node()) }
-}
+//extension RootProtocol {
+//  @inlinable
+//  @inline(__always)
+//  func __root() -> _NodePtr { __left_(__end_node()) }
+//}
 
 @usableFromInline
 protocol RootPtrProrototol: RootProtocol {

@@ -206,7 +206,7 @@ protocol RootProtocol {
 protocol ___RootProtocol: MemberProtocol & EndProtocol {}
 
 extension ___RootProtocol {
-  @available(*, deprecated, message: "知識の喪失を防ぐためだけの理由で残しているため")
+  @available(*, deprecated, message: "Kept only for the purpose of preventing loss of knowledge")
   func __root() -> _NodePtr { __left_(__end_node()) }
 }
 

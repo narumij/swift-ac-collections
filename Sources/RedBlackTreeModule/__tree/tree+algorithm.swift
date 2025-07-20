@@ -32,7 +32,7 @@ extension MemberSetProtocol {
     assert(__x != .nullptr, "node shouldn't be null")
     assert(__right_(__x) != .nullptr, "node should have a right child")
     let __y = __right_(__x)
-    __right_(__x, __left_(__y))
+    __right_(__x, __left_unsafe(__y))
     if __right_(__x) != .nullptr {
       __parent_(__right_(__x), __x)
     }
@@ -53,10 +53,10 @@ extension MemberSetProtocol {
   {
     assert(__x != .nullptr, "node shouldn't be null")
     assert(__left_(__x) != .nullptr, "node should have a left child")
-    let __y = __left_(__x)
+    let __y = __left_unsafe(__x)
     __left_(__x, __right_(__y))
-    if __left_(__x) != .nullptr {
-      __parent_(__left_(__x), __x)
+    if __left_unsafe(__x) != .nullptr {
+      __parent_(__left_unsafe(__x), __x)
     }
     __parent_(__y, __parent_(__x))
     if __tree_is_left_child(__x) {
@@ -100,7 +100,7 @@ extension MemberSetProtocol {
           break
         }
       } else {
-        let __y = __left_(__parent_(__parent_unsafe(__x)))
+        let __y = __left_unsafe(__parent_(__parent_unsafe(__x)))
         if __y != .nullptr, !__is_black_(__y) {
           __x = __parent_unsafe(__x)
           __is_black_(__x, true)
@@ -136,9 +136,9 @@ extension MemberSetProtocol {
     // __y is either __z, or if __z has two children, __tree_next(__z).
     // __y will have at most one child.
     // __y will be the initial hole in the tree (make the hole at a leaf)
-    let __y = (__left_(__z) == .nullptr || __right_(__z) == .nullptr) ? __z : __tree_next(__z)
+    let __y = (__left_unsafe(__z) == .nullptr || __right_(__z) == .nullptr) ? __z : __tree_next(__z)
     // __x is __y's possibly null single child
-    var __x = __left_(__y) != .nullptr ? __left_(__y) : __right_(__y)
+    var __x = __left_unsafe(__y) != .nullptr ? __left_unsafe(__y) : __right_(__y)
     // __w is __x's possibly null uncle (will become __x's sibling)
     var __w: _NodePtr = .nullptr
     // link __x to __y's parent, and find __w
@@ -155,7 +155,7 @@ extension MemberSetProtocol {
     } else {
       __right_(__parent_(__y), __x)
       // __y can't be root if it is a right child
-      __w = __left_(__parent_(__y))
+      __w = __left_unsafe(__parent_(__y))
     }
     let __removed_black = __is_black_(__y)
     // If we didn't remove __z, do so now by splicing in __y for __z,
@@ -168,8 +168,8 @@ extension MemberSetProtocol {
       } else {
         __right_(__parent_(__y), __y)
       }
-      __left_(__y, __left_(__z))
-      __parent_(__left_(__y), __y)
+      __left_(__y, __left_unsafe(__z))
+      __parent_(__left_unsafe(__y), __y)
       __right_(__y, __right_(__z))
       if __right_(__y) != .nullptr {
         __parent_(__right_(__y), __y)
@@ -211,14 +211,14 @@ extension MemberSetProtocol {
               __tree_left_rotate(__parent_(__w))
               // __x is still valid
               // reset __root only if necessary
-              if __root == __left_(__w) {
+              if __root == __left_unsafe(__w) {
                 __root = __w
               }
               // reset sibling, and it still can't be null
-              __w = __right_(__left_(__w))
+              __w = __right_(__left_unsafe(__w))
             }
             // __w->__is_black_ is now true, __w may have null children
-            if (__left_(__w) == .nullptr || __is_black_(__left_(__w)))
+            if (__left_unsafe(__w) == .nullptr || __is_black_(__left_unsafe(__w)))
               && (__right_(__w) == .nullptr || __is_black_(__right_(__w)))
             {
               __is_black_(__w, false)
@@ -229,13 +229,13 @@ extension MemberSetProtocol {
                 break
               }
               // reset sibling, and it still can't be null
-              __w = __tree_is_left_child(__x) ? __right_(__parent_(__x)) : __left_(__parent_(__x))
+              __w = __tree_is_left_child(__x) ? __right_(__parent_(__x)) : __left_unsafe(__parent_(__x))
               // continue;
             } else  // __w has a red child
             {
               if __right_(__w) == .nullptr || __is_black_(__right_(__w)) {
                 // __w left child is non-null and red
-                __is_black_(__left_(__w), true)
+                __is_black_(__left_unsafe(__w), true)
                 __is_black_(__w, false)
                 __tree_right_rotate(__w)
                 // __w is known not to be root, so root hasn't changed
@@ -260,10 +260,10 @@ extension MemberSetProtocol {
                 __root = __w
               }
               // reset sibling, and it still can't be null
-              __w = __left_(__right_(__w))
+              __w = __left_unsafe(__right_(__w))
             }
             // __w->__is_black_ is now true, __w may have null children
-            if (__left_(__w) == .nullptr || __is_black_(__left_(__w)))
+            if (__left_unsafe(__w) == .nullptr || __is_black_(__left_unsafe(__w)))
               && (__right_(__w) == .nullptr || __is_black_(__right_(__w)))
             {
               __is_black_(__w, false)
@@ -274,11 +274,11 @@ extension MemberSetProtocol {
                 break
               }
               // reset sibling, and it still can't be null
-              __w = __tree_is_left_child(__x) ? __right_(__parent_(__x)) : __left_(__parent_(__x))
+              __w = __tree_is_left_child(__x) ? __right_(__parent_(__x)) : __left_unsafe(__parent_(__x))
               // continue;
             } else  // __w has a red child
             {
-              if __left_(__w) == .nullptr || __is_black_(__left_(__w)) {
+              if __left_unsafe(__w) == .nullptr || __is_black_(__left_unsafe(__w)) {
                 // __w right child is non-null and red
                 __is_black_(__right_(__w), true)
                 __is_black_(__w, false)
@@ -290,7 +290,7 @@ extension MemberSetProtocol {
               // __w has a left red child, right child may be null
               __is_black_(__w, __is_black_(__parent_(__w)))
               __is_black_(__parent_(__w), true)
-              __is_black_(__left_(__w), true)
+              __is_black_(__left_unsafe(__w), true)
               __tree_right_rotate(__parent_(__w))
               break
             }

@@ -1016,5 +1016,12 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(a, [0,1])
     XCTAssertEqual(b, [0])
   }
+  
+  func testLeftUnsafe() {
+    
+    let a = RedBlackTreeSet<Int>()
+    _ = a.lowerBound(0)
+    _ = a.upperBound(0)
+  }
 }
 

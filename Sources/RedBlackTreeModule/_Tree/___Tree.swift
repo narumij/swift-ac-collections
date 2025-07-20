@@ -498,6 +498,13 @@ extension ___Tree {
     assert(___initialized_contains(p))
     return __parent_(p)
   }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal func __root() -> _NodePtr {
+    __header_ptr.pointee.__left_
+  }
 }
 
 extension ___Tree {

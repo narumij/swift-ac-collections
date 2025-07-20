@@ -108,8 +108,8 @@ extension MemberProtocol {
   {
     assert(__x != .nullptr, "Root node shouldn't be null")
     var __x = __x
-    while __left_(__x) != .nullptr {
-      __x = __left_(__x)
+    while __left_unsafe(__x) != .nullptr {
+      __x = __left_unsafe(__x)
     }
     return __x
   }

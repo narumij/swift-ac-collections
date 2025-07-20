@@ -47,8 +47,8 @@ extension FindLeafProtocol {
             return __right_ref(__nd)
           }
         } else {
-          if __left_(__nd) != .nullptr {
-            __nd = __left_(__nd)
+          if __left_unsafe(__nd) != .nullptr {
+            __nd = __left_unsafe(__nd)
           } else {
             __parent = __nd
             return __left_ref(__parent)
@@ -69,8 +69,8 @@ extension FindLeafProtocol {
     if __nd != .nullptr {
       while true {
         if value_comp(__v, __value_(__nd)) {
-          if __left_(__nd) != .nullptr {
-            __nd = __left_(__nd)
+          if __left_unsafe(__nd) != .nullptr {
+            __nd = __left_unsafe(__nd)
           } else {
             __parent = __nd
             return __left_ref(__parent)
@@ -106,9 +106,9 @@ extension FindEqualProtocol {
       while true {
         let __value__nd = __value_(__nd)
         if value_comp(__v, __value__nd) {
-          if __left_(__nd) != .nullptr {
+          if __left_unsafe(__nd) != .nullptr {
             __nd_ptr = __left_ref(__nd)
-            __nd = __left_(__nd)
+            __nd = __left_unsafe(__nd)
           } else {
             __parent = __nd
             return __left_ref(__parent)

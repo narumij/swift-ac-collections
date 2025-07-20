@@ -465,6 +465,14 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
+  internal func __left_unsafe(_ p: _NodePtr) -> _NodePtr {
+    assert(!___is_null_or_end(p))
+    assert(___initialized_contains(p))
+    return __node_ptr[p].__left_
+  }
+  @nonobjc
+  @inlinable
+  @inline(__always)
   internal func __right_(_ p: _NodePtr) -> _NodePtr {
     assert(!___is_null_or_end(p))
     assert(___initialized_contains(p))

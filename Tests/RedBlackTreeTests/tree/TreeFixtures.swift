@@ -22,6 +22,7 @@ import XCTest
     var ___destroy_count: Int = 0
 
     func __left_(_ p: _NodePtr) -> _NodePtr { p == .end ? __left_ : __nodes[p].__left_ }
+    func __left_unsafe(_ p: _NodePtr) -> _NodePtr { __nodes[p].__left_ }
     func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
       if lhs == .end {
         __left_ = rhs

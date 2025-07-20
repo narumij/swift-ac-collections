@@ -5,19 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.38] - 2025-7-21
+## [0.1.37] - 2025-7-21
 ### Changed
 - left unsafe実装の改善（PR #36）
 - root ptr関連の修正
 - tree.swiftファイルの更新
 - find、equal関連のアルゴリズム修正
 ### Fixed
-- Copilotによるコードレビュー対応
-
-## [0.1.37] - 2025-7-21
-### Fixed
 - CHANGELOGに記載されていなかったバージョン0.1.32-0.1.36を追加
 - バージョン0.1.31の日付を修正
+- Copilotによるコードレビュー対応
 
 ## [0.1.36] - 2025-7-21
 ### Changed

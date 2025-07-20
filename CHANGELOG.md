@@ -5,7 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.31] - 2025-7-?
+## [0.1.37] - 2025-7-21
+### Changed
+- left unsafe実装の改善（PR #36）
+- root ptr関連の修正
+- tree.swiftファイルの更新
+- find、equal関連のアルゴリズム修正
+### Fixed
+- CHANGELOGに記載されていなかったバージョン0.1.32-0.1.36を追加
+- バージョン0.1.31の日付を修正
+- Copilotによるコードレビュー対応
+
+## [0.1.36] - 2025-7-21
+### Changed
+- left unsafe関連の実装修正
+
+## [0.1.35] - 2025-7-17
+### Changed
+- テストの修正
+- メモ機能の削除
+- 0.1.30-0.1.32のチューニングをリバート
+
+## [0.1.34] - 2025-7-14
+### Removed
+- Copy-on-Write機能を削除
+### Changed
+- テストの修正
+- リファクタリング
+
+## [0.1.33] - 2025-7-13
+### Added
+- memoize cache機能を追加
+
+## [0.1.32] - 2025-7-11
+### Changed
+- un-inline化
+- テストの修正
+- 成長係数の調整
+- コメントの追加
+
+## [0.1.31] - 2025-7-9
 ### Added
 - MemoizePack及びMemoizeCacheを追加
 ### Changed
@@ -17,8 +56,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - 初期化コードの修正
 
-## [0.1.29] - 2025-6-?
-?
+## [0.1.29] - 2025-6-28
+### Changed
+- 内部実装の改善
 
 ## [0.1.28] - 2025-6-14
 ### Added
@@ -26,7 +66,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MultiMapにmeld及びmeldingメソッドを追加
 
 ## [0.1.27] - 2025-6-14
-タグミス
+### Fixed
+- タグミス修正
 
 ## [0.1.26] - 2025-6-9
 ### Changed
@@ -62,14 +103,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - 内部APIの整理改変
 
-## [0.1.19] - 2025-6-2
-- タグミス
-
 ## [0.1.20] - 2025-5-31
-- タグミス
+### Fixed
+- タグミス修正
+
+## [0.1.19] - 2025-6-2
+### Fixed
+- タグミス修正
 
 ## [0.1.18] - 2025-5-31
-- タグミス
 ### Added
 - `Range<Index>`相当のシーケンスを追加
 ### Removed

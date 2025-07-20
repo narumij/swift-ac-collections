@@ -91,7 +91,7 @@ extension FindLeafProtocol {
 }
 
 @usableFromInline
-protocol FindEqualProtocol: FindProtocol & RefProtocol & RootPtrProrototol {}
+protocol FindEqualProtocol: FindProtocol & RefProtocol & RootPtrProtocol {}
 
 extension FindEqualProtocol {
 

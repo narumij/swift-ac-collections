@@ -210,11 +210,11 @@ protocol RootProtocol: MemberProtocol & EndProtocol {
 //}
 
 @usableFromInline
-protocol RootPtrProrototol: RootProtocol {
+protocol RootPtrProtocol: RootProtocol {
   func __root_ptr() -> _NodeRef
 }
 
-extension RootPtrProrototol {
+extension RootPtrProtocol {
   @inlinable
   @inline(__always)
   func __root_ptr() -> _NodeRef { __left_ref(__end_node()) }

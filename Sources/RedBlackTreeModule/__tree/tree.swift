@@ -199,18 +199,19 @@ extension EndProtocol {
 }
 
 @usableFromInline
-protocol RootProtocol: MemberProtocol & EndProtocol {
+protocol RootProtocol {
   func __root() -> _NodePtr
 }
 
-//extension RootProtocol {
-//  @inlinable
-//  @inline(__always)
-//  func __root() -> _NodePtr { __left_(__end_node()) }
-//}
+protocol ___RootProtocol: MemberProtocol & EndProtocol {}
+
+extension ___RootProtocol {
+  @available(*, deprecated, message: "知識の喪失を防ぐためだけの理由で残しているため")
+  func __root() -> _NodePtr { __left_(__end_node()) }
+}
 
 @usableFromInline
-protocol RootPtrProtocol: RootProtocol {
+protocol RootPtrProtocol: RootProtocol & MemberProtocol & EndProtocol {
   func __root_ptr() -> _NodeRef
 }
 

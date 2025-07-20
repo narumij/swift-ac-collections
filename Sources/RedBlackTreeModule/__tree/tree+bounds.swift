@@ -52,7 +52,7 @@ extension ValueProtocol {
     while __root != .nullptr {
       if !value_comp(__value_(__root), __v) {
         __result = __root
-        __root = __left_(__root)
+        __root = __left_unsafe(__root)
       } else {
         __root = __right_(__root)
       }
@@ -70,7 +70,7 @@ extension ValueProtocol {
     while __root != .nullptr {
       if value_comp(__v, __value_(__root)) {
         __result = __root
-        __root = __left_(__root)
+        __root = __left_unsafe(__root)
       } else {
         __root = __right_(__root)
       }

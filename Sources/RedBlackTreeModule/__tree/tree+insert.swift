@@ -42,6 +42,7 @@ extension InsertNodeAtProtocol {
     __parent_(__new_node, __parent)
     // __new_node->__is_black_ is initialized in __tree_balance_after_insert
     __ptr_(__child, __new_node)
+    // unsafe不可
     if __left_(__begin_node) != .nullptr {
       __begin_node = __left_(__begin_node)
     }

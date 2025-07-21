@@ -1237,7 +1237,12 @@ final class MultisetTests: XCTestCase {
   
   func testLeftUnsafeSmoke() {
     typealias MultiSet = RedBlackTreeMultiSet<Int>
-    for _ in 0..<100 {
+#if DEBUG
+    let repeatCount = 1
+#else
+    let repeatCount = 100
+#endif
+    for _ in 0..<repeatCount {
       let count = Int.random(in: 0..<1_000_000)
       let a = MultiSet(0 ..< count)
       do {

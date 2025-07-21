@@ -1019,7 +1019,12 @@ final class SetTests: XCTestCase {
   
   func testLeftUnsafeSmoke() {
     typealias Set = RedBlackTreeSet<Int>
-    for _ in 0..<100 {
+#if DEBUG
+    let repeatCount = 1
+#else
+    let repeatCount = 100
+#endif
+    for _ in 0..<repeatCount {
       let count = Int.random(in: 0..<1_000_000)
       let a = Set(0 ..< count)
       do {

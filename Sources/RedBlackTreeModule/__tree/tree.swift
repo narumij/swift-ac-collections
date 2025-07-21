@@ -74,6 +74,9 @@ public
 @usableFromInline
 protocol TreeEndNodeProtocol {
   func __left_(_: pointer) -> pointer
+  /// A method that does not handle branching related to `end`.
+  /// endに関する分岐処理をしないもの
+  func __left_unsafe(_ p: pointer) -> pointer
   func __left_(_ lhs: pointer, _ rhs: pointer)
 }
 
@@ -91,6 +94,8 @@ protocol TreeNodeBaseProtocol: TreeEndNodeProtocol {
   func __is_black_(_ lhs: pointer, _ rhs: Bool)
   func __parent_(_: pointer) -> pointer
   func __parent_(_ lhs: pointer, _ rhs: pointer)
+  /// This is only to align the naming with C++.
+  /// C++と名前を揃えているだけのもの
   func __parent_unsafe(_: pointer) -> __parent_pointer
 }
 

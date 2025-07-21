@@ -52,7 +52,7 @@
     @inline(__always)
     internal func ___popDetroy() -> _NodePtr {
       let p = __right_(___destroy_node)
-      ___destroy_node = __left_(p)
+      ___destroy_node = __left_unsafe(p)
       ___destroy_count -= 1
       return p
     }

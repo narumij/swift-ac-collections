@@ -1017,11 +1017,35 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(b, [0])
   }
   
-  func testLeftUnsafe() {
-    
-    let a = RedBlackTreeSet<Int>()
-    _ = a.lowerBound(0)
-    _ = a.upperBound(0)
+  func testLeftUnsafeSmoke() {
+    typealias Set = RedBlackTreeSet<Int>
+#if DEBUG
+    let repeatCount = 1
+#else
+    let repeatCount = 100
+#endif
+    for _ in 0..<repeatCount {
+      let count = Int.random(in: 0..<1_000_000)
+      let a = Set(0 ..< count)
+      do {
+        var p: Set.Index? = a.startIndex
+        while p != a.endIndex {
+          p = p?.next
+        }
+      }
+      do {
+        var p: Set.Index? = a.endIndex
+        while p != a.startIndex {
+          p = p?.previous
+        }
+      }
+      do {
+        _ = a.equalRange(Int.random(in: 0..<count))
+      }
+      do {
+        _ = a.min()
+      }
+    }
   }
 }
 

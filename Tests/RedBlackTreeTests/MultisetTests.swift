@@ -1234,5 +1234,36 @@ final class MultisetTests: XCTestCase {
       XCTAssertEqual(a.melding(b) + [], [0,1,2,3])
     }
   }
+  
+  func testLeftUnsafeSmoke() {
+    typealias MultiSet = RedBlackTreeMultiSet<Int>
+#if DEBUG
+    let repeatCount = 1
+#else
+    let repeatCount = 100
+#endif
+    for _ in 0..<repeatCount {
+      let count = Int.random(in: 0..<1_000_000)
+      let a = MultiSet(0 ..< count)
+      do {
+        var p: MultiSet.Index? = a.startIndex
+        while p != a.endIndex {
+          p = p?.next
+        }
+      }
+      do {
+        var p: MultiSet.Index? = a.endIndex
+        while p != a.startIndex {
+          p = p?.previous
+        }
+      }
+      do {
+        _ = a.equalRange(Int.random(in: 0..<count))
+      }
+      do {
+        _ = a.min()
+      }
+    }
+  }
 }
 

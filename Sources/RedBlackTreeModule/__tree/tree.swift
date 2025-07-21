@@ -74,6 +74,7 @@ public
 @usableFromInline
 protocol TreeEndNodeProtocol {
   func __left_(_: pointer) -> pointer
+  /// A method that does not handle branching related to `end`.
   /// endに関する分岐処理をしないもの
   func __left_unsafe(_ p: pointer) -> pointer
   func __left_(_ lhs: pointer, _ rhs: pointer)

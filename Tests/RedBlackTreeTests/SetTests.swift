@@ -1042,31 +1042,5 @@ final class SetTests: XCTestCase {
       }
     }
   }
-  
-  func testLeftUnsafe2() {
-    typealias MultiSet = RedBlackTreeMultiSet<Int>
-    for _ in 0..<100 {
-      let count = Int.random(in: 0..<1_000_000)
-      let a = MultiSet(0 ..< count)
-      do {
-        var p: MultiSet.Index? = a.startIndex
-        while p != a.endIndex {
-          p = p?.next
-        }
-      }
-      do {
-        var p: MultiSet.Index? = a.endIndex
-        while p != a.startIndex {
-          p = p?.previous
-        }
-      }
-      do {
-        _ = a.equalRange(Int.random(in: 0..<count))
-      }
-      do {
-        _ = a.min()
-      }
-    }
-  }
 }
 

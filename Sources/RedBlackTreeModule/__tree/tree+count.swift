@@ -42,7 +42,7 @@ extension CountProtocol {
     var __rt: __node_pointer = __root()
     while __rt != .nullptr {
       if value_comp(__k, __value_(__rt)) {
-        __rt = __left_(__rt)
+        __rt = __left_unsafe(__rt)
       } else if value_comp(__value_(__rt), __k) {
         __rt = __right_(__rt)
       } else {
@@ -60,12 +60,12 @@ extension CountProtocol {
     while __rt != .nullptr {
       if value_comp(__k, __value_(__rt)) {
         __result = __rt
-        __rt = __left_(__rt)
+        __rt = __left_unsafe(__rt)
       } else if value_comp(__value_(__rt), __k) {
         __rt = __right_(__rt)
       } else {
         return __distance(
-          __lower_bound(__k, __left_(__rt), __rt),
+          __lower_bound(__k, __left_unsafe(__rt), __rt),
           __upper_bound(__k, __right_(__rt), __result))
       }
     }

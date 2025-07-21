@@ -210,6 +210,15 @@ extension RedBlackTreeDictionary {
   }
 }
 
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(log *n* + *k*)
+  @inlinable
+  public func count(forKey key: Key) -> Int {
+    __tree_.__count_unique(key)
+  }
+}
+
 // MARK: - Accessing Keys and Values
 
 extension RedBlackTreeDictionary {

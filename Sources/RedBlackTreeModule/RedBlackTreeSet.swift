@@ -158,6 +158,15 @@ extension RedBlackTreeSet {
   }
 }
 
+extension RedBlackTreeSet {
+
+  /// - Complexity: O(log *n* + *k*)
+  @inlinable
+  public func count(of element: Element) -> Int {
+    __tree_.__count_unique(element)
+  }
+}
+
 // MARK: - Accessing Elements
 
 extension RedBlackTreeSet {

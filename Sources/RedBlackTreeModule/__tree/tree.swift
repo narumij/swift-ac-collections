@@ -94,6 +94,7 @@ protocol TreeNodeBaseProtocol: TreeEndNodeProtocol {
   func __is_black_(_ lhs: pointer, _ rhs: Bool)
   func __parent_(_: pointer) -> pointer
   func __parent_(_ lhs: pointer, _ rhs: pointer)
+  /// This is only to align the naming with C++.
   /// C++と名前を揃えているだけのもの
   func __parent_unsafe(_: pointer) -> __parent_pointer
 }

@@ -165,7 +165,7 @@ extension MemberProtocol {
     __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   {
     assert(__x != .nullptr, "node shouldn't be null")
-    // unsafe不可
+    // unsafe not allowed
     if __left_(__x) != .nullptr {
       return __tree_max(__left_(__x))
     }

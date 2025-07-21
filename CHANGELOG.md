@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.38] - 2025-7-21
+### Changed
+- tree+base.swiftファイルの更新（PR #38）
+- tree.swiftファイルの更新
+- tree+insert.swiftファイルの更新
+- left unsafe実装の継続改善
+- テストの重量化対応
+### Fixed
+- Copilotによるコードレビュー対応
+
 ## [0.1.37] - 2025-7-21
 ### Changed
 - left unsafe実装の改善（PR #36）

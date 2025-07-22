@@ -73,9 +73,9 @@ public
 // ルートノード相当の機能
 @usableFromInline
 protocol TreeEndNodeProtocol {
+  /// 木を遡るケースではこちらが必ず必要
   func __left_(_: pointer) -> pointer
-  /// A method that does not handle branching related to `end`.
-  /// endに関する分岐処理をしないもの
+  /// 根から末端に向かう処理は、こちらで足りる
   func __left_unsafe(_ p: pointer) -> pointer
   func __left_(_ lhs: pointer, _ rhs: pointer)
 }

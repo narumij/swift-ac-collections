@@ -29,6 +29,7 @@ extension MemberProtocol {
   func
     __tree_is_left_child(_ __x: _NodePtr) -> Bool
   {
+    // unsafe不可
     return __x == __left_(__parent_(__x))
   }
 
@@ -181,6 +182,7 @@ extension MemberProtocol {
   func
     __tree_leaf(_ __x: _NodePtr) -> _NodePtr
   {
+    // unsafe不明
     assert(__x != .nullptr, "node shouldn't be null")
     var __x = __x
     while true {

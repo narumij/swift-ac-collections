@@ -503,7 +503,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func __root() -> _NodePtr {
-    _header.__left_
+    __header_ptr.pointee.__left_
   }
 }
 

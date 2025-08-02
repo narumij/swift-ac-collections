@@ -74,3 +74,23 @@ extension RedBlackTreeSet: SetAlgebra {
     _storage = .init(tree: __tree_.___symmetric_difference(other.__tree_))
   }
 }
+
+extension RedBlackTreeSet {
+  
+  @inlinable
+  @inline(__always)
+  public func difference(_ other: __owned RedBlackTreeSet<Element>)
+    -> RedBlackTreeSet<Element>
+  {
+    var result = self
+    result.formDifference(other)
+    return result
+  }
+
+  /// - Complexity: O(*n* + *m*)
+  @inlinable
+  //  @inline(__always)
+  public mutating func formDifference(_ other: __owned RedBlackTreeSet<Element>) {
+    _storage = .init(tree: __tree_.___difference(other.__tree_))
+  }
+}

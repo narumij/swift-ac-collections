@@ -76,7 +76,7 @@ extension RedBlackTreeSet: SetAlgebra {
 }
 
 /*
-  __algorithm/set_symmetric_difference.h に準じた動作となっている。
+  __algorithm/set_difference.h に準じた動作となっている。
 */
 extension RedBlackTreeSet {
   

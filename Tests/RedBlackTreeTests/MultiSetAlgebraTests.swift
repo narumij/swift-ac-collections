@@ -38,7 +38,7 @@ final class MultiSetAlgebraTests: XCTestCase {
     let rhs: RedBlackTreeMultiSet<Int> = [3, 4, 5, 6]
     XCTAssertEqual(lhs.union(rhs), [1, 2, 3, 3, 4, 4, 5, 6])
   }
-  
+
   func testSymm0() throws {
     var lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4]
     let rhs: RedBlackTreeMultiSet<Int> = [3, 4, 5, 6]

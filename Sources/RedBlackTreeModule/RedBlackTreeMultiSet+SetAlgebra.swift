@@ -19,34 +19,41 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
+/*
+  __algorithm/set_union.h
+  __algorithm/set_difference.h
+  __algorithm/set_intersect.h
+  __algorithm/set_symmetric_difference.h
+  に準じた動作となっている。
+  SwiftのSetAlgebraプロトコルがmulti_setを想定しているか不明なので、プロトコル適合はしていない。
+*/
 
-extension RedBlackTreeSet: SetAlgebra {
-
+extension RedBlackTreeMultiSet {
+  
   @inlinable
   @inline(__always)
-  public func union(_ other: __owned RedBlackTreeSet<Element>)
-    -> RedBlackTreeSet<Element>
+  public func union(_ other: __owned RedBlackTreeMultiSet<Element>)
+    -> RedBlackTreeMultiSet<Element>
   {
     var result = self
     result.formUnion(other)
     return result
   }
 
+  /// - Complexity: O(*n* + *m*)
   @inlinable
-  @inline(__always)
-  public func intersection(_ other: RedBlackTreeSet<Element>)
-    -> RedBlackTreeSet<Element>
-  {
-    var result = self
-    result.formIntersection(other)
-    return result
+  //  @inline(__always)
+  public mutating func formUnion(_ other: __owned RedBlackTreeMultiSet<Element>) {
+    _storage = .init(tree: __tree_.___meld_multi(other.__tree_))
   }
+}
 
+extension RedBlackTreeMultiSet {
+  
   @inlinable
   @inline(__always)
-  public func symmetricDifference(_ other: __owned RedBlackTreeSet<Element>)
-    -> RedBlackTreeSet<Element>
+  public func symmetricDifference(_ other: __owned RedBlackTreeMultiSet<Element>)
+    -> RedBlackTreeMultiSet<Element>
   {
     var result = self
     result.formSymmetricDifference(other)
@@ -56,34 +63,37 @@ extension RedBlackTreeSet: SetAlgebra {
   /// - Complexity: O(*n* + *m*)
   @inlinable
   //  @inline(__always)
-  public mutating func formUnion(_ other: __owned RedBlackTreeSet<Element>) {
-    _storage = .init(tree: __tree_.___meld_unique(other.__tree_))
-  }
-
-  /// - Complexity: O(*n* + *m*)
-  @inlinable
-  //  @inline(__always)
-  public mutating func formIntersection(_ other: RedBlackTreeSet<Element>) {
-    _storage = .init(tree: __tree_.___intersection(other.__tree_))
-  }
-
-  /// - Complexity: O(*n* + *m*)
-  @inlinable
-  //  @inline(__always)
-  public mutating func formSymmetricDifference(_ other: __owned RedBlackTreeSet<Element>) {
+  public mutating func formSymmetricDifference(_ other: __owned RedBlackTreeMultiSet<Element>) {
     _storage = .init(tree: __tree_.___symmetric_difference(other.__tree_))
   }
 }
 
-/*
-  __algorithm/set_difference.h に準じた動作となっている。
-*/
-extension RedBlackTreeSet {
+extension RedBlackTreeMultiSet {
   
   @inlinable
   @inline(__always)
-  public func difference(_ other: __owned RedBlackTreeSet<Element>)
-    -> RedBlackTreeSet<Element>
+  public func intersection(_ other: RedBlackTreeMultiSet<Element>)
+    -> RedBlackTreeMultiSet<Element>
+  {
+    var result = self
+    result.formIntersection(other)
+    return result
+  }
+
+  /// - Complexity: O(*n* + *m*)
+  @inlinable
+  //  @inline(__always)
+  public mutating func formIntersection(_ other: RedBlackTreeMultiSet<Element>) {
+    _storage = .init(tree: __tree_.___intersection(other.__tree_))
+  }
+}
+
+extension RedBlackTreeMultiSet {
+  
+  @inlinable
+  @inline(__always)
+  public func difference(_ other: __owned RedBlackTreeMultiSet<Element>)
+    -> RedBlackTreeMultiSet<Element>
   {
     var result = self
     result.formDifference(other)
@@ -93,7 +103,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*n* + *m*)
   @inlinable
   //  @inline(__always)
-  public mutating func formDifference(_ other: __owned RedBlackTreeSet<Element>) {
+  public mutating func formDifference(_ other: __owned RedBlackTreeMultiSet<Element>) {
     _storage = .init(tree: __tree_.___difference(other.__tree_))
   }
 }

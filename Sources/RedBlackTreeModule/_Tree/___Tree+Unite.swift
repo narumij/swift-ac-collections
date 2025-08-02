@@ -161,4 +161,27 @@ extension ___Tree {
     other.___copy_range(&__first2, __last2, to: &__result_)
     return __result_
   }
+
+  /// - Complexity: O(*n* + *m*)
+  @inlinable
+  @inline(__always)
+  func ___difference(_ other: ___Tree) -> ___Tree {
+    var __result_: ___Tree = .create(minimumCapacity: 0)
+    var (__parent, __child) = __result_.___max_ref()
+    var (__first1, __last1) = (__begin_node, __end_node())
+    var (__first2, __last2) = (other.__begin_node, other.__end_node())
+    while __first1 != __last1, __first2 != __last2 {
+      if ___comp(__key(self[__first1]), __key(other[__first2])) {
+        Tree.ensureCapacity(tree: &__result_)
+        (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, self[__first1])
+        __first1 = __tree_next_iter(__first1)
+      } else if ___comp(__key(other[__first2]), __key(self[__first1])) {
+        __first2 = __tree_next_iter(__first2)
+      } else {
+        __first1 = __tree_next_iter(__first1)
+        __first2 = __tree_next_iter(__first2)
+      }
+    }
+    return __result_
+  }
 }

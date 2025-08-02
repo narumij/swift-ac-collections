@@ -76,6 +76,19 @@ final class SetAlgebraTests: XCTestCase {
     let rhs: RedBlackTreeSet<Int> = [3, 4, 5, 6]
     XCTAssertEqual(lhs.intersection(rhs), [3, 4])
   }
+  
+  func testDiff0() throws {
+    var lhs: RedBlackTreeSet<Int> = [1, 2, 3, 4]
+    let rhs: RedBlackTreeSet<Int> = [3, 4, 5, 6]
+    lhs.formDifference(rhs)
+    XCTAssertEqual(lhs, [1, 2])
+  }
+  
+  func testDiff1() throws {
+    let lhs: RedBlackTreeSet<Int> = [1, 2, 3, 4]
+    let rhs: RedBlackTreeSet<Int> = [3, 4, 5, 6]
+    XCTAssertEqual(lhs.difference(rhs), [1, 2])
+  }
 
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
@@ -83,5 +96,4 @@ final class SetAlgebraTests: XCTestCase {
       // Put the code you want to measure the time of here.
     }
   }
-
 }

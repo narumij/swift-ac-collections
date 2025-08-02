@@ -19,6 +19,15 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+/*
+  __algorithm/set_union.h
+  __algorithm/set_difference.h
+  __algorithm/set_intersect.h
+  __algorithm/set_symmetric_difference.h
+  に準じた動作となっている。
+  SwiftのSetAlgebraプロトコルがmulti_setを想定しているか不明なので、プロトコル適合はしていない。
+*/
+
 extension RedBlackTreeMultiSet {
   
   @inlinable

@@ -104,27 +104,57 @@ extension FindEqualProtocol {
     var __nd_ptr = __root_ptr()
     if __nd != .nullptr {
       while true {
-        let __value__nd = __value_(__nd)
-        if value_comp(__v, __value__nd) {
-          if __left_unsafe(__nd) != .nullptr {
-            __nd_ptr = __left_ref(__nd)
-            __nd = __left_unsafe(__nd)
+        #if false
+          let __value__nd = __value_(__nd)
+          if value_comp(__v, __value__nd) {
+            if __left_unsafe(__nd) != .nullptr {
+              __nd_ptr = __left_ref(__nd)
+              __nd = __left_unsafe(__nd)
+            } else {
+              __parent = __nd
+              return __left_ref(__parent)
+            }
+          } else if value_comp(__value__nd, __v) {
+            if __right_(__nd) != .nullptr {
+              __nd_ptr = __right_ref(__nd)
+              __nd = __right_(__nd)
+            } else {
+              __parent = __nd
+              return __right_ref(__nd)
+            }
           } else {
             __parent = __nd
-            return __left_ref(__parent)
+            return __nd_ptr
           }
-        } else if value_comp(__value__nd, __v) {
-          if __right_(__nd) != .nullptr {
-            __nd_ptr = __right_ref(__nd)
-            __nd = __right_(__nd)
-          } else {
+        #else
+          // 分岐改善
+          // b.gt
+          // b.ge
+          // と続くのを避けている
+          let __value__nd = __value_(__nd)
+          let lessThan = value_comp(__v, __value__nd)
+          if lessThan, value_comp(__value__nd, __v) {
             __parent = __nd
-            return __right_ref(__nd)
+            return __nd_ptr
           }
-        } else {
-          __parent = __nd
-          return __nd_ptr
-        }
+          if lessThan {
+            if __left_unsafe(__nd) != .nullptr {
+              __nd_ptr = __left_ref(__nd)
+              __nd = __left_unsafe(__nd)
+            } else {
+              __parent = __nd
+              return __left_ref(__parent)
+            }
+          } else {
+            if __right_(__nd) != .nullptr {
+              __nd_ptr = __right_ref(__nd)
+              __nd = __right_(__nd)
+            } else {
+              __parent = __nd
+              return __right_ref(__nd)
+            }
+          }
+        #endif
       }
     }
     __parent = __end_node()

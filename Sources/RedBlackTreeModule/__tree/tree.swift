@@ -201,7 +201,7 @@ protocol EndProtocol: EndNodeProtocol {
 extension EndProtocol {
   @inlinable
   @inline(__always)
-  func end() -> _NodePtr { __end_node() }
+  func end() -> _NodePtr { .end }
 }
 
 @usableFromInline

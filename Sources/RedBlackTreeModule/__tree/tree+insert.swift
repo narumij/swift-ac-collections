@@ -25,7 +25,8 @@ import Foundation
 @usableFromInline
 protocol InsertNodeAtProtocol:
   MemberSetProtocol & RefSetProtocol & SizeProtocol & BeginNodeProtocol & EndNodeProtocol
-{}
+{
+}
 
 extension InsertNodeAtProtocol {
 
@@ -46,7 +47,8 @@ extension InsertNodeAtProtocol {
     if __left_(__begin_node) != .nullptr {
       __begin_node = __left_(__begin_node)
     }
-    __tree_balance_after_insert(__left_(__end_node()), __ptr_(__child))
+//    __tree_balance_after_insert(__left_(__end_node()), __ptr_(__child))
+    __tree_balance_after_insert(__left_end, __ptr_(__child))
     size += 1
   }
 }

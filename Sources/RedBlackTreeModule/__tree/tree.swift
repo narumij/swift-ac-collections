@@ -111,6 +111,7 @@ extension TreeNodeBaseProtocol {
 protocol MemberProtocol {
   func __left_(_: _NodePtr) -> _NodePtr
   func __left_unsafe(_ p: _NodePtr) -> _NodePtr
+  var __left_end: _NodePtr { get }
   func __right_(_: _NodePtr) -> _NodePtr
   func __is_black_(_: _NodePtr) -> Bool
   func __parent_(_: _NodePtr) -> _NodePtr

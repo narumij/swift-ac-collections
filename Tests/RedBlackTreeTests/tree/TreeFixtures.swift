@@ -11,7 +11,7 @@ import XCTest
     XCTestCase,
     ___tree_root_node, MemberProtocol, RootProtocol, EndNodeProtocol,
     ___RedBlackTreeNodePoolProtocol
-{
+  {
     var __left_: _NodePtr = .nullptr
     var __begin_node: _NodePtr = .end
 
@@ -24,7 +24,7 @@ import XCTest
     func __left_(_ p: _NodePtr) -> _NodePtr { p == .end ? __left_ : __nodes[p].__left_ }
     func __left_unsafe(_ p: _NodePtr) -> _NodePtr { __nodes[p].__left_ }
     var __left_end: RedBlackTreeModule._NodePtr { __left_ }
-  func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+    func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
       if lhs == .end {
         __left_ = rhs
       } else {
@@ -103,7 +103,7 @@ import XCTest
     func value_comp(_ l: Element, _ r: Element) -> Bool {
       l < r
     }
-    
+
     func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
       ___ptr_comp_multi(l, r)
     }

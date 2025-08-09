@@ -133,7 +133,7 @@ extension FindEqualProtocol {
           // と続くのを避けている
           let __value__nd = __value_(__nd)
           let lessThan = value_comp(__v, __value__nd)
-          if lessThan, value_comp(__value__nd, __v) {
+          if !lessThan, !value_comp(__value__nd, __v) {
             __parent = __nd
             return __nd_ptr
           }

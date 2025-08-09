@@ -472,7 +472,7 @@ extension ___Tree {
   }
   @nonobjc
   @inlinable
-  internal var __left_end: _NodePtr {
+  internal var __left_of_end: _NodePtr {
     @inline(__always) _read { yield _header.__left_ }
   }
   @nonobjc

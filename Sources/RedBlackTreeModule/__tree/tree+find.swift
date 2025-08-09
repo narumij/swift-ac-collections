@@ -96,7 +96,7 @@ protocol FindEqualProtocol: FindProtocol & RefProtocol & RootPtrProtocol {}
 extension FindEqualProtocol {
 
   @inlinable
-  @inline(never)
+  @inline(__always)
   func
     __find_equal(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
   {

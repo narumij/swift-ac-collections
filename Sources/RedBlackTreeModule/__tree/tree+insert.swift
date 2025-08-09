@@ -25,8 +25,7 @@ import Foundation
 @usableFromInline
 protocol InsertNodeAtProtocol:
   MemberSetProtocol & RefSetProtocol & SizeProtocol & BeginNodeProtocol & EndNodeProtocol
-{
-}
+{}
 
 extension InsertNodeAtProtocol {
 

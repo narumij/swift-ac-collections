@@ -472,11 +472,6 @@ extension ___Tree {
   }
   @nonobjc
   @inlinable
-  internal var __left_of_end: _NodePtr {
-    @inline(__always) _read { yield _header.__left_ }
-  }
-  @nonobjc
-  @inlinable
   @inline(__always)
   internal func __right_(_ p: _NodePtr) -> _NodePtr {
     assert(!___is_null_or_end(p))

@@ -40,8 +40,7 @@ extension RemoveProtocol {
       __begin_node = __r
     }
     size -= 1
-//    __tree_remove(__left_(__end_node()), __ptr)
-    __tree_remove(__left_of_end, __ptr)
+    __tree_remove(__left_(__end_node()), __ptr)
     return __r
   }
 }

@@ -279,10 +279,11 @@ extension ___Tree {
   @inline(__always)
   internal func ___popDetroy() -> _NodePtr {
     assert(_header.destroyCount > 0)
-    let p = _header.destroyNode
-    _header.destroyNode = __node_ptr[p].__left_
-    _header.destroyCount -= 1
-    return p
+    defer {
+      _header.destroyNode = __node_ptr[_header.destroyNode].__left_
+      _header.destroyCount -= 1
+    }
+    return _header.destroyNode
   }
   /// O(1)
   @nonobjc

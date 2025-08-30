@@ -283,6 +283,7 @@ extension ___Tree {
       _header.destroyNode = __node_ptr[_header.destroyNode].__left_
       _header.destroyCount -= 1
     }
+    __node_ptr[_header.destroyNode].__is_black_ = false
     return _header.destroyNode
   }
   /// O(1)

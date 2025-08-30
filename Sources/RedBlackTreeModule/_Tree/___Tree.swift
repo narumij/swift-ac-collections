@@ -269,7 +269,7 @@ extension ___Tree {
     assert(_header.destroyCount <= _header.capacity)
     assert(_header.destroyNode != p)
     __node_ptr[p].__left_ = _header.destroyNode
-    __node_ptr[p].__right_ = p
+    __node_ptr[p].__right_ = .nullptr
     __node_ptr[p].__parent_ = .nullptr
     __node_ptr[p].__is_black_ = false
     _header.destroyNode = p
@@ -281,7 +281,7 @@ extension ___Tree {
   @inline(__always)
   internal func ___popDetroy() -> _NodePtr {
     assert(_header.destroyCount > 0)
-    let p = __node_ptr[_header.destroyNode].__right_
+    let p = _header.destroyNode
     _header.destroyNode = __node_ptr[p].__left_
     _header.destroyCount -= 1
     return p

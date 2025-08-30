@@ -269,9 +269,7 @@ extension ___Tree {
     assert(_header.destroyCount <= _header.capacity)
     assert(_header.destroyNode != p)
     __node_ptr[p].__left_ = _header.destroyNode
-    __node_ptr[p].__right_ = .nullptr
     __node_ptr[p].__parent_ = .nullptr
-    __node_ptr[p].__is_black_ = false
     _header.destroyNode = p
     _header.destroyCount += 1
   }

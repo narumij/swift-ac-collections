@@ -27,8 +27,7 @@ import Foundation
 ///
 /// InlineMemoize動作用。CoWがないので注意
 @frozen
-@usableFromInline
-internal struct ___LRUMemoizeStorage<Custom, Value>
+public struct ___LRUMemoizeStorage<Custom, Value>
 where Custom: _KeyCustomProtocol {
 
   public

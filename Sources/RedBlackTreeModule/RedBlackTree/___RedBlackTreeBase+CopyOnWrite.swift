@@ -139,3 +139,11 @@ extension ___RedBlackTreeCopyOnWrite {
     assert(_storage.tree.header.initializedCount <= _storage.capacity)
   }
 }
+
+extension ___RedBlackTreeBase {
+  // SE-0494対応の準備
+  @inlinable
+  public func _isIdentical(to other: Self) -> Bool {
+    self.__tree_ === other.__tree_
+  }
+}

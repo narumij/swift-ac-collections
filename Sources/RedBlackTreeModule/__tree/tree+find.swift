@@ -23,11 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol FindLeafProtocol: ValueProtocol
-    & RootProtocol
-    & RefProtocol
-    & EndNodeProtocol
-{}
+protocol FindLeafProtocol: ValueProtocol, RefProtocol, RootProtocol, EndNodeProtocol {}
 
 extension FindLeafProtocol {
 
@@ -91,7 +87,7 @@ extension FindLeafProtocol {
 }
 
 @usableFromInline
-protocol FindEqualProtocol: FindProtocol & RefProtocol & RootPtrProtocol {}
+protocol FindEqualProtocol: ValueProtocol, RefProtocol, RootProtocol, RootPtrProtocol {}
 
 extension FindEqualProtocol {
 
@@ -132,11 +128,7 @@ extension FindEqualProtocol {
 }
 
 @usableFromInline
-protocol FindProtocol: ValueProtocol
-    & RootProtocol
-    & EndNodeProtocol
-    & EndProtocol
-{}
+protocol FindProtocol: BoundAlgorithmProtocol & EndProtocol {}
 
 extension FindProtocol {
 

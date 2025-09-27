@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol EqualProtocol: ValueProtocol, RootProtocol, EndNodeProtocol {}
+protocol EqualProtocol: BoundAlgorithmProtocol {}
 
 extension EqualProtocol {
 

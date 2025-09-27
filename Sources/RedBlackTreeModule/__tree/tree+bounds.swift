@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol BoundProtocol: ValueProtocol & RootProtocol & EndNodeProtocol {}
+protocol BoundProtocol: BoundAlgorithmProtocol {}
 
 extension BoundProtocol {
 
@@ -40,7 +40,10 @@ extension BoundProtocol {
   }
 }
 
-extension ValueProtocol {
+@usableFromInline
+protocol BoundAlgorithmProtocol: ValueProtocol & RootProtocol & EndNodeProtocol {}
+
+extension BoundAlgorithmProtocol {
 
   @inlinable
   @inline(__always)

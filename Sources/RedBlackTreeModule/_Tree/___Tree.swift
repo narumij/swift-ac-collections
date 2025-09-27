@@ -441,7 +441,7 @@ extension ___Tree: EraseMultiProtocol {}
 extension ___Tree: BoundProtocol {}
 extension ___Tree: InsertUniqueProtocol {}
 extension ___Tree: CountProtocol {}
-extension ___Tree: MemberProtocol {}
+extension ___Tree: TreeNodeProtocol {}
 extension ___Tree: DistanceProtocol {}
 extension ___Tree: CompareProtocol {}
 extension ___Tree: CompareUniqueProtocol {}

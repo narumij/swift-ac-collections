@@ -31,7 +31,7 @@ protocol MergeProtocol: KeyProtocol & FindEqualProtocol & FindLeafProtocol & Ins
 }
 
 @usableFromInline
-protocol HandleProtocol: AllocatorProtocol & KeyProtocol & ValueProtocol & BeginProtocol & EndProtocol & MemberProtocol & EraseProtocol {
+protocol HandleProtocol: AllocatorProtocol & KeyProtocol & ValueProtocol & BeginProtocol & EndProtocol & TreeNodeProtocol & EraseProtocol {
   // 現在使っていない
 }
 

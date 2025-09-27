@@ -82,7 +82,7 @@ extension CompareUniqueProtocol {
 }
 
 @usableFromInline
-protocol CompareMultiProtocol: MemberProtocol & RootProtocol & EndProtocol {}
+protocol CompareMultiProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {}
 
 extension CompareMultiProtocol {
 

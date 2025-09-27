@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension MemberSetProtocol {
+extension TreeNodeProtocol {
 
   @inlinable
   @inline(__always)

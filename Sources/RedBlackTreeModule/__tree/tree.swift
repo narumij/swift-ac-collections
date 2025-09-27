@@ -87,7 +87,7 @@ extension TreeEndNodeProtocol {
 
 // 一般ノード相当の機能
 @usableFromInline
-protocol TreeNodeBaseProtocol: TreeEndNodeProtocol {
+protocol TreeNodeProtocol: TreeEndNodeProtocol {
   func __right_(_: pointer) -> pointer
   func __right_(_ lhs: pointer, _ rhs: pointer)
   func __is_black_(_: pointer) -> Bool
@@ -99,44 +99,27 @@ protocol TreeNodeBaseProtocol: TreeEndNodeProtocol {
   func __parent_unsafe(_: pointer) -> __parent_pointer
 }
 
-extension TreeNodeBaseProtocol {
+extension TreeNodeProtocol {
   @usableFromInline
   typealias __parent_pointer = _Pointer
 }
 
-// 以下は、現在の設計に至る過程で、readハンドルとupdateハンドルに分けていた名残で、
-// getとsetが分かれている
-
 @usableFromInline
-protocol MemberProtocol {
-  func __left_(_: _NodePtr) -> _NodePtr
-  func __left_unsafe(_ p: _NodePtr) -> _NodePtr
-  func __right_(_: _NodePtr) -> _NodePtr
-  func __is_black_(_: _NodePtr) -> Bool
-  func __parent_(_: _NodePtr) -> _NodePtr
-  func __parent_unsafe(_: _NodePtr) -> _NodePtr
-}
-
-@usableFromInline
-protocol MemberSetProtocol: MemberProtocol {
-  func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr)
-  func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr)
-  func __is_black_(_ lhs: _NodePtr, _ rhs: Bool)
-  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr)
-}
-
-@usableFromInline
-protocol RefProtocol: MemberProtocol {
+protocol TreeNodeRefProtocol {
   func __left_ref(_: _NodePtr) -> _NodeRef
   func __right_ref(_: _NodePtr) -> _NodeRef
   func __ptr_(_ rhs: _NodeRef) -> _NodePtr
-}
-
-@usableFromInline
-protocol RefSetProtocol: RefProtocol {
   func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr)
 }
 
+// 名前のねじれは移植元に由来する
+@usableFromInline
+protocol TreeValueProtocol {
+  associatedtype _Key
+  func __value_(_: _NodePtr) -> _Key
+}
+
+// 名前のねじれは移植元に由来する
 @usableFromInline
 protocol KeyProtocol {
   associatedtype _Key
@@ -144,11 +127,10 @@ protocol KeyProtocol {
   func __key(_ e: Element) -> _Key
 }
 
+// 名前のねじれは移植元に由来する
 @usableFromInline
-protocol ValueProtocol: MemberProtocol {
+protocol ValueProtocol: TreeNodeProtocol, TreeValueProtocol {
 
-  associatedtype _Key
-  func __value_(_: _NodePtr) -> _Key
   func value_comp(_: _Key, _: _Key) -> Bool
 }
 
@@ -208,7 +190,7 @@ protocol RootProtocol {
   func __root() -> _NodePtr
 }
 
-protocol ___RootProtocol: MemberProtocol & EndProtocol {}
+protocol ___RootProtocol: TreeNodeProtocol & EndProtocol {}
 
 extension ___RootProtocol {
   @available(*, deprecated, message: "Kept only for the purpose of preventing loss of knowledge")
@@ -216,7 +198,7 @@ extension ___RootProtocol {
 }
 
 @usableFromInline
-protocol RootPtrProtocol: RootProtocol & MemberProtocol & EndProtocol {
+protocol RootPtrProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {
   func __root_ptr() -> _NodeRef
 }
 

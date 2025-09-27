@@ -9,7 +9,7 @@ import XCTest
 #if DEBUG
   class TreeFixtureBase<Element>:
     XCTestCase,
-    ___tree_root_node, MemberProtocol, RootProtocol, EndNodeProtocol,
+    ___tree_root_node, TreeNodeProtocol, RootProtocol, EndNodeProtocol,
     ___RedBlackTreeNodePoolProtocol
   {
     var __left_: _NodePtr = .nullptr

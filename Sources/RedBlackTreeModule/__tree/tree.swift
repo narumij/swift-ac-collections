@@ -116,6 +116,9 @@ protocol TreeNodeRefProtocol {
 @usableFromInline
 protocol TreeValueProtocol {
   associatedtype _Key
+  /// ノードから比較用のキー値を取り出す。
+  /// SetやMultisetではElementに該当する
+  /// DictionaryやMultiMapではKeyに該当する
   func __value_(_: _NodePtr) -> _Key
 }
 
@@ -124,6 +127,7 @@ protocol TreeValueProtocol {
 protocol KeyProtocol {
   associatedtype _Key
   associatedtype Element
+  /// 要素から比較用のキー値を取り出す。
   func __key(_ e: Element) -> _Key
 }
 
@@ -131,11 +135,13 @@ protocol KeyProtocol {
 @usableFromInline
 protocol ValueProtocol: TreeNodeProtocol, TreeValueProtocol {
 
+  /// キー同士を比較する。通常`<`と同じ
   func value_comp(_: _Key, _: _Key) -> Bool
 }
 
 extension ValueProtocol {
 
+  /// キー同士を比較する。通常`<`と同じ
   @inlinable
   @inline(__always)
   func ___comp(_ a: _Key, _ b: _Key) -> Bool {
@@ -145,6 +151,7 @@ extension ValueProtocol {
 
 @usableFromInline
 protocol BeginNodeProtocol {
+  /// 木の左端のノードを返す
   var __begin_node: _NodePtr { get nonmutating set }
 }
 
@@ -152,6 +159,7 @@ protocol BeginNodeProtocol {
 protocol BeginProtocol: BeginNodeProtocol {
   // __begin_nodeが圧倒的に速いため
   @available(*, deprecated, renamed: "__begin_node")
+  /// 木の左端のノードを返す
   func begin() -> _NodePtr
 }
 
@@ -160,15 +168,18 @@ extension BeginProtocol {
   @available(*, deprecated, renamed: "__begin_node")
   @inlinable
   @inline(__always)
+  /// 木の左端のノードを返す
   func begin() -> _NodePtr { __begin_node }
 }
 
 @usableFromInline
 protocol EndNodeProtocol {
+  /// 終端ノード（木の右端の次の仮想ノード）を返す
   func __end_node() -> _NodePtr
 }
 
 extension EndNodeProtocol {
+  /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable
   @inline(__always)
   func __end_node() -> _NodePtr { .end }
@@ -176,10 +187,12 @@ extension EndNodeProtocol {
 
 @usableFromInline
 protocol EndProtocol: EndNodeProtocol {
+  /// 終端ノード（木の右端の次の仮想ノード）を返す
   func end() -> _NodePtr
 }
 
 extension EndProtocol {
+  /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable
   @inline(__always)
   func end() -> _NodePtr { .end }
@@ -187,6 +200,7 @@ extension EndProtocol {
 
 @usableFromInline
 protocol RootProtocol {
+  /// 木の根ノードを返す
   func __root() -> _NodePtr
 }
 
@@ -194,15 +208,18 @@ protocol ___RootProtocol: TreeNodeProtocol & EndProtocol {}
 
 extension ___RootProtocol {
   @available(*, deprecated, message: "Kept only for the purpose of preventing loss of knowledge")
+  /// 木の根ノードを返す
   func __root() -> _NodePtr { __left_(__end_node()) }
 }
 
 @usableFromInline
 protocol RootPtrProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {
+  /// 木の根ノードへの参照を返す
   func __root_ptr() -> _NodeRef
 }
 
 extension RootPtrProtocol {
+  /// 木の根ノードへの参照を返す
   @inlinable
   @inline(__always)
   func __root_ptr() -> _NodeRef { __left_ref(__end_node()) }
@@ -210,6 +227,9 @@ extension RootPtrProtocol {
 
 @usableFromInline
 protocol SizeProtocol {
+  /// 木のノードの数を返す
+  ///
+  /// 終端ノードは含まないはず
   var size: Int { get nonmutating set }
 }
 
@@ -218,22 +238,33 @@ protocol SizeProtocol {
 @usableFromInline
 protocol AllocatorProtocol {
   associatedtype Element
+  /// ノードを構築する
   func __construct_node(_ k: Element) -> _NodePtr
+  /// ノードを破棄する
   func destroy(_ p: _NodePtr)
+  /// ノードの値要素を取得する
+  // TODO: マージプロトコルの作業時にさぼってここに配置しているので、直す
   func ___element(_ p: _NodePtr) -> Element
 }
 
 // MARK: common
 
+/// ツリー使用条件をインジェクションするためのプロトコル
 public protocol ValueComparer {
+  /// ツリーが比較に使用する値の型
   associatedtype _Key
+  /// 要素の型
   associatedtype Element
+  /// 要素から比較キー値がとれること
   static func __key(_: Element) -> _Key
+  /// 比較関数が実装されていること
   static func value_comp(_: _Key, _: _Key) -> Bool
 }
 
+// Comparableプロトコルの場合標準実装を付与する
 extension ValueComparer where _Key: Comparable {
 
+  /// Comparableプロトコルの場合の標準実装
   @inlinable
   @inline(__always)
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
@@ -243,6 +274,7 @@ extension ValueComparer where _Key: Comparable {
 
 extension ValueComparer {
 
+  /// 比較のインスタンス関数の標準実装
   @inlinable
   @inline(__always)
   static func ___comp(_ a: _Key, _ b: _Key) -> Bool {
@@ -252,6 +284,7 @@ extension ValueComparer {
 
 // MARK: key
 
+/// 要素とキーが一致する場合のひな形
 public protocol ScalarValueComparer: ValueComparer where _Key == Element {}
 
 extension ScalarValueComparer {
@@ -263,11 +296,13 @@ extension ScalarValueComparer {
 
 // MARK: key value
 
+/// 要素がキーバリューの場合のひな形
 public protocol KeyValueComparer: ValueComparer {
   associatedtype _Value
   static func __key(_ element: Element) -> _Key
 }
 
+// TODO: 最近タプルの最適化が甘いので、構造体に変更する
 public typealias _KeyValueTuple_<_Key, _Value> = (key: _Key, value: _Value)
 
 extension KeyValueComparer {
@@ -283,6 +318,7 @@ extension KeyValueComparer where Element == _KeyValueTuple {
 
 // MARK: key value
 
+/// 要素がカスタムでキーの取得が特殊な場合のひな形
 public
   protocol _KeyCustomProtocol
 {

@@ -737,7 +737,7 @@ extension RedBlackTreeSet: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.count == rhs.count && lhs.elementsEqual(rhs)
+    lhs._isIdentical(to: rhs) || lhs.count == rhs.count && lhs.elementsEqual(rhs)
   }
 }
 

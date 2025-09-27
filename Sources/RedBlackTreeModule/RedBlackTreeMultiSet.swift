@@ -756,7 +756,7 @@ extension RedBlackTreeMultiSet: Comparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
+    !lhs._isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
 

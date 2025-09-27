@@ -104,8 +104,7 @@ extension FindEqualProtocol {
     var __nd_ptr = __root_ptr()
     if __nd != .nullptr {
       while true {
-        let __value__nd = __value_(__nd)
-        if value_comp(__v, __value__nd) {
+        if value_comp(__v, __value_(__nd)) {
           if __left_unsafe(__nd) != .nullptr {
             __nd_ptr = __left_ref(__nd)
             __nd = __left_unsafe(__nd)
@@ -113,7 +112,7 @@ extension FindEqualProtocol {
             __parent = __nd
             return __left_ref(__parent)
           }
-        } else if value_comp(__value__nd, __v) {
+        } else if value_comp(__value_(__nd), __v) {
           if __right_(__nd) != .nullptr {
             __nd_ptr = __right_ref(__nd)
             __nd = __right_(__nd)

@@ -23,6 +23,7 @@
 import Foundation
 
 @_fixed_layout
+@_objc_non_lazy_realization
 public final class ___Tree<VC>: ManagedBuffer<
   ___Tree<VC>.Header,
   ___Tree<VC>.Node

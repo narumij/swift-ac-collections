@@ -117,7 +117,14 @@ extension ___LRUMemoizeStorage {
   }
 }
 
-extension ___LRUMemoizeStorage: ___LRULinkList {}
+extension ___LRUMemoizeStorage: ___LRULinkList {
+  
+  @inlinable
+  public static func ___value(of element: Element) -> _Value {
+    element.value
+  }
+}
+
 extension ___LRUMemoizeStorage: ___RedBlackTreeCopyOnWrite {}
 extension ___LRUMemoizeStorage: CustomKeyValueComparer {}
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}

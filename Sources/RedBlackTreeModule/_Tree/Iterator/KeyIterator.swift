@@ -64,7 +64,7 @@ extension KeyIterator: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs, by: { !Tree.value_comp($0, $1) && !Tree.value_comp($1, $0) })
+    lhs.elementsEqual(rhs, by: Tree.value_equiv)
   }
 }
 
@@ -112,7 +112,7 @@ extension ReversedKeyIterator: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs, by: { !Tree.value_comp($0, $1) && !Tree.value_comp($1, $0) })
+    lhs.elementsEqual(rhs, by: Tree.value_equiv)
   }
 }
 

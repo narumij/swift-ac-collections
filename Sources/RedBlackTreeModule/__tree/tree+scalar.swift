@@ -1,64 +1,50 @@
+// Copyright 2024 narumij
 //
-//  tree+scalar.swift
-//  swift-ac-collections
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-//  Created by narumij on 2025/09/29.
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2024 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+
+import Foundation
 
 /// 要素とキーが一致する場合のひな形
-public protocol ScalarValueComparer: ValueComparer where _Key == Element {
-  static func ___element_comp(_ lhs: Element, _ rhs: Element) -> Bool
-  static func ___element_equiv(_ lhs: Element, _ rhs: Element) -> Bool
-}
+public protocol ScalarValueComparer: ValueComparer where _Key == Element {}
 
 extension ScalarValueComparer {
 
   @inlinable
   @inline(__always)
   public static func __key(_ e: Element) -> _Key { e }
-
-  @inlinable
-  @inline(__always)
-  public static func ___element_comp(_ lhs: Element, _ rhs: Element) -> Bool {
-    value_comp(__key(lhs), __key(rhs))
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func ___element_equiv(_ lhs: Element, _ rhs: Element) -> Bool {
-    value_equiv(__key(lhs), __key(rhs))
-  }
 }
 
-extension ScalarValueComparer where Element: Equatable {
-
-  @inlinable
-  @inline(__always)
-  public static func ___element_equiv(_ lhs: Element, _ rhs: Element) -> Bool {
-    lhs == rhs
-  }
-}
-
-extension ScalarValueComparer where Element: Comparable {
-
-  @inlinable
-  @inline(__always)
-  public static func ___element_comp(_ lhs: Element, _ rhs: Element) -> Bool {
-    lhs < rhs
-  }
-}
+// MARK: -
 
 extension ValueComparerProtocol where VC: ScalarValueComparer {
 
   @inlinable
   @inline(__always)
   static func ___element_comp(_ lhs: VC.Element, _ rhs: VC.Element) -> Bool {
-    VC.___element_comp(lhs, rhs)
+    VC.value_comp(lhs, rhs)
   }
 
   @inlinable
   @inline(__always)
   static func ___element_equiv(_ lhs: VC.Element, _ rhs: VC.Element) -> Bool {
-    VC.___element_equiv(lhs, rhs)
+    VC.value_equiv(lhs, rhs)
   }
 }

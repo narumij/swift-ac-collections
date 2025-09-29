@@ -29,7 +29,7 @@ public final class ___Tree<VC>: ManagedBuffer<
   ___Tree<VC>.Node
 >
 where VC: ValueComparer & CompareTrait {
-
+  
   @inlinable
   deinit {
     self.withUnsafeMutablePointers { header, elements in
@@ -135,8 +135,7 @@ extension ___Tree {
 
   public typealias Tree = ___Tree<VC>
 
-  @usableFromInline
-  internal typealias VC = VC
+  public typealias VC = VC
 
   @usableFromInline
   internal typealias Manager = ManagedBufferPointer<Header, Node>
@@ -1025,42 +1024,7 @@ extension ___Tree: Tree_IndicesProtocol {
   }
 }
 
-// TODO: FIXME
-// 継承関係で混乱がある
-extension ___Tree: Tree_KeyCompare {
-
-  public typealias Key = VC._Key
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public static func ___key_equiv(_ lhs: Element, _ rhs: Element) -> Bool {
-    VC.value_equiv(VC.__key(lhs), VC.__key(rhs))
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public static func ___key_value_equiv<Key, Value>(_ lhs: Element, _ rhs: Element) -> Bool
-  where Element == _KeyValueTuple_<Key, Value>, Value: Equatable {
-    ___key_equiv(lhs, rhs) && lhs.value == rhs.value
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  static func ___key_comp(_ lhs: Element, _ rhs: Element) -> Bool {
-    value_comp(VC.__key(lhs), VC.__key(rhs))
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  static func ___key_value_comp<Key, Value>(_ lhs: Element, _ rhs: Element) -> Bool
-  where Element == _KeyValueTuple_<Key, Value>, Value: Comparable {
-    ___key_comp(lhs, rhs) || (!___key_comp(lhs, rhs) && lhs.value < rhs.value)
-  }
-}
+extension ___Tree: Tree_KeyCompare where VC: KeyValueComparer {}
 
 extension ___Tree {
 

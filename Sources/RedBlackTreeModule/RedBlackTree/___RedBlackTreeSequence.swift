@@ -55,6 +55,14 @@ extension ___RedBlackTreeSequence {
       try body(__tree_[$0])
     }
   }
+  
+  @inlinable
+  @inline(__always)
+  internal func forEach(_ body: (Tree.Key, Tree.Value) throws -> Void) rethrows where Tree: Tree_KeyValue {
+    try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
+      try body(Tree.__key(__tree_[$0]), Tree.___value(of: __tree_[$0]))
+    }
+  }
 }
 
 extension ___RedBlackTreeSequence {

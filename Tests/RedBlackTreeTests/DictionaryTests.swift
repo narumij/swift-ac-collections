@@ -90,12 +90,12 @@ final class DictionaryTests: XCTestCase {
     //    map.updateValue(1, forKey: 0)
     XCTAssertEqual(map[0], 1)
     XCTAssertEqual(map[1], nil)
-    XCTAssertTrue(zip(map.map { ($0.0, $0.1) }, [(0, 1)]).allSatisfy(==))
+    XCTAssertTrue(zip(map.map { ($0.key, $0.value) }, [(0, 1)]).allSatisfy(==))
     map[0] = nil
     //    map.removeValue(forKey: 0)
     XCTAssertEqual(map[0], nil)
     XCTAssertEqual(map[1], nil)
-    XCTAssertTrue(zip(map.map { ($0.0, $0.1) }, []).allSatisfy(==))
+    XCTAssertTrue(zip(map.map { ($0.key, $0.value) }, []).allSatisfy(==))
     map[1] = 2
     //    map.updateValue(20, forKey: 10)
     XCTAssertEqual(map[0], nil)
@@ -540,7 +540,7 @@ final class DictionaryTests: XCTestCase {
     var set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
     let sub = set[set.startIndex..<set.endIndex]
     var a: [String] = []
-    for (_, value) in sub {
+    for (_, value) in sub.map(keyValue) {
       a.append(value)
     }
     XCTAssertEqual(a, ["a", "b", "c", "d", "e"])

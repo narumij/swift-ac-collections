@@ -157,6 +157,25 @@ extension ___Tree.ReversedElementIterator {
 
 extension ___Tree.ReversedElementIterator {
 
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func keys<Key, Value>() -> ReversedKeyIterator<___Tree, Key, Value>
+  where Element == _KeyValueElement<Key, Value> {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func values<Key, Value>() -> ReversedValueIterator<___Tree, Key, Value>
+  where Element == _KeyValueElement<Key, Value> {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+}
+
+extension ___Tree.ReversedElementIterator {
+
   @inlinable
   @inline(__always)
   public __consuming func ___node_positions() -> ReversedNodeIterator<___Tree> {

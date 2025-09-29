@@ -51,8 +51,8 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias Index = Tree.Index
 
   public
-    typealias KeyValue = (key: Key, value: Value)
-//  typealias KeyValue = _KeyValueElement<_Key,_Value>
+//    typealias KeyValue = (key: Key, value: Value)
+  typealias KeyValue = _KeyValueElement<_Key,_Value>
   
   public
     typealias Element = KeyValue
@@ -701,6 +701,12 @@ extension RedBlackTreeDictionary {
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     try ___first_index(where: predicate)
+  }
+  
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func firstIndex(where predicate: (Key, Value) throws -> Bool) rethrows -> Index? {
+    try ___first_index(where: { kv in try predicate(kv.key, kv.value) })
   }
 }
 

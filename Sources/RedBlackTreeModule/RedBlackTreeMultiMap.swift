@@ -53,8 +53,8 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Index = Tree.Index
 
   public
-    typealias KeyValue = (key: Key, value: Value)
-//  typealias KeyValue = _KeyValueElement<_Key,_Value>
+//    typealias KeyValue = (key: Key, value: Value)
+  typealias KeyValue = _KeyValueElement<_Key,_Value>
 
   public
     typealias Element = KeyValue
@@ -255,7 +255,17 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    insert(keyValue(key, value))
+    insert(keyValue(key, value) as KeyValue)
+  }
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func insert(_ tuple: (Key, Value)) -> (
+    inserted: Bool, memberAfterInsert: Element
+  ) {
+    insert(keyValue(tuple) as KeyValue)
   }
 
   /// - Complexity: O(log *n*)
@@ -997,7 +1007,7 @@ extension RedBlackTreeMultiMap {
   /// それでもメモリでダメだった場合、ごめんなさい
   @inlinable
   public init<Source>(naive sequence: __owned Source)
-  where Element == Source.Element, Source: Sequence {
+  where Source.Element == (Key,Value), Source: Sequence {
     let count = (sequence as? (any Collection))?.count
     var tree: Tree = .create(minimumCapacity: count ?? 0)
     for __k in sequence {
@@ -1006,9 +1016,9 @@ extension RedBlackTreeMultiMap {
       }
       var __parent = _NodePtr.nullptr
       // 検索の計算量がO(log *n*)
-      let __child = tree.__find_leaf_high(&__parent, tree.__key(__k))
+      let __child = tree.__find_leaf_high(&__parent, tree.__key(keyValue(__k)))
       if tree.__ptr_(__child) == .nullptr {
-        let __h = tree.__construct_node(__k)
+        let __h = tree.__construct_node(keyValue(__k))
         // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
         tree.__insert_node_at(__parent, __child, __h)
       }

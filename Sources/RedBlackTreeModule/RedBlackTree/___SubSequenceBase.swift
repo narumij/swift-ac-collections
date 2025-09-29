@@ -68,6 +68,15 @@ extension ___SubSequenceBase {
       try body(__tree_[$0])
     }
   }
+  
+  @inlinable
+  @inline(__always)
+  internal func forEach(_ body: (Tree.Key, Tree.Value) throws -> Void) rethrows where Tree: Tree_KeyValue {
+    //    try __tree_.___for_each_(__p: _start, __l: _end, body: body)
+    try __tree_.___for_each_(__p: _start, __l: _end) {
+      try body(Tree.__key(__tree_[$0]), Tree.___value(of: __tree_[$0]))
+    }
+  }
 }
 
 extension ___SubSequenceBase {
@@ -339,6 +348,25 @@ extension ___SubSequenceBase {
   @inline(__always)
   public __consuming func values<Key, Value>() -> ValueIterator<Tree, Key, Value>
   where Element == _KeyValueTuple_<Key, Value> {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+}
+
+extension ___SubSequenceBase {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func keys<Key, Value>() -> KeyIterator<Tree, Key, Value>
+  where Element == _KeyValueElement<Key, Value> {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func values<Key, Value>() -> ValueIterator<Tree, Key, Value>
+  where Element == _KeyValueElement<Key, Value> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

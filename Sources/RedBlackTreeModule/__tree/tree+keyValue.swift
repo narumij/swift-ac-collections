@@ -133,6 +133,13 @@ public struct _KeyValueElement<Key, Value> {
   public var value: Value
 }
 
+extension _KeyValueElement: Equatable where Key: Equatable, Value: Equatable {}
+extension _KeyValueElement: Comparable where Key: Comparable, Value: Comparable {
+  public static func < (lhs: _KeyValueElement<Key, Value>, rhs: _KeyValueElement<Key, Value>) -> Bool {
+    (lhs.key, lhs.value) < (rhs.key, rhs.value)
+  }
+}
+
 extension KeyValueComparer where Element == _KeyValueElement<_Key,_Value> {
 
   @inlinable
@@ -154,7 +161,7 @@ func keyValue<K,V>(_ tuple: (K, V)) -> _KeyValueTuple_<K,V> {
   tuple
 }
 @inlinable
-func keyValue<K,V>(_ key: K,_ value: V) -> _KeyValueElement<K,V> {
+public func keyValue<K,V>(_ key: K,_ value: V) -> _KeyValueElement<K,V> {
   .init(key, value)
 }
 @inlinable

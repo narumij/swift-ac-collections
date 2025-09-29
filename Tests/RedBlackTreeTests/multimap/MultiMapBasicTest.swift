@@ -69,7 +69,7 @@ final class MultiMapBasicTest: XCTestCase {
     XCTAssertEqual(multiMap.values(forKey: "x").sorted(), [10, 30])
 
     var collected: [String: [Int]] = [:]
-    for (key, value) in multiMap {
+    for (key, value) in multiMap.map(keyValue) {
       collected[key, default: []].append(value)
     }
     XCTAssertEqual(collected["x"]?.sorted(), [10, 30])

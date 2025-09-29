@@ -49,7 +49,7 @@ where
   Tree == ___Tree<Self>,
   Storage == ___Storage<Self>
 {
-  associatedtype Element
+  associatedtype _Value
   associatedtype Storage
   var _storage: Tree.Storage { get set }
 }
@@ -151,13 +151,13 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  func ___min() -> Element? {
+  func ___min() -> _Value? {
     __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_min(__tree_.__root())]
   }
 
   @inlinable
   @inline(__always)
-  func ___max() -> Element? {
+  func ___max() -> _Value? {
     __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_max(__tree_.__root())]
   }
 }
@@ -193,13 +193,13 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  var ___first: Element? {
+  var ___first: _Value? {
     ___is_empty ? nil : __tree_[__tree_.__begin_node]
   }
 
   @inlinable
   @inline(__always)
-  var ___last: Element? {
+  var ___last: _Value? {
     ___is_empty ? nil : __tree_[__tree_.__tree_prev_iter(__tree_.__end_node())]
   }
 }
@@ -216,7 +216,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+  func ___first_index(where predicate: (_Value) throws -> Bool) rethrows -> Index? {
     var result: Index?
     try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
       if try predicate(__tree_[__p]) {
@@ -232,8 +232,8 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  public func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    var result: Element?
+  public func ___first(where predicate: (_Value) throws -> Bool) rethrows -> _Value? {
+    var result: _Value?
     try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
       if try predicate(__tree_[__p]) {
         result = __tree_[__p]
@@ -251,7 +251,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func ___remove(at ptr: _NodePtr) -> Element? {
+  public mutating func ___remove(at ptr: _NodePtr) -> _Value? {
     guard !__tree_.___is_subscript_null(ptr) else {
       return nil
     }
@@ -274,7 +274,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public mutating func ___remove(
-    from: _NodePtr, to: _NodePtr, forEach action: (Element) throws -> Void
+    from: _NodePtr, to: _NodePtr, forEach action: (_Value) throws -> Void
   )
     rethrows
   {
@@ -290,7 +290,7 @@ extension ___RedBlackTreeBase {
   public mutating func ___remove<Result>(
     from: _NodePtr, to: _NodePtr,
     into initialResult: Result,
-    _ updateAccumulatingResult: (inout Result, Element) throws -> Void
+    _ updateAccumulatingResult: (inout Result, _Value) throws -> Void
   ) rethrows -> Result {
     guard !__tree_.___is_end(from) else {
       return initialResult
@@ -304,7 +304,7 @@ extension ___RedBlackTreeBase {
   public mutating func ___remove<Result>(
     from: _NodePtr, to: _NodePtr,
     _ initialResult: Result,
-    _ nextPartialResult: (Result, Element) throws -> Result
+    _ nextPartialResult: (Result, _Value) throws -> Result
   ) rethrows -> Result {
     guard !__tree_.___is_end(from) else {
       return initialResult
@@ -334,7 +334,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  func ___value_for(_ __k: _Key) -> Element? {
+  func ___value_for(_ __k: _Key) -> _Value? {
     let __ptr = __tree_.find(__k)
     return ___is_null_or_end(__ptr) ? nil : __tree_[__ptr]
   }
@@ -392,7 +392,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  public var ___value_comp: (Element, Element) -> Bool {
+  public var ___value_comp: (_Value, _Value) -> Bool {
     { __tree_.value_comp(__tree_.__key($0), __tree_.__key($1)) }
   }
 }

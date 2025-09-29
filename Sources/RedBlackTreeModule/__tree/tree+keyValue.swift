@@ -25,20 +25,20 @@ import Foundation
 /// 要素がキーバリューの場合のひな形
 public protocol KeyValueComparer: ValueComparer {
   associatedtype _MappedValue
-  static func ___value(of element: Element) -> _MappedValue
+  static func ___value(of element: _Value) -> _MappedValue
 }
 
 extension KeyValueComparer {
 
   @inlinable
   @inline(__always)
-  static func ___key_equiv(_ lhs: Element, _ rhs: Element) -> Bool {
+  static func ___key_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
     value_equiv(__key(lhs), __key(rhs))
   }
 
   @inlinable
   @inline(__always)
-  static func ___key_comp(_ lhs: Element, _ rhs: Element) -> Bool {
+  static func ___key_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
     value_comp(__key(lhs), __key(rhs))
   }
 }
@@ -48,7 +48,7 @@ extension KeyValueComparer {
 extension KeyValueComparer where _MappedValue: Comparable {
   @inlinable
   @inline(__always)
-  static func ___element_comp(_ lhs: Element, _ rhs: Element) -> Bool {
+  static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
     ___key_comp(lhs, rhs)
       || (!___key_comp(lhs, rhs) && ___value(of: lhs) < ___value(of: rhs))
   }
@@ -57,7 +57,7 @@ extension KeyValueComparer where _MappedValue: Comparable {
 extension KeyValueComparer where _MappedValue: Equatable {
   @inlinable
   @inline(__always)
-  static func ___element_equiv(_ lhs: Element, _ rhs: Element) -> Bool {
+  static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
     ___key_equiv(lhs, rhs) && ___value(of: lhs) == ___value(of: rhs)
   }
 }
@@ -67,13 +67,13 @@ extension KeyValueComparer where _MappedValue: Equatable {
 extension ValueComparerProtocol where VC: KeyValueComparer {
   @inlinable
   @inline(__always)
-  public static func ___value(of element: VC.Element) -> VC._MappedValue { VC.___value(of: element) }
+  public static func ___value(of element: VC._Value) -> VC._MappedValue { VC.___value(of: element) }
 }
 
 extension ValueComparerProtocol where VC: KeyValueComparer, VC._MappedValue: Comparable {
   @inlinable
   @inline(__always)
-  static func ___element_comp(_ lhs: VC.Element, _ rhs: VC.Element) -> Bool {
+  static func ___element_comp(_ lhs: VC._Value, _ rhs: VC._Value) -> Bool {
     VC.___element_comp(lhs, rhs)
   }
 }
@@ -81,7 +81,7 @@ extension ValueComparerProtocol where VC: KeyValueComparer, VC._MappedValue: Com
 extension ValueComparerProtocol where VC: KeyValueComparer, VC._MappedValue: Equatable {
   @inlinable
   @inline(__always)
-  static func ___element_equiv(_ lhs: VC.Element, _ rhs: VC.Element) -> Bool {
+  static func ___element_equiv(_ lhs: VC._Value, _ rhs: VC._Value) -> Bool {
     VC.___element_equiv(lhs, rhs)
   }
 }
@@ -98,15 +98,15 @@ extension KeyValueComparer {
   public typealias _KeyValueTuple = _KeyValueTuple_<_Key, _MappedValue>
 }
 
-extension KeyValueComparer where Element == _KeyValueTuple {
+extension KeyValueComparer where _Value == _KeyValueTuple {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ element: Element) -> _Key { element.key }
+  public static func __key(_ element: _Value) -> _Key { element.key }
 
   @inlinable
   @inline(__always)
-  public static func ___value(of element: Element) -> _MappedValue { element.value }
+  public static func ___value(of element: _Value) -> _MappedValue { element.value }
 }
 
 // MARK: -
@@ -141,15 +141,15 @@ extension _KeyValueElement: Comparable where Key: Comparable, Value: Comparable 
   }
 }
 
-extension KeyValueComparer where Element == _KeyValueElement<_Key,_MappedValue> {
+extension KeyValueComparer where _Value == _KeyValueElement<_Key,_MappedValue> {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ element: Element) -> _Key { element.key }
+  public static func __key(_ element: _Value) -> _Key { element.key }
 
   @inlinable
   @inline(__always)
-  public static func ___value(of element: Element) -> _MappedValue { element.value }
+  public static func ___value(of element: _Value) -> _MappedValue { element.value }
 }
 
 #if true

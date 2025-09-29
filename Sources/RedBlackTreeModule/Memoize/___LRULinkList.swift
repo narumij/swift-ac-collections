@@ -28,18 +28,18 @@ extension KeyValueComparer {
   )
 }
 
-extension KeyValueComparer where Element == _LinkingKeyValueTuple {
+extension KeyValueComparer where _Value == _LinkingKeyValueTuple {
 
   @inlinable @inline(__always)
-  public static func __key(_ element: Element) -> _Key { element.key }
+  public static func __key(_ element: _Value) -> _Key { element.key }
 
   @inlinable @inline(__always)
-  public static func __value(_ element: Element) -> _MappedValue { element.value }
+  public static func __value(_ element: _Value) -> _MappedValue { element.value }
 }
 
 @usableFromInline
 protocol ___LRULinkList: ___RedBlackTreeBase, KeyValueComparer
-where Element == _LinkingKeyValueTuple {
+where _Value == _LinkingKeyValueTuple {
   associatedtype Value
   var __tree_: Tree { get }
   var _rankHighest: _NodePtr { get set }

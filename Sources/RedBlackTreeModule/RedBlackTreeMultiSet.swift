@@ -50,6 +50,9 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 
   public
     typealias _Key = Element
+  
+  public
+    typealias _Value = Element
 
   @usableFromInline
   var _storage: Tree.Storage

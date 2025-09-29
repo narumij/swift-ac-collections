@@ -60,7 +60,7 @@ extension MergeProtocol {
   @inlinable
   @inline(__always)
   public func __node_handle_merge_unique<_Tree>(_ __source: _Tree)
-  where _Tree: HandleProtocol, _Tree._Key == _Key, _Tree.Element == Element {
+  where _Tree: HandleProtocol, _Tree._Key == _Key, _Tree._Value == _Value {
     
     var __i = __source.__begin_node; while __i != __source.end() {
       var __src_ptr: _Tree.__node_pointer = __get_np(__i)
@@ -83,7 +83,7 @@ extension MergeProtocol {
   @inlinable
   @inline(__always)
   public func __node_handle_merge_multi<_Tree>(_ __source: _Tree)
-  where _Tree: HandleProtocol, _Tree._Key == _Key, _Tree.Element == Element {
+  where _Tree: HandleProtocol, _Tree._Key == _Key, _Tree._Value == _Value {
 
     var __i = __source.__begin_node; while __i != __source.end() {
       var __src_ptr: _Tree.__node_pointer = __get_np(__i)

@@ -103,7 +103,7 @@ extension ___Tree {
   public struct Node: ___tree_base_node {
 
     @usableFromInline
-    internal var __value_: Element
+    internal var __value_: _Value
     @usableFromInline
     internal var __left_: _NodePtr
     @usableFromInline
@@ -120,7 +120,7 @@ extension ___Tree {
       __left_: _NodePtr = .nullptr,
       __right_: _NodePtr = .nullptr,
       __parent_: _NodePtr = .nullptr,
-      __value_: Element
+      __value_: _Value
     ) {
       self.__is_black_ = __is_black_
       self.__left_ = __left_
@@ -238,7 +238,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
-  public subscript(_ pointer: _NodePtr) -> Element {
+  public subscript(_ pointer: _NodePtr) -> _Value {
     @inline(__always) _read {
       assert(___initialized_contains(pointer))
       yield __node_ptr[pointer].__value_
@@ -329,7 +329,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func __construct_node(_ k: Element) -> _NodePtr {
+  internal func __construct_node(_ k: _Value) -> _NodePtr {
     if _header.destroyCount > 0 {
       let p = ___popDetroy()
       __node_ptr[p].__value_ = k
@@ -392,7 +392,7 @@ extension ___Tree {
 
 extension ___Tree {
 
-  public typealias Element = VC.Element
+  public typealias _Value = VC._Value
 
 //  @usableFromInline
   public typealias _Key = VC._Key
@@ -407,21 +407,21 @@ extension ___Tree {
 //  @nonobjc
 //  @inlinable
 //  @inline(__always)
-//  internal static func __key(_ e: VC.Element) -> VC._Key {
+//  internal static func __key(_ e: VC._Value) -> VC._Key {
 //    VC.__key(e)
 //  }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___element(_ p: _NodePtr) -> VC.Element {
+  internal func ___element(_ p: _NodePtr) -> VC._Value {
     __node_ptr[p].__value_
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___element(_ p: _NodePtr, _ __v: VC.Element) {
+  internal func ___element(_ p: _NodePtr, _ __v: VC._Value) {
     __node_ptr[p].__value_ = __v
   }
 }
@@ -564,7 +564,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func
-    ___erase(_ __f: _NodePtr, _ __l: _NodePtr, _ action: (Element) throws -> Void) rethrows
+    ___erase(_ __f: _NodePtr, _ __l: _NodePtr, _ action: (_Value) throws -> Void) rethrows
   {
     var __f = __f
     while __f != __l {
@@ -579,7 +579,7 @@ extension ___Tree {
   internal func
     ___erase<Result>(
       _ __f: _NodePtr, _ __l: _NodePtr, _ initialResult: Result,
-      _ nextPartialResult: (Result, Element) throws -> Result
+      _ nextPartialResult: (Result, _Value) throws -> Result
     ) rethrows -> Result
   {
     var result = initialResult
@@ -597,7 +597,7 @@ extension ___Tree {
   internal func
     ___erase<Result>(
       _ __f: _NodePtr, _ __l: _NodePtr, into initialResult: Result,
-      _ updateAccumulatingResult: (inout Result, Element) throws -> Void
+      _ updateAccumulatingResult: (inout Result, _Value) throws -> Void
     ) rethrows -> Result
   {
     var result = initialResult
@@ -1031,7 +1031,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___filter(_ isIncluded: (Element) throws -> Bool)
+  public func ___filter(_ isIncluded: (_Value) throws -> Bool)
     rethrows -> ___Tree
   {
     var tree: Tree = .create(minimumCapacity: 0)
@@ -1053,8 +1053,8 @@ extension ___Tree {
   public func ___mapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T)
     rethrows -> ___Tree<Other>
   where
-    Element == _KeyValueTuple_<Key, Value>,
-    Other.Element == _KeyValueTuple_<Key, T>
+  _Value == _KeyValueTuple_<Key, Value>,
+    Other._Value == _KeyValueTuple_<Key, T>
   {
     let tree = ___Tree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = tree.___max_ref()
@@ -1071,8 +1071,8 @@ extension ___Tree {
   public func ___compactMapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T?)
     rethrows -> ___Tree<Other>
   where
-    Element == _KeyValueTuple_<Key, Value>,
-    Other.Element == _KeyValueTuple_<Key, T>
+  _Value == _KeyValueTuple_<Key, Value>,
+    Other._Value == _KeyValueTuple_<Key, T>
   {
     var tree = ___Tree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = tree.___max_ref()
@@ -1095,8 +1095,8 @@ extension ___Tree {
   public func ___mapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T)
     rethrows -> ___Tree<Other>
   where
-    Element == _KeyValueElement<Key, Value>,
-    Other.Element == _KeyValueElement<Key, T>
+  _Value == _KeyValueElement<Key, Value>,
+    Other._Value == _KeyValueElement<Key, T>
   {
     let tree = ___Tree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = tree.___max_ref()
@@ -1113,8 +1113,8 @@ extension ___Tree {
   public func ___compactMapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T?)
     rethrows -> ___Tree<Other>
   where
-    Element == _KeyValueElement<Key, Value>,
-    Other.Element == _KeyValueElement<Key, T>
+  _Value == _KeyValueElement<Key, Value>,
+    Other._Value == _KeyValueElement<Key, T>
   {
     var tree = ___Tree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = tree.___max_ref()

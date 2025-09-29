@@ -124,15 +124,15 @@ protocol TreeValueProtocol {
 
 @usableFromInline
 protocol TreeElementProtocol {
-  associatedtype Element
+  associatedtype _Value
   /// ノードの値要素を取得する
-  func ___element(_ p: _NodePtr) -> Element
+  func ___element(_ p: _NodePtr) -> _Value
 }
 
 @usableFromInline
 protocol KeyProtocol: TreeValueProtocol, TreeElementProtocol {
   /// 要素から比較用のキー値を取り出す。
-  func __key(_ e: Element) -> _Key
+  func __key(_ e: _Value) -> _Key
 }
 
 extension KeyProtocol {
@@ -247,9 +247,9 @@ protocol SizeProtocol {
 
 @usableFromInline
 protocol AllocatorProtocol {
-  associatedtype Element
+  associatedtype _Value
   /// ノードを構築する
-  func __construct_node(_ k: Element) -> _NodePtr
+  func __construct_node(_ k: _Value) -> _NodePtr
   /// ノードを破棄する
   func destroy(_ p: _NodePtr)
 }
@@ -261,9 +261,9 @@ public protocol ValueComparer {
   /// ツリーが比較に使用する値の型
   associatedtype _Key
   /// 要素の型
-  associatedtype Element
+  associatedtype _Value
   /// 要素から比較キー値がとれること
-  static func __key(_: Element) -> _Key
+  static func __key(_: _Value) -> _Key
   /// 比較関数が実装されていること
   static func value_comp(_: _Key, _: _Key) -> Bool
 
@@ -307,7 +307,7 @@ public protocol ValueComparerProtocol {
   static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
   static func value_equiv(_ lhs: VC._Key, _ rhs: VC._Key) -> Bool
   
-  func __key(_ e: VC.Element) -> VC._Key
+  func __key(_ e: VC._Value) -> VC._Key
   func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
   func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool
 }
@@ -316,7 +316,7 @@ extension ValueComparerProtocol {
   
   @inlinable
   @inline(__always)
-  public static func __key(_ e: VC.Element) -> VC._Key {
+  public static func __key(_ e: VC._Value) -> VC._Key {
     VC.__key(e)
   }
   
@@ -334,7 +334,7 @@ extension ValueComparerProtocol {
   
   @inlinable
   @inline(__always)
-  public func __key(_ e: VC.Element) -> VC._Key {
+  public func __key(_ e: VC._Value) -> VC._Key {
     VC.__key(e)
   }
 

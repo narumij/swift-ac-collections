@@ -69,6 +69,9 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias _Key = Key
 
   public
+    typealias _Value = KeyValue
+  
+  public
     typealias _MappedValue = Value
 
   @usableFromInline

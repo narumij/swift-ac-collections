@@ -40,7 +40,7 @@ where Custom: _KeyCustomProtocol {
     typealias KeyValue = _LinkingKeyValueTuple
 
   public
-    typealias Element = KeyValue
+    typealias _Value = KeyValue
 
   public
     typealias _Key = Key
@@ -120,7 +120,7 @@ extension ___LRUMemoizeStorage {
 extension ___LRUMemoizeStorage: ___LRULinkList {
   
   @inlinable
-  public static func ___value(of element: Element) -> _MappedValue {
+  public static func ___value(of element: _Value) -> _MappedValue {
     element.value
   }
 }

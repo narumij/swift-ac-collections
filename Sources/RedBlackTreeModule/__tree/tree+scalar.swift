@@ -23,13 +23,13 @@
 import Foundation
 
 /// 要素とキーが一致する場合のひな形
-public protocol ScalarValueComparer: ValueComparer where _Key == Element {}
+public protocol ScalarValueComparer: ValueComparer where _Key == _Value {}
 
 extension ScalarValueComparer {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ e: Element) -> _Key { e }
+  public static func __key(_ e: _Value) -> _Key { e }
 }
 
 // MARK: -
@@ -38,13 +38,13 @@ extension ValueComparerProtocol where VC: ScalarValueComparer {
 
   @inlinable
   @inline(__always)
-  static func ___element_comp(_ lhs: VC.Element, _ rhs: VC.Element) -> Bool {
+  static func ___element_comp(_ lhs: VC._Value, _ rhs: VC._Value) -> Bool {
     VC.value_comp(lhs, rhs)
   }
 
   @inlinable
   @inline(__always)
-  static func ___element_equiv(_ lhs: VC.Element, _ rhs: VC.Element) -> Bool {
+  static func ___element_equiv(_ lhs: VC._Value, _ rhs: VC._Value) -> Bool {
     VC.value_equiv(lhs, rhs)
   }
 }

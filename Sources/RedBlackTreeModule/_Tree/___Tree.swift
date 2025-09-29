@@ -1024,7 +1024,7 @@ extension ___Tree: Tree_IndicesProtocol {
   }
 }
 
-extension ___Tree: Tree_KeyCompare where VC: KeyValueComparer {}
+extension ___Tree: Tree_KeyValue where VC: KeyValueComparer {}
 
 extension ___Tree {
 
@@ -1080,6 +1080,48 @@ extension ___Tree {
       if let new = try transform(v) {
         ___Tree<Other>.ensureCapacity(tree: &tree)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, new))
+        assert(tree.__tree_invariant(tree.__root()))
+      }
+    }
+    return tree
+  }
+}
+
+extension ___Tree {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public func ___mapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T)
+    rethrows -> ___Tree<Other>
+  where
+    Element == _KeyValueElement<Key, Value>,
+    Other.Element == _KeyValueElement<Key, T>
+  {
+    let tree = ___Tree<Other>.create(minimumCapacity: count)
+    var (__parent, __child) = tree.___max_ref()
+    for (k, v) in self.map(keyValue) {
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, keyValue(k, try transform(v)))
+      assert(tree.__tree_invariant(tree.__root()))
+    }
+    return tree
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public func ___compactMapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T?)
+    rethrows -> ___Tree<Other>
+  where
+    Element == _KeyValueElement<Key, Value>,
+    Other.Element == _KeyValueElement<Key, T>
+  {
+    var tree = ___Tree<Other>.create(minimumCapacity: count)
+    var (__parent, __child) = tree.___max_ref()
+    for (k, v) in self.map(keyValue) {
+      if let new = try transform(v) {
+        ___Tree<Other>.ensureCapacity(tree: &tree)
+        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, keyValue(k, new))
         assert(tree.__tree_invariant(tree.__root()))
       }
     }

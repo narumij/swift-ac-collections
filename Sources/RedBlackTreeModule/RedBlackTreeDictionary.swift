@@ -52,7 +52,8 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   public
     typealias KeyValue = (key: Key, value: Value)
-
+//  typealias KeyValue = _KeyValueElement<_Key,_Value>
+  
   public
     typealias Element = KeyValue
 
@@ -117,9 +118,9 @@ extension RedBlackTreeDictionary {
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
     for __k in elements {
-      if __parent == .end || tree[__parent].0 != __k.0 {
+      if __parent == .end || tree[__parent].key != __k.0 {
         // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
+        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, keyValue(__k))
       } else {
         fatalError("Dupricate values for key: '\(__k.0)'")
       }
@@ -144,9 +145,9 @@ extension RedBlackTreeDictionary {
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
     for __k in elements {
-      if __parent == .end || tree[__parent].0 != __k.0 {
+      if __parent == .end || tree[__parent].key != __k.0 {
         // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
+        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, keyValue(__k))
       } else {
         tree[__parent].value = try combine(tree[__parent].value, __k.1)
       }
@@ -174,7 +175,7 @@ extension RedBlackTreeDictionary {
       let __k = try keyForValue(__v)
       if __parent == .end || tree[__parent].key != __k {
         // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k, [__v]))
+        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, keyValue(__k, [__v]))
       } else {
         tree[__parent].value.append(__v)
       }
@@ -285,7 +286,7 @@ extension RedBlackTreeDictionary {
         defer {
           if let value {
             _ensureUniqueAndCapacity()
-            let __h = __tree_.__construct_node((key, value))
+            let __h = __tree_.__construct_node(keyValue(key, value))
             __tree_.__insert_node_at(__parent, __child, __h)
           }
         }
@@ -317,7 +318,7 @@ extension RedBlackTreeDictionary {
       if __ptr == .nullptr {
         _ensureUniqueAndCapacity()
         assert(__tree_.header.capacity > __tree_.count)
-        __ptr = __tree_.__construct_node((key, defaultValue()))
+        __ptr = __tree_.__construct_node(keyValue(key, defaultValue()))
         __tree_.__insert_node_at(__parent, __child, __ptr)
       } else {
         _ensureUnique()
@@ -379,7 +380,7 @@ extension RedBlackTreeDictionary {
   public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    insert((key, value))
+    insert(keyValue(key, value))
   }
 
   /// - Complexity: O(log *n*)
@@ -406,10 +407,10 @@ extension RedBlackTreeDictionary {
     forKey key: Key
   ) -> Value? {
     _ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique((key, value))
+    let (__r, __inserted) = __tree_.__insert_unique(keyValue(key, value))
     guard !__inserted else { return nil }
     let oldMember = __tree_[__r]
-    __tree_[__r] = (key, value)
+    __tree_[__r] = keyValue(key, value)
     return oldMember.value
   }
 }
@@ -914,7 +915,7 @@ extension RedBlackTreeDictionary: CustomStringConvertible {
     if isEmpty { return "[:]" }
     var result = "["
     var first = true
-    for (key, value) in self {
+    for (key, value) in self.map(keyValue) {
       if first {
         first = false
       } else {
@@ -938,7 +939,7 @@ extension RedBlackTreeDictionary: CustomDebugStringConvertible {
     } else {
       result += "["
       var first = true
-      for (key, value) in self {
+      for (key, value) in self.map(keyValue) {
         if first {
           first = false
         } else {

@@ -111,14 +111,20 @@ extension KeyValueComparer where Element == _KeyValueTuple {
 // MARK: -
 
 public struct _KeyValueElement<Key, Value> {
+  @inlinable
+  @inline(__always)
   public init(key: Key, value: Value) {
     self.key = key
     self.value = value
   }
+  @inlinable
+  @inline(__always)
   public init(_ key: Key,_ value: Value) {
     self.key = key
     self.value = value
   }
+  @inlinable
+  @inline(__always)
   public init(_ tuple: (Key, Value)) {
     self.key = tuple.0
     self.value = tuple.1
@@ -138,3 +144,38 @@ extension KeyValueComparer where Element == _KeyValueElement<_Key,_Value> {
   public static func ___value(of element: Element) -> _Value { element.value }
 }
 
+#if true
+@inlinable
+public func keyValue<K,V>(_ key: K,_ value: V) -> _KeyValueTuple_<K,V> {
+  (key, value)
+}
+@inlinable
+func keyValue<K,V>(_ tuple: (K, V)) -> _KeyValueTuple_<K,V> {
+  tuple
+}
+@inlinable
+func keyValue<K,V>(_ key: K,_ value: V) -> _KeyValueElement<K,V> {
+  .init(key, value)
+}
+@inlinable
+func keyValue<K,V>(_ tuple: _KeyValueTuple_<K,V>) -> _KeyValueElement<K,V> {
+  .init(tuple)
+}
+@inlinable
+func keyValue<K,V>(_ kv: _KeyValueElement<K,V>) -> (K,V) {
+  (kv.key, kv.value)
+}
+#else
+@inlinable
+func keyValue<K,V>(_ key: K,_ value: V) -> _KeyValueElement<K,V> {
+  .init(key, value)
+}
+@inlinable
+func keyValue<K,V>(_ tuple: (K, V)) -> _KeyValueElement<K,V> {
+  .init(tuple)
+}
+@inlinable
+func _keyValue<K,V>(_ kv: _KeyValueElement<K,V>) -> (K,V) {
+  (kv.key, kv.value)
+}
+#endif

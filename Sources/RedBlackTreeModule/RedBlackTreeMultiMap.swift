@@ -54,6 +54,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 
   public
     typealias KeyValue = (key: Key, value: Value)
+//  typealias KeyValue = _KeyValueElement<_Key,_Value>
 
   public
     typealias Element = KeyValue
@@ -118,7 +119,7 @@ extension RedBlackTreeMultiMap {
     // ソートの計算量がO(*n* log *n*)
     for __k in elements {
       // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, keyValue(__k))
     }
     assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(tree: tree)
@@ -143,7 +144,7 @@ extension RedBlackTreeMultiMap {
     for __v in values {
       let __k = try keyForValue(__v)
       // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k, __v))
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, keyValue(__k, __v))
     }
     assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(tree: tree)
@@ -254,7 +255,7 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    insert((key, value))
+    insert(keyValue(key, value))
   }
 
   /// - Complexity: O(log *n*)
@@ -831,7 +832,7 @@ extension RedBlackTreeMultiMap: CustomStringConvertible {
     if isEmpty { return "[:]" }
     var result = "["
     var first = true
-    for (key, value) in self {
+    for (key, value) in self.map(keyValue) {
       if first {
         first = false
       } else {
@@ -855,7 +856,7 @@ extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
     } else {
       result += "["
       var first = true
-      for (key, value) in self {
+      for (key, value) in self.map(keyValue) {
         if first {
           first = false
         } else {

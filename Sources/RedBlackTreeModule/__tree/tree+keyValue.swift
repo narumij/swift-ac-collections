@@ -43,25 +43,7 @@ extension KeyValueComparer {
   }
 }
 
-// TODO: 最近タプルの最適化が甘いので、構造体に変更する.
-// 以外とやっかいで諦めかけている
-
-public typealias _KeyValueTuple_<_Key, _Value> = (key: _Key, value: _Value)
-
-extension KeyValueComparer {
-  public typealias _KeyValueTuple = _KeyValueTuple_<_Key, _Value>
-}
-
-extension KeyValueComparer where Element == _KeyValueTuple {
-
-  @inlinable
-  @inline(__always)
-  public static func __key(_ element: Element) -> _Key { element.key }
-
-  @inlinable
-  @inline(__always)
-  public static func ___value(of element: Element) -> _Value { element.value }
-}
+// MARK: -
 
 extension KeyValueComparer where _Value: Comparable {
   @inlinable
@@ -97,3 +79,26 @@ extension ValueComparerProtocol where VC: KeyValueComparer, VC._Value: Equatable
     VC.___element_equiv(lhs, rhs)
   }
 }
+
+// MARK: -
+
+// TODO: 最近タプルの最適化が甘いので、構造体に変更する.
+// 以外とやっかいで諦めかけている
+
+public typealias _KeyValueTuple_<_Key, _Value> = (key: _Key, value: _Value)
+
+extension KeyValueComparer {
+  public typealias _KeyValueTuple = _KeyValueTuple_<_Key, _Value>
+}
+
+extension KeyValueComparer where Element == _KeyValueTuple {
+
+  @inlinable
+  @inline(__always)
+  public static func __key(_ element: Element) -> _Key { element.key }
+
+  @inlinable
+  @inline(__always)
+  public static func ___value(of element: Element) -> _Value { element.value }
+}
+

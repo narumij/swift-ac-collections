@@ -90,6 +90,7 @@ extension ValueComparerProtocol where VC: KeyValueComparer, VC._Value: Equatable
 
 // TODO: 最近タプルの最適化が甘いので、構造体に変更する.
 // 以外とやっかいで諦めかけている
+// いろいろ要素アクセスが変わってAPIチェックが大変なので、一旦断念
 
 public typealias _KeyValueTuple_<_Key, _Value> = (key: _Key, value: _Value)
 

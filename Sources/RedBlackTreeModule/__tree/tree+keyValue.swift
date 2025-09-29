@@ -88,8 +88,7 @@ extension ValueComparerProtocol where VC: KeyValueComparer, VC._Value: Equatable
 
 // MARK: -
 
-// TODO: 最近タプルの最適化が甘いので、構造体に変更する.
-// 以外とやっかいで諦めかけている
+// 最近タプルの最適化が甘いので、構造体に変更したいが、API変動が大変なので見送り
 
 public typealias _KeyValueTuple_<_Key, _Value> = (key: _Key, value: _Value)
 
@@ -107,34 +106,3 @@ extension KeyValueComparer where Element == _KeyValueTuple {
   @inline(__always)
   public static func ___value(of element: Element) -> _Value { element.value }
 }
-
-// MARK: -
-
-public struct _KeyValueElement<Key, Value> {
-  public init(key: Key, value: Value) {
-    self.key = key
-    self.value = value
-  }
-  public init(_ key: Key,_ value: Value) {
-    self.key = key
-    self.value = value
-  }
-  public init(_ tuple: (Key, Value)) {
-    self.key = tuple.0
-    self.value = tuple.1
-  }
-  public var key: Key
-  public var value: Value
-}
-
-extension KeyValueComparer where Element == _KeyValueElement<_Key,_Value> {
-
-  @inlinable
-  @inline(__always)
-  public static func __key(_ element: Element) -> _Key { element.key }
-
-  @inlinable
-  @inline(__always)
-  public static func ___value(of element: Element) -> _Value { element.value }
-}
-

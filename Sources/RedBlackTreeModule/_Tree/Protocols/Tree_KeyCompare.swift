@@ -22,6 +22,8 @@
 
 public protocol Tree_KeyCompare {
   associatedtype Key
+  associatedtype Element
+  static func __key(_ e: Element) -> Key
   static func value_comp(_ lhs: Key,_ rhs: Key) -> Bool
   static func value_equiv(_ :Key,_ :Key) -> Bool
 }

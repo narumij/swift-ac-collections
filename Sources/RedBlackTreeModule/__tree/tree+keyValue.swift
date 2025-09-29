@@ -64,6 +64,12 @@ extension KeyValueComparer where _Value: Equatable {
 
 // MARK: -
 
+extension ValueComparerProtocol where VC: KeyValueComparer {
+  @inlinable
+  @inline(__always)
+  public static func ___value(of element: VC.Element) -> VC._Value { VC.___value(of: element) }
+}
+
 extension ValueComparerProtocol where VC: KeyValueComparer, VC._Value: Comparable {
   @inlinable
   @inline(__always)
@@ -92,6 +98,36 @@ extension KeyValueComparer {
 }
 
 extension KeyValueComparer where Element == _KeyValueTuple {
+
+  @inlinable
+  @inline(__always)
+  public static func __key(_ element: Element) -> _Key { element.key }
+
+  @inlinable
+  @inline(__always)
+  public static func ___value(of element: Element) -> _Value { element.value }
+}
+
+// MARK: -
+
+public struct _KeyValueElement<Key, Value> {
+  public init(key: Key, value: Value) {
+    self.key = key
+    self.value = value
+  }
+  public init(_ key: Key,_ value: Value) {
+    self.key = key
+    self.value = value
+  }
+  public init(_ tuple: (Key, Value)) {
+    self.key = tuple.0
+    self.value = tuple.1
+  }
+  public var key: Key
+  public var value: Value
+}
+
+extension KeyValueComparer where Element == _KeyValueElement<_Key,_Value> {
 
   @inlinable
   @inline(__always)

@@ -21,7 +21,10 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct NodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
+public struct NodeIterator<Tree>: Sequence, IteratorProtocol
+where
+  Tree: Tree_IterateProtocol
+{
 
   @usableFromInline
   let __tree_: Tree
@@ -76,7 +79,10 @@ extension NodeIterator: Comparable {
 }
 
 @frozen
-public struct ReversedNodeIterator<Tree: Tree_IterateProtocol>: Sequence, IteratorProtocol {
+public struct ReversedNodeIterator<Tree>: Sequence, IteratorProtocol
+where
+  Tree: Tree_IterateProtocol
+{
 
   @usableFromInline
   let __tree_: Tree

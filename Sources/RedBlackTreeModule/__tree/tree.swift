@@ -316,10 +316,10 @@ extension ValueComparerProtocol {
   
   @inlinable
   @inline(__always)
-  public func __key(_ e: VC.Element) -> VC._Key {
+  public static func __key(_ e: VC.Element) -> VC._Key {
     VC.__key(e)
   }
-
+  
   @inlinable
   @inline(__always)
   public static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
@@ -332,6 +332,12 @@ extension ValueComparerProtocol {
     VC.value_equiv(lhs, rhs)
   }
   
+  @inlinable
+  @inline(__always)
+  public func __key(_ e: VC.Element) -> VC._Key {
+    VC.__key(e)
+  }
+
   @inlinable
   @inline(__always)
   public func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool {

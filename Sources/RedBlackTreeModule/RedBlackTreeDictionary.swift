@@ -837,7 +837,7 @@ extension RedBlackTreeDictionary.SubSequence where Value: Equatable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___key_value_equiv)
+    elementsEqual(other, by: Tree.___element_equiv)
   }
 }
 
@@ -849,7 +849,7 @@ extension RedBlackTreeDictionary.SubSequence where Value: Comparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
+    lexicographicallyPrecedes(other, by: Tree.___element_comp)
   }
 }
 
@@ -1038,7 +1038,7 @@ extension RedBlackTreeDictionary where Value: Equatable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___key_value_equiv)
+    elementsEqual(other, by: Tree.___element_equiv)
   }
 }
 
@@ -1050,7 +1050,7 @@ extension RedBlackTreeDictionary where Value: Comparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
+    lexicographicallyPrecedes(other, by: Tree.___element_comp)
   }
 }
 

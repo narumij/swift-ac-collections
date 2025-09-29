@@ -395,22 +395,22 @@ extension ___Tree {
 
   public typealias Element = VC.Element
 
-  @usableFromInline
-  internal typealias _Key = VC._Key
+//  @usableFromInline
+  public typealias _Key = VC._Key
 
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    VC.value_comp(a, b)
-  }
+//  @nonobjc
+//  @inlinable
+//  @inline(__always)
+//  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
+//    VC.value_comp(a, b)
+//  }
 
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func __key(_ e: VC.Element) -> VC._Key {
-    VC.__key(e)
-  }
+//  @nonobjc
+//  @inlinable
+//  @inline(__always)
+//  internal static func __key(_ e: VC.Element) -> VC._Key {
+//    VC.__key(e)
+//  }
 
   @nonobjc
   @inlinable
@@ -447,6 +447,8 @@ extension ___Tree: CompareProtocol {}
 extension ___Tree: CompareUniqueProtocol {}
 extension ___Tree: CompareMultiProtocol {}
 extension ___Tree: MergeSourceProtocol {}
+extension ___Tree: CompProtocol {}
+extension ___Tree: ValueComparerProtocol {}
 
 extension ___Tree {
   @nonobjc
@@ -1023,6 +1025,8 @@ extension ___Tree: Tree_IndicesProtocol {
   }
 }
 
+// TODO: FIXME
+// 継承関係で混乱がある
 extension ___Tree: Tree_KeyCompare {
 
   public typealias Key = VC._Key
@@ -1030,22 +1034,8 @@ extension ___Tree: Tree_KeyCompare {
   @nonobjc
   @inlinable
   @inline(__always)
-  public static func value_comp(_ lhs: Key, _ rhs: Key) -> Bool {
-    VC.value_comp(lhs, rhs)
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public static func value_equiv(_ lhs: Key, _ rhs: Key) -> Bool {
-    !value_comp(lhs, rhs) && !value_comp(rhs, lhs)
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
   public static func ___key_equiv(_ lhs: Element, _ rhs: Element) -> Bool {
-    value_equiv(VC.__key(lhs), VC.__key(rhs))
+    VC.value_equiv(VC.__key(lhs), VC.__key(rhs))
   }
 
   @nonobjc

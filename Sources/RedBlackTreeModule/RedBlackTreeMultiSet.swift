@@ -640,7 +640,7 @@ extension RedBlackTreeMultiSet.SubSequence {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___key_equiv)
+    elementsEqual(other, by: Tree.___element_equiv)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -649,7 +649,7 @@ extension RedBlackTreeMultiSet.SubSequence {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___key_comp)
+    lexicographicallyPrecedes(other, by: Tree.___element_comp)
   }
 }
 
@@ -811,7 +811,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___key_equiv)
+    elementsEqual(other, by: Tree.___element_equiv)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -820,7 +820,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___key_comp)
+    lexicographicallyPrecedes(other, by: Tree.___element_comp)
   }
 }
 

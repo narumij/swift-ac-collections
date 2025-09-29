@@ -30,7 +30,7 @@ import Foundation
 ///
 /// endはルートノードを保持するオブジェクトを指すかわりに、-2で表現している
 ///
-/// `__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
+/// llvmの`__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
 public typealias _NodePtr = Int
 
 public typealias _Pointer = _NodePtr
@@ -70,7 +70,7 @@ public
   case __left_(_NodePtr)
 }
 
-// ルートノード相当の機能
+// ルートノードの親相当の機能
 @usableFromInline
 protocol TreeEndNodeProtocol {
   /// 木を遡るケースではこちらが必ず必要
@@ -122,31 +122,41 @@ protocol TreeValueProtocol {
   func __value_(_: _NodePtr) -> _Key
 }
 
-// 名前のねじれは移植元に由来する
 @usableFromInline
-protocol KeyProtocol {
-  associatedtype _Key
+protocol TreeElementProtocol {
   associatedtype Element
+  /// ノードの値要素を取得する
+  func ___element(_ p: _NodePtr) -> Element
+}
+
+@usableFromInline
+protocol KeyProtocol: TreeValueProtocol, TreeElementProtocol {
   /// 要素から比較用のキー値を取り出す。
   func __key(_ e: Element) -> _Key
+}
+
+extension KeyProtocol {
+
+  @inlinable
+  @inline(__always)
+  func __value_(_ p: _NodePtr) -> _Key {
+    __key(___element(p))
+  }
 }
 
 // 名前のねじれは移植元に由来する
 @usableFromInline
 protocol ValueProtocol: TreeNodeProtocol, TreeValueProtocol {
-
   /// キー同士を比較する。通常`<`と同じ
   func value_comp(_: _Key, _: _Key) -> Bool
 }
 
-extension ValueProtocol {
-
+/// Set Algebraやmeld等で用いる
+@usableFromInline
+protocol CompProtocol {
+  associatedtype _Key
   /// キー同士を比較する。通常`<`と同じ
-  @inlinable
-  @inline(__always)
-  func ___comp(_ a: _Key, _ b: _Key) -> Bool {
-    value_comp(a, b)
-  }
+  func ___comp(_ a: _Key, _ b: _Key) -> Bool
 }
 
 @usableFromInline
@@ -242,9 +252,6 @@ protocol AllocatorProtocol {
   func __construct_node(_ k: Element) -> _NodePtr
   /// ノードを破棄する
   func destroy(_ p: _NodePtr)
-  /// ノードの値要素を取得する
-  // TODO: マージプロトコルの作業時にさぼってここに配置しているので、直す
-  func ___element(_ p: _NodePtr) -> Element
 }
 
 // MARK: common
@@ -259,6 +266,17 @@ public protocol ValueComparer {
   static func __key(_: Element) -> _Key
   /// 比較関数が実装されていること
   static func value_comp(_: _Key, _: _Key) -> Bool
+
+  static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
+}
+
+extension ValueComparer {
+
+  @inlinable
+  @inline(__always)
+  public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
+    !value_comp(lhs, rhs) && !value_comp(rhs, lhs)
+  }
 }
 
 // Comparableプロトコルの場合標準実装を付与する
@@ -272,53 +290,63 @@ extension ValueComparer where _Key: Comparable {
   }
 }
 
-extension ValueComparer {
+extension ValueComparer where _Key: Equatable {
 
-  /// 比較のインスタンス関数の標準実装
   @inlinable
   @inline(__always)
-  static func ___comp(_ a: _Key, _ b: _Key) -> Bool {
-    value_comp(a, b)
+  public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
+    lhs == rhs
+  }
+}
+
+/// ツリー使用条件をインジェクションされる側の実装プロトコル
+@usableFromInline
+protocol ValueComparerProtocol {
+  associatedtype VC: ValueComparer
+  func __key(_ e: VC.Element) -> VC._Key
+  static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
+  func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
+  func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool
+}
+
+extension ValueComparerProtocol {
+
+  @inlinable
+  @inline(__always)
+  public func __key(_ e: VC.Element) -> VC._Key {
+    VC.__key(e)
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
+    VC.value_comp(a, b)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
+    VC.value_comp(a, b)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
+    VC.value_comp(a, b)
   }
 }
 
 // MARK: key
 
-/// 要素とキーが一致する場合のひな形
-public protocol ScalarValueComparer: ValueComparer where _Key == Element {}
-
-extension ScalarValueComparer {
-
-  @inlinable
-  @inline(__always)
-  public static func __key(_ e: Element) -> _Key { e }
-}
 
 // MARK: key value
 
-/// 要素がキーバリューの場合のひな形
-public protocol KeyValueComparer: ValueComparer {
-  associatedtype _Value
-  static func __key(_ element: Element) -> _Key
-}
 
-// TODO: 最近タプルの最適化が甘いので、構造体に変更する
-public typealias _KeyValueTuple_<_Key, _Value> = (key: _Key, value: _Value)
-
-extension KeyValueComparer {
-  public typealias _KeyValueTuple = _KeyValueTuple_<_Key, _Value>
-}
-
-extension KeyValueComparer where Element == _KeyValueTuple {
-
-  @inlinable
-  @inline(__always)
-  public static func __key(_ element: Element) -> _Key { element.key }
-}
-
-// MARK: key value
+// MARK: custom
 
 /// 要素がカスタムでキーの取得が特殊な場合のひな形
+///
+/// 主としてLRU用
 public
   protocol _KeyCustomProtocol
 {

@@ -46,7 +46,7 @@ where Custom: _KeyCustomProtocol {
     typealias _Key = Key
 
   public
-    typealias _Value = Value
+    typealias _MappedValue = Value
 
   @usableFromInline
   var _storage: Tree.Storage
@@ -120,7 +120,7 @@ extension ___LRUMemoizeStorage {
 extension ___LRUMemoizeStorage: ___LRULinkList {
   
   @inlinable
-  public static func ___value(of element: Element) -> _Value {
+  public static func ___value(of element: Element) -> _MappedValue {
     element.value
   }
 }

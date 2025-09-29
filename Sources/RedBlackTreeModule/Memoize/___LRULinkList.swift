@@ -24,7 +24,7 @@ import Foundation
 
 extension KeyValueComparer {
   public typealias _LinkingKeyValueTuple = (
-    key: _Key, prev: _NodePtr, next: _NodePtr, value: _Value
+    key: _Key, prev: _NodePtr, next: _NodePtr, value: _MappedValue
   )
 }
 
@@ -34,7 +34,7 @@ extension KeyValueComparer where Element == _LinkingKeyValueTuple {
   public static func __key(_ element: Element) -> _Key { element.key }
 
   @inlinable @inline(__always)
-  public static func __value(_ element: Element) -> _Value { element.value }
+  public static func __value(_ element: Element) -> _MappedValue { element.value }
 }
 
 @usableFromInline

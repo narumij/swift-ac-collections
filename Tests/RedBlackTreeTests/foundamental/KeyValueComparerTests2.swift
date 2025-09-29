@@ -10,7 +10,7 @@ import XCTest
 
 final class KeyValueComparerTests2: XCTestCase, KeyValueComparer {
   
-  typealias _Value = Int
+  typealias _MappedValue = Int
   typealias _Key = Int
   typealias Element = _KeyValueTuple
   

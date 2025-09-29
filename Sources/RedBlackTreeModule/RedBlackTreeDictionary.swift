@@ -67,7 +67,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias _Key = Key
 
   public
-    typealias _Value = Value
+    typealias _MappedValue = Value
 
   @usableFromInline
   var _storage: Tree.Storage

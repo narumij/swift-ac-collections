@@ -13,7 +13,7 @@ final class KeyValueComparerTests: XCTestCase, KeyValueComparer {
   static func value_comp(_ l: _Key, _ r: _Key) -> Bool {
     l.internalKey < r.internalKey
   }
-  typealias _Value = Int
+  typealias _MappedValue = Int
   struct _Key {
     var internalKey: Int
   }

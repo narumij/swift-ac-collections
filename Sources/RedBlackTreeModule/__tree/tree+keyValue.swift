@@ -151,39 +151,3 @@ extension KeyValueComparer where _Value == _KeyValueElement<_Key,_MappedValue> {
   @inline(__always)
   public static func ___value(of element: _Value) -> _MappedValue { element.value }
 }
-
-#if true
-@inlinable
-public func keyValue<K,V>(_ key: K,_ value: V) -> _KeyValueTuple_<K,V> {
-  (key, value)
-}
-@inlinable
-func keyValue<K,V>(_ tuple: (K, V)) -> _KeyValueTuple_<K,V> {
-  tuple
-}
-@inlinable
-func keyValue<K,V>(_ key: K,_ value: V) -> _KeyValueElement<K,V> {
-  .init(key, value)
-}
-@inlinable
-func keyValue<K,V>(_ tuple: _KeyValueTuple_<K,V>) -> _KeyValueElement<K,V> {
-  .init(tuple)
-}
-@inlinable
-func keyValue<K,V>(_ kv: _KeyValueElement<K,V>) -> (K,V) {
-  (kv.key, kv.value)
-}
-#else
-@inlinable
-func keyValue<K,V>(_ key: K,_ value: V) -> _KeyValueElement<K,V> {
-  .init(key, value)
-}
-@inlinable
-func keyValue<K,V>(_ tuple: (K, V)) -> _KeyValueElement<K,V> {
-  .init(tuple)
-}
-@inlinable
-func _keyValue<K,V>(_ kv: _KeyValueElement<K,V>) -> (K,V) {
-  (kv.key, kv.value)
-}
-#endif

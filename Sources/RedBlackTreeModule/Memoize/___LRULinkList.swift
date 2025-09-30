@@ -22,13 +22,22 @@
 
 import Foundation
 
-extension KeyValueComparer {
-  public typealias _LinkingKeyValueTuple = (
-    key: _Key, prev: _NodePtr, next: _NodePtr, value: _MappedValue
-  )
+public struct _LinkingPair<Key,Value> {
+  @inlinable
+  @inline(__always)
+  public init(_ key: Key,_ prev: _NodePtr,_ next: _NodePtr,_ value: Value) {
+    self.key = key
+    self.prev = prev
+    self.next = next
+    self.value = value
+  }
+  public var key: Key
+  public var prev: _NodePtr
+  public var next: _NodePtr
+  public var value: Value
 }
 
-extension KeyValueComparer where _Value == _LinkingKeyValueTuple {
+extension KeyValueComparer where _Value == _LinkingPair<_Key,_MappedValue> {
 
   @inlinable @inline(__always)
   public static func __key(_ element: _Value) -> _Key { element.key }
@@ -39,7 +48,7 @@ extension KeyValueComparer where _Value == _LinkingKeyValueTuple {
 
 @usableFromInline
 protocol ___LRULinkList: ___RedBlackTreeBase, KeyValueComparer
-where _Value == _LinkingKeyValueTuple {
+where _Value == _LinkingPair<_Key,_MappedValue> {
   associatedtype Value
   var __tree_: Tree { get }
   var _rankHighest: _NodePtr { get set }
@@ -49,6 +58,7 @@ where _Value == _LinkingKeyValueTuple {
 extension ___LRULinkList {
 
   @inlinable
+  @inline(__always)
   mutating func ___prepend(_ __p: _NodePtr) {
     if _rankHighest == .nullptr {
       __tree_[__p].next = .nullptr
@@ -64,6 +74,7 @@ extension ___LRULinkList {
   }
 
   @inlinable
+  @inline(__always)
   mutating func ___pop(_ __p: _NodePtr) -> _NodePtr {
 
     assert(
@@ -89,6 +100,7 @@ extension ___LRULinkList {
   }
 
   @inlinable
+  @inline(__always)
   mutating func ___popRankLowest() -> _NodePtr {
 
     defer {

@@ -54,7 +54,6 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 
   public
     typealias KeyValue = (key: Key, value: Value)
-//  typealias KeyValue = _KeyValueElement<_Key,_Value>
 
   public
     typealias Element = KeyValue
@@ -69,10 +68,10 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias _Key = Key
 
   public
-    typealias _Value = KeyValue
-  
-  public
     typealias _MappedValue = Value
+
+  public
+    typealias _Value = Element
 
   @usableFromInline
   var _storage: Tree.Storage
@@ -122,7 +121,7 @@ extension RedBlackTreeMultiMap {
     // ソートの計算量がO(*n* log *n*)
     for __k in elements {
       // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, keyValue(__k))
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
     }
     assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(tree: tree)
@@ -147,7 +146,7 @@ extension RedBlackTreeMultiMap {
     for __v in values {
       let __k = try keyForValue(__v)
       // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, keyValue(__k, __v))
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k, __v))
     }
     assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(tree: tree)
@@ -258,7 +257,7 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    insert(keyValue(key, value))
+    insert((key, value))
   }
 
   /// - Complexity: O(log *n*)
@@ -835,7 +834,7 @@ extension RedBlackTreeMultiMap: CustomStringConvertible {
     if isEmpty { return "[:]" }
     var result = "["
     var first = true
-    for (key, value) in self.map(keyValue) {
+    for (key, value) in self {
       if first {
         first = false
       } else {
@@ -859,7 +858,7 @@ extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
     } else {
       result += "["
       var first = true
-      for (key, value) in self.map(keyValue) {
+      for (key, value) in self {
         if first {
           first = false
         } else {

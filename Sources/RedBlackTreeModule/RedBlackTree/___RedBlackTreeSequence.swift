@@ -261,25 +261,6 @@ extension ___RedBlackTreeSequence {
 
 extension ___RedBlackTreeSequence {
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public __consuming func keys<Key, Value>() -> KeyIterator<Tree, Key, Value>
-  where _Value == _KeyValueElement<Key, Value> {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public __consuming func values<Key, Value>() -> ValueIterator<Tree, Key, Value>
-  where _Value == _KeyValueElement<Key, Value> {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-  }
-}
-
-extension ___RedBlackTreeSequence {
-
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable

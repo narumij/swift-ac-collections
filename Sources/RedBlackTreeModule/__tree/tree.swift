@@ -112,14 +112,12 @@ protocol TreeNodeRefProtocol {
   func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr)
 }
 
-// 名前のねじれは比較対象の型が異なっているため
-// 多分辞書を急ピッチで作成した際にミスった
-// llvmの__treeにもねじれがあるが、ソースを追い切れてない
+// 名前のねじれはllvmの__tree由来
 @usableFromInline
 protocol TreeNodeValueProtocol where _Key == __node_value_type {
   associatedtype _Key
   associatedtype __node_value_type
-  /// ノードから比較用のキー値を取り出す。
+  /// ノードから比較用の値を取り出す。
   /// SetやMultisetではElementに該当する
   /// DictionaryやMultiMapではKeyに該当する
   func __get_value(_: _NodePtr) -> __node_value_type
@@ -148,13 +146,11 @@ extension KeyProtocol {
   }
 }
 
-// 名前のねじれは比較対象の型が異なっているため
-// 多分辞書を急ピッチで作成した際にミスった
-// llvmの__treeにもねじれがあるが、ソースを追い切れてない
+// 名前のねじれはllvmの__tree由来
 @usableFromInline
 protocol ValueProtocol: TreeNodeProtocol, TreeNodeValueProtocol {
   /// キー同士を比較する。通常`<`と同じ
-  func value_comp(_: _Key, _: _Key) -> Bool
+  func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
 }
 
 /// Set Algebraやmeld等で用いる
@@ -296,6 +292,7 @@ extension ValueComparer where _Key: Comparable {
   }
 }
 
+// Equatableプロトコルの場合標準実装を付与する
 extension ValueComparer where _Key: Equatable {
 
   @inlinable
@@ -306,13 +303,10 @@ extension ValueComparer where _Key: Equatable {
 }
 
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
-//@usableFromInline
 public protocol ValueComparerProtocol {
   associatedtype VC: ValueComparer
-  
   static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
   static func value_equiv(_ lhs: VC._Key, _ rhs: VC._Key) -> Bool
-  
   func __key(_ e: VC._Value) -> VC._Key
   func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
   func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool
@@ -354,37 +348,5 @@ extension ValueComparerProtocol {
   @inline(__always)
   public func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
     VC.value_comp(a, b)
-  }
-}
-
-// MARK: key
-
-
-// MARK: key value
-
-
-// MARK: custom
-
-/// 要素がカスタムでキーの取得が特殊な場合のひな形
-///
-/// 主としてLRU用
-public
-  protocol _KeyCustomProtocol
-{
-  associatedtype Parameters
-  static func value_comp(_ a: Parameters, _ b: Parameters) -> Bool
-}
-
-@usableFromInline
-protocol CustomKeyValueComparer: KeyValueComparer where _Key == Custom.Parameters {
-  associatedtype Custom: _KeyCustomProtocol
-}
-
-extension CustomKeyValueComparer {
-
-  @inlinable
-  @inline(__always)
-  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    Custom.value_comp(a, b)
   }
 }

@@ -27,11 +27,11 @@ import Foundation
 ///
 /// InlineMemoize動作用。CoWがないので注意
 @frozen
-public struct ___LRUMemoizeStorage<Custom, Value>
-where Custom: _KeyCustomProtocol {
+public struct ___LRUMemoizeStorage<Parameters, Value>
+where Parameters: Comparable {
 
   public
-    typealias Key = Custom.Parameters
+    typealias Key = Parameters
 
   public
     typealias Value = Value
@@ -126,5 +126,5 @@ extension ___LRUMemoizeStorage: ___LRULinkList {
 }
 
 extension ___LRUMemoizeStorage: ___RedBlackTreeCopyOnWrite {}
-extension ___LRUMemoizeStorage: CustomKeyValueComparer {}
+extension ___LRUMemoizeStorage: KeyValueComparer {}
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}

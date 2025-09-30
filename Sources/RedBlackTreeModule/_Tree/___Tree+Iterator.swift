@@ -28,7 +28,7 @@ extension ___Tree {
   @frozen
   public struct ___Iterator {
 
-    public typealias Element = Tree.Element
+    public typealias _Value = Tree._Value
 
     @usableFromInline
     let __tree_: ___Tree
@@ -173,7 +173,7 @@ extension ___Tree.___Iterator {
 extension ___Tree.___Iterator {
 
   @inlinable
-  public var pointee: Element? {
+  public var pointee: _Value? {
     @inline(__always) _read {
       yield __tree_.___is_subscript_null(rawValue) ? nil : ___pointee
     }
@@ -189,7 +189,7 @@ extension ___Tree.___Iterator {
   }
 
   @inlinable
-  var ___pointee: Element {
+  var ___pointee: _Value {
     @inline(__always) _read {
       yield __tree_[rawValue]
     }
@@ -262,5 +262,5 @@ public func - <VC>(
 
 #if swift(>=5.5)
   extension ___Tree.___Iterator: @unchecked Sendable
-  where Element: Sendable {}
+  where _Value: Sendable {}
 #endif

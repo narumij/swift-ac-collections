@@ -27,12 +27,12 @@ where
   Tree == ___Tree<Self>,
   Index == Tree.Index,
   Indices == Tree.Indices,
-  Element == Tree.Element
+_Value == Tree._Value
 {
   associatedtype Tree
   associatedtype Index
   associatedtype Indices
-  associatedtype Element
+  associatedtype _Value
   var __tree_: Tree { get }
 }
 
@@ -50,7 +50,7 @@ extension ___RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (Element) throws -> Void) rethrows {
+  public func forEach(_ body: (_Value) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
       try body(__tree_[$0])
     }
@@ -61,7 +61,7 @@ extension ___RedBlackTreeSequence {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+  public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
       try body(___index($0), __tree_[$0])
     }
@@ -69,7 +69,7 @@ extension ___RedBlackTreeSequence {
   
   @inlinable
   @inline(__always)
-  public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
+  public func ___forEach(_ body: (_NodePtr, _Value) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
       try body($0, __tree_[$0])
     }
@@ -172,7 +172,7 @@ extension ___RedBlackTreeSequence {
 
   /// - Complexity: O(1)
   @inlinable
-  public subscript(position: Index) -> Element {
+  public subscript(position: Index) -> _Value {
     @inline(__always) _read {
       __tree_.___ensureValid(subscript: position.rawValue)
       yield __tree_[position.rawValue]
@@ -184,7 +184,7 @@ extension ___RedBlackTreeSequence {
 
   /// - Complexity: O(1)
   @inlinable
-  public subscript(_unsafe position: Index) -> Element {
+  public subscript(_unsafe position: Index) -> _Value {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
@@ -246,7 +246,7 @@ extension ___RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public __consuming func keys<Key, Value>() -> KeyIterator<Tree, Key, Value>
-  where Element == _KeyValueTuple_<Key, Value> {
+  where _Value == _KeyValueTuple_<Key, Value> {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 
@@ -254,7 +254,7 @@ extension ___RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public __consuming func values<Key, Value>() -> ValueIterator<Tree, Key, Value>
-  where Element == _KeyValueTuple_<Key, Value> {
+  where _Value == _KeyValueTuple_<Key, Value> {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
@@ -266,7 +266,7 @@ extension ___RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public func elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
+    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
     try makeIterator().elementsEqual(other, by: areEquivalent)
   }
@@ -276,8 +276,8 @@ extension ___RedBlackTreeSequence {
   @inlinable
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
+    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
     try makeIterator().lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
@@ -286,7 +286,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  public mutating func ___element(at ptr: _NodePtr) -> Element? {
+  public mutating func ___element(at ptr: _NodePtr) -> _Value? {
     guard !__tree_.___is_subscript_null(ptr) else {
       return nil
     }

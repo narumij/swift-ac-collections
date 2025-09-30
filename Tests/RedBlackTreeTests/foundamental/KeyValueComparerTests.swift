@@ -13,11 +13,11 @@ final class KeyValueComparerTests: XCTestCase, KeyValueComparer {
   static func value_comp(_ l: _Key, _ r: _Key) -> Bool {
     l.internalKey < r.internalKey
   }
-  typealias _Value = Int
+  typealias _MappedValue = Int
   struct _Key {
     var internalKey: Int
   }
-  typealias Element = _KeyValueTuple
+  typealias _Value = _KeyValueTuple
   
   let keys: [_Key] = (0..<3).map { .init(internalKey: $0) }
 

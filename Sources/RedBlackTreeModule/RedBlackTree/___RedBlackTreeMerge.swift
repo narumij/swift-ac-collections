@@ -9,10 +9,10 @@
 protocol ___RedBlackTreeMerge: ValueComparer & CompareTrait
 where
   Tree == ___Tree<Self>,
-  Element == Tree.Element
+_Value == Tree._Value
 {
   associatedtype Tree
-  associatedtype Element
+  associatedtype _Value
   var __tree_: Tree { get }
   mutating func _ensureCapacity()
 }
@@ -22,7 +22,7 @@ extension ___RedBlackTreeMerge {
   @inlinable
   @inline(__always)
   mutating func ___tree_merge_unique<Source>(_ __source: Source)
-  where Source: MergeSourceProtocol, Source._Key == _Key, Source.Element == Element {
+  where Source: MergeSourceProtocol, Source._Key == _Key, Source._Value == _Value {
     var __i = __source.__begin_node
     while __i != __source.__end_node() {
       var __src_ptr: _NodePtr = __i
@@ -41,7 +41,7 @@ extension ___RedBlackTreeMerge {
   @inlinable
   @inline(__always)
   mutating func ___tree_merge_multi<Source>(_ __source: Source)
-  where Source: MergeSourceProtocol, Source._Key == _Key, Source.Element == Element {
+  where Source: MergeSourceProtocol, Source._Key == _Key, Source._Value == _Value {
     var __i = __source.__begin_node
     while __i != __source.__end_node() {
       var __src_ptr: _NodePtr = __i
@@ -60,10 +60,10 @@ extension ___RedBlackTreeMerge {
     _ __source: Source, uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows
   where
-    Element == _KeyValueTuple_<Key, Value>,
+  _Value == _KeyValueTuple_<Key, Value>,
     Source: MergeSourceProtocol,
     Source._Key == _Key,
-    Source.Element == Element
+    Source._Value == _Value
   {
     var __i = __source.__begin_node
     while __i != __source.__end_node() {
@@ -85,7 +85,7 @@ extension ___RedBlackTreeMerge {
   @inlinable
   @inline(__always)
   mutating func ___merge_unique<S>(_ __source: S)
-  where S: Sequence, S.Element == Element {
+  where S: Sequence, S.Element == _Value {
     for __element in __source {
       var __parent: _NodePtr = .zero
       let __child = __tree_.__find_equal(&__parent, __tree_.__key(__element))
@@ -101,7 +101,7 @@ extension ___RedBlackTreeMerge {
   @inlinable
   @inline(__always)
   mutating func ___merge_multi<S>(_ __source: S)
-  where S: Sequence, S.Element == Element {
+  where S: Sequence, S.Element == _Value {
     for __element in __source {
       var __parent: _NodePtr = .zero
       let __child = __tree_.__find_leaf_high(&__parent, __tree_.__key(__element))
@@ -115,7 +115,7 @@ extension ___RedBlackTreeMerge {
   @inline(__always)
   mutating func ___merge_multi<S, Key, Value>(_ __source: S)
   where
-    Element == _KeyValueTuple_<Key, Value>,
+  _Value == _KeyValueTuple_<Key, Value>,
     S: Sequence, S.Element == (Key, Value)
   {
     for __element in __source {
@@ -126,14 +126,14 @@ extension ___RedBlackTreeMerge {
       __tree_.__insert_node_at(__parent, __child, __src_ptr)
     }
   }
-
+  
   @inlinable
   @inline(__always)
   mutating func ___merge_unique<S, Key, Value>(
     _ __source: S, uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows
   where
-    Element == _KeyValueTuple_<Key, Value>,
+  _Value == _KeyValueTuple_<Key, Value>,
     S: Sequence, S.Element == (Key, Value)
   {
     for __element in __source {

@@ -22,7 +22,7 @@
 
 @frozen
 public struct ValueIterator<Tree: Tree_IterateProtocol, K, Value>: Sequence, IteratorProtocol
-where Tree.Element == _KeyValueTuple_<K, Value> {
+where Tree._Value == _KeyValueTuple_<K, Value> {
 
   @usableFromInline
   let __tree_: Tree
@@ -79,7 +79,7 @@ extension ValueIterator: Comparable where Value: Comparable {
 @frozen
 public struct ReversedValueIterator<Tree: Tree_IterateProtocol, K, Value>: Sequence,
   IteratorProtocol
-where Tree.Element == _KeyValueTuple_<K, Value> {
+where Tree._Value == _KeyValueTuple_<K, Value> {
 
   @usableFromInline
   let __tree_: Tree

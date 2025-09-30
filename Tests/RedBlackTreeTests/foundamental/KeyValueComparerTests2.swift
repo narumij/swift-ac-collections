@@ -10,9 +10,9 @@ import XCTest
 
 final class KeyValueComparerTests2: XCTestCase, KeyValueComparer {
   
-  typealias _Value = Int
+  typealias _MappedValue = Int
   typealias _Key = Int
-  typealias Element = _KeyValueTuple
+  typealias _Value = _KeyValueTuple
   
   let keys: [_Key] = (0..<3) + []
 

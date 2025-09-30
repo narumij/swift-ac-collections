@@ -24,40 +24,40 @@ import Foundation
 
 /// 要素がキーバリューの場合のひな形
 public protocol KeyValueComparer: ValueComparer {
-  associatedtype _Value
-  static func ___value(of element: Element) -> _Value
+  associatedtype _MappedValue
+  static func ___value(of element: _Value) -> _MappedValue
 }
 
 extension KeyValueComparer {
 
   @inlinable
   @inline(__always)
-  static func ___key_equiv(_ lhs: Element, _ rhs: Element) -> Bool {
+  static func ___key_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
     value_equiv(__key(lhs), __key(rhs))
   }
 
   @inlinable
   @inline(__always)
-  static func ___key_comp(_ lhs: Element, _ rhs: Element) -> Bool {
+  static func ___key_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
     value_comp(__key(lhs), __key(rhs))
   }
 }
 
 // MARK: -
 
-extension KeyValueComparer where _Value: Comparable {
+extension KeyValueComparer where _MappedValue: Comparable {
   @inlinable
   @inline(__always)
-  static func ___element_comp(_ lhs: Element, _ rhs: Element) -> Bool {
+  static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
     ___key_comp(lhs, rhs)
       || (!___key_comp(lhs, rhs) && ___value(of: lhs) < ___value(of: rhs))
   }
 }
 
-extension KeyValueComparer where _Value: Equatable {
+extension KeyValueComparer where _MappedValue: Equatable {
   @inlinable
   @inline(__always)
-  static func ___element_equiv(_ lhs: Element, _ rhs: Element) -> Bool {
+  static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
     ___key_equiv(lhs, rhs) && ___value(of: lhs) == ___value(of: rhs)
   }
 }
@@ -67,42 +67,86 @@ extension KeyValueComparer where _Value: Equatable {
 extension ValueComparerProtocol where VC: KeyValueComparer {
   @inlinable
   @inline(__always)
-  public static func ___value(of element: VC.Element) -> VC._Value { VC.___value(of: element) }
+  public static func ___value(of element: VC._Value) -> VC._MappedValue { VC.___value(of: element) }
 }
 
-extension ValueComparerProtocol where VC: KeyValueComparer, VC._Value: Comparable {
+extension ValueComparerProtocol where VC: KeyValueComparer, VC._MappedValue: Comparable {
   @inlinable
   @inline(__always)
-  static func ___element_comp(_ lhs: VC.Element, _ rhs: VC.Element) -> Bool {
+  static func ___element_comp(_ lhs: VC._Value, _ rhs: VC._Value) -> Bool {
     VC.___element_comp(lhs, rhs)
   }
 }
 
-extension ValueComparerProtocol where VC: KeyValueComparer, VC._Value: Equatable {
+extension ValueComparerProtocol where VC: KeyValueComparer, VC._MappedValue: Equatable {
   @inlinable
   @inline(__always)
-  static func ___element_equiv(_ lhs: VC.Element, _ rhs: VC.Element) -> Bool {
+  static func ___element_equiv(_ lhs: VC._Value, _ rhs: VC._Value) -> Bool {
     VC.___element_equiv(lhs, rhs)
   }
 }
 
 // MARK: -
 
-// 最近タプルの最適化が甘いので、構造体に変更したいが、API変動が大変なので見送り
+// 最近タプルの最適化が甘いので、LRUのみペアを構造体に変更
+// それ以外は一律速くなる感じでは無く、トレードオフになるため行わない
 
-public typealias _KeyValueTuple_<_Key, _Value> = (key: _Key, value: _Value)
+public typealias _KeyValueTuple_<Key, Value> = (key: Key, value: Value)
 
 extension KeyValueComparer {
-  public typealias _KeyValueTuple = _KeyValueTuple_<_Key, _Value>
+  public typealias _KeyValueTuple = _KeyValueTuple_<_Key, _MappedValue>
 }
 
-extension KeyValueComparer where Element == _KeyValueTuple {
+extension KeyValueComparer where _Value == _KeyValueTuple {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ element: Element) -> _Key { element.key }
+  public static func __key(_ element: _Value) -> _Key { element.key }
 
   @inlinable
   @inline(__always)
-  public static func ___value(of element: Element) -> _Value { element.value }
+  public static func ___value(of element: _Value) -> _MappedValue { element.value }
+}
+
+// MARK: -
+
+public struct _KeyValueElement<Key, Value> {
+  @inlinable
+  @inline(__always)
+  public init(key: Key, value: Value) {
+    self.key = key
+    self.value = value
+  }
+  @inlinable
+  @inline(__always)
+  public init(_ key: Key,_ value: Value) {
+    self.key = key
+    self.value = value
+  }
+  @inlinable
+  @inline(__always)
+  public init(_ tuple: (Key, Value)) {
+    self.key = tuple.0
+    self.value = tuple.1
+  }
+  public var key: Key
+  public var value: Value
+}
+
+extension _KeyValueElement: Equatable where Key: Equatable, Value: Equatable {}
+extension _KeyValueElement: Comparable where Key: Comparable, Value: Comparable {
+  public static func < (lhs: _KeyValueElement<Key, Value>, rhs: _KeyValueElement<Key, Value>) -> Bool {
+    (lhs.key, lhs.value) < (rhs.key, rhs.value)
+  }
+}
+
+extension KeyValueComparer where _Value == _KeyValueElement<_Key,_MappedValue> {
+
+  @inlinable
+  @inline(__always)
+  public static func __key(_ element: _Value) -> _Key { element.key }
+
+  @inlinable
+  @inline(__always)
+  public static func ___value(of element: _Value) -> _MappedValue { element.value }
 }

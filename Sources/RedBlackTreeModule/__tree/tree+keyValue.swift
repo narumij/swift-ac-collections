@@ -112,7 +112,7 @@ extension KeyValueComparer where _Value == _KeyValueTuple {
 
 // MARK: -
 
-public struct _KeyValueElement<Key, Value> {
+public struct Pair<Key, Value> {
   @inlinable
   @inline(__always)
   public init(key: Key, value: Value) {
@@ -135,16 +135,18 @@ public struct _KeyValueElement<Key, Value> {
   public var value: Value
 }
 
-extension _KeyValueElement: Equatable where Key: Equatable, Value: Equatable {}
-extension _KeyValueElement: Comparable where Key: Comparable, Value: Comparable {
-  public static func < (lhs: _KeyValueElement<Key, Value>, rhs: _KeyValueElement<Key, Value>)
+extension Pair: Sendable where Key: Sendable, Value: Sendable {}
+extension Pair: Hashable where Key: Hashable, Value: Hashable {}
+extension Pair: Equatable where Key: Equatable, Value: Equatable {}
+extension Pair: Comparable where Key: Comparable, Value: Comparable {
+  public static func < (lhs: Pair<Key, Value>, rhs: Pair<Key, Value>)
     -> Bool
   {
     (lhs.key, lhs.value) < (rhs.key, rhs.value)
   }
 }
 
-extension KeyValueComparer where _Value == _KeyValueElement<_Key, _MappedValue> {
+extension KeyValueComparer where _Value == Pair<_Key, _MappedValue> {
 
   @inlinable
   @inline(__always)

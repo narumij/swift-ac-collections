@@ -385,7 +385,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func __value_(_ p: _NodePtr) -> _Key {
+  internal func __get_value(_ p: _NodePtr) -> _Key {
     __key(__node_ptr[p].__value_)
   }
 }

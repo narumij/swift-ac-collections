@@ -35,10 +35,10 @@ extension EqualProtocol {
     var __result = __end_node()
     var __rt = __root()
     while __rt != .nullptr {
-      if value_comp(__k, __value_(__rt)) {
+      if value_comp(__k, __get_value(__rt)) {
         __result = __rt
         __rt = __left_unsafe(__rt)
-      } else if value_comp(__value_(__rt), __k) {
+      } else if value_comp(__get_value(__rt), __k) {
         __rt = __right_(__rt)
       } else {
         return (
@@ -60,10 +60,10 @@ extension EqualProtocol {
     var __result = __end_node()
     var __rt = __root()
     while __rt != .nullptr {
-      if value_comp(__k, __value_(__rt)) {
+      if value_comp(__k, __get_value(__rt)) {
         __result = __rt
         __rt = __left_unsafe(__rt)
-      } else if value_comp(__value_(__rt), __k) {
+      } else if value_comp(__get_value(__rt), __k) {
         __rt = __right_(__rt)
       } else {
         return (

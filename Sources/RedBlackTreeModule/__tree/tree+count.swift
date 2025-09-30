@@ -41,9 +41,9 @@ extension CountProtocol {
   func __count_unique(_ __k: _Key) -> size_type {
     var __rt: __node_pointer = __root()
     while __rt != .nullptr {
-      if value_comp(__k, __value_(__rt)) {
+      if value_comp(__k, __get_value(__rt)) {
         __rt = __left_unsafe(__rt)
-      } else if value_comp(__value_(__rt), __k) {
+      } else if value_comp(__get_value(__rt), __k) {
         __rt = __right_(__rt)
       } else {
         return 1
@@ -58,10 +58,10 @@ extension CountProtocol {
     var __result: __iter_pointer = __end_node()
     var __rt: __node_pointer = __root()
     while __rt != .nullptr {
-      if value_comp(__k, __value_(__rt)) {
+      if value_comp(__k, __get_value(__rt)) {
         __result = __rt
         __rt = __left_unsafe(__rt)
-      } else if value_comp(__value_(__rt), __k) {
+      } else if value_comp(__get_value(__rt), __k) {
         __rt = __right_(__rt)
       } else {
         return __distance(

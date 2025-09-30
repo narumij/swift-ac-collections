@@ -86,7 +86,7 @@ import XCTest
       e
     }
 
-    func __value_(_ p: _NodePtr) -> Element {
+    func __get_value(_ p: _NodePtr) -> Element {
       __values[p]
     }
 

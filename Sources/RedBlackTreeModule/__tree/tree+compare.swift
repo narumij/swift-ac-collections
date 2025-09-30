@@ -77,7 +77,7 @@ extension CompareUniqueProtocol {
     else {
       return l != .end && r == .end
     }
-    return value_comp(__value_(l), __value_(r))
+    return value_comp(__get_value(l), __get_value(r))
   }
 }
 

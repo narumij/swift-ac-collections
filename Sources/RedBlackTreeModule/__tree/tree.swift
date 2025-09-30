@@ -114,13 +114,15 @@ protocol TreeNodeRefProtocol {
 
 // 名前のねじれは比較対象の型が異なっているため
 // 多分辞書を急ピッチで作成した際にミスった
+// llvmの__treeにもねじれがあるが、ソースを追い切れてない
 @usableFromInline
-protocol TreeValueProtocol {
+protocol TreeNodeValueProtocol where _Key == __node_value_type {
   associatedtype _Key
+  associatedtype __node_value_type
   /// ノードから比較用のキー値を取り出す。
   /// SetやMultisetではElementに該当する
   /// DictionaryやMultiMapではKeyに該当する
-  func __value_(_: _NodePtr) -> _Key
+  func __get_value(_: _NodePtr) -> __node_value_type
 }
 
 @usableFromInline
@@ -131,7 +133,7 @@ protocol TreeElementProtocol {
 }
 
 @usableFromInline
-protocol KeyProtocol: TreeValueProtocol, TreeElementProtocol {
+protocol KeyProtocol: TreeNodeValueProtocol, TreeElementProtocol {
   /// 要素から比較用のキー値を取り出す。
   func __key(_ e: _Value) -> _Key
 }
@@ -140,15 +142,16 @@ extension KeyProtocol {
 
   @inlinable
   @inline(__always)
-  func __value_(_ p: _NodePtr) -> _Key {
+  func __get_value(_ p: _NodePtr) -> __node_value_type {
     __key(___element(p))
   }
 }
 
 // 名前のねじれは比較対象の型が異なっているため
 // 多分辞書を急ピッチで作成した際にミスった
+// llvmの__treeにもねじれがあるが、ソースを追い切れてない
 @usableFromInline
-protocol ValueProtocol: TreeNodeProtocol, TreeValueProtocol {
+protocol ValueProtocol: TreeNodeProtocol, TreeNodeValueProtocol {
   /// キー同士を比較する。通常`<`と同じ
   func value_comp(_: _Key, _: _Key) -> Bool
 }

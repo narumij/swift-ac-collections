@@ -53,7 +53,7 @@ extension BoundAlgorithmProtocol {
     var (__root, __result) = (__root, __result)
 
     while __root != .nullptr {
-      if !value_comp(__value_(__root), __v) {
+      if !value_comp(__get_value(__root), __v) {
         __result = __root
         __root = __left_unsafe(__root) // ここはunsafeか否か迷う
       } else {
@@ -71,7 +71,7 @@ extension BoundAlgorithmProtocol {
     var (__root, __result) = (__root, __result)
 
     while __root != .nullptr {
-      if value_comp(__v, __value_(__root)) {
+      if value_comp(__v, __get_value(__root)) {
         __result = __root
         __root = __left_unsafe(__root)
       } else {

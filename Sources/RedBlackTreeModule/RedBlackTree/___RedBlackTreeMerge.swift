@@ -27,7 +27,7 @@ extension ___RedBlackTreeMerge {
     while __i != __source.__end_node() {
       var __src_ptr: _NodePtr = __i
       var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_equal(&__parent, __source.__value_(__src_ptr))
+      let __child = __tree_.__find_equal(&__parent, __source.__get_value(__src_ptr))
       __i = __source.__tree_next_iter(__i)
       if __tree_.__ptr_(__child) != .nullptr {
         continue
@@ -46,7 +46,7 @@ extension ___RedBlackTreeMerge {
     while __i != __source.__end_node() {
       var __src_ptr: _NodePtr = __i
       var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_leaf_high(&__parent, __source.__value_(__src_ptr))
+      let __child = __tree_.__find_leaf_high(&__parent, __source.__get_value(__src_ptr))
       __i = __source.__tree_next_iter(__i)
       _ensureCapacity()
       __src_ptr = __tree_.__construct_node(__source.___element(__src_ptr))
@@ -69,7 +69,7 @@ extension ___RedBlackTreeMerge {
     while __i != __source.__end_node() {
       var __src_ptr: _NodePtr = __i
       var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_equal(&__parent, __source.__value_(__src_ptr))
+      let __child = __tree_.__find_equal(&__parent, __source.__get_value(__src_ptr))
       __i = __source.__tree_next_iter(__i)
       if __tree_.__ptr_(__child) != .nullptr {
         __tree_[__tree_.__ptr_(__child)].value = try combine(

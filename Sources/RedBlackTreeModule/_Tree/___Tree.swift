@@ -1024,7 +1024,7 @@ extension ___Tree: Tree_IndicesProtocol {
   }
 }
 
-extension ___Tree: Tree_KeyValue where VC: KeyValueComparer {}
+extension ___Tree: Tree_KeyCompare where VC: KeyValueComparer {}
 
 extension ___Tree {
 
@@ -1053,7 +1053,7 @@ extension ___Tree {
   public func ___mapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T)
     rethrows -> ___Tree<Other>
   where
-  _Value == _KeyValueTuple_<Key, Value>,
+    _Value == _KeyValueTuple_<Key, Value>,
     Other._Value == _KeyValueTuple_<Key, T>
   {
     let tree = ___Tree<Other>.create(minimumCapacity: count)
@@ -1071,7 +1071,7 @@ extension ___Tree {
   public func ___compactMapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T?)
     rethrows -> ___Tree<Other>
   where
-  _Value == _KeyValueTuple_<Key, Value>,
+    _Value == _KeyValueTuple_<Key, Value>,
     Other._Value == _KeyValueTuple_<Key, T>
   {
     var tree = ___Tree<Other>.create(minimumCapacity: count)

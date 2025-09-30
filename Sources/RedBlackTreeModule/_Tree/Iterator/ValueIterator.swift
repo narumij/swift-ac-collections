@@ -21,11 +21,8 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct ValueIterator<Tree, K, Value>: Sequence, IteratorProtocol
-where
-  Tree: Tree_IterateProtocol & Tree_KeyValue,
-  Tree.Value == Value
-{
+public struct ValueIterator<Tree: Tree_IterateProtocol, K, Value>: Sequence, IteratorProtocol
+where Tree._Value == _KeyValueTuple_<K, Value> {
 
   @usableFromInline
   let __tree_: Tree
@@ -51,7 +48,7 @@ where
       _current = _next
       _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return Tree.___value(of: __tree_[_current])
+    return __tree_[_current].value
   }
 
   @inlinable
@@ -82,10 +79,7 @@ extension ValueIterator: Comparable where Value: Comparable {
 @frozen
 public struct ReversedValueIterator<Tree: Tree_IterateProtocol, K, Value>: Sequence,
   IteratorProtocol
-where
-  Tree: Tree_IterateProtocol & Tree_KeyValue,
-  Tree.Value == Value
-{
+where Tree._Value == _KeyValueTuple_<K, Value> {
 
   @usableFromInline
   let __tree_: Tree
@@ -109,7 +103,7 @@ where
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-    return Tree.___value(of: __tree_[_current])
+    return __tree_[_current].value
   }
 }
 

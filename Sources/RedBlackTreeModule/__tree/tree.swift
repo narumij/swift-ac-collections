@@ -144,7 +144,7 @@ extension KeyProtocol {
   }
 }
 
-// 名前のねじれは移植元に由来する
+// 名前のねじれは比較対象の型が異なっているため
 @usableFromInline
 protocol ValueProtocol: TreeNodeProtocol, TreeValueProtocol {
   /// キー同士を比較する。通常`<`と同じ

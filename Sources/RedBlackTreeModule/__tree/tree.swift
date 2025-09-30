@@ -305,6 +305,7 @@ extension ValueComparer where _Key: Equatable {
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 public protocol ValueComparerProtocol {
   associatedtype VC: ValueComparer
+  static func __key(_ e: VC._Value) -> VC._Key
   static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
   static func value_equiv(_ lhs: VC._Key, _ rhs: VC._Key) -> Bool
   func __key(_ e: VC._Value) -> VC._Key

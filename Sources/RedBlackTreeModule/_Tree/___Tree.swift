@@ -394,22 +394,7 @@ extension ___Tree {
 
   public typealias _Value = VC._Value
 
-//  @usableFromInline
   public typealias _Key = VC._Key
-
-//  @nonobjc
-//  @inlinable
-//  @inline(__always)
-//  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-//    VC.value_comp(a, b)
-//  }
-
-//  @nonobjc
-//  @inlinable
-//  @inline(__always)
-//  internal static func __key(_ e: VC._Value) -> VC._Key {
-//    VC.__key(e)
-//  }
 
   @nonobjc
   @inlinable

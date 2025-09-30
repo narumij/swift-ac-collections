@@ -91,7 +91,7 @@ extension ValueComparerProtocol where VC: KeyValueComparer, VC._MappedValue: Equ
 // MARK: -
 
 // 最近タプルの最適化が甘いので、LRUのみペアを構造体に変更
-// それ以外は一律速くなる感じでは無く、トレードオフになるため行わない
+// それ以外は一律速くなる感じでは無く、APIを維持するコストも高くつくし、性能的にもトレードオフになるため行わない
 
 public typealias _KeyValueTuple_<Key, Value> = (key: Key, value: Value)
 

@@ -414,7 +414,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___element(_ p: _NodePtr) -> VC._Value {
+  internal func __value_(_ p: _NodePtr) -> VC._Value {
     __node_ptr[p].__value_
   }
 

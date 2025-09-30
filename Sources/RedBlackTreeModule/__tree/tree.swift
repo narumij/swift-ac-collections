@@ -126,14 +126,15 @@ protocol TreeNodeValueProtocol where _Key == __node_value_type {
 }
 
 @usableFromInline
-protocol TreeElementProtocol {
+protocol TreeValueProtocol where _Value == __value_type {
   associatedtype _Value
+  associatedtype __value_type
   /// ノードの値要素を取得する
-  func ___element(_ p: _NodePtr) -> _Value
+  func __value_(_ p: _NodePtr) -> __value_type
 }
 
 @usableFromInline
-protocol KeyProtocol: TreeNodeValueProtocol, TreeElementProtocol {
+protocol KeyProtocol: TreeNodeValueProtocol, TreeValueProtocol {
   /// 要素から比較用のキー値を取り出す。
   func __key(_ e: _Value) -> _Key
 }
@@ -143,7 +144,7 @@ extension KeyProtocol {
   @inlinable
   @inline(__always)
   func __get_value(_ p: _NodePtr) -> __node_value_type {
-    __key(___element(p))
+    __key(__value_(p))
   }
 }
 

@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol MergeSourceProtocol: TreeElementProtocol & AllocatorProtocol & BeginNodeProtocol & EndNodeProtocol & ValueProtocol { }
+protocol MergeSourceProtocol: TreeValueProtocol & AllocatorProtocol & BeginNodeProtocol & EndNodeProtocol & ValueProtocol { }
 
 @usableFromInline
 protocol MergeProtocol: KeyProtocol & FindEqualProtocol & FindLeafProtocol & InsertNodeAtProtocol & AllocatorProtocol {
@@ -74,7 +74,7 @@ extension MergeProtocol {
       _ = __source.__remove_node_pointer(__src_ptr);
 #else
       // ポインタを受け取れないので、代わりにノードを作る
-      __src_ptr = __construct_node(__source.___element(__src_ptr))
+      __src_ptr = __construct_node(__source.__value_(__src_ptr))
 #endif
       __insert_node_at(__parent, __child, static_cast___node_base_pointer_(__src_ptr))
     }
@@ -95,7 +95,7 @@ extension MergeProtocol {
       _ = __source.__remove_node_pointer(__src_ptr);
 #else
       // ポインタを受け取れないので、代わりにノードを作る
-      __src_ptr = __construct_node(__source.___element(__src_ptr))
+      __src_ptr = __construct_node(__source.__value_(__src_ptr))
 #endif
       __insert_node_at(__parent, __child, static_cast___node_base_pointer_(__src_ptr));
     }

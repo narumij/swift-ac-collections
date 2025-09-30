@@ -46,7 +46,7 @@ import XCTest
       return n
     }
 
-    func ___element(_ p: _NodePtr) -> Element {
+    func __value_(_ p: _NodePtr) -> Element {
       __values[p]
     }
 

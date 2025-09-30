@@ -29,19 +29,19 @@ final class ManagedBufferTests: XCTestCase {
   func testConstruct() async throws {
     let storage = ___Tree<VC>.create(minimumCapacity: 4)
     let ptr = storage.__construct_node(100)
-    XCTAssertEqual(storage.___element(ptr), 100)
+    XCTAssertEqual(storage.__value_(ptr), 100)
     storage.___element(ptr, 20)
-    XCTAssertEqual(storage.___element(ptr), 20)
+    XCTAssertEqual(storage.__value_(ptr), 20)
     storage.___element(ptr, 50)
-    XCTAssertEqual(storage.___element(ptr), 50)
+    XCTAssertEqual(storage.__value_(ptr), 50)
   }
 
   func testDestroy0() async throws {
     let storage = ___Tree<VC>.create(minimumCapacity: 4)
     let ptr = storage.__construct_node(100)
-    XCTAssertEqual(storage.___element(ptr), 100)
+    XCTAssertEqual(storage.__value_(ptr), 100)
     storage.destroy(ptr)
-    XCTAssertEqual(storage.___element(ptr), 100)
+    XCTAssertEqual(storage.__value_(ptr), 100)
   }
   
   func testDestroyStack() async throws {

@@ -25,7 +25,7 @@ import Foundation
 /// 要素がキーバリューの場合のひな形
 public protocol KeyValueComparer: ValueComparer {
   associatedtype _MappedValue
-  static func ___value(of element: _Value) -> _MappedValue
+  static func ___mapped_value(of element: _Value) -> _MappedValue
 }
 
 extension KeyValueComparer {
@@ -50,7 +50,7 @@ extension KeyValueComparer where _MappedValue: Comparable {
   @inline(__always)
   static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
     ___key_comp(lhs, rhs)
-      || (!___key_comp(lhs, rhs) && ___value(of: lhs) < ___value(of: rhs))
+      || (!___key_comp(lhs, rhs) && ___mapped_value(of: lhs) < ___mapped_value(of: rhs))
   }
 }
 
@@ -58,7 +58,7 @@ extension KeyValueComparer where _MappedValue: Equatable {
   @inlinable
   @inline(__always)
   static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    ___key_equiv(lhs, rhs) && ___value(of: lhs) == ___value(of: rhs)
+    ___key_equiv(lhs, rhs) && ___mapped_value(of: lhs) == ___mapped_value(of: rhs)
   }
 }
 
@@ -67,7 +67,9 @@ extension KeyValueComparer where _MappedValue: Equatable {
 extension ValueComparerProtocol where VC: KeyValueComparer {
   @inlinable
   @inline(__always)
-  public static func ___value(of element: VC._Value) -> VC._MappedValue { VC.___value(of: element) }
+  public static func ___mapped_value(of element: VC._Value) -> VC._MappedValue {
+    VC.___mapped_value(of: element)
+  }
 }
 
 extension ValueComparerProtocol where VC: KeyValueComparer, VC._MappedValue: Comparable {
@@ -105,7 +107,7 @@ extension KeyValueComparer where _Value == _KeyValueTuple {
 
   @inlinable
   @inline(__always)
-  public static func ___value(of element: _Value) -> _MappedValue { element.value }
+  public static func ___mapped_value(of element: _Value) -> _MappedValue { element.value }
 }
 
 // MARK: -
@@ -119,7 +121,7 @@ public struct _KeyValueElement<Key, Value> {
   }
   @inlinable
   @inline(__always)
-  public init(_ key: Key,_ value: Value) {
+  public init(_ key: Key, _ value: Value) {
     self.key = key
     self.value = value
   }
@@ -135,12 +137,14 @@ public struct _KeyValueElement<Key, Value> {
 
 extension _KeyValueElement: Equatable where Key: Equatable, Value: Equatable {}
 extension _KeyValueElement: Comparable where Key: Comparable, Value: Comparable {
-  public static func < (lhs: _KeyValueElement<Key, Value>, rhs: _KeyValueElement<Key, Value>) -> Bool {
+  public static func < (lhs: _KeyValueElement<Key, Value>, rhs: _KeyValueElement<Key, Value>)
+    -> Bool
+  {
     (lhs.key, lhs.value) < (rhs.key, rhs.value)
   }
 }
 
-extension KeyValueComparer where _Value == _KeyValueElement<_Key,_MappedValue> {
+extension KeyValueComparer where _Value == _KeyValueElement<_Key, _MappedValue> {
 
   @inlinable
   @inline(__always)
@@ -148,5 +152,5 @@ extension KeyValueComparer where _Value == _KeyValueElement<_Key,_MappedValue> {
 
   @inlinable
   @inline(__always)
-  public static func ___value(of element: _Value) -> _MappedValue { element.value }
+  public static func ___mapped_value(of element: _Value) -> _MappedValue { element.value }
 }

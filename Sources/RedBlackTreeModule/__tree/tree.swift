@@ -112,7 +112,8 @@ protocol TreeNodeRefProtocol {
   func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr)
 }
 
-// 名前のねじれは移植元に由来する
+// 名前のねじれは比較対象の型が異なっているため
+// 多分辞書を急ピッチで作成した際にミスった
 @usableFromInline
 protocol TreeValueProtocol {
   associatedtype _Key
@@ -145,6 +146,7 @@ extension KeyProtocol {
 }
 
 // 名前のねじれは比較対象の型が異なっているため
+// 多分辞書を急ピッチで作成した際にミスった
 @usableFromInline
 protocol ValueProtocol: TreeNodeProtocol, TreeValueProtocol {
   /// キー同士を比較する。通常`<`と同じ

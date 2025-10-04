@@ -37,17 +37,19 @@ final class AllocationTests: XCTestCase {
       // countがゼロになった場合、一旦リセットしてもいい気はするが、しばらく保留
       
       let storage: Storage = .create(withCapacity: 5)
+      XCTAssertGreaterThanOrEqual(storage.capacity, 5)
+      let actualCapacity = storage.capacity // ManagedBufferの挙動が変わった
       for i in 0..<5 {
         XCTAssertEqual(storage.tree.__construct_node(-1), i)
       }
-      XCTAssertEqual(storage.capacity, 5)
+      XCTAssertEqual(storage.capacity, actualCapacity) // capacityが変動しないこと
       XCTAssertEqual(storage.tree.header.initializedCount, 5)
       XCTAssertEqual(storage.tree.count, 5)
       XCTAssertEqual(storage.tree.header.destroyCount, 0)
       for i in (0..<5).reversed() {
         storage.tree.destroy(i)
       }
-      XCTAssertEqual(storage.capacity, 5)
+      XCTAssertEqual(storage.capacity, actualCapacity)
       XCTAssertEqual(storage.tree.header.initializedCount, 5)
       XCTAssertEqual(storage.tree.count, 0)
       XCTAssertEqual(storage.tree.header.destroyCount, 5)
@@ -56,7 +58,7 @@ final class AllocationTests: XCTestCase {
         let initializedCount = storage.tree.header.initializedCount
         // ストレージのリファレンスが2になる
         var set = RedBlackTreeSet(_storage: storage)
-        XCTAssertEqual(set._storage.capacity, 5)
+        XCTAssertEqual(set._storage.capacity, actualCapacity)
         XCTAssertEqual(set._storage.tree.header.initializedCount, 5)
         XCTAssertEqual(set._storage.tree.count, 0)
         XCTAssertEqual(set._storage.tree.header.destroyCount, 5)
@@ -73,7 +75,7 @@ final class AllocationTests: XCTestCase {
         let initializedCount = storage.tree.header.initializedCount
         // ストレージのリファレンスが2になる
         var set = RedBlackTreeSet(_storage: storage)
-        XCTAssertEqual(set._storage.capacity, 5)
+        XCTAssertEqual(set._storage.capacity, actualCapacity)
         XCTAssertEqual(set._storage.tree.header.initializedCount, 5)
         XCTAssertEqual(set._storage.tree.count, 0)
         XCTAssertEqual(set._storage.tree.header.destroyCount, 5)

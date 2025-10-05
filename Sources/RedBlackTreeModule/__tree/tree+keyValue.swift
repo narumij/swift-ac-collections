@@ -133,6 +133,7 @@ public struct Pair<Key, Value> {
   }
   public var key: Key
   public var value: Value
+  public var tuple: (Key, Value) { (key, value) }
 }
 
 extension Pair: Sendable where Key: Sendable, Value: Sendable {}

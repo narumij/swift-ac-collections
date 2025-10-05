@@ -77,8 +77,8 @@ final class RedBlackTreeComparatorsTests: XCTestCase {
     XCTAssertTrue(keyComp("a", "b"))
     XCTAssertFalse(keyComp("c", "b"))
 
-    XCTAssertTrue(valueComp(("a", 1), ("b", 2)))
-    XCTAssertFalse(valueComp(("c", 3), ("b", 2)))
+    XCTAssertTrue(valueComp(.init("a", 1), .init("b", 2)))
+    XCTAssertFalse(valueComp(.init("c", 3), .init("b", 2)))
 
     let (lo, hi) = dict.equalRange("b")
     XCTAssertEqual(dict[lo].key, "b")

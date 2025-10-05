@@ -68,12 +68,12 @@ import XCTest
       //    map.updateValue(1, forKey: 0)
       XCTAssertEqual(map[0].map(\.value), [1])
       XCTAssertEqual(map[1].map(\.value), [])
-      XCTAssertTrue(zip(map.map { ($0.0, $0.1) }, [(0, 1)]).allSatisfy(==))
+      XCTAssertTrue(zip(map.map { ($0.key, $0.value) }, [(0, 1)]).allSatisfy(==))
       map.removeAll(forKey: 0)
       //    map.removeValue(forKey: 0)
       XCTAssertEqual(map[0].map(\.value), [])
       XCTAssertEqual(map[1].map(\.value), [])
-      XCTAssertTrue(zip(map.map { ($0.0, $0.1) }, []).allSatisfy(==))
+      XCTAssertTrue(zip(map.map { ($0.key, $0.value) }, []).allSatisfy(==))
       map.insert((1, 2))
       //    map.updateValue(20, forKey: 10)
       XCTAssertEqual(map[0].map(\.value), [])
@@ -206,7 +206,7 @@ import XCTest
     func testInitNaive() throws {
       do {
         let dict = Target(
-          naive: [(1, 10), (1, 11), (2, 20), (2, 22)].map { ($0,$1) })
+          naive: [(1, 10), (1, 11), (2, 20), (2, 22)].map { .init($0,$1) })
         XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
         XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
         XCTAssertEqual(dict[0].map(\.value), [])
@@ -508,8 +508,8 @@ import XCTest
     func testForEach() throws {
       let dict = [1: 11, 2: 22, 3: 33] as Target<Int, Int>
       var d: [Int: Int] = [:]
-      dict.forEach { k, v in
-        d[k] = v
+      dict.forEach { kv in
+        d[kv.key] = kv.value
       }
       XCTAssertEqual(d, [1: 11, 2: 22, 3: 33])
     }
@@ -569,12 +569,12 @@ import XCTest
       var set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
       let sub = set[set.startIndex..<set.endIndex]
       var a: [String] = []
-      for (_, value) in sub {
-        a.append(value)
+      for kv in sub {
+        a.append(kv.value)
       }
       XCTAssertEqual(a, ["a", "b", "c", "d", "e"])
-      sub.forEach { key, value in
-        set.insert(key: key, value: "?")
+      sub.forEach { kv in
+        set.insert(key: kv.key, value: "?")
       }
       XCTAssertEqual(set.map(\.value), ["a", "?", "b", "?", "c", "?", "d", "?", "e", "?"])
     }

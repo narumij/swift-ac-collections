@@ -23,7 +23,7 @@
 @frozen
 public struct KeyIterator<Tree, Key, V>: Sequence, IteratorProtocol
 where
-  Tree: Tree_IterateProtocol & Tree_KeyCompare,
+  Tree: Tree_IterateProtocol & Tree_KeyValue,
   Tree.Key == Key
 {
 
@@ -82,7 +82,7 @@ extension KeyIterator: Comparable {
 @frozen
 public struct ReversedKeyIterator<Tree, Key, V>: Sequence, IteratorProtocol
 where
-  Tree: Tree_IterateProtocol & Tree_KeyCompare,
+  Tree: Tree_IterateProtocol & Tree_KeyValue,
   Tree.Key == Key
 {
 

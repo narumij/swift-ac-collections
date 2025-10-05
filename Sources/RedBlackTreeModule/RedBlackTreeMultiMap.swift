@@ -53,7 +53,8 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Index = Tree.Index
 
   public
-    typealias KeyValue = (key: Key, value: Value)
+//    typealias KeyValue = (key: Key, value: Value)
+  typealias KeyValue = Pair<Key, Value>
 
   public
     typealias Element = KeyValue
@@ -112,8 +113,8 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S>(multiKeysWithValues keysAndValues: __owned S)
-  where S: Sequence, S.Element == (Key, Value) {
-    let elements = keysAndValues.sorted(by: { $0.0 < $1.0 })
+  where S: Sequence, S.Element == KeyValue {
+    let elements = keysAndValues.sorted(by: { $0.key < $1.key })
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
@@ -122,6 +123,24 @@ extension RedBlackTreeMultiMap {
     for __k in elements {
       // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
+    }
+    assert(tree.__tree_invariant(tree.__root()))
+    self._storage = .init(tree: tree)
+  }
+  
+  /// - Complexity: O(*n* log *n* + *n*)
+  @inlinable
+  public init<S>(multiKeysWithValues keysAndValues: __owned S)
+  where S: Sequence, S.Element == (Key,Value) {
+    let elements = keysAndValues.sorted(by: { $0.0 < $1.0 })
+    let count = elements.count
+    let tree: Tree = .create(minimumCapacity: count)
+    // 初期化直後はO(1)
+    var (__parent, __child) = tree.___max_ref()
+    // ソートの計算量がO(*n* log *n*)
+    for __k in elements {
+      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, .init(__k))
     }
     assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(tree: tree)
@@ -146,7 +165,7 @@ extension RedBlackTreeMultiMap {
     for __v in values {
       let __k = try keyForValue(__v)
       // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (__k, __v))
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, .init(__k, __v))
     }
     assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(tree: tree)
@@ -257,7 +276,17 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    insert((key, value))
+    insert(.init(key, value))
+  }
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func insert(_ tuple: (key: Key, value: Value)) -> (
+    inserted: Bool, memberAfterInsert: Element
+  ) {
+    insert(.init(tuple))
   }
 
   /// - Complexity: O(log *n*)
@@ -317,9 +346,9 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    ___tree_merge_multi(other.__tree_)
+    ___merge_multi(other.map{ $0 })
   }
-
+  
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -809,7 +838,7 @@ extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
   @inlinable
   @inline(__always)
   public init(dictionaryLiteral elements: (Key, Value)...) {
-    self.init(multiKeysWithValues: elements)
+    self.init(multiKeysWithValues: elements.map{ .init($0) })
   }
 }
 
@@ -821,7 +850,7 @@ extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
   @inlinable
   @inline(__always)
   public init(arrayLiteral elements: (Key, Value)...) {
-    self.init(multiKeysWithValues: elements)
+    self.init(multiKeysWithValues: elements.map{ .init($0) })
   }
 }
 
@@ -834,7 +863,8 @@ extension RedBlackTreeMultiMap: CustomStringConvertible {
     if isEmpty { return "[:]" }
     var result = "["
     var first = true
-    for (key, value) in self {
+    for kv in self {
+      let (key, value) = (kv.key, kv.value)
       if first {
         first = false
       } else {
@@ -858,7 +888,8 @@ extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
     } else {
       result += "["
       var first = true
-      for (key, value) in self {
+      for kv in self {
+        let (key, value) = (kv.key, kv.value)
         if first {
           first = false
         } else {

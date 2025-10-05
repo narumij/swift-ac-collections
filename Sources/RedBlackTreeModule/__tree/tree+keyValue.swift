@@ -112,6 +112,7 @@ extension KeyValueComparer where _Value == _KeyValueTuple {
 
 // MARK: -
 
+@frozen
 public struct Pair<Key, Value> {
   @inlinable
   @inline(__always)

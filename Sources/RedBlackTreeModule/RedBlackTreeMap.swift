@@ -28,18 +28,18 @@ import Foundation
 /// ### 使用例
 /// ```swift
 /// /// `RedBlackTreeMap` を使用する例
-/// var dictionary = RedBlackTreeMap<String, Int>()
-/// dictionary["apple"] = 5
-/// dictionary["banana"] = 3
-/// dictionary["cherry"] = 7
+/// var map = RedBlackTreeMap<String, Int>()
+/// map["apple"] = 5
+/// map["banana"] = 3
+/// map["cherry"] = 7
 ///
 /// // キーを使用して値にアクセス
-/// if let value = dictionary.value(forKey: "banana") {
+/// if let value = map.value(forKey: "banana") {
 ///     print("banana の値は \(value) です。") // 出力例: banana の値は 3 です。
 /// }
 ///
 /// // キーと値のペアを削除
-/// dictionary.remove(key: "apple")
+/// map.remove(key: "apple")
 /// ```
 @frozen
 public struct RedBlackTreeMap<Key: Comparable, Value> {

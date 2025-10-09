@@ -182,6 +182,7 @@ extension ___RedBlackTreeSequence {
 
 extension ___RedBlackTreeSequence {
 
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
   public subscript(unchecked position: Index) -> _Value {

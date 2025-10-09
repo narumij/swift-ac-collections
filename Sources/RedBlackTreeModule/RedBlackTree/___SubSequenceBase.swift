@@ -149,6 +149,7 @@ extension ___SubSequenceBase {
 
 extension ___SubSequenceBase {
 
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
   public subscript(unchecked position: Index) -> Element {
@@ -177,6 +178,7 @@ extension ___SubSequenceBase {
       end: bounds.upperBound.rawValue)
   }
 
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)

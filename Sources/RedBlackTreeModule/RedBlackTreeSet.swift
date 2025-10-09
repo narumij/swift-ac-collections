@@ -206,6 +206,7 @@ extension RedBlackTreeSet {
       end: bounds.upperBound.rawValue)
   }
 
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)

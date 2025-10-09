@@ -50,6 +50,7 @@ import XCTest
       XCTAssertNil(map.first)
       XCTAssertNil(map.last)
       XCTAssertEqual(map.distance(from: map.startIndex, to: map.endIndex), 0)
+      XCTAssertEqual(map.count(forKey: 0), 0)
     }
 
     func testRedBlackTreeCapacity() throws {
@@ -127,6 +128,10 @@ import XCTest
       XCTAssertEqual(map[1].map(\.value), [0, 2])
       XCTAssertEqual(map[3].map(\.value), [4])
       XCTAssertEqual(map[5].map(\.value), [6, 7])
+      XCTAssertEqual(map.count(forKey: 0), 0)
+      XCTAssertEqual(map.count(forKey: 1), 2)
+      XCTAssertEqual(map.count(forKey: 3), 1)
+      XCTAssertEqual(map.count(forKey: 5), 2)
     }
 
     func testSmoke() throws {

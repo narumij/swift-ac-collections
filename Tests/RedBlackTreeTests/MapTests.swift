@@ -29,6 +29,7 @@ final class MapTests: XCTestCase {
     XCTAssertNil(map.first)
     XCTAssertNil(map.last)
     XCTAssertEqual(map.distance(from: map.startIndex, to: map.endIndex), 0)
+    XCTAssertEqual(map.count(forKey: 0), 0)
   }
 
   func testRedBlackTreeCapacity() throws {
@@ -149,6 +150,10 @@ final class MapTests: XCTestCase {
     XCTAssertEqual(map[1], 2)
     XCTAssertEqual(map[3], 4)
     XCTAssertEqual(map[5], 6)
+    XCTAssertEqual(map.count(forKey: 0), 0)
+    XCTAssertEqual(map.count(forKey: 1), 1)
+    XCTAssertEqual(map.count(forKey: 3), 1)
+    XCTAssertEqual(map.count(forKey: 5), 1)
   }
 
   func testSubscriptDefault0() throws {

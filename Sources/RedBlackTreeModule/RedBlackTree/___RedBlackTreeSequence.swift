@@ -184,7 +184,7 @@ extension ___RedBlackTreeSequence {
 
   /// - Complexity: O(1)
   @inlinable
-  public subscript(_unsafe position: Index) -> _Value {
+  public subscript(unchecked position: Index) -> _Value {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }

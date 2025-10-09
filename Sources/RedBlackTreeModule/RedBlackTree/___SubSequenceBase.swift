@@ -151,7 +151,7 @@ extension ___SubSequenceBase {
 
   /// - Complexity: O(1)
   @inlinable
-  public subscript(_unsafe position: Index) -> Element {
+  public subscript(unchecked position: Index) -> Element {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
@@ -180,7 +180,7 @@ extension ___SubSequenceBase {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
+  public subscript(unchecked bounds: Range<Index>) -> SubSequence {
     .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,

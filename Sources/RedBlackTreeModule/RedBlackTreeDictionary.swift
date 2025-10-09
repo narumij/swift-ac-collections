@@ -362,7 +362,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
+  public subscript(unchecked bounds: Range<Index>) -> SubSequence {
     .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,

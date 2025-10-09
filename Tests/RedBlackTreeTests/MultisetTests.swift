@@ -103,6 +103,7 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.count, 0)
     XCTAssertTrue(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
+    XCTAssertEqual(set.count(of: 0), 0)
   }
 
   func testRedBlackTreeCapacity() throws {
@@ -567,6 +568,12 @@ final class MultisetTests: XCTestCase {
   func testLiteral() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
     XCTAssertEqual(set + [], [1, 1, 2, 2, 3, 3, 4, 4, 5, 5])
+    XCTAssertEqual(set.count(of: 0), 0)
+    XCTAssertEqual(set.count(of: 1), 2)
+    XCTAssertEqual(set.count(of: 2), 2)
+    XCTAssertEqual(set.count(of: 3), 2)
+    XCTAssertEqual(set.count(of: 4), 2)
+    XCTAssertEqual(set.count(of: 5), 2)
   }
 
   class A: Hashable, Comparable {

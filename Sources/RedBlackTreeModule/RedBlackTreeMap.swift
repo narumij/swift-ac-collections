@@ -485,7 +485,7 @@ extension RedBlackTreeMap {
     try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
   }
 
-  /// 辞書に `other` の要素をマージします。
+  /// mapに `other` の要素をマージします。
   /// キーが重複したときは `combine` の戻り値を採用します。
   ///
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
@@ -524,7 +524,7 @@ extension RedBlackTreeMap {
     return result
   }
 
-  /// `self` と `other` をマージした新しい辞書を返します。
+  /// `self` と `other` をマージした新しいmapを返します。
   ///
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
@@ -924,7 +924,7 @@ extension RedBlackTreeMap: ExpressibleByDictionaryLiteral {
 
 extension RedBlackTreeMap: ExpressibleByArrayLiteral {
 
-  /// `[("key", value), ...]` 形式のリテラルから辞書を生成します。
+  /// `[("key", value), ...]` 形式のリテラルからmapを生成します。
   ///
   /// - Important: キーが重複していた場合は
   ///   `Dictionary(uniqueKeysWithValues:)` と同じく **ランタイムエラー** になります。

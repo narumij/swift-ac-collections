@@ -17,7 +17,12 @@ where
   mutating func _ensureCapacity()
 }
 
+// MARK: - Tree merge
+// マージ元がtreeを持つケース
+
 extension ___RedBlackTreeMerge {
+
+  // MARK: Unique
 
   @inlinable
   @inline(__always)
@@ -42,25 +47,7 @@ extension ___RedBlackTreeMerge {
     }
   }
 
-  @inlinable
-  @inline(__always)
-  mutating func ___tree_merge_multi<Source>(_ __source: Source)
-  where
-    Source: MergeSourceProtocol,
-    Source._Key == _Key,
-    Source._Value == _Value
-  {
-    var __i = __source.__begin_node
-    while __i != __source.__end_node() {
-      var __src_ptr: _NodePtr = __i
-      var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_leaf_high(&__parent, __source.__get_value(__src_ptr))
-      __i = __source.__tree_next_iter(__i)
-      _ensureCapacity()
-      __src_ptr = __tree_.__construct_node(__source.__value_(__src_ptr))
-      __tree_.__insert_node_at(__parent, __child, __src_ptr)
-    }
-  }
+  // MARK: Unique with Uniquing
 
   @inlinable
   @inline(__always)
@@ -100,25 +87,6 @@ extension ___RedBlackTreeMerge {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows
   where
-    _Value == _KeyValueTuple_<Key, Value>,
-    Source: MergeSourceProtocol,
-    Source._Key == _Key,
-    Source._Value == _Value
-  {
-    try ___tree_merge_unique(
-      __source,
-      uniquingKeysWith: combine,
-      mappedValue: { $0.value },
-      transform: { $0 })
-  }
-
-  @inlinable
-  @inline(__always)
-  mutating func ___tree_merge_unique<Source, Key, Value>(
-    _ __source: Source,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows
-  where
     _Value == Pair<Key, Value>,
     Source: MergeSourceProtocol,
     Source._Key == _Key,
@@ -140,7 +108,40 @@ extension ___RedBlackTreeMerge {
       }
     }
   }
+}
 
+extension ___RedBlackTreeMerge {
+
+  // MARK: Multi
+
+  @inlinable
+  @inline(__always)
+  mutating func ___tree_merge_multi<Source>(_ __source: Source)
+  where
+    Source: MergeSourceProtocol,
+    Source._Key == _Key,
+    Source._Value == _Value
+  {
+    var __i = __source.__begin_node
+    while __i != __source.__end_node() {
+      var __src_ptr: _NodePtr = __i
+      var __parent: _NodePtr = .zero
+      let __child = __tree_.__find_leaf_high(&__parent, __source.__get_value(__src_ptr))
+      __i = __source.__tree_next_iter(__i)
+      _ensureCapacity()
+      __src_ptr = __tree_.__construct_node(__source.__value_(__src_ptr))
+      __tree_.__insert_node_at(__parent, __child, __src_ptr)
+    }
+  }
+}
+
+// MARK: - Sequence merge
+// マージ元がSequenceのケース
+
+extension ___RedBlackTreeMerge {
+
+  // MARK: Unique
+  
   @inlinable
   @inline(__always)
   mutating func ___merge_unique<S>(_ __source: S)
@@ -159,6 +160,8 @@ extension ___RedBlackTreeMerge {
       __tree_.__insert_node_at(__parent, __child, __src_ptr)
     }
   }
+
+  // MARK: Unique with Uniquing
 
   @inlinable
   @inline(__always)
@@ -209,6 +212,13 @@ extension ___RedBlackTreeMerge {
       }
     }
   }
+}
+
+extension ___RedBlackTreeMerge {
+
+  // MARK: Multi
+  
+  // TODO: Collection版を用意し、_ensureCapacity()を一回で済ますようにする
 
   @inlinable
   @inline(__always)
@@ -216,23 +226,6 @@ extension ___RedBlackTreeMerge {
   where
     S: Sequence,
     S.Element == _Value
-  {
-    for __element in __source {
-      var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_leaf_high(&__parent, __tree_.__key(__element))
-      _ensureCapacity()
-      let __src_ptr = __tree_.__construct_node(__element)
-      __tree_.__insert_node_at(__parent, __child, __src_ptr)
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  mutating func ___merge_multi<S, Key, Value>(_ __source: S)
-  where
-    _Value == _KeyValueTuple_<Key, Value>,
-    S: Sequence,
-    S.Element == (Key, Value)
   {
     for __element in __source {
       var __parent: _NodePtr = .zero

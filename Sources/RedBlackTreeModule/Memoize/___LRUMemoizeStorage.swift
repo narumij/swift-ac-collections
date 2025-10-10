@@ -120,7 +120,7 @@ extension ___LRUMemoizeStorage {
 extension ___LRUMemoizeStorage: ___LRULinkList {
   
   @inlinable
-  public static func ___mapped_value(of element: _Value) -> _MappedValue {
+  public static func ___mapped_value(_ element: _Value) -> _MappedValue {
     element.value
   }
 }

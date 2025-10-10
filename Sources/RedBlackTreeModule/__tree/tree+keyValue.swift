@@ -25,7 +25,7 @@ import Foundation
 /// 要素がキーバリューの場合のひな形
 public protocol KeyValueComparer: ValueComparer {
   associatedtype _MappedValue
-  static func ___mapped_value(of element: _Value) -> _MappedValue
+  static func ___mapped_value(_ element: _Value) -> _MappedValue
 }
 
 extension KeyValueComparer {
@@ -50,7 +50,7 @@ extension KeyValueComparer where _MappedValue: Comparable {
   @inline(__always)
   static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
     ___key_comp(lhs, rhs)
-      || (!___key_comp(lhs, rhs) && ___mapped_value(of: lhs) < ___mapped_value(of: rhs))
+      || (!___key_comp(lhs, rhs) && ___mapped_value(lhs) < ___mapped_value(rhs))
   }
 }
 
@@ -58,7 +58,7 @@ extension KeyValueComparer where _MappedValue: Equatable {
   @inlinable
   @inline(__always)
   static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    ___key_equiv(lhs, rhs) && ___mapped_value(of: lhs) == ___mapped_value(of: rhs)
+    ___key_equiv(lhs, rhs) && ___mapped_value(lhs) == ___mapped_value(rhs)
   }
 }
 
@@ -68,7 +68,7 @@ extension ValueComparerProtocol where VC: KeyValueComparer {
   @inlinable
   @inline(__always)
   public static func ___mapped_value(of element: VC._Value) -> VC._MappedValue {
-    VC.___mapped_value(of: element)
+    VC.___mapped_value(element)
   }
 }
 
@@ -107,7 +107,7 @@ extension KeyValueComparer where _Value == _KeyValueTuple {
 
   @inlinable
   @inline(__always)
-  public static func ___mapped_value(of element: _Value) -> _MappedValue { element.value }
+  public static func ___mapped_value(_ element: _Value) -> _MappedValue { element.value }
 }
 
 // MARK: -
@@ -156,5 +156,5 @@ extension KeyValueComparer where _Value == Pair<_Key, _MappedValue> {
 
   @inlinable
   @inline(__always)
-  public static func ___mapped_value(of element: _Value) -> _MappedValue { element.value }
+  public static func ___mapped_value(_ element: _Value) -> _MappedValue { element.value }
 }

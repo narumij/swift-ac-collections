@@ -438,7 +438,11 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
     _ensureUnique()
-    try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
+    try ___tree_merge_unique(
+      other.__tree_,
+      uniquingKeysWith: combine,
+      mappedValue: { $0.value },
+      transform: { $0 })
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
@@ -449,7 +453,11 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
     _ensureUnique()
-    try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
+    try ___tree_merge_unique(
+      other.__tree_,
+      uniquingKeysWith: combine,
+      mappedValue: { $0.value },
+      transform: { $0.tuple })
   }
 
   /// 辞書に `other` の要素をマージします。

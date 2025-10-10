@@ -66,13 +66,14 @@ extension ___RedBlackTreeMerge {
   @inline(__always)
   mutating func ___tree_merge_unique<Source, Key, Value>(
     _ __source: Source,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
+    uniquingKeysWith combine: (Value, Value) throws -> Value,
+    mappedValue __mapped_value: (Source._Value) -> Value,
+    transform: (Source._Value) -> _Value
   ) rethrows
   where
     _Value == _KeyValueTuple_<Key, Value>,
     Source: MergeSourceProtocol,
-    Source._Key == _Key,
-    Source._Value == _Value
+    Source._Key == _Key
   {
     var __i = __source.__begin_node
     while __i != __source.__end_node() {
@@ -82,13 +83,33 @@ extension ___RedBlackTreeMerge {
       __i = __source.__tree_next_iter(__i)
       if __tree_.__ptr_(__child) != .nullptr {
         __tree_[__tree_.__ptr_(__child)].value = try combine(
-          __tree_[__tree_.__ptr_(__child)].value, __source.__value_(__src_ptr).value)
+          __tree_[__tree_.__ptr_(__child)].value,
+          __mapped_value(__source.__value_(__src_ptr)))
       } else {
         _ensureCapacity()
-        __src_ptr = __tree_.__construct_node(__source.__value_(__src_ptr))
+        __src_ptr = __tree_.__construct_node(transform(__source.__value_(__src_ptr)))
         __tree_.__insert_node_at(__parent, __child, __src_ptr)
       }
     }
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func ___tree_merge_unique<Source, Key, Value>(
+    _ __source: Source,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows
+  where
+    _Value == _KeyValueTuple_<Key, Value>,
+    Source: MergeSourceProtocol,
+    Source._Key == _Key,
+    Source._Value == _Value
+  {
+    try ___tree_merge_unique(
+      __source,
+      uniquingKeysWith: combine,
+      mappedValue: { $0.value },
+      transform: { $0 })
   }
   
   @inlinable
@@ -120,35 +141,6 @@ extension ___RedBlackTreeMerge {
     }
   }
   
-  @inlinable
-  @inline(__always)
-  mutating func ___tree_merge_unique<Source, Key, Value>(
-    _ __source: Source,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows
-  where
-    _Value == _KeyValueTuple_<Key, Value>,
-    Source: MergeSourceProtocol,
-    Source._Key == _Key,
-    Source._Value == Pair<Key, Value>
-  {
-    var __i = __source.__begin_node
-    while __i != __source.__end_node() {
-      var __src_ptr: _NodePtr = __i
-      var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_equal(&__parent, __source.__get_value(__src_ptr))
-      __i = __source.__tree_next_iter(__i)
-      if __tree_.__ptr_(__child) != .nullptr {
-        __tree_[__tree_.__ptr_(__child)].value = try combine(
-          __tree_[__tree_.__ptr_(__child)].value, __source.__value_(__src_ptr).value)
-      } else {
-        _ensureCapacity()
-        __src_ptr = __tree_.__construct_node(__source.__value_(__src_ptr).tuple)
-        __tree_.__insert_node_at(__parent, __child, __src_ptr)
-      }
-    }
-  }
-
   @inlinable
   @inline(__always)
   mutating func ___merge_unique<S>(_ __source: S)

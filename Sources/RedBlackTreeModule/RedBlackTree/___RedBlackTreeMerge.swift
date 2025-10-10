@@ -61,7 +61,7 @@ extension ___RedBlackTreeMerge {
       __tree_.__insert_node_at(__parent, __child, __src_ptr)
     }
   }
-  
+
   @inlinable
   @inline(__always)
   mutating func ___tree_merge_unique<Source, Key, Value>(
@@ -111,7 +111,7 @@ extension ___RedBlackTreeMerge {
       mappedValue: { $0.value },
       transform: { $0 })
   }
-  
+
   @inlinable
   @inline(__always)
   mutating func ___tree_merge_unique<Source, Key, Value>(
@@ -140,7 +140,7 @@ extension ___RedBlackTreeMerge {
       }
     }
   }
-  
+
   @inlinable
   @inline(__always)
   mutating func ___merge_unique<S>(_ __source: S)
@@ -157,6 +157,56 @@ extension ___RedBlackTreeMerge {
       _ensureCapacity()
       let __src_ptr = __tree_.__construct_node(__element)
       __tree_.__insert_node_at(__parent, __child, __src_ptr)
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func ___merge_unique<S, Key, Value>(
+    _ __source: S,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows
+  where
+    _Value == _KeyValueTuple_<Key, Value>,
+    S: Sequence,
+    S.Element == (Key, Value)
+  {
+    for __element in __source {
+      var __parent: _NodePtr = .zero
+      let __child = __tree_.__find_equal(&__parent, __tree_.__key(__element))
+      if __tree_.__ptr_(__child) != .nullptr {
+        __tree_[__tree_.__ptr_(__child)].value = try combine(
+          __tree_[__tree_.__ptr_(__child)].value, __element.1)
+      } else {
+        _ensureCapacity()
+        let __src_ptr = __tree_.__construct_node(__element)
+        __tree_.__insert_node_at(__parent, __child, __src_ptr)
+      }
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func ___merge_unique<S, Key, Value>(
+    _ __source: S,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows
+  where
+    _Value == Pair<Key, Value>,
+    S: Sequence,
+    S.Element == (Key, Value)
+  {
+    for __element in __source.map({ Pair($0) }) {
+      var __parent: _NodePtr = .zero
+      let __child = __tree_.__find_equal(&__parent, __tree_.__key(__element))
+      if __tree_.__ptr_(__child) != .nullptr {
+        __tree_[__tree_.__ptr_(__child)].value = try combine(
+          __tree_[__tree_.__ptr_(__child)].value, __element.value)
+      } else {
+        _ensureCapacity()
+        let __src_ptr = __tree_.__construct_node(__element)
+        __tree_.__insert_node_at(__parent, __child, __src_ptr)
+      }
     }
   }
 
@@ -192,7 +242,7 @@ extension ___RedBlackTreeMerge {
       __tree_.__insert_node_at(__parent, __child, __src_ptr)
     }
   }
-  
+
   @inlinable
   @inline(__always)
   mutating func ___merge_multi<S, Key, Value>(_ __source: S)
@@ -207,56 +257,6 @@ extension ___RedBlackTreeMerge {
       _ensureCapacity()
       let __src_ptr = __tree_.__construct_node(__element)
       __tree_.__insert_node_at(__parent, __child, __src_ptr)
-    }
-  }
-  
-  @inlinable
-  @inline(__always)
-  mutating func ___merge_unique<S, Key, Value>(
-    _ __source: S,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows
-  where
-    _Value == _KeyValueTuple_<Key, Value>,
-    S: Sequence,
-    S.Element == (Key, Value)
-  {
-    for __element in __source {
-      var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_equal(&__parent, __tree_.__key(__element))
-      if __tree_.__ptr_(__child) != .nullptr {
-        __tree_[__tree_.__ptr_(__child)].value = try combine(
-          __tree_[__tree_.__ptr_(__child)].value, __element.1)
-      } else {
-        _ensureCapacity()
-        let __src_ptr = __tree_.__construct_node(__element)
-        __tree_.__insert_node_at(__parent, __child, __src_ptr)
-      }
-    }
-  }
-  
-  @inlinable
-  @inline(__always)
-  mutating func ___merge_unique<S, Key, Value>(
-    _ __source: S,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows
-  where
-    _Value == Pair<Key, Value>,
-    S: Sequence,
-    S.Element == (Key, Value)
-  {
-    for __element in __source.map({ Pair($0) }) {
-      var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_equal(&__parent, __tree_.__key(__element))
-      if __tree_.__ptr_(__child) != .nullptr {
-        __tree_[__tree_.__ptr_(__child)].value = try combine(
-          __tree_[__tree_.__ptr_(__child)].value, __element.value)
-      } else {
-        _ensureCapacity()
-        let __src_ptr = __tree_.__construct_node(__element)
-        __tree_.__insert_node_at(__parent, __child, __src_ptr)
-      }
     }
   }
 }

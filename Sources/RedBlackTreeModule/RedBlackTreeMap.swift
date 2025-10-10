@@ -51,8 +51,8 @@ public struct RedBlackTreeMap<Key: Comparable, Value> {
     typealias Index = Tree.Index
 
   public
-//    typealias KeyValue = (key: Key, value: Value)
-  typealias KeyValue = Pair<Key, Value>
+    //    typealias KeyValue = (key: Key, value: Value)
+    typealias KeyValue = Pair<Key, Value>
 
   public
     typealias Element = KeyValue
@@ -131,7 +131,7 @@ extension RedBlackTreeMap {
     assert(tree.__tree_invariant(tree.__root()))
     self._storage = .init(tree: tree)
   }
-  
+
   /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
@@ -408,7 +408,7 @@ extension RedBlackTreeMap {
   ) {
     insert(.init(key, value))
   }
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
@@ -474,15 +474,19 @@ extension RedBlackTreeMap {
     try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
   }
 
+  /// mapに `other` の要素をマージします。
+  /// キーが重複したときは `combine` の戻り値を採用します。
+  ///
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  public mutating func merge(
-    _ other: RedBlackTreeMultiMap<Key, Value>,
+  public mutating func merge<S>(
+    _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows {
+  ) rethrows where S: Sequence, S.Element == Pair<Key, Value> {
+
     _ensureUnique()
-    try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
+    try ___merge_unique(other, uniquingKeysWith: combine)
   }
 
   /// mapに `other` の要素をマージします。
@@ -512,13 +516,15 @@ extension RedBlackTreeMap {
     return result
   }
 
+  /// `self` と `other` をマージした新しいmapを返します。
+  ///
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  public func merging(
-    _ other: RedBlackTreeMultiMap<Key, Value>,
+  public func merging<S>(
+    _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows -> Self {
+  ) rethrows -> Self where S: Sequence, S.Element == Pair<Key, Value> {
     var result = self
     try result.merge(other, uniquingKeysWith: combine)
     return result

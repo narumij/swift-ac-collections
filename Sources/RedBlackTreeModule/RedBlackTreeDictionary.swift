@@ -445,23 +445,6 @@ extension RedBlackTreeDictionary {
       transform: { $0 })
   }
 
-#if false
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  public mutating func merge(
-    _ other: RedBlackTreeMultiMap<Key, Value>,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows {
-    _ensureUnique()
-    try ___tree_merge_unique(
-      other.__tree_,
-      uniquingKeysWith: combine,
-      mappedValue: { $0.value },
-      transform: { $0.tuple })
-  }
-#endif
-
   /// 辞書に `other` の要素をマージします。
   /// キーが重複したときは `combine` の戻り値を採用します。
   ///
@@ -497,18 +480,6 @@ extension RedBlackTreeDictionary {
   @inlinable
   public func merging(
     _ other: RedBlackTreeDictionary<Key, Value>,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows -> Self {
-    var result = self
-    try result.merge(other, uniquingKeysWith: combine)
-    return result
-  }
-
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  public func merging(
-    _ other: RedBlackTreeMultiMap<Key, Value>,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows -> Self {
     var result = self

@@ -15,6 +15,7 @@ where
   associatedtype _Value
   var __tree_: Tree { get }
   mutating func _ensureCapacity()
+  mutating func _ensureCapacity(amount: Int)
 }
 
 // MARK: - Tree merge
@@ -122,13 +123,13 @@ extension ___RedBlackTreeMerge {
     Source._Key == _Key,
     Source._Value == _Value
   {
+    _ensureCapacity(amount: __source.size)
     var __i = __source.__begin_node
     while __i != __source.__end_node() {
       var __src_ptr: _NodePtr = __i
       var __parent: _NodePtr = .zero
       let __child = __tree_.__find_leaf_high(&__parent, __source.__get_value(__src_ptr))
       __i = __source.__tree_next_iter(__i)
-      _ensureCapacity()
       __src_ptr = __tree_.__construct_node(__source.__value_(__src_ptr))
       __tree_.__insert_node_at(__parent, __child, __src_ptr)
     }
@@ -218,8 +219,6 @@ extension ___RedBlackTreeMerge {
 
   // MARK: Multi
   
-  // TODO: Collection版を用意し、_ensureCapacity()を一回で済ますようにする
-
   @inlinable
   @inline(__always)
   mutating func ___merge_multi<S>(_ __source: S)

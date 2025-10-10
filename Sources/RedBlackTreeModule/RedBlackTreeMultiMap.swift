@@ -345,9 +345,9 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    ___merge_multi(other.map{ Pair($0) })
+  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Pair<Key, Value> {
+    _ensureUnique()
+    ___merge_multi(other)
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
@@ -357,7 +357,7 @@ extension RedBlackTreeMultiMap {
     _ensureUnique()
     ___merge_multi(other.map({ Pair($0) }))
   }
-
+  
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -369,15 +369,14 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
-  ///
-  /// - Important: 空間計算量に余裕がある場合、meldingの使用を推奨します
   @inlinable
-  public func inserting(contentsOf other: RedBlackTreeDictionary<Key, Value>) -> Self {
+  public func inserting<S>(contentsOf other: __owned S) -> Self
+  where S: Sequence, S.Element == Pair<Key, Value> {
     var result = self
     result.insert(contentsOf: other)
     return result
   }
-
+  
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable

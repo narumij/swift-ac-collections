@@ -110,7 +110,13 @@ extension ___RedBlackTreeCopyOnWrite {
   @inlinable
   @inline(__always)
   mutating func _ensureCapacity() {
-    let minimumCapacity = _storage.count + 1
+    _ensureCapacity(amount: 1)
+  }
+  
+  @inlinable
+  @inline(__always)
+  mutating func _ensureCapacity(amount: Int) {
+    let minimumCapacity = _storage.count + amount
     if _storage.capacity < minimumCapacity {
       _storage = _storage.copy(
         growthCapacityTo: minimumCapacity,

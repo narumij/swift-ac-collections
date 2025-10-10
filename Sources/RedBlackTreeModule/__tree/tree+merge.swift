@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol MergeSourceProtocol: TreeValueProtocol & AllocatorProtocol & BeginNodeProtocol & EndNodeProtocol & ValueProtocol { }
+protocol MergeSourceProtocol: TreeValueProtocol & AllocatorProtocol & BeginNodeProtocol & EndNodeProtocol & ValueProtocol & SizeProtocol { }
 
 @usableFromInline
 protocol MergeProtocol: KeyProtocol & FindEqualProtocol & FindLeafProtocol & InsertNodeAtProtocol & AllocatorProtocol {

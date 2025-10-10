@@ -347,7 +347,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
     _ensureUniqueAndCapacity(to: count + other.count)
-    ___merge_multi(other.map{ $0 })
+    ___merge_multi(other.map{ Pair($0) })
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
@@ -355,7 +355,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
     _ensureUnique()
-    ___merge_multi(other)
+    ___merge_multi(other.map({ Pair($0) }))
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

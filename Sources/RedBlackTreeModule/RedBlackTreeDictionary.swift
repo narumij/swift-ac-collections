@@ -445,6 +445,7 @@ extension RedBlackTreeDictionary {
       transform: { $0 })
   }
 
+#if false
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -459,6 +460,7 @@ extension RedBlackTreeDictionary {
       mappedValue: { $0.value },
       transform: { $0.tuple })
   }
+#endif
 
   /// 辞書に `other` の要素をマージします。
   /// キーが重複したときは `combine` の戻り値を採用します。
@@ -473,6 +475,21 @@ extension RedBlackTreeDictionary {
 
     _ensureUnique()
     try ___merge_unique(other, uniquingKeysWith: combine)
+  }
+  
+  /// 辞書に `other` の要素をマージします。
+  /// キーが重複したときは `combine` の戻り値を採用します。
+  ///
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public mutating func merge<S>(
+    _ other: __owned S,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows where S: Sequence, S.Element == Pair<Key, Value> {
+
+    _ensureUnique()
+    try ___merge_unique(other.map({ (key: $0.key, value: $0.value) }), uniquingKeysWith: combine)
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
@@ -508,6 +525,20 @@ extension RedBlackTreeDictionary {
     _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows -> Self where S: Sequence, S.Element == (Key, Value) {
+    var result = self
+    try result.merge(other, uniquingKeysWith: combine)
+    return result
+  }
+  
+  /// `self` と `other` をマージした新しい辞書を返します。
+  ///
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func merging<S>(
+    _ other: __owned S,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows -> Self where S: Sequence, S.Element == Pair<Key, Value> {
     var result = self
     try result.merge(other, uniquingKeysWith: combine)
     return result

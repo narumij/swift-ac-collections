@@ -497,7 +497,7 @@ extension RedBlackTreeMap {
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
     _ensureUnique()
-    try ___merge_unique(other, uniquingKeysWith: combine)
+    try ___merge_unique(other.map({ Pair($0) }), uniquingKeysWith: combine)
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

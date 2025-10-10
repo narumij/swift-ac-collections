@@ -438,11 +438,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
     _ensureUnique()
-    try ___tree_merge_unique(
-      other.__tree_,
-      uniquingKeysWith: combine,
-      mappedValue: { $0.value },
-      transform: { $0 })
+    try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
   }
 
   /// 辞書に `other` の要素をマージします。
@@ -472,7 +468,7 @@ extension RedBlackTreeDictionary {
   ) rethrows where S: Sequence, S.Element == Pair<Key, Value> {
 
     _ensureUnique()
-    try ___merge_unique(other.map({ (key: $0.key, value: $0.value) }), uniquingKeysWith: combine)
+    try ___merge_unique(other.map({ $0.tuple }), uniquingKeysWith: combine)
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

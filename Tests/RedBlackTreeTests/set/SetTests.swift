@@ -857,6 +857,18 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(i, sub.startIndex)
   }
 
+  func testIndex1() throws {
+    let set: RedBlackTreeSet<Int> = [1,2,3,4,6,7]
+    let l2 = set.lowerBound(2)
+    let u2 = set.upperBound(4)
+    XCTAssertEqual(set[l2..<u2].map{ $0 }, [2, 3, 4])
+    XCTAssertEqual(set[l2...].map{ $0 }, [2, 3, 4, 6, 7])
+    XCTAssertEqual(set[u2...].map{ $0 }, [6, 7])
+    XCTAssertEqual(set[..<u2].map{ $0 }, [1, 2, 3, 4])
+    XCTAssertEqual(set[...u2].map{ $0 }, [1, 2, 3, 4, 6])
+    XCTAssertEqual(set[..<set.endIndex].map{ $0 }, [1,2,3,4,6,7])
+  }
+
   func testSorted() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     XCTAssertEqual(set.sorted(), [1, 2, 3, 4, 5])

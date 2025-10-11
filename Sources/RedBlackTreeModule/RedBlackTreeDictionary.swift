@@ -359,12 +359,28 @@ extension RedBlackTreeDictionary {
       end: bounds.upperBound.rawValue)
   }
 
+  @inlinable
+  @inline(__always)
+  public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+    let bounds: Range<Index> = bounds.relative(to: self)
+    
+    __tree_.___ensureValidRange(
+      begin: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+    
+    return .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+  }
+  
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public subscript(unchecked bounds: Range<Index>) -> SubSequence {
-    .init(
+  public subscript<R>(unchecked bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+    let bounds: Range<Index> = bounds.relative(to: self)
+    return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)

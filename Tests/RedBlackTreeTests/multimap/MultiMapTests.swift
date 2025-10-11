@@ -811,6 +811,18 @@ import XCTest
       sub.formIndex(&i, offsetBy: -3)
       XCTAssertEqual(i, sub.startIndex)
     }
+    
+    func testIndex1() throws {
+      let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]
+      let l2 = set.lowerBound(2)
+      let u2 = set.upperBound(4)
+      XCTAssertEqual(set[l2..<u2].map{ $0 }, [2,3,4].map{ .init($0, $0 * 10) })
+      XCTAssertEqual(set[l2...].map{ $0 }, [2, 3, 4, 6, 7].map{ .init($0, $0 * 10) })
+      XCTAssertEqual(set[u2...].map{ $0 }, [6, 7].map{ .init($0, $0 * 10) })
+      XCTAssertEqual(set[..<u2].map{ $0 }, [1, 2, 3, 4].map{ .init($0, $0 * 10) })
+      XCTAssertEqual(set[...u2].map{ $0 }, [1, 2, 3, 4, 6].map{ .init($0, $0 * 10) })
+      XCTAssertEqual(set[..<set.endIndex].map{ $0 }, [1,2,3,4,6,7].map{ .init($0, $0 * 10) })
+    }
 
     func testIndexValidation() throws {
       let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]

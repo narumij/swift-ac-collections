@@ -680,7 +680,7 @@ extension ___Tree {
     //    return !___initialized_contains(p) || ___is_garbaged(p)
     // begin -> false
     // end -> true
-    return p < 0 || _header.initializedCount <= p || ___is_garbaged(p)
+    return ___is_null_or_end(p) || _header.initializedCount <= p || ___is_garbaged(p)
   }
 
   @nonobjc

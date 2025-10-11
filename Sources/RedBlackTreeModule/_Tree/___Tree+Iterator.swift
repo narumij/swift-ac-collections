@@ -25,8 +25,14 @@ import Foundation
 extension ___Tree {
 
   /// 赤黒木のノードへのイテレータ
+  ///
+  /// 非公開APIの型名となっているが、実際にはあちこちに公開されている
+  /// どちらかというと名前の衝突回避でこの名前となっている
   @frozen
   public struct ___Iterator {
+    
+    // TODO: 公開APIに見える名前に変更すること
+    // 単純に公開な形にすると諸々連鎖して公開になるので困っている
 
     public typealias _Value = Tree._Value
 
@@ -109,6 +115,9 @@ extension ___Tree.___Iterator {
 
 extension ___Tree.___Iterator {
 
+  /// 次のイテレータを返す
+  ///
+  /// 終端だった場合と、無効だった場合にnilとなる
   @inlinable
   @inline(__always)
   public var next: Self? {
@@ -116,10 +125,13 @@ extension ___Tree.___Iterator {
       return nil
     }
     var next = self
-    next.___next()
+    next.___unchecked_next()
     return next
   }
 
+  /// 前のイテレータを返す
+  ///
+  /// 始点だった場合と、無効だった場合にnilとなる
   @inlinable
   @inline(__always)
   public var previous: Self? {
@@ -127,13 +139,13 @@ extension ___Tree.___Iterator {
       return nil
     }
     var prev = self
-    prev.___prev()
+    prev.___unchecked_prev()
     return prev
   }
 
   @inlinable
   @inline(__always)
-  mutating func ___next() {
+  mutating func ___unchecked_next() {
     assert(!__tree_.___is_garbaged(rawValue))
     assert(!__tree_.___is_end(rawValue))
     rawValue = __tree_.__tree_next_iter(rawValue)
@@ -141,7 +153,7 @@ extension ___Tree.___Iterator {
 
   @inlinable
   @inline(__always)
-  mutating func ___prev() {
+  mutating func ___unchecked_prev() {
     assert(!__tree_.___is_garbaged(rawValue))
     assert(!__tree_.___is_begin(rawValue))
     rawValue = __tree_.__tree_prev_iter(rawValue)
@@ -172,6 +184,9 @@ extension ___Tree.___Iterator {
 
 extension ___Tree.___Iterator {
 
+  /// 現在位置の値を返す
+  ///
+  /// 無効な場合nilとなる
   @inlinable
   public var pointee: _Value? {
     @inline(__always) _read {
@@ -207,19 +222,6 @@ extension ___Tree.___Iterator {
   extension ___Tree.___Iterator {
     static func unsafe(tree: ___Tree<VC>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue)
-    }
-  }
-#endif
-
-#if false
-  @inlinable
-  func _description(_ p: _NodePtr) -> String {
-    switch p {
-    case .nullptr: ".nullptr"
-    case .end: ".end"
-    case .under: ".under"
-    case .over: ".over"
-    default: "\(p)"
     }
   }
 #endif

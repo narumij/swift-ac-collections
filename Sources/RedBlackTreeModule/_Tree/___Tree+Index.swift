@@ -24,7 +24,7 @@
 ///
 /// C++の双方向イテレータに近い内容となっている
 @frozen
-public struct TreeIndex<VC> where VC: ValueComparer & CompareTrait {
+public struct TreeNodeIndex<VC> where VC: ValueComparer & CompareTrait {
   public typealias Tree = ___Tree<VC>
   public typealias _Value = Tree._Value
 
@@ -43,7 +43,7 @@ public struct TreeIndex<VC> where VC: ValueComparer & CompareTrait {
     self.__tree_ = tree
     self.rawValue = rawValue
   }
-  
+
   /*
    invalidなポインタでの削除は、だんまりがいいように思う
    */
@@ -52,7 +52,7 @@ public struct TreeIndex<VC> where VC: ValueComparer & CompareTrait {
   // CoWに関与できないので、Treeに対する破壊的変更は行わないこと
 }
 
-extension TreeIndex: Comparable {
+extension TreeNodeIndex: Comparable {
 
   /// - Complexity: O(1)
   @inlinable
@@ -71,11 +71,12 @@ extension TreeIndex: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-    
+
     let __tree_ = lhs.__tree_
 
     guard !__tree_.___is_garbaged(lhs.rawValue),
-          !__tree_.___is_garbaged(rhs.rawValue) else {
+      !__tree_.___is_garbaged(rhs.rawValue)
+    else {
       preconditionFailure(.garbagedIndex)
     }
 
@@ -85,13 +86,14 @@ extension TreeIndex: Comparable {
 
 // Stridableできるが、Range<Index>に標準実装が生えることと、
 // その実装が要素アクセスのたびに範囲チェックを行うことを嫌って、Stridableをやめている
-extension TreeIndex {
+extension TreeNodeIndex {
 
   @inlinable
   //  @inline(__always)
   public func distance(to other: Self) -> Int {
     guard !__tree_.___is_garbaged(rawValue),
-          !__tree_.___is_garbaged(other.rawValue) else {
+      !__tree_.___is_garbaged(other.rawValue)
+    else {
       preconditionFailure(.garbagedIndex)
     }
     return __tree_.___signed_distance(rawValue, other.rawValue)
@@ -104,7 +106,7 @@ extension TreeIndex {
   }
 }
 
-extension TreeIndex {
+extension TreeNodeIndex {
 
   /// 次のイテレータを返す
   ///
@@ -151,7 +153,7 @@ extension TreeIndex {
   }
 }
 
-extension TreeIndex {
+extension TreeNodeIndex {
 
   @inlinable
   @inline(__always)
@@ -173,7 +175,7 @@ extension TreeIndex {
   }
 }
 
-extension TreeIndex {
+extension TreeNodeIndex {
 
   /// 現在位置の値を返す
   ///
@@ -186,7 +188,7 @@ extension TreeIndex {
   }
 }
 
-extension TreeIndex {
+extension TreeNodeIndex {
 
   @inlinable
   @inline(__always)
@@ -203,14 +205,14 @@ extension TreeIndex {
 }
 
 #if DEBUG
-  extension TreeIndex {
+  extension TreeNodeIndex {
     fileprivate init(_unsafe_tree: ___Tree<VC>, rawValue: _NodePtr) {
       self.__tree_ = _unsafe_tree
       self.rawValue = rawValue
     }
   }
 
-  extension TreeIndex {
+  extension TreeNodeIndex {
     static func unsafe(tree: ___Tree<VC>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue)
     }
@@ -218,42 +220,34 @@ extension TreeIndex {
 #endif
 
 #if swift(>=5.5)
-  extension TreeIndex: @unchecked Sendable
+  extension TreeNodeIndex: @unchecked Sendable
   where _Value: Sendable {}
 #endif
 
 @inlinable
 @inline(__always)
-public func ..< <VC>(
-  lhs: TreeIndex<VC>,
-  rhs: TreeIndex<VC>
-) -> ___Tree<VC>.Indices {
+public func ..< <VC>(lhs: TreeNodeIndex<VC>, rhs: TreeNodeIndex<VC>) -> ___Tree<VC>.Indices {
   lhs.__tree_.makeIndices(start: lhs.rawValue, end: rhs.rawValue)
 }
 
 @inlinable
 @inline(__always)
-public func + <VC>(
-  lhs: TreeIndex<VC>,
-  rhs: Int
-) -> TreeIndex<VC> {
+public func + <VC>(lhs: TreeNodeIndex<VC>, rhs: Int) -> TreeNodeIndex<VC> {
   lhs.advanced(by: rhs)
 }
 
 @inlinable
 @inline(__always)
-public func - <VC>(
-  lhs: TreeIndex<VC>,
-  rhs: Int
-) -> TreeIndex<VC> {
+public func - <VC>(lhs: TreeNodeIndex<VC>, rhs: Int) -> TreeNodeIndex<VC> {
   lhs.advanced(by: -rhs)
 }
 
 @inlinable
 @inline(__always)
-public func - <VC>(
-  lhs: TreeIndex<VC>,
-  rhs: TreeIndex<VC>
-) -> Int {
+public func - <VC>(lhs: TreeNodeIndex<VC>, rhs: TreeNodeIndex<VC>) -> Int {
   rhs.distance(to: lhs)
+}
+
+extension ___Tree {
+  public typealias ___Iterator = TreeNodeIndex<VC>
 }

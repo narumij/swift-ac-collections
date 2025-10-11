@@ -35,7 +35,8 @@ protocol CompareBothProtocol: CompareUniqueProtocol, CompareMultiProtocol, NodeF
 }
 
 extension CompareBothProtocol {
-  @inlinable @inline(__always)
+  @inlinable
+  @inline(__always)
   func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     assert(l == .end || __parent_(l) != .nullptr)
     assert(r == .end || __parent_(r) != .nullptr)

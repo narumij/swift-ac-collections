@@ -215,6 +215,7 @@ extension NodeFlagProtocol {
       __h += 1
     }
     __f <<= UInt.bitWidth - __h
+    assert(__f != UInt.max, "conflicting with end ptr")
     return __f
   }
 

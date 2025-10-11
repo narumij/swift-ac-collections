@@ -28,7 +28,7 @@ protocol PointerCompareProtocol: ValueProtocol {
 }
 
 @usableFromInline
-protocol CompareBothProtocol: CompareUniqueProtocol, CompareMultiProtocol {
+protocol CompareBothProtocol: CompareUniqueProtocol, CompareMultiProtocol, NodeFlagProtocol {
   var isMulti: Bool { get }
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
   func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
@@ -39,7 +39,8 @@ extension CompareBothProtocol {
   func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     assert(l == .end || __parent_(l) != .nullptr)
     assert(r == .end || __parent_(r) != .nullptr)
-    return isMulti ? ___ptr_comp_unique(l, r) || ___ptr_comp_multi(l, r) : ___ptr_comp_unique(l, r)
+    //    return isMulti ? ___ptr_comp_unique(l, r) || ___ptr_comp_multi(l, r) : ___ptr_comp_unique(l, r)
+    return isMulti ? ___ptr_comp_unique(l, r) || ___ptr_comp_bitmap(l, r) : ___ptr_comp_unique(l, r)
   }
 }
 
@@ -47,14 +48,14 @@ public protocol CompareTrait {
   static var isMulti: Bool { get }
 }
 
-public protocol CompareUniqueTrait: CompareTrait { }
+public protocol CompareUniqueTrait: CompareTrait {}
 
 extension CompareUniqueTrait {
   @inlinable @inline(__always)
   public static var isMulti: Bool { false }
 }
 
-public protocol CompareMultiTrait: CompareTrait { }
+public protocol CompareMultiTrait: CompareTrait {}
 
 extension CompareMultiTrait {
   @inlinable @inline(__always)
@@ -99,10 +100,10 @@ extension CompareMultiProtocol {
     }
     return __h
   }
-  
+
   // ノードの大小を比較する
   @inlinable
-//  @inline(__always)
+  //  @inline(__always)
   func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
     assert(__l != .nullptr, "Left node shouldn't be null")
     assert(__r != .nullptr, "Right node shouldn't be null")
@@ -177,10 +178,48 @@ extension CompareProtocol {
   func ___ptr_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool {
     ___ptr_less_than_or_equal(l, p) && ___ptr_less_than(p, r)
   }
-  
+
   @inlinable
   @inline(__always)
   func ___ptr_closed_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool {
     ___ptr_less_than_or_equal(l, p) && ___ptr_less_than_or_equal(p, r)
+  }
+}
+
+@usableFromInline
+protocol NodeFlagProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {}
+
+extension NodeFlagProtocol {
+
+  /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
+  ///
+  /// 8bit幅で例えると、
+  /// ルートは128 (0b10000000)
+  /// ルートの左は64 (0b010000000)
+  /// ルートの右は192となる  (0b110000000)
+  /// (実際にはUIntで64bit幅)
+  @inlinable
+  @inline(__always)
+  func ___ptr_bitmap(_ __p: _NodePtr) -> UInt {
+    assert(__p != .nullptr, "Node shouldn't be null")
+    var __f: UInt = 1  // terminator flag
+    var __h = 1
+    var __p = __p
+    if __p == .end {
+      return .max
+    }
+    while __p != __root(), __p != end() {
+      __f = __f | (__tree_is_left_child(__p) ? 0 : 1) << __h
+      __p = __parent_(__p)
+      __h += 1
+    }
+    __f <<= UInt.bitWidth - __h
+    return __f
+  }
+
+  @inlinable
+  @inline(__always)
+  func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
+    ___ptr_bitmap(__l) < ___ptr_bitmap(__r)
   }
 }

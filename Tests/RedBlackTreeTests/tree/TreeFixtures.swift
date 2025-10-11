@@ -80,7 +80,7 @@ import XCTest
     TreeFixtureBase<Element>,
     FindEqualProtocol, InsertNodeAtProtocol, InsertUniqueProtocol,
     RemoveProtocol, EraseProtocol, EraseUniqueProtocol, CompareProtocol, CompareMultiProtocol,
-    BoundProtocol
+    BoundProtocol, NodeFlagProtocol
   {
     func __key(_ e: Element) -> Element {
       e

@@ -46,9 +46,9 @@ let package = Package(
 //       url: "https://github.com/apple/swift-collections.git",
 //       branch: "main"
 //     ),
-//     .package(
-//       url: "https://github.com/apple/swift-algorithms.git",
-//       from: "1.2.0"),
+     .package(
+       url: "https://github.com/apple/swift-algorithms.git",
+       from: "1.2.1"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -66,7 +66,10 @@ let package = Package(
     ),
     .testTarget(
       name: "RedBlackTreeTests",
-      dependencies: ["RedBlackTreeModule"],
+      dependencies: [
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        "RedBlackTreeModule"
+      ],
       swiftSettings: _settings
     ),
     .target(

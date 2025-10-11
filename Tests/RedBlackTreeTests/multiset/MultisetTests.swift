@@ -395,6 +395,24 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -2)], 3)
     XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -1)], 4)
   }
+  
+  func testArrayAccess3() throws {
+    let set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
+    XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 0)], 0)
+    XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 1)], 1)
+    XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 2)], 2)
+    XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 3)], 3)
+    XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 4)], 4)
+  }
+
+  func testArrayAccess4() throws {
+    let set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
+    XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -5)], 0)
+    XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -4)], 1)
+    XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -3)], 2)
+    XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -2)], 3)
+    XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -1)], 4)
+  }
 
   func testIndexLimit1() throws {
     let set = Set<Int>([0, 1, 2, 3, 4])
@@ -1165,6 +1183,35 @@ final class MultisetTests: XCTestCase {
     do {
       let a = RedBlackTreeMultiSet<Int>([0,1,2])
       let b = RedBlackTreeMultiSet<Int>([0,1,3])
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+  }
+  
+  func testCompare2() throws {
+    let aa = RedBlackTreeMultiSet<Int>([0,1,2,3,4,5])
+    let bb = RedBlackTreeMultiSet<Int>([3,4,5,6,7,8])
+    do {
+      let a = aa[0 ..< 0]
+      let b = bb[3 ..< 3]
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = aa[3 ..< 6]
+      let b = bb[3 ..< 6]
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = aa[2 ..< 6]
+      let b = bb[3 ..< 6]
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = aa[3 ..< 6]
+      let b = bb[3 ..< 7]
       XCTAssertTrue(a < b)
       XCTAssertFalse(b < a)
     }

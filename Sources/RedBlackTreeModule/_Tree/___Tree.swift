@@ -107,9 +107,9 @@ extension ___Tree {
     @usableFromInline
     internal var __left_: _NodePtr
     @usableFromInline
-    internal var __right_: _NodePtr
-    @usableFromInline
     internal var __parent_: _NodePtr
+    @usableFromInline
+    internal var __right_: _NodePtr
     @usableFromInline
     internal var __is_black_: Bool
 

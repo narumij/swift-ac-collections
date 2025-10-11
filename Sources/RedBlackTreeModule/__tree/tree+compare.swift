@@ -40,6 +40,15 @@ extension CompareBothProtocol {
   func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     assert(l == .end || __parent_(l) != .nullptr)
     assert(r == .end || __parent_(r) != .nullptr)
+    
+    guard
+      l != r,
+      r != .end,
+      l != .end
+    else {
+      return l != .end && r == .end
+    }
+
     if isMulti {
 //      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_multi(l, r))
       return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_bitmap(l, r))
@@ -75,13 +84,10 @@ extension CompareUniqueProtocol {
   @inlinable
   @inline(__always)
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    guard
-      l != r,
-      r != .end,
-      l != .end
-    else {
-      return l != .end && r == .end
-    }
+    assert(l != .nullptr, "Node shouldn't be null")
+    assert(l != .end, "Node shouldn't be end")
+    assert(r != .nullptr, "Node shouldn't be null")
+    assert(r != .end, "Node shouldn't be end")
     return value_comp(__get_value(l), __get_value(r))
   }
 }
@@ -206,6 +212,7 @@ extension NodeFlagProtocol {
   @inline(__always)
   func ___ptr_bitmap(_ __p: _NodePtr) -> UInt {
     assert(__p != .nullptr, "Node shouldn't be null")
+    assert(__p != .end, "Node shouldn't be end")
     var __f: UInt = 1  // 終端flag
     var __h = 1 // 終端flag分
     var __p = __p
@@ -221,11 +228,6 @@ extension NodeFlagProtocol {
   @inlinable
   @inline(__always)
   func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
-    switch (__l,__r) {
-    case (_,.end): true
-    case (.end,_): false
-    default:
-      ___ptr_bitmap(__l) < ___ptr_bitmap(__r)
-    }
+    ___ptr_bitmap(__l) < ___ptr_bitmap(__r)
   }
 }

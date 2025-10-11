@@ -20,6 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+import Foundation
+
 /// 赤黒木のノードへのインデックス
 ///
 /// C++の双方向イテレータに近い内容となっている

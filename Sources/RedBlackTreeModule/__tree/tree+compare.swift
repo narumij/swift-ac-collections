@@ -39,7 +39,7 @@ extension CompareBothProtocol {
   func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     assert(l == .end || __parent_(l) != .nullptr)
     assert(r == .end || __parent_(r) != .nullptr)
-    return isMulti ? ___ptr_comp_multi(l, r) : ___ptr_comp_unique(l, r)
+    return isMulti ? ___ptr_comp_unique(l, r) || ___ptr_comp_multi(l, r) : ___ptr_comp_unique(l, r)
   }
 }
 

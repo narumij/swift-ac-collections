@@ -1010,5 +1010,39 @@ import XCTest
         XCTAssertFalse(b < a)
       }
     }
+    
+    func testMeld() throws {
+      do {
+        var a: Target<Int,Int> = [0: 10,1: 30]
+        let b: Target<Int,Int> = [0: 20,1: 40]
+        a.meld(b)
+        XCTAssertEqual(a + [], [0: 10,0: 20,1: 30,1: 40])
+      }
+    }
+    
+    func testMelding() throws {
+      do {
+        let a: Target<Int,Int> = [0: 10,1: 30]
+        let b: Target<Int,Int> = [0: 20,1: 40]
+        XCTAssertEqual(a.melding(b) + [], [0: 10,0: 20,1: 30,1: 40])
+      }
+    }
+    
+    func testAdd() throws {
+      do {
+        let a: Target<Int,Int> = [0: 10,1: 30]
+        let b: Target<Int,Int> = [0: 20,1: 40]
+        XCTAssertEqual((a + b) + [], [0: 10,0: 20,1: 30,1: 40])
+      }
+    }
+    
+    func testAddEqual() throws {
+      do {
+        var a: Target<Int,Int> = [0: 10,1: 30]
+        let b: Target<Int,Int> = [0: 20,1: 40]
+        a += b
+        XCTAssertEqual(a + [], [0: 10,0: 20,1: 30,1: 40])
+      }
+    }
   }
 #endif

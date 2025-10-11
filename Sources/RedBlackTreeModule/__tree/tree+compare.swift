@@ -39,8 +39,11 @@ extension CompareBothProtocol {
   func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     assert(l == .end || __parent_(l) != .nullptr)
     assert(r == .end || __parent_(r) != .nullptr)
-    //    return isMulti ? ___ptr_comp_unique(l, r) || ___ptr_comp_multi(l, r) : ___ptr_comp_unique(l, r)
-    return isMulti ? ___ptr_comp_unique(l, r) || ___ptr_comp_bitmap(l, r) : ___ptr_comp_unique(l, r)
+    if isMulti {
+//      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_multi(l, r))
+      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_bitmap(l, r))
+    }
+    return ___ptr_comp_unique(l, r)
   }
 }
 
@@ -202,26 +205,26 @@ extension NodeFlagProtocol {
   @inline(__always)
   func ___ptr_bitmap(_ __p: _NodePtr) -> UInt {
     assert(__p != .nullptr, "Node shouldn't be null")
-    var __f: UInt = 1  // terminator flag
-    var __h = 1
+    var __f: UInt = 1  // 終端flag
+    var __h = 1 // 終端flag分
     var __p = __p
-    if __p == .end {
-      // この限度があるので、一番右の深さが63に到達すると衝突する
-      return .max
-    }
-    while __p != __root(), __p != end() {
-      __f = __f | (__tree_is_left_child(__p) ? 0 : 1) << __h
+    while __p != __root(), __p != .end {
+      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< __h
       __p = __parent_(__p)
-      __h += 1
+      __h &+= 1
     }
-    __f <<= UInt.bitWidth - __h
-    assert(__f != UInt.max, "conflicting with end ptr")
+    __f &<<= UInt.bitWidth &- __h
     return __f
   }
 
   @inlinable
   @inline(__always)
   func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
-    ___ptr_bitmap(__l) < ___ptr_bitmap(__r)
+    switch (__l,__r) {
+    case (_,.end): true
+    case (.end,_): false
+    default:
+      ___ptr_bitmap(__l) < ___ptr_bitmap(__r)
+    }
   }
 }

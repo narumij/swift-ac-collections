@@ -783,7 +783,7 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(i, sub.startIndex)
   }
   
-  func testIndex1() throws {
+  func testRangeSubscript() throws {
     let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]
     let l2 = set.lowerBound(2)
     let u2 = set.upperBound(4)
@@ -793,6 +793,18 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(set[..<u2].map{ Pair($0) }, [1, 2, 3, 4].map{ .init($0, $0 * 10) })
     XCTAssertEqual(set[...u2].map{ Pair($0) }, [1, 2, 3, 4, 6].map{ .init($0, $0 * 10) })
     XCTAssertEqual(set[..<set.endIndex].map{ Pair($0) }, [1,2,3,4,6,7].map{ .init($0, $0 * 10) })
+  }
+  
+  func testRangeSubscriptUnchecked() throws {
+    let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]
+    let l2 = set.lowerBound(2)
+    let u2 = set.upperBound(4)
+    XCTAssertEqual(set[unchecked: l2..<u2].map{ Pair($0) }, [2,3,4].map{ .init($0, $0 * 10) })
+    XCTAssertEqual(set[unchecked: l2...].map{ Pair($0) }, [2, 3, 4, 6, 7].map{ .init($0, $0 * 10) })
+    XCTAssertEqual(set[unchecked: u2...].map{ Pair($0) }, [6, 7].map{ .init($0, $0 * 10) })
+    XCTAssertEqual(set[unchecked: ..<u2].map{ Pair($0) }, [1, 2, 3, 4].map{ .init($0, $0 * 10) })
+    XCTAssertEqual(set[unchecked: ...u2].map{ Pair($0) }, [1, 2, 3, 4, 6].map{ .init($0, $0 * 10) })
+    XCTAssertEqual(set[unchecked: ..<set.endIndex].map{ Pair($0) }, [1,2,3,4,6,7].map{ .init($0, $0 * 10) })
   }
 
   func testIndexValidation() throws {

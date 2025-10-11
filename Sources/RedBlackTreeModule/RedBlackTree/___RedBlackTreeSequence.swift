@@ -20,6 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+// TODO: コード補完にあらわれない問題への対応を検討
+
 @usableFromInline
 protocol ___RedBlackTreeSequence: ___RedBlackTree & ___RedBlackTreeIndexing & ValueComparer
     & CompareTrait, Sequence & Collection & BidirectionalCollection

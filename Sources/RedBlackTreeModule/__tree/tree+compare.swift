@@ -196,6 +196,7 @@ extension CompareProtocol {
   }
 }
 
+// TODO: 名前の変更
 @usableFromInline
 protocol NodeFlagProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {}
 

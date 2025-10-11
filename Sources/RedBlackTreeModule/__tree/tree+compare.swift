@@ -206,6 +206,7 @@ extension NodeFlagProtocol {
     var __h = 1
     var __p = __p
     if __p == .end {
+      // この限度があるので、一番右の深さが63に到達すると衝突する
       return .max
     }
     while __p != __root(), __p != end() {

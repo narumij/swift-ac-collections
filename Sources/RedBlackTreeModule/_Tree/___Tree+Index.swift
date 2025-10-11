@@ -20,53 +20,39 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
+/// 赤黒木のノードへのインデックス
+///
+/// C++の双方向イテレータに近い内容となっている
+@frozen
+public struct TreeIndex<VC> where VC: ValueComparer & CompareTrait {
+  public typealias Tree = ___Tree<VC>
+  public typealias _Value = Tree._Value
 
-#if true
-extension ___Tree {
-  public typealias ___Iterator = TreeIndex<VC>
-}
-#else
-extension ___Tree {
+  @usableFromInline
+  let __tree_: Tree
 
-  /// 赤黒木のノードへのイテレータ
-  ///
-  /// 非公開APIの型名となっているが、実際にはあちこちに公開されている
-  /// どちらかというと名前の衝突回避でこの名前となっている
-  @frozen
-  public struct ___Iterator {
-    
-    // TODO: 公開APIに見える名前に変更すること
-    // 単純に公開な形にすると諸々連鎖して公開になるので困っている
+  @usableFromInline
+  var rawValue: Int
 
-    public typealias _Value = Tree._Value
+  // MARK: -
 
-    @usableFromInline
-    let __tree_: ___Tree
-
-    @usableFromInline
-    var rawValue: Int
-
-    // MARK: -
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: ___Tree, rawValue: _NodePtr) {
-      assert(rawValue != .nullptr)
-      self.__tree_ = tree
-      self.rawValue = rawValue
-    }
-
-    /*
-     invalidなポインタでの削除は、だんまりがいいように思う
-     */
-
-    // 性能上の問題でCoWに関与できない設計としている
-    // CoWに関与できないので、Treeに対する破壊的変更は行わないこと
+  @inlinable
+  @inline(__always)
+  internal init(tree: Tree, rawValue: _NodePtr) {
+    assert(rawValue != .nullptr)
+    self.__tree_ = tree
+    self.rawValue = rawValue
   }
+  
+  /*
+   invalidなポインタでの削除は、だんまりがいいように思う
+   */
+
+  // 性能上の問題でCoWに関与できない設計としている
+  // CoWに関与できないので、Treeに対する破壊的変更は行わないこと
 }
 
-extension ___Tree.___Iterator: Comparable {
+extension TreeIndex: Comparable {
 
   /// - Complexity: O(1)
   @inlinable
@@ -99,7 +85,7 @@ extension ___Tree.___Iterator: Comparable {
 
 // Stridableできるが、Range<Index>に標準実装が生えることと、
 // その実装が要素アクセスのたびに範囲チェックを行うことを嫌って、Stridableをやめている
-extension ___Tree.___Iterator {
+extension TreeIndex {
 
   @inlinable
   //  @inline(__always)
@@ -118,7 +104,7 @@ extension ___Tree.___Iterator {
   }
 }
 
-extension ___Tree.___Iterator {
+extension TreeIndex {
 
   /// 次のイテレータを返す
   ///
@@ -165,7 +151,7 @@ extension ___Tree.___Iterator {
   }
 }
 
-extension ___Tree.___Iterator {
+extension TreeIndex {
 
   @inlinable
   @inline(__always)
@@ -187,7 +173,7 @@ extension ___Tree.___Iterator {
   }
 }
 
-extension ___Tree.___Iterator {
+extension TreeIndex {
 
   /// 現在位置の値を返す
   ///
@@ -200,7 +186,7 @@ extension ___Tree.___Iterator {
   }
 }
 
-extension ___Tree.___Iterator {
+extension TreeIndex {
 
   @inlinable
   @inline(__always)
@@ -217,14 +203,14 @@ extension ___Tree.___Iterator {
 }
 
 #if DEBUG
-  extension ___Tree.___Iterator {
+  extension TreeIndex {
     fileprivate init(_unsafe_tree: ___Tree<VC>, rawValue: _NodePtr) {
       self.__tree_ = _unsafe_tree
       self.rawValue = rawValue
     }
   }
 
-  extension ___Tree.___Iterator {
+  extension TreeIndex {
     static func unsafe(tree: ___Tree<VC>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue)
     }
@@ -232,15 +218,15 @@ extension ___Tree.___Iterator {
 #endif
 
 #if swift(>=5.5)
-  extension ___Tree.___Iterator: @unchecked Sendable
+  extension TreeIndex: @unchecked Sendable
   where _Value: Sendable {}
 #endif
 
 @inlinable
 @inline(__always)
 public func ..< <VC>(
-  lhs: ___Tree<VC>.Index,
-  rhs: ___Tree<VC>.Index
+  lhs: TreeIndex<VC>,
+  rhs: TreeIndex<VC>
 ) -> ___Tree<VC>.Indices {
   lhs.__tree_.makeIndices(start: lhs.rawValue, end: rhs.rawValue)
 }
@@ -248,29 +234,26 @@ public func ..< <VC>(
 @inlinable
 @inline(__always)
 public func + <VC>(
-  lhs: ___Tree<VC>.Index,
+  lhs: TreeIndex<VC>,
   rhs: Int
-) -> ___Tree<VC>.Index {
+) -> TreeIndex<VC> {
   lhs.advanced(by: rhs)
 }
 
 @inlinable
 @inline(__always)
 public func - <VC>(
-  lhs: ___Tree<VC>.Index,
+  lhs: TreeIndex<VC>,
   rhs: Int
-) -> ___Tree<VC>.Index {
+) -> TreeIndex<VC> {
   lhs.advanced(by: -rhs)
 }
 
 @inlinable
 @inline(__always)
 public func - <VC>(
-  lhs: ___Tree<VC>.Index,
-  rhs: ___Tree<VC>.Index
+  lhs: TreeIndex<VC>,
+  rhs: TreeIndex<VC>
 ) -> Int {
   rhs.distance(to: lhs)
 }
-
-#endif
-

@@ -41,27 +41,6 @@ where
 
 // MARK: -
 
-//extension ___RedBlackTreeSequenceBase {
-//
-//  /// - Complexity: O(1)
-//  @inlinable
-//  @inline(__always)
-//  public __consuming func keys<Key, Value>() -> KeyIterator<Tree, Key, Value>
-//  where _Value == Pair<Key, Value> {
-//    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-//  }
-//
-//  /// - Complexity: O(1)
-//  @inlinable
-//  @inline(__always)
-//  public __consuming func values<Key, Value>() -> ValueIterator<Tree, Key, Value>
-//  where _Value == Pair<Key, Value> {
-//    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
-//  }
-//}
-
-// MARK: -
-
 extension ___RedBlackTreeSequenceBase {
 
   @inlinable

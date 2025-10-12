@@ -15,7 +15,7 @@
 dependencies: [
   .package(
     url: "https://github.com/narumij/swift-ac-collections",
-    branch: "release/AtCoder/2025"),
+    branch: "main"),
 ]
 ```
 
@@ -31,6 +31,18 @@ dependencies: [
 
 ```Swift
 import AcCollections
+```
+
+## AtCoder 2025
+
+AtCoder2025ジャッジと同一のものをご要望の場合は以下をご利用ください。
+
+```Swift
+dependencies: [
+  .package(
+    url: "https://github.com/narumij/swift-ac-collections",
+    branch: "release/AtCoder/2025"),
+]
 ```
 
 ## 内容

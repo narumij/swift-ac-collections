@@ -70,7 +70,6 @@ extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeSet: ___RedBlackTreeUnique {}
 extension RedBlackTreeSet: ___RedBlackTreeMerge {}
 extension RedBlackTreeSet: ___RedBlackTreeSequenceBase {}
-//extension RedBlackTreeSet: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 extension RedBlackTreeSet: ElementComparable { }
 extension RedBlackTreeSet: ElementEqutable { }
@@ -789,89 +788,15 @@ extension RedBlackTreeSet {
 
 // MARK: - SubSequence
 
-#if true
 extension RedBlackTreeSet {
   
   public typealias SubSequence = RedBlackTreeSlice<Self>
 }
-#else
-extension RedBlackTreeSet {
-
-  @frozen
-  public struct SubSequence {
-
-    @usableFromInline
-    let __tree_: Tree
-
-    @usableFromInline
-    var _start, _end: _NodePtr
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      __tree_ = tree
-      _start = start
-      _end = end
-    }
-  }
-}
-
-extension RedBlackTreeSet.SubSequence: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
-  }
-}
-
-extension RedBlackTreeSet.SubSequence: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
-  }
-}
-
-extension RedBlackTreeSet.SubSequence {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___element_equiv)
-  }
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___element_comp)
-  }
-}
-
-extension RedBlackTreeSet.SubSequence: ___SubSequenceBase {
-  public typealias Base = RedBlackTreeSet
-  public typealias Element = Tree.Element
-  public typealias Indices = Tree.Indices
-}
-
-extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollection {
-  public typealias Index = RedBlackTreeSet.Index
-  public typealias SubSequence = Self
-}
-#endif
 
 // MARK: - Index Range
 
 extension RedBlackTreeSet {
+  
   public typealias Indices = Tree.Indices
 }
 

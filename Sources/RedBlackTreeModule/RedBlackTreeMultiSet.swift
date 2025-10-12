@@ -63,7 +63,6 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMerge {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeSequenceBase {}
-//extension RedBlackTreeMultiSet: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 extension RedBlackTreeMultiSet: ElementComparable { }
 extension RedBlackTreeMultiSet: ElementEqutable { }
@@ -794,85 +793,10 @@ extension RedBlackTreeMultiSet {
 }
 // MARK: - SubSequence: Sequence
 
-#if true
 extension RedBlackTreeMultiSet {
-  
+
   public typealias SubSequence = RedBlackTreeSlice<Self>
 }
-#else
-extension RedBlackTreeMultiSet {
-
-  @frozen
-  public struct SubSequence {
-
-    @usableFromInline
-    let __tree_: Tree
-
-    @usableFromInline
-    var _start, _end: _NodePtr
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      __tree_ = tree
-      _start = start
-      _end = end
-    }
-  }
-}
-
-extension RedBlackTreeMultiSet.SubSequence: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
-  }
-}
-
-extension RedBlackTreeMultiSet.SubSequence: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
-  }
-}
-
-extension RedBlackTreeMultiSet.SubSequence {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___element_equiv)
-  }
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___element_comp)
-  }
-}
-
-extension RedBlackTreeMultiSet.SubSequence: ___SubSequenceBase {
-  public typealias Base = RedBlackTreeMultiSet
-  public typealias Element = Tree.Element
-  public typealias Indices = Tree.Indices
-}
-
-extension RedBlackTreeMultiSet.SubSequence: Sequence, Collection, BidirectionalCollection {
-  public typealias Index = RedBlackTreeMultiSet.Index
-  public typealias SubSequence = Self
-}
-#endif
 
 // MARK: - Index Range
 

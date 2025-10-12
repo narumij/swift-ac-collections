@@ -85,7 +85,6 @@ extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
 extension RedBlackTreeDictionary: ___RedBlackTreeMerge {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSequenceBase {}
-//extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 extension RedBlackTreeDictionary: ElementComparable where Value: Comparable { }
 extension RedBlackTreeDictionary: ElementEqutable where Value: Equatable { }
@@ -1017,88 +1016,10 @@ extension RedBlackTreeDictionary {
 
 // MARK: - SubSequence
 
-#if true
 extension RedBlackTreeDictionary {
   
   public typealias SubSequence = RedBlackTreeSlice<Self>
 }
-#else
-extension RedBlackTreeDictionary {
-
-  @frozen
-  public struct SubSequence {
-
-    @usableFromInline
-    let __tree_: Tree
-
-    @usableFromInline
-    var _start, _end: _NodePtr
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      __tree_ = tree
-      _start = start
-      _end = end
-    }
-  }
-}
-
-extension RedBlackTreeDictionary.SubSequence: Equatable where Value: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
-  }
-}
-
-extension RedBlackTreeDictionary.SubSequence: Comparable where Value: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
-  }
-}
-
-extension RedBlackTreeDictionary.SubSequence where Value: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___element_equiv)
-  }
-}
-
-extension RedBlackTreeDictionary.SubSequence where Value: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___element_comp)
-  }
-}
-
-extension RedBlackTreeDictionary.SubSequence: ___SubSequenceBase {
-  public typealias Base = RedBlackTreeDictionary
-  public typealias Element = Tree.Element
-  public typealias Indices = Tree.Indices
-}
-
-extension RedBlackTreeDictionary.SubSequence: Sequence, Collection, BidirectionalCollection {
-  public typealias Index = RedBlackTreeDictionary.Index
-  public typealias SubSequence = Self
-}
-#endif
 
 // MARK: - Index Range
 

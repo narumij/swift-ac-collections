@@ -88,7 +88,6 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMerge {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSequenceBase {}
-//extension RedBlackTreeMultiMap: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 extension RedBlackTreeMultiMap: ElementComparable where Value: Comparable { }
 extension RedBlackTreeMultiMap: ElementEqutable where Value: Equatable { }
@@ -947,88 +946,10 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-#if true
 extension RedBlackTreeMultiMap {
   
   public typealias SubSequence = RedBlackTreeSlice<Self>
 }
-#else
-extension RedBlackTreeMultiMap {
-
-  @frozen
-  public struct SubSequence {
-
-    @usableFromInline
-    let __tree_: Tree
-
-    @usableFromInline
-    var _start, _end: _NodePtr
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      __tree_ = tree
-      _start = start
-      _end = end
-    }
-  }
-}
-
-extension RedBlackTreeMultiMap.SubSequence: Equatable where Value: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
-  }
-}
-
-extension RedBlackTreeMultiMap.SubSequence: Comparable where Value: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
-  }
-}
-
-extension RedBlackTreeMultiMap.SubSequence where Value: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___element_equiv)
-  }
-}
-
-extension RedBlackTreeMultiMap.SubSequence where Value: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___element_comp)
-  }
-}
-
-extension RedBlackTreeMultiMap.SubSequence: ___SubSequenceBase {
-  public typealias Base = RedBlackTreeMultiMap
-  public typealias Element = Tree.Element
-  public typealias Indices = Tree.Indices
-}
-
-extension RedBlackTreeMultiMap.SubSequence: Sequence, Collection, BidirectionalCollection {
-  public typealias Index = RedBlackTreeMultiMap.Index
-  public typealias SubSequence = Self
-}
-#endif
 
 // MARK: - Index Range
 

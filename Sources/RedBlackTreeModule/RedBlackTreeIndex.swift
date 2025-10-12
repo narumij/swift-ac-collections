@@ -64,7 +64,7 @@ extension RedBlackTreeIndex: Comparable {
     lhs.rawValue == rhs.rawValue
   }
 
-  /// - Complexity: RedBlackTreeSet, RedBlackTreeDictionaryの場合O(1)
+  /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(1)
   ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n*)
   ///
   ///   内部動作がユニークな場合、値の比較で解決できますが、
@@ -90,6 +90,8 @@ extension RedBlackTreeIndex: Comparable {
 // その実装が要素アクセスのたびに範囲チェックを行うことを嫌って、Stridableをやめている
 extension RedBlackTreeIndex {
 
+  /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(*d*)
+  ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n* + *d*)
   @inlinable
   //  @inline(__always)
   public func distance(to other: Self) -> Int {
@@ -101,6 +103,7 @@ extension RedBlackTreeIndex {
     return __tree_.___signed_distance(rawValue, other.rawValue)
   }
 
+  /// - Complexity: O(1)
   @inlinable
   //  @inline(__always)
   public func advanced(by n: Int) -> Self {
@@ -112,7 +115,7 @@ extension RedBlackTreeIndex {
 
   /// 次のイテレータを返す
   ///
-  /// 終端だった場合と、無効だった場合にnilとなる
+  /// 操作が不正な場合に結果がnilとなる
   @inlinable
   @inline(__always)
   public var next: Self? {
@@ -126,7 +129,7 @@ extension RedBlackTreeIndex {
 
   /// 前のイテレータを返す
   ///
-  /// 始点だった場合と、無効だった場合にnilとなる
+  /// 操作が不正な場合に結果がnilとなる
   @inlinable
   @inline(__always)
   public var previous: Self? {
@@ -222,7 +225,7 @@ extension RedBlackTreeIndex {
 #endif
 
 #if swift(>=5.5)
-// 競プロ用としてはSendableがいいが、一般用としてはSendableじゃないほうがいい
+// TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeIndex: @unchecked Sendable
   where _Value: Sendable {}
 #endif

@@ -613,9 +613,7 @@ extension RedBlackTreeSet {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {}
-
-extension RedBlackTreeSet {
+extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
 
   /// - Complexity: O(1)
   @inlinable
@@ -630,6 +628,7 @@ extension RedBlackTreeSet {
     try _forEach(body)
   }
   
+  /// 特殊なforEach
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
@@ -956,7 +955,7 @@ extension RedBlackTreeSet {
 // MARK: - Sendable
 
 #if swift(>=5.5)
-// 競プロ用としてはSendableがいいが、一般用としてはSendableじゃないほうがいい
+// TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeSet: @unchecked Sendable
   where Element: Sendable {}
 #endif

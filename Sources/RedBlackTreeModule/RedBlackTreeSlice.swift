@@ -74,7 +74,6 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
-    //    try __tree_.___for_each_(__p: _start, __l: _end, body: body)
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(__tree_[$0])
     }
@@ -148,11 +147,6 @@ extension RedBlackTreeSlice {
   public subscript(position: Index) -> Element {
     @inline(__always) _read {
       __tree_.___ensureValid(subscript: position.rawValue)
-      //      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
-      //        _tree.___ptr_less_than(position.rawValue, _end)
-      //      else {
-      //        fatalError(.outOfRange)
-      //      }
       yield __tree_[position.rawValue]
     }
   }
@@ -177,12 +171,8 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     __tree_.___ensureValidRange(
-      begin: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
-    //    guard __tree_.___ptr_less_than_or_equal(_start, bounds.lowerBound.rawValue),
-    //      __tree_.___ptr_less_than_or_equal(bounds.upperBound.rawValue, _end)
-    //    else {
-    //      fatalError(.outOfRange)
-    //    }
+      begin: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
     return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
@@ -194,7 +184,8 @@ extension RedBlackTreeSlice {
   public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
     let bounds: Range<Index> = bounds.relative(to: self)
     __tree_.___ensureValidRange(
-      begin: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
+      begin: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
     return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
@@ -468,7 +459,7 @@ extension RedBlackTreeSlice {
 }
 
 #if swift(>=5.5)
-  // 競プロ用としてはSendableがいいが、一般用としてはSendableじゃないほうがいい
+// TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeSlice: @unchecked Sendable
   where Element: Sendable {}
 #endif

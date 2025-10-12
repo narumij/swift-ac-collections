@@ -757,9 +757,7 @@ extension RedBlackTreeMultiMap {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {}
-
-extension RedBlackTreeMultiMap {
+extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
 
   /// - Complexity: O(1)
   @inlinable
@@ -774,6 +772,7 @@ extension RedBlackTreeMultiMap {
     try _forEach(body)
   }
   
+  /// 特殊なforEach
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
@@ -1150,6 +1149,7 @@ extension RedBlackTreeMultiMap where Value: Comparable {
 // MARK: - Sendable
 
 #if swift(>=5.5)
+// TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeMultiMap: @unchecked Sendable
   where Element: Sendable {}
 #endif

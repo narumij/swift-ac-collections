@@ -822,9 +822,7 @@ extension RedBlackTreeDictionary {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection {}
-
-extension RedBlackTreeDictionary {
+extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection {
 
   /// - Complexity: O(1)
   @inlinable
@@ -839,6 +837,7 @@ extension RedBlackTreeDictionary {
     try _forEach(body)
   }
   
+  /// 特殊なforEach
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
@@ -1214,6 +1213,7 @@ extension RedBlackTreeDictionary where Value: Comparable {
 // MARK: - Sendable
 
 #if swift(>=5.5)
+// TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeDictionary: @unchecked Sendable
   where Element: Sendable {}
 #endif

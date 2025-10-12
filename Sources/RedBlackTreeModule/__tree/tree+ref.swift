@@ -64,6 +64,5 @@ extension TreeNodeProtocol {
       return __left_(basePtr, rhs)
     }
   }
-
 }
 

@@ -100,7 +100,7 @@ extension ___Tree {
 extension ___Tree {
 
   @frozen
-  public struct Node: ___tree_base_node {
+  public struct Node {
 
     @usableFromInline
     internal var __value_: _Value
@@ -147,7 +147,7 @@ extension ___Tree {
 extension ___Tree {
 
   @frozen
-  public struct Header: ___tree_root_node {
+  public struct Header {
 
     @inlinable
     @inline(__always)

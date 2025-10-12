@@ -28,7 +28,7 @@ protocol PointerCompareProtocol: ValueProtocol {
 }
 
 @usableFromInline
-protocol CompareBothProtocol: CompareUniqueProtocol, CompareMultiProtocol, NodeFlagProtocol {
+protocol CompareBothProtocol: CompareUniqueProtocol, CompareMultiProtocol, NodeBitmapProtocol {
   var isMulti: Bool { get }
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
   func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
@@ -196,11 +196,10 @@ extension CompareProtocol {
   }
 }
 
-// TODO: 名前の変更
 @usableFromInline
-protocol NodeFlagProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {}
+protocol NodeBitmapProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {}
 
-extension NodeFlagProtocol {
+extension NodeBitmapProtocol {
 
   /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
   ///

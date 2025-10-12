@@ -32,34 +32,14 @@ extension ScalarValueComparer {
   public static func __key(_ e: _Value) -> _Key { e }
 }
 
-// MARK: -
-
-extension ValueComparerProtocol where VC: ScalarValueComparer {
-
-  @inlinable
-  @inline(__always)
-  static func ___element_comp(_ lhs: VC._Value, _ rhs: VC._Value) -> Bool {
-    VC.value_comp(lhs, rhs)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func ___element_equiv(_ lhs: VC._Value, _ rhs: VC._Value) -> Bool {
-    VC.value_equiv(lhs, rhs)
-  }
-}
-
-extension ElementComparable where Self: ScalarValueComparer {
+extension ScalarValueComparer {
   
   @inlinable
   @inline(__always)
   public static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
     value_comp(lhs, rhs)
   }
-}
-
-extension ElementEqutable where Self: ScalarValueComparer {
-
+  
   @inlinable
   @inline(__always)
   public static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {

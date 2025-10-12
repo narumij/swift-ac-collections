@@ -20,5 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+#if false
 @usableFromInline
 protocol ___RedBlackTreeSubSequence: ___RedBlackTree, ValueComparer & CompareTrait {}
+#endif

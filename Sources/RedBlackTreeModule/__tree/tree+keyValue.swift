@@ -46,18 +46,20 @@ extension KeyValueComparer {
 // MARK: -
 
 extension KeyValueComparer where _MappedValue: Comparable {
+  
   @inlinable
   @inline(__always)
-  static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
+  public static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
     ___key_comp(lhs, rhs)
       || (!___key_comp(lhs, rhs) && ___mapped_value(lhs) < ___mapped_value(rhs))
   }
 }
 
 extension KeyValueComparer where _MappedValue: Equatable {
+  
   @inlinable
   @inline(__always)
-  static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
+  public static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
     ___key_equiv(lhs, rhs) && ___mapped_value(lhs) == ___mapped_value(rhs)
   }
 }
@@ -69,38 +71,6 @@ extension ValueComparerProtocol where VC: KeyValueComparer {
   @inline(__always)
   public static func ___mapped_value(of element: VC._Value) -> VC._MappedValue {
     VC.___mapped_value(element)
-  }
-}
-
-extension ValueComparerProtocol where VC: KeyValueComparer, VC._MappedValue: Comparable {
-  @inlinable
-  @inline(__always)
-  static func ___element_comp(_ lhs: VC._Value, _ rhs: VC._Value) -> Bool {
-    VC.___element_comp(lhs, rhs)
-  }
-}
-
-extension ValueComparerProtocol where VC: KeyValueComparer, VC._MappedValue: Equatable {
-  @inlinable
-  @inline(__always)
-  static func ___element_equiv(_ lhs: VC._Value, _ rhs: VC._Value) -> Bool {
-    VC.___element_equiv(lhs, rhs)
-  }
-}
-
-extension ElementComparable where Self: KeyValueComparer, _MappedValue: Comparable {
-  @inlinable
-  @inline(__always)
-  public static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    ___element_comp(lhs, rhs)
-  }
-}
-
-extension ElementEqutable where Self: KeyValueComparer, _MappedValue: Equatable {
-  @inlinable
-  @inline(__always)
-  public static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    ___element_equiv(lhs, rhs)
   }
 }
 

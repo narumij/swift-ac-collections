@@ -63,7 +63,7 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMerge {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeSequenceBase {}
-extension RedBlackTreeMultiSet: ___RedBlackTreeSubSequence {}
+//extension RedBlackTreeMultiSet: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 extension RedBlackTreeMultiSet: ElementComparable { }
 extension RedBlackTreeMultiSet: ElementEqutable { }
@@ -1021,7 +1021,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___element_equiv)
+    elementsEqual(other, by: Self.___element_equiv)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -1030,7 +1030,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___element_comp)
+    lexicographicallyPrecedes(other, by: Self.___element_comp)
   }
 }
 

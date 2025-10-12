@@ -84,8 +84,8 @@ extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
 extension RedBlackTreeDictionary: ___RedBlackTreeMerge {}
-extension RedBlackTreeDictionary: ___RedBlackTreeSequence {}
-extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence {}
+extension RedBlackTreeDictionary: ___RedBlackTreeSequenceBase {}
+//extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 extension RedBlackTreeDictionary: ElementComparable where Value: Comparable { }
 extension RedBlackTreeDictionary: ElementEqutable where Value: Equatable { }
@@ -928,15 +928,13 @@ extension RedBlackTreeDictionary {
     _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
 
-#if false
-  // コンパイラがクラッシュする
-  
   /// - Complexity: O(1)
   @inlinable
   public subscript(position: Index) -> _Value {
-    @inline(__always) _read { yield self[_checked: position] }
+    @inline(__always) get { self[_checked: position] }
+    // コンパイラがクラッシュする
+//    @inline(__always) _read { yield self[_checked: position] }
   }
-#endif
 
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
@@ -1276,7 +1274,7 @@ extension RedBlackTreeDictionary where Value: Equatable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___element_equiv)
+    elementsEqual(other, by: Self.___element_equiv)
   }
 }
 
@@ -1288,7 +1286,7 @@ extension RedBlackTreeDictionary where Value: Comparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___element_comp)
+    lexicographicallyPrecedes(other, by: Self.___element_comp)
   }
 }
 

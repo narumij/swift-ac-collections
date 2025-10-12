@@ -247,6 +247,7 @@ extension ___RedBlackTreeBase {
 
 // MARK: -
 
+#if false
 @usableFromInline
 protocol ___RedBlackTreeSequence: ___RedBlackTreeSequenceBase, Sequence & Collection & BidirectionalCollection
 where
@@ -425,6 +426,7 @@ extension ___RedBlackTreeSequence {
     try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
+#endif
 
 // MARK: -
 

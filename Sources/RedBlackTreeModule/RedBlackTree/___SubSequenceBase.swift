@@ -20,6 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+#if false
 @usableFromInline
 protocol ___SubSequenceBase: ___RedBlackTree & Sequence & Collection
     & BidirectionalCollection
@@ -386,3 +387,4 @@ extension ___SubSequenceBase {
   }
 }
 
+#endif

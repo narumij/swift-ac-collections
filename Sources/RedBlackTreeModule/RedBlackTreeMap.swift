@@ -86,7 +86,7 @@ extension RedBlackTreeMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMap: ___RedBlackTreeUnique {}
 extension RedBlackTreeMap: ___RedBlackTreeMerge {}
 extension RedBlackTreeMap: ___RedBlackTreeSequenceBase {}
-extension RedBlackTreeMap: ___RedBlackTreeSubSequence {}
+//extension RedBlackTreeMap: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeMap: KeyValueComparer {}
 extension RedBlackTreeMap: ElementComparable where Value: Comparable { }
 extension RedBlackTreeMap: ElementEqutable where Value: Equatable { }
@@ -1290,7 +1290,7 @@ extension RedBlackTreeMap where Value: Equatable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___element_equiv)
+    elementsEqual(other, by: Self.___element_equiv)
   }
 }
 
@@ -1302,7 +1302,7 @@ extension RedBlackTreeMap where Value: Comparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___element_comp)
+    lexicographicallyPrecedes(other, by: Self.___element_comp)
   }
 }
 

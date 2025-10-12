@@ -1028,6 +1028,23 @@ extension RedBlackTreeMap {
   }
 }
 
+extension RedBlackTreeMap {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func keys() -> KeyIterator<Tree, Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func values() -> ValueIterator<Tree, Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+}
+
 // MARK: - SubSequence
 
 extension RedBlackTreeMap {
@@ -1232,11 +1249,4 @@ extension RedBlackTreeMap where Value: Comparable {
 #if swift(>=5.5)
   extension RedBlackTreeMap: @unchecked Sendable
   where Element: Sendable {}
-#endif
-
-#if false
-#if swift(>=5.5)
-  extension RedBlackTreeMap.SubSequence: @unchecked Sendable
-  where Key: Sendable, Value: Sendable {}
-#endif
 #endif

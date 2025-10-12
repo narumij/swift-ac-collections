@@ -961,13 +961,6 @@ extension RedBlackTreeSet {
   where Element: Sendable {}
 #endif
 
-#if false
-#if swift(>=5.5)
-  extension RedBlackTreeSet.SubSequence: @unchecked Sendable
-  where Element: Sendable {}
-#endif
-#endif
-
 // MARK: - Init naive
 
 extension RedBlackTreeSet {

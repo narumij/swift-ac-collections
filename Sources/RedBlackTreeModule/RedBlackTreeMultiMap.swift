@@ -53,8 +53,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Index = Tree.Index
 
   public
-//    typealias KeyValue = (key: Key, value: Value)
-  typealias KeyValue = Pair<Key, Value>
+    typealias KeyValue = Pair<Key, Value>
 
   public
     typealias Element = KeyValue
@@ -931,7 +930,22 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: - Range Access
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func keys() -> KeyIterator<Tree, Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func values() -> ValueIterator<Tree, Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+}
 
 // MARK: - SubSequence
 
@@ -1140,12 +1154,7 @@ extension RedBlackTreeMultiMap where Value: Comparable {
   where Element: Sendable {}
 #endif
 
-#if false
-#if swift(>=5.5)
-  extension RedBlackTreeMultiMap.SubSequence: @unchecked Sendable
-  where Element: Sendable {}
-#endif
-#endif
+// MARK: - Init naive
 
 extension RedBlackTreeMultiMap {
 

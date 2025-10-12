@@ -9,7 +9,7 @@ import XCTest
 #if DEBUG
   class TreeFixtureBase<Element>:
     XCTestCase,
-    ___tree_root_node, TreeNodeProtocol, RootProtocol, EndNodeProtocol,
+    TreeNodeProtocol, RootProtocol, EndNodeProtocol,
     ___RedBlackTreeNodePoolProtocol
   {
     var __left_: _NodePtr = .nullptr
@@ -102,7 +102,7 @@ import XCTest
     func value_comp(_ l: Element, _ r: Element) -> Bool {
       l < r
     }
-    
+
     func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
       ___ptr_comp_multi(l, r)
     }

@@ -25,7 +25,7 @@ import Foundation
 #if DEBUG
   @testable import RedBlackTreeModule
 
-  public struct ___Node: ___tree_base_node {
+  public struct ___Node {
 
     public var __right_: _NodePtr
     public var __left_: _NodePtr
@@ -61,7 +61,7 @@ import Foundation
     }
   }
 
-  extension ___tree_base_node {
+  extension ___Node {
 
     @inlinable @inline(__always)
     public mutating func clear() {

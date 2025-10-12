@@ -90,6 +90,8 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeMerge {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
+extension RedBlackTreeMultiMap: ElementComparable where Value: Comparable { }
+extension RedBlackTreeMultiMap: ElementEqutable where Value: Equatable { }
 
 // MARK: - Creating a MultiMap
 
@@ -945,6 +947,12 @@ extension RedBlackTreeMultiMap {
   }
 }
 
+#if true
+extension RedBlackTreeMultiMap {
+  
+  public typealias SubSequence = RedBlackTreeSlice<Self>
+}
+#else
 extension RedBlackTreeMultiMap {
 
   @frozen
@@ -1020,6 +1028,7 @@ extension RedBlackTreeMultiMap.SubSequence: Sequence, Collection, BidirectionalC
   public typealias Index = RedBlackTreeMultiMap.Index
   public typealias SubSequence = Self
 }
+#endif
 
 // MARK: - Index Range
 
@@ -1210,9 +1219,11 @@ extension RedBlackTreeMultiMap where Value: Comparable {
   where Element: Sendable {}
 #endif
 
+#if false
 #if swift(>=5.5)
   extension RedBlackTreeMultiMap.SubSequence: @unchecked Sendable
   where Element: Sendable {}
+#endif
 #endif
 
 extension RedBlackTreeMultiMap {

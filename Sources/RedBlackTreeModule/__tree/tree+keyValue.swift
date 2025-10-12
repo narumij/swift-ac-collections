@@ -88,6 +88,22 @@ extension ValueComparerProtocol where VC: KeyValueComparer, VC._MappedValue: Equ
   }
 }
 
+extension ElementComparable where Self: KeyValueComparer, _MappedValue: Comparable {
+  @inlinable
+  @inline(__always)
+  public static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
+    ___element_comp(lhs, rhs)
+  }
+}
+
+extension ElementEqutable where Self: KeyValueComparer, _MappedValue: Equatable {
+  @inlinable
+  @inline(__always)
+  public static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
+    ___element_equiv(lhs, rhs)
+  }
+}
+
 // MARK: -
 
 // 最近タプルの最適化が甘いので、LRUのみペアを構造体に変更

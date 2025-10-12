@@ -72,6 +72,8 @@ extension RedBlackTreeSet: ___RedBlackTreeMerge {}
 extension RedBlackTreeSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeSet: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeSet: ScalarValueComparer {}
+extension RedBlackTreeSet: ElementComparable { }
+extension RedBlackTreeSet: ElementEqutable { }
 
 // MARK: - Creating a Set
 
@@ -787,6 +789,12 @@ extension RedBlackTreeSet {
 
 // MARK: - SubSequence
 
+#if true
+extension RedBlackTreeSet {
+  
+  public typealias SubSequence = RedBlackTreeSlice<Self>
+}
+#else
 extension RedBlackTreeSet {
 
   @frozen
@@ -859,6 +867,7 @@ extension RedBlackTreeSet.SubSequence: Sequence, Collection, BidirectionalCollec
   public typealias Index = RedBlackTreeSet.Index
   public typealias SubSequence = Self
 }
+#endif
 
 // MARK: - Index Range
 
@@ -1006,7 +1015,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___element_equiv)
+    elementsEqual(other, by: Self.___element_equiv)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -1015,20 +1024,23 @@ extension RedBlackTreeSet {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___element_comp)
+    lexicographicallyPrecedes(other, by: Self.___element_comp)
   }
 }
 
 // MARK: - Sendable
 
 #if swift(>=5.5)
+// 競プロ用としてはSendableがいいが、一般用としてはSendableじゃないほうがいい
   extension RedBlackTreeSet: @unchecked Sendable
   where Element: Sendable {}
 #endif
 
+#if false
 #if swift(>=5.5)
   extension RedBlackTreeSet.SubSequence: @unchecked Sendable
   where Element: Sendable {}
+#endif
 #endif
 
 // MARK: - Init naive

@@ -48,3 +48,21 @@ extension ValueComparerProtocol where VC: ScalarValueComparer {
     VC.value_equiv(lhs, rhs)
   }
 }
+
+extension ElementComparable where Self: ScalarValueComparer {
+  
+  @inlinable
+  @inline(__always)
+  public static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
+    value_comp(lhs, rhs)
+  }
+}
+
+extension ElementEqutable where Self: ScalarValueComparer {
+
+  @inlinable
+  @inline(__always)
+  public static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
+    value_equiv(lhs, rhs)
+  }
+}

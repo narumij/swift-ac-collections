@@ -87,6 +87,8 @@ extension RedBlackTreeDictionary: ___RedBlackTreeMerge {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSequence {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
+extension RedBlackTreeDictionary: ElementComparable where Value: Comparable { }
+extension RedBlackTreeDictionary: ElementEqutable where Value: Equatable { }
 
 // MARK: - Creating a Dictionay
 
@@ -1017,6 +1019,12 @@ extension RedBlackTreeDictionary {
 
 // MARK: - SubSequence
 
+#if true
+extension RedBlackTreeDictionary {
+  
+  public typealias SubSequence = RedBlackTreeSlice<Self>
+}
+#else
 extension RedBlackTreeDictionary {
 
   @frozen
@@ -1092,6 +1100,7 @@ extension RedBlackTreeDictionary.SubSequence: Sequence, Collection, Bidirectiona
   public typealias Index = RedBlackTreeDictionary.Index
   public typealias SubSequence = Self
 }
+#endif
 
 // MARK: - Index Range
 
@@ -1290,7 +1299,9 @@ extension RedBlackTreeDictionary where Value: Comparable {
   where Element: Sendable {}
 #endif
 
+#if false
 #if swift(>=5.5)
   extension RedBlackTreeDictionary.SubSequence: @unchecked Sendable
   where Key: Sendable, Value: Sendable {}
+#endif
 #endif

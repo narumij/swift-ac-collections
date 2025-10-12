@@ -351,3 +351,13 @@ extension ValueComparerProtocol {
     VC.value_comp(a, b)
   }
 }
+
+public protocol ElementComparable: ValueComparer {
+  associatedtype _Value
+  static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool
+}
+
+public protocol ElementEqutable: ValueComparer {
+  associatedtype _Value
+  static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool
+}

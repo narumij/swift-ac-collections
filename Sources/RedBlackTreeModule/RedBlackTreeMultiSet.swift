@@ -65,6 +65,8 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeMerge {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
+extension RedBlackTreeMultiSet: ElementComparable { }
+extension RedBlackTreeMultiSet: ElementEqutable { }
 
 // MARK: - Creating a MultSet
 
@@ -792,6 +794,12 @@ extension RedBlackTreeMultiSet {
 }
 // MARK: - SubSequence: Sequence
 
+#if true
+extension RedBlackTreeMultiSet {
+  
+  public typealias SubSequence = RedBlackTreeSlice<Self>
+}
+#else
 extension RedBlackTreeMultiSet {
 
   @frozen
@@ -864,6 +872,7 @@ extension RedBlackTreeMultiSet.SubSequence: Sequence, Collection, BidirectionalC
   public typealias Index = RedBlackTreeMultiSet.Index
   public typealias SubSequence = Self
 }
+#endif
 
 // MARK: - Index Range
 
@@ -1028,13 +1037,16 @@ extension RedBlackTreeMultiSet {
 // MARK: - Sendable
 
 #if swift(>=5.5)
+// 競プロ用としてはSendableがいいが、一般用としてはSendableじゃないほうがいい
   extension RedBlackTreeMultiSet: @unchecked Sendable
   where Element: Sendable {}
 #endif
 
+#if false
 #if swift(>=5.5)
   extension RedBlackTreeMultiSet.SubSequence: @unchecked Sendable
   where Element: Sendable {}
+#endif
 #endif
 
 // MARK: - Init naive

@@ -992,4 +992,35 @@ final class MapTests: XCTestCase {
       XCTAssertFalse(b < a)
     }
   }
+  
+  func testInsert() throws {
+    do {
+      var a = RedBlackTreeMap<Int,Int>()
+      XCTAssertNil(a[3])
+      var (inserted, memberAfterInsert) = a.insert((3,10))
+      XCTAssertTrue(inserted)
+      XCTAssertEqual(memberAfterInsert.key, 3)
+      XCTAssertEqual(memberAfterInsert.value, 10)
+      XCTAssertEqual(a[3], 10)
+      (inserted, memberAfterInsert) = a.insert((3,20))
+      XCTAssertFalse(inserted)
+      XCTAssertEqual(memberAfterInsert.key, 3)
+      XCTAssertEqual(memberAfterInsert.value, 10)
+      XCTAssertEqual(a[3], 10)
+    }
+    do {
+      var a = RedBlackTreeMap<Int,Int>()
+      XCTAssertNil(a[3])
+      var (inserted, memberAfterInsert) = a.insert(key: 3, value: 10)
+      XCTAssertTrue(inserted)
+      XCTAssertEqual(memberAfterInsert.key, 3)
+      XCTAssertEqual(memberAfterInsert.value, 10)
+      XCTAssertEqual(a[3], 10)
+      (inserted, memberAfterInsert) = a.insert(key: 3, value: 20)
+      XCTAssertFalse(inserted)
+      XCTAssertEqual(memberAfterInsert.key, 3)
+      XCTAssertEqual(memberAfterInsert.value, 10)
+      XCTAssertEqual(a[3], 10)
+    }
+  }
 }

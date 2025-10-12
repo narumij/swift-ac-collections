@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.0] - 2025-10-12
 ### Added
+- RedBlackTreeMapを追加
 - RedBlackTreeIndexを追加
 - RedBlackTreeSliceを追加
 - RangeExpression対応を追加

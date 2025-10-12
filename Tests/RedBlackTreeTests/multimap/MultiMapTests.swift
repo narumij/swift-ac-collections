@@ -1016,7 +1016,7 @@ import XCTest
         var a: Target<Int,Int> = [0: 10,1: 30]
         let b: Target<Int,Int> = [0: 20,1: 40]
         a.meld(b)
-        XCTAssertEqual(a + [], [0: 10,0: 20,1: 30,1: 40])
+        XCTAssertEqual(a + [], [(0, 10), (0, 20),(1, 30),(1, 40)].map{ Pair($0) })
       }
     }
     
@@ -1024,7 +1024,7 @@ import XCTest
       do {
         let a: Target<Int,Int> = [0: 10,1: 30]
         let b: Target<Int,Int> = [0: 20,1: 40]
-        XCTAssertEqual(a.melding(b) + [], [0: 10,0: 20,1: 30,1: 40])
+        XCTAssertEqual(a.melding(b) + [], [(0, 10),(0, 20),(1, 30),(1, 40)].map{ Pair($0) })
       }
     }
     
@@ -1032,7 +1032,8 @@ import XCTest
       do {
         let a: Target<Int,Int> = [0: 10,1: 30]
         let b: Target<Int,Int> = [0: 20,1: 40]
-        XCTAssertEqual((a + b) + [], [0: 10,0: 20,1: 30,1: 40])
+        let c = a + b
+        XCTAssertEqual(c + [], [(0, 10),(0, 20),(1, 30),(1, 40)].map{ Pair($0) })
       }
     }
     
@@ -1041,7 +1042,7 @@ import XCTest
         var a: Target<Int,Int> = [0: 10,1: 30]
         let b: Target<Int,Int> = [0: 20,1: 40]
         a += b
-        XCTAssertEqual(a + [], [0: 10,0: 20,1: 30,1: 40])
+        XCTAssertEqual(a + [], [(0, 10),(0, 20),(1, 30),(1, 40)].map{ Pair($0) })
       }
     }
   }

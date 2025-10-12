@@ -764,7 +764,7 @@ extension ___Tree {
 
 // MARK: -
 
-extension ___Tree: Tree_ForEach {
+extension ___Tree {
 
   @nonobjc
   @inlinable

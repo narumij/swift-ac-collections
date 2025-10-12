@@ -20,7 +20,29 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public protocol Tree_KeyCompare {
-  associatedtype Key
-  static func value_comp(_ lhs: Key,_ rhs: Key) -> Bool
+import Foundation
+
+/// 要素とキーが一致する場合のひな形
+public protocol ScalarValueComparer: ValueComparer where _Key == _Value {}
+
+extension ScalarValueComparer {
+
+  @inlinable
+  @inline(__always)
+  public static func __key(_ e: _Value) -> _Key { e }
+}
+
+extension ScalarValueComparer {
+  
+  @inlinable
+  @inline(__always)
+  public static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
+    value_comp(lhs, rhs)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
+    value_equiv(lhs, rhs)
+  }
 }

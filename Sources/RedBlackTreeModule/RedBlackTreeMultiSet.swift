@@ -50,6 +50,9 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 
   public
     typealias _Key = Element
+  
+  public
+    typealias _Value = Element
 
   @usableFromInline
   var _storage: Tree.Storage
@@ -59,9 +62,10 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMerge {}
-extension RedBlackTreeMultiSet: ___RedBlackTreeSequence {}
-extension RedBlackTreeMultiSet: ___RedBlackTreeSubSequence {}
+extension RedBlackTreeMultiSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
+extension RedBlackTreeMultiSet: ElementComparable { }
+extension RedBlackTreeMultiSet: ElementEqutable { }
 
 // MARK: - Creating a MultSet
 
@@ -192,11 +196,39 @@ extension RedBlackTreeMultiSet {
       end: bounds.upperBound.rawValue)
   }
 
+  @inlinable
+  @inline(__always)
+  public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+    let bounds: Range<Index> = bounds.relative(to: self)
+    
+    __tree_.___ensureValidRange(
+      begin: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+    
+    return .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+  }
+  
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
+  public subscript(unchecked bounds: Range<Index>) -> SubSequence {
     .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+  }
+
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public subscript<R>(unchecked bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+    let bounds: Range<Index> = bounds.relative(to: self)
+    return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
@@ -314,13 +346,13 @@ extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
-  static func + (lhs: Self, rhs: Self) -> Self {
+  public static func + (lhs: Self, rhs: Self) -> Self {
     lhs.inserting(contentsOf: rhs)
   }
 
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
-  static func += (lhs: inout Self, rhs: Self) {
+  public static func += (lhs: inout Self, rhs: Self) {
     lhs.insert(contentsOf: rhs)
   }
 }
@@ -589,79 +621,181 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {}
 
+extension RedBlackTreeMultiSet {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> Tree.ElementIterator {
+    _makeIterator()
+  }
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (_Value) throws -> Void) rethrows {
+    try _forEach(body)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
+    try _forEach(body)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func sorted() -> Tree.ElementIterator {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var startIndex: Index { _startIndex }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var endIndex: Index { _endIndex }
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  //  @inline(__always)
+  public func distance(from start: Index, to end: Index) -> Int {
+    _distance(from: start, to: end)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func index(after i: Index) -> Index {
+    _index(after: i)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func formIndex(after i: inout Index) {
+    _formIndex(after: &i)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func index(before i: Index) -> Index {
+    _index(before: i)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func formIndex(before i: inout Index) {
+    _formIndex(before: &i)
+  }
+  
+  /// - Complexity: O(*d*)
+  @inlinable
+  //  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int) -> Index {
+    _index(i, offsetBy: distance)
+  }
+  
+  /// - Complexity: O(*d*)
+  @inlinable
+  //  @inline(__always)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    _formIndex(&i, offsetBy: distance)
+  }
+  
+  /// - Complexity: O(*d*)
+  @inlinable
+  //  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+    _index(i, offsetBy: distance, limitedBy: limit)
+  }
+  
+  /// - Complexity: O(*d*)
+  @inlinable
+  //  @inline(__always)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
+  -> Bool
+  {
+    _formIndex(&i, offsetBy: distance, limitedBy: limit)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  public subscript(position: Index) -> _Value {
+    @inline(__always) _read { yield self[_checked: position] }
+  }
+  
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+  /// - Complexity: O(1)
+  @inlinable
+  public subscript(unchecked position: Index) -> _Value {
+    @inline(__always) _read { yield self[_unchecked: position] }
+  }
+
+  /// Indexがsubscriptやremoveで利用可能か判別します
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func isValid(index: Index) -> Bool {
+    _isValid(index: index)
+  }
+  
+  /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func isValid<R: RangeExpression>(
+    _ bounds: R
+  ) -> Bool where R.Bound == Index {
+    _isValid(bounds)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func reversed() -> Tree.ReversedElementIterator {
+    _reversed()
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var indices: Indices {
+    _indices
+  }
+  
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func elementsEqual<OtherSequence>(
+    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence {
+    try _elementsEqual(other, by: areEquivalent)
+  }
+  
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func lexicographicallyPrecedes<OtherSequence>(
+    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
+    try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+  }
+}
 // MARK: - SubSequence: Sequence
 
 extension RedBlackTreeMultiSet {
 
-  @frozen
-  public struct SubSequence {
-
-    @usableFromInline
-    let __tree_: Tree
-
-    @usableFromInline
-    var _start, _end: _NodePtr
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      __tree_ = tree
-      _start = start
-      _end = end
-    }
-  }
-}
-
-extension RedBlackTreeMultiSet.SubSequence: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
-  }
-}
-
-extension RedBlackTreeMultiSet.SubSequence: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
-  }
-}
-
-extension RedBlackTreeMultiSet.SubSequence {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___key_equiv)
-  }
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___key_comp)
-  }
-}
-
-extension RedBlackTreeMultiSet.SubSequence: ___SubSequenceBase {
-  public typealias Base = RedBlackTreeMultiSet
-  public typealias Element = Tree.Element
-  public typealias Indices = Tree.Indices
-}
-
-extension RedBlackTreeMultiSet.SubSequence: Sequence, Collection, BidirectionalCollection {
-  public typealias Index = RedBlackTreeMultiSet.Index
-  public typealias SubSequence = Self
+  public typealias SubSequence = RedBlackTreeSlice<Self>
 }
 
 // MARK: - Index Range
@@ -736,6 +870,47 @@ extension RedBlackTreeMultiSet: CustomReflectable {
   }
 }
 
+// MARK: - Is Identical To
+
+extension RedBlackTreeMultiSet {
+
+  /// Returns a boolean value indicating whether this set is identical to
+  /// `other`.
+  ///
+  /// Two set values are identical if there is no way to distinguish between
+  /// them.
+  ///
+  /// For any values `a`, `b`, and `c`:
+  ///
+  /// - `a.isIdentical(to: a)` is always `true`. (Reflexivity)
+  /// - `a.isIdentical(to: b)` implies `b.isIdentical(to: a)`. (Symmetry)
+  /// - If `a.isIdentical(to: b)` and `b.isIdentical(to: c)` are both `true`,
+  ///   then `a.isIdentical(to: c)` is also `true`. (Transitivity)
+  /// - `a.isIdentical(b)` implies `a == b`
+  ///   - `a == b` does not imply `a.isIdentical(b)`
+  ///
+  /// Values produced by copying the same value, with no intervening mutations,
+  /// will compare identical:
+  ///
+  /// ```swift
+  /// let d = c
+  /// print(c.isIdentical(to: d))
+  /// // Prints true
+  /// ```
+  ///
+  /// Comparing sets this way includes comparing (normally) hidden
+  /// implementation details such as the memory location of any underlying set
+  /// storage object. Therefore, identical sets are guaranteed to compare equal
+  /// with `==`, but not all equal sets are considered identical.
+  ///
+  /// - Performance: O(1)
+  @inlinable
+  @inline(__always)
+  public func isIdentical(to other: Self) -> Bool {
+    _isIdentical(to: other)
+  }
+}
+
 // MARK: - Equatable
 
 extension RedBlackTreeMultiSet: Equatable {
@@ -744,7 +919,7 @@ extension RedBlackTreeMultiSet: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.count == rhs.count && lhs.elementsEqual(rhs)
+    lhs.isIdentical(to: rhs) || lhs.count == rhs.count && lhs.elementsEqual(rhs)
   }
 }
 
@@ -756,7 +931,7 @@ extension RedBlackTreeMultiSet: Comparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
+    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
 
@@ -770,7 +945,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___key_equiv)
+    elementsEqual(other, by: Self.___element_equiv)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -779,20 +954,23 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___key_comp)
+    lexicographicallyPrecedes(other, by: Self.___element_comp)
   }
 }
 
 // MARK: - Sendable
 
 #if swift(>=5.5)
+// 競プロ用としてはSendableがいいが、一般用としてはSendableじゃないほうがいい
   extension RedBlackTreeMultiSet: @unchecked Sendable
   where Element: Sendable {}
 #endif
 
+#if false
 #if swift(>=5.5)
   extension RedBlackTreeMultiSet.SubSequence: @unchecked Sendable
   where Element: Sendable {}
+#endif
 #endif
 
 // MARK: - Init naive

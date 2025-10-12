@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2025-10-12
+### Added
+- RedBlackTreeIndexを追加
+- RedBlackTreeSliceを追加
+- RangeExpression対応を追加
+### Changed
+- IndexをRedBlackTreeIndexに変更
+- SubSequenceをRedBlackTreeSliceに変更
+- 内部Indexの比較アルゴリズムを変更
+- プロトコル構成の変更
+- `_unsafe`サブスクリプトを`unchecked`に変更
+### Fixed
+- Xcodeでコード補完が効きにくい不具合の修正
+
+## [0.1.44] - 2025-9-3
+(AtCoder 2025搭載版です)
+
+## [0.1.43] - 2025-9-3
+
+## [0.1.42] - 2025-8-22
+
+## [0.1.41] - 2025-8-10
+
+## [0.1.40] - 2025-8-3
+
+## [0.1.39] - 2025-7-30
+
 ## [0.1.38] - 2025-7-21
 ### Changed
 - tree+base.swiftファイルの更新（PR #38）

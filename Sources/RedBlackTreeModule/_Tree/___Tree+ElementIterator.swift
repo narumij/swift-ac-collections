@@ -45,7 +45,7 @@ extension ___Tree {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> Tree.Element? {
+    public mutating func next() -> Tree._Value? {
       guard _current != _end else { return nil }
       defer {
         _current = _next
@@ -98,7 +98,7 @@ extension ___Tree {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> Tree.Element? {
+    public mutating func next() -> Tree._Value? {
       guard _current != _start else { return nil }
       _current = _next
       _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
@@ -111,7 +111,7 @@ extension ___Tree.ReversedElementIterator {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (___Tree.Index, Element) throws -> Void) rethrows {
+  public func forEach(_ body: (___Tree.Index, ___Tree._Value) throws -> Void) rethrows {
     try __tree_.___rev_for_each_(__p: _start, __l: _end) {
       try body(__tree_.makeIndex(rawValue: $0), __tree_[$0])
     }
@@ -119,7 +119,7 @@ extension ___Tree.ReversedElementIterator {
 
   @inlinable
   @inline(__always)
-  public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
+  public func ___forEach(_ body: (_NodePtr, ___Tree._Value) throws -> Void) rethrows {
     try __tree_.___rev_for_each_(__p: _start, __l: _end) {
       try body($0, __tree_[$0])
     }

@@ -110,7 +110,13 @@ extension ___RedBlackTreeCopyOnWrite {
   @inlinable
   @inline(__always)
   mutating func _ensureCapacity() {
-    let minimumCapacity = _storage.count + 1
+    _ensureCapacity(amount: 1)
+  }
+  
+  @inlinable
+  @inline(__always)
+  mutating func _ensureCapacity(amount: Int) {
+    let minimumCapacity = _storage.count + amount
     if _storage.capacity < minimumCapacity {
       _storage = _storage.copy(
         growthCapacityTo: minimumCapacity,
@@ -137,5 +143,14 @@ extension ___RedBlackTreeCopyOnWrite {
     }
     assert(_storage.capacity >= minimumCapacity)
     assert(_storage.tree.header.initializedCount <= _storage.capacity)
+  }
+}
+
+extension ___RedBlackTreeBase {
+  // SE-0494対応の準備
+  @inlinable
+  @inline(__always)
+  public func _isIdentical(to other: Self) -> Bool {
+    self.__tree_ === other.__tree_
   }
 }

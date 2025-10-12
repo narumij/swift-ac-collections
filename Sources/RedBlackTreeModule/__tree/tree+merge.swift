@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol MergeSourceProtocol: AllocatorProtocol & BeginNodeProtocol & EndNodeProtocol & ValueProtocol { }
+protocol MergeSourceProtocol: TreeValueProtocol & AllocatorProtocol & BeginNodeProtocol & EndNodeProtocol & ValueProtocol & SizeProtocol { }
 
 @usableFromInline
 protocol MergeProtocol: KeyProtocol & FindEqualProtocol & FindLeafProtocol & InsertNodeAtProtocol & AllocatorProtocol {
@@ -31,7 +31,7 @@ protocol MergeProtocol: KeyProtocol & FindEqualProtocol & FindLeafProtocol & Ins
 }
 
 @usableFromInline
-protocol HandleProtocol: AllocatorProtocol & KeyProtocol & ValueProtocol & BeginProtocol & EndProtocol & MemberProtocol & EraseProtocol {
+protocol HandleProtocol: AllocatorProtocol & KeyProtocol & ValueProtocol & BeginProtocol & EndProtocol & TreeNodeProtocol & EraseProtocol {
   // 現在使っていない
 }
 
@@ -60,12 +60,12 @@ extension MergeProtocol {
   @inlinable
   @inline(__always)
   public func __node_handle_merge_unique<_Tree>(_ __source: _Tree)
-  where _Tree: HandleProtocol, _Tree._Key == _Key, _Tree.Element == Element {
+  where _Tree: HandleProtocol, _Tree._Key == _Key, _Tree._Value == _Value {
     
     var __i = __source.__begin_node; while __i != __source.end() {
       var __src_ptr: _Tree.__node_pointer = __get_np(__i)
       var __parent: __parent_pointer = .zero
-      let __child = __find_equal(&__parent, __source.__get_key(__source.__value_(__src_ptr)))
+      let __child = __find_equal(&__parent, __source.__get_key(__source.__get_value(__src_ptr)))
       __i = __source.__tree_next_iter(__i)
       if (__ptr_(__child) != .nullptr) {
         continue }
@@ -74,7 +74,7 @@ extension MergeProtocol {
       _ = __source.__remove_node_pointer(__src_ptr);
 #else
       // ポインタを受け取れないので、代わりにノードを作る
-      __src_ptr = __construct_node(__source.___element(__src_ptr))
+      __src_ptr = __construct_node(__source.__value_(__src_ptr))
 #endif
       __insert_node_at(__parent, __child, static_cast___node_base_pointer_(__src_ptr))
     }
@@ -83,19 +83,19 @@ extension MergeProtocol {
   @inlinable
   @inline(__always)
   public func __node_handle_merge_multi<_Tree>(_ __source: _Tree)
-  where _Tree: HandleProtocol, _Tree._Key == _Key, _Tree.Element == Element {
+  where _Tree: HandleProtocol, _Tree._Key == _Key, _Tree._Value == _Value {
 
     var __i = __source.__begin_node; while __i != __source.end() {
       var __src_ptr: _Tree.__node_pointer = __get_np(__i)
       var __parent: __parent_pointer = .zero
-      let __child = __find_leaf_high(&__parent, __source.__get_key(__source.__value_(__src_ptr)))
+      let __child = __find_leaf_high(&__parent, __source.__get_key(__source.__get_value(__src_ptr)))
       __i = __source.__tree_next_iter(__i)
 #if false
       // C++では本物のポインタで動作し、挿入後はノードがポインタを介して共有されるため、削除が行われる
       _ = __source.__remove_node_pointer(__src_ptr);
 #else
       // ポインタを受け取れないので、代わりにノードを作る
-      __src_ptr = __construct_node(__source.___element(__src_ptr))
+      __src_ptr = __construct_node(__source.__value_(__src_ptr))
 #endif
       __insert_node_at(__parent, __child, static_cast___node_base_pointer_(__src_ptr));
     }

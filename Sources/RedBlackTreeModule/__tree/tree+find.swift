@@ -23,11 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol FindLeafProtocol: ValueProtocol
-    & RootProtocol
-    & RefProtocol
-    & EndNodeProtocol
-{}
+protocol FindLeafProtocol: ValueProtocol, TreeNodeRefProtocol, RootProtocol, EndNodeProtocol {}
 
 extension FindLeafProtocol {
 
@@ -39,7 +35,7 @@ extension FindLeafProtocol {
     var __nd: _NodePtr = __root()
     if __nd != .nullptr {
       while true {
-        if value_comp(__value_(__nd), __v) {
+        if value_comp(__get_value(__nd), __v) {
           if __right_(__nd) != .nullptr {
             __nd = __right_(__nd)
           } else {
@@ -68,7 +64,7 @@ extension FindLeafProtocol {
     var __nd: _NodePtr = __root()
     if __nd != .nullptr {
       while true {
-        if value_comp(__v, __value_(__nd)) {
+        if value_comp(__v, __get_value(__nd)) {
           if __left_unsafe(__nd) != .nullptr {
             __nd = __left_unsafe(__nd)
           } else {
@@ -91,12 +87,12 @@ extension FindLeafProtocol {
 }
 
 @usableFromInline
-protocol FindEqualProtocol: FindProtocol & RefProtocol & RootPtrProtocol {}
+protocol FindEqualProtocol: ValueProtocol, TreeNodeRefProtocol, RootProtocol, RootPtrProtocol {}
 
 extension FindEqualProtocol {
 
   @inlinable
-  @inline(__always)
+  @inline(never)
   func
     __find_equal(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
   {
@@ -104,8 +100,7 @@ extension FindEqualProtocol {
     var __nd_ptr = __root_ptr()
     if __nd != .nullptr {
       while true {
-        let __value__nd = __value_(__nd)
-        if value_comp(__v, __value__nd) {
+        if value_comp(__v, __get_value(__nd)) {
           if __left_unsafe(__nd) != .nullptr {
             __nd_ptr = __left_ref(__nd)
             __nd = __left_unsafe(__nd)
@@ -113,7 +108,7 @@ extension FindEqualProtocol {
             __parent = __nd
             return __left_ref(__parent)
           }
-        } else if value_comp(__value__nd, __v) {
+        } else if value_comp(__get_value(__nd), __v) {
           if __right_(__nd) != .nullptr {
             __nd_ptr = __right_ref(__nd)
             __nd = __right_(__nd)
@@ -133,11 +128,7 @@ extension FindEqualProtocol {
 }
 
 @usableFromInline
-protocol FindProtocol: ValueProtocol
-    & RootProtocol
-    & EndNodeProtocol
-    & EndProtocol
-{}
+protocol FindProtocol: BoundAlgorithmProtocol & EndProtocol {}
 
 extension FindProtocol {
 
@@ -145,7 +136,7 @@ extension FindProtocol {
   @inline(__always)
   func find(_ __v: _Key) -> _NodePtr {
     let __p = __lower_bound(__v, __root(), __end_node())
-    if __p != end(), !value_comp(__v, __value_(__p)) {
+    if __p != end(), !value_comp(__v, __get_value(__p)) {
       return __p
     }
     return end()

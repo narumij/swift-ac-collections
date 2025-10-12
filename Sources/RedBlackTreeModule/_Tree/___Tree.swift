@@ -23,12 +23,13 @@
 import Foundation
 
 @_fixed_layout
+@_objc_non_lazy_realization
 public final class ___Tree<VC>: ManagedBuffer<
   ___Tree<VC>.Header,
   ___Tree<VC>.Node
 >
 where VC: ValueComparer & CompareTrait {
-
+  
   @inlinable
   deinit {
     self.withUnsafeMutablePointers { header, elements in
@@ -102,13 +103,13 @@ extension ___Tree {
   public struct Node: ___tree_base_node {
 
     @usableFromInline
-    internal var __value_: Element
+    internal var __value_: _Value
     @usableFromInline
     internal var __left_: _NodePtr
     @usableFromInline
-    internal var __right_: _NodePtr
-    @usableFromInline
     internal var __parent_: _NodePtr
+    @usableFromInline
+    internal var __right_: _NodePtr
     @usableFromInline
     internal var __is_black_: Bool
 
@@ -119,7 +120,7 @@ extension ___Tree {
       __left_: _NodePtr = .nullptr,
       __right_: _NodePtr = .nullptr,
       __parent_: _NodePtr = .nullptr,
-      __value_: Element
+      __value_: _Value
     ) {
       self.__is_black_ = __is_black_
       self.__left_ = __left_
@@ -134,8 +135,7 @@ extension ___Tree {
 
   public typealias Tree = ___Tree<VC>
 
-  @usableFromInline
-  internal typealias VC = VC
+  public typealias VC = VC
 
   @usableFromInline
   internal typealias Manager = ManagedBufferPointer<Header, Node>
@@ -238,7 +238,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
-  public subscript(_ pointer: _NodePtr) -> Element {
+  public subscript(_ pointer: _NodePtr) -> _Value {
     @inline(__always) _read {
       assert(___initialized_contains(pointer))
       yield __node_ptr[pointer].__value_
@@ -329,7 +329,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func __construct_node(_ k: Element) -> _NodePtr {
+  internal func __construct_node(_ k: _Value) -> _NodePtr {
     if _header.destroyCount > 0 {
       let p = ___popDetroy()
       __node_ptr[p].__value_ = k
@@ -385,43 +385,28 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func __value_(_ p: _NodePtr) -> _Key {
+  internal func __get_value(_ p: _NodePtr) -> _Key {
     __key(__node_ptr[p].__value_)
   }
 }
 
 extension ___Tree {
 
-  public typealias Element = VC.Element
+  public typealias _Value = VC._Value
 
-  @usableFromInline
-  internal typealias _Key = VC._Key
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    VC.value_comp(a, b)
-  }
+  public typealias _Key = VC._Key
 
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func __key(_ e: VC.Element) -> VC._Key {
-    VC.__key(e)
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func ___element(_ p: _NodePtr) -> VC.Element {
+  internal func __value_(_ p: _NodePtr) -> VC._Value {
     __node_ptr[p].__value_
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___element(_ p: _NodePtr, _ __v: VC.Element) {
+  internal func ___element(_ p: _NodePtr, _ __v: VC._Value) {
     __node_ptr[p].__value_ = __v
   }
 }
@@ -440,12 +425,14 @@ extension ___Tree: EraseMultiProtocol {}
 extension ___Tree: BoundProtocol {}
 extension ___Tree: InsertUniqueProtocol {}
 extension ___Tree: CountProtocol {}
-extension ___Tree: MemberProtocol {}
+extension ___Tree: TreeNodeProtocol {}
 extension ___Tree: DistanceProtocol {}
 extension ___Tree: CompareProtocol {}
 extension ___Tree: CompareUniqueProtocol {}
 extension ___Tree: CompareMultiProtocol {}
 extension ___Tree: MergeSourceProtocol {}
+extension ___Tree: CompProtocol {}
+extension ___Tree: ValueComparerProtocol {}
 
 extension ___Tree {
   @nonobjc
@@ -562,7 +549,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func
-    ___erase(_ __f: _NodePtr, _ __l: _NodePtr, _ action: (Element) throws -> Void) rethrows
+    ___erase(_ __f: _NodePtr, _ __l: _NodePtr, _ action: (_Value) throws -> Void) rethrows
   {
     var __f = __f
     while __f != __l {
@@ -577,7 +564,7 @@ extension ___Tree {
   internal func
     ___erase<Result>(
       _ __f: _NodePtr, _ __l: _NodePtr, _ initialResult: Result,
-      _ nextPartialResult: (Result, Element) throws -> Result
+      _ nextPartialResult: (Result, _Value) throws -> Result
     ) rethrows -> Result
   {
     var result = initialResult
@@ -595,7 +582,7 @@ extension ___Tree {
   internal func
     ___erase<Result>(
       _ __f: _NodePtr, _ __l: _NodePtr, into initialResult: Result,
-      _ updateAccumulatingResult: (inout Result, Element) throws -> Void
+      _ updateAccumulatingResult: (inout Result, _Value) throws -> Void
     ) rethrows -> Result
   {
     var result = initialResult
@@ -693,7 +680,7 @@ extension ___Tree {
     //    return !___initialized_contains(p) || ___is_garbaged(p)
     // begin -> false
     // end -> true
-    return p < 0 || _header.initializedCount <= p || ___is_garbaged(p)
+    return ___is_null_or_end(p) || _header.initializedCount <= p || ___is_garbaged(p)
   }
 
   @nonobjc
@@ -1022,61 +1009,14 @@ extension ___Tree: Tree_IndicesProtocol {
   }
 }
 
-extension ___Tree: Tree_KeyCompare {
-
-  public typealias Key = VC._Key
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public static func value_comp(_ lhs: Key, _ rhs: Key) -> Bool {
-    VC.value_comp(lhs, rhs)
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public static func value_equiv(_ lhs: Key, _ rhs: Key) -> Bool {
-    !value_comp(lhs, rhs) && !value_comp(rhs, lhs)
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public static func ___key_equiv(_ lhs: Element, _ rhs: Element) -> Bool {
-    value_equiv(VC.__key(lhs), VC.__key(rhs))
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public static func ___key_value_equiv<Key, Value>(_ lhs: Element, _ rhs: Element) -> Bool
-  where Element == _KeyValueTuple_<Key, Value>, Value: Equatable {
-    ___key_equiv(lhs, rhs) && lhs.value == rhs.value
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  static func ___key_comp(_ lhs: Element, _ rhs: Element) -> Bool {
-    value_comp(VC.__key(lhs), VC.__key(rhs))
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  static func ___key_value_comp<Key, Value>(_ lhs: Element, _ rhs: Element) -> Bool
-  where Element == _KeyValueTuple_<Key, Value>, Value: Comparable {
-    ___key_comp(lhs, rhs) || (!___key_comp(lhs, rhs) && lhs.value < rhs.value)
-  }
-}
+extension ___Tree: Tree_KeyValue where VC: KeyValueComparer {}
 
 extension ___Tree {
 
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___filter(_ isIncluded: (Element) throws -> Bool)
+  public func ___filter(_ isIncluded: (_Value) throws -> Bool)
     rethrows -> ___Tree
   {
     var tree: Tree = .create(minimumCapacity: 0)
@@ -1098,8 +1038,8 @@ extension ___Tree {
   public func ___mapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T)
     rethrows -> ___Tree<Other>
   where
-    Element == _KeyValueTuple_<Key, Value>,
-    Other.Element == _KeyValueTuple_<Key, T>
+    _Value == _KeyValueTuple_<Key, Value>,
+    Other._Value == _KeyValueTuple_<Key, T>
   {
     let tree = ___Tree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = tree.___max_ref()
@@ -1116,8 +1056,8 @@ extension ___Tree {
   public func ___compactMapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T?)
     rethrows -> ___Tree<Other>
   where
-    Element == _KeyValueTuple_<Key, Value>,
-    Other.Element == _KeyValueTuple_<Key, T>
+    _Value == _KeyValueTuple_<Key, Value>,
+    Other._Value == _KeyValueTuple_<Key, T>
   {
     var tree = ___Tree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = tree.___max_ref()
@@ -1125,6 +1065,50 @@ extension ___Tree {
       if let new = try transform(v) {
         ___Tree<Other>.ensureCapacity(tree: &tree)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, new))
+        assert(tree.__tree_invariant(tree.__root()))
+      }
+    }
+    return tree
+  }
+}
+
+extension ___Tree {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public func ___mapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T)
+    rethrows -> ___Tree<Other>
+  where
+    _Value == Pair<Key, Value>,
+    Other._Value == Pair<Key, T>
+  {
+    let tree = ___Tree<Other>.create(minimumCapacity: count)
+    var (__parent, __child) = tree.___max_ref()
+    for kv in self {
+      let (k, v) = (kv.key, kv.value)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, .init(k, try transform(v)))
+      assert(tree.__tree_invariant(tree.__root()))
+    }
+    return tree
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public func ___compactMapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T?)
+    rethrows -> ___Tree<Other>
+  where
+    _Value == Pair<Key, Value>,
+    Other._Value == Pair<Key, T>
+  {
+    var tree = ___Tree<Other>.create(minimumCapacity: count)
+    var (__parent, __child) = tree.___max_ref()
+    for kv in self {
+      let (k, v) = (kv.key, kv.value)
+      if let new = try transform(v) {
+        ___Tree<Other>.ensureCapacity(tree: &tree)
+        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, .init(k, new))
         assert(tree.__tree_invariant(tree.__root()))
       }
     }

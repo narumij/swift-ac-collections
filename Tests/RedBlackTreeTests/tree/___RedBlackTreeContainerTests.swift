@@ -39,7 +39,7 @@ import XCTest
     var ___elements: [Element] {
       get {
         (0..<__tree_._header.initializedCount).map {
-          __tree_.___element($0)
+          __tree_.__value_($0)
         }
       }
       set {

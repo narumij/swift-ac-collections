@@ -44,6 +44,7 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(set.count, 0)
     XCTAssertTrue(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
+    XCTAssertEqual(set.count(of: 0), 0)
   }
 
   func testRedBlackTreeCapacity() throws {
@@ -286,6 +287,24 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -2)], 3)
     XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -1)], 4)
   }
+  
+  func testArrayAccess3() throws {
+    let set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
+    XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 0)], 0)
+    XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 1)], 1)
+    XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 2)], 2)
+    XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 3)], 3)
+    XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 4)], 4)
+  }
+
+  func testArrayAccess4() throws {
+    let set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
+    XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -5)], 0)
+    XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -4)], 1)
+    XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -3)], 2)
+    XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -2)], 3)
+    XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -1)], 4)
+  }
 
   func testIndexLimit1() throws {
     let set = Set<Int>([0, 1, 2, 3, 4])
@@ -451,6 +470,12 @@ final class SetTests: XCTestCase {
   func testLiteral() throws {
     let set: RedBlackTreeSet<Int> = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
     XCTAssertEqual(set + [], [1, 2, 3, 4, 5])
+    XCTAssertEqual(set.count(of: 0), 0)
+    XCTAssertEqual(set.count(of: 1), 1)
+    XCTAssertEqual(set.count(of: 2), 1)
+    XCTAssertEqual(set.count(of: 3), 1)
+    XCTAssertEqual(set.count(of: 4), 1)
+    XCTAssertEqual(set.count(of: 5), 1)
   }
 
   class A: Hashable, Comparable {
@@ -832,6 +857,18 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(i, sub.startIndex)
   }
 
+  func testIndex1() throws {
+    let set: RedBlackTreeSet<Int> = [1,2,3,4,6,7]
+    let l2 = set.lowerBound(2)
+    let u2 = set.upperBound(4)
+    XCTAssertEqual(set[l2..<u2].map{ $0 }, [2, 3, 4])
+    XCTAssertEqual(set[l2...].map{ $0 }, [2, 3, 4, 6, 7])
+    XCTAssertEqual(set[u2...].map{ $0 }, [6, 7])
+    XCTAssertEqual(set[..<u2].map{ $0 }, [1, 2, 3, 4])
+    XCTAssertEqual(set[...u2].map{ $0 }, [1, 2, 3, 4, 6])
+    XCTAssertEqual(set[..<set.endIndex].map{ $0 }, [1,2,3,4,6,7])
+  }
+
   func testSorted() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     XCTAssertEqual(set.sorted(), [1, 2, 3, 4, 5])
@@ -1003,6 +1040,35 @@ final class SetTests: XCTestCase {
     do {
       let a = RedBlackTreeSet<Int>([0,1,2])
       let b = RedBlackTreeSet<Int>([0,1,3])
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+  }
+  
+  func testCompare2() throws {
+    let aa = RedBlackTreeSet<Int>([0,1,2,3,4,5])
+    let bb = RedBlackTreeSet<Int>([3,4,5,6,7,8])
+    do {
+      let a = aa[0 ..< 0]
+      let b = bb[3 ..< 3]
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = aa[3 ..< 6]
+      let b = bb[3 ..< 6]
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = aa[2 ..< 6]
+      let b = bb[3 ..< 6]
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = aa[3 ..< 6]
+      let b = bb[3 ..< 7]
       XCTAssertTrue(a < b)
       XCTAssertFalse(b < a)
     }

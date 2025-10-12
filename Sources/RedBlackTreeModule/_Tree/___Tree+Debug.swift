@@ -144,7 +144,7 @@ import Foundation
     }
   }
 
-  extension Array where Element == Graphviz.NodeProperty {
+  extension Array where _Value == Graphviz.NodeProperty {
     static var red: [Graphviz.NodeProperty] {
       [.shape(.circle), .style(.filled), .fillColor(.red)]
     }
@@ -159,7 +159,7 @@ import Foundation
     }
   }
 
-  extension Array where Element == Graphviz.EdgeProperty {
+  extension Array where _Value == Graphviz.EdgeProperty {
     static var left: [Graphviz.EdgeProperty] {
       [.label("left"),.labelAngle(45)]
     }

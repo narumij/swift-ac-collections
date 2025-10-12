@@ -22,40 +22,39 @@
 
 import Foundation
 
-extension ___Tree {
+/// 赤黒木のノードへのインデックス
+///
+/// C++の双方向イテレータに近い内容となっている
+@frozen
+public struct RedBlackTreeIndex<VC> where VC: ValueComparer & CompareTrait {
+  public typealias Tree = ___Tree<VC>
+  public typealias _Value = Tree._Value
 
-  /// 赤黒木のノードへのイテレータ
-  @frozen
-  public struct ___Iterator {
+  @usableFromInline
+  let __tree_: Tree
 
-    public typealias Element = Tree.Element
+  @usableFromInline
+  var rawValue: Int
 
-    @usableFromInline
-    let __tree_: ___Tree
+  // MARK: -
 
-    @usableFromInline
-    var rawValue: Int
-
-    // MARK: -
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: ___Tree, rawValue: _NodePtr) {
-      assert(rawValue != .nullptr)
-      self.__tree_ = tree
-      self.rawValue = rawValue
-    }
-
-    /*
-     invalidなポインタでの削除は、だんまりがいいように思う
-     */
-
-    // 性能上の問題でCoWに関与できない設計としている
-    // CoWに関与できないので、Treeに対する破壊的変更は行わないこと
+  @inlinable
+  @inline(__always)
+  internal init(tree: Tree, rawValue: _NodePtr) {
+    assert(rawValue != .nullptr)
+    self.__tree_ = tree
+    self.rawValue = rawValue
   }
+
+  /*
+   invalidなポインタでの削除は、だんまりがいいように思う
+   */
+
+  // 性能上の問題でCoWに関与できない設計としている
+  // CoWに関与できないので、Treeに対する破壊的変更は行わないこと
 }
 
-extension ___Tree.___Iterator: Comparable {
+extension RedBlackTreeIndex: Comparable {
 
   /// - Complexity: O(1)
   @inlinable
@@ -74,11 +73,12 @@ extension ___Tree.___Iterator: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-    
+
     let __tree_ = lhs.__tree_
 
     guard !__tree_.___is_garbaged(lhs.rawValue),
-          !__tree_.___is_garbaged(rhs.rawValue) else {
+      !__tree_.___is_garbaged(rhs.rawValue)
+    else {
       preconditionFailure(.garbagedIndex)
     }
 
@@ -88,13 +88,14 @@ extension ___Tree.___Iterator: Comparable {
 
 // Stridableできるが、Range<Index>に標準実装が生えることと、
 // その実装が要素アクセスのたびに範囲チェックを行うことを嫌って、Stridableをやめている
-extension ___Tree.___Iterator {
+extension RedBlackTreeIndex {
 
   @inlinable
   //  @inline(__always)
   public func distance(to other: Self) -> Int {
     guard !__tree_.___is_garbaged(rawValue),
-          !__tree_.___is_garbaged(other.rawValue) else {
+      !__tree_.___is_garbaged(other.rawValue)
+    else {
       preconditionFailure(.garbagedIndex)
     }
     return __tree_.___signed_distance(rawValue, other.rawValue)
@@ -107,8 +108,11 @@ extension ___Tree.___Iterator {
   }
 }
 
-extension ___Tree.___Iterator {
+extension RedBlackTreeIndex {
 
+  /// 次のイテレータを返す
+  ///
+  /// 終端だった場合と、無効だった場合にnilとなる
   @inlinable
   @inline(__always)
   public var next: Self? {
@@ -116,10 +120,13 @@ extension ___Tree.___Iterator {
       return nil
     }
     var next = self
-    next.___next()
+    next.___unchecked_next()
     return next
   }
 
+  /// 前のイテレータを返す
+  ///
+  /// 始点だった場合と、無効だった場合にnilとなる
   @inlinable
   @inline(__always)
   public var previous: Self? {
@@ -127,13 +134,13 @@ extension ___Tree.___Iterator {
       return nil
     }
     var prev = self
-    prev.___prev()
+    prev.___unchecked_prev()
     return prev
   }
 
   @inlinable
   @inline(__always)
-  mutating func ___next() {
+  mutating func ___unchecked_next() {
     assert(!__tree_.___is_garbaged(rawValue))
     assert(!__tree_.___is_end(rawValue))
     rawValue = __tree_.__tree_next_iter(rawValue)
@@ -141,14 +148,14 @@ extension ___Tree.___Iterator {
 
   @inlinable
   @inline(__always)
-  mutating func ___prev() {
+  mutating func ___unchecked_prev() {
     assert(!__tree_.___is_garbaged(rawValue))
     assert(!__tree_.___is_begin(rawValue))
     rawValue = __tree_.__tree_prev_iter(rawValue)
   }
 }
 
-extension ___Tree.___Iterator {
+extension RedBlackTreeIndex {
 
   @inlinable
   @inline(__always)
@@ -170,17 +177,20 @@ extension ___Tree.___Iterator {
   }
 }
 
-extension ___Tree.___Iterator {
+extension RedBlackTreeIndex {
 
+  /// 現在位置の値を返す
+  ///
+  /// 無効な場合nilとなる
   @inlinable
-  public var pointee: Element? {
+  public var pointee: _Value? {
     @inline(__always) _read {
       yield __tree_.___is_subscript_null(rawValue) ? nil : ___pointee
     }
   }
 }
 
-extension ___Tree.___Iterator {
+extension RedBlackTreeIndex {
 
   @inlinable
   @inline(__always)
@@ -189,7 +199,7 @@ extension ___Tree.___Iterator {
   }
 
   @inlinable
-  var ___pointee: Element {
+  var ___pointee: _Value {
     @inline(__always) _read {
       yield __tree_[rawValue]
     }
@@ -197,70 +207,50 @@ extension ___Tree.___Iterator {
 }
 
 #if DEBUG
-  extension ___Tree.___Iterator {
+  extension RedBlackTreeIndex {
     fileprivate init(_unsafe_tree: ___Tree<VC>, rawValue: _NodePtr) {
       self.__tree_ = _unsafe_tree
       self.rawValue = rawValue
     }
   }
 
-  extension ___Tree.___Iterator {
+  extension RedBlackTreeIndex {
     static func unsafe(tree: ___Tree<VC>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue)
     }
   }
 #endif
 
-#if false
-  @inlinable
-  func _description(_ p: _NodePtr) -> String {
-    switch p {
-    case .nullptr: ".nullptr"
-    case .end: ".end"
-    case .under: ".under"
-    case .over: ".over"
-    default: "\(p)"
-    }
-  }
+#if swift(>=5.5)
+// 競プロ用としてはSendableがいいが、一般用としてはSendableじゃないほうがいい
+  extension RedBlackTreeIndex: @unchecked Sendable
+  where _Value: Sendable {}
 #endif
 
 @inlinable
 @inline(__always)
-public func ..< <VC>(
-  lhs: ___Tree<VC>.Index,
-  rhs: ___Tree<VC>.Index
-) -> ___Tree<VC>.Indices {
+public func ..< <VC>(lhs: RedBlackTreeIndex<VC>, rhs: RedBlackTreeIndex<VC>) -> ___Tree<VC>.Indices {
   lhs.__tree_.makeIndices(start: lhs.rawValue, end: rhs.rawValue)
 }
 
 @inlinable
 @inline(__always)
-public func + <VC>(
-  lhs: ___Tree<VC>.Index,
-  rhs: Int
-) -> ___Tree<VC>.Index {
+public func + <VC>(lhs: RedBlackTreeIndex<VC>, rhs: Int) -> RedBlackTreeIndex<VC> {
   lhs.advanced(by: rhs)
 }
 
 @inlinable
 @inline(__always)
-public func - <VC>(
-  lhs: ___Tree<VC>.Index,
-  rhs: Int
-) -> ___Tree<VC>.Index {
+public func - <VC>(lhs: RedBlackTreeIndex<VC>, rhs: Int) -> RedBlackTreeIndex<VC> {
   lhs.advanced(by: -rhs)
 }
 
 @inlinable
 @inline(__always)
-public func - <VC>(
-  lhs: ___Tree<VC>.Index,
-  rhs: ___Tree<VC>.Index
-) -> Int {
+public func - <VC>(lhs: RedBlackTreeIndex<VC>, rhs: RedBlackTreeIndex<VC>) -> Int {
   rhs.distance(to: lhs)
 }
 
-#if swift(>=5.5)
-  extension ___Tree.___Iterator: @unchecked Sendable
-  where Element: Sendable {}
-#endif
+extension ___Tree {
+  public typealias ___Iterator = RedBlackTreeIndex<VC>
+}

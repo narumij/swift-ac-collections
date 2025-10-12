@@ -28,18 +28,32 @@ protocol PointerCompareProtocol: ValueProtocol {
 }
 
 @usableFromInline
-protocol CompareBothProtocol: CompareUniqueProtocol, CompareMultiProtocol {
+protocol CompareBothProtocol: CompareUniqueProtocol, CompareMultiProtocol, NodeBitmapProtocol {
   var isMulti: Bool { get }
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
   func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
 }
 
 extension CompareBothProtocol {
-  @inlinable @inline(__always)
+  @inlinable
+  @inline(__always)
   func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     assert(l == .end || __parent_(l) != .nullptr)
     assert(r == .end || __parent_(r) != .nullptr)
-    return isMulti ? ___ptr_comp_multi(l, r) : ___ptr_comp_unique(l, r)
+    
+    guard
+      l != r,
+      r != .end,
+      l != .end
+    else {
+      return l != .end && r == .end
+    }
+
+    if isMulti {
+//      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_multi(l, r))
+      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_bitmap(l, r))
+    }
+    return ___ptr_comp_unique(l, r)
   }
 }
 
@@ -47,14 +61,14 @@ public protocol CompareTrait {
   static var isMulti: Bool { get }
 }
 
-public protocol CompareUniqueTrait: CompareTrait { }
+public protocol CompareUniqueTrait: CompareTrait {}
 
 extension CompareUniqueTrait {
   @inlinable @inline(__always)
   public static var isMulti: Bool { false }
 }
 
-public protocol CompareMultiTrait: CompareTrait { }
+public protocol CompareMultiTrait: CompareTrait {}
 
 extension CompareMultiTrait {
   @inlinable @inline(__always)
@@ -70,19 +84,16 @@ extension CompareUniqueProtocol {
   @inlinable
   @inline(__always)
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    guard
-      l != r,
-      r != .end,
-      l != .end
-    else {
-      return l != .end && r == .end
-    }
-    return value_comp(__value_(l), __value_(r))
+    assert(l != .nullptr, "Node shouldn't be null")
+    assert(l != .end, "Node shouldn't be end")
+    assert(r != .nullptr, "Node shouldn't be null")
+    assert(r != .end, "Node shouldn't be end")
+    return value_comp(__get_value(l), __get_value(r))
   }
 }
 
 @usableFromInline
-protocol CompareMultiProtocol: MemberProtocol & RootProtocol & EndProtocol {}
+protocol CompareMultiProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {}
 
 extension CompareMultiProtocol {
 
@@ -99,10 +110,10 @@ extension CompareMultiProtocol {
     }
     return __h
   }
-  
+
   // ノードの大小を比較する
   @inlinable
-//  @inline(__always)
+  //  @inline(__always)
   func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
     assert(__l != .nullptr, "Left node shouldn't be null")
     assert(__r != .nullptr, "Right node shouldn't be null")
@@ -177,10 +188,46 @@ extension CompareProtocol {
   func ___ptr_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool {
     ___ptr_less_than_or_equal(l, p) && ___ptr_less_than(p, r)
   }
-  
+
   @inlinable
   @inline(__always)
   func ___ptr_closed_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool {
     ___ptr_less_than_or_equal(l, p) && ___ptr_less_than_or_equal(p, r)
+  }
+}
+
+@usableFromInline
+protocol NodeBitmapProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {}
+
+extension NodeBitmapProtocol {
+
+  /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
+  ///
+  /// 8bit幅で例えると、
+  /// ルートは128 (0b10000000)
+  /// ルートの左は64 (0b010000000)
+  /// ルートの右は192となる  (0b110000000)
+  /// (実際にはUIntで64bit幅)
+  @inlinable
+  @inline(__always)
+  func ___ptr_bitmap(_ __p: _NodePtr) -> UInt {
+    assert(__p != .nullptr, "Node shouldn't be null")
+    assert(__p != .end, "Node shouldn't be end")
+    var __f: UInt = 1  // 終端flag
+    var __h = 1 // 終端flag分
+    var __p = __p
+    while __p != __root(), __p != .end {
+      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< __h
+      __p = __parent_(__p)
+      __h &+= 1
+    }
+    __f &<<= UInt.bitWidth &- __h
+    return __f
+  }
+
+  @inlinable
+  @inline(__always)
+  func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
+    ___ptr_bitmap(__l) < ___ptr_bitmap(__r)
   }
 }

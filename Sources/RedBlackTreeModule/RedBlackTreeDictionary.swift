@@ -66,7 +66,10 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias _Key = Key
 
   public
-    typealias _Value = Value
+    typealias _MappedValue = Value
+
+  public
+    typealias _Value = Element
 
   @usableFromInline
   var _storage: Tree.Storage
@@ -81,9 +84,10 @@ extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
 extension RedBlackTreeDictionary: ___RedBlackTreeMerge {}
-extension RedBlackTreeDictionary: ___RedBlackTreeSequence {}
-extension RedBlackTreeDictionary: ___RedBlackTreeSubSequence {}
+extension RedBlackTreeDictionary: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
+extension RedBlackTreeDictionary: ElementComparable where Value: Comparable { }
+extension RedBlackTreeDictionary: ElementEqutable where Value: Equatable { }
 
 // MARK: - Creating a Dictionay
 
@@ -356,11 +360,39 @@ extension RedBlackTreeDictionary {
       end: bounds.upperBound.rawValue)
   }
 
+  @inlinable
+  @inline(__always)
+  public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+    let bounds: Range<Index> = bounds.relative(to: self)
+    
+    __tree_.___ensureValidRange(
+      begin: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+    
+    return .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+  }
+  
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
+  public subscript(unchecked bounds: Range<Index>) -> SubSequence {
     .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+  }
+  
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public subscript<R>(unchecked bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+    let bounds: Range<Index> = bounds.relative(to: self)
+    return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
@@ -437,17 +469,6 @@ extension RedBlackTreeDictionary {
     try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
   }
 
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  public mutating func merge(
-    _ other: RedBlackTreeMultiMap<Key, Value>,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows {
-    _ensureUnique()
-    try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
-  }
-
   /// 辞書に `other` の要素をマージします。
   /// キーが重複したときは `combine` の戻り値を採用します。
   ///
@@ -462,24 +483,27 @@ extension RedBlackTreeDictionary {
     _ensureUnique()
     try ___merge_unique(other, uniquingKeysWith: combine)
   }
-
+  
+  /// 辞書に `other` の要素をマージします。
+  /// キーが重複したときは `combine` の戻り値を採用します。
+  ///
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
-  public func merging(
-    _ other: RedBlackTreeDictionary<Key, Value>,
+  public mutating func merge<S>(
+    _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows -> Self {
-    var result = self
-    try result.merge(other, uniquingKeysWith: combine)
-    return result
+  ) rethrows where S: Sequence, S.Element == Pair<Key, Value> {
+
+    _ensureUnique()
+    try ___merge_unique(other.map({ $0.tuple }), uniquingKeysWith: combine)
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public func merging(
-    _ other: RedBlackTreeMultiMap<Key, Value>,
+    _ other: RedBlackTreeDictionary<Key, Value>,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows -> Self {
     var result = self
@@ -496,6 +520,20 @@ extension RedBlackTreeDictionary {
     _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows -> Self where S: Sequence, S.Element == (Key, Value) {
+    var result = self
+    try result.merge(other, uniquingKeysWith: combine)
+    return result
+  }
+  
+  /// `self` と `other` をマージした新しい辞書を返します。
+  ///
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func merging<S>(
+    _ other: __owned S,
+    uniquingKeysWith combine: (Value, Value) throws -> Value
+  ) rethrows -> Self where S: Sequence, S.Element == Pair<Key, Value> {
     var result = self
     try result.merge(other, uniquingKeysWith: combine)
     return result
@@ -530,7 +568,7 @@ extension RedBlackTreeDictionary {
     if __i == __tree_.end() {
       return nil
     }
-    let value = __tree_.___element(__i).value
+    let value = __tree_.__value_(__i).value
     _ensureUnique()
     _ = __tree_.erase(__i)
     return value
@@ -786,82 +824,201 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection {}
 
-// MARK: - SubSequence
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> Tree.ElementIterator {
+    _makeIterator()
+  }
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (_Value) throws -> Void) rethrows {
+    try _forEach(body)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
+    try _forEach(body)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func sorted() -> Tree.ElementIterator {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var startIndex: Index { _startIndex }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var endIndex: Index { _endIndex }
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  //  @inline(__always)
+  public func distance(from start: Index, to end: Index) -> Int {
+    _distance(from: start, to: end)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func index(after i: Index) -> Index {
+    _index(after: i)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func formIndex(after i: inout Index) {
+    _formIndex(after: &i)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func index(before i: Index) -> Index {
+    _index(before: i)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func formIndex(before i: inout Index) {
+    _formIndex(before: &i)
+  }
+  
+  /// - Complexity: O(*d*)
+  @inlinable
+  //  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int) -> Index {
+    _index(i, offsetBy: distance)
+  }
+  
+  /// - Complexity: O(*d*)
+  @inlinable
+  //  @inline(__always)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    _formIndex(&i, offsetBy: distance)
+  }
+  
+  /// - Complexity: O(*d*)
+  @inlinable
+  //  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+    _index(i, offsetBy: distance, limitedBy: limit)
+  }
+  
+  /// - Complexity: O(*d*)
+  @inlinable
+  //  @inline(__always)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
+  -> Bool
+  {
+    _formIndex(&i, offsetBy: distance, limitedBy: limit)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  public subscript(position: Index) -> _Value {
+    @inline(__always) get { self[_checked: position] }
+    // コンパイラがクラッシュする
+//    @inline(__always) _read { yield self[_checked: position] }
+  }
+
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+  /// - Complexity: O(1)
+  @inlinable
+  public subscript(unchecked position: Index) -> _Value {
+    @inline(__always) _read { yield self[_unchecked: position] }
+  }
+
+  /// Indexがsubscriptやremoveで利用可能か判別します
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func isValid(index: Index) -> Bool {
+    _isValid(index: index)
+  }
+  
+  /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func isValid<R: RangeExpression>(
+    _ bounds: R
+  ) -> Bool where R.Bound == Index {
+    _isValid(bounds)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func reversed() -> Tree.ReversedElementIterator {
+    _reversed()
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var indices: Indices {
+    _indices
+  }
+  
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func elementsEqual<OtherSequence>(
+    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence {
+    try _elementsEqual(other, by: areEquivalent)
+  }
+  
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func lexicographicallyPrecedes<OtherSequence>(
+    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
+    try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+  }
+}
 
 extension RedBlackTreeDictionary {
 
-  @frozen
-  public struct SubSequence {
-
-    @usableFromInline
-    let __tree_: Tree
-
-    @usableFromInline
-    var _start, _end: _NodePtr
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      __tree_ = tree
-      _start = start
-      _end = end
-    }
-  }
-}
-
-extension RedBlackTreeDictionary.SubSequence: Equatable where Value: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
+  public __consuming func keys() -> KeyIterator<Tree, Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
-}
 
-extension RedBlackTreeDictionary.SubSequence: Comparable where Value: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
+  public __consuming func values() -> ValueIterator<Tree, Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }
 
-extension RedBlackTreeDictionary.SubSequence where Value: Equatable {
+// MARK: - SubSequence
 
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___key_value_equiv)
-  }
-}
-
-extension RedBlackTreeDictionary.SubSequence where Value: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
-  }
-}
-
-extension RedBlackTreeDictionary.SubSequence: ___SubSequenceBase {
-  public typealias Base = RedBlackTreeDictionary
-  public typealias Element = Tree.Element
-  public typealias Indices = Tree.Indices
-}
-
-extension RedBlackTreeDictionary.SubSequence: Sequence, Collection, BidirectionalCollection {
-  public typealias Index = RedBlackTreeDictionary.Index
-  public typealias SubSequence = Self
+extension RedBlackTreeDictionary {
+  
+  public typealias SubSequence = RedBlackTreeSlice<Self>
 }
 
 // MARK: - Index Range
@@ -963,6 +1120,47 @@ extension RedBlackTreeDictionary: CustomReflectable {
   }
 }
 
+// MARK: - Is Identical To
+
+extension RedBlackTreeDictionary {
+
+  /// Returns a boolean value indicating whether this set is identical to
+  /// `other`.
+  ///
+  /// Two set values are identical if there is no way to distinguish between
+  /// them.
+  ///
+  /// For any values `a`, `b`, and `c`:
+  ///
+  /// - `a.isIdentical(to: a)` is always `true`. (Reflexivity)
+  /// - `a.isIdentical(to: b)` implies `b.isIdentical(to: a)`. (Symmetry)
+  /// - If `a.isIdentical(to: b)` and `b.isIdentical(to: c)` are both `true`,
+  ///   then `a.isIdentical(to: c)` is also `true`. (Transitivity)
+  /// - `a.isIdentical(b)` implies `a == b`
+  ///   - `a == b` does not imply `a.isIdentical(b)`
+  ///
+  /// Values produced by copying the same value, with no intervening mutations,
+  /// will compare identical:
+  ///
+  /// ```swift
+  /// let d = c
+  /// print(c.isIdentical(to: d))
+  /// // Prints true
+  /// ```
+  ///
+  /// Comparing sets this way includes comparing (normally) hidden
+  /// implementation details such as the memory location of any underlying set
+  /// storage object. Therefore, identical sets are guaranteed to compare equal
+  /// with `==`, but not all equal sets are considered identical.
+  ///
+  /// - Performance: O(1)
+  @inlinable
+  @inline(__always)
+  public func isIdentical(to other: Self) -> Bool {
+    _isIdentical(to: other)
+  }
+}
+
 // MARK: - Equatable
 
 extension RedBlackTreeDictionary: Equatable where Value: Equatable {
@@ -971,7 +1169,7 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.count == rhs.count && lhs.elementsEqual(rhs)
+    lhs.isIdentical(to: rhs) || lhs.count == rhs.count && lhs.elementsEqual(rhs)
   }
 }
 
@@ -983,7 +1181,7 @@ extension RedBlackTreeDictionary: Comparable where Value: Comparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
+    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
 
@@ -997,7 +1195,7 @@ extension RedBlackTreeDictionary where Value: Equatable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Tree.___key_value_equiv)
+    elementsEqual(other, by: Self.___element_equiv)
   }
 }
 
@@ -1009,7 +1207,7 @@ extension RedBlackTreeDictionary where Value: Comparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Tree.___key_value_comp)
+    lexicographicallyPrecedes(other, by: Self.___element_comp)
   }
 }
 
@@ -1020,7 +1218,9 @@ extension RedBlackTreeDictionary where Value: Comparable {
   where Element: Sendable {}
 #endif
 
+#if false
 #if swift(>=5.5)
   extension RedBlackTreeDictionary.SubSequence: @unchecked Sendable
   where Key: Sendable, Value: Sendable {}
+#endif
 #endif

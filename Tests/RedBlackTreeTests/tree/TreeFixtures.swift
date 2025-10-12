@@ -9,7 +9,7 @@ import XCTest
 #if DEBUG
   class TreeFixtureBase<Element>:
     XCTestCase,
-    ___tree_root_node, MemberProtocol, RootProtocol, EndNodeProtocol,
+    ___tree_root_node, TreeNodeProtocol, RootProtocol, EndNodeProtocol,
     ___RedBlackTreeNodePoolProtocol
   {
     var __left_: _NodePtr = .nullptr
@@ -46,7 +46,7 @@ import XCTest
       return n
     }
 
-    func ___element(_ p: _NodePtr) -> Element {
+    func __value_(_ p: _NodePtr) -> Element {
       __values[p]
     }
 
@@ -80,13 +80,13 @@ import XCTest
     TreeFixtureBase<Element>,
     FindEqualProtocol, InsertNodeAtProtocol, InsertUniqueProtocol,
     RemoveProtocol, EraseProtocol, EraseUniqueProtocol, CompareProtocol, CompareMultiProtocol,
-    BoundProtocol
+    BoundProtocol, NodeBitmapProtocol
   {
     func __key(_ e: Element) -> Element {
       e
     }
 
-    func __value_(_ p: _NodePtr) -> Element {
+    func __get_value(_ p: _NodePtr) -> Element {
       __values[p]
     }
 

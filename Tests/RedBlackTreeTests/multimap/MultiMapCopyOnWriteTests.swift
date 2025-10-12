@@ -51,7 +51,7 @@ final class MultiMapCopyOnWriteTests: XCTestCase {
       print($0)
     }
     print(set.map{ $0 })
-    print(set.filter{ $0 != (0,0) })
+    print(set.filter{ $0 != .init(0,0) })
 //    print(set.reduce(0, +))
     print(set.reduce(into: []) { $0.append($1) })
     XCTAssertEqual(set._copyCount, 0)

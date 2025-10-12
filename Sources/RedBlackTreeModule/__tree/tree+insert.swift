@@ -24,7 +24,7 @@ import Foundation
 
 @usableFromInline
 protocol InsertNodeAtProtocol:
-  MemberSetProtocol & RefSetProtocol & SizeProtocol & BeginNodeProtocol & EndNodeProtocol
+  TreeNodeProtocol & TreeNodeRefProtocol & SizeProtocol & BeginNodeProtocol & EndNodeProtocol
 {}
 
 extension InsertNodeAtProtocol {
@@ -53,7 +53,7 @@ extension InsertNodeAtProtocol {
 
 @usableFromInline
 protocol InsertUniqueProtocol:
-  AllocatorProtocol & KeyProtocol & RefProtocol
+  AllocatorProtocol & KeyProtocol & TreeNodeRefProtocol
 {
 
   func
@@ -72,7 +72,7 @@ extension InsertUniqueProtocol {
 
   @inlinable
   @inline(__always)
-  public func __insert_unique(_ x: Element) -> (__r: _NodePtr, __inserted: Bool) {
+  public func __insert_unique(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool) {
 
     __emplace_unique_key_args(x)
   }
@@ -81,7 +81,7 @@ extension InsertUniqueProtocol {
     @inlinable
     @inline(__always)
     func
-      __emplace_unique_key_args(_ __k: Element) -> (__r: _NodePtr, __inserted: Bool)
+      __emplace_unique_key_args(_ __k: _Value) -> (__r: _NodePtr, __inserted: Bool)
     {
       var __parent = _NodePtr.nullptr
       let __child = __find_equal(&__parent, __key(__k))
@@ -100,7 +100,7 @@ extension InsertUniqueProtocol {
   #else
     @inlinable
     func
-      __emplace_unique_key_args(_ __k: Element) -> (__r: _NodeRef, __inserted: Bool)
+      __emplace_unique_key_args(_ __k: _Value) -> (__r: _NodeRef, __inserted: Bool)
     {
       var __parent = _NodePtr.nullptr
       let __child = __find_equal(&__parent, __key(__k))
@@ -133,14 +133,14 @@ extension InsertMultiProtocol {
 
   @inlinable
   @inline(__always)
-  public func __insert_multi(_ x: Element) -> _NodePtr {
+  public func __insert_multi(_ x: _Value) -> _NodePtr {
     __emplace_multi(x)
   }
 
   @inlinable
   @inline(__always)
   func
-    __emplace_multi(_ __k: Element) -> _NodePtr
+    __emplace_multi(_ __k: _Value) -> _NodePtr
   {
     let __h = __construct_node(__k)
     var __parent = _NodePtr.nullptr
@@ -169,7 +169,7 @@ extension InsertLastProtocol {
 
   @inlinable
   @inline(__always)
-  func ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: Element) -> (
+  func ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _Value) -> (
     __parent: _NodePtr, __child: _NodeRef
   ) {
     let __p = __construct_node(__k)
@@ -181,7 +181,7 @@ extension InsertLastProtocol {
   // 分岐の有無の差だとおもわれる
   @inlinable
   @inline(__always)
-  func ___emplace_hint_right(_ __p: _NodePtr, _ __k: Element) -> _NodePtr {
+  func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr {
     let __child = __p == .end ? __left_ref(__p) : __right_ref(__p)
     //                        ^--- これの差
     let __h = __construct_node(__k)
@@ -191,7 +191,7 @@ extension InsertLastProtocol {
 
   @inlinable
   @inline(__always)
-  func ___emplace_hint_left(_ __p: _NodePtr, _ __k: Element) -> _NodePtr {
+  func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr {
     let __child = __left_ref(__p)
     let __h = __construct_node(__k)
     __insert_node_at(__p, __child, __h)

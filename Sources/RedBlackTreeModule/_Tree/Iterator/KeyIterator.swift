@@ -21,9 +21,11 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct KeyIterator<Tree: Tree_IterateProtocol & Tree_KeyCompare, Key, V>: Sequence,
-  IteratorProtocol
-where Tree.Element == _KeyValueTuple_<Key, V>, Tree.Key == Key {
+public struct KeyIterator<Tree, Key, V>: Sequence, IteratorProtocol
+where
+  Tree: Tree_IterateProtocol & Tree_KeyValue,
+  Tree.Key == Key
+{
 
   @usableFromInline
   let __tree_: Tree
@@ -49,7 +51,7 @@ where Tree.Element == _KeyValueTuple_<Key, V>, Tree.Key == Key {
       _current = _next
       _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return __tree_[_current].key
+    return Tree.__key(__tree_[_current])
   }
 
   @inlinable
@@ -64,7 +66,7 @@ extension KeyIterator: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs, by: { !Tree.value_comp($0, $1) && !Tree.value_comp($1, $0) })
+    lhs.elementsEqual(rhs, by: Tree.value_equiv)
   }
 }
 
@@ -78,8 +80,11 @@ extension KeyIterator: Comparable {
 }
 
 @frozen
-public struct ReversedKeyIterator<Tree: Tree_IterateProtocol & Tree_KeyCompare, Key, V>: Sequence, IteratorProtocol
-where Tree.Element == _KeyValueTuple_<Key, V>, Tree.Key == Key {
+public struct ReversedKeyIterator<Tree, Key, V>: Sequence, IteratorProtocol
+where
+  Tree: Tree_IterateProtocol & Tree_KeyValue,
+  Tree.Key == Key
+{
 
   @usableFromInline
   let __tree_: Tree
@@ -103,7 +108,7 @@ where Tree.Element == _KeyValueTuple_<Key, V>, Tree.Key == Key {
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-    return __tree_[_current].key
+    return Tree.__key(__tree_[_current])
   }
 }
 
@@ -112,7 +117,7 @@ extension ReversedKeyIterator: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs, by: { !Tree.value_comp($0, $1) && !Tree.value_comp($1, $0) })
+    lhs.elementsEqual(rhs, by: Tree.value_equiv)
   }
 }
 

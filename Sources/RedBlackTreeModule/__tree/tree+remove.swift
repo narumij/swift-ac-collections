@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol RemoveProtocol: MemberSetProtocol
+protocol RemoveProtocol: TreeNodeProtocol
     & BeginNodeProtocol
     & EndNodeProtocol
     & SizeProtocol

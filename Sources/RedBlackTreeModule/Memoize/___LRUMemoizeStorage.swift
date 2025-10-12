@@ -27,26 +27,26 @@ import Foundation
 ///
 /// InlineMemoize動作用。CoWがないので注意
 @frozen
-public struct ___LRUMemoizeStorage<Custom, Value>
-where Custom: _KeyCustomProtocol {
+public struct ___LRUMemoizeStorage<Parameters, Value>
+where Parameters: Comparable {
 
   public
-    typealias Key = Custom.Parameters
+    typealias Key = Parameters
 
   public
     typealias Value = Value
 
   public
-    typealias KeyValue = _LinkingKeyValueTuple
+    typealias KeyValue = _LinkingPair<_Key,_MappedValue>
 
   public
-    typealias Element = KeyValue
+    typealias _Value = KeyValue
 
   public
     typealias _Key = Key
 
   public
-    typealias _Value = Value
+    typealias _MappedValue = Value
 
   @usableFromInline
   var _storage: Tree.Storage
@@ -94,7 +94,7 @@ extension ___LRUMemoizeStorage {
         var __parent = _NodePtr.nullptr
         let __child = __tree_.__find_equal(&__parent, key)
         if __tree_.__ptr_(__child) == .nullptr {
-          let __h = __tree_.__construct_node((key, .nullptr, .nullptr, newValue))
+          let __h = __tree_.__construct_node(.init(key, .nullptr, .nullptr, newValue))
           __tree_.__insert_node_at(__parent, __child, __h)
           ___prepend(__h)
         }
@@ -117,7 +117,14 @@ extension ___LRUMemoizeStorage {
   }
 }
 
-extension ___LRUMemoizeStorage: ___LRULinkList {}
+extension ___LRUMemoizeStorage: ___LRULinkList {
+  
+  @inlinable
+  public static func ___mapped_value(_ element: _Value) -> _MappedValue {
+    element.value
+  }
+}
+
 extension ___LRUMemoizeStorage: ___RedBlackTreeCopyOnWrite {}
-extension ___LRUMemoizeStorage: CustomKeyValueComparer {}
+extension ___LRUMemoizeStorage: KeyValueComparer {}
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}

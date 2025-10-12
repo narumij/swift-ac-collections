@@ -8,10 +8,7 @@ import XCTest
 
 final class MemoizeCacheLRUTests: XCTestCase {
 
-  enum TestKey: _KeyCustomProtocol {
-    @inlinable @inline(__always)
-    static func value_comp(_ a: Int, _ b: Int) -> Bool { a < b }
-  }
+  typealias TestKey = Int
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.

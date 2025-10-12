@@ -30,7 +30,7 @@ import Foundation
 ///
 /// endはルートノードを保持するオブジェクトを指すかわりに、-2で表現している
 ///
-/// `__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
+/// llvmの`__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
 public typealias _NodePtr = Int
 
 public typealias _Pointer = _NodePtr
@@ -70,7 +70,7 @@ public
   case __left_(_NodePtr)
 }
 
-// ルートノード相当の機能
+// ルートノードの親相当の機能
 @usableFromInline
 protocol TreeEndNodeProtocol {
   /// 木を遡るケースではこちらが必ず必要
@@ -87,7 +87,7 @@ extension TreeEndNodeProtocol {
 
 // 一般ノード相当の機能
 @usableFromInline
-protocol TreeNodeBaseProtocol: TreeEndNodeProtocol {
+protocol TreeNodeProtocol: TreeEndNodeProtocol {
   func __right_(_: pointer) -> pointer
   func __right_(_ lhs: pointer, _ rhs: pointer)
   func __is_black_(_: pointer) -> Bool
@@ -99,70 +99,71 @@ protocol TreeNodeBaseProtocol: TreeEndNodeProtocol {
   func __parent_unsafe(_: pointer) -> __parent_pointer
 }
 
-extension TreeNodeBaseProtocol {
+extension TreeNodeProtocol {
   @usableFromInline
   typealias __parent_pointer = _Pointer
 }
 
-// 以下は、現在の設計に至る過程で、readハンドルとupdateハンドルに分けていた名残で、
-// getとsetが分かれている
-
 @usableFromInline
-protocol MemberProtocol {
-  func __left_(_: _NodePtr) -> _NodePtr
-  func __left_unsafe(_ p: _NodePtr) -> _NodePtr
-  func __right_(_: _NodePtr) -> _NodePtr
-  func __is_black_(_: _NodePtr) -> Bool
-  func __parent_(_: _NodePtr) -> _NodePtr
-  func __parent_unsafe(_: _NodePtr) -> _NodePtr
-}
-
-@usableFromInline
-protocol MemberSetProtocol: MemberProtocol {
-  func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr)
-  func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr)
-  func __is_black_(_ lhs: _NodePtr, _ rhs: Bool)
-  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr)
-}
-
-@usableFromInline
-protocol RefProtocol: MemberProtocol {
+protocol TreeNodeRefProtocol {
   func __left_ref(_: _NodePtr) -> _NodeRef
   func __right_ref(_: _NodePtr) -> _NodeRef
   func __ptr_(_ rhs: _NodeRef) -> _NodePtr
-}
-
-@usableFromInline
-protocol RefSetProtocol: RefProtocol {
   func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr)
 }
 
+// 名前のねじれはllvmの__tree由来
 @usableFromInline
-protocol KeyProtocol {
+protocol TreeNodeValueProtocol where _Key == __node_value_type {
   associatedtype _Key
-  associatedtype Element
-  func __key(_ e: Element) -> _Key
+  associatedtype __node_value_type
+  /// ノードから比較用の値を取り出す。
+  /// SetやMultisetではElementに該当する
+  /// DictionaryやMultiMapではKeyに該当する
+  func __get_value(_: _NodePtr) -> __node_value_type
 }
 
 @usableFromInline
-protocol ValueProtocol: MemberProtocol {
-
-  associatedtype _Key
-  func __value_(_: _NodePtr) -> _Key
-  func value_comp(_: _Key, _: _Key) -> Bool
+protocol TreeValueProtocol where _Value == __value_type {
+  associatedtype _Value
+  associatedtype __value_type
+  /// ノードの値要素を取得する
+  func __value_(_ p: _NodePtr) -> __value_type
 }
 
-extension ValueProtocol {
+@usableFromInline
+protocol KeyProtocol: TreeNodeValueProtocol, TreeValueProtocol {
+  /// 要素から比較用のキー値を取り出す。
+  func __key(_ e: _Value) -> _Key
+}
+
+extension KeyProtocol {
 
   @inlinable
   @inline(__always)
-  func ___comp(_ a: _Key, _ b: _Key) -> Bool {
-    value_comp(a, b)
+  func __get_value(_ p: _NodePtr) -> __node_value_type {
+    __key(__value_(p))
   }
+}
+
+// 名前のねじれはllvmの__tree由来
+@usableFromInline
+protocol ValueProtocol: TreeNodeProtocol, TreeNodeValueProtocol {
+  /// キー同士を比較する。通常`<`と同じ
+  func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
+}
+
+/// Set Algebraやmeld等で用いる
+@usableFromInline
+protocol CompProtocol {
+  associatedtype _Key
+  /// キー同士を比較する。通常`<`と同じ
+  func ___comp(_ a: _Key, _ b: _Key) -> Bool
 }
 
 @usableFromInline
 protocol BeginNodeProtocol {
+  /// 木の左端のノードを返す
   var __begin_node: _NodePtr { get nonmutating set }
 }
 
@@ -170,6 +171,7 @@ protocol BeginNodeProtocol {
 protocol BeginProtocol: BeginNodeProtocol {
   // __begin_nodeが圧倒的に速いため
   @available(*, deprecated, renamed: "__begin_node")
+  /// 木の左端のノードを返す
   func begin() -> _NodePtr
 }
 
@@ -178,15 +180,18 @@ extension BeginProtocol {
   @available(*, deprecated, renamed: "__begin_node")
   @inlinable
   @inline(__always)
+  /// 木の左端のノードを返す
   func begin() -> _NodePtr { __begin_node }
 }
 
 @usableFromInline
 protocol EndNodeProtocol {
+  /// 終端ノード（木の右端の次の仮想ノード）を返す
   func __end_node() -> _NodePtr
 }
 
 extension EndNodeProtocol {
+  /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable
   @inline(__always)
   func __end_node() -> _NodePtr { .end }
@@ -194,33 +199,39 @@ extension EndNodeProtocol {
 
 @usableFromInline
 protocol EndProtocol: EndNodeProtocol {
+  /// 終端ノード（木の右端の次の仮想ノード）を返す
   func end() -> _NodePtr
 }
 
 extension EndProtocol {
+  /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable
   @inline(__always)
-  func end() -> _NodePtr { __end_node() }
+  func end() -> _NodePtr { .end }
 }
 
 @usableFromInline
 protocol RootProtocol {
+  /// 木の根ノードを返す
   func __root() -> _NodePtr
 }
 
-protocol ___RootProtocol: MemberProtocol & EndProtocol {}
+protocol ___RootProtocol: TreeNodeProtocol & EndProtocol {}
 
 extension ___RootProtocol {
   @available(*, deprecated, message: "Kept only for the purpose of preventing loss of knowledge")
+  /// 木の根ノードを返す
   func __root() -> _NodePtr { __left_(__end_node()) }
 }
 
 @usableFromInline
-protocol RootPtrProtocol: RootProtocol & MemberProtocol & EndProtocol {
+protocol RootPtrProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {
+  /// 木の根ノードへの参照を返す
   func __root_ptr() -> _NodeRef
 }
 
 extension RootPtrProtocol {
+  /// 木の根ノードへの参照を返す
   @inlinable
   @inline(__always)
   func __root_ptr() -> _NodeRef { __left_ref(__end_node()) }
@@ -228,6 +239,9 @@ extension RootPtrProtocol {
 
 @usableFromInline
 protocol SizeProtocol {
+  /// 木のノードの数を返す
+  ///
+  /// 終端ノードは含まないはず
   var size: Int { get nonmutating set }
 }
 
@@ -235,23 +249,42 @@ protocol SizeProtocol {
 
 @usableFromInline
 protocol AllocatorProtocol {
-  associatedtype Element
-  func __construct_node(_ k: Element) -> _NodePtr
+  associatedtype _Value
+  /// ノードを構築する
+  func __construct_node(_ k: _Value) -> _NodePtr
+  /// ノードを破棄する
   func destroy(_ p: _NodePtr)
-  func ___element(_ p: _NodePtr) -> Element
 }
 
 // MARK: common
 
+/// ツリー使用条件をインジェクションするためのプロトコル
 public protocol ValueComparer {
+  /// ツリーが比較に使用する値の型
   associatedtype _Key
-  associatedtype Element
-  static func __key(_: Element) -> _Key
+  /// 要素の型
+  associatedtype _Value
+  /// 要素から比較キー値がとれること
+  static func __key(_: _Value) -> _Key
+  /// 比較関数が実装されていること
   static func value_comp(_: _Key, _: _Key) -> Bool
+
+  static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
 }
 
+extension ValueComparer {
+
+  @inlinable
+  @inline(__always)
+  public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
+    !value_comp(lhs, rhs) && !value_comp(rhs, lhs)
+  }
+}
+
+// Comparableプロトコルの場合標準実装を付与する
 extension ValueComparer where _Key: Comparable {
 
+  /// Comparableプロトコルの場合の標準実装
   @inlinable
   @inline(__always)
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
@@ -259,65 +292,72 @@ extension ValueComparer where _Key: Comparable {
   }
 }
 
-extension ValueComparer {
+// Equatableプロトコルの場合標準実装を付与する
+extension ValueComparer where _Key: Equatable {
 
   @inlinable
   @inline(__always)
-  static func ___comp(_ a: _Key, _ b: _Key) -> Bool {
-    value_comp(a, b)
+  public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
+    lhs == rhs
   }
 }
 
-// MARK: key
+/// ツリー使用条件をインジェクションされる側の実装プロトコル
+public protocol ValueComparerProtocol {
+  associatedtype VC: ValueComparer
+  static func __key(_ e: VC._Value) -> VC._Key
+  static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
+  static func value_equiv(_ lhs: VC._Key, _ rhs: VC._Key) -> Bool
+  func __key(_ e: VC._Value) -> VC._Key
+  func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
+  func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool
+}
 
-public protocol ScalarValueComparer: ValueComparer where _Key == Element {}
-
-extension ScalarValueComparer {
+extension ValueComparerProtocol {
+  
+  @inlinable
+  @inline(__always)
+  public static func __key(_ e: VC._Value) -> VC._Key {
+    VC.__key(e)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
+    VC.value_comp(a, b)
+  }
 
   @inlinable
   @inline(__always)
-  public static func __key(_ e: Element) -> _Key { e }
+  public static func value_equiv(_ lhs: VC._Key, _ rhs: VC._Key) -> Bool {
+    VC.value_equiv(lhs, rhs)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func __key(_ e: VC._Value) -> VC._Key {
+    VC.__key(e)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
+    VC.value_comp(a, b)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
+    VC.value_comp(a, b)
+  }
 }
 
-// MARK: key value
-
-public protocol KeyValueComparer: ValueComparer {
+public protocol ElementComparable: ValueComparer {
   associatedtype _Value
-  static func __key(_ element: Element) -> _Key
+  static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool
 }
 
-public typealias _KeyValueTuple_<_Key, _Value> = (key: _Key, value: _Value)
-
-extension KeyValueComparer {
-  public typealias _KeyValueTuple = _KeyValueTuple_<_Key, _Value>
-}
-
-extension KeyValueComparer where Element == _KeyValueTuple {
-
-  @inlinable
-  @inline(__always)
-  public static func __key(_ element: Element) -> _Key { element.key }
-}
-
-// MARK: key value
-
-public
-  protocol _KeyCustomProtocol
-{
-  associatedtype Parameters
-  static func value_comp(_ a: Parameters, _ b: Parameters) -> Bool
-}
-
-@usableFromInline
-protocol CustomKeyValueComparer: KeyValueComparer where _Key == Custom.Parameters {
-  associatedtype Custom: _KeyCustomProtocol
-}
-
-extension CustomKeyValueComparer {
-
-  @inlinable
-  @inline(__always)
-  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    Custom.value_comp(a, b)
-  }
+public protocol ElementEqutable: ValueComparer {
+  associatedtype _Value
+  static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool
 }

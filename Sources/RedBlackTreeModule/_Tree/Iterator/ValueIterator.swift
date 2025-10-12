@@ -21,8 +21,11 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct ValueIterator<Tree: Tree_IterateProtocol, K, Value>: Sequence, IteratorProtocol
-where Tree.Element == _KeyValueTuple_<K, Value> {
+public struct ValueIterator<Tree, K, Value>: Sequence, IteratorProtocol
+where
+  Tree: Tree_IterateProtocol & Tree_KeyValue,
+  Tree.Value == Value
+{
 
   @usableFromInline
   let __tree_: Tree
@@ -48,7 +51,7 @@ where Tree.Element == _KeyValueTuple_<K, Value> {
       _current = _next
       _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return __tree_[_current].value
+    return Tree.___mapped_value(of: __tree_[_current])
   }
 
   @inlinable
@@ -77,9 +80,12 @@ extension ValueIterator: Comparable where Value: Comparable {
 }
 
 @frozen
-public struct ReversedValueIterator<Tree: Tree_IterateProtocol, K, Value>: Sequence,
+public struct ReversedValueIterator<Tree, K, Value>: Sequence,
   IteratorProtocol
-where Tree.Element == _KeyValueTuple_<K, Value> {
+where
+  Tree: Tree_IterateProtocol & Tree_KeyValue,
+  Tree.Value == Value
+{
 
   @usableFromInline
   let __tree_: Tree
@@ -103,7 +109,7 @@ where Tree.Element == _KeyValueTuple_<K, Value> {
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-    return __tree_[_current].value
+    return Tree.___mapped_value(of: __tree_[_current])
   }
 }
 

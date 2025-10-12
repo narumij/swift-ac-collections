@@ -21,9 +21,9 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public protocol Tree_IterateProtocol {
-  associatedtype Element
+  associatedtype _Value
   var __begin_node: _NodePtr { get }
   func __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
   func __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
-  subscript(_ pointer: _NodePtr) -> Element { get }
+  subscript(_ pointer: _NodePtr) -> _Value { get }
 }

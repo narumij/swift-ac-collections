@@ -1,45 +1,42 @@
-// Copyright 2024 narumij
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//  ___RedBlackTreeSlice.swift
+//  swift-ac-collections
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//  Created by narumij on 2025/10/12.
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
-//
-// Copyright © 2003-2024 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
-// The original license can be found at https://llvm.org/LICENSE.txt
-//
-// This Swift implementation includes modifications and adaptations made by narumij.
 
-@usableFromInline
-protocol ___SubSequenceBase: ___RedBlackTree & Sequence & Collection
-    & BidirectionalCollection
+import Foundation
+
+@frozen
+public struct RedBlackTreeSlice<Base>
 where
-  Base: ___RedBlackTreeSubSequence,
-  Tree == ___Tree<Base>,
-  Index == Tree.Index,
-  Indices == Tree.Indices,
-  Element == Tree.Element,
-  Iterator == Tree.ElementIterator,
-  SubSequence == Self
+  Base: ___RedBlackTree & ValueComparer & CompareTrait,
+  Base.Tree == ___Tree<Base>
 {
-  associatedtype Base
-  var __tree_: Tree { get }
-  var _start: _NodePtr { get set }
-  var _end: _NodePtr { get set }
-  init(tree: Tree, start: _NodePtr, end: _NodePtr)
+  public typealias Tree = Base.Tree
+  public typealias Element = Tree._Value
+  public typealias Index = Tree.Index
+  public typealias SubSequence = Self
+  public typealias Indices = Tree.Indices
+
+  @usableFromInline
+  let __tree_: Tree
+
+  @usableFromInline
+  var _start, _end: _NodePtr
+
+  @inlinable
+  @inline(__always)
+  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+    __tree_ = tree
+    _start = start
+    _end = end
+  }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice: Sequence & Collection & BidirectionalCollection { }
+
+extension RedBlackTreeSlice {
 
   @inlinable
   @inline(__always)
@@ -48,7 +45,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   /// - Complexity: O(1)
   @inlinable
@@ -58,7 +55,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   @inlinable
   @inline(__always)
@@ -70,7 +67,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   @inlinable
   @inline(__always)
@@ -89,7 +86,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -99,7 +96,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   /// - Complexity: O(1)
   @inlinable
@@ -116,7 +113,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   // 断念
   //    @inlinable
@@ -130,7 +127,7 @@ extension ___SubSequenceBase {
   //    }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   /// - Complexity: O(1)
   @inlinable
@@ -147,18 +144,19 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
-  public subscript(_unsafe position: Index) -> Element {
+  public subscript(unchecked position: Index) -> Element {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   /// - Complexity: O(log *n*)
   @inlinable
@@ -177,10 +175,11 @@ extension ___SubSequenceBase {
       end: bounds.upperBound.rawValue)
   }
 
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
+  public subscript(unchecked bounds: Range<Index>) -> SubSequence {
     .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
@@ -188,7 +187,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -198,7 +197,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   /// - Complexity: O(1)
   @inlinable
@@ -226,7 +225,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   /// - Complexity: O(1)
   @inlinable
@@ -269,7 +268,7 @@ extension ___SubSequenceBase {
 
 // MARK: - Utility
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   @inlinable
   @inline(__always)
@@ -287,7 +286,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
@@ -304,7 +303,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   /// - Complexity: O(1)
   @inlinable
@@ -314,7 +313,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   /// - Complexity: O(1)
   @inlinable
@@ -324,7 +323,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   /// - Complexity: O(1)
   @inlinable
@@ -343,7 +342,7 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -366,7 +365,53 @@ extension ___SubSequenceBase {
   }
 }
 
-extension ___SubSequenceBase {
+extension RedBlackTreeSlice: Equatable where Base: ElementEqutable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  @inline(__always)
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.elementsEqual(rhs)
+  }
+}
+
+extension RedBlackTreeSlice: Comparable where Base: ElementComparable & ElementEqutable {}
+
+extension RedBlackTreeSlice where Base: ElementComparable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  @inline(__always)
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
+extension RedBlackTreeSlice where Base: ElementEqutable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    elementsEqual(other, by: Base.___element_equiv)
+  }
+}
+
+extension RedBlackTreeSlice where Base: ElementComparable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    lexicographicallyPrecedes(other, by: Base.___element_comp)
+  }
+}
+
+extension RedBlackTreeSlice {
 
   @inlinable
   @inline(__always)
@@ -384,3 +429,8 @@ extension ___SubSequenceBase {
   }
 }
 
+#if swift(>=5.5)
+  // 競プロ用としてはSendableがいいが、一般用としてはSendableじゃないほうがいい
+  extension RedBlackTreeSlice: @unchecked Sendable
+  where Element: Sendable {}
+#endif

@@ -20,5 +20,13 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@usableFromInline
-protocol ___RedBlackTreeSubSequence: ___RedBlackTree, ValueComparer & CompareTrait {}
+public protocol Tree_KeyValue {
+  associatedtype Key
+  associatedtype Value
+  associatedtype _Value
+  static func __key(_ e: _Value) -> Key
+  static func ___mapped_value(of element: _Value) -> Value
+  static func value_comp(_ lhs: Key,_ rhs: Key) -> Bool
+  static func value_equiv(_ :Key,_ :Key) -> Bool
+}
+

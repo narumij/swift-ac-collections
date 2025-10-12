@@ -87,7 +87,7 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMerge {}
-extension RedBlackTreeMultiMap: ___RedBlackTreeSequence {}
+extension RedBlackTreeMultiMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSubSequence {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 
@@ -758,6 +758,177 @@ extension RedBlackTreeMultiMap {
 // MARK: - BidirectionalCollection
 
 extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {}
+
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> Tree.ElementIterator {
+    _makeIterator()
+  }
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (_Value) throws -> Void) rethrows {
+    try _forEach(body)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
+    try _forEach(body)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func sorted() -> Tree.ElementIterator {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var startIndex: Index { _startIndex }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var endIndex: Index { _endIndex }
+  
+  /// - Complexity: O(log *n*)
+  @inlinable
+  //  @inline(__always)
+  public func distance(from start: Index, to end: Index) -> Int {
+    _distance(from: start, to: end)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func index(after i: Index) -> Index {
+    _index(after: i)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func formIndex(after i: inout Index) {
+    _formIndex(after: &i)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func index(before i: Index) -> Index {
+    _index(before: i)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func formIndex(before i: inout Index) {
+    _formIndex(before: &i)
+  }
+  
+  /// - Complexity: O(*d*)
+  @inlinable
+  //  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int) -> Index {
+    _index(i, offsetBy: distance)
+  }
+  
+  /// - Complexity: O(*d*)
+  @inlinable
+  //  @inline(__always)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    _formIndex(&i, offsetBy: distance)
+  }
+  
+  /// - Complexity: O(*d*)
+  @inlinable
+  //  @inline(__always)
+  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+    _index(i, offsetBy: distance, limitedBy: limit)
+  }
+  
+  /// - Complexity: O(*d*)
+  @inlinable
+  //  @inline(__always)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
+  -> Bool
+  {
+    _formIndex(&i, offsetBy: distance, limitedBy: limit)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  public subscript(position: Index) -> _Value {
+    @inline(__always) _read { yield self[_checked: position] }
+  }
+  
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+  /// - Complexity: O(1)
+  @inlinable
+  public subscript(unchecked position: Index) -> _Value {
+    @inline(__always) _read { yield self[_unchecked: position] }
+  }
+
+  /// Indexがsubscriptやremoveで利用可能か判別します
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func isValid(index: Index) -> Bool {
+    _isValid(index: index)
+  }
+  
+  /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func isValid<R: RangeExpression>(
+    _ bounds: R
+  ) -> Bool where R.Bound == Index {
+    _isValid(bounds)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func reversed() -> Tree.ReversedElementIterator {
+    _reversed()
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var indices: Indices {
+    _indices
+  }
+  
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func elementsEqual<OtherSequence>(
+    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence {
+    try _elementsEqual(other, by: areEquivalent)
+  }
+  
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func lexicographicallyPrecedes<OtherSequence>(
+    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
+    try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+  }
+}
 
 // MARK: - Range Access
 

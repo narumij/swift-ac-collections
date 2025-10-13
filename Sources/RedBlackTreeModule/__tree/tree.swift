@@ -63,7 +63,6 @@ func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
 public
   enum _NodeRef: Equatable
 {
-  case nullptr
   /// 右ノードへの参照
   case __right_(_NodePtr)
   /// 左ノードへの参照

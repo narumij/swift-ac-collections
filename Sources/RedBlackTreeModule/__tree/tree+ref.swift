@@ -28,8 +28,6 @@ extension TreeNodeProtocol {
   @inline(__always)
   func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
     switch rhs {
-    case .nullptr:
-      return .nullptr
     case .__right_(let basePtr):
       return __right_(basePtr)
     case .__left_(let basePtr):
@@ -40,13 +38,15 @@ extension TreeNodeProtocol {
   @inlinable
   @inline(__always)
   func __left_ref(_ p: _NodePtr) -> _NodeRef {
-    .__left_(p)
+    assert(p != .nullptr)
+    return .__left_(p)
   }
 
   @inlinable
   @inline(__always)
   func __right_ref(_ p: _NodePtr) -> _NodeRef {
-    .__right_(p)
+    assert(p != .nullptr)
+    return .__right_(p)
   }
 }
 
@@ -56,8 +56,6 @@ extension TreeNodeProtocol {
   @inline(__always)
   func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
     switch lhs {
-    case .nullptr:
-      fatalError()
     case .__right_(let basePtr):
       return __right_(basePtr, rhs)
     case .__left_(let basePtr):

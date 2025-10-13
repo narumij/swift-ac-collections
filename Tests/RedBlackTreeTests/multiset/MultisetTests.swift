@@ -1452,5 +1452,11 @@ final class MultisetTests: XCTestCase {
       p = p?.next
     }
   }
+  
+  func testInitNaive_with_Sequence() throws {
+    let source = [0,1,2,3,4,5]
+    let a = RedBlackTreeMultiSet<Int>(naive: AnySequence(source))
+    XCTAssertEqual(a.sorted() + [], source)
+  }
 }
 

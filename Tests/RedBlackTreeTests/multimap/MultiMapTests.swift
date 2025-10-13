@@ -1068,5 +1068,11 @@ import XCTest
         p = p?.next
       }
     }
+    
+    func testInitNaive_with_Sequence() throws {
+      let source = [0,1,2,3,4,5].map { Pair($0,$0 * 10) }
+      let a = RedBlackTreeMultiMap<Int,Int>(naive: AnySequence(source))
+      XCTAssertEqual(a.sorted() + [], source)
+    }
   }
 #endif

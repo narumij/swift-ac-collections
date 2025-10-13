@@ -1136,5 +1136,11 @@ final class SetTests: XCTestCase {
       p = p?.next
     }
   }
+  
+  func testInitNaive_with_Sequence() throws {
+    let source = [0,1,2,3,4,5]
+    let a = RedBlackTreeSet<Int>(naive: AnySequence(source))
+    XCTAssertEqual(a.sorted() + [], source)
+  }
 }
 

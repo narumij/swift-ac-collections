@@ -1045,5 +1045,10 @@ import XCTest
         XCTAssertEqual(a + [], [(0, 10),(0, 20),(1, 30),(1, 40)].map{ Pair($0) })
       }
     }
+    
+    func testIsValidRangeSmoke() throws {
+      let a = RedBlackTreeMultiMap<Int,Int>(naive: [0,1,2,3,4,5].map{ Pair($0,$0) })
+      XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
+    }
   }
 #endif

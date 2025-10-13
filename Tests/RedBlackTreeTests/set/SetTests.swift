@@ -1113,5 +1113,10 @@ final class SetTests: XCTestCase {
       }
     }
   }
+  
+  func testIsValidRangeSmoke() throws {
+    let a = RedBlackTreeSet<Int>(naive: [0,1,2,3,4,5])
+    XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
+  }
 }
 

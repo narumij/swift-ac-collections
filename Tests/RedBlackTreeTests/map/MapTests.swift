@@ -1023,4 +1023,15 @@ final class MapTests: XCTestCase {
       XCTAssertEqual(a[3], 10)
     }
   }
+  
+  func testRemoveRange() throws {
+    var a = RedBlackTreeMap<Int,Int>(uniqueKeysWithValues: [0,1,2,3,4,5].map{ Pair($0,$0) })
+    a.removeSubrange(a.lowerBound(2)..<a.upperBound(4))
+    XCTAssertEqual(a.keys() + [], [0,1,5])
+  }
+  
+  func testIsValidRangeSmoke() throws {
+    let a = RedBlackTreeMap<Int,Int>(uniqueKeysWithValues: [0,1,2,3,4,5].map{ Pair($0,$0) })
+    XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
+  }
 }

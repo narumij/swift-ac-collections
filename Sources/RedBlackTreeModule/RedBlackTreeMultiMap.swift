@@ -1161,11 +1161,6 @@ extension RedBlackTreeMultiMap {
   // メモリ制限がきつい場合に備えて復活
 
   /// - Complexity: O(*n* log *n*)
-  ///
-  /// 標準のイニシャライザはメモリを余分につかう面がある。
-  /// メモリ制限がきつい場合、こちらをお試しください
-  ///
-  /// それでもメモリでダメだった場合、ごめんなさい
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
@@ -1177,7 +1172,7 @@ extension RedBlackTreeMultiMap {
       }
       var __parent = _NodePtr.nullptr
       // 検索の計算量がO(log *n*)
-      let __child = tree.__find_leaf_high(&__parent, tree.__key(__k))
+      let __child = tree.__find_leaf_high(&__parent, Self.__key(__k))
       if tree.__ptr_(__child) == .nullptr {
         let __h = tree.__construct_node(__k)
         // バランシングの最悪計算量が結局わからず、ならしO(1)とみている

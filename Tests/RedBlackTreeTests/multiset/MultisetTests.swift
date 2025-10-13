@@ -1429,5 +1429,10 @@ final class MultisetTests: XCTestCase {
       }
     }
   }
+  
+  func testIsValidRangeSmoke() throws {
+    let a = RedBlackTreeMultiSet<Int>(naive: [0,1,2,3,4,5])
+    XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
+  }
 }
 

@@ -1050,5 +1050,12 @@ import XCTest
       let a = RedBlackTreeMultiMap<Int,Int>(naive: [0,1,2,3,4,5].map{ Pair($0,$0) })
       XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
     }
+    
+    func testSortedReversed() throws {
+      let source = [0,1,2,3,4,5].map { Pair($0,$0 * 10) }
+      let a = RedBlackTreeMultiMap<Int,Int>(multiKeysWithValues: source)
+      XCTAssertEqual(a.sorted() + [], source)
+      XCTAssertEqual(a.reversed() + [], source.reversed())
+    }
   }
 #endif

@@ -1434,5 +1434,12 @@ final class MultisetTests: XCTestCase {
     let a = RedBlackTreeMultiSet<Int>(naive: [0,1,2,3,4,5])
     XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
   }
+  
+  func testSortedReversed() throws {
+    let source = [0,1,2,3,4,5]
+    let a = RedBlackTreeMultiSet<Int>(naive: source)
+    XCTAssertEqual(a.sorted() + [], source)
+    XCTAssertEqual(a.reversed() + [], source.reversed())
+  }
 }
 

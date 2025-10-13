@@ -1057,5 +1057,16 @@ import XCTest
       XCTAssertEqual(a.sorted() + [], source)
       XCTAssertEqual(a.reversed() + [], source.reversed())
     }
+    
+    func testForEach_enumeration() throws {
+      let source = [0,1,2,3,4,5].map { Pair($0,$0 * 10) }
+      let a = RedBlackTreeMultiMap<Int,Int>(multiKeysWithValues: source)
+      var p: RedBlackTreeMultiMap<Int,Int>.Index? = a.startIndex
+      a.forEach { i, v in
+        XCTAssertEqual(i, p)
+        XCTAssertEqual(a[p!], v)
+        p = p?.next
+      }
+    }
   }
 #endif

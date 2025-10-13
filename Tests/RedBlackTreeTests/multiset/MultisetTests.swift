@@ -1441,5 +1441,16 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(a.sorted() + [], source)
     XCTAssertEqual(a.reversed() + [], source.reversed())
   }
+  
+  func testForEach_enumeration() throws {
+    let source = [0,1,2,3,4,5]
+    let a = RedBlackTreeMultiSet<Int>(naive: source)
+    var p: RedBlackTreeMultiSet<Int>.Index? = a.startIndex
+    a.forEach { i, v in
+      XCTAssertEqual(i, p)
+      XCTAssertEqual(a[p!], v)
+      p = p?.next
+    }
+  }
 }
 

@@ -1041,4 +1041,15 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(a.sorted().map{ Pair($0) }, source)
     XCTAssertEqual(a.reversed().map{ Pair($0) }, source.reversed())
   }
+  
+  func testForEach_enumeration() throws {
+    let source = [0,1,2,3,4,5].map { ($0,$0 * 10) }
+    let a = RedBlackTreeDictionary<Int,Int>(uniqueKeysWithValues: source)
+    var p: RedBlackTreeDictionary<Int,Int>.Index? = a.startIndex
+    a.forEach { i, v in
+      XCTAssertEqual(i, p)
+      XCTAssertEqual(Pair(a[p!]), Pair(v))
+      p = p?.next
+    }
+  }
 }

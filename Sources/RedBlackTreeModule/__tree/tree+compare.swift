@@ -250,7 +250,7 @@ extension NodeBitmapProtocol {
   func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
     // 木の深さが63に到達するのは余り現実的ではなく、UIntで十分だが
     // 多少アンバランスが発生した場合を考えると不安がよぎるので
-    // UInt128を採用
-    ___ptr_bitmap_128(__l) < ___ptr_bitmap_128(__r)
+    // 一旦UInt128を採用したが、計算したらやっぱり現実的ではないのでUIntに戻す
+    ___ptr_bitmap(__l) < ___ptr_bitmap(__r)
   }
 }

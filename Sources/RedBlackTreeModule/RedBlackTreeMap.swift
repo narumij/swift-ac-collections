@@ -456,8 +456,8 @@ extension RedBlackTreeMap {
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
-    let (ptr, inserted) = __tree_.__insert_unique(newMember)
-    return (inserted, __tree_[ptr])
+    let (__r, __inserted) = __tree_.__insert_unique(newMember)
+    return (__inserted, __inserted ? newMember : __tree_[__r])
   }
 }
 

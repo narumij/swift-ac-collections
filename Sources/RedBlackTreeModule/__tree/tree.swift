@@ -40,12 +40,12 @@ extension _NodePtr {
   /// 赤黒木のIndexで、nullを表す
   @inlinable
   @inline(__always)
-  static var nullptr: Self { -1 }
+  static var nullptr: Self { -2 }
 
   /// 赤黒木のIndexで、終端を表す
   @inlinable
   @inline(__always)
-  static var end: Self { -2 }
+  static var end: Self { -1 }
 
   /// 数値を直接扱うことを避けるための初期化メソッド
   @inlinable
@@ -59,6 +59,7 @@ func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
   ptr < 0
 }
 
+#if false
 /// 赤黒木の参照型を表す内部enum
 public
   enum _NodeRef: Equatable
@@ -68,6 +69,11 @@ public
   /// 左ノードへの参照
   case __left_(_NodePtr)
 }
+#else
+// こちらのほうがfind equalの速度が改善する
+// かわりに上限サイズがInt.max - 1になる
+public typealias _NodeRef = UInt
+#endif
 
 // ルートノードの親相当の機能
 @usableFromInline

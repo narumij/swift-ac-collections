@@ -231,7 +231,7 @@ extension NodeBitmapProtocol {
   // 64bit版をこちらの方式で動かすとステップ数が多いので速度が悪化する
   @inlinable
   @inline(__always)
-  func ___ptr_bitmap(_ __p: _NodePtr) -> UInt128
+  func ___ptr_bitmap_128(_ __p: _NodePtr) -> UInt128
   {
     assert(__p != .nullptr, "Node shouldn't be null")
     assert(__p != .end, "Node shouldn't be end")
@@ -251,6 +251,6 @@ extension NodeBitmapProtocol {
     // 木の深さが63に到達するのは余り現実的ではなく、UIntで十分だが
     // 多少アンバランスが発生した場合を考えると不安がよぎるので
     // UInt128を採用
-    (___ptr_bitmap(__l) as UInt128) < ___ptr_bitmap(__r)
+    ___ptr_bitmap_128(__l) < ___ptr_bitmap_128(__r)
   }
 }

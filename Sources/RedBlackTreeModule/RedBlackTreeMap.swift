@@ -358,8 +358,7 @@ extension RedBlackTreeMap {
   internal func _prepareForKeyingModify(
     _ key: Key
   ) -> (__parent: _NodePtr, __child: _NodeRef, __ptr: _NodePtr) {
-    var __parent = _NodePtr.nullptr
-    let __child = __tree_.__find_equal(&__parent, key)
+    let (__parent, __child) = __tree_.__find_equal(key)
     let __ptr = __tree_.__ptr_(__child)
     return (__parent, __child, __ptr)
   }

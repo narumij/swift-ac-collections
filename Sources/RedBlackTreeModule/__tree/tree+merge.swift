@@ -64,8 +64,7 @@ extension MergeProtocol {
     
     var __i = __source.__begin_node; while __i != __source.end() {
       var __src_ptr: _Tree.__node_pointer = __get_np(__i)
-      var __parent: __parent_pointer = .zero
-      let __child = __find_equal(&__parent, __source.__get_key(__source.__get_value(__src_ptr)))
+      let (__parent, __child) = __find_equal( __source.__get_key(__source.__get_value(__src_ptr)))
       __i = __source.__tree_next_iter(__i)
       if (__ptr_(__child) != .nullptr) {
         continue }

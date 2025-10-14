@@ -338,17 +338,15 @@ import XCTest
       var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       fixtureEmpty(&tree)
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 5
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertEqual(__parent, .end)
         XCTAssertEqual(__child, tree.__tree_.__left_ref(.end))
       }
       do {
         tree.__left_ = .nullptr
-        var __parent: _NodePtr = .nullptr
         let __k = 5
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertEqual(__parent, .end)
         XCTAssertEqual(__child, tree.__tree_.__left_ref(.end))
       }
@@ -358,57 +356,50 @@ import XCTest
       var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       fixture0_10_20(&tree)
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = -1
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 1)
         XCTAssertEqual(__child, tree.__tree_.__left_ref(1))
       }
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 0
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertNotEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 1)
         XCTAssertEqual(__child, tree.__tree_.__left_ref(0))
       }
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 5
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 1)
         XCTAssertEqual(__child, tree.__tree_.__right_ref(1))
       }
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 10
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertNotEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 0)
         XCTAssertEqual(__child, tree.__tree_.__left_ref(.end))
       }
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 15
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 2)
         XCTAssertEqual(__child, tree.__tree_.__left_ref(2))
       }
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 20
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertNotEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 2)
         XCTAssertEqual(__child, tree.__tree_.__right_ref(0))
       }
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 21
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 2)
         XCTAssertEqual(__child, tree.__tree_.__right_ref(2))

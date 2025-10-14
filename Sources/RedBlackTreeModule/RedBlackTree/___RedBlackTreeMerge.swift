@@ -36,8 +36,7 @@ extension ___RedBlackTreeMerge {
     var __i = __source.__begin_node
     while __i != __source.__end_node() {
       var __src_ptr: _NodePtr = __i
-      var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_equal(&__parent, __source.__get_value(__src_ptr))
+      let (__parent, __child) = __tree_.__find_equal(__source.__get_value(__src_ptr))
       __i = __source.__tree_next_iter(__i)
       if __tree_.__ptr_(__child) != .nullptr {
         continue
@@ -65,8 +64,7 @@ extension ___RedBlackTreeMerge {
     var __i = __source.__begin_node
     while __i != __source.__end_node() {
       var __src_ptr: _NodePtr = __i
-      var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_equal(&__parent, __source.__get_value(__src_ptr))
+      let (__parent, __child) = __tree_.__find_equal(__source.__get_value(__src_ptr))
       __i = __source.__tree_next_iter(__i)
       if __tree_.__ptr_(__child) != .nullptr {
         __tree_[__tree_.__ptr_(__child)].value = try combine(
@@ -94,8 +92,7 @@ extension ___RedBlackTreeMerge {
     var __i = __source.__begin_node
     while __i != __source.__end_node() {
       var __src_ptr: _NodePtr = __i
-      var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_equal(&__parent, __source.__get_value(__src_ptr))
+      let (__parent, __child) = __tree_.__find_equal(__source.__get_value(__src_ptr))
       __i = __source.__tree_next_iter(__i)
       if __tree_.__ptr_(__child) != .nullptr {
         __tree_[__tree_.__ptr_(__child)].value = try combine(
@@ -149,8 +146,7 @@ extension ___RedBlackTreeMerge {
     S.Element == _Value
   {
     for __element in __source {
-      var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_equal(&__parent, __tree_.__key(__element))
+      let (__parent, __child) = __tree_.__find_equal(__tree_.__key(__element))
       if __tree_.__ptr_(__child) != .nullptr {
         continue
       }
@@ -174,8 +170,7 @@ extension ___RedBlackTreeMerge {
     S.Element == (Key, Value)
   {
     for __element in __source {
-      var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_equal(&__parent, __tree_.__key(__element))
+      let (__parent, __child) = __tree_.__find_equal(__tree_.__key(__element))
       if __tree_.__ptr_(__child) != .nullptr {
         __tree_[__tree_.__ptr_(__child)].value = try combine(
           __tree_[__tree_.__ptr_(__child)].value, __element.1)
@@ -199,8 +194,7 @@ extension ___RedBlackTreeMerge {
     S.Element == Pair<Key, Value>
   {
     for __element in __source {
-      var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_equal(&__parent, __tree_.__key(__element))
+      let (__parent, __child) = __tree_.__find_equal(__tree_.__key(__element))
       if __tree_.__ptr_(__child) != .nullptr {
         __tree_[__tree_.__ptr_(__child)].value = try combine(
           __tree_[__tree_.__ptr_(__child)].value, __element.value)

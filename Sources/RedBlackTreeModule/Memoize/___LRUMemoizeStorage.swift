@@ -91,8 +91,7 @@ extension ___LRUMemoizeStorage {
         if __tree_.count == maxCount {
           ___remove(at: ___popRankLowest())
         }
-        var __parent = _NodePtr.nullptr
-        let __child = __tree_.__find_equal(&__parent, key)
+        let (__parent, __child) = __tree_.__find_equal(key)
         if __tree_.__ptr_(__child) == .nullptr {
           let __h = __tree_.__construct_node(.init(key, .nullptr, .nullptr, newValue))
           __tree_.__insert_node_at(__parent, __child, __h)

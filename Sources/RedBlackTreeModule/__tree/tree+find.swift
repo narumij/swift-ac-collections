@@ -94,8 +94,9 @@ extension FindEqualProtocol {
   @inlinable
   @inline(never)
   func
-    __find_equal(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
+  __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {
+    var __parent: _NodePtr = .end
     var __nd = __root()
     var __nd_ptr = __root_ptr()
     if __nd != .nullptr {
@@ -106,7 +107,7 @@ extension FindEqualProtocol {
             __nd = __left_unsafe(__nd)
           } else {
             __parent = __nd
-            return __left_ref(__parent)
+            return (__parent, __left_ref(__parent))
           }
         } else if value_comp(__get_value(__nd), __v) {
           if __right_(__nd) != .nullptr {
@@ -114,16 +115,16 @@ extension FindEqualProtocol {
             __nd = __right_(__nd)
           } else {
             __parent = __nd
-            return __right_ref(__nd)
+            return (__parent,__right_ref(__nd))
           }
         } else {
           __parent = __nd
-          return __nd_ptr
+          return (__parent,__nd_ptr)
         }
       }
     }
     __parent = __end_node()
-    return __left_ref(__parent)
+    return (__parent, __left_ref(__parent))
   }
 }
 

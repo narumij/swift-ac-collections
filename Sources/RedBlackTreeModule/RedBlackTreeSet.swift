@@ -981,9 +981,8 @@ extension RedBlackTreeSet {
       if count == nil {
         Tree.ensureCapacity(tree: &tree)
       }
-      var __parent = _NodePtr.nullptr
       // 検索の計算量がO(log *n*)
-      let __child = tree.__find_equal(&__parent, __k)
+      let (__parent,__child) = tree.__find_equal(__k)
       if tree.__ptr_(__child) == .nullptr {
         let __h = tree.__construct_node(__k)
         // バランシングの最悪計算量が結局わからず、ならしO(1)とみている

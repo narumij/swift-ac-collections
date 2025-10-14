@@ -55,12 +55,13 @@ extension InsertNodeAtProtocol {
 protocol InsertUniqueProtocol:
   AllocatorProtocol & KeyProtocol & TreeNodeRefProtocol
 {
-
-  func
-    __find_equal(
-      _ __parent: inout _NodePtr,
-      _ __v: _Key
-    ) -> _NodeRef
+  func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+//
+//  func
+//    __find_equal(
+//      _ __parent: inout _NodePtr,
+//      _ __v: _Key
+//    ) -> _NodeRef
 
   func
     __insert_node_at(
@@ -83,8 +84,7 @@ extension InsertUniqueProtocol {
     func
       __emplace_unique_key_args(_ __k: _Value) -> (__r: _NodePtr, __inserted: Bool)
     {
-      var __parent = _NodePtr.nullptr
-      let __child = __find_equal(&__parent, __key(__k))
+      let (__parent, __child) = __find_equal(__key(__k))
       let __r = __child
       if __ptr_(__child) == .nullptr {
         let __h = __construct_node(__k)

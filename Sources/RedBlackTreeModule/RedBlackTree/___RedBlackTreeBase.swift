@@ -209,8 +209,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   func ___first_index(of member: _Key) -> Index? {
-    var __parent = _NodePtr.nullptr
-    let ptr = __tree_.__ptr_(__tree_.__find_equal(&__parent, member))
+    let ptr = __tree_.__ptr_(__tree_.__find_equal(member).__child)
     return ___index_or_nil(ptr)
   }
 

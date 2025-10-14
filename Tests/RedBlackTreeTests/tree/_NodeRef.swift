@@ -18,7 +18,7 @@ extension _NodeRef {
       case ~0:
         return .end
       default:
-        return .init(bitPattern: self & ~(1 << Self.bitWidth - 1))
+        return .init(bitPattern: self & ~(1 << (Self.bitWidth - 1)))
       }
 #endif
     }

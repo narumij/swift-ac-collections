@@ -70,14 +70,12 @@ extension TreeNodeProtocol {
   @inlinable
   @inline(__always)
   func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
-    let l = _NodePtr(bitPattern: rhs)
-    switch l {
-    case .end:
-      return __left_(.end)
-    case 0...:
-      return __left_(l)
-    default:
-      return __right_(l & ~(1 << (_NodeRef.bitWidth - 1)))
+    let mask: _NodeRef = 1 &<< (_NodeRef.bitWidth &- 1)
+    if mask & rhs != 0 {
+      return __left_(rhs == ~0 ? .end : .init(bitPattern: rhs & ~mask))
+    }
+    else {
+      return __right_(.init(bitPattern:(rhs)))
     }
   }
 
@@ -85,14 +83,14 @@ extension TreeNodeProtocol {
   @inline(__always)
   func __left_ref(_ p: _NodePtr) -> _NodeRef {
     assert(p != .nullptr)
-    return .init(bitPattern: p)
+    return .init(bitPattern: p) | (1 << (_NodeRef.bitWidth - 1))
   }
 
   @inlinable
   @inline(__always)
   func __right_ref(_ p: _NodePtr) -> _NodeRef {
     assert(p != .nullptr)
-    return .init(bitPattern: p) | (1 << (_NodeRef.bitWidth - 1))
+    return .init(bitPattern: p)
   }
 }
 
@@ -101,14 +99,12 @@ extension TreeNodeProtocol {
   @inlinable
   @inline(__always)
   func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
-    let l = _NodePtr(bitPattern: lhs)
-    switch l {
-    case .end:
-      return __left_(.end, rhs)
-    case 0...:
-      return __left_(l, rhs)
-    default:
-      return __right_(l & ~(1 << (_NodeRef.bitWidth - 1)), rhs)
+    let mask: _NodeRef = 1 &<< (_NodeRef.bitWidth &- 1)
+    if mask & lhs != 0 {
+      __left_(lhs == ~0 ? .end : .init(bitPattern: lhs & ~mask), rhs)
+    }
+    else {
+      __right_(.init(bitPattern:(lhs)), rhs)
     }
   }
 }

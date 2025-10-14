@@ -992,4 +992,64 @@ final class DictionaryTests: XCTestCase {
       XCTAssertFalse(b < a)
     }
   }
+  
+  func testInsert() throws {
+    do {
+      var a = RedBlackTreeDictionary<Int,Int>()
+      XCTAssertNil(a[3])
+      var (inserted, memberAfterInsert) = a.insert((3,10))
+      XCTAssertTrue(inserted)
+      XCTAssertEqual(memberAfterInsert.key, 3)
+      XCTAssertEqual(memberAfterInsert.value, 10)
+      XCTAssertEqual(a[3], 10)
+      (inserted, memberAfterInsert) = a.insert((3,20))
+      XCTAssertFalse(inserted)
+      XCTAssertEqual(memberAfterInsert.key, 3)
+      XCTAssertEqual(memberAfterInsert.value, 10)
+      XCTAssertEqual(a[3], 10)
+    }
+    do {
+      var a = RedBlackTreeDictionary<Int,Int>()
+      XCTAssertNil(a[3])
+      var (inserted, memberAfterInsert) = a.insert(key: 3, value: 10)
+      XCTAssertTrue(inserted)
+      XCTAssertEqual(memberAfterInsert.key, 3)
+      XCTAssertEqual(memberAfterInsert.value, 10)
+      XCTAssertEqual(a[3], 10)
+      (inserted, memberAfterInsert) = a.insert(key: 3, value: 20)
+      XCTAssertFalse(inserted)
+      XCTAssertEqual(memberAfterInsert.key, 3)
+      XCTAssertEqual(memberAfterInsert.value, 10)
+      XCTAssertEqual(a[3], 10)
+    }
+  }
+  
+  func testRemoveRange() throws {
+    var a = RedBlackTreeDictionary<Int,Int>(uniqueKeysWithValues: [0,1,2,3,4,5].map{ ($0,$0) })
+    a.removeSubrange(a.lowerBound(2)..<a.upperBound(4))
+    XCTAssertEqual(a.keys() + [], [0,1,5])
+  }
+  
+  func testIsValidRangeSmoke() throws {
+    let a = RedBlackTreeDictionary<Int,Int>(uniqueKeysWithValues: [0,1,2,3,4,5].map{ ($0,$0) })
+    XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
+  }
+  
+  func testSortedReversed() throws {
+    let source = [0,1,2,3,4,5].map { Pair($0,$0 * 10) }
+    let a = RedBlackTreeDictionary<Int,Int>(uniqueKeysWithValues: source.map(\.tuple))
+    XCTAssertEqual(a.sorted().map{ Pair($0) }, source)
+    XCTAssertEqual(a.reversed().map{ Pair($0) }, source.reversed())
+  }
+  
+  func testForEach_enumeration() throws {
+    let source = [0,1,2,3,4,5].map { ($0,$0 * 10) }
+    let a = RedBlackTreeDictionary<Int,Int>(uniqueKeysWithValues: source)
+    var p: RedBlackTreeDictionary<Int,Int>.Index? = a.startIndex
+    a.forEach { i, v in
+      XCTAssertEqual(i, p)
+      XCTAssertEqual(Pair(a[p!]), Pair(v))
+      p = p?.next
+    }
+  }
 }

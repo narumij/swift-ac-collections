@@ -1113,5 +1113,41 @@ final class SetTests: XCTestCase {
       }
     }
   }
+  
+  func testIsValidRangeSmoke() throws {
+    let a = RedBlackTreeSet<Int>(naive: [0,1,2,3,4,5])
+    XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
+  }
+  
+  func testSortedReversed() throws {
+    let source = [0,1,2,3,4,5]
+    let a = RedBlackTreeSet<Int>(naive: source)
+    XCTAssertEqual(a.sorted() + [], source)
+    XCTAssertEqual(a.reversed() + [], source.reversed())
+  }
+  
+  func testForEach_enumeration() throws {
+    let source = [0,1,2,3,4,5]
+    let a = RedBlackTreeSet<Int>(naive: source)
+    var p: RedBlackTreeSet<Int>.Index? = a.startIndex
+    a.forEach { i, v in
+      XCTAssertEqual(i, p)
+      XCTAssertEqual(a[p!], v)
+      p = p?.next
+    }
+  }
+  
+  func testInitNaive_with_Sequence() throws {
+    let source = [0,1,2,3,4,5]
+    let a = RedBlackTreeSet<Int>(naive: AnySequence(source))
+    XCTAssertEqual(a.sorted() + [], source)
+  }
+  
+  #if DEBUG
+  func testMemoryLayout() throws {
+    XCTAssertEqual(MemoryLayout<RedBlackTreeSet<Int>.Tree.Node>.stride, 40)
+    XCTAssertEqual(40 * UInt128(Int.max) / 1024 / 1024 / 1024 / 1024 / 1024, 327679)
+  }
+  #endif
 }
 

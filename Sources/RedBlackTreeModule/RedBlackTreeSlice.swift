@@ -1,9 +1,23 @@
 //
-//  ___RedBlackTreeSlice.swift
-//  swift-ac-collections
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-//  Created by narumij on 2025/10/12.
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2024 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
 
 import Foundation
 
@@ -60,7 +74,6 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
-    //    try __tree_.___for_each_(__p: _start, __l: _end, body: body)
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(__tree_[$0])
     }
@@ -134,11 +147,6 @@ extension RedBlackTreeSlice {
   public subscript(position: Index) -> Element {
     @inline(__always) _read {
       __tree_.___ensureValid(subscript: position.rawValue)
-      //      guard _tree.___ptr_less_than_or_equal(_start, position.rawValue),
-      //        _tree.___ptr_less_than(position.rawValue, _end)
-      //      else {
-      //        fatalError(.outOfRange)
-      //      }
       yield __tree_[position.rawValue]
     }
   }
@@ -163,12 +171,21 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     __tree_.___ensureValidRange(
-      begin: bounds.lowerBound.rawValue, end: bounds.upperBound.rawValue)
-    //    guard __tree_.___ptr_less_than_or_equal(_start, bounds.lowerBound.rawValue),
-    //      __tree_.___ptr_less_than_or_equal(bounds.upperBound.rawValue, _end)
-    //    else {
-    //      fatalError(.outOfRange)
-    //    }
+      begin: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+    return .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+    let bounds: Range<Index> = bounds.relative(to: self)
+    __tree_.___ensureValidRange(
+      begin: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
     return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
@@ -181,6 +198,18 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public subscript(unchecked bounds: Range<Index>) -> SubSequence {
     .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+  }
+  
+  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public subscript<R>(unchecked bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+    let bounds: Range<Index> = bounds.relative(to: self)
+    return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
@@ -430,7 +459,7 @@ extension RedBlackTreeSlice {
 }
 
 #if swift(>=5.5)
-  // 競プロ用としてはSendableがいいが、一般用としてはSendableじゃないほうがいい
+// TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeSlice: @unchecked Sendable
   where Element: Sendable {}
 #endif

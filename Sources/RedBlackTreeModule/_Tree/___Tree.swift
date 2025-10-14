@@ -29,7 +29,7 @@ public final class ___Tree<VC>: ManagedBuffer<
   ___Tree<VC>.Node
 >
 where VC: ValueComparer & CompareTrait {
-  
+
   @inlinable
   deinit {
     self.withUnsafeMutablePointers { header, elements in
@@ -100,7 +100,7 @@ extension ___Tree {
 extension ___Tree {
 
   @frozen
-  public struct Node: ___tree_base_node {
+  public struct Node {
 
     @usableFromInline
     internal var __value_: _Value
@@ -139,7 +139,7 @@ extension ___Tree {
 
   @usableFromInline
   internal typealias Manager = ManagedBufferPointer<Header, Node>
-  
+
   @usableFromInline
   internal typealias Storage = ___Storage<VC>
 }
@@ -147,7 +147,7 @@ extension ___Tree {
 extension ___Tree {
 
   @frozen
-  public struct Header: ___tree_root_node {
+  public struct Header {
 
     @inlinable
     @inline(__always)
@@ -764,7 +764,7 @@ extension ___Tree {
 
 // MARK: -
 
-extension ___Tree: Tree_ForEach {
+extension ___Tree {
 
   @nonobjc
   @inlinable
@@ -783,7 +783,9 @@ extension ___Tree: Tree_ForEach {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___rev_for_each_(__p _end: _NodePtr, __l _start: _NodePtr, body: (_NodePtr) throws -> Void)
+  public func ___rev_for_each_(
+    __p _end: _NodePtr, __l _start: _NodePtr, body: (_NodePtr) throws -> Void
+  )
     rethrows
   {
     var _current = _start
@@ -791,14 +793,14 @@ extension ___Tree: Tree_ForEach {
     var _next = _start == _end ? _end : __tree_prev_iter(_start)
     while _current != _end {
       _current = _next
-      _next =  _next == _end ? _end : __tree_prev_iter(_next)
+      _next = _next == _end ? _end : __tree_prev_iter(_next)
       try body(_current)
     }
   }
 }
 
 extension ___Tree {
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -987,7 +989,7 @@ extension ___Tree {
 
 extension ___Tree: Tree_IterateProtocol {}
 
-extension ___Tree: Tree_IndexProtocol {
+extension ___Tree {
   public typealias Index = ___Iterator
 
   @nonobjc
@@ -998,7 +1000,7 @@ extension ___Tree: Tree_IndexProtocol {
   }
 }
 
-extension ___Tree: Tree_IndicesProtocol {
+extension ___Tree {
   public typealias Indices = ___IteratorSequence
 
   @nonobjc
@@ -1087,7 +1089,8 @@ extension ___Tree {
     var (__parent, __child) = tree.___max_ref()
     for kv in self {
       let (k, v) = (kv.key, kv.value)
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, .init(k, try transform(v)))
+      (__parent, __child) = tree.___emplace_hint_right(
+        __parent, __child, .init(k, try transform(v)))
       assert(tree.__tree_invariant(tree.__root()))
     }
     return tree

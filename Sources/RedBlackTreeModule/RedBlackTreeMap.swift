@@ -87,8 +87,8 @@ extension RedBlackTreeMap: ___RedBlackTreeUnique {}
 extension RedBlackTreeMap: ___RedBlackTreeMerge {}
 extension RedBlackTreeMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMap: KeyValueComparer {}
-extension RedBlackTreeMap: ElementComparable where Value: Comparable { }
-extension RedBlackTreeMap: ElementEqutable where Value: Equatable { }
+extension RedBlackTreeMap: ElementComparable where Value: Comparable {}
+extension RedBlackTreeMap: ElementEqutable where Value: Equatable {}
 
 // MARK: - Creating a Dictionay
 
@@ -387,17 +387,17 @@ extension RedBlackTreeMap {
   @inline(__always)
   public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
     let bounds: Range<Index> = bounds.relative(to: self)
-    
+
     __tree_.___ensureValidRange(
       begin: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
-    
+
     return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
   }
-  
+
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
@@ -408,12 +408,13 @@ extension RedBlackTreeMap {
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
   }
-  
+
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public subscript<R>(unchecked bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+  public subscript<R>(unchecked bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index
+  {
     let bounds: Range<Index> = bounds.relative(to: self)
     return .init(
       tree: __tree_,
@@ -455,8 +456,8 @@ extension RedBlackTreeMap {
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
-    _ = __tree_.__insert_unique(newMember)
-    return (true, newMember)
+    let (__r, __inserted) = __tree_.__insert_unique(newMember)
+    return (__inserted, __inserted ? newMember : __tree_[__r])
   }
 }
 
@@ -855,9 +856,7 @@ extension RedBlackTreeMap {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeMap: Sequence, Collection, BidirectionalCollection {}
-
-extension RedBlackTreeMap {
+extension RedBlackTreeMap: Sequence, Collection, BidirectionalCollection {
 
   /// - Complexity: O(1)
   @inlinable
@@ -871,7 +870,8 @@ extension RedBlackTreeMap {
   public func forEach(_ body: (_Value) throws -> Void) rethrows {
     try _forEach(body)
   }
-  
+
+  /// 特殊なforEach
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
@@ -884,78 +884,78 @@ extension RedBlackTreeMap {
   public __consuming func sorted() -> Tree.ElementIterator {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var startIndex: Index { _startIndex }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var endIndex: Index { _endIndex }
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   //  @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     _distance(from: start, to: end)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     _index(after: i)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     _formIndex(after: &i)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     _index(before: i)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     _formIndex(before: &i)
   }
-  
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     _index(i, offsetBy: distance)
   }
-  
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     _formIndex(&i, offsetBy: distance)
   }
-  
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     _index(i, offsetBy: distance, limitedBy: limit)
   }
-  
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-  -> Bool
+    -> Bool
   {
     _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
@@ -965,7 +965,7 @@ extension RedBlackTreeMap {
   public subscript(position: Index) -> _Value {
     @inline(__always) _read { yield self[_checked: position] }
   }
-  
+
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
@@ -981,15 +981,14 @@ extension RedBlackTreeMap {
   public func isValid(index: Index) -> Bool {
     _isValid(index: index)
   }
-  
+
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func isValid<R: RangeExpression>(
-    _ bounds: R
-  ) -> Bool where R.Bound == Index {
+  public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
+  where R.Bound == Index {
     _isValid(bounds)
   }
 
@@ -999,14 +998,14 @@ extension RedBlackTreeMap {
   public __consuming func reversed() -> Tree.ReversedElementIterator {
     _reversed()
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var indices: Indices {
     _indices
   }
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
@@ -1016,7 +1015,7 @@ extension RedBlackTreeMap {
   ) rethrows -> Bool where OtherSequence: Sequence {
     try _elementsEqual(other, by: areEquivalent)
   }
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
@@ -1028,10 +1027,27 @@ extension RedBlackTreeMap {
   }
 }
 
+extension RedBlackTreeMap {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func keys() -> KeyIterator<Tree, Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func values() -> ValueIterator<Tree, Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+}
+
 // MARK: - SubSequence
 
 extension RedBlackTreeMap {
-  
+
   public typealias SubSequence = RedBlackTreeSlice<Self>
 }
 
@@ -1230,13 +1246,7 @@ extension RedBlackTreeMap where Value: Comparable {
 // MARK: - Sendable
 
 #if swift(>=5.5)
+  // TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeMap: @unchecked Sendable
   where Element: Sendable {}
-#endif
-
-#if false
-#if swift(>=5.5)
-  extension RedBlackTreeMap.SubSequence: @unchecked Sendable
-  where Key: Sendable, Value: Sendable {}
-#endif
 #endif

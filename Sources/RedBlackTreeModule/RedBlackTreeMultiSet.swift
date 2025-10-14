@@ -619,9 +619,7 @@ extension RedBlackTreeMultiSet {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {}
-
-extension RedBlackTreeMultiSet {
+extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
 
   /// - Complexity: O(1)
   @inlinable
@@ -636,6 +634,7 @@ extension RedBlackTreeMultiSet {
     try _forEach(body)
   }
   
+  /// 特殊なforEach
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
@@ -751,9 +750,8 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func isValid<R: RangeExpression>(
-    _ bounds: R
-  ) -> Bool where R.Bound == Index {
+  public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
+  where R.Bound == Index {
     _isValid(bounds)
   }
 
@@ -961,16 +959,9 @@ extension RedBlackTreeMultiSet {
 // MARK: - Sendable
 
 #if swift(>=5.5)
-// 競プロ用としてはSendableがいいが、一般用としてはSendableじゃないほうがいい
+// TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeMultiSet: @unchecked Sendable
   where Element: Sendable {}
-#endif
-
-#if false
-#if swift(>=5.5)
-  extension RedBlackTreeMultiSet.SubSequence: @unchecked Sendable
-  where Element: Sendable {}
-#endif
 #endif
 
 // MARK: - Init naive

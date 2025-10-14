@@ -193,7 +193,7 @@ import XCTest
         let __k = 5
         let __child = __find_equal(&__parent, __k)
         XCTAssertEqual(__parent, .end)
-        XCTAssertEqual(__child, .__left_(.end))
+        XCTAssertEqual(__child, __left_ref(.end))
       }
       do {
         __root(.nullptr)
@@ -201,7 +201,7 @@ import XCTest
         let __k = 5
         let __child = __find_equal(&__parent, __k)
         XCTAssertEqual(__parent, .end)
-        XCTAssertEqual(__child, .__left_(.end))
+        XCTAssertEqual(__child, __left_ref(.end))
       }
     }
 
@@ -230,7 +230,7 @@ import XCTest
         let __child = __find_equal(&__parent, __k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 1)
-        XCTAssertEqual(__child, .__left_(1))
+        XCTAssertEqual(__child, __left_ref(1))
       }
       do {
         var __parent: _NodePtr = .nullptr
@@ -238,7 +238,7 @@ import XCTest
         let __child = __find_equal(&__parent, __k)
         XCTAssertNotEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 1)
-        XCTAssertEqual(__child, .__left_(0))
+        XCTAssertEqual(__child, __left_ref(0))
       }
       do {
         var __parent: _NodePtr = .nullptr
@@ -246,7 +246,7 @@ import XCTest
         let __child = __find_equal(&__parent, __k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 1)
-        XCTAssertEqual(__child, .__right_(1))
+        XCTAssertEqual(__child, __right_ref(1))
       }
       do {
         var __parent: _NodePtr = .nullptr
@@ -254,7 +254,7 @@ import XCTest
         let __child = __find_equal(&__parent, __k)
         XCTAssertNotEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 0)
-        XCTAssertEqual(__child, .__left_(.end))
+        XCTAssertEqual(__child, __left_ref(.end))
       }
       do {
         var __parent: _NodePtr = .nullptr
@@ -262,7 +262,7 @@ import XCTest
         let __child = __find_equal(&__parent, __k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 2)
-        XCTAssertEqual(__child, .__left_(2))
+        XCTAssertEqual(__child, __left_ref(2))
       }
       do {
         var __parent: _NodePtr = .nullptr
@@ -270,7 +270,7 @@ import XCTest
         let __child = __find_equal(&__parent, __k)
         XCTAssertNotEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 2)
-        XCTAssertEqual(__child, .__right_(0))
+        XCTAssertEqual(__child, __right_ref(0))
       }
       do {
         var __parent: _NodePtr = .nullptr
@@ -278,7 +278,7 @@ import XCTest
         let __child = __find_equal(&__parent, __k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 2)
-        XCTAssertEqual(__child, .__right_(2))
+        XCTAssertEqual(__child, __right_ref(2))
       }
     }
   }

@@ -53,8 +53,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Index = Tree.Index
 
   public
-//    typealias KeyValue = (key: Key, value: Value)
-  typealias KeyValue = Pair<Key, Value>
+    typealias KeyValue = Pair<Key, Value>
 
   public
     typealias Element = KeyValue
@@ -758,9 +757,7 @@ extension RedBlackTreeMultiMap {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {}
-
-extension RedBlackTreeMultiMap {
+extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
 
   /// - Complexity: O(1)
   @inlinable
@@ -775,6 +772,7 @@ extension RedBlackTreeMultiMap {
     try _forEach(body)
   }
   
+  /// 特殊なforEach
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
@@ -890,9 +888,8 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func isValid<R: RangeExpression>(
-    _ bounds: R
-  ) -> Bool where R.Bound == Index {
+  public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
+  where R.Bound == Index {
     _isValid(bounds)
   }
 
@@ -931,7 +928,22 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: - Range Access
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func keys() -> KeyIterator<Tree, Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func values() -> ValueIterator<Tree, Key, Value> {
+    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  }
+}
 
 // MARK: - SubSequence
 
@@ -1136,16 +1148,12 @@ extension RedBlackTreeMultiMap where Value: Comparable {
 // MARK: - Sendable
 
 #if swift(>=5.5)
+// TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeMultiMap: @unchecked Sendable
   where Element: Sendable {}
 #endif
 
-#if false
-#if swift(>=5.5)
-  extension RedBlackTreeMultiMap.SubSequence: @unchecked Sendable
-  where Element: Sendable {}
-#endif
-#endif
+// MARK: - Init naive
 
 extension RedBlackTreeMultiMap {
 
@@ -1153,11 +1161,6 @@ extension RedBlackTreeMultiMap {
   // メモリ制限がきつい場合に備えて復活
 
   /// - Complexity: O(*n* log *n*)
-  ///
-  /// 標準のイニシャライザはメモリを余分につかう面がある。
-  /// メモリ制限がきつい場合、こちらをお試しください
-  ///
-  /// それでもメモリでダメだった場合、ごめんなさい
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
@@ -1169,7 +1172,7 @@ extension RedBlackTreeMultiMap {
       }
       var __parent = _NodePtr.nullptr
       // 検索の計算量がO(log *n*)
-      let __child = tree.__find_leaf_high(&__parent, tree.__key(__k))
+      let __child = tree.__find_leaf_high(&__parent, Self.__key(__k))
       if tree.__ptr_(__child) == .nullptr {
         let __h = tree.__construct_node(__k)
         // バランシングの最悪計算量が結局わからず、ならしO(1)とみている

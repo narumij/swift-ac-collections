@@ -49,8 +49,8 @@ final class MemoizeCacheLRUTests: XCTestCase {
     XCTAssertEqual(cache._rankLowest, 1)
     
     XCTAssertEqual(cache.___popRankLowest(), 1)
-    XCTAssertEqual(cache._rankHighest, -1)
-    XCTAssertEqual(cache._rankLowest, -1)
+    XCTAssertEqual(cache._rankHighest, .nullptr)
+    XCTAssertEqual(cache._rankLowest, .nullptr)
   }
 
   func testQueue2() throws {
@@ -101,8 +101,8 @@ final class MemoizeCacheLRUTests: XCTestCase {
     XCTAssertEqual(cache._rankHighest, 3)
     XCTAssertEqual(cache._rankLowest, 3)
     XCTAssertEqual(cache.___pop(3),3) //
-    XCTAssertEqual(cache._rankHighest, -1)
-    XCTAssertEqual(cache._rankLowest, -1)
+    XCTAssertEqual(cache._rankHighest, .nullptr)
+    XCTAssertEqual(cache._rankLowest, .nullptr)
   }
 
   func testQueue4() throws {
@@ -132,8 +132,8 @@ final class MemoizeCacheLRUTests: XCTestCase {
     XCTAssertEqual(cache._rankHighest, 2)
     XCTAssertEqual(cache._rankLowest, 2)
     XCTAssertEqual(cache.___popRankLowest(), 2)
-    XCTAssertEqual(cache._rankHighest, -1)
-    XCTAssertEqual(cache._rankLowest, -1)
+    XCTAssertEqual(cache._rankHighest, .nullptr)
+    XCTAssertEqual(cache._rankLowest, .nullptr)
   }
 
   func testMaximum() throws {

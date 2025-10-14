@@ -224,10 +224,33 @@ extension NodeBitmapProtocol {
     __f &<<= UInt.bitWidth &- __h
     return __f
   }
+  
+  // 64bit版をそのまま128bitにすると、___ptr_comp_multiと速度が変わらなくなる
+  // 待避するレジスタの数が影響していると想定して修正したところ、
+  // 64bit版には及ばないが、速度の改善がみられた
+  // 64bit版をこちらの方式で動かすとステップ数が多いので速度が悪化する
+  @inlinable
+  @inline(__always)
+  func ___ptr_bitmap_128(_ __p: _NodePtr) -> UInt128
+  {
+    assert(__p != .nullptr, "Node shouldn't be null")
+    assert(__p != .end, "Node shouldn't be end")
+    var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
+    var __p = __p
+    while __p != __root(), __p != .end {
+      __f >>= 1
+      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt128.bitWidth &- 1)
+      __p = __parent_(__p)
+    }
+    return __f
+  }
 
   @inlinable
   @inline(__always)
   func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
+    // 木の深さが63に到達するのは余り現実的ではなく、UIntで十分だが
+    // 多少アンバランスが発生した場合を考えると不安がよぎるので
+    // 一旦UInt128を採用したが、計算したらやっぱり現実的ではないのでUIntに戻す
     ___ptr_bitmap(__l) < ___ptr_bitmap(__r)
   }
 }

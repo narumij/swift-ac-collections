@@ -22,14 +22,13 @@
 
 import Foundation
 
+#if false
 extension TreeNodeProtocol {
 
   @inlinable
   @inline(__always)
   func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
     switch rhs {
-    case .nullptr:
-      return .nullptr
     case .__right_(let basePtr):
       return __right_(basePtr)
     case .__left_(let basePtr):
@@ -40,13 +39,15 @@ extension TreeNodeProtocol {
   @inlinable
   @inline(__always)
   func __left_ref(_ p: _NodePtr) -> _NodeRef {
-    .__left_(p)
+    assert(p != .nullptr)
+    return .__left_(p)
   }
 
   @inlinable
   @inline(__always)
   func __right_ref(_ p: _NodePtr) -> _NodeRef {
-    .__right_(p)
+    assert(p != .nullptr)
+    return .__right_(p)
   }
 }
 
@@ -56,14 +57,59 @@ extension TreeNodeProtocol {
   @inline(__always)
   func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
     switch lhs {
-    case .nullptr:
-      fatalError()
     case .__right_(let basePtr):
       return __right_(basePtr, rhs)
     case .__left_(let basePtr):
       return __left_(basePtr, rhs)
     }
   }
+}
+#else
+extension TreeNodeProtocol {
 
+  @inlinable
+  @inline(__always)
+  func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
+    let l = _NodePtr(bitPattern: rhs)
+    switch l {
+    case .end:
+      return __left_(.end)
+    case 0...:
+      return __left_(l)
+    default:
+      return __right_(l & ~(1 << (_NodeRef.bitWidth - 1)))
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  func __left_ref(_ p: _NodePtr) -> _NodeRef {
+    assert(p != .nullptr)
+    return .init(bitPattern: p)
+  }
+
+  @inlinable
+  @inline(__always)
+  func __right_ref(_ p: _NodePtr) -> _NodeRef {
+    assert(p != .nullptr)
+    return .init(bitPattern: p) | (1 << (_NodeRef.bitWidth - 1))
+  }
 }
 
+extension TreeNodeProtocol {
+
+  @inlinable
+  @inline(__always)
+  func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
+    let l = _NodePtr(bitPattern: lhs)
+    switch l {
+    case .end:
+      return __left_(.end, rhs)
+    case 0...:
+      return __left_(l, rhs)
+    default:
+      return __right_(l & ~(1 << (_NodeRef.bitWidth - 1)), rhs)
+    }
+  }
+}
+#endif

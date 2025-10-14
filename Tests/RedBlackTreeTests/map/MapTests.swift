@@ -992,4 +992,64 @@ final class MapTests: XCTestCase {
       XCTAssertFalse(b < a)
     }
   }
+  
+  func testInsert() throws {
+    do {
+      var a = RedBlackTreeMap<Int,Int>()
+      XCTAssertNil(a[3])
+      var (inserted, memberAfterInsert) = a.insert((3,10))
+      XCTAssertTrue(inserted)
+      XCTAssertEqual(memberAfterInsert.key, 3)
+      XCTAssertEqual(memberAfterInsert.value, 10)
+      XCTAssertEqual(a[3], 10)
+      (inserted, memberAfterInsert) = a.insert((3,20))
+      XCTAssertFalse(inserted)
+      XCTAssertEqual(memberAfterInsert.key, 3)
+      XCTAssertEqual(memberAfterInsert.value, 10)
+      XCTAssertEqual(a[3], 10)
+    }
+    do {
+      var a = RedBlackTreeMap<Int,Int>()
+      XCTAssertNil(a[3])
+      var (inserted, memberAfterInsert) = a.insert(key: 3, value: 10)
+      XCTAssertTrue(inserted)
+      XCTAssertEqual(memberAfterInsert.key, 3)
+      XCTAssertEqual(memberAfterInsert.value, 10)
+      XCTAssertEqual(a[3], 10)
+      (inserted, memberAfterInsert) = a.insert(key: 3, value: 20)
+      XCTAssertFalse(inserted)
+      XCTAssertEqual(memberAfterInsert.key, 3)
+      XCTAssertEqual(memberAfterInsert.value, 10)
+      XCTAssertEqual(a[3], 10)
+    }
+  }
+  
+  func testRemoveRange() throws {
+    var a = RedBlackTreeMap<Int,Int>(uniqueKeysWithValues: [0,1,2,3,4,5].map{ Pair($0,$0) })
+    a.removeSubrange(a.lowerBound(2)..<a.upperBound(4))
+    XCTAssertEqual(a.keys() + [], [0,1,5])
+  }
+  
+  func testIsValidRangeSmoke() throws {
+    let a = RedBlackTreeMap<Int,Int>(uniqueKeysWithValues: [0,1,2,3,4,5].map{ Pair($0,$0) })
+    XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
+  }
+  
+  func testSortedReversed() throws {
+    let source = [0,1,2,3,4,5].map { Pair($0,$0 * 10) }
+    let a = RedBlackTreeMap<Int,Int>(uniqueKeysWithValues: source)
+    XCTAssertEqual(a.sorted() + [], source)
+    XCTAssertEqual(a.reversed() + [], source.reversed())
+  }
+  
+  func testForEach_enumeration() throws {
+    let source = [0,1,2,3,4,5].map { Pair($0,$0 * 10) }
+    let a = RedBlackTreeMap<Int,Int>(uniqueKeysWithValues: source)
+    var p: RedBlackTreeMap<Int,Int>.Index? = a.startIndex
+    a.forEach { i, v in
+      XCTAssertEqual(i, p)
+      XCTAssertEqual(a[p!], v)
+      p = p?.next
+    }
+  }
 }

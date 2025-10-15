@@ -308,7 +308,7 @@ extension ValueComparer where _Key: Equatable {
 }
 
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
-public protocol ValueComparerProtocol {
+public protocol ValueComparator {
   associatedtype VC: ValueComparer
   static func __key(_ e: VC._Value) -> VC._Key
   static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
@@ -318,7 +318,7 @@ public protocol ValueComparerProtocol {
   func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool
 }
 
-extension ValueComparerProtocol {
+extension ValueComparator {
   
   @inlinable
   @inline(__always)
@@ -354,6 +354,15 @@ extension ValueComparerProtocol {
   @inline(__always)
   public func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
     VC.value_comp(a, b)
+  }
+}
+
+extension ValueComparator where VC: ThreeWayComparator {
+  
+  @inlinable
+  @inline(__always)
+  public func __comp(_ lhs: VC._Key,_ rhs: VC._Key) -> VC.__compare_result {
+    VC.__comp(lhs, rhs)
   }
 }
 

@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol ___RedBlackTreeMerge: ValueComparer & CompareTrait
+protocol ___RedBlackTreeMerge: ValueComparer & CompareTrait & ThreeWayComparator
 where
   Tree == ___Tree<Self>,
   _Value == Tree._Value

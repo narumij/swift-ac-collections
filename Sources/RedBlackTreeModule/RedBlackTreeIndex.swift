@@ -26,7 +26,7 @@ import Foundation
 ///
 /// C++の双方向イテレータに近い内容となっている
 @frozen
-public struct RedBlackTreeIndex<VC> where VC: ValueComparer & CompareTrait {
+public struct RedBlackTreeIndex<VC> where VC: ValueComparer & CompareTrait & ThreeWayComparator {
   public typealias Tree = ___Tree<VC>
   public typealias _Value = Tree._Value
 

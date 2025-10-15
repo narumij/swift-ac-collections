@@ -28,7 +28,7 @@ public final class ___Tree<VC>: ManagedBuffer<
   ___Tree<VC>.Header,
   ___Tree<VC>.Node
 >
-where VC: ValueComparer & CompareTrait {
+where VC: ValueComparer & CompareTrait & ThreeWayComparator {
 
   @inlinable
   deinit {
@@ -432,7 +432,7 @@ extension ___Tree: CompareUniqueProtocol {}
 extension ___Tree: CompareMultiProtocol {}
 extension ___Tree: MergeSourceProtocol {}
 extension ___Tree: CompProtocol {}
-extension ___Tree: ValueComparerProtocol {}
+extension ___Tree: ValueComparator {}
 
 extension ___Tree {
   @nonobjc

@@ -9,7 +9,7 @@
 // それ以外はTree側の保持の仕方で管理する
 @_fixed_layout
 @usableFromInline
-final class ___Storage<VC: ValueComparer & CompareTrait> {
+final class ___Storage<VC: ValueComparer & CompareTrait & ThreeWayComparator> {
   public typealias Tree = ___Tree<VC>
   @nonobjc
   @inlinable

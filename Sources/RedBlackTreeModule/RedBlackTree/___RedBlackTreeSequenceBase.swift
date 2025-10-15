@@ -24,7 +24,7 @@
 
 @usableFromInline
 protocol ___RedBlackTreeSequenceBase: ___RedBlackTree & ___RedBlackTreeIndexing & ValueComparer
-    & CompareTrait, Sequence & Collection & BidirectionalCollection
+    & CompareTrait & ThreeWayComparator, Sequence & Collection & BidirectionalCollection
 where
   Tree == ___Tree<Self>,
   Index == Tree.Index,

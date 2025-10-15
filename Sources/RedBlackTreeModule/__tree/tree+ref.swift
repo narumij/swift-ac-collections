@@ -83,7 +83,7 @@ extension TreeNodeProtocol {
   @inline(__always)
   func __left_ref(_ p: _NodePtr) -> _NodeRef {
     assert(p != .nullptr)
-    return .init(bitPattern: p) | (1 << (_NodeRef.bitWidth - 1))
+    return .init(bitPattern: p) | (1 &<< (_NodeRef.bitWidth &- 1))
   }
 
   @inlinable

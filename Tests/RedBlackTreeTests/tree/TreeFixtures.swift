@@ -81,7 +81,7 @@ import XCTest
     FindEqualProtocol, InsertNodeAtProtocol, InsertUniqueProtocol,
     RemoveProtocol, EraseProtocol, EraseUniqueProtocol, CompareProtocol, CompareMultiProtocol,
     BoundProtocol, NodeBitmapProtocol
-  {
+{
     func __key(_ e: Element) -> Element {
       e
     }
@@ -105,6 +105,22 @@ import XCTest
 
     func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
       ___ptr_comp_multi(l, r)
+    }
+    
+    public struct __compare_result: ThreeWayCompareResult {
+      init(comp: @escaping (Element,Element) -> Bool,_ lhs: Element,_ rhs: Element) {
+        self.comp = comp
+        self.lhs = lhs
+        self.rhs = rhs
+      }
+      var comp: (Element,Element) -> Bool
+      var lhs,rhs: Element
+      public func less() -> Bool { comp(lhs,rhs) }
+      public func greater() -> Bool { comp(rhs, lhs) }
+    }
+    
+    func __comp(_ lhs: Element, _ rhs: Element) -> __compare_result {
+      .init(comp: value_comp, lhs, rhs)
     }
   }
 

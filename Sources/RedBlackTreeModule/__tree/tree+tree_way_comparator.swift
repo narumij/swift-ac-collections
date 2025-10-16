@@ -82,6 +82,7 @@ where VC: ValueComparer {
 public
 struct AnyThreeWayCompareResult: ThreeWayCompareResult {
   @inlinable
+  @inline(__always)
   internal init(result: ThreeWayCompareResult) {
     self.result = result
   }

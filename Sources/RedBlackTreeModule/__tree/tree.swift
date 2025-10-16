@@ -59,7 +59,7 @@ func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
   ptr < 0
 }
 
-#if false
+#if USE_ENUM_NODE_REF
 /// 赤黒木の参照型を表す内部enum
 public
   enum _NodeRef: Equatable
@@ -72,6 +72,8 @@ public
 #else
 // こちらのほうがfind equalの速度が改善する
 // かわりに上限サイズがInt.max - 1になる
+//
+// しばらく様子を見る
 public typealias _NodeRef = UInt
 #endif
 

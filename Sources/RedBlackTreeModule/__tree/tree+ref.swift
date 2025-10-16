@@ -22,7 +22,7 @@
 
 import Foundation
 
-#if false
+#if USE_ENUM_NODE_REF
 extension TreeNodeProtocol {
 
   @inlinable
@@ -83,6 +83,7 @@ extension TreeNodeProtocol {
   @inline(__always)
   func __left_ref(_ p: _NodePtr) -> _NodeRef {
     assert(p != .nullptr)
+    // この方式、レジスタは減らせるが、ここの計算でフェッチ待ちが発生する
     return .init(bitPattern: p) | (1 &<< (_NodeRef.bitWidth &- 1))
   }
 

@@ -89,22 +89,11 @@ extension FindLeafProtocol {
 @usableFromInline
 protocol FindEqualProtocol: ValueProtocol, TreeNodeRefProtocol, RootProtocol, RootPtrProtocol, ThreeWayComparatorProtocol {}
 
-@inlinable
-@inline(__always)
-func default_three_way_compare<_Key>(_ lhs: _Key,_ rhs: _Key, value_comp: (_Key,_Key) -> Bool) -> Int {
-  if value_comp(lhs,rhs) {
-    -1
-  } else if value_comp(rhs,lhs) {
-    1
-  } else {
-    0
-  }
-}
-
 extension FindEqualProtocol {
 
+#if USE_THREE_WAY_COMPARE
   @inlinable
-  @inline(never)
+  @inline(__always)
   func
     __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {
@@ -135,6 +124,38 @@ extension FindEqualProtocol {
       }
     }
   }
+#else
+  @inlinable
+  @inline(__always)
+  func
+    __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+  {
+    var __nd = __root()
+    if __nd == .nullptr {
+      return (__end_node(), __left_ref(.end))
+    }
+    var __nd_ptr = __root_ptr()
+    
+    while true {
+      
+      if value_comp(__v, __get_value(__nd)) {
+        if __left_unsafe(__nd) == .nullptr {
+          return (__nd, __left_ref(__nd)) }
+        
+        __nd_ptr = __left_ref(__nd)
+        __nd = __left_unsafe(__nd)
+      } else if value_comp(__get_value(__nd), __v) {
+        if __right_(__nd) == .nullptr {
+          return (__nd, __right_ref(__nd)) }
+        
+        __nd_ptr = __right_ref(__nd)
+        __nd = __right_(__nd)
+      } else {
+        return (__nd, __nd_ptr)
+      }
+    }
+  }
+#endif
 }
 
 @usableFromInline

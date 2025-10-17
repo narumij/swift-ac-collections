@@ -107,7 +107,7 @@ import XCTest
       ___ptr_comp_multi(l, r)
     }
     
-    func __comparator() -> (_Key,_Key) -> __lazy_three_way_compare_result_<Element> {
+    func __lazy_synth_three_way_comparator() -> (_Key,_Key) -> __lazy_three_way_compare_result<Element> {
       { .init(lhs: $0, rhs: $1) }
     }
 

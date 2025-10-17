@@ -17,16 +17,17 @@ public
 protocol ThreeWayComparator {
   associatedtype __compare_result: ThreeWayCompareResult
   associatedtype _Key
-  static func __comparator() -> (_Key,_Key) -> __compare_result
+  static func __lazy_synth_three_way_comparator() -> (_Key,_Key) -> __compare_result
 }
 
 @usableFromInline
 protocol ThreeWayComparatorProtocol {
   associatedtype __compare_result: ThreeWayCompareResult
   associatedtype _Key
-  func __comparator() -> (_Key,_Key) -> __compare_result
+  func __lazy_synth_three_way_comparator() -> (_Key,_Key) -> __compare_result
 }
 
+// High Frequency Samplingでの計測で、これが一番速かった
 public
 struct __lazy_three_way_compare_result<_Key>: ThreeWayCompareResult
 where _Key: Comparable {
@@ -47,6 +48,7 @@ where _Key: Comparable {
 
 // MARK: -
 
+#if false
 @usableFromInline
 struct __default_three_way_compare_result: ThreeWayCompareResult {
   @inlinable
@@ -114,3 +116,4 @@ struct AnyThreeWayCompareResult: ThreeWayCompareResult {
   @inline(__always)
   public func greater() -> Bool { result.greater() }
 }
+#endif

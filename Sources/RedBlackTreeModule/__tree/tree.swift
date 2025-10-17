@@ -300,7 +300,7 @@ extension ValueComparer where _Key: Comparable {
   
   @inlinable
   @inline(__always)
-  public static func __comparator() -> (_Key,_Key) -> __lazy_three_way_compare_result<_Key> {
+  public static func __lazy_synth_three_way_comparator() -> (_Key,_Key) -> __lazy_three_way_compare_result<_Key> {
     {
       __lazy_three_way_compare_result<_Key>(lhs: $0, rhs: $1)
     }
@@ -371,8 +371,8 @@ extension ValueComparator where VC: ThreeWayComparator {
   
   @inlinable
   @inline(__always)
-  func __comparator() -> (VC._Key,VC._Key) -> VC.__compare_result {
-    VC.__comparator()
+  func __lazy_synth_three_way_comparator() -> (VC._Key,VC._Key) -> VC.__compare_result {
+    VC.__lazy_synth_three_way_comparator()
   }
 }
 

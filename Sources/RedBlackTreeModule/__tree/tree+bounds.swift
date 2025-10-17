@@ -30,29 +30,13 @@ extension BoundProtocol {
   @inlinable
   @inline(__always)
   func lower_bound(_ __v: _Key) -> _NodePtr {
-    if Self.isMulti {
-      return __lower_bound_multi(__v)
-    } else {
-      #if USE_THREE_WAY_COMPARE
-        return __lower_bound_unique(__v)
-      #else
-        return __lower_bound_multi(__v)
-      #endif
-    }
+    Self.isMulti ? __lower_bound_multi(__v) : __lower_bound_unique(__v)
   }
 
   @inlinable
   @inline(__always)
   func upper_bound(_ __v: _Key) -> _NodePtr {
-    if Self.isMulti {
-      return __upper_bound_multi(__v)
-    } else {
-      #if USE_THREE_WAY_COMPARE
-        return __upper_bound_unique(__v)
-      #else
-        return __upper_bound_multi(__v)
-      #endif
-    }
+    Self.isMulti ? __upper_bound_multi(__v) : __upper_bound_unique(__v)
   }
 }
 
@@ -68,7 +52,7 @@ extension BoundAlgorithmProtocol {
   func __lower_upper_bound_unique_impl(_LowerBound: Bool, _ __v: _Key) -> _NodePtr {
     var __rt = __root()
     var __result = __end_node()
-    let __comp = __comparator()
+    let __comp = __lazy_synth_three_way_comparator()
     while __rt != .nullptr {
       let __comp_res = __comp(__v, __get_value(__rt))
       if __comp_res.less() {

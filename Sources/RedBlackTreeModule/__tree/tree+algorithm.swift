@@ -245,7 +245,8 @@ extension TreeNodeProtocol {
                 break
               }
               // reset sibling, and it still can't be null
-              __w = __tree_is_left_child(__x) ? __right_(__parent_(__x)) : __left_unsafe(__parent_(__x))
+              __w =
+                __tree_is_left_child(__x) ? __right_(__parent_(__x)) : __left_unsafe(__parent_(__x))
               // continue;
             } else  // __w has a red child
             {
@@ -290,7 +291,8 @@ extension TreeNodeProtocol {
                 break
               }
               // reset sibling, and it still can't be null
-              __w = __tree_is_left_child(__x) ? __right_(__parent_(__x)) : __left_unsafe(__parent_(__x))
+              __w =
+                __tree_is_left_child(__x) ? __right_(__parent_(__x)) : __left_unsafe(__parent_(__x))
               // continue;
             } else  // __w has a red child
             {

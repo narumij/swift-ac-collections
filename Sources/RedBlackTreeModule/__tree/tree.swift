@@ -60,21 +60,21 @@ func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
 }
 
 #if USE_ENUM_NODE_REF
-/// 赤黒木の参照型を表す内部enum
-public
-  enum _NodeRef: Equatable
-{
-  /// 右ノードへの参照
-  case __right_(_NodePtr)
-  /// 左ノードへの参照
-  case __left_(_NodePtr)
-}
+  /// 赤黒木の参照型を表す内部enum
+  public
+    enum _NodeRef: Equatable
+  {
+    /// 右ノードへの参照
+    case __right_(_NodePtr)
+    /// 左ノードへの参照
+    case __left_(_NodePtr)
+  }
 #else
-// こちらのほうがfind equalの速度が改善する
-// かわりに上限サイズがInt.max - 1になる
-//
-// しばらく様子を見る
-public typealias _NodeRef = UInt
+  // こちらのほうがfind equalの速度が改善する
+  // かわりに上限サイズがInt.max - 1になる
+  //
+  // しばらく様子を見る
+  public typealias _NodeRef = UInt
 #endif
 
 // ルートノードの親相当の機能
@@ -297,10 +297,12 @@ extension ValueComparer where _Key: Comparable {
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     a < b
   }
-  
+
   @inlinable
   @inline(__always)
-  public static func __lazy_synth_three_way_comparator() -> (_Key,_Key) -> __lazy_three_way_compare_result<_Key> {
+  public static func __lazy_synth_three_way_comparator() -> (_Key, _Key) ->
+    __lazy_three_way_compare_result<_Key>
+  {
     {
       __lazy_three_way_compare_result<_Key>(lhs: $0, rhs: $1)
     }
@@ -329,13 +331,13 @@ public protocol ValueComparator {
 }
 
 extension ValueComparator {
-  
+
   @inlinable
   @inline(__always)
   public static func __key(_ e: VC._Value) -> VC._Key {
     VC.__key(e)
   }
-  
+
   @inlinable
   @inline(__always)
   public static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
@@ -347,7 +349,7 @@ extension ValueComparator {
   public static func value_equiv(_ lhs: VC._Key, _ rhs: VC._Key) -> Bool {
     VC.value_equiv(lhs, rhs)
   }
-  
+
   @inlinable
   @inline(__always)
   public func __key(_ e: VC._Value) -> VC._Key {
@@ -368,10 +370,10 @@ extension ValueComparator {
 }
 
 extension ValueComparator where VC: ThreeWayComparator {
-  
+
   @inlinable
   @inline(__always)
-  func __lazy_synth_three_way_comparator() -> (VC._Key,VC._Key) -> VC.__compare_result {
+  func __lazy_synth_three_way_comparator() -> (VC._Key, VC._Key) -> VC.__compare_result {
     VC.__lazy_synth_three_way_comparator()
   }
 }

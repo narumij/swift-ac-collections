@@ -56,12 +56,6 @@ protocol InsertUniqueProtocol:
   AllocatorProtocol & KeyProtocol & TreeNodeRefProtocol
 {
   func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
-//
-//  func
-//    __find_equal(
-//      _ __parent: inout _NodePtr,
-//      _ __v: _Key
-//    ) -> _NodeRef
 
   func
     __insert_node_at(
@@ -123,6 +117,7 @@ protocol InsertMultiProtocol:
 
   func
     __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
+  
   func
     __insert_node_at(
       _ __parent: _NodePtr, _ __child: _NodeRef,

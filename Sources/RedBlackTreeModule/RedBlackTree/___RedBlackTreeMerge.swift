@@ -218,12 +218,27 @@ extension ___RedBlackTreeMerge {
     S: Sequence,
     S.Element == _Value
   {
-    for __element in __source {
-      var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_leaf_high(&__parent, __tree_.__key(__element))
+    var it = __source.makeIterator()
+
+    if __tree_.__root() == .nullptr,
+      let __element = it.next()
+    {
+      __tree_.__insert_node_at(.end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
+    }
+
+    var __max_node = __tree_.__tree_max(__tree_.__root())
+
+    while let __element = it.next() {
       _ensureCapacity()
-      let __src_ptr = __tree_.__construct_node(__element)
-      __tree_.__insert_node_at(__parent, __child, __src_ptr)
+      let __nd = __tree_.__construct_node(__element)
+      if !__tree_.value_comp(__tree_.__get_value(__nd), __tree_.__get_value(__max_node)) {
+        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
+        __max_node = __nd
+      } else {
+        var __parent: _NodePtr = .zero
+        let __child = __tree_.__find_leaf_high(&__parent, __tree_.__key(__element))
+        __tree_.__insert_node_at(__parent, __child, __nd)
+      }
     }
   }
 }

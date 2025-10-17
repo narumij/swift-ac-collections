@@ -107,13 +107,13 @@ extension FindEqualProtocol {
       
       let __comp_res = __comp(__v, __get_value(__nd))
       
-      if __comp_res.less() {
+      if __comp_res.__less() {
         if __left_unsafe(__nd) == .nullptr {
           return (__nd, __left_ref(__nd)) }
         
         __nd_ptr = __left_ref(__nd)
         __nd = __left_unsafe(__nd)
-      } else if __comp_res.greater() {
+      } else if __comp_res.__greater() {
         if __right_(__nd) == .nullptr {
           return (__nd, __right_ref(__nd)) }
         

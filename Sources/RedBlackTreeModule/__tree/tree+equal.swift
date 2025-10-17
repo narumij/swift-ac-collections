@@ -37,10 +37,10 @@ extension EqualProtocol {
     let __comp = __lazy_synth_three_way_comparator()
     while __rt != .nullptr {
       let __comp_res = __comp(__k, __get_value(__rt))
-      if __comp_res.less() {
+      if __comp_res.__less() {
         __result = __rt
         __rt = __left_unsafe(__rt)
-      } else if __comp_res.greater() {
+      } else if __comp_res.__greater() {
         __rt = __right_(__rt)
       } else {
         return (
@@ -64,10 +64,10 @@ extension EqualProtocol {
     let __comp = __lazy_synth_three_way_comparator()
     while __rt != .nullptr {
       let __comp_res = __comp(__k, __get_value(__rt))
-      if __comp_res.less() {
+      if __comp_res.__less() {
         __result = __rt
         __rt = __left_unsafe(__rt)
-      } else if __comp_res.greater() {
+      } else if __comp_res.__greater() {
         __rt = __right_(__rt)
       } else {
         return (

@@ -9,8 +9,8 @@ import Foundation
 
 public
 protocol ThreeWayCompareResult {
-  func less() -> Bool
-  func greater() -> Bool
+  func __less() -> Bool
+  func __greater() -> Bool
 }
 
 public
@@ -40,10 +40,10 @@ where _Key: Comparable {
   @usableFromInline let lhs, rhs: _Key
   @inlinable
   @inline(__always)
-  public func less() -> Bool { lhs < rhs }
+  public func __less() -> Bool { lhs < rhs }
   @inlinable
   @inline(__always)
-  public func greater() -> Bool { lhs > rhs }
+  public func __greater() -> Bool { lhs > rhs }
 }
 
 // MARK: -

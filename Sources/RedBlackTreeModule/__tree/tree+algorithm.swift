@@ -24,6 +24,8 @@ import Foundation
 
 extension TreeNodeProtocol {
 
+  /// Effects:  Makes `__x`->`__right_` the subtree root with `__x` as its left child
+  ///           while preserving in-order order.
   @inlinable
   @inline(__always)
   func
@@ -46,6 +48,8 @@ extension TreeNodeProtocol {
     __parent_(__x, __y)
   }
 
+  /// Effects:  Makes `__x`->`__left_` the subtree root with `__x` as its right child
+  ///           while preserving in-order order.
   @inlinable
   @inline(__always)
   func
@@ -68,6 +72,13 @@ extension TreeNodeProtocol {
     __parent_(__x, __y)
   }
 
+  /// Effects:  Rebalances `__root` after attaching `__x` to a leaf.
+  /// Precondition:  `__x` has no children.
+  ///                `__x` == `__root` or == a direct or indirect child of `__root`.
+  ///                If `__x` were to be unlinked from `__root` (setting `__root` to
+  ///                  nullptr if `__root` == `__x`), `__tree_invariant(__root)` == true.
+  /// Postcondition: `__tree_invariant(end_node->__left_)` == true.  end_node->`__left_`
+  ///                may be different than the value passed in as `__root`.
   @inlinable
   @inline(never)
   func
@@ -123,6 +134,11 @@ extension TreeNodeProtocol {
     }
   }
 
+  /// Precondition:  `__z` == `__root` or == a direct or indirect child of `__root`.
+  /// Effects:  unlinks `__z` from the tree rooted at `__root`, rebalancing as needed.
+  /// Postcondition: `__tree_invariant(end_node->__left_)` == true && end_node->`__left_`
+  ///                nor any of its children refer to `__z`.  end_node->`__left_`
+  ///                may be different than the value passed in as `__root`.
   @inlinable
   @inline(never)
   func

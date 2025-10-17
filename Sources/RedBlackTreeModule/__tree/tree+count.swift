@@ -65,8 +65,8 @@ extension CountProtocol {
         __rt = __right_(__rt)
       } else {
         return __distance(
-          __lower_bound(__k, __left_unsafe(__rt), __rt),
-          __upper_bound(__k, __right_(__rt), __result))
+          __lower_bound_multi(__k, __left_unsafe(__rt), __rt),
+          __upper_bound_multi(__k, __right_(__rt), __result))
       }
     }
     return 0

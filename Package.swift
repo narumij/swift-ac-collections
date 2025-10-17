@@ -33,7 +33,7 @@ var _settings: [SwiftSetting] =
 //    .define("USE_ENUM_NODE_REF"),
     // この定義をオフにすると参照に符号なし整数を用い、レジスタ一本に収まるようになる
     
-//    .define("USE_THREE_WAY_COMPARE"),
+    .define("USE_THREE_WAY_COMPARE"),
     // 新しい比較方式を用いる
     // Swiftの場合、C++と同様の特殊化が出来ないので、うまみが無いかもしれない
   ]

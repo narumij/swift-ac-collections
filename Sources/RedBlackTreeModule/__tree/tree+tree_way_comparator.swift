@@ -17,15 +17,35 @@ public
 protocol ThreeWayComparator {
   associatedtype __compare_result: ThreeWayCompareResult
   associatedtype _Key
-  static func __comp(_ lhs:_Key,_ rhs: _Key) -> __compare_result
+  static func __comparator() -> (_Key,_Key) -> __compare_result
 }
 
 @usableFromInline
 protocol ThreeWayComparatorProtocol {
   associatedtype __compare_result: ThreeWayCompareResult
   associatedtype _Key
-  func __comp(_ lhs:_Key,_ rhs: _Key) -> __compare_result
+  func __comparator() -> (_Key,_Key) -> __compare_result
 }
+
+public
+struct __lazy_three_way_compare_result<_Key>: ThreeWayCompareResult
+where _Key: Comparable {
+  @inlinable
+  @inline(__always)
+  internal init(lhs: _Key, rhs: _Key) {
+    self.lhs = lhs
+    self.rhs = rhs
+  }
+  @usableFromInline let lhs, rhs: _Key
+  @inlinable
+  @inline(__always)
+  public func less() -> Bool { lhs < rhs }
+  @inlinable
+  @inline(__always)
+  public func greater() -> Bool { lhs > rhs }
+}
+
+// MARK: -
 
 @usableFromInline
 struct __default_three_way_compare_result: ThreeWayCompareResult {
@@ -46,7 +66,7 @@ struct __default_three_way_compare_result: ThreeWayCompareResult {
 
 public
 struct __default_three_way_compare_result_<T>: ThreeWayCompareResult
-where T: Numeric & AdditiveArithmetic, T: Comparable {
+where T: BinaryInteger {
   @inlinable
   @inline(__always)
   internal init(comp: T) {
@@ -63,7 +83,7 @@ where T: Numeric & AdditiveArithmetic, T: Comparable {
 }
 
 public
-struct __lazy_three_way_compare_result<VC>: ThreeWayCompareResult
+struct __lazy_three_way_compare_result__<VC>: ThreeWayCompareResult
 where VC: ValueComparer {
   @inlinable
   internal init(lhs: VC._Key, rhs: VC._Key) {
@@ -83,10 +103,10 @@ public
 struct AnyThreeWayCompareResult: ThreeWayCompareResult {
   @inlinable
   @inline(__always)
-  internal init(result: ThreeWayCompareResult) {
+  internal init(result: any ThreeWayCompareResult) {
     self.result = result
   }
-  @usableFromInline let result: ThreeWayCompareResult
+  @usableFromInline let result: any ThreeWayCompareResult
   @inlinable
   @inline(__always)
   public func less() -> Bool { result.less() }

@@ -1118,3 +1118,11 @@ extension ___Tree {
     return tree
   }
 }
+
+extension ___Tree {
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public static var isMulti: Bool { VC.isMulti }
+}

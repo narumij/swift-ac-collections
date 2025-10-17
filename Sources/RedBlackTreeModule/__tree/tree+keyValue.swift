@@ -144,10 +144,3 @@ extension KeyValueComparer where _Value == Pair<_Key, _MappedValue> {
   @inline(__always)
   public static func ___mapped_value(_ element: _Value) -> _MappedValue { element.value }
 }
-
-extension KeyValueComparer {
-  public static func __comp(_ lhs:_Key,_ rhs: _Key) -> __lazy_three_way_compare_result<Self> {
-    .init(lhs: lhs, rhs: rhs)
-  }
-}
-

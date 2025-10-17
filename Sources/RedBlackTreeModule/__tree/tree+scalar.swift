@@ -46,23 +46,3 @@ extension ScalarValueComparer {
     value_equiv(lhs, rhs)
   }
 }
-
-#if true
-extension ScalarValueComparer {
-  
-  @inlinable
-  @inline(__always)
-  public static func __comp(_ lhs:_Key,_ rhs: _Key) -> __lazy_three_way_compare_result<Self> {
-    __lazy_three_way_compare_result<Self>(lhs: lhs, rhs: rhs)
-  }
-}
-#else
-extension ScalarValueComparer {
-  @inlinable
-  @inline(__always)
-  public static func __comp(_ lhs:_Key,_ rhs: _Key) -> AnyThreeWayCompareResult {
-    .init(result:
-    __lazy_three_way_compare_result<Self>(lhs: lhs, rhs: rhs))
-  }
-}
-#endif

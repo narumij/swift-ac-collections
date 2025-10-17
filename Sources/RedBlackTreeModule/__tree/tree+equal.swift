@@ -67,11 +67,11 @@ extension EqualProtocol {
         __rt = __right_(__rt)
       } else {
         return (
-          __lower_bound(
+          __lower_bound_multi(
             __k,
             __left_unsafe(__rt),
             __rt),
-          __upper_bound(
+          __upper_bound_multi(
             __k,
             __right_(__rt),
             __result)

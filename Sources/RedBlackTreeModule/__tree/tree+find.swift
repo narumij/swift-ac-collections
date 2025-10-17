@@ -102,7 +102,8 @@ extension FindEqualProtocol {
       return (__end_node(), __left_ref(.end))
     }
     var __nd_ptr = __root_ptr()
-    
+    let __comp = __comparator()
+
     while true {
       
       let __comp_res = __comp(__v, __get_value(__nd))
@@ -158,18 +159,35 @@ extension FindEqualProtocol {
 #endif
 }
 
+#if true
 @usableFromInline
-protocol FindProtocol: BoundAlgorithmProtocol & EndProtocol {}
+protocol FindProtocol: BoundProtocol & EndProtocol {}
 
 extension FindProtocol {
 
   @inlinable
   @inline(__always)
   func find(_ __v: _Key) -> _NodePtr {
-    let __p = __lower_bound(__v, __root(), __end_node())
+    let __p = lower_bound(__v)
     if __p != end(), !value_comp(__v, __get_value(__p)) {
       return __p
     }
     return end()
   }
 }
+#else
+@usableFromInline
+protocol FindProtocol: FindEqualProtocol & EndProtocol {}
+
+extension FindProtocol {
+
+  @inlinable
+  @inline(__always)
+  func find(_ __key: _Key) -> _NodeRef {
+    let (_, __match) = __find_equal(__key);
+    if __match == .nullptr {
+      return end() }
+    return __match
+  }
+}
+#endif

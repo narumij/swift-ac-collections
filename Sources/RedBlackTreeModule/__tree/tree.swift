@@ -297,6 +297,14 @@ extension ValueComparer where _Key: Comparable {
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     a < b
   }
+  
+  @inlinable
+  @inline(__always)
+  public static func __comparator() -> (_Key,_Key) -> __lazy_three_way_compare_result<_Key> {
+    {
+      __lazy_three_way_compare_result<_Key>(lhs: $0, rhs: $1)
+    }
+  }
 }
 
 // Equatableプロトコルの場合標準実装を付与する
@@ -363,8 +371,8 @@ extension ValueComparator where VC: ThreeWayComparator {
   
   @inlinable
   @inline(__always)
-  public func __comp(_ lhs: VC._Key,_ rhs: VC._Key) -> VC.__compare_result {
-    VC.__comp(lhs, rhs)
+  func __comparator() -> (VC._Key,VC._Key) -> VC.__compare_result {
+    VC.__comparator()
   }
 }
 

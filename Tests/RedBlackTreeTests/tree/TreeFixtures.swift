@@ -107,21 +107,11 @@ import XCTest
       ___ptr_comp_multi(l, r)
     }
     
-    public struct __compare_result: ThreeWayCompareResult {
-      init(comp: @escaping (Element,Element) -> Bool,_ lhs: Element,_ rhs: Element) {
-        self.comp = comp
-        self.lhs = lhs
-        self.rhs = rhs
-      }
-      var comp: (Element,Element) -> Bool
-      var lhs,rhs: Element
-      public func less() -> Bool { comp(lhs,rhs) }
-      public func greater() -> Bool { comp(rhs, lhs) }
+    func __comparator() -> (_Key,_Key) -> __lazy_three_way_compare_result_<Element> {
+      { .init(lhs: $0, rhs: $1) }
     }
-    
-    func __comp(_ lhs: Element, _ rhs: Element) -> __compare_result {
-      .init(comp: value_comp, lhs, rhs)
-    }
+
+    static var isMulti: Bool { false }
   }
 
   class TreeFixture0_10_20: TreeFixture<Int> {

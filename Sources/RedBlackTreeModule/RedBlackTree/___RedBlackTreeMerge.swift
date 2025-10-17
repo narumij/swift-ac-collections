@@ -222,7 +222,7 @@ extension ___RedBlackTreeMerge {
 
     if __tree_.__root() == .nullptr,
       let __element = it.next()
-    {
+    { // Make sure we always have a root node
       __tree_.__insert_node_at(.end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
     }
 
@@ -231,7 +231,8 @@ extension ___RedBlackTreeMerge {
     while let __element = it.next() {
       _ensureCapacity()
       let __nd = __tree_.__construct_node(__element)
-      if !__tree_.value_comp(__tree_.__get_value(__nd), __tree_.__get_value(__max_node)) {
+      // Always check the max node first. This optimizes for sorted ranges inserted at the end.
+      if !__tree_.value_comp(__tree_.__get_value(__nd), __tree_.__get_value(__max_node)) { // __node >= __max_val
         __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
         __max_node = __nd
       } else {

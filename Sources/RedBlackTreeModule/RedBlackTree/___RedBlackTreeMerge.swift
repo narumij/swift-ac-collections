@@ -18,13 +18,6 @@ where
   mutating func _ensureCapacity(amount: Int)
 }
 
-@usableFromInline
-protocol ___RedBlackTreeMappedValue {
-  associatedtype _MappedValue
-  func ___mapped_value(_ __p:_NodePtr) -> _MappedValue
-  func ___mapped_value(_ __p:_NodePtr,_ value: _MappedValue)
-}
-
 // MARK: - Tree merge
 // マージ元がtreeを持つケース
 
@@ -53,17 +46,19 @@ extension ___RedBlackTreeMerge {
       __tree_.__insert_node_at(__parent, __child, __src_ptr)
     }
   }
+}
 
+extension ___RedBlackTreeMerge where Self: KeyValueComparer {
+  
   // MARK: Unique with Uniquing
 
   @inlinable
   @inline(__always)
-  mutating func ___tree_merge_unique<Source, Key, Value>(
+  mutating func ___tree_merge_unique<Source>(
     _ __source: Source,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
+    uniquingKeysWith combine: (_MappedValue, _MappedValue) throws -> _MappedValue
   ) rethrows
   where
-    _Value == _KeyValueTuple_<Key, Value>,
     Source: MergeSourceProtocol,
     Source._Key == _Key,
     Source._Value == _Value
@@ -74,36 +69,9 @@ extension ___RedBlackTreeMerge {
       let (__parent, __child) = __tree_.__find_equal(__source.__get_value(__src_ptr))
       __i = __source.__tree_next_iter(__i)
       if __tree_.__ptr_(__child) != .nullptr {
-        __tree_[__tree_.__ptr_(__child)].value = try combine(
-          __tree_[__tree_.__ptr_(__child)].value, __source.__value_(__src_ptr).value)
-      } else {
-        _ensureCapacity()
-        __src_ptr = __tree_.__construct_node(__source.__value_(__src_ptr))
-        __tree_.__insert_node_at(__parent, __child, __src_ptr)
-      }
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  mutating func ___tree_merge_unique<Source, Key, Value>(
-    _ __source: Source,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows
-  where
-    _Value == Pair<Key, Value>,
-    Source: MergeSourceProtocol,
-    Source._Key == _Key,
-    Source._Value == _Value
-  {
-    var __i = __source.__begin_node
-    while __i != __source.__end_node() {
-      var __src_ptr: _NodePtr = __i
-      let (__parent, __child) = __tree_.__find_equal(__source.__get_value(__src_ptr))
-      __i = __source.__tree_next_iter(__i)
-      if __tree_.__ptr_(__child) != .nullptr {
-        __tree_[__tree_.__ptr_(__child)].value = try combine(
-          __tree_[__tree_.__ptr_(__child)].value, __source.__value_(__src_ptr).value)
+        __tree_.___mapped_value(__tree_.__ptr_(__child),
+                                try combine(__tree_.___mapped_value(__tree_.__ptr_(__child)),
+                                            ___mapped_value(__source.__value_(__src_ptr))))
       } else {
         _ensureCapacity()
         __src_ptr = __tree_.__construct_node(__source.__value_(__src_ptr))
@@ -182,10 +150,10 @@ extension ___RedBlackTreeMerge {
   }
 }
 
-// MARK: Unique with Uniquing
-
-extension ___RedBlackTreeMerge where Self: KeyValueComparer & ___RedBlackTreeMappedValue {
+extension ___RedBlackTreeMerge where Self: KeyValueComparer {
   
+  // MARK: Unique with Uniquing
+
   @inlinable
   @inline(__always)
   mutating func ___merge_unique<S>(
@@ -219,9 +187,9 @@ extension ___RedBlackTreeMerge where Self: KeyValueComparer & ___RedBlackTreeMap
         if __tree_.__ptr_(__child) == .nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          ___mapped_value(__tree_.__ptr_(__child),
+          __tree_.___mapped_value(__tree_.__ptr_(__child),
                           try combine(
-                            ___mapped_value(__tree_.__ptr_(__child)),
+                            __tree_.___mapped_value(__tree_.__ptr_(__child)),
                             ___mapped_value(__element)))
           __tree_.destroy(__nd)
         }

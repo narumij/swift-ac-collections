@@ -122,6 +122,11 @@ extension ___LRUMemoizeStorage: ___LRULinkList {
   public static func ___mapped_value(_ element: _Value) -> _MappedValue {
     element.value
   }
+  
+  @inlinable
+  public static func ___mapped_value(_ element: inout _Value,_ value: _MappedValue) {
+    element.value = value
+  }
 }
 
 extension ___LRUMemoizeStorage: ___RedBlackTreeCopyOnWrite {}

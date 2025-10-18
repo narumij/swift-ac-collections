@@ -85,7 +85,6 @@ extension RedBlackTreeMap: ___RedBlackTreeBase {}
 extension RedBlackTreeMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMap: ___RedBlackTreeUnique {}
 extension RedBlackTreeMap: ___RedBlackTreeMerge {}
-extension RedBlackTreeMap: ___RedBlackTreeMappedValue {}
 extension RedBlackTreeMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMap: KeyValueComparer {}
 extension RedBlackTreeMap: ElementComparable where Value: Comparable {}

@@ -1013,6 +1013,23 @@ extension ___Tree {
 
 extension ___Tree: Tree_KeyValue where VC: KeyValueComparer {}
 
+extension ___Tree where VC: KeyValueComparer {
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func ___mapped_value(_ __p: _NodePtr) -> Value {
+    VC.___mapped_value(self[__p])
+  }
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func ___mapped_value(_ __p: _NodePtr,_ value: Value) {
+    VC.___mapped_value(&self[__p], value)
+  }
+}
+
 extension ___Tree {
 
   @nonobjc

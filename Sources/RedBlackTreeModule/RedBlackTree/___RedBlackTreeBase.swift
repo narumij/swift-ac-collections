@@ -64,34 +64,6 @@ extension ___RedBlackTreeBase {
   }
 }
 
-extension ___RedBlackTreeBase where Self: KeyValueComparer, _Value == Pair<_Key,_MappedValue>
-{
-  @inlinable
-  @inline(__always)
-  func ___mapped_value(_ __p:_NodePtr) -> _MappedValue {
-    __tree_[__p].value
-  }
-  @inlinable
-  @inline(__always)
-  func ___mapped_value(_ __p:_NodePtr,_ value: _MappedValue) {
-    __tree_[__p].value = value
-  }
-}
-
-extension ___RedBlackTreeBase where Self: KeyValueComparer, _Value == _KeyValueTuple_<_Key,_MappedValue>
-{
-  @inlinable
-  @inline(__always)
-  func ___mapped_value(_ __p:_NodePtr) -> _MappedValue {
-    __tree_[__p].value
-  }
-  @inlinable
-  @inline(__always)
-  func ___mapped_value(_ __p:_NodePtr,_ value: _MappedValue) {
-    __tree_[__p].value = value
-  }
-}
-
 extension ___RedBlackTreeBase {
 
   @inlinable

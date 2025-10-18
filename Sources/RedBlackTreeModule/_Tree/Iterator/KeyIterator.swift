@@ -51,7 +51,7 @@ where
       _current = _next
       _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return Tree.__key(__tree_[_current])
+    return __tree_.__get_value(_current)
   }
 
   @inlinable
@@ -108,7 +108,7 @@ where
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-    return Tree.__key(__tree_[_current])
+    return __tree_.__get_value(_current)
   }
 }
 

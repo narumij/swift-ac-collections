@@ -33,26 +33,13 @@ extension ___RedBlackTreeMerge {
     Source._Key == _Key,
     Source._Value == _Value
   {
-#if false
-    var __i = __source.__begin_node
-    while __i != __source.__end_node() {
-      var __src_ptr: _NodePtr = __i
-      let (__parent, __child) = __tree_.__find_equal(__source.__get_value(__src_ptr))
-      __i = __source.__tree_next_iter(__i)
-      if __tree_.__ptr_(__child) != .nullptr {
-        continue
-      }
-      _ensureCapacity()
-      __src_ptr = __tree_.__construct_node(__source.__value_(__src_ptr))
-      __tree_.__insert_node_at(__parent, __child, __src_ptr)
-    }
-#else
     var __i = __source.__begin_node
 
     if __tree_.__root() == .nullptr, __i != .end {
       // Make sure we always have a root node
       _ensureCapacity()
-      __tree_.__insert_node_at(.end, __tree_.__left_ref(.end), __tree_.__construct_node(__source.__value_(__i)))
+      __tree_.__insert_node_at(
+        .end, __tree_.__left_ref(.end), __tree_.__construct_node(__source.__value_(__i)))
       __i = __source.__tree_next_iter(__i)
     }
 
@@ -75,12 +62,11 @@ extension ___RedBlackTreeMerge {
         }
       }
     }
-#endif
   }
 }
 
 extension ___RedBlackTreeMerge where Self: KeyValueComparer {
-  
+
   // MARK: Unique with Uniquing
 
   @inlinable
@@ -94,39 +80,22 @@ extension ___RedBlackTreeMerge where Self: KeyValueComparer {
     Source._Key == _Key,
     Source._Value == _Value
   {
-#if false
-    var __i = __source.__begin_node
-    while __i != __source.__end_node() {
-      var __src_ptr: _NodePtr = __i
-      let (__parent, __child) = __tree_.__find_equal(__source.__get_value(__src_ptr))
-      __i = __source.__tree_next_iter(__i)
-      if __tree_.__ptr_(__child) != .nullptr {
-        __tree_.___mapped_value(__tree_.__ptr_(__child),
-                                try combine(__tree_.___mapped_value(__tree_.__ptr_(__child)),
-                                            ___mapped_value(__source.__value_(__src_ptr))))
-      } else {
-        _ensureCapacity()
-        __src_ptr = __tree_.__construct_node(__source.__value_(__src_ptr))
-        __tree_.__insert_node_at(__parent, __child, __src_ptr)
-      }
-    }
-#else
     var __i = __source.__begin_node
 
-    if __tree_.__root() == .nullptr, __i != .end
-    {  // Make sure we always have a root node
+    if __tree_.__root() == .nullptr, __i != .end {  // Make sure we always have a root node
       _ensureCapacity()
-      __tree_.__insert_node_at(.end, __tree_.__left_ref(.end), __tree_.__construct_node(__source.__value_(__i)))
+      __tree_.__insert_node_at(
+        .end, __tree_.__left_ref(.end), __tree_.__construct_node(__source.__value_(__i)))
       __i = __source.__tree_next_iter(__i)
     }
 
     var __max_node = __tree_.__tree_max(__tree_.__root())
-    
+
     while __i != .end {
       _ensureCapacity()
       let __nd = __tree_.__construct_node(__source.__value_(__i))
       __i = __source.__tree_next_iter(__i)
-      
+
       if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
         __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
         __max_node = __nd
@@ -135,15 +104,15 @@ extension ___RedBlackTreeMerge where Self: KeyValueComparer {
         if __tree_.__ptr_(__child) == .nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          __tree_.___mapped_value(__tree_.__ptr_(__child),
-                          try combine(
-                            __tree_.___mapped_value(__tree_.__ptr_(__child)),
-                            ___mapped_value(__tree_.__value_(__nd))))
+          __tree_.___mapped_value(
+            __tree_.__ptr_(__child),
+            try combine(
+              __tree_.___mapped_value(__tree_.__ptr_(__child)),
+              ___mapped_value(__tree_.__value_(__nd))))
           __tree_.destroy(__nd)
         }
       }
     }
-#endif
   }
 }
 
@@ -159,25 +128,14 @@ extension ___RedBlackTreeMerge {
     Source._Key == _Key,
     Source._Value == _Value
   {
-#if false
-    _ensureCapacity(amount: __source.size)
-    var __i = __source.__begin_node
-    while __i != __source.__end_node() {
-      var __src_ptr: _NodePtr = __i
-      var __parent: _NodePtr = .zero
-      let __child = __tree_.__find_leaf_high(&__parent, __source.__get_value(__src_ptr))
-      __i = __source.__tree_next_iter(__i)
-      __src_ptr = __tree_.__construct_node(__source.__value_(__src_ptr))
-      __tree_.__insert_node_at(__parent, __child, __src_ptr)
-    }
-#else
     _ensureCapacity(amount: __source.size)
 
     var __i = __source.__begin_node
 
     if __tree_.__root() == .nullptr, __i != .end {
       // Make sure we always have a root node
-      __tree_.__insert_node_at(.end, __tree_.__left_ref(.end), __tree_.__construct_node(__source.__value_(__i)))
+      __tree_.__insert_node_at(
+        .end, __tree_.__left_ref(.end), __tree_.__construct_node(__source.__value_(__i)))
       __i = __source.__tree_next_iter(__i)
     }
 
@@ -197,7 +155,6 @@ extension ___RedBlackTreeMerge {
         __tree_.__insert_node_at(__parent, __child, __nd)
       }
     }
-#endif
   }
 }
 
@@ -246,7 +203,7 @@ extension ___RedBlackTreeMerge {
 }
 
 extension ___RedBlackTreeMerge where Self: KeyValueComparer {
-  
+
   // MARK: Unique with Uniquing
 
   @inlinable
@@ -262,7 +219,7 @@ extension ___RedBlackTreeMerge where Self: KeyValueComparer {
     var it = __source.makeIterator()
 
     if __tree_.__root() == .nullptr,
-       let __element = it.next().map(__t_)
+      let __element = it.next().map(__t_)
     {  // Make sure we always have a root node
       _ensureCapacity()
       __tree_.__insert_node_at(
@@ -270,7 +227,7 @@ extension ___RedBlackTreeMerge where Self: KeyValueComparer {
     }
 
     var __max_node = __tree_.__tree_max(__tree_.__root())
-    
+
     while let __element = it.next().map(__t_) {
       _ensureCapacity()
       let __nd = __tree_.__construct_node(__element)
@@ -282,10 +239,11 @@ extension ___RedBlackTreeMerge where Self: KeyValueComparer {
         if __tree_.__ptr_(__child) == .nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          __tree_.___mapped_value(__tree_.__ptr_(__child),
-                          try combine(
-                            __tree_.___mapped_value(__tree_.__ptr_(__child)),
-                            ___mapped_value(__tree_.__value_(__nd))))
+          __tree_.___mapped_value(
+            __tree_.__ptr_(__child),
+            try combine(
+              __tree_.___mapped_value(__tree_.__ptr_(__child)),
+              ___mapped_value(__tree_.__value_(__nd))))
           __tree_.destroy(__nd)
         }
       }

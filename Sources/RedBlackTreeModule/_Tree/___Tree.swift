@@ -386,7 +386,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   public func __get_value(_ p: _NodePtr) -> _Key {
-    __key(__node_ptr[p].__value_)
+    VC.__key(__node_ptr[p].__value_)
   }
 }
 

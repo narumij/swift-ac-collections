@@ -198,7 +198,7 @@ extension RedBlackTreeIndex {
   @inlinable
   @inline(__always)
   var ___key: VC._Key {
-    __tree_.__key(___pointee)
+    VC.__key(___pointee)
   }
 
   @inlinable

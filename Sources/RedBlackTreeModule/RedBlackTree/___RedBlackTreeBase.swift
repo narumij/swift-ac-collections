@@ -392,7 +392,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public var ___value_comp: (_Value, _Value) -> Bool {
-    { __tree_.value_comp(__tree_.__key($0), __tree_.__key($1)) }
+    { __tree_.value_comp(Self.__key($0), Self.__key($1)) }
   }
 }
 

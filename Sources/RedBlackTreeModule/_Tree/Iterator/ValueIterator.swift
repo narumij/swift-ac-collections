@@ -24,7 +24,7 @@
 public struct ValueIterator<Tree, K, Value>: Sequence, IteratorProtocol
 where
   Tree: Tree_IterateProtocol & Tree_KeyValue,
-  Tree.Value == Value
+  Tree._MappedValue == Value
 {
 
   @usableFromInline
@@ -51,7 +51,7 @@ where
       _current = _next
       _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return Tree.___mapped_value(of: __tree_[_current])
+    return __tree_.___mapped_value(_current)
   }
 
   @inlinable
@@ -84,7 +84,7 @@ public struct ReversedValueIterator<Tree, K, Value>: Sequence,
   IteratorProtocol
 where
   Tree: Tree_IterateProtocol & Tree_KeyValue,
-  Tree.Value == Value
+  Tree._MappedValue == Value
 {
 
   @usableFromInline
@@ -109,7 +109,7 @@ where
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-    return Tree.___mapped_value(of: __tree_[_current])
+    return __tree_.___mapped_value(_current)
   }
 }
 

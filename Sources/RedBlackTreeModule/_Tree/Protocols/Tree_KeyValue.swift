@@ -22,10 +22,11 @@
 
 public protocol Tree_KeyValue {
   associatedtype Key
-  associatedtype Value
+  associatedtype _MappedValue
   associatedtype _Value
   static func __key(_ e: _Value) -> Key
-  static func ___mapped_value(of element: _Value) -> Value
+  func ___mapped_value(_ __p: _NodePtr) -> _MappedValue
+  func ___mapped_value(_ __p: _NodePtr,_ value: _MappedValue)
   static func value_comp(_ lhs: Key,_ rhs: Key) -> Bool
   static func value_equiv(_ :Key,_ :Key) -> Bool
 }

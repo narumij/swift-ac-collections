@@ -24,7 +24,7 @@
 public struct KeyIterator<Tree, Key, V>: Sequence, IteratorProtocol
 where
   Tree: Tree_IterateProtocol & Tree_KeyValue,
-  Tree.Key == Key
+  Tree._Key == Key
 {
 
   @usableFromInline
@@ -83,7 +83,7 @@ extension KeyIterator: Comparable {
 public struct ReversedKeyIterator<Tree, Key, V>: Sequence, IteratorProtocol
 where
   Tree: Tree_IterateProtocol & Tree_KeyValue,
-  Tree.Key == Key
+  Tree._Key == Key
 {
 
   @usableFromInline

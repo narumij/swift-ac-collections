@@ -21,12 +21,12 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public protocol Tree_KeyValue {
-  associatedtype Key
+  associatedtype _Key
   associatedtype _MappedValue
   associatedtype _Value
-  static func __key(_ e: _Value) -> Key
+  static func __key(_ e: _Value) -> _Key
+  static func value_comp(_ lhs: _Key,_ rhs: _Key) -> Bool
+  static func value_equiv(_ :_Key,_ :_Key) -> Bool
   func ___mapped_value(_ __p: _NodePtr) -> _MappedValue
   func ___mapped_value(_ __p: _NodePtr,_ value: _MappedValue)
-  static func value_comp(_ lhs: Key,_ rhs: Key) -> Bool
-  static func value_equiv(_ :Key,_ :Key) -> Bool
 }

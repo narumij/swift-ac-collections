@@ -1012,22 +1012,18 @@ extension ___Tree {
 }
 
 extension ___Tree: Tree_KeyValue where VC: KeyValueComparer {
-  public typealias _MappedValue = VC._MappedValue
-}
-
-extension ___Tree where VC: KeyValueComparer {
   
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___mapped_value(_ __p: _NodePtr) -> _MappedValue {
+  public func ___mapped_value(_ __p: _NodePtr) -> VC._MappedValue {
     VC.___mapped_value(self[__p])
   }
   
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___mapped_value(_ __p: _NodePtr,_ value: _MappedValue) {
+  public func ___mapped_value(_ __p: _NodePtr,_ value: VC._MappedValue) {
     VC.___mapped_value(&self[__p], value)
   }
 }

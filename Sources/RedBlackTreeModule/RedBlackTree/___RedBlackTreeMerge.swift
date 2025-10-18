@@ -18,6 +18,13 @@ where
   mutating func _ensureCapacity(amount: Int)
 }
 
+@usableFromInline
+protocol ___RedBlackTreeMappedValue {
+  associatedtype _MappedValue
+  func ___mapped_value(_ __p:_NodePtr) -> _MappedValue
+  func ___mapped_value(_ __p:_NodePtr,_ value: _MappedValue)
+}
+
 // MARK: - Tree merge
 // マージ元がtreeを持つケース
 
@@ -145,159 +152,81 @@ extension ___RedBlackTreeMerge {
     S: Sequence,
     S.Element == _Value
   {
-    #if false
-      for __element in __source {
+    var it = __source.makeIterator()
+
+    if __tree_.__root() == .nullptr,
+      let __element = it.next()
+    {  // Make sure we always have a root node
+      _ensureCapacity()
+      __tree_.__insert_node_at(
+        .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
+    }
+
+    var __max_node = __tree_.__tree_max(__tree_.__root())
+
+    while let __element = it.next() {
+      _ensureCapacity()
+      let __nd = __tree_.__construct_node(__element)
+      if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
+        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
+        __max_node = __nd
+      } else {
         let (__parent, __child) = __tree_.__find_equal(__tree_.__key(__element))
-        if __tree_.__ptr_(__child) != .nullptr {
-          continue
-        }
-        _ensureCapacity()
-        let __src_ptr = __tree_.__construct_node(__element)
-        __tree_.__insert_node_at(__parent, __child, __src_ptr)
-      }
-    #else
-      var it = __source.makeIterator()
-
-      if __tree_.__root() == .nullptr,
-        let __element = it.next()
-      {  // Make sure we always have a root node
-        _ensureCapacity()
-        __tree_.__insert_node_at(
-          .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
-      }
-
-      var __max_node = __tree_.__tree_max(__tree_.__root())
-
-      while let __element = it.next() {
-        _ensureCapacity()
-        let __nd = __tree_.__construct_node(__element)
-        if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) { // __node > __max_node
-          __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
-          __max_node = __nd
+        if __tree_.__ptr_(__child) == .nullptr {
+          __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          let (__parent, __child) = __tree_.__find_equal(__tree_.__key(__element))
-          if __tree_.__ptr_(__child) == .nullptr {
-            __tree_.__insert_node_at(__parent, __child, __nd)
-          } else {
-            __tree_.destroy(__nd)
-          }
+          __tree_.destroy(__nd)
         }
       }
-    #endif
+    }
   }
+}
 
-  // MARK: Unique with Uniquing
+// MARK: Unique with Uniquing
 
+extension ___RedBlackTreeMerge where Self: KeyValueComparer & ___RedBlackTreeMappedValue {
+  
   @inlinable
   @inline(__always)
-  mutating func ___merge_unique<S, Key, Value>(
+  mutating func ___merge_unique<S>(
     _ __source: S,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
+    uniquingKeysWith combine: (_MappedValue, _MappedValue) throws -> _MappedValue,
+    transform __t_: (S.Element) -> _Value
   ) rethrows
   where
-    _Value == _KeyValueTuple_<Key, Value>,
-    S: Sequence,
-    S.Element == (Key, Value)
+    S: Sequence
   {
-    #if false
-      for __element in __source {
+    var it = __source.makeIterator()
+
+    if __tree_.__root() == .nullptr,
+       let __element = it.next().map(__t_)
+    {  // Make sure we always have a root node
+      _ensureCapacity()
+      __tree_.__insert_node_at(
+        .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
+    }
+
+    var __max_node = __tree_.__tree_max(__tree_.__root())
+    
+    while let __element = it.next().map(__t_) {
+      _ensureCapacity()
+      let __nd = __tree_.__construct_node(__element)
+      if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
+        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
+        __max_node = __nd
+      } else {
         let (__parent, __child) = __tree_.__find_equal(__tree_.__key(__element))
-        if __tree_.__ptr_(__child) != .nullptr {
-          __tree_[__tree_.__ptr_(__child)].value = try combine(
-            __tree_[__tree_.__ptr_(__child)].value, __element.1)
+        if __tree_.__ptr_(__child) == .nullptr {
+          __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          _ensureCapacity()
-          let __src_ptr = __tree_.__construct_node(__element)
-          __tree_.__insert_node_at(__parent, __child, __src_ptr)
+          ___mapped_value(__tree_.__ptr_(__child),
+                          try combine(
+                            ___mapped_value(__tree_.__ptr_(__child)),
+                            ___mapped_value(__element)))
+          __tree_.destroy(__nd)
         }
       }
-    #else
-      var it = __source.makeIterator()
-
-      if __tree_.__root() == .nullptr,
-        let __element = it.next()
-      {  // Make sure we always have a root node
-        _ensureCapacity()
-        __tree_.__insert_node_at(
-          .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
-      }
-
-      var __max_node = __tree_.__tree_max(__tree_.__root())
-
-      while let __element = it.next() {
-        _ensureCapacity()
-        let __nd = __tree_.__construct_node(__element)
-        if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) { // __node > __max_node
-          __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
-          __max_node = __nd
-        } else {
-          let (__parent, __child) = __tree_.__find_equal(__tree_.__key(__element))
-          if __tree_.__ptr_(__child) == .nullptr {
-            __tree_.__insert_node_at(__parent, __child, __nd)
-          } else {
-            __tree_[__tree_.__ptr_(__child)].value = try combine(
-              __tree_[__tree_.__ptr_(__child)].value, __element.1)
-            __tree_.destroy(__nd)
-          }
-        }
-      }
-    #endif
-  }
-
-  @inlinable
-  @inline(__always)
-  mutating func ___merge_unique<S, Key, Value>(
-    _ __source: S,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows
-  where
-    _Value == Pair<Key, Value>,
-    S: Sequence,
-    S.Element == Pair<Key, Value>
-  {
-    #if false
-      for __element in __source {
-        let (__parent, __child) = __tree_.__find_equal(__tree_.__key(__element))
-        if __tree_.__ptr_(__child) != .nullptr {
-          __tree_[__tree_.__ptr_(__child)].value = try combine(
-            __tree_[__tree_.__ptr_(__child)].value, __element.value)
-        } else {
-          _ensureCapacity()
-          let __src_ptr = __tree_.__construct_node(__element)
-          __tree_.__insert_node_at(__parent, __child, __src_ptr)
-        }
-      }
-    #else
-      var it = __source.makeIterator()
-
-      if __tree_.__root() == .nullptr,
-        let __element = it.next()
-      {  // Make sure we always have a root node
-        _ensureCapacity()
-        __tree_.__insert_node_at(
-          .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
-      }
-
-      var __max_node = __tree_.__tree_max(__tree_.__root())
-
-      while let __element = it.next() {
-        _ensureCapacity()
-        let __nd = __tree_.__construct_node(__element)
-        if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) { // __node > __max_node
-          __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
-          __max_node = __nd
-        } else {
-          let (__parent, __child) = __tree_.__find_equal(__tree_.__key(__element))
-          if __tree_.__ptr_(__child) == .nullptr {
-            __tree_.__insert_node_at(__parent, __child, __nd)
-          } else {
-            __tree_[__tree_.__ptr_(__child)].value = try combine(
-              __tree_[__tree_.__ptr_(__child)].value, __element.value)
-            __tree_.destroy(__nd)
-          }
-        }
-      }
-    #endif
+    }
   }
 }
 

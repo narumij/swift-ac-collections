@@ -41,6 +41,12 @@ extension KeyValueComparer {
   static func ___key_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
     value_comp(__key(lhs), __key(rhs))
   }
+  
+  @inlinable
+  @inline(__always)
+  func ___mapped_value(_ element: _Value) -> _MappedValue {
+    Self.___mapped_value(element)
+  }
 }
 
 // MARK: -

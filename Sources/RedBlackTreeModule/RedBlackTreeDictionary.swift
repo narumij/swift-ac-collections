@@ -84,6 +84,7 @@ extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
 extension RedBlackTreeDictionary: ___RedBlackTreeMerge {}
+extension RedBlackTreeDictionary: ___RedBlackTreeMappedValue {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 extension RedBlackTreeDictionary: ElementComparable where Value: Comparable {}
@@ -481,7 +482,7 @@ extension RedBlackTreeDictionary {
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
     _ensureUnique()
-    try ___merge_unique(other, uniquingKeysWith: combine)
+    try ___merge_unique(other, uniquingKeysWith: combine) { $0 }
   }
 
   /// 辞書に `other` の要素をマージします。
@@ -496,7 +497,7 @@ extension RedBlackTreeDictionary {
   ) rethrows where S: Sequence, S.Element == Pair<Key, Value> {
 
     _ensureUnique()
-    try ___merge_unique(other.map({ $0.tuple }), uniquingKeysWith: combine)
+    try ___merge_unique(other, uniquingKeysWith: combine) { $0.tuple }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

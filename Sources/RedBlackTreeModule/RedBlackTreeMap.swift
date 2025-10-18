@@ -85,6 +85,7 @@ extension RedBlackTreeMap: ___RedBlackTreeBase {}
 extension RedBlackTreeMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMap: ___RedBlackTreeUnique {}
 extension RedBlackTreeMap: ___RedBlackTreeMerge {}
+extension RedBlackTreeMap: ___RedBlackTreeMappedValue {}
 extension RedBlackTreeMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMap: KeyValueComparer {}
 extension RedBlackTreeMap: ElementComparable where Value: Comparable {}
@@ -514,7 +515,7 @@ extension RedBlackTreeMap {
   ) rethrows where S: Sequence, S.Element == Pair<Key, Value> {
 
     _ensureUnique()
-    try ___merge_unique(other, uniquingKeysWith: combine)
+    try ___merge_unique(other, uniquingKeysWith: combine) { $0 }
   }
 
   /// mapに `other` の要素をマージします。
@@ -529,7 +530,7 @@ extension RedBlackTreeMap {
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
     _ensureUnique()
-    try ___merge_unique(other.map({ Pair($0) }), uniquingKeysWith: combine)
+    try ___merge_unique(other, uniquingKeysWith: combine) { Pair($0) }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

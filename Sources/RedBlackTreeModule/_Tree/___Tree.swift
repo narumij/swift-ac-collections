@@ -431,7 +431,6 @@ extension ___Tree: CompareProtocol {}
 extension ___Tree: CompareUniqueProtocol {}
 extension ___Tree: CompareMultiProtocol {}
 extension ___Tree: MergeSourceProtocol {}
-extension ___Tree: CompProtocol {}
 extension ___Tree: ValueComparator {}
 
 extension ___Tree {
@@ -1012,18 +1011,18 @@ extension ___Tree {
 }
 
 extension ___Tree: Tree_KeyValue where VC: KeyValueComparer {
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
   public func ___mapped_value(_ __p: _NodePtr) -> VC._MappedValue {
     VC.___mapped_value(self[__p])
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___mapped_value(_ __p: _NodePtr,_ value: VC._MappedValue) {
+  public func ___mapped_value(_ __p: _NodePtr, _ value: VC._MappedValue) {
     VC.___mapped_value(&self[__p], value)
   }
 }
@@ -1135,7 +1134,7 @@ extension ___Tree {
 }
 
 extension ___Tree {
-  
+
   @nonobjc
   @inlinable
   @inline(__always)

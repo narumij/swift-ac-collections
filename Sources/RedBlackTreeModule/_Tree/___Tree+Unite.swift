@@ -24,6 +24,12 @@ extension ___Tree {
 
   @inlinable
   @inline(__always)
+  public func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
+    VC.value_comp(a, b)
+  }
+
+  @inlinable
+  @inline(__always)
   func ___copy_range(_ f: inout _NodePtr, _ l: _NodePtr, to r: inout Tree) {
     var (__parent, __child) = r.___max_ref()
     while f != l {
@@ -59,8 +65,8 @@ extension ___Tree {
         __first2 = other.__tree_next_iter(__first2)
       } else {
         if !___comp(
-            self.__get_value(__first1),
-            other.__get_value(__first2))
+          self.__get_value(__first1),
+          other.__get_value(__first2))
         {
           __first2 = other.__tree_next_iter(__first2)
         }

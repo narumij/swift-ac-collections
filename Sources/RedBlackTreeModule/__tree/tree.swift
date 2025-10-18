@@ -160,14 +160,6 @@ protocol ValueProtocol: TreeNodeProtocol, TreeNodeValueProtocol {
   func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
 }
 
-/// Set Algebraやmeld等で用いる
-@usableFromInline
-protocol CompProtocol {
-  associatedtype _Key
-  /// キー同士を比較する。通常`<`と同じ
-  func ___comp(_ a: _Key, _ b: _Key) -> Bool
-}
-
 @usableFromInline
 protocol BeginNodeProtocol {
   /// 木の左端のノードを返す
@@ -327,7 +319,6 @@ public protocol ValueComparator {
   static func value_equiv(_ lhs: VC._Key, _ rhs: VC._Key) -> Bool
   func __key(_ e: VC._Value) -> VC._Key
   func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
-  func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool
 }
 
 extension ValueComparator {
@@ -359,12 +350,6 @@ extension ValueComparator {
   @inlinable
   @inline(__always)
   public func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
-    VC.value_comp(a, b)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
     VC.value_comp(a, b)
   }
 }

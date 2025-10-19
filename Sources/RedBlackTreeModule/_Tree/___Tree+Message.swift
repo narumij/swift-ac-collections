@@ -54,5 +54,3 @@ extension String {
     "Can't removeLast from an empty RedBlackTree"
   }
 }
-
-// メッセージをマッサージに空見するぐらい疲れている

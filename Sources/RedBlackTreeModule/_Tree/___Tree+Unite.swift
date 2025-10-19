@@ -24,12 +24,6 @@ extension ___Tree {
 
   @inlinable
   @inline(__always)
-  public func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
-    VC.value_comp(a, b)
-  }
-
-  @inlinable
-  @inline(__always)
   func ___copy_range(_ f: inout _NodePtr, _ l: _NodePtr, to r: inout Tree) {
     var (__parent, __child) = r.___max_ref()
     while f != l {
@@ -55,7 +49,7 @@ extension ___Tree {
         return __result_
       }
 
-      if ___comp(
+      if value_comp(
         other.__get_value(__first2),
         self.__get_value(__first1))
       {
@@ -64,7 +58,7 @@ extension ___Tree {
         (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, other[__first2])
         __first2 = other.__tree_next_iter(__first2)
       } else {
-        if !___comp(
+        if !value_comp(
           self.__get_value(__first1),
           other.__get_value(__first2))
         {
@@ -98,7 +92,7 @@ extension ___Tree {
         return __result_
       }
 
-      if ___comp(
+      if value_comp(
         self.__get_value(__first1),
         other.__get_value(__first2))
       {
@@ -106,7 +100,7 @@ extension ___Tree {
         Tree.ensureCapacity(tree: &__result_)
         (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, self[__first1])
         __first1 = __tree_next_iter(__first1)
-      } else if ___comp(
+      } else if value_comp(
         other.__get_value(__first2),
         self.__get_value(__first1))
       {
@@ -138,10 +132,10 @@ extension ___Tree {
     var (__first1, __last1) = (__begin_node, __end_node())
     var (__first2, __last2) = (other.__begin_node, other.__end_node())
     while __first1 != __last1, __first2 != __last2 {
-      if ___comp(self.__get_value(__first1), other.__get_value(__first2)) {
+      if value_comp(self.__get_value(__first1), other.__get_value(__first2)) {
         __first1 = __tree_next_iter(__first1)
       } else {
-        if !___comp(other.__get_value(__first2), self.__get_value(__first1)) {
+        if !value_comp(other.__get_value(__first2), self.__get_value(__first1)) {
           Tree.ensureCapacity(tree: &__result_)
           (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, self[__first1])
           __first1 = __tree_next_iter(__first1)
@@ -165,12 +159,12 @@ extension ___Tree {
         ___copy_range(&__first1, __last1, to: &__result_)
         return __result_
       }
-      if ___comp(self.__get_value(__first1), other.__get_value(__first2)) {
+      if value_comp(self.__get_value(__first1), other.__get_value(__first2)) {
         Tree.ensureCapacity(tree: &__result_)
         (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, self[__first1])
         __first1 = __tree_next_iter(__first1)
       } else {
-        if ___comp(other.__get_value(__first2), self.__get_value(__first1)) {
+        if value_comp(other.__get_value(__first2), self.__get_value(__first1)) {
           Tree.ensureCapacity(tree: &__result_)
           (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, other[__first2])
         } else {
@@ -192,11 +186,11 @@ extension ___Tree {
     var (__first1, __last1) = (__begin_node, __end_node())
     var (__first2, __last2) = (other.__begin_node, other.__end_node())
     while __first1 != __last1, __first2 != __last2 {
-      if ___comp(self.__get_value(__first1), other.__get_value(__first2)) {
+      if value_comp(self.__get_value(__first1), other.__get_value(__first2)) {
         Tree.ensureCapacity(tree: &__result_)
         (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, self[__first1])
         __first1 = __tree_next_iter(__first1)
-      } else if ___comp(other.__get_value(__first2), self.__get_value(__first1)) {
+      } else if value_comp(other.__get_value(__first2), self.__get_value(__first1)) {
         __first2 = __tree_next_iter(__first2)
       } else {
         __first1 = __tree_next_iter(__first1)

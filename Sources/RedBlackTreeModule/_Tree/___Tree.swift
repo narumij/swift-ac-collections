@@ -989,18 +989,18 @@ extension ___Tree {
 extension ___Tree: Tree_IterateProtocol {}
 
 extension ___Tree {
-  public typealias Index = ___Iterator
+  public typealias Index = RedBlackTreeIndex<VC>
 
   @nonobjc
   @inlinable
   @inline(__always)
-  func makeIndex(rawValue: _NodePtr) -> ___Iterator {
+  func makeIndex(rawValue: _NodePtr) -> Index {
     .init(tree: self, rawValue: rawValue)
   }
 }
 
 extension ___Tree {
-  public typealias Indices = ___IteratorSequence
+  public typealias Indices = RedBlackTreeIndices<VC>
 
   @nonobjc
   @inlinable

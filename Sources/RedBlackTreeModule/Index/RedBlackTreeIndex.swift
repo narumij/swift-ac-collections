@@ -253,7 +253,3 @@ public func - <VC>(lhs: RedBlackTreeIndex<VC>, rhs: Int) -> RedBlackTreeIndex<VC
 public func - <VC>(lhs: RedBlackTreeIndex<VC>, rhs: RedBlackTreeIndex<VC>) -> Int {
   rhs.distance(to: lhs)
 }
-
-extension ___Tree {
-  public typealias ___Iterator = RedBlackTreeIndex<VC>
-}

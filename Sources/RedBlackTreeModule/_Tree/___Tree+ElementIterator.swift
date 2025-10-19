@@ -41,8 +41,6 @@ extension ___Tree {
       self._next = start == .end ? .end : tree.__tree_next_iter(start)
     }
 
-    // 性能変化の反応が過敏なので、慎重さが必要っぽい。
-
     @inlinable
     @inline(__always)
     public mutating func next() -> Tree._Value? {
@@ -131,7 +129,7 @@ extension ___Tree.ReversedElementIterator {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var indices: ___Tree.BackwordIterator {
+  public var indices: RedBlackTreeIndices<VC>.BackwordIterator {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

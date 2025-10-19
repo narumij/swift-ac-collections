@@ -20,6 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+import Foundation
+
 extension RedBlackTreeIterator {
   
   @frozen
@@ -81,55 +83,3 @@ extension RedBlackTreeIterator.MappedValues: Comparable where Base._MappedValue:
   }
 }
 
-extension RedBlackTreeIterator.MappedValues {
-  
-  @frozen
-  public struct Reversed: Sequence, IteratorProtocol
-  where Base: KeyValueComparer
-  {
-    public typealias Tree = ___Tree<Base>
-    
-    @usableFromInline
-    let __tree_: Tree
-    
-    @usableFromInline
-    var _start, _begin, _current, _next: _NodePtr
-    
-    @inlinable
-    @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.__tree_ = tree
-      self._current = end
-      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
-      self._start = start
-      self._begin = __tree_.__begin_node
-    }
-    
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> Base._MappedValue? {
-      guard _current != _start else { return nil }
-      _current = _next
-      _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-      return __tree_.___mapped_value(_current)
-    }
-  }
-}
-
-extension RedBlackTreeIterator.MappedValues.Reversed: Equatable where Base._MappedValue: Equatable {
-
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
-  }
-}
-
-extension RedBlackTreeIterator.MappedValues.Reversed: Comparable where Base._MappedValue: Comparable {
-
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
-  }
-}

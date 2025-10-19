@@ -22,10 +22,10 @@
 
 import Foundation
 
-extension RedBlackTreeIterator {
+extension RedBlackTreeIterator.Keys {
   
   @frozen
-  public struct Keys: Sequence, IteratorProtocol {
+  public struct Reversed: Sequence, IteratorProtocol {
     
     public typealias Tree = ___Tree<Base>
     
@@ -33,38 +33,30 @@ extension RedBlackTreeIterator {
     let __tree_: Tree
     
     @usableFromInline
-    var _start, _end, _current, _next: _NodePtr
+    var _start, _begin, _current, _next: _NodePtr
     
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.__tree_ = tree
-      self._current = start
+      self._current = end
+      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
       self._start = start
-      self._end = end
-      self._next = start == .end ? .end : tree.__tree_next_iter(start)
+      self._begin = __tree_.__begin_node
     }
     
     @inlinable
     @inline(__always)
     public mutating func next() -> Base._Key? {
-      guard _current != _end else { return nil }
-      defer {
-        _current = _next
-        _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
-      }
+      guard _current != _start else { return nil }
+      _current = _next
+      _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
       return __tree_.__get_value(_current)
-    }
-    
-    @inlinable
-    @inline(__always)
-    public __consuming func reversed() -> Reversed {
-      .init(tree: __tree_, start: _start, end: _end)
     }
   }
 }
 
-extension RedBlackTreeIterator.Keys: Equatable {
+extension RedBlackTreeIterator.Keys.Reversed: Equatable {
 
   @inlinable
   @inline(__always)
@@ -73,7 +65,7 @@ extension RedBlackTreeIterator.Keys: Equatable {
   }
 }
 
-extension RedBlackTreeIterator.Keys: Comparable {
+extension RedBlackTreeIterator.Keys.Reversed: Comparable {
 
   @inlinable
   @inline(__always)
@@ -81,4 +73,3 @@ extension RedBlackTreeIterator.Keys: Comparable {
     lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
   }
 }
-

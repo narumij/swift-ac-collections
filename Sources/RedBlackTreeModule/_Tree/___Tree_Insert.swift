@@ -104,11 +104,11 @@ extension ___Tree where VC: KeyValueComparer {
         if __tree_.__ptr_(__child) == .nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          __tree_.___mapped_value(
-            __tree_.__ptr_(__child),
-            try combine(
-              __tree_.___mapped_value(__tree_.__ptr_(__child)),
-              VC.___mapped_value(__tree_.__value_(__nd))))
+          try __tree_.___with_mapped_value(__tree_.__ptr_(__child)) {
+              $0 = try combine(
+                __tree_.___mapped_value(__tree_.__ptr_(__child)),
+                VC.___mapped_value(__tree_.__value_(__nd)))
+            }
           __tree_.destroy(__nd)
         }
       }
@@ -238,11 +238,11 @@ extension ___Tree where VC: KeyValueComparer {
         if __tree_.__ptr_(__child) == .nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          __tree_.___mapped_value(
-            __tree_.__ptr_(__child),
-            try combine(
+          try __tree_.___with_mapped_value(__tree_.__ptr_(__child)) {
+            $0 = try combine(
               __tree_.___mapped_value(__tree_.__ptr_(__child)),
-              VC.___mapped_value(__tree_.__value_(__nd))))
+              VC.___mapped_value(__tree_.__value_(__nd)))
+          }
           __tree_.destroy(__nd)
         }
       }

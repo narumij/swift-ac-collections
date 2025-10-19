@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 extension ___Tree {
-  
+
   @inlinable
   static func __create_unique<S>(sequence: __owned S) -> ___Tree
   where VC._Value == S.Element, S: Sequence {
@@ -39,10 +39,10 @@ extension ___Tree {
         tree.__insert_node_at(__parent, __child, __h)
       }
     }
-    
+
     return tree
   }
-  
+
   @inlinable
   static func __create_multi<S>(sequence: __owned S) -> ___Tree
   where VC._Value == S.Element, S: Sequence {
@@ -61,10 +61,13 @@ extension ___Tree {
         tree.__insert_node_at(__parent, __child, __h)
       }
     }
-    
+
     return tree
   }
-  
+}
+
+extension ___Tree where VC._Key == VC._Value {
+
   @inlinable
   static func create_unique(sorted elements: __owned [VC._Value]) -> ___Tree
   where VC._Key: Comparable {
@@ -85,9 +88,12 @@ extension ___Tree {
 }
 
 extension ___Tree where VC: KeyValueComparer {
-  
+
   @inlinable
-  static func create_unique_(sorted elements: __owned [VC._Value]) -> ___Tree
+  static func create_unique<Element>(
+    sorted elements: __owned [Element],
+    transform: (Element) -> VC._Value
+  ) -> ___Tree
   where VC._Key: Comparable {
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -95,11 +101,68 @@ extension ___Tree where VC: KeyValueComparer {
     var (__parent, __child) = tree.___max_ref()
     // ソートの計算量がO(*n* log *n*)
     for __k in elements {
-      if __parent == .end || __key(tree[__parent]) != __key(__k) {
+      let __v = transform(__k)
+      if __parent == .end || __key(tree[__parent]) != __key(__v) {
         // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
+        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
       } else {
-        fatalError("Dupricate values for key: '\(VC.__key(__k))'")
+        fatalError("Dupricate values for key: '\(VC.__key(__v))'")
+      }
+    }
+    assert(tree.__tree_invariant(tree.__root()))
+    return tree
+  }
+
+  @inlinable
+  static func create_unique<Element>(
+    sorted elements: __owned [Element],
+    uniquingKeysWith combine: (VC._MappedValue, VC._MappedValue) throws -> VC._MappedValue,
+    transform: (Element) -> VC._Value
+  ) rethrows -> ___Tree
+  where VC._Key: Comparable {
+    let count = elements.count
+    let tree: Tree = .create(minimumCapacity: count)
+    // 初期化直後はO(1)
+    var (__parent, __child) = tree.___max_ref()
+    // ソートの計算量がO(*n* log *n*)
+    for __k in elements {
+      let __v = transform(__k)
+      if __parent == .end || VC.__key(tree[__parent]) != VC.__key(__v) {
+        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
+        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
+      } else {
+        try tree.___with_mapped_value(__parent) {
+          $0 = try combine(
+            tree.___mapped_value(__parent),
+            VC.___mapped_value(__v))
+        }
+      }
+    }
+    assert(tree.__tree_invariant(tree.__root()))
+    return tree
+  }
+
+  @inlinable
+  static func create_unique<Element>(
+    sorted elements: __owned [Element],
+    by keyForValue: (Element) throws -> VC._Key,
+    transform: (VC._Key, Element) -> VC._Value
+  ) rethrows -> ___Tree
+  where VC._Key: Comparable, VC._MappedValue == [Element] {
+    let count = elements.count
+    let tree: Tree = .create(minimumCapacity: count)
+    // 初期化直後はO(1)
+    var (__parent, __child) = tree.___max_ref()
+    // ソートの計算量がO(*n* log *n*)
+    for __v in elements {
+      let __k = try keyForValue(__v)
+      if __parent == .end || VC.__key(tree[__parent]) != __k {
+        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
+        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, transform(__k, __v))
+      } else {
+        tree.___with_mapped_value(__parent) {
+          $0.append(__v)
+        }
       }
     }
     assert(tree.__tree_invariant(tree.__root()))

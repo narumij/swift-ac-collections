@@ -1017,11 +1017,18 @@ extension ___Tree where VC: KeyValueComparer {
     VC.___mapped_value(self[__p])
   }
 
+//  @nonobjc
+//  @inlinable
+//  @inline(__always)
+//  public func ___mapped_value(_ __p: _NodePtr, _ value: VC._MappedValue) {
+//    VC.___with_mapped_value(&self[__p]) { $0 = value }
+//  }
+  
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___mapped_value(_ __p: _NodePtr, _ value: VC._MappedValue) {
-    VC.___mapped_value(&self[__p], value)
+  public func ___with_mapped_value<T>(_ __p: _NodePtr,_ f: (inout VC._MappedValue) throws -> T) rethrows -> T {
+    try VC.___with_mapped_value(&self[__p], f)
   }
 }
 

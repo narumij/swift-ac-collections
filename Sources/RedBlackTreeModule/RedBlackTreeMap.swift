@@ -58,10 +58,10 @@ public struct RedBlackTreeMap<Key: Comparable, Value> {
     typealias Element = KeyValue
 
   public
-  typealias Keys = RedBlackTreeIterator<Self>.Keys
+    typealias Keys = RedBlackTreeIterator<Self>.Keys
 
   public
-  typealias Values = RedBlackTreeIterator<Self>.MappedValues
+    typealias Values = RedBlackTreeIterator<Self>.MappedValues
 
   public
     typealias _Key = Key
@@ -114,16 +114,27 @@ extension RedBlackTreeMap {
   @inlinable
   public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == KeyValue {
-    self._storage = .init(tree:
-        .create_unique_(sorted: keysAndValues.sorted { $0.key < $1.key }))
+    
+    self._storage = .init(
+      tree:
+        .create_unique(
+          sorted: keysAndValues.sorted { $0.key < $1.key }
+        ) {
+          $0
+        })
   }
 
   /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
-    self._storage = .init(tree:
-        .create_unique_(sorted: keysAndValues.sorted { $0.0 < $1.0 }.map { Pair($0) }))
+    self._storage = .init(
+      tree:
+        .create_unique(
+          sorted: keysAndValues.sorted { $0.0 < $1.0 }
+        ) {
+          Pair($0)
+        })
   }
 }
 
@@ -135,22 +146,17 @@ extension RedBlackTreeMap {
     _ keysAndValues: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
-    let elements = keysAndValues.sorted(by: { $0.0 < $1.0 })
-    let count = elements.count
-    let tree: Tree = .create(minimumCapacity: count)
-    // 初期化直後はO(1)
-    var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
-    for __k in elements {
-      if __parent == .end || tree[__parent].key != __k.0 {
-        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, .init(__k))
-      } else {
-        tree[__parent].value = try combine(tree[__parent].value, __k.1)
-      }
-    }
-    assert(tree.__tree_invariant(tree.__root()))
-    self._storage = .init(tree: tree)
+
+    self._storage = .init(
+      tree:
+        try .create_unique(
+          sorted: keysAndValues.sorted {
+            $0.0 < $1.0
+          },
+          uniquingKeysWith: combine
+        ) {
+          Pair($0)
+        })
   }
 }
 
@@ -162,23 +168,16 @@ extension RedBlackTreeMap {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == [S.Element] {
-    let values = try values.sorted(by: { try keyForValue($0) < keyForValue($1) })
-    let count = values.count
-    let tree: Tree = .create(minimumCapacity: count)
-    // 初期化直後はO(1)
-    var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
-    for __v in values {
-      let __k = try keyForValue(__v)
-      if __parent == .end || tree[__parent].key != __k {
-        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, .init(__k, [__v]))
-      } else {
-        tree[__parent].value.append(__v)
-      }
-    }
-    assert(tree.__tree_invariant(tree.__root()))
-    self._storage = .init(tree: tree)
+
+    self._storage = .init(
+      tree: try .create_unique(
+        sorted: try values.sorted {
+          try keyForValue($0) < keyForValue($1)
+        },
+        by: keyForValue
+      ) {
+        Pair($0, [$1])
+      })
   }
 }
 
@@ -469,7 +468,9 @@ extension RedBlackTreeMap {
     _ other: RedBlackTreeMap<Key, Value>,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
-    try _ensureUnique { try .___insert_unique(tree: $0, other: other.__tree_, uniquingKeysWith: combine) }
+    try _ensureUnique {
+      try .___insert_unique(tree: $0, other: other.__tree_, uniquingKeysWith: combine)
+    }
   }
 
   /// mapに `other` の要素をマージします。

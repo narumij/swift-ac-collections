@@ -26,9 +26,9 @@ import Foundation
 ///
 /// ヒープの代わりに配列を使っているため、実際には内部配列のインデックスを使用している
 ///
-/// インデックスが0からはじまるため、一般的にnullは0で表現するところを、-1で表現している
+/// インデックスが0からはじまるため、一般的にnullは0で表現するところを、-2で表現している
 ///
-/// endはルートノードを保持するオブジェクトを指すかわりに、-2で表現している
+/// endはルートノードを保持するオブジェクトを指すかわりに、-1で表現している
 ///
 /// llvmの`__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
 public typealias _NodePtr = Int
@@ -39,13 +39,15 @@ extension _NodePtr {
 
   /// 赤黒木のIndexで、nullを表す
   @inlinable
-  @inline(__always)
-  static var nullptr: Self { -2 }
+  static var nullptr: Self {
+    @inline(__always) _read { yield -2 }
+  }
 
   /// 赤黒木のIndexで、終端を表す
   @inlinable
-  @inline(__always)
-  static var end: Self { -1 }
+  static var end: Self {
+    @inline(__always) _read { yield -1 }
+  }
 
   /// 数値を直接扱うことを避けるための初期化メソッド
   @inlinable
@@ -74,16 +76,24 @@ func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
   // かわりに上限サイズがInt.max - 1になる
   //
   // しばらく様子を見る
+  /// 最上位ビットが0のとき右、最上位ビットが1の時左
+  ///
+  /// 直感に反してこのようにしているのは、`__left_ref(.end)`を簡潔に扱えるようにするため
   public typealias _NodeRef = UInt
 #endif
 
 // ルートノードの親相当の機能
 @usableFromInline
 protocol TreeEndNodeProtocol {
+  /// 左ノードを返す
+  ///
   /// 木を遡るケースではこちらが必ず必要
   func __left_(_: pointer) -> pointer
+  /// 左ノードを返す
+  ///
   /// 根から末端に向かう処理は、こちらで足りる
   func __left_unsafe(_ p: pointer) -> pointer
+  /// 左ノードを更新する
   func __left_(_ lhs: pointer, _ rhs: pointer)
 }
 
@@ -95,12 +105,20 @@ extension TreeEndNodeProtocol {
 // 一般ノード相当の機能
 @usableFromInline
 protocol TreeNodeProtocol: TreeEndNodeProtocol {
+  /// 右ノードを返す
   func __right_(_: pointer) -> pointer
+  /// 右ノードを更新する
   func __right_(_ lhs: pointer, _ rhs: pointer)
+  /// 色を返す
   func __is_black_(_: pointer) -> Bool
+  /// 色を更新する
   func __is_black_(_ lhs: pointer, _ rhs: Bool)
+  /// 親ノードを返す
   func __parent_(_: pointer) -> pointer
+  /// 親ノードを更新する
   func __parent_(_ lhs: pointer, _ rhs: pointer)
+  /// 親ノードを返す
+  ///
   /// This is only to align the naming with C++.
   /// C++と名前を揃えているだけのもの
   func __parent_unsafe(_: pointer) -> __parent_pointer
@@ -113,9 +131,13 @@ extension TreeNodeProtocol {
 
 @usableFromInline
 protocol TreeNodeRefProtocol {
+  /// 左ノードへの参照を返す
   func __left_ref(_: _NodePtr) -> _NodeRef
+  /// 右ノードへの参照を返す
   func __right_ref(_: _NodePtr) -> _NodeRef
+  /// 参照先を返す
   func __ptr_(_ rhs: _NodeRef) -> _NodePtr
+  /// 参照先を更新する
   func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr)
 }
 

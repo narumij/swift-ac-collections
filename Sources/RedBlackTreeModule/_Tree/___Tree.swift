@@ -986,8 +986,6 @@ extension ___Tree {
 
 // MARK: -
 
-extension ___Tree: Tree_IterateProtocol {}
-
 extension ___Tree {
   public typealias Index = RedBlackTreeIndex<VC>
 

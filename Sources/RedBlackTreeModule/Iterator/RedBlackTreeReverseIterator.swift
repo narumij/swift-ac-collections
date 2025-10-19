@@ -92,7 +92,7 @@ extension RedBlackTreeReverseIterator {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> ReversedNodeIterator<Tree> {
+  public __consuming func ___node_positions() -> ReversedNodeIterator<VC> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

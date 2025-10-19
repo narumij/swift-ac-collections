@@ -21,10 +21,11 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct ___NodeIterator<Tree>: Sequence, IteratorProtocol
+public struct ___NodeIterator<VC>: Sequence, IteratorProtocol
 where
-  Tree: Tree_IterateProtocol
+  VC: ValueComparer & CompareTrait & ThreeWayComparator
 {
+  public typealias Tree = ___Tree<VC>
 
   @usableFromInline
   let __tree_: Tree
@@ -55,7 +56,7 @@ where
 
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> ReversedNodeIterator<Tree> {
+  public __consuming func reversed() -> ReversedNodeIterator<VC> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -79,10 +80,11 @@ extension ___NodeIterator: Comparable {
 }
 
 @frozen
-public struct ReversedNodeIterator<Tree>: Sequence, IteratorProtocol
+public struct ReversedNodeIterator<VC>: Sequence, IteratorProtocol
 where
-  Tree: Tree_IterateProtocol
+  VC: ValueComparer & CompareTrait & ThreeWayComparator
 {
+  public typealias Tree = ___Tree<VC>
 
   @usableFromInline
   let __tree_: Tree

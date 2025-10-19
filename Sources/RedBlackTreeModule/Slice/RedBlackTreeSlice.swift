@@ -453,7 +453,7 @@ extension RedBlackTreeSlice {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> ___NodeIterator<Tree> {
+  public __consuming func ___node_positions() -> ___NodeIterator<Base> {
     ___NodeIterator(tree: __tree_, start: _start, end: _end)
   }
 }

@@ -89,7 +89,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    self._storage = .init(tree: .create(unique: false, sorted: sequence.sorted()))
+    self._storage = .init(tree: .create_multi(sorted: sequence.sorted()))
   }
 }
 

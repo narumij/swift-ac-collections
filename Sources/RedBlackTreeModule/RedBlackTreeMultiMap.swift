@@ -113,36 +113,16 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public init<S>(multiKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == KeyValue {
-    let elements = keysAndValues.sorted(by: { $0.key < $1.key })
-    let count = elements.count
-    let tree: Tree = .create(minimumCapacity: count)
-    // 初期化直後はO(1)
-    var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
-    for __k in elements {
-      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
-    }
-    assert(tree.__tree_invariant(tree.__root()))
-    self._storage = .init(tree: tree)
+    self._storage = .init(tree:
+        .create_multi(sorted: keysAndValues.sorted { $0.key < $1.key }))
   }
   
   /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S>(multiKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key,Value) {
-    let elements = keysAndValues.sorted(by: { $0.0 < $1.0 })
-    let count = elements.count
-    let tree: Tree = .create(minimumCapacity: count)
-    // 初期化直後はO(1)
-    var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
-    for __k in elements {
-      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, .init(__k))
-    }
-    assert(tree.__tree_invariant(tree.__root()))
-    self._storage = .init(tree: tree)
+    self._storage = .init(tree:
+        .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }.map { Pair($0) }))
   }
 }
 

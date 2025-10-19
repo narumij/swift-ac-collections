@@ -23,8 +23,8 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeIndices<VC> where VC: ValueComparer & CompareTrait & ThreeWayComparator {
-  public typealias Tree = ___Tree<VC>
+public struct RedBlackTreeIndices<Base> where Base: ValueComparer & CompareTrait & ThreeWayComparator {
+  public typealias Tree = ___Tree<Base>
   public typealias _Value = Tree._Value
   
   @usableFromInline

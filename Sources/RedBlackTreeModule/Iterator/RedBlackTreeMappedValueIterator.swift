@@ -21,11 +21,11 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct RedBlackTreeMappedValueIterator<VC>: Sequence, IteratorProtocol
+public struct RedBlackTreeMappedValueIterator<Base>: Sequence, IteratorProtocol
 where
-  VC: KeyValueComparer & CompareTrait & ThreeWayComparator
+  Base: KeyValueComparer & CompareTrait & ThreeWayComparator
 {
-  public typealias Tree = ___Tree<VC>
+  public typealias Tree = ___Tree<Base>
 
   @usableFromInline
   let __tree_: Tree
@@ -45,7 +45,7 @@ where
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> VC._MappedValue? {
+  public mutating func next() -> Base._MappedValue? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
@@ -56,12 +56,12 @@ where
 
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> ReversedValueIterator<VC> {
+  public __consuming func reversed() -> ReversedValueIterator<Base> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-extension RedBlackTreeMappedValueIterator: Equatable where VC._MappedValue: Equatable {
+extension RedBlackTreeMappedValueIterator: Equatable where Base._MappedValue: Equatable {
 
   @inlinable
   @inline(__always)
@@ -70,7 +70,7 @@ extension RedBlackTreeMappedValueIterator: Equatable where VC._MappedValue: Equa
   }
 }
 
-extension RedBlackTreeMappedValueIterator: Comparable where VC._MappedValue: Comparable {
+extension RedBlackTreeMappedValueIterator: Comparable where Base._MappedValue: Comparable {
 
   @inlinable
   @inline(__always)
@@ -80,12 +80,12 @@ extension RedBlackTreeMappedValueIterator: Comparable where VC._MappedValue: Com
 }
 
 @frozen
-public struct ReversedValueIterator<VC>: Sequence,
+public struct ReversedValueIterator<Base>: Sequence,
   IteratorProtocol
 where
-  VC: KeyValueComparer & CompareTrait & ThreeWayComparator
+  Base: KeyValueComparer & CompareTrait & ThreeWayComparator
 {
-  public typealias Tree = ___Tree<VC>
+  public typealias Tree = ___Tree<Base>
 
   @usableFromInline
   let __tree_: Tree
@@ -105,7 +105,7 @@ where
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> VC._MappedValue? {
+  public mutating func next() -> Base._MappedValue? {
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
@@ -113,7 +113,7 @@ where
   }
 }
 
-extension ReversedValueIterator: Equatable where VC._MappedValue: Equatable {
+extension ReversedValueIterator: Equatable where Base._MappedValue: Equatable {
 
   @inlinable
   @inline(__always)
@@ -122,7 +122,7 @@ extension ReversedValueIterator: Equatable where VC._MappedValue: Equatable {
   }
 }
 
-extension ReversedValueIterator: Comparable where VC._MappedValue: Comparable {
+extension ReversedValueIterator: Comparable where Base._MappedValue: Comparable {
 
   @inlinable
   @inline(__always)

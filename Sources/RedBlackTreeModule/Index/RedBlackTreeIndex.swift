@@ -26,8 +26,8 @@ import Foundation
 ///
 /// C++の双方向イテレータに近い内容となっている
 @frozen
-public struct RedBlackTreeIndex<VC> where VC: ValueComparer & CompareTrait & ThreeWayComparator {
-  public typealias Tree = ___Tree<VC>
+public struct RedBlackTreeIndex<Base> where Base: ValueComparer & CompareTrait & ThreeWayComparator {
+  public typealias Tree = ___Tree<Base>
   public typealias _Value = Tree._Value
 
   @usableFromInline
@@ -197,8 +197,8 @@ extension RedBlackTreeIndex {
 
   @inlinable
   @inline(__always)
-  var ___key: VC._Key {
-    VC.__key(___pointee)
+  var ___key: Base._Key {
+    Base.__key(___pointee)
   }
 
   @inlinable
@@ -211,14 +211,14 @@ extension RedBlackTreeIndex {
 
 #if DEBUG
   extension RedBlackTreeIndex {
-    fileprivate init(_unsafe_tree: ___Tree<VC>, rawValue: _NodePtr) {
+    fileprivate init(_unsafe_tree: ___Tree<Base>, rawValue: _NodePtr) {
       self.__tree_ = _unsafe_tree
       self.rawValue = rawValue
     }
   }
 
   extension RedBlackTreeIndex {
-    static func unsafe(tree: ___Tree<VC>, rawValue: _NodePtr) -> Self {
+    static func unsafe(tree: ___Tree<Base>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue)
     }
   }
@@ -232,24 +232,24 @@ extension RedBlackTreeIndex {
 
 @inlinable
 @inline(__always)
-public func ..< <VC>(lhs: RedBlackTreeIndex<VC>, rhs: RedBlackTreeIndex<VC>) -> ___Tree<VC>.Indices {
+public func ..< <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
   lhs.__tree_.makeIndices(start: lhs.rawValue, end: rhs.rawValue)
 }
 
 @inlinable
 @inline(__always)
-public func + <VC>(lhs: RedBlackTreeIndex<VC>, rhs: Int) -> RedBlackTreeIndex<VC> {
+public func + <Base>(lhs: RedBlackTreeIndex<Base>, rhs: Int) -> RedBlackTreeIndex<Base> {
   lhs.advanced(by: rhs)
 }
 
 @inlinable
 @inline(__always)
-public func - <VC>(lhs: RedBlackTreeIndex<VC>, rhs: Int) -> RedBlackTreeIndex<VC> {
+public func - <Base>(lhs: RedBlackTreeIndex<Base>, rhs: Int) -> RedBlackTreeIndex<Base> {
   lhs.advanced(by: -rhs)
 }
 
 @inlinable
 @inline(__always)
-public func - <VC>(lhs: RedBlackTreeIndex<VC>, rhs: RedBlackTreeIndex<VC>) -> Int {
+public func - <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>) -> Int {
   rhs.distance(to: lhs)
 }

@@ -21,11 +21,11 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct RedBlackTreeKeyIterator<VC>: Sequence, IteratorProtocol
+public struct RedBlackTreeKeyIterator<Base>: Sequence, IteratorProtocol
 where
-  VC: KeyValueComparer & CompareTrait & ThreeWayComparator
+  Base: KeyValueComparer & CompareTrait & ThreeWayComparator
 {
-  public typealias Tree = ___Tree<VC>
+  public typealias Tree = ___Tree<Base>
 
   @usableFromInline
   let __tree_: Tree
@@ -45,7 +45,7 @@ where
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> VC._Key? {
+  public mutating func next() -> Base._Key? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
@@ -56,7 +56,7 @@ where
 
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> ReversedKeyIterator<VC> {
+  public __consuming func reversed() -> ReversedKeyIterator<Base> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -80,11 +80,11 @@ extension RedBlackTreeKeyIterator: Comparable {
 }
 
 @frozen
-public struct ReversedKeyIterator<VC>: Sequence, IteratorProtocol
+public struct ReversedKeyIterator<Base>: Sequence, IteratorProtocol
 where
-  VC: KeyValueComparer & CompareTrait & ThreeWayComparator
+  Base: KeyValueComparer & CompareTrait & ThreeWayComparator
 {
-  public typealias Tree = ___Tree<VC>
+  public typealias Tree = ___Tree<Base>
 
   @usableFromInline
   let __tree_: Tree
@@ -104,7 +104,7 @@ where
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> VC._Key? {
+  public mutating func next() -> Base._Key? {
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr

@@ -8,11 +8,11 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeIterator<VC>: Sequence, IteratorProtocol
+public struct RedBlackTreeIterator<Base>: Sequence, IteratorProtocol
 where
-  VC: ValueComparer & CompareTrait & ThreeWayComparator
+  Base: ValueComparer & CompareTrait & ThreeWayComparator
 {
-  public typealias Tree = ___Tree<VC>
+  public typealias Tree = ___Tree<Base>
   public typealias _Value = Tree._Value
   
   @usableFromInline

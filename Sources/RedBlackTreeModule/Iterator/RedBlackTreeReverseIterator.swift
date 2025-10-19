@@ -6,11 +6,11 @@
 //
 
 @frozen
-public struct RedBlackTreeReverseIterator<VC>: Sequence, IteratorProtocol
+public struct RedBlackTreeReverseIterator<Base>: Sequence, IteratorProtocol
 where
-  VC: ValueComparer & CompareTrait & ThreeWayComparator
+  Base: ValueComparer & CompareTrait & ThreeWayComparator
 {
-  public typealias Tree = ___Tree<VC>
+  public typealias Tree = ___Tree<Base>
   public typealias _Value = Tree._Value
   
   @usableFromInline
@@ -64,7 +64,7 @@ extension RedBlackTreeReverseIterator {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var indices: RedBlackTreeIndices<VC>.ReverseIterator {
+  public var indices: RedBlackTreeIndices<Base>.ReverseIterator {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -74,7 +74,7 @@ extension RedBlackTreeReverseIterator {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func keys<Key, Value>() -> ReversedKeyIterator<VC>
+  public __consuming func keys<Key, Value>() -> ReversedKeyIterator<Base>
   where Element == _KeyValueTuple_<Key, Value> {
     .init(tree: __tree_, start: _start, end: _end)
   }
@@ -82,7 +82,7 @@ extension RedBlackTreeReverseIterator {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func values<Key, Value>() -> ReversedValueIterator<VC>
+  public __consuming func values<Key, Value>() -> ReversedValueIterator<Base>
   where Element == _KeyValueTuple_<Key, Value> {
     .init(tree: __tree_, start: _start, end: _end)
   }
@@ -92,7 +92,7 @@ extension RedBlackTreeReverseIterator {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> ReversedNodeIterator<VC> {
+  public __consuming func ___node_positions() -> ReversedNodeIterator<Base> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

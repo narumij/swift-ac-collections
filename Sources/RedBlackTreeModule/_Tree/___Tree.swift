@@ -1008,7 +1008,7 @@ extension ___Tree {
   }
 }
 
-extension ___Tree: Tree_KeyValue where VC: KeyValueComparer {
+extension ___Tree where VC: KeyValueComparer {
 
   @nonobjc
   @inlinable

@@ -357,7 +357,7 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func keys<Key, Value>() -> KeyIterator<Base>
+  public __consuming func keys<Key, Value>() -> RedBlackTreeKeyIterator<Base>
   where Element == _KeyValueTuple_<Key, Value> {
     .init(tree: __tree_, start: _start, end: _end)
   }
@@ -365,7 +365,7 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func values<Key, Value>() -> MappedValueIterator<Base>
+  public __consuming func values<Key, Value>() -> RedBlackTreeMappedValueIterator<Base>
   where Element == _KeyValueTuple_<Key, Value> {
     .init(tree: __tree_, start: _start, end: _end)
   }
@@ -453,8 +453,8 @@ extension RedBlackTreeSlice {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> NodeIterator<Tree> {
-    NodeIterator(tree: __tree_, start: _start, end: _end)
+  public __consuming func ___node_positions() -> ___NodeIterator<Tree> {
+    ___NodeIterator(tree: __tree_, start: _start, end: _end)
   }
 }
 

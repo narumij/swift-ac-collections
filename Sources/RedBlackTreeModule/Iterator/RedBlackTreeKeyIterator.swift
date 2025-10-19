@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct MappedValueIterator<VC>: Sequence, IteratorProtocol
+public struct RedBlackTreeKeyIterator<VC>: Sequence, IteratorProtocol
 where
   VC: KeyValueComparer & CompareTrait & ThreeWayComparator
 {
@@ -45,43 +45,42 @@ where
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> VC._MappedValue? {
+  public mutating func next() -> VC._Key? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
       _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return __tree_.___mapped_value(_current)
+    return __tree_.__get_value(_current)
   }
 
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> ReversedValueIterator<VC> {
+  public __consuming func reversed() -> ReversedKeyIterator<VC> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-extension MappedValueIterator: Equatable where VC._MappedValue: Equatable {
+extension RedBlackTreeKeyIterator: Equatable {
 
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
+    lhs.elementsEqual(rhs, by: Tree.value_equiv)
   }
 }
 
-extension MappedValueIterator: Comparable where VC._MappedValue: Comparable {
+extension RedBlackTreeKeyIterator: Comparable {
 
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
+    lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
   }
 }
 
 @frozen
-public struct ReversedValueIterator<VC>: Sequence,
-  IteratorProtocol
+public struct ReversedKeyIterator<VC>: Sequence, IteratorProtocol
 where
   VC: KeyValueComparer & CompareTrait & ThreeWayComparator
 {
@@ -105,28 +104,28 @@ where
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> VC._MappedValue? {
+  public mutating func next() -> VC._Key? {
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-    return __tree_.___mapped_value(_current)
+    return __tree_.__get_value(_current)
   }
 }
 
-extension ReversedValueIterator: Equatable where VC._MappedValue: Equatable {
+extension ReversedKeyIterator: Equatable {
 
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
+    lhs.elementsEqual(rhs, by: Tree.value_equiv)
   }
 }
 
-extension ReversedValueIterator: Comparable where VC._MappedValue: Comparable {
+extension ReversedKeyIterator: Comparable {
 
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
+    lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
   }
 }

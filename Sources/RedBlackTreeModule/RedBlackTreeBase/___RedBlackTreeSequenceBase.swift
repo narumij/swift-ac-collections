@@ -219,7 +219,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> NodeIterator<Tree> {
+  public __consuming func ___node_positions() -> ___NodeIterator<Tree> {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }

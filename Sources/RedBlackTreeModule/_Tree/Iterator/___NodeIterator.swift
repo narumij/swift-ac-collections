@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct NodeIterator<Tree>: Sequence, IteratorProtocol
+public struct ___NodeIterator<Tree>: Sequence, IteratorProtocol
 where
   Tree: Tree_IterateProtocol
 {
@@ -60,7 +60,7 @@ where
   }
 }
 
-extension NodeIterator: Equatable {
+extension ___NodeIterator: Equatable {
 
   @inlinable
   @inline(__always)
@@ -69,7 +69,7 @@ extension NodeIterator: Equatable {
   }
 }
 
-extension NodeIterator: Comparable {
+extension ___NodeIterator: Comparable {
 
   @inlinable
   @inline(__always)

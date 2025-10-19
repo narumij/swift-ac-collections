@@ -84,7 +84,6 @@ public struct RedBlackTreeMap<Key: Comparable, Value> {
 extension RedBlackTreeMap: ___RedBlackTreeBase {}
 extension RedBlackTreeMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMap: ___RedBlackTreeUnique {}
-extension RedBlackTreeMap: ___RedBlackTreeMerge {}
 extension RedBlackTreeMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMap: KeyValueComparer {}
 extension RedBlackTreeMap: ElementComparable where Value: Comparable {}
@@ -498,8 +497,7 @@ extension RedBlackTreeMap {
     _ other: RedBlackTreeMap<Key, Value>,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
-    _ensureUnique()
-    try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
+    try _ensureUnique { try .___insert_unique(tree: $0, other: other.__tree_, uniquingKeysWith: combine) }
   }
 
   /// mapに `other` の要素をマージします。
@@ -513,8 +511,7 @@ extension RedBlackTreeMap {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == Pair<Key, Value> {
 
-    _ensureUnique()
-    try ___merge_unique(other, uniquingKeysWith: combine) { $0 }
+    try _ensureUnique { try .___insert(tree: $0, other, uniquingKeysWith: combine) { $0 } }
   }
 
   /// mapに `other` の要素をマージします。
@@ -528,8 +525,7 @@ extension RedBlackTreeMap {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    _ensureUnique()
-    try ___merge_unique(other, uniquingKeysWith: combine) { Pair($0) }
+    try _ensureUnique { try .___insert(tree: $0, other, uniquingKeysWith: combine) { Pair($0) } }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

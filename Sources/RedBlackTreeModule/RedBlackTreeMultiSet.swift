@@ -61,7 +61,6 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
-extension RedBlackTreeMultiSet: ___RedBlackTreeMerge {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 extension RedBlackTreeMultiSet: ElementComparable { }
@@ -251,24 +250,21 @@ extension RedBlackTreeMultiSet {
   /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    ___tree_merge_multi(other.__tree_)
+    _ensureUnique { .___insert_multi(tree: $0, other: other.__tree_) }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    ___tree_merge_multi(other.__tree_)
+    _ensureUnique { .___insert_multi(tree: $0, other: other.__tree_) }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
-    _ensureUnique()
-    ___merge_multi(other)
+    _ensureUnique { .___insert_multi(tree: $0, other) }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

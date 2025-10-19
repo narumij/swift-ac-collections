@@ -83,7 +83,6 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
 extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
-extension RedBlackTreeDictionary: ___RedBlackTreeMerge {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 extension RedBlackTreeDictionary: ElementComparable where Value: Comparable {}
@@ -465,8 +464,7 @@ extension RedBlackTreeDictionary {
     _ other: RedBlackTreeDictionary<Key, Value>,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
-    _ensureUnique()
-    try ___tree_merge_unique(other.__tree_, uniquingKeysWith: combine)
+    try _ensureUnique { try .___insert_unique(tree: $0, other: other.__tree_, uniquingKeysWith: combine) }
   }
 
   /// 辞書に `other` の要素をマージします。
@@ -480,8 +478,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    _ensureUnique()
-    try ___merge_unique(other, uniquingKeysWith: combine) { $0 }
+    try _ensureUnique { try .___insert(tree: $0, other, uniquingKeysWith: combine) { $0 } }
   }
 
   /// 辞書に `other` の要素をマージします。
@@ -495,8 +492,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == Pair<Key, Value> {
 
-    _ensureUnique()
-    try ___merge_unique(other, uniquingKeysWith: combine) { $0.tuple }
+    try _ensureUnique { try .___insert(tree: $0, other, uniquingKeysWith: combine) { $0.tuple } }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

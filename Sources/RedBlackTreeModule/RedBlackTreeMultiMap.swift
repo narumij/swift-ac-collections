@@ -85,7 +85,6 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 extension RedBlackTreeMultiMap: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
-extension RedBlackTreeMultiMap: ___RedBlackTreeMerge {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 extension RedBlackTreeMultiMap: ElementComparable where Value: Comparable { }
@@ -365,24 +364,21 @@ extension RedBlackTreeMultiMap {
   /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    ___tree_merge_multi(other.__tree_)
+    _ensureUnique { .___insert_multi(tree: $0, other) }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Pair<Key, Value> {
-    _ensureUnique()
-    ___merge_multi(other)
+    _ensureUnique { .___insert_multi(tree: $0, other) }
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
-    _ensureUnique()
-    ___merge_multi(other.map({ Pair($0) }))
+    _ensureUnique { .___insert_multi(tree: $0, other.map{ Pair($0) }) }
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

@@ -70,9 +70,9 @@ extension ___RedBlackTreeCopyOnWrite {
   
   @inlinable
   @inline(__always)
-  mutating func _ensureUnique(tree: ___Storage<VC>.Tree) {
+  mutating func _ensureUnique(transform: (___Storage<VC>.Tree) throws -> ___Storage<VC>.Tree) rethrows {
     _ensureUnique()
-    _storage = .init(tree: tree)
+    _storage = .init(tree: try transform(_storage.tree))
   }
 
   @inlinable

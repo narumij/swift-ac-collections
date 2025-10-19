@@ -16,6 +16,7 @@ where
   var __tree_: Tree { get }
   mutating func _ensureCapacity()
   mutating func _ensureCapacity(amount: Int)
+  mutating func _ensureUnique(tree: Tree)
 }
 
 // MARK: - Tree merge
@@ -33,35 +34,7 @@ extension ___RedBlackTreeMerge {
     Source._Key == _Key,
     Source._Value == _Value
   {
-    var __i = __source.__begin_node
-
-    if __tree_.__root() == .nullptr, __i != .end {
-      // Make sure we always have a root node
-      _ensureCapacity()
-      __tree_.__insert_node_at(
-        .end, __tree_.__left_ref(.end), __tree_.__construct_node(__source.__value_(__i)))
-      __i = __source.__tree_next_iter(__i)
-    }
-
-    var __max_node = __tree_.__tree_max(__tree_.__root())
-
-    while __i != .end {
-      _ensureCapacity()
-      let __nd = __tree_.__construct_node(__source.__value_(__i))
-      __i = __source.__tree_next_iter(__i)
-
-      if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
-        __max_node = __nd
-      } else {
-        let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-        if __tree_.__ptr_(__child) == .nullptr {
-          __tree_.__insert_node_at(__parent, __child, __nd)
-        } else {
-          __tree_.destroy(__nd)
-        }
-      }
-    }
+    _ensureUnique(tree: .___insert_unique(tree: __tree_, __source))
   }
 }
 
@@ -80,39 +53,7 @@ extension ___RedBlackTreeMerge where Self: KeyValueComparer {
     Source._Key == _Key,
     Source._Value == _Value
   {
-    var __i = __source.__begin_node
-
-    if __tree_.__root() == .nullptr, __i != .end {  // Make sure we always have a root node
-      _ensureCapacity()
-      __tree_.__insert_node_at(
-        .end, __tree_.__left_ref(.end), __tree_.__construct_node(__source.__value_(__i)))
-      __i = __source.__tree_next_iter(__i)
-    }
-
-    var __max_node = __tree_.__tree_max(__tree_.__root())
-
-    while __i != .end {
-      _ensureCapacity()
-      let __nd = __tree_.__construct_node(__source.__value_(__i))
-      __i = __source.__tree_next_iter(__i)
-
-      if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
-        __max_node = __nd
-      } else {
-        let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-        if __tree_.__ptr_(__child) == .nullptr {
-          __tree_.__insert_node_at(__parent, __child, __nd)
-        } else {
-          __tree_.___mapped_value(
-            __tree_.__ptr_(__child),
-            try combine(
-              __tree_.___mapped_value(__tree_.__ptr_(__child)),
-              ___mapped_value(__tree_.__value_(__nd))))
-          __tree_.destroy(__nd)
-        }
-      }
-    }
+    _ensureUnique(tree: try .___insert_unique(tree: __tree_, __source, uniquingKeysWith: combine))
   }
 }
 
@@ -128,33 +69,7 @@ extension ___RedBlackTreeMerge {
     Source._Key == _Key,
     Source._Value == _Value
   {
-    _ensureCapacity(amount: __source.size)
-
-    var __i = __source.__begin_node
-
-    if __tree_.__root() == .nullptr, __i != .end {
-      // Make sure we always have a root node
-      __tree_.__insert_node_at(
-        .end, __tree_.__left_ref(.end), __tree_.__construct_node(__source.__value_(__i)))
-      __i = __source.__tree_next_iter(__i)
-    }
-
-    var __max_node = __tree_.__tree_max(__tree_.__root())
-
-    while __i != .end {
-      let __nd = __tree_.__construct_node(__source.__value_(__i))
-      __i = __source.__tree_next_iter(__i)
-
-      // Always check the max node first. This optimizes for sorted ranges inserted at the end.
-      if !__tree_.value_comp(__tree_.__get_value(__nd), __tree_.__get_value(__max_node)) {  // __node >= __max_val
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
-        __max_node = __nd
-      } else {
-        var __parent: _NodePtr = .zero
-        let __child = __tree_.__find_leaf_high(&__parent, __tree_.__get_value(__nd))
-        __tree_.__insert_node_at(__parent, __child, __nd)
-      }
-    }
+    _ensureUnique(tree: .___insert_multi(tree: __tree_, __source))
   }
 }
 
@@ -172,33 +87,7 @@ extension ___RedBlackTreeMerge {
     S: Sequence,
     S.Element == _Value
   {
-    var it = __source.makeIterator()
-
-    if __tree_.__root() == .nullptr,
-      let __element = it.next()
-    {  // Make sure we always have a root node
-      _ensureCapacity()
-      __tree_.__insert_node_at(
-        .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
-    }
-
-    var __max_node = __tree_.__tree_max(__tree_.__root())
-
-    while let __element = it.next() {
-      _ensureCapacity()
-      let __nd = __tree_.__construct_node(__element)
-      if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
-        __max_node = __nd
-      } else {
-        let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-        if __tree_.__ptr_(__child) == .nullptr {
-          __tree_.__insert_node_at(__parent, __child, __nd)
-        } else {
-          __tree_.destroy(__nd)
-        }
-      }
-    }
+    _ensureUnique(tree: .___insert_unique(tree: __tree_, __source))
   }
 }
 
@@ -216,38 +105,7 @@ extension ___RedBlackTreeMerge where Self: KeyValueComparer {
   where
     S: Sequence
   {
-    var it = __source.makeIterator()
-
-    if __tree_.__root() == .nullptr,
-      let __element = it.next().map(__t_)
-    {  // Make sure we always have a root node
-      _ensureCapacity()
-      __tree_.__insert_node_at(
-        .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
-    }
-
-    var __max_node = __tree_.__tree_max(__tree_.__root())
-
-    while let __element = it.next().map(__t_) {
-      _ensureCapacity()
-      let __nd = __tree_.__construct_node(__element)
-      if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
-        __max_node = __nd
-      } else {
-        let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-        if __tree_.__ptr_(__child) == .nullptr {
-          __tree_.__insert_node_at(__parent, __child, __nd)
-        } else {
-          __tree_.___mapped_value(
-            __tree_.__ptr_(__child),
-            try combine(
-              __tree_.___mapped_value(__tree_.__ptr_(__child)),
-              ___mapped_value(__tree_.__value_(__nd))))
-          __tree_.destroy(__nd)
-        }
-      }
-    }
+    _ensureUnique(tree: try .___insert(tree: __tree_, __source, uniquingKeysWith: combine, transform: __t_))
   }
 }
 
@@ -262,29 +120,6 @@ extension ___RedBlackTreeMerge {
     S: Sequence,
     S.Element == _Value
   {
-    var it = __source.makeIterator()
-
-    if __tree_.__root() == .nullptr,
-      let __element = it.next()
-    {  // Make sure we always have a root node
-      _ensureCapacity()
-      __tree_.__insert_node_at(.end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
-    }
-
-    var __max_node = __tree_.__tree_max(__tree_.__root())
-
-    while let __element = it.next() {
-      _ensureCapacity()
-      let __nd = __tree_.__construct_node(__element)
-      // Always check the max node first. This optimizes for sorted ranges inserted at the end.
-      if !__tree_.value_comp(__tree_.__get_value(__nd), __tree_.__get_value(__max_node)) {  // __node >= __max_val
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
-        __max_node = __nd
-      } else {
-        var __parent: _NodePtr = .zero
-        let __child = __tree_.__find_leaf_high(&__parent, __tree_.__get_value(__nd))
-        __tree_.__insert_node_at(__parent, __child, __nd)
-      }
-    }
+    _ensureUnique(tree: .___insert_multi(tree: __tree_, __source))
   }
 }

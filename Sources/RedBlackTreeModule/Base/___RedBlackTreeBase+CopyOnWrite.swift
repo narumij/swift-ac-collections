@@ -67,6 +67,13 @@ extension ___RedBlackTreeCopyOnWrite {
       _storage = _storage.copy()
     }
   }
+  
+  @inlinable
+  @inline(__always)
+  mutating func _ensureUnique(tree: ___Storage<VC>.Tree) {
+    _ensureUnique()
+    _storage = .init(tree: tree)
+  }
 
   @inlinable
   @inline(__always)

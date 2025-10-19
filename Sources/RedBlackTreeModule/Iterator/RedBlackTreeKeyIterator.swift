@@ -20,48 +20,49 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@frozen
-public struct RedBlackTreeKeyIterator<Base>: Sequence, IteratorProtocol
-where
-  Base: KeyValueComparer & CompareTrait & ThreeWayComparator
-{
-  public typealias Tree = ___Tree<Base>
-
-  @usableFromInline
-  let __tree_: Tree
-
-  @usableFromInline
-  var _start, _end, _current, _next: _NodePtr
-
-  @inlinable
-  @inline(__always)
-  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self.__tree_ = tree
-    self._current = start
-    self._start = start
-    self._end = end
-    self._next = start == .end ? .end : tree.__tree_next_iter(start)
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func next() -> Base._Key? {
-    guard _current != _end else { return nil }
-    defer {
-      _current = _next
-      _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
+extension RedBlackTreeIterator {
+  
+  @frozen
+  public struct Keys: Sequence, IteratorProtocol {
+    
+    public typealias Tree = ___Tree<Base>
+    
+    @usableFromInline
+    let __tree_: Tree
+    
+    @usableFromInline
+    var _start, _end, _current, _next: _NodePtr
+    
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      self.__tree_ = tree
+      self._current = start
+      self._start = start
+      self._end = end
+      self._next = start == .end ? .end : tree.__tree_next_iter(start)
     }
-    return __tree_.__get_value(_current)
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func reversed() -> ReversedKeyIterator<Base> {
-    .init(tree: __tree_, start: _start, end: _end)
+    
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> Base._Key? {
+      guard _current != _end else { return nil }
+      defer {
+        _current = _next
+        _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
+      }
+      return __tree_.__get_value(_current)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public __consuming func reversed() -> Reversed {
+      .init(tree: __tree_, start: _start, end: _end)
+    }
   }
 }
 
-extension RedBlackTreeKeyIterator: Equatable {
+extension RedBlackTreeIterator.Keys: Equatable {
 
   @inlinable
   @inline(__always)
@@ -70,7 +71,7 @@ extension RedBlackTreeKeyIterator: Equatable {
   }
 }
 
-extension RedBlackTreeKeyIterator: Comparable {
+extension RedBlackTreeIterator.Keys: Comparable {
 
   @inlinable
   @inline(__always)
@@ -79,40 +80,41 @@ extension RedBlackTreeKeyIterator: Comparable {
   }
 }
 
-@frozen
-public struct ReversedKeyIterator<Base>: Sequence, IteratorProtocol
-where
-  Base: KeyValueComparer & CompareTrait & ThreeWayComparator
-{
-  public typealias Tree = ___Tree<Base>
-
-  @usableFromInline
-  let __tree_: Tree
-
-  @usableFromInline
-  var _start, _begin, _current, _next: _NodePtr
-
-  @inlinable
-  @inline(__always)
-  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self.__tree_ = tree
-    self._current = end
-    self._next = end == start ? end : __tree_.__tree_prev_iter(end)
-    self._start = start
-    self._begin = __tree_.__begin_node
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func next() -> Base._Key? {
-    guard _current != _start else { return nil }
-    _current = _next
-    _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-    return __tree_.__get_value(_current)
+extension RedBlackTreeIterator.Keys {
+  
+  @frozen
+  public struct Reversed: Sequence, IteratorProtocol {
+    
+    public typealias Tree = ___Tree<Base>
+    
+    @usableFromInline
+    let __tree_: Tree
+    
+    @usableFromInline
+    var _start, _begin, _current, _next: _NodePtr
+    
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      self.__tree_ = tree
+      self._current = end
+      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
+      self._start = start
+      self._begin = __tree_.__begin_node
+    }
+    
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> Base._Key? {
+      guard _current != _start else { return nil }
+      _current = _next
+      _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
+      return __tree_.__get_value(_current)
+    }
   }
 }
 
-extension ReversedKeyIterator: Equatable {
+extension RedBlackTreeIterator.Keys.Reversed: Equatable {
 
   @inlinable
   @inline(__always)
@@ -121,7 +123,7 @@ extension ReversedKeyIterator: Equatable {
   }
 }
 
-extension ReversedKeyIterator: Comparable {
+extension RedBlackTreeIterator.Keys.Reversed: Comparable {
 
   @inlinable
   @inline(__always)

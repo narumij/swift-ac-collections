@@ -80,7 +80,7 @@ extension RedBlackTreeIndices {
 extension RedBlackTreeIndices {
 
   @frozen
-  public struct ReverseIterator: Sequence, IteratorProtocol {
+  public struct Reversed: Sequence, IteratorProtocol {
     
     @usableFromInline
     let __tree_: Tree
@@ -119,7 +119,7 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
   
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> ReverseIterator {
+  public __consuming func reversed() -> Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 

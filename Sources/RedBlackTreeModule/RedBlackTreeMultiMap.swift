@@ -59,10 +59,10 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Element = KeyValue
 
   public
-    typealias Keys = RedBlackTreeKeyIterator<Self>
+  typealias Keys = RedBlackTreeIterator<Self>.Keys
 
   public
-    typealias Values = RedBlackTreeMappedValueIterator<Self>
+  typealias Values = RedBlackTreeIterator<Self>.MappedValues
 
   public
     typealias _Key = Key
@@ -933,14 +933,14 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func keys() -> RedBlackTreeKeyIterator<Self> {
+  public __consuming func keys() -> Keys {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func values() -> RedBlackTreeMappedValueIterator<Self> {
+  public __consuming func values() -> Values {
     .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
   }
 }

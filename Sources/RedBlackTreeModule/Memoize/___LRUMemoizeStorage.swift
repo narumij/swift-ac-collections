@@ -124,12 +124,6 @@ extension ___LRUMemoizeStorage: ___LRULinkList {
     element.value
   }
   
-//  @inlinable
-//  @inline(__always)
-//  public static func ___mapped_value(_ element: inout _Value,_ value: _MappedValue) {
-//    element.value = value
-//  }
-  
   @inlinable
   @inline(__always)
   public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {

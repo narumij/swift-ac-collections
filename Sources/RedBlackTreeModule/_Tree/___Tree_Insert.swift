@@ -1,9 +1,24 @@
+// Copyright 2024 narumij
 //
-//  ___Tree_Insert.swift
-//  swift-ac-collections
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-//  Created by narumij on 2025/10/19.
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2024 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
 
 extension ___Tree {
 
@@ -273,84 +288,3 @@ extension ___Tree {
   }
 }
 
-protocol InsertRangeMulti: InsertNodeAtProtocol & FindLeafProtocol & TreeValueProtocol & AllocatorProtocol {
-  static func ensureCapacity(tree: inout Self)
-  static func ensureCapacity(tree: inout Self, minimumCapacity: Int)
-}
-
-extension InsertRangeMulti {
-  
-  @inlinable
-  @inline(__always)
-  static func ___insert_multi<Other>(tree __tree_: Self, other __source: Other) -> Self
-  where
-Other: InsertNodeAtProtocol & TreeValueProtocol,
-    ___Tree<Other>._Key == _Key,
-    ___Tree<Other>._Value == _Value
-  {
-    var __tree_ = __tree_
-
-    Self.ensureCapacity(tree: &__tree_, minimumCapacity: __tree_.size + __source.size)
-
-    var __i = __source.__begin_node
-
-    if __tree_.__root() == .nullptr, __i != .end {
-      // Make sure we always have a root node
-      __tree_.__insert_node_at(
-        .end, __tree_.__left_ref(.end), __tree_.__construct_node(__source.__value_(__i)))
-      __i = __source.__tree_next_iter(__i)
-    }
-
-    var __max_node = __tree_.__tree_max(__tree_.__root())
-
-    while __i != .end {
-      let __nd = __tree_.__construct_node(__source.__value_(__i))
-      __i = __source.__tree_next_iter(__i)
-
-      // Always check the max node first. This optimizes for sorted ranges inserted at the end.
-      if !__tree_.value_comp(__tree_.__get_value(__nd), __tree_.__get_value(__max_node)) {  // __node >= __max_val
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
-        __max_node = __nd
-      } else {
-        var __parent: _NodePtr = .zero
-        let __child = __tree_.__find_leaf_high(&__parent, __tree_.__get_value(__nd))
-        __tree_.__insert_node_at(__parent, __child, __nd)
-      }
-    }
-
-    return __tree_
-  }
-  
-  @inlinable
-  static func ___insert_multi<S>(tree __tree_: Self, _ __source: __owned S) -> Self
-  where _Value == S.Element, S: Sequence {
-    var __tree_ = __tree_
-
-    var it = __source.makeIterator()
-
-    if __tree_.__root() == .nullptr,
-      let __element = it.next()
-    {  // Make sure we always have a root node
-      Self.ensureCapacity(tree: &__tree_)
-      __tree_.__insert_node_at(.end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
-    }
-
-    var __max_node = __tree_.__tree_max(__tree_.__root())
-
-    while let __element = it.next() {
-      Self.ensureCapacity(tree: &__tree_)
-      let __nd = __tree_.__construct_node(__element)
-      // Always check the max node first. This optimizes for sorted ranges inserted at the end.
-      if !__tree_.value_comp(__tree_.__get_value(__nd), __tree_.__get_value(__max_node)) {  // __node >= __max_val
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
-        __max_node = __nd
-      } else {
-        var __parent: _NodePtr = .zero
-        let __child = __tree_.__find_leaf_high(&__parent, __tree_.__get_value(__nd))
-        __tree_.__insert_node_at(__parent, __child, __nd)
-      }
-    }
-
-    return __tree_
-  }
-}

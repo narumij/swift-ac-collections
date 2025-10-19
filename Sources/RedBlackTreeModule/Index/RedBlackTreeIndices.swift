@@ -47,7 +47,7 @@ public struct RedBlackTreeIndices<VC> where VC: ValueComparer & CompareTrait & T
 extension RedBlackTreeIndices {
   
   @frozen
-  public struct ForwardIterator: IteratorProtocol {
+  public struct Iterator: IteratorProtocol {
     
     @usableFromInline
     let __tree_: Tree
@@ -80,7 +80,7 @@ extension RedBlackTreeIndices {
 extension RedBlackTreeIndices {
 
   @frozen
-  public struct BackwordIterator: Sequence, IteratorProtocol {
+  public struct ReverseIterator: Sequence, IteratorProtocol {
     
     @usableFromInline
     let __tree_: Tree
@@ -113,13 +113,13 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
   
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> ForwardIterator {
+  public __consuming func makeIterator() -> Iterator {
     .init(tree: __tree_, start: _start, end: _end)
   }
   
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> BackwordIterator {
+  public __consuming func reversed() -> ReverseIterator {
     .init(tree: __tree_, start: _start, end: _end)
   }
 

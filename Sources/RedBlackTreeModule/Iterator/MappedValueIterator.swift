@@ -21,11 +21,11 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct ValueIterator<Tree, K, Value>: Sequence, IteratorProtocol
+public struct MappedValueIterator<VC>: Sequence, IteratorProtocol
 where
-  Tree: Tree_IterateProtocol & Tree_KeyValue,
-  Tree._MappedValue == Value
+  VC: KeyValueComparer & CompareTrait & ThreeWayComparator
 {
+  public typealias Tree = ___Tree<VC>
 
   @usableFromInline
   let __tree_: Tree
@@ -45,7 +45,7 @@ where
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> Value? {
+  public mutating func next() -> VC._MappedValue? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
@@ -56,12 +56,12 @@ where
 
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> ReversedValueIterator<Tree, K, Value> {
+  public __consuming func reversed() -> ReversedValueIterator<VC> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-extension ValueIterator: Equatable where Value: Equatable {
+extension MappedValueIterator: Equatable where VC._MappedValue: Equatable {
 
   @inlinable
   @inline(__always)
@@ -70,7 +70,7 @@ extension ValueIterator: Equatable where Value: Equatable {
   }
 }
 
-extension ValueIterator: Comparable where Value: Comparable {
+extension MappedValueIterator: Comparable where VC._MappedValue: Comparable {
 
   @inlinable
   @inline(__always)
@@ -80,12 +80,12 @@ extension ValueIterator: Comparable where Value: Comparable {
 }
 
 @frozen
-public struct ReversedValueIterator<Tree, K, Value>: Sequence,
+public struct ReversedValueIterator<VC>: Sequence,
   IteratorProtocol
 where
-  Tree: Tree_IterateProtocol & Tree_KeyValue,
-  Tree._MappedValue == Value
+  VC: KeyValueComparer & CompareTrait & ThreeWayComparator
 {
+  public typealias Tree = ___Tree<VC>
 
   @usableFromInline
   let __tree_: Tree
@@ -105,7 +105,7 @@ where
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> Value? {
+  public mutating func next() -> VC._MappedValue? {
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
@@ -113,7 +113,7 @@ where
   }
 }
 
-extension ReversedValueIterator: Equatable where Value: Equatable {
+extension ReversedValueIterator: Equatable where VC._MappedValue: Equatable {
 
   @inlinable
   @inline(__always)
@@ -122,7 +122,7 @@ extension ReversedValueIterator: Equatable where Value: Equatable {
   }
 }
 
-extension ReversedValueIterator: Comparable where Value: Comparable {
+extension ReversedValueIterator: Comparable where VC._MappedValue: Comparable {
 
   @inlinable
   @inline(__always)

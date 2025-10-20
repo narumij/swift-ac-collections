@@ -24,14 +24,19 @@ import Foundation
 
 extension ___Tree where VC._Key == VC._Value {
 
+  /// ソート済みの配列から木を生成する
+  ///
+  /// ソート済み前提では、常に末尾への追加となり探索が不要になる
+  ///
+  /// - Complexity: O(*n*)
   @inlinable
   static func create_unique(sorted elements: __owned [VC._Value]) -> ___Tree
   where VC._Key: Comparable {
+
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
     for __k in elements {
       if __parent == .end || __key(tree[__parent]) != __key(__k) {
         // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
@@ -45,12 +50,18 @@ extension ___Tree where VC._Key == VC._Value {
 
 extension ___Tree where VC: KeyValueComparer {
 
+  /// ソート済みの配列から木を生成する
+  ///
+  /// ソート済み前提では、常に末尾への追加となり探索が不要になる
+  ///
+  /// - Complexity: O(*n*)
   @inlinable
   static func create_unique<Element>(
     sorted elements: __owned [Element],
     transform: (Element) -> VC._Value
   ) -> ___Tree
   where VC._Key: Comparable {
+
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
@@ -69,6 +80,11 @@ extension ___Tree where VC: KeyValueComparer {
     return tree
   }
 
+  /// ソート済みの配列から木を生成する
+  ///
+  /// ソート済み前提では、常に末尾への追加となり探索が不要になる
+  ///
+  /// - Complexity: O(*n*)
   @inlinable
   static func create_unique<Element>(
     sorted elements: __owned [Element],
@@ -76,6 +92,7 @@ extension ___Tree where VC: KeyValueComparer {
     transform: (Element) -> VC._Value
   ) rethrows -> ___Tree
   where VC._Key: Comparable {
+
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
@@ -98,6 +115,11 @@ extension ___Tree where VC: KeyValueComparer {
     return tree
   }
 
+  /// ソート済みの配列から木を生成する
+  ///
+  /// ソート済み前提では、常に末尾への追加となり探索が不要になる
+  ///
+  /// - Complexity: O(*n*)
   @inlinable
   static func create_unique<Element>(
     sorted elements: __owned [Element],
@@ -105,6 +127,7 @@ extension ___Tree where VC: KeyValueComparer {
     transform: (VC._Key, Element) -> VC._Value
   ) rethrows -> ___Tree
   where VC._Key: Comparable, VC._MappedValue == [Element] {
+
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
@@ -124,7 +147,12 @@ extension ___Tree where VC: KeyValueComparer {
     assert(tree.__tree_invariant(tree.__root()))
     return tree
   }
-  
+
+  /// ソート済みの配列から木を生成する
+  ///
+  /// ソート済み前提では、常に末尾への追加となり探索が不要になる
+  ///
+  /// - Complexity: O(*n*)
   @inlinable
   static func create_multi<Element>(
     sorted elements: __owned [Element],
@@ -132,6 +160,7 @@ extension ___Tree where VC: KeyValueComparer {
     transform: (VC._Key, Element) -> VC._Value
   ) rethrows -> ___Tree
   where VC._Key: Comparable, VC._MappedValue == Element {
+
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
@@ -148,19 +177,32 @@ extension ___Tree where VC: KeyValueComparer {
 }
 
 extension ___Tree {
-  
+
+  /// ソート済みの配列から木を生成する
+  ///
+  /// ソート済み前提では、常に末尾への追加となり探索が不要になる
+  ///
+  /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
   static func create_multi(sorted elements: __owned [VC._Value]) -> ___Tree
   where VC._Key: Comparable {
+
     create_multi(sorted: elements) { $0 }
   }
-  
+
+  /// ソート済みの配列から木を生成する
+  ///
+  /// ソート済み前提では、常に末尾への追加となり探索が不要になる
+  ///
+  /// - Complexity: O(*n*)
   @inlinable
   static func create_multi<Element>(
     sorted elements: __owned [Element],
-    transform: (Element) -> VC._Value) -> ___Tree
+    transform: (Element) -> VC._Value
+  ) -> ___Tree
   where VC._Key: Comparable {
+
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
@@ -177,10 +219,16 @@ extension ___Tree {
 }
 
 extension ___Tree {
-  
+
+  /// Rangeから木を生成する
+  ///
+  /// Rangeは重複も無いため、さらに簡略化したコードで足りる
+  ///
+  /// - Complexity: O(*n*)
   @inlinable
   static func create<R>(range: __owned R) -> ___Tree
   where R: RangeExpression, R: Collection, R.Element == VC._Value {
+
     let tree: Tree = .create(minimumCapacity: range.count)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
@@ -198,25 +246,28 @@ extension ___Tree {
   @inlinable
   static func create_unique<S>(naive sequence: __owned S) -> ___Tree
   where VC._Value == S.Element, S: Sequence {
-    return .___insert_unique(tree: .create(minimumCapacity: 0), sequence)
+
+    .___insert_range_unique(tree: .create(minimumCapacity: 0), sequence)
   }
 
   @inlinable
   static func create_multi<S>(naive sequence: __owned S) -> ___Tree
   where VC._Value == S.Element, S: Sequence {
-    return .___insert_multi(tree: .create(minimumCapacity: 0), sequence)
+
+    .___insert_range_multi(tree: .create(minimumCapacity: 0), sequence)
   }
 }
 
 // MARK: -
 
 extension ___Tree {
-  
+
   // 使っていない
 
   @inlinable
   static func __create_unique<S>(sequence: __owned S) -> ___Tree
   where VC._Value == S.Element, S: Sequence {
+
     let count = (sequence as? (any Collection))?.count
     var tree: Tree = .create(minimumCapacity: count ?? 0)
     for __v in sequence {
@@ -238,6 +289,7 @@ extension ___Tree {
   @inlinable
   static func __create_multi<S>(sequence: __owned S) -> ___Tree
   where VC._Value == S.Element, S: Sequence {
+
     let count = (sequence as? (any Collection))?.count
     var tree: Tree = .create(minimumCapacity: count ?? 0)
     for __v in sequence {

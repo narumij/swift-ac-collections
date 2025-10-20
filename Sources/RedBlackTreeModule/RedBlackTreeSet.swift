@@ -272,21 +272,21 @@ extension RedBlackTreeSet {
   /// - Important: 空間計算量に余裕がある場合、formUnionの使用を推奨します
   @inlinable
   public mutating func merge(_ other: RedBlackTreeSet<Element>) {
-    _ensureUnique { .___insert_unique(tree: $0, other: other.__tree_) }
+    _ensureUnique { .___insert_range_unique(tree: $0, other: other.__tree_) }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge(_ other: RedBlackTreeMultiSet<Element>) {
-    _ensureUnique { .___insert_unique(tree: $0, other: other.__tree_) }
+    _ensureUnique { .___insert_range_unique(tree: $0, other: other.__tree_) }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge<S>(_ other: S) where S: Sequence, S.Element == Element {
-    _ensureUnique { .___insert_unique(tree: $0, other) }
+    _ensureUnique { .___insert_range_unique(tree: $0, other) }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

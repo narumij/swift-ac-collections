@@ -22,9 +22,10 @@
 
 import Foundation
 
-@usableFromInline
-protocol MergeSourceProtocol: TreeValueProtocol & AllocatorProtocol & BeginNodeProtocol & EndNodeProtocol & ValueProtocol & SizeProtocol { }
+//@usableFromInline
+//protocol MergeSourceProtocol: TreeValueProtocol & AllocatorProtocol & BeginNodeProtocol & EndNodeProtocol & ValueProtocol & SizeProtocol { }
 
+#if false
 @usableFromInline
 protocol MergeProtocol: KeyProtocol & FindEqualProtocol & FindLeafProtocol & InsertNodeAtProtocol & AllocatorProtocol {
   // 現在使っていない
@@ -100,3 +101,4 @@ extension MergeProtocol {
     }
   }
 }
+#endif

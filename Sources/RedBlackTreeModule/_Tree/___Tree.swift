@@ -416,6 +416,7 @@ extension ___Tree: FindEqualProtocol {}
 extension ___Tree: FindLeafProtocol {}
 extension ___Tree: EqualProtocol {}
 extension ___Tree: InsertNodeAtProtocol {}
+extension ___Tree: InsertUniqueProtocol {}
 extension ___Tree: InsertMultiProtocol {}
 extension ___Tree: InsertLastProtocol {}
 extension ___Tree: RemoveProtocol {}
@@ -423,14 +424,12 @@ extension ___Tree: EraseProtocol {}
 extension ___Tree: EraseUniqueProtocol {}
 extension ___Tree: EraseMultiProtocol {}
 extension ___Tree: BoundProtocol {}
-extension ___Tree: InsertUniqueProtocol {}
 extension ___Tree: CountProtocol {}
 extension ___Tree: TreeNodeProtocol {}
 extension ___Tree: DistanceProtocol {}
 extension ___Tree: CompareProtocol {}
 extension ___Tree: CompareUniqueProtocol {}
 extension ___Tree: CompareMultiProtocol {}
-extension ___Tree: MergeSourceProtocol {}
 extension ___Tree: ValueComparator {}
 
 extension ___Tree {

@@ -24,7 +24,7 @@ extension ___Tree {
 
   @inlinable
   @inline(__always)
-  static func ___insert_unique<Other>(tree __tree_: ___Tree, other __source: ___Tree<Other>) -> ___Tree
+  static func ___insert_range_unique<Other>(tree __tree_: ___Tree, other __source: ___Tree<Other>) -> ___Tree
   where
     ___Tree<Other>._Key == _Key,
     ___Tree<Other>._Value == _Value
@@ -69,7 +69,7 @@ extension ___Tree where VC: KeyValueComparer {
 
   @inlinable
   @inline(__always)
-  static func ___insert_unique<Other>(
+  static func ___insert_range_unique<Other>(
     tree __tree_: ___Tree,
     other __source: ___Tree<Other>,
     uniquingKeysWith combine: (VC._MappedValue, VC._MappedValue) throws -> VC._MappedValue
@@ -122,7 +122,7 @@ extension ___Tree {
 
   @inlinable
   @inline(__always)
-  static func ___insert_multi<Other>(tree __tree_: ___Tree, other __source: ___Tree<Other>) -> ___Tree
+  static func ___insert_range_multi<Other>(tree __tree_: ___Tree, other __source: ___Tree<Other>) -> ___Tree
   where
     ___Tree<Other>._Key == _Key,
     ___Tree<Other>._Value == _Value
@@ -164,7 +164,7 @@ extension ___Tree {
 extension ___Tree {
 
   @inlinable
-  static func ___insert_unique<S>(tree __tree_: ___Tree, _ __source: __owned S) -> ___Tree
+  static func ___insert_range_unique<S>(tree __tree_: ___Tree, _ __source: __owned S) -> ___Tree
   where VC._Value == S.Element, S: Sequence {
     var __tree_ = __tree_
 
@@ -204,7 +204,7 @@ extension ___Tree where VC: KeyValueComparer {
 
   @inlinable
   @inline(__always)
-  static func ___insert<S>(
+  static func ___insert_range_unique<S>(
     tree __tree_: ___Tree,
     _ __source: S,
     uniquingKeysWith combine: (VC._MappedValue, VC._MappedValue) throws -> VC._MappedValue,
@@ -255,7 +255,7 @@ extension ___Tree where VC: KeyValueComparer {
 extension ___Tree {
 
   @inlinable
-  static func ___insert_multi<S>(tree __tree_: ___Tree, _ __source: __owned S) -> ___Tree
+  static func ___insert_range_multi<S>(tree __tree_: ___Tree, _ __source: __owned S) -> ___Tree
   where VC._Value == S.Element, S: Sequence {
     var __tree_ = __tree_
 

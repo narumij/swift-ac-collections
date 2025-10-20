@@ -441,7 +441,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
     try _ensureUnique {
-      try .___insert_unique(tree: $0, other: other.__tree_, uniquingKeysWith: combine)
+      try .___insert_range_unique(tree: $0, other: other.__tree_, uniquingKeysWith: combine)
     }
   }
 
@@ -456,7 +456,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    try _ensureUnique { try .___insert(tree: $0, other, uniquingKeysWith: combine) { $0 } }
+    try _ensureUnique { try .___insert_range_unique(tree: $0, other, uniquingKeysWith: combine) { $0 } }
   }
 
   /// 辞書に `other` の要素をマージします。
@@ -470,7 +470,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == Pair<Key, Value> {
 
-    try _ensureUnique { try .___insert(tree: $0, other, uniquingKeysWith: combine) { $0.tuple } }
+    try _ensureUnique { try .___insert_range_unique(tree: $0, other, uniquingKeysWith: combine) { $0.tuple } }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

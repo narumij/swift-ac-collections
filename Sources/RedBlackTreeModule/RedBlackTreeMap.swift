@@ -51,7 +51,6 @@ public struct RedBlackTreeMap<Key: Comparable, Value> {
     typealias Index = Tree.Index
 
   public
-    //    typealias KeyValue = (key: Key, value: Value)
     typealias KeyValue = Pair<Key, Value>
 
   public
@@ -469,7 +468,7 @@ extension RedBlackTreeMap {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
     try _ensureUnique {
-      try .___insert_unique(tree: $0, other: other.__tree_, uniquingKeysWith: combine)
+      try .___insert_range_unique(tree: $0, other: other.__tree_, uniquingKeysWith: combine)
     }
   }
 
@@ -484,7 +483,7 @@ extension RedBlackTreeMap {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == Pair<Key, Value> {
 
-    try _ensureUnique { try .___insert(tree: $0, other, uniquingKeysWith: combine) { $0 } }
+    try _ensureUnique { try .___insert_range_unique(tree: $0, other, uniquingKeysWith: combine) { $0 } }
   }
 
   /// mapに `other` の要素をマージします。
@@ -498,7 +497,7 @@ extension RedBlackTreeMap {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    try _ensureUnique { try .___insert(tree: $0, other, uniquingKeysWith: combine) { Pair($0) } }
+    try _ensureUnique { try .___insert_range_unique(tree: $0, other, uniquingKeysWith: combine) { Pair($0) } }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

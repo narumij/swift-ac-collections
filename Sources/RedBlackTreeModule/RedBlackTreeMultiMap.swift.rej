@@ -1,0 +1,24 @@
+@@ -342,19 +324,19 @@
+   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
+     _ensureUnique { .___insert_multi(tree: $0, other) }
+   }
+-
++  
+   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+   ///   and *m* is the size of the current tree.
+   @inlinable
+-  public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Pair<Key, Value> {
++  public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
+     _ensureUnique { .___insert_multi(tree: $0, other) }
+   }
+-  
++
+   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+   ///   and *m* is the size of the current tree.
+   @inlinable
+   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
+-    _ensureUnique { .___insert_multi(tree: $0, other.map{ Pair($0) }) }
++    _ensureUnique { .___insert_multi(tree: $0, other.map{ $0 }) }
+   }
+   
+   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

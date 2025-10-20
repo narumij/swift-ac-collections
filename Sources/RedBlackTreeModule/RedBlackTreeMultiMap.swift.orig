@@ -53,8 +53,8 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Index = Tree.Index
 
   public
-    typealias KeyValue = (key: Key, value: Value)
-  
+    typealias KeyValue = Pair<Key, Value>
+
   public
     typealias Element = KeyValue
 
@@ -112,9 +112,17 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S>(multiKeysWithValues keysAndValues: __owned S)
+  where S: Sequence, S.Element == KeyValue {
+    self._storage = .init(tree:
+        .create_multi(sorted: keysAndValues.sorted { $0.key < $1.key }))
+  }
+  
+  /// - Complexity: O(*n* log *n* + *n*)
+  @inlinable
+  public init<S>(multiKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key,Value) {
     self._storage = .init(tree:
-        .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) { $0 })
+        .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) { Pair($0) })
   }
 }
 
@@ -134,7 +142,7 @@ extension RedBlackTreeMultiMap {
         },
         by: keyForValue
       ) {
-        ($0, $1)
+        Pair($0, $1)
       })
   }
 }
@@ -271,9 +279,19 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    insert((key, value))
+    insert(.init(key, value))
   }
   
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func insert(_ tuple: (key: Key, value: Value)) -> (
+    inserted: Bool, memberAfterInsert: Element
+  ) {
+    insert(.init(tuple))
+  }
+
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
@@ -330,32 +348,19 @@ extension RedBlackTreeMultiMap {
         other.__tree_.__end_node())
     }
   }
-  
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  public mutating func insert(contentsOf other: RedBlackTreeDictionary<Key, Value>) {
-    _ensureUnique {
-      .___insert_range_multi(
-        tree: $0,
-        other: other.__tree_,
-        other.__tree_.__begin_node_,
-        other.__tree_.__end_node())
-    }
-  }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Pair<Key, Value> {
-    _ensureUnique { .___insert_range_multi(tree: $0, other.map{ $0.tuple }) }
+    _ensureUnique { .___insert_range_multi(tree: $0, other) }
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
-    _ensureUnique { .___insert_range_multi(tree: $0, other.map{ $0 }) }
+    _ensureUnique { .___insert_range_multi(tree: $0, other.map{ Pair($0) }) }
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
@@ -366,18 +371,17 @@ extension RedBlackTreeMultiMap {
     result.insert(contentsOf: other)
     return result
   }
-  
+
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
-  ///
-  /// - Important: 空間計算量に余裕がある場合、meldingの使用を推奨します
   @inlinable
-  public func inserting(contentsOf other: RedBlackTreeDictionary<Key, Value>) -> Self {
+  public func inserting<S>(contentsOf other: __owned S) -> Self
+  where S: Sequence, S.Element == Pair<Key, Value> {
     var result = self
     result.insert(contentsOf: other)
     return result
   }
-
+  
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -415,14 +419,14 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   @inline(__always)
-  static func + (lhs: Self, rhs: Self) -> Self {
+  public static func + (lhs: Self, rhs: Self) -> Self {
     lhs.inserting(contentsOf: rhs)
   }
 
   /// - Complexity: O(*n* log(*m + n*))
   @inlinable
   @inline(__always)
-  static func += (lhs: inout Self, rhs: Self) {
+  public static func += (lhs: inout Self, rhs: Self) {
     lhs.insert(contentsOf: rhs)
   }
 }
@@ -952,7 +956,7 @@ extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
   @inlinable
   @inline(__always)
   public init(dictionaryLiteral elements: (Key, Value)...) {
-    self.init(multiKeysWithValues: elements)
+    self.init(multiKeysWithValues: elements.map{ .init($0) })
   }
 }
 
@@ -964,7 +968,7 @@ extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
   @inlinable
   @inline(__always)
   public init(arrayLiteral elements: (Key, Value)...) {
-    self.init(multiKeysWithValues: elements)
+    self.init(multiKeysWithValues: elements.map{ .init($0) })
   }
 }
 

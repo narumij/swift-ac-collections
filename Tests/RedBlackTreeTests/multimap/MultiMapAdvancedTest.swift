@@ -74,7 +74,7 @@ final class MultiMapAdvancedTest: XCTestCase {
     func testSequenceAndIterator() {
         let map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("a", 3)]
         var seenKeys = Set<String>()
-      for (key, value) in map.map({ ($0.key, $0.value )}) {
+        for (key, value) in map {
             seenKeys.insert(key)
             XCTAssertTrue(value == 1 || value == 2 || value == 3)
         }

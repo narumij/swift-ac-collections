@@ -59,10 +59,10 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Element = KeyValue
 
   public
-    typealias Keys = KeyIterator<Tree, Key, Value>
+  typealias Keys = RedBlackTreeIterator<Self>.Keys
 
   public
-    typealias Values = ValueIterator<Tree, Key, Value>
+  typealias Values = RedBlackTreeIterator<Self>.MappedValues
 
   public
     typealias _Key = Key
@@ -85,7 +85,6 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 extension RedBlackTreeMultiMap: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
-extension RedBlackTreeMultiMap: ___RedBlackTreeMerge {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 extension RedBlackTreeMultiMap: ElementComparable where Value: Comparable { }
@@ -114,36 +113,16 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public init<S>(multiKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == KeyValue {
-    let elements = keysAndValues.sorted(by: { $0.key < $1.key })
-    let count = elements.count
-    let tree: Tree = .create(minimumCapacity: count)
-    // 初期化直後はO(1)
-    var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
-    for __k in elements {
-      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
-    }
-    assert(tree.__tree_invariant(tree.__root()))
-    self._storage = .init(tree: tree)
+    self._storage = .init(tree:
+        .create_multi(sorted: keysAndValues.sorted { $0.key < $1.key }))
   }
   
   /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
   public init<S>(multiKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key,Value) {
-    let elements = keysAndValues.sorted(by: { $0.0 < $1.0 })
-    let count = elements.count
-    let tree: Tree = .create(minimumCapacity: count)
-    // 初期化直後はO(1)
-    var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
-    for __k in elements {
-      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, .init(__k))
-    }
-    assert(tree.__tree_invariant(tree.__root()))
-    self._storage = .init(tree: tree)
+    self._storage = .init(tree:
+        .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) { Pair($0) })
   }
 }
 
@@ -156,19 +135,15 @@ extension RedBlackTreeMultiMap {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == S.Element {
-    let values = try values.sorted(by: { try keyForValue($0) < keyForValue($1) })
-    let count = values.count
-    let tree: Tree = .create(minimumCapacity: count)
-    // 初期化直後はO(1)
-    var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
-    for __v in values {
-      let __k = try keyForValue(__v)
-      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, .init(__k, __v))
-    }
-    assert(tree.__tree_invariant(tree.__root()))
-    self._storage = .init(tree: tree)
+    self._storage = .init(
+      tree: try .create_multi(
+        sorted: try values.sorted {
+          try keyForValue($0) < keyForValue($1)
+        },
+        by: keyForValue
+      ) {
+        Pair($0, $1)
+      })
   }
 }
 
@@ -365,24 +340,27 @@ extension RedBlackTreeMultiMap {
   /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
-    _ensureUniqueAndCapacity(to: count + other.count)
-    ___tree_merge_multi(other.__tree_)
+    _ensureUnique {
+      .___insert_range_multi(
+        tree: $0,
+        other: other.__tree_,
+        other.__tree_.__begin_node_,
+        other.__tree_.__end_node())
+    }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Pair<Key, Value> {
-    _ensureUnique()
-    ___merge_multi(other)
+    _ensureUnique { .___insert_range_multi(tree: $0, other) }
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
-    _ensureUnique()
-    ___merge_multi(other.map({ Pair($0) }))
+    _ensureUnique { .___insert_range_multi(tree: $0, other.map{ Pair($0) }) }
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
@@ -783,7 +761,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   @inlinable
   @inline(__always)
   public __consuming func sorted() -> Tree.ElementIterator {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
   
   /// - Complexity: O(1)
@@ -933,15 +911,15 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func keys() -> KeyIterator<Tree, Key, Value> {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  public __consuming func keys() -> Keys {
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func values() -> ValueIterator<Tree, Key, Value> {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+  public __consuming func values() -> Values {
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 }
 

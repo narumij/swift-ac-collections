@@ -26,9 +26,9 @@ import Foundation
 ///
 /// ヒープの代わりに配列を使っているため、実際には内部配列のインデックスを使用している
 ///
-/// インデックスが0からはじまるため、一般的にnullは0で表現するところを、-1で表現している
+/// インデックスが0からはじまるため、一般的にnullは0で表現するところを、-2で表現している
 ///
-/// endはルートノードを保持するオブジェクトを指すかわりに、-2で表現している
+/// endはルートノードを保持するオブジェクトを指すかわりに、-1で表現している
 ///
 /// llvmの`__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
 public typealias _NodePtr = Int
@@ -39,13 +39,15 @@ extension _NodePtr {
 
   /// 赤黒木のIndexで、nullを表す
   @inlinable
-  @inline(__always)
-  static var nullptr: Self { -2 }
+  static var nullptr: Self {
+    @inline(__always) get { -2 }
+  }
 
   /// 赤黒木のIndexで、終端を表す
   @inlinable
-  @inline(__always)
-  static var end: Self { -1 }
+  static var end: Self {
+    @inline(__always) get { -1 }
+  }
 
   /// 数値を直接扱うことを避けるための初期化メソッド
   @inlinable
@@ -59,29 +61,39 @@ func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
   ptr < 0
 }
 
-#if false
-/// 赤黒木の参照型を表す内部enum
-public
-  enum _NodeRef: Equatable
-{
-  /// 右ノードへの参照
-  case __right_(_NodePtr)
-  /// 左ノードへの参照
-  case __left_(_NodePtr)
-}
+#if USE_ENUM_NODE_REF
+  /// 赤黒木の参照型を表す内部enum
+  public
+    enum _NodeRef: Equatable
+  {
+    /// 右ノードへの参照
+    case __right_(_NodePtr)
+    /// 左ノードへの参照
+    case __left_(_NodePtr)
+  }
 #else
-// こちらのほうがfind equalの速度が改善する
-// かわりに上限サイズがInt.max - 1になる
-public typealias _NodeRef = UInt
+  // こちらのほうがfind equalの速度が改善する
+  // かわりに上限サイズがInt.max - 1になる
+  //
+  // しばらく様子を見る
+  /// 最上位ビットが0のとき右、最上位ビットが1の時左
+  ///
+  /// 直感に反してこのようにしているのは、`__left_ref(.end)`を簡潔に扱えるようにするため
+  public typealias _NodeRef = UInt
 #endif
 
 // ルートノードの親相当の機能
 @usableFromInline
 protocol TreeEndNodeProtocol {
+  /// 左ノードを返す
+  ///
   /// 木を遡るケースではこちらが必ず必要
   func __left_(_: pointer) -> pointer
+  /// 左ノードを返す
+  ///
   /// 根から末端に向かう処理は、こちらで足りる
   func __left_unsafe(_ p: pointer) -> pointer
+  /// 左ノードを更新する
   func __left_(_ lhs: pointer, _ rhs: pointer)
 }
 
@@ -93,12 +105,20 @@ extension TreeEndNodeProtocol {
 // 一般ノード相当の機能
 @usableFromInline
 protocol TreeNodeProtocol: TreeEndNodeProtocol {
+  /// 右ノードを返す
   func __right_(_: pointer) -> pointer
+  /// 右ノードを更新する
   func __right_(_ lhs: pointer, _ rhs: pointer)
+  /// 色を返す
   func __is_black_(_: pointer) -> Bool
+  /// 色を更新する
   func __is_black_(_ lhs: pointer, _ rhs: Bool)
+  /// 親ノードを返す
   func __parent_(_: pointer) -> pointer
+  /// 親ノードを更新する
   func __parent_(_ lhs: pointer, _ rhs: pointer)
+  /// 親ノードを返す
+  ///
   /// This is only to align the naming with C++.
   /// C++と名前を揃えているだけのもの
   func __parent_unsafe(_: pointer) -> __parent_pointer
@@ -111,9 +131,13 @@ extension TreeNodeProtocol {
 
 @usableFromInline
 protocol TreeNodeRefProtocol {
+  /// 左ノードへの参照を返す
   func __left_ref(_: _NodePtr) -> _NodeRef
+  /// 右ノードへの参照を返す
   func __right_ref(_: _NodePtr) -> _NodeRef
+  /// 参照先を返す
   func __ptr_(_ rhs: _NodeRef) -> _NodePtr
+  /// 参照先を更新する
   func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr)
 }
 
@@ -158,35 +182,27 @@ protocol ValueProtocol: TreeNodeProtocol, TreeNodeValueProtocol {
   func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
 }
 
-/// Set Algebraやmeld等で用いる
-@usableFromInline
-protocol CompProtocol {
-  associatedtype _Key
-  /// キー同士を比較する。通常`<`と同じ
-  func ___comp(_ a: _Key, _ b: _Key) -> Bool
-}
-
 @usableFromInline
 protocol BeginNodeProtocol {
   /// 木の左端のノードを返す
-  var __begin_node: _NodePtr { get nonmutating set }
+  var __begin_node_: _NodePtr { get nonmutating set }
 }
 
 @usableFromInline
 protocol BeginProtocol: BeginNodeProtocol {
-  // __begin_nodeが圧倒的に速いため
-  @available(*, deprecated, renamed: "__begin_node")
+  // __begin_node_が圧倒的に速いため
+  @available(*, deprecated, renamed: "__begin_node_")
   /// 木の左端のノードを返す
   func begin() -> _NodePtr
 }
 
 extension BeginProtocol {
-  // __begin_nodeが圧倒的に速いため
-  @available(*, deprecated, renamed: "__begin_node")
+  // __begin_node_が圧倒的に速いため
+  @available(*, deprecated, renamed: "__begin_node_")
   @inlinable
   @inline(__always)
   /// 木の左端のノードを返す
-  func begin() -> _NodePtr { __begin_node }
+  func begin() -> _NodePtr { __begin_node_ }
 }
 
 @usableFromInline
@@ -247,7 +263,7 @@ protocol SizeProtocol {
   /// 木のノードの数を返す
   ///
   /// 終端ノードは含まないはず
-  var size: Int { get nonmutating set }
+  var __size_: Int { get nonmutating set }
 }
 
 // MARK: -
@@ -295,6 +311,16 @@ extension ValueComparer where _Key: Comparable {
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     a < b
   }
+
+  @inlinable
+  @inline(__always)
+  public static func __lazy_synth_three_way_comparator() -> (_Key, _Key) ->
+    __lazy_three_way_compare_result<_Key>
+  {
+    {
+      __lazy_three_way_compare_result<_Key>(lhs: $0, rhs: $1)
+    }
+  }
 }
 
 // Equatableプロトコルの場合標準実装を付与する
@@ -308,24 +334,23 @@ extension ValueComparer where _Key: Equatable {
 }
 
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
-public protocol ValueComparerProtocol {
+public protocol ValueComparator {
   associatedtype VC: ValueComparer
   static func __key(_ e: VC._Value) -> VC._Key
   static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
   static func value_equiv(_ lhs: VC._Key, _ rhs: VC._Key) -> Bool
   func __key(_ e: VC._Value) -> VC._Key
   func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
-  func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool
 }
 
-extension ValueComparerProtocol {
-  
+extension ValueComparator {
+
   @inlinable
   @inline(__always)
   public static func __key(_ e: VC._Value) -> VC._Key {
     VC.__key(e)
   }
-  
+
   @inlinable
   @inline(__always)
   public static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
@@ -337,7 +362,7 @@ extension ValueComparerProtocol {
   public static func value_equiv(_ lhs: VC._Key, _ rhs: VC._Key) -> Bool {
     VC.value_equiv(lhs, rhs)
   }
-  
+
   @inlinable
   @inline(__always)
   public func __key(_ e: VC._Value) -> VC._Key {
@@ -349,11 +374,14 @@ extension ValueComparerProtocol {
   public func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
     VC.value_comp(a, b)
   }
+}
+
+extension ValueComparator where VC: ThreeWayComparator {
 
   @inlinable
   @inline(__always)
-  public func ___comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
-    VC.value_comp(a, b)
+  func __lazy_synth_three_way_comparator() -> (VC._Key, VC._Key) -> VC.__compare_result {
+    VC.__lazy_synth_three_way_comparator()
   }
 }
 

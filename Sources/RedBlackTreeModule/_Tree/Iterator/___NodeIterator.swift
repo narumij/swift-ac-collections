@@ -21,11 +21,10 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct KeyIterator<Tree, Key, V>: Sequence, IteratorProtocol
-where
-  Tree: Tree_IterateProtocol & Tree_KeyValue,
-  Tree.Key == Key
-{
+public struct ___NodeIterator<VC>: Sequence, IteratorProtocol
+where VC: ___TreeBase {
+
+  public typealias Tree = ___Tree<VC>
 
   @usableFromInline
   let __tree_: Tree
@@ -45,46 +44,45 @@ where
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> Key? {
+  public mutating func next() -> _NodePtr? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
       _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return Tree.__key(__tree_[_current])
+    return _current
   }
 
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> ReversedKeyIterator<Tree, Key, V> {
+  public __consuming func reversed() -> ReversedNodeIterator<VC> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-extension KeyIterator: Equatable {
+extension ___NodeIterator: Equatable {
 
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs, by: Tree.value_equiv)
+    lhs.elementsEqual(rhs)
   }
 }
 
-extension KeyIterator: Comparable {
+extension ___NodeIterator: Comparable {
 
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
+    lhs.lexicographicallyPrecedes(rhs)
   }
 }
 
 @frozen
-public struct ReversedKeyIterator<Tree, Key, V>: Sequence, IteratorProtocol
-where
-  Tree: Tree_IterateProtocol & Tree_KeyValue,
-  Tree.Key == Key
-{
+public struct ReversedNodeIterator<VC>: Sequence, IteratorProtocol
+where VC: ___TreeBase {
+
+  public typealias Tree = ___Tree<VC>
 
   @usableFromInline
   let __tree_: Tree
@@ -99,33 +97,33 @@ where
     self._current = end
     self._next = end == start ? end : __tree_.__tree_prev_iter(end)
     self._start = start
-    self._begin = __tree_.__begin_node
+    self._begin = __tree_.__begin_node_
   }
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> Key? {
+  public mutating func next() -> _NodePtr? {
     guard _current != _start else { return nil }
     _current = _next
     _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-    return Tree.__key(__tree_[_current])
+    return _current
   }
 }
 
-extension ReversedKeyIterator: Equatable {
+extension ReversedNodeIterator: Equatable {
 
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs, by: Tree.value_equiv)
+    lhs.elementsEqual(rhs)
   }
 }
 
-extension ReversedKeyIterator: Comparable {
+extension ReversedNodeIterator: Comparable {
 
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
+    lhs.lexicographicallyPrecedes(rhs)
   }
 }

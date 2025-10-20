@@ -68,7 +68,6 @@ public struct RedBlackTreeSet<Element: Comparable> {
 extension RedBlackTreeSet: ___RedBlackTreeBase {}
 extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeSet: ___RedBlackTreeUnique {}
-extension RedBlackTreeSet: ___RedBlackTreeMerge {}
 extension RedBlackTreeSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 extension RedBlackTreeSet: ElementComparable { }
@@ -99,40 +98,19 @@ extension RedBlackTreeSet {
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    let elements = sequence.sorted()
-    let count = elements.count
-    let tree: Tree = .create(minimumCapacity: count)
-    // 初期化直後はO(1)
-    var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
-    for __k in elements {
-      if __parent == .end || tree[__parent] != __k {
-        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
-      }
-    }
-    assert(tree.__tree_invariant(tree.__root()))
-    self._storage = .init(tree: tree)
+    self._storage = .init(tree: .create_unique(sorted: sequence.sorted()))
   }
 }
 
 extension RedBlackTreeSet {
 
-  /// - Important: 昇順を想定して処理を省いている。降順に用いた場合未定義とする。
+  /// - Important: 昇順を想定して処理を省いている。降順に用いた場合未定義
   /// - Complexity: O(*n*)
   @inlinable
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {
     precondition(range is Range<Element> || range is ClosedRange<Element>)
-    let tree: Tree = .create(minimumCapacity: range.count)
-    // 初期化直後はO(1)
-    var (__parent, __child) = tree.___max_ref()
-    for __k in range {
-      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
-    }
-    assert(tree.__tree_invariant(tree.__root()))
-    self._storage = .init(tree: tree)
+    self._storage = .init(tree: .create(range: range))
   }
 }
 
@@ -294,24 +272,33 @@ extension RedBlackTreeSet {
   /// - Important: 空間計算量に余裕がある場合、formUnionの使用を推奨します
   @inlinable
   public mutating func merge(_ other: RedBlackTreeSet<Element>) {
-    _ensureUnique()
-    ___tree_merge_unique(other.__tree_)
+    _ensureUnique {
+      .___insert_range_unique(
+        tree: $0,
+        other: other.__tree_,
+        other.__tree_.__begin_node_,
+        other.__tree_.__end_node())
+    }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge(_ other: RedBlackTreeMultiSet<Element>) {
-    _ensureUnique()
-    ___tree_merge_unique(other.__tree_)
+    _ensureUnique {
+      .___insert_range_unique(
+        tree: $0,
+        other: other.__tree_,
+        other.__tree_.__begin_node_,
+        other.__tree_.__end_node())
+    }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge<S>(_ other: S) where S: Sequence, S.Element == Element {
-    _ensureUnique()
-    ___merge_unique(other)
+    _ensureUnique { .___insert_range_unique(tree: $0, other) }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
@@ -639,7 +626,7 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
   @inlinable
   @inline(__always)
   public __consuming func sorted() -> Tree.ElementIterator {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
   
   /// - Complexity: O(1)
@@ -963,33 +950,12 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  // 旧初期化実装
-  // メモリ制限がきつい場合に備えて復活
-
   /// - Complexity: O(*n* log *n*)
   ///
-  /// 標準のイニシャライザはメモリを余分につかう面がある。
-  /// メモリ制限がきつい場合、こちらをお試しください
-  ///
-  /// それでもメモリでダメだった場合、ごめんなさい
+  /// 省メモリでの初期化
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    let count = (sequence as? (any Collection))?.count
-    var tree: Tree = .create(minimumCapacity: count ?? 0)
-    for __k in sequence {
-      if count == nil {
-        Tree.ensureCapacity(tree: &tree)
-      }
-      var __parent = _NodePtr.nullptr
-      // 検索の計算量がO(log *n*)
-      let __child = tree.__find_equal(&__parent, __k)
-      if tree.__ptr_(__child) == .nullptr {
-        let __h = tree.__construct_node(__k)
-        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-        tree.__insert_node_at(__parent, __child, __h)
-      }
-    }
-    self._storage = .init(tree: tree)
+    self._storage = .init(tree: .create_unique(naive: sequence))
   }
 }

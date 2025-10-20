@@ -352,21 +352,22 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice where Base: KeyValueComparer {
+  
+  public typealias Keys = RedBlackTreeIterator<Base>.Keys
+  public typealias Values = RedBlackTreeIterator<Base>.MappedValues
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func keys<Key, Value>() -> KeyIterator<Tree, Key, Value>
-  where Element == _KeyValueTuple_<Key, Value> {
+  public __consuming func keys() -> Keys {
     .init(tree: __tree_, start: _start, end: _end)
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func values<Key, Value>() -> ValueIterator<Tree, Key, Value>
-  where Element == _KeyValueTuple_<Key, Value> {
+  public __consuming func values() -> Values {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -453,8 +454,8 @@ extension RedBlackTreeSlice {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> NodeIterator<Tree> {
-    NodeIterator(tree: __tree_, start: _start, end: _end)
+  public __consuming func ___node_positions() -> ___NodeIterator<Base> {
+    ___NodeIterator(tree: __tree_, start: _start, end: _end)
   }
 }
 

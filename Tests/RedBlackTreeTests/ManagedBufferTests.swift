@@ -5,7 +5,7 @@ import XCTest
 
 final class ManagedBufferTests: XCTestCase {
 
-  enum VC: ScalarValueComparer & CompareUniqueTrait {
+  enum VC: ScalarValueComparer & CompareUniqueTrait & ThreeWayComparator {
     typealias _Key = Int
     typealias Element = Int
   }
@@ -15,7 +15,7 @@ final class ManagedBufferTests: XCTestCase {
     XCTAssertEqual(storage.capacity, 0)
     XCTAssertEqual(storage.count, 0)
     XCTAssertEqual(storage.__root(), .nullptr)
-    XCTAssertEqual(storage.__begin_node, .end)
+    XCTAssertEqual(storage.__begin_node_, .end)
   }
 
   func testCreate() async throws {
@@ -23,7 +23,7 @@ final class ManagedBufferTests: XCTestCase {
     XCTAssertEqual(storage.capacity, 4)
     XCTAssertEqual(storage.count, 0)
     XCTAssertEqual(storage.__root(), .nullptr)
-    XCTAssertEqual(storage.__begin_node, .end)
+    XCTAssertEqual(storage.__begin_node_, .end)
   }
 
   func testConstruct() async throws {

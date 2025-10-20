@@ -22,13 +22,15 @@
 
 import Foundation
 
+public typealias ___TreeBase = ValueComparer & CompareTrait & ThreeWayComparator
+
 @_fixed_layout
 @_objc_non_lazy_realization
 public final class ___Tree<VC>: ManagedBuffer<
   ___Tree<VC>.Header,
   ___Tree<VC>.Node
 >
-where VC: ValueComparer & CompareTrait {
+where VC: ___TreeBase {
 
   @inlinable
   deinit {
@@ -363,14 +365,14 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal var size: Int {
+  internal var __size_: Int {
     get { __header_ptr.pointee.count }
     set { /* NOP */  }
   }
 
   @nonobjc
   @inlinable
-  public var __begin_node: _NodePtr {
+  public var __begin_node_: _NodePtr {
     @inline(__always)
     _read { yield __header_ptr.pointee.__begin_node }
     @inline(__always)
@@ -385,8 +387,8 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func __get_value(_ p: _NodePtr) -> _Key {
-    __key(__node_ptr[p].__value_)
+  public func __get_value(_ p: _NodePtr) -> _Key {
+    VC.__key(__node_ptr[p].__value_)
   }
 }
 
@@ -416,6 +418,7 @@ extension ___Tree: FindEqualProtocol {}
 extension ___Tree: FindLeafProtocol {}
 extension ___Tree: EqualProtocol {}
 extension ___Tree: InsertNodeAtProtocol {}
+extension ___Tree: InsertUniqueProtocol {}
 extension ___Tree: InsertMultiProtocol {}
 extension ___Tree: InsertLastProtocol {}
 extension ___Tree: RemoveProtocol {}
@@ -423,16 +426,13 @@ extension ___Tree: EraseProtocol {}
 extension ___Tree: EraseUniqueProtocol {}
 extension ___Tree: EraseMultiProtocol {}
 extension ___Tree: BoundProtocol {}
-extension ___Tree: InsertUniqueProtocol {}
 extension ___Tree: CountProtocol {}
 extension ___Tree: TreeNodeProtocol {}
 extension ___Tree: DistanceProtocol {}
 extension ___Tree: CompareProtocol {}
 extension ___Tree: CompareUniqueProtocol {}
 extension ___Tree: CompareMultiProtocol {}
-extension ___Tree: MergeSourceProtocol {}
-extension ___Tree: CompProtocol {}
-extension ___Tree: ValueComparerProtocol {}
+extension ___Tree: ValueComparator {}
 
 extension ___Tree {
   @nonobjc
@@ -646,7 +646,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___is_begin(_ p: _NodePtr) -> Bool {
-    p == __begin_node
+    p == __begin_node_
   }
 
   @nonobjc
@@ -882,7 +882,7 @@ extension ___Tree {
         i = ___index(after: i)
         distance -= 1
       } else {
-        guard i != __begin_node else {
+        guard i != __begin_node_ else {
           fatalError(.outOfBounds)
         }
         i = ___index(before: i)
@@ -919,7 +919,7 @@ extension ___Tree {
         i = ___index(after: i)
         distance -= 1
       } else {
-        guard i != __begin_node else {
+        guard i != __begin_node_ else {
           fatalError(.outOfBounds)
         }
         i = ___index(before: i)
@@ -951,7 +951,7 @@ extension ___Tree: Sequence {
   @inlinable
   @inline(__always)
   public __consuming func makeIterator() -> ElementIterator {
-    .init(tree: self, start: __begin_node, end: __end_node())
+    .init(tree: self, start: __begin_node_, end: __end_node())
   }
 }
 
@@ -972,7 +972,7 @@ extension ___Tree {
         result = __tree_next_iter(result)
         distance -= 1
       } else {
-        if result == __begin_node {
+        if result == __begin_node_ {
           // 後ろと区別したくてnullptrにしてたが、一周回るとendなのでendにしてみる
           result = .end
           return result
@@ -987,21 +987,19 @@ extension ___Tree {
 
 // MARK: -
 
-extension ___Tree: Tree_IterateProtocol {}
-
 extension ___Tree {
-  public typealias Index = ___Iterator
+  public typealias Index = RedBlackTreeIndex<VC>
 
   @nonobjc
   @inlinable
   @inline(__always)
-  func makeIndex(rawValue: _NodePtr) -> ___Iterator {
+  func makeIndex(rawValue: _NodePtr) -> Index {
     .init(tree: self, rawValue: rawValue)
   }
 }
 
 extension ___Tree {
-  public typealias Indices = ___IteratorSequence
+  public typealias Indices = RedBlackTreeIndices<VC>
 
   @nonobjc
   @inlinable
@@ -1011,7 +1009,29 @@ extension ___Tree {
   }
 }
 
-extension ___Tree: Tree_KeyValue where VC: KeyValueComparer {}
+extension ___Tree where VC: KeyValueComparer {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public func ___mapped_value(_ __p: _NodePtr) -> VC._MappedValue {
+    VC.___mapped_value(self[__p])
+  }
+
+//  @nonobjc
+//  @inlinable
+//  @inline(__always)
+//  public func ___mapped_value(_ __p: _NodePtr, _ value: VC._MappedValue) {
+//    VC.___with_mapped_value(&self[__p]) { $0 = value }
+//  }
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public func ___with_mapped_value<T>(_ __p: _NodePtr,_ f: (inout VC._MappedValue) throws -> T) rethrows -> T {
+    try VC.___with_mapped_value(&self[__p], f)
+  }
+}
 
 extension ___Tree {
 
@@ -1117,4 +1137,12 @@ extension ___Tree {
     }
     return tree
   }
+}
+
+extension ___Tree {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public static var isMulti: Bool { VC.isMulti }
 }

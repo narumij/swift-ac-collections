@@ -91,8 +91,7 @@ extension ___LRUMemoizeStorage {
         if __tree_.count == maxCount {
           ___remove(at: ___popRankLowest())
         }
-        var __parent = _NodePtr.nullptr
-        let __child = __tree_.__find_equal(&__parent, key)
+        let (__parent, __child) = __tree_.__find_equal(key)
         if __tree_.__ptr_(__child) == .nullptr {
           let __h = __tree_.__construct_node(.init(key, .nullptr, .nullptr, newValue))
           __tree_.__insert_node_at(__parent, __child, __h)
@@ -120,8 +119,15 @@ extension ___LRUMemoizeStorage {
 extension ___LRUMemoizeStorage: ___LRULinkList {
   
   @inlinable
+  @inline(__always)
   public static func ___mapped_value(_ element: _Value) -> _MappedValue {
     element.value
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {
+    try f(&element.value)
   }
 }
 

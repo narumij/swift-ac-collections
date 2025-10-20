@@ -13,7 +13,7 @@ import XCTest
     ___RedBlackTreeNodePoolProtocol
   {
     var __left_: _NodePtr = .nullptr
-    var __begin_node: _NodePtr = .end
+    var __begin_node_: _NodePtr = .end
 
     var __nodes: [___Node] = []
     var __values: [Element] = []
@@ -60,7 +60,7 @@ import XCTest
 
     func clear() {
       __left_ = .nullptr
-      __begin_node = .end
+      __begin_node_ = .end
       __nodes = []
       ___clearDestroy()
     }
@@ -81,7 +81,7 @@ import XCTest
     FindEqualProtocol, InsertNodeAtProtocol, InsertUniqueProtocol,
     RemoveProtocol, EraseProtocol, EraseUniqueProtocol, CompareProtocol, CompareMultiProtocol,
     BoundProtocol, NodeBitmapProtocol
-  {
+{
     func __key(_ e: Element) -> Element {
       e
     }
@@ -92,7 +92,7 @@ import XCTest
 
     typealias Element = Element
 
-    var size: Int {
+    var __size_: Int {
       get { __nodes.count - ___destroy_count }
       set {}
     }
@@ -106,6 +106,12 @@ import XCTest
     func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
       ___ptr_comp_multi(l, r)
     }
+    
+    func __lazy_synth_three_way_comparator() -> (_Key,_Key) -> __lazy_three_way_compare_result<Element> {
+      { .init(lhs: $0, rhs: $1) }
+    }
+
+    static var isMulti: Bool { false }
   }
 
   class TreeFixture0_10_20: TreeFixture<Int> {
@@ -159,7 +165,7 @@ import XCTest
       ]
       __root(0)
       //    size = tree.nodes.count
-      __begin_node = 2
+      __begin_node_ = 2
       XCTAssertTrue(__tree_invariant(__root()))
     }
 

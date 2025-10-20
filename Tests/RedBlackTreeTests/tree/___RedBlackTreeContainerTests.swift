@@ -138,6 +138,7 @@ import XCTest
         20,
       ]
       tree.__root(0)
+      tree.__tree_.__begin_node_ = 1
       XCTAssertTrue(tree.___tree_invariant())
     }
 
@@ -266,6 +267,7 @@ import XCTest
       tree.__left_ = .node(tree.__nodes.count)
       tree.__nodes.append(
         .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .end))
+      tree.__tree_.__begin_node_ = 0
       XCTAssertEqual(tree.__nodes.count, 1)
       XCTAssertNotEqual(tree.__root(), nil)
       XCTAssertNotEqual(tree.__tree_.__parent_(tree.__root()), nil)
@@ -338,17 +340,15 @@ import XCTest
       var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       fixtureEmpty(&tree)
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 5
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertEqual(__parent, .end)
         XCTAssertEqual(__child, tree.__tree_.__left_ref(.end))
       }
       do {
         tree.__left_ = .nullptr
-        var __parent: _NodePtr = .nullptr
         let __k = 5
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertEqual(__parent, .end)
         XCTAssertEqual(__child, tree.__tree_.__left_ref(.end))
       }
@@ -358,57 +358,50 @@ import XCTest
       var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       fixture0_10_20(&tree)
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = -1
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 1)
         XCTAssertEqual(__child, tree.__tree_.__left_ref(1))
       }
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 0
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertNotEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 1)
         XCTAssertEqual(__child, tree.__tree_.__left_ref(0))
       }
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 5
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 1)
         XCTAssertEqual(__child, tree.__tree_.__right_ref(1))
       }
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 10
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertNotEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 0)
         XCTAssertEqual(__child, tree.__tree_.__left_ref(.end))
       }
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 15
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 2)
         XCTAssertEqual(__child, tree.__tree_.__left_ref(2))
       }
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 20
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertNotEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 2)
         XCTAssertEqual(__child, tree.__tree_.__right_ref(0))
       }
       do {
-        var __parent: _NodePtr = .nullptr
         let __k = 21
-        let __child = tree.__tree_.__find_equal(&__parent, __k)
+        let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertEqual(__parent.index, __child.index)
         XCTAssertEqual(__parent, 2)
         XCTAssertEqual(__child, tree.__tree_.__right_ref(2))

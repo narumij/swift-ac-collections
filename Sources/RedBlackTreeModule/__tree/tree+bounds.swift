@@ -23,39 +23,87 @@
 import Foundation
 
 @usableFromInline
-protocol BoundProtocol: BoundAlgorithmProtocol {}
+protocol BoundProtocol: BoundAlgorithmProtocol & CompareTrait {}
 
 extension BoundProtocol {
 
   @inlinable
   @inline(__always)
   func lower_bound(_ __v: _Key) -> _NodePtr {
-    return __lower_bound(__v, __root(), __end_node())
+    Self.isMulti ? __lower_bound_multi(__v) : __lower_bound_unique(__v)
   }
 
   @inlinable
   @inline(__always)
   func upper_bound(_ __v: _Key) -> _NodePtr {
-    return __upper_bound(__v, __root(), __end_node())
+    Self.isMulti ? __upper_bound_multi(__v) : __upper_bound_unique(__v)
   }
 }
 
 @usableFromInline
-protocol BoundAlgorithmProtocol: ValueProtocol & RootProtocol & EndNodeProtocol {}
+protocol BoundAlgorithmProtocol: ValueProtocol & RootProtocol & EndNodeProtocol
+    & ThreeWayComparatorProtocol
+{}
 
 extension BoundAlgorithmProtocol {
 
   @inlinable
   @inline(__always)
+  func __lower_upper_bound_unique_impl(_LowerBound: Bool, _ __v: _Key) -> _NodePtr {
+    var __rt = __root()
+    var __result = __end_node()
+    let __comp = __lazy_synth_three_way_comparator()
+    while __rt != .nullptr {
+      let __comp_res = __comp(__v, __get_value(__rt))
+      if __comp_res.__less() {
+        __result = __rt
+        __rt = __left_unsafe(__rt)
+      } else if __comp_res.__greater() {
+        __rt = __right_(__rt)
+      } else if _LowerBound {
+        return __rt
+      } else {
+        return __right_(__rt) != .nullptr ? __tree_min(__right_(__rt)) : __result
+      }
+    }
+    return __result
+  }
+
+  @inlinable
+  @inline(__always)
+  func __lower_bound_unique(_ __v: _Key) -> _NodePtr {
+    __lower_upper_bound_unique_impl(_LowerBound: true, __v)
+  }
+
+  @inlinable
+  @inline(__always)
+  func __upper_bound_unique(_ __v: _Key) -> _NodePtr {
+    __lower_upper_bound_unique_impl(_LowerBound: false, __v)
+  }
+
+  @inlinable
+  @inline(__always)
+  func __lower_bound_multi(_ __v: _Key) -> _NodePtr {
+    __lower_bound_multi(__v, __root(), __end_node())
+  }
+
+  @inlinable
+  @inline(__always)
+  func __upper_bound_multi(_ __v: _Key) -> _NodePtr {
+    __upper_bound_multi(__v, __root(), __end_node())
+  }
+
+  @inlinable
+  @inline(__always)
   func
-    __lower_bound(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
+    __lower_bound_multi(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
   {
     var (__root, __result) = (__root, __result)
 
     while __root != .nullptr {
       if !value_comp(__get_value(__root), __v) {
         __result = __root
-        __root = __left_unsafe(__root) // ここはunsafeか否か迷う
+        __root = __left_unsafe(__root)
       } else {
         __root = __right_(__root)
       }
@@ -66,7 +114,7 @@ extension BoundAlgorithmProtocol {
   @inlinable
   @inline(__always)
   func
-    __upper_bound(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
+    __upper_bound_multi(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
   {
     var (__root, __result) = (__root, __result)
 

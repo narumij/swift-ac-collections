@@ -20,31 +20,55 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-extension ___Tree {
+import Foundation
 
+@frozen
+public struct RedBlackTreeIndices<Base>
+where Base: ___TreeBase {
+  
+  public typealias Tree = ___Tree<Base>
+  public typealias _Value = Tree._Value
+  
+  @usableFromInline
+  let __tree_: Tree
+  
+  @usableFromInline
+  var _start, _end: _NodePtr
+  
+  public typealias Index = Tree.Index
+  
+  @inlinable
+  @inline(__always)
+  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+    __tree_ = tree
+    _start = start
+    _end = end
+  }
+}
+
+extension RedBlackTreeIndices {
+  
   @frozen
-  public struct ForwardIterator: IteratorProtocol {
-
+  public struct Iterator: IteratorProtocol {
+    
     @usableFromInline
-    let __tree_: ___Tree
-
+    let __tree_: Tree
+    
     @usableFromInline
     var _current, _next, _end: _NodePtr
-
+    
     @inlinable
     @inline(__always)
-    internal init(tree: ___Tree, start: _NodePtr, end: _NodePtr) {
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.__tree_ = tree
       self._current = start
       self._end = end
       self._next = start == .end ? .end : tree.__tree_next(start)
     }
-
-    // 性能変化の反応が過敏なので、慎重さが必要っぽい。
-
+    
     @inlinable
     @inline(__always)
-    public mutating func next() -> ___Iterator? {
+    public mutating func next() -> Index? {
       guard _current != _end else { return nil }
       defer {
         _current = _next
@@ -53,79 +77,53 @@ extension ___Tree {
       return __tree_.makeIndex(rawValue: _current)
     }
   }
+}
+
+extension RedBlackTreeIndices {
 
   @frozen
-  public struct BackwordIterator: Sequence, IteratorProtocol {
-
+  public struct Reversed: Sequence, IteratorProtocol {
+    
     @usableFromInline
-    let __tree_: ___Tree
-
+    let __tree_: Tree
+    
     @usableFromInline
     var _current, _next, _start, _begin: _NodePtr
-
+    
     @inlinable
     @inline(__always)
-    internal init(tree: ___Tree, start: _NodePtr, end: _NodePtr) {
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.__tree_ = tree
       self._current = end
       self._next = end == start ? end : __tree_.__tree_prev_iter(end)
       self._start = start
-      self._begin = __tree_.__begin_node
+      self._begin = __tree_.__begin_node_
     }
-
+    
     @inlinable
     @inline(__always)
-    public mutating func next() -> ___Iterator? {
+    public mutating func next() -> Index? {
       guard _current != _start else { return nil }
       _current = _next
       _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
       return __tree_.makeIndex(rawValue: _current)
     }
   }
-
-  @frozen
-  public struct ___IteratorSequence: Sequence {
-
-    @usableFromInline
-    let __tree_: ___Tree
-
-    @usableFromInline
-    var _start, _end: _NodePtr
-
-    public typealias Index = ___Iterator
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: ___Tree) {
-      self.init(
-        tree: tree,
-        start: tree.__begin_node,
-        end: tree.__end_node())
-    }
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      __tree_ = tree
-      _start = start
-      _end = end
-    }
-
-    @inlinable
-    @inline(__always)
-    public __consuming func makeIterator() -> ForwardIterator {
-      .init(tree: __tree_, start: _start, end: _end)
-    }
-
-    @inlinable
-    @inline(__always)
-    public __consuming func reversed() -> BackwordIterator {
-      .init(tree: __tree_, start: _start, end: _end)
-    }
-  }
 }
 
-extension ___Tree.___IteratorSequence: Collection, BidirectionalCollection {
+extension RedBlackTreeIndices: Collection, BidirectionalCollection {
+  
+  @inlinable
+  @inline(__always)
+  public __consuming func makeIterator() -> Iterator {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public __consuming func reversed() -> Reversed {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
 
   @inlinable
   @inline(__always)
@@ -165,6 +163,16 @@ extension ___Tree.___IteratorSequence: Collection, BidirectionalCollection {
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     .init(
+      tree: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+    let bounds: Range<Index> = bounds.relative(to: self)
+    return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)

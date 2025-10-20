@@ -22,7 +22,7 @@
 
 @usableFromInline
 protocol ___RedBlackTreeCopyOnWrite {
-  associatedtype VC: ValueComparer & CompareTrait
+  associatedtype VC: ___TreeBase
   var _storage: ___Storage<VC> { get set }
 }
 
@@ -66,6 +66,13 @@ extension ___RedBlackTreeCopyOnWrite {
     if !_isKnownUniquelyReferenced_LV2() {
       _storage = _storage.copy()
     }
+  }
+  
+  @inlinable
+  @inline(__always)
+  mutating func _ensureUnique(transform: (___Storage<VC>.Tree) throws -> ___Storage<VC>.Tree) rethrows {
+    _ensureUnique()
+    _storage = .init(tree: try transform(_storage.tree))
   }
 
   @inlinable

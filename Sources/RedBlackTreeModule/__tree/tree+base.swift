@@ -24,6 +24,8 @@ import Foundation
 
 extension TreeNodeProtocol {
 
+  /// Returns:  true if `__x` is a left child of its parent, else false
+  /// Precondition:  `__x` != nullptr.
   @inlinable
   @inline(__always)
   func
@@ -34,6 +36,9 @@ extension TreeNodeProtocol {
   }
 
   #if TREE_INVARIANT_CHECKS
+    /// Determines if the subtree rooted at `__x` is a proper red black subtree.  If
+    ///    `__x` is a proper subtree, returns the black height (null counts as 1).  If
+    ///    `__x` is an improper subtree, returns 0.
     @usableFromInline
     func
       __tree_sub_invariant(_ __x: _NodePtr) -> UInt
@@ -72,9 +77,10 @@ extension TreeNodeProtocol {
       }  // invalid or different height right subtree
       return __h + (__is_black_(__x) ? 1 : 0)  // return black height of this node
     }
-  #endif
 
-  #if TREE_INVARIANT_CHECKS
+    /// Determines if the red black tree rooted at `__root` is a proper red black tree.
+    ///    `__root` == nullptr is a proper tree.  Returns true if `__root` is a proper
+    ///    red black tree, else returns false.
     @usableFromInline
     func
       __tree_invariant(_ __root: _NodePtr) -> Bool
@@ -102,6 +108,7 @@ extension TreeNodeProtocol {
     func __tree_invariant(_ __root: _NodePtr) -> Bool { true }
   #endif
 
+  /// Returns:  pointer to the left-most node under `__x`.
   @inlinable
   @inline(__always)
   func
@@ -115,6 +122,7 @@ extension TreeNodeProtocol {
     return __x
   }
 
+  /// Returns:  pointer to the right-most node under `__x`.
   @inlinable
   @inline(__always)
   func
@@ -128,6 +136,7 @@ extension TreeNodeProtocol {
     return __x
   }
 
+  /// Returns:  pointer to the next in-order node after __x.
   @inlinable
   @inline(__always)
   func
@@ -144,6 +153,11 @@ extension TreeNodeProtocol {
     return __parent_unsafe(__x)
   }
 
+  /// `__tree_next_iter` and `__tree_prev_iter` implement iteration through the tree. The order is as follows:
+  /// left sub-tree -> node -> right sub-tree. When the right-most node of a sub-tree is reached, we walk up the tree until
+  /// we find a node where we were in the left sub-tree. We are _always_ in a left sub-tree, since the `__end_node_` points
+  /// to the actual root of the tree through a `__left_` pointer. Incrementing the end() pointer is UB, so we can assume that
+  /// never happens.
   @inlinable
   @inline(__always)
   public func
@@ -160,6 +174,8 @@ extension TreeNodeProtocol {
     return __parent_(__x)
   }
 
+  /// Returns:  pointer to the previous in-order node before `__x`.
+  /// Note: `__x` may be the end node.
   @inlinable
   @inline(__always)
   public func
@@ -177,6 +193,7 @@ extension TreeNodeProtocol {
     return __parent_unsafe(__xx)
   }
 
+  /// Returns:  pointer to a node which has no children
   @inlinable
   @inline(__always)
   func

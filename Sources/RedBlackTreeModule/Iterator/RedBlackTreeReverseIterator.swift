@@ -20,71 +20,21 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-extension ___Tree {
+import Foundation
 
+extension RedBlackTreeIterator {
+  
   @frozen
-  public struct ElementIterator: Sequence, IteratorProtocol {
-
+  public struct Reversed: Sequence, IteratorProtocol {
+    public typealias Tree = ___Tree<Base>
+    public typealias _Value = Tree._Value
+    
     @usableFromInline
     let __tree_: Tree
-
-    @usableFromInline
-    var _start, _end, _current, _next: _NodePtr
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.__tree_ = tree
-      self._current = start
-      self._start = start
-      self._end = end
-      self._next = start == .end ? .end : tree.__tree_next_iter(start)
-    }
-
-    // 性能変化の反応が過敏なので、慎重さが必要っぽい。
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> Tree._Value? {
-      guard _current != _end else { return nil }
-      defer {
-        _current = _next
-        _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
-      }
-      return __tree_[_current]
-    }
-  }
-}
-
-extension ___Tree.ElementIterator: Equatable where Element: Equatable {
-
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
-  }
-}
-
-extension ___Tree.ElementIterator: Comparable where Element: Comparable {
-
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
-  }
-}
-
-extension ___Tree {
-
-  @frozen
-  public struct ReversedElementIterator: Sequence, IteratorProtocol {
-
-    @usableFromInline
-    let __tree_: Tree
-
+    
     @usableFromInline
     var _start, _end, _begin, _current, _next: _NodePtr
-
+    
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -93,9 +43,9 @@ extension ___Tree {
       self._next = end == start ? end : __tree_.__tree_prev_iter(end)
       self._start = start
       self._end = end
-      self._begin = __tree_.__begin_node
+      self._begin = __tree_.__begin_node_
     }
-
+    
     @inlinable
     @inline(__always)
     public mutating func next() -> Tree._Value? {
@@ -107,11 +57,11 @@ extension ___Tree {
   }
 }
 
-extension ___Tree.ReversedElementIterator {
+extension RedBlackTreeIterator.Reversed {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (___Tree.Index, ___Tree._Value) throws -> Void) rethrows {
+  public func forEach(_ body: (Tree.Index, Tree._Value) throws -> Void) rethrows {
     try __tree_.___rev_for_each_(__p: _start, __l: _end) {
       try body(__tree_.makeIndex(rawValue: $0), __tree_[$0])
     }
@@ -119,29 +69,29 @@ extension ___Tree.ReversedElementIterator {
 
   @inlinable
   @inline(__always)
-  public func ___forEach(_ body: (_NodePtr, ___Tree._Value) throws -> Void) rethrows {
+  public func ___forEach(_ body: (_NodePtr, Tree._Value) throws -> Void) rethrows {
     try __tree_.___rev_for_each_(__p: _start, __l: _end) {
       try body($0, __tree_[$0])
     }
   }
 }
 
-extension ___Tree.ReversedElementIterator {
+extension RedBlackTreeIterator.Reversed {
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var indices: ___Tree.BackwordIterator {
+  public var indices: RedBlackTreeIndices<Base>.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-extension ___Tree.ReversedElementIterator {
+extension RedBlackTreeIterator.Reversed {
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func keys<Key, Value>() -> ReversedKeyIterator<___Tree, Key, Value>
+  public __consuming func keys<Key, Value>() -> RedBlackTreeIterator<Base>.Keys.Reversed
   where Element == _KeyValueTuple_<Key, Value> {
     .init(tree: __tree_, start: _start, end: _end)
   }
@@ -149,22 +99,22 @@ extension ___Tree.ReversedElementIterator {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func values<Key, Value>() -> ReversedValueIterator<___Tree, Key, Value>
+  public __consuming func values<Key, Value>() -> RedBlackTreeIterator<Base>.MappedValues.Reversed
   where Element == _KeyValueTuple_<Key, Value> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-extension ___Tree.ReversedElementIterator {
+extension RedBlackTreeIterator.Reversed {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> ReversedNodeIterator<___Tree> {
+  public __consuming func ___node_positions() -> ReversedNodeIterator<Base> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-extension ___Tree.ReversedElementIterator: Equatable where Element: Equatable {
+extension RedBlackTreeIterator.Reversed: Equatable where Element: Equatable {
 
   @inlinable
   @inline(__always)
@@ -173,11 +123,16 @@ extension ___Tree.ReversedElementIterator: Equatable where Element: Equatable {
   }
 }
 
-extension ___Tree.ReversedElementIterator: Comparable where Element: Comparable {
+extension RedBlackTreeIterator.Reversed: Comparable where Element: Comparable {
 
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
   }
+}
+
+
+extension ___Tree {
+  public typealias ReversedElementIterator = RedBlackTreeIterator<VC>.Reversed
 }

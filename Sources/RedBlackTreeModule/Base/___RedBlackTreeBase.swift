@@ -44,7 +44,7 @@ protocol ___RedBlackTreeIndexing {
 @usableFromInline
 protocol ___RedBlackTreeBase:
   ___RedBlackTree___,
-  ValueComparer & CompareTrait
+  ___TreeBase
 where
   Tree == ___Tree<Self>,
   Storage == ___Storage<Self>
@@ -116,7 +116,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public func ___start() -> _NodePtr {
-    __tree_.__begin_node
+    __tree_.__begin_node_
   }
 
   @inlinable
@@ -128,7 +128,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   func ___index_start() -> Index {
-    ___index(__tree_.__begin_node)
+    ___index(__tree_.__begin_node_)
   }
 
   @inlinable
@@ -194,7 +194,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   var ___first: _Value? {
-    ___is_empty ? nil : __tree_[__tree_.__begin_node]
+    ___is_empty ? nil : __tree_[__tree_.__begin_node_]
   }
 
   @inlinable
@@ -209,8 +209,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   func ___first_index(of member: _Key) -> Index? {
-    var __parent = _NodePtr.nullptr
-    let ptr = __tree_.__ptr_(__tree_.__find_equal(&__parent, member))
+    let ptr = __tree_.__ptr_(__tree_.__find_equal(member).__child)
     return ___index_or_nil(ptr)
   }
 
@@ -218,7 +217,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   func ___first_index(where predicate: (_Value) throws -> Bool) rethrows -> Index? {
     var result: Index?
-    try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
+    try __tree_.___for_each(__p: __tree_.__begin_node_, __l: __tree_.__end_node()) { __p, cont in
       if try predicate(__tree_[__p]) {
         result = ___index(__p)
         cont = false
@@ -234,7 +233,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   public func ___first(where predicate: (_Value) throws -> Bool) rethrows -> _Value? {
     var result: _Value?
-    try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
+    try __tree_.___for_each(__p: __tree_.__begin_node_, __l: __tree_.__end_node()) { __p, cont in
       if try predicate(__tree_[__p]) {
         result = __tree_[__p]
         cont = false
@@ -341,12 +340,18 @@ extension ___RedBlackTreeBase {
 }
 
 extension ___RedBlackTreeBase {
-
+  
   /// releaseビルドでは無効化されています
   @inlinable
   @inline(__always)
   public func ___tree_invariant() -> Bool {
+#if true
+    // 並行してサイズもチェックする。その分遅い
+    __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, .end)
+    && __tree_.__tree_invariant(__tree_.__root())
+#else
     __tree_.__tree_invariant(__tree_.__root())
+#endif
   }
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -393,7 +398,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public var ___value_comp: (_Value, _Value) -> Bool {
-    { __tree_.value_comp(__tree_.__key($0), __tree_.__key($1)) }
+    { __tree_.value_comp(Self.__key($0), Self.__key($1)) }
   }
 }
 

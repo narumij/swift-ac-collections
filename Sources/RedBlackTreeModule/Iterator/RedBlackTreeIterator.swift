@@ -20,16 +20,18 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@frozen
-public struct ValueIterator<Tree, K, Value>: Sequence, IteratorProtocol
-where
-  Tree: Tree_IterateProtocol & Tree_KeyValue,
-  Tree.Value == Value
-{
+import Foundation
 
+@frozen
+public struct RedBlackTreeIterator<Base>: Sequence, IteratorProtocol
+where Base: ___TreeBase {
+  
+  public typealias Tree = ___Tree<Base>
+  public typealias _Value = Tree._Value
+  
   @usableFromInline
   let __tree_: Tree
-
+  
   @usableFromInline
   var _start, _end, _current, _next: _NodePtr
 
@@ -45,23 +47,17 @@ where
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> Value? {
+  public mutating func next() -> Tree._Value? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
       _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
     }
-    return Tree.___mapped_value(of: __tree_[_current])
-  }
-
-  @inlinable
-  @inline(__always)
-  public __consuming func reversed() -> ReversedValueIterator<Tree, K, Value> {
-    .init(tree: __tree_, start: _start, end: _end)
+    return __tree_[_current]
   }
 }
 
-extension ValueIterator: Equatable where Value: Equatable {
+extension RedBlackTreeIterator: Equatable where Tree._Value: Equatable {
 
   @inlinable
   @inline(__always)
@@ -70,7 +66,7 @@ extension ValueIterator: Equatable where Value: Equatable {
   }
 }
 
-extension ValueIterator: Comparable where Value: Comparable {
+extension RedBlackTreeIterator: Comparable where Tree._Value: Comparable {
 
   @inlinable
   @inline(__always)
@@ -79,54 +75,6 @@ extension ValueIterator: Comparable where Value: Comparable {
   }
 }
 
-@frozen
-public struct ReversedValueIterator<Tree, K, Value>: Sequence,
-  IteratorProtocol
-where
-  Tree: Tree_IterateProtocol & Tree_KeyValue,
-  Tree.Value == Value
-{
-
-  @usableFromInline
-  let __tree_: Tree
-
-  @usableFromInline
-  var _start, _begin, _current, _next: _NodePtr
-
-  @inlinable
-  @inline(__always)
-  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self.__tree_ = tree
-    self._current = end
-    self._next = end == start ? end : __tree_.__tree_prev_iter(end)
-    self._start = start
-    self._begin = __tree_.__begin_node
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func next() -> Value? {
-    guard _current != _start else { return nil }
-    _current = _next
-    _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-    return Tree.___mapped_value(of: __tree_[_current])
-  }
-}
-
-extension ReversedValueIterator: Equatable where Value: Equatable {
-
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
-  }
-}
-
-extension ReversedValueIterator: Comparable where Value: Comparable {
-
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
-  }
+extension ___Tree {
+  public typealias ElementIterator = RedBlackTreeIterator<VC>
 }

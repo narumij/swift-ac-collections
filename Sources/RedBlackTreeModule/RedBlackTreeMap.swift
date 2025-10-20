@@ -468,7 +468,12 @@ extension RedBlackTreeMap {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
     try _ensureUnique {
-      try .___insert_range_unique(tree: $0, other: other.__tree_, uniquingKeysWith: combine)
+      try .___insert_range_unique(
+        tree: $0,
+        other: other.__tree_,
+        other.__tree_.__begin_node_,
+        other.__tree_.__end_node(),
+        uniquingKeysWith: combine)
     }
   }
 

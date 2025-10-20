@@ -36,10 +36,10 @@ extension RemoveProtocol {
   func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {
     var __r = __ptr
     __r = __tree_next_iter(__r)
-    if __begin_node == __ptr {
-      __begin_node = __r
+    if __begin_node_ == __ptr {
+      __begin_node_ = __r
     }
-    size -= 1
+    __size_ -= 1
     __tree_remove(__left_(__end_node()), __ptr)
     return __r
   }

@@ -45,13 +45,13 @@ extension ___RedBlackTreeSequenceBase {
   @inlinable
   @inline(__always)
   __consuming func _makeIterator() -> Tree.ElementIterator {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
   @inlinable
   @inline(__always)
   func _forEach(_ body: (_Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
+    try __tree_.___for_each_(__p: __tree_.__begin_node_, __l: __tree_.__end_node()) {
       try body(__tree_[$0])
     }
   }
@@ -59,7 +59,7 @@ extension ___RedBlackTreeSequenceBase {
   @inlinable
   @inline(__always)
   func _forEach(_ body: (Index, _Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
+    try __tree_.___for_each_(__p: __tree_.__begin_node_, __l: __tree_.__end_node()) {
       try body(___index($0), __tree_[$0])
     }
   }
@@ -67,7 +67,7 @@ extension ___RedBlackTreeSequenceBase {
   @inlinable
   @inline(__always)
   public func ___forEach(_ body: (_NodePtr, _Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: __tree_.__begin_node, __l: __tree_.__end_node()) {
+    try __tree_.___for_each_(__p: __tree_.__begin_node_, __l: __tree_.__end_node()) {
       try body($0, __tree_[$0])
     }
   }
@@ -78,7 +78,7 @@ extension ___RedBlackTreeSequenceBase {
   @inlinable
   @inline(__always)
   var _startIndex: Index {
-    ___index(__tree_.__begin_node)
+    ___index(__tree_.__begin_node_)
   }
 
   @inlinable
@@ -179,13 +179,13 @@ extension ___RedBlackTreeSequenceBase {
   @inlinable
   @inline(__always)
   __consuming func _reversed() -> Tree.ReversedElementIterator {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
   @inlinable
   @inline(__always)
   var _indices: Indices {
-    __tree_.makeIndices(start: __tree_.__begin_node, end: __tree_.__end_node())
+    __tree_.makeIndices(start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
   
   @inlinable
@@ -219,6 +219,6 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public __consuming func ___node_positions() -> ___NodeIterator<Self> {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 }

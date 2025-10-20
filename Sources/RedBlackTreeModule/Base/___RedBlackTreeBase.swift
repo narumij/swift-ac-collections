@@ -116,7 +116,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public func ___start() -> _NodePtr {
-    __tree_.__begin_node
+    __tree_.__begin_node_
   }
 
   @inlinable
@@ -128,7 +128,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   func ___index_start() -> Index {
-    ___index(__tree_.__begin_node)
+    ___index(__tree_.__begin_node_)
   }
 
   @inlinable
@@ -194,7 +194,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   var ___first: _Value? {
-    ___is_empty ? nil : __tree_[__tree_.__begin_node]
+    ___is_empty ? nil : __tree_[__tree_.__begin_node_]
   }
 
   @inlinable
@@ -217,7 +217,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   func ___first_index(where predicate: (_Value) throws -> Bool) rethrows -> Index? {
     var result: Index?
-    try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
+    try __tree_.___for_each(__p: __tree_.__begin_node_, __l: __tree_.__end_node()) { __p, cont in
       if try predicate(__tree_[__p]) {
         result = ___index(__p)
         cont = false
@@ -233,7 +233,7 @@ extension ___RedBlackTreeBase {
   @inline(__always)
   public func ___first(where predicate: (_Value) throws -> Bool) rethrows -> _Value? {
     var result: _Value?
-    try __tree_.___for_each(__p: __tree_.__begin_node, __l: __tree_.__end_node()) { __p, cont in
+    try __tree_.___for_each(__p: __tree_.__begin_node_, __l: __tree_.__end_node()) { __p, cont in
       if try predicate(__tree_[__p]) {
         result = __tree_[__p]
         cont = false

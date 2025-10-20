@@ -31,7 +31,7 @@ extension ___Tree {
   {
     var __tree_ = __tree_
 
-    var __i = __source.__begin_node
+    var __i = __source.__begin_node_
 
     if __tree_.__root() == .nullptr, __i != .end {
       // Make sure we always have a root node
@@ -80,7 +80,7 @@ extension ___Tree where VC: KeyValueComparer {
   {
     var __tree_ = __tree_
 
-    var __i = __source.__begin_node
+    var __i = __source.__begin_node_
 
     if __tree_.__root() == .nullptr, __i != .end {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
@@ -129,9 +129,9 @@ extension ___Tree {
   {
     var __tree_ = __tree_
 
-    Tree.ensureCapacity(tree: &__tree_, minimumCapacity: __tree_.size + __source.size)
+    Tree.ensureCapacity(tree: &__tree_, minimumCapacity: __tree_.__size_ + __source.__size_)
 
-    var __i = __source.__begin_node
+    var __i = __source.__begin_node_
 
     if __tree_.__root() == .nullptr, __i != .end {
       // Make sure we always have a root node

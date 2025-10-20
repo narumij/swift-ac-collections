@@ -147,13 +147,13 @@ import XCTest
       _ = __insert_unique(0)
       _ = __insert_unique(1)
       _ = __insert_unique(2)
-      XCTAssertEqual(__tree_min(__root()), __begin_node)
+      XCTAssertEqual(__tree_min(__root()), __begin_node_)
       for i in 0..<3 {
         _ = ___erase_unique(i)
         if __root() != .nullptr {
-          XCTAssertEqual(__tree_min(__root()), __begin_node)
+          XCTAssertEqual(__tree_min(__root()), __begin_node_)
         }
-        XCTAssertEqual(size, 2 - i)
+        XCTAssertEqual(__size_, 2 - i)
       }
     }
 
@@ -161,14 +161,14 @@ import XCTest
       for i in 0..<2 {
         _ = __insert_unique(i)
       }
-      XCTAssertEqual(__tree_min(__root()), __begin_node)
+      XCTAssertEqual(__tree_min(__root()), __begin_node_)
       for i in 0..<2 {
         XCTAssertTrue(___erase_unique(i) == true, "i = \(i)")
         XCTAssertTrue(__tree_invariant(__root()))
         XCTAssertEqual(
           __root() == .nullptr ? .end : __tree_min(__root()),
-          __begin_node)
-        XCTAssertEqual(size, 1 - i, "i = \(i)")
+          __begin_node_)
+        XCTAssertEqual(__size_, 1 - i, "i = \(i)")
       }
     }
 
@@ -176,14 +176,14 @@ import XCTest
       for i in 0..<7 {
         _ = __insert_unique(i)
       }
-      XCTAssertEqual(__tree_min(__root()), __begin_node)
+      XCTAssertEqual(__tree_min(__root()), __begin_node_)
       for i in 0..<7 {
         XCTAssertTrue(___erase_unique(i) == true, "i = \(i)")
         XCTAssertTrue(__tree_invariant(__root()))
         XCTAssertEqual(
           __root() == .nullptr ? .end : __tree_min(__root()),
-          __begin_node)
-        XCTAssertEqual(size, 6 - i, "i = \(i)")
+          __begin_node_)
+        XCTAssertEqual(__size_, 6 - i, "i = \(i)")
       }
     }
 

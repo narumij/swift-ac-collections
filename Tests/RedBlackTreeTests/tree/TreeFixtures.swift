@@ -13,7 +13,7 @@ import XCTest
     ___RedBlackTreeNodePoolProtocol
   {
     var __left_: _NodePtr = .nullptr
-    var __begin_node: _NodePtr = .end
+    var __begin_node_: _NodePtr = .end
 
     var __nodes: [___Node] = []
     var __values: [Element] = []
@@ -60,7 +60,7 @@ import XCTest
 
     func clear() {
       __left_ = .nullptr
-      __begin_node = .end
+      __begin_node_ = .end
       __nodes = []
       ___clearDestroy()
     }
@@ -92,7 +92,7 @@ import XCTest
 
     typealias Element = Element
 
-    var size: Int {
+    var __size_: Int {
       get { __nodes.count - ___destroy_count }
       set {}
     }
@@ -165,7 +165,7 @@ import XCTest
       ]
       __root(0)
       //    size = tree.nodes.count
-      __begin_node = 2
+      __begin_node_ = 2
       XCTAssertTrue(__tree_invariant(__root()))
     }
 

@@ -43,7 +43,7 @@ extension RedBlackTreeIterator.MappedValues {
       self._current = end
       self._next = end == start ? end : __tree_.__tree_prev_iter(end)
       self._start = start
-      self._begin = __tree_.__begin_node
+      self._begin = __tree_.__begin_node_
     }
     
     @inlinable

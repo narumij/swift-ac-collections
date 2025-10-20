@@ -56,22 +56,22 @@ final class SetRemoveTests: XCTestCase {
 
   #if DEBUG
     func testRemoveAt() throws {
-      XCTAssertEqual(members.___remove(at: members.__tree_.__begin_node), 0)
+      XCTAssertEqual(members.___remove(at: members.__tree_.__begin_node_), 0)
       XCTAssertEqual(members.elements, [1, 2, 3, 4])
       XCTAssertEqual(members.count, 4)
-      XCTAssertEqual(members.___remove(at: members.__tree_.__begin_node), 1)
+      XCTAssertEqual(members.___remove(at: members.__tree_.__begin_node_), 1)
       XCTAssertEqual(members.elements, [2, 3, 4])
       XCTAssertEqual(members.count, 3)
-      XCTAssertEqual(members.___remove(at: members.__tree_.__begin_node), 2)
+      XCTAssertEqual(members.___remove(at: members.__tree_.__begin_node_), 2)
       XCTAssertEqual(members.elements, [3, 4])
       XCTAssertEqual(members.count, 2)
-      XCTAssertEqual(members.___remove(at: members.__tree_.__begin_node), 3)
+      XCTAssertEqual(members.___remove(at: members.__tree_.__begin_node_), 3)
       XCTAssertEqual(members.elements, [4])
       XCTAssertEqual(members.count, 1)
-      XCTAssertEqual(members.___remove(at: members.__tree_.__begin_node), 4)
+      XCTAssertEqual(members.___remove(at: members.__tree_.__begin_node_), 4)
       XCTAssertEqual(members.elements, [])
       XCTAssertEqual(members.count, 0)
-      XCTAssertEqual(members.___remove(at: members.__tree_.__begin_node), nil)
+      XCTAssertEqual(members.___remove(at: members.__tree_.__begin_node_), nil)
     }
   #endif
 

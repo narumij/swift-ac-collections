@@ -40,8 +40,8 @@ extension ___Tree {
     var __result_: ___Tree = .create(minimumCapacity: 0)
 
     var (__parent, __child) = __result_.___max_ref()
-    var (__first1, __last1) = (__begin_node, __end_node())
-    var (__first2, __last2) = (other.__begin_node, other.__end_node())
+    var (__first1, __last1) = (__begin_node_, __end_node())
+    var (__first2, __last2) = (other.__begin_node_, other.__end_node())
 
     while __first1 != __last1 {
       if __first2 == __last2 {
@@ -82,8 +82,8 @@ extension ___Tree {
     var __result_: ___Tree = .create(minimumCapacity: 0)
 
     var (__parent, __child) = __result_.___max_ref()
-    var (__first1, __last1) = (__begin_node, __end_node())
-    var (__first2, __last2) = (other.__begin_node, other.__end_node())
+    var (__first1, __last1) = (__begin_node_, __end_node())
+    var (__first2, __last2) = (other.__begin_node_, other.__end_node())
 
     while __first1 != __last1 {
 
@@ -129,8 +129,8 @@ extension ___Tree {
     // lower_boundを使う方法があるが、一旦楽に実装できそうな方からにしている
     var __result_: ___Tree = .create(minimumCapacity: 0)
     var (__parent, __child) = __result_.___max_ref()
-    var (__first1, __last1) = (__begin_node, __end_node())
-    var (__first2, __last2) = (other.__begin_node, other.__end_node())
+    var (__first1, __last1) = (__begin_node_, __end_node())
+    var (__first2, __last2) = (other.__begin_node_, other.__end_node())
     while __first1 != __last1, __first2 != __last2 {
       if value_comp(self.__get_value(__first1), other.__get_value(__first2)) {
         __first1 = __tree_next_iter(__first1)
@@ -152,8 +152,8 @@ extension ___Tree {
   func ___symmetric_difference(_ other: ___Tree) -> ___Tree {
     var __result_: ___Tree = .create(minimumCapacity: 0)
     var (__parent, __child) = __result_.___max_ref()
-    var (__first1, __last1) = (__begin_node, __end_node())
-    var (__first2, __last2) = (other.__begin_node, other.__end_node())
+    var (__first1, __last1) = (__begin_node_, __end_node())
+    var (__first2, __last2) = (other.__begin_node_, other.__end_node())
     while __first1 != __last1 {
       if __first2 == __last2 {
         ___copy_range(&__first1, __last1, to: &__result_)
@@ -183,8 +183,8 @@ extension ___Tree {
   func ___difference(_ other: ___Tree) -> ___Tree {
     var __result_: ___Tree = .create(minimumCapacity: 0)
     var (__parent, __child) = __result_.___max_ref()
-    var (__first1, __last1) = (__begin_node, __end_node())
-    var (__first2, __last2) = (other.__begin_node, other.__end_node())
+    var (__first1, __last1) = (__begin_node_, __end_node())
+    var (__first2, __last2) = (other.__begin_node_, other.__end_node())
     while __first1 != __last1, __first2 != __last2 {
       if value_comp(self.__get_value(__first1), other.__get_value(__first2)) {
         Tree.ensureCapacity(tree: &__result_)

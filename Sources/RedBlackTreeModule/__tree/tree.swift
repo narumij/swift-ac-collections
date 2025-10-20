@@ -40,13 +40,13 @@ extension _NodePtr {
   /// 赤黒木のIndexで、nullを表す
   @inlinable
   static var nullptr: Self {
-    @inline(__always) _read { yield -2 }
+    @inline(__always) get { -2 }
   }
 
   /// 赤黒木のIndexで、終端を表す
   @inlinable
   static var end: Self {
-    @inline(__always) _read { yield -1 }
+    @inline(__always) get { -1 }
   }
 
   /// 数値を直接扱うことを避けるための初期化メソッド
@@ -185,24 +185,24 @@ protocol ValueProtocol: TreeNodeProtocol, TreeNodeValueProtocol {
 @usableFromInline
 protocol BeginNodeProtocol {
   /// 木の左端のノードを返す
-  var __begin_node: _NodePtr { get nonmutating set }
+  var __begin_node_: _NodePtr { get nonmutating set }
 }
 
 @usableFromInline
 protocol BeginProtocol: BeginNodeProtocol {
-  // __begin_nodeが圧倒的に速いため
-  @available(*, deprecated, renamed: "__begin_node")
+  // __begin_node_が圧倒的に速いため
+  @available(*, deprecated, renamed: "__begin_node_")
   /// 木の左端のノードを返す
   func begin() -> _NodePtr
 }
 
 extension BeginProtocol {
-  // __begin_nodeが圧倒的に速いため
-  @available(*, deprecated, renamed: "__begin_node")
+  // __begin_node_が圧倒的に速いため
+  @available(*, deprecated, renamed: "__begin_node_")
   @inlinable
   @inline(__always)
   /// 木の左端のノードを返す
-  func begin() -> _NodePtr { __begin_node }
+  func begin() -> _NodePtr { __begin_node_ }
 }
 
 @usableFromInline
@@ -263,7 +263,7 @@ protocol SizeProtocol {
   /// 木のノードの数を返す
   ///
   /// 終端ノードは含まないはず
-  var size: Int { get nonmutating set }
+  var __size_: Int { get nonmutating set }
 }
 
 // MARK: -

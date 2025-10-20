@@ -365,14 +365,14 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal var size: Int {
+  internal var __size_: Int {
     get { __header_ptr.pointee.count }
     set { /* NOP */  }
   }
 
   @nonobjc
   @inlinable
-  public var __begin_node: _NodePtr {
+  public var __begin_node_: _NodePtr {
     @inline(__always)
     _read { yield __header_ptr.pointee.__begin_node }
     @inline(__always)
@@ -646,7 +646,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___is_begin(_ p: _NodePtr) -> Bool {
-    p == __begin_node
+    p == __begin_node_
   }
 
   @nonobjc
@@ -882,7 +882,7 @@ extension ___Tree {
         i = ___index(after: i)
         distance -= 1
       } else {
-        guard i != __begin_node else {
+        guard i != __begin_node_ else {
           fatalError(.outOfBounds)
         }
         i = ___index(before: i)
@@ -919,7 +919,7 @@ extension ___Tree {
         i = ___index(after: i)
         distance -= 1
       } else {
-        guard i != __begin_node else {
+        guard i != __begin_node_ else {
           fatalError(.outOfBounds)
         }
         i = ___index(before: i)
@@ -951,7 +951,7 @@ extension ___Tree: Sequence {
   @inlinable
   @inline(__always)
   public __consuming func makeIterator() -> ElementIterator {
-    .init(tree: self, start: __begin_node, end: __end_node())
+    .init(tree: self, start: __begin_node_, end: __end_node())
   }
 }
 
@@ -972,7 +972,7 @@ extension ___Tree {
         result = __tree_next_iter(result)
         distance -= 1
       } else {
-        if result == __begin_node {
+        if result == __begin_node_ {
           // 後ろと区別したくてnullptrにしてたが、一周回るとendなのでendにしてみる
           result = .end
           return result

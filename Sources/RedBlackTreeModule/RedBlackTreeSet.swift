@@ -614,7 +614,7 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
   @inlinable
   @inline(__always)
   public __consuming func sorted() -> Tree.ElementIterator {
-    .init(tree: __tree_, start: __tree_.__begin_node, end: __tree_.__end_node())
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
   
   /// - Complexity: O(1)

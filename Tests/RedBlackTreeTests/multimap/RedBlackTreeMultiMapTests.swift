@@ -53,20 +53,22 @@ final class RedBlackTreeMultiMapTests: XCTestCase {
     XCTAssertNil(firstLarge)
   }
 
-  func testFirstIndexAndIndexing() {
-    let map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("a", 3)]
-    if let idx = map.firstIndex(of: "a") {
-      XCTAssertEqual(map[idx].key, "a")
-    } else {
-      XCTFail("Expected to find key 'a'")
-    }
+  #if !COMPATIBLE_ATCODER_2025
+    func testFirstIndexAndIndexing() {
+      let map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("a", 3)]
+      if let idx = map.firstIndex(of: "a") {
+        XCTAssertEqual(map[idx].key, "a")
+      } else {
+        XCTFail("Expected to find key 'a'")
+      }
 
-    if let idx = map.firstIndex(where: { $0.value == 2 }) {
-      XCTAssertEqual(map[idx].value, 2)
-    } else {
-      XCTFail("Expected to find value 2")
+      if let idx = map.firstIndex(where: { $0.value == 2 }) {
+        XCTAssertEqual(map[idx].value, 2)
+      } else {
+        XCTFail("Expected to find value 2")
+      }
     }
-  }
+  #endif
 
   func testRemoveValuesForKey() {
     var map: RedBlackTreeMultiMap = [("k1", 1), ("k1", 2), ("k2", 3)]

@@ -52,9 +52,13 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
   public
     typealias Index = Tree.Index
 
-  public
-    typealias KeyValue = Pair<Key, Value>
-  //  typealias KeyValue = (key: Key, value: Value)
+  #if COMPATIBLE_ATCODER_2025
+    public
+      typealias KeyValue = (key: Key, value: Value)
+  #else
+    public
+      typealias KeyValue = Pair<Key, Value>
+  #endif
 
   public
     typealias Element = KeyValue
@@ -113,14 +117,16 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(*n* log *n* + *n*)
-  @inlinable
-  public init<S>(multiKeysWithValues keysAndValues: __owned S)
-  where S: Sequence, S.Element == KeyValue {
-    self._storage = .init(
-      tree:
-        .create_multi(sorted: keysAndValues.sorted { $0.key < $1.key }))
-  }
+  #if !COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(*n* log *n* + *n*)
+    @inlinable
+    public init<S>(multiKeysWithValues keysAndValues: __owned S)
+    where S: Sequence, S.Element == KeyValue {
+      self._storage = .init(
+        tree:
+          .create_multi(sorted: keysAndValues.sorted { $0.key < $1.key }))
+    }
+  #endif
 
   /// - Complexity: O(*n* log *n* + *n*)
   @inlinable
@@ -287,15 +293,17 @@ extension RedBlackTreeMultiMap {
     insert(Self.__value_(key, value))
   }
 
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func insert(_ tuple: (key: Key, value: Value)) -> (
-    inserted: Bool, memberAfterInsert: Element
-  ) {
-    insert(Self.__value_(tuple))
-  }
+  #if !COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @inline(__always)
+    @discardableResult
+    public mutating func insert(_ tuple: (key: Key, value: Value)) -> (
+      inserted: Bool, memberAfterInsert: Element
+    ) {
+      insert(Self.__value_(tuple))
+    }
+  #endif
 
   /// - Complexity: O(log *n*)
   @inlinable
@@ -354,15 +362,17 @@ extension RedBlackTreeMultiMap {
     }
   }
 
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  public mutating func insert<S>(contentsOf other: S)
-  where S: Sequence, S.Element == Pair<Key, Value> {
-    _ensureUnique { __tree_ in
-      .___insert_range_multi(tree: __tree_, other)
+  #if !COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+    ///   and *m* is the size of the current tree.
+    @inlinable
+    public mutating func insert<S>(contentsOf other: S)
+    where S: Sequence, S.Element == Pair<Key, Value> {
+      _ensureUnique { __tree_ in
+        .___insert_range_multi(tree: __tree_, other)
+      }
     }
-  }
+  #endif
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
@@ -382,15 +392,17 @@ extension RedBlackTreeMultiMap {
     return result
   }
 
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  public func inserting<S>(contentsOf other: __owned S) -> Self
-  where S: Sequence, S.Element == Pair<Key, Value> {
-    var result = self
-    result.insert(contentsOf: other)
-    return result
-  }
+  #if !COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+    ///   and *m* is the size of the current tree.
+    @inlinable
+    public func inserting<S>(contentsOf other: __owned S) -> Self
+    where S: Sequence, S.Element == Pair<Key, Value> {
+      var result = self
+      result.insert(contentsOf: other)
+      return result
+    }
+  #endif
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
@@ -774,21 +786,21 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
     try _forEach(body)
   }
 
-#if false
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func sorted() -> Tree._Values {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
-#else
-  /// - Complexity: O(*n*)
-  @inlinable
-  @inline(__always)
-  public func sorted() -> [Element] {
-    __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
-  }
-#endif
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func sorted() -> Tree._Values {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
+  #else
+    /// - Complexity: O(*n*)
+    @inlinable
+    @inline(__always)
+    public func sorted() -> [Element] {
+      __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
+    }
+  #endif
 
   /// - Complexity: O(1)
   @inlinable
@@ -1120,7 +1132,7 @@ extension RedBlackTreeMultiMap: Comparable where Value: Comparable {
 // MARK: - Hashable
 
 extension RedBlackTreeMultiMap: Hashable where Key: Hashable, Value: Hashable {
-  
+
   @inlinable
   @inline(__always)
   public func hash(into hasher: inout Hasher) {
@@ -1137,24 +1149,26 @@ extension RedBlackTreeMultiMap: Hashable where Key: Hashable, Value: Hashable {
 
 // MARK: - Codable
 
-extension RedBlackTreeMultiMap: Encodable where Key: Encodable, Value: Encodable {
-  
-  @inlinable
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.unkeyedContainer()
-    for element in self {
-      try container.encode(element)
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap: Encodable where Key: Encodable, Value: Encodable {
+
+    @inlinable
+    public func encode(to encoder: Encoder) throws {
+      var container = encoder.unkeyedContainer()
+      for element in self {
+        try container.encode(element)
+      }
     }
   }
-}
 
-extension RedBlackTreeMultiMap: Decodable where Key: Decodable, Value: Decodable {
-  
-  @inlinable
-  public init(from decoder: Decoder) throws {
-    _storage = .init(tree: try .create(from: decoder))
+  extension RedBlackTreeMultiMap: Decodable where Key: Decodable, Value: Decodable {
+
+    @inlinable
+    public init(from decoder: Decoder) throws {
+      _storage = .init(tree: try .create(from: decoder))
+    }
   }
-}
+#endif
 
 // MARK: - Init naive
 

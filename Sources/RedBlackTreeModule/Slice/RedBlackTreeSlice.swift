@@ -22,16 +22,13 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeSlice<Base>
-where
-  Base: ___RedBlackTree & ValueComparer & CompareTrait,
-  Base.Tree == ___Tree<Base>
-{
-  public typealias Tree = Base.Tree
+public struct RedBlackTreeSlice<Base> where Base: ___TreeBase {
+  
+  public typealias Tree = ___Tree<Base>
   public typealias Element = Tree._Value
   public typealias Index = Tree.Index
-  public typealias SubSequence = Self
   public typealias Indices = Tree.Indices
+  public typealias SubSequence = Self
 
   @usableFromInline
   let __tree_: Tree

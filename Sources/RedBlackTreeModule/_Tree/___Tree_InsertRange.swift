@@ -183,8 +183,7 @@ extension ___Tree {
 
     var it = __source.makeIterator()
 
-    if __tree_.__root() == .nullptr,
-      let __element = it.next()
+    if __tree_.__root() == .nullptr, let __element = it.next()
     {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
@@ -230,8 +229,7 @@ extension ___Tree where VC: KeyValueComparer {
 
     var it = __source.makeIterator()
 
-    if __tree_.__root() == .nullptr,
-      let __element = it.next().map(__t_)
+    if __tree_.__root() == .nullptr, let __element = it.next().map(__t_)
     {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
@@ -274,8 +272,7 @@ extension ___Tree {
 
     var it = __source.makeIterator()
 
-    if __tree_.__root() == .nullptr,
-      let __element = it.next()
+    if __tree_.__root() == .nullptr, let __element = it.next()
     {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(.end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))

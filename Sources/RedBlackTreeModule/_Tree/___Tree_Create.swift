@@ -260,6 +260,7 @@ extension ___Tree {
 
 // MARK: -
 
+#if false
 extension ___Tree {
 
   // 使っていない
@@ -309,3 +310,4 @@ extension ___Tree {
     return tree
   }
 }
+#endif

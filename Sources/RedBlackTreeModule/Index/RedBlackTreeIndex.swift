@@ -26,8 +26,7 @@ import Foundation
 ///
 /// C++の双方向イテレータに近い内容となっている
 @frozen
-public struct RedBlackTreeIndex<Base>
-where Base: ___TreeBase {
+public struct RedBlackTreeIndex<Base> where Base: ___TreeBase {
   
   public typealias Tree = ___Tree<Base>
   public typealias _Value = Tree._Value

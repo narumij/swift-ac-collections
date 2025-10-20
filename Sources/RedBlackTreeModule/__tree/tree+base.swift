@@ -25,7 +25,7 @@ import Foundation
 extension TreeNodeProtocol {
 
   /// Returns:  true if `__x` is a left child of its parent, else false
-  /// Precondition:  __x != nullptr.
+  /// Precondition:  `__x` != nullptr.
   @inlinable
   @inline(__always)
   func

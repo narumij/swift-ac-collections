@@ -66,7 +66,6 @@ extension ___Tree where VC: KeyValueComparer {
     let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
     for __k in elements {
       let __v = transform(__k)
       if __parent == .end || __key(tree[__parent]) != __key(__v) {
@@ -97,7 +96,6 @@ extension ___Tree where VC: KeyValueComparer {
     let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
     for __k in elements {
       let __v = transform(__k)
       if __parent == .end || VC.__key(tree[__parent]) != VC.__key(__v) {
@@ -165,7 +163,6 @@ extension ___Tree where VC: KeyValueComparer {
     let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
     for __v in elements {
       let __k = try keyForValue(__v)
       // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
@@ -207,7 +204,6 @@ extension ___Tree {
     let tree: Tree = .create(minimumCapacity: count)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
     for __k in elements {
       let __v = transform(__k)
       // バランシングの最悪計算量が結局わからず、ならしO(1)とみている

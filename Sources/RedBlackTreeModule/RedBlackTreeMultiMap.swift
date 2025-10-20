@@ -135,19 +135,6 @@ extension RedBlackTreeMultiMap {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == S.Element {
-//    let values = try values.sorted(by: { try keyForValue($0) < keyForValue($1) })
-//    let count = values.count
-//    let tree: Tree = .create(minimumCapacity: count)
-//    // 初期化直後はO(1)
-//    var (__parent, __child) = tree.___max_ref()
-//    // ソートの計算量がO(*n* log *n*)
-//    for __v in values {
-//      let __k = try keyForValue(__v)
-//      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-//      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, .init(__k, __v))
-//    }
-//    assert(tree.__tree_invariant(tree.__root()))
-//    self._storage = .init(tree: tree)
     self._storage = .init(
       tree: try .create_multi(
         sorted: try values.sorted {

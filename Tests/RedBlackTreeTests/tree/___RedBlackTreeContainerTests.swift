@@ -138,6 +138,7 @@ import XCTest
         20,
       ]
       tree.__root(0)
+      tree.__tree_.__begin_node_ = 1
       XCTAssertTrue(tree.___tree_invariant())
     }
 
@@ -266,6 +267,7 @@ import XCTest
       tree.__left_ = .node(tree.__nodes.count)
       tree.__nodes.append(
         .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .end))
+      tree.__tree_.__begin_node_ = 0
       XCTAssertEqual(tree.__nodes.count, 1)
       XCTAssertNotEqual(tree.__root(), nil)
       XCTAssertNotEqual(tree.__tree_.__parent_(tree.__root()), nil)

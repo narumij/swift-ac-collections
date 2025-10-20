@@ -341,21 +341,17 @@ extension ___RedBlackTreeBase {
 
 extension ___RedBlackTreeBase {
   
-  @inlinable
-  @inline(__always)
-  public func ___tree_check_count() -> Bool {
-#if false && TREE_INVARIANT_CHECKS
-    __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, .end)
-#else
-    true
-#endif
-  }
-
   /// releaseビルドでは無効化されています
   @inlinable
   @inline(__always)
   public func ___tree_invariant() -> Bool {
-    ___tree_check_count() && __tree_.__tree_invariant(__tree_.__root())
+#if true
+    // 並行してサイズもチェックする。その分遅い
+    __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, .end)
+    && __tree_.__tree_invariant(__tree_.__root())
+#else
+    __tree_.__tree_invariant(__tree_.__root())
+#endif
   }
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS

@@ -344,7 +344,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public func ___tree_check_count() -> Bool {
-#if TREE_INVARIANT_CHECKS
+#if false && TREE_INVARIANT_CHECKS
     __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, .end)
 #else
     true

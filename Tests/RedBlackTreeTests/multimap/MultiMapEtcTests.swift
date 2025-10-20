@@ -156,30 +156,30 @@ final class MultiMapEtcTests: XCTestCase {
       XCTAssertFalse(target1.removeFirst(forKey: 3))
       let expected = [(0, 0), (0, 1), (0, 2), (1, 5), (1, 4), (1, 3), (2, 6), (2, 7), (2, 8)]
       XCTAssertEqual(
-        target1.map { $0.key },
+        target1.map { $0.0 },
         expected.map { $0.0 })
       XCTAssertEqual(
-        target1.map { $0.value },
+        target1.map { $0.1 },
         expected.map { $0.1 })
     }
     do {
       XCTAssertTrue(target1.removeFirst(forKey: 1))
       let expected = [(0, 0), (0, 1), (0, 2), (1, 4), (1, 3), (2, 6), (2, 7), (2, 8)]
       XCTAssertEqual(
-        target1.map { $0.key },
+        target1.map { $0.0 },
         expected.map { $0.0 })
       XCTAssertEqual(
-        target1.map { $0.value },
+        target1.map { $0.1 },
         expected.map { $0.1 })
     }
     do {
       XCTAssertTrue(target1.removeFirst(forKey: 2))
       let expected = [(0, 0), (0, 1), (0, 2), (1, 4), (1, 3), (2, 7), (2, 8)]
       XCTAssertEqual(
-        target1.map { $0.key },
+        target1.map { $0.0 },
         expected.map { $0.0 })
       XCTAssertEqual(
-        target1.map { $0.value },
+        target1.map { $0.1 },
         expected.map { $0.1 })
     }
     do {
@@ -187,10 +187,10 @@ final class MultiMapEtcTests: XCTestCase {
       XCTAssertTrue(target1.removeFirst(forKey: 0))
       let expected = [(0, 2), (1, 4), (1, 3), (2, 7), (2, 8)]
       XCTAssertEqual(
-        target1.map { $0.key },
+        target1.map { $0.0 },
         expected.map { $0.0 })
       XCTAssertEqual(
-        target1.map { $0.value },
+        target1.map { $0.1 },
         expected.map { $0.1 })
     }
     do {
@@ -198,10 +198,10 @@ final class MultiMapEtcTests: XCTestCase {
       XCTAssertTrue(target1.removeFirst(forKey: 2))
       let expected = [(0, 2), (1, 3), (2, 8)]
       XCTAssertEqual(
-        target1.map { $0.key },
+        target1.map { $0.0 },
         expected.map { $0.0 })
       XCTAssertEqual(
-        target1.map { $0.value },
+        target1.map { $0.1 },
         expected.map { $0.1 })
     }
     do {
@@ -210,10 +210,10 @@ final class MultiMapEtcTests: XCTestCase {
       XCTAssertTrue(target1.removeFirst(forKey: 2))
       let expected: [(Int, Int)] = []
       XCTAssertEqual(
-        target1.map { $0.key },
+        target1.map { $0.0 },
         expected.map { $0.0 })
       XCTAssertEqual(
-        target1.map { $0.value },
+        target1.map { $0.1 },
         expected.map { $0.1 })
     }
   }
@@ -223,40 +223,40 @@ final class MultiMapEtcTests: XCTestCase {
       XCTAssertEqual(target1.removeAll(forKey: 3), 0)
       let expected = [(0, 0), (0, 1), (0, 2), (1, 5), (1, 4), (1, 3), (2, 6), (2, 7), (2, 8)]
       XCTAssertEqual(
-        target1.map { $0.key },
+        target1.map { $0.0 },
         expected.map { $0.0 })
       XCTAssertEqual(
-        target1.map { $0.value },
+        target1.map { $0.1 },
         expected.map { $0.1 })
     }
     do {
       XCTAssertEqual(target1.removeAll(forKey: 1), 3)
       let expected = [(0, 0), (0, 1), (0, 2), (2, 6), (2, 7), (2, 8)]
       XCTAssertEqual(
-        target1.map { $0.key },
+        target1.map { $0.0 },
         expected.map { $0.0 })
       XCTAssertEqual(
-        target1.map { $0.value },
+        target1.map { $0.1 },
         expected.map { $0.1 })
     }
     do {
       XCTAssertEqual(target1.removeAll(forKey: 2), 3)
       let expected = [(0, 0), (0, 1), (0, 2)]
       XCTAssertEqual(
-        target1.map { $0.key },
+        target1.map { $0.0 },
         expected.map { $0.0 })
       XCTAssertEqual(
-        target1.map { $0.value },
+        target1.map { $0.1 },
         expected.map { $0.1 })
     }
     do {
       XCTAssertEqual(target1.removeAll(forKey: 0), 3)
       let expected: [(Int, Int)] = []
       XCTAssertEqual(
-        target1.map { $0.key },
+        target1.map { $0.0 },
         expected.map { $0.0 })
       XCTAssertEqual(
-        target1.map { $0.value },
+        target1.map { $0.1 },
         expected.map { $0.1 })
     }
   }
@@ -270,10 +270,10 @@ final class MultiMapEtcTests: XCTestCase {
     }
 
     XCTAssertEqual(
-      hoge.map { $0.key },
+      hoge.map { $0.0 },
       (0..<100_000).map { $0 / 100 })
     XCTAssertEqual(
-      hoge.map { $0.value },
+      hoge.map { $0.1 },
       (0..<100_000).map { $0 })
   }
   

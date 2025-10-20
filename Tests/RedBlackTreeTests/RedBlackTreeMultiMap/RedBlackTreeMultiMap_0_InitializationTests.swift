@@ -70,7 +70,7 @@ final class RedBlackTreeMultiMapInitializationTests: XCTestCase {
   
   /// シーケンス初期化テスト（AnySequence使用）
   func testSequenceInitializationWithNaive() {
-    let multiMap = RedBlackTreeMultiMap<String, Int>(naive: AnySequence(elements.map{ .init($0.0,$0.1) }))
+    let multiMap = RedBlackTreeMultiMap<String, Int>(naive: AnySequence(elements.map{ ($0.0,$0.1) }))
 
     let expected = [
       ("apple", 1),

@@ -46,7 +46,7 @@ final class MultiMapRemoveTests: XCTestCase {
 
   func testRemove() throws {
     var dict = [1:1,2:2,3:3] as RedBlackTreeMultiMap<Int,Int>
-    let i = dict.firstIndex { $0.key == 1 }!
+    let i = dict.firstIndex { (k,v) in k == 1 }!
     XCTAssertEqual(dict.remove(at: i).value, 1)
   }
 

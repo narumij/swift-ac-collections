@@ -24,9 +24,8 @@ import Foundation
 
 @frozen
 public struct RedBlackTreeIterator<Base>: Sequence, IteratorProtocol
-where
-  Base: ValueComparer & CompareTrait & ThreeWayComparator
-{
+where Base: ___TreeBase {
+  
   public typealias Tree = ___Tree<Base>
   public typealias _Value = Tree._Value
   

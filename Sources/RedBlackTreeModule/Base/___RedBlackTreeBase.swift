@@ -44,7 +44,7 @@ protocol ___RedBlackTreeIndexing {
 @usableFromInline
 protocol ___RedBlackTreeBase:
   ___RedBlackTree___,
-  ValueComparer & CompareTrait & ThreeWayComparator
+  ___TreeBase
 where
   Tree == ___Tree<Self>,
   Storage == ___Storage<Self>

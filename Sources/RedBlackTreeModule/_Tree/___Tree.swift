@@ -22,13 +22,15 @@
 
 import Foundation
 
+public typealias ___TreeBase = ValueComparer & CompareTrait & ThreeWayComparator
+
 @_fixed_layout
 @_objc_non_lazy_realization
 public final class ___Tree<VC>: ManagedBuffer<
   ___Tree<VC>.Header,
   ___Tree<VC>.Node
 >
-where VC: ValueComparer & CompareTrait & ThreeWayComparator {
+where VC: ___TreeBase {
 
   @inlinable
   deinit {

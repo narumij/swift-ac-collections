@@ -22,9 +22,8 @@
 
 @frozen
 public struct ___NodeIterator<VC>: Sequence, IteratorProtocol
-where
-  VC: ValueComparer & CompareTrait & ThreeWayComparator
-{
+where VC: ___TreeBase {
+
   public typealias Tree = ___Tree<VC>
 
   @usableFromInline
@@ -81,9 +80,8 @@ extension ___NodeIterator: Comparable {
 
 @frozen
 public struct ReversedNodeIterator<VC>: Sequence, IteratorProtocol
-where
-  VC: ValueComparer & CompareTrait & ThreeWayComparator
-{
+where VC: ___TreeBase {
+
   public typealias Tree = ___Tree<VC>
 
   @usableFromInline

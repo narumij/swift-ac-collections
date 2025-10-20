@@ -23,8 +23,7 @@
 // TODO: コード補完にあらわれない問題への対応を検討
 
 @usableFromInline
-protocol ___RedBlackTreeSequenceBase: ___RedBlackTree & ___RedBlackTreeIndexing & ValueComparer
-    & CompareTrait & ThreeWayComparator, Collection
+protocol ___RedBlackTreeSequenceBase: ___RedBlackTree & ___RedBlackTreeIndexing & ___TreeBase, Collection
 where
   Tree == ___Tree<Self>,
   Index == Tree.Index,

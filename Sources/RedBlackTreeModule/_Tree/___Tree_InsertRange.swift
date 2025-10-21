@@ -28,14 +28,16 @@ extension ___Tree {
     tree __tree_: ___Tree,
     other __source: ___Tree<Other>,
     _ __first: _NodePtr,
-    _ __last: _NodePtr) -> ___Tree
+    _ __last: _NodePtr
+  ) -> ___Tree
   where
     ___Tree<Other>._Key == _Key,
     ___Tree<Other>._Value == _Value
   {
-    if (__first == __last) {
-        return __tree_ }
-    
+    if __first == __last {
+      return __tree_
+    }
+
     var __tree_ = __tree_
 
     var __first = __first
@@ -78,15 +80,18 @@ extension ___Tree where VC: KeyValueComparer {
   @inline(__always)
   static func ___insert_range_unique<Other>(
     tree __tree_: ___Tree,
-    other __source: ___Tree<Other>, _ __first: _NodePtr,_ __last: _NodePtr,
+    other __source: ___Tree<Other>,
+    _ __first: _NodePtr,
+    _ __last: _NodePtr,
     uniquingKeysWith combine: (VC._MappedValue, VC._MappedValue) throws -> VC._MappedValue
   ) rethrows -> ___Tree
   where
     ___Tree<Other>._Key == _Key,
     ___Tree<Other>._Value == _Value
   {
-    if (__first == __last) {
-        return __tree_ }
+    if __first == __last {
+      return __tree_
+    }
 
     var __tree_ = __tree_
 
@@ -114,11 +119,9 @@ extension ___Tree where VC: KeyValueComparer {
         if __tree_.__ptr_(__child) == .nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          try __tree_.___with_mapped_value(__tree_.__ptr_(__child)) {
-              $0 = try combine(
-                __tree_.___mapped_value(__tree_.__ptr_(__child)),
-                VC.___mapped_value(__tree_.__value_(__nd)))
-            }
+          try __tree_.___with_mapped_value(__tree_.__ptr_(__child)) { __mappedValue in
+            __mappedValue = try combine(__mappedValue, VC.___mapped_value(__tree_.__value_(__nd)))
+          }
           __tree_.destroy(__nd)
         }
       }
@@ -132,13 +135,19 @@ extension ___Tree {
 
   @inlinable
   @inline(__always)
-  static func ___insert_range_multi<Other>(tree __tree_: ___Tree, other __source: ___Tree<Other>, _ __first: _NodePtr,_ __last: _NodePtr) -> ___Tree
+  static func ___insert_range_multi<Other>(
+    tree __tree_: ___Tree,
+    other __source: ___Tree<Other>,
+    _ __first: _NodePtr,
+    _ __last: _NodePtr
+  ) -> ___Tree
   where
     ___Tree<Other>._Key == _Key,
     ___Tree<Other>._Value == _Value
   {
-    if (__first == __last) {
-        return __tree_ }
+    if __first == __last {
+      return __tree_
+    }
 
     var __tree_ = __tree_
 
@@ -183,8 +192,7 @@ extension ___Tree {
 
     var it = __source.makeIterator()
 
-    if __tree_.__root() == .nullptr, let __element = it.next()
-    {  // Make sure we always have a root node
+    if __tree_.__root() == .nullptr, let __element = it.next() {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
         .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
@@ -229,8 +237,7 @@ extension ___Tree where VC: KeyValueComparer {
 
     var it = __source.makeIterator()
 
-    if __tree_.__root() == .nullptr, let __element = it.next().map(__t_)
-    {  // Make sure we always have a root node
+    if __tree_.__root() == .nullptr, let __element = it.next().map(__t_) {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
         .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
@@ -249,10 +256,8 @@ extension ___Tree where VC: KeyValueComparer {
         if __tree_.__ptr_(__child) == .nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          try __tree_.___with_mapped_value(__tree_.__ptr_(__child)) {
-            $0 = try combine(
-              __tree_.___mapped_value(__tree_.__ptr_(__child)),
-              VC.___mapped_value(__tree_.__value_(__nd)))
+          try __tree_.___with_mapped_value(__tree_.__ptr_(__child)) { __mappedValue in
+            __mappedValue = try combine(__mappedValue, VC.___mapped_value(__tree_.__value_(__nd)))
           }
           __tree_.destroy(__nd)
         }
@@ -272,8 +277,7 @@ extension ___Tree {
 
     var it = __source.makeIterator()
 
-    if __tree_.__root() == .nullptr, let __element = it.next()
-    {  // Make sure we always have a root node
+    if __tree_.__root() == .nullptr, let __element = it.next() {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(.end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
     }
@@ -297,4 +301,3 @@ extension ___Tree {
     return __tree_
   }
 }
-

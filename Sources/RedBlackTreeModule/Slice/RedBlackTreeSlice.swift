@@ -61,7 +61,7 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree.ElementIterator {
+  public __consuming func makeIterator() -> Tree._ValueIterator {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

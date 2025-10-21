@@ -950,7 +950,7 @@ extension ___Tree: Sequence {
   @nonobjc
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> ElementIterator {
+  public __consuming func makeIterator() -> _ValueIterator {
     .init(tree: self, start: __begin_node_, end: __end_node())
   }
 }

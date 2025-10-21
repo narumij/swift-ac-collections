@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension RedBlackTreeIterator {
+extension RedBlackTreeIterator.Values {
   
   @frozen
   public struct Reversed: Sequence, IteratorProtocol {
@@ -57,7 +57,7 @@ extension RedBlackTreeIterator {
   }
 }
 
-extension RedBlackTreeIterator.Reversed {
+extension RedBlackTreeIterator.Values.Reversed {
 
   @inlinable
   @inline(__always)
@@ -76,7 +76,7 @@ extension RedBlackTreeIterator.Reversed {
   }
 }
 
-extension RedBlackTreeIterator.Reversed {
+extension RedBlackTreeIterator.Values.Reversed {
 
   /// - Complexity: O(1)
   @inlinable
@@ -86,7 +86,7 @@ extension RedBlackTreeIterator.Reversed {
   }
 }
 
-extension RedBlackTreeIterator.Reversed {
+extension RedBlackTreeIterator.Values.Reversed {
 
   /// - Complexity: O(1)
   @inlinable
@@ -105,16 +105,16 @@ extension RedBlackTreeIterator.Reversed {
   }
 }
 
-extension RedBlackTreeIterator.Reversed {
+extension RedBlackTreeIterator.Values.Reversed {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> ReversedNodeIterator<Base> {
+  public __consuming func ___node_positions() -> ___NodeIterator<Base>.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-extension RedBlackTreeIterator.Reversed: Equatable where Element: Equatable {
+extension RedBlackTreeIterator.Values.Reversed: Equatable where Element: Equatable {
 
   @inlinable
   @inline(__always)
@@ -123,7 +123,7 @@ extension RedBlackTreeIterator.Reversed: Equatable where Element: Equatable {
   }
 }
 
-extension RedBlackTreeIterator.Reversed: Comparable where Element: Comparable {
+extension RedBlackTreeIterator.Values.Reversed: Comparable where Element: Comparable {
 
   @inlinable
   @inline(__always)
@@ -134,5 +134,5 @@ extension RedBlackTreeIterator.Reversed: Comparable where Element: Comparable {
 
 
 extension ___Tree {
-  public typealias ReversedElementIterator = RedBlackTreeIterator<VC>.Reversed
+  public typealias ReversedElementIterator = RedBlackTreeIterator<VC>.Values.Reversed
 }

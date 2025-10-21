@@ -833,7 +833,7 @@ extension RedBlackTreeMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree.ElementIterator {
+  public __consuming func makeIterator() -> Tree._ValueIterator {
     _makeIterator()
   }
 
@@ -853,7 +853,7 @@ extension RedBlackTreeMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func sorted() -> Tree.ElementIterator {
+  public __consuming func sorted() -> Tree._ValueIterator {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 

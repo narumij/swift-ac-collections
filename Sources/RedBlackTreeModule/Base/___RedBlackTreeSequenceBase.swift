@@ -20,10 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-// TODO: コード補完にあらわれない問題への対応を検討
-
 @usableFromInline
-protocol ___RedBlackTreeSequenceBase: ___RedBlackTree & ___RedBlackTreeIndexing & ___TreeBase, Collection
+protocol ___RedBlackTreeSequenceBase: ___RedBlackTreeIndexing & ___TreeBase, Collection
 where
   Tree == ___Tree<Self>,
   Index == Tree.Index,

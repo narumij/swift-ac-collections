@@ -22,12 +22,6 @@
 
 import Foundation
 
-// 単に公開可能なTreeを知っているというだけの状態
-// 下のモノと混ぜたかったが混ぜるとなぜかコンパイルエラーとなるのでわけてある
-public protocol ___RedBlackTree {
-  associatedtype Tree
-}
-
 // コレクション実装の基点
 public protocol ___RedBlackTree___ {
   associatedtype Tree

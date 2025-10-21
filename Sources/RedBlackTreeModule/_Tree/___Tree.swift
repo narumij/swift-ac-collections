@@ -1146,3 +1146,12 @@ extension ___Tree {
   @inline(__always)
   public static var isMulti: Bool { VC.isMulti }
 }
+
+extension ___Tree {
+  // SE-0494対応の準備
+  @inlinable
+  @inline(__always)
+  public func _isIdentical(to other: ___Tree) -> Bool {
+    self === other
+  }
+}

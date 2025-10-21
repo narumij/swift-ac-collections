@@ -34,7 +34,7 @@ extension RedBlackTreeIterator.MappedValues {
     let __tree_: Tree
     
     @usableFromInline
-    var _start, _begin, _current, _next: _NodePtr
+    var _start, _end, _begin, _current, _next: _NodePtr
     
     @inlinable
     @inline(__always)
@@ -43,6 +43,7 @@ extension RedBlackTreeIterator.MappedValues {
       self._current = end
       self._next = end == start ? end : __tree_.__tree_prev_iter(end)
       self._start = start
+      self._end = end
       self._begin = __tree_.__begin_node_
     }
     
@@ -62,7 +63,7 @@ extension RedBlackTreeIterator.MappedValues.Reversed: Equatable where Base._Mapp
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
+    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs)
   }
 }
 
@@ -71,6 +72,8 @@ extension RedBlackTreeIterator.MappedValues.Reversed: Comparable where Base._Map
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
+    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
+
+extension RedBlackTreeIterator.MappedValues.Reversed: ___RedBlackTreeIsIdenticalTo {}

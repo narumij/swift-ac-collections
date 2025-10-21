@@ -177,3 +177,7 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
       end: bounds.upperBound.rawValue)
   }
 }
+
+// MARK: - Is Identical To
+
+extension RedBlackTreeIndices: ___RedBlackTreeIsIdenticalTo {}

@@ -119,7 +119,7 @@ extension RedBlackTreeIterator.Values.Reversed: Equatable where Element: Equatab
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
+    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs)
   }
 }
 
@@ -128,10 +128,11 @@ extension RedBlackTreeIterator.Values.Reversed: Comparable where Element: Compar
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
+    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
 
+extension RedBlackTreeIterator.Values.Reversed: ___RedBlackTreeIsIdenticalTo {}
 
 extension ___Tree {
   public typealias ReversedElementIterator = RedBlackTreeIterator<VC>.Values.Reversed

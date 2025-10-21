@@ -398,7 +398,7 @@ extension RedBlackTreeSlice: Equatable where Base: ElementEqutable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
+    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs)
   }
 }
 
@@ -410,7 +410,7 @@ extension RedBlackTreeSlice where Base: ElementComparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
+    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
 
@@ -461,3 +461,7 @@ extension RedBlackTreeSlice {
   extension RedBlackTreeSlice: @unchecked Sendable
   where Element: Sendable {}
 #endif
+
+// MARK: - Is Identical To
+
+extension RedBlackTreeSlice: ___RedBlackTreeIsIdenticalTo {}

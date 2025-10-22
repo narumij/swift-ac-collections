@@ -219,7 +219,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
-    __tree_.___ensureValidRange(
+    __tree_.___ensureValid(
       begin: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
 
@@ -234,7 +234,7 @@ extension RedBlackTreeMultiMap {
   public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
     let bounds: Range<Index> = bounds.relative(to: self)
     
-    __tree_.___ensureValidRange(
+    __tree_.___ensureValid(
       begin: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
     

@@ -167,7 +167,7 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
-    __tree_.___ensureValidRange(
+    __tree_.___ensureValid(
       begin: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
     return .init(
@@ -180,7 +180,7 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
     let bounds: Range<Index> = bounds.relative(to: self)
-    __tree_.___ensureValidRange(
+    __tree_.___ensureValid(
       begin: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
     return .init(

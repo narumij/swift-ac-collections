@@ -789,7 +789,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___ensureValidRange(begin i: _NodePtr, end j: _NodePtr) {
+  func ___ensureValid(begin i: _NodePtr, end j: _NodePtr) {
     if ___is_range_null(i, j) {
       fatalError(.invalidIndex)
     }

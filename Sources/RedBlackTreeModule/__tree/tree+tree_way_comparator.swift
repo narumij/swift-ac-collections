@@ -49,6 +49,30 @@ where _Key: Comparable {
 // MARK: -
 
 #if false
+// 差が無い
+public
+struct __lazy_three_way_compare_result_2<_Key>: ThreeWayCompareResult
+where _Key: Comparable {
+  @inlinable
+  @inline(__always)
+  internal init(lhs: _Key, rhs: _Key) {
+    if lhs < rhs {
+      comp = -1
+    } else if rhs < lhs {
+      comp = 1
+    } else {
+      comp = 0
+    }
+  }
+  @usableFromInline let comp: Int
+  @inlinable
+  @inline(__always)
+  public func __less() -> Bool { comp < 0 }
+  @inlinable
+  @inline(__always)
+  public func __greater() -> Bool { comp > 0 }
+}
+
 @usableFromInline
 struct __default_three_way_compare_result: ThreeWayCompareResult {
   @inlinable

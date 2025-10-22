@@ -267,8 +267,8 @@ extension NodeBitmapProtocol {
     // 木の深さが63に到達するのは余り現実的ではなく、UIntで十分だが
     // 多少アンバランスが発生した場合を考えると不安がよぎるので
     // 一旦UInt128を採用したが、計算したらやっぱり現実的ではないのでUIntに戻す
-//    ___ptr_bitmap(__l) < ___ptr_bitmap(__r)
+    ___ptr_bitmap(__l) < ___ptr_bitmap(__r)
 //    ___ptr_bitmap_128(__l) < ___ptr_bitmap_128(__r)
-    ___ptr_bitmap_64(__l) < ___ptr_bitmap_64(__r)
+//    ___ptr_bitmap_64(__l) < ___ptr_bitmap_64(__r)
   }
 }

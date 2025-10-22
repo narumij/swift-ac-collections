@@ -641,7 +641,7 @@ extension ___Tree {
 
 extension ___Tree {
 
-  // O(1)
+  /// - Complexity: O(1)
   @nonobjc
   @inlinable
   @inline(__always)
@@ -649,6 +649,7 @@ extension ___Tree {
     p == __begin_node_
   }
 
+  /// - Complexity: O(1)
   @nonobjc
   @inlinable
   @inline(__always)
@@ -656,6 +657,7 @@ extension ___Tree {
     p == .end
   }
 
+  /// - Complexity: O(1)
   @nonobjc
   @inlinable
   @inline(__always)
@@ -663,7 +665,7 @@ extension ___Tree {
     p == __root()
   }
 
-  // O(1)
+  /// - Complexity: O(1)
   @nonobjc
   @inlinable
   @inline(__always)
@@ -671,11 +673,17 @@ extension ___Tree {
     0..<_header.initializedCount ~= p
   }
 
-  // O(1)
+  /// 真の場合、操作は失敗する
+  ///
+  /// 添え字アクセスチェック用
+  ///
+  /// endを無効として扱う
+  /// - Complexity: O(1)
   @nonobjc
   @inlinable
   @inline(__always)
   internal func ___is_subscript_null(_ p: _NodePtr) -> Bool {
+
     // 初期化済みチェックでnullptrとendは除外される
     //    return !___initialized_contains(p) || ___is_garbaged(p)
     // begin -> false
@@ -683,6 +691,12 @@ extension ___Tree {
     return ___is_null_or_end(p) || _header.initializedCount <= p || ___is_garbaged(p)
   }
 
+  /// 真の場合、操作は失敗する
+  ///
+  /// beginを有効として扱う
+  ///
+  /// endを無効として扱う
+  /// - Complexity: O(1)
   @nonobjc
   @inlinable
   @inline(__always)
@@ -690,15 +704,28 @@ extension ___Tree {
     ___is_subscript_null(p)
   }
 
+  /// 真の場合、操作は失敗する
+  ///
+  /// beginを無効として扱う
+  ///
+  /// endを有効として扱う
+  /// - Complexity: O(1)
   @nonobjc
   @inlinable
   @inline(__always)
   internal func ___is_prev_null(_ p: _NodePtr) -> Bool {
+    
     // begin -> true
     // end -> false
     return p == .nullptr || _header.initializedCount <= p || ___is_begin(p) || ___is_garbaged(p)
   }
 
+  /// 真の場合、操作は失敗する
+  ///
+  /// 範囲チェック用
+  ///
+  /// endを有効として扱う
+  /// - Complexity: O(1)
   @nonobjc
   @inlinable
   @inline(__always)
@@ -706,10 +733,17 @@ extension ___Tree {
     return p == .nullptr || _header.initializedCount <= p || ___is_garbaged(p)
   }
 
+  /// 真の場合、操作は失敗する
+  ///
+  /// `end..<end`のケースを有効として扱う
+  ///
+  /// ベースコレクションの場合、回収済みでさえなければ、`start..<end`に必ず含まれているので、範囲チェックを省略している
+  /// - Complexity: O(1)
   @nonobjc
   @inlinable
   @inline(__always)
   internal func ___is_range_null(_ p: _NodePtr, _ l: _NodePtr) -> Bool {
+    // end..<endのケースを許可するため、左辺を___is_offset_nullとしている
     ___is_offset_null(p) || ___is_offset_null(l)
   }
 }

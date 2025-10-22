@@ -255,7 +255,7 @@ extension NodeBitmapProtocol {
     var __p = __p
     while __p != __root(), __p != .end {
       __f &>>= 1
-      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt128.bitWidth &- 1)
+      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt.bitWidth &- 1)
       __p = __parent_(__p)
     }
     return __f

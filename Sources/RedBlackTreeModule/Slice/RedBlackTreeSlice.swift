@@ -299,12 +299,17 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   func ___contains(_ i: _NodePtr) -> Bool {
-    !__tree_.___is_subscript_null(i) && __tree_.___ptr_closed_range_contains(_start, _end, i)
+    !__tree_.___is_subscript_null(i) &&
+    __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
 
   /// Indexがsubscriptやremoveで利用可能か判別します
   ///
-  /// - Complexity: O(1)
+  /// - Complexity:
+  ///
+  ///   ベースがset, map, dictionaryの場合、O(1)
+  ///
+  ///   ベースがmultiset, multimapの場合 O(log *n*)
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
@@ -314,18 +319,29 @@ extension RedBlackTreeSlice {
 
 extension RedBlackTreeSlice {
 
+  @inlinable
+  @inline(__always)
+  func ___contains(_ bounds: Range<Index>) -> Bool {
+    !__tree_.___is_offset_null(bounds.lowerBound.rawValue) &&
+    !__tree_.___is_offset_null(bounds.upperBound.rawValue) &&
+    __tree_.___ptr_range_contains(_start, _end, bounds.lowerBound.rawValue) &&
+    __tree_.___ptr_range_contains(_start, _end, bounds.upperBound.rawValue)
+  }
+
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
-  /// - Complexity: O(1)
+  /// - Complexity:
+  ///
+  ///   ベースがset, map, dictionaryの場合、O(1)
+  ///
+  ///   ベースがmultiset, multimapの場合 O(log *n*)
   @inlinable
   @inline(__always)
   public func isValid<R: RangeExpression>(
     _ bounds: R
   ) -> Bool where R.Bound == Index {
     let bounds = bounds.relative(to: self)
-    return !__tree_.___is_range_null(
-      bounds.lowerBound.rawValue,
-      bounds.upperBound.rawValue)
+    return ___contains(bounds)
   }
 }
 

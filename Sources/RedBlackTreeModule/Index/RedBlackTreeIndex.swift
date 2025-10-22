@@ -231,6 +231,7 @@ extension RedBlackTreeIndex {
   where _Value: Sendable {}
 #endif
 
+// TODO: 一般用としては廃止が妥当かもしれない。要検討
 @inlinable
 @inline(__always)
 public func ..< <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {

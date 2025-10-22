@@ -231,12 +231,57 @@ extension RedBlackTreeIndex {
   where _Value: Sendable {}
 #endif
 
-// TODO: 一般用としては廃止が妥当かもしれない。要検討
+extension RedBlackTreeIndex {
+  @inlinable
+  @inline(__always)
+  var ___indices: RedBlackTreeIndices<Base> {
+    __tree_.makeIndices(start: __tree_.__begin_node_, end: __tree_.__end_node())
+  }
+}
+
+// MARK: - Range Expression
+
 @inlinable
 @inline(__always)
 public func ..< <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
-  lhs.__tree_.makeIndices(start: lhs.rawValue, end: rhs.rawValue)
+  let ii = lhs.___indices
+  let bounds = (lhs..<rhs).relative(to: ii)
+  return ii[bounds.lowerBound..<bounds.upperBound]
 }
+
+@inlinable
+@inline(__always)
+public func ... <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
+  let ii = lhs.___indices
+  let bounds = (lhs...rhs).relative(to: ii)
+  return ii[bounds.lowerBound..<bounds.upperBound]
+}
+
+@inlinable
+@inline(__always)
+public prefix func ..< <Base>(rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
+  let ii = rhs.___indices
+  let bounds = (..<rhs).relative(to: ii)
+  return ii[bounds.lowerBound..<bounds.upperBound]
+}
+
+@inlinable
+@inline(__always)
+public prefix func ... <Base>(rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
+  let ii = rhs.___indices
+  let bounds = (...rhs).relative(to: ii)
+  return ii[bounds.lowerBound..<bounds.upperBound]
+}
+
+@inlinable
+@inline(__always)
+public postfix func ... <Base>(lhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
+  let ii = lhs.___indices
+  let bounds = (lhs...).relative(to: ii)
+  return ii[bounds.lowerBound..<bounds.upperBound]
+}
+
+// MARK: - Convenience
 
 @inlinable
 @inline(__always)

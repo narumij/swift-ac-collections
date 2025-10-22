@@ -23,58 +23,63 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeIterator<Base>: Sequence, IteratorProtocol
-where Base: ___TreeBase {
+public enum RedBlackTreeIterator<Base> where Base: ___TreeBase {
   
-  public typealias Tree = ___Tree<Base>
-  public typealias _Value = Tree._Value
-  
-  @usableFromInline
-  let __tree_: Tree
-  
-  @usableFromInline
-  var _start, _end, _current, _next: _NodePtr
+  @frozen
+  public struct Values: Sequence, IteratorProtocol {
+    
+    public typealias Tree = ___Tree<Base>
+    public typealias _Value = Tree._Value
+    
+    @usableFromInline
+    let __tree_: Tree
+    
+    @usableFromInline
+    var _start, _end, _current, _next: _NodePtr
 
-  @inlinable
-  @inline(__always)
-  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self.__tree_ = tree
-    self._current = start
-    self._start = start
-    self._end = end
-    self._next = start == .end ? .end : tree.__tree_next_iter(start)
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func next() -> Tree._Value? {
-    guard _current != _end else { return nil }
-    defer {
-      _current = _next
-      _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      self.__tree_ = tree
+      self._current = start
+      self._start = start
+      self._end = end
+      self._next = start == .end ? .end : tree.__tree_next_iter(start)
     }
-    return __tree_[_current]
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> Tree._Value? {
+      guard _current != _end else { return nil }
+      defer {
+        _current = _next
+        _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
+      }
+      return __tree_[_current]
+    }
   }
 }
 
-extension RedBlackTreeIterator: Equatable where Tree._Value: Equatable {
+extension RedBlackTreeIterator.Values: Equatable where Tree._Value: Equatable {
 
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
+    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs)
   }
 }
 
-extension RedBlackTreeIterator: Comparable where Tree._Value: Comparable {
+extension RedBlackTreeIterator.Values: Comparable where Tree._Value: Comparable {
 
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
+    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
 
+extension RedBlackTreeIterator.Values: ___RedBlackTreeIsIdenticalTo {}
+
 extension ___Tree {
-  public typealias ElementIterator = RedBlackTreeIterator<VC>
+  public typealias _ValueIterator = RedBlackTreeIterator<VC>.Values
 }

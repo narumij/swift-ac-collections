@@ -20,10 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-// TODO: コード補完にあらわれない問題への対応を検討
-
 @usableFromInline
-protocol ___RedBlackTreeSequenceBase: ___RedBlackTree & ___RedBlackTreeIndexing & ___TreeBase, Collection
+protocol ___RedBlackTreeSequenceBase: ___RedBlackTreeIndexing & ___TreeBase, Collection
 where
   Tree == ___Tree<Self>,
   Index == Tree.Index,
@@ -35,7 +33,7 @@ where
   associatedtype Indices
   associatedtype _Value
   var __tree_: Tree { get }
-  func makeIterator() -> Tree.ElementIterator
+  func makeIterator() -> Tree._ValueIterator
 }
 
 // MARK: -
@@ -44,7 +42,7 @@ extension ___RedBlackTreeSequenceBase {
 
   @inlinable
   @inline(__always)
-  __consuming func _makeIterator() -> Tree.ElementIterator {
+  __consuming func _makeIterator() -> Tree._ValueIterator {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 

@@ -22,12 +22,6 @@
 
 import Foundation
 
-// 単に公開可能なTreeを知っているというだけの状態
-// 下のモノと混ぜたかったが混ぜるとなぜかコンパイルエラーとなるのでわけてある
-public protocol ___RedBlackTree {
-  associatedtype Tree
-}
-
 // コレクション実装の基点
 public protocol ___RedBlackTree___ {
   associatedtype Tree
@@ -266,7 +260,7 @@ extension ___RedBlackTreeBase {
     guard !__tree_.___is_end(from) else {
       return .end
     }
-    __tree_.___ensureValidRange(begin: from, end: to)
+    __tree_.___ensureValid(begin: from, end: to)
     return __tree_.erase(from, to)
   }
 
@@ -280,7 +274,7 @@ extension ___RedBlackTreeBase {
     guard !__tree_.___is_end(from) else {
       return
     }
-    __tree_.___ensureValidRange(begin: from, end: to)
+    __tree_.___ensureValid(begin: from, end: to)
     return try __tree_.___erase(from, to, action)
   }
 
@@ -294,7 +288,7 @@ extension ___RedBlackTreeBase {
     guard !__tree_.___is_end(from) else {
       return initialResult
     }
-    __tree_.___ensureValidRange(begin: from, end: to)
+    __tree_.___ensureValid(begin: from, end: to)
     return try __tree_.___erase(from, to, into: initialResult, updateAccumulatingResult)
   }
 
@@ -308,7 +302,7 @@ extension ___RedBlackTreeBase {
     guard !__tree_.___is_end(from) else {
       return initialResult
     }
-    __tree_.___ensureValidRange(begin: from, end: to)
+    __tree_.___ensureValid(begin: from, end: to)
     return try __tree_.___erase(from, to, initialResult, nextPartialResult)
   }
 }

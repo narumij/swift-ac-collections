@@ -141,7 +141,7 @@ protocol TreeNodeRefProtocol {
   func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr)
 }
 
-// 名前のねじれはllvmの__tree由来
+// 型の名前にねじれがあるので注意
 @usableFromInline
 protocol TreeNodeValueProtocol where _Key == __node_value_type {
   associatedtype _Key
@@ -152,6 +152,7 @@ protocol TreeNodeValueProtocol where _Key == __node_value_type {
   func __get_value(_: _NodePtr) -> __node_value_type
 }
 
+// 型の名前にねじれがあるので注意
 @usableFromInline
 protocol TreeValueProtocol where _Value == __value_type {
   associatedtype _Value
@@ -175,7 +176,7 @@ extension KeyProtocol {
   }
 }
 
-// 名前のねじれはllvmの__tree由来
+// 型の名前にねじれがあるので注意
 @usableFromInline
 protocol ValueProtocol: TreeNodeProtocol, TreeNodeValueProtocol {
   /// キー同士を比較する。通常`<`と同じ

@@ -69,7 +69,7 @@ extension RedBlackTreeIterator.Keys: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs, by: Tree.value_equiv)
+    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs, by: Tree.value_equiv)
   }
 }
 
@@ -78,7 +78,8 @@ extension RedBlackTreeIterator.Keys: Comparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
+    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
   }
 }
 
+extension RedBlackTreeIterator.Keys: ___RedBlackTreeIsIdenticalTo {}

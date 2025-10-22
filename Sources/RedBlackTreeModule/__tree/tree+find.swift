@@ -127,17 +127,26 @@ extension FindEqualProtocol {
 }
 
 @usableFromInline
-protocol FindProtocol: BoundProtocol & EndProtocol {}
+protocol FindProtocol: BoundProtocol & EndProtocol & FindEqualProtocol {}
 
 extension FindProtocol {
 
   @inlinable
   @inline(__always)
   func find(_ __v: _Key) -> _NodePtr {
+#if true
     let __p = lower_bound(__v)
     if __p != end(), !value_comp(__v, __get_value(__p)) {
       return __p
     }
     return end()
+#else
+    // llvmの__treeに寄せたが、multimapの挙動が変わってしまうので保留
+    let (_,__match) = __find_equal(__v)
+    if __ptr_(__match) == .nullptr {
+      return .end
+    }
+    return __ptr_(__match)
+#endif
   }
 }

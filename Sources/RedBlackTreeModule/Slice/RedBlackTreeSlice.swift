@@ -22,16 +22,13 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeSlice<Base>
-where
-  Base: ___RedBlackTree & ValueComparer & CompareTrait,
-  Base.Tree == ___Tree<Base>
-{
-  public typealias Tree = Base.Tree
+public struct RedBlackTreeSlice<Base> where Base: ___TreeBase {
+  
+  public typealias Tree = ___Tree<Base>
   public typealias Element = Tree._Value
   public typealias Index = Tree.Index
-  public typealias SubSequence = Self
   public typealias Indices = Tree.Indices
+  public typealias SubSequence = Self
 
   @usableFromInline
   let __tree_: Tree
@@ -64,7 +61,7 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree.ElementIterator {
+  public __consuming func makeIterator() -> Tree._ValueIterator {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -170,7 +167,8 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
-    __tree_.___ensureValidRange(
+    // TODO: ベースでの有効性しかチェックしていない。__containsのチェックにするか要検討
+    __tree_.___ensureValid(
       begin: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
     return .init(
@@ -183,7 +181,8 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
     let bounds: Range<Index> = bounds.relative(to: self)
-    __tree_.___ensureValidRange(
+    // TODO: ベースでの有効性しかチェックしていない。__containsのチェックにするか要検討
+    __tree_.___ensureValid(
       begin: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
     return .init(
@@ -302,12 +301,17 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   func ___contains(_ i: _NodePtr) -> Bool {
-    !__tree_.___is_subscript_null(i) && __tree_.___ptr_closed_range_contains(_start, _end, i)
+    !__tree_.___is_subscript_null(i) &&
+    __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
 
   /// Indexがsubscriptやremoveで利用可能か判別します
   ///
-  /// - Complexity: O(1)
+  /// - Complexity:
+  ///
+  ///   ベースがset, map, dictionaryの場合、O(1)
+  ///
+  ///   ベースがmultiset, multimapの場合 O(log *n*)
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
@@ -317,18 +321,29 @@ extension RedBlackTreeSlice {
 
 extension RedBlackTreeSlice {
 
+  @inlinable
+  @inline(__always)
+  func ___contains(_ bounds: Range<Index>) -> Bool {
+    !__tree_.___is_offset_null(bounds.lowerBound.rawValue) &&
+    !__tree_.___is_offset_null(bounds.upperBound.rawValue) &&
+    __tree_.___ptr_range_contains(_start, _end, bounds.lowerBound.rawValue) &&
+    __tree_.___ptr_range_contains(_start, _end, bounds.upperBound.rawValue)
+  }
+
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
-  /// - Complexity: O(1)
+  /// - Complexity:
+  ///
+  ///   ベースがset, map, dictionaryの場合、O(1)
+  ///
+  ///   ベースがmultiset, multimapの場合 O(log *n*)
   @inlinable
   @inline(__always)
   public func isValid<R: RangeExpression>(
     _ bounds: R
   ) -> Bool where R.Bound == Index {
     let bounds = bounds.relative(to: self)
-    return !__tree_.___is_range_null(
-      bounds.lowerBound.rawValue,
-      bounds.upperBound.rawValue)
+    return ___contains(bounds)
   }
 }
 
@@ -401,7 +416,7 @@ extension RedBlackTreeSlice: Equatable where Base: ElementEqutable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
+    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs)
   }
 }
 
@@ -413,7 +428,7 @@ extension RedBlackTreeSlice where Base: ElementComparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
+    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
 
@@ -464,3 +479,7 @@ extension RedBlackTreeSlice {
   extension RedBlackTreeSlice: @unchecked Sendable
   where Element: Sendable {}
 #endif
+
+// MARK: - Is Identical To
+
+extension RedBlackTreeSlice: ___RedBlackTreeIsIdenticalTo {}

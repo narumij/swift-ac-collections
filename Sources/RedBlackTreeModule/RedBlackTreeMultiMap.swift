@@ -219,7 +219,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
-    __tree_.___ensureValidRange(
+    __tree_.___ensureValid(
       begin: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
 
@@ -234,7 +234,7 @@ extension RedBlackTreeMultiMap {
   public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
     let bounds: Range<Index> = bounds.relative(to: self)
     
-    __tree_.___ensureValidRange(
+    __tree_.___ensureValid(
       begin: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
     
@@ -740,7 +740,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree.ElementIterator {
+  public __consuming func makeIterator() -> Tree._ValueIterator {
     _makeIterator()
   }
 
@@ -760,7 +760,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func sorted() -> Tree.ElementIterator {
+  public __consuming func sorted() -> Tree._ValueIterator {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
   

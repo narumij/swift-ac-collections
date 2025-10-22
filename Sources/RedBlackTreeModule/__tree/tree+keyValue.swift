@@ -134,6 +134,12 @@ public struct Pair<Key, Value> {
   public var key: Key
   public var value: Value
   public var tuple: (Key, Value) { (key, value) }
+  @inlinable
+  @inline(__always)
+  public var first: Key { key }
+  @inlinable
+  @inline(__always)
+  public var second: Value { value }
 }
 
 extension Pair: Sendable where Key: Sendable, Value: Sendable {}

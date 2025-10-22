@@ -238,8 +238,24 @@ extension NodeBitmapProtocol {
     var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
     var __p = __p
     while __p != __root(), __p != .end {
-      __f >>= 1
+      __f &>>= 1
       __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt128.bitWidth &- 1)
+      __p = __parent_(__p)
+    }
+    return __f
+  }
+  
+  @inlinable
+  @inline(__always)
+  func ___ptr_bitmap_64(_ __p: _NodePtr) -> UInt
+  {
+    assert(__p != .nullptr, "Node shouldn't be null")
+    assert(__p != .end, "Node shouldn't be end")
+    var __f: UInt = 1 &<< (UInt.bitWidth &- 1)
+    var __p = __p
+    while __p != __root(), __p != .end {
+      __f &>>= 1
+      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt.bitWidth &- 1)
       __p = __parent_(__p)
     }
     return __f
@@ -252,5 +268,7 @@ extension NodeBitmapProtocol {
     // 多少アンバランスが発生した場合を考えると不安がよぎるので
     // 一旦UInt128を採用したが、計算したらやっぱり現実的ではないのでUIntに戻す
     ___ptr_bitmap(__l) < ___ptr_bitmap(__r)
+//    ___ptr_bitmap_128(__l) < ___ptr_bitmap_128(__r)
+//    ___ptr_bitmap_64(__l) < ___ptr_bitmap_64(__r)
   }
 }

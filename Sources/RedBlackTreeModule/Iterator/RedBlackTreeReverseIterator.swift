@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension RedBlackTreeIterator {
+extension RedBlackTreeIterator.Values {
   
   @frozen
   public struct Reversed: Sequence, IteratorProtocol {
@@ -57,7 +57,7 @@ extension RedBlackTreeIterator {
   }
 }
 
-extension RedBlackTreeIterator.Reversed {
+extension RedBlackTreeIterator.Values.Reversed {
 
   @inlinable
   @inline(__always)
@@ -76,7 +76,7 @@ extension RedBlackTreeIterator.Reversed {
   }
 }
 
-extension RedBlackTreeIterator.Reversed {
+extension RedBlackTreeIterator.Values.Reversed {
 
   /// - Complexity: O(1)
   @inlinable
@@ -86,7 +86,7 @@ extension RedBlackTreeIterator.Reversed {
   }
 }
 
-extension RedBlackTreeIterator.Reversed {
+extension RedBlackTreeIterator.Values.Reversed {
 
   /// - Complexity: O(1)
   @inlinable
@@ -105,34 +105,35 @@ extension RedBlackTreeIterator.Reversed {
   }
 }
 
-extension RedBlackTreeIterator.Reversed {
+extension RedBlackTreeIterator.Values.Reversed {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> ReversedNodeIterator<Base> {
+  public __consuming func ___node_positions() -> ___NodeIterator<Base>.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-extension RedBlackTreeIterator.Reversed: Equatable where Element: Equatable {
+extension RedBlackTreeIterator.Values.Reversed: Equatable where Element: Equatable {
 
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
+    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs)
   }
 }
 
-extension RedBlackTreeIterator.Reversed: Comparable where Element: Comparable {
+extension RedBlackTreeIterator.Values.Reversed: Comparable where Element: Comparable {
 
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
+    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
 
+extension RedBlackTreeIterator.Values.Reversed: ___RedBlackTreeIsIdenticalTo {}
 
 extension ___Tree {
-  public typealias ReversedElementIterator = RedBlackTreeIterator<VC>.Reversed
+  public typealias ReversedElementIterator = RedBlackTreeIterator<VC>.Values.Reversed
 }

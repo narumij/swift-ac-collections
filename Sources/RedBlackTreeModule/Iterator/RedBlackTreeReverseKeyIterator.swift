@@ -33,7 +33,7 @@ extension RedBlackTreeIterator.Keys {
     let __tree_: Tree
     
     @usableFromInline
-    var _start, _begin, _current, _next: _NodePtr
+    var _start, _end, _begin, _current, _next: _NodePtr
     
     @inlinable
     @inline(__always)
@@ -42,6 +42,7 @@ extension RedBlackTreeIterator.Keys {
       self._current = end
       self._next = end == start ? end : __tree_.__tree_prev_iter(end)
       self._start = start
+      self._end = end
       self._begin = __tree_.__begin_node_
     }
     
@@ -61,7 +62,7 @@ extension RedBlackTreeIterator.Keys.Reversed: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs, by: Tree.value_equiv)
+    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs, by: Tree.value_equiv)
   }
 }
 
@@ -70,6 +71,8 @@ extension RedBlackTreeIterator.Keys.Reversed: Comparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
+    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs, by: Tree.value_comp)
   }
 }
+
+extension RedBlackTreeIterator.Keys.Reversed: ___RedBlackTreeIsIdenticalTo {}

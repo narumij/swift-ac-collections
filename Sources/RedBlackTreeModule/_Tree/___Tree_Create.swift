@@ -102,10 +102,8 @@ extension ___Tree where VC: KeyValueComparer {
         // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
       } else {
-        try tree.___with_mapped_value(__parent) {
-          $0 = try combine(
-            tree.___mapped_value(__parent),
-            VC.___mapped_value(__v))
+        try tree.___with_mapped_value(__parent) { __mappedValue in
+          __mappedValue = try combine(__mappedValue, VC.___mapped_value(__v))
         }
       }
     }

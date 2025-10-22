@@ -70,7 +70,7 @@ extension RedBlackTreeIterator.MappedValues: Equatable where Base._MappedValue: 
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
+    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs)
   }
 }
 
@@ -79,7 +79,8 @@ extension RedBlackTreeIterator.MappedValues: Comparable where Base._MappedValue:
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
+    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
 
+extension RedBlackTreeIterator.MappedValues: ___RedBlackTreeIsIdenticalTo {}

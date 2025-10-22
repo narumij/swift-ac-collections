@@ -55,7 +55,7 @@ where VC: ___TreeBase {
 
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> ReversedNodeIterator<VC> {
+  public __consuming func reversed() -> Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -78,39 +78,42 @@ extension ___NodeIterator: Comparable {
   }
 }
 
-@frozen
-public struct ReversedNodeIterator<VC>: Sequence, IteratorProtocol
-where VC: ___TreeBase {
+extension ___NodeIterator {
 
-  public typealias Tree = ___Tree<VC>
+  @frozen
+  public struct Reversed: Sequence, IteratorProtocol
+  where VC: ___TreeBase {
 
-  @usableFromInline
-  let __tree_: Tree
+    public typealias Tree = ___Tree<VC>
 
-  @usableFromInline
-  var _start, _begin, _current, _next: _NodePtr
+    @usableFromInline
+    let __tree_: Tree
 
-  @inlinable
-  @inline(__always)
-  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self.__tree_ = tree
-    self._current = end
-    self._next = end == start ? end : __tree_.__tree_prev_iter(end)
-    self._start = start
-    self._begin = __tree_.__begin_node_
-  }
+    @usableFromInline
+    var _start, _begin, _current, _next: _NodePtr
 
-  @inlinable
-  @inline(__always)
-  public mutating func next() -> _NodePtr? {
-    guard _current != _start else { return nil }
-    _current = _next
-    _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-    return _current
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      self.__tree_ = tree
+      self._current = end
+      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
+      self._start = start
+      self._begin = __tree_.__begin_node_
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> _NodePtr? {
+      guard _current != _start else { return nil }
+      _current = _next
+      _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
+      return _current
+    }
   }
 }
 
-extension ReversedNodeIterator: Equatable {
+extension ___NodeIterator.Reversed: Equatable {
 
   @inlinable
   @inline(__always)
@@ -119,7 +122,7 @@ extension ReversedNodeIterator: Equatable {
   }
 }
 
-extension ReversedNodeIterator: Comparable {
+extension ___NodeIterator.Reversed: Comparable {
 
   @inlinable
   @inline(__always)

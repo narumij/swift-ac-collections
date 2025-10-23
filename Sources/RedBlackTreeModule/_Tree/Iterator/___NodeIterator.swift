@@ -21,10 +21,10 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct ___NodeIterator<VC>: Sequence, IteratorProtocol
-where VC: ___TreeBase {
+public struct ___NodeIterator<Base>: Sequence, IteratorProtocol
+where Base: ___TreeBase {
 
-  public typealias Tree = ___Tree<VC>
+  public typealias Tree = ___Tree<Base>
 
   @usableFromInline
   let __tree_: Tree
@@ -82,9 +82,9 @@ extension ___NodeIterator {
 
   @frozen
   public struct Reversed: Sequence, IteratorProtocol
-  where VC: ___TreeBase {
+  where Base: ___TreeBase {
 
-    public typealias Tree = ___Tree<VC>
+    public typealias Tree = ___Tree<Base>
 
     @usableFromInline
     let __tree_: Tree

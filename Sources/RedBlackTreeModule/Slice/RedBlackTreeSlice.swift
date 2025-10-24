@@ -125,20 +125,6 @@ extension RedBlackTreeSlice {
 
 extension RedBlackTreeSlice {
 
-  // 断念
-  //    @inlinable
-  //    public func lowerBound(_ member: Element) -> Index {
-  //      base.__lower_bound(base.__key(member), base.__root(), endIndex)
-  //    }
-  //
-  //    @inlinable
-  //    public func upperBound(_ member: Element) -> Index {
-  //      base.__upper_bound(base.__key(member), base.__root(), endIndex)
-  //    }
-}
-
-extension RedBlackTreeSlice {
-
   /// - Complexity: O(1)
   @inlinable
   public subscript(position: Index) -> Element {

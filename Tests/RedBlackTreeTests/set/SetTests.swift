@@ -13,21 +13,6 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-extension RedBlackTreeSet {
-  func left(_ p: Element) -> Int {
-    distance(from: startIndex, to: lowerBound(p))
-  }
-  func right(_ p: Element) -> Int {
-    distance(from: startIndex, to: upperBound(p))
-  }
-}
-
-extension RedBlackTreeSet {
-  var elements: [Element] {
-    map { $0 }
-  }
-}
-
 final class SetTests: XCTestCase {
 
   override func setUpWithError() throws {

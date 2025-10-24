@@ -54,6 +54,14 @@ final class SetTests: XCTestCase {
     XCTAssertGreaterThanOrEqual(numbers.capacity, 4)
   }
 
+  func testInitNaive0() throws {
+    let set = RedBlackTreeSet<Int>(naive: 0..<0)
+    XCTAssertEqual(set.elements, (0..<0) + [])
+    XCTAssertEqual(set.count, 0)
+    XCTAssertTrue(set.isEmpty)
+    XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
+  }
+
   func testInitRange() throws {
     let set = RedBlackTreeSet<Int>(0..<10000)
     XCTAssertEqual(set.elements, (0..<10000) + [])
@@ -1141,6 +1149,13 @@ final class SetTests: XCTestCase {
     let source = [0,1,2,3,4,5]
     let a = RedBlackTreeSet<Int>(naive: AnySequence(source))
     XCTAssertEqual(a.sorted() + [], source)
+  }
+  
+  func testInsertEmpty() throws {
+    var a = RedBlackTreeSet<Int>()
+    var b = RedBlackTreeSet<Int>()
+    a.merge(b)
+    XCTAssertTrue(a.isEmpty)
   }
   
   #if DEBUG

@@ -191,12 +191,14 @@ extension ___Tree {
     var __tree_ = __tree_
 
     var it = __source.makeIterator()
-
+    
     if __tree_.__root() == .nullptr, let __element = it.next() {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
         .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
     }
+    
+    if __tree_.__root() == .nullptr { return __tree_ }
 
     var __max_node = __tree_.__tree_max(__tree_.__root())
 
@@ -243,6 +245,8 @@ extension ___Tree where VC: KeyValueComparer {
         .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
     }
 
+    if __tree_.__root() == .nullptr { return __tree_ }
+
     var __max_node = __tree_.__tree_max(__tree_.__root())
 
     while let __element = it.next().map(__t_) {
@@ -281,6 +285,8 @@ extension ___Tree {
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(.end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
     }
+
+    if __tree_.__root() == .nullptr { return __tree_ }
 
     var __max_node = __tree_.__tree_max(__tree_.__root())
 

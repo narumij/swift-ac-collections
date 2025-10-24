@@ -15,6 +15,12 @@ extension ___Tree {
 }
 #endif
 
+extension RedBlackTreeMultiSet {
+  var elements: [Element] {
+    map { $0 }
+  }
+}
+
 #if DEBUG
   extension RedBlackTreeMultiSet {
 
@@ -111,6 +117,14 @@ final class MultisetTests: XCTestCase {
     XCTAssertGreaterThanOrEqual(numbers.capacity, 3)
     numbers.reserveCapacity(4)
     XCTAssertGreaterThanOrEqual(numbers.capacity, 4)
+  }
+  
+  func testInitNaive0() throws {
+    let set = RedBlackTreeMultiSet<Int>(naive: 0..<0)
+    XCTAssertEqual(set.elements, (0..<0) + [])
+    XCTAssertEqual(set.count, 0)
+    XCTAssertTrue(set.isEmpty)
+    XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
   }
 
   func testInitRange() throws {

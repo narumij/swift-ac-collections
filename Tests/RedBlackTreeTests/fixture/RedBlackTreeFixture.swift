@@ -5,6 +5,8 @@
 //  Created by narumij on 2025/10/25.
 //
 
+import XCTest
+
 #if DEBUG
   @testable import RedBlackTreeModule
 #endif
@@ -12,11 +14,12 @@
 #if DEBUG
   protocol RedBlackTreeFixture: ___TreeBase & Sequence {
     associatedtype Index
+    associatedtype _Key
     var __tree_: ___Tree<Self> { get }
     var startIndex: Index { get }
     func distance(from start: Index, to end: Index) -> Int
-    func lowerBound(_ member: Element) -> Index
-    func upperBound(_ member: Element) -> Index
+    func lowerBound(_ member: _Key) -> Index
+    func upperBound(_ member: _Key) -> Index
   }
 
   extension RedBlackTreeFixture {
@@ -67,10 +70,10 @@
   }
 
   extension RedBlackTreeFixture {
-    func left(_ p: Element) -> Int {
+    func left(_ p: _Key) -> Int {
       distance(from: startIndex, to: lowerBound(p))
     }
-    func right(_ p: Element) -> Int {
+    func right(_ p: _Key) -> Int {
       distance(from: startIndex, to: upperBound(p))
     }
   }
@@ -79,4 +82,31 @@
 #if DEBUG
   extension RedBlackTreeSet: RedBlackTreeFixture {}
   extension RedBlackTreeMultiSet: RedBlackTreeFixture {}
+  extension RedBlackTreeMap: RedBlackTreeFixture {}
+  extension RedBlackTreeMultiMap: RedBlackTreeFixture {}
+  extension RedBlackTreeDictionary: RedBlackTreeFixture {}
 #endif
+
+func assertEquiv<Target>(
+  _ lhs: Target,
+  _ rhs: Target,
+  file: StaticString = #file, line: UInt = #line
+) where Target: RedBlackTreeFixture, Target.Element: Equatable {
+  XCTAssertEqual(lhs.elements, rhs.elements, file: (file), line: line)
+}
+
+func assertEquiv<LHS: RedBlackTreeFixture>(
+  _ lhs: LHS,
+  _ rhs: Array<LHS.Element>,
+  file: StaticString = #file, line: UInt = #line
+) where LHS.Element: Equatable {
+  XCTAssertEqual(lhs.elements, rhs, file: (file), line: line)
+}
+
+func assertEquiv<LHS>(
+  _ lhs: LHS,
+  _ rhs: Set<LHS.Element>,
+  file: StaticString = #file, line: UInt = #line
+) where LHS: RedBlackTreeFixture, LHS.Element: Comparable {
+  XCTAssertEqual(lhs.elements, rhs.sorted(), file: (file), line: line)
+}

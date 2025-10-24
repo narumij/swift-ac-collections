@@ -16,15 +16,6 @@ final class RedBlackTreeSetAlgebraFullTests: XCTestCase {
 
   // MARK: ── 汎用比較ヘルパ ───────────────────────────────────────────────
 
-  /// `RedBlackTreeSet` と `Swift.Set` の結果が一致するかを検査
-  private func assertEquivalent<T: Comparable>(
-    _ lhs: RedBlackTreeSet<T>,
-    _ rhs: RedBlackTreeSet<T>,
-    file: StaticString = #file, line: UInt = #line
-  ) {
-    XCTAssertEqual(lhs.sorted(), rhs.sorted(), file: (file), line: line)
-  }
-
   /// 2 つの `RedBlackTreeSet` と対応する `Set` を生成
   private func makeRandomPair(seed: inout SplitMix64) -> (
     rbt1: RedBlackTreeSet<Int>, rbt2: RedBlackTreeSet<Int>,
@@ -48,21 +39,21 @@ final class RedBlackTreeSetAlgebraFullTests: XCTestCase {
     for _ in 0..<250 {  // 250 ランダムケース
       let (rbt1, rbt2, set1, set2) = makeRandomPair(seed: &rng)
 
-      XCTAssertEqual(
-        rbt1.union(rbt2).sorted(),
-        set1.union(set2).sorted())
+      assertEquiv(
+        rbt1.union(rbt2),
+        set1.union(set2))
 
-      XCTAssertEqual(
-        rbt1.intersection(rbt2).sorted(),
-        set1.intersection(set2).sorted())
+      assertEquiv(
+        rbt1.intersection(rbt2),
+        set1.intersection(set2))
 
-      XCTAssertEqual(
-        rbt1.symmetricDifference(rbt2).sorted(),
-        set1.symmetricDifference(set2).sorted())
+      assertEquiv(
+        rbt1.symmetricDifference(rbt2),
+        set1.symmetricDifference(set2))
 
-      XCTAssertEqual(
-        rbt1.subtracting(rbt2).sorted(),
-        set1.subtracting(set2).sorted())
+      assertEquiv(
+        rbt1.subtracting(rbt2),
+        set1.subtracting(set2))
     }
   }
 
@@ -79,31 +70,31 @@ final class RedBlackTreeSetAlgebraFullTests: XCTestCase {
       lhsU.formUnion(rhs)
       var sLU = sL
       sLU.formUnion(sR)
-      assertEquivalent(lhsU, RedBlackTreeSet(sLU))
+      assertEquiv(lhsU, RedBlackTreeSet(sLU))
 
       // formIntersection
       var lhsI = lhs
       lhsI.formIntersection(rhs)
       var sLI = sL
       sLI.formIntersection(sR)
-      assertEquivalent(lhsI, RedBlackTreeSet(sLI))
+      assertEquiv(lhsI, RedBlackTreeSet(sLI))
 
       // formSymmetricDifference
       var lhsS = lhs
       lhsS.formSymmetricDifference(rhs)
       var sLS = sL
       sLS.formSymmetricDifference(sR)
-      assertEquivalent(lhsS, RedBlackTreeSet(sLS))
+      assertEquiv(lhsS, RedBlackTreeSet(sLS))
 
       // subtract (mutating)
       var lhsSub = lhs
       lhsSub.subtract(rhs)
       var sLSub = sL
       sLSub.subtract(sR)
-      assertEquivalent(lhsSub, RedBlackTreeSet(sLSub))
+      assertEquiv(lhsSub, RedBlackTreeSet(sLSub))
 
       // “rhs は無変化” を保証
-      assertEquivalent(rhs, rhs)  // 型安全のためダミーチェック
+      assertEquiv(rhs, rhs)  // 型安全のためダミーチェック
       XCTAssertEqual(rhs.sorted(), RedBlackTreeSet(sR).sorted())
     }
   }

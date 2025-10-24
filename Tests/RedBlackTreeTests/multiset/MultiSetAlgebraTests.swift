@@ -30,70 +30,70 @@ final class MultiSetAlgebraTests: XCTestCase {
     var lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4]
     let rhs: RedBlackTreeMultiSet<Int> = [3, 4, 5, 6]
     lhs.formUnion(rhs)
-    XCTAssertEqual(lhs, [1, 2, 3, 3, 4, 4, 5, 6])
+    assertEquiv(lhs, [1, 2, 3, 3, 4, 4, 5, 6])
   }
 
   func testUnion1() throws {
     let lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4]
     let rhs: RedBlackTreeMultiSet<Int> = [3, 4, 5, 6]
-    XCTAssertEqual(lhs.union(rhs), [1, 2, 3, 3, 4, 4, 5, 6])
+    assertEquiv(lhs.union(rhs), [1, 2, 3, 3, 4, 4, 5, 6])
   }
 
   func testSymm0() throws {
     var lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4]
     let rhs: RedBlackTreeMultiSet<Int> = [3, 4, 5, 6]
     lhs.formSymmetricDifference(rhs)
-    XCTAssertEqual(lhs, [1, 2, 5, 6])
+    assertEquiv(lhs, [1, 2, 5, 6])
   }
 
   func testSymm1() throws {
     let lhs: RedBlackTreeMultiSet<Int> = [3, 4, 5, 6]
     let rhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4]
-    XCTAssertEqual(lhs.symmetricDifference(rhs), [1, 2, 5, 6])
+    assertEquiv(lhs.symmetricDifference(rhs), [1, 2, 5, 6])
   }
 
   func testSymm2() throws {
     let lhs: RedBlackTreeMultiSet<Int> = [3, 4, 4, 5, 6]
     let rhs: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
-    XCTAssertEqual(lhs.symmetricDifference(rhs), [1, 2, 2, 4, 5, 6])
+    assertEquiv(lhs.symmetricDifference(rhs), [1, 2, 2, 4, 5, 6])
   }
   
   func testInter0() throws {
     var lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4]
     let rhs: RedBlackTreeMultiSet<Int> = [3, 4, 5, 6]
     lhs.formIntersection(rhs)
-    XCTAssertEqual(lhs, [3, 4])
+    assertEquiv(lhs, [3, 4])
   }
 
   func testInter1() throws {
     let lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4]
     let rhs: RedBlackTreeMultiSet<Int> = [3, 4, 5, 6]
-    XCTAssertEqual(lhs.intersection(rhs), [3, 4])
+    assertEquiv(lhs.intersection(rhs), [3, 4])
   }
   
   func testInter2() throws {
     let lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 3, 4]
     let rhs: RedBlackTreeMultiSet<Int> = [3, 4, 4, 5, 6]
-    XCTAssertEqual(lhs.intersection(rhs), [3, 4])
+    assertEquiv(lhs.intersection(rhs), [3, 4])
   }
   
   func testInter3() throws {
     let lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 3, 4, 4]
     let rhs: RedBlackTreeMultiSet<Int> = [3, 4, 4, 5, 6]
-    XCTAssertEqual(lhs.intersection(rhs), [3, 4, 4])
+    assertEquiv(lhs.intersection(rhs), [3, 4, 4])
   }
 
   func testDiff0() throws {
     var lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 3, 4]
     let rhs: RedBlackTreeMultiSet<Int> = [3, 4, 5, 6]
     lhs.formDifference(rhs)
-    XCTAssertEqual(lhs, [1, 2, 3])
+    assertEquiv(lhs, [1, 2, 3])
   }
 
   func testDiff1() throws {
     let lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 3, 4]
     let rhs: RedBlackTreeMultiSet<Int> = [3, 4, 5, 6]
-    XCTAssertEqual(lhs.difference(rhs), [1, 2, 3])
+    assertEquiv(lhs.difference(rhs), [1, 2, 3])
   }
 
   func testPerformanceExample() throws {

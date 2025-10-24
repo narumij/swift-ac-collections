@@ -6,26 +6,6 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-#if DEBUG
-//  extension ___Tree {
-//    @inlinable
-//    func __root(_ p: _NodePtr) {
-//      __header_ptr.pointee.__left_ = p
-//    }
-//  }
-#endif
-
-#if false
-extension RedBlackTreeMultiSet {
-  func left(_ p: Element) -> Int {
-    distance(from: startIndex, to: lowerBound(p))
-  }
-  func right(_ p: Element) -> Int {
-    distance(from: startIndex, to: upperBound(p))
-  }
-}
-#endif
-
 final class MultisetTests: XCTestCase {
 
   func testInitEmtpy() throws {

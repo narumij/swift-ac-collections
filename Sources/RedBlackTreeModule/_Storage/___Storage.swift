@@ -9,8 +9,8 @@
 // それ以外はTree側の保持の仕方で管理する
 @_fixed_layout
 @usableFromInline
-final class ___Storage<VC: ___TreeBase> {
-  public typealias Tree = ___Tree<VC>
+final class ___Storage<Base: ___TreeBase> {
+  public typealias Tree = ___Tree<Base>
   @nonobjc
   @inlinable
   @inline(__always)

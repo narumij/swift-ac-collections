@@ -336,53 +336,53 @@ extension ValueComparer where _Key: Equatable {
 
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 public protocol ValueComparator {
-  associatedtype VC: ValueComparer
-  static func __key(_ e: VC._Value) -> VC._Key
-  static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
-  static func value_equiv(_ lhs: VC._Key, _ rhs: VC._Key) -> Bool
-  func __key(_ e: VC._Value) -> VC._Key
-  func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool
+  associatedtype Base: ValueComparer
+  static func __key(_ e: Base._Value) -> Base._Key
+  static func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool
+  static func value_equiv(_ lhs: Base._Key, _ rhs: Base._Key) -> Bool
+  func __key(_ e: Base._Value) -> Base._Key
+  func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool
 }
 
 extension ValueComparator {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ e: VC._Value) -> VC._Key {
-    VC.__key(e)
+  public static func __key(_ e: Base._Value) -> Base._Key {
+    Base.__key(e)
   }
 
   @inlinable
   @inline(__always)
-  public static func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
-    VC.value_comp(a, b)
+  public static func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool {
+    Base.value_comp(a, b)
   }
 
   @inlinable
   @inline(__always)
-  public static func value_equiv(_ lhs: VC._Key, _ rhs: VC._Key) -> Bool {
-    VC.value_equiv(lhs, rhs)
+  public static func value_equiv(_ lhs: Base._Key, _ rhs: Base._Key) -> Bool {
+    Base.value_equiv(lhs, rhs)
   }
 
   @inlinable
   @inline(__always)
-  public func __key(_ e: VC._Value) -> VC._Key {
-    VC.__key(e)
+  public func __key(_ e: Base._Value) -> Base._Key {
+    Base.__key(e)
   }
 
   @inlinable
   @inline(__always)
-  public func value_comp(_ a: VC._Key, _ b: VC._Key) -> Bool {
-    VC.value_comp(a, b)
+  public func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool {
+    Base.value_comp(a, b)
   }
 }
 
-extension ValueComparator where VC: ThreeWayComparator {
+extension ValueComparator where Base: ThreeWayComparator {
 
   @inlinable
   @inline(__always)
-  func __lazy_synth_three_way_comparator() -> (VC._Key, VC._Key) -> VC.__compare_result {
-    VC.__lazy_synth_three_way_comparator()
+  func __lazy_synth_three_way_comparator() -> (Base._Key, Base._Key) -> Base.__compare_result {
+    Base.__lazy_synth_three_way_comparator()
   }
 }
 

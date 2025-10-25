@@ -74,11 +74,11 @@ extension KeyValueComparer where _MappedValue: Equatable {
 
 // MARK: -
 
-extension ValueComparator where VC: KeyValueComparer {
+extension ValueComparator where Base: KeyValueComparer {
   @inlinable
   @inline(__always)
-  public static func ___mapped_value(of element: VC._Value) -> VC._MappedValue {
-    VC.___mapped_value(element)
+  public static func ___mapped_value(of element: Base._Value) -> Base._MappedValue {
+    Base.___mapped_value(element)
   }
 }
 

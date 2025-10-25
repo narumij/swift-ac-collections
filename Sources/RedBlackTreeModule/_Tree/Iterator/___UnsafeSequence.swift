@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct ___UnsafeIterator<Base>: Sequence, IteratorProtocol
+public struct ___UnsafeSequence<Base>: Sequence, IteratorProtocol
 where Base: ___TreeBase {
 
   public typealias Tree = ___Tree<Base>

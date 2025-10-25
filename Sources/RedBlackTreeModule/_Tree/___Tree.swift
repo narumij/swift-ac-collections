@@ -1082,7 +1082,7 @@ extension ___Tree {
   {
     var tree: Tree = .create(minimumCapacity: 0)
     var (__parent, __child) = tree.___max_ref()
-    for __p in makeUnsafeIterator(__first, __last)
+    for __p in unsafeSequence(__first, __last)
     where try isIncluded(__value_(__p)) {
       Tree.ensureCapacity(tree: &tree)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __value_(__p))
@@ -1097,7 +1097,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func makeUnsafeIterator(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeIterator<VC> {
+  func unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeSequence<VC> {
     .init(tree: self, __first: __first, __last: __last)
   }
 }
@@ -1119,7 +1119,7 @@ extension ___Tree where VC: KeyValueComparer {
   {
     let other = ___Tree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = other.___max_ref()
-    for __p in makeUnsafeIterator(__first, __last) {
+    for __p in unsafeSequence(__first, __last) {
       let __mapped_value = try transform(___mapped_value(__p))
       (__parent, __child) = other.___emplace_hint_right(
         __parent, __child, Other.__value_(__get_value(__p), __mapped_value))
@@ -1143,7 +1143,7 @@ extension ___Tree where VC: KeyValueComparer {
   {
     var other = ___Tree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = other.___max_ref()
-    for __p in makeUnsafeIterator(__first, __last) {
+    for __p in unsafeSequence(__first, __last) {
       guard let __mv = try transform(___mapped_value(__p)) else { continue }
       ___Tree<Other>.ensureCapacity(tree: &other)
       (__parent, __child) = other.___emplace_hint_right(

@@ -981,12 +981,12 @@ extension ___Tree {
 
 extension ___Tree: Sequence {
   
-  public typealias Values = RedBlackTreeIterator<VC>.Values
+  public typealias _Values = RedBlackTreeIterator<VC>.Values
 
   @nonobjc
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Values {
+  public __consuming func makeIterator() -> _Values {
     .init(tree: self, start: __begin_node_, end: __end_node())
   }
 }

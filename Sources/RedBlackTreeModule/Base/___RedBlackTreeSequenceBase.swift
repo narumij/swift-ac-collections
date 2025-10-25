@@ -33,7 +33,7 @@ where
   associatedtype Indices
   associatedtype _Value
   var __tree_: Tree { get }
-  func makeIterator() -> Tree.Values
+  func makeIterator() -> Tree._Values
 }
 
 // MARK: -
@@ -42,7 +42,7 @@ extension ___RedBlackTreeSequenceBase {
 
   @inlinable
   @inline(__always)
-  __consuming func _makeIterator() -> Tree.Values {
+  __consuming func _makeIterator() -> Tree._Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
@@ -176,7 +176,7 @@ extension ___RedBlackTreeSequenceBase {
 
   @inlinable
   @inline(__always)
-  __consuming func _reversed() -> Tree.Values.Reversed {
+  __consuming func _reversed() -> Tree._Values.Reversed {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 

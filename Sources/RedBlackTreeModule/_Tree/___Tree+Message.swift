@@ -53,4 +53,9 @@ extension String {
   static var emptyLast: String {
     "Can't removeLast from an empty RedBlackTree"
   }
+  
+  @usableFromInline
+  static func duplicateValue<Key>(for key: Key) -> String {
+    "Dupricate values for key: '\(key)'"
+  }
 }

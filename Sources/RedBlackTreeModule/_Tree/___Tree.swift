@@ -1158,11 +1158,11 @@ extension ___Tree {
 }
 
 extension ___Tree {
-  // SE-0494対応の準備
+  
   @nonobjc
   @inlinable
   @inline(__always)
-  func _isIdentical(to other: ___Tree) -> Bool {
+  func isIdentical(to other: ___Tree) -> Bool {
     self === other
   }
 }

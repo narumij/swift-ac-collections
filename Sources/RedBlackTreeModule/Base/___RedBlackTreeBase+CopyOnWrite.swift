@@ -154,10 +154,10 @@ extension ___RedBlackTreeCopyOnWrite {
 }
 
 extension ___RedBlackTreeBase {
-  // SE-0494対応の準備
+  
   @inlinable
   @inline(__always)
   public func _isIdentical(to other: Self) -> Bool {
-    self.__tree_ === other.__tree_
+    __tree_.isIdentical(to: other.__tree_)
   }
 }

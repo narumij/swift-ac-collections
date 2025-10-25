@@ -216,7 +216,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> ___SafeIterator<Self> {
+  public __consuming func ___node_positions() -> ___Sequence<Self> {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 }

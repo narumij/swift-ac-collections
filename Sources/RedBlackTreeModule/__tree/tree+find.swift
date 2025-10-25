@@ -87,7 +87,9 @@ extension FindLeafProtocol {
 }
 
 @usableFromInline
-protocol FindEqualProtocol: ValueProtocol, TreeNodeRefProtocol, RootProtocol, RootPtrProtocol, ThreeWayComparatorProtocol {}
+protocol FindEqualProtocol: ValueProtocol, TreeNodeRefProtocol, RootProtocol, RootPtrProtocol,
+  ThreeWayComparatorProtocol
+{}
 
 extension FindEqualProtocol {
 
@@ -104,19 +106,21 @@ extension FindEqualProtocol {
     let __comp = __lazy_synth_three_way_comparator()
 
     while true {
-      
+
       let __comp_res = __comp(__v, __get_value(__nd))
-      
+
       if __comp_res.__less() {
         if __left_unsafe(__nd) == .nullptr {
-          return (__nd, __left_ref(__nd)) }
-        
+          return (__nd, __left_ref(__nd))
+        }
+
         __nd_ptr = __left_ref(__nd)
         __nd = __left_unsafe(__nd)
       } else if __comp_res.__greater() {
         if __right_(__nd) == .nullptr {
-          return (__nd, __right_ref(__nd)) }
-        
+          return (__nd, __right_ref(__nd))
+        }
+
         __nd_ptr = __right_ref(__nd)
         __nd = __right_(__nd)
       } else {
@@ -134,19 +138,19 @@ extension FindProtocol {
   @inlinable
   @inline(__always)
   func find(_ __v: _Key) -> _NodePtr {
-#if true
-    let __p = lower_bound(__v)
-    if __p != end(), !value_comp(__v, __get_value(__p)) {
-      return __p
-    }
-    return end()
-#else
-    // llvmの__treeに寄せたが、multimapの挙動が変わってしまうので保留
-    let (_,__match) = __find_equal(__v)
-    if __ptr_(__match) == .nullptr {
-      return .end
-    }
-    return __ptr_(__match)
-#endif
+    #if true
+      let __p = lower_bound(__v)
+      if __p != end(), !value_comp(__v, __get_value(__p)) {
+        return __p
+      }
+      return end()
+    #else
+      // llvmの__treeに寄せたが、multimapの挙動が変わってしまうので保留
+      let (_, __match) = __find_equal(__v)
+      if __ptr_(__match) == .nullptr {
+        return .end
+      }
+      return __ptr_(__match)
+    #endif
   }
 }

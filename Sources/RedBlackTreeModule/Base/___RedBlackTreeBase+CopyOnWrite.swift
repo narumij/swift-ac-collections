@@ -22,8 +22,8 @@
 
 @usableFromInline
 protocol ___RedBlackTreeCopyOnWrite {
-  associatedtype VC: ___TreeBase
-  var _storage: ___Storage<VC> { get set }
+  associatedtype Base: ___TreeBase
+  var _storage: ___Storage<Base> { get set }
 }
 
 extension ___RedBlackTreeCopyOnWrite {
@@ -70,7 +70,7 @@ extension ___RedBlackTreeCopyOnWrite {
   
   @inlinable
   @inline(__always)
-  mutating func _ensureUnique(transform: (___Storage<VC>.Tree) throws -> ___Storage<VC>.Tree) rethrows {
+  mutating func _ensureUnique(transform: (___Storage<Base>.Tree) throws -> ___Storage<Base>.Tree) rethrows {
     _ensureUnique()
     _storage = .init(tree: try transform(_storage.tree))
   }
@@ -154,10 +154,10 @@ extension ___RedBlackTreeCopyOnWrite {
 }
 
 extension ___RedBlackTreeBase {
-  // SE-0494対応の準備
+  
   @inlinable
   @inline(__always)
   public func _isIdentical(to other: Self) -> Bool {
-    self.__tree_ === other.__tree_
+    __tree_.isIdentical(to: other.__tree_)
   }
 }

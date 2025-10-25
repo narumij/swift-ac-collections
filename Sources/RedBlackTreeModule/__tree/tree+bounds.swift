@@ -72,13 +72,24 @@ extension BoundAlgorithmProtocol {
   @inlinable
   @inline(__always)
   func __lower_bound_unique(_ __v: _Key) -> _NodePtr {
+#if false
+    // Benchmarkで速度低下がみられるので、一旦保留
+    // 最適化不足かとおもってlower bound専用を試したが変わらなかった
     __lower_upper_bound_unique_impl(_LowerBound: true, __v)
+#else
+    __lower_bound_multi(__v, __root(), __end_node())
+#endif
   }
 
   @inlinable
   @inline(__always)
   func __upper_bound_unique(_ __v: _Key) -> _NodePtr {
+#if false
+    // Benchmarkで速度低下がみられるので、一旦保留
     __lower_upper_bound_unique_impl(_LowerBound: false, __v)
+#else
+    __upper_bound_multi(__v, __root(), __end_node())
+#endif
   }
 
   @inlinable

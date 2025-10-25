@@ -113,6 +113,8 @@ extension RedBlackTreeIndex {
 }
 
 extension RedBlackTreeIndex {
+  
+  // TODO: ここら辺を使いこなそうとすると、型を書く必要が生じて使いにくい。APIを再度検討すること
 
   /// 次のイテレータを返す
   ///

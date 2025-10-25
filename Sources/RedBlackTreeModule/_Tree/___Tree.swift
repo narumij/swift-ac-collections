@@ -714,7 +714,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___is_prev_null(_ p: _NodePtr) -> Bool {
-    
+
     // begin -> true
     // end -> false
     return p == .nullptr || _header.initializedCount <= p || ___is_begin(p) || ___is_garbaged(p)
@@ -1052,17 +1052,19 @@ extension ___Tree where VC: KeyValueComparer {
     VC.___mapped_value(self[__p])
   }
 
-//  @nonobjc
-//  @inlinable
-//  @inline(__always)
-//  public func ___mapped_value(_ __p: _NodePtr, _ value: VC._MappedValue) {
-//    VC.___with_mapped_value(&self[__p]) { $0 = value }
-//  }
-  
+  //  @nonobjc
+  //  @inlinable
+  //  @inline(__always)
+  //  public func ___mapped_value(_ __p: _NodePtr, _ value: VC._MappedValue) {
+  //    VC.___with_mapped_value(&self[__p]) { $0 = value }
+  //  }
+
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___with_mapped_value<T>(_ __p: _NodePtr,_ f: (inout VC._MappedValue) throws -> T) rethrows -> T {
+  public func ___with_mapped_value<T>(_ __p: _NodePtr, _ f: (inout VC._MappedValue) throws -> T)
+    rethrows -> T
+  {
     try VC.___with_mapped_value(&self[__p], f)
   }
 }
@@ -1072,14 +1074,18 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___filter(_ isIncluded: (_Value) throws -> Bool)
+  public func ___filter(
+    _ __first: _NodePtr,
+    _ __last: _NodePtr,
+    _ isIncluded: (_Value) throws -> Bool)
     rethrows -> ___Tree
   {
     var tree: Tree = .create(minimumCapacity: 0)
     var (__parent, __child) = tree.___max_ref()
-    for pair in self where try isIncluded(pair) {
+    for __p in makeUnsafeIterator(__first, __last)
+    where try isIncluded(__value_(__p)) {
       Tree.ensureCapacity(tree: &tree)
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, pair)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __value_(__p))
       assert(tree.__tree_invariant(tree.__root()))
     }
     return tree
@@ -1091,85 +1097,60 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___mapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T)
-    rethrows -> ___Tree<Other>
-  where
-    _Value == _KeyValueTuple_<Key, Value>,
-    Other._Value == _KeyValueTuple_<Key, T>
-  {
-    let tree = ___Tree<Other>.create(minimumCapacity: count)
-    var (__parent, __child) = tree.___max_ref()
-    for (k, v) in self {
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, try transform(v)))
-      assert(tree.__tree_invariant(tree.__root()))
-    }
-    return tree
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public func ___compactMapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T?)
-    rethrows -> ___Tree<Other>
-  where
-    _Value == _KeyValueTuple_<Key, Value>,
-    Other._Value == _KeyValueTuple_<Key, T>
-  {
-    var tree = ___Tree<Other>.create(minimumCapacity: count)
-    var (__parent, __child) = tree.___max_ref()
-    for (k, v) in self {
-      if let new = try transform(v) {
-        ___Tree<Other>.ensureCapacity(tree: &tree)
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, new))
-        assert(tree.__tree_invariant(tree.__root()))
-      }
-    }
-    return tree
+  func makeUnsafeIterator(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeIterator<VC> {
+    .init(tree: self, __first: __first, __last: __last)
   }
 }
 
-extension ___Tree {
+extension ___Tree where VC: KeyValueComparer {
 
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___mapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T)
+  public func ___mapValues<Other>(
+    _ __first: _NodePtr,
+    _ __last: _NodePtr,
+    _ transform: (VC._MappedValue) throws -> Other._MappedValue
+  )
     rethrows -> ___Tree<Other>
   where
-    _Value == Pair<Key, Value>,
-    Other._Value == Pair<Key, T>
+    Other: KeyValueComparer,
+    Other._Key == VC._Key
   {
-    let tree = ___Tree<Other>.create(minimumCapacity: count)
-    var (__parent, __child) = tree.___max_ref()
-    for kv in self {
-      let (k, v) = (kv.key, kv.value)
-      (__parent, __child) = tree.___emplace_hint_right(
-        __parent, __child, .init(k, try transform(v)))
-      assert(tree.__tree_invariant(tree.__root()))
+    let other = ___Tree<Other>.create(minimumCapacity: count)
+    var (__parent, __child) = other.___max_ref()
+    for __p in makeUnsafeIterator(__first, __last) {
+      let __mapped_value = try transform(___mapped_value(__p))
+      (__parent, __child) = other.___emplace_hint_right(
+        __parent, __child, Other.__value_(__get_value(__p), __mapped_value))
+      assert(other.__tree_invariant(other.__root()))
     }
-    return tree
+    return other
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___compactMapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T?)
+  public func ___compactMapValues<Other>(
+    _ __first: _NodePtr,
+    _ __last: _NodePtr,
+    _ transform: (VC._MappedValue) throws -> Other._MappedValue?
+  )
     rethrows -> ___Tree<Other>
   where
-    _Value == Pair<Key, Value>,
-    Other._Value == Pair<Key, T>
+    Other: KeyValueComparer,
+    Other._Key == VC._Key
   {
-    var tree = ___Tree<Other>.create(minimumCapacity: count)
-    var (__parent, __child) = tree.___max_ref()
-    for kv in self {
-      let (k, v) = (kv.key, kv.value)
-      if let new = try transform(v) {
-        ___Tree<Other>.ensureCapacity(tree: &tree)
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, .init(k, new))
-        assert(tree.__tree_invariant(tree.__root()))
-      }
+    var other = ___Tree<Other>.create(minimumCapacity: count)
+    var (__parent, __child) = other.___max_ref()
+    for __p in makeUnsafeIterator(__first, __last) {
+      guard let __mv = try transform(___mapped_value(__p)) else { continue }
+      ___Tree<Other>.ensureCapacity(tree: &other)
+      (__parent, __child) = other.___emplace_hint_right(
+        __parent, __child, Other.__value_(__get_value(__p), __mv))
+      assert(other.__tree_invariant(other.__root()))
     }
-    return tree
+    return other
   }
 }
 

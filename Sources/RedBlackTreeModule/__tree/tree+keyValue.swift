@@ -27,6 +27,7 @@ public protocol KeyValueComparer: ValueComparer {
   associatedtype _MappedValue
   static func ___mapped_value(_ element: _Value) -> _MappedValue
   static func ___with_mapped_value<T>(_ element: inout _Value,_ :(inout _MappedValue) throws -> T) rethrows -> T
+  static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value
 }
 
 extension KeyValueComparer {
@@ -107,6 +108,12 @@ extension KeyValueComparer where _Value == _KeyValueTuple {
   public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {
     try f(&element.value)
   }
+  
+  @inlinable
+  @inline(__always)
+  public static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value {
+    (k,v)
+  }
 }
 
 // MARK: -
@@ -167,5 +174,11 @@ extension KeyValueComparer where _Value == Pair<_Key, _MappedValue> {
   @inline(__always)
   public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {
     try f(&element.value)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value {
+    .init(k, v)
   }
 }

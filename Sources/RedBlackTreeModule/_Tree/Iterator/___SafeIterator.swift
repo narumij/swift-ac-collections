@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct ___NodeIterator<Base>: Sequence, IteratorProtocol
+public struct ___SafeIterator<Base>: Sequence, IteratorProtocol
 where Base: ___TreeBase {
 
   public typealias Tree = ___Tree<Base>
@@ -60,7 +60,7 @@ where Base: ___TreeBase {
   }
 }
 
-extension ___NodeIterator: Equatable {
+extension ___SafeIterator: Equatable {
 
   @inlinable
   @inline(__always)
@@ -69,7 +69,7 @@ extension ___NodeIterator: Equatable {
   }
 }
 
-extension ___NodeIterator: Comparable {
+extension ___SafeIterator: Comparable {
 
   @inlinable
   @inline(__always)
@@ -78,7 +78,7 @@ extension ___NodeIterator: Comparable {
   }
 }
 
-extension ___NodeIterator {
+extension ___SafeIterator {
 
   @frozen
   public struct Reversed: Sequence, IteratorProtocol
@@ -113,7 +113,7 @@ extension ___NodeIterator {
   }
 }
 
-extension ___NodeIterator.Reversed: Equatable {
+extension ___SafeIterator.Reversed: Equatable {
 
   @inlinable
   @inline(__always)
@@ -122,7 +122,7 @@ extension ___NodeIterator.Reversed: Equatable {
   }
 }
 
-extension ___NodeIterator.Reversed: Comparable {
+extension ___SafeIterator.Reversed: Comparable {
 
   @inlinable
   @inline(__always)

@@ -811,7 +811,7 @@ extension RedBlackTreeMap {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    .init(_storage: .init(tree: try __tree_.___filter(isIncluded)))
+    .init(_storage: .init(tree: try __tree_.___filter(__tree_.__begin_node_,__tree_.__end_node(), isIncluded)))
   }
 }
 
@@ -822,7 +822,7 @@ extension RedBlackTreeMap {
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
     -> RedBlackTreeMap<Key, T>
   {
-    .init(_storage: .init(tree: try __tree_.___mapValues(transform)))
+    .init(_storage: .init(tree: try __tree_.___mapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
   }
 
   /// - Complexity: O(*n*)
@@ -830,7 +830,7 @@ extension RedBlackTreeMap {
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
     rethrows -> RedBlackTreeMap<Key, T>
   {
-    .init(_storage: .init(tree: try __tree_.___compactMapValues(transform)))
+    .init(_storage: .init(tree: try __tree_.___compactMapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
   }
 }
 

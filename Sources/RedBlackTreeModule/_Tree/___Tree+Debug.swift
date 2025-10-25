@@ -339,9 +339,9 @@ import Foundation
         digraph.edges.append(
           .init(from: (node(.end), .sw), to: (node(__root()), .n), properties: .left))
       }
-      if __begin_node != .nullptr {
+      if __begin_node_ != .nullptr {
         digraph.edges.append(
-          .init(from: ("begin", .s), to: (node(__begin_node), .n), properties: .left))
+          .init(from: ("begin", .s), to: (node(__begin_node_), .n), properties: .left))
       }
       if header.destroyNode != .nullptr {
         digraph.edges.append(

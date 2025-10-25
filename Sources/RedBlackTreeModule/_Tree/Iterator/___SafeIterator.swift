@@ -60,24 +60,6 @@ where Base: ___TreeBase {
   }
 }
 
-extension ___SafeIterator: Equatable {
-
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
-  }
-}
-
-extension ___SafeIterator: Comparable {
-
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
-  }
-}
-
 extension ___SafeIterator {
 
   @frozen
@@ -110,23 +92,5 @@ extension ___SafeIterator {
       _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
       return _current
     }
-  }
-}
-
-extension ___SafeIterator.Reversed: Equatable {
-
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
-  }
-}
-
-extension ___SafeIterator.Reversed: Comparable {
-
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
   }
 }

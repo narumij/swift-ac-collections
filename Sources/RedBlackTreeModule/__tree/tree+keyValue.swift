@@ -87,13 +87,7 @@ extension ValueComparator where VC: KeyValueComparer {
 // 最近タプルの最適化が甘いので、LRUのみペアを構造体に変更
 // それ以外は一律速くなる感じでは無く、APIを維持するコストも高くつくし、性能的にもトレードオフになるため行わない
 
-public typealias _KeyValueTuple_<Key, Value> = (key: Key, value: Value)
-
-extension KeyValueComparer {
-  public typealias _KeyValueTuple = _KeyValueTuple_<_Key, _MappedValue>
-}
-
-extension KeyValueComparer where _Value == _KeyValueTuple {
+extension KeyValueComparer where _Value == (key: _Key, value: _MappedValue) {
 
   @inlinable
   @inline(__always)

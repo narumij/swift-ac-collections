@@ -12,8 +12,8 @@ final class KeyValueComparerTests2: XCTestCase, KeyValueComparer {
   
   typealias _MappedValue = Int
   typealias _Key = Int
-  typealias _Value = _KeyValueTuple
-  
+  typealias _Value = (key: _Key, value: _MappedValue)
+
   let keys: [_Key] = (0..<3) + []
 
   func testExample() throws {

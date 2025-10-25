@@ -17,7 +17,7 @@ final class KeyValueComparerTests: XCTestCase, KeyValueComparer {
   struct _Key {
     var internalKey: Int
   }
-  typealias _Value = _KeyValueTuple
+  typealias _Value = (key: _Key, value: _MappedValue)
   
   let keys: [_Key] = (0..<3).map { .init(internalKey: $0) }
 

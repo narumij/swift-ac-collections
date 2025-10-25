@@ -91,16 +91,16 @@ extension RedBlackTreeIterator.Values.Reversed {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func keys<Key, Value>() -> RedBlackTreeIterator<Base>.Keys.Reversed
-  where Element == _KeyValueTuple_<Key, Value> {
+  public __consuming func keys() -> RedBlackTreeIterator<Base>.Keys.Reversed
+  where Base: KeyValueComparer {
     .init(tree: __tree_, start: _start, end: _end)
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func values<Key, Value>() -> RedBlackTreeIterator<Base>.MappedValues.Reversed
-  where Element == _KeyValueTuple_<Key, Value> {
+  public __consuming func values() -> RedBlackTreeIterator<Base>.MappedValues.Reversed
+  where Base: KeyValueComparer {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

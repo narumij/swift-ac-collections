@@ -61,7 +61,7 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._ValueIterator {
+  public __consuming func makeIterator() -> Tree.Values {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -338,7 +338,7 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> Tree.ReversedElementIterator {
+  public __consuming func reversed() -> Tree.Values.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

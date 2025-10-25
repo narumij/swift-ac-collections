@@ -98,7 +98,3 @@ extension RedBlackTreeIterator.Values: Comparable where Tree._Value: Comparable 
 }
 
 extension RedBlackTreeIterator.Values: ___RedBlackTreeIsIdenticalTo {}
-
-extension ___Tree {
-  public typealias _ValueIterator = RedBlackTreeIterator<VC>.Values
-}

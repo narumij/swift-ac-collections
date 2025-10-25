@@ -133,7 +133,3 @@ extension RedBlackTreeIterator.Values.Reversed: Comparable where Element: Compar
 }
 
 extension RedBlackTreeIterator.Values.Reversed: ___RedBlackTreeIsIdenticalTo {}
-
-extension ___Tree {
-  public typealias ReversedElementIterator = RedBlackTreeIterator<VC>.Values.Reversed
-}

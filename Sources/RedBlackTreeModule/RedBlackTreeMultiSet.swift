@@ -615,7 +615,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._ValueIterator {
+  public __consuming func makeIterator() -> Tree.Values {
     _makeIterator()
   }
 
@@ -635,7 +635,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func sorted() -> Tree._ValueIterator {
+  public __consuming func sorted() -> Tree.Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
   
@@ -749,7 +749,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> Tree.ReversedElementIterator {
+  public __consuming func reversed() -> Tree.Values.Reversed {
     _reversed()
   }
   

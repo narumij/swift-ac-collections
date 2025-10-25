@@ -1024,6 +1024,7 @@ extension ___Tree {
 // MARK: -
 
 extension ___Tree {
+  
   public typealias Index = RedBlackTreeIndex<VC>
 
   @nonobjc
@@ -1035,6 +1036,7 @@ extension ___Tree {
 }
 
 extension ___Tree {
+  
   public typealias Indices = RedBlackTreeIndices<VC>
 
   @nonobjc
@@ -1166,6 +1168,7 @@ extension ___Tree {
 
 extension ___Tree {
   // SE-0494対応の準備
+  @nonobjc
   @inlinable
   @inline(__always)
   public func _isIdentical(to other: ___Tree) -> Bool {

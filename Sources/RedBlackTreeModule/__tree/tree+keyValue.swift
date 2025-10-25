@@ -173,6 +173,6 @@ extension KeyValueComparer where _Value == Pair<_Key, _MappedValue> {
   @inlinable
   @inline(__always)
   public static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value {
-    .init(k, v)
+    Pair(key: k, value: v)
   }
 }

@@ -803,13 +803,27 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
+  func sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafeIterator<VC> {
+    .init(tree: self, start: __first, end: __last)
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeSequence<VC> {
+    .init(tree: self, __first: __first, __last: __last)
+  }
+}
+
+extension ___Tree {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
     rethrows
   {
-    var __p = __p
-    while __p != __l {
-      let __c = __p
-      __p = __tree_next(__p)
+    for __c in sequence(__p, __l) {
       try body(__c)
     }
   }
@@ -817,18 +831,11 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___rev_for_each_(
-    __p _end: _NodePtr, __l _start: _NodePtr, body: (_NodePtr) throws -> Void
-  )
+  func ___rev_for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
     rethrows
   {
-    var _current = _start
-    // __begin_nodeでの__tree_prev_iterは不定動作なので注意が必要
-    var _next = _start == _end ? _end : __tree_prev_iter(_start)
-    while _current != _end {
-      _current = _next
-      _next = _next == _end ? _end : __tree_prev_iter(_next)
-      try body(_current)
+    for __c in sequence(__p, __l).reversed() {
+      try body(__c)
     }
   }
 }
@@ -843,12 +850,12 @@ extension ___Tree {
   )
     rethrows
   {
-    var __p = __p
-    var cont = true
-    while cont, __p != __l {
-      let __c = __p
-      __p = __tree_next(__p)
+    for __c in sequence(__p, __l) {
+      var cont = true
       try body(__c, &cont)
+      if !cont {
+        break
+      }
     }
   }
 }
@@ -979,14 +986,14 @@ extension ___Tree {
 
 // MARK: -
 
-extension ___Tree: Sequence {
-  
+extension ___Tree {
+
   public typealias _Values = RedBlackTreeIterator<VC>.Values
 
   @nonobjc
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> _Values {
+  __consuming func makeIterator() -> _Values {
     .init(tree: self, start: __begin_node_, end: __end_node())
   }
 }
@@ -1024,7 +1031,7 @@ extension ___Tree {
 // MARK: -
 
 extension ___Tree {
-  
+
   public typealias Index = RedBlackTreeIndex<VC>
 
   @nonobjc
@@ -1036,7 +1043,7 @@ extension ___Tree {
 }
 
 extension ___Tree {
-  
+
   public typealias Indices = RedBlackTreeIndices<VC>
 
   @nonobjc
@@ -1052,21 +1059,14 @@ extension ___Tree where VC: KeyValueComparer {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___mapped_value(_ __p: _NodePtr) -> VC._MappedValue {
+  func ___mapped_value(_ __p: _NodePtr) -> VC._MappedValue {
     VC.___mapped_value(self[__p])
   }
-
-  //  @nonobjc
-  //  @inlinable
-  //  @inline(__always)
-  //  public func ___mapped_value(_ __p: _NodePtr, _ value: VC._MappedValue) {
-  //    VC.___with_mapped_value(&self[__p]) { $0 = value }
-  //  }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___with_mapped_value<T>(_ __p: _NodePtr, _ f: (inout VC._MappedValue) throws -> T)
+  func ___with_mapped_value<T>(_ __p: _NodePtr, _ f: (inout VC._MappedValue) throws -> T)
     rethrows -> T
   {
     try VC.___with_mapped_value(&self[__p], f)
@@ -1078,10 +1078,11 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___filter(
+  func ___filter(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
-    _ isIncluded: (_Value) throws -> Bool)
+    _ isIncluded: (_Value) throws -> Bool
+  )
     rethrows -> ___Tree
   {
     var tree: Tree = .create(minimumCapacity: 0)
@@ -1096,22 +1097,12 @@ extension ___Tree {
   }
 }
 
-extension ___Tree {
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeSequence<VC> {
-    .init(tree: self, __first: __first, __last: __last)
-  }
-}
-
 extension ___Tree where VC: KeyValueComparer {
 
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___mapValues<Other>(
+  func ___mapValues<Other>(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
     _ transform: (VC._MappedValue) throws -> Other._MappedValue
@@ -1135,7 +1126,7 @@ extension ___Tree where VC: KeyValueComparer {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___compactMapValues<Other>(
+  func ___compactMapValues<Other>(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
     _ transform: (VC._MappedValue) throws -> Other._MappedValue?
@@ -1171,7 +1162,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func _isIdentical(to other: ___Tree) -> Bool {
+  func _isIdentical(to other: ___Tree) -> Bool {
     self === other
   }
 }

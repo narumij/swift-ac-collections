@@ -803,7 +803,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafeIterator<VC> {
+  func sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___Sequence<VC> {
     .init(tree: self, start: __first, end: __last)
   }
 

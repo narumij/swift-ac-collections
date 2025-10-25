@@ -21,10 +21,10 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct ___NodeIterator<VC>: Sequence, IteratorProtocol
-where VC: ___TreeBase {
+public struct ___SafeIterator<Base>: Sequence, IteratorProtocol
+where Base: ___TreeBase {
 
-  public typealias Tree = ___Tree<VC>
+  public typealias Tree = ___Tree<Base>
 
   @usableFromInline
   let __tree_: Tree
@@ -60,31 +60,13 @@ where VC: ___TreeBase {
   }
 }
 
-extension ___NodeIterator: Equatable {
-
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
-  }
-}
-
-extension ___NodeIterator: Comparable {
-
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
-  }
-}
-
-extension ___NodeIterator {
+extension ___SafeIterator {
 
   @frozen
   public struct Reversed: Sequence, IteratorProtocol
-  where VC: ___TreeBase {
+  where Base: ___TreeBase {
 
-    public typealias Tree = ___Tree<VC>
+    public typealias Tree = ___Tree<Base>
 
     @usableFromInline
     let __tree_: Tree
@@ -110,23 +92,5 @@ extension ___NodeIterator {
       _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
       return _current
     }
-  }
-}
-
-extension ___NodeIterator.Reversed: Equatable {
-
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.elementsEqual(rhs)
-  }
-}
-
-extension ___NodeIterator.Reversed: Comparable {
-
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.lexicographicallyPrecedes(rhs)
   }
 }

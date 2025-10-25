@@ -6,6 +6,7 @@ import Foundation
   import RedBlackTreeModule
 #endif
 
+#if DEBUG
 extension _NodePtr {
   var offset: Int! {
     switch self {
@@ -18,6 +19,7 @@ extension _NodePtr {
     }
   }
 }
+#endif
 
 extension _NodePtr {
   var index: Int! { self }

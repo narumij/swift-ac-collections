@@ -244,41 +244,41 @@ extension RedBlackTreeIndex {
 @inlinable
 @inline(__always)
 public func ..< <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
-  let ii = lhs.___indices
-  let bounds = (lhs..<rhs).relative(to: ii)
-  return ii[bounds.lowerBound..<bounds.upperBound]
+  let indices = lhs.___indices
+  let bounds = (lhs..<rhs).relative(to: indices)
+  return indices[bounds.lowerBound..<bounds.upperBound]
 }
 
 @inlinable
 @inline(__always)
 public func ... <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
-  let ii = lhs.___indices
-  let bounds = (lhs...rhs).relative(to: ii)
-  return ii[bounds.lowerBound..<bounds.upperBound]
+  let indices = lhs.___indices
+  let bounds = (lhs...rhs).relative(to: indices)
+  return indices[bounds.lowerBound..<bounds.upperBound]
 }
 
 @inlinable
 @inline(__always)
 public prefix func ..< <Base>(rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
-  let ii = rhs.___indices
-  let bounds = (..<rhs).relative(to: ii)
-  return ii[bounds.lowerBound..<bounds.upperBound]
+  let indices = rhs.___indices
+  let bounds = (..<rhs).relative(to: indices)
+  return indices[bounds.lowerBound..<bounds.upperBound]
 }
 
 @inlinable
 @inline(__always)
 public prefix func ... <Base>(rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
-  let ii = rhs.___indices
-  let bounds = (...rhs).relative(to: ii)
-  return ii[bounds.lowerBound..<bounds.upperBound]
+  let indices = rhs.___indices
+  let bounds = (...rhs).relative(to: indices)
+  return indices[bounds.lowerBound..<bounds.upperBound]
 }
 
 @inlinable
 @inline(__always)
 public postfix func ... <Base>(lhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
-  let ii = lhs.___indices
-  let bounds = (lhs...).relative(to: ii)
-  return ii[bounds.lowerBound..<bounds.upperBound]
+  let indices = lhs.___indices
+  let bounds = (lhs...).relative(to: indices)
+  return indices[bounds.lowerBound..<bounds.upperBound]
 }
 
 // MARK: - Convenience

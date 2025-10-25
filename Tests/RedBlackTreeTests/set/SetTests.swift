@@ -13,21 +13,6 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-extension RedBlackTreeSet {
-  func left(_ p: Element) -> Int {
-    distance(from: startIndex, to: lowerBound(p))
-  }
-  func right(_ p: Element) -> Int {
-    distance(from: startIndex, to: upperBound(p))
-  }
-}
-
-extension RedBlackTreeSet {
-  var elements: [Element] {
-    map { $0 }
-  }
-}
-
 final class SetTests: XCTestCase {
 
   override func setUpWithError() throws {
@@ -52,6 +37,14 @@ final class SetTests: XCTestCase {
     XCTAssertGreaterThanOrEqual(numbers.capacity, 3)
     numbers.reserveCapacity(4)
     XCTAssertGreaterThanOrEqual(numbers.capacity, 4)
+  }
+
+  func testInitNaive0() throws {
+    let set = RedBlackTreeSet<Int>(naive: 0..<0)
+    XCTAssertEqual(set.elements, (0..<0) + [])
+    XCTAssertEqual(set.count, 0)
+    XCTAssertTrue(set.isEmpty)
+    XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
   }
 
   func testInitRange() throws {
@@ -1141,6 +1134,13 @@ final class SetTests: XCTestCase {
     let source = [0,1,2,3,4,5]
     let a = RedBlackTreeSet<Int>(naive: AnySequence(source))
     XCTAssertEqual(a.sorted() + [], source)
+  }
+  
+  func testInsertEmpty() throws {
+    var a = RedBlackTreeSet<Int>()
+    var b = RedBlackTreeSet<Int>()
+    a.merge(b)
+    XCTAssertTrue(a.isEmpty)
   }
   
   #if DEBUG

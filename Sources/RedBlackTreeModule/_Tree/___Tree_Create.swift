@@ -39,7 +39,7 @@ extension ___Tree where VC._Key == VC._Value {
     var (__parent, __child) = tree.___max_ref()
     for __k in elements {
       if __parent == .end || __key(tree[__parent]) != __key(__k) {
-        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
+        // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
       }
     }
@@ -69,10 +69,10 @@ extension ___Tree where VC: KeyValueComparer {
     for __k in elements {
       let __v = transform(__k)
       if __parent == .end || __key(tree[__parent]) != __key(__v) {
-        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
+        // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
       } else {
-        fatalError("Dupricate values for key: '\(VC.__key(__v))'")
+        fatalError(.duplicateValue(for: VC.__key(__v)))
       }
     }
     assert(tree.__tree_invariant(tree.__root()))
@@ -99,7 +99,7 @@ extension ___Tree where VC: KeyValueComparer {
     for __k in elements {
       let __v = transform(__k)
       if __parent == .end || VC.__key(tree[__parent]) != VC.__key(__v) {
-        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
+        // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
       } else {
         try tree.___with_mapped_value(__parent) { __mappedValue in
@@ -132,7 +132,7 @@ extension ___Tree where VC: KeyValueComparer {
     for __v in elements {
       let __k = try keyForValue(__v)
       if __parent == .end || VC.__key(tree[__parent]) != __k {
-        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
+        // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, transform(__k, __v))
       } else {
         tree.___with_mapped_value(__parent) {
@@ -163,7 +163,7 @@ extension ___Tree where VC: KeyValueComparer {
     var (__parent, __child) = tree.___max_ref()
     for __v in elements {
       let __k = try keyForValue(__v)
-      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
+      // ならしO(1)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, transform(__k, __v))
     }
     assert(tree.__tree_invariant(tree.__root()))
@@ -204,7 +204,7 @@ extension ___Tree {
     var (__parent, __child) = tree.___max_ref()
     for __k in elements {
       let __v = transform(__k)
-      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
+      // ならしO(1)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
     }
     assert(tree.__tree_invariant(tree.__root()))
@@ -227,7 +227,7 @@ extension ___Tree {
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     for __k in range {
-      // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
+      // ならしO(1)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
     }
     assert(tree.__tree_invariant(tree.__root()))
@@ -255,53 +255,53 @@ extension ___Tree {
 // MARK: -
 
 #if false
-extension ___Tree {
+  extension ___Tree {
 
-  // 使っていない
+    // 使っていない
 
-  @inlinable
-  static func __create_unique<S>(sequence: __owned S) -> ___Tree
-  where VC._Value == S.Element, S: Sequence {
+    @inlinable
+    static func __create_unique<S>(sequence: __owned S) -> ___Tree
+    where VC._Value == S.Element, S: Sequence {
 
-    let count = (sequence as? (any Collection))?.count
-    var tree: Tree = .create(minimumCapacity: count ?? 0)
-    for __v in sequence {
-      if count == nil {
-        Tree.ensureCapacity(tree: &tree)
+      let count = (sequence as? (any Collection))?.count
+      var tree: Tree = .create(minimumCapacity: count ?? 0)
+      for __v in sequence {
+        if count == nil {
+          Tree.ensureCapacity(tree: &tree)
+        }
+        // 検索の計算量がO(log *n*)
+        let (__parent, __child) = tree.__find_equal(VC.__key(__v))
+        if tree.__ptr_(__child) == .nullptr {
+          let __h = tree.__construct_node(__v)
+          // ならしO(1)
+          tree.__insert_node_at(__parent, __child, __h)
+        }
       }
-      // 検索の計算量がO(log *n*)
-      let (__parent, __child) = tree.__find_equal(VC.__key(__v))
-      if tree.__ptr_(__child) == .nullptr {
-        let __h = tree.__construct_node(__v)
-        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-        tree.__insert_node_at(__parent, __child, __h)
-      }
+
+      return tree
     }
 
-    return tree
-  }
+    @inlinable
+    static func __create_multi<S>(sequence: __owned S) -> ___Tree
+    where VC._Value == S.Element, S: Sequence {
 
-  @inlinable
-  static func __create_multi<S>(sequence: __owned S) -> ___Tree
-  where VC._Value == S.Element, S: Sequence {
+      let count = (sequence as? (any Collection))?.count
+      var tree: Tree = .create(minimumCapacity: count ?? 0)
+      for __v in sequence {
+        if count == nil {
+          Tree.ensureCapacity(tree: &tree)
+        }
+        var __parent = _NodePtr.nullptr
+        // 検索の計算量がO(log *n*)
+        let __child = tree.__find_leaf_high(&__parent, VC.__key(__v))
+        if tree.__ptr_(__child) == .nullptr {
+          let __h = tree.__construct_node(__v)
+          // ならしO(1)
+          tree.__insert_node_at(__parent, __child, __h)
+        }
+      }
 
-    let count = (sequence as? (any Collection))?.count
-    var tree: Tree = .create(minimumCapacity: count ?? 0)
-    for __v in sequence {
-      if count == nil {
-        Tree.ensureCapacity(tree: &tree)
-      }
-      var __parent = _NodePtr.nullptr
-      // 検索の計算量がO(log *n*)
-      let __child = tree.__find_leaf_high(&__parent, VC.__key(__v))
-      if tree.__ptr_(__child) == .nullptr {
-        let __h = tree.__construct_node(__v)
-        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-        tree.__insert_node_at(__parent, __child, __h)
-      }
+      return tree
     }
-
-    return tree
   }
-}
 #endif

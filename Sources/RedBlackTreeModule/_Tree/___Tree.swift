@@ -714,7 +714,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___is_prev_null(_ p: _NodePtr) -> Bool {
-    
+
     // begin -> true
     // end -> false
     return p == .nullptr || _header.initializedCount <= p || ___is_begin(p) || ___is_garbaged(p)
@@ -803,13 +803,27 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
+  func sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafeIterator<VC> {
+    .init(tree: self, start: __first, end: __last)
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeSequence<VC> {
+    .init(tree: self, __first: __first, __last: __last)
+  }
+}
+
+extension ___Tree {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
     rethrows
   {
-    var __p = __p
-    while __p != __l {
-      let __c = __p
-      __p = __tree_next(__p)
+    for __c in sequence(__p, __l) {
       try body(__c)
     }
   }
@@ -817,18 +831,11 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___rev_for_each_(
-    __p _end: _NodePtr, __l _start: _NodePtr, body: (_NodePtr) throws -> Void
-  )
+  func ___rev_for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
     rethrows
   {
-    var _current = _start
-    // __begin_nodeでの__tree_prev_iterは不定動作なので注意が必要
-    var _next = _start == _end ? _end : __tree_prev_iter(_start)
-    while _current != _end {
-      _current = _next
-      _next = _next == _end ? _end : __tree_prev_iter(_next)
-      try body(_current)
+    for __c in sequence(__p, __l).reversed() {
+      try body(__c)
     }
   }
 }
@@ -843,12 +850,12 @@ extension ___Tree {
   )
     rethrows
   {
-    var __p = __p
-    var cont = true
-    while cont, __p != __l {
-      let __c = __p
-      __p = __tree_next(__p)
+    for __c in sequence(__p, __l) {
+      var cont = true
       try body(__c, &cont)
+      if !cont {
+        break
+      }
     }
   }
 }
@@ -979,12 +986,14 @@ extension ___Tree {
 
 // MARK: -
 
-extension ___Tree: Sequence {
+extension ___Tree {
+
+  public typealias _Values = RedBlackTreeIterator<VC>.Values
 
   @nonobjc
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> _ValueIterator {
+  __consuming func makeIterator() -> _Values {
     .init(tree: self, start: __begin_node_, end: __end_node())
   }
 }
@@ -1022,6 +1031,7 @@ extension ___Tree {
 // MARK: -
 
 extension ___Tree {
+
   public typealias Index = RedBlackTreeIndex<VC>
 
   @nonobjc
@@ -1033,6 +1043,7 @@ extension ___Tree {
 }
 
 extension ___Tree {
+
   public typealias Indices = RedBlackTreeIndices<VC>
 
   @nonobjc
@@ -1048,21 +1059,16 @@ extension ___Tree where VC: KeyValueComparer {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___mapped_value(_ __p: _NodePtr) -> VC._MappedValue {
+  func ___mapped_value(_ __p: _NodePtr) -> VC._MappedValue {
     VC.___mapped_value(self[__p])
   }
 
-//  @nonobjc
-//  @inlinable
-//  @inline(__always)
-//  public func ___mapped_value(_ __p: _NodePtr, _ value: VC._MappedValue) {
-//    VC.___with_mapped_value(&self[__p]) { $0 = value }
-//  }
-  
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___with_mapped_value<T>(_ __p: _NodePtr,_ f: (inout VC._MappedValue) throws -> T) rethrows -> T {
+  func ___with_mapped_value<T>(_ __p: _NodePtr, _ f: (inout VC._MappedValue) throws -> T)
+    rethrows -> T
+  {
     try VC.___with_mapped_value(&self[__p], f)
   }
 }
@@ -1072,104 +1078,74 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___filter(_ isIncluded: (_Value) throws -> Bool)
+  func ___filter(
+    _ __first: _NodePtr,
+    _ __last: _NodePtr,
+    _ isIncluded: (_Value) throws -> Bool
+  )
     rethrows -> ___Tree
   {
     var tree: Tree = .create(minimumCapacity: 0)
     var (__parent, __child) = tree.___max_ref()
-    for pair in self where try isIncluded(pair) {
+    for __p in unsafeSequence(__first, __last)
+    where try isIncluded(__value_(__p)) {
       Tree.ensureCapacity(tree: &tree)
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, pair)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __value_(__p))
       assert(tree.__tree_invariant(tree.__root()))
     }
     return tree
   }
 }
 
-extension ___Tree {
+extension ___Tree where VC: KeyValueComparer {
 
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___mapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T)
+  func ___mapValues<Other>(
+    _ __first: _NodePtr,
+    _ __last: _NodePtr,
+    _ transform: (VC._MappedValue) throws -> Other._MappedValue
+  )
     rethrows -> ___Tree<Other>
   where
-    _Value == _KeyValueTuple_<Key, Value>,
-    Other._Value == _KeyValueTuple_<Key, T>
+    Other: KeyValueComparer,
+    Other._Key == VC._Key
   {
-    let tree = ___Tree<Other>.create(minimumCapacity: count)
-    var (__parent, __child) = tree.___max_ref()
-    for (k, v) in self {
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, try transform(v)))
-      assert(tree.__tree_invariant(tree.__root()))
+    let other = ___Tree<Other>.create(minimumCapacity: count)
+    var (__parent, __child) = other.___max_ref()
+    for __p in unsafeSequence(__first, __last) {
+      let __mapped_value = try transform(___mapped_value(__p))
+      (__parent, __child) = other.___emplace_hint_right(
+        __parent, __child, Other.__value_(__get_value(__p), __mapped_value))
+      assert(other.__tree_invariant(other.__root()))
     }
-    return tree
+    return other
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___compactMapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T?)
+  func ___compactMapValues<Other>(
+    _ __first: _NodePtr,
+    _ __last: _NodePtr,
+    _ transform: (VC._MappedValue) throws -> Other._MappedValue?
+  )
     rethrows -> ___Tree<Other>
   where
-    _Value == _KeyValueTuple_<Key, Value>,
-    Other._Value == _KeyValueTuple_<Key, T>
+    Other: KeyValueComparer,
+    Other._Key == VC._Key
   {
-    var tree = ___Tree<Other>.create(minimumCapacity: count)
-    var (__parent, __child) = tree.___max_ref()
-    for (k, v) in self {
-      if let new = try transform(v) {
-        ___Tree<Other>.ensureCapacity(tree: &tree)
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, (k, new))
-        assert(tree.__tree_invariant(tree.__root()))
-      }
+    var other = ___Tree<Other>.create(minimumCapacity: count)
+    var (__parent, __child) = other.___max_ref()
+    for __p in unsafeSequence(__first, __last) {
+      guard let __mv = try transform(___mapped_value(__p)) else { continue }
+      ___Tree<Other>.ensureCapacity(tree: &other)
+      (__parent, __child) = other.___emplace_hint_right(
+        __parent, __child, Other.__value_(__get_value(__p), __mv))
+      assert(other.__tree_invariant(other.__root()))
     }
-    return tree
-  }
-}
-
-extension ___Tree {
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public func ___mapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T)
-    rethrows -> ___Tree<Other>
-  where
-    _Value == Pair<Key, Value>,
-    Other._Value == Pair<Key, T>
-  {
-    let tree = ___Tree<Other>.create(minimumCapacity: count)
-    var (__parent, __child) = tree.___max_ref()
-    for kv in self {
-      let (k, v) = (kv.key, kv.value)
-      (__parent, __child) = tree.___emplace_hint_right(
-        __parent, __child, .init(k, try transform(v)))
-      assert(tree.__tree_invariant(tree.__root()))
-    }
-    return tree
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public func ___compactMapValues<Other, Key, Value, T>(_ transform: (Value) throws -> T?)
-    rethrows -> ___Tree<Other>
-  where
-    _Value == Pair<Key, Value>,
-    Other._Value == Pair<Key, T>
-  {
-    var tree = ___Tree<Other>.create(minimumCapacity: count)
-    var (__parent, __child) = tree.___max_ref()
-    for kv in self {
-      let (k, v) = (kv.key, kv.value)
-      if let new = try transform(v) {
-        ___Tree<Other>.ensureCapacity(tree: &tree)
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, .init(k, new))
-        assert(tree.__tree_invariant(tree.__root()))
-      }
-    }
-    return tree
+    return other
   }
 }
 
@@ -1183,9 +1159,10 @@ extension ___Tree {
 
 extension ___Tree {
   // SE-0494対応の準備
+  @nonobjc
   @inlinable
   @inline(__always)
-  public func _isIdentical(to other: ___Tree) -> Bool {
+  func _isIdentical(to other: ___Tree) -> Bool {
     self === other
   }
 }

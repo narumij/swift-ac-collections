@@ -4,14 +4,12 @@ import Foundation
 
 extension _NodeRef {
     var index: Int! {
-#if false
+#if USE_ENUM_NODE_REF
         switch self {
         case .__right_(let p):
             return p
         case .__left_(let p):
             return p
-        default:
-            return nil
         }
 #else
       switch self {

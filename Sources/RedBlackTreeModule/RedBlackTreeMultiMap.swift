@@ -340,9 +340,9 @@ extension RedBlackTreeMultiMap {
   /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
-    _ensureUnique {
+    _ensureUnique { __tree_ in
       .___insert_range_multi(
-        tree: $0,
+        tree: __tree_,
         other: other.__tree_,
         other.__tree_.__begin_node_,
         other.__tree_.__end_node())
@@ -353,14 +353,18 @@ extension RedBlackTreeMultiMap {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Pair<Key, Value> {
-    _ensureUnique { .___insert_range_multi(tree: $0, other) }
+    _ensureUnique { __tree_ in
+      .___insert_range_multi(tree: __tree_, other)
+    }
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
-    _ensureUnique { .___insert_range_multi(tree: $0, other.map{ Pair($0) }) }
+    _ensureUnique { __tree_ in
+      .___insert_range_multi(tree: __tree_, other.map{ Pair($0) })
+    }
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
@@ -710,7 +714,7 @@ extension RedBlackTreeMultiMap {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    .init(_storage: .init(tree: try __tree_.___filter(isIncluded)))
+    .init(_storage: .init(tree: try __tree_.___filter(__tree_.__begin_node_,__tree_.__end_node(), isIncluded)))
   }
 }
 
@@ -720,14 +724,14 @@ extension RedBlackTreeMultiMap {
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
     -> RedBlackTreeMultiMap<Key, T>
   {
-    .init(_storage: .init(tree: try __tree_.___mapValues(transform)))
+    .init(_storage: .init(tree: try __tree_.___mapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
   }
 
   @inlinable
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
     rethrows -> RedBlackTreeMultiMap<Key, T>
   {
-    .init(_storage: .init(tree: try __tree_.___compactMapValues(transform)))
+    .init(_storage: .init(tree: try __tree_.___compactMapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
   }
 }
 
@@ -740,7 +744,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._ValueIterator {
+  public __consuming func makeIterator() -> Tree._Values {
     _makeIterator()
   }
 
@@ -760,7 +764,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func sorted() -> Tree._ValueIterator {
+  public __consuming func sorted() -> Tree._Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
   
@@ -874,7 +878,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> Tree.ReversedElementIterator {
+  public __consuming func reversed() -> Tree._Values.Reversed {
     _reversed()
   }
   
@@ -1135,28 +1139,10 @@ extension RedBlackTreeMultiMap where Value: Comparable {
 
 extension RedBlackTreeMultiMap {
 
-  // 旧初期化実装
-  // メモリ制限がきつい場合に備えて復活
-
   /// - Complexity: O(*n* log *n*)
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    let count = (sequence as? (any Collection))?.count
-    var tree: Tree = .create(minimumCapacity: count ?? 0)
-    for __k in sequence {
-      if count == nil {
-        Tree.ensureCapacity(tree: &tree)
-      }
-      var __parent = _NodePtr.nullptr
-      // 検索の計算量がO(log *n*)
-      let __child = tree.__find_leaf_high(&__parent, Self.__key(__k))
-      if tree.__ptr_(__child) == .nullptr {
-        let __h = tree.__construct_node(__k)
-        // バランシングの最悪計算量が結局わからず、ならしO(1)とみている
-        tree.__insert_node_at(__parent, __child, __h)
-      }
-    }
-    self._storage = .init(tree: tree)
+    self._storage = .init(tree: .create_multi(naive: sequence))
   }
 }

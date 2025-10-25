@@ -20,42 +20,31 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
+@frozen
+public struct ___UnsafeSequence<Base>: Sequence, IteratorProtocol
+where Base: ___TreeBase {
 
-extension String {
-  
-  @usableFromInline
-  static var garbagedIndex: String {
-    "A dangling node reference was used. Consider using a valid range or slice."
-  }
+  public typealias Tree = ___Tree<Base>
 
   @usableFromInline
-  static var invalidIndex: String {
-    "Attempting to access RedBlackTree elements using an invalid index"
-  }
+  let __tree_: Tree
 
   @usableFromInline
-  static var outOfBounds: String {
-    "RedBlackTree index is out of Bound."
+  var __first, __last: _NodePtr
+
+  @inlinable
+  @inline(__always)
+  internal init(tree: Tree, __first: _NodePtr, __last: _NodePtr) {
+    self.__tree_ = tree
+    self.__first = __first
+    self.__last = __last
   }
 
-  @usableFromInline
-  static var outOfRange: String {
-    "RedBlackTree index is out of range."
-  }
-  
-  @usableFromInline
-  static var emptyFirst: String {
-    "Can't removeFirst from an empty RedBlackTree"
-  }
-
-  @usableFromInline
-  static var emptyLast: String {
-    "Can't removeLast from an empty RedBlackTree"
-  }
-  
-  @usableFromInline
-  static func duplicateValue<Key>(for key: Key) -> String {
-    "Dupricate values for key: '\(key)'"
+  @inlinable
+  @inline(__always)
+  public mutating func next() -> _NodePtr? {
+    guard __first != __last else { return nil }
+    defer { __first = __tree_.__tree_next_iter(__first) }
+    return __first
   }
 }

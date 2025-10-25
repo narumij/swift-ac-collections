@@ -440,9 +440,10 @@ extension RedBlackTreeDictionary {
     _ other: RedBlackTreeDictionary<Key, Value>,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
-    try _ensureUnique {
+    
+    try _ensureUnique { __tree_ in
       try .___insert_range_unique(
-        tree: $0,
+        tree: __tree_,
         other: other.__tree_,
         other.__tree_.__begin_node_,
         other.__tree_.__end_node(),
@@ -461,7 +462,12 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    try _ensureUnique { try .___insert_range_unique(tree: $0, other, uniquingKeysWith: combine) { $0 } }
+    try _ensureUnique { __tree_ in
+      try .___insert_range_unique(
+        tree: __tree_,
+        other,
+        uniquingKeysWith: combine) { $0 }
+    }
   }
 
   /// 辞書に `other` の要素をマージします。
@@ -475,7 +481,14 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == Pair<Key, Value> {
 
-    try _ensureUnique { try .___insert_range_unique(tree: $0, other, uniquingKeysWith: combine) { $0.tuple } }
+    try _ensureUnique { __tree_ in
+      try .___insert_range_unique(
+        tree: __tree_,
+        other,
+        uniquingKeysWith: combine) {
+          $0.tuple
+        }
+    }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
@@ -772,7 +785,7 @@ extension RedBlackTreeDictionary {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    .init(_storage: .init(tree: try __tree_.___filter(isIncluded)))
+    .init(_storage: .init(tree: try __tree_.___filter(__tree_.__begin_node_,__tree_.__end_node(),isIncluded)))
   }
 }
 
@@ -783,7 +796,7 @@ extension RedBlackTreeDictionary {
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
     -> RedBlackTreeDictionary<Key, T>
   {
-    .init(_storage: .init(tree: try __tree_.___mapValues(transform)))
+    .init(_storage: .init(tree: try __tree_.___mapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
   }
 
   /// - Complexity: O(*n*)
@@ -791,7 +804,7 @@ extension RedBlackTreeDictionary {
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
     rethrows -> RedBlackTreeDictionary<Key, T>
   {
-    .init(_storage: .init(tree: try __tree_.___compactMapValues(transform)))
+    .init(_storage: .init(tree: try __tree_.___compactMapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
   }
 }
 
@@ -806,7 +819,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._ValueIterator {
+  public __consuming func makeIterator() -> Tree._Values {
     _makeIterator()
   }
 
@@ -826,7 +839,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func sorted() -> Tree._ValueIterator {
+  public __consuming func sorted() -> Tree._Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
@@ -942,7 +955,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> Tree.ReversedElementIterator {
+  public __consuming func reversed() -> Tree._Values.Reversed {
     _reversed()
   }
 

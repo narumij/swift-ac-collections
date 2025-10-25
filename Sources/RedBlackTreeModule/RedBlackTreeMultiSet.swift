@@ -250,9 +250,9 @@ extension RedBlackTreeMultiSet {
   /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
-    _ensureUnique {
+    _ensureUnique { __tree_ in
       .___insert_range_multi(
-        tree: $0,
+        tree: __tree_,
         other: other.__tree_,
         other.__tree_.__begin_node_,
         other.__tree_.__end_node())
@@ -263,14 +263,22 @@ extension RedBlackTreeMultiSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
-    _ensureUnique { .___insert_range_multi(tree: $0, other: other.__tree_, other.__tree_.__begin_node_, other.__tree_.__end_node()) }
+    _ensureUnique { __tree_ in
+      .___insert_range_multi(
+        tree: __tree_,
+        other: other.__tree_,
+        other.__tree_.__begin_node_,
+        other.__tree_.__end_node())
+    }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
-    _ensureUnique { .___insert_range_multi(tree: $0, other) }
+    _ensureUnique { __tree_ in
+      .___insert_range_multi(tree: __tree_, other)
+    }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
@@ -607,7 +615,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._ValueIterator {
+  public __consuming func makeIterator() -> Tree._Values {
     _makeIterator()
   }
 
@@ -627,7 +635,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func sorted() -> Tree._ValueIterator {
+  public __consuming func sorted() -> Tree._Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
   
@@ -741,7 +749,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> Tree.ReversedElementIterator {
+  public __consuming func reversed() -> Tree._Values.Reversed {
     _reversed()
   }
   

@@ -61,7 +61,7 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._ValueIterator {
+  public __consuming func makeIterator() -> Tree._Values {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -121,20 +121,6 @@ extension RedBlackTreeSlice {
   public var endIndex: Index {
     ___index(_end)
   }
-}
-
-extension RedBlackTreeSlice {
-
-  // 断念
-  //    @inlinable
-  //    public func lowerBound(_ member: Element) -> Index {
-  //      base.__lower_bound(base.__key(member), base.__root(), endIndex)
-  //    }
-  //
-  //    @inlinable
-  //    public func upperBound(_ member: Element) -> Index {
-  //      base.__upper_bound(base.__key(member), base.__root(), endIndex)
-  //    }
 }
 
 extension RedBlackTreeSlice {
@@ -352,7 +338,7 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> Tree.ReversedElementIterator {
+  public __consuming func reversed() -> Tree._Values.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -469,8 +455,8 @@ extension RedBlackTreeSlice {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> ___NodeIterator<Base> {
-    ___NodeIterator(tree: __tree_, start: _start, end: _end)
+  public __consuming func ___node_positions() -> ___SafeIterator<Base> {
+    ___SafeIterator(tree: __tree_, start: _start, end: _end)
   }
 }
 

@@ -27,6 +27,7 @@ public protocol KeyValueComparer: ValueComparer {
   associatedtype _MappedValue
   static func ___mapped_value(_ element: _Value) -> _MappedValue
   static func ___with_mapped_value<T>(_ element: inout _Value,_ :(inout _MappedValue) throws -> T) rethrows -> T
+  static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value
 }
 
 extension KeyValueComparer {
@@ -86,13 +87,7 @@ extension ValueComparator where VC: KeyValueComparer {
 // 最近タプルの最適化が甘いので、LRUのみペアを構造体に変更
 // それ以外は一律速くなる感じでは無く、APIを維持するコストも高くつくし、性能的にもトレードオフになるため行わない
 
-public typealias _KeyValueTuple_<Key, Value> = (key: Key, value: Value)
-
-extension KeyValueComparer {
-  public typealias _KeyValueTuple = _KeyValueTuple_<_Key, _MappedValue>
-}
-
-extension KeyValueComparer where _Value == _KeyValueTuple {
+extension KeyValueComparer where _Value == (key: _Key, value: _MappedValue) {
 
   @inlinable
   @inline(__always)
@@ -106,6 +101,12 @@ extension KeyValueComparer where _Value == _KeyValueTuple {
   @inline(__always)
   public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {
     try f(&element.value)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value {
+    (k,v)
   }
 }
 
@@ -167,5 +168,11 @@ extension KeyValueComparer where _Value == Pair<_Key, _MappedValue> {
   @inline(__always)
   public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {
     try f(&element.value)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value {
+    Pair(key: k, value: v)
   }
 }

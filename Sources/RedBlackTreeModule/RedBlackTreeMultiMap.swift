@@ -340,9 +340,9 @@ extension RedBlackTreeMultiMap {
   /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
-    _ensureUnique {
+    _ensureUnique { __tree_ in
       .___insert_range_multi(
-        tree: $0,
+        tree: __tree_,
         other: other.__tree_,
         other.__tree_.__begin_node_,
         other.__tree_.__end_node())
@@ -353,14 +353,18 @@ extension RedBlackTreeMultiMap {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Pair<Key, Value> {
-    _ensureUnique { .___insert_range_multi(tree: $0, other) }
+    _ensureUnique { __tree_ in
+      .___insert_range_multi(tree: __tree_, other)
+    }
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
-    _ensureUnique { .___insert_range_multi(tree: $0, other.map{ Pair($0) }) }
+    _ensureUnique { __tree_ in
+      .___insert_range_multi(tree: __tree_, other.map{ Pair($0) })
+    }
   }
   
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

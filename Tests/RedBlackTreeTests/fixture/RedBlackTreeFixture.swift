@@ -9,20 +9,16 @@ import XCTest
 
 #if DEBUG
   @testable import RedBlackTreeModule
+#else
+  import RedBlackTreeModule
 #endif
 
 #if DEBUG
-  protocol RedBlackTreeFixture: ___TreeBase & Sequence {
-    associatedtype Index
-    associatedtype _Key
+  protocol RedBlackTreeDebugFixture: ___TreeBase {
     var __tree_: ___Tree<Self> { get }
-    var startIndex: Index { get }
-    func distance(from start: Index, to end: Index) -> Int
-    func lowerBound(_ member: _Key) -> Index
-    func upperBound(_ member: _Key) -> Index
   }
 
-  extension RedBlackTreeFixture {
+  extension RedBlackTreeDebugFixture {
 
     func __left_(_ p: _NodePtr) -> _NodePtr {
       __tree_.__left_(p)
@@ -63,29 +59,42 @@ import XCTest
     }
   }
 
-  extension RedBlackTreeFixture {
-    var elements: [Element] {
-      map { $0 }
-    }
-  }
-
-  extension RedBlackTreeFixture {
-    func left(_ p: _Key) -> Int {
-      distance(from: startIndex, to: lowerBound(p))
-    }
-    func right(_ p: _Key) -> Int {
-      distance(from: startIndex, to: upperBound(p))
-    }
-  }
+  extension RedBlackTreeSet: RedBlackTreeDebugFixture {}
+  extension RedBlackTreeMultiSet: RedBlackTreeDebugFixture {}
+  extension RedBlackTreeMap: RedBlackTreeDebugFixture {}
+  extension RedBlackTreeMultiMap: RedBlackTreeDebugFixture {}
+  extension RedBlackTreeDictionary: RedBlackTreeDebugFixture {}
 #endif
 
-#if DEBUG
-  extension RedBlackTreeSet: RedBlackTreeFixture {}
-  extension RedBlackTreeMultiSet: RedBlackTreeFixture {}
-  extension RedBlackTreeMap: RedBlackTreeFixture {}
-  extension RedBlackTreeMultiMap: RedBlackTreeFixture {}
-  extension RedBlackTreeDictionary: RedBlackTreeFixture {}
-#endif
+protocol RedBlackTreeFixture: Sequence {
+  associatedtype Index
+  associatedtype _Key
+  var startIndex: Index { get }
+  func distance(from start: Index, to end: Index) -> Int
+  func lowerBound(_ member: _Key) -> Index
+  func upperBound(_ member: _Key) -> Index
+}
+
+extension RedBlackTreeFixture {
+  var elements: [Element] {
+    map { $0 }
+  }
+}
+
+extension RedBlackTreeFixture {
+  func left(_ p: _Key) -> Int {
+    distance(from: startIndex, to: lowerBound(p))
+  }
+  func right(_ p: _Key) -> Int {
+    distance(from: startIndex, to: upperBound(p))
+  }
+}
+
+extension RedBlackTreeSet: RedBlackTreeFixture {}
+extension RedBlackTreeMultiSet: RedBlackTreeFixture {}
+extension RedBlackTreeMap: RedBlackTreeFixture {}
+extension RedBlackTreeMultiMap: RedBlackTreeFixture {}
+extension RedBlackTreeDictionary: RedBlackTreeFixture {}
 
 func assertEquiv<Target>(
   _ lhs: Target,
@@ -97,7 +106,7 @@ func assertEquiv<Target>(
 
 func assertEquiv<LHS: RedBlackTreeFixture>(
   _ lhs: LHS,
-  _ rhs: Array<LHS.Element>,
+  _ rhs: [LHS.Element],
   file: StaticString = #file, line: UInt = #line
 ) where LHS.Element: Equatable {
   XCTAssertEqual(lhs.elements, rhs, file: (file), line: line)

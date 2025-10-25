@@ -60,6 +60,25 @@ public enum RedBlackTreeIterator<Base> where Base: ___TreeBase {
   }
 }
 
+extension RedBlackTreeIterator.Values {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func keys() -> RedBlackTreeIterator<Base>.Keys
+  where Base: KeyValueComparer {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public __consuming func values() -> RedBlackTreeIterator<Base>.MappedValues
+  where Base: KeyValueComparer {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+}
+
 extension RedBlackTreeIterator.Values: Equatable where Tree._Value: Equatable {
 
   @inlinable

@@ -119,8 +119,7 @@ extension ___Tree where Base: KeyValueComparer {
   @inlinable
   static func create_unique<Element>(
     sorted elements: __owned [Element],
-    by keyForValue: (Element) throws -> Base._Key,
-    transform: (Base._Key, Element) -> Base._Value
+    by keyForValue: (Element) throws -> Base._Key
   ) rethrows -> ___Tree
   where Base._Key: Comparable, Base._MappedValue == [Element] {
 
@@ -133,7 +132,8 @@ extension ___Tree where Base: KeyValueComparer {
       let __k = try keyForValue(__v)
       if __parent == .end || Base.__key(tree[__parent]) != __k {
         // ならしO(1)
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, transform(__k, __v))
+        (__parent, __child) = tree.___emplace_hint_right(
+          __parent, __child, Base.__value_(__k, [__v]))
       } else {
         tree.___with_mapped_value(__parent) {
           $0.append(__v)
@@ -152,8 +152,7 @@ extension ___Tree where Base: KeyValueComparer {
   @inlinable
   static func create_multi<Element>(
     sorted elements: __owned [Element],
-    by keyForValue: (Element) throws -> Base._Key,
-    transform: (Base._Key, Element) -> Base._Value
+    by keyForValue: (Element) throws -> Base._Key
   ) rethrows -> ___Tree
   where Base._Key: Comparable, Base._MappedValue == Element {
 
@@ -164,7 +163,7 @@ extension ___Tree where Base: KeyValueComparer {
     for __v in elements {
       let __k = try keyForValue(__v)
       // ならしO(1)
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, transform(__k, __v))
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, Base.__value_(__k, __v))
     }
     assert(tree.__tree_invariant(tree.__root()))
     return tree
@@ -249,6 +248,25 @@ extension ___Tree {
   where Base._Value == S.Element, S: Sequence {
 
     .___insert_range_multi(tree: .create(minimumCapacity: 0), sequence)
+  }
+}
+
+extension ___Tree where Base: KeyValueComparer {
+
+  @inlinable
+  static func create_unique<S>(
+    naive sequence: __owned S,
+    uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
+    transform: (S.Element) -> Base._Value
+  ) rethrows -> ___Tree
+  where S: Sequence {
+
+    try .___insert_range_unique(
+      tree: .create(minimumCapacity: 0),
+      sequence,
+      uniquingKeysWith: combine,
+      transform: transform
+    )
   }
 }
 

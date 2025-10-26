@@ -157,9 +157,7 @@ extension RedBlackTreeDictionary {
           try keyForValue($0) < keyForValue($1)
         },
         by: keyForValue
-      ) {
-        ($0, [$1])
-      })
+      ))
   }
 }
 

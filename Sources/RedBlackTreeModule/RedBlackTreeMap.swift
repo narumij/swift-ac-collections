@@ -174,9 +174,7 @@ extension RedBlackTreeMap {
           try keyForValue($0) < keyForValue($1)
         },
         by: keyForValue
-      ) {
-        Pair($0, [$1])
-      })
+      ))
   }
 }
 

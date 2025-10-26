@@ -26,11 +26,11 @@ public typealias ___TreeBase = ValueComparer & CompareTrait & ThreeWayComparator
 
 @_fixed_layout
 @_objc_non_lazy_realization
-public final class ___Tree<VC>: ManagedBuffer<
-  ___Tree<VC>.Header,
-  ___Tree<VC>.Node
+public final class ___Tree<Base>: ManagedBuffer<
+  ___Tree<Base>.Header,
+  ___Tree<Base>.Node
 >
-where VC: ___TreeBase {
+where Base: ___TreeBase {
 
   @inlinable
   deinit {
@@ -135,15 +135,15 @@ extension ___Tree {
 
 extension ___Tree {
 
-  public typealias Tree = ___Tree<VC>
+  public typealias Tree = ___Tree<Base>
 
-  public typealias VC = VC
+  public typealias Base = Base
 
   @usableFromInline
   internal typealias Manager = ManagedBufferPointer<Header, Node>
 
   @usableFromInline
-  internal typealias Storage = ___Storage<VC>
+  internal typealias Storage = ___Storage<Base>
 }
 
 extension ___Tree {
@@ -388,27 +388,27 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   public func __get_value(_ p: _NodePtr) -> _Key {
-    VC.__key(__node_ptr[p].__value_)
+    Base.__key(__node_ptr[p].__value_)
   }
 }
 
 extension ___Tree {
 
-  public typealias _Value = VC._Value
+  public typealias _Value = Base._Value
 
-  public typealias _Key = VC._Key
+  public typealias _Key = Base._Key
 
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func __value_(_ p: _NodePtr) -> VC._Value {
+  internal func __value_(_ p: _NodePtr) -> Base._Value {
     __node_ptr[p].__value_
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___element(_ p: _NodePtr, _ __v: VC._Value) {
+  internal func ___element(_ p: _NodePtr, _ __v: Base._Value) {
     __node_ptr[p].__value_ = __v
   }
 }
@@ -538,7 +538,7 @@ extension ___Tree: CompareBothProtocol {
   @nonobjc
   @inlinable
   @inline(__always)
-  var isMulti: Bool { VC.isMulti }
+  var isMulti: Bool { Base.isMulti }
 }
 
 // MARK: -
@@ -803,14 +803,14 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafeIterator<VC> {
+  func sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___Sequence<Base> {
     .init(tree: self, start: __first, end: __last)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  func unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeSequence<VC> {
+  func unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeSequence<Base> {
     .init(tree: self, __first: __first, __last: __last)
   }
 }
@@ -988,7 +988,7 @@ extension ___Tree {
 
 extension ___Tree {
 
-  public typealias _Values = RedBlackTreeIterator<VC>.Values
+  public typealias _Values = RedBlackTreeIterator<Base>.Values
 
   @nonobjc
   @inlinable
@@ -1032,7 +1032,7 @@ extension ___Tree {
 
 extension ___Tree {
 
-  public typealias Index = RedBlackTreeIndex<VC>
+  public typealias Index = RedBlackTreeIndex<Base>
 
   @nonobjc
   @inlinable
@@ -1044,7 +1044,7 @@ extension ___Tree {
 
 extension ___Tree {
 
-  public typealias Indices = RedBlackTreeIndices<VC>
+  public typealias Indices = RedBlackTreeIndices<Base>
 
   @nonobjc
   @inlinable
@@ -1054,22 +1054,22 @@ extension ___Tree {
   }
 }
 
-extension ___Tree where VC: KeyValueComparer {
+extension ___Tree where Base: KeyValueComparer {
 
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___mapped_value(_ __p: _NodePtr) -> VC._MappedValue {
-    VC.___mapped_value(self[__p])
+  func ___mapped_value(_ __p: _NodePtr) -> Base._MappedValue {
+    Base.___mapped_value(self[__p])
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___with_mapped_value<T>(_ __p: _NodePtr, _ f: (inout VC._MappedValue) throws -> T)
+  func ___with_mapped_value<T>(_ __p: _NodePtr, _ f: (inout Base._MappedValue) throws -> T)
     rethrows -> T
   {
-    try VC.___with_mapped_value(&self[__p], f)
+    try Base.___with_mapped_value(&self[__p], f)
   }
 }
 
@@ -1097,7 +1097,7 @@ extension ___Tree {
   }
 }
 
-extension ___Tree where VC: KeyValueComparer {
+extension ___Tree where Base: KeyValueComparer {
 
   @nonobjc
   @inlinable
@@ -1105,12 +1105,12 @@ extension ___Tree where VC: KeyValueComparer {
   func ___mapValues<Other>(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
-    _ transform: (VC._MappedValue) throws -> Other._MappedValue
+    _ transform: (Base._MappedValue) throws -> Other._MappedValue
   )
     rethrows -> ___Tree<Other>
   where
     Other: KeyValueComparer,
-    Other._Key == VC._Key
+    Other._Key == Base._Key
   {
     let other = ___Tree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = other.___max_ref()
@@ -1129,12 +1129,12 @@ extension ___Tree where VC: KeyValueComparer {
   func ___compactMapValues<Other>(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
-    _ transform: (VC._MappedValue) throws -> Other._MappedValue?
+    _ transform: (Base._MappedValue) throws -> Other._MappedValue?
   )
     rethrows -> ___Tree<Other>
   where
     Other: KeyValueComparer,
-    Other._Key == VC._Key
+    Other._Key == Base._Key
   {
     var other = ___Tree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = other.___max_ref()
@@ -1154,15 +1154,15 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public static var isMulti: Bool { VC.isMulti }
+  public static var isMulti: Bool { Base.isMulti }
 }
 
 extension ___Tree {
-  // SE-0494対応の準備
+  
   @nonobjc
   @inlinable
   @inline(__always)
-  func _isIdentical(to other: ___Tree) -> Bool {
+  func isIdentical(to other: ___Tree) -> Bool {
     self === other
   }
 }

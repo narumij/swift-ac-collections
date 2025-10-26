@@ -74,7 +74,7 @@ extension ___Tree {
   }
 }
 
-extension ___Tree where VC: KeyValueComparer {
+extension ___Tree where Base: KeyValueComparer {
 
   @inlinable
   @inline(__always)
@@ -83,7 +83,7 @@ extension ___Tree where VC: KeyValueComparer {
     other __source: ___Tree<Other>,
     _ __first: _NodePtr,
     _ __last: _NodePtr,
-    uniquingKeysWith combine: (VC._MappedValue, VC._MappedValue) throws -> VC._MappedValue
+    uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue
   ) rethrows -> ___Tree
   where
     ___Tree<Other>._Key == _Key,
@@ -120,7 +120,7 @@ extension ___Tree where VC: KeyValueComparer {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
           try __tree_.___with_mapped_value(__tree_.__ptr_(__child)) { __mappedValue in
-            __mappedValue = try combine(__mappedValue, VC.___mapped_value(__tree_.__value_(__nd)))
+            __mappedValue = try combine(__mappedValue, Base.___mapped_value(__tree_.__value_(__nd)))
           }
           __tree_.destroy(__nd)
         }
@@ -187,7 +187,7 @@ extension ___Tree {
 
   @inlinable
   static func ___insert_range_unique<S>(tree __tree_: ___Tree, _ __source: __owned S) -> ___Tree
-  where VC._Value == S.Element, S: Sequence {
+  where Base._Value == S.Element, S: Sequence {
     var __tree_ = __tree_
 
     var it = __source.makeIterator()
@@ -222,15 +222,15 @@ extension ___Tree {
   }
 }
 
-extension ___Tree where VC: KeyValueComparer {
+extension ___Tree where Base: KeyValueComparer {
 
   @inlinable
   @inline(__always)
   static func ___insert_range_unique<S>(
     tree __tree_: ___Tree,
     _ __source: S,
-    uniquingKeysWith combine: (VC._MappedValue, VC._MappedValue) throws -> VC._MappedValue,
-    transform __t_: (S.Element) -> VC._Value
+    uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
+    transform __t_: (S.Element) -> Base._Value
   ) rethrows -> ___Tree
   where
     S: Sequence
@@ -261,7 +261,7 @@ extension ___Tree where VC: KeyValueComparer {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
           try __tree_.___with_mapped_value(__tree_.__ptr_(__child)) { __mappedValue in
-            __mappedValue = try combine(__mappedValue, VC.___mapped_value(__tree_.__value_(__nd)))
+            __mappedValue = try combine(__mappedValue, Base.___mapped_value(__tree_.__value_(__nd)))
           }
           __tree_.destroy(__nd)
         }
@@ -276,7 +276,7 @@ extension ___Tree {
 
   @inlinable
   static func ___insert_range_multi<S>(tree __tree_: ___Tree, _ __source: __owned S) -> ___Tree
-  where VC._Value == S.Element, S: Sequence {
+  where Base._Value == S.Element, S: Sequence {
     var __tree_ = __tree_
 
     var it = __source.makeIterator()

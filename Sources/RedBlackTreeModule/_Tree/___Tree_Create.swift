@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension ___Tree where VC._Key == VC._Value {
+extension ___Tree where Base._Key == Base._Value {
 
   /// ソート済みの配列から木を生成する
   ///
@@ -30,8 +30,8 @@ extension ___Tree where VC._Key == VC._Value {
   ///
   /// - Complexity: O(*n*)
   @inlinable
-  static func create_unique(sorted elements: __owned [VC._Value]) -> ___Tree
-  where VC._Key: Comparable {
+  static func create_unique(sorted elements: __owned [Base._Value]) -> ___Tree
+  where Base._Key: Comparable {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -48,7 +48,7 @@ extension ___Tree where VC._Key == VC._Value {
   }
 }
 
-extension ___Tree where VC: KeyValueComparer {
+extension ___Tree where Base: KeyValueComparer {
 
   /// ソート済みの配列から木を生成する
   ///
@@ -58,9 +58,9 @@ extension ___Tree where VC: KeyValueComparer {
   @inlinable
   static func create_unique<Element>(
     sorted elements: __owned [Element],
-    transform: (Element) -> VC._Value
+    transform: (Element) -> Base._Value
   ) -> ___Tree
-  where VC._Key: Comparable {
+  where Base._Key: Comparable {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -72,7 +72,7 @@ extension ___Tree where VC: KeyValueComparer {
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
       } else {
-        fatalError(.duplicateValue(for: VC.__key(__v)))
+        fatalError(.duplicateValue(for: Base.__key(__v)))
       }
     }
     assert(tree.__tree_invariant(tree.__root()))
@@ -87,10 +87,10 @@ extension ___Tree where VC: KeyValueComparer {
   @inlinable
   static func create_unique<Element>(
     sorted elements: __owned [Element],
-    uniquingKeysWith combine: (VC._MappedValue, VC._MappedValue) throws -> VC._MappedValue,
-    transform: (Element) -> VC._Value
+    uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
+    transform: (Element) -> Base._Value
   ) rethrows -> ___Tree
-  where VC._Key: Comparable {
+  where Base._Key: Comparable {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -98,12 +98,12 @@ extension ___Tree where VC: KeyValueComparer {
     var (__parent, __child) = tree.___max_ref()
     for __k in elements {
       let __v = transform(__k)
-      if __parent == .end || VC.__key(tree[__parent]) != VC.__key(__v) {
+      if __parent == .end || Base.__key(tree[__parent]) != Base.__key(__v) {
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
       } else {
         try tree.___with_mapped_value(__parent) { __mappedValue in
-          __mappedValue = try combine(__mappedValue, VC.___mapped_value(__v))
+          __mappedValue = try combine(__mappedValue, Base.___mapped_value(__v))
         }
       }
     }
@@ -119,10 +119,10 @@ extension ___Tree where VC: KeyValueComparer {
   @inlinable
   static func create_unique<Element>(
     sorted elements: __owned [Element],
-    by keyForValue: (Element) throws -> VC._Key,
-    transform: (VC._Key, Element) -> VC._Value
+    by keyForValue: (Element) throws -> Base._Key,
+    transform: (Base._Key, Element) -> Base._Value
   ) rethrows -> ___Tree
-  where VC._Key: Comparable, VC._MappedValue == [Element] {
+  where Base._Key: Comparable, Base._MappedValue == [Element] {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -131,7 +131,7 @@ extension ___Tree where VC: KeyValueComparer {
     // ソートの計算量がO(*n* log *n*)
     for __v in elements {
       let __k = try keyForValue(__v)
-      if __parent == .end || VC.__key(tree[__parent]) != __k {
+      if __parent == .end || Base.__key(tree[__parent]) != __k {
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, transform(__k, __v))
       } else {
@@ -152,10 +152,10 @@ extension ___Tree where VC: KeyValueComparer {
   @inlinable
   static func create_multi<Element>(
     sorted elements: __owned [Element],
-    by keyForValue: (Element) throws -> VC._Key,
-    transform: (VC._Key, Element) -> VC._Value
+    by keyForValue: (Element) throws -> Base._Key,
+    transform: (Base._Key, Element) -> Base._Value
   ) rethrows -> ___Tree
-  where VC._Key: Comparable, VC._MappedValue == Element {
+  where Base._Key: Comparable, Base._MappedValue == Element {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -180,8 +180,8 @@ extension ___Tree {
   /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
-  static func create_multi(sorted elements: __owned [VC._Value]) -> ___Tree
-  where VC._Key: Comparable {
+  static func create_multi(sorted elements: __owned [Base._Value]) -> ___Tree
+  where Base._Key: Comparable {
 
     create_multi(sorted: elements) { $0 }
   }
@@ -194,9 +194,9 @@ extension ___Tree {
   @inlinable
   static func create_multi<Element>(
     sorted elements: __owned [Element],
-    transform: (Element) -> VC._Value
+    transform: (Element) -> Base._Value
   ) -> ___Tree
-  where VC._Key: Comparable {
+  where Base._Key: Comparable {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -221,7 +221,7 @@ extension ___Tree {
   /// - Complexity: O(*n*)
   @inlinable
   static func create<R>(range: __owned R) -> ___Tree
-  where R: RangeExpression, R: Collection, R.Element == VC._Value {
+  where R: RangeExpression, R: Collection, R.Element == Base._Value {
 
     let tree: Tree = .create(minimumCapacity: range.count)
     // 初期化直後はO(1)
@@ -239,14 +239,14 @@ extension ___Tree {
 
   @inlinable
   static func create_unique<S>(naive sequence: __owned S) -> ___Tree
-  where VC._Value == S.Element, S: Sequence {
+  where Base._Value == S.Element, S: Sequence {
 
     .___insert_range_unique(tree: .create(minimumCapacity: 0), sequence)
   }
 
   @inlinable
   static func create_multi<S>(naive sequence: __owned S) -> ___Tree
-  where VC._Value == S.Element, S: Sequence {
+  where Base._Value == S.Element, S: Sequence {
 
     .___insert_range_multi(tree: .create(minimumCapacity: 0), sequence)
   }
@@ -261,7 +261,7 @@ extension ___Tree {
 
     @inlinable
     static func __create_unique<S>(sequence: __owned S) -> ___Tree
-    where VC._Value == S.Element, S: Sequence {
+    where Base._Value == S.Element, S: Sequence {
 
       let count = (sequence as? (any Collection))?.count
       var tree: Tree = .create(minimumCapacity: count ?? 0)
@@ -270,7 +270,7 @@ extension ___Tree {
           Tree.ensureCapacity(tree: &tree)
         }
         // 検索の計算量がO(log *n*)
-        let (__parent, __child) = tree.__find_equal(VC.__key(__v))
+        let (__parent, __child) = tree.__find_equal(Base.__key(__v))
         if tree.__ptr_(__child) == .nullptr {
           let __h = tree.__construct_node(__v)
           // ならしO(1)
@@ -283,7 +283,7 @@ extension ___Tree {
 
     @inlinable
     static func __create_multi<S>(sequence: __owned S) -> ___Tree
-    where VC._Value == S.Element, S: Sequence {
+    where Base._Value == S.Element, S: Sequence {
 
       let count = (sequence as? (any Collection))?.count
       var tree: Tree = .create(minimumCapacity: count ?? 0)
@@ -293,7 +293,7 @@ extension ___Tree {
         }
         var __parent = _NodePtr.nullptr
         // 検索の計算量がO(log *n*)
-        let __child = tree.__find_leaf_high(&__parent, VC.__key(__v))
+        let __child = tree.__find_leaf_high(&__parent, Base.__key(__v))
         if tree.__ptr_(__child) == .nullptr {
           let __h = tree.__construct_node(__v)
           // ならしO(1)

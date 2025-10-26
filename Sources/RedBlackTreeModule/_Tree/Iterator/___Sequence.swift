@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct ___SafeIterator<Base>: Sequence, IteratorProtocol
+public struct ___Sequence<Base>: Sequence, IteratorProtocol
 where Base: ___TreeBase {
 
   public typealias Tree = ___Tree<Base>
@@ -60,7 +60,7 @@ where Base: ___TreeBase {
   }
 }
 
-extension ___SafeIterator {
+extension ___Sequence {
 
   @frozen
   public struct Reversed: Sequence, IteratorProtocol

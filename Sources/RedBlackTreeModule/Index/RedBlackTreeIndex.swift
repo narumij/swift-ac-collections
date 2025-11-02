@@ -302,3 +302,38 @@ public func - <Base>(lhs: RedBlackTreeIndex<Base>, rhs: Int) -> RedBlackTreeInde
 public func - <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>) -> Int {
   rhs.distance(to: lhs)
 }
+
+extension RedBlackTreeIndex {
+  
+  /// Indexをたどり続ける場合に型を書く負担を軽減するためのものです。
+  ///
+  /// 例えば以下のように書きたい場合に用います。
+  /// ```swift
+  /// let st = RedBlackTreeSet<Int>(0..<10)
+  /// var it = st.startIndex.some()
+  /// while it != st.endIndex {
+  ///   it = it?.next
+  /// }
+  /// ```
+  ///
+  /// - 代替コード: AtCoder2025には未搭載なので、利用する場合、提出コードに以下を追加する必要があります。
+  /// ```swift
+  /// extension ___Tree.___Iterator {
+  ///   func some() -> Self? { .some(self) }
+  /// }
+  /// ```
+  @available(
+    *, deprecated,
+    message: "AtCoder2025には未搭載です。もし必要な場合は、代替コードを利用してください。"
+  )
+  func some() -> Self? { .some(self) }
+}
+
+/*
+代替コード
+```swift
+extension ___Tree.___Iterator {
+  func some() -> Self? { .some(self) }
+}
+```
+ */

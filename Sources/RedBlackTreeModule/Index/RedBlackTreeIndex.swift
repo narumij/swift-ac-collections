@@ -318,9 +318,11 @@ extension RedBlackTreeIndex {
   ///
   /// - 代替コード: AtCoder2025には未搭載なので、利用する場合、提出コードに以下を追加する必要があります。
   /// ```swift
+  /// #if ONLINE_JUDGE
   /// extension ___Tree.___Iterator {
   ///   func some() -> Self? { .some(self) }
   /// }
+  /// #endif
   /// ```
   @available(
     *, deprecated,
@@ -332,8 +334,10 @@ extension RedBlackTreeIndex {
 /*
 代替コード
 ```swift
+#if ONLINE_JUDGE
 extension ___Tree.___Iterator {
   func some() -> Self? { .some(self) }
 }
+#endif
 ```
  */

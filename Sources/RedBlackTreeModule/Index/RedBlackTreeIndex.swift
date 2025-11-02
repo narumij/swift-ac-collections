@@ -303,6 +303,8 @@ public func - <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>)
   rhs.distance(to: lhs)
 }
 
+// MARK: - Optional
+
 extension RedBlackTreeIndex {
   
   /// Indexをたどり続ける場合に型を書く負担を軽減するためのものです。

@@ -475,7 +475,6 @@ extension RedBlackTreeSet {
   /// - Parameter member: 二分探索で検索したい要素
   /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
   /// - Complexity: O(log *n*), where *n* is the number of elements.
-  // TODO: Index?かIndex!への変更の検討
   @inlinable
   public func lowerBound(_ member: Element) -> Index {
     ___index_lower_bound(member)
@@ -494,7 +493,6 @@ extension RedBlackTreeSet {
   /// - Parameter member: 二分探索で検索したい要素
   /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
   /// - Complexity: O(log *n*), where *n* is the number of elements.
-  // TODO: Index?かIndex!への変更の検討
   @inlinable
   public func upperBound(_ member: Element) -> Index {
     ___index_upper_bound(member)

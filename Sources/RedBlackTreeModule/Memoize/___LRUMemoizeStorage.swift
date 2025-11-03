@@ -135,6 +135,12 @@ extension ___LRUMemoizeStorage: ___LRULinkList {
   public static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value {
     fatalError("NOT IMPLEMENTED YET")
   }
+  
+  @inlinable
+  @inline(__always)
+  public static func __value_(_ kv: (_Key,_MappedValue)) -> _Value {
+    fatalError("NOT IMPLEMENTED YET")
+  }
 }
 
 extension ___LRUMemoizeStorage: ___RedBlackTreeCopyOnWrite {}

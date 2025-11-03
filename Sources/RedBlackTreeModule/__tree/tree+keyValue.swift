@@ -28,6 +28,7 @@ public protocol KeyValueComparer: ValueComparer {
   static func ___mapped_value(_ element: _Value) -> _MappedValue
   static func ___with_mapped_value<T>(_ element: inout _Value,_ :(inout _MappedValue) throws -> T) rethrows -> T
   static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value
+  static func __value_(_ : (_Key,_MappedValue)) -> _Value
 }
 
 extension KeyValueComparer {
@@ -108,6 +109,12 @@ extension KeyValueComparer where _Value == (key: _Key, value: _MappedValue) {
   public static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value {
     (k,v)
   }
+  
+  @inlinable
+  @inline(__always)
+  public static func __value_(_ kv: (_Key,_MappedValue)) -> _Value {
+    kv
+  }
 }
 
 // MARK: -
@@ -174,5 +181,11 @@ extension KeyValueComparer where _Value == Pair<_Key, _MappedValue> {
   @inline(__always)
   public static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value {
     Pair(key: k, value: v)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func __value_(_ kv: (_Key,_MappedValue)) -> _Value {
+    Pair(key: kv.0, value: kv.1)
   }
 }

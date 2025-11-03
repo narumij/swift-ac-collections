@@ -120,7 +120,7 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
   
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> Reversed {
+  public func reversed() -> Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 

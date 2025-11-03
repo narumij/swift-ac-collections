@@ -1148,6 +1148,8 @@ extension RedBlackTreeMultiMap where Value: Comparable {
 extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(*n* log *n*)
+  ///
+  /// 省メモリでの初期化
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {

@@ -7,7 +7,7 @@ extension Collection where Index == Int {
   /// C++のnext_permutationの挙動をmapやfilterで使う場合はこちら。
   @inlinable
   @inline(__always)
-  public __consuming func nextPermutations() -> Permutations<Self>.Nexts
+  public func nextPermutations() -> Permutations<Self>.Nexts
   where Element: Comparable {
     .init(safe: self)
   }
@@ -17,7 +17,7 @@ extension Collection where Index == Int {
   /// C++のnext_permutationの挙動をfor文で使う場合はこちらも利用できます。
   @inlinable
   @inline(__always)
-  public __consuming func unsafeNextPermutations() -> Permutations<Self>.Nexts
+  public func unsafeNextPermutations() -> Permutations<Self>.Nexts
   where Element: Comparable {
     .init(unsafe: self)
   }
@@ -25,7 +25,7 @@ extension Collection where Index == Int {
   /// 全通りをしっかりpermutationsするが、CoWをさっぱりしないもの
   @inlinable
   @inline(__always)
-  public __consuming func unsafePermutations() -> Permutations<Self>.All {
+  public func unsafePermutations() -> Permutations<Self>.All {
     .init(unsafe: self)
   }
 }
@@ -59,7 +59,7 @@ extension Permutations {
 
     @inlinable
     @inline(__always)
-    public __consuming func makeIterator() -> IteratorA {
+    public func makeIterator() -> IteratorA {
       .init(
         elementBuffer: .prepare(source: source),
         buffer: .prepare(count: source.count),
@@ -90,7 +90,7 @@ extension Permutations {
 
     @inlinable
     @inline(__always)
-    public __consuming func makeIterator() -> IteratorN {
+    public func makeIterator() -> IteratorN {
       .init(
         elementBuffer: .prepare(source: source),
         _unsafe: _unsafe)

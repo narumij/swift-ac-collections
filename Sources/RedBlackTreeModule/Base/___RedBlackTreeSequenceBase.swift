@@ -42,7 +42,7 @@ extension ___RedBlackTreeSequenceBase {
 
   @inlinable
   @inline(__always)
-  __consuming func _makeIterator() -> Tree._Values {
+  func _makeIterator() -> Tree._Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
@@ -176,7 +176,7 @@ extension ___RedBlackTreeSequenceBase {
 
   @inlinable
   @inline(__always)
-  __consuming func _reversed() -> Tree._Values.Reversed {
+  func _reversed() -> Tree._Values.Reversed {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
@@ -216,7 +216,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> ___Sequence<Self> {
+  public func ___node_positions() -> ___Sequence<Self> {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 }

@@ -993,7 +993,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  __consuming func makeIterator() -> _Values {
+  func makeIterator() -> _Values {
     .init(tree: self, start: __begin_node_, end: __end_node())
   }
 }

@@ -61,7 +61,7 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._Values {
+  public func makeIterator() -> Tree._Values {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -338,7 +338,7 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> Tree._Values.Reversed {
+  public func reversed() -> Tree._Values.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -361,14 +361,14 @@ extension RedBlackTreeSlice where Base: KeyValueComparer {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func keys() -> Keys {
+  public func keys() -> Keys {
     .init(tree: __tree_, start: _start, end: _end)
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func values() -> Values {
+  public func values() -> Values {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -455,7 +455,7 @@ extension RedBlackTreeSlice {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> ___Sequence<Base> {
+  public func ___node_positions() -> ___Sequence<Base> {
     ___Sequence(tree: __tree_, start: _start, end: _end)
   }
 }

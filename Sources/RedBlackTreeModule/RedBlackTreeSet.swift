@@ -57,9 +57,9 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
   public
     typealias _Key = Element
-  
+
   public
-  typealias _Value = Element
+    typealias _Value = Element
 
   @usableFromInline
   var _storage: Tree.Storage
@@ -70,8 +70,8 @@ extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeSet: ___RedBlackTreeUnique {}
 extension RedBlackTreeSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeSet: ScalarValueComparer {}
-extension RedBlackTreeSet: ElementComparable { }
-extension RedBlackTreeSet: ElementEqutable { }
+extension RedBlackTreeSet: ElementComparable {}
+extension RedBlackTreeSet: ElementEqutable {}
 
 // MARK: - Creating a Set
 
@@ -189,17 +189,17 @@ extension RedBlackTreeSet {
   @inline(__always)
   public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
     let bounds: Range<Index> = bounds.relative(to: self)
-    
+
     __tree_.___ensureValid(
       begin: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
-    
+
     return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
   }
-  
+
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
@@ -215,7 +215,8 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public subscript<R>(unchecked bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+  public subscript<R>(unchecked bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index
+  {
     let bounds: Range<Index> = bounds.relative(to: self)
     return .init(
       tree: __tree_,
@@ -616,7 +617,7 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
   public func forEach(_ body: (_Value) throws -> Void) rethrows {
     try _forEach(body)
   }
-  
+
   /// 特殊なforEach
   @inlinable
   @inline(__always)
@@ -630,78 +631,78 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
   public func sorted() -> Tree._Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var startIndex: Index { _startIndex }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var endIndex: Index { _endIndex }
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   //  @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     _distance(from: start, to: end)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     _index(after: i)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     _formIndex(after: &i)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     _index(before: i)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     _formIndex(before: &i)
   }
-  
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     _index(i, offsetBy: distance)
   }
-  
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     _formIndex(&i, offsetBy: distance)
   }
-  
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     _index(i, offsetBy: distance, limitedBy: limit)
   }
-  
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-  -> Bool
+    -> Bool
   {
     _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
@@ -711,7 +712,7 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
   public subscript(position: Index) -> _Value {
     @inline(__always) _read { yield self[_checked: position] }
   }
-  
+
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
@@ -727,7 +728,7 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
   public func isValid(index: Index) -> Bool {
     _isValid(index: index)
   }
-  
+
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
   /// - Complexity: O(1)
@@ -744,14 +745,14 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
   public func reversed() -> Tree._Values.Reversed {
     _reversed()
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var indices: Indices {
     _indices
   }
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
@@ -761,7 +762,7 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
   ) rethrows -> Bool where OtherSequence: Sequence {
     try _elementsEqual(other, by: areEquivalent)
   }
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
@@ -776,14 +777,14 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
 // MARK: - SubSequence
 
 extension RedBlackTreeSet {
-  
+
   public typealias SubSequence = RedBlackTreeSlice<Self>
 }
 
 // MARK: - Index Range
 
 extension RedBlackTreeSet {
-  
+
   public typealias Indices = Tree.Indices
 }
 
@@ -927,7 +928,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Self.___element_equiv)
+    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -936,7 +937,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Self.___element_comp)
+    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other)
   }
 }
 

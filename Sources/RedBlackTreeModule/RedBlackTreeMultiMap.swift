@@ -1121,7 +1121,7 @@ extension RedBlackTreeMultiMap where Value: Equatable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Self.___element_equiv)
+    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other)
   }
 }
 
@@ -1133,7 +1133,7 @@ extension RedBlackTreeMultiMap where Value: Comparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Self.___element_comp)
+    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other)
   }
 }
 

@@ -133,6 +133,9 @@ extension ___Tree {
   }
 }
 
+extension ___Tree.Node: Equatable where ___Tree._Value: Equatable {}
+extension ___Tree.Node: Hashable where ___Tree._Value: Hashable {}
+
 extension ___Tree {
 
   public typealias Tree = ___Tree<Base>
@@ -193,6 +196,9 @@ extension ___Tree {
     #endif
   }
 }
+
+extension ___Tree.Header: Equatable {}
+extension ___Tree.Header: Hashable {}
 
 extension ___Tree.Header {
 
@@ -813,6 +819,13 @@ extension ___Tree {
   func unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeSequence<Base> {
     .init(tree: self, __first: __first, __last: __last)
   }
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeValues<Base> {
+    .init(tree: self, __first: __first, __last: __last)
+  }
 }
 
 extension ___Tree {
@@ -1164,5 +1177,58 @@ extension ___Tree {
   @inline(__always)
   func isIdentical(to other: ___Tree) -> Bool {
     self === other
+  }
+}
+
+extension ___Tree: Equatable where _Value: Equatable {
+  public static func == (lhs: ___Tree<Base>, rhs: ___Tree<Base>) -> Bool {
+    lhs.isIdentical(to: rhs) ||
+    lhs.elementsEqual(lhs.__begin_node_,
+                      lhs.__end_node(),
+                      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
+                      by: ==)
+  }
+}
+
+extension ___Tree: Hashable where _Value: Hashable {
+  
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(header)
+    for node in unsafeValues(__begin_node_, __end_node()) {
+      hasher.combine(node)
+    }
+  }
+}
+
+extension ___Tree {
+
+  @inlinable
+  public func elementsEqual<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence {
+    try unsafeValues(__first, __last).elementsEqual(other, by: areEquivalent)
+  }
+
+  @inlinable
+  public func lexicographicallyPrecedes<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence, _Value == OtherSequence.Element {
+    try unsafeValues(__first, __last).lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+  }
+}
+
+extension ___Tree where Base: ElementEqutable {
+  
+  @inlinable
+  @inline(__always)
+  public func elementsEqual<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, _Value == OtherSequence.Element {
+    elementsEqual(__first, __last, other, by: Base.___element_equiv)
+  }
+}
+
+extension ___Tree where Base: ElementComparable {
+  
+  @inlinable
+  @inline(__always)
+  public func lexicographicallyPrecedes<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, _Value == OtherSequence.Element {
+    lexicographicallyPrecedes(__first, __last, other, by: Base.___element_comp)
   }
 }

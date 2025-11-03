@@ -113,7 +113,7 @@ extension RedBlackTreeMap {
   @inlinable
   public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == KeyValue {
-    
+
     self._storage = .init(
       tree:
         .create_unique(
@@ -490,7 +490,8 @@ extension RedBlackTreeMap {
       try .___insert_range_unique(
         tree: __tree_,
         other,
-        uniquingKeysWith: combine) { $0 }
+        uniquingKeysWith: combine
+      ) { $0 }
     }
   }
 
@@ -509,9 +510,10 @@ extension RedBlackTreeMap {
       try .___insert_range_unique(
         tree: __tree_,
         other,
-        uniquingKeysWith: combine) {
-          Pair($0)
-        }
+        uniquingKeysWith: combine
+      ) {
+        Pair($0)
+      }
     }
   }
 
@@ -809,7 +811,9 @@ extension RedBlackTreeMap {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    .init(_storage: .init(tree: try __tree_.___filter(__tree_.__begin_node_,__tree_.__end_node(), isIncluded)))
+    .init(
+      _storage: .init(
+        tree: try __tree_.___filter(__tree_.__begin_node_, __tree_.__end_node(), isIncluded)))
   }
 }
 
@@ -820,7 +824,9 @@ extension RedBlackTreeMap {
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
     -> RedBlackTreeMap<Key, T>
   {
-    .init(_storage: .init(tree: try __tree_.___mapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
+    .init(
+      _storage: .init(
+        tree: try __tree_.___mapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
   }
 
   /// - Complexity: O(*n*)
@@ -828,7 +834,10 @@ extension RedBlackTreeMap {
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
     rethrows -> RedBlackTreeMap<Key, T>
   {
-    .init(_storage: .init(tree: try __tree_.___compactMapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
+    .init(
+      _storage: .init(
+        tree: try __tree_.___compactMapValues(
+          __tree_.__begin_node_, __tree_.__end_node(), transform)))
   }
 }
 
@@ -1209,7 +1218,7 @@ extension RedBlackTreeMap where Value: Equatable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Self.___element_equiv)
+    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other)
   }
 }
 
@@ -1221,7 +1230,7 @@ extension RedBlackTreeMap where Value: Comparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Self.___element_comp)
+    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other)
   }
 }
 

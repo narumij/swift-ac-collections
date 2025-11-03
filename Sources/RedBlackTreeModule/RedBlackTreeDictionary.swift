@@ -113,7 +113,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
-    
+
     self._storage = .init(
       tree: .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 }
@@ -438,7 +438,7 @@ extension RedBlackTreeDictionary {
     _ other: RedBlackTreeDictionary<Key, Value>,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
-    
+
     try _ensureUnique { __tree_ in
       try .___insert_range_unique(
         tree: __tree_,
@@ -464,7 +464,8 @@ extension RedBlackTreeDictionary {
       try .___insert_range_unique(
         tree: __tree_,
         other,
-        uniquingKeysWith: combine) { $0 }
+        uniquingKeysWith: combine
+      ) { $0 }
     }
   }
 
@@ -483,9 +484,10 @@ extension RedBlackTreeDictionary {
       try .___insert_range_unique(
         tree: __tree_,
         other,
-        uniquingKeysWith: combine) {
-          $0.tuple
-        }
+        uniquingKeysWith: combine
+      ) {
+        $0.tuple
+      }
     }
   }
 
@@ -783,7 +785,9 @@ extension RedBlackTreeDictionary {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    .init(_storage: .init(tree: try __tree_.___filter(__tree_.__begin_node_,__tree_.__end_node(),isIncluded)))
+    .init(
+      _storage: .init(
+        tree: try __tree_.___filter(__tree_.__begin_node_, __tree_.__end_node(), isIncluded)))
   }
 }
 
@@ -794,7 +798,9 @@ extension RedBlackTreeDictionary {
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
     -> RedBlackTreeDictionary<Key, T>
   {
-    .init(_storage: .init(tree: try __tree_.___mapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
+    .init(
+      _storage: .init(
+        tree: try __tree_.___mapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
   }
 
   /// - Complexity: O(*n*)
@@ -802,7 +808,10 @@ extension RedBlackTreeDictionary {
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
     rethrows -> RedBlackTreeDictionary<Key, T>
   {
-    .init(_storage: .init(tree: try __tree_.___compactMapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
+    .init(
+      _storage: .init(
+        tree: try __tree_.___compactMapValues(
+          __tree_.__begin_node_, __tree_.__end_node(), transform)))
   }
 }
 
@@ -1183,7 +1192,7 @@ extension RedBlackTreeDictionary where Value: Equatable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Self.___element_equiv)
+    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other, by: ==)
   }
 }
 
@@ -1195,7 +1204,7 @@ extension RedBlackTreeDictionary where Value: Comparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Self.___element_comp)
+    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other, by: <)
   }
 }
 

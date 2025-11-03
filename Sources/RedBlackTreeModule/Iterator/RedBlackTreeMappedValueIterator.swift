@@ -83,4 +83,11 @@ extension RedBlackTreeIterator.MappedValues: Comparable where Base._MappedValue:
   }
 }
 
+#if swift(>=5.5)
+  extension RedBlackTreeIterator.MappedValues: @unchecked Sendable
+  where Tree._Value: Sendable {}
+#endif
+
+// MARK: - Is Identical To
+
 extension RedBlackTreeIterator.MappedValues: ___RedBlackTreeIsIdenticalTo {}

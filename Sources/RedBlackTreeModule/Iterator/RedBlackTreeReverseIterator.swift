@@ -23,18 +23,18 @@
 import Foundation
 
 extension RedBlackTreeIterator.Values {
-  
+
   @frozen
   public struct Reversed: Sequence, IteratorProtocol {
     public typealias Tree = ___Tree<Base>
     public typealias _Value = Tree._Value
-    
+
     @usableFromInline
     let __tree_: Tree
-    
+
     @usableFromInline
     var _start, _end, _begin, _current, _next: _NodePtr
-    
+
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -45,7 +45,7 @@ extension RedBlackTreeIterator.Values {
       self._end = end
       self._begin = __tree_.__begin_node_
     }
-    
+
     @inlinable
     @inline(__always)
     public mutating func next() -> Tree._Value? {
@@ -131,5 +131,12 @@ extension RedBlackTreeIterator.Values.Reversed: Comparable where Element: Compar
     !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
+
+#if swift(>=5.5)
+  extension RedBlackTreeIterator.Values.Reversed: @unchecked Sendable
+  where Tree._Value: Sendable {}
+#endif
+
+// MARK: - Is Identical To
 
 extension RedBlackTreeIterator.Values.Reversed: ___RedBlackTreeIsIdenticalTo {}

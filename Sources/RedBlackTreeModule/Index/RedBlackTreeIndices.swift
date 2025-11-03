@@ -178,6 +178,11 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
   }
 }
 
+#if swift(>=5.5)
+  extension RedBlackTreeIndices: @unchecked Sendable
+  where _Value: Sendable {}
+#endif
+
 // MARK: - Is Identical To
 
 extension RedBlackTreeIndices: ___RedBlackTreeIsIdenticalTo {}

@@ -1139,7 +1139,6 @@ extension RedBlackTreeMultiMap where Value: Comparable {
 // MARK: - Sendable
 
 #if swift(>=5.5)
-  // TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeMultiMap: @unchecked Sendable
   where Element: Sendable {}
 #endif

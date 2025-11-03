@@ -54,6 +54,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 
   public
     typealias KeyValue = Pair<Key, Value>
+  //  typealias KeyValue = (key: Key, value: Value)
 
   public
     typealias Element = KeyValue
@@ -124,7 +125,7 @@ extension RedBlackTreeMultiMap {
   where S: Sequence, S.Element == (Key, Value) {
     self._storage = .init(
       tree:
-        .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) { Pair($0) })
+        .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) { Self.__value_($0) })
   }
 }
 
@@ -280,7 +281,7 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    insert(.init(key, value))
+    insert(Self.__value_(key, value))
   }
 
   /// - Complexity: O(log *n*)
@@ -290,7 +291,7 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(_ tuple: (key: Key, value: Value)) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    insert(.init(tuple))
+    insert(Self.__value_(tuple))
   }
 
   /// - Complexity: O(log *n*)
@@ -365,7 +366,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
     _ensureUnique { __tree_ in
-      .___insert_range_multi(tree: __tree_, other.map { Pair($0) })
+      .___insert_range_multi(tree: __tree_, other.map { Self.__value_($0) })
     }
   }
 
@@ -969,7 +970,7 @@ extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
   @inlinable
   @inline(__always)
   public init(dictionaryLiteral elements: (Key, Value)...) {
-    self.init(multiKeysWithValues: elements.map { .init($0) })
+    self.init(multiKeysWithValues: elements)
   }
 }
 
@@ -981,7 +982,7 @@ extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
   @inlinable
   @inline(__always)
   public init(arrayLiteral elements: (Key, Value)...) {
-    self.init(multiKeysWithValues: elements.map { .init($0) })
+    self.init(multiKeysWithValues: elements)
   }
 }
 

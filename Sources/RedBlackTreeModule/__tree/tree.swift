@@ -72,6 +72,8 @@ func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
     case __left_(_NodePtr)
   }
 #else
+  // 追記) ベンチマークの結果、ケースバイケースだったので、一旦保留
+  //
   // こちらのほうがfind equalの速度が改善する
   // かわりに上限サイズがInt.max - 1になる
   //

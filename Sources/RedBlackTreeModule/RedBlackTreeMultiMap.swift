@@ -1019,20 +1019,7 @@ extension RedBlackTreeMultiMap: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    if isEmpty { return "[:]" }
-    var result = "["
-    var first = true
-    for kv in self {
-      let (key, value) = (kv.key, kv.value)
-      if first {
-        first = false
-      } else {
-        result += ", "
-      }
-      result += "\(key): \(value)"
-    }
-    result += "]"
-    return result
+    _dictionaryDescription(for: self)
   }
 }
 
@@ -1041,26 +1028,7 @@ extension RedBlackTreeMultiMap: CustomStringConvertible {
 extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
 
   public var debugDescription: String {
-    var result = "RedBlackTreeMultiMap<\(Key.self), \(Value.self)>("
-    if isEmpty {
-      result += "[:]"
-    } else {
-      result += "["
-      var first = true
-      for kv in self {
-        let (key, value) = (kv.key, kv.value)
-        if first {
-          first = false
-        } else {
-          result += ", "
-        }
-
-        debugPrint(key, value, separator: ": ", terminator: "", to: &result)
-      }
-      result += "]"
-    }
-    result += ")"
-    return result
+    description
   }
 }
 

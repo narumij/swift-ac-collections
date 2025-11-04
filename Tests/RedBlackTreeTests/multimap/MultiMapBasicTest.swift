@@ -85,8 +85,8 @@ final class MultiMapBasicTest: XCTestCase {
   func testDebugDescription() {
     let multiMap: RedBlackTreeMultiMap = [("a", 1), ("b", 2)]
     let desc = multiMap.description
-    XCTAssertTrue(desc.contains("a: 1"))
-    XCTAssertTrue(desc.contains("b: 2"))
+    XCTAssertTrue(desc.contains("\"a\": 1"))
+    XCTAssertTrue(desc.contains("\"b\": 2"))
   }
 
   func testRemoveContentsOfRange() {

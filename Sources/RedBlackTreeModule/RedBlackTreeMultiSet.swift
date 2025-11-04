@@ -838,18 +838,7 @@ extension RedBlackTreeMultiSet: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    var result = "["
-    var first = true
-    for element in self {
-      if first {
-        first = false
-      } else {
-        result += ", "
-      }
-      print(element, terminator: "", to: &result)
-    }
-    result += "]"
-    return result
+    _arrayDescription(for: self)
   }
 }
 
@@ -858,19 +847,7 @@ extension RedBlackTreeMultiSet: CustomStringConvertible {
 extension RedBlackTreeMultiSet: CustomDebugStringConvertible {
 
   public var debugDescription: String {
-    var result = "RedBlackTreeMultiSet<\(Element.self)>(["
-    var first = true
-    for element in self {
-      if first {
-        first = false
-      } else {
-        result += ", "
-      }
-
-      debugPrint(element, terminator: "", to: &result)
-    }
-    result += "])"
-    return result
+    description
   }
 }
 

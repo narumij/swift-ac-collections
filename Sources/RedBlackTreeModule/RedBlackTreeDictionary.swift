@@ -1092,19 +1092,7 @@ extension RedBlackTreeDictionary: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    if isEmpty { return "[:]" }
-    var result = "["
-    var first = true
-    for (key, value) in self {
-      if first {
-        first = false
-      } else {
-        result += ", "
-      }
-      result += "\(key): \(value)"
-    }
-    result += "]"
-    return result
+    _dictionaryDescription(for: self)
   }
 }
 
@@ -1113,25 +1101,7 @@ extension RedBlackTreeDictionary: CustomStringConvertible {
 extension RedBlackTreeDictionary: CustomDebugStringConvertible {
 
   public var debugDescription: String {
-    var result = "RedBlackTreeDictionary<\(Key.self), \(Value.self)>("
-    if isEmpty {
-      result += "[:]"
-    } else {
-      result += "["
-      var first = true
-      for (key, value) in self {
-        if first {
-          first = false
-        } else {
-          result += ", "
-        }
-
-        debugPrint(key, value, separator: ": ", terminator: "", to: &result)
-      }
-      result += "]"
-    }
-    result += ")"
-    return result
+    description
   }
 }
 

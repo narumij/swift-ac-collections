@@ -966,6 +966,27 @@ extension RedBlackTreeMultiSet: Hashable where Element: Hashable {
   where Element: Sendable {}
 #endif
 
+// MARK: - Codable
+
+extension RedBlackTreeMultiSet: Encodable where Element: Encodable {
+  
+  @inlinable
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.unkeyedContainer()
+    for element in self {
+      try container.encode(element)
+    }
+  }
+}
+
+extension RedBlackTreeMultiSet: Decodable where Element: Decodable {
+  
+  @inlinable
+  public init(from decoder: Decoder) throws {
+    _storage = .init(tree: try .create(from: decoder))
+  }
+}
+
 // MARK: - Init naive
 
 extension RedBlackTreeMultiSet {

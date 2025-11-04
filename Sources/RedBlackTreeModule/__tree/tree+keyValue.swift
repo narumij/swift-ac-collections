@@ -167,6 +167,8 @@ extension Pair: Comparable where Key: Comparable, Value: Comparable {
     (lhs.key, lhs.value) < (rhs.key, rhs.value)
   }
 }
+extension Pair: Encodable where Key: Encodable, Value: Encodable {}
+extension Pair: Decodable where Key: Decodable, Value: Decodable {}
 
 extension KeyValueComparer where _Value == Pair<_Key, _MappedValue> {
 

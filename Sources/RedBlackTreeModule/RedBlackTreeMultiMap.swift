@@ -1156,6 +1156,27 @@ extension RedBlackTreeMultiMap: Hashable where Key: Hashable, Value: Hashable {
   where Element: Sendable {}
 #endif
 
+// MARK: - Codable
+
+extension RedBlackTreeMultiMap: Encodable where Key: Encodable, Value: Encodable {
+  
+  @inlinable
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.unkeyedContainer()
+    for element in self {
+      try container.encode(element)
+    }
+  }
+}
+
+extension RedBlackTreeMultiMap: Decodable where Key: Decodable, Value: Decodable {
+  
+  @inlinable
+  public init(from decoder: Decoder) throws {
+    _storage = .init(tree: try .create(from: decoder))
+  }
+}
+
 // MARK: - Init naive
 
 extension RedBlackTreeMultiMap {

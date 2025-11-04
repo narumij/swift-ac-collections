@@ -1252,3 +1252,24 @@ extension RedBlackTreeMap: Hashable where Key: Hashable, Value: Hashable {
   extension RedBlackTreeMap: @unchecked Sendable
   where Element: Sendable {}
 #endif
+
+// MARK: - Codable
+
+extension RedBlackTreeMap: Encodable where Key: Encodable, Value: Encodable {
+  
+  @inlinable
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.unkeyedContainer()
+    for element in self {
+      try container.encode(element)
+    }
+  }
+}
+
+extension RedBlackTreeMap: Decodable where Key: Decodable, Value: Decodable {
+  
+  @inlinable
+  public init(from decoder: Decoder) throws {
+    _storage = .init(tree: try .create(from: decoder))
+  }
+}

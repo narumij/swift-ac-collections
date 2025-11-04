@@ -775,6 +775,27 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
   }
 }
 
+extension RedBlackTreeSet {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other)
+  }
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other)
+  }
+}
+
 // MARK: - SubSequence
 
 extension RedBlackTreeSet {
@@ -927,29 +948,6 @@ extension RedBlackTreeSet: Hashable where Element: Hashable {
   @inline(__always)
   public func hash(into hasher: inout Hasher) {
     hasher.combine(__tree_)
-  }
-}
-
-// MARK: -
-
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other)
-  }
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other)
   }
 }
 

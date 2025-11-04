@@ -921,6 +921,32 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   }
 }
 
+extension RedBlackTreeMultiMap where Value: Equatable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other)
+  }
+}
+
+extension RedBlackTreeMultiMap where Value: Comparable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other)
+  }
+}
+
+// MARK: -
+
 extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(1)
@@ -1120,32 +1146,6 @@ extension RedBlackTreeMultiMap: Hashable where Key: Hashable, Value: Hashable {
   @inline(__always)
   public func hash(into hasher: inout Hasher) {
     hasher.combine(__tree_)
-  }
-}
-
-// MARK: -
-
-extension RedBlackTreeMultiMap where Value: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other)
-  }
-}
-
-extension RedBlackTreeMultiMap where Value: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other)
   }
 }
 

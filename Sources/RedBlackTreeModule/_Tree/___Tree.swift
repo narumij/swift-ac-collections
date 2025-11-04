@@ -1192,6 +1192,20 @@ extension ___Tree: Equatable where Base: ElementEqutable {
   }
 }
 
+extension ___Tree: Comparable where Base: ElementEqutable & ElementComparable {
+  
+  @inlinable
+  @inline(__always)
+  public static func < (lhs: ___Tree<Base>, rhs: ___Tree<Base>) -> Bool {
+    !lhs.isIdentical(to: rhs) &&
+    lhs.lexicographicallyPrecedes(
+      lhs.__begin_node_,
+      lhs.__end_node(),
+      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
+      by: Base.___element_comp)
+  }
+}
+
 extension ___Tree: Hashable where Base: ElementEqutable & ElementHashable {
   
   @inlinable

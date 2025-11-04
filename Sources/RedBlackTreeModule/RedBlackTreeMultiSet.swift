@@ -910,7 +910,7 @@ extension RedBlackTreeMultiSet: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.isIdentical(to: rhs) || lhs.count == rhs.count && lhs.elementsEqual(rhs)
+    lhs.__tree_ == rhs.__tree_
   }
 }
 
@@ -922,7 +922,7 @@ extension RedBlackTreeMultiSet: Comparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+    lhs.__tree_ < rhs.__tree_
   }
 }
 

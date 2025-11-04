@@ -87,6 +87,7 @@ extension RedBlackTreeDictionary: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 extension RedBlackTreeDictionary: ElementComparable where Value: Comparable {}
 extension RedBlackTreeDictionary: ElementEqutable where Value: Equatable {}
+extension RedBlackTreeDictionary: ElementHashable where Key: Hashable, Value: Hashable {}
 
 // MARK: - Creating a Dictionay
 
@@ -113,7 +114,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
-    
+
     self._storage = .init(
       tree: .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 }
@@ -438,7 +439,7 @@ extension RedBlackTreeDictionary {
     _ other: RedBlackTreeDictionary<Key, Value>,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
-    
+
     try _ensureUnique { __tree_ in
       try .___insert_range_unique(
         tree: __tree_,
@@ -464,7 +465,8 @@ extension RedBlackTreeDictionary {
       try .___insert_range_unique(
         tree: __tree_,
         other,
-        uniquingKeysWith: combine) { $0 }
+        uniquingKeysWith: combine
+      ) { $0 }
     }
   }
 
@@ -483,9 +485,10 @@ extension RedBlackTreeDictionary {
       try .___insert_range_unique(
         tree: __tree_,
         other,
-        uniquingKeysWith: combine) {
-          $0.tuple
-        }
+        uniquingKeysWith: combine
+      ) {
+        $0.tuple
+      }
     }
   }
 
@@ -783,7 +786,9 @@ extension RedBlackTreeDictionary {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    .init(_storage: .init(tree: try __tree_.___filter(__tree_.__begin_node_,__tree_.__end_node(),isIncluded)))
+    .init(
+      _storage: .init(
+        tree: try __tree_.___filter(__tree_.__begin_node_, __tree_.__end_node(), isIncluded)))
   }
 }
 
@@ -794,7 +799,9 @@ extension RedBlackTreeDictionary {
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
     -> RedBlackTreeDictionary<Key, T>
   {
-    .init(_storage: .init(tree: try __tree_.___mapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
+    .init(
+      _storage: .init(
+        tree: try __tree_.___mapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
   }
 
   /// - Complexity: O(*n*)
@@ -802,7 +809,10 @@ extension RedBlackTreeDictionary {
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
     rethrows -> RedBlackTreeDictionary<Key, T>
   {
-    .init(_storage: .init(tree: try __tree_.___compactMapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
+    .init(
+      _storage: .init(
+        tree: try __tree_.___compactMapValues(
+          __tree_.__begin_node_, __tree_.__end_node(), transform)))
   }
 }
 
@@ -817,7 +827,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._Values {
+  public func makeIterator() -> Tree._Values {
     _makeIterator()
   }
 
@@ -837,7 +847,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func sorted() -> Tree._Values {
+  public func sorted() -> Tree._Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
@@ -953,7 +963,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> Tree._Values.Reversed {
+  public func reversed() -> Tree._Values.Reversed {
     _reversed()
   }
 
@@ -985,19 +995,45 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   }
 }
 
+extension RedBlackTreeDictionary where Value: Equatable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other, by: ==)
+  }
+}
+
+extension RedBlackTreeDictionary where Value: Comparable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other, by: <)
+  }
+}
+
+// MARK: -
+
 extension RedBlackTreeDictionary {
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func keys() -> Keys {
+  public func keys() -> Keys {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func values() -> Values {
+  public func values() -> Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 }
@@ -1056,19 +1092,7 @@ extension RedBlackTreeDictionary: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    if isEmpty { return "[:]" }
-    var result = "["
-    var first = true
-    for (key, value) in self {
-      if first {
-        first = false
-      } else {
-        result += ", "
-      }
-      result += "\(key): \(value)"
-    }
-    result += "]"
-    return result
+    _dictionaryDescription(for: self)
   }
 }
 
@@ -1077,25 +1101,7 @@ extension RedBlackTreeDictionary: CustomStringConvertible {
 extension RedBlackTreeDictionary: CustomDebugStringConvertible {
 
   public var debugDescription: String {
-    var result = "RedBlackTreeDictionary<\(Key.self), \(Value.self)>("
-    if isEmpty {
-      result += "[:]"
-    } else {
-      result += "["
-      var first = true
-      for (key, value) in self {
-        if first {
-          first = false
-        } else {
-          result += ", "
-        }
-
-        debugPrint(key, value, separator: ": ", terminator: "", to: &result)
-      }
-      result += "]"
-    }
-    result += ")"
-    return result
+    description
   }
 }
 
@@ -1157,7 +1163,7 @@ extension RedBlackTreeDictionary: Equatable where Value: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.isIdentical(to: rhs) || lhs.count == rhs.count && lhs.elementsEqual(rhs)
+    lhs.__tree_ == rhs.__tree_
   }
 }
 
@@ -1169,40 +1175,46 @@ extension RedBlackTreeDictionary: Comparable where Value: Comparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+    lhs.__tree_ < rhs.__tree_
   }
 }
 
-// MARK: -
+// MARK: - Hashable
 
-extension RedBlackTreeDictionary where Value: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
+extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable {
+  
   @inlinable
   @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Self.___element_equiv)
-  }
-}
-
-extension RedBlackTreeDictionary where Value: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Self.___element_comp)
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(__tree_)
   }
 }
 
 // MARK: - Sendable
 
 #if swift(>=5.5)
-  // TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeDictionary: @unchecked Sendable
   where Element: Sendable {}
 #endif
+
+// MARK: - Codable
+
+extension RedBlackTreeDictionary: Encodable where Key: Encodable, Value: Encodable {
+  
+  @inlinable
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.unkeyedContainer()
+    for element in self {
+      try container.encode(element.key)
+      try container.encode(element.value)
+    }
+  }
+}
+
+extension RedBlackTreeDictionary: Decodable where Key: Decodable, Value: Decodable {
+  
+  @inlinable
+  public init(from decoder: Decoder) throws {
+    _storage = .init(tree: try .create(from: decoder))
+  }
+}

@@ -76,4 +76,11 @@ extension RedBlackTreeIterator.MappedValues.Reversed: Comparable where Base._Map
   }
 }
 
+#if swift(>=5.5)
+  extension RedBlackTreeIterator.MappedValues.Reversed: @unchecked Sendable
+  where Tree._Value: Sendable {}
+#endif
+
+// MARK: - Is Identical To
+
 extension RedBlackTreeIterator.MappedValues.Reversed: ___RedBlackTreeIsIdenticalTo {}

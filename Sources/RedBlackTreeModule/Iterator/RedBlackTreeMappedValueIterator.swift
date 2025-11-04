@@ -59,7 +59,7 @@ extension RedBlackTreeIterator {
     
     @inlinable
     @inline(__always)
-    public __consuming func reversed() -> Reversed {
+    public func reversed() -> Reversed {
       .init(tree: __tree_, start: _start, end: _end)
     }
   }
@@ -82,5 +82,12 @@ extension RedBlackTreeIterator.MappedValues: Comparable where Base._MappedValue:
     !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
+
+#if swift(>=5.5)
+  extension RedBlackTreeIterator.MappedValues: @unchecked Sendable
+  where Tree._Value: Sendable {}
+#endif
+
+// MARK: - Is Identical To
 
 extension RedBlackTreeIterator.MappedValues: ___RedBlackTreeIsIdenticalTo {}

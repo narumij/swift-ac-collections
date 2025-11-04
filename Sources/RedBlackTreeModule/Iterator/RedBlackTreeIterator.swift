@@ -24,16 +24,16 @@ import Foundation
 
 @frozen
 public enum RedBlackTreeIterator<Base> where Base: ___TreeBase {
-  
+
   @frozen
   public struct Values: Sequence, IteratorProtocol {
-    
+
     public typealias Tree = ___Tree<Base>
     public typealias _Value = Tree._Value
-    
+
     @usableFromInline
     let __tree_: Tree
-    
+
     @usableFromInline
     var _start, _end, _current, _next: _NodePtr
 
@@ -65,7 +65,7 @@ extension RedBlackTreeIterator.Values {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func keys() -> RedBlackTreeIterator<Base>.Keys
+  public func keys() -> RedBlackTreeIterator<Base>.Keys
   where Base: KeyValueComparer {
     .init(tree: __tree_, start: _start, end: _end)
   }
@@ -73,7 +73,7 @@ extension RedBlackTreeIterator.Values {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func values() -> RedBlackTreeIterator<Base>.MappedValues
+  public func values() -> RedBlackTreeIterator<Base>.MappedValues
   where Base: KeyValueComparer {
     .init(tree: __tree_, start: _start, end: _end)
   }
@@ -96,5 +96,12 @@ extension RedBlackTreeIterator.Values: Comparable where Tree._Value: Comparable 
     !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
+
+#if swift(>=5.5)
+  extension RedBlackTreeIterator.Values: @unchecked Sendable
+  where Tree._Value: Sendable {}
+#endif
+
+// MARK: - Is Identical To
 
 extension RedBlackTreeIterator.Values: ___RedBlackTreeIsIdenticalTo {}

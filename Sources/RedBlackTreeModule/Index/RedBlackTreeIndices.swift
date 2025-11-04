@@ -120,7 +120,7 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
   
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> Reversed {
+  public func reversed() -> Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 
@@ -177,6 +177,11 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
       end: bounds.upperBound.rawValue)
   }
 }
+
+#if swift(>=5.5)
+  extension RedBlackTreeIndices: @unchecked Sendable
+  where _Value: Sendable {}
+#endif
 
 // MARK: - Is Identical To
 

@@ -54,6 +54,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 
   public
     typealias KeyValue = Pair<Key, Value>
+  //  typealias KeyValue = (key: Key, value: Value)
 
   public
     typealias Element = KeyValue
@@ -89,6 +90,7 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 extension RedBlackTreeMultiMap: ElementComparable where Value: Comparable {}
 extension RedBlackTreeMultiMap: ElementEqutable where Value: Equatable {}
+extension RedBlackTreeMultiMap: ElementHashable where Key: Hashable, Value: Hashable {}
 
 // MARK: - Creating a MultiMap
 
@@ -124,7 +126,7 @@ extension RedBlackTreeMultiMap {
   where S: Sequence, S.Element == (Key, Value) {
     self._storage = .init(
       tree:
-        .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) { Pair($0) })
+        .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) { Self.__value_($0) })
   }
 }
 
@@ -280,7 +282,7 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    insert(.init(key, value))
+    insert(Self.__value_(key, value))
   }
 
   /// - Complexity: O(log *n*)
@@ -290,7 +292,7 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(_ tuple: (key: Key, value: Value)) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    insert(.init(tuple))
+    insert(Self.__value_(tuple))
   }
 
   /// - Complexity: O(log *n*)
@@ -365,7 +367,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
     _ensureUnique { __tree_ in
-      .___insert_range_multi(tree: __tree_, other.map { Pair($0) })
+      .___insert_range_multi(tree: __tree_, other.map { Self.__value_($0) })
     }
   }
 
@@ -753,7 +755,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._Values {
+  public func makeIterator() -> Tree._Values {
     _makeIterator()
   }
 
@@ -773,7 +775,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func sorted() -> Tree._Values {
+  public func sorted() -> Tree._Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
@@ -887,7 +889,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> Tree._Values.Reversed {
+  public func reversed() -> Tree._Values.Reversed {
     _reversed()
   }
 
@@ -919,19 +921,45 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   }
 }
 
+extension RedBlackTreeMultiMap where Value: Equatable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other)
+  }
+}
+
+extension RedBlackTreeMultiMap where Value: Comparable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other)
+  }
+}
+
+// MARK: -
+
 extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func keys() -> Keys {
+  public func keys() -> Keys {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func values() -> Values {
+  public func values() -> Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 }
@@ -969,7 +997,7 @@ extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
   @inlinable
   @inline(__always)
   public init(dictionaryLiteral elements: (Key, Value)...) {
-    self.init(multiKeysWithValues: elements.map { .init($0) })
+    self.init(multiKeysWithValues: elements)
   }
 }
 
@@ -981,7 +1009,7 @@ extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
   @inlinable
   @inline(__always)
   public init(arrayLiteral elements: (Key, Value)...) {
-    self.init(multiKeysWithValues: elements.map { .init($0) })
+    self.init(multiKeysWithValues: elements)
   }
 }
 
@@ -991,20 +1019,7 @@ extension RedBlackTreeMultiMap: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    if isEmpty { return "[:]" }
-    var result = "["
-    var first = true
-    for kv in self {
-      let (key, value) = (kv.key, kv.value)
-      if first {
-        first = false
-      } else {
-        result += ", "
-      }
-      result += "\(key): \(value)"
-    }
-    result += "]"
-    return result
+    _dictionaryDescription(for: self)
   }
 }
 
@@ -1013,26 +1028,7 @@ extension RedBlackTreeMultiMap: CustomStringConvertible {
 extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
 
   public var debugDescription: String {
-    var result = "RedBlackTreeMultiMap<\(Key.self), \(Value.self)>("
-    if isEmpty {
-      result += "[:]"
-    } else {
-      result += "["
-      var first = true
-      for kv in self {
-        let (key, value) = (kv.key, kv.value)
-        if first {
-          first = false
-        } else {
-          result += ", "
-        }
-
-        debugPrint(key, value, separator: ": ", terminator: "", to: &result)
-      }
-      result += "]"
-    }
-    result += ")"
-    return result
+    description
   }
 }
 
@@ -1094,7 +1090,7 @@ extension RedBlackTreeMultiMap: Equatable where Value: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.isIdentical(to: rhs) || lhs.count == rhs.count && lhs.elementsEqual(rhs)
+    lhs.__tree_ == rhs.__tree_
   }
 }
 
@@ -1106,49 +1102,56 @@ extension RedBlackTreeMultiMap: Comparable where Value: Comparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+    lhs.__tree_ < rhs.__tree_
   }
 }
 
-// MARK: -
+// MARK: - Hashable
 
-extension RedBlackTreeMultiMap where Value: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
+extension RedBlackTreeMultiMap: Hashable where Key: Hashable, Value: Hashable {
+  
   @inlinable
   @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Self.___element_equiv)
-  }
-}
-
-extension RedBlackTreeMultiMap where Value: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Self.___element_comp)
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(__tree_)
   }
 }
 
 // MARK: - Sendable
 
 #if swift(>=5.5)
-  // TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeMultiMap: @unchecked Sendable
   where Element: Sendable {}
 #endif
+
+// MARK: - Codable
+
+extension RedBlackTreeMultiMap: Encodable where Key: Encodable, Value: Encodable {
+  
+  @inlinable
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.unkeyedContainer()
+    for element in self {
+      try container.encode(element)
+    }
+  }
+}
+
+extension RedBlackTreeMultiMap: Decodable where Key: Decodable, Value: Decodable {
+  
+  @inlinable
+  public init(from decoder: Decoder) throws {
+    _storage = .init(tree: try .create(from: decoder))
+  }
+}
 
 // MARK: - Init naive
 
 extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(*n* log *n*)
+  ///
+  /// 省メモリでの初期化
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {

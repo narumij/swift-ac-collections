@@ -323,3 +323,49 @@ extension ___Tree where Base: KeyValueComparer {
     }
   }
 #endif
+
+// MARK: -
+
+extension ___Tree where _Value: Decodable {
+
+  @inlinable
+  static func create(from decoder: Decoder) throws -> ___Tree {
+
+    var container = try decoder.unkeyedContainer()
+    var tree: Tree = .create(minimumCapacity: 0)
+    if let count = container.count {
+      Tree.ensureCapacity(tree: &tree, minimumCapacity: count)
+    }
+
+    var (__parent, __child) = tree.___max_ref()
+    while !container.isAtEnd {
+      let __k = try container.decode(_Value.self)
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
+    }
+    
+    assert(tree.__tree_invariant(tree.__root()))
+    return tree
+  }
+}
+
+extension ___Tree where Base: KeyValueComparer, _Value == (key: _Key, value: Base._MappedValue), _Key: Decodable, Base._MappedValue: Decodable {
+
+  @inlinable
+  static func create(from decoder: Decoder) throws -> ___Tree {
+
+    var container = try decoder.unkeyedContainer()
+    var tree: Tree = .create(minimumCapacity: 0)
+    if let count = container.count {
+      Tree.ensureCapacity(tree: &tree, minimumCapacity: count)
+    }
+
+    var (__parent, __child) = tree.___max_ref()
+    while !container.isAtEnd {
+      let __k = Base.__value_(try container.decode(_Key.self), try container.decode(Base._MappedValue.self))
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
+    }
+    
+    assert(tree.__tree_invariant(tree.__root()))
+    return tree
+  }
+}

@@ -338,7 +338,7 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> Tree._Values.Reversed {
+  public func reversed() -> Tree._Values.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -361,14 +361,14 @@ extension RedBlackTreeSlice where Base: KeyValueComparer {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func keys() -> Keys {
+  public func keys() -> Keys {
     .init(tree: __tree_, start: _start, end: _end)
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func values() -> Values {
+  public func values() -> Values {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -382,7 +382,7 @@ extension RedBlackTreeSlice {
   public func elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
-    try makeIterator().elementsEqual(other, by: areEquivalent)
+    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -392,7 +392,7 @@ extension RedBlackTreeSlice {
   public func lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
-    try makeIterator().lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
   }
 }
 
@@ -426,7 +426,7 @@ extension RedBlackTreeSlice where Base: ElementEqutable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Base.___element_equiv)
+    __tree_.elementsEqual(_start, _end, other)
   }
 }
 
@@ -438,7 +438,7 @@ extension RedBlackTreeSlice where Base: ElementComparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Base.___element_comp)
+    __tree_.lexicographicallyPrecedes(_start, _end, other)
   }
 }
 
@@ -455,13 +455,12 @@ extension RedBlackTreeSlice {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> ___Sequence<Base> {
+  public func ___node_positions() -> ___Sequence<Base> {
     ___Sequence(tree: __tree_, start: _start, end: _end)
   }
 }
 
 #if swift(>=5.5)
-// TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeSlice: @unchecked Sendable
   where Element: Sendable {}
 #endif

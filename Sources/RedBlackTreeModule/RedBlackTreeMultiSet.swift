@@ -50,7 +50,7 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 
   public
     typealias _Key = Element
-  
+
   public
     typealias _Value = Element
 
@@ -63,8 +63,9 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
-extension RedBlackTreeMultiSet: ElementComparable { }
-extension RedBlackTreeMultiSet: ElementEqutable { }
+extension RedBlackTreeMultiSet: ElementComparable {}
+extension RedBlackTreeMultiSet: ElementEqutable {}
+extension RedBlackTreeMultiSet: ElementHashable where Element: Hashable {}
 
 // MARK: - Creating a MultSet
 
@@ -180,17 +181,17 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
     let bounds: Range<Index> = bounds.relative(to: self)
-    
+
     __tree_.___ensureValid(
       begin: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
-    
+
     return .init(
       tree: __tree_,
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
   }
-  
+
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
@@ -206,7 +207,8 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public subscript<R>(unchecked bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+  public subscript<R>(unchecked bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index
+  {
     let bounds: Range<Index> = bounds.relative(to: self)
     return .init(
       tree: __tree_,
@@ -320,7 +322,7 @@ extension RedBlackTreeMultiSet {
   public mutating func meld(_ other: __owned RedBlackTreeMultiSet<Element>) {
     _storage = .init(tree: __tree_.___meld_multi(other.__tree_))
   }
-  
+
   /// - Complexity: O(*n* + *m*)
   @inlinable
   @inline(__always)
@@ -615,7 +617,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._Values {
+  public func makeIterator() -> Tree._Values {
     _makeIterator()
   }
 
@@ -624,7 +626,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   public func forEach(_ body: (_Value) throws -> Void) rethrows {
     try _forEach(body)
   }
-  
+
   /// 特殊なforEach
   @inlinable
   @inline(__always)
@@ -635,81 +637,81 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func sorted() -> Tree._Values {
+  public func sorted() -> Tree._Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var startIndex: Index { _startIndex }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var endIndex: Index { _endIndex }
-  
+
   /// - Complexity: O(log *n*)
   @inlinable
   //  @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     _distance(from: start, to: end)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
     _index(after: i)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
     _formIndex(after: &i)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
     _index(before: i)
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
     _formIndex(before: &i)
   }
-  
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
     _index(i, offsetBy: distance)
   }
-  
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     _formIndex(&i, offsetBy: distance)
   }
-  
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     _index(i, offsetBy: distance, limitedBy: limit)
   }
-  
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-  -> Bool
+    -> Bool
   {
     _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
@@ -719,7 +721,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   public subscript(position: Index) -> _Value {
     @inline(__always) _read { yield self[_checked: position] }
   }
-  
+
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
@@ -735,7 +737,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   public func isValid(index: Index) -> Bool {
     _isValid(index: index)
   }
-  
+
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
   /// - Complexity: O(1)
@@ -749,17 +751,17 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func reversed() -> Tree._Values.Reversed {
+  public func reversed() -> Tree._Values.Reversed {
     _reversed()
   }
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public var indices: Indices {
     _indices
   }
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
@@ -769,7 +771,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   ) rethrows -> Bool where OtherSequence: Sequence {
     try _elementsEqual(other, by: areEquivalent)
   }
-  
+
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
@@ -780,6 +782,28 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
     try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
+
+extension RedBlackTreeMultiSet {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other)
+  }
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other)
+  }
+}
+
 // MARK: - SubSequence: Sequence
 
 extension RedBlackTreeMultiSet {
@@ -814,18 +838,7 @@ extension RedBlackTreeMultiSet: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    var result = "["
-    var first = true
-    for element in self {
-      if first {
-        first = false
-      } else {
-        result += ", "
-      }
-      print(element, terminator: "", to: &result)
-    }
-    result += "]"
-    return result
+    _arrayDescription(for: self)
   }
 }
 
@@ -834,19 +847,7 @@ extension RedBlackTreeMultiSet: CustomStringConvertible {
 extension RedBlackTreeMultiSet: CustomDebugStringConvertible {
 
   public var debugDescription: String {
-    var result = "RedBlackTreeMultiSet<\(Element.self)>(["
-    var first = true
-    for element in self {
-      if first {
-        first = false
-      } else {
-        result += ", "
-      }
-
-      debugPrint(element, terminator: "", to: &result)
-    }
-    result += "])"
-    return result
+    description
   }
 }
 
@@ -908,7 +909,7 @@ extension RedBlackTreeMultiSet: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.isIdentical(to: rhs) || lhs.count == rhs.count && lhs.elementsEqual(rhs)
+    lhs.__tree_ == rhs.__tree_
   }
 }
 
@@ -920,40 +921,48 @@ extension RedBlackTreeMultiSet: Comparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+    lhs.__tree_ < rhs.__tree_
   }
 }
 
-// MARK: -
+// MARK: - Hashable
 
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
+extension RedBlackTreeMultiSet: Hashable where Element: Hashable {
+  
   @inlinable
   @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: Self.___element_equiv)
-  }
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: Self.___element_comp)
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(__tree_)
   }
 }
 
 // MARK: - Sendable
 
 #if swift(>=5.5)
-// TODO: 競プロ用としてはSendableでいいが、一般用としてはSendableが適切かどうか検証が必要
   extension RedBlackTreeMultiSet: @unchecked Sendable
   where Element: Sendable {}
 #endif
+
+// MARK: - Codable
+
+extension RedBlackTreeMultiSet: Encodable where Element: Encodable {
+  
+  @inlinable
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.unkeyedContainer()
+    for element in self {
+      try container.encode(element)
+    }
+  }
+}
+
+extension RedBlackTreeMultiSet: Decodable where Element: Decodable {
+  
+  @inlinable
+  public init(from decoder: Decoder) throws {
+    _storage = .init(tree: try .create(from: decoder))
+  }
+}
 
 // MARK: - Init naive
 

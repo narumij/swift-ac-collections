@@ -42,7 +42,7 @@ extension ___RedBlackTreeSequenceBase {
 
   @inlinable
   @inline(__always)
-  __consuming func _makeIterator() -> Tree._Values {
+  func _makeIterator() -> Tree._Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
@@ -176,7 +176,7 @@ extension ___RedBlackTreeSequenceBase {
 
   @inlinable
   @inline(__always)
-  __consuming func _reversed() -> Tree._Values.Reversed {
+  func _reversed() -> Tree._Values.Reversed {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
@@ -191,7 +191,7 @@ extension ___RedBlackTreeSequenceBase {
   func _elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
-    try makeIterator().elementsEqual(other, by: areEquivalent)
+    try __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other, by: areEquivalent)
   }
 
   @inlinable
@@ -199,7 +199,7 @@ extension ___RedBlackTreeSequenceBase {
   func _lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
-    try makeIterator().lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+    try __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other, by: areInIncreasingOrder)
   }
 }
 
@@ -216,7 +216,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  public __consuming func ___node_positions() -> ___Sequence<Self> {
+  public func ___node_positions() -> ___Sequence<Self> {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 }

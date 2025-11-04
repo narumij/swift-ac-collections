@@ -20,38 +20,31 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
+@frozen
+public struct ___UnsafeValues<Base>: Sequence, IteratorProtocol
+where Base: ___TreeBase {
 
-/// 要素とキーが一致する場合のひな形
-public protocol ScalarValueComparer: ValueComparer where _Key == _Value {}
+  public typealias Tree = ___Tree<Base>
 
-extension ScalarValueComparer {
+  @usableFromInline
+  let __tree_: Tree
+
+  @usableFromInline
+  var __first, __last: _NodePtr
 
   @inlinable
   @inline(__always)
-  public static func __key(_ e: _Value) -> _Key { e }
-}
-
-extension ScalarValueComparer {
-  
-  @inlinable
-  @inline(__always)
-  public static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    value_comp(lhs, rhs)
+  internal init(tree: Tree, __first: _NodePtr, __last: _NodePtr) {
+    self.__tree_ = tree
+    self.__first = __first
+    self.__last = __last
   }
-  
-  @inlinable
-  @inline(__always)
-  public static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    value_equiv(lhs, rhs)
-  }
-}
-
-extension ScalarValueComparer where _Value: Hashable {
 
   @inlinable
   @inline(__always)
-  public static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher) {
-    hasher.combine(lhs)
+  public mutating func next() -> Tree._Value? {
+    guard __first != __last else { return nil }
+    defer { __first = __tree_.__tree_next_iter(__first) }
+    return __tree_[__first]
   }
 }

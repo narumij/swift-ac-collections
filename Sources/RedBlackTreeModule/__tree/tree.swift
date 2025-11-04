@@ -72,6 +72,8 @@ func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
     case __left_(_NodePtr)
   }
 #else
+  // 追記) ベンチマークの結果、ケースバイケースだったので、一旦保留
+  //
   // こちらのほうがfind equalの速度が改善する
   // かわりに上限サイズがInt.max - 1になる
   //
@@ -394,4 +396,9 @@ public protocol ElementComparable: ValueComparer {
 public protocol ElementEqutable: ValueComparer {
   associatedtype _Value
   static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool
+}
+
+public protocol ElementHashable: ValueComparer {
+  associatedtype _Value
+  static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher)
 }

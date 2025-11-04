@@ -1183,12 +1183,21 @@ extension ___Tree {
 extension ___Tree: Equatable where Base: ElementEqutable {
   
   @inlinable
+  @inline(__always)
   public static func == (lhs: ___Tree<Base>, rhs: ___Tree<Base>) -> Bool {
-    lhs.isIdentical(to: rhs) ||
-    lhs.elementsEqual(lhs.__begin_node_,
-                      lhs.__end_node(),
-                      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
-                      by: Base.___element_equiv)
+    
+    if lhs.count != rhs.count {
+      return false
+    }
+    
+    if lhs.count == 0 || lhs.isIdentical(to: rhs) {
+      return true
+    }
+    
+    return lhs.elementsEqual(lhs.__begin_node_,
+                             lhs.__end_node(),
+                             rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
+                             by: Base.___element_equiv)
   }
 }
 

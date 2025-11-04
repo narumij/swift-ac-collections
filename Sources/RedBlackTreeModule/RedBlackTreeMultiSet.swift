@@ -65,6 +65,7 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 extension RedBlackTreeMultiSet: ElementComparable {}
 extension RedBlackTreeMultiSet: ElementEqutable {}
+extension RedBlackTreeMultiSet: ElementHashable where Element: Hashable {}
 
 // MARK: - Creating a MultSet
 
@@ -922,6 +923,17 @@ extension RedBlackTreeMultiSet: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
+// MARK: - Hashable
+
+extension RedBlackTreeMultiSet: Hashable where Element: Hashable {
+  
+  @inlinable
+  @inline(__always)
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(__tree_)
   }
 }
 

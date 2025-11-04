@@ -72,6 +72,7 @@ extension RedBlackTreeSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 extension RedBlackTreeSet: ElementComparable {}
 extension RedBlackTreeSet: ElementEqutable {}
+extension RedBlackTreeSet: ElementHashable where Element: Hashable {}
 
 // MARK: - Creating a Set
 
@@ -915,6 +916,17 @@ extension RedBlackTreeSet: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
+// MARK: - Hashable
+
+extension RedBlackTreeSet: Hashable where Element: Hashable {
+  
+  @inlinable
+  @inline(__always)
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(__tree_)
   }
 }
 

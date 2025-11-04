@@ -87,6 +87,7 @@ extension RedBlackTreeMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMap: KeyValueComparer {}
 extension RedBlackTreeMap: ElementComparable where Value: Comparable {}
 extension RedBlackTreeMap: ElementEqutable where Value: Equatable {}
+extension RedBlackTreeMap: ElementHashable where Key: Hashable, Value: Hashable {}
 
 // MARK: - Creating a Dictionay
 
@@ -1205,6 +1206,17 @@ extension RedBlackTreeMap: Comparable where Value: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
+// MARK: - Hashable
+
+extension RedBlackTreeMap: Hashable where Key: Hashable, Value: Hashable {
+  
+  @inlinable
+  @inline(__always)
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(__tree_)
   }
 }
 

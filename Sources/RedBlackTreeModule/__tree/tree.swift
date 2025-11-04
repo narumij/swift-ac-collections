@@ -397,3 +397,8 @@ public protocol ElementEqutable: ValueComparer {
   associatedtype _Value
   static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool
 }
+
+public protocol ElementHashable: ValueComparer {
+  associatedtype _Value
+  static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher)
+}

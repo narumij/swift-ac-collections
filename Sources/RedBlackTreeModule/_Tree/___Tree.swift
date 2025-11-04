@@ -1180,22 +1180,25 @@ extension ___Tree {
   }
 }
 
-extension ___Tree: Equatable where _Value: Equatable {
+extension ___Tree: Equatable where Base: ElementEqutable {
+  
+  @inlinable
   public static func == (lhs: ___Tree<Base>, rhs: ___Tree<Base>) -> Bool {
     lhs.isIdentical(to: rhs) ||
     lhs.elementsEqual(lhs.__begin_node_,
                       lhs.__end_node(),
                       rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
-                      by: ==)
+                      by: Base.___element_equiv)
   }
 }
 
-extension ___Tree: Hashable where _Value: Hashable {
+extension ___Tree: Hashable where Base: ElementEqutable & ElementHashable {
   
+  @inlinable
   public func hash(into hasher: inout Hasher) {
     hasher.combine(header)
     for node in unsafeValues(__begin_node_, __end_node()) {
-      hasher.combine(node)
+      Base.___element_hash(node, into: &hasher)
     }
   }
 }
@@ -1216,7 +1219,6 @@ extension ___Tree {
 extension ___Tree where Base: ElementEqutable {
   
   @inlinable
-  @inline(__always)
   public func elementsEqual<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, _Value == OtherSequence.Element {
     elementsEqual(__first, __last, other, by: Base.___element_equiv)
@@ -1226,7 +1228,6 @@ extension ___Tree where Base: ElementEqutable {
 extension ___Tree where Base: ElementComparable {
   
   @inlinable
-  @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, _Value == OtherSequence.Element {
     lexicographicallyPrecedes(__first, __last, other, by: Base.___element_comp)

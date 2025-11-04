@@ -90,6 +90,7 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 extension RedBlackTreeMultiMap: ElementComparable where Value: Comparable {}
 extension RedBlackTreeMultiMap: ElementEqutable where Value: Equatable {}
+extension RedBlackTreeMultiMap: ElementHashable where Key: Hashable, Value: Hashable {}
 
 // MARK: - Creating a MultiMap
 
@@ -1108,6 +1109,17 @@ extension RedBlackTreeMultiMap: Comparable where Value: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
+// MARK: - Hashable
+
+extension RedBlackTreeMultiMap: Hashable where Key: Hashable, Value: Hashable {
+  
+  @inlinable
+  @inline(__always)
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(__tree_)
   }
 }
 

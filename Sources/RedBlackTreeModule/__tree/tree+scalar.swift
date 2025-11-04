@@ -46,3 +46,12 @@ extension ScalarValueComparer {
     value_equiv(lhs, rhs)
   }
 }
+
+extension ScalarValueComparer where _Value: Hashable {
+
+  @inlinable
+  @inline(__always)
+  public static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher) {
+    hasher.combine(lhs)
+  }
+}

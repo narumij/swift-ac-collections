@@ -115,6 +115,13 @@ extension KeyValueComparer where _Value == (key: _Key, value: _MappedValue) {
   public static func __value_(_ kv: (_Key,_MappedValue)) -> _Value {
     kv
   }
+  
+  @inlinable
+  @inline(__always)
+  public static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher) where _Key: Hashable, _MappedValue: Hashable {
+    hasher.combine(__key(lhs))
+    hasher.combine(___mapped_value(lhs))
+  }
 }
 
 // MARK: -
@@ -187,5 +194,11 @@ extension KeyValueComparer where _Value == Pair<_Key, _MappedValue> {
   @inline(__always)
   public static func __value_(_ kv: (_Key,_MappedValue)) -> _Value {
     Pair(key: kv.0, value: kv.1)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher) where _Key: Hashable, _MappedValue: Hashable {
+    hasher.combine(lhs)
   }
 }

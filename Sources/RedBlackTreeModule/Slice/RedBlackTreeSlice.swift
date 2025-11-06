@@ -396,28 +396,6 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice: Equatable where Base: ElementEqutable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs)
-  }
-}
-
-extension RedBlackTreeSlice: Comparable where Base: ElementComparable & ElementEqutable {}
-
-extension RedBlackTreeSlice where Base: ElementComparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
-  }
-}
-
 extension RedBlackTreeSlice where Base: ElementEqutable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -439,6 +417,28 @@ extension RedBlackTreeSlice where Base: ElementComparable {
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     __tree_.lexicographicallyPrecedes(_start, _end, other)
+  }
+}
+
+extension RedBlackTreeSlice: Equatable where Base: ElementEqutable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  @inline(__always)
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs)
+  }
+}
+
+extension RedBlackTreeSlice: Comparable where Base: ElementComparable & ElementEqutable {}
+
+extension RedBlackTreeSlice where Base: ElementComparable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  @inline(__always)
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
 

@@ -50,16 +50,19 @@ extension CompareBothProtocol {
     }
 
     if isMulti {
+      
 //      name                         time             std         iterations
 //      --------------------------------------------------------------------
 //      index compare 1000        19416.000 ns ±  10.13 %       69751
 //      index compare 1000000 109517708.000 ns ±   2.03 %          13
+      
 //      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_multi(l, r))
       
 //      name                         time             std         iterations
 //      --------------------------------------------------------------------
 //      index compare 1000        11917.000 ns ±   8.25 %     114822
 //      index compare 1000000  54229021.000 ns ±   3.62 %         24
+      
       return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_bitmap(l, r))
     }
     return ___ptr_comp_unique(l, r)

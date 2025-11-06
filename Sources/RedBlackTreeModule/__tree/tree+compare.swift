@@ -271,7 +271,7 @@ extension NodeBitmapProtocol {
   @inlinable
   @inline(__always)
   func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
-    // サイズの64bit幅で絶対に使い切れない128bit幅の方が安心なのでこれを採用
+    // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
     ___ptr_bitmap_128(__l) < ___ptr_bitmap_128(__r)
   }
 }

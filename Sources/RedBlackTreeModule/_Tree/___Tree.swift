@@ -809,14 +809,14 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___Sequence<Base> {
+  func sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafePointers<Base> {
     .init(tree: self, start: __first, end: __last)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  func unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeSequence<Base> {
+  func unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafePointers<Base> {
     .init(tree: self, __first: __first, __last: __last)
   }
   

@@ -50,8 +50,20 @@ extension CompareBothProtocol {
     }
 
     if isMulti {
-      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_multi(l, r))
-//      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_bitmap(l, r))
+      
+//      name                         time             std         iterations
+//      --------------------------------------------------------------------
+//      index compare 1000        19416.000 ns ±  10.13 %       69751
+//      index compare 1000000 109517708.000 ns ±   2.03 %          13
+      
+//      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_multi(l, r))
+      
+//      name                         time             std         iterations
+//      --------------------------------------------------------------------
+//      index compare 1000        11917.000 ns ±   8.25 %     114822
+//      index compare 1000000  54229021.000 ns ±   3.62 %         24
+      
+      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_bitmap(l, r))
     }
     return ___ptr_comp_unique(l, r)
   }
@@ -225,10 +237,7 @@ extension NodeBitmapProtocol {
     return __f
   }
   
-  // 64bit版をそのまま128bitにすると、___ptr_comp_multiと速度が変わらなくなる
-  // 待避するレジスタの数が影響していると想定して修正したところ、
-  // 64bit版には及ばないが、速度の改善がみられた
-  // 64bit版をこちらの方式で動かすとステップ数が多いので速度が悪化する
+  // 128bit幅でかつ、必要なレジスタ数が削減されている
   @inlinable
   @inline(__always)
   func ___ptr_bitmap_128(_ __p: _NodePtr) -> UInt128
@@ -245,6 +254,7 @@ extension NodeBitmapProtocol {
     return __f
   }
   
+  // 64bit幅でかつ、必要なレジスタ数が削減されている
   @inlinable
   @inline(__always)
   func ___ptr_bitmap_64(_ __p: _NodePtr) -> UInt
@@ -264,11 +274,7 @@ extension NodeBitmapProtocol {
   @inlinable
   @inline(__always)
   func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
-    // 木の深さが63に到達するのは余り現実的ではなく、UIntで十分だが
-    // 多少アンバランスが発生した場合を考えると不安がよぎるので
-    // 一旦UInt128を採用したが、計算したらやっぱり現実的ではないのでUIntに戻す
-    ___ptr_bitmap(__l) < ___ptr_bitmap(__r)
-//    ___ptr_bitmap_128(__l) < ___ptr_bitmap_128(__r)
-//    ___ptr_bitmap_64(__l) < ___ptr_bitmap_64(__r)
+    // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
+    ___ptr_bitmap_128(__l) < ___ptr_bitmap_128(__r)
   }
 }

@@ -50,6 +50,8 @@ extension ___RedBlackTreeIsIdenticalTo {
   @inlinable
   @inline(__always)
   public func isIdentical(to other: Self) -> Bool {
-    __tree_.isIdentical(to: other.__tree_) && _start == other._start && _end == other._end
+    __tree_.isIdentical(to: other.__tree_) &&
+    _start == other._start &&
+    _end == other._end
   }
 }

@@ -374,6 +374,16 @@ extension RedBlackTreeSlice where Base: KeyValueComparer {
 }
 
 extension RedBlackTreeSlice {
+  
+  /// - Complexity: O(*n*)
+  @inlinable
+  @inline(__always)
+  public func sorted() -> [Element] {
+    __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
+  }
+}
+
+extension RedBlackTreeSlice {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.

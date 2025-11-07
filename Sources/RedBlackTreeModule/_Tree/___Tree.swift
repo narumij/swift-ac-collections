@@ -1256,3 +1256,21 @@ extension ___Tree where Base: ElementComparable {
     lexicographicallyPrecedes(__first, __last, other, by: Base.___element_comp)
   }
 }
+
+extension ___Tree {
+  
+  @inlinable
+  public func ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_Value] {
+    let count = __distance(__first, __last)
+    return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      initializedCount = count
+      var buffer = buffer.baseAddress!
+      var __first = __first
+      while __first != __last {
+        buffer.initialize(to: self[__first])
+        buffer = buffer + 1
+        __first = __tree_next_iter(__first)
+      }
+    }
+  }
+}

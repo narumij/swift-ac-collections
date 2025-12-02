@@ -89,6 +89,8 @@ extension RedBlackTreeDictionary: ElementComparable where Value: Comparable {}
 extension RedBlackTreeDictionary: ElementEqutable where Value: Equatable {}
 extension RedBlackTreeDictionary: ElementHashable where Key: Hashable, Value: Hashable {}
 
+extension RedBlackTreeDictionary: DefaultThreeWayComparator {}
+
 // MARK: - Creating a Dictionay
 
 extension RedBlackTreeDictionary {

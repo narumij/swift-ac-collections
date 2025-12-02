@@ -92,6 +92,8 @@ extension RedBlackTreeMultiMap: ElementComparable where Value: Comparable {}
 extension RedBlackTreeMultiMap: ElementEqutable where Value: Equatable {}
 extension RedBlackTreeMultiMap: ElementHashable where Key: Hashable, Value: Hashable {}
 
+extension RedBlackTreeMultiMap: DefaultThreeWayComparator {}
+
 // MARK: - Creating a MultiMap
 
 extension RedBlackTreeMultiMap {

@@ -379,7 +379,7 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   public func sorted() -> [Element] {
-    __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
+    __tree_.___copy_to_array(_start, _end)
   }
 }
 

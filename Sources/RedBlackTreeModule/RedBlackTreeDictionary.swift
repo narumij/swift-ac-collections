@@ -89,6 +89,8 @@ extension RedBlackTreeDictionary: ElementComparable where Value: Comparable {}
 extension RedBlackTreeDictionary: ElementEqutable where Value: Equatable {}
 extension RedBlackTreeDictionary: ElementHashable where Key: Hashable, Value: Hashable {}
 
+extension RedBlackTreeDictionary: DefaultThreeWayComparator {}
+
 // MARK: - Creating a Dictionay
 
 extension RedBlackTreeDictionary {
@@ -844,12 +846,21 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
     try _forEach(body)
   }
 
+#if false
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func sorted() -> Tree._Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
+#else
+  /// - Complexity: O(*n*)
+  @inlinable
+  @inline(__always)
+  public func sorted() -> [Element] {
+    __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
+  }
+#endif
 
   /// - Complexity: O(1)
   @inlinable

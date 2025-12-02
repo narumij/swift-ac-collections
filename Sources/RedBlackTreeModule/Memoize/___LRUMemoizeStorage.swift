@@ -116,6 +116,8 @@ extension ___LRUMemoizeStorage {
   }
 }
 
+extension ___LRUMemoizeStorage: DefaultThreeWayComparator {}
+
 extension ___LRUMemoizeStorage: ___LRULinkList {
   
   @inlinable

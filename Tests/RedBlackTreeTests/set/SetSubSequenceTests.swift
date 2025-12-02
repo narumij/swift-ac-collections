@@ -28,6 +28,15 @@ final class SetSubSequenceTests: XCTestCase {
         from: slice.startIndex,
         to: slice.endIndex), 4)
   }
+  
+  func testSliceSorted() {
+    let base = RedBlackTreeSet(0..<10)  // [0‥9]
+    let slice = base.elements(in: 2..<6)  // [2,3,4,5]
+
+    XCTAssertEqual(slice.sorted().count, 4)
+    XCTAssertEqual(slice.sorted().first, 2)
+    XCTAssertEqual(slice.sorted().last, 5)
+  }
 
   // MARK: forward / backward イテレーション ------------------------------
 

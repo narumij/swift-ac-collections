@@ -52,7 +52,7 @@ extension BoundAlgorithmProtocol {
   func __lower_upper_bound_unique_impl(_LowerBound: Bool, _ __v: _Key) -> _NodePtr {
     var __rt = __root()
     var __result = __end_node()
-    let __comp = __lazy_synth_three_way_comparator()
+//    let __comp = __lazy_synth_three_way_comparator()
     while __rt != .nullptr {
       let __comp_res = __comp(__v, __get_value(__rt))
       if __comp_res.__less() {
@@ -72,7 +72,7 @@ extension BoundAlgorithmProtocol {
   @inlinable
   @inline(__always)
   func __lower_bound_unique(_ __v: _Key) -> _NodePtr {
-#if false
+#if true
     // Benchmarkで速度低下がみられるので、一旦保留
     // 最適化不足かとおもってlower bound専用を試したが変わらなかった
     __lower_upper_bound_unique_impl(_LowerBound: true, __v)
@@ -84,7 +84,7 @@ extension BoundAlgorithmProtocol {
   @inlinable
   @inline(__always)
   func __upper_bound_unique(_ __v: _Key) -> _NodePtr {
-#if false
+#if true
     // Benchmarkで速度低下がみられるので、一旦保留
     __lower_upper_bound_unique_impl(_LowerBound: false, __v)
 #else

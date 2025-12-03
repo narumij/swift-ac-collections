@@ -34,7 +34,7 @@ public
 {
   associatedtype __compare_result: ThreeWayCompareResult
   associatedtype _Key
-  @inlinable static func __lazy_synth_three_way_comparator() -> (_Key, _Key) -> __compare_result
+  @inlinable static func ___three_way_compare(_ __l: _Key, _ __r: _Key) -> __compare_result
 }
 
 @usableFromInline
@@ -42,6 +42,7 @@ protocol ThreeWayComparatorProtocol {
   associatedtype __compare_result: ThreeWayCompareResult
   associatedtype _Key
   @inlinable func __lazy_synth_three_way_comparator() -> (_Key, _Key) -> __compare_result
+  @inlinable func __comp(_ __l: _Key, _ __r: _Key) -> __compare_result
 }
 
 public
@@ -76,11 +77,12 @@ public
 public protocol DefaultThreeWayComparator: ThreeWayComparator {}
 
 extension DefaultThreeWayComparator where _Key: Comparable {
+
   @inlinable
   @inline(__always)
-  public static func __lazy_synth_three_way_comparator() -> (_Key, _Key) ->
-    __lazy_three_way_compare_result
+  public static func
+  ___three_way_compare(_ __l: _Key, _ __r: _Key) -> __lazy_three_way_compare_result
   {
-    { .init(lhs: $0, rhs: $1) }
+    __lazy_three_way_compare_result(lhs: __l, rhs: __r)
   }
 }

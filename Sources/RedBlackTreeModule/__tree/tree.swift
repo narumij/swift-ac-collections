@@ -370,11 +370,17 @@ extension ValueComparator {
 }
 
 extension ValueComparator where Base: ThreeWayComparator {
-
+  
   @inlinable
   @inline(__always)
   func __lazy_synth_three_way_comparator() -> (Base._Key, Base._Key) -> Base.__compare_result {
-    Base.__lazy_synth_three_way_comparator()
+    Base.___three_way_compare
+  }
+  
+  @inlinable
+  @inline(__always)
+  func __comp(_ __l: Base._Key, _ __r: Base._Key) -> Base.__compare_result {
+    Base.___three_way_compare(__l,__r)
   }
 }
 

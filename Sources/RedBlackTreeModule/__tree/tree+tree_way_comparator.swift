@@ -34,14 +34,14 @@ public
 {
   associatedtype __compare_result: ThreeWayCompareResult
   associatedtype _Key
-  @inlinable static func __lazy_synth_three_way_comparator(_ __l: _Key, _ __r: _Key) -> __compare_result
+  @inlinable static func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __compare_result
 }
 
 @usableFromInline
 protocol ThreeWayComparatorProtocol {
   associatedtype __compare_result: ThreeWayCompareResult
   associatedtype _Key
-  @inlinable func __lazy_synth_three_way_comparator(_ __l: _Key, _ __r: _Key) -> __compare_result
+  @inlinable func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __compare_result
 }
 
 @inlinable
@@ -126,9 +126,9 @@ extension LazySynthThreeWayComparator where Self: ValueComparer {
 
   @inlinable
   public static func
-  __lazy_synth_three_way_comparator(_ __l: _Key, _ __r: _Key) -> __lazy_compare_result<Self>
+  __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __lazy_compare_result<Self>
   {
-    __lazy_compare_result(__l, __r)
+    __lazy_compare_result(__lhs, __rhs)
   }
 }
 
@@ -138,9 +138,9 @@ extension ComparableThreeWayComparator where _Key: Comparable {
 
   @inlinable
   public static func
-  __lazy_synth_three_way_comparator(_ __l: _Key, _ __r: _Key) -> __comparable_compare_result<_Key>
+  __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __comparable_compare_result<_Key>
   {
-    __comparable_compare_result(__l, __r)
+    __comparable_compare_result(__lhs, __rhs)
   }
 }
 
@@ -150,8 +150,8 @@ extension HasDefaultThreeWayComparator where _Key: Comparable {
 
   @inlinable
   public static func
-  __lazy_synth_three_way_comparator(_ __l: _Key, _ __r: _Key) -> __eager_compare_result
+  __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __eager_compare_result
   {
-    __eager_compare_result(__default_three_way_comparator(__l, __r))
+    __eager_compare_result(__default_three_way_comparator(__lhs, __rhs))
   }
 }

@@ -67,7 +67,7 @@ extension RedBlackTreeMultiSet: ElementComparable {}
 extension RedBlackTreeMultiSet: ElementEqutable {}
 extension RedBlackTreeMultiSet: ElementHashable where Element: Hashable {}
 
-extension RedBlackTreeMultiSet: DefaultThreeWayComparator {}
+extension RedBlackTreeMultiSet: HasDefaultThreeWayComparator {}
 
 // MARK: - Creating a MultSet
 

@@ -103,7 +103,7 @@ extension FindEqualProtocol {
       return (__end_node(), __left_ref(.end))
     }
     var __nd_ptr = __root_ptr()
-    let __comp = __lazy_synth_three_way_comparator()
+    let __comp = __lazy_synth_three_way_comparator
 
     while true {
 

@@ -39,14 +39,12 @@ extension _NodePtr {
 
   /// 赤黒木のIndexで、nullを表す
   @inlinable
-  @inline(__always)
   static var nullptr: Self {
     -2
   }
 
   /// 赤黒木のIndexで、終端を表す
   @inlinable
-  @inline(__always)
   static var end: Self {
     -1
   }
@@ -92,13 +90,13 @@ protocol TreeEndNodeProtocol {
   /// 左ノードを返す
   ///
   /// 木を遡るケースではこちらが必ず必要
-  @inlinable func __left_(_: pointer) -> pointer
+  func __left_(_: pointer) -> pointer
   /// 左ノードを返す
   ///
   /// 根から末端に向かう処理は、こちらで足りる
-  @inlinable func __left_unsafe(_ p: pointer) -> pointer
+  func __left_unsafe(_ p: pointer) -> pointer
   /// 左ノードを更新する
-  @inlinable func __left_(_ lhs: pointer, _ rhs: pointer)
+  func __left_(_ lhs: pointer, _ rhs: pointer)
 }
 
 extension TreeEndNodeProtocol {
@@ -110,22 +108,22 @@ extension TreeEndNodeProtocol {
 @usableFromInline
 protocol TreeNodeProtocol: TreeEndNodeProtocol {
   /// 右ノードを返す
-  @inlinable func __right_(_: pointer) -> pointer
+  func __right_(_: pointer) -> pointer
   /// 右ノードを更新する
-  @inlinable func __right_(_ lhs: pointer, _ rhs: pointer)
+  func __right_(_ lhs: pointer, _ rhs: pointer)
   /// 色を返す
-  @inlinable func __is_black_(_: pointer) -> Bool
+  func __is_black_(_: pointer) -> Bool
   /// 色を更新する
-  @inlinable func __is_black_(_ lhs: pointer, _ rhs: Bool)
+  func __is_black_(_ lhs: pointer, _ rhs: Bool)
   /// 親ノードを返す
-  @inlinable func __parent_(_: pointer) -> pointer
+  func __parent_(_: pointer) -> pointer
   /// 親ノードを更新する
-  @inlinable func __parent_(_ lhs: pointer, _ rhs: pointer)
+  func __parent_(_ lhs: pointer, _ rhs: pointer)
   /// 親ノードを返す
   ///
   /// This is only to align the naming with C++.
   /// C++と名前を揃えているだけのもの
-  @inlinable func __parent_unsafe(_: pointer) -> __parent_pointer
+  func __parent_unsafe(_: pointer) -> __parent_pointer
 }
 
 extension TreeNodeProtocol {
@@ -136,13 +134,13 @@ extension TreeNodeProtocol {
 @usableFromInline
 protocol TreeNodeRefProtocol {
   /// 左ノードへの参照を返す
-  @inlinable func __left_ref(_: _NodePtr) -> _NodeRef
+  func __left_ref(_: _NodePtr) -> _NodeRef
   /// 右ノードへの参照を返す
-  @inlinable func __right_ref(_: _NodePtr) -> _NodeRef
+  func __right_ref(_: _NodePtr) -> _NodeRef
   /// 参照先を返す
-  @inlinable func __ptr_(_ rhs: _NodeRef) -> _NodePtr
+  func __ptr_(_ rhs: _NodeRef) -> _NodePtr
   /// 参照先を更新する
-  @inlinable func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr)
+  func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr)
 }
 
 // 型の名前にねじれがあるので注意
@@ -153,7 +151,7 @@ protocol TreeNodeValueProtocol where _Key == __node_value_type {
   /// ノードから比較用の値を取り出す。
   /// SetやMultisetではElementに該当する
   /// DictionaryやMultiMapではKeyに該当する
-  @inlinable func __get_value(_: _NodePtr) -> __node_value_type
+  func __get_value(_: _NodePtr) -> __node_value_type
 }
 
 // 型の名前にねじれがあるので注意
@@ -162,13 +160,13 @@ protocol TreeValueProtocol where _Value == __value_type {
   associatedtype _Value
   associatedtype __value_type
   /// ノードの値要素を取得する
-  @inlinable func __value_(_ p: _NodePtr) -> __value_type
+  func __value_(_ p: _NodePtr) -> __value_type
 }
 
 @usableFromInline
 protocol KeyProtocol: TreeNodeValueProtocol, TreeValueProtocol {
   /// 要素から比較用のキー値を取り出す。
-  @inlinable func __key(_ e: _Value) -> _Key
+  func __key(_ e: _Value) -> _Key
 }
 
 extension KeyProtocol {
@@ -184,13 +182,13 @@ extension KeyProtocol {
 @usableFromInline
 protocol ValueProtocol: TreeNodeProtocol, TreeNodeValueProtocol {
   /// キー同士を比較する。通常`<`と同じ
-  @inlinable func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
+  func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
 }
 
 @usableFromInline
 protocol BeginNodeProtocol {
   /// 木の左端のノードを返す
-  @inlinable var __begin_node_: _NodePtr { get nonmutating set }
+  var __begin_node_: _NodePtr { get nonmutating set }
 }
 
 @usableFromInline
@@ -198,7 +196,7 @@ protocol BeginProtocol: BeginNodeProtocol {
   // __begin_node_が圧倒的に速いため
   @available(*, deprecated, renamed: "__begin_node_")
   /// 木の左端のノードを返す
-  @inlinable func begin() -> _NodePtr
+  func begin() -> _NodePtr
 }
 
 extension BeginProtocol {
@@ -213,7 +211,7 @@ extension BeginProtocol {
 @usableFromInline
 protocol EndNodeProtocol {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
-  @inlinable func __end_node() -> _NodePtr
+  func __end_node() -> _NodePtr
 }
 
 extension EndNodeProtocol {
@@ -226,7 +224,7 @@ extension EndNodeProtocol {
 @usableFromInline
 protocol EndProtocol: EndNodeProtocol {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
-  @inlinable func end() -> _NodePtr
+  func end() -> _NodePtr
 }
 
 extension EndProtocol {
@@ -239,7 +237,7 @@ extension EndProtocol {
 @usableFromInline
 protocol RootProtocol {
   /// 木の根ノードを返す
-  @inlinable func __root() -> _NodePtr
+  func __root() -> _NodePtr
 }
 
 protocol ___RootProtocol: TreeNodeProtocol & EndProtocol {}
@@ -253,7 +251,7 @@ extension ___RootProtocol {
 @usableFromInline
 protocol RootPtrProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {
   /// 木の根ノードへの参照を返す
-  @inlinable func __root_ptr() -> _NodeRef
+  func __root_ptr() -> _NodeRef
 }
 
 extension RootPtrProtocol {
@@ -268,7 +266,7 @@ protocol SizeProtocol {
   /// 木のノードの数を返す
   ///
   /// 終端ノードは含まないはず
-  @inlinable var __size_: Int { get nonmutating set }
+  var __size_: Int { get nonmutating set }
 }
 
 // MARK: -
@@ -277,9 +275,9 @@ protocol SizeProtocol {
 protocol AllocatorProtocol {
   associatedtype _Value
   /// ノードを構築する
-  @inlinable func __construct_node(_ k: _Value) -> _NodePtr
+  func __construct_node(_ k: _Value) -> _NodePtr
   /// ノードを破棄する
-  @inlinable func destroy(_ p: _NodePtr)
+  func destroy(_ p: _NodePtr)
 }
 
 // MARK: common
@@ -291,11 +289,11 @@ public protocol ValueComparer {
   /// 要素の型
   associatedtype _Value
   /// 要素から比較キー値がとれること
-  @inlinable static func __key(_: _Value) -> _Key
+  static func __key(_: _Value) -> _Key
   /// 比較関数が実装されていること
-  @inlinable static func value_comp(_: _Key, _: _Key) -> Bool
+  static func value_comp(_: _Key, _: _Key) -> Bool
 
-  @inlinable static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
+  static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
 }
 
 extension ValueComparer {
@@ -331,11 +329,11 @@ extension ValueComparer where _Key: Equatable {
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 public protocol ValueComparator {
   associatedtype Base: ValueComparer
-  @inlinable static func __key(_ e: Base._Value) -> Base._Key
-  @inlinable static func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool
-  @inlinable static func value_equiv(_ lhs: Base._Key, _ rhs: Base._Key) -> Bool
-  @inlinable func __key(_ e: Base._Value) -> Base._Key
-  @inlinable func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool
+  static func __key(_ e: Base._Value) -> Base._Key
+  static func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool
+  static func value_equiv(_ lhs: Base._Key, _ rhs: Base._Key) -> Bool
+  func __key(_ e: Base._Value) -> Base._Key
+  func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool
 }
 
 extension ValueComparator {
@@ -375,24 +373,30 @@ extension ValueComparator where Base: ThreeWayComparator {
 
   @inlinable
   @inline(__always)
-  func __lazy_synth_three_way_comparator(_ __lhs: Base._Key, _ __rhs: Base._Key)
+  func __lazy_synth_three_way_comparator(_ __l: Base._Key, _ __r: Base._Key)
     -> Base.__compare_result
   {
-    Base.__lazy_synth_three_way_comparator(__lhs, __rhs)
+    Base.__lazy_synth_three_way_comparator(__l, __r)
   }
+
+//  @inlinable
+//  @inline(__always)
+//  func __comp(_ __l: Base._Key, _ __r: Base._Key) -> Base.__compare_result {
+//    Base.__lazy_synth_three_way_comparator(__l, __r)
+//  }
 }
 
 public protocol ElementComparable: ValueComparer {
   associatedtype _Value
-  @inlinable static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool
+  static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool
 }
 
 public protocol ElementEqutable: ValueComparer {
   associatedtype _Value
-  @inlinable static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool
+  static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool
 }
 
 public protocol ElementHashable: ValueComparer {
   associatedtype _Value
-  @inlinable static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher)
+  static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher)
 }

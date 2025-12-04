@@ -52,7 +52,7 @@ extension BoundAlgorithmProtocol {
   func __lower_upper_bound_unique_impl(_LowerBound: Bool, _ __v: _Key) -> _NodePtr {
     var __rt = __root()
     var __result = __end_node()
-//    let __comp = __lazy_synth_three_way_comparator()
+    let __comp = __lazy_synth_three_way_comparator
     while __rt != .nullptr {
       let __comp_res = __comp(__v, __get_value(__rt))
       if __comp_res.__less() {

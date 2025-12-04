@@ -116,7 +116,7 @@ extension ___LRUMemoizeStorage {
   }
 }
 
-extension ___LRUMemoizeStorage: DefaultThreeWayComparator {}
+extension ___LRUMemoizeStorage: HasDefaultThreeWayComparator {}
 
 extension ___LRUMemoizeStorage: ___LRULinkList {
   

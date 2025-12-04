@@ -74,7 +74,7 @@ extension RedBlackTreeSet: ElementComparable {}
 extension RedBlackTreeSet: ElementEqutable {}
 extension RedBlackTreeSet: ElementHashable where Element: Hashable {}
 
-extension RedBlackTreeSet: DefaultThreeWayComparator {}
+extension RedBlackTreeSet: HasDefaultThreeWayComparator {}
 
 // MARK: - Creating a Set
 

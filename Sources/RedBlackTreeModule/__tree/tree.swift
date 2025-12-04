@@ -40,13 +40,13 @@ extension _NodePtr {
   /// 赤黒木のIndexで、nullを表す
   @inlinable
   static var nullptr: Self {
-    @inline(__always) get { -2 }
+    -2
   }
 
   /// 赤黒木のIndexで、終端を表す
   @inlinable
   static var end: Self {
-    @inline(__always) get { -1 }
+    -1
   }
 
   /// 数値を直接扱うことを避けるための初期化メソッド
@@ -370,17 +370,20 @@ extension ValueComparator {
 }
 
 extension ValueComparator where Base: ThreeWayComparator {
-  
+
   @inlinable
   @inline(__always)
-  func __lazy_synth_three_way_comparator() -> (Base._Key, Base._Key) -> Base.__compare_result {
-    Base.___three_way_compare
+  //  func __lazy_synth_three_way_comparator() -> (Base._Key, Base._Key) -> Base.__compare_result {
+  func __lazy_synth_three_way_comparator(_ __l: Base._Key, _ __r: Base._Key)
+    -> Base.__compare_result
+  {
+    Base.__lazy_synth_three_way_comparator(__l, __r)
   }
-  
+
   @inlinable
   @inline(__always)
   func __comp(_ __l: Base._Key, _ __r: Base._Key) -> Base.__compare_result {
-    Base.___three_way_compare(__l,__r)
+    Base.__lazy_synth_three_way_comparator(__l, __r)
   }
 }
 

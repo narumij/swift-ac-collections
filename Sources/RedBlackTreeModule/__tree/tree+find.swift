@@ -88,9 +88,8 @@ extension FindLeafProtocol {
 
 @usableFromInline
 protocol FindEqualProtocol: ValueProtocol, TreeNodeRefProtocol, RootProtocol, RootPtrProtocol,
-                            ThreeWayComparatorProtocol
-{
-}
+  ThreeWayComparatorProtocol
+{}
 
 extension FindEqualProtocol {
 

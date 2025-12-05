@@ -83,7 +83,7 @@ struct __lazy_compare_result<Base: ValueComparer>: ThreeWayCompareResult
   public func __greater() -> Bool { __comp_(__rhs_, __lhs_) }
 }
 
-// L1に載るとこれが一番速い
+// バグって速かった。直したら普通
 public
 struct __comparable_compare_result<T: Comparable>: ThreeWayCompareResult
 {
@@ -99,7 +99,7 @@ struct __comparable_compare_result<T: Comparable>: ThreeWayCompareResult
   public func __less() -> Bool { __lhs_ < __rhs_ }
   @inlinable
   @inline(__always)
-  public func __greater() -> Bool { __rhs_ > __lhs_ }
+  public func __greater() -> Bool { __lhs_ > __rhs_ }
 }
 
 // 安定して速い

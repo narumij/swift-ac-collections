@@ -384,8 +384,8 @@ final class EtcTests: XCTestCase {
   
 #if DEBUG
   func testBackwordIterator1() throws {
-    var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-    var seq = AnySequence {
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    let seq = AnySequence {
       RedBlackTreeIndices<RedBlackTreeSet<Int>>.Reversed(
         tree: set.__tree_, start: set.startIndex.rawValue, end: set.endIndex.rawValue)
     }
@@ -397,7 +397,7 @@ final class EtcTests: XCTestCase {
   }
   func testBackwordIterator2() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-    var seq = AnySequence {
+    let seq = AnySequence {
       RedBlackTreeIndices<RedBlackTreeSet<Int>>.Reversed(
         tree: set.__tree_, start: set.startIndex.rawValue, end: set.endIndex.rawValue)
     }

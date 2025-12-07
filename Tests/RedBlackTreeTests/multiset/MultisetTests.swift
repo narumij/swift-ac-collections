@@ -1242,37 +1242,37 @@ final class MultisetTests: XCTestCase {
 
   func testAdd() throws {
     do {
-      var a = RedBlackTreeMultiSet<Int>([0, 1])
+      let a = RedBlackTreeMultiSet<Int>([0, 1])
       let b = RedBlackTreeMultiSet<Int>([0, 1])
       //      a.meld(b)
       XCTAssertEqual((a + b) + [], [0, 0, 1, 1])
     }
     do {
-      var a = RedBlackTreeMultiSet<Int>([0, 1])
+      let a = RedBlackTreeMultiSet<Int>([0, 1])
       let b = RedBlackTreeMultiSet<Int>([1, 2])
       //      a.meld(b)
       XCTAssertEqual((a + b) + [], [0, 1, 1, 2])
     }
     do {
-      var a = RedBlackTreeMultiSet<Int>([0, 1])
+      let a = RedBlackTreeMultiSet<Int>([0, 1])
       let b = RedBlackTreeMultiSet<Int>([2, 3])
       //      a.meld(b)
       XCTAssertEqual((a + b) + [], [0, 1, 2, 3])
     }
     do {
-      var a = RedBlackTreeMultiSet<Int>([0, 1])
+      let a = RedBlackTreeMultiSet<Int>([0, 1])
       let b = RedBlackTreeMultiSet<Int>([0, 1])
       //      a.meld(b)
       XCTAssertEqual((a + b) + [], [0, 0, 1, 1])
     }
     do {
-      var a = RedBlackTreeMultiSet<Int>([1, 2])
+      let a = RedBlackTreeMultiSet<Int>([1, 2])
       let b = RedBlackTreeMultiSet<Int>([0, 1])
       //      a.meld(b)
       XCTAssertEqual((a + b) + [], [0, 1, 1, 2])
     }
     do {
-      var a = RedBlackTreeMultiSet<Int>([2, 3])
+      let a = RedBlackTreeMultiSet<Int>([2, 3])
       let b = RedBlackTreeMultiSet<Int>([0, 1])
       //      a.meld(b)
       XCTAssertEqual((a + b) + [], [0, 1, 2, 3])

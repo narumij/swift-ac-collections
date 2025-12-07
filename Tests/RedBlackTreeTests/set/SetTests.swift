@@ -1138,7 +1138,7 @@ final class SetTests: XCTestCase {
   
   func testInsertEmpty() throws {
     var a = RedBlackTreeSet<Int>()
-    var b = RedBlackTreeSet<Int>()
+    let b = RedBlackTreeSet<Int>()
     a.merge(b)
     XCTAssertTrue(a.isEmpty)
   }

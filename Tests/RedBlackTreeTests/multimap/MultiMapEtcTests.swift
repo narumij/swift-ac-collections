@@ -74,7 +74,7 @@ final class MultiMapEtcTests: XCTestCase {
   }
 
   func testMultiMapAndMultiMap2() throws {
-    var lhs: RedBlackTreeMultiMap<String, String> = ["イートハーブの香る": "なんとか"]
+    let lhs: RedBlackTreeMultiMap<String, String> = ["イートハーブの香る": "なんとか"]
     let rhs: RedBlackTreeMultiMap<String, String> = ["foo": "bar"]
     XCTAssertEqual(lhs.inserting(contentsOf: rhs), ["イートハーブの香る": "なんとか", "foo": "bar"])
     XCTAssertEqual(lhs, ["イートハーブの香る": "なんとか"])
@@ -103,7 +103,7 @@ final class MultiMapEtcTests: XCTestCase {
   }
   
   func testMultiMapAndMultiMap6() throws {
-    var lhs: RedBlackTreeMultiMap<String, String> = ["イートハーブの香る": "なんとか"]
+    let lhs: RedBlackTreeMultiMap<String, String> = ["イートハーブの香る": "なんとか"]
     let rhs: RedBlackTreeMultiMap<String, String> = ["foo": "bar"]
     XCTAssertEqual(lhs.inserting(contentsOf: rhs.map{ $0 }), ["イートハーブの香る": "なんとか", "foo": "bar"])
     XCTAssertEqual(lhs, ["イートハーブの香る": "なんとか"])
@@ -119,7 +119,7 @@ final class MultiMapEtcTests: XCTestCase {
   }
 
   func testMultiMapAndDictionary2() throws {
-    var lhs: RedBlackTreeMultiMap<String, String> = ["イートハーブの香る": "なんとか"]
+    let lhs: RedBlackTreeMultiMap<String, String> = ["イートハーブの香る": "なんとか"]
     let rhs: RedBlackTreeDictionary<String, String> = ["foo": "bar"]
     XCTAssertEqual(lhs.inserting(contentsOf: rhs.map{ $0 }), ["イートハーブの香る": "なんとか", "foo": "bar"])
     XCTAssertEqual(lhs, ["イートハーブの香る": "なんとか"])

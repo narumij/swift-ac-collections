@@ -183,8 +183,13 @@ import XCTest
 
     func testInitUniqueKeysWithValues() throws {
       let dict = Target(multiKeysWithValues: [(1, 10), (2, 20)])
+#if COMPATIBLE_ATCODER_2025
       XCTAssertEqual(dict.keys() + [], [1, 2])
       XCTAssertEqual(dict.values() + [], [10, 20])
+#else
+      XCTAssertEqual(dict.keys + [], [1, 2])
+      XCTAssertEqual(dict.values + [], [10, 20])
+#endif
       XCTAssertEqual(dict[0].map(\.value), [])
       XCTAssertEqual(dict[1].map(\.value), [10])
       XCTAssertEqual(dict[2].map(\.value), [20])
@@ -193,8 +198,13 @@ import XCTest
 
     func testInitUniqueKeysWithValues2() throws {
       let dict = Target(multiKeysWithValues: AnySequence([(1, 10), (2, 20)]))
+#if COMPATIBLE_ATCODER_2025
       XCTAssertEqual(dict.keys() + [], [1, 2])
       XCTAssertEqual(dict.values() + [], [10, 20])
+#else
+      XCTAssertEqual(dict.keys + [], [1, 2])
+      XCTAssertEqual(dict.values + [], [10, 20])
+#endif
       XCTAssertEqual(dict[0].map(\.value), [])
       XCTAssertEqual(dict[1].map(\.value), [10])
       XCTAssertEqual(dict[2].map(\.value), [20])
@@ -230,8 +240,13 @@ import XCTest
       do {
         let dict = Target(
           multiKeysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
+#if COMPATIBLE_ATCODER_2025
         XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
         XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
+#else
+        XCTAssertEqual(dict.keys + [], [1, 1, 2, 2])
+        XCTAssertEqual(dict.values + [], [10, 11, 20, 22])
+#endif
         XCTAssertEqual(dict[0].map(\.value), [])
         XCTAssertEqual(dict[1].map(\.value), [10, 11])
         XCTAssertEqual(dict[2].map(\.value), [20, 22])
@@ -243,8 +258,13 @@ import XCTest
       do {
         let dict = Target(
           naive: [(1, 10), (1, 11), (2, 20), (2, 22)].map { keyValue($0, $1) })
+#if COMPATIBLE_ATCODER_2025
         XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
         XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
+#else
+        XCTAssertEqual(dict.keys + [], [1, 1, 2, 2])
+        XCTAssertEqual(dict.values + [], [10, 11, 20, 22])
+#endif
         XCTAssertEqual(dict[0].map(\.value), [])
         XCTAssertEqual(dict[1].map(\.value), [10, 11])
         XCTAssertEqual(dict[2].map(\.value), [20, 22])

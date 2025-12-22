@@ -23,7 +23,7 @@ import Foundation
 
 @frozen
 public struct RedBlackTreeSlice<Base> where Base: ___TreeBase {
-  
+
   public typealias Tree = ___Tree<Base>
   public typealias Element = Tree._Value
   public typealias Index = Tree.Index
@@ -45,7 +45,7 @@ public struct RedBlackTreeSlice<Base> where Base: ___TreeBase {
   }
 }
 
-extension RedBlackTreeSlice: Sequence & Collection & BidirectionalCollection { }
+extension RedBlackTreeSlice: Sequence & Collection & BidirectionalCollection {}
 
 extension RedBlackTreeSlice {
 
@@ -162,7 +162,7 @@ extension RedBlackTreeSlice {
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
@@ -187,12 +187,13 @@ extension RedBlackTreeSlice {
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
   }
-  
+
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public subscript<R>(unchecked bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+  public subscript<R>(unchecked bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index
+  {
     let bounds: Range<Index> = bounds.relative(to: self)
     return .init(
       tree: __tree_,
@@ -287,8 +288,7 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   func ___contains(_ i: _NodePtr) -> Bool {
-    !__tree_.___is_subscript_null(i) &&
-    __tree_.___ptr_closed_range_contains(_start, _end, i)
+    !__tree_.___is_subscript_null(i) && __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
 
   /// Indexがsubscriptやremoveで利用可能か判別します
@@ -310,10 +310,10 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   func ___contains(_ bounds: Range<Index>) -> Bool {
-    !__tree_.___is_offset_null(bounds.lowerBound.rawValue) &&
-    !__tree_.___is_offset_null(bounds.upperBound.rawValue) &&
-    __tree_.___ptr_range_contains(_start, _end, bounds.lowerBound.rawValue) &&
-    __tree_.___ptr_range_contains(_start, _end, bounds.upperBound.rawValue)
+    !__tree_.___is_offset_null(bounds.lowerBound.rawValue)
+      && !__tree_.___is_offset_null(bounds.upperBound.rawValue)
+      && __tree_.___ptr_range_contains(_start, _end, bounds.lowerBound.rawValue)
+      && __tree_.___ptr_range_contains(_start, _end, bounds.upperBound.rawValue)
   }
 
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
@@ -354,27 +354,43 @@ extension RedBlackTreeSlice {
 }
 
 extension RedBlackTreeSlice where Base: KeyValueComparer {
-  
+
   public typealias Keys = RedBlackTreeIterator<Base>.Keys
   public typealias Values = RedBlackTreeIterator<Base>.MappedValues
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func keys() -> Keys {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func keys() -> Keys {
+      .init(tree: __tree_, start: _start, end: _end)
+    }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func values() -> Values {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func values() -> Values {
+      .init(tree: __tree_, start: _start, end: _end)
+    }
+  #else
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var keys: Keys {
+      .init(tree: __tree_, start: _start, end: _end)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var values: Values {
+      .init(tree: __tree_, start: _start, end: _end)
+    }
+  #endif
 }
 
 extension RedBlackTreeSlice {
-  
+
   /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)

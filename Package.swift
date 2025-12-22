@@ -14,7 +14,7 @@ var defines: [String] = [
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "SKIP_MULTISET_INDEX_BUG",
   //  "PERFOMANCE_CHECK",
-  "COMPATIBLE_ATCODER_2025",
+//  "COMPATIBLE_ATCODER_2025",
 ]
 
 var _settings: [SwiftSetting] =

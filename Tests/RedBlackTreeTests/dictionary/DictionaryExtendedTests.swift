@@ -94,7 +94,11 @@ final class RedBlackTreeDictionaryExtendedTests: XCTestCase {
     var d: RedBlackTreeDictionary = [("b", 2), ("a", 1), ("c", 3)]
     let first = d.popFirst()
     XCTAssertEqual(first?.key, "a")
+#if COMPATIBLE_ATCODER_2025
     XCTAssertEqual(Set(d.keys()), ["b", "c"])
+#else
+    XCTAssertEqual(Set(d.keys), ["b", "c"])
+#endif
     XCTAssertEqual(d.popFirst()?.key, "b")
     _ = d.popFirst()
     XCTAssertTrue(d.isEmpty)

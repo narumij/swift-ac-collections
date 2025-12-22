@@ -972,19 +972,35 @@ extension RedBlackTreeMultiMap where Value: Comparable {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func keys() -> Keys {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func keys() -> Keys {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func values() -> Values {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func values() -> Values {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
+  #else
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var keys: Keys {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var values: Values {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
+  #endif
 }
 
 // MARK: - SubSequence

@@ -872,21 +872,21 @@ extension RedBlackTreeMap: Sequence, Collection, BidirectionalCollection {
     try _forEach(body)
   }
 
-#if false
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func sorted() -> Tree._Values {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
-#else
-  /// - Complexity: O(*n*)
-  @inlinable
-  @inline(__always)
-  public func sorted() -> [Element] {
-    __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
-  }
-#endif
+  #if false
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func sorted() -> Tree._Values {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
+  #else
+    /// - Complexity: O(*n*)
+    @inlinable
+    @inline(__always)
+    public func sorted() -> [Element] {
+      __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
+    }
+  #endif
 
   /// - Complexity: O(1)
   @inlinable
@@ -1058,19 +1058,35 @@ extension RedBlackTreeMap where Value: Comparable {
 
 extension RedBlackTreeMap {
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func keys() -> Keys {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func keys() -> Keys {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func values() -> Values {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func values() -> Values {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
+  #else
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var keys: Keys {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var values: Values {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
+  #endif
 }
 
 // MARK: - SubSequence
@@ -1217,7 +1233,7 @@ extension RedBlackTreeMap: Comparable where Value: Comparable {
 // MARK: - Hashable
 
 extension RedBlackTreeMap: Hashable where Key: Hashable, Value: Hashable {
-  
+
   @inlinable
   @inline(__always)
   public func hash(into hasher: inout Hasher) {
@@ -1235,7 +1251,7 @@ extension RedBlackTreeMap: Hashable where Key: Hashable, Value: Hashable {
 // MARK: - Codable
 
 extension RedBlackTreeMap: Encodable where Key: Encodable, Value: Encodable {
-  
+
   @inlinable
   public func encode(to encoder: Encoder) throws {
     var container = encoder.unkeyedContainer()
@@ -1246,7 +1262,7 @@ extension RedBlackTreeMap: Encodable where Key: Encodable, Value: Encodable {
 }
 
 extension RedBlackTreeMap: Decodable where Key: Decodable, Value: Decodable {
-  
+
   @inlinable
   public init(from decoder: Decoder) throws {
     _storage = .init(tree: try .create(from: decoder))

@@ -30,6 +30,7 @@ public protocol KeyValueComparer: ValueComparer {
   static func ___with_mapped_value<T>(_ element: inout _Value,_ :(inout _MappedValue) throws -> T) rethrows -> T
   static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value
   static func __value_(_ : (_Key,_MappedValue)) -> _Value
+  static func ___with_value_func<T>(_ :((_Key,_MappedValue) -> _Value) throws -> T) rethrows -> T
 }
 
 extension KeyValueComparer {
@@ -56,6 +57,12 @@ extension KeyValueComparer {
   @inline(__always)
   func ___tupple_value(_ element: _Value) -> (key: _Key, value: _MappedValue) {
     Self.___tupple_value(element)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func ___with_value_func<T>(_ f:((_Key,_MappedValue) -> _Value) throws -> T) rethrows -> T {
+    try f(__value_)
   }
 }
 

@@ -1239,15 +1239,10 @@ extension ___Tree: Hashable where Base: ElementEqutable & ElementHashable {
 }
 
 extension ___Tree {
-
+  
   @inlinable
   public func elementsEqual<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence {
     try unsafeValues(__first, __last).elementsEqual(other, by: areEquivalent)
-  }
-
-  @inlinable
-  public func lexicographicallyPrecedes<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence, _Value == OtherSequence.Element {
-    try unsafeValues(__first, __last).lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
 
@@ -1257,6 +1252,14 @@ extension ___Tree where Base: ElementEqutable {
   public func elementsEqual<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, _Value == OtherSequence.Element {
     elementsEqual(__first, __last, other, by: Base.___element_equiv)
+  }
+}
+
+extension ___Tree {
+
+  @inlinable
+  public func lexicographicallyPrecedes<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence, _Value == OtherSequence.Element {
+    try unsafeValues(__first, __last).lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
 
@@ -1280,6 +1283,21 @@ extension ___Tree {
       var __first = __first
       while __first != __last {
         buffer.initialize(to: self[__first])
+        buffer = buffer + 1
+        __first = __tree_next_iter(__first)
+      }
+    }
+  }
+  
+  @inlinable
+  public func ___copy_to_array<T>(_ __first: _NodePtr, _ __last: _NodePtr, transform: (_Value) -> T) -> [T] {
+    let count = __distance(__first, __last)
+    return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      initializedCount = count
+      var buffer = buffer.baseAddress!
+      var __first = __first
+      while __first != __last {
+        buffer.initialize(to: transform(self[__first]))
         buffer = buffer + 1
         __first = __tree_next_iter(__first)
       }

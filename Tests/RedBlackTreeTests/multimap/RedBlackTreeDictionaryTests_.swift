@@ -34,23 +34,21 @@ final class RedBlackTreeMultiMapTests_: XCTestCase {
     XCTAssertEqual(multiDict.count(forKey: "banana"), 1)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
-    func testRedBlackTreeMultiDictionary_equalRange() {
-      var multiDict = RedBlackTreeMultiMap<String, Int>()
-      multiDict.insert(key: "apple", value: 1)
-      multiDict.insert(key: "apple", value: 3)
-      multiDict.insert(key: "banana", value: 2)
+  func testRedBlackTreeMultiDictionary_equalRange() {
+    var multiDict = RedBlackTreeMultiMap<String, Int>()
+    multiDict.insert(key: "apple", value: 1)
+    multiDict.insert(key: "apple", value: 3)
+    multiDict.insert(key: "banana", value: 2)
 
-      let (lower, upper) = multiDict.equalRange("apple")
-      var result: [Int] = []
-      var it = lower
-      while it != upper {
-        //            if let val = multiDict[it] {
-        result.append(multiDict[it].value)
-        //            }
-        it = multiDict.index(after: it)
-      }
-      XCTAssertEqual(Set(result), Set([1, 3]))
+    let (lower, upper) = multiDict.equalRange("apple")
+    var result: [Int] = []
+    var it = lower
+    while it != upper {
+      //            if let val = multiDict[it] {
+      result.append(multiDict[it].value)
+      //            }
+      it = multiDict.index(after: it)
     }
-  #endif
+    XCTAssertEqual(Set(result), Set([1, 3]))
+  }
 }

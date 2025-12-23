@@ -182,6 +182,8 @@ extension RedBlackTreeIndex {
 }
 
 extension RedBlackTreeIndex {
+  
+  // TODO: KeyValueのケース対応
 
   /// 現在位置の値を返す
   ///

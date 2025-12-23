@@ -66,22 +66,20 @@ final class RedBlackTreeComparatorsTests: XCTestCase {
     XCTAssertEqual(dict.distance(from: lo, to: hi), 1)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
-    func testMultiMapKeyValueCompAndEqualRange() {
-      let dict: RedBlackTreeMultiMap = ["a": 1, "b": 2, "c": 3]
+  func testMultiMapKeyValueCompAndEqualRange() {
+    let dict: RedBlackTreeMultiMap = ["a": 1, "b": 2, "c": 3]
 
-      let keyComp = dict.___key_comp
-      let valueComp = dict.___value_comp
+    let keyComp = dict.___key_comp
+    let valueComp = dict.___value_comp
 
-      XCTAssertTrue(keyComp("a", "b"))
-      XCTAssertFalse(keyComp("c", "b"))
+    XCTAssertTrue(keyComp("a", "b"))
+    XCTAssertFalse(keyComp("c", "b"))
 
-      XCTAssertTrue(valueComp(keyValue("a", 1), keyValue("b", 2)))
-      XCTAssertFalse(valueComp(keyValue("c", 3), keyValue("b", 2)))
+    XCTAssertTrue(valueComp(_value("a", 1), _value("b", 2)))
+    XCTAssertFalse(valueComp(_value("c", 3), _value("b", 2)))
 
-      let (lo, hi) = dict.equalRange("b")
-      XCTAssertEqual(dict[lo].key, "b")
-      XCTAssertEqual(dict.distance(from: lo, to: hi), 1)
-    }
-  #endif
+    let (lo, hi) = dict.equalRange("b")
+    XCTAssertEqual(dict[lo].key, "b")
+    XCTAssertEqual(dict.distance(from: lo, to: hi), 1)
+  }
 }

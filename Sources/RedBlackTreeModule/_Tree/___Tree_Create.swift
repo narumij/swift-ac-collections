@@ -249,6 +249,13 @@ extension ___Tree {
 
     .___insert_range_multi(tree: .create(minimumCapacity: 0), sequence)
   }
+  
+  @inlinable
+  static func create_multi<S>(naive sequence: __owned S, transform: (S.Element) -> Base._Value) -> ___Tree
+  where S: Sequence {
+
+    .___insert_range_multi(tree: .create(minimumCapacity: 0), sequence, transform: transform)
+  }
 }
 
 extension ___Tree where Base: KeyValueComparer {

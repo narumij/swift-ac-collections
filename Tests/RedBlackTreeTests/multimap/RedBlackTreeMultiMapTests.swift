@@ -53,22 +53,20 @@ final class RedBlackTreeMultiMapTests: XCTestCase {
     XCTAssertNil(firstLarge)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
-    func testFirstIndexAndIndexing() {
-      let map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("a", 3)]
-      if let idx = map.firstIndex(of: "a") {
-        XCTAssertEqual(map[idx].key, "a")
-      } else {
-        XCTFail("Expected to find key 'a'")
-      }
-
-      if let idx = map.firstIndex(where: { $0.value == 2 }) {
-        XCTAssertEqual(map[idx].value, 2)
-      } else {
-        XCTFail("Expected to find value 2")
-      }
+  func testFirstIndexAndIndexing() {
+    let map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("a", 3)]
+    if let idx = map.firstIndex(of: "a") {
+      XCTAssertEqual(map[idx].key, "a")
+    } else {
+      XCTFail("Expected to find key 'a'")
     }
-  #endif
+
+    if let idx = map.firstIndex(where: { $0.value == 2 }) {
+      XCTAssertEqual(map[idx].value, 2)
+    } else {
+      XCTFail("Expected to find value 2")
+    }
+  }
 
   func testRemoveValuesForKey() {
     var map: RedBlackTreeMultiMap = [("k1", 1), ("k1", 2), ("k2", 3)]
@@ -88,13 +86,13 @@ final class RedBlackTreeMultiMapTests: XCTestCase {
 
   func testKeysAndValues() {
     let map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("a", 3)]
-#if COMPATIBLE_ATCODER_2025
-    let keys = map.keys() + []
-    let values = map.values() + []
-#else
-    let keys = map.keys + []
-    let values = map.values + []
-#endif
+    #if COMPATIBLE_ATCODER_2025
+      let keys = map.keys() + []
+      let values = map.values() + []
+    #else
+      let keys = map.keys + []
+      let values = map.values + []
+    #endif
     XCTAssertEqual(keys, ["a", "a", "b"])
     XCTAssertEqual(values, [1, 3, 2])
   }

@@ -817,24 +817,24 @@ final class MapTests: XCTestCase {
     let set: RedBlackTreeMap<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]
     let l2 = set.lowerBound(2)
     let u2 = set.upperBound(4)
-    XCTAssertEqual(set[l2..<u2].map{ $0 }, [2,3,4].map{ .init($0, $0 * 10) })
-    XCTAssertEqual(set[l2...].map{ $0 }, [2, 3, 4, 6, 7].map{ .init($0, $0 * 10) })
-    XCTAssertEqual(set[u2...].map{ $0 }, [6, 7].map{ .init($0, $0 * 10) })
-    XCTAssertEqual(set[..<u2].map{ $0 }, [1, 2, 3, 4].map{ .init($0, $0 * 10) })
-    XCTAssertEqual(set[...u2].map{ $0 }, [1, 2, 3, 4, 6].map{ .init($0, $0 * 10) })
-    XCTAssertEqual(set[..<set.endIndex].map{ $0 }, [1,2,3,4,6,7].map{ .init($0, $0 * 10) })
+    AssertEquenceEqual(set[l2..<u2].map{ $0 }, [2,3,4].map{ keyValue($0, $0 * 10) })
+    AssertEquenceEqual(set[l2...].map{ $0 }, [2, 3, 4, 6, 7].map{ keyValue($0, $0 * 10) })
+    AssertEquenceEqual(set[u2...].map{ $0 }, [6, 7].map{ keyValue($0, $0 * 10) })
+    AssertEquenceEqual(set[..<u2].map{ $0 }, [1, 2, 3, 4].map{ keyValue($0, $0 * 10) })
+    AssertEquenceEqual(set[...u2].map{ $0 }, [1, 2, 3, 4, 6].map{ keyValue($0, $0 * 10) })
+    AssertEquenceEqual(set[..<set.endIndex].map{ $0 }, [1,2,3,4,6,7].map{ keyValue($0, $0 * 10) })
   }
   
   func testRangeSubscriptUnchecked() throws {
     let set: RedBlackTreeMap<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]
     let l2 = set.lowerBound(2)
     let u2 = set.upperBound(4)
-    XCTAssertEqual(set[unchecked: l2..<u2].map{ $0 }, [2,3,4].map{ .init($0, $0 * 10) })
-    XCTAssertEqual(set[unchecked: l2...].map{ $0 }, [2, 3, 4, 6, 7].map{ .init($0, $0 * 10) })
-    XCTAssertEqual(set[unchecked: u2...].map{ $0 }, [6, 7].map{ .init($0, $0 * 10) })
-    XCTAssertEqual(set[unchecked: ..<u2].map{ $0 }, [1, 2, 3, 4].map{ .init($0, $0 * 10) })
-    XCTAssertEqual(set[unchecked: ...u2].map{ $0 }, [1, 2, 3, 4, 6].map{ .init($0, $0 * 10) })
-    XCTAssertEqual(set[unchecked: ..<set.endIndex].map{ $0 }, [1,2,3,4,6,7].map{ .init($0, $0 * 10) })
+    AssertEquenceEqual(set[unchecked: l2..<u2].map{ $0 }, [2,3,4].map{ keyValue($0, $0 * 10) })
+    AssertEquenceEqual(set[unchecked: l2...].map{ $0 }, [2, 3, 4, 6, 7].map{ keyValue($0, $0 * 10) })
+    AssertEquenceEqual(set[unchecked: u2...].map{ $0 }, [6, 7].map{ keyValue($0, $0 * 10) })
+    AssertEquenceEqual(set[unchecked: ..<u2].map{ $0 }, [1, 2, 3, 4].map{ keyValue($0, $0 * 10) })
+    AssertEquenceEqual(set[unchecked: ...u2].map{ $0 }, [1, 2, 3, 4, 6].map{ keyValue($0, $0 * 10) })
+    AssertEquenceEqual(set[unchecked: ..<set.endIndex].map{ $0 }, [1,2,3,4,6,7].map{ keyValue($0, $0 * 10) })
   }
 
   func testIndexValidation() throws {
@@ -1055,7 +1055,7 @@ final class MapTests: XCTestCase {
   }
   
   func testRemoveRange() throws {
-    var a = RedBlackTreeMap<Int,Int>(uniqueKeysWithValues: [0,1,2,3,4,5].map{ Pair($0,$0) })
+    var a = RedBlackTreeMap<Int,Int>(uniqueKeysWithValues: [0,1,2,3,4,5].map{ keyValue($0,$0) })
     a.removeSubrange(a.lowerBound(2)..<a.upperBound(4))
 #if COMPATIBLE_ATCODER_2025
     XCTAssertEqual(a.keys() + [], [0,1,5])
@@ -1065,24 +1065,24 @@ final class MapTests: XCTestCase {
   }
   
   func testIsValidRangeSmoke() throws {
-    let a = RedBlackTreeMap<Int,Int>(uniqueKeysWithValues: [0,1,2,3,4,5].map{ Pair($0,$0) })
+    let a = RedBlackTreeMap<Int,Int>(uniqueKeysWithValues: [0,1,2,3,4,5].map{ keyValue($0,$0) })
     XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
   }
   
   func testSortedReversed() throws {
-    let source = [0,1,2,3,4,5].map { Pair($0,$0 * 10) }
+    let source = [0,1,2,3,4,5].map { keyValue($0,$0 * 10) }
     let a = RedBlackTreeMap<Int,Int>(uniqueKeysWithValues: source)
-    XCTAssertEqual(a.sorted() + [], source)
-    XCTAssertEqual(a.reversed() + [], source.reversed())
+    AssertEquenceEqual(a.sorted() + [], source)
+    AssertEquenceEqual(a.reversed() + [], source.reversed())
   }
   
   func testForEach_enumeration() throws {
-    let source = [0,1,2,3,4,5].map { Pair($0,$0 * 10) }
+    let source = [0,1,2,3,4,5].map { keyValue($0,$0 * 10) }
     let a = RedBlackTreeMap<Int,Int>(uniqueKeysWithValues: source)
     var p: RedBlackTreeMap<Int,Int>.Index? = a.startIndex
     a.forEach { i, v in
       XCTAssertEqual(i, p)
-      XCTAssertEqual(a[p!], v)
+      XCTAssertTrue(a[p!] == v)
       p = p?.next
     }
   }

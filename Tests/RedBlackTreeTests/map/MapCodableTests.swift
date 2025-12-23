@@ -1,6 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
+#if !COMPATIBLE_ATCODER_2025
 final class MapCodableTests: CodableFixture {
 
   func testRoundTrip() throws {
@@ -10,3 +11,4 @@ final class MapCodableTests: CodableFixture {
     XCTAssertEqual(v, u)
   }
 }
+#endif

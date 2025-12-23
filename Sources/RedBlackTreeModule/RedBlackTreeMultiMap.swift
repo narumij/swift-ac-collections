@@ -687,7 +687,9 @@ extension RedBlackTreeMultiMap {
         tree: try __tree_.___filter(
           __tree_.__begin_node_,
           __tree_.__end_node()
-        ) { try isIncluded(___tupple_value($0)) }
+        ) {
+          try isIncluded(___tupple_value($0))
+        }
       ))
   }
 }

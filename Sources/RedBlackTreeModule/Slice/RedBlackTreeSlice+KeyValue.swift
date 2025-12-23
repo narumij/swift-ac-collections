@@ -142,22 +142,22 @@ extension RedBlackTreeSlice.KeyValue {
 }
 
 extension RedBlackTreeSlice.KeyValue {
-  
-  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(unchecked position: Index) -> Element {
-    @inline(__always) get {
-      return Base.___element(__tree_[position.rawValue])
+
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    public subscript(_unsafe position: Index) -> Element {
+      Base.___element(__tree_[position.rawValue])
     }
-  }
-  
-#if COMPATIBLE_ATCODER_2025
-  @inlinable
-  public subscript(_unsafe position: Index) -> Element {
-    self[unchecked: position]
-  }
-#endif
+  #else
+    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(unchecked position: Index) -> Element {
+      @inline(__always) get {
+        return Base.___element(__tree_[position.rawValue])
+      }
+    }
+  #endif
 }
 
 extension RedBlackTreeSlice.KeyValue {

@@ -138,14 +138,23 @@ extension RedBlackTreeSlice {
 
 extension RedBlackTreeSlice {
 
-  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(unchecked position: Index) -> Element {
-    @inline(__always) _read {
-      yield __tree_[position.rawValue]
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    public subscript(_unsafe position: Index) -> Element {
+      @inline(__always) _read {
+        yield __tree_[position.rawValue]
+      }
     }
-  }
+  #else
+    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(unchecked position: Index) -> Element {
+      @inline(__always) _read {
+        yield __tree_[position.rawValue]
+      }
+    }
+  #endif
 }
 
 extension RedBlackTreeSlice {

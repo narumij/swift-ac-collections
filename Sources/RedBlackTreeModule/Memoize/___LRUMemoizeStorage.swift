@@ -100,26 +100,6 @@ extension ___LRUMemoizeStorage {
       }
     }
   }
-
-  @inlinable
-  public var count: Int { __tree_.count }
-
-  @inlinable
-  public var capacity: Int { __tree_.___capacity }
-
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    public var _copyCount: UInt {
-      _storage.tree.copyCount
-    }
-  #endif
-}
-
-extension ___LRUMemoizeStorage {
-
-  @inlinable
-  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    ___removeAll(keepingCapacity: keepCapacity)
-  }
 }
 
 extension ___LRUMemoizeStorage: HasDefaultThreeWayComparator {}
@@ -132,17 +112,11 @@ extension ___LRUMemoizeStorage: ___LRULinkList {
       yield _storage.tree
     }
   }
+}
 
-  @inlinable
-  @inline(__always)
-  mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
-
-    if keepCapacity {
-      __tree_.__eraseAll()
-    } else {
-      _storage = .create(withCapacity: 0)
-    }
-  }
+extension ___LRUMemoizeStorage: ___RedBlackTreeCopyOnWrite {}
+extension ___LRUMemoizeStorage: CompareUniqueTrait {}
+extension ___LRUMemoizeStorage: KeyValueComparer {
 
   @inlinable
   @inline(__always)
@@ -159,6 +133,32 @@ extension ___LRUMemoizeStorage: ___LRULinkList {
   }
 }
 
-extension ___LRUMemoizeStorage: ___RedBlackTreeCopyOnWrite {}
-extension ___LRUMemoizeStorage: KeyValueComparer {}
-extension ___LRUMemoizeStorage: CompareUniqueTrait {}
+extension ___LRUMemoizeStorage {
+
+  @inlinable
+  @inline(__always)
+  mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
+
+    if keepCapacity {
+      __tree_.__eraseAll()
+    } else {
+      _storage = .create(withCapacity: 0)
+    }
+  }
+
+}
+
+extension ___LRUMemoizeStorage {
+
+  @inlinable
+  public var count: Int { __tree_.count }
+
+  @inlinable
+  public var capacity: Int { __tree_.___capacity }
+
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    public var _copyCount: UInt {
+      _storage.tree.copyCount
+    }
+  #endif
+}

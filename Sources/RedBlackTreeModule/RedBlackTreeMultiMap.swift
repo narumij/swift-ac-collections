@@ -61,7 +61,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
   #endif
 
   public
-    typealias Element = KeyValue
+    typealias Element = (key: Key, value: Value)
 
   public
     typealias Keys = RedBlackTreeIterator<Self>.Keys
@@ -117,7 +117,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025 && false
     /// - Complexity: O(*n* log *n* + *n*)
     @inlinable
     public init<S>(multiKeysWithValues keysAndValues: __owned S)
@@ -293,7 +293,7 @@ extension RedBlackTreeMultiMap {
     insert(Self.__value_(key, value))
   }
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025 && false
     /// - Complexity: O(log *n*)
     @inlinable
     @inline(__always)
@@ -362,7 +362,7 @@ extension RedBlackTreeMultiMap {
     }
   }
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025 && false
     /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
     ///   and *m* is the size of the current tree.
     @inlinable
@@ -392,7 +392,7 @@ extension RedBlackTreeMultiMap {
     return result
   }
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025 && false
     /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
     ///   and *m* is the size of the current tree.
     @inlinable
@@ -462,7 +462,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public mutating func popFirst() -> KeyValue? {
+  public mutating func popFirst() -> Element? {
     guard !isEmpty else { return nil }
     return remove(at: startIndex)
   }
@@ -537,7 +537,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func remove(at index: Index) -> KeyValue {
+  public mutating func remove(at index: Index) -> Element {
     _ensureUnique()
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
@@ -769,7 +769,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func makeIterator() -> Tree._Values {
+  public func makeIterator() -> Tree._KeyValues {
     _makeIterator()
   }
 
@@ -1165,7 +1165,7 @@ extension RedBlackTreeMultiMap: Hashable where Key: Hashable, Value: Hashable {
 
 // MARK: - Codable
 
-#if !COMPATIBLE_ATCODER_2025
+#if !COMPATIBLE_ATCODER_2025 && false
   extension RedBlackTreeMultiMap: Encodable where Key: Encodable, Value: Encodable {
 
     @inlinable

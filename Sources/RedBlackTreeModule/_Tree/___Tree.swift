@@ -1011,6 +1011,18 @@ extension ___Tree {
   }
 }
 
+extension ___Tree where Base: KeyValueComparer {
+
+  public typealias _KeyValues = RedBlackTreeIterator<Base>.KeyValues
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func makeIterator() -> _KeyValues {
+    .init(tree: self, start: __begin_node_, end: __end_node())
+  }
+}
+
 // MARK: -
 
 extension ___Tree {

@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeSequenceBase: ___RedBlackTreeIndexing & ___TreeBase, Collection
+protocol ___RedBlackTreeSequenceBase: ___RedBlackTreeIndexing & ___TreeBase & ___TreeIndex, Collection
 where
   Tree == ___Tree<Self>,
   Index == Tree.Index,

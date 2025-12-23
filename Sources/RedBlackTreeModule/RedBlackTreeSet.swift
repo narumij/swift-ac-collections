@@ -73,10 +73,8 @@ extension RedBlackTreeSet: ScalarValueComparer {}
 
 extension RedBlackTreeSet: HasDefaultThreeWayComparator {}
 
-extension RedBlackTreeSet: ___RedBlackTreePointee {
-  public static func ___pointee(_ __value: Element) -> Element {
-    __value
-  }
+extension RedBlackTreeSet: ___TreeIndex {
+  public static func ___pointee(_ __value: Element) -> Element { __value }
 }
 
 // MARK: - Creating a Set

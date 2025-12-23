@@ -22,7 +22,7 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeSlice<Base> where Base: ___TreeBase {
+public struct RedBlackTreeSlice<Base> where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = ___Tree<Base>
   public typealias _Value = Tree._Value

@@ -26,9 +26,10 @@ import Foundation
 ///
 /// C++の双方向イテレータに近い内容となっている
 @frozen
-public struct RedBlackTreeIndex<Base> where Base: ___TreeBase {
+public struct RedBlackTreeIndex<Base> where Base: ___TreeBase & ___TreeIndex {
   
   public typealias Tree = ___Tree<Base>
+  public typealias Pointee = Tree.Pointee
   public typealias _Value = Tree._Value
 
   @usableFromInline
@@ -189,9 +190,9 @@ extension RedBlackTreeIndex {
   ///
   /// 無効な場合nilとなる
   @inlinable
-  public var pointee: _Value? {
-    @inline(__always) _read {
-      yield __tree_.___is_subscript_null(rawValue) ? nil : ___pointee
+  public var pointee: Pointee? {
+    @inline(__always) get {
+      __tree_.___is_subscript_null(rawValue) ? nil : Base.___pointee(___tree_value)
     }
   }
 }
@@ -201,11 +202,11 @@ extension RedBlackTreeIndex {
   @inlinable
   @inline(__always)
   var ___key: Base._Key {
-    Base.__key(___pointee)
+    Base.__key(___tree_value)
   }
 
   @inlinable
-  var ___pointee: _Value {
+  var ___tree_value: _Value {
     @inline(__always) _read {
       yield __tree_[rawValue]
     }

@@ -66,6 +66,10 @@ extension RedBlackTreeMultiSet: ScalarValueComparer {}
 
 extension RedBlackTreeMultiSet: HasDefaultThreeWayComparator {}
 
+extension RedBlackTreeMultiSet: ___TreeIndex {
+  public static func ___pointee(_ __value: Element) -> Element { __value }
+}
+
 // MARK: - Creating a MultSet
 
 extension RedBlackTreeMultiSet {

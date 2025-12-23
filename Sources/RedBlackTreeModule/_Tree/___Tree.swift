@@ -999,7 +999,7 @@ extension ___Tree {
 
 // MARK: -
 
-extension ___Tree {
+extension ___Tree where Base: ___TreeIndex {
 
   public typealias _Values = RedBlackTreeIterator<Base>.Values
 
@@ -1011,7 +1011,7 @@ extension ___Tree {
   }
 }
 
-extension ___Tree where Base: KeyValueComparer {
+extension ___Tree where Base: KeyValueComparer & ___TreeIndex {
 
   public typealias _KeyValues = RedBlackTreeIterator<Base>.KeyValues
 
@@ -1055,9 +1055,10 @@ extension ___Tree {
 
 // MARK: -
 
-extension ___Tree {
+extension ___Tree where Base: ___TreeIndex {
 
   public typealias Index = RedBlackTreeIndex<Base>
+  public typealias Pointee = Base.Pointee
 
   @nonobjc
   @inlinable
@@ -1067,7 +1068,7 @@ extension ___Tree {
   }
 }
 
-extension ___Tree {
+extension ___Tree where Base: ___TreeIndex {
 
   public typealias Indices = RedBlackTreeIndices<Base>
 

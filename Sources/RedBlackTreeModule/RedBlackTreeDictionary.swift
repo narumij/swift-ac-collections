@@ -90,7 +90,7 @@ extension RedBlackTreeDictionary: HasDefaultThreeWayComparator {}
 
 extension RedBlackTreeDictionary: ___RedBlackTreeKeyValueBase {}
 
-extension RedBlackTreeDictionary: ___RedBlackTreePointee {
+extension RedBlackTreeDictionary: ___TreeIndex {
   public static func ___pointee(_ __value: _Value) -> Element {
     Self.___element(__value)
   }

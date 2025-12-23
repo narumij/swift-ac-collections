@@ -23,7 +23,7 @@
 import Foundation
 
 @frozen
-public enum RedBlackTreeIterator<Base> where Base: ___TreeBase {
+public enum RedBlackTreeIterator<Base> where Base: ___TreeBase & ___TreeIndex {
 
   @frozen
   public struct Values: Sequence, IteratorProtocol {

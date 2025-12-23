@@ -38,7 +38,8 @@ protocol ___RedBlackTreeIndexing {
 @usableFromInline
 protocol ___RedBlackTreeBase:
   ___RedBlackTree___,
-  ___TreeBase
+  ___TreeBase,
+  ___TreeIndex
 where
   Tree == ___Tree<Self>,
   Storage == ___Storage<Self>

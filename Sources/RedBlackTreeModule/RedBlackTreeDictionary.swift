@@ -925,12 +925,19 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
     //    @inline(__always) _read { yield self[_checked: position] }
   }
 
-  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(unchecked position: Index) -> Element {
-    @inline(__always) get { ___element(self[_unchecked: position]) }
-  }
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    public subscript(_unsafe position: Index) -> Element {
+      @inline(__always) get { ___element(self[_unchecked: position]) }
+    }
+  #else
+    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(unchecked position: Index) -> Element {
+      @inline(__always) get { ___element(self[_unchecked: position]) }
+    }
+  #endif
 
   /// Indexがsubscriptやremoveで利用可能か判別します
   ///
@@ -1192,9 +1199,8 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
     @inlinable
     public func encode(to encoder: Encoder) throws {
       var container = encoder.unkeyedContainer()
-      for element in self {
-        try container.encode(element.key)
-        try container.encode(element.value)
+      for element in __tree_.unsafeValues(__tree_.__begin_node_, __tree_.__end_node()) {
+        try container.encode(element)
       }
     }
   }

@@ -6,7 +6,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-#if COMPATIBLE_ATCODER_2025
+#if COMPATIBLE_ATCODER_2025 || true
   func keyValue<K, V>(_ k: K, _ v: V) -> (key: K, value: V) { (k, v) }
   func keyValue<K, V>(_ kv: (K, V)) -> (key: K, value: V) {
     (kv.0, kv.1)
@@ -14,11 +14,11 @@ import XCTest
   func _value<K, V>(_ k: K, _ v: V) -> RedBlackTreePair<K, V> { RedBlackTreePair(k, v) }
   func _value<K, V>(_ kv: (K, V)) -> RedBlackTreePair<K, V> { RedBlackTreePair(kv.0, kv.1) }
 #else
-  func keyValue<K, V>(_ k: K, _ v: V) -> Pair<K, V> { Pair(k, v) }
-  func keyValue<K, V>(_ kv: (K, V)) -> Pair<K, V> { Pair(kv.0, kv.1) }
+//  func keyValue<K, V>(_ k: K, _ v: V) -> Pair<K, V> { Pair(k, v) }
+//  func keyValue<K, V>(_ kv: (K, V)) -> Pair<K, V> { Pair(kv.0, kv.1) }
 #endif
 
-#if COMPATIBLE_ATCODER_2025
+#if COMPATIBLE_ATCODER_2025 || true
   func tuple<K, V>(_ kv: (key: K, value: V)) -> (K, V) {
     (kv.key, kv.value)
   }
@@ -29,18 +29,18 @@ import XCTest
     kv.value
   }
 #else
-  func tuple<K, V>(_ kv: Pair<K, V>) -> (K, V) {
-    (kv.key, kv.value)
-  }
-  func __key<K, V>(_ kv: Pair<K, V>) -> K {
-    kv.key
-  }
-  func __value<K, V>(_ kv: Pair<K, V>) -> V {
-    kv.value
-  }
+//  func tuple<K, V>(_ kv: Pair<K, V>) -> (K, V) {
+//    (kv.key, kv.value)
+//  }
+//  func __key<K, V>(_ kv: Pair<K, V>) -> K {
+//    kv.key
+//  }
+//  func __value<K, V>(_ kv: Pair<K, V>) -> V {
+//    kv.value
+//  }
 #endif
 
-#if COMPATIBLE_ATCODER_2025
+#if COMPATIBLE_ATCODER_2025 || true
   func AssertEquenceEqual<A, B, C, D>(_ lhs: A, _ rhs: B)
   where
     A: Sequence, B: Sequence, A.Element == (key: C, value: D), A.Element == B.Element,
@@ -49,13 +49,13 @@ import XCTest
     XCTAssertTrue(lhs.elementsEqual(rhs, by: ==))
   }
 #else
-  func AssertEquenceEqual<A, B, C, D>(_ lhs: A, _ rhs: B)
-  where
-    A: Sequence, B: Sequence, A.Element == Pair<C, D>, A.Element == B.Element,
-    C: Equatable, D: Equatable
-  {
-    XCTAssertTrue(lhs.elementsEqual(rhs, by: ==))
-  }
+//  func AssertEquenceEqual<A, B, C, D>(_ lhs: A, _ rhs: B)
+//  where
+//    A: Sequence, B: Sequence, A.Element == Pair<C, D>, A.Element == B.Element,
+//    C: Equatable, D: Equatable
+//  {
+//    XCTAssertTrue(lhs.elementsEqual(rhs, by: ==))
+//  }
 #endif
 
 #if true
@@ -882,6 +882,7 @@ import XCTest
         set[..<set.endIndex].map { $0 }, [1, 2, 3, 4, 6, 7].map { keyValue($0, $0 * 10) })
     }
 
+#if !COMPATIBLE_ATCODER_2025
     func testRangeSubscriptUnchecked() throws {
       let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]
       let l2 = set.lowerBound(2)
@@ -899,6 +900,7 @@ import XCTest
         set[unchecked: ..<set.endIndex].map { $0 },
         [1, 2, 3, 4, 6, 7].map { keyValue($0, $0 * 10) })
     }
+#endif
 
     func testIndexValidation() throws {
       let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]

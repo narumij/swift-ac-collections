@@ -825,6 +825,7 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(set[..<set.endIndex].map{ RedBlackTreePair($0) }, [1,2,3,4,6,7].map{ .init($0, $0 * 10) })
   }
   
+#if !COMPATIBLE_ATCODER_2025
   func testRangeSubscriptUnchecked() throws {
     let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]
     let l2 = set.lowerBound(2)
@@ -836,6 +837,7 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(set[unchecked: ...u2].map{ RedBlackTreePair($0) }, [1, 2, 3, 4, 6].map{ .init($0, $0 * 10) })
     XCTAssertEqual(set[unchecked: ..<set.endIndex].map{ RedBlackTreePair($0) }, [1,2,3,4,6,7].map{ .init($0, $0 * 10) })
   }
+#endif
 
   func testIndexValidation() throws {
     let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]

@@ -739,12 +739,19 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
     @inline(__always) _read { yield self[_checked: position] }
   }
 
-  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(unchecked position: Index) -> _Value {
-    @inline(__always) _read { yield self[_unchecked: position] }
-  }
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    public subscript(_unsafe position: Index) -> Element {
+      @inline(__always) _read { yield self[_unchecked: position] }
+    }
+  #else
+    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(unchecked position: Index) -> _Value {
+      @inline(__always) _read { yield self[_unchecked: position] }
+    }
+  #endif
 
   /// Indexがsubscriptやremoveで利用可能か判別します
   ///

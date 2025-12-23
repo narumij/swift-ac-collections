@@ -51,7 +51,10 @@ public struct RedBlackTreePair<Key, Value> {
   public var second: Value { value }
 }
 
-extension RedBlackTreePair: Sendable where Key: Sendable, Value: Sendable {}
+#if swift(>=5.5)
+  extension RedBlackTreePair: Sendable where Key: Sendable, Value: Sendable {}
+#endif
+
 extension RedBlackTreePair: Hashable where Key: Hashable, Value: Hashable {}
 extension RedBlackTreePair: Equatable where Key: Equatable, Value: Equatable {}
 extension RedBlackTreePair: Comparable where Key: Comparable, Value: Comparable {

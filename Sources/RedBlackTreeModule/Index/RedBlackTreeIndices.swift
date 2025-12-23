@@ -167,6 +167,7 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
       end: bounds.upperBound.rawValue)
   }
   
+#if !COMPATIBLE_ATCODER_2025
   @inlinable
   @inline(__always)
   public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
@@ -176,6 +177,7 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
   }
+#endif
 }
 
 #if swift(>=5.5)

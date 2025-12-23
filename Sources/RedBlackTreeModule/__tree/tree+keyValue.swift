@@ -28,7 +28,6 @@ public protocol KeyValueComparer: ValueComparer {
   static func ___mapped_value(_ element: _Value) -> _MappedValue
   static func ___with_mapped_value<T>(_ element: inout _Value, _: (inout _MappedValue) throws -> T)
     rethrows -> T
-  static func __value_(_ k: _Key, _ v: _MappedValue) -> _Value
 }
 
 extension KeyValueComparer {
@@ -49,27 +48,6 @@ extension KeyValueComparer {
   @inline(__always)
   func ___mapped_value(_ element: _Value) -> _MappedValue {
     Self.___mapped_value(element)
-  }
-}
-
-// MARK: -
-
-extension KeyValueComparer where _MappedValue: Comparable {
-
-  @inlinable
-  @inline(__always)
-  public static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    ___key_comp(lhs, rhs)
-      || (!___key_comp(lhs, rhs) && ___mapped_value(lhs) < ___mapped_value(rhs))
-  }
-}
-
-extension KeyValueComparer where _MappedValue: Equatable {
-
-  @inlinable
-  @inline(__always)
-  public static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    ___key_equiv(lhs, rhs) && ___mapped_value(lhs) == ___mapped_value(rhs)
   }
 }
 
@@ -104,12 +82,6 @@ extension KeyValueComparer where _Value == (key: _Key, value: _MappedValue) {
     _ element: inout _Value, _ f: (inout _MappedValue) throws -> T
   ) rethrows -> T {
     try f(&element.value)
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func __value_(_ k: _Key, _ v: _MappedValue) -> _Value {
-    (k, v)
   }
 }
 
@@ -175,11 +147,5 @@ extension KeyValueComparer where _Value == RedBlackTreePair<_Key, _MappedValue> 
     _ element: inout _Value, _ f: (inout _MappedValue) throws -> T
   ) rethrows -> T {
     try f(&element.value)
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func __value_(_ k: _Key, _ v: _MappedValue) -> _Value {
-    RedBlackTreePair(key: k, value: v)
   }
 }

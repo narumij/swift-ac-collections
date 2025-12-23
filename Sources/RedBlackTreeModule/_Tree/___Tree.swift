@@ -819,7 +819,7 @@ extension ___Tree {
   func unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafePointers<Base> {
     .init(tree: self, __first: __first, __last: __last)
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -1134,7 +1134,7 @@ extension ___Tree where Base: KeyValueComparer {
   )
     rethrows -> ___Tree<Other>
   where
-    Other: KeyValueComparer,
+    Other: KeyValueComparer & ___RedBlackTreeKeyValueBase,
     Other._Key == Base._Key
   {
     let other = ___Tree<Other>.create(minimumCapacity: count)
@@ -1142,7 +1142,7 @@ extension ___Tree where Base: KeyValueComparer {
     for __p in unsafeSequence(__first, __last) {
       let __mapped_value = try transform(___mapped_value(__p))
       (__parent, __child) = other.___emplace_hint_right(
-        __parent, __child, Other.__value_(__get_value(__p), __mapped_value))
+        __parent, __child, Other.___tree_value((__get_value(__p), __mapped_value)))
       assert(other.__tree_invariant(other.__root()))
     }
     return other
@@ -1158,7 +1158,7 @@ extension ___Tree where Base: KeyValueComparer {
   )
     rethrows -> ___Tree<Other>
   where
-    Other: KeyValueComparer,
+    Other: KeyValueComparer & ___RedBlackTreeKeyValueBase,
     Other._Key == Base._Key
   {
     var other = ___Tree<Other>.create(minimumCapacity: count)
@@ -1167,7 +1167,7 @@ extension ___Tree where Base: KeyValueComparer {
       guard let __mv = try transform(___mapped_value(__p)) else { continue }
       ___Tree<Other>.ensureCapacity(tree: &other)
       (__parent, __child) = other.___emplace_hint_right(
-        __parent, __child, Other.__value_(__get_value(__p), __mv))
+        __parent, __child, Other.___tree_value((__get_value(__p), __mv)))
       assert(other.__tree_invariant(other.__root()))
     }
     return other
@@ -1183,7 +1183,7 @@ extension ___Tree {
 }
 
 extension ___Tree {
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -1193,42 +1193,43 @@ extension ___Tree {
 }
 
 extension ___Tree: Equatable where _Value: Equatable {
-  
+
   @inlinable
   @inline(__always)
   public static func == (lhs: ___Tree<Base>, rhs: ___Tree<Base>) -> Bool {
-    
+
     if lhs.count != rhs.count {
       return false
     }
-    
+
     if lhs.count == 0 || lhs.isIdentical(to: rhs) {
       return true
     }
-    
-    return lhs.elementsEqual(lhs.__begin_node_,
-                             lhs.__end_node(),
-                             rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
-                             by: ==)
+
+    return lhs.elementsEqual(
+      lhs.__begin_node_,
+      lhs.__end_node(),
+      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
+      by: ==)
   }
 }
 
 extension ___Tree: Comparable where _Value: Comparable {
-  
+
   @inlinable
   @inline(__always)
   public static func < (lhs: ___Tree<Base>, rhs: ___Tree<Base>) -> Bool {
-    !lhs.isIdentical(to: rhs) &&
-    lhs.lexicographicallyPrecedes(
-      lhs.__begin_node_,
-      lhs.__end_node(),
-      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
-      by: <)
+    !lhs.isIdentical(to: rhs)
+      && lhs.lexicographicallyPrecedes(
+        lhs.__begin_node_,
+        lhs.__end_node(),
+        rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
+        by: <)
   }
 }
 
 extension ___Tree: Hashable where _Value: Hashable {
-  
+
   @inlinable
   public func hash(into hasher: inout Hasher) {
     hasher.combine(header)
@@ -1239,9 +1240,12 @@ extension ___Tree: Hashable where _Value: Hashable {
 }
 
 extension ___Tree {
-  
+
   @inlinable
-  public func elementsEqual<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence {
+  public func elementsEqual<OtherSequence>(
+    _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
+    by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence {
     try unsafeValues(__first, __last).elementsEqual(other, by: areEquivalent)
   }
 }
@@ -1249,13 +1253,16 @@ extension ___Tree {
 extension ___Tree {
 
   @inlinable
-  public func lexicographicallyPrecedes<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence, _Value == OtherSequence.Element {
+  public func lexicographicallyPrecedes<OtherSequence>(
+    _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
+    by areInIncreasingOrder: (_Value, _Value) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
     try unsafeValues(__first, __last).lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
 
 extension ___Tree {
-  
+
   @inlinable
   public func ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_Value] {
     let count = __distance(__first, __last)
@@ -1270,9 +1277,11 @@ extension ___Tree {
       }
     }
   }
-  
+
   @inlinable
-  public func ___copy_to_array<T>(_ __first: _NodePtr, _ __last: _NodePtr, transform: (_Value) -> T) -> [T] {
+  public func ___copy_to_array<T>(_ __first: _NodePtr, _ __last: _NodePtr, transform: (_Value) -> T)
+    -> [T]
+  {
     let count = __distance(__first, __last)
     return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
       initializedCount = count

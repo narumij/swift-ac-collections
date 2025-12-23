@@ -21,34 +21,39 @@
 
 import Foundation
 
-@frozen
-public struct RedBlackTreeSlice<Base> where Base: ___TreeBase & ___TreeIndex {
+extension RedBlackTreeSlice {
 
-  public typealias Tree = ___Tree<Base>
-  public typealias _Value = Tree._Value
-  public typealias Element = Tree._Value
-  public typealias Index = Tree.Index
-  public typealias Indices = Tree.Indices
-  public typealias SubSequence = Self
+  @frozen
+  public struct KeyValue where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
 
-  @usableFromInline
-  let __tree_: Tree
+    public typealias Tree = ___Tree<Base>
+    public typealias _Key = Base._Key
+    public typealias _Value = Tree._Value
+    public typealias _MappedValue = Base._MappedValue
+    public typealias Element = (key: _Key, value: _MappedValue)
+    public typealias Index = Tree.Index
+    public typealias Indices = Tree.Indices
+    public typealias SubSequence = Self
 
-  @usableFromInline
-  var _start, _end: _NodePtr
+    @usableFromInline
+    let __tree_: Tree
 
-  @inlinable
-  @inline(__always)
-  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    __tree_ = tree
-    _start = start
-    _end = end
+    @usableFromInline
+    var _start, _end: _NodePtr
+
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      __tree_ = tree
+      _start = start
+      _end = end
+    }
   }
 }
 
-extension RedBlackTreeSlice: Sequence & Collection & BidirectionalCollection {}
+extension RedBlackTreeSlice.KeyValue: Sequence & Collection & BidirectionalCollection {}
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   @inlinable
   @inline(__always)
@@ -57,34 +62,34 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._Values {
+  public __consuming func makeIterator() -> Tree._KeyValues {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(__tree_[$0])
+      try body(Base.___element(__tree_[$0]))
     }
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0), __tree_[$0])
+      try body(___index($0), Base.___element(__tree_[$0]))
     }
   }
 
@@ -92,12 +97,12 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body($0, __tree_[$0])
+      try body($0, Base.___element(__tree_[$0]))
     }
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -107,7 +112,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
@@ -124,31 +129,38 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
   public subscript(position: Index) -> Element {
-    @inline(__always) _read {
+    @inline(__always) get {
       __tree_.___ensureValid(subscript: position.rawValue)
-      yield __tree_[position.rawValue]
+      return Base.___element(__tree_[position.rawValue])
     }
   }
 }
 
-extension RedBlackTreeSlice {
-
+extension RedBlackTreeSlice.KeyValue {
+  
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
   public subscript(unchecked position: Index) -> Element {
-    @inline(__always) _read {
-      yield __tree_[position.rawValue]
+    @inline(__always) get {
+      return Base.___element(__tree_[position.rawValue])
     }
   }
+  
+#if COMPATIBLE_ATCODER_2025
+  @inlinable
+  public subscript(_unsafe position: Index) -> Element {
+    self[unchecked: position]
+  }
+#endif
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   /// - Complexity: O(log *n*)
   @inlinable
@@ -215,7 +227,7 @@ extension RedBlackTreeSlice {
   #endif
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -225,7 +237,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
@@ -253,7 +265,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
@@ -296,7 +308,7 @@ extension RedBlackTreeSlice {
 
 // MARK: - Utility
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   @inlinable
   @inline(__always)
@@ -318,7 +330,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   @inlinable
   @inline(__always)
@@ -346,17 +358,17 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func reversed() -> Tree._Values.Reversed {
+  public func reversed() -> Tree._KeyValues.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
@@ -366,40 +378,53 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
+
+  public typealias Keys = RedBlackTreeIterator<Base>.Keys
+  public typealias Values = RedBlackTreeIterator<Base>.MappedValues
+
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func keys() -> Keys {
+      .init(tree: __tree_, start: _start, end: _end)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func values() -> Values {
+      .init(tree: __tree_, start: _start, end: _end)
+    }
+  #else
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var keys: Keys {
+      .init(tree: __tree_, start: _start, end: _end)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var values: Values {
+      .init(tree: __tree_, start: _start, end: _end)
+    }
+  #endif
+}
+
+extension RedBlackTreeSlice.KeyValue {
 
   /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
   public func sorted() -> [Element] {
-    __tree_.___copy_to_array(_start, _end)
+    __tree_.___copy_to_array(_start, _end, transform: Base.___element)
   }
 }
 
-extension RedBlackTreeSlice {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence {
-    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
-  }
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
-    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
-  }
-}
-
-extension RedBlackTreeSlice where _Value: Equatable {
+extension RedBlackTreeSlice.KeyValue where _Key: Equatable, _MappedValue: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -407,11 +432,11 @@ extension RedBlackTreeSlice where _Value: Equatable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.elementsEqual(_start, _end, other, by: ==)
+    elementsEqual(other, by: ==)
   }
 }
 
-extension RedBlackTreeSlice where _Value: Comparable {
+extension RedBlackTreeSlice.KeyValue where _Key: Comparable, _MappedValue: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -419,31 +444,31 @@ extension RedBlackTreeSlice where _Value: Comparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.lexicographicallyPrecedes(_start, _end, other, by: <)
+    lexicographicallyPrecedes(other, by: <)
   }
 }
 
-extension RedBlackTreeSlice: Equatable where _Value: Equatable {
+extension RedBlackTreeSlice.KeyValue: Equatable where _Key: Equatable, _MappedValue: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs)
+    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs, by: ==)
   }
 }
 
-extension RedBlackTreeSlice: Comparable where _Value: Comparable {
+extension RedBlackTreeSlice.KeyValue: Comparable where _Key: Comparable, _MappedValue: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs, by: <)
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice.KeyValue {
 
   @inlinable
   @inline(__always)
@@ -451,7 +476,7 @@ extension RedBlackTreeSlice {
     guard !__tree_.___is_subscript_null(ptr) else {
       return nil
     }
-    return __tree_[ptr]
+    return Base.___element(__tree_[ptr])
   }
 
   @inlinable
@@ -462,10 +487,10 @@ extension RedBlackTreeSlice {
 }
 
 #if swift(>=5.5)
-  extension RedBlackTreeSlice: @unchecked Sendable
+  extension RedBlackTreeSlice.KeyValue: @unchecked Sendable
   where Element: Sendable {}
 #endif
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeSlice: ___RedBlackTreeIsIdenticalTo {}
+extension RedBlackTreeSlice.KeyValue: ___RedBlackTreeIsIdenticalTo {}

@@ -26,50 +26,16 @@ import Foundation
 public protocol KeyValueComparer: ValueComparer {
   associatedtype _MappedValue
   static func ___mapped_value(_ element: _Value) -> _MappedValue
-  static func ___with_mapped_value<T>(_ element: inout _Value,_ :(inout _MappedValue) throws -> T) rethrows -> T
-  static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value
-  static func __value_(_ : (_Key,_MappedValue)) -> _Value
+  static func ___with_mapped_value<T>(_ element: inout _Value, _: (inout _MappedValue) throws -> T)
+    rethrows -> T
 }
 
 extension KeyValueComparer {
 
   @inlinable
   @inline(__always)
-  static func ___key_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    value_equiv(__key(lhs), __key(rhs))
-  }
-
-  @inlinable
-  @inline(__always)
-  static func ___key_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    value_comp(__key(lhs), __key(rhs))
-  }
-  
-  @inlinable
-  @inline(__always)
   func ___mapped_value(_ element: _Value) -> _MappedValue {
     Self.___mapped_value(element)
-  }
-}
-
-// MARK: -
-
-extension KeyValueComparer where _MappedValue: Comparable {
-  
-  @inlinable
-  @inline(__always)
-  public static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    ___key_comp(lhs, rhs)
-      || (!___key_comp(lhs, rhs) && ___mapped_value(lhs) < ___mapped_value(rhs))
-  }
-}
-
-extension KeyValueComparer where _MappedValue: Equatable {
-  
-  @inlinable
-  @inline(__always)
-  public static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    ___key_equiv(lhs, rhs) && ___mapped_value(lhs) == ___mapped_value(rhs)
   }
 }
 
@@ -80,127 +46,5 @@ extension ValueComparator where Base: KeyValueComparer {
   @inline(__always)
   public static func ___mapped_value(of element: Base._Value) -> Base._MappedValue {
     Base.___mapped_value(element)
-  }
-}
-
-// MARK: -
-
-// 最近タプルの最適化が甘いので、LRUのみペアを構造体に変更
-// それ以外は一律速くなる感じでは無く、APIを維持するコストも高くつくし、性能的にもトレードオフになるため行わない
-
-extension KeyValueComparer where _Value == (key: _Key, value: _MappedValue) {
-
-  @inlinable
-  @inline(__always)
-  public static func __key(_ element: _Value) -> _Key { element.key }
-
-  @inlinable
-  @inline(__always)
-  public static func ___mapped_value(_ element: _Value) -> _MappedValue { element.value }
-  
-  @inlinable
-  @inline(__always)
-  public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {
-    try f(&element.value)
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value {
-    (k,v)
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func __value_(_ kv: (_Key,_MappedValue)) -> _Value {
-    kv
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher) where _Key: Hashable, _MappedValue: Hashable {
-    hasher.combine(__key(lhs))
-    hasher.combine(___mapped_value(lhs))
-  }
-}
-
-// MARK: -
-
-@frozen
-public struct Pair<Key, Value> {
-  @inlinable
-  @inline(__always)
-  public init(key: Key, value: Value) {
-    self.key = key
-    self.value = value
-  }
-  @inlinable
-  @inline(__always)
-  public init(_ key: Key, _ value: Value) {
-    self.key = key
-    self.value = value
-  }
-  @inlinable
-  @inline(__always)
-  public init(_ tuple: (Key, Value)) {
-    self.key = tuple.0
-    self.value = tuple.1
-  }
-  public var key: Key
-  public var value: Value
-  public var tuple: (Key, Value) { (key, value) }
-  @inlinable
-  @inline(__always)
-  public var first: Key { key }
-  @inlinable
-  @inline(__always)
-  public var second: Value { value }
-}
-
-extension Pair: Sendable where Key: Sendable, Value: Sendable {}
-extension Pair: Hashable where Key: Hashable, Value: Hashable {}
-extension Pair: Equatable where Key: Equatable, Value: Equatable {}
-extension Pair: Comparable where Key: Comparable, Value: Comparable {
-  public static func < (lhs: Pair<Key, Value>, rhs: Pair<Key, Value>)
-    -> Bool
-  {
-    (lhs.key, lhs.value) < (rhs.key, rhs.value)
-  }
-}
-extension Pair: Encodable where Key: Encodable, Value: Encodable {}
-extension Pair: Decodable where Key: Decodable, Value: Decodable {}
-
-extension KeyValueComparer where _Value == Pair<_Key, _MappedValue> {
-
-  @inlinable
-  @inline(__always)
-  public static func __key(_ element: _Value) -> _Key { element.key }
-
-  @inlinable
-  @inline(__always)
-  public static func ___mapped_value(_ element: _Value) -> _MappedValue { element.value }
-  
-  @inlinable
-  @inline(__always)
-  public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {
-    try f(&element.value)
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value {
-    Pair(key: k, value: v)
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func __value_(_ kv: (_Key,_MappedValue)) -> _Value {
-    Pair(key: kv.0, value: kv.1)
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher) where _Key: Hashable, _MappedValue: Hashable {
-    hasher.combine(lhs)
   }
 }

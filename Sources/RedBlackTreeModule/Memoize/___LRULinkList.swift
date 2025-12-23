@@ -22,10 +22,10 @@
 
 import Foundation
 
-public struct _LinkingPair<Key,Value> {
+public struct _LinkingPair<Key, Value> {
   @inlinable
   @inline(__always)
-  public init(_ key: Key,_ prev: _NodePtr,_ next: _NodePtr,_ value: Value) {
+  public init(_ key: Key, _ prev: _NodePtr, _ next: _NodePtr, _ value: Value) {
     self.key = key
     self.prev = prev
     self.next = next
@@ -37,7 +37,7 @@ public struct _LinkingPair<Key,Value> {
   public var value: Value
 }
 
-extension KeyValueComparer where _Value == _LinkingPair<_Key,_MappedValue> {
+extension KeyValueComparer where _Value == _LinkingPair<_Key, _MappedValue> {
 
   @inlinable @inline(__always)
   public static func __key(_ element: _Value) -> _Key { element.key }
@@ -47,8 +47,8 @@ extension KeyValueComparer where _Value == _LinkingPair<_Key,_MappedValue> {
 }
 
 @usableFromInline
-protocol ___LRULinkList: ___RedBlackTreeBase, KeyValueComparer
-where _Value == _LinkingPair<_Key,_MappedValue> {
+protocol ___LRULinkList: KeyValueComparer & CompareTrait & ThreeWayComparator
+where _Value == _LinkingPair<_Key, _MappedValue> {
   associatedtype Value
   var __tree_: Tree { get }
   var _rankHighest: _NodePtr { get set }
@@ -56,6 +56,8 @@ where _Value == _LinkingPair<_Key,_MappedValue> {
 }
 
 extension ___LRULinkList {
+
+  public typealias Tree = ___Tree<Self>
 
   @inlinable
   @inline(__always)

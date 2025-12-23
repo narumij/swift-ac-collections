@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeSequenceBase: ___RedBlackTreeIndexing & ___TreeBase, Collection
+protocol ___RedBlackTreeSequenceBase: ___RedBlackTreeIndexing & ___TreeBase & ___TreeIndex, Collection
 where
   Tree == ___Tree<Self>,
   Index == Tree.Index,
@@ -33,18 +33,40 @@ where
   associatedtype Indices
   associatedtype _Value
   var __tree_: Tree { get }
-  func makeIterator() -> Tree._Values
 }
 
 // MARK: -
 
 extension ___RedBlackTreeSequenceBase {
-
+  
   @inlinable
   @inline(__always)
   func _makeIterator() -> Tree._Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
+  
+  @inlinable
+  @inline(__always)
+  func _reversed() -> Tree._Values.Reversed {
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+  }
+}
+
+extension ___RedBlackTreeSequenceBase where Self: KeyValueComparer {
+  @inlinable
+  @inline(__always)
+  func _makeIterator() -> Tree._KeyValues {
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+  }
+  
+  @inlinable
+  @inline(__always)
+  func _reversed() -> Tree._KeyValues.Reversed {
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+  }
+}
+
+extension ___RedBlackTreeSequenceBase {
 
   @inlinable
   @inline(__always)
@@ -172,12 +194,6 @@ extension ___RedBlackTreeSequenceBase {
     return !__tree_.___is_range_null(
       bounds.lowerBound.rawValue,
       bounds.upperBound.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _reversed() -> Tree._Values.Reversed {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
   @inlinable

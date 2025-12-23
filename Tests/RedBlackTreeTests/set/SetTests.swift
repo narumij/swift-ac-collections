@@ -281,6 +281,7 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -1)], 4)
   }
   
+#if !COMPATIBLE_ATCODER_2025
   func testArrayAccess3() throws {
     let set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 0)], 0)
@@ -298,6 +299,7 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -2)], 3)
     XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -1)], 4)
   }
+#endif
 
   func testIndexLimit1() throws {
     let set = Set<Int>([0, 1, 2, 3, 4])

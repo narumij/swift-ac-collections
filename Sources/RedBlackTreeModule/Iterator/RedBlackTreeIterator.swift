@@ -23,7 +23,7 @@
 import Foundation
 
 @frozen
-public enum RedBlackTreeIterator<Base> where Base: ___TreeBase {
+public enum RedBlackTreeIterator<Base> where Base: ___TreeBase & ___TreeIndex {
 
   @frozen
   public struct Values: Sequence, IteratorProtocol {
@@ -57,25 +57,6 @@ public enum RedBlackTreeIterator<Base> where Base: ___TreeBase {
       }
       return __tree_[_current]
     }
-  }
-}
-
-extension RedBlackTreeIterator.Values {
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func keys() -> RedBlackTreeIterator<Base>.Keys
-  where Base: KeyValueComparer {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func values() -> RedBlackTreeIterator<Base>.MappedValues
-  where Base: KeyValueComparer {
-    .init(tree: __tree_, start: _start, end: _end)
   }
 }
 

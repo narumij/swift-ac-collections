@@ -86,8 +86,13 @@ final class RedBlackTreeMultiMapTests: XCTestCase {
 
   func testKeysAndValues() {
     let map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("a", 3)]
-    let keys = map.keys() + []
-    let values = map.values() + []
+    #if COMPATIBLE_ATCODER_2025
+      let keys = map.keys() + []
+      let values = map.values() + []
+    #else
+      let keys = map.keys + []
+      let values = map.values + []
+    #endif
     XCTAssertEqual(keys, ["a", "a", "b"])
     XCTAssertEqual(values, [1, 3, 2])
   }

@@ -37,7 +37,7 @@ where Parameters: Comparable {
     typealias Value = Value
 
   public
-    typealias KeyValue = _LinkingPair<_Key,_MappedValue>
+    typealias KeyValue = _LinkingPair<_Key, _MappedValue>
 
   public
     typealias _Value = KeyValue
@@ -89,7 +89,7 @@ extension ___LRUMemoizeStorage {
           _ensureCapacity(limit: maxCount)
         }
         if __tree_.count == maxCount {
-          ___remove(at: ___popRankLowest())
+          _ = __tree_.erase(___popRankLowest())
         }
         let (__parent, __child) = __tree_.__find_equal(key)
         if __tree_.__ptr_(__child) == .nullptr {
@@ -102,10 +102,16 @@ extension ___LRUMemoizeStorage {
   }
 
   @inlinable
-  public var count: Int { ___count }
-  
+  public var count: Int { __tree_.count }
+
   @inlinable
-  public var capacity: Int { ___capacity }
+  public var capacity: Int { __tree_.___capacity }
+
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    public var _copyCount: UInt {
+      _storage.tree.copyCount
+    }
+  #endif
 }
 
 extension ___LRUMemoizeStorage {
@@ -119,29 +125,37 @@ extension ___LRUMemoizeStorage {
 extension ___LRUMemoizeStorage: HasDefaultThreeWayComparator {}
 
 extension ___LRUMemoizeStorage: ___LRULinkList {
-  
+
+  @inlinable
+  var __tree_: Tree {
+    @inline(__always) _read {
+      yield _storage.tree
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
+
+    if keepCapacity {
+      __tree_.__eraseAll()
+    } else {
+      _storage = .create(withCapacity: 0)
+    }
+  }
+
   @inlinable
   @inline(__always)
   public static func ___mapped_value(_ element: _Value) -> _MappedValue {
     element.value
   }
-  
+
   @inlinable
   @inline(__always)
-  public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {
+  public static func ___with_mapped_value<T>(
+    _ element: inout _Value, _ f: (inout _MappedValue) throws -> T
+  ) rethrows -> T {
     try f(&element.value)
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value {
-    fatalError("NOT IMPLEMENTED YET")
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func __value_(_ kv: (_Key,_MappedValue)) -> _Value {
-    fatalError("NOT IMPLEMENTED YET")
   }
 }
 

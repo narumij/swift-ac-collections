@@ -72,21 +72,21 @@ final class RedBlackTreeDictionaryExtendedTests: XCTestCase {
     XCTAssertEqual(d1["k"], 1)  // 元は無変化
   }
   
-  func testMergeAndMergingAPIs_3() {
-    var d1: RedBlackTreeDictionary = [("k", 1), ("v", 2)]
-    let seq = [("v", 100), ("z", 3)].map { Pair($0) }
-
-    // 破壊的 merge (Sequence)
-    d1.merge(seq) { old, new in old + new }
-    XCTAssertEqual(d1["v"], 102)
-    XCTAssertEqual(d1["z"], 3)
-
-    // 非破壊的 merging (Dictionary)
-    let other = [("k", 9), ("n", 4)].map { Pair($0) }
-    let merged = d1.merging(other) { _, new in new }
-    XCTAssertEqual(merged["k"], 9)  // new 優先
-    XCTAssertEqual(d1["k"], 1)  // 元は無変化
-  }
+//  func testMergeAndMergingAPIs_3() {
+//    var d1: RedBlackTreeDictionary = [("k", 1), ("v", 2)]
+//    let seq = [("v", 100), ("z", 3)].map { RedBlackTreePair($0) }
+//
+//    // 破壊的 merge (Sequence)
+//    d1.merge(seq) { old, new in old + new }
+//    XCTAssertEqual(d1["v"], 102)
+//    XCTAssertEqual(d1["z"], 3)
+//
+//    // 非破壊的 merging (Dictionary)
+//    let other = [("k", 9), ("n", 4)].map { RedBlackTreePair($0) }
+//    let merged = d1.merging(other) { _, new in new }
+//    XCTAssertEqual(merged["k"], 9)  // new 優先
+//    XCTAssertEqual(d1["k"], 1)  // 元は無変化
+//  }
 
   // MARK: ── popFirst ────────────────────────────────────────────
 
@@ -94,7 +94,11 @@ final class RedBlackTreeDictionaryExtendedTests: XCTestCase {
     var d: RedBlackTreeDictionary = [("b", 2), ("a", 1), ("c", 3)]
     let first = d.popFirst()
     XCTAssertEqual(first?.key, "a")
+#if COMPATIBLE_ATCODER_2025
     XCTAssertEqual(Set(d.keys()), ["b", "c"])
+#else
+    XCTAssertEqual(Set(d.keys), ["b", "c"])
+#endif
     XCTAssertEqual(d.popFirst()?.key, "b")
     _ = d.popFirst()
     XCTAssertTrue(d.isEmpty)

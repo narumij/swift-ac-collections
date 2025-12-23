@@ -22,11 +22,11 @@ final class RedBlackTreeMultiMapInitializationTests: XCTestCase {
   func testEmptyInitialization() {
     // 事前条件: 空のマルチマップを初期化
     let multiMap = RedBlackTreeMultiMap<String, Int>()
-    
+
     XCTAssertTrue(multiMap.isEmpty, "空であること")
     XCTAssertEqual(multiMap.count, 0, "要素数0であること")
   }
-  
+
   /// 最小容量指定初期化が成功し、空であること
   func test_minimumCapacityInitialization() {
     // 事前条件: 最小容量10で初期化
@@ -67,10 +67,11 @@ final class RedBlackTreeMultiMapInitializationTests: XCTestCase {
     XCTAssertFalse(multiMap.isEmpty, "空ではないこと")
     XCTAssertEqual(multiMap.count, expected.count, "要素数が期待通りであること")
   }
-  
+
   /// シーケンス初期化テスト（AnySequence使用）
   func testSequenceInitializationWithNaive() {
-    let multiMap = RedBlackTreeMultiMap<String, Int>(naive: AnySequence(elements.map{ .init($0.0,$0.1) }))
+    let multiMap = RedBlackTreeMultiMap<String, Int>(
+      naive: AnySequence(elements.map { keyValue($0.0, $0.1) }))
 
     let expected = [
       ("apple", 1),
@@ -105,10 +106,10 @@ final class RedBlackTreeMultiMapInitializationTests: XCTestCase {
     XCTAssertGreaterThanOrEqual(multiMap.capacity, 20, "指定したサイズ以上であること")
     XCTAssertTrue(multiMap.isEmpty, "空であること")
   }
-  
+
   /// reserveCapacityにより容量が指定値以上に増加すること
   func test_reserveCapacity_shouldIncreaseCapacity2() {
-    var multiset = RedBlackTreeMultiMap<String, Int>(multiKeysWithValues: [("a",1)])
+    var multiset = RedBlackTreeMultiMap<String, Int>(multiKeysWithValues: [("a", 1)])
     let initialCount = multiset.count
 
     // 事前条件:

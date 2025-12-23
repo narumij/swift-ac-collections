@@ -20,14 +20,42 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
+public protocol ___RedBlackTreeKeyValueBase
+where Element == (key: _Key, value: _MappedValue) {
+  associatedtype _Key
+  associatedtype _MappedValue
+  associatedtype _Value
+  associatedtype Element
+  static func ___element(_ __value: _Value) -> Element
+  static func ___tree_value(_ __element: Element) -> _Value
+}
 
-/// 要素とキーが一致する場合のひな形
-public protocol ScalarValueComparer: ValueComparer where _Key == _Value {}
-
-extension ScalarValueComparer {
+extension ___RedBlackTreeKeyValueBase {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ e: _Value) -> _Key { e }
+  public func ___element(_ __value: _Value) -> Element {
+    Self.___element(__value)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func ___tree_value(_ __element: Element) -> _Value {
+    Self.___tree_value(__element)
+  }
+}
+
+extension ___RedBlackTreeKeyValueBase where _Value == RedBlackTreePair<_Key, _MappedValue> {
+
+  @inlinable
+  @inline(__always)
+  public static func ___element(_ __value: _Value) -> Element {
+    (__value.key, __value.value)
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func ___tree_value(_ __element: Element) -> _Value {
+    RedBlackTreePair(__element.key, __element.value)
+  }
 }

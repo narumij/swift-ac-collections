@@ -18,6 +18,7 @@ class CodableFixture: XCTestCase {
   }()
 }
 
+#if !COMPATIBLE_ATCODER_2025
 final class SetCodableTests: CodableFixture {
 
   func testRoundTrip() throws {
@@ -27,3 +28,4 @@ final class SetCodableTests: CodableFixture {
     XCTAssertEqual(v, u)
   }
 }
+#endif

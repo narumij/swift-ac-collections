@@ -1,4 +1,4 @@
-// Copyright 2024 narumij
+// Copyright 2024-2025 narumij
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,14 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
-
-/// 要素とキーが一致する場合のひな形
-public protocol ScalarValueComparer: ValueComparer where _Key == _Value {}
-
-extension ScalarValueComparer {
-
-  @inlinable
-  @inline(__always)
-  public static func __key(_ e: _Value) -> _Key { e }
+public protocol ___TreeIndex {
+  associatedtype _Value
+  associatedtype Pointee
+  static func ___pointee(_ __value: _Value) -> Pointee
 }

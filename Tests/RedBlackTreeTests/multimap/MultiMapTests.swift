@@ -6,6 +6,58 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
+#if COMPATIBLE_ATCODER_2025 || true
+  func keyValue<K, V>(_ k: K, _ v: V) -> (key: K, value: V) { (k, v) }
+  func keyValue<K, V>(_ kv: (K, V)) -> (key: K, value: V) {
+    (kv.0, kv.1)
+  }
+  func _value<K, V>(_ k: K, _ v: V) -> RedBlackTreePair<K, V> { RedBlackTreePair(k, v) }
+  func _value<K, V>(_ kv: (K, V)) -> RedBlackTreePair<K, V> { RedBlackTreePair(kv.0, kv.1) }
+#else
+//  func keyValue<K, V>(_ k: K, _ v: V) -> Pair<K, V> { Pair(k, v) }
+//  func keyValue<K, V>(_ kv: (K, V)) -> Pair<K, V> { Pair(kv.0, kv.1) }
+#endif
+
+#if COMPATIBLE_ATCODER_2025 || true
+  func tuple<K, V>(_ kv: (key: K, value: V)) -> (K, V) {
+    (kv.key, kv.value)
+  }
+  func __key<K, V>(_ kv: (key: K, value: V)) -> K {
+    kv.key
+  }
+  func __value<K, V>(_ kv: (key: K, value: V)) -> V {
+    kv.value
+  }
+#else
+//  func tuple<K, V>(_ kv: Pair<K, V>) -> (K, V) {
+//    (kv.key, kv.value)
+//  }
+//  func __key<K, V>(_ kv: Pair<K, V>) -> K {
+//    kv.key
+//  }
+//  func __value<K, V>(_ kv: Pair<K, V>) -> V {
+//    kv.value
+//  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025 || true
+  func AssertEquenceEqual<A, B, C, D>(_ lhs: A, _ rhs: B)
+  where
+    A: Sequence, B: Sequence, A.Element == (key: C, value: D), A.Element == B.Element,
+    C: Equatable, D: Equatable
+  {
+    XCTAssertTrue(lhs.elementsEqual(rhs, by: ==))
+  }
+#else
+//  func AssertEquenceEqual<A, B, C, D>(_ lhs: A, _ rhs: B)
+//  where
+//    A: Sequence, B: Sequence, A.Element == Pair<C, D>, A.Element == B.Element,
+//    C: Equatable, D: Equatable
+//  {
+//    XCTAssertTrue(lhs.elementsEqual(rhs, by: ==))
+//  }
+#endif
+
 #if true
   extension Optional where Wrapped == Int {
     fileprivate mutating func hoge() {
@@ -32,7 +84,6 @@ import XCTest
       XCTAssertNil(map.first)
       XCTAssertNil(map.last)
       XCTAssertEqual(map.distance(from: map.startIndex, to: map.endIndex), 0)
-      XCTAssertEqual(map.count(forKey: 0), 0)
     }
 
     func testRedBlackTreeCapacity() throws {
@@ -51,12 +102,12 @@ import XCTest
       //    map.updateValue(1, forKey: 0)
       XCTAssertEqual(map[0].map(\.value), [1])
       XCTAssertEqual(map[1].map(\.value), [])
-      XCTAssertTrue(zip(map.map { ($0.key, $0.value) }, [(0, 1)]).allSatisfy(==))
+      XCTAssertTrue(zip(map.map { (__key($0), __value($0)) }, [(0, 1)]).allSatisfy(==))
       map.removeAll(forKey: 0)
       //    map.removeValue(forKey: 0)
       XCTAssertEqual(map[0].map(\.value), [])
       XCTAssertEqual(map[1].map(\.value), [])
-      XCTAssertTrue(zip(map.map { ($0.key, $0.value) }, []).allSatisfy(==))
+      XCTAssertTrue(zip(map.map { (__key($0), __value($0)) }, []).allSatisfy(==))
       map.insert((1, 2))
       //    map.updateValue(20, forKey: 10)
       XCTAssertEqual(map[0].map(\.value), [])
@@ -134,8 +185,13 @@ import XCTest
 
     func testInitUniqueKeysWithValues() throws {
       let dict = Target(multiKeysWithValues: [(1, 10), (2, 20)])
-      XCTAssertEqual(dict.keys() + [], [1, 2])
-      XCTAssertEqual(dict.values() + [], [10, 20])
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertEqual(dict.keys() + [], [1, 2])
+        XCTAssertEqual(dict.values() + [], [10, 20])
+      #else
+        XCTAssertEqual(dict.keys + [], [1, 2])
+        XCTAssertEqual(dict.values + [], [10, 20])
+      #endif
       XCTAssertEqual(dict[0].map(\.value), [])
       XCTAssertEqual(dict[1].map(\.value), [10])
       XCTAssertEqual(dict[2].map(\.value), [20])
@@ -144,8 +200,13 @@ import XCTest
 
     func testInitUniqueKeysWithValues2() throws {
       let dict = Target(multiKeysWithValues: AnySequence([(1, 10), (2, 20)]))
-      XCTAssertEqual(dict.keys() + [], [1, 2])
-      XCTAssertEqual(dict.values() + [], [10, 20])
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertEqual(dict.keys() + [], [1, 2])
+        XCTAssertEqual(dict.values() + [], [10, 20])
+      #else
+        XCTAssertEqual(dict.keys + [], [1, 2])
+        XCTAssertEqual(dict.values + [], [10, 20])
+      #endif
       XCTAssertEqual(dict[0].map(\.value), [])
       XCTAssertEqual(dict[1].map(\.value), [10])
       XCTAssertEqual(dict[2].map(\.value), [20])
@@ -181,21 +242,31 @@ import XCTest
       do {
         let dict = Target(
           multiKeysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
-        XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
-        XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
+        #if COMPATIBLE_ATCODER_2025
+          XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
+          XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
+        #else
+          XCTAssertEqual(dict.keys + [], [1, 1, 2, 2])
+          XCTAssertEqual(dict.values + [], [10, 11, 20, 22])
+        #endif
         XCTAssertEqual(dict[0].map(\.value), [])
         XCTAssertEqual(dict[1].map(\.value), [10, 11])
         XCTAssertEqual(dict[2].map(\.value), [20, 22])
         XCTAssertEqual(dict[3].map(\.value), [])
       }
     }
-    
+
     func testInitNaive() throws {
       do {
         let dict = Target(
-          naive: [(1, 10), (1, 11), (2, 20), (2, 22)].map { .init($0,$1) })
-        XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
-        XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
+          naive: [(1, 10), (1, 11), (2, 20), (2, 22)].map { keyValue($0, $1) })
+        #if COMPATIBLE_ATCODER_2025
+          XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
+          XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
+        #else
+          XCTAssertEqual(dict.keys + [], [1, 1, 2, 2])
+          XCTAssertEqual(dict.values + [], [10, 11, 20, 22])
+        #endif
         XCTAssertEqual(dict[0].map(\.value), [])
         XCTAssertEqual(dict[1].map(\.value), [10, 11])
         XCTAssertEqual(dict[2].map(\.value), [20, 22])
@@ -218,12 +289,13 @@ import XCTest
       XCTAssertEqual(
         studentsByLetter, ["E": "Efua", "K": "Kofi", "K": "Kweku", "A": "Abena", "A": "Akosua"])
     }
-    
+
     func testInitGroupingBy2() throws {
-      let students = AnySequence(0 ..< 100)
+      let students = AnySequence(0..<100)
       let studentsByLetter = Target(grouping: students, by: { $0 % 10 })
       XCTAssertEqual(
-        studentsByLetter, [
+        studentsByLetter,
+        [
           0: 0, 0: 10, 0: 20, 0: 30, 0: 40, 0: 50, 0: 60, 0: 70, 0: 80, 0: 90,
           1: 1, 1: 11, 1: 21, 1: 31, 1: 41, 1: 51, 1: 61, 1: 71, 1: 81, 1: 91,
           2: 2, 2: 12, 2: 22, 2: 32, 2: 42, 2: 52, 2: 62, 2: 72, 2: 82, 2: 92,
@@ -233,7 +305,8 @@ import XCTest
           6: 6, 6: 16, 6: 26, 6: 36, 6: 46, 6: 56, 6: 66, 6: 76, 6: 86, 6: 96,
           7: 7, 7: 17, 7: 27, 7: 37, 7: 47, 7: 57, 7: 67, 7: 77, 7: 87, 7: 97,
           8: 8, 8: 18, 8: 28, 8: 38, 8: 48, 8: 58, 8: 68, 8: 78, 8: 88, 8: 98,
-          9: 9, 9: 19, 9: 29, 9: 39, 9: 49, 9: 59, 9: 69, 9: 79, 9: 89, 9: 99])
+          9: 9, 9: 19, 9: 29, 9: 39, 9: 49, 9: 59, 9: 69, 9: 79, 9: 89, 9: 99,
+        ])
     }
 
     #if false
@@ -269,23 +342,25 @@ import XCTest
       XCTAssertEqual(dict.upperBound(3), dict.index(dict.startIndex, offsetBy: 2))
     }
 
-    func testArrayAccess1() throws {
-      let set = [0: 0, 1: 10, 2: 20, 3: 30, 4: 40] as Target<Int, Int>
-      XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 0)].key, 0)
-      XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 1)].key, 1)
-      XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 2)].key, 2)
-      XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 3)].key, 3)
-      XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 4)].key, 4)
-    }
+    #if false
+      func testArrayAccess1() throws {
+        let set = [0: 0, 1: 10, 2: 20, 3: 30, 4: 40] as Target<Int, Int>
+        XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 0)].key, 0)
+        XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 1)].key, 1)
+        XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 2)].key, 2)
+        XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 3)].key, 3)
+        XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 4)].key, 4)
+      }
 
-    func testArrayAccess2() throws {
-      let set = [0: 0, 1: 10, 2: 20, 3: 30, 4: 40] as Target<Int, Int>
-      XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -5)].key, 0)
-      XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -4)].key, 1)
-      XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -3)].key, 2)
-      XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -2)].key, 3)
-      XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -1)].key, 4)
-    }
+      func testArrayAccess2() throws {
+        let set = [0: 0, 1: 10, 2: 20, 3: 30, 4: 40] as Target<Int, Int>
+        XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -5)].key, 0)
+        XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -4)].key, 1)
+        XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -3)].key, 2)
+        XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -2)].key, 3)
+        XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -1)].key, 4)
+      }
+    #endif
 
     func testIndex() throws {
       let set = [0: 0, 1: 10, 2: 20, 3: 30, 4: 40] as Target<Int, Int>
@@ -496,7 +571,7 @@ import XCTest
       let dict = [1: 11, 2: 22, 3: 33] as Target<Int, Int>
       var d: [Int: Int] = [:]
       dict.forEach { kv in
-        d[kv.key] = kv.value
+        d[__key(kv)] = __value(kv)
       }
       XCTAssertEqual(d, [1: 11, 2: 22, 3: 33])
     }
@@ -532,8 +607,8 @@ import XCTest
     }
 
     func testSubsequence4() throws {
-//      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-//      let sub = set.elements(in: 1..<3)
+      //      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      //      let sub = set.elements(in: 1..<3)
       throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
       //      XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
     }
@@ -556,12 +631,12 @@ import XCTest
       var set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
       let sub = set[set.startIndex..<set.endIndex]
       var a: [String] = []
-      for kv in sub {
-        a.append(kv.value)
+      for (_, value) in sub.map(tuple) {
+        a.append(value)
       }
       XCTAssertEqual(a, ["a", "b", "c", "d", "e"])
-      sub.forEach { kv in
-        set.insert(key: kv.key, value: "?")
+      sub.map(tuple).forEach { key, value in
+        set.insert(key: key, value: "?")
       }
       XCTAssertEqual(set.map(\.value), ["a", "?", "b", "?", "c", "?", "d", "?", "e", "?"])
     }
@@ -793,35 +868,44 @@ import XCTest
       sub.formIndex(&i, offsetBy: -3)
       XCTAssertEqual(i, sub.startIndex)
     }
-    
+
     func testRangeSubscript() throws {
       let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]
       let l2 = set.lowerBound(2)
       let u2 = set.upperBound(4)
-      XCTAssertEqual(set[l2..<u2].map{ $0 }, [2,3,4].map{ .init($0, $0 * 10) })
-      XCTAssertEqual(set[l2...].map{ $0 }, [2, 3, 4, 6, 7].map{ .init($0, $0 * 10) })
-      XCTAssertEqual(set[u2...].map{ $0 }, [6, 7].map{ .init($0, $0 * 10) })
-      XCTAssertEqual(set[..<u2].map{ $0 }, [1, 2, 3, 4].map{ .init($0, $0 * 10) })
-      XCTAssertEqual(set[...u2].map{ $0 }, [1, 2, 3, 4, 6].map{ .init($0, $0 * 10) })
-      XCTAssertEqual(set[..<set.endIndex].map{ $0 }, [1,2,3,4,6,7].map{ .init($0, $0 * 10) })
+      AssertEquenceEqual(set[l2..<u2].map { $0 }, [2, 3, 4].map { keyValue($0, $0 * 10) })
+      AssertEquenceEqual(set[l2...].map { $0 }, [2, 3, 4, 6, 7].map { keyValue($0, $0 * 10) })
+      AssertEquenceEqual(set[u2...].map { $0 }, [6, 7].map { keyValue($0, $0 * 10) })
+      AssertEquenceEqual(set[..<u2].map { $0 }, [1, 2, 3, 4].map { keyValue($0, $0 * 10) })
+      AssertEquenceEqual(set[...u2].map { $0 }, [1, 2, 3, 4, 6].map { keyValue($0, $0 * 10) })
+      AssertEquenceEqual(
+        set[..<set.endIndex].map { $0 }, [1, 2, 3, 4, 6, 7].map { keyValue($0, $0 * 10) })
     }
-    
+
+#if !COMPATIBLE_ATCODER_2025
     func testRangeSubscriptUnchecked() throws {
       let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]
       let l2 = set.lowerBound(2)
       let u2 = set.upperBound(4)
-      XCTAssertEqual(set[unchecked: l2..<u2].map{ $0 }, [2,3,4].map{ .init($0, $0 * 10) })
-      XCTAssertEqual(set[unchecked: l2...].map{ $0 }, [2, 3, 4, 6, 7].map{ .init($0, $0 * 10) })
-      XCTAssertEqual(set[unchecked: u2...].map{ $0 }, [6, 7].map{ .init($0, $0 * 10) })
-      XCTAssertEqual(set[unchecked: ..<u2].map{ $0 }, [1, 2, 3, 4].map{ .init($0, $0 * 10) })
-      XCTAssertEqual(set[unchecked: ...u2].map{ $0 }, [1, 2, 3, 4, 6].map{ .init($0, $0 * 10) })
-      XCTAssertEqual(set[unchecked: ..<set.endIndex].map{ $0 }, [1,2,3,4,6,7].map{ .init($0, $0 * 10) })
+      AssertEquenceEqual(
+        set[unchecked: l2..<u2].map { $0 }, [2, 3, 4].map { keyValue($0, $0 * 10) })
+      AssertEquenceEqual(
+        set[unchecked: l2...].map { $0 }, [2, 3, 4, 6, 7].map { keyValue($0, $0 * 10) })
+      AssertEquenceEqual(set[unchecked: u2...].map { $0 }, [6, 7].map { keyValue($0, $0 * 10) })
+      AssertEquenceEqual(
+        set[unchecked: ..<u2].map { $0 }, [1, 2, 3, 4].map { keyValue($0, $0 * 10) })
+      AssertEquenceEqual(
+        set[unchecked: ...u2].map { $0 }, [1, 2, 3, 4, 6].map { keyValue($0, $0 * 10) })
+      AssertEquenceEqual(
+        set[unchecked: ..<set.endIndex].map { $0 },
+        [1, 2, 3, 4, 6, 7].map { keyValue($0, $0 * 10) })
     }
+#endif
 
     func testIndexValidation() throws {
       let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
       XCTAssertTrue(set.isValid(index: set.startIndex))
-      XCTAssertFalse(set.isValid(index: set.endIndex)) // 仕様変更。subscriptやremoveにつかえないので
+      XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
       typealias Index = Target<Int, String>.Index
       #if DEBUG
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawValue, -1)
@@ -885,176 +969,181 @@ import XCTest
       XCTAssertEqual(maxPair?.key, "c")
       XCTAssertEqual(maxPair?.value, 3)
     }
-    
+
     func testEqual1() throws {
       do {
-        let a = Target<Int,Int>()
-        let b = Target<Int,Int>()
+        let a = Target<Int, Int>()
+        let b = Target<Int, Int>()
         XCTAssertEqual(a, b)
         XCTAssertEqual(b, a)
       }
       do {
-        let a = Target<Int,Int>()
-        let b: Target<Int,Int> = [(0,0)]
+        let a = Target<Int, Int>()
+        let b: Target<Int, Int> = [(0, 0)]
         XCTAssertNotEqual(a, b)
         XCTAssertNotEqual(b, a)
       }
       do {
-        let a: Target<Int,Int> = [(0,0)]
-        let b: Target<Int,Int> = [(0,0)]
+        let a: Target<Int, Int> = [(0, 0)]
+        let b: Target<Int, Int> = [(0, 0)]
         XCTAssertEqual(a, b)
         XCTAssertEqual(b, a)
       }
       do {
-        let a: Target<Int,Int> = [(0,0),(1,1)]
-        let b: Target<Int,Int> = [(0,0)]
+        let a: Target<Int, Int> = [(0, 0), (1, 1)]
+        let b: Target<Int, Int> = [(0, 0)]
         XCTAssertNotEqual(a, b)
         XCTAssertNotEqual(b, a)
       }
       do {
-        let a: Target<Int,Int> = [(0,0),(1,1)]
-        let b: Target<Int,Int> = [(0,0),(1,1)]
+        let a: Target<Int, Int> = [(0, 0), (1, 1)]
+        let b: Target<Int, Int> = [(0, 0), (1, 1)]
         XCTAssertEqual(a, b)
         XCTAssertEqual(b, a)
       }
     }
-    
+
     func testEqual2() throws {
-      let aa = Target<Int,Int>(multiKeysWithValues: [0,1,2,3,4,5].map{ ($0,$0) })
-      let bb = Target<Int,Int>(multiKeysWithValues: [3,4,5,6,7,8].map{ ($0,$0) })
+      let aa = Target<Int, Int>(multiKeysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
+      let bb = Target<Int, Int>(multiKeysWithValues: [3, 4, 5, 6, 7, 8].map { ($0, $0) })
       do {
-        let a = aa[0 ..< 0]
-        let b = bb[3 ..< 3]
+        let a = aa[0..<0]
+        let b = bb[3..<3]
         XCTAssertEqual(a, b)
         XCTAssertEqual(b, a)
       }
       do {
-        let a = aa[3 ..< 6]
-        let b = bb[3 ..< 6]
+        let a = aa[3..<6]
+        let b = bb[3..<6]
         XCTAssertEqual(a, b)
         XCTAssertEqual(b, a)
       }
       do {
-        let a = aa[2 ..< 6]
-        let b = bb[3 ..< 6]
+        let a = aa[2..<6]
+        let b = bb[3..<6]
         XCTAssertNotEqual(a, b)
         XCTAssertNotEqual(b, a)
       }
       do {
-        let a = aa[3 ..< 6]
-        let b = bb[3 ..< 7]
+        let a = aa[3..<6]
+        let b = bb[3..<7]
         XCTAssertNotEqual(a, b)
         XCTAssertNotEqual(b, a)
       }
     }
-      
+
     func testCompare1() throws {
       do {
-        let a: Target<Int,Int> = []
-        let b: Target<Int,Int> = []
+        let a: Target<Int, Int> = []
+        let b: Target<Int, Int> = []
         XCTAssertFalse(a < b)
         XCTAssertFalse(b < a)
       }
       do {
-        let a: Target<Int,Int> = []
-        let b: Target<Int,Int> = [(0,0)]
+        let a: Target<Int, Int> = []
+        let b: Target<Int, Int> = [(0, 0)]
         XCTAssertTrue(a < b)
         XCTAssertFalse(b < a)
       }
       do {
-        let a: Target<Int,Int> = [(0,0)]
-        let b: Target<Int,Int> = [(0,0)]
+        let a: Target<Int, Int> = [(0, 0)]
+        let b: Target<Int, Int> = [(0, 0)]
         XCTAssertFalse(a < b)
         XCTAssertFalse(b < a)
       }
       do {
-        let a: Target<Int,Int> = [(0,0)]
-        let b: Target<Int,Int> = [(1,1)]
+        let a: Target<Int, Int> = [(0, 0)]
+        let b: Target<Int, Int> = [(1, 1)]
         XCTAssertTrue(a < b)
         XCTAssertFalse(b < a)
       }
       do {
-        let a: Target<Int,Int> = [(0,0),(1,1)]
-        let b: Target<Int,Int> = [(0,0)]
+        let a: Target<Int, Int> = [(0, 0), (1, 1)]
+        let b: Target<Int, Int> = [(0, 0)]
         XCTAssertFalse(a < b)
         XCTAssertTrue(b < a)
       }
       do {
-        let a: Target<Int,Int> = [(0,0),(1,1)]
-        let b: Target<Int,Int> = [(0,0),(1,1)]
+        let a: Target<Int, Int> = [(0, 0), (1, 1)]
+        let b: Target<Int, Int> = [(0, 0), (1, 1)]
         XCTAssertFalse(a < b)
         XCTAssertFalse(b < a)
       }
       do {
-        let a: Target<Int,Int> = [(0,0),(1,1),(2,2)]
-        let b: Target<Int,Int> = [(0,0),(1,1),(3,3)]
+        let a: Target<Int, Int> = [(0, 0), (1, 1), (2, 2)]
+        let b: Target<Int, Int> = [(0, 0), (1, 1), (3, 3)]
         XCTAssertTrue(a < b)
         XCTAssertFalse(b < a)
       }
     }
-    
+
     func testMeld() throws {
       do {
-        var a: Target<Int,Int> = [0: 10,1: 30]
-        let b: Target<Int,Int> = [0: 20,1: 40]
+        var a: Target<Int, Int> = [0: 10, 1: 30]
+        let b: Target<Int, Int> = [0: 20, 1: 40]
         a.meld(b)
-        XCTAssertEqual(a + [], [(0, 10), (0, 20),(1, 30),(1, 40)].map{ Pair($0) })
+        AssertEquenceEqual(a + [], [(0, 10), (0, 20), (1, 30), (1, 40)].map { keyValue($0) })
       }
     }
-    
+
     func testMelding() throws {
       do {
-        let a: Target<Int,Int> = [0: 10,1: 30]
-        let b: Target<Int,Int> = [0: 20,1: 40]
-        XCTAssertEqual(a.melding(b) + [], [(0, 10),(0, 20),(1, 30),(1, 40)].map{ Pair($0) })
+        let a: Target<Int, Int> = [0: 10, 1: 30]
+        let b: Target<Int, Int> = [0: 20, 1: 40]
+        AssertEquenceEqual(
+          a.melding(b) + [], [(0, 10), (0, 20), (1, 30), (1, 40)].map { keyValue($0) })
       }
     }
-    
+
     func testAdd() throws {
       do {
-        let a: Target<Int,Int> = [0: 10,1: 30]
-        let b: Target<Int,Int> = [0: 20,1: 40]
+        let a: Target<Int, Int> = [0: 10, 1: 30]
+        let b: Target<Int, Int> = [0: 20, 1: 40]
         let c = a + b
-        XCTAssertEqual(c + [], [(0, 10),(0, 20),(1, 30),(1, 40)].map{ Pair($0) })
+        AssertEquenceEqual(c + [], [(0, 10), (0, 20), (1, 30), (1, 40)].map { keyValue($0) })
       }
     }
-    
+
     func testAddEqual() throws {
       do {
-        var a: Target<Int,Int> = [0: 10,1: 30]
-        let b: Target<Int,Int> = [0: 20,1: 40]
+        var a: Target<Int, Int> = [0: 10, 1: 30]
+        let b: Target<Int, Int> = [0: 20, 1: 40]
         a += b
-        XCTAssertEqual(a + [], [(0, 10),(0, 20),(1, 30),(1, 40)].map{ Pair($0) })
+        AssertEquenceEqual(a + [], [(0, 10), (0, 20), (1, 30), (1, 40)].map { keyValue($0) })
       }
     }
-    
+
     func testIsValidRangeSmoke() throws {
-      let a = RedBlackTreeMultiMap<Int,Int>(naive: [0,1,2,3,4,5].map{ Pair($0,$0) })
+      let a = RedBlackTreeMultiMap<Int, Int>(naive: [0, 1, 2, 3, 4, 5].map { keyValue($0, $0) })
       XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
     }
-    
-    func testSortedReversed() throws {
-      let source = [0,1,2,3,4,5].map { Pair($0,$0 * 10) }
-      let a = RedBlackTreeMultiMap<Int,Int>(multiKeysWithValues: source)
-      XCTAssertEqual(a.sorted() + [], source)
-      XCTAssertEqual(a.reversed() + [], source.reversed())
-    }
-    
+
+    #if !COMPATIBLE_ATCODER_2025
+      func testSortedReversed() throws {
+        let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
+        let a = RedBlackTreeMultiMap<Int, Int>(multiKeysWithValues: source)
+        AssertEquenceEqual(a.sorted() + [], source)
+        AssertEquenceEqual(a.reversed() + [], source.reversed())
+      }
+    #endif
+
     func testForEach_enumeration() throws {
-      let source = [0,1,2,3,4,5].map { Pair($0,$0 * 10) }
-      let a = RedBlackTreeMultiMap<Int,Int>(multiKeysWithValues: source)
-      var p: RedBlackTreeMultiMap<Int,Int>.Index? = a.startIndex
+      let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
+      let a = RedBlackTreeMultiMap<Int, Int>(multiKeysWithValues: source)
+      var p: RedBlackTreeMultiMap<Int, Int>.Index? = a.startIndex
       a.forEach { i, v in
         XCTAssertEqual(i, p)
-        XCTAssertEqual(a[p!], v)
+        XCTAssertTrue(a[p!] == v)
         p = p?.next
       }
     }
-    
-    func testInitNaive_with_Sequence() throws {
-      let source = [0,1,2,3,4,5].map { Pair($0,$0 * 10) }
-      let a = RedBlackTreeMultiMap<Int,Int>(naive: AnySequence(source))
-      XCTAssertEqual(a.sorted() + [], source)
-    }
+
+    #if !COMPATIBLE_ATCODER_2025
+      func testInitNaive_with_Sequence() throws {
+        let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
+        let a = RedBlackTreeMultiMap<Int, Int>(naive: AnySequence(source))
+        AssertEquenceEqual(a.sorted() + [], source)
+      }
+    #endif
   }
 #endif

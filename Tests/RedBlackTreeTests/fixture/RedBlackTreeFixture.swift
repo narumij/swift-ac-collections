@@ -61,7 +61,6 @@ import XCTest
 
   extension RedBlackTreeSet: RedBlackTreeDebugFixture {}
   extension RedBlackTreeMultiSet: RedBlackTreeDebugFixture {}
-  extension RedBlackTreeMap: RedBlackTreeDebugFixture {}
   extension RedBlackTreeMultiMap: RedBlackTreeDebugFixture {}
   extension RedBlackTreeDictionary: RedBlackTreeDebugFixture {}
 #endif
@@ -92,7 +91,6 @@ extension RedBlackTreeFixture {
 
 extension RedBlackTreeSet: RedBlackTreeFixture {}
 extension RedBlackTreeMultiSet: RedBlackTreeFixture {}
-extension RedBlackTreeMap: RedBlackTreeFixture {}
 extension RedBlackTreeMultiMap: RedBlackTreeFixture {}
 extension RedBlackTreeDictionary: RedBlackTreeFixture {}
 

@@ -1,4 +1,4 @@
-// Copyright 2024 narumij
+// Copyright 2024-2025 narumij
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,14 +20,21 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
-
-/// 要素とキーが一致する場合のひな形
-public protocol ScalarValueComparer: ValueComparer where _Key == _Value {}
-
-extension ScalarValueComparer {
+extension KeyValueComparer where _Value == RedBlackTreePair<_Key, _MappedValue> {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ e: _Value) -> _Key { e }
+  public static func __key(_ element: _Value) -> _Key { element.key }
+
+  @inlinable
+  @inline(__always)
+  public static func ___mapped_value(_ element: _Value) -> _MappedValue { element.value }
+
+  @inlinable
+  @inline(__always)
+  public static func ___with_mapped_value<T>(
+    _ element: inout _Value, _ f: (inout _MappedValue) throws -> T
+  ) rethrows -> T {
+    try f(&element.value)
+  }
 }

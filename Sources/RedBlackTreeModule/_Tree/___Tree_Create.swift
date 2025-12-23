@@ -110,6 +110,9 @@ extension ___Tree where Base: KeyValueComparer {
     assert(tree.__tree_invariant(tree.__root()))
     return tree
   }
+}
+
+extension ___Tree where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
 
   /// ソート済みの配列から木を生成する
   ///
@@ -133,7 +136,7 @@ extension ___Tree where Base: KeyValueComparer {
       if __parent == .end || Base.__key(tree[__parent]) != __k {
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(
-          __parent, __child, Base.__value_(__k, [__v]))
+          __parent, __child, Base.___tree_value((__k, [__v])))
       } else {
         tree.___with_mapped_value(__parent) {
           $0.append(__v)
@@ -163,7 +166,8 @@ extension ___Tree where Base: KeyValueComparer {
     for __v in elements {
       let __k = try keyForValue(__v)
       // ならしO(1)
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, Base.__value_(__k, __v))
+      (__parent, __child) = tree.___emplace_hint_right(
+        __parent, __child, Base.___tree_value((__k, __v)))
     }
     assert(tree.__tree_invariant(tree.__root()))
     return tree
@@ -248,6 +252,14 @@ extension ___Tree {
   where Base._Value == S.Element, S: Sequence {
 
     .___insert_range_multi(tree: .create(minimumCapacity: 0), sequence)
+  }
+
+  @inlinable
+  static func create_multi<S>(naive sequence: __owned S, transform: (S.Element) -> Base._Value)
+    -> ___Tree
+  where S: Sequence {
+
+    .___insert_range_multi(tree: .create(minimumCapacity: 0), sequence, transform: transform)
   }
 }
 
@@ -342,29 +354,7 @@ extension ___Tree where _Value: Decodable {
       let __k = try container.decode(_Value.self)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
     }
-    
-    assert(tree.__tree_invariant(tree.__root()))
-    return tree
-  }
-}
 
-extension ___Tree where Base: KeyValueComparer, _Value == (key: _Key, value: Base._MappedValue), _Key: Decodable, Base._MappedValue: Decodable {
-
-  @inlinable
-  static func create(from decoder: Decoder) throws -> ___Tree {
-
-    var container = try decoder.unkeyedContainer()
-    var tree: Tree = .create(minimumCapacity: 0)
-    if let count = container.count {
-      Tree.ensureCapacity(tree: &tree, minimumCapacity: count)
-    }
-
-    var (__parent, __child) = tree.___max_ref()
-    while !container.isAtEnd {
-      let __k = Base.__value_(try container.decode(_Key.self), try container.decode(Base._MappedValue.self))
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
-    }
-    
     assert(tree.__tree_invariant(tree.__root()))
     return tree
   }

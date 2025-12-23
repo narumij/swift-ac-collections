@@ -70,11 +70,12 @@ extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeSet: ___RedBlackTreeUnique {}
 extension RedBlackTreeSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeSet: ScalarValueComparer {}
-extension RedBlackTreeSet: ElementComparable {}
-extension RedBlackTreeSet: ElementEqutable {}
-extension RedBlackTreeSet: ElementHashable where Element: Hashable {}
 
 extension RedBlackTreeSet: HasDefaultThreeWayComparator {}
+
+extension RedBlackTreeSet: ___TreeIndex {
+  public static func ___pointee(_ __value: Element) -> Element { __value }
+}
 
 // MARK: - Creating a Set
 
@@ -188,44 +189,56 @@ extension RedBlackTreeSet {
       end: bounds.upperBound.rawValue)
   }
 
-  @inlinable
-  @inline(__always)
-  public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
-    let bounds: Range<Index> = bounds.relative(to: self)
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
+      .init(
+        tree: __tree_,
+        start: bounds.lowerBound.rawValue,
+        end: bounds.upperBound.rawValue)
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+      let bounds: Range<Index> = bounds.relative(to: self)
 
-    __tree_.___ensureValid(
-      begin: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue)
+      __tree_.___ensureValid(
+        begin: bounds.lowerBound.rawValue,
+        end: bounds.upperBound.rawValue)
 
-    return .init(
-      tree: __tree_,
-      start: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue)
-  }
+      return .init(
+        tree: __tree_,
+        start: bounds.lowerBound.rawValue,
+        end: bounds.upperBound.rawValue)
+    }
 
-  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public subscript(unchecked bounds: Range<Index>) -> SubSequence {
-    .init(
-      tree: __tree_,
-      start: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue)
-  }
+    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public subscript(unchecked bounds: Range<Index>) -> SubSequence {
+      .init(
+        tree: __tree_,
+        start: bounds.lowerBound.rawValue,
+        end: bounds.upperBound.rawValue)
+    }
 
-  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public subscript<R>(unchecked bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index
-  {
-    let bounds: Range<Index> = bounds.relative(to: self)
-    return .init(
-      tree: __tree_,
-      start: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue)
-  }
+    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public subscript<R>(unchecked bounds: R) -> SubSequence
+    where R: RangeExpression, R.Bound == Index {
+      let bounds: Range<Index> = bounds.relative(to: self)
+      return .init(
+        tree: __tree_,
+        start: bounds.lowerBound.rawValue,
+        end: bounds.upperBound.rawValue)
+    }
+  #endif
 }
 
 // MARK: - Insertion
@@ -628,21 +641,14 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
     try _forEach(body)
   }
 
-#if false
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func sorted() -> Tree._Values {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
-#else
-  /// - Complexity: O(*n*)
-  @inlinable
-  @inline(__always)
-  public func sorted() -> [Element] {
-    __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
-  }
-#endif
+  #if !COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(*n*)
+    @inlinable
+    @inline(__always)
+    public func sorted() -> [Element] {
+      __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
+    }
+  #endif
 
   /// - Complexity: O(1)
   @inlinable
@@ -725,12 +731,19 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
     @inline(__always) _read { yield self[_checked: position] }
   }
 
-  /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(unchecked position: Index) -> _Value {
-    @inline(__always) _read { yield self[_unchecked: position] }
-  }
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    public subscript(_unsafe position: Index) -> Element {
+      @inline(__always) _read { yield self[_unchecked: position] }
+    }
+  #else
+    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(unchecked position: Index) -> _Value {
+      @inline(__always) _read { yield self[_unchecked: position] }
+    }
+  #endif
 
   /// Indexがsubscriptやremoveで利用可能か判別します
   ///
@@ -794,7 +807,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other)
+    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other, by: ==)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -803,7 +816,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other)
+    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other, by: <)
   }
 }
 
@@ -931,7 +944,7 @@ extension RedBlackTreeSet: Comparable {
 // MARK: - Hashable
 
 extension RedBlackTreeSet: Hashable where Element: Hashable {
-  
+
   @inlinable
   @inline(__always)
   public func hash(into hasher: inout Hasher) {
@@ -948,24 +961,26 @@ extension RedBlackTreeSet: Hashable where Element: Hashable {
 
 // MARK: - Codable
 
-extension RedBlackTreeSet: Encodable where Element: Encodable {
-  
-  @inlinable
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.unkeyedContainer()
-    for element in self {
-      try container.encode(element)
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet: Encodable where Element: Encodable {
+
+    @inlinable
+    public func encode(to encoder: Encoder) throws {
+      var container = encoder.unkeyedContainer()
+      for element in self {
+        try container.encode(element)
+      }
     }
   }
-}
 
-extension RedBlackTreeSet: Decodable where Element: Decodable {
-  
-  @inlinable
-  public init(from decoder: Decoder) throws {
-    _storage = .init(tree: try .create(from: decoder))
+  extension RedBlackTreeSet: Decodable where Element: Decodable {
+
+    @inlinable
+    public init(from decoder: Decoder) throws {
+      _storage = .init(tree: try .create(from: decoder))
+    }
   }
-}
+#endif
 
 // MARK: - Init naive
 
@@ -980,4 +995,3 @@ extension RedBlackTreeSet {
     self._storage = .init(tree: .create_unique(naive: sequence))
   }
 }
-

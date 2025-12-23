@@ -26,6 +26,7 @@ import Foundation
 public protocol KeyValueComparer: ValueComparer {
   associatedtype _MappedValue
   static func ___mapped_value(_ element: _Value) -> _MappedValue
+  static func ___tupple_value(_ element: _Value) -> (key: _Key, value: _MappedValue)
   static func ___with_mapped_value<T>(_ element: inout _Value,_ :(inout _MappedValue) throws -> T) rethrows -> T
   static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value
   static func __value_(_ : (_Key,_MappedValue)) -> _Value
@@ -49,6 +50,12 @@ extension KeyValueComparer {
   @inline(__always)
   func ___mapped_value(_ element: _Value) -> _MappedValue {
     Self.___mapped_value(element)
+  }
+  
+  @inlinable
+  @inline(__always)
+  func ___tupple_value(_ element: _Value) -> (key: _Key, value: _MappedValue) {
+    Self.___tupple_value(element)
   }
 }
 
@@ -97,6 +104,10 @@ extension KeyValueComparer where _Value == (key: _Key, value: _MappedValue) {
   @inlinable
   @inline(__always)
   public static func ___mapped_value(_ element: _Value) -> _MappedValue { element.value }
+  
+  @inlinable
+  @inline(__always)
+  public static func ___tupple_value(_ element: _Value) -> (key: _Key, value: _MappedValue) { element }
   
   @inlinable
   @inline(__always)
@@ -180,6 +191,12 @@ extension KeyValueComparer where _Value == Pair<_Key, _MappedValue> {
   @inline(__always)
   public static func ___mapped_value(_ element: _Value) -> _MappedValue { element.value }
   
+  @inlinable
+  @inline(__always)
+  public static func ___tupple_value(_ element: _Value) -> (key: _Key, value: _MappedValue) {
+    (element.key, element.value)
+  }
+
   @inlinable
   @inline(__always)
   public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {

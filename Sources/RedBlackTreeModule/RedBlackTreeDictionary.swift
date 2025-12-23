@@ -835,14 +835,14 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (_Value) throws -> Void) rethrows {
+  public func forEach(_ body: (Element) throws -> Void) rethrows {
     try _forEach(body)
   }
 
   /// 特殊なforEach
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
+  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
     try _forEach(body)
   }
 
@@ -850,7 +850,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func sorted() -> Tree._Values {
+  public func sorted() -> Tree._KeyValues {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 #else
@@ -939,7 +939,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
 
   /// - Complexity: O(1)
   @inlinable
-  public subscript(position: Index) -> _Value {
+  public subscript(position: Index) -> Element {
     @inline(__always) get { self[_checked: position] }
     // コンパイラがクラッシュする
     //    @inline(__always) _read { yield self[_checked: position] }
@@ -948,7 +948,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
-  public subscript(unchecked position: Index) -> _Value {
+  public subscript(unchecked position: Index) -> Element {
     @inline(__always) _read { yield self[_unchecked: position] }
   }
 
@@ -974,7 +974,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func reversed() -> Tree._Values.Reversed {
+  public func reversed() -> Tree._KeyValues.Reversed {
     _reversed()
   }
 
@@ -990,7 +990,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   @inlinable
   @inline(__always)
   public func elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
+    _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
     try _elementsEqual(other, by: areEquivalent)
   }
@@ -1000,8 +1000,8 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   @inlinable
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
+    _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
     try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }

@@ -44,12 +44,24 @@ extension ___RedBlackTreeSequenceBase {
   func _makeIterator() -> Tree._Values {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
+  
+  @inlinable
+  @inline(__always)
+  func _reversed() -> Tree._Values.Reversed {
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+  }
 }
 
 extension ___RedBlackTreeSequenceBase where Self: KeyValueComparer {
   @inlinable
   @inline(__always)
   func _makeIterator() -> Tree._KeyValues {
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+  }
+  
+  @inlinable
+  @inline(__always)
+  func _reversed() -> Tree._KeyValues.Reversed {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 }
@@ -182,12 +194,6 @@ extension ___RedBlackTreeSequenceBase {
     return !__tree_.___is_range_null(
       bounds.lowerBound.rawValue,
       bounds.upperBound.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _reversed() -> Tree._Values.Reversed {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 
   @inlinable

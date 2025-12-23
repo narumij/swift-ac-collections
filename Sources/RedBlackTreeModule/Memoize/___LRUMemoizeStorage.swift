@@ -128,6 +128,13 @@ extension ___LRUMemoizeStorage: ___LRULinkList {
   
   @inlinable
   @inline(__always)
+  public
+  static func ___tupple_value(_ element: _Value) -> (key: _Key, value: _MappedValue) {
+    (element.key, element.value)
+  }
+  
+  @inlinable
+  @inline(__always)
   public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {
     try f(&element.value)
   }

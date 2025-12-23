@@ -861,14 +861,14 @@ extension RedBlackTreeMap: Sequence, Collection, BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (_Value) throws -> Void) rethrows {
+  public func forEach(_ body: (Element) throws -> Void) rethrows {
     try _forEach(body)
   }
 
   /// 特殊なforEach
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
+  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
     try _forEach(body)
   }
 
@@ -965,14 +965,14 @@ extension RedBlackTreeMap: Sequence, Collection, BidirectionalCollection {
 
   /// - Complexity: O(1)
   @inlinable
-  public subscript(position: Index) -> _Value {
+  public subscript(position: Index) -> Element {
     @inline(__always) _read { yield self[_checked: position] }
   }
 
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
-  public subscript(unchecked position: Index) -> _Value {
+  public subscript(unchecked position: Index) -> Element {
     @inline(__always) _read { yield self[_unchecked: position] }
   }
 
@@ -1014,7 +1014,7 @@ extension RedBlackTreeMap: Sequence, Collection, BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
+    _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
     try _elementsEqual(other, by: areEquivalent)
   }
@@ -1024,8 +1024,8 @@ extension RedBlackTreeMap: Sequence, Collection, BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
+    _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
     try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }

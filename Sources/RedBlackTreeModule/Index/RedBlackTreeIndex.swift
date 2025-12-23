@@ -30,7 +30,9 @@ public struct RedBlackTreeIndex<Base> where Base: ___TreeBase & ___TreeIndex {
   
   public typealias Tree = ___Tree<Base>
   public typealias Pointee = Tree.Pointee
-  public typealias _Value = Tree._Value
+  
+  @usableFromInline
+  typealias _Value = Tree._Value
 
   @usableFromInline
   let __tree_: Tree

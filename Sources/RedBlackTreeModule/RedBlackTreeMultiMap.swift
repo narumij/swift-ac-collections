@@ -89,7 +89,6 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
-//extension RedBlackTreeMultiMap: ElementHashable where Key: Hashable, Value: Hashable {}
 
 extension RedBlackTreeMultiMap: HasDefaultThreeWayComparator {}
 
@@ -120,9 +119,9 @@ extension RedBlackTreeMultiMap {
   where S: Sequence, S.Element == (Key, Value) {
     self._storage = .init(
       tree:
-          .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) {
-            Self.___tree_value($0)
-          })
+        .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) {
+          Self.___tree_value($0)
+        })
   }
 }
 
@@ -1136,6 +1135,6 @@ extension RedBlackTreeMultiMap {
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
     //    self._storage = .init(tree: .create_multi(naive: sequence, transform: Self.__value_))
-    self._storage =  .init(tree: .create_multi(naive: sequence, transform: Self.___tree_value))
+    self._storage = .init(tree: .create_multi(naive: sequence, transform: Self.___tree_value))
   }
 }

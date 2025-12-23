@@ -72,22 +72,6 @@ final class MapExtendedTests: XCTestCase {
     XCTAssertEqual(d1["k"], 1)  // 元は無変化
   }
 
-  func testMergeAndMergingAPIs_3() {
-    var d1: RedBlackTreeMap = [("k", 1), ("v", 2)]
-    let seq = [("v", 100), ("z", 3)].map { RedBlackTreePair($0) }
-
-    // 破壊的 merge (Sequence)
-    d1.merge(seq) { old, new in old + new }
-    XCTAssertEqual(d1["v"], 102)
-    XCTAssertEqual(d1["z"], 3)
-
-    // 非破壊的 merging (Dictionary)
-    let other = [("k", 9), ("n", 4)].map { RedBlackTreePair($0) }
-    let merged = d1.merging(other) { _, new in new }
-    XCTAssertEqual(merged["k"], 9)  // new 優先
-    XCTAssertEqual(d1["k"], 1)  // 元は無変化
-  }
-
   // MARK: ── popFirst ────────────────────────────────────────────
 
   func testPopFirstReturnsMinKey() {

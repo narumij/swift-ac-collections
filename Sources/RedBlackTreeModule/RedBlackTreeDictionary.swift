@@ -85,7 +85,6 @@ extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
-//extension RedBlackTreeDictionary: ElementHashable where Key: Hashable, Value: Hashable {}
 
 extension RedBlackTreeDictionary: HasDefaultThreeWayComparator {}
 
@@ -119,10 +118,9 @@ extension RedBlackTreeDictionary {
 
     self._storage = .init(
       tree: .create_unique(
-        sorted: keysAndValues.sorted { $0.0 < $1.0 }
-      ) {
-        Self.___tree_value($0)
-      })
+        sorted: keysAndValues.sorted { $0.0 < $1.0 },
+        transform: Self.___tree_value
+      ))
   }
 }
 
@@ -138,10 +136,9 @@ extension RedBlackTreeDictionary {
     self._storage = .init(
       tree: try .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
-        uniquingKeysWith: combine
-      ) {
-        Self.___tree_value($0)
-      })
+        uniquingKeysWith: combine,
+        transform: Self.___tree_value
+      ))
   }
 }
 
@@ -472,28 +469,6 @@ extension RedBlackTreeDictionary {
     }
   }
 
-  /// 辞書に `other` の要素をマージします。
-  /// キーが重複したときは `combine` の戻り値を採用します。
-  ///
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  public mutating func merge<S>(
-    _ other: __owned S,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows where S: Sequence, S.Element == RedBlackTreePair<Key, Value> {
-
-    try _ensureUnique { __tree_ in
-      try .___insert_range_unique(
-        tree: __tree_,
-        other,
-        uniquingKeysWith: combine
-      ) {
-        $0
-      }
-    }
-  }
-
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -515,20 +490,6 @@ extension RedBlackTreeDictionary {
     _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows -> Self where S: Sequence, S.Element == (Key, Value) {
-    var result = self
-    try result.merge(other, uniquingKeysWith: combine)
-    return result
-  }
-
-  /// `self` と `other` をマージした新しい辞書を返します。
-  ///
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  public func merging<S>(
-    _ other: __owned S,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows -> Self where S: Sequence, S.Element == RedBlackTreePair<Key, Value> {
     var result = self
     try result.merge(other, uniquingKeysWith: combine)
     return result

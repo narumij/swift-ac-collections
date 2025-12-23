@@ -63,7 +63,6 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
-//extension RedBlackTreeMultiSet: ElementHashable where Element: Hashable {}
 
 extension RedBlackTreeMultiSet: HasDefaultThreeWayComparator {}
 
@@ -634,21 +633,21 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
     try _forEach(body)
   }
 
-#if false
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func sorted() -> Tree._Values {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
-#else
-  /// - Complexity: O(*n*)
-  @inlinable
-  @inline(__always)
-  public func sorted() -> [Element] {
-    __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
-  }
-#endif
+  #if false
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func sorted() -> Tree._Values {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
+  #else
+    /// - Complexity: O(*n*)
+    @inlinable
+    @inline(__always)
+    public func sorted() -> [Element] {
+      __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
+    }
+  #endif
 
   /// - Complexity: O(1)
   @inlinable
@@ -937,7 +936,7 @@ extension RedBlackTreeMultiSet: Comparable {
 // MARK: - Hashable
 
 extension RedBlackTreeMultiSet: Hashable where Element: Hashable {
-  
+
   @inlinable
   @inline(__always)
   public func hash(into hasher: inout Hasher) {
@@ -955,7 +954,7 @@ extension RedBlackTreeMultiSet: Hashable where Element: Hashable {
 // MARK: - Codable
 
 extension RedBlackTreeMultiSet: Encodable where Element: Encodable {
-  
+
   @inlinable
   public func encode(to encoder: Encoder) throws {
     var container = encoder.unkeyedContainer()
@@ -966,7 +965,7 @@ extension RedBlackTreeMultiSet: Encodable where Element: Encodable {
 }
 
 extension RedBlackTreeMultiSet: Decodable where Element: Decodable {
-  
+
   @inlinable
   public init(from decoder: Decoder) throws {
     _storage = .init(tree: try .create(from: decoder))

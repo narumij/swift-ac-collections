@@ -87,7 +87,6 @@ extension RedBlackTreeMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMap: ___RedBlackTreeUnique {}
 extension RedBlackTreeMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMap: KeyValueComparer {}
-//extension RedBlackTreeMap: ElementHashable where Key: Hashable, Value: Hashable {}
 
 extension RedBlackTreeMap: HasDefaultThreeWayComparator {}
 
@@ -121,10 +120,9 @@ extension RedBlackTreeMap {
     self._storage = .init(
       tree:
         .create_unique(
-          sorted: keysAndValues.sorted { $0.0 < $1.0 }
-        ) {
-          RedBlackTreePair($0)
-        })
+          sorted: keysAndValues.sorted { $0.0 < $1.0 },
+          transform: Self.___tree_value
+        ))
   }
 }
 
@@ -143,10 +141,9 @@ extension RedBlackTreeMap {
           sorted: keysAndValues.sorted {
             $0.0 < $1.0
           },
-          uniquingKeysWith: combine
-        ) {
-          RedBlackTreePair($0)
-        })
+          uniquingKeysWith: combine,
+          transform: Self.___tree_value
+        ))
   }
 }
 
@@ -465,36 +462,15 @@ extension RedBlackTreeMap {
   public mutating func merge<S>(
     _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows where S: Sequence, S.Element == RedBlackTreePair<Key, Value> {
-
-    try _ensureUnique { __tree_ in
-      try .___insert_range_unique(
-        tree: __tree_,
-        other,
-        uniquingKeysWith: combine
-      ) { $0 }
-    }
-  }
-
-  /// mapに `other` の要素をマージします。
-  /// キーが重複したときは `combine` の戻り値を採用します。
-  ///
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  public mutating func merge<S>(
-    _ other: __owned S,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
     try _ensureUnique { __tree_ in
       try .___insert_range_unique(
         tree: __tree_,
         other,
-        uniquingKeysWith: combine
-      ) {
-        RedBlackTreePair($0)
-      }
+        uniquingKeysWith: combine,
+        transform: Self.___tree_value
+      )
     }
   }
 
@@ -505,20 +481,6 @@ extension RedBlackTreeMap {
     _ other: RedBlackTreeMap<Key, Value>,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows -> Self {
-    var result = self
-    try result.merge(other, uniquingKeysWith: combine)
-    return result
-  }
-
-  /// `self` と `other` をマージした新しいmapを返します。
-  ///
-  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
-  ///   and *m* is the size of the current tree.
-  @inlinable
-  public func merging<S>(
-    _ other: __owned S,
-    uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows -> Self where S: Sequence, S.Element == RedBlackTreePair<Key, Value> {
     var result = self
     try result.merge(other, uniquingKeysWith: combine)
     return result

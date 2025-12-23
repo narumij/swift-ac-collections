@@ -70,7 +70,6 @@ extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeSet: ___RedBlackTreeUnique {}
 extension RedBlackTreeSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeSet: ScalarValueComparer {}
-//extension RedBlackTreeSet: ElementHashable where Element: Hashable {}
 
 extension RedBlackTreeSet: HasDefaultThreeWayComparator {}
 
@@ -626,21 +625,21 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
     try _forEach(body)
   }
 
-#if false
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func sorted() -> Tree._Values {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
-#else
-  /// - Complexity: O(*n*)
-  @inlinable
-  @inline(__always)
-  public func sorted() -> [Element] {
-    __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
-  }
-#endif
+  #if false
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func sorted() -> Tree._Values {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
+  #else
+    /// - Complexity: O(*n*)
+    @inlinable
+    @inline(__always)
+    public func sorted() -> [Element] {
+      __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
+    }
+  #endif
 
   /// - Complexity: O(1)
   @inlinable
@@ -929,7 +928,7 @@ extension RedBlackTreeSet: Comparable {
 // MARK: - Hashable
 
 extension RedBlackTreeSet: Hashable where Element: Hashable {
-  
+
   @inlinable
   @inline(__always)
   public func hash(into hasher: inout Hasher) {
@@ -947,7 +946,7 @@ extension RedBlackTreeSet: Hashable where Element: Hashable {
 // MARK: - Codable
 
 extension RedBlackTreeSet: Encodable where Element: Encodable {
-  
+
   @inlinable
   public func encode(to encoder: Encoder) throws {
     var container = encoder.unkeyedContainer()
@@ -958,7 +957,7 @@ extension RedBlackTreeSet: Encodable where Element: Encodable {
 }
 
 extension RedBlackTreeSet: Decodable where Element: Decodable {
-  
+
   @inlinable
   public init(from decoder: Decoder) throws {
     _storage = .init(tree: try .create(from: decoder))
@@ -978,4 +977,3 @@ extension RedBlackTreeSet {
     self._storage = .init(tree: .create_unique(naive: sequence))
   }
 }
-

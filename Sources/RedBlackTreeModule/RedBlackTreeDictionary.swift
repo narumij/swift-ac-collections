@@ -1175,22 +1175,24 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
 
 // MARK: - Codable
 
-extension RedBlackTreeDictionary: Encodable where Key: Encodable, Value: Encodable {
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary: Encodable where Key: Encodable, Value: Encodable {
 
-  @inlinable
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.unkeyedContainer()
-    for element in self {
-      try container.encode(element.key)
-      try container.encode(element.value)
+    @inlinable
+    public func encode(to encoder: Encoder) throws {
+      var container = encoder.unkeyedContainer()
+      for element in self {
+        try container.encode(element.key)
+        try container.encode(element.value)
+      }
     }
   }
-}
 
-extension RedBlackTreeDictionary: Decodable where Key: Decodable, Value: Decodable {
+  extension RedBlackTreeDictionary: Decodable where Key: Decodable, Value: Decodable {
 
-  @inlinable
-  public init(from decoder: Decoder) throws {
-    _storage = .init(tree: try .create(from: decoder))
+    @inlinable
+    public init(from decoder: Decoder) throws {
+      _storage = .init(tree: try .create(from: decoder))
+    }
   }
-}
+#endif

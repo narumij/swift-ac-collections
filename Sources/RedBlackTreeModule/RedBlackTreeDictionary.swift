@@ -54,7 +54,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias KeyValue = (key: Key, value: Value)
 
   public
-    typealias Element = KeyValue
+    typealias Element = (key: Key, value: Value)
 
   public
     typealias Keys = RedBlackTreeIterator<Self>.Keys
@@ -89,6 +89,8 @@ extension RedBlackTreeDictionary: ElementHashable where Key: Hashable, Value: Ha
 
 extension RedBlackTreeDictionary: HasDefaultThreeWayComparator {}
 
+extension RedBlackTreeDictionary: ___RedBlackTreeKeyValueBase {}
+
 // MARK: - Creating a Dictionay
 
 extension RedBlackTreeDictionary {
@@ -119,7 +121,7 @@ extension RedBlackTreeDictionary {
       tree: .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 }
       ) {
-        Pair($0)
+        Self.___tree_value($0)
       })
   }
 }
@@ -138,7 +140,7 @@ extension RedBlackTreeDictionary {
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
         uniquingKeysWith: combine
       ) {
-        Pair($0)
+        Self.___tree_value($0)
       })
   }
 }
@@ -205,13 +207,13 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public var first: Element? {
-    ___first.map(___tupple_value)
+    ___first.map(___to_element)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public var last: Element? {
-    ___last.map(___tupple_value)
+    ___last.map(___to_element)
   }
 }
 
@@ -263,7 +265,7 @@ extension RedBlackTreeDictionary {
         defer {
           if let value {
             _ensureUniqueAndCapacity()
-            let __h = __tree_.__construct_node(.init(key, value))
+            let __h = __tree_.__construct_node(Self.___tree_value((key, value)))
             __tree_.__insert_node_at(__parent, __child, __h)
           }
         }
@@ -295,7 +297,7 @@ extension RedBlackTreeDictionary {
       if __ptr == .nullptr {
         _ensureUniqueAndCapacity()
         assert(__tree_.header.capacity > __tree_.count)
-        __ptr = __tree_.__construct_node(.init(key, defaultValue()))
+        __ptr = __tree_.__construct_node(Self.___tree_value((key, defaultValue())))
         __tree_.__insert_node_at(__parent, __child, __ptr)
       } else {
         _ensureUnique()
@@ -396,8 +398,8 @@ extension RedBlackTreeDictionary {
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(.init(newMember))
-    return (__inserted, __inserted ? newMember : ___tupple_value(__tree_[__r]))
+    let (__r, __inserted) = __tree_.__insert_unique(Self.___tree_value(newMember))
+    return (__inserted, __inserted ? newMember : ___to_element(__tree_[__r]))
   }
 }
 
@@ -412,10 +414,10 @@ extension RedBlackTreeDictionary {
     forKey key: Key
   ) -> Value? {
     _ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(.init(key, value))
+    let (__r, __inserted) = __tree_.__insert_unique(Self.___tree_value((key, value)))
     guard !__inserted else { return nil }
     let oldMember = __tree_[__r]
-    __tree_[__r] = .init(key, value)
+    __tree_[__r] = Self.___tree_value((key, value))
     return oldMember.value
   }
 }
@@ -466,7 +468,7 @@ extension RedBlackTreeDictionary {
         tree: __tree_,
         other,
         uniquingKeysWith: combine
-      ) { .init($0) }
+      ) { Self.___tree_value($0) }
     }
   }
 
@@ -600,7 +602,7 @@ extension RedBlackTreeDictionary {
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
-    return ___tupple_value(element)
+    return ___to_element(element)
   }
 
   /// Removes the specified subrange of elements from the collection.
@@ -700,13 +702,13 @@ extension RedBlackTreeDictionary {
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
   public func min() -> Element? {
-    ___min().map(___tupple_value)
+    ___min().map(___to_element)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public func max() -> Element? {
-    ___max().map(___tupple_value)
+    ___max().map(___to_element)
   }
 }
 
@@ -715,8 +717,8 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-//    try ___first(where: predicate)
-    try ___first { try predicate(___tupple_value($0)) }.map(___tupple_value)
+    //    try ___first(where: predicate)
+    try ___first { try predicate(___to_element($0)) }.map(___to_element)
   }
 }
 
@@ -731,8 +733,8 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(*n*)
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-//    try ___first_index(where: predicate)
-    try ___first_index { try predicate(___tupple_value($0)) }
+    //    try ___first_index(where: predicate)
+    try ___first_index { try predicate(___to_element($0)) }
   }
 }
 
@@ -792,9 +794,9 @@ extension RedBlackTreeDictionary {
       _storage: .init(
         tree: try __tree_.___filter(
           __tree_.__begin_node_,
-          __tree_.__end_node())
-        {
-          try isIncluded(___tupple_value($0))
+          __tree_.__end_node()
+        ) {
+          try isIncluded(___to_element($0))
         }))
   }
 }
@@ -841,31 +843,32 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _forEach { try body(___tupple_value($0)) }
+    try _forEach { try body(___to_element($0)) }
   }
 
   /// 特殊なforEach
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try _forEach { try body($0, ___tupple_value($1)) }
+    try _forEach { try body($0, ___to_element($1)) }
   }
 
-#if COMPATIBLE_ATCODER_2025
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func sorted() -> Tree._KeyValues {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
-#else
-  /// - Complexity: O(*n*)
-  @inlinable
-  @inline(__always)
-  public func sorted() -> [Element] {
-    __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node(), transform: Self.___tupple_value)
-  }
-#endif
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func sorted() -> Tree._KeyValues {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
+  #else
+    /// - Complexity: O(*n*)
+    @inlinable
+    @inline(__always)
+    public func sorted() -> [Element] {
+      __tree_.___copy_to_array(
+        __tree_.__begin_node_, __tree_.__end_node(), transform: Self.___tupple_value)
+    }
+  #endif
 
   /// - Complexity: O(1)
   @inlinable
@@ -945,7 +948,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /// - Complexity: O(1)
   @inlinable
   public subscript(position: Index) -> Element {
-    @inline(__always) get { ___tupple_value(self[_checked: position]) }
+    @inline(__always) get { ___to_element(self[_checked: position]) }
     // コンパイラがクラッシュする
     //    @inline(__always) _read { yield self[_checked: position] }
   }
@@ -954,7 +957,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /// - Complexity: O(1)
   @inlinable
   public subscript(unchecked position: Index) -> Element {
-    @inline(__always) get { ___tupple_value(self[_unchecked: position]) }
+    @inline(__always) get { ___to_element(self[_unchecked: position]) }
   }
 
   /// Indexがsubscriptやremoveで利用可能か判別します
@@ -1019,35 +1022,35 @@ extension RedBlackTreeDictionary where Value: Comparable {
 
 extension RedBlackTreeDictionary {
 
-#if COMPATIBLE_ATCODER_2025
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func keys() -> Keys {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func keys() -> Keys {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func values() -> Values {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
-#else
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var keys: Keys {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func values() -> Values {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
+  #else
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var keys: Keys {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var values: Values {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
-  }
-#endif
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var values: Values {
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    }
+  #endif
 }
 
 // MARK: - SubSequence
@@ -1194,7 +1197,7 @@ extension RedBlackTreeDictionary: Comparable where Value: Comparable {
 // MARK: - Hashable
 
 extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable {
-  
+
   @inlinable
   @inline(__always)
   public func hash(into hasher: inout Hasher) {
@@ -1212,7 +1215,7 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
 // MARK: - Codable
 
 extension RedBlackTreeDictionary: Encodable where Key: Encodable, Value: Encodable {
-  
+
   @inlinable
   public func encode(to encoder: Encoder) throws {
     var container = encoder.unkeyedContainer()
@@ -1224,7 +1227,7 @@ extension RedBlackTreeDictionary: Encodable where Key: Encodable, Value: Encodab
 }
 
 extension RedBlackTreeDictionary: Decodable where Key: Decodable, Value: Decodable {
-  
+
   @inlinable
   public init(from decoder: Decoder) throws {
     _storage = .init(tree: try .create(from: decoder))

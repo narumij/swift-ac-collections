@@ -24,7 +24,7 @@ import Foundation
 extension RedBlackTreeSlice {
 
   @frozen
-  public struct KeyValue where Base: KeyValueComparer {
+  public struct KeyValue where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
 
     public typealias Tree = ___Tree<Base>
     public typealias _Key = Base._Key
@@ -78,7 +78,7 @@ extension RedBlackTreeSlice.KeyValue {
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(Base.___tupple_value(__tree_[$0]))
+      try body(Base.___element(__tree_[$0]))
     }
   }
 }
@@ -89,7 +89,7 @@ extension RedBlackTreeSlice.KeyValue {
   @inline(__always)
   public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0), Base.___tupple_value(__tree_[$0]))
+      try body(___index($0), Base.___element(__tree_[$0]))
     }
   }
 
@@ -97,7 +97,7 @@ extension RedBlackTreeSlice.KeyValue {
   @inline(__always)
   public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body($0, Base.___tupple_value(__tree_[$0]))
+      try body($0, Base.___element(__tree_[$0]))
     }
   }
 }
@@ -136,7 +136,7 @@ extension RedBlackTreeSlice.KeyValue {
   public subscript(position: Index) -> Element {
     @inline(__always) get {
       __tree_.___ensureValid(subscript: position.rawValue)
-      return Base.___tupple_value(__tree_[position.rawValue])
+      return Base.___element(__tree_[position.rawValue])
     }
   }
 }
@@ -148,7 +148,7 @@ extension RedBlackTreeSlice.KeyValue {
   @inlinable
   public subscript(unchecked position: Index) -> Element {
     @inline(__always) get {
-      return Base.___tupple_value(__tree_[position.rawValue])
+      return Base.___element(__tree_[position.rawValue])
     }
   }
 }
@@ -401,7 +401,7 @@ extension RedBlackTreeSlice.KeyValue {
   @inlinable
   @inline(__always)
   public func sorted() -> [Element] {
-    __tree_.___copy_to_array(_start, _end, transform: Base.___tupple_value)
+    __tree_.___copy_to_array(_start, _end, transform: Base.___element)
   }
 }
 
@@ -457,7 +457,7 @@ extension RedBlackTreeSlice.KeyValue {
     guard !__tree_.___is_subscript_null(ptr) else {
       return nil
     }
-    return Base.___tupple_value(__tree_[ptr])
+    return Base.___element(__tree_[ptr])
   }
 
   @inlinable

@@ -91,6 +91,8 @@ extension RedBlackTreeMap: ElementHashable where Key: Hashable, Value: Hashable 
 
 extension RedBlackTreeMap: HasDefaultThreeWayComparator {}
 
+extension RedBlackTreeMap: ___RedBlackTreeKeyValueBase {}
+
 // MARK: - Creating a Dictionay
 
 extension RedBlackTreeMap {
@@ -210,13 +212,13 @@ extension RedBlackTreeMap {
   @inlinable
   @inline(__always)
   public var first: Element? {
-    ___first.map(___tupple_value)
+    ___first.map(___to_element)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public var last: Element? {
-    ___last.map(___tupple_value)
+    ___last.map(___to_element)
   }
 }
 
@@ -401,8 +403,8 @@ extension RedBlackTreeMap {
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(Self.__value_(newMember))
-    return (__inserted, __inserted ? newMember : ___tupple_value(__tree_[__r]))
+    let (__r, __inserted) = __tree_.__insert_unique(___tree_value(newMember))
+    return (__inserted, __inserted ? newMember : ___to_element(__tree_[__r]))
   }
 }
 
@@ -604,7 +606,7 @@ extension RedBlackTreeMap {
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
-    return ___tupple_value(element)
+    return ___to_element(element)
   }
 
   /// Removes the specified subrange of elements from the collection.
@@ -704,13 +706,13 @@ extension RedBlackTreeMap {
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
   public func min() -> Element? {
-    ___min().map(___tupple_value)
+    ___min().map(___to_element)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public func max() -> Element? {
-    ___max().map(___tupple_value)
+    ___max().map(___to_element)
   }
 }
 
@@ -720,7 +722,7 @@ extension RedBlackTreeMap {
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     //    try ___first(where: predicate)
-    try ___first { try predicate(___tupple_value($0)) }.map(___tupple_value)
+    try ___first { try predicate(___to_element($0)) }.map(___to_element)
   }
 }
 
@@ -736,7 +738,7 @@ extension RedBlackTreeMap {
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     //    try ___first_index(where: predicate)
-    try ___first_index { try predicate(___tupple_value($0)) }
+    try ___first_index { try predicate(___to_element($0)) }
   }
 }
 
@@ -798,7 +800,7 @@ extension RedBlackTreeMap {
           __tree_.__begin_node_,
           __tree_.__end_node()
         ) {
-          try isIncluded(___tupple_value($0))
+          try isIncluded(___to_element($0))
         }))
   }
 }
@@ -845,14 +847,14 @@ extension RedBlackTreeMap: Sequence, Collection, BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _forEach { try body(___tupple_value($0)) }
+    try _forEach { try body(___to_element($0)) }
   }
 
   /// 特殊なforEach
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try _forEach { try body($0, ___tupple_value($1)) }
+    try _forEach { try body($0, ___to_element($1)) }
   }
 
   #if COMPATIBLE_ATCODER_2025
@@ -950,14 +952,14 @@ extension RedBlackTreeMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   public subscript(position: Index) -> Element {
-    @inline(__always) get { ___tupple_value(self[_checked: position]) }
+    @inline(__always) get { ___to_element(self[_checked: position]) }
   }
 
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
   public subscript(unchecked position: Index) -> Element {
-    @inline(__always) get { ___tupple_value(self[_unchecked: position]) }
+    @inline(__always) get { ___to_element(self[_unchecked: position]) }
   }
 
   /// Indexがsubscriptやremoveで利用可能か判別します
@@ -994,25 +996,25 @@ extension RedBlackTreeMap: Sequence, Collection, BidirectionalCollection {
   }
 
   #if false
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence {
-    try _elementsEqual(other, by: areEquivalent)
-  }
+    /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+    ///   sequence and the length of `other`.
+    @inlinable
+    @inline(__always)
+    public func elementsEqual<OtherSequence>(
+      _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
+    ) rethrows -> Bool where OtherSequence: Sequence {
+      try _elementsEqual(other, by: areEquivalent)
+    }
 
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
-    try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
-  }
+    /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+    ///   sequence and the length of `other`.
+    @inlinable
+    @inline(__always)
+    public func lexicographicallyPrecedes<OtherSequence>(
+      _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
+    ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
+      try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+    }
   #endif
 }
 
@@ -1237,22 +1239,22 @@ extension RedBlackTreeMap: Hashable where Key: Hashable, Value: Hashable {
 // MARK: - Codable
 
 #if false
-extension RedBlackTreeMap: Encodable where Key: Encodable, Value: Encodable {
+  extension RedBlackTreeMap: Encodable where Key: Encodable, Value: Encodable {
 
-  @inlinable
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.unkeyedContainer()
-    for element in self {
-      try container.encode(element)
+    @inlinable
+    public func encode(to encoder: Encoder) throws {
+      var container = encoder.unkeyedContainer()
+      for element in self {
+        try container.encode(element)
+      }
     }
   }
-}
 
-extension RedBlackTreeMap: Decodable where Key: Decodable, Value: Decodable {
+  extension RedBlackTreeMap: Decodable where Key: Decodable, Value: Decodable {
 
-  @inlinable
-  public init(from decoder: Decoder) throws {
-    _storage = .init(tree: try .create(from: decoder))
+    @inlinable
+    public init(from decoder: Decoder) throws {
+      _storage = .init(tree: try .create(from: decoder))
+    }
   }
-}
 #endif

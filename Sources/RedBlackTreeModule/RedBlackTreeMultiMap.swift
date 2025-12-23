@@ -93,6 +93,8 @@ extension RedBlackTreeMultiMap: ElementHashable where Key: Hashable, Value: Hash
 
 extension RedBlackTreeMultiMap: HasDefaultThreeWayComparator {}
 
+extension RedBlackTreeMultiMap: ___RedBlackTreeKeyValueBase {}
+
 // MARK: - Creating a MultiMap
 
 extension RedBlackTreeMultiMap {
@@ -118,7 +120,9 @@ extension RedBlackTreeMultiMap {
   where S: Sequence, S.Element == (Key, Value) {
     self._storage = .init(
       tree:
-        .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) { Self.__value_($0) })
+          .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) {
+            Self.___tree_value($0)
+          })
   }
 }
 
@@ -184,14 +188,14 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public var first: Element? {
-    ___first.map(___tupple_value)
+    ___first.map(___to_element)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
   public var last: Element? {
-    ___last.map(___tupple_value)
+    ___last.map(___to_element)
   }
 }
 
@@ -303,7 +307,7 @@ extension RedBlackTreeMultiMap {
     _ensureUnique()
     let old = __tree_[ptr.rawValue]
     __tree_[ptr.rawValue].value = newValue
-    return ___tupple_value(old)
+    return ___to_element(old)
   }
 }
 
@@ -490,7 +494,7 @@ extension RedBlackTreeMultiMap {
     guard let element = ___remove(at: index.rawValue) else {
       fatalError(.invalidIndex)
     }
-    return ___tupple_value(element)
+    return ___to_element(element)
   }
 
   /// Removes the specified subrange of elements from the collection.
@@ -588,13 +592,13 @@ extension RedBlackTreeMultiMap {
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
   public func min() -> Element? {
-    ___min().map(___tupple_value)
+    ___min().map(___to_element)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public func max() -> Element? {
-    ___max().map(___tupple_value)
+    ___max().map(___to_element)
   }
 }
 
@@ -603,7 +607,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___first { try predicate(___tupple_value($0)) }.map(___tupple_value)
+    try ___first { try predicate(___to_element($0)) }.map(___to_element)
   }
 }
 
@@ -618,7 +622,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n*)
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index { try predicate(___tupple_value($0)) }
+    try ___first_index { try predicate(___to_element($0)) }
   }
 }
 
@@ -686,7 +690,7 @@ extension RedBlackTreeMultiMap {
           __tree_.__begin_node_,
           __tree_.__end_node()
         ) {
-          try isIncluded(___tupple_value($0))
+          try isIncluded(___to_element($0))
         }
       ))
   }
@@ -730,14 +734,14 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _forEach { try body(___tupple_value($0)) }
+    try _forEach { try body(___to_element($0)) }
   }
 
   /// 特殊なforEach
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try _forEach { try body($0, ___tupple_value($1)) }
+    try _forEach { try body($0, ___to_element($1)) }
   }
 
   #if COMPATIBLE_ATCODER_2025
@@ -835,14 +839,14 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   public subscript(position: Index) -> Element {
-    @inline(__always) get { ___tupple_value(self[_checked: position]) }
+    @inline(__always) get { ___to_element(self[_checked: position]) }
   }
 
   /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
   /// - Complexity: O(1)
   @inlinable
   public subscript(unchecked position: Index) -> Element {
-    @inline(__always) get { ___tupple_value(self[_unchecked: position]) }
+    @inline(__always) get { ___to_element(self[_unchecked: position]) }
   }
 
   /// Indexがsubscriptやremoveで利用可能か判別します
@@ -1131,9 +1135,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-//    self._storage = .init(tree: .create_multi(naive: sequence, transform: Self.__value_))
-    self._storage = Self.___with_value_func {
-      .init(tree: .create_multi(naive: sequence, transform: $0))
-    }
+    //    self._storage = .init(tree: .create_multi(naive: sequence, transform: Self.__value_))
+    self._storage =  .init(tree: .create_multi(naive: sequence, transform: Self.___tree_value))
   }
 }

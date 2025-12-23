@@ -27,10 +27,10 @@ import Foundation
 /// C++の双方向イテレータに近い内容となっている
 @frozen
 public struct RedBlackTreeIndex<Base> where Base: ___TreeBase & ___TreeIndex {
-  
+
   public typealias Tree = ___Tree<Base>
   public typealias Pointee = Tree.Pointee
-  
+
   @usableFromInline
   typealias _Value = Tree._Value
 
@@ -116,7 +116,7 @@ extension RedBlackTreeIndex {
 }
 
 extension RedBlackTreeIndex {
-  
+
   /// 次のイテレータを返す
   ///
   /// 操作が不正な場合に結果がnilとなる
@@ -185,7 +185,7 @@ extension RedBlackTreeIndex {
 }
 
 extension RedBlackTreeIndex {
-  
+
   // TODO: KeyValueのケース対応
 
   /// 現在位置の値を返す
@@ -193,9 +193,7 @@ extension RedBlackTreeIndex {
   /// 無効な場合nilとなる
   @inlinable
   public var pointee: Pointee? {
-    @inline(__always) get {
-      __tree_.___is_subscript_null(rawValue) ? nil : Base.___pointee(___tree_value)
-    }
+    __tree_.___is_subscript_null(rawValue) ? nil : Base.___pointee(___tree_value)
   }
 }
 
@@ -247,43 +245,49 @@ extension RedBlackTreeIndex {
 
 @inlinable
 @inline(__always)
-public func ..< <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
+public func ..< <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>)
+  -> ___Tree<Base>.Indices
+{
   let indices = lhs.___indices
   let bounds = (lhs..<rhs).relative(to: indices)
   return indices[bounds.lowerBound..<bounds.upperBound]
 }
 
-@inlinable
-@inline(__always)
-public func ... <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
-  let indices = lhs.___indices
-  let bounds = (lhs...rhs).relative(to: indices)
-  return indices[bounds.lowerBound..<bounds.upperBound]
-}
+#if !COMPATIBLE_ATCODER_2025
+  @inlinable
+  @inline(__always)
+  public func ... <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>)
+    -> ___Tree<Base>.Indices
+  {
+    let indices = lhs.___indices
+    let bounds = (lhs...rhs).relative(to: indices)
+    return indices[bounds.lowerBound..<bounds.upperBound]
+  }
 
-@inlinable
-@inline(__always)
-public prefix func ..< <Base>(rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
-  let indices = rhs.___indices
-  let bounds = (..<rhs).relative(to: indices)
-  return indices[bounds.lowerBound..<bounds.upperBound]
-}
+  @inlinable
+  @inline(__always)
+  public prefix func ..< <Base>(rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
+    let indices = rhs.___indices
+    let bounds = (..<rhs).relative(to: indices)
+    return indices[bounds.lowerBound..<bounds.upperBound]
+  }
 
-@inlinable
-@inline(__always)
-public prefix func ... <Base>(rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
-  let indices = rhs.___indices
-  let bounds = (...rhs).relative(to: indices)
-  return indices[bounds.lowerBound..<bounds.upperBound]
-}
+  @inlinable
+  @inline(__always)
+  public prefix func ... <Base>(rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
+    let indices = rhs.___indices
+    let bounds = (...rhs).relative(to: indices)
+    return indices[bounds.lowerBound..<bounds.upperBound]
+  }
 
-@inlinable
-@inline(__always)
-public postfix func ... <Base>(lhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
-  let indices = lhs.___indices
-  let bounds = (lhs...).relative(to: indices)
-  return indices[bounds.lowerBound..<bounds.upperBound]
-}
+  @inlinable
+  @inline(__always)
+  public postfix func ... <Base>(lhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
+    let indices = lhs.___indices
+    let bounds = (lhs...).relative(to: indices)
+    return indices[bounds.lowerBound..<bounds.upperBound]
+  }
+#endif
 
 // MARK: - Convenience
 
@@ -307,41 +311,21 @@ public func - <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>)
 
 // MARK: - Optional
 
-extension RedBlackTreeIndex {
-  
-  /// Indexをたどり続ける場合に型を書く負担を軽減するためのものです。
-  ///
-  /// 例えば以下のように書きたい場合に用います。
-  /// ```swift
-  /// let st = RedBlackTreeSet<Int>(0..<10)
-  /// var it = st.startIndex.some()
-  /// while it != st.endIndex {
-  ///   it = it?.next
-  /// }
-  /// ```
-  ///
-  /// - 代替コード: AtCoder2025には未搭載なので、利用する場合、提出コードに以下を追加する必要があります。
-  /// ```swift
-  /// #if ONLINE_JUDGE
-  /// extension ___Tree.___Iterator {
-  ///   func some() -> Self? { .some(self) }
-  /// }
-  /// #endif
-  /// ```
-  @available(
-    *, deprecated,
-    message: "AtCoder2025には未搭載です。もし必要な場合は、代替コードを利用してください。"
-  )
-  func some() -> Self? { .some(self) }
-}
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeIndex {
 
-/*
-代替コード
-```swift
-#if ONLINE_JUDGE
-extension ___Tree.___Iterator {
-  func some() -> Self? { .some(self) }
-}
+    /// オプショナル型を返却します。
+    ///
+    /// 型を書く負担を軽減するためのものです。
+    ///
+    /// 例えば以下のように書きたい場合に用います。
+    /// ```swift
+    /// let st = RedBlackTreeSet<Int>(0..<10)
+    /// var it = st.startIndex.some()
+    /// while it != st.endIndex {
+    ///   it = it?.next
+    /// }
+    /// ```
+    public func some() -> Self? { .some(self) }
+  }
 #endif
-```
- */

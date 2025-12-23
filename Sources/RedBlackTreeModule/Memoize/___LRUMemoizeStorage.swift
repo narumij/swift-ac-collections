@@ -37,7 +37,7 @@ where Parameters: Comparable {
     typealias Value = Value
 
   public
-    typealias KeyValue = _LinkingPair<_Key,_MappedValue>
+    typealias KeyValue = _LinkingPair<_Key, _MappedValue>
 
   public
     typealias _Value = KeyValue
@@ -102,10 +102,10 @@ extension ___LRUMemoizeStorage {
   }
 
   @inlinable
-  public var count: Int { ___count }
-  
+  public var count: Int { __tree_.count }
+
   @inlinable
-  public var capacity: Int { ___capacity }
+  public var capacity: Int { __tree_.___capacity }
 }
 
 extension ___LRUMemoizeStorage {
@@ -119,16 +119,55 @@ extension ___LRUMemoizeStorage {
 extension ___LRUMemoizeStorage: HasDefaultThreeWayComparator {}
 
 extension ___LRUMemoizeStorage: ___LRULinkList {
-  
+
+  @inlinable
+  var __tree_: Tree {
+    @inline(__always) _read {
+      yield _storage.tree
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func ___remove(at ptr: _NodePtr) -> _Value? {
+    guard !__tree_.___is_subscript_null(ptr) else {
+      return nil
+    }
+    let e = __tree_[ptr]
+    _ = __tree_.erase(ptr)
+    return e
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
+
+    if keepCapacity {
+      __tree_.__eraseAll()
+    } else {
+      _storage = .create(withCapacity: 0)
+    }
+  }
+
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    public var _copyCount: UInt {
+      get { _storage.tree.copyCount }
+      set { _storage.tree.copyCount = newValue }
+    }
+  #endif
+
   @inlinable
   @inline(__always)
   public static func ___mapped_value(_ element: _Value) -> _MappedValue {
     element.value
   }
-  
+
   @inlinable
   @inline(__always)
-  public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {
+  public static func ___with_mapped_value<T>(
+    _ element: inout _Value, _ f: (inout _MappedValue) throws -> T
+  ) rethrows -> T {
     try f(&element.value)
   }
 }

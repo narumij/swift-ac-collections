@@ -20,16 +20,13 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public protocol ___RedBlackTreeValue {
-  associatedtype _Value
-  associatedtype Element
-  static func ___element(_ __value: _Value) -> Element
-}
-
-public protocol ___RedBlackTreeKeyValueBase: ___RedBlackTreeValue
+public protocol ___RedBlackTreeKeyValueBase
 where Element == (key: _Key, value: _MappedValue) {
   associatedtype _Key
   associatedtype _MappedValue
+  associatedtype _Value
+  associatedtype Element
+  static func ___element(_ __value: _Value) -> Element
   static func ___tree_value(_ __element: Element) -> _Value
 }
 
@@ -60,20 +57,5 @@ extension ___RedBlackTreeKeyValueBase where _Value == RedBlackTreePair<_Key, _Ma
   @inline(__always)
   public static func ___tree_value(_ __element: Element) -> _Value {
     RedBlackTreePair(__element.key, __element.value)
-  }
-}
-
-extension ___RedBlackTreeKeyValueBase where _Value == Element {
-
-  @inlinable
-  @inline(__always)
-  public static func ___to_element(_ __value: _Value) -> Element {
-    __value
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func ___tree_value(_ __element: Element) -> _Value {
-    __element
   }
 }

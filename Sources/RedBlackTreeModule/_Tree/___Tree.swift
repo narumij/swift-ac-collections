@@ -1192,7 +1192,7 @@ extension ___Tree {
   }
 }
 
-extension ___Tree: Equatable where Base: ElementEqutable {
+extension ___Tree: Equatable where _Value: Equatable {
   
   @inlinable
   @inline(__always)
@@ -1209,11 +1209,11 @@ extension ___Tree: Equatable where Base: ElementEqutable {
     return lhs.elementsEqual(lhs.__begin_node_,
                              lhs.__end_node(),
                              rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
-                             by: Base.___element_equiv)
+                             by: ==)
   }
 }
 
-extension ___Tree: Comparable where Base: ElementEqutable & ElementComparable {
+extension ___Tree: Comparable where _Value: Comparable {
   
   @inlinable
   @inline(__always)
@@ -1223,11 +1223,11 @@ extension ___Tree: Comparable where Base: ElementEqutable & ElementComparable {
       lhs.__begin_node_,
       lhs.__end_node(),
       rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
-      by: Base.___element_comp)
+      by: <)
   }
 }
 
-extension ___Tree: Hashable where Base: ElementEqutable & ElementHashable {
+extension ___Tree: Hashable where _Value: Equatable, Base: ElementHashable {
   
   @inlinable
   public func hash(into hasher: inout Hasher) {
@@ -1246,29 +1246,11 @@ extension ___Tree {
   }
 }
 
-extension ___Tree where Base: ElementEqutable {
-  
-  @inlinable
-  public func elementsEqual<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, _Value == OtherSequence.Element {
-    elementsEqual(__first, __last, other, by: Base.___element_equiv)
-  }
-}
-
 extension ___Tree {
 
   @inlinable
   public func lexicographicallyPrecedes<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence, _Value == OtherSequence.Element {
     try unsafeValues(__first, __last).lexicographicallyPrecedes(other, by: areInIncreasingOrder)
-  }
-}
-
-extension ___Tree where Base: ElementComparable {
-  
-  @inlinable
-  public func lexicographicallyPrecedes<OtherSequence>(_ __first: _NodePtr, _ __last: _NodePtr,_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, _Value == OtherSequence.Element {
-    lexicographicallyPrecedes(__first, __last, other, by: Base.___element_comp)
   }
 }
 

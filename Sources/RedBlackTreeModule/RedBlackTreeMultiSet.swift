@@ -63,8 +63,6 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
-extension RedBlackTreeMultiSet: ElementComparable {}
-extension RedBlackTreeMultiSet: ElementEqutable {}
 extension RedBlackTreeMultiSet: ElementHashable where Element: Hashable {}
 
 extension RedBlackTreeMultiSet: HasDefaultThreeWayComparator {}
@@ -802,7 +800,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other)
+    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other, by: ==)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -811,7 +809,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other)
+    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other, by: <)
   }
 }
 

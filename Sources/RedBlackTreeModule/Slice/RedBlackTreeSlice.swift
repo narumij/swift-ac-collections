@@ -25,6 +25,7 @@ import Foundation
 public struct RedBlackTreeSlice<Base> where Base: ___TreeBase {
 
   public typealias Tree = ___Tree<Base>
+  public typealias _Value = Tree._Value
   public typealias Element = Tree._Value
   public typealias Index = Tree.Index
   public typealias Indices = Tree.Indices
@@ -353,42 +354,6 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice where Base: KeyValueComparer {
-
-  public typealias Keys = RedBlackTreeIterator<Base>.Keys
-  public typealias Values = RedBlackTreeIterator<Base>.MappedValues
-
-  #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public func keys() -> Keys {
-      .init(tree: __tree_, start: _start, end: _end)
-    }
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public func values() -> Values {
-      .init(tree: __tree_, start: _start, end: _end)
-    }
-  #else
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var keys: Keys {
-      .init(tree: __tree_, start: _start, end: _end)
-    }
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var values: Values {
-      .init(tree: __tree_, start: _start, end: _end)
-    }
-  #endif
-}
-
 extension RedBlackTreeSlice {
 
   /// - Complexity: O(*n*)
@@ -422,7 +387,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice where Base: ElementEqutable {
+extension RedBlackTreeSlice where _Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -430,11 +395,11 @@ extension RedBlackTreeSlice where Base: ElementEqutable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.elementsEqual(_start, _end, other)
+    __tree_.elementsEqual(_start, _end, other, by: ==)
   }
 }
 
-extension RedBlackTreeSlice where Base: ElementComparable {
+extension RedBlackTreeSlice where _Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -442,11 +407,11 @@ extension RedBlackTreeSlice where Base: ElementComparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.lexicographicallyPrecedes(_start, _end, other)
+    __tree_.lexicographicallyPrecedes(_start, _end, other, by: <)
   }
 }
 
-extension RedBlackTreeSlice: Equatable where Base: ElementEqutable {
+extension RedBlackTreeSlice: Equatable where _Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
@@ -456,9 +421,7 @@ extension RedBlackTreeSlice: Equatable where Base: ElementEqutable {
   }
 }
 
-extension RedBlackTreeSlice: Comparable where Base: ElementComparable & ElementEqutable {}
-
-extension RedBlackTreeSlice where Base: ElementComparable {
+extension RedBlackTreeSlice: Comparable where _Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable

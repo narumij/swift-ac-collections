@@ -89,8 +89,6 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
-extension RedBlackTreeMultiMap: ElementComparable where Value: Comparable {}
-extension RedBlackTreeMultiMap: ElementEqutable where Value: Equatable {}
 extension RedBlackTreeMultiMap: ElementHashable where Key: Hashable, Value: Hashable {}
 
 extension RedBlackTreeMultiMap: HasDefaultThreeWayComparator {}

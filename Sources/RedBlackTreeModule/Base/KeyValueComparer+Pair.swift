@@ -1,4 +1,4 @@
-// Copyright 2024 narumij
+// Copyright 2024-2025 narumij
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,31 +20,21 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
-
-/// 要素がキーバリューの場合のひな形
-public protocol KeyValueComparer: ValueComparer {
-  associatedtype _MappedValue
-  static func ___mapped_value(_ element: _Value) -> _MappedValue
-  static func ___with_mapped_value<T>(_ element: inout _Value, _: (inout _MappedValue) throws -> T)
-    rethrows -> T
-}
-
-extension KeyValueComparer {
+extension KeyValueComparer where _Value == RedBlackTreePair<_Key, _MappedValue> {
 
   @inlinable
   @inline(__always)
-  func ___mapped_value(_ element: _Value) -> _MappedValue {
-    Self.___mapped_value(element)
-  }
-}
+  public static func __key(_ element: _Value) -> _Key { element.key }
 
-// MARK: -
-
-extension ValueComparator where Base: KeyValueComparer {
   @inlinable
   @inline(__always)
-  public static func ___mapped_value(of element: Base._Value) -> Base._MappedValue {
-    Base.___mapped_value(element)
+  public static func ___mapped_value(_ element: _Value) -> _MappedValue { element.value }
+
+  @inlinable
+  @inline(__always)
+  public static func ___with_mapped_value<T>(
+    _ element: inout _Value, _ f: (inout _MappedValue) throws -> T
+  ) rethrows -> T {
+    try f(&element.value)
   }
 }

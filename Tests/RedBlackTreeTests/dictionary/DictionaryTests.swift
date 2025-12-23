@@ -1069,12 +1069,14 @@ final class DictionaryTests: XCTestCase {
     XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
   }
   
+#if !COMPATIBLE_ATCODER_2025
   func testSortedReversed() throws {
     let source = [0,1,2,3,4,5].map { RedBlackTreePair($0,$0 * 10) }
     let a = RedBlackTreeDictionary<Int,Int>(uniqueKeysWithValues: source.map(\.tuple))
     XCTAssertEqual(a.sorted().map{ RedBlackTreePair($0) }, source)
     XCTAssertEqual(a.reversed().map{ RedBlackTreePair($0) }, source.reversed())
   }
+#endif
   
   func testForEach_enumeration() throws {
     let source = [0,1,2,3,4,5].map { ($0,$0 * 10) }

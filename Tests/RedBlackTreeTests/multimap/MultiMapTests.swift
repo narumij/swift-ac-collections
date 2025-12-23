@@ -1116,12 +1116,14 @@ import XCTest
       XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
     }
 
-    func testSortedReversed() throws {
-      let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
-      let a = RedBlackTreeMultiMap<Int, Int>(multiKeysWithValues: source)
-      AssertEquenceEqual(a.sorted() + [], source)
-      AssertEquenceEqual(a.reversed() + [], source.reversed())
-    }
+    #if !COMPATIBLE_ATCODER_2025
+      func testSortedReversed() throws {
+        let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
+        let a = RedBlackTreeMultiMap<Int, Int>(multiKeysWithValues: source)
+        AssertEquenceEqual(a.sorted() + [], source)
+        AssertEquenceEqual(a.reversed() + [], source.reversed())
+      }
+    #endif
 
     func testForEach_enumeration() throws {
       let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
@@ -1134,10 +1136,12 @@ import XCTest
       }
     }
 
-    func testInitNaive_with_Sequence() throws {
-      let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
-      let a = RedBlackTreeMultiMap<Int, Int>(naive: AnySequence(source))
-      AssertEquenceEqual(a.sorted() + [], source)
-    }
+    #if !COMPATIBLE_ATCODER_2025
+      func testInitNaive_with_Sequence() throws {
+        let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
+        let a = RedBlackTreeMultiMap<Int, Int>(naive: AnySequence(source))
+        AssertEquenceEqual(a.sorted() + [], source)
+      }
+    #endif
   }
 #endif

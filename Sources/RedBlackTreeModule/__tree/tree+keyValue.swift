@@ -26,9 +26,10 @@ import Foundation
 public protocol KeyValueComparer: ValueComparer {
   associatedtype _MappedValue
   static func ___mapped_value(_ element: _Value) -> _MappedValue
-  static func ___with_mapped_value<T>(_ element: inout _Value,_ :(inout _MappedValue) throws -> T) rethrows -> T
-  static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value
-  static func __value_(_ : (_Key,_MappedValue)) -> _Value
+  static func ___with_mapped_value<T>(_ element: inout _Value, _: (inout _MappedValue) throws -> T)
+    rethrows -> T
+  static func __value_(_ k: _Key, _ v: _MappedValue) -> _Value
+  static func __value_(_: (_Key, _MappedValue)) -> _Value
 }
 
 extension KeyValueComparer {
@@ -44,7 +45,7 @@ extension KeyValueComparer {
   static func ___key_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
     value_comp(__key(lhs), __key(rhs))
   }
-  
+
   @inlinable
   @inline(__always)
   func ___mapped_value(_ element: _Value) -> _MappedValue {
@@ -55,7 +56,7 @@ extension KeyValueComparer {
 // MARK: -
 
 extension KeyValueComparer where _MappedValue: Comparable {
-  
+
   @inlinable
   @inline(__always)
   public static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
@@ -65,7 +66,7 @@ extension KeyValueComparer where _MappedValue: Comparable {
 }
 
 extension KeyValueComparer where _MappedValue: Equatable {
-  
+
   @inlinable
   @inline(__always)
   public static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
@@ -97,28 +98,31 @@ extension KeyValueComparer where _Value == (key: _Key, value: _MappedValue) {
   @inlinable
   @inline(__always)
   public static func ___mapped_value(_ element: _Value) -> _MappedValue { element.value }
-  
+
   @inlinable
   @inline(__always)
-  public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {
+  public static func ___with_mapped_value<T>(
+    _ element: inout _Value, _ f: (inout _MappedValue) throws -> T
+  ) rethrows -> T {
     try f(&element.value)
   }
-  
+
   @inlinable
   @inline(__always)
-  public static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value {
-    (k,v)
+  public static func __value_(_ k: _Key, _ v: _MappedValue) -> _Value {
+    (k, v)
   }
-  
+
   @inlinable
   @inline(__always)
-  public static func __value_(_ kv: (_Key,_MappedValue)) -> _Value {
+  public static func __value_(_ kv: (_Key, _MappedValue)) -> _Value {
     kv
   }
-  
+
   @inlinable
   @inline(__always)
-  public static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher) where _Key: Hashable, _MappedValue: Hashable {
+  public static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher)
+  where _Key: Hashable, _MappedValue: Hashable {
     hasher.combine(__key(lhs))
     hasher.combine(___mapped_value(lhs))
   }
@@ -127,7 +131,7 @@ extension KeyValueComparer where _Value == (key: _Key, value: _MappedValue) {
 // MARK: -
 
 @frozen
-public struct Pair<Key, Value> {
+public struct RedBlackTreePair<Key, Value> {
   @inlinable
   @inline(__always)
   public init(key: Key, value: Value) {
@@ -157,20 +161,20 @@ public struct Pair<Key, Value> {
   public var second: Value { value }
 }
 
-extension Pair: Sendable where Key: Sendable, Value: Sendable {}
-extension Pair: Hashable where Key: Hashable, Value: Hashable {}
-extension Pair: Equatable where Key: Equatable, Value: Equatable {}
-extension Pair: Comparable where Key: Comparable, Value: Comparable {
-  public static func < (lhs: Pair<Key, Value>, rhs: Pair<Key, Value>)
+extension RedBlackTreePair: Sendable where Key: Sendable, Value: Sendable {}
+extension RedBlackTreePair: Hashable where Key: Hashable, Value: Hashable {}
+extension RedBlackTreePair: Equatable where Key: Equatable, Value: Equatable {}
+extension RedBlackTreePair: Comparable where Key: Comparable, Value: Comparable {
+  public static func < (lhs: RedBlackTreePair<Key, Value>, rhs: RedBlackTreePair<Key, Value>)
     -> Bool
   {
     (lhs.key, lhs.value) < (rhs.key, rhs.value)
   }
 }
-extension Pair: Encodable where Key: Encodable, Value: Encodable {}
-extension Pair: Decodable where Key: Decodable, Value: Decodable {}
+extension RedBlackTreePair: Encodable where Key: Encodable, Value: Encodable {}
+extension RedBlackTreePair: Decodable where Key: Decodable, Value: Decodable {}
 
-extension KeyValueComparer where _Value == Pair<_Key, _MappedValue> {
+extension KeyValueComparer where _Value == RedBlackTreePair<_Key, _MappedValue> {
 
   @inlinable
   @inline(__always)
@@ -179,28 +183,31 @@ extension KeyValueComparer where _Value == Pair<_Key, _MappedValue> {
   @inlinable
   @inline(__always)
   public static func ___mapped_value(_ element: _Value) -> _MappedValue { element.value }
-  
+
   @inlinable
   @inline(__always)
-  public static func ___with_mapped_value<T>(_ element: inout _Value,_ f:(inout _MappedValue) throws -> T) rethrows -> T {
+  public static func ___with_mapped_value<T>(
+    _ element: inout _Value, _ f: (inout _MappedValue) throws -> T
+  ) rethrows -> T {
     try f(&element.value)
   }
-  
+
   @inlinable
   @inline(__always)
-  public static func __value_(_ k: _Key,_ v: _MappedValue) -> _Value {
-    Pair(key: k, value: v)
+  public static func __value_(_ k: _Key, _ v: _MappedValue) -> _Value {
+    RedBlackTreePair(key: k, value: v)
   }
-  
+
   @inlinable
   @inline(__always)
-  public static func __value_(_ kv: (_Key,_MappedValue)) -> _Value {
-    Pair(key: kv.0, value: kv.1)
+  public static func __value_(_ kv: (_Key, _MappedValue)) -> _Value {
+    RedBlackTreePair(key: kv.0, value: kv.1)
   }
-  
+
   @inlinable
   @inline(__always)
-  public static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher) where _Key: Hashable, _MappedValue: Hashable {
+  public static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher)
+  where _Key: Hashable, _MappedValue: Hashable {
     hasher.combine(lhs)
   }
 }

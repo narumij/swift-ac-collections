@@ -69,7 +69,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias _MappedValue = Value
 
   public
-    typealias _Value = Pair<Key, Value>
+    typealias _Value = RedBlackTreePair<Key, Value>
 
   @usableFromInline
   var _storage: Tree.Storage
@@ -481,7 +481,7 @@ extension RedBlackTreeDictionary {
   public mutating func merge<S>(
     _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows where S: Sequence, S.Element == Pair<Key, Value> {
+  ) rethrows where S: Sequence, S.Element == RedBlackTreePair<Key, Value> {
 
     try _ensureUnique { __tree_ in
       try .___insert_range_unique(
@@ -528,7 +528,7 @@ extension RedBlackTreeDictionary {
   public func merging<S>(
     _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows -> Self where S: Sequence, S.Element == Pair<Key, Value> {
+  ) rethrows -> Self where S: Sequence, S.Element == RedBlackTreePair<Key, Value> {
     var result = self
     try result.merge(other, uniquingKeysWith: combine)
     return result

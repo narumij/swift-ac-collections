@@ -11,8 +11,8 @@ import XCTest
   func keyValue<K, V>(_ kv: (K, V)) -> (key: K, value: V) {
     (kv.0, kv.1)
   }
-  func _value<K, V>(_ k: K, _ v: V) -> Pair<K, V> { Pair(k, v) }
-  func _value<K, V>(_ kv: (K, V)) -> Pair<K, V> { Pair(kv.0, kv.1) }
+  func _value<K, V>(_ k: K, _ v: V) -> RedBlackTreePair<K, V> { RedBlackTreePair(k, v) }
+  func _value<K, V>(_ kv: (K, V)) -> RedBlackTreePair<K, V> { RedBlackTreePair(kv.0, kv.1) }
 #else
   func keyValue<K, V>(_ k: K, _ v: V) -> Pair<K, V> { Pair(k, v) }
   func keyValue<K, V>(_ kv: (K, V)) -> Pair<K, V> { Pair(kv.0, kv.1) }

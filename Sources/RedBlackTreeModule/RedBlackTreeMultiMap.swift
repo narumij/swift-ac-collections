@@ -73,7 +73,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias _MappedValue = Value
 
   public
-    typealias _Value = Pair<Key, Value>
+    typealias _Value = RedBlackTreePair<Key, Value>
 
   @usableFromInline
   var _storage: Tree.Storage

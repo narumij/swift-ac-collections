@@ -71,7 +71,7 @@ public struct RedBlackTreeMap<Key: Comparable, Value> {
     typealias _MappedValue = Value
 
   public
-    typealias _Value = Pair<Key, Value>
+    typealias _Value = RedBlackTreePair<Key, Value>
 
   @usableFromInline
   var _storage: Tree.Storage
@@ -123,7 +123,7 @@ extension RedBlackTreeMap {
         .create_unique(
           sorted: keysAndValues.sorted { $0.0 < $1.0 }
         ) {
-          Pair($0)
+          RedBlackTreePair($0)
         })
   }
 }
@@ -145,7 +145,7 @@ extension RedBlackTreeMap {
           },
           uniquingKeysWith: combine
         ) {
-          Pair($0)
+          RedBlackTreePair($0)
         })
   }
 }
@@ -465,7 +465,7 @@ extension RedBlackTreeMap {
   public mutating func merge<S>(
     _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows where S: Sequence, S.Element == Pair<Key, Value> {
+  ) rethrows where S: Sequence, S.Element == RedBlackTreePair<Key, Value> {
 
     try _ensureUnique { __tree_ in
       try .___insert_range_unique(
@@ -493,7 +493,7 @@ extension RedBlackTreeMap {
         other,
         uniquingKeysWith: combine
       ) {
-        Pair($0)
+        RedBlackTreePair($0)
       }
     }
   }
@@ -518,7 +518,7 @@ extension RedBlackTreeMap {
   public func merging<S>(
     _ other: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
-  ) rethrows -> Self where S: Sequence, S.Element == Pair<Key, Value> {
+  ) rethrows -> Self where S: Sequence, S.Element == RedBlackTreePair<Key, Value> {
     var result = self
     try result.merge(other, uniquingKeysWith: combine)
     return result

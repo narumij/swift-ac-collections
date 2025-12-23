@@ -482,7 +482,7 @@ package func _dictionaryDescription<Key, Value, C: Collection>(
 @inlinable
 package func _dictionaryDescription<Key, Value, C: Collection>(
   for elements: C
-) -> String where C.Element == Pair<Key,Value> {
+) -> String where C.Element == RedBlackTreePair<Key,Value> {
   guard !elements.isEmpty else { return "[:]" }
   var result = "["
   var first = true

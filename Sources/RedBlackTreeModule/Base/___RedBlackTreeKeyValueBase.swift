@@ -45,7 +45,7 @@ extension ___RedBlackTreeKeyValueBase {
   }
 }
 
-extension ___RedBlackTreeKeyValueBase where _Value == Pair<_Key, _MappedValue> {
+extension ___RedBlackTreeKeyValueBase where _Value == RedBlackTreePair<_Key, _MappedValue> {
 
   @inlinable
   @inline(__always)
@@ -56,7 +56,7 @@ extension ___RedBlackTreeKeyValueBase where _Value == Pair<_Key, _MappedValue> {
   @inlinable
   @inline(__always)
   public static func ___tree_value(_ __element: Element) -> _Value {
-    Pair(__element.key, __element.value)
+    RedBlackTreePair(__element.key, __element.value)
   }
 }
 

@@ -89,7 +89,7 @@ extension ___LRUMemoizeStorage {
           _ensureCapacity(limit: maxCount)
         }
         if __tree_.count == maxCount {
-          ___remove(at: ___popRankLowest())
+          _ = __tree_.erase(___popRankLowest())
         }
         let (__parent, __child) = __tree_.__find_equal(key)
         if __tree_.__ptr_(__child) == .nullptr {
@@ -106,6 +106,12 @@ extension ___LRUMemoizeStorage {
 
   @inlinable
   public var capacity: Int { __tree_.___capacity }
+
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    public var _copyCount: UInt {
+      _storage.tree.copyCount
+    }
+  #endif
 }
 
 extension ___LRUMemoizeStorage {
@@ -129,18 +135,6 @@ extension ___LRUMemoizeStorage: ___LRULinkList {
 
   @inlinable
   @inline(__always)
-  @discardableResult
-  public mutating func ___remove(at ptr: _NodePtr) -> _Value? {
-    guard !__tree_.___is_subscript_null(ptr) else {
-      return nil
-    }
-    let e = __tree_[ptr]
-    _ = __tree_.erase(ptr)
-    return e
-  }
-
-  @inlinable
-  @inline(__always)
   mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
 
     if keepCapacity {
@@ -149,13 +143,6 @@ extension ___LRUMemoizeStorage: ___LRULinkList {
       _storage = .create(withCapacity: 0)
     }
   }
-
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    public var _copyCount: UInt {
-      get { _storage.tree.copyCount }
-      set { _storage.tree.copyCount = newValue }
-    }
-  #endif
 
   @inlinable
   @inline(__always)

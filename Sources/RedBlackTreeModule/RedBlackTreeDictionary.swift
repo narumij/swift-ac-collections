@@ -85,7 +85,7 @@ extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
-extension RedBlackTreeDictionary: ElementHashable where Key: Hashable, Value: Hashable {}
+//extension RedBlackTreeDictionary: ElementHashable where Key: Hashable, Value: Hashable {}
 
 extension RedBlackTreeDictionary: HasDefaultThreeWayComparator {}
 

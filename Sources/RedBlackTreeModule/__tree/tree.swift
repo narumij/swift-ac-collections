@@ -394,8 +394,3 @@ extension ValueComparator where Base: ThreeWayComparator {
     Base.__lazy_synth_three_way_comparator(__lhs, __rhs)
   }
 }
-
-public protocol ElementHashable: ValueComparer {
-  associatedtype _Value
-  @inlinable static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher)
-}

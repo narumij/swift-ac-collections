@@ -89,7 +89,7 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
-extension RedBlackTreeMultiMap: ElementHashable where Key: Hashable, Value: Hashable {}
+//extension RedBlackTreeMultiMap: ElementHashable where Key: Hashable, Value: Hashable {}
 
 extension RedBlackTreeMultiMap: HasDefaultThreeWayComparator {}
 
@@ -289,7 +289,7 @@ extension RedBlackTreeMultiMap {
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
-    _ = __tree_.__insert_multi(Self.__value_(newMember))
+    _ = __tree_.__insert_multi(Self.___tree_value(newMember))
     return (true, newMember)
   }
 }
@@ -343,7 +343,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
     _ensureUnique { __tree_ in
-      .___insert_range_multi(tree: __tree_, other.map { Self.__value_($0) })
+      .___insert_range_multi(tree: __tree_, other.map { Self.___tree_value($0) })
     }
   }
 

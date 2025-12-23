@@ -63,7 +63,7 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
-extension RedBlackTreeMultiSet: ElementHashable where Element: Hashable {}
+//extension RedBlackTreeMultiSet: ElementHashable where Element: Hashable {}
 
 extension RedBlackTreeMultiSet: HasDefaultThreeWayComparator {}
 

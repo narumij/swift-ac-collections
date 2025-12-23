@@ -70,7 +70,7 @@ extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeSet: ___RedBlackTreeUnique {}
 extension RedBlackTreeSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeSet: ScalarValueComparer {}
-extension RedBlackTreeSet: ElementHashable where Element: Hashable {}
+//extension RedBlackTreeSet: ElementHashable where Element: Hashable {}
 
 extension RedBlackTreeSet: HasDefaultThreeWayComparator {}
 

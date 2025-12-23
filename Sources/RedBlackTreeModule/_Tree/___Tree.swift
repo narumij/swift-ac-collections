@@ -1227,13 +1227,13 @@ extension ___Tree: Comparable where _Value: Comparable {
   }
 }
 
-extension ___Tree: Hashable where _Value: Equatable, Base: ElementHashable {
+extension ___Tree: Hashable where _Value: Hashable {
   
   @inlinable
   public func hash(into hasher: inout Hasher) {
     hasher.combine(header)
     for node in unsafeValues(__begin_node_, __end_node()) {
-      Base.___element_hash(node, into: &hasher)
+      hasher.combine(node)
     }
   }
 }

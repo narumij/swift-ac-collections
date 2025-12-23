@@ -29,7 +29,6 @@ public protocol KeyValueComparer: ValueComparer {
   static func ___with_mapped_value<T>(_ element: inout _Value, _: (inout _MappedValue) throws -> T)
     rethrows -> T
   static func __value_(_ k: _Key, _ v: _MappedValue) -> _Value
-  static func __value_(_: (_Key, _MappedValue)) -> _Value
 }
 
 extension KeyValueComparer {
@@ -112,20 +111,6 @@ extension KeyValueComparer where _Value == (key: _Key, value: _MappedValue) {
   public static func __value_(_ k: _Key, _ v: _MappedValue) -> _Value {
     (k, v)
   }
-
-  @inlinable
-  @inline(__always)
-  public static func __value_(_ kv: (_Key, _MappedValue)) -> _Value {
-    kv
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher)
-  where _Key: Hashable, _MappedValue: Hashable {
-    hasher.combine(__key(lhs))
-    hasher.combine(___mapped_value(lhs))
-  }
 }
 
 // MARK: -
@@ -196,18 +181,5 @@ extension KeyValueComparer where _Value == RedBlackTreePair<_Key, _MappedValue> 
   @inline(__always)
   public static func __value_(_ k: _Key, _ v: _MappedValue) -> _Value {
     RedBlackTreePair(key: k, value: v)
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func __value_(_ kv: (_Key, _MappedValue)) -> _Value {
-    RedBlackTreePair(key: kv.0, value: kv.1)
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher)
-  where _Key: Hashable, _MappedValue: Hashable {
-    hasher.combine(lhs)
   }
 }

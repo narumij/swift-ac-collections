@@ -31,27 +31,3 @@ extension ScalarValueComparer {
   @inline(__always)
   public static func __key(_ e: _Value) -> _Key { e }
 }
-
-extension ScalarValueComparer {
-  
-  @inlinable
-  @inline(__always)
-  public static func ___element_comp(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    value_comp(lhs, rhs)
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func ___element_equiv(_ lhs: _Value, _ rhs: _Value) -> Bool {
-    value_equiv(lhs, rhs)
-  }
-}
-
-extension ScalarValueComparer where _Value: Hashable {
-
-  @inlinable
-  @inline(__always)
-  public static func ___element_hash(_ lhs: _Value, into hasher: inout Hasher) {
-    hasher.combine(lhs)
-  }
-}

@@ -87,7 +87,7 @@ extension RedBlackTreeMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMap: ___RedBlackTreeUnique {}
 extension RedBlackTreeMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMap: KeyValueComparer {}
-extension RedBlackTreeMap: ElementHashable where Key: Hashable, Value: Hashable {}
+//extension RedBlackTreeMap: ElementHashable where Key: Hashable, Value: Hashable {}
 
 extension RedBlackTreeMap: HasDefaultThreeWayComparator {}
 

@@ -6,19 +6,7 @@
 //
 
 @usableFromInline
-protocol ___IndexProvider: ___RedBlackTree___
-where
-  Base: ___TreeBase & ___TreeIndex,
-  Tree == ___Tree<Base>,
-  Index == Tree.Index,
-  _Value == Tree._Value
-{
-  associatedtype Index
-  associatedtype _Value
-  var __tree_: Tree { get }
-  var _start: _NodePtr { get }
-  var _end: _NodePtr { get }
-}
+protocol ___IndexProvider: ___Base {}
 
 extension ___IndexProvider {
 

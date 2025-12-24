@@ -62,12 +62,10 @@ extension RedBlackTreeMultiSet {
   public typealias Base = Self
 }
 
-extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
-extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
+extension RedBlackTreeMultiSet: ___RedBlackTreeValueBase___ {}
 extension RedBlackTreeMultiSet: CompareMultiTrait {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 extension RedBlackTreeMultiSet: ValuePointee {}
-extension RedBlackTreeMultiSet: ___KeyOnlyBase {}
 
 // MARK: - Creating a MultSet
 

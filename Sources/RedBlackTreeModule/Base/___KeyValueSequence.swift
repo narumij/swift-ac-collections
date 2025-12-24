@@ -6,10 +6,10 @@
 //
 
 @usableFromInline
-protocol ___KeyValueBase: ___Base
+protocol ___KeyValueSequence: ___Base 
 where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {}
 
-extension ___KeyValueBase {
+extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
@@ -24,7 +24,7 @@ extension ___KeyValueBase {
   }
 }
 
-extension ___KeyValueBase {
+extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
@@ -35,7 +35,7 @@ extension ___KeyValueBase {
   }
 }
 
-extension ___KeyValueBase {
+extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
@@ -46,7 +46,7 @@ extension ___KeyValueBase {
   }
 }
 
-extension ___KeyValueBase {
+extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
@@ -57,7 +57,7 @@ extension ___KeyValueBase {
   }
 }
 
-extension ___KeyValueBase {
+extension ___KeyValueSequence {
 
   /// - Complexity: O(*n*)
   @inlinable

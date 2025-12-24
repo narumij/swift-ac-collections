@@ -24,7 +24,7 @@ import Foundation
 extension RedBlackTreeSlice {
 
   @frozen
-  public struct KeyValue: RedBlackTreeSliceInternal & ___KeyValueBase where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
+  public struct KeyValue: ___SubSequence & ___IndexProvider & ___Common & ___KeyValueSequence where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
 
     public typealias Tree = ___Tree<Base>
     public typealias _Key = Base._Key

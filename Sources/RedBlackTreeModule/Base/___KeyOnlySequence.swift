@@ -6,9 +6,9 @@
 //
 
 @usableFromInline
-protocol ___KeyOnlyBase: ___Base {}
+protocol ___KeyOnlySequence: ___Base {}
 
-extension ___KeyOnlyBase {
+extension ___KeyOnlySequence {
 
   @inlinable
   @inline(__always)
@@ -23,7 +23,7 @@ extension ___KeyOnlyBase {
   }
 }
 
-extension ___KeyOnlyBase {
+extension ___KeyOnlySequence {
 
   @inlinable
   @inline(__always)
@@ -34,7 +34,7 @@ extension ___KeyOnlyBase {
   }
 }
 
-extension ___KeyOnlyBase {
+extension ___KeyOnlySequence {
 
   @inlinable
   @inline(__always)
@@ -45,7 +45,7 @@ extension ___KeyOnlyBase {
   }
 }
 
-extension ___KeyOnlyBase {
+extension ___KeyOnlySequence {
 
   @inlinable
   @inline(__always)
@@ -56,7 +56,7 @@ extension ___KeyOnlyBase {
   }
 }
 
-extension ___KeyOnlyBase {
+extension ___KeyOnlySequence {
 
   /// - Complexity: O(*n*)
   @inlinable

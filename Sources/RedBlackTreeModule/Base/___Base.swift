@@ -5,6 +5,13 @@
 //  Created by narumij on 2025/12/24.
 //
 
+// コレクション実装の基点
+public protocol ___RedBlackTree___ {
+  associatedtype Base
+  associatedtype Tree
+  associatedtype Element
+}
+
 @usableFromInline
 protocol ___Base: ___RedBlackTree___
 where

@@ -68,12 +68,10 @@ public struct RedBlackTreeSet<Element: Comparable> {
   var _storage: Storage
 }
 
-extension RedBlackTreeSet: ___RedBlackTreeBase {}
-extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
+extension RedBlackTreeSet: ___RedBlackTreeValueBase___ {}
 extension RedBlackTreeSet: CompareUniqueTrait {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 extension RedBlackTreeSet: ValuePointee {}
-extension RedBlackTreeSet: ___KeyOnlyBase {}
 
 // MARK: - Creating a Set
 

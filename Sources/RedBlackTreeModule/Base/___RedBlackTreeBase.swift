@@ -22,86 +22,17 @@
 
 import Foundation
 
-// コレクション実装の基点
-public protocol ___RedBlackTree___ {
-  associatedtype Base
-  associatedtype Tree
-  associatedtype Element
-}
-
-public protocol ___RedBlackTreeKeyValue___: ___RedBlackTree___ {
-  associatedtype _Key
-  associatedtype _MappedValue
-}
-
 // コレクションの内部実装
+
 @usableFromInline
-protocol ___RedBlackTreeBase:
-  ___RedBlackTree___ & ___StorageProvider & ___IndexProvider & ___Common & ___Sequence
+protocol ___RedBlackTreeValueBase___:
+  ___BaseSequence & ___IndexProvider & ___Common & ___StorageProvider & ___KeyOnlySequence & ___RedBlackTreeCopyOnWrite
 {}
 
-// MARK: - Index
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  func ___contains(_ __k: _Key) -> Bool {
-    __tree_.__count_unique(__k) != 0
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  func ___min() -> _Value? {
-    __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_min(__tree_.__root())]
-  }
-
-  @inlinable
-  @inline(__always)
-  func ___max() -> _Value? {
-    __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_max(__tree_.__root())]
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  public func ___lower_bound(_ __k: _Key) -> _NodePtr {
-    __tree_.lower_bound(__k)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___upper_bound(_ __k: _Key) -> _NodePtr {
-    __tree_.upper_bound(__k)
-  }
-
-  @inlinable
-  @inline(__always)
-  func ___index_lower_bound(_ __k: _Key) -> Index {
-    ___index(___lower_bound(__k))
-  }
-
-  @inlinable
-  @inline(__always)
-  func ___index_upper_bound(_ __k: _Key) -> Index {
-    ___index(___upper_bound(__k))
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  func ___first_index(of member: _Key) -> Index? {
-    let ptr = __tree_.__ptr_(__tree_.__find_equal(member).__child)
-    return ___index_or_nil(ptr)
-  }
-}
+@usableFromInline
+protocol ___RedBlackTreeKeyValueBase___:
+  ___BaseSequence & ___IndexProvider & ___Common & ___StorageProvider & ___KeyValueSequence & ___RedBlackTreeCopyOnWrite
+{}
 
 // MARK: - Etc
 

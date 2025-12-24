@@ -6,9 +6,9 @@
 //
 
 @usableFromInline
-protocol RedBlackTreeSliceInternal: ___RedBlackTree___ & ___IndexProvider & ___Sequence & ___Common {}
+protocol ___SubSequence: ___Base {}
 
-extension RedBlackTreeSliceInternal {
+extension ___SubSequence {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -30,14 +30,5 @@ extension RedBlackTreeSliceInternal {
       && !__tree_.___is_offset_null(bounds.upperBound.rawValue)
       && __tree_.___ptr_range_contains(_start, _end, bounds.lowerBound.rawValue)
       && __tree_.___ptr_range_contains(_start, _end, bounds.upperBound.rawValue)
-  }
-}
-
-extension RedBlackTreeSliceInternal {
-
-  @inlinable
-  @inline(__always)
-  public func ___node_positions() -> ___SafePointers<Base> {
-    ___SafePointers(tree: __tree_, start: _start, end: _end)
   }
 }

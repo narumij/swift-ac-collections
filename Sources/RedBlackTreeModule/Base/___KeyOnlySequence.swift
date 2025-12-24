@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___KeyOnlySequence: ___Base where _Value == Element {}
+protocol ___KeyOnlySequence: ___Base, ___TreeIndex where _Value == Element {}
 
 extension ___KeyOnlySequence {
   
@@ -85,5 +85,56 @@ extension ___KeyOnlySequence {
   @inline(__always)
   func _sorted() -> [_Value] {
     __tree_.___copy_to_array(_start, _end)
+  }
+}
+
+extension ___KeyOnlySequence {
+
+  @inlinable
+  subscript(_checked position: Index) -> _Value {
+    @inline(__always) _read {
+      __tree_.___ensureValid(subscript: position.rawValue)
+      yield __tree_[position.rawValue]
+    }
+  }
+
+  @inlinable
+  subscript(_unchecked position: Index) -> _Value {
+    @inline(__always) _read {
+      yield __tree_[position.rawValue]
+    }
+  }
+}
+
+extension ___KeyOnlySequence {
+
+  // めんどくさくなったので、KeyValue側では標準実装を使っている
+  @inlinable
+  @inline(__always)
+  func _elementsEqual<OtherSequence>(
+    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence {
+    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
+  }
+
+  // 制約で値の型が一致する必要があり、KeyValue側では標準実装を使っている
+  @inlinable
+  @inline(__always)
+  func _lexicographicallyPrecedes<OtherSequence>(
+    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
+    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
+  }
+}
+
+extension ___KeyOnlySequence {
+
+  @inlinable
+  @inline(__always)
+  public mutating func ___element(at ptr: _NodePtr) -> _Value? {
+    guard !__tree_.___is_subscript_null(ptr) else {
+      return nil
+    }
+    return __tree_[ptr]
   }
 }

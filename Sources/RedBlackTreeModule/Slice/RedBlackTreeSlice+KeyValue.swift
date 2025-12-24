@@ -25,8 +25,9 @@ extension RedBlackTreeSlice {
 
   @frozen
   public struct KeyValue: ___Common & ___SubSequence & ___Index & ___KeyValueSequence
-  where Base: KeyValueComparer,
-        _Value == RedBlackTreePair<Base._Key, Base._MappedValue>
+  where
+    Base: KeyValueComparer,
+    _Value == RedBlackTreePair<Base._Key, Base._MappedValue>
   {
 
     public typealias Tree = ___Tree<Base>
@@ -55,7 +56,7 @@ extension RedBlackTreeSlice {
 }
 
 extension RedBlackTreeSlice.KeyValue {
-  
+
   @inlinable
   @inline(__always)
   public func ___element(_ __value: _Value) -> Element {
@@ -77,11 +78,14 @@ extension RedBlackTreeSlice.KeyValue {
 
 extension RedBlackTreeSlice.KeyValue {
 
-  @inlinable
-  @inline(__always)
-  internal func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _forEach(body)
-  }
+  #if !COMPATIBLE_ATCODER_2025
+    // 2025でpublicになってなかったのは痛恨のミス。でも標準実装が動くはず
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  #endif
 }
 
 extension RedBlackTreeSlice.KeyValue {
@@ -98,9 +102,7 @@ extension RedBlackTreeSlice.KeyValue {
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
-  public var count: Int {
-    __tree_.___distance(from: _start, to: _end)
-  }
+  public var count: Int { _count }
 }
 
 extension RedBlackTreeSlice.KeyValue {
@@ -121,10 +123,7 @@ extension RedBlackTreeSlice.KeyValue {
   /// - Complexity: O(1)
   @inlinable
   public subscript(position: Index) -> Element {
-    @inline(__always) get {
-      __tree_.___ensureValid(subscript: position.rawValue)
-      return ___element(__tree_[position.rawValue])
-    }
+    @inline(__always) get { ___element(self[_checked: position]) }
   }
 }
 
@@ -133,16 +132,14 @@ extension RedBlackTreeSlice.KeyValue {
   #if COMPATIBLE_ATCODER_2025
     @inlinable
     public subscript(_unsafe position: Index) -> Element {
-      ___element(__tree_[position.rawValue])
+      @inline(__always) get { ___element(self[_unchecked: position]) }
     }
   #else
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable
     public subscript(unchecked position: Index) -> Element {
-      @inline(__always) get {
-        return Base.___element(__tree_[position.rawValue])
-      }
+      @inline(__always) get { ___element(self[_unchecked: position]) }
     }
   #endif
 }
@@ -355,28 +352,28 @@ extension RedBlackTreeSlice.KeyValue {
     @inlinable
     @inline(__always)
     public func keys() -> Keys {
-      .init(tree: __tree_, start: _start, end: _end)
+      _keys()
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public func values() -> Values {
-      .init(tree: __tree_, start: _start, end: _end)
+      _values()
     }
   #else
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var keys: Keys {
-      .init(tree: __tree_, start: _start, end: _end)
+      _keys()
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var values: Values {
-      .init(tree: __tree_, start: _start, end: _end)
+      _values()
     }
   #endif
 }
@@ -432,18 +429,6 @@ extension RedBlackTreeSlice.KeyValue: Comparable where _Key: Comparable, _Mapped
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs, by: <)
-  }
-}
-
-extension RedBlackTreeSlice.KeyValue {
-
-  @inlinable
-  @inline(__always)
-  mutating func ___element(at ptr: _NodePtr) -> Element? {
-    guard !__tree_.___is_subscript_null(ptr) else {
-      return nil
-    }
-    return ___element(__tree_[ptr])
   }
 }
 

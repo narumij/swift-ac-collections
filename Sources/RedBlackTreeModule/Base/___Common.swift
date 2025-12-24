@@ -157,57 +157,8 @@ extension ___Common {
 extension ___Common {
 
   @inlinable
-  subscript(_checked position: Index) -> _Value {
-    @inline(__always) _read {
-      __tree_.___ensureValid(subscript: position.rawValue)
-      yield __tree_[position.rawValue]
-    }
-  }
-
-  @inlinable
-  subscript(_unchecked position: Index) -> _Value {
-    @inline(__always) _read {
-      yield __tree_[position.rawValue]
-    }
-  }
-}
-
-extension ___Common {
-
-  @inlinable
-  @inline(__always)
-  func _elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence {
-    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
-    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
-  }
-}
-
-extension ___Common {
-
-  @inlinable
   @inline(__always)
   public func ___node_positions() -> ___SafePointers<Base> {
     .init(tree: __tree_, start: _start, end: _end)
-  }
-}
-
-extension ___Common {
-
-  @inlinable
-  @inline(__always)
-  public mutating func ___element(at ptr: _NodePtr) -> _Value? {
-    guard !__tree_.___is_subscript_null(ptr) else {
-      return nil
-    }
-    return __tree_[ptr]
   }
 }

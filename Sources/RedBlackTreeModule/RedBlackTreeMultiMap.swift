@@ -91,7 +91,6 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap: ___RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeMultiMap: CompareMultiTrait {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
-extension RedBlackTreeMultiMap: ___TreeIndex {}
 
 // MARK: - Creating a MultiMap
 
@@ -637,6 +636,9 @@ extension RedBlackTreeMultiMap {
 }
 
 extension RedBlackTreeMultiMap {
+  // TODO: 検討
+  // 思いついた当初はとても気に入っていたが、いまはそうでもないので削除を検討
+
   // 割と注意喚起の為のdeprecatedなだけで、実際にいつ消すのかは不明です。
   // 分かってると便利なため、競技プログラミングにこのシンタックスシュガーは有用と考えているからです。
 
@@ -892,6 +894,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   }
 }
 
+// TODO: 便利止まりだし、標準にならうと不自然なので、削除するか検討
 extension RedBlackTreeMultiMap where Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -904,6 +907,7 @@ extension RedBlackTreeMultiMap where Value: Equatable {
   }
 }
 
+// TODO: 便利止まりだし、標準にならうと不自然なので、削除するか検討
 extension RedBlackTreeMultiMap where Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -925,7 +929,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public func keys() -> Keys {
-      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+      _keys()
     }
 
     /// - Complexity: O(1)

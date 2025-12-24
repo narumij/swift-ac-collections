@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___KeyValueSequence: ___Base
+protocol ___KeyValueSequence: ___Base, ___TreeIndex
 where
   Base: KeyValueComparer,
   Element == (key: _Key, value: _MappedValue),
@@ -43,7 +43,7 @@ extension ___KeyValueSequence {
   public static func ___tree_value(_ __element: Element) -> _Value {
     RedBlackTreePair(__element.key, __element.value)
   }
-  
+
   @inlinable
   @inline(__always)
   public static func ___pointee(_ __value: _Value) -> Element {
@@ -95,7 +95,7 @@ extension ___KeyValueSequence where Self: ___Index {
   func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first { try predicate(___element($0)) }.map(___element)
   }
-  
+
   /// - Complexity: O(*n*)
   @inlinable
   func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
@@ -124,6 +124,25 @@ extension ___KeyValueSequence {
   @inlinable
   @inline(__always)
   func _reversed() -> Tree._KeyValues.Reversed {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+}
+
+extension ___KeyValueSequence {
+
+  public typealias Keys = RedBlackTreeIterator<Base>.Keys
+  public typealias Values = RedBlackTreeIterator<Base>.MappedValues
+
+  @inlinable
+  @inline(__always)
+  func _keys() -> Keys {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  func _values() -> Values {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -168,5 +187,57 @@ extension ___KeyValueSequence {
   @inline(__always)
   func _sorted() -> [Element] {
     __tree_.___copy_to_array(_start, _end, transform: Self.___element)
+  }
+}
+
+extension ___KeyValueSequence {
+
+  @inlinable
+  subscript(_checked position: Index) -> _Value {
+    @inline(__always) _read {
+      __tree_.___ensureValid(subscript: position.rawValue)
+      yield __tree_[position.rawValue]
+    }
+  }
+
+  @inlinable
+  subscript(_unchecked position: Index) -> _Value {
+    @inline(__always) _read {
+      yield __tree_[position.rawValue]
+    }
+  }
+}
+
+#if false
+// テストコードのコンパイルクラッシュを誘発する懸念があり使っていない
+extension ___KeyValueSequence {
+
+  @inlinable
+  subscript(_checked position: Index) -> Element {
+    @inline(__always) get {
+      __tree_.___ensureValid(subscript: position.rawValue)
+      return ___element(__tree_[position.rawValue])
+    }
+  }
+
+  @inlinable
+  subscript(_unchecked position: Index) -> Element {
+    @inline(__always) get {
+      return ___element(__tree_[position.rawValue])
+    }
+  }
+}
+#endif
+
+extension ___KeyValueSequence {
+
+  // あえてElementを返していない
+  @inlinable
+  @inline(__always)
+  public mutating func ___element(at ptr: _NodePtr) -> _Value? {
+    guard !__tree_.___is_subscript_null(ptr) else {
+      return nil
+    }
+    return __tree_[ptr]
   }
 }

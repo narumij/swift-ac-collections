@@ -60,11 +60,14 @@ extension RedBlackTreeSlice {
 
 extension RedBlackTreeSlice {
 
+#if !COMPATIBLE_ATCODER_2025
+  // 2025でpublicになってなかったのは痛恨のミス。でも標準実装が動くはず
   @inlinable
   @inline(__always)
-  internal func forEach(_ body: (Element) throws -> Void) rethrows {
+  public func forEach(_ body: (Element) throws -> Void) rethrows {
     try _forEach(body)
   }
+#endif
 }
 
 extension RedBlackTreeSlice {
@@ -103,8 +106,7 @@ extension RedBlackTreeSlice {
   @inlinable
   public subscript(position: Index) -> Element {
     @inline(__always) _read {
-      __tree_.___ensureValid(subscript: position.rawValue)
-      yield __tree_[position.rawValue]
+      yield self[_checked: position]
     }
   }
 }
@@ -115,7 +117,7 @@ extension RedBlackTreeSlice {
     @inlinable
     public subscript(_unsafe position: Index) -> Element {
       @inline(__always) _read {
-        yield __tree_[position.rawValue]
+        yield self[_unchecked: position]
       }
     }
   #else
@@ -124,7 +126,7 @@ extension RedBlackTreeSlice {
     @inlinable
     public subscript(unchecked position: Index) -> Element {
       @inline(__always) _read {
-        yield __tree_[position.rawValue]
+        yield self[_unchecked: position]
       }
     }
   #endif
@@ -347,7 +349,7 @@ extension RedBlackTreeSlice {
   public func elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
-    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
+    try _elementsEqual(other, by: areEquivalent)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -357,7 +359,7 @@ extension RedBlackTreeSlice {
   public func lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
-    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
+    try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
 
@@ -369,7 +371,7 @@ extension RedBlackTreeSlice where _Value: Equatable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.elementsEqual(_start, _end, other, by: ==)
+    _elementsEqual(other, by: ==)
   }
 }
 
@@ -381,7 +383,7 @@ extension RedBlackTreeSlice where _Value: Comparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.lexicographicallyPrecedes(_start, _end, other, by: <)
+    _lexicographicallyPrecedes(other, by: <)
   }
 }
 

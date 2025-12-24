@@ -87,7 +87,6 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary: ___RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeDictionary: CompareUniqueTrait {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
-extension RedBlackTreeDictionary: ___TreeIndex {}
 
 // MARK: - Creating a Dictionay
 
@@ -709,6 +708,8 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary {
+  // TODO: 検討
+  // 思いついた当初はとても気に入っていたが、いまはそうでもないので削除を検討
 
   // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
   /// 範囲 `[lower, upper)` に含まれる要素を返します。
@@ -913,6 +914,8 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
     @inline(__always) get { ___element(self[_checked: position]) }
     // コンパイラがクラッシュする
     //    @inline(__always) _read { yield self[_checked: position] }
+    // コンパイラがクラッシュする場合もある
+    //    @inline(__always) get { self[_checked: position] }
   }
 
   #if COMPATIBLE_ATCODER_2025
@@ -963,6 +966,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   }
 }
 
+// TODO: 便利止まりだし、標準にならうと不自然なので、削除するか検討
 extension RedBlackTreeDictionary where Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -975,6 +979,7 @@ extension RedBlackTreeDictionary where Value: Equatable {
   }
 }
 
+// TODO: 便利止まりだし、標準にならうと不自然なので、削除するか検討
 extension RedBlackTreeDictionary where Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -996,28 +1001,28 @@ extension RedBlackTreeDictionary {
     @inlinable
     @inline(__always)
     public func keys() -> Keys {
-      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+      _keys()
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public func values() -> Values {
-      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+      _values()
     }
   #else
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var keys: Keys {
-      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+      _keys()
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var values: Values {
-      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+      _values()
     }
   #endif
 }

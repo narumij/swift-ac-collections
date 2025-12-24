@@ -26,12 +26,12 @@ import Foundation
 
 @usableFromInline
 protocol ___RedBlackTreeValueBase___:
-  ___BaseSequence & ___IndexProvider & ___Common & ___StorageProvider & ___KeyOnlySequence & ___RedBlackTreeCopyOnWrite
+  ___BaseSequence & ___IndexProvider & ___Common & ___StorageProvider & ___KeyOnlySequence & ___CopyOnWrite
 {}
 
 @usableFromInline
 protocol ___RedBlackTreeKeyValueBase___:
-  ___BaseSequence & ___IndexProvider & ___Common & ___StorageProvider & ___KeyValueSequence & ___RedBlackTreeCopyOnWrite
+  ___BaseSequence & ___IndexProvider & ___Common & ___StorageProvider & ___KeyValueSequence & ___CopyOnWrite
 {}
 
 // MARK: - Etc

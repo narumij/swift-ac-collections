@@ -114,7 +114,7 @@ extension ___LRUMemoizeStorage: ___LRULinkList {
   }
 }
 
-extension ___LRUMemoizeStorage: ___RedBlackTreeCopyOnWrite {}
+extension ___LRUMemoizeStorage: ___CopyOnWrite {}
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}
 extension ___LRUMemoizeStorage: KeyValueComparer {
 

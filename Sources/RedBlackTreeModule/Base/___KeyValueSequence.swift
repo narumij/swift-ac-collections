@@ -10,6 +10,16 @@ protocol ___KeyValueSequence: ___Base
 where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {}
 
 extension ___KeyValueSequence {
+  
+  @inlinable
+  @inline(__always)
+  func ___value_for(_ __k: _Key) -> _Value? {
+    let __ptr = __tree_.find(__k)
+    return ___is_null_or_end(__ptr) ? nil : __tree_[__ptr]
+  }
+}
+
+extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)

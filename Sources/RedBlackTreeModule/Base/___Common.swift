@@ -124,15 +124,11 @@ extension ___Common {
 
   @inlinable
   @inline(__always)
-  public func ___start() -> _NodePtr {
-    _start
-  }
+  public func ___start() -> _NodePtr { _start }
 
   @inlinable
   @inline(__always)
-  public func ___end() -> _NodePtr {
-    _end
-  }
+  public func ___end() -> _NodePtr { _end }
 }
 
 extension ___Common {
@@ -140,27 +136,6 @@ extension ___Common {
   @inline(__always)
   var _indices: Indices {
     __tree_.makeIndices(start: _start, end: _end)
-  }
-}
-
-extension ___Common {
-
-  @inlinable
-  @inline(__always)
-  public func ___node_positions() -> ___SafePointers<Base> {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-}
-
-extension ___Common {
-
-  @inlinable
-  @inline(__always)
-  public mutating func ___element(at ptr: _NodePtr) -> _Value? {
-    guard !__tree_.___is_subscript_null(ptr) else {
-      return nil
-    }
-    return __tree_[ptr]
   }
 }
 
@@ -205,8 +180,19 @@ extension ___Common {
 
   @inlinable
   @inline(__always)
-  func ___value_for(_ __k: _Key) -> _Value? {
-    let __ptr = __tree_.find(__k)
-    return ___is_null_or_end(__ptr) ? nil : __tree_[__ptr]
+  public func ___node_positions() -> ___SafePointers<Base> {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+}
+
+extension ___Common {
+
+  @inlinable
+  @inline(__always)
+  public mutating func ___element(at ptr: _NodePtr) -> _Value? {
+    guard !__tree_.___is_subscript_null(ptr) else {
+      return nil
+    }
+    return __tree_[ptr]
   }
 }

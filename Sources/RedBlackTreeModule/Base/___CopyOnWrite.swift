@@ -21,12 +21,12 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeCopyOnWrite {
+protocol ___CopyOnWrite {
   associatedtype Base: ___TreeBase
   var _storage: ___Storage<Base> { get set }
 }
 
-extension ___RedBlackTreeCopyOnWrite {
+extension ___CopyOnWrite {
 
   @inlinable
   @inline(__always)
@@ -156,7 +156,7 @@ extension ___RedBlackTreeCopyOnWrite {
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-  extension ___RedBlackTreeCopyOnWrite {
+  extension ___CopyOnWrite {
     public mutating func _checkUnique() -> Bool {
       _isKnownUniquelyReferenced_LV2()
     }

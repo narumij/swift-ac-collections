@@ -174,7 +174,7 @@ extension ___Index where Base: CompareUniqueTrait {
   @inlinable
   @inline(__always)
   func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
-    let (lo, hi) = __tree_.__equal_range_unique(k)
+    let (lo, hi) = ___equal_range(k)
     return (___index(lo), ___index(hi))
   }
 }
@@ -191,7 +191,7 @@ extension ___Index where Base: CompareMultiTrait {
   @inlinable
   @inline(__always)
   func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
-    let (lo, hi) = __tree_.__equal_range_multi(k)
+    let (lo, hi) = ___equal_range(k)
     return (___index(lo), ___index(hi))
   }
 }

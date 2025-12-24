@@ -38,26 +38,3 @@ package func _dictionaryDescription<Key, Value, C: Collection>(
   result += "]"
   return result
 }
-
-// from https://github.com/apple/swift-collections/blob/main/Sources/InternalCollectionsUtilities/Descriptions.swift
-@inlinable
-package func _dictionaryDescription<Key, Value, C: Collection>(
-  for elements: C
-) -> String where C.Element == RedBlackTreePair<Key, Value> {
-  guard !elements.isEmpty else { return "[:]" }
-  var result = "["
-  var first = true
-  for kv in elements {
-    let (key, value) = (kv.key, kv.value)
-    if first {
-      first = false
-    } else {
-      result += ", "
-    }
-    debugPrint(key, terminator: "", to: &result)
-    result += ": "
-    debugPrint(value, terminator: "", to: &result)
-  }
-  result += "]"
-  return result
-}

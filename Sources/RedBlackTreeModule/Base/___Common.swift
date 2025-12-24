@@ -116,7 +116,7 @@ extension ___Common {
   @inlinable
   @inline(__always)
   public func ___tree_invariant() -> Bool {
-    #if true
+    #if !WITHOUT_SIZECHECK
       // 並行してサイズもチェックする。その分遅い
       __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, .end)
         && __tree_.__tree_invariant(__tree_.__root())
@@ -130,7 +130,7 @@ extension ___Common {
 
   @inlinable
   @inline(__always)
-  public func _isIdentical(to other: Self) -> Bool {
+  func _isIdentical(to other: Self) -> Bool {
     __tree_.isIdentical(to: other.__tree_) && _start == other._start && _end == other._end
   }
 }

@@ -911,7 +911,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /*
    しばらく苦しめられていたテストコードのコンパイルエラーについて。
    
-   typecheckでクラッシュしてることはクラッシュログが空読み取れる。
+   typecheckでクラッシュしてることはクラッシュログから読み取れる。
    推論に失敗するバグを踏んでいると想定し、型をちゃんと書くことで様子を見ることにした。
    
    型推論のバグなんて直せる気がまったくせず、ごくごく一部のミラクルムーブ期待なので、

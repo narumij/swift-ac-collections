@@ -40,18 +40,6 @@ extension ___IndexProvider {
     p.map { ___index($0) }
   }
 
-  //  @inlinable
-  //  @inline(__always)
-  //  func ___index_start() -> Index {
-  //    ___index(_start)
-  //  }
-  //
-  //  @inlinable
-  //  @inline(__always)
-  //  func ___index_end() -> Index {
-  //    ___index(_end)
-  //  }
-
   @inlinable
   @inline(__always)
   var _startIndex: Index {
@@ -190,5 +178,56 @@ extension ___IndexProvider where Self: Collection {
     return !__tree_.___is_range_null(
       bounds.lowerBound.rawValue,
       bounds.upperBound.rawValue)
+  }
+}
+
+extension ___IndexProvider where Base: CompareUniqueTrait {
+
+  ///（重複なし）
+  @inlinable
+  @inline(__always)
+  func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
+    __tree_.__equal_range_unique(k)
+  }
+
+  @inlinable
+  @inline(__always)
+  func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
+    let (lo, hi) = __tree_.__equal_range_unique(k)
+    return (___index(lo), ___index(hi))
+  }
+}
+
+extension ___IndexProvider where Base: CompareMultiTrait {
+
+  /// （重複あり）
+  @inlinable
+  @inline(__always)
+  func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
+    __tree_.__equal_range_multi(k)
+  }
+
+  @inlinable
+  @inline(__always)
+  func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
+    let (lo, hi) = __tree_.__equal_range_multi(k)
+    return (___index(lo), ___index(hi))
+  }
+}
+
+extension ___IndexProvider {
+
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func ___erase(_ ptr: _NodePtr) -> _NodePtr {
+    __tree_.erase(ptr)
+  }
+
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func ___erase(_ ptr: Index) -> Index {
+    ___index(__tree_.erase(ptr.rawValue))
   }
 }

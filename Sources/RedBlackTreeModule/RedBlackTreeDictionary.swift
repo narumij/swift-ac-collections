@@ -84,8 +84,6 @@ extension RedBlackTreeDictionary: ___RedBlackTreeBase & CompareUniqueTrait {
   public typealias Base = Self
 }
 extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
-extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
-extension RedBlackTreeDictionary: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 
 extension RedBlackTreeDictionary: HasDefaultThreeWayComparator {}
@@ -839,8 +837,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
     @inlinable
     @inline(__always)
     public func sorted() -> [Element] {
-      __tree_.___copy_to_array(
-        __tree_.__begin_node_, __tree_.__end_node(), transform: Self.___element)
+      _sorted()
     }
   #endif
 

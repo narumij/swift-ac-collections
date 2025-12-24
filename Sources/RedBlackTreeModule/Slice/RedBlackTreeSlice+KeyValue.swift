@@ -59,7 +59,6 @@ extension RedBlackTreeSlice.KeyValue {
   @inlinable
   @inline(__always)
   public __consuming func makeIterator() -> Tree._KeyValues {
-//    .init(tree: __tree_, start: _start, end: _end)
     _makeIterator()
   }
 }
@@ -69,9 +68,6 @@ extension RedBlackTreeSlice.KeyValue {
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
-//    try __tree_.___for_each_(__p: _start, __l: _end) {
-//      try body(Base.___element(__tree_[$0]))
-//    }
     try _forEach(body)
   }
 }
@@ -81,19 +77,12 @@ extension RedBlackTreeSlice.KeyValue {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-//    try __tree_.___for_each_(__p: _start, __l: _end) {
-//      try body(___index($0), Base.___element(__tree_[$0]))
-//    }
-//    try _forEach({ try body($0, Base.___element($1)) })
     try _forEach(body)
   }
 
   @inlinable
   @inline(__always)
   public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
-//    try __tree_.___for_each_(__p: _start, __l: _end) {
-//      try body($0, Base.___element(__tree_[$0]))
-//    }
     try ___forEach({ try body($0, Base.___element($1)) })
   }
 }
@@ -113,16 +102,12 @@ extension RedBlackTreeSlice.KeyValue {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var startIndex: Index {
-    ___index(_start)
-  }
+  public var startIndex: Index { _startIndex }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var endIndex: Index {
-    ___index(_end)
-  }
+  public var endIndex: Index { _endIndex }
 }
 
 extension RedBlackTreeSlice.KeyValue {
@@ -227,9 +212,8 @@ extension RedBlackTreeSlice.KeyValue {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
-  //  @inline(__always)
+  @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-//    __tree_.___distance(from: start.rawValue, to: end.rawValue)
     _distance(from: start, to: end)
   }
 }
@@ -241,7 +225,6 @@ extension RedBlackTreeSlice.KeyValue {
   @inline(__always)
   public func index(before i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-//    ___index(__tree_.___index(before: i.rawValue))
     _index(before: i)
   }
 
@@ -250,7 +233,6 @@ extension RedBlackTreeSlice.KeyValue {
   @inline(__always)
   public func index(after i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-//    ___index(__tree_.___index(after: i.rawValue))
     _index(after: i)
   }
 
@@ -259,8 +241,6 @@ extension RedBlackTreeSlice.KeyValue {
   //  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-//    __tree_.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
-//      .map { ___index($0) }
     _index(i, offsetBy: distance, limitedBy: limit)
   }
 }
@@ -272,7 +252,6 @@ extension RedBlackTreeSlice.KeyValue {
   @inline(__always)
   public func formIndex(after i: inout Index) {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-//    __tree_.___formIndex(after: &i.rawValue)
     _formIndex(after: &i)
   }
 
@@ -281,7 +260,6 @@ extension RedBlackTreeSlice.KeyValue {
   @inline(__always)
   public func formIndex(before i: inout Index) {
     // 標準のArrayが単純に減算することにならい、範囲チェックをしない
-//    __tree_.___formIndex(before: &i.rawValue)
     _formIndex(before: &i)
   }
 
@@ -290,7 +268,6 @@ extension RedBlackTreeSlice.KeyValue {
   //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-//    __tree_.___formIndex(&i.rawValue, offsetBy: distance)
     _formIndex(&i, offsetBy: distance)
   }
 
@@ -301,11 +278,6 @@ extension RedBlackTreeSlice.KeyValue {
     -> Bool
   {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-//    if let ii = index(i, offsetBy: distance, limitedBy: limit) {
-//      i = ii
-//      return true
-//    }
-//    return false
     _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
 }
@@ -353,7 +325,7 @@ extension RedBlackTreeSlice.KeyValue {
   @inlinable
   @inline(__always)
   public func reversed() -> Tree._KeyValues.Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
+    _reversed()
   }
 }
 
@@ -363,7 +335,7 @@ extension RedBlackTreeSlice.KeyValue {
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    __tree_.makeIndices(start: _start, end: _end)
+    _indices
   }
 }
 
@@ -409,7 +381,7 @@ extension RedBlackTreeSlice.KeyValue {
   @inlinable
   @inline(__always)
   public func sorted() -> [Element] {
-    __tree_.___copy_to_array(_start, _end, transform: Base.___element)
+    _sorted()
   }
 }
 

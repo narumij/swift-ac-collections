@@ -28,21 +28,12 @@ public protocol ___RedBlackTree___ {
   associatedtype Tree
 }
 
-@usableFromInline
-protocol ___RedBlackTreeIndexing {
-  associatedtype Index
-  func ___index(_ rawValue: _NodePtr) -> Index
-  func ___index_or_nil(_ p: _NodePtr?) -> Index?
-}
-
 // コレクションの内部実装
 @usableFromInline
 protocol ___RedBlackTreeBase: ___RedBlackTree___ & ___StorageProvider & ___IndexProvider & ___Common & ___Sequence
 where Base: ___TreeIndex {}
 
-extension ___RedBlackTreeBase {
-  public typealias _Key = Base._Key
-}
+extension ___RedBlackTreeBase {}
 
 // MARK: - Index
 
@@ -123,88 +114,6 @@ extension ___RedBlackTreeBase {
 }
 
 // MARK: - Etc
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  func ___value_for(_ __k: _Key) -> _Value? {
-    let __ptr = __tree_.find(__k)
-    return ___is_null_or_end(__ptr) ? nil : __tree_[__ptr]
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  /// releaseビルドでは無効化されています
-  @inlinable
-  @inline(__always)
-  public func ___tree_invariant() -> Bool {
-    #if true
-      // 並行してサイズもチェックする。その分遅い
-      __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, .end)
-        && __tree_.__tree_invariant(__tree_.__root())
-    #else
-      __tree_.__tree_invariant(__tree_.__root())
-    #endif
-  }
-
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    public var _copyCount: UInt {
-      get { _storage.tree.copyCount }
-      set { _storage.tree.copyCount = newValue }
-    }
-  #endif
-}
-
-#if AC_COLLECTIONS_INTERNAL_CHECKS
-  extension ___RedBlackTreeCopyOnWrite {
-    public mutating func _checkUnique() -> Bool {
-      _isKnownUniquelyReferenced_LV2()
-    }
-  }
-#endif
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func ___erase(_ ptr: _NodePtr) -> _NodePtr {
-    __tree_.erase(ptr)
-  }
-
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func ___erase(_ ptr: Index) -> Index {
-    ___index(__tree_.erase(ptr.rawValue))
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  public var ___key_comp: (_Key, _Key) -> Bool {
-    __tree_.value_comp
-  }
-
-  @inlinable
-  @inline(__always)
-  public var ___value_comp: (_Value, _Value) -> Bool {
-    { __tree_.value_comp(Base.__key($0), Base.__key($1)) }
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  public func ___is_garbaged(_ index: _NodePtr) -> Bool {
-    __tree_.___is_garbaged(index)
-  }
-}
 
 // from https://github.com/apple/swift-collections/blob/main/Sources/InternalCollectionsUtilities/Descriptions.swift
 @inlinable

@@ -135,3 +135,13 @@ extension ___StorageProvider {
     }
   }
 }
+
+extension ___StorageProvider {
+
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    public var _copyCount: UInt {
+      get { _storage.tree.copyCount }
+      set { _storage.tree.copyCount = newValue }
+    }
+  #endif
+}

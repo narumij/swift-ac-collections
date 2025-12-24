@@ -12,10 +12,12 @@ where
   Tree == ___Tree<Base>,
   Index == Tree.Index,
   Indices == Tree.Indices,
+  _Key == Tree._Key,
   _Value == Tree._Value
 {
   associatedtype Index
   associatedtype Indices
+  associatedtype _Key
   associatedtype _Value
   var __tree_: Tree { get }
   var _start: _NodePtr { get }
@@ -104,7 +106,7 @@ extension ___Sequence {
 }
 
 extension ___Sequence {
-  
+
   @inlinable
   @inline(__always)
   public mutating func ___element(at ptr: _NodePtr) -> _Value? {
@@ -116,7 +118,7 @@ extension ___Sequence {
 }
 
 extension ___Sequence {
-  
+
   @inlinable
   subscript(_checked position: Index) -> _Value {
     @inline(__always) _read {
@@ -124,7 +126,7 @@ extension ___Sequence {
       yield __tree_[position.rawValue]
     }
   }
-  
+
   @inlinable
   subscript(_unchecked position: Index) -> _Value {
     @inline(__always) _read {
@@ -149,5 +151,35 @@ extension ___Sequence {
     _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
     try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
+  }
+}
+
+extension ___Sequence {
+
+  @inlinable
+  @inline(__always)
+  func ___value_for(_ __k: _Key) -> _Value? {
+    let __ptr = __tree_.find(__k)
+    return ___is_null_or_end(__ptr) ? nil : __tree_[__ptr]
+  }
+}
+
+extension ___Sequence {
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  @inline(__always)
+  func _sorted() -> [_Value] {
+    __tree_.___copy_to_array(_start, _end)
+  }
+}
+
+extension ___Sequence where Base: ___RedBlackTreeKeyValueBase {
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  @inline(__always)
+  func _sorted() -> [Base.Element] {
+    __tree_.___copy_to_array(_start, _end, transform: Base.___element)
   }
 }

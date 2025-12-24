@@ -153,11 +153,10 @@ extension ___RedBlackTreeCopyOnWrite {
   }
 }
 
-extension ___RedBlackTreeBase {
-  
-  @inlinable
-  @inline(__always)
-  public func _isIdentical(to other: Self) -> Bool {
-    __tree_.isIdentical(to: other.__tree_)
+#if AC_COLLECTIONS_INTERNAL_CHECKS
+  extension ___RedBlackTreeCopyOnWrite {
+    public mutating func _checkUnique() -> Bool {
+      _isKnownUniquelyReferenced_LV2()
+    }
   }
-}
+#endif

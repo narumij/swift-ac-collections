@@ -62,8 +62,6 @@ extension RedBlackTreeMultiSet: ___RedBlackTreeBase & CompareMultiTrait {
   public typealias Base = Self
 }
 extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
-extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
-extension RedBlackTreeMultiSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 
 extension RedBlackTreeMultiSet: HasDefaultThreeWayComparator {}
@@ -656,7 +654,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
     @inlinable
     @inline(__always)
     public func sorted() -> [Element] {
-      __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
+      _sorted()
     }
   #endif
 

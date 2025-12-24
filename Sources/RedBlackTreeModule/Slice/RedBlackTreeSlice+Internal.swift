@@ -5,8 +5,6 @@
 //  Created by narumij on 2025/12/24.
 //
 
-
-
 @usableFromInline
 protocol RedBlackTreeSliceInternal: ___RedBlackTree___ & ___IndexProvider & ___Sequence & ___Common {}
 

@@ -70,10 +70,7 @@ extension RedBlackTreeSet: ___RedBlackTreeBase & CompareUniqueTrait {
 }
 
 extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
-extension RedBlackTreeSet: ___RedBlackTreeUnique {}
-extension RedBlackTreeSet: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeSet: ScalarValueComparer {}
-
 extension RedBlackTreeSet: HasDefaultThreeWayComparator {}
 
 extension RedBlackTreeSet: ___TreeIndex {
@@ -649,7 +646,7 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
     @inlinable
     @inline(__always)
     public func sorted() -> [Element] {
-      __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
+      _sorted()
     }
   #endif
 

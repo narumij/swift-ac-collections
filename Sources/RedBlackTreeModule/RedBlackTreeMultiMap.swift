@@ -88,8 +88,6 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeBase & CompareMultiTrait {
   public typealias Base = Self
 }
 extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
-extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
-extension RedBlackTreeMultiMap: ___RedBlackTreeSequenceBase {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 
 extension RedBlackTreeMultiMap: HasDefaultThreeWayComparator {}
@@ -768,8 +766,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
     @inlinable
     @inline(__always)
     public func sorted() -> [Element] {
-      __tree_.___copy_to_array(
-        __tree_.__begin_node_, __tree_.__end_node(), transform: Self.___element)
+      _sorted()
     }
   #endif
 

@@ -201,9 +201,8 @@ extension RedBlackTreeSlice {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
-  //  @inline(__always)
+  @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-//    __tree_.___distance(from: start.rawValue, to: end.rawValue)
     _distance(from: start, to: end)
   }
 }
@@ -335,7 +334,7 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   public func sorted() -> [Element] {
-    __tree_.___copy_to_array(_start, _end)
+    _sorted()
   }
 }
 

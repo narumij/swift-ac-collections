@@ -41,202 +41,23 @@ where
 
 // MARK: -
 
-extension ___RedBlackTreeSequenceBase {
-
-  @inlinable
-  @inline(__always)
-  func _makeIterator() -> Tree._Values {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _reversed() -> Tree._Values.Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-}
-
-extension ___RedBlackTreeSequenceBase where Base: KeyValueComparer {
-  @inlinable
-  @inline(__always)
-  func _makeIterator() -> Tree._KeyValues {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _reversed() -> Tree._KeyValues.Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-}
+extension ___RedBlackTreeSequenceBase { }
 
 extension ___RedBlackTreeSequenceBase {
 
-  @inlinable
-  @inline(__always)
-  func _forEach(_ body: (_Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(__tree_[$0])
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  func _forEach(_ body: (Index, _Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0), __tree_[$0])
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___forEach(_ body: (_NodePtr, _Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body($0, __tree_[$0])
-    }
-  }
-}
-
-extension ___RedBlackTreeSequenceBase {
-
-  @inlinable
-  @inline(__always)
-  var _startIndex: Index {
-    ___index(_start)
-  }
-
-  @inlinable
-  @inline(__always)
-  var _endIndex: Index {
-    ___index(__tree_.__end_node())
-  }
-
-  @inlinable
-  @inline(__always)
-  func _distance(from start: Index, to end: Index) -> Int {
-    __tree_.___distance(from: start.rawValue, to: end.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _index(after i: Index) -> Index {
-    ___index(__tree_.___index(after: i.rawValue))
-  }
-
-  @inlinable
-  @inline(__always)
-  func _formIndex(after i: inout Index) {
-    __tree_.___formIndex(after: &i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _index(before i: Index) -> Index {
-    ___index(__tree_.___index(before: i.rawValue))
-  }
-
-  @inlinable
-  @inline(__always)
-  func _formIndex(before i: inout Index) {
-    __tree_.___formIndex(before: &i.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(__tree_.___index(i.rawValue, offsetBy: distance))
-  }
-
-  @inlinable
-  @inline(__always)
-  func _formIndex(_ i: inout Index, offsetBy distance: Int) {
-    __tree_.___formIndex(&i.rawValue, offsetBy: distance)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    ___index_or_nil(__tree_.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue))
-  }
-
-  @inlinable
-  @inline(__always)
-  func _formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Bool
-  {
-    __tree_.___formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
-  }
-
-  @inlinable
-  subscript(_checked position: Index) -> _Value {
-    @inline(__always) _read {
-      __tree_.___ensureValid(subscript: position.rawValue)
-      yield __tree_[position.rawValue]
-    }
-  }
-
-  @inlinable
-  subscript(_unchecked position: Index) -> _Value {
-    @inline(__always) _read {
-      yield __tree_[position.rawValue]
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  func _isValid(index: Index) -> Bool {
-    !__tree_.___is_subscript_null(index.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _isValid<R: RangeExpression>(
-    _ bounds: R
-  ) -> Bool where R.Bound == Index {
-
-    let bounds = bounds.relative(to: self)
-    return !__tree_.___is_range_null(
-      bounds.lowerBound.rawValue,
-      bounds.upperBound.rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  var _indices: Indices {
-    __tree_.makeIndices(start: _start, end: _end)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence {
-    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
-    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  public mutating func ___element(at ptr: _NodePtr) -> _Value? {
-    guard !__tree_.___is_subscript_null(ptr) else {
-      return nil
-    }
-    return __tree_[ptr]
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___node_positions() -> ___SafePointers<Base> {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
+//  @inlinable
+//  @inline(__always)
+//  func _elementsEqual<OtherSequence>(
+//    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
+//  ) rethrows -> Bool where OtherSequence: Sequence {
+//    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
+//  }
+//
+//  @inlinable
+//  @inline(__always)
+//  func _lexicographicallyPrecedes<OtherSequence>(
+//    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
+//  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
+//    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
+//  }
 }

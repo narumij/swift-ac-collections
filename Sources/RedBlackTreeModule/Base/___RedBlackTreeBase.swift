@@ -35,150 +35,29 @@ protocol ___RedBlackTreeIndexing {
   func ___index_or_nil(_ p: _NodePtr?) -> Index?
 }
 
-@usableFromInline
-protocol ___StorageProvider: ___RedBlackTree___
-where
-  Base: ___TreeBase,
-  Storage == ___Storage<Base>,
-  Tree == ___Tree<Base>
-{
-  associatedtype Storage
-  var _storage: Storage { get set }
-}
-
-extension ___StorageProvider {
-
-  @inlinable
-  var __tree_: Tree {
-    @inline(__always) _read {
-      yield _storage.tree
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  var _start: _NodePtr {
-    __tree_.__begin_node_
-  }
-
-  @inlinable
-  @inline(__always)
-  var _end: _NodePtr {
-    __tree_.__end_node()
-  }
-}
-
 // コレクションの内部実装
 @usableFromInline
-protocol ___RedBlackTreeBase:
-  ___RedBlackTree___ & ___StorageProvider
-where
-  Base: ___TreeBase & ___TreeIndex,
-  Storage == ___Storage<Base>,
-  Tree == ___Tree<Base>
-{
-  //  associatedtype Storage
-  //  var _storage: Storage { get set }
-}
+protocol ___RedBlackTreeBase: ___RedBlackTree___ & ___StorageProvider & ___IndexProvider & ___Common & ___Sequence
+where Base: ___TreeIndex {}
 
 extension ___RedBlackTreeBase {
-
   public typealias _Key = Base._Key
-  public typealias _Value = Base._Value
-  //  @inlinable
-  //  var __tree_: Tree {
-  //    @inline(__always) _read {
-  //      yield _storage.tree
-  //    }
-  //  }
-}
-
-extension ___RedBlackTreeBase {
-
-//  @inlinable
-//  @inline(__always)
-//  var _start: _NodePtr {
-//    __tree_.__begin_node_
-//  }
-//
-//  @inlinable
-//  @inline(__always)
-//  var _end: _NodePtr {
-//    __tree_.__end_node()
-//  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  var ___count: Int {
-    __tree_.count
-  }
-
-  @inlinable
-  @inline(__always)
-  var ___is_empty: Bool {
-    __tree_.___is_empty
-  }
-
-  @inlinable
-  @inline(__always)
-  var ___capacity: Int {
-    __tree_.___capacity
-  }
 }
 
 // MARK: - Index
 
 extension ___RedBlackTreeBase {
 
-  @usableFromInline
-  typealias Index = Tree.Index
-
-  @inlinable
-  @inline(__always)
-  func ___index(_ p: _NodePtr) -> Index {
-    __tree_.makeIndex(rawValue: p)
-  }
-
-  @inlinable
-  @inline(__always)
-  func ___index_or_nil(_ p: _NodePtr) -> Index? {
-    p == .nullptr ? nil : ___index(p)
-  }
-
-  @inlinable
-  @inline(__always)
-  func ___index_or_nil(_ p: _NodePtr?) -> Index? {
-    p.map { ___index($0) }
-  }
-}
-
-extension ___RedBlackTreeBase {
-
   @inlinable
   @inline(__always)
   public func ___start() -> _NodePtr {
-    __tree_.__begin_node_
+    _start
   }
 
   @inlinable
   @inline(__always)
   public func ___end() -> _NodePtr {
-    __tree_.___end()
-  }
-
-  @inlinable
-  @inline(__always)
-  func ___index_start() -> Index {
-    ___index(__tree_.__begin_node_)
-  }
-
-  @inlinable
-  @inline(__always)
-  func ___index_end() -> Index {
-    ___index(__tree_.___end())
+    _end
   }
 }
 
@@ -237,137 +116,9 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  var ___first: _Value? {
-    ___is_empty ? nil : __tree_[__tree_.__begin_node_]
-  }
-
-  @inlinable
-  @inline(__always)
-  var ___last: _Value? {
-    ___is_empty ? nil : __tree_[__tree_.__tree_prev_iter(__tree_.__end_node())]
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
   func ___first_index(of member: _Key) -> Index? {
     let ptr = __tree_.__ptr_(__tree_.__find_equal(member).__child)
     return ___index_or_nil(ptr)
-  }
-
-  @inlinable
-  @inline(__always)
-  func ___first_index(where predicate: (_Value) throws -> Bool) rethrows -> Index? {
-    var result: Index?
-    try __tree_.___for_each(__p: __tree_.__begin_node_, __l: __tree_.__end_node()) { __p, cont in
-      if try predicate(__tree_[__p]) {
-        result = ___index(__p)
-        cont = false
-      }
-    }
-    return result
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  public func ___first(where predicate: (_Value) throws -> Bool) rethrows -> _Value? {
-    var result: _Value?
-    try __tree_.___for_each(__p: __tree_.__begin_node_, __l: __tree_.__end_node()) { __p, cont in
-      if try predicate(__tree_[__p]) {
-        result = __tree_[__p]
-        cont = false
-      }
-    }
-    return result
-  }
-}
-
-// MARK: - Remove
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func ___remove(at ptr: _NodePtr) -> _Value? {
-    guard !__tree_.___is_subscript_null(ptr) else {
-      return nil
-    }
-    let e = __tree_[ptr]
-    _ = __tree_.erase(ptr)
-    return e
-  }
-
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
-    guard !__tree_.___is_end(from) else {
-      return .end
-    }
-    __tree_.___ensureValid(begin: from, end: to)
-    return __tree_.erase(from, to)
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func ___remove(
-    from: _NodePtr, to: _NodePtr, forEach action: (_Value) throws -> Void
-  )
-    rethrows
-  {
-    guard !__tree_.___is_end(from) else {
-      return
-    }
-    __tree_.___ensureValid(begin: from, end: to)
-    return try __tree_.___erase(from, to, action)
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func ___remove<Result>(
-    from: _NodePtr, to: _NodePtr,
-    into initialResult: Result,
-    _ updateAccumulatingResult: (inout Result, _Value) throws -> Void
-  ) rethrows -> Result {
-    guard !__tree_.___is_end(from) else {
-      return initialResult
-    }
-    __tree_.___ensureValid(begin: from, end: to)
-    return try __tree_.___erase(from, to, into: initialResult, updateAccumulatingResult)
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func ___remove<Result>(
-    from: _NodePtr, to: _NodePtr,
-    _ initialResult: Result,
-    _ nextPartialResult: (Result, _Value) throws -> Result
-  ) rethrows -> Result {
-    guard !__tree_.___is_end(from) else {
-      return initialResult
-    }
-    __tree_.___ensureValid(begin: from, end: to)
-    return try __tree_.___erase(from, to, initialResult, nextPartialResult)
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
-
-    if keepCapacity {
-      __tree_.__eraseAll()
-    } else {
-      _storage = .create(withCapacity: 0)
-    }
   }
 }
 
@@ -447,39 +198,6 @@ extension ___RedBlackTreeBase {
 }
 
 extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  public func ___prev(_ i: _NodePtr) -> _NodePtr {
-    __tree_.__tree_prev_iter(i)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___next(_ i: _NodePtr) -> _NodePtr {
-    __tree_.__tree_next_iter(i)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___advanced(_ i: _NodePtr, by distance: Int) -> _NodePtr {
-    __tree_.___tree_adv_iter(i, by: distance)
-  }
-}
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  public func ___is_valid(_ index: _NodePtr) -> Bool {
-    !__tree_.___is_subscript_null(index)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___is_valid_range(_ p: _NodePtr, _ l: _NodePtr) -> Bool {
-    !__tree_.___is_range_null(p, l)
-  }
 
   @inlinable
   @inline(__always)

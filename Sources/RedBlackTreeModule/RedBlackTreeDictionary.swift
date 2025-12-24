@@ -824,14 +824,14 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _forEach { try body(___element($0)) }
+    try _forEach(body)
   }
 
   /// 特殊なforEach
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try _forEach { try body($0, ___element($1)) }
+    try _forEach(body)
   }
 
   #if !COMPATIBLE_ATCODER_2025

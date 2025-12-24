@@ -54,7 +54,7 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   public __consuming func makeIterator() -> Tree._Values {
-    .init(tree: __tree_, start: _start, end: _end)
+    _makeIterator()
   }
 }
 
@@ -63,9 +63,7 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   internal func forEach(_ body: (Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(__tree_[$0])
-    }
+    try _forEach(body)
   }
 }
 
@@ -74,17 +72,7 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0), __tree_[$0])
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body($0, __tree_[$0])
-    }
+    try _forEach(body)
   }
 }
 
@@ -93,9 +81,7 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
-  public var count: Int {
-    __tree_.___distance(from: _start, to: _end)
-  }
+  public var count: Int { _count }
 }
 
 extension RedBlackTreeSlice {
@@ -103,16 +89,12 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var startIndex: Index {
-    ___index(_start)
-  }
+  public var startIndex: Index { _startIndex }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var endIndex: Index {
-    ___index(_end)
-  }
+  public var endIndex: Index { _endIndex }
 }
 
 extension RedBlackTreeSlice {
@@ -221,7 +203,8 @@ extension RedBlackTreeSlice {
   @inlinable
   //  @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    __tree_.___distance(from: start.rawValue, to: end.rawValue)
+//    __tree_.___distance(from: start.rawValue, to: end.rawValue)
+    _distance(from: start, to: end)
   }
 }
 
@@ -232,7 +215,7 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public func index(before i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    ___index(__tree_.___index(before: i.rawValue))
+    _index(before: i)
   }
 
   /// - Complexity: O(1)
@@ -240,7 +223,7 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public func index(after i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    ___index(__tree_.___index(after: i.rawValue))
+    _index(after: i)
   }
 
   /// - Complexity: O(*d*)
@@ -248,8 +231,7 @@ extension RedBlackTreeSlice {
   //  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-    __tree_.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
-      .map { ___index($0) }
+    _index(i, offsetBy: distance, limitedBy: limit)
   }
 }
 
@@ -260,7 +242,7 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public func formIndex(after i: inout Index) {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    __tree_.___formIndex(after: &i.rawValue)
+    _formIndex(after: &i)
   }
 
   /// - Complexity: O(1)
@@ -268,7 +250,7 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public func formIndex(before i: inout Index) {
     // 標準のArrayが単純に減算することにならい、範囲チェックをしない
-    __tree_.___formIndex(before: &i.rawValue)
+    _formIndex(before: &i)
   }
 
   /// - Complexity: O(*d*)
@@ -276,7 +258,7 @@ extension RedBlackTreeSlice {
   //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-    __tree_.___formIndex(&i.rawValue, offsetBy: distance)
+    _formIndex(&i, offsetBy: distance)
   }
 
   /// - Complexity: O(*d*)
@@ -286,11 +268,7 @@ extension RedBlackTreeSlice {
     -> Bool
   {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-    if let ii = index(i, offsetBy: distance, limitedBy: limit) {
-      i = ii
-      return true
-    }
-    return false
+    _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
 }
 
@@ -337,7 +315,7 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   public func reversed() -> Tree._Values.Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
+    _reversed()
   }
 }
 
@@ -347,7 +325,7 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    __tree_.makeIndices(start: _start, end: _end)
+    _indices
   }
 }
 

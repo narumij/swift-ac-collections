@@ -5,27 +5,20 @@
 //  Created by narumij on 2025/12/24.
 //
 
+
+
 @usableFromInline
-protocol RedBlackTreeSliceInternal: ___RedBlackTree___
-where
-  Base: ___TreeBase & ___TreeIndex,
-  Tree == ___Tree<Base>
-{
-  associatedtype Index where Index == Tree.Index
-  associatedtype _Value where _Value == Tree._Value
-  var __tree_: Tree { get }
-  var _start: _NodePtr { get }
-  var _end: _NodePtr { get }
-}
+protocol RedBlackTreeSliceInternal: ___RedBlackTree___ & ___IndexProvider & ___Sequence & ___Common {}
 
 extension RedBlackTreeSliceInternal {
 
+  /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
-  func ___index(_ rawValue: _NodePtr) -> Index {
-    .init(tree: __tree_, rawValue: rawValue)
+  var _count: Int {
+    __tree_.___distance(from: _start, to: _end)
   }
-
+  
   @inlinable
   @inline(__always)
   func ___contains(_ i: _NodePtr) -> Bool {

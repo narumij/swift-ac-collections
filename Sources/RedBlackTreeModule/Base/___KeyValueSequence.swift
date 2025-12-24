@@ -9,8 +9,8 @@
 protocol ___KeyValueSequence: ___Base
 where
   Base: KeyValueComparer,
-  _Value == RedBlackTreePair<_Key, _MappedValue>,
-  Element == (key: _Key, value: _MappedValue)
+  Element == (key: _Key, value: _MappedValue),
+  _Value == RedBlackTreePair<_Key, _MappedValue>
 {
   associatedtype _MappedValue
 }
@@ -22,7 +22,7 @@ extension ___KeyValueSequence {
   static func ___element(_ __value: _Value) -> Element {
     (__value.key, __value.value)
   }
-  
+
   @inlinable
   @inline(__always)
   public static func ___tree_value(_ __element: Element) -> _Value {
@@ -36,6 +36,49 @@ extension ___KeyValueSequence {
   @inline(__always)
   func ___element(_ __value: _Value) -> Element {
     Self.___element(__value)
+  }
+}
+
+extension ___KeyValueSequence where Self: ___Common {
+
+  @inlinable
+  @inline(__always)
+  var ___first: Element? {
+    ___first.map(___element)
+  }
+
+  @inlinable
+  @inline(__always)
+  var ___last: Element? {
+    ___last.map(___element)
+  }
+}
+
+extension ___KeyValueSequence where Self: ___BaseSequence {
+
+  @inlinable
+  func ___min() -> Element? {
+    ___min().map(___element)
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  func ___max() -> Element? {
+    ___max().map(___element)
+  }
+}
+
+extension ___KeyValueSequence where Self: ___IndexProvider {
+
+  @inlinable
+  func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+    try ___first { try predicate(___element($0)) }.map(___element)
+  }
+  
+  /// - Complexity: O(*n*)
+  @inlinable
+  func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    try ___first_index { try predicate(___element($0)) }
   }
 }
 

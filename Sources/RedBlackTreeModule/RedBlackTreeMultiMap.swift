@@ -190,14 +190,14 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public var first: Element? {
-    ___first.map(___element)
+    ___first
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
   public var last: Element? {
-    ___last.map(___element)
+    ___last
   }
 }
 
@@ -606,13 +606,13 @@ extension RedBlackTreeMultiMap {
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
   public func min() -> Element? {
-    ___min().map(___element)
+    ___min()
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public func max() -> Element? {
-    ___max().map(___element)
+    ___max()
   }
 }
 
@@ -621,7 +621,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___first { try predicate(___element($0)) }.map(___element)
+    try ___first(where: predicate)
   }
 }
 
@@ -636,7 +636,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n*)
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index { try predicate(___element($0)) }
+    try ___first_index(where: predicate)
   }
 }
 

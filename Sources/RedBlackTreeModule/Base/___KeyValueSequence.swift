@@ -169,6 +169,7 @@ extension ___KeyValueSequence {
   }
 }
 
+// TODO: 削除検討
 extension ___KeyValueSequence {
 
   @inlinable

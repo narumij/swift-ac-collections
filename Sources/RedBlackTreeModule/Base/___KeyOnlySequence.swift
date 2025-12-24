@@ -67,6 +67,7 @@ extension ___KeyOnlySequence {
   }
 }
 
+// TODO: 削除検討
 extension ___KeyOnlySequence {
 
   @inlinable

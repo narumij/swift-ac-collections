@@ -196,6 +196,8 @@ extension ___Index where Base: CompareMultiTrait {
   }
 }
 
+// TODO: 削除検討
+// 初期の名残
 extension ___Index {
 
   @inlinable

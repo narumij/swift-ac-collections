@@ -44,25 +44,29 @@ extension ___Common {
   }
 }
 
+// TODO: 削除検討
 extension ___Common {
-
+  
   @inlinable
   @inline(__always)
   func ___prev(_ i: _NodePtr) -> _NodePtr {
     __tree_.__tree_prev_iter(i)
   }
-
+  
   @inlinable
   @inline(__always)
   func ___next(_ i: _NodePtr) -> _NodePtr {
     __tree_.__tree_next_iter(i)
   }
-
+  
   @inlinable
   @inline(__always)
   func ___advanced(_ i: _NodePtr, by distance: Int) -> _NodePtr {
     __tree_.___tree_adv_iter(i, by: distance)
   }
+}
+
+extension ___Common {
 
   @inlinable
   @inline(__always)
@@ -135,6 +139,7 @@ extension ___Common {
   }
 }
 
+// TODO: 削除検討
 extension ___Common {
 
   @inlinable

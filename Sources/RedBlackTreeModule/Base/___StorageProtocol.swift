@@ -70,7 +70,7 @@ extension ___StorageProtocol {
 // MARK: - Remove
 
 extension ___StorageProtocol {
-
+  
   @inlinable
   @inline(__always)
   @discardableResult
@@ -82,7 +82,7 @@ extension ___StorageProtocol {
     _ = __tree_.erase(ptr)
     return e
   }
-
+  
   @inlinable
   @inline(__always)
   @discardableResult
@@ -93,6 +93,12 @@ extension ___StorageProtocol {
     __tree_.___ensureValid(begin: from, end: to)
     return __tree_.erase(from, to)
   }
+}
+
+// TODO: 削除検討
+// ABCの何かの問題に特化で速くできないか模索した名残だと思う
+// カバレッジもないし利用してもいなさそう
+extension ___StorageProtocol {
 
   @inlinable
   @inline(__always)

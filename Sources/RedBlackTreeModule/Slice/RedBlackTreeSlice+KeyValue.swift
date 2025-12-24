@@ -24,7 +24,7 @@ import Foundation
 extension RedBlackTreeSlice {
 
   @frozen
-  public struct KeyValue: RedBlackTreeSliceInternal where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
+  public struct KeyValue: RedBlackTreeSliceInternal & ___KeyValueBase where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
 
     public typealias Tree = ___Tree<Base>
     public typealias _Key = Base._Key
@@ -80,11 +80,11 @@ extension RedBlackTreeSlice.KeyValue {
     try _forEach(body)
   }
 
-  @inlinable
-  @inline(__always)
-  public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
-    try ___forEach({ try body($0, Base.___element($1)) })
-  }
+//  @inlinable
+//  @inline(__always)
+//  public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
+//    try ___forEach({ try body($0, Base.___element($1)) })
+//  }
 }
 
 extension RedBlackTreeSlice.KeyValue {

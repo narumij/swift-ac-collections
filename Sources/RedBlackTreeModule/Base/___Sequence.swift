@@ -27,33 +27,33 @@ where
 //extension ___Sequence where Base: ScalarValueComparer {
 extension ___Sequence {
 
-  @inlinable
-  @inline(__always)
-  func _makeIterator() -> Tree._Values {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _reversed() -> Tree._Values.Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
+//  @inlinable
+//  @inline(__always)
+//  func _makeIterator() -> Tree._Values {
+//    .init(tree: __tree_, start: _start, end: _end)
+//  }
+//
+//  @inlinable
+//  @inline(__always)
+//  func _reversed() -> Tree._Values.Reversed {
+//    .init(tree: __tree_, start: _start, end: _end)
+//  }
 }
 
-extension ___Sequence where Base: KeyValueComparer {
-
-  @inlinable
-  @inline(__always)
-  func _makeIterator() -> Tree._KeyValues {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-
-  @inlinable
-  @inline(__always)
-  func _reversed() -> Tree._KeyValues.Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-}
+//extension ___Sequence where Base: KeyValueComparer {
+//
+//  @inlinable
+//  @inline(__always)
+//  func _makeIterator() -> Tree._KeyValues {
+//    .init(tree: __tree_, start: _start, end: _end)
+//  }
+//
+//  @inlinable
+//  @inline(__always)
+//  func _reversed() -> Tree._KeyValues.Reversed {
+//    .init(tree: __tree_, start: _start, end: _end)
+//  }
+//}
 
 extension ___Sequence {
   @inlinable
@@ -63,38 +63,38 @@ extension ___Sequence {
   }
 }
 
-extension ___Sequence {
+//extension ___Sequence {
+//
+//  @inlinable
+//  @inline(__always)
+//  func _forEach(_ body: (_Value) throws -> Void) rethrows {
+//    try __tree_.___for_each_(__p: _start, __l: _end) {
+//      try body(__tree_[$0])
+//    }
+//  }
+//}
+//
+//extension ___Sequence {
+//
+//  @inlinable
+//  @inline(__always)
+//  public func ___forEach(_ body: (_NodePtr, _Value) throws -> Void) rethrows {
+//    try __tree_.___for_each_(__p: _start, __l: _end) {
+//      try body($0, __tree_[$0])
+//    }
+//  }
+//}
 
-  @inlinable
-  @inline(__always)
-  func _forEach(_ body: (_Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(__tree_[$0])
-    }
-  }
-}
-
-extension ___Sequence {
-
-  @inlinable
-  @inline(__always)
-  public func ___forEach(_ body: (_NodePtr, _Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body($0, __tree_[$0])
-    }
-  }
-}
-
-extension ___Sequence where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
-
-  @inlinable
-  @inline(__always)
-  func _forEach(_ body: (Base.Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(Base.___element(__tree_[$0]))
-    }
-  }
-}
+//extension ___Sequence where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
+//
+//  @inlinable
+//  @inline(__always)
+//  func _forEach(_ body: (Base.Element) throws -> Void) rethrows {
+//    try __tree_.___for_each_(__p: _start, __l: _end) {
+//      try body(Base.___element(__tree_[$0]))
+//    }
+//  }
+//}
 
 extension ___Sequence {
 
@@ -164,22 +164,26 @@ extension ___Sequence {
   }
 }
 
-extension ___Sequence {
+//extension ___Sequence {
+//
+//  /// - Complexity: O(*n*)
+//  @inlinable
+//  @inline(__always)
+//  func _sorted() -> [_Value] {
+//    __tree_.___copy_to_array(_start, _end)
+//  }
+//}
 
-  /// - Complexity: O(*n*)
-  @inlinable
-  @inline(__always)
-  func _sorted() -> [_Value] {
-    __tree_.___copy_to_array(_start, _end)
-  }
-}
+//extension ___Sequence where Base: ___RedBlackTreeKeyValueBase {
+//
+//  /// - Complexity: O(*n*)
+//  @inlinable
+//  @inline(__always)
+//  func _sorted() -> [Base.Element] {
+//    __tree_.___copy_to_array(_start, _end, transform: Base.___element)
+//  }
+//}
 
-extension ___Sequence where Base: ___RedBlackTreeKeyValueBase {
 
-  /// - Complexity: O(*n*)
-  @inlinable
-  @inline(__always)
-  func _sorted() -> [Base.Element] {
-    __tree_.___copy_to_array(_start, _end, transform: Base.___element)
-  }
-}
+
+

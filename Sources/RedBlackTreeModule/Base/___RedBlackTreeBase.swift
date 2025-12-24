@@ -26,15 +26,19 @@ import Foundation
 public protocol ___RedBlackTree___ {
   associatedtype Base
   associatedtype Tree
+  associatedtype Element
+}
+
+public protocol ___RedBlackTreeKeyValue___: ___RedBlackTree___ {
+  associatedtype _Key
+  associatedtype _MappedValue
 }
 
 // コレクションの内部実装
 @usableFromInline
-protocol ___RedBlackTreeBase: ___RedBlackTree___ & ___StorageProvider & ___IndexProvider & ___Common
-    & ___Sequence
-where Base: ___TreeIndex {}
-
-extension ___RedBlackTreeBase {}
+protocol ___RedBlackTreeBase:
+  ___RedBlackTree___ & ___StorageProvider & ___IndexProvider & ___Common & ___Sequence
+{}
 
 // MARK: - Index
 

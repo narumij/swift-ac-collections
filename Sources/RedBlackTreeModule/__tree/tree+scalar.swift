@@ -23,11 +23,22 @@
 import Foundation
 
 /// 要素とキーが一致する場合のひな形
-public protocol ScalarValueComparer: ValueComparer where _Key == _Value {}
+public protocol ScalarValueComparer: ValueComparer & HasDefaultThreeWayComparator where _Key == _Value {}
 
 extension ScalarValueComparer {
 
   @inlinable
   @inline(__always)
   public static func __key(_ e: _Value) -> _Key { e }
+}
+
+public protocol ValuePointee: ___TreeIndex where _Value == Element {
+  associatedtype _Value
+  associatedtype Element
+}
+
+extension ValuePointee {
+  @inlinable
+  @inline(__always)
+  public static func ___pointee(_ __value: _Value) -> Element { __value }
 }

@@ -135,27 +135,27 @@ extension ___IndexProvider {
   }
 }
 
-extension ___IndexProvider {
+//extension ___IndexProvider {
+//
+//  @inlinable
+//  @inline(__always)
+//  func _forEach(_ body: (Index, _Value) throws -> Void) rethrows {
+//    try __tree_.___for_each_(__p: _start, __l: _end) {
+//      try body(___index($0), __tree_[$0])
+//    }
+//  }
+//}
 
-  @inlinable
-  @inline(__always)
-  func _forEach(_ body: (Index, _Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0), __tree_[$0])
-    }
-  }
-}
-
-extension ___IndexProvider where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
-
-  @inlinable
-  @inline(__always)
-  func _forEach(_ body: (Index, Base.Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0), Base.___element(__tree_[$0]))
-    }
-  }
-}
+//extension ___IndexProvider where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
+//
+//  @inlinable
+//  @inline(__always)
+//  func _forEach(_ body: (Index, Base.Element) throws -> Void) rethrows {
+//    try __tree_.___for_each_(__p: _start, __l: _end) {
+//      try body(___index($0), Base.___element(__tree_[$0]))
+//    }
+//  }
+//}
 
 extension ___IndexProvider {
 

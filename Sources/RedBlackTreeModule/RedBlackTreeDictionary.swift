@@ -95,6 +95,7 @@ extension RedBlackTreeDictionary: ___TreeIndex {
     Self.___element(__value)
   }
 }
+extension RedBlackTreeDictionary: ___KeyValueBase {}
 
 // MARK: - Creating a Dictionay
 

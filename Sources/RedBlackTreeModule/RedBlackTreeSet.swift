@@ -61,21 +61,19 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias _Value = Element
 
+  public
+    typealias Base = Self
+
   @usableFromInline
   var _storage: Storage
 }
 
-extension RedBlackTreeSet: ___RedBlackTreeBase & CompareUniqueTrait {
-  public typealias Base = Self
-}
-
+extension RedBlackTreeSet: ___RedBlackTreeBase {}
 extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
+extension RedBlackTreeSet: CompareUniqueTrait {}
 extension RedBlackTreeSet: ScalarValueComparer {}
-extension RedBlackTreeSet: HasDefaultThreeWayComparator {}
-
-extension RedBlackTreeSet: ___TreeIndex {
-  public static func ___pointee(_ __value: Element) -> Element { __value }
-}
+extension RedBlackTreeSet: ValuePointee {}
+extension RedBlackTreeSet: ___KeyOnlyBase {}
 
 // MARK: - Creating a Set
 

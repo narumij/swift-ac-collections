@@ -58,17 +58,16 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
   var _storage: Storage
 }
 
-extension RedBlackTreeMultiSet: ___RedBlackTreeBase & CompareMultiTrait {
+extension RedBlackTreeMultiSet {
   public typealias Base = Self
 }
+
+extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
+extension RedBlackTreeMultiSet: CompareMultiTrait {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
-
-extension RedBlackTreeMultiSet: HasDefaultThreeWayComparator {}
-
-extension RedBlackTreeMultiSet: ___TreeIndex {
-  public static func ___pointee(_ __value: Element) -> Element { __value }
-}
+extension RedBlackTreeMultiSet: ValuePointee {}
+extension RedBlackTreeMultiSet: ___KeyOnlyBase {}
 
 // MARK: - Creating a MultSet
 

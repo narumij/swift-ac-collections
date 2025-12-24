@@ -25,12 +25,12 @@ import Foundation
 // コレクションの内部実装
 
 @usableFromInline
-protocol ___RedBlackTreeValueBase___:
+protocol ___RedBlackTreeValuesBase:
   ___BaseSequence & ___IndexProvider & ___Common & ___StorageProvider & ___KeyOnlySequence & ___CopyOnWrite
 {}
 
 @usableFromInline
-protocol ___RedBlackTreeKeyValueBase___:
+protocol ___RedBlackTreeKeyValuesBase:
   ___BaseSequence & ___IndexProvider & ___Common & ___StorageProvider & ___KeyValueSequence & ___CopyOnWrite
 {}
 

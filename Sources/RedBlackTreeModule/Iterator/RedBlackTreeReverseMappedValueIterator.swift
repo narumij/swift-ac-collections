@@ -83,4 +83,4 @@ extension RedBlackTreeIterator.MappedValues.Reversed: Comparable where Base._Map
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIterator.MappedValues.Reversed: ___RedBlackTreeIsIdenticalTo {}
+extension RedBlackTreeIterator.MappedValues.Reversed: ___IsIdenticalTo {}

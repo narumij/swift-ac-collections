@@ -424,4 +424,4 @@ extension RedBlackTreeSlice {
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeSlice: ___RedBlackTreeIsIdenticalTo {}
+extension RedBlackTreeSlice: ___IsIdenticalTo {}

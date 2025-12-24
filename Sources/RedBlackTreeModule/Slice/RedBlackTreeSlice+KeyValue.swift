@@ -454,4 +454,4 @@ extension RedBlackTreeSlice.KeyValue {
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeSlice.KeyValue: ___RedBlackTreeIsIdenticalTo {}
+extension RedBlackTreeSlice.KeyValue: ___IsIdenticalTo {}

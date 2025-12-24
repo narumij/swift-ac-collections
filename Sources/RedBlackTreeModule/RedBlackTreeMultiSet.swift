@@ -62,7 +62,7 @@ extension RedBlackTreeMultiSet {
   public typealias Base = Self
 }
 
-extension RedBlackTreeMultiSet: ___RedBlackTreeValueBase___ {}
+extension RedBlackTreeMultiSet: ___RedBlackTreeValuesBase {}
 extension RedBlackTreeMultiSet: CompareMultiTrait {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 extension RedBlackTreeMultiSet: ___TreeIndex {}

@@ -84,7 +84,7 @@ extension RedBlackTreeDictionary {
   public typealias Base = Self
 }
 
-extension RedBlackTreeDictionary: ___RedBlackTreeKeyValueBase___ {}
+extension RedBlackTreeDictionary: ___RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeDictionary: CompareUniqueTrait {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
 extension RedBlackTreeDictionary: HasDefaultThreeWayComparator {}

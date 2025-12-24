@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeIsIdenticalTo {
+protocol ___IsIdenticalTo {
   associatedtype Base: ___TreeBase
   var __tree_: ___Tree<Base> { get }
   var _start: _NodePtr { get }
@@ -30,7 +30,7 @@ protocol ___RedBlackTreeIsIdenticalTo {
 
 // MARK: - Is Identical To
 
-extension ___RedBlackTreeIsIdenticalTo {
+extension ___IsIdenticalTo {
 
   /// Returns a boolean value indicating whether this set is identical to
   /// `other`.

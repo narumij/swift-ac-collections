@@ -88,7 +88,7 @@ extension RedBlackTreeMultiMap {
   public typealias Base = Self
 }
 
-extension RedBlackTreeMultiMap: ___RedBlackTreeKeyValueBase___ {}
+extension RedBlackTreeMultiMap: ___RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeMultiMap: CompareMultiTrait {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
 extension RedBlackTreeMultiMap: HasDefaultThreeWayComparator {}

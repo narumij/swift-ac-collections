@@ -82,4 +82,4 @@ extension RedBlackTreeIterator.Keys.Reversed: Comparable {
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIterator.Keys.Reversed: ___RedBlackTreeIsIdenticalTo {}
+extension RedBlackTreeIterator.Keys.Reversed: ___IsIdenticalTo {}

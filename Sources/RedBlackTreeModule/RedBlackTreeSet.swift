@@ -68,7 +68,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   var _storage: Storage
 }
 
-extension RedBlackTreeSet: ___RedBlackTreeValueBase___ {}
+extension RedBlackTreeSet: ___RedBlackTreeValuesBase {}
 extension RedBlackTreeSet: CompareUniqueTrait {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 extension RedBlackTreeSet: ___TreeIndex {}

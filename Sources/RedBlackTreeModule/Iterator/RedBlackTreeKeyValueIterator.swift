@@ -117,4 +117,4 @@ where Base._Key: Comparable, Base._MappedValue: Comparable {
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIterator.KeyValues: ___RedBlackTreeIsIdenticalTo {}
+extension RedBlackTreeIterator.KeyValues: ___IsIdenticalTo {}

@@ -186,8 +186,6 @@ extension RedBlackTreeIndex {
 
 extension RedBlackTreeIndex {
 
-  // TODO: KeyValueのケース対応
-
   /// 現在位置の値を返す
   ///
   /// 無効な場合nilとなる
@@ -312,7 +310,11 @@ public func - <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>)
 // MARK: - Optional
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeIndex {
+// TODO: 再検討
+// こういうものが必要になるのもどうかとおもうが、
+// かといってIndexの返却をIndex!にするのは標準で前例がみつかってないし、
+// Index?もどうかとおもい、悩むポイント
+extension RedBlackTreeIndex {
 
     /// オプショナル型を返却します。
     ///

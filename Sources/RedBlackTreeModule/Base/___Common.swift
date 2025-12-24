@@ -110,30 +110,41 @@ extension ___Common {
 }
 
 extension ___Common {
-  
+
   /// releaseビルドでは無効化されています
   @inlinable
   @inline(__always)
   public func ___tree_invariant() -> Bool {
-#if true
-    // 並行してサイズもチェックする。その分遅い
-    __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, .end)
-    && __tree_.__tree_invariant(__tree_.__root())
-#else
-    __tree_.__tree_invariant(__tree_.__root())
-#endif
+    #if true
+      // 並行してサイズもチェックする。その分遅い
+      __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, .end)
+        && __tree_.__tree_invariant(__tree_.__root())
+    #else
+      __tree_.__tree_invariant(__tree_.__root())
+    #endif
   }
 }
 
 extension ___Common {
-  
+
   @inlinable
   @inline(__always)
   public func _isIdentical(to other: Self) -> Bool {
-//    __tree_.isIdentical(to: other.__tree_)
-    __tree_.isIdentical(to: other.__tree_) &&
-    _start == other._start &&
-    _end == other._end
+    __tree_.isIdentical(to: other.__tree_) && _start == other._start && _end == other._end
   }
 }
 
+extension ___Common {
+
+  @inlinable
+  @inline(__always)
+  public func ___start() -> _NodePtr {
+    _start
+  }
+
+  @inlinable
+  @inline(__always)
+  public func ___end() -> _NodePtr {
+    _end
+  }
+}

@@ -67,10 +67,12 @@ extension ___RedBlackTreeCopyOnWrite {
       _storage = _storage.copy()
     }
   }
-  
+
   @inlinable
   @inline(__always)
-  mutating func _ensureUnique(transform: (___Storage<Base>.Tree) throws -> ___Storage<Base>.Tree) rethrows {
+  mutating func _ensureUnique(transform: (___Storage<Base>.Tree) throws -> ___Storage<Base>.Tree)
+    rethrows
+  {
     _ensureUnique()
     _storage = .init(tree: try transform(_storage.tree))
   }
@@ -119,7 +121,7 @@ extension ___RedBlackTreeCopyOnWrite {
   mutating func _ensureCapacity() {
     _ensureCapacity(amount: 1)
   }
-  
+
   @inlinable
   @inline(__always)
   mutating func _ensureCapacity(amount: Int) {

@@ -31,7 +31,7 @@ where Element == (key: _Key, value: _MappedValue) {
 }
 
 extension ___RedBlackTreeKeyValueBase {
-  
+
   @inlinable
   @inline(__always)
   public func ___element(_ __value: _Value) -> Element {

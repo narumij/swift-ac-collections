@@ -30,27 +30,13 @@ public protocol ___RedBlackTree___ {
 
 // コレクションの内部実装
 @usableFromInline
-protocol ___RedBlackTreeBase: ___RedBlackTree___ & ___StorageProvider & ___IndexProvider & ___Common & ___Sequence
+protocol ___RedBlackTreeBase: ___RedBlackTree___ & ___StorageProvider & ___IndexProvider & ___Common
+    & ___Sequence
 where Base: ___TreeIndex {}
 
 extension ___RedBlackTreeBase {}
 
 // MARK: - Index
-
-extension ___RedBlackTreeBase {
-
-  @inlinable
-  @inline(__always)
-  public func ___start() -> _NodePtr {
-    _start
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___end() -> _NodePtr {
-    _end
-  }
-}
 
 extension ___RedBlackTreeBase {
 

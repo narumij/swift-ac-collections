@@ -158,7 +158,7 @@ extension ___IndexProvider where Base: KeyValueComparer & ___RedBlackTreeKeyValu
 }
 
 extension ___IndexProvider {
-  
+
   @inlinable
   @inline(__always)
   func _isValid(index: Index) -> Bool {

@@ -20,43 +20,42 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public protocol ___TreeIndex {
+// コレクション実装の基点
+public protocol ___Root {
+  associatedtype Base
+  associatedtype Tree
+}
+
+@usableFromInline
+protocol ___Base: ___Root
+where
+  Base: ___TreeBase & ___TreeIndex,
+  Tree == ___Tree<Base>,
+  Index == Tree.Index,
+  Indices == Tree.Indices,
+  _Key == Tree._Key,
+  _Value == Tree._Value
+{
+  associatedtype Index
+  associatedtype Indices
+  associatedtype _Key
   associatedtype _Value
-  associatedtype Pointee
-  static func ___pointee(_ __value: _Value) -> Pointee
+  associatedtype Element
+  var __tree_: Tree { get }
+  var _start: _NodePtr { get }
+  var _end: _NodePtr { get }
+
+  func ___index(_ p: _NodePtr) -> Index
 }
 
-extension ___Tree where Base: ___TreeIndex {
+@usableFromInline
+protocol ___RedBlackTreeKeyOnlyBase:
+  ___StorageProtocol & ___CopyOnWrite & ___Common & ___Index & ___BaseSequence
+    & ___KeyOnlySequence
+{}
 
-  public typealias Index = RedBlackTreeIndex<Base>
-  public typealias Pointee = Base.Pointee
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func makeIndex(rawValue: _NodePtr) -> Index {
-    .init(tree: self, rawValue: rawValue)
-  }
-}
-
-extension ___Tree where Base: ___TreeIndex {
-
-  public typealias Indices = RedBlackTreeIndices<Base>
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices {
-    .init(tree: self, start: start, end: end)
-  }
-}
-
-extension ___Tree where Base: ___TreeIndex {
-
-  public typealias _Values = RedBlackTreeIterator<Base>.Values
-}
-
-extension ___Tree where Base: KeyValueComparer & ___TreeIndex {
-
-  public typealias _KeyValues = RedBlackTreeIterator<Base>.KeyValues
-}
+@usableFromInline
+protocol ___RedBlackTreeKeyValuesBase:
+  ___StorageProtocol & ___CopyOnWrite & ___Common & ___Index & ___BaseSequence
+    & ___KeyValueSequence
+{}

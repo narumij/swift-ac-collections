@@ -1,4 +1,4 @@
-// Copyright 2024 narumij
+// Copyright 2024-2025 narumij
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,42 +20,30 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public protocol ___RedBlackTreeKeyValueBase
-where Element == (key: _Key, value: _MappedValue) {
-  associatedtype _Key
-  associatedtype _MappedValue
-  associatedtype _Value
-  associatedtype Element
-  static func ___element(_ __value: _Value) -> Element
-  static func ___tree_value(_ __element: Element) -> _Value
-}
+@usableFromInline
+protocol ___SubSequence: ___Base {}
 
-extension ___RedBlackTreeKeyValueBase {
+extension ___SubSequence {
 
+  /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
-  public func ___element(_ __value: _Value) -> Element {
-    Self.___element(__value)
+  var _count: Int {
+    __tree_.___distance(from: _start, to: _end)
+  }
+  
+  @inlinable
+  @inline(__always)
+  func ___contains(_ i: _NodePtr) -> Bool {
+    !__tree_.___is_subscript_null(i) && __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
 
   @inlinable
   @inline(__always)
-  public func ___tree_value(_ __element: Element) -> _Value {
-    Self.___tree_value(__element)
-  }
-}
-
-extension ___RedBlackTreeKeyValueBase where _Value == RedBlackTreePair<_Key, _MappedValue> {
-
-  @inlinable
-  @inline(__always)
-  public static func ___element(_ __value: _Value) -> Element {
-    (__value.key, __value.value)
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func ___tree_value(_ __element: Element) -> _Value {
-    RedBlackTreePair(__element.key, __element.value)
+  func ___contains(_ bounds: Range<Index>) -> Bool {
+    !__tree_.___is_offset_null(bounds.lowerBound.rawValue)
+      && !__tree_.___is_offset_null(bounds.upperBound.rawValue)
+      && __tree_.___ptr_range_contains(_start, _end, bounds.lowerBound.rawValue)
+      && __tree_.___ptr_range_contains(_start, _end, bounds.upperBound.rawValue)
   }
 }

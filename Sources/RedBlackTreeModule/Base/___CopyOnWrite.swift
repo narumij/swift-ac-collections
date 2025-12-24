@@ -21,12 +21,12 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeCopyOnWrite {
+protocol ___CopyOnWrite {
   associatedtype Base: ___TreeBase
   var _storage: ___Storage<Base> { get set }
 }
 
-extension ___RedBlackTreeCopyOnWrite {
+extension ___CopyOnWrite {
 
   @inlinable
   @inline(__always)
@@ -67,10 +67,12 @@ extension ___RedBlackTreeCopyOnWrite {
       _storage = _storage.copy()
     }
   }
-  
+
   @inlinable
   @inline(__always)
-  mutating func _ensureUnique(transform: (___Storage<Base>.Tree) throws -> ___Storage<Base>.Tree) rethrows {
+  mutating func _ensureUnique(transform: (___Storage<Base>.Tree) throws -> ___Storage<Base>.Tree)
+    rethrows
+  {
     _ensureUnique()
     _storage = .init(tree: try transform(_storage.tree))
   }
@@ -119,7 +121,7 @@ extension ___RedBlackTreeCopyOnWrite {
   mutating func _ensureCapacity() {
     _ensureCapacity(amount: 1)
   }
-  
+
   @inlinable
   @inline(__always)
   mutating func _ensureCapacity(amount: Int) {
@@ -153,11 +155,10 @@ extension ___RedBlackTreeCopyOnWrite {
   }
 }
 
-extension ___RedBlackTreeBase {
-  
-  @inlinable
-  @inline(__always)
-  public func _isIdentical(to other: Self) -> Bool {
-    __tree_.isIdentical(to: other.__tree_)
+#if AC_COLLECTIONS_INTERNAL_CHECKS
+  extension ___CopyOnWrite {
+    public mutating func _checkUnique() -> Bool {
+      _isKnownUniquelyReferenced_LV2()
+    }
   }
-}
+#endif

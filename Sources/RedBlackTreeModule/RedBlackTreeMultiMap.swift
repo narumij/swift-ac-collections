@@ -76,29 +76,21 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias _Value = RedBlackTreePair<Key, Value>
 
   @usableFromInline
-  var _storage: Tree.Storage
+  var _storage: Storage
 
   @inlinable @inline(__always)
-  init(_storage: Tree.Storage) {
+  init(_storage: Storage) {
     self._storage = _storage
   }
 }
 
-extension RedBlackTreeMultiMap: ___RedBlackTreeBase {}
-extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
-extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
-extension RedBlackTreeMultiMap: ___RedBlackTreeSequenceBase {}
-extension RedBlackTreeMultiMap: KeyValueComparer {}
-
-extension RedBlackTreeMultiMap: HasDefaultThreeWayComparator {}
-
-extension RedBlackTreeMultiMap: ___RedBlackTreeKeyValueBase {}
-
-extension RedBlackTreeMultiMap: ___TreeIndex {
-  public static func ___pointee(_ __value: _Value) -> Element {
-    Self.___element(__value)
-  }
+extension RedBlackTreeMultiMap {
+  public typealias Base = Self
 }
+
+extension RedBlackTreeMultiMap: ___RedBlackTreeKeyValuesBase {}
+extension RedBlackTreeMultiMap: CompareMultiTrait {}
+extension RedBlackTreeMultiMap: KeyValueComparer {}
 
 // MARK: - Creating a MultiMap
 
@@ -193,14 +185,14 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public var first: Element? {
-    ___first.map(___element)
+    ___first
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
   public var last: Element? {
-    ___last.map(___element)
+    ___last
   }
 }
 
@@ -609,13 +601,13 @@ extension RedBlackTreeMultiMap {
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
   public func min() -> Element? {
-    ___min().map(___element)
+    ___min()
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public func max() -> Element? {
-    ___max().map(___element)
+    ___max()
   }
 }
 
@@ -624,7 +616,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n*)
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___first { try predicate(___element($0)) }.map(___element)
+    try ___first(where: predicate)
   }
 }
 
@@ -639,11 +631,14 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n*)
   @inlinable
   public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index { try predicate(___element($0)) }
+    try ___first_index(where: predicate)
   }
 }
 
 extension RedBlackTreeMultiMap {
+  // TODO: 検討
+  // 思いついた当初はとても気に入っていたが、いまはそうでもないので削除を検討
+
   // 割と注意喚起の為のdeprecatedなだけで、実際にいつ消すのかは不明です。
   // 分かってると便利なため、競技プログラミングにこのシンタックスシュガーは有用と考えているからです。
 
@@ -751,14 +746,14 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _forEach { try body(___element($0)) }
+    try _forEach(body)
   }
 
   /// 特殊なforEach
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try _forEach { try body($0, ___element($1)) }
+    try _forEach(body)
   }
 
   #if !COMPATIBLE_ATCODER_2025
@@ -766,8 +761,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
     @inlinable
     @inline(__always)
     public func sorted() -> [Element] {
-      __tree_.___copy_to_array(
-        __tree_.__begin_node_, __tree_.__end_node(), transform: Self.___element)
+      _sorted()
     }
   #endif
 
@@ -846,23 +840,33 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
     _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
 
+  /*
+   コメントアウトの多さはテストコードのコンパイラクラッシュに由来する。
+   */
+  
   /// - Complexity: O(1)
   @inlinable
-  public subscript(position: Index) -> Element {
-    @inline(__always) get { ___element(self[_checked: position]) }
+//  public subscript(position: Index) -> Element {
+  public subscript(position: Index) -> (key: Key, value: Value) {
+//    @inline(__always) get { ___element(self[_checked: position]) }
+    @inline(__always) get { self[_checked: position] }
   }
 
   #if COMPATIBLE_ATCODER_2025
     @inlinable
-    public subscript(_unsafe position: Index) -> Element {
-      @inline(__always) get { ___element(self[_unchecked: position]) }
+//    public subscript(_unsafe position: Index) -> Element {
+  public subscript(_unsafe position: Index) -> (key: Key, value: Value) {
+//      @inline(__always) get { ___element(self[_unchecked: position]) }
+    @inline(__always) get { self[_unchecked: position] }
     }
   #else
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable
-    public subscript(unchecked position: Index) -> Element {
-      @inline(__always) get { ___element(self[_unchecked: position]) }
+//    public subscript(unchecked position: Index) -> Element {
+  public subscript(unchecked position: Index) -> (key: Key, value: Value) {
+//      @inline(__always) get { ___element(self[_unchecked: position]) }
+    @inline(__always) get { self[_unchecked: position] }
     }
   #endif
 
@@ -900,6 +904,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   }
 }
 
+// TODO: 便利止まりだし、標準にならうと不自然なので、削除するか検討
 extension RedBlackTreeMultiMap where Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -912,6 +917,7 @@ extension RedBlackTreeMultiMap where Value: Equatable {
   }
 }
 
+// TODO: 便利止まりだし、標準にならうと不自然なので、削除するか検討
 extension RedBlackTreeMultiMap where Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -933,7 +939,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public func keys() -> Keys {
-      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+      _keys()
     }
 
     /// - Complexity: O(1)
@@ -1116,7 +1122,7 @@ extension RedBlackTreeMultiMap: Hashable where Key: Hashable, Value: Hashable {
 
 #if swift(>=5.5)
   extension RedBlackTreeMultiMap: @unchecked Sendable
-  where Element: Sendable {}
+  where Key: Sendable, Value: Sendable {}
 #endif
 
 // MARK: - Codable

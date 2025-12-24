@@ -22,7 +22,7 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeSlice<Base> where Base: ___TreeBase & ___TreeIndex {
+public struct RedBlackTreeSlice<Base>: ___Common & ___SubSequence & ___Index &  ___KeyOnlySequence where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = ___Tree<Base>
   public typealias _Value = Tree._Value
@@ -50,32 +50,24 @@ extension RedBlackTreeSlice: Sequence & Collection & BidirectionalCollection {}
 
 extension RedBlackTreeSlice {
 
-  @inlinable
-  @inline(__always)
-  func ___index(_ rawValue: _NodePtr) -> Index {
-    .init(tree: __tree_, rawValue: rawValue)
-  }
-}
-
-extension RedBlackTreeSlice {
-
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public __consuming func makeIterator() -> Tree._Values {
-    .init(tree: __tree_, start: _start, end: _end)
+    _makeIterator()
   }
 }
 
 extension RedBlackTreeSlice {
 
+#if !COMPATIBLE_ATCODER_2025
+  // 2025でpublicになってなかったのは痛恨のミス。でも標準実装が動くはず
   @inlinable
   @inline(__always)
-  internal func forEach(_ body: (Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(__tree_[$0])
-    }
+  public func forEach(_ body: (Element) throws -> Void) rethrows {
+    try _forEach(body)
   }
+#endif
 }
 
 extension RedBlackTreeSlice {
@@ -83,17 +75,7 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0), __tree_[$0])
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body($0, __tree_[$0])
-    }
+    try _forEach(body)
   }
 }
 
@@ -102,9 +84,7 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
-  public var count: Int {
-    __tree_.___distance(from: _start, to: _end)
-  }
+  public var count: Int { _count }
 }
 
 extension RedBlackTreeSlice {
@@ -112,16 +92,12 @@ extension RedBlackTreeSlice {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var startIndex: Index {
-    ___index(_start)
-  }
+  public var startIndex: Index { _startIndex }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var endIndex: Index {
-    ___index(_end)
-  }
+  public var endIndex: Index { _endIndex }
 }
 
 extension RedBlackTreeSlice {
@@ -130,8 +106,7 @@ extension RedBlackTreeSlice {
   @inlinable
   public subscript(position: Index) -> Element {
     @inline(__always) _read {
-      __tree_.___ensureValid(subscript: position.rawValue)
-      yield __tree_[position.rawValue]
+      yield self[_checked: position]
     }
   }
 }
@@ -142,7 +117,7 @@ extension RedBlackTreeSlice {
     @inlinable
     public subscript(_unsafe position: Index) -> Element {
       @inline(__always) _read {
-        yield __tree_[position.rawValue]
+        yield self[_unchecked: position]
       }
     }
   #else
@@ -151,7 +126,7 @@ extension RedBlackTreeSlice {
     @inlinable
     public subscript(unchecked position: Index) -> Element {
       @inline(__always) _read {
-        yield __tree_[position.rawValue]
+        yield self[_unchecked: position]
       }
     }
   #endif
@@ -228,9 +203,9 @@ extension RedBlackTreeSlice {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
-  //  @inline(__always)
+  @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    __tree_.___distance(from: start.rawValue, to: end.rawValue)
+    _distance(from: start, to: end)
   }
 }
 
@@ -241,7 +216,7 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public func index(before i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    ___index(__tree_.___index(before: i.rawValue))
+    _index(before: i)
   }
 
   /// - Complexity: O(1)
@@ -249,7 +224,7 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public func index(after i: Index) -> Index {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    ___index(__tree_.___index(after: i.rawValue))
+    _index(after: i)
   }
 
   /// - Complexity: O(*d*)
@@ -257,8 +232,7 @@ extension RedBlackTreeSlice {
   //  @inline(__always)
   public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-    __tree_.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
-      .map { ___index($0) }
+    _index(i, offsetBy: distance, limitedBy: limit)
   }
 }
 
@@ -269,7 +243,7 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public func formIndex(after i: inout Index) {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
-    __tree_.___formIndex(after: &i.rawValue)
+    _formIndex(after: &i)
   }
 
   /// - Complexity: O(1)
@@ -277,7 +251,7 @@ extension RedBlackTreeSlice {
   @inline(__always)
   public func formIndex(before i: inout Index) {
     // 標準のArrayが単純に減算することにならい、範囲チェックをしない
-    __tree_.___formIndex(before: &i.rawValue)
+    _formIndex(before: &i)
   }
 
   /// - Complexity: O(*d*)
@@ -285,7 +259,7 @@ extension RedBlackTreeSlice {
   //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-    __tree_.___formIndex(&i.rawValue, offsetBy: distance)
+    _formIndex(&i, offsetBy: distance)
   }
 
   /// - Complexity: O(*d*)
@@ -295,23 +269,13 @@ extension RedBlackTreeSlice {
     -> Bool
   {
     // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-    if let ii = index(i, offsetBy: distance, limitedBy: limit) {
-      i = ii
-      return true
-    }
-    return false
+    _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
 }
 
 // MARK: - Utility
 
 extension RedBlackTreeSlice {
-
-  @inlinable
-  @inline(__always)
-  func ___contains(_ i: _NodePtr) -> Bool {
-    !__tree_.___is_subscript_null(i) && __tree_.___ptr_closed_range_contains(_start, _end, i)
-  }
 
   /// Indexがsubscriptやremoveで利用可能か判別します
   ///
@@ -328,15 +292,6 @@ extension RedBlackTreeSlice {
 }
 
 extension RedBlackTreeSlice {
-
-  @inlinable
-  @inline(__always)
-  func ___contains(_ bounds: Range<Index>) -> Bool {
-    !__tree_.___is_offset_null(bounds.lowerBound.rawValue)
-      && !__tree_.___is_offset_null(bounds.upperBound.rawValue)
-      && __tree_.___ptr_range_contains(_start, _end, bounds.lowerBound.rawValue)
-      && __tree_.___ptr_range_contains(_start, _end, bounds.upperBound.rawValue)
-  }
 
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
@@ -361,7 +316,7 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   public func reversed() -> Tree._Values.Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
+    _reversed()
   }
 }
 
@@ -371,7 +326,7 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   public var indices: Indices {
-    __tree_.makeIndices(start: _start, end: _end)
+    _indices
   }
 }
 
@@ -381,7 +336,7 @@ extension RedBlackTreeSlice {
   @inlinable
   @inline(__always)
   public func sorted() -> [Element] {
-    __tree_.___copy_to_array(_start, _end)
+    _sorted()
   }
 }
 
@@ -394,7 +349,7 @@ extension RedBlackTreeSlice {
   public func elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
-    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
+    try _elementsEqual(other, by: areEquivalent)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -404,7 +359,7 @@ extension RedBlackTreeSlice {
   public func lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
-    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
+    try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
 
@@ -416,7 +371,7 @@ extension RedBlackTreeSlice where _Value: Equatable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.elementsEqual(_start, _end, other, by: ==)
+    _elementsEqual(other, by: ==)
   }
 }
 
@@ -428,7 +383,7 @@ extension RedBlackTreeSlice where _Value: Comparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.lexicographicallyPrecedes(_start, _end, other, by: <)
+    _lexicographicallyPrecedes(other, by: <)
   }
 }
 
@@ -462,12 +417,6 @@ extension RedBlackTreeSlice {
     }
     return __tree_[ptr]
   }
-
-  @inlinable
-  @inline(__always)
-  public func ___node_positions() -> ___SafePointers<Base> {
-    ___SafePointers(tree: __tree_, start: _start, end: _end)
-  }
 }
 
 #if swift(>=5.5)
@@ -477,4 +426,4 @@ extension RedBlackTreeSlice {
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeSlice: ___RedBlackTreeIsIdenticalTo {}
+extension RedBlackTreeSlice: ___IsIdenticalTo {}

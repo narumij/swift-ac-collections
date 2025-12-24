@@ -61,21 +61,16 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias _Value = Element
 
+  public
+    typealias Base = Self
+
   @usableFromInline
-  var _storage: Tree.Storage
+  var _storage: Storage
 }
 
-extension RedBlackTreeSet: ___RedBlackTreeBase {}
-extension RedBlackTreeSet: ___RedBlackTreeCopyOnWrite {}
-extension RedBlackTreeSet: ___RedBlackTreeUnique {}
-extension RedBlackTreeSet: ___RedBlackTreeSequenceBase {}
+extension RedBlackTreeSet: ___RedBlackTreeKeyOnlyBase {}
+extension RedBlackTreeSet: CompareUniqueTrait {}
 extension RedBlackTreeSet: ScalarValueComparer {}
-
-extension RedBlackTreeSet: HasDefaultThreeWayComparator {}
-
-extension RedBlackTreeSet: ___TreeIndex {
-  public static func ___pointee(_ __value: Element) -> Element { __value }
-}
 
 // MARK: - Creating a Set
 
@@ -567,6 +562,9 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
+  // TODO: 検討
+  // 思いついた当初はとても気に入っていたが、いまはそうでもないので削除を検討
+
   // 割と注意喚起の為のdeprecatedなだけで、実際にいつ消すのかは不明です。
   // 分かってると便利なため、競技プログラミングにこのシンタックスシュガーは有用と考えているからです。
 
@@ -630,14 +628,14 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (_Value) throws -> Void) rethrows {
+  public func forEach(_ body: (Element) throws -> Void) rethrows {
     try _forEach(body)
   }
 
   /// 特殊なforEach
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
+  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
     try _forEach(body)
   }
 
@@ -646,7 +644,7 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
     @inlinable
     @inline(__always)
     public func sorted() -> [Element] {
-      __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
+      _sorted()
     }
   #endif
 
@@ -727,7 +725,7 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
 
   /// - Complexity: O(1)
   @inlinable
-  public subscript(position: Index) -> _Value {
+  public subscript(position: Index) -> Element {
     @inline(__always) _read { yield self[_checked: position] }
   }
 
@@ -783,7 +781,7 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
+    _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
     try _elementsEqual(other, by: areEquivalent)
   }
@@ -793,8 +791,8 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
+    _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
     try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
@@ -807,7 +805,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other, by: ==)
+    _elementsEqual(other, by: ==)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -816,7 +814,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other, by: <)
+    _lexicographicallyPrecedes(other, by: <)
   }
 }
 
@@ -824,7 +822,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  public typealias SubSequence = RedBlackTreeSlice<Self>
+  public typealias SubSequence = RedBlackTreeSlice<Base>
 }
 
 // MARK: - Index Range

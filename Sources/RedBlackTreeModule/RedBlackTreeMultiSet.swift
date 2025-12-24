@@ -55,20 +55,16 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
     typealias _Value = Element
 
   @usableFromInline
-  var _storage: Tree.Storage
+  var _storage: Storage
 }
 
-extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
-extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
-extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
-extension RedBlackTreeMultiSet: ___RedBlackTreeSequenceBase {}
+extension RedBlackTreeMultiSet {
+  public typealias Base = Self
+}
+
+extension RedBlackTreeMultiSet: ___RedBlackTreeKeyOnlyBase {}
+extension RedBlackTreeMultiSet: CompareMultiTrait {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
-
-extension RedBlackTreeMultiSet: HasDefaultThreeWayComparator {}
-
-extension RedBlackTreeMultiSet: ___TreeIndex {
-  public static func ___pointee(_ __value: Element) -> Element { __value }
-}
 
 // MARK: - Creating a MultSet
 
@@ -573,6 +569,9 @@ extension RedBlackTreeMultiSet {
 }
 
 extension RedBlackTreeMultiSet {
+  // TODO: 検討
+  // 思いついた当初はとても気に入っていたが、いまはそうでもないので削除を検討
+
   // 割と注意喚起の為のdeprecatedなだけで、実際にいつ消すのかは不明です。
   // 分かってると便利なため、競技プログラミングにこのシンタックスシュガーは有用と考えているからです。
 
@@ -654,7 +653,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
     @inlinable
     @inline(__always)
     public func sorted() -> [Element] {
-      __tree_.___copy_to_array(__tree_.__begin_node_, __tree_.__end_node())
+      _sorted()
     }
   #endif
 
@@ -815,7 +814,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other, by: ==)
+    _elementsEqual(other, by: ==)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -824,7 +823,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other, by: <)
+    _lexicographicallyPrecedes(other, by: <)
   }
 }
 

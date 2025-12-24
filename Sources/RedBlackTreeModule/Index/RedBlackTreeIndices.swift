@@ -187,4 +187,4 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIndices: ___RedBlackTreeIsIdenticalTo {}
+extension RedBlackTreeIndices: ___IsIdenticalTo {}

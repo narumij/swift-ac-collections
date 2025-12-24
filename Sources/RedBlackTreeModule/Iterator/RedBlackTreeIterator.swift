@@ -85,4 +85,4 @@ extension RedBlackTreeIterator.Values: Comparable where Tree._Value: Comparable 
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIterator.Values: ___RedBlackTreeIsIdenticalTo {}
+extension RedBlackTreeIterator.Values: ___IsIdenticalTo {}

@@ -144,9 +144,6 @@ extension ___Tree {
 
   @usableFromInline
   internal typealias Manager = ManagedBufferPointer<Header, Node>
-
-  @usableFromInline
-  internal typealias Storage = ___Storage<Base>
 }
 
 extension ___Tree {
@@ -549,6 +546,7 @@ extension ___Tree: CompareBothProtocol {
 
 // MARK: -
 
+// TODO: 削除検討
 extension ___Tree {
 
   @nonobjc
@@ -999,32 +997,6 @@ extension ___Tree {
 
 // MARK: -
 
-extension ___Tree where Base: ___TreeIndex {
-
-  public typealias _Values = RedBlackTreeIterator<Base>.Values
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func makeIterator() -> _Values {
-    .init(tree: self, start: __begin_node_, end: __end_node())
-  }
-}
-
-extension ___Tree where Base: KeyValueComparer & ___TreeIndex {
-
-  public typealias _KeyValues = RedBlackTreeIterator<Base>.KeyValues
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func makeIterator() -> _KeyValues {
-    .init(tree: self, start: __begin_node_, end: __end_node())
-  }
-}
-
-// MARK: -
-
 extension ___Tree {
 
   @nonobjc
@@ -1054,31 +1026,6 @@ extension ___Tree {
 }
 
 // MARK: -
-
-extension ___Tree where Base: ___TreeIndex {
-
-  public typealias Index = RedBlackTreeIndex<Base>
-  public typealias Pointee = Base.Pointee
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func makeIndex(rawValue: _NodePtr) -> Index {
-    .init(tree: self, rawValue: rawValue)
-  }
-}
-
-extension ___Tree where Base: ___TreeIndex {
-
-  public typealias Indices = RedBlackTreeIndices<Base>
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices {
-    .init(tree: self, start: start, end: end)
-  }
-}
 
 extension ___Tree where Base: KeyValueComparer {
 
@@ -1135,7 +1082,7 @@ extension ___Tree where Base: KeyValueComparer {
   )
     rethrows -> ___Tree<Other>
   where
-    Other: KeyValueComparer & ___RedBlackTreeKeyValueBase,
+    Other: KeyValueComparer & ___KeyValueSequence,
     Other._Key == Base._Key
   {
     let other = ___Tree<Other>.create(minimumCapacity: count)
@@ -1159,7 +1106,7 @@ extension ___Tree where Base: KeyValueComparer {
   )
     rethrows -> ___Tree<Other>
   where
-    Other: KeyValueComparer & ___RedBlackTreeKeyValueBase,
+    Other: KeyValueComparer & ___KeyValueSequence,
     Other._Key == Base._Key
   {
     var other = ___Tree<Other>.create(minimumCapacity: count)

@@ -112,7 +112,7 @@ extension ___Tree where Base: KeyValueComparer {
   }
 }
 
-extension ___Tree where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
+extension ___Tree where Base: KeyValueComparer & ___KeyValueSequence {
 
   /// ソート済みの配列から木を生成する
   ///
@@ -248,6 +248,13 @@ extension ___Tree {
   }
 
   @inlinable
+  static func create_unique<S>(naive sequence: __owned S, transform: (S.Element) -> Base._Value) -> ___Tree
+  where S: Sequence {
+
+    .___insert_range_unique(tree: .create(minimumCapacity: 0), sequence, transform: transform)
+  }
+  
+  @inlinable
   static func create_multi<S>(naive sequence: __owned S) -> ___Tree
   where Base._Value == S.Element, S: Sequence {
 
@@ -260,25 +267,6 @@ extension ___Tree {
   where S: Sequence {
 
     .___insert_range_multi(tree: .create(minimumCapacity: 0), sequence, transform: transform)
-  }
-}
-
-extension ___Tree where Base: KeyValueComparer {
-
-  @inlinable
-  static func create_unique<S>(
-    naive sequence: __owned S,
-    uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
-    transform: (S.Element) -> Base._Value
-  ) rethrows -> ___Tree
-  where S: Sequence {
-
-    try .___insert_range_unique(
-      tree: .create(minimumCapacity: 0),
-      sequence,
-      uniquingKeysWith: combine,
-      transform: transform
-    )
   }
 }
 

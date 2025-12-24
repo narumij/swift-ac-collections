@@ -120,4 +120,4 @@ extension RedBlackTreeIterator.Values.Reversed: Comparable where Element: Compar
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIterator.Values.Reversed: ___RedBlackTreeIsIdenticalTo {}
+extension RedBlackTreeIterator.Values.Reversed: ___IsIdenticalTo {}

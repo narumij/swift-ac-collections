@@ -49,7 +49,7 @@ where Parameters: Comparable {
     typealias _MappedValue = Value
 
   @usableFromInline
-  var _storage: Tree.Storage
+  var _storage: ___Storage<Self>
 
   public let maxCount: Int
 
@@ -102,19 +102,10 @@ extension ___LRUMemoizeStorage {
   }
 }
 
-extension ___LRUMemoizeStorage: HasDefaultThreeWayComparator {}
 
-extension ___LRUMemoizeStorage: ___LRULinkList {
-
-  @inlinable
-  var __tree_: Tree {
-    @inline(__always) _read {
-      yield _storage.tree
-    }
-  }
+extension ___LRUMemoizeStorage: ___LRULinkList & ___CopyOnWrite & ___StorageProtocol {
+  public typealias Base = Self
 }
-
-extension ___LRUMemoizeStorage: ___RedBlackTreeCopyOnWrite {}
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}
 extension ___LRUMemoizeStorage: KeyValueComparer {
 
@@ -138,26 +129,15 @@ extension ___LRUMemoizeStorage {
   @inlinable
   @inline(__always)
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-
-    if keepCapacity {
-      __tree_.__eraseAll()
-    } else {
-      _storage = .create(withCapacity: 0)
-    }
+    ___removeAll(keepingCapacity: keepCapacity)
   }
 }
 
 extension ___LRUMemoizeStorage {
 
   @inlinable
-  public var count: Int { __tree_.count }
+  public var count: Int { ___count }
 
   @inlinable
-  public var capacity: Int { __tree_.___capacity }
-
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    public var _copyCount: UInt {
-      _storage.tree.copyCount
-    }
-  #endif
+  public var capacity: Int { ___capacity }
 }

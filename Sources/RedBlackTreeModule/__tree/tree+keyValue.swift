@@ -23,28 +23,9 @@
 import Foundation
 
 /// 要素がキーバリューの場合のひな形
-public protocol KeyValueComparer: ValueComparer {
+public protocol KeyValueComparer: ValueComparer & HasDefaultThreeWayComparator {
   associatedtype _MappedValue
   static func ___mapped_value(_ element: _Value) -> _MappedValue
   static func ___with_mapped_value<T>(_ element: inout _Value, _: (inout _MappedValue) throws -> T)
     rethrows -> T
-}
-
-extension KeyValueComparer {
-
-  @inlinable
-  @inline(__always)
-  func ___mapped_value(_ element: _Value) -> _MappedValue {
-    Self.___mapped_value(element)
-  }
-}
-
-// MARK: -
-
-extension ValueComparator where Base: KeyValueComparer {
-  @inlinable
-  @inline(__always)
-  public static func ___mapped_value(of element: Base._Value) -> Base._MappedValue {
-    Base.___mapped_value(element)
-  }
 }

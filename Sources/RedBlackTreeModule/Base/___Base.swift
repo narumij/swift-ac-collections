@@ -49,7 +49,7 @@ where
 }
 
 @usableFromInline
-protocol ___RedBlackTreeValuesBase:
+protocol ___RedBlackTreeKeyOnlyBase:
   ___StorageProtocol & ___CopyOnWrite & ___Common & ___Index & ___BaseSequence
     & ___KeyOnlySequence
 {}

@@ -546,6 +546,7 @@ extension ___Tree: CompareBothProtocol {
 
 // MARK: -
 
+// TODO: 削除検討
 extension ___Tree {
 
   @nonobjc

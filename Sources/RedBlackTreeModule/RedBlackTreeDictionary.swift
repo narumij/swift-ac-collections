@@ -1208,3 +1208,19 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
     }
   }
 #endif
+
+// MARK: - Init naive
+
+#if !COMPATIBLE_ATCODER_2025
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(*n* log *n*)
+  ///
+  /// 省メモリでの初期化
+  @inlinable
+  public init<Source>(naive sequence: __owned Source)
+  where Element == Source.Element, Source: Sequence {
+    self._storage = .init(tree: .create_unique(naive: sequence, transform: Self.___tree_value))
+  }
+}
+#endif

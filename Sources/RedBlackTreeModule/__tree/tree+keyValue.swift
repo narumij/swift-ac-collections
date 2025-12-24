@@ -29,22 +29,3 @@ public protocol KeyValueComparer: ValueComparer & HasDefaultThreeWayComparator {
   static func ___with_mapped_value<T>(_ element: inout _Value, _: (inout _MappedValue) throws -> T)
     rethrows -> T
 }
-
-extension KeyValueComparer {
-
-  @inlinable
-  @inline(__always)
-  func ___mapped_value(_ element: _Value) -> _MappedValue {
-    Self.___mapped_value(element)
-  }
-}
-
-// MARK: -
-
-extension ValueComparator where Base: KeyValueComparer {
-  @inlinable
-  @inline(__always)
-  public static func ___mapped_value(of element: Base._Value) -> Base._MappedValue {
-    Base.___mapped_value(element)
-  }
-}

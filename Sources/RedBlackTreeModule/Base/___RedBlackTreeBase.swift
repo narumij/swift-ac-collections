@@ -41,11 +41,11 @@ protocol ___RedBlackTreeBase:
   ___TreeBase,
   ___TreeIndex
 where
-  Tree == ___Tree<Self>,
-  Storage == ___Storage<Self>
+  Storage == ___Storage<Self>,
+  Tree == Storage.Tree
 {
-  associatedtype _Value
   associatedtype Storage
+  associatedtype _Value
   var _storage: Tree.Storage { get set }
 }
 
@@ -60,13 +60,13 @@ extension ___RedBlackTreeBase {
 }
 
 extension ___RedBlackTreeBase {
-  
+
   @inlinable
   @inline(__always)
   var _start: _NodePtr {
     __tree_.__begin_node_
   }
-  
+
   @inlinable
   @inline(__always)
   var _end: _NodePtr {
@@ -350,18 +350,18 @@ extension ___RedBlackTreeBase {
 }
 
 extension ___RedBlackTreeBase {
-  
+
   /// releaseビルドでは無効化されています
   @inlinable
   @inline(__always)
   public func ___tree_invariant() -> Bool {
-#if true
-    // 並行してサイズもチェックする。その分遅い
-    __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, .end)
-    && __tree_.__tree_invariant(__tree_.__root())
-#else
-    __tree_.__tree_invariant(__tree_.__root())
-#endif
+    #if true
+      // 並行してサイズもチェックする。その分遅い
+      __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, .end)
+        && __tree_.__tree_invariant(__tree_.__root())
+    #else
+      __tree_.__tree_invariant(__tree_.__root())
+    #endif
   }
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -498,7 +498,7 @@ package func _dictionaryDescription<Key, Value, C: Collection>(
 @inlinable
 package func _dictionaryDescription<Key, Value, C: Collection>(
   for elements: C
-) -> String where C.Element == RedBlackTreePair<Key,Value> {
+) -> String where C.Element == RedBlackTreePair<Key, Value> {
   guard !elements.isEmpty else { return "[:]" }
   var result = "["
   var first = true

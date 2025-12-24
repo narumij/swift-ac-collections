@@ -6,7 +6,14 @@
 //
 
 @usableFromInline
-protocol ___KeyOnlySequence: ___Base {}
+protocol ___KeyOnlySequence: ___Base where _Value == Element {}
+
+extension ___KeyOnlySequence {
+  
+  @inlinable
+  @inline(__always)
+  public static func ___pointee(_ __value: _Value) -> Element { __value }
+}
 
 extension ___KeyOnlySequence {
 

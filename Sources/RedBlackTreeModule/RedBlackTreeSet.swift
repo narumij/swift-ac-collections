@@ -71,7 +71,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
 extension RedBlackTreeSet: ___RedBlackTreeValueBase___ {}
 extension RedBlackTreeSet: CompareUniqueTrait {}
 extension RedBlackTreeSet: ScalarValueComparer {}
-extension RedBlackTreeSet: ValuePointee {}
+extension RedBlackTreeSet: ___TreeIndex {}
 
 // MARK: - Creating a Set
 

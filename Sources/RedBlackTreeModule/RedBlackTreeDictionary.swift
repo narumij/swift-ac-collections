@@ -80,18 +80,15 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   }
 }
 
-extension RedBlackTreeDictionary: ___RedBlackTreeKeyValueBase___ & CompareUniqueTrait {
+extension RedBlackTreeDictionary {
   public typealias Base = Self
 }
+
+extension RedBlackTreeDictionary: ___RedBlackTreeKeyValueBase___ {}
+extension RedBlackTreeDictionary: CompareUniqueTrait {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
-
 extension RedBlackTreeDictionary: HasDefaultThreeWayComparator {}
-
-extension RedBlackTreeDictionary: ___TreeIndex {
-//  public static func ___pointee(_ __value: _Value) -> Element {
-//    Self.___element(__value)
-//  }
-}
+extension RedBlackTreeDictionary: ___TreeIndex {}
 
 // MARK: - Creating a Dictionay
 

@@ -84,18 +84,15 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
   }
 }
 
-extension RedBlackTreeMultiMap: ___RedBlackTreeKeyValueBase___ & CompareMultiTrait {
+extension RedBlackTreeMultiMap {
   public typealias Base = Self
 }
+
+extension RedBlackTreeMultiMap: ___RedBlackTreeKeyValueBase___ {}
+extension RedBlackTreeMultiMap: CompareMultiTrait {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
-
 extension RedBlackTreeMultiMap: HasDefaultThreeWayComparator {}
-
-extension RedBlackTreeMultiMap: ___TreeIndex {
-//  public static func ___pointee(_ __value: _Value) -> Element {
-//    Self.___element(__value)
-//  }
-}
+extension RedBlackTreeMultiMap: ___TreeIndex {}
 
 // MARK: - Creating a MultiMap
 

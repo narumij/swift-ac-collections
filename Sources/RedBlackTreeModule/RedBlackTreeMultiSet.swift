@@ -65,7 +65,7 @@ extension RedBlackTreeMultiSet {
 extension RedBlackTreeMultiSet: ___RedBlackTreeValueBase___ {}
 extension RedBlackTreeMultiSet: CompareMultiTrait {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
-extension RedBlackTreeMultiSet: ValuePointee {}
+extension RedBlackTreeMultiSet: ___TreeIndex {}
 
 // MARK: - Creating a MultSet
 

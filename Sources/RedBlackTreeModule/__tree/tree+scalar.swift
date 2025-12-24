@@ -31,14 +31,3 @@ extension ScalarValueComparer {
   @inline(__always)
   public static func __key(_ e: _Value) -> _Key { e }
 }
-
-public protocol ValuePointee: ___TreeIndex where _Value == Element {
-  associatedtype _Value
-  associatedtype Element
-}
-
-extension ValuePointee {
-  @inlinable
-  @inline(__always)
-  public static func ___pointee(_ __value: _Value) -> Element { __value }
-}

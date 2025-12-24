@@ -54,23 +54,9 @@ extension ___Tree where Base: ___TreeIndex {
 extension ___Tree where Base: ___TreeIndex {
 
   public typealias _Values = RedBlackTreeIterator<Base>.Values
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func makeIterator() -> _Values {
-    .init(tree: self, start: __begin_node_, end: __end_node())
-  }
 }
 
 extension ___Tree where Base: KeyValueComparer & ___TreeIndex {
 
   public typealias _KeyValues = RedBlackTreeIterator<Base>.KeyValues
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func makeIterator() -> _KeyValues {
-    .init(tree: self, start: __begin_node_, end: __end_node())
-  }
 }

@@ -60,6 +60,21 @@ extension ___RedBlackTreeBase {
 }
 
 extension ___RedBlackTreeBase {
+  
+  @inlinable
+  @inline(__always)
+  var _start: _NodePtr {
+    __tree_.__begin_node_
+  }
+  
+  @inlinable
+  @inline(__always)
+  var _end: _NodePtr {
+    __tree_.__end_node()
+  }
+}
+
+extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)

@@ -22,7 +22,7 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeSlice<Base> where Base: ___TreeBase & ___TreeIndex {
+public struct RedBlackTreeSlice<Base>: RedBlackTreeSliceInternal where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = ___Tree<Base>
   public typealias _Value = Tree._Value
@@ -47,15 +47,6 @@ public struct RedBlackTreeSlice<Base> where Base: ___TreeBase & ___TreeIndex {
 }
 
 extension RedBlackTreeSlice: Sequence & Collection & BidirectionalCollection {}
-
-extension RedBlackTreeSlice {
-
-  @inlinable
-  @inline(__always)
-  func ___index(_ rawValue: _NodePtr) -> Index {
-    .init(tree: __tree_, rawValue: rawValue)
-  }
-}
 
 extension RedBlackTreeSlice {
 
@@ -307,12 +298,6 @@ extension RedBlackTreeSlice {
 
 extension RedBlackTreeSlice {
 
-  @inlinable
-  @inline(__always)
-  func ___contains(_ i: _NodePtr) -> Bool {
-    !__tree_.___is_subscript_null(i) && __tree_.___ptr_closed_range_contains(_start, _end, i)
-  }
-
   /// Indexがsubscriptやremoveで利用可能か判別します
   ///
   /// - Complexity:
@@ -328,15 +313,6 @@ extension RedBlackTreeSlice {
 }
 
 extension RedBlackTreeSlice {
-
-  @inlinable
-  @inline(__always)
-  func ___contains(_ bounds: Range<Index>) -> Bool {
-    !__tree_.___is_offset_null(bounds.lowerBound.rawValue)
-      && !__tree_.___is_offset_null(bounds.upperBound.rawValue)
-      && __tree_.___ptr_range_contains(_start, _end, bounds.lowerBound.rawValue)
-      && __tree_.___ptr_range_contains(_start, _end, bounds.upperBound.rawValue)
-  }
 
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
@@ -461,12 +437,6 @@ extension RedBlackTreeSlice {
       return nil
     }
     return __tree_[ptr]
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___node_positions() -> ___SafePointers<Base> {
-    ___SafePointers(tree: __tree_, start: _start, end: _end)
   }
 }
 

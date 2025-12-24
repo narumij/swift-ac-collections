@@ -33,6 +33,8 @@ where
   associatedtype Indices
   associatedtype _Value
   var __tree_: Tree { get }
+  var _start: _NodePtr { get }
+  var _end: _NodePtr { get }
 }
 
 // MARK: -
@@ -42,13 +44,13 @@ extension ___RedBlackTreeSequenceBase {
   @inlinable
   @inline(__always)
   func _makeIterator() -> Tree._Values {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    .init(tree: __tree_, start: _start, end: _end)
   }
   
   @inlinable
   @inline(__always)
   func _reversed() -> Tree._Values.Reversed {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
@@ -56,13 +58,13 @@ extension ___RedBlackTreeSequenceBase where Self: KeyValueComparer {
   @inlinable
   @inline(__always)
   func _makeIterator() -> Tree._KeyValues {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    .init(tree: __tree_, start: _start, end: _end)
   }
   
   @inlinable
   @inline(__always)
   func _reversed() -> Tree._KeyValues.Reversed {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
@@ -71,7 +73,7 @@ extension ___RedBlackTreeSequenceBase {
   @inlinable
   @inline(__always)
   func _forEach(_ body: (_Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: __tree_.__begin_node_, __l: __tree_.__end_node()) {
+    try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(__tree_[$0])
     }
   }
@@ -79,7 +81,7 @@ extension ___RedBlackTreeSequenceBase {
   @inlinable
   @inline(__always)
   func _forEach(_ body: (Index, _Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: __tree_.__begin_node_, __l: __tree_.__end_node()) {
+    try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(___index($0), __tree_[$0])
     }
   }
@@ -87,7 +89,7 @@ extension ___RedBlackTreeSequenceBase {
   @inlinable
   @inline(__always)
   public func ___forEach(_ body: (_NodePtr, _Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: __tree_.__begin_node_, __l: __tree_.__end_node()) {
+    try __tree_.___for_each_(__p: _start, __l: _end) {
       try body($0, __tree_[$0])
     }
   }
@@ -98,7 +100,7 @@ extension ___RedBlackTreeSequenceBase {
   @inlinable
   @inline(__always)
   var _startIndex: Index {
-    ___index(__tree_.__begin_node_)
+    ___index(_start)
   }
 
   @inlinable
@@ -199,7 +201,7 @@ extension ___RedBlackTreeSequenceBase {
   @inlinable
   @inline(__always)
   var _indices: Indices {
-    __tree_.makeIndices(start: __tree_.__begin_node_, end: __tree_.__end_node())
+    __tree_.makeIndices(start: _start, end: _end)
   }
   
   @inlinable
@@ -207,7 +209,7 @@ extension ___RedBlackTreeSequenceBase {
   func _elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
-    try __tree_.elementsEqual(__tree_.__begin_node_, __tree_.__end_node(), other, by: areEquivalent)
+    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
   }
 
   @inlinable
@@ -215,7 +217,7 @@ extension ___RedBlackTreeSequenceBase {
   func _lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
-    try __tree_.lexicographicallyPrecedes(__tree_.__begin_node_, __tree_.__end_node(), other, by: areInIncreasingOrder)
+    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
   }
 }
 
@@ -233,6 +235,6 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public func ___node_positions() -> ___SafePointers<Self> {
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }

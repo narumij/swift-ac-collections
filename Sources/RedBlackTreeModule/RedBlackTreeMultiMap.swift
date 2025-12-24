@@ -92,9 +92,9 @@ extension RedBlackTreeMultiMap: KeyValueComparer {}
 extension RedBlackTreeMultiMap: HasDefaultThreeWayComparator {}
 
 extension RedBlackTreeMultiMap: ___TreeIndex {
-  public static func ___pointee(_ __value: _Value) -> Element {
-    Self.___element(__value)
-  }
+//  public static func ___pointee(_ __value: _Value) -> Element {
+//    Self.___element(__value)
+//  }
 }
 
 // MARK: - Creating a MultiMap

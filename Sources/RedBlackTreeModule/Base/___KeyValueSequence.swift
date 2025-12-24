@@ -28,6 +28,12 @@ extension ___KeyValueSequence {
   public static func ___tree_value(_ __element: Element) -> _Value {
     RedBlackTreePair(__element.key, __element.value)
   }
+  
+  @inlinable
+  @inline(__always)
+  public static func ___pointee(_ __value: _Value) -> Element {
+    Self.___element(__value)
+  }
 }
 
 extension ___KeyValueSequence {

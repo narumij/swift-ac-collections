@@ -91,7 +91,6 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap: ___RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeMultiMap: CompareMultiTrait {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
-extension RedBlackTreeMultiMap: HasDefaultThreeWayComparator {}
 extension RedBlackTreeMultiMap: ___TreeIndex {}
 
 // MARK: - Creating a MultiMap

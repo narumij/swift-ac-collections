@@ -89,7 +89,7 @@ extension ___KeyValueSequence where Self: ___BaseSequence {
   }
 }
 
-extension ___KeyValueSequence where Self: ___IndexProvider {
+extension ___KeyValueSequence where Self: ___Index {
 
   @inlinable
   func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {

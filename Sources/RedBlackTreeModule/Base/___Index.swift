@@ -21,9 +21,9 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___IndexProvider: ___Base {}
+protocol ___Index: ___Base {}
 
-extension ___IndexProvider {
+extension ___Index {
 
   @inlinable
   @inline(__always)
@@ -106,7 +106,7 @@ extension ___IndexProvider {
   }
 }
 
-extension ___IndexProvider {
+extension ___Index {
 
   @inlinable
   @inline(__always)
@@ -122,7 +122,7 @@ extension ___IndexProvider {
   }
 }
 
-extension ___IndexProvider {
+extension ___Index {
 
   @inlinable
   @inline(__always)
@@ -138,29 +138,7 @@ extension ___IndexProvider {
   }
 }
 
-//extension ___IndexProvider {
-//
-//  @inlinable
-//  @inline(__always)
-//  func _forEach(_ body: (Index, _Value) throws -> Void) rethrows {
-//    try __tree_.___for_each_(__p: _start, __l: _end) {
-//      try body(___index($0), __tree_[$0])
-//    }
-//  }
-//}
-
-//extension ___IndexProvider where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
-//
-//  @inlinable
-//  @inline(__always)
-//  func _forEach(_ body: (Index, Base.Element) throws -> Void) rethrows {
-//    try __tree_.___for_each_(__p: _start, __l: _end) {
-//      try body(___index($0), Base.___element(__tree_[$0]))
-//    }
-//  }
-//}
-
-extension ___IndexProvider {
+extension ___Index {
 
   @inlinable
   @inline(__always)
@@ -169,7 +147,7 @@ extension ___IndexProvider {
   }
 }
 
-extension ___IndexProvider where Self: Collection {
+extension ___Index where Self: Collection {
 
   @inlinable
   @inline(__always)
@@ -184,7 +162,7 @@ extension ___IndexProvider where Self: Collection {
   }
 }
 
-extension ___IndexProvider where Base: CompareUniqueTrait {
+extension ___Index where Base: CompareUniqueTrait {
 
   ///（重複なし）
   @inlinable
@@ -201,7 +179,7 @@ extension ___IndexProvider where Base: CompareUniqueTrait {
   }
 }
 
-extension ___IndexProvider where Base: CompareMultiTrait {
+extension ___Index where Base: CompareMultiTrait {
 
   /// （重複あり）
   @inlinable
@@ -218,7 +196,7 @@ extension ___IndexProvider where Base: CompareMultiTrait {
   }
 }
 
-extension ___IndexProvider {
+extension ___Index {
 
   @inlinable
   @inline(__always)

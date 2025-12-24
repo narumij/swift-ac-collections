@@ -87,7 +87,6 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary: ___RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeDictionary: CompareUniqueTrait {}
 extension RedBlackTreeDictionary: KeyValueComparer {}
-extension RedBlackTreeDictionary: HasDefaultThreeWayComparator {}
 extension RedBlackTreeDictionary: ___TreeIndex {}
 
 // MARK: - Creating a Dictionay

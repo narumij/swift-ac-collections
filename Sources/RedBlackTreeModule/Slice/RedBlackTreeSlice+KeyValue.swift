@@ -24,7 +24,7 @@ import Foundation
 extension RedBlackTreeSlice {
 
   @frozen
-  public struct KeyValue: ___Common & ___SubSequence & ___IndexProvider & ___KeyValueSequence
+  public struct KeyValue: ___Common & ___SubSequence & ___Index & ___KeyValueSequence
   where Base: KeyValueComparer,
         _Value == RedBlackTreePair<Base._Key, Base._MappedValue>
   {

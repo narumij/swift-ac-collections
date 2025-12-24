@@ -21,14 +21,13 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 // コレクション実装の基点
-public protocol ___RedBlackTree___ {
+public protocol ___Root {
   associatedtype Base
   associatedtype Tree
-  associatedtype Element
 }
 
 @usableFromInline
-protocol ___Base: ___RedBlackTree___
+protocol ___Base: ___Root
 where
   Base: ___TreeBase & ___TreeIndex,
   Tree == ___Tree<Base>,
@@ -41,9 +40,22 @@ where
   associatedtype Indices
   associatedtype _Key
   associatedtype _Value
+  associatedtype Element
   var __tree_: Tree { get }
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
-  
+
   func ___index(_ p: _NodePtr) -> Index
 }
+
+@usableFromInline
+protocol ___RedBlackTreeValuesBase:
+  ___StorageProtocol & ___CopyOnWrite & ___Common & ___Index & ___BaseSequence
+    & ___KeyOnlySequence
+{}
+
+@usableFromInline
+protocol ___RedBlackTreeKeyValuesBase:
+  ___StorageProtocol & ___CopyOnWrite & ___Common & ___Index & ___BaseSequence
+    & ___KeyValueSequence
+{}

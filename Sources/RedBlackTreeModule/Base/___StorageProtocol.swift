@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___StorageProvider: ___RedBlackTree___
+protocol ___StorageProtocol: ___Root
 where
   Base: ___TreeBase,
   Storage == ___Storage<Base>,
@@ -33,7 +33,7 @@ where
   var _storage: Storage { get set }
 }
 
-extension ___StorageProvider {
+extension ___StorageProtocol {
 
   @inlinable
   var __tree_: Tree {
@@ -69,7 +69,7 @@ extension ___StorageProvider {
 
 // MARK: - Remove
 
-extension ___StorageProvider {
+extension ___StorageProtocol {
 
   @inlinable
   @inline(__always)
@@ -137,7 +137,7 @@ extension ___StorageProvider {
   }
 }
 
-extension ___StorageProvider {
+extension ___StorageProtocol {
 
   @inlinable
   @inline(__always)
@@ -151,7 +151,7 @@ extension ___StorageProvider {
   }
 }
 
-extension ___StorageProvider {
+extension ___StorageProtocol {
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
     public var _copyCount: UInt {

@@ -191,6 +191,7 @@ extension ___KeyValueSequence {
   }
 }
 
+#if false
 extension ___KeyValueSequence {
 
   @inlinable
@@ -208,6 +209,7 @@ extension ___KeyValueSequence {
     }
   }
 }
+#endif
 
 #if false
 // テストコードのコンパイルクラッシュを誘発する懸念があり使っていない
@@ -223,6 +225,26 @@ extension ___KeyValueSequence {
 
   @inlinable
   subscript(_unchecked position: Index) -> Element {
+    @inline(__always) get {
+      return ___element(__tree_[position.rawValue])
+    }
+  }
+}
+#else
+extension ___KeyValueSequence {
+
+  // コンパイラの型推論のバグを踏んでいると想定し、型をちゃんと書くことにし、様子を見ている
+
+  @inlinable
+  subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
+    @inline(__always) get {
+      __tree_.___ensureValid(subscript: position.rawValue)
+      return ___element(__tree_[position.rawValue])
+    }
+  }
+
+  @inlinable
+  subscript(_unchecked position: Index) -> (key: _Key, value: _MappedValue) {
     @inline(__always) get {
       return ___element(__tree_[position.rawValue])
     }

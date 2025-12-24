@@ -840,23 +840,33 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
     _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
 
+  /*
+   コメントアウトの多さはテストコードのコンパイラクラッシュに由来する。
+   */
+  
   /// - Complexity: O(1)
   @inlinable
-  public subscript(position: Index) -> Element {
-    @inline(__always) get { ___element(self[_checked: position]) }
+//  public subscript(position: Index) -> Element {
+  public subscript(position: Index) -> (key: Key, value: Value) {
+//    @inline(__always) get { ___element(self[_checked: position]) }
+    @inline(__always) get { self[_checked: position] }
   }
 
   #if COMPATIBLE_ATCODER_2025
     @inlinable
-    public subscript(_unsafe position: Index) -> Element {
-      @inline(__always) get { ___element(self[_unchecked: position]) }
+//    public subscript(_unsafe position: Index) -> Element {
+  public subscript(_unsafe position: Index) -> (key: Key, value: Value) {
+//      @inline(__always) get { ___element(self[_unchecked: position]) }
+    @inline(__always) get { self[_unchecked: position] }
     }
   #else
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable
-    public subscript(unchecked position: Index) -> Element {
-      @inline(__always) get { ___element(self[_unchecked: position]) }
+//    public subscript(unchecked position: Index) -> Element {
+  public subscript(unchecked position: Index) -> (key: Key, value: Value) {
+//      @inline(__always) get { ___element(self[_unchecked: position]) }
+    @inline(__always) get { self[_unchecked: position] }
     }
   #endif
 

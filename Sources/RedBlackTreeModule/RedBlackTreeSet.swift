@@ -62,7 +62,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
     typealias _Value = Element
 
   @usableFromInline
-  var _storage: Tree.Storage
+  var _storage: Storage
 }
 
 extension RedBlackTreeSet: ___RedBlackTreeBase {}

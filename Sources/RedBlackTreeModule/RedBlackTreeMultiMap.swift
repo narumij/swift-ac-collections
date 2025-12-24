@@ -76,10 +76,10 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias _Value = RedBlackTreePair<Key, Value>
 
   @usableFromInline
-  var _storage: Tree.Storage
+  var _storage: Storage
 
   @inlinable @inline(__always)
-  init(_storage: Tree.Storage) {
+  init(_storage: Storage) {
     self._storage = _storage
   }
 }

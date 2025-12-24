@@ -49,7 +49,7 @@ where Parameters: Comparable {
     typealias _MappedValue = Value
 
   @usableFromInline
-  var _storage: Tree.Storage
+  var _storage: ___Storage<Self>
 
   public let maxCount: Int
 

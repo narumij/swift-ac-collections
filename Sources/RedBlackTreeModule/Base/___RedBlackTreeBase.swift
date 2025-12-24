@@ -24,6 +24,7 @@ import Foundation
 
 // コレクション実装の基点
 public protocol ___RedBlackTree___ {
+  associatedtype Base
   associatedtype Tree
 }
 
@@ -33,20 +34,17 @@ protocol ___RedBlackTreeIndexing {
   func ___index(_ rawValue: _NodePtr) -> Index
   func ___index_or_nil(_ p: _NodePtr?) -> Index?
 }
-
 // コレクションの内部実装
 @usableFromInline
 protocol ___RedBlackTreeBase:
-  ___RedBlackTree___,
-  ___TreeBase,
-  ___TreeIndex
+  ___RedBlackTree___ & ___TreeBase & ___TreeIndex
 where
-  Storage == ___Storage<Self>,
-  Tree == Storage.Tree
+  Base == Self,
+  Storage == ___Storage<Base>,
+  Tree == ___Tree<Base>
 {
   associatedtype Storage
-  associatedtype _Value
-  var _storage: Tree.Storage { get set }
+  var _storage: Storage { get set }
 }
 
 extension ___RedBlackTreeBase {

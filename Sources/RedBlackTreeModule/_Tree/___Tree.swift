@@ -144,9 +144,6 @@ extension ___Tree {
 
   @usableFromInline
   internal typealias Manager = ManagedBufferPointer<Header, Node>
-
-  @usableFromInline
-  internal typealias Storage = ___Storage<Base>
 }
 
 extension ___Tree {

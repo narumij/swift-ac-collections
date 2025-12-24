@@ -112,7 +112,7 @@ extension ___Tree where Base: KeyValueComparer {
   }
 }
 
-extension ___Tree where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
+extension ___Tree where Base: KeyValueComparer & ___KeyValueSequence {
 
   /// ソート済みの配列から木を生成する
   ///

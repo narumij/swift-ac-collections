@@ -24,7 +24,10 @@ import Foundation
 extension RedBlackTreeSlice {
 
   @frozen
-  public struct KeyValue: ___Common & ___SubSequence & ___IndexProvider & ___KeyValueSequence where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {
+  public struct KeyValue: ___Common & ___SubSequence & ___IndexProvider & ___KeyValueSequence
+  where Base: KeyValueComparer,
+        _Value == RedBlackTreePair<Base._Key, Base._MappedValue>
+  {
 
     public typealias Tree = ___Tree<Base>
     public typealias _Key = Base._Key
@@ -48,6 +51,15 @@ extension RedBlackTreeSlice {
       _start = start
       _end = end
     }
+  }
+}
+
+extension RedBlackTreeSlice.KeyValue {
+  
+  @inlinable
+  @inline(__always)
+  public func ___element(_ __value: _Value) -> Element {
+    Self.___element(__value)
   }
 }
 
@@ -79,12 +91,6 @@ extension RedBlackTreeSlice.KeyValue {
   public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
     try _forEach(body)
   }
-
-//  @inlinable
-//  @inline(__always)
-//  public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
-//    try ___forEach({ try body($0, Base.___element($1)) })
-//  }
 }
 
 extension RedBlackTreeSlice.KeyValue {
@@ -117,7 +123,7 @@ extension RedBlackTreeSlice.KeyValue {
   public subscript(position: Index) -> Element {
     @inline(__always) get {
       __tree_.___ensureValid(subscript: position.rawValue)
-      return Base.___element(__tree_[position.rawValue])
+      return ___element(__tree_[position.rawValue])
     }
   }
 }
@@ -127,7 +133,7 @@ extension RedBlackTreeSlice.KeyValue {
   #if COMPATIBLE_ATCODER_2025
     @inlinable
     public subscript(_unsafe position: Index) -> Element {
-      Base.___element(__tree_[position.rawValue])
+      ___element(__tree_[position.rawValue])
     }
   #else
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -437,7 +443,7 @@ extension RedBlackTreeSlice.KeyValue {
     guard !__tree_.___is_subscript_null(ptr) else {
       return nil
     }
-    return Base.___element(__tree_[ptr])
+    return ___element(__tree_[ptr])
   }
 }
 

@@ -1081,7 +1081,7 @@ extension ___Tree where Base: KeyValueComparer {
   )
     rethrows -> ___Tree<Other>
   where
-    Other: KeyValueComparer & ___RedBlackTreeKeyValueBase,
+    Other: KeyValueComparer & ___KeyValueSequence,
     Other._Key == Base._Key
   {
     let other = ___Tree<Other>.create(minimumCapacity: count)
@@ -1105,7 +1105,7 @@ extension ___Tree where Base: KeyValueComparer {
   )
     rethrows -> ___Tree<Other>
   where
-    Other: KeyValueComparer & ___RedBlackTreeKeyValueBase,
+    Other: KeyValueComparer & ___KeyValueSequence,
     Other._Key == Base._Key
   {
     var other = ___Tree<Other>.create(minimumCapacity: count)

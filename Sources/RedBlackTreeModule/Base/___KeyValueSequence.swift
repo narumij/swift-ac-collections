@@ -6,11 +6,41 @@
 //
 
 @usableFromInline
-protocol ___KeyValueSequence: ___Base 
-where Base: KeyValueComparer & ___RedBlackTreeKeyValueBase {}
+protocol ___KeyValueSequence: ___Base
+where
+  Base: KeyValueComparer,
+  _Value == RedBlackTreePair<_Key, _MappedValue>,
+  Element == (key: _Key, value: _MappedValue)
+{
+  associatedtype _MappedValue
+}
 
 extension ___KeyValueSequence {
+
+  @inlinable
+  @inline(__always)
+  static func ___element(_ __value: _Value) -> Element {
+    (__value.key, __value.value)
+  }
   
+  @inlinable
+  @inline(__always)
+  public static func ___tree_value(_ __element: Element) -> _Value {
+    RedBlackTreePair(__element.key, __element.value)
+  }
+}
+
+extension ___KeyValueSequence {
+
+  @inlinable
+  @inline(__always)
+  func ___element(_ __value: _Value) -> Element {
+    Self.___element(__value)
+  }
+}
+
+extension ___KeyValueSequence {
+
   @inlinable
   @inline(__always)
   func ___value_for(_ __k: _Key) -> _Value? {
@@ -38,9 +68,9 @@ extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
-  func _forEach(_ body: (Base.Element) throws -> Void) rethrows {
+  func _forEach(_ body: (Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(Base.___element(__tree_[$0]))
+      try body(Self.___element(__tree_[$0]))
     }
   }
 }
@@ -49,9 +79,9 @@ extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
-  func _forEach(_ body: (Index, Base.Element) throws -> Void) rethrows {
+  func _forEach(_ body: (Index, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0), Base.___element(__tree_[$0]))
+      try body(___index($0), Self.___element(__tree_[$0]))
     }
   }
 }
@@ -60,9 +90,9 @@ extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
-  public func ___forEach(_ body: (_NodePtr, Base.Element) throws -> Void) rethrows {
+  public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body($0, Base.___element(__tree_[$0]))
+      try body($0, Self.___element(__tree_[$0]))
     }
   }
 }
@@ -72,7 +102,7 @@ extension ___KeyValueSequence {
   /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
-  func _sorted() -> [Base.Element] {
-    __tree_.___copy_to_array(_start, _end, transform: Base.___element)
+  func _sorted() -> [Element] {
+    __tree_.___copy_to_array(_start, _end, transform: Self.___element)
   }
 }

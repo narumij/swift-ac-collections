@@ -1200,7 +1200,7 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
 
 #if swift(>=5.5)
   extension RedBlackTreeDictionary: @unchecked Sendable
-  where Element: Sendable {}
+  where Key: Sendable, Value: Sendable {}
 #endif
 
 // MARK: - Codable

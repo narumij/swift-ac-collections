@@ -80,7 +80,9 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   }
 }
 
-extension RedBlackTreeDictionary: ___RedBlackTreeBase {}
+extension RedBlackTreeDictionary: ___RedBlackTreeBase & CompareUniqueTrait {
+  public typealias Base = Self
+}
 extension RedBlackTreeDictionary: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeDictionary: ___RedBlackTreeUnique {}
 extension RedBlackTreeDictionary: ___RedBlackTreeSequenceBase {}

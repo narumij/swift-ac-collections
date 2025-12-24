@@ -21,11 +21,13 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeUnique: ___RedBlackTreeIndexing & ___TreeBase & CompareUniqueTrait & ___TreeIndex
+protocol ___RedBlackTreeUnique: ___RedBlackTreeIndexing
 where
-  Tree == ___Tree<Self>,
+  Base: ___TreeBase & ___TreeIndex & CompareUniqueTrait,
+  Tree == ___Tree<Base>,
   Index == Tree.Index
 {
+  associatedtype Base
   associatedtype Tree
   associatedtype Index
   var __tree_: Tree { get }
@@ -49,11 +51,13 @@ extension ___RedBlackTreeUnique {
 }
 
 @usableFromInline
-protocol ___RedBlackTreeMulti: ___RedBlackTreeIndexing & ___TreeBase & CompareMultiTrait & ___TreeIndex
+protocol ___RedBlackTreeMulti: ___RedBlackTreeIndexing
 where
-  Tree == ___Tree<Self>,
+  Base: ___TreeBase & ___TreeIndex & CompareMultiTrait,
+  Tree == ___Tree<Base>,
   Index == Tree.Index
 {
+  associatedtype Base
   associatedtype Tree
   associatedtype Index
   var __tree_: Tree { get }

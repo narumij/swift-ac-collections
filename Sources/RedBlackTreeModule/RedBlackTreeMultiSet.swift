@@ -58,7 +58,9 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
   var _storage: Storage
 }
 
-extension RedBlackTreeMultiSet: ___RedBlackTreeBase {}
+extension RedBlackTreeMultiSet: ___RedBlackTreeBase & CompareMultiTrait {
+  public typealias Base = Self
+}
 extension RedBlackTreeMultiSet: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiSet: ___RedBlackTreeSequenceBase {}

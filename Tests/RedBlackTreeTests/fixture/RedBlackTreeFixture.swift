@@ -15,7 +15,8 @@ import XCTest
 
 #if DEBUG
   protocol RedBlackTreeDebugFixture: ___TreeBase {
-    var __tree_: ___Tree<Self> { get }
+    associatedtype Base: ___TreeBase
+    var __tree_: ___Tree<Base> { get }
   }
 
   extension RedBlackTreeDebugFixture {

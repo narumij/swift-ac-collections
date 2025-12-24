@@ -21,13 +21,15 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___RedBlackTreeSequenceBase: ___RedBlackTreeIndexing & ___TreeBase & ___TreeIndex, Collection
+protocol ___RedBlackTreeSequenceBase: ___RedBlackTreeIndexing, Collection
 where
-  Tree == ___Tree<Self>,
+  Base: ___TreeBase & ___TreeIndex,
+  Tree == ___Tree<Base>,
   Index == Tree.Index,
   Indices == Tree.Indices,
   _Value == Tree._Value
 {
+  associatedtype Base
   associatedtype Tree
   associatedtype Index
   associatedtype Indices
@@ -40,13 +42,13 @@ where
 // MARK: -
 
 extension ___RedBlackTreeSequenceBase {
-  
+
   @inlinable
   @inline(__always)
   func _makeIterator() -> Tree._Values {
     .init(tree: __tree_, start: _start, end: _end)
   }
-  
+
   @inlinable
   @inline(__always)
   func _reversed() -> Tree._Values.Reversed {
@@ -54,13 +56,13 @@ extension ___RedBlackTreeSequenceBase {
   }
 }
 
-extension ___RedBlackTreeSequenceBase where Self: KeyValueComparer {
+extension ___RedBlackTreeSequenceBase where Base: KeyValueComparer {
   @inlinable
   @inline(__always)
   func _makeIterator() -> Tree._KeyValues {
     .init(tree: __tree_, start: _start, end: _end)
   }
-  
+
   @inlinable
   @inline(__always)
   func _reversed() -> Tree._KeyValues.Reversed {
@@ -77,7 +79,7 @@ extension ___RedBlackTreeSequenceBase {
       try body(__tree_[$0])
     }
   }
-  
+
   @inlinable
   @inline(__always)
   func _forEach(_ body: (Index, _Value) throws -> Void) rethrows {
@@ -96,7 +98,7 @@ extension ___RedBlackTreeSequenceBase {
 }
 
 extension ___RedBlackTreeSequenceBase {
-  
+
   @inlinable
   @inline(__always)
   var _startIndex: Index {
@@ -114,7 +116,7 @@ extension ___RedBlackTreeSequenceBase {
   func _distance(from start: Index, to end: Index) -> Int {
     __tree_.___distance(from: start.rawValue, to: end.rawValue)
   }
-  
+
   @inlinable
   @inline(__always)
   func _index(after i: Index) -> Index {
@@ -172,7 +174,7 @@ extension ___RedBlackTreeSequenceBase {
       yield __tree_[position.rawValue]
     }
   }
-  
+
   @inlinable
   subscript(_unchecked position: Index) -> _Value {
     @inline(__always) _read {
@@ -203,7 +205,7 @@ extension ___RedBlackTreeSequenceBase {
   var _indices: Indices {
     __tree_.makeIndices(start: _start, end: _end)
   }
-  
+
   @inlinable
   @inline(__always)
   func _elementsEqual<OtherSequence>(
@@ -234,7 +236,7 @@ extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
-  public func ___node_positions() -> ___SafePointers<Self> {
+  public func ___node_positions() -> ___SafePointers<Base> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

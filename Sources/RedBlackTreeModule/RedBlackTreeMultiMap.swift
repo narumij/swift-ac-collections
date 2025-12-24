@@ -84,7 +84,9 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
   }
 }
 
-extension RedBlackTreeMultiMap: ___RedBlackTreeBase {}
+extension RedBlackTreeMultiMap: ___RedBlackTreeBase & CompareMultiTrait {
+  public typealias Base = Self
+}
 extension RedBlackTreeMultiMap: ___RedBlackTreeCopyOnWrite {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeMulti {}
 extension RedBlackTreeMultiMap: ___RedBlackTreeSequenceBase {}

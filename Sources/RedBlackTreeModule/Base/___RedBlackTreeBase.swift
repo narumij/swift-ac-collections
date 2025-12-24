@@ -34,12 +34,11 @@ protocol ___RedBlackTreeIndexing {
   func ___index(_ rawValue: _NodePtr) -> Index
   func ___index_or_nil(_ p: _NodePtr?) -> Index?
 }
-// コレクションの内部実装
+
 @usableFromInline
-protocol ___RedBlackTreeBase:
-  ___RedBlackTree___ & ___TreeBase & ___TreeIndex
+protocol ___StorageProvider: ___RedBlackTree___
 where
-  Base == Self,
+  Base: ___TreeBase,
   Storage == ___Storage<Base>,
   Tree == ___Tree<Base>
 {
@@ -47,7 +46,7 @@ where
   var _storage: Storage { get set }
 }
 
-extension ___RedBlackTreeBase {
+extension ___StorageProvider {
 
   @inlinable
   var __tree_: Tree {
@@ -55,9 +54,6 @@ extension ___RedBlackTreeBase {
       yield _storage.tree
     }
   }
-}
-
-extension ___RedBlackTreeBase {
 
   @inlinable
   @inline(__always)
@@ -70,6 +66,46 @@ extension ___RedBlackTreeBase {
   var _end: _NodePtr {
     __tree_.__end_node()
   }
+}
+
+// コレクションの内部実装
+@usableFromInline
+protocol ___RedBlackTreeBase:
+  ___RedBlackTree___ & ___StorageProvider
+where
+  Base: ___TreeBase & ___TreeIndex,
+  Storage == ___Storage<Base>,
+  Tree == ___Tree<Base>
+{
+  //  associatedtype Storage
+  //  var _storage: Storage { get set }
+}
+
+extension ___RedBlackTreeBase {
+
+  public typealias _Key = Base._Key
+  public typealias _Value = Base._Value
+  //  @inlinable
+  //  var __tree_: Tree {
+  //    @inline(__always) _read {
+  //      yield _storage.tree
+  //    }
+  //  }
+}
+
+extension ___RedBlackTreeBase {
+
+//  @inlinable
+//  @inline(__always)
+//  var _start: _NodePtr {
+//    __tree_.__begin_node_
+//  }
+//
+//  @inlinable
+//  @inline(__always)
+//  var _end: _NodePtr {
+//    __tree_.__end_node()
+//  }
 }
 
 extension ___RedBlackTreeBase {
@@ -406,7 +442,7 @@ extension ___RedBlackTreeBase {
   @inlinable
   @inline(__always)
   public var ___value_comp: (_Value, _Value) -> Bool {
-    { __tree_.value_comp(Self.__key($0), Self.__key($1)) }
+    { __tree_.value_comp(Base.__key($0), Base.__key($1)) }
   }
 }
 

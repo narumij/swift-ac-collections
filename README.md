@@ -71,7 +71,6 @@ dependencies: [
 - **重複ありのキーと値** の要素を管理する Map。  
 - `count(forKey:)` により、特定キーの要素が何個含まれるかを取得できます。  
 - MultiSetやDictionaryをベースに、なるべくSwiftに寄せたAPIとなっています。
-- AtCoder 2025搭載版と異なり、KeyValueが構造体となっています。
 
 #### 4. RedBlackTreeDictionary
 

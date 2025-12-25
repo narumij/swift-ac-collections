@@ -126,7 +126,7 @@ extension ___Index {
 
   @inlinable
   @inline(__always)
-  public func ___first(where predicate: (_Value) throws -> Bool) rethrows -> _Value? {
+  internal func ___first(where predicate: (_Value) throws -> Bool) rethrows -> _Value? {
     var result: _Value?
     try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
       if try predicate(__tree_[__p]) {

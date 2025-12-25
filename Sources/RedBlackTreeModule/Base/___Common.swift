@@ -94,13 +94,13 @@ extension ___Common {
 
   @inlinable
   @inline(__always)
-  public var ___key_comp: (_Key, _Key) -> Bool {
+  internal var ___key_comp: (_Key, _Key) -> Bool {
     __tree_.value_comp
   }
 
   @inlinable
   @inline(__always)
-  public var ___value_comp: (_Value, _Value) -> Bool {
+  internal var ___value_comp: (_Value, _Value) -> Bool {
     { __tree_.value_comp(Base.__key($0), Base.__key($1)) }
   }
 }
@@ -109,7 +109,7 @@ extension ___Common {
 
   @inlinable
   @inline(__always)
-  public func ___is_garbaged(_ index: _NodePtr) -> Bool {
+  internal func ___is_garbaged(_ index: _NodePtr) -> Bool {
     __tree_.___is_garbaged(index)
   }
 }

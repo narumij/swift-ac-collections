@@ -116,7 +116,7 @@ extension ___Common {
 
 extension ___Common {
 
-  /// releaseビルドでは無効化されています
+  /// releaseビルドでは無効化されています(?)
   @inlinable
   @inline(__always)
   public func ___tree_invariant() -> Bool {

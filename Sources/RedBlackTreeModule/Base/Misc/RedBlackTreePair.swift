@@ -30,13 +30,13 @@ public struct RedBlackTreePair<Key, Value> {
   }
   @inlinable
   @inline(__always)
-  internal init(_ key: Key, _ value: Value) {
+  package init(_ key: Key, _ value: Value) {
     self.key = key
     self.value = value
   }
   @inlinable
   @inline(__always)
-  internal init(_ tuple: (Key, Value)) {
+  package init(_ tuple: (Key, Value)) {
     self.key = tuple.0
     self.value = tuple.1
   }

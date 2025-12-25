@@ -35,6 +35,7 @@ final class MultiMapEtcTests: XCTestCase {
     XCTAssertTrue(target1.isEmpty)
   }
 
+#if DEBUG
   func testExample___0() throws {
     for i in target1.___node_positions() {
       target1.___remove(at: i)
@@ -48,6 +49,7 @@ final class MultiMapEtcTests: XCTestCase {
     }
     XCTAssertTrue(target1.isEmpty)
   }
+#endif
 
   #if false
     func testExample2() throws {

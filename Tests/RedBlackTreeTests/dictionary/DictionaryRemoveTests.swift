@@ -123,6 +123,7 @@ final class DictionaryRemoveTests: XCTestCase {
     XCTAssertEqual(members.map { $0.key }, [])
   }
 
+#if DEBUG
   func testRemoveWith___Indices() throws {
     var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
     for i in members.___node_positions() {
@@ -146,7 +147,9 @@ final class DictionaryRemoveTests: XCTestCase {
     }
     XCTAssertEqual(members.map { $0.key }, [])
   }
+#endif
 
+#if COMPATIBLE_ATCODER_2025
   func testRemoveWithSubIndices() throws {
     var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
     for i in members[2..<8].indices {
@@ -179,6 +182,7 @@ final class DictionaryRemoveTests: XCTestCase {
     XCTAssertEqual(members.map { $0.key }, [0, 1, 8, 9])
   }
 
+#if DEBUG
   func testRemoveWithSub___Indices() throws {
     var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
     for i in members[2..<8].___node_positions() {
@@ -202,4 +206,6 @@ final class DictionaryRemoveTests: XCTestCase {
     }
     XCTAssertEqual(members.map { $0.key }, [0, 1, 8, 9])
   }
+#endif
+#endif
 }

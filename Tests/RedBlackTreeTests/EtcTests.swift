@@ -492,59 +492,61 @@ final class EtcTests: XCTestCase {
     XCTAssertEqual(result, [a.startIndex])
   }
 
-  func testSubRev6() throws {
-    let a = RedBlackTreeSet<Int>([0, 1, 2])
-    do {
-      var result = [_NodePtr]()
-      a[a.endIndex..<a.endIndex].reversed().___node_positions().forEach { i in
-        result.append(i)
+  #if DEBUG
+    func testSubRev6() throws {
+      let a = RedBlackTreeSet<Int>([0, 1, 2])
+      do {
+        var result = [_NodePtr]()
+        a[a.endIndex..<a.endIndex].reversed().___node_positions().forEach { i in
+          result.append(i)
+        }
+        XCTAssertEqual(result, [])
       }
-      XCTAssertEqual(result, [])
-    }
-    do {
-      var result = [_NodePtr]()
-      a[a.endIndex..<a.endIndex].___node_positions().reversed().forEach { i in
-        result.append(i)
+      do {
+        var result = [_NodePtr]()
+        a[a.endIndex..<a.endIndex].___node_positions().reversed().forEach { i in
+          result.append(i)
+        }
+        XCTAssertEqual(result, [])
       }
-      XCTAssertEqual(result, [])
     }
-  }
 
-  func testSubRev7() throws {
-    let a = RedBlackTreeSet<Int>([0, 1, 2])
-    do {
-      var result = [_NodePtr]()
-      a[a.startIndex..<a.startIndex].reversed().___node_positions().forEach { i in
-        result.append(i)
+    func testSubRev7() throws {
+      let a = RedBlackTreeSet<Int>([0, 1, 2])
+      do {
+        var result = [_NodePtr]()
+        a[a.startIndex..<a.startIndex].reversed().___node_positions().forEach { i in
+          result.append(i)
+        }
+        XCTAssertEqual(result, [])
       }
-      XCTAssertEqual(result, [])
-    }
-    do {
-      var result = [_NodePtr]()
-      a[a.startIndex..<a.startIndex].___node_positions().reversed().forEach { i in
-        result.append(i)
+      do {
+        var result = [_NodePtr]()
+        a[a.startIndex..<a.startIndex].___node_positions().reversed().forEach { i in
+          result.append(i)
+        }
+        XCTAssertEqual(result, [])
       }
-      XCTAssertEqual(result, [])
     }
-  }
 
-  func testSubRev8() throws {
-    let a = RedBlackTreeSet<Int>([0, 1, 2])
-    do {
-      var result = [_NodePtr]()
-      a[a.startIndex..<a.endIndex].reversed().___node_positions().forEach { i in
-        result.append(i)
+    func testSubRev8() throws {
+      let a = RedBlackTreeSet<Int>([0, 1, 2])
+      do {
+        var result = [_NodePtr]()
+        a[a.startIndex..<a.endIndex].reversed().___node_positions().forEach { i in
+          result.append(i)
+        }
+        XCTAssertEqual(result, [2, 1, 0])
       }
-      XCTAssertEqual(result, [2, 1, 0])
-    }
-    do {
-      var result = [_NodePtr]()
-      a[a.startIndex..<a.endIndex].___node_positions().reversed().forEach { i in
-        result.append(i)
+      do {
+        var result = [_NodePtr]()
+        a[a.startIndex..<a.endIndex].___node_positions().reversed().forEach { i in
+          result.append(i)
+        }
+        XCTAssertEqual(result, [2, 1, 0])
       }
-      XCTAssertEqual(result, [2, 1, 0])
     }
-  }
+  #endif
 
   func testSubRev9() throws {
     let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
@@ -661,15 +663,15 @@ final class EtcTests: XCTestCase {
     }
     do {
       var result = [Int]()
-#if COMPATIBLE_ATCODER_2025
-      a[a.endIndex..<a.endIndex].values().reversed().forEach { i in
-        result.append(i)
-      }
-#else
-      a[a.endIndex..<a.endIndex].values.reversed().forEach { i in
-        result.append(i)
-      }
-#endif
+      #if COMPATIBLE_ATCODER_2025
+        a[a.endIndex..<a.endIndex].values().reversed().forEach { i in
+          result.append(i)
+        }
+      #else
+        a[a.endIndex..<a.endIndex].values.reversed().forEach { i in
+          result.append(i)
+        }
+      #endif
       XCTAssertEqual(result, [])
     }
   }
@@ -680,28 +682,28 @@ final class EtcTests: XCTestCase {
     ])
     do {
       var result = [Int]()
-#if COMPATIBLE_ATCODER_2025
-      a[a.startIndex..<a.startIndex].reversed().values().forEach { i in
-        result.append(i)
-      }
-#else
-      a[a.startIndex..<a.startIndex].reversed().values.forEach { i in
-        result.append(i)
-      }
-#endif
+      #if COMPATIBLE_ATCODER_2025
+        a[a.startIndex..<a.startIndex].reversed().values().forEach { i in
+          result.append(i)
+        }
+      #else
+        a[a.startIndex..<a.startIndex].reversed().values.forEach { i in
+          result.append(i)
+        }
+      #endif
       XCTAssertEqual(result, [])
     }
     do {
       var result = [Int]()
-#if COMPATIBLE_ATCODER_2025
-      a[a.startIndex..<a.startIndex].values().reversed().forEach { i in
-        result.append(i)
-      }
-#else
-      a[a.startIndex..<a.startIndex].values.reversed().forEach { i in
-        result.append(i)
-      }
-#endif
+      #if COMPATIBLE_ATCODER_2025
+        a[a.startIndex..<a.startIndex].values().reversed().forEach { i in
+          result.append(i)
+        }
+      #else
+        a[a.startIndex..<a.startIndex].values.reversed().forEach { i in
+          result.append(i)
+        }
+      #endif
       XCTAssertEqual(result, [])
     }
   }
@@ -712,28 +714,28 @@ final class EtcTests: XCTestCase {
     ])
     do {
       var result = [Int]()
-#if COMPATIBLE_ATCODER_2025
-      a[a.startIndex..<a.endIndex].reversed().values().forEach { i in
-        result.append(i)
-      }
-#else
-      a[a.startIndex..<a.endIndex].reversed().values.forEach { i in
-        result.append(i)
-      }
-#endif
+      #if COMPATIBLE_ATCODER_2025
+        a[a.startIndex..<a.endIndex].reversed().values().forEach { i in
+          result.append(i)
+        }
+      #else
+        a[a.startIndex..<a.endIndex].reversed().values.forEach { i in
+          result.append(i)
+        }
+      #endif
       XCTAssertEqual(result, [2, 1, 0])
     }
     do {
       var result = [Int]()
-#if COMPATIBLE_ATCODER_2025
-      a[a.startIndex..<a.endIndex].values().reversed().forEach { i in
-        result.append(i)
-      }
-#else
-      a[a.startIndex..<a.endIndex].values.reversed().forEach { i in
-        result.append(i)
-      }
-#endif
+      #if COMPATIBLE_ATCODER_2025
+        a[a.startIndex..<a.endIndex].values().reversed().forEach { i in
+          result.append(i)
+        }
+      #else
+        a[a.startIndex..<a.endIndex].values.reversed().forEach { i in
+          result.append(i)
+        }
+      #endif
       XCTAssertEqual(result, [2, 1, 0])
     }
   }

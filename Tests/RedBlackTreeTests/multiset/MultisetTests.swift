@@ -650,6 +650,7 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(b.count(of: 3), 1)
   }
 
+#if COMPATIBLE_ATCODER_2025
   func testSubsequence() throws {
     var set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     let sub = set[2..<4]
@@ -662,6 +663,7 @@ final class MultisetTests: XCTestCase {
     set.remove(contentsOf: 2..<4)
     XCTAssertEqual(set.map { $0 }, [1, 4, 5])
   }
+#endif
 
   func testSubsequence2() throws {
     var set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
@@ -676,11 +678,13 @@ final class MultisetTests: XCTestCase {
     XCTAssertEqual(set.map { $0 }, [1, 5])
   }
 
+#if COMPATIBLE_ATCODER_2025
   func testSubsequence3() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     XCTAssertEqual(set[1...5] + [], [1, 2, 3, 4, 5])
   }
-
+#endif
+  
   func testSubsequence4() throws {
     //    let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     //    let sub = set[1 ..< 3]
@@ -1069,6 +1073,7 @@ final class MultisetTests: XCTestCase {
     }
   }
 
+#if COMPATIBLE_ATCODER_2025
   func testEqual2() throws {
     let aa = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4, 5])
     let bb = RedBlackTreeMultiSet<Int>([3, 4, 5, 6, 7, 8])
@@ -1097,6 +1102,7 @@ final class MultisetTests: XCTestCase {
       XCTAssertNotEqual(b, a)
     }
   }
+#endif
 
   func testCompare1() throws {
     do {
@@ -1143,6 +1149,7 @@ final class MultisetTests: XCTestCase {
     }
   }
 
+#if COMPATIBLE_ATCODER_2025
   func testCompare2() throws {
     let aa = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4, 5])
     let bb = RedBlackTreeMultiSet<Int>([3, 4, 5, 6, 7, 8])
@@ -1171,6 +1178,7 @@ final class MultisetTests: XCTestCase {
       XCTAssertFalse(b < a)
     }
   }
+#endif
 
   func testMeld() throws {
     do {

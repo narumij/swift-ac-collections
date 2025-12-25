@@ -98,27 +98,27 @@ final class MultiMapTests: XCTestCase {
     func testUsage1() throws {
       // 意外と普通のユースケースでバグがあることが判明
       var map = Target<Int, Int>()
-      XCTAssertEqual(map[0], [])
+      XCTAssertEqual(map[0] + [], [])
       map.insert((0, 1))
       //    map.updateValue(1, forKey: 0)
-      XCTAssertEqual(map[0], [1])
-      XCTAssertEqual(map[1], [])
+      XCTAssertEqual(map[0] + [], [1])
+      XCTAssertEqual(map[1] + [], [])
       XCTAssertTrue(zip(map.map { (__key($0), __value($0)) }, [(0, 1)]).allSatisfy(==))
       map.removeAll(forKey: 0)
       //    map.removeValue(forKey: 0)
-      XCTAssertEqual(map[0], [])
-      XCTAssertEqual(map[1], [])
+      XCTAssertEqual(map[0] + [], [])
+      XCTAssertEqual(map[1] + [], [])
       XCTAssertTrue(zip(map.map { (__key($0), __value($0)) }, []).allSatisfy(==))
       map.insert((1, 2))
       //    map.updateValue(20, forKey: 10)
-      XCTAssertEqual(map[0], [])
-      XCTAssertEqual(map[1], [2])
+      XCTAssertEqual(map[0] + [], [])
+      XCTAssertEqual(map[1] + [], [2])
       XCTAssertEqual(map.map(\.key), [1])
       XCTAssertEqual(map.map(\.value), [2])
       map.removeAll(forKey: 1)
       //    map.removeValue(forKey: 10)
-      XCTAssertEqual(map[0], [])
-      XCTAssertEqual(map[1], [])
+      XCTAssertEqual(map[0] + [], [])
+      XCTAssertEqual(map[1] + [], [])
       XCTAssertEqual(map.map(\.key), [])
       XCTAssertEqual(map.map(\.value), [])
     }
@@ -147,22 +147,22 @@ final class MultiMapTests: XCTestCase {
   #else
     func testUsage2() throws {
       var map = Target<Int, Int>()
-      XCTAssertEqual(map[0], [])
+      XCTAssertEqual(map[0] + [], [])
       map.insert((0, 0))
-      XCTAssertEqual(map[0], [0])
-      XCTAssertEqual(map[1], [])
+      XCTAssertEqual(map[0] + [], [0])
+      XCTAssertEqual(map[1] + [], [])
       map.insert((1, 2))
-      XCTAssertEqual(map[0], [0])
-      XCTAssertEqual(map[1], [2])
+      XCTAssertEqual(map[0] + [], [0])
+      XCTAssertEqual(map[1] + [], [2])
       map.removeAll(forKey: 0)
-      XCTAssertEqual(map[0], [])
-      XCTAssertEqual(map[1], [2])
+      XCTAssertEqual(map[0] + [], [])
+      XCTAssertEqual(map[1] + [], [2])
       map.removeAll(forKey: 1)
-      XCTAssertEqual(map[0], [])
-      XCTAssertEqual(map[1], [])
+      XCTAssertEqual(map[0] + [], [])
+      XCTAssertEqual(map[1] + [], [])
       map.insert((1, 3))
-      XCTAssertEqual(map[0], [])
-      XCTAssertEqual(map[1], [3])
+      XCTAssertEqual(map[0] + [], [])
+      XCTAssertEqual(map[1] + [], [3])
     }
   #endif
 
@@ -184,14 +184,14 @@ final class MultiMapTests: XCTestCase {
     func testUsage3() throws {
       var map = Target<Int, Int>()
       map.insert((0, 0))
-      XCTAssertEqual(map[0], [0])
+      XCTAssertEqual(map[0] + [], [0])
       map.remove(at: map.startIndex)
-      XCTAssertEqual(map[0], [])
+      XCTAssertEqual(map[0] + [], [])
       XCTAssertTrue(map.isEmpty)
       map.insert((0, 0))
-      XCTAssertEqual(map[0], [0])
+      XCTAssertEqual(map[0] + [], [0])
       map.remove(at: map.startIndex)
-      XCTAssertEqual(map[0], [])
+      XCTAssertEqual(map[0] + [], [])
       XCTAssertTrue(map.isEmpty)
     }
   #endif
@@ -210,9 +210,9 @@ final class MultiMapTests: XCTestCase {
   #else
     func testLiteral() throws {
       let map: Target<Int, Int> = [1: 0, 1: 2, 3: 4, 5: 6, 5: 7]
-      XCTAssertEqual(map[1], [0, 2])
-      XCTAssertEqual(map[3], [4])
-      XCTAssertEqual(map[5], [6, 7])
+      XCTAssertEqual(map[1] + [], [0, 2])
+      XCTAssertEqual(map[3] + [], [4])
+      XCTAssertEqual(map[5] + [], [6, 7])
       XCTAssertEqual(map.count(forKey: 0), 0)
       XCTAssertEqual(map.count(forKey: 1), 2)
       XCTAssertEqual(map.count(forKey: 3), 1)
@@ -261,10 +261,10 @@ final class MultiMapTests: XCTestCase {
         XCTAssertEqual(dict.keys + [], [1, 2])
         XCTAssertEqual(dict.values + [], [10, 20])
       #endif
-      XCTAssertEqual(dict[0], [])
-      XCTAssertEqual(dict[1], [10])
-      XCTAssertEqual(dict[2], [20])
-      XCTAssertEqual(dict[3], [])
+      XCTAssertEqual(dict[0] + [], [])
+      XCTAssertEqual(dict[1] + [], [10])
+      XCTAssertEqual(dict[2] + [], [20])
+      XCTAssertEqual(dict[3] + [], [])
     }
   #endif
 
@@ -293,10 +293,10 @@ final class MultiMapTests: XCTestCase {
         XCTAssertEqual(dict.keys + [], [1, 2])
         XCTAssertEqual(dict.values + [], [10, 20])
       #endif
-      XCTAssertEqual(dict[0], [])
-      XCTAssertEqual(dict[1], [10])
-      XCTAssertEqual(dict[2], [20])
-      XCTAssertEqual(dict[3], [])
+      XCTAssertEqual(dict[0] + [], [])
+      XCTAssertEqual(dict[1] + [], [10])
+      XCTAssertEqual(dict[2] + [], [20])
+      XCTAssertEqual(dict[3] + [], [])
     }
   #endif
 
@@ -355,10 +355,10 @@ final class MultiMapTests: XCTestCase {
           XCTAssertEqual(dict.keys + [], [1, 1, 2, 2])
           XCTAssertEqual(dict.values + [], [10, 11, 20, 22])
         #endif
-        XCTAssertEqual(dict[0], [])
-        XCTAssertEqual(dict[1], [10, 11])
-        XCTAssertEqual(dict[2], [20, 22])
-        XCTAssertEqual(dict[3], [])
+        XCTAssertEqual(dict[0] + [], [])
+        XCTAssertEqual(dict[1] + [], [10, 11])
+        XCTAssertEqual(dict[2] + [], [20, 22])
+        XCTAssertEqual(dict[3] + [], [])
       }
     }
   #endif
@@ -393,10 +393,10 @@ final class MultiMapTests: XCTestCase {
           XCTAssertEqual(dict.keys + [], [1, 1, 2, 2])
           XCTAssertEqual(dict.values + [], [10, 11, 20, 22])
         #endif
-        XCTAssertEqual(dict[0], [])
-        XCTAssertEqual(dict[1], [10, 11])
-        XCTAssertEqual(dict[2], [20, 22])
-        XCTAssertEqual(dict[3], [])
+        XCTAssertEqual(dict[0] + [], [])
+        XCTAssertEqual(dict[1] + [], [10, 11])
+        XCTAssertEqual(dict[2] + [], [20, 22])
+        XCTAssertEqual(dict[3] + [], [])
       }
     }
   #endif
@@ -472,9 +472,9 @@ final class MultiMapTests: XCTestCase {
           nil)
       #endif
       XCTAssertEqual(dict.updateValue(0, at: dict.endIndex)?.value, nil)
-      XCTAssertEqual(dict[1], [1])
+      XCTAssertEqual(dict[1] + [], [1])
       XCTAssertEqual(dict.updateValue(10, at: dict.firstIndex(of: 1)!)?.value, 1)
-      XCTAssertEqual(dict[1], [10])
+      XCTAssertEqual(dict[1] + [], [10])
     }
   #endif
 
@@ -1147,6 +1147,7 @@ final class MultiMapTests: XCTestCase {
     }
   }
 
+#if COMPATIBLE_ATCODER_2025
   func testEqual2() throws {
     let aa = Target<Int, Int>(multiKeysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
     let bb = Target<Int, Int>(multiKeysWithValues: [3, 4, 5, 6, 7, 8].map { ($0, $0) })
@@ -1175,6 +1176,7 @@ final class MultiMapTests: XCTestCase {
       XCTAssertNotEqual(b, a)
     }
   }
+#endif
 
   func testCompare1() throws {
     do {

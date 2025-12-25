@@ -707,13 +707,13 @@ extension RedBlackTreeDictionary {
   }
 }
 
+#if COMPATIBLE_ATCODER_2025
 extension RedBlackTreeDictionary {
-  // TODO: 検討
-  // 思いついた当初はとても気に入っていたが、いまはそうでもないので削除を検討
-
+  
   // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
   /// 範囲 `[lower, upper)` に含まれる要素を返します。
   /// - Complexity: O(log *n*)
+  @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Key>) -> SubSequence {
@@ -723,13 +723,17 @@ extension RedBlackTreeDictionary {
   // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
   /// 範囲 `[lower, upper]` に含まれる要素を返します。
   /// - Complexity: O(log *n*)
+  @available(*, deprecated, renamed: "elements(in:)")
   @inlinable
   @inline(__always)
   public subscript(bounds: ClosedRange<Key>) -> SubSequence {
     elements(in: bounds)
   }
 }
+#endif
 
+// TODO: 検討
+// Rangeの使い方としてはやはりおかしいので、削除を検討すること
 extension RedBlackTreeDictionary {
   /// キーレンジ `[lower, upper)` に含まれる要素のスライス
   /// - Complexity: O(log *n*)

@@ -194,7 +194,7 @@ import XCTest
       }
     #endif
 
-    #if DEBUG
+    #if DEBUG && COMPATIBLE_ATCODER_2025
       func testSet4000() throws {
         let count = 1500
         var xy: [Int: RedBlackTreeMultiMap<Int, Int>] = [

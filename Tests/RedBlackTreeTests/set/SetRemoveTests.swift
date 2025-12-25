@@ -249,6 +249,7 @@ final class SetRemoveTest_10: XCTestCase {
     XCTAssertEqual(members + [], [])
   }
 
+#if DEBUG
   func testRemoveWith___Indices() throws {
     for i in members.___node_positions() {
       members.___remove(at: i)
@@ -269,6 +270,7 @@ final class SetRemoveTest_10: XCTestCase {
     }
     XCTAssertEqual(members + [], [])
   }
+#endif
 
   #if true
     func testRemoveWithSubIndices() throws {
@@ -300,6 +302,7 @@ final class SetRemoveTest_10: XCTestCase {
     }
   #endif
 
+#if DEBUG
   func testRemoveWithSub___Indices() throws {
     for i in members.elements(in: 2..<8).___node_positions() {
       members.___remove(at: i)
@@ -320,4 +323,5 @@ final class SetRemoveTest_10: XCTestCase {
     }
     XCTAssertEqual(members + [], [0, 1, 8, 9])
   }
+#endif
 }

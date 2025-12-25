@@ -224,17 +224,7 @@ extension RedBlackTreeMultiMap {
       end: bounds.upperBound.rawValue)
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
-      .init(
-        tree: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
-    }
-  #else
+  #if !COMPATIBLE_ATCODER_2025
     @inlinable
     @inline(__always)
     public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
@@ -635,64 +625,16 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-#if COMPATIBLE_ATCODER_2025
-// Rangeの使い方としておかしいので、便利だが将来的に削除することにした
+#if !COMPATIBLE_ATCODER_2025
 extension RedBlackTreeMultiMap {
-
-  /// 範囲 `[lower, upper)` に含まれる要素を返します。
-  ///
-  /// index範囲ではないことに留意
-  /// **Deprecated – `elements(in:)` を使ってください。**
-  @available(*, deprecated, renamed: "elements(in:)")
-  @inlinable
-  @inline(__always)
-  public subscript(bounds: Range<Key>) -> SubSequence {
-    elements(in: bounds)
-  }
-
-  /// 範囲 `[lower, upper]` に含まれる要素を返します。
-  ///
-  /// index範囲ではないことに留意
-  /// **Deprecated – `elements(in:)` を使ってください。**
-  @available(*, deprecated, renamed: "elements(in:)")
-  @inlinable
-  @inline(__always)
-  public subscript(bounds: ClosedRange<Key>) -> SubSequence {
-    elements(in: bounds)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: Range<Key>) -> SubSequence {
-    .init(
-      tree: __tree_,
-      start: ___lower_bound(range.lowerBound),
-      end: ___lower_bound(range.upperBound))
-  }
-
-  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: ClosedRange<Key>) -> SubSequence {
-    .init(
-      tree: __tree_,
-      start: ___lower_bound(range.lowerBound),
-      end: ___upper_bound(range.upperBound))
-  }
-}
-#else
-extension RedBlackTreeMultiMap {
-  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
+  /// キーレンジ `[start, upper)` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
   @inlinable
   public func sequence(from start: Key, to end: Key) -> SubSequence {
     .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
   }
 
-  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
+  /// キーレンジ `[start, upper]` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
   @inlinable
   public func sequence(from start: Key, through end: Key) -> SubSequence {
@@ -865,14 +807,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
     @inline(__always) get { self[_checked: position] }
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    @inlinable
-//    public subscript(_unsafe position: Index) -> Element {
-  public subscript(_unsafe position: Index) -> (key: Key, value: Value) {
-//      @inline(__always) get { ___element(self[_unchecked: position]) }
-    @inline(__always) get { self[_unchecked: position] }
-    }
-  #else
+  #if !COMPATIBLE_ATCODER_2025
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable

@@ -47,17 +47,17 @@ final class ___Storage<Base: ___TreeBase> {
 
   @nonobjc
   @usableFromInline
-  final internal var tree: Tree
+  internal var tree: Tree
 
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal var count: Int { tree.count }
+  internal var count: Int { tree.count }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal var capacity: Int { tree.header.capacity }
+  internal var capacity: Int { tree.header.capacity }
 
   @nonobjc
   @inlinable
@@ -71,14 +71,14 @@ final class ___Storage<Base: ___TreeBase> {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func copy() -> ___Storage {
+  internal func copy() -> ___Storage {
     .init(tree: tree.copy())
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func copy(
+  internal func copy(
     growthCapacityTo capacity: Int,
     linearly: Bool
   ) -> ___Storage {
@@ -91,7 +91,7 @@ final class ___Storage<Base: ___TreeBase> {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func copy(
+  internal func copy(
     growthCapacityTo capacity: Int,
     limit: Int,
     linearly: Bool
@@ -106,7 +106,7 @@ final class ___Storage<Base: ___TreeBase> {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func isKnownUniquelyReferenced_tree() -> Bool {
+  internal func isKnownUniquelyReferenced_tree() -> Bool {
     #if !DISABLE_COPY_ON_WRITE
       isKnownUniquelyReferenced(&tree)
     #else

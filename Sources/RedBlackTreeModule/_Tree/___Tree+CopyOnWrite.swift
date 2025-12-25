@@ -27,14 +27,14 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  final public func bitCeil(_ n: Int) -> Int {
+  public func bitCeil(_ n: Int) -> Int {
     n <= 1 ? 1 : 1 << (Int.bitWidth - (n - 1).leadingZeroBitCount)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  final public func growthFormula(count: Int) -> Int {
+  public func growthFormula(count: Int) -> Int {
 #if true
     // アロケーターにとって負担が軽そうな、2のべき付近を要求することにした。
     // ヘッダー込みで確保するべきかどうかは、ManagedBufferのソースをみておらず不明。
@@ -50,7 +50,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
 
     if linearly {
       return Swift.max(
@@ -86,14 +86,14 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func copy() -> Tree {
+  internal func copy() -> Tree {
     copy(minimumCapacity: _header.initializedCount)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func copy(growthCapacityTo capacity: Int, linearly: Bool) -> Tree {
+  internal func copy(growthCapacityTo capacity: Int, linearly: Bool) -> Tree {
     copy(
       minimumCapacity:
         growCapacity(to: capacity, linearly: linearly))
@@ -102,7 +102,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func copy(growthCapacityTo capacity: Int, limit: Int, linearly: Bool) -> Tree {
+  internal func copy(growthCapacityTo capacity: Int, limit: Int, linearly: Bool) -> Tree {
     copy(
       minimumCapacity:
         Swift.min(

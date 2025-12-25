@@ -34,7 +34,7 @@ extension ___Tree where Base: ___TreeIndex {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func makeIndex(rawValue: _NodePtr) -> Index {
+  internal func makeIndex(rawValue: _NodePtr) -> Index {
     .init(tree: self, rawValue: rawValue)
   }
 }
@@ -46,7 +46,7 @@ extension ___Tree where Base: ___TreeIndex {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices {
+  internal func makeIndices(start: _NodePtr, end: _NodePtr) -> Indices {
     .init(tree: self, start: start, end: end)
   }
 }

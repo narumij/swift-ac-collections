@@ -10,10 +10,6 @@ import XCTest
 
 final class KeyValueComparerTests: XCTestCase, KeyValueComparer {
   
-  static func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __eager_compare_result {
-    fatalError()
-  }
-  
   static func value_comp(_ l: _Key, _ r: _Key) -> Bool {
     l.internalKey < r.internalKey
   }
@@ -50,5 +46,11 @@ final class KeyValueComparerTests: XCTestCase, KeyValueComparer {
     XCTAssertFalse(Self.value_equiv(keys[1], keys[0]))
     XCTAssertFalse(Self.value_equiv(keys[2], keys[1]))
     XCTAssertFalse(Self.value_equiv(keys[2], keys[0]))
+  }
+}
+
+extension KeyValueComparerTests._Key: Comparable {
+  static func < (lhs: KeyValueComparerTests._Key, rhs: KeyValueComparerTests._Key) -> Bool {
+    lhs.internalKey < rhs.internalKey
   }
 }

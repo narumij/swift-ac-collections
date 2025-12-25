@@ -74,7 +74,7 @@ extension ___StorageProtocol {
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func ___remove(at ptr: _NodePtr) -> _Value? {
+  internal mutating func ___remove(at ptr: _NodePtr) -> _Value? {
     guard !__tree_.___is_subscript_null(ptr) else {
       return nil
     }
@@ -86,7 +86,7 @@ extension ___StorageProtocol {
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
+  internal mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
     guard !__tree_.___is_end(from) else {
       return .end
     }

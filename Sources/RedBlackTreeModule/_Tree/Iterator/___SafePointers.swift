@@ -21,10 +21,12 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct ___SafePointers<Base>: Sequence, IteratorProtocol
+@usableFromInline
+internal struct ___SafePointers<Base>: Sequence, IteratorProtocol
 where Base: ___TreeBase {
 
-  public typealias Tree = ___Tree<Base>
+  @usableFromInline
+  internal typealias Tree = ___Tree<Base>
 
   @usableFromInline
   internal let __tree_: Tree
@@ -44,7 +46,7 @@ where Base: ___TreeBase {
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> _NodePtr? {
+  internal mutating func next() -> _NodePtr? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
@@ -55,7 +57,7 @@ where Base: ___TreeBase {
 
   @inlinable
   @inline(__always)
-  public func reversed() -> Reversed {
+  internal func reversed() -> Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -63,10 +65,12 @@ where Base: ___TreeBase {
 extension ___SafePointers {
 
   @frozen
-  public struct Reversed: Sequence, IteratorProtocol
+  @usableFromInline
+  internal struct Reversed: Sequence, IteratorProtocol
   where Base: ___TreeBase {
 
-    public typealias Tree = ___Tree<Base>
+    @usableFromInline
+    internal typealias Tree = ___Tree<Base>
 
     @usableFromInline
     internal let __tree_: Tree
@@ -86,7 +90,7 @@ extension ___SafePointers {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> _NodePtr? {
+    internal mutating func next() -> _NodePtr? {
       guard _current != _start else { return nil }
       _current = _next
       _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr

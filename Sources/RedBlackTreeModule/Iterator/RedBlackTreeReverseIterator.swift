@@ -90,7 +90,7 @@ extension RedBlackTreeIterator.Values.Reversed {
 
   @inlinable
   @inline(__always)
-  public func ___node_positions() -> ___SafePointers<Base>.Reversed {
+  internal func ___node_positions() -> ___SafePointers<Base>.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

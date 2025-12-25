@@ -53,13 +53,13 @@ extension ___BaseSequence {
 
   @inlinable
   @inline(__always)
-  public func ___lower_bound(_ __k: _Key) -> _NodePtr {
+  internal func ___lower_bound(_ __k: _Key) -> _NodePtr {
     __tree_.lower_bound(__k)
   }
 
   @inlinable
   @inline(__always)
-  public func ___upper_bound(_ __k: _Key) -> _NodePtr {
+  internal func ___upper_bound(_ __k: _Key) -> _NodePtr {
     __tree_.upper_bound(__k)
   }
 

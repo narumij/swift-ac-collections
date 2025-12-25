@@ -203,7 +203,7 @@ extension ___Index {
   @inlinable
   @inline(__always)
   @discardableResult
-  public mutating func ___erase(_ ptr: _NodePtr) -> _NodePtr {
+  internal mutating func ___erase(_ ptr: _NodePtr) -> _NodePtr {
     __tree_.erase(ptr)
   }
 

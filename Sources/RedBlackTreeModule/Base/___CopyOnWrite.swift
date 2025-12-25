@@ -161,7 +161,7 @@ extension ___CopyOnWrite {
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
   extension ___CopyOnWrite {
-    public mutating func _checkUnique() -> Bool {
+    internal mutating func _checkUnique() -> Bool {
       _isKnownUniquelyReferenced_LV2()
     }
   }

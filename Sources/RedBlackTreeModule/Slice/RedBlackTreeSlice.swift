@@ -32,10 +32,10 @@ public struct RedBlackTreeSlice<Base>: ___Common & ___SubSequence & ___Index &  
   public typealias SubSequence = Self
 
   @usableFromInline
-  let __tree_: Tree
+  internal let __tree_: Tree
 
   @usableFromInline
-  var _start, _end: _NodePtr
+  internal var _start, _end: _NodePtr
 
   @inlinable
   @inline(__always)

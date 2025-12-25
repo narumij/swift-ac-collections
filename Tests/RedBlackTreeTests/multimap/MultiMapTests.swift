@@ -1147,7 +1147,6 @@ final class MultiMapTests: XCTestCase {
     }
   }
 
-#if COMPATIBLE_ATCODER_2025
   func testEqual2() throws {
     let aa = Target<Int, Int>(multiKeysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
     let bb = Target<Int, Int>(multiKeysWithValues: [3, 4, 5, 6, 7, 8].map { ($0, $0) })
@@ -1176,7 +1175,6 @@ final class MultiMapTests: XCTestCase {
       XCTAssertNotEqual(b, a)
     }
   }
-#endif
 
   func testCompare1() throws {
     do {

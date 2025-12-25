@@ -149,7 +149,6 @@ final class DictionaryRemoveTests: XCTestCase {
   }
 #endif
 
-#if COMPATIBLE_ATCODER_2025
   func testRemoveWithSubIndices() throws {
     var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
     for i in members[2..<8].indices {
@@ -206,6 +205,5 @@ final class DictionaryRemoveTests: XCTestCase {
     }
     XCTAssertEqual(members.map { $0.key }, [0, 1, 8, 9])
   }
-#endif
 #endif
 }

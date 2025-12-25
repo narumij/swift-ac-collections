@@ -569,6 +569,7 @@ extension RedBlackTreeMultiSet {
 }
 
 #if COMPATIBLE_ATCODER_2025
+// Rangeの使い方としておかしいので、便利だが将来的に削除することにした
 extension RedBlackTreeMultiSet {
 
   /// 範囲 `[lower, upper)` に含まれる要素を返します。
@@ -593,10 +594,7 @@ extension RedBlackTreeMultiSet {
     elements(in: bounds)
   }
 }
-#endif
 
-// TODO: 検討
-// Rangeの使い方としてはやはりおかしいので、削除を検討すること
 extension RedBlackTreeMultiSet {
   /// 値レンジ `[lower, upper)` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
@@ -618,6 +616,7 @@ extension RedBlackTreeMultiSet {
       end: ___upper_bound(range.upperBound))
   }
 }
+#endif
 
 // MARK: - Collection Conformance
 

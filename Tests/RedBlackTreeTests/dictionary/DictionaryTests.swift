@@ -515,7 +515,6 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(d, [1: 11, 2: 22, 3: 33])
   }
 
-  #if COMPATIBLE_ATCODER_2025
     func testSubsequence() throws {
       var set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
       let sub = set[2..<4]
@@ -565,7 +564,6 @@ final class DictionaryTests: XCTestCase {
       XCTAssertEqual(sub[sub.startIndex..<sub.endIndex].map { $0.key }, [1, 2])
       XCTAssertEqual(sub[sub.startIndex..<sub.index(before: sub.endIndex)].map { $0.key }, [1])
     }
-  #endif
 
   func testSubsequence6() throws {
     let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
@@ -649,7 +647,6 @@ final class DictionaryTests: XCTestCase {
     }
   }
 
-  #if COMPATIBLE_ATCODER_2025
     func testIndex00() throws {
       let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
       do {
@@ -815,7 +812,6 @@ final class DictionaryTests: XCTestCase {
       sub.formIndex(&i, offsetBy: -3)
       XCTAssertEqual(i, sub.startIndex)
     }
-  #endif
 
   func testRangeSubscript() throws {
     let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]
@@ -880,7 +876,6 @@ final class DictionaryTests: XCTestCase {
     let _set: RedBlackTreeDictionary<Int, String> = [
       1: "a", 2: "b", 3: "c", 4: "d", 5: "e", 6: "f", 7: "g",
     ]
-    #if COMPATIBLE_ATCODER_2025
       let set = _set[2..<6]
       XCTAssertTrue(set.isValid(index: set.startIndex))
       XCTAssertTrue(set.isValid(index: set.endIndex))
@@ -899,7 +894,6 @@ final class DictionaryTests: XCTestCase {
         XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 6)))
         XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
       #endif
-    #endif
   }
 
   func testContainsKey() {
@@ -971,7 +965,6 @@ final class DictionaryTests: XCTestCase {
     }
   }
 
-  #if COMPATIBLE_ATCODER_2025
     func testEqual2() throws {
       let aa = RedBlackTreeDictionary<Int, Int>(
         uniqueKeysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
@@ -1002,7 +995,6 @@ final class DictionaryTests: XCTestCase {
         XCTAssertNotEqual(b, a)
       }
     }
-  #endif
 
   func testCompare1() throws {
     do {

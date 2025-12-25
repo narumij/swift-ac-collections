@@ -612,22 +612,20 @@ final class SetTests: XCTestCase {
     }
   #endif
 
-  #if COMPATIBLE_ATCODER_2025
-    func testSubsequence() throws {
-      var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-      XCTAssertEqual(set[set.startIndex..<set.endIndex].map { $0 }, [1, 2, 3, 4, 5])
-      XCTAssertEqual(set[set.lowerBound(2)..<set.lowerBound(4)].map { $0 }, [2, 3])
-      let sub = set[2..<4]
-      XCTAssertEqual(sub[set.lowerBound(2)], 2)
-      XCTAssertEqual(sub[set.lowerBound(3)], 3)
-      XCTAssertEqual(set.upperBound(3), sub.endIndex)
-      XCTAssertEqual(set.lowerBound(4), sub.endIndex)
-      XCTAssertEqual(sub.count, 2)
-      XCTAssertEqual(sub.map { $0 }, [2, 3])
-      set.remove(contentsOf: 2..<4)
-      XCTAssertEqual(set.map { $0 }, [1, 4, 5])
-    }
-  #endif
+  func testSubsequence() throws {
+    var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    XCTAssertEqual(set[set.startIndex..<set.endIndex].map { $0 }, [1, 2, 3, 4, 5])
+    XCTAssertEqual(set[set.lowerBound(2)..<set.lowerBound(4)].map { $0 }, [2, 3])
+    let sub = set[2..<4]
+    XCTAssertEqual(sub[set.lowerBound(2)], 2)
+    XCTAssertEqual(sub[set.lowerBound(3)], 3)
+    XCTAssertEqual(set.upperBound(3), sub.endIndex)
+    XCTAssertEqual(set.lowerBound(4), sub.endIndex)
+    XCTAssertEqual(sub.count, 2)
+    XCTAssertEqual(sub.map { $0 }, [2, 3])
+    set.remove(contentsOf: 2..<4)
+    XCTAssertEqual(set.map { $0 }, [1, 4, 5])
+  }
 
   func testSubsequence2() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
@@ -642,12 +640,10 @@ final class SetTests: XCTestCase {
     XCTAssertEqual(set.map { $0 }, [1, 5])
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testSubsequence3() throws {
-      let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-      XCTAssertEqual(set[1...5] + [], [1, 2, 3, 4, 5])
-    }
-  #endif
+  func testSubsequence3() throws {
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    XCTAssertEqual(set[1...5] + [], [1, 2, 3, 4, 5])
+  }
 
   func testSubsequence4() throws {
     //    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
@@ -970,36 +966,34 @@ final class SetTests: XCTestCase {
     }
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testEqual2() throws {
-      let aa = RedBlackTreeSet<Int>([0, 1, 2, 3, 4, 5])
-      let bb = RedBlackTreeSet<Int>([3, 4, 5, 6, 7, 8])
-      do {
-        let a = aa[0..<0]
-        let b = bb[3..<3]
-        XCTAssertEqual(a, b)
-        XCTAssertEqual(b, a)
-      }
-      do {
-        let a = aa[3..<6]
-        let b = bb[3..<6]
-        XCTAssertEqual(a, b)
-        XCTAssertEqual(b, a)
-      }
-      do {
-        let a = aa[2..<6]
-        let b = bb[3..<6]
-        XCTAssertNotEqual(a, b)
-        XCTAssertNotEqual(b, a)
-      }
-      do {
-        let a = aa[3..<6]
-        let b = bb[3..<7]
-        XCTAssertNotEqual(a, b)
-        XCTAssertNotEqual(b, a)
-      }
+  func testEqual2() throws {
+    let aa = RedBlackTreeSet<Int>([0, 1, 2, 3, 4, 5])
+    let bb = RedBlackTreeSet<Int>([3, 4, 5, 6, 7, 8])
+    do {
+      let a = aa[0..<0]
+      let b = bb[3..<3]
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
     }
-  #endif
+    do {
+      let a = aa[3..<6]
+      let b = bb[3..<6]
+      XCTAssertEqual(a, b)
+      XCTAssertEqual(b, a)
+    }
+    do {
+      let a = aa[2..<6]
+      let b = bb[3..<6]
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+    do {
+      let a = aa[3..<6]
+      let b = bb[3..<7]
+      XCTAssertNotEqual(a, b)
+      XCTAssertNotEqual(b, a)
+    }
+  }
 
   func testCompare1() throws {
     do {
@@ -1046,36 +1040,34 @@ final class SetTests: XCTestCase {
     }
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testCompare2() throws {
-      let aa = RedBlackTreeSet<Int>([0, 1, 2, 3, 4, 5])
-      let bb = RedBlackTreeSet<Int>([3, 4, 5, 6, 7, 8])
-      do {
-        let a = aa[0..<0]
-        let b = bb[3..<3]
-        XCTAssertFalse(a < b)
-        XCTAssertFalse(b < a)
-      }
-      do {
-        let a = aa[3..<6]
-        let b = bb[3..<6]
-        XCTAssertFalse(a < b)
-        XCTAssertFalse(b < a)
-      }
-      do {
-        let a = aa[2..<6]
-        let b = bb[3..<6]
-        XCTAssertTrue(a < b)
-        XCTAssertFalse(b < a)
-      }
-      do {
-        let a = aa[3..<6]
-        let b = bb[3..<7]
-        XCTAssertTrue(a < b)
-        XCTAssertFalse(b < a)
-      }
+  func testCompare2() throws {
+    let aa = RedBlackTreeSet<Int>([0, 1, 2, 3, 4, 5])
+    let bb = RedBlackTreeSet<Int>([3, 4, 5, 6, 7, 8])
+    do {
+      let a = aa[0..<0]
+      let b = bb[3..<3]
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
     }
-  #endif
+    do {
+      let a = aa[3..<6]
+      let b = bb[3..<6]
+      XCTAssertFalse(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = aa[2..<6]
+      let b = bb[3..<6]
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+    do {
+      let a = aa[3..<6]
+      let b = bb[3..<7]
+      XCTAssertTrue(a < b)
+      XCTAssertFalse(b < a)
+    }
+  }
 
   func testSwap() {
 

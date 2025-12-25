@@ -636,6 +636,7 @@ extension RedBlackTreeMultiMap {
 }
 
 #if COMPATIBLE_ATCODER_2025
+// Rangeの使い方としておかしいので、便利だが将来的に削除することにした
 extension RedBlackTreeMultiMap {
 
   /// 範囲 `[lower, upper)` に含まれる要素を返します。
@@ -660,10 +661,7 @@ extension RedBlackTreeMultiMap {
     elements(in: bounds)
   }
 }
-#endif
 
-// TODO: 検討
-// Rangeの使い方としてはやはりおかしいので、削除を検討すること
 extension RedBlackTreeMultiMap {
   /// キーレンジ `[lower, upper)` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
@@ -685,6 +683,7 @@ extension RedBlackTreeMultiMap {
       end: ___upper_bound(range.upperBound))
   }
 }
+#endif
 
 // MARK: - Transformation
 
@@ -903,7 +902,8 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   }
 }
 
-// TODO: 便利止まりだし、標準にならうと不自然なので、削除するか検討
+#if COMPATIBLE_ATCODER_2025
+// 便利止まりだし、標準にならうと不自然なので、将来的に削除する
 extension RedBlackTreeMultiMap where Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -916,7 +916,7 @@ extension RedBlackTreeMultiMap where Value: Equatable {
   }
 }
 
-// TODO: 便利止まりだし、標準にならうと不自然なので、削除するか検討
+// 便利止まりだし、標準にならうと不自然なので、将来的に削除する
 extension RedBlackTreeMultiMap where Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -928,6 +928,7 @@ extension RedBlackTreeMultiMap where Value: Comparable {
     lexicographicallyPrecedes(other, by: <)
   }
 }
+#endif
 
 // MARK: -
 

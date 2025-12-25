@@ -708,6 +708,7 @@ extension RedBlackTreeDictionary {
 }
 
 #if COMPATIBLE_ATCODER_2025
+// Rangeの使い方としておかしいので、便利だが将来的に削除することにした
 extension RedBlackTreeDictionary {
   
   // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
@@ -730,10 +731,7 @@ extension RedBlackTreeDictionary {
     elements(in: bounds)
   }
 }
-#endif
 
-// TODO: 検討
-// Rangeの使い方としてはやはりおかしいので、削除を検討すること
 extension RedBlackTreeDictionary {
   /// キーレンジ `[lower, upper)` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
@@ -755,6 +753,7 @@ extension RedBlackTreeDictionary {
       end: ___upper_bound(range.upperBound))
   }
 }
+#endif
 
 // MARK: - Transformation
 
@@ -987,7 +986,8 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   }
 }
 
-// TODO: 便利止まりだし、標準にならうと不自然なので、削除するか検討
+#if COMPATIBLE_ATCODER_2025
+// 便利止まりだし、標準にならうと不自然なので、将来的に削除する
 extension RedBlackTreeDictionary where Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -1000,7 +1000,7 @@ extension RedBlackTreeDictionary where Value: Equatable {
   }
 }
 
-// TODO: 便利止まりだし、標準にならうと不自然なので、削除するか検討
+// 便利止まりだし、標準にならうと不自然なので、将来的に削除する
 extension RedBlackTreeDictionary where Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -1012,6 +1012,7 @@ extension RedBlackTreeDictionary where Value: Comparable {
     lexicographicallyPrecedes(other, by: <)
   }
 }
+#endif
 
 // MARK: -
 

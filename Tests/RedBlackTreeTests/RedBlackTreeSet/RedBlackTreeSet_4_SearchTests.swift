@@ -137,7 +137,6 @@ extension RedBlackTreeSetSearchTests {
     XCTAssertEqual(sub + [], [3, 4, 5, 6])
   }
 
-#if COMPATIBLE_ATCODER_2025
   /// deprecated subscript(range) が正しく動作すること
   func test_deprecatedSubscriptRange() {
     let set = RedBlackTreeSet([1, 2, 3, 4, 5, 6, 7])
@@ -151,5 +150,4 @@ extension RedBlackTreeSetSearchTests {
     let sub = set[3...6]
     XCTAssertEqual(sub + [], [3, 4, 5, 6])
   }
-#endif
 }

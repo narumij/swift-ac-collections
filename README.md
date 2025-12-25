@@ -67,20 +67,13 @@ dependencies: [
 - その他の特性や使い方は `RedBlackTreeSet` に準じます。  
 - 使用例: [AtCoder 提出例 (ABC358D)](https://atcoder.jp/contests/abc358/submissions/62143179) など。
 
-#### 3. RedBlackTreeMap
-- **重複なしのキーと値** の要素を管理する Map。  
-- 基本的なキー検索・挿入・削除などの操作を `O(log n)` で行えます。  
-- 連想配列リテラル（`ExpressibleByDictionaryLiteral`）にも対応しています。
-- RedBlackTreeDictionaryと異なり、KeyValueが構造体となっています。
-- AtCoder 2025未搭載です
-
-#### 4. RedBlackTreeMultiMap
+#### 3. RedBlackTreeMultiMap
 - **重複ありのキーと値** の要素を管理する Map。  
 - `count(forKey:)` により、特定キーの要素が何個含まれるかを取得できます。  
 - MultiSetやDictionaryをベースに、なるべくSwiftに寄せたAPIとなっています。
 - AtCoder 2025搭載版と異なり、KeyValueが構造体となっています。
 
-#### 5. RedBlackTreeDictionary
+#### 4. RedBlackTreeDictionary
 
 - **キーと値** を管理する Dictionary。  
 - 基本的なキー検索・挿入・削除などの操作を `O(log n)` で行えます。  

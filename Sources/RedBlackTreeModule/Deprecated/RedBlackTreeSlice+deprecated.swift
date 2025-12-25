@@ -1,4 +1,5 @@
 #if COMPATIBLE_ATCODER_2025
+
   extension RedBlackTreeSlice {
     @available(*, deprecated)
     public subscript(_unsafe position: Index) -> Element {

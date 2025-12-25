@@ -1,4 +1,5 @@
 #if COMPATIBLE_ATCODER_2025
+
   extension RedBlackTreeMultiMap {
     @available(*, deprecated)
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {

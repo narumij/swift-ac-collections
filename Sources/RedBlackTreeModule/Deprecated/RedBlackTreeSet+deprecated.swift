@@ -1,22 +1,21 @@
-
 #if COMPATIBLE_ATCODER_2025
 
-extension RedBlackTreeSet {
-  @available(*, deprecated)
-  public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
-    .init(
-      tree: __tree_,
-      start: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue)
+  extension RedBlackTreeSet {
+    @available(*, deprecated)
+    public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
+      .init(
+        tree: __tree_,
+        start: bounds.lowerBound.rawValue,
+        end: bounds.upperBound.rawValue)
+    }
   }
-}
 
-extension RedBlackTreeSet {
-  @available(*, deprecated)
-  public subscript(_unsafe position: Index) -> Element {
-    @inline(__always) _read { yield self[_unchecked: position] }
+  extension RedBlackTreeSet {
+    @available(*, deprecated)
+    public subscript(_unsafe position: Index) -> Element {
+      @inline(__always) _read { yield self[_unchecked: position] }
+    }
   }
-}
 
   // Rangeの使い方としておかしいので、便利だが将来的に削除することにした
   extension RedBlackTreeSet {

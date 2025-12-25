@@ -117,7 +117,7 @@ extension ___Tree {
 
     @inlinable
     @inline(__always)
-    init(
+    internal init(
       __is_black_: Bool = false,
       __left_: _NodePtr = .nullptr,
       __right_: _NodePtr = .nullptr,
@@ -153,7 +153,7 @@ extension ___Tree {
 
     @inlinable
     @inline(__always)
-    init(
+    internal init(
       capacity: Int,
       __left_: _NodePtr,
       __begin_node: _NodePtr,
@@ -189,7 +189,7 @@ extension ___Tree {
 
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       @usableFromInline
-      var copyCount: UInt = 0
+      internal var copyCount: UInt = 0
     #endif
   }
 }
@@ -243,7 +243,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
-  public subscript(_ pointer: _NodePtr) -> _Value {
+  internal subscript(_ pointer: _NodePtr) -> _Value {
     @inline(__always) _read {
       assert(___initialized_contains(pointer))
       yield __node_ptr[pointer].__value_
@@ -316,7 +316,7 @@ extension ___Tree {
 
     /// O(*k*)
     @usableFromInline
-    var ___destroyNodes: [_NodePtr] {
+    internal var ___destroyNodes: [_NodePtr] {
       if _header.destroyNode == .nullptr {
         return []
       }
@@ -375,7 +375,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
-  public var __begin_node_: _NodePtr {
+  internal var __begin_node_: _NodePtr {
     @inline(__always)
     _read { yield __header_ptr.pointee.__begin_node }
     @inline(__always)
@@ -390,7 +390,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func __get_value(_ p: _NodePtr) -> _Key {
+  internal func __get_value(_ p: _NodePtr) -> _Key {
     Base.__key(__node_ptr[p].__value_)
   }
 }
@@ -541,63 +541,10 @@ extension ___Tree: CompareBothProtocol {
   @nonobjc
   @inlinable
   @inline(__always)
-  var isMulti: Bool { Base.isMulti }
+  internal var isMulti: Bool { Base.isMulti }
 }
 
 // MARK: -
-
-// TODO: 削除検討
-extension ___Tree {
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func
-    ___erase(_ __f: _NodePtr, _ __l: _NodePtr, _ action: (_Value) throws -> Void) rethrows
-  {
-    var __f = __f
-    while __f != __l {
-      try action(self[__f])
-      __f = erase(__f)
-    }
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func
-    ___erase<Result>(
-      _ __f: _NodePtr, _ __l: _NodePtr, _ initialResult: Result,
-      _ nextPartialResult: (Result, _Value) throws -> Result
-    ) rethrows -> Result
-  {
-    var result = initialResult
-    var __f = __f
-    while __f != __l {
-      result = try nextPartialResult(result, self[__f])
-      __f = erase(__f)
-    }
-    return result
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func
-    ___erase<Result>(
-      _ __f: _NodePtr, _ __l: _NodePtr, into initialResult: Result,
-      _ updateAccumulatingResult: (inout Result, _Value) throws -> Void
-    ) rethrows -> Result
-  {
-    var result = initialResult
-    var __f = __f
-    while __f != __l {
-      try updateAccumulatingResult(&result, self[__f])
-      __f = erase(__f)
-    }
-    return result
-  }
-}
 
 extension ___Tree {
 
@@ -757,7 +704,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___ensureValid(after i: _NodePtr) {
+  internal func ___ensureValid(after i: _NodePtr) {
     if ___is_next_null(i) {
       fatalError(.invalidIndex)
     }
@@ -766,7 +713,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___ensureValid(before i: _NodePtr) {
+  internal func ___ensureValid(before i: _NodePtr) {
     if ___is_prev_null(i) {
       fatalError(.invalidIndex)
     }
@@ -775,7 +722,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___ensureValid(offset i: _NodePtr) {
+  internal func ___ensureValid(offset i: _NodePtr) {
     if ___is_offset_null(i) {
       fatalError(.invalidIndex)
     }
@@ -784,7 +731,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___ensureValid(subscript i: _NodePtr) {
+  internal func ___ensureValid(subscript i: _NodePtr) {
     if ___is_subscript_null(i) {
       fatalError(.invalidIndex)
     }
@@ -793,7 +740,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___ensureValid(begin i: _NodePtr, end j: _NodePtr) {
+  internal func ___ensureValid(begin i: _NodePtr, end j: _NodePtr) {
     if ___is_range_null(i, j) {
       fatalError(.invalidIndex)
     }
@@ -807,21 +754,28 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafePointers<Base> {
+  internal func
+  sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafePointers<Base> {
     .init(tree: self, start: __first, end: __last)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  func unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafePointers<Base> {
+  internal func
+    unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
+    -> ___UnsafePointers<Base>
+  {
     .init(tree: self, __first: __first, __last: __last)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  func unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeValues<Base> {
+  internal func
+    unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
+    -> ___UnsafeValues<Base>
+  {
     .init(tree: self, __first: __first, __last: __last)
   }
 }
@@ -831,7 +785,8 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
+  internal func
+    ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
     rethrows
   {
     for __c in sequence(__p, __l) {
@@ -842,7 +797,9 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___rev_for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
+  internal func ___rev_for_each_(
+    __p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void
+  )
     rethrows
   {
     for __c in sequence(__p, __l).reversed() {
@@ -879,7 +836,9 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int {
+  internal func
+    ___distance(from start: _NodePtr, to end: _NodePtr) -> Int
+  {
     guard
       !___is_offset_null(start),
       !___is_offset_null(end)
@@ -954,7 +913,8 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
+  internal func
+    ___index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
     -> _NodePtr?
   {
     ___ensureValid(offset: i)
@@ -984,7 +944,10 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
+  internal func
+    ___formIndex(
+      _ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr
+    )
     -> Bool
   {
     if let ii = ___index(i, offsetBy: distance, limitedBy: limit) {
@@ -1002,7 +965,9 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func ___tree_adv_iter(_ i: _NodePtr, by distance: Int) -> _NodePtr {
+  internal func
+    ___tree_adv_iter(_ i: _NodePtr, by distance: Int) -> _NodePtr
+  {
     ___ensureValid(offset: i)
     var distance = distance
     var result: _NodePtr = i
@@ -1032,14 +997,16 @@ extension ___Tree where Base: KeyValueComparer {
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___mapped_value(_ __p: _NodePtr) -> Base._MappedValue {
+  internal func ___mapped_value(_ __p: _NodePtr) -> Base._MappedValue {
     Base.___mapped_value(self[__p])
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___with_mapped_value<T>(_ __p: _NodePtr, _ f: (inout Base._MappedValue) throws -> T)
+  internal func ___with_mapped_value<T>(
+    _ __p: _NodePtr, _ f: (inout Base._MappedValue) throws -> T
+  )
     rethrows -> T
   {
     try Base.___with_mapped_value(&self[__p], f)
@@ -1051,7 +1018,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___filter(
+  internal func ___filter(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
     _ isIncluded: (_Value) throws -> Bool
@@ -1075,7 +1042,7 @@ extension ___Tree where Base: KeyValueComparer {
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___mapValues<Other>(
+  internal func ___mapValues<Other>(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
     _ transform: (Base._MappedValue) throws -> Other._MappedValue
@@ -1099,7 +1066,7 @@ extension ___Tree where Base: KeyValueComparer {
   @nonobjc
   @inlinable
   @inline(__always)
-  func ___compactMapValues<Other>(
+  internal func ___compactMapValues<Other>(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
     _ transform: (Base._MappedValue) throws -> Other._MappedValue?
@@ -1135,7 +1102,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func isIdentical(to other: ___Tree) -> Bool {
+  internal func isIdentical(to other: ___Tree) -> Bool {
     self === other
   }
 }
@@ -1190,7 +1157,7 @@ extension ___Tree: Hashable where _Value: Hashable {
 extension ___Tree {
 
   @inlinable
-  public func elementsEqual<OtherSequence>(
+  internal func elementsEqual<OtherSequence>(
     _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
     by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
@@ -1201,7 +1168,7 @@ extension ___Tree {
 extension ___Tree {
 
   @inlinable
-  public func lexicographicallyPrecedes<OtherSequence>(
+  internal func lexicographicallyPrecedes<OtherSequence>(
     _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
     by areInIncreasingOrder: (_Value, _Value) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
@@ -1212,7 +1179,9 @@ extension ___Tree {
 extension ___Tree {
 
   @inlinable
-  public func ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_Value] {
+  internal func
+    ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_Value]
+  {
     let count = __distance(__first, __last)
     return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
       initializedCount = count
@@ -1227,7 +1196,8 @@ extension ___Tree {
   }
 
   @inlinable
-  public func ___copy_to_array<T>(_ __first: _NodePtr, _ __last: _NodePtr, transform: (_Value) -> T)
+  internal func
+    ___copy_to_array<T>(_ __first: _NodePtr, _ __last: _NodePtr, transform: (_Value) -> T)
     -> [T]
   {
     let count = __distance(__first, __last)

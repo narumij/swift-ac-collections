@@ -28,7 +28,7 @@ extension TreeNodeProtocol {
   /// Precondition:  `__x` != nullptr.
   @inlinable
   @inline(__always)
-  func
+  internal func
     __tree_is_left_child(_ __x: _NodePtr) -> Bool
   {
     // unsafe不可
@@ -40,7 +40,7 @@ extension TreeNodeProtocol {
     ///    `__x` is a proper subtree, returns the black height (null counts as 1).  If
     ///    `__x` is an improper subtree, returns 0.
     @usableFromInline
-    func
+    internal func
       __tree_sub_invariant(_ __x: _NodePtr) -> UInt
     {
       if __x == .nullptr {
@@ -82,7 +82,7 @@ extension TreeNodeProtocol {
     ///    `__root` == nullptr is a proper tree.  Returns true if `__root` is a proper
     ///    red black tree, else returns false.
     @usableFromInline
-    func
+    internal func
       __tree_invariant(_ __root: _NodePtr) -> Bool
     {
       if __root == .nullptr {
@@ -105,13 +105,13 @@ extension TreeNodeProtocol {
   #else
     @inlinable
     @inline(__always)
-    func __tree_invariant(_ __root: _NodePtr) -> Bool { true }
+    internal func __tree_invariant(_ __root: _NodePtr) -> Bool { true }
   #endif
 
   /// Returns:  pointer to the left-most node under `__x`.
   @inlinable
   @inline(__always)
-  func
+  internal func
     __tree_min(_ __x: _NodePtr) -> _NodePtr
   {
     assert(__x != .nullptr, "Root node shouldn't be null")
@@ -125,7 +125,7 @@ extension TreeNodeProtocol {
   /// Returns:  pointer to the right-most node under `__x`.
   @inlinable
   @inline(__always)
-  func
+  internal func
     __tree_max(_ __x: _NodePtr) -> _NodePtr
   {
     assert(__x != .nullptr, "Root node shouldn't be null")
@@ -139,7 +139,7 @@ extension TreeNodeProtocol {
   /// Returns:  pointer to the next in-order node after __x.
   @inlinable
   @inline(__always)
-  func
+  internal func
     __tree_next(_ __x: _NodePtr) -> _NodePtr
   {
     assert(__x != .nullptr, "node shouldn't be null")
@@ -160,7 +160,7 @@ extension TreeNodeProtocol {
   /// never happens.
   @inlinable
   @inline(__always)
-  public func
+  internal func
     __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
   {
     assert(__x != .nullptr, "node shouldn't be null")
@@ -178,7 +178,7 @@ extension TreeNodeProtocol {
   /// Note: `__x` may be the end node.
   @inlinable
   @inline(__always)
-  public func
+  internal func
     __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   {
     assert(__x != .nullptr, "node shouldn't be null")
@@ -196,7 +196,7 @@ extension TreeNodeProtocol {
   /// Returns:  pointer to a node which has no children
   @inlinable
   @inline(__always)
-  func
+  internal func
     __tree_leaf(_ __x: _NodePtr) -> _NodePtr
   {
     // unsafe不明

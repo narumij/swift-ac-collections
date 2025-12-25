@@ -27,50 +27,28 @@ extension ___Common {
 
   @inlinable
   @inline(__always)
-  var ___is_empty: Bool {
-    __tree_.___is_empty
+  internal var ___is_empty: Bool {
+    __tree_.___is_empty || _start == _end
   }
 
   @inlinable
   @inline(__always)
-  var ___first: _Value? {
+  internal var ___first: _Value? {
     ___is_empty ? nil : __tree_[_start]
   }
 
   @inlinable
   @inline(__always)
-  var ___last: _Value? {
+  internal var ___last: _Value? {
     ___is_empty ? nil : __tree_[__tree_.__tree_prev_iter(_end)]
   }
 }
 
-// TODO: 削除検討
-extension ___Common {
-  
-  @inlinable
-  @inline(__always)
-  func ___prev(_ i: _NodePtr) -> _NodePtr {
-    __tree_.__tree_prev_iter(i)
-  }
-  
-  @inlinable
-  @inline(__always)
-  func ___next(_ i: _NodePtr) -> _NodePtr {
-    __tree_.__tree_next_iter(i)
-  }
-  
-  @inlinable
-  @inline(__always)
-  func ___advanced(_ i: _NodePtr, by distance: Int) -> _NodePtr {
-    __tree_.___tree_adv_iter(i, by: distance)
-  }
-}
-
 extension ___Common {
 
   @inlinable
   @inline(__always)
-  func _distance(from start: Index, to end: Index) -> Int {
+  internal func _distance(from start: Index, to end: Index) -> Int {
     __tree_.___distance(from: start.rawValue, to: end.rawValue)
   }
 }
@@ -79,13 +57,13 @@ extension ___Common {
 
   @inlinable
   @inline(__always)
-  func ___is_valid(_ index: _NodePtr) -> Bool {
+  internal func ___is_valid(_ index: _NodePtr) -> Bool {
     !__tree_.___is_subscript_null(index)
   }
 
   @inlinable
   @inline(__always)
-  func ___is_valid_range(_ p: _NodePtr, _ l: _NodePtr) -> Bool {
+  internal func ___is_valid_range(_ p: _NodePtr, _ l: _NodePtr) -> Bool {
     !__tree_.___is_range_null(p, l)
   }
 }
@@ -94,13 +72,13 @@ extension ___Common {
 
   @inlinable
   @inline(__always)
-  public var ___key_comp: (_Key, _Key) -> Bool {
+  internal var ___key_comp: (_Key, _Key) -> Bool {
     __tree_.value_comp
   }
 
   @inlinable
   @inline(__always)
-  public var ___value_comp: (_Value, _Value) -> Bool {
+  internal var ___value_comp: (_Value, _Value) -> Bool {
     { __tree_.value_comp(Base.__key($0), Base.__key($1)) }
   }
 }
@@ -109,14 +87,14 @@ extension ___Common {
 
   @inlinable
   @inline(__always)
-  public func ___is_garbaged(_ index: _NodePtr) -> Bool {
+  internal func ___is_garbaged(_ index: _NodePtr) -> Bool {
     __tree_.___is_garbaged(index)
   }
 }
 
 extension ___Common {
 
-  /// releaseビルドでは無効化されています
+  /// releaseビルドでは無効化されています(?)
   @inlinable
   @inline(__always)
   public func ___tree_invariant() -> Bool {
@@ -134,28 +112,16 @@ extension ___Common {
 
   @inlinable
   @inline(__always)
-  func _isIdentical(to other: Self) -> Bool {
+  internal func _isIdentical(to other: Self) -> Bool {
     __tree_.isIdentical(to: other.__tree_) && _start == other._start && _end == other._end
   }
 }
 
-// TODO: 削除検討
-extension ___Common {
-
-  @inlinable
-  @inline(__always)
-  public func ___start() -> _NodePtr { _start }
-
-  @inlinable
-  @inline(__always)
-  public func ___end() -> _NodePtr { _end }
-}
-
 extension ___Common {
   @inlinable
   @inline(__always)
-  var _indices: Indices {
-    __tree_.makeIndices(start: _start, end: _end)
+  internal var _indices: Indices {
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
@@ -163,7 +129,7 @@ extension ___Common {
 
   @inlinable
   @inline(__always)
-  public func ___node_positions() -> ___SafePointers<Base> {
+  internal func ___node_positions() -> ___SafePointers<Base> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

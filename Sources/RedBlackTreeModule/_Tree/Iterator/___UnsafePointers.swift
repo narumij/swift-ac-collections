@@ -21,16 +21,18 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct ___UnsafePointers<Base>: Sequence, IteratorProtocol
+@usableFromInline
+struct ___UnsafePointers<Base>: Sequence, IteratorProtocol
 where Base: ___TreeBase {
 
-  public typealias Tree = ___Tree<Base>
+  @usableFromInline
+  internal typealias Tree = ___Tree<Base>
 
   @usableFromInline
-  let __tree_: Tree
+  internal let __tree_: Tree
 
   @usableFromInline
-  var __first, __last: _NodePtr
+  internal var __first, __last: _NodePtr
 
   @inlinable
   @inline(__always)
@@ -42,7 +44,7 @@ where Base: ___TreeBase {
 
   @inlinable
   @inline(__always)
-  public mutating func next() -> _NodePtr? {
+  internal mutating func next() -> _NodePtr? {
     guard __first != __last else { return nil }
     defer { __first = __tree_.__tree_next_iter(__first) }
     return __first

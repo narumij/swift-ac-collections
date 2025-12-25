@@ -1,20 +1,27 @@
-import RedBlackTreeModule
 import XCTest
+
+#if DEBUG
+  @testable import RedBlackTreeModule
+#else
+  import RedBlackTreeModule
+#endif
 
 final class RedBlackTreeComparatorsTests: XCTestCase {
 
-  func testSetKeyAndValueComp() {
-    let set: RedBlackTreeSet = [3, 1, 4, 5]
-    let keyComp = set.___key_comp
-    let valueComp = set.___value_comp
+  #if DEBUG
+    func testSetKeyAndValueComp() {
+      let set: RedBlackTreeSet = [3, 1, 4, 5]
+      let keyComp = set.___key_comp
+      let valueComp = set.___value_comp
 
-    XCTAssertTrue(keyComp(1, 2))
-    XCTAssertFalse(keyComp(2, 1))
-    XCTAssertEqual(keyComp(3, 3), false)
+      XCTAssertTrue(keyComp(1, 2))
+      XCTAssertFalse(keyComp(2, 1))
+      XCTAssertEqual(keyComp(3, 3), false)
 
-    XCTAssertTrue(valueComp(1, 2))
-    XCTAssertFalse(valueComp(2, 1))
-  }
+      XCTAssertTrue(valueComp(1, 2))
+      XCTAssertFalse(valueComp(2, 1))
+    }
+  #endif
 
   func testSetEqualRange() {
     let set: RedBlackTreeSet = [1, 2, 3, 4, 5]
@@ -37,49 +44,55 @@ final class RedBlackTreeComparatorsTests: XCTestCase {
     XCTAssertEqual(count, 3)
   }
 
-  func testMultisetKeyAndValueComp() {
-    let multi: RedBlackTreeMultiSet = [1, 2, 3]
-    let keyComp = multi.___key_comp
-    let valueComp = multi.___value_comp
+  #if DEBUG
+    func testMultisetKeyAndValueComp() {
+      let multi: RedBlackTreeMultiSet = [1, 2, 3]
+      let keyComp = multi.___key_comp
+      let valueComp = multi.___value_comp
 
-    XCTAssertTrue(keyComp(1, 2))
-    XCTAssertFalse(keyComp(3, 2))
+      XCTAssertTrue(keyComp(1, 2))
+      XCTAssertFalse(keyComp(3, 2))
 
-    XCTAssertTrue(valueComp(1, 2))
-    XCTAssertFalse(valueComp(3, 2))
-  }
+      XCTAssertTrue(valueComp(1, 2))
+      XCTAssertFalse(valueComp(3, 2))
+    }
+  #endif
 
-  func testDictionaryKeyValueCompAndEqualRange() {
-    let dict: RedBlackTreeDictionary = ["a": 1, "b": 2, "c": 3]
+  #if DEBUG
+    func testDictionaryKeyValueCompAndEqualRange() {
+      let dict: RedBlackTreeDictionary = ["a": 1, "b": 2, "c": 3]
 
-    let keyComp = dict.___key_comp
-    let valueComp = dict.___value_comp
+      let keyComp = dict.___key_comp
+      let valueComp = dict.___value_comp
 
-    XCTAssertTrue(keyComp("a", "b"))
-    XCTAssertFalse(keyComp("c", "b"))
+      XCTAssertTrue(keyComp("a", "b"))
+      XCTAssertFalse(keyComp("c", "b"))
 
-    XCTAssertTrue(valueComp(_value("a", 1), _value("b", 2)))
-    XCTAssertFalse(valueComp(_value("c", 3), _value("b", 2)))
+      XCTAssertTrue(valueComp(_value("a", 1), _value("b", 2)))
+      XCTAssertFalse(valueComp(_value("c", 3), _value("b", 2)))
 
-    let (lo, hi) = dict.equalRange("b")
-    XCTAssertEqual(dict[lo].key, "b")
-    XCTAssertEqual(dict.distance(from: lo, to: hi), 1)
-  }
+      let (lo, hi) = dict.equalRange("b")
+      XCTAssertEqual(dict[lo].key, "b")
+      XCTAssertEqual(dict.distance(from: lo, to: hi), 1)
+    }
+  #endif
 
-  func testMultiMapKeyValueCompAndEqualRange() {
-    let dict: RedBlackTreeMultiMap = ["a": 1, "b": 2, "c": 3]
+  #if DEBUG
+    func testMultiMapKeyValueCompAndEqualRange() {
+      let dict: RedBlackTreeMultiMap = ["a": 1, "b": 2, "c": 3]
 
-    let keyComp = dict.___key_comp
-    let valueComp = dict.___value_comp
+      let keyComp = dict.___key_comp
+      let valueComp = dict.___value_comp
 
-    XCTAssertTrue(keyComp("a", "b"))
-    XCTAssertFalse(keyComp("c", "b"))
+      XCTAssertTrue(keyComp("a", "b"))
+      XCTAssertFalse(keyComp("c", "b"))
 
-    XCTAssertTrue(valueComp(_value("a", 1), _value("b", 2)))
-    XCTAssertFalse(valueComp(_value("c", 3), _value("b", 2)))
+      XCTAssertTrue(valueComp(_value("a", 1), _value("b", 2)))
+      XCTAssertFalse(valueComp(_value("c", 3), _value("b", 2)))
 
-    let (lo, hi) = dict.equalRange("b")
-    XCTAssertEqual(dict[lo].key, "b")
-    XCTAssertEqual(dict.distance(from: lo, to: hi), 1)
-  }
+      let (lo, hi) = dict.equalRange("b")
+      XCTAssertEqual(dict[lo].key, "b")
+      XCTAssertEqual(dict.distance(from: lo, to: hi), 1)
+    }
+  #endif
 }

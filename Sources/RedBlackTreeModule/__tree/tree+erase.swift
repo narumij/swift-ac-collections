@@ -32,7 +32,7 @@ extension EraseProtocol {
 
   @inlinable
   @inline(__always)
-  func
+  internal func
     erase(_ __p: _NodePtr) -> _NodePtr
   {
     let __r = __remove_node_pointer(__p)
@@ -42,7 +42,7 @@ extension EraseProtocol {
 
   @inlinable
   @inline(__always)
-  func
+  internal func
     erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
   {
     var __f = __f

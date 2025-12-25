@@ -40,10 +40,10 @@ extension RedBlackTreeSlice {
     public typealias SubSequence = Self
 
     @usableFromInline
-    let __tree_: Tree
+    internal let __tree_: Tree
 
     @usableFromInline
-    var _start, _end: _NodePtr
+    internal var _start, _end: _NodePtr
 
     @inlinable
     @inline(__always)
@@ -135,14 +135,7 @@ extension RedBlackTreeSlice.KeyValue {
 
 extension RedBlackTreeSlice.KeyValue {
 
-  #if COMPATIBLE_ATCODER_2025
-    @inlinable
-//    public subscript(_unsafe position: Index) -> Element {
-  public subscript(_unsafe position: Index) -> (key: _Key, value: _MappedValue) {
-//      @inline(__always) get { ___element(self[_unchecked: position]) }
-    @inline(__always) get { self[_unchecked: position] }
-    }
-  #else
+  #if !COMPATIBLE_ATCODER_2025
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable
@@ -170,17 +163,7 @@ extension RedBlackTreeSlice.KeyValue {
       end: bounds.upperBound.rawValue)
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
-      .init(
-        tree: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
-    }
-  #else
+  #if !COMPATIBLE_ATCODER_2025
     @inlinable
     @inline(__always)
     public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
@@ -357,21 +340,7 @@ extension RedBlackTreeSlice.KeyValue {
   public typealias Keys = RedBlackTreeIterator<Base>.Keys
   public typealias Values = RedBlackTreeIterator<Base>.MappedValues
 
-  #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public func keys() -> Keys {
-      _keys()
-    }
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public func values() -> Values {
-      _values()
-    }
-  #else
+  #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)

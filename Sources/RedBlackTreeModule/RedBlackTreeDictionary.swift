@@ -330,17 +330,7 @@ extension RedBlackTreeDictionary {
       end: bounds.upperBound.rawValue)
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
-      .init(
-        tree: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
-    }
-  #else
+  #if !COMPATIBLE_ATCODER_2025
     @inlinable
     @inline(__always)
     public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
@@ -707,50 +697,23 @@ extension RedBlackTreeDictionary {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
 extension RedBlackTreeDictionary {
-  // TODO: 検討
-  // 思いついた当初はとても気に入っていたが、いまはそうでもないので削除を検討
-
-  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
-  /// 範囲 `[lower, upper)` に含まれる要素を返します。
+  /// キーレンジ `[start, end)` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
-  public subscript(bounds: Range<Key>) -> SubSequence {
-    elements(in: bounds)
+  public func sequence(from start: Key, to end: Key) -> SubSequence {
+    .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
   }
 
-  // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
-  /// 範囲 `[lower, upper]` に含まれる要素を返します。
+  /// キーレンジ `[start, end]` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
-  public subscript(bounds: ClosedRange<Key>) -> SubSequence {
-    elements(in: bounds)
+  public func sequence(from start: Key, through end: Key) -> SubSequence {
+    .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
   }
 }
-
-extension RedBlackTreeDictionary {
-  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: Range<Key>) -> SubSequence {
-    .init(
-      tree: __tree_,
-      start: ___lower_bound(range.lowerBound),
-      end: ___lower_bound(range.upperBound))
-  }
-
-  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func elements(in range: ClosedRange<Key>) -> SubSequence {
-    .init(
-      tree: __tree_,
-      start: ___lower_bound(range.lowerBound),
-      end: ___upper_bound(range.upperBound))
-  }
-}
+#endif
 
 // MARK: - Transformation
 
@@ -931,14 +894,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
     @inline(__always) get { self[_checked: position] }
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    @inlinable
-//    public subscript(_unsafe position: Index) -> Element {
-  public subscript(_unsafe position: Index) -> (key: Key, value: Value) {
-//      @inline(__always) get { ___element(self[_unchecked: position]) }
-    @inline(__always) get { self[_unchecked: position] }
-    }
-  #else
+  #if !COMPATIBLE_ATCODER_2025
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable
@@ -983,7 +939,8 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   }
 }
 
-// TODO: 便利止まりだし、標準にならうと不自然なので、削除するか検討
+#if COMPATIBLE_ATCODER_2025
+// 便利止まりだし、標準にならうと不自然なので、将来的に削除する
 extension RedBlackTreeDictionary where Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -996,7 +953,7 @@ extension RedBlackTreeDictionary where Value: Equatable {
   }
 }
 
-// TODO: 便利止まりだし、標準にならうと不自然なので、削除するか検討
+// 便利止まりだし、標準にならうと不自然なので、将来的に削除する
 extension RedBlackTreeDictionary where Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -1008,26 +965,13 @@ extension RedBlackTreeDictionary where Value: Comparable {
     lexicographicallyPrecedes(other, by: <)
   }
 }
+#endif
 
 // MARK: -
 
 extension RedBlackTreeDictionary {
 
-  #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public func keys() -> Keys {
-      _keys()
-    }
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public func values() -> Values {
-      _values()
-    }
-  #else
+  #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)

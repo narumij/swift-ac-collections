@@ -33,7 +33,7 @@ extension RemoveProtocol {
 
   @inlinable
   @inline(__always)
-  func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {
+  internal func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {
     var __r = __ptr
     __r = __tree_next_iter(__r)
     if __begin_node_ == __ptr {

@@ -39,25 +39,25 @@ extension _NodePtr {
 
   /// 赤黒木のIndexで、nullを表す
   @inlinable
-  static var nullptr: Self {
+  internal static var nullptr: Self {
     -2
   }
 
   /// 赤黒木のIndexで、終端を表す
   @inlinable
-  static var end: Self {
+  internal static var end: Self {
     -1
   }
 
   /// 数値を直接扱うことを避けるための初期化メソッド
   @inlinable
   @inline(__always)
-  static func node(_ p: Int) -> Self { p }
+  internal static func node(_ p: Int) -> Self { p }
 }
 
 @inlinable
 @inline(__always)
-func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
+package func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
   ptr < 0
 }
 
@@ -173,7 +173,7 @@ extension KeyProtocol {
 
   @inlinable
   @inline(__always)
-  func __get_value(_ p: _NodePtr) -> __node_value_type {
+  internal func __get_value(_ p: _NodePtr) -> __node_value_type {
     __key(__value_(p))
   }
 }
@@ -205,7 +205,7 @@ extension BeginProtocol {
   @inlinable
   @inline(__always)
   /// 木の左端のノードを返す
-  func begin() -> _NodePtr { __begin_node_ }
+  internal func begin() -> _NodePtr { __begin_node_ }
 }
 
 @usableFromInline
@@ -218,7 +218,7 @@ extension EndNodeProtocol {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable
   @inline(__always)
-  func __end_node() -> _NodePtr { .end }
+  internal func __end_node() -> _NodePtr { .end }
 }
 
 @usableFromInline
@@ -231,7 +231,7 @@ extension EndProtocol {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable
   @inline(__always)
-  func end() -> _NodePtr { .end }
+  internal func end() -> _NodePtr { .end }
 }
 
 @usableFromInline
@@ -245,7 +245,7 @@ protocol ___RootProtocol: TreeNodeProtocol & EndProtocol {}
 extension ___RootProtocol {
   @available(*, deprecated, message: "Kept only for the purpose of preventing loss of knowledge")
   /// 木の根ノードを返す
-  func __root() -> _NodePtr { __left_(__end_node()) }
+  internal func __root() -> _NodePtr { __left_(__end_node()) }
 }
 
 @usableFromInline
@@ -258,7 +258,7 @@ extension RootPtrProtocol {
   /// 木の根ノードへの参照を返す
   @inlinable
   @inline(__always)
-  func __root_ptr() -> _NodeRef { __left_ref(__end_node()) }
+  internal func __root_ptr() -> _NodeRef { __left_ref(__end_node()) }
 }
 
 @usableFromInline
@@ -373,13 +373,13 @@ extension ValueComparator {
 
   @inlinable
   @inline(__always)
-  public static func with_value_equiv<T>(_ f: ((Base._Key, Base._Key) -> Bool) -> T) -> T {
+  internal static func with_value_equiv<T>(_ f: ((Base._Key, Base._Key) -> Bool) -> T) -> T {
     f(value_equiv)
   }
 
   @inlinable
   @inline(__always)
-  public static func with_value_comp<T>(_ f: ((Base._Key, Base._Key) -> Bool) -> T) -> T {
+  internal static func with_value_comp<T>(_ f: ((Base._Key, Base._Key) -> Bool) -> T) -> T {
     f(value_comp)
   }
 }
@@ -388,7 +388,8 @@ extension ValueComparator where Base: ThreeWayComparator {
 
   @inlinable
   @inline(__always)
-  func __lazy_synth_three_way_comparator(_ __lhs: Base._Key, _ __rhs: Base._Key)
+  internal func
+    __lazy_synth_three_way_comparator(_ __lhs: Base._Key, _ __rhs: Base._Key)
     -> Base.__compare_result
   {
     Base.__lazy_synth_three_way_comparator(__lhs, __rhs)

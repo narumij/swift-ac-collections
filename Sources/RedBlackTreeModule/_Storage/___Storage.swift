@@ -25,32 +25,40 @@
 @_fixed_layout
 @usableFromInline
 final class ___Storage<Base: ___TreeBase> {
+
   public typealias Tree = ___Tree<Base>
+
   @nonobjc
   @inlinable
   @inline(__always)
-  init(tree: Tree) {
+  internal init(tree: Tree) {
     self.tree = tree
   }
+
   @nonobjc
   @inlinable
   @inline(__always)
-  init(minimumCapacity: Int) {
+  internal init(minimumCapacity: Int) {
     tree = .create(minimumCapacity: minimumCapacity)
   }
+
   @usableFromInline
   typealias _Tree = Tree
+
   @nonobjc
   @usableFromInline
-  final var tree: Tree
+  internal var tree: Tree
+
   @nonobjc
   @inlinable
   @inline(__always)
-  final var count: Int { tree.count }
+  internal var count: Int { tree.count }
+
   @nonobjc
   @inlinable
   @inline(__always)
-  final var capacity: Int { tree.header.capacity }
+  internal var capacity: Int { tree.header.capacity }
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -59,16 +67,18 @@ final class ___Storage<Base: ___TreeBase> {
   ) -> ___Storage {
     return .init(minimumCapacity: capacity)
   }
+
   @nonobjc
   @inlinable
   @inline(__always)
-  final func copy() -> ___Storage {
+  internal func copy() -> ___Storage {
     .init(tree: tree.copy())
   }
+
   @nonobjc
   @inlinable
   @inline(__always)
-  final func copy(
+  internal func copy(
     growthCapacityTo capacity: Int,
     linearly: Bool
   ) -> ___Storage {
@@ -77,10 +87,11 @@ final class ___Storage<Base: ___TreeBase> {
         growthCapacityTo: capacity,
         linearly: linearly))
   }
+
   @nonobjc
   @inlinable
   @inline(__always)
-  final func copy(
+  internal func copy(
     growthCapacityTo capacity: Int,
     limit: Int,
     linearly: Bool
@@ -91,10 +102,11 @@ final class ___Storage<Base: ___TreeBase> {
         limit: limit,
         linearly: linearly))
   }
+
   @nonobjc
   @inlinable
   @inline(__always)
-  final func isKnownUniquelyReferenced_tree() -> Bool {
+  internal func isKnownUniquelyReferenced_tree() -> Bool {
     #if !DISABLE_COPY_ON_WRITE
       isKnownUniquelyReferenced(&tree)
     #else

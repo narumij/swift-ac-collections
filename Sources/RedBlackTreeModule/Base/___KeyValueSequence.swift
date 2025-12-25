@@ -34,7 +34,7 @@ extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
-  static func ___element(_ __value: _Value) -> Element {
+  internal static func ___element(_ __value: _Value) -> Element {
     (__value.key, __value.value)
   }
 
@@ -55,7 +55,7 @@ extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
-  func ___element(_ __value: _Value) -> Element {
+  internal func ___element(_ __value: _Value) -> Element {
     Self.___element(__value)
   }
 }
@@ -64,13 +64,13 @@ extension ___KeyValueSequence where Self: ___Common {
 
   @inlinable
   @inline(__always)
-  var ___first: Element? {
+  internal var ___first: Element? {
     ___first.map(___element)
   }
 
   @inlinable
   @inline(__always)
-  var ___last: Element? {
+  internal var ___last: Element? {
     ___last.map(___element)
   }
 }
@@ -78,13 +78,13 @@ extension ___KeyValueSequence where Self: ___Common {
 extension ___KeyValueSequence where Self: ___BaseSequence {
 
   @inlinable
-  func ___min() -> Element? {
+  internal func ___min() -> Element? {
     ___min().map(___element)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
-  func ___max() -> Element? {
+  internal func ___max() -> Element? {
     ___max().map(___element)
   }
 }
@@ -92,13 +92,13 @@ extension ___KeyValueSequence where Self: ___BaseSequence {
 extension ___KeyValueSequence where Self: ___Index {
 
   @inlinable
-  func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+  internal func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first { try predicate(___element($0)) }.map(___element)
   }
 
   /// - Complexity: O(*n*)
   @inlinable
-  func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+  internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     try ___first_index { try predicate(___element($0)) }
   }
 }
@@ -107,7 +107,7 @@ extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
-  func ___value_for(_ __k: _Key) -> _Value? {
+  internal func ___value_for(_ __k: _Key) -> _Value? {
     let __ptr = __tree_.find(__k)
     return ___is_null_or_end(__ptr) ? nil : __tree_[__ptr]
   }
@@ -117,13 +117,13 @@ extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
-  func _makeIterator() -> Tree._KeyValues {
+  internal func _makeIterator() -> Tree._KeyValues {
     .init(tree: __tree_, start: _start, end: _end)
   }
 
   @inlinable
   @inline(__always)
-  func _reversed() -> Tree._KeyValues.Reversed {
+  internal func _reversed() -> Tree._KeyValues.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -135,14 +135,14 @@ extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
-  func _keys() -> Keys {
+  internal func _keys() -> Keys {
     .init(tree: __tree_, start: _start, end: _end)
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  func _values() -> Values {
+  internal func _values() -> Values {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -151,7 +151,7 @@ extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
-  func _forEach(_ body: (Element) throws -> Void) rethrows {
+  internal func _forEach(_ body: (Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(Self.___element(__tree_[$0]))
     }
@@ -162,21 +162,9 @@ extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
-  func _forEach(_ body: (Index, Element) throws -> Void) rethrows {
+  internal func _forEach(_ body: (Index, Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(___index($0), Self.___element(__tree_[$0]))
-    }
-  }
-}
-
-// TODO: 削除検討
-extension ___KeyValueSequence {
-
-  @inlinable
-  @inline(__always)
-  public func ___forEach(_ body: (_NodePtr, Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body($0, Self.___element(__tree_[$0]))
     }
   }
 }
@@ -186,7 +174,7 @@ extension ___KeyValueSequence {
   /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
-  func _sorted() -> [Element] {
+  internal func _sorted() -> [Element] {
     __tree_.___copy_to_array(_start, _end, transform: Self.___element)
   }
 }
@@ -195,7 +183,7 @@ extension ___KeyValueSequence {
 extension ___KeyValueSequence {
 
   @inlinable
-  subscript(_checked position: Index) -> _Value {
+  internal subscript(_checked position: Index) -> _Value {
     @inline(__always) _read {
       __tree_.___ensureValid(subscript: position.rawValue)
       yield __tree_[position.rawValue]
@@ -203,7 +191,7 @@ extension ___KeyValueSequence {
   }
 
   @inlinable
-  subscript(_unchecked position: Index) -> _Value {
+  internal subscript(_unchecked position: Index) -> _Value {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
@@ -216,7 +204,7 @@ extension ___KeyValueSequence {
 extension ___KeyValueSequence {
 
   @inlinable
-  subscript(_checked position: Index) -> Element {
+  internal subscript(_checked position: Index) -> Element {
     @inline(__always) get {
       __tree_.___ensureValid(subscript: position.rawValue)
       return ___element(__tree_[position.rawValue])
@@ -224,7 +212,7 @@ extension ___KeyValueSequence {
   }
 
   @inlinable
-  subscript(_unchecked position: Index) -> Element {
+  internal subscript(_unchecked position: Index) -> Element {
     @inline(__always) get {
       return ___element(__tree_[position.rawValue])
     }
@@ -236,7 +224,7 @@ extension ___KeyValueSequence {
   // コンパイラの型推論のバグを踏んでいると想定し、型をちゃんと書くことにし、様子を見ている
 
   @inlinable
-  subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
+  internal subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
     @inline(__always) get {
       __tree_.___ensureValid(subscript: position.rawValue)
       return ___element(__tree_[position.rawValue])
@@ -244,7 +232,7 @@ extension ___KeyValueSequence {
   }
 
   @inlinable
-  subscript(_unchecked position: Index) -> (key: _Key, value: _MappedValue) {
+  internal subscript(_unchecked position: Index) -> (key: _Key, value: _MappedValue) {
     @inline(__always) get {
       return ___element(__tree_[position.rawValue])
     }

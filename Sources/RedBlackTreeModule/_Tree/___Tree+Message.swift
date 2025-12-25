@@ -25,37 +25,37 @@ import Foundation
 extension String {
   
   @usableFromInline
-  static var garbagedIndex: String {
+  internal static var garbagedIndex: String {
     "A dangling node reference was used. Consider using a valid range or slice."
   }
 
   @usableFromInline
-  static var invalidIndex: String {
+  internal static var invalidIndex: String {
     "Attempting to access RedBlackTree elements using an invalid index"
   }
 
   @usableFromInline
-  static var outOfBounds: String {
+  internal static var outOfBounds: String {
     "RedBlackTree index is out of Bound."
   }
 
   @usableFromInline
-  static var outOfRange: String {
+  internal static var outOfRange: String {
     "RedBlackTree index is out of range."
   }
   
   @usableFromInline
-  static var emptyFirst: String {
+  internal static var emptyFirst: String {
     "Can't removeFirst from an empty RedBlackTree"
   }
 
   @usableFromInline
-  static var emptyLast: String {
+  internal static var emptyLast: String {
     "Can't removeLast from an empty RedBlackTree"
   }
   
   @usableFromInline
-  static func duplicateValue<Key>(for key: Key) -> String {
+  internal static func duplicateValue<Key>(for key: Key) -> String {
     "Dupricate values for key: '\(key)'"
   }
 }

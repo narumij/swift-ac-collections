@@ -34,13 +34,13 @@ extension ___KeyOnlySequence {
 
   @inlinable
   @inline(__always)
-  func _makeIterator() -> Tree._Values {
+  internal func _makeIterator() -> Tree._Values {
     .init(tree: __tree_, start: _start, end: _end)
   }
 
   @inlinable
   @inline(__always)
-  func _reversed() -> Tree._Values.Reversed {
+  internal func _reversed() -> Tree._Values.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -49,7 +49,7 @@ extension ___KeyOnlySequence {
 
   @inlinable
   @inline(__always)
-  func _forEach(_ body: (_Value) throws -> Void) rethrows {
+  internal func _forEach(_ body: (_Value) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(__tree_[$0])
     }
@@ -60,21 +60,9 @@ extension ___KeyOnlySequence {
 
   @inlinable
   @inline(__always)
-  func _forEach(_ body: (Index, _Value) throws -> Void) rethrows {
+  internal func _forEach(_ body: (Index, _Value) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(___index($0), __tree_[$0])
-    }
-  }
-}
-
-// TODO: 削除検討
-extension ___KeyOnlySequence {
-
-  @inlinable
-  @inline(__always)
-  public func ___forEach(_ body: (_NodePtr, _Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body($0, __tree_[$0])
     }
   }
 }
@@ -84,7 +72,7 @@ extension ___KeyOnlySequence {
   /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
-  func _sorted() -> [_Value] {
+  internal func _sorted() -> [_Value] {
     __tree_.___copy_to_array(_start, _end)
   }
 }
@@ -92,7 +80,7 @@ extension ___KeyOnlySequence {
 extension ___KeyOnlySequence {
 
   @inlinable
-  subscript(_checked position: Index) -> _Value {
+  internal subscript(_checked position: Index) -> _Value {
     @inline(__always) _read {
       __tree_.___ensureValid(subscript: position.rawValue)
       yield __tree_[position.rawValue]
@@ -100,7 +88,7 @@ extension ___KeyOnlySequence {
   }
 
   @inlinable
-  subscript(_unchecked position: Index) -> _Value {
+  internal subscript(_unchecked position: Index) -> _Value {
     @inline(__always) _read {
       yield __tree_[position.rawValue]
     }
@@ -112,7 +100,7 @@ extension ___KeyOnlySequence {
   // めんどくさくなったので、KeyValue側では標準実装を使っている
   @inlinable
   @inline(__always)
-  func _elementsEqual<OtherSequence>(
+  internal func _elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
     try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
@@ -121,7 +109,7 @@ extension ___KeyOnlySequence {
   // 制約で値の型が一致する必要があり、KeyValue側では標準実装を使っている
   @inlinable
   @inline(__always)
-  func _lexicographicallyPrecedes<OtherSequence>(
+  internal func _lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
     try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)

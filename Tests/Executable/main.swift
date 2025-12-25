@@ -274,14 +274,6 @@ xy[1]?[0 ..< 2_000_000].enumerated().forEach { i, v in
 print("tree.count",xy[1]!.count)
 print("tree._copyCount",xy[1]!.copyCount)
 #elseif false
-var xy: RedBlackTreeDictionary<Int,RedBlackTreeSet<Int>> = [1: .init(0 ..< 2_000_000)]
-for i in 0 ..< 2_000_000 {
-//  _ = xy[1]?.lowerBound(i)
-  xy[1]?.removeAndForEach(0 ..< i) { e in
-    _ = e + 1
-  }
-}
-#elseif false
 var xy: [Int] = (0 ..< 200_000_000) + []
   for _ in 0 ..< 200_000_000 {
     // 配列の場合、CoWチェックは走ってるが、コピーは起きてない
@@ -396,18 +388,4 @@ print(a.count)
 //#endif
 
 print("Hola!")
-
-
-extension RedBlackTreeSet {
-
-  @inlinable
-  public mutating func removeAndForEach(
-    _ range: Range<Element>,
-    _ action: (Element) throws -> ()) rethrows {
-    try ___remove(
-      from: ___lower_bound(range.lowerBound),
-      to: ___upper_bound(range.upperBound),
-      forEach: action)
-  }
-}
 

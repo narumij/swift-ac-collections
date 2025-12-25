@@ -28,7 +28,7 @@ extension TreeNodeProtocol {
   ///           while preserving in-order order.
   @inlinable
   @inline(__always)
-  func
+  internal func
     __tree_left_rotate(_ __x: _NodePtr)
   {
     assert(__x != .nullptr, "node shouldn't be null")
@@ -52,7 +52,7 @@ extension TreeNodeProtocol {
   ///           while preserving in-order order.
   @inlinable
   @inline(__always)
-  func
+  internal func
     __tree_right_rotate(_ __x: _NodePtr)
   {
     assert(__x != .nullptr, "node shouldn't be null")
@@ -81,7 +81,7 @@ extension TreeNodeProtocol {
   ///                may be different than the value passed in as `__root`.
   @inlinable
   @inline(never)
-  func
+  internal func
     __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
   {
     assert(__root != .nullptr, "Root of the tree shouldn't be null")
@@ -141,7 +141,7 @@ extension TreeNodeProtocol {
   ///                may be different than the value passed in as `__root`.
   @inlinable
   @inline(never)
-  func
+  internal func
     __tree_remove(_ __root: _NodePtr, _ __z: _NodePtr)
   {
     assert(__root != .nullptr, "Root node should not be null")

@@ -27,79 +27,79 @@ extension ___Index {
 
   @inlinable
   @inline(__always)
-  func ___index(_ p: _NodePtr) -> Index {
+  internal func ___index(_ p: _NodePtr) -> Index {
     __tree_.makeIndex(rawValue: p)
   }
 
   @inlinable
   @inline(__always)
-  func ___index_or_nil(_ p: _NodePtr) -> Index? {
+  internal func ___index_or_nil(_ p: _NodePtr) -> Index? {
     p == .nullptr ? nil : ___index(p)
   }
 
   @inlinable
   @inline(__always)
-  func ___index_or_nil(_ p: _NodePtr?) -> Index? {
+  internal func ___index_or_nil(_ p: _NodePtr?) -> Index? {
     p.map { ___index($0) }
   }
 
   @inlinable
   @inline(__always)
-  var _startIndex: Index {
+  internal var _startIndex: Index {
     ___index(_start)
   }
 
   @inlinable
   @inline(__always)
-  var _endIndex: Index {
+  internal var _endIndex: Index {
     ___index(_end)
   }
 
   @inlinable
   @inline(__always)
-  func _index(after i: Index) -> Index {
+  internal func _index(after i: Index) -> Index {
     ___index(__tree_.___index(after: i.rawValue))
   }
 
   @inlinable
   @inline(__always)
-  func _formIndex(after i: inout Index) {
+  internal func _formIndex(after i: inout Index) {
     __tree_.___formIndex(after: &i.rawValue)
   }
 
   @inlinable
   @inline(__always)
-  func _index(before i: Index) -> Index {
+  internal func _index(before i: Index) -> Index {
     ___index(__tree_.___index(before: i.rawValue))
   }
 
   @inlinable
   @inline(__always)
-  func _formIndex(before i: inout Index) {
+  internal func _formIndex(before i: inout Index) {
     __tree_.___formIndex(before: &i.rawValue)
   }
 
   @inlinable
   @inline(__always)
-  func _index(_ i: Index, offsetBy distance: Int) -> Index {
+  internal func _index(_ i: Index, offsetBy distance: Int) -> Index {
     ___index(__tree_.___index(i.rawValue, offsetBy: distance))
   }
 
   @inlinable
   @inline(__always)
-  func _formIndex(_ i: inout Index, offsetBy distance: Int) {
+  internal func _formIndex(_ i: inout Index, offsetBy distance: Int) {
     __tree_.___formIndex(&i.rawValue, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
-  func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+  internal func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index_or_nil(__tree_.___index(i.rawValue, offsetBy: distance, limitedBy: limit.rawValue))
   }
 
   @inlinable
   @inline(__always)
-  func _formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
+  internal func _formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
     __tree_.___formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
@@ -110,7 +110,7 @@ extension ___Index {
 
   @inlinable
   @inline(__always)
-  func ___first_index(where predicate: (_Value) throws -> Bool) rethrows -> Index? {
+  internal func ___first_index(where predicate: (_Value) throws -> Bool) rethrows -> Index? {
     var result: Index?
     try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
       if try predicate(__tree_[__p]) {
@@ -142,7 +142,7 @@ extension ___Index {
 
   @inlinable
   @inline(__always)
-  func _isValid(index: Index) -> Bool {
+  internal func _isValid(index: Index) -> Bool {
     !__tree_.___is_subscript_null(index.rawValue)
   }
 }
@@ -151,7 +151,7 @@ extension ___Index where Self: Collection {
 
   @inlinable
   @inline(__always)
-  func _isValid<R: RangeExpression>(
+  internal func _isValid<R: RangeExpression>(
     _ bounds: R
   ) -> Bool where R.Bound == Index {
 
@@ -167,13 +167,13 @@ extension ___Index where Base: CompareUniqueTrait {
   ///（重複なし）
   @inlinable
   @inline(__always)
-  func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
+  internal func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
     __tree_.__equal_range_unique(k)
   }
 
   @inlinable
   @inline(__always)
-  func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
+  internal func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
     let (lo, hi) = ___equal_range(k)
     return (___index(lo), ___index(hi))
   }
@@ -184,13 +184,13 @@ extension ___Index where Base: CompareMultiTrait {
   /// （重複あり）
   @inlinable
   @inline(__always)
-  func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
+  internal func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
     __tree_.__equal_range_multi(k)
   }
 
   @inlinable
   @inline(__always)
-  func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
+  internal func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
     let (lo, hi) = ___equal_range(k)
     return (___index(lo), ___index(hi))
   }

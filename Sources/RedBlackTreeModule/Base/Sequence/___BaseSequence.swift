@@ -65,13 +65,13 @@ extension ___BaseSequence {
 
   @inlinable
   @inline(__always)
-  func ___index_lower_bound(_ __k: _Key) -> Index {
+  internal func ___index_lower_bound(_ __k: _Key) -> Index {
     ___index(___lower_bound(__k))
   }
 
   @inlinable
   @inline(__always)
-  func ___index_upper_bound(_ __k: _Key) -> Index {
+  internal func ___index_upper_bound(_ __k: _Key) -> Index {
     ___index(___upper_bound(__k))
   }
 }
@@ -80,7 +80,7 @@ extension ___BaseSequence {
   
   @inlinable
   @inline(__always)
-  func ___first_index(of member: _Key) -> Index? {
+  internal func ___first_index(of member: _Key) -> Index? {
     let ptr = __tree_.__ptr_(__tree_.__find_equal(member).__child)
     return ___index_or_nil(ptr)
   }

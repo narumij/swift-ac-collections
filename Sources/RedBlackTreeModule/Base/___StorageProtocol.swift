@@ -36,7 +36,7 @@ where
 extension ___StorageProtocol {
 
   @inlinable
-  var __tree_: Tree {
+  internal var __tree_: Tree {
     @inline(__always) _read {
       yield _storage.tree
     }
@@ -44,25 +44,25 @@ extension ___StorageProtocol {
 
   @inlinable
   @inline(__always)
-  var _start: _NodePtr {
+  internal var _start: _NodePtr {
     __tree_.__begin_node_
   }
 
   @inlinable
   @inline(__always)
-  var _end: _NodePtr {
+  internal var _end: _NodePtr {
     __tree_.__end_node()
   }
 
   @inlinable
   @inline(__always)
-  var ___count: Int {
+  internal var ___count: Int {
     __tree_.count
   }
 
   @inlinable
   @inline(__always)
-  var ___capacity: Int {
+  internal var ___capacity: Int {
     __tree_.___capacity
   }
 }
@@ -99,7 +99,7 @@ extension ___StorageProtocol {
 
   @inlinable
   @inline(__always)
-  mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
+  internal mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
 
     if keepCapacity {
       __tree_.__eraseAll()

@@ -24,7 +24,7 @@ extension ___Tree {
 
   @inlinable
   @inline(__always)
-  static func ___insert_range_unique<Other>(
+  internal static func ___insert_range_unique<Other>(
     tree __tree_: ___Tree,
     other __source: ___Tree<Other>,
     _ __first: _NodePtr,
@@ -78,7 +78,7 @@ extension ___Tree where Base: KeyValueComparer {
 
   @inlinable
   @inline(__always)
-  static func ___insert_range_unique<Other>(
+  internal static func ___insert_range_unique<Other>(
     tree __tree_: ___Tree,
     other __source: ___Tree<Other>,
     _ __first: _NodePtr,
@@ -135,7 +135,7 @@ extension ___Tree {
 
   @inlinable
   @inline(__always)
-  static func ___insert_range_multi<Other>(
+  internal static func ___insert_range_multi<Other>(
     tree __tree_: ___Tree,
     other __source: ___Tree<Other>,
     _ __first: _NodePtr,
@@ -186,7 +186,7 @@ extension ___Tree {
 extension ___Tree {
 
   @inlinable
-  static func ___insert_range_unique<S>(tree __tree_: ___Tree, _ __source: __owned S) -> ___Tree
+  internal static func ___insert_range_unique<S>(tree __tree_: ___Tree, _ __source: __owned S) -> ___Tree
   where Base._Value == S.Element, S: Sequence {
 #if false
     var __tree_ = __tree_
@@ -229,7 +229,7 @@ extension ___Tree {
 extension ___Tree {
 
   @inlinable
-  static func ___insert_range_unique<S>(tree __tree_: ___Tree, _ __source: __owned S, transform: (S.Element) -> Base._Value) -> ___Tree
+  internal static func ___insert_range_unique<S>(tree __tree_: ___Tree, _ __source: __owned S, transform: (S.Element) -> Base._Value) -> ___Tree
   where S: Sequence {
     var __tree_ = __tree_
 
@@ -269,7 +269,7 @@ extension ___Tree where Base: KeyValueComparer {
 
   @inlinable
   @inline(__always)
-  static func ___insert_range_unique<S>(
+  internal static func ___insert_range_unique<S>(
     tree __tree_: ___Tree,
     _ __source: S,
     uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
@@ -318,7 +318,7 @@ extension ___Tree where Base: KeyValueComparer {
 extension ___Tree {
 
   @inlinable
-  static func ___insert_range_multi<S>(tree __tree_: ___Tree, _ __source: __owned S) -> ___Tree
+  internal static func ___insert_range_multi<S>(tree __tree_: ___Tree, _ __source: __owned S) -> ___Tree
   where Base._Value == S.Element, S: Sequence {
 #if false
     var __tree_ = __tree_
@@ -355,7 +355,7 @@ extension ___Tree {
   }
   
   @inlinable
-  static func ___insert_range_multi<S>(tree __tree_: ___Tree, _ __source: __owned S, transform: (S.Element) -> Base._Value) -> ___Tree
+  internal static func ___insert_range_multi<S>(tree __tree_: ___Tree, _ __source: __owned S, transform: (S.Element) -> Base._Value) -> ___Tree
   where S: Sequence {
     var __tree_ = __tree_
 

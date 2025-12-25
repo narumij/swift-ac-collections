@@ -30,7 +30,7 @@ extension ___CopyOnWrite {
 
   @inlinable
   @inline(__always)
-  mutating func _isKnownUniquelyReferenced_LV1() -> Bool {
+  internal mutating func _isKnownUniquelyReferenced_LV1() -> Bool {
     #if !DISABLE_COPY_ON_WRITE
       isKnownUniquelyReferenced(&_storage)
     #else
@@ -40,7 +40,7 @@ extension ___CopyOnWrite {
 
   @inlinable
   @inline(__always)
-  mutating func _isKnownUniquelyReferenced_LV2() -> Bool {
+  internal mutating func _isKnownUniquelyReferenced_LV2() -> Bool {
     #if !DISABLE_COPY_ON_WRITE
       if !_isKnownUniquelyReferenced_LV1() {
         return false
@@ -54,7 +54,7 @@ extension ___CopyOnWrite {
 
   @inlinable
   @inline(__always)
-  mutating func _ensureUnique() {
+  internal mutating func _ensureUnique() {
     if !_isKnownUniquelyReferenced_LV1() {
       _storage = _storage.copy()
     }
@@ -62,7 +62,7 @@ extension ___CopyOnWrite {
 
   @inlinable
   @inline(__always)
-  mutating func _strongEnsureUnique() {
+  internal mutating func _strongEnsureUnique() {
     if !_isKnownUniquelyReferenced_LV2() {
       _storage = _storage.copy()
     }
@@ -70,7 +70,9 @@ extension ___CopyOnWrite {
 
   @inlinable
   @inline(__always)
-  mutating func _ensureUnique(transform: (___Storage<Base>.Tree) throws -> ___Storage<Base>.Tree)
+  internal mutating func _ensureUnique(
+    transform: (___Storage<Base>.Tree) throws -> ___Storage<Base>.Tree
+  )
     rethrows
   {
     _ensureUnique()
@@ -79,14 +81,14 @@ extension ___CopyOnWrite {
 
   @inlinable
   @inline(__always)
-  mutating func _ensureUniqueAndCapacity() {
+  internal mutating func _ensureUniqueAndCapacity() {
     _ensureUniqueAndCapacity(to: _storage.count + 1)
     assert(_storage.capacity > 0)
   }
 
   @inlinable
   @inline(__always)
-  mutating func _ensureUniqueAndCapacity(to minimumCapacity: Int) {
+  internal mutating func _ensureUniqueAndCapacity(to minimumCapacity: Int) {
     let shouldExpand = _storage.capacity < minimumCapacity
     if shouldExpand || !_isKnownUniquelyReferenced_LV1() {
       _storage = _storage.copy(growthCapacityTo: minimumCapacity, linearly: false)
@@ -97,14 +99,16 @@ extension ___CopyOnWrite {
 
   @inlinable
   @inline(__always)
-  mutating func _ensureUniqueAndCapacity(limit: Int, linearly: Bool = false) {
+  internal mutating func _ensureUniqueAndCapacity(limit: Int, linearly: Bool = false) {
     _ensureUniqueAndCapacity(to: _storage.count + 1, limit: limit, linearly: linearly)
     assert(_storage.capacity > 0)
   }
 
   @inlinable
   @inline(__always)
-  mutating func _ensureUniqueAndCapacity(to minimumCapacity: Int, limit: Int, linearly: Bool) {
+  internal mutating func _ensureUniqueAndCapacity(
+    to minimumCapacity: Int, limit: Int, linearly: Bool
+  ) {
     let shouldExpand = _storage.capacity < minimumCapacity
     if shouldExpand || !_isKnownUniquelyReferenced_LV1() {
       _storage = _storage.copy(
@@ -118,13 +122,13 @@ extension ___CopyOnWrite {
 
   @inlinable
   @inline(__always)
-  mutating func _ensureCapacity() {
+  internal mutating func _ensureCapacity() {
     _ensureCapacity(amount: 1)
   }
 
   @inlinable
   @inline(__always)
-  mutating func _ensureCapacity(amount: Int) {
+  internal mutating func _ensureCapacity(amount: Int) {
     let minimumCapacity = _storage.count + amount
     if _storage.capacity < minimumCapacity {
       _storage = _storage.copy(
@@ -137,13 +141,13 @@ extension ___CopyOnWrite {
 
   @inlinable
   @inline(__always)
-  mutating func _ensureCapacity(limit: Int, linearly: Bool = false) {
+  internal mutating func _ensureCapacity(limit: Int, linearly: Bool = false) {
     _ensureCapacity(to: _storage.count + 1, limit: limit, linearly: linearly)
   }
 
   @inlinable
   @inline(__always)
-  mutating func _ensureCapacity(to minimumCapacity: Int, limit: Int, linearly: Bool) {
+  internal mutating func _ensureCapacity(to minimumCapacity: Int, limit: Int, linearly: Bool) {
     if _storage.capacity < minimumCapacity {
       _storage = _storage.copy(
         growthCapacityTo: minimumCapacity,

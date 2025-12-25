@@ -27,10 +27,10 @@ where Base: ___TreeBase {
   public typealias Tree = ___Tree<Base>
 
   @usableFromInline
-  let __tree_: Tree
+  internal let __tree_: Tree
 
   @usableFromInline
-  var _start, _end, _current, _next: _NodePtr
+  internal var _start, _end, _current, _next: _NodePtr
 
   @inlinable
   @inline(__always)
@@ -69,10 +69,10 @@ extension ___SafePointers {
     public typealias Tree = ___Tree<Base>
 
     @usableFromInline
-    let __tree_: Tree
+    internal let __tree_: Tree
 
     @usableFromInline
-    var _start, _begin, _current, _next: _NodePtr
+    internal var _start, _begin, _current, _next: _NodePtr
 
     @inlinable
     @inline(__always)

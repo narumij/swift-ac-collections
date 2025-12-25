@@ -27,14 +27,14 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func bitCeil(_ n: Int) -> Int {
+  final public func bitCeil(_ n: Int) -> Int {
     n <= 1 ? 1 : 1 << (Int.bitWidth - (n - 1).leadingZeroBitCount)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  public func growthFormula(count: Int) -> Int {
+  final public func growthFormula(count: Int) -> Int {
 #if true
     // アロケーターにとって負担が軽そうな、2のべき付近を要求することにした。
     // ヘッダー込みで確保するべきかどうかは、ManagedBufferのソースをみておらず不明。
@@ -50,7 +50,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+  final internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
 
     if linearly {
       return Swift.max(
@@ -86,14 +86,14 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func copy() -> Tree {
+  final internal func copy() -> Tree {
     copy(minimumCapacity: _header.initializedCount)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  func copy(growthCapacityTo capacity: Int, linearly: Bool) -> Tree {
+  final internal func copy(growthCapacityTo capacity: Int, linearly: Bool) -> Tree {
     copy(
       minimumCapacity:
         growCapacity(to: capacity, linearly: linearly))
@@ -102,7 +102,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  func copy(growthCapacityTo capacity: Int, limit: Int, linearly: Bool) -> Tree {
+  final internal func copy(growthCapacityTo capacity: Int, limit: Int, linearly: Bool) -> Tree {
     copy(
       minimumCapacity:
         Swift.min(
@@ -116,7 +116,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  static func _isKnownUniquelyReferenced(tree: inout Tree) -> Bool {
+  internal static func _isKnownUniquelyReferenced(tree: inout Tree) -> Bool {
     #if !DISABLE_COPY_ON_WRITE
       isKnownUniquelyReferenced(&tree)
     #else
@@ -127,14 +127,14 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  static func ensureUniqueAndCapacity(tree: inout Tree) {
+  internal static func ensureUniqueAndCapacity(tree: inout Tree) {
     ensureUniqueAndCapacity(tree: &tree, minimumCapacity: tree._header.count + 1)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  static func ensureUniqueAndCapacity(tree: inout Tree, minimumCapacity: Int) {
+  internal static func ensureUniqueAndCapacity(tree: inout Tree, minimumCapacity: Int) {
     let shouldExpand = tree._header.capacity < minimumCapacity
     if shouldExpand || !_isKnownUniquelyReferenced(tree: &tree) {
       tree = tree.copy(growthCapacityTo: minimumCapacity, linearly: false)
@@ -144,14 +144,14 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  static func ensureCapacity(tree: inout Tree) {
+  internal static func ensureCapacity(tree: inout Tree) {
     ensureCapacity(tree: &tree, minimumCapacity: tree._header.count + 1)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  static func ensureCapacity(tree: inout Tree, minimumCapacity: Int) {
+  internal static func ensureCapacity(tree: inout Tree, minimumCapacity: Int) {
     if tree._header.capacity < minimumCapacity {
       tree = tree.copy(growthCapacityTo: minimumCapacity, linearly: false)
     }

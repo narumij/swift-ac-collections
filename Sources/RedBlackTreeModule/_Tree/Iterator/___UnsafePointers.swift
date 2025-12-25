@@ -27,10 +27,10 @@ where Base: ___TreeBase {
   public typealias Tree = ___Tree<Base>
 
   @usableFromInline
-  let __tree_: Tree
+  internal let __tree_: Tree
 
   @usableFromInline
-  var __first, __last: _NodePtr
+  internal var __first, __last: _NodePtr
 
   @inlinable
   @inline(__always)

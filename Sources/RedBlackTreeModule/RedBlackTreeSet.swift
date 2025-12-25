@@ -615,6 +615,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   public func sequence(from start: Element, to end: Element) -> SubSequence {
+    // APIはstride関数とsequence関数を参考にした
     .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
   }
 
@@ -622,6 +623,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*)
   @inlinable
   public func sequence(from start: Element, through end: Element) -> SubSequence {
+    // APIはstride関数とsequence関数を参考にした
     .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
   }
 }

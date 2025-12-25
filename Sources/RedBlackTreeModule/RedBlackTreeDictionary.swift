@@ -753,6 +753,22 @@ extension RedBlackTreeDictionary {
       end: ___upper_bound(range.upperBound))
   }
 }
+#else
+extension RedBlackTreeDictionary {
+  /// キーレンジ `[lower, upper)` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func sequence(from start: Key, to end: Key) -> SubSequence {
+    .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
+  }
+
+  /// キーレンジ `[lower, upper]` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func sequence(from start: Key, through end: Key) -> SubSequence {
+    .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
+  }
+}
 #endif
 
 // MARK: - Transformation

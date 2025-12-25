@@ -24,6 +24,7 @@ import Foundation
 
 // TODO: 仕様及び設計について再検討すること
 // プロトコル適合問題だけに対処して止まっている気がする
+// そもそも使いやすくすること自体が不可能かもしれない
 
 @frozen
 public struct RedBlackTreeIndices<Base> where Base: ___TreeBase & ___TreeIndex {

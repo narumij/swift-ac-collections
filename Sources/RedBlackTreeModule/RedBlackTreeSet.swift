@@ -609,6 +609,22 @@ extension RedBlackTreeSet {
       end: ___upper_bound(range.upperBound))
   }
 }
+#else
+extension RedBlackTreeSet {
+  /// 値レンジ `[lower, upper)` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func sequence(from start: Element, to end: Element) -> SubSequence {
+    .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
+  }
+
+  /// 値レンジ `[lower, upper]` に含まれる要素のスライス
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func sequence(from start: Element, through end: Element) -> SubSequence {
+    .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
+  }
+}
 #endif
 
 // MARK: - Sequence

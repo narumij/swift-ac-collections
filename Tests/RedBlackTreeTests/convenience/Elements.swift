@@ -31,11 +31,11 @@ extension RedBlackTreeSet {
 extension RedBlackTreeMultiSet {
 
   subscript(bounds: Range<Element>) -> SubSequence {
-    elements(in: bounds)
+    sequence(from: bounds.lowerBound, to: bounds.upperBound)
   }
 
   subscript(bounds: ClosedRange<Element>) -> SubSequence {
-    elements(in: bounds)
+    sequence(from: bounds.lowerBound, through: bounds.upperBound)
   }
 }
 
@@ -43,17 +43,13 @@ extension RedBlackTreeMultiSet {
   /// 値レンジ `[lower, upper)` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
   func elements(in range: Range<Element>) -> SubSequence {
-    let lo = lowerBound(range.lowerBound)
-    let hi = lowerBound(range.upperBound)
-    return self[lo..<hi]
+    sequence(from: range.lowerBound, to: range.upperBound)
   }
 
   /// 値レンジ `[lower, upper]` に含まれる要素のスライス
   /// - Complexity: O(log *n*)
   func elements(in range: ClosedRange<Element>) -> SubSequence {
-    let lo = lowerBound(range.lowerBound)
-    let hi = upperBound(range.upperBound)
-    return self[lo..<hi]
+    sequence(from: range.lowerBound, through: range.upperBound)
   }
 }
 #endif

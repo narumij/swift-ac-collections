@@ -27,24 +27,24 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func bitCeil(_ n: Int) -> Int {
+  internal func bitCeil(_ n: Int) -> Int {
     n <= 1 ? 1 : 1 << (Int.bitWidth - (n - 1).leadingZeroBitCount)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  public func growthFormula(count: Int) -> Int {
-#if true
-    // アロケーターにとって負担が軽そうな、2のべき付近を要求することにした。
-    // ヘッダー込みで確保するべきかどうかは、ManagedBufferのソースをみておらず不明。
-    // はみ出して大量に無駄にするよりはましなので、ヘッダー込みでサイズ計算することにしている。
-    let rawSize = bitCeil(MemoryLayout<Header>.stride + MemoryLayout<Node>.stride * count)
-    return (rawSize - MemoryLayout<Header>.stride) / MemoryLayout<Node>.stride
-#else
-    // メモリ使用量の多さが気になったので、標準Setと同じものに変更
-    return Self.capacity(forScale: Self.scale(forCapacity: count))
-#endif
+  internal func growthFormula(count: Int) -> Int {
+    #if true
+      // アロケーターにとって負担が軽そうな、2のべき付近を要求することにした。
+      // ヘッダー込みで確保するべきかどうかは、ManagedBufferのソースをみておらず不明。
+      // はみ出して大量に無駄にするよりはましなので、ヘッダー込みでサイズ計算することにしている。
+      let rawSize = bitCeil(MemoryLayout<Header>.stride + MemoryLayout<Node>.stride * count)
+      return (rawSize - MemoryLayout<Header>.stride) / MemoryLayout<Node>.stride
+    #else
+      // メモリ使用量の多さが気になったので、標準Setと同じものに変更
+      return Self.capacity(forScale: Self.scale(forCapacity: count))
+    #endif
   }
 
   @nonobjc
@@ -163,7 +163,7 @@ extension ___Tree {
 // Apache License 2.0 LLVM exception
 
 extension FixedWidthInteger {
-  
+
   @inlinable
   internal func _binaryLogarithm() -> Int {
     return Self.bitWidth &- (leadingZeroBitCount &+ 1)
@@ -175,13 +175,13 @@ extension FixedWidthInteger {
 // Apache License 2.0 LLVM exception
 
 extension ___Tree {
-  
+
   /// The inverse of the maximum hash table load factor.
   @inlinable
   internal static var maxLoadFactor: Double {
-    @inline(__always) get { return 3 / 4 }
+    return 3 / 4
   }
-  
+
   @inlinable
   internal static func capacity(forScale scale: Int8) -> Int {
     let bucketCount = (1 as Int) &<< scale
@@ -201,10 +201,10 @@ extension ___Tree {
     // two greater than or equal to the minimum entry count. Calculate its
     // exponent.
     let exponent = (Swift.max(minimumEntries, 2) - 1)._binaryLogarithm() + 1
-//    _internalInvariant(exponent >= 0 && exponent < Int.bitWidth)
+    //    _internalInvariant(exponent >= 0 && exponent < Int.bitWidth)
     // The scale is the exponent corresponding to the bucket count.
     let scale = Int8(truncatingIfNeeded: exponent)
-//    unsafe _internalInvariant(self.capacity(forScale: scale) >= capacity)
+    //    unsafe _internalInvariant(self.capacity(forScale: scale) >= capacity)
     return scale
   }
 }

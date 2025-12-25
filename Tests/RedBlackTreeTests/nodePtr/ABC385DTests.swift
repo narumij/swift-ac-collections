@@ -124,7 +124,7 @@ final class ABC385DTests: XCTestCase {
   }
   #endif
 
-#if false
+#if true
   func testABC358D(N: Int, M: Int, _A:[Int], B:[Int]) throws
   {
     var A = RedBlackTreeMultiSet(_A)
@@ -136,21 +136,6 @@ final class ABC385DTests: XCTestCase {
         break
       }
       ans += A.remove(at: i)
-    }
-    print(ans)
-  }
-#else
-  func testABC358D(N: Int, M: Int, _A:[Int], B:[Int]) throws
-  {
-    var A = RedBlackTreeMultiSet(_A)
-    var ans = 0
-    for b in B {
-      let i = A.___lower_bound(b)
-      guard i != A.___end() else {
-        ans = -1
-        break
-      }
-      ans += A.___remove(at: i)!
     }
     print(ans)
   }

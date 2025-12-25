@@ -26,31 +26,31 @@ protocol ___BaseSequence: ___Base {
 }
 
 extension ___BaseSequence {
-  
+
   @inlinable
   @inline(__always)
-  func ___contains(_ __k: _Key) -> Bool {
+  internal func ___contains(_ __k: _Key) -> Bool {
     __tree_.__count_unique(__k) != 0
   }
 }
 
 extension ___BaseSequence {
-  
+
   @inlinable
   @inline(__always)
-  func ___min() -> _Value? {
+  internal func ___min() -> _Value? {
     __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_min(__tree_.__root())]
   }
 
   @inlinable
   @inline(__always)
-  func ___max() -> _Value? {
+  internal func ___max() -> _Value? {
     __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_max(__tree_.__root())]
   }
 }
 
 extension ___BaseSequence {
-  
+
   @inlinable
   @inline(__always)
   public func ___lower_bound(_ __k: _Key) -> _NodePtr {
@@ -77,7 +77,7 @@ extension ___BaseSequence {
 }
 
 extension ___BaseSequence {
-  
+
   @inlinable
   @inline(__always)
   internal func ___first_index(of member: _Key) -> Index? {

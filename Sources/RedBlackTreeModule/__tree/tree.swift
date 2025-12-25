@@ -39,25 +39,25 @@ extension _NodePtr {
 
   /// 赤黒木のIndexで、nullを表す
   @inlinable
-  static var nullptr: Self {
+  internal static var nullptr: Self {
     -2
   }
 
   /// 赤黒木のIndexで、終端を表す
   @inlinable
-  static var end: Self {
+  internal static var end: Self {
     -1
   }
 
   /// 数値を直接扱うことを避けるための初期化メソッド
   @inlinable
   @inline(__always)
-  static func node(_ p: Int) -> Self { p }
+  internal static func node(_ p: Int) -> Self { p }
 }
 
 @inlinable
 @inline(__always)
-func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
+package func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
   ptr < 0
 }
 
@@ -173,7 +173,7 @@ extension KeyProtocol {
 
   @inlinable
   @inline(__always)
-  func __get_value(_ p: _NodePtr) -> __node_value_type {
+  internal func __get_value(_ p: _NodePtr) -> __node_value_type {
     __key(__value_(p))
   }
 }

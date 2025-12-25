@@ -29,7 +29,7 @@ extension FindLeafProtocol {
 
   @inlinable
   @inline(__always)
-  func
+  internal func
     __find_leaf_low(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
   {
     var __nd: _NodePtr = __root()
@@ -58,7 +58,7 @@ extension FindLeafProtocol {
 
   @inlinable
   @inline(__always)
-  func
+  internal func
     __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
   {
     var __nd: _NodePtr = __root()
@@ -95,7 +95,7 @@ extension FindEqualProtocol {
 
   @inlinable
   @inline(__always)
-  func
+  internal func
     __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {
     var __nd = __root()
@@ -137,7 +137,7 @@ extension FindProtocol {
 
   @inlinable
   @inline(__always)
-  func find(_ __v: _Key) -> _NodePtr {
+  internal func find(_ __v: _Key) -> _NodePtr {
     #if true
       let __p = lower_bound(__v)
       if __p != end(), !value_comp(__v, __get_value(__p)) {

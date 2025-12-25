@@ -205,7 +205,7 @@ extension BeginProtocol {
   @inlinable
   @inline(__always)
   /// 木の左端のノードを返す
-  func begin() -> _NodePtr { __begin_node_ }
+  internal func begin() -> _NodePtr { __begin_node_ }
 }
 
 @usableFromInline
@@ -218,7 +218,7 @@ extension EndNodeProtocol {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable
   @inline(__always)
-  func __end_node() -> _NodePtr { .end }
+  internal func __end_node() -> _NodePtr { .end }
 }
 
 @usableFromInline
@@ -231,7 +231,7 @@ extension EndProtocol {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable
   @inline(__always)
-  func end() -> _NodePtr { .end }
+  internal func end() -> _NodePtr { .end }
 }
 
 @usableFromInline
@@ -245,7 +245,7 @@ protocol ___RootProtocol: TreeNodeProtocol & EndProtocol {}
 extension ___RootProtocol {
   @available(*, deprecated, message: "Kept only for the purpose of preventing loss of knowledge")
   /// 木の根ノードを返す
-  func __root() -> _NodePtr { __left_(__end_node()) }
+  internal func __root() -> _NodePtr { __left_(__end_node()) }
 }
 
 @usableFromInline
@@ -258,7 +258,7 @@ extension RootPtrProtocol {
   /// 木の根ノードへの参照を返す
   @inlinable
   @inline(__always)
-  func __root_ptr() -> _NodeRef { __left_ref(__end_node()) }
+  internal func __root_ptr() -> _NodeRef { __left_ref(__end_node()) }
 }
 
 @usableFromInline
@@ -388,7 +388,8 @@ extension ValueComparator where Base: ThreeWayComparator {
 
   @inlinable
   @inline(__always)
-  func __lazy_synth_three_way_comparator(_ __lhs: Base._Key, _ __rhs: Base._Key)
+  internal func
+    __lazy_synth_three_way_comparator(_ __lhs: Base._Key, _ __rhs: Base._Key)
     -> Base.__compare_result
   {
     Base.__lazy_synth_three_way_comparator(__lhs, __rhs)

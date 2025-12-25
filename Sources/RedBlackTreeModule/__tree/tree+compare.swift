@@ -37,10 +37,10 @@ protocol CompareBothProtocol: CompareUniqueProtocol, CompareMultiProtocol, NodeB
 extension CompareBothProtocol {
   @inlinable
   @inline(__always)
-  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+  internal func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     assert(l == .end || __parent_(l) != .nullptr)
     assert(r == .end || __parent_(r) != .nullptr)
-    
+
     guard
       l != r,
       r != .end,
@@ -50,19 +50,19 @@ extension CompareBothProtocol {
     }
 
     if isMulti {
-      
-//      name                         time             std         iterations
-//      --------------------------------------------------------------------
-//      index compare 1000        19416.000 ns ±  10.13 %       69751
-//      index compare 1000000 109517708.000 ns ±   2.03 %          13
-      
-//      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_multi(l, r))
-      
-//      name                         time             std         iterations
-//      --------------------------------------------------------------------
-//      index compare 1000        11917.000 ns ±   8.25 %     114822
-//      index compare 1000000  54229021.000 ns ±   3.62 %         24
-      
+
+      //      name                         time             std         iterations
+      //      --------------------------------------------------------------------
+      //      index compare 1000        19416.000 ns ±  10.13 %       69751
+      //      index compare 1000000 109517708.000 ns ±   2.03 %          13
+
+      //      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_multi(l, r))
+
+      //      name                         time             std         iterations
+      //      --------------------------------------------------------------------
+      //      index compare 1000        11917.000 ns ±   8.25 %     114822
+      //      index compare 1000000  54229021.000 ns ±   3.62 %         24
+
       return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_bitmap(l, r))
     }
     return ___ptr_comp_unique(l, r)
@@ -95,7 +95,7 @@ extension CompareUniqueProtocol {
   /// multisetでも、インデックス比較に関して不正な結果だが、レンジで使う限り落ちはしない
   @inlinable
   @inline(__always)
-  func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+  internal func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     assert(l != .nullptr, "Node shouldn't be null")
     assert(l != .end, "Node shouldn't be end")
     assert(r != .nullptr, "Node shouldn't be null")
@@ -112,7 +112,7 @@ extension CompareMultiProtocol {
   // ノードの高さを数える
   @inlinable
   @inline(__always)
-  func ___ptr_height(_ __p: _NodePtr) -> Int {
+  internal func ___ptr_height(_ __p: _NodePtr) -> Int {
     assert(__p != .nullptr, "Node shouldn't be null")
     var __h = 0
     var __p = __p
@@ -126,7 +126,7 @@ extension CompareMultiProtocol {
   // ノードの大小を比較する
   @inlinable
   //  @inline(__always)
-  func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
+  internal func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
     assert(__l != .nullptr, "Left node shouldn't be null")
     assert(__r != .nullptr, "Right node shouldn't be null")
     guard
@@ -173,37 +173,49 @@ extension CompareProtocol {
 
   @inlinable
   @inline(__always)
-  func ___ptr_less_than(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+  internal func
+    ___ptr_less_than(_ l: _NodePtr, _ r: _NodePtr) -> Bool
+  {
     ___ptr_comp(l, r)
   }
 
   @inlinable
   @inline(__always)
-  func ___ptr_less_than_or_equal(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+  internal func
+    ___ptr_less_than_or_equal(_ l: _NodePtr, _ r: _NodePtr) -> Bool
+  {
     !___ptr_comp(r, l)
   }
 
   @inlinable
   @inline(__always)
-  func ___ptr_greator_than(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+  internal func
+    ___ptr_greator_than(_ l: _NodePtr, _ r: _NodePtr) -> Bool
+  {
     ___ptr_comp(r, l)
   }
 
   @inlinable
   @inline(__always)
-  func ___ptr_greator_than_or_equal(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+  internal func
+    ___ptr_greator_than_or_equal(_ l: _NodePtr, _ r: _NodePtr) -> Bool
+  {
     !___ptr_comp(l, r)
   }
 
   @inlinable
   @inline(__always)
-  func ___ptr_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool {
+  internal func
+    ___ptr_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool
+  {
     ___ptr_less_than_or_equal(l, p) && ___ptr_less_than(p, r)
   }
 
   @inlinable
   @inline(__always)
-  func ___ptr_closed_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool {
+  internal func
+    ___ptr_closed_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool
+  {
     ___ptr_less_than_or_equal(l, p) && ___ptr_less_than_or_equal(p, r)
   }
 }
@@ -222,11 +234,11 @@ extension NodeBitmapProtocol {
   /// (実際にはUIntで64bit幅)
   @inlinable
   @inline(__always)
-  func ___ptr_bitmap(_ __p: _NodePtr) -> UInt {
+  internal func ___ptr_bitmap(_ __p: _NodePtr) -> UInt {
     assert(__p != .nullptr, "Node shouldn't be null")
     assert(__p != .end, "Node shouldn't be end")
     var __f: UInt = 1  // 終端flag
-    var __h = 1 // 終端flag分
+    var __h = 1  // 終端flag分
     var __p = __p
     while __p != __root(), __p != .end {
       __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< __h
@@ -236,12 +248,11 @@ extension NodeBitmapProtocol {
     __f &<<= UInt.bitWidth &- __h
     return __f
   }
-  
+
   // 128bit幅でかつ、必要なレジスタ数が削減されている
   @inlinable
   @inline(__always)
-  func ___ptr_bitmap_128(_ __p: _NodePtr) -> UInt128
-  {
+  internal func ___ptr_bitmap_128(_ __p: _NodePtr) -> UInt128 {
     assert(__p != .nullptr, "Node shouldn't be null")
     assert(__p != .end, "Node shouldn't be end")
     var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
@@ -253,12 +264,11 @@ extension NodeBitmapProtocol {
     }
     return __f
   }
-  
+
   // 64bit幅でかつ、必要なレジスタ数が削減されている
   @inlinable
   @inline(__always)
-  func ___ptr_bitmap_64(_ __p: _NodePtr) -> UInt
-  {
+  internal func ___ptr_bitmap_64(_ __p: _NodePtr) -> UInt {
     assert(__p != .nullptr, "Node shouldn't be null")
     assert(__p != .end, "Node shouldn't be end")
     var __f: UInt = 1 &<< (UInt.bitWidth &- 1)
@@ -273,7 +283,7 @@ extension NodeBitmapProtocol {
 
   @inlinable
   @inline(__always)
-  func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
+  internal func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
     // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
     ___ptr_bitmap_128(__l) < ___ptr_bitmap_128(__r)
   }

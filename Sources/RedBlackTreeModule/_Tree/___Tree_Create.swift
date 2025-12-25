@@ -30,7 +30,8 @@ extension ___Tree where Base._Key == Base._Value {
   ///
   /// - Complexity: O(*n*)
   @inlinable
-  internal static func create_unique(sorted elements: __owned [Base._Value]) -> ___Tree
+  internal static func
+    create_unique(sorted elements: __owned [Base._Value]) -> ___Tree
   where Base._Key: Comparable {
 
     let count = elements.count
@@ -183,7 +184,8 @@ extension ___Tree {
   /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
-  internal static func create_multi(sorted elements: __owned [Base._Value]) -> ___Tree
+  internal static func
+    create_multi(sorted elements: __owned [Base._Value]) -> ___Tree
   where Base._Key: Comparable {
 
     create_multi(sorted: elements) { $0 }
@@ -248,12 +250,14 @@ extension ___Tree {
   }
 
   @inlinable
-  internal static func create_unique<S>(naive sequence: __owned S, transform: (S.Element) -> Base._Value) -> ___Tree
+  internal static func create_unique<S>(
+    naive sequence: __owned S, transform: (S.Element) -> Base._Value
+  ) -> ___Tree
   where S: Sequence {
 
     .___insert_range_unique(tree: .create(minimumCapacity: 0), sequence, transform: transform)
   }
-  
+
   @inlinable
   internal static func create_multi<S>(naive sequence: __owned S) -> ___Tree
   where Base._Value == S.Element, S: Sequence {
@@ -262,7 +266,9 @@ extension ___Tree {
   }
 
   @inlinable
-  internal static func create_multi<S>(naive sequence: __owned S, transform: (S.Element) -> Base._Value)
+  internal static func create_multi<S>(
+    naive sequence: __owned S, transform: (S.Element) -> Base._Value
+  )
     -> ___Tree
   where S: Sequence {
 

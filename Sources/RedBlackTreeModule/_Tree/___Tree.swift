@@ -754,21 +754,29 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafePointers<Base> {
+  final internal func
+    sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafePointers<Base>
+  {
     .init(tree: self, start: __first, end: __last)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafePointers<Base> {
+  final internal func
+    unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
+    -> ___UnsafePointers<Base>
+  {
     .init(tree: self, __first: __first, __last: __last)
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeValues<Base> {
+  final internal func
+    unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
+    -> ___UnsafeValues<Base>
+  {
     .init(tree: self, __first: __first, __last: __last)
   }
 }
@@ -778,7 +786,8 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
+  final internal func
+    ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
     rethrows
   {
     for __c in sequence(__p, __l) {
@@ -789,7 +798,9 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func ___rev_for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
+  final internal func ___rev_for_each_(
+    __p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void
+  )
     rethrows
   {
     for __c in sequence(__p, __l).reversed() {
@@ -826,7 +837,9 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func ___distance(from start: _NodePtr, to end: _NodePtr) -> Int {
+  final internal func
+    ___distance(from start: _NodePtr, to end: _NodePtr) -> Int
+  {
     guard
       !___is_offset_null(start),
       !___is_offset_null(end)
@@ -901,7 +914,8 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func ___index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
+  final internal func
+    ___index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
     -> _NodePtr?
   {
     ___ensureValid(offset: i)
@@ -931,7 +945,10 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
+  final internal func
+    ___formIndex(
+      _ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr
+    )
     -> Bool
   {
     if let ii = ___index(i, offsetBy: distance, limitedBy: limit) {
@@ -949,7 +966,9 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  final public func ___tree_adv_iter(_ i: _NodePtr, by distance: Int) -> _NodePtr {
+  final public func
+    ___tree_adv_iter(_ i: _NodePtr, by distance: Int) -> _NodePtr
+  {
     ___ensureValid(offset: i)
     var distance = distance
     var result: _NodePtr = i
@@ -986,7 +1005,9 @@ extension ___Tree where Base: KeyValueComparer {
   @nonobjc
   @inlinable
   @inline(__always)
-  final internal func ___with_mapped_value<T>(_ __p: _NodePtr, _ f: (inout Base._MappedValue) throws -> T)
+  final internal func ___with_mapped_value<T>(
+    _ __p: _NodePtr, _ f: (inout Base._MappedValue) throws -> T
+  )
     rethrows -> T
   {
     try Base.___with_mapped_value(&self[__p], f)
@@ -1159,7 +1180,9 @@ extension ___Tree {
 extension ___Tree {
 
   @inlinable
-  final public func ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_Value] {
+  final public func
+    ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_Value]
+  {
     let count = __distance(__first, __last)
     return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
       initializedCount = count
@@ -1174,7 +1197,8 @@ extension ___Tree {
   }
 
   @inlinable
-  final public func ___copy_to_array<T>(_ __first: _NodePtr, _ __last: _NodePtr, transform: (_Value) -> T)
+  final public func
+    ___copy_to_array<T>(_ __first: _NodePtr, _ __last: _NodePtr, transform: (_Value) -> T)
     -> [T]
   {
     let count = __distance(__first, __last)

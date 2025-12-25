@@ -27,7 +27,7 @@ extension TreeNodeProtocol {
 
   @inlinable
   @inline(__always)
-  func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
+  internal func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
     switch rhs {
     case .__right_(let basePtr):
       return __right_(basePtr)
@@ -38,14 +38,14 @@ extension TreeNodeProtocol {
 
   @inlinable
   @inline(__always)
-  func __left_ref(_ p: _NodePtr) -> _NodeRef {
+  internal func __left_ref(_ p: _NodePtr) -> _NodeRef {
     assert(p != .nullptr)
     return .__left_(p)
   }
 
   @inlinable
   @inline(__always)
-  func __right_ref(_ p: _NodePtr) -> _NodeRef {
+  internal func __right_ref(_ p: _NodePtr) -> _NodeRef {
     assert(p != .nullptr)
     return .__right_(p)
   }
@@ -55,7 +55,7 @@ extension TreeNodeProtocol {
 
   @inlinable
   @inline(__always)
-  func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
+  internal func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
     switch lhs {
     case .__right_(let basePtr):
       return __right_(basePtr, rhs)
@@ -69,7 +69,7 @@ extension TreeNodeProtocol {
 
   @inlinable
   @inline(__always)
-  func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
+  internal func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
     let mask: _NodeRef = 1 &<< (_NodeRef.bitWidth &- 1)
     if mask & rhs != 0 {
       return __left_(rhs == ~0 ? .end : .init(bitPattern: rhs & ~mask))
@@ -81,7 +81,7 @@ extension TreeNodeProtocol {
 
   @inlinable
   @inline(__always)
-  func __left_ref(_ p: _NodePtr) -> _NodeRef {
+  internal func __left_ref(_ p: _NodePtr) -> _NodeRef {
     assert(p != .nullptr)
     // この方式、レジスタは減らせるが、ここの計算でフェッチ待ちが発生する
     return .init(bitPattern: p) | (1 &<< (_NodeRef.bitWidth &- 1))
@@ -89,7 +89,7 @@ extension TreeNodeProtocol {
 
   @inlinable
   @inline(__always)
-  func __right_ref(_ p: _NodePtr) -> _NodeRef {
+  internal func __right_ref(_ p: _NodePtr) -> _NodeRef {
     assert(p != .nullptr)
     return .init(bitPattern: p)
   }
@@ -99,7 +99,7 @@ extension TreeNodeProtocol {
 
   @inlinable
   @inline(__always)
-  func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
+  internal func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
     let mask: _NodeRef = 1 &<< (_NodeRef.bitWidth &- 1)
     if mask & lhs != 0 {
       __left_(lhs == ~0 ? .end : .init(bitPattern: lhs & ~mask), rhs)

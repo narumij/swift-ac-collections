@@ -29,7 +29,7 @@ extension EqualProtocol {
 
   @inlinable
   @inline(__always)
-  func
+  internal func
     __equal_range_unique(_ __k: _Key) -> (_NodePtr, _NodePtr)
   {
     var __result = __end_node()
@@ -56,7 +56,7 @@ extension EqualProtocol {
 
   @inlinable
   @inline(__always)
-  func
+  internal func
     __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)
   {
     var __result = __end_node()

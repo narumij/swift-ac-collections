@@ -15,6 +15,9 @@ import XCTest
 final class SetSubSequenceTests: XCTestCase {
   
   func testEmptySlice() {
+    
+    // 軽く心配になったが、release/AtCoder/2025でも同じ動作結果が得られた
+    
     let base = RedBlackTreeSet(0..<10)  // [0‥9]
     
     do {

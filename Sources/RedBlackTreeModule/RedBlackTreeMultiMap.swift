@@ -978,12 +978,19 @@ extension RedBlackTreeMultiMap {
     return .init(tree: __tree_, start: lo, end: hi)
   }
 #else
+//  /// - Complexity: O(log *n*)
+//  @inlinable
+//  @inline(__always)
+//  public subscript(key: Key) -> [Value] {
+//    let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
+//    return __tree_.___copy_to_array(lo, hi) { $0.value }
+//  }
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
-  public subscript(key: Key) -> [Value] {
+  public subscript(key: Key) -> Values {
     let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
-    return __tree_.___copy_to_array(lo, hi) { $0.value }
+    return .init(tree: __tree_, start: lo, end: hi)
   }
 #endif
 }

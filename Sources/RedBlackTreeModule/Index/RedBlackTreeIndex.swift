@@ -234,8 +234,8 @@ extension RedBlackTreeIndex {
 extension RedBlackTreeIndex {
   @inlinable
   @inline(__always)
-  var ___indices: RedBlackTreeIndices<Base> {
-    __tree_.makeIndices(start: __tree_.__begin_node_, end: __tree_.__end_node())
+  internal var ___indices: RedBlackTreeIndices<Base> {
+    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
   }
 }
 

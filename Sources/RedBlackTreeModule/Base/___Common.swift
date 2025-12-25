@@ -28,6 +28,7 @@ extension ___Common {
   @inlinable
   @inline(__always)
   internal var ___is_empty: Bool {
+    // TODO: テストケースの追加
     __tree_.___is_empty || _start == _end
   }
 
@@ -121,7 +122,7 @@ extension ___Common {
   @inlinable
   @inline(__always)
   internal var _indices: Indices {
-    __tree_.makeIndices(start: _start, end: _end)
+    .init(tree: __tree_, start: _start, end: _end)
   }
 }
 

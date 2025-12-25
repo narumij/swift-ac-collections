@@ -1,16 +1,8 @@
-//
-//  RedBlackTreeSet+deprecated.swift
-//  swift-ac-collections
-//
-//  Created by narumij on 2025/12/26.
-//
 
 #if COMPATIBLE_ATCODER_2025
 
 extension RedBlackTreeSet {
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
+  @available(*, deprecated)
   public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
     .init(
       tree: __tree_,
@@ -20,7 +12,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-  @inlinable
+  @available(*, deprecated)
   public subscript(_unsafe position: Index) -> Element {
     @inline(__always) _read { yield self[_unchecked: position] }
   }
@@ -43,8 +35,6 @@ extension RedBlackTreeSet {
     /// }
     /// ```
     @available(*, deprecated)
-    @inlinable
-    @inline(__always)
     public subscript(bounds: Range<Element>) -> SubSequence {
       elements(in: bounds)
     }
@@ -63,8 +53,6 @@ extension RedBlackTreeSet {
     /// }
     /// ```
     @available(*, deprecated)
-    @inlinable
-    @inline(__always)
     public subscript(bounds: ClosedRange<Element>) -> SubSequence {
       elements(in: bounds)
     }
@@ -84,7 +72,6 @@ extension RedBlackTreeSet {
     /// }
     /// ```
     @available(*, deprecated)
-    @inlinable
     public func elements(in range: Range<Element>) -> SubSequence {
       .init(
         tree: __tree_,
@@ -105,7 +92,6 @@ extension RedBlackTreeSet {
     /// }
     /// ```
     @available(*, deprecated)
-    @inlinable
     public func elements(in range: ClosedRange<Element>) -> SubSequence {
       .init(
         tree: __tree_,

@@ -1,16 +1,7 @@
-//
-//  RedBlackTreeDictionary+deprecated.swift
-//  swift-ac-collections
-//
-//  Created by narumij on 2025/12/26.
-//
-
 #if COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeDictionary {
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
+    @available(*, deprecated)
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
@@ -20,11 +11,25 @@
   }
 
   extension RedBlackTreeDictionary {
+    @available(*, deprecated)
+    public subscript(_unsafe position: Index) -> (key: Key, value: Value) {
+      @inline(__always) get { self[_unchecked: position] }
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+    /// - Complexity: O(1)
     @inlinable
-//    public subscript(_unsafe position: Index) -> Element {
-  public subscript(_unsafe position: Index) -> (key: Key, value: Value) {
-//      @inline(__always) get { ___element(self[_unchecked: position]) }
-    @inline(__always) get { self[_unchecked: position] }
+    @inline(__always)
+    public func keys() -> Keys {
+      _keys()
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func values() -> Values {
+      _values()
     }
   }
 

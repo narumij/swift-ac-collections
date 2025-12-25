@@ -971,21 +971,7 @@ extension RedBlackTreeDictionary where Value: Comparable {
 
 extension RedBlackTreeDictionary {
 
-  #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public func keys() -> Keys {
-      _keys()
-    }
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public func values() -> Values {
-      _values()
-    }
-  #else
+  #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)

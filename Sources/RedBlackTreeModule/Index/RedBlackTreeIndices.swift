@@ -22,6 +22,8 @@
 
 import Foundation
 
+// TODO: 仕様及び設計について再検討すること
+
 @frozen
 public struct RedBlackTreeIndices<Base> where Base: ___TreeBase & ___TreeIndex {
   

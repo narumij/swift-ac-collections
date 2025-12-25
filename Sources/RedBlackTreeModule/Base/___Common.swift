@@ -28,7 +28,7 @@ extension ___Common {
   @inlinable
   @inline(__always)
   internal var ___is_empty: Bool {
-    __tree_.___is_empty
+    __tree_.___is_empty || _start == _end
   }
 
   @inlinable
@@ -41,28 +41,6 @@ extension ___Common {
   @inline(__always)
   internal var ___last: _Value? {
     ___is_empty ? nil : __tree_[__tree_.__tree_prev_iter(_end)]
-  }
-}
-
-// TODO: 削除検討
-extension ___Common {
-  
-  @inlinable
-  @inline(__always)
-  internal func ___prev(_ i: _NodePtr) -> _NodePtr {
-    __tree_.__tree_prev_iter(i)
-  }
-  
-  @inlinable
-  @inline(__always)
-  internal func ___next(_ i: _NodePtr) -> _NodePtr {
-    __tree_.__tree_next_iter(i)
-  }
-  
-  @inlinable
-  @inline(__always)
-  internal func ___advanced(_ i: _NodePtr, by distance: Int) -> _NodePtr {
-    __tree_.___tree_adv_iter(i, by: distance)
   }
 }
 
@@ -137,18 +115,6 @@ extension ___Common {
   internal func _isIdentical(to other: Self) -> Bool {
     __tree_.isIdentical(to: other.__tree_) && _start == other._start && _end == other._end
   }
-}
-
-// TODO: 削除検討
-extension ___Common {
-
-  @inlinable
-  @inline(__always)
-  internal func ___start() -> _NodePtr { _start }
-
-  @inlinable
-  @inline(__always)
-  internal func ___end() -> _NodePtr { _end }
 }
 
 extension ___Common {

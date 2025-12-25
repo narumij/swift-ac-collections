@@ -67,18 +67,6 @@ extension ___KeyOnlySequence {
   }
 }
 
-// TODO: 削除検討
-extension ___KeyOnlySequence {
-
-  @inlinable
-  @inline(__always)
-  internal func ___forEach(_ body: (_NodePtr, _Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body($0, __tree_[$0])
-    }
-  }
-}
-
 extension ___KeyOnlySequence {
 
   /// - Complexity: O(*n*)

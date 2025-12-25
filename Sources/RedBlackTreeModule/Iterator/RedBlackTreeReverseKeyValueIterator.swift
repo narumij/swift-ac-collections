@@ -58,20 +58,12 @@ extension RedBlackTreeIterator.KeyValues {
 }
 
 extension RedBlackTreeIterator.KeyValues.Reversed {
-
+  
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Tree.Index, Tree._Value) throws -> Void) rethrows {
     try __tree_.___rev_for_each_(__p: _start, __l: _end) {
       try body(__tree_.makeIndex(rawValue: $0), __tree_[$0])
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  public func ___forEach(_ body: (_NodePtr, Tree._Value) throws -> Void) rethrows {
-    try __tree_.___rev_for_each_(__p: _start, __l: _end) {
-      try body($0, __tree_[$0])
     }
   }
 }

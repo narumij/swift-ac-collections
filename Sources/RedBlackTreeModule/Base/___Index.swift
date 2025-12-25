@@ -196,16 +196,9 @@ extension ___Index where Base: CompareMultiTrait {
   }
 }
 
-// TODO: 削除検討
+// TODO: 削除または正式公開の検討
 // 初期の名残
 extension ___Index {
-
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  internal mutating func ___erase(_ ptr: _NodePtr) -> _NodePtr {
-    __tree_.erase(ptr)
-  }
 
   @inlinable
   @inline(__always)

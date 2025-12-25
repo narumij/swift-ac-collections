@@ -160,7 +160,7 @@ extension TreeNodeProtocol {
   /// never happens.
   @inlinable
   @inline(__always)
-  public func
+  internal func
     __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
   {
     assert(__x != .nullptr, "node shouldn't be null")
@@ -178,7 +178,7 @@ extension TreeNodeProtocol {
   /// Note: `__x` may be the end node.
   @inlinable
   @inline(__always)
-  public func
+  internal func
     __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   {
     assert(__x != .nullptr, "node shouldn't be null")

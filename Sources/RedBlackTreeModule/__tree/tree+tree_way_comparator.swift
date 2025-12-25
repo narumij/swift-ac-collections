@@ -67,17 +67,17 @@ public
 {
   public typealias LHS = Base._Key
   public typealias RHS = Base._Key
-  public var __lhs_: LHS
-  public var __rhs_: RHS
+  @usableFromInline internal var __lhs_: LHS
+  @usableFromInline internal var __rhs_: RHS
   @inlinable
   @inline(__always)
-  public init(_ __lhs_: LHS, _ __rhs_: RHS) {
+  internal init(_ __lhs_: LHS, _ __rhs_: RHS) {
     self.__lhs_ = __lhs_
     self.__rhs_ = __rhs_
   }
   @inlinable
   @inline(__always)
-  public func __comp_(_ __lhs_: LHS, _ __rhs_: RHS) -> Bool {
+  internal func __comp_(_ __lhs_: LHS, _ __rhs_: RHS) -> Bool {
     Base.value_comp(__lhs_, __rhs_)
   }
   @inlinable
@@ -92,10 +92,10 @@ public
 public
   struct __comparable_compare_result<T: Comparable>: ThreeWayCompareResult
 {
-  public var __lhs_, __rhs_: T
+  @usableFromInline internal var __lhs_, __rhs_: T
   @inlinable
   @inline(__always)
-  public init(_ __lhs_: T, _ __rhs_: T) {
+  internal init(_ __lhs_: T, _ __rhs_: T) {
     self.__lhs_ = __lhs_
     self.__rhs_ = __rhs_
   }
@@ -111,10 +111,10 @@ public
 public
   struct __eager_compare_result: ThreeWayCompareResult
 {
-  public var __res_: Int
+  @usableFromInline internal var __res_: Int
   @inlinable
   @inline(__always)
-  public init(_ __res_: Int) {
+  internal init(_ __res_: Int) {
     self.__res_ = __res_
   }
   @inlinable
@@ -125,9 +125,10 @@ public
   public func __greater() -> Bool { __res_ > 0 }
 }
 
-public protocol LazySynthThreeWayComparator: ThreeWayComparator {}
+public protocol LazySynthThreeWayComparator: ThreeWayComparator
+where Self: ValueComparer {}
 
-extension LazySynthThreeWayComparator where Self: ValueComparer {
+extension LazySynthThreeWayComparator {
 
   @inlinable
   @inline(__always)
@@ -139,9 +140,10 @@ extension LazySynthThreeWayComparator where Self: ValueComparer {
   }
 }
 
-public protocol ComparableThreeWayComparator: ThreeWayComparator {}
+public protocol ComparableThreeWayComparator: ThreeWayComparator
+where _Key: Comparable {}
 
-extension ComparableThreeWayComparator where _Key: Comparable {
+extension ComparableThreeWayComparator {
 
   @inlinable
   @inline(__always)
@@ -155,9 +157,10 @@ extension ComparableThreeWayComparator where _Key: Comparable {
   }
 }
 
-public protocol HasDefaultThreeWayComparator: ThreeWayComparator {}
+public protocol HasDefaultThreeWayComparator: ThreeWayComparator
+where _Key: Comparable {}
 
-extension HasDefaultThreeWayComparator where _Key: Comparable {
+extension HasDefaultThreeWayComparator {
 
   @inlinable
   @inline(__always)

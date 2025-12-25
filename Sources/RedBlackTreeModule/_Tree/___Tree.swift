@@ -243,7 +243,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
-  public subscript(_ pointer: _NodePtr) -> _Value {
+  internal subscript(_ pointer: _NodePtr) -> _Value {
     @inline(__always) _read {
       assert(___initialized_contains(pointer))
       yield __node_ptr[pointer].__value_
@@ -375,7 +375,7 @@ extension ___Tree {
 
   @nonobjc
   @inlinable
-  public var __begin_node_: _NodePtr {
+  internal var __begin_node_: _NodePtr {
     @inline(__always)
     _read { yield __header_ptr.pointee.__begin_node }
     @inline(__always)
@@ -390,7 +390,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func __get_value(_ p: _NodePtr) -> _Key {
+  internal func __get_value(_ p: _NodePtr) -> _Key {
     Base.__key(__node_ptr[p].__value_)
   }
 }
@@ -965,7 +965,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public func
+  internal func
     ___tree_adv_iter(_ i: _NodePtr, by distance: Int) -> _NodePtr
   {
     ___ensureValid(offset: i)
@@ -1157,7 +1157,7 @@ extension ___Tree: Hashable where _Value: Hashable {
 extension ___Tree {
 
   @inlinable
-  public func elementsEqual<OtherSequence>(
+  internal func elementsEqual<OtherSequence>(
     _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
     by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
@@ -1168,7 +1168,7 @@ extension ___Tree {
 extension ___Tree {
 
   @inlinable
-  public func lexicographicallyPrecedes<OtherSequence>(
+  internal func lexicographicallyPrecedes<OtherSequence>(
     _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
     by areInIncreasingOrder: (_Value, _Value) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
@@ -1179,7 +1179,7 @@ extension ___Tree {
 extension ___Tree {
 
   @inlinable
-  public func
+  internal func
     ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_Value]
   {
     let count = __distance(__first, __last)
@@ -1196,7 +1196,7 @@ extension ___Tree {
   }
 
   @inlinable
-  public func
+  internal func
     ___copy_to_array<T>(_ __first: _NodePtr, _ __last: _NodePtr, transform: (_Value) -> T)
     -> [T]
   {

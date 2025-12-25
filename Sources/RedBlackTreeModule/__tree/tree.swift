@@ -373,13 +373,13 @@ extension ValueComparator {
 
   @inlinable
   @inline(__always)
-  public static func with_value_equiv<T>(_ f: ((Base._Key, Base._Key) -> Bool) -> T) -> T {
+  internal static func with_value_equiv<T>(_ f: ((Base._Key, Base._Key) -> Bool) -> T) -> T {
     f(value_equiv)
   }
 
   @inlinable
   @inline(__always)
-  public static func with_value_comp<T>(_ f: ((Base._Key, Base._Key) -> Bool) -> T) -> T {
+  internal static func with_value_comp<T>(_ f: ((Base._Key, Base._Key) -> Bool) -> T) -> T {
     f(value_comp)
   }
 }

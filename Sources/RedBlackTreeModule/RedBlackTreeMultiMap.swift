@@ -969,6 +969,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+#if COMPATIBLE_ATCODER_2025
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
@@ -976,6 +977,15 @@ extension RedBlackTreeMultiMap {
     let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
     return .init(tree: __tree_, start: lo, end: hi)
   }
+#else
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @inline(__always)
+  public subscript(key: Key) -> [Value] {
+    let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
+    return __tree_.___copy_to_array(lo, hi) { $0.value }
+  }
+#endif
 }
 
 extension RedBlackTreeMultiMap {

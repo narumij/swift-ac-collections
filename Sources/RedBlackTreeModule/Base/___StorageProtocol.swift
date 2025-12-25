@@ -70,7 +70,7 @@ extension ___StorageProtocol {
 // MARK: - Remove
 
 extension ___StorageProtocol {
-  
+
   @inlinable
   @inline(__always)
   @discardableResult
@@ -82,7 +82,7 @@ extension ___StorageProtocol {
     _ = __tree_.erase(ptr)
     return e
   }
-  
+
   @inlinable
   @inline(__always)
   @discardableResult
@@ -92,54 +92,6 @@ extension ___StorageProtocol {
     }
     __tree_.___ensureValid(begin: from, end: to)
     return __tree_.erase(from, to)
-  }
-}
-
-// TODO: 削除検討
-// ABCの何かの問題に特化で速くできないか模索した名残だと思う
-// カバレッジもないし利用してもいなさそう
-extension ___StorageProtocol {
-
-  @inlinable
-  @inline(__always)
-  public mutating func ___remove(
-    from: _NodePtr, to: _NodePtr, forEach action: (_Value) throws -> Void
-  )
-    rethrows
-  {
-    guard !__tree_.___is_end(from) else {
-      return
-    }
-    __tree_.___ensureValid(begin: from, end: to)
-    return try __tree_.___erase(from, to, action)
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func ___remove<Result>(
-    from: _NodePtr, to: _NodePtr,
-    into initialResult: Result,
-    _ updateAccumulatingResult: (inout Result, _Value) throws -> Void
-  ) rethrows -> Result {
-    guard !__tree_.___is_end(from) else {
-      return initialResult
-    }
-    __tree_.___ensureValid(begin: from, end: to)
-    return try __tree_.___erase(from, to, into: initialResult, updateAccumulatingResult)
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func ___remove<Result>(
-    from: _NodePtr, to: _NodePtr,
-    _ initialResult: Result,
-    _ nextPartialResult: (Result, _Value) throws -> Result
-  ) rethrows -> Result {
-    guard !__tree_.___is_end(from) else {
-      return initialResult
-    }
-    __tree_.___ensureValid(begin: from, end: to)
-    return try __tree_.___erase(from, to, initialResult, nextPartialResult)
   }
 }
 

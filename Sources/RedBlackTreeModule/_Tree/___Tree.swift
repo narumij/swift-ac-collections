@@ -546,59 +546,6 @@ extension ___Tree: CompareBothProtocol {
 
 // MARK: -
 
-// TODO: 削除検討
-extension ___Tree {
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func
-    ___erase(_ __f: _NodePtr, _ __l: _NodePtr, _ action: (_Value) throws -> Void) rethrows
-  {
-    var __f = __f
-    while __f != __l {
-      try action(self[__f])
-      __f = erase(__f)
-    }
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func
-    ___erase<Result>(
-      _ __f: _NodePtr, _ __l: _NodePtr, _ initialResult: Result,
-      _ nextPartialResult: (Result, _Value) throws -> Result
-    ) rethrows -> Result
-  {
-    var result = initialResult
-    var __f = __f
-    while __f != __l {
-      result = try nextPartialResult(result, self[__f])
-      __f = erase(__f)
-    }
-    return result
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func
-    ___erase<Result>(
-      _ __f: _NodePtr, _ __l: _NodePtr, into initialResult: Result,
-      _ updateAccumulatingResult: (inout Result, _Value) throws -> Void
-    ) rethrows -> Result
-  {
-    var result = initialResult
-    var __f = __f
-    while __f != __l {
-      try updateAccumulatingResult(&result, self[__f])
-      __f = erase(__f)
-    }
-    return result
-  }
-}
-
 extension ___Tree {
 
   /// O(1)

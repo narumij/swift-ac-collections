@@ -13,6 +13,47 @@ import XCTest
 #endif
 
 final class SetSubSequenceTests: XCTestCase {
+  
+  func testEmptySlice() {
+    let base = RedBlackTreeSet(0..<10)  // [0‥9]
+    
+    do {
+      let slice = base[base.startIndex..<base.startIndex]  // []
+      
+      XCTAssertEqual(slice.count, 0)
+      XCTAssertEqual(slice.first, nil)
+      XCTAssertEqual(slice.last, nil)
+      XCTAssertEqual(
+        slice.distance(
+          from: slice.startIndex,
+          to: slice.endIndex), 0)
+    }
+    
+    do {
+      let mid = base.startIndex.advanced(by: 5)
+      let slice = base[mid..<mid]  // []
+      
+      XCTAssertEqual(slice.count, 0)
+      XCTAssertEqual(slice.first, nil)
+      XCTAssertEqual(slice.last, nil)
+      XCTAssertEqual(
+        slice.distance(
+          from: slice.startIndex,
+          to: slice.endIndex), 0)
+    }
+    
+    do {
+      let slice = base[base.endIndex..<base.endIndex]  // []
+      
+      XCTAssertEqual(slice.count, 0)
+      XCTAssertEqual(slice.first, nil)
+      XCTAssertEqual(slice.last, nil)
+      XCTAssertEqual(
+        slice.distance(
+          from: slice.startIndex,
+          to: slice.endIndex), 0)
+    }
+  }
 
   // MARK: 基本プロパティ -------------------------------------------------
 

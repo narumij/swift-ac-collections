@@ -28,7 +28,6 @@ extension ___Common {
   @inlinable
   @inline(__always)
   internal var ___is_empty: Bool {
-    // TODO: テストケースの追加
     __tree_.___is_empty || _start == _end
   }
 

@@ -25,8 +25,8 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   @inline(__always)
-  package func ___is_garbaged(_ index: _NodePtr) -> Bool {
-    __tree_.___is_garbaged(index)
+  package func ___is_garbaged(_ index: Index) -> Bool {
+    __tree_.___is_garbaged(index.rawValue)
   }
 }
 

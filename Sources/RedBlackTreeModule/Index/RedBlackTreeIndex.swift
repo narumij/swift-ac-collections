@@ -35,10 +35,10 @@ public struct RedBlackTreeIndex<Base> where Base: ___TreeBase & ___TreeIndex {
   typealias _Value = Tree._Value
 
   @usableFromInline
-  let __tree_: Tree
+  internal let __tree_: Tree
 
   @usableFromInline
-  var rawValue: Int
+  internal var rawValue: Int
 
   // MARK: -
 

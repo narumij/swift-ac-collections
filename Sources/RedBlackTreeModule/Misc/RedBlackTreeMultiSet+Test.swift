@@ -25,25 +25,25 @@ extension RedBlackTreeMultiSet {
 
   @inlinable
   @inline(__always)
-  package func ___is_garbaged(_ index: _NodePtr) -> Bool {
-    __tree_.___is_garbaged(index)
+  package func ___is_garbaged(_ index: Index) -> Bool {
+    __tree_.___is_garbaged(index.rawValue)
   }
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-extension RedBlackTreeMultiSet {
+  extension RedBlackTreeMultiSet {
 
-  package var _copyCount: UInt {
-    get { _storage.tree.copyCount }
-    set { _storage.tree.copyCount = newValue }
+    package var _copyCount: UInt {
+      get { _storage.tree.copyCount }
+      set { _storage.tree.copyCount = newValue }
+    }
   }
-}
 
-extension RedBlackTreeMultiSet {
-  package mutating func _checkUnique() -> Bool {
-    _isKnownUniquelyReferenced_LV2()
+  extension RedBlackTreeMultiSet {
+    package mutating func _checkUnique() -> Bool {
+      _isKnownUniquelyReferenced_LV2()
+    }
   }
-}
 #endif
 
 extension RedBlackTreeMultiSet {

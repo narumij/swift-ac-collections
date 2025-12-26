@@ -21,12 +21,12 @@ final class MultiMapPointerTests: XCTestCase {
   
   func testPointer2() throws {
     if let it = members.startIndex.next {
-      XCTAssertFalse(members.___is_garbaged(it.rawValue))
+      XCTAssertFalse(members.___is_garbaged(it))
       XCTAssertEqual(it.pointee?.key, 1)
       XCTAssertNotNil(it.previous)
       XCTAssertNotNil(it.next)
       members.remove(at: it)
-      XCTAssertTrue(members.___is_garbaged(it.rawValue))
+      XCTAssertTrue(members.___is_garbaged(it))
       XCTAssertNil(it.pointee)
       XCTAssertNil(it.previous)
       XCTAssertNil(it.next)

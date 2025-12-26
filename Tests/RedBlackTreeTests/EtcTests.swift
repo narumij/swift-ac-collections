@@ -382,32 +382,23 @@ final class EtcTests: XCTestCase {
     XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
   }
 
-  #if DEBUG
-    func testBackwordIterator1() throws {
-      let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-      let seq = AnySequence {
-        RedBlackTreeIndices<RedBlackTreeSet<Int>>.Reversed(
-          tree: set.__tree_, start: set.startIndex.rawValue, end: set.endIndex.rawValue)
-      }
-      var result: [Int] = []
-      for i in seq {
-        result.append(set[i])
-      }
-      XCTAssertEqual(set.reversed(), result)
+  func testBackwordIterator1() throws {
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    let seq = AnySequence { set.indices.reversed() }
+    var result: [Int] = []
+    for i in seq {
+      result.append(set[i])
     }
-    func testBackwordIterator2() throws {
-      var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-      let seq = AnySequence {
-        RedBlackTreeIndices<RedBlackTreeSet<Int>>.Reversed(
-          tree: set.__tree_, start: set.startIndex.rawValue, end: set.endIndex.rawValue)
-      }
-      for i in seq {
-        set.remove(at: i)
-      }
-      XCTAssertTrue(set.isEmpty)
+    XCTAssertEqual(set.reversed(), result)
+  }
+  func testBackwordIterator2() throws {
+    var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    let seq = AnySequence { set.reversed().indices }
+    for i in seq {
+      set.remove(at: i)
     }
-
-  #endif
+    XCTAssertTrue(set.isEmpty)
+  }
 
   func testCompare() throws {
     XCTAssertTrue([0] < [0, 1])

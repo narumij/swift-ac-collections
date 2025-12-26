@@ -19,21 +19,19 @@ final class MultiMapPointerTests: XCTestCase {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
   
-#if DEBUG
   func testPointer2() throws {
     if let it = members.startIndex.next {
-      XCTAssertFalse(members.___is_garbaged(it.rawValue))
+      XCTAssertFalse(members.___is_garbaged(it))
       XCTAssertEqual(it.pointee?.key, 1)
       XCTAssertNotNil(it.previous)
       XCTAssertNotNil(it.next)
       members.remove(at: it)
-      XCTAssertTrue(members.___is_garbaged(it.rawValue))
+      XCTAssertTrue(members.___is_garbaged(it))
       XCTAssertNil(it.pointee)
       XCTAssertNil(it.previous)
       XCTAssertNil(it.next)
     }
   }
-#endif
 
   func testPointerNext() throws {
     XCTAssertEqual(members.startIndex.pointee?.key, 0)

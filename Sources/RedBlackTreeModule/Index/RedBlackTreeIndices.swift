@@ -27,19 +27,19 @@ import Foundation
 // そもそも使いやすくすること自体が不可能かもしれない
 
 @frozen
-public struct RedBlackTreeIndices<Base> where Base: ___TreeBase & ___TreeIndex {
-  
+public struct RedBlackTreeIndices<Base>: ___IndexBase where Base: ___TreeBase & ___TreeIndex {
+
   public typealias Tree = ___Tree<Base>
   public typealias _Value = Tree._Value
-  
+
   @usableFromInline
   let __tree_: Tree
-  
+
   @usableFromInline
   var _start, _end: _NodePtr
-  
+
   public typealias Index = Tree.Index
-  
+
   @inlinable
   @inline(__always)
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -50,16 +50,16 @@ public struct RedBlackTreeIndices<Base> where Base: ___TreeBase & ___TreeIndex {
 }
 
 extension RedBlackTreeIndices {
-  
+
   @frozen
-  public struct Iterator: IteratorProtocol {
-    
+  public struct Iterator: IteratorProtocol, ___IndexBase {
+
     @usableFromInline
     let __tree_: Tree
-    
+
     @usableFromInline
     var _current, _next, _end: _NodePtr
-    
+
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -68,7 +68,7 @@ extension RedBlackTreeIndices {
       self._end = end
       self._next = start == .end ? .end : tree.__tree_next(start)
     }
-    
+
     @inlinable
     @inline(__always)
     public mutating func next() -> Index? {
@@ -77,7 +77,7 @@ extension RedBlackTreeIndices {
         _current = _next
         _next = _next == _end ? _end : __tree_.__tree_next(_next)
       }
-      return __tree_.makeIndex(rawValue: _current)
+      return ___index(_current)
     }
   }
 }
@@ -85,14 +85,14 @@ extension RedBlackTreeIndices {
 extension RedBlackTreeIndices {
 
   @frozen
-  public struct Reversed: Sequence, IteratorProtocol {
-    
+  public struct Reversed: Sequence, IteratorProtocol, ___IndexBase {
+
     @usableFromInline
     let __tree_: Tree
-    
+
     @usableFromInline
     var _current, _next, _start, _begin: _NodePtr
-    
+
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -102,26 +102,26 @@ extension RedBlackTreeIndices {
       self._start = start
       self._begin = __tree_.__begin_node_
     }
-    
+
     @inlinable
     @inline(__always)
     public mutating func next() -> Index? {
       guard _current != _start else { return nil }
       _current = _next
       _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-      return __tree_.makeIndex(rawValue: _current)
+      return ___index(_current)
     }
   }
 }
 
 extension RedBlackTreeIndices: Collection, BidirectionalCollection {
-  
+
   @inlinable
   @inline(__always)
   public __consuming func makeIterator() -> Iterator {
     .init(tree: __tree_, start: _start, end: _end)
   }
-  
+
   @inlinable
   @inline(__always)
   public func reversed() -> Reversed {
@@ -131,33 +131,31 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    return i.advanced(by: 1)
-    //    i.___next_
+    ___index(__tree_.___index(after: i.rawValue))
   }
 
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    return i.advanced(by: -1)
-    //    i.___prev_
+    ___index(__tree_.___index(before: i.rawValue))
   }
 
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Index {
-    __tree_.makeIndex(rawValue: position.rawValue)
+    position
   }
 
   @inlinable
   @inline(__always)
   public var startIndex: Index {
-    __tree_.makeIndex(rawValue: _start)
+    ___index(_start)
   }
 
   @inlinable
   @inline(__always)
   public var endIndex: Index {
-    __tree_.makeIndex(rawValue: _end)
+    ___index(_end)
   }
 
   public typealias SubSequence = Self
@@ -170,18 +168,18 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue)
   }
-  
-#if !COMPATIBLE_ATCODER_2025
-  @inlinable
-  @inline(__always)
-  public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
-    let bounds: Range<Index> = bounds.relative(to: self)
-    return .init(
-      tree: __tree_,
-      start: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue)
-  }
-#endif
+
+  #if !COMPATIBLE_ATCODER_2025
+    @inlinable
+    @inline(__always)
+    public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+      let bounds: Range<Index> = bounds.relative(to: self)
+      return .init(
+        tree: __tree_,
+        start: bounds.lowerBound.rawValue,
+        end: bounds.upperBound.rawValue)
+    }
+  #endif
 }
 
 #if swift(>=5.5)

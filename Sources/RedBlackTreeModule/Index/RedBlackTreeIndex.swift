@@ -35,10 +35,10 @@ public struct RedBlackTreeIndex<Base> where Base: ___TreeBase & ___TreeIndex {
   typealias _Value = Tree._Value
 
   @usableFromInline
-  let __tree_: Tree
+  internal let __tree_: Tree
 
   @usableFromInline
-  var rawValue: Int
+  internal var rawValue: Int
 
   // MARK: -
 
@@ -147,7 +147,7 @@ extension RedBlackTreeIndex {
 
   @inlinable
   @inline(__always)
-  mutating func ___unchecked_next() {
+  internal mutating func ___unchecked_next() {
     assert(!__tree_.___is_garbaged(rawValue))
     assert(!__tree_.___is_end(rawValue))
     rawValue = __tree_.__tree_next_iter(rawValue)
@@ -155,7 +155,7 @@ extension RedBlackTreeIndex {
 
   @inlinable
   @inline(__always)
-  mutating func ___unchecked_prev() {
+  internal mutating func ___unchecked_prev() {
     assert(!__tree_.___is_garbaged(rawValue))
     assert(!__tree_.___is_begin(rawValue))
     rawValue = __tree_.__tree_prev_iter(rawValue)
@@ -191,23 +191,7 @@ extension RedBlackTreeIndex {
   /// 無効な場合nilとなる
   @inlinable
   public var pointee: Pointee? {
-    __tree_.___is_subscript_null(rawValue) ? nil : Base.___pointee(___tree_value)
-  }
-}
-
-extension RedBlackTreeIndex {
-
-  @inlinable
-  @inline(__always)
-  var ___key: Base._Key {
-    Base.__key(___tree_value)
-  }
-
-  @inlinable
-  var ___tree_value: _Value {
-    @inline(__always) _read {
-      yield __tree_[rawValue]
-    }
+    __tree_.___is_subscript_null(rawValue) ? nil : Base.___pointee(__tree_[rawValue])
   }
 }
 
@@ -220,7 +204,7 @@ extension RedBlackTreeIndex {
   }
 
   extension RedBlackTreeIndex {
-    static func unsafe(tree: ___Tree<Base>, rawValue: _NodePtr) -> Self {
+    internal static func unsafe(tree: ___Tree<Base>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue)
     }
   }
@@ -310,11 +294,11 @@ public func - <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>)
 // MARK: - Optional
 
 #if !COMPATIBLE_ATCODER_2025
-// TODO: 再検討
-// こういうものが必要になるのもどうかとおもうが、
-// かといってIndexの返却をIndex!にするのは標準で前例がみつかってないし、
-// Index?もどうかとおもい、悩むポイント
-extension RedBlackTreeIndex {
+  // TODO: 再検討
+  // こういうものが必要になるのもどうかとおもうが、
+  // かといってIndexの返却をIndex!にするのは標準で前例がみつかってないし、
+  // Index?もどうかとおもい、悩むポイント
+  extension RedBlackTreeIndex {
 
     /// オプショナル型を返却します。
     ///

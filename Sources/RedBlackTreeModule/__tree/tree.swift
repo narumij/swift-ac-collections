@@ -39,20 +39,20 @@ extension _NodePtr {
 
   /// 赤黒木のIndexで、nullを表す
   @inlinable
-  internal static var nullptr: Self {
+  package static var nullptr: Self {
     -2
   }
 
   /// 赤黒木のIndexで、終端を表す
   @inlinable
-  internal static var end: Self {
+  package static var end: Self {
     -1
   }
 
   /// 数値を直接扱うことを避けるための初期化メソッド
   @inlinable
   @inline(__always)
-  internal static func node(_ p: Int) -> Self { p }
+  package static func node(_ p: Int) -> Self { p }
 }
 
 @inlinable

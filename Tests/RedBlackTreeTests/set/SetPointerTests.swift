@@ -26,21 +26,19 @@ final class SetPointerTests: XCTestCase {
     XCTAssertTrue(members.endIndex.isEnd)
   }
 
-#if DEBUG
   func testPointer2() throws {
     if let it = members.startIndex.next {
-      XCTAssertFalse(members.___is_garbaged(it.rawValue))
+      XCTAssertFalse(members.___is_garbaged(it))
       XCTAssertEqual(it.pointee, 1)
       XCTAssertNotNil(it.previous)
       XCTAssertNotNil(it.next)
       members.remove(at: it)
-      XCTAssertTrue(members.___is_garbaged(it.rawValue))
+      XCTAssertTrue(members.___is_garbaged(it))
       XCTAssertNil(it.pointee)
       XCTAssertNil(it.previous)
       XCTAssertNil(it.next)
     }
   }
-#endif
   
   func testPointerNext() throws {
     XCTAssertEqual(members.startIndex.pointee, 0)
@@ -89,16 +87,15 @@ final class SetPointerTests: XCTestCase {
     XCTAssertNil(members.startIndex.advanced(by: -6).pointee)
   }
 
-#if DEBUG
   func testValidBehavior1() throws {
     let indices = members.indices + []
     for i in indices.indices {
       members.remove(at: indices[i])
       for j in indices.startIndex..<i {
-        XCTAssertTrue(members.___is_garbaged(indices[j].rawValue))
+        XCTAssertTrue(members.___is_garbaged(indices[j]))
       }
       for j in i.advanced(by: 1)..<indices.endIndex {
-        XCTAssertFalse(members.___is_garbaged(indices[j].rawValue))
+        XCTAssertFalse(members.___is_garbaged(indices[j]))
       }
     }
   }
@@ -108,14 +105,13 @@ final class SetPointerTests: XCTestCase {
     for i in indices.indices.reversed() {
       members.remove(at: indices[i])
       for j in indices.startIndex..<i {
-        XCTAssertFalse(members.___is_garbaged(indices[j].rawValue))
+        XCTAssertFalse(members.___is_garbaged(indices[j]))
       }
       for j in i.advanced(by: 1)..<indices.endIndex {
-        XCTAssertTrue(members.___is_garbaged(indices[j].rawValue))
+        XCTAssertTrue(members.___is_garbaged(indices[j]))
       }
     }
   }
-#endif
 
   func testPerformanceExample() throws {
     // This is an example of a performance test case.

@@ -87,31 +87,6 @@ extension ___Common {
 
   @inlinable
   @inline(__always)
-  internal func ___is_garbaged(_ index: _NodePtr) -> Bool {
-    __tree_.___is_garbaged(index)
-  }
-}
-
-extension ___Common {
-
-  /// releaseビルドでは無効化されています(?)
-  @inlinable
-  @inline(__always)
-  public func ___tree_invariant() -> Bool {
-    #if !WITHOUT_SIZECHECK
-      // 並行してサイズもチェックする。その分遅い
-      __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, .end)
-        && __tree_.__tree_invariant(__tree_.__root())
-    #else
-      __tree_.__tree_invariant(__tree_.__root())
-    #endif
-  }
-}
-
-extension ___Common {
-
-  @inlinable
-  @inline(__always)
   internal func _isIdentical(to other: Self) -> Bool {
     __tree_.isIdentical(to: other.__tree_) && _start == other._start && _end == other._end
   }
@@ -125,11 +100,11 @@ extension ___Common {
   }
 }
 
-extension ___Common {
-
-  @inlinable
-  @inline(__always)
-  internal func ___node_positions() -> ___SafePointers<Base> {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-}
+//extension ___Common {
+//
+//  @inlinable
+//  @inline(__always)
+//  internal func ___node_positions() -> ___SafePointers<Base> {
+//    .init(tree: __tree_, start: _start, end: _end)
+//  }
+//}

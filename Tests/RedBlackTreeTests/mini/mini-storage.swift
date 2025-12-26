@@ -1,13 +1,11 @@
 import Foundation
-#if DEBUG
-@testable import RedBlackTreeModule
-#endif
-
 // 書いてみたけれども、
 // よくよく考えるとサイズが小さいと
 // アルゴリムのメリットが消えてしまうので、
 // 保留に
 #if false
+@testable import RedBlackTreeModule
+
 @usableFromInline
 struct RedBlackTree4<Element>
 where Element: Comparable, Element: SIMDScalar {

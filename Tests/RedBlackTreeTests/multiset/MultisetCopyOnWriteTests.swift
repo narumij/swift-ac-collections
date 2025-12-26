@@ -1,10 +1,5 @@
 import XCTest
-
-#if DEBUG
-  @testable import RedBlackTreeModule
-#else
-  import RedBlackTreeModule
-#endif
+import RedBlackTreeModule
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
   final class MultisetCopyOnWriteTests: XCTestCase {

@@ -5,12 +5,7 @@
 // 既存の CornerCaseTests と併用して OK。
 
 import XCTest
-
-#if DEBUG
-  @testable import RedBlackTreeModule
-#else
-  import RedBlackTreeModule
-#endif
+import RedBlackTreeModule
 
 final class RedBlackTreeSetAlgebraFullTests: XCTestCase {
 

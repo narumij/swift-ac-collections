@@ -7,12 +7,7 @@
 //   - 基 multiset 変化時に index が無効化されるか
 
 import XCTest
-
-#if DEBUG
-  @testable import RedBlackTreeModule
-#else
-  import RedBlackTreeModule
-#endif
+import RedBlackTreeModule
 
 final class RedBlackTreeMultisetSubSequenceTests: XCTestCase {
 

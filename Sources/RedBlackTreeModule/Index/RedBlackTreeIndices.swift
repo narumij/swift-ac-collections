@@ -27,7 +27,7 @@ import Foundation
 // そもそも使いやすくすること自体が不可能かもしれない
 
 @frozen
-public struct RedBlackTreeIndices<Base> where Base: ___TreeBase & ___TreeIndex {
+public struct RedBlackTreeIndices<Base>: ___IndexBase where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = ___Tree<Base>
   public typealias _Value = Tree._Value
@@ -52,7 +52,7 @@ public struct RedBlackTreeIndices<Base> where Base: ___TreeBase & ___TreeIndex {
 extension RedBlackTreeIndices {
 
   @frozen
-  public struct Iterator: IteratorProtocol {
+  public struct Iterator: IteratorProtocol, ___IndexBase {
 
     @usableFromInline
     let __tree_: Tree
@@ -77,7 +77,7 @@ extension RedBlackTreeIndices {
         _current = _next
         _next = _next == _end ? _end : __tree_.__tree_next(_next)
       }
-      return __tree_.makeIndex(rawValue: _current)
+      return ___index(_current)
     }
   }
 }
@@ -85,7 +85,7 @@ extension RedBlackTreeIndices {
 extension RedBlackTreeIndices {
 
   @frozen
-  public struct Reversed: Sequence, IteratorProtocol {
+  public struct Reversed: Sequence, IteratorProtocol, ___IndexBase {
 
     @usableFromInline
     let __tree_: Tree
@@ -109,18 +109,12 @@ extension RedBlackTreeIndices {
       guard _current != _start else { return nil }
       _current = _next
       _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr
-      return __tree_.makeIndex(rawValue: _current)
+      return ___index(_current)
     }
   }
 }
 
 extension RedBlackTreeIndices: Collection, BidirectionalCollection {
-
-  @inlinable
-  @inline(__always)
-  internal func ___index(_ p: _NodePtr) -> Index {
-    __tree_.makeIndex(rawValue: p)
-  }
 
   @inlinable
   @inline(__always)
@@ -149,7 +143,7 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
   @inlinable
   @inline(__always)
   public subscript(position: Index) -> Index {
-    ___index(position.rawValue)
+    position
   }
 
   @inlinable

@@ -27,7 +27,18 @@ public protocol ___Root {
 }
 
 @usableFromInline
-protocol ___Base: ___Root
+protocol ___IndexBase: ___Root
+where
+  Base: ___TreeBase & ___TreeIndex,
+  Tree == ___Tree<Base>,
+  Index == Tree.Index
+{
+  associatedtype Index
+  var __tree_: Tree { get }
+}
+
+@usableFromInline
+protocol ___Base: ___IndexBase
 where
   Base: ___TreeBase & ___TreeIndex,
   Tree == ___Tree<Base>,
@@ -44,8 +55,6 @@ where
   var __tree_: Tree { get }
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
-
-  func ___index(_ p: _NodePtr) -> Index
 }
 
 @usableFromInline
@@ -59,3 +68,26 @@ protocol ___RedBlackTreeKeyValuesBase:
   ___StorageProtocol & ___CopyOnWrite & ___Common & ___Index & ___BaseSequence
     & ___KeyValueSequence
 {}
+
+// MARK: -
+
+extension ___IndexBase {
+
+  @inlinable
+  @inline(__always)
+  internal func ___index(_ p: _NodePtr) -> Index {
+    __tree_.makeIndex(rawValue: p)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___index_or_nil(_ p: _NodePtr) -> Index? {
+    p == .nullptr ? nil : ___index(p)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___index_or_nil(_ p: _NodePtr?) -> Index? {
+    p.map { ___index($0) }
+  }
+}

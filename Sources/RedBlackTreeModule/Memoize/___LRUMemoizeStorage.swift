@@ -102,7 +102,6 @@ extension ___LRUMemoizeStorage {
   }
 }
 
-
 extension ___LRUMemoizeStorage: ___LRULinkList & ___CopyOnWrite & ___StorageProtocol {
   public typealias Base = Self
 }
@@ -141,3 +140,13 @@ extension ___LRUMemoizeStorage {
   @inlinable
   public var capacity: Int { ___capacity }
 }
+
+#if AC_COLLECTIONS_INTERNAL_CHECKS
+  extension ___LRUMemoizeStorage {
+
+    package var _copyCount: UInt {
+      get { _storage.tree.copyCount }
+      set { _storage.tree.copyCount = newValue }
+    }
+  }
+#endif

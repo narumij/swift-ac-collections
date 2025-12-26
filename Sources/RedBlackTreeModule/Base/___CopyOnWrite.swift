@@ -159,10 +159,10 @@ extension ___CopyOnWrite {
   }
 }
 
-#if AC_COLLECTIONS_INTERNAL_CHECKS
-  extension ___CopyOnWrite {
-    internal mutating func _checkUnique() -> Bool {
-      _isKnownUniquelyReferenced_LV2()
-    }
-  }
-#endif
+//#if AC_COLLECTIONS_INTERNAL_CHECKS
+//  extension ___CopyOnWrite {
+//    internal mutating func _checkUnique() -> Bool {
+//      _isKnownUniquelyReferenced_LV2()
+//    }
+//  }
+//#endif

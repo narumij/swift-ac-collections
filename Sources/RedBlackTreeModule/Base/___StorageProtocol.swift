@@ -109,12 +109,3 @@ extension ___StorageProtocol {
   }
 }
 
-extension ___StorageProtocol {
-
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    public var _copyCount: UInt {
-      get { _storage.tree.copyCount }
-      set { _storage.tree.copyCount = newValue }
-    }
-  #endif
-}

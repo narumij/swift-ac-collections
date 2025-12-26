@@ -30,7 +30,6 @@ final class MultisetPointerTests: XCTestCase {
     XCTAssertNil(members.endIndex.next)
   }
   
-#if DEBUG
   func testPointer2() throws {
     if let it = members.startIndex.next {
       XCTAssertFalse(members.___is_garbaged(it.rawValue))
@@ -44,7 +43,6 @@ final class MultisetPointerTests: XCTestCase {
       XCTAssertNil(it.next)
     }
   }
-#endif
   
   func testPointerPrev() throws {
     XCTAssertNil(members.endIndex.pointee)

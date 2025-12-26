@@ -492,61 +492,59 @@ final class EtcTests: XCTestCase {
     XCTAssertEqual(result, [a.startIndex])
   }
 
-  #if DEBUG
-    func testSubRev6() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      do {
-        var result = [_NodePtr]()
-        a[a.endIndex..<a.endIndex].reversed().___node_positions().forEach { i in
-          result.append(i)
-        }
-        XCTAssertEqual(result, [])
+  func testSubRev6() throws {
+    let a = RedBlackTreeSet<Int>([0, 1, 2])
+    do {
+      var result = [_NodePtr]()
+      a[a.endIndex..<a.endIndex].reversed().___node_positions().forEach { i in
+        result.append(i)
       }
-      do {
-        var result = [_NodePtr]()
-        a[a.endIndex..<a.endIndex].___node_positions().reversed().forEach { i in
-          result.append(i)
-        }
-        XCTAssertEqual(result, [])
-      }
+      XCTAssertEqual(result, [])
     }
+    do {
+      var result = [_NodePtr]()
+      a[a.endIndex..<a.endIndex].___node_positions().reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+  }
 
-    func testSubRev7() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      do {
-        var result = [_NodePtr]()
-        a[a.startIndex..<a.startIndex].reversed().___node_positions().forEach { i in
-          result.append(i)
-        }
-        XCTAssertEqual(result, [])
+  func testSubRev7() throws {
+    let a = RedBlackTreeSet<Int>([0, 1, 2])
+    do {
+      var result = [_NodePtr]()
+      a[a.startIndex..<a.startIndex].reversed().___node_positions().forEach { i in
+        result.append(i)
       }
-      do {
-        var result = [_NodePtr]()
-        a[a.startIndex..<a.startIndex].___node_positions().reversed().forEach { i in
-          result.append(i)
-        }
-        XCTAssertEqual(result, [])
-      }
+      XCTAssertEqual(result, [])
     }
+    do {
+      var result = [_NodePtr]()
+      a[a.startIndex..<a.startIndex].___node_positions().reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
+    }
+  }
 
-    func testSubRev8() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      do {
-        var result = [_NodePtr]()
-        a[a.startIndex..<a.endIndex].reversed().___node_positions().forEach { i in
-          result.append(i)
-        }
-        XCTAssertEqual(result, [2, 1, 0])
+  func testSubRev8() throws {
+    let a = RedBlackTreeSet<Int>([0, 1, 2])
+    do {
+      var result = [_NodePtr]()
+      a[a.startIndex..<a.endIndex].reversed().___node_positions().forEach { i in
+        result.append(i)
       }
-      do {
-        var result = [_NodePtr]()
-        a[a.startIndex..<a.endIndex].___node_positions().reversed().forEach { i in
-          result.append(i)
-        }
-        XCTAssertEqual(result, [2, 1, 0])
-      }
+      XCTAssertEqual(result, [2, 1, 0])
     }
-  #endif
+    do {
+      var result = [_NodePtr]()
+      a[a.startIndex..<a.endIndex].___node_positions().reversed().forEach { i in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [2, 1, 0])
+    }
+  }
 
   func testSubRev9() throws {
     let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [

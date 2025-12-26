@@ -1145,10 +1145,10 @@ final class SetTests: XCTestCase {
     XCTAssertTrue(a.isEmpty)
   }
 
-  #if DEBUG
+//  #if DEBUG
     func testMemoryLayout() throws {
       XCTAssertEqual(MemoryLayout<RedBlackTreeSet<Int>.Tree.Node>.stride, 40)
       XCTAssertEqual(40 * UInt128(Int.max) / 1024 / 1024 / 1024 / 1024 / 1024, 327679)
     }
-  #endif
+//  #endif
 }

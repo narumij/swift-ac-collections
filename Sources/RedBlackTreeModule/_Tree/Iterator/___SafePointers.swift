@@ -22,7 +22,7 @@
 
 @frozen
 @usableFromInline
-internal struct ___SafePointers<Base>: Sequence, IteratorProtocol
+package struct ___SafePointers<Base>: Sequence, IteratorProtocol
 where Base: ___TreeBase {
 
   @usableFromInline
@@ -46,7 +46,7 @@ where Base: ___TreeBase {
 
   @inlinable
   @inline(__always)
-  internal mutating func next() -> _NodePtr? {
+  package mutating func next() -> _NodePtr? {
     guard _current != _end else { return nil }
     defer {
       _current = _next
@@ -66,7 +66,7 @@ extension ___SafePointers {
 
   @frozen
   @usableFromInline
-  internal struct Reversed: Sequence, IteratorProtocol
+  package struct Reversed: Sequence, IteratorProtocol
   where Base: ___TreeBase {
 
     @usableFromInline
@@ -90,7 +90,7 @@ extension ___SafePointers {
 
     @inlinable
     @inline(__always)
-    internal mutating func next() -> _NodePtr? {
+    package mutating func next() -> _NodePtr? {
       guard _current != _start else { return nil }
       _current = _next
       _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : .nullptr

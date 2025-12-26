@@ -102,46 +102,42 @@ import XCTest
       XCTAssertEqual(tree._copyCount, 0)
     }
 
-    #if DEBUG
-      func testSet3000() throws {
-        let count = 1500
-        var loopCount = 0
-        var xy: [Int: RedBlackTreeMultiSet<Int>] = [1: .init(0..<count)]
-        xy[1]?._copyCount = 0
-        let N = 100
-        for i in 0..<count / N {
-          loopCount += 1
-          if let lo = xy[1]?.lowerBound(i * N),
-            let hi = xy[1]?.upperBound(i * N + N)
-          {
-            xy[1]?.removeSubrange(lo..<hi)
-          }
+    func testSet3000() throws {
+      let count = 1500
+      var loopCount = 0
+      var xy: [Int: RedBlackTreeMultiSet<Int>] = [1: .init(0..<count)]
+      xy[1]?._copyCount = 0
+      let N = 100
+      for i in 0..<count / N {
+        loopCount += 1
+        if let lo = xy[1]?.lowerBound(i * N),
+          let hi = xy[1]?.upperBound(i * N + N)
+        {
+          xy[1]?.removeSubrange(lo..<hi)
         }
-        XCTAssertTrue(xy[1]!._checkUnique())
-        XCTAssertEqual(xy[1]!.count, 0)
-        XCTAssertEqual(xy[1]!._copyCount, 0)
-        XCTAssertEqual(loopCount, count / N)
       }
-    #endif
+      XCTAssertTrue(xy[1]!._checkUnique())
+      XCTAssertEqual(xy[1]!.count, 0)
+      XCTAssertEqual(xy[1]!._copyCount, 0)
+      XCTAssertEqual(loopCount, count / N)
+    }
 
-    #if DEBUG
-      func testSet4000() throws {
-        let count = 1500
-        var xy: [Int: RedBlackTreeMultiSet<Int>] = [1: .init(0..<count)]
-        xy[1]?._copyCount = 0
-        let N = 100
-        var loopCount = 0
-        for i in 0..<count / N {
-          loopCount += 1
-          xy[1]?.elements(in: (i * N)..<(i * N + N)).forEach { i, v in
-            xy[1]?.remove(at: i)
-          }
+    func testSet4000() throws {
+      let count = 1500
+      var xy: [Int: RedBlackTreeMultiSet<Int>] = [1: .init(0..<count)]
+      xy[1]?._copyCount = 0
+      let N = 100
+      var loopCount = 0
+      for i in 0..<count / N {
+        loopCount += 1
+        xy[1]?.elements(in: (i * N)..<(i * N + N)).forEach { i, v in
+          xy[1]?.remove(at: i)
         }
-        XCTAssertTrue(xy[1]!._checkUnique())
-        XCTAssertEqual(xy[1]!.count, 0)
-        XCTAssertEqual(xy[1]!._copyCount, 0)
-        XCTAssertEqual(loopCount, count / N)
       }
-    #endif
+      XCTAssertTrue(xy[1]!._checkUnique())
+      XCTAssertEqual(xy[1]!.count, 0)
+      XCTAssertEqual(xy[1]!._copyCount, 0)
+      XCTAssertEqual(loopCount, count / N)
+    }
   }
 #endif

@@ -98,4 +98,37 @@
         end: ___upper_bound(range.upperBound))
     }
   }
+
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    public mutating func remove(contentsOf elementRange: Range<Element>) {
+      _strongEnsureUnique()
+      let lower = ___lower_bound(elementRange.lowerBound)
+      let upper = ___lower_bound(elementRange.upperBound)
+      ___remove(from: lower, to: upper)
+    }
+
+    /// - Complexity: O(log *n* : *k*)
+    @inlinable
+    public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
+      _strongEnsureUnique()
+      let lower = ___lower_bound(elementRange.lowerBound)
+      let upper = ___upper_bound(elementRange.upperBound)
+      ___remove(from: lower, to: upper)
+    }
+  }
+
+  // 予備的に用意したものと推定。これを使わないと通らない問題に出会わない場合、削除とする
+  extension RedBlackTreeMultiSet {
+    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Complexity: O(log *n* : *k*)
+    @inlinable
+    @discardableResult
+    public mutating func removeAll(_unsafe member: Element) -> Element? {
+      _ensureUnique()
+      return __tree_.___erase_multi(member) != 0 ? member : nil
+    }
+  }
 #endif

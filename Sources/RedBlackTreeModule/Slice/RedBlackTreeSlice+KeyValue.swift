@@ -402,15 +402,6 @@ extension RedBlackTreeSlice.KeyValue: Comparable where _Key: Comparable, _Mapped
   }
 }
 
-extension RedBlackTreeSlice.KeyValue {
-
-  @inlinable
-  @inline(__always)
-  public func ___element(_ __value: _Value) -> Element {
-    Self.___element(__value)
-  }
-}
-
 #if swift(>=5.5)
   extension RedBlackTreeSlice.KeyValue: @unchecked Sendable
   where Element: Sendable {}

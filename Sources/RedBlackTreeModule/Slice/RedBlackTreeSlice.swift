@@ -390,18 +390,6 @@ extension RedBlackTreeSlice: Comparable where _Value: Comparable {
   }
 }
 
-extension RedBlackTreeSlice {
-
-  @inlinable
-  @inline(__always)
-  mutating func ___element(at ptr: _NodePtr) -> Element? {
-    guard !__tree_.___is_subscript_null(ptr) else {
-      return nil
-    }
-    return __tree_[ptr]
-  }
-}
-
 #if swift(>=5.5)
   extension RedBlackTreeSlice: @unchecked Sendable
   where Element: Sendable {}

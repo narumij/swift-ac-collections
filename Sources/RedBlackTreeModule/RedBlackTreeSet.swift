@@ -153,6 +153,17 @@ extension RedBlackTreeSet {
   }
 }
 
+// MARK: - Testing for Membership
+
+extension RedBlackTreeSet {
+
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
+  @inlinable
+  public func contains(_ member: Element) -> Bool {
+    ___contains(member)
+  }
+}
+
 // MARK: - Accessing Elements
 
 extension RedBlackTreeSet {
@@ -433,15 +444,6 @@ extension RedBlackTreeSet {
 }
 
 // MARK: Finding Elements
-
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  public func contains(_ member: Element) -> Bool {
-    ___contains(member)
-  }
-}
 
 extension RedBlackTreeSet {
 

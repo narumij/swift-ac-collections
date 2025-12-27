@@ -195,6 +195,17 @@ extension RedBlackTreeDictionary {
   }
 }
 
+// MARK: - Testing for Membership
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func contains(key: Key) -> Bool {
+    ___contains(key)
+  }
+}
+
 // MARK: - Accessing Keys and Values
 
 extension RedBlackTreeDictionary {
@@ -598,15 +609,6 @@ extension RedBlackTreeDictionary {
 }
 
 // MARK: Finding Elements
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func contains(key: Key) -> Bool {
-    ___contains(key)
-  }
-}
 
 extension RedBlackTreeDictionary {
 

@@ -178,6 +178,17 @@ extension RedBlackTreeMultiMap {
   }
 }
 
+// MARK: - Testing for Membership
+
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func contains(key: Key) -> Bool {
+    ___contains(key)
+  }
+}
+
 // MARK: - Accessing Keys and Values
 
 extension RedBlackTreeMultiMap {
@@ -528,15 +539,6 @@ extension RedBlackTreeMultiMap {
 }
 
 // MARK: Finding Elements
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func contains(key: Key) -> Bool {
-    ___contains(key)
-  }
-}
 
 extension RedBlackTreeMultiMap {
 

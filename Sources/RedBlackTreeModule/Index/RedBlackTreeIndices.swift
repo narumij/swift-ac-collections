@@ -33,10 +33,10 @@ public struct RedBlackTreeIndices<Base>: ___IndexBase where Base: ___TreeBase & 
   public typealias _Value = Tree._Value
 
   @usableFromInline
-  let __tree_: Tree
+  internal let __tree_: Tree
 
   @usableFromInline
-  var _start, _end: _NodePtr
+  internal var _start, _end: _NodePtr
 
   public typealias Index = Tree.Index
 
@@ -55,10 +55,10 @@ extension RedBlackTreeIndices {
   public struct Iterator: IteratorProtocol, ___IndexBase {
 
     @usableFromInline
-    let __tree_: Tree
+    internal let __tree_: Tree
 
     @usableFromInline
-    var _current, _next, _end: _NodePtr
+    internal var _current, _next, _end: _NodePtr
 
     @inlinable
     @inline(__always)
@@ -88,10 +88,10 @@ extension RedBlackTreeIndices {
   public struct Reversed: Sequence, IteratorProtocol, ___IndexBase {
 
     @usableFromInline
-    let __tree_: Tree
+    internal let __tree_: Tree
 
     @usableFromInline
-    var _current, _next, _start, _begin: _NodePtr
+    internal var _current, _next, _start, _begin: _NodePtr
 
     @inlinable
     @inline(__always)

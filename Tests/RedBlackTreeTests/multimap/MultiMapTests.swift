@@ -1289,4 +1289,11 @@ final class MultiMapTests: XCTestCase {
       AssertEquenceEqual(a.sorted() + [], source)
     }
   #endif
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testFilter() throws {
+      let s = RedBlackTreeMultiMap<Int, String>(naive: (0..<5).map { ($0, "\($0)") })
+      XCTAssertEqual(s.filter { _ in true }, s)
+    }
+  #endif
 }

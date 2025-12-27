@@ -115,3 +115,31 @@
     }
   }
 #endif
+
+#if COMPATIBLE_ATCODER_2025
+  // 便利止まりだし、標準にならうと不自然なので、将来的に削除する
+  extension RedBlackTreeDictionary where Value: Equatable {
+
+    /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+    ///   sequence and the length of `other`.
+    @inlinable
+    @inline(__always)
+    public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+    where OtherSequence: Sequence, Element == OtherSequence.Element {
+      elementsEqual(other, by: ==)
+    }
+  }
+
+  // 便利止まりだし、標準にならうと不自然なので、将来的に削除する
+  extension RedBlackTreeDictionary where Value: Comparable {
+
+    /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+    ///   sequence and the length of `other`.
+    @inlinable
+    @inline(__always)
+    public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+    where OtherSequence: Sequence, Element == OtherSequence.Element {
+      lexicographicallyPrecedes(other, by: <)
+    }
+  }
+#endif

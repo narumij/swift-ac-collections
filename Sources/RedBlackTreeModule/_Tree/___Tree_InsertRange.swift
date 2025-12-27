@@ -189,49 +189,14 @@ extension ___Tree {
   internal static func ___insert_range_unique<S>(tree __tree_: ___Tree, _ __source: __owned S)
     -> ___Tree
   where Base._Value == S.Element, S: Sequence {
-    #if false
-      var __tree_ = __tree_
-
-      var it = __source.makeIterator()
-
-      if __tree_.__root() == .nullptr, let __element = it.next() {  // Make sure we always have a root node
-        Tree.ensureCapacity(tree: &__tree_)
-        __tree_.__insert_node_at(
-          .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
-      }
-
-      if __tree_.__root() == .nullptr { return __tree_ }
-
-      var __max_node = __tree_.__tree_max(__tree_.__root())
-
-      while let __element = it.next() {
-        Tree.ensureCapacity(tree: &__tree_)
-        let __nd = __tree_.__construct_node(__element)
-        if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
-          __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
-          __max_node = __nd
-        } else {
-          let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-          if __tree_.__ptr_(__child) == .nullptr {
-            __tree_.__insert_node_at(__parent, __child, __nd)
-          } else {
-            __tree_.destroy(__nd)
-          }
-        }
-      }
-
-      return __tree_
-    #else
-      return ___insert_range_unique(tree: __tree_, __source, transform: { $0 })
-    #endif
+    return ___insert_range_unique(tree: __tree_, __source) { $0 }
   }
-}
-
-extension ___Tree {
 
   @inlinable
   internal static func ___insert_range_unique<S>(
-    tree __tree_: ___Tree, _ __source: __owned S, transform: (S.Element) -> Base._Value
+    tree __tree_: ___Tree,
+    _ __source: __owned S,
+    transform: (S.Element) -> Base._Value
   ) -> ___Tree
   where S: Sequence {
     var __tree_ = __tree_
@@ -325,45 +290,15 @@ extension ___Tree {
   internal static func
     ___insert_range_multi<S>(tree __tree_: ___Tree, _ __source: __owned S) -> ___Tree
   where Base._Value == S.Element, S: Sequence {
-    #if false
-      var __tree_ = __tree_
-
-      var it = __source.makeIterator()
-
-      if __tree_.__root() == .nullptr, let __element = it.next() {  // Make sure we always have a root node
-        Tree.ensureCapacity(tree: &__tree_)
-        __tree_.__insert_node_at(
-          .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
-      }
-
-      if __tree_.__root() == .nullptr { return __tree_ }
-
-      var __max_node = __tree_.__tree_max(__tree_.__root())
-
-      while let __element = it.next() {
-        Tree.ensureCapacity(tree: &__tree_)
-        let __nd = __tree_.__construct_node(__element)
-        // Always check the max node first. This optimizes for sorted ranges inserted at the end.
-        if !__tree_.value_comp(__tree_.__get_value(__nd), __tree_.__get_value(__max_node)) {  // __node >= __max_val
-          __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
-          __max_node = __nd
-        } else {
-          var __parent: _NodePtr = .zero
-          let __child = __tree_.__find_leaf_high(&__parent, __tree_.__get_value(__nd))
-          __tree_.__insert_node_at(__parent, __child, __nd)
-        }
-      }
-
-      return __tree_
-    #else
-      return ___insert_range_multi(tree: __tree_, __source, transform: { $0 })
-    #endif
+    ___insert_range_multi(tree: __tree_, __source) { $0 }
   }
 
   @inlinable
   internal static func
     ___insert_range_multi<S>(
-      tree __tree_: ___Tree, _ __source: __owned S, transform: (S.Element) -> Base._Value
+      tree __tree_: ___Tree,
+      _ __source: __owned S,
+      transform: (S.Element) -> Base._Value
     )
     -> ___Tree
   where S: Sequence {

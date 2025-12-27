@@ -1,4 +1,4 @@
-// Copyright 2024 narumij
+// Copyright 2024-2025 narumij
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ import Foundation
 /// // キーと値のペアを削除
 /// dictionary.remove(key: "apple")
 /// ```
+/// - Important: `RedBlackTreeDictionary` はスレッドセーフではありません。
 @frozen
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 

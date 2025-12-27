@@ -1,4 +1,4 @@
-// Copyright 2024 narumij
+// Copyright 2024-2025 narumij
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,10 +30,10 @@ extension RedBlackTreeIterator.Values {
     public typealias _Value = Tree._Value
 
     @usableFromInline
-    let __tree_: Tree
+    internal let __tree_: Tree
 
     @usableFromInline
-    var _start, _end, _begin, _current, _next: _NodePtr
+    internal var _start, _end, _begin, _current, _next: _NodePtr
 
     @inlinable
     @inline(__always)

@@ -40,7 +40,7 @@ extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
-  public static func ___tree_value(_ __element: Element) -> _Value {
+  internal static func ___tree_value(_ __element: Element) -> _Value {
     RedBlackTreePair(__element.key, __element.value)
   }
 
@@ -179,49 +179,10 @@ extension ___KeyValueSequence {
   }
 }
 
-#if false
-extension ___KeyValueSequence {
-
-  @inlinable
-  internal subscript(_checked position: Index) -> _Value {
-    @inline(__always) _read {
-      __tree_.___ensureValid(subscript: position.rawValue)
-      yield __tree_[position.rawValue]
-    }
-  }
-
-  @inlinable
-  internal subscript(_unchecked position: Index) -> _Value {
-    @inline(__always) _read {
-      yield __tree_[position.rawValue]
-    }
-  }
-}
-#endif
-
-#if false
-// テストコードのコンパイルクラッシュを誘発する懸念があり使っていない
-extension ___KeyValueSequence {
-
-  @inlinable
-  internal subscript(_checked position: Index) -> Element {
-    @inline(__always) get {
-      __tree_.___ensureValid(subscript: position.rawValue)
-      return ___element(__tree_[position.rawValue])
-    }
-  }
-
-  @inlinable
-  internal subscript(_unchecked position: Index) -> Element {
-    @inline(__always) get {
-      return ___element(__tree_[position.rawValue])
-    }
-  }
-}
-#else
 extension ___KeyValueSequence {
 
   // コンパイラの型推論のバグを踏んでいると想定し、型をちゃんと書くことにし、様子を見ている
+  // -> 今の設計だと影響があるが、過去のバグはこの方法では迂回できないことが確認できている
 
   @inlinable
   internal subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
@@ -238,7 +199,6 @@ extension ___KeyValueSequence {
     }
   }
 }
-#endif
 
 extension ___KeyValueSequence {
 

@@ -1,4 +1,5 @@
 // from https://github.com/apple/swift-collections/blob/main/Sources/InternalCollectionsUtilities/Descriptions.swift
+// license https://github.com/apple/swift-collections/blob/main/LICENSE.txt
 @inlinable
 package func _arrayDescription<C: Collection>(
   for elements: C
@@ -18,6 +19,7 @@ package func _arrayDescription<C: Collection>(
 }
 
 // from https://github.com/apple/swift-collections/blob/main/Sources/InternalCollectionsUtilities/Descriptions.swift
+// license https://github.com/apple/swift-collections/blob/main/LICENSE.txt
 @inlinable
 package func _dictionaryDescription<Key, Value, C: Collection>(
   for elements: C

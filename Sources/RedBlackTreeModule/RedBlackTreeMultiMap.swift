@@ -1,4 +1,4 @@
-// Copyright 2024 narumij
+// Copyright 2024-2025 narumij
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ import Foundation
 /// // キーと値のペアを一つ削除
 /// multimap.removeFirst(forKey: "apple")
 /// ```
+/// - Important: `RedBlackTreeMultiMap` はスレッドセーフではありません。
 @frozen
 public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 

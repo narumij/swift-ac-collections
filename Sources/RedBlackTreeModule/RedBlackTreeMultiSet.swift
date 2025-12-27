@@ -56,6 +56,11 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 
   @usableFromInline
   var _storage: Storage
+
+  @inlinable @inline(__always)
+  internal init(_storage: Storage) {
+    self._storage = _storage
+  }
 }
 
 extension RedBlackTreeMultiSet {
@@ -572,6 +577,24 @@ extension RedBlackTreeMultiSet {
     @inlinable
     public func sequence(from start: Element, through end: Element) -> SubSequence {
       .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
+    }
+  }
+#endif
+
+// MARK: - Transformation
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O(*n*)
+    @inlinable
+    public func filter(
+      _ isIncluded: (Element) throws -> Bool
+    ) rethrows -> Self {
+      .init(
+        _storage: .init(
+          tree: try __tree_.___filter(_start, _end, isIncluded)
+        ))
     }
   }
 #endif

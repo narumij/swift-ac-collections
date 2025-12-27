@@ -79,7 +79,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
   var _storage: Storage
 
   @inlinable @inline(__always)
-  init(_storage: Storage) {
+  internal init(_storage: Storage) {
     self._storage = _storage
   }
 }
@@ -626,21 +626,22 @@ extension RedBlackTreeMultiMap {
 }
 
 #if !COMPATIBLE_ATCODER_2025
-extension RedBlackTreeMultiMap {
-  /// キーレンジ `[start, upper)` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func sequence(from start: Key, to end: Key) -> SubSequence {
-    .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
-  }
+  extension RedBlackTreeMultiMap {
+    /// キーレンジ `[start, upper)` に含まれる要素のスライス
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func sequence(from start: Key, to end: Key) -> SubSequence {
+      .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
+    }
 
-  /// キーレンジ `[start, upper]` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func sequence(from start: Key, through end: Key) -> SubSequence {
-    .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
+    /// キーレンジ `[start, upper]` に含まれる要素のスライス
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func sequence(from start: Key, through end: Key) -> SubSequence {
+      .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
+    }
   }
-}#endif
+#endif
 
 // MARK: - Transformation
 
@@ -653,10 +654,7 @@ extension RedBlackTreeMultiMap {
   ) rethrows -> Self {
     .init(
       _storage: .init(
-        tree: try __tree_.___filter(
-          __tree_.__begin_node_,
-          __tree_.__end_node()
-        ) {
+        tree: try __tree_.___filter(_start, _end) {
           try isIncluded(___element($0))
         }
       ))
@@ -665,23 +663,24 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Complexity: O(*n*)
   @inlinable
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
     -> RedBlackTreeMultiMap<Key, T>
   {
     .init(
       _storage: .init(
-        tree: try __tree_.___mapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
+        tree: try __tree_.___mapValues(_start, _end, transform)))
   }
 
+  /// - Complexity: O(*n*)
   @inlinable
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
     rethrows -> RedBlackTreeMultiMap<Key, T>
   {
     .init(
       _storage: .init(
-        tree: try __tree_.___compactMapValues(
-          __tree_.__begin_node_, __tree_.__end_node(), transform)))
+        tree: try __tree_.___compactMapValues(_start, _end, transform)))
   }
 }
 
@@ -798,12 +797,12 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   /*
    コメントアウトの多さはテストコードのコンパイラクラッシュに由来する。
    */
-  
+
   /// - Complexity: O(1)
   @inlinable
-//  public subscript(position: Index) -> Element {
+  //  public subscript(position: Index) -> Element {
   public subscript(position: Index) -> (key: Key, value: Value) {
-//    @inline(__always) get { ___element(self[_checked: position]) }
+    //    @inline(__always) get { ___element(self[_checked: position]) }
     @inline(__always) get { self[_checked: position] }
   }
 
@@ -811,10 +810,10 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable
-//    public subscript(unchecked position: Index) -> Element {
-  public subscript(unchecked position: Index) -> (key: Key, value: Value) {
-//      @inline(__always) get { ___element(self[_unchecked: position]) }
-    @inline(__always) get { self[_unchecked: position] }
+    //    public subscript(unchecked position: Index) -> Element {
+    public subscript(unchecked position: Index) -> (key: Key, value: Value) {
+      //      @inline(__always) get { ___element(self[_unchecked: position]) }
+      @inline(__always) get { self[_unchecked: position] }
     }
   #endif
 
@@ -852,34 +851,6 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   }
 }
 
-#if COMPATIBLE_ATCODER_2025
-// 便利止まりだし、標準にならうと不自然なので、将来的に削除する
-extension RedBlackTreeMultiMap where Value: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: ==)
-  }
-}
-
-// 便利止まりだし、標準にならうと不自然なので、将来的に削除する
-extension RedBlackTreeMultiMap where Value: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: <)
-  }
-}
-#endif
-
 // MARK: -
 
 extension RedBlackTreeMultiMap {
@@ -905,30 +876,30 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-#if COMPATIBLE_ATCODER_2025
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @inline(__always)
-  public subscript(key: Key) -> SubSequence {
-    let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
-    return .init(tree: __tree_, start: lo, end: hi)
-  }
-#else
-//  /// - Complexity: O(log *n*)
-//  @inlinable
-//  @inline(__always)
-//  public subscript(key: Key) -> [Value] {
-//    let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
-//    return __tree_.___copy_to_array(lo, hi) { $0.value }
-//  }
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @inline(__always)
-  public subscript(key: Key) -> Values {
-    let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
-    return .init(tree: __tree_, start: lo, end: hi)
-  }
-#endif
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @inline(__always)
+    public subscript(key: Key) -> SubSequence {
+      let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
+      return .init(tree: __tree_, start: lo, end: hi)
+    }
+  #else
+    //  /// - Complexity: O(log *n*)
+    //  @inlinable
+    //  @inline(__always)
+    //  public subscript(key: Key) -> [Value] {
+    //    let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
+    //    return __tree_.___copy_to_array(lo, hi) { $0.value }
+    //  }
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @inline(__always)
+    public subscript(key: Key) -> Values {
+      let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
+      return .init(tree: __tree_, start: lo, end: hi)
+    }
+  #endif
 }
 
 extension RedBlackTreeMultiMap {

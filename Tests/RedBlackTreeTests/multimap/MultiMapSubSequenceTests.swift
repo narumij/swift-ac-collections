@@ -9,12 +9,7 @@
 // * CoW 後の index 無効化 (base・slice とも false になる)
 
 import XCTest
-
-#if DEBUG
-  @testable import RedBlackTreeModule
-#else
-  import RedBlackTreeModule
-#endif
+import RedBlackTreeModule
 
 final class MultiMapSubSequenceTests: XCTestCase {
 

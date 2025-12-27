@@ -2,12 +2,7 @@
 // swift-tools-version:5.10
 
 import XCTest
-
-#if DEBUG
-  @testable import RedBlackTreeModule
-#else
-  import RedBlackTreeModule
-#endif
+import RedBlackTreeModule
 
 /// シンプル Count ディクショナリを Swift 標準 Multiset 代わりに利用
 private struct ReferenceMultiset {

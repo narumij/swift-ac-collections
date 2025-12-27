@@ -1,10 +1,5 @@
 import XCTest
-
-#if DEBUG
-  @testable import RedBlackTreeModule
-#else
-  import RedBlackTreeModule
-#endif
+import RedBlackTreeModule
 
 final class RedBlackTreeMultiMapSequenceTests: XCTestCase {
 

@@ -75,7 +75,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   var _storage: Storage
 
   @inlinable @inline(__always)
-  init(_storage: Storage) {
+  internal init(_storage: Storage) {
     self._storage = _storage
   }
 }
@@ -698,21 +698,21 @@ extension RedBlackTreeDictionary {
 }
 
 #if !COMPATIBLE_ATCODER_2025
-extension RedBlackTreeDictionary {
-  /// キーレンジ `[start, end)` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func sequence(from start: Key, to end: Key) -> SubSequence {
-    .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
-  }
+  extension RedBlackTreeDictionary {
+    /// キーレンジ `[start, end)` に含まれる要素のスライス
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func sequence(from start: Key, to end: Key) -> SubSequence {
+      .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
+    }
 
-  /// キーレンジ `[start, end]` に含まれる要素のスライス
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func sequence(from start: Key, through end: Key) -> SubSequence {
-    .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
+    /// キーレンジ `[start, end]` に含まれる要素のスライス
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func sequence(from start: Key, through end: Key) -> SubSequence {
+      .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
+    }
   }
-}
 #endif
 
 // MARK: - Transformation
@@ -726,10 +726,7 @@ extension RedBlackTreeDictionary {
   ) rethrows -> Self {
     .init(
       _storage: .init(
-        tree: try __tree_.___filter(
-          __tree_.__begin_node_,
-          __tree_.__end_node()
-        ) {
+        tree: try __tree_.___filter(_start, _end) {
           try isIncluded(___element($0))
         }))
   }
@@ -744,7 +741,7 @@ extension RedBlackTreeDictionary {
   {
     .init(
       _storage: .init(
-        tree: try __tree_.___mapValues(__tree_.__begin_node_, __tree_.__end_node(), transform)))
+        tree: try __tree_.___mapValues(_start, _end, transform)))
   }
 
   /// - Complexity: O(*n*)
@@ -754,8 +751,7 @@ extension RedBlackTreeDictionary {
   {
     .init(
       _storage: .init(
-        tree: try __tree_.___compactMapValues(
-          __tree_.__begin_node_, __tree_.__end_node(), transform)))
+        tree: try __tree_.___compactMapValues(_start, _end, transform)))
   }
 }
 
@@ -870,24 +866,24 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   {
     _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
-  
+
   /*
    しばらく苦しめられていたテストコードのコンパイルエラーについて。
-   
+  
    typecheckでクラッシュしてることはクラッシュログから読み取れる。
    推論に失敗するバグを踏んでいると想定し、型をちゃんと書くことで様子を見ることにした。
-   
+  
    型推論のバグなんて直せる気がまったくせず、ごくごく一部の天才のミラクルムーブ期待なので、
    これでクラッシュが落ち着くようならElementを返すメンバー全てで型をちゃんと書くのが安全かもしれない
-   
+  
    type packは型を書けないケースなので、この迂回策が使えず、バグ修正を待つばかり
    */
 
   /// - Complexity: O(1)
   @inlinable
-//  public subscript(position: Index) -> Element {
+  //  public subscript(position: Index) -> Element {
   public subscript(position: Index) -> (key: Key, value: Value) {
-//    @inline(__always) get { ___element(self[_checked: position]) }
+    //    @inline(__always) get { ___element(self[_checked: position]) }
     // コンパイラがクラッシュする
     //    @inline(__always) _read { yield self[_checked: position] }
     // コンパイラがクラッシュする場合もある
@@ -898,10 +894,10 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable
-//    public subscript(unchecked position: Index) -> Element {
-  public subscript(unchecked position: Index) -> (key: Key, value: Value) {
-//      @inline(__always) get { ___element(self[_unchecked: position]) }
-    @inline(__always) get { self[_unchecked: position] }
+    //    public subscript(unchecked position: Index) -> Element {
+    public subscript(unchecked position: Index) -> (key: Key, value: Value) {
+      //      @inline(__always) get { ___element(self[_unchecked: position]) }
+      @inline(__always) get { self[_unchecked: position] }
     }
   #endif
 
@@ -938,34 +934,6 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
     _indices
   }
 }
-
-#if COMPATIBLE_ATCODER_2025
-// 便利止まりだし、標準にならうと不自然なので、将来的に削除する
-extension RedBlackTreeDictionary where Value: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: ==)
-  }
-}
-
-// 便利止まりだし、標準にならうと不自然なので、将来的に削除する
-extension RedBlackTreeDictionary where Value: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: <)
-  }
-}
-#endif
 
 // MARK: -
 
@@ -1173,15 +1141,15 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
 // MARK: - Init naive
 
 #if !COMPATIBLE_ATCODER_2025
-extension RedBlackTreeDictionary {
+  extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(*n* log *n*)
-  ///
-  /// 省メモリでの初期化
-  @inlinable
-  public init<Source>(naive sequence: __owned Source)
-  where Element == Source.Element, Source: Sequence {
-    self._storage = .init(tree: .create_unique(naive: sequence, transform: Self.___tree_value))
+    /// - Complexity: O(*n* log *n*)
+    ///
+    /// 省メモリでの初期化
+    @inlinable
+    public init<Source>(naive sequence: __owned Source)
+    where Element == Source.Element, Source: Sequence {
+      self._storage = .init(tree: .create_unique(naive: sequence, transform: Self.___tree_value))
+    }
   }
-}
 #endif

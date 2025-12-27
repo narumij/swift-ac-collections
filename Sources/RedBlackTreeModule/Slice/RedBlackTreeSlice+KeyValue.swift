@@ -55,15 +55,6 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice.KeyValue {
-
-  @inlinable
-  @inline(__always)
-  public func ___element(_ __value: _Value) -> Element {
-    Self.___element(__value)
-  }
-}
-
 extension RedBlackTreeSlice.KeyValue: Sequence & Collection & BidirectionalCollection {}
 
 extension RedBlackTreeSlice.KeyValue {
@@ -126,9 +117,9 @@ extension RedBlackTreeSlice.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
-//  public subscript(position: Index) -> Element {
+  //  public subscript(position: Index) -> Element {
   public subscript(position: Index) -> (key: _Key, value: _MappedValue) {
-//    @inline(__always) get { ___element(self[_checked: position]) }
+    //    @inline(__always) get { ___element(self[_checked: position]) }
     @inline(__always) get { self[_checked: position] }
   }
 }
@@ -139,10 +130,10 @@ extension RedBlackTreeSlice.KeyValue {
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable
-//    public subscript(unchecked position: Index) -> Element {
-  public subscript(unchecked position: Index) -> (key: _Key, value: _MappedValue) {
-//      @inline(__always) get { ___element(self[_unchecked: position]) }
-    @inline(__always) get { self[_unchecked: position] }
+    //    public subscript(unchecked position: Index) -> Element {
+    public subscript(unchecked position: Index) -> (key: _Key, value: _MappedValue) {
+      //      @inline(__always) get { ___element(self[_unchecked: position]) }
+      @inline(__always) get { self[_unchecked: position] }
     }
   #endif
 }

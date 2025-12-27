@@ -1381,4 +1381,11 @@ final class MultisetTests: XCTestCase {
     let a = RedBlackTreeMultiSet<Int>(naive: AnySequence(source))
     XCTAssertEqual(a.sorted() + [], source)
   }
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testFilter() throws {
+      let s = RedBlackTreeMultiSet<Int>(0..<5)
+      XCTAssertEqual(s.filter { _ in true }, s)
+    }
+  #endif
 }

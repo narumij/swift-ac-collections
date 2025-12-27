@@ -646,7 +646,7 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
   @inline(__always)
   public var endIndex: Index { _endIndex }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(*d* + log *n*)
   @inlinable
   //  @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {

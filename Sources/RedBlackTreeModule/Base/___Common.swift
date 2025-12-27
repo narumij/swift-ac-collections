@@ -99,12 +99,3 @@ extension ___Common {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
-
-//extension ___Common {
-//
-//  @inlinable
-//  @inline(__always)
-//  internal func ___node_positions() -> ___SafePointers<Base> {
-//    .init(tree: __tree_, start: _start, end: _end)
-//  }
-//}

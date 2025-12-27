@@ -1,10 +1,3 @@
-//
-//  RedBlackTreeDictionary+Test.swift
-//  swift-ac-collections
-//
-//  Created by narumij on 2025/12/26.
-//
-
 extension RedBlackTreeDictionary {
 
   /// releaseビルドでは無効化されています(?)

@@ -647,10 +647,6 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  // TODO: 戻りの型について再検討
-  // 要らない気がしている
-  // あるいは逆にsetやmultisetへ展開するかのいずれか
-
   /// - Complexity: O(*n*)
   @inlinable
   public func filter(

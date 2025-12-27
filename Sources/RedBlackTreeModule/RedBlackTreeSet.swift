@@ -66,6 +66,11 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
   @usableFromInline
   var _storage: Storage
+
+  @inlinable @inline(__always)
+  internal init(_storage: Storage) {
+    self._storage = _storage
+  }
 }
 
 extension RedBlackTreeSet: ___RedBlackTreeKeyOnlyBase {}
@@ -567,6 +572,22 @@ extension RedBlackTreeSet {
     public func sequence(from start: Element, through end: Element) -> SubSequence {
       // APIはstride関数とsequence関数を参考にした
       .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(*n*)
+    @inlinable
+    public func filter(
+      _ isIncluded: (Element) throws -> Bool
+    ) rethrows -> Self {
+      .init(
+        _storage: .init(
+          tree: try __tree_.___filter(_start, _end, isIncluded)
+        ))
     }
   }
 #endif

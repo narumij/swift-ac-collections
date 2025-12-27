@@ -36,6 +36,7 @@ import Foundation
 /// print(multiset.count(of: 5)) // 出力例: 2
 /// print(multiset.count(of: 3)) // 出力例: 1
 /// ```
+/// - Important: `RedBlackTreeMultiSet` はスレッドセーフではありません。
 @frozen
 public struct RedBlackTreeMultiSet<Element: Comparable> {
 

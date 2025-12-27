@@ -43,6 +43,7 @@ import Foundation
 /// // キーと値のペアを一つ削除
 /// multimap.removeFirst(forKey: "apple")
 /// ```
+/// - Important: `RedBlackTreeMultiMap` はスレッドセーフではありません。
 @frozen
 public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 

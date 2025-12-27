@@ -41,6 +41,7 @@ import Foundation
 /// // キーと値のペアを削除
 /// dictionary.remove(key: "apple")
 /// ```
+/// - Important: `RedBlackTreeDictionary` はスレッドセーフではありません。
 @frozen
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 

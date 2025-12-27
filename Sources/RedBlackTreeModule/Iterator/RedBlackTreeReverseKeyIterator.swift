@@ -30,10 +30,10 @@ extension RedBlackTreeIterator.Keys {
     public typealias Tree = ___Tree<Base>
     
     @usableFromInline
-    let __tree_: Tree
+    internal let __tree_: Tree
     
     @usableFromInline
-    var _start, _end, _begin, _current, _next: _NodePtr
+    internal var _start, _end, _begin, _current, _next: _NodePtr
     
     @inlinable
     @inline(__always)

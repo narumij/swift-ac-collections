@@ -32,10 +32,10 @@ public enum RedBlackTreeIterator<Base> where Base: ___TreeBase & ___TreeIndex {
     public typealias _Value = Tree._Value
 
     @usableFromInline
-    let __tree_: Tree
+    internal let __tree_: Tree
 
     @usableFromInline
-    var _start, _end, _current, _next: _NodePtr
+    internal var _start, _end, _current, _next: _NodePtr
 
     @inlinable
     @inline(__always)

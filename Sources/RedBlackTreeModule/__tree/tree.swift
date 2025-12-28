@@ -84,9 +84,17 @@ package func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
   public typealias _NodeRef = UInt
 #endif
 
+public protocol TreePointer {
+  associatedtype _NodePtr: Equatable
+  associatedtype _Pointer where _NodePtr == _Pointer
+  associatedtype _NodeRef
+  var nullptr: _NodePtr { get }
+  var end: _NodePtr { get }
+}
+
 // ルートノードの親相当の機能
 @usableFromInline
-protocol TreeEndNodeProtocol {
+protocol TreeEndNodeProtocol: TreePointer {
   /// 左ノードを返す
   ///
   /// 木を遡るケースではこちらが必ず必要
@@ -132,7 +140,7 @@ extension TreeNodeProtocol {
 }
 
 @usableFromInline
-protocol TreeNodeRefProtocol {
+protocol TreeNodeRefProtocol: TreePointer {
   /// 左ノードへの参照を返す
   @inlinable func __left_ref(_: _NodePtr) -> _NodeRef
   /// 右ノードへの参照を返す
@@ -145,7 +153,7 @@ protocol TreeNodeRefProtocol {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol TreeNodeValueProtocol where _Key == __node_value_type {
+protocol TreeNodeValueProtocol: TreePointer where _Key == __node_value_type {
   associatedtype _Key
   associatedtype __node_value_type
   /// ノードから比較用の値を取り出す。
@@ -156,7 +164,7 @@ protocol TreeNodeValueProtocol where _Key == __node_value_type {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol TreeValueProtocol where _Value == __value_type {
+protocol TreeValueProtocol: TreePointer where _Value == __value_type {
   associatedtype _Value
   associatedtype __value_type
   /// ノードの値要素を取得する
@@ -186,7 +194,7 @@ protocol ValueProtocol: TreeNodeProtocol, TreeNodeValueProtocol {
 }
 
 @usableFromInline
-protocol BeginNodeProtocol {
+protocol BeginNodeProtocol: TreePointer {
   /// 木の左端のノードを返す
   @inlinable var __begin_node_: _NodePtr { get nonmutating set }
 }
@@ -209,12 +217,12 @@ extension BeginProtocol {
 }
 
 @usableFromInline
-protocol EndNodeProtocol {
+protocol EndNodeProtocol: TreePointer {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   func __end_node() -> _NodePtr
 }
 
-extension EndNodeProtocol {
+extension EndNodeProtocol where _NodePtr == Int {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable
   @inline(__always)
@@ -224,18 +232,18 @@ extension EndNodeProtocol {
 @usableFromInline
 protocol EndProtocol: EndNodeProtocol {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
-  @inlinable func end() -> _NodePtr
+  @inlinable var end: _NodePtr { get }
 }
 
-extension EndProtocol {
+extension EndProtocol where _NodePtr == Int {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable
   @inline(__always)
-  internal func end() -> _NodePtr { .end }
+  internal var end: _NodePtr { .end }
 }
 
 @usableFromInline
-protocol RootProtocol {
+protocol RootProtocol: TreePointer {
   /// 木の根ノードを返す
   @inlinable func __root() -> _NodePtr
 }
@@ -254,7 +262,7 @@ protocol RootPtrProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {
   @inlinable func __root_ptr() -> _NodeRef
 }
 
-extension RootPtrProtocol {
+extension RootPtrProtocol where _NodePtr == Int, _NodeRef == RedBlackTreeModule._NodeRef {
   /// 木の根ノードへの参照を返す
   @inlinable
   @inline(__always)
@@ -272,7 +280,7 @@ protocol SizeProtocol {
 // MARK: -
 
 @usableFromInline
-protocol AllocatorProtocol {
+protocol AllocatorProtocol: TreePointer {
   associatedtype _Value
   /// ノードを構築する
   func __construct_node(_ k: _Value) -> _NodePtr

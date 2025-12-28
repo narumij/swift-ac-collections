@@ -37,13 +37,13 @@ extension InsertNodeAtProtocol {
       _ __new_node: _NodePtr
     )
   {
-    __left_(__new_node, .nullptr)
-    __right_(__new_node, .nullptr)
+    __left_(__new_node, nullptr)
+    __right_(__new_node, nullptr)
     __parent_(__new_node, __parent)
     // __new_node->__is_black_ is initialized in __tree_balance_after_insert
     __ptr_(__child, __new_node)
     // unsafe operation not allowed
-    if __left_(__begin_node_) != .nullptr {
+    if __left_(__begin_node_) != nullptr {
       __begin_node_ = __left_(__begin_node_)
     }
     __tree_balance_after_insert(__left_(__end_node()), __ptr_(__child))
@@ -82,7 +82,7 @@ extension InsertUniqueProtocol {
     {
       let (__parent, __child) = __find_equal(__key(__k))
       let __r = __child
-      if __ptr_(__child) == .nullptr {
+      if __ptr_(__child) == nullptr {
         let __h = __construct_node(__k)
         __insert_node_at(__parent, __child, __h)
         return (__h, true)
@@ -141,7 +141,7 @@ extension InsertMultiProtocol {
     __emplace_multi(_ __k: _Value) -> _NodePtr
   {
     let __h = __construct_node(__k)
-    var __parent = _NodePtr.nullptr
+    var __parent = nullptr
     let __child = __find_leaf_high(&__parent, __key(__k))
     __insert_node_at(__parent, __child, __h)
     return __h
@@ -158,7 +158,7 @@ extension InsertLastProtocol {
   @inlinable
   @inline(__always)
   internal func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef) {
-    if __root() == .nullptr {
+    if __root() == nullptr {
       return (__end_node(), __left_ref(__end_node()))
     }
     let __parent = __tree_max(__root())
@@ -181,7 +181,7 @@ extension InsertLastProtocol {
   @inlinable
   @inline(__always)
   internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr {
-    let __child = __p == .end ? __left_ref(__end_node()) : __right_ref(__p)
+    let __child = __p == end ? __left_ref(__end_node()) : __right_ref(__p)
     //                        ^--- これの差
     let __h = __construct_node(__k)
     __insert_node_at(__p, __child, __h)

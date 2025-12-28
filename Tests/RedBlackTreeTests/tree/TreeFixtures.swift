@@ -11,7 +11,14 @@ import XCTest
     XCTestCase,
     TreeNodeProtocol, RootProtocol, EndNodeProtocol,
     ___RedBlackTreeNodePoolProtocol
-  {
+{
+    var nullptr: Int { .nullptr }
+    var end: Int { .end }
+    
+    typealias _NodePtr = Int
+    typealias _Pointer = Int    
+    typealias _NodeRef = RedBlackTreeModule._NodeRef
+    
     var __left_: _NodePtr = .nullptr
     var __begin_node_: _NodePtr = .end
 

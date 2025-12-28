@@ -42,7 +42,7 @@
     internal func ___pushDestroy(_ p: _NodePtr) {
       __left_(p, ___destroy_node)
       __right_(p, p)
-      __parent_(p, .nullptr)
+      __parent_(p, nullptr)
       __is_black_(p, false)
       ___destroy_node = p
       ___destroy_count += 1
@@ -59,18 +59,18 @@
     /// O(1)
     @inlinable
     internal func ___clearDestroy() {
-      ___destroy_node = .nullptr
+      ___destroy_node = nullptr
       ___destroy_count = 0
     }
 
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       /// O(*k*)
       var ___destroyNodes: [_NodePtr] {
-        if ___destroy_node == .nullptr {
+        if ___destroy_node == nullptr {
           return []
         }
         var nodes: [_NodePtr] = [___destroy_node]
-        while let l = nodes.last, __left_(l) != .nullptr {
+        while let l = nodes.last, __left_(l) != nullptr {
           nodes.append(__left_(l))
         }
         return nodes

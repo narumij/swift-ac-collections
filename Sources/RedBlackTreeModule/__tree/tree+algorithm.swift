@@ -31,11 +31,11 @@ extension TreeNodeProtocol {
   internal func
     __tree_left_rotate(_ __x: _NodePtr)
   {
-    assert(__x != .nullptr, "node shouldn't be null")
-    assert(__right_(__x) != .nullptr, "node should have a right child")
+    assert(__x != nullptr, "node shouldn't be null")
+    assert(__right_(__x) != nullptr, "node should have a right child")
     let __y = __right_(__x)
     __right_(__x, __left_unsafe(__y))
-    if __right_(__x) != .nullptr {
+    if __right_(__x) != nullptr {
       __parent_(__right_(__x), __x)
     }
     __parent_(__y, __parent_(__x))
@@ -55,11 +55,11 @@ extension TreeNodeProtocol {
   internal func
     __tree_right_rotate(_ __x: _NodePtr)
   {
-    assert(__x != .nullptr, "node shouldn't be null")
-    assert(__left_(__x) != .nullptr, "node should have a left child")
+    assert(__x != nullptr, "node shouldn't be null")
+    assert(__left_(__x) != nullptr, "node should have a left child")
     let __y = __left_unsafe(__x)
     __left_(__x, __right_(__y))
-    if __left_unsafe(__x) != .nullptr {
+    if __left_unsafe(__x) != nullptr {
       __parent_(__left_unsafe(__x), __x)
     }
     __parent_(__y, __parent_(__x))
@@ -84,15 +84,15 @@ extension TreeNodeProtocol {
   internal func
     __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
   {
-    assert(__root != .nullptr, "Root of the tree shouldn't be null")
-    assert(__x != .nullptr, "Can't attach null node to a leaf")
+    assert(__root != nullptr, "Root of the tree shouldn't be null")
+    assert(__x != nullptr, "Can't attach null node to a leaf")
     var __x = __x
     __is_black_(__x, __x == __root)
     while __x != __root, !__is_black_(__parent_unsafe(__x)) {
       // __x->__parent_ != __root because __x->__parent_->__is_black == false
       if __tree_is_left_child(__parent_unsafe(__x)) {
         let __y = __right_(__parent_unsafe(__parent_unsafe(__x)))
-        if __y != .nullptr, !__is_black_(__y) {
+        if __y != nullptr, !__is_black_(__y) {
           __x = __parent_unsafe(__x)
           __is_black_(__x, true)
           __x = __parent_unsafe(__x)
@@ -112,7 +112,7 @@ extension TreeNodeProtocol {
         }
       } else {
         let __y = __left_unsafe(__parent_(__parent_unsafe(__x)))
-        if __y != .nullptr, !__is_black_(__y) {
+        if __y != nullptr, !__is_black_(__y) {
           __x = __parent_unsafe(__x)
           __is_black_(__x, true)
           __x = __parent_unsafe(__x)
@@ -144,21 +144,21 @@ extension TreeNodeProtocol {
   internal func
     __tree_remove(_ __root: _NodePtr, _ __z: _NodePtr)
   {
-    assert(__root != .nullptr, "Root node should not be null")
-    assert(__z != .nullptr, "The node to remove should not be null")
+    assert(__root != nullptr, "Root node should not be null")
+    assert(__z != nullptr, "The node to remove should not be null")
     assert(__tree_invariant(__root), "The tree invariants should hold")
     var __root = __root
     // __z will be removed from the tree.  Client still needs to destruct/deallocate it
     // __y is either __z, or if __z has two children, __tree_next(__z).
     // __y will have at most one child.
     // __y will be the initial hole in the tree (make the hole at a leaf)
-    let __y = (__left_unsafe(__z) == .nullptr || __right_(__z) == .nullptr) ? __z : __tree_next(__z)
+    let __y = (__left_unsafe(__z) == nullptr || __right_(__z) == nullptr) ? __z : __tree_next(__z)
     // __x is __y's possibly null single child
-    var __x = __left_unsafe(__y) != .nullptr ? __left_unsafe(__y) : __right_(__y)
+    var __x = __left_unsafe(__y) != nullptr ? __left_unsafe(__y) : __right_(__y)
     // __w is __x's possibly null uncle (will become __x's sibling)
-    var __w: _NodePtr = .nullptr
+    var __w: _NodePtr = nullptr
     // link __x to __y's parent, and find __w
-    if __x != .nullptr {
+    if __x != nullptr {
       __parent_(__x, __parent_(__y))
     }
     if __tree_is_left_child(__y) {
@@ -187,7 +187,7 @@ extension TreeNodeProtocol {
       __left_(__y, __left_unsafe(__z))
       __parent_(__left_unsafe(__y), __y)
       __right_(__y, __right_(__z))
-      if __right_(__y) != .nullptr {
+      if __right_(__y) != nullptr {
         __parent_(__right_(__y), __y)
       }
       __is_black_(__y, __is_black_(__z))
@@ -197,7 +197,7 @@ extension TreeNodeProtocol {
     }
     // There is no need to rebalance if we removed a red, or if we removed
     //     the last node.
-    if __removed_black && __root != .nullptr {
+    if __removed_black && __root != nullptr {
       // Rebalance:
       // __x has an implicit black color (transferred from the removed __y)
       //    associated with it, no matter what its color is.
@@ -210,7 +210,7 @@ extension TreeNodeProtocol {
       //   is either red with no children, else null, otherwise __y would have
       //   different black heights under left and right pointers.
       // if (__x == __root || __x != nullptr && !__x->__is_black_)
-      if __x != .nullptr {
+      if __x != nullptr {
         __is_black_(__x, true)
       } else {
         //  Else __x isn't root, and is "doubly black", even though it may
@@ -234,8 +234,8 @@ extension TreeNodeProtocol {
               __w = __right_(__left_unsafe(__w))
             }
             // __w->__is_black_ is now true, __w may have null children
-            if (__left_unsafe(__w) == .nullptr || __is_black_(__left_unsafe(__w)))
-              && (__right_(__w) == .nullptr || __is_black_(__right_(__w)))
+            if (__left_unsafe(__w) == nullptr || __is_black_(__left_unsafe(__w)))
+              && (__right_(__w) == nullptr || __is_black_(__right_(__w)))
             {
               __is_black_(__w, false)
               __x = __parent_(__w)
@@ -250,7 +250,7 @@ extension TreeNodeProtocol {
               // continue;
             } else  // __w has a red child
             {
-              if __right_(__w) == .nullptr || __is_black_(__right_(__w)) {
+              if __right_(__w) == nullptr || __is_black_(__right_(__w)) {
                 // __w left child is non-null and red
                 __is_black_(__left_unsafe(__w), true)
                 __is_black_(__w, false)
@@ -280,8 +280,8 @@ extension TreeNodeProtocol {
               __w = __left_unsafe(__right_(__w))
             }
             // __w->__is_black_ is now true, __w may have null children
-            if (__left_unsafe(__w) == .nullptr || __is_black_(__left_unsafe(__w)))
-              && (__right_(__w) == .nullptr || __is_black_(__right_(__w)))
+            if (__left_unsafe(__w) == nullptr || __is_black_(__left_unsafe(__w)))
+              && (__right_(__w) == nullptr || __is_black_(__right_(__w)))
             {
               __is_black_(__w, false)
               __x = __parent_(__w)
@@ -296,7 +296,7 @@ extension TreeNodeProtocol {
               // continue;
             } else  // __w has a red child
             {
-              if __left_unsafe(__w) == .nullptr || __is_black_(__left_unsafe(__w)) {
+              if __left_unsafe(__w) == nullptr || __is_black_(__left_unsafe(__w)) {
                 // __w right child is non-null and red
                 __is_black_(__right_(__w), true)
                 __is_black_(__w, false)

@@ -1213,3 +1213,14 @@ extension ___Tree {
     }
   }
 }
+
+extension ___Tree: TreePointer {
+  public typealias _NodePtr = Int
+  
+  public typealias _Pointer = Int
+  
+  public typealias _NodeRef = RedBlackTreeModule._NodeRef
+  
+  public var nullptr: Int { .nullptr }
+  public var end: Int { .end }
+}

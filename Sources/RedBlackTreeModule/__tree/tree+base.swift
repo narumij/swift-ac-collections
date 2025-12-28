@@ -43,28 +43,28 @@ extension TreeNodeProtocol {
     internal func
       __tree_sub_invariant(_ __x: _NodePtr) -> UInt
     {
-      if __x == .nullptr {
+      if __x == nullptr {
         return 1
       }
       // parent consistency checked by caller
       // check __x->__left_ consistency
-      if __left_(__x) != .nullptr && __parent_(__left_(__x)) != __x {
+      if __left_(__x) != nullptr && __parent_(__left_(__x)) != __x {
         return 0
       }
       // check __x->__right_ consistency
-      if __right_(__x) != .nullptr && __parent_(__right_(__x)) != __x {
+      if __right_(__x) != nullptr && __parent_(__right_(__x)) != __x {
         return 0
       }
       // check __x->__left_ != __x->__right_ unless both are nullptr
-      if __left_(__x) == __right_(__x) && __left_(__x) != .nullptr {
+      if __left_(__x) == __right_(__x) && __left_(__x) != nullptr {
         return 0
       }
       // If this is red, neither child can be red
       if !__is_black_(__x) {
-        if __left_(__x) != .nullptr && !__is_black_(__left_(__x)) {
+        if __left_(__x) != nullptr && !__is_black_(__left_(__x)) {
           return 0
         }
-        if __right_(__x) != .nullptr && !__is_black_(__right_(__x)) {
+        if __right_(__x) != nullptr && !__is_black_(__right_(__x)) {
           return 0
         }
       }
@@ -85,11 +85,11 @@ extension TreeNodeProtocol {
     internal func
       __tree_invariant(_ __root: _NodePtr) -> Bool
     {
-      if __root == .nullptr {
+      if __root == nullptr {
         return true
       }
       // check __x->__parent_ consistency
-      if __parent_(__root) == .nullptr {
+      if __parent_(__root) == nullptr {
         return false
       }
       if !__tree_is_left_child(__root) {
@@ -114,9 +114,9 @@ extension TreeNodeProtocol {
   internal func
     __tree_min(_ __x: _NodePtr) -> _NodePtr
   {
-    assert(__x != .nullptr, "Root node shouldn't be null")
+    assert(__x != nullptr, "Root node shouldn't be null")
     var __x = __x
-    while __left_unsafe(__x) != .nullptr {
+    while __left_unsafe(__x) != nullptr {
       __x = __left_unsafe(__x)
     }
     return __x
@@ -128,9 +128,9 @@ extension TreeNodeProtocol {
   internal func
     __tree_max(_ __x: _NodePtr) -> _NodePtr
   {
-    assert(__x != .nullptr, "Root node shouldn't be null")
+    assert(__x != nullptr, "Root node shouldn't be null")
     var __x = __x
-    while __right_(__x) != .nullptr {
+    while __right_(__x) != nullptr {
       __x = __right_(__x)
     }
     return __x
@@ -142,9 +142,9 @@ extension TreeNodeProtocol {
   internal func
     __tree_next(_ __x: _NodePtr) -> _NodePtr
   {
-    assert(__x != .nullptr, "node shouldn't be null")
+    assert(__x != nullptr, "node shouldn't be null")
     var __x = __x
-    if __right_(__x) != .nullptr {
+    if __right_(__x) != nullptr {
       return __tree_min(__right_(__x))
     }
     while !__tree_is_left_child(__x) {
@@ -163,9 +163,9 @@ extension TreeNodeProtocol {
   internal func
     __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
   {
-    assert(__x != .nullptr, "node shouldn't be null")
+    assert(__x != nullptr, "node shouldn't be null")
     var __x = __x
-    if __right_(__x) != .nullptr {
+    if __right_(__x) != nullptr {
       return __tree_min(__right_(__x))
     }
     while !__tree_is_left_child(__x) {
@@ -181,9 +181,9 @@ extension TreeNodeProtocol {
   internal func
     __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   {
-    assert(__x != .nullptr, "node shouldn't be null")
+    assert(__x != nullptr, "node shouldn't be null")
     // unsafe not allowed
-    if __left_(__x) != .nullptr {
+    if __left_(__x) != nullptr {
       return __tree_max(__left_(__x))
     }
     var __xx = __x
@@ -200,14 +200,14 @@ extension TreeNodeProtocol {
     __tree_leaf(_ __x: _NodePtr) -> _NodePtr
   {
     // unsafe不明
-    assert(__x != .nullptr, "node shouldn't be null")
+    assert(__x != nullptr, "node shouldn't be null")
     var __x = __x
     while true {
-      if __left_(__x) != .nullptr {
+      if __left_(__x) != nullptr {
         __x = __left_(__x)
         continue
       }
-      if __right_(__x) != .nullptr {
+      if __right_(__x) != nullptr {
         __x = __right_(__x)
         continue
       }

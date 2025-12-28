@@ -55,7 +55,7 @@ extension BoundAlgorithmProtocol {
     var __rt = __root()
     var __result = __end_node()
     let __comp = __lazy_synth_three_way_comparator
-    while __rt != .nullptr {
+    while __rt != nullptr {
       let __comp_res = __comp(__v, __get_value(__rt))
       if __comp_res.__less() {
         __result = __rt
@@ -65,7 +65,7 @@ extension BoundAlgorithmProtocol {
       } else if _LowerBound {
         return __rt
       } else {
-        return __right_(__rt) != .nullptr ? __tree_min(__right_(__rt)) : __result
+        return __right_(__rt) != nullptr ? __tree_min(__right_(__rt)) : __result
       }
     }
     return __result
@@ -113,7 +113,7 @@ extension BoundAlgorithmProtocol {
   {
     var (__root, __result) = (__root, __result)
 
-    while __root != .nullptr {
+    while __root != nullptr {
       if !value_comp(__get_value(__root), __v) {
         __result = __root
         __root = __left_unsafe(__root)
@@ -131,7 +131,7 @@ extension BoundAlgorithmProtocol {
   {
     var (__root, __result) = (__root, __result)
 
-    while __root != .nullptr {
+    while __root != nullptr {
       if value_comp(__v, __get_value(__root)) {
         __result = __root
         __root = __left_unsafe(__root)

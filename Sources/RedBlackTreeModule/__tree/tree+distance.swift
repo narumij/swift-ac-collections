@@ -31,7 +31,7 @@ extension DistanceProtocol {
   typealias difference_type = Int
 
   @usableFromInline
-  typealias _InputIter = Int
+  typealias _InputIter = _NodePtr
 
   @inlinable
   @inline(__always)

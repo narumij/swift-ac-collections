@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol EraseProtocol: AnyObject {
+protocol EraseProtocol: AnyObject, TreePointer {
   func destroy(_ p: _NodePtr)
   func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
 }
@@ -62,7 +62,7 @@ extension EraseUniqueProtocol {
   @inline(__always)
   internal func ___erase_unique(_ __k: _Key) -> Bool {
     let __i = find(__k)
-    if __i == end() {
+    if __i == end {
       return false
     }
     _ = erase(__i)

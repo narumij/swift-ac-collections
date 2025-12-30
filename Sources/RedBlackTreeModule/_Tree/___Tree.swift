@@ -35,7 +35,22 @@ where Base: ___TreeBase {
   @inlinable
   deinit {
     self.withUnsafeMutablePointers { header, elements in
-      elements.deinitialize(count: header.pointee.initializedCount)
+      #if false
+        for i in 0..<header.pointee.initializedCount {
+          (elements + i).deinitialize(count: 1)
+        }
+      #else
+      for i in 0..<header.pointee.initializedCount {
+        if (elements + i).pointee.___needs_deinitialize {
+          (elements + i).deinitialize(count: 1)
+        }
+        else {
+          UnsafeMutableRawPointer(elements + i)
+            .assumingMemoryBound(to: UInt8.self)
+            .deinitialize(count: MemoryLayout<Node>.stride)
+        }
+      }
+      #endif
       header.deinitialize(count: 1)
     }
   }
@@ -114,6 +129,8 @@ extension ___Tree {
     internal var __right_: _NodePtr
     @usableFromInline
     internal var __is_black_: Bool
+    @usableFromInline
+    internal var ___needs_deinitialize: Bool
 
     @inlinable
     @inline(__always)
@@ -129,6 +146,7 @@ extension ___Tree {
       self.__right_ = __right_
       self.__parent_ = __parent_
       self.__value_ = __value_
+      self.___needs_deinitialize = true
     }
   }
 }
@@ -273,10 +291,15 @@ extension ___Tree {
     assert(_header.initializedCount <= _header.capacity)
     assert(_header.destroyCount <= _header.capacity)
     assert(_header.destroyNode != p)
+    (__node_ptr + p).deinitialize(count: 1)
+    UnsafeMutableRawPointer(__node_ptr + p)
+      .assumingMemoryBound(to: UInt8.self)
+      .initialize(repeating: 0, count: MemoryLayout<Node>.stride)
     __node_ptr[p].__left_ = _header.destroyNode
     __node_ptr[p].__right_ = p
     __node_ptr[p].__parent_ = .nullptr
     __node_ptr[p].__is_black_ = false
+    __node_ptr[p].___needs_deinitialize = false
     _header.destroyNode = p
     _header.destroyCount += 1
   }
@@ -289,6 +312,9 @@ extension ___Tree {
     let p = __node_ptr[_header.destroyNode].__right_
     _header.destroyNode = __node_ptr[p].__left_
     _header.destroyCount -= 1
+    UnsafeMutableRawPointer(__node_ptr + p)
+      .assumingMemoryBound(to: UInt8.self)
+      .deinitialize(count: MemoryLayout<Node>.stride)
     return p
   }
   /// O(1)
@@ -337,13 +363,13 @@ extension ___Tree {
   internal func __construct_node(_ k: _Value) -> _NodePtr {
     if _header.destroyCount > 0 {
       let p = ___popDetroy()
-      __node_ptr[p].__value_ = k
+      (__node_ptr + p).initialize(to: Node(__value_: k))
       return p
     }
     assert(capacity - count >= 1)
     let index = _header.initializedCount
-    (__node_ptr + index).initialize(to: Node(__value_: k))
     _header.initializedCount += 1
+    (__node_ptr + index).initialize(to: Node(__value_: k))
     assert(_header.initializedCount <= _header.capacity)
     return index
   }
@@ -755,7 +781,8 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func
-  sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafePointers<Base> {
+    sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafePointers<Base>
+  {
     .init(tree: self, start: __first, end: __last)
   }
 

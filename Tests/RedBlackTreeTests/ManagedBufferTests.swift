@@ -41,7 +41,8 @@ final class ManagedBufferTests: XCTestCase {
     let ptr = storage.__construct_node(100)
     XCTAssertEqual(storage.__value_(ptr), 100)
     storage.destroy(ptr)
-    XCTAssertEqual(storage.__value_(ptr), 100)
+//    XCTAssertEqual(storage.__value_(ptr), 100)
+    XCTAssertEqual(storage.__value_(ptr), 0) // ほっとけだったのを0クリア実装に変更した
   }
   
   func testDestroyStack() async throws {

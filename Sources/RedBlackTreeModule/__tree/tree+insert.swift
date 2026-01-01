@@ -158,10 +158,10 @@ extension InsertLastProtocol {
   @inlinable
   @inline(__always)
   internal func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef) {
-    if __root() == nullptr {
+    if __root == nullptr {
       return (__end_node(), __left_ref(__end_node()))
     }
-    let __parent = __tree_max(__root())
+    let __parent = __tree_max(__root)
     return (__parent, __right_ref(__parent))
   }
 

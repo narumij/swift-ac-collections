@@ -245,15 +245,15 @@ extension EndProtocol where _NodePtr == Int {
 @usableFromInline
 protocol RootProtocol: TreePointer {
   /// 木の根ノードを返す
-  @inlinable func __root() -> _NodePtr
+  @inlinable var __root: _NodePtr { get }
 }
 
 protocol ___RootProtocol: TreeNodeProtocol & EndProtocol {}
 
-extension ___RootProtocol {
+extension ___RootProtocol where _NodePtr == Int {
   @available(*, deprecated, message: "Kept only for the purpose of preventing loss of knowledge")
   /// 木の根ノードを返す
-  internal func __root() -> _NodePtr { __left_(__end_node()) }
+  internal var __root: _NodePtr { __left_(__end_node()) }
 }
 
 @usableFromInline

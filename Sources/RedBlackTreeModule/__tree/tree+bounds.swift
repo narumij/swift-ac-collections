@@ -52,7 +52,7 @@ extension BoundAlgorithmProtocol {
   internal func
     __lower_upper_bound_unique_impl(_LowerBound: Bool, _ __v: _Key) -> _NodePtr
   {
-    var __rt = __root()
+    var __rt = __root
     var __result = __end_node()
     let __comp = __lazy_synth_three_way_comparator
     while __rt != nullptr {
@@ -90,20 +90,20 @@ extension BoundAlgorithmProtocol {
       // Benchmarkで速度低下がみられるので、一旦保留
       __lower_upper_bound_unique_impl(_LowerBound: false, __v)
     #else
-      __upper_bound_multi(__v, __root(), __end_node())
+      __upper_bound_multi(__v, __root, __end_node())
     #endif
   }
 
   @inlinable
   @inline(__always)
   internal func __lower_bound_multi(_ __v: _Key) -> _NodePtr {
-    __lower_bound_multi(__v, __root(), __end_node())
+    __lower_bound_multi(__v, __root, __end_node())
   }
 
   @inlinable
   @inline(__always)
   internal func __upper_bound_multi(_ __v: _Key) -> _NodePtr {
-    __upper_bound_multi(__v, __root(), __end_node())
+    __upper_bound_multi(__v, __root, __end_node())
   }
 
   @inlinable

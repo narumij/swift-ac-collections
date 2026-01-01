@@ -518,7 +518,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func __root() -> _NodePtr {
+  internal var __root: _NodePtr {
     __header_ptr.pointee.__left_
   }
 }

@@ -32,7 +32,7 @@ extension FindLeafProtocol {
   internal func
     __find_leaf_low(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
   {
-    var __nd: _NodePtr = __root()
+    var __nd: _NodePtr = __root
     if __nd != nullptr {
       while true {
         if value_comp(__get_value(__nd), __v) {
@@ -61,7 +61,7 @@ extension FindLeafProtocol {
   internal func
     __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
   {
-    var __nd: _NodePtr = __root()
+    var __nd: _NodePtr = __root
     if __nd != nullptr {
       while true {
         if value_comp(__v, __get_value(__nd)) {
@@ -98,7 +98,7 @@ extension FindEqualProtocol {
   internal func
     __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {
-    var __nd = __root()
+    var __nd = __root
     if __nd == nullptr {
       return (__end_node(), __left_ref(end))
     }

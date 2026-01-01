@@ -16,6 +16,7 @@ protocol UnsafeNodeFreshPool {
   var freshBucketLast: ReserverHeaderPointer? { get set }
   var freshBucketCount: Int { get set }
   var freshPoolCapacity: Int { get set }
+  var freshBucketDispose: (ReserverHeaderPointer?) -> Void { get set }
 }
 
 extension UnsafeNodeFreshPool {
@@ -78,13 +79,22 @@ extension UnsafeNodeFreshPool {
   }
   
   @inlinable
+  static func disposeBucketFunc(_ pointer: ReserverHeaderPointer?) {
+    pointer!.pointee.dispose()
+    pointer!.deinitialize(count: 1)
+    UnsafeRawPointer(pointer!).deallocate()
+  }
+  
+  @inlinable
   @inline(__always)
   func ___disposeBucket(_ pointer: ReserverHeaderPointer) {
     // ここで__swift_instantiateGenericMetadataが生じていて、出来ればこれをキャンセルしたい
     // TODO: Value の deinit 専用 thunkというのをChatGPTがおすすめしてくる。再度検討すること
-    pointer.pointee.dispose()
-    pointer.deinitialize(count: 1)
-    UnsafeRawPointer(pointer).deallocate()
+//    pointer.pointee.dispose()
+//    pointer.deinitialize(count: 1)
+//    UnsafeRawPointer(pointer).deallocate()
+    // クロージャ化することで型情報を維持している。型情報を維持することでペナルティを避けられる。
+    freshBucketDispose(pointer)
   }
   
   @inlinable

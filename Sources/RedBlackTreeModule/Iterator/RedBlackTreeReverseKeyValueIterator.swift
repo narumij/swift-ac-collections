@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension RedBlackTreeIterator.KeyValues {
+extension RedBlackTreeIterator_old.KeyValues {
 
   @frozen
   public struct Reversed: Sequence, IteratorProtocol {
@@ -57,7 +57,7 @@ extension RedBlackTreeIterator.KeyValues {
   }
 }
 
-extension RedBlackTreeIterator.KeyValues.Reversed {
+extension RedBlackTreeIterator_old.KeyValues.Reversed {
   
   @inlinable
   @inline(__always)
@@ -68,7 +68,7 @@ extension RedBlackTreeIterator.KeyValues.Reversed {
   }
 }
 
-extension RedBlackTreeIterator.KeyValues.Reversed {
+extension RedBlackTreeIterator_old.KeyValues.Reversed {
 
   /// - Complexity: O(1)
   @inlinable
@@ -78,7 +78,7 @@ extension RedBlackTreeIterator.KeyValues.Reversed {
   }
 }
 
-extension RedBlackTreeIterator.KeyValues.Reversed where Base: KeyValueComparer {
+extension RedBlackTreeIterator_old.KeyValues.Reversed where Base: KeyValueComparer {
 
   #if COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
@@ -111,7 +111,7 @@ extension RedBlackTreeIterator.KeyValues.Reversed where Base: KeyValueComparer {
   #endif
 }
 
-extension RedBlackTreeIterator.KeyValues.Reversed {
+extension RedBlackTreeIterator_old.KeyValues.Reversed {
 
   @inlinable
   @inline(__always)
@@ -120,7 +120,7 @@ extension RedBlackTreeIterator.KeyValues.Reversed {
   }
 }
 
-extension RedBlackTreeIterator.KeyValues.Reversed: Equatable
+extension RedBlackTreeIterator_old.KeyValues.Reversed: Equatable
 where Base._Key: Equatable, Base._MappedValue: Equatable {
 
   @inlinable
@@ -130,7 +130,7 @@ where Base._Key: Equatable, Base._MappedValue: Equatable {
   }
 }
 
-extension RedBlackTreeIterator.KeyValues.Reversed: Comparable
+extension RedBlackTreeIterator_old.KeyValues.Reversed: Comparable
 where Base._Key: Comparable, Base._MappedValue: Comparable {
 
   @inlinable
@@ -141,10 +141,10 @@ where Base._Key: Comparable, Base._MappedValue: Comparable {
 }
 
 #if swift(>=5.5)
-  extension RedBlackTreeIterator.KeyValues.Reversed: @unchecked Sendable
+  extension RedBlackTreeIterator_old.KeyValues.Reversed: @unchecked Sendable
   where Tree._Value: Sendable {}
 #endif
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIterator.KeyValues.Reversed: ___IsIdenticalTo {}
+extension RedBlackTreeIterator_old.KeyValues.Reversed: ___IsIdenticalTo {}

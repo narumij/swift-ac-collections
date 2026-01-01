@@ -38,11 +38,28 @@ where
 }
 
 #if false
+public typealias RedBlackTreeIndex = UnsafeIndex
+public typealias RedBlackTreeIndices = UnsafeIndices
+public typealias RedBlackTreeIterator = RedBlackTreeIteratorUnsafe
+
+@usableFromInline
+typealias ___CopyOnWrite = ___UnsafeCopyOnWrite
+
+@usableFromInline
+typealias ___StorageProtocol = ___UnsafeStorageProtocol
+
 @usableFromInline
 typealias ___Base = ___UnsafeBase
 #else
 public typealias RedBlackTreeIndex = RedBlackTreeIndex_old
 public typealias RedBlackTreeIndices = RedBlackTreeIndices_old
+public typealias RedBlackTreeIterator = RedBlackTreeIterator_old
+
+@usableFromInline
+typealias ___CopyOnWrite = ___CopyOnWrite_old
+
+@usableFromInline
+typealias ___StorageProtocol = ___StorageProtocol_old
 
 @usableFromInline
 protocol ___Base: ___IndexBase

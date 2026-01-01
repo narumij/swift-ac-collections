@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___StorageProtocol: ___Root
+protocol ___StorageProtocol_old: ___Root
 where
   Base: ___TreeBase,
   Storage == ___Storage<Base>,
@@ -33,7 +33,7 @@ where
   var _storage: Storage { get set }
 }
 
-extension ___StorageProtocol {
+extension ___StorageProtocol_old {
 
   @inlinable
   internal var __tree_: Tree {
@@ -69,7 +69,7 @@ extension ___StorageProtocol {
 
 // MARK: - Remove
 
-extension ___StorageProtocol {
+extension ___StorageProtocol_old {
 
   @inlinable
   @inline(__always)
@@ -95,7 +95,7 @@ extension ___StorageProtocol {
   }
 }
 
-extension ___StorageProtocol {
+extension ___StorageProtocol_old {
 
   @inlinable
   @inline(__always)

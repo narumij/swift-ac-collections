@@ -21,12 +21,12 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___CopyOnWrite {
+protocol ___CopyOnWrite_old {
   associatedtype Base: ___TreeBase
   var _storage: ___Storage<Base> { get set }
 }
 
-extension ___CopyOnWrite {
+extension ___CopyOnWrite_old {
 
   @inlinable
   @inline(__always)

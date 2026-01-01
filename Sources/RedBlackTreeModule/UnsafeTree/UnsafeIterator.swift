@@ -60,9 +60,6 @@ struct UnsafeInitializedNodeIterator<_Value>: IteratorProtocol {
     defer { offset += 1 }
 
     // nodePointer(from:) + advance を使う
-    let base = UnsafePair<_Value>.pointer(from: h.pointee.storage)
-    return offset == 0
-      ? base
-      : UnsafePair<_Value>.advance(base, offset)
+    return UnsafePair<_Value>.advance(h.pointee.start, offset)
   }
 }

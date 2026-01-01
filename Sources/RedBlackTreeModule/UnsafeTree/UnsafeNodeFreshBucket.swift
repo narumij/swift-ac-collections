@@ -32,26 +32,18 @@ struct UnsafeNodeFreshBucket<_Value> {
   @inlinable
   @inline(__always)
   internal init(
-    storage: UnsafeMutableRawPointer,
+    start: NodePointer,
     capacity: Int
   ) {
-    self.storage = storage
-    self.current = UnsafePair<_Value>.pointer(from: storage)
+    self.start = start
     self.capacity = capacity
   }
 
-  public let storage: UnsafeMutableRawPointer
+  public let start: NodePointer
   public let capacity: Int
   public var count: Int = 0
   public var next: HeaderPointer? = nil
-  public var current: NodePointer?
-  
-  @inlinable
-  @inline(__always)
-  var start: NodePointer {
-    UnsafePair<_Value>.pointer(from: storage)
-  }
-  
+
   @inlinable
   @inline(__always)
   subscript(index: Int) -> NodePointer {
@@ -61,9 +53,9 @@ struct UnsafeNodeFreshBucket<_Value> {
   @inlinable
   @inline(__always)
   mutating func pop() -> NodePointer? {
-    guard let p = current, count < capacity else { return nil }
+    guard count < capacity else { return nil }
+    let p = UnsafePair<_Value>.advance(start, count)
     count += 1
-    current = (count < capacity) ? UnsafePair<_Value>.advance(p) : nil
     return p
   }
   
@@ -100,7 +92,6 @@ struct UnsafeNodeFreshBucket<_Value> {
   @inline(__always)
   mutating func clear() {
     _clear()
-    current = self[0]
     count = 0
   }
   
@@ -108,7 +99,6 @@ struct UnsafeNodeFreshBucket<_Value> {
   @inline(__always)
   func dispose() {
     _clear()
-//    storage.deallocate()
   }
 
   @inlinable
@@ -132,7 +122,7 @@ struct UnsafeNodeFreshBucket<_Value> {
     header.initialize(
       to:
         .init(
-          storage: storage,
+          start: UnsafePair<_Value>.pointer(from: storage),
           capacity: capacity))
 
     #if DEBUG
@@ -180,17 +170,17 @@ extension UnsafeNodeFreshBucket {
 
   func dump(label: String = "") {
     print("---- FreshBucket \(label) ----")
-    print(" storage:", storage)
+//    print(" storage:", storage)
     print(" capacity:", capacity)
     print(" count:", count)
-    print(" current:", current as Any)
+//    print(" current:", current as Any)
 
     var i = 0
     var p = start
     while i < capacity {
       let isUsed = i < count
       let marker =
-        (current == p) ? "<- current" :
+        (count == i) ? "<- current" :
         isUsed ? "[used]" : "[free]"
 
       print(

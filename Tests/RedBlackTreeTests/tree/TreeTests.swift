@@ -396,12 +396,12 @@ import XCTest
       XCTAssertTrue(___ptr_closed_range_contains(lower_bound(1), lower_bound(4), lower_bound(1)))
       XCTAssertTrue(___ptr_closed_range_contains(lower_bound(1), lower_bound(4), lower_bound(4)))
       XCTAssertFalse(___ptr_closed_range_contains(lower_bound(1), lower_bound(4), lower_bound(5)))
-      XCTAssertFalse(___ptr_closed_range_contains(lower_bound(1), lower_bound(4), __end_node()))
+      XCTAssertFalse(___ptr_closed_range_contains(lower_bound(1), lower_bound(4), __end_node))
       XCTAssertFalse(___ptr_closed_range_contains(lower_bound(2), lower_bound(3), lower_bound(1)))
       XCTAssertTrue(___ptr_closed_range_contains(lower_bound(2), lower_bound(3), lower_bound(2)))
       XCTAssertTrue(___ptr_closed_range_contains(lower_bound(2), lower_bound(3), lower_bound(3)))
       XCTAssertFalse(___ptr_closed_range_contains(lower_bound(2), lower_bound(3), lower_bound(4)))
-      XCTAssertFalse(___ptr_closed_range_contains(lower_bound(2), lower_bound(3), __end_node()))
+      XCTAssertFalse(___ptr_closed_range_contains(lower_bound(2), lower_bound(3), __end_node))
     }
   }
 #endif

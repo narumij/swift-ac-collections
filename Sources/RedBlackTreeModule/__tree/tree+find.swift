@@ -52,7 +52,7 @@ extension FindLeafProtocol {
         }
       }
     }
-    __parent = __end_node()
+    __parent = __end_node
     return __left_ref(__parent)
   }
 
@@ -81,7 +81,7 @@ extension FindLeafProtocol {
         }
       }
     }
-    __parent = __end_node()
+    __parent = __end_node
     return __left_ref(__parent)
   }
 }
@@ -100,7 +100,7 @@ extension FindEqualProtocol {
   {
     var __nd = __root
     if __nd == nullptr {
-      return (__end_node(), __left_ref(end))
+      return (__end_node, __left_ref(end))
     }
     var __nd_ptr = __root_ptr()
     let __comp = __lazy_synth_three_way_comparator

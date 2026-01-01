@@ -456,7 +456,7 @@ extension RedBlackTreeDictionary {
         tree: __tree_,
         other: other.__tree_,
         other.__tree_.__begin_node_,
-        other.__tree_.__end_node(),
+        other.__tree_.__end_node,
         uniquingKeysWith: combine)
     }
   }

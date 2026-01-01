@@ -51,7 +51,7 @@ extension ___StorageProtocol {
   @inlinable
   @inline(__always)
   internal var _end: _NodePtr {
-    __tree_.__end_node()
+    __tree_.__end_node
   }
 
   @inlinable

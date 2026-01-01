@@ -914,7 +914,7 @@ extension ___Tree {
     var i = i
     while distance != 0 {
       if 0 < distance {
-        guard i != __end_node() else {
+        guard i != __end_node else {
           fatalError(.outOfBounds)
         }
         i = ___index(after: i)
@@ -952,7 +952,7 @@ extension ___Tree {
         return nil
       }
       if 0 < distance {
-        guard i != __end_node() else {
+        guard i != __end_node else {
           fatalError(.outOfBounds)
         }
         i = ___index(after: i)
@@ -1000,7 +1000,7 @@ extension ___Tree {
     var result: _NodePtr = i
     while distance != 0 {
       if 0 < distance {
-        if result == __end_node() { return result }
+        if result == __end_node { return result }
         result = __tree_next_iter(result)
         distance -= 1
       } else {
@@ -1150,8 +1150,8 @@ extension ___Tree: Equatable where _Value: Equatable {
 
     return lhs.elementsEqual(
       lhs.__begin_node_,
-      lhs.__end_node(),
-      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
+      lhs.__end_node,
+      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
       by: ==)
   }
 }
@@ -1164,8 +1164,8 @@ extension ___Tree: Comparable where _Value: Comparable {
     !lhs.isIdentical(to: rhs)
       && lhs.lexicographicallyPrecedes(
         lhs.__begin_node_,
-        lhs.__end_node(),
-        rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
+        lhs.__end_node,
+        rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
         by: <)
   }
 }
@@ -1175,7 +1175,7 @@ extension ___Tree: Hashable where _Value: Hashable {
   @inlinable
   public func hash(into hasher: inout Hasher) {
     hasher.combine(header)
-    for node in unsafeValues(__begin_node_, __end_node()) {
+    for node in unsafeValues(__begin_node_, __end_node) {
       hasher.combine(node)
     }
   }

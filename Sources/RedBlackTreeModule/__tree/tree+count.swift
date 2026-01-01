@@ -57,7 +57,7 @@ extension CountProtocol {
   @inlinable
   @inline(__always)
   internal func __count_multi(_ __k: _Key) -> size_type {
-    var __result: __iter_pointer = __end_node()
+    var __result: __iter_pointer = __end_node
     var __rt: __node_pointer = __root
     let __comp = __lazy_synth_three_way_comparator
     while __rt != nullptr {

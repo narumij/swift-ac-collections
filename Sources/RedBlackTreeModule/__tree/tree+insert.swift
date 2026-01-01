@@ -46,7 +46,7 @@ extension InsertNodeAtProtocol {
     if __left_(__begin_node_) != nullptr {
       __begin_node_ = __left_(__begin_node_)
     }
-    __tree_balance_after_insert(__left_(__end_node()), __ptr_(__child))
+    __tree_balance_after_insert(__left_(__end_node), __ptr_(__child))
     __size_ += 1
   }
 }
@@ -159,7 +159,7 @@ extension InsertLastProtocol {
   @inline(__always)
   internal func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef) {
     if __root == nullptr {
-      return (__end_node(), __left_ref(__end_node()))
+      return (__end_node, __left_ref(__end_node))
     }
     let __parent = __tree_max(__root)
     return (__parent, __right_ref(__parent))
@@ -181,7 +181,7 @@ extension InsertLastProtocol {
   @inlinable
   @inline(__always)
   internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr {
-    let __child = __p == end ? __left_ref(__end_node()) : __right_ref(__p)
+    let __child = __p == end ? __left_ref(__end_node) : __right_ref(__p)
     //                        ^--- これの差
     let __h = __construct_node(__k)
     __insert_node_at(__p, __child, __h)

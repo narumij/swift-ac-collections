@@ -219,14 +219,14 @@ extension BeginProtocol {
 @usableFromInline
 protocol EndNodeProtocol: TreePointer {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
-  func __end_node() -> _NodePtr
+  var __end_node: _NodePtr { get }
 }
 
 extension EndNodeProtocol where _NodePtr == Int {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable
   @inline(__always)
-  internal func __end_node() -> _NodePtr { .end }
+  internal var __end_node: _NodePtr { .end }
 }
 
 @usableFromInline
@@ -253,7 +253,7 @@ protocol ___RootProtocol: TreeNodeProtocol & EndProtocol {}
 extension ___RootProtocol where _NodePtr == Int {
   @available(*, deprecated, message: "Kept only for the purpose of preventing loss of knowledge")
   /// 木の根ノードを返す
-  internal var __root: _NodePtr { __left_(__end_node()) }
+  internal var __root: _NodePtr { __left_(__end_node) }
 }
 
 @usableFromInline
@@ -266,7 +266,7 @@ extension RootPtrProtocol where _NodePtr == Int, _NodeRef == RedBlackTreeModule.
   /// 木の根ノードへの参照を返す
   @inlinable
   @inline(__always)
-  internal func __root_ptr() -> _NodeRef { __left_ref(__end_node()) }
+  internal func __root_ptr() -> _NodeRef { __left_ref(__end_node) }
 }
 
 @usableFromInline

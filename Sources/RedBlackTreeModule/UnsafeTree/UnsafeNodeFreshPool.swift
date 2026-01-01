@@ -57,6 +57,8 @@ extension UnsafeNodeFreshPool {
   @inlinable
   @inline(__always)
   mutating func pushBucket(capacity: Int) {
+    // TODO: FIXME
+    // 2回連続で確保した場合の挙動が不定となっているのを修正する
     assert(capacity != 0)
     let pointer = ReserverHeader.create(capacity: capacity)
     if freshBucketHead == nil {

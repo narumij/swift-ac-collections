@@ -28,7 +28,7 @@ public protocol ___TreeIndex {
 
 extension ___Tree where Base: ___TreeIndex {
 
-  public typealias Index = RedBlackTreeIndex<Base>
+  public typealias Index = RedBlackTreeIndex_old<Base>
   public typealias Pointee = Base.Pointee
 
   @nonobjc
@@ -41,15 +41,15 @@ extension ___Tree where Base: ___TreeIndex {
 
 extension ___Tree where Base: ___TreeIndex {
 
-  public typealias Indices = RedBlackTreeIndices<Base>
+  public typealias Indices = RedBlackTreeIndices_old<Base>
 }
 
 extension ___Tree where Base: ___TreeIndex {
 
-  public typealias _Values = RedBlackTreeIterator<Base>.Values
+  public typealias _Values = RedBlackTreeIterator_old<Base>.Values
 }
 
 extension ___Tree where Base: KeyValueComparer & ___TreeIndex {
 
-  public typealias _KeyValues = RedBlackTreeIterator<Base>.KeyValues
+  public typealias _KeyValues = RedBlackTreeIterator_old<Base>.KeyValues
 }

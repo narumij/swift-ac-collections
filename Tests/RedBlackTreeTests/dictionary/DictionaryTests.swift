@@ -457,12 +457,12 @@ final class DictionaryTests: XCTestCase {
   #if DEBUG
     func testIndexLimit3() throws {
       let set = [0: 0, 1: 10, 2: 20, 3: 30, 4: 40] as RedBlackTreeDictionary<Int, Int>
-      XCTAssertEqual(set.startIndex.rawValue, .node(0))
-      XCTAssertEqual(set.index(before: set.endIndex).rawValue, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).rawValue, .node(4))
+      XCTAssertEqual(set.startIndex._rawValue, .node(0))
+      XCTAssertEqual(set.index(before: set.endIndex)._rawValue, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1)._rawValue, .node(4))
       XCTAssertEqual(
-        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.rawValue, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).rawValue, .node(0))
+        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?._rawValue, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5)._rawValue, .node(0))
       XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
       XCTAssertNotEqual(
         set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),
@@ -853,6 +853,7 @@ final class DictionaryTests: XCTestCase {
     }
   #endif
 
+#if !USE_UNSAFE_TREE
   func testIndexValidation() throws {
     let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
     XCTAssertTrue(set.isValid(index: set.startIndex))
@@ -895,6 +896,7 @@ final class DictionaryTests: XCTestCase {
         XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
       #endif
   }
+#endif
 
   func testContainsKey() {
     let dict: RedBlackTreeDictionary<String, Int> = ["a": 1, "b": 2, "c": 3]

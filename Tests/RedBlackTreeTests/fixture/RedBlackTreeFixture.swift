@@ -13,7 +13,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-#if DEBUG
+#if DEBUG && !USE_UNSAFE_TREE
   protocol RedBlackTreeDebugFixture: ___TreeBase {
     associatedtype Base: ___TreeBase
     var __tree_: ___Tree<Base> { get }
@@ -65,6 +65,62 @@ import XCTest
   extension RedBlackTreeMultiMap: RedBlackTreeDebugFixture {}
   extension RedBlackTreeDictionary: RedBlackTreeDebugFixture {}
 #endif
+
+#if DEBUG && USE_UNSAFE_TREE
+  protocol RedBlackTreeDebugFixture: ___TreeBase {
+    associatedtype Base: ___TreeBase
+    var __tree_: UnsafeTree<Base> { get }
+  }
+
+  extension RedBlackTreeDebugFixture {
+    
+    typealias _NodePtr = UnsafeTree<Base>._NodePtr
+
+    func __left_(_ p: _NodePtr) -> _NodePtr {
+      __tree_.__left_(p)
+    }
+    func __right_(_ p: _NodePtr) -> _NodePtr {
+      __tree_.__right_(p)
+    }
+    var __root: _NodePtr {
+      __tree_.__root
+    }
+    mutating func __root(_ p: _NodePtr) {
+      __tree_.__left_(__tree_.end, p)
+    }
+    func
+      __tree_min(_ __x: _NodePtr) -> _NodePtr
+    {
+      __tree_.__tree_min(__x)
+    }
+    func
+      __tree_max(_ __x: _NodePtr) -> _NodePtr
+    {
+      __tree_.__tree_max(__x)
+    }
+    mutating func
+      __tree_left_rotate(_ __x: _NodePtr)
+    {
+      __tree_.__tree_left_rotate(__x)
+    }
+    mutating func
+      __tree_right_rotate(_ __x: _NodePtr)
+    {
+      __tree_.__tree_right_rotate(__x)
+    }
+    mutating func
+      __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
+    {
+      __tree_.__tree_balance_after_insert(__root, __x)
+    }
+  }
+
+  extension RedBlackTreeSet: RedBlackTreeDebugFixture {}
+  extension RedBlackTreeMultiSet: RedBlackTreeDebugFixture {}
+  extension RedBlackTreeMultiMap: RedBlackTreeDebugFixture {}
+  extension RedBlackTreeDictionary: RedBlackTreeDebugFixture {}
+#endif
+
 
 protocol RedBlackTreeFixture: Sequence {
   associatedtype Index

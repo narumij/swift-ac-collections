@@ -219,7 +219,8 @@ extension ___Tree.Header {
 
   @usableFromInline
   var freshPoolCapacity: Int {
-    capacity
+    get { capacity }
+    set { capacity = newValue }
   }
 
   @inlinable
@@ -238,6 +239,11 @@ extension ___Tree.Header {
 }
 
 extension ___Tree {
+  
+  @usableFromInline
+  var freshPoolCapacity: Int {
+    capacity
+  }
 
   @nonobjc
   @inlinable

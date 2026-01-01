@@ -365,12 +365,12 @@ final class MultisetTests: XCTestCase {
   #if DEBUG
     func testIndexLimit3() throws {
       let set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set.startIndex.rawValue, .node(0))
-      XCTAssertEqual(set.index(before: set.endIndex).rawValue, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).rawValue, .node(4))
+      XCTAssertEqual(set.startIndex._rawValue, .node(0))
+      XCTAssertEqual(set.index(before: set.endIndex)._rawValue, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1)._rawValue, .node(4))
       XCTAssertEqual(
-        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.rawValue, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).rawValue, .node(0))
+        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?._rawValue, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5)._rawValue, .node(0))
       XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
       XCTAssertNotEqual(
         set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),
@@ -563,12 +563,12 @@ final class MultisetTests: XCTestCase {
   #if DEBUG
     func testRedBlackTreeSetLowerBound() throws {
       let numbers: RedBlackTreeMultiSet = [1, 3, 5, 7, 9]
-      XCTAssertEqual(numbers.lowerBound(4).rawValue, 2)
+      XCTAssertEqual(numbers.lowerBound(4)._rawValue, 2)
     }
 
     func testRedBlackTreeSetUpperBound() throws {
       let numbers: RedBlackTreeMultiSet = [1, 3, 5, 7, 9]
-      XCTAssertEqual(numbers.upperBound(7).rawValue, 4)
+      XCTAssertEqual(numbers.upperBound(7)._rawValue, 4)
     }
   #endif
 
@@ -589,9 +589,9 @@ final class MultisetTests: XCTestCase {
   #if DEBUG
     func testRedBlackTreeSetFirstIndex() throws {
       var members: RedBlackTreeMultiSet = [1, 3, 5, 7, 9]
-      XCTAssertEqual(members.firstIndex(of: 3)?.rawValue, .init(1))
+      XCTAssertEqual(members.firstIndex(of: 3)?._rawValue, .init(1))
       XCTAssertEqual(members.firstIndex(of: 2), nil)
-      XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?.rawValue, .init(2))
+      XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?._rawValue, .init(2))
       XCTAssertEqual(members.firstIndex(where: { $0 > 9 }), nil)
       XCTAssertEqual(members.sorted(), [1, 3, 5, 7, 9])
       XCTAssertEqual(members.removeFirst(), 1)
@@ -984,6 +984,7 @@ final class MultisetTests: XCTestCase {
     }
   #endif
 
+#if !USE_UNSAFE_TREE
   func testIndexValidation() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     XCTAssertTrue(set.isValid(index: set.startIndex))
@@ -1024,7 +1025,8 @@ final class MultisetTests: XCTestCase {
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
     #endif
   }
-
+  #endif
+  
   func testPopFirst() {
     do {
       var d = RedBlackTreeMultiSet<Int>()

@@ -316,3 +316,12 @@ public func - <Base>(lhs: RedBlackTreeIndex_old<Base>, rhs: RedBlackTreeIndex_ol
     public func some() -> Self? { .some(self) }
   }
 #endif
+
+extension RedBlackTreeIndex_old {
+  
+  @inlinable
+  @inline(__always)
+  internal func rawValue(_ tree: Tree) -> _NodePtr {
+    self.rawValue
+  }
+}

@@ -26,7 +26,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @inline(__always)
   package func ___is_garbaged(_ index: Index) -> Bool {
-    __tree_.___is_garbaged(index.rawValue)
+    __tree_.___is_garbaged(index.rawValue(__tree_))
   }
 }
 

@@ -17,8 +17,8 @@ var defines: [String] = [
   "WITHOUT_SIZECHECK",
   "COMPATIBLE_ATCODER_2025",
 
-  
-//  "USE_UNSAFE_TREE",
+
+  "USE_UNSAFE_TREE",
 ]
 
 var _settings: [SwiftSetting] =

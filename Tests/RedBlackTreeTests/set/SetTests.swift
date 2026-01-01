@@ -881,16 +881,19 @@ final class SetTests: XCTestCase {
     }
   #endif
 
-#if !USE_UNSAFE_TREE
   func testIndexValidation() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     XCTAssertTrue(set.isValid(index: set.startIndex))
     XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = RedBlackTreeSet<Int>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawValue, -1)
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawValue, 5)
-
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
+      #if !USE_UNSAFE_TREE
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, 5)
+      #else
+        // UnsafeTreeでは、範囲外のインデックスを作成できない
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
+      #endif
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))
@@ -908,8 +911,8 @@ final class SetTests: XCTestCase {
     XCTAssertTrue(set.isValid(index: set.endIndex))
     typealias Index = RedBlackTreeSet<Int>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawValue, -1)
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawValue, 5)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, 5)
 
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
@@ -922,8 +925,7 @@ final class SetTests: XCTestCase {
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
     #endif
   }
-  #endif
-  
+
   func testPopFirst() {
     do {
       var d = RedBlackTreeSet<Int>()
@@ -1149,10 +1151,10 @@ final class SetTests: XCTestCase {
 
   //  #if DEBUG
   #if !USE_UNSAFE_TREE
-  func testMemoryLayout() throws {
-    XCTAssertEqual(MemoryLayout<RedBlackTreeSet<Int>.Tree.Node>.stride, 40)
-    XCTAssertEqual(40 * UInt128(Int.max) / 1024 / 1024 / 1024 / 1024 / 1024, 327679)
-  }
+    func testMemoryLayout() throws {
+      XCTAssertEqual(MemoryLayout<RedBlackTreeSet<Int>.Tree.Node>.stride, 40)
+      XCTAssertEqual(40 * UInt128(Int.max) / 1024 / 1024 / 1024 / 1024 / 1024, 327679)
+    }
   #endif
   //  #endif
 

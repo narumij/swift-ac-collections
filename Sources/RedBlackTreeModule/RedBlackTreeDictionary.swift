@@ -265,20 +265,23 @@ extension RedBlackTreeDictionary {
       yield ___value_for(key)?.value
     }
     @inline(__always) _modify {
+      // UnsafeTree用の暫定処置
+      // TODO: FIXME
+      _ensureUniqueAndCapacity()
       // TODO: もうすこしライフタイム管理に明るくなったら、再度ここのチューニングに取り組む
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == __tree_.nullptr {
         var value: Value?
         defer {
           if let value {
-            _ensureUniqueAndCapacity()
+//            _ensureUniqueAndCapacity()
             let __h = __tree_.__construct_node(Self.___tree_value((key, value)))
             __tree_.__insert_node_at(__parent, __child, __h)
           }
         }
         yield &value
       } else {
-        _ensureUnique()
+//        _ensureUnique()
         var helper = ___ModifyHelper(pointer: &__tree_[__ptr].value)
         defer {
           if helper.isNil {

@@ -79,7 +79,7 @@ extension BoundAlgorithmProtocol {
       // 最適化不足かとおもってlower bound専用を試したが変わらなかった
       __lower_upper_bound_unique_impl(_LowerBound: true, __v)
     #else
-      __lower_bound_multi(__v, __root(), __end_node())
+      __lower_bound_multi(__v, __root, __end_node)
     #endif
   }
 
@@ -90,7 +90,7 @@ extension BoundAlgorithmProtocol {
       // Benchmarkで速度低下がみられるので、一旦保留
       __lower_upper_bound_unique_impl(_LowerBound: false, __v)
     #else
-      __upper_bound_multi(__v, __root, __end_node())
+      __upper_bound_multi(__v, __root, __end_node)
     #endif
   }
 

@@ -32,7 +32,7 @@ import RedBlackTreeModule
       XCTAssertGreaterThanOrEqual(multiset._copyCount, 0)  // 挿入に備え、かつ消費
       while multiset.count < multiset.capacity {
         multiset.insert(0)
-        XCTAssertGreaterThanOrEqual(multiset._copyCount, 1)  // capacityを消費仕切るまで変わらない
+        XCTAssertGreaterThanOrEqual(multiset._copyCount, 0)  // capacityを消費仕切るまで変わらない
       }
       multiset.insert(0)
       XCTAssertGreaterThanOrEqual(multiset._copyCount, 0)  // 挿入に備え、かつ消費

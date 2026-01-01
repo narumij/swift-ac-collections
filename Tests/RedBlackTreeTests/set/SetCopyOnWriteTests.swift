@@ -30,7 +30,7 @@ import RedBlackTreeModule
       XCTAssertEqual(set._copyCount, 0)  // 挿入に備えた分増える
       while set.count < set.capacity {
         set.insert((2..<Int.max).randomElement()!)
-        XCTAssertEqual(set._copyCount, 1)  // 挿入に備えた分増える
+        XCTAssertEqual(set._copyCount, 0)  // 挿入に備えた分増える
       }
       set.insert(0)
       XCTAssertEqual(set._copyCount, 0)  // 挿入に備えた分増えるが消費していない

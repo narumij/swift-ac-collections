@@ -39,9 +39,9 @@ struct UnsafeNodeFreshBucket<_Value> {
     self.capacity = capacity
   }
 
+  public var count: Int = 0
   public let start: NodePointer
   public let capacity: Int
-  public var count: Int = 0
   public var next: HeaderPointer? = nil
 
   @inlinable

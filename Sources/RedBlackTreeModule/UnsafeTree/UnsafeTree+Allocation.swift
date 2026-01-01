@@ -15,9 +15,9 @@ protocol Allcation {
 
 extension UnsafeTree: Allcation {}
 extension UnsafeTree.Header: AllocationHeader {}
-extension UnsafeTree: OldAllocation {}
+//extension UnsafeTree: OldAllocation {}
 //extension UnsafeTree: NewAllocation {}
-//extension UnsafeTree: NewAllocation2 {}
+extension UnsafeTree: NewAllocation2 {}
 
 @usableFromInline
 protocol NewAllocation2: Allcation {}

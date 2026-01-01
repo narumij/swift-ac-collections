@@ -217,6 +217,11 @@ extension ___Tree.Header: Hashable {}
 
 extension ___Tree.Header {
 
+  @usableFromInline
+  var freshPoolCapacity: Int {
+    capacity
+  }
+
   @inlinable
   @inline(__always)
   internal var count: Int {

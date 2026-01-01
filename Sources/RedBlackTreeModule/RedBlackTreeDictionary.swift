@@ -267,7 +267,7 @@ extension RedBlackTreeDictionary {
     @inline(__always) _modify {
       // TODO: もうすこしライフタイム管理に明るくなったら、再度ここのチューニングに取り組む
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
-      if __ptr == .nullptr {
+      if __ptr == __tree_.nullptr {
         var value: Value?
         defer {
           if let value {
@@ -301,9 +301,9 @@ extension RedBlackTreeDictionary {
     @inline(__always) _modify {
       defer { _fixLifetime(self) }
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
-      if __ptr == .nullptr {
+      if __ptr == __tree_.nullptr {
         _ensureUniqueAndCapacity()
-        assert(__tree_.header.capacity > __tree_.count)
+        assert(__tree_.header.freshPoolCapacity > __tree_.count)
         __ptr = __tree_.__construct_node(Self.___tree_value((key, defaultValue())))
         __tree_.__insert_node_at(__parent, __child, __ptr)
       } else {
@@ -317,7 +317,7 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   internal func _prepareForKeyingModify(
     _ key: Key
-  ) -> (__parent: _NodePtr, __child: _NodeRef, __ptr: _NodePtr) {
+  ) -> (__parent: Tree._NodePtr, __child: Tree._NodeRef, __ptr: Tree._NodePtr) {
     let (__parent, __child) = __tree_.__find_equal(key)
     let __ptr = __tree_.__ptr_(__child)
     return (__parent, __child, __ptr)

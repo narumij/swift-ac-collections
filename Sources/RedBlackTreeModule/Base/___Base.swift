@@ -63,7 +63,7 @@ where
   var _end: _NodePtr { get }
 }
 
-#if true
+#if !USE_UNSAFE_TREE
 public typealias RedBlackTreeIndex = RedBlackTreeIndex_old
 public typealias RedBlackTreeIndices = RedBlackTreeIndices_old
 public typealias RedBlackTreeIterator = RedBlackTreeIterator_old

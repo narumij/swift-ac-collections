@@ -321,7 +321,13 @@ extension RedBlackTreeIndex_old {
   
   @inlinable
   @inline(__always)
-  internal func rawValue(_ tree: Tree) -> _NodePtr {
+  package func rawValue(_ tree: Tree) -> _NodePtr {
+    self.rawValue
+  }
+  
+  @inlinable
+  @inline(__always)
+  package var _rawValue: Int {
     self.rawValue
   }
 }

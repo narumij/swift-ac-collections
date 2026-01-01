@@ -138,7 +138,7 @@ extension FindProtocol {
   @inlinable
   @inline(__always)
   internal func find(_ __v: _Key) -> _NodePtr {
-    #if true
+    #if USE_OLD_FIND
       let __p = lower_bound(__v)
       if __p != end, !value_comp(__v, __get_value(__p)) {
         return __p
@@ -147,8 +147,8 @@ extension FindProtocol {
     #else
       // llvmの__treeに寄せたが、multimapの挙動が変わってしまうので保留
       let (_, __match) = __find_equal(__v)
-      if __ptr_(__match) == .nullptr {
-        return .end
+      if __ptr_(__match) == nullptr {
+        return end
       }
       return __ptr_(__match)
     #endif

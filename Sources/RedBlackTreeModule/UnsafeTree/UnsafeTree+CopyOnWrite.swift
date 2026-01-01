@@ -109,7 +109,7 @@ extension UnsafeTree {
           growCapacity(to: capacity, linearly: linearly),
           limit))
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -169,7 +169,7 @@ extension UnsafeTree {
   @inline(__always)
   internal static func ensureCapacity(tree: inout UnsafeTree, minimumCapacity: Int) {
     if tree.freshPoolCapacity < minimumCapacity {
-//      tree = tree.copy(growthCapacityTo: minimumCapacity, linearly: false)
+      //      tree = tree.copy(growthCapacityTo: minimumCapacity, linearly: false)
       tree.growthCapacity(to: minimumCapacity, linearly: false)
     }
   }
@@ -180,13 +180,13 @@ extension UnsafeTree {
 // Apache License 2.0 LLVM exception
 
 #if UNSAFE_TREE_PROJECT
-extension FixedWidthInteger {
+  extension FixedWidthInteger {
 
-  @inlinable
-  internal func _binaryLogarithm() -> Int {
-    return Self.bitWidth &- (leadingZeroBitCount &+ 1)
+    @inlinable
+    internal func _binaryLogarithm() -> Int {
+      return Self.bitWidth &- (leadingZeroBitCount &+ 1)
+    }
   }
-}
 #endif
 
 // from https://github.com/swiftlang/swift/blob/main/stdlib/public/core/HashTable.swift

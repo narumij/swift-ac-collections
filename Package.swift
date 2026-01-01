@@ -18,6 +18,9 @@ var defines: [String] = [
   "COMPATIBLE_ATCODER_2025",
 
   "USE_UNSAFE_TREE",
+
+  
+  //"USE_OLD_FIND",
 ]
 
 var _settings: [SwiftSetting] =

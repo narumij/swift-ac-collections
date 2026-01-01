@@ -16,7 +16,7 @@ protocol UnsafeNodeFreshPool {
   var freshBucketLast: ReserverHeaderPointer? { get set }
   var freshBucketCount: Int { get set }
   var freshPoolCapacity: Int { get set }
-  var freshBucketDispose: (ReserverHeaderPointer?) -> Void { get set }
+  var freshBucketDispose: (ReserverHeaderPointer?) -> Void { get }
 }
 
 extension UnsafeNodeFreshPool {
@@ -79,7 +79,8 @@ extension UnsafeNodeFreshPool {
   }
   
   @inlinable
-  static func disposeBucketFunc(_ pointer: ReserverHeaderPointer?) {
+//  @inline(__always)
+  static func ___disposeBucketFunc(_ pointer: ReserverHeaderPointer?) {
     pointer!.pointee.dispose()
     pointer!.deinitialize(count: 1)
     UnsafeRawPointer(pointer!).deallocate()

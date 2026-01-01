@@ -185,7 +185,7 @@ extension UnsafeTree {
     internal init(end: UnsafeTree._NodePtr = nil) {
       self.end = end
       self.__begin_node_ = end
-      self.freshBucketDispose = Self.disposeBucketFunc
+      self.freshBucketDispose = Self.___disposeBucketFunc
       assert(__begin_node_ == end)
       assert(__left_ == nil)
     }
@@ -199,7 +199,7 @@ extension UnsafeTree {
     @usableFromInline var freshBucketLast: ReserverHeaderPointer?
     @usableFromInline var freshBucketCount: Int = 0
     @usableFromInline var freshPoolCapacity: Int = 0
-    @usableFromInline var freshBucketDispose: (ReserverHeaderPointer?) -> Void
+    @usableFromInline let freshBucketDispose: (ReserverHeaderPointer?) -> Void
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       @usableFromInline internal var copyCount: UInt = 0
     #endif

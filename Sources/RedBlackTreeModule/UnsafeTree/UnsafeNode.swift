@@ -105,15 +105,15 @@ public enum UnsafePair<_Value> {
   static func _allocationSize() -> (size: Int, alignment: Int) {
     let numBytes = MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride
 
-    let headerAlignment = MemoryLayout<UnsafeNode>.alignment
-    let elementAlignment = MemoryLayout<_Value>.alignment
+    let nodeAlignment = MemoryLayout<UnsafeNode>.alignment
+    let valueAlignment = MemoryLayout<_Value>.alignment
 
-    if elementAlignment <= headerAlignment {
+    if valueAlignment <= nodeAlignment {
       return (numBytes, MemoryLayout<UnsafeNode>.alignment)
     }
-
+    
     return (
-      numBytes + elementAlignment - headerAlignment,
+      numBytes + valueAlignment - nodeAlignment,
       MemoryLayout<_Value>.alignment
     )
   }

@@ -108,7 +108,7 @@ struct UnsafeNodeFreshBucket<_Value> {
   @inline(__always)
   func dispose() {
     _clear()
-    storage.deallocate()
+//    storage.deallocate()
   }
 
   @inlinable
@@ -117,7 +117,7 @@ struct UnsafeNodeFreshBucket<_Value> {
 
     assert(capacity != 0)
 
-    let (bytes, alignment) = Self.allocationSize()
+    let (bytes, alignment) = Self.allocationSize(capacity: capacity)
 
     let header_storage = UnsafeMutableRawPointer.allocate(
       byteCount: bytes,
@@ -126,11 +126,8 @@ struct UnsafeNodeFreshBucket<_Value> {
     let header = UnsafeMutableRawPointer(header_storage)
       .assumingMemoryBound(to: UnsafeNodeFreshBucket.self)
 
-    let (b, a) = UnsafePair<_Value>.allocationSize(capacity: capacity)
-
-    let storage = UnsafeMutableRawPointer.allocate(
-      byteCount: b,
-      alignment: a)
+    let storage = UnsafeMutableRawPointer(header.advanced(by: 1))
+      .alignedUp(toMultipleOf: alignment)
 
     header.initialize(
       to:
@@ -151,6 +148,21 @@ struct UnsafeNodeFreshBucket<_Value> {
     #endif
 
     return header
+  }
+  
+  @inlinable
+  @inline(__always)
+  static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
+    let (bufferSize, bufferAlignment) = UnsafePair<_Value>.allocationSize(capacity: capacity)
+    let numBytes = MemoryLayout<Header>.stride + bufferSize
+    let headerAlignment = MemoryLayout<Header>.alignment
+    if bufferAlignment <= headerAlignment {
+      return (numBytes, MemoryLayout<Header>.alignment)
+    }
+    return (
+      numBytes + bufferAlignment - headerAlignment,
+      bufferAlignment
+    )
   }
 
   @inlinable

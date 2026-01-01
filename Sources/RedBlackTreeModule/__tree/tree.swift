@@ -257,12 +257,12 @@ extension ___RootProtocol where _NodePtr == Int {
 }
 
 @usableFromInline
-protocol RootPtrProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {
+protocol RootPtrProtocol: TreeNodeProtocol & TreeNodeRefProtocol & RootProtocol & EndProtocol {
   /// 木の根ノードへの参照を返す
   @inlinable func __root_ptr() -> _NodeRef
 }
 
-extension RootPtrProtocol where _NodePtr == Int, _NodeRef == RedBlackTreeModule._NodeRef {
+extension RootPtrProtocol where _NodePtr == Int {
   /// 木の根ノードへの参照を返す
   @inlinable
   @inline(__always)

@@ -37,6 +37,13 @@ where
   var __tree_: Tree { get }
 }
 
+#if false
+@usableFromInline
+typealias ___Base = ___UnsafeBase
+#else
+public typealias RedBlackTreeIndex = RedBlackTreeIndex_old
+public typealias RedBlackTreeIndices = RedBlackTreeIndices_old
+
 @usableFromInline
 protocol ___Base: ___IndexBase
 where
@@ -56,6 +63,7 @@ where
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
+#endif
 
 @usableFromInline
 protocol ___RedBlackTreeKeyOnlyBase:

@@ -22,11 +22,12 @@
 
 import Foundation
 
+
 /// 赤黒木のノードへのインデックス
 ///
 /// C++の双方向イテレータに近い内容となっている
 @frozen
-public struct RedBlackTreeIndex<Base> where Base: ___TreeBase & ___TreeIndex {
+public struct RedBlackTreeIndex_old<Base> where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = ___Tree<Base>
   public typealias Pointee = Tree.Pointee
@@ -58,7 +59,7 @@ public struct RedBlackTreeIndex<Base> where Base: ___TreeBase & ___TreeIndex {
   // CoWに関与できないので、Treeに対する破壊的変更は行わないこと
 }
 
-extension RedBlackTreeIndex: Comparable {
+extension RedBlackTreeIndex_old: Comparable {
 
   /// - Complexity: O(1)
   @inlinable
@@ -92,7 +93,7 @@ extension RedBlackTreeIndex: Comparable {
 
 // Stridableできるが、Range<Index>に標準実装が生えることと、
 // その実装が要素アクセスのたびに範囲チェックを行うことを嫌って、Stridableをやめている
-extension RedBlackTreeIndex {
+extension RedBlackTreeIndex_old {
 
   /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(*d*)
   ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n* + *d*)
@@ -115,7 +116,7 @@ extension RedBlackTreeIndex {
   }
 }
 
-extension RedBlackTreeIndex {
+extension RedBlackTreeIndex_old {
 
   /// 次のイテレータを返す
   ///
@@ -162,7 +163,7 @@ extension RedBlackTreeIndex {
   }
 }
 
-extension RedBlackTreeIndex {
+extension RedBlackTreeIndex_old {
 
   @inlinable
   @inline(__always)
@@ -184,7 +185,7 @@ extension RedBlackTreeIndex {
   }
 }
 
-extension RedBlackTreeIndex {
+extension RedBlackTreeIndex_old {
 
   /// 現在位置の値を返す
   ///
@@ -196,14 +197,14 @@ extension RedBlackTreeIndex {
 }
 
 #if DEBUG
-  extension RedBlackTreeIndex {
+  extension RedBlackTreeIndex_old {
     fileprivate init(_unsafe_tree: ___Tree<Base>, rawValue: _NodePtr) {
       self.__tree_ = _unsafe_tree
       self.rawValue = rawValue
     }
   }
 
-  extension RedBlackTreeIndex {
+  extension RedBlackTreeIndex_old {
     internal static func unsafe(tree: ___Tree<Base>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue)
     }
@@ -211,11 +212,11 @@ extension RedBlackTreeIndex {
 #endif
 
 #if swift(>=5.5)
-  extension RedBlackTreeIndex: @unchecked Sendable
+  extension RedBlackTreeIndex_old: @unchecked Sendable
   where _Value: Sendable {}
 #endif
 
-extension RedBlackTreeIndex {
+extension RedBlackTreeIndex_old {
   @inlinable
   @inline(__always)
   internal var ___indices: RedBlackTreeIndices<Base> {
@@ -227,7 +228,7 @@ extension RedBlackTreeIndex {
 
 @inlinable
 @inline(__always)
-public func ..< <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>)
+public func ..< <Base>(lhs: RedBlackTreeIndex_old<Base>, rhs: RedBlackTreeIndex_old<Base>)
   -> ___Tree<Base>.Indices
 {
   let indices = lhs.___indices
@@ -238,7 +239,7 @@ public func ..< <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base
 #if !COMPATIBLE_ATCODER_2025
   @inlinable
   @inline(__always)
-  public func ... <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>)
+  public func ... <Base>(lhs: RedBlackTreeIndex_old<Base>, rhs: RedBlackTreeIndex_old<Base>)
     -> ___Tree<Base>.Indices
   {
     let indices = lhs.___indices
@@ -248,7 +249,7 @@ public func ..< <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base
 
   @inlinable
   @inline(__always)
-  public prefix func ..< <Base>(rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
+  public prefix func ..< <Base>(rhs: RedBlackTreeIndex_old<Base>) -> ___Tree<Base>.Indices {
     let indices = rhs.___indices
     let bounds = (..<rhs).relative(to: indices)
     return indices[bounds.lowerBound..<bounds.upperBound]
@@ -256,7 +257,7 @@ public func ..< <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base
 
   @inlinable
   @inline(__always)
-  public prefix func ... <Base>(rhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
+  public prefix func ... <Base>(rhs: RedBlackTreeIndex_old<Base>) -> ___Tree<Base>.Indices {
     let indices = rhs.___indices
     let bounds = (...rhs).relative(to: indices)
     return indices[bounds.lowerBound..<bounds.upperBound]
@@ -264,7 +265,7 @@ public func ..< <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base
 
   @inlinable
   @inline(__always)
-  public postfix func ... <Base>(lhs: RedBlackTreeIndex<Base>) -> ___Tree<Base>.Indices {
+  public postfix func ... <Base>(lhs: RedBlackTreeIndex_old<Base>) -> ___Tree<Base>.Indices {
     let indices = lhs.___indices
     let bounds = (lhs...).relative(to: indices)
     return indices[bounds.lowerBound..<bounds.upperBound]
@@ -275,19 +276,19 @@ public func ..< <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base
 
 @inlinable
 @inline(__always)
-public func + <Base>(lhs: RedBlackTreeIndex<Base>, rhs: Int) -> RedBlackTreeIndex<Base> {
+public func + <Base>(lhs: RedBlackTreeIndex_old<Base>, rhs: Int) -> RedBlackTreeIndex_old<Base> {
   lhs.advanced(by: rhs)
 }
 
 @inlinable
 @inline(__always)
-public func - <Base>(lhs: RedBlackTreeIndex<Base>, rhs: Int) -> RedBlackTreeIndex<Base> {
+public func - <Base>(lhs: RedBlackTreeIndex_old<Base>, rhs: Int) -> RedBlackTreeIndex_old<Base> {
   lhs.advanced(by: -rhs)
 }
 
 @inlinable
 @inline(__always)
-public func - <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>) -> Int {
+public func - <Base>(lhs: RedBlackTreeIndex_old<Base>, rhs: RedBlackTreeIndex_old<Base>) -> Int {
   rhs.distance(to: lhs)
 }
 
@@ -298,7 +299,7 @@ public func - <Base>(lhs: RedBlackTreeIndex<Base>, rhs: RedBlackTreeIndex<Base>)
   // こういうものが必要になるのもどうかとおもうが、
   // かといってIndexの返却をIndex!にするのは標準で前例がみつかってないし、
   // Index?もどうかとおもい、悩むポイント
-  extension RedBlackTreeIndex {
+  extension RedBlackTreeIndex_old {
 
     /// オプショナル型を返却します。
     ///

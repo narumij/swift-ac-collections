@@ -639,7 +639,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___is_root(_ p: _NodePtr) -> Bool {
-    p == __root()
+    p == __root
   }
 
   /// - Complexity: O(1)
@@ -1058,7 +1058,7 @@ extension ___Tree {
     where try isIncluded(__value_(__p)) {
       Tree.ensureCapacity(tree: &tree)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __value_(__p))
-      assert(tree.__tree_invariant(tree.__root()))
+      assert(tree.__tree_invariant(tree.__root))
     }
     return tree
   }
@@ -1085,7 +1085,7 @@ extension ___Tree where Base: KeyValueComparer {
       let __mapped_value = try transform(___mapped_value(__p))
       (__parent, __child) = other.___emplace_hint_right(
         __parent, __child, Other.___tree_value((__get_value(__p), __mapped_value)))
-      assert(other.__tree_invariant(other.__root()))
+      assert(other.__tree_invariant(other.__root))
     }
     return other
   }
@@ -1110,7 +1110,7 @@ extension ___Tree where Base: KeyValueComparer {
       ___Tree<Other>.ensureCapacity(tree: &other)
       (__parent, __child) = other.___emplace_hint_right(
         __parent, __child, Other.___tree_value((__get_value(__p), __mv)))
-      assert(other.__tree_invariant(other.__root()))
+      assert(other.__tree_invariant(other.__root))
     }
     return other
   }

@@ -42,7 +42,7 @@ extension ___Tree {
 
     var __first = __first
 
-    if __tree_.__root() == .nullptr, __first != __last {
+    if __tree_.__root == .nullptr, __first != __last {
       // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
@@ -50,7 +50,7 @@ extension ___Tree {
       __first = __source.__tree_next_iter(__first)
     }
 
-    var __max_node = __tree_.__tree_max(__tree_.__root())
+    var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while __first != __last {
       Tree.ensureCapacity(tree: &__tree_)
@@ -97,14 +97,14 @@ extension ___Tree where Base: KeyValueComparer {
 
     var __i = __first
 
-    if __tree_.__root() == .nullptr, __i != __last {  // Make sure we always have a root node
+    if __tree_.__root == .nullptr, __i != __last {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
         .end, __tree_.__left_ref(.end), __tree_.__construct_node(__source.__value_(__i)))
       __i = __source.__tree_next_iter(__i)
     }
 
-    var __max_node = __tree_.__tree_max(__tree_.__root())
+    var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while __i != __last {
       Tree.ensureCapacity(tree: &__tree_)
@@ -155,14 +155,14 @@ extension ___Tree {
 
     var __first = __first
 
-    if __tree_.__root() == .nullptr, __first != __last {
+    if __tree_.__root == .nullptr, __first != __last {
       // Make sure we always have a root node
       __tree_.__insert_node_at(
         .end, __tree_.__left_ref(.end), __tree_.__construct_node(__source.__value_(__first)))
       __first = __source.__tree_next_iter(__first)
     }
 
-    var __max_node = __tree_.__tree_max(__tree_.__root())
+    var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while __first != __last {
       let __nd = __tree_.__construct_node(__source.__value_(__first))
@@ -203,15 +203,15 @@ extension ___Tree {
 
     var it = __source.makeIterator()
 
-    if __tree_.__root() == .nullptr, let __element = it.next() {  // Make sure we always have a root node
+    if __tree_.__root == .nullptr, let __element = it.next() {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
         .end, __tree_.__left_ref(.end), __tree_.__construct_node(transform(__element)))
     }
 
-    if __tree_.__root() == .nullptr { return __tree_ }
+    if __tree_.__root == .nullptr { return __tree_ }
 
-    var __max_node = __tree_.__tree_max(__tree_.__root())
+    var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while let __element = it.next() {
       Tree.ensureCapacity(tree: &__tree_)
@@ -251,15 +251,15 @@ extension ___Tree where Base: KeyValueComparer {
 
     var it = __source.makeIterator()
 
-    if __tree_.__root() == .nullptr, let __element = it.next().map(__t_) {  // Make sure we always have a root node
+    if __tree_.__root == .nullptr, let __element = it.next().map(__t_) {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
         .end, __tree_.__left_ref(.end), __tree_.__construct_node(__element))
     }
 
-    if __tree_.__root() == .nullptr { return __tree_ }
+    if __tree_.__root == .nullptr { return __tree_ }
 
-    var __max_node = __tree_.__tree_max(__tree_.__root())
+    var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while let __element = it.next().map(__t_) {
       Tree.ensureCapacity(tree: &__tree_)
@@ -306,15 +306,15 @@ extension ___Tree {
 
     var it = __source.makeIterator()
 
-    if __tree_.__root() == .nullptr, let __element = it.next() {  // Make sure we always have a root node
+    if __tree_.__root == .nullptr, let __element = it.next() {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
         .end, __tree_.__left_ref(.end), __tree_.__construct_node(transform(__element)))
     }
 
-    if __tree_.__root() == .nullptr { return __tree_ }
+    if __tree_.__root == .nullptr { return __tree_ }
 
-    var __max_node = __tree_.__tree_max(__tree_.__root())
+    var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while let __element = it.next() {
       Tree.ensureCapacity(tree: &__tree_)

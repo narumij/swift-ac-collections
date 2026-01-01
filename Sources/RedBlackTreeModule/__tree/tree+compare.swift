@@ -116,7 +116,7 @@ extension CompareMultiProtocol {
     assert(__p != nullptr, "Node shouldn't be null")
     var __h = 0
     var __p = __p
-    while __p != __root(), __p != end {
+    while __p != __root, __p != end {
       __p = __parent_(__p)
       __h += 1
     }
@@ -240,7 +240,7 @@ extension NodeBitmapProtocol {
     var __f: UInt = 1  // 終端flag
     var __h = 1  // 終端flag分
     var __p = __p
-    while __p != __root(), __p != end {
+    while __p != __root, __p != end {
       __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< __h
       __p = __parent_(__p)
       __h &+= 1
@@ -257,7 +257,7 @@ extension NodeBitmapProtocol {
     assert(__p != end, "Node shouldn't be end")
     var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
     var __p = __p
-    while __p != __root(), __p != end {
+    while __p != __root, __p != end {
       __f &>>= 1
       __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt128.bitWidth &- 1)
       __p = __parent_(__p)
@@ -273,7 +273,7 @@ extension NodeBitmapProtocol {
     assert(__p != end, "Node shouldn't be end")
     var __f: UInt = 1 &<< (UInt.bitWidth &- 1)
     var __p = __p
-    while __p != __root(), __p != end {
+    while __p != __root, __p != end {
       __f &>>= 1
       __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt.bitWidth &- 1)
       __p = __parent_(__p)

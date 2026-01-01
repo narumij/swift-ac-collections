@@ -288,11 +288,11 @@ import XCTest
       _ = tree.__tree_.__insert_unique(0)
       _ = tree.__tree_.__insert_unique(1)
       _ = tree.__tree_.__insert_unique(2)
-      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root()), tree.___header.__begin_node)
+      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root), tree.___header.__begin_node)
       for i in 0..<3 {
         _ = tree.__tree_.___erase_unique(i)
         if tree.__root() != .nullptr {
-          XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root()), tree.___header.__begin_node)
+          XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root), tree.___header.__begin_node)
         }
         XCTAssertEqual(tree._count, 2 - i)
       }
@@ -305,13 +305,13 @@ import XCTest
         _ = tree.__tree_.__insert_unique(i)
       }
       //        fixture0_1_2_3_4_5_6(&tree)
-      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root()), tree.___header.__begin_node)
+      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root), tree.___header.__begin_node)
       for i in 0..<2 {
         XCTAssertTrue(tree.__tree_.___erase_unique(i), "i = \(i)")
         print("__root():", tree.__root())
         XCTAssertTrue(tree.___tree_invariant())
         XCTAssertEqual(
-          tree.__root() == .nullptr ? .end : tree.__tree_.__tree_min(tree.__tree_.__root()),
+          tree.__root() == .nullptr ? .end : tree.__tree_.__tree_min(tree.__tree_.__root),
           tree.___header.__begin_node)
         XCTAssertEqual(tree._count, 1 - i, "i = \(i)")
       }
@@ -324,13 +324,13 @@ import XCTest
         _ = tree.__tree_.__insert_unique(i)
       }
       //        fixture0_1_2_3_4_5_6(&tree)
-      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root()), tree.___header.__begin_node)
+      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root), tree.___header.__begin_node)
       for i in 0..<7 {
         XCTAssertTrue(tree.__tree_.___erase_unique(i), "i = \(i)")
         print("__root():", tree.__root())
         XCTAssertTrue(tree.___tree_invariant())
         XCTAssertEqual(
-          tree.__root() == .nullptr ? .end : tree.__tree_.__tree_min(tree.__tree_.__root()),
+          tree.__root == .nullptr ? .end : tree.__tree_.__tree_min(tree.__tree_.__root),
           tree.___header.__begin_node)
         XCTAssertEqual(tree._count, 6 - i, "i = \(i)")
       }

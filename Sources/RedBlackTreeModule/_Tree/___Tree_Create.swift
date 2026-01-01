@@ -44,7 +44,7 @@ extension ___Tree where Base._Key == Base._Value {
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
       }
     }
-    assert(tree.__tree_invariant(tree.__root()))
+    assert(tree.__tree_invariant(tree.__root))
     return tree
   }
 }
@@ -76,7 +76,7 @@ extension ___Tree where Base: KeyValueComparer {
         fatalError(.duplicateValue(for: Base.__key(__v)))
       }
     }
-    assert(tree.__tree_invariant(tree.__root()))
+    assert(tree.__tree_invariant(tree.__root))
     return tree
   }
 
@@ -108,7 +108,7 @@ extension ___Tree where Base: KeyValueComparer {
         }
       }
     }
-    assert(tree.__tree_invariant(tree.__root()))
+    assert(tree.__tree_invariant(tree.__root))
     return tree
   }
 }
@@ -144,7 +144,7 @@ extension ___Tree where Base: KeyValueComparer & ___KeyValueSequence {
         }
       }
     }
-    assert(tree.__tree_invariant(tree.__root()))
+    assert(tree.__tree_invariant(tree.__root))
     return tree
   }
 
@@ -170,7 +170,7 @@ extension ___Tree where Base: KeyValueComparer & ___KeyValueSequence {
       (__parent, __child) = tree.___emplace_hint_right(
         __parent, __child, Base.___tree_value((__k, __v)))
     }
-    assert(tree.__tree_invariant(tree.__root()))
+    assert(tree.__tree_invariant(tree.__root))
     return tree
   }
 }
@@ -212,7 +212,7 @@ extension ___Tree {
       // ならしO(1)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
     }
-    assert(tree.__tree_invariant(tree.__root()))
+    assert(tree.__tree_invariant(tree.__root))
     return tree
   }
 }
@@ -235,7 +235,7 @@ extension ___Tree {
       // ならしO(1)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
     }
-    assert(tree.__tree_invariant(tree.__root()))
+    assert(tree.__tree_invariant(tree.__root))
     return tree
   }
 }
@@ -349,7 +349,7 @@ extension ___Tree where _Value: Decodable {
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
     }
 
-    assert(tree.__tree_invariant(tree.__root()))
+    assert(tree.__tree_invariant(tree.__root))
     return tree
   }
 }

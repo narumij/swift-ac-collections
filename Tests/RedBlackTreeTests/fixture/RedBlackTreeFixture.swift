@@ -27,8 +27,8 @@ import XCTest
     func __right_(_ p: _NodePtr) -> _NodePtr {
       __tree_.__right_(p)
     }
-    func __root() -> _NodePtr {
-      __tree_.__root()
+    var __root: _NodePtr {
+      __tree_.__root
     }
     mutating func __root(_ p: _NodePtr) {
       __tree_.__left_(.end, p)

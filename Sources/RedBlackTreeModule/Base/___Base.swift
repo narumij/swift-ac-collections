@@ -37,26 +37,6 @@ where
   var __tree_: Tree { get }
 }
 
-#if false
-public typealias RedBlackTreeIndex = UnsafeIndex
-public typealias RedBlackTreeIndices = UnsafeIndices
-public typealias RedBlackTreeIterator = RedBlackTreeIteratorUnsafe
-public typealias RedBlackTreeSlice = RedBlackTreeSliceUnsafe
-
-@usableFromInline
-typealias ___CopyOnWrite = ___UnsafeCopyOnWrite
-
-@usableFromInline
-typealias ___StorageProtocol = ___UnsafeStorageProtocol
-
-@usableFromInline
-typealias ___Base = ___UnsafeBase
-#else
-public typealias RedBlackTreeIndex = RedBlackTreeIndex_old
-public typealias RedBlackTreeIndices = RedBlackTreeIndices_old
-public typealias RedBlackTreeIterator = RedBlackTreeIterator_old
-public typealias RedBlackTreeSlice = RedBlackTreeSlice_old
-
 @usableFromInline
 typealias ___CopyOnWrite = ___CopyOnWrite_old
 
@@ -82,7 +62,12 @@ where
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
-#endif
+
+#if true
+public typealias RedBlackTreeIndex = RedBlackTreeIndex_old
+public typealias RedBlackTreeIndices = RedBlackTreeIndices_old
+public typealias RedBlackTreeIterator = RedBlackTreeIterator_old
+public typealias RedBlackTreeSlice = RedBlackTreeSlice_old
 
 @usableFromInline
 protocol ___RedBlackTreeKeyOnlyBase:
@@ -95,6 +80,24 @@ protocol ___RedBlackTreeKeyValuesBase:
   ___StorageProtocol & ___CopyOnWrite & ___Common & ___Index & ___BaseSequence
     & ___KeyValueSequence
 {}
+#else
+public typealias RedBlackTreeIndex = UnsafeIndex
+public typealias RedBlackTreeIndices = UnsafeIndices
+public typealias RedBlackTreeIterator = RedBlackTreeIteratorUnsafe
+public typealias RedBlackTreeSlice = RedBlackTreeSliceUnsafe
+
+@usableFromInline
+protocol ___RedBlackTreeKeyOnlyBase:
+  ___UnsafeStorageProtocol & ___UnsafeCopyOnWrite & ___UnsafeCommon & ___UnsafeIndex & ___UnsafeBaseSequence
+    & ___UnsafeKeyOnlySequence
+{}
+
+@usableFromInline
+protocol ___RedBlackTreeKeyValuesBase:
+  ___UnsafeStorageProtocol & ___UnsafeCopyOnWrite & ___UnsafeCommon & ___UnsafeIndex & ___UnsafeBaseSequence
+    & ___UnsafeKeyValueSequence
+{}
+#endif
 
 // MARK: -
 

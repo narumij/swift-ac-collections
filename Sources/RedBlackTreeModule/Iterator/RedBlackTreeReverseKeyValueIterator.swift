@@ -73,7 +73,7 @@ extension RedBlackTreeIterator_old.KeyValues.Reversed {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var indices: RedBlackTreeIndices<Base>.Reversed {
+  public var indices: RedBlackTreeIndices_old<Base>.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
@@ -84,28 +84,28 @@ extension RedBlackTreeIterator_old.KeyValues.Reversed where Base: KeyValueCompar
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func keys() -> RedBlackTreeIterator<Base>.Keys.Reversed {
+    public func keys() -> RedBlackTreeIterator_old<Base>.Keys.Reversed {
       .init(tree: __tree_, start: _start, end: _end)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func values() -> RedBlackTreeIterator<Base>.MappedValues.Reversed {
+    public func values() -> RedBlackTreeIterator_old<Base>.MappedValues.Reversed {
       .init(tree: __tree_, start: _start, end: _end)
     }
   #else
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var keys: RedBlackTreeIterator<Base>.Keys.Reversed {
+    public var keys: RedBlackTreeIterator_old<Base>.Keys.Reversed {
       .init(tree: __tree_, start: _start, end: _end)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var values: RedBlackTreeIterator<Base>.MappedValues.Reversed {
+    public var values: RedBlackTreeIterator_old<Base>.MappedValues.Reversed {
       .init(tree: __tree_, start: _start, end: _end)
     }
   #endif

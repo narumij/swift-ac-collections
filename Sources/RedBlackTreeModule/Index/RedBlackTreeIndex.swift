@@ -219,7 +219,7 @@ extension RedBlackTreeIndex_old {
 extension RedBlackTreeIndex_old {
   @inlinable
   @inline(__always)
-  internal var ___indices: RedBlackTreeIndices<Base> {
+  internal var ___indices: RedBlackTreeIndices_old<Base> {
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node)
   }
 }

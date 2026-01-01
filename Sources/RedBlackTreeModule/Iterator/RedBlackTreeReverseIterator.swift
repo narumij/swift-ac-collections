@@ -73,7 +73,7 @@ extension RedBlackTreeIterator_old.Values.Reversed {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var indices: RedBlackTreeIndices<Base>.Reversed {
+  public var indices: RedBlackTreeIndices_old<Base>.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

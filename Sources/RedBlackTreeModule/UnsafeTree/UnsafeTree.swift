@@ -102,11 +102,10 @@ extension UnsafeTree {
           return h.pointee[index]
         }
 
-        var srcIter = source_header.pointee.makeNodeReserverIterator()
-        var dstIter = h.pointee.makeConsumingIterator()
+        var srcIter = source_header.pointee.makeInitializedIterator()
         var i = 0
 
-        while let s = srcIter.next(), let d = dstIter.next() {
+        while let s = srcIter.next(), let d = h.pointee.popFresh() {
 
           d.initialize(to: UnsafeNode(index: i))
           UnsafePair<_Value>.__value_(d).initialize(to: UnsafePair<_Value>.__value_(s).pointee)

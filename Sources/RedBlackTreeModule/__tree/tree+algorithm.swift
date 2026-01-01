@@ -80,7 +80,7 @@ extension TreeNodeProtocol {
   /// Postcondition: `__tree_invariant(end_node->__left_)` == true.  end_node->`__left_`
   ///                may be different than the value passed in as `__root`.
   @inlinable
-  @inline(never)
+//  @inline(__always)
   internal func
     __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
   {
@@ -140,7 +140,7 @@ extension TreeNodeProtocol {
   ///                nor any of its children refer to `__z`.  end_node->`__left_`
   ///                may be different than the value passed in as `__root`.
   @inlinable
-  @inline(never)
+//  @inline(__always)
   internal func
     __tree_remove(_ __root: _NodePtr, _ __z: _NodePtr)
   {

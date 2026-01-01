@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   @frozen
   public struct KeyValue: ___Common & ___SubSequence & ___Index & ___KeyValueSequence
@@ -56,9 +56,9 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice.KeyValue: Sequence & Collection & BidirectionalCollection {}
+extension RedBlackTreeSlice_old.KeyValue: Sequence & Collection & BidirectionalCollection {}
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
@@ -68,7 +68,7 @@ extension RedBlackTreeSlice.KeyValue {
   }
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   #if !COMPATIBLE_ATCODER_2025
     // 2025でpublicになってなかったのは痛恨のミス。でも標準実装が動くはず
@@ -80,7 +80,7 @@ extension RedBlackTreeSlice.KeyValue {
   #endif
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   @inlinable
   @inline(__always)
@@ -89,7 +89,7 @@ extension RedBlackTreeSlice.KeyValue {
   }
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -97,7 +97,7 @@ extension RedBlackTreeSlice.KeyValue {
   public var count: Int { _count }
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
@@ -114,7 +114,7 @@ extension RedBlackTreeSlice.KeyValue {
  コメントアウトの多さはテストコードのコンパイラクラッシュに由来する。
  */
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
@@ -125,7 +125,7 @@ extension RedBlackTreeSlice.KeyValue {
   }
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   #if !COMPATIBLE_ATCODER_2025
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -139,7 +139,7 @@ extension RedBlackTreeSlice.KeyValue {
   #endif
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   /// - Complexity: O(log *n*)
   @inlinable
@@ -196,7 +196,7 @@ extension RedBlackTreeSlice.KeyValue {
   #endif
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -206,7 +206,7 @@ extension RedBlackTreeSlice.KeyValue {
   }
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
@@ -233,7 +233,7 @@ extension RedBlackTreeSlice.KeyValue {
   }
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
@@ -272,7 +272,7 @@ extension RedBlackTreeSlice.KeyValue {
 
 // MARK: - Utility
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   /// Indexがsubscriptやremoveで利用可能か判別します
   ///
@@ -288,7 +288,7 @@ extension RedBlackTreeSlice.KeyValue {
   }
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
@@ -307,7 +307,7 @@ extension RedBlackTreeSlice.KeyValue {
   }
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
@@ -317,7 +317,7 @@ extension RedBlackTreeSlice.KeyValue {
   }
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   /// - Complexity: O(1)
   @inlinable
@@ -327,7 +327,7 @@ extension RedBlackTreeSlice.KeyValue {
   }
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   public typealias Keys = RedBlackTreeIterator<Base>.Keys
   public typealias Values = RedBlackTreeIterator<Base>.MappedValues
@@ -349,7 +349,7 @@ extension RedBlackTreeSlice.KeyValue {
   #endif
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSlice_old.KeyValue {
 
   /// - Complexity: O(*n*)
   @inlinable
@@ -359,7 +359,7 @@ extension RedBlackTreeSlice.KeyValue {
   }
 }
 
-extension RedBlackTreeSlice.KeyValue where _Key: Equatable, _MappedValue: Equatable {
+extension RedBlackTreeSlice_old.KeyValue where _Key: Equatable, _MappedValue: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -371,7 +371,7 @@ extension RedBlackTreeSlice.KeyValue where _Key: Equatable, _MappedValue: Equata
   }
 }
 
-extension RedBlackTreeSlice.KeyValue where _Key: Comparable, _MappedValue: Comparable {
+extension RedBlackTreeSlice_old.KeyValue where _Key: Comparable, _MappedValue: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -383,7 +383,7 @@ extension RedBlackTreeSlice.KeyValue where _Key: Comparable, _MappedValue: Compa
   }
 }
 
-extension RedBlackTreeSlice.KeyValue: Equatable where _Key: Equatable, _MappedValue: Equatable {
+extension RedBlackTreeSlice_old.KeyValue: Equatable where _Key: Equatable, _MappedValue: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
@@ -393,7 +393,7 @@ extension RedBlackTreeSlice.KeyValue: Equatable where _Key: Equatable, _MappedVa
   }
 }
 
-extension RedBlackTreeSlice.KeyValue: Comparable where _Key: Comparable, _MappedValue: Comparable {
+extension RedBlackTreeSlice_old.KeyValue: Comparable where _Key: Comparable, _MappedValue: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
@@ -404,10 +404,10 @@ extension RedBlackTreeSlice.KeyValue: Comparable where _Key: Comparable, _Mapped
 }
 
 #if swift(>=5.5)
-  extension RedBlackTreeSlice.KeyValue: @unchecked Sendable
+  extension RedBlackTreeSlice_old.KeyValue: @unchecked Sendable
   where Element: Sendable {}
 #endif
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeSlice.KeyValue: ___IsIdenticalTo {}
+extension RedBlackTreeSlice_old.KeyValue: ___IsIdenticalTo {}

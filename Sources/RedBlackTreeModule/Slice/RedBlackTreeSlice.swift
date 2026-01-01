@@ -23,7 +23,7 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeSlice<Base>: ___Common & ___SubSequence & ___Index &  ___KeyOnlySequence where Base: ___TreeBase & ___TreeIndex {
+public struct RedBlackTreeSlice_old<Base>: ___Common & ___SubSequence & ___Index &  ___KeyOnlySequence where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = ___Tree<Base>
   public typealias _Value = Tree._Value
@@ -47,9 +47,9 @@ public struct RedBlackTreeSlice<Base>: ___Common & ___SubSequence & ___Index &  
   }
 }
 
-extension RedBlackTreeSlice: Sequence & Collection & BidirectionalCollection {}
+extension RedBlackTreeSlice_old: Sequence & Collection & BidirectionalCollection {}
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// - Complexity: O(1)
   @inlinable
@@ -59,7 +59,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
 #if !COMPATIBLE_ATCODER_2025
   // 2025でpublicになってなかったのは痛恨のミス。でも標準実装が動くはず
@@ -71,7 +71,7 @@ extension RedBlackTreeSlice {
 #endif
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   @inlinable
   @inline(__always)
@@ -80,7 +80,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -88,7 +88,7 @@ extension RedBlackTreeSlice {
   public var count: Int { _count }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// - Complexity: O(1)
   @inlinable
@@ -101,7 +101,7 @@ extension RedBlackTreeSlice {
   public var endIndex: Index { _endIndex }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// - Complexity: O(1)
   @inlinable
@@ -112,7 +112,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   #if !COMPATIBLE_ATCODER_2025
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -126,7 +126,7 @@ extension RedBlackTreeSlice {
   #endif
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// - Complexity: O(log *n*)
   @inlinable
@@ -183,7 +183,7 @@ extension RedBlackTreeSlice {
   #endif
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -193,7 +193,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// - Complexity: O(1)
   @inlinable
@@ -220,7 +220,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// - Complexity: O(1)
   @inlinable
@@ -259,7 +259,7 @@ extension RedBlackTreeSlice {
 
 // MARK: - Utility
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// Indexがsubscriptやremoveで利用可能か判別します
   ///
@@ -275,7 +275,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
@@ -294,7 +294,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// - Complexity: O(1)
   @inlinable
@@ -304,7 +304,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// - Complexity: O(1)
   @inlinable
@@ -314,7 +314,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// - Complexity: O(*n*)
   @inlinable
@@ -324,7 +324,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice {
+extension RedBlackTreeSlice_old {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -347,7 +347,7 @@ extension RedBlackTreeSlice {
   }
 }
 
-extension RedBlackTreeSlice where _Value: Equatable {
+extension RedBlackTreeSlice_old where _Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -359,7 +359,7 @@ extension RedBlackTreeSlice where _Value: Equatable {
   }
 }
 
-extension RedBlackTreeSlice where _Value: Comparable {
+extension RedBlackTreeSlice_old where _Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -371,7 +371,7 @@ extension RedBlackTreeSlice where _Value: Comparable {
   }
 }
 
-extension RedBlackTreeSlice: Equatable where _Value: Equatable {
+extension RedBlackTreeSlice_old: Equatable where _Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
@@ -381,7 +381,7 @@ extension RedBlackTreeSlice: Equatable where _Value: Equatable {
   }
 }
 
-extension RedBlackTreeSlice: Comparable where _Value: Comparable {
+extension RedBlackTreeSlice_old: Comparable where _Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
@@ -392,10 +392,10 @@ extension RedBlackTreeSlice: Comparable where _Value: Comparable {
 }
 
 #if swift(>=5.5)
-  extension RedBlackTreeSlice: @unchecked Sendable
+  extension RedBlackTreeSlice_old: @unchecked Sendable
   where Element: Sendable {}
 #endif
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeSlice: ___IsIdenticalTo {}
+extension RedBlackTreeSlice_old: ___IsIdenticalTo {}

@@ -41,6 +41,7 @@ where
 public typealias RedBlackTreeIndex = UnsafeIndex
 public typealias RedBlackTreeIndices = UnsafeIndices
 public typealias RedBlackTreeIterator = RedBlackTreeIteratorUnsafe
+public typealias RedBlackTreeSlice = RedBlackTreeSliceUnsafe
 
 @usableFromInline
 typealias ___CopyOnWrite = ___UnsafeCopyOnWrite
@@ -54,6 +55,7 @@ typealias ___Base = ___UnsafeBase
 public typealias RedBlackTreeIndex = RedBlackTreeIndex_old
 public typealias RedBlackTreeIndices = RedBlackTreeIndices_old
 public typealias RedBlackTreeIterator = RedBlackTreeIterator_old
+public typealias RedBlackTreeSlice = RedBlackTreeSlice_old
 
 @usableFromInline
 typealias ___CopyOnWrite = ___CopyOnWrite_old

@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-#if false
+#if true
   // 多分試作コード
   // 消して大丈夫そう(2026/01/03)
   #if DEBUG

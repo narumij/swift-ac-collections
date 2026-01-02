@@ -21,7 +21,8 @@ var defines: [String] = [
 
   //"USE_OLD_FIND",
   
-  "ALLOCATION_DRILL"
+  
+//  "ALLOCATION_DRILL" // リリース時はオフ
 ]
 
 var _settings: [SwiftSetting] =

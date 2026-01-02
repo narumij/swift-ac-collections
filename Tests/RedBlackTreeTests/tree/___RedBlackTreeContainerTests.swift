@@ -7,6 +7,8 @@
 
 import XCTest
 
+// 結構ディープな内容なので温存する必要がある
+
 #if false
   #if DEBUG && !USE_UNSAFE_TREE
     @testable import RedBlackTreeModule

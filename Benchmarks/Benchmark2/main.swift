@@ -30,6 +30,7 @@ for count in (0..<4).map({ 1 << $0 }) {
       var f = Fixture<Int>()
       for i in 0..<count {
         f.reserveCapacity(i)
+        f.insert(i)
         assert(f.capacity == i)
       }
     }

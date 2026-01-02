@@ -22,53 +22,55 @@
 
 import Foundation
 
-#if DEBUG
-  @testable import RedBlackTreeModule
+#if false
+  #if DEBUG
+    @testable import RedBlackTreeModule
 
-  public struct ___Node {
+    public struct ___Node {
 
-    public var __right_: _NodePtr
-    public var __left_: _NodePtr
-    public var __parent_: _NodePtr
-    public var __is_black_: Bool
+      public var __right_: _NodePtr
+      public var __left_: _NodePtr
+      public var __parent_: _NodePtr
+      public var __is_black_: Bool
 
-    @inlinable
-    init(
-      __is_black_: Bool = false,
-      __left_: _NodePtr = .nullptr,
-      __right_: _NodePtr = .nullptr,
-      __parent_: _NodePtr = .nullptr
-    ) {
-      self.__right_ = __right_
-      self.__left_ = __left_
-      self.__parent_ = __parent_
-      self.__is_black_ = __is_black_
+      @inlinable
+      init(
+        __is_black_: Bool = false,
+        __left_: _NodePtr = .nullptr,
+        __right_: _NodePtr = .nullptr,
+        __parent_: _NodePtr = .nullptr
+      ) {
+        self.__right_ = __right_
+        self.__left_ = __left_
+        self.__parent_ = __parent_
+        self.__is_black_ = __is_black_
+      }
+
+      @usableFromInline
+      static let zero: Self = .init(__is_black_: false, __left_: 0, __right_: 0, __parent_: 0)
     }
 
-    @usableFromInline
-    static let zero: Self = .init(__is_black_: false, __left_: 0, __right_: 0, __parent_: 0)
-  }
+    extension ___Node: Equatable {}
 
-  extension ___Node: Equatable {}
+    #if swift(>=5.5)
+      extension ___Node: @unchecked Sendable {}
+    #endif
 
-  #if swift(>=5.5)
-    extension ___Node: @unchecked Sendable {}
+    extension ___Node {
+      static var node: Self {
+        .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
+      }
+    }
+
+    extension ___Node {
+
+      @inlinable @inline(__always)
+      public mutating func clear() {
+        __left_ = .nullptr
+        __right_ = .nullptr
+        __parent_ = .nullptr
+        __is_black_ = false
+      }
+    }
   #endif
-
-  extension ___Node {
-    static var node: Self {
-      .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
-    }
-  }
-
-  extension ___Node {
-
-    @inlinable @inline(__always)
-    public mutating func clear() {
-      __left_ = .nullptr
-      __right_ = .nullptr
-      __parent_ = .nullptr
-      __is_black_ = false
-    }
-  }
 #endif

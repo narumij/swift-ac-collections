@@ -36,6 +36,7 @@ extension UnsafeNodeRecyclePool {
   mutating func ___pushRecycle(_ p: _NodePtr) {
     assert(p != nil)
     assert(destroyNode != p)
+    // 値型の場合、この処理を削りたい誘惑がある
     UnsafePair<_Value>.__value_ptr(p)?.deinitialize(count: 1)
     p?.pointee.___needs_deinitialize = false
     p?.pointee.__left_ = destroyNode

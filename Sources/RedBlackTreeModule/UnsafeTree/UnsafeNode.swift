@@ -269,8 +269,7 @@ public enum UnsafePair<_Value> {
   @inline(__always)
   static func __value_ptr(_ p: MutablePointer?) -> UnsafeMutablePointer<_Value>? {
     guard let p else { return nil }
-    return UnsafeMutableRawPointer(p.advanced(by: 1))
-      .assumingMemoryBound(to: _Value.self)
+    return __value_ptr(p)
   }
 
   @inlinable
@@ -278,5 +277,20 @@ public enum UnsafePair<_Value> {
   static func __value_ptr(_ p: MutablePointer) -> UnsafeMutablePointer<_Value> {
     UnsafeMutableRawPointer(p.advanced(by: 1))
       .assumingMemoryBound(to: _Value.self)
+  }
+  
+  @inlinable
+  @inline(__always)
+  static func __value_(_ p: MutablePointer?) -> _Value? {
+    guard let p else { return nil }
+    return __value_(p)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func __value_(_ p: MutablePointer) -> _Value {
+    UnsafeMutableRawPointer(p.advanced(by: 1))
+      .assumingMemoryBound(to: _Value.self)
+      .pointee
   }
 }

@@ -117,7 +117,9 @@ extension UnsafeTree {
     // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
     assert(tree._header.freshBucketCount <= 1)
-
+    
+    // 複数のバケットを新しい一つのバケットに連番通りにまとめ、その他管理情報をそのまま移す
+    // アドレスやバケット配置は変化するがそれ以外は変わらない状態となる
     withUnsafeMutablePointers { source_header, source_end in
 
       tree.withUnsafeMutablePointers { _header_ptr, _end_ptr in
@@ -126,50 +128,58 @@ extension UnsafeTree {
         func resolved(_ index: Int) -> _NodePtr {
           index == .end ? _end_ptr : _header_ptr.pointee[index]
         }
+        
+        @inline(__always)
+        func apply(_ d: inout UnsafeNode, _ s: inout UnsafeNode) {
+          // endにも使うので___node_idには触らない
+          if let l = s.__left_?.pointee.___node_id_ {
+            assert(l != -2)
+            d.__left_ = resolved(l)
+          }
+          if let r = s.__right_?.pointee.___node_id_ {
+            assert(r != -2)
+            d.__right_ = resolved(r)
+          }
+          if let p = s.__parent_?.pointee.___node_id_ {
+            assert(p != -2)
+            d.__parent_ = resolved(p)
+          }
+          d.__is_black_ = s.__is_black_
+          // 値は別途管理
+        }
 
         var source_nodes = source_header.pointee.makeInitializedIterator()
         var ___node_id_ = 0
 
         while let s = source_nodes.next(), let d = _header_ptr.pointee.popFresh() {
-
+          // メモリを連番で初期化
           d.initialize(to: UnsafeNode(___node_id_: ___node_id_))
+          // 値を初期化
           UnsafePair<_Value>.__value_ptr(d)
             .initialize(to: UnsafePair<_Value>.__value_ptr(s).pointee)
-
-          d.pointee.__is_black_ = s.pointee.__is_black_
-
-          if let l = s.pointee.__left_?.pointee.___node_id_ {
-            assert(l != -2)
-            d.pointee.__left_ = resolved(l)
-          }
-
-          if let r = s.pointee.__right_?.pointee.___node_id_ {
-            assert(r != -2)
-            d.pointee.__right_ = resolved(r)
-          }
-
-          if let p = s.pointee.__parent_?.pointee.___node_id_ {
-            assert(p != -2)
-            d.pointee.__parent_ = resolved(p)
-          }
-
+          // 残りを初期化
+          apply(&d.pointee, &s.pointee)
+          
           ___node_id_ += 1
         }
+        
+        // 最終ノード番号が初期化済み数と一致すること
+        assert(___node_id_ == source_header.pointee.initializedCount)
 
+        // endノードを初期化
+        apply(&_end_ptr.pointee, &source_end.pointee)
+        
+        // __begin_nodeを初期化
         if let b = source_header.pointee.__begin_node_?.pointee.___node_id_ {
           _header_ptr.pointee.__begin_node_ = resolved(b)
         }
-        if let l = source_end.pointee.__left_?.pointee.___node_id_ {
-          _end_ptr.pointee.__left_ = resolved(l)
-        }
+        
+        // その他管理情報をコピー
         _header_ptr.pointee.initializedCount = source_header.pointee.initializedCount
         _header_ptr.pointee.destroyCount = source_header.pointee.destroyCount
-
         if let l = source_header.pointee.destroyNode?.pointee.___node_id_ {
           _header_ptr.pointee.destroyNode = resolved(l)
         }
-
-        assert(source_header.pointee.___destroyNodes == tree._header.___destroyNodes)
 
         #if AC_COLLECTIONS_INTERNAL_CHECKS
           _header_ptr.pointee.copyCount = source_header.pointee.copyCount &+ 1
@@ -177,12 +187,16 @@ extension UnsafeTree {
       }
     }
 
-    assert(__tree_invariant(__root))
     assert(tree.__tree_invariant(tree.__root))
+    assert(tree.count >= 0)
+    assert(tree.count <= tree._header.initializedCount)
+    assert(tree.count <= tree.freshPoolCapacity)
+    assert(tree._header.initializedCount <= tree.freshPoolCapacity)
+    
     assert(__root?.pointee.___node_id_ == tree.__root?.pointee.___node_id_)
     assert(__begin_node_?.pointee.___node_id_ == tree.__begin_node_?.pointee.___node_id_)
-    assert(tree._header.destroyCount == _header.destroyCount)
-    assert(tree.count >= 0)
+    assert(_header.destroyCount == tree._header.destroyCount)
+    assert(___destroyNodes == tree._header.___destroyNodes)
 
     return tree
   }

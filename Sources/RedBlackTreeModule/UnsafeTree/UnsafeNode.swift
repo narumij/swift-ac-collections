@@ -115,13 +115,13 @@ public struct UnsafeNode {
   @inlinable
   @inline(__always)
   public init(
-    index: Int,
+        ___node_id_: Int,
     __left_: Pointer? = nil,
     __right_: Pointer? = nil,
     __parent_: Pointer? = nil,
     __is_black_: Bool = false
   ) {
-    self.___node_id_ = index
+    self.___node_id_ =     ___node_id_
     self.__left_ = __left_
     self.__right_ = __right_
     self.__parent_ = __parent_

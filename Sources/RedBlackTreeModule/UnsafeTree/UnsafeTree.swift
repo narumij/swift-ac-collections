@@ -55,14 +55,14 @@ extension UnsafeTree {
     _read { yield _header_ptr.pointee }
     _modify { yield &_header_ptr.pointee }
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
   public var _end_ptr: UnsafeMutablePointer<UnsafeNode> {
     withUnsafeMutablePointerToElements { $0 }
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -81,25 +81,19 @@ extension UnsafeTree {
     minimumCapacity nodeCapacity: Int
   ) -> Tree {
 
-    assert(
-      MemoryLayout<UnsafeNode>.stride
-        % MemoryLayout<UInt>.stride == 0
-    )
-
-    let storage = Tree.create(
-      minimumCapacity: 1
-    ) { managedBuffer in
-
+    // elementsはendにしか用いないのでManagerdBufferの要素数は常に1
+    let storage = Tree.create(minimumCapacity: 1)
+    { managedBuffer in
       return managedBuffer.withUnsafeMutablePointerToElements { _end_ptr in
-        
-        _end_ptr.initialize(to: UnsafeNode(index: .end))
-
+        // endノード用に初期化する
+        _end_ptr.initialize(to: UnsafeNode(___node_id_: .end))
+        // ヘッダーを準備する
         var header = Header(_end_ptr: _end_ptr)
-
+        // ノードを確保する
         if nodeCapacity > 0 {
           header.pushBucket(capacity: nodeCapacity)
         }
-
+        // ヘッダを返却して以後はManagerBufferさんがよしなにする
         return header
       }
     }
@@ -117,32 +111,30 @@ extension UnsafeTree {
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTree {
     assert(__tree_invariant(__root))
     // 予定サイズを確定させる
-    let newCapacity = max(minimumCapacity ?? _header.initializedCount, _header.initializedCount)
-    // 空の木を作成する
-    let result = UnsafeTree.create(minimumCapacity: newCapacity)
-    // 予定サイズに変更する。freshPool内のfreshBucketは0〜1個となる
+    let newCapacity = max(minimumCapacity ?? 0, _header.initializedCount)
+    // 予定サイズの木を作成する
+    let tree = UnsafeTree.create(minimumCapacity: newCapacity)
+    // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
-    assert(result._header.freshBucketCount <= 1)
+    assert(tree._header.freshBucketCount <= 1)
 
     withUnsafeMutablePointers { source_header, source_end in
 
-      result.withUnsafeMutablePointers { _header_ptr, _end_ptr in
+      tree.withUnsafeMutablePointers { _header_ptr, _end_ptr in
 
         @inline(__always)
         func resolved(_ index: Int) -> _NodePtr {
-          if index == .end {
-            return _end_ptr
-          }
-          return _header_ptr.pointee[index]
+          index == .end ? _end_ptr : _header_ptr.pointee[index]
         }
 
-        var srcIter = source_header.pointee.makeInitializedIterator()
-        var i = 0
+        var source_nodes = source_header.pointee.makeInitializedIterator()
+        var ___node_id_ = 0
 
-        while let s = srcIter.next(), let d = _header_ptr.pointee.popFresh() {
+        while let s = source_nodes.next(), let d = _header_ptr.pointee.popFresh() {
 
-          d.initialize(to: UnsafeNode(index: i))
-          UnsafePair<_Value>.__value_(d).initialize(to: UnsafePair<_Value>.__value_(s).pointee)
+          d.initialize(to: UnsafeNode(___node_id_: ___node_id_))
+          UnsafePair<_Value>.__value_(d)
+            .initialize(to: UnsafePair<_Value>.__value_(s).pointee)
 
           d.pointee.__is_black_ = s.pointee.__is_black_
 
@@ -161,7 +153,7 @@ extension UnsafeTree {
             d.pointee.__parent_ = resolved(p)
           }
 
-          i += 1
+          ___node_id_ += 1
         }
 
         if let b = source_header.pointee.__begin_node_?.pointee.___node_id_ {
@@ -172,12 +164,12 @@ extension UnsafeTree {
         }
         _header_ptr.pointee.initializedCount = source_header.pointee.initializedCount
         _header_ptr.pointee.destroyCount = source_header.pointee.destroyCount
-        
+
         if let l = source_header.pointee.destroyNode?.pointee.___node_id_ {
           _header_ptr.pointee.destroyNode = resolved(l)
         }
-        
-        assert(source_header.pointee.___destroyNodes == result._header.___destroyNodes)
+
+        assert(source_header.pointee.___destroyNodes == tree._header.___destroyNodes)
 
         #if AC_COLLECTIONS_INTERNAL_CHECKS
           _header_ptr.pointee.copyCount = source_header.pointee.copyCount &+ 1
@@ -186,13 +178,13 @@ extension UnsafeTree {
     }
 
     assert(__tree_invariant(__root))
-    assert(result.__tree_invariant(result.__root))
-    assert(__root?.pointee.___node_id_ == result.__root?.pointee.___node_id_)
-    assert(__begin_node_?.pointee.___node_id_ == result.__begin_node_?.pointee.___node_id_)
-    assert(result._header.destroyCount == _header.destroyCount)
-    assert(result.count >= 0)
+    assert(tree.__tree_invariant(tree.__root))
+    assert(__root?.pointee.___node_id_ == tree.__root?.pointee.___node_id_)
+    assert(__begin_node_?.pointee.___node_id_ == tree.__begin_node_?.pointee.___node_id_)
+    assert(tree._header.destroyCount == _header.destroyCount)
+    assert(tree.count >= 0)
 
-    return result
+    return tree
   }
 }
 
@@ -243,13 +235,13 @@ extension UnsafeTree {
 
 extension UnsafeTree {
 
-//  @nonobjc
-//  @inlinable
-//  @inline(__always)
-//  public var __left_: _NodePtr {
-//    _read { yield _header.__left_ }
-//    _modify { yield &_header.__left_ }
-//  }
+  //  @nonobjc
+  //  @inlinable
+  //  @inline(__always)
+  //  public var __left_: _NodePtr {
+  //    _read { yield _header.__left_ }
+  //    _modify { yield &_header.__left_ }
+  //  }
 
   // capacityを上書きするとManagedBufferの挙動に影響があるので、異なる名前を維持すること
   @nonobjc
@@ -351,12 +343,12 @@ extension UnsafeTree {
 }
 
 extension UnsafeTree {
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
   public
-  func ___node_alloc() -> _NodePtr
+    func ___node_alloc() -> _NodePtr
   {
     let p = _header.popFresh()
     assert(p != nil)
@@ -381,7 +373,7 @@ extension UnsafeTree {
     let p = ___node_alloc()
     assert(p != nil)
     assert(p?.pointee.___node_id_ == -2)
-    p?.initialize(to: UnsafeNode(index: _header.initializedCount))
+    p?.initialize(to: UnsafeNode(___node_id_: _header.initializedCount))
     UnsafePair<_Value>.__value_(p)!.initialize(to: k)
     assert(p!.pointee.___node_id_ >= 0)
     _header.initializedCount += 1

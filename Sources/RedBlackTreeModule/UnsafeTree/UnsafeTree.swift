@@ -399,7 +399,8 @@ extension UnsafeTree {
   @inline(__always)
   internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
     // TODO: 方式再検討
-    p != end && p?.pointee.__parent_ == nil
+//    p != end && p?.pointee.__parent_ == nil
+    p != end && p?.pointee.___needs_deinitialize != true
   }
 }
 
@@ -438,3 +439,4 @@ protocol PointerResolvable {
   var rawValue: Pointer { get }
   var ___node_id_: Int { get }
 }
+

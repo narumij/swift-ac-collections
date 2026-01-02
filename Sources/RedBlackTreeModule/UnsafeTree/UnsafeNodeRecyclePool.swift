@@ -38,10 +38,12 @@ extension UnsafeNodeRecyclePool {
     assert(destroyNode != p)
     // 値型の場合、この処理を削りたい誘惑がある
     UnsafePair<_Value>.__value_ptr(p)?.deinitialize(count: 1)
-    p?.pointee.___needs_deinitialize = false
-    p?.pointee.__left_ = destroyNode
-    p?.pointee.__right_ = p
-    p?.pointee.__parent_ = nil
+    p!.pointee.___needs_deinitialize = false
+    p!.pointee.__left_ = destroyNode
+#if GRAPHVIZ_DEBUG
+    p!.pointee.__right_ = nil
+    p!.pointee.__parent_ = nil
+#endif
     destroyNode = p
     destroyCount += 1
   }
@@ -50,8 +52,8 @@ extension UnsafeNodeRecyclePool {
   @inline(__always)
   mutating func ___popRecycle() -> _NodePtr {
     assert(destroyCount > 0)
-    let p = destroyNode?.pointee.__right_
-    destroyNode = p?.pointee.__left_
+    let p = destroyNode
+    destroyNode = p!.pointee.__left_
     destroyCount -= 1
     return p
   }

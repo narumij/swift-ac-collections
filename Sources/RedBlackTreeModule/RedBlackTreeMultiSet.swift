@@ -146,6 +146,17 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+// MARK: - Testing for Membership
+
+extension RedBlackTreeMultiSet {
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func contains(_ member: Element) -> Bool {
+    ___contains(member)
+  }
+}
+
 // MARK: - Accessing Elements
 
 extension RedBlackTreeMultiSet {
@@ -446,36 +457,6 @@ extension RedBlackTreeMultiSet {
     _strongEnsureUnique()
     return __tree_.___erase_multi(member) != 0 ? member : nil
   }
-
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n* : *k*)
-  @inlinable
-  @discardableResult
-  public mutating func removeAll(_unsafe member: Element) -> Element? {
-    _ensureUnique()
-    return __tree_.___erase_multi(member) != 0 ? member : nil
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  public mutating func remove(contentsOf elementRange: Range<Element>) {
-    _strongEnsureUnique()
-    let lower = ___lower_bound(elementRange.lowerBound)
-    let upper = ___lower_bound(elementRange.upperBound)
-    ___remove(from: lower, to: upper)
-  }
-
-  /// - Complexity: O(log *n* : *k*)
-  @inlinable
-  public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
-    _strongEnsureUnique()
-    let lower = ___lower_bound(elementRange.lowerBound)
-    let upper = ___upper_bound(elementRange.upperBound)
-    ___remove(from: lower, to: upper)
-  }
 }
 
 extension RedBlackTreeMultiSet {
@@ -489,15 +470,6 @@ extension RedBlackTreeMultiSet {
 }
 
 // MARK: Finding Elements
-
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func contains(_ member: Element) -> Bool {
-    ___contains(member)
-  }
-}
 
 extension RedBlackTreeMultiSet {
 

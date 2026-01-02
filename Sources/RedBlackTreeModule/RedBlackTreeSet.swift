@@ -153,6 +153,17 @@ extension RedBlackTreeSet {
   }
 }
 
+// MARK: - Testing for Membership
+
+extension RedBlackTreeSet {
+
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
+  @inlinable
+  public func contains(_ member: Element) -> Bool {
+    ___contains(member)
+  }
+}
+
 // MARK: - Accessing Elements
 
 extension RedBlackTreeSet {
@@ -424,31 +435,6 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  @inline(__always)
-  public mutating func remove(contentsOf elementRange: Range<Element>) {
-    _strongEnsureUnique()
-    let lower = ___lower_bound(elementRange.lowerBound)
-    let upper = ___lower_bound(elementRange.upperBound)
-    ___remove(from: lower, to: upper)
-  }
-
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  @inline(__always)
-  public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
-    _strongEnsureUnique()
-    let lower = ___lower_bound(elementRange.lowerBound)
-    let upper = ___upper_bound(elementRange.upperBound)
-    ___remove(from: lower, to: upper)
-  }
-}
-
-extension RedBlackTreeSet {
-
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -458,15 +444,6 @@ extension RedBlackTreeSet {
 }
 
 // MARK: Finding Elements
-
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  public func contains(_ member: Element) -> Bool {
-    ___contains(member)
-  }
-}
 
 extension RedBlackTreeSet {
 

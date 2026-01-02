@@ -114,6 +114,29 @@
         end: ___upper_bound(range.upperBound))
     }
   }
+
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    @inline(__always)
+    public mutating func remove(contentsOf keyRange: Range<Key>) {
+      _strongEnsureUnique()
+      let lower = ___lower_bound(keyRange.lowerBound)
+      let upper = ___lower_bound(keyRange.upperBound)
+      ___remove(from: lower, to: upper)
+    }
+
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    @inline(__always)
+    public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
+      _strongEnsureUnique()
+      let lower = ___lower_bound(keyRange.lowerBound)
+      let upper = ___upper_bound(keyRange.upperBound)
+      ___remove(from: lower, to: upper)
+    }
+  }
 #endif
 
 #if COMPATIBLE_ATCODER_2025

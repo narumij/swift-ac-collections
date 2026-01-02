@@ -144,6 +144,7 @@ final class AllocationTests: XCTestCase {
     XCTAssertEqual(capacities.count, 26)
     XCTAssertEqual(capacities.last, 1677720)
 //    XCTAssertEqual(capacities.last, 1572864)
+    tree._header.initializedCount = 0 // これをしないと未初期化メモリに触ってクラッシュとなる
   }
 
 #endif // DEBUG

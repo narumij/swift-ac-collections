@@ -195,6 +195,17 @@ extension RedBlackTreeDictionary {
   }
 }
 
+// MARK: - Testing for Membership
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func contains(key: Key) -> Bool {
+    ___contains(key)
+  }
+}
+
 // MARK: - Accessing Keys and Values
 
 extension RedBlackTreeDictionary {
@@ -589,31 +600,6 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  @inline(__always)
-  public mutating func remove(contentsOf keyRange: Range<Key>) {
-    _strongEnsureUnique()
-    let lower = ___lower_bound(keyRange.lowerBound)
-    let upper = ___lower_bound(keyRange.upperBound)
-    ___remove(from: lower, to: upper)
-  }
-
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  @inline(__always)
-  public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
-    _strongEnsureUnique()
-    let lower = ___lower_bound(keyRange.lowerBound)
-    let upper = ___upper_bound(keyRange.upperBound)
-    ___remove(from: lower, to: upper)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -623,15 +609,6 @@ extension RedBlackTreeDictionary {
 }
 
 // MARK: Finding Elements
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func contains(key: Key) -> Bool {
-    ___contains(key)
-  }
-}
 
 extension RedBlackTreeDictionary {
 

@@ -178,6 +178,17 @@ extension RedBlackTreeMultiMap {
   }
 }
 
+// MARK: - Testing for Membership
+
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func contains(key: Key) -> Bool {
+    ___contains(key)
+  }
+}
+
 // MARK: - Accessing Keys and Values
 
 extension RedBlackTreeMultiMap {
@@ -519,29 +530,6 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  @inline(__always)
-  public mutating func remove(contentsOf keyRange: Range<Key>) {
-    _strongEnsureUnique()
-    let lower = ___lower_bound(keyRange.lowerBound)
-    let upper = ___lower_bound(keyRange.upperBound)
-    ___remove(from: lower, to: upper)
-  }
-
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  @inline(__always)
-  public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
-    _strongEnsureUnique()
-    let lower = ___lower_bound(keyRange.lowerBound)
-    let upper = ___upper_bound(keyRange.upperBound)
-    ___remove(from: lower, to: upper)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -551,15 +539,6 @@ extension RedBlackTreeMultiMap {
 }
 
 // MARK: Finding Elements
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func contains(key: Key) -> Bool {
-    ___contains(key)
-  }
-}
 
 extension RedBlackTreeMultiMap {
 

@@ -37,6 +37,7 @@ protocol UnsafeNodeFreshPool {
   var freshBucketLast: ReserverHeaderPointer? { get set }
   var freshBucketCount: Int { get set }
   var freshPoolCapacity: Int { get set }
+  var freshBucketCreate: (Int) -> ReserverHeaderPointer { get }
   var freshBucketDispose: (ReserverHeaderPointer?) -> Void { get }
 }
 
@@ -59,7 +60,8 @@ extension UnsafeNodeFreshPool {
   mutating func pushFreshBucket(capacity: Int) {
     // 2回連続で確保した場合の挙動が不定な気がしたが、両端保持しているリンクリストなので大丈夫だった
     assert(capacity != 0)
-    let pointer = ReserverHeader.create(capacity: capacity)
+//    let pointer = ReserverHeader.create(capacity: capacity)
+    let pointer = freshBucketCreate(capacity)
     if freshBucketHead == nil {
       freshBucketHead = pointer
     }

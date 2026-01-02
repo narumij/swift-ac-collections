@@ -30,7 +30,7 @@ extension UnsafeTree {
   public var nullptr: _NodePtr {
     nil
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -42,21 +42,21 @@ extension UnsafeTree {
 // MARK: - TreeEndNodeProtocol
 
 extension UnsafeTree: TreeEndNodeProtocol {
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
   func __left_(_ p: _NodePtr) -> _NodePtr {
     return p!.pointee.__left_
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
   func __left_unsafe(_ p: _NodePtr) -> _NodePtr {
     return p!.pointee.__left_
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -96,7 +96,7 @@ extension UnsafeTree: TreeNodeProtocol {
   func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
     lhs!.pointee.__is_black_ = rhs
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -110,7 +110,7 @@ extension UnsafeTree: TreeNodeProtocol {
   func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
     lhs!.pointee.__parent_ = rhs
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -134,7 +134,7 @@ extension UnsafeTree {
 // MARK: - BeginNodeProtocol
 
 extension UnsafeTree {
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -160,22 +160,22 @@ extension UnsafeTree {
 
 extension UnsafeTree {
 
-#if !DEBUG
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal var __root: _NodePtr {
-    _read { yield _end.__left_ }
-  }
-#else
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal var __root: _NodePtr {
-    get { _end.__left_ }
-    set { _end.__left_ = newValue }
-  }
-#endif
+  #if !DEBUG
+    @nonobjc
+    @inlinable
+    @inline(__always)
+    internal var __root: _NodePtr {
+      _read { yield _end.__left_ }
+    }
+  #else
+    @nonobjc
+    @inlinable
+    @inline(__always)
+    internal var __root: _NodePtr {
+      get { _end.__left_ }
+      set { _end.__left_ = newValue }
+    }
+  #endif
 
   // MARK: - RootPtrProtocol
 
@@ -201,28 +201,18 @@ extension UnsafeTree {
 
 // MARK: - AllocatorProtocol
 
+
+
 extension UnsafeTree {
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
   public func __construct_node(_ k: _Value) -> _NodePtr {
-    if _header.destroyCount > 0 {
-      let p = _header.___popRecycle()
-      UnsafePair<_Value>.__value_ptr(p)!.initialize(to: k)
-      p?.pointee.___needs_deinitialize = true
-      return p
-    }
-    assert(_header.initializedCount < freshPoolCapacity)
-    let p = ___node_alloc()
-    assert(p != nil)
-    assert(p?.pointee.___node_id_ == -2)
-    // ナンバリングとノード初期化の責務は移動できる(freshPoolUsedCountは使えない）
-    p?.initialize(to: UnsafeNode(___node_id_: _header.initializedCount))
-    UnsafePair<_Value>.__value_ptr(p)!.initialize(to: k)
-    assert(p!.pointee.___node_id_ >= 0)
-    _header.initializedCount += 1
-    return p
+//    withUnsafeMutablePointerToHeader { header in
+//      header.pointee.__construct_node(k)
+//    }
+    _header.__construct_node(k)
   }
 
   @nonobjc

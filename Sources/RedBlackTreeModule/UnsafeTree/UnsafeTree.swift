@@ -229,6 +229,7 @@ extension UnsafeTree {
     @inline(__always)
     internal init(_end_ptr: _NodePtr) {
       self.__begin_node_ = _end_ptr
+      self.freshBucketCreate = UnsafeNodeFreshBucket<_Value>.create
       self.freshBucketDispose = Self.___disposeBucketFunc
     }
     public var __begin_node_: _NodePtr
@@ -240,6 +241,7 @@ extension UnsafeTree {
     @usableFromInline var freshBucketLast: ReserverHeaderPointer?
     @usableFromInline var freshBucketCount: Int = 0
     @usableFromInline var freshPoolCapacity: Int = 0
+    @usableFromInline var freshBucketCreate: (Int) -> ReserverHeaderPointer
     @usableFromInline let freshBucketDispose: (ReserverHeaderPointer?) -> Void
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       /// CoWの発火回数を観察するためのプロパティ
@@ -275,13 +277,19 @@ extension UnsafeTree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public var freshPoolCapacity: Int { _header.freshPoolCapacity }
+  public var freshPoolCapacity: Int {
+//    _header.freshPoolCapacity
+    withUnsafeMutablePointerToHeader{ $0.pointee.freshPoolCapacity }
+  }
 
   // これはinitializedCountと同一の内容だが計算量が異なるため代用はできない。
   @nonobjc
   @inlinable
   @inline(__always)
-  public var freshPoolUsedCount: Int { _header.freshPoolUsedCount }
+  public var freshPoolUsedCount: Int {
+//    _header.freshPoolUsedCount
+    withUnsafeMutablePointerToHeader{ $0.pointee.freshPoolUsedCount }
+  }
 }
 
 extension UnsafeTree {
@@ -301,6 +309,17 @@ extension UnsafeTree {
   }
 }
 
+extension UnsafeTree.Header {
+
+  // TODO: grow関連の名前が混乱気味なので整理する
+  @inlinable
+  @inline(__always)
+  public mutating func ensureCapacity(_ newCapacity: Int) {
+      guard freshPoolCapacity < newCapacity else { return }
+      pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
+  }
+}
+
 extension UnsafeTree {
 
   // TODO: grow関連の名前が混乱気味なので整理する
@@ -308,8 +327,27 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   public func ensureCapacity(_ newCapacity: Int) {
-    guard freshPoolCapacity < newCapacity else { return }
-    _header.pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
+    withUnsafeMutablePointerToHeader {
+      $0.pointee.ensureCapacity(newCapacity)
+    }
+  }
+}
+
+extension UnsafeTree {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public var count: Int {
+    withUnsafeMutablePointerToHeader{ $0.pointee.count }
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func clear() {
+    _end.__left_ = nil
+    _header.clear(_end_ptr: _end_ptr)
   }
 }
 
@@ -322,35 +360,42 @@ extension UnsafeTree.Header {
   }
 }
 
-extension UnsafeTree {
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public var count: Int { _header.count }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func clear() {
-    _end.__left_ = nil
-    _header.clear(_end_ptr: _end_ptr)
-  }
-}
-
-extension UnsafeTree {
+extension UnsafeTree.Header {
 
   // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
-  @nonobjc
   @inlinable
   @inline(__always)
-  public
+  mutating public
     func ___node_alloc() -> _NodePtr
   {
-    let p = _header.popFresh()
+    let p = popFresh()
     assert(p != nil)
     assert(p?.pointee.___node_id_ == -2)
     return p
+  }
+}
+
+extension UnsafeTree.Header {
+  
+  @inlinable
+  @inline(__always)
+  public mutating func __construct_node(_ k: _Value) -> _NodePtr {
+      if destroyCount > 0 {
+        let p = ___popRecycle()
+        UnsafePair<_Value>.__value_ptr(p)!.initialize(to: k)
+        p?.pointee.___needs_deinitialize = true
+        return p
+      }
+      assert(initializedCount < freshPoolCapacity)
+      let p = ___node_alloc()
+      assert(p != nil)
+      assert(p?.pointee.___node_id_ == -2)
+      // ナンバリングとノード初期化の責務は移動できる(freshPoolUsedCountは使えない）
+      p?.initialize(to: UnsafeNode(___node_id_: initializedCount))
+      UnsafePair<_Value>.__value_ptr(p)!.initialize(to: k)
+      assert(p!.pointee.___node_id_ >= 0)
+      initializedCount += 1
+      return p
   }
 }
 

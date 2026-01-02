@@ -42,7 +42,6 @@ import XCTest
 
     #if TREE_INVARIANT_CHECKS
       func testRotate() throws {
-        //      let tree = RedBlackTree___Tree.create(minimumCapacity: 8)
 
         __nodes = [
           .init(__is_black_: true, __left_: 1, __right_: 2, __parent_: .end),

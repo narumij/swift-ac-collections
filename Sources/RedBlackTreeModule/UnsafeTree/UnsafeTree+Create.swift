@@ -279,12 +279,12 @@ extension UnsafeTree {
 // MARK: -
 
 #if false
-  extension ___Tree {
+  extension UnsafeTree {
 
     // 使っていない
 
     @inlinable
-    internal static func __create_unique<S>(sequence: __owned S) -> ___Tree
+    internal static func __create_unique<S>(sequence: __owned S) -> UnsafeTree
     where Base._Value == S.Element, S: Sequence {
 
       let count = (sequence as? (any Collection))?.count
@@ -306,7 +306,7 @@ extension UnsafeTree {
     }
 
     @inlinable
-    internal static func __create_multi<S>(sequence: __owned S) -> ___Tree
+    internal static func __create_multi<S>(sequence: __owned S) -> UnsafeTree
     where Base._Value == S.Element, S: Sequence {
 
       let count = (sequence as? (any Collection))?.count

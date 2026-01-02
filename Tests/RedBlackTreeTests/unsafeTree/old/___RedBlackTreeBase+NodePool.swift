@@ -20,7 +20,9 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-#if true
+#if false
+  // 多分試作コード
+  // 消して大丈夫そう(2026/01/03)
   #if DEBUG
     @testable import RedBlackTreeModule
 
@@ -95,33 +97,5 @@
         ___pushDestroy(p)
       }
     }
-
-    #if false
-      extension ___RedBlackTree.___Tree: ___RedBlackTreeNodePoolProtocol {
-        @usableFromInline
-        var ___destroy_node: _NodePtr {
-          get { _header.destroyNode }
-          _modify {
-            yield &_header.destroyNode
-          }
-        }
-        @usableFromInline
-        var ___destroy_count: Int {
-          get { _header.destroyCount }
-          _modify {
-            yield &_header.destroyCount
-          }
-        }
-        @usableFromInline
-        func ___initialize(_ k: Element) -> _NodePtr {
-          assert(capacity - count >= 1)
-          let index = _header.initializedCount
-          (__node_ptr + index).initialize(to: Node(__value_: k))
-          _header.initializedCount += 1
-          assert(_header.initializedCount <= _header.capacity)
-          return index
-        }
-      }
-    #endif
   #endif
 #endif

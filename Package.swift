@@ -17,9 +17,10 @@ var defines: [String] = [
   "WITHOUT_SIZECHECK",
   "COMPATIBLE_ATCODER_2025",
 
-  "USE_UNSAFE_TREE",
-
+//  "USE_UNSAFE_TREE",
   
+  
+
   //"USE_OLD_FIND",
 ]
 
@@ -59,7 +60,15 @@ let package = Package(
     //     ),
     .package(
       url: "https://github.com/apple/swift-algorithms.git",
-      from: "1.2.1")
+      from: "1.2.1"),
+
+    .package(
+      url: "https://github.com/google/swift-benchmark",
+      from: "0.1.0"),
+
+    .package(
+      url: "https://github.com/narumij/swift-ac-foundation",
+      branch: "main"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -104,6 +113,16 @@ let package = Package(
         "PermutationModule",
       ],
       path: "Tests/Executable",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "Benchmark0",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Benchmarks/Benchmark0",
       swiftSettings: _settings
     ),
   ]

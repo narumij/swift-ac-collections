@@ -91,7 +91,7 @@ extension UnsafeTree {
         var header = Header(_end_ptr: _end_ptr)
         // ノードを確保する
         if nodeCapacity > 0 {
-          header.pushBucket(capacity: nodeCapacity)
+          header.pushFreshBucket(capacity: nodeCapacity)
         }
         // ヘッダを返却して以後はManagerBufferさんがよしなにする
         return header
@@ -250,20 +250,14 @@ extension UnsafeTree {
 
 extension UnsafeTree {
 
-  //  @nonobjc
-  //  @inlinable
-  //  @inline(__always)
-  //  public var __left_: _NodePtr {
-  //    _read { yield _header.__left_ }
-  //    _modify { yield &_header.__left_ }
-  //  }
-
   // capacityを上書きするとManagedBufferの挙動に影響があるので、異なる名前を維持すること
   @nonobjc
   @inlinable
   @inline(__always)
   public var freshPoolCapacity: Int { _header.freshPoolCapacity }
 
+  // これはinitializedCountと同一かもしれない。
+  // TODO: リファクタリング
   @nonobjc
   @inlinable
   @inline(__always)
@@ -293,7 +287,7 @@ extension UnsafeTree {
   @inline(__always)
   public func ensureCapacity(_ newCapacity: Int) {
     guard freshPoolCapacity < newCapacity else { return }
-    _header.pushBucket(capacity: newCapacity - freshPoolCapacity)
+    _header.pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
   }
 }
 
@@ -388,6 +382,7 @@ extension UnsafeTree {
     let p = ___node_alloc()
     assert(p != nil)
     assert(p?.pointee.___node_id_ == -2)
+    // freshPoolUseCountとinitializedCountが同値のようなので、ナンバリングとノード初期化の責務は移動できる
     p?.initialize(to: UnsafeNode(___node_id_: _header.initializedCount))
     UnsafePair<_Value>.__value_ptr(p)!.initialize(to: k)
     assert(p!.pointee.___node_id_ >= 0)

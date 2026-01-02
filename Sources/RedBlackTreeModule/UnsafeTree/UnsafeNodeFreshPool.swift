@@ -56,7 +56,7 @@ extension UnsafeNodeFreshPool {
    */
   @inlinable
   @inline(__always)
-  mutating func pushBucket(capacity: Int) {
+  mutating func pushFreshBucket(capacity: Int) {
     // 2回連続で確保した場合の挙動が不定な気がしたが、両端保持しているリンクリストなので大丈夫だった
     assert(capacity != 0)
     let pointer = ReserverHeader.create(capacity: capacity)

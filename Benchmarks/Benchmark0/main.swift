@@ -1,6 +1,7 @@
 import Benchmark
 import RedBlackTreeModule
 import MT19937
+import Foundation
 
 var mt = mt19937_64(seed: 0)
 
@@ -11,6 +12,7 @@ print("UNSAFE_TREE")
 #else
 print("ARRAY_TREE")
 #endif
+print(Date.now)
 print()
 
 for count in [0, 32, 1024, 8192] {

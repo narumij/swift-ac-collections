@@ -526,12 +526,22 @@ extension ___Tree {
     return __parent_(p)
   }
 
+#if !DEBUG
   @nonobjc
   @inlinable
   @inline(__always)
   internal var __root: _NodePtr {
-    __header_ptr.pointee.__left_
+     __header_ptr.pointee.__left_
   }
+#else
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal var __root: _NodePtr {
+    get { __header_ptr.pointee.__left_ }
+    set { __header_ptr.pointee.__left_ = newValue }
+  }
+#endif
 }
 
 extension ___Tree {

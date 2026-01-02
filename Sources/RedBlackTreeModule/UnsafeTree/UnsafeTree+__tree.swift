@@ -160,12 +160,22 @@ extension UnsafeTree {
 
 extension UnsafeTree {
 
+#if !DEBUG
   @nonobjc
   @inlinable
   @inline(__always)
   internal var __root: _NodePtr {
     _read { yield _end.__left_ }
   }
+#else
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal var __root: _NodePtr {
+    get { _end.__left_ }
+    set { _end.__left_ = newValue }
+  }
+#endif
 
   // MARK: - RootPtrProtocol
 

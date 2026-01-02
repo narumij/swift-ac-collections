@@ -1,3 +1,4 @@
+#if DEBUG
 extension UnsafeTree {
 
   package func ___NodePtr(_ p: Int) -> _NodePtr {
@@ -53,10 +54,6 @@ extension UnsafeTree {
   package func ___element(_ p: Int, _ __v: _Value) {
     ___element(___NodePtr(p), __v)
   }
-//  
-//  package func __root(_ p: Int) {
-//    _end.__left_ = ___NodePtr(p)
-//  }
 }
 
 extension UnsafeTree {
@@ -73,3 +70,4 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
   package var index: Int { self?.pointee.___node_id_ ?? .nullptr }
 }
+#endif

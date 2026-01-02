@@ -40,7 +40,8 @@ import XCTest
       __tree_.__right_(p)
     }
     var __root: _NodePtr {
-      __tree_.__root
+      get { __tree_.__root }
+      set { __tree_.__root = newValue }
     }
     mutating func __root(_ p: _NodePtr) {
       __tree_.__left_(__tree_.end, p)

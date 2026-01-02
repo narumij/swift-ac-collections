@@ -154,8 +154,8 @@ final class AllocationTests: XCTestCase {
     XCTAssertNotEqual(capacities, [])
 #if USE_UNSAFE_TREE
     // 小さく確保していく方針に切り替えた
-    XCTAssertEqual(capacities.count, 71277)
-    XCTAssertEqual(capacities.last, 1000013)
+    XCTAssertEqual(capacities.count, 1054)
+    XCTAssertEqual(capacities.last, 1000747)
 #else
     XCTAssertEqual(capacities.count, 26)
     XCTAssertEqual(capacities.last, 1677720)

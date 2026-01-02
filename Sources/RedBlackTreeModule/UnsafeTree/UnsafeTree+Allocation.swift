@@ -20,6 +20,8 @@ extension UnsafeTree.Header: UnsafeTreeAllocationHeader {}
 extension UnsafeTree: UnsafeTreeAllcation2 {}
 //extension UnsafeTree: UnsafeTreeAllcation3 {}
 
+// TODO: 確保サイズ毎所要時間をのアロケーションとデアロケーションの両方で測ること
+
 @usableFromInline
 protocol UnsafeTreeAllcation3: UnsafeTreeAllcationBody {}
 

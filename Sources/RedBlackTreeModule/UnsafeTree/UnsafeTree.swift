@@ -246,24 +246,9 @@ extension UnsafeTree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public var end: _NodePtr {
-    _read { yield __header_ptr.pointee.end }
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
   public var __left_: _NodePtr {
     _read { yield end!.pointee.__left_ }
     _modify { yield &end!.pointee.__left_ }
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public var __begin_node_: _NodePtr {
-    _read { yield __header_ptr.pointee.__begin_node_ }
-    _modify { yield &__header_ptr.pointee.__begin_node_ }
   }
 
   @nonobjc

@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-extension UnsafeTree {
+extension UnsafeTree: TreeNodeRefProtocol {
   
   @nonobjc
   @inlinable

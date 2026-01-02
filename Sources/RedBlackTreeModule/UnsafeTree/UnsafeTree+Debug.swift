@@ -266,10 +266,10 @@ import Foundation
         }
       }
       func leftPair(_ i: _NodePtr) -> (_NodePtr, Int) {
-        (i, offset(__left_(i)) ?? -1)
+        (i, offset(__left_(i)) ?? .end)
       }
       func rightPair(_ i: _NodePtr) -> (_NodePtr, Int) {
-        (i, offset(__right_(i)) ?? -1)
+        (i, offset(__right_(i)) ?? .end)
       }
       func node(_ i: _NodePtr) -> String {
         switch i {

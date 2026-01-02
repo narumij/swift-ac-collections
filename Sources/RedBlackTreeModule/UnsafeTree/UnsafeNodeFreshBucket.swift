@@ -170,10 +170,8 @@ extension UnsafeNodeFreshBucket {
 
   func dump(label: String = "") {
     print("---- FreshBucket \(label) ----")
-//    print(" storage:", storage)
     print(" capacity:", capacity)
     print(" count:", count)
-//    print(" current:", current as Any)
 
     var i = 0
     var p = start

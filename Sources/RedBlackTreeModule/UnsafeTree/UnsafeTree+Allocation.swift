@@ -15,12 +15,31 @@ protocol UnsafeTreeAllcationBody {
 
 extension UnsafeTree: UnsafeTreeAllcationBody {}
 extension UnsafeTree.Header: UnsafeTreeAllocationHeader {}
+
+// TODO: 確保サイズ毎所要時間をのアロケーションとデアロケーションの両方で測ること
+
+#if ALLOCATION_DRILL
+extension UnsafeTree: UnsafeTreeAllcationDrill {}
+#else
 //extension UnsafeTree: UnsafeTreeAllcation0 {}
 //extension UnsafeTree: UnsafeTreeAllcation1 {}
 extension UnsafeTree: UnsafeTreeAllcation2 {}
 //extension UnsafeTree: UnsafeTreeAllcation3 {}
+#endif
 
-// TODO: 確保サイズ毎所要時間をのアロケーションとデアロケーションの両方で測ること
+public nonisolated(unsafe) var allocationChunkSize: Int = 0
+
+@usableFromInline
+protocol UnsafeTreeAllcationDrill: UnsafeTreeAllcationBody {}
+
+extension UnsafeTreeAllcationDrill {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+    Swift.max(minimumCapacity, freshPoolCapacity + allocationChunkSize)
+  }
+}
 
 @usableFromInline
 protocol UnsafeTreeAllcation3: UnsafeTreeAllcationBody {}

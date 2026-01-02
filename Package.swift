@@ -20,6 +20,8 @@ var defines: [String] = [
   "USE_UNSAFE_TREE",
 
   //"USE_OLD_FIND",
+  
+  "ALLOCATION_DRILL"
 ]
 
 var _settings: [SwiftSetting] =
@@ -121,6 +123,26 @@ let package = Package(
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
       ],
       path: "Benchmarks/Benchmark0",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "Benchmark1",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Benchmarks/Benchmark1",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "Benchmark2",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Benchmarks/Benchmark2",
       swiftSettings: _settings
     ),
   ]

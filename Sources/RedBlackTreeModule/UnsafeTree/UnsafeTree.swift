@@ -347,39 +347,6 @@ extension UnsafeTree {
   }
 }
 
-// これを動かすとなぜかコンパイルエラーになる
-extension UnsafeTree {
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public func __construct_node(_ k: _Value) -> _NodePtr {
-    if _header.destroyCount > 0 {
-      let p = _header.___popRecycle()
-      UnsafePair<_Value>.__value_ptr(p)!.initialize(to: k)
-      p?.pointee.___needs_deinitialize = true
-      return p
-    }
-    assert(_header.initializedCount < freshPoolCapacity)
-    let p = ___node_alloc()
-    assert(p != nil)
-    assert(p?.pointee.___node_id_ == -2)
-    // ナンバリングとノード初期化の責務は移動できる(freshPoolUsedCountは使えない）
-    p?.initialize(to: UnsafeNode(___node_id_: _header.initializedCount))
-    UnsafePair<_Value>.__value_ptr(p)!.initialize(to: k)
-    assert(p!.pointee.___node_id_ >= 0)
-    _header.initializedCount += 1
-    return p
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func destroy(_ p: _NodePtr) {
-    _header.___pushRecycle(p)
-  }
-}
-
 // TODO: ここに配置するのが適切には思えない。配置場所を再考する
 extension UnsafeTree {
 

@@ -199,7 +199,7 @@ extension UnsafeIndex {
   @inlinable
   public var pointee: Pointee? {
     __tree_.___is_subscript_null(rawValue)
-      ? nil : Base.___pointee(UnsafePair<_Value>.__value_(rawValue)!.pointee)
+      ? nil : Base.___pointee(UnsafePair<_Value>.__value_ptr(rawValue)!.pointee)
   }
 }
 

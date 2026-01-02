@@ -135,15 +135,15 @@ final class UnsafeTreeMemoryTests: XCTestCase {
     }
     XCTAssertEqual(storage.lower_bound(3)?.pointee.___node_id_, 3)
     var begin = storage.__begin_node_
-    XCTAssertEqual(UnsafePair<Base._Value>.__value_(begin!).pointee, 0)
+    XCTAssertEqual(UnsafePair<Base._Value>.__value_ptr(begin!).pointee, 0)
     begin = storage.__tree_next_iter(begin)
-    XCTAssertEqual(UnsafePair<Base._Value>.__value_(begin!).pointee, 1)
+    XCTAssertEqual(UnsafePair<Base._Value>.__value_ptr(begin!).pointee, 1)
     begin = storage.__tree_next_iter(begin)
-    XCTAssertEqual(UnsafePair<Base._Value>.__value_(begin!).pointee, 2)
+    XCTAssertEqual(UnsafePair<Base._Value>.__value_ptr(begin!).pointee, 2)
     begin = storage.__tree_next_iter(begin)
-    XCTAssertEqual(UnsafePair<Base._Value>.__value_(begin!).pointee, 3)
+    XCTAssertEqual(UnsafePair<Base._Value>.__value_ptr(begin!).pointee, 3)
     begin = storage.__tree_next_iter(begin)
-    XCTAssertEqual(UnsafePair<Base._Value>.__value_(begin!).pointee, 4)
+    XCTAssertEqual(UnsafePair<Base._Value>.__value_ptr(begin!).pointee, 4)
     begin = storage.__tree_next_iter(begin)
     XCTAssertEqual(begin, storage.end)
   }
@@ -176,15 +176,15 @@ final class UnsafeTreeMemoryTests: XCTestCase {
 
     XCTAssertEqual(copy.lower_bound(3)?.pointee.___node_id_, 3)
     var begin = copy.__begin_node_
-    XCTAssertEqual(UnsafePair<Base._Value>.__value_(begin!).pointee, 0)
+    XCTAssertEqual(UnsafePair<Base._Value>.__value_ptr(begin!).pointee, 0)
     begin = copy.__tree_next_iter(begin)
-    XCTAssertEqual(UnsafePair<Base._Value>.__value_(begin!).pointee, 1)
+    XCTAssertEqual(UnsafePair<Base._Value>.__value_ptr(begin!).pointee, 1)
     begin = copy.__tree_next_iter(begin)
-    XCTAssertEqual(UnsafePair<Base._Value>.__value_(begin!).pointee, 2)
+    XCTAssertEqual(UnsafePair<Base._Value>.__value_ptr(begin!).pointee, 2)
     begin = copy.__tree_next_iter(begin)
-    XCTAssertEqual(UnsafePair<Base._Value>.__value_(begin!).pointee, 3)
+    XCTAssertEqual(UnsafePair<Base._Value>.__value_ptr(begin!).pointee, 3)
     begin = copy.__tree_next_iter(begin)
-    XCTAssertEqual(UnsafePair<Base._Value>.__value_(begin!).pointee, 4)
+    XCTAssertEqual(UnsafePair<Base._Value>.__value_ptr(begin!).pointee, 4)
     begin = copy.__tree_next_iter(begin)
     XCTAssertEqual(begin, copy.end)
   }

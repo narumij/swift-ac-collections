@@ -127,7 +127,7 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   func __get_value(_ p: _NodePtr) -> _Key {
-    Base.__key(UnsafePair<_Value>.__value_(p)!.pointee)
+    Base.__key(UnsafePair<_Value>.__value_ptr(p)!.pointee)
   }
 }
 
@@ -196,14 +196,14 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   internal func __value_(_ p: _NodePtr) -> _Value {
-    UnsafePair<Tree._Value>.__value_(p)!.pointee
+    UnsafePair<Tree._Value>.__value_ptr(p)!.pointee
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   internal func ___element(_ p: _NodePtr, _ __v: _Value) {
-    UnsafePair<Tree._Value>.__value_(p)!.pointee = __v
+    UnsafePair<Tree._Value>.__value_ptr(p)!.pointee = __v
   }
 }
 

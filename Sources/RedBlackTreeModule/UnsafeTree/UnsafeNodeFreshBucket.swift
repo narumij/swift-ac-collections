@@ -69,7 +69,7 @@ struct UnsafeNodeFreshBucket<_Value> {
       let c = p
       p = UnsafePair<_Value>.advance(p)
       if c.pointee.___needs_deinitialize {
-        UnsafePair<_Value>.__value_(c)
+        UnsafePair<_Value>.__value_ptr(c)
           .deinitialize(count: 1)
       }
       c.deinitialize(count: 1)

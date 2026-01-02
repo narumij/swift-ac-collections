@@ -133,8 +133,8 @@ extension UnsafeTree {
         while let s = source_nodes.next(), let d = _header_ptr.pointee.popFresh() {
 
           d.initialize(to: UnsafeNode(___node_id_: ___node_id_))
-          UnsafePair<_Value>.__value_(d)
-            .initialize(to: UnsafePair<_Value>.__value_(s).pointee)
+          UnsafePair<_Value>.__value_ptr(d)
+            .initialize(to: UnsafePair<_Value>.__value_ptr(s).pointee)
 
           d.pointee.__is_black_ = s.pointee.__is_black_
 
@@ -262,11 +262,11 @@ extension UnsafeTree {
   internal subscript(_ pointer: _NodePtr) -> _Value {
     @inline(__always) _read {
       assert(___initialized_contains(pointer))
-      yield UnsafePair<_Value>.__value_(pointer)!.pointee
+      yield UnsafePair<_Value>.__value_ptr(pointer)!.pointee
     }
     @inline(__always) _modify {
       assert(___initialized_contains(pointer))
-      yield &UnsafePair<_Value>.__value_(pointer)!.pointee
+      yield &UnsafePair<_Value>.__value_ptr(pointer)!.pointee
     }
   }
 }
@@ -366,7 +366,7 @@ extension UnsafeTree {
   public func __construct_node(_ k: _Value) -> _NodePtr {
     if _header.destroyCount > 0 {
       let p = _header.___popRecycle()
-      UnsafePair<_Value>.__value_(p)!.initialize(to: k)
+      UnsafePair<_Value>.__value_ptr(p)!.initialize(to: k)
       return p
     }
     assert(_header.initializedCount < freshPoolCapacity)
@@ -374,7 +374,7 @@ extension UnsafeTree {
     assert(p != nil)
     assert(p?.pointee.___node_id_ == -2)
     p?.initialize(to: UnsafeNode(___node_id_: _header.initializedCount))
-    UnsafePair<_Value>.__value_(p)!.initialize(to: k)
+    UnsafePair<_Value>.__value_ptr(p)!.initialize(to: k)
     assert(p!.pointee.___node_id_ >= 0)
     _header.initializedCount += 1
     return p

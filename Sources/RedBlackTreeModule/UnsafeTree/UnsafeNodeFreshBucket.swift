@@ -22,7 +22,7 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-struct UnsafeNodeFreshBucket<_Value> {
+struct UnsafeNodeFreshBucket {
 
   public typealias Header = UnsafeNodeFreshBucket
   public typealias Node = UnsafeNode
@@ -33,81 +33,102 @@ struct UnsafeNodeFreshBucket<_Value> {
   @inline(__always)
   internal init(
     start: NodePointer,
-    capacity: Int
+    capacity: Int,
+    strice: Int,
+    alignment: Int
   ) {
     self.start = start
     self.capacity = capacity
+    self.strice = strice
+    self.alignment = alignment
   }
 
   public var count: Int = 0
   public let start: NodePointer
   public let capacity: Int
+  public let strice: Int
+  public let alignment: Int
   public var next: HeaderPointer? = nil
 
   @inlinable
   @inline(__always)
+  func advance(_ p: NodePointer, _ n: Int = 1) -> NodePointer {
+    UnsafeMutableRawPointer(p)
+      .advanced(by: strice * n)
+      .alignedUp(toMultipleOf: alignment)
+      .assumingMemoryBound(to: UnsafeNode.self)
+  }
+
+  @inlinable
+  @inline(__always)
   subscript(index: Int) -> NodePointer {
-    UnsafePair<_Value>.advance(start, index)
+    advance(start, index)
   }
 
   @inlinable
   @inline(__always)
   mutating func pop() -> NodePointer? {
     guard count < capacity else { return nil }
-    let p = UnsafePair<_Value>.advance(start, count)
+    let p = advance(start, count)
     count += 1
     return p
   }
-  
+
   @inlinable
   @inline(__always)
-  func _clear() {
+  func _clear<T>(_ t: T.Type) {
     var i = 0
     let count = count
     var p = start
     while i < count {
       let c = p
-      p = UnsafePair<_Value>.advance(p)
+      p = advance(p)
       if c.pointee.___needs_deinitialize {
-        UnsafePair<_Value>.__value_ptr(c)
-          .deinitialize(count: 1)
+        //        UnsafePair<_Value>.__value_ptr(c)
+        UnsafeMutableRawPointer(
+          UnsafeMutablePointer<UnsafeNode>(c)
+            .advanced(by: 1)
+        )
+        .alignedUp(for: t.self)
+        .assumingMemoryBound(to: t.self)
+        .deinitialize(count: 1)
       }
       c.deinitialize(count: 1)
       i += 1
     }
-#if DEBUG
-  do {
-    var c = 0
-    var p = start
-    while c < capacity {
-      p.pointee.___node_id_ = -2
-      p = UnsafePair<_Value>.advance(p)
-      c += 1
-    }
-  }
-#endif
+    #if DEBUG
+      do {
+        var c = 0
+        var p = start
+        while c < capacity {
+          p.pointee.___node_id_ = -2
+          p = advance(p)
+          c += 1
+        }
+      }
+    #endif
   }
 
   @inlinable
   @inline(__always)
-  mutating func clear() {
-    _clear()
+  mutating func clear<T>(_ t: T.Type) {
+    _clear(t.self)
     count = 0
   }
-  
+
   @inlinable
   @inline(__always)
-  func dispose() {
-    _clear()
+  func dispose<T>(_ t: T.Type) {
+    _clear(t.self)
   }
 
   @inlinable
   @inline(__always)
-  static func create(capacity: Int) -> HeaderPointer {
+  static func create<T>(_ t: T.Type, capacity: Int) -> HeaderPointer {
 
     assert(capacity != 0)
 
-    let (bytes, alignment) = Self.allocationSize(capacity: capacity)
+    let (bytes, alignment) = Self.allocationSize(T.self,capacity: capacity)
 
     let header_storage = UnsafeMutableRawPointer.allocate(
       byteCount: bytes,
@@ -122,8 +143,10 @@ struct UnsafeNodeFreshBucket<_Value> {
     header.initialize(
       to:
         .init(
-          start: UnsafePair<_Value>.pointer(from: storage),
-          capacity: capacity))
+          start: UnsafePair<T>.pointer(from: storage),
+          capacity: capacity,
+          strice: MemoryLayout<UnsafeNode>.stride + MemoryLayout<T>.stride,
+          alignment: alignment))
 
     #if DEBUG
       do {
@@ -131,7 +154,7 @@ struct UnsafeNodeFreshBucket<_Value> {
         var p = header.pointee.start
         while c < capacity {
           p.pointee.___node_id_ = -2
-          p = UnsafePair<_Value>.advance(p)
+          p = UnsafePair<T>.advance(p)
           c += 1
         }
       }
@@ -139,11 +162,11 @@ struct UnsafeNodeFreshBucket<_Value> {
 
     return header
   }
-  
+
   @inlinable
   @inline(__always)
-  static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
-    let (bufferSize, bufferAlignment) = UnsafePair<_Value>.allocationSize(capacity: capacity)
+  static func allocationSize<T>(_ t: T.Type, capacity: Int) -> (size: Int, alignment: Int) {
+    let (bufferSize, bufferAlignment) = UnsafePair<T>.allocationSize(capacity: capacity)
     let numBytes = MemoryLayout<Header>.stride + bufferSize
     let headerAlignment = MemoryLayout<Header>.alignment
     if bufferAlignment <= headerAlignment {
@@ -165,36 +188,37 @@ struct UnsafeNodeFreshBucket<_Value> {
   }
 }
 
+#if false
 #if DEBUG
-extension UnsafeNodeFreshBucket {
+  extension UnsafeNodeFreshBucket {
 
-  func dump(label: String = "") {
-    print("---- FreshBucket \(label) ----")
-    print(" capacity:", capacity)
-    print(" count:", count)
+    func dump(label: String = "") {
+      print("---- FreshBucket \(label) ----")
+      print(" capacity:", capacity)
+      print(" count:", count)
 
-    var i = 0
-    var p = start
-    while i < capacity {
-      let isUsed = i < count
-      let marker =
-        (count == i) ? "<- current" :
-        isUsed ? "[used]" : "[free]"
+      var i = 0
+      var p = start
+      while i < capacity {
+        let isUsed = i < count
+        let marker =
+          (count == i) ? "<- current" : isUsed ? "[used]" : "[free]"
 
-      print(
-        String(
-          format: " [%02lld] ptr=%p id=%lld %@",
-          i,
-          p,
-          p.pointee.___node_id_,
-          marker
+        print(
+          String(
+            format: " [%02lld] ptr=%p id=%lld %@",
+            i,
+            p,
+            p.pointee.___node_id_,
+            marker
+          )
         )
-      )
 
-      p = UnsafePair<_Value>.advance(p)
-      i += 1
+        p = UnsafePair<_Value>.advance(p)
+        i += 1
+      }
+      print("-----------------------------")
     }
-    print("-----------------------------")
   }
-}
+#endif
 #endif

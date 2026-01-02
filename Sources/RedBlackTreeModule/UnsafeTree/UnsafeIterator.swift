@@ -24,7 +24,7 @@
 struct UnsafeInitializedNodeIterator<_Value>: IteratorProtocol {
 
   @usableFromInline
-  typealias Bucket = UnsafeNodeFreshBucket<_Value>
+  typealias Bucket = UnsafeNodeFreshBucket
 
   @usableFromInline
   typealias BucketPointer = UnsafeMutablePointer<Bucket>

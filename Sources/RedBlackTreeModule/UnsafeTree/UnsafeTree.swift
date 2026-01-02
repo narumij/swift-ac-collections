@@ -229,8 +229,8 @@ extension UnsafeTree {
     @inline(__always)
     internal init(_end_ptr: _NodePtr) {
       self.__begin_node_ = _end_ptr
-      self.freshBucketCreate = UnsafeNodeFreshBucket<_Value>.create
-      self.freshBucketDispose = Self.___disposeBucketFunc
+//      self.freshBucketCreate = UnsafeNodeFreshBucket<_Value>.create
+//      self.freshBucketDispose = Self.___disposeBucketFunc
     }
     public var __begin_node_: _NodePtr
     @usableFromInline var initializedCount: Int = 0
@@ -241,8 +241,8 @@ extension UnsafeTree {
     @usableFromInline var freshBucketLast: ReserverHeaderPointer?
     @usableFromInline var freshBucketCount: Int = 0
     @usableFromInline var freshPoolCapacity: Int = 0
-    @usableFromInline var freshBucketCreate: (Int) -> ReserverHeaderPointer
-    @usableFromInline let freshBucketDispose: (ReserverHeaderPointer?) -> Void
+//    @usableFromInline var freshBucketCreate: (Int) -> ReserverHeaderPointer
+//    @usableFromInline let freshBucketDispose: (ReserverHeaderPointer?) -> Void
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       /// CoWの発火回数を観察するためのプロパティ
       @usableFromInline internal var copyCount: UInt = 0

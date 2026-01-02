@@ -22,7 +22,7 @@
 
 import Foundation
 
-#if false
+#if true
   #if DEBUG
     @testable import RedBlackTreeModule
 

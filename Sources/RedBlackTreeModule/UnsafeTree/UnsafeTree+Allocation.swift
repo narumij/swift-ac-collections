@@ -1,28 +1,29 @@
 @usableFromInline
-protocol AllocationHeader {
+protocol UnsafeTreeAllocationHeader {
   var initializedCount: Int { get }
   var freshBucketCount: Int { get }
 }
 
 @usableFromInline
-protocol Allcation {
-  associatedtype Header: AllocationHeader
+protocol UnsafeTreeAllcationBody {
+  associatedtype Header: UnsafeTreeAllocationHeader
   associatedtype _Value
   var _header: Header { get }
   var freshPoolCapacity: Int { get }
   var count: Int { get }
 }
 
-extension UnsafeTree: Allcation {}
-extension UnsafeTree.Header: AllocationHeader {}
-//extension UnsafeTree: OldAllocation {}
-//extension UnsafeTree: NewAllocation {}
-extension UnsafeTree: NewAllocation2 {}
+extension UnsafeTree: UnsafeTreeAllcationBody {}
+extension UnsafeTree.Header: UnsafeTreeAllocationHeader {}
+//extension UnsafeTree: UnsafeTreeAllcation0 {}
+//extension UnsafeTree: UnsafeTreeAllcation1 {}
+extension UnsafeTree: UnsafeTreeAllcation2 {}
+//extension UnsafeTree: UnsafeTreeAllcation3 {}
 
 @usableFromInline
-protocol NewAllocation2: Allcation {}
+protocol UnsafeTreeAllcation3: UnsafeTreeAllcationBody {}
 
-extension NewAllocation2 {
+extension UnsafeTreeAllcation3 {
 
   @inlinable
   @inline(__always)
@@ -37,28 +38,74 @@ extension NewAllocation2 {
     let s0 = MemoryLayout<UnsafeNode>.stride
     let s1 = MemoryLayout<_Value>.stride
     let s2 = MemoryLayout<UnsafeNodeFreshBucket<_Value>>.stride
-    let a2 = MemoryLayout<UnsafeNodeFreshBucket<_Value>>.alignment
+    let a2 = 0 // MemoryLayout<UnsafeNodeFreshBucket<_Value>>.alignment
 
     if minimumCapacity <= 2 {
       return 3
     }
 
     if minimumCapacity <= 64 {
-      return Swift.max(minimumCapacity, count + (15 * (s0 + s1) - s2 - a2) / (s0 + s1))
+      return Swift.max(minimumCapacity, count + ((16 - 1) * (s0 + s1) - s2 - a2) / (s0 + s1))
+    }
+    
+    var n = 1 << ((Int.bitWidth - minimumCapacity.leadingZeroBitCount) + 1)
+    
+    if minimumCapacity <= 100000 {
+      n = n << 1
     }
 
-    if minimumCapacity < 4096 {
-      return Swift.max(minimumCapacity, count + (31 * (s0 + s1) - s2 - a2) / (s0 + s1))
-    }
-
-    return Swift.max(minimumCapacity, count + (15 * (s0 + s1) - s2 - a2) / (s0 + s1))
+    return Swift.max(minimumCapacity, count + ((n - 1) * (s0 + s1) - s2 - a2) / (s0 + s1))
   }
 }
 
 @usableFromInline
-protocol NewAllocation: Allcation {}
+protocol UnsafeTreeAllcation2: UnsafeTreeAllcationBody {}
 
-extension NewAllocation {
+extension UnsafeTreeAllcation2 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        _header.initializedCount,
+        minimumCapacity)
+    }
+
+    let s0 = MemoryLayout<UnsafeNode>.stride
+    let s1 = MemoryLayout<_Value>.stride
+    let s2 = MemoryLayout<UnsafeNodeFreshBucket<_Value>>.stride
+    let a2 = 0 // MemoryLayout<UnsafeNodeFreshBucket<_Value>>.alignment
+
+    if minimumCapacity <= 2 {
+      return 3
+    }
+
+    if minimumCapacity <= 64 {
+      return Swift.max(minimumCapacity, count + ((16 - 1) * (s0 + s1) - s2 - a2) / (s0 + s1))
+    }
+
+    if minimumCapacity < 4096 {
+      return Swift.max(minimumCapacity, count + ((32 - 1) * (s0 + s1) - s2 - a2) / (s0 + s1))
+    }
+
+    if minimumCapacity <= 8192 {
+      return Swift.max(minimumCapacity, count + ((16 - 1) * (s0 + s1) - s2 - a2) / (s0 + s1))
+    }
+    
+    if minimumCapacity <= 100000 {
+      return Swift.max(minimumCapacity, count + ((512 - 1) * (s0 + s1) - s2 - a2) / (s0 + s1))
+    }
+    
+    return Swift.max(minimumCapacity, count + ((1024 * 2 - 1) * (s0 + s1) - s2 - a2) / (s0 + s1))
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation1: UnsafeTreeAllcationBody {}
+
+extension UnsafeTreeAllcation1 {
 
   @inlinable
   @inline(__always)
@@ -90,10 +137,9 @@ extension NewAllocation {
 }
 
 @usableFromInline
-protocol OldAllocation: Allcation {
-}
+protocol UnsafeTreeAllcation0: UnsafeTreeAllcationBody {}
 
-extension OldAllocation {
+extension UnsafeTreeAllcation0 {
 
   @inlinable
   @inline(__always)
@@ -170,7 +216,7 @@ extension OldAllocation {
 // LICENCE: https://github.com/swiftlang/swift/blob/main/LICENSE.txt
 // Apache License 2.0 LLVM exception
 
-extension OldAllocation {
+extension UnsafeTreeAllcation0 {
 
   /// The inverse of the maximum hash table load factor.
   @inlinable

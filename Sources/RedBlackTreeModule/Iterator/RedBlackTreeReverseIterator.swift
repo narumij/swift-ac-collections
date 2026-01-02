@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension RedBlackTreeIterator.Values {
+extension RedBlackTreeIterator_old.Values {
 
   @frozen
   public struct Reversed: Sequence, IteratorProtocol {
@@ -57,7 +57,7 @@ extension RedBlackTreeIterator.Values {
   }
 }
 
-extension RedBlackTreeIterator.Values.Reversed {
+extension RedBlackTreeIterator_old.Values.Reversed {
   
   @inlinable
   @inline(__always)
@@ -68,17 +68,17 @@ extension RedBlackTreeIterator.Values.Reversed {
   }
 }
 
-extension RedBlackTreeIterator.Values.Reversed {
+extension RedBlackTreeIterator_old.Values.Reversed {
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var indices: RedBlackTreeIndices<Base>.Reversed {
+  public var indices: RedBlackTreeIndices_old<Base>.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-extension RedBlackTreeIterator.Values.Reversed {
+extension RedBlackTreeIterator_old.Values.Reversed {
 
   @inlinable
   @inline(__always)
@@ -87,7 +87,7 @@ extension RedBlackTreeIterator.Values.Reversed {
   }
 }
 
-extension RedBlackTreeIterator.Values.Reversed: Equatable where Element: Equatable {
+extension RedBlackTreeIterator_old.Values.Reversed: Equatable where Element: Equatable {
 
   @inlinable
   @inline(__always)
@@ -96,7 +96,7 @@ extension RedBlackTreeIterator.Values.Reversed: Equatable where Element: Equatab
   }
 }
 
-extension RedBlackTreeIterator.Values.Reversed: Comparable where Element: Comparable {
+extension RedBlackTreeIterator_old.Values.Reversed: Comparable where Element: Comparable {
 
   @inlinable
   @inline(__always)
@@ -106,10 +106,10 @@ extension RedBlackTreeIterator.Values.Reversed: Comparable where Element: Compar
 }
 
 #if swift(>=5.5)
-  extension RedBlackTreeIterator.Values.Reversed: @unchecked Sendable
+  extension RedBlackTreeIterator_old.Values.Reversed: @unchecked Sendable
   where Tree._Value: Sendable {}
 #endif
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIterator.Values.Reversed: ___IsIdenticalTo {}
+extension RedBlackTreeIterator_old.Values.Reversed: ___IsIdenticalTo {}

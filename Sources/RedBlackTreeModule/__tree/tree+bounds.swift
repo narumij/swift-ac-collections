@@ -52,10 +52,10 @@ extension BoundAlgorithmProtocol {
   internal func
     __lower_upper_bound_unique_impl(_LowerBound: Bool, _ __v: _Key) -> _NodePtr
   {
-    var __rt = __root()
-    var __result = __end_node()
+    var __rt = __root
+    var __result = __end_node
     let __comp = __lazy_synth_three_way_comparator
-    while __rt != .nullptr {
+    while __rt != nullptr {
       let __comp_res = __comp(__v, __get_value(__rt))
       if __comp_res.__less() {
         __result = __rt
@@ -65,7 +65,7 @@ extension BoundAlgorithmProtocol {
       } else if _LowerBound {
         return __rt
       } else {
-        return __right_(__rt) != .nullptr ? __tree_min(__right_(__rt)) : __result
+        return __right_(__rt) != nullptr ? __tree_min(__right_(__rt)) : __result
       }
     }
     return __result
@@ -79,7 +79,7 @@ extension BoundAlgorithmProtocol {
       // 最適化不足かとおもってlower bound専用を試したが変わらなかった
       __lower_upper_bound_unique_impl(_LowerBound: true, __v)
     #else
-      __lower_bound_multi(__v, __root(), __end_node())
+      __lower_bound_multi(__v, __root, __end_node)
     #endif
   }
 
@@ -90,20 +90,20 @@ extension BoundAlgorithmProtocol {
       // Benchmarkで速度低下がみられるので、一旦保留
       __lower_upper_bound_unique_impl(_LowerBound: false, __v)
     #else
-      __upper_bound_multi(__v, __root(), __end_node())
+      __upper_bound_multi(__v, __root, __end_node)
     #endif
   }
 
   @inlinable
   @inline(__always)
   internal func __lower_bound_multi(_ __v: _Key) -> _NodePtr {
-    __lower_bound_multi(__v, __root(), __end_node())
+    __lower_bound_multi(__v, __root, __end_node)
   }
 
   @inlinable
   @inline(__always)
   internal func __upper_bound_multi(_ __v: _Key) -> _NodePtr {
-    __upper_bound_multi(__v, __root(), __end_node())
+    __upper_bound_multi(__v, __root, __end_node)
   }
 
   @inlinable
@@ -113,7 +113,7 @@ extension BoundAlgorithmProtocol {
   {
     var (__root, __result) = (__root, __result)
 
-    while __root != .nullptr {
+    while __root != nullptr {
       if !value_comp(__get_value(__root), __v) {
         __result = __root
         __root = __left_unsafe(__root)
@@ -131,7 +131,7 @@ extension BoundAlgorithmProtocol {
   {
     var (__root, __result) = (__root, __result)
 
-    while __root != .nullptr {
+    while __root != nullptr {
       if value_comp(__v, __get_value(__root)) {
         __result = __root
         __root = __left_unsafe(__root)

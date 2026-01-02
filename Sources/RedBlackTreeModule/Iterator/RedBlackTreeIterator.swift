@@ -23,7 +23,7 @@
 import Foundation
 
 @frozen
-public enum RedBlackTreeIterator<Base> where Base: ___TreeBase & ___TreeIndex {
+public enum RedBlackTreeIterator_old<Base> where Base: ___TreeBase & ___TreeIndex {
 
   @frozen
   public struct Values: Sequence, IteratorProtocol {
@@ -60,7 +60,7 @@ public enum RedBlackTreeIterator<Base> where Base: ___TreeBase & ___TreeIndex {
   }
 }
 
-extension RedBlackTreeIterator.Values: Equatable where Tree._Value: Equatable {
+extension RedBlackTreeIterator_old.Values: Equatable where Tree._Value: Equatable {
 
   @inlinable
   @inline(__always)
@@ -69,7 +69,7 @@ extension RedBlackTreeIterator.Values: Equatable where Tree._Value: Equatable {
   }
 }
 
-extension RedBlackTreeIterator.Values: Comparable where Tree._Value: Comparable {
+extension RedBlackTreeIterator_old.Values: Comparable where Tree._Value: Comparable {
 
   @inlinable
   @inline(__always)
@@ -79,10 +79,10 @@ extension RedBlackTreeIterator.Values: Comparable where Tree._Value: Comparable 
 }
 
 #if swift(>=5.5)
-  extension RedBlackTreeIterator.Values: @unchecked Sendable
+  extension RedBlackTreeIterator_old.Values: @unchecked Sendable
   where Tree._Value: Sendable {}
 #endif
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIterator.Values: ___IsIdenticalTo {}
+extension RedBlackTreeIterator_old.Values: ___IsIdenticalTo {}

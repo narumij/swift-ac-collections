@@ -453,7 +453,8 @@ final class MultiMapTests: XCTestCase {
         XCTAssertEqual(
           dict.updateValue(
             0,
-            at: Target<Int, Int>.Index.unsafe(tree: dict.__tree_, rawValue: .nullptr))?.value,
+            at: Target<Int, Int>.Index.unsafe(tree: dict.__tree_, rawValue: dict.__tree_.nullptr))?
+            .value,
           nil)
       #endif
       XCTAssertEqual(dict.updateValue(0, at: dict.endIndex)?.value, nil)
@@ -543,12 +544,12 @@ final class MultiMapTests: XCTestCase {
   #if DEBUG
     func testIndexLimit3() throws {
       let set = [0: 0, 1: 10, 2: 20, 3: 30, 4: 40] as Target<Int, Int>
-      XCTAssertEqual(set.startIndex.rawValue, .node(0))
-      XCTAssertEqual(set.index(before: set.endIndex).rawValue, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).rawValue, .node(4))
+      XCTAssertEqual(set.startIndex._rawValue, .node(0))
+      XCTAssertEqual(set.index(before: set.endIndex)._rawValue, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1)._rawValue, .node(4))
       XCTAssertEqual(
-        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.rawValue, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).rawValue, .node(0))
+        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?._rawValue, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5)._rawValue, .node(0))
       XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
       XCTAssertNotEqual(
         set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),
@@ -1052,8 +1053,13 @@ final class MultiMapTests: XCTestCase {
     XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = Target<Int, String>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawValue, -1)
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawValue, 5)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
+      #if !USE_UNSAFE_TREE
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, 5)
+      #else
+        // UnsafeTreeは範囲外のインデックスを作成できない
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
+      #endif
 
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
@@ -1074,8 +1080,8 @@ final class MultiMapTests: XCTestCase {
     XCTAssertTrue(set.isValid(index: set.endIndex))
     typealias Index = Target<Int, String>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawValue, -1)
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawValue, 5)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, 5)
 
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))

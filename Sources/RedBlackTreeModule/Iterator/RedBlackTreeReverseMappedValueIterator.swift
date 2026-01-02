@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension RedBlackTreeIterator.MappedValues {
+extension RedBlackTreeIterator_old.MappedValues {
   
   @frozen
   public struct Reversed: Sequence, IteratorProtocol
@@ -58,7 +58,7 @@ extension RedBlackTreeIterator.MappedValues {
   }
 }
 
-extension RedBlackTreeIterator.MappedValues.Reversed: Equatable where Base._MappedValue: Equatable {
+extension RedBlackTreeIterator_old.MappedValues.Reversed: Equatable where Base._MappedValue: Equatable {
 
   @inlinable
   @inline(__always)
@@ -67,7 +67,7 @@ extension RedBlackTreeIterator.MappedValues.Reversed: Equatable where Base._Mapp
   }
 }
 
-extension RedBlackTreeIterator.MappedValues.Reversed: Comparable where Base._MappedValue: Comparable {
+extension RedBlackTreeIterator_old.MappedValues.Reversed: Comparable where Base._MappedValue: Comparable {
 
   @inlinable
   @inline(__always)
@@ -77,10 +77,10 @@ extension RedBlackTreeIterator.MappedValues.Reversed: Comparable where Base._Map
 }
 
 #if swift(>=5.5)
-  extension RedBlackTreeIterator.MappedValues.Reversed: @unchecked Sendable
+  extension RedBlackTreeIterator_old.MappedValues.Reversed: @unchecked Sendable
   where Tree._Value: Sendable {}
 #endif
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIterator.MappedValues.Reversed: ___IsIdenticalTo {}
+extension RedBlackTreeIterator_old.MappedValues.Reversed: ___IsIdenticalTo {}

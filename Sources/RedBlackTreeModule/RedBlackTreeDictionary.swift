@@ -265,20 +265,23 @@ extension RedBlackTreeDictionary {
       yield ___value_for(key)?.value
     }
     @inline(__always) _modify {
+      // UnsafeTree用の暫定処置
+      // TODO: FIXME
+      _ensureUniqueAndCapacity()
       // TODO: もうすこしライフタイム管理に明るくなったら、再度ここのチューニングに取り組む
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
-      if __ptr == .nullptr {
+      if __ptr == __tree_.nullptr {
         var value: Value?
         defer {
           if let value {
-            _ensureUniqueAndCapacity()
+//            _ensureUniqueAndCapacity()
             let __h = __tree_.__construct_node(Self.___tree_value((key, value)))
             __tree_.__insert_node_at(__parent, __child, __h)
           }
         }
         yield &value
       } else {
-        _ensureUnique()
+//        _ensureUnique()
         var helper = ___ModifyHelper(pointer: &__tree_[__ptr].value)
         defer {
           if helper.isNil {
@@ -301,9 +304,9 @@ extension RedBlackTreeDictionary {
     @inline(__always) _modify {
       defer { _fixLifetime(self) }
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
-      if __ptr == .nullptr {
+      if __ptr == __tree_.nullptr {
         _ensureUniqueAndCapacity()
-        assert(__tree_.header.capacity > __tree_.count)
+        assert(__tree_.header.freshPoolCapacity > __tree_.count)
         __ptr = __tree_.__construct_node(Self.___tree_value((key, defaultValue())))
         __tree_.__insert_node_at(__parent, __child, __ptr)
       } else {
@@ -317,7 +320,7 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   internal func _prepareForKeyingModify(
     _ key: Key
-  ) -> (__parent: _NodePtr, __child: _NodeRef, __ptr: _NodePtr) {
+  ) -> (__parent: Tree._NodePtr, __child: Tree._NodeRef, __ptr: Tree._NodePtr) {
     let (__parent, __child) = __tree_.__find_equal(key)
     let __ptr = __tree_.__ptr_(__child)
     return (__parent, __child, __ptr)
@@ -333,13 +336,13 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     __tree_.___ensureValid(
-      begin: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue)
+      begin: bounds.lowerBound.rawValue(__tree_),
+      end: bounds.upperBound.rawValue(__tree_))
 
     return .init(
       tree: __tree_,
-      start: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue)
+      start: bounds.lowerBound.rawValue(__tree_),
+      end: bounds.upperBound.rawValue(__tree_))
   }
 
   #if !COMPATIBLE_ATCODER_2025
@@ -349,13 +352,13 @@ extension RedBlackTreeDictionary {
       let bounds: Range<Index> = bounds.relative(to: self)
 
       __tree_.___ensureValid(
-        begin: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
+        begin: bounds.lowerBound.rawValue(__tree_),
+        end: bounds.upperBound.rawValue(__tree_))
 
       return .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
+        start: bounds.lowerBound.rawValue(__tree_),
+        end: bounds.upperBound.rawValue(__tree_))
     }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -365,8 +368,8 @@ extension RedBlackTreeDictionary {
     public subscript(unchecked bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
+        start: bounds.lowerBound.rawValue(__tree_),
+        end: bounds.upperBound.rawValue(__tree_))
     }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -378,8 +381,8 @@ extension RedBlackTreeDictionary {
       let bounds: Range<Index> = bounds.relative(to: self)
       return .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
+        start: bounds.lowerBound.rawValue(__tree_),
+        end: bounds.upperBound.rawValue(__tree_))
     }
   #endif
 }
@@ -456,7 +459,7 @@ extension RedBlackTreeDictionary {
         tree: __tree_,
         other: other.__tree_,
         other.__tree_.__begin_node_,
-        other.__tree_.__end_node(),
+        other.__tree_.__end_node,
         uniquingKeysWith: combine)
     }
   }
@@ -533,7 +536,7 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
     let __i = __tree_.find(__k)
-    if __i == __tree_.end() {
+    if __i == __tree_.end {
       return nil
     }
     let value = __tree_.__value_(__i).value
@@ -572,7 +575,7 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     _ensureUnique()
-    guard let element = ___remove(at: index.rawValue) else {
+    guard let element = ___remove(at: index.rawValue(__tree_)) else {
       fatalError(.invalidIndex)
     }
     return ___element(element)
@@ -593,8 +596,8 @@ extension RedBlackTreeDictionary {
     let bounds = bounds.relative(to: self)
     _ensureUnique()
     ___remove(
-      from: bounds.lowerBound.rawValue,
-      to: bounds.upperBound.rawValue)
+      from: bounds.lowerBound.rawValue(__tree_),
+      to: bounds.upperBound.rawValue(__tree_))
   }
 }
 

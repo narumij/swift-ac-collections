@@ -7,6 +7,7 @@ import RedBlackTreeModule
     let count = 2_000_000
 
     func testSet1() throws {
+#if !USE_UNSAFE_TREE
       var set = RedBlackTreeSet<Int>()
       XCTAssertEqual(set._copyCount, 0)
       set.insert(0)
@@ -21,6 +22,23 @@ import RedBlackTreeModule
       XCTAssertEqual(set._copyCount, 2)  // 挿入に備えた必要分をまだ消費していない
       set.insert(1)
       XCTAssertEqual(set._copyCount, 2)  // 挿入に備えた必要分を消費したところ
+#else
+      // UnsafeTreeの場合、capacity増加はバケット追加で行われるので、コピーしない
+      var set = RedBlackTreeSet<Int>()
+      XCTAssertEqual(set._copyCount, 0)
+      set.insert(0)
+      XCTAssertEqual(set._copyCount, 0)  // 挿入に備えた分増える
+      while set.count < set.capacity {
+        set.insert((2..<Int.max).randomElement()!)
+        XCTAssertEqual(set._copyCount, 0)  // 挿入に備えた分増える
+      }
+      set.insert(0)
+      XCTAssertEqual(set._copyCount, 0)  // 挿入に備えた分増えるが消費していない
+      set.insert(0)
+      XCTAssertEqual(set._copyCount, 0)  // 挿入に備えた必要分をまだ消費していない
+      set.insert(1)
+      XCTAssertEqual(set._copyCount, 0)  // 挿入に備えた必要分を消費したところ
+#endif
     }
 
     func testSet2() throws {

@@ -39,13 +39,13 @@ extension ___BaseSequence {
   @inlinable
   @inline(__always)
   internal func ___min() -> _Value? {
-    __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_min(__tree_.__root())]
+    __tree_.__root == __tree_.nullptr ? nil : __tree_[__tree_.__tree_min(__tree_.__root)]
   }
 
   @inlinable
   @inline(__always)
   internal func ___max() -> _Value? {
-    __tree_.__root() == .nullptr ? nil : __tree_[__tree_.__tree_max(__tree_.__root())]
+    __tree_.__root == __tree_.nullptr ? nil : __tree_[__tree_.__tree_max(__tree_.__root)]
   }
 }
 

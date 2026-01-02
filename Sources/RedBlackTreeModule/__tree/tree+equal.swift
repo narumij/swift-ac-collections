@@ -32,10 +32,10 @@ extension EqualProtocol {
   internal func
     __equal_range_unique(_ __k: _Key) -> (_NodePtr, _NodePtr)
   {
-    var __result = __end_node()
-    var __rt = __root()
+    var __result = __end_node
+    var __rt = __root
     let __comp = __lazy_synth_three_way_comparator
-    while __rt != .nullptr {
+    while __rt != nullptr {
       let __comp_res = __comp(__k, __get_value(__rt))
       if __comp_res.__less() {
         __result = __rt
@@ -45,7 +45,7 @@ extension EqualProtocol {
       } else {
         return (
           __rt,
-          __right_(__rt) != .nullptr
+          __right_(__rt) != nullptr
             ? __tree_min(__right_(__rt))
             : __result
         )
@@ -59,10 +59,10 @@ extension EqualProtocol {
   internal func
     __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)
   {
-    var __result = __end_node()
-    var __rt = __root()
+    var __result = __end_node
+    var __rt = __root
     let __comp = __lazy_synth_three_way_comparator
-    while __rt != .nullptr {
+    while __rt != nullptr {
       let __comp_res = __comp(__k, __get_value(__rt))
       if __comp_res.__less() {
         __result = __rt

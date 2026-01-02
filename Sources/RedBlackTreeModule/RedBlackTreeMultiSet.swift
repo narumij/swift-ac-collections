@@ -184,13 +184,13 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     __tree_.___ensureValid(
-      begin: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue)
+      begin: bounds.lowerBound.rawValue(__tree_),
+      end: bounds.upperBound.rawValue(__tree_))
 
     return .init(
       tree: __tree_,
-      start: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue)
+      start: bounds.lowerBound.rawValue(__tree_),
+      end: bounds.upperBound.rawValue(__tree_))
   }
 
   #if !COMPATIBLE_ATCODER_2025
@@ -200,13 +200,13 @@ extension RedBlackTreeMultiSet {
       let bounds: Range<Index> = bounds.relative(to: self)
 
       __tree_.___ensureValid(
-        begin: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
+        begin: bounds.lowerBound.rawValue(__tree_),
+        end: bounds.upperBound.rawValue(__tree_))
 
       return .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
+        start: bounds.lowerBound.rawValue(__tree_),
+        end: bounds.upperBound.rawValue(__tree_))
     }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -216,8 +216,8 @@ extension RedBlackTreeMultiSet {
     public subscript(unchecked bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
+        start: bounds.lowerBound.rawValue(__tree_),
+        end: bounds.upperBound.rawValue(__tree_))
     }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -229,8 +229,8 @@ extension RedBlackTreeMultiSet {
       let bounds: Range<Index> = bounds.relative(to: self)
       return .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
+        start: bounds.lowerBound.rawValue(__tree_),
+        end: bounds.upperBound.rawValue(__tree_))
     }
   #endif
 }
@@ -275,7 +275,7 @@ extension RedBlackTreeMultiSet {
         tree: __tree_,
         other: other.__tree_,
         other.__tree_.__begin_node_,
-        other.__tree_.__end_node())
+        other.__tree_.__end_node)
     }
   }
 
@@ -288,7 +288,7 @@ extension RedBlackTreeMultiSet {
         tree: __tree_,
         other: other.__tree_,
         other.__tree_.__begin_node_,
-        other.__tree_.__end_node())
+        other.__tree_.__end_node)
     }
   }
 
@@ -401,7 +401,7 @@ extension RedBlackTreeMultiSet {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     _ensureUnique()
-    guard let element = ___remove(at: index.rawValue) else {
+    guard let element = ___remove(at: index.rawValue(__tree_)) else {
       fatalError(.invalidIndex)
     }
     return element
@@ -445,8 +445,8 @@ extension RedBlackTreeMultiSet {
     let bounds = bounds.relative(to: self)
     _ensureUnique()
     ___remove(
-      from: bounds.lowerBound.rawValue,
-      to: bounds.upperBound.rawValue)
+      from: bounds.lowerBound.rawValue(__tree_),
+      to: bounds.upperBound.rawValue(__tree_))
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。

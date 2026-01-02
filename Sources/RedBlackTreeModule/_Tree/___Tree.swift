@@ -217,6 +217,12 @@ extension ___Tree.Header: Hashable {}
 
 extension ___Tree.Header {
 
+  @usableFromInline
+  var freshPoolCapacity: Int {
+    get { capacity }
+    set { capacity = newValue }
+  }
+
   @inlinable
   @inline(__always)
   internal var count: Int {
@@ -233,6 +239,11 @@ extension ___Tree.Header {
 }
 
 extension ___Tree {
+  
+  @usableFromInline
+  var freshPoolCapacity: Int {
+    capacity
+  }
 
   @nonobjc
   @inlinable
@@ -518,7 +529,7 @@ extension ___Tree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func __root() -> _NodePtr {
+  internal var __root: _NodePtr {
     __header_ptr.pointee.__left_
   }
 }
@@ -639,7 +650,7 @@ extension ___Tree {
   @inlinable
   @inline(__always)
   internal func ___is_root(_ p: _NodePtr) -> Bool {
-    p == __root()
+    p == __root
   }
 
   /// - Complexity: O(1)
@@ -914,7 +925,7 @@ extension ___Tree {
     var i = i
     while distance != 0 {
       if 0 < distance {
-        guard i != __end_node() else {
+        guard i != __end_node else {
           fatalError(.outOfBounds)
         }
         i = ___index(after: i)
@@ -952,7 +963,7 @@ extension ___Tree {
         return nil
       }
       if 0 < distance {
-        guard i != __end_node() else {
+        guard i != __end_node else {
           fatalError(.outOfBounds)
         }
         i = ___index(after: i)
@@ -1000,7 +1011,7 @@ extension ___Tree {
     var result: _NodePtr = i
     while distance != 0 {
       if 0 < distance {
-        if result == __end_node() { return result }
+        if result == __end_node { return result }
         result = __tree_next_iter(result)
         distance -= 1
       } else {
@@ -1058,7 +1069,7 @@ extension ___Tree {
     where try isIncluded(__value_(__p)) {
       Tree.ensureCapacity(tree: &tree)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __value_(__p))
-      assert(tree.__tree_invariant(tree.__root()))
+      assert(tree.__tree_invariant(tree.__root))
     }
     return tree
   }
@@ -1085,7 +1096,7 @@ extension ___Tree where Base: KeyValueComparer {
       let __mapped_value = try transform(___mapped_value(__p))
       (__parent, __child) = other.___emplace_hint_right(
         __parent, __child, Other.___tree_value((__get_value(__p), __mapped_value)))
-      assert(other.__tree_invariant(other.__root()))
+      assert(other.__tree_invariant(other.__root))
     }
     return other
   }
@@ -1110,7 +1121,7 @@ extension ___Tree where Base: KeyValueComparer {
       ___Tree<Other>.ensureCapacity(tree: &other)
       (__parent, __child) = other.___emplace_hint_right(
         __parent, __child, Other.___tree_value((__get_value(__p), __mv)))
-      assert(other.__tree_invariant(other.__root()))
+      assert(other.__tree_invariant(other.__root))
     }
     return other
   }
@@ -1150,8 +1161,8 @@ extension ___Tree: Equatable where _Value: Equatable {
 
     return lhs.elementsEqual(
       lhs.__begin_node_,
-      lhs.__end_node(),
-      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
+      lhs.__end_node,
+      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
       by: ==)
   }
 }
@@ -1164,8 +1175,8 @@ extension ___Tree: Comparable where _Value: Comparable {
     !lhs.isIdentical(to: rhs)
       && lhs.lexicographicallyPrecedes(
         lhs.__begin_node_,
-        lhs.__end_node(),
-        rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node()),
+        lhs.__end_node,
+        rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
         by: <)
   }
 }
@@ -1175,7 +1186,7 @@ extension ___Tree: Hashable where _Value: Hashable {
   @inlinable
   public func hash(into hasher: inout Hasher) {
     hasher.combine(header)
-    for node in unsafeValues(__begin_node_, __end_node()) {
+    for node in unsafeValues(__begin_node_, __end_node) {
       hasher.combine(node)
     }
   }
@@ -1239,4 +1250,15 @@ extension ___Tree {
       }
     }
   }
+}
+
+extension ___Tree: TreePointer {
+  public typealias _NodePtr = Int
+
+  public typealias _Pointer = Int
+
+  public typealias _NodeRef = RedBlackTreeModule._NodeRef
+
+  public var nullptr: Int { .nullptr }
+  public var end: Int { .end }
 }

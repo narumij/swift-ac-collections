@@ -38,15 +38,15 @@ extension CompareBothProtocol {
   @inlinable
   @inline(__always)
   internal func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    assert(l == .end || __parent_(l) != .nullptr)
-    assert(r == .end || __parent_(r) != .nullptr)
+    assert(l == end || __parent_(l) != nullptr)
+    assert(r == end || __parent_(r) != nullptr)
 
     guard
       l != r,
-      r != .end,
-      l != .end
+      r != end,
+      l != end
     else {
-      return l != .end && r == .end
+      return l != end && r == end
     }
 
     if isMulti {
@@ -96,10 +96,10 @@ extension CompareUniqueProtocol {
   @inlinable
   @inline(__always)
   internal func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    assert(l != .nullptr, "Node shouldn't be null")
-    assert(l != .end, "Node shouldn't be end")
-    assert(r != .nullptr, "Node shouldn't be null")
-    assert(r != .end, "Node shouldn't be end")
+    assert(l != nullptr, "Node shouldn't be null")
+    assert(l != end, "Node shouldn't be end")
+    assert(r != nullptr, "Node shouldn't be null")
+    assert(r != end, "Node shouldn't be end")
     return value_comp(__get_value(l), __get_value(r))
   }
 }
@@ -113,10 +113,10 @@ extension CompareMultiProtocol {
   @inlinable
   @inline(__always)
   internal func ___ptr_height(_ __p: _NodePtr) -> Int {
-    assert(__p != .nullptr, "Node shouldn't be null")
+    assert(__p != nullptr, "Node shouldn't be null")
     var __h = 0
     var __p = __p
-    while __p != __root(), __p != end() {
+    while __p != __root, __p != end {
       __p = __parent_(__p)
       __h += 1
     }
@@ -127,14 +127,14 @@ extension CompareMultiProtocol {
   @inlinable
   //  @inline(__always)
   internal func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
-    assert(__l != .nullptr, "Left node shouldn't be null")
-    assert(__r != .nullptr, "Right node shouldn't be null")
+    assert(__l != nullptr, "Left node shouldn't be null")
+    assert(__r != nullptr, "Right node shouldn't be null")
     guard
-      __l != end(),
-      __r != end(),
+      __l != end,
+      __r != end,
       __l != __r
     else {
-      return __l != end() && __r == end()
+      return __l != end && __r == end
     }
     var (__l, __lh) = (__l, ___ptr_height(__l))
     var (__r, __rh) = (__r, ___ptr_height(__r))
@@ -235,12 +235,12 @@ extension NodeBitmapProtocol {
   @inlinable
   @inline(__always)
   internal func ___ptr_bitmap(_ __p: _NodePtr) -> UInt {
-    assert(__p != .nullptr, "Node shouldn't be null")
-    assert(__p != .end, "Node shouldn't be end")
+    assert(__p != nullptr, "Node shouldn't be null")
+    assert(__p != end, "Node shouldn't be end")
     var __f: UInt = 1  // 終端flag
     var __h = 1  // 終端flag分
     var __p = __p
-    while __p != __root(), __p != .end {
+    while __p != __root, __p != end {
       __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< __h
       __p = __parent_(__p)
       __h &+= 1
@@ -253,11 +253,11 @@ extension NodeBitmapProtocol {
   @inlinable
   @inline(__always)
   internal func ___ptr_bitmap_128(_ __p: _NodePtr) -> UInt128 {
-    assert(__p != .nullptr, "Node shouldn't be null")
-    assert(__p != .end, "Node shouldn't be end")
+    assert(__p != nullptr, "Node shouldn't be null")
+    assert(__p != end, "Node shouldn't be end")
     var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
     var __p = __p
-    while __p != __root(), __p != .end {
+    while __p != __root, __p != end {
       __f &>>= 1
       __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt128.bitWidth &- 1)
       __p = __parent_(__p)
@@ -269,11 +269,11 @@ extension NodeBitmapProtocol {
   @inlinable
   @inline(__always)
   internal func ___ptr_bitmap_64(_ __p: _NodePtr) -> UInt {
-    assert(__p != .nullptr, "Node shouldn't be null")
-    assert(__p != .end, "Node shouldn't be end")
+    assert(__p != nullptr, "Node shouldn't be null")
+    assert(__p != end, "Node shouldn't be end")
     var __f: UInt = 1 &<< (UInt.bitWidth &- 1)
     var __p = __p
-    while __p != __root(), __p != .end {
+    while __p != __root, __p != end {
       __f &>>= 1
       __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt.bitWidth &- 1)
       __p = __parent_(__p)

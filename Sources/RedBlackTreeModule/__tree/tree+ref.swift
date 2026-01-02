@@ -23,7 +23,7 @@
 import Foundation
 
 #if USE_ENUM_NODE_REF
-extension TreeNodeProtocol {
+extension TreeNodeProtocol where _NodePtr == Int, _NodeRef == RedBlackTreeModule._NodeRef {
 
   @inlinable
   @inline(__always)
@@ -51,7 +51,7 @@ extension TreeNodeProtocol {
   }
 }
 
-extension TreeNodeProtocol {
+extension TreeNodeProtocol where _NodePtr == Int, _NodeRef == RedBlackTreeModule._NodeRef {
 
   @inlinable
   @inline(__always)

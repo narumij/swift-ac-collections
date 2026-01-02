@@ -26,8 +26,9 @@ import Foundation
 // プロトコル適合問題だけに対処して止まっている気がする
 // そもそも使いやすくすること自体が不可能かもしれない
 
+
 @frozen
-public struct RedBlackTreeIndices<Base>: ___IndexBase where Base: ___TreeBase & ___TreeIndex {
+public struct RedBlackTreeIndices_old<Base>: ___IndexBase where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = ___Tree<Base>
   public typealias _Value = Tree._Value
@@ -49,7 +50,7 @@ public struct RedBlackTreeIndices<Base>: ___IndexBase where Base: ___TreeBase & 
   }
 }
 
-extension RedBlackTreeIndices {
+extension RedBlackTreeIndices_old {
 
   @frozen
   public struct Iterator: IteratorProtocol, ___IndexBase {
@@ -82,7 +83,7 @@ extension RedBlackTreeIndices {
   }
 }
 
-extension RedBlackTreeIndices {
+extension RedBlackTreeIndices_old {
 
   @frozen
   public struct Reversed: Sequence, IteratorProtocol, ___IndexBase {
@@ -114,7 +115,7 @@ extension RedBlackTreeIndices {
   }
 }
 
-extension RedBlackTreeIndices: Collection, BidirectionalCollection {
+extension RedBlackTreeIndices_old: Collection, BidirectionalCollection {
 
   @inlinable
   @inline(__always)
@@ -183,10 +184,10 @@ extension RedBlackTreeIndices: Collection, BidirectionalCollection {
 }
 
 #if swift(>=5.5)
-  extension RedBlackTreeIndices: @unchecked Sendable
+  extension RedBlackTreeIndices_old: @unchecked Sendable
   where _Value: Sendable {}
 #endif
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIndices: ___IsIdenticalTo {}
+extension RedBlackTreeIndices_old: ___IsIdenticalTo {}

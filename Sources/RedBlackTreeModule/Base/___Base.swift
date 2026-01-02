@@ -38,6 +38,12 @@ where
 }
 
 @usableFromInline
+typealias ___CopyOnWrite = ___CopyOnWrite_old
+
+@usableFromInline
+typealias ___StorageProtocol = ___StorageProtocol_old
+
+@usableFromInline
 protocol ___Base: ___IndexBase
 where
   Base: ___TreeBase & ___TreeIndex,
@@ -57,6 +63,12 @@ where
   var _end: _NodePtr { get }
 }
 
+#if !USE_UNSAFE_TREE
+public typealias RedBlackTreeIndex = RedBlackTreeIndex_old
+public typealias RedBlackTreeIndices = RedBlackTreeIndices_old
+public typealias RedBlackTreeIterator = RedBlackTreeIterator_old
+public typealias RedBlackTreeSlice = RedBlackTreeSlice_old
+
 @usableFromInline
 protocol ___RedBlackTreeKeyOnlyBase:
   ___StorageProtocol & ___CopyOnWrite & ___Common & ___Index & ___BaseSequence
@@ -68,6 +80,24 @@ protocol ___RedBlackTreeKeyValuesBase:
   ___StorageProtocol & ___CopyOnWrite & ___Common & ___Index & ___BaseSequence
     & ___KeyValueSequence
 {}
+#else
+public typealias RedBlackTreeIndex = UnsafeIndex
+public typealias RedBlackTreeIndices = UnsafeIndices
+public typealias RedBlackTreeIterator = RedBlackTreeIteratorUnsafe
+public typealias RedBlackTreeSlice = RedBlackTreeSliceUnsafe
+
+@usableFromInline
+protocol ___RedBlackTreeKeyOnlyBase:
+  ___UnsafeStorageProtocol & ___UnsafeCopyOnWrite & ___UnsafeCommon & ___UnsafeIndex & ___UnsafeBaseSequence
+    & ___UnsafeKeyOnlySequence
+{}
+
+@usableFromInline
+protocol ___RedBlackTreeKeyValuesBase:
+  ___UnsafeStorageProtocol & ___UnsafeCopyOnWrite & ___UnsafeCommon & ___UnsafeIndex & ___UnsafeBaseSequence
+    & ___UnsafeKeyValueSequence
+{}
+#endif
 
 // MARK: -
 

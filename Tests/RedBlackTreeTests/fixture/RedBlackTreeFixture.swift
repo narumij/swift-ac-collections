@@ -14,10 +14,22 @@ import XCTest
 #endif
 
 #if DEBUG
-  protocol RedBlackTreeDebugFixture: ___TreeBase {
-    associatedtype Base: ___TreeBase
-    var __tree_: ___Tree<Base> { get }
-  }
+  #if !USE_UNSAFE_TREE
+    protocol RedBlackTreeDebugFixture: ___TreeBase {
+      associatedtype Base: ___TreeBase
+      var __tree_: ___Tree<Base> { get }
+    }
+  #else
+    protocol RedBlackTreeDebugFixture: ___TreeBase {
+      associatedtype Base: ___TreeBase
+      var __tree_: UnsafeTree<Base> { get }
+    }
+
+    extension RedBlackTreeDebugFixture {
+
+      typealias _NodePtr = UnsafeTree<Base>._NodePtr
+    }
+  #endif
 
   extension RedBlackTreeDebugFixture {
 
@@ -27,11 +39,11 @@ import XCTest
     func __right_(_ p: _NodePtr) -> _NodePtr {
       __tree_.__right_(p)
     }
-    func __root() -> _NodePtr {
-      __tree_.__root()
+    var __root: _NodePtr {
+      __tree_.__root
     }
     mutating func __root(_ p: _NodePtr) {
-      __tree_.__left_(.end, p)
+      __tree_.__left_(__tree_.end, p)
     }
     func
       __tree_min(_ __x: _NodePtr) -> _NodePtr

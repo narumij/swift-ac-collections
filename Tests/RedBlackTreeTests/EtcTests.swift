@@ -414,7 +414,7 @@ final class EtcTests: XCTestCase {
       let a = RedBlackTreeSet<Int>([0, 1, 2])
       var result = [Int]()
       a.__tree_.___rev_for_each_(__p: a.startIndex.rawValue, __l: a.endIndex.rawValue) { p in
-        result.append(p)
+        result.append(p.index)
       }
       XCTAssertEqual(result, [2, 1, 0])
     }
@@ -488,14 +488,14 @@ final class EtcTests: XCTestCase {
     do {
       var result = [_NodePtr]()
       a[a.endIndex..<a.endIndex].reversed().___node_positions().forEach { i in
-        result.append(i)
+        result.append(i.index)
       }
       XCTAssertEqual(result, [])
     }
     do {
       var result = [_NodePtr]()
       a[a.endIndex..<a.endIndex].___node_positions().reversed().forEach { i in
-        result.append(i)
+        result.append(i.index)
       }
       XCTAssertEqual(result, [])
     }
@@ -506,14 +506,14 @@ final class EtcTests: XCTestCase {
     do {
       var result = [_NodePtr]()
       a[a.startIndex..<a.startIndex].reversed().___node_positions().forEach { i in
-        result.append(i)
+        result.append(i.index)
       }
       XCTAssertEqual(result, [])
     }
     do {
       var result = [_NodePtr]()
       a[a.startIndex..<a.startIndex].___node_positions().reversed().forEach { i in
-        result.append(i)
+        result.append(i.index)
       }
       XCTAssertEqual(result, [])
     }
@@ -524,14 +524,14 @@ final class EtcTests: XCTestCase {
     do {
       var result = [_NodePtr]()
       a[a.startIndex..<a.endIndex].reversed().___node_positions().forEach { i in
-        result.append(i)
+        result.append(i.index)
       }
       XCTAssertEqual(result, [2, 1, 0])
     }
     do {
       var result = [_NodePtr]()
       a[a.startIndex..<a.endIndex].___node_positions().reversed().forEach { i in
-        result.append(i)
+        result.append(i.index)
       }
       XCTAssertEqual(result, [2, 1, 0])
     }

@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension RedBlackTreeIterator.KeyValues {
+extension RedBlackTreeIterator_old.KeyValues {
 
   @frozen
   public struct Reversed: Sequence, IteratorProtocol {
@@ -57,7 +57,7 @@ extension RedBlackTreeIterator.KeyValues {
   }
 }
 
-extension RedBlackTreeIterator.KeyValues.Reversed {
+extension RedBlackTreeIterator_old.KeyValues.Reversed {
   
   @inlinable
   @inline(__always)
@@ -68,50 +68,50 @@ extension RedBlackTreeIterator.KeyValues.Reversed {
   }
 }
 
-extension RedBlackTreeIterator.KeyValues.Reversed {
+extension RedBlackTreeIterator_old.KeyValues.Reversed {
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var indices: RedBlackTreeIndices<Base>.Reversed {
+  public var indices: RedBlackTreeIndices_old<Base>.Reversed {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }
 
-extension RedBlackTreeIterator.KeyValues.Reversed where Base: KeyValueComparer {
+extension RedBlackTreeIterator_old.KeyValues.Reversed where Base: KeyValueComparer {
 
   #if COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func keys() -> RedBlackTreeIterator<Base>.Keys.Reversed {
+    public func keys() -> RedBlackTreeIterator_old<Base>.Keys.Reversed {
       .init(tree: __tree_, start: _start, end: _end)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func values() -> RedBlackTreeIterator<Base>.MappedValues.Reversed {
+    public func values() -> RedBlackTreeIterator_old<Base>.MappedValues.Reversed {
       .init(tree: __tree_, start: _start, end: _end)
     }
   #else
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var keys: RedBlackTreeIterator<Base>.Keys.Reversed {
+    public var keys: RedBlackTreeIterator_old<Base>.Keys.Reversed {
       .init(tree: __tree_, start: _start, end: _end)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var values: RedBlackTreeIterator<Base>.MappedValues.Reversed {
+    public var values: RedBlackTreeIterator_old<Base>.MappedValues.Reversed {
       .init(tree: __tree_, start: _start, end: _end)
     }
   #endif
 }
 
-extension RedBlackTreeIterator.KeyValues.Reversed {
+extension RedBlackTreeIterator_old.KeyValues.Reversed {
 
   @inlinable
   @inline(__always)
@@ -120,7 +120,7 @@ extension RedBlackTreeIterator.KeyValues.Reversed {
   }
 }
 
-extension RedBlackTreeIterator.KeyValues.Reversed: Equatable
+extension RedBlackTreeIterator_old.KeyValues.Reversed: Equatable
 where Base._Key: Equatable, Base._MappedValue: Equatable {
 
   @inlinable
@@ -130,7 +130,7 @@ where Base._Key: Equatable, Base._MappedValue: Equatable {
   }
 }
 
-extension RedBlackTreeIterator.KeyValues.Reversed: Comparable
+extension RedBlackTreeIterator_old.KeyValues.Reversed: Comparable
 where Base._Key: Comparable, Base._MappedValue: Comparable {
 
   @inlinable
@@ -141,10 +141,10 @@ where Base._Key: Comparable, Base._MappedValue: Comparable {
 }
 
 #if swift(>=5.5)
-  extension RedBlackTreeIterator.KeyValues.Reversed: @unchecked Sendable
+  extension RedBlackTreeIterator_old.KeyValues.Reversed: @unchecked Sendable
   where Tree._Value: Sendable {}
 #endif
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIterator.KeyValues.Reversed: ___IsIdenticalTo {}
+extension RedBlackTreeIterator_old.KeyValues.Reversed: ___IsIdenticalTo {}

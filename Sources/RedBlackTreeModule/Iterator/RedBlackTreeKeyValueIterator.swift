@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-extension RedBlackTreeIterator {
+extension RedBlackTreeIterator_old {
 
   @frozen
   public struct KeyValues: Sequence, IteratorProtocol
@@ -57,40 +57,40 @@ extension RedBlackTreeIterator {
   }
 }
 
-extension RedBlackTreeIterator.KeyValues where Base: KeyValueComparer {
+extension RedBlackTreeIterator_old.KeyValues where Base: KeyValueComparer {
 
   #if COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func keys() -> RedBlackTreeIterator<Base>.Keys {
+    public func keys() -> RedBlackTreeIterator_old<Base>.Keys {
       .init(tree: __tree_, start: _start, end: _end)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func values() -> RedBlackTreeIterator<Base>.MappedValues {
+    public func values() -> RedBlackTreeIterator_old<Base>.MappedValues {
       .init(tree: __tree_, start: _start, end: _end)
     }
   #else
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var keys: RedBlackTreeIterator<Base>.Keys {
+    public var keys: RedBlackTreeIterator_old<Base>.Keys {
       .init(tree: __tree_, start: _start, end: _end)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var values: RedBlackTreeIterator<Base>.MappedValues {
+    public var values: RedBlackTreeIterator_old<Base>.MappedValues {
       .init(tree: __tree_, start: _start, end: _end)
     }
   #endif
 }
 
-extension RedBlackTreeIterator.KeyValues: Equatable
+extension RedBlackTreeIterator_old.KeyValues: Equatable
 where Base._Key: Equatable, Base._MappedValue: Equatable {
 
   @inlinable
@@ -100,7 +100,7 @@ where Base._Key: Equatable, Base._MappedValue: Equatable {
   }
 }
 
-extension RedBlackTreeIterator.KeyValues: Comparable
+extension RedBlackTreeIterator_old.KeyValues: Comparable
 where Base._Key: Comparable, Base._MappedValue: Comparable {
 
   @inlinable
@@ -111,10 +111,10 @@ where Base._Key: Comparable, Base._MappedValue: Comparable {
 }
 
 #if swift(>=5.5)
-  extension RedBlackTreeIterator.KeyValues: @unchecked Sendable
+  extension RedBlackTreeIterator_old.KeyValues: @unchecked Sendable
   where Tree._Value: Sendable {}
 #endif
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIterator.KeyValues: ___IsIdenticalTo {}
+extension RedBlackTreeIterator_old.KeyValues: ___IsIdenticalTo {}

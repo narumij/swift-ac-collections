@@ -227,13 +227,13 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     __tree_.___ensureValid(
-      begin: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue)
+      begin: bounds.lowerBound.rawValue(__tree_),
+      end: bounds.upperBound.rawValue(__tree_))
 
     return .init(
       tree: __tree_,
-      start: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue)
+      start: bounds.lowerBound.rawValue(__tree_),
+      end: bounds.upperBound.rawValue(__tree_))
   }
 
   #if !COMPATIBLE_ATCODER_2025
@@ -243,13 +243,13 @@ extension RedBlackTreeMultiMap {
       let bounds: Range<Index> = bounds.relative(to: self)
 
       __tree_.___ensureValid(
-        begin: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
+        begin: bounds.lowerBound.rawValue(__tree_),
+        end: bounds.upperBound.rawValue(__tree_))
 
       return .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
+        start: bounds.lowerBound.rawValue(__tree_),
+        end: bounds.upperBound.rawValue(__tree_))
     }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -259,8 +259,8 @@ extension RedBlackTreeMultiMap {
     public subscript(unchecked bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
+        start: bounds.lowerBound.rawValue(__tree_),
+        end: bounds.upperBound.rawValue(__tree_))
     }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -272,8 +272,8 @@ extension RedBlackTreeMultiMap {
       let bounds: Range<Index> = bounds.relative(to: self)
       return .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
+        start: bounds.lowerBound.rawValue(__tree_),
+        end: bounds.upperBound.rawValue(__tree_))
     }
   #endif
 }
@@ -312,12 +312,12 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   @discardableResult
   public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
-    guard !__tree_.___is_subscript_null(ptr.rawValue) else {
+    guard !__tree_.___is_subscript_null(ptr.rawValue(__tree_)) else {
       return nil
     }
     _ensureUnique()
-    let old = __tree_[ptr.rawValue]
-    __tree_[ptr.rawValue].value = newValue
+    let old = __tree_[ptr.rawValue(__tree_)]
+    __tree_[ptr.rawValue(__tree_)].value = newValue
     return ___element(old)
   }
 }
@@ -345,7 +345,7 @@ extension RedBlackTreeMultiMap {
         tree: __tree_,
         other: other.__tree_,
         other.__tree_.__begin_node_,
-        other.__tree_.__end_node())
+        other.__tree_.__end_node)
     }
   }
 
@@ -502,7 +502,7 @@ extension RedBlackTreeMultiMap {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     _ensureUnique()
-    guard let element = ___remove(at: index.rawValue) else {
+    guard let element = ___remove(at: index.rawValue(__tree_)) else {
       fatalError(.invalidIndex)
     }
     return ___element(element)
@@ -523,8 +523,8 @@ extension RedBlackTreeMultiMap {
     let bounds = bounds.relative(to: self)
     _ensureUnique()
     ___remove(
-      from: bounds.lowerBound.rawValue,
-      to: bounds.upperBound.rawValue)
+      from: bounds.lowerBound.rawValue(__tree_),
+      to: bounds.upperBound.rawValue(__tree_))
   }
 }
 

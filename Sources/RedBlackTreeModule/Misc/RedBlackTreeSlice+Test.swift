@@ -1,13 +1,25 @@
 extension RedBlackTreeSlice {
 
+#if USE_UNSAFE_TREE
+  package func ___node_positions() -> ___SafePointersUnsafe<Base> {
+    .init(tree: __tree_, start: _start, end: _end)
+  }
+#else
   package func ___node_positions() -> ___SafePointers<Base> {
     .init(tree: __tree_, start: _start, end: _end)
   }
+#endif
 }
 
 extension RedBlackTreeSlice.KeyValue {
 
-  package func ___node_positions() -> ___SafePointers<Base> {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
+  #if USE_UNSAFE_TREE
+    package func ___node_positions() -> ___SafePointersUnsafe<Base> {
+      .init(tree: __tree_, start: _start, end: _end)
+    }
+  #else
+    package func ___node_positions() -> ___SafePointers<Base> {
+      .init(tree: __tree_, start: _start, end: _end)
+    }
+  #endif
 }

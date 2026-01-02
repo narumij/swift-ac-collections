@@ -5,8 +5,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue)
+        start: bounds.lowerBound.rawValue(__tree_),
+        end: bounds.upperBound.rawValue(__tree_))
     }
   }
 
@@ -29,7 +29,7 @@
     @inlinable
     @inline(__always)
     public func values() -> Values {
-      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node)
     }
   }
 

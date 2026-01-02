@@ -6,19 +6,30 @@ import XCTest
 import RedBlackTreeModule
 #endif
 
+#if DEBUG && USE_UNSAFE_TREE
+extension UnsafeTree {
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal func destroy(_ p: Int) {
+    _header.___pushRecycle(_header[p])
+  }
+}
+#endif
+
 final class AllocationTests: XCTestCase {
 
 #if DEBUG
   typealias Tree = RedBlackTreeSet<Int>.Tree
   typealias Storage = RedBlackTreeSet<Int>.Storage
   typealias Header = RedBlackTreeSet<Int>.Tree.Header
-  typealias Node = RedBlackTreeSet<Int>.Tree.Node
+//  typealias Node = RedBlackTreeSet<Int>.Tree.Node
 
   func test0() throws {
     do {
       let storage: Storage = .create(withCapacity: 0)
       XCTAssertEqual(storage.capacity, 0)
-      XCTAssertEqual(storage.tree.capacity, 0)
+      XCTAssertEqual(storage.tree.freshPoolCapacity, 0)
     }
     do {
       let storage: Storage = .create(withCapacity: 1)
@@ -28,7 +39,7 @@ final class AllocationTests: XCTestCase {
     do {
       let storage: Storage = .create(withCapacity: 2)
       XCTAssertEqual(storage.capacity, 2)
-      XCTAssertEqual(storage.tree.capacity, 2)
+      XCTAssertEqual(storage.tree.freshPoolCapacity, 2)
     }
   }
 
@@ -40,7 +51,7 @@ final class AllocationTests: XCTestCase {
       XCTAssertGreaterThanOrEqual(storage.capacity, 5)
       let actualCapacity = storage.capacity // ManagedBufferの挙動が変わった
       for i in 0..<5 {
-        XCTAssertEqual(storage.tree.__construct_node(-1), i)
+        XCTAssertEqual(storage.tree.__construct_node(-1).index, i)
       }
       XCTAssertEqual(storage.capacity, actualCapacity) // capacityが変動しないこと
       XCTAssertEqual(storage.tree.header.initializedCount, 5)
@@ -133,7 +144,7 @@ final class AllocationTests: XCTestCase {
     var capacities: [Int] = [0]
     while let l = capacities.last, l < 1_000_000 {
       tree._header.initializedCount = l
-      tree._header.capacity = l
+      tree._header.freshPoolCapacity = l
       capacities.append(tree.growCapacity(to: l + 1, linearly: false))
     }
     // [0, 1, 2, 3, 4, 6, 8, 10, 12, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576]
@@ -141,8 +152,14 @@ final class AllocationTests: XCTestCase {
     // [0, 1, 2, 3, 4, 6, 8, 10, 12, 24, 49, 101, 203, 408, 817, 1637, 3275, 6552, 13105, 26213, 52427, 104856, 209713, 419429, 838859, 1677720]
     // [0, 1, 2, 3, 4, 6, 8, 10, 12, 24, 48, 96, 192, 384, 768, 1536, 3072, 6144, 12288, 24576, 49152, 98304, 196608, 393216, 786432, 1572864]
     XCTAssertNotEqual(capacities, [])
+#if USE_UNSAFE_TREE
+    // 小さく確保していく方針に切り替えた
+    XCTAssertEqual(capacities.count, 1054)
+    XCTAssertEqual(capacities.last, 1000747)
+#else
     XCTAssertEqual(capacities.count, 26)
     XCTAssertEqual(capacities.last, 1677720)
+#endif
 //    XCTAssertEqual(capacities.last, 1572864)
     tree._header.initializedCount = 0 // これをしないと未初期化メモリに触ってクラッシュとなる
   }

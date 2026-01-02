@@ -130,8 +130,8 @@ extension ___KeyValueSequence {
 
 extension ___KeyValueSequence {
 
-  public typealias Keys = RedBlackTreeIterator<Base>.Keys
-  public typealias Values = RedBlackTreeIterator<Base>.MappedValues
+  public typealias Keys = RedBlackTreeIterator_old<Base>.Keys
+  public typealias Values = RedBlackTreeIterator_old<Base>.MappedValues
 
   @inlinable
   @inline(__always)

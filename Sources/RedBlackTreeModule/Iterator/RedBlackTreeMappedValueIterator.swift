@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension RedBlackTreeIterator {
+extension RedBlackTreeIterator_old {
   
   @frozen
   public struct MappedValues: Sequence, IteratorProtocol
@@ -65,7 +65,7 @@ extension RedBlackTreeIterator {
   }
 }
 
-extension RedBlackTreeIterator.MappedValues: Equatable where Base._MappedValue: Equatable {
+extension RedBlackTreeIterator_old.MappedValues: Equatable where Base._MappedValue: Equatable {
 
   @inlinable
   @inline(__always)
@@ -74,7 +74,7 @@ extension RedBlackTreeIterator.MappedValues: Equatable where Base._MappedValue: 
   }
 }
 
-extension RedBlackTreeIterator.MappedValues: Comparable where Base._MappedValue: Comparable {
+extension RedBlackTreeIterator_old.MappedValues: Comparable where Base._MappedValue: Comparable {
 
   @inlinable
   @inline(__always)
@@ -84,10 +84,10 @@ extension RedBlackTreeIterator.MappedValues: Comparable where Base._MappedValue:
 }
 
 #if swift(>=5.5)
-  extension RedBlackTreeIterator.MappedValues: @unchecked Sendable
+  extension RedBlackTreeIterator_old.MappedValues: @unchecked Sendable
   where Tree._Value: Sendable {}
 #endif
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIterator.MappedValues: ___IsIdenticalTo {}
+extension RedBlackTreeIterator_old.MappedValues: ___IsIdenticalTo {}

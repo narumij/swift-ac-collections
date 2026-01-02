@@ -39,9 +39,9 @@ extension CountProtocol {
   @inlinable
   @inline(__always)
   internal func __count_unique(_ __k: _Key) -> size_type {
-    var __rt: __node_pointer = __root()
+    var __rt: __node_pointer = __root
     let __comp = __lazy_synth_three_way_comparator
-    while __rt != .nullptr {
+    while __rt != nullptr {
       let __comp_res = __comp(__k, __get_value(__rt))
       if __comp_res.__less() {
         __rt = __left_unsafe(__rt)
@@ -57,10 +57,10 @@ extension CountProtocol {
   @inlinable
   @inline(__always)
   internal func __count_multi(_ __k: _Key) -> size_type {
-    var __result: __iter_pointer = __end_node()
-    var __rt: __node_pointer = __root()
+    var __result: __iter_pointer = __end_node
+    var __rt: __node_pointer = __root
     let __comp = __lazy_synth_three_way_comparator
-    while __rt != .nullptr {
+    while __rt != nullptr {
       let __comp_res = __comp(__k, __get_value(__rt))
       if __comp_res.__less() {
         __result = __rt

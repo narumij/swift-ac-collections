@@ -28,7 +28,7 @@ import Foundation
 public final class UnsafeTree<Base: ___TreeBase>:
   ManagedBuffer<UnsafeTree<Base>.Header, UnsafeNode>
 {
-
+  // MARK: - 解放処理
   @inlinable
   @inline(__always)
   deinit {
@@ -38,6 +38,8 @@ public final class UnsafeTree<Base: ___TreeBase>:
     }
   }
 }
+
+// MARK: - プリミティブメンバ
 
 extension UnsafeTree {
 
@@ -71,6 +73,8 @@ extension UnsafeTree {
     _modify { yield &_end_ptr.pointee }
   }
 }
+
+// MARK: - 生成
 
 extension UnsafeTree {
 
@@ -202,6 +206,8 @@ extension UnsafeTree {
   }
 }
 
+// MARK: -
+
 extension UnsafeTree {
 
   public typealias Base = Base
@@ -234,8 +240,10 @@ extension UnsafeTree {
     @usableFromInline var freshPoolCapacity: Int = 0
     @usableFromInline let freshBucketDispose: (ReserverHeaderPointer?) -> Void
     #if AC_COLLECTIONS_INTERNAL_CHECKS
+      /// CoWの発火回数を観察するためのプロパティ
       @usableFromInline internal var copyCount: UInt = 0
     #endif
+    // TODO: removeAll(keepingCapacity:)対応
     @inlinable
     @inline(__always)
     internal mutating func clear(_end_ptr: _NodePtr) {
@@ -250,6 +258,7 @@ extension UnsafeTree {
 extension UnsafeTree {
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
+    /// CoWの発火回数を観察するためのプロパティ
     @usableFromInline
     internal var copyCount: UInt {
       get { _header_ptr.pointee.copyCount }
@@ -266,8 +275,7 @@ extension UnsafeTree {
   @inline(__always)
   public var freshPoolCapacity: Int { _header.freshPoolCapacity }
 
-  // これはinitializedCountと同一かもしれない。
-  // TODO: リファクタリング
+  // これはinitializedCountと同一の内容だが計算量が異なるため代用はできない。
   @nonobjc
   @inlinable
   @inline(__always)
@@ -275,7 +283,8 @@ extension UnsafeTree {
 }
 
 extension UnsafeTree {
-
+  
+  // _NodePtrがIntだった頃の名残
   @nonobjc
   @inlinable
   internal subscript(_ pointer: _NodePtr) -> _Value {
@@ -292,6 +301,7 @@ extension UnsafeTree {
 
 extension UnsafeTree {
 
+  // TODO: grow関連の名前が混乱気味なので整理する
   @nonobjc
   @inlinable
   @inline(__always)
@@ -321,6 +331,7 @@ extension UnsafeTree {
 
 extension UnsafeTree {
 
+  // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
   @nonobjc
   @inlinable
   @inline(__always)
@@ -350,7 +361,7 @@ extension UnsafeTree {
     let p = ___node_alloc()
     assert(p != nil)
     assert(p?.pointee.___node_id_ == -2)
-    // freshPoolUseCountとinitializedCountが同値のようなので、ナンバリングとノード初期化の責務は移動できる
+    // ナンバリングとノード初期化の責務は移動できる(freshPoolUsedCountは使えない）
     p?.initialize(to: UnsafeNode(___node_id_: _header.initializedCount))
     UnsafePair<_Value>.__value_ptr(p)!.initialize(to: k)
     assert(p!.pointee.___node_id_ >= 0)
@@ -366,6 +377,7 @@ extension UnsafeTree {
   }
 }
 
+// TODO: ここに配置するのが適切には思えない。配置場所を再考する
 extension UnsafeTree {
 
   /// O(1)

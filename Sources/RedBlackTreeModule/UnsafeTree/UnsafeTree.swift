@@ -116,6 +116,7 @@ extension UnsafeTree {
     let tree = UnsafeTree.create(minimumCapacity: newCapacity)
     // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
+    // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる
     assert(tree._header.freshBucketCount <= 1)
     
     // 複数のバケットを新しい一つのバケットに連番通りにまとめ、その他管理情報をそのまま移す

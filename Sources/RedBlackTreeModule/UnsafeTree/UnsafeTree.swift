@@ -313,14 +313,21 @@ extension UnsafeTree {
   }
 }
 
+extension UnsafeTree.Header {
+  
+  @inlinable
+  @inline(__always)
+  public var count: Int {
+    initializedCount - destroyCount
+  }
+}
+
 extension UnsafeTree {
 
   @nonobjc
   @inlinable
   @inline(__always)
-  public var count: Int {
-    _header.initializedCount - _header.destroyCount
-  }
+  public var count: Int { _header.count }
 
   @nonobjc
   @inlinable

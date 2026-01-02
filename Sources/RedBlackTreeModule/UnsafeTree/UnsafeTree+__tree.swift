@@ -139,8 +139,8 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   public var __begin_node_: _NodePtr {
-    _read { yield _header_ptr.pointee.__begin_node_ }
-    _modify { yield &_header_ptr.pointee.__begin_node_ }
+    get { withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ } }
+    set { withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ = newValue } }
   }
 }
 
@@ -194,8 +194,7 @@ extension UnsafeTree {
   @nonobjc
   @inlinable
   var __size_: Int {
-    @inline(__always)
-    _read { yield count }
+    get { withUnsafeMutablePointerToHeader { $0.pointee.count } }
     set { /* NOP */  }
   }
 }
@@ -230,7 +229,9 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   internal func destroy(_ p: _NodePtr) {
-    _header.___pushRecycle(p)
+    withUnsafeMutablePointerToHeader {
+      $0.pointee.___pushRecycle(p)
+    }
   }
 }
 

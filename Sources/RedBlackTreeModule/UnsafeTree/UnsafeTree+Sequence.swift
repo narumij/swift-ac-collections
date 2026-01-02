@@ -187,3 +187,36 @@ extension UnsafeTree {
     return tree
   }
 }
+
+extension UnsafeTree {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal func
+    sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafePointersUnsafe<Base>
+  {
+    .init(tree: self, start: __first, end: __last)
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal func
+    unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
+    -> ___UnsafePointersUnsafe<Base>
+  {
+    .init(tree: self, __first: __first, __last: __last)
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal func
+    unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
+    -> ___UnsafeValuesUnsafe<Base>
+  {
+    .init(tree: self, __first: __first, __last: __last)
+  }
+}
+

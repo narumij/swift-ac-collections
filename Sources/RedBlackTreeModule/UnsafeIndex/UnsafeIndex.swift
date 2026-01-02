@@ -341,7 +341,7 @@ extension UnsafeIndex {
   @inlinable
   @inline(__always)
   package func rawValue(_ tree: Tree) -> _NodePtr {
-    tree.___resolve_node_pointer(self)
+    tree.___node_ptr(self)
   }
 
   @inlinable

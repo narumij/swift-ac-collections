@@ -62,3 +62,27 @@ extension UnsafeNodeRecyclePool {
     destroyCount = 0
   }
 }
+
+extension UnsafeNodeRecyclePool {
+  @inlinable
+  @inline(__always)
+  internal var ___destroyNodes: [Int] {
+    var nodes: [Int] = []
+    var last = destroyNode
+    while let l = last {
+      nodes.append(l.pointee.___node_id_)
+      last = l.pointee.__left_
+    }
+    return nodes
+  }
+}
+
+extension UnsafeTree {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal var ___destroyNodes: [Int] {
+    _header.___destroyNodes
+  }
+}

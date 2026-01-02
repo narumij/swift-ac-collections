@@ -126,7 +126,7 @@ extension UnsafeTree {
       tree.withUnsafeMutablePointers { _header_ptr, _end_ptr in
 
         @inline(__always)
-        func resolved(_ index: Int) -> _NodePtr {
+        func __node_ptr(_ index: Int) -> _NodePtr {
           index == .end ? _end_ptr : _header_ptr.pointee[index]
         }
         
@@ -135,15 +135,15 @@ extension UnsafeTree {
           // endにも使うので___node_idには触らない
           if let l = s.__left_?.pointee.___node_id_ {
             assert(l != -2)
-            d.__left_ = resolved(l)
+            d.__left_ = __node_ptr(l)
           }
           if let r = s.__right_?.pointee.___node_id_ {
             assert(r != -2)
-            d.__right_ = resolved(r)
+            d.__right_ = __node_ptr(r)
           }
           if let p = s.__parent_?.pointee.___node_id_ {
             assert(p != -2)
-            d.__parent_ = resolved(p)
+            d.__parent_ = __node_ptr(p)
           }
           d.__is_black_ = s.__is_black_
           // 値は別途管理
@@ -172,14 +172,14 @@ extension UnsafeTree {
         
         // __begin_nodeを初期化
         if let b = source_header.pointee.__begin_node_?.pointee.___node_id_ {
-          _header_ptr.pointee.__begin_node_ = resolved(b)
+          _header_ptr.pointee.__begin_node_ = __node_ptr(b)
         }
         
         // その他管理情報をコピー
         _header_ptr.pointee.initializedCount = source_header.pointee.initializedCount
         _header_ptr.pointee.destroyCount = source_header.pointee.destroyCount
         if let l = source_header.pointee.destroyNode?.pointee.___node_id_ {
-          _header_ptr.pointee.destroyNode = resolved(l)
+          _header_ptr.pointee.destroyNode = __node_ptr(l)
         }
 
         #if AC_COLLECTIONS_INTERNAL_CHECKS

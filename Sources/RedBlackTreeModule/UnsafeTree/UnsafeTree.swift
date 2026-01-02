@@ -96,6 +96,7 @@ extension UnsafeTree {
         if nodeCapacity > 0 {
           header.pushFreshBucket(capacity: nodeCapacity)
         }
+        assert(_end_ptr.pointee.___needs_deinitialize == true)
         // ヘッダを返却して以後はManagerBufferさんがよしなにする
         return header
       }
@@ -192,6 +193,7 @@ extension UnsafeTree {
     }
 
     assert(tree.__tree_invariant(tree.__root))
+    assert(tree._end_ptr.pointee.___needs_deinitialize == true)
     assert(tree.count >= 0)
     assert(tree.count <= tree._header.initializedCount)
     assert(tree.count <= tree.freshPoolCapacity)
@@ -283,7 +285,7 @@ extension UnsafeTree {
 }
 
 extension UnsafeTree {
-  
+
   // _NodePtrがIntだった頃の名残
   @nonobjc
   @inlinable
@@ -355,6 +357,7 @@ extension UnsafeTree {
     if _header.destroyCount > 0 {
       let p = _header.___popRecycle()
       UnsafePair<_Value>.__value_ptr(p)!.initialize(to: k)
+      p?.pointee.___needs_deinitialize = true
       return p
     }
     assert(_header.initializedCount < freshPoolCapacity)
@@ -399,8 +402,10 @@ extension UnsafeTree {
   @inline(__always)
   internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
     // TODO: 方式再検討
-//    p != end && p?.pointee.__parent_ == nil
-    p != end && p?.pointee.___needs_deinitialize != true
+    //    p != end && p?.pointee.__parent_ == nil
+    // これがなぜ動かないのかわからない
+    // 再利用時のフラグ設定漏れだった
+    p?.pointee.___needs_deinitialize != true
   }
 }
 
@@ -440,3 +445,57 @@ protocol PointerResolvable {
   var ___node_id_: Int { get }
 }
 
+extension UnsafeNode {
+
+  @inlinable
+  func debugDescription(resolve: (Pointer?) -> Int?) -> String {
+    let id = ___node_id_
+    let l = resolve(__left_)
+    let r = resolve(__right_)
+    let p = resolve(__parent_)
+    let color = __is_black_ ? "B" : "R"
+    #if DEBUG
+      let rc = ___recycle_count
+    #else
+      let rc = -1
+    #endif
+
+    return """
+      node[\(id)] \(color)
+        L: \(l.map(String.init) ?? "nil")
+        R: \(r.map(String.init) ?? "nil")
+        P: \(p.map(String.init) ?? "nil")
+        needsDeinit: \(___needs_deinitialize)
+        recycleCount: \(rc)
+      """
+  }
+}
+
+extension UnsafeTree {
+
+  @inlinable
+  func _nodeID(_ p: _NodePtr) -> Int? {
+    guard let p else { return nil }
+    return p.pointee.___node_id_
+  }
+}
+
+extension UnsafeTree {
+
+  func dumpTree(label: String = "") {
+    print("==== UnsafeTree \(label) ====")
+    print(" count:", count)
+    print(" freshPool:", freshPoolUsedCount, "/", freshPoolCapacity)
+    print(" destroyCount:", _header.destroyCount)
+    print(" root:", __root?.pointee.___node_id_ as Any)
+    print(" begin:", __begin_node_?.pointee.___node_id_ as Any)
+
+    var it = _header.makeInitializedIterator()
+    while let p = it.next() {
+      print(
+        p.pointee.debugDescription { self._nodeID($0) }
+      )
+    }
+    print("============================")
+  }
+}

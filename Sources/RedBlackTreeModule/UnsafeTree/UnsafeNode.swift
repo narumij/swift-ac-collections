@@ -115,13 +115,13 @@ public struct UnsafeNode {
   @inlinable
   @inline(__always)
   public init(
-        ___node_id_: Int,
+    ___node_id_: Int,
     __left_: Pointer? = nil,
     __right_: Pointer? = nil,
     __parent_: Pointer? = nil,
     __is_black_: Bool = false
   ) {
-    self.___node_id_ =     ___node_id_
+    self.___node_id_ = ___node_id_
     self.__left_ = __left_
     self.__right_ = __right_
     self.__parent_ = __parent_
@@ -190,6 +190,9 @@ public struct UnsafeNode {
   public var ___needs_deinitialize: Bool
   // メモリ管理をちゃんとするために隙間にねじ込んだ
   // TODO: メモリ管理に整合性があるか考慮すること
+#if DEBUG
+  public var ___recycle_count: Int = 0
+#endif
 }
 
 public enum UnsafePair<_Value> {
@@ -208,7 +211,7 @@ public enum UnsafePair<_Value> {
     if valueAlignment <= nodeAlignment {
       return (numBytes, MemoryLayout<UnsafeNode>.alignment)
     }
-    
+
     return (
       numBytes + valueAlignment - nodeAlignment,
       MemoryLayout<_Value>.alignment

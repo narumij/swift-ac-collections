@@ -35,7 +35,7 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   public var end: _NodePtr {
-    _read { yield __header_ptr.pointee.end }
+    _read { yield _end_ptr }
   }
 }
 
@@ -139,8 +139,8 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   public var __begin_node_: _NodePtr {
-    _read { yield __header_ptr.pointee.__begin_node_ }
-    _modify { yield &__header_ptr.pointee.__begin_node_ }
+    _read { yield _header_ptr.pointee.__begin_node_ }
+    _modify { yield &_header_ptr.pointee.__begin_node_ }
   }
 }
 
@@ -164,7 +164,7 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   internal var __root: _NodePtr {
-    _read { yield __left_ }
+    _read { yield _end.__left_ }
   }
 
   // MARK: - RootPtrProtocol
@@ -173,7 +173,7 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   internal func __root_ptr() -> _NodeRef {
-    withUnsafeMutablePointer(to: &__left_) { $0 }
+    withUnsafeMutablePointer(to: &_end.__left_) { $0 }
   }
 }
 

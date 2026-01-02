@@ -217,15 +217,15 @@ extension UnsafeIndex {
       .init(_unsafe_tree: tree, rawValue: rawValue, node_id: rawValue?.pointee.___node_id_ ?? -2)
     }
     internal static func unsafe(tree: UnsafeTree<Base>, rawValue: Int) -> Self {
-      if rawValue == -2 {
-        return .init(_unsafe_tree: tree, rawValue: nil, node_id: -2)
+      if rawValue == .nullptr {
+        return .init(_unsafe_tree: tree, rawValue: nil, node_id: .nullptr)
       }
-      if rawValue == -1 {
-        return .init(_unsafe_tree: tree, rawValue: tree.end, node_id: -1)
+      if rawValue == .end {
+        return .init(_unsafe_tree: tree, rawValue: tree.end, node_id: .end)
       }
       return .init(
         _unsafe_tree: tree, rawValue: tree._header[rawValue],
-        node_id: tree._header[rawValue]?.pointee.___node_id_ ?? -2)
+        node_id: tree._header[rawValue]?.pointee.___node_id_ ?? .nullptr)
     }
   }
 #endif

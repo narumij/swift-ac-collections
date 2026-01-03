@@ -23,7 +23,7 @@ final class AllocationTests: XCTestCase {
       do {
         let storage: Storage = .create(withCapacity: 1)
         XCTAssertEqual(storage.capacity, 1)
-        XCTAssertEqual(storage.tree.capacity, 1)
+        XCTAssertEqual(storage.tree.freshPoolCapacity, 1)
       }
       do {
         let storage: Storage = .create(withCapacity: 2)

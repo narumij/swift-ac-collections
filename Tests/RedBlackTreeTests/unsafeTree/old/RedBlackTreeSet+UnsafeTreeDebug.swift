@@ -61,8 +61,8 @@
       return c
     }
     @inlinable var __left_: _NodePtr {
-      get { _end?.pointee.__left_ }
-      set { _end?.pointee.__left_ = newValue }
+      get { _end.pointee.__left_ }
+      set { _end.pointee.__left_ = newValue }
     }
     @inlinable func __left_(_ p: _NodePtr) -> _NodePtr {
       __tree_.__left_(p)
@@ -72,11 +72,11 @@
     }
     @inlinable
     var __root: _NodePtr {
-      __tree_.end?.pointee.__left_
+      __tree_.end.pointee.__left_
     }
     @inlinable
     mutating func __root(_ p: _NodePtr) {
-      __tree_.end?.pointee.__left_ = p
+      __tree_.end.pointee.__left_ = p
     }
     @inlinable
     func
@@ -113,7 +113,7 @@
       __tree_.___NodePtr(p)
     }
     @inlinable
-    var nullptr: _NodePtr { nil }
+    var nullptr: _NodePtr { __tree_.nullptr }
     @inlinable
     var end: _NodePtr { __tree_.end }
   }

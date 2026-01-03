@@ -52,7 +52,7 @@ public struct UnsafeIndex<Base> where Base: ___TreeBase & ___TreeIndex {
     assert(rawValue != tree.nullptr)
     self.__tree_ = tree
     self.rawValue = rawValue
-    self.___node_id_ = rawValue!.pointee.___node_id_
+    self.___node_id_ = rawValue.pointee.___node_id_
   }
 
   /*
@@ -214,17 +214,17 @@ extension UnsafeIndex {
 
   extension UnsafeIndex {
     internal static func unsafe(tree: UnsafeTree<Base>, rawValue: _NodePtr) -> Self {
-      .init(_unsafe_tree: tree, rawValue: rawValue, node_id: rawValue?.pointee.___node_id_ ?? -2)
+      .init(_unsafe_tree: tree, rawValue: rawValue, node_id: rawValue.pointee.___node_id_)
     }
     internal static func unsafe(tree: UnsafeTree<Base>, rawValue: Int) -> Self {
       if rawValue == .nullptr {
-        return .init(_unsafe_tree: tree, rawValue: nil, node_id: .nullptr)
+        return .init(_unsafe_tree: tree, rawValue: tree.nullptr, node_id: .nullptr)
       }
       if rawValue == .end {
         return .init(_unsafe_tree: tree, rawValue: tree.end, node_id: .end)
       }
       return .init(
-        _unsafe_tree: tree, rawValue: tree._header[rawValue],
+        _unsafe_tree: tree, rawValue: tree._header[rawValue] ?? tree.nullptr,
         node_id: tree._header[rawValue]?.pointee.___node_id_ ?? .nullptr)
     }
   }
@@ -347,6 +347,6 @@ extension UnsafeIndex {
   @inlinable
   @inline(__always)
   package var _rawValue: Int {
-    rawValue?.pointee.___node_id_ ?? -2
+    rawValue.pointee.___node_id_
   }
 }

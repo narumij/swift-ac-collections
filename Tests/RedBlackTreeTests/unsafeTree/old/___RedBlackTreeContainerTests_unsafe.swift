@@ -209,7 +209,7 @@ import XCTest
         print("__root():", tree.__root.index)
         XCTAssertTrue(tree.___tree_invariant())
         XCTAssertEqual(
-          tree.__root == nil ? tree.end : tree.__tree_.__tree_min(tree.__tree_.__root),
+          tree.__root == tree.nullptr ? tree.end : tree.__tree_.__tree_min(tree.__tree_.__root),
           tree.___header.__begin_node_)
         XCTAssertEqual(tree._count, 1 - i, "i = \(i)")
       }
@@ -228,7 +228,7 @@ import XCTest
         print("__root():", tree.__root.index)
         XCTAssertTrue(tree.___tree_invariant())
         XCTAssertEqual(
-          tree.__root == nil ? tree.end : tree.__tree_.__tree_min(tree.__tree_.__root),
+          tree.__root == tree.nullptr ? tree.end : tree.__tree_.__tree_min(tree.__tree_.__root),
           tree.___header.__begin_node_)
         XCTAssertEqual(tree._count, 6 - i, "i = \(i)")
       }
@@ -244,7 +244,7 @@ import XCTest
         XCTAssertEqual(__child, tree.__tree_.__left_ref(tree.___NodePtr(.end)))
       }
       do {
-        tree.__left_ = nil
+        tree.__left_ = tree.nullptr
         let __k = 5
         let (__parent, __child) = tree.__tree_.__find_equal(__k)
         XCTAssertEqual(__parent.index, .end)

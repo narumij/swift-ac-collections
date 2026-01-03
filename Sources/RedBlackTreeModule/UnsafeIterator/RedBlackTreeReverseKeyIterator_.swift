@@ -28,7 +28,7 @@ extension RedBlackTreeIteratorUnsafe.Keys {
   public struct Reversed: Sequence, IteratorProtocol {
     
     public typealias Tree = UnsafeTree<Base>
-    public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>?
+    public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     @usableFromInline
     internal let __tree_: Tree

@@ -29,7 +29,7 @@ extension RedBlackTreeIteratorUnsafe {
   where Base: KeyValueComparer
   {
     public typealias Tree = UnsafeTree<Base>
-    public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>?
+    public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     @usableFromInline
     internal let __tree_: Tree

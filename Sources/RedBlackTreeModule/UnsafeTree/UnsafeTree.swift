@@ -34,7 +34,7 @@ public final class UnsafeTree<Base: ___TreeBase>:
   deinit {
     withUnsafeMutablePointers { header, end in
       header.pointee.___disposeFreshPool()
-      end.deinitialize(count: 1)
+      end.deinitialize(count: 2)
     }
   }
 }
@@ -72,6 +72,13 @@ extension UnsafeTree {
     _read { yield _end_ptr.pointee }
     _modify { yield &_end_ptr.pointee }
   }
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public var _nullptr: UnsafeMutablePointer<UnsafeNode> {
+    withUnsafeMutablePointerToElements { $0 + 1 }
+  }
 }
 
 // MARK: - 生成
@@ -86,10 +93,12 @@ extension UnsafeTree {
   ) -> Tree {
 
     // elementsはendにしか用いないのでManagerdBufferの要素数は常に1
-    let storage = Tree.create(minimumCapacity: 1) { managedBuffer in
+    let storage = Tree.create(minimumCapacity: 2) { managedBuffer in
       return managedBuffer.withUnsafeMutablePointerToElements { _end_ptr in
+        let _nullptr = _end_ptr + 1
+        _nullptr.initialize(to: UnsafeNode(___node_id_: .nullptr,__left_: _nullptr,__right_: _nullptr,__parent_: _nullptr))
         // endノード用に初期化する
-        _end_ptr.initialize(to: UnsafeNode(___node_id_: .end))
+        _end_ptr.initialize(to: UnsafeNode(___node_id_: .end,__left_: _nullptr,__right_: _nullptr,__parent_: _nullptr))
         // ヘッダーを準備する
         var header = Header(_end_ptr: _end_ptr)
         // ノードを確保する
@@ -129,26 +138,27 @@ extension UnsafeTree {
 
       tree.withUnsafeMutablePointers { _header_ptr, _end_ptr in
 
+        let _nullptr = _header_ptr.pointee._nullptr
+        assert(_nullptr.pointee.___node_id_ == .nullptr)
+
         @inline(__always)
         func __node_ptr(_ index: Int) -> _NodePtr {
-          index == .end ? _end_ptr : _header_ptr.pointee[index]
+          switch index {
+          case .nullptr:
+            _nullptr
+          case .end:
+            _end_ptr
+          default:
+            _header_ptr.pointee[index] ?? _nullptr
+          }
         }
 
         @inline(__always)
         func apply(_ d: inout UnsafeNode, _ s: inout UnsafeNode) {
           // endにも使うので___node_idには触らない
-          if let l = s.__left_?.pointee.___node_id_ {
-            assert(l != -2)
-            d.__left_ = __node_ptr(l)
-          }
-          if let r = s.__right_?.pointee.___node_id_ {
-            assert(r != -2)
-            d.__right_ = __node_ptr(r)
-          }
-          if let p = s.__parent_?.pointee.___node_id_ {
-            assert(p != -2)
-            d.__parent_ = __node_ptr(p)
-          }
+          d.__left_ = __node_ptr(s.__left_.pointee.___node_id_)
+          d.__right_ = __node_ptr(s.__right_.pointee.___node_id_)
+          d.__parent_ = __node_ptr(s.__parent_.pointee.___node_id_)
           d.__is_black_ = s.__is_black_
           // 値は別途管理
         }
@@ -158,10 +168,10 @@ extension UnsafeTree {
 
         while let s = source_nodes.next(), let d = _header_ptr.pointee.popFresh() {
           // メモリを連番で初期化
-          d.initialize(to: UnsafeNode(___node_id_: ___node_id_))
+//          d.initialize(to: UnsafeNode(___node_id_: ___node_id_))
+          d.initialize(to: UnsafeNode(___node_id_: ___node_id_,__left_: _nullptr,__right_: _nullptr,__parent_: _nullptr))
           // 値を初期化
-          UnsafePair<_Value>.__value_ptr(d)
-            .initialize(to: UnsafePair<_Value>.__value_ptr(s).pointee)
+          UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
           // 残りを初期化
           apply(&d.pointee, &s.pointee)
 
@@ -175,16 +185,14 @@ extension UnsafeTree {
         apply(&_end_ptr.pointee, &source_end.pointee)
 
         // __begin_nodeを初期化
-        if let b = source_header.pointee.__begin_node_?.pointee.___node_id_ {
-          _header_ptr.pointee.__begin_node_ = __node_ptr(b)
-        }
+        _header_ptr.pointee.__begin_node_ = __node_ptr(source_header.pointee.__begin_node_.pointee.___node_id_)
 
         // その他管理情報をコピー
         _header_ptr.pointee.initializedCount = source_header.pointee.initializedCount
         _header_ptr.pointee.destroyCount = source_header.pointee.destroyCount
-        if let l = source_header.pointee.destroyNode?.pointee.___node_id_ {
-          _header_ptr.pointee.destroyNode = __node_ptr(l)
-        }
+        _header_ptr.pointee.destroyNode = __node_ptr(source_header.pointee.destroyNode.pointee.___node_id_)
+        assert(_header_ptr.pointee.destroyNode.pointee.___node_id_
+               == source_header.pointee.destroyNode.pointee.___node_id_)
 
         #if AC_COLLECTIONS_INTERNAL_CHECKS
           _header_ptr.pointee.copyCount = source_header.pointee.copyCount &+ 1
@@ -199,8 +207,8 @@ extension UnsafeTree {
     assert(tree.count <= tree.freshPoolCapacity)
     assert(tree._header.initializedCount <= tree.freshPoolCapacity)
 
-    assert(__root?.pointee.___node_id_ == tree.__root?.pointee.___node_id_)
-    assert(__begin_node_?.pointee.___node_id_ == tree.__begin_node_?.pointee.___node_id_)
+    assert(__root.pointee.___node_id_ == tree.__root.pointee.___node_id_)
+    assert(__begin_node_.pointee.___node_id_ == tree.__begin_node_.pointee.___node_id_)
     assert(_header.destroyCount == tree._header.destroyCount)
     assert(___destroyNodes == tree._header.___destroyNodes)
 
@@ -216,8 +224,8 @@ extension UnsafeTree {
   public typealias Tree = UnsafeTree<Base>
   public typealias _Key = Base._Key
   public typealias _Value = Base._Value
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>?
-  public typealias _NodeRef = UnsafeMutablePointer<_NodePtr>
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
 }
 
 extension UnsafeTree {
@@ -228,21 +236,24 @@ extension UnsafeTree {
     @inlinable
     @inline(__always)
     internal init(_end_ptr: _NodePtr) {
+      self._nullptr = _end_ptr + 1
       self.__begin_node_ = _end_ptr
-//      self.freshBucketCreate = UnsafeNodeFreshBucket<_Value>.create
-//      self.freshBucketDispose = Self.___disposeBucketFunc
+      self.destroyNode = _end_ptr + 1
+      //      self.freshBucketCreate = UnsafeNodeFreshBucket<_Value>.create
+      //      self.freshBucketDispose = Self.___disposeBucketFunc
     }
-    public var __begin_node_: _NodePtr
+    public var _nullptr: UnsafeMutablePointer<UnsafeNode>
+    public var __begin_node_: UnsafeMutablePointer<UnsafeNode>
     @usableFromInline var initializedCount: Int = 0
-    @usableFromInline var destroyNode: _NodePtr = nil
+    @usableFromInline var destroyNode: _NodePtr
     @usableFromInline var destroyCount: Int = 0
     @usableFromInline var freshBucketHead: ReserverHeaderPointer?
     @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
     @usableFromInline var freshBucketLast: ReserverHeaderPointer?
     @usableFromInline var freshBucketCount: Int = 0
     @usableFromInline var freshPoolCapacity: Int = 0
-//    @usableFromInline var freshBucketCreate: (Int) -> ReserverHeaderPointer
-//    @usableFromInline let freshBucketDispose: (ReserverHeaderPointer?) -> Void
+    //    @usableFromInline var freshBucketCreate: (Int) -> ReserverHeaderPointer
+    //    @usableFromInline let freshBucketDispose: (ReserverHeaderPointer?) -> Void
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       /// CoWの発火回数を観察するためのプロパティ
       @usableFromInline internal var copyCount: UInt = 0
@@ -278,8 +289,8 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   public var freshPoolCapacity: Int {
-//    _header.freshPoolCapacity
-    withUnsafeMutablePointerToHeader{ $0.pointee.freshPoolCapacity }
+    //    _header.freshPoolCapacity
+    withUnsafeMutablePointerToHeader { $0.pointee.freshPoolCapacity }
   }
 
   // これはinitializedCountと同一の内容だが計算量が異なるため代用はできない。
@@ -287,8 +298,8 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   public var freshPoolUsedCount: Int {
-//    _header.freshPoolUsedCount
-    withUnsafeMutablePointerToHeader{ $0.pointee.freshPoolUsedCount }
+    //    _header.freshPoolUsedCount
+    withUnsafeMutablePointerToHeader { $0.pointee.freshPoolUsedCount }
   }
 }
 
@@ -300,11 +311,11 @@ extension UnsafeTree {
   internal subscript(_ pointer: _NodePtr) -> _Value {
     @inline(__always) _read {
       assert(___initialized_contains(pointer))
-      yield UnsafePair<_Value>.__value_ptr(pointer)!.pointee
+      yield UnsafeNode.valuePointer(pointer).pointee
     }
     @inline(__always) _modify {
       assert(___initialized_contains(pointer))
-      yield &UnsafePair<_Value>.__value_ptr(pointer)!.pointee
+      yield &UnsafeNode.valuePointer(pointer).pointee
     }
   }
 }
@@ -315,8 +326,8 @@ extension UnsafeTree.Header {
   @inlinable
   @inline(__always)
   public mutating func ensureCapacity(_ newCapacity: Int) {
-      guard freshPoolCapacity < newCapacity else { return }
-      pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
+    guard freshPoolCapacity < newCapacity else { return }
+    pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
   }
 }
 
@@ -339,20 +350,20 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   public var count: Int {
-    withUnsafeMutablePointerToHeader{ $0.pointee.count }
+    withUnsafeMutablePointerToHeader { $0.pointee.count }
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func clear() {
-    _end.__left_ = nil
+    _end.__left_ = _nullptr
     _header.clear(_end_ptr: _end_ptr)
   }
 }
 
 extension UnsafeTree.Header {
-  
+
   @inlinable
   @inline(__always)
   public var count: Int {
@@ -371,31 +382,32 @@ extension UnsafeTree.Header {
     let p = popFresh()
     assert(p != nil)
     assert(p?.pointee.___node_id_ == -2)
-    return p
+    return p!
   }
 }
 
 extension UnsafeTree.Header {
-  
+
   @inlinable
   @inline(__always)
   public mutating func __construct_node(_ k: _Value) -> _NodePtr {
-      if destroyCount > 0 {
-        let p = ___popRecycle()
-        UnsafePair<_Value>.__value_ptr(p)!.initialize(to: k)
-        p?.pointee.___needs_deinitialize = true
-        return p
-      }
-      assert(initializedCount < freshPoolCapacity)
-      let p = ___node_alloc()
-      assert(p != nil)
-      assert(p?.pointee.___node_id_ == -2)
-      // ナンバリングとノード初期化の責務は移動できる(freshPoolUsedCountは使えない）
-      p?.initialize(to: UnsafeNode(___node_id_: initializedCount))
-      UnsafePair<_Value>.__value_ptr(p)!.initialize(to: k)
-      assert(p!.pointee.___node_id_ >= 0)
-      initializedCount += 1
+    if destroyCount > 0 {
+      let p = ___popRecycle()
+      UnsafeNode.initializeValue(p, to: k)
+      p.pointee.___needs_deinitialize = true
       return p
+    }
+    assert(initializedCount < freshPoolCapacity)
+    let p = ___node_alloc()
+    assert(p != nil)
+    assert(p.pointee.___node_id_ == -2)
+    // ナンバリングとノード初期化の責務は移動できる(freshPoolUsedCountは使えない）
+//    p?.initialize(to: UnsafeNode(___node_id_: initializedCount))
+    p.initialize(to: UnsafeNode(___node_id_: initializedCount, __left_: _nullptr,__right_: _nullptr,__parent_: _nullptr))
+    UnsafeNode.initializeValue(p, to: k)
+    assert(p.pointee.___node_id_ >= 0)
+    initializedCount += 1
+    return p
   }
 }
 
@@ -424,7 +436,7 @@ extension UnsafeTree {
     //    p != end && p?.pointee.__parent_ == nil
     // これがなぜ動かないのかわからない
     // 再利用時のフラグ設定漏れだった
-    p?.pointee.___needs_deinitialize != true
+    p.pointee.___needs_deinitialize != true
   }
 }
 
@@ -451,7 +463,7 @@ extension UnsafeTree {
   @inline(__always)
   internal func ___node_ptr<Index: PointerResolvable>(_ index: Index) -> _NodePtr
   where Index.Tree == UnsafeTree, Index.Pointer == _NodePtr {
-    self === index.__tree_ ? index.rawValue : _header[index.___node_id_]
+    self === index.__tree_ ? index.rawValue : (_header[index.___node_id_] ?? nullptr)
   }
 }
 
@@ -494,7 +506,6 @@ extension UnsafeTree {
 
   @inlinable
   func _nodeID(_ p: _NodePtr) -> Int? {
-    guard let p else { return nil }
     return p.pointee.___node_id_
   }
 }
@@ -506,13 +517,13 @@ extension UnsafeTree {
     print(" count:", count)
     print(" freshPool:", freshPoolUsedCount, "/", freshPoolCapacity)
     print(" destroyCount:", _header.destroyCount)
-    print(" root:", __root?.pointee.___node_id_ as Any)
-    print(" begin:", __begin_node_?.pointee.___node_id_ as Any)
+    print(" root:", __root.pointee.___node_id_ as Any)
+    print(" begin:", __begin_node_.pointee.___node_id_ as Any)
 
     var it = _header.makeInitializedIterator()
     while let p = it.next() {
       print(
-        p.pointee.debugDescription { self._nodeID($0) }
+        p.pointee.debugDescription { self._nodeID($0!) }
       )
     }
     print("============================")

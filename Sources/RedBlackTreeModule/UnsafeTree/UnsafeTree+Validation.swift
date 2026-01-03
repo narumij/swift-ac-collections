@@ -25,7 +25,7 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   internal func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
-    ptr == nil || ptr == end
+    ptr == nullptr || ptr == end
   }
 
   /// - Complexity: O(1)
@@ -57,7 +57,7 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   internal func ___initialized_contains(_ p: _NodePtr) -> Bool {
-    0..<_header.initializedCount ~= p!.pointee.___node_id_
+    0..<_header.initializedCount ~= p.pointee.___node_id_
   }
 
   /// 真の場合、操作は失敗する
@@ -75,7 +75,7 @@ extension UnsafeTree {
     //    return !___initialized_contains(p) || ___is_garbaged(p)
     // begin -> false
     // end -> true
-    return ___is_null_or_end(p) || _header.initializedCount <= p!.pointee.___node_id_ || ___is_garbaged(p)
+    return ___is_null_or_end(p) || _header.initializedCount <= p.pointee.___node_id_ || ___is_garbaged(p)
   }
 
   /// 真の場合、操作は失敗する
@@ -104,7 +104,7 @@ extension UnsafeTree {
 
     // begin -> true
     // end -> false
-    return p == nullptr || _header.initializedCount <= p!.pointee.___node_id_ || ___is_begin(p) || ___is_garbaged(p)
+    return p == nullptr || _header.initializedCount <= p.pointee.___node_id_ || ___is_begin(p) || ___is_garbaged(p)
   }
 
   /// 真の場合、操作は失敗する
@@ -117,7 +117,7 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   internal func ___is_offset_null(_ p: _NodePtr) -> Bool {
-    return p == nullptr || _header.initializedCount <= p!.pointee.___node_id_ || ___is_garbaged(p)
+    return p == nullptr || _header.initializedCount <= p.pointee.___node_id_ || ___is_garbaged(p)
   }
 
   /// 真の場合、操作は失敗する

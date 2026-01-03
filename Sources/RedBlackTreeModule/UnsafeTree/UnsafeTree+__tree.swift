@@ -28,14 +28,14 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   public var nullptr: _NodePtr {
-    nil
+    _nullptr
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   public var end: _NodePtr {
-    _read { yield _end_ptr }
+    _end_ptr
   }
 }
 
@@ -47,21 +47,21 @@ extension UnsafeTree: TreeEndNodeProtocol {
   @inlinable
   @inline(__always)
   func __left_(_ p: _NodePtr) -> _NodePtr {
-    return p!.pointee.__left_
+    return p.pointee.__left_
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __left_unsafe(_ p: _NodePtr) -> _NodePtr {
-    return p!.pointee.__left_
+    return p.pointee.__left_
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    lhs!.pointee.__left_ = rhs
+    lhs.pointee.__left_ = rhs
   }
 }
 
@@ -73,49 +73,49 @@ extension UnsafeTree: TreeNodeProtocol {
   @inlinable
   @inline(__always)
   func __right_(_ p: _NodePtr) -> _NodePtr {
-    return p!.pointee.__right_
+    return p.pointee.__right_
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    lhs!.pointee.__right_ = rhs
+    lhs.pointee.__right_ = rhs
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __is_black_(_ p: _NodePtr) -> Bool {
-    return p!.pointee.__is_black_
+    return p.pointee.__is_black_
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
-    lhs!.pointee.__is_black_ = rhs
+    lhs.pointee.__is_black_ = rhs
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __parent_(_ p: _NodePtr) -> _NodePtr {
-    return p!.pointee.__parent_
+    return p.pointee.__parent_
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    lhs!.pointee.__parent_ = rhs
+    lhs.pointee.__parent_ = rhs
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
-    return p!.pointee.__parent_
+    return p.pointee.__parent_
   }
 }
 

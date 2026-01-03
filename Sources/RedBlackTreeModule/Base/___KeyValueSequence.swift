@@ -75,20 +75,6 @@ extension ___KeyValueSequence where Self: ___Common {
   }
 }
 
-extension ___KeyValueSequence where Self: ___BaseSequence {
-
-  @inlinable
-  internal func ___min() -> Element? {
-    ___min().map(___element)
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  internal func ___max() -> Element? {
-    ___max().map(___element)
-  }
-}
-
 extension ___KeyValueSequence {
 
   @inlinable

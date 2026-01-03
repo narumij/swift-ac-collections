@@ -188,6 +188,3 @@ extension RedBlackTreeIndices_old: Collection, BidirectionalCollection {
   where _Value: Sendable {}
 #endif
 
-// MARK: - Is Identical To
-
-extension RedBlackTreeIndices_old: ___IsIdenticalTo {}

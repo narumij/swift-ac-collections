@@ -57,9 +57,8 @@ extension UnsafeNodeFreshPool {
   @inlinable
   @inline(__always)
   mutating func pushFreshBucket(capacity: Int) {
-    // 2回連続で確保した場合の挙動が不定な気がしたが、両端保持しているリンクリストなので大丈夫だった
     assert(capacity != 0)
-    let pointer = ReserverHeader.create(_Value.self, capacity: capacity)
+    let pointer = Self.createBucket(capacity: capacity)
     if freshBucketHead == nil {
       freshBucketHead = pointer
     }
@@ -102,19 +101,11 @@ extension UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
-  static func ___disposeBucketFunc(_ pointer: ReserverHeaderPointer?) {
-    pointer!.pointee.dispose(_Value.self)
-    pointer!.deinitialize(count: 1)
-    UnsafeRawPointer(pointer!).deallocate()
-  }
-
-  @inlinable
-  @inline(__always)
   func ___disposeFreshPool() {
     var reserverHead = freshBucketHead
     while let h = reserverHead {
       reserverHead = h.pointee.next
-      h.pointee.dispose(_Value.self)
+      Self.deinitializeNodes(h)
       h.deinitialize(count: 1)
       UnsafeRawPointer(h).deallocate()
     }
@@ -193,7 +184,6 @@ extension UnsafeNodeFreshPool {
   }
 }
 
-#if false
 #if DEBUG
   extension UnsafeNodeFreshPool {
 
@@ -201,7 +191,7 @@ extension UnsafeNodeFreshPool {
       print("==== FreshPool \(label) ====")
       print(" bucketCount:", freshBucketCount)
       print(" capacity:", freshPoolCapacity)
-      print(" usedCount:", freshPoolUsedCount)
+      print(" usedCount:", freshPoolActualCount)
 
       var i = 0
       var p = freshBucketHead
@@ -213,5 +203,4 @@ extension UnsafeNodeFreshPool {
       print("===========================")
     }
   }
-#endif
 #endif

@@ -59,7 +59,7 @@ extension UnsafeTree {
 extension UnsafeTree {
 
   package func destroy(_ p: Int) {
-    _header.___pushRecycle(_header[p]!)
+    _header.___pushRecycle(_header[p])
   }
 }
 

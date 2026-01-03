@@ -224,8 +224,8 @@ extension UnsafeIndex {
         return .init(_unsafe_tree: tree, rawValue: tree.end, node_id: .end)
       }
       return .init(
-        _unsafe_tree: tree, rawValue: tree._header[rawValue] ?? tree.nullptr,
-        node_id: tree._header[rawValue]?.pointee.___node_id_ ?? .nullptr)
+        _unsafe_tree: tree, rawValue: tree._header[rawValue],
+        node_id: tree._header[rawValue].pointee.___node_id_)
     }
   }
 #endif

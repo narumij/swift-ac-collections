@@ -195,6 +195,60 @@ public struct UnsafeNode {
   #endif
 }
 
+extension UnsafeNode {
+
+  @inlinable
+  @inline(__always)
+  static func valuePointer<_Value>(_ pointer: UnsafeMutablePointer<Self>?) -> UnsafeMutablePointer<
+    _Value
+  >? {
+    guard let pointer else { return nil }
+    return UnsafeMutableRawPointer(pointer.advanced(by: 1))
+      .assumingMemoryBound(to: _Value.self)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func valuePointer<_Value>(_ pointer: UnsafeMutablePointer<Self>) -> UnsafeMutablePointer<
+    _Value
+  > {
+    UnsafeMutableRawPointer(pointer.advanced(by: 1))
+      .assumingMemoryBound(to: _Value.self)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func value<_Value>(_ pointer: UnsafeMutablePointer<Self>) -> _Value {
+    UnsafeMutableRawPointer(pointer.advanced(by: 1))
+      .assumingMemoryBound(to: _Value.self)
+      .pointee
+  }
+}
+
+extension UnsafeNode {
+
+  @inlinable
+  @inline(__always)
+  static func initializeValue<_Value>(_ p: UnsafeMutablePointer<UnsafeNode>, to: _Value) {
+    p.advanced(by: 1)
+      .withMemoryRebound(to: _Value.self, capacity: 1) { pointer in
+        pointer.initialize(to: to)
+      }
+  }
+
+  @inlinable
+  @inline(__always)
+  static func deinitialize<_Value>(_ t: _Value.Type, _ p: UnsafeMutablePointer<UnsafeNode>) {
+    if p.pointee.___needs_deinitialize {
+      UnsafeMutableRawPointer(p.advanced(by: 1))
+        .alignedUp(for: _Value.self)
+        .assumingMemoryBound(to: _Value.self)
+        .deinitialize(count: 1)
+    }
+    p.deinitialize(count: 1)
+  }
+}
+
 public enum UnsafePair<_Value> {
 
   public typealias Pointer = UnsafePointer<UnsafeNode>
@@ -249,201 +303,18 @@ public enum UnsafePair<_Value> {
       .alignedUp(for: UnsafeNode.self)
       .assumingMemoryBound(to: UnsafeNode.self)
   }
-  
-    @inlinable
-    @inline(__always)
-    static func __value_ptr(_ p: Pointer?) -> UnsafePointer<_Value>? {
-      guard let p else { return nil }
-      return UnsafeRawPointer(p.advanced(by: 1))
-        .assumingMemoryBound(to: _Value.self)
-    }
-  
-    @inlinable
-    @inline(__always)
-    static func __value_ptr(_ p: Pointer) -> UnsafePointer<_Value> {
-      UnsafeRawPointer(p.advanced(by: 1))
-        .assumingMemoryBound(to: _Value.self)
-    }
-  
-    @inlinable
-    @inline(__always)
-    static func __value_ptr(_ p: MutablePointer?) -> UnsafeMutablePointer<_Value>? {
-      guard let p else { return nil }
-      return __value_ptr(p)
-    }
-  
-    @inlinable
-    @inline(__always)
-    static func __value_ptr(_ p: MutablePointer) -> UnsafeMutablePointer<_Value> {
-      UnsafeMutableRawPointer(p.advanced(by: 1))
-        .assumingMemoryBound(to: _Value.self)
-    }
-}
-
-extension UnsafeNode {
 
   @inlinable
   @inline(__always)
-  static func initializeValue<_Value>(_ p: UnsafeMutablePointer<UnsafeNode>, to: _Value) {
-    p.advanced(by: 1)
-      .withMemoryRebound(to: _Value.self, capacity: 1) { pointer in
-        pointer.initialize(to: to)
-      }
+  static func valuePointer(_ p: MutablePointer?) -> UnsafeMutablePointer<_Value>? {
+    guard let p else { return nil }
+    return valuePointer(p)
   }
 
   @inlinable
   @inline(__always)
-  static func _allocationSize<_Value>(_ t: _Value.Type) -> (size: Int, alignment: Int) {
-    let numBytes = MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride
-
-    let nodeAlignment = MemoryLayout<UnsafeNode>.alignment
-    let valueAlignment = MemoryLayout<_Value>.alignment
-
-    if valueAlignment <= nodeAlignment {
-      return (numBytes, MemoryLayout<UnsafeNode>.alignment)
-    }
-
-    return (
-      numBytes + valueAlignment - nodeAlignment,
-      MemoryLayout<_Value>.alignment
-    )
-  }
-
-  @inlinable
-  @inline(__always)
-  static func allocationSize<_Value>(_ t: _Value.Type, capacity: Int) -> (size: Int, alignment: Int)
-  {
-    let (bytes, alignment) = _allocationSize(_Value.self)
-    return (bytes * capacity, alignment)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func pointer<_Value>(
-    _ t: _Value.Type,
-    from storage: UnsafeMutableRawPointer
-  ) -> UnsafeMutablePointer<UnsafeNode> {
-
-    let headerAlignment = MemoryLayout<UnsafeNode>.alignment
-    let elementAlignment = MemoryLayout<_Value>.alignment
-
-    if elementAlignment <= headerAlignment {
-      return storage.assumingMemoryBound(to: UnsafeNode.self)
-    }
-
-    return storage.advanced(by: MemoryLayout<UnsafeNode>.stride)
-      .alignedUp(toMultipleOf: elementAlignment)
-      .advanced(by: -MemoryLayout<UnsafeNode>.stride)
-      .assumingMemoryBound(to: UnsafeNode.self)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func pointer(
-    from storage: UnsafeMutableRawPointer,
-    elementAlignment: Int
-  ) -> UnsafeMutablePointer<UnsafeNode> {
-
-    let headerAlignment = MemoryLayout<UnsafeNode>.alignment
-
-    if elementAlignment <= headerAlignment {
-      return storage.assumingMemoryBound(to: UnsafeNode.self)
-    }
-
-    return storage.advanced(by: MemoryLayout<UnsafeNode>.stride)
-      .alignedUp(toMultipleOf: elementAlignment)
-      .advanced(by: -MemoryLayout<UnsafeNode>.stride)
-      .assumingMemoryBound(to: UnsafeNode.self)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func advance(_ pointer: UnsafeMutableRawPointer, elementStride: Int, offset: Int)
-    -> UnsafeMutableRawPointer
-  {
-    pointer
-      .advanced(by: (MemoryLayout<UnsafeNode>.stride + elementStride) * offset)
-      .alignedUp(for: UnsafeNode.self)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func advance(
-    _ pointer: UnsafeMutablePointer<UnsafeNode>, elementStride: Int, offset: Int = 1
-  )
-    -> UnsafeMutablePointer<UnsafeNode>
-  {
-    UnsafeMutableRawPointer(pointer)
-      .advanced(by: (MemoryLayout<UnsafeNode>.stride + elementStride) * offset)
-      .alignedUp(for: UnsafeNode.self)
-      .assumingMemoryBound(to: UnsafeNode.self)
-  }
-
-  //  @inlinable
-  //  @inline(__always)
-  //  static func valuePointer(_ p: UnsafeMutableRawPointer) -> UnsafeMutableRawPointer {
-  //    UnsafeMutableRawPointer(p.assumingMemoryBound(to: Self.self).advanced(by: 1))
-  //  }
-
-  @inlinable
-  @inline(__always)
-  static func valuePointer<_Value>(_ pointer: UnsafeMutablePointer<Self>?) -> UnsafeMutablePointer<
-    _Value
-  >? {
-    guard let pointer else { return nil }
-    return UnsafeMutableRawPointer(pointer.advanced(by: 1))
+  static func valuePointer(_ p: MutablePointer) -> UnsafeMutablePointer<_Value> {
+    UnsafeMutableRawPointer(p.advanced(by: 1))
       .assumingMemoryBound(to: _Value.self)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func valuePointer<_Value>(_ pointer: UnsafeMutablePointer<Self>) -> UnsafeMutablePointer<
-    _Value
-  > {
-    UnsafeMutableRawPointer(pointer.advanced(by: 1))
-      .assumingMemoryBound(to: _Value.self)
-  }
-
-  //  @inlinable
-  //  @inline(__always)
-  //  static func value<_Value>(_ pointer: UnsafeMutableRawPointer) -> _Value {
-  //    pointer
-  //      .assumingMemoryBound(to: Self.self)
-  //      .advanced(by: 1)
-  //      .withMemoryRebound(to: _Value.self, capacity: 1) { pointer in
-  //        pointer.pointee
-  //      }
-  //  }
-
-  @inlinable
-  @inline(__always)
-  static func value<_Value>(_ pointer: UnsafeMutablePointer<Self>) -> _Value {
-    UnsafeMutableRawPointer(pointer.advanced(by: 1))
-      .assumingMemoryBound(to: _Value.self)
-      .pointee
-  }
-
-  //  @inlinable
-  //  @inline(__always)
-  //  static func deinitialize<_Value>(_ t: _Value.Type, _ p: UnsafeMutableRawPointer) {
-  //    if p.assumingMemoryBound(to: UnsafeNode.self).pointee.___needs_deinitialize {
-  //      UnsafeMutableRawPointer(p.advanced(by: 1))
-  //        .alignedUp(for: _Value.self)
-  //        .assumingMemoryBound(to: _Value.self)
-  //        .deinitialize(count: 1)
-  //    }
-  //    p.assumingMemoryBound(to: UnsafeNode.self).deinitialize(count: 1)
-  //  }
-
-  @inlinable
-  @inline(__always)
-  static func deinitialize<_Value>(_ t: _Value.Type, _ p: UnsafeMutablePointer<UnsafeNode>) {
-    if p.pointee.___needs_deinitialize {
-      UnsafeMutableRawPointer(p.advanced(by: 1))
-        .alignedUp(for: _Value.self)
-        .assumingMemoryBound(to: _Value.self)
-        .deinitialize(count: 1)
-    }
-    p.deinitialize(count: 1)
   }
 }

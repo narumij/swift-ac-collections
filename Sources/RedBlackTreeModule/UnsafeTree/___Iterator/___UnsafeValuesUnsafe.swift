@@ -49,6 +49,6 @@ where Base: ___TreeBase {
   internal mutating func next() -> Tree._Value? {
     guard __first != __last else { return nil }
     defer { __first = __tree_.__tree_next_iter(__first) }
-    return UnsafePair<Tree._Value>.__value_ptr(__first)!.pointee
+    return UnsafePair<Tree._Value>.valuePointer(__first)!.pointee
   }
 }

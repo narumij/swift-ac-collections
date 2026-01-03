@@ -117,40 +117,6 @@ extension ___KeyValueSequence {
 
   @inlinable
   @inline(__always)
-  internal func _makeIterator() -> Tree._KeyValues {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func _reversed() -> Tree._KeyValues.Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-}
-
-extension ___KeyValueSequence {
-
-  public typealias Keys = RedBlackTreeIterator_old<Base>.Keys
-  public typealias Values = RedBlackTreeIterator_old<Base>.MappedValues
-
-  @inlinable
-  @inline(__always)
-  internal func _keys() -> Keys {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  internal func _values() -> Values {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-}
-
-extension ___KeyValueSequence {
-
-  @inlinable
-  @inline(__always)
   internal func _forEach(_ body: (Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(Self.___element(__tree_[$0]))

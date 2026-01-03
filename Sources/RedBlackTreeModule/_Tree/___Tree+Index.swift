@@ -44,12 +44,3 @@ extension ___Tree where Base: ___TreeIndex {
   public typealias Indices = RedBlackTreeIndices_old<Base>
 }
 
-extension ___Tree where Base: ___TreeIndex {
-
-  public typealias _Values = RedBlackTreeIterator_old<Base>.Values
-}
-
-extension ___Tree where Base: KeyValueComparer & ___TreeIndex {
-
-  public typealias _KeyValues = RedBlackTreeIterator_old<Base>.KeyValues
-}

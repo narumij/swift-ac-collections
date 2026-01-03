@@ -34,21 +34,6 @@ extension ___KeyOnlySequence {
 
   @inlinable
   @inline(__always)
-  internal func _makeIterator() -> Tree._Values {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func _reversed() -> Tree._Values.Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-}
-
-extension ___KeyOnlySequence {
-
-  @inlinable
-  @inline(__always)
   internal func _forEach(_ body: (_Value) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(__tree_[$0])

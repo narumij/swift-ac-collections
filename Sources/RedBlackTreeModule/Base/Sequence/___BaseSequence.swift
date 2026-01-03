@@ -62,18 +62,6 @@ extension ___BaseSequence {
   internal func ___upper_bound(_ __k: _Key) -> _NodePtr {
     __tree_.upper_bound(__k)
   }
-
-  @inlinable
-  @inline(__always)
-  internal func ___index_lower_bound(_ __k: _Key) -> Index {
-    ___index(___lower_bound(__k))
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___index_upper_bound(_ __k: _Key) -> Index {
-    ___index(___upper_bound(__k))
-  }
 }
 
 extension ___BaseSequence {

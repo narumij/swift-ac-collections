@@ -42,14 +42,6 @@ extension ___KeyOnlySequence {
 }
 
 extension ___KeyOnlySequence {
-
-  @inlinable
-  @inline(__always)
-  internal func _forEach(_ body: (Index, _Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0), __tree_[$0])
-    }
-  }
 }
 
 extension ___KeyOnlySequence {
@@ -63,21 +55,6 @@ extension ___KeyOnlySequence {
 }
 
 extension ___KeyOnlySequence {
-
-  @inlinable
-  internal subscript(_checked position: Index) -> _Value {
-    @inline(__always) _read {
-      __tree_.___ensureValid(subscript: position.rawValue)
-      yield __tree_[position.rawValue]
-    }
-  }
-
-  @inlinable
-  internal subscript(_unchecked position: Index) -> _Value {
-    @inline(__always) _read {
-      yield __tree_[position.rawValue]
-    }
-  }
 }
 
 extension ___KeyOnlySequence {

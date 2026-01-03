@@ -20,23 +20,3 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-extension ___IndexBase {
-
-  @inlinable
-  @inline(__always)
-  internal func ___index(_ p: _NodePtr) -> Index {
-    __tree_.makeIndex(rawValue: p)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___index_or_nil(_ p: _NodePtr) -> Index? {
-    p == .nullptr ? nil : ___index(p)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___index_or_nil(_ p: _NodePtr?) -> Index? {
-    p.map { ___index($0) }
-  }
-}

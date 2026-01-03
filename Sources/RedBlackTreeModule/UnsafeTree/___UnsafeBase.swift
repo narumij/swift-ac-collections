@@ -30,8 +30,7 @@ public protocol ___Root {
 protocol ___IndexBase: ___Root
 where
   Base: ___TreeBase & ___TreeIndex,
-  Tree == ___Tree<Base>,
-  Index == Tree.Index
+  Tree == ___Tree<Base>
 {
   associatedtype Index
   var __tree_: Tree { get }
@@ -76,8 +75,6 @@ protocol ___Base: ___IndexBase
 where
   Base: ___TreeBase & ___TreeIndex,
   Tree == ___Tree<Base>,
-  Index == Tree.Index,
-  Indices == Tree.Indices,
   _Key == Tree._Key,
   _Value == Tree._Value
 {

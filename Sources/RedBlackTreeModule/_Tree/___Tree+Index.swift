@@ -25,22 +25,3 @@ public protocol ___TreeIndex {
   associatedtype Pointee
   static func ___pointee(_ __value: _Value) -> Pointee
 }
-
-extension ___Tree where Base: ___TreeIndex {
-
-  public typealias Index = RedBlackTreeIndex_old<Base>
-  public typealias Pointee = Base.Pointee
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func makeIndex(rawValue: _NodePtr) -> Index {
-    .init(tree: self, rawValue: rawValue)
-  }
-}
-
-extension ___Tree where Base: ___TreeIndex {
-
-  public typealias Indices = RedBlackTreeIndices_old<Base>
-}
-

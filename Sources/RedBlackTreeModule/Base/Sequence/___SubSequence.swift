@@ -37,13 +37,4 @@ extension ___SubSequence {
   internal func ___contains(_ i: _NodePtr) -> Bool {
     !__tree_.___is_subscript_null(i) && __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
-
-  @inlinable
-  @inline(__always)
-  internal func ___contains(_ bounds: Range<Index>) -> Bool {
-    !__tree_.___is_offset_null(bounds.lowerBound.rawValue)
-      && !__tree_.___is_offset_null(bounds.upperBound.rawValue)
-      && __tree_.___ptr_range_contains(_start, _end, bounds.lowerBound.rawValue)
-      && __tree_.___ptr_range_contains(_start, _end, bounds.upperBound.rawValue)
-  }
 }

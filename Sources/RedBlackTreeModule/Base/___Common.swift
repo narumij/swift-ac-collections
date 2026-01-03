@@ -45,12 +45,6 @@ extension ___Common {
 }
 
 extension ___Common {
-
-  @inlinable
-  @inline(__always)
-  internal func _distance(from start: Index, to end: Index) -> Int {
-    __tree_.___distance(from: start.rawValue, to: end.rawValue)
-  }
 }
 
 extension ___Common {
@@ -92,10 +86,3 @@ extension ___Common {
   }
 }
 
-extension ___Common {
-  @inlinable
-  @inline(__always)
-  internal var _indices: Indices {
-    .init(tree: __tree_, start: _start, end: _end)
-  }
-}

@@ -111,14 +111,6 @@ extension ___KeyValueSequence {
 }
 
 extension ___KeyValueSequence {
-
-  @inlinable
-  @inline(__always)
-  internal func _forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0), Self.___element(__tree_[$0]))
-    }
-  }
 }
 
 extension ___KeyValueSequence {
@@ -128,27 +120,6 @@ extension ___KeyValueSequence {
   @inline(__always)
   internal func _sorted() -> [Element] {
     __tree_.___copy_to_array(_start, _end, transform: Self.___element)
-  }
-}
-
-extension ___KeyValueSequence {
-
-  // コンパイラの型推論のバグを踏んでいると想定し、型をちゃんと書くことにし、様子を見ている
-  // -> 今の設計だと影響があるが、過去のバグはこの方法では迂回できないことが確認できている
-
-  @inlinable
-  internal subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
-    @inline(__always) get {
-      __tree_.___ensureValid(subscript: position.rawValue)
-      return ___element(__tree_[position.rawValue])
-    }
-  }
-
-  @inlinable
-  internal subscript(_unchecked position: Index) -> (key: _Key, value: _MappedValue) {
-    @inline(__always) get {
-      return ___element(__tree_[position.rawValue])
-    }
   }
 }
 

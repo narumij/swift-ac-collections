@@ -77,7 +77,9 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   public var _nullptr: UnsafeMutablePointer<UnsafeNode> {
-    withUnsafeMutablePointerToElements { $0 + 1 }
+    withUnsafeMutablePointerToHeader {
+      $0.pointee._nullptr
+    }
   }
 }
 

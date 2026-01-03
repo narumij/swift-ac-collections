@@ -13,7 +13,7 @@ var mt = mt19937_64(seed: 0)
   print(f.sorted().count)
 #endif
 
-#if false
+#if true
   for _ in 0..<1_000_000 {
     for count in [0, 32, 1024, 8192] {
       let fixture = RedBlackTreeSet<Int>()
@@ -26,6 +26,7 @@ var mt = mt19937_64(seed: 0)
   }
 #endif
 
+#if false
 do {
   for count in [0, 32, 1024, 8192] {
     let ii = (0..<count).shuffled(using: &mt)
@@ -46,3 +47,4 @@ do {
   //    }
   //  }
 }
+#endif

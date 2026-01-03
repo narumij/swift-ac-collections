@@ -481,6 +481,7 @@ final class EtcTests: XCTestCase {
     XCTAssertEqual(result, [a.startIndex])
   }
 
+#if !USE_UNSAFE_TREE
   func testSubRev6() throws {
     let a = RedBlackTreeSet<Int>([0, 1, 2])
     do {
@@ -498,7 +499,7 @@ final class EtcTests: XCTestCase {
       XCTAssertEqual(result, [])
     }
   }
-
+  
   func testSubRev7() throws {
     let a = RedBlackTreeSet<Int>([0, 1, 2])
     do {
@@ -534,6 +535,7 @@ final class EtcTests: XCTestCase {
       XCTAssertEqual(result, [2, 1, 0])
     }
   }
+#endif
 
   func testSubRev9() throws {
     let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [

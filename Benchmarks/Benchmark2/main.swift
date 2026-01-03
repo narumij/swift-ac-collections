@@ -23,15 +23,12 @@ print(Date.now)
 print()
 
 #if true
-for count in (0..<4).map({ 1 << $0 }) {
+for count in (0..<10).map({ 1 << $0 }) {
   for allocSize in (0..<32).map({ 1 << $0 }) {
-    allocationChunkSize = allocSize
-    benchmark("reserveCapacity \(count) / \(allocationChunkSize)") {
+    benchmark("reserveCapacity \(count) / \(allocSize)") {
       var f = Fixture<Int>()
-      for i in 0..<count {
-        f.reserveCapacity(i)
-        f.insert(i)
-        assert(f.capacity == i)
+      for _ in 0..<max(1, count / allocSize) {
+        f.pushFreshBucket(capacity: allocSize)
       }
     }
   }
@@ -39,14 +36,12 @@ for count in (0..<4).map({ 1 << $0 }) {
 #endif
 
 #if false
-for amount in (4..<8).map({ 1 << $0 }) {
-  for allocSize in (0..<12).map({ 1 << $0 }) {
-    allocationChunkSize = allocSize
-    benchmark("reserveCapacity \(amount) / \(allocationChunkSize)") {
+for count in (4..<8).map({ 1 << $0 }) {
+  for allocSize in (0..<32).map({ 1 << $0 }) {
+    benchmark("reserveCapacity \(count) / \(allocSize)") {
       var f = Fixture<Int>()
-      for i in 0..<amount {
-        f.reserveCapacity(i)
-        assert(f.capacity == i)
+      for _ in 0..<max(1, count / allocSize) {
+        f.pushFreshBucket(capacity: allocSize)
       }
     }
   }
@@ -54,89 +49,16 @@ for amount in (4..<8).map({ 1 << $0 }) {
 #endif
 
 #if false
-for amount in (8..<12).map({ 1 << $0 }) {
-  for allocSize in (0..<12).map({ 1 << $0 }) {
-    allocationChunkSize = allocSize
-    benchmark("reserveCapacity \(amount) / \(allocationChunkSize)") {
+for count in (16..<22).map({ 1 << $0 }) {
+  for allocSize in (0..<32).map({ 1 << $0 }) {
+    benchmark("reserveCapacity \(count) / \(allocSize)") {
       var f = Fixture<Int>()
-      for i in 0..<amount {
-        f.reserveCapacity(i)
-        assert(f.capacity == i)
+      for _ in 0..<max(1, count / allocSize) {
+        f.pushFreshBucket(capacity: allocSize)
       }
     }
   }
 }
 #endif
-
-#if false
-for amount in (12..<16).map({ 1 << $0 }) {
-  for allocSize in (0..<12).map({ 1 << $0 }) {
-    allocationChunkSize = allocSize
-    benchmark("reserveCapacity \(amount) / \(allocationChunkSize)") {
-      var f = Fixture<Int>()
-      for i in 0..<amount {
-        f.reserveCapacity(i)
-        assert(f.capacity == i)
-      }
-    }
-  }
-}
-#endif
-
-#if false
-for amount in (16..<20).map({ 1 << $0 }) {
-  for allocSize in (0..<12).map({ 1 << $0 }) {
-    allocationChunkSize = allocSize
-    benchmark("reserveCapacity \(amount) / \(allocationChunkSize)") {
-      var f = Fixture<Int>()
-      for i in 0..<amount {
-        f.reserveCapacity(i)
-        assert(f.capacity == i)
-      }
-    }
-  }
-}
-#endif
-
-#if false
-for amount in (20..<24).map({ 1 << $0 }) {
-  for allocSize in (0..<12).map({ 1 << $0 }) {
-    allocationChunkSize = allocSize
-    benchmark("reserveCapacity \(amount) / \(allocationChunkSize)") {
-      var f = Fixture<Int>()
-      for i in 0..<amount {
-        f.reserveCapacity(i)
-        assert(f.capacity == i)
-      }
-    }
-  }
-}
-#endif
-
-#if false
-for amount in (24..<28).map({ 1 << $0 }) {
-  for allocSize in (0..<12).map({ 1 << $0 }) {
-    allocationChunkSize = allocSize
-    benchmark("reserveCapacity \(amount) / \(allocationChunkSize)") {
-      var f = Fixture<Int>()
-      for i in 0..<amount {
-        f.reserveCapacity(i)
-        assert(f.capacity == i)
-      }
-    }
-  }
-}
-#endif
-
-//for allocSize in [2,4,8,16,32,64,128] {
-//  for count in (0..<6).map({ 1 << $0 }) {
-//    benchmark("insert \(count) with allocSize \(allocSize)") {
-//      var f = Fixture<Int>()
-//      for i in 0..<count {
-//        f.insert(i)
-//      }
-//    }
-//  }
-//}
 
 Benchmark.main()

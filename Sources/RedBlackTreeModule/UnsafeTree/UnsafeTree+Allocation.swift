@@ -27,6 +27,14 @@ extension UnsafeTree: UnsafeTreeAllcation2 {}
 //extension UnsafeTree: UnsafeTreeAllcation3 {}
 #endif
 
+#if ALLOCATION_DRILL
+extension RedBlackTreeSet {
+  public mutating func pushFreshBucket(capacity: Int) {
+    __tree_.header.pushFreshBucket(capacity: capacity)
+  }
+}
+#endif
+
 public nonisolated(unsafe) var allocationChunkSize: Int = 0
 
 @usableFromInline

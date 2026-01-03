@@ -249,6 +249,9 @@ extension UnsafeNode {
   }
 }
 
+
+// 最初に作ったヘルパー
+// 他にもinstantiateを避ける工夫をしていたが迷子になったので途中だが止めている
 public enum UnsafePair<_Value> {
 
   public typealias Pointer = UnsafePointer<UnsafeNode>

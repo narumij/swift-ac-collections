@@ -20,34 +20,6 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@usableFromInline
-typealias ___CopyOnWrite = ___CopyOnWrite_old
-
-@usableFromInline
-typealias ___StorageProtocol = ___StorageProtocol_old
-
-#if !USE_UNSAFE_TREE
-public typealias RedBlackTreeIndex = RedBlackTreeIndex_old
-public typealias RedBlackTreeIndices = RedBlackTreeIndices_old
-public typealias RedBlackTreeIterator = RedBlackTreeIterator_old
-public typealias RedBlackTreeSlice = RedBlackTreeSlice_old
-
-@usableFromInline
-protocol ___RedBlackTreeKeyOnlyBase:
-  ___StorageProtocol & ___CopyOnWrite & ___Common & ___Index & ___BaseSequence
-    & ___KeyOnlySequence
-{}
-
-@usableFromInline
-protocol ___RedBlackTreeKeyValuesBase:
-  ___StorageProtocol & ___CopyOnWrite & ___Common & ___Index & ___BaseSequence
-    & ___KeyValueSequence
-{}
-#else
-#endif
-
-// MARK: -
-
 extension ___IndexBase {
 
   @inlinable

@@ -89,20 +89,6 @@ extension ___KeyValueSequence where Self: ___BaseSequence {
   }
 }
 
-extension ___KeyValueSequence where Self: ___Index {
-
-  @inlinable
-  internal func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___first { try predicate(___element($0)) }.map(___element)
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index { try predicate(___element($0)) }
-  }
-}
-
 extension ___KeyValueSequence {
 
   @inlinable

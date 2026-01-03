@@ -25,7 +25,8 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   internal func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
-    ptr == nullptr || ptr == end
+//    ptr == nullptr || ptr == end
+    ptr.pointee.___node_id_ < 0
   }
 
   /// - Complexity: O(1)

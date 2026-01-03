@@ -179,6 +179,8 @@ public struct UnsafeNode {
   /// 通常はコピー処理中にのみ参照される。
   /// CoW により木のインスタンスが分離した後でも、
   /// この ID を用いて等価なノード同士を対応付けることができる。
+  ///
+  /// nullptrは-2、endは-1をIDにもつ
   public var ___node_id_: Int
   /// Color flag of this red-black tree node.
   ///

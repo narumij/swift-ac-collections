@@ -137,10 +137,12 @@ extension UnsafeTree {
 
   @nonobjc
   @inlinable
-  @inline(__always)
   public var __begin_node_: _NodePtr {
-    get { withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ } }
-    set { withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ = newValue } }
+    @inline(__always) get { withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ } }
+//    set { withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ = newValue } }
+//    @inline(__always) _read { yield _header.__begin_node_ }
+//    @inline(__always) _modify { yield &_header.__begin_node_ }
+    @inline(__always) set { withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ = newValue } }
   }
 }
 
@@ -150,9 +152,8 @@ extension UnsafeTree {
 
   @nonobjc
   @inlinable
-  @inline(__always)
   var __end_node: _NodePtr {
-    _read { yield end }
+    @inline(__always) get { withUnsafeMutablePointerToElements { $0 } }
   }
 }
 
@@ -165,7 +166,7 @@ extension UnsafeTree {
     @inlinable
     @inline(__always)
     internal var __root: _NodePtr {
-      _read { yield _end.__left_ }
+      withUnsafeMutablePointerToElements { $0.pointee.__left_ }
     }
   #else
     @nonobjc

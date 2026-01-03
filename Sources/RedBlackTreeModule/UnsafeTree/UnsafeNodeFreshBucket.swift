@@ -22,7 +22,7 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-struct UnsafeNodeFreshBucket {
+@frozen struct UnsafeNodeFreshBucket {
 
   public typealias Header = UnsafeNodeFreshBucket
   public typealias Node = UnsafeNode

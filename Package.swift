@@ -107,16 +107,6 @@ let package = Package(
       swiftSettings: _settings
     ),
     .executableTarget(
-      name: "Executable",
-      dependencies: [
-        //         .product(name: "Collections", package: "swift-collections"),
-        "RedBlackTreeModule",
-        "PermutationModule",
-      ],
-      path: "Tests/Executable",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
       name: "Benchmark0",
       dependencies: [
         "RedBlackTreeModule",
@@ -146,5 +136,29 @@ let package = Package(
       path: "Benchmarks/Benchmark2",
       swiftSettings: _settings
     ),
+    .executableTarget(
+      name: "Executable",
+      dependencies: [
+        //         .product(name: "Collections", package: "swift-collections"),
+        "RedBlackTreeModule",
+        "PermutationModule",
+      ],
+      path: "Tests/Executables/Executable",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "SimpleInsert",
+      dependencies: [
+        "AcCollections",
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Tests/Executables/SimpleInsert"),
+    .executableTarget(
+      name: "SimpleRemove",
+      dependencies: [
+        "AcCollections",
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Tests/Executables/SimpleRemove"),
   ]
 )

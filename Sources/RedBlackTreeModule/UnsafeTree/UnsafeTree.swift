@@ -69,7 +69,7 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   public var _end: UnsafeNode {
-    _read { yield _end_ptr.pointee }
+    @inline(__always) get { withUnsafeMutablePointerToElements { $0.pointee } }
     _modify { yield &_end_ptr.pointee }
   }
   
@@ -230,6 +230,7 @@ extension UnsafeTree {
 
 extension UnsafeTree {
 
+  @frozen
   public struct Header: UnsafeNodeFreshPool, UnsafeNodeRecyclePool {
     public typealias _NodePtr = UnsafeTree._NodePtr
     public typealias _Value = UnsafeTree._Value

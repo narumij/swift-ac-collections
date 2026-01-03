@@ -27,17 +27,6 @@ public protocol ___Root {
 }
 
 @usableFromInline
-protocol ___IndexBase: ___Root
-where
-  Base: ___TreeBase & ___TreeIndex,
-  Tree == ___Tree<Base>
-{
-  associatedtype Index
-  var __tree_: Tree { get }
-}
-
-
-@usableFromInline
 protocol ___UnsafeIndexBase: ___Root
 where
   Base: ___TreeBase & ___TreeIndex,
@@ -57,24 +46,6 @@ where
   Tree == UnsafeTree<Base>,
   Index == Tree.Index,
   Indices == Tree.Indices,
-  _Key == Tree._Key,
-  _Value == Tree._Value
-{
-  associatedtype Index
-  associatedtype Indices
-  associatedtype _Key
-  associatedtype _Value
-  associatedtype Element
-  var __tree_: Tree { get }
-  var _start: _NodePtr { get }
-  var _end: _NodePtr { get }
-}
-
-@usableFromInline
-protocol ___Base: ___IndexBase
-where
-  Base: ___TreeBase & ___TreeIndex,
-  Tree == ___Tree<Base>,
   _Key == Tree._Key,
   _Value == Tree._Value
 {

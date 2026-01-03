@@ -209,10 +209,9 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   public func __construct_node(_ k: _Value) -> _NodePtr {
-//    withUnsafeMutablePointerToHeader { header in
-//      header.pointee.__construct_node(k)
-//    }
-    _header.__construct_node(k)
+    withUnsafeMutablePointerToHeader { header in
+      header.pointee.__construct_node(k)
+    }
   }
 
   @nonobjc

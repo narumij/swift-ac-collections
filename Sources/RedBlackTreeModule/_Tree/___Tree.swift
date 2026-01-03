@@ -22,7 +22,6 @@
 
 import Foundation
 
-public typealias ___TreeBase = ValueComparer & CompareTrait & ThreeWayComparator
 
 @_fixed_layout
 @_objc_non_lazy_realization

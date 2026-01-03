@@ -242,8 +242,6 @@ extension UnsafeTree {
       self._nullptr = _end_ptr + 1
       self.__begin_node_ = _end_ptr
       self.destroyNode = _end_ptr + 1
-      //      self.freshBucketCreate = UnsafeNodeFreshBucket<_Value>.create
-      //      self.freshBucketDispose = Self.___disposeBucketFunc
     }
     public var _nullptr: UnsafeMutablePointer<UnsafeNode>
     public var __begin_node_: UnsafeMutablePointer<UnsafeNode>
@@ -255,8 +253,6 @@ extension UnsafeTree {
     @usableFromInline var freshBucketLast: ReserverHeaderPointer?
     @usableFromInline var freshBucketCount: Int = 0
     @usableFromInline var freshPoolCapacity: Int = 0
-    //    @usableFromInline var freshBucketCreate: (Int) -> ReserverHeaderPointer
-    //    @usableFromInline let freshBucketDispose: (ReserverHeaderPointer?) -> Void
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       /// CoWの発火回数を観察するためのプロパティ
       @usableFromInline internal var copyCount: UInt = 0
@@ -300,9 +296,9 @@ extension UnsafeTree {
   @nonobjc
   @inlinable
   @inline(__always)
-  public var freshPoolUsedCount: Int {
+  public var freshPoolActualCount: Int {
     //    _header.freshPoolUsedCount
-    withUnsafeMutablePointerToHeader { $0.pointee.freshPoolUsedCount }
+    withUnsafeMutablePointerToHeader { $0.pointee.freshPoolActualCount }
   }
 }
 
@@ -371,21 +367,6 @@ extension UnsafeTree.Header {
   @inline(__always)
   public var count: Int {
     initializedCount - destroyCount
-  }
-}
-
-extension UnsafeTree.Header {
-
-  // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
-  @inlinable
-  @inline(__always)
-  mutating public
-    func ___node_alloc() -> _NodePtr
-  {
-    let p = popFresh()
-    assert(p != nil)
-    assert(p?.pointee.___node_id_ == -2)
-    return p!
   }
 }
 
@@ -518,7 +499,7 @@ extension UnsafeTree {
   func dumpTree(label: String = "") {
     print("==== UnsafeTree \(label) ====")
     print(" count:", count)
-    print(" freshPool:", freshPoolUsedCount, "/", freshPoolCapacity)
+    print(" freshPool:", freshPoolActualCount, "/", freshPoolCapacity)
     print(" destroyCount:", _header.destroyCount)
     print(" root:", __root.pointee.___node_id_ as Any)
     print(" begin:", __begin_node_.pointee.___node_id_ as Any)

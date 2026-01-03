@@ -37,8 +37,7 @@ protocol UnsafeNodeFreshPool {
   var freshBucketLast: ReserverHeaderPointer? { get set }
   var freshBucketCount: Int { get set }
   var freshPoolCapacity: Int { get set }
-  //  var freshBucketCreate: (Int) -> ReserverHeaderPointer { get }
-//  var freshBucketDispose: (ReserverHeaderPointer?) -> Void { get }
+  var _nullptr: NodePointer { get }
 }
 
 extension UnsafeNodeFreshPool {
@@ -61,7 +60,6 @@ extension UnsafeNodeFreshPool {
     // 2回連続で確保した場合の挙動が不定な気がしたが、両端保持しているリンクリストなので大丈夫だった
     assert(capacity != 0)
     let pointer = ReserverHeader.create(_Value.self, capacity: capacity)
-    //    let pointer = freshBucketCreate(capacity)
     if freshBucketHead == nil {
       freshBucketHead = pointer
     }
@@ -116,7 +114,6 @@ extension UnsafeNodeFreshPool {
     var reserverHead = freshBucketHead
     while let h = reserverHead {
       reserverHead = h.pointee.next
-//      freshBucketDispose(h)
       h.pointee.dispose(_Value.self)
       h.deinitialize(count: 1)
       UnsafeRawPointer(h).deallocate()
@@ -149,7 +146,7 @@ extension UnsafeNodeFreshPool {
   */
   @inlinable
   @inline(__always)
-  subscript(___node_id_: Int) -> NodePointer? {
+  subscript(___node_id_: Int) -> NodePointer {
     assert(___node_id_ >= 0)
     var remaining = ___node_id_
     var p = freshBucketHead
@@ -161,7 +158,23 @@ extension UnsafeNodeFreshPool {
       remaining -= cap
       p = h.pointee.next
     }
-    return nil
+    return _nullptr
+  }
+}
+
+
+extension UnsafeNodeFreshPool {
+
+  // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
+  @inlinable
+  @inline(__always)
+  mutating public
+    func ___node_alloc() -> NodePointer
+  {
+    let p = popFresh()
+    assert(p != nil)
+    assert(p?.pointee.___node_id_ == -2)
+    return p ?? _nullptr
   }
 }
 
@@ -169,7 +182,7 @@ extension UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
-  var freshPoolUsedCount: Int {
+  var freshPoolActualCount: Int {
     var count = 0
     var p = freshBucketHead
     while let h = p {

@@ -22,7 +22,7 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-protocol UnsafeNodeFreshPool {
+protocol UnsafeNodeFreshPool where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
 
   /*
    Design invariant:
@@ -32,18 +32,18 @@ protocol UnsafeNodeFreshPool {
   */
 
   associatedtype _Value
+  associatedtype _NodePtr
   var freshBucketHead: ReserverHeaderPointer? { get set }
   var freshBucketCurrent: ReserverHeaderPointer? { get set }
   var freshBucketLast: ReserverHeaderPointer? { get set }
   var freshBucketCount: Int { get set }
   var freshPoolCapacity: Int { get set }
-  var _nullptr: NodePointer { get }
+  var _nullptr: _NodePtr { get }
 }
 
 extension UnsafeNodeFreshPool {
   public typealias ReserverHeader = UnsafeNodeFreshBucket
   public typealias ReserverHeaderPointer = UnsafeMutablePointer<ReserverHeader>
-  public typealias NodePointer = UnsafeMutablePointer<UnsafeNode>
 }
 
 extension UnsafeNodeFreshPool {
@@ -75,7 +75,7 @@ extension UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
-  mutating func popFresh() -> NodePointer? {
+  mutating func popFresh() -> _NodePtr? {
     if let p = freshBucketCurrent?.pointee.pop() {
       return p
     }
@@ -137,7 +137,7 @@ extension UnsafeNodeFreshPool {
   */
   @inlinable
   @inline(__always)
-  subscript(___node_id_: Int) -> NodePointer {
+  subscript(___node_id_: Int) -> _NodePtr {
     assert(___node_id_ >= 0)
     var remaining = ___node_id_
     var p = freshBucketHead
@@ -160,7 +160,7 @@ extension UnsafeNodeFreshPool {
   @inlinable
   @inline(__always)
   mutating public
-    func ___node_alloc() -> NodePointer
+    func ___node_alloc() -> _NodePtr
   {
     let p = popFresh()
     assert(p != nil)

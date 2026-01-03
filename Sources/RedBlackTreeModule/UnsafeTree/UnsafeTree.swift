@@ -72,7 +72,7 @@ extension UnsafeTree {
     @inline(__always) get { withUnsafeMutablePointerToElements { $0.pointee } }
     _modify { yield &_end_ptr.pointee }
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
@@ -98,9 +98,11 @@ extension UnsafeTree {
     let storage = Tree.create(minimumCapacity: 2) { managedBuffer in
       return managedBuffer.withUnsafeMutablePointerToElements { _end_ptr in
         let _nullptr = _end_ptr + 1
-        _nullptr.initialize(to: UnsafeNode(___node_id_: .nullptr,__left_: _nullptr,__right_: _nullptr,__parent_: _nullptr))
+        _nullptr.initialize(
+          to: UnsafeNode(___node_id_: .nullptr, _nullpotr: _nullptr))
         // endノード用に初期化する
-        _end_ptr.initialize(to: UnsafeNode(___node_id_: .end,__left_: _nullptr,__right_: _nullptr,__parent_: _nullptr))
+        _end_ptr.initialize(
+          to: UnsafeNode(___node_id_: .end, _nullpotr: _nullptr))
         // ヘッダーを準備する
         var header = Header(_end_ptr: _end_ptr)
         // ノードを確保する
@@ -151,7 +153,7 @@ extension UnsafeTree {
           case .end:
             _end_ptr
           default:
-            _header_ptr.pointee[index] ?? _nullptr
+            _header_ptr.pointee[index]
           }
         }
 
@@ -170,8 +172,7 @@ extension UnsafeTree {
 
         while let s = source_nodes.next(), let d = _header_ptr.pointee.popFresh() {
           // メモリを連番で初期化
-//          d.initialize(to: UnsafeNode(___node_id_: ___node_id_))
-          d.initialize(to: UnsafeNode(___node_id_: ___node_id_,__left_: _nullptr,__right_: _nullptr,__parent_: _nullptr))
+          d.initialize(to: UnsafeNode(___node_id_: ___node_id_, _nullpotr: _nullptr))
           // 値を初期化
           UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
           // 残りを初期化
@@ -187,14 +188,17 @@ extension UnsafeTree {
         apply(&_end_ptr.pointee, &source_end.pointee)
 
         // __begin_nodeを初期化
-        _header_ptr.pointee.__begin_node_ = __node_ptr(source_header.pointee.__begin_node_.pointee.___node_id_)
+        _header_ptr.pointee.__begin_node_ = __node_ptr(
+          source_header.pointee.__begin_node_.pointee.___node_id_)
 
         // その他管理情報をコピー
         _header_ptr.pointee.initializedCount = source_header.pointee.initializedCount
         _header_ptr.pointee.destroyCount = source_header.pointee.destroyCount
-        _header_ptr.pointee.destroyNode = __node_ptr(source_header.pointee.destroyNode.pointee.___node_id_)
-        assert(_header_ptr.pointee.destroyNode.pointee.___node_id_
-               == source_header.pointee.destroyNode.pointee.___node_id_)
+        _header_ptr.pointee.destroyNode = __node_ptr(
+          source_header.pointee.destroyNode.pointee.___node_id_)
+        assert(
+          _header_ptr.pointee.destroyNode.pointee.___node_id_
+            == source_header.pointee.destroyNode.pointee.___node_id_)
 
         #if AC_COLLECTIONS_INTERNAL_CHECKS
           _header_ptr.pointee.copyCount = source_header.pointee.copyCount &+ 1
@@ -386,8 +390,10 @@ extension UnsafeTree.Header {
     assert(p != nil)
     assert(p.pointee.___node_id_ == -2)
     // ナンバリングとノード初期化の責務は移動できる(freshPoolUsedCountは使えない）
-//    p?.initialize(to: UnsafeNode(___node_id_: initializedCount))
-    p.initialize(to: UnsafeNode(___node_id_: initializedCount, __left_: _nullptr,__right_: _nullptr,__parent_: _nullptr))
+    //    p?.initialize(to: UnsafeNode(___node_id_: initializedCount))
+    p.initialize(
+      to: UnsafeNode(
+        ___node_id_: initializedCount, __left_: _nullptr, __right_: _nullptr, __parent_: _nullptr))
     UnsafeNode.initializeValue(p, to: k)
     assert(p.pointee.___node_id_ >= 0)
     initializedCount += 1
@@ -445,19 +451,27 @@ extension UnsafeTree {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal func ___node_ptr<Index: PointerResolvable>(_ index: Index) -> _NodePtr
-  where Index.Tree == UnsafeTree, Index.Pointer == _NodePtr {
-    self === index.__tree_ ? index.rawValue : (_header[index.___node_id_] ?? nullptr)
+  internal func ___node_ptr(_ index: Index) -> _NodePtr
+  where Index.Tree == UnsafeTree, Index._NodePtr == _NodePtr {
+#if true
+    // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
+    // endはシングルトン的にしたい気持ちもある
+    @inline(__always)
+    func ___NodePtr(_ p: Int) -> _NodePtr {
+      switch p {
+      case .nullptr:
+        return _nullptr
+      case .end:
+        return end
+      default:
+        return _header[p]
+      }
+    }
+    return self === index.__tree_ ? index.rawValue : ___NodePtr(index.___node_id_)
+#else
+    self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
+#endif
   }
-}
-
-@usableFromInline
-protocol PointerResolvable {
-  associatedtype Tree
-  associatedtype Pointer
-  var __tree_: Tree { get }
-  var rawValue: Pointer { get }
-  var ___node_id_: Int { get }
 }
 
 extension UnsafeNode {

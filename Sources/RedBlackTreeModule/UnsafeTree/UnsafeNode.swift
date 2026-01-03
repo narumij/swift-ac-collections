@@ -116,6 +116,19 @@ public struct UnsafeNode {
   @inline(__always)
   public init(
     ___node_id_: Int,
+    _nullpotr: Pointer
+  ) {
+    self.init(
+      ___node_id_: ___node_id_,
+      __left_: _nullpotr,
+      __right_: _nullpotr,
+      __parent_: _nullpotr)
+  }
+
+  @inlinable
+  @inline(__always)
+  public init(
+    ___node_id_: Int,
     __left_: Pointer,
     __right_: Pointer,
     __parent_: Pointer,

@@ -25,14 +25,13 @@
 @frozen struct UnsafeNodeFreshBucket {
 
   public typealias Header = UnsafeNodeFreshBucket
-  public typealias Node = UnsafeNode
   public typealias HeaderPointer = UnsafeMutablePointer<Header>
-  public typealias NodePointer = UnsafeMutablePointer<Node>
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
   @inlinable
   @inline(__always)
   internal init(
-    start: NodePointer,
+    start: _NodePtr,
     capacity: Int,
     strice: Int,
     alignment: Int
@@ -45,14 +44,14 @@
 
   public var count: Int = 0
   public let capacity: Int
-  public let start: NodePointer
+  public let start: _NodePtr
   public let stride: Int
   public let alignment: Int
   public var next: HeaderPointer? = nil
 
   @inlinable
   @inline(__always)
-  func advance(_ p: NodePointer, offset n: Int = 1) -> NodePointer {
+  func advance(_ p: _NodePtr, offset n: Int = 1) -> _NodePtr {
     UnsafeMutableRawPointer(p)
       .advanced(by: stride * n)
       .alignedUp(toMultipleOf: alignment)  // _Valueへのalignment
@@ -61,13 +60,13 @@
 
   @inlinable
   @inline(__always)
-  subscript(index: Int) -> NodePointer {
+  subscript(index: Int) -> _NodePtr {
     advance(start, offset: index)
   }
 
   @inlinable
   @inline(__always)
-  mutating func pop() -> NodePointer? {
+  mutating func pop() -> _NodePtr? {
     guard count < capacity else { return nil }
     let p = advance(start, offset: count)
     count += 1

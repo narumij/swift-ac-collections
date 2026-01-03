@@ -63,8 +63,6 @@ public struct UnsafeIndex<Base> where Base: ___TreeBase & ___TreeIndex {
   // CoWに関与できないので、Treeに対する破壊的変更は行わないこと
 }
 
-extension UnsafeIndex: PointerResolvable {}
-
 extension UnsafeIndex: Comparable {
 
   /// - Complexity: O(1)

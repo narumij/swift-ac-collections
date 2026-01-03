@@ -8,7 +8,7 @@ extension UnsafeTree {
     case .end:
       return end
     default:
-      return _header[p] ?? nullptr
+      return _header[p]
     }
   }
 }

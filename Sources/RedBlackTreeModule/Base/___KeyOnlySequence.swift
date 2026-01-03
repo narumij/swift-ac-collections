@@ -30,16 +30,6 @@ extension ___KeyOnlySequence {
   public static func ___pointee(_ __value: _Value) -> Element { __value }
 }
 
-extension ___KeyOnlySequence {
-
-  @inlinable
-  @inline(__always)
-  internal func _forEach(_ body: (_Value) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(__tree_[$0])
-    }
-  }
-}
 
 extension ___KeyOnlySequence {
 }
@@ -51,30 +41,6 @@ extension ___KeyOnlySequence {
   @inline(__always)
   internal func _sorted() -> [_Value] {
     __tree_.___copy_to_array(_start, _end)
-  }
-}
-
-extension ___KeyOnlySequence {
-}
-
-extension ___KeyOnlySequence {
-
-  // めんどくさくなったので、KeyValue側では標準実装を使っている
-  @inlinable
-  @inline(__always)
-  internal func _elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence {
-    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
-  }
-
-  // 制約で値の型が一致する必要があり、KeyValue側では標準実装を使っている
-  @inlinable
-  @inline(__always)
-  internal func _lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
-    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
   }
 }
 

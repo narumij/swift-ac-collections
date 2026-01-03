@@ -101,20 +101,6 @@ extension ___KeyValueSequence {
 
 extension ___KeyValueSequence {
 
-  @inlinable
-  @inline(__always)
-  internal func _forEach(_ body: (Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(Self.___element(__tree_[$0]))
-    }
-  }
-}
-
-extension ___KeyValueSequence {
-}
-
-extension ___KeyValueSequence {
-
   /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)

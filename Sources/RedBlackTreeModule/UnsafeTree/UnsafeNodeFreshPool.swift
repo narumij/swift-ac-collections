@@ -22,32 +22,32 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-protocol UnsafeNodeFreshPool {
-  
+protocol UnsafeNodeFreshPool where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
+
   /*
    Design invariant:
    - FreshPool may consist of multiple buckets in general.
    - Immediately after CoW, the pool must be constrained to a single bucket
      because index-based access is performed.
   */
-  
+
   associatedtype _Value
+  associatedtype _NodePtr
   var freshBucketHead: ReserverHeaderPointer? { get set }
   var freshBucketCurrent: ReserverHeaderPointer? { get set }
   var freshBucketLast: ReserverHeaderPointer? { get set }
   var freshBucketCount: Int { get set }
   var freshPoolCapacity: Int { get set }
-  var freshBucketDispose: (ReserverHeaderPointer?) -> Void { get }
+  var _nullptr: _NodePtr { get }
 }
 
 extension UnsafeNodeFreshPool {
-  public typealias ReserverHeader = UnsafeNodeFreshBucket<_Value>
+  public typealias ReserverHeader = UnsafeNodeFreshBucket
   public typealias ReserverHeaderPointer = UnsafeMutablePointer<ReserverHeader>
-  public typealias NodePointer = UnsafeMutablePointer<UnsafeNode>
 }
 
 extension UnsafeNodeFreshPool {
-  
+
   /*
    NOTE:
    Normally, FreshPool may grow by adding multiple buckets.
@@ -56,10 +56,9 @@ extension UnsafeNodeFreshPool {
    */
   @inlinable
   @inline(__always)
-  mutating func pushBucket(capacity: Int) {
-    // 2回連続で確保した場合の挙動が不定な気がしたが、両端保持しているリンクリストなので大丈夫だった
+  mutating func pushFreshBucket(capacity: Int) {
     assert(capacity != 0)
-    let pointer = ReserverHeader.create(capacity: capacity)
+    let pointer = Self.createBucket(capacity: capacity)
     if freshBucketHead == nil {
       freshBucketHead = pointer
     }
@@ -73,70 +72,52 @@ extension UnsafeNodeFreshPool {
     self.freshPoolCapacity += capacity
     freshBucketCount += 1
   }
-  
+
   @inlinable
   @inline(__always)
-  mutating func popFresh() -> NodePointer? {
+  mutating func popFresh() -> _NodePtr? {
     if let p = freshBucketCurrent?.pointee.pop() {
       return p
     }
     nextBucket()
     return freshBucketCurrent?.pointee.pop()
   }
-  
+
   @inlinable
   @inline(__always)
   mutating func nextBucket() {
     freshBucketCurrent = freshBucketCurrent?.pointee.next
   }
-  
+
   @inlinable
   @inline(__always)
   func ___clearFresh() {
     var reserverHead = freshBucketHead
     while let h = reserverHead {
-      h.pointee.clear()
+      h.pointee.clear(_Value.self)
       reserverHead = h.pointee.next
     }
   }
-  
-  @inlinable
-//  @inline(__always)
-  static func ___disposeBucketFunc(_ pointer: ReserverHeaderPointer?) {
-    pointer!.pointee.dispose()
-    pointer!.deinitialize(count: 1)
-    UnsafeRawPointer(pointer!).deallocate()
-  }
-  
-  @inlinable
-  @inline(__always)
-  func ___disposeBucket(_ pointer: ReserverHeaderPointer) {
-    // ここで__swift_instantiateGenericMetadataが生じていて、出来ればこれをキャンセルしたい
-    // TODO: Value の deinit 専用 thunkというのをChatGPTがおすすめしてくる。再度検討すること
-//    pointer.pointee.dispose()
-//    pointer.deinitialize(count: 1)
-//    UnsafeRawPointer(pointer).deallocate()
-    // クロージャ化することで型情報を維持している。型情報を維持することでペナルティを避けられる。
-    freshBucketDispose(pointer)
-  }
-  
+
   @inlinable
   @inline(__always)
   func ___disposeFreshPool() {
     var reserverHead = freshBucketHead
     while let h = reserverHead {
       reserverHead = h.pointee.next
-      ___disposeBucket(h)
+      Self.deinitializeNodes(h)
+      h.deinitialize(count: 1)
+      UnsafeRawPointer(h).deallocate()
     }
   }
 }
 
 extension UnsafeNodeFreshPool {
-  
+
   @inlinable
   @inline(__always)
   func makeInitializedIterator() -> UnsafeInitializedNodeIterator<_Value> {
-    return UnsafeInitializedNodeIterator<_Value>(pointer: freshBucketHead)
+    return UnsafeInitializedNodeIterator<_Value>(bucket: freshBucketHead)
   }
 }
 
@@ -147,16 +128,16 @@ extension UnsafeNodeFreshPool {
    After a Copy-on-Write operation, node access is performed via index-based
    lookup. To guarantee O(1) address resolution and avoid bucket traversal,
    the FreshPool must contain exactly ONE bucket at this point.
-
+  
    Invariant:
      - During and immediately after CoW, `reserverBucketCount == 1`
      - Index-based access relies on a single contiguous bucket
-
+  
    Violating this invariant may cause excessive traversal or undefined behavior.
   */
   @inlinable
   @inline(__always)
-  subscript(___node_id_: Int) -> NodePointer? {
+  subscript(___node_id_: Int) -> _NodePtr {
     assert(___node_id_ >= 0)
     var remaining = ___node_id_
     var p = freshBucketHead
@@ -168,7 +149,23 @@ extension UnsafeNodeFreshPool {
       remaining -= cap
       p = h.pointee.next
     }
-    return nil
+    return _nullptr
+  }
+}
+
+
+extension UnsafeNodeFreshPool {
+
+  // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
+  @inlinable
+  @inline(__always)
+  mutating public
+    func ___node_alloc() -> _NodePtr
+  {
+    let p = popFresh()
+    assert(p != nil)
+    assert(p?.pointee.___node_id_ == -2)
+    return p ?? _nullptr
   }
 }
 
@@ -176,7 +173,7 @@ extension UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
-  var freshPoolUsedCount: Int {
+  var freshPoolActualCount: Int {
     var count = 0
     var p = freshBucketHead
     while let h = p {
@@ -188,22 +185,22 @@ extension UnsafeNodeFreshPool {
 }
 
 #if DEBUG
-extension UnsafeNodeFreshPool {
+  extension UnsafeNodeFreshPool {
 
-  func dumpFreshPool(label: String = "") {
-    print("==== FreshPool \(label) ====")
-    print(" bucketCount:", freshBucketCount)
-    print(" capacity:", freshPoolCapacity)
-    print(" usedCount:", freshPoolUsedCount)
+    func dumpFreshPool(label: String = "") {
+      print("==== FreshPool \(label) ====")
+      print(" bucketCount:", freshBucketCount)
+      print(" capacity:", freshPoolCapacity)
+      print(" usedCount:", freshPoolActualCount)
 
-    var i = 0
-    var p = freshBucketHead
-    while let h = p {
-      h.pointee.dump(label: "bucket[\(i)]")
-      p = h.pointee.next
-      i += 1
+      var i = 0
+      var p = freshBucketHead
+      while let h = p {
+        h.pointee.dump(label: "bucket[\(i)]")
+        p = h.pointee.next
+        i += 1
+      }
+      print("===========================")
     }
-    print("===========================")
   }
-}
 #endif

@@ -52,7 +52,7 @@ public struct UnsafeIndex<Base> where Base: ___TreeBase & ___TreeIndex {
     assert(rawValue != tree.nullptr)
     self.__tree_ = tree
     self.rawValue = rawValue
-    self.___node_id_ = rawValue!.pointee.___node_id_
+    self.___node_id_ = rawValue.pointee.___node_id_
   }
 
   /*
@@ -62,8 +62,6 @@ public struct UnsafeIndex<Base> where Base: ___TreeBase & ___TreeIndex {
   // 性能上の問題でCoWに関与できない設計としている
   // CoWに関与できないので、Treeに対する破壊的変更は行わないこと
 }
-
-extension UnsafeIndex: PointerResolvable {}
 
 extension UnsafeIndex: Comparable {
 
@@ -199,7 +197,7 @@ extension UnsafeIndex {
   @inlinable
   public var pointee: Pointee? {
     __tree_.___is_subscript_null(rawValue)
-      ? nil : Base.___pointee(UnsafePair<_Value>.__value_(rawValue)!.pointee)
+      ? nil : Base.___pointee(UnsafePair<_Value>.valuePointer(rawValue)!.pointee)
   }
 }
 
@@ -214,18 +212,18 @@ extension UnsafeIndex {
 
   extension UnsafeIndex {
     internal static func unsafe(tree: UnsafeTree<Base>, rawValue: _NodePtr) -> Self {
-      .init(_unsafe_tree: tree, rawValue: rawValue, node_id: rawValue?.pointee.___node_id_ ?? -2)
+      .init(_unsafe_tree: tree, rawValue: rawValue, node_id: rawValue.pointee.___node_id_)
     }
     internal static func unsafe(tree: UnsafeTree<Base>, rawValue: Int) -> Self {
-      if rawValue == -2 {
-        return .init(_unsafe_tree: tree, rawValue: nil, node_id: -2)
+      if rawValue == .nullptr {
+        return .init(_unsafe_tree: tree, rawValue: tree.nullptr, node_id: .nullptr)
       }
-      if rawValue == -1 {
-        return .init(_unsafe_tree: tree, rawValue: tree.end, node_id: -1)
+      if rawValue == .end {
+        return .init(_unsafe_tree: tree, rawValue: tree.end, node_id: .end)
       }
       return .init(
         _unsafe_tree: tree, rawValue: tree._header[rawValue],
-        node_id: tree._header[rawValue]?.pointee.___node_id_ ?? -2)
+        node_id: tree._header[rawValue].pointee.___node_id_)
     }
   }
 #endif
@@ -341,12 +339,12 @@ extension UnsafeIndex {
   @inlinable
   @inline(__always)
   package func rawValue(_ tree: Tree) -> _NodePtr {
-    tree.___resolve_node_pointer(self)
+    tree.___node_ptr(self)
   }
 
   @inlinable
   @inline(__always)
   package var _rawValue: Int {
-    rawValue?.pointee.___node_id_ ?? -2
+    rawValue.pointee.___node_id_
   }
 }

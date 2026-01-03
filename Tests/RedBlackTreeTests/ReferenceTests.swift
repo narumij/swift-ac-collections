@@ -12,12 +12,12 @@ final class ReferenceTests: XCTestCase {
 
   nonisolated(unsafe) static var count: Int = 0
 
-  class Dummy: Comparable {
-    static func < (lhs: ReferenceTests.Dummy, rhs: ReferenceTests.Dummy) -> Bool {
+  class DeinitializeCounter: Comparable {
+    static func < (lhs: ReferenceTests.DeinitializeCounter, rhs: ReferenceTests.DeinitializeCounter) -> Bool {
       lhs.num < rhs.num
     }
 
-    static func == (lhs: ReferenceTests.Dummy, rhs: ReferenceTests.Dummy) -> Bool {
+    static func == (lhs: ReferenceTests.DeinitializeCounter, rhs: ReferenceTests.DeinitializeCounter) -> Bool {
       lhs.num == rhs.num
     }
 
@@ -32,18 +32,16 @@ final class ReferenceTests: XCTestCase {
   }
 
   override func setUpWithError() throws {
-    // Put setup code here. This method is called before the invocation of each test method in the class.
     Self.count = 0
   }
 
   override func tearDownWithError() throws {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+
     Self.count = 0
   }
 
   func testExample() throws {
-    throw XCTSkip("まだしばらく通らないので")
-    var a = RedBlackTreeSet<Dummy>((0..<3).map { Dummy(num: $0) })
+    var a = RedBlackTreeSet<DeinitializeCounter>((0..<3).map { DeinitializeCounter(num: $0) })
     XCTAssertEqual(Self.count, 3)
     for i in a.indices {
       a.remove(at: i)
@@ -52,17 +50,9 @@ final class ReferenceTests: XCTestCase {
   }
 
   func testExample2() throws {
-    throw XCTSkip("まだしばらく通らないので")
-    var a = RedBlackTreeSet<Dummy>((0..<3).map { Dummy(num: $0) })
+    var a = RedBlackTreeSet<DeinitializeCounter>((0..<3).map { DeinitializeCounter(num: $0) })
     XCTAssertEqual(Self.count, 3)
     a.removeAll(keepingCapacity: true)
     XCTAssertEqual(Self.count, 0)
-  }
-
-  func testPerformanceExample() throws {
-    // This is an example of a performance test case.
-    self.measure {
-      // Put the code you want to measure the time of here.
-    }
   }
 }

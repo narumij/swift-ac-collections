@@ -22,11 +22,12 @@
 
 @usableFromInline
 protocol UnsafeNodeRecyclePool
-where _NodePtr == UnsafeMutablePointer<UnsafeNode>? {
+where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
   associatedtype _Value
   associatedtype _NodePtr
   var destroyNode: _NodePtr { get set }
   var destroyCount: Int { get set }
+  var _nullptr: _NodePtr { get }
 }
 
 extension UnsafeNodeRecyclePool {
@@ -36,11 +37,17 @@ extension UnsafeNodeRecyclePool {
   mutating func ___pushRecycle(_ p: _NodePtr) {
     assert(p != nil)
     assert(destroyNode != p)
-    UnsafePair<_Value>.__value_(p)?.deinitialize(count: 1)
-    p?.pointee.___needs_deinitialize = false
-    p?.pointee.__left_ = destroyNode
-    p?.pointee.__right_ = p
-    p?.pointee.__parent_ = nil
+#if DEBUG
+    p.pointee.___recycle_count += 1
+#endif
+    // 値型の場合、この処理を削りたい誘惑がある
+    UnsafePair<_Value>.valuePointer(p)?.deinitialize(count: 1)
+    p.pointee.___needs_deinitialize = false
+    p.pointee.__left_ = destroyNode
+#if GRAPHVIZ_DEBUG
+    p!.pointee.__right_ = nil
+    p!.pointee.__parent_ = nil
+#endif
     destroyNode = p
     destroyCount += 1
   }
@@ -49,8 +56,8 @@ extension UnsafeNodeRecyclePool {
   @inline(__always)
   mutating func ___popRecycle() -> _NodePtr {
     assert(destroyCount > 0)
-    let p = destroyNode?.pointee.__right_
-    destroyNode = p?.pointee.__left_
+    let p = destroyNode
+    destroyNode = p.pointee.__left_
     destroyCount -= 1
     return p
   }
@@ -58,7 +65,31 @@ extension UnsafeNodeRecyclePool {
   @inlinable
   @inline(__always)
   mutating func ___clearRecycle() {
-    destroyNode = nil
+    destroyNode = _nullptr
     destroyCount = 0
+  }
+}
+
+extension UnsafeNodeRecyclePool {
+  @inlinable
+  @inline(__always)
+  internal var ___destroyNodes: [Int] {
+    var nodes: [Int] = []
+    var last = destroyNode
+    while last != _nullptr {
+      nodes.append(last.pointee.___node_id_)
+      last = last.pointee.__left_
+    }
+    return nodes
+  }
+}
+
+extension UnsafeTree {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal var ___destroyNodes: [Int] {
+    _header.___destroyNodes
   }
 }

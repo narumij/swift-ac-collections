@@ -30,7 +30,7 @@ public enum RedBlackTreeIteratorUnsafe<Base> where Base: ___TreeBase & ___TreeIn
 
     public typealias Tree = UnsafeTree<Base>
     public typealias _Value = Tree._Value
-    public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>?
+    public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     @usableFromInline
     internal let __tree_: Tree

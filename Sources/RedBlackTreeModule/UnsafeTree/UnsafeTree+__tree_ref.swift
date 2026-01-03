@@ -20,20 +20,20 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-extension UnsafeTree {
+extension UnsafeTree: TreeNodeRefProtocol {
   
   @nonobjc
   @inlinable
   @inline(__always)
   func __left_ref(_ p: _NodePtr) -> _NodeRef {
-    return withUnsafeMutablePointer(to: &p!.pointee.__left_) { $0 }
+    return withUnsafeMutablePointer(to: &p.pointee.__left_) { $0 }
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __right_ref(_ p: _NodePtr) -> _NodeRef {
-    return withUnsafeMutablePointer(to: &p!.pointee.__right_) { $0 }
+    return withUnsafeMutablePointer(to: &p.pointee.__right_) { $0 }
   }
 
   @nonobjc

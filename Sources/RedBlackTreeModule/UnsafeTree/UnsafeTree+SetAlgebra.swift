@@ -191,10 +191,10 @@ extension UnsafeTree {
         (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, self[__first1])
         __first1 = __tree_next_iter(__first1)
       } else if value_comp(other.__get_value(__first2), self.__get_value(__first1)) {
-        __first2 = __tree_next_iter(__first2)
+        __first2 = other.__tree_next_iter(__first2)
       } else {
         __first1 = __tree_next_iter(__first1)
-        __first2 = __tree_next_iter(__first2)
+        __first2 = other.__tree_next_iter(__first2)
       }
     }
     return __result_

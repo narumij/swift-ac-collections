@@ -115,13 +115,26 @@ public struct UnsafeNode {
   @inlinable
   @inline(__always)
   public init(
-    index: Int,
-    __left_: Pointer? = nil,
-    __right_: Pointer? = nil,
-    __parent_: Pointer? = nil,
+    ___node_id_: Int,
+    _nullpotr: Pointer
+  ) {
+    self.init(
+      ___node_id_: ___node_id_,
+      __left_: _nullpotr,
+      __right_: _nullpotr,
+      __parent_: _nullpotr)
+  }
+
+  @inlinable
+  @inline(__always)
+  public init(
+    ___node_id_: Int,
+    __left_: Pointer,
+    __right_: Pointer,
+    __parent_: Pointer,
     __is_black_: Bool = false
   ) {
-    self.___node_id_ = index
+    self.___node_id_ = ___node_id_
     self.__left_ = __left_
     self.__right_ = __right_
     self.__parent_ = __parent_
@@ -134,21 +147,21 @@ public struct UnsafeNode {
   /// ---
   ///
   /// 赤黒木ノードの左の子ノードを指すポインタ。
-  public var __left_: Pointer?
+  public var __left_: Pointer
 
   /// Right child pointer of this red-black tree node.
   ///
   /// ---
   ///
   /// 赤黒木ノードの右の子ノードを指すポインタ。
-  public var __right_: Pointer?
+  public var __right_: Pointer
 
   /// Parent pointer of this red-black tree node.
   ///
   /// ---
   ///
   /// 赤黒木ノードの親ノードを指すポインタ。
-  public var __parent_: Pointer?
+  public var __parent_: Pointer
   // IndexアクセスでCoWが発生した場合のフォローバックとなる
   // TODO: 不変性が維持されているか考慮すること
   /// A temporary node identifier assigned in initialization order.
@@ -166,6 +179,8 @@ public struct UnsafeNode {
   /// 通常はコピー処理中にのみ参照される。
   /// CoW により木のインスタンスが分離した後でも、
   /// この ID を用いて等価なノード同士を対応付けることができる。
+  ///
+  /// nullptrは-2、endは-1をIDにもつ
   public var ___node_id_: Int
   /// Color flag of this red-black tree node.
   ///
@@ -190,90 +205,64 @@ public struct UnsafeNode {
   public var ___needs_deinitialize: Bool
   // メモリ管理をちゃんとするために隙間にねじ込んだ
   // TODO: メモリ管理に整合性があるか考慮すること
+  #if DEBUG
+    public var ___recycle_count: Int = 0
+  #endif
 }
 
-public enum UnsafePair<_Value> {
-
-  public typealias Pointer = UnsafePointer<UnsafeNode>
-  public typealias MutablePointer = UnsafeMutablePointer<UnsafeNode>
+extension UnsafeNode {
 
   @inlinable
   @inline(__always)
-  static func _allocationSize() -> (size: Int, alignment: Int) {
-    let numBytes = MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride
-
-    let nodeAlignment = MemoryLayout<UnsafeNode>.alignment
-    let valueAlignment = MemoryLayout<_Value>.alignment
-
-    if valueAlignment <= nodeAlignment {
-      return (numBytes, MemoryLayout<UnsafeNode>.alignment)
-    }
-    
-    return (
-      numBytes + valueAlignment - nodeAlignment,
-      MemoryLayout<_Value>.alignment
-    )
-  }
-
-  @inlinable
-  @inline(__always)
-  static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
-    let (bytes, alignment) = _allocationSize()
-    return (bytes * capacity, alignment)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func pointer(from storage: UnsafeMutableRawPointer) -> MutablePointer {
-    let headerAlignment = MemoryLayout<UnsafeNode>.alignment
-    let elementAlignment = MemoryLayout<_Value>.alignment
-
-    if elementAlignment <= headerAlignment {
-      return storage.assumingMemoryBound(to: UnsafeNode.self)
-    }
-
-    return storage.advanced(by: MemoryLayout<UnsafeNode>.stride)
-      .alignedUp(for: _Value.self)
-      .advanced(by: -MemoryLayout<UnsafeNode>.stride)
-      .assumingMemoryBound(to: UnsafeNode.self)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func advance(_ p: MutablePointer, _ n: Int = 1) -> MutablePointer {
-    UnsafeMutableRawPointer(p)
-      .advanced(by: (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride) * n)
-      .alignedUp(for: UnsafeNode.self)
-      .assumingMemoryBound(to: UnsafeNode.self)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func __value_(_ p: Pointer?) -> UnsafePointer<_Value>? {
-    guard let p else { return nil }
-    return UnsafeRawPointer(p.advanced(by: 1))
+  static func valuePointer<_Value>(_ pointer: UnsafeMutablePointer<Self>?) -> UnsafeMutablePointer<
+    _Value
+  >? {
+    guard let pointer else { return nil }
+    return UnsafeMutableRawPointer(pointer.advanced(by: 1))
       .assumingMemoryBound(to: _Value.self)
   }
 
   @inlinable
   @inline(__always)
-  static func __value_(_ p: Pointer) -> UnsafePointer<_Value> {
-    UnsafeRawPointer(p.advanced(by: 1))
+  static func valuePointer<_Value>(_ pointer: UnsafeMutablePointer<Self>) -> UnsafeMutablePointer<
+    _Value
+  > {
+    UnsafeMutableRawPointer(pointer.advanced(by: 1))
       .assumingMemoryBound(to: _Value.self)
   }
 
   @inlinable
   @inline(__always)
-  static func __value_(_ p: MutablePointer?) -> UnsafeMutablePointer<_Value>? {
-    guard let p else { return nil }
-    return UnsafeMutableRawPointer(p.advanced(by: 1))
+  static func value<_Value>(_ pointer: UnsafeMutablePointer<Self>) -> _Value {
+    UnsafeMutableRawPointer(pointer.advanced(by: 1))
       .assumingMemoryBound(to: _Value.self)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func __value_(_ p: MutablePointer) -> UnsafeMutablePointer<_Value> {
-    UnsafeMutableRawPointer(p.advanced(by: 1))
-      .assumingMemoryBound(to: _Value.self)
+      .pointee
   }
 }
+
+extension UnsafeNode {
+
+  @inlinable
+  @inline(__always)
+  static func initializeValue<_Value>(_ p: UnsafeMutablePointer<UnsafeNode>, to: _Value) {
+    p.advanced(by: 1)
+      .withMemoryRebound(to: _Value.self, capacity: 1) { pointer in
+        pointer.initialize(to: to)
+      }
+  }
+
+  @inlinable
+  @inline(__always)
+  static func deinitialize<_Value>(_ t: _Value.Type, _ p: UnsafeMutablePointer<UnsafeNode>) {
+    if p.pointee.___needs_deinitialize {
+      UnsafeMutableRawPointer(p.advanced(by: 1))
+        .alignedUp(for: _Value.self)
+        .assumingMemoryBound(to: _Value.self)
+        .deinitialize(count: 1)
+    }
+    p.deinitialize(count: 1)
+  }
+}
+
+
+

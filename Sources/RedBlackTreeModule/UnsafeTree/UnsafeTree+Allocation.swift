@@ -15,10 +15,31 @@ protocol UnsafeTreeAllcationBody {
 
 extension UnsafeTree: UnsafeTreeAllcationBody {}
 extension UnsafeTree.Header: UnsafeTreeAllocationHeader {}
+
+// TODO: 確保サイズ毎所要時間をのアロケーションとデアロケーションの両方で測ること
+
+#if ALLOCATION_DRILL
+extension UnsafeTree: UnsafeTreeAllcationDrill {}
+#else
 //extension UnsafeTree: UnsafeTreeAllcation0 {}
 //extension UnsafeTree: UnsafeTreeAllcation1 {}
 extension UnsafeTree: UnsafeTreeAllcation2 {}
 //extension UnsafeTree: UnsafeTreeAllcation3 {}
+#endif
+
+public nonisolated(unsafe) var allocationChunkSize: Int = 0
+
+@usableFromInline
+protocol UnsafeTreeAllcationDrill: UnsafeTreeAllcationBody {}
+
+extension UnsafeTreeAllcationDrill {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+    Swift.max(minimumCapacity, freshPoolCapacity + allocationChunkSize)
+  }
+}
 
 @usableFromInline
 protocol UnsafeTreeAllcation3: UnsafeTreeAllcationBody {}
@@ -37,7 +58,7 @@ extension UnsafeTreeAllcation3 {
 
     let s0 = MemoryLayout<UnsafeNode>.stride
     let s1 = MemoryLayout<_Value>.stride
-    let s2 = MemoryLayout<UnsafeNodeFreshBucket<_Value>>.stride
+    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
     let a2 = 0 // MemoryLayout<UnsafeNodeFreshBucket<_Value>>.alignment
 
     if minimumCapacity <= 2 {
@@ -75,7 +96,7 @@ extension UnsafeTreeAllcation2 {
 
     let s0 = MemoryLayout<UnsafeNode>.stride
     let s1 = MemoryLayout<_Value>.stride
-    let s2 = MemoryLayout<UnsafeNodeFreshBucket<_Value>>.stride
+    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
     let a2 = 0 // MemoryLayout<UnsafeNodeFreshBucket<_Value>>.alignment
 
     if minimumCapacity <= 2 {
@@ -123,8 +144,8 @@ extension UnsafeTreeAllcation1 {
 
     let s0 = MemoryLayout<UnsafeNode>.stride
     let s1 = MemoryLayout<_Value>.stride
-    let s2 = MemoryLayout<UnsafeNodeFreshBucket<_Value>>.stride
-    let a2 = MemoryLayout<UnsafeNodeFreshBucket<_Value>>.alignment
+    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
+    let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
 
     let (small, large) = _header.initializedCount < 2048 ? (31, 31) : (15, 15)
 

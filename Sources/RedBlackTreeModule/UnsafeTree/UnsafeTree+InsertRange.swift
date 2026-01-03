@@ -175,7 +175,7 @@ extension UnsafeTree {
         __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
         __max_node = __nd
       } else {
-        var __parent: _NodePtr = nil
+        var __parent: _NodePtr = __tree_.nullptr
         let __child = __tree_.__find_leaf_high(&__parent, __tree_.__get_value(__nd))
         __tree_.__insert_node_at(__parent, __child, __nd)
       }
@@ -326,7 +326,7 @@ extension UnsafeTree {
         __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
         __max_node = __nd
       } else {
-        var __parent: _NodePtr = nil
+        var __parent: _NodePtr = __tree_.nullptr
         let __child = __tree_.__find_leaf_high(&__parent, __tree_.__get_value(__nd))
         __tree_.__insert_node_at(__parent, __child, __nd)
       }

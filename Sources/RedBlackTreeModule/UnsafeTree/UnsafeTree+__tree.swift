@@ -20,117 +20,208 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+// MARK: - TreePointer
+
 extension UnsafeTree {
 
   @nonobjc
   @inlinable
   @inline(__always)
   public var nullptr: _NodePtr {
-    nil
+    _nullptr
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public var end: _NodePtr {
+    _end_ptr
   }
 }
 
-extension UnsafeTree: TreeNodeProtocol {
+// MARK: - TreeEndNodeProtocol
+
+extension UnsafeTree: TreeEndNodeProtocol {
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __left_(_ p: _NodePtr) -> _NodePtr {
-    return p!.pointee.__left_
+    return p.pointee.__left_
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __left_unsafe(_ p: _NodePtr) -> _NodePtr {
-    return p!.pointee.__left_
+    return p.pointee.__left_
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    lhs!.pointee.__left_ = rhs
-    return
+    lhs.pointee.__left_ = rhs
   }
+}
+
+// MARK: - TreeNodeProtocol
+
+extension UnsafeTree: TreeNodeProtocol {
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __right_(_ p: _NodePtr) -> _NodePtr {
-    return p!.pointee.__right_
+    return p.pointee.__right_
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    lhs!.pointee.__right_ = rhs
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func __parent_(_ p: _NodePtr) -> _NodePtr {
-    return p!.pointee.__parent_
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
-    return p!.pointee.__parent_
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    lhs!.pointee.__parent_ = rhs
+    lhs.pointee.__right_ = rhs
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __is_black_(_ p: _NodePtr) -> Bool {
-    return p!.pointee.__is_black_
+    return p.pointee.__is_black_
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
-    lhs!.pointee.__is_black_ = rhs
+    lhs.pointee.__is_black_ = rhs
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func __parent_(_ p: _NodePtr) -> _NodePtr {
+    return p.pointee.__parent_
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+    lhs.pointee.__parent_ = rhs
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
+    return p.pointee.__parent_
   }
 }
 
-extension UnsafeTree: TreeNodeRefProtocol {}
+// MARK: - TreeNodeValueProtocol
 
 extension UnsafeTree {
 
   @nonobjc
   @inlinable
   @inline(__always)
-  internal var __root: _NodePtr {
-    _read { yield __left_ }
+  func __get_value(_ p: _NodePtr) -> _Key {
+    Base.__key(UnsafePair<_Value>.valuePointer(p)!.pointee)
   }
+}
+
+// MARK: - BeginNodeProtocol
+
+extension UnsafeTree {
+
+  @nonobjc
+  @inlinable
+  public var __begin_node_: _NodePtr {
+    @inline(__always) get { withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ } }
+//    set { withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ = newValue } }
+//    @inline(__always) _read { yield _header.__begin_node_ }
+//    @inline(__always) _modify { yield &_header.__begin_node_ }
+    @inline(__always) set { withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ = newValue } }
+  }
+}
+
+// MARK: - EndNodeProtocol
+
+extension UnsafeTree {
+
+  @nonobjc
+  @inlinable
+  var __end_node: _NodePtr {
+    @inline(__always) get { withUnsafeMutablePointerToElements { $0 } }
+  }
+}
+
+// MARK: - RootProtocol
+
+extension UnsafeTree {
+
+  #if !DEBUG
+    @nonobjc
+    @inlinable
+    @inline(__always)
+    internal var __root: _NodePtr {
+      withUnsafeMutablePointerToElements { $0.pointee.__left_ }
+    }
+  #else
+    @nonobjc
+    @inlinable
+    @inline(__always)
+    internal var __root: _NodePtr {
+      get { _end.__left_ }
+      set { _end.__left_ = newValue }
+    }
+  #endif
+
+  // MARK: - RootPtrProtocol
 
   @nonobjc
   @inlinable
   @inline(__always)
   internal func __root_ptr() -> _NodeRef {
-    withUnsafeMutablePointer(to: &__left_) { $0 }
+    withUnsafeMutablePointer(to: &_end.__left_) { $0 }
   }
 }
+
+// MARK: - SizeProtocol
 
 extension UnsafeTree {
 
   @nonobjc
   @inlinable
   var __size_: Int {
-    @inline(__always)
-    _read { yield count }
+    get { withUnsafeMutablePointerToHeader { $0.pointee.count } }
     set { /* NOP */  }
+  }
+}
+
+// MARK: - AllocatorProtocol
+
+
+
+extension UnsafeTree {
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public func __construct_node(_ k: _Value) -> _NodePtr {
+    withUnsafeMutablePointerToHeader { header in
+      header.pointee.__construct_node(k)
+    }
+  }
+
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal func destroy(_ p: _NodePtr) {
+    withUnsafeMutablePointerToHeader {
+      $0.pointee.___pushRecycle(p)
+    }
   }
 }
 
@@ -140,26 +231,19 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   internal func __value_(_ p: _NodePtr) -> _Value {
-    UnsafePair<Tree._Value>.__value_(p)!.pointee
+    UnsafePair<Tree._Value>.valuePointer(p)!.pointee
   }
 
   @nonobjc
   @inlinable
   @inline(__always)
   internal func ___element(_ p: _NodePtr, _ __v: _Value) {
-    UnsafePair<Tree._Value>.__value_(p)!.pointee = __v
+    UnsafePair<Tree._Value>.valuePointer(p)!.pointee = __v
   }
 }
 
 extension UnsafeTree: ValueComparator {}
 extension UnsafeTree: BoundProtocol {
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func __get_value(_ p: _NodePtr) -> _Key {
-    Base.__key(UnsafePair<_Value>.__value_(p)!.pointee)
-  }
 
   @nonobjc
   @inlinable
@@ -173,13 +257,6 @@ extension UnsafeTree: BoundProtocol {
   @inline(__always)
   var isMulti: Bool {
     Base.isMulti
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  var __end_node: _NodePtr {
-    _read { yield end }
   }
 }
 

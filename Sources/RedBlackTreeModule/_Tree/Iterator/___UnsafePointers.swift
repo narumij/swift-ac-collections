@@ -45,7 +45,7 @@ where Base: ___TreeBase {
   @inlinable
   @inline(__always)
   internal mutating func next() -> _NodePtr? {
-    guard __first != __last else { return nil }
+    guard __first != __last else { return __tree_.nullptr }
     defer { __first = __tree_.__tree_next_iter(__first) }
     return __first
   }

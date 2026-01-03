@@ -20,6 +20,9 @@ var defines: [String] = [
   "USE_UNSAFE_TREE",
 
   //"USE_OLD_FIND",
+  
+  
+//  "ALLOCATION_DRILL" // リリース時はオフ
 ]
 
 var _settings: [SwiftSetting] =
@@ -104,16 +107,6 @@ let package = Package(
       swiftSettings: _settings
     ),
     .executableTarget(
-      name: "Executable",
-      dependencies: [
-        //         .product(name: "Collections", package: "swift-collections"),
-        "RedBlackTreeModule",
-        "PermutationModule",
-      ],
-      path: "Tests/Executable",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
       name: "Benchmark0",
       dependencies: [
         "RedBlackTreeModule",
@@ -123,5 +116,49 @@ let package = Package(
       path: "Benchmarks/Benchmark0",
       swiftSettings: _settings
     ),
+    .executableTarget(
+      name: "Benchmark1",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Benchmarks/Benchmark1",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "Benchmark2",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Benchmarks/Benchmark2",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "Executable",
+      dependencies: [
+        //         .product(name: "Collections", package: "swift-collections"),
+        "RedBlackTreeModule",
+        "PermutationModule",
+      ],
+      path: "Tests/Executables/Executable",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "SimpleInsert",
+      dependencies: [
+        "AcCollections",
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Tests/Executables/SimpleInsert"),
+    .executableTarget(
+      name: "SimpleRemove",
+      dependencies: [
+        "AcCollections",
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Tests/Executables/SimpleRemove"),
   ]
 )

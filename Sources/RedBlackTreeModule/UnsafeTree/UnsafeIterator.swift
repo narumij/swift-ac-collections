@@ -24,42 +24,41 @@
 struct UnsafeInitializedNodeIterator<_Value>: IteratorProtocol {
 
   @usableFromInline
-  typealias Header = UnsafeNodeFreshBucket<_Value>
+  typealias Bucket = UnsafeNodeFreshBucket
 
   @usableFromInline
-  typealias HeaderPointer = UnsafeMutablePointer<Header>
+  typealias BucketPointer = UnsafeMutablePointer<Bucket>
 
   @usableFromInline
   typealias ElementPointer = UnsafeMutablePointer<UnsafeNode>
 
   @inlinable
   @inline(__always)
-  internal init(pointer: HeaderPointer?) {
-    self.pointer = pointer
+  internal init(bucket: BucketPointer?) {
+    self.bucket = bucket
   }
 
   @usableFromInline
-  var pointer: HeaderPointer?
+  var bucket: BucketPointer?
 
   @usableFromInline
-  var offset: Int = 0
+  var nodeOffset: Int = 0
 
   @inlinable
   @inline(__always)
   mutating func next() -> ElementPointer? {
 
-    while let h = pointer, offset == h.pointee.count {
-      pointer = h.pointee.next
-      offset = 0
+    while let bucket, nodeOffset == bucket.pointee.count {
+      self.bucket = bucket.pointee.next
+      nodeOffset = 0
     }
 
-    guard let h = pointer else {
+    guard let h = bucket else {
       return nil
     }
 
-    defer { offset += 1 }
+    defer { nodeOffset += 1 }
 
-    // nodePointer(from:) + advance を使う
-    return UnsafePair<_Value>.advance(h.pointee.start, offset)
+    return UnsafePair<_Value>.advance(h.pointee.start, nodeOffset)
   }
 }

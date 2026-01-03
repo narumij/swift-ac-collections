@@ -20,48 +20,11 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-// コレクション実装の基点
-public protocol ___Root {
-  associatedtype Base
-  associatedtype Tree
-}
-
-@usableFromInline
-protocol ___IndexBase: ___Root
-where
-  Base: ___TreeBase & ___TreeIndex,
-  Tree == ___Tree<Base>,
-  Index == Tree.Index
-{
-  associatedtype Index
-  var __tree_: Tree { get }
-}
-
 @usableFromInline
 typealias ___CopyOnWrite = ___CopyOnWrite_old
 
 @usableFromInline
 typealias ___StorageProtocol = ___StorageProtocol_old
-
-@usableFromInline
-protocol ___Base: ___IndexBase
-where
-  Base: ___TreeBase & ___TreeIndex,
-  Tree == ___Tree<Base>,
-  Index == Tree.Index,
-  Indices == Tree.Indices,
-  _Key == Tree._Key,
-  _Value == Tree._Value
-{
-  associatedtype Index
-  associatedtype Indices
-  associatedtype _Key
-  associatedtype _Value
-  associatedtype Element
-  var __tree_: Tree { get }
-  var _start: _NodePtr { get }
-  var _end: _NodePtr { get }
-}
 
 #if !USE_UNSAFE_TREE
 public typealias RedBlackTreeIndex = RedBlackTreeIndex_old
@@ -81,22 +44,6 @@ protocol ___RedBlackTreeKeyValuesBase:
     & ___KeyValueSequence
 {}
 #else
-public typealias RedBlackTreeIndex = UnsafeIndex
-public typealias RedBlackTreeIndices = UnsafeIndices
-public typealias RedBlackTreeIterator = RedBlackTreeIteratorUnsafe
-public typealias RedBlackTreeSlice = RedBlackTreeSliceUnsafe
-
-@usableFromInline
-protocol ___RedBlackTreeKeyOnlyBase:
-  ___UnsafeStorageProtocol & ___UnsafeCopyOnWrite & ___UnsafeCommon & ___UnsafeIndex & ___UnsafeBaseSequence
-    & ___UnsafeKeyOnlySequence
-{}
-
-@usableFromInline
-protocol ___RedBlackTreeKeyValuesBase:
-  ___UnsafeStorageProtocol & ___UnsafeCopyOnWrite & ___UnsafeCommon & ___UnsafeIndex & ___UnsafeBaseSequence
-    & ___UnsafeKeyValueSequence
-{}
 #endif
 
 // MARK: -

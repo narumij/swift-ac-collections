@@ -33,8 +33,6 @@ import Foundation
 /// llvmの`__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
 public typealias _PointerIndex = Int
 
-public typealias _Pointer = _PointerIndex
-
 extension _PointerIndex {
 
   /// 赤黒木のIndexで、nullを表す
@@ -61,28 +59,15 @@ package func ___is_null_or_end(_ ptr: _PointerIndex) -> Bool {
   ptr < 0
 }
 
-#if USE_ENUM_NODE_REF
-  /// 赤黒木の参照型を表す内部enum
-  public
-    enum _NodeRef: Equatable
-  {
-    /// 右ノードへの参照
-    case __right_(_PointerIndex)
-    /// 左ノードへの参照
-    case __left_(_PointerIndex)
-  }
-#else
-  // 追記) ベンチマークの結果、ケースバイケースだったので、一旦保留
-  //
-  // こちらのほうがfind equalの速度が改善する
-  // かわりに上限サイズがInt.max - 1になる
-  //
-  // しばらく様子を見る
-  /// 最上位ビットが0のとき右、最上位ビットが1の時左
-  ///
-  /// 直感に反してこのようにしているのは、`__left_ref(.end)`を簡潔に扱えるようにするため
-  public typealias _NodeRef = UInt
-#endif
+/// 赤黒木の参照型を表す内部enum
+public
+  enum _PointerIndexRef: Equatable
+{
+  /// 右ノードへの参照
+  case __right_(_PointerIndex)
+  /// 左ノードへの参照
+  case __left_(_PointerIndex)
+}
 
 public protocol TreePointer {
   associatedtype _NodePtr: Equatable

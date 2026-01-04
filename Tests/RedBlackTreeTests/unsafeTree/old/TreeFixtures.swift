@@ -15,9 +15,8 @@ import XCTest
     var nullptr: Int { .nullptr }
     var end: Int { .end }
     
-    typealias _NodePtr = Int
-    typealias _Pointer = Int    
-    typealias _NodeRef = RedBlackTreeModule._NodeRef
+    typealias _NodePtr = RedBlackTreeModule._PointerIndex
+    typealias _NodeRef = RedBlackTreeModule._PointerIndexRef
     
     var __left_: _NodePtr = .nullptr
     var __begin_node_: _NodePtr = .end

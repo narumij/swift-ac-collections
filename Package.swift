@@ -22,7 +22,7 @@ var defines: [String] = [
   //"USE_OLD_FIND",
   
   
-  "ALLOCATION_DRILL" // リリース時はオフ
+//  "ALLOCATION_DRILL" // リリース時はオフ
 ]
 
 var _settings: [SwiftSetting] =
@@ -38,9 +38,6 @@ var _settings: [SwiftSetting] =
 
     .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
-
-    .define("USE_ENUM_NODE_REF"),
-    // この定義をオフにすると参照に符号なし整数を用い、レジスタ一本に収まるようになる
   ]
   + defines.map { .define($0) }
 

@@ -31,11 +31,11 @@ import Foundation
 /// endはルートノードを保持するオブジェクトを指すかわりに、-1で表現している
 ///
 /// llvmの`__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
-public typealias _NodePtr = Int
+public typealias _PointerIndex = Int
 
-public typealias _Pointer = _NodePtr
+public typealias _Pointer = _PointerIndex
 
-extension _NodePtr {
+extension _PointerIndex {
 
   /// 赤黒木のIndexで、nullを表す
   @inlinable
@@ -57,7 +57,7 @@ extension _NodePtr {
 
 @inlinable
 @inline(__always)
-package func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
+package func ___is_null_or_end(_ ptr: _PointerIndex) -> Bool {
   ptr < 0
 }
 
@@ -67,9 +67,9 @@ package func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
     enum _NodeRef: Equatable
   {
     /// 右ノードへの参照
-    case __right_(_NodePtr)
+    case __right_(_PointerIndex)
     /// 左ノードへの参照
-    case __left_(_NodePtr)
+    case __left_(_PointerIndex)
   }
 #else
   // 追記) ベンチマークの結果、ケースバイケースだったので、一旦保留

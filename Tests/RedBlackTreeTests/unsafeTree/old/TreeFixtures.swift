@@ -25,7 +25,7 @@ import XCTest
     var __nodes: [___Node] = []
     var __values: [Element] = []
 
-    var ___destroy_node: RedBlackTreeModule._NodePtr = .nullptr
+    var ___destroy_node: RedBlackTreeModule._PointerIndex = .nullptr
     var ___destroy_count: Int = 0
 
     func __left_(_ p: _NodePtr) -> _NodePtr { p == .end ? __left_ : __nodes[p].__left_ }

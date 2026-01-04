@@ -58,21 +58,21 @@ extension RedBlackTreeSet: SetAlgebra {
   @inlinable
   //  @inline(__always)
   public mutating func formUnion(_ other: __owned RedBlackTreeSet<Element>) {
-    _storage = .init(tree: __tree_.___meld_unique(other.__tree_))
+    __tree_ = __tree_.___meld_unique(other.__tree_)
   }
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
   //  @inline(__always)
   public mutating func formIntersection(_ other: RedBlackTreeSet<Element>) {
-    _storage = .init(tree: __tree_.___intersection(other.__tree_))
+    __tree_ = __tree_.___intersection(other.__tree_)
   }
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
   //  @inline(__always)
   public mutating func formSymmetricDifference(_ other: __owned RedBlackTreeSet<Element>) {
-    _storage = .init(tree: __tree_.___symmetric_difference(other.__tree_))
+    __tree_ = __tree_.___symmetric_difference(other.__tree_)
   }
 }
 
@@ -95,6 +95,6 @@ extension RedBlackTreeSet {
   @inlinable
   //  @inline(__always)
   public mutating func formDifference(_ other: __owned RedBlackTreeSet<Element>) {
-    _storage = .init(tree: __tree_.___difference(other.__tree_))
+    __tree_ = __tree_.___difference(other.__tree_)
   }
 }

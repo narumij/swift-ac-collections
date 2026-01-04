@@ -64,11 +64,19 @@ public typealias RedBlackTreeIndices = UnsafeIndices
 public typealias RedBlackTreeIterator = RedBlackTreeIteratorUnsafe
 public typealias RedBlackTreeSlice = RedBlackTreeSliceUnsafe
 
+#if false
 @usableFromInline
 protocol ___RedBlackTreeKeyOnlyBase:
   ___UnsafeStorageProtocol & ___UnsafeCopyOnWrite & ___UnsafeCommon & ___UnsafeIndex & ___UnsafeBaseSequence
     & ___UnsafeKeyOnlySequence
 {}
+#else
+@usableFromInline
+protocol ___RedBlackTreeKeyOnlyBase:
+  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommon & ___UnsafeIndex & ___UnsafeBaseSequence
+    & ___UnsafeKeyOnlySequence
+{}
+#endif
 
 @usableFromInline
 protocol ___RedBlackTreeKeyValuesBase:

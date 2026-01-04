@@ -26,8 +26,8 @@ extension RedBlackTreeSet {
 #if AC_COLLECTIONS_INTERNAL_CHECKS
   extension RedBlackTreeSet {
     package var _copyCount: UInt {
-      get { _storage.tree.copyCount }
-      set { _storage.tree.copyCount = newValue }
+      get { __tree_.copyCount }
+      set { __tree_.copyCount = newValue }
     }
   }
 

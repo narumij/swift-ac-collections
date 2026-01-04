@@ -63,13 +63,13 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
   public
     typealias Base = Self
-
+  
   @usableFromInline
-  var _storage: Storage
+  var __tree_: UnsafeTree<RedBlackTreeSet<Element>>
 
   @inlinable @inline(__always)
-  internal init(_storage: Storage) {
-    self._storage = _storage
+  internal init(__tree_: Tree) {
+    self.__tree_ = __tree_
   }
 }
 
@@ -92,7 +92,7 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public init(minimumCapacity: Int) {
-    _storage = .create(withCapacity: minimumCapacity)
+    self.init(__tree_: .create(minimumCapacity: minimumCapacity))
   }
 }
 
@@ -102,7 +102,7 @@ extension RedBlackTreeSet {
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    self._storage = .init(tree: .create_unique(sorted: sequence.sorted()))
+    self.init(__tree_: .create_unique(sorted: sequence.sorted()))
   }
 }
 
@@ -114,7 +114,7 @@ extension RedBlackTreeSet {
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {
     precondition(range is Range<Element> || range is ClosedRange<Element>)
-    self._storage = .init(tree: .create(range: range))
+    self.init(__tree_: .create(range: range))
   }
 }
 
@@ -941,6 +941,6 @@ extension RedBlackTreeSet {
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    self._storage = .init(tree: .create_unique(naive: sequence))
+    self.init(__tree_: .create_unique(naive: sequence))
   }
 }

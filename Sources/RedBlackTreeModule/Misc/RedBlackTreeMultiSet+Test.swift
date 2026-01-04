@@ -34,8 +34,8 @@ extension RedBlackTreeMultiSet {
   extension RedBlackTreeMultiSet {
 
     package var _copyCount: UInt {
-      get { _storage.tree.copyCount }
-      set { _storage.tree.copyCount = newValue }
+      get { __tree_.copyCount }
+      set { __tree_.copyCount = newValue }
     }
   }
 

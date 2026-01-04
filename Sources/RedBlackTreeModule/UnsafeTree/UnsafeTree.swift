@@ -36,7 +36,7 @@ public final class UnsafeTree<Base: ___TreeBase>:
   deinit {
     withUnsafeMutablePointers { header, end in
       header.pointee.___disposeFreshPool()
-      end.deinitialize(count: 2)
+      end.deinitialize(count: 1)
     }
   }
 }

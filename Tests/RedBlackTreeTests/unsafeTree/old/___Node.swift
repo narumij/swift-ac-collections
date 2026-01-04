@@ -24,6 +24,8 @@ import Foundation
 import RedBlackTreeModule
 
 public struct ___Node {
+  
+  public typealias _NodePtr = _PointerIndex
 
   public var __right_: _NodePtr
   public var __left_: _NodePtr

@@ -22,68 +22,6 @@
 
 import Foundation
 
-/// 赤黒木の内部Index
-///
-/// ヒープの代わりに配列を使っているため、実際には内部配列のインデックスを使用している
-///
-/// インデックスが0からはじまるため、一般的にnullは0で表現するところを、-2で表現している
-///
-/// endはルートノードを保持するオブジェクトを指すかわりに、-1で表現している
-///
-/// llvmの`__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
-public typealias _NodePtr = Int
-
-public typealias _Pointer = _NodePtr
-
-extension _NodePtr {
-
-  /// 赤黒木のIndexで、nullを表す
-  @inlinable
-  package static var nullptr: Self {
-    -2
-  }
-
-  /// 赤黒木のIndexで、終端を表す
-  @inlinable
-  package static var end: Self {
-    -1
-  }
-
-  /// 数値を直接扱うことを避けるための初期化メソッド
-  @inlinable
-  @inline(__always)
-  package static func node(_ p: Int) -> Self { p }
-}
-
-@inlinable
-@inline(__always)
-package func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
-  ptr < 0
-}
-
-#if USE_ENUM_NODE_REF
-  /// 赤黒木の参照型を表す内部enum
-  public
-    enum _NodeRef: Equatable
-  {
-    /// 右ノードへの参照
-    case __right_(_NodePtr)
-    /// 左ノードへの参照
-    case __left_(_NodePtr)
-  }
-#else
-  // 追記) ベンチマークの結果、ケースバイケースだったので、一旦保留
-  //
-  // こちらのほうがfind equalの速度が改善する
-  // かわりに上限サイズがInt.max - 1になる
-  //
-  // しばらく様子を見る
-  /// 最上位ビットが0のとき右、最上位ビットが1の時左
-  ///
-  /// 直感に反してこのようにしているのは、`__left_ref(.end)`を簡潔に扱えるようにするため
-  public typealias _NodeRef = UInt
-#endif
-
 public protocol TreePointer {
   associatedtype _NodePtr: Equatable
   associatedtype _Pointer where _NodePtr == _Pointer

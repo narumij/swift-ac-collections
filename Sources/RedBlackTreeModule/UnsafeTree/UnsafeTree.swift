@@ -22,6 +22,8 @@
 
 import Foundation
 
+public typealias ___TreeBase = ValueComparer & CompareTrait & ThreeWayComparator
+
 // TODO: テスト整備後internalにする
 @_fixed_layout
 @_objc_non_lazy_realization

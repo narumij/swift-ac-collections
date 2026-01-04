@@ -49,7 +49,7 @@ where Parameters: Comparable {
     typealias _MappedValue = Value
 
   @usableFromInline
-  var _storage: ___Storage<Self>
+  var _storage: UnsafeStorage<Self>
 
   public let maxCount: Int
 
@@ -62,12 +62,17 @@ where Parameters: Comparable {
 
 extension ___LRUMemoizeStorage {
 
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+
   @inlinable
   @inline(__always)
   public init(minimumCapacity: Int = 0, maxCount: Int = Int.max) {
     _storage = .create(withCapacity: minimumCapacity)
     self.maxCount = maxCount
-    (_rankHighest, _rankLowest) = (.nullptr, .nullptr)
+    // これら二つはコピーでケアされない
+    // インデックス時代はそれでこまらなかった
+    // コピーが発生する前提の場合、別途ケアをする必要がある
+    (_rankHighest, _rankLowest) = (_storage.tree.nullptr, _storage.tree.nullptr)
   }
 
   @inlinable
@@ -75,7 +80,7 @@ extension ___LRUMemoizeStorage {
     @inline(__always)
     mutating get {
       let __ptr = __tree_.find(key)
-      if ___is_null_or_end(__ptr) {
+      if __tree_.___is_null_or_end(__ptr) {
         return nil
       }
       ___prepend(___pop(__ptr))
@@ -91,9 +96,10 @@ extension ___LRUMemoizeStorage {
         if __tree_.count == maxCount {
           _ = __tree_.erase(___popRankLowest())
         }
+        assert(__tree_.count < __tree_.freshPoolCapacity)
         let (__parent, __child) = __tree_.__find_equal(key)
-        if __tree_.__ptr_(__child) == .nullptr {
-          let __h = __tree_.__construct_node(.init(key, .nullptr, .nullptr, newValue))
+        if __tree_.__ptr_(__child) == __tree_.nullptr {
+          let __h = __tree_.__construct_node(.init(key, __tree_.nullptr, __tree_.nullptr, newValue))
           __tree_.__insert_node_at(__parent, __child, __h)
           ___prepend(__h)
         }
@@ -102,7 +108,7 @@ extension ___LRUMemoizeStorage {
   }
 }
 
-extension ___LRUMemoizeStorage: ___LRULinkList & ___CopyOnWrite & ___StorageProtocol {
+extension ___LRUMemoizeStorage: ___LRULinkList & ___UnsafeCopyOnWrite & ___UnsafeStorageProtocol {
   public typealias Base = Self
 }
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}

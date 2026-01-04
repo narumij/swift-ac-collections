@@ -35,6 +35,8 @@ public struct _LinkingPair<Key, Value> {
   public var prev: _NodePtr
   public var next: _NodePtr
   public var value: Value
+  
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 }
 
 extension KeyValueComparer where _Value == _LinkingPair<_Key, _MappedValue> {
@@ -57,20 +59,22 @@ where _Value == _LinkingPair<_Key, _MappedValue> {
 
 extension ___LRULinkList {
 
-  public typealias Tree = ___Tree<Self>
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+
+  public typealias Tree = UnsafeTree<Self>
 
   @inlinable
   @inline(__always)
   mutating func ___prepend(_ __p: _NodePtr) {
-    if _rankHighest == .nullptr {
-      __tree_[__p].next = .nullptr
-      __tree_[__p].prev = .nullptr
+    if _rankHighest == __tree_.nullptr {
+      __tree_[__p].next = __tree_.nullptr
+      __tree_[__p].prev = __tree_.nullptr
       _rankLowest = __p
       _rankHighest = __p
     } else {
       __tree_[_rankHighest].prev = __p
       __tree_[__p].next = _rankHighest
-      __tree_[__p].prev = .nullptr
+      __tree_[__p].prev = __tree_.nullptr
       _rankHighest = __p
     }
   }
@@ -80,18 +84,18 @@ extension ___LRULinkList {
   mutating func ___pop(_ __p: _NodePtr) -> _NodePtr {
 
     assert(
-      __p == _rankHighest || __tree_[__p].next != .nullptr || __tree_[__p].prev != .nullptr,
+      __p == _rankHighest || __tree_[__p].next != __tree_.nullptr || __tree_[__p].prev != __tree_.nullptr,
       "did not contain \(__p) ptr.")
 
     defer {
       let prev = __tree_[__p].prev
       let next = __tree_[__p].next
-      if prev != .nullptr {
+      if prev != __tree_.nullptr {
         __tree_[prev].next = next
       } else {
         _rankHighest = next
       }
-      if next != .nullptr {
+      if next != __tree_.nullptr {
         __tree_[next].prev = prev
       } else {
         _rankLowest = prev
@@ -106,16 +110,36 @@ extension ___LRULinkList {
   mutating func ___popRankLowest() -> _NodePtr {
 
     defer {
-      if _rankLowest != .nullptr {
+      if _rankLowest != __tree_.nullptr {
         _rankLowest = __tree_[_rankLowest].prev
       }
-      if _rankLowest != .nullptr {
-        __tree_[_rankLowest].next = .nullptr
+      if _rankLowest != __tree_.nullptr {
+        __tree_[_rankLowest].next = __tree_.nullptr
       } else {
-        _rankHighest = .nullptr
+        _rankHighest = __tree_.nullptr
       }
     }
 
     return _rankLowest
+  }
+}
+
+extension ___LRULinkList {
+
+  /// インデックスをポインタに解決する
+  ///
+  /// 木が同一の場合、インデックスが保持するポインタを返す。
+  /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
+  @inlinable
+  @inline(__always)
+  internal func ___node_ptr(_ index: Int) -> _NodePtr {
+    switch index {
+    case .nullptr:
+      return __tree_._nullptr
+    case .end:
+      return __tree_.end
+    default:
+      return __tree_._header[index]
+    }
   }
 }

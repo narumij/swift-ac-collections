@@ -1,7 +1,7 @@
 import Foundation
 import RedBlackTreeModule
 
-extension _NodePtr {
+extension _PointerIndex {
   var offset: Int! {
     switch self {
     case .end:
@@ -14,6 +14,6 @@ extension _NodePtr {
   }
 }
 
-extension _NodePtr {
+extension _PointerIndex {
   var index: Int! { self }
 }

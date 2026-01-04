@@ -1,6 +1,6 @@
 import XCTest
 
-#if DEBUG
+#if DEBUG && !USE_UNSAFE_TREE
 @testable import RedBlackTreeModule
 
 final class ManagedBufferTests: XCTestCase {

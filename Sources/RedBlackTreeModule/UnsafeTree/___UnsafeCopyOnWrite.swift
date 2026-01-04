@@ -79,7 +79,6 @@ extension ___UnsafeCopyOnWrite {
     _storage = .init(tree: try transform(_storage.tree))
   }
 
-#if true
   @inlinable
   @inline(__always)
   internal mutating func _ensureUniqueAndCapacity() {
@@ -87,22 +86,6 @@ extension ___UnsafeCopyOnWrite {
     assert(_storage.capacity > 0)
     assert(_storage.capacity > _storage.count)
   }
-#else
-  @inlinable
-  @inline(__always)
-  internal mutating func _ensureUniqueAndCapacity() {
-    let minimumCapacity = _storage.count + 1
-    let shouldExpand = _storage.capacity < minimumCapacity
-    if !_isKnownUniquelyReferenced_LV1() {
-      _storage = _storage.copy(growthCapacityTo: minimumCapacity, linearly: false)
-    } else if shouldExpand {
-      _storage.ensure(growthCapacityTo: minimumCapacity, linearly: false)
-//      _storage = _storage.copy(growthCapacityTo: minimumCapacity, linearly: false)
-    }
-    assert(_storage.capacity >= minimumCapacity)
-    assert(_storage.tree._header.initializedCount <= _storage.capacity)
-  }
-#endif
 
   @inlinable
   @inline(__always)
@@ -112,7 +95,6 @@ extension ___UnsafeCopyOnWrite {
       _storage = _storage.copy(growthCapacityTo: minimumCapacity, linearly: false)
     } else if shouldExpand {
       _storage.ensure(growthCapacityTo: minimumCapacity, linearly: false)
-//      _storage = _storage.copy(growthCapacityTo: minimumCapacity, linearly: false)
     }
     assert(_storage.capacity >= minimumCapacity)
     assert(_storage.tree._header.initializedCount <= _storage.capacity)
@@ -131,11 +113,13 @@ extension ___UnsafeCopyOnWrite {
     to minimumCapacity: Int, limit: Int, linearly: Bool
   ) {
     let shouldExpand = _storage.capacity < minimumCapacity
-    if shouldExpand || !_isKnownUniquelyReferenced_LV1() {
+    if !_isKnownUniquelyReferenced_LV1() {
       _storage = _storage.copy(
         growthCapacityTo: minimumCapacity,
         limit: limit,
         linearly: false)
+    } else if shouldExpand {
+      _storage.ensure(growthCapacityTo: minimumCapacity, limit: limit, linearly: false)
     }
     assert(_storage.capacity >= minimumCapacity)
     assert(_storage.tree._header.initializedCount <= _storage.capacity)
@@ -152,9 +136,7 @@ extension ___UnsafeCopyOnWrite {
   internal mutating func _ensureCapacity(amount: Int) {
     let minimumCapacity = _storage.count + amount
     if _storage.capacity < minimumCapacity {
-      _storage = _storage.copy(
-        growthCapacityTo: minimumCapacity,
-        linearly: false)
+      _storage.ensure(growthCapacityTo: minimumCapacity, linearly: false)
     }
     assert(_storage.capacity >= minimumCapacity)
     assert(_storage.tree._header.initializedCount <= _storage.capacity)
@@ -170,10 +152,7 @@ extension ___UnsafeCopyOnWrite {
   @inline(__always)
   internal mutating func _ensureCapacity(to minimumCapacity: Int, limit: Int, linearly: Bool) {
     if _storage.capacity < minimumCapacity {
-      _storage = _storage.copy(
-        growthCapacityTo: minimumCapacity,
-        limit: limit,
-        linearly: linearly)
+      _storage.ensure(growthCapacityTo: minimumCapacity, limit: limit, linearly: false)
     }
     assert(_storage.capacity >= minimumCapacity)
     assert(_storage.tree._header.initializedCount <= _storage.capacity)

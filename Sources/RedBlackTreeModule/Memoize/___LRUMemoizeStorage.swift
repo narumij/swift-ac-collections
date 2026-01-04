@@ -69,6 +69,9 @@ extension ___LRUMemoizeStorage {
   public init(minimumCapacity: Int = 0, maxCount: Int = Int.max) {
     _storage = .create(withCapacity: minimumCapacity)
     self.maxCount = maxCount
+    // これら二つはコピーでケアされない
+    // インデックス時代はそれでこまらなかった
+    // コピーが発生する前提の場合、別途ケアをする必要がある
     (_rankHighest, _rankLowest) = (_storage.tree.nullptr, _storage.tree.nullptr)
   }
 
@@ -93,6 +96,7 @@ extension ___LRUMemoizeStorage {
         if __tree_.count == maxCount {
           _ = __tree_.erase(___popRankLowest())
         }
+        assert(__tree_.count < __tree_.freshPoolCapacity)
         let (__parent, __child) = __tree_.__find_equal(key)
         if __tree_.__ptr_(__child) == __tree_.nullptr {
           let __h = __tree_.__construct_node(.init(key, __tree_.nullptr, __tree_.nullptr, newValue))

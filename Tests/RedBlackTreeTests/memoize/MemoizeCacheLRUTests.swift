@@ -28,10 +28,9 @@ final class MemoizeCacheLRUTests: XCTestCase {
   
 #if DEBUG
   func testInit() throws {
-    throw XCTSkip("めんどいので一旦スキップ。TODO: マージする前に直すこと")
     let cache = ___LRUMemoizeStorage<TestKey, Int>(minimumCapacity: 10)
     XCTAssertEqual(cache.__tree_.count, 0)
-    XCTAssertEqual(cache.__tree_.capacity, 10)
+    XCTAssertEqual(cache.__tree_.freshPoolCapacity, 10)
   }
 
   func testQueue() throws {
@@ -138,10 +137,9 @@ final class MemoizeCacheLRUTests: XCTestCase {
   }
 
   func testMaximum() throws {
-    throw XCTSkip("めんどいので一旦スキップ。TODO: マージする前に直すこと")
     var cache = ___LRUMemoizeStorage<TestKey, Int>(minimumCapacity: 0, maxCount: 100)
     XCTAssertEqual(cache.__tree_.count, 0)
-    XCTAssertEqual(cache.__tree_.capacity, 0)
+    XCTAssertEqual(cache.__tree_.freshPoolCapacity, 0)
     var finalCapacity: Int? = nil
     for i in 0..<200 {
       cache[i] = i
@@ -156,7 +154,6 @@ final class MemoizeCacheLRUTests: XCTestCase {
   }
 
   func testMaximum2() throws {
-    throw XCTSkip("めんどいので一旦スキップ。TODO: マージする前に直すこと")
     var cache = ___LRUMemoizeStorage<TestKey, Int>(minimumCapacity: 0, maxCount: 5)
     cache[0] = 0
     XCTAssertEqual(cache[0], 0)

@@ -24,6 +24,9 @@ import Foundation
 
 /// 赤黒木の内部Index
 ///
+/// (説明が古いので注意)
+/// (現在はCoW時のノード解決や特殊ポインタ判定簡略の為に使っている)
+///
 /// ヒープの代わりに配列を使っているため、実際には内部配列のインデックスを使用している
 ///
 /// インデックスが0からはじまるため、一般的にnullは0で表現するところを、-2で表現している
@@ -60,6 +63,8 @@ package func ___is_null_or_end(_ ptr: _PointerIndex) -> Bool {
 }
 
 /// 赤黒木の参照型を表す内部enum
+///
+/// (現在はプロトコルのテスト用に使っている)
 public
   enum _PointerIndexRef: Equatable
 {

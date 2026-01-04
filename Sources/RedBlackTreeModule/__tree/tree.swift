@@ -22,58 +22,6 @@
 
 import Foundation
 
-/// 赤黒木の内部Index
-///
-/// (説明が古いので注意)
-/// (現在はCoW時のノード解決や特殊ポインタ判定簡略の為に使っている)
-///
-/// ヒープの代わりに配列を使っているため、実際には内部配列のインデックスを使用している
-///
-/// インデックスが0からはじまるため、一般的にnullは0で表現するところを、-2で表現している
-///
-/// endはルートノードを保持するオブジェクトを指すかわりに、-1で表現している
-///
-/// llvmの`__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
-public typealias _PointerIndex = Int
-
-extension _PointerIndex {
-
-  /// 赤黒木のIndexで、nullを表す
-  @inlinable
-  package static var nullptr: Self {
-    -2
-  }
-
-  /// 赤黒木のIndexで、終端を表す
-  @inlinable
-  package static var end: Self {
-    -1
-  }
-
-  /// 数値を直接扱うことを避けるための初期化メソッド
-  @inlinable
-  @inline(__always)
-  package static func node(_ p: Int) -> Self { p }
-}
-
-@inlinable
-@inline(__always)
-package func ___is_null_or_end(_ ptr: _PointerIndex) -> Bool {
-  ptr < 0
-}
-
-/// 赤黒木の参照型を表す内部enum
-///
-/// (現在はプロトコルのテスト用に使っている)
-public
-  enum _PointerIndexRef: Equatable
-{
-  /// 右ノードへの参照
-  case __right_(_PointerIndex)
-  /// 左ノードへの参照
-  case __left_(_PointerIndex)
-}
-
 public protocol TreePointer {
   associatedtype _NodePtr: Equatable
   associatedtype _Pointer where _NodePtr == _Pointer

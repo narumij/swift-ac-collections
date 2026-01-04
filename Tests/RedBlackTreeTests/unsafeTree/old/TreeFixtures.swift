@@ -15,8 +15,8 @@ import XCTest
     var nullptr: Int { .nullptr }
     var end: Int { .end }
     
-    typealias _NodePtr = RedBlackTreeModule._PointerIndex
-    typealias _NodeRef = RedBlackTreeModule._PointerIndexRef
+    typealias _NodePtr = _PointerIndex
+    typealias _NodeRef = _PointerIndexRef
     
     var __left_: _NodePtr = .nullptr
     var __begin_node_: _NodePtr = .end
@@ -24,7 +24,7 @@ import XCTest
     var __nodes: [___Node] = []
     var __values: [Element] = []
 
-    var ___destroy_node: RedBlackTreeModule._PointerIndex = .nullptr
+    var ___destroy_node: _PointerIndex = .nullptr
     var ___destroy_count: Int = 0
 
     func __left_(_ p: _NodePtr) -> _NodePtr { p == .end ? __left_ : __nodes[p].__left_ }

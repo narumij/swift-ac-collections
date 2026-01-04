@@ -79,9 +79,13 @@ extension UnsafeTree {
   @inlinable
   @inline(__always)
   public var _nullptr: UnsafeMutablePointer<UnsafeNode> {
+#if true
     withUnsafeMutablePointerToHeader {
       $0.pointee._nullptr
     }
+#else
+    UnsafeNode.___nullptr
+#endif
   }
 }
 
@@ -97,16 +101,17 @@ extension UnsafeTree {
   ) -> Tree {
 
     // elementsはendにしか用いないのでManagerdBufferの要素数は常に1
-    let storage = Tree.create(minimumCapacity: 2) { managedBuffer in
+    
+    let storage = Tree.create(minimumCapacity: 1) { managedBuffer in
       return managedBuffer.withUnsafeMutablePointerToElements { _end_ptr in
-        let _nullptr = _end_ptr + 1
-        _nullptr.initialize(
-          to: UnsafeNode(___node_id_: .nullptr, _nullpotr: _nullptr))
+        
+        let _nullptr = ___slow_shared_unsafe_null_pointer
+        
         // endノード用に初期化する
         _end_ptr.initialize(
           to: UnsafeNode(___node_id_: .end, _nullpotr: _nullptr))
         // ヘッダーを準備する
-        var header = Header(_end_ptr: _end_ptr)
+        var header = Header(_nullptr: _nullptr, _end_ptr: _end_ptr)
         // ノードを確保する
         if nodeCapacity > 0 {
           header.pushFreshBucket(capacity: nodeCapacity)
@@ -244,10 +249,10 @@ extension UnsafeTree {
     public typealias _Value = UnsafeTree._Value
     @inlinable
     @inline(__always)
-    internal init(_end_ptr: _NodePtr) {
-      self._nullptr = _end_ptr + 1
+    internal init(_nullptr: _NodePtr, _end_ptr: _NodePtr) {
+      self._nullptr = _nullptr
       self.__begin_node_ = _end_ptr
-      self.destroyNode = _end_ptr + 1
+      self.destroyNode = _nullptr
     }
     public var _nullptr: UnsafeMutablePointer<UnsafeNode>
     public var __begin_node_: UnsafeMutablePointer<UnsafeNode>

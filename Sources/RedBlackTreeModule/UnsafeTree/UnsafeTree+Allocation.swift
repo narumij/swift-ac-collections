@@ -63,27 +63,16 @@ extension UnsafeTreeAllcation3 {
         _header.initializedCount,
         minimumCapacity)
     }
-
-    let s0 = MemoryLayout<UnsafeNode>.stride
-    let s1 = MemoryLayout<_Value>.stride
-    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
-    let a2 = 0 // MemoryLayout<UnsafeNodeFreshBucket<_Value>>.alignment
-
-    if minimumCapacity <= 2 {
-      return 3
-    }
-
-    if minimumCapacity <= 64 {
-      return Swift.max(minimumCapacity, count + ((16 - 1) * (s0 + s1) - s2 - a2) / (s0 + s1))
-    }
     
-    var n = 1 << ((Int.bitWidth - minimumCapacity.leadingZeroBitCount) + 1)
-    
-    if minimumCapacity <= 100000 {
-      n = n << 1
+    if minimumCapacity <= 6 {
+      return Swift.max(minimumCapacity, count + count)
     }
 
-    return Swift.max(minimumCapacity, count + ((n - 1) * (s0 + s1) - s2 - a2) / (s0 + s1))
+    if minimumCapacity <= 8192 {
+      return Swift.max(minimumCapacity, count + Swift.min(count / 2, 14))
+    }
+
+    return Swift.max(minimumCapacity, count + Swift.min(count / 2, 510))
   }
 }
 

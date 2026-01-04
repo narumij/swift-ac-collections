@@ -264,5 +264,28 @@ extension UnsafeNode {
   }
 }
 
+extension UnsafeNode {
 
+  fileprivate final class Null {
+    fileprivate let pointer: UnsafeMutablePointer<UnsafeNode>
+    fileprivate init() {
+      let raw = UnsafeMutableRawPointer.allocate(
+        byteCount: MemoryLayout<UnsafeNode>.stride,
+        alignment: MemoryLayout<UnsafeNode>.alignment)
+      pointer = raw.assumingMemoryBound(to: UnsafeNode.self)
+      pointer.initialize(to: .init(___node_id_: .nullptr, _nullpotr: pointer))
+    }
+    deinit {
+      pointer.deinitialize(count: 1)
+      pointer.deallocate()
+    }
+  }
+}
 
+fileprivate
+nonisolated(unsafe) let shared: UnsafeNode.Null = .init()
+
+/// `__swift_instantiateConcreteTypeFromMangledNameV2`を避けるためには、
+/// 直接利用せずに、一度内部に保持する必要がある
+@usableFromInline
+nonisolated(unsafe) let ___slow_shared_unsafe_null_pointer: UnsafeMutablePointer<UnsafeNode> = shared.pointer

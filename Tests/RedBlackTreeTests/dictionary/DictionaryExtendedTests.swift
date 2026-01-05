@@ -8,6 +8,14 @@ import RedBlackTreeModule
 
 final class RedBlackTreeDictionaryExtendedTests: XCTestCase {
 
+  override func setUpWithError() throws {
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+  
+  override func tearDownWithError() throws {
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+
   // MARK: ── ヘルパ ────────────────────────────────────────────────
 
   private func assertEqual<K: Comparable, V: Equatable>(

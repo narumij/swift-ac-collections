@@ -3,6 +3,15 @@ import RedBlackTreeModule
 
 final class RedBlackTreeDictionaryInitializationTests: XCTestCase {
 
+  override func setUpWithError() throws {
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+  
+  override func tearDownWithError() throws {
+    // Put teardown code here. This method is called after the invocation of each test method in the class.
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+
   // MARK: - 「空なものは空である」と「空でないものは空ではない」のトートロジー
 
   let elements = [("apple", 1), ("cherry", 3), ("banana", 2)]

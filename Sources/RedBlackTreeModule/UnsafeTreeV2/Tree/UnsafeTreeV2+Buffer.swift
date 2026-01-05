@@ -173,10 +173,12 @@ extension UnsafeTreeV2Buffer: CustomStringConvertible {
 
 /// The type-punned empty singleton storage instance.
 @usableFromInline
-nonisolated(unsafe) internal let _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.create(
+nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.create(
   minimumCapacity: 0)
 
 #if DEBUG
+#endif
+
 extension UnsafeTreeV2Buffer.Header {
   @inlinable
   mutating func tearDown() {
@@ -192,7 +194,7 @@ extension UnsafeTreeV2Buffer.Header {
 }
 
 @inlinable
-func tearDown<T>(treeBuffer buffer: UnsafeTreeV2Buffer<T>) {
+package func tearDown<T>(treeBuffer buffer: UnsafeTreeV2Buffer<T>) {
   buffer.header.tearDown()
   buffer.withUnsafeMutablePointers { h, e in
     h.pointee.__begin_node_ = e
@@ -201,4 +203,3 @@ func tearDown<T>(treeBuffer buffer: UnsafeTreeV2Buffer<T>) {
     e.pointee.__parent_ = ___slow_shared_unsafe_null_pointer
   }
 }
-#endif

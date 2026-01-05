@@ -178,82 +178,6 @@ extension UnsafeTree {
   }
 }
 
-extension UnsafeTree {
-
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    /// CoWの発火回数を観察するためのプロパティ
-    @usableFromInline
-    internal var copyCount: UInt {
-      get { _header_ptr.pointee.copyCount }
-      set { _header_ptr.pointee.copyCount = newValue }
-    }
-  #endif
-}
-
-extension UnsafeTree {
-
-  // capacityを上書きするとManagedBufferの挙動に影響があるので、異なる名前を維持すること
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public var freshPoolCapacity: Int {
-    //    _header.freshPoolCapacity
-    withUnsafeMutablePointerToHeader { $0.pointee.freshPoolCapacity }
-  }
-
-  // これはinitializedCountと同一の内容だが計算量が異なるため代用はできない。
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public var freshPoolActualCount: Int {
-    //    _header.freshPoolUsedCount
-    withUnsafeMutablePointerToHeader { $0.pointee.freshPoolActualCount }
-  }
-}
-
-
-extension UnsafeTree.Header {
-
-  // TODO: grow関連の名前が混乱気味なので整理する
-  @inlinable
-  @inline(__always)
-  public mutating func ensureCapacity(_ newCapacity: Int) {
-    guard freshPoolCapacity < newCapacity else { return }
-    pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
-  }
-}
-
-extension UnsafeTree {
-
-  // TODO: grow関連の名前が混乱気味なので整理する
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public func ensureCapacity(_ newCapacity: Int) {
-    withUnsafeMutablePointerToHeader {
-      $0.pointee.ensureCapacity(newCapacity)
-    }
-  }
-}
-
-extension UnsafeTree {
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public var count: Int {
-    withUnsafeMutablePointerToHeader { $0.pointee.count }
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  func clear() {
-    _end.__left_ = _nullptr
-    _header.clear(_end_ptr: _end_ptr)
-  }
-}
-
 extension UnsafeTree.Header {
 
   @inlinable
@@ -287,44 +211,5 @@ extension UnsafeTree.Header {
     assert(p.pointee.___node_id_ >= 0)
     initializedCount += 1
     return p
-  }
-}
-
-// TODO: ここに配置するのが適切には思えない。配置場所を再考する
-extension UnsafeTree {
-
-  /// O(1)
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func __eraseAll() {
-    clear()
-    _header.___clearRecycle()
-  }
-}
-
-// MARK: Predicate
-
-extension UnsafeTree {
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
-    // TODO: 方式再検討
-    //    p != end && p?.pointee.__parent_ == nil
-    // これがなぜ動かないのかわからない
-    // 再利用時のフラグ設定漏れだった
-    p.pointee.___needs_deinitialize != true
-  }
-}
-
-extension UnsafeTree {
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal var ___is_empty: Bool {
-    count == 0
   }
 }

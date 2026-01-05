@@ -110,8 +110,11 @@ final class AllocationTests: XCTestCase {
           let C = A.__tree_
           defer { _fixLifetime(C) }
           A._ensureUnique()
+#if false
+          // シングルトンバッファを使っているので、コピーが発生するようになった
           // 弱ユニーク化は発火しないが
           XCTAssertEqual(A._copyCount, 0)
+#endif
           A._strongEnsureUnique()
           // 強ユニーク化は発火すること
           XCTAssertEqual(A._copyCount, 1)

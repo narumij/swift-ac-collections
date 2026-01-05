@@ -91,7 +91,8 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public init() {
-    self.init(minimumCapacity: 0)
+//    self.init(minimumCapacity: 0)
+    self.init(__tree_: .create())
   }
 
   /// - Complexity: O(1)

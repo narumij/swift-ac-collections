@@ -108,6 +108,8 @@ extension UnsafeTreeBuffer {
     @inlinable
     @inline(__always)
     internal mutating func clear(_end_ptr: _NodePtr) {
+      assert(_Value.self != Void.self)
+
       ___clearFresh()
       ___clearRecycle()
       __begin_node_ = _end_ptr
@@ -130,6 +132,8 @@ extension UnsafeTreeBuffer.Header {
   @inlinable
   @inline(__always)
   public mutating func __construct_node(_ k: _Value) -> _NodePtr {
+    assert(_Value.self != Void.self)
+    
     if destroyCount > 0 {
       let p = ___popRecycle()
       UnsafeNode.initializeValue(p, to: k)
@@ -151,3 +155,15 @@ extension UnsafeTreeBuffer.Header {
     return p
   }
 }
+
+extension UnsafeTreeBuffer: CustomStringConvertible {
+  public var description: String {
+    unsafe withUnsafeMutablePointerToHeader { "UnsafeTreeBuffer<\(_Value.self)>\(unsafe $0.pointee)" }
+  }
+}
+
+/// The type-punned empty singleton storage instance.
+@usableFromInline
+nonisolated(unsafe) internal let _emptyTreeStorage = UnsafeTreeBuffer<Void>.create(
+  minimumCapacity: 0)
+

@@ -147,14 +147,9 @@ final class AllocationTests: XCTestCase {
       // [0, 1, 2, 3, 4, 6, 8, 10, 12, 24, 48, 96, 192, 384, 768, 1536, 3072, 6144, 12288, 24576, 49152, 98304, 196608, 393216, 786432, 1572864]
       XCTAssertNotEqual(capacities, [])
       #if !ALLOCATION_DRILL
-        #if USE_UNSAFE_TREE
           // 小さく確保していく方針に切り替えた
           XCTAssertEqual(capacities.count, 1054)
           XCTAssertEqual(capacities.last, 1_000_747)
-        #else
-          XCTAssertEqual(capacities.count, 26)
-          XCTAssertEqual(capacities.last, 1_677_720)
-        #endif
       #endif
       //    XCTAssertEqual(capacities.last, 1572864)
       tree.initializedCount = 0  // これをしないと未初期化メモリに触ってクラッシュとなる

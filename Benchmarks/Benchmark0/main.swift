@@ -7,11 +7,7 @@ var mt = mt19937_64(seed: 0)
 
 typealias Fixture = RedBlackTreeSet
 
-#if USE_UNSAFE_TREE
-print("UNSAFE_TREE")
-#else
-print("ARRAY_TREE")
-#endif
+print("UNSAFE_TREE＿V2")
 print(Date.now)
 print()
 

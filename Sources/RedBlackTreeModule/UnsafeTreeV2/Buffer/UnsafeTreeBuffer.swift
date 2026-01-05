@@ -156,6 +156,15 @@ extension UnsafeTreeBuffer.Header {
   }
 }
 
+extension UnsafeTreeBuffer.Header {
+  
+  @inlinable
+  @inline(__always)
+  var isVoid: Bool {
+    _Value.self == Void.self
+  }
+}
+
 extension UnsafeTreeBuffer: CustomStringConvertible {
   public var description: String {
     unsafe withUnsafeMutablePointerToHeader { "UnsafeTreeBuffer<\(_Value.self)>\(unsafe $0.pointee)" }

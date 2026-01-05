@@ -14,22 +14,15 @@ import XCTest
 #endif
 
 #if DEBUG
-  #if !USE_UNSAFE_TREE
-    protocol RedBlackTreeDebugFixture: ___TreeBase {
-      associatedtype Base: ___TreeBase
-      var __tree_: ___Tree<Base> { get }
-    }
-  #else
-    protocol RedBlackTreeDebugFixture: ___TreeBase {
-      associatedtype Base: ___TreeBase
-      var __tree_: UnsafeTreeV2<Base> { get set }
-    }
+  protocol RedBlackTreeDebugFixture: ___TreeBase {
+    associatedtype Base: ___TreeBase
+    var __tree_: UnsafeTreeV2<Base> { get set }
+  }
 
-    extension RedBlackTreeDebugFixture {
+  extension RedBlackTreeDebugFixture {
 
-      typealias _NodePtr = UnsafeTreeV2<Base>._NodePtr
-    }
-  #endif
+    typealias _NodePtr = UnsafeTreeV2<Base>._NodePtr
+  }
 
   extension RedBlackTreeDebugFixture {
 

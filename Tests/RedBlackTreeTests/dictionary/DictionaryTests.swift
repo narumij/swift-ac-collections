@@ -525,11 +525,11 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(sub.count, 2)
     XCTAssertEqual(sub.map { $0.key }, [2, 3])
     XCTAssertEqual(sub.map { $0.value }, ["b", "c"])
-#if COMPATIBLE_ATCODER_2025
-    set.remove(contentsOf: 2..<4)
-    XCTAssertEqual(set.map { $0.key }, [1, 4, 5])
-    XCTAssertEqual(set.map { $0.value }, ["a", "d", "e"])
-#endif
+    #if COMPATIBLE_ATCODER_2025
+      set.remove(contentsOf: 2..<4)
+      XCTAssertEqual(set.map { $0.key }, [1, 4, 5])
+      XCTAssertEqual(set.map { $0.value }, ["a", "d", "e"])
+    #endif
   }
 
   func testSubsequence2() throws {
@@ -542,11 +542,11 @@ final class DictionaryTests: XCTestCase {
     XCTAssertEqual(sub.count, 3)
     XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
     XCTAssertEqual(sub.map { $0.value }, ["b", "c", "d"])
-#if COMPATIBLE_ATCODER_2025
-    set.remove(contentsOf: 2...4)
-    XCTAssertEqual(set.map { $0.key }, [1, 5])
-    XCTAssertEqual(set.map { $0.value }, ["a", "e"])
-#endif
+    #if COMPATIBLE_ATCODER_2025
+      set.remove(contentsOf: 2...4)
+      XCTAssertEqual(set.map { $0.key }, [1, 5])
+      XCTAssertEqual(set.map { $0.value }, ["a", "e"])
+    #endif
   }
 
   func testSubsequence3() throws {
@@ -864,13 +864,9 @@ final class DictionaryTests: XCTestCase {
     typealias Index = RedBlackTreeDictionary<Int, String>.Index
     #if DEBUG
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
-      #if !USE_UNSAFE_TREE
-        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, 5)
-      #else
-        // UnsafeTreeでは、範囲外のインデックスを作成できない
-        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
-      #endif
-    
+      // UnsafeTreeでは、範囲外のインデックスを作成できない
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
+
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))

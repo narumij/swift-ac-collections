@@ -23,11 +23,25 @@ extension UnsafeTreeV2 {
   @inlinable
   public var count: Int { _buffer.header.count }
   
+#if !DEBUG
   @inlinable
   public var capacity: Int { _buffer.header.freshPoolCapacity }
   
   @inlinable
   public var initializedCount: Int { _buffer.header.initializedCount }
+#else
+  @inlinable
+  public var capacity: Int {
+    get { _buffer.header.freshPoolCapacity }
+    set { _buffer.header.freshPoolCapacity = newValue }
+  }
+  
+  @inlinable
+  public var initializedCount: Int {
+    get { _buffer.header.initializedCount }
+    set { _buffer.header.initializedCount = newValue }
+  }
+#endif
 }
 
 // MARK: - 生成

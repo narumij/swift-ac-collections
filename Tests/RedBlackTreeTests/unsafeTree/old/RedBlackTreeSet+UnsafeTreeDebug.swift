@@ -6,7 +6,7 @@
     @inlinable
     var __nodes: [___Node] {
       get {
-        (0..<__tree_._header.initializedCount).map {
+        (0..<__tree_.initializedCount).map {
           .init(
             __is_black_: __tree_.__is_black_($0),
             __left_: __tree_.__left_($0),
@@ -15,8 +15,8 @@
         }
       }
       set {
-        __tree_._header.___clearRecycle()
-        __tree_._header.initializedCount = newValue.count
+        __tree_._buffer.header.___clearRecycle()
+        __tree_.initializedCount = newValue.count
         newValue.enumerated().forEach {
           i, v in
           __tree_.__is_black_(i, v.__is_black_)
@@ -30,12 +30,12 @@
     @inlinable
     var ___elements: [Element] {
       get {
-        (0..<__tree_._header.initializedCount).map {
+        (0..<__tree_.initializedCount).map {
           __tree_.__value_($0)
         }
       }
       set {
-        __tree_._header.initializedCount = newValue.count
+        __tree_.initializedCount = newValue.count
         newValue.enumerated().forEach {
           i, v in
           __tree_.___element(i, v)
@@ -44,8 +44,8 @@
     }
     @inlinable
     var ___header: Tree.Header {
-      get { __tree_._header }
-      set { __tree_._header = newValue }
+      get { __tree_._buffer.header }
+      set { __tree_._buffer.header = newValue }
     }
     @inlinable
     var _count: Int {

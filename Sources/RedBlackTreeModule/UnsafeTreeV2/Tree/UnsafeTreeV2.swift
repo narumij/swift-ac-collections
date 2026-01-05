@@ -10,7 +10,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   
   public typealias Base = Base
   public typealias Tree = UnsafeTreeV2<Base>
-  public typealias Header = UnsafeTreeBuffer<Base>.Header
+  public typealias Header = UnsafeTreeBuffer<Base._Value>.Header
   public typealias _Key = Base._Key
   public typealias _Value = Base._Value
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
@@ -55,7 +55,9 @@ extension UnsafeTreeV2 {
   internal static func create(
     minimumCapacity nodeCapacity: Int
   ) -> Tree {
-    .init(_buffer: .init(unsafeBufferObject: UnsafeTreeBuffer<Base>.create(minimumCapacity: nodeCapacity)))
+    .init(_buffer:
+        .init(unsafeBufferObject:
+                UnsafeTreeBuffer<Base._Value>.create(minimumCapacity: nodeCapacity)))
   }
 }
 

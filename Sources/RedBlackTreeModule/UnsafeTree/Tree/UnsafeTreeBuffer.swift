@@ -24,8 +24,8 @@ import Foundation
 
 // TODO: テスト整備後internalにする
 @_fixed_layout
-public final class UnsafeTreeBuffer<Base: ___TreeBase>:
-  ManagedBuffer<UnsafeTreeBuffer<Base>.Header, UnsafeNode>
+public final class UnsafeTreeBuffer<_Value>:
+  ManagedBuffer<UnsafeTreeBuffer<_Value>.Header, UnsafeNode>
 {
   // MARK: - 解放処理
   @inlinable
@@ -83,7 +83,6 @@ extension UnsafeTreeBuffer {
   @frozen
   public struct Header: UnsafeNodeFreshPool, UnsafeNodeRecyclePool {
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-    public typealias _Value = Base._Value
     @inlinable
     @inline(__always)
     internal init(_nullptr: _NodePtr, _end_ptr: _NodePtr) {

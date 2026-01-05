@@ -48,9 +48,6 @@ where Parameters: Comparable {
   public
     typealias _MappedValue = Value
 
-  @usableFromInline
-  var _storage: UnsafeStorage<Self>
-
   public let maxCount: Int
 
   @usableFromInline
@@ -58,6 +55,14 @@ where Parameters: Comparable {
 
   @usableFromInline
   var _rankLowest: _NodePtr
+  
+  @usableFromInline
+  var referenceCounter: ReferenceCounter
+
+  @usableFromInline
+  var __tree_: Tree {
+    didSet { referenceCounter = .create() }
+  }
 }
 
 extension ___LRUMemoizeStorage {
@@ -67,12 +72,14 @@ extension ___LRUMemoizeStorage {
   @inlinable
   @inline(__always)
   public init(minimumCapacity: Int = 0, maxCount: Int = Int.max) {
-    _storage = .create(withCapacity: minimumCapacity)
+    __tree_ = .create(minimumCapacity: minimumCapacity)
     self.maxCount = maxCount
     // これら二つはコピーでケアされない
     // インデックス時代はそれでこまらなかった
     // コピーが発生する前提の場合、別途ケアをする必要がある
-    (_rankHighest, _rankLowest) = (_storage.tree.nullptr, _storage.tree.nullptr)
+    (_rankHighest, _rankLowest) = (__tree_.nullptr, __tree_.nullptr)
+    
+    referenceCounter = .create()
   }
 
   @inlinable
@@ -96,7 +103,7 @@ extension ___LRUMemoizeStorage {
         if __tree_.count == maxCount {
           _ = __tree_.erase(___popRankLowest())
         }
-        assert(__tree_.count < __tree_.freshPoolCapacity)
+        assert(__tree_.count < __tree_.capacity)
         let (__parent, __child) = __tree_.__find_equal(key)
         if __tree_.__ptr_(__child) == __tree_.nullptr {
           let __h = __tree_.__construct_node(.init(key, __tree_.nullptr, __tree_.nullptr, newValue))
@@ -108,7 +115,8 @@ extension ___LRUMemoizeStorage {
   }
 }
 
-extension ___LRUMemoizeStorage: ___LRULinkList & ___UnsafeCopyOnWrite & ___UnsafeStorageProtocol {
+extension ___LRUMemoizeStorage: ___LRULinkList & ___UnsafeCopyOnWriteV2 & ___UnsafeStorageProtocolV2 {
+  
   public typealias Base = Self
 }
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}
@@ -151,8 +159,8 @@ extension ___LRUMemoizeStorage {
   extension ___LRUMemoizeStorage {
 
     package var _copyCount: UInt {
-      get { _storage.tree.copyCount }
-      set { _storage.tree.copyCount = newValue }
+      get { __tree_.copyCount }
+      set { __tree_.copyCount = newValue }
     }
   }
 #endif

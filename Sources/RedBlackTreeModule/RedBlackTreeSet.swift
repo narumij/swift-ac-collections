@@ -63,13 +63,28 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
   public
     typealias Base = Self
-
+  
+#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
   @usableFromInline
-  var _storage: Storage
+  var referenceCounter: ReferenceCounter
+#endif
+  
+#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+  @usableFromInline
+  var __tree_: Tree {
+    didSet { referenceCounter = .create() }
+  }
+#else
+  @usableFromInline
+  var __tree_: Tree
+#endif
 
   @inlinable @inline(__always)
-  internal init(_storage: Storage) {
-    self._storage = _storage
+  internal init(__tree_: Tree) {
+    self.__tree_ = __tree_
+#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+    referenceCounter = .create()
+#endif
   }
 }
 
@@ -85,14 +100,15 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public init() {
-    self.init(minimumCapacity: 0)
+//    self.init(minimumCapacity: 0)
+    self.init(__tree_: .create())
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public init(minimumCapacity: Int) {
-    _storage = .create(withCapacity: minimumCapacity)
+    self.init(__tree_: .create(minimumCapacity: minimumCapacity))
   }
 }
 
@@ -102,7 +118,7 @@ extension RedBlackTreeSet {
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    self._storage = .init(tree: .create_unique(sorted: sequence.sorted()))
+    self.init(__tree_: .create_unique(sorted: sequence.sorted()))
   }
 }
 
@@ -114,7 +130,7 @@ extension RedBlackTreeSet {
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {
     precondition(range is Range<Element> || range is ClosedRange<Element>)
-    self._storage = .init(tree: .create(range: range))
+    self.init(__tree_: .create(range: range))
   }
 }
 
@@ -561,10 +577,7 @@ extension RedBlackTreeSet {
     public func filter(
       _ isIncluded: (Element) throws -> Bool
     ) rethrows -> Self {
-      .init(
-        _storage: .init(
-          tree: try __tree_.___filter(_start, _end, isIncluded)
-        ))
+      .init(__tree_: try __tree_.___filter(_start, _end, isIncluded))
     }
   }
 #endif
@@ -773,7 +786,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  public typealias SubSequence = RedBlackTreeSlice<Base>
+  public typealias SubSequence = RedBlackTreeSliceV2<Base>
 }
 
 // MARK: - Index Range
@@ -926,7 +939,7 @@ extension RedBlackTreeSet: Hashable where Element: Hashable {
 
     @inlinable
     public init(from decoder: Decoder) throws {
-      _storage = .init(tree: try .create(from: decoder))
+      self.init(__tree_: try .create(from: decoder))
     }
   }
 #endif
@@ -941,6 +954,6 @@ extension RedBlackTreeSet {
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    self._storage = .init(tree: .create_unique(naive: sequence))
+    self.init(__tree_: .create_unique(naive: sequence))
   }
 }

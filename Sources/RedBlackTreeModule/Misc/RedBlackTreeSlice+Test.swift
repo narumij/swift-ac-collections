@@ -1,7 +1,7 @@
-extension RedBlackTreeSlice {
+extension RedBlackTreeSliceV2 {
 
 #if USE_UNSAFE_TREE
-  package func ___node_positions() -> ___SafePointersUnsafe<Base> {
+  package func ___node_positions() -> ___SafePointersUnsafeV2<Base> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 #else
@@ -11,10 +11,10 @@ extension RedBlackTreeSlice {
 #endif
 }
 
-extension RedBlackTreeSlice.KeyValue {
+extension RedBlackTreeSliceV2.KeyValue {
 
   #if USE_UNSAFE_TREE
-    package func ___node_positions() -> ___SafePointersUnsafe<Base> {
+    package func ___node_positions() -> ___SafePointersUnsafeV2<Base> {
       .init(tree: __tree_, start: _start, end: _end)
     }
   #else

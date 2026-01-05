@@ -45,7 +45,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   //  @inline(__always)
   public mutating func formUnion(_ other: __owned RedBlackTreeMultiSet<Element>) {
-    _storage = .init(tree: __tree_.___meld_multi(other.__tree_))
+    __tree_ = __tree_.___meld_multi(other.__tree_)
   }
 }
 
@@ -65,7 +65,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   //  @inline(__always)
   public mutating func formSymmetricDifference(_ other: __owned RedBlackTreeMultiSet<Element>) {
-    _storage = .init(tree: __tree_.___symmetric_difference(other.__tree_))
+    __tree_ = __tree_.___symmetric_difference(other.__tree_)
   }
 }
 
@@ -85,7 +85,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   //  @inline(__always)
   public mutating func formIntersection(_ other: RedBlackTreeMultiSet<Element>) {
-    _storage = .init(tree: __tree_.___intersection(other.__tree_))
+    __tree_ = __tree_.___intersection(other.__tree_)
   }
 }
 
@@ -105,6 +105,6 @@ extension RedBlackTreeMultiSet {
   @inlinable
   //  @inline(__always)
   public mutating func formDifference(_ other: __owned RedBlackTreeMultiSet<Element>) {
-    _storage = .init(tree: __tree_.___difference(other.__tree_))
+    __tree_ = __tree_.___difference(other.__tree_)
   }
 }

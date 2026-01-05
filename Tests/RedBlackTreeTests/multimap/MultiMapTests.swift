@@ -731,9 +731,11 @@ final class MultiMapTests: XCTestCase {
     XCTAssertEqual(sub.count, 2)
     XCTAssertEqual(sub.map { $0.key }, [2, 3])
     XCTAssertEqual(sub.map { $0.value }, ["b", "c"])
+#if COMPATIBLE_ATCODER_2025
     set.remove(contentsOf: 2..<4)
     XCTAssertEqual(set.map { $0.key }, [1, 4, 5])
     XCTAssertEqual(set.map { $0.value }, ["a", "d", "e"])
+#endif
   }
 
   func testSubsequence2() throws {
@@ -746,9 +748,11 @@ final class MultiMapTests: XCTestCase {
     XCTAssertEqual(sub.count, 3)
     XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
     XCTAssertEqual(sub.map { $0.value }, ["b", "c", "d"])
+#if COMPATIBLE_ATCODER_2025
     set.remove(contentsOf: 2...4)
     XCTAssertEqual(set.map { $0.key }, [1, 5])
     XCTAssertEqual(set.map { $0.value }, ["a", "e"])
+#endif
   }
 
   func testSubsequence4() throws {

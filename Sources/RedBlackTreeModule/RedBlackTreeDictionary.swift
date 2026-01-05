@@ -58,10 +58,10 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias Element = (key: Key, value: Value)
 
   public
-    typealias Keys = RedBlackTreeIterator<Self>.Keys
+    typealias Keys = RedBlackTreeIteratorV2<Self>.Keys
 
   public
-    typealias Values = RedBlackTreeIterator<Self>.MappedValues
+    typealias Values = RedBlackTreeIteratorV2<Self>.MappedValues
 
   public
     typealias _Key = Key
@@ -72,12 +72,27 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   public
     typealias _Value = RedBlackTreePair<Key, Value>
 
+#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
   @usableFromInline
-  var _storage: Storage
+  var referenceCounter: ReferenceCounter
+#endif
+  
+#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+  @usableFromInline
+  var __tree_: Tree {
+    didSet { referenceCounter = .create() }
+  }
+#else
+  @usableFromInline
+  var __tree_: Tree
+#endif
 
   @inlinable @inline(__always)
-  internal init(_storage: Storage) {
-    self._storage = _storage
+  internal init(__tree_: Tree) {
+    self.__tree_ = __tree_
+#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+    referenceCounter = .create()
+#endif
   }
 }
 
@@ -104,7 +119,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public init(minimumCapacity: Int) {
-    _storage = .create(withCapacity: minimumCapacity)
+    self.init(__tree_: .create(minimumCapacity: minimumCapacity))
   }
 }
 
@@ -115,8 +130,7 @@ extension RedBlackTreeDictionary {
   public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
 
-    self._storage = .init(
-      tree: .create_unique(
+    self.init(__tree_: .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
         transform: Self.___tree_value
       ))
@@ -132,8 +146,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    self._storage = .init(
-      tree: try .create_unique(
+    self.init(__tree_: try .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
         uniquingKeysWith: combine,
         transform: Self.___tree_value
@@ -150,8 +163,7 @@ extension RedBlackTreeDictionary {
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == [S.Element] {
 
-    self._storage = .init(
-      tree: try .create_unique(
+    self.init(__tree_: try .create_unique(
         sorted: try values.sorted {
           try keyForValue($0) < keyForValue($1)
         },
@@ -306,7 +318,7 @@ extension RedBlackTreeDictionary {
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == __tree_.nullptr {
         _ensureUniqueAndCapacity()
-        assert(__tree_.header.freshPoolCapacity > __tree_.count)
+        assert(__tree_.capacity > __tree_.count)
         __ptr = __tree_.__construct_node(Self.___tree_value((key, defaultValue())))
         __tree_.__insert_node_at(__parent, __child, __ptr)
       } else {
@@ -705,11 +717,9 @@ extension RedBlackTreeDictionary {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    .init(
-      _storage: .init(
-        tree: try __tree_.___filter(_start, _end) {
+    .init(__tree_: try __tree_.___filter(_start, _end) {
           try isIncluded(___element($0))
-        }))
+        })
   }
 }
 
@@ -720,9 +730,7 @@ extension RedBlackTreeDictionary {
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
     -> RedBlackTreeDictionary<Key, T>
   {
-    .init(
-      _storage: .init(
-        tree: try __tree_.___mapValues(_start, _end, transform)))
+    .init(__tree_:  try __tree_.___mapValues(_start, _end, transform))
   }
 
   /// - Complexity: O(*n*)
@@ -730,9 +738,7 @@ extension RedBlackTreeDictionary {
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
     rethrows -> RedBlackTreeDictionary<Key, T>
   {
-    .init(
-      _storage: .init(
-        tree: try __tree_.___compactMapValues(_start, _end, transform)))
+    .init(__tree_: try __tree_.___compactMapValues(_start, _end, transform))
   }
 }
 
@@ -941,7 +947,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  public typealias SubSequence = RedBlackTreeSlice<Self>.KeyValue
+  public typealias SubSequence = RedBlackTreeSliceV2<Self>.KeyValue
 }
 
 // MARK: - Index Range
@@ -1104,7 +1110,7 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
     @inlinable
     public func encode(to encoder: Encoder) throws {
       var container = encoder.unkeyedContainer()
-      for element in __tree_.unsafeValues(__tree_.__begin_node_, __tree_.__end_node()) {
+      for element in __tree_.unsafeValues(__tree_.__begin_node_, __tree_.__end_node) {
         try container.encode(element)
       }
     }
@@ -1114,7 +1120,7 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
 
     @inlinable
     public init(from decoder: Decoder) throws {
-      _storage = .init(tree: try .create(from: decoder))
+      self.init(__tree_: try .create(from: decoder))
     }
   }
 #endif
@@ -1130,7 +1136,7 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
     @inlinable
     public init<Source>(naive sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
-      self._storage = .init(tree: .create_unique(naive: sequence, transform: Self.___tree_value))
+      self.init(__tree_: .create_unique(naive: sequence, transform: Self.___tree_value))
     }
   }
 #endif

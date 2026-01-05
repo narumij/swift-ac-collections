@@ -15,12 +15,14 @@ var defines: [String] = [
   //  "SKIP_MULTISET_INDEX_BUG",
   //  "PERFOMANCE_CHECK",
   "WITHOUT_SIZECHECK",
+  
   "COMPATIBLE_ATCODER_2025",
 
   "USE_UNSAFE_TREE",
 
   //"USE_OLD_FIND",
   
+  "USE_DUAL_REF_COUNT"
   
 //  "ALLOCATION_DRILL" // リリース時はオフ
 ]

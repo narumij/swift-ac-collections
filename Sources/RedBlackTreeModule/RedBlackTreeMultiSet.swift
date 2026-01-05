@@ -55,12 +55,27 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
   public
     typealias _Value = Element
 
+#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
   @usableFromInline
-  var _storage: Storage
+  var referenceCounter: ReferenceCounter
+#endif
+  
+#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+  @usableFromInline
+  var __tree_: Tree {
+    didSet { referenceCounter = .create() }
+  }
+#else
+  @usableFromInline
+  var __tree_: Tree
+#endif
 
   @inlinable @inline(__always)
-  internal init(_storage: Storage) {
-    self._storage = _storage
+  internal init(__tree_: Tree) {
+    self.__tree_ = __tree_
+#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+    referenceCounter = .create()
+#endif
   }
 }
 
@@ -85,7 +100,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(1)
   @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
-    _storage = .create(withCapacity: minimumCapacity)
+    self.init(__tree_: .create(minimumCapacity: minimumCapacity))
   }
 }
 
@@ -95,7 +110,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public init<Source>(_ sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    self._storage = .init(tree: .create_multi(sorted: sequence.sorted()))
+    self.init(__tree_: .create_multi(sorted: sequence.sorted()))
   }
 }
 
@@ -107,7 +122,7 @@ extension RedBlackTreeMultiSet {
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {
     precondition(range is Range<Element> || range is ClosedRange<Element>)
-    self._storage = .init(tree: .create(range: range))
+    self.init(__tree_: .create(range: range))
   }
 }
 
@@ -338,7 +353,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @inline(__always)
   public mutating func meld(_ other: __owned RedBlackTreeMultiSet<Element>) {
-    _storage = .init(tree: __tree_.___meld_multi(other.__tree_))
+    __tree_ = __tree_.___meld_multi(other.__tree_)
   }
 
   /// - Complexity: O(*n* + *m*)
@@ -564,10 +579,7 @@ extension RedBlackTreeMultiSet {
     public func filter(
       _ isIncluded: (Element) throws -> Bool
     ) rethrows -> Self {
-      .init(
-        _storage: .init(
-          tree: try __tree_.___filter(_start, _end, isIncluded)
-        ))
+      .init(__tree_: try __tree_.___filter(_start, _end, isIncluded))
     }
   }
 #endif
@@ -778,7 +790,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  public typealias SubSequence = RedBlackTreeSlice<Self>
+  public typealias SubSequence = RedBlackTreeSliceV2<Self>
 }
 
 // MARK: - Index Range
@@ -931,7 +943,7 @@ extension RedBlackTreeMultiSet: Hashable where Element: Hashable {
 
     @inlinable
     public init(from decoder: Decoder) throws {
-      _storage = .init(tree: try .create(from: decoder))
+      self.init(__tree_: try .create(from: decoder))
     }
   }
 #endif
@@ -946,6 +958,6 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    self._storage = .init(tree: .create_multi(naive: sequence))
+    self.init(__tree_: .create_multi(naive: sequence))
   }
 }

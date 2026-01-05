@@ -17,7 +17,7 @@
     }
   }
 
-  extension RedBlackTreeSlice.KeyValue {
+  extension RedBlackTreeSliceV2.KeyValue {
 
     @available(*, deprecated)
     public subscript(_unsafe position: Index) -> (key: _Key, value: _MappedValue) {
@@ -33,7 +33,7 @@
     }
   }
 
-  extension RedBlackTreeSlice.KeyValue {
+  extension RedBlackTreeSliceV2.KeyValue {
 
     /// - Complexity: O(1)
     @inlinable

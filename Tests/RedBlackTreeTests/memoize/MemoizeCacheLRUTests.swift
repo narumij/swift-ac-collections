@@ -30,7 +30,7 @@ final class MemoizeCacheLRUTests: XCTestCase {
   func testInit() throws {
     let cache = ___LRUMemoizeStorage<TestKey, Int>(minimumCapacity: 10)
     XCTAssertEqual(cache.__tree_.count, 0)
-    XCTAssertEqual(cache.__tree_.freshPoolCapacity, 10)
+    XCTAssertEqual(cache.__tree_.capacity, 10)
   }
 
   func testQueue() throws {
@@ -139,7 +139,7 @@ final class MemoizeCacheLRUTests: XCTestCase {
   func testMaximum() throws {
     var cache = ___LRUMemoizeStorage<TestKey, Int>(minimumCapacity: 0, maxCount: 100)
     XCTAssertEqual(cache.__tree_.count, 0)
-    XCTAssertEqual(cache.__tree_.freshPoolCapacity, 0)
+    XCTAssertEqual(cache.__tree_.capacity, 0)
     var finalCapacity: Int? = nil
     for i in 0..<200 {
       cache[i] = i

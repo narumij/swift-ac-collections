@@ -18,24 +18,24 @@ import XCTest
     }
 
     func testCreateZero() async throws {
-      let storage = UnsafeTree<Base>.create(minimumCapacity: 0)
-      XCTAssertEqual(storage.freshPoolCapacity, 0)
+      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 0)
+      XCTAssertEqual(storage.capacity, 0)
       XCTAssertEqual(storage.count, 0)
       XCTAssertEqual(storage.__root, storage.nullptr)
       XCTAssertEqual(storage.__begin_node_, storage.end)
     }
 
     func testCreate() async throws {
-      let storage = UnsafeTree<Base>.create(minimumCapacity: 4)
-      XCTAssertEqual(storage.freshPoolCapacity, 4)
+      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
+      XCTAssertEqual(storage.capacity, 4)
       XCTAssertEqual(storage.count, 0)
       XCTAssertEqual(storage.__root, storage.nullptr)
       XCTAssertEqual(storage.__begin_node_, storage.end)
     }
 
     func testConstruct() async throws {
-      let storage = UnsafeTree<Base>.create(minimumCapacity: 4)
-      XCTAssertEqual(storage.freshPoolCapacity, 4)
+      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
+      XCTAssertEqual(storage.capacity, 4)
       let ptr = storage.__construct_node(100)
       XCTAssertEqual(storage.__value_(ptr), 100)
       storage.___element(ptr, 20)
@@ -45,7 +45,7 @@ import XCTest
     }
 
     func testDestroy0() async throws {
-      let storage = UnsafeTree<Base>.create(minimumCapacity: 4)
+      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
       let ptr = storage.__construct_node(100)
       XCTAssertEqual(storage.__value_(ptr), 100)
       storage.destroy(ptr)
@@ -53,61 +53,61 @@ import XCTest
     }
 
     func testDestroyStack() async throws {
-      let storage = UnsafeTree<Base>.create(minimumCapacity: 4)
+      var storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
       //    storage.initializedCount = 4
       _ = storage.__construct_node(0)
       _ = storage.__construct_node(2)
       _ = storage.__construct_node(4)
       _ = storage.__construct_node(8)
-      XCTAssertEqual(storage._header[0].index, 0)
-      XCTAssertEqual(storage._header[1].index, 1)
-      XCTAssertEqual(storage._header[2].index, 2)
-      XCTAssertEqual(storage._header[3].index, 3)
-      XCTAssertEqual(storage._header.destroyNode, storage.nullptr)
-      XCTAssertEqual(storage.___destroyNodes, [])
-      XCTAssertEqual(storage._header.destroyCount, 0)
-      storage._header.___pushRecycle(storage._header[0])
-      XCTAssertEqual(storage._header.destroyNode, storage._header[0])
-      XCTAssertEqual(storage.__left_(storage._header[0]), storage.nullptr)
-      XCTAssertEqual(storage.___destroyNodes, [0])
-      XCTAssertEqual(storage._header.destroyCount, 1)
-      storage._header.___pushRecycle(storage._header[1])
-      XCTAssertEqual(storage.___destroyNodes, [1, 0])
-      XCTAssertEqual(storage._header.destroyCount, 2)
-      storage._header.___pushRecycle(storage._header[2])
-      XCTAssertEqual(storage.___destroyNodes, [2, 1, 0])
-      XCTAssertEqual(storage._header.destroyCount, 3)
-      storage._header.___pushRecycle(storage._header[3])
-      XCTAssertEqual(storage.___destroyNodes, [3, 2, 1, 0])
-      XCTAssertEqual(storage._header.destroyCount, 4)
-      XCTAssertEqual(storage._header.___popRecycle(), storage._header[3])
-      XCTAssertEqual(storage.___destroyNodes, [2, 1, 0])
-      XCTAssertEqual(storage._header.destroyCount, 3)
-      XCTAssertEqual(storage._header.___popRecycle(), storage._header[2])
-      XCTAssertEqual(storage.___destroyNodes, [1, 0])
-      XCTAssertEqual(storage._header.destroyCount, 2)
-      XCTAssertEqual(storage._header.___popRecycle(), storage._header[1])
-      XCTAssertEqual(storage.___destroyNodes, [0])
-      XCTAssertEqual(storage._header.destroyCount, 1)
-      XCTAssertEqual(storage._header.___popRecycle(), storage._header[0])
-      XCTAssertEqual(storage.___destroyNodes, [])
-      XCTAssertEqual(storage._header.destroyCount, 0)
+      XCTAssertEqual(storage._buffer.header[0].index, 0)
+      XCTAssertEqual(storage._buffer.header[1].index, 1)
+      XCTAssertEqual(storage._buffer.header[2].index, 2)
+      XCTAssertEqual(storage._buffer.header[3].index, 3)
+      XCTAssertEqual(storage._buffer.header.destroyNode, storage.nullptr)
+      XCTAssertEqual(storage._buffer.header.___destroyNodes, [])
+      XCTAssertEqual(storage._buffer.header.destroyCount, 0)
+      storage._buffer.header.___pushRecycle(storage._buffer.header[0])
+      XCTAssertEqual(storage._buffer.header.destroyNode, storage._buffer.header[0])
+      XCTAssertEqual(storage.__left_(storage._buffer.header[0]), storage.nullptr)
+      XCTAssertEqual(storage._buffer.header.___destroyNodes, [0])
+      XCTAssertEqual(storage._buffer.header.destroyCount, 1)
+      storage._buffer.header.___pushRecycle(storage._buffer.header[1])
+      XCTAssertEqual(storage._buffer.header.___destroyNodes, [1, 0])
+      XCTAssertEqual(storage._buffer.header.destroyCount, 2)
+      storage._buffer.header.___pushRecycle(storage._buffer.header[2])
+      XCTAssertEqual(storage._buffer.header.___destroyNodes, [2, 1, 0])
+      XCTAssertEqual(storage._buffer.header.destroyCount, 3)
+      storage._buffer.header.___pushRecycle(storage._buffer.header[3])
+      XCTAssertEqual(storage._buffer.header.___destroyNodes, [3, 2, 1, 0])
+      XCTAssertEqual(storage._buffer.header.destroyCount, 4)
+      XCTAssertEqual(storage._buffer.header.___popRecycle(), storage._buffer.header[3])
+      XCTAssertEqual(storage._buffer.header.___destroyNodes, [2, 1, 0])
+      XCTAssertEqual(storage._buffer.header.destroyCount, 3)
+      XCTAssertEqual(storage._buffer.header.___popRecycle(), storage._buffer.header[2])
+      XCTAssertEqual(storage._buffer.header.___destroyNodes, [1, 0])
+      XCTAssertEqual(storage._buffer.header.destroyCount, 2)
+      XCTAssertEqual(storage._buffer.header.___popRecycle(), storage._buffer.header[1])
+      XCTAssertEqual(storage._buffer.header.___destroyNodes, [0])
+      XCTAssertEqual(storage._buffer.header.destroyCount, 1)
+      XCTAssertEqual(storage._buffer.header.___popRecycle(), storage._buffer.header[0])
+      XCTAssertEqual(storage._buffer.header.___destroyNodes, [])
+      XCTAssertEqual(storage._buffer.header.destroyCount, 0)
     }
 
     func testDestroyStack2() async throws {
       //    throw XCTSkip()
-      let storage = UnsafeTree<Base>.create(minimumCapacity: 4)
+      var storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
       _ = storage.__construct_node(0)
       _ = storage.__construct_node(2)
       _ = storage.__construct_node(4)
       _ = storage.__construct_node(8)
-      storage._header.___pushRecycle(storage._header[0])
-      storage._header.___pushRecycle(storage._header[1])
-      storage._header.___pushRecycle(storage._header[2])
-      storage._header.___pushRecycle(storage._header[3])
+      storage._buffer.header.___pushRecycle(storage._buffer.header[0])
+      storage._buffer.header.___pushRecycle(storage._buffer.header[1])
+      storage._buffer.header.___pushRecycle(storage._buffer.header[2])
+      storage._buffer.header.___pushRecycle(storage._buffer.header[3])
       let copy = storage.copy(minimumCapacity: 100)
-      XCTAssertEqual(storage.___destroyNodes, copy.___destroyNodes)
-      var (s, c) = (storage._header.destroyNode, copy._header.destroyNode)
+      XCTAssertEqual(storage._buffer.header.___destroyNodes, copy._buffer.header.___destroyNodes)
+      var (s, c) = (storage._buffer.header.destroyNode, copy._buffer.header.destroyNode)
       while s != storage.nullptr , c != storage.nullptr {
         XCTAssertEqual(s.index, s.index)
         XCTAssertEqual(
@@ -120,16 +120,16 @@ import XCTest
 
     func testConstructDestroy() async throws {
       #if AC_COLLECTIONS_INTERNAL_CHECKS
-        let storage = UnsafeTree<Base>.create(minimumCapacity: 4)
+        let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
         do {
           let p = storage.__construct_node(-1)
           XCTAssertEqual(storage.count, 1)
           XCTAssertEqual(p.index, 0)
           storage.destroy(p)
           XCTAssertEqual(storage.count, 0)
-          XCTAssertEqual(storage.header.destroyNode.index, 0)
-          XCTAssertEqual(storage.___destroyNodes, [0])
-          XCTAssertEqual(storage.header.destroyCount, 1)
+          XCTAssertEqual(storage._buffer.header.destroyNode.index, 0)
+          XCTAssertEqual(storage._buffer.header.___destroyNodes, [0])
+          XCTAssertEqual(storage._buffer.header.destroyCount, 1)
           XCTAssertEqual(storage.__left_(0), .nullptr)
         }
         do {
@@ -142,15 +142,15 @@ import XCTest
             XCTAssertEqual(p.index, 1)
             storage.destroy(p)
             XCTAssertEqual(storage.count, 1)
-            XCTAssertEqual(storage.header.destroyNode.index, 1)
-            XCTAssertEqual(storage.___destroyNodes, [1])
-            XCTAssertEqual(storage.header.destroyCount, 1)
+            XCTAssertEqual(storage._buffer.header.destroyNode.index, 1)
+            XCTAssertEqual(storage._buffer.header.___destroyNodes, [1])
+            XCTAssertEqual(storage._buffer.header.destroyCount, 1)
           }
           storage.destroy(p)
           XCTAssertEqual(storage.count, 0)
-          XCTAssertEqual(storage.header.destroyNode.index, 0)
-          XCTAssertEqual(storage.___destroyNodes, [0, 1])
-          XCTAssertEqual(storage.header.destroyCount, 2)
+          XCTAssertEqual(storage._buffer.header.destroyNode.index, 0)
+          XCTAssertEqual(storage._buffer.header.___destroyNodes, [0, 1])
+          XCTAssertEqual(storage._buffer.header.destroyCount, 2)
           XCTAssertEqual(storage.__left_(1), .nullptr)
         }
         do {
@@ -167,22 +167,22 @@ import XCTest
               XCTAssertEqual(p.index, 2)
               storage.destroy(p)
               XCTAssertEqual(storage.count, 2)
-              XCTAssertEqual(storage.header.destroyNode.index, 2)
-              XCTAssertEqual(storage.___destroyNodes, [2])
-              XCTAssertEqual(storage.header.destroyCount, 1)
+              XCTAssertEqual(storage._buffer.header.destroyNode.index, 2)
+              XCTAssertEqual(storage._buffer.header.___destroyNodes, [2])
+              XCTAssertEqual(storage._buffer.header.destroyCount, 1)
               XCTAssertEqual(storage.__left_(2), .nullptr)
             }
             storage.destroy(p)
             XCTAssertEqual(storage.count, 1)
-            XCTAssertEqual(storage.header.destroyNode.index, 1)
-            XCTAssertEqual(storage.___destroyNodes, [1, 2])
-            XCTAssertEqual(storage.header.destroyCount, 2)
+            XCTAssertEqual(storage._buffer.header.destroyNode.index, 1)
+            XCTAssertEqual(storage._buffer.header.___destroyNodes, [1, 2])
+            XCTAssertEqual(storage._buffer.header.destroyCount, 2)
             XCTAssertEqual(storage.__left_(2), .nullptr)
           }
           storage.destroy(p)
-          XCTAssertEqual(storage.header.destroyNode.index, 0)
-          XCTAssertEqual(storage.___destroyNodes, [0, 1, 2])
-          XCTAssertEqual(storage.header.destroyCount, 3)
+          XCTAssertEqual(storage._buffer.header.destroyNode.index, 0)
+          XCTAssertEqual(storage._buffer.header.___destroyNodes, [0, 1, 2])
+          XCTAssertEqual(storage._buffer.header.destroyCount, 3)
           XCTAssertEqual(storage.__left_(2), .nullptr)
         }
       #endif
@@ -190,7 +190,7 @@ import XCTest
 
     func testInsert() async throws {
       //    throw XCTSkip()
-      let storage = UnsafeTree<Base>.create(minimumCapacity: 5)
+      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
       for i in 0..<5 {
         _ = storage.__insert_unique(i)
         XCTAssertTrue(storage.__tree_invariant(storage.__root))
@@ -212,7 +212,7 @@ import XCTest
 
     func testInsert2() async throws {
       //    throw XCTSkip()
-      let storage = UnsafeTree<Base>.create(minimumCapacity: 5)
+      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
       for i in 0..<5 {
         _ = storage.__insert_unique(i)
         XCTAssertTrue(storage.__tree_invariant(storage.__root))

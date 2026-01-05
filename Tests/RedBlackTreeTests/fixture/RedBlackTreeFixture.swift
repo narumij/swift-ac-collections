@@ -22,12 +22,12 @@ import XCTest
   #else
     protocol RedBlackTreeDebugFixture: ___TreeBase {
       associatedtype Base: ___TreeBase
-      var __tree_: UnsafeTree<Base> { get }
+      var __tree_: UnsafeTreeV2<Base> { get set }
     }
 
     extension RedBlackTreeDebugFixture {
 
-      typealias _NodePtr = UnsafeTree<Base>._NodePtr
+      typealias _NodePtr = UnsafeTreeV2<Base>._NodePtr
     }
   #endif
 

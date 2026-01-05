@@ -1,13 +1,16 @@
-
 public typealias ___TreeBase = ValueComparer & CompareTrait & ThreeWayComparator
 
 public struct UnsafeTreeV2<Base: ___TreeBase> {
-  
+
   @inlinable
-  internal init(_buffer: ManagedBufferPointer<Header, UnsafeNode>) {
+  internal init(
+    _buffer: ManagedBufferPointer<Header, UnsafeNode>,
+    isReadOnly: Bool = false
+  ) {
     self._buffer = _buffer
+    self.isReadOnly = isReadOnly
   }
-  
+
   public typealias Base = Base
   public typealias Tree = UnsafeTreeV2<Base>
   public typealias Header = UnsafeTreeBuffer<Base._Value>.Header
@@ -15,35 +18,38 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   public typealias _Value = Base._Value
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
-  
+
   @usableFromInline
   var _buffer: ManagedBufferPointer<Header, UnsafeNode>
+
+  @usableFromInline
+  let isReadOnly: Bool
 }
 
 extension UnsafeTreeV2 {
-  
+
   @inlinable
   public var count: Int { _buffer.header.count }
-  
-#if !DEBUG
-  @inlinable
-  public var capacity: Int { _buffer.header.freshPoolCapacity }
-  
-  @inlinable
-  public var initializedCount: Int { _buffer.header.initializedCount }
-#else
-  @inlinable
-  public var capacity: Int {
-    get { _buffer.header.freshPoolCapacity }
-    set { _buffer.header.freshPoolCapacity = newValue }
-  }
-  
-  @inlinable
-  public var initializedCount: Int {
-    get { _buffer.header.initializedCount }
-    set { _buffer.header.initializedCount = newValue }
-  }
-#endif
+
+  #if !DEBUG
+    @inlinable
+    public var capacity: Int { _buffer.header.freshPoolCapacity }
+
+    @inlinable
+    public var initializedCount: Int { _buffer.header.initializedCount }
+  #else
+    @inlinable
+    public var capacity: Int {
+      get { _buffer.header.freshPoolCapacity }
+      set { _buffer.header.freshPoolCapacity = newValue }
+    }
+
+    @inlinable
+    public var initializedCount: Int {
+      get { _buffer.header.initializedCount }
+      set { _buffer.header.initializedCount = newValue }
+    }
+  #endif
 }
 
 // MARK: - 生成
@@ -53,8 +59,10 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal static func create() -> UnsafeTreeV2 {
-    .init(_buffer:
-        .init(unsafeBufferObject: _emptyTreeStorage))
+    .init(
+      _buffer:
+        .init(unsafeBufferObject: _emptyTreeStorage),
+      isReadOnly: true)
   }
 
   @inlinable
@@ -62,9 +70,11 @@ extension UnsafeTreeV2 {
   internal static func create(
     minimumCapacity nodeCapacity: Int
   ) -> UnsafeTreeV2 {
-    return .init(_buffer:
-        .init(unsafeBufferObject:
-                UnsafeTreeBuffer<Base._Value>.create(minimumCapacity: nodeCapacity)))
+    return .init(
+      _buffer:
+        .init(
+          unsafeBufferObject:
+            UnsafeTreeBuffer<Base._Value>.create(minimumCapacity: nodeCapacity)))
   }
 }
 
@@ -261,24 +271,24 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func ___node_ptr(_ index: Index) -> _NodePtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-#if true
-    // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
-    // endはシングルトン的にしたい気持ちもある
-    @inline(__always)
-    func ___NodePtr(_ p: Int) -> _NodePtr {
-      switch p {
-      case .nullptr:
-        return nullptr
-      case .end:
-        return end
-      default:
-        return _buffer.header[p]
+    #if true
+      // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
+      // endはシングルトン的にしたい気持ちもある
+      @inline(__always)
+      func ___NodePtr(_ p: Int) -> _NodePtr {
+        switch p {
+        case .nullptr:
+          return nullptr
+        case .end:
+          return end
+        default:
+          return _buffer.header[p]
+        }
       }
-    }
-    return self.isIdentical(to: index.__tree_) ? index.rawValue : ___NodePtr(index.___node_id_)
-#else
-    self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
-#endif
+      return self.isIdentical(to: index.__tree_) ? index.rawValue : ___NodePtr(index.___node_id_)
+    #else
+      self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
+    #endif
   }
 }
 
@@ -295,8 +305,6 @@ extension UnsafeTreeV2 {
 }
 
 // MARK: -
-
-
 
 extension UnsafeTreeV2 {
 

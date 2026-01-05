@@ -44,8 +44,7 @@ extension ___UnsafeCopyOnWriteV2 {
   internal mutating func _isKnownUniquelyReferenced_LV1() -> Bool {
     #if !DISABLE_COPY_ON_WRITE
       #if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
-        // 左辺と右辺を逆にするとすごく遅くなる
-        _emptyTreeStorage !== __tree_._buffer.buffer && isKnownUniquelyReferenced(&referenceCounter)
+    !__tree_.isReadOnly && isKnownUniquelyReferenced(&referenceCounter)
       #else
         __tree_._buffer.isUniqueReference()
       #endif

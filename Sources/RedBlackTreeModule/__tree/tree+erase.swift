@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol EraseProtocol: AnyObject, TreePointer {
+protocol EraseProtocol: TreePointer {
   func destroy(_ p: _NodePtr)
   func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
 }

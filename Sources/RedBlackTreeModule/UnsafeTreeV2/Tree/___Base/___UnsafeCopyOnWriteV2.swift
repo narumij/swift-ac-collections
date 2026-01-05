@@ -21,6 +21,17 @@ extension ManagedBuffer where Header == Void, Element == Void {
 protocol ___UnsafeCopyOnWriteV2 {
   associatedtype Base: ___TreeBase
   #if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+  /// 2段階CoWを実現するためのプロパティ
+  ///
+  /// 競技プログラミングでの利用ではできる限りCopyを避けたかった。
+  /// これを実現するためにコンテナ本体のユニーク参照と木のユニーク参照とを分けることにした。
+  ///
+  /// multimap等では中身の破壊が起きやすいので木のユニーク参照判定をしている。
+  ///
+  /// 性能が向上し、コピーを避ける必要があるかまだ判断がつかないので維持している。
+  ///
+  /// 一般的なCoW動作の方が一般向けと今のところ考えており、このモジュールを一般利用可能にするにあたっては、
+  /// これを利用しない判断をする可能性が高い。
     var referenceCounter: ReferenceCounter { get set }
   #endif
   var __tree_: UnsafeTreeV2<Base> { get set }

@@ -62,10 +62,10 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Element = (key: Key, value: Value)
 
   public
-    typealias Keys = RedBlackTreeIterator<Self>.Keys
+    typealias Keys = RedBlackTreeIteratorV2<Self>.Keys
 
   public
-    typealias Values = RedBlackTreeIterator<Self>.MappedValues
+    typealias Values = RedBlackTreeIteratorV2<Self>.MappedValues
 
   public
     typealias _Key = Key
@@ -77,11 +77,11 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias _Value = RedBlackTreePair<Key, Value>
 
   @usableFromInline
-  var _storage: Storage
+  var __tree_: Tree
 
   @inlinable @inline(__always)
-  internal init(_storage: Storage) {
-    self._storage = _storage
+  internal init(__tree_: Tree) {
+    self.__tree_ = __tree_
   }
 }
 
@@ -106,7 +106,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(1)
   @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
-    _storage = .create(withCapacity: minimumCapacity)
+    self.init(__tree_: .create(minimumCapacity: minimumCapacity))
   }
 }
 
@@ -116,8 +116,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public init<S>(multiKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
-    self._storage = .init(
-      tree:
+    self.init(__tree_:
         .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) {
           Self.___tree_value($0)
         })
@@ -133,8 +132,7 @@ extension RedBlackTreeMultiMap {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == S.Element {
-    self._storage = .init(
-      tree: try .create_multi(
+    self.init(__tree_: try .create_multi(
         sorted: try values.sorted {
           try keyForValue($0) < keyForValue($1)
         },
@@ -384,7 +382,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public mutating func meld(_ other: __owned RedBlackTreeMultiMap<Key, Value>) {
-    _storage = .init(tree: __tree_.___meld_multi(other.__tree_))
+    __tree_ = __tree_.___meld_multi(other.__tree_)
   }
 
   /// - Complexity: O(*n* + *m*)
@@ -632,12 +630,10 @@ extension RedBlackTreeMultiMap {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    .init(
-      _storage: .init(
-        tree: try __tree_.___filter(_start, _end) {
+    .init(__tree_: try __tree_.___filter(_start, _end) {
           try isIncluded(___element($0))
         }
-      ))
+      )
   }
 }
 
@@ -648,9 +644,7 @@ extension RedBlackTreeMultiMap {
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
     -> RedBlackTreeMultiMap<Key, T>
   {
-    .init(
-      _storage: .init(
-        tree: try __tree_.___mapValues(_start, _end, transform)))
+    .init(__tree_: try __tree_.___mapValues(_start, _end, transform))
   }
 
   /// - Complexity: O(*n*)
@@ -658,9 +652,7 @@ extension RedBlackTreeMultiMap {
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
     rethrows -> RedBlackTreeMultiMap<Key, T>
   {
-    .init(
-      _storage: .init(
-        tree: try __tree_.___compactMapValues(_start, _end, transform)))
+    .init(__tree_: try __tree_.___compactMapValues(_start, _end, transform))
   }
 }
 
@@ -884,7 +876,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  public typealias SubSequence = RedBlackTreeSlice<Self>.KeyValue
+  public typealias SubSequence = RedBlackTreeSliceV2<Self>.KeyValue
 }
 
 // MARK: - Index Range
@@ -1062,6 +1054,6 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    self._storage = .init(tree: .create_multi(naive: sequence, transform: Self.___tree_value))
+    self.init(__tree_: .create_multi(naive: sequence, transform: Self.___tree_value))
   }
 }

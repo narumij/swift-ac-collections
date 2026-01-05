@@ -113,7 +113,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   }
 }
 
-extension UnsafeTreeV2 where Base: KeyValueComparer & ___UnsafeKeyValueSequence {
+extension UnsafeTreeV2 where Base: KeyValueComparer & ___UnsafeKeyValueSequenceV2 {
 
   /// ソート済みの配列から木を生成する
   ///

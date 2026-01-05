@@ -70,19 +70,24 @@ protocol ___RedBlackTreeKeyOnlyBase:
   ___UnsafeStorageProtocol & ___UnsafeCopyOnWrite & ___UnsafeCommon & ___UnsafeIndex & ___UnsafeBaseSequence
     & ___UnsafeKeyOnlySequence
 {}
-#else
-@usableFromInline
-protocol ___RedBlackTreeKeyOnlyBase:
-  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
-    & ___UnsafeKeyOnlySequenceV2
-{}
-#endif
 
 @usableFromInline
 protocol ___RedBlackTreeKeyValuesBase:
   ___UnsafeStorageProtocol & ___UnsafeCopyOnWrite & ___UnsafeCommon & ___UnsafeIndex & ___UnsafeBaseSequence
     & ___UnsafeKeyValueSequence
 {}
+#else
+@usableFromInline
+protocol ___RedBlackTreeKeyOnlyBase:
+  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
+    & ___UnsafeKeyOnlySequenceV2
+{}
+@usableFromInline
+protocol ___RedBlackTreeKeyValuesBase:
+  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
+    & ___UnsafeKeyValueSequenceV2
+{}
+#endif
 
 extension ___UnsafeIndexBase {
 

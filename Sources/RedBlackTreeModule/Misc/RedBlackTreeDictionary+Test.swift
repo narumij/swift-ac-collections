@@ -27,8 +27,8 @@ extension RedBlackTreeDictionary {
   extension RedBlackTreeDictionary {
 
     package var _copyCount: UInt {
-      get { _storage.tree.copyCount }
-      set { _storage.tree.copyCount = newValue }
+      get { __tree_.copyCount }
+      set { __tree_.copyCount = newValue }
     }
   }
 
@@ -42,7 +42,7 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
 #if USE_UNSAFE_TREE
-  package func ___node_positions() -> ___SafePointersUnsafe<Base> {
+  package func ___node_positions() -> ___SafePointersUnsafeV2<Base> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 #else

@@ -22,7 +22,7 @@ var defines: [String] = [
 
   //"USE_OLD_FIND",
   
-  "USE_DUAL_REF_COUNT"
+  "USE_DUAL_REF_COUNT" // この定義は今後悩み
   
 //  "ALLOCATION_DRILL" // リリース時はオフ
 ]

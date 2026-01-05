@@ -7,24 +7,6 @@ import RedBlackTreeModule
     let count = 2_000_000
 
     func testSet1() throws {
-#if !USE_UNSAFE_TREE
-      var multiset = RedBlackTreeMultiSet<Int>()
-      XCTAssertEqual(multiset._copyCount, 0)
-      multiset.insert(0)
-      XCTAssertGreaterThanOrEqual(multiset._copyCount, 1)  // 挿入に備え、かつ消費
-      while multiset.count < multiset.capacity {
-        multiset.insert(0)
-        XCTAssertGreaterThanOrEqual(multiset._copyCount, 1)  // capacityを消費仕切るまで変わらない
-      }
-      multiset.insert(0)
-      XCTAssertGreaterThanOrEqual(multiset._copyCount, 2)  // 挿入に備え、かつ消費
-      while multiset.count < multiset.capacity {
-        multiset.insert(0)
-        XCTAssertGreaterThanOrEqual(multiset._copyCount, 1)  // capacityを消費仕切るまで変わらない
-      }
-      multiset.insert(0)
-      XCTAssertGreaterThanOrEqual(multiset._copyCount, 3)  // 挿入に備え、かつ消費
-#else
       // UnsafeTreeの場合、capacity増加はバケット追加で行われるので、コピーしない
       var multiset = RedBlackTreeMultiSet<Int>()
       XCTAssertEqual(multiset._copyCount, 0)
@@ -42,7 +24,6 @@ import RedBlackTreeModule
       }
       multiset.insert(0)
       XCTAssertGreaterThanOrEqual(multiset._copyCount, 0)  // 挿入に備え、かつ消費
-#endif
     }
 
     func testSet2() throws {

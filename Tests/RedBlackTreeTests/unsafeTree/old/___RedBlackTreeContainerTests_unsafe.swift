@@ -10,7 +10,7 @@ import XCTest
 // 結構ディープな内容なので温存する必要がある
 // テストのセットアップがマニアックでしんどい
 
-#if DEBUG && USE_UNSAFE_TREE
+#if DEBUG
   @testable import RedBlackTreeModule
 
   final class ___RedBlackTreeContainerTests: XCTestCase {

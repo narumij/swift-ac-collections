@@ -1,4 +1,4 @@
-#if DEBUG && USE_UNSAFE_TREE
+#if DEBUG
   @testable import RedBlackTreeModule
 
   extension RedBlackTreeSet {

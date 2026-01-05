@@ -577,10 +577,7 @@ extension RedBlackTreeSet {
     public func filter(
       _ isIncluded: (Element) throws -> Bool
     ) rethrows -> Self {
-      .init(
-        _storage: .init(
-          tree: try __tree_.___filter(_start, _end, isIncluded)
-        ))
+      .init(__tree_: try __tree_.___filter(_start, _end, isIncluded))
     }
   }
 #endif
@@ -942,7 +939,7 @@ extension RedBlackTreeSet: Hashable where Element: Hashable {
 
     @inlinable
     public init(from decoder: Decoder) throws {
-      _storage = .init(tree: try .create(from: decoder))
+      self.init(__tree_: try .create(from: decoder))
     }
   }
 #endif

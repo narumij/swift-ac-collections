@@ -32,6 +32,7 @@ extension RedBlackTreeMultiMapTests {
     #endif
   }
 
+#if COMPATIBLE_ATCODER_2025
   func testRemoveContentsOfRange() {
     var map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("c", 3), ("d", 4)]
     map.remove(contentsOf: "b"..<"d")
@@ -44,6 +45,7 @@ extension RedBlackTreeMultiMapTests {
     map.remove(contentsOf: "a"..."d")
     XCTAssertTrue(map.isEmpty)
   }
+#endif
 
   func testRemoveAtIndex() {
     var map: RedBlackTreeMultiMap = [("a", 10), ("b", 20)]

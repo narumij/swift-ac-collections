@@ -256,8 +256,8 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
 #if !COMPATIBLE_ATCODER_2025
   @inlinable
   @inline(__always)
-  public func ... <Base>(lhs: UnsafeIndex<Base>, rhs: UnsafeIndex<Base>)
-    -> UnsafeTree<Base>.Indices
+  public func ... <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
+    -> UnsafeTreeV2<Base>.Indices
   {
     let indices = lhs.___indices
     let bounds = (lhs...rhs).relative(to: indices)
@@ -266,7 +266,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
 
   @inlinable
   @inline(__always)
-  public prefix func ..< <Base>(rhs: UnsafeIndex<Base>) -> UnsafeTree<Base>.Indices {
+  public prefix func ..< <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeTreeV2<Base>.Indices {
     let indices = rhs.___indices
     let bounds = (..<rhs).relative(to: indices)
     return indices[bounds.lowerBound..<bounds.upperBound]
@@ -274,7 +274,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
 
   @inlinable
   @inline(__always)
-  public prefix func ... <Base>(rhs: UnsafeIndex<Base>) -> UnsafeTree<Base>.Indices {
+  public prefix func ... <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeTreeV2<Base>.Indices {
     let indices = rhs.___indices
     let bounds = (...rhs).relative(to: indices)
     return indices[bounds.lowerBound..<bounds.upperBound]
@@ -282,7 +282,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
 
   @inlinable
   @inline(__always)
-  public postfix func ... <Base>(lhs: UnsafeIndex<Base>) -> UnsafeTree<Base>.Indices {
+  public postfix func ... <Base>(lhs: UnsafeIndexV2<Base>) -> UnsafeTreeV2<Base>.Indices {
     let indices = lhs.___indices
     let bounds = (lhs...).relative(to: indices)
     return indices[bounds.lowerBound..<bounds.upperBound]
@@ -316,7 +316,7 @@ public func - <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>) -> Int 
   // こういうものが必要になるのもどうかとおもうが、
   // かといってIndexの返却をIndex!にするのは標準で前例がみつかってないし、
   // Index?もどうかとおもい、悩むポイント
-  extension UnsafeIndex {
+  extension UnsafeIndexV2 {
 
     /// オプショナル型を返却します。
     ///

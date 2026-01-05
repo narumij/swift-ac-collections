@@ -78,6 +78,7 @@ final class RedBlackTreeSetRemoveTests: XCTestCase {
     XCTAssertTrue(set.isEmpty, "removeAll() 実行後、セットは空になること")
   }
 
+  #if COMPATIBLE_ATCODER_2025
   /// remove(contentsOf:) が指定範囲の要素を削除すること（Range版）
   func test_remove_contentsOf_Range() {
     var set = RedBlackTreeSet([1, 2, 3, 4, 5])
@@ -91,6 +92,7 @@ final class RedBlackTreeSetRemoveTests: XCTestCase {
     set.remove(contentsOf: 2...4)
     XCTAssertEqual(set.sorted(), [1, 5], "指定ClosedRange内の要素を削除すること")
   }
+  #endif
 }
 
 extension RedBlackTreeSetRemoveTests {

@@ -1110,7 +1110,7 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
     @inlinable
     public func encode(to encoder: Encoder) throws {
       var container = encoder.unkeyedContainer()
-      for element in __tree_.unsafeValues(__tree_.__begin_node_, __tree_.__end_node()) {
+      for element in __tree_.unsafeValues(__tree_.__begin_node_, __tree_.__end_node) {
         try container.encode(element)
       }
     }
@@ -1120,7 +1120,7 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
 
     @inlinable
     public init(from decoder: Decoder) throws {
-      _storage = .init(tree: try .create(from: decoder))
+      self.init(__tree_: try .create(from: decoder))
     }
   }
 #endif
@@ -1136,7 +1136,7 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
     @inlinable
     public init<Source>(naive sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
-      self._storage = .init(tree: .create_unique(naive: sequence, transform: Self.___tree_value))
+      self.init(__tree_: .create_unique(naive: sequence, transform: Self.___tree_value))
     }
   }
 #endif

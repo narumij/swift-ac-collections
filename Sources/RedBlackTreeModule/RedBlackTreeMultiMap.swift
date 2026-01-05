@@ -847,14 +847,14 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public var keys: Keys {
-      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var values: Values {
-      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node())
+      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node)
     }
   #endif
 }
@@ -1044,7 +1044,7 @@ extension RedBlackTreeMultiMap: Hashable where Key: Hashable, Value: Hashable {
     @inlinable
     public func encode(to encoder: Encoder) throws {
       var container = encoder.unkeyedContainer()
-      for element in __tree_.unsafeValues(__tree_.__begin_node_, __tree_.__end_node()) {
+      for element in __tree_.unsafeValues(__tree_.__begin_node_, __tree_.__end_node) {
         try container.encode(element)
       }
     }
@@ -1054,7 +1054,7 @@ extension RedBlackTreeMultiMap: Hashable where Key: Hashable, Value: Hashable {
 
     @inlinable
     public init(from decoder: Decoder) throws {
-      _storage = .init(tree: try .create(from: decoder))
+      self.init(__tree_: try .create(from: decoder))
     }
   }
 #endif

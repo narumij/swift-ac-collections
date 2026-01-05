@@ -16,8 +16,7 @@ var defines: [String] = [
   //  "PERFOMANCE_CHECK",
   "WITHOUT_SIZECHECK",
   
-  
-//  "COMPATIBLE_ATCODER_2025",
+  "COMPATIBLE_ATCODER_2025",
 
   "USE_UNSAFE_TREE",
 

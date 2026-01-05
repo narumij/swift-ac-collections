@@ -112,7 +112,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public init() {
-    self.init(__tree_: .create())
+    self.init(__tree_: .create(minimumCapacity: 0))
   }
 
   /// - Complexity: O(1)
@@ -315,9 +315,11 @@ extension RedBlackTreeDictionary {
     }
     @inline(__always) _modify {
       defer { _fixLifetime(self) }
+      // UnsafeTree用の暫定処置
+      // TODO: FIXME
+      _ensureUniqueAndCapacity()
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == __tree_.nullptr {
-        _ensureUniqueAndCapacity()
         assert(__tree_.capacity > __tree_.count)
         __ptr = __tree_.__construct_node(Self.___tree_value((key, defaultValue())))
         __tree_.__insert_node_at(__parent, __child, __ptr)

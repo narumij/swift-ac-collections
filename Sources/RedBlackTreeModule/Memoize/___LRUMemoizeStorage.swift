@@ -72,7 +72,8 @@ extension ___LRUMemoizeStorage {
   @inlinable
   @inline(__always)
   public init(minimumCapacity: Int = 0, maxCount: Int = Int.max) {
-    __tree_ = .create(minimumCapacity: minimumCapacity)
+    // enxureUniqueをしないため、シングルトンインスタンスを避けている
+    __tree_ = .___create(minimumCapacity: minimumCapacity)
     self.maxCount = maxCount
     // これら二つはコピーでケアされない
     // インデックス時代はそれでこまらなかった

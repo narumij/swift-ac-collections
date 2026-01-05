@@ -90,7 +90,7 @@ extension UnsafeTreeV2Buffer {
       self.__begin_node_ = _end_ptr
       self.destroyNode = _nullptr
     }
-    public var _nullptr: UnsafeMutablePointer<UnsafeNode>
+    public let _nullptr: UnsafeMutablePointer<UnsafeNode>
     public var __begin_node_: UnsafeMutablePointer<UnsafeNode>
     @usableFromInline var initializedCount: Int = 0
     @usableFromInline var destroyNode: _NodePtr
@@ -176,3 +176,29 @@ extension UnsafeTreeV2Buffer: CustomStringConvertible {
 nonisolated(unsafe) internal let _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.create(
   minimumCapacity: 0)
 
+#if DEBUG
+extension UnsafeTreeV2Buffer.Header {
+  @inlinable
+  mutating func tearDown() {
+    ___disposeFreshPool()
+    freshBucketHead = nil
+    freshBucketCurrent = nil
+    freshBucketLast = nil
+    freshBucketCount = 0
+    freshPoolCapacity = 0
+    initializedCount = 0
+    ___clearRecycle()
+  }
+}
+
+@inlinable
+func tearDown<T>(treeBuffer buffer: UnsafeTreeV2Buffer<T>) {
+  buffer.header.tearDown()
+  buffer.withUnsafeMutablePointers { h, e in
+    h.pointee.__begin_node_ = e
+    e.pointee.__left_ = ___slow_shared_unsafe_null_pointer
+    e.pointee.__right_ = ___slow_shared_unsafe_null_pointer
+    e.pointee.__parent_ = ___slow_shared_unsafe_null_pointer
+  }
+}
+#endif

@@ -94,7 +94,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(1)
   @inlinable @inline(__always)
   public init() {
-    self.init(__tree_: .create())
+    self.init(__tree_: .create(minimumCapacity: 0))
   }
 
   /// - Complexity: O(1)

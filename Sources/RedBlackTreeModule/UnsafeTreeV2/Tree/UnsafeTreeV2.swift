@@ -56,25 +56,51 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  @inlinable
-  @inline(__always)
-  internal static func create() -> UnsafeTreeV2 {
-    .init(
-      _buffer:
-        .init(unsafeBufferObject: _emptyTreeStorage),
-      isReadOnly: true)
-  }
-
+  /// 木の生成を行う
+  ///
+  /// サイズが0の場合に共有バッファを用いたインスタンスを返す。
+  /// ensureUniqueが利用できない場面では他の生成メソッドを利用すること。
   @inlinable
   @inline(__always)
   internal static func create(
     minimumCapacity nodeCapacity: Int
   ) -> UnsafeTreeV2 {
+    nodeCapacity == 0
+      ? ___create()
+      : ___create(minimumCapacity: nodeCapacity)
+  }
+
+  /// シングルトンバッファを用いて高速に生成する
+  ///
+  /// 直接呼ぶ必要はほとんど無い
+  @inlinable
+  @inline(__always)
+  internal static func ___create() -> UnsafeTreeV2 {
+    #if DEBUG
+      // 中身をいじり倒すテストコードがあるため、復帰している
+      tearDown(treeBuffer: _emptyTreeStorage)
+    #endif
+    assert(_emptyTreeStorage.header.freshPoolCapacity == 0)
     return .init(
       _buffer:
-        .init(
+        .init(unsafeBufferObject: _emptyTreeStorage),
+      isReadOnly: true)
+  }
+
+  /// 通常の生成
+  ///
+  /// ensureUniqueが利用できない場面に限って直接呼ぶようにすること
+  @inlinable
+  @inline(__always)
+  internal static func ___create(
+    minimumCapacity nodeCapacity: Int
+  ) -> UnsafeTreeV2 {
+    return UnsafeTreeV2(
+      _buffer:
+        ManagedBufferPointer(
           unsafeBufferObject:
-            UnsafeTreeV2Buffer<Base._Value>.create(minimumCapacity: nodeCapacity)))
+            UnsafeTreeV2Buffer<Base._Value>
+            .create(minimumCapacity: nodeCapacity)))
   }
 }
 
@@ -87,7 +113,7 @@ extension UnsafeTreeV2 {
     // 予定サイズを確定させる
     let newCapacity = max(minimumCapacity ?? 0, initializedCount)
     // 予定サイズの木を作成する
-    let tree = UnsafeTreeV2.create(minimumCapacity: newCapacity)
+    let tree = UnsafeTreeV2.___create(minimumCapacity: newCapacity)
     // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
     // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる

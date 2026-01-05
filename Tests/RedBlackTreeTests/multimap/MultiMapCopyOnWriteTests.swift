@@ -1,7 +1,8 @@
 import XCTest
-import RedBlackTreeModule
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
+  @testable import RedBlackTreeModule
+
   final class MultiMapCopyOnWriteTests: XCTestCase {
 
     typealias Target = RedBlackTreeMultiMap<Int, Int>
@@ -14,6 +15,7 @@ import RedBlackTreeModule
     }
 
     override func tearDownWithError() throws {
+      RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
     }
 
     func testSet1() throws {

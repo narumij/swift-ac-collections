@@ -83,13 +83,3 @@ extension UnsafeNodeRecyclePool {
     return nodes
   }
 }
-
-extension UnsafeTree {
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal var ___destroyNodes: [Int] {
-    _header.___destroyNodes
-  }
-}

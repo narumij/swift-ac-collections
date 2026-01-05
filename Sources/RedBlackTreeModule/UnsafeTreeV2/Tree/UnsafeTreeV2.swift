@@ -4,20 +4,20 @@ public typealias ___TreeBase = ValueComparer & CompareTrait & ThreeWayComparator
 public struct UnsafeTreeV2<Base: ___TreeBase> {
   
   @inlinable
-  internal init(_buffer: ManagedBufferPointer<UnsafeTree<Base>.Header, UnsafeNode>) {
+  internal init(_buffer: ManagedBufferPointer<Header, UnsafeNode>) {
     self._buffer = _buffer
   }
   
   public typealias Base = Base
   public typealias Tree = UnsafeTreeV2<Base>
-  public typealias Header = UnsafeTree<Base>.Header
+  public typealias Header = UnsafeTreeBuffer<Base>.Header
   public typealias _Key = Base._Key
   public typealias _Value = Base._Value
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   
   @usableFromInline
-  var _buffer: ManagedBufferPointer<UnsafeTree<Base>.Header, UnsafeNode>
+  var _buffer: ManagedBufferPointer<Header, UnsafeNode>
 }
 
 extension UnsafeTreeV2 {
@@ -55,7 +55,7 @@ extension UnsafeTreeV2 {
   internal static func create(
     minimumCapacity nodeCapacity: Int
   ) -> Tree {
-    .init(_buffer: .init(unsafeBufferObject: UnsafeTree<Base>.create(minimumCapacity: nodeCapacity)))
+    .init(_buffer: .init(unsafeBufferObject: UnsafeTreeBuffer<Base>.create(minimumCapacity: nodeCapacity)))
   }
 }
 

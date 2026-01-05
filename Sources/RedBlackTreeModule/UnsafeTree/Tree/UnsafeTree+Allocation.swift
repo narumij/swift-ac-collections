@@ -13,7 +13,7 @@ protocol UnsafeTreeAllcationBody {
   var count: Int { get }
 }
 
-extension UnsafeTree.Header: UnsafeTreeAllocationHeader {}
+extension UnsafeTreeBuffer.Header: UnsafeTreeAllocationHeader {}
 
 // TODO: 確保サイズ毎所要時間をのアロケーションとデアロケーションの両方で測ること
 

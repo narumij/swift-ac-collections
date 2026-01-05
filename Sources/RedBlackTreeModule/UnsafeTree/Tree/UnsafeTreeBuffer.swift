@@ -24,9 +24,8 @@ import Foundation
 
 // TODO: テスト整備後internalにする
 @_fixed_layout
-@_objc_non_lazy_realization
-public final class UnsafeTree<Base: ___TreeBase>:
-  ManagedBuffer<UnsafeTree<Base>.Header, UnsafeNode>
+public final class UnsafeTreeBuffer<Base: ___TreeBase>:
+  ManagedBuffer<UnsafeTreeBuffer<Base>.Header, UnsafeNode>
 {
   // MARK: - 解放処理
   @inlinable
@@ -39,68 +38,20 @@ public final class UnsafeTree<Base: ___TreeBase>:
   }
 }
 
-// MARK: - プリミティブメンバ
-
-extension UnsafeTree {
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public var _header_ptr: UnsafeMutablePointer<Header> {
-    withUnsafeMutablePointerToHeader { $0 }
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public var _header: Header {
-    _read { yield _header_ptr.pointee }
-    _modify { yield &_header_ptr.pointee }
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public var _end_ptr: UnsafeMutablePointer<UnsafeNode> {
-    withUnsafeMutablePointerToElements { $0 }
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public var _end: UnsafeNode {
-    @inline(__always) get { withUnsafeMutablePointerToElements { $0.pointee } }
-    _modify { yield &_end_ptr.pointee }
-  }
-
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  public var _nullptr: UnsafeMutablePointer<UnsafeNode> {
-#if true
-    withUnsafeMutablePointerToHeader {
-      $0.pointee._nullptr
-    }
-#else
-    UnsafeNode.___nullptr
-#endif
-  }
-}
-
 // MARK: - 生成
 
-extension UnsafeTree {
+extension UnsafeTreeBuffer {
 
   @nonobjc
   @inlinable
   @inline(__always)
   internal static func create(
     minimumCapacity nodeCapacity: Int
-  ) -> UnsafeTree {
+  ) -> UnsafeTreeBuffer {
 
     // elementsはendにしか用いないのでManagerdBufferの要素数は常に1
     
-    let storage = UnsafeTree.create(minimumCapacity: 1) { managedBuffer in
+    let storage = UnsafeTreeBuffer.create(minimumCapacity: 1) { managedBuffer in
       return managedBuffer.withUnsafeMutablePointerToElements { _end_ptr in
         
         let _nullptr = ___slow_shared_unsafe_null_pointer
@@ -121,13 +72,13 @@ extension UnsafeTree {
     }
 
     assert(nodeCapacity == storage.header.freshPoolCapacity)
-    return unsafeDowncast(storage, to: UnsafeTree.self)
+    return unsafeDowncast(storage, to: UnsafeTreeBuffer.self)
   }
 }
 
 // MARK: -
 
-extension UnsafeTree {
+extension UnsafeTreeBuffer {
 
   @frozen
   public struct Header: UnsafeNodeFreshPool, UnsafeNodeRecyclePool {
@@ -166,7 +117,7 @@ extension UnsafeTree {
   }
 }
 
-extension UnsafeTree.Header {
+extension UnsafeTreeBuffer.Header {
 
   @inlinable
   @inline(__always)
@@ -175,7 +126,7 @@ extension UnsafeTree.Header {
   }
 }
 
-extension UnsafeTree.Header {
+extension UnsafeTreeBuffer.Header {
 
   @inlinable
   @inline(__always)

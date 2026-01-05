@@ -25,7 +25,7 @@ protocol ___UnsafeCopyOnWriteV2 {
 }
 
 extension ___UnsafeCopyOnWriteV2 {
-
+  
   @inlinable
   @inline(__always)
   internal mutating func _isKnownUniquelyReferenced_LV1() -> Bool {

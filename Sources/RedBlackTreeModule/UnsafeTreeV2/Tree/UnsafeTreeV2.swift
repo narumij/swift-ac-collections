@@ -1,4 +1,6 @@
 
+public typealias ___TreeBase = ValueComparer & CompareTrait & ThreeWayComparator
+
 public struct UnsafeTreeV2<Base: ___TreeBase> {
   
   @inlinable

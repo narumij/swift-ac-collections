@@ -22,8 +22,6 @@
 
 import Foundation
 
-public typealias ___TreeBase = ValueComparer & CompareTrait & ThreeWayComparator
-
 // TODO: テスト整備後internalにする
 @_fixed_layout
 @_objc_non_lazy_realization
@@ -98,11 +96,11 @@ extension UnsafeTree {
   @inline(__always)
   internal static func create(
     minimumCapacity nodeCapacity: Int
-  ) -> Tree {
+  ) -> UnsafeTree {
 
     // elementsはendにしか用いないのでManagerdBufferの要素数は常に1
     
-    let storage = Tree.create(minimumCapacity: 1) { managedBuffer in
+    let storage = UnsafeTree.create(minimumCapacity: 1) { managedBuffer in
       return managedBuffer.withUnsafeMutablePointerToElements { _end_ptr in
         
         let _nullptr = ___slow_shared_unsafe_null_pointer
@@ -123,7 +121,7 @@ extension UnsafeTree {
     }
 
     assert(nodeCapacity == storage.header.freshPoolCapacity)
-    return unsafeDowncast(storage, to: Tree.self)
+    return unsafeDowncast(storage, to: UnsafeTree.self)
   }
 }
 
@@ -131,20 +129,10 @@ extension UnsafeTree {
 
 extension UnsafeTree {
 
-  public typealias Base = Base
-  public typealias Tree = UnsafeTree<Base>
-  public typealias _Key = Base._Key
-  public typealias _Value = Base._Value
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-  public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
-}
-
-extension UnsafeTree {
-
   @frozen
   public struct Header: UnsafeNodeFreshPool, UnsafeNodeRecyclePool {
-    public typealias _NodePtr = UnsafeTree._NodePtr
-    public typealias _Value = UnsafeTree._Value
+    public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+    public typealias _Value = Base._Value
     @inlinable
     @inline(__always)
     internal init(_nullptr: _NodePtr, _end_ptr: _NodePtr) {

@@ -31,8 +31,8 @@ extension UnsafeTreeV2 {
     _ __last: _NodePtr
   ) -> UnsafeTreeV2
   where
-    UnsafeTree<Other>._Key == _Key,
-    UnsafeTree<Other>._Value == _Value
+    UnsafeTreeV2<Other>._Key == _Key,
+    UnsafeTreeV2<Other>._Value == _Value
   {
     if __first == __last {
       return __tree_
@@ -87,8 +87,8 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
     uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue
   ) rethrows -> UnsafeTreeV2
   where
-    UnsafeTree<Other>._Key == _Key,
-    UnsafeTree<Other>._Value == _Value
+    UnsafeTreeV2<Other>._Key == _Key,
+    UnsafeTreeV2<Other>._Value == _Value
   {
     if __first == __last {
       return __tree_
@@ -144,8 +144,8 @@ extension UnsafeTreeV2 {
     _ __last: _NodePtr
   ) -> UnsafeTreeV2
   where
-    UnsafeTree<Other>._Key == _Key,
-    UnsafeTree<Other>._Value == _Value
+    UnsafeTreeV2<Other>._Key == _Key,
+    UnsafeTreeV2<Other>._Value == _Value
   {
     if __first == __last {
       return __tree_

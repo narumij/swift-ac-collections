@@ -21,6 +21,7 @@ var defines: [String] = [
 
   //"USE_OLD_FIND",
   
+  "USE_DUAL_REF_COUNT"
   
 //  "ALLOCATION_DRILL" // リリース時はオフ
 ]

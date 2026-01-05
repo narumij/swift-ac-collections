@@ -76,18 +76,27 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
   public
     typealias _Value = RedBlackTreePair<Key, Value>
 
+#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
   @usableFromInline
   var referenceCounter: ReferenceCounter
-
+#endif
+  
+#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
   @usableFromInline
   var __tree_: Tree {
     didSet { referenceCounter = .create() }
   }
+#else
+  @usableFromInline
+  var __tree_: Tree
+#endif
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
+#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
     referenceCounter = .create()
+#endif
   }
 }
 

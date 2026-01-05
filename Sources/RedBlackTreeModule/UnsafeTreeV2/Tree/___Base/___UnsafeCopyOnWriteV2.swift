@@ -6,33 +6,38 @@
 //
 
 @usableFromInline
-typealias ReferenceCounter = ManagedBuffer<Void,Void>
+typealias ReferenceCounter = ManagedBuffer<Void, Void>
 
 extension ManagedBuffer where Header == Void, Element == Void {
-  
+
   @inlinable
   @inline(__always)
   static func create() -> ManagedBuffer {
-    ManagedBuffer<Void,Void>.create(minimumCapacity: 0) { _ in }
+    ManagedBuffer<Void, Void>.create(minimumCapacity: 0) { _ in }
   }
 }
 
 @usableFromInline
 protocol ___UnsafeCopyOnWriteV2 {
   associatedtype Base: ___TreeBase
-  var referenceCounter: ReferenceCounter { get set }
+  #if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+    var referenceCounter: ReferenceCounter { get set }
+  #endif
   var __tree_: UnsafeTreeV2<Base> { get set }
 }
 
 extension ___UnsafeCopyOnWriteV2 {
-  
+
   @inlinable
   @inline(__always)
   internal mutating func _isKnownUniquelyReferenced_LV1() -> Bool {
     #if !DISABLE_COPY_ON_WRITE
-    // 左辺と右辺を逆にするとすごく遅くなる
-    _emptyTreeStorage !== __tree_._buffer.buffer &&
-    isKnownUniquelyReferenced(&referenceCounter)
+      #if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+        // 左辺と右辺を逆にするとすごく遅くなる
+        _emptyTreeStorage !== __tree_._buffer.buffer && isKnownUniquelyReferenced(&referenceCounter)
+      #else
+        __tree_._buffer.isUniqueReference()
+      #endif
     #else
       true
     #endif

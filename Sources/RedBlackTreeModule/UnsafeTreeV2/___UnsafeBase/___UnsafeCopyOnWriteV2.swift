@@ -20,6 +20,7 @@ extension ManagedBufferPointer where Header == Void, Element == Void {
 @usableFromInline
 protocol ___UnsafeCopyOnWriteV2 {
   associatedtype Base: ___TreeBase
+  var referenceCounter: ReferenceCounter { get set }
   var __tree_: UnsafeTreeV2<Base> { get set }
 }
 
@@ -29,7 +30,7 @@ extension ___UnsafeCopyOnWriteV2 {
   @inline(__always)
   internal mutating func _isKnownUniquelyReferenced_LV1() -> Bool {
     #if !DISABLE_COPY_ON_WRITE
-    __tree_._buffer.isUniqueReference()
+    referenceCounter.isUniqueReference()
     #else
       true
     #endif

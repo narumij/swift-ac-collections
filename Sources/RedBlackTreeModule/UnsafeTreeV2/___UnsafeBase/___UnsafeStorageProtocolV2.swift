@@ -76,8 +76,7 @@ extension ___UnsafeStorageProtocolV2 {
     if keepCapacity {
       __tree_.__eraseAll()
     } else {
-//      _storage = .create(withCapacity: 0)
-      fatalError()
+      __tree_ = .create(minimumCapacity: 0)
     }
   }
 }

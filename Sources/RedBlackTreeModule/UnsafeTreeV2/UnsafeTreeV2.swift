@@ -64,13 +64,13 @@ extension UnsafeTreeV2 {
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
     assert(__tree_invariant(__root))
     // 予定サイズを確定させる
-    let newCapacity = max(minimumCapacity ?? 0, _buffer.header.initializedCount)
+    let newCapacity = max(minimumCapacity ?? 0, initializedCount)
     // 予定サイズの木を作成する
     let tree = UnsafeTreeV2.create(minimumCapacity: newCapacity)
     // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
     // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる
-    assert(_buffer.header.freshBucketCount <= 1)
+    assert(tree._buffer.header.freshBucketCount <= 1)
 
     // 複数のバケットを新しい一つのバケットに連番通りにまとめ、その他管理情報をそのまま移す
     // アドレスやバケット配置は変化するがそれ以外は変わらない状態となる

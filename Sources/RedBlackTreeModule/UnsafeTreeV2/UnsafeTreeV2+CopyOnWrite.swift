@@ -28,7 +28,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func copy() -> UnsafeTreeV2 {
-    copy(minimumCapacity: initializedCount)
+    copy(minimumCapacity: capacity)
   }
 
   @inlinable

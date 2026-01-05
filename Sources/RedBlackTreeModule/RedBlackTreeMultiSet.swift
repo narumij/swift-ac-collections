@@ -56,11 +56,17 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
     typealias _Value = Element
 
   @usableFromInline
-  var __tree_: Tree
+  var referenceCounter: ReferenceCounter
+
+  @usableFromInline
+  var __tree_: Tree {
+    didSet { referenceCounter = .create() }
+  }
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
+    referenceCounter = .create()
   }
 }
 

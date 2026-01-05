@@ -73,11 +73,17 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias _Value = RedBlackTreePair<Key, Value>
 
   @usableFromInline
-  var __tree_: Tree
+  var referenceCounter: ReferenceCounter
+
+  @usableFromInline
+  var __tree_: Tree {
+    didSet { referenceCounter = .create() }
+  }
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
+    referenceCounter = .create()
   }
 }
 

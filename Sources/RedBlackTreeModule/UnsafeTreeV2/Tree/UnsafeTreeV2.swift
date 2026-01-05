@@ -13,7 +13,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   public typealias Base = Base
   public typealias Tree = UnsafeTreeV2<Base>
-  public typealias Header = UnsafeTreeBuffer<Base._Value>.Header
+  public typealias Header = UnsafeTreeV2Buffer<Base._Value>.Header
   public typealias _Key = Base._Key
   public typealias _Value = Base._Value
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
@@ -74,7 +74,7 @@ extension UnsafeTreeV2 {
       _buffer:
         .init(
           unsafeBufferObject:
-            UnsafeTreeBuffer<Base._Value>.create(minimumCapacity: nodeCapacity)))
+            UnsafeTreeV2Buffer<Base._Value>.create(minimumCapacity: nodeCapacity)))
   }
 }
 

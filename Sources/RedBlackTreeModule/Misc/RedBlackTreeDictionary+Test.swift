@@ -6,7 +6,7 @@ extension RedBlackTreeDictionary {
   package func ___tree_invariant() -> Bool {
     #if !WITHOUT_SIZECHECK
       // 並行してサイズもチェックする。その分遅い
-      __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, .end)
+      __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, __tree_.end)
         && __tree_.__tree_invariant(__tree_.__root)
     #else
       __tree_.__tree_invariant(__tree_.__root)

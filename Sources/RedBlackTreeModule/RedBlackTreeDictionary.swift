@@ -72,12 +72,12 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   public
     typealias _Value = RedBlackTreePair<Key, Value>
 
-#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+#if !WITHOUT_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
   @usableFromInline
   var referenceCounter: ReferenceCounter
 #endif
   
-#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+#if !WITHOUT_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
   @usableFromInline
   var __tree_: Tree {
     didSet { referenceCounter = .create() }
@@ -90,7 +90,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
-#if USE_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+#if !WITHOUT_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
     referenceCounter = .create()
 #endif
   }
@@ -112,7 +112,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public init() {
-    self.init(minimumCapacity: 0)
+    self.init(__tree_: .create())
   }
 
   /// - Complexity: O(1)

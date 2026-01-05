@@ -266,7 +266,8 @@ extension UnsafeNode {
 
 extension UnsafeNode {
 
-  fileprivate final class Null {
+  @usableFromInline
+  final class Null {
     fileprivate let pointer: UnsafeMutablePointer<UnsafeNode>
     fileprivate init() {
       let raw = UnsafeMutableRawPointer.allocate(
@@ -282,10 +283,12 @@ extension UnsafeNode {
   }
 }
 
-fileprivate
+@usableFromInline
 nonisolated(unsafe) let shared: UnsafeNode.Null = .init()
 
 /// `__swift_instantiateConcreteTypeFromMangledNameV2`を避けるためには、
 /// 直接利用せずに、一度内部に保持する必要がある
 @usableFromInline
 nonisolated(unsafe) let ___slow_shared_unsafe_null_pointer: UnsafeMutablePointer<UnsafeNode> = shared.pointer
+
+// 連結提出する場合、上の二つがBufferの初期化コードより上部に無いと、未初期化でnullとなる。

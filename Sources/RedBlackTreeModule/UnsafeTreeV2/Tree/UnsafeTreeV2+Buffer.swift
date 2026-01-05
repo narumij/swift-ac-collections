@@ -24,8 +24,8 @@ import Foundation
 
 // TODO: テスト整備後internalにする
 @_fixed_layout
-public final class UnsafeTreeBuffer<_Value>:
-  ManagedBuffer<UnsafeTreeBuffer<_Value>.Header, UnsafeNode>
+public final class UnsafeTreeV2Buffer<_Value>:
+  ManagedBuffer<UnsafeTreeV2Buffer<_Value>.Header, UnsafeNode>
 {
   // MARK: - 解放処理
   @inlinable
@@ -40,18 +40,18 @@ public final class UnsafeTreeBuffer<_Value>:
 
 // MARK: - 生成
 
-extension UnsafeTreeBuffer {
+extension UnsafeTreeV2Buffer {
 
   @nonobjc
   @inlinable
   @inline(__always)
   internal static func create(
     minimumCapacity nodeCapacity: Int
-  ) -> UnsafeTreeBuffer {
+  ) -> UnsafeTreeV2Buffer {
 
     // elementsはendにしか用いないのでManagerdBufferの要素数は常に1
     
-    let storage = UnsafeTreeBuffer.create(minimumCapacity: 1) { managedBuffer in
+    let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 1) { managedBuffer in
       return managedBuffer.withUnsafeMutablePointerToElements { _end_ptr in
         
         let _nullptr = ___slow_shared_unsafe_null_pointer
@@ -72,13 +72,13 @@ extension UnsafeTreeBuffer {
     }
 
     assert(nodeCapacity == storage.header.freshPoolCapacity)
-    return unsafeDowncast(storage, to: UnsafeTreeBuffer.self)
+    return unsafeDowncast(storage, to: UnsafeTreeV2Buffer.self)
   }
 }
 
 // MARK: -
 
-extension UnsafeTreeBuffer {
+extension UnsafeTreeV2Buffer {
 
   @frozen
   public struct Header: UnsafeNodeFreshPool, UnsafeNodeRecyclePool {
@@ -118,7 +118,7 @@ extension UnsafeTreeBuffer {
   }
 }
 
-extension UnsafeTreeBuffer.Header {
+extension UnsafeTreeV2Buffer.Header {
 
   @inlinable
   @inline(__always)
@@ -127,7 +127,7 @@ extension UnsafeTreeBuffer.Header {
   }
 }
 
-extension UnsafeTreeBuffer.Header {
+extension UnsafeTreeV2Buffer.Header {
 
   @inlinable
   @inline(__always)
@@ -156,7 +156,7 @@ extension UnsafeTreeBuffer.Header {
   }
 }
 
-extension UnsafeTreeBuffer.Header {
+extension UnsafeTreeV2Buffer.Header {
   
   @inlinable
   @inline(__always)
@@ -165,7 +165,7 @@ extension UnsafeTreeBuffer.Header {
   }
 }
 
-extension UnsafeTreeBuffer: CustomStringConvertible {
+extension UnsafeTreeV2Buffer: CustomStringConvertible {
   public var description: String {
     unsafe withUnsafeMutablePointerToHeader { "UnsafeTreeBuffer<\(_Value.self)>\(unsafe $0.pointee)" }
   }
@@ -173,6 +173,6 @@ extension UnsafeTreeBuffer: CustomStringConvertible {
 
 /// The type-punned empty singleton storage instance.
 @usableFromInline
-nonisolated(unsafe) internal let _emptyTreeStorage = UnsafeTreeBuffer<Void>.create(
+nonisolated(unsafe) internal let _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.create(
   minimumCapacity: 0)
 

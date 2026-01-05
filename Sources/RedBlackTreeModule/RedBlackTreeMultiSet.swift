@@ -778,7 +778,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  public typealias SubSequence = RedBlackTreeSlice<Self>
+  public typealias SubSequence = RedBlackTreeSliceV2<Self>
 }
 
 // MARK: - Index Range

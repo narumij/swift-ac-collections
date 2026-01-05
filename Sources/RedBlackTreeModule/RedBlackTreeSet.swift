@@ -65,7 +65,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
     typealias Base = Self
   
   @usableFromInline
-  var __tree_: UnsafeTree<RedBlackTreeSet<Element>>
+  var __tree_: Tree
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
@@ -773,7 +773,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  public typealias SubSequence = RedBlackTreeSlice<Base>
+  public typealias SubSequence = RedBlackTreeSliceV2<Base>
 }
 
 // MARK: - Index Range

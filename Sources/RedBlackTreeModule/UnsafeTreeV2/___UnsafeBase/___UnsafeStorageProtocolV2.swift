@@ -3,7 +3,7 @@
 protocol ___UnsafeStorageProtocolV2: ___Root
 where
   Base: ___TreeBase,
-  Tree == UnsafeTree<Base>,
+  Tree == UnsafeTreeV2<Base>,
   _Value == Tree._Value,
   _NodePtr == Tree._NodePtr
 {
@@ -35,7 +35,7 @@ extension ___UnsafeStorageProtocolV2 {
   @inlinable
   @inline(__always)
   internal var ___capacity: Int {
-    __tree_.freshPoolCapacity
+    __tree_.capacity
   }
 }
 

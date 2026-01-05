@@ -20,7 +20,7 @@ extension ManagedBufferPointer where Header == Void, Element == Void {
 @usableFromInline
 protocol ___UnsafeCopyOnWriteV2 {
   associatedtype Base: ___TreeBase
-  var __tree_: UnsafeTree<Base> { get set }
+  var __tree_: UnsafeTreeV2<Base> { get set }
 }
 
 extension ___UnsafeCopyOnWriteV2 {
@@ -29,7 +29,7 @@ extension ___UnsafeCopyOnWriteV2 {
   @inline(__always)
   internal mutating func _isKnownUniquelyReferenced_LV1() -> Bool {
     #if !DISABLE_COPY_ON_WRITE
-    isKnownUniquelyReferenced(&__tree_)
+    __tree_._buffer.isUniqueReference()
     #else
       true
     #endif
@@ -42,7 +42,7 @@ extension ___UnsafeCopyOnWriteV2 {
       if !_isKnownUniquelyReferenced_LV1() {
         return false
       }
-      if !isKnownUniquelyReferenced(&__tree_) {
+      if !__tree_._buffer.isUniqueReference() {
         return false
       }
     #endif
@@ -68,7 +68,7 @@ extension ___UnsafeCopyOnWriteV2 {
   @inlinable
   @inline(__always)
   internal mutating func _ensureUnique(
-    transform: (UnsafeStorage<Base>.Tree) throws -> UnsafeStorage<Base>.Tree
+    transform: (UnsafeTreeV2<Base>) throws -> UnsafeTreeV2<Base>
   )
     rethrows
   {
@@ -80,28 +80,28 @@ extension ___UnsafeCopyOnWriteV2 {
   @inline(__always)
   internal mutating func _ensureUniqueAndCapacity() {
     _ensureUniqueAndCapacity(to: __tree_.count + 1)
-    assert(__tree_.freshPoolCapacity > 0)
-    assert(__tree_.freshPoolCapacity > __tree_.count)
+    assert(__tree_.capacity > 0)
+    assert(__tree_.capacity > __tree_.count)
   }
 
   @inlinable
   @inline(__always)
   internal mutating func _ensureUniqueAndCapacity(to minimumCapacity: Int) {
-    let shouldExpand = __tree_.freshPoolCapacity < minimumCapacity
+    let shouldExpand = __tree_.capacity < minimumCapacity
     if !_isKnownUniquelyReferenced_LV1() {
       __tree_ = __tree_.copy(growthCapacityTo: minimumCapacity, linearly: false)
     } else if shouldExpand {
       __tree_.growthCapacity(to: minimumCapacity, linearly: false)
     }
-    assert(__tree_.freshPoolCapacity >= minimumCapacity)
-    assert(__tree_._header.initializedCount <= __tree_.freshPoolCapacity)
+    assert(__tree_.capacity >= minimumCapacity)
+    assert(__tree_.initializedCount <= __tree_.capacity)
   }
 
   @inlinable
   @inline(__always)
   internal mutating func _ensureUniqueAndCapacity(limit: Int, linearly: Bool = false) {
     _ensureUniqueAndCapacity(to: __tree_.count + 1, limit: limit, linearly: linearly)
-    assert(__tree_.freshPoolCapacity > 0)
+    assert(__tree_.capacity > 0)
   }
 
   @inlinable
@@ -109,7 +109,7 @@ extension ___UnsafeCopyOnWriteV2 {
   internal mutating func _ensureUniqueAndCapacity(
     to minimumCapacity: Int, limit: Int, linearly: Bool
   ) {
-    let shouldExpand = __tree_.freshPoolCapacity < minimumCapacity
+    let shouldExpand = __tree_.capacity < minimumCapacity
     if !_isKnownUniquelyReferenced_LV1() {
       __tree_ = __tree_.copy(
         growthCapacityTo: minimumCapacity,
@@ -118,8 +118,8 @@ extension ___UnsafeCopyOnWriteV2 {
     } else if shouldExpand {
       __tree_.growthCapacity(to: minimumCapacity, limit: limit, linearly: false)
     }
-    assert(__tree_.freshPoolCapacity >= minimumCapacity)
-    assert(__tree_._header.initializedCount <= __tree_.freshPoolCapacity)
+    assert(__tree_.capacity >= minimumCapacity)
+    assert(__tree_.initializedCount <= __tree_.capacity)
   }
 
   @inlinable
@@ -132,11 +132,11 @@ extension ___UnsafeCopyOnWriteV2 {
   @inline(__always)
   internal mutating func _ensureCapacity(amount: Int) {
     let minimumCapacity = __tree_.count + amount
-    if __tree_.freshPoolCapacity < minimumCapacity {
+    if __tree_.capacity < minimumCapacity {
       __tree_.growthCapacity(to: minimumCapacity, linearly: false)
     }
-    assert(__tree_.freshPoolCapacity >= minimumCapacity)
-    assert(__tree_._header.initializedCount <= __tree_.freshPoolCapacity)
+    assert(__tree_.capacity >= minimumCapacity)
+    assert(__tree_.initializedCount <= __tree_.capacity)
   }
 
   @inlinable
@@ -148,10 +148,10 @@ extension ___UnsafeCopyOnWriteV2 {
   @inlinable
   @inline(__always)
   internal mutating func _ensureCapacity(to minimumCapacity: Int, limit: Int, linearly: Bool) {
-    if __tree_.freshPoolCapacity < minimumCapacity {
+    if __tree_.capacity < minimumCapacity {
       __tree_.growthCapacity(to: minimumCapacity, limit: limit, linearly: false)
     }
-    assert(__tree_.freshPoolCapacity >= minimumCapacity)
-    assert(__tree_._header.initializedCount <= __tree_.freshPoolCapacity)
+    assert(__tree_.capacity >= minimumCapacity)
+    assert(__tree_.initializedCount <= __tree_.capacity)
   }
 }

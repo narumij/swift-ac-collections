@@ -174,6 +174,32 @@ extension UnsafeTreeV2 {
   }
 }
 
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  func clear() {
+    end.pointee.__left_ = nullptr
+    _buffer.withUnsafeMutablePointerToHeader {
+      $0.pointee.clear(_end_ptr: __end_node)
+    }
+  }
+}
+
+// TODO: ここに配置するのが適切には思えない。配置場所を再考する
+extension UnsafeTreeV2 {
+
+  /// O(1)
+  @inlinable
+  @inline(__always)
+  internal func __eraseAll() {
+    clear()
+    _buffer.withUnsafeMutablePointerToHeader {
+      $0.pointee.___clearRecycle()
+    }
+  }
+}
+
 // MARK: Predicate
 
 extension UnsafeTreeV2 {
@@ -229,4 +255,16 @@ extension UnsafeTreeV2 {
     self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
 #endif
   }
+}
+
+extension UnsafeTreeV2 {
+
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    /// CoWの発火回数を観察するためのプロパティ
+    @usableFromInline
+    internal var copyCount: UInt {
+      get { _buffer.header.copyCount }
+      set { _buffer.header.copyCount = newValue }
+    }
+  #endif
 }

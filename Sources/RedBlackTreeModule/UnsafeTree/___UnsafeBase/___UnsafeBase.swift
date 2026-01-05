@@ -73,8 +73,8 @@ protocol ___RedBlackTreeKeyOnlyBase:
 #else
 @usableFromInline
 protocol ___RedBlackTreeKeyOnlyBase:
-  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommon & ___UnsafeIndex & ___UnsafeBaseSequence
-    & ___UnsafeKeyOnlySequence
+  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
+    & ___UnsafeKeyOnlySequenceV2
 {}
 #endif
 

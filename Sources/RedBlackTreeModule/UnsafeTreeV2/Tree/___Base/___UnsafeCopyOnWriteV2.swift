@@ -5,18 +5,6 @@
 //  Created by narumij on 2026/01/05.
 //
 
-//@usableFromInline
-//typealias ReferenceCounter = ManagedBufferPointer<Void,Void>
-//
-//extension ManagedBufferPointer where Header == Void, Element == Void {
-//  
-//  @inlinable
-//  @inline(__always)
-//  static func create() -> Self {
-//    .init(unsafeBufferObject: ManagedBuffer<Void,Void>.create(minimumCapacity: 0) { _ in })
-//  }
-//}
-
 @usableFromInline
 typealias ReferenceCounter = ManagedBuffer<Void,Void>
 

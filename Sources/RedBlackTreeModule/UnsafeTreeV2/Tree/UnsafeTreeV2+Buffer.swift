@@ -176,6 +176,8 @@ extension UnsafeTreeV2Buffer: CustomStringConvertible {
 nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.create(
   minimumCapacity: 0)
 
+// TODO: このシングルトンを破壊するテストコードを撲滅し根治すること
+
 #if DEBUG
 #endif
 

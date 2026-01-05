@@ -52,7 +52,7 @@ extension KeyValueComparer where _Value == _LinkingPair<_Key, _MappedValue> {
 protocol ___LRULinkList: KeyValueComparer & CompareTrait & ThreeWayComparator
 where _Value == _LinkingPair<_Key, _MappedValue> {
   associatedtype Value
-  var __tree_: Tree { get }
+  var __tree_: Tree { get set }
   var _rankHighest: _NodePtr { get set }
   var _rankLowest: _NodePtr { get set }
 }
@@ -61,7 +61,7 @@ extension ___LRULinkList {
 
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
-  public typealias Tree = UnsafeTree<Self>
+  public typealias Tree = UnsafeTreeV2<Self>
 
   @inlinable
   @inline(__always)
@@ -135,11 +135,11 @@ extension ___LRULinkList {
   internal func ___node_ptr(_ index: Int) -> _NodePtr {
     switch index {
     case .nullptr:
-      return __tree_._nullptr
+      return __tree_.nullptr
     case .end:
       return __tree_.end
     default:
-      return __tree_._header[index]
+      return __tree_._buffer.header[index]
     }
   }
 }

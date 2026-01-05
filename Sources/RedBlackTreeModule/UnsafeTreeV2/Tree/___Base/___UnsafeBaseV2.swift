@@ -52,3 +52,20 @@ where
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
+
+
+public typealias RedBlackTreeIndex = UnsafeIndexV2
+public typealias RedBlackTreeIndices = UnsafeIndicesV2
+public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2
+public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
+
+@usableFromInline
+protocol ___RedBlackTreeKeyOnlyBase:
+  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
+    & ___UnsafeKeyOnlySequenceV2
+{}
+@usableFromInline
+protocol ___RedBlackTreeKeyValuesBase:
+  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
+    & ___UnsafeKeyValueSequenceV2
+{}

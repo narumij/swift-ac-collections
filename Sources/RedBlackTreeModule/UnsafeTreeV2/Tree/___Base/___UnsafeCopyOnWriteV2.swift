@@ -5,15 +5,27 @@
 //  Created by narumij on 2026/01/05.
 //
 
-@usableFromInline
-typealias ReferenceCounter = ManagedBufferPointer<Void,Void>
+//@usableFromInline
+//typealias ReferenceCounter = ManagedBufferPointer<Void,Void>
+//
+//extension ManagedBufferPointer where Header == Void, Element == Void {
+//  
+//  @inlinable
+//  @inline(__always)
+//  static func create() -> Self {
+//    .init(unsafeBufferObject: ManagedBuffer<Void,Void>.create(minimumCapacity: 0) { _ in })
+//  }
+//}
 
-extension ManagedBufferPointer where Header == Void, Element == Void {
+@usableFromInline
+typealias ReferenceCounter = ManagedBuffer<Void,Void>
+
+extension ManagedBuffer where Header == Void, Element == Void {
   
   @inlinable
   @inline(__always)
-  static func create() -> Self {
-    .init(unsafeBufferObject: ManagedBuffer<Void,Void>.create(minimumCapacity: 0) { _ in })
+  static func create() -> ManagedBuffer {
+    ManagedBuffer<Void,Void>.create(minimumCapacity: 0) { _ in }
   }
 }
 
@@ -30,7 +42,7 @@ extension ___UnsafeCopyOnWriteV2 {
   @inline(__always)
   internal mutating func _isKnownUniquelyReferenced_LV1() -> Bool {
     #if !DISABLE_COPY_ON_WRITE
-    referenceCounter.isUniqueReference()
+    isKnownUniquelyReferenced(&referenceCounter)
     #else
       true
     #endif

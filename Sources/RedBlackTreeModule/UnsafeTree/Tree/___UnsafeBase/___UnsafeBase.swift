@@ -59,11 +59,6 @@ where
   var _end: _NodePtr { get }
 }
 
-public typealias RedBlackTreeIndex = UnsafeIndex
-public typealias RedBlackTreeIndices = UnsafeIndices
-public typealias RedBlackTreeIterator = RedBlackTreeIteratorUnsafe
-public typealias RedBlackTreeSlice = RedBlackTreeSliceUnsafe
-
 #if false
 @usableFromInline
 protocol ___RedBlackTreeKeyOnlyBase:
@@ -77,16 +72,7 @@ protocol ___RedBlackTreeKeyValuesBase:
     & ___UnsafeKeyValueSequence
 {}
 #else
-@usableFromInline
-protocol ___RedBlackTreeKeyOnlyBase:
-  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
-    & ___UnsafeKeyOnlySequenceV2
-{}
-@usableFromInline
-protocol ___RedBlackTreeKeyValuesBase:
-  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
-    & ___UnsafeKeyValueSequenceV2
-{}
+
 #endif
 
 extension ___UnsafeIndexBase {

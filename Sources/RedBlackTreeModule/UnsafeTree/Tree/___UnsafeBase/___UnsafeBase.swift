@@ -20,12 +20,6 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-// コレクション実装の基点
-public protocol ___Root {
-  associatedtype Base
-  associatedtype Tree
-}
-
 @usableFromInline
 protocol ___UnsafeIndexBase: ___Root
 where
@@ -58,22 +52,6 @@ where
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
-
-#if false
-@usableFromInline
-protocol ___RedBlackTreeKeyOnlyBase:
-  ___UnsafeStorageProtocol & ___UnsafeCopyOnWrite & ___UnsafeCommon & ___UnsafeIndex & ___UnsafeBaseSequence
-    & ___UnsafeKeyOnlySequence
-{}
-
-@usableFromInline
-protocol ___RedBlackTreeKeyValuesBase:
-  ___UnsafeStorageProtocol & ___UnsafeCopyOnWrite & ___UnsafeCommon & ___UnsafeIndex & ___UnsafeBaseSequence
-    & ___UnsafeKeyValueSequence
-{}
-#else
-
-#endif
 
 extension ___UnsafeIndexBase {
 

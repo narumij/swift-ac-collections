@@ -1,3 +1,8 @@
+// コレクション実装の基点
+public protocol ___Root {
+  associatedtype Base
+  associatedtype Tree
+}
 
 @usableFromInline
 protocol ___UnsafeIndexBaseV2: ___Root

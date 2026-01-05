@@ -9,11 +9,7 @@ typealias Fixture = RedBlackTreeSet
 
 print("Benchmark1")
 print()
-#if USE_UNSAFE_TREE
-print("UNSAFE_TREE")
-#else
-print("ARRAY_TREE")
-#endif
+print("UNSAFE_TREE_V2")
 print(Date.now)
 print()
 

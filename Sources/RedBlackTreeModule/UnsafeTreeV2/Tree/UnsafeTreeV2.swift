@@ -52,7 +52,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal static func create() -> Tree {
+  internal static func create() -> UnsafeTreeV2 {
     .init(_buffer:
         .init(unsafeBufferObject: _emptyTreeStorage))
   }
@@ -61,8 +61,8 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal static func create(
     minimumCapacity nodeCapacity: Int
-  ) -> Tree {
-    .init(_buffer:
+  ) -> UnsafeTreeV2 {
+    return .init(_buffer:
         .init(unsafeBufferObject:
                 UnsafeTreeBuffer<Base._Value>.create(minimumCapacity: nodeCapacity)))
   }

@@ -27,17 +27,18 @@ import RedBlackTreeModule
       var set = RedBlackTreeSet<Int>()
       XCTAssertEqual(set._copyCount, 0)
       set.insert(0)
-      XCTAssertEqual(set._copyCount, 0)  // 挿入に備えた分増える
+      // シングルトンバッファスタートなので、空のオブジェクトは操作で必ずコピーが発生する
+      XCTAssertEqual(set._copyCount, 1)  // 挿入に備えた分増える
       while set.count < set.capacity {
         set.insert((2..<Int.max).randomElement()!)
-        XCTAssertEqual(set._copyCount, 0)  // 挿入に備えた分増える
+        XCTAssertEqual(set._copyCount, 1)  // 挿入に備えた分増える
       }
       set.insert(0)
-      XCTAssertEqual(set._copyCount, 0)  // 挿入に備えた分増えるが消費していない
+      XCTAssertEqual(set._copyCount, 1)  // 挿入に備えた分増えるが消費していない
       set.insert(0)
-      XCTAssertEqual(set._copyCount, 0)  // 挿入に備えた必要分をまだ消費していない
+      XCTAssertEqual(set._copyCount, 1)  // 挿入に備えた必要分をまだ消費していない
       set.insert(1)
-      XCTAssertEqual(set._copyCount, 0)  // 挿入に備えた必要分を消費したところ
+      XCTAssertEqual(set._copyCount, 1)  // 挿入に備えた必要分を消費したところ
 #endif
     }
 

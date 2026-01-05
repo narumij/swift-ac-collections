@@ -12,7 +12,6 @@ final class AllocationTests: XCTestCase {
     typealias Tree = RedBlackTreeSet<Int>.Tree
     typealias Storage = RedBlackTreeSet<Int>.Tree
     typealias Header = RedBlackTreeSet<Int>.Tree.Header
-    //  typealias Node = RedBlackTreeSet<Int>.Tree.Node
 
     func test0() throws {
       do {

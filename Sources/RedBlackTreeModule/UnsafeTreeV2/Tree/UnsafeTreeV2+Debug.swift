@@ -25,7 +25,7 @@ import Foundation
 // TODO: ちゃんと動くのか確認すること
 
 #if GRAPHVIZ_DEBUG
-  extension UnsafeTree {
+  extension UnsafeTreeV2 {
 
     /// グラフビズオブジェクトを生成します
     public func ___graphviz() -> Graphviz.Digraph {

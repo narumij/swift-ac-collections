@@ -313,22 +313,6 @@ extension UnsafeTree {
   }
 }
 
-extension UnsafeTree {
-
-  // _NodePtrがIntだった頃の名残
-  @nonobjc
-  @inlinable
-  internal subscript(_ pointer: _NodePtr) -> _Value {
-    @inline(__always) _read {
-      assert(___initialized_contains(pointer))
-      yield UnsafeNode.valuePointer(pointer).pointee
-    }
-    @inline(__always) _modify {
-      assert(___initialized_contains(pointer))
-      yield &UnsafeNode.valuePointer(pointer).pointee
-    }
-  }
-}
 
 extension UnsafeTree.Header {
 
@@ -447,67 +431,7 @@ extension UnsafeTree {
   }
 }
 
-// MARK: Index Resolver
-
-extension UnsafeTree {
-
-  /// インデックスをポインタに解決する
-  ///
-  /// 木が同一の場合、インデックスが保持するポインタを返す。
-  /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  internal func ___node_ptr(_ index: Index) -> _NodePtr
-  where Index.Tree == UnsafeTree, Index._NodePtr == _NodePtr {
-#if true
-    // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
-    // endはシングルトン的にしたい気持ちもある
-    @inline(__always)
-    func ___NodePtr(_ p: Int) -> _NodePtr {
-      switch p {
-      case .nullptr:
-        return _nullptr
-      case .end:
-        return end
-      default:
-        return _header[p]
-      }
-    }
-    return self === index.__tree_ ? index.rawValue : ___NodePtr(index.___node_id_)
-#else
-    self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
-#endif
-  }
-}
-
 // MARK: -
-
-extension UnsafeNode {
-
-  @inlinable
-  func debugDescription(resolve: (Pointer?) -> Int?) -> String {
-    let id = ___node_id_
-    let l = resolve(__left_)
-    let r = resolve(__right_)
-    let p = resolve(__parent_)
-    let color = __is_black_ ? "B" : "R"
-    #if DEBUG
-      let rc = ___recycle_count
-    #else
-      let rc = -1
-    #endif
-
-    return """
-      node[\(id)] \(color)
-        L: \(l.map(String.init) ?? "nil")
-        R: \(r.map(String.init) ?? "nil")
-        P: \(p.map(String.init) ?? "nil")
-        needsDeinit: \(___needs_deinitialize)
-        recycleCount: \(rc)
-      """
-  }
-}
 
 extension UnsafeTree {
 

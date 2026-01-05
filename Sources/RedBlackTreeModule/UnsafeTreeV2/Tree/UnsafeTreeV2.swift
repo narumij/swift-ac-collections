@@ -282,3 +282,59 @@ extension UnsafeTreeV2 {
     }
   #endif
 }
+
+// MARK: -
+
+extension UnsafeNode {
+
+  @inlinable
+  func debugDescription(resolve: (Pointer?) -> Int?) -> String {
+    let id = ___node_id_
+    let l = resolve(__left_)
+    let r = resolve(__right_)
+    let p = resolve(__parent_)
+    let color = __is_black_ ? "B" : "R"
+    #if DEBUG
+      let rc = ___recycle_count
+    #else
+      let rc = -1
+    #endif
+
+    return """
+      node[\(id)] \(color)
+        L: \(l.map(String.init) ?? "nil")
+        R: \(r.map(String.init) ?? "nil")
+        P: \(p.map(String.init) ?? "nil")
+        needsDeinit: \(___needs_deinitialize)
+        recycleCount: \(rc)
+      """
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  func _nodeID(_ p: _NodePtr) -> Int? {
+    return p.pointee.___node_id_
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  func dumpTree(label: String = "") {
+    print("==== UnsafeTree \(label) ====")
+    print(" count:", count)
+    print(" freshPool:", _buffer.header.freshPoolActualCount, "/", capacity)
+    print(" destroyCount:", _buffer.header.destroyCount)
+    print(" root:", __root.pointee.___node_id_ as Any)
+    print(" begin:", __begin_node_.pointee.___node_id_ as Any)
+
+    var it = _buffer.header.makeInitializedIterator()
+    while let p = it.next() {
+      print(
+        p.pointee.debugDescription { self._nodeID($0!) }
+      )
+    }
+    print("============================")
+  }
+}

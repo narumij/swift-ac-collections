@@ -65,7 +65,6 @@ extension UnsafeTreeV2 {
   }
 }
 
-#if false
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
   package var index: Int { pointee.___node_id_ }
 }
@@ -73,5 +72,4 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
   package var index: Int { self?.pointee.___node_id_ ?? .nullptr }
 }
-#endif
 #endif

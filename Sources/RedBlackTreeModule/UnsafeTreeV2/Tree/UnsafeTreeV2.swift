@@ -77,9 +77,10 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal static func ___create() -> UnsafeTreeV2 {
     assert(_emptyTreeStorage.header.freshPoolCapacity == 0)
-    return .init(
+    return UnsafeTreeV2(
       _buffer:
-        .init(unsafeBufferObject: _emptyTreeStorage),
+        ManagedBufferPointer<UnsafeTreeV2Buffer<_Value>.Header, UnsafeNode>(
+          unsafeBufferObject: _emptyTreeStorage),
       isReadOnly: true)
   }
 
@@ -91,12 +92,21 @@ extension UnsafeTreeV2 {
   internal static func ___create(
     minimumCapacity nodeCapacity: Int
   ) -> UnsafeTreeV2 {
+    create(
+      unsafeBufferObject:
+        UnsafeTreeV2Buffer<Base._Value>
+        .create(minimumCapacity: nodeCapacity))
+  }
+
+  @inlinable
+  @inline(__always)
+  internal static func create(unsafeBufferObject buffer: AnyObject)
+    -> UnsafeTreeV2
+  {
     return UnsafeTreeV2(
       _buffer:
         ManagedBufferPointer(
-          unsafeBufferObject:
-            UnsafeTreeV2Buffer<Base._Value>
-            .create(minimumCapacity: nodeCapacity)))
+          unsafeBufferObject: buffer))
   }
 }
 
@@ -122,8 +132,9 @@ extension UnsafeTreeV2 {
       tree._buffer.withUnsafeMutablePointers { _header_ptr, _end_ptr in
 
         @inline(__always)
-        func __node_ptr(_ index: Int) -> _NodePtr {
-          switch index {
+        func __ptr_(_ ptr: UnsafeMutablePointer<UnsafeNode>) -> _NodePtr {
+          let index = ptr.pointee.___node_id_
+          return switch index {
           case .nullptr:
             UnsafeNode.nullptr
           case .end:
@@ -134,44 +145,47 @@ extension UnsafeTreeV2 {
         }
 
         @inline(__always)
-        func apply(_ d: inout UnsafeNode, _ s: inout UnsafeNode) {
+        func apply(_ d: inout UnsafeNode, _ s: UnsafeNode) {
           // endにも使うので___node_idには触らない
-          d.__left_ = __node_ptr(s.__left_.pointee.___node_id_)
-          d.__right_ = __node_ptr(s.__right_.pointee.___node_id_)
-          d.__parent_ = __node_ptr(s.__parent_.pointee.___node_id_)
+          d.__left_ = __ptr_(s.__left_)
+          d.__right_ = __ptr_(s.__right_)
+          d.__parent_ = __ptr_(s.__parent_)
           d.__is_black_ = s.__is_black_
           // 値は別途管理
         }
 
-        var source_nodes = source_header.pointee.makeInitializedIterator()
-        var ___node_id_ = 0
-
-        while let s = source_nodes.next(), let d = _header_ptr.pointee.popFresh() {
-          // メモリを連番で初期化
-          d.initialize(to: UnsafeNode(___node_id_: ___node_id_))
-          // 値を初期化
-          UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
-          // 残りを初期化
-          apply(&d.pointee, &s.pointee)
-
-          ___node_id_ += 1
+        @inline(__always)
+        func node(_ s: UnsafeNode) -> UnsafeNode {
+          // 値は別途管理
+          return .init(
+            ___node_id_: s.___node_id_,
+            __left_: __ptr_(s.__left_),
+            __right_: __ptr_(s.__right_),
+            __parent_: __ptr_(s.__parent_),
+            __is_black_: s.__is_black_)
         }
 
-        // 最終ノード番号が初期化済み数と一致すること
-        assert(___node_id_ == source_header.pointee.initializedCount)
+        var source_nodes = source_header.pointee.makeInitializedIterator()
+
+        while let s = source_nodes.next(), let d = _header_ptr.pointee.popFresh() {
+          // ノードを初期化
+          d.initialize(to: node(s.pointee))
+          // 値を初期化
+          UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
+        }
 
         // endノードを初期化
-        apply(&_end_ptr.pointee, &source_end.pointee)
+        apply(&_end_ptr.pointee, source_end.pointee)
 
         // __begin_nodeを初期化
-        _header_ptr.pointee.__begin_node_ = __node_ptr(
-          source_header.pointee.__begin_node_.pointee.___node_id_)
+        _header_ptr.pointee.__begin_node_ = __ptr_(
+          source_header.pointee.__begin_node_)
 
         // その他管理情報をコピー
         _header_ptr.pointee.initializedCount = source_header.pointee.initializedCount
         _header_ptr.pointee.destroyCount = source_header.pointee.destroyCount
-        _header_ptr.pointee.destroyNode = __node_ptr(
-          source_header.pointee.destroyNode.pointee.___node_id_)
+        _header_ptr.pointee.destroyNode = __ptr_(
+          source_header.pointee.destroyNode)
         assert(
           _header_ptr.pointee.destroyNode.pointee.___node_id_
             == source_header.pointee.destroyNode.pointee.___node_id_)

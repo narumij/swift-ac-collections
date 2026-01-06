@@ -137,7 +137,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
-    assert(__tree_invariant(__root))
+    assert(check())
     // 予定サイズを確定させる
     let newCapacity = max(minimumCapacity ?? 0, initializedCount)
     // 予定サイズの木を作成する
@@ -174,10 +174,11 @@ extension UnsafeTreeV2 {
             __left_: __ptr_(s.__left_),
             __right_: __ptr_(s.__right_),
             __parent_: __ptr_(s.__parent_),
-            __is_black_: s.__is_black_)
+            __is_black_: s.__is_black_,
+            ___needs_deinitialize: s.___needs_deinitialize)
         }
 
-        var source_nodes = source_header.pointee.makeInitializedIterator()
+        var source_nodes = source_header.pointee.makeFreshPoolIterator()
 
         while let s = source_nodes.next(), let d = _header_ptr.pointee.popFresh() {
           // ノードを初期化
@@ -207,17 +208,8 @@ extension UnsafeTreeV2 {
       }
     }
 
-    assert(tree.__tree_invariant(tree.__root))
-    assert(tree.end.pointee.___needs_deinitialize == true)
-    assert(tree.count >= 0)
-    assert(tree.count <= tree.initializedCount)
-    assert(tree.count <= tree.capacity)
-    assert(tree.initializedCount <= tree.capacity)
-
-    assert(__root.pointee.___node_id_ == tree.__root.pointee.___node_id_)
-    assert(__begin_node_.pointee.___node_id_ == tree.__begin_node_.pointee.___node_id_)
-    assert(_buffer.header.recycleCount == tree._buffer.header.recycleCount)
-    assert(_buffer.header.___destroyNodes == tree._buffer.header.___destroyNodes)
+    assert(tree.check())
+    assert(equiv(with: tree))
 
     return tree
   }
@@ -303,6 +295,17 @@ extension UnsafeTreeV2 {
   }
 }
 
+// MARK: Refresh Pool Iterator
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  func makeFreshPoolIterator() -> UnsafeNodeFreshPoolIterator<_Value> {
+    return UnsafeNodeFreshPoolIterator<_Value>(bucket: _buffer.header.freshBucketHead)
+  }
+}
+
 // MARK: Index Resolver
 
 extension UnsafeTreeV2 {
@@ -368,7 +371,7 @@ extension UnsafeTreeV2 {
     print(" root:", __root.pointee.___node_id_ as Any)
     print(" begin:", __begin_node_.pointee.___node_id_ as Any)
 
-    var it = _buffer.header.makeInitializedIterator()
+    var it = makeFreshPoolIterator()
     while let p = it.next() {
       print(
         p.pointee.debugDescription { self._nodeID($0!) }

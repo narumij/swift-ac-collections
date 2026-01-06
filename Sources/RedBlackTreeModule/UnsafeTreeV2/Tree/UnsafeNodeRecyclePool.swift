@@ -79,7 +79,7 @@ extension UnsafeNodeRecyclePool {
 extension UnsafeNodeRecyclePool {
   @inlinable
   @inline(__always)
-  internal var ___destroyNodes: [Int] {
+  internal var ___recycleNodes: [Int] {
     var nodes: [Int] = []
     var last = recycleHead
     while last != nullptr {

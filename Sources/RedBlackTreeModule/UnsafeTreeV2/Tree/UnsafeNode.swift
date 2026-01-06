@@ -131,14 +131,15 @@ public struct UnsafeNode {
     __left_: Pointer,
     __right_: Pointer,
     __parent_: Pointer,
-    __is_black_: Bool = false
+    __is_black_: Bool = false,
+    ___needs_deinitialize: Bool = true
   ) {
     self.___node_id_ = ___node_id_
     self.__left_ = __left_
     self.__right_ = __right_
     self.__parent_ = __parent_
     self.__is_black_ = __is_black_
-    self.___needs_deinitialize = true
+    self.___needs_deinitialize = ___needs_deinitialize
   }
 
   /// Left child pointer of this red-black tree node.

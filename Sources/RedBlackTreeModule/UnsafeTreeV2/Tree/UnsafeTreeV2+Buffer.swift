@@ -68,7 +68,7 @@ extension UnsafeTreeV2Buffer {
       }
     }
 
-    assert(nodeCapacity == storage.header.freshPoolCapacity)
+    assert(nodeCapacity <= storage.header.freshPoolCapacity)
     return unsafeDowncast(storage, to: UnsafeTreeV2Buffer.self)
   }
 }
@@ -98,6 +98,7 @@ extension UnsafeTreeV2Buffer {
 
     @usableFromInline var recycleHead: _NodePtr
     @usableFromInline var recycleCount: Int = 0
+    
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       /// CoWの発火回数を観察するためのプロパティ
       @usableFromInline internal var copyCount: UInt = 0

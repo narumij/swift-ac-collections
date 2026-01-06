@@ -20,11 +20,11 @@ final class AllocationTests: RedBlackTreeTestCase {
       }
       do {
         let storage: Storage = .create(minimumCapacity: 1)
-        XCTAssertEqual(storage.capacity, 1)
+        XCTAssertGreaterThanOrEqual(storage.capacity, 1)
       }
       do {
         let storage: Storage = .create(minimumCapacity: 2)
-        XCTAssertEqual(storage.capacity, 2)
+        XCTAssertGreaterThanOrEqual(storage.capacity, 2)
       }
     }
 
@@ -156,6 +156,14 @@ final class AllocationTests: RedBlackTreeTestCase {
       //    XCTAssertEqual(capacities.last, 1572864)
       tree.initializedCount = 0  // これをしないと未初期化メモリに触ってクラッシュとなる
     }
+  
+  func testHoge() throws {
+    var a = RedBlackTreeSet<Int>()
+    a._ensureUnique()
+    XCTAssertEqual(a.capacity, 0)
+    a.__tree_._buffer.header.pushFreshBucket(capacity: 512)
+    XCTAssertGreaterThan(a.capacity, 512)
+  }
 
   #endif  // DEBUG
 }

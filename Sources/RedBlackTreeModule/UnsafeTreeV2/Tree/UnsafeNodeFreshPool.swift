@@ -23,14 +23,14 @@
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
 protocol UnsafeNodeFreshPool where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
-
+  
   /*
    Design invariant:
    - FreshPool may consist of multiple buckets in general.
    - Immediately after CoW, the pool must be constrained to a single bucket
-     because index-based access is performed.
-  */
-
+   because index-based access is performed.
+   */
+  
   associatedtype _Value
   associatedtype _NodePtr
   var freshBucketHead: ReserverHeaderPointer? { get set }
@@ -71,7 +71,9 @@ extension UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
-  static func allocationCapacity(size: Int) -> Int {
+//  @usableFromInline
+  static func pagedCapacity(capacity: Int) -> (capacity: Int, size: Int, stride: Int, alignment: Int) {
+    
     let s0 = MemoryLayout<UnsafeNode>.stride
     let a0 = MemoryLayout<UnsafeNode>.alignment
     let s1 = MemoryLayout<_Value>.stride
@@ -79,19 +81,31 @@ extension UnsafeNodeFreshPool {
     let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
     let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
     let s01 = s0 + s1
-    let o01 = a0 <= a1 ? 0 : a0 - a1
-    return a2 <= max(a1,a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1,a0)) / s01
-  }
-
-  @inlinable
-  @inline(__always)
-  static func pagedCapacity(capacity: Int) -> (capacity: Int, size: Int, alignment: Int) {
-    let (size, alignment) = Self.allocationSize2(capacity: capacity)
-    let pagedSize = ((size >> 10) + ((size - ((size >> 10) << 10)) == 0 ? 0 : 1)) << 10
+//    let o01 = a1 <= a0 ? 0 : a1 - a0
+    let o01 = max(0, a1 - a0)
+    let o012 = max(0, max(a0,a1) - a2)
+    let size = s2 + s01 * capacity + o01 + o012
+    let alignment = max(a0,a1,a2)
+    
+    if size <= 1024 {
+      return (capacity, size, s01, alignment)
+    }
+//
+//    
+//    let (size, alignment) = Self.allocationSize2(capacity: capacity)
+#if true
+//    let pagedSize = max(1024, (size & ~1023) + (size & 1023 == 0 ? 0 : 1024))
+    let pagedSize = (size + 1023) & ~1023
+    assert(abs(size / 1024 - pagedSize / 1024) <= 1)
     return (
-      capacity + max(0,(pagedSize - size) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)),
+      capacity + (pagedSize - size) / (s01),
+//      capacity,
       pagedSize,
+      s01,
       alignment)
+#else
+    return (capacity, size, s01, alignment)
+#endif
   }
   
   /*
@@ -106,8 +120,8 @@ extension UnsafeNodeFreshPool {
   mutating func pushFreshBucket(capacity: Int) {
 //    let capacity = Self.pagedCapacity(capacity: capacity).capacity
     assert(capacity != 0)
-    let pointer = Self.createBucket(capacity: capacity)
-//    let pointer = Self.createBucket2(capacity: capacity)
+//    let pointer = Self.createBucket(capacity: capacity)
+    let (pointer, capacity) = Self.createBucket2(capacity: capacity)
     if freshBucketHead == nil {
       freshBucketHead = pointer
     }

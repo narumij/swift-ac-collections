@@ -27,7 +27,7 @@ import XCTest
 
     func testCreate() async throws {
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
-      XCTAssertEqual(storage.capacity, 4)
+      XCTAssertGreaterThanOrEqual(storage.capacity, 4)
       XCTAssertEqual(storage.count, 0)
       XCTAssertEqual(storage.__root, storage.nullptr)
       XCTAssertEqual(storage.__begin_node_, storage.end)
@@ -35,7 +35,7 @@ import XCTest
 
     func testConstruct() async throws {
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
-      XCTAssertEqual(storage.capacity, 4)
+      XCTAssertGreaterThanOrEqual(storage.capacity, 4)
       let ptr = storage.__construct_node(100)
       XCTAssertEqual(storage.__value_(ptr), 100)
       storage.___element(ptr, 20)

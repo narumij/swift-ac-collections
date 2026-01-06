@@ -32,7 +32,7 @@ final class MemoizeCacheLRUTests: RedBlackTreeTestCase {
   func testInit() throws {
     let cache = ___LRUMemoizeStorage<TestKey, Int>(minimumCapacity: 10)
     XCTAssertEqual(cache.__tree_.count, 0)
-    XCTAssertEqual(cache.__tree_.capacity, 10)
+    XCTAssertGreaterThanOrEqual(cache.__tree_.capacity, 10)
   }
 
   func testQueue() throws {

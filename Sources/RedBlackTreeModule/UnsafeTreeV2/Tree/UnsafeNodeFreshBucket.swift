@@ -190,11 +190,11 @@ extension UnsafeNodeFreshPool {
   
   @inlinable
   @inline(__always)
-  static func createBucket2(capacity: Int) -> ReserverHeaderPointer {
+  static func createBucket2(capacity: Int) -> (ReserverHeaderPointer, capacity: Int) {
 
     assert(capacity != 0)
 
-    let (capacity, bytes, alignment) = Self.pagedCapacity(capacity: capacity)
+    let (capacity, bytes, stride, alignment) = pagedCapacity(capacity: capacity)
 
     let header_storage = UnsafeMutableRawPointer.allocate(
       byteCount: bytes,
@@ -211,7 +211,7 @@ extension UnsafeNodeFreshPool {
         .init(
           start: UnsafePair<_Value>.pointer(from: storage),
           capacity: capacity,
-          strice: MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride,
+          strice: stride,
           alignment: alignment))
 
     #if DEBUG
@@ -226,7 +226,7 @@ extension UnsafeNodeFreshPool {
       }
     #endif
 
-    return header
+    return (header, capacity)
   }
 
   @inlinable

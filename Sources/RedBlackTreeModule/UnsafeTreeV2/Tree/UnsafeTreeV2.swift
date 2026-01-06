@@ -242,6 +242,7 @@ extension UnsafeTreeV2 {
     _buffer.withUnsafeMutablePointerToHeader {
       $0.pointee.pushFreshBucket(capacity: newCapacity - capacity)
     }
+    assert(capacity >= newCapacity)
   }
 }
 

@@ -80,9 +80,7 @@ extension UnsafeTreeAllcation6 {
         minimumCapacity)
     }
 
-    let recommendCapacity = (1 << (Int.bitWidth - capacity.leadingZeroBitCount))
-    | (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 1))
-    return Swift.max(minimumCapacity, recommendCapacity)
+    return Swift.max(minimumCapacity, capacity + max(capacity / 2, 1))
   }
 }
 

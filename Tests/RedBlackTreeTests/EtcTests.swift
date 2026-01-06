@@ -873,7 +873,7 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(1 << (Int.bitWidth - N.leadingZeroBitCount - 2), N / 2)
 
     do {
-      let N = 4097
+      let N = 4096
 //      XCTAssertEqual( N / 1024, 4)
       XCTAssertEqual( (N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)), 4)
       XCTAssertEqual( (N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)) * 1024, 4096)

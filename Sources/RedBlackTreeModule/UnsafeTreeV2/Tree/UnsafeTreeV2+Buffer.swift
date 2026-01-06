@@ -121,7 +121,8 @@ extension UnsafeTreeV2Buffer.Header {
   @inlinable
   @inline(__always)
   public var count: Int {
-    // TODO: _size_に移行する（性能を観察しながら）
+    // __sizeへ以降した場合、減産のステップ数が増えるので逆効果なため
+    // 計算プロパティ維持の方針
     initializedCount - destroyCount
   }
 }

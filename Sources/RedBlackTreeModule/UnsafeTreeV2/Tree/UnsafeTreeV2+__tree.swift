@@ -6,13 +6,13 @@
 //
 
 extension UnsafeTreeV2 {
-  
+
   @inlinable
   @inline(__always)
   public var nullptr: UnsafeMutablePointer<UnsafeNode> {
     UnsafeNode.nullptr
   }
-  
+
   @inlinable
   @inline(__always)
   public var end: UnsafeMutablePointer<UnsafeNode> {
@@ -93,7 +93,7 @@ extension UnsafeTreeV2: TreeNodeProtocol {
 // MARK: -
 
 extension UnsafeTreeV2: TreeNodeRefProtocol {
-  
+
   @inlinable
   @inline(__always)
   func __left_ref(_ p: _NodePtr) -> _NodeRef {
@@ -136,10 +136,19 @@ extension UnsafeTreeV2 {
 
   @inlinable
   public var __begin_node_: _NodePtr {
+
+    @inline(__always) get {
+      _buffer.withUnsafeMutablePointerToHeader {
+        $0.pointee.__begin_node_
+      }
+    }
+
     @inline(__always)
-    get { _buffer.withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ } }
-    @inline(__always)
-    nonmutating set { _buffer.withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ = newValue } }
+    nonmutating set {
+      _buffer.withUnsafeMutablePointerToHeader {
+        $0.pointee.__begin_node_ = newValue
+      }
+    }
   }
 }
 
@@ -149,7 +158,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   var __end_node: _NodePtr {
-    @inline(__always) get { end }
+    end
   }
 }
 
@@ -188,15 +197,16 @@ extension UnsafeTreeV2 {
 
   @inlinable
   var __size_: Int {
-    @inline(__always)
-    get { _buffer.withUnsafeMutablePointerToHeader { $0.pointee.count } }
-    nonmutating set { /* NOP */  }
+    @inline(__always) get {
+      _buffer.withUnsafeMutablePointerToHeader { $0.pointee.count }
+    }    
+    nonmutating set {
+      /* NOP */
+    }
   }
 }
 
 // MARK: - AllocatorProtocol
-
-
 
 extension UnsafeTreeV2 {
 

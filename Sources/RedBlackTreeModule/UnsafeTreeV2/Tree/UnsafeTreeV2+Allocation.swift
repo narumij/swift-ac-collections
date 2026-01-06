@@ -22,7 +22,7 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
 extension UnsafeTree: UnsafeTreeAllcationDrill {}
 #else
 //extension UnsafeTreeV2: UnsafeTreeAllcation2V2 {}
-extension UnsafeTreeV2: UnsafeTreeAllcation3V2 {}
+extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
 #endif
 
 #if ALLOCATION_DRILL
@@ -33,11 +33,45 @@ extension RedBlackTreeSet {
 }
 #endif
 
+@usableFromInline
+protocol UnsafeTreeAllcation4 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation4 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+    
+    if minimumCapacity <= 64 {
+      let increaseCapacity = 1 << (Int.bitWidth - capacity.leadingZeroBitCount)
+      let recommendCapacity = capacity + increaseCapacity
+      return Swift.max(minimumCapacity, recommendCapacity)
+    }
+
+    if minimumCapacity <= 1024 * 512 {
+      let increaseCapacity = Swift.max(16, 1 << ((Int.bitWidth - capacity.leadingZeroBitCount) >> 8))
+      let recommendCapacity = capacity + increaseCapacity
+      return Swift.max(minimumCapacity, recommendCapacity)
+    }
+
+    let increaseCapacity = Swift.max(512, 1 << ((Int.bitWidth - capacity.leadingZeroBitCount) >> 8))
+    let recommendCapacity = capacity + increaseCapacity
+    return Swift.max(minimumCapacity, recommendCapacity)
+  }
+}
 
 @usableFromInline
-protocol UnsafeTreeAllcation3V2: UnsafeTreeAllcationBodyV2 {}
+protocol UnsafeTreeAllcation3: UnsafeTreeAllcationBodyV2 {}
 
-extension UnsafeTreeAllcation3V2 {
+extension UnsafeTreeAllcation3 {
 
   @inlinable
   @inline(__always)
@@ -62,9 +96,9 @@ extension UnsafeTreeAllcation3V2 {
 }
 
 @usableFromInline
-protocol UnsafeTreeAllcation2V2: UnsafeTreeAllcationBodyV2 {}
+protocol UnsafeTreeAllcation2: UnsafeTreeAllcationBodyV2 {}
 
-extension UnsafeTreeAllcation2V2 {
+extension UnsafeTreeAllcation2 {
 
   @inlinable
   @inline(__always)

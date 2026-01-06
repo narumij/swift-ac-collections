@@ -21,8 +21,8 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
 #if ALLOCATION_DRILL
 extension UnsafeTree: UnsafeTreeAllcationDrill {}
 #else
-//extension UnsafeTreeV2: UnsafeTreeAllcation2V2 {}
-extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
+extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
+//extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
 #endif
 
 #if ALLOCATION_DRILL

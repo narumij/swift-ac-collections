@@ -10,9 +10,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   public var nullptr: UnsafeMutablePointer<UnsafeNode> {
-    _buffer.withUnsafeMutablePointerToHeader { header in
-      header.pointee._nullptr
-    }
+    UnsafeNode.nullptr
   }
   
   @inlinable

@@ -115,14 +115,13 @@ public struct UnsafeNode {
   @inlinable
   @inline(__always)
   public init(
-    ___node_id_: Int,
-    _nullpotr: Pointer
+    ___node_id_: Int
   ) {
     self.init(
       ___node_id_: ___node_id_,
-      __left_: _nullpotr,
-      __right_: _nullpotr,
-      __parent_: _nullpotr)
+      __left_: Self.nullptr,
+      __right_: Self.nullptr,
+      __parent_: Self.nullptr)
   }
 
   @inlinable
@@ -208,6 +207,12 @@ public struct UnsafeNode {
   #if DEBUG
     public var ___recycle_count: Int = 0
   #endif
+  
+  @usableFromInline
+  nonisolated(unsafe) static let null: UnsafeNode.Null = .init()
+  
+  @usableFromInline
+  nonisolated(unsafe) static let nullptr: UnsafeMutablePointer<UnsafeNode> = null.pointer
 }
 
 extension UnsafeNode {
@@ -274,7 +279,11 @@ extension UnsafeNode {
         byteCount: MemoryLayout<UnsafeNode>.stride,
         alignment: MemoryLayout<UnsafeNode>.alignment)
       pointer = raw.assumingMemoryBound(to: UnsafeNode.self)
-      pointer.initialize(to: .init(___node_id_: .nullptr, _nullpotr: pointer))
+      pointer.initialize(to:
+          .init(___node_id_: .nullptr,
+                __left_: pointer,
+                __right_:  pointer,
+                __parent_: pointer))
     }
     deinit {
       pointer.deinitialize(count: 1)
@@ -282,13 +291,3 @@ extension UnsafeNode {
     }
   }
 }
-
-@usableFromInline
-nonisolated(unsafe) let shared: UnsafeNode.Null = .init()
-
-/// `__swift_instantiateConcreteTypeFromMangledNameV2`を避けるためには、
-/// 直接利用せずに、一度内部に保持する必要がある
-@usableFromInline
-nonisolated(unsafe) let ___slow_shared_unsafe_null_pointer: UnsafeMutablePointer<UnsafeNode> = shared.pointer
-
-// 連結提出する場合、上の二つがBufferの初期化コードより上部に無いと、未初期化でnullとなる。

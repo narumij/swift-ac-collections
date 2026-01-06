@@ -27,10 +27,15 @@ where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
   associatedtype _NodePtr
   var destroyNode: _NodePtr { get set }
   var destroyCount: Int { get set }
-  var _nullptr: _NodePtr { get }
 }
 
 extension UnsafeNodeRecyclePool {
+  
+  @inlinable
+  @inline(__always)
+  public var _nullptr: UnsafeMutablePointer<UnsafeNode> {
+    UnsafeNode.nullptr
+  }
   
   @inlinable
   @inline(__always)

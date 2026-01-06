@@ -125,14 +125,11 @@ extension UnsafeTreeV2 {
 
       tree._buffer.withUnsafeMutablePointers { _header_ptr, _end_ptr in
 
-        let _nullptr = _header_ptr.pointee._nullptr
-        assert(_nullptr.pointee.___node_id_ == .nullptr)
-
         @inline(__always)
         func __node_ptr(_ index: Int) -> _NodePtr {
           switch index {
           case .nullptr:
-            _nullptr
+            UnsafeNode.nullptr
           case .end:
             _end_ptr
           default:
@@ -155,7 +152,7 @@ extension UnsafeTreeV2 {
 
         while let s = source_nodes.next(), let d = _header_ptr.pointee.popFresh() {
           // メモリを連番で初期化
-          d.initialize(to: UnsafeNode(___node_id_: ___node_id_, _nullpotr: _nullptr))
+          d.initialize(to: UnsafeNode(___node_id_: ___node_id_))
           // 値を初期化
           UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
           // 残りを初期化

@@ -38,7 +38,6 @@ protocol UnsafeNodeFreshPool where _NodePtr == UnsafeMutablePointer<UnsafeNode> 
   var freshBucketLast: ReserverHeaderPointer? { get set }
   var freshBucketCount: Int { get set }
   var freshPoolCapacity: Int { get set }
-  var _nullptr: _NodePtr { get }
 }
 
 extension UnsafeNodeFreshPool {
@@ -48,6 +47,12 @@ extension UnsafeNodeFreshPool {
 
 extension UnsafeNodeFreshPool {
 
+  @inlinable
+  @inline(__always)
+  public var _nullptr: UnsafeMutablePointer<UnsafeNode> {
+    UnsafeNode.nullptr
+  }
+  
   /*
    NOTE:
    Normally, FreshPool may grow by adding multiple buckets.

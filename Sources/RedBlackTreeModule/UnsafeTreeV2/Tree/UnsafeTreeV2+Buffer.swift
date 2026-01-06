@@ -54,13 +54,11 @@ extension UnsafeTreeV2Buffer {
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 1) { managedBuffer in
       return managedBuffer.withUnsafeMutablePointerToElements { _end_ptr in
         
-        let _nullptr = ___slow_shared_unsafe_null_pointer
-        
         // endノード用に初期化する
         _end_ptr.initialize(
-          to: UnsafeNode(___node_id_: .end, _nullpotr: _nullptr))
+          to: UnsafeNode(___node_id_: .end))
         // ヘッダーを準備する
-        var header = Header(_nullptr: _nullptr, _end_ptr: _end_ptr)
+        var header = Header(_end_ptr: _end_ptr)
         // ノードを確保する
         if nodeCapacity > 0 {
           header.pushFreshBucket(capacity: nodeCapacity)
@@ -85,12 +83,11 @@ extension UnsafeTreeV2Buffer {
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
     @inlinable
     @inline(__always)
-    internal init(_nullptr: _NodePtr, _end_ptr: _NodePtr) {
-      self._nullptr = _nullptr
+    internal init(_end_ptr: _NodePtr) {
       self.__begin_node_ = _end_ptr
-      self.destroyNode = _nullptr
+      self.destroyNode = UnsafeNode.nullptr
     }
-    public let _nullptr: UnsafeMutablePointer<UnsafeNode>
+
     public var __begin_node_: UnsafeMutablePointer<UnsafeNode>
     @usableFromInline var initializedCount: Int = 0
     @usableFromInline var destroyNode: _NodePtr
@@ -145,10 +142,7 @@ extension UnsafeTreeV2Buffer.Header {
     assert(p != nil)
     assert(p.pointee.___node_id_ == -2)
     // ナンバリングとノード初期化の責務は移動できる(freshPoolUsedCountは使えない）
-    //    p?.initialize(to: UnsafeNode(___node_id_: initializedCount))
-    p.initialize(
-      to: UnsafeNode(
-        ___node_id_: initializedCount, __left_: _nullptr, __right_: _nullptr, __parent_: _nullptr))
+    p.initialize(to: UnsafeNode(___node_id_: initializedCount))
     UnsafeNode.initializeValue(p, to: k)
     assert(p.pointee.___node_id_ >= 0)
     initializedCount += 1
@@ -200,8 +194,8 @@ package func tearDown<T>(treeBuffer buffer: UnsafeTreeV2Buffer<T>) {
   buffer.header.tearDown()
   buffer.withUnsafeMutablePointers { h, e in
     h.pointee.__begin_node_ = e
-    e.pointee.__left_ = ___slow_shared_unsafe_null_pointer
-    e.pointee.__right_ = ___slow_shared_unsafe_null_pointer
-    e.pointee.__parent_ = ___slow_shared_unsafe_null_pointer
+    e.pointee.__left_ = UnsafeNode.nullptr
+    e.pointee.__right_ = UnsafeNode.nullptr
+    e.pointee.__parent_ = UnsafeNode.nullptr
   }
 }

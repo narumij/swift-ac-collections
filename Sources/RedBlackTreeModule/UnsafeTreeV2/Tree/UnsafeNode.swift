@@ -207,12 +207,37 @@ public struct UnsafeNode {
   #if DEBUG
     public var ___recycle_count: Int = 0
   #endif
-  
+
   @usableFromInline
   nonisolated(unsafe) static let null: UnsafeNode.Null = .init()
-  
+
   @usableFromInline
-  nonisolated(unsafe) static let nullptr: UnsafeMutablePointer<UnsafeNode> = null.pointer
+  nonisolated(unsafe) static let nullptr: UnsafeMutablePointer<UnsafeNode> = null.nullptr
+}
+
+extension UnsafeNode {
+
+  @usableFromInline
+  final class Null {
+    fileprivate let nullptr: UnsafeMutablePointer<UnsafeNode>
+    fileprivate init() {
+      let raw = UnsafeMutableRawPointer.allocate(
+        byteCount: MemoryLayout<UnsafeNode>.stride,
+        alignment: MemoryLayout<UnsafeNode>.alignment)
+      nullptr = raw.assumingMemoryBound(to: UnsafeNode.self)
+      nullptr.initialize(
+        to:
+          .init(
+            ___node_id_: .nullptr,
+            __left_: nullptr,
+            __right_: nullptr,
+            __parent_: nullptr))
+    }
+    deinit {
+      nullptr.deinitialize(count: 1)
+      nullptr.deallocate()
+    }
+  }
 }
 
 extension UnsafeNode {
@@ -266,28 +291,5 @@ extension UnsafeNode {
         .deinitialize(count: 1)
     }
     p.deinitialize(count: 1)
-  }
-}
-
-extension UnsafeNode {
-
-  @usableFromInline
-  final class Null {
-    fileprivate let pointer: UnsafeMutablePointer<UnsafeNode>
-    fileprivate init() {
-      let raw = UnsafeMutableRawPointer.allocate(
-        byteCount: MemoryLayout<UnsafeNode>.stride,
-        alignment: MemoryLayout<UnsafeNode>.alignment)
-      pointer = raw.assumingMemoryBound(to: UnsafeNode.self)
-      pointer.initialize(to:
-          .init(___node_id_: .nullptr,
-                __left_: pointer,
-                __right_:  pointer,
-                __parent_: pointer))
-    }
-    deinit {
-      pointer.deinitialize(count: 1)
-      pointer.deallocate()
-    }
   }
 }

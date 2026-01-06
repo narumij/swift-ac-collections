@@ -87,11 +87,14 @@ extension UnsafeTreeV2Buffer {
       self.__begin_node_ = _end_ptr
       self.destroyNode = UnsafeNode.nullptr
     }
-
+    
     public var __begin_node_: UnsafeMutablePointer<UnsafeNode>
+    
     @usableFromInline var initializedCount: Int = 0
+    
     @usableFromInline var destroyNode: _NodePtr
     @usableFromInline var destroyCount: Int = 0
+    
     @usableFromInline var freshBucketHead: ReserverHeaderPointer?
     @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
     @usableFromInline var freshBucketLast: ReserverHeaderPointer?
@@ -120,6 +123,7 @@ extension UnsafeTreeV2Buffer.Header {
   @inlinable
   @inline(__always)
   public var count: Int {
+    // TODO: _size_に移行する（性能を観察しながら）
     initializedCount - destroyCount
   }
 }

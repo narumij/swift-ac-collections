@@ -10,6 +10,14 @@ final class RedBlackTreeMultiMapSequenceTests: XCTestCase {
     ("apple", 3),
   ]
 
+  override func setUpWithError() throws {
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+  
+  override func tearDownWithError() throws {
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+  
   func testSequenceConformance() {
     let multiMap = RedBlackTreeMultiMap<String, Int>(multiKeysWithValues: elements)
 

@@ -96,7 +96,7 @@ extension UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
-  func ___clearFresh() {
+  func ___cleanFreshPool() {
     var reserverHead = freshBucketHead
     while let h = reserverHead {
       h.pointee.clear(_Value.self)
@@ -106,7 +106,7 @@ extension UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
-  func ___disposeFreshPool() {
+  mutating func ___flushFreshPool() {
     var reserverHead = freshBucketHead
     while let h = reserverHead {
       reserverHead = h.pointee.next
@@ -114,6 +114,11 @@ extension UnsafeNodeFreshPool {
       h.deinitialize(count: 1)
       UnsafeRawPointer(h).deallocate()
     }
+    freshBucketHead = nil
+    freshBucketCurrent = nil
+    freshBucketLast = nil
+    freshBucketCount = 0
+    freshPoolCapacity = 0
   }
 }
 

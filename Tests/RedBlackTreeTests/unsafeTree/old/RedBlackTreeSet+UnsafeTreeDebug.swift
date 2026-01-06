@@ -15,7 +15,7 @@
         }
       }
       set {
-        __tree_._buffer.header.___clearRecycle()
+        __tree_._buffer.header.___flushRecyclePool()
         __tree_.initializedCount = newValue.count
         newValue.enumerated().forEach {
           i, v in

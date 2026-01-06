@@ -3,6 +3,14 @@ import RedBlackTreeModule
 
 final class RedBlackTreeMultiMapTests_: XCTestCase {
 
+  override func setUpWithError() throws {
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+  
+  override func tearDownWithError() throws {
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+  
   func testRedBlackTreeDictionary_basic() {
     var dict = RedBlackTreeDictionary<String, Int>()
     dict["apple"] = 1

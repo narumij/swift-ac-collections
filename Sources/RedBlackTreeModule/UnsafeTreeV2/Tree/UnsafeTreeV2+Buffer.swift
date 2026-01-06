@@ -32,7 +32,7 @@ public final class UnsafeTreeV2Buffer<_Value>:
   @inline(__always)
   deinit {
     withUnsafeMutablePointers { header, end in
-      header.pointee.___disposeFreshPool()
+      header.pointee.___flushFreshPool()
       end.deinitialize(count: 1)
     }
   }
@@ -49,14 +49,13 @@ extension UnsafeTreeV2Buffer {
     minimumCapacity nodeCapacity: Int
   ) -> UnsafeTreeV2Buffer {
 
-    // elementsはendにしか用いないのでManagerdBufferの要素数は常に1
+    // end nodeしか用意しないので要素数は常に1
     
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 1) { managedBuffer in
       return managedBuffer.withUnsafeMutablePointerToElements { _end_ptr in
         
         // endノード用に初期化する
-        _end_ptr.initialize(
-          to: UnsafeNode(___node_id_: .end))
+        _end_ptr.initialize(to: UnsafeNode(___node_id_: .end))
         // ヘッダーを準備する
         var header = Header(_end_ptr: _end_ptr)
         // ノードを確保する
@@ -108,10 +107,9 @@ extension UnsafeTreeV2Buffer {
     @inlinable
     @inline(__always)
     internal mutating func clear(_end_ptr: _NodePtr) {
-      assert(_Value.self != Void.self)
-
-      ___clearFresh()
-      ___clearRecycle()
+      _end_ptr.pointee.__left_ = UnsafeNode.nullptr
+      ___cleanFreshPool()
+      ___flushRecyclePool()
       __begin_node_ = _end_ptr
       initializedCount = 0
     }
@@ -182,14 +180,9 @@ nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.cre
 extension UnsafeTreeV2Buffer.Header {
   @inlinable
   mutating func tearDown() {
-    ___disposeFreshPool()
-    freshBucketHead = nil
-    freshBucketCurrent = nil
-    freshBucketLast = nil
-    freshBucketCount = 0
-    freshPoolCapacity = 0
+    ___flushFreshPool()
+    ___flushRecyclePool()
     initializedCount = 0
-    ___clearRecycle()
   }
 }
 

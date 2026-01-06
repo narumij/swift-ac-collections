@@ -3,6 +3,14 @@ import RedBlackTreeModule
 
 final class RedBlackTreeMultiMapTests: XCTestCase {
 
+  override func setUpWithError() throws {
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+  
+  override func tearDownWithError() throws {
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+  
   func testInsertAndContains() {
     var map = RedBlackTreeMultiMap<String, Int>()
     map.insert(key: "a", value: 1)

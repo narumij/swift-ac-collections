@@ -69,7 +69,7 @@ extension UnsafeNodeRecyclePool {
   
   @inlinable
   @inline(__always)
-  mutating func ___clearRecycle() {
+  mutating func ___flushRecyclePool() {
     destroyNode = nullptr
     destroyCount = 0
   }

@@ -253,7 +253,7 @@ extension UnsafeTreeV2 {
   internal func __eraseAll() {
     clear()
     _buffer.withUnsafeMutablePointerToHeader {
-      $0.pointee.___clearRecycle()
+      $0.pointee.___flushRecyclePool()
     }
   }
 }

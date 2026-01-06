@@ -14,13 +14,15 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   public typealias Base = Base
   public typealias Tree = UnsafeTreeV2<Base>
   public typealias Header = UnsafeTreeV2Buffer<Base._Value>.Header
+  public typealias Buffer = ManagedBuffer<Header, UnsafeNode>
+  public typealias BufferPointer = ManagedBufferPointer<Header, UnsafeNode>
   public typealias _Key = Base._Key
   public typealias _Value = Base._Value
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
 
   @usableFromInline
-  var _buffer: ManagedBufferPointer<Header, UnsafeNode>
+  var _buffer: BufferPointer
 
   @usableFromInline
   let isReadOnly: Bool
@@ -79,7 +81,7 @@ extension UnsafeTreeV2 {
     assert(_emptyTreeStorage.header.freshPoolCapacity == 0)
     return UnsafeTreeV2(
       _buffer:
-        ManagedBufferPointer<UnsafeTreeV2Buffer<_Value>.Header, UnsafeNode>(
+        BufferPointer(
           unsafeBufferObject: _emptyTreeStorage),
       isReadOnly: true)
   }
@@ -105,7 +107,7 @@ extension UnsafeTreeV2 {
   {
     return UnsafeTreeV2(
       _buffer:
-        ManagedBufferPointer(
+        BufferPointer(
           unsafeBufferObject: buffer))
   }
 }

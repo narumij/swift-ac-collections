@@ -34,30 +34,30 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
 // TODO: 確保サイズ毎所要時間をのアロケーションとデアロケーションの両方で測ること
 
 #if ALLOCATION_DRILL
-extension UnsafeTreeV2 {
-  @inlinable
-  @inline(__always)
-  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
-    fatalError()
+  extension UnsafeTreeV2 {
+    @inlinable
+    @inline(__always)
+    internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+      fatalError()
+    }
   }
-}
-extension RedBlackTreeSet {
-  @inlinable
-  public static func allocationDrill() -> RedBlackTreeSet {
-    .init(__tree_: .___create(minimumCapacity: 0))
+  extension RedBlackTreeSet {
+    @inlinable
+    public static func allocationDrill() -> RedBlackTreeSet {
+      .init(__tree_: .___create(minimumCapacity: 0))
+    }
   }
-}
 #else
-//extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
-extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
+  //extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
+  extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
 #endif
 
 #if ALLOCATION_DRILL
-extension RedBlackTreeSet {
-  public mutating func pushFreshBucket(capacity: Int) {
-    __tree_._buffer.header.pushFreshBucket(capacity: capacity)
+  extension RedBlackTreeSet {
+    public mutating func pushFreshBucket(capacity: Int) {
+      __tree_._buffer.header.pushFreshBucket(capacity: capacity)
+    }
   }
-}
 #endif
 
 @usableFromInline
@@ -76,20 +76,49 @@ extension UnsafeTreeAllcation4 {
         capacity,
         minimumCapacity)
     }
+
+    if minimumCapacity <= 32 {
+      let recommendCapacity = 1 << (Int.bitWidth - capacity.leadingZeroBitCount)
+      return Swift.max(minimumCapacity, recommendCapacity)
+    }
     
-    if minimumCapacity <= 64 {
-      let increaseCapacity = 1 << (Int.bitWidth - capacity.leadingZeroBitCount)
+    if minimumCapacity <= 128 {
+      let increaseCapacity =
+      // 1/1
+        (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 1))
+      let recommendCapacity = capacity + increaseCapacity
+      return Swift.max(minimumCapacity, recommendCapacity)
+    }
+    
+    if minimumCapacity <= 2048 {
+      let increaseCapacity =
+      // 3/4
+        (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 2))
+        | (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 3))
+      let recommendCapacity = capacity + increaseCapacity
+      return Swift.max(minimumCapacity, recommendCapacity)
+    }
+    
+    if minimumCapacity <= 8192 {
+      let increaseCapacity =
+      // つまり5/8
+        (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 2))
+        | (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 4))
+      let recommendCapacity = capacity + increaseCapacity
+      return Swift.max(minimumCapacity, recommendCapacity)
+    }
+    
+    if minimumCapacity <= 1024 * 256 {
+      let increaseCapacity =
+      // つまり1/2
+        (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 2))
       let recommendCapacity = capacity + increaseCapacity
       return Swift.max(minimumCapacity, recommendCapacity)
     }
 
-    if minimumCapacity <= 1024 * 512 {
-      let increaseCapacity = Swift.max(16, 1 << ((Int.bitWidth - capacity.leadingZeroBitCount) >> 8))
-      let recommendCapacity = capacity + increaseCapacity
-      return Swift.max(minimumCapacity, recommendCapacity)
-    }
-
-    let increaseCapacity = Swift.max(512, 1 << ((Int.bitWidth - capacity.leadingZeroBitCount) >> 8))
+    let increaseCapacity =
+    // つまり1/4
+      (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 3))
     let recommendCapacity = capacity + increaseCapacity
     return Swift.max(minimumCapacity, recommendCapacity)
   }
@@ -109,7 +138,7 @@ extension UnsafeTreeAllcation3 {
         initializedCount,
         minimumCapacity)
     }
-    
+
     if minimumCapacity <= 6 {
       return Swift.max(minimumCapacity, count + count)
     }
@@ -140,7 +169,7 @@ extension UnsafeTreeAllcation2 {
     let s0 = MemoryLayout<UnsafeNode>.stride
     let s1 = MemoryLayout<_Value>.stride
     let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
-    let a2 = 0 // MemoryLayout<UnsafeNodeFreshBucket<_Value>>.alignment
+    let a2 = 0  // MemoryLayout<UnsafeNodeFreshBucket<_Value>>.alignment
 
     if minimumCapacity <= 2 {
       return 3
@@ -157,18 +186,16 @@ extension UnsafeTreeAllcation2 {
     if minimumCapacity <= 8192 {
       return Swift.max(minimumCapacity, count + ((16 - 1) * (s0 + s1) - s2 - a2) / (s0 + s1))
     }
-    
+
     if minimumCapacity <= 100000 {
       return Swift.max(minimumCapacity, count + ((512 - 1) * (s0 + s1) - s2 - a2) / (s0 + s1))
     }
-    
+
     return Swift.max(minimumCapacity, count + ((1024 * 2 - 1) * (s0 + s1) - s2 - a2) / (s0 + s1))
   }
 }
 
 // MARK: -
-
-
 
 @usableFromInline
 protocol UnsafeTreeAllcation1: UnsafeTreeAllcationBodyV2 {}
@@ -318,4 +345,3 @@ extension UnsafeTreeAllcation0 {
     return scale
   }
 }
-

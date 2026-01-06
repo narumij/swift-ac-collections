@@ -132,7 +132,7 @@ extension UnsafeTreeV2 {
       tree._buffer.withUnsafeMutablePointers { _header_ptr, _end_ptr in
 
         @inline(__always)
-        func __ptr_(_ ptr: UnsafeMutablePointer<UnsafeNode>) -> _NodePtr {
+        func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
           let index = ptr.pointee.___node_id_
           return switch index {
           case .nullptr:
@@ -142,16 +142,6 @@ extension UnsafeTreeV2 {
           default:
             _header_ptr.pointee[index]
           }
-        }
-
-        @inline(__always)
-        func apply(_ d: inout UnsafeNode, _ s: UnsafeNode) {
-          // endにも使うので___node_idには触らない
-          d.__left_ = __ptr_(s.__left_)
-          d.__right_ = __ptr_(s.__right_)
-          d.__parent_ = __ptr_(s.__parent_)
-          d.__is_black_ = s.__is_black_
-          // 値は別途管理
         }
 
         @inline(__always)
@@ -174,12 +164,11 @@ extension UnsafeTreeV2 {
           UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
         }
 
-        // endノードを初期化
-        apply(&_end_ptr.pointee, source_end.pointee)
+        // ルートノードを設定
+        _end_ptr.pointee.__left_ = __ptr_(source_end.pointee.__left_)
 
         // __begin_nodeを初期化
-        _header_ptr.pointee.__begin_node_ = __ptr_(
-          source_header.pointee.__begin_node_)
+        _header_ptr.pointee.__begin_node_ = __ptr_(source_header.pointee.__begin_node_)
 
         // その他管理情報をコピー
         _header_ptr.pointee.initializedCount = source_header.pointee.initializedCount

@@ -790,7 +790,91 @@ final class EtcTests: RedBlackTreeTestCase {
       XCTAssertEqual(result, [2, 1, 0].map { a.startIndex + $0 })
     }
   }
+  
+  static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
+    typealias _Value = Int
+    let (bufferSize, bufferAlignment) = UnsafePair<_Value>.allocationSize(capacity: capacity)
+    let numBytes = MemoryLayout<UnsafeNodeFreshBucket>.stride + bufferSize
+    let headerAlignment = MemoryLayout<UnsafeNodeFreshBucket>.alignment
+    if bufferAlignment <= headerAlignment {
+      return (numBytes, MemoryLayout<UnsafeNodeFreshBucket>.alignment)
+    }
+    return (
+      numBytes + bufferAlignment - headerAlignment,
+      bufferAlignment
+    )
+  }
 
+  static func allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
+    typealias _Value = Int
+    let s0 = MemoryLayout<UnsafeNode>.stride
+    let a0 = MemoryLayout<UnsafeNode>.alignment
+    let s1 = MemoryLayout<_Value>.stride
+    let a1 = MemoryLayout<_Value>.alignment
+    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
+    let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
+    let s01 = s0 + s1
+    let o01 = a1 <= a0 ? 0 : a1 - a0
+    let o012 = max(a1,a0) <= a2 ? 0 : max(a0,a1) - a2
+    return (s2 + s01 * capacity + o01 + o012, max(a0,a1,a2))
+  }
+
+  static func allocationCapacity(size: Int) -> Int {
+    typealias _Value = Int
+    let s0 = MemoryLayout<UnsafeNode>.stride
+    let a0 = MemoryLayout<UnsafeNode>.alignment
+    let s1 = MemoryLayout<_Value>.stride
+    let a1 = MemoryLayout<_Value>.alignment
+    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
+    let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
+    let s01 = s0 + s1
+    let o01 = a0 <= a1 ? 0 : a0 - a1
+    return a2 <= max(a1,a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1,a0)) / s01
+  }
+  
+  static func pagedCapacity(capacity: Int) -> Int {
+    let size = Self.allocationSize2(capacity: capacity).size
+    let pagedSize = ((size >> 10) + 1) << 10
+    return Self.allocationCapacity(size: pagedSize)
+  }
+
+  func testBufferSize() throws {
+    typealias _Value = Int
+    let s0 = MemoryLayout<UnsafeNode>.stride
+    let a0 = MemoryLayout<UnsafeNode>.alignment
+    let s1 = MemoryLayout<_Value>.stride
+    let a1 = MemoryLayout<_Value>.alignment
+    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
+    let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
+    
+    var hoge: [(size: Int, capacity: Int)] = []
+    for i in 0..<32 {
+      let size = 1 << i
+      
+      let s01 = a1 <= a0 ? (s0 + s1) : (s0 + s1)
+      let o01 = a1 <= a0 ? 0 : a2 - a1
+      let capacity = a2 <= max(a1,a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1,a0)) / s01
+      
+      XCTAssertGreaterThanOrEqual(
+        size,
+        capacity == 0 ? 0 : Self.allocationSize2(capacity: capacity).size)
+      hoge.append((size, capacity))
+    }
+    
+    for capacity1 in 32..<1024 {
+      let size = Self.allocationSize(capacity: capacity1).size
+      let pagedSize = ((size >> 10) + 1) << 10
+      let pagedCapacity = Self.allocationCapacity(size: pagedSize)
+      XCTAssertLessThanOrEqual(Self.allocationSize(capacity: pagedCapacity).size, pagedSize)
+    }
+    
+    XCTAssertEqual(65537 / 1024, 65536 >> 10)
+    
+//    throw XCTSkip("\(hoge.filter { $0.capacity != 0 }.map(\.capacity))")
+    throw XCTSkip("\(hoge.filter { $0.capacity != 0 })")
+  }
+  
+  // TODO: 再検討
   // __tree_prev_iterの不定動作を解消する場合、以下となるが、性能上の問題で保留となっている
   //  func testPtr5() throws {
   //    do {
@@ -806,5 +890,4 @@ final class EtcTests: RedBlackTreeTestCase {
   //      XCTAssertEqual(a.__tree_.__tree_prev_iter(a.startIndex.rawValue), .nullptr)
   //    }
   //  }
-
 }

@@ -54,6 +54,43 @@ extension UnsafeNodeFreshPool {
     UnsafeNode.nullptr
   }
   
+  @inlinable
+  @inline(__always)
+  static func allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
+    let s0 = MemoryLayout<UnsafeNode>.stride
+    let a0 = MemoryLayout<UnsafeNode>.alignment
+    let s1 = MemoryLayout<_Value>.stride
+    let a1 = MemoryLayout<_Value>.alignment
+    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
+    let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
+    let s01 = s0 + s1
+    let o01 = a1 <= a0 ? 0 : a1 - a0
+    let o012 = max(a1,a0) <= a2 ? 0 : max(a0,a1) - a2
+    return (s2 + s01 * capacity + o01 + o012, max(a0,a1,a2))
+  }
+
+  @inlinable
+  @inline(__always)
+  static func allocationCapacity(size: Int) -> Int {
+    let s0 = MemoryLayout<UnsafeNode>.stride
+    let a0 = MemoryLayout<UnsafeNode>.alignment
+    let s1 = MemoryLayout<_Value>.stride
+    let a1 = MemoryLayout<_Value>.alignment
+    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
+    let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
+    let s01 = s0 + s1
+    let o01 = a0 <= a1 ? 0 : a0 - a1
+    return a2 <= max(a1,a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1,a0)) / s01
+  }
+
+  @inlinable
+  @inline(__always)
+  static func pagedCapacity(capacity: Int) -> (capacity: Int, size: Int, alignment: Int) {
+    let (size, alignment) = Self.allocationSize2(capacity: capacity)
+    let pagedSize = ((size >> 10) + (size - (size >> 10)) > 0 ? 1 : 0) << 10
+    return (capacity + (pagedSize - size) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride), pagedSize, alignment)
+  }
+  
   /*
    NOTE:
    Normally, FreshPool may grow by adding multiple buckets.
@@ -62,9 +99,12 @@ extension UnsafeNodeFreshPool {
    */
   @inlinable
   @inline(__always)
+//  @usableFromInline
   mutating func pushFreshBucket(capacity: Int) {
+//    let capacity = Self.pagedCapacity(capacity: capacity).capacity
     assert(capacity != 0)
     let pointer = Self.createBucket(capacity: capacity)
+//    let pointer = Self.createBucket2(capacity: capacity)
     if freshBucketHead == nil {
       freshBucketHead = pointer
     }

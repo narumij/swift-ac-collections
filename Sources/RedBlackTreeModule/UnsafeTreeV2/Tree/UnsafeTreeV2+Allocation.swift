@@ -34,10 +34,22 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
 // TODO: 確保サイズ毎所要時間をのアロケーションとデアロケーションの両方で測ること
 
 #if ALLOCATION_DRILL
-extension UnsafeTree: UnsafeTreeAllcationDrill {}
+extension UnsafeTreeV2 {
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+    fatalError()
+  }
+}
+extension RedBlackTreeSet {
+  @inlinable
+  public static func allocationDrill() -> RedBlackTreeSet {
+    .init(__tree_: .___create(minimumCapacity: 0))
+  }
+}
 #else
-extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
-//extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
+//extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
+extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
 #endif
 
 #if ALLOCATION_DRILL

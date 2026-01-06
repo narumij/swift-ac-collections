@@ -134,6 +134,7 @@ let package = Package(
       name: "Benchmark2",
       dependencies: [
         "RedBlackTreeModule",
+        .product(name: "Algorithms", package: "swift-algorithms"),
         .product(name: "Benchmark", package: "swift-benchmark"),
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
       ],

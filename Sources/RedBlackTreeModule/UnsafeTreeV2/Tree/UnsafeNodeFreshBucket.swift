@@ -187,6 +187,47 @@ extension UnsafeNodeFreshPool {
 
     return header
   }
+  
+  @inlinable
+  @inline(__always)
+  static func createBucket2(capacity: Int) -> ReserverHeaderPointer {
+
+    assert(capacity != 0)
+
+    let (capacity, bytes, alignment) = Self.pagedCapacity(capacity: capacity)
+
+    let header_storage = UnsafeMutableRawPointer.allocate(
+      byteCount: bytes,
+      alignment: alignment)
+
+    let header = UnsafeMutableRawPointer(header_storage)
+      .assumingMemoryBound(to: UnsafeNodeFreshBucket.self)
+
+    let storage = UnsafeMutableRawPointer(header.advanced(by: 1))
+      .alignedUp(toMultipleOf: alignment)
+
+    header.initialize(
+      to:
+        .init(
+          start: UnsafePair<_Value>.pointer(from: storage),
+          capacity: capacity,
+          strice: MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride,
+          alignment: alignment))
+
+    #if DEBUG
+      do {
+        var c = 0
+        var p = header.pointee.start
+        while c < capacity {
+          p.pointee.___node_id_ = .nullptr
+          p = UnsafePair<_Value>.advance(p)
+          c += 1
+        }
+      }
+    #endif
+
+    return header
+  }
 
   @inlinable
   @inline(__always)

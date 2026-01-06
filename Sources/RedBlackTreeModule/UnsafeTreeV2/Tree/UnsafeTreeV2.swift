@@ -20,8 +20,6 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public typealias ___TreeBase = ValueComparer & CompareTrait & ThreeWayComparator
-
 public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @inlinable

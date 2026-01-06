@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeSetSearchTests: XCTestCase {
+final class RedBlackTreeSetSearchTests: RedBlackTreeTestCase {
 
   /// contains(_:) が要素存在確認を正しく行うこと
   func test_contains_shouldReturnCorrectResult() {

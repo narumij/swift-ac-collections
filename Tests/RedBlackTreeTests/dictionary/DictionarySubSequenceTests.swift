@@ -11,7 +11,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeDictionarySubSequenceTests: XCTestCase {
+final class RedBlackTreeDictionarySubSequenceTests: RedBlackTreeTestCase {
 
   // MARK: 基本プロパティ -------------------------------------------------
 

@@ -14,7 +14,7 @@ import XCTest
 #endif
 
 #if DEBUG && ALLOCATION_DRILL
-  final class BucketCountTests: XCTestCase {
+  final class BucketCountTests: RedBlackTreeTestCase {
 
     func testExample1() throws {
       var f = RedBlackTreeSet<Int>()

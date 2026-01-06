@@ -7,7 +7,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class SetSubSequenceTests: XCTestCase {
+final class SetSubSequenceTests: RedBlackTreeTestCase {
   
   func testEmptySlice() {
     

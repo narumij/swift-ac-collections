@@ -13,15 +13,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class SetTests: XCTestCase {
-
-  override func setUpWithError() throws {
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
-  }
-  
-  override func tearDownWithError() throws {
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
-  }
+final class SetTests: RedBlackTreeTestCase {
 
   func testInitEmtpy() throws {
     let set = RedBlackTreeSet<Int>()

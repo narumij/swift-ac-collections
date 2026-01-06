@@ -4,7 +4,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeSetCornerCaseTests: XCTestCase {
+final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
 
   // MARK: ── 基本プロパティ ────────────────────────────────────────────────
 

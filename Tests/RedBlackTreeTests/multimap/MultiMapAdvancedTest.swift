@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class MultiMapAdvancedTest: XCTestCase {
+final class MultiMapAdvancedTest: RedBlackTreeTestCase {
 
   func testEmptyAndCapacity() {
     var map = RedBlackTreeMultiMap<String, Int>()

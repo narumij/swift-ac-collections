@@ -3,7 +3,7 @@ import XCTest
 #if DEBUG && !USE_UNSAFE_TREE
 @testable import RedBlackTreeModule
 
-final class ManagedBufferTests: XCTestCase {
+final class ManagedBufferTests: RedBlackTreeTestCase {
 
   enum Base: ScalarValueComparer & CompareUniqueTrait & HasDefaultThreeWayComparator {
     typealias _Key = Int

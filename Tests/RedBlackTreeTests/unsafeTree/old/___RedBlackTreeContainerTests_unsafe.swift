@@ -13,7 +13,7 @@ import XCTest
 #if DEBUG
   @testable import RedBlackTreeModule
 
-  final class ___RedBlackTreeContainerTests: XCTestCase {
+  final class ___RedBlackTreeContainerTests: RedBlackTreeTestCase {
 
     let capacity = 32
 

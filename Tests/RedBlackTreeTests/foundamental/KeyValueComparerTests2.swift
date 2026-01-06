@@ -8,7 +8,7 @@
 import RedBlackTreeModule
 import XCTest
 
-final class KeyValueComparerTests2: XCTestCase, KeyValueComparer {
+final class KeyValueComparerTests2: RedBlackTreeTestCase, KeyValueComparer {
   
   typealias _MappedValue = Int
   typealias _Key = Int

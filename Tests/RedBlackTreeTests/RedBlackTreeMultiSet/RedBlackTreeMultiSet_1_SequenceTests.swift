@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeMultiSetSequenceTests: XCTestCase {
+final class RedBlackTreeMultiSetSequenceTests: RedBlackTreeTestCase {
 
   // MARK: - map動作チェックと併せて、初期化内容のチェック
 

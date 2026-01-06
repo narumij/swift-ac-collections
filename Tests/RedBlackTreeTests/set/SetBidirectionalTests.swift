@@ -6,7 +6,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeSetBidirectionalTests: XCTestCase {
+final class RedBlackTreeSetBidirectionalTests: RedBlackTreeTestCase {
 
   // MARK: ── empty / single element ───────────────────────────────
 

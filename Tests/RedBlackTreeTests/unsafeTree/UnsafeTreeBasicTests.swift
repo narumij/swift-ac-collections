@@ -10,7 +10,7 @@ import XCTest
 #if DEBUG
   @testable import RedBlackTreeModule
 
-  final class UnsafeTreeBasicTests: XCTestCase {
+  final class UnsafeTreeBasicTests: RedBlackTreeTestCase {
 
     enum Base: ScalarValueComparer & CompareUniqueTrait & HasDefaultThreeWayComparator {
       typealias _Key = Int

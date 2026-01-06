@@ -6,15 +6,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class MultisetTests: XCTestCase {
-  
-  override func setUpWithError() throws {
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
-  }
-  
-  override func tearDownWithError() throws {
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
-  }
+final class MultisetTests: RedBlackTreeTestCase {
 
   func testInitEmtpy() throws {
     let set = RedBlackTreeMultiSet<Int>()

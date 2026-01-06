@@ -6,7 +6,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class MultisetRemoveTests: XCTestCase {
+final class MultisetRemoveTests: RedBlackTreeTestCase {
 
   func testRemove1() throws {
     var set = RedBlackTreeMultiSet<Int>([0, 0, 1, 1, 2])

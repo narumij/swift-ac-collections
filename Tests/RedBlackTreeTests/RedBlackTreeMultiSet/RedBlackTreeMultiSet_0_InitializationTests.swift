@@ -1,15 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeMultiSetInitializationTests: XCTestCase {
-
-  override func setUpWithError() throws {
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
-  }
-  
-  override func tearDownWithError() throws {
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
-  }
+final class RedBlackTreeMultiSetInitializationTests: RedBlackTreeTestCase {
 
   // MARK: - 「空なものは空である」と「空でないものは空ではない」のトートロジー
 

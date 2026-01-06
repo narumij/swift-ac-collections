@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeSetSetAlgebraTests: XCTestCase {
+final class RedBlackTreeSetSetAlgebraTests: RedBlackTreeTestCase {
 
   /// unionが正しく動作すること
   func test_union() {

@@ -6,15 +6,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeDictionaryExtendedTests: XCTestCase {
-
-  override func setUpWithError() throws {
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
-  }
-  
-  override func tearDownWithError() throws {
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
-  }
+final class RedBlackTreeDictionaryExtendedTests: RedBlackTreeTestCase {
 
   // MARK: ── ヘルパ ────────────────────────────────────────────────
 

@@ -76,10 +76,6 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal static func ___create() -> UnsafeTreeV2 {
-    #if DEBUG
-      // 中身をいじり倒すテストコードがあるため、復帰している
-      tearDown(treeBuffer: _emptyTreeStorage)
-    #endif
     assert(_emptyTreeStorage.header.freshPoolCapacity == 0)
     return .init(
       _buffer:

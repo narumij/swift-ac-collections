@@ -6,7 +6,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class AllocationTests: XCTestCase {
+final class AllocationTests: RedBlackTreeTestCase {
 
   #if DEBUG
     typealias Tree = RedBlackTreeSet<Int>.Tree

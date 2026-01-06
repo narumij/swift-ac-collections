@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeSetUtilityTests: XCTestCase {
+final class RedBlackTreeSetUtilityTests: RedBlackTreeTestCase {
 
   /// isEmptyが空であることを正しく示すこと
   func test_isEmpty_true_whenEmpty() {

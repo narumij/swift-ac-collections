@@ -13,17 +13,19 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class SetRemoveTests: XCTestCase {
+final class SetRemoveTests: RedBlackTreeTestCase {
 
   var members: RedBlackTreeSet<Int> = []
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    try super.setUpWithError()
     members = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
   }
 
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    try super.tearDownWithError()
   }
 
   func testRemove() throws {
@@ -148,17 +150,19 @@ final class SetRemoveTests: XCTestCase {
   }
 }
 
-final class SetRemoveTest_5000: XCTestCase {
+final class SetRemoveTest_5000: RedBlackTreeTestCase {
 
   var members: RedBlackTreeSet<Int> = []
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    try super.setUpWithError()
     members = .init(0..<5_000)
   }
 
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    try super.tearDownWithError()
   }
 
   func testSmokeRemove0() throws {
@@ -180,17 +184,19 @@ final class SetRemoveTest_5000: XCTestCase {
   }
 }
 
-final class SetRemoveTest_10: XCTestCase {
+final class SetRemoveTest_10: RedBlackTreeTestCase {
 
   var members: RedBlackTreeSet<Int> = []
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    try super.setUpWithError()
     members = RedBlackTreeSet(0..<10)
   }
 
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    try super.tearDownWithError()
   }
 
   func testRemoveWithRange1() throws {

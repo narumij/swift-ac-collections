@@ -123,7 +123,7 @@ import XCTest
 
     override func tearDownWithError() throws {
       // Put teardown code here. This method is called after the invocation of each test method in the class.
-      try super.setUpWithError()
+      try super.tearDownWithError()
     }
 
     func testIsLeftChild() throws {
@@ -288,6 +288,7 @@ import XCTest
 
     override func setUpWithError() throws {
       // Put setup code here. This method is called before the invocation of each test method in the class.
+      try super.setUpWithError()
       clear()
       _ = __insert_unique(0)
       _ = __insert_unique(1)
@@ -299,6 +300,7 @@ import XCTest
 
     override func tearDownWithError() throws {
       // Put teardown code here. This method is called after the invocation of each test method in the class.
+      try super.tearDownWithError()
       clear()
     }
 

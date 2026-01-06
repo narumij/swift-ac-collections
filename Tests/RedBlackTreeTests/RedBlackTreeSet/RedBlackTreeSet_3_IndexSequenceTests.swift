@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeSetIndexRangeTests: XCTestCase {
+final class RedBlackTreeSetIndexRangeTests: RedBlackTreeTestCase {
 
   /// indices() がすべてのインデックスを列挙すること
   func test_indices_forEach() {

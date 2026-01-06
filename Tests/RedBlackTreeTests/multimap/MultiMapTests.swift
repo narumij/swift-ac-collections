@@ -37,15 +37,16 @@ extension Optional where Wrapped == Int {
   }
 }
 
-final class MultiMapTests: XCTestCase {
+final class MultiMapTests: RedBlackTreeTestCase {
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    try super.setUpWithError()
   }
 
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+    try super.tearDownWithError()
   }
 
   typealias Target = RedBlackTreeMultiMap

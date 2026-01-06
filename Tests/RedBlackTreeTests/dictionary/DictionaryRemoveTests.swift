@@ -12,15 +12,7 @@ extension Optional where Wrapped == Int {
   }
 }
 
-final class DictionaryRemoveTests: XCTestCase {
-
-  override func setUpWithError() throws {
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
-  }
-  
-  override func tearDownWithError() throws {
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
-  }
+final class DictionaryRemoveTests: RedBlackTreeTestCase {
 
   func testRemoveKey_() throws {
     var dict = [1: 1, 2: 2, 3: 3]

@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeMultiMapSequenceTests: XCTestCase {
+final class RedBlackTreeMultiMapSequenceTests: RedBlackTreeTestCase {
 
   let elements: [(String, Int)] = [
     ("cherry", 4),
@@ -9,14 +9,6 @@ final class RedBlackTreeMultiMapSequenceTests: XCTestCase {
     ("banana", 2),
     ("apple", 3),
   ]
-
-  override func setUpWithError() throws {
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
-  }
-  
-  override func tearDownWithError() throws {
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
-  }
   
   func testSequenceConformance() {
     let multiMap = RedBlackTreeMultiMap<String, Int>(multiKeysWithValues: elements)

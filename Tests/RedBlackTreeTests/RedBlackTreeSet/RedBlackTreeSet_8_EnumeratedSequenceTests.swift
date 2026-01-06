@@ -6,7 +6,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class RedBlackTreeSetEnumeratedSequenceTests: XCTestCase {
+final class RedBlackTreeSetEnumeratedSequenceTests: RedBlackTreeTestCase {
 
   #if DEBUG && false
     /// EnumuratedSequenceのforEachが正しく動作すること

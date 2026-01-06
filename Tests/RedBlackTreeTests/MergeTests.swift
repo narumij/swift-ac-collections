@@ -1,7 +1,7 @@
 import RedBlackTreeModule
 import XCTest
 
-final class MergeTests: XCTestCase {
+final class MergeTests: RedBlackTreeTestCase {
 
   func testSetAndSet() throws {
     var lhs: RedBlackTreeSet<Int> = [1, 2, 3]

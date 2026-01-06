@@ -8,7 +8,7 @@
 import RedBlackTreeModule
 import XCTest
 
-final class ReferenceTests: XCTestCase {
+final class ReferenceTests: RedBlackTreeTestCase {
 
   nonisolated(unsafe) static var count: Int = 0
 
@@ -32,11 +32,12 @@ final class ReferenceTests: XCTestCase {
   }
 
   override func setUpWithError() throws {
+    try super.setUpWithError()
     Self.count = 0
   }
 
   override func tearDownWithError() throws {
-
+    try super.tearDownWithError()
     Self.count = 0
   }
 

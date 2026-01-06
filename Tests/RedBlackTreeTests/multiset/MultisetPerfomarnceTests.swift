@@ -1,7 +1,7 @@
 import RedBlackTreeModule
 import XCTest
 
-final class MultisetPerfomarnceTests: XCTestCase {
+final class MultisetPerfomarnceTests: RedBlackTreeTestCase {
 
   #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceDistanceFromTo() throws {

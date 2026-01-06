@@ -35,7 +35,7 @@ extension ManagedBuffer where Header == Void, Element == Void {
 @usableFromInline
 protocol ___UnsafeCopyOnWriteV2 {
   associatedtype Base: ___TreeBase
-  #if !WITHOUT_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+  #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
     /// 2段階CoWを実現するためのプロパティ
     ///
     /// 競技プログラミングでの利用ではできる限りCopyを避けたかった。
@@ -58,7 +58,7 @@ extension ___UnsafeCopyOnWriteV2 {
   @inline(__always)
   internal mutating func _isKnownUniquelyReferenced_LV1() -> Bool {
     #if !DISABLE_COPY_ON_WRITE
-      #if !WITHOUT_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+      #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
         !__tree_.isReadOnly && isKnownUniquelyReferenced(&referenceCounter)
       #else
         __tree_._buffer.isUniqueReference()

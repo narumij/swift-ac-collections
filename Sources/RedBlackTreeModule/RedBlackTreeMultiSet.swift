@@ -55,12 +55,12 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
   public
     typealias _Value = Element
 
-#if !WITHOUT_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
   @usableFromInline
   var referenceCounter: ReferenceCounter
 #endif
   
-#if !WITHOUT_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
   @usableFromInline
   var __tree_: Tree {
     didSet { referenceCounter = .create() }
@@ -73,7 +73,7 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
-#if !WITHOUT_DUAL_REF_COUNT || COMPATIBLE_ATCODER_2025
+#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
     referenceCounter = .create()
 #endif
   }

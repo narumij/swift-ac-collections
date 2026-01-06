@@ -134,6 +134,15 @@ extension UnsafeNodeFreshPool {
 
 extension UnsafeNodeFreshPool {
 
+  @inlinable
+  @inline(__always)
+  func makeFreshBucketIterator() -> UnsafeNodeFreshBucketIterator<_Value> {
+    return UnsafeNodeFreshBucketIterator<_Value>(bucket: freshBucketHead)
+  }
+}
+
+extension UnsafeNodeFreshPool {
+
   /*
    IMPORTANT:
    After a Copy-on-Write operation, node access is performed via index-based
@@ -176,7 +185,7 @@ extension UnsafeNodeFreshPool {
     guard let p = popFresh() else {
       return nullptr
     }
-    assert(p.pointee.___node_id_ == -2)
+    assert(p.pointee.___node_id_ == .nullptr)
     p.initialize(to: UnsafeNode(___node_id_: freshPoolUsedCount))
     freshPoolUsedCount += 1
     return p

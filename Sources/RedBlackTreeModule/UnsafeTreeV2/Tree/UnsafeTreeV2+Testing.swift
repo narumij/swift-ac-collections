@@ -1,81 +1,81 @@
 #if DEBUG
-extension UnsafeTreeV2 {
+  extension UnsafeTreeV2 {
 
-  package func ___NodePtr(_ p: Int) -> _NodePtr {
-    switch p {
-    case .nullptr:
-      return nullptr
-    case .end:
-      return end
-    default:
-      return _buffer.header[p]
+    package func ___NodePtr(_ p: Int) -> _NodePtr {
+      switch p {
+      case .nullptr:
+        return nullptr
+      case .end:
+        return end
+      default:
+        return _buffer.header[p]
+      }
     }
   }
-}
 
-extension UnsafeTreeV2 {
+  extension UnsafeTreeV2 {
 
-  package func ___ptr_(_ p: _NodePtr) -> Int {
-    p.pointee.___node_id_
-  }
+    package func ___ptr_(_ p: _NodePtr) -> Int {
+      p.pointee.___node_id_
+    }
 
-  package func __left_(_ p: Int) -> Int {
-    __left_(___NodePtr(p)).pointee.___node_id_
-  }
+    package func __left_(_ p: Int) -> Int {
+      __left_(___NodePtr(p)).pointee.___node_id_
+    }
 
-  package func __left_(_ p: Int,_ l: Int) {
-    __left_(___NodePtr(p), ___NodePtr(l))
-  }
+    package func __left_(_ p: Int, _ l: Int) {
+      __left_(___NodePtr(p), ___NodePtr(l))
+    }
 
-  package func __right_(_ p: Int) -> Int {
-    __right_(___NodePtr(p)).pointee.___node_id_
-  }
-  
-  package func __right_(_ p: Int,_ l: Int) {
-    __right_(___NodePtr(p), ___NodePtr(l))
-  }
+    package func __right_(_ p: Int) -> Int {
+      __right_(___NodePtr(p)).pointee.___node_id_
+    }
 
-  package func __parent_(_ p: Int) -> Int {
-    __parent_(___NodePtr(p)).pointee.___node_id_
-  }
-  
-  package func __parent_(_ p: Int,_ l: Int) {
-    __parent_(___NodePtr(p), ___NodePtr(l))
-  }
+    package func __right_(_ p: Int, _ l: Int) {
+      __right_(___NodePtr(p), ___NodePtr(l))
+    }
 
-  package func __is_black_(_ p: Int) -> Bool {
-    __is_black_(___NodePtr(p))
-  }
+    package func __parent_(_ p: Int) -> Int {
+      __parent_(___NodePtr(p)).pointee.___node_id_
+    }
 
-  package func __is_black_(_ p: Int, _ b: Bool) {
-    __is_black_(___NodePtr(p), b)
-  }
-  
-  package func __value_(_ p: Int) -> _Value {
-    __value_(___NodePtr(p))
-  }
-  
-  package func ___element(_ p: Int, _ __v: _Value) {
-    ___element(___NodePtr(p), __v)
-  }
-}
+    package func __parent_(_ p: Int, _ l: Int) {
+      __parent_(___NodePtr(p), ___NodePtr(l))
+    }
 
-extension UnsafeTreeV2 {
+    package func __is_black_(_ p: Int) -> Bool {
+      __is_black_(___NodePtr(p))
+    }
 
-  package func destroy(_ p: Int) {
-    _buffer.withUnsafeMutablePointerToHeader { header in
-      header.pointee.___pushRecycle(_buffer.header[p])
+    package func __is_black_(_ p: Int, _ b: Bool) {
+      __is_black_(___NodePtr(p), b)
+    }
+
+    package func __value_(_ p: Int) -> _Value {
+      __value_(___NodePtr(p))
+    }
+
+    package func ___element(_ p: Int, _ __v: _Value) {
+      ___element(___NodePtr(p), __v)
     }
   }
-}
 
-extension UnsafeMutablePointer where Pointee == UnsafeNode {
-  package var index: Int { pointee.___node_id_ }
-}
+  extension UnsafeTreeV2 {
 
-extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
-  package var index: Int { self?.pointee.___node_id_ ?? .nullptr }
-}
+    package func destroy(_ p: Int) {
+      _buffer.withUnsafeMutablePointerToHeader { header in
+        header.pointee.___pushRecycle(_buffer.header[p])
+      }
+    }
+  }
+
+  extension UnsafeMutablePointer where Pointee == UnsafeNode {
+    package var index: Int { pointee.___node_id_ }
+  }
+
+  extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
+    package var index: Int { self?.pointee.___node_id_ ?? .nullptr }
+  }
 #endif
 
 // MARK: -- For assertions
@@ -157,7 +157,7 @@ extension UnsafeTreeV2 {
         == tree.__begin_node_.pointee.___node_id_,
 
       _buffer.header.equiv(with: tree._buffer.header)
-      
+
     else {
       return false
     }
@@ -188,7 +188,7 @@ extension UnsafeNode {
     }
     return true
   }
-  
+
   @inlinable
   package func endCheck() -> Bool {
     assert(___node_id_ == .end)
@@ -210,7 +210,7 @@ extension UnsafeNode {
 }
 
 extension UnsafeTreeV2 {
-  
+
   @inlinable
   package func emptyCheck() -> Bool {
     assert(__tree_invariant(__root))
@@ -239,26 +239,124 @@ extension UnsafeTreeV2 {
   package func check() -> Bool {
     assert(UnsafeNode.nullptr.pointee.nullCheck())
     assert(end.pointee.endCheck())
-    assert(__tree_invariant(__root))
     assert(count >= 0)
     assert(count <= initializedCount)
     assert(count <= capacity)
     assert(initializedCount <= capacity)
     assert(isReadOnly ? count == 0 : true)
+    assert(try! ___tree_invariant(__root))
     guard
       UnsafeNode.nullptr.pointee.nullCheck(),
       end.pointee.endCheck(),
       count == 0 ? emptyCheck() : true,
-      __tree_invariant(__root),
+      (try? ___tree_invariant(__root)) == true,
       count >= 0,
       count <= initializedCount,
       count <= capacity,
       initializedCount <= capacity,
       isReadOnly ? count == 0 : true,
-      _buffer.header.___recycleNodes.count == _buffer.header.recycleCount
+      _buffer.header.___recycleNodes.count == _buffer.header.recycleCount,
+      (makeFreshBucketIterator() + []).first == _buffer.header.freshBucketHead,
+      _buffer.header.freshBucketCurrent.map({
+        makeFreshBucketIterator().contains($0)
+      }) ?? true,
+      (makeFreshBucketIterator() + []).last == _buffer.header.freshBucketLast
     else {
       return false
     }
     return true
+  }
+
+  enum UnsafeTreeError: Swift.Error {
+    case message(String)
+  }
+
+  /// Determines if the subtree rooted at `__x` is a proper red black subtree.  If
+  ///    `__x` is a proper subtree, returns the black height (null counts as 1).  If
+  ///    `__x` is an improper subtree, returns 0.
+  @usableFromInline
+  internal func
+    ___tree_sub_invariant(_ __x: _NodePtr) throws -> UInt
+  {
+    if __x == nullptr {
+      return 1
+    }
+    // parent consistency checked by caller
+    // check __x->__left_ consistency
+    if __left_(__x) != nullptr && __parent_(__left_(__x)) != __x {
+      throw UnsafeTreeError.message(
+        """
+        parent consistency checked by caller
+        check __x->__left_ consistency
+        """)
+    }
+    // check __x->__right_ consistency
+    if __right_(__x) != nullptr && __parent_(__right_(__x)) != __x {
+      throw UnsafeTreeError.message(
+        """
+        check __x->__right_ consistency
+        """)
+    }
+    // check __x->__left_ != __x->__right_ unless both are nullptr
+    if __left_(__x) == __right_(__x) && __left_(__x) != nullptr {
+      throw UnsafeTreeError.message(
+        """
+        check __x->__left_ != __x->__right_ unless both are nullptr
+        """)
+    }
+    // If this is red, neither child can be red
+    if !__is_black_(__x) {
+      if __left_(__x) != nullptr && !__is_black_(__left_(__x)) {
+        throw UnsafeTreeError.message(
+          """
+          If this is red, neither child can be red
+          """)
+      }
+      if __right_(__x) != nullptr && !__is_black_(__right_(__x)) {
+        throw UnsafeTreeError.message(
+          """
+          If this is red, neither child can be red
+          """)
+      }
+    }
+    let __h = try ___tree_sub_invariant(__left_(__x))
+    if __h == 0 {
+      throw UnsafeTreeError.message(
+        """
+        invalid left subtree
+        """)
+    }  // invalid left subtree
+    if try __h != ___tree_sub_invariant(__right_(__x)) {
+      throw UnsafeTreeError.message(
+        """
+        invalid or different height right subtree
+        """)
+    }  // invalid or different height right subtree
+    return __h + (__is_black_(__x) ? 1 : 0)  // return black height of this node
+  }
+
+  /// Determines if the red black tree rooted at `__root` is a proper red black tree.
+  ///    `__root` == nullptr is a proper tree.  Returns true if `__root` is a proper
+  ///    red black tree, else returns false.
+  @usableFromInline
+  internal func
+    ___tree_invariant(_ __root: _NodePtr) throws -> Bool
+  {
+    if __root == nullptr {
+      return true
+    }
+    // check __x->__parent_ consistency
+    if __parent_(__root) == nullptr {
+      throw UnsafeTreeError.message("check __x->__parent_ consistency")
+    }
+    if !__tree_is_left_child(__root) {
+      throw UnsafeTreeError.message("check left child of __root")
+    }
+    // root must be black
+    if !__is_black_(__root) {
+      throw UnsafeTreeError.message("root must be black")
+    }
+    // do normal node checks
+    return try ___tree_sub_invariant(__root) != 0
   }
 }

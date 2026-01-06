@@ -208,8 +208,8 @@ extension UnsafeTreeV2 {
       }
     }
 
-    assert(tree.check())
     assert(equiv(with: tree))
+    assert(tree.check())
 
     return tree
   }
@@ -303,6 +303,15 @@ extension UnsafeTreeV2 {
   @inline(__always)
   func makeFreshPoolIterator() -> UnsafeNodeFreshPoolIterator<_Value> {
     return UnsafeNodeFreshPoolIterator<_Value>(bucket: _buffer.header.freshBucketHead)
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  func makeFreshBucketIterator() -> UnsafeNodeFreshBucketIterator<_Value> {
+    return UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
   }
 }
 

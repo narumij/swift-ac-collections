@@ -278,7 +278,7 @@ import Foundation
         case end:
           return "end"
         default:
-          return "\(i?.pointee.index ?? -2)"
+          return "\(i?.pointee.index ?? .nullptr)"
         }
       }
       func nodeN(_ i: _NodePtr) -> String {
@@ -288,7 +288,7 @@ import Foundation
         case end:
           return "end"
         default:
-          return "#\(i?.pointee.index ?? -2)"
+          return "#\(i?.pointee.index ?? .nullptr)"
         }
       }
       func nodeV(_ i: _NodePtr) -> String {
@@ -297,8 +297,8 @@ import Foundation
         } else {
           let c = String("\(i!.pointee.__value_)".flatMap { $0 == "\n" ? ["\n", "n"] : [$0] })
           //          let l: String = "\\\"\(c)\\\"\\n#\(i)"
-          let l: String = "\(c)\\n\\n#\(i?.pointee.index ?? -2)"
-          return "\(i?.pointee.index ?? -2) [label = \"\(l)\"];"
+          let l: String = "\(c)\\n\\n#\(i?.pointee.index ?? .nullptr)"
+          return "\(i?.pointee.index ?? .nullptr) [label = \"\(l)\"];"
         }
       }
       func headerNote() -> [Graphviz.NodeProperty] {

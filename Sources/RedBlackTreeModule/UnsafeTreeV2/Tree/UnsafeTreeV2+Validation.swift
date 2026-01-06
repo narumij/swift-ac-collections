@@ -20,13 +20,21 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+@inlinable
+@inline(__always)
+func ___is_null_or_end__(pointerIndex: Int) -> Bool {
+  // 名前が衝突するしパッケージ名を書きたくないため中継している
+  ___is_null_or_end(pointerIndex)
+}
+
 extension UnsafeTreeV2 {
   
   @inlinable
   @inline(__always)
   internal func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
 //    ptr == nullptr || ptr == end
-    ptr.pointee.___node_id_ < 0
+//    ptr.pointee.___node_id_ < 0
+    ___is_null_or_end__(pointerIndex: ptr.pointee.___node_id_)
   }
 
   /// - Complexity: O(1)

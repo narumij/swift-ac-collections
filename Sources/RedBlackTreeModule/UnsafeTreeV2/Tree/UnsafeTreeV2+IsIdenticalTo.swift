@@ -33,8 +33,8 @@ extension UnsafeTreeV2: Hashable where _Value: Hashable {
 
   @inlinable
   public func hash(into hasher: inout Hasher) {
-    // TODO: 実装すること
-    // デグレしてました。てへっ
-    fatalError()
+    for __v in unsafeValues(__begin_node_, end) {
+      hasher.combine(__v)
+    }
   }
 }

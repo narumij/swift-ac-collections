@@ -25,8 +25,8 @@ protocol UnsafeNodeRecyclePool
 where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
   associatedtype _Value
   associatedtype _NodePtr
-  var destroyNode: _NodePtr { get set }
-  var destroyCount: Int { get set }
+  var recycleHead: _NodePtr { get set }
+  var recycleCount: Int { get set }
 }
 
 extension UnsafeNodeRecyclePool {
@@ -41,37 +41,38 @@ extension UnsafeNodeRecyclePool {
   @inline(__always)
   mutating func ___pushRecycle(_ p: _NodePtr) {
     assert(p != nil)
-    assert(destroyNode != p)
+    assert(recycleHead != p)
 #if DEBUG
     p.pointee.___recycle_count += 1
 #endif
     // 値型の場合、この処理を削りたい誘惑がある
     UnsafePair<_Value>.valuePointer(p)?.deinitialize(count: 1)
     p.pointee.___needs_deinitialize = false
-    p.pointee.__left_ = destroyNode
+    p.pointee.__left_ = recycleHead
 #if GRAPHVIZ_DEBUG
     p!.pointee.__right_ = nil
     p!.pointee.__parent_ = nil
 #endif
-    destroyNode = p
-    destroyCount += 1
+    recycleHead = p
+    recycleCount += 1
   }
   
   @inlinable
   @inline(__always)
   mutating func ___popRecycle() -> _NodePtr {
-    assert(destroyCount > 0)
-    let p = destroyNode
-    destroyNode = p.pointee.__left_
-    destroyCount -= 1
+    assert(recycleCount > 0)
+    let p = recycleHead
+    recycleHead = p.pointee.__left_
+    recycleCount -= 1
+    p.pointee.___needs_deinitialize = true
     return p
   }
   
   @inlinable
   @inline(__always)
   mutating func ___flushRecyclePool() {
-    destroyNode = nullptr
-    destroyCount = 0
+    recycleHead = nullptr
+    recycleCount = 0
   }
 }
 
@@ -80,7 +81,7 @@ extension UnsafeNodeRecyclePool {
   @inline(__always)
   internal var ___destroyNodes: [Int] {
     var nodes: [Int] = []
-    var last = destroyNode
+    var last = recycleHead
     while last != nullptr {
       nodes.append(last.pointee.___node_id_)
       last = last.pointee.__left_

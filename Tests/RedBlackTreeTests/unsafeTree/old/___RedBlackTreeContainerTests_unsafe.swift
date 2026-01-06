@@ -60,7 +60,7 @@ import XCTest
       ]
       tree.__root(tree.___NodePtr(0))
       //        tree.___header.size = tree.___nodes.count
-      XCTAssertEqual(tree.___header.initializedCount, 7)
+      XCTAssertEqual(tree.___header.freshPoolUsedCount, 7)
       tree.___header.__begin_node_ = tree.___NodePtr(2)
       XCTAssertTrue(tree.___tree_invariant())
     }

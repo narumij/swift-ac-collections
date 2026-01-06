@@ -38,7 +38,7 @@ extension UnsafeTreeV2 {
     public var capacity: Int { _buffer.header.freshPoolCapacity }
 
     @inlinable
-    public var initializedCount: Int { _buffer.header.initializedCount }
+    public var initializedCount: Int { _buffer.header.freshPoolUsedCount }
   #else
     @inlinable
     public var capacity: Int {
@@ -48,8 +48,8 @@ extension UnsafeTreeV2 {
 
     @inlinable
     public var initializedCount: Int {
-      get { _buffer.header.initializedCount }
-      set { _buffer.header.initializedCount = newValue }
+      get { _buffer.header.freshPoolUsedCount }
+      set { _buffer.header.freshPoolUsedCount = newValue }
     }
   #endif
 }
@@ -173,13 +173,13 @@ extension UnsafeTreeV2 {
         _header_ptr.pointee.__begin_node_ = __ptr_(source_header.pointee.__begin_node_)
 
         // その他管理情報をコピー
-        _header_ptr.pointee.initializedCount = source_header.pointee.initializedCount
-        _header_ptr.pointee.destroyCount = source_header.pointee.destroyCount
-        _header_ptr.pointee.destroyNode = __ptr_(
-          source_header.pointee.destroyNode)
+        _header_ptr.pointee.freshPoolUsedCount = source_header.pointee.freshPoolUsedCount
+        _header_ptr.pointee.recycleCount = source_header.pointee.recycleCount
+        _header_ptr.pointee.recycleHead = __ptr_(
+          source_header.pointee.recycleHead)
         assert(
-          _header_ptr.pointee.destroyNode.pointee.___node_id_
-            == source_header.pointee.destroyNode.pointee.___node_id_)
+          _header_ptr.pointee.recycleHead.pointee.___node_id_
+            == source_header.pointee.recycleHead.pointee.___node_id_)
 
         #if AC_COLLECTIONS_INTERNAL_CHECKS
           _header_ptr.pointee.copyCount = source_header.pointee.copyCount &+ 1
@@ -196,7 +196,7 @@ extension UnsafeTreeV2 {
 
     assert(__root.pointee.___node_id_ == tree.__root.pointee.___node_id_)
     assert(__begin_node_.pointee.___node_id_ == tree.__begin_node_.pointee.___node_id_)
-    assert(_buffer.header.destroyCount == tree._buffer.header.destroyCount)
+    assert(_buffer.header.recycleCount == tree._buffer.header.recycleCount)
     assert(_buffer.header.___destroyNodes == tree._buffer.header.___destroyNodes)
 
     return tree
@@ -344,7 +344,7 @@ extension UnsafeTreeV2 {
     print("==== UnsafeTree \(label) ====")
     print(" count:", count)
     print(" freshPool:", _buffer.header.freshPoolActualCount, "/", capacity)
-    print(" destroyCount:", _buffer.header.destroyCount)
+    print(" destroyCount:", _buffer.header.recycleCount)
     print(" root:", __root.pointee.___node_id_ as Any)
     print(" begin:", __begin_node_.pointee.___node_id_ as Any)
 

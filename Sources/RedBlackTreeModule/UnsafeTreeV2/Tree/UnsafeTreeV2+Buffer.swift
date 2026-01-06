@@ -84,21 +84,20 @@ extension UnsafeTreeV2Buffer {
     @inline(__always)
     internal init(_end_ptr: _NodePtr) {
       self.__begin_node_ = _end_ptr
-      self.destroyNode = UnsafeNode.nullptr
+      self.recycleHead = UnsafeNode.nullptr
     }
     
-    public var __begin_node_: UnsafeMutablePointer<UnsafeNode>
-    
-    @usableFromInline var initializedCount: Int = 0
-    
-    @usableFromInline var destroyNode: _NodePtr
-    @usableFromInline var destroyCount: Int = 0
+    @usableFromInline var __begin_node_: UnsafeMutablePointer<UnsafeNode>
     
     @usableFromInline var freshBucketHead: ReserverHeaderPointer?
     @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
     @usableFromInline var freshBucketLast: ReserverHeaderPointer?
     @usableFromInline var freshBucketCount: Int = 0
     @usableFromInline var freshPoolCapacity: Int = 0
+    @usableFromInline var freshPoolUsedCount: Int = 0
+
+    @usableFromInline var recycleHead: _NodePtr
+    @usableFromInline var recycleCount: Int = 0
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       /// CoWの発火回数を観察するためのプロパティ
       @usableFromInline internal var copyCount: UInt = 0
@@ -111,7 +110,7 @@ extension UnsafeTreeV2Buffer {
       ___cleanFreshPool()
       ___flushRecyclePool()
       __begin_node_ = _end_ptr
-      initializedCount = 0
+      freshPoolUsedCount = 0
     }
   }
 }
@@ -121,9 +120,10 @@ extension UnsafeTreeV2Buffer.Header {
   @inlinable
   @inline(__always)
   public var count: Int {
-    // __sizeへ以降した場合、減産のステップ数が増えるので逆効果なため
+    // __sizeへ移行した場合、
+    // 減産のステップ数が増えるので逆効果なため
     // 計算プロパティ維持の方針
-    initializedCount - destroyCount
+    freshPoolUsedCount - recycleCount
   }
 }
 
@@ -133,32 +133,10 @@ extension UnsafeTreeV2Buffer.Header {
   @inline(__always)
   public mutating func __construct_node(_ k: _Value) -> _NodePtr {
     assert(_Value.self != Void.self)
-    
-    if destroyCount > 0 {
-      let p = ___popRecycle()
-      UnsafeNode.initializeValue(p, to: k)
-      p.pointee.___needs_deinitialize = true
-      return p
-    }
-    assert(initializedCount < freshPoolCapacity)
-    let p = ___node_alloc()
-    assert(p != nil)
-    assert(p.pointee.___node_id_ == -2)
-    // ナンバリングとノード初期化の責務は移動できる(freshPoolUsedCountは使えない）
-    p.initialize(to: UnsafeNode(___node_id_: initializedCount))
+    let p = recycleCount == 0 ? ___popFresh() : ___popRecycle()
     UnsafeNode.initializeValue(p, to: k)
     assert(p.pointee.___node_id_ >= 0)
-    initializedCount += 1
     return p
-  }
-}
-
-extension UnsafeTreeV2Buffer.Header {
-  
-  @inlinable
-  @inline(__always)
-  var isVoid: Bool {
-    _Value.self == Void.self
   }
 }
 
@@ -183,7 +161,7 @@ extension UnsafeTreeV2Buffer.Header {
   mutating func tearDown() {
     ___flushFreshPool()
     ___flushRecyclePool()
-    initializedCount = 0
+    freshPoolUsedCount = 0
   }
 }
 

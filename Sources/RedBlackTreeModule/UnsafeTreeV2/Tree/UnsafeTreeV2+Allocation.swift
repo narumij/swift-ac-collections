@@ -1,6 +1,5 @@
 @usableFromInline
 protocol UnsafeTreeAllocationHeader {
-  var initializedCount: Int { get }
   var freshBucketCount: Int { get }
 }
 

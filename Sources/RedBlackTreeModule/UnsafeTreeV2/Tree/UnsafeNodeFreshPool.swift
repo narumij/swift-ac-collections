@@ -38,6 +38,7 @@ protocol UnsafeNodeFreshPool where _NodePtr == UnsafeMutablePointer<UnsafeNode> 
   var freshBucketLast: ReserverHeaderPointer? { get set }
   var freshBucketCount: Int { get set }
   var freshPoolCapacity: Int { get set }
+  var freshPoolUsedCount: Int { get set }
 }
 
 extension UnsafeNodeFreshPool {
@@ -170,12 +171,15 @@ extension UnsafeNodeFreshPool {
   @inlinable
   @inline(__always)
   mutating public
-    func ___node_alloc() -> _NodePtr
+    func ___popFresh() -> _NodePtr
   {
-    let p = popFresh()
-    assert(p != nil)
-    assert(p?.pointee.___node_id_ == -2)
-    return p ?? nullptr
+    guard let p = popFresh() else {
+      return nullptr
+    }
+    assert(p.pointee.___node_id_ == -2)
+    p.initialize(to: UnsafeNode(___node_id_: freshPoolUsedCount))
+    freshPoolUsedCount += 1
+    return p
   }
 }
 

@@ -157,6 +157,51 @@ extension UnsafeTreeV2 {
         == tree.__begin_node_.pointee.___node_id_,
 
       _buffer.header.equiv(with: tree._buffer.header)
+      
+    else {
+      return false
+    }
+    return true
+  }
+}
+
+extension UnsafeNode {
+
+  @inlinable
+  package func nullCheck() -> Bool {
+    assert(___node_id_ == .nullptr)
+    assert(__left_ == UnsafeNode.nullptr)
+    assert(__right_ == UnsafeNode.nullptr)
+    assert(__parent_ == UnsafeNode.nullptr)
+    assert(__is_black_ == false)
+    assert(___needs_deinitialize == true)
+    guard
+      ___node_id_ == .nullptr,
+      __right_ == UnsafeNode.nullptr,
+      __right_ == UnsafeNode.nullptr,
+      __parent_ == UnsafeNode.nullptr,
+      __is_black_ == false,
+      // 判定を簡略化するための措置
+      ___needs_deinitialize == true
+    else {
+      return false
+    }
+    return true
+  }
+  
+  @inlinable
+  package func endCheck() -> Bool {
+    assert(___node_id_ == .end)
+    assert(__right_ == UnsafeNode.nullptr)
+    assert(__parent_ == UnsafeNode.nullptr)
+    assert(__is_black_ == false)
+    guard
+      ___node_id_ == .end,
+      __right_ == UnsafeNode.nullptr,
+      __parent_ == UnsafeNode.nullptr,
+      __is_black_ == false,
+      // 判定を簡略化するための措置
+      ___needs_deinitialize == true
     else {
       return false
     }
@@ -167,7 +212,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
   
   @inlinable
-  package func emptyCondtion() -> Bool {
+  package func emptyCheck() -> Bool {
     assert(__tree_invariant(__root))
     assert(count == 0)
     assert(count <= initializedCount)
@@ -192,22 +237,25 @@ extension UnsafeTreeV2 {
 
   @inlinable
   package func check() -> Bool {
+    assert(UnsafeNode.nullptr.pointee.nullCheck())
+    assert(end.pointee.endCheck())
     assert(__tree_invariant(__root))
-    assert(end.pointee.___needs_deinitialize == true)
     assert(count >= 0)
     assert(count <= initializedCount)
     assert(count <= capacity)
     assert(initializedCount <= capacity)
     assert(isReadOnly ? count == 0 : true)
     guard
-      count == 0 ? emptyCondtion() : true,
+      UnsafeNode.nullptr.pointee.nullCheck(),
+      end.pointee.endCheck(),
+      count == 0 ? emptyCheck() : true,
       __tree_invariant(__root),
-      end.pointee.___needs_deinitialize == true,
       count >= 0,
       count <= initializedCount,
       count <= capacity,
       initializedCount <= capacity,
-      isReadOnly ? count == 0 : true
+      isReadOnly ? count == 0 : true,
+      _buffer.header.___recycleNodes.count == _buffer.header.recycleCount
     else {
       return false
     }

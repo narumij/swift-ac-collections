@@ -13,6 +13,14 @@ final class RedBlackTreeMultiMapInitializationTests: XCTestCase {
     ("apple", 3),
   ]
 
+  override func setUpWithError() throws {
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+  
+  override func tearDownWithError() throws {
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+  
   /// 空初期化テスト
   func testEmptyInitialization() {
     // 事前条件: 空のマルチマップを初期化

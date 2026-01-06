@@ -5,6 +5,14 @@ final class RedBlackTreeSetInitializationTests: XCTestCase {
 
   // MARK: - 「空なものは空である」と「空でないものは空ではない」のトートロジー
   
+  override func setUpWithError() throws {
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+  
+  override func tearDownWithError() throws {
+    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+  }
+  
   /// 空の初期化が成功し、プロパティが空を示していること
   func test_emptyInitialization() {
     // 事前条件: 空のマルチセットを初期化

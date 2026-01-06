@@ -102,7 +102,7 @@ extension UnsafeTreeV2Buffer {
       /// CoWの発火回数を観察するためのプロパティ
       @usableFromInline internal var copyCount: UInt = 0
     #endif
-    // TODO: removeAll(keepingCapacity:)対応
+    
     @inlinable
     @inline(__always)
     internal mutating func clear(_end_ptr: _NodePtr) {
@@ -110,7 +110,6 @@ extension UnsafeTreeV2Buffer {
       ___cleanFreshPool()
       ___flushRecyclePool()
       __begin_node_ = _end_ptr
-      freshPoolUsedCount = 0
     }
   }
 }
@@ -121,7 +120,7 @@ extension UnsafeTreeV2Buffer.Header {
   @inline(__always)
   public var count: Int {
     // __sizeへ移行した場合、
-    // 減産のステップ数が増えるので逆効果なため
+    // 減算のステップ数が増えるので逆効果なため
     // 計算プロパティ維持の方針
     freshPoolUsedCount - recycleCount
   }
@@ -142,7 +141,9 @@ extension UnsafeTreeV2Buffer.Header {
 
 extension UnsafeTreeV2Buffer: CustomStringConvertible {
   public var description: String {
-    unsafe withUnsafeMutablePointerToHeader { "UnsafeTreeBuffer<\(_Value.self)>\(unsafe $0.pointee)" }
+    unsafe withUnsafeMutablePointerToHeader {
+      "UnsafeTreeBuffer<\(_Value.self)>\(unsafe $0.pointee)"
+    }
   }
 }
 

@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-/// 使用済みから初期化済みまでを列挙するイテレータ
+/// バケット(ノードを保持している塊)を走査するイテレータ
 @usableFromInline
 struct UnsafeNodeFreshBucketIterator<_Value>: IteratorProtocol, Sequence {
 

@@ -97,12 +97,13 @@ extension UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
-  func ___cleanFreshPool() {
+  mutating func ___cleanFreshPool() {
     var reserverHead = freshBucketHead
     while let h = reserverHead {
       h.pointee.clear(_Value.self)
       reserverHead = h.pointee.next
     }
+    freshPoolUsedCount = 0
   }
 
   @inlinable

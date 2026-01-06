@@ -20,11 +20,12 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-extension UnsafeTreeV2 {
+extension UnsafeTreeV2: Hashable where _Value: Hashable {
 
   @inlinable
-  @inline(__always)
-  internal func isIdentical(to other: UnsafeTreeV2) -> Bool {
-    self._buffer.buffer === other._buffer.buffer
+  public func hash(into hasher: inout Hasher) {
+    for __v in unsafeValues(__begin_node_, end) {
+      hasher.combine(__v)
+    }
   }
 }

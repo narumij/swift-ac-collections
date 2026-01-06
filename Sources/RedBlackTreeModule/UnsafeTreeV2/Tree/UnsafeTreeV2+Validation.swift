@@ -33,7 +33,6 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
 //    ptr == nullptr || ptr == end
-//    ptr.pointee.___node_id_ < 0
     ___is_null_or_end__(pointerIndex: ptr.pointee.___node_id_)
   }
 

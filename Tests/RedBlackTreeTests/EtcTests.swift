@@ -872,6 +872,16 @@ final class EtcTests: RedBlackTreeTestCase {
     let N = 1024
     XCTAssertEqual(1 << (Int.bitWidth - N.leadingZeroBitCount - 2), N / 2)
 
+    do {
+      let N = 4097
+//      XCTAssertEqual( N / 1024, 4)
+      XCTAssertEqual( (N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)), 4)
+      XCTAssertEqual( (N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)) * 1024, 4096)
+      XCTAssertEqual( ((N >> 10) + ((N - ((N >> 10) << 10)) == 0 ? 0 : 1)) << 10, 4096)
+    }
+
+    
+    
 //    throw XCTSkip("\(hoge.filter { $0.capacity != 0 }.map(\.capacity))")
     throw XCTSkip("\(hoge.filter { $0.capacity != 0 })")
   }

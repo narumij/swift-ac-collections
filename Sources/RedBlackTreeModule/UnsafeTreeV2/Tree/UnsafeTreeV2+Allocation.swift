@@ -48,8 +48,11 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
     }
   }
 #else
-  //extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
-  extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
+  extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
+//    extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
+//  extension UnsafeTreeV2: UnsafeTreeAllcation4 {}
+//extension UnsafeTreeV2: UnsafeTreeAllcation5 {}
+//extension UnsafeTreeV2: UnsafeTreeAllcation6 {}
 #endif
 
 #if ALLOCATION_DRILL
@@ -59,6 +62,51 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
     }
   }
 #endif
+
+@usableFromInline
+protocol UnsafeTreeAllcation6 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation6 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    let recommendCapacity = (1 << (Int.bitWidth - capacity.leadingZeroBitCount))
+    | (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 1))
+    return Swift.max(minimumCapacity, recommendCapacity)
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation5 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation5 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    let recommendCapacity = 1 << (Int.bitWidth - capacity.leadingZeroBitCount)
+    return Swift.max(minimumCapacity, recommendCapacity)
+  }
+}
 
 @usableFromInline
 protocol UnsafeTreeAllcation4 {
@@ -77,50 +125,49 @@ extension UnsafeTreeAllcation4 {
         minimumCapacity)
     }
 
-    if minimumCapacity <= 32 {
+    if minimumCapacity <= 256 {
       let recommendCapacity = 1 << (Int.bitWidth - capacity.leadingZeroBitCount)
       return Swift.max(minimumCapacity, recommendCapacity)
     }
-    
-    if minimumCapacity <= 128 {
-      let increaseCapacity =
-      // 1/1
-        (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 1))
-      let recommendCapacity = capacity + increaseCapacity
-      return Swift.max(minimumCapacity, recommendCapacity)
-    }
-    
-    if minimumCapacity <= 2048 {
-      let increaseCapacity =
-      // 3/4
-        (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 2))
-        | (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 3))
-      let recommendCapacity = capacity + increaseCapacity
-      return Swift.max(minimumCapacity, recommendCapacity)
-    }
-    
-    if minimumCapacity <= 8192 {
-      let increaseCapacity =
-      // つまり5/8
-        (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 2))
-        | (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 4))
-      let recommendCapacity = capacity + increaseCapacity
-      return Swift.max(minimumCapacity, recommendCapacity)
-    }
-    
-    if minimumCapacity <= 1024 * 256 {
-      let increaseCapacity =
-      // つまり1/2
-        (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 2))
-      let recommendCapacity = capacity + increaseCapacity
-      return Swift.max(minimumCapacity, recommendCapacity)
-    }
 
+    //    if minimumCapacity <= 8192 {
+    //      let increaseCapacity =
+    //        // 1/1
+    //        (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 1))
+    //      let recommendCapacity = capacity + increaseCapacity
+    //      return Swift.max(minimumCapacity, recommendCapacity)
+    //    }
+
+    //    if minimumCapacity <= 2048 {
     let increaseCapacity =
-    // つまり1/4
-      (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 3))
+      // 3/4
+      (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 2))
+      | (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 3))
     let recommendCapacity = capacity + increaseCapacity
     return Swift.max(minimumCapacity, recommendCapacity)
+    //    }
+    //    if minimumCapacity <= 8196 {
+    //      let increaseCapacity =
+    //        // つまり5/8
+    //        (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 2))
+    //        | (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 4))
+    //      let recommendCapacity = capacity + increaseCapacity
+    //      return Swift.max(minimumCapacity, recommendCapacity)
+    //    }
+    //
+    //    if minimumCapacity <= 1024 * 16 {
+    //      let increaseCapacity =
+    //        // つまり1/2
+    //        (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 2))
+    //      let recommendCapacity = capacity + increaseCapacity
+    //      return Swift.max(minimumCapacity, recommendCapacity)
+    //    }
+    //
+    //    let increaseCapacity =
+    //      // つまり1/4
+    //      (1 << (Int.bitWidth - capacity.leadingZeroBitCount - 3))
+    //    let recommendCapacity = capacity + increaseCapacity
+    //    return Swift.max(minimumCapacity, recommendCapacity)
   }
 }
 

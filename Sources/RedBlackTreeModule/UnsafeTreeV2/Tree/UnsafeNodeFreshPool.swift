@@ -87,8 +87,11 @@ extension UnsafeNodeFreshPool {
   @inline(__always)
   static func pagedCapacity(capacity: Int) -> (capacity: Int, size: Int, alignment: Int) {
     let (size, alignment) = Self.allocationSize2(capacity: capacity)
-    let pagedSize = ((size >> 10) + (size - (size >> 10)) > 0 ? 1 : 0) << 10
-    return (capacity + (pagedSize - size) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride), pagedSize, alignment)
+    let pagedSize = ((size >> 10) + ((size - ((size >> 10) << 10)) == 0 ? 0 : 1)) << 10
+    return (
+      capacity + max(0,(pagedSize - size) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)),
+      pagedSize,
+      alignment)
   }
   
   /*

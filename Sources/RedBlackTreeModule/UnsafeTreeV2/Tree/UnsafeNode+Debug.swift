@@ -36,7 +36,7 @@ extension UnsafeNode {
     #endif
 
     return """
-      node[\(id)] \(color)
+      - node[\(id)] \(color)
         L: \(l.map(String.init) ?? "nil")
         R: \(r.map(String.init) ?? "nil")
         P: \(p.map(String.init) ?? "nil")

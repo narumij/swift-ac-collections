@@ -33,7 +33,7 @@ extension UnsafeNodeRecyclePool {
   
   @inlinable
   @inline(__always)
-  public var _nullptr: UnsafeMutablePointer<UnsafeNode> {
+  var nullptr: UnsafeMutablePointer<UnsafeNode> {
     UnsafeNode.nullptr
   }
   
@@ -70,7 +70,7 @@ extension UnsafeNodeRecyclePool {
   @inlinable
   @inline(__always)
   mutating func ___clearRecycle() {
-    destroyNode = _nullptr
+    destroyNode = nullptr
     destroyCount = 0
   }
 }
@@ -81,7 +81,7 @@ extension UnsafeNodeRecyclePool {
   internal var ___destroyNodes: [Int] {
     var nodes: [Int] = []
     var last = destroyNode
-    while last != _nullptr {
+    while last != nullptr {
       nodes.append(last.pointee.___node_id_)
       last = last.pointee.__left_
     }

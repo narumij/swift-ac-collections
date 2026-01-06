@@ -49,7 +49,7 @@ extension UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
-  public var _nullptr: UnsafeMutablePointer<UnsafeNode> {
+  var nullptr: UnsafeMutablePointer<UnsafeNode> {
     UnsafeNode.nullptr
   }
   
@@ -154,7 +154,7 @@ extension UnsafeNodeFreshPool {
       remaining -= cap
       p = h.pointee.next
     }
-    return _nullptr
+    return nullptr
   }
 }
 
@@ -170,7 +170,7 @@ extension UnsafeNodeFreshPool {
     let p = popFresh()
     assert(p != nil)
     assert(p?.pointee.___node_id_ == -2)
-    return p ?? _nullptr
+    return p ?? nullptr
   }
 }
 

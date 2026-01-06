@@ -20,8 +20,9 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+/// 使用済みから初期化済みまでを列挙するイテレータ
 @usableFromInline
-struct UnsafeInitializedNodeIterator<_Value>: IteratorProtocol {
+struct UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol {
 
   @usableFromInline
   typealias Bucket = UnsafeNodeFreshBucket

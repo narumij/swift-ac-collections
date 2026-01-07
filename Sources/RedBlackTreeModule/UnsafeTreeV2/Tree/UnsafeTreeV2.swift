@@ -224,7 +224,6 @@ extension UnsafeTreeV2 {
         _end_ptr.pointee.__left_ = __ptr_(source_end.pointee.__left_)
 
         // __begin_nodeを初期化
-        //        _header_ptr.pointee.__begin_node_ = __ptr_(source_header.pointee.__begin_node_)
         _begin_ptr.pointee = __ptr_(source_begin.pointee)
 
         // その他管理情報をコピー

@@ -40,6 +40,36 @@ import XCTest
       // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
     }
     
+    func testPaged0() throws {
+      do {
+        let stride = 33
+        let lz = Int.bitWidth - stride.leadingZeroBitCount
+        XCTAssertEqual(lz, 6)
+        XCTAssertEqual( 1 << lz, 64)
+        let mask = 1 << (lz - 1) - 1
+        let offset = (stride & mask == 0) ? -1 : 0
+        //      let shift = Int.bitWidth - masked.leadingZeroBitCount - 1
+        XCTAssertFalse(stride & mask == 0)
+        XCTAssertEqual( 1 << (lz + offset), 64)
+        XCTAssertEqual( 1024 >> (lz + offset), 1024 / 64)
+        //      XCTAssertEqual( 1 << shift, 64)
+        //      XCTAssertEqual( 1024 >> shift, 1024 / 64)
+      }
+      do {
+        let stride = 32
+        let lz = Int.bitWidth - stride.leadingZeroBitCount
+        XCTAssertEqual(lz, 6)
+        XCTAssertEqual( 1 << lz, 64)
+        let mask = 1 << (lz - 1) - 1
+        let offset = (stride & mask == 0) ? -1 : 0
+        XCTAssertTrue(stride & mask == 0)
+        XCTAssertEqual( 1 << (lz + offset), 32)
+        XCTAssertEqual( 1024 >> (lz + offset), 1024 / 32)
+        //      XCTAssertEqual( 1 << shift, 64)
+        //      XCTAssertEqual( 1024 >> shift, 1024 / 64)
+      }
+    }
+    
     // TODO: 実際にメモリを確保し、要素数分たどり、末尾が一致または収まるか確認する
 
     func testAlignment1() throws {

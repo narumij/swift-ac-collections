@@ -396,7 +396,6 @@ extension UnsafeNodeFreshPool {
     let s1 = MemoryLayout<_Value>.stride
     let a1 = MemoryLayout<_Value>.alignment
     let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
-    let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
     let s01 = s0 + s1
     let offset01 = max(0, a1 - a0)
     let size = s2 + (capacity == 0 ? 0 : s01 * capacity + offset01)
@@ -415,12 +414,25 @@ extension UnsafeNodeFreshPool {
     }
 #endif
     
-    //
-    //
-    //    let (size, alignment) = Self.allocationSize2(capacity: capacity)
-#if true
+#if false
+    // 割り算が重すぎと判断した場合、2のべきで近似して割り算代わりにシフトする
+    // それよりもメモリ効率の方が問題のような気がしている
+    let pagedSize = (size + 4095) & ~4095
+    let lz = Int.bitWidth - s01.leadingZeroBitCount
+    let mask = 1 << (lz - 1) - 1
+    let offset = (s01 & mask == 0) ? -1 : 0
+    let extra = (pagedSize - size) >> (lz + offset)
+    
+    assert(abs(size / 4096 - pagedSize / 4096) <= 1)
+    return (
+      capacity + extra,
+      //      capacity,
+      pagedSize,
+      s01,
+      alignment)
+#elseif false
+    // 割り算バージョン
     // 性能上重要なので数値ベタ書き推奨かもしれない
-    //    let pagedSize = max(1024, (size & ~1023) + (size & 1023 == 0 ? 0 : 1024))
     let pagedSize = (size + 4095) & ~4095
     assert(abs(size / 4096 - pagedSize / 4096) <= 1)
     return (
@@ -430,6 +442,7 @@ extension UnsafeNodeFreshPool {
       s01,
       alignment)
 #else
+    // キャパシティ変更しないバージョン
     return (capacity, size, s01, alignment)
 #endif
   }

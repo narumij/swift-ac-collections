@@ -26,21 +26,24 @@ where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
   associatedtype _Value
   associatedtype _NodePtr
   var recycleHead: _NodePtr { get set }
-  var recycleCount: Int { get set }
+  var count: Int { get set }
+  var freshPoolUsedCount: Int { get set }
+  var nullptr: _NodePtr { get }
 }
 
 extension UnsafeNodeRecyclePool {
   
-  @inlinable
-  @inline(__always)
-  var nullptr: UnsafeMutablePointer<UnsafeNode> {
-    UnsafeNode.nullptr
-  }
+//  @inlinable
+//  @inline(__always)
+//  var nullptr: _NodePtr {
+//    UnsafeNode.nullptr
+//  }
   
   @inlinable
   @inline(__always)
   mutating func ___pushRecycle(_ p: _NodePtr) {
     assert(p != nil)
+    assert(p.pointee.___node_id_ > .end)
     assert(recycleHead != p)
 #if DEBUG
     p.pointee.___recycle_count += 1
@@ -54,16 +57,18 @@ extension UnsafeNodeRecyclePool {
     p!.pointee.__parent_ = nil
 #endif
     recycleHead = p
-    recycleCount += 1
+//    recycleCount += 1
+    count -= 1
   }
   
   @inlinable
   @inline(__always)
   mutating func ___popRecycle() -> _NodePtr {
-    assert(recycleCount > 0)
+//    assert(recycleCount > 0)
     let p = recycleHead
     recycleHead = p.pointee.__left_
-    recycleCount -= 1
+//    recycleCount -= 1
+    count += 1
     p.pointee.___needs_deinitialize = true
     return p
   }
@@ -72,7 +77,14 @@ extension UnsafeNodeRecyclePool {
   @inline(__always)
   mutating func ___flushRecyclePool() {
     recycleHead = nullptr
-    recycleCount = 0
+//    recycleCount = 0
+    count = 0
+  }
+  
+  @inlinable
+  @inline(__always)
+  var recycleCount: Int {
+    freshPoolUsedCount - count
   }
 }
 

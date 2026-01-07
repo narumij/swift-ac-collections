@@ -227,7 +227,7 @@ extension UnsafeTreeV2 {
 
         // その他管理情報をコピー
         _header_ptr.pointee.freshPoolUsedCount = source_header.pointee.freshPoolUsedCount
-        _header_ptr.pointee.recycleCount = source_header.pointee.recycleCount
+        _header_ptr.pointee.count = source_header.pointee.count
         _header_ptr.pointee.recycleHead = __ptr_(
           source_header.pointee.recycleHead)
         assert(

@@ -36,9 +36,13 @@ protocol UnsafeNodeFreshPool where _NodePtr == UnsafeMutablePointer<UnsafeNode> 
   var freshBucketHead: ReserverHeaderPointer? { get set }
   var freshBucketCurrent: ReserverHeaderPointer? { get set }
   var freshBucketLast: ReserverHeaderPointer? { get set }
-  var freshBucketCount: Int { get set }
   var freshPoolCapacity: Int { get set }
   var freshPoolUsedCount: Int { get set }
+  var count: Int { get set }
+  var nullptr: _NodePtr { get }
+#if DEBUG
+  var freshBucketCount: Int { get set }
+#endif
 }
 
 extension UnsafeNodeFreshPool {
@@ -48,11 +52,11 @@ extension UnsafeNodeFreshPool {
 
 extension UnsafeNodeFreshPool {
 
-  @inlinable
-  @inline(__always)
-  var nullptr: UnsafeMutablePointer<UnsafeNode> {
-    UnsafeNode.nullptr
-  }
+//  @inlinable
+//  @inline(__always)
+//  var nullptr: _NodePtr {
+//    UnsafeNode.nullptr
+//  }
   
   @inlinable
   @inline(__always)
@@ -144,7 +148,9 @@ extension UnsafeNodeFreshPool {
     }
     freshBucketLast = pointer
     self.freshPoolCapacity += capacity
+#if DEBUG
     freshBucketCount += 1
+#endif
   }
 
   @inlinable
@@ -172,6 +178,7 @@ extension UnsafeNodeFreshPool {
       reserverHead = h.pointee.next
     }
     freshPoolUsedCount = 0
+    count = 0
   }
 
   @inlinable
@@ -187,7 +194,9 @@ extension UnsafeNodeFreshPool {
     freshBucketHead = nil
     freshBucketCurrent = nil
     freshBucketLast = nil
+#if DEBUG
     freshBucketCount = 0
+#endif
     freshPoolCapacity = 0
     freshPoolUsedCount = 0
   }
@@ -258,6 +267,7 @@ extension UnsafeNodeFreshPool {
     assert(p.pointee.___node_id_ == .nullptr)
     p.initialize(to: UnsafeNode(___node_id_: freshPoolUsedCount))
     freshPoolUsedCount += 1
+    count += 1
     return p
   }
 }

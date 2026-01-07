@@ -85,6 +85,8 @@ extension UnsafeTreeV2Buffer {
     @inline(__always)
     internal init() { }
     
+    @usableFromInline var count: Int = 0
+
     @usableFromInline var freshBucketHead: ReserverHeaderPointer?
     @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
     @usableFromInline var freshBucketLast: ReserverHeaderPointer?
@@ -93,8 +95,9 @@ extension UnsafeTreeV2Buffer {
     @usableFromInline var freshPoolUsedCount: Int = 0
 
     @usableFromInline var recycleHead: _NodePtr = UnsafeNode.nullptr
-    @usableFromInline var recycleCount: Int = 0
-    
+
+//    @usableFromInline let nullptr: _NodePtr = UnsafeNode.nullptr
+
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       /// CoWの発火回数を観察するためのプロパティ
       @usableFromInline internal var copyCount: UInt = 0
@@ -115,12 +118,18 @@ extension UnsafeTreeV2Buffer.Header {
 
   @inlinable
   @inline(__always)
-  public var count: Int {
-    // __sizeへ移行した場合、
-    // 減算のステップ数が増えるので逆効果なため
-    // 計算プロパティ維持の方針
-    freshPoolUsedCount - recycleCount
+  var nullptr: _NodePtr {
+    UnsafeNode.nullptr
   }
+
+//  @inlinable
+//  @inline(__always)
+//  public var count: Int {
+//    // __sizeへ移行した場合、
+//    // 減算のステップ数が増えるので逆効果なため
+//    // 計算プロパティ維持の方針
+//    freshPoolUsedCount - recycleCount
+//  }
 }
 
 extension UnsafeTreeV2Buffer.Header {
@@ -129,7 +138,9 @@ extension UnsafeTreeV2Buffer.Header {
   @inline(__always)
   public mutating func __construct_node(_ k: _Value) -> _NodePtr {
     assert(_Value.self != Void.self)
-    let p = recycleCount == 0 ? ___popFresh() : ___popRecycle()
+    assert(recycleCount >= 0)
+//    let p = recycleCount == 0 ? ___popFresh() : ___popRecycle()
+    let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
     UnsafeNode.initializeValue(p, to: k)
     assert(p.pointee.___node_id_ >= 0)
     return p

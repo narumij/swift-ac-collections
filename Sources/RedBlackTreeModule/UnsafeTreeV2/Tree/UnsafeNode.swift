@@ -212,6 +212,9 @@ public struct UnsafeNode {
   @usableFromInline
   nonisolated(unsafe) static let null: UnsafeNode.Null = .init()
 
+  // non optionalを選択したのは、コードのあちこちにチェックコードが自動で挟まって遅くなることを懸念しての措置
+  // nullptrは定数でもなにかコストがかかっていた記憶もある
+  // 過去のコードベースで再度調査してこういった諸々の問題が杞憂だった場合、optionalに変更してnullptrにnil変更しても良い
   @usableFromInline
   nonisolated(unsafe) static let nullptr: UnsafeMutablePointer<UnsafeNode> = null.nullptr
 }

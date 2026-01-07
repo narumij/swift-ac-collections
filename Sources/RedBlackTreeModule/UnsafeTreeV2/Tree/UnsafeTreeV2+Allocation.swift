@@ -15,7 +15,9 @@
 
 @usableFromInline
 protocol UnsafeTreeAllocationHeader {
+#if DEBUG
   var freshBucketCount: Int { get }
+#endif
 }
 
 @usableFromInline
@@ -268,9 +270,11 @@ extension UnsafeTreeAllcation1 {
 
     let (small, large) = initializedCount < 2048 ? (31, 31) : (15, 15)
 
+#if DEBUG
     if _buffer.header.freshBucketCount & 1 == 1 {
       return Swift.max(minimumCapacity, count + (small * (s0 + s1) - s2 - a2) / (s0 + s1))
     }
+#endif
 
     return Swift.max(minimumCapacity, count + (large * (s0 + s1) - s2 - a2) / (s0 + s1))
   }

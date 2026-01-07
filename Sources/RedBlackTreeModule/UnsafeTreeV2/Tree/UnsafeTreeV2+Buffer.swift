@@ -31,9 +31,9 @@ public final class UnsafeTreeV2Buffer<_Value>:
   @inlinable
   @inline(__always)
   deinit {
-    withUnsafeMutablePointers { header, end in
+    withUnsafeMutablePointers { header, tree in
       header.pointee.___flushFreshPool()
-      end.deinitialize(count: 1)
+      tree.deinitialize(count: 1)
     }
   }
 }
@@ -54,10 +54,11 @@ extension UnsafeTreeV2Buffer {
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 1) { managedBuffer in
       return managedBuffer.withUnsafeMutablePointerToElements { tree in
         
+        let nullptr = UnsafeNode.nullptr
         // endノード用に初期化する
-        tree.initialize(to: __tree(base: tree))
+        tree.initialize(to: __tree(base: tree,nullptr: nullptr))
         // ヘッダーを準備する
-        var header = Header()
+        var header = Header(nullptr: nullptr)
         // ノードを確保する
         if nodeCapacity > 0 {
           header.pushFreshBucket(capacity: nodeCapacity)
@@ -83,20 +84,24 @@ extension UnsafeTreeV2Buffer {
     
     @inlinable
     @inline(__always)
-    internal init() { }
+    internal init(nullptr: _NodePtr) {
+      self.nullptr = nullptr
+    }
     
     @usableFromInline var count: Int = 0
 
-    @usableFromInline var freshBucketHead: ReserverHeaderPointer?
     @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
-    @usableFromInline var freshBucketLast: ReserverHeaderPointer?
-    @usableFromInline var freshBucketCount: Int = 0
     @usableFromInline var freshPoolCapacity: Int = 0
     @usableFromInline var freshPoolUsedCount: Int = 0
 
     @usableFromInline var recycleHead: _NodePtr = UnsafeNode.nullptr
-
-//    @usableFromInline let nullptr: _NodePtr = UnsafeNode.nullptr
+    
+    @usableFromInline var freshBucketHead: ReserverHeaderPointer?
+    @usableFromInline var freshBucketLast: ReserverHeaderPointer?
+#if DEBUG
+    @usableFromInline var freshBucketCount: Int = 0
+#endif
+    @usableFromInline let nullptr: _NodePtr
 
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       /// CoWの発火回数を観察するためのプロパティ
@@ -116,11 +121,11 @@ extension UnsafeTreeV2Buffer {
 
 extension UnsafeTreeV2Buffer.Header {
 
-  @inlinable
-  @inline(__always)
-  var nullptr: _NodePtr {
-    UnsafeNode.nullptr
-  }
+//  @inlinable
+//  @inline(__always)
+//  var nullptr: _NodePtr {
+//    UnsafeNode.nullptr
+//  }
 
 //  @inlinable
 //  @inline(__always)

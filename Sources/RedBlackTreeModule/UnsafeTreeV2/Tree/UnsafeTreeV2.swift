@@ -23,12 +23,13 @@
 
 public struct __tree{
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-  @usableFromInline let nullptr: _NodePtr = UnsafeNode.nullptr
+  @usableFromInline let nullptr: _NodePtr
   @usableFromInline var begin_ptr: _NodePtr
   @usableFromInline let end_ptr: _NodePtr
   @usableFromInline var end_node: UnsafeNode
   @inlinable
-  init(base: UnsafeMutablePointer<__tree>) {
+  init(base: UnsafeMutablePointer<__tree>, nullptr: _NodePtr) {
+    self.nullptr = nullptr
     end_node = .init(___node_id_: .end)
     let e = withUnsafeMutablePointer(to: &base.pointee.end_node) { $0 }
     end_ptr = e
@@ -168,7 +169,9 @@ extension UnsafeTreeV2 {
     // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
     // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる
+#if DEBUG
     assert(tree._buffer.header.freshBucketCount <= 1)
+#endif
 
     // 複数のバケットを新しい一つのバケットに連番通りにまとめ、その他管理情報をそのまま移す
     // アドレスやバケット配置は変化するがそれ以外は変わらない状態となる

@@ -96,6 +96,8 @@ extension UnsafeTreeAllcation7 {
     
     if minimumCapacity <= limit1024 {
       return Swift.min(capacity + capacity / 8, limit1024)
+      // SimpleInsertはこちらの方が速いが、Benchmark0は上が圧倒的だったので、上を選択した。
+      // return Swift.min(capacity + Swift.max(2, capacity / 8), limit1024)
     }
     
     // L1目一杯で出来ることをやり尽くすようにする

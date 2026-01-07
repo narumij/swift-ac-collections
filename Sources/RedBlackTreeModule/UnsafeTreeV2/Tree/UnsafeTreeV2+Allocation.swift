@@ -55,7 +55,10 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
 // extension UnsafeTreeV2: UnsafeTreeAllcation4 {}
 //extension UnsafeTreeV2: UnsafeTreeAllcation5 {}
 //extension UnsafeTreeV2: UnsafeTreeAllcation6 {}
-extension UnsafeTreeV2: UnsafeTreeAllcation7 {}
+extension UnsafeTreeV2: UnsafeTreeAllcation6_7 {
+  // https://atcoder.jp/contests/abc411/submissions/72291000
+}
+//extension UnsafeTreeV2: UnsafeTreeAllcation7 {}
 #endif
 
 #if ALLOCATION_DRILL
@@ -117,6 +120,195 @@ extension UnsafeTreeAllcation7 {
     }
     
     return Swift.max(minimumCapacity, capacity + max(capacity / 8, 1))
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation6_10 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation6_10 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    return Swift.max(minimumCapacity, capacity + max(capacity * 3 / 16, 2))
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation6_9 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation6_9 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    return Swift.max(minimumCapacity, capacity + max(capacity / 4, 2))
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation6_8 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation6_8 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    return Swift.max(minimumCapacity, capacity + max(capacity / 16, 2))
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation6_7 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation6_7 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    return Swift.max(minimumCapacity, capacity + max(capacity / 8, 2))
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation6_6 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation6_6 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    return Swift.max(minimumCapacity, capacity + max(capacity * 4, 2))
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation6_5 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation6_5 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    return Swift.max(minimumCapacity, capacity + max(capacity * 3, 2))
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation6_4 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation6_4 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    return Swift.max(minimumCapacity, capacity + max(capacity * 2, 2))
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation6_3 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation6_3 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    return Swift.max(minimumCapacity, capacity + max(capacity, 2))
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation6_2 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation6_2 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    return Swift.max(minimumCapacity, capacity + max(capacity * 3 / 4, 2))
   }
 }
 

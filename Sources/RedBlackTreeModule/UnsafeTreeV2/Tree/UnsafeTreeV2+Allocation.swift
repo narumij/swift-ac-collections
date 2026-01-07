@@ -84,20 +84,20 @@ extension UnsafeTreeAllcation7 {
     }
     
     if minimumCapacity <= 2 {
-      return 2
+      return Swift.max(minimumCapacity, 2)
     }
     
     if minimumCapacity <= 4 {
-      return 4
+      return Swift.max(minimumCapacity, 4)
     }
     
     // 若干計算は適当だが、スモールアロケーションの速度で出来ることをやり尽くすように制限している
     let limit1024 = (1024 - MemoryLayout<UnsafeNodeFreshBucket>.stride) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
     
     if minimumCapacity <= limit1024 {
-      return Swift.min(capacity + capacity / 8, limit1024)
-      // SimpleInsertはこちらの方が速いが、Benchmark0は上が圧倒的だったので、上を選択した。
-      // return Swift.min(capacity + Swift.max(2, capacity / 8), limit1024)
+      // バグってて速かった
+      // return Swift.min(capacity + capacity / 8, limit1024)
+       return Swift.max(minimumCapacity, Swift.min(capacity + Swift.max(2, capacity / 8), limit1024))
     }
     
     // L1目一杯で出来ることをやり尽くすようにする
@@ -105,7 +105,7 @@ extension UnsafeTreeAllcation7 {
     let limit32k = (1024 * 32 - 4096) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
 
     if minimumCapacity <= limit32k {
-      return Swift.min(capacity + capacity / 8, limit32k)
+      return Swift.max(minimumCapacity, Swift.min(capacity + capacity / 8, limit32k))
     }
 
     // L2目一杯で出来ることをやり尽くすようにする
@@ -113,7 +113,7 @@ extension UnsafeTreeAllcation7 {
     let limit512k = (1024 * 512 - 4096) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
 
     if minimumCapacity <= limit512k {
-      return Swift.min(capacity + capacity / 8, limit512k)
+      return Swift.max(minimumCapacity, Swift.min(capacity + capacity / 8, limit512k))
     }
     
     return Swift.max(minimumCapacity, capacity + max(capacity / 8, 1))

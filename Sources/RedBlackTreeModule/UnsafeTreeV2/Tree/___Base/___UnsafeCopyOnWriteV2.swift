@@ -123,10 +123,11 @@ extension ___UnsafeCopyOnWriteV2 {
     let shouldExpand = __tree_.capacity < minimumCapacity
     if !_isKnownUniquelyReferenced_LV1() {
       __tree_ = __tree_.copy(growthCapacityTo: minimumCapacity, linearly: false)
+      assert(__tree_.capacity >= minimumCapacity)
     } else if shouldExpand {
       __tree_.growthCapacity(to: minimumCapacity, linearly: false)
+      assert(__tree_.capacity >= minimumCapacity)
     }
-    assert(__tree_.capacity >= minimumCapacity)
     assert(__tree_.initializedCount <= __tree_.capacity)
   }
 

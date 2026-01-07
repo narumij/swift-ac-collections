@@ -52,17 +52,17 @@ extension UnsafeTreeV2Buffer {
     // end nodeしか用意しないので要素数は常に1
     
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 1) { managedBuffer in
-      return managedBuffer.withUnsafeMutablePointerToElements { _end_ptr in
+      return managedBuffer.withUnsafeMutablePointerToElements { tree in
         
         // endノード用に初期化する
-        _end_ptr.initialize(to: __tree(base: _end_ptr))
+        tree.initialize(to: __tree(base: tree))
         // ヘッダーを準備する
-        var header = Header(_end_ptr: _end_ptr.pointee.end_ptr)
+        var header = Header()
         // ノードを確保する
         if nodeCapacity > 0 {
           header.pushFreshBucket(capacity: nodeCapacity)
         }
-        assert(_end_ptr.pointee.end_ptr.pointee.___needs_deinitialize == true)
+        assert(tree.pointee.end_ptr.pointee.___needs_deinitialize == true)
         // ヘッダを返却して以後はManagerBufferさんがよしなにする
         return header
       }
@@ -80,14 +80,10 @@ extension UnsafeTreeV2Buffer {
   @frozen
   public struct Header: UnsafeNodeFreshPool, UnsafeNodeRecyclePool {
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+    
     @inlinable
     @inline(__always)
-    internal init(_end_ptr: _NodePtr) {
-//      self.__begin_node_ = _end_ptr
-      self.recycleHead = UnsafeNode.nullptr
-    }
-    
-//    @usableFromInline var __begin_node_: UnsafeMutablePointer<UnsafeNode>
+    internal init() { }
     
     @usableFromInline var freshBucketHead: ReserverHeaderPointer?
     @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
@@ -96,7 +92,7 @@ extension UnsafeTreeV2Buffer {
     @usableFromInline var freshPoolCapacity: Int = 0
     @usableFromInline var freshPoolUsedCount: Int = 0
 
-    @usableFromInline var recycleHead: _NodePtr
+    @usableFromInline var recycleHead: _NodePtr = UnsafeNode.nullptr
     @usableFromInline var recycleCount: Int = 0
     
     #if AC_COLLECTIONS_INTERNAL_CHECKS

@@ -275,6 +275,18 @@ extension UnsafeNodeFreshPool {
     }
     return count
   }
+  
+  @inlinable
+  @inline(__always)
+  var freshPoolNumBytes: Int {
+    var bytes = 0
+    var p = freshBucketHead
+    while let h = p {
+      bytes += h.pointee.count * (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
+      p = h.pointee.next
+    }
+    return bytes
+  }
 }
 
 #if DEBUG

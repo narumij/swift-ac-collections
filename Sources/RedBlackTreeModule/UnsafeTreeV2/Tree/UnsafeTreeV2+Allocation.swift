@@ -22,7 +22,7 @@ protocol UnsafeTreeAllocationHeader {
 protocol UnsafeTreeAllcationBodyV2 {
   associatedtype Header: UnsafeTreeAllocationHeader
   associatedtype _Value
-  var _buffer: ManagedBufferPointer<Header, UnsafeNode> { get }
+  var _buffer: ManagedBufferPointer<Header, __tree> { get }
   var capacity: Int { get }
   var count: Int { get }
   var initializedCount: Int { get }

@@ -25,7 +25,7 @@ import Foundation
 // TODO: テスト整備後internalにする
 @_fixed_layout
 public final class UnsafeTreeV2Buffer<_Value>:
-  ManagedBuffer<UnsafeTreeV2Buffer<_Value>.Header, UnsafeNode>
+  ManagedBuffer<UnsafeTreeV2Buffer<_Value>.Header, __tree>
 {
   // MARK: - 解放処理
   @inlinable
@@ -55,14 +55,14 @@ extension UnsafeTreeV2Buffer {
       return managedBuffer.withUnsafeMutablePointerToElements { _end_ptr in
         
         // endノード用に初期化する
-        _end_ptr.initialize(to: UnsafeNode(___node_id_: .end))
+        _end_ptr.initialize(to: __tree(base: _end_ptr))
         // ヘッダーを準備する
-        var header = Header(_end_ptr: _end_ptr)
+        var header = Header(_end_ptr: _end_ptr.pointee.end_ptr)
         // ノードを確保する
         if nodeCapacity > 0 {
           header.pushFreshBucket(capacity: nodeCapacity)
         }
-        assert(_end_ptr.pointee.___needs_deinitialize == true)
+        assert(_end_ptr.pointee.end_ptr.pointee.___needs_deinitialize == true)
         // ヘッダを返却して以後はManagerBufferさんがよしなにする
         return header
       }
@@ -171,6 +171,7 @@ extension UnsafeTreeV2Buffer.Header {
 package func tearDown<T>(treeBuffer buffer: UnsafeTreeV2Buffer<T>) {
   buffer.header.tearDown()
   buffer.withUnsafeMutablePointers { h, e in
+    let e = e.pointee.end_ptr
     h.pointee.__begin_node_ = e
     e.pointee.__left_ = UnsafeNode.nullptr
     e.pointee.__right_ = UnsafeNode.nullptr

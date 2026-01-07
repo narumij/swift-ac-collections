@@ -25,13 +25,13 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   public var nullptr: UnsafeMutablePointer<UnsafeNode> {
-    UnsafeNode.nullptr
+    _buffer.withUnsafeMutablePointerToElements { $0.pointee.nullptr }
   }
 
   @inlinable
   @inline(__always)
   public var end: UnsafeMutablePointer<UnsafeNode> {
-    _buffer.withUnsafeMutablePointerToElements { $0 }
+    _buffer.withUnsafeMutablePointerToElements { $0.pointee.end_ptr }
   }
 }
 
@@ -186,7 +186,7 @@ extension UnsafeTreeV2 {
     @inlinable
     @inline(__always)
     internal var __root: _NodePtr {
-      _buffer.withUnsafeMutablePointerToElements { $0.pointee.__left_ }
+      _buffer.withUnsafeMutablePointerToElements { $0.pointee.end_node.__left_ }
     }
   #else
     @inlinable

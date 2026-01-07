@@ -20,11 +20,24 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+
+public struct __tree{
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  @usableFromInline let nullptr: _NodePtr = UnsafeNode.nullptr
+  @usableFromInline let end_ptr: _NodePtr
+  @usableFromInline var end_node: UnsafeNode
+  @inlinable
+  init(base: UnsafeMutablePointer<__tree>) {
+    end_node = .init(___node_id_: .end)
+    end_ptr = withUnsafeMutablePointer(to: &base.pointee.end_node) { $0 }
+  }
+}
+
 public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @inlinable
   internal init(
-    _buffer: ManagedBufferPointer<Header, UnsafeNode>,
+    _buffer: ManagedBufferPointer<Header, __tree>,
     isReadOnly: Bool = false
   ) {
     self._buffer = _buffer
@@ -34,8 +47,8 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   public typealias Base = Base
   public typealias Tree = UnsafeTreeV2<Base>
   public typealias Header = UnsafeTreeV2Buffer<Base._Value>.Header
-  public typealias Buffer = ManagedBuffer<Header, UnsafeNode>
-  public typealias BufferPointer = ManagedBufferPointer<Header, UnsafeNode>
+  public typealias Buffer = ManagedBuffer<Header, __tree>
+  public typealias BufferPointer = ManagedBufferPointer<Header, __tree>
   public typealias _Key = Base._Key
   public typealias _Value = Base._Value
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
@@ -151,7 +164,11 @@ extension UnsafeTreeV2 {
     // アドレスやバケット配置は変化するがそれ以外は変わらない状態となる
     _buffer.withUnsafeMutablePointers { source_header, source_end in
 
+      let source_end = source_end.pointee.end_ptr
+
       tree._buffer.withUnsafeMutablePointers { _header_ptr, _end_ptr in
+        
+        let _end_ptr = _end_ptr.pointee.end_ptr
 
         @inline(__always)
         func __ptr_(_ ptr: _NodePtr) -> _NodePtr {

@@ -213,7 +213,9 @@ extension UnsafeTreeV2 {
           // ノードを初期化
           d.initialize(to: node(s.pointee))
           // 値を初期化
-          UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
+          if s.pointee.___needs_deinitialize {
+            UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
+          }
         }
 
         // ルートノードを設定

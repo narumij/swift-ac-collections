@@ -139,11 +139,15 @@ import XCTest
           let (size1, alignment1) = Fixture.allocationSize(capacity: i)
           let (size2, alignment2) = Fixture.allocationSize2(capacity: i)
           XCTAssertEqual(size1, size2)
+          XCTAssertEqual(alignment1, MemoryLayout<_Value>.alignment)
+          XCTAssertEqual(alignment2, MemoryLayout<_Value>.alignment)
         }
         do {
           let (size1, alignment1) = UnsafePair<_Value>.allocationSize(capacity: i)
           let (size2, alignment2) = Fixture._allocationSize2(capacity: i)
           XCTAssertEqual(size1, size2)
+          XCTAssertEqual(alignment1, MemoryLayout<_Value>.alignment)
+          XCTAssertEqual(alignment2, MemoryLayout<_Value>.alignment)
         }
       }
     }
@@ -157,12 +161,223 @@ import XCTest
           let (size1, alignment1) = Fixture.allocationSize(capacity: i)
           let (size2, alignment2) = Fixture.allocationSize2(capacity: i)
           XCTAssertEqual(size1, size2)
+          XCTAssertEqual(alignment1, MemoryLayout<_Value>.alignment)
+          XCTAssertEqual(alignment2, MemoryLayout<_Value>.alignment)
         }
         do {
           let (size1, alignment1) = UnsafePair<_Value>.allocationSize(capacity: i)
           let (size2, alignment2) = Fixture._allocationSize2(capacity: i)
           XCTAssertEqual(size1, size2)
+          XCTAssertEqual(alignment1, MemoryLayout<_Value>.alignment)
+          XCTAssertEqual(alignment2, MemoryLayout<_Value>.alignment)
         }
+      }
+    }
+    
+    func testAllocationSize0() throws {
+      typealias _Value = Int32
+      typealias Fixture = FreshPoolFixture<_Value>
+      typealias Raw = UnsafeRawPointer
+      for _capacity in [2,3,5,7,11,13,1024,1024 * 32] {
+        let (_, bytes, stride, alignment) = Fixture.pagedCapacity(capacity: _capacity)
+        let (bucket, capacity) = FreshPoolFixture<_Value>.createBucket(capacity: _capacity)
+        XCTAssertEqual(bucket.pointee.stride, stride)
+        XCTAssertEqual(bucket.pointee.alignment, alignment)
+        var p = bucket.pointee.start
+        var pp = UnsafeMutableRawPointer(bucket.pointee.start)
+        for _ in 0..<capacity {
+          p = bucket.pointee.advance(p)
+          pp = pp.advanced(by: stride)
+          XCTAssertEqual(p, pp)
+          XCTAssertEqual(Raw(UnsafePair<_Value>.valuePointer(p)), Raw(UnsafePair<_Value>.valuePointer(p)).alignedUp(for: _Value.self))
+          XCTAssertEqual(Raw(p.advanced(by: 1)).alignedUp(for: _Value.self), Raw(p.advanced(by: 1)))
+        }
+        
+        do {
+          let diff = Raw(bucket.pointee.start) - Raw(bucket)
+          let minimum = MemoryLayout<UnsafeNodeFreshBucket>.stride
+          let maximum = minimum + max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
+          XCTAssertLessThanOrEqual(minimum, maximum)
+          XCTAssertLessThanOrEqual(minimum, diff)
+          XCTAssertLessThanOrEqual(diff,maximum)
+        }
+        
+        do {
+          let diff = Raw(bucket).advanced(by: bytes) - Raw(p)
+          let minimum = 0
+          let maximum = max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
+          XCTAssertLessThanOrEqual(minimum, maximum)
+          XCTAssertLessThanOrEqual(minimum, diff)
+          XCTAssertLessThanOrEqual(diff,maximum)
+        }
+        
+        do {
+          let diff = Raw(bucket).advanced(by: bytes) - Raw(Raw(bucket.pointee.advance(p, offset: -1).advanced(by: 1))
+            .assumingMemoryBound(to: _Value.self).advanced(by: 1))
+          let minimum = 0
+          let maximum = max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
+          XCTAssertLessThanOrEqual(minimum, maximum)
+          XCTAssertLessThanOrEqual(minimum, diff)
+          XCTAssertLessThanOrEqual(diff,maximum)
+        }
+        
+        do {
+          let stride = (
+            bucket: MemoryLayout<UnsafeNodeFreshBucket>.stride,
+            element: MemoryLayout<_Value>.stride + MemoryLayout<UnsafeNode>.stride)
+          let minimum = 0
+          let maximum = max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
+
+          let diff = Raw(bucket).advanced(by: stride.bucket + capacity * stride.element) - Raw(p)
+          XCTAssertLessThanOrEqual(minimum, maximum)
+          XCTAssertLessThanOrEqual(minimum, diff)
+          XCTAssertLessThanOrEqual(diff,maximum)
+        }
+
+        bucket.pointee.clear(_Value.self)
+        bucket.deinitialize(count: 1)
+        bucket.deallocate()
+      }
+    }
+    
+    func testAllocationSize1() throws {
+      typealias _Value = Int
+      typealias Fixture = FreshPoolFixture<_Value>
+      typealias Raw = UnsafeRawPointer
+      for _capacity in [2,3,5,7,11,13,1024,1024 * 32] {
+        let (_, bytes, stride, alignment) = Fixture.pagedCapacity(capacity: _capacity)
+        let (bucket, capacity) = FreshPoolFixture<_Value>.createBucket(capacity: _capacity)
+        XCTAssertEqual(bucket.pointee.stride, stride)
+        XCTAssertEqual(bucket.pointee.alignment, alignment)
+        var p = bucket.pointee.start
+        var pp = UnsafeMutableRawPointer(bucket.pointee.start)
+        for _ in 0..<capacity {
+          p = bucket.pointee.advance(p)
+          pp = pp.advanced(by: stride)
+          XCTAssertEqual(p, pp)
+          XCTAssertEqual(Raw(UnsafePair<_Value>.valuePointer(p)), Raw(UnsafePair<_Value>.valuePointer(p)).alignedUp(for: _Value.self))
+          XCTAssertEqual(Raw(p.advanced(by: 1)).alignedUp(for: _Value.self), Raw(p.advanced(by: 1)))
+        }
+        
+        do {
+          let diff = Raw(bucket.pointee.start) - Raw(bucket)
+          let minimum = MemoryLayout<UnsafeNodeFreshBucket>.stride
+          let maximum = minimum + max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
+          XCTAssertLessThanOrEqual(minimum, maximum)
+          XCTAssertLessThanOrEqual(minimum, diff)
+          XCTAssertLessThanOrEqual(diff,maximum)
+        }
+        
+        do {
+          let diff = Raw(bucket).advanced(by: bytes) - Raw(p)
+          let minimum = 0
+          let maximum = max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
+          XCTAssertLessThanOrEqual(minimum, maximum)
+          XCTAssertLessThanOrEqual(minimum, diff)
+          XCTAssertLessThanOrEqual(diff,maximum)
+        }
+        
+        do {
+          let diff = Raw(bucket).advanced(by: bytes)
+          - Raw(Raw(bucket.pointee.advance(p, offset: -1).advanced(by: 1))
+            .assumingMemoryBound(to: _Value.self).advanced(by: 1))
+          let minimum = 0
+          let maximum = max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
+          XCTAssertLessThanOrEqual(minimum, maximum)
+          XCTAssertLessThanOrEqual(minimum, diff)
+          XCTAssertLessThanOrEqual(diff,maximum)
+        }
+        
+        do {
+          let stride = (
+            bucket: MemoryLayout<UnsafeNodeFreshBucket>.stride,
+            element: MemoryLayout<_Value>.stride + MemoryLayout<UnsafeNode>.stride)
+          let minimum = 0
+          let maximum = max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
+
+          let diff = Raw(bucket).advanced(by: stride.bucket + capacity * stride.element) - Raw(p)
+          XCTAssertLessThanOrEqual(minimum, maximum)
+          XCTAssertLessThanOrEqual(minimum, diff)
+          XCTAssertLessThanOrEqual(diff,maximum)
+        }
+        
+        bucket.pointee.clear(_Value.self)
+        bucket.deinitialize(count: 1)
+        bucket.deallocate()
+      }
+    }
+    
+    func testAllocationSize2() throws {
+      typealias _Value = SIMD4<Float>
+      typealias Fixture = FreshPoolFixture<_Value>
+      typealias Raw = UnsafeRawPointer
+      for _capacity in [2,3,5,7,11,13,1024,1024 * 32] {
+        let (_, bytes, stride, alignment) = Fixture.pagedCapacity(capacity: _capacity)
+        let (bucket, capacity) = FreshPoolFixture<_Value>.createBucket(capacity: _capacity)
+        XCTAssertEqual(bucket.pointee.stride, stride)
+        XCTAssertEqual(bucket.pointee.alignment, alignment)
+        var p = bucket.pointee.start
+        var pp = UnsafeMutableRawPointer(bucket.pointee.start)
+        for _ in 0..<capacity {
+          p = bucket.pointee.advance(p)
+          pp = pp.advanced(by: stride)
+          XCTAssertEqual(p, pp)
+          XCTAssertEqual(Raw(UnsafePair<_Value>.valuePointer(p)), Raw(UnsafePair<_Value>.valuePointer(p)).alignedUp(for: _Value.self))
+          XCTAssertEqual(Raw(p.advanced(by: 1)).alignedUp(for: _Value.self), Raw(p.advanced(by: 1)))
+        }
+        
+        do {
+          let diff = Raw(bucket.pointee.start) - Raw(bucket)
+          let minimum = MemoryLayout<UnsafeNodeFreshBucket>.stride
+          let maximum = minimum + max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
+          XCTAssertLessThanOrEqual(minimum, maximum)
+          XCTAssertLessThanOrEqual(minimum, diff)
+          XCTAssertLessThanOrEqual(diff,maximum)
+        }
+        
+        do {
+          let diff = Raw(bucket).advanced(by: bytes) - Raw(p)
+          let minimum = 0
+          let maximum = max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
+          XCTAssertLessThanOrEqual(minimum, maximum)
+          XCTAssertLessThanOrEqual(minimum, diff)
+          XCTAssertLessThanOrEqual(diff,maximum)
+        }
+        
+        do {
+          let diff = Raw(bucket).advanced(by: bytes)
+          - Raw(Raw(bucket.pointee.advance(p, offset: -1).advanced(by: 1))
+            .assumingMemoryBound(to: _Value.self).advanced(by: 1))
+          let minimum = 0
+          let maximum = max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
+          XCTAssertLessThanOrEqual(minimum, maximum)
+          XCTAssertLessThanOrEqual(minimum, diff)
+          XCTAssertLessThanOrEqual(diff,maximum)
+        }
+        
+        do {
+          let stride = (
+            bucket: MemoryLayout<UnsafeNodeFreshBucket>.stride,
+            element: MemoryLayout<_Value>.stride + MemoryLayout<UnsafeNode>.stride)
+          let minimum = 0
+          let maximum = max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
+
+          let diff = Raw(bucket).advanced(by: stride.bucket + capacity * stride.element) - Raw(p)
+          XCTAssertLessThanOrEqual(minimum, maximum)
+          XCTAssertLessThanOrEqual(minimum, diff)
+          XCTAssertLessThanOrEqual(diff,maximum)
+        }
+
+        XCTAssertEqual(
+          Raw(bucket)
+            .advanced(by:
+                        MemoryLayout<UnsafeNodeFreshBucket>.stride +
+                      capacity * (MemoryLayout<_Value>.stride + MemoryLayout<UnsafeNode>.stride)
+                      + max(0, MemoryLayout<UnsafeNode>.alignment - MemoryLayout<_Value>.alignment))
+          - Raw(p), 0)
+        bucket.pointee.clear(_Value.self)
+        bucket.deinitialize(count: 1)
+        bucket.deallocate()
       }
     }
 

@@ -272,7 +272,7 @@ extension UnsafeNodeFreshPool {
       .assumingMemoryBound(to: UnsafeNodeFreshBucket.self)
     
     let storage = UnsafeMutableRawPointer(header.advanced(by: 1))
-      .alignedUp(toMultipleOf: alignment)
+//      .alignedUp(toMultipleOf: alignment)
     
     header.initialize(
       to:
@@ -303,7 +303,7 @@ extension UnsafeNodeFreshPool {
   @inlinable
   @inline(__always)
   //  @usableFromInline
-  static func pagedCapacity(capacity: Int) -> (capacity: Int, size: Int, stride: Int, alignment: Int) {
+  static func pagedCapacity(capacity: Int) -> (capacity: Int, bytes: Int, stride: Int, alignment: Int) {
     
     let s0 = MemoryLayout<UnsafeNode>.stride
     let a0 = MemoryLayout<UnsafeNode>.alignment

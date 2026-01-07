@@ -290,7 +290,6 @@ extension UnsafeNode {
   static func deinitialize<_Value>(_ t: _Value.Type, _ p: UnsafeMutablePointer<UnsafeNode>) {
     if p.pointee.___needs_deinitialize {
       UnsafeMutableRawPointer(p.advanced(by: 1))
-        .alignedUp(for: _Value.self)
         .assumingMemoryBound(to: _Value.self)
         .deinitialize(count: 1)
     }

@@ -55,7 +55,7 @@ package struct UnsafeNodeFreshBucket {
   func advance(_ p: _NodePtr, offset n: Int = 1) -> _NodePtr {
     UnsafeMutableRawPointer(p)
       .advanced(by: stride * n)
-      .alignedUp(toMultipleOf: alignment)  // _Valueへのalignment
+//      .alignedUp(toMultipleOf: alignment)  // _Valueへのalignment
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
@@ -89,7 +89,7 @@ package struct UnsafeNodeFreshBucket {
           UnsafeMutablePointer<UnsafeNode>(c)
             .advanced(by: 1)
         )
-        .alignedUp(for: t.self)
+//        .alignedUp(for: t.self)
         .assumingMemoryBound(to: t.self)
         .deinitialize(count: 1)
       }

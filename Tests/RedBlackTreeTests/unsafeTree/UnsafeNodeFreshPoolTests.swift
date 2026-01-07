@@ -71,6 +71,8 @@ import XCTest
     }
     
     // TODO: 実際にメモリを確保し、要素数分たどり、末尾が一致または収まるか確認する
+    
+    // TODO: advanceでのalignedUpを削っても大丈夫かどうか引き続き検討
 
     func testAlignment1() throws {
       typealias _Value = UInt8

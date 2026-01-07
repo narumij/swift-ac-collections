@@ -50,11 +50,12 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
     }
   }
 #else
-  extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
-//    extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
-//  extension UnsafeTreeV2: UnsafeTreeAllcation4 {}
+//extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
+// extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
+// extension UnsafeTreeV2: UnsafeTreeAllcation4 {}
 //extension UnsafeTreeV2: UnsafeTreeAllcation5 {}
 //extension UnsafeTreeV2: UnsafeTreeAllcation6 {}
+extension UnsafeTreeV2: UnsafeTreeAllcation7 {}
 #endif
 
 #if ALLOCATION_DRILL
@@ -64,6 +65,58 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
     }
   }
 #endif
+
+@usableFromInline
+protocol UnsafeTreeAllcation7: UnsafeTreeAllcationBodyV2 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation7 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+    
+    if minimumCapacity <= 2 {
+      return 2
+    }
+    
+    if minimumCapacity <= 4 {
+      return 4
+    }
+    
+    // 若干計算は適当だが、スモールアロケーションの速度で出来ることをやり尽くすように制限している
+    let limit1024 = (1024 - MemoryLayout<UnsafeNodeFreshBucket>.stride) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
+    
+    if minimumCapacity <= limit1024 {
+      return Swift.min(capacity + capacity / 2, limit1024)
+    }
+    
+    // L1目一杯で出来ることをやり尽くすようにする
+    // 4096のマージンはアロケータ補正に対する分
+    let limit32k = (1024 * 32 - 4096) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
+
+    if minimumCapacity <= limit32k {
+      return Swift.min(capacity + capacity / 2, limit32k)
+    }
+
+    // L2目一杯で出来ることをやり尽くすようにする
+    // 4096のマージンはアロケータ補正に対する分
+    let limit512k = (1024 * 512 - 4096) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
+
+    if minimumCapacity <= limit512k {
+      return Swift.min(capacity + capacity / 2, limit512k)
+    }
+    
+    return Swift.max(minimumCapacity, capacity + max(capacity / 2, 1))
+  }
+}
 
 @usableFromInline
 protocol UnsafeTreeAllcation6 {

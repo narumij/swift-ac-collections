@@ -189,6 +189,7 @@ extension UnsafeNodeFreshPool {
     freshBucketLast = nil
     freshBucketCount = 0
     freshPoolCapacity = 0
+    freshPoolUsedCount = 0
   }
 }
 

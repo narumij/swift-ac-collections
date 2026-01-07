@@ -163,18 +163,20 @@ extension UnsafeTreeV2Buffer.Header {
   mutating func tearDown() {
     ___flushFreshPool()
     ___flushRecyclePool()
-    freshPoolUsedCount = 0
   }
 }
 
 @inlinable
 package func tearDown<T>(treeBuffer buffer: UnsafeTreeV2Buffer<T>) {
-  buffer.header.tearDown()
+//  buffer.header.tearDown()
   buffer.withUnsafeMutablePointers { h, e in
-    let e = e.pointee.end_ptr
-//    h.pointee.__begin_node_ = e
-    e.pointee.__left_ = UnsafeNode.nullptr
-    e.pointee.__right_ = UnsafeNode.nullptr
-    e.pointee.__parent_ = UnsafeNode.nullptr
+    h.pointee.tearDown()
+    e.pointee.clear()
+//    e.pointee.begin_ptr = e.pointee.end_ptr
+//    let e = e.pointee.end_ptr
+////    h.pointee.__begin_node_ = e
+//    e.pointee.__left_ = UnsafeNode.nullptr
+//    e.pointee.__right_ = UnsafeNode.nullptr
+//    e.pointee.__parent_ = UnsafeNode.nullptr
   }
 }

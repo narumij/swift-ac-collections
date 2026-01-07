@@ -38,6 +38,8 @@ public struct __tree{
   mutating func clear() {
     begin_ptr = end_ptr
     end_node.__left_ = nullptr
+    end_node.__right_ = nullptr
+    end_node.__parent_ = nullptr
   }
 }
 

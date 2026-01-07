@@ -57,7 +57,19 @@ extension UnsafeNodeFreshPool {
 //  var nullptr: _NodePtr {
 //    UnsafeNode.nullptr
 //  }
-  
+
+  @inlinable
+  @inline(__always)
+  static func _allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
+    let a0 = MemoryLayout<UnsafeNode>.alignment
+    let a1 = MemoryLayout<_Value>.alignment
+    let s0 = MemoryLayout<UnsafeNode>.stride
+    let s1 = MemoryLayout<_Value>.stride
+    let s01 = s0 + s1
+    let offset01 = max(0, a1 - a0)
+    return (capacity == 0 ? 0 : s01 * capacity + offset01, max(a0, a1))
+  }
+
   @inlinable
   @inline(__always)
   static func allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
@@ -68,9 +80,8 @@ extension UnsafeNodeFreshPool {
     let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
     let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
     let s01 = s0 + s1
-    let o01 = a1 <= a0 ? 0 : a1 - a0
-    let o012 = max(a1,a0) <= a2 ? 0 : max(a0,a1) - a2
-    return (s2 + s01 * capacity + o01 + o012, max(a0,a1,a2))
+    let offset01 = max(0, a1 - a0)
+    return (s2 + (capacity == 0 ? 0 : s01 * capacity + offset01), max(a0, a1))
   }
 
   @inlinable
@@ -85,11 +96,9 @@ extension UnsafeNodeFreshPool {
     let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
     let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
     let s01 = s0 + s1
-//    let o01 = a1 <= a0 ? 0 : a1 - a0
-    let o01 = max(0, a1 - a0)
-    let o012 = max(0, max(a0,a1) - a2)
-    let size = s2 + s01 * capacity + o01 + o012
-    let alignment = max(a0,a1,a2)
+    let offset01 = max(0, a1 - a0)
+    let size = s2 + (capacity == 0 ? 0 : s01 * capacity + offset01)
+    let alignment = max(a0,a1)
     
     /*
      512B未満はスルーに
@@ -296,6 +305,145 @@ extension UnsafeNodeFreshPool {
       p = h.pointee.next
     }
     return bytes
+  }
+}
+
+extension UnsafeNodeFreshPool {
+
+  @inlinable
+  @inline(__always)
+  static func deinitializeNodes(_ p: ReserverHeaderPointer) {
+    let bucket = p.pointee
+    var i = 0
+    let count = bucket.count
+    var p = bucket.start
+    while i < count {
+      let c = p
+      p = UnsafePair<_Value>.advance(p)
+      if c.pointee.___needs_deinitialize {
+        UnsafeNode.deinitialize(_Value.self, c)
+      }
+      c.deinitialize(count: 1)
+      i += 1
+    }
+    #if DEBUG
+      do {
+        var c = 0
+        var p = bucket.start
+        while c < bucket.capacity {
+          p.pointee.___node_id_ = .nullptr
+          p = UnsafePair<_Value>.advance(p)
+          c += 1
+        }
+      }
+    #endif
+  }
+
+  @inlinable
+  @inline(__always)
+  static func createBucket(capacity: Int) -> ReserverHeaderPointer {
+
+    assert(capacity != 0)
+
+    let (bytes, alignment) = Self.allocationSize(capacity: capacity)
+
+    let header_storage = UnsafeMutableRawPointer.allocate(
+      byteCount: bytes,
+      alignment: alignment)
+
+    let header = UnsafeMutableRawPointer(header_storage)
+      .assumingMemoryBound(to: UnsafeNodeFreshBucket.self)
+
+    let storage = UnsafeMutableRawPointer(header.advanced(by: 1))
+      .alignedUp(toMultipleOf: alignment)
+
+    header.initialize(
+      to:
+        .init(
+          start: UnsafePair<_Value>.pointer(from: storage),
+          capacity: capacity,
+          strice: MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride,
+          alignment: alignment))
+
+    #if DEBUG
+      do {
+        var c = 0
+        var p = header.pointee.start
+        while c < capacity {
+          p.pointee.___node_id_ = .nullptr
+          p = UnsafePair<_Value>.advance(p)
+          c += 1
+        }
+      }
+    #endif
+
+    return header
+  }
+  
+  @inlinable
+  @inline(__always)
+  static func createBucket2(capacity: Int) -> (ReserverHeaderPointer, capacity: Int) {
+
+    assert(capacity != 0)
+
+    let (capacity, bytes, stride, alignment) = pagedCapacity(capacity: capacity)
+
+    let header_storage = UnsafeMutableRawPointer.allocate(
+      byteCount: bytes,
+      alignment: alignment)
+
+    let header = UnsafeMutableRawPointer(header_storage)
+      .assumingMemoryBound(to: UnsafeNodeFreshBucket.self)
+
+    let storage = UnsafeMutableRawPointer(header.advanced(by: 1))
+      .alignedUp(toMultipleOf: alignment)
+
+    header.initialize(
+      to:
+        .init(
+          start: UnsafePair<_Value>.pointer(from: storage),
+          capacity: capacity,
+          strice: stride,
+          alignment: alignment))
+
+    #if DEBUG
+      do {
+        var c = 0
+        var p = header.pointee.start
+        while c < capacity {
+          p.pointee.___node_id_ = .nullptr
+          p = UnsafePair<_Value>.advance(p)
+          c += 1
+        }
+      }
+    #endif
+
+    return (header, capacity)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
+    let (bufferSize, bufferAlignment) = UnsafePair<_Value>.allocationSize(capacity: capacity)
+//    let numBytes = MemoryLayout<ReserverHeader>.stride + bufferSize
+//    let headerAlignment = MemoryLayout<ReserverHeader>.alignment
+//    if bufferAlignment <= headerAlignment {
+//      return (numBytes, MemoryLayout<ReserverHeader>.alignment)
+//    }
+//    return (
+//      numBytes + bufferAlignment - headerAlignment,
+//      bufferAlignment
+//    )
+    return (bufferSize + MemoryLayout<ReserverHeader>.stride, bufferAlignment)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func allocationSize() -> (size: Int, alignment: Int) {
+    return (
+      MemoryLayout<ReserverHeader>.stride,
+      MemoryLayout<ReserverHeader>.alignment
+    )
   }
 }
 

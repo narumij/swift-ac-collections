@@ -47,7 +47,7 @@ public enum UnsafePair<_Value> {
 
   @inlinable
   @inline(__always)
-  static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
+  package static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
     let numBytes = MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride
 
     let nodeAlignment = MemoryLayout<UnsafeNode>.alignment

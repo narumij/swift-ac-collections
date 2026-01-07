@@ -21,8 +21,9 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
+@frozen
 @usableFromInline
-@frozen struct UnsafeNodeFreshBucket {
+package struct UnsafeNodeFreshBucket {
 
   public typealias Header = UnsafeNodeFreshBucket
   public typealias HeaderPointer = UnsafeMutablePointer<Header>

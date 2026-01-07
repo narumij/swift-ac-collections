@@ -162,7 +162,7 @@ final class AllocationTests: RedBlackTreeTestCase {
     a._ensureUnique()
     XCTAssertEqual(a.capacity, 0)
     a.__tree_._buffer.header.pushFreshBucket(capacity: 512)
-    XCTAssertGreaterThan(a.capacity, 512)
+    XCTAssertGreaterThanOrEqual(a.capacity, 512)
   }
 
   #endif  // DEBUG

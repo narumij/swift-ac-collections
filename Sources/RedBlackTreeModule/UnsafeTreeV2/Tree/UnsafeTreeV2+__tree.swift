@@ -153,15 +153,15 @@ extension UnsafeTreeV2 {
   public var __begin_node_: _NodePtr {
 
     @inline(__always) get {
-      _buffer.withUnsafeMutablePointerToHeader {
-        $0.pointee.__begin_node_
+      _buffer.withUnsafeMutablePointerToElements {
+        $0.pointee.begin_ptr
       }
     }
 
     @inline(__always)
     nonmutating set {
-      _buffer.withUnsafeMutablePointerToHeader {
-        $0.pointee.__begin_node_ = newValue
+      _buffer.withUnsafeMutablePointerToElements {
+        $0.pointee.begin_ptr = newValue
       }
     }
   }

@@ -24,12 +24,20 @@
 public struct __tree{
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   @usableFromInline let nullptr: _NodePtr = UnsafeNode.nullptr
+  @usableFromInline var begin_ptr: _NodePtr
   @usableFromInline let end_ptr: _NodePtr
   @usableFromInline var end_node: UnsafeNode
   @inlinable
   init(base: UnsafeMutablePointer<__tree>) {
     end_node = .init(___node_id_: .end)
-    end_ptr = withUnsafeMutablePointer(to: &base.pointee.end_node) { $0 }
+    let e = withUnsafeMutablePointer(to: &base.pointee.end_node) { $0 }
+    end_ptr = e
+    begin_ptr = e
+  }
+  @inlinable
+  mutating func clear() {
+    begin_ptr = end_ptr
+    end_node.__left_ = nullptr
   }
 }
 
@@ -164,10 +172,12 @@ extension UnsafeTreeV2 {
     // アドレスやバケット配置は変化するがそれ以外は変わらない状態となる
     _buffer.withUnsafeMutablePointers { source_header, source_end in
 
+      let source_begin = withUnsafeMutablePointer(to: &source_end.pointee.begin_ptr) { $0 }
       let source_end = source_end.pointee.end_ptr
 
       tree._buffer.withUnsafeMutablePointers { _header_ptr, _end_ptr in
         
+        let _begin_ptr = withUnsafeMutablePointer(to: &_end_ptr.pointee.begin_ptr) { $0 }
         let _end_ptr = _end_ptr.pointee.end_ptr
 
         @inline(__always)
@@ -208,7 +218,8 @@ extension UnsafeTreeV2 {
         _end_ptr.pointee.__left_ = __ptr_(source_end.pointee.__left_)
 
         // __begin_nodeを初期化
-        _header_ptr.pointee.__begin_node_ = __ptr_(source_header.pointee.__begin_node_)
+//        _header_ptr.pointee.__begin_node_ = __ptr_(source_header.pointee.__begin_node_)
+        _begin_ptr.pointee = __ptr_(source_begin.pointee)
 
         // その他管理情報をコピー
         _header_ptr.pointee.freshPoolUsedCount = source_header.pointee.freshPoolUsedCount
@@ -271,6 +282,9 @@ extension UnsafeTreeV2 {
     end.pointee.__left_ = nullptr
     _buffer.withUnsafeMutablePointerToHeader {
       $0.pointee.clear(_end_ptr: __end_node)
+    }
+    _buffer.withUnsafeMutablePointerToElements {
+      $0.pointee.clear()
     }
   }
 }

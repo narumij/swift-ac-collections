@@ -109,10 +109,10 @@ extension UnsafeTreeV2Buffer.Header {
   @inlinable
   package func equiv(with other: UnsafeTreeV2Buffer.Header) -> Bool {
     // freshPoolCapacityは等価判定不可
-    assert(__begin_node_.pointee.___node_id_ == other.__begin_node_.pointee.___node_id_)
+//    assert(__begin_node_.pointee.___node_id_ == other.__begin_node_.pointee.___node_id_)
     assert(recycleCount == other.recycleCount)
     guard
-      __begin_node_.pointee.___node_id_ == other.__begin_node_.pointee.___node_id_,
+//      __begin_node_.pointee.___node_id_ == other.__begin_node_.pointee.___node_id_,
       freshPoolUsedCount == other.freshPoolUsedCount,
       freshPoolActualCount == other.freshPoolActualCount,
       recycleCount == other.recycleCount,
@@ -222,7 +222,7 @@ extension UnsafeTreeV2 {
     guard
       __tree_invariant(__root),
       end.pointee.__left_ == UnsafeNode.nullptr,
-      _buffer.header.__begin_node_ == end,
+//      _buffer.header.__begin_node_ == end,
       end.pointee.___needs_deinitialize == true,
       count == 0,
       count <= initializedCount,

@@ -83,11 +83,11 @@ extension UnsafeTreeV2Buffer {
     @inlinable
     @inline(__always)
     internal init(_end_ptr: _NodePtr) {
-      self.__begin_node_ = _end_ptr
+//      self.__begin_node_ = _end_ptr
       self.recycleHead = UnsafeNode.nullptr
     }
     
-    @usableFromInline var __begin_node_: UnsafeMutablePointer<UnsafeNode>
+//    @usableFromInline var __begin_node_: UnsafeMutablePointer<UnsafeNode>
     
     @usableFromInline var freshBucketHead: ReserverHeaderPointer?
     @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
@@ -110,7 +110,7 @@ extension UnsafeTreeV2Buffer {
       _end_ptr.pointee.__left_ = UnsafeNode.nullptr
       ___cleanFreshPool()
       ___flushRecyclePool()
-      __begin_node_ = _end_ptr
+//      __begin_node_ = _end_ptr
     }
   }
 }
@@ -172,7 +172,7 @@ package func tearDown<T>(treeBuffer buffer: UnsafeTreeV2Buffer<T>) {
   buffer.header.tearDown()
   buffer.withUnsafeMutablePointers { h, e in
     let e = e.pointee.end_ptr
-    h.pointee.__begin_node_ = e
+//    h.pointee.__begin_node_ = e
     e.pointee.__left_ = UnsafeNode.nullptr
     e.pointee.__right_ = UnsafeNode.nullptr
     e.pointee.__parent_ = UnsafeNode.nullptr

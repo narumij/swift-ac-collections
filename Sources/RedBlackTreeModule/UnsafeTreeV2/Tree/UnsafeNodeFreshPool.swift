@@ -408,7 +408,7 @@ extension UnsafeNodeFreshPool {
      4KB以上は分割確保に
      */
     
-#if false
+#if true
     // 1024B以下はsmall扱い。それ以上はページ扱い
     if size <= 1024 {
       return (capacity, size, s01, alignment)
@@ -418,7 +418,7 @@ extension UnsafeNodeFreshPool {
     //
     //
     //    let (size, alignment) = Self.allocationSize2(capacity: capacity)
-#if false
+#if true
     // 性能上重要なので数値ベタ書き推奨かもしれない
     //    let pagedSize = max(1024, (size & ~1023) + (size & 1023 == 0 ? 0 : 1024))
     let pagedSize = (size + 4095) & ~4095

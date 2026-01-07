@@ -39,6 +39,8 @@ import XCTest
       // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
       // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
     }
+    
+    // TODO: 実際にメモリを確保し、要素数分たどり、末尾が一致または収まるか確認する
 
     func testAlignment1() throws {
       typealias _Value = UInt8

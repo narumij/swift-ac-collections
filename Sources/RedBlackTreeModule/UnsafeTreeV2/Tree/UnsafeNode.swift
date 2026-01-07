@@ -162,6 +162,26 @@ public struct UnsafeNode {
   ///
   /// 赤黒木ノードの親ノードを指すポインタ。
   public var __parent_: Pointer
+  /// Color flag of this red-black tree node.
+  ///
+  /// `true` indicates black, `false` indicates red.
+  ///
+  /// ---
+  ///
+  /// 赤黒木ノードの色を表すフラグ。
+  /// `true` の場合は黒、`false` の場合は赤。
+  public var __is_black_: Bool = false
+  /// Indicates whether the associated value requires deinitialization.
+  ///
+  /// This flag is used by low-level allocators / pools to determine
+  /// whether the value stored after this node should be deinitialized.
+  ///
+  /// ---
+  ///
+  /// 値の解放（deinitialize）が必要かどうかを示すフラグ。
+  /// ノード直後に配置された値を解放すべきかを判断するために、
+  /// 低レベルのアロケータ／プールで使用される。
+  public var ___needs_deinitialize: Bool
   // IndexアクセスでCoWが発生した場合のフォローバックとなる
   // TODO: 不変性が維持されているか考慮すること
   /// A temporary node identifier assigned in initialization order.
@@ -182,27 +202,7 @@ public struct UnsafeNode {
   ///
   /// nullptrは-2、endは-1をIDにもつ
   public var ___node_id_: Int
-  /// Color flag of this red-black tree node.
-  ///
-  /// `true` indicates black, `false` indicates red.
-  ///
-  /// ---
-  ///
-  /// 赤黒木ノードの色を表すフラグ。
-  /// `true` の場合は黒、`false` の場合は赤。
-  public var __is_black_: Bool = false
 
-  /// Indicates whether the associated value requires deinitialization.
-  ///
-  /// This flag is used by low-level allocators / pools to determine
-  /// whether the value stored after this node should be deinitialized.
-  ///
-  /// ---
-  ///
-  /// 値の解放（deinitialize）が必要かどうかを示すフラグ。
-  /// ノード直後に配置された値を解放すべきかを判断するために、
-  /// 低レベルのアロケータ／プールで使用される。
-  public var ___needs_deinitialize: Bool
   // メモリ管理をちゃんとするために隙間にねじ込んだ
   // TODO: メモリ管理に整合性があるか考慮すること
   #if DEBUG

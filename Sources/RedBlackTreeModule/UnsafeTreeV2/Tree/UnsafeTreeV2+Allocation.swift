@@ -95,7 +95,7 @@ extension UnsafeTreeAllcation7 {
     let limit1024 = (1024 - MemoryLayout<UnsafeNodeFreshBucket>.stride) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
     
     if minimumCapacity <= limit1024 {
-      return Swift.min(capacity + capacity / 2, limit1024)
+      return Swift.min(capacity + capacity / 8, limit1024)
     }
     
     // L1目一杯で出来ることをやり尽くすようにする
@@ -103,7 +103,7 @@ extension UnsafeTreeAllcation7 {
     let limit32k = (1024 * 32 - 4096) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
 
     if minimumCapacity <= limit32k {
-      return Swift.min(capacity + capacity / 2, limit32k)
+      return Swift.min(capacity + capacity / 8, limit32k)
     }
 
     // L2目一杯で出来ることをやり尽くすようにする
@@ -111,10 +111,10 @@ extension UnsafeTreeAllcation7 {
     let limit512k = (1024 * 512 - 4096) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
 
     if minimumCapacity <= limit512k {
-      return Swift.min(capacity + capacity / 2, limit512k)
+      return Swift.min(capacity + capacity / 8, limit512k)
     }
     
-    return Swift.max(minimumCapacity, capacity + max(capacity / 2, 1))
+    return Swift.max(minimumCapacity, capacity + max(capacity / 8, 1))
   }
 }
 

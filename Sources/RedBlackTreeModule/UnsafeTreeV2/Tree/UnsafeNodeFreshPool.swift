@@ -87,16 +87,27 @@ extension UnsafeNodeFreshPool {
     let size = s2 + s01 * capacity + o01 + o012
     let alignment = max(a0,a1,a2)
     
+    /*
+     512B未満はスルーに
+     中間は要研究
+     4KB以上は分割確保に
+     */
+
+#if false
+    // 1024B以下はsmall扱い。それ以上はページ扱い
     if size <= 1024 {
       return (capacity, size, s01, alignment)
     }
+#endif
+    
 //
 //    
 //    let (size, alignment) = Self.allocationSize2(capacity: capacity)
-#if true
+#if false
+    // 性能上重要なので数値ベタ書き推奨かもしれない
 //    let pagedSize = max(1024, (size & ~1023) + (size & 1023 == 0 ? 0 : 1024))
-    let pagedSize = (size + 1023) & ~1023
-    assert(abs(size / 1024 - pagedSize / 1024) <= 1)
+    let pagedSize = (size + 4095) & ~4095
+    assert(abs(size / 4096 - pagedSize / 4096) <= 1)
     return (
       capacity + (pagedSize - size) / (s01),
 //      capacity,

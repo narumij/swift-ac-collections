@@ -28,6 +28,32 @@ typealias Fixture = RedBlackTreeSet
 let allocaSizes = ((0..<32).map({ 1 << $0 }) + [1, 3, 8, 17, 35, 72, 145, 291, 584, 1169, 2339, 4680, 9361, 18723, 37448, 74897, 149795, 299592, 599185, 1198371, 2396744, 4793489, 9586979, 19173960, 38347921])
   .sorted().uniqued()
 
+#if false
+  for count in (0..<1).map({ 1 << $0 }) {
+    for allocSize in allocaSizes {
+      benchmark("reserveCapacity \(count) / \(allocSize)") {
+        var f = Fixture<Int>.allocationDrill()
+        for _ in 0..<max(1, count / allocSize) {
+          f.pushFreshBucket(capacity: allocSize)
+        }
+      }
+    }
+  }
+#endif
+
+#if true
+  for count in [1000000] {
+    for allocSize in allocaSizes {
+      benchmark("reserveCapacity \(count) / \(allocSize)") {
+        var f = Fixture<Int>.allocationDrill()
+        for _ in 0..<max(1, count / allocSize) {
+          f.pushFreshBucket(capacity: allocSize)
+        }
+      }
+    }
+  }
+#endif
+
   #if false
     for count in (0..<10).map({ 1 << $0 }) {
       for allocSize in allocaSizes {
@@ -54,7 +80,7 @@ let allocaSizes = ((0..<32).map({ 1 << $0 }) + [1, 3, 8, 17, 35, 72, 145, 291, 5
     }
   #endif
 
-  #if true
+  #if false
     for count in (16..<22).map({ 1 << $0 }) {
       for allocSize in allocaSizes {
         benchmark("reserveCapacity \(count) / \(allocSize)") {

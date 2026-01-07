@@ -20,8 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-
-public struct __tree{
+public struct __tree {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   @usableFromInline let nullptr: _NodePtr
   @usableFromInline var begin_ptr: _NodePtr
@@ -169,9 +168,9 @@ extension UnsafeTreeV2 {
     // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
     // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる
-#if DEBUG
-    assert(tree._buffer.header.freshBucketCount <= 1)
-#endif
+    #if DEBUG
+      assert(tree._buffer.header.freshBucketCount <= 1)
+    #endif
 
     // 複数のバケットを新しい一つのバケットに連番通りにまとめ、その他管理情報をそのまま移す
     // アドレスやバケット配置は変化するがそれ以外は変わらない状態となる
@@ -181,7 +180,7 @@ extension UnsafeTreeV2 {
       let source_end = source_end.pointee.end_ptr
 
       tree._buffer.withUnsafeMutablePointers { _header_ptr, _end_ptr in
-        
+
         let _begin_ptr = withUnsafeMutablePointer(to: &_end_ptr.pointee.begin_ptr) { $0 }
         let _end_ptr = _end_ptr.pointee.end_ptr
 
@@ -225,7 +224,7 @@ extension UnsafeTreeV2 {
         _end_ptr.pointee.__left_ = __ptr_(source_end.pointee.__left_)
 
         // __begin_nodeを初期化
-//        _header_ptr.pointee.__begin_node_ = __ptr_(source_header.pointee.__begin_node_)
+        //        _header_ptr.pointee.__begin_node_ = __ptr_(source_header.pointee.__begin_node_)
         _begin_ptr.pointee = __ptr_(source_begin.pointee)
 
         // その他管理情報をコピー

@@ -52,86 +52,6 @@ extension UnsafeNodeFreshPool {
 
 extension UnsafeNodeFreshPool {
 
-//  @inlinable
-//  @inline(__always)
-//  var nullptr: _NodePtr {
-//    UnsafeNode.nullptr
-//  }
-
-  @inlinable
-  @inline(__always)
-  static func _allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
-    let a0 = MemoryLayout<UnsafeNode>.alignment
-    let a1 = MemoryLayout<_Value>.alignment
-    let s0 = MemoryLayout<UnsafeNode>.stride
-    let s1 = MemoryLayout<_Value>.stride
-    let s01 = s0 + s1
-    let offset01 = max(0, a1 - a0)
-    return (capacity == 0 ? 0 : s01 * capacity + offset01, max(a0, a1))
-  }
-
-  @inlinable
-  @inline(__always)
-  static func allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
-    let s0 = MemoryLayout<UnsafeNode>.stride
-    let a0 = MemoryLayout<UnsafeNode>.alignment
-    let s1 = MemoryLayout<_Value>.stride
-    let a1 = MemoryLayout<_Value>.alignment
-    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
-    let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
-    let s01 = s0 + s1
-    let offset01 = max(0, a1 - a0)
-    return (s2 + (capacity == 0 ? 0 : s01 * capacity + offset01), max(a0, a1))
-  }
-
-  @inlinable
-  @inline(__always)
-//  @usableFromInline
-  static func pagedCapacity(capacity: Int) -> (capacity: Int, size: Int, stride: Int, alignment: Int) {
-    
-    let s0 = MemoryLayout<UnsafeNode>.stride
-    let a0 = MemoryLayout<UnsafeNode>.alignment
-    let s1 = MemoryLayout<_Value>.stride
-    let a1 = MemoryLayout<_Value>.alignment
-    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
-    let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
-    let s01 = s0 + s1
-    let offset01 = max(0, a1 - a0)
-    let size = s2 + (capacity == 0 ? 0 : s01 * capacity + offset01)
-    let alignment = max(a0,a1)
-    
-    /*
-     512B未満はスルーに
-     中間は要研究
-     4KB以上は分割確保に
-     */
-
-#if false
-    // 1024B以下はsmall扱い。それ以上はページ扱い
-    if size <= 1024 {
-      return (capacity, size, s01, alignment)
-    }
-#endif
-    
-//
-//    
-//    let (size, alignment) = Self.allocationSize2(capacity: capacity)
-#if false
-    // 性能上重要なので数値ベタ書き推奨かもしれない
-//    let pagedSize = max(1024, (size & ~1023) + (size & 1023 == 0 ? 0 : 1024))
-    let pagedSize = (size + 4095) & ~4095
-    assert(abs(size / 4096 - pagedSize / 4096) <= 1)
-    return (
-      capacity + (pagedSize - size) / (s01),
-//      capacity,
-      pagedSize,
-      s01,
-      alignment)
-#else
-    return (capacity, size, s01, alignment)
-#endif
-  }
-  
   /*
    NOTE:
    Normally, FreshPool may grow by adding multiple buckets.
@@ -425,15 +345,6 @@ extension UnsafeNodeFreshPool {
   @inline(__always)
   static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
     let (bufferSize, bufferAlignment) = UnsafePair<_Value>.allocationSize(capacity: capacity)
-//    let numBytes = MemoryLayout<ReserverHeader>.stride + bufferSize
-//    let headerAlignment = MemoryLayout<ReserverHeader>.alignment
-//    if bufferAlignment <= headerAlignment {
-//      return (numBytes, MemoryLayout<ReserverHeader>.alignment)
-//    }
-//    return (
-//      numBytes + bufferAlignment - headerAlignment,
-//      bufferAlignment
-//    )
     return (bufferSize + MemoryLayout<ReserverHeader>.stride, bufferAlignment)
   }
 
@@ -444,6 +355,83 @@ extension UnsafeNodeFreshPool {
       MemoryLayout<ReserverHeader>.stride,
       MemoryLayout<ReserverHeader>.alignment
     )
+  }
+}
+
+extension UnsafeNodeFreshPool {
+  
+  @inlinable
+  @inline(__always)
+  static func _allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
+    let a0 = MemoryLayout<UnsafeNode>.alignment
+    let a1 = MemoryLayout<_Value>.alignment
+    let s0 = MemoryLayout<UnsafeNode>.stride
+    let s1 = MemoryLayout<_Value>.stride
+    let s01 = s0 + s1
+    let offset01 = max(0, a1 - a0)
+    return (capacity == 0 ? 0 : s01 * capacity + offset01, max(a0, a1))
+  }
+  
+  @inlinable
+  @inline(__always)
+  static func allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
+    let s0 = MemoryLayout<UnsafeNode>.stride
+    let a0 = MemoryLayout<UnsafeNode>.alignment
+    let s1 = MemoryLayout<_Value>.stride
+    let a1 = MemoryLayout<_Value>.alignment
+    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
+    let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
+    let s01 = s0 + s1
+    let offset01 = max(0, a1 - a0)
+    return (s2 + (capacity == 0 ? 0 : s01 * capacity + offset01), max(a0, a1))
+  }
+  
+  @inlinable
+  @inline(__always)
+  //  @usableFromInline
+  static func pagedCapacity(capacity: Int) -> (capacity: Int, size: Int, stride: Int, alignment: Int) {
+    
+    let s0 = MemoryLayout<UnsafeNode>.stride
+    let a0 = MemoryLayout<UnsafeNode>.alignment
+    let s1 = MemoryLayout<_Value>.stride
+    let a1 = MemoryLayout<_Value>.alignment
+    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
+    let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
+    let s01 = s0 + s1
+    let offset01 = max(0, a1 - a0)
+    let size = s2 + (capacity == 0 ? 0 : s01 * capacity + offset01)
+    let alignment = max(a0,a1)
+    
+    /*
+     512B未満はスルーに
+     中間は要研究
+     4KB以上は分割確保に
+     */
+    
+#if false
+    // 1024B以下はsmall扱い。それ以上はページ扱い
+    if size <= 1024 {
+      return (capacity, size, s01, alignment)
+    }
+#endif
+    
+    //
+    //
+    //    let (size, alignment) = Self.allocationSize2(capacity: capacity)
+#if false
+    // 性能上重要なので数値ベタ書き推奨かもしれない
+    //    let pagedSize = max(1024, (size & ~1023) + (size & 1023 == 0 ? 0 : 1024))
+    let pagedSize = (size + 4095) & ~4095
+    assert(abs(size / 4096 - pagedSize / 4096) <= 1)
+    return (
+      capacity + (pagedSize - size) / (s01),
+      //      capacity,
+      pagedSize,
+      s01,
+      alignment)
+#else
+    return (capacity, size, s01, alignment)
+#endif
   }
 }
 

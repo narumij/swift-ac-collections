@@ -14,18 +14,20 @@ protocol UnsafeNodeFreshPoolV2 where _NodePtr == UnsafeMutablePointer<UnsafeNode
   var freshPool: FreshPool<_Value> { get set }
   var count: Int { get set }
   var nullptr: _NodePtr { get }
-  var _freshPoolCapacity: Int? { get set }
 }
 
 extension UnsafeNodeFreshPoolV2 {
-  @usableFromInline
+  
+  @inlinable
   var freshPoolCapacity: Int {
-    get { _freshPoolCapacity ?? freshPool.capacity }
-    set { _freshPoolCapacity = newValue }
+    @inline(__always)
+    get { freshPool.capacity }
+    set { fatalError() }
   }
 
-  @usableFromInline
+  @inlinable
   var freshPoolUsedCount: Int {
+    @inline(__always)
     get { freshPool.used }
     set {
       #if DEBUG
@@ -44,48 +46,48 @@ extension UnsafeNodeFreshPoolV2 {
     var freshBucketCount: Int { -1 }
   #endif
 
-  @usableFromInline
+  @inlinable
+  @inline(__always)
   subscript(___node_id_: Int) -> _NodePtr {
-    assert(freshPool[___node_id_] != nil)
     return freshPool[___node_id_]
   }
 
-  @usableFromInline
+  @inlinable
+  @inline(__always)
   mutating func pushFreshBucket(capacity: Int) {
     assert(capacity > 0)
     freshPool.reserveCapacity(minimumCapacity: freshPool.capacity + capacity)
   }
 
-  @usableFromInline
+  @inlinable
+  @inline(__always)
   mutating func popFresh() -> _NodePtr? {
     defer { freshPool.used += 1 }
     return self[freshPool.used]
   }
 
-  @usableFromInline
+  @inlinable
+  @inline(__always)
   mutating func ___popFresh() -> _NodePtr {
     let p = self[freshPool.used]
-    assert(p != nil)
     assert(p.pointee.___node_id_ == .nullptr)
     p.initialize(to: UnsafeNode(___node_id_: freshPoolUsedCount))
-    assert(p.pointee.__left_ != nil)
-    assert(p.pointee.__right_ != nil)
-    assert(p.pointee.__parent_ != nil)
     freshPool.used += 1
     count += 1
     return p
   }
 
-  @usableFromInline
+  @inlinable
+  @inline(__always)
   mutating func ___flushFreshPool() {
     freshPool.dispose()
     count = 0
   }
 
-  @usableFromInline
+  @inlinable
+  @inline(__always)
   mutating func ___cleanFreshPool() {
     freshPool.removeAllKeepingCapacity()
-    _freshPoolCapacity = nil
   }
 }
 

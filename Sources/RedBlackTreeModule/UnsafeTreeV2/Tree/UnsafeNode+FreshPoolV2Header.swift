@@ -52,7 +52,9 @@ extension FreshPool {
     storage?.pointee.capacity ?? 0
   }
 
-  @usableFromInline
+  @inlinable
+  @inline(__always)
+//  @usableFromInline
   mutating func reserveCapacity(minimumCapacity newCapacity: Int) {
     assert(capacity < newCapacity)
     assert(used <= capacity)
@@ -132,12 +134,14 @@ extension FreshPool {
     let header_storage = UnsafeMutableRawPointer.allocate(
       byteCount: bytes,
       alignment: alignment)
+    
+    header_storage.bindMemory(to: FreshStorage.self, capacity: 1)
 
     let header = UnsafeMutableRawPointer(header_storage)
       .assumingMemoryBound(to: FreshStorage.self)
 
     let elements = UnsafeMutableRawPointer(header.advanced(by: 1))
-
+    
     header.initialize(
       to:
         .init(
@@ -166,6 +170,8 @@ extension FreshPool {
     return (header, elements, capacity)
   }
 
+  @inlinable
+  @inline(__always)
   var buffer: UnsafeMutableBufferPointer<UnsafeMutablePointer<UnsafeNode>> {
     guard let array else { fatalError() }
     return UnsafeMutableBufferPointer(
@@ -175,23 +181,12 @@ extension FreshPool {
     )
   }
 
-//  @usableFromInline
-//  subscript(___node_id_: Int) -> UnsafeMutablePointer<UnsafeNode> {
-////    buffer[___node_id_]
-////    array!.pointee.advanced(by: ___node_id_)
-////    array!.advanced(by: ___node_id_).pointee
-////    fatalError()
-//  }
-  
-  @usableFromInline
+  @inlinable
+  @inline(__always)
   subscript(___node_id_: Int) -> UnsafeMutablePointer<UnsafeNode> {
-    // 前提：0 <= ___node_id_ < used
     assert(0 <= ___node_id_)
     assert(___node_id_ < capacity)
-    
-    let p = array!.advanced(by: ___node_id_).pointee
-    assert(p != nil)
-    return p
+    return array!.advanced(by: ___node_id_).pointee
   }
 
   @usableFromInline
@@ -205,7 +200,8 @@ extension FreshPool {
     used = 0
   }
 
-  @usableFromInline
+  @inlinable
+  @inline(__always)
   mutating func dispose() {
     for i in 0..<used {
       let c = self[i]

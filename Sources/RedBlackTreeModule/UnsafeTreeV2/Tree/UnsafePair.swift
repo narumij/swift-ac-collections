@@ -26,6 +26,12 @@ public enum UnsafePair<_Value> {
 
   public typealias Pointer = UnsafePointer<UnsafeNode>
   public typealias MutablePointer = UnsafeMutablePointer<UnsafeNode>
+  
+  @inlinable
+  @inline(__always)
+  static var stride: Int {
+    MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride
+  }
 
   @inlinable
   @inline(__always)
@@ -87,6 +93,14 @@ public enum UnsafePair<_Value> {
   @inline(__always)
   static func advance(_ p: MutablePointer, _ n: Int = 1) -> MutablePointer {
     UnsafeMutableRawPointer(p)
+      .advanced(by: (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride) * n)
+      .assumingMemoryBound(to: UnsafeNode.self)
+  }
+  
+  @inlinable
+  @inline(__always)
+  static func advance(_ p: UnsafeMutableRawPointer, _ n: Int = 1) -> MutablePointer {
+    p
       .advanced(by: (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride) * n)
       .assumingMemoryBound(to: UnsafeNode.self)
   }

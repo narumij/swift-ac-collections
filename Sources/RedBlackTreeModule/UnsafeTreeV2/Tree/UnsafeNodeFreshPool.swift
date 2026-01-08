@@ -58,8 +58,9 @@ extension UnsafeNodeFreshPool {
    However, immediately after CoW, callers MUST ensure that
    only a single bucket exists to support index-based access.
    */
-  @inlinable
-  @inline(__always)
+//  @inlinable
+//  @inline(__always)
+  @usableFromInline
   mutating func pushFreshBucket(capacity: Int) {
     assert(capacity != 0)
     let (pointer, capacity) = Self.createBucket(capacity: capacity)

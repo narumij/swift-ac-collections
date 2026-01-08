@@ -160,11 +160,13 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
+    assert(capacity >= _buffer.header.freshPool.capacity)
     assert(check())
     // 予定サイズを確定させる
     let newCapacity = max(minimumCapacity ?? 0, initializedCount)
     // 予定サイズの木を作成する
     let tree = UnsafeTreeV2.___create(minimumCapacity: newCapacity)
+    assert(tree.capacity >= tree._buffer.header.freshPool.capacity)
     // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
     // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる
@@ -243,6 +245,7 @@ extension UnsafeTreeV2 {
 
     assert(equiv(with: tree))
     assert(tree.check())
+    assert(tree.capacity >= tree._buffer.header.freshPool.capacity)
 
     return tree
   }
@@ -271,11 +274,14 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   public func ensureCapacity(_ newCapacity: Int) {
+    assert(capacity == _buffer.header.freshPool.capacity)
     guard capacity < newCapacity else { return }
     _buffer.withUnsafeMutablePointerToHeader {
       $0.pointee.pushFreshBucket(capacity: newCapacity - capacity)
+      $0.pointee.freshPool.reserveCapacity(minimumCapacity: newCapacity)
     }
     assert(capacity >= newCapacity)
+    assert(capacity == _buffer.header.freshPool.capacity)
   }
 }
 

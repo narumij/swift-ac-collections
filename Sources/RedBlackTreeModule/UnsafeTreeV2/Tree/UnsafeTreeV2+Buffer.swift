@@ -82,7 +82,7 @@ extension UnsafeTreeV2Buffer {
 extension UnsafeTreeV2Buffer {
 
   @frozen
-  public struct Header: UnsafeNodeFreshPool, UnsafeNodeRecyclePool {
+  public struct Header: UnsafeNodeRecyclePool {
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
     
     @inlinable
@@ -92,17 +92,20 @@ extension UnsafeTreeV2Buffer {
     }
     
     @usableFromInline var count: Int = 0
-
+#if !USE_FRESH_POOL_V2
     @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
     @usableFromInline var freshPoolCapacity: Int = 0
     @usableFromInline var freshPoolUsedCount: Int = 0
+#endif
 
     @usableFromInline var recycleHead: _NodePtr = UnsafeNode.nullptr
     
+#if !USE_FRESH_POOL_V2
     @usableFromInline var freshBucketHead: ReserverHeaderPointer?
     @usableFromInline var freshBucketLast: ReserverHeaderPointer?
 #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
+#endif
 #endif
     @usableFromInline let nullptr: _NodePtr
     
@@ -123,6 +126,13 @@ extension UnsafeTreeV2Buffer {
     }
   }
 }
+
+#if !USE_FRESH_POOL_V2
+extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPool { }
+#else
+extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPoolV2 { }
+#endif
+
 
 extension UnsafeTreeV2Buffer.Header {
 

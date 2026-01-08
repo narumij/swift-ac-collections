@@ -340,6 +340,7 @@ extension UnsafeTreeV2 {
 
 // MARK: Refresh Pool Iterator
 
+#if !USE_FRESH_POOL_V2
 extension UnsafeTreeV2 {
 
   @inlinable
@@ -357,6 +358,16 @@ extension UnsafeTreeV2 {
     return UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
   }
 }
+#else
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  func makeFreshPoolIterator() -> UnsafeNodeFreshPoolV2Iterator<_Value> {
+    return _buffer.header.makeFreshPoolIterator()
+  }
+}
+#endif
 
 // MARK: Index Resolver
 

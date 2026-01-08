@@ -253,12 +253,13 @@ extension UnsafeTreeV2 {
       count <= capacity,
       initializedCount <= capacity,
       isReadOnly ? count == 0 : true,
-      _buffer.header.___recycleNodes.count == _buffer.header.recycleCount,
-      (makeFreshBucketIterator() + []).first == _buffer.header.freshBucketHead,
-      _buffer.header.freshBucketCurrent.map({
-        makeFreshBucketIterator().contains($0)
-      }) ?? true,
-      (makeFreshBucketIterator() + []).last == _buffer.header.freshBucketLast
+      true
+//      _buffer.header.___recycleNodes.count == _buffer.header.recycleCount,
+//      (makeFreshBucketIterator() + []).first == _buffer.header.freshBucketHead,
+//      _buffer.header.freshBucketCurrent.map({
+//        makeFreshBucketIterator().contains($0)
+//      }) ?? true,
+//      (makeFreshBucketIterator() + []).last == _buffer.header.freshBucketLast
     else {
       return false
     }

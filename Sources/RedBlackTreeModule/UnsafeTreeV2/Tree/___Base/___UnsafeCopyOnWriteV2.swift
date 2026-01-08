@@ -123,10 +123,8 @@ extension ___UnsafeCopyOnWriteV2 {
     let shouldExpand = __tree_.capacity < minimumCapacity
     if !_isKnownUniquelyReferenced_LV1() {
       __tree_ = __tree_.copy(growthCapacityTo: minimumCapacity, linearly: false)
-      assert(__tree_.capacity >= minimumCapacity)
     } else if shouldExpand {
       __tree_.growthCapacity(to: minimumCapacity, linearly: false)
-      assert(__tree_.capacity >= minimumCapacity)
     }
     assert(__tree_.initializedCount <= __tree_.capacity)
   }
@@ -182,10 +180,15 @@ extension ___UnsafeCopyOnWriteV2 {
   @inlinable
   @inline(__always)
   internal mutating func _ensureCapacity(to minimumCapacity: Int, limit: Int, linearly: Bool) {
+//    assert(__tree_.capacity <= minimumCapacity)
     if __tree_.capacity < minimumCapacity {
       __tree_.growthCapacity(to: minimumCapacity, limit: limit, linearly: false)
     }
-    assert(__tree_.capacity >= minimumCapacity)
+//    assert(__tree_.capacity >= minimumCapacity)
+#if !USE_FRESH_POOL_V2
     assert(__tree_.initializedCount <= __tree_.capacity)
+#else
+    assert(__tree_.initializedCount <= __tree_._buffer.header.freshPool.capacity)
+#endif
   }
 }

@@ -63,8 +63,7 @@ extension UnsafeTreeV2Buffer {
         // ノードを確保する
         if nodeCapacity > 0 {
           header.pushFreshBucket(capacity: nodeCapacity)
-          header.freshPool.reserveCapacity(minimumCapacity: nodeCapacity)
-          assert(header.freshPoolCapacity >= header.freshPool.capacity)
+          assert(header.freshPoolCapacity >= nodeCapacity)
         }
         assert(tree.pointee.end_ptr.pointee.___needs_deinitialize == true)
         // ヘッダを返却して以後はManagerBufferさんがよしなにする
@@ -110,6 +109,7 @@ extension UnsafeTreeV2Buffer {
     @usableFromInline let nullptr: _NodePtr
     
     @usableFromInline var freshPool: FreshPool<_Value> = .init()
+    @usableFromInline var _freshPoolCapacity: Int?
 
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       /// CoWの発火回数を観察するためのプロパティ
@@ -162,6 +162,7 @@ extension UnsafeTreeV2Buffer.Header {
 //    let p = recycleCount == 0 ? ___popFresh() : ___popRecycle()
     let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
     UnsafeNode.initializeValue(p, to: k)
+    assert(p != nil)
     assert(p.pointee.___node_id_ >= 0)
     return p
   }
@@ -205,6 +206,6 @@ package func tearDown<T>(treeBuffer buffer: UnsafeTreeV2Buffer<T>) {
 //    e.pointee.__left_ = UnsafeNode.nullptr
 //    e.pointee.__right_ = UnsafeNode.nullptr
 //    e.pointee.__parent_ = UnsafeNode.nullptr
-    h.pointee.freshPool = .init()
+//    h.pointee.freshPool = .init()
   }
 }

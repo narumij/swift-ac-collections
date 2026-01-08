@@ -105,6 +105,7 @@ import XCTest
       storage._buffer.header.___pushRecycle(storage._buffer.header[1])
       storage._buffer.header.___pushRecycle(storage._buffer.header[2])
       storage._buffer.header.___pushRecycle(storage._buffer.header[3])
+      XCTAssertTrue(storage.check())
       let copy = storage.copy(minimumCapacity: 100)
       XCTAssertEqual(storage._buffer.header.___recycleNodes, copy._buffer.header.___recycleNodes)
       var (s, c) = (storage._buffer.header.recycleHead, copy._buffer.header.recycleHead)

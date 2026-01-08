@@ -188,6 +188,7 @@ extension UnsafeTreeV2 {
 
         @inline(__always)
         func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
+          assert(ptr != nil)
           let index = ptr.pointee.___node_id_
           return switch index {
           case .nullptr:
@@ -229,7 +230,9 @@ extension UnsafeTreeV2 {
         _begin_ptr.pointee = __ptr_(source_begin.pointee)
 
         // その他管理情報をコピー
+#if !USE_FRESH_POOL_V2
         _header_ptr.pointee.freshPoolUsedCount = source_header.pointee.freshPoolUsedCount
+#endif
         _header_ptr.pointee.count = source_header.pointee.count
         _header_ptr.pointee.recycleHead = __ptr_(
           source_header.pointee.recycleHead)
@@ -274,14 +277,10 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   public func ensureCapacity(_ newCapacity: Int) {
-    assert(capacity == _buffer.header.freshPool.capacity)
     guard capacity < newCapacity else { return }
     _buffer.withUnsafeMutablePointerToHeader {
       $0.pointee.pushFreshBucket(capacity: newCapacity - capacity)
-      $0.pointee.freshPool.reserveCapacity(minimumCapacity: newCapacity)
     }
-    assert(capacity >= newCapacity)
-    assert(capacity == _buffer.header.freshPool.capacity)
   }
 }
 

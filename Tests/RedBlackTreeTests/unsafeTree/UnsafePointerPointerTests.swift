@@ -1,0 +1,62 @@
+import XCTest
+@testable import RedBlackTreeModule
+
+final class UnsafePointerPointerTests: XCTestCase {
+
+  func testPointerOfPointerPointsToOriginalNodes() {
+
+    // 1. UnsafeNode を10個分確保・初期化
+    let nodeCount = 10
+    let nodes = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: nodeCount)
+    for i in 0..<nodeCount {
+      (nodes + i).initialize(to: UnsafeNode(___node_id_: i))
+    }
+
+    // 2. UnsafeNode へのポインタを10個保持する生メモリを確保・初期化
+    let ptrArray =
+      UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
+        .allocate(capacity: nodeCount)
+
+    for i in 0..<nodeCount {
+      (ptrArray + i).initialize(to: nodes + i)
+    }
+
+    // 3. 各ポインタが正しく元の UnsafeNode を指しているか検証
+    for i in 0..<nodeCount {
+      let p = (ptrArray + i).pointee
+      XCTAssertEqual(p.pointee.___node_id_, i)
+      XCTAssertTrue(p == nodes + i)
+    }
+
+    // 後始末
+    for i in 0..<nodeCount {
+      (ptrArray + i).deinitialize(count: 1)
+    }
+    ptrArray.deallocate()
+
+    for i in 0..<nodeCount {
+      (nodes + i).deinitialize(count: 1)
+    }
+    nodes.deallocate()
+  }
+  
+  func testFreshPool_NodeIdMatchesArrayIndex() {
+    typealias V = Int
+    var pool = FreshPool<V>()
+    pool.reserveCapacity(minimumCapacity: 10)
+
+    for i in 0..<10 {
+      let p = pool[i]
+      p.initialize(to: UnsafeNode(___node_id_: i))
+    }
+
+    pool.used = 10
+
+    for i in 0..<10 {
+      XCTAssertEqual(pool[i].pointee.___node_id_, i)
+      XCTAssertEqual(pool[i].pointee.__left_, UnsafeNode.nullptr)
+      XCTAssertEqual(pool[i].pointee.__right_, UnsafeNode.nullptr)
+      XCTAssertEqual(pool[i].pointee.__parent_, UnsafeNode.nullptr)
+    }
+  }
+}

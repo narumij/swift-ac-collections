@@ -29,13 +29,13 @@ struct UnsafeNodeFreshPoolV2Iterator<_Value>: IteratorProtocol, Sequence {
 
   @inlinable
   @inline(__always)
-  internal init(elements: ElementPointer, count: Int) {
+  internal init(elements: UnsafeMutablePointer<ElementPointer>?, count: Int) {
     self.elements = elements
     self.count = count
   }
 
   @usableFromInline
-  var elements: ElementPointer
+  var elements: UnsafeMutablePointer<ElementPointer>?
 
   @usableFromInline
   var current: Int = 0
@@ -48,6 +48,6 @@ struct UnsafeNodeFreshPoolV2Iterator<_Value>: IteratorProtocol, Sequence {
   mutating func next() -> ElementPointer? {
     guard current < count else { return nil }
     defer { current += 1}
-    return elements + current
+    return elements?[current]
   }
 }

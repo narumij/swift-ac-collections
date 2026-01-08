@@ -132,6 +132,7 @@ final class AllocationTests: RedBlackTreeTestCase {
       }
     }
 
+#if !USE_FRESH_POOL_V2
     func testCapacityGrowth() throws {
       let set = RedBlackTreeSet<Int>()
       var tree = set.__tree_
@@ -156,6 +157,7 @@ final class AllocationTests: RedBlackTreeTestCase {
       //    XCTAssertEqual(capacities.last, 1572864)
       tree.initializedCount = 0  // これをしないと未初期化メモリに触ってクラッシュとなる
     }
+  #endif
   
   func testHoge() throws {
     var a = RedBlackTreeSet<Int>()

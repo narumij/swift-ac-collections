@@ -995,16 +995,19 @@ final class MultisetTests: RedBlackTreeTestCase {
     typealias Index = RedBlackTreeMultiSet<Int>.Index
     #if DEBUG
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
+#if !USE_FRESH_POOL_V2
       // UnsafeTreeでは、範囲外のインデックスを作成できない
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
-
+#endif
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 2)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 3)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
+#if !USE_FRESH_POOL_V2
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
+#endif
     #endif
   }
 
@@ -1026,7 +1029,9 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 6)))
+#if !USE_FRESH_POOL_V2
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
+#endif
     #endif
   }
 

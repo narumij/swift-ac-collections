@@ -54,6 +54,9 @@ extension FreshPool {
 
   @usableFromInline
   mutating func reserveCapacity(minimumCapacity newCapacity: Int) {
+    assert(capacity < newCapacity)
+    assert(used <= capacity)
+    assert(used < newCapacity)
     guard capacity < newCapacity else { return }
     let oldCapacity = capacity
     let size = newCapacity - oldCapacity
@@ -67,6 +70,7 @@ extension FreshPool {
         .assumingMemoryBound(to: UnsafeNode.self)
       i += 1
     }
+    assert(used < capacity)
   }
 
   @inlinable
@@ -79,6 +83,7 @@ extension FreshPool {
       .allocate(capacity: newRank)
     if let array {
       newArray.moveInitialize(from: array, count: capacity)
+      array.deallocate()
     }
     array = newArray
   }
@@ -92,8 +97,10 @@ extension FreshPool {
     //                            byteCount: (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride) * size,
     //                            alignment: max(MemoryLayout<UnsafeNode>.alignment, MemoryLayout<_Value>.alignment)),
     //                           pointer: storage))
+    assert(used <= capacity)
     let (newStorage, buffer, _) = createBucket(capacity: size)
     storage = newStorage
+    assert(used < capacity)
     return UnsafePair<_Value>.pointer(from: buffer)
   }
 
@@ -134,7 +141,7 @@ extension FreshPool {
     header.initialize(
       to:
         .init(
-          capacity: capacity,
+          capacity: self.capacity + capacity,
           pointer: self.storage))
 
     #if DEBUG
@@ -160,16 +167,42 @@ extension FreshPool {
   }
 
   var buffer: UnsafeMutableBufferPointer<UnsafeMutablePointer<UnsafeNode>> {
-    UnsafeMutableBufferPointer(
-      start: UnsafeMutableRawPointer(array!)
+    guard let array else { fatalError() }
+    return UnsafeMutableBufferPointer(
+      start: UnsafeMutableRawPointer(array)
         .assumingMemoryBound(to: UnsafeMutablePointer<UnsafeNode>.self),
       count: capacity
     )
   }
 
+//  @usableFromInline
+//  subscript(___node_id_: Int) -> UnsafeMutablePointer<UnsafeNode> {
+////    buffer[___node_id_]
+////    array!.pointee.advanced(by: ___node_id_)
+////    array!.advanced(by: ___node_id_).pointee
+////    fatalError()
+//  }
+  
   @usableFromInline
   subscript(___node_id_: Int) -> UnsafeMutablePointer<UnsafeNode> {
-    buffer[___node_id_]
+    // 前提：0 <= ___node_id_ < used
+    assert(0 <= ___node_id_)
+    assert(___node_id_ < capacity)
+    
+    let p = array!.advanced(by: ___node_id_).pointee
+    assert(p != nil)
+    return p
+  }
+
+  @usableFromInline
+  mutating func removeAllKeepingCapacity() {
+    for i in 0..<used {
+      let c = self[i]
+      if c.pointee.___needs_deinitialize {
+        UnsafeNode.deinitialize(_Value.self, c)
+      }
+    }
+    used = 0
   }
 
   @usableFromInline
@@ -189,6 +222,9 @@ extension FreshPool {
       array.deinitialize(count: capacity)
       array.deallocate()
     }
+    used = 0
+    storage = nil
+    array = nil
   }
 }
 

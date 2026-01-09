@@ -49,10 +49,12 @@ protocol ___UnsafeCopyOnWriteV2 {
     /// これを利用しない判断をする可能性が高い。
     var referenceCounter: ReferenceCounter { get set }
   #endif
-  var __tree_: UnsafeTreeV2<Base> { get set }
+  var __tree_: _CoW_Tree { get set }
 }
 
 extension ___UnsafeCopyOnWriteV2 {
+  
+  public typealias _CoW_Tree = UnsafeTreeV2<Base>
 
   @inlinable
   @inline(__always)
@@ -101,7 +103,7 @@ extension ___UnsafeCopyOnWriteV2 {
   @inlinable
   @inline(__always)
   internal mutating func _ensureUnique(
-    transform: (UnsafeTreeV2<Base>) throws -> UnsafeTreeV2<Base>
+    transform: (_CoW_Tree) throws -> _CoW_Tree
   )
     rethrows
   {

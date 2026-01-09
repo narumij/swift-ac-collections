@@ -203,7 +203,7 @@ extension UnsafeIndexV2 {
 
 #if DEBUG
   extension UnsafeIndexV2 {
-    fileprivate init(_unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, node_id: Int) {
+    fileprivate init(_unsafe_tree: Tree, rawValue: _NodePtr, node_id: Int) {
       self.__tree_ = _unsafe_tree
       self.rawValue = rawValue
       self.___node_id_ = node_id
@@ -211,10 +211,10 @@ extension UnsafeIndexV2 {
   }
 
   extension UnsafeIndexV2 {
-    internal static func unsafe(tree: UnsafeTreeV2<Base>, rawValue: _NodePtr) -> Self {
+    internal static func unsafe(tree: Tree, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue, node_id: rawValue.pointee.___node_id_)
     }
-    internal static func unsafe(tree: UnsafeTreeV2<Base>, rawValue: Int) -> Self {
+    internal static func unsafe(tree: Tree, rawValue: Int) -> Self {
       if rawValue == .nullptr {
         return .init(_unsafe_tree: tree, rawValue: tree.nullptr, node_id: .nullptr)
       }

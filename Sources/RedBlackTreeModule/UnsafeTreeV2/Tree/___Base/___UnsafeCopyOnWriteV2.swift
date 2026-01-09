@@ -181,8 +181,8 @@ extension ___UnsafeCopyOnWriteV2 {
   @inline(__always)
   internal mutating func _ensureCapacity(to minimumCapacity: Int, limit: Int, linearly: Bool) {
 //    assert(__tree_.capacity <= minimumCapacity)
-    if __tree_.capacity < minimumCapacity {
-      __tree_.growthCapacity(to: minimumCapacity, limit: limit, linearly: false)
+    if __tree_.capacity < min(limit, minimumCapacity) {
+      __tree_.growthCapacity(to: min(limit, minimumCapacity), limit: limit, linearly: false)
     }
 //    assert(__tree_.capacity >= minimumCapacity)
 #if !USE_FRESH_POOL_V2

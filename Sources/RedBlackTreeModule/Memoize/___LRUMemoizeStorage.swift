@@ -99,14 +99,7 @@ extension ___LRUMemoizeStorage {
       if let newValue {
         if __tree_.count < maxCount {
           // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
-#if !USE_UNSAFE_TREE
           _ensureCapacity(limit: maxCount)
-          #else
-          _ensureCapacity(limit: maxCount, linearly: true)
-          #endif
-          // TODO: FIXME
-          // テストを通すための暫定処置。挙動変更でいつまでも増えるようになった様子
-          __tree_._buffer.header.freshPoolCapacity = min(maxCount, __tree_._buffer.header.freshPoolCapacity)
         }
         if __tree_.count == maxCount {
           _ = __tree_.erase(___popRankLowest())

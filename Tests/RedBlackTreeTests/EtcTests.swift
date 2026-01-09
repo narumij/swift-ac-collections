@@ -902,4 +902,59 @@ final class EtcTests: RedBlackTreeTestCase {
   //      XCTAssertEqual(a.__tree_.__tree_prev_iter(a.startIndex.rawValue), .nullptr)
   //    }
   //  }
+  
+  func testRoundTrip() throws {
+    var fixture = RedBlackTreeSet<Int>(minimumCapacity: 100)
+    for _ in 0..<1000 {
+      for i in 0..<100 {
+        fixture.insert(i)
+      }
+      for i in 0..<100 {
+        fixture.remove(i)
+      }
+    }
+    XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead?.pointee.count, 100)
+    XCTAssertEqual(fixture.capacity, 100)
+  }
+  
+  func testRoundTrip2() throws {
+    var fixture = RedBlackTreeSet<Int>(minimumCapacity: 100)
+    let head = fixture.__tree_._buffer.header.freshBucketHead
+    XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 100)
+    for n in 0..<1 {
+      for i in 0..<100 {
+        fixture.insert(i)
+      }
+      for i in 0..<100 {
+        fixture.remove(i)
+      }
+      XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 100)
+      fixture.removeAll(keepingCapacity: true)
+      XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 100)
+    }
+    XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead, head)
+//    XCTAssertEqual(fixture.__tree_.makeFreshPoolIterator().map(\.pointee.___node_id_).count, 100)
+//    XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead?.pointee.count, 100)
+    XCTAssertEqual(fixture.capacity, 100)
+  }
+  
+  func testRoundTrip3() throws {
+    var fixture = RedBlackTreeSet<Int>()
+    let head = fixture.__tree_._buffer.header.freshBucketHead
+    XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 0)
+    for n in 0..<1 {
+      for i in 0..<100 {
+        fixture.insert(i)
+      }
+      for i in 0..<100 {
+        fixture.remove(i)
+      }
+      fixture.removeAll(keepingCapacity: false)
+      XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 0)
+    }
+    XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead, head)
+//    XCTAssertEqual(fixture.__tree_.makeFreshPoolIterator().map(\.pointee.___node_id_).count, 100)
+//    XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead?.pointee.count, 100)
+    XCTAssertEqual(fixture.capacity, 0)
+  }
 }

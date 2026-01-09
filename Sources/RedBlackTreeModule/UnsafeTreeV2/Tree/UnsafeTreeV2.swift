@@ -302,7 +302,7 @@ extension UnsafeTreeV2 {
   func clear() {
     end.pointee.__left_ = nullptr
     _buffer.withUnsafeMutablePointerToHeader {
-      $0.pointee.clear(_end_ptr: __end_node)
+      $0.pointee.clear()
     }
     _buffer.withUnsafeMutablePointerToElements {
       $0.pointee.clear()
@@ -318,10 +318,10 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func __eraseAll() {
     clear()
-    _buffer.withUnsafeMutablePointerToHeader {
-      $0.pointee.___flushRecyclePool()
-      $0.pointee.count = 0
-    }
+//    _buffer.withUnsafeMutablePointerToHeader {
+//      $0.pointee.___flushRecyclePool()
+//      $0.pointee.count = 0
+//    }
   }
 }
 

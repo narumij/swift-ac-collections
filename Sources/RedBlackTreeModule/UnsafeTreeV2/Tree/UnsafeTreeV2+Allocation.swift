@@ -193,6 +193,14 @@ extension UnsafeTreeAllcation6_7 {
         minimumCapacity)
     }
 
+//    if minimumCapacity <= 2 {
+//      return Swift.max(minimumCapacity, 2)
+//    }
+//
+//    if minimumCapacity <= 4 {
+//      return Swift.max(minimumCapacity, 4)
+//    }
+
     return Swift.max(minimumCapacity, capacity + max(capacity / 8, 2))
   }
 }
@@ -213,6 +221,14 @@ extension UnsafeTreeAllcation6_9 {
         capacity,
         minimumCapacity)
     }
+    
+//    if minimumCapacity <= 2 {
+//      return Swift.max(minimumCapacity, 2)
+//    }
+//
+//    if minimumCapacity <= 4 {
+//      return Swift.max(minimumCapacity, 4)
+//    }
 
     return Swift.max(minimumCapacity, capacity + max(capacity / 4, 2))
   }

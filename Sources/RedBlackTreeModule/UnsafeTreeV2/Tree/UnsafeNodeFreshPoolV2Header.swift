@@ -38,7 +38,7 @@ struct FreshPool<_Value> {
   @usableFromInline var used: Int = 0
   @usableFromInline var capacity: Int = 0
   @usableFromInline var pointers: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>?
-  @usableFromInline var pointersCount: Int = 0
+  @usableFromInline var pointerCount: Int = 0
   @usableFromInline var storage: UnsafeMutablePointer<FreshStorage>?
 }
 
@@ -67,17 +67,22 @@ extension FreshPool {
   }
   
   @inlinable
-  func growthCount(minimumCount: Int) -> Int {
+  func growthPointerCount(minimumCount: Int) -> Int {
+    let base = 16
+    // 最初にどんと増やすケースではサイズが確定してるケースが多そうなのでサイズ依頼に従う
+    if pointerCount == 0, minimumCount > base {
+      return minimumCount
+    }
     // ノード用メモリ確保の速度でうまみが強い範囲に余計な仕事をしないための最小限を最初に確保
     // その後は1/3ずつ増加
-    max(16, minimumCount * 5 / 4)
+    return max(base, minimumCount * 5 / 4)
   }
 
   @inlinable
   @inline(__always)
   mutating func resizeArrayIfNeeds(minimumCapacity newCapacity: Int) {
-    let newRank = growthCount(minimumCount: newCapacity)
-    guard pointersCount != newRank || pointers == nil else { return }
+    let newRank = growthPointerCount(minimumCount: newCapacity)
+    guard pointerCount != newRank || pointers == nil else { return }
     let newArray = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
       .allocate(capacity: newRank)
     if let pointers {
@@ -85,7 +90,7 @@ extension FreshPool {
       pointers.deallocate()
     }
     pointers = newArray
-    pointersCount = newRank
+    pointerCount = newRank
   }
 
   @inlinable

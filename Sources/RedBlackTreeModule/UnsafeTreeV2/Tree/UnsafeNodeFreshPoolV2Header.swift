@@ -204,9 +204,7 @@ extension FreshPool {
 
   @inlinable
   @inline(__always)
-//  @usableFromInline
   mutating func dispose() {
-#if true
     if let array {
       var i = 0
       while i < used {
@@ -224,27 +222,5 @@ extension FreshPool {
       storage.deinitialize(count: 1)
       storage.deallocate()
     }
-//    used = 0
-//    storage = nil
-#else
-    if let array {
-      var it = array
-      let end = it + used
-      while it != end {
-        let c = it.pointee
-        UnsafeNode.deinitialize(_Value.self, c)
-        c.deinitialize(count: 1)
-        it += 1
-      }
-      array.deinitialize(count: capacity)
-      array.deallocate()
-      self.array = nil
-    }
-    while let storage {
-      self.storage = storage.pointee.pointer
-      storage.deinitialize(count: 1)
-      storage.deallocate()
-    }
-#endif
   }
 }

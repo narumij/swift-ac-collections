@@ -57,7 +57,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   }
 
   public typealias Base = Base
-  public typealias Tree = UnsafeTreeV2<Base>
+  public typealias Tree = Self
   public typealias Header = UnsafeTreeV2Buffer<Base._Value>.Header
   public typealias Buffer = ManagedBuffer<Header, UnsafeTreeV2Origin>
   public typealias BufferPointer = ManagedBufferPointer<Header, UnsafeTreeV2Origin>

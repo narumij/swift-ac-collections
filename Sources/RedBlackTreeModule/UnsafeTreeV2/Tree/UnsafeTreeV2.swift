@@ -52,6 +52,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   ) {
     self._buffer = _buffer
     self.isReadOnly = isReadOnly
+    self.nullptr = _buffer.withUnsafeMutablePointerToElements { $0[0].nullptr }
     self.end = _buffer.withUnsafeMutablePointerToElements { $0[0].end_ptr }
   }
 
@@ -68,7 +69,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   @usableFromInline
   var _buffer: BufferPointer
 
-  public let end: _NodePtr
+  public let nullptr, end: _NodePtr
 
   @usableFromInline
   let isReadOnly: Bool

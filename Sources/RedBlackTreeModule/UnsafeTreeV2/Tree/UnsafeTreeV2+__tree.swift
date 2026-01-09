@@ -22,11 +22,11 @@
 
 extension UnsafeTreeV2 {
 
-  @inlinable
-  @inline(__always)
-  public var nullptr: UnsafeMutablePointer<UnsafeNode> {
-    _buffer.withUnsafeMutablePointerToElements { $0.pointee.nullptr }
-  }
+//  @inlinable
+//  @inline(__always)
+//  public var nullptr: UnsafeMutablePointer<UnsafeNode> {
+//    _buffer.withUnsafeMutablePointerToElements { $0.pointee.nullptr }
+//  }
 
 //  @inlinable
 //  @inline(__always)

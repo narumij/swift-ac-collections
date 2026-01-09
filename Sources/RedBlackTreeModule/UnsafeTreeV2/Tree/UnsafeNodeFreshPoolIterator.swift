@@ -35,31 +35,32 @@ struct UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence {
 
   @inlinable
   @inline(__always)
-  internal init(bucket: BucketPointer?) {
+  internal init(bucket: BucketPointer?, nullptr: UnsafeMutablePointer<UnsafeNode>) {
     self.bucket = bucket
+    self.it = nullptr
+    self.end = nullptr
   }
 
   @usableFromInline
   var bucket: BucketPointer?
 
   @usableFromInline
-  var nodeOffset: Int = 0
+  var it, end: UnsafeMutablePointer<UnsafeNode>
 
   @inlinable
   @inline(__always)
   mutating func next() -> ElementPointer? {
 
-    while let bucket, nodeOffset == bucket.pointee.count {
+    while it == end, let bucket {
       self.bucket = bucket.pointee.next
-      nodeOffset = 0
+      it = bucket.pointee.start
+      end = UnsafePair<_Value>.advance(bucket.pointee.start, bucket.pointee.count)
     }
+    
+    guard it != end else { return .none }
 
-    guard let h = bucket else {
-      return nil
-    }
-
-    defer { nodeOffset += 1 }
-
-    return UnsafePair<_Value>.advance(h.pointee.start, nodeOffset)
+    let p = it
+    self.it = UnsafePair<_Value>.advance(it)
+    return p
   }
 }

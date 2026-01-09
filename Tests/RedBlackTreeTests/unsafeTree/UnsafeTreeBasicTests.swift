@@ -44,6 +44,35 @@ import XCTest
       XCTAssertEqual(storage.__value_(ptr), 50)
     }
 
+    func testPoolIterator() async throws {
+      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
+      XCTAssertGreaterThanOrEqual(storage.capacity, 4)
+      _ = storage.__construct_node(100)
+      _ = storage.__construct_node(200)
+      _ = storage.__construct_node(300)
+      _ = storage.__construct_node(400)
+      
+      do {
+        var it = storage.makeFreshPoolIterator()
+        XCTAssertEqual(it.next().map(\.pointee.___node_id_), 0)
+        XCTAssertEqual(it.next().map(\.pointee.___node_id_), 1)
+        XCTAssertEqual(it.next().map(\.pointee.___node_id_), 2)
+        XCTAssertEqual(it.next().map(\.pointee.___node_id_), 3)
+        XCTAssertEqual(it.next().map(\.pointee.___node_id_), nil)
+        XCTAssertEqual(it.next().map(\.pointee.___node_id_), nil)
+      }
+      
+//      throw XCTSkip()
+
+      XCTAssertEqual(
+        storage.makeFreshPoolIterator().map(\.pointee.___node_id_),
+        [0, 1, 2, 3])
+
+      XCTAssertEqual(
+        storage.makeFreshPoolIterator().map { UnsafePair<Base._Value>.valuePointer($0).pointee },
+        [100, 200, 300, 400])
+    }
+
     func testDestroy0() async throws {
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
       let ptr = storage.__construct_node(100)
@@ -109,7 +138,7 @@ import XCTest
       let copy = storage.copy(minimumCapacity: 100)
       XCTAssertEqual(storage._buffer.header.___recycleNodes, copy._buffer.header.___recycleNodes)
       var (s, c) = (storage._buffer.header.recycleHead, copy._buffer.header.recycleHead)
-      while s != storage.nullptr , c != storage.nullptr {
+      while s != storage.nullptr, c != storage.nullptr {
         XCTAssertEqual(s.index, s.index)
         XCTAssertEqual(
           s.pointee.__right_.index, c.pointee.__right_.index)

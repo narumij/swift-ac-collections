@@ -82,7 +82,7 @@ extension UnsafeNodeFreshPoolV2 {
   @inlinable
   @inline(__always)
   mutating func ___cleanFreshPool() {
-    freshPool.removeAllKeepingCapacity()
+    freshPool.clear()
   }
 }
 

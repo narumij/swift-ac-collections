@@ -9,7 +9,7 @@ final class FreshPoolAllocatorTests: XCTestCase {
     let capacity = 10
     var pool = FreshPool<V>()
 
-    let (header, firstRaw, _) = pool.createBucket(capacity: capacity)
+    let (header, firstRaw, _) = pool._createBucket(capacity: capacity)
 
     // elements 開始位置
     var raw = firstRaw

@@ -11,12 +11,11 @@ struct FreshStorage {
 
   @inlinable
   @inline(__always)
-  internal init(
-    pointer: UnsafeMutablePointer<FreshStorage>?
-  ) {
+  internal init(pointer: UnsafeMutablePointer<FreshStorage>?) {
     self.pointer = pointer
   }
-  // 過去のバッファ
+  
+  // 直前のバッファ
   @usableFromInline let pointer: UnsafeMutablePointer<FreshStorage>?
 }
 
@@ -53,8 +52,8 @@ extension FreshPool {
     guard capacity < newCapacity else { return }
     let oldCapacity = capacity
     let size = newCapacity - oldCapacity
-    resizeArrayIfNeeds(minimumCapacity: newCapacity)
-    var p = pushStorage(size: size)
+    _resizePointersIfNeeds(minimumCapacity: newCapacity)
+    var p = _pushStorage(size: size)
     var i = oldCapacity
     while i < newCapacity {
       (pointers! + i).initialize(to: p)
@@ -65,7 +64,7 @@ extension FreshPool {
     }
     assert(used < capacity)
   }
-  
+
   @inlinable
   func growthPointerCount(minimumCount: Int) -> Int {
     let base = 16
@@ -80,7 +79,7 @@ extension FreshPool {
 
   @inlinable
   @inline(__always)
-  mutating func resizeArrayIfNeeds(minimumCapacity newCapacity: Int) {
+  mutating func _resizePointersIfNeeds(minimumCapacity newCapacity: Int) {
     let newRank = growthPointerCount(minimumCount: newCapacity)
     guard pointerCount != newRank || pointers == nil else { return }
     let newArray = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
@@ -95,9 +94,9 @@ extension FreshPool {
 
   @inlinable
   @inline(__always)
-  mutating func pushStorage(size: Int) -> UnsafeMutablePointer<UnsafeNode> {
+  mutating func _pushStorage(size: Int) -> UnsafeMutablePointer<UnsafeNode> {
     assert(used <= capacity)
-    let (newStorage, buffer, size) = createBucket(capacity: size)
+    let (newStorage, buffer, size) = _createBucket(capacity: size)
     storage = newStorage
     capacity += size
     assert(used < capacity)
@@ -106,7 +105,7 @@ extension FreshPool {
 
   @inlinable
   @inline(__always)
-  func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
+  func _allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
     let s0 = MemoryLayout<UnsafeNode>.stride
     let a0 = MemoryLayout<UnsafeNode>.alignment
     let s1 = MemoryLayout<_Value>.stride
@@ -119,7 +118,7 @@ extension FreshPool {
 
   @inlinable
   @inline(__always)
-  func createBucket(capacity: Int) -> (
+  func _createBucket(capacity: Int) -> (
     head: UnsafeMutablePointer<FreshStorage>,
     first: UnsafeMutableRawPointer,
     capacity: Int
@@ -127,7 +126,7 @@ extension FreshPool {
 
     assert(capacity != 0)
 
-    let (bytes, alignment) = allocationSize(capacity: capacity)
+    let (bytes, alignment) = _allocationSize(capacity: capacity)
 
     let header_storage = UnsafeMutableRawPointer.allocate(
       byteCount: bytes,
@@ -166,7 +165,7 @@ extension FreshPool {
 
   @inlinable
   @inline(__always)
-  var buffer: UnsafeMutableBufferPointer<UnsafeMutablePointer<UnsafeNode>> {
+  var _buffer: UnsafeMutableBufferPointer<UnsafeMutablePointer<UnsafeNode>> {
     guard let pointers else { fatalError() }
     return UnsafeMutableBufferPointer(
       start: UnsafeMutableRawPointer(pointers)
@@ -193,7 +192,7 @@ extension FreshPool {
   }
 
   @usableFromInline
-  mutating func removeAllKeepingCapacity() {
+  mutating func clear() {
     for i in 0..<used {
       let c = self[i]
       if c.pointee.___needs_deinitialize {

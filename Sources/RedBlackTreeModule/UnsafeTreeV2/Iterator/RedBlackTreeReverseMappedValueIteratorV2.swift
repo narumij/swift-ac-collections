@@ -29,7 +29,9 @@ extension RedBlackTreeIteratorV2.MappedValues {
   where Base: KeyValueComparer
   {
     public typealias Tree = UnsafeTreeV2<Base,Base._Key>
-    
+    public typealias _Key = Tree._Key
+    public typealias _Value = Tree._Value
+
     @usableFromInline
     internal let __tree_: Tree
     

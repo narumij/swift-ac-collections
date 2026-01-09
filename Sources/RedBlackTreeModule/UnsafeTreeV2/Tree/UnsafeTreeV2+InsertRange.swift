@@ -195,7 +195,7 @@ extension UnsafeTreeV2 {
   @inlinable
   internal static func ___insert_range_unique<S>(tree __tree_: UnsafeTreeV2, _ __source: __owned S)
     -> UnsafeTreeV2
-  where Base._Value == S.Element, S: Sequence {
+  where _Value == S.Element, S: Sequence {
     return ___insert_range_unique(tree: __tree_, __source) { $0 }
   }
 
@@ -203,7 +203,7 @@ extension UnsafeTreeV2 {
   internal static func ___insert_range_unique<S>(
     tree __tree_: UnsafeTreeV2,
     _ __source: __owned S,
-    transform: (S.Element) -> Base._Value
+    transform: (S.Element) -> _Value
   ) -> UnsafeTreeV2
   where S: Sequence {
     var __tree_ = __tree_
@@ -249,7 +249,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
     tree __tree_: UnsafeTreeV2,
     _ __source: S,
     uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
-    transform __t_: (S.Element) -> Base._Value
+    transform __t_: (S.Element) -> _Value
   )
     rethrows -> UnsafeTreeV2
   where
@@ -297,7 +297,7 @@ extension UnsafeTreeV2 {
   @inlinable
   internal static func
     ___insert_range_multi<S>(tree __tree_: UnsafeTreeV2, _ __source: __owned S) -> UnsafeTreeV2
-  where Base._Value == S.Element, S: Sequence {
+  where _Value == S.Element, S: Sequence {
     ___insert_range_multi(tree: __tree_, __source) { $0 }
   }
 
@@ -306,7 +306,7 @@ extension UnsafeTreeV2 {
     ___insert_range_multi<S>(
       tree __tree_: UnsafeTreeV2,
       _ __source: __owned S,
-      transform: (S.Element) -> Base._Value
+      transform: (S.Element) -> _Value
     )
     -> UnsafeTreeV2
   where S: Sequence {

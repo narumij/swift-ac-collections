@@ -51,7 +51,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
     rethrows -> OtherTree<Other>
   where
     Other: KeyValueComparer & ___UnsafeKeyValueSequenceV2,
-    Other._Key == Base._Key
+    Other._Key == _Key
   {
     let other = OtherTree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = other.___max_ref()
@@ -74,7 +74,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
     rethrows -> OtherTree<Other>
   where
     Other: KeyValueComparer & ___UnsafeKeyValueSequenceV2,
-    Other._Key == Base._Key
+    Other._Key == _Key
   {
     var other = OtherTree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = other.___max_ref()

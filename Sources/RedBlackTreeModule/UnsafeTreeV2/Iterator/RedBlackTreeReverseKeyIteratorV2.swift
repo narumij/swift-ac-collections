@@ -29,6 +29,8 @@ extension RedBlackTreeIteratorV2.Keys {
     
     public typealias Tree = UnsafeTreeV2<Base,Base._Key>
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+    public typealias _Key = Tree._Key
+    public typealias _Value = Tree._Value
 
     @usableFromInline
     internal let __tree_: Tree
@@ -49,7 +51,7 @@ extension RedBlackTreeIteratorV2.Keys {
     
     @inlinable
     @inline(__always)
-    public mutating func next() -> Base._Key? {
+    public mutating func next() -> _Key? {
       guard _current != _start else { return nil }
       _current = _next
       _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : __tree_.nullptr

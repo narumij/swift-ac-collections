@@ -262,8 +262,8 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  @inline(__always)
+//  @inlinable
+//  @inline(__always)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element

@@ -61,7 +61,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase,_Key> where _Key == Base._Key {
   public typealias Header = UnsafeTreeV2Buffer<Base._Value>.Header
   public typealias Buffer = ManagedBuffer<Header, UnsafeTreeV2Origin>
   public typealias BufferPointer = ManagedBufferPointer<Header, UnsafeTreeV2Origin>
-  public typealias _Key = Base._Key
+  public typealias _Key = _Key
   public typealias _Value = Base._Value
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>

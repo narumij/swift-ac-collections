@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 extension UnsafeTreeV2 {
-  public typealias OtherTree<O> = UnsafeTreeV2<O,O._Key,O._Value> where O: ValueComparer & CompareTrait & ThreeWayComparator
+  public typealias OtherTree<O> = UnsafeTreeV2<O,O._Key,O._Value,O.__compare_result> where O: ValueComparer & CompareTrait & ThreeWayComparator
 }
 
 extension UnsafeTreeV2 {

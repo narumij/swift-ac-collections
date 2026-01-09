@@ -25,7 +25,7 @@ import Foundation
 @frozen
 public struct RedBlackTreeSliceV2<Base>: ___UnsafeCommonV2 & ___UnsafeSubSequenceV2 & ___UnsafeIndexV2 &  ___UnsafeKeyOnlySequenceV2 where Base: ___TreeBase & ___TreeIndex {
 
-  public typealias Tree = UnsafeTreeV2<Base,Base._Key,Base._Value>
+  public typealias Tree = UnsafeTreeV2<Base,Base._Key,Base._Value,Base.__compare_result>
   public typealias _NodePtr = Tree._NodePtr
   public typealias _Value = Tree._Value
   public typealias Element = Tree._Value

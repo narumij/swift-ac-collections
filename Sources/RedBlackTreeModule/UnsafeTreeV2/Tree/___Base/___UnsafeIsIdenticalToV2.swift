@@ -32,7 +32,7 @@ protocol ___UnsafeIsIdenticalToV2 {
 
 extension ___UnsafeIsIdenticalToV2 {
   
-  public typealias __IIT_Tree = UnsafeTreeV2<Base,Base._Key,Base._Value>
+  public typealias __IIT_Tree = UnsafeTreeV2<Base,Base._Key,Base._Value,Base.__compare_result>
 
   /// Returns a boolean value indicating whether this set is identical to
   /// `other`.

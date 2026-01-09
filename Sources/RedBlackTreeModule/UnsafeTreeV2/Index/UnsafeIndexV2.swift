@@ -28,7 +28,7 @@ import Foundation
 @frozen
 public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
 
-  public typealias Tree = UnsafeTreeV2<Base,Base._Key,Base._Value>
+  public typealias Tree = UnsafeTreeV2<Base,Base._Key,Base._Value,Base.__compare_result>
   public typealias Pointee = Tree.Pointee
   public typealias _NodePtr = Tree._NodePtr
 
@@ -246,7 +246,7 @@ extension UnsafeIndexV2 {
 @inlinable
 @inline(__always)
 public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
-  -> UnsafeTreeV2<Base,Base._Key,Base._Value>.Indices
+  -> UnsafeTreeV2<Base,Base._Key,Base._Value,Base.__compare_result>.Indices
 {
   let indices = lhs.___indices
   let bounds = (lhs..<rhs).relative(to: indices)

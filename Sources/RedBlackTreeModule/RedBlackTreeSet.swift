@@ -89,7 +89,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
 }
 
 extension RedBlackTreeSet: ___RedBlackTreeKeyOnlyBase {
-  public typealias Tree = UnsafeTreeV2<Self,Element,Element>
+  public typealias Tree = UnsafeTreeV2<Self,Element,Element,__eager_compare_result>
   @inlinable
   @inline(__always)
   public static func value_equiv(_ lhs: Element, _ rhs: Element) -> Bool {

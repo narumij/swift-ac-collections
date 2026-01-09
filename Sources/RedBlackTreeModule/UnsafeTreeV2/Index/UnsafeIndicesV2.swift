@@ -29,7 +29,7 @@ import Foundation
 @frozen
 public struct UnsafeIndicesV2<Base>: ___UnsafeIndexBaseV2 where Base: ___TreeBase & ___TreeIndex {
 
-  public typealias Tree = UnsafeTreeV2<Base,Base._Key,Base._Value>
+  public typealias Tree = UnsafeTreeV2<Base,Base._Key,Base._Value,Base.__compare_result>
   public typealias _Value = Tree._Value
   public typealias _NodePtr = Tree._NodePtr
 

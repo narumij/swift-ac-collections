@@ -29,25 +29,20 @@ struct UnsafeNodeFreshPoolV2Iterator<_Value>: IteratorProtocol, Sequence {
 
   @inlinable
   @inline(__always)
-  internal init(elements: UnsafeMutablePointer<ElementPointer>?, count: Int) {
-    self.elements = elements
-    self.count = count
+  internal init(elements it: UnsafeMutablePointer<ElementPointer>?, count: Int) {
+    self.it = it
+    self.end = it.map { $0 + count }
   }
 
   @usableFromInline
-  var elements: UnsafeMutablePointer<ElementPointer>?
-
-  @usableFromInline
-  var current: Int = 0
-  
-  @usableFromInline
-  var count: Int
+  var it, end: UnsafeMutablePointer<ElementPointer>?
 
   @inlinable
   @inline(__always)
   mutating func next() -> ElementPointer? {
-    guard current < count else { return nil }
-    defer { current += 1}
-    return elements?[current]
+    guard it != end, let it else { return nil }
+    let p = it
+    self.it = it + 1
+    return p.pointee
   }
 }

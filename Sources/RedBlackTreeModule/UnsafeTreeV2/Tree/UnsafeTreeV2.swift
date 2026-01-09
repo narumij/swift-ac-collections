@@ -188,7 +188,6 @@ extension UnsafeTreeV2 {
 
         @inline(__always)
         func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
-          assert(ptr != nil)
           let index = ptr.pointee.___node_id_
           return switch index {
           case .nullptr:

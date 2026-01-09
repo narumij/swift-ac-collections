@@ -20,21 +20,6 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-extension UnsafeTreeV2 {
-
-//  @inlinable
-//  @inline(__always)
-//  public var nullptr: UnsafeMutablePointer<UnsafeNode> {
-//    _buffer.withUnsafeMutablePointerToElements { $0.pointee.nullptr }
-//  }
-
-//  @inlinable
-//  @inline(__always)
-//  public var end: UnsafeMutablePointer<UnsafeNode> {
-//    _buffer.withUnsafeMutablePointerToElements { $0.pointee.end_ptr }
-//  }
-}
-
 // MARK: - TreeEndNodeProtocol
 
 extension UnsafeTreeV2: TreeEndNodeProtocol {

@@ -1,4 +1,5 @@
 import XCTest
+#if DEBUG
 @testable import RedBlackTreeModule
 
 final class FreshPoolAllocatorTests: XCTestCase {
@@ -92,6 +93,7 @@ final class FreshPoolSubscriptTests: XCTestCase {
     pool.dispose()
   }
 }
+#endif
 
 extension UnsafeMutablePointer {
   

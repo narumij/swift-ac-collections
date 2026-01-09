@@ -201,6 +201,7 @@ extension FreshPool {
   @inline(__always)
   mutating func _popFresh(nullptr: _NodePtr) -> _NodePtr {
     let p = self[used]
+    assert(p.pointee.___node_id_ == .debug)
     p.initialize(to: nullptr.create(id: used))
     used += 1
     return p

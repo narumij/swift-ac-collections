@@ -241,7 +241,7 @@ extension UnsafeTreeV2 {
         _begin_ptr.pointee = __ptr_(source_begin.pointee)
 
         // その他管理情報をコピー
-        #if !USE_FRESH_POOL_V2
+        #if USE_FRESH_POOL_V1
           _header_ptr.pointee.freshPoolUsedCount = source_header.pointee.freshPoolUsedCount
         #endif
         _header_ptr.pointee.count = source_header.pointee.count
@@ -349,13 +349,13 @@ extension UnsafeTreeV2 {
 
 // MARK: Refresh Pool Iterator
 
-#if !USE_FRESH_POOL_V2
+#if USE_FRESH_POOL_V1
   extension UnsafeTreeV2 {
 
     @inlinable
     @inline(__always)
     func makeFreshPoolIterator() -> UnsafeNodeFreshPoolIterator<_Value> {
-      return UnsafeNodeFreshPoolIterator<_Value>(bucket: _buffer.header.freshBucketHead)
+      return _buffer.header.makeFreshPoolIterator()
     }
   }
 
@@ -364,7 +364,7 @@ extension UnsafeTreeV2 {
     @inlinable
     @inline(__always)
     func makeFreshBucketIterator() -> UnsafeNodeFreshBucketIterator<_Value> {
-      return _buffer.header.makeFreshPoolIterator()
+      return UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
     }
   }
 #else

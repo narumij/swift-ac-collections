@@ -132,7 +132,7 @@ final class AllocationTests: RedBlackTreeTestCase {
       }
     }
 
-#if !USE_FRESH_POOL_V2
+#if USE_FRESH_POOL_V1
     func testCapacityGrowth() throws {
       let set = RedBlackTreeSet<Int>()
       var tree = set.__tree_

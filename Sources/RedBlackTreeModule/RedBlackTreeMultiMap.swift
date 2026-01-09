@@ -108,7 +108,7 @@ extension RedBlackTreeMultiMap: ___RedBlackTreeKeyValuesBase {
   public typealias Tree = UnsafeTreeV2<Self, Key, RedBlackTreePair<Key, Value>>
 }
 extension RedBlackTreeMultiMap: CompareMultiTrait {}
-extension RedBlackTreeMultiMap: KeyValueComparer {}
+extension RedBlackTreeMultiMap: KeyValueComparer, ValueComparerImpl, HasDefaultThreeWayComparator {}
 
 // MARK: - Creating a MultiMap
 

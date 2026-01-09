@@ -123,7 +123,7 @@ extension ___LRUMemoizeStorage: ___LRULinkList & ___UnsafeCopyOnWriteV2 & ___Uns
   public typealias Base = Self
 }
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}
-extension ___LRUMemoizeStorage: KeyValueComparer {
+extension ___LRUMemoizeStorage: KeyValueComparer, ValueComparerImpl, HasDefaultThreeWayComparator {
 
   @inlinable
   @inline(__always)

@@ -104,7 +104,7 @@ extension RedBlackTreeDictionary: ___RedBlackTreeKeyValuesBase {
   public typealias Tree = UnsafeTreeV2<Self, Key, RedBlackTreePair<Key, Value>>
 }
 extension RedBlackTreeDictionary: CompareUniqueTrait {}
-extension RedBlackTreeDictionary: KeyValueComparer {}
+extension RedBlackTreeDictionary: KeyValueComparer, ValueComparerImpl, HasDefaultThreeWayComparator {}
 
 // MARK: - Creating a Dictionay
 

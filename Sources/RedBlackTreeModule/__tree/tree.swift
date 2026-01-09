@@ -235,14 +235,16 @@ public protocol ValueComparer {
   /// 要素の型
   associatedtype _Value
   /// 要素から比較キー値がとれること
-  @inlinable static func __key(_: _Value) -> _Key
+  static func __key(_: _Value) -> _Key
   /// 比較関数が実装されていること
-  @inlinable static func value_comp(_: _Key, _: _Key) -> Bool
+  static func value_comp(_: _Key, _: _Key) -> Bool
 
-  @inlinable static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
+  static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
 }
 
-extension ValueComparer {
+public protocol ValueComparerImpl: ValueComparer { }
+
+extension ValueComparerImpl {
 
   @inlinable
   @inline(__always)
@@ -252,7 +254,7 @@ extension ValueComparer {
 }
 
 // Comparableプロトコルの場合標準実装を付与する
-extension ValueComparer where _Key: Comparable {
+extension ValueComparerImpl where _Key: Comparable {
 
   /// Comparableプロトコルの場合の標準実装
   @inlinable
@@ -263,7 +265,7 @@ extension ValueComparer where _Key: Comparable {
 }
 
 // Equatableプロトコルの場合標準実装を付与する
-extension ValueComparer where _Key: Equatable {
+extension ValueComparerImpl where _Key: Equatable {
 
   @inlinable
   @inline(__always)

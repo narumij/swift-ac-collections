@@ -227,7 +227,6 @@ extension FreshPool {
       }
       pointers.deinitialize(count: capacity)
       pointers.deallocate()
-      self.pointers = nil
     }
     while let storage {
       self.storage = storage.pointee.pointer

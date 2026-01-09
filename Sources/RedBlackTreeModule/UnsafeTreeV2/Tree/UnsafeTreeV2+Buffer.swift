@@ -90,26 +90,23 @@ extension UnsafeTreeV2Buffer {
       self.recycleHead = nullptr
     }
 
-    @usableFromInline var count: Int = 0
     #if !USE_FRESH_POOL_V2
+      @usableFromInline let nullptr: _NodePtr
       @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
       @usableFromInline var freshPoolCapacity: Int = 0
       @usableFromInline var freshPoolUsedCount: Int = 0
-    #endif
-
-    @usableFromInline var recycleHead: _NodePtr
-
-    #if !USE_FRESH_POOL_V2
+      @usableFromInline var recycleHead: _NodePtr
       @usableFromInline var freshBucketHead: ReserverHeaderPointer?
       @usableFromInline var freshBucketLast: ReserverHeaderPointer?
       #if DEBUG
         @usableFromInline var freshBucketCount: Int = 0
       #endif
+    #else
+      @usableFromInline var recycleHead: _NodePtr
+      @usableFromInline let nullptr: _NodePtr
+      @usableFromInline var freshPool: FreshPool<_Value> = .init()
+      @usableFromInline var count: Int = 0
     #endif
-    @usableFromInline let nullptr: _NodePtr
-
-    @usableFromInline var freshPool: FreshPool<_Value> = .init()
-    @usableFromInline var _freshPoolCapacity: Int?
 
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       /// CoWの発火回数を観察するためのプロパティ

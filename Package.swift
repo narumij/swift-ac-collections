@@ -167,6 +167,13 @@ let package = Package(
       ],
       path: "Tests/Executables/SimpleRemove"),
     .executableTarget(
+      name: "SimpleCreate",
+      dependencies: [
+        "AcCollections",
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Tests/Executables/SimpleCreate"),
+    .executableTarget(
       name: "MarriedSource",
       dependencies: [
         .product(name: "AcFoundation", package: "swift-ac-foundation"),

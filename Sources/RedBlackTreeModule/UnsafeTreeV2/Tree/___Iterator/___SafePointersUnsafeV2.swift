@@ -26,7 +26,7 @@ package struct ___SafePointersUnsafeV2<Base>: Sequence, IteratorProtocol
 where Base: ___TreeBase {
 
   @usableFromInline
-  package typealias Tree = UnsafeTreeV2<Base,Base._Key>
+  package typealias Tree = UnsafeTreeV2<Base,Base._Key,Base._Value>
 
   @usableFromInline
   package typealias _NodePtr = Tree._NodePtr
@@ -73,7 +73,7 @@ extension ___SafePointersUnsafeV2 {
   where Base: ___TreeBase {
 
     @usableFromInline
-    internal typealias Tree = UnsafeTreeV2<Base,Base._Key>
+    internal typealias Tree = UnsafeTreeV2<Base,Base._Key,Base._Value>
 
     @usableFromInline
     internal let __tree_: Tree

@@ -262,7 +262,7 @@ extension UnsafeTreeV2: FindProtocol {}
 extension UnsafeTreeV2: FindEqualProtocol {}
 extension UnsafeTreeV2: FindLeafProtocol {}
 extension UnsafeTreeV2: InsertNodeAtProtocol {}
-extension UnsafeTreeV2: InsertUniqueProtocol {}
+//extension UnsafeTreeV2: InsertUniqueProtocol {}
 extension UnsafeTreeV2: InsertMultiProtocol {}
 extension UnsafeTreeV2: EqualProtocol {}
 extension UnsafeTreeV2: RemoveProtocol {}
@@ -286,8 +286,8 @@ extension UnsafeTreeV2 {
     var __nd_ptr = __root_ptr()
     if __nd != nullptr {
       while true {
-//        if value_comp(__v, __get_value(__nd)) {
-        if __v < __get_value(__nd) {
+        if value_comp(__v, __get_value(__nd)) {
+//        if __v < __get_value(__nd) {
           if __left_unsafe(__nd) != nullptr {
             __nd_ptr = __left_ref(__nd)
             __nd = __left_unsafe(__nd)
@@ -295,8 +295,8 @@ extension UnsafeTreeV2 {
             __parent = __nd
             return (__parent, __left_ref(__parent))
           }
-//        } else if value_comp(__get_value(__nd), __v) {
-        } else if __get_value(__nd) < __v {
+        } else if value_comp(__get_value(__nd), __v) {
+//        } else if __get_value(__nd) < __v {
           if __right_(__nd) != nullptr {
             __nd_ptr = __right_ref(__nd)
             __nd = __right_(__nd)

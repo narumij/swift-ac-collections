@@ -32,7 +32,7 @@ public protocol ___Root {
 protocol ___UnsafeIndexBaseV2: ___Root
 where
   Base: ___TreeBase & ___TreeIndex,
-Tree == UnsafeTreeV2<Base,Base._Key>,
+  Tree == UnsafeTreeV2<Base, Base._Key, Base._Value>,
   Index == Tree.Index,
   _NodePtr == Tree._NodePtr
 {
@@ -66,7 +66,7 @@ extension ___UnsafeIndexBaseV2 {
 protocol ___UnsafeBaseV2: ___UnsafeIndexBaseV2
 where
   Base: ___TreeBase & ___TreeIndex,
-  Tree == UnsafeTreeV2<Base,Base._Key>,
+  Tree == UnsafeTreeV2<Base, Base._Key, Base._Value>,
   Index == Tree.Index,
   Indices == Tree.Indices,
   _Key == Tree._Key,
@@ -82,7 +82,6 @@ where
   var _end: _NodePtr { get }
 }
 
-
 public typealias RedBlackTreeIndex = UnsafeIndexV2
 public typealias RedBlackTreeIndices = UnsafeIndicesV2
 public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2
@@ -90,11 +89,13 @@ public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
 
 @usableFromInline
 protocol ___RedBlackTreeKeyOnlyBase:
-  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
+  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2
+    & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyOnlySequenceV2
 {}
 @usableFromInline
 protocol ___RedBlackTreeKeyValuesBase:
-  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
+  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2
+    & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyValueSequenceV2
 {}

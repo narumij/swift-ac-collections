@@ -43,7 +43,7 @@ public struct UnsafeTreeV2Origin {
   }
 }
 
-public struct UnsafeTreeV2<Base: ___TreeBase,_Key> where _Key == Base._Key {
+public struct UnsafeTreeV2<Base: ___TreeBase,_Key,_Value> where _Key == Base._Key, _Value == Base._Value {
 
   @inlinable
   internal init(
@@ -62,7 +62,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase,_Key> where _Key == Base._Key {
   public typealias Buffer = ManagedBuffer<Header, UnsafeTreeV2Origin>
   public typealias BufferPointer = ManagedBufferPointer<Header, UnsafeTreeV2Origin>
   public typealias _Key = _Key
-  public typealias _Value = Base._Value
+  public typealias _Value = _Value
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
 

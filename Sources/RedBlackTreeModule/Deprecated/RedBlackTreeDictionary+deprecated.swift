@@ -1,3 +1,4 @@
+#if false
 #if COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeDictionary {
@@ -167,4 +168,5 @@
       lexicographicallyPrecedes(other, by: <)
     }
   }
+#endif
 #endif

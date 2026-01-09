@@ -8,7 +8,7 @@ let N = 2000
 #endif
 
 
-#if false
+#if true
 var fixtures: [RedBlackTreeSet<Int>] = .init(repeating: .init(minimumCapacity: N), count: N)
 
 for _ in 0..<1 {

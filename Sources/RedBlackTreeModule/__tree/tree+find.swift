@@ -87,7 +87,7 @@ extension FindLeafProtocol {
 }
 
 @usableFromInline
-protocol FindEqualProtocol: ValueProtocol, TreeNodeRefProtocol, FindEqualProtocol_std
+protocol FindEqualProtocol: ValueProtocol, TreeNodeRefProtocol
 {
   func
     __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)

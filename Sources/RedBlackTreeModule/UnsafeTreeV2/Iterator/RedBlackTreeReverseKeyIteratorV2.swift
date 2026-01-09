@@ -27,7 +27,7 @@ extension RedBlackTreeIteratorV2.Keys {
   @frozen
   public struct Reversed: Sequence, IteratorProtocol {
     
-    public typealias Tree = UnsafeTreeV2<Base,Base._Key>
+    public typealias Tree = UnsafeTreeV2<Base,Base._Key,Base._Value>
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
     public typealias _Key = Tree._Key
     public typealias _Value = Tree._Value

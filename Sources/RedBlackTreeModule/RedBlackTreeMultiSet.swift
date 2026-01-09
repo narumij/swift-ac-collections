@@ -83,7 +83,9 @@ extension RedBlackTreeMultiSet {
   public typealias Base = Self
 }
 
-extension RedBlackTreeMultiSet: ___RedBlackTreeKeyOnlyBase {}
+extension RedBlackTreeMultiSet: ___RedBlackTreeKeyOnlyBase {
+  public typealias Tree = UnsafeTreeV2<Self,Element,Element>
+}
 extension RedBlackTreeMultiSet: CompareMultiTrait {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {}
 

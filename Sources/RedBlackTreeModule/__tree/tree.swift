@@ -231,7 +231,7 @@ protocol AllocatorProtocol: TreePointer {
 /// ツリー使用条件をインジェクションするためのプロトコル
 public protocol ValueComparer {
   /// ツリーが比較に使用する値の型
-  associatedtype _Key: Comparable
+  associatedtype _Key
   /// 要素の型
   associatedtype _Value
   /// 要素から比較キー値がとれること
@@ -244,11 +244,11 @@ public protocol ValueComparer {
 
 extension ValueComparer {
 
-//  @inlinable
-//  @inline(__always)
-//  public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
-//    !value_comp(lhs, rhs) && !value_comp(rhs, lhs)
-//  }
+  @inlinable
+  @inline(__always)
+  public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
+    !value_comp(lhs, rhs) && !value_comp(rhs, lhs)
+  }
 }
 
 // Comparableプロトコルの場合標準実装を付与する

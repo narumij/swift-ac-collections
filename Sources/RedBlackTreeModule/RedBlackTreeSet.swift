@@ -88,7 +88,9 @@ public struct RedBlackTreeSet<Element: Comparable> {
   }
 }
 
-extension RedBlackTreeSet: ___RedBlackTreeKeyOnlyBase {}
+extension RedBlackTreeSet: ___RedBlackTreeKeyOnlyBase {
+  public typealias Tree = UnsafeTreeV2<Self,Element,Element>
+}
 extension RedBlackTreeSet: CompareUniqueTrait {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 

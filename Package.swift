@@ -19,7 +19,7 @@ var defines: [String] = [
   //"USE_OLD_FIND",
 //  "ALLOCATION_DRILL" // リリース時はオフ
   
-  "USE_FRESH_POOL_V1"
+//  "USE_FRESH_POOL_V1"
 //"USE_FRESH_POOL_V2"
 
 

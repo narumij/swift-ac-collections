@@ -56,14 +56,15 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
     // extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
     // extension UnsafeTreeV2: UnsafeTreeAllcation4 {}
     //extension UnsafeTreeV2: UnsafeTreeAllcation5 {}
-    //extension UnsafeTreeV2: UnsafeTreeAllcation6 {}
-    extension UnsafeTreeV2: UnsafeTreeAllcation6_7 {
-      // https://atcoder.jp/contests/abc411/submissions/72291000
-    }
+    //extension UnsafeTreeV2: UnsafeTreeAllcation6 {} // 1.5
+//    extension UnsafeTreeV2: UnsafeTreeAllcation6_7 { // 1.125
+//      // https://atcoder.jp/contests/abc411/submissions/72291000
+//    }
+extension UnsafeTreeV2: UnsafeTreeAllcation6_9 {} // 1.25
   //extension UnsafeTreeV2: UnsafeTreeAllcation7 {}
   #else
-    //extension UnsafeTreeV2: UnsafeTreeAllcation6_9 {}
-    extension UnsafeTreeV2: UnsafeTreeAllcation6_7 {}
+    extension UnsafeTreeV2: UnsafeTreeAllcation6_9 {}
+// extension UnsafeTreeV2: UnsafeTreeAllcation6_7 {}
   #endif
 #endif
 

@@ -63,7 +63,7 @@ import XCTest
       XCTAssertEqual(storage._buffer.header[1].index, 1)
       XCTAssertEqual(storage._buffer.header[2].index, 2)
       XCTAssertEqual(storage._buffer.header[3].index, 3)
-      XCTAssertEqual(storage._buffer.header.recycleHead, nil)
+      XCTAssertEqual(storage._buffer.header.recycleHead, storage.nullptr)
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [])
       XCTAssertEqual(storage._buffer.header.recycleCount, 0)
       storage._buffer.header.___pushRecycle(storage._buffer.header[0])

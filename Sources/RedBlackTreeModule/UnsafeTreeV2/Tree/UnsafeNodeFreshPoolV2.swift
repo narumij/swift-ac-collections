@@ -75,7 +75,7 @@ extension UnsafeNodeFreshPoolV2 {
 
   @inlinable
   @inline(__always)
-  mutating func ___flushFreshPool() {
+  mutating func ___deinitFreshPool() {
     freshPool.dispose()
 //    count = 0
   }

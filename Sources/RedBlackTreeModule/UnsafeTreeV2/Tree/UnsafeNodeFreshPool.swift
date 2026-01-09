@@ -112,6 +112,12 @@ extension UnsafeNodeFreshPool {
   @inlinable
   @inline(__always)
   mutating func ___flushFreshPool() {
+    ___deinitFreshPool()
+  }
+  
+  @inlinable
+  @inline(__always)
+  mutating func ___deinitFreshPool() {
     var reserverHead = freshBucketHead
     while let h = reserverHead {
       reserverHead = h.pointee.next

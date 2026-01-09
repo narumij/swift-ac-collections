@@ -32,7 +32,7 @@ public final class UnsafeTreeV2Buffer<_Value>:
   @inline(__always)
   deinit {
     withUnsafeMutablePointers { header, tree in
-      header.pointee.___flushFreshPool()
+      header.pointee.___deinitFreshPool()
       tree.deinitialize(count: 1)
     }
   }
@@ -51,10 +51,10 @@ extension UnsafeTreeV2Buffer {
   ) -> UnsafeTreeV2Buffer {
 
     // end nodeしか用意しないので要素数は常に1
-    
+
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 1) { managedBuffer in
       return managedBuffer.withUnsafeMutablePointerToElements { tree in
-        
+
         // endノード用に初期化する
         tree.initialize(to: __tree(base: tree, nullptr: nullptr))
         // ヘッダーを準備する
@@ -82,32 +82,32 @@ extension UnsafeTreeV2Buffer {
   @frozen
   public struct Header: UnsafeNodeRecyclePool {
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-    
+
     @inlinable
     @inline(__always)
     internal init(nullptr: _NodePtr) {
       self.nullptr = nullptr
       self.recycleHead = nullptr
     }
-    
+
     @usableFromInline var count: Int = 0
-#if !USE_FRESH_POOL_V2
-    @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
-    @usableFromInline var freshPoolCapacity: Int = 0
-    @usableFromInline var freshPoolUsedCount: Int = 0
-#endif
+    #if !USE_FRESH_POOL_V2
+      @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
+      @usableFromInline var freshPoolCapacity: Int = 0
+      @usableFromInline var freshPoolUsedCount: Int = 0
+    #endif
 
     @usableFromInline var recycleHead: _NodePtr
-    
-#if !USE_FRESH_POOL_V2
-    @usableFromInline var freshBucketHead: ReserverHeaderPointer?
-    @usableFromInline var freshBucketLast: ReserverHeaderPointer?
-#if DEBUG
-    @usableFromInline var freshBucketCount: Int = 0
-#endif
-#endif
+
+    #if !USE_FRESH_POOL_V2
+      @usableFromInline var freshBucketHead: ReserverHeaderPointer?
+      @usableFromInline var freshBucketLast: ReserverHeaderPointer?
+      #if DEBUG
+        @usableFromInline var freshBucketCount: Int = 0
+      #endif
+    #endif
     @usableFromInline let nullptr: _NodePtr
-    
+
     @usableFromInline var freshPool: FreshPool<_Value> = .init()
     @usableFromInline var _freshPoolCapacity: Int?
 
@@ -115,7 +115,7 @@ extension UnsafeTreeV2Buffer {
       /// CoWの発火回数を観察するためのプロパティ
       @usableFromInline internal var copyCount: UInt = 0
     #endif
-    
+
     @inlinable
     @inline(__always)
     internal mutating func clear(_end_ptr: _NodePtr) {
@@ -126,9 +126,9 @@ extension UnsafeTreeV2Buffer {
 }
 
 #if !USE_FRESH_POOL_V2
-extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPool { }
+  extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPool {}
 #else
-extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPoolV2 { }
+  extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPoolV2 {}
 #endif
 
 extension UnsafeTreeV2Buffer.Header {
@@ -160,15 +160,17 @@ nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.cre
 
 // TODO: このシングルトンを破壊するテストコードを撲滅し根治すること
 
-#if DEBUG
-#endif
-
 extension UnsafeTreeV2Buffer.Header {
   @inlinable
   mutating func tearDown() {
-    freshPool.dispose()
-    freshPool = .init()
-    count = 0
+    #if !USE_FRESH_POOL_V2
+      ___flushFreshPool()
+      count = 0
+    #else
+      freshPool.dispose()
+      freshPool = .init()
+      count = 0
+    #endif
     ___flushRecyclePool()
   }
 }

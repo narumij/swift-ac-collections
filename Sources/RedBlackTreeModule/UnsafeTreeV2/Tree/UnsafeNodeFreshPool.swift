@@ -194,7 +194,6 @@ extension UnsafeNodeFreshPool {
       return nullptr
     }
     assert(p.pointee.___node_id_ == .nullptr)
-//    p.initialize(to: UnsafeNode(___node_id_: freshPoolUsedCount))
     p.initialize(to: nullptr.create(id: freshPoolUsedCount))
     freshPoolUsedCount += 1
     count += 1
@@ -368,6 +367,7 @@ extension UnsafeNodeFreshPool {
 
 // MARK: - 作業用サイズ計算
 
+#if DEBUG
 extension UnsafeNodeFreshPool {
 
   @inlinable
@@ -415,6 +415,7 @@ extension UnsafeNodeFreshPool {
     return (s2 + (capacity == 0 ? 0 : s01 * capacity + offset01), max(a0, a1))
   }
 }
+#endif
 
 // MARK: - DEBUG
 

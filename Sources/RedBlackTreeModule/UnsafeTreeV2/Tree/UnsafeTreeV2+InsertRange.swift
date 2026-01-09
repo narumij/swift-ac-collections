@@ -21,18 +21,22 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 extension UnsafeTreeV2 {
+  public typealias OtherTree<O> = UnsafeTreeV2<O> where O: ___TreeBase & ___TreeIndex
+}
+
+extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
   internal static func ___insert_range_unique<Other>(
     tree __tree_: UnsafeTreeV2,
-    other __source: UnsafeTreeV2<Other>,
+    other __source: OtherTree<Other>,
     _ __first: _NodePtr,
     _ __last: _NodePtr
   ) -> UnsafeTreeV2
   where
-    UnsafeTreeV2<Other>._Key == _Key,
-    UnsafeTreeV2<Other>._Value == _Value
+    OtherTree<Other>._Key == _Key,
+    OtherTree<Other>._Value == _Value
   {
     if __first == __last {
       return __tree_
@@ -81,14 +85,14 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   @inline(__always)
   internal static func ___insert_range_unique<Other>(
     tree __tree_: UnsafeTreeV2,
-    other __source: UnsafeTreeV2<Other>,
+    other __source: OtherTree<Other>,
     _ __first: _NodePtr,
     _ __last: _NodePtr,
     uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue
   ) rethrows -> UnsafeTreeV2
   where
-    UnsafeTreeV2<Other>._Key == _Key,
-    UnsafeTreeV2<Other>._Value == _Value
+    OtherTree<Other>._Key == _Key,
+    OtherTree<Other>._Value == _Value
   {
     if __first == __last {
       return __tree_
@@ -139,13 +143,13 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal static func ___insert_range_multi<Other>(
     tree __tree_: UnsafeTreeV2,
-    other __source: UnsafeTreeV2<Other>,
+    other __source: OtherTree<Other>,
     _ __first: _NodePtr,
     _ __last: _NodePtr
   ) -> UnsafeTreeV2
   where
-    UnsafeTreeV2<Other>._Key == _Key,
-    UnsafeTreeV2<Other>._Value == _Value
+    OtherTree<Other>._Key == _Key,
+    OtherTree<Other>._Value == _Value
   {
     if __first == __last {
       return __tree_
@@ -160,7 +164,8 @@ extension UnsafeTreeV2 {
     if __tree_.__root == __tree_.nullptr, __first != __last {
       // Make sure we always have a root node
       __tree_.__insert_node_at(
-        __tree_.end, __tree_.__left_ref(__tree_.end), __tree_.__construct_node(__source.__value_(__first)))
+        __tree_.end, __tree_.__left_ref(__tree_.end),
+        __tree_.__construct_node(__source.__value_(__first)))
       __first = __source.__tree_next_iter(__first)
     }
 
@@ -208,7 +213,8 @@ extension UnsafeTreeV2 {
     if __tree_.__root == __tree_.nullptr, let __element = it.next() {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
-        __tree_.end, __tree_.__left_ref(__tree_.end), __tree_.__construct_node(transform(__element)))
+        __tree_.end, __tree_.__left_ref(__tree_.end), __tree_.__construct_node(transform(__element))
+      )
     }
 
     if __tree_.__root == __tree_.nullptr { return __tree_ }
@@ -311,7 +317,8 @@ extension UnsafeTreeV2 {
     if __tree_.__root == __tree_.nullptr, let __element = it.next() {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
-        __tree_.end, __tree_.__left_ref(__tree_.end), __tree_.__construct_node(transform(__element)))
+        __tree_.end, __tree_.__left_ref(__tree_.end), __tree_.__construct_node(transform(__element))
+      )
     }
 
     if __tree_.__root == __tree_.nullptr { return __tree_ }

@@ -48,12 +48,12 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
     _ __last: _NodePtr,
     _ transform: (Base._MappedValue) throws -> Other._MappedValue
   )
-    rethrows -> UnsafeTreeV2<Other>
+    rethrows -> OtherTree<Other>
   where
     Other: KeyValueComparer & ___UnsafeKeyValueSequenceV2,
     Other._Key == Base._Key
   {
-    let other = UnsafeTreeV2<Other>.create(minimumCapacity: count)
+    let other = OtherTree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = other.___max_ref()
     for __p in unsafeSequence(__first, __last) {
       let __mapped_value = try transform(___mapped_value(__p))
@@ -71,16 +71,16 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
     _ __last: _NodePtr,
     _ transform: (Base._MappedValue) throws -> Other._MappedValue?
   )
-    rethrows -> UnsafeTreeV2<Other>
+    rethrows -> OtherTree<Other>
   where
     Other: KeyValueComparer & ___UnsafeKeyValueSequenceV2,
     Other._Key == Base._Key
   {
-    var other = UnsafeTreeV2<Other>.create(minimumCapacity: count)
+    var other = OtherTree<Other>.create(minimumCapacity: count)
     var (__parent, __child) = other.___max_ref()
     for __p in unsafeSequence(__first, __last) {
       guard let __mv = try transform(___mapped_value(__p)) else { continue }
-      UnsafeTreeV2<Other>.ensureCapacity(tree: &other)
+      OtherTree<Other>.ensureCapacity(tree: &other)
       (__parent, __child) = other.___emplace_hint_right(
         __parent, __child, Other.___tree_value((__get_value(__p), __mv)))
       assert(other.__tree_invariant(other.__root))

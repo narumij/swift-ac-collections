@@ -33,12 +33,6 @@ where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
 
 extension UnsafeNodeRecyclePool {
   
-//  @inlinable
-//  @inline(__always)
-//  var nullptr: _NodePtr {
-//    UnsafeNode.nullptr
-//  }
-  
   @inlinable
   @inline(__always)
   mutating func ___pushRecycle(_ p: _NodePtr) {

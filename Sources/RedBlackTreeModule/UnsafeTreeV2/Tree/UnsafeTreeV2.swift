@@ -112,7 +112,7 @@ extension UnsafeTreeV2 {
   ) -> UnsafeTreeV2 {
     nodeCapacity == 0
       ? ___create()
-      : ___create(minimumCapacity: nodeCapacity)
+      : ___create(minimumCapacity: nodeCapacity, nullptr: UnsafeNode.nullptr)
   }
 
   /// シングルトンバッファを用いて高速に生成する
@@ -135,12 +135,15 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal static func ___create(
-    minimumCapacity nodeCapacity: Int
+    minimumCapacity nodeCapacity: Int,
+    nullptr: _NodePtr
   ) -> UnsafeTreeV2 {
     create(
       unsafeBufferObject:
         UnsafeTreeV2Buffer<Base._Value>
-        .create(minimumCapacity: nodeCapacity))
+        .create(
+          minimumCapacity: nodeCapacity,
+          nullptr: nullptr))
   }
 
   @inlinable
@@ -165,7 +168,7 @@ extension UnsafeTreeV2 {
     // 予定サイズを確定させる
     let newCapacity = max(minimumCapacity ?? 0, initializedCount)
     // 予定サイズの木を作成する
-    let tree = UnsafeTreeV2.___create(minimumCapacity: newCapacity)
+    let tree = UnsafeTreeV2.___create(minimumCapacity: newCapacity, nullptr: nullptr)
     assert(tree.capacity >= tree._buffer.header.freshPool.capacity)
     // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
@@ -229,14 +232,14 @@ extension UnsafeTreeV2 {
         _begin_ptr.pointee = __ptr_(source_begin.pointee)
 
         // その他管理情報をコピー
-#if !USE_FRESH_POOL_V2
-        _header_ptr.pointee.freshPoolUsedCount = source_header.pointee.freshPoolUsedCount
-#endif
+        #if !USE_FRESH_POOL_V2
+          _header_ptr.pointee.freshPoolUsedCount = source_header.pointee.freshPoolUsedCount
+        #endif
         _header_ptr.pointee.count = source_header.pointee.count
         _header_ptr.pointee.recycleHead = __ptr_(source_header.pointee.recycleHead)
-//        assert(
-//          _header_ptr.pointee.recycleHead.pointee.___node_id_
-//            == source_header.pointee.recycleHead.pointee.___node_id_)
+        //        assert(
+        //          _header_ptr.pointee.recycleHead.pointee.___node_id_
+        //            == source_header.pointee.recycleHead.pointee.___node_id_)
 
         #if AC_COLLECTIONS_INTERNAL_CHECKS
           _header_ptr.pointee.copyCount = source_header.pointee.copyCount &+ 1
@@ -339,32 +342,32 @@ extension UnsafeTreeV2 {
 // MARK: Refresh Pool Iterator
 
 #if !USE_FRESH_POOL_V2
-extension UnsafeTreeV2 {
+  extension UnsafeTreeV2 {
 
-  @inlinable
-  @inline(__always)
-  func makeFreshPoolIterator() -> UnsafeNodeFreshPoolIterator<_Value> {
-    return UnsafeNodeFreshPoolIterator<_Value>(bucket: _buffer.header.freshBucketHead)
+    @inlinable
+    @inline(__always)
+    func makeFreshPoolIterator() -> UnsafeNodeFreshPoolIterator<_Value> {
+      return UnsafeNodeFreshPoolIterator<_Value>(bucket: _buffer.header.freshBucketHead)
+    }
   }
-}
 
-extension UnsafeTreeV2 {
+  extension UnsafeTreeV2 {
 
-  @inlinable
-  @inline(__always)
-  func makeFreshBucketIterator() -> UnsafeNodeFreshBucketIterator<_Value> {
-    return UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
+    @inlinable
+    @inline(__always)
+    func makeFreshBucketIterator() -> UnsafeNodeFreshBucketIterator<_Value> {
+      return UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
+    }
   }
-}
 #else
-extension UnsafeTreeV2 {
+  extension UnsafeTreeV2 {
 
-  @inlinable
-  @inline(__always)
-  func makeFreshPoolIterator() -> UnsafeNodeFreshPoolV2Iterator<_Value> {
-    return _buffer.header.makeFreshPoolIterator()
+    @inlinable
+    @inline(__always)
+    func makeFreshPoolIterator() -> UnsafeNodeFreshPoolV2Iterator<_Value> {
+      return _buffer.header.makeFreshPoolIterator()
+    }
   }
-}
 #endif
 
 // MARK: Index Resolver

@@ -33,7 +33,6 @@ public final class UnsafeTreeV2Buffer<_Value>:
   deinit {
     withUnsafeMutablePointers { header, tree in
       header.pointee.___flushFreshPool()
-      header.pointee.freshPool.dispose()
       tree.deinitialize(count: 1)
     }
   }
@@ -47,7 +46,8 @@ extension UnsafeTreeV2Buffer {
   @inlinable
   @inline(__always)
   internal static func create(
-    minimumCapacity nodeCapacity: Int
+    minimumCapacity nodeCapacity: Int,
+    nullptr: UnsafeMutablePointer<UnsafeNode>
   ) -> UnsafeTreeV2Buffer {
 
     // end nodeしか用意しないので要素数は常に1
@@ -55,7 +55,6 @@ extension UnsafeTreeV2Buffer {
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 1) { managedBuffer in
       return managedBuffer.withUnsafeMutablePointerToElements { tree in
         
-        let nullptr = UnsafeNode.nullptr
         // endノード用に初期化する
         tree.initialize(to: __tree(base: tree, nullptr: nullptr))
         // ヘッダーを準備する
@@ -98,7 +97,7 @@ extension UnsafeTreeV2Buffer {
     @usableFromInline var freshPoolUsedCount: Int = 0
 #endif
 
-    @usableFromInline var recycleHead: _NodePtr // = UnsafeNode.nullptr
+    @usableFromInline var recycleHead: _NodePtr
     
 #if !USE_FRESH_POOL_V2
     @usableFromInline var freshBucketHead: ReserverHeaderPointer?
@@ -120,10 +119,8 @@ extension UnsafeTreeV2Buffer {
     @inlinable
     @inline(__always)
     internal mutating func clear(_end_ptr: _NodePtr) {
-      _end_ptr.pointee.__left_ = UnsafeNode.nullptr
       ___cleanFreshPool()
       ___flushRecyclePool()
-//      __begin_node_ = _end_ptr
     }
   }
 }
@@ -133,25 +130,6 @@ extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPool { }
 #else
 extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPoolV2 { }
 #endif
-
-
-extension UnsafeTreeV2Buffer.Header {
-
-//  @inlinable
-//  @inline(__always)
-//  var nullptr: _NodePtr {
-//    UnsafeNode.nullptr
-//  }
-
-//  @inlinable
-//  @inline(__always)
-//  public var count: Int {
-//    // __sizeへ移行した場合、
-//    // 減算のステップ数が増えるので逆効果なため
-//    // 計算プロパティ維持の方針
-//    freshPoolUsedCount - recycleCount
-//  }
-}
 
 extension UnsafeTreeV2Buffer.Header {
 
@@ -178,7 +156,7 @@ extension UnsafeTreeV2Buffer: CustomStringConvertible {
 /// The type-punned empty singleton storage instance.
 @usableFromInline
 nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.create(
-  minimumCapacity: 0)
+  minimumCapacity: 0, nullptr: UnsafeNode.nullptr)
 
 // TODO: このシングルトンを破壊するテストコードを撲滅し根治すること
 
@@ -191,23 +169,14 @@ extension UnsafeTreeV2Buffer.Header {
     freshPool.dispose()
     freshPool = .init()
     count = 0
-//    ___flushFreshPool()
     ___flushRecyclePool()
   }
 }
 
 @inlinable
 package func tearDown<T>(treeBuffer buffer: UnsafeTreeV2Buffer<T>) {
-//  buffer.header.tearDown()
   buffer.withUnsafeMutablePointers { h, e in
     h.pointee.tearDown()
     e.pointee.clear()
-//    e.pointee.begin_ptr = e.pointee.end_ptr
-//    let e = e.pointee.end_ptr
-////    h.pointee.__begin_node_ = e
-//    e.pointee.__left_ = UnsafeNode.nullptr
-//    e.pointee.__right_ = UnsafeNode.nullptr
-//    e.pointee.__parent_ = UnsafeNode.nullptr
-//    h.pointee.freshPool = .init()
   }
 }

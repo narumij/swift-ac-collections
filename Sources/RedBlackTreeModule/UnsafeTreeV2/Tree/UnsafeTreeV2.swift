@@ -52,6 +52,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   ) {
     self._buffer = _buffer
     self.isReadOnly = isReadOnly
+    self.end = _buffer.withUnsafeMutablePointerToElements { $0[0].end_ptr }
   }
 
   public typealias Base = Base
@@ -66,6 +67,8 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @usableFromInline
   var _buffer: BufferPointer
+
+  public let end: _NodePtr
 
   @usableFromInline
   let isReadOnly: Bool
@@ -86,13 +89,21 @@ extension UnsafeTreeV2 {
     @inlinable
     public var capacity: Int {
       get { _buffer.header.freshPoolCapacity }
-      set { _buffer.header.freshPoolCapacity = newValue }
+      set {
+        _buffer.withUnsafeMutablePointerToHeader {
+          $0.pointee.freshPoolCapacity = newValue
+        }
+      }
     }
 
     @inlinable
     public var initializedCount: Int {
       get { _buffer.header.freshPoolUsedCount }
-      set { _buffer.header.freshPoolUsedCount = newValue }
+      set {
+        _buffer.withUnsafeMutablePointerToHeader {
+          $0.pointee.freshPoolUsedCount = newValue
+        }
+      }
     }
   #endif
 }
@@ -410,7 +421,11 @@ extension UnsafeTreeV2 {
     @usableFromInline
     internal var copyCount: UInt {
       get { _buffer.header.copyCount }
-      set { _buffer.header.copyCount = newValue }
+      set {
+        _buffer.withUnsafeMutablePointerToHeader {
+          $0.pointee.copyCount = newValue
+        }
+      }
     }
   #endif
 }
@@ -419,28 +434,32 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  @inlinable
-  func _nodeID(_ p: _NodePtr) -> Int? {
-    return p.pointee.___node_id_
-  }
+  #if DEBUG
+    @inlinable
+    func _nodeID(_ p: _NodePtr) -> Int? {
+      return p.pointee.___node_id_
+    }
+  #endif
 }
 
 extension UnsafeTreeV2 {
 
-  func dumpTree(label: String = "") {
-    print("==== UnsafeTree \(label) ====")
-    print(" count:", count)
-    print(" freshPool:", _buffer.header.freshPoolActualCount, "/", capacity)
-    print(" destroyCount:", _buffer.header.recycleCount)
-    print(" root:", __root.pointee.___node_id_ as Any)
-    print(" begin:", __begin_node_.pointee.___node_id_ as Any)
+  #if DEBUG
+    func dumpTree(label: String = "") {
+      print("==== UnsafeTree \(label) ====")
+      print(" count:", count)
+      print(" freshPool:", _buffer.header.freshPoolActualCount, "/", capacity)
+      print(" destroyCount:", _buffer.header.recycleCount)
+      print(" root:", __root.pointee.___node_id_ as Any)
+      print(" begin:", __begin_node_.pointee.___node_id_ as Any)
 
-    var it = makeFreshPoolIterator()
-    while let p = it.next() {
-      print(
-        p.pointee.debugDescription { self._nodeID($0!) }
-      )
+      var it = makeFreshPoolIterator()
+      while let p = it.next() {
+        print(
+          p.pointee.debugDescription { self._nodeID($0!) }
+        )
+      }
+      print("============================")
     }
-    print("============================")
-  }
+  #endif
 }

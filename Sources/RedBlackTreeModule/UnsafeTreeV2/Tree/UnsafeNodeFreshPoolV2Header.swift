@@ -96,12 +96,6 @@ extension FreshPool {
   @inlinable
   @inline(__always)
   mutating func pushStorage(size: Int) -> UnsafeMutablePointer<UnsafeNode> {
-    //    let newStorage = UnsafeMutablePointer<FreshStorage>.allocate(capacity: 1)
-    //    newStorage.initialize(to: .init(capacity: capacity + size,
-    //                           buffer: UnsafeMutableRawPointer.allocate(
-    //                            byteCount: (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride) * size,
-    //                            alignment: max(MemoryLayout<UnsafeNode>.alignment, MemoryLayout<_Value>.alignment)),
-    //                           pointer: storage))
     assert(used <= capacity)
     let (newStorage, buffer, size) = createBucket(capacity: size)
     storage = newStorage
@@ -146,11 +140,7 @@ extension FreshPool {
 
     let elements = UnsafeMutableRawPointer(header.advanced(by: 1))
 
-    header.initialize(
-      to:
-        .init(
-//          capacity: self.capacity + capacity,
-          pointer: self.storage))
+    header.initialize(to: .init(pointer: self.storage))
 
     #if DEBUG
       do {
@@ -197,7 +187,6 @@ extension FreshPool {
   @inline(__always)
   mutating func _popFresh(nullptr: _NodePtr) -> _NodePtr {
     let p = self[used]
-    //    p.initialize(to: UnsafeNode(___node_id_: used))
     p.initialize(to: nullptr.create(id: used))
     used += 1
     return p
@@ -219,6 +208,7 @@ extension FreshPool {
   mutating func dispose() {
     if let pointers {
       var i = 0
+      let used = used
       while i < used {
         let c = (pointers + i).pointee
         UnsafeNode.deinitialize(_Value.self, c)

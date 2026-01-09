@@ -28,11 +28,11 @@ extension UnsafeTreeV2 {
     _buffer.withUnsafeMutablePointerToElements { $0.pointee.nullptr }
   }
 
-  @inlinable
-  @inline(__always)
-  public var end: UnsafeMutablePointer<UnsafeNode> {
-    _buffer.withUnsafeMutablePointerToElements { $0.pointee.end_ptr }
-  }
+//  @inlinable
+//  @inline(__always)
+//  public var end: UnsafeMutablePointer<UnsafeNode> {
+//    _buffer.withUnsafeMutablePointerToElements { $0.pointee.end_ptr }
+//  }
 }
 
 // MARK: - TreeEndNodeProtocol
@@ -172,8 +172,8 @@ extension UnsafeTreeV2 {
 
   @inlinable
   var __end_node: _NodePtr {
-//    end
-    _buffer.withUnsafeMutablePointerToElements { $0.pointee.end_ptr }
+    end
+//    _buffer.withUnsafeMutablePointerToElements { $0.pointee.end_ptr }
   }
 }
 

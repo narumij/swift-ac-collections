@@ -134,7 +134,9 @@ extension UnsafeTreeV2Buffer.Header {
   @inline(__always)
   public mutating func __construct_node(_ k: _Value) -> _NodePtr {
     assert(_Value.self != Void.self)
+#if DEBUG
     assert(recycleCount >= 0)
+    #endif
     let p = recycleHead.pointerIndex == .nullptr ? ___popFresh() : ___popRecycle()
     UnsafeNode.initializeValue(p, to: k)
     assert(p.pointee.___node_id_ >= 0)

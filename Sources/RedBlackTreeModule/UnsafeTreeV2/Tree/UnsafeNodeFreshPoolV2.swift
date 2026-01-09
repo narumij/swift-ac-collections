@@ -91,7 +91,6 @@ extension UnsafeNodeFreshPoolV2 {
   @inlinable
   @inline(__always)
   func makeFreshPoolIterator() -> UnsafeNodeFreshPoolV2Iterator<_Value> {
-    return UnsafeNodeFreshPoolV2Iterator<_Value>(
-      elements: freshPool.pointers, count: freshPool.used)
+    freshPool.makeFreshPoolIterator()
   }
 }

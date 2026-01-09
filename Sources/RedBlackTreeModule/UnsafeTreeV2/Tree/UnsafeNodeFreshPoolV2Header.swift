@@ -225,3 +225,13 @@ extension FreshPool {
     }
   }
 }
+
+extension FreshPool {
+
+  @inlinable
+  @inline(__always)
+  func makeFreshPoolIterator() -> UnsafeNodeFreshPoolV2Iterator<_Value> {
+    return UnsafeNodeFreshPoolV2Iterator<_Value>(
+      elements: pointers, count: used)
+  }
+}

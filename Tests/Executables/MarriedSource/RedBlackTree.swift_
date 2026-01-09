@@ -1,7 +1,3 @@
-import AcFoundation
-import IOUtil
-
-
 
 import Foundation
 
@@ -8269,7 +8265,6 @@ extension ___UnsafeCopyOnWriteV2 {
       __tree_.growthCapacity(to: min(limit, minimumCapacity), limit: limit, linearly: false)
     }
 #if USE_FRESH_POOL_V1
-    //#if !USE_FRESH_POOL_V2
     assert(__tree_.initializedCount <= __tree_.capacity)
 #else
     assert(__tree_.initializedCount <= __tree_._buffer.header.freshPool.capacity)
@@ -9436,7 +9431,6 @@ extension UnsafeNodeFreshPool {
 }
 
 #if USE_FRESH_POOL_V1
-//#if !USE_FRESH_POOL_V2
 extension UnsafeNodeFreshPool {
 
   /*
@@ -10588,7 +10582,6 @@ extension UnsafeTreeV2 {
         _begin_ptr.pointee = __ptr_(source_begin.pointee)
 
         #if USE_FRESH_POOL_V1
-        //#if !USE_FRESH_POOL_V2
           _header_ptr.pointee.freshPoolUsedCount = source_header.pointee.freshPoolUsedCount
         #endif
         _header_ptr.pointee.count = source_header.pointee.count
@@ -10684,7 +10677,6 @@ extension UnsafeTreeV2 {
 
 
 #if USE_FRESH_POOL_V1
-//#if !USE_FRESH_POOL_V2
   extension UnsafeTreeV2 {
 
     @inlinable
@@ -10968,7 +10960,7 @@ extension UnsafeTreeV2 {
   var __size_: Int {
     @inline(__always) get {
       _buffer.withUnsafeMutablePointerToHeader { $0.pointee.count }
-    }
+    }    
     nonmutating set {
       /* NOP */
     }
@@ -11660,7 +11652,6 @@ extension UnsafeTreeV2Buffer {
     }
 
     #if USE_FRESH_POOL_V1
-    //#if !USE_FRESH_POOL_V2
       @usableFromInline let nullptr: _NodePtr
       @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
       @usableFromInline var freshPoolCapacity: Int = 0
@@ -11693,7 +11684,6 @@ extension UnsafeTreeV2Buffer {
 }
 
 #if USE_FRESH_POOL_V1
-//#if !USE_FRESH_POOL_V2
   extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPool {}
 #else
   extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPoolV2 {}
@@ -11732,7 +11722,6 @@ extension UnsafeTreeV2Buffer.Header {
   @inlinable
   mutating func tearDown() {
     #if USE_FRESH_POOL_V1
-    //#if !USE_FRESH_POOL_V2
       ___flushFreshPool()
       count = 0
     #else
@@ -13830,56 +13819,4 @@ extension UnsafeTreeV2 {
       fatalError(.invalidIndex)
     }
   }
-}
-
-
-
-// ----
-
-
-var (N, m): (Int,Int) = stdin()
-var p_rev = (0..<N) + []
-var p = (0..<N).map { [$0] }
-var e: [RedBlackTreeSet<Int>] = .init(repeating: .init(), count: N)
-var u: [Int] = []
-var v: [Int] = []
-for _ in 0..<m {
-  let (_u,_v) = (Int.stdin - 1, Int.stdin - 1)
-  u.append(_u)
-  v.append(_v)
-  e[_u].insert(_v)
-  e[_v].insert(_u)
-}
-let Q = Int.stdin
-for _ in 0..<Q {
-  let x = Int.stdin - 1
-  var vx = p_rev[u[x]]
-  var vy = p_rev[v[x]]
-  if vx != vy {
-    let valx = (e[vx].count) + (p[vx].count)
-    let valy = (e[vy].count) + (p[vy].count)
-    if valx > valy { swap(&vx, &vy) }
-    let sz = p[vx].count
-    for j in 0..<sz {
-      p[vy].append(p[vx][j])
-      p_rev[p[vx][j]] = vy
-    }
-    p[vx].removeAll()
-    for vz in e[vx] {
-      if vz == vy {
-        m -= 1
-        e[vy].remove(vx)
-      } else {
-        if e[vy].contains(vz) {
-          m -= 1
-        } else {
-          e[vy].insert(vz)
-          e[vz].insert(vy)
-        }
-        e[vz].remove(vx)
-      }
-    }
-    e[vx].removeAll()
-  }
-  fastPrint(m)
 }

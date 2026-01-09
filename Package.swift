@@ -20,7 +20,7 @@ var defines: [String] = [
 //  "ALLOCATION_DRILL" // リリース時はオフ
   
   "USE_FRESH_POOL_V1"
-  //  "USE_FRESH_POOL_V2"
+//    "USE_FRESH_POOL_V2"
 ]
 
 var _settings: [SwiftSetting] =

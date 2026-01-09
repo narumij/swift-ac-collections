@@ -895,6 +895,7 @@ final class SetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 3)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
 #if USE_FRESH_POOL_V1
+    //#if !USE_FRESH_POOL_V2
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
 #endif
     #endif
@@ -919,6 +920,7 @@ final class SetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 6)))
 #if USE_FRESH_POOL_V1
+    //#if !USE_FRESH_POOL_V2
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
 #endif
     #endif

@@ -15,9 +15,9 @@
 
 @usableFromInline
 protocol UnsafeTreeAllocationHeader {
-#if DEBUG
-  var freshBucketCount: Int { get }
-#endif
+  #if DEBUG
+    var freshBucketCount: Int { get }
+  #endif
 }
 
 @usableFromInline
@@ -50,15 +50,21 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
     }
   }
 #else
-//extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
-// extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
-// extension UnsafeTreeV2: UnsafeTreeAllcation4 {}
-//extension UnsafeTreeV2: UnsafeTreeAllcation5 {}
-//extension UnsafeTreeV2: UnsafeTreeAllcation6 {}
-extension UnsafeTreeV2: UnsafeTreeAllcation6_7 {
-  // https://atcoder.jp/contests/abc411/submissions/72291000
-}
-//extension UnsafeTreeV2: UnsafeTreeAllcation7 {}
+  #if USE_FRESH_POOL_V1
+//#if !USE_FRESH_POOL_V2
+    //extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
+    // extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
+    // extension UnsafeTreeV2: UnsafeTreeAllcation4 {}
+    //extension UnsafeTreeV2: UnsafeTreeAllcation5 {}
+    //extension UnsafeTreeV2: UnsafeTreeAllcation6 {}
+    extension UnsafeTreeV2: UnsafeTreeAllcation6_7 {
+      // https://atcoder.jp/contests/abc411/submissions/72291000
+    }
+  //extension UnsafeTreeV2: UnsafeTreeAllcation7 {}
+  #else
+    //extension UnsafeTreeV2: UnsafeTreeAllcation6_9 {}
+    extension UnsafeTreeV2: UnsafeTreeAllcation6_7 {}
+  #endif
 #endif
 
 #if ALLOCATION_DRILL
@@ -85,27 +91,30 @@ extension UnsafeTreeAllcation7 {
         capacity,
         minimumCapacity)
     }
-    
+
     if minimumCapacity <= 2 {
       return Swift.max(minimumCapacity, 2)
     }
-    
+
     if minimumCapacity <= 4 {
       return Swift.max(minimumCapacity, 4)
     }
-    
+
     // 若干計算は適当だが、スモールアロケーションの速度で出来ることをやり尽くすように制限している
-    let limit1024 = (1024 - MemoryLayout<UnsafeNodeFreshBucket>.stride) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
-    
+    let limit1024 =
+      (1024 - MemoryLayout<UnsafeNodeFreshBucket>.stride)
+      / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
+
     if minimumCapacity <= limit1024 {
       // バグってて速かった
       // return Swift.min(capacity + capacity / 8, limit1024)
-       return Swift.max(minimumCapacity, Swift.min(capacity + Swift.max(2, capacity / 8), limit1024))
+      return Swift.max(minimumCapacity, Swift.min(capacity + Swift.max(2, capacity / 8), limit1024))
     }
-    
+
     // L1目一杯で出来ることをやり尽くすようにする
     // 4096のマージンはアロケータ補正に対する分
-    let limit32k = (1024 * 32 - 4096) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
+    let limit32k =
+      (1024 * 32 - 4096) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
 
     if minimumCapacity <= limit32k {
       return Swift.max(minimumCapacity, Swift.min(capacity + capacity / 8, limit32k))
@@ -113,12 +122,13 @@ extension UnsafeTreeAllcation7 {
 
     // L2目一杯で出来ることをやり尽くすようにする
     // 4096のマージンはアロケータ補正に対する分
-    let limit512k = (1024 * 512 - 4096) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
+    let limit512k =
+      (1024 * 512 - 4096) / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
 
     if minimumCapacity <= limit512k {
       return Swift.max(minimumCapacity, Swift.min(capacity + capacity / 8, limit512k))
     }
-    
+
     return Swift.max(minimumCapacity, capacity + max(capacity / 8, 1))
   }
 }
@@ -141,27 +151,6 @@ extension UnsafeTreeAllcation6_10 {
     }
 
     return Swift.max(minimumCapacity, capacity + max(capacity * 3 / 16, 2))
-  }
-}
-
-@usableFromInline
-protocol UnsafeTreeAllcation6_9 {
-  var capacity: Int { get }
-}
-
-extension UnsafeTreeAllcation6_9 {
-
-  @inlinable
-  @inline(__always)
-  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
-
-    if linearly {
-      return Swift.max(
-        capacity,
-        minimumCapacity)
-    }
-
-    return Swift.max(minimumCapacity, capacity + max(capacity / 4, 2))
   }
 }
 
@@ -208,11 +197,11 @@ extension UnsafeTreeAllcation6_7 {
 }
 
 @usableFromInline
-protocol UnsafeTreeAllcation6_6 {
+protocol UnsafeTreeAllcation6_9 {
   var capacity: Int { get }
 }
 
-extension UnsafeTreeAllcation6_6 {
+extension UnsafeTreeAllcation6_9 {
 
   @inlinable
   @inline(__always)
@@ -224,16 +213,16 @@ extension UnsafeTreeAllcation6_6 {
         minimumCapacity)
     }
 
-    return Swift.max(minimumCapacity, capacity + max(capacity * 4, 2))
+    return Swift.max(minimumCapacity, capacity + max(capacity / 4, 2))
   }
 }
 
 @usableFromInline
-protocol UnsafeTreeAllcation6_5 {
+protocol UnsafeTreeAllcation6 {
   var capacity: Int { get }
 }
 
-extension UnsafeTreeAllcation6_5 {
+extension UnsafeTreeAllcation6 {
 
   @inlinable
   @inline(__always)
@@ -245,49 +234,7 @@ extension UnsafeTreeAllcation6_5 {
         minimumCapacity)
     }
 
-    return Swift.max(minimumCapacity, capacity + max(capacity * 3, 2))
-  }
-}
-
-@usableFromInline
-protocol UnsafeTreeAllcation6_4 {
-  var capacity: Int { get }
-}
-
-extension UnsafeTreeAllcation6_4 {
-
-  @inlinable
-  @inline(__always)
-  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
-
-    if linearly {
-      return Swift.max(
-        capacity,
-        minimumCapacity)
-    }
-
-    return Swift.max(minimumCapacity, capacity + max(capacity * 2, 2))
-  }
-}
-
-@usableFromInline
-protocol UnsafeTreeAllcation6_3 {
-  var capacity: Int { get }
-}
-
-extension UnsafeTreeAllcation6_3 {
-
-  @inlinable
-  @inline(__always)
-  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
-
-    if linearly {
-      return Swift.max(
-        capacity,
-        minimumCapacity)
-    }
-
-    return Swift.max(minimumCapacity, capacity + max(capacity, 2))
+    return Swift.max(minimumCapacity, capacity + max(capacity / 2, 1))
   }
 }
 
@@ -313,11 +260,11 @@ extension UnsafeTreeAllcation6_2 {
 }
 
 @usableFromInline
-protocol UnsafeTreeAllcation6 {
+protocol UnsafeTreeAllcation6_3 {
   var capacity: Int { get }
 }
 
-extension UnsafeTreeAllcation6 {
+extension UnsafeTreeAllcation6_3 {
 
   @inlinable
   @inline(__always)
@@ -329,7 +276,70 @@ extension UnsafeTreeAllcation6 {
         minimumCapacity)
     }
 
-    return Swift.max(minimumCapacity, capacity + max(capacity / 2, 1))
+    return Swift.max(minimumCapacity, capacity + max(capacity, 2))
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation6_4 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation6_4 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    return Swift.max(minimumCapacity, capacity + max(capacity * 2, 2))
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation6_5 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation6_5 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    return Swift.max(minimumCapacity, capacity + max(capacity * 3, 2))
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeAllcation6_6 {
+  var capacity: Int { get }
+}
+
+extension UnsafeTreeAllcation6_6 {
+
+  @inlinable
+  @inline(__always)
+  internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        capacity,
+        minimumCapacity)
+    }
+
+    return Swift.max(minimumCapacity, capacity + max(capacity * 4, 2))
   }
 }
 
@@ -517,11 +527,11 @@ extension UnsafeTreeAllcation1 {
 
     let (small, large) = initializedCount < 2048 ? (31, 31) : (15, 15)
 
-#if DEBUG
-    if _buffer.header.freshBucketCount & 1 == 1 {
-      return Swift.max(minimumCapacity, count + (small * (s0 + s1) - s2 - a2) / (s0 + s1))
-    }
-#endif
+    #if DEBUG
+      if _buffer.header.freshBucketCount & 1 == 1 {
+        return Swift.max(minimumCapacity, count + (small * (s0 + s1) - s2 - a2) / (s0 + s1))
+      }
+    #endif
 
     return Swift.max(minimumCapacity, count + (large * (s0 + s1) - s2 - a2) / (s0 + s1))
   }

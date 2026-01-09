@@ -91,6 +91,7 @@ extension UnsafeTreeV2Buffer {
     }
 
     #if USE_FRESH_POOL_V1
+    //#if !USE_FRESH_POOL_V2
       @usableFromInline let nullptr: _NodePtr
       @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
       @usableFromInline var freshPoolCapacity: Int = 0
@@ -124,6 +125,7 @@ extension UnsafeTreeV2Buffer {
 }
 
 #if USE_FRESH_POOL_V1
+//#if !USE_FRESH_POOL_V2
   extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPool {}
 #else
   extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPoolV2 {}
@@ -134,7 +136,6 @@ extension UnsafeTreeV2Buffer.Header {
   @inlinable
   @inline(__always)
   public mutating func __construct_node(_ k: _Value) -> _NodePtr {
-    assert(_Value.self != Void.self)
     #if DEBUG
       assert(recycleCount >= 0)
     #endif
@@ -164,6 +165,7 @@ extension UnsafeTreeV2Buffer.Header {
   @inlinable
   mutating func tearDown() {
     #if USE_FRESH_POOL_V1
+    //#if !USE_FRESH_POOL_V2
       ___flushFreshPool()
       count = 0
     #else

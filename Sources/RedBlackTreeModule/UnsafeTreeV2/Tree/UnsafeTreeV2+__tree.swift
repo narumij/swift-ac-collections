@@ -54,7 +54,6 @@ extension UnsafeTreeV2: TreeEndNodeProtocol {
   @inlinable
   @inline(__always)
   func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    assert(rhs != nil)
     lhs.pointee.__left_ = rhs
   }
 }
@@ -72,7 +71,6 @@ extension UnsafeTreeV2: TreeNodeProtocol {
   @inlinable
   @inline(__always)
   func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    assert(rhs != nil)
     lhs.pointee.__right_ = rhs
   }
 
@@ -97,7 +95,6 @@ extension UnsafeTreeV2: TreeNodeProtocol {
   @inlinable
   @inline(__always)
   func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    assert(rhs != nil)
     lhs.pointee.__parent_ = rhs
   }
 

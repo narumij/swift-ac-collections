@@ -51,6 +51,7 @@ extension UnsafeNodeFreshPool {
 }
 
 #if USE_FRESH_POOL_V1
+//#if !USE_FRESH_POOL_V2
 extension UnsafeNodeFreshPool {
 
   /*
@@ -59,9 +60,9 @@ extension UnsafeNodeFreshPool {
    However, immediately after CoW, callers MUST ensure that
    only a single bucket exists to support index-based access.
    */
-//  @inlinable
-//  @inline(__always)
-  @usableFromInline
+  @inlinable
+  @inline(__always)
+//  @usableFromInline
   mutating func pushFreshBucket(capacity: Int) {
     assert(capacity != 0)
     let (pointer, capacity) = Self.createBucket(capacity: capacity)
@@ -87,14 +88,8 @@ extension UnsafeNodeFreshPool {
     if let p = freshBucketCurrent?.pointee.pop() {
       return p
     }
-    nextBucket()
-    return freshBucketCurrent?.pointee.pop()
-  }
-
-  @inlinable
-  @inline(__always)
-  mutating func nextBucket() {
     freshBucketCurrent = freshBucketCurrent?.pointee.next
+    return freshBucketCurrent?.pointee.pop()
   }
 
   @inlinable
@@ -113,6 +108,14 @@ extension UnsafeNodeFreshPool {
   @inline(__always)
   mutating func ___flushFreshPool() {
     ___deinitFreshPool()
+    freshBucketHead = nil
+    freshBucketCurrent = nil
+    freshBucketLast = nil
+#if DEBUG
+    freshBucketCount = 0
+#endif
+    freshPoolCapacity = 0
+    freshPoolUsedCount = 0
   }
   
   @inlinable
@@ -125,14 +128,6 @@ extension UnsafeNodeFreshPool {
       h.deinitialize(count: 1)
       h.deallocate()
     }
-    freshBucketHead = nil
-    freshBucketCurrent = nil
-    freshBucketLast = nil
-#if DEBUG
-    freshBucketCount = 0
-#endif
-    freshPoolCapacity = 0
-    freshPoolUsedCount = 0
   }
 }
 

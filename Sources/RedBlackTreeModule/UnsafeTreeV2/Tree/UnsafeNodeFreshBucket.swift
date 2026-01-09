@@ -82,6 +82,9 @@ package struct UnsafeNodeFreshBucket {
     while i < count {
       let c = p
       p = advance(p)
+#if false
+      UnsafeNode.deinitialize(T.self, c)
+#else
       if c.pointee.___needs_deinitialize {
         UnsafeMutableRawPointer(
           UnsafeMutablePointer<UnsafeNode>(c)
@@ -90,6 +93,7 @@ package struct UnsafeNodeFreshBucket {
         .assumingMemoryBound(to: t.self)
         .deinitialize(count: 1)
       }
+#endif
       c.deinitialize(count: 1)
       i += 1
     }

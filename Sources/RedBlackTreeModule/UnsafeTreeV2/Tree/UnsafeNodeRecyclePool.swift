@@ -42,7 +42,6 @@ extension UnsafeNodeRecyclePool {
   @inlinable
   @inline(__always)
   mutating func ___pushRecycle(_ p: _NodePtr) {
-    assert(p != nil)
     assert(p.pointee.___node_id_ > .end)
     assert(recycleHead != p)
 #if DEBUG

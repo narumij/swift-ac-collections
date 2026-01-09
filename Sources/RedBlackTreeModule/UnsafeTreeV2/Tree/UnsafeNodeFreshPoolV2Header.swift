@@ -220,7 +220,8 @@ extension FreshPool {
     for i in 0..<used {
       let c = self[i]
       if c.pointee.___needs_deinitialize {
-        UnsafeNode.deinitialize(_Value.self, c)
+//        UnsafeNode.deinitialize(_Value.self, c)
+        UnsafePair<_Value>.valuePointer(c)?.deinitialize(count: 1)
       }
       c.deinitialize(count: 1)
     }

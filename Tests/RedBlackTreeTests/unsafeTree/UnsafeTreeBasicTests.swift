@@ -18,7 +18,7 @@ import XCTest
     }
 
     func testCreateZero() async throws {
-      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 0)
+      let storage = UnsafeTreeV2<Base,Base._Key>.create(minimumCapacity: 0)
       XCTAssertEqual(storage.capacity, 0)
       XCTAssertEqual(storage.count, 0)
       XCTAssertEqual(storage.__root, storage.nullptr)
@@ -26,7 +26,7 @@ import XCTest
     }
 
     func testCreate() async throws {
-      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
+      let storage = UnsafeTreeV2<Base,Base._Key>.create(minimumCapacity: 4)
       XCTAssertGreaterThanOrEqual(storage.capacity, 4)
       XCTAssertEqual(storage.count, 0)
       XCTAssertEqual(storage.__root, storage.nullptr)
@@ -34,7 +34,7 @@ import XCTest
     }
 
     func testConstruct() async throws {
-      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
+      let storage = UnsafeTreeV2<Base,Base._Key>.create(minimumCapacity: 4)
       XCTAssertGreaterThanOrEqual(storage.capacity, 4)
       let ptr = storage.__construct_node(100)
       XCTAssertEqual(storage.__value_(ptr), 100)
@@ -45,7 +45,7 @@ import XCTest
     }
 
     func testPoolIterator() async throws {
-      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
+      let storage = UnsafeTreeV2<Base,Base._Key>.create(minimumCapacity: 4)
       XCTAssertGreaterThanOrEqual(storage.capacity, 4)
       _ = storage.__construct_node(100)
       _ = storage.__construct_node(200)
@@ -74,7 +74,7 @@ import XCTest
     }
 
     func testDestroy0() async throws {
-      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
+      let storage = UnsafeTreeV2<Base,Base._Key>.create(minimumCapacity: 4)
       let ptr = storage.__construct_node(100)
       XCTAssertEqual(storage.__value_(ptr), 100)
       storage.destroy(ptr)
@@ -82,7 +82,7 @@ import XCTest
     }
 
     func testDestroyStack() async throws {
-      var storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
+      var storage = UnsafeTreeV2<Base,Base._Key>.create(minimumCapacity: 4)
       //    storage.initializedCount = 4
       _ = storage.__construct_node(0)
       _ = storage.__construct_node(2)
@@ -125,7 +125,7 @@ import XCTest
 
     func testDestroyStack2() async throws {
       //    throw XCTSkip()
-      var storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
+      var storage = UnsafeTreeV2<Base,Base._Key>.create(minimumCapacity: 4)
       _ = storage.__construct_node(0)
       _ = storage.__construct_node(2)
       _ = storage.__construct_node(4)
@@ -150,7 +150,7 @@ import XCTest
 
     func testConstructDestroy() async throws {
       #if AC_COLLECTIONS_INTERNAL_CHECKS
-        let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
+        let storage = UnsafeTreeV2<Base,Base._Key>.create(minimumCapacity: 4)
         do {
           let p = storage.__construct_node(-1)
           XCTAssertEqual(storage.count, 1)
@@ -220,7 +220,7 @@ import XCTest
 
     func testInsert() async throws {
       //    throw XCTSkip()
-      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
+      let storage = UnsafeTreeV2<Base,Base._Key>.create(minimumCapacity: 5)
       for i in 0..<5 {
         _ = storage.__insert_unique(i)
         XCTAssertTrue(storage.__tree_invariant(storage.__root))
@@ -242,7 +242,7 @@ import XCTest
 
     func testInsert2() async throws {
       //    throw XCTSkip()
-      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
+      let storage = UnsafeTreeV2<Base,Base._Key>.create(minimumCapacity: 5)
       for i in 0..<5 {
         _ = storage.__insert_unique(i)
         XCTAssertTrue(storage.__tree_invariant(storage.__root))

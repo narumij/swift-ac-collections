@@ -1,0 +1,263 @@
+// Copyright 2024-2026 narumij
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2025 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+
+@frozen
+@usableFromInline
+struct FreshStorage {
+
+  @inlinable
+  @inline(__always)
+  internal init(pointer: UnsafeMutablePointer<FreshStorage>?) {
+    self.pointer = pointer
+  }
+
+  // 直前のバッファ
+  @usableFromInline let pointer: UnsafeMutablePointer<FreshStorage>?
+}
+
+@frozen
+@usableFromInline
+struct FreshPool<_Value> {
+
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+
+  @usableFromInline
+  internal init(
+    storage: UnsafeMutablePointer<FreshStorage>? = nil,
+    array: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>? = nil
+  ) {
+    self.storage = storage
+    self.pointers = array
+  }
+
+  @usableFromInline var used: Int = 0
+  @usableFromInline var capacity: Int = 0
+  @usableFromInline var pointers: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>?
+  @usableFromInline var pointerCount: Int = 0
+  @usableFromInline var storage: UnsafeMutablePointer<FreshStorage>?
+}
+
+extension FreshPool {
+
+  @inlinable
+  @inline(__always)
+  mutating func reserveCapacity(minimumCapacity newCapacity: Int) {
+    assert(capacity < newCapacity)
+    assert(used <= capacity)
+    assert(used < newCapacity)
+    guard capacity < newCapacity else { return }
+    let oldCapacity = capacity
+    let size = newCapacity - oldCapacity
+    _resizePointersIfNeeds(minimumCapacity: newCapacity)
+    var p = _pushStorage(size: size)
+    var i = oldCapacity
+    while i < newCapacity {
+      (pointers! + i).initialize(to: p)
+      p = UnsafeMutableRawPointer(p)
+        .advanced(by: MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
+        .assumingMemoryBound(to: UnsafeNode.self)
+      i += 1
+    }
+    assert(used < capacity)
+  }
+
+  @inlinable
+  func growthPointerCount(minimumCount: Int) -> Int {
+    let base = 16
+    // 最初にどんと増やすケースではサイズが確定してるケースが多そうなのでサイズ依頼に従う
+    if pointerCount == 0, minimumCount > base {
+      return minimumCount
+    }
+    // ノード用メモリ確保の速度でうまみが強い範囲に余計な仕事をしないための最小限を最初に確保
+    // その後は1/3ずつ増加
+    return max(base, minimumCount * 5 / 4)
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func _resizePointersIfNeeds(minimumCapacity newCapacity: Int) {
+    let newRank = growthPointerCount(minimumCount: newCapacity)
+    guard pointerCount != newRank || pointers == nil else { return }
+    let newArray = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
+      .allocate(capacity: newRank)
+    if let pointers {
+      newArray.moveInitialize(from: pointers, count: capacity)
+      pointers.deallocate()
+    }
+    pointers = newArray
+    pointerCount = newRank
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func _pushStorage(size: Int) -> UnsafeMutablePointer<UnsafeNode> {
+    assert(used <= capacity)
+    let (newStorage, buffer, size) = _createBucket(capacity: size)
+    storage = newStorage
+    capacity += size
+    assert(used < capacity)
+    return UnsafePair<_Value>.pointer(from: buffer)
+  }
+
+  @inlinable
+  @inline(__always)
+  func _allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
+    let s0 = MemoryLayout<UnsafeNode>.stride
+    let a0 = MemoryLayout<UnsafeNode>.alignment
+    let s1 = MemoryLayout<_Value>.stride
+    let a1 = MemoryLayout<_Value>.alignment
+    let s2 = MemoryLayout<FreshStorage>.stride
+    let s01 = s0 + s1
+    let offset01 = max(0, a1 - a0)
+    return (s2 + (capacity == 0 ? 0 : s01 * capacity + offset01), max(a0, a1))
+  }
+
+  @inlinable
+  @inline(__always)
+  func _createBucket(capacity: Int) -> (
+    head: UnsafeMutablePointer<FreshStorage>,
+    first: UnsafeMutableRawPointer,
+    capacity: Int
+  ) {
+
+    assert(capacity != 0)
+
+    let (bytes, alignment) = _allocationSize(capacity: capacity)
+
+    let header_storage = UnsafeMutableRawPointer.allocate(
+      byteCount: bytes,
+      alignment: alignment)
+
+    header_storage.bindMemory(to: FreshStorage.self, capacity: 1)
+
+    let header = UnsafeMutableRawPointer(header_storage)
+      .assumingMemoryBound(to: FreshStorage.self)
+
+    let elements = UnsafeMutableRawPointer(header.advanced(by: 1))
+
+    header.initialize(to: .init(pointer: self.storage))
+
+    #if DEBUG
+      do {
+        var c = 0
+        var p = elements
+        while c < capacity {
+
+          p.assumingMemoryBound(to: UnsafeNode.self)
+            .pointee
+            .___node_id_ = .nullptr
+
+          p = UnsafeMutableRawPointer(
+            UnsafePair<_Value>
+              .advance(p.assumingMemoryBound(to: UnsafeNode.self)))
+
+          c += 1
+        }
+      }
+    #endif
+
+    return (header, elements, capacity)
+  }
+
+  @inlinable
+  @inline(__always)
+  var _buffer: UnsafeMutableBufferPointer<UnsafeMutablePointer<UnsafeNode>> {
+    guard let pointers else { fatalError() }
+    return UnsafeMutableBufferPointer(
+      start: UnsafeMutableRawPointer(pointers)
+        .assumingMemoryBound(to: UnsafeMutablePointer<UnsafeNode>.self),
+      count: capacity
+    )
+  }
+
+  @inlinable
+  @inline(__always)
+  subscript(___node_id_: Int) -> UnsafeMutablePointer<UnsafeNode> {
+    assert(0 <= ___node_id_)
+    assert(___node_id_ < capacity)
+    return pointers!.advanced(by: ___node_id_).pointee
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func _popFresh(nullptr: _NodePtr) -> _NodePtr {
+    let p = self[used]
+    assert(p.pointee.___node_id_ == .debug)
+    p.initialize(to: nullptr.create(id: used))
+    used += 1
+    return p
+  }
+
+  @usableFromInline
+  mutating func clear() {
+    for i in 0..<used {
+      let c = self[i]
+      if c.pointee.___needs_deinitialize {
+        UnsafeNode.deinitialize(_Value.self, c)
+      }
+    }
+    used = 0
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func dispose() {
+    if let pointers {
+      var i = 0
+      let used = used
+      while i < used {
+        let c = (pointers + i).pointee
+#if true
+        UnsafeNode.deinitialize(_Value.self, c)
+#else
+        if c.pointee.___needs_deinitialize {
+          UnsafeMutableRawPointer(
+            UnsafeMutablePointer<UnsafeNode>(c)
+              .advanced(by: 1)
+          )
+          .assumingMemoryBound(to: _Value.self)
+          .deinitialize(count: 1)
+        }
+#endif
+        c.deinitialize(count: 1)
+        i += 1
+      }
+      pointers.deinitialize(count: capacity)
+      pointers.deallocate()
+    }
+    while let storage {
+      self.storage = storage.pointee.pointer
+      storage.deinitialize(count: 1)
+      storage.deallocate()
+    }
+  }
+}
+
+extension FreshPool {
+
+  @inlinable
+  @inline(__always)
+  func makeFreshPoolIterator() -> UnsafeNodeFreshPoolV2Iterator<_Value> {
+    return UnsafeNodeFreshPoolV2Iterator<_Value>(
+      elements: pointers, count: used)
+  }
+}

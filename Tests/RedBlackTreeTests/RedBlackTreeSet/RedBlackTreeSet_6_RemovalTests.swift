@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeSetRemoveTests: XCTestCase {
+final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
 
   /// popFirst() が空セットの場合に nil を返すこと
   func test_popFirst_empty() {

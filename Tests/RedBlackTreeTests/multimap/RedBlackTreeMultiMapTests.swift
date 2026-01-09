@@ -1,8 +1,8 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeMultiMapTests: XCTestCase {
-
+final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {
+  
   func testInsertAndContains() {
     var map = RedBlackTreeMultiMap<String, Int>()
     map.insert(key: "a", value: 1)

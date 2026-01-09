@@ -11,7 +11,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class MultiMapSubSequenceTests: XCTestCase {
+final class MultiMapSubSequenceTests: RedBlackTreeTestCase {
 
   typealias Target = RedBlackTreeMultiMap
 

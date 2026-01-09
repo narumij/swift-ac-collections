@@ -1,26 +1,24 @@
+// Copyright 2024-2026 narumij
 //
-//  UnsafeTreeV2+__tree.swift
-//  swift-ac-collections
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-//  Created by narumij on 2026/01/05.
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
-
-extension UnsafeTreeV2 {
-  
-  @inlinable
-  @inline(__always)
-  public var nullptr: UnsafeMutablePointer<UnsafeNode> {
-    _buffer.withUnsafeMutablePointerToHeader { header in
-      header.pointee._nullptr
-    }
-  }
-  
-  @inlinable
-  @inline(__always)
-  public var end: UnsafeMutablePointer<UnsafeNode> {
-    _buffer.withUnsafeMutablePointerToElements { $0 }
-  }
-}
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2025 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
 
 // MARK: - TreeEndNodeProtocol
 
@@ -95,7 +93,7 @@ extension UnsafeTreeV2: TreeNodeProtocol {
 // MARK: -
 
 extension UnsafeTreeV2: TreeNodeRefProtocol {
-  
+
   @inlinable
   @inline(__always)
   func __left_ref(_ p: _NodePtr) -> _NodeRef {
@@ -138,10 +136,15 @@ extension UnsafeTreeV2 {
 
   @inlinable
   public var __begin_node_: _NodePtr {
+
+    @inline(__always) get {
+      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr }
+    }
+
     @inline(__always)
-    get { _buffer.withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ } }
-    @inline(__always)
-    nonmutating set { _buffer.withUnsafeMutablePointerToHeader { $0.pointee.__begin_node_ = newValue } }
+    nonmutating set {
+      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr = newValue }
+    }
   }
 }
 
@@ -151,7 +154,8 @@ extension UnsafeTreeV2 {
 
   @inlinable
   var __end_node: _NodePtr {
-    @inline(__always) get { end }
+    end
+//    _buffer.withUnsafeMutablePointerToElements { $0.pointee.end_ptr }
   }
 }
 
@@ -164,7 +168,7 @@ extension UnsafeTreeV2 {
     @inlinable
     @inline(__always)
     internal var __root: _NodePtr {
-      _buffer.withUnsafeMutablePointerToElements { $0.pointee.__left_ }
+      _buffer.withUnsafeMutablePointerToElements { $0.pointee.end_node.__left_ }
     }
   #else
     @inlinable
@@ -180,7 +184,9 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func __root_ptr() -> _NodeRef {
-    withUnsafeMutablePointer(to: &end.pointee.__left_) { $0 }
+    _buffer.withUnsafeMutablePointerToElements {
+      withUnsafeMutablePointer(to: &$0.pointee.end_node.__left_) { $0 }
+    }
   }
 }
 
@@ -190,15 +196,16 @@ extension UnsafeTreeV2 {
 
   @inlinable
   var __size_: Int {
-    @inline(__always)
-    get { _buffer.withUnsafeMutablePointerToHeader { $0.pointee.count } }
-    nonmutating set { /* NOP */  }
+    @inline(__always) get {
+      _buffer.withUnsafeMutablePointerToHeader { $0.pointee.count }
+    }    
+    nonmutating set {
+      /* NOP */
+    }
   }
 }
 
 // MARK: - AllocatorProtocol
-
-
 
 extension UnsafeTreeV2 {
 

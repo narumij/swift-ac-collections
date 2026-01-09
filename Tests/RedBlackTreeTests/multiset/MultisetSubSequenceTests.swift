@@ -9,7 +9,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeMultisetSubSequenceTests: XCTestCase {
+final class RedBlackTreeMultisetSubSequenceTests: RedBlackTreeTestCase {
 
   // MARK: 基本プロパティ -------------------------------------------------
 

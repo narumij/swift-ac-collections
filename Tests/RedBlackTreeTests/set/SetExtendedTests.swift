@@ -6,7 +6,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class SetExtendedTests: XCTestCase {
+final class SetExtendedTests: RedBlackTreeTestCase {
 
   // MARK: ── merge / merging ─────────────────────────────────────
 

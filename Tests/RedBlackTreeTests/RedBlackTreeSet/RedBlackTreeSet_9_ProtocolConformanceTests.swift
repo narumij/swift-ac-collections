@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeSetProtocolConformanceTests: XCTestCase {}
+final class RedBlackTreeSetProtocolConformanceTests: RedBlackTreeTestCase {}
 
 // MARK: - Equatable
 extension RedBlackTreeSetProtocolConformanceTests {

@@ -28,13 +28,3 @@ extension UnsafeTreeV2 {
     self._buffer.buffer === other._buffer.buffer
   }
 }
-
-extension UnsafeTreeV2: Hashable where _Value: Hashable {
-
-  @inlinable
-  public func hash(into hasher: inout Hasher) {
-    // TODO: 実装すること
-    // デグレしてました。てへっ
-    fatalError()
-  }
-}

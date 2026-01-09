@@ -20,13 +20,35 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+@inlinable
+@inline(__always)
+func ___is_null_or_end__(pointerIndex: Int) -> Bool {
+  // 名前が衝突するしパッケージ名を書きたくないため中継している
+  ___is_null_or_end(pointerIndex)
+}
+
 extension UnsafeTreeV2 {
   
+  /// nullポインタまたはendポインタかどうかの判定
+  ///
+  /// この木では、llvmの`__tree`とはことなり、CoW対策でノード番号も保持している。
+  /// これを利用することで、以下の判定は2回の比較ではなく、1回の比較で済む
+  ///
+  /// 以下のコードで判定する内容が、
+  ///
+  /// ```swift
+  /// ptr == nullptr || ptr == end
+  /// ```
+  ///
+  /// 以下で済む
+  ///
+  /// ```swift
+  /// index < 0
+  /// ```
   @inlinable
   @inline(__always)
   internal func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
-//    ptr == nullptr || ptr == end
-    ptr.pointee.___node_id_ < 0
+    ___is_null_or_end__(pointerIndex: ptr.pointee.___node_id_)
   }
 
   /// - Complexity: O(1)

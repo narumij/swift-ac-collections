@@ -25,61 +25,72 @@ protocol UnsafeNodeRecyclePool
 where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
   associatedtype _Value
   associatedtype _NodePtr
-  var destroyNode: _NodePtr { get set }
-  var destroyCount: Int { get set }
-  var _nullptr: _NodePtr { get }
+  var recycleHead: _NodePtr { get set }
+  var count: Int { get set }
+  var freshPoolUsedCount: Int { get set }
+  var nullptr: _NodePtr { get }
 }
 
 extension UnsafeNodeRecyclePool {
-  
+
   @inlinable
   @inline(__always)
   mutating func ___pushRecycle(_ p: _NodePtr) {
-    assert(p != nil)
-    assert(destroyNode != p)
-#if DEBUG
-    p.pointee.___recycle_count += 1
-#endif
+    assert(p.pointee.___node_id_ > .end)
+    assert(recycleHead != p)
+    #if DEBUG
+      p.pointee.___recycle_count += 1
+    #endif
     // 値型の場合、この処理を削りたい誘惑がある
     UnsafePair<_Value>.valuePointer(p)?.deinitialize(count: 1)
     p.pointee.___needs_deinitialize = false
-    p.pointee.__left_ = destroyNode
-#if GRAPHVIZ_DEBUG
-    p!.pointee.__right_ = nil
-    p!.pointee.__parent_ = nil
-#endif
-    destroyNode = p
-    destroyCount += 1
+    p.pointee.__left_ = recycleHead
+    #if GRAPHVIZ_DEBUG
+      p!.pointee.__right_ = nil
+      p!.pointee.__parent_ = nil
+    #endif
+    recycleHead = p
+    count -= 1
   }
-  
+
   @inlinable
   @inline(__always)
   mutating func ___popRecycle() -> _NodePtr {
-    assert(destroyCount > 0)
-    let p = destroyNode
-    destroyNode = p.pointee.__left_
-    destroyCount -= 1
+    let p = recycleHead
+    recycleHead = p.pointee.__left_
+    count += 1
+    p.pointee.___needs_deinitialize = true
     return p
   }
-  
+
   @inlinable
   @inline(__always)
-  mutating func ___clearRecycle() {
-    destroyNode = _nullptr
-    destroyCount = 0
+  mutating func ___flushRecyclePool() {
+    recycleHead = nullptr
+    count = 0
   }
+
+  #if DEBUG
+    @inlinable
+    @inline(__always)
+    var recycleCount: Int {
+      freshPoolUsedCount - count
+    }
+  #endif
 }
 
 extension UnsafeNodeRecyclePool {
-  @inlinable
-  @inline(__always)
-  internal var ___destroyNodes: [Int] {
-    var nodes: [Int] = []
-    var last = destroyNode
-    while last != _nullptr {
-      nodes.append(last.pointee.___node_id_)
-      last = last.pointee.__left_
+  #if DEBUG
+    @inlinable
+    @inline(__always)
+    internal var ___recycleNodes: [Int] {
+      var nodes: [Int] = []
+      var last = recycleHead
+      while last != nullptr {
+        nodes.append(last.pointee.___node_id_)
+        last = last.pointee.__left_
+      }
+      return nodes
     }
-    return nodes
-  }
+  #endif
 }

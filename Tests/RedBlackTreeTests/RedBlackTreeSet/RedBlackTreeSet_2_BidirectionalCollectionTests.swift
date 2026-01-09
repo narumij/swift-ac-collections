@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeSetBidirectionalCollectionTests: XCTestCase {
+final class RedBlackTreeSetBidirectionalCollectionTests: RedBlackTreeTestCase {
 
   /// startIndexとendIndexの正しさ、および範囲外インデックスの確認を行うこと
   func test_startIndex_endIndex() {

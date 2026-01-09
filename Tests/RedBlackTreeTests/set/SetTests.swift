@@ -13,15 +13,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class SetTests: XCTestCase {
-
-  override func setUpWithError() throws {
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-  }
-
-  override func tearDownWithError() throws {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-  }
+final class SetTests: RedBlackTreeTestCase {
 
   func testInitEmtpy() throws {
     let set = RedBlackTreeSet<Int>()
@@ -892,15 +884,21 @@ final class SetTests: XCTestCase {
     typealias Index = RedBlackTreeSet<Int>.Index
     #if DEBUG
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
+    //#if USE_FRESH_POOL_V1
+    #if !USE_FRESH_POOL_V2
         // UnsafeTreeでは、範囲外のインデックスを作成できない
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
+#endif
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 2)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 3)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
+    //#if USE_FRESH_POOL_V1
+    #if !USE_FRESH_POOL_V2
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
+#endif
     #endif
   }
 
@@ -922,7 +920,10 @@ final class SetTests: XCTestCase {
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 6)))
+    //#if USE_FRESH_POOL_V1
+    #if !USE_FRESH_POOL_V2
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
+#endif
     #endif
   }
 

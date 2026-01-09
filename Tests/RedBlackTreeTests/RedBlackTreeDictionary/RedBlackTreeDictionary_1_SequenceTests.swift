@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeDictionarySequenceTests: XCTestCase {
+final class RedBlackTreeDictionarySequenceTests: RedBlackTreeTestCase {
 
   let elements = [("apple", 1), ("cherry", 3), ("banana", 2)]
 

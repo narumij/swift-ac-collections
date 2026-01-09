@@ -14,7 +14,7 @@ import XCTest
 #endif
 
 #if false
-final class MemoizeCacheTests: XCTestCase {
+final class MemoizeCacheTests: RedBlackTreeTestCase {
 
   enum TestKey: _KeyCustomProtocol {
     @inlinable @inline(__always)

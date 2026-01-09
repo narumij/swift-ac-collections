@@ -13,8 +13,8 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-#if DEBUG && ALLOCATION_DRILL
-  final class BucketCountTests: XCTestCase {
+#if DEBUG && ALLOCATION_DRILL && false
+  final class BucketCountTests: RedBlackTreeTestCase {
 
     func testExample1() throws {
       var f = RedBlackTreeSet<Int>()

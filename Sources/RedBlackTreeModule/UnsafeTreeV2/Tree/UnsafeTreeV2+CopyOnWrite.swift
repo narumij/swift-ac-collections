@@ -68,7 +68,7 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal static func _isKnownUniquelyReferenced(tree: inout UnsafeTreeV2) -> Bool {
     #if !DISABLE_COPY_ON_WRITE
-    tree._buffer.isUniqueReference()
+    !tree.isReadOnly && tree._buffer.isUniqueReference()
     #else
       true
     #endif

@@ -12,7 +12,7 @@ import XCTest
 #if DEBUG && !USE_UNSAFE_TREE
   @testable import RedBlackTreeModule
 
-  final class ___RedBlackTreeContainerTests: XCTestCase {
+  final class ___RedBlackTreeContainerTests: RedBlackTreeTestCase {
 
     func fixtureEmpty(_ tree: inout RedBlackTreeSet<Int>) {
       tree.__nodes = []

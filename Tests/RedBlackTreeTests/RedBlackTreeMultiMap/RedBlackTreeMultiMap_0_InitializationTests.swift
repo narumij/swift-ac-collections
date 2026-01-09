@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeMultiMapInitializationTests: XCTestCase {
+final class RedBlackTreeMultiMapInitializationTests: RedBlackTreeTestCase {
 
   // MARK: - 「空なものは空である」と「空でないものは空ではない」のトートロジー
 
@@ -12,7 +12,7 @@ final class RedBlackTreeMultiMapInitializationTests: XCTestCase {
     ("banana", 2),
     ("apple", 3),
   ]
-
+  
   /// 空初期化テスト
   func testEmptyInitialization() {
     // 事前条件: 空のマルチマップを初期化

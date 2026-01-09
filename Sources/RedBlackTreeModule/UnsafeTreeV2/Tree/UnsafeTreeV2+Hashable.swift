@@ -20,45 +20,12 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@usableFromInline
-struct UnsafeInitializedNodeIterator<_Value>: IteratorProtocol {
-
-  @usableFromInline
-  typealias Bucket = UnsafeNodeFreshBucket
-
-  @usableFromInline
-  typealias BucketPointer = UnsafeMutablePointer<Bucket>
-
-  @usableFromInline
-  typealias ElementPointer = UnsafeMutablePointer<UnsafeNode>
+extension UnsafeTreeV2: Hashable where _Value: Hashable {
 
   @inlinable
-  @inline(__always)
-  internal init(bucket: BucketPointer?) {
-    self.bucket = bucket
-  }
-
-  @usableFromInline
-  var bucket: BucketPointer?
-
-  @usableFromInline
-  var nodeOffset: Int = 0
-
-  @inlinable
-  @inline(__always)
-  mutating func next() -> ElementPointer? {
-
-    while let bucket, nodeOffset == bucket.pointee.count {
-      self.bucket = bucket.pointee.next
-      nodeOffset = 0
+  public func hash(into hasher: inout Hasher) {
+    for __v in unsafeValues(__begin_node_, end) {
+      hasher.combine(__v)
     }
-
-    guard let h = bucket else {
-      return nil
-    }
-
-    defer { nodeOffset += 1 }
-
-    return UnsafePair<_Value>.advance(h.pointee.start, nodeOffset)
   }
 }

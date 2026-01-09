@@ -112,18 +112,17 @@ public struct UnsafeNode {
 
   public typealias Pointer = UnsafeMutablePointer<UnsafeNode>
 
-  @inlinable
-  @inline(__always)
-  public init(
-    ___node_id_: Int,
-    _nullpotr: Pointer
-  ) {
-    self.init(
-      ___node_id_: ___node_id_,
-      __left_: _nullpotr,
-      __right_: _nullpotr,
-      __parent_: _nullpotr)
-  }
+//  @inlinable
+//  @inline(__always)
+//  public init(
+//    ___node_id_: Int
+//  ) {
+//    self.init(
+//      ___node_id_: ___node_id_,
+//      __left_: Self.nullptr,
+//      __right_: Self.nullptr,
+//      __parent_: Self.nullptr)
+//  }
 
   @inlinable
   @inline(__always)
@@ -132,14 +131,15 @@ public struct UnsafeNode {
     __left_: Pointer,
     __right_: Pointer,
     __parent_: Pointer,
-    __is_black_: Bool = false
+    __is_black_: Bool = false,
+    ___needs_deinitialize: Bool = true
   ) {
     self.___node_id_ = ___node_id_
     self.__left_ = __left_
     self.__right_ = __right_
     self.__parent_ = __parent_
     self.__is_black_ = __is_black_
-    self.___needs_deinitialize = true
+    self.___needs_deinitialize = ___needs_deinitialize
   }
 
   /// Left child pointer of this red-black tree node.
@@ -162,6 +162,26 @@ public struct UnsafeNode {
   ///
   /// 赤黒木ノードの親ノードを指すポインタ。
   public var __parent_: Pointer
+  /// Color flag of this red-black tree node.
+  ///
+  /// `true` indicates black, `false` indicates red.
+  ///
+  /// ---
+  ///
+  /// 赤黒木ノードの色を表すフラグ。
+  /// `true` の場合は黒、`false` の場合は赤。
+  public var __is_black_: Bool = false
+  /// Indicates whether the associated value requires deinitialization.
+  ///
+  /// This flag is used by low-level allocators / pools to determine
+  /// whether the value stored after this node should be deinitialized.
+  ///
+  /// ---
+  ///
+  /// 値の解放（deinitialize）が必要かどうかを示すフラグ。
+  /// ノード直後に配置された値を解放すべきかを判断するために、
+  /// 低レベルのアロケータ／プールで使用される。
+  public var ___needs_deinitialize: Bool
   // IndexアクセスでCoWが発生した場合のフォローバックとなる
   // TODO: 不変性が維持されているか考慮すること
   /// A temporary node identifier assigned in initialization order.
@@ -182,32 +202,73 @@ public struct UnsafeNode {
   ///
   /// nullptrは-2、endは-1をIDにもつ
   public var ___node_id_: Int
-  /// Color flag of this red-black tree node.
-  ///
-  /// `true` indicates black, `false` indicates red.
-  ///
-  /// ---
-  ///
-  /// 赤黒木ノードの色を表すフラグ。
-  /// `true` の場合は黒、`false` の場合は赤。
-  public var __is_black_: Bool = false
 
-  /// Indicates whether the associated value requires deinitialization.
-  ///
-  /// This flag is used by low-level allocators / pools to determine
-  /// whether the value stored after this node should be deinitialized.
-  ///
-  /// ---
-  ///
-  /// 値の解放（deinitialize）が必要かどうかを示すフラグ。
-  /// ノード直後に配置された値を解放すべきかを判断するために、
-  /// 低レベルのアロケータ／プールで使用される。
-  public var ___needs_deinitialize: Bool
   // メモリ管理をちゃんとするために隙間にねじ込んだ
   // TODO: メモリ管理に整合性があるか考慮すること
   #if DEBUG
     public var ___recycle_count: Int = 0
   #endif
+
+  @usableFromInline
+  nonisolated(unsafe) static let null: UnsafeNode.Null = .init()
+
+  // non optionalを選択したのは、コードのあちこちにチェックコードが自動で挟まって遅くなることを懸念しての措置
+  // nullptrは定数でもなにかコストがかかっていた記憶もある
+  // 過去のコードベースで再度調査してこういった諸々の問題が杞憂だった場合、optionalに変更してnullptrにnil変更しても良い
+  @usableFromInline
+  nonisolated(unsafe) static let nullptr: UnsafeMutablePointer<UnsafeNode> = null.nullptr
+}
+
+extension UnsafeNode {
+
+  @usableFromInline
+  final class Null {
+    fileprivate let nullptr: UnsafeMutablePointer<UnsafeNode>
+    fileprivate init() {
+      nullptr = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+      nullptr.initialize(
+        to:
+          .init(
+            ___node_id_: .nullptr,
+            __left_: nullptr,
+            __right_: nullptr,
+            __parent_: nullptr))
+    }
+    deinit {
+      nullptr.deinitialize(count: 1)
+      nullptr.deallocate()
+    }
+  }
+}
+
+extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
+  
+  @inlinable
+  var pointerIndex: Int {
+    switch self {
+    case .none:
+      return .nullptr
+    case .some(let wrapped):
+      return wrapped.pointee.___node_id_
+    }
+  }
+}
+
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
+  
+  @inlinable
+  var pointerIndex: Int {
+    pointee.___node_id_
+  }
+  
+  @inlinable
+  @inline(__always)
+  func create(id: Int) -> UnsafeNode {
+    .init(___node_id_: id,
+          __left_: self,
+          __right_: self,
+          __parent_: self)
+  }
 }
 
 extension UnsafeNode {
@@ -245,10 +306,20 @@ extension UnsafeNode {
   @inlinable
   @inline(__always)
   static func initializeValue<_Value>(_ p: UnsafeMutablePointer<UnsafeNode>, to: _Value) {
-    p.advanced(by: 1)
-      .withMemoryRebound(to: _Value.self, capacity: 1) { pointer in
-        pointer.initialize(to: to)
-      }
+    p.pointee.___needs_deinitialize = true
+    
+//    p.advanced(by: 1)
+//      .withMemoryRebound(to: _Value.self, capacity: 1) { pointer in
+//        pointer.initialize(to: to)
+//      }
+    
+    UnsafeMutableRawPointer(p.advanced(by: 1))
+      .bindMemory(to: _Value.self, capacity: 1)
+      .initialize(to: to)
+
+//    UnsafeMutableRawPointer(p.advanced(by: 1))
+//      .assumingMemoryBound(to: _Value.self)
+//      .initialize(to: to)
   }
 
   @inlinable
@@ -256,36 +327,9 @@ extension UnsafeNode {
   static func deinitialize<_Value>(_ t: _Value.Type, _ p: UnsafeMutablePointer<UnsafeNode>) {
     if p.pointee.___needs_deinitialize {
       UnsafeMutableRawPointer(p.advanced(by: 1))
-        .alignedUp(for: _Value.self)
         .assumingMemoryBound(to: _Value.self)
         .deinitialize(count: 1)
     }
     p.deinitialize(count: 1)
   }
 }
-
-extension UnsafeNode {
-
-  fileprivate final class Null {
-    fileprivate let pointer: UnsafeMutablePointer<UnsafeNode>
-    fileprivate init() {
-      let raw = UnsafeMutableRawPointer.allocate(
-        byteCount: MemoryLayout<UnsafeNode>.stride,
-        alignment: MemoryLayout<UnsafeNode>.alignment)
-      pointer = raw.assumingMemoryBound(to: UnsafeNode.self)
-      pointer.initialize(to: .init(___node_id_: .nullptr, _nullpotr: pointer))
-    }
-    deinit {
-      pointer.deinitialize(count: 1)
-      pointer.deallocate()
-    }
-  }
-}
-
-fileprivate
-nonisolated(unsafe) let shared: UnsafeNode.Null = .init()
-
-/// `__swift_instantiateConcreteTypeFromMangledNameV2`を避けるためには、
-/// 直接利用せずに、一度内部に保持する必要がある
-@usableFromInline
-nonisolated(unsafe) let ___slow_shared_unsafe_null_pointer: UnsafeMutablePointer<UnsafeNode> = shared.pointer

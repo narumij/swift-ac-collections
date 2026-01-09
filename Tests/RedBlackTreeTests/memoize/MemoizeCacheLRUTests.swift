@@ -6,16 +6,18 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class MemoizeCacheLRUTests: XCTestCase {
+final class MemoizeCacheLRUTests: RedBlackTreeTestCase {
 
   typealias TestKey = Int
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    try super.setUpWithError()
   }
 
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    try super.tearDownWithError()
   }
 
   func testExample() throws {
@@ -30,7 +32,7 @@ final class MemoizeCacheLRUTests: XCTestCase {
   func testInit() throws {
     let cache = ___LRUMemoizeStorage<TestKey, Int>(minimumCapacity: 10)
     XCTAssertEqual(cache.__tree_.count, 0)
-    XCTAssertEqual(cache.__tree_.capacity, 10)
+    XCTAssertGreaterThanOrEqual(cache.__tree_.capacity, 10)
   }
 
   func testQueue() throws {

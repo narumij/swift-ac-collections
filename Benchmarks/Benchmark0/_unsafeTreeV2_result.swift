@@ -1,87 +1,88 @@
 /*
+ (以前までのものはバグっていて速かった模様）
  
- UNSAFE_TREE
- 2026-01-05 10:01:18 +0000
+ UNSAFE_TREE＿V2
+ 2026-01-09 14:45:31 +0000
 
- running insert already presents 0... done! (200.51 ms)
- running insert already presents 32... done! (220.34 ms)
- running insert already presents 1024... done! (241.08 ms)
- running insert already presents 8192... done! (267.13 ms)
- running insert new 0... done! (301.18 ms)
- running insert new 32... done! (310.65 ms)
- running insert new 1024... done! (311.63 ms)
- running insert new 8192... done! (311.08 ms)
- running insert 0... done! (192.39 ms)
- running insert 32... done! (1016.35 ms)
- running insert 1024... done! (1683.63 ms)
- running insert 8192... done! (1688.74 ms)
- running insert 100000... done! (1810.49 ms)
- running insert 1000000... done! (1895.46 ms)
- running insert shuffled 0... done! (193.33 ms)
- running insert shuffled 32... done! (897.64 ms)
- running insert shuffled 1024... done! (1624.03 ms)
- running insert shuffled 8192... done! (2130.67 ms)
- running insert shuffled 100000... done! (1541.48 ms)
- running insert shuffled 1000000... done! (1474.95 ms)
- running remove 1000... done! (2311.93 ms)
- running remove 1000000... done! (2325.71 ms)
- running randomElement 0... done! (172.81 ms)
- running randomElement 32... done! (217.18 ms)
- running randomElement 1024... done! (217.97 ms)
- running randomElement 8192... done! (218.31 ms)
- running sequencial element 32... done! (179.72 ms)
- running sequencial element 1024... done! (179.95 ms)
- running sequencial element 8192... done! (179.04 ms)
- running lower bound 32... done! (197.82 ms)
- running lower bound 1024... done! (203.29 ms)
- running lower bound 8192... done! (208.53 ms)
- running upper bound 32... done! (197.32 ms)
- running upper bound 1024... done! (205.26 ms)
- running upper bound 8192... done! (215.38 ms)
- running first index 32... done! (196.87 ms)
- running first index 1024... done! (202.82 ms)
- running first index 8192... done! (204.26 ms)
+ running insert already presents 0... done! (199.26 ms)
+ running insert already presents 32... done! (219.82 ms)
+ running insert already presents 1024... done! (239.85 ms)
+ running insert already presents 8192... done! (266.95 ms)
+ running insert new 0... done! (312.50 ms)
+ running insert new 32... done! (323.64 ms)
+ running insert new 1024... done! (320.49 ms)
+ running insert new 8192... done! (320.22 ms)
+ running insert 0... done! (195.33 ms)
+ running insert 32... done! (1306.06 ms)
+ running insert 1024... done! (1680.47 ms)
+ running insert 8192... done! (1650.29 ms)
+ running insert 100000... done! (1787.98 ms)
+ running insert 1000000... done! (2197.59 ms)
+ running insert shuffled 0... done! (195.10 ms)
+ running insert shuffled 32... done! (1125.72 ms)
+ running insert shuffled 1024... done! (1589.11 ms)
+ running insert shuffled 8192... done! (2033.36 ms)
+ running insert shuffled 100000... done! (1527.76 ms)
+ running insert shuffled 1000000... done! (1497.52 ms)
+ running remove 1000... done! (1667.65 ms)
+ running remove 1000000... done! (1654.22 ms)
+ running randomElement 0... done! (174.46 ms)
+ running randomElement 32... done! (220.05 ms)
+ running randomElement 1024... done! (220.18 ms)
+ running randomElement 8192... done! (220.12 ms)
+ running sequencial element 32... done! (181.83 ms)
+ running sequencial element 1024... done! (183.01 ms)
+ running sequencial element 8192... done! (183.13 ms)
+ running lower bound 32... done! (181.67 ms)
+ running lower bound 1024... done! (182.54 ms)
+ running lower bound 8192... done! (181.90 ms)
+ running upper bound 32... done! (181.67 ms)
+ running upper bound 1024... done! (182.54 ms)
+ running upper bound 8192... done! (181.12 ms)
+ running first index 32... done! (182.53 ms)
+ running first index 1024... done! (182.63 ms)
+ running first index 8192... done! (182.31 ms)
 
  name                         time             std        iterations
  -------------------------------------------------------------------
- insert already presents 0          166.000 ns ± 115.35 %    1000000
- insert already presents 32         167.000 ns ±  96.97 %    1000000
- insert already presents 1024       208.000 ns ±  55.80 %    1000000
- insert already presents 8192       209.000 ns ±  39.42 %    1000000
- insert new 0                       250.000 ns ±  33.98 %    1000000
- insert new 32                      250.000 ns ±  31.36 %    1000000
- insert new 1024                    250.000 ns ±  29.00 %    1000000
- insert new 8192                    250.000 ns ±  30.13 %    1000000
- insert 0                           166.000 ns ±  32.31 %    1000000
- insert 32                          875.000 ns ±  18.71 %    1000000
- insert 1024                      25833.000 ns ±   4.00 %      53711
- insert 8192                     260125.000 ns ±   1.79 %       5357
- insert 100000                  3640541.500 ns ±   0.68 %        386
- insert 1000000                45013042.000 ns ±   0.50 %         31
- insert shuffled 0                  166.000 ns ±  51.71 %    1000000
- insert shuffled 32                 792.000 ns ±  15.61 %    1000000
- insert shuffled 1024             25541.000 ns ±  23.61 %      45042
- insert shuffled 8192            643250.000 ns ±   2.06 %       2264
- insert shuffled 100000        12874229.000 ns ±   3.73 %        106
- insert shuffled 1000000      286651687.500 ns ±   3.61 %          4
- remove 1000                       8083.000 ns ±   6.88 %     172837
- remove 1000000                 7961895.500 ns ±   0.54 %        176
- randomElement 0                    125.000 ns ±  44.03 %    1000000
- randomElement 32                   167.000 ns ±  43.93 %    1000000
- randomElement 1024                 167.000 ns ±  47.52 %    1000000
- randomElement 8192                 167.000 ns ±  72.44 %    1000000
- sequencial element 32              125.000 ns ±  24.16 %    1000000
- sequencial element 1024            125.000 ns ±  70.61 %    1000000
- sequencial element 8192            125.000 ns ±  54.94 %    1000000
- lower bound 32                     166.000 ns ±  35.48 %    1000000
- lower bound 1024                   167.000 ns ±  65.48 %    1000000
- lower bound 8192                   167.000 ns ±  48.04 %    1000000
- upper bound 32                     166.000 ns ±  45.59 %    1000000
- upper bound 1024                   167.000 ns ±  43.31 %    1000000
- upper bound 8192                   167.000 ns ±  51.54 %    1000000
- first index 32                     166.000 ns ±  45.68 %    1000000
- first index 1024                   167.000 ns ±  49.26 %    1000000
- first index 8192                   167.000 ns ±  59.86 %    1000000
+ insert already presents 0          166.000 ns ± 109.49 %    1000000
+ insert already presents 32         167.000 ns ± 110.71 %    1000000
+ insert already presents 1024       208.000 ns ±  58.35 %    1000000
+ insert already presents 8192       209.000 ns ±  35.07 %    1000000
+ insert new 0                       250.000 ns ±  39.90 %    1000000
+ insert new 32                      250.000 ns ±  34.13 %    1000000
+ insert new 1024                    250.000 ns ±  39.86 %    1000000
+ insert new 8192                    250.000 ns ±  42.70 %    1000000
+ insert 0                           166.000 ns ±  37.45 %    1000000
+ insert 32                         1125.000 ns ±  21.14 %    1000000
+ insert 1024                      26000.000 ns ±   3.34 %      53152
+ insert 8192                     232583.000 ns ±   2.04 %       5933
+ insert 100000                  3528104.000 ns ±   1.35 %        396
+ insert 1000000                70041375.000 ns ±   2.25 %         20
+ insert shuffled 0                  166.000 ns ±  34.97 %    1000000
+ insert shuffled 32                1000.000 ns ±  22.48 %    1000000
+ insert shuffled 1024             25334.000 ns ±  16.77 %      46407
+ insert shuffled 8192            578395.500 ns ±   1.52 %       2376
+ insert shuffled 100000        13244500.000 ns ±   2.99 %        105
+ insert shuffled 1000000      297700500.000 ns ±   3.83 %          4
+ remove 1000                       2042.000 ns ±  14.86 %     686298
+ remove 1000000                 1912542.000 ns ±   0.97 %        729
+ randomElement 0                    125.000 ns ±  58.32 %    1000000
+ randomElement 32                   167.000 ns ±  64.12 %    1000000
+ randomElement 1024                 167.000 ns ±  49.26 %    1000000
+ randomElement 8192                 167.000 ns ±  54.34 %    1000000
+ sequencial element 32              125.000 ns ±  25.56 %    1000000
+ sequencial element 1024            125.000 ns ±  60.60 %    1000000
+ sequencial element 8192            125.000 ns ±  68.32 %    1000000
+ lower bound 32                     125.000 ns ±  53.92 %    1000000
+ lower bound 1024                   125.000 ns ±  88.70 %    1000000
+ lower bound 8192                   125.000 ns ±  45.13 %    1000000
+ upper bound 32                     125.000 ns ±  62.19 %    1000000
+ upper bound 1024                   125.000 ns ±  90.64 %    1000000
+ upper bound 8192                   125.000 ns ±  52.37 %    1000000
+ first index 32                     125.000 ns ±  74.57 %    1000000
+ first index 1024                   125.000 ns ±  83.71 %    1000000
+ first index 8192                   125.000 ns ±  43.89 %    1000000
  Program ended with exit code: 0
  
  */

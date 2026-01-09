@@ -1,8 +1,9 @@
 import XCTest
-import RedBlackTreeModule
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-  final class MultiMapCopyOnWriteTests: XCTestCase {
+  @testable import RedBlackTreeModule
+
+  final class MultiMapCopyOnWriteTests: RedBlackTreeTestCase {
 
     typealias Target = RedBlackTreeMultiMap<Int, Int>
 
@@ -10,10 +11,12 @@ import RedBlackTreeModule
     var tree: Target = .init()
 
     override func setUpWithError() throws {
+      try super.setUpWithError()
       tree = .init(multiKeysWithValues: (0..<20).map { ($0, $0) })
     }
 
     override func tearDownWithError() throws {
+      try super.tearDownWithError()
     }
 
     func testSet1() throws {

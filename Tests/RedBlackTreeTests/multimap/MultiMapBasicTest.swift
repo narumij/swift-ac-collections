@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class MultiMapBasicTest: XCTestCase {
+final class MultiMapBasicTest: RedBlackTreeTestCase {
 
   func testInsertAndBasicProperties() {
     var multiMap = RedBlackTreeMultiMap<String, Int>()

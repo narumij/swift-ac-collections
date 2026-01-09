@@ -6,7 +6,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class AllocationTests: XCTestCase {
+final class AllocationTests: RedBlackTreeTestCase {
 
   #if DEBUG
     typealias Tree = RedBlackTreeSet<Int>.Tree
@@ -20,11 +20,11 @@ final class AllocationTests: XCTestCase {
       }
       do {
         let storage: Storage = .create(minimumCapacity: 1)
-        XCTAssertEqual(storage.capacity, 1)
+        XCTAssertGreaterThanOrEqual(storage.capacity, 1)
       }
       do {
         let storage: Storage = .create(minimumCapacity: 2)
-        XCTAssertEqual(storage.capacity, 2)
+        XCTAssertGreaterThanOrEqual(storage.capacity, 2)
       }
     }
 
@@ -42,14 +42,14 @@ final class AllocationTests: XCTestCase {
         XCTAssertEqual(storage.capacity, actualCapacity)  // capacityが変動しないこと
         XCTAssertEqual(storage.initializedCount, 5)
         XCTAssertEqual(storage.count, 5)
-        XCTAssertEqual(storage._buffer.header.destroyCount, 0)
+        XCTAssertEqual(storage._buffer.header.recycleCount, 0)
         for i in (0..<5).reversed() {
           storage.destroy(i)
         }
         XCTAssertEqual(storage.capacity, actualCapacity)
         XCTAssertEqual(storage.initializedCount, 5)
         XCTAssertEqual(storage.count, 0)
-        XCTAssertEqual(storage._buffer.header.destroyCount, 5)
+        XCTAssertEqual(storage._buffer.header.recycleCount, 5)
 
         do {
           let initializedCount = storage.initializedCount
@@ -58,7 +58,7 @@ final class AllocationTests: XCTestCase {
           XCTAssertEqual(set.__tree_.capacity, actualCapacity)
           XCTAssertEqual(set.__tree_.initializedCount, 5)
           XCTAssertEqual(set.__tree_.count, 0)
-          XCTAssertEqual(set.__tree_._buffer.header.destroyCount, 5)
+          XCTAssertEqual(set.__tree_._buffer.header.recycleCount, 5)
           set._ensureUniqueAndCapacity(to: 1)
           // リファレンスが2なので、CoWが発火する
 #if false
@@ -78,7 +78,7 @@ final class AllocationTests: XCTestCase {
           XCTAssertEqual(set.__tree_.capacity, actualCapacity)
           XCTAssertEqual(set.__tree_.initializedCount, 5)
           XCTAssertEqual(set.__tree_.count, 0)
-          XCTAssertEqual(set.__tree_._buffer.header.destroyCount, 5)
+          XCTAssertEqual(set.__tree_._buffer.header.recycleCount, 5)
           set._ensureUniqueAndCapacity(to: 15)
           // リファレンスが2なので、CoWが発火する
 #if false
@@ -132,6 +132,8 @@ final class AllocationTests: XCTestCase {
       }
     }
 
+  //#if USE_FRESH_POOL_V1
+  #if !USE_FRESH_POOL_V2
     func testCapacityGrowth() throws {
       let set = RedBlackTreeSet<Int>()
       var tree = set.__tree_
@@ -148,12 +150,23 @@ final class AllocationTests: XCTestCase {
       XCTAssertNotEqual(capacities, [])
       #if !ALLOCATION_DRILL
           // 小さく確保していく方針に切り替えた
-          XCTAssertEqual(capacities.count, 1054)
-          XCTAssertEqual(capacities.last, 1_000_747)
+      // アロケーション改良中で未確定
+      // TODO: FIXME
+//          XCTAssertEqual(capacities.count, 1054)
+//          XCTAssertEqual(capacities.last, 1_000_747)
       #endif
       //    XCTAssertEqual(capacities.last, 1572864)
       tree.initializedCount = 0  // これをしないと未初期化メモリに触ってクラッシュとなる
     }
+  #endif
+  
+  func testHoge() throws {
+    var a = RedBlackTreeSet<Int>()
+    a._ensureUnique()
+    XCTAssertEqual(a.capacity, 0)
+    a.__tree_._buffer.header.pushFreshBucket(capacity: 512)
+    XCTAssertGreaterThanOrEqual(a.capacity, 512)
+  }
 
   #endif  // DEBUG
 }

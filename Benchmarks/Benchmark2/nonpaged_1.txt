@@ -1,0 +1,121 @@
+NON PAGED
+
+Benchmark2
+
+UNSAFE_TREE
+2026-01-07 03:23:53 +0000
+
+running reserveCapacity 1 / 1... done! (345.69 ms)
+running reserveCapacity 1 / 2... done! (324.12 ms)
+running reserveCapacity 1 / 3... done! (322.37 ms)
+running reserveCapacity 1 / 4... done! (322.09 ms)
+running reserveCapacity 1 / 8... done! (334.02 ms)
+running reserveCapacity 1 / 16... done! (336.53 ms)
+running reserveCapacity 1 / 17... done! (336.01 ms)
+running reserveCapacity 1 / 32... done! (328.58 ms)
+running reserveCapacity 1 / 35... done! (328.88 ms)
+running reserveCapacity 1 / 64... done! (336.65 ms)
+running reserveCapacity 1 / 72... done! (336.81 ms)
+running reserveCapacity 1 / 128... done! (333.48 ms)
+running reserveCapacity 1 / 145... done! (333.52 ms)
+running reserveCapacity 1 / 256... done! (334.15 ms)
+running reserveCapacity 1 / 291... done! (333.99 ms)
+running reserveCapacity 1 / 512... done! (333.65 ms)
+running reserveCapacity 1 / 584... done! (334.09 ms)
+running reserveCapacity 1 / 1024... done! (1074.25 ms)
+running reserveCapacity 1 / 1169... done! (1070.71 ms)
+running reserveCapacity 1 / 2048... done! (1073.79 ms)
+running reserveCapacity 1 / 2339... done! (1074.98 ms)
+running reserveCapacity 1 / 4096... done! (1069.56 ms)
+running reserveCapacity 1 / 4680... done! (1070.48 ms)
+running reserveCapacity 1 / 8192... done! (1066.71 ms)
+running reserveCapacity 1 / 9361... done! (841.51 ms)
+running reserveCapacity 1 / 16384... done! (1082.90 ms)
+running reserveCapacity 1 / 18723... done! (1074.62 ms)
+running reserveCapacity 1 / 32768... done! (1074.76 ms)
+running reserveCapacity 1 / 37448... done! (1075.40 ms)
+running reserveCapacity 1 / 65536... done! (825.43 ms)
+running reserveCapacity 1 / 74897... done! (827.37 ms)
+running reserveCapacity 1 / 131072... done! (840.53 ms)
+running reserveCapacity 1 / 149795... done! (843.30 ms)
+running reserveCapacity 1 / 262144... done! (847.22 ms)
+running reserveCapacity 1 / 299592... done! (852.49 ms)
+running reserveCapacity 1 / 524288... done! (854.14 ms)
+running reserveCapacity 1 / 599185... done! (860.42 ms)
+running reserveCapacity 1 / 1048576... done! (887.95 ms)
+running reserveCapacity 1 / 1198371... done! (896.75 ms)
+running reserveCapacity 1 / 2097152... done! (922.72 ms)
+running reserveCapacity 1 / 2396744... done! (937.53 ms)
+running reserveCapacity 1 / 4194304... done! (1007.64 ms)
+running reserveCapacity 1 / 4793489... done! (1047.59 ms)
+running reserveCapacity 1 / 8388608... done! (1131.71 ms)
+running reserveCapacity 1 / 9586979... done! (1169.26 ms)
+running reserveCapacity 1 / 16777216... done! (1363.79 ms)
+running reserveCapacity 1 / 19173960... done! (1433.10 ms)
+running reserveCapacity 1 / 33554432... done! (1573.90 ms)
+running reserveCapacity 1 / 38347921... done! (1593.28 ms)
+running reserveCapacity 1 / 67108864... done! (1660.43 ms)
+running reserveCapacity 1 / 134217728... done! (1637.27 ms)
+running reserveCapacity 1 / 268435456... done! (1808.44 ms)
+running reserveCapacity 1 / 536870912... done! (2069.37 ms)
+running reserveCapacity 1 / 1073741824... done! (1513.29 ms)
+running reserveCapacity 1 / 2147483648... done! (1635.69 ms)
+
+name                           time          std        iterations
+------------------------------------------------------------------
+reserveCapacity 1 / 1             291.000 ns ±  99.61 %    1000000
+reserveCapacity 1 / 2             250.000 ns ±  81.27 %    1000000
+reserveCapacity 1 / 3             250.000 ns ±  75.86 %    1000000
+reserveCapacity 1 / 4             250.000 ns ±  68.83 %    1000000
+reserveCapacity 1 / 8             291.000 ns ±  40.38 %    1000000
+reserveCapacity 1 / 16            291.000 ns ±  41.15 %    1000000
+reserveCapacity 1 / 17            291.000 ns ±  34.43 %    1000000
+reserveCapacity 1 / 32            291.000 ns ±  42.54 %    1000000
+reserveCapacity 1 / 35            291.000 ns ±  34.24 %    1000000
+reserveCapacity 1 / 64            291.000 ns ±  43.30 %    1000000
+reserveCapacity 1 / 72            291.000 ns ± 138.57 %    1000000
+reserveCapacity 1 / 128           291.000 ns ±  37.41 %    1000000
+reserveCapacity 1 / 145           291.000 ns ±  32.23 %    1000000
+reserveCapacity 1 / 256           291.000 ns ±  43.38 %    1000000
+reserveCapacity 1 / 291           291.000 ns ±  35.27 %    1000000
+reserveCapacity 1 / 512           291.000 ns ±  37.20 %    1000000
+reserveCapacity 1 / 584           291.000 ns ±  42.02 %    1000000
+reserveCapacity 1 / 1024          958.000 ns ±  21.79 %    1000000
+reserveCapacity 1 / 1169          958.000 ns ±  15.61 %    1000000
+reserveCapacity 1 / 2048          958.000 ns ±  19.76 %    1000000
+reserveCapacity 1 / 2339          958.000 ns ±  21.22 %    1000000
+reserveCapacity 1 / 4096          917.000 ns ±  19.23 %    1000000
+reserveCapacity 1 / 4680          958.000 ns ±  18.44 %    1000000
+reserveCapacity 1 / 8192          917.000 ns ±  21.55 %    1000000
+reserveCapacity 1 / 9361          708.000 ns ±  25.67 %    1000000
+reserveCapacity 1 / 16384         958.000 ns ±  18.03 %    1000000
+reserveCapacity 1 / 18723         958.000 ns ±  19.39 %    1000000
+reserveCapacity 1 / 32768         958.000 ns ±  16.16 %    1000000
+reserveCapacity 1 / 37448         958.000 ns ±  20.28 %    1000000
+reserveCapacity 1 / 65536         708.000 ns ±  21.99 %    1000000
+reserveCapacity 1 / 74897         709.000 ns ±  25.57 %    1000000
+reserveCapacity 1 / 131072        750.000 ns ±  24.51 %    1000000
+reserveCapacity 1 / 149795        750.000 ns ±  21.94 %    1000000
+reserveCapacity 1 / 262144        750.000 ns ±  22.26 %    1000000
+reserveCapacity 1 / 299592        750.000 ns ±  19.91 %    1000000
+reserveCapacity 1 / 524288        750.000 ns ±  21.77 %    1000000
+reserveCapacity 1 / 599185        750.000 ns ±  20.18 %    1000000
+reserveCapacity 1 / 1048576       791.000 ns ±  19.18 %    1000000
+reserveCapacity 1 / 1198371       792.000 ns ±  17.91 %    1000000
+reserveCapacity 1 / 2097152       792.000 ns ±  18.87 %    1000000
+reserveCapacity 1 / 2396744       833.000 ns ±  19.50 %    1000000
+reserveCapacity 1 / 4194304       875.000 ns ±  19.06 %    1000000
+reserveCapacity 1 / 4793489       917.000 ns ±  18.75 %    1000000
+reserveCapacity 1 / 8388608      1000.000 ns ±  16.91 %    1000000
+reserveCapacity 1 / 9586979      1041.000 ns ±  17.34 %    1000000
+reserveCapacity 1 / 16777216     1208.000 ns ±  24.47 %    1000000
+reserveCapacity 1 / 19173960     1250.000 ns ±  34.54 %    1000000
+reserveCapacity 1 / 33554432     1542.000 ns ±  26.58 %     881482
+reserveCapacity 1 / 38347921     1667.000 ns ±  26.42 %     827904
+reserveCapacity 1 / 67108864     2291.000 ns ±  20.14 %     603766
+reserveCapacity 1 / 134217728   22291.000 ns ±   9.42 %      60201
+reserveCapacity 1 / 268435456   35708.000 ns ±   7.80 %      38535
+reserveCapacity 1 / 536870912   58750.000 ns ±   5.40 %      23650
+reserveCapacity 1 / 1073741824 104458.000 ns ±   5.04 %      13144
+reserveCapacity 1 / 2147483648 201917.000 ns ±   3.56 %       6978
+Program ended with exit code: 0

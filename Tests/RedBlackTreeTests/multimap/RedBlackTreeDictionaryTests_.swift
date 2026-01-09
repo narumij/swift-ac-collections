@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeMultiMapTests_: XCTestCase {
+final class RedBlackTreeMultiMapTests_: RedBlackTreeTestCase {
 
   func testRedBlackTreeDictionary_basic() {
     var dict = RedBlackTreeDictionary<String, Int>()

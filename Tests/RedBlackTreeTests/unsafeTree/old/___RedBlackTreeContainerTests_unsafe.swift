@@ -13,7 +13,7 @@ import XCTest
 #if DEBUG
   @testable import RedBlackTreeModule
 
-  final class ___RedBlackTreeContainerTests: XCTestCase {
+  final class ___RedBlackTreeContainerTests: RedBlackTreeTestCase {
 
     let capacity = 32
 
@@ -60,8 +60,8 @@ import XCTest
       ]
       tree.__root(tree.___NodePtr(0))
       //        tree.___header.size = tree.___nodes.count
-      XCTAssertEqual(tree.___header.initializedCount, 7)
-      tree.___header.__begin_node_ = tree.___NodePtr(2)
+      XCTAssertEqual(tree.___header.freshPoolUsedCount, 7)
+      tree.__begin_node_ = tree.___NodePtr(2)
       XCTAssertTrue(tree.___tree_invariant())
     }
 
@@ -185,12 +185,12 @@ import XCTest
       _ = tree.__tree_.__insert_unique(0)
       _ = tree.__tree_.__insert_unique(1)
       _ = tree.__tree_.__insert_unique(2)
-      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root), tree.___header.__begin_node_)
+      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root), tree.__begin_node_)
       for i in 0..<3 {
         _ = tree.__tree_.___erase_unique(i)
         if tree.__root.index != .nullptr {
           XCTAssertEqual(
-            tree.__tree_.__tree_min(tree.__tree_.__root), tree.___header.__begin_node_)
+            tree.__tree_.__tree_min(tree.__tree_.__root), tree.__begin_node_)
         }
         XCTAssertEqual(tree._count, 2 - i)
       }
@@ -203,14 +203,14 @@ import XCTest
         _ = tree.__tree_.__insert_unique(i)
       }
       //        fixture0_1_2_3_4_5_6(&tree)
-      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root), tree.___header.__begin_node_)
+      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root), tree.__begin_node_)
       for i in 0..<2 {
         XCTAssertTrue(tree.__tree_.___erase_unique(i), "i = \(i)")
         print("__root():", tree.__root.index)
         XCTAssertTrue(tree.___tree_invariant())
         XCTAssertEqual(
           tree.__root == tree.nullptr ? tree.end : tree.__tree_.__tree_min(tree.__tree_.__root),
-          tree.___header.__begin_node_)
+          tree.__begin_node_)
         XCTAssertEqual(tree._count, 1 - i, "i = \(i)")
       }
     }
@@ -222,14 +222,14 @@ import XCTest
         _ = tree.__tree_.__insert_unique(i)
       }
       //        fixture0_1_2_3_4_5_6(&tree)
-      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root), tree.___header.__begin_node_)
+      XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root), tree.__begin_node_)
       for i in 0..<7 {
         XCTAssertTrue(tree.__tree_.___erase_unique(i), "i = \(i)")
         print("__root():", tree.__root.index)
         XCTAssertTrue(tree.___tree_invariant())
         XCTAssertEqual(
           tree.__root == tree.nullptr ? tree.end : tree.__tree_.__tree_min(tree.__tree_.__root),
-          tree.___header.__begin_node_)
+          tree.__begin_node_)
         XCTAssertEqual(tree._count, 6 - i, "i = \(i)")
       }
     }

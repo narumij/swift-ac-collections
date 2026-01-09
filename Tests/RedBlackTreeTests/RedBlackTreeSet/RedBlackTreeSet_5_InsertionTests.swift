@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeSetInsertionTests: XCTestCase {
+final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
 
   /// 要素を挿入した場合、集合に含まれること
   func test_insert_singleElement() {

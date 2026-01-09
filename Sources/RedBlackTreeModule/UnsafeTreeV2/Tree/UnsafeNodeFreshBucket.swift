@@ -21,8 +21,9 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
+@frozen
 @usableFromInline
-@frozen struct UnsafeNodeFreshBucket {
+package struct UnsafeNodeFreshBucket {
 
   public typealias Header = UnsafeNodeFreshBucket
   public typealias HeaderPointer = UnsafeMutablePointer<Header>
@@ -54,7 +55,6 @@
   func advance(_ p: _NodePtr, offset n: Int = 1) -> _NodePtr {
     UnsafeMutableRawPointer(p)
       .advanced(by: stride * n)
-      .alignedUp(toMultipleOf: alignment)  // _Valueへのalignment
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
@@ -82,16 +82,18 @@
     while i < count {
       let c = p
       p = advance(p)
+#if false
+      UnsafeNode.deinitialize(T.self, c)
+#else
       if c.pointee.___needs_deinitialize {
-        //        UnsafePair<_Value>.__value_ptr(c)
         UnsafeMutableRawPointer(
           UnsafeMutablePointer<UnsafeNode>(c)
             .advanced(by: 1)
         )
-        .alignedUp(for: t.self)
         .assumingMemoryBound(to: t.self)
         .deinitialize(count: 1)
       }
+#endif
       c.deinitialize(count: 1)
       i += 1
     }
@@ -100,7 +102,7 @@
         var c = 0
         var p = start
         while c < capacity {
-          p.pointee.___node_id_ = -2
+          p.pointee.___node_id_ = .debug
           p = advance(p)
           c += 1
         }
@@ -113,103 +115,6 @@
   mutating func clear<T>(_ t: T.Type) {
     _clear(t.self)
     count = 0
-  }
-}
-
-extension UnsafeNodeFreshPool {
-
-  @inlinable
-  @inline(__always)
-  static func deinitializeNodes(_ p: ReserverHeaderPointer) {
-    let bucket = p.pointee
-    var i = 0
-    let count = bucket.count
-    var p = bucket.start
-    while i < count {
-      let c = p
-      p = UnsafePair<_Value>.advance(p)
-      if c.pointee.___needs_deinitialize {
-        UnsafeNode.deinitialize(_Value.self, c)
-      }
-      c.deinitialize(count: 1)
-      i += 1
-    }
-    #if DEBUG
-      do {
-        var c = 0
-        var p = bucket.start
-        while c < bucket.capacity {
-          p.pointee.___node_id_ = -2
-          p = UnsafePair<_Value>.advance(p)
-          c += 1
-        }
-      }
-    #endif
-  }
-
-  @inlinable
-  @inline(__always)
-  static func createBucket(capacity: Int) -> ReserverHeaderPointer {
-
-    assert(capacity != 0)
-
-    let (bytes, alignment) = Self.allocationSize(capacity: capacity)
-
-    let header_storage = UnsafeMutableRawPointer.allocate(
-      byteCount: bytes,
-      alignment: alignment)
-
-    let header = UnsafeMutableRawPointer(header_storage)
-      .assumingMemoryBound(to: UnsafeNodeFreshBucket.self)
-
-    let storage = UnsafeMutableRawPointer(header.advanced(by: 1))
-      .alignedUp(toMultipleOf: alignment)
-
-    header.initialize(
-      to:
-        .init(
-          start: UnsafePair<_Value>.pointer(from: storage),
-          capacity: capacity,
-          strice: MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride,
-          alignment: alignment))
-
-    #if DEBUG
-      do {
-        var c = 0
-        var p = header.pointee.start
-        while c < capacity {
-          p.pointee.___node_id_ = -2
-          p = UnsafePair<_Value>.advance(p)
-          c += 1
-        }
-      }
-    #endif
-
-    return header
-  }
-
-  @inlinable
-  @inline(__always)
-  static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
-    let (bufferSize, bufferAlignment) = UnsafePair<_Value>.allocationSize(capacity: capacity)
-    let numBytes = MemoryLayout<ReserverHeader>.stride + bufferSize
-    let headerAlignment = MemoryLayout<ReserverHeader>.alignment
-    if bufferAlignment <= headerAlignment {
-      return (numBytes, MemoryLayout<ReserverHeader>.alignment)
-    }
-    return (
-      numBytes + bufferAlignment - headerAlignment,
-      bufferAlignment
-    )
-  }
-
-  @inlinable
-  @inline(__always)
-  static func allocationSize() -> (size: Int, alignment: Int) {
-    return (
-      MemoryLayout<ReserverHeader>.stride,
-      MemoryLayout<ReserverHeader>.alignment
-    )
   }
 }
 

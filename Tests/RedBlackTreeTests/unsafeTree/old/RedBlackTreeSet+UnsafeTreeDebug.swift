@@ -15,7 +15,7 @@
         }
       }
       set {
-        __tree_._buffer.header.___clearRecycle()
+        __tree_._buffer.header.___flushRecyclePool()
         __tree_.initializedCount = newValue.count
         newValue.enumerated().forEach {
           i, v in
@@ -43,13 +43,18 @@
       }
     }
     @inlinable
+    var __begin_node_: _NodePtr {
+      get { __tree_.__begin_node_ }
+      set { __tree_.__begin_node_ = newValue }
+    }
+    @inlinable
     var ___header: Tree.Header {
       get { __tree_._buffer.header }
       set { __tree_._buffer.header = newValue }
     }
     @inlinable
     var _count: Int {
-      var it = ___header.__begin_node_
+      var it = __tree_.__begin_node_
       if it == __tree_.end {
         return 0
       }

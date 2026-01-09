@@ -6,7 +6,7 @@
 import XCTest
 import RedBlackTreeModule
 
-final class RedBlackTreeDictionaryExtendedTests: XCTestCase {
+final class RedBlackTreeDictionaryExtendedTests: RedBlackTreeTestCase {
 
   // MARK: ── ヘルパ ────────────────────────────────────────────────
 

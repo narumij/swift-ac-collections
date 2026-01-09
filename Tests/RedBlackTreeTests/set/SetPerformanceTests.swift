@@ -6,20 +6,22 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class SetPerformanceTests: XCTestCase {
+final class SetPerformanceTests: RedBlackTreeTestCase {
 
   var random: [Int] = []
   var sequence: [Int] = []
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    try super.setUpWithError()
     random = (0..<2_000_000).shuffled()
     sequence = (0..<2_000_000) + []
   }
 
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
-  }
+    try super.tearDownWithError()
+ }
 
   #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceDistanceFromTo() throws {

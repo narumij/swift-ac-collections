@@ -1,7 +1,7 @@
 import XCTest
 import RedBlackTreeModule
 
-class CodableFixture: XCTestCase {
+class CodableFixture: RedBlackTreeTestCase {
   
   let encoder: JSONEncoder = {
     let e = JSONEncoder()

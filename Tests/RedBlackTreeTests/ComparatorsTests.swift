@@ -6,7 +6,7 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class RedBlackTreeComparatorsTests: XCTestCase {
+final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
 
   #if DEBUG
     func testSetKeyAndValueComp() {

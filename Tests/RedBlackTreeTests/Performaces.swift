@@ -1,13 +1,7 @@
 import RedBlackTreeModule
 import XCTest
 
-final class Performaces: XCTestCase {
-
-  override func setUpWithError() throws {
-  }
-
-  override func tearDownWithError() throws {
-  }
+final class Performaces: RedBlackTreeTestCase {
 
 #if ENABLE_PERFORMANCE_TESTING
   func testPerformanceExample00() throws {

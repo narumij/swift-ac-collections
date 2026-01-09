@@ -12,14 +12,16 @@ extension Optional where Wrapped == Int {
   }
 }
 
-final class DictionaryTests: XCTestCase {
+final class DictionaryTests: RedBlackTreeTestCase {
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    try super.setUpWithError()
   }
 
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    try super.tearDownWithError()
   }
 
   func testInitEmtpy() throws {
@@ -864,16 +866,19 @@ final class DictionaryTests: XCTestCase {
     typealias Index = RedBlackTreeDictionary<Int, String>.Index
     #if DEBUG
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
+#if !USE_UNSAFE_TREE
       // UnsafeTreeでは、範囲外のインデックスを作成できない
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
-
+#endif
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 2)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 3)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
+#if !USE_UNSAFE_TREE
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
+#endif
     #endif
   }
 
@@ -897,7 +902,9 @@ final class DictionaryTests: XCTestCase {
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 6)))
+    #if !USE_UNSAFE_TREE
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
+    #endif
     #endif
   }
 

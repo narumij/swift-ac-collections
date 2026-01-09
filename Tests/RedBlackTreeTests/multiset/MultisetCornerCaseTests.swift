@@ -14,7 +14,7 @@ private struct ReferenceMultiset {
     var sorted: [Int] { dict.flatMap { Array(repeating: $0.key, count: $0.value) } .sorted() }
 }
 
-final class RedBlackTreeMultisetCornerCaseTests: XCTestCase {
+final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
 
     // MARK: ── 基本動作 ──────────────────────────────────────────────
 

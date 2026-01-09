@@ -83,7 +83,6 @@ package struct UnsafeNodeFreshBucket {
       let c = p
       p = advance(p)
       if c.pointee.___needs_deinitialize {
-        //        UnsafePair<_Value>.__value_ptr(c)
         UnsafeMutableRawPointer(
           UnsafeMutablePointer<UnsafeNode>(c)
             .advanced(by: 1)
@@ -99,7 +98,7 @@ package struct UnsafeNodeFreshBucket {
         var c = 0
         var p = start
         while c < capacity {
-          p.pointee.___node_id_ = .nullptr
+          p.pointee.___node_id_ = .debug
           p = advance(p)
           c += 1
         }

@@ -50,6 +50,11 @@ extension _PointerIndex {
     -1
   }
 
+  @inlinable
+  package static var debug: Self {
+    -999
+  }
+
   /// 数値を直接扱うことを避けるための初期化メソッド
   @inlinable
   @inline(__always)

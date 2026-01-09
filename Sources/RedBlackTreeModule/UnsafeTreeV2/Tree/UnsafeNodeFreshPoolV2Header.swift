@@ -225,7 +225,18 @@ extension FreshPool {
       let used = used
       while i < used {
         let c = (pointers + i).pointee
+#if true
         UnsafeNode.deinitialize(_Value.self, c)
+#else
+        if c.pointee.___needs_deinitialize {
+          UnsafeMutableRawPointer(
+            UnsafeMutablePointer<UnsafeNode>(c)
+              .advanced(by: 1)
+          )
+          .assumingMemoryBound(to: _Value.self)
+          .deinitialize(count: 1)
+        }
+#endif
         c.deinitialize(count: 1)
         i += 1
       }

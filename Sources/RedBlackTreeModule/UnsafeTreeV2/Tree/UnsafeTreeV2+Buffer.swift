@@ -25,7 +25,7 @@ import Foundation
 // TODO: テスト整備後internalにする
 @_fixed_layout
 public final class UnsafeTreeV2Buffer<_Value>:
-  ManagedBuffer<UnsafeTreeV2Buffer<_Value>.Header, __tree>
+  ManagedBuffer<UnsafeTreeV2Buffer<_Value>.Header, UnsafeTreeV2Origin>
 {
   // MARK: - 解放処理
   @inlinable
@@ -56,7 +56,7 @@ extension UnsafeTreeV2Buffer {
       return managedBuffer.withUnsafeMutablePointerToElements { tree in
 
         // endノード用に初期化する
-        tree.initialize(to: __tree(base: tree, nullptr: nullptr))
+        tree.initialize(to: UnsafeTreeV2Origin(base: tree, nullptr: nullptr))
         // ヘッダーを準備する
         var header = Header(nullptr: nullptr)
         // ノードを確保する

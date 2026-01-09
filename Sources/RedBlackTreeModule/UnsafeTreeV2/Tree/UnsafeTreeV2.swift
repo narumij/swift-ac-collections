@@ -20,14 +20,14 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public struct __tree {
+public struct UnsafeTreeV2Origin {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   @usableFromInline let nullptr: _NodePtr
   @usableFromInline var begin_ptr: _NodePtr
   @usableFromInline let end_ptr: _NodePtr
   @usableFromInline var end_node: UnsafeNode
   @inlinable
-  init(base: UnsafeMutablePointer<__tree>, nullptr: _NodePtr) {
+  init(base: UnsafeMutablePointer<UnsafeTreeV2Origin>, nullptr: _NodePtr) {
     self.nullptr = nullptr
     end_node = nullptr.create(id: .end)
     let e = withUnsafeMutablePointer(to: &base.pointee.end_node) { $0 }
@@ -47,7 +47,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @inlinable
   internal init(
-    _buffer: ManagedBufferPointer<Header, __tree>,
+    _buffer: ManagedBufferPointer<Header, UnsafeTreeV2Origin>,
     isReadOnly: Bool = false
   ) {
     self._buffer = _buffer
@@ -58,8 +58,8 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   public typealias Base = Base
   public typealias Tree = UnsafeTreeV2<Base>
   public typealias Header = UnsafeTreeV2Buffer<Base._Value>.Header
-  public typealias Buffer = ManagedBuffer<Header, __tree>
-  public typealias BufferPointer = ManagedBufferPointer<Header, __tree>
+  public typealias Buffer = ManagedBuffer<Header, UnsafeTreeV2Origin>
+  public typealias BufferPointer = ManagedBufferPointer<Header, UnsafeTreeV2Origin>
   public typealias _Key = Base._Key
   public typealias _Value = Base._Value
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>

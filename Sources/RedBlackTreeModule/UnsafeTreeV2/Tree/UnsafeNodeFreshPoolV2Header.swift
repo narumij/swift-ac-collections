@@ -12,21 +12,12 @@ struct FreshStorage {
   @inlinable
   @inline(__always)
   internal init(
-    capacity: Int,
-    pointer: UnsafeMutablePointer<FreshStorage>? = nil
+    pointer: UnsafeMutablePointer<FreshStorage>?
   ) {
-    self.capacity = capacity
     self.pointer = pointer
   }
-
-  // 最新の全体容量を記録する
-  @usableFromInline let capacity: Int
   // 過去のバッファ
   @usableFromInline let pointer: UnsafeMutablePointer<FreshStorage>?
-
-  @usableFromInline var count: Int {
-    capacity - (pointer?.pointee.capacity ?? 0)
-  }
 }
 
 @frozen
@@ -44,17 +35,13 @@ struct FreshPool<_Value> {
     self.array = array
   }
 
+  @usableFromInline var capacity: Int = 0
   @usableFromInline var used: Int = 0
   @usableFromInline var storage: UnsafeMutablePointer<FreshStorage>?
   @usableFromInline var array: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>?
 }
 
 extension FreshPool {
-
-  @usableFromInline
-  var capacity: Int {
-    storage?.pointee.capacity ?? 0
-  }
 
   @inlinable
   @inline(__always)
@@ -104,8 +91,9 @@ extension FreshPool {
     //                            alignment: max(MemoryLayout<UnsafeNode>.alignment, MemoryLayout<_Value>.alignment)),
     //                           pointer: storage))
     assert(used <= capacity)
-    let (newStorage, buffer, _) = createBucket(capacity: size)
+    let (newStorage, buffer, size) = createBucket(capacity: size)
     storage = newStorage
+    capacity += size
     assert(used < capacity)
     return UnsafePair<_Value>.pointer(from: buffer)
   }
@@ -149,7 +137,7 @@ extension FreshPool {
     header.initialize(
       to:
         .init(
-          capacity: self.capacity + capacity,
+//          capacity: self.capacity + capacity,
           pointer: self.storage))
 
     #if DEBUG
@@ -216,27 +204,47 @@ extension FreshPool {
 
   @inlinable
   @inline(__always)
+//  @usableFromInline
   mutating func dispose() {
-    var i = 0
+#if true
     if let array {
+      var i = 0
       while i < used {
         let c = (array + i).pointee
         UnsafeNode.deinitialize(_Value.self, c)
         c.deinitialize(count: 1)
         i += 1
       }
+      array.deinitialize(count: capacity)
+      array.deallocate()
+      self.array = nil
     }
     while let storage {
       self.storage = storage.pointee.pointer
       storage.deinitialize(count: 1)
       storage.deallocate()
     }
+//    used = 0
+//    storage = nil
+#else
     if let array {
+      var it = array
+      let end = it + used
+      while it != end {
+        let c = it.pointee
+        UnsafeNode.deinitialize(_Value.self, c)
+        c.deinitialize(count: 1)
+        it += 1
+      }
       array.deinitialize(count: capacity)
       array.deallocate()
+      self.array = nil
     }
-    used = 0
-    storage = nil
-    array = nil
+    while let storage {
+      self.storage = storage.pointee.pointer
+      storage.deinitialize(count: 1)
+      storage.deallocate()
+    }
+#endif
   }
 }

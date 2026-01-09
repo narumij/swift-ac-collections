@@ -233,9 +233,7 @@ extension UnsafeTreeV2 {
         _header_ptr.pointee.freshPoolUsedCount = source_header.pointee.freshPoolUsedCount
 #endif
         _header_ptr.pointee.count = source_header.pointee.count
-        _header_ptr.pointee.recycleHead = source_header.pointee.recycleHead.map {
-          __ptr_($0)
-        }
+        _header_ptr.pointee.recycleHead = __ptr_(source_header.pointee.recycleHead)
 //        assert(
 //          _header_ptr.pointee.recycleHead.pointee.___node_id_
 //            == source_header.pointee.recycleHead.pointee.___node_id_)

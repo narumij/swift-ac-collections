@@ -88,6 +88,7 @@ extension UnsafeTreeV2Buffer {
     @inline(__always)
     internal init(nullptr: _NodePtr) {
       self.nullptr = nullptr
+      self.recycleHead = nullptr
     }
     
     @usableFromInline var count: Int = 0
@@ -97,7 +98,7 @@ extension UnsafeTreeV2Buffer {
     @usableFromInline var freshPoolUsedCount: Int = 0
 #endif
 
-    @usableFromInline var recycleHead: _NodePtr? // = UnsafeNode.nullptr
+    @usableFromInline var recycleHead: _NodePtr // = UnsafeNode.nullptr
     
 #if !USE_FRESH_POOL_V2
     @usableFromInline var freshBucketHead: ReserverHeaderPointer?

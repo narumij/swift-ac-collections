@@ -75,7 +75,7 @@ final class FreshPoolSubscriptTests: XCTestCase {
 
     // 各ノードに ID を書き込む
     for i in 0..<10 {
-      let p = pool.array!.advanced(by: i).pointee
+      let p = pool.pointers!.advanced(by: i).pointee
       p.initialize(to: UnsafeNode(___node_id_: i))
     }
 
@@ -84,7 +84,7 @@ final class FreshPoolSubscriptTests: XCTestCase {
     // subscript が array に詰めた先頭ポインタを
     // そのまま返しているか
     for i in 0..<10 {
-      let pFromArray = pool.array!.advanced(by: i).pointee
+      let pFromArray = pool.pointers!.advanced(by: i).pointee
       let pFromSubscript = pool[i]
 
       XCTAssertTrue(pFromArray == pFromSubscript)

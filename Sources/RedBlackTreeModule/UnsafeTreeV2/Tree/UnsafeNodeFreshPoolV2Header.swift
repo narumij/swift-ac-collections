@@ -32,20 +32,20 @@ struct FreshPool<_Value> {
     array: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>? = nil
   ) {
     self.storage = storage
-    self.array = array
+    self.pointers = array
   }
 
-  @usableFromInline var capacity: Int = 0
   @usableFromInline var used: Int = 0
+  @usableFromInline var capacity: Int = 0
+  @usableFromInline var pointers: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>?
+  @usableFromInline var pointersCount: Int = 0
   @usableFromInline var storage: UnsafeMutablePointer<FreshStorage>?
-  @usableFromInline var array: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>?
 }
 
 extension FreshPool {
 
   @inlinable
   @inline(__always)
-  //  @usableFromInline
   mutating func reserveCapacity(minimumCapacity newCapacity: Int) {
     assert(capacity < newCapacity)
     assert(used <= capacity)
@@ -57,7 +57,7 @@ extension FreshPool {
     var p = pushStorage(size: size)
     var i = oldCapacity
     while i < newCapacity {
-      (array! + i).initialize(to: p)
+      (pointers! + i).initialize(to: p)
       p = UnsafeMutableRawPointer(p)
         .advanced(by: MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
         .assumingMemoryBound(to: UnsafeNode.self)
@@ -65,20 +65,27 @@ extension FreshPool {
     }
     assert(used < capacity)
   }
+  
+  @inlinable
+  func growthCount(minimumCount: Int) -> Int {
+    // ノード用メモリ確保の速度でうまみが強い範囲に余計な仕事をしないための最小限を最初に確保
+    // その後は1/3ずつ増加
+    max(16, minimumCount * 5 / 4)
+  }
 
   @inlinable
   @inline(__always)
   mutating func resizeArrayIfNeeds(minimumCapacity newCapacity: Int) {
-    let oldRank = 1 << (Int.bitWidth - capacity.leadingZeroBitCount)
-    let newRank = 1 << (Int.bitWidth - newCapacity.leadingZeroBitCount)
-    guard oldRank != newRank || array == nil else { return }
+    let newRank = growthCount(minimumCount: newCapacity)
+    guard pointersCount != newRank || pointers == nil else { return }
     let newArray = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
       .allocate(capacity: newRank)
-    if let array {
-      newArray.moveInitialize(from: array, count: capacity)
-      array.deallocate()
+    if let pointers {
+      newArray.moveInitialize(from: pointers, count: capacity)
+      pointers.deallocate()
     }
-    array = newArray
+    pointers = newArray
+    pointersCount = newRank
   }
 
   @inlinable
@@ -165,9 +172,9 @@ extension FreshPool {
   @inlinable
   @inline(__always)
   var buffer: UnsafeMutableBufferPointer<UnsafeMutablePointer<UnsafeNode>> {
-    guard let array else { fatalError() }
+    guard let pointers else { fatalError() }
     return UnsafeMutableBufferPointer(
-      start: UnsafeMutableRawPointer(array)
+      start: UnsafeMutableRawPointer(pointers)
         .assumingMemoryBound(to: UnsafeMutablePointer<UnsafeNode>.self),
       count: capacity
     )
@@ -178,7 +185,7 @@ extension FreshPool {
   subscript(___node_id_: Int) -> UnsafeMutablePointer<UnsafeNode> {
     assert(0 <= ___node_id_)
     assert(___node_id_ < capacity)
-    return array!.advanced(by: ___node_id_).pointee
+    return pointers!.advanced(by: ___node_id_).pointee
   }
 
   @inlinable
@@ -205,17 +212,17 @@ extension FreshPool {
   @inlinable
   @inline(__always)
   mutating func dispose() {
-    if let array {
+    if let pointers {
       var i = 0
       while i < used {
-        let c = (array + i).pointee
+        let c = (pointers + i).pointee
         UnsafeNode.deinitialize(_Value.self, c)
         c.deinitialize(count: 1)
         i += 1
       }
-      array.deinitialize(count: capacity)
-      array.deallocate()
-      self.array = nil
+      pointers.deinitialize(count: capacity)
+      pointers.deallocate()
+      self.pointers = nil
     }
     while let storage {
       self.storage = storage.pointee.pointer

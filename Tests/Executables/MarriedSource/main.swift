@@ -8268,8 +8268,8 @@ extension ___UnsafeCopyOnWriteV2 {
     if __tree_.capacity < min(limit, minimumCapacity) {
       __tree_.growthCapacity(to: min(limit, minimumCapacity), limit: limit, linearly: false)
     }
-#if USE_FRESH_POOL_V1
-    //#if !USE_FRESH_POOL_V2
+    //#if USE_FRESH_POOL_V1
+    #if !USE_FRESH_POOL_V2
     assert(__tree_.initializedCount <= __tree_.capacity)
 #else
     assert(__tree_.initializedCount <= __tree_._buffer.header.freshPool.capacity)
@@ -9435,8 +9435,8 @@ extension UnsafeNodeFreshPool {
   public typealias ReserverHeaderPointer = UnsafeMutablePointer<ReserverHeader>
 }
 
-#if USE_FRESH_POOL_V1
-//#if !USE_FRESH_POOL_V2
+//#if USE_FRESH_POOL_V1
+#if !USE_FRESH_POOL_V2
 extension UnsafeNodeFreshPool {
 
   /*
@@ -10587,8 +10587,8 @@ extension UnsafeTreeV2 {
 
         _begin_ptr.pointee = __ptr_(source_begin.pointee)
 
-        #if USE_FRESH_POOL_V1
-        //#if !USE_FRESH_POOL_V2
+        //#if USE_FRESH_POOL_V1
+        #if !USE_FRESH_POOL_V2
           _header_ptr.pointee.freshPoolUsedCount = source_header.pointee.freshPoolUsedCount
         #endif
         _header_ptr.pointee.count = source_header.pointee.count
@@ -10683,8 +10683,8 @@ extension UnsafeTreeV2 {
 }
 
 
-#if USE_FRESH_POOL_V1
-//#if !USE_FRESH_POOL_V2
+//#if USE_FRESH_POOL_V1
+#if !USE_FRESH_POOL_V2
   extension UnsafeTreeV2 {
 
     @inlinable
@@ -11659,8 +11659,8 @@ extension UnsafeTreeV2Buffer {
       self.recycleHead = nullptr
     }
 
-    #if USE_FRESH_POOL_V1
-    //#if !USE_FRESH_POOL_V2
+    //#if USE_FRESH_POOL_V1
+    #if !USE_FRESH_POOL_V2
       @usableFromInline let nullptr: _NodePtr
       @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
       @usableFromInline var freshPoolCapacity: Int = 0
@@ -11692,8 +11692,8 @@ extension UnsafeTreeV2Buffer {
   }
 }
 
-#if USE_FRESH_POOL_V1
-//#if !USE_FRESH_POOL_V2
+//#if USE_FRESH_POOL_V1
+#if !USE_FRESH_POOL_V2
   extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPool {}
 #else
   extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPoolV2 {}
@@ -11731,8 +11731,8 @@ nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.cre
 extension UnsafeTreeV2Buffer.Header {
   @inlinable
   mutating func tearDown() {
-    #if USE_FRESH_POOL_V1
-    //#if !USE_FRESH_POOL_V2
+    //#if USE_FRESH_POOL_V1
+    #if !USE_FRESH_POOL_V2
       ___flushFreshPool()
       count = 0
     #else

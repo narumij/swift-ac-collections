@@ -185,8 +185,8 @@ extension ___UnsafeCopyOnWriteV2 {
       __tree_.growthCapacity(to: min(limit, minimumCapacity), limit: limit, linearly: false)
     }
 //    assert(__tree_.capacity >= minimumCapacity)
-#if USE_FRESH_POOL_V1
-//#if !USE_FRESH_POOL_V2
+//#if USE_FRESH_POOL_V1
+#if !USE_FRESH_POOL_V2
     assert(__tree_.initializedCount <= __tree_.capacity)
 #else
     assert(__tree_.initializedCount <= __tree_._buffer.header.freshPool.capacity)

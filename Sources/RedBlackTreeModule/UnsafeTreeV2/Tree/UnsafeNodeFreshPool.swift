@@ -50,8 +50,8 @@ extension UnsafeNodeFreshPool {
   public typealias ReserverHeaderPointer = UnsafeMutablePointer<ReserverHeader>
 }
 
-#if USE_FRESH_POOL_V1
-//#if !USE_FRESH_POOL_V2
+//#if USE_FRESH_POOL_V1
+#if !USE_FRESH_POOL_V2
 extension UnsafeNodeFreshPool {
 
   /*

@@ -50,8 +50,8 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
     }
   }
 #else
-  #if USE_FRESH_POOL_V1
-//#if !USE_FRESH_POOL_V2
+//#if USE_FRESH_POOL_V1
+#if !USE_FRESH_POOL_V2
     //extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
     // extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
     // extension UnsafeTreeV2: UnsafeTreeAllcation4 {}

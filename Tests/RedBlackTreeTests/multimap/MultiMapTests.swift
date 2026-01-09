@@ -1060,8 +1060,8 @@ final class MultiMapTests: RedBlackTreeTestCase {
     typealias Index = Target<Int, String>.Index
     #if DEBUG
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
-#if USE_FRESH_POOL_V1
-    //#if !USE_FRESH_POOL_V2
+    //#if USE_FRESH_POOL_V1
+    #if !USE_FRESH_POOL_V2
       // UnsafeTreeは範囲外のインデックスを作成できない
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
 #endif
@@ -1071,8 +1071,8 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 2)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 3)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
-#if USE_FRESH_POOL_V1
-    //#if !USE_FRESH_POOL_V2
+    //#if USE_FRESH_POOL_V1
+    #if !USE_FRESH_POOL_V2
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
     #endif
     #endif
@@ -1098,8 +1098,8 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 6)))
-#if USE_FRESH_POOL_V1
-    //#if !USE_FRESH_POOL_V2
+    //#if USE_FRESH_POOL_V1
+    #if !USE_FRESH_POOL_V2
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
 #endif
     #endif

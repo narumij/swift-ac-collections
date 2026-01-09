@@ -32,6 +32,7 @@ extension RedBlackTreeIteratorV2 {
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
     public typealias _Key = Tree._Key
     public typealias _Value = Tree._Value
+    public typealias _MappedValue = Tree._MappedValue
 
     @usableFromInline
     internal let __tree_: Tree
@@ -51,7 +52,7 @@ extension RedBlackTreeIteratorV2 {
     
     @inlinable
     @inline(__always)
-    public mutating func next() -> Base._MappedValue? {
+    public mutating func next() -> _MappedValue? {
       guard _current != _end else { return nil }
       defer {
         _current = _next
@@ -68,7 +69,7 @@ extension RedBlackTreeIteratorV2 {
   }
 }
 
-extension RedBlackTreeIteratorV2.MappedValues: Equatable where Base._MappedValue: Equatable {
+extension RedBlackTreeIteratorV2.MappedValues: Equatable where _MappedValue: Equatable {
 
   @inlinable
   @inline(__always)
@@ -77,7 +78,7 @@ extension RedBlackTreeIteratorV2.MappedValues: Equatable where Base._MappedValue
   }
 }
 
-extension RedBlackTreeIteratorV2.MappedValues: Comparable where Base._MappedValue: Comparable {
+extension RedBlackTreeIteratorV2.MappedValues: Comparable where _MappedValue: Comparable {
 
   @inlinable
   @inline(__always)

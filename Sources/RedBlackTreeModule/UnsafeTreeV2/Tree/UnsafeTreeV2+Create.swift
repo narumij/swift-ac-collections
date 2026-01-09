@@ -88,7 +88,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   @inlinable
   internal static func create_unique<Element>(
     sorted elements: __owned [Element],
-    uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
+    uniquingKeysWith combine: (_MappedValue, _MappedValue) throws -> _MappedValue,
     transform: (Element) -> _Value
   ) rethrows -> UnsafeTreeV2
   where _Key: Comparable {
@@ -125,7 +125,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer & ___UnsafeKeyValueSequenceV
     sorted elements: __owned [Element],
     by keyForValue: (Element) throws -> _Key
   ) rethrows -> UnsafeTreeV2
-  where _Key: Comparable, Base._MappedValue == [Element] {
+  where _Key: Comparable, _MappedValue == [Element] {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -158,7 +158,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer & ___UnsafeKeyValueSequenceV
     sorted elements: __owned [Element],
     by keyForValue: (Element) throws -> Base._Key
   ) rethrows -> UnsafeTreeV2
-  where _Key: Comparable, Base._MappedValue == Element {
+  where _Key: Comparable, _MappedValue == Element {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)

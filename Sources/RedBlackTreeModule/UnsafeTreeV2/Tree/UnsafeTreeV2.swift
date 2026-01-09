@@ -109,6 +109,10 @@ extension UnsafeTreeV2 {
   #endif
 }
 
+extension UnsafeTreeV2 where Base: KeyValueComparer {
+  public typealias _MappedValue = Base._MappedValue
+}
+
 // MARK: - 生成
 
 extension UnsafeTreeV2 {

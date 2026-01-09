@@ -88,7 +88,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
     other __source: OtherTree<Other>,
     _ __first: _NodePtr,
     _ __last: _NodePtr,
-    uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue
+    uniquingKeysWith combine: (_MappedValue, _MappedValue) throws -> _MappedValue
   ) rethrows -> UnsafeTreeV2
   where
     OtherTree<Other>._Key == _Key,
@@ -248,7 +248,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   internal static func ___insert_range_unique<S>(
     tree __tree_: UnsafeTreeV2,
     _ __source: S,
-    uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
+    uniquingKeysWith combine: (_MappedValue, _MappedValue) throws -> _MappedValue,
     transform __t_: (S.Element) -> _Value
   )
     rethrows -> UnsafeTreeV2

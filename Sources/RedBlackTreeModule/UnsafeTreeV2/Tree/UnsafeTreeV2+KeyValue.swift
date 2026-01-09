@@ -24,14 +24,14 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
 
   @inlinable
   @inline(__always)
-  internal func ___mapped_value(_ __p: _NodePtr) -> Base._MappedValue {
+  internal func ___mapped_value(_ __p: _NodePtr) -> _MappedValue {
     Base.___mapped_value(UnsafePair<_Value>.valuePointer(__p)!.pointee)
   }
 
   @inlinable
   @inline(__always)
   internal func ___with_mapped_value<T>(
-    _ __p: _NodePtr, _ f: (inout Base._MappedValue) throws -> T
+    _ __p: _NodePtr, _ f: (inout _MappedValue) throws -> T
   )
     rethrows -> T
   {
@@ -46,7 +46,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   internal func ___mapValues<Other>(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
-    _ transform: (Base._MappedValue) throws -> Other._MappedValue
+    _ transform: (_MappedValue) throws -> Other._MappedValue
   )
     rethrows -> OtherTree<Other>
   where
@@ -69,7 +69,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   internal func ___compactMapValues<Other>(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
-    _ transform: (Base._MappedValue) throws -> Other._MappedValue?
+    _ transform: (_MappedValue) throws -> Other._MappedValue?
   )
     rethrows -> OtherTree<Other>
   where

@@ -117,7 +117,7 @@ extension UnsafeNodeFreshPool {
       reserverHead = h.pointee.next
       Self.deinitializeNodes(h)
       h.deinitialize(count: 1)
-      UnsafeRawPointer(h).deallocate()
+      h.deallocate()
     }
     freshBucketHead = nil
     freshBucketCurrent = nil
@@ -193,7 +193,8 @@ extension UnsafeNodeFreshPool {
       return nullptr
     }
     assert(p.pointee.___node_id_ == .nullptr)
-    p.initialize(to: UnsafeNode(___node_id_: freshPoolUsedCount))
+//    p.initialize(to: UnsafeNode(___node_id_: freshPoolUsedCount))
+    p.initialize(to: nullptr.create(id: freshPoolUsedCount))
     freshPoolUsedCount += 1
     count += 1
     return p

@@ -8,7 +8,7 @@
 @frozen
 @usableFromInline
 struct FreshStorage {
-  
+
   @inlinable
   @inline(__always)
   internal init(
@@ -32,9 +32,9 @@ struct FreshStorage {
 @frozen
 @usableFromInline
 struct FreshPool<_Value> {
-  
+
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-  
+
   @usableFromInline
   internal init(
     storage: UnsafeMutablePointer<FreshStorage>? = nil,
@@ -58,7 +58,7 @@ extension FreshPool {
 
   @inlinable
   @inline(__always)
-//  @usableFromInline
+  //  @usableFromInline
   mutating func reserveCapacity(minimumCapacity newCapacity: Int) {
     assert(capacity < newCapacity)
     assert(used <= capacity)
@@ -138,14 +138,14 @@ extension FreshPool {
     let header_storage = UnsafeMutableRawPointer.allocate(
       byteCount: bytes,
       alignment: alignment)
-    
+
     header_storage.bindMemory(to: FreshStorage.self, capacity: 1)
 
     let header = UnsafeMutableRawPointer(header_storage)
       .assumingMemoryBound(to: FreshStorage.self)
 
     let elements = UnsafeMutableRawPointer(header.advanced(by: 1))
-    
+
     header.initialize(
       to:
         .init(
@@ -153,22 +153,22 @@ extension FreshPool {
           pointer: self.storage))
 
     #if DEBUG
-        do {
-          var c = 0
-          var p = elements
-          while c < capacity {
-            
-            p.assumingMemoryBound(to: UnsafeNode.self)
-              .pointee
-              .___node_id_ = .nullptr
-            
-            p = UnsafePair<_Value>
-              .advance(p.assumingMemoryBound(to: UnsafeNode.self))
-              ._assumingUnbound()
-            
-            c += 1
-          }
+      do {
+        var c = 0
+        var p = elements
+        while c < capacity {
+
+          p.assumingMemoryBound(to: UnsafeNode.self)
+            .pointee
+            .___node_id_ = .nullptr
+
+          p = UnsafePair<_Value>
+            .advance(p.assumingMemoryBound(to: UnsafeNode.self))
+            ._assumingUnbound()
+
+          c += 1
         }
+      }
     #endif
 
     return (header, elements, capacity)
@@ -192,12 +192,12 @@ extension FreshPool {
     assert(___node_id_ < capacity)
     return array!.advanced(by: ___node_id_).pointee
   }
-  
+
   @inlinable
   @inline(__always)
   mutating func _popFresh(nullptr: _NodePtr) -> _NodePtr {
     let p = self[used]
-//    p.initialize(to: UnsafeNode(___node_id_: used))
+    //    p.initialize(to: UnsafeNode(___node_id_: used))
     p.initialize(to: nullptr.create(id: used))
     used += 1
     return p
@@ -217,16 +217,18 @@ extension FreshPool {
   @inlinable
   @inline(__always)
   mutating func dispose() {
-    for i in 0..<used {
-      let c = self[i]
-      if c.pointee.___needs_deinitialize {
-//        UnsafeNode.deinitialize(_Value.self, c)
-        UnsafePair<_Value>.valuePointer(c)?.deinitialize(count: 1)
+    var i = 0
+    if let array {
+      while i < used {
+        let c = (array + i).pointee
+        UnsafeNode.deinitialize(_Value.self, c)
+        c.deinitialize(count: 1)
+        i += 1
       }
-      c.deinitialize(count: 1)
     }
     while let storage {
       self.storage = storage.pointee.pointer
+      storage.deinitialize(count: 1)
       storage.deallocate()
     }
     if let array {
@@ -238,4 +240,3 @@ extension FreshPool {
     array = nil
   }
 }
-

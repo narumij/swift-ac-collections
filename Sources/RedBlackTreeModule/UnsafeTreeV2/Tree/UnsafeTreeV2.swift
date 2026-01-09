@@ -307,6 +307,7 @@ extension UnsafeTreeV2 {
     clear()
     _buffer.withUnsafeMutablePointerToHeader {
       $0.pointee.___flushRecyclePool()
+      $0.pointee.count = 0
     }
   }
 }

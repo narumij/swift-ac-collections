@@ -364,7 +364,7 @@ extension UnsafeTreeV2 {
     @inlinable
     @inline(__always)
     func makeFreshBucketIterator() -> UnsafeNodeFreshBucketIterator<_Value> {
-      return UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
+      return _buffer.header.makeFreshPoolIterator()
     }
   }
 #else

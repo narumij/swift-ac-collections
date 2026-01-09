@@ -29,7 +29,7 @@ struct FreshStorage {
   internal init(pointer: UnsafeMutablePointer<FreshStorage>?) {
     self.pointer = pointer
   }
-  
+
   // 直前のバッファ
   @usableFromInline let pointer: UnsafeMutablePointer<FreshStorage>?
 }
@@ -166,9 +166,9 @@ extension FreshPool {
             .pointee
             .___node_id_ = .nullptr
 
-          p = UnsafePair<_Value>
-            .advance(p.assumingMemoryBound(to: UnsafeNode.self))
-            ._assumingUnbound()
+          p = UnsafeMutableRawPointer(
+            UnsafePair<_Value>
+              .advance(p.assumingMemoryBound(to: UnsafeNode.self)))
 
           c += 1
         }

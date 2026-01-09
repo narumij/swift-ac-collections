@@ -25,7 +25,7 @@ protocol UnsafeNodeRecyclePool
 where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
   associatedtype _Value
   associatedtype _NodePtr
-  var recycleHead: _NodePtr { get set }
+  var recycleHead: _NodePtr? { get set }
   var count: Int { get set }
   var freshPoolUsedCount: Int { get set }
   var nullptr: _NodePtr { get }
@@ -51,7 +51,7 @@ extension UnsafeNodeRecyclePool {
     // 値型の場合、この処理を削りたい誘惑がある
     UnsafePair<_Value>.valuePointer(p)?.deinitialize(count: 1)
     p.pointee.___needs_deinitialize = false
-    p.pointee.__left_ = recycleHead
+    p.pointee.__left_ = recycleHead ?? nullptr
 #if GRAPHVIZ_DEBUG
     p!.pointee.__right_ = nil
     p!.pointee.__parent_ = nil
@@ -65,18 +65,19 @@ extension UnsafeNodeRecyclePool {
   @inline(__always)
   mutating func ___popRecycle() -> _NodePtr {
 //    assert(recycleCount > 0)
+//    guard let p = recycleHead else { fatalError() }
     let p = recycleHead
-    recycleHead = p.pointee.__left_
+    recycleHead = (recycleHead?.pointee.__left_).pointerIndex == .nullptr ? nil : recycleHead?.pointee.__left_
 //    recycleCount -= 1
     count += 1
-    p.pointee.___needs_deinitialize = true
-    return p
+//    p.pointee.___needs_deinitialize = true
+    return p!
   }
   
   @inlinable
   @inline(__always)
   mutating func ___flushRecyclePool() {
-    recycleHead = nullptr
+    recycleHead = nil
 //    recycleCount = 0
     count = 0
   }
@@ -94,9 +95,9 @@ extension UnsafeNodeRecyclePool {
   internal var ___recycleNodes: [Int] {
     var nodes: [Int] = []
     var last = recycleHead
-    while last != nullptr {
-      nodes.append(last.pointee.___node_id_)
-      last = last.pointee.__left_
+    while last != nil, last != nullptr {
+      nodes.append(last?.pointee.___node_id_ ?? -999)
+      last = last?.pointee.__left_
     }
     return nodes
   }

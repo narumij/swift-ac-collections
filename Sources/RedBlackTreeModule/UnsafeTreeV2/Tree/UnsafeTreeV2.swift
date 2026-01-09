@@ -191,7 +191,7 @@ extension UnsafeTreeV2 {
           let index = ptr.pointee.___node_id_
           return switch index {
           case .nullptr:
-            UnsafeNode.nullptr
+            nullptr
           case .end:
             _end_ptr
           default:
@@ -233,11 +233,12 @@ extension UnsafeTreeV2 {
         _header_ptr.pointee.freshPoolUsedCount = source_header.pointee.freshPoolUsedCount
 #endif
         _header_ptr.pointee.count = source_header.pointee.count
-        _header_ptr.pointee.recycleHead = __ptr_(
-          source_header.pointee.recycleHead)
-        assert(
-          _header_ptr.pointee.recycleHead.pointee.___node_id_
-            == source_header.pointee.recycleHead.pointee.___node_id_)
+        _header_ptr.pointee.recycleHead = source_header.pointee.recycleHead.map {
+          __ptr_($0)
+        }
+//        assert(
+//          _header_ptr.pointee.recycleHead.pointee.___node_id_
+//            == source_header.pointee.recycleHead.pointee.___node_id_)
 
         #if AC_COLLECTIONS_INTERNAL_CHECKS
           _header_ptr.pointee.copyCount = source_header.pointee.copyCount &+ 1

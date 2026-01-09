@@ -63,7 +63,7 @@ import XCTest
       XCTAssertEqual(storage._buffer.header[1].index, 1)
       XCTAssertEqual(storage._buffer.header[2].index, 2)
       XCTAssertEqual(storage._buffer.header[3].index, 3)
-      XCTAssertEqual(storage._buffer.header.recycleHead, storage.nullptr)
+      XCTAssertEqual(storage._buffer.header.recycleHead, nil)
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [])
       XCTAssertEqual(storage._buffer.header.recycleCount, 0)
       storage._buffer.header.___pushRecycle(storage._buffer.header[0])
@@ -112,10 +112,10 @@ import XCTest
       while s != storage.nullptr , c != storage.nullptr {
         XCTAssertEqual(s.index, s.index)
         XCTAssertEqual(
-          s.pointee.__right_.index, c.pointee.__right_.index)
+          s?.pointee.__right_.index, c?.pointee.__right_.index)
         XCTAssertEqual(
-          s.pointee.__left_.index, c.pointee.__left_.index)
-        (s, c) = (storage.__left_(s), copy.__left_(c))
+          s?.pointee.__left_.index, c?.pointee.__left_.index)
+        (s, c) = (storage.__left_(s!), copy.__left_(c!))
       }
     }
 

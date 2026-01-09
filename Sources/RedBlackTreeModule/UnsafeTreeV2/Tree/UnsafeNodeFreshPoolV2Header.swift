@@ -8,6 +8,7 @@
 @frozen
 @usableFromInline
 struct FreshStorage {
+  
   @inlinable
   @inline(__always)
   internal init(
@@ -31,6 +32,9 @@ struct FreshStorage {
 @frozen
 @usableFromInline
 struct FreshPool<_Value> {
+  
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  
   @usableFromInline
   internal init(
     storage: UnsafeMutablePointer<FreshStorage>? = nil,
@@ -187,6 +191,16 @@ extension FreshPool {
     assert(0 <= ___node_id_)
     assert(___node_id_ < capacity)
     return array!.advanced(by: ___node_id_).pointee
+  }
+  
+  @inlinable
+  @inline(__always)
+  mutating func _popFresh(nullptr: _NodePtr) -> _NodePtr {
+    let p = self[used]
+//    p.initialize(to: UnsafeNode(___node_id_: used))
+    p.initialize(to: nullptr.create(id: used))
+    used += 1
+    return p
   }
 
   @usableFromInline

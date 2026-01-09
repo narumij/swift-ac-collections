@@ -62,17 +62,13 @@ extension UnsafeNodeFreshPoolV2 {
   @inlinable
   @inline(__always)
   mutating func popFresh() -> _NodePtr? {
-    defer { freshPool.used += 1 }
-    return self[freshPool.used]
+    freshPool._popFresh(nullptr: nullptr)
   }
 
   @inlinable
   @inline(__always)
   mutating func ___popFresh() -> _NodePtr {
-    let p = self[freshPool.used]
-    assert(p.pointee.___node_id_ == .nullptr)
-    p.initialize(to: UnsafeNode(___node_id_: freshPoolUsedCount))
-    freshPool.used += 1
+    let p = freshPool._popFresh(nullptr: nullptr)
     count += 1
     return p
   }

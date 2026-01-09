@@ -97,7 +97,7 @@ extension UnsafeTreeV2Buffer {
     @usableFromInline var freshPoolUsedCount: Int = 0
 #endif
 
-    @usableFromInline var recycleHead: _NodePtr = UnsafeNode.nullptr
+    @usableFromInline var recycleHead: _NodePtr? // = UnsafeNode.nullptr
     
 #if !USE_FRESH_POOL_V2
     @usableFromInline var freshBucketHead: ReserverHeaderPointer?
@@ -159,10 +159,8 @@ extension UnsafeTreeV2Buffer.Header {
   public mutating func __construct_node(_ k: _Value) -> _NodePtr {
     assert(_Value.self != Void.self)
     assert(recycleCount >= 0)
-//    let p = recycleCount == 0 ? ___popFresh() : ___popRecycle()
-    let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
+    let p = recycleHead.pointerIndex == .nullptr ? ___popFresh() : ___popRecycle()
     UnsafeNode.initializeValue(p, to: k)
-    assert(p != nil)
     assert(p.pointee.___node_id_ >= 0)
     return p
   }

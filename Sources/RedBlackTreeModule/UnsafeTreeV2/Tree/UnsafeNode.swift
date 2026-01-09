@@ -225,10 +225,7 @@ extension UnsafeNode {
   final class Null {
     fileprivate let nullptr: UnsafeMutablePointer<UnsafeNode>
     fileprivate init() {
-      let raw = UnsafeMutableRawPointer.allocate(
-        byteCount: MemoryLayout<UnsafeNode>.stride,
-        alignment: MemoryLayout<UnsafeNode>.alignment)
-      nullptr = raw.assumingMemoryBound(to: UnsafeNode.self)
+      nullptr = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
       nullptr.initialize(
         to:
           .init(
@@ -241,6 +238,31 @@ extension UnsafeNode {
       nullptr.deinitialize(count: 1)
       nullptr.deallocate()
     }
+  }
+}
+
+extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
+  
+  @inlinable
+  var pointerIndex: Int {
+    switch self {
+    case .none:
+      return .nullptr
+    case .some(let wrapped):
+      return wrapped.pointee.___node_id_
+    }
+  }
+}
+
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
+  
+  @inlinable
+  @inline(__always)
+  func create(id: Int) -> UnsafeNode {
+    .init(___node_id_: id,
+          __left_: self,
+          __right_: self,
+          __parent_: self)
   }
 }
 
@@ -279,10 +301,20 @@ extension UnsafeNode {
   @inlinable
   @inline(__always)
   static func initializeValue<_Value>(_ p: UnsafeMutablePointer<UnsafeNode>, to: _Value) {
-    p.advanced(by: 1)
-      .withMemoryRebound(to: _Value.self, capacity: 1) { pointer in
-        pointer.initialize(to: to)
-      }
+    p.pointee.___needs_deinitialize = true
+    
+//    p.advanced(by: 1)
+//      .withMemoryRebound(to: _Value.self, capacity: 1) { pointer in
+//        pointer.initialize(to: to)
+//      }
+    
+    UnsafeMutableRawPointer(p.advanced(by: 1))
+      .bindMemory(to: _Value.self, capacity: 1)
+      .initialize(to: to)
+
+//    UnsafeMutableRawPointer(p.advanced(by: 1))
+//      .assumingMemoryBound(to: _Value.self)
+//      .initialize(to: to)
   }
 
   @inlinable

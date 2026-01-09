@@ -111,7 +111,14 @@ extension RedBlackTreeSet: ___RedBlackTreeKeyOnlyBase {
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __eager_compare_result
   {
-    __eager_compare_result(__default_three_way_comparator(__lhs, __rhs))
+    let res = if __lhs < __rhs {
+      -1
+    } else if __lhs > __rhs {
+      1
+    } else {
+      0
+    }
+    return __eager_compare_result(res)
   }
 }
 extension RedBlackTreeSet: CompareUniqueTrait {}
@@ -287,8 +294,8 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
-//  @inlinable
-//  @inline(__always)
+  @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element

@@ -65,6 +65,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase,K,V,C> where K == Base._Key, V == B
   public typealias _Value = V
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
+  public typealias __compare_result = __eager_compare_result
 
   @usableFromInline
   var _buffer: BufferPointer

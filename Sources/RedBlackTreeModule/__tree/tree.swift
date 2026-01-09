@@ -334,8 +334,9 @@ extension ValueComparator {
 
 extension ValueComparator where Base: ThreeWayComparator {
 
-  @inlinable
-  @inline(__always)
+//  @inlinable
+//  @inline(__always)
+  @usableFromInline
   internal func
     __lazy_synth_three_way_comparator(_ __lhs: Base._Key, _ __rhs: Base._Key)
     -> Base.__compare_result

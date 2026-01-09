@@ -112,10 +112,10 @@ import XCTest
       while s != storage.nullptr , c != storage.nullptr {
         XCTAssertEqual(s.index, s.index)
         XCTAssertEqual(
-          s?.pointee.__right_.index, c?.pointee.__right_.index)
+          s.pointee.__right_.index, c.pointee.__right_.index)
         XCTAssertEqual(
-          s?.pointee.__left_.index, c?.pointee.__left_.index)
-        (s, c) = (storage.__left_(s!), copy.__left_(c!))
+          s.pointee.__left_.index, c.pointee.__left_.index)
+        (s, c) = (storage.__left_(s), copy.__left_(c))
       }
     }
 

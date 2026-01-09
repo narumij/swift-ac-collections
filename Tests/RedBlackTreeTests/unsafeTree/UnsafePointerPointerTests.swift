@@ -9,7 +9,7 @@ final class UnsafePointerPointerTests: XCTestCase {
     let nodeCount = 10
     let nodes = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: nodeCount)
     for i in 0..<nodeCount {
-      (nodes + i).initialize(to: UnsafeNode(___node_id_: i))
+      (nodes + i).initialize(to: UnsafeNode.nullptr.create(id: i))
     }
 
     // 2. UnsafeNode へのポインタを10個保持する生メモリを確保・初期化
@@ -47,7 +47,7 @@ final class UnsafePointerPointerTests: XCTestCase {
 
     for i in 0..<10 {
       let p = pool[i]
-      p.initialize(to: UnsafeNode(___node_id_: i))
+      p.initialize(to: UnsafeNode.nullptr.create(id: i))
     }
 
     pool.used = 10

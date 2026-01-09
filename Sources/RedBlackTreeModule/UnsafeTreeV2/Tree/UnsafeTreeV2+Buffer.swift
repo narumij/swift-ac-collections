@@ -188,7 +188,10 @@ nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.cre
 extension UnsafeTreeV2Buffer.Header {
   @inlinable
   mutating func tearDown() {
-    ___flushFreshPool()
+    freshPool.dispose()
+    freshPool = .init()
+    count = 0
+//    ___flushFreshPool()
     ___flushRecyclePool()
   }
 }

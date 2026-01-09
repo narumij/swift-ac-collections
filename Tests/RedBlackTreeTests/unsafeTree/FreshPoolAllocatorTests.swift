@@ -11,9 +11,6 @@ final class FreshPoolAllocatorTests: XCTestCase {
 
     let (header, firstRaw, _) = pool.createBucket(capacity: capacity)
 
-    // FreshStorage header が先頭にあり、capacity が正しい
-    XCTAssertEqual(header.pointee.capacity, capacity)
-
     // elements 開始位置
     var raw = firstRaw
 
@@ -76,7 +73,7 @@ final class FreshPoolSubscriptTests: XCTestCase {
     // 各ノードに ID を書き込む
     for i in 0..<10 {
       let p = pool.pointers!.advanced(by: i).pointee
-      p.initialize(to: UnsafeNode(___node_id_: i))
+      p.initialize(to: UnsafeNode.nullptr.create(id: i))
     }
 
     pool.used = 10

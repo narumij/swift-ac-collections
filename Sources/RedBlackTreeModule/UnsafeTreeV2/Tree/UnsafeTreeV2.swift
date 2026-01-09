@@ -29,7 +29,7 @@ public struct __tree {
   @inlinable
   init(base: UnsafeMutablePointer<__tree>, nullptr: _NodePtr) {
     self.nullptr = nullptr
-    end_node = .init(___node_id_: .end)
+    end_node = nullptr.create(id: .end)
     let e = withUnsafeMutablePointer(to: &base.pointee.end_node) { $0 }
     end_ptr = e
     begin_ptr = e

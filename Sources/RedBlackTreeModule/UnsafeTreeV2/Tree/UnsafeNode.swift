@@ -112,17 +112,17 @@ public struct UnsafeNode {
 
   public typealias Pointer = UnsafeMutablePointer<UnsafeNode>
 
-  @inlinable
-  @inline(__always)
-  public init(
-    ___node_id_: Int
-  ) {
-    self.init(
-      ___node_id_: ___node_id_,
-      __left_: Self.nullptr,
-      __right_: Self.nullptr,
-      __parent_: Self.nullptr)
-  }
+//  @inlinable
+//  @inline(__always)
+//  public init(
+//    ___node_id_: Int
+//  ) {
+//    self.init(
+//      ___node_id_: ___node_id_,
+//      __left_: Self.nullptr,
+//      __right_: Self.nullptr,
+//      __parent_: Self.nullptr)
+//  }
 
   @inlinable
   @inline(__always)

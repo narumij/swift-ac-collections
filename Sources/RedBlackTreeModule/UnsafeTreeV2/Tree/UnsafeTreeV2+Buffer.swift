@@ -57,7 +57,7 @@ extension UnsafeTreeV2Buffer {
         
         let nullptr = UnsafeNode.nullptr
         // endノード用に初期化する
-        tree.initialize(to: __tree(base: tree,nullptr: nullptr))
+        tree.initialize(to: __tree(base: tree, nullptr: nullptr))
         // ヘッダーを準備する
         var header = Header(nullptr: nullptr)
         // ノードを確保する

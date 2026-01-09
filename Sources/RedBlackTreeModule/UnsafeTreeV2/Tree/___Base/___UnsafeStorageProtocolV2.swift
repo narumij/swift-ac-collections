@@ -24,7 +24,7 @@
 protocol ___UnsafeStorageProtocolV2: ___Root
 where
   Base: ___TreeBase,
-  Tree == UnsafeTreeV2<Base>,
+  Tree == UnsafeTreeV2<Base,Base._Key>,
   _Value == Tree._Value,
   _NodePtr == Tree._NodePtr
 {

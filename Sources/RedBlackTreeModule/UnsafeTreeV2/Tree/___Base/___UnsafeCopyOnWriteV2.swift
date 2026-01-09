@@ -54,7 +54,7 @@ protocol ___UnsafeCopyOnWriteV2 {
 
 extension ___UnsafeCopyOnWriteV2 {
   
-  public typealias _CoW_Tree = UnsafeTreeV2<Base>
+  public typealias _CoW_Tree = UnsafeTreeV2<Base,Base._Key>
 
   @inlinable
   @inline(__always)

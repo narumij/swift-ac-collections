@@ -31,7 +31,7 @@ extension RedBlackTreeSliceV2 {
     _Value == RedBlackTreePair<Base._Key, Base._MappedValue>
   {
 
-    public typealias Tree = UnsafeTreeV2<Base>
+    public typealias Tree = UnsafeTreeV2<Base,Base._Key>
     public typealias _Key = Base._Key
     public typealias _Value = Tree._Value
     public typealias _MappedValue = Base._MappedValue

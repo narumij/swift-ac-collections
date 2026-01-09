@@ -43,7 +43,7 @@ public struct UnsafeTreeV2Origin {
   }
 }
 
-public struct UnsafeTreeV2<Base: ___TreeBase> {
+public struct UnsafeTreeV2<Base: ___TreeBase,_Key> where _Key == Base._Key {
 
   @inlinable
   internal init(

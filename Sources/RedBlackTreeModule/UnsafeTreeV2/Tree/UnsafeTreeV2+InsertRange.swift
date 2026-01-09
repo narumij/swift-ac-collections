@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 extension UnsafeTreeV2 {
-  public typealias OtherTree<O> = UnsafeTreeV2<O> where O: ___TreeBase & ___TreeIndex
+  public typealias OtherTree<O> = UnsafeTreeV2<O,O._Key> where O: ___TreeBase & ___TreeIndex
 }
 
 extension UnsafeTreeV2 {

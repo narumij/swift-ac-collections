@@ -32,7 +32,7 @@ public protocol ___Root {
 protocol ___UnsafeIndexBaseV2: ___Root
 where
   Base: ___TreeBase & ___TreeIndex,
-  Tree == UnsafeTreeV2<Base>,
+Tree == UnsafeTreeV2<Base,Base._Key>,
   Index == Tree.Index,
   _NodePtr == Tree._NodePtr
 {
@@ -66,7 +66,7 @@ extension ___UnsafeIndexBaseV2 {
 protocol ___UnsafeBaseV2: ___UnsafeIndexBaseV2
 where
   Base: ___TreeBase & ___TreeIndex,
-  Tree == UnsafeTreeV2<Base>,
+  Tree == UnsafeTreeV2<Base,Base._Key>,
   Index == Tree.Index,
   Indices == Tree.Indices,
   _Key == Tree._Key,

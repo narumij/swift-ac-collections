@@ -28,7 +28,7 @@ extension RedBlackTreeIteratorV2 {
   public struct MappedValues: Sequence, IteratorProtocol
   where Base: KeyValueComparer
   {
-    public typealias Tree = UnsafeTreeV2<Base>
+    public typealias Tree = UnsafeTreeV2<Base,Base._Key>
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     @usableFromInline

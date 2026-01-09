@@ -28,7 +28,7 @@ extension RedBlackTreeIteratorV2.MappedValues {
   public struct Reversed: Sequence, IteratorProtocol
   where Base: KeyValueComparer
   {
-    public typealias Tree = UnsafeTreeV2<Base>
+    public typealias Tree = UnsafeTreeV2<Base,Base._Key>
     
     @usableFromInline
     internal let __tree_: Tree

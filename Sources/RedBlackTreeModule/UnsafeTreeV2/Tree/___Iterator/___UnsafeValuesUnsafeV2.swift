@@ -26,7 +26,7 @@ struct ___UnsafeValuesUnsafeV2<Base>: Sequence, IteratorProtocol
 where Base: ___TreeBase {
 
   @usableFromInline
-  internal typealias Tree = UnsafeTreeV2<Base>
+  internal typealias Tree = UnsafeTreeV2<Base,Base._Key>
 
   public typealias _NodePtr = Tree._NodePtr
 

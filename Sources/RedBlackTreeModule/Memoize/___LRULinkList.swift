@@ -61,7 +61,7 @@ extension ___LRULinkList {
 
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
-  public typealias Tree = UnsafeTreeV2<Self>
+  public typealias Tree = UnsafeTreeV2<Self,_Key>
 
   @inlinable
   @inline(__always)

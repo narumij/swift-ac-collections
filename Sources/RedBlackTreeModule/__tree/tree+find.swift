@@ -146,7 +146,7 @@ protocol FindEqualProtocol_old: ValueProtocol, TreeNodeRefProtocol, RootProtocol
 extension FindEqualProtocol_old {
 
   @inlinable
-  @inline(never)
+  @inline(__always)
   func
   __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {

@@ -63,7 +63,7 @@ extension ___UnsafeIndexBaseV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeBaseV2: ___UnsafeIndexBaseV2, _TreeValue
+protocol ___UnsafeBaseV2: ___UnsafeIndexBaseV2 & _TreeValue
 where
   Base: ___TreeBase & ___TreeIndex,
   Tree == UnsafeTreeV2<Base>,

@@ -29,7 +29,8 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-protocol UnsafeNodeFreshPoolV2: _TreeValue where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
+protocol UnsafeNodeFreshPoolV2: _ValueProtocol
+where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
 
   associatedtype _NodePtr
   var freshPool: FreshPool<_Value> { get set }

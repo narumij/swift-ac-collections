@@ -21,7 +21,7 @@ protocol UnsafeTreeAllocationHeader {
 }
 
 @usableFromInline
-protocol UnsafeTreeAllcationBodyV2: _TreeValue {
+protocol UnsafeTreeAllcationBodyV2: _ValueProtocol {
   associatedtype Header: UnsafeTreeAllocationHeader
   var _buffer: ManagedBufferPointer<Header, UnsafeTreeV2Origin> { get }
   var capacity: Int { get }

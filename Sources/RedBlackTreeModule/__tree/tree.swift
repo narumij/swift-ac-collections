@@ -22,20 +22,30 @@
 
 import Foundation
 
-public protocol TreePointer {
+public protocol _TreePointer {
   associatedtype _NodePtr: Equatable
-  associatedtype _Pointer where _NodePtr == _Pointer
   associatedtype _NodeRef
+}
+
+public protocol TreePointer: _TreePointer
+where _NodePtr == _Pointer
+{
+  associatedtype _Pointer
   var nullptr: _NodePtr { get }
   var end: _NodePtr { get }
 }
 
-public protocol _TreeValue {
+public protocol _KeyProtocol {
   /// ツリーが比較に使用する値の型
   associatedtype _Key
+}
+
+public protocol _ValueProtocol {
   /// 要素の型
   associatedtype _Value
 }
+
+public protocol _TreeValue: _KeyProtocol & _ValueProtocol {}
 
 // ルートノードの親相当の機能
 @usableFromInline
@@ -98,7 +108,7 @@ protocol TreeNodeRefProtocol: TreePointer {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol TreeNodeValueProtocol: TreePointer & _TreeValue where _Key == __node_value_type {
+protocol TreeNodeValueProtocol: TreePointer & _KeyProtocol where _Key == __node_value_type {
   associatedtype __node_value_type
   /// ノードから比較用の値を取り出す。
   /// SetやMultisetではElementに該当する
@@ -108,7 +118,7 @@ protocol TreeNodeValueProtocol: TreePointer & _TreeValue where _Key == __node_va
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol TreeValueProtocol: TreePointer & _TreeValue where _Value == __value_type {
+protocol TreeValueProtocol: TreePointer & _ValueProtocol where _Value == __value_type {
   associatedtype __value_type
   /// ノードの値要素を取得する
   @inlinable func __value_(_ p: _NodePtr) -> __value_type
@@ -223,7 +233,7 @@ protocol SizeProtocol {
 // MARK: -
 
 @usableFromInline
-protocol AllocatorProtocol: TreePointer & _TreeValue {
+protocol AllocatorProtocol: TreePointer & _ValueProtocol {
   /// ノードを構築する
   func __construct_node(_ k: _Value) -> _NodePtr
   /// ノードを破棄する
@@ -233,7 +243,7 @@ protocol AllocatorProtocol: TreePointer & _TreeValue {
 // MARK: common
 
 /// ツリー使用条件をインジェクションするためのプロトコル
-public protocol ValueComparer: _TreeValue {
+public protocol ValueComparer: _TreeValue, _TreeValue {
   /// 要素から比較キー値がとれること
   @inlinable static func __key(_: _Value) -> _Key
   /// 比較関数が実装されていること

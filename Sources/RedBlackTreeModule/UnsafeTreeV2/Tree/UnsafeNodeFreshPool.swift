@@ -22,7 +22,8 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-protocol UnsafeNodeFreshPool: _TreeValue where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
+protocol UnsafeNodeFreshPool: _ValueProtocol
+where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
   
   /*
    Design invariant:

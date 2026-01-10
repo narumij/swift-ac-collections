@@ -375,3 +375,20 @@ extension UnsafeTreeV2 {
     return try ___tree_sub_invariant(__root) != 0
   }
 }
+
+extension RedBlackTreeSet {
+
+#if USE_FRESH_POOL_V1
+  public static var buildInfo: String {
+    "USE_FRESH_POOL_V1"
+  }
+#elseif USE_FRESH_POOL_V2
+  public static var buildInfo: String {
+    "USE_FRESH_POOL_V2"
+  }
+#else
+  public static var buildInfo: String {
+    "not both, maybe pool v1"
+  }
+#endif
+}

@@ -14,16 +14,6 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
   @usableFromInline let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
 }
 
-//extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase { }
-
-//@usableFromInline
-//protocol UnsafeTreeHandleBase {
-//  associatedtype _Key
-//  associatedtype _Value
-//  var header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header> { get }
-//  var origin: UnsafeMutablePointer<UnsafeTreeV2Origin> { get }
-//}
-
 extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   
   @usableFromInline
@@ -312,48 +302,7 @@ extension UnsafeTreeV2ScalarHandle: CompareTrait {
 }
 extension UnsafeTreeV2ScalarHandle: BoundProtocol {}
 
-extension UnsafeTreeV2ScalarHandle: FindProtocol {}
+extension UnsafeTreeV2ScalarHandle: FindProtocol, FindEqualProtocol_old {}
 extension UnsafeTreeV2ScalarHandle: RemoveProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
-
-extension UnsafeTreeV2ScalarHandle {
-
-//  @inlinable
-//  @inline(__always)
-  @usableFromInline
-  func
-  __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
-  {
-    let value_comp = value_comp
-    var __parent: _NodePtr = end
-    var __nd = __root
-    var __nd_ptr = __root_ptr()
-    if __nd != nullptr {
-      while true {
-        if value_comp(__v, __get_value(__nd)) {
-          if __left_unsafe(__nd) != nullptr {
-            __nd_ptr = __left_ref(__nd)
-            __nd = __left_unsafe(__nd)
-          } else {
-            __parent = __nd
-            return (__parent, __left_ref(__parent))
-          }
-        } else if value_comp(__get_value(__nd), __v) {
-          if __right_(__nd) != nullptr {
-            __nd_ptr = __right_ref(__nd)
-            __nd = __right_(__nd)
-          } else {
-            __parent = __nd
-            return (__parent,__right_ref(__nd))
-          }
-        } else {
-          __parent = __nd
-          return (__parent,__nd_ptr)
-        }
-      }
-    }
-    __parent = __end_node
-    return (__parent, __left_ref(__parent))
-  }
-}

@@ -269,7 +269,8 @@ extension RedBlackTreeSet {
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(newMember)
+//    let (__r, __inserted) = __tree_.__insert_unique(newMember)
+    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     return (__inserted, __inserted ? newMember : __tree_[__r])
   }
 

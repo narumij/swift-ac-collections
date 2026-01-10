@@ -26,30 +26,6 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
 
 extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   
-  @inlinable
-  @inline(__always)
-  var scalarHandle: Handle {
-    _buffer.withUnsafeMutablePointers { header, origin in
-      Handle(header: header, origin: origin)
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func
-    __insert_unique_(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
-  {
-    scalarHandle.__insert_unique(x)
-  }
-  
-  @inlinable
-  @inline(__always)
-  internal func ___erase_unique_(_ __k: _Key) -> Bool {
-    _buffer.withUnsafeMutablePointers { header, origin in
-      Handle(header: header, origin: origin).___erase_unique(__k)
-    }
-  }
-  
   @usableFromInline
   typealias Handle = UnsafeTreeV2ScalarHandle<UnsafeTreeV2<Base>._Value>
   

@@ -6,11 +6,9 @@
 //
 
 @usableFromInline
-protocol UnsafeTreeHandleBase: TreeNodeProtocol
+protocol UnsafeTreeHandleBase: TreeNodeProtocol, _TreeValue
 where _NodePtr == UnsafeMutablePointer<UnsafeNode>,
       _NodeRef == UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>> {
-  associatedtype _Key
-  associatedtype _Value
   var header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header> { get }
   var origin: UnsafeMutablePointer<UnsafeTreeV2Origin> { get }
 }

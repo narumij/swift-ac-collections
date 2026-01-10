@@ -30,10 +30,9 @@ public
 }
 
 public
-  protocol ThreeWayComparator
+protocol ThreeWayComparator: _TreeValue
 {
   associatedtype __compare_result: ThreeWayCompareResult
-  associatedtype _Key
   @inlinable
   static func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
@@ -41,9 +40,8 @@ public
 }
 
 @usableFromInline
-protocol ThreeWayComparatorProtocol {
+protocol ThreeWayComparatorProtocol: _TreeValue {
   associatedtype __compare_result: ThreeWayCompareResult
-  associatedtype _Key
   @inlinable
   func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __compare_result

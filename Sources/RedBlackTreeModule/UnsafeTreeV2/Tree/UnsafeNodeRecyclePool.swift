@@ -21,9 +21,8 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol UnsafeNodeRecyclePool
+protocol UnsafeNodeRecyclePool: _TreeValue
 where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
-  associatedtype _Value
   associatedtype _NodePtr
   var recycleHead: _NodePtr { get set }
   var count: Int { get set }

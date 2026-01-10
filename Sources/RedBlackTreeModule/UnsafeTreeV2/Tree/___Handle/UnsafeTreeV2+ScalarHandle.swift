@@ -8,9 +8,11 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
     self.origin = origin
     self.isMulti = false
   }
-  public typealias _Key = _Key
-  public typealias _Value = _Key
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  @usableFromInline typealias _Key = _Key
+  @usableFromInline typealias _Value = _Key
+  @usableFromInline typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  @usableFromInline typealias _Pointer = _NodePtr
+  @usableFromInline typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header>
   @usableFromInline let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
   @usableFromInline var isMulti: Bool
@@ -42,20 +44,20 @@ extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
 
 extension UnsafeTreeV2ScalarHandle {
   
-  @inlinable
   @inline(__always)
-  public func __key(_ __v: _Value) -> _Key { __v }
+  @usableFromInline
+  func __key(_ __v: _Value) -> _Key { __v }
   
-  @inlinable
   @inline(__always)
-  public func value_comp(_ __l: _Key, _ __r: _Key) -> Bool { __l < __r }
+  @usableFromInline
+  func value_comp(_ __l: _Key, _ __r: _Key) -> Bool { __l < __r }
   
-  @inlinable
   @inline(__always)
-  public func value_equiv(_ __l: _Key, _ __r: _Key) -> Bool { __l == __r }
+  @usableFromInline
+  func value_equiv(_ __l: _Key, _ __r: _Key) -> Bool { __l == __r }
   
-  @inlinable
   @inline(__always)
+  @usableFromInline
   func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __eager_compare_result {
     .init(__default_three_way_comparator(__lhs, __rhs))
   }
@@ -76,20 +78,17 @@ extension UnsafeTreeV2ScalarHandle {
   
   @inlinable
   @inline(__always)
-  public var nullptr: _NodePtr { origin.pointee.nullptr }
+  var nullptr: _NodePtr { origin.pointee.nullptr }
   
   @inlinable
   @inline(__always)
-  public var end: _NodePtr { origin.pointee.end_ptr }
+  var end: _NodePtr { origin.pointee.end_ptr }
 }
 
 // MARK: - TreeEndNodeProtocol
 
 extension UnsafeTreeV2ScalarHandle {
   
-  public typealias _Pointer = _NodePtr
-  public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
-
   @inlinable
   @inline(__always)
   func __left_(_ p: _NodePtr) -> _NodePtr {
@@ -174,7 +173,7 @@ extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
   @inline(__always)
-  public func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
+  func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
     rhs.pointee
   }
 
@@ -190,7 +189,8 @@ extension UnsafeTreeV2ScalarHandle {
 extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
-  public var __begin_node_: _NodePtr {
+  @inline(__always)
+  var __begin_node_: _NodePtr {
 
     @inline(__always) get {
       origin.pointee.begin_ptr
@@ -261,13 +261,13 @@ extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
   @inline(__always)
-  public func __construct_node(_ k: _Value) -> _NodePtr {
+  func __construct_node(_ k: _Value) -> _NodePtr {
     header.pointee.__construct_node(k)
   }
 
   @inlinable
   @inline(__always)
-  internal func destroy(_ p: _NodePtr) {
+  func destroy(_ p: _NodePtr) {
     header.pointee.___pushRecycle(p)
   }
 }

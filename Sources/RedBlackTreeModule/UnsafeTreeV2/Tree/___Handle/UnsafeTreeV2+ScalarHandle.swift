@@ -1,5 +1,5 @@
 
-
+@frozen
 @usableFromInline
 struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
   @inlinable

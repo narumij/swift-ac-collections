@@ -6,19 +6,17 @@
 //
 
 @usableFromInline
-protocol UnsafeTreeHandleBase: TreeNodeProtocol & _TreeValue
-where _NodePtr == UnsafeMutablePointer<UnsafeNode>,
-      _NodeRef == UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>> {
+protocol UnsafeTreeHandleBase: TreeNodeProtocol & _TreeValue & UnsafeTreePointer {
   var header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header> { get }
   var origin: UnsafeMutablePointer<UnsafeTreeV2Origin> { get }
 }
 
 extension UnsafeTreeHandleBase {
-  
+
   @inlinable
   @inline(__always)
   public var nullptr: _NodePtr { origin.pointee.nullptr }
-  
+
   @inlinable
   @inline(__always)
   public var end: _NodePtr { origin.pointee.end_ptr }
@@ -27,7 +25,7 @@ extension UnsafeTreeHandleBase {
 // MARK: - TreeEndNodeProtocol
 
 extension UnsafeTreeHandleBase {
-  
+
   @inlinable
   @inline(__always)
   func __left_(_ p: _NodePtr) -> _NodePtr {

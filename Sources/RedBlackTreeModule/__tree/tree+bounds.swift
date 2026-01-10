@@ -74,7 +74,7 @@ extension BoundAlgorithmProtocol {
   @inlinable
   @inline(__always)
   internal func __lower_bound_unique(_ __v: _Key) -> _NodePtr {
-    #if true
+    #if false
       // Benchmarkで速度低下がみられるので、一旦保留
       // 最適化不足かとおもってlower bound専用を試したが変わらなかった
       __lower_upper_bound_unique_impl(_LowerBound: true, __v)
@@ -86,7 +86,7 @@ extension BoundAlgorithmProtocol {
   @inlinable
   @inline(__always)
   internal func __upper_bound_unique(_ __v: _Key) -> _NodePtr {
-    #if true
+    #if false
       // Benchmarkで速度低下がみられるので、一旦保留
       __lower_upper_bound_unique_impl(_LowerBound: false, __v)
     #else

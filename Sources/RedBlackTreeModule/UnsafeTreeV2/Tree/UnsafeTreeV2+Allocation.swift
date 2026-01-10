@@ -49,21 +49,24 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
     }
   }
 #else
-//#if USE_FRESH_POOL_V1
-#if !USE_FRESH_POOL_V2
+  //#if USE_FRESH_POOL_V1
+  #if !USE_FRESH_POOL_V2
     //extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
     // extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
     // extension UnsafeTreeV2: UnsafeTreeAllcation4 {}
     //extension UnsafeTreeV2: UnsafeTreeAllcation5 {}
     //extension UnsafeTreeV2: UnsafeTreeAllcation6 {} // 1.5
-//    extension UnsafeTreeV2: UnsafeTreeAllcation6_7 { // 1.125
-//      // https://atcoder.jp/contests/abc411/submissions/72291000
-//    }
-extension UnsafeTreeV2: UnsafeTreeAllcation6_9 {} // 1.25
+    //extension UnsafeTreeV2: UnsafeTreeAllcation6_7 { // 1.125
+    //  // https://atcoder.jp/contests/abc411/submissions/72291000
+    //}
+    extension UnsafeTreeV2: UnsafeTreeAllcation6_9 {
+      // https://atcoder.jp/contests/abc411/submissions/72391453
+    }  // 1.25
+  //extension UnsafeTreeV2: UnsafeTreeAllcation6_8 {}
   //extension UnsafeTreeV2: UnsafeTreeAllcation7 {}
   #else
     extension UnsafeTreeV2: UnsafeTreeAllcation6_9 {}
-// extension UnsafeTreeV2: UnsafeTreeAllcation6_7 {}
+  // extension UnsafeTreeV2: UnsafeTreeAllcation6_7 {}
   #endif
 #endif
 
@@ -171,7 +174,7 @@ extension UnsafeTreeAllcation6_8 {
         minimumCapacity)
     }
 
-    return Swift.max(minimumCapacity, capacity + max(capacity / 16, 2))
+    return Swift.max(minimumCapacity, capacity + max(capacity / 16, 1))
   }
 }
 
@@ -192,15 +195,15 @@ extension UnsafeTreeAllcation6_7 {
         minimumCapacity)
     }
 
-//    if minimumCapacity <= 2 {
-//      return Swift.max(minimumCapacity, 2)
-//    }
-//
-//    if minimumCapacity <= 4 {
-//      return Swift.max(minimumCapacity, 4)
-//    }
+    //    if minimumCapacity <= 2 {
+    //      return Swift.max(minimumCapacity, 2)
+    //    }
+    //
+    //    if minimumCapacity <= 4 {
+    //      return Swift.max(minimumCapacity, 4)
+    //    }
 
-    return Swift.max(minimumCapacity, capacity + max(capacity / 8, 2))
+    return Swift.max(minimumCapacity, capacity + max(capacity / 8, 1))
   }
 }
 
@@ -220,14 +223,14 @@ extension UnsafeTreeAllcation6_9 {
         capacity,
         minimumCapacity)
     }
-    
-//    if minimumCapacity <= 2 {
-//      return Swift.max(minimumCapacity, 2)
-//    }
-//
-//    if minimumCapacity <= 4 {
-//      return Swift.max(minimumCapacity, 4)
-//    }
+
+    //    if minimumCapacity <= 2 {
+    //      return Swift.max(minimumCapacity, 2)
+    //    }
+    //
+    //    if minimumCapacity <= 4 {
+    //      return Swift.max(minimumCapacity, 4)
+    //    }
 
     return Swift.max(minimumCapacity, capacity + max(capacity / 4, 2))
   }

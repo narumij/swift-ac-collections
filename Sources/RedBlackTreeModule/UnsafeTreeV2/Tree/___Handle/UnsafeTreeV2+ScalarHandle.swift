@@ -7,6 +7,7 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
     self.header = header
     self.origin = origin
     self.isMulti = false
+    self.specializeMode = .asInt
   }
   @usableFromInline typealias _Key = _Key
   @usableFromInline typealias _Value = _Key
@@ -16,6 +17,7 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header>
   @usableFromInline let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
   @usableFromInline var isMulti: Bool
+  @usableFromInline var specializeMode: SpecializeMode
 }
 
 extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
@@ -42,43 +44,34 @@ extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   }
 }
 
-@usableFromInline
-enum ValueComp {
-  case normal
-  case asInt
-  
-  @inline(__always)
-  @usableFromInline
-  func value_comp<_Key: Comparable>(_ __l: _Key,_ __r: _Key) -> Bool {
-    switch self {
-    case .normal:
-      return __l < __r
-    case .asInt:
-      return (__l as! Int) < (__r as! Int)
-    }
-  }
-}
-
 extension UnsafeTreeV2ScalarHandle {
   
+  @inlinable
   @inline(__always)
-  @usableFromInline
   func __key(_ __v: _Value) -> _Key { __v }
   
+  @inlinable
   @inline(__always)
-  @usableFromInline
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
-    ValueComp.asInt.value_comp(__l, __r)
+    specializeMode.value_comp(__l, __r)
   }
   
+  @inlinable
   @inline(__always)
-  @usableFromInline
-  func value_equiv(_ __l: _Key, _ __r: _Key) -> Bool { __l == __r }
+  func value_equiv(_ __l: _Key, _ __r: _Key) -> Bool {
+    specializeMode.value_equiv(__l, __r)
+  }
   
+  @inlinable
   @inline(__always)
-  @usableFromInline
   func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __eager_compare_result {
-    .init(__default_three_way_comparator(__lhs, __rhs))
+    specializeMode.synth_three_way(__lhs, __rhs)
+  }
+  
+  @inlinable
+  @inline(__always)
+  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __eager_compare_result {
+    specializeMode.synth_three_way(__lhs, __rhs)
   }
 }
 
@@ -306,8 +299,8 @@ extension UnsafeTreeV2ScalarHandle {
   }
 }
 
-extension UnsafeTreeV2ScalarHandle: FindProtocol, FindEqualProtocol_old {}
-extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
+extension UnsafeTreeV2ScalarHandle: FindProtocol {}
+extension UnsafeTreeV2ScalarHandle: FindEqualProtocol, FindEqualProtocol_old {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol {}
 extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol {}
 extension UnsafeTreeV2ScalarHandle: BoundProtocol {}

@@ -3,15 +3,32 @@ import IOUtil
 
 
 
+
+
 import Foundation
 
-public protocol TreePointer {
+public protocol _TreePointer {
   associatedtype _NodePtr: Equatable
-  associatedtype _Pointer where _NodePtr == _Pointer
   associatedtype _NodeRef
+}
+
+public protocol TreePointer: _TreePointer
+where _NodePtr == _Pointer
+{
+  associatedtype _Pointer
   var nullptr: _NodePtr { get }
   var end: _NodePtr { get }
 }
+
+public protocol _KeyProtocol {
+  associatedtype _Key
+}
+
+public protocol _ValueProtocol {
+  associatedtype _Value
+}
+
+public protocol _TreeValue: _KeyProtocol & _ValueProtocol {}
 
 @usableFromInline
 protocol TreeEndNodeProtocol: TreePointer {
@@ -50,15 +67,13 @@ protocol TreeNodeRefProtocol: TreePointer {
 }
 
 @usableFromInline
-protocol TreeNodeValueProtocol: TreePointer where _Key == __node_value_type {
-  associatedtype _Key
+protocol TreeNodeValueProtocol: TreePointer & _KeyProtocol where _Key == __node_value_type {
   associatedtype __node_value_type
   @inlinable func __get_value(_: _NodePtr) -> __node_value_type
 }
 
 @usableFromInline
-protocol TreeValueProtocol: TreePointer where _Value == __value_type {
-  associatedtype _Value
+protocol TreeValueProtocol: TreePointer & _ValueProtocol where _Value == __value_type {
   associatedtype __value_type
   @inlinable func __value_(_ p: _NodePtr) -> __value_type
 }
@@ -152,16 +167,13 @@ protocol SizeProtocol {
 
 
 @usableFromInline
-protocol AllocatorProtocol: TreePointer {
-  associatedtype _Value
+protocol AllocatorProtocol: TreePointer & _ValueProtocol {
   func __construct_node(_ k: _Value) -> _NodePtr
   func destroy(_ p: _NodePtr)
 }
 
 
-public protocol ValueComparer {
-  associatedtype _Key
-  associatedtype _Value
+public protocol ValueComparer: _TreeValue, _TreeValue {
   @inlinable static func __key(_: _Value) -> _Key
   @inlinable static func value_comp(_: _Key, _: _Key) -> Bool
 
@@ -195,44 +207,48 @@ extension ValueComparer where _Key: Equatable {
   }
 }
 
-public protocol ValueComparator {
+public protocol ValueComparator: _TreeValue
+where
+  _Key == Base._Key,
+  _Value == Base._Value
+{
   associatedtype Base: ValueComparer
-  @inlinable static func __key(_ e: Base._Value) -> Base._Key
-  @inlinable static func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool
-  @inlinable static func value_equiv(_ lhs: Base._Key, _ rhs: Base._Key) -> Bool
-  @inlinable func __key(_ e: Base._Value) -> Base._Key
-  @inlinable func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool
+  @inlinable static func __key(_ e: _Value) -> _Key
+  @inlinable static func value_comp(_ a: _Key, _ b: _Key) -> Bool
+  @inlinable static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
+  @inlinable func __key(_ e: _Value) -> _Key
+  @inlinable func value_comp(_ a: _Key, _ b: _Key) -> Bool
 }
 
 extension ValueComparator {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ e: Base._Value) -> Base._Key {
+  public static func __key(_ e: _Value) -> _Key {
     Base.__key(e)
   }
 
   @inlinable
   @inline(__always)
-  public static func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool {
+  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     Base.value_comp(a, b)
   }
 
   @inlinable
   @inline(__always)
-  public static func value_equiv(_ lhs: Base._Key, _ rhs: Base._Key) -> Bool {
+  public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
     Base.value_equiv(lhs, rhs)
   }
 
   @inlinable
   @inline(__always)
-  public func __key(_ e: Base._Value) -> Base._Key {
+  public func __key(_ e: _Value) -> _Key {
     Base.__key(e)
   }
 
   @inlinable
   @inline(__always)
-  public func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool {
+  public func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     Base.value_comp(a, b)
   }
 }
@@ -241,13 +257,13 @@ extension ValueComparator {
 
   @inlinable
   @inline(__always)
-  internal static func with_value_equiv<T>(_ f: ((Base._Key, Base._Key) -> Bool) -> T) -> T {
+  internal static func with_value_equiv<T>(_ f: ((_Key, _Key) -> Bool) -> T) -> T {
     f(value_equiv)
   }
 
   @inlinable
   @inline(__always)
-  internal static func with_value_comp<T>(_ f: ((Base._Key, Base._Key) -> Bool) -> T) -> T {
+  internal static func with_value_comp<T>(_ f: ((_Key, _Key) -> Bool) -> T) -> T {
     f(value_comp)
   }
 }
@@ -257,7 +273,7 @@ extension ValueComparator where Base: ThreeWayComparator {
   @inlinable
   @inline(__always)
   internal func
-    __lazy_synth_three_way_comparator(_ __lhs: Base._Key, _ __rhs: Base._Key)
+    __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> Base.__compare_result
   {
     Base.__lazy_synth_three_way_comparator(__lhs, __rhs)
@@ -664,20 +680,20 @@ extension TreeNodeProtocol {
 import Foundation
 
 @usableFromInline
-protocol BoundProtocol: BoundAlgorithmProtocol & CompareTrait {}
+protocol BoundProtocol: BoundAlgorithmProtocol & CompareTraitInstance {}
 
 extension BoundProtocol {
 
   @inlinable
   @inline(__always)
   internal func lower_bound(_ __v: _Key) -> _NodePtr {
-    Self.isMulti ? __lower_bound_multi(__v) : __lower_bound_unique(__v)
+    isMulti ? __lower_bound_multi(__v) : __lower_bound_unique(__v)
   }
 
   @inlinable
   @inline(__always)
   internal func upper_bound(_ __v: _Key) -> _NodePtr {
-    Self.isMulti ? __upper_bound_multi(__v) : __upper_bound_unique(__v)
+    isMulti ? __upper_bound_multi(__v) : __upper_bound_unique(__v)
   }
 }
 
@@ -715,7 +731,7 @@ extension BoundAlgorithmProtocol {
   @inlinable
   @inline(__always)
   internal func __lower_bound_unique(_ __v: _Key) -> _NodePtr {
-    #if true
+    #if false
       __lower_upper_bound_unique_impl(_LowerBound: true, __v)
     #else
       __lower_bound_multi(__v, __root, __end_node)
@@ -725,7 +741,7 @@ extension BoundAlgorithmProtocol {
   @inlinable
   @inline(__always)
   internal func __upper_bound_unique(_ __v: _Key) -> _NodePtr {
-    #if true
+    #if false
       __lower_upper_bound_unique_impl(_LowerBound: false, __v)
     #else
       __upper_bound_multi(__v, __root, __end_node)
@@ -821,18 +837,27 @@ extension CompareBothProtocol {
   }
 }
 
-public protocol CompareTrait {
+public protocol CompareTrait: CompareTraitInstance {
   static var isMulti: Bool { get }
 }
 
-public protocol CompareUniqueTrait: CompareTrait {}
+extension CompareTrait {
+  @inlinable @inline(__always)
+  public var isMulti: Bool { Self.isMulti }
+}
+
+public protocol CompareTraitInstance {
+  var isMulti: Bool { get }
+}
+
+public protocol CompareUniqueTrait: CompareTrait & CompareTraitInstance {}
 
 extension CompareUniqueTrait {
   @inlinable @inline(__always)
   public static var isMulti: Bool { false }
 }
 
-public protocol CompareMultiTrait: CompareTrait {}
+public protocol CompareMultiTrait: CompareTrait & CompareTraitInstance {}
 
 extension CompareMultiTrait {
   @inlinable @inline(__always)
@@ -1378,7 +1403,7 @@ protocol FindEqualProtocol_old: ValueProtocol, TreeNodeRefProtocol, RootProtocol
 extension FindEqualProtocol_old {
 
   @inlinable
-  @inline(never)
+  @inline(__always)
   func
   __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {
@@ -1744,10 +1769,9 @@ public
 }
 
 public
-  protocol ThreeWayComparator
+protocol ThreeWayComparator: _KeyProtocol
 {
   associatedtype __compare_result: ThreeWayCompareResult
-  associatedtype _Key
   @inlinable
   static func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
@@ -1755,9 +1779,8 @@ public
 }
 
 @usableFromInline
-protocol ThreeWayComparatorProtocol {
+protocol ThreeWayComparatorProtocol: _KeyProtocol {
   associatedtype __compare_result: ThreeWayCompareResult
-  associatedtype _Key
   @inlinable
   func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __compare_result
@@ -5338,28 +5361,28 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
   public
     typealias Base = Self
-  
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-  @usableFromInline
-  var referenceCounter: ReferenceCounter
-#endif
-  
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-  @usableFromInline
-  var __tree_: Tree {
-    didSet { referenceCounter = .create() }
-  }
-#else
-  @usableFromInline
-  var __tree_: Tree
-#endif
+
+  #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
+    @usableFromInline
+    var referenceCounter: ReferenceCounter
+  #endif
+
+  #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
+    @usableFromInline
+    var __tree_: Tree {
+      didSet { referenceCounter = .create() }
+    }
+  #else
+    @usableFromInline
+    var __tree_: Tree
+  #endif
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    referenceCounter = .create()
-#endif
+    #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
+      referenceCounter = .create()
+    #endif
   }
 }
 
@@ -5520,7 +5543,7 @@ extension RedBlackTreeSet {
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.scalarHandle.__insert_unique(newMember)
+    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     return (__inserted, __inserted ? newMember : __tree_[__r])
   }
 
@@ -5617,7 +5640,7 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     _ensureUnique()
-    return __tree_.scalarHandle.___erase_unique(member) ? member : nil
+    return __tree_.___erase_unique(member) ? member : nil
   }
 
   @inlinable
@@ -7205,8 +7228,7 @@ extension RedBlackTreeIteratorV2.MappedValues.Reversed: Comparable where Base._M
 
 extension RedBlackTreeIteratorV2.MappedValues.Reversed: ___UnsafeIsIdenticalToV2 {}
 
-public protocol ___TreeIndex {
-  associatedtype _Value
+public protocol ___TreeIndex: _ValueProtocol {
   associatedtype Pointee
   static func ___pointee(_ __value: _Value) -> Pointee
 }
@@ -8052,7 +8074,7 @@ extension ___UnsafeIndexBaseV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeBaseV2: ___UnsafeIndexBaseV2
+protocol ___UnsafeBaseV2: ___UnsafeIndexBaseV2 & _TreeValue
 where
   Base: ___TreeBase & ___TreeIndex,
   Tree == UnsafeTreeV2<Base>,
@@ -8063,8 +8085,6 @@ where
 {
   associatedtype Index
   associatedtype Indices
-  associatedtype _Key
-  associatedtype _Value
   associatedtype Element
   var __tree_: Tree { get }
   var _start: _NodePtr { get }
@@ -8804,14 +8824,13 @@ extension ___UnsafeKeyValueSequenceV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeStorageProtocolV2: ___Root
+protocol ___UnsafeStorageProtocolV2: ___Root & _ValueProtocol
 where
   Base: ___TreeBase,
   Tree == UnsafeTreeV2<Base>,
   _Value == Tree._Value,
   _NodePtr == Tree._NodePtr
 {
-  associatedtype _Value
   associatedtype _NodePtr
   var __tree_: Tree { get set }
 }
@@ -8877,6 +8896,613 @@ extension ___UnsafeStorageProtocolV2 {
   internal mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
 
     __tree_.__eraseAll(keepingCapacity: keepCapacity)
+  }
+}
+
+@usableFromInline
+enum SpecializeMode {
+  case asInt
+  case generic
+
+  @inlinable
+  @inline(__always)
+  func value_comp<_Key: Comparable>(_ __l: _Key,_ __r: _Key) -> Bool {
+    switch self {
+    case .asInt:
+      return (__l as! Int) < (__r as! Int)
+    case .generic:
+      return __l < __r
+    }
+  }
+  
+  @inlinable
+  @inline(__always)
+  func value_equiv<_Key: Comparable>(_ __l: _Key,_ __r: _Key) -> Bool {
+    switch self {
+    case .asInt:
+      return (__l as! Int) == (__r as! Int)
+    case .generic:
+      return __l == __r
+    }
+  }
+  
+  @inlinable
+  @inline(__always)
+  func synth_three_way<_Key: Comparable>(_ __l: _Key,_ __r: _Key) -> __eager_compare_result {
+    switch self {
+    case .asInt:
+      return __eager_compare_result((__r as! Int) - (__l as! Int))
+    case .generic:
+      return __eager_compare_result(__default_three_way_comparator(__l, __r))
+    }
+  }
+}
+
+@usableFromInline
+protocol UnsafeTreeHandleBase: TreeNodeProtocol & _TreeValue & UnsafeTreePointer {
+  var header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header> { get }
+  var origin: UnsafeMutablePointer<UnsafeTreeV2Origin> { get }
+}
+
+extension UnsafeTreeHandleBase {
+
+  @inlinable
+  @inline(__always)
+  public var nullptr: _NodePtr { origin.pointee.nullptr }
+
+  @inlinable
+  @inline(__always)
+  public var end: _NodePtr { origin.pointee.end_ptr }
+}
+
+
+extension UnsafeTreeHandleBase {
+
+  @inlinable
+  @inline(__always)
+  func __left_(_ p: _NodePtr) -> _NodePtr {
+    return p.pointee.__left_
+  }
+
+  @inlinable
+  @inline(__always)
+  func __left_unsafe(_ p: _NodePtr) -> _NodePtr {
+    return p.pointee.__left_
+  }
+
+  @inlinable
+  @inline(__always)
+  func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+    lhs.pointee.__left_ = rhs
+  }
+}
+
+
+extension UnsafeTreeHandleBase {
+
+  @inlinable
+  @inline(__always)
+  func __right_(_ p: _NodePtr) -> _NodePtr {
+    return p.pointee.__right_
+  }
+
+  @inlinable
+  @inline(__always)
+  func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+    lhs.pointee.__right_ = rhs
+  }
+
+  @inlinable
+  @inline(__always)
+  func __is_black_(_ p: _NodePtr) -> Bool {
+    return p.pointee.__is_black_
+  }
+
+  @inlinable
+  @inline(__always)
+  func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
+    lhs.pointee.__is_black_ = rhs
+  }
+
+  @inlinable
+  @inline(__always)
+  func __parent_(_ p: _NodePtr) -> _NodePtr {
+    return p.pointee.__parent_
+  }
+
+  @inlinable
+  @inline(__always)
+  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+    lhs.pointee.__parent_ = rhs
+  }
+
+  @inlinable
+  @inline(__always)
+  func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
+    return p.pointee.__parent_
+  }
+}
+
+
+extension UnsafeTreeHandleBase {
+
+  @inlinable
+  @inline(__always)
+  func __left_ref(_ p: _NodePtr) -> _NodeRef {
+    return withUnsafeMutablePointer(to: &p.pointee.__left_) { $0 }
+  }
+
+  @inlinable
+  @inline(__always)
+  func __right_ref(_ p: _NodePtr) -> _NodeRef {
+    return withUnsafeMutablePointer(to: &p.pointee.__right_) { $0 }
+  }
+
+  @inlinable
+  @inline(__always)
+  public func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
+    rhs.pointee
+  }
+
+  @inlinable
+  @inline(__always)
+  func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
+    lhs.pointee = rhs
+  }
+}
+
+
+extension UnsafeTreeHandleBase {
+
+  @inlinable
+  public var __begin_node_: _NodePtr {
+
+    @inline(__always) get {
+      origin.pointee.begin_ptr
+    }
+
+    @inline(__always)
+    nonmutating set {
+      origin.pointee.begin_ptr = newValue
+    }
+  }
+}
+
+
+extension UnsafeTreeHandleBase {
+
+  @inlinable
+  var __end_node: _NodePtr {
+    end
+  }
+}
+
+
+extension UnsafeTreeHandleBase {
+
+  #if !DEBUG
+    @nonobjc
+    @inlinable
+    @inline(__always)
+    internal var __root: _NodePtr {
+      origin.pointee.end_node.__left_
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    internal var __root: _NodePtr {
+      get { end.pointee.__left_ }
+      set { end.pointee.__left_ = newValue }
+    }
+  #endif
+
+
+  @inlinable
+  @inline(__always)
+  internal func __root_ptr() -> _NodeRef {
+    withUnsafeMutablePointer(to: &origin.pointee.end_node.__left_) { $0 }
+  }
+}
+
+
+extension UnsafeTreeHandleBase {
+
+  @inlinable
+  var __size_: Int {
+    @inline(__always) get {
+      header.pointee.count
+    }
+    nonmutating set {
+      /* NOP */
+    }
+  }
+}
+
+
+extension UnsafeTreeHandleBase {
+
+  @inlinable
+  @inline(__always)
+  public func __construct_node(_ k: _Value) -> _NodePtr {
+    header.pointee.__construct_node(k)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func destroy(_ p: _NodePtr) {
+    header.pointee.___pushRecycle(p)
+  }
+}
+
+extension UnsafeTreeHandleBase {
+
+  @inlinable
+  @inline(__always)
+  internal func __value_(_ p: _NodePtr) -> _Value {
+    UnsafePair<_Value>.valuePointer(p)!.pointee
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___element(_ p: _NodePtr, _ __v: _Value) {
+    UnsafePair<_Value>.valuePointer(p)!.pointee = __v
+  }
+}
+
+@frozen
+@usableFromInline
+struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
+  @inlinable
+  internal init(header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header>, origin: UnsafeMutablePointer<UnsafeTreeV2Origin>) {
+    self.header = header
+    self.origin = origin
+    self.isMulti = false
+    self.specializeMode = .asInt
+  }
+  @usableFromInline typealias _Key = _Key
+  @usableFromInline typealias _Value = _Key
+  @usableFromInline typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  @usableFromInline typealias _Pointer = _NodePtr
+  @usableFromInline typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
+  @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header>
+  @usableFromInline let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
+  @usableFromInline var isMulti: Bool
+  @usableFromInline var specializeMode: SpecializeMode
+}
+
+extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
+  
+  @usableFromInline
+  typealias Handle = UnsafeTreeV2ScalarHandle<UnsafeTreeV2<Base>._Value>
+  
+  @inlinable
+  @inline(__always)
+  internal func read<R>(_ body: (Handle) throws -> R) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, elements in
+      let handle = Handle(header: header, origin: elements)
+      return try body(handle)
+    }
+  }
+  
+  @inlinable
+  @inline(__always)
+  internal func update<R>(_ body: (Handle) throws -> R) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, elements in
+      let handle = Handle(header: header, origin: elements)
+      return try body(handle)
+    }
+  }
+}
+
+extension UnsafeTreeV2ScalarHandle {
+  
+  @inlinable
+  @inline(__always)
+  func __key(_ __v: _Value) -> _Key { __v }
+  
+  @inlinable
+  @inline(__always)
+  func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
+    specializeMode.value_comp(__l, __r)
+  }
+  
+  @inlinable
+  @inline(__always)
+  func value_equiv(_ __l: _Key, _ __r: _Key) -> Bool {
+    specializeMode.value_equiv(__l, __r)
+  }
+  
+  @inlinable
+  @inline(__always)
+  func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __eager_compare_result {
+    specializeMode.synth_three_way(__lhs, __rhs)
+  }
+  
+  @inlinable
+  @inline(__always)
+  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __eager_compare_result {
+    specializeMode.synth_three_way(__lhs, __rhs)
+  }
+}
+
+
+extension UnsafeTreeV2ScalarHandle {
+
+  @inlinable
+  @inline(__always)
+  func __get_value(_ p: _NodePtr) -> _Key {
+    UnsafePair<_Value>.valuePointer(p)!.pointee
+  }
+}
+
+extension UnsafeTreeV2ScalarHandle {
+  
+  @inlinable
+  @inline(__always)
+  var nullptr: _NodePtr { origin.pointee.nullptr }
+  
+  @inlinable
+  @inline(__always)
+  var end: _NodePtr { origin.pointee.end_ptr }
+}
+
+
+extension UnsafeTreeV2ScalarHandle {
+  
+  @inlinable
+  @inline(__always)
+  func __left_(_ p: _NodePtr) -> _NodePtr {
+    return p.pointee.__left_
+  }
+
+  @inlinable
+  @inline(__always)
+  func __left_unsafe(_ p: _NodePtr) -> _NodePtr {
+    return p.pointee.__left_
+  }
+
+  @inlinable
+  @inline(__always)
+  func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+    lhs.pointee.__left_ = rhs
+  }
+}
+
+
+extension UnsafeTreeV2ScalarHandle: TreeNodeProtocol {
+
+  @inlinable
+  @inline(__always)
+  func __right_(_ p: _NodePtr) -> _NodePtr {
+    return p.pointee.__right_
+  }
+
+  @inlinable
+  @inline(__always)
+  func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+    lhs.pointee.__right_ = rhs
+  }
+
+  @inlinable
+  @inline(__always)
+  func __is_black_(_ p: _NodePtr) -> Bool {
+    return p.pointee.__is_black_
+  }
+
+  @inlinable
+  @inline(__always)
+  func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
+    lhs.pointee.__is_black_ = rhs
+  }
+
+  @inlinable
+  @inline(__always)
+  func __parent_(_ p: _NodePtr) -> _NodePtr {
+    return p.pointee.__parent_
+  }
+
+  @inlinable
+  @inline(__always)
+  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+    lhs.pointee.__parent_ = rhs
+  }
+
+  @inlinable
+  @inline(__always)
+  func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
+    return p.pointee.__parent_
+  }
+}
+
+
+extension UnsafeTreeV2ScalarHandle {
+
+  @inlinable
+  @inline(__always)
+  func __left_ref(_ p: _NodePtr) -> _NodeRef {
+    return withUnsafeMutablePointer(to: &p.pointee.__left_) { $0 }
+  }
+
+  @inlinable
+  @inline(__always)
+  func __right_ref(_ p: _NodePtr) -> _NodeRef {
+    return withUnsafeMutablePointer(to: &p.pointee.__right_) { $0 }
+  }
+
+  @inlinable
+  @inline(__always)
+  func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
+    rhs.pointee
+  }
+
+  @inlinable
+  @inline(__always)
+  func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
+    lhs.pointee = rhs
+  }
+}
+
+
+extension UnsafeTreeV2ScalarHandle {
+
+  @inlinable
+  @inline(__always)
+  var __begin_node_: _NodePtr {
+
+    @inline(__always) get {
+      origin.pointee.begin_ptr
+    }
+
+    @inline(__always)
+    nonmutating set {
+      origin.pointee.begin_ptr = newValue
+    }
+  }
+}
+
+
+extension UnsafeTreeV2ScalarHandle {
+
+  @inlinable
+  var __end_node: _NodePtr { end }
+}
+
+
+extension UnsafeTreeV2ScalarHandle {
+
+  #if !DEBUG
+    @nonobjc
+    @inlinable
+    @inline(__always)
+    internal var __root: _NodePtr {
+      origin.pointee.end_node.__left_
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    internal var __root: _NodePtr {
+      get { end.pointee.__left_ }
+      set { end.pointee.__left_ = newValue }
+    }
+  #endif
+
+
+  @inlinable
+  @inline(__always)
+  internal func __root_ptr() -> _NodeRef {
+    withUnsafeMutablePointer(to: &origin.pointee.end_node.__left_) { $0 }
+  }
+}
+
+
+extension UnsafeTreeV2ScalarHandle {
+
+  @inlinable
+  var __size_: Int {
+    @inline(__always) get {
+      header.pointee.count
+    }
+    nonmutating set {
+      /* NOP */
+    }
+  }
+}
+
+
+extension UnsafeTreeV2ScalarHandle {
+
+  @inlinable
+  @inline(__always)
+  func __construct_node(_ k: _Value) -> _NodePtr {
+    header.pointee.__construct_node(k)
+  }
+
+  @inlinable
+  @inline(__always)
+  func destroy(_ p: _NodePtr) {
+    header.pointee.___pushRecycle(p)
+  }
+}
+
+extension UnsafeTreeV2ScalarHandle {
+
+  @inlinable
+  @inline(__always)
+  internal func __value_(_ p: _NodePtr) -> _Value {
+    UnsafePair<_Value>.valuePointer(p)!.pointee
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___element(_ p: _NodePtr, _ __v: _Value) {
+    UnsafePair<_Value>.valuePointer(p)!.pointee = __v
+  }
+}
+
+extension UnsafeTreeV2ScalarHandle: FindProtocol {}
+extension UnsafeTreeV2ScalarHandle: FindEqualProtocol, FindEqualProtocol_old {}
+extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol {}
+extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol {}
+extension UnsafeTreeV2ScalarHandle: BoundProtocol {}
+extension UnsafeTreeV2ScalarHandle: RemoveProtocol {}
+extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
+extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
+@frozen
+@usableFromInline
+struct UnsafeTreeV2CommonHandle<_Value> {
+  @inlinable
+  internal init(
+    header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header>,
+    origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
+  ) {
+    self.header = header
+    self.origin = origin
+  }
+  public typealias _Value = _Value
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header>
+  @usableFromInline let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
+}
+
+extension UnsafeTreeV2 {
+
+  @usableFromInline
+  typealias CommonHandle = UnsafeTreeV2CommonHandle<UnsafeTreeV2<Base>._Value>
+
+  @inlinable
+  @inline(__always)
+  internal func withMutableHeader<R>(
+    _ body: (inout UnsafeTreeV2Buffer<_Value>.Header) throws -> R
+  )
+    rethrows -> R
+  {
+    try _buffer.withUnsafeMutablePointerToHeader { header in
+      return try body(&header.pointee)
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func withMutableHeaderBody<R>(
+    _ body: (
+      inout UnsafeTreeV2Buffer<_Value>.Header,
+      inout UnsafeTreeV2Origin
+    ) throws -> R
+  ) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, elements in
+      return try body(&header.pointee, &elements.pointee)
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func withandler<R>(
+    _ body: (UnsafeTreeV2CommonHandle<_Value>) throws -> R
+  ) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, elements in
+      let handle = UnsafeTreeV2CommonHandle<_Value>(header: header, origin: elements)
+      return try body(handle)
+    }
   }
 }
 
@@ -9457,7 +10083,8 @@ struct UnsafeNodeFreshBucketIterator<_Value>: IteratorProtocol, Sequence {
 }
 
 @usableFromInline
-protocol UnsafeNodeFreshPool where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
+protocol UnsafeNodeFreshPool: _ValueProtocol
+where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
   
   /*
    Design invariant:
@@ -9466,7 +10093,6 @@ protocol UnsafeNodeFreshPool where _NodePtr == UnsafeMutablePointer<UnsafeNode> 
    because index-based access is performed.
    */
   
-  associatedtype _Value
   associatedtype _NodePtr
   var freshBucketHead: ReserverHeaderPointer? { get set }
   var freshBucketCurrent: ReserverHeaderPointer? { get set }
@@ -9925,9 +10551,9 @@ struct UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence {
  */
 
 @usableFromInline
-protocol UnsafeNodeFreshPoolV2 where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
+protocol UnsafeNodeFreshPoolV2: _ValueProtocol
+where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
 
-  associatedtype _Value
   associatedtype _NodePtr
   var freshPool: FreshPool<_Value> { get set }
   var count: Int { get set }
@@ -9997,6 +10623,12 @@ extension UnsafeNodeFreshPoolV2 {
     freshPool.dispose()
   }
 
+  @inlinable
+  @inline(__always)
+  mutating func ___flushFreshPool() {
+    freshPool.clear()
+  }
+  
   @inlinable
   @inline(__always)
   mutating func ___cleanFreshPool() {
@@ -10278,9 +10910,8 @@ struct UnsafeNodeFreshPoolV2Iterator<_Value>: IteratorProtocol, Sequence {
 }
 
 @usableFromInline
-protocol UnsafeNodeRecyclePool
+protocol UnsafeNodeRecyclePool: _ValueProtocol
 where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
-  associatedtype _Value
   associatedtype _NodePtr
   var recycleHead: _NodePtr { get set }
   var count: Int { get set }
@@ -10448,6 +11079,11 @@ public enum UnsafePair<_Value> {
       .assumingMemoryBound(to: _Value.self)
   }
 }
+public protocol UnsafeTreePointer: _TreePointer
+where
+  _NodePtr == UnsafeMutablePointer<UnsafeNode>,
+  _NodeRef == UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
+{}
 
 public struct UnsafeTreeV2Origin {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
@@ -10686,35 +11322,12 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  public func ensureCapacity(_ newCapacity: Int) {
-    guard capacity < newCapacity else { return }
-    _buffer.withUnsafeMutablePointerToHeader {
-      $0.pointee.pushFreshBucket(capacity: newCapacity - capacity)
-    }
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  func clear(keepingCapacity keepCapacity: Bool = false) {
-    end.pointee.__left_ = nullptr
-    _buffer.withUnsafeMutablePointerToHeader {
-      $0.pointee.clear(keepingCapacity: keepCapacity)
-    }
-    _buffer.withUnsafeMutablePointerToElements {
-      $0.pointee.clear()
-    }
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
   internal func __eraseAll(keepingCapacity keepCapacity: Bool = false) {
-    clear(keepingCapacity: keepCapacity)
+    end.pointee.__left_ = nullptr
+    withandler { handler in
+      handler.header.pointee.clear(keepingCapacity: keepCapacity)
+      handler.origin.pointee.clear()
+    }
   }
 }
 
@@ -11062,7 +11675,7 @@ extension UnsafeTreeV2: BoundProtocol {
 
   @inlinable
   @inline(__always)
-  var isMulti: Bool {
+  public var isMulti: Bool {
     Base.isMulti
   }
 }
@@ -11091,9 +11704,8 @@ protocol UnsafeTreeAllocationHeader {
 }
 
 @usableFromInline
-protocol UnsafeTreeAllcationBodyV2 {
+protocol UnsafeTreeAllcationBodyV2: _ValueProtocol {
   associatedtype Header: UnsafeTreeAllocationHeader
-  associatedtype _Value
   var _buffer: ManagedBufferPointer<Header, UnsafeTreeV2Origin> { get }
   var capacity: Int { get }
   var count: Int { get }
@@ -11120,7 +11732,7 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
   }
 #else
 #if !USE_FRESH_POOL_V2
-extension UnsafeTreeV2: UnsafeTreeAllcation6_9 {} // 1.25
+extension UnsafeTreeV2: UnsafeTreeAllcation6_8 {}
   #else
     extension UnsafeTreeV2: UnsafeTreeAllcation6_9 {}
   #endif
@@ -11223,7 +11835,7 @@ extension UnsafeTreeAllcation6_8 {
         minimumCapacity)
     }
 
-    return Swift.max(minimumCapacity, capacity + max(capacity / 16, 2))
+    return Swift.max(minimumCapacity, capacity + max(capacity / 16, 1))
   }
 }
 
@@ -11245,7 +11857,7 @@ extension UnsafeTreeAllcation6_7 {
     }
 
 
-    return Swift.max(minimumCapacity, capacity + max(capacity / 8, 2))
+    return Swift.max(minimumCapacity, capacity + max(capacity / 8, 1))
   }
 }
 
@@ -11804,6 +12416,16 @@ package func tearDown<T>(treeBuffer buffer: UnsafeTreeV2Buffer<T>) {
 }
 
 import Foundation
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  public func ensureCapacity(_ newCapacity: Int) {
+    guard capacity < newCapacity else { return }
+    withMutableHeader { $0.pushFreshBucket(capacity: newCapacity - capacity) }
+  }
+}
 
 extension UnsafeTreeV2 {
 
@@ -13045,365 +13667,6 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   }
 }
 
-@usableFromInline
-struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
-  @inlinable
-  internal init(header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Key>.Header>, origin: UnsafeMutablePointer<UnsafeTreeV2Origin>) {
-    self.header = header
-    self.origin = origin
-  }
-  public typealias _Key = _Key
-  public typealias _Value = _Key
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-  @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Key>.Header>
-  @usableFromInline let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
-}
-
-extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase { }
-
-@usableFromInline
-protocol UnsafeTreeHandleBase {
-  associatedtype _Key
-  associatedtype _Value
-  var header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header> { get }
-  var origin: UnsafeMutablePointer<UnsafeTreeV2Origin> { get }
-}
-
-extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
-  
-  @inlinable
-  @inline(__always)
-  var scalarHandle: Handle {
-    _buffer.withUnsafeMutablePointers { header, origin in
-      Handle(header: header, origin: origin)
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func
-    __insert_unique_(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
-  {
-    scalarHandle.__insert_unique(x)
-  }
-  
-  @inlinable
-  @inline(__always)
-  internal func ___erase_unique_(_ __k: _Key) -> Bool {
-    _buffer.withUnsafeMutablePointers { header, origin in
-      Handle(header: header, origin: origin).___erase_unique(__k)
-    }
-  }
-  
-  @usableFromInline
-  typealias Handle = UnsafeTreeV2ScalarHandle<UnsafeTreeV2<Base>._Value>
-  
-  @inlinable
-  @inline(__always)
-  internal func update<R>(_ body: (Handle) throws -> R) rethrows -> R {
-    try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = Handle(header: header, origin: elements)
-      return try body(handle)
-    }
-  }
-}
-
-extension UnsafeTreeV2ScalarHandle {
-  
-  @inlinable
-  @inline(__always)
-  public func __key(_ __v: _Value) -> _Key { __v }
-  
-  @inlinable
-  @inline(__always)
-  public func value_comp(_ __l: _Key, _ __r: _Key) -> Bool { __l < __r }
-  
-  @inlinable
-  @inline(__always)
-  public func value_equiv(_ __l: _Key, _ __r: _Key) -> Bool { __l == __r }
-  
-  @inlinable
-  @inline(__always)
-  func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __eager_compare_result {
-    .init(__default_three_way_comparator(__lhs, __rhs))
-  }
-}
-
-
-extension UnsafeTreeV2ScalarHandle {
-
-  @inlinable
-  @inline(__always)
-  func __get_value(_ p: _NodePtr) -> _Key {
-    __key(UnsafePair<_Value>.valuePointer(p)!.pointee)
-  }
-}
-
-extension UnsafeTreeHandleBase {
-  
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-
-  @inlinable
-  @inline(__always)
-  public var nullptr: _NodePtr { origin.pointee.nullptr }
-  
-  @inlinable
-  @inline(__always)
-  public var end: _NodePtr { origin.pointee.end_ptr }
-}
-
-
-extension UnsafeTreeHandleBase {
-  
-  public typealias _Pointer = _NodePtr
-  public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
-
-  @inlinable
-  @inline(__always)
-  func __left_(_ p: _NodePtr) -> _NodePtr {
-    return p.pointee.__left_
-  }
-
-  @inlinable
-  @inline(__always)
-  func __left_unsafe(_ p: _NodePtr) -> _NodePtr {
-    return p.pointee.__left_
-  }
-
-  @inlinable
-  @inline(__always)
-  func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    lhs.pointee.__left_ = rhs
-  }
-}
-
-
-extension UnsafeTreeV2ScalarHandle: TreeNodeProtocol {
-
-  @inlinable
-  @inline(__always)
-  func __right_(_ p: _NodePtr) -> _NodePtr {
-    return p.pointee.__right_
-  }
-
-  @inlinable
-  @inline(__always)
-  func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    lhs.pointee.__right_ = rhs
-  }
-
-  @inlinable
-  @inline(__always)
-  func __is_black_(_ p: _NodePtr) -> Bool {
-    return p.pointee.__is_black_
-  }
-
-  @inlinable
-  @inline(__always)
-  func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
-    lhs.pointee.__is_black_ = rhs
-  }
-
-  @inlinable
-  @inline(__always)
-  func __parent_(_ p: _NodePtr) -> _NodePtr {
-    return p.pointee.__parent_
-  }
-
-  @inlinable
-  @inline(__always)
-  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    lhs.pointee.__parent_ = rhs
-  }
-
-  @inlinable
-  @inline(__always)
-  func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
-    return p.pointee.__parent_
-  }
-}
-
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-  @inline(__always)
-  func __left_ref(_ p: _NodePtr) -> _NodeRef {
-    return withUnsafeMutablePointer(to: &p.pointee.__left_) { $0 }
-  }
-
-  @inlinable
-  @inline(__always)
-  func __right_ref(_ p: _NodePtr) -> _NodeRef {
-    return withUnsafeMutablePointer(to: &p.pointee.__right_) { $0 }
-  }
-
-  @inlinable
-  @inline(__always)
-  public func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
-    rhs.pointee
-  }
-
-  @inlinable
-  @inline(__always)
-  func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
-    lhs.pointee = rhs
-  }
-}
-
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-  public var __begin_node_: _NodePtr {
-
-    @inline(__always) get {
-      origin.pointee.begin_ptr
-    }
-
-    @inline(__always)
-    nonmutating set {
-      origin.pointee.begin_ptr = newValue
-    }
-  }
-}
-
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-  var __end_node: _NodePtr {
-    end
-  }
-}
-
-
-extension UnsafeTreeHandleBase {
-
-  #if !DEBUG
-    @nonobjc
-    @inlinable
-    @inline(__always)
-    internal var __root: _NodePtr {
-      origin.pointee.end_node.__left_
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    internal var __root: _NodePtr {
-      get { end.pointee.__left_ }
-      set { end.pointee.__left_ = newValue }
-    }
-  #endif
-
-
-  @inlinable
-  @inline(__always)
-  internal func __root_ptr() -> _NodeRef {
-    withUnsafeMutablePointer(to: &origin.pointee.end_node.__left_) { $0 }
-  }
-}
-
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-  var __size_: Int {
-    @inline(__always) get {
-      header.pointee.count
-    }
-    nonmutating set {
-      /* NOP */
-    }
-  }
-}
-
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-  @inline(__always)
-  public func __construct_node(_ k: _Value) -> _NodePtr {
-    header.pointee.__construct_node(k)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func destroy(_ p: _NodePtr) {
-    header.pointee.___pushRecycle(p)
-  }
-}
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-  @inline(__always)
-  internal func __value_(_ p: _NodePtr) -> _Value {
-    UnsafePair<_Value>.valuePointer(p)!.pointee
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___element(_ p: _NodePtr, _ __v: _Value) {
-    UnsafePair<_Value>.valuePointer(p)!.pointee = __v
-  }
-}
-
-extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
-extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol {}
-extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol {}
-
-extension UnsafeTreeV2ScalarHandle: CompareTrait {
-  @inlinable
-  @inline(__always)
-  static var isMulti: Bool { false }
-}
-extension UnsafeTreeV2ScalarHandle: BoundProtocol {}
-
-extension UnsafeTreeV2ScalarHandle: FindProtocol {}
-extension UnsafeTreeV2ScalarHandle: RemoveProtocol {}
-extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
-extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
-
-extension UnsafeTreeV2ScalarHandle {
-
-  @inlinable
-  @inline(never)
-  func
-  __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
-  {
-    var __parent: _NodePtr = end
-    var __nd = __root
-    var __nd_ptr = __root_ptr()
-    if __nd != nullptr {
-      while true {
-        if __v < __get_value(__nd) {
-          if __left_unsafe(__nd) != nullptr {
-            __nd_ptr = __left_ref(__nd)
-            __nd = __left_unsafe(__nd)
-          } else {
-            __parent = __nd
-            return (__parent, __left_ref(__parent))
-          }
-        } else if __get_value(__nd) < __v {
-          if __right_(__nd) != nullptr {
-            __nd_ptr = __right_ref(__nd)
-            __nd = __right_(__nd)
-          } else {
-            __parent = __nd
-            return (__parent,__right_ref(__nd))
-          }
-        } else {
-          __parent = __nd
-          return (__parent,__nd_ptr)
-        }
-      }
-    }
-    __parent = __end_node
-    return (__parent, __left_ref(__parent))
-  }
-}
-
 extension UnsafeTreeV2 {
 
   @inlinable
@@ -14128,6 +14391,23 @@ extension UnsafeTreeV2 {
   }
 }
 
+extension RedBlackTreeSet {
+
+#if USE_FRESH_POOL_V1
+  public static var buildInfo: String {
+    "USE_FRESH_POOL_V1"
+  }
+#elseif USE_FRESH_POOL_V2
+  public static var buildInfo: String {
+    "USE_FRESH_POOL_V2"
+  }
+#else
+  public static var buildInfo: String {
+    "not both, maybe pool v1"
+  }
+#endif
+}
+
 @inlinable
 @inline(__always)
 func ___is_null_or_end__(pointerIndex: Int) -> Bool {
@@ -14244,6 +14524,8 @@ extension UnsafeTreeV2 {
 
 
 
+
+
 // ----
 
 
@@ -14293,4 +14575,3 @@ for _ in 0..<Q {
   }
   fastPrint(m)
 }
-

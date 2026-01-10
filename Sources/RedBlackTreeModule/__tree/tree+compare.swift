@@ -69,18 +69,27 @@ extension CompareBothProtocol {
   }
 }
 
-public protocol CompareTrait {
+public protocol CompareTrait: CompareTraitInstance {
   static var isMulti: Bool { get }
 }
 
-public protocol CompareUniqueTrait: CompareTrait {}
+extension CompareTrait {
+  @inlinable @inline(__always)
+  public var isMulti: Bool { Self.isMulti }
+}
+
+public protocol CompareTraitInstance {
+  var isMulti: Bool { get }
+}
+
+public protocol CompareUniqueTrait: CompareTrait & CompareTraitInstance {}
 
 extension CompareUniqueTrait {
   @inlinable @inline(__always)
   public static var isMulti: Bool { false }
 }
 
-public protocol CompareMultiTrait: CompareTrait {}
+public protocol CompareMultiTrait: CompareTrait & CompareTraitInstance {}
 
 extension CompareMultiTrait {
   @inlinable @inline(__always)

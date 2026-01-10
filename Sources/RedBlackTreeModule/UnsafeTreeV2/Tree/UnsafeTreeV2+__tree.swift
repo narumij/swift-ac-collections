@@ -252,7 +252,7 @@ extension UnsafeTreeV2: BoundProtocol {
 
   @inlinable
   @inline(__always)
-  var isMulti: Bool {
+  public var isMulti: Bool {
     Base.isMulti
   }
 }

@@ -6,12 +6,14 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
   internal init(header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header>, origin: UnsafeMutablePointer<UnsafeTreeV2Origin>) {
     self.header = header
     self.origin = origin
+    self.isMulti = false
   }
   public typealias _Key = _Key
   public typealias _Value = _Key
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header>
   @usableFromInline let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
+  @usableFromInline var isMulti: Bool
 }
 
 extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
@@ -295,11 +297,11 @@ extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol {}
 extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol {}
 
-extension UnsafeTreeV2ScalarHandle: CompareTrait {
-  @inlinable
-  @inline(__always)
-  static var isMulti: Bool { false }
-}
+//extension UnsafeTreeV2ScalarHandle: CompareTrait {
+//  @inlinable
+//  @inline(__always)
+//  static var isMulti: Bool { false }
+//}
 extension UnsafeTreeV2ScalarHandle: BoundProtocol {}
 
 extension UnsafeTreeV2ScalarHandle: FindProtocol, FindEqualProtocol_old {}

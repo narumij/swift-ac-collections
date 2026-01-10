@@ -94,11 +94,6 @@ extension ___UnsafeStorageProtocolV2 {
   @inline(__always)
   internal mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
 
-    if keepCapacity {
-      __tree_.__eraseAll()
-    } else {
-      __tree_ = .create(minimumCapacity: 0)
-    }
+    __tree_.__eraseAll(keepingCapacity: keepCapacity)
   }
 }
-

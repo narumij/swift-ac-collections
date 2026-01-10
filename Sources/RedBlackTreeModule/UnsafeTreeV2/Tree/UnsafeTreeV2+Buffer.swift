@@ -117,8 +117,12 @@ extension UnsafeTreeV2Buffer {
 
     @inlinable
     @inline(__always)
-    internal mutating func clear() {
-      ___cleanFreshPool()
+    internal mutating func clear(keepingCapacity keepCapacity: Bool = false) {
+      if keepCapacity {
+        ___cleanFreshPool()
+      } else {
+        ___flushFreshPool()
+      }
       ___flushRecyclePool()
     }
   }

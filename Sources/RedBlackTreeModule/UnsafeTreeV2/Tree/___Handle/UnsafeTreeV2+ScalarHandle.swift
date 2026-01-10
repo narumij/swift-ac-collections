@@ -1,38 +1,45 @@
 
+
 @usableFromInline
 struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
   @inlinable
-  internal init(header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Key>.Header>, origin: UnsafeMutablePointer<UnsafeTreeV2Origin>) {
+  internal init(header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header>, origin: UnsafeMutablePointer<UnsafeTreeV2Origin>) {
     self.header = header
     self.origin = origin
   }
   public typealias _Key = _Key
   public typealias _Value = _Key
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-  @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Key>.Header>
+  @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header>
   @usableFromInline let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
 }
 
-extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase { }
+//extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase { }
 
-@usableFromInline
-protocol UnsafeTreeHandleBase {
-  associatedtype _Key
-  associatedtype _Value
-  var header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header> { get }
-  var origin: UnsafeMutablePointer<UnsafeTreeV2Origin> { get }
-}
+//@usableFromInline
+//protocol UnsafeTreeHandleBase {
+//  associatedtype _Key
+//  associatedtype _Value
+//  var header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header> { get }
+//  var origin: UnsafeMutablePointer<UnsafeTreeV2Origin> { get }
+//}
 
 extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   
   @inlinable
   @inline(__always)
+  var scalarHandle: Handle {
+    _buffer.withUnsafeMutablePointers { header, origin in
+      Handle(header: header, origin: origin)
+    }
+  }
+
+  @inlinable
+  @inline(__always)
   internal func
     __insert_unique_(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
   {
-    _buffer.withUnsafeMutablePointers { header, origin in
-      Handle(header: header, origin: origin).__insert_unique(x)
-    }
+    scalarHandle.__insert_unique(x)
   }
   
   @inlinable
@@ -45,6 +52,15 @@ extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   
   @usableFromInline
   typealias Handle = UnsafeTreeV2ScalarHandle<UnsafeTreeV2<Base>._Value>
+  
+  @inlinable
+  @inline(__always)
+  internal func read<R>(_ body: (Handle) throws -> R) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, elements in
+      let handle = Handle(header: header, origin: elements)
+      return try body(handle)
+    }
+  }
   
   @inlinable
   @inline(__always)
@@ -84,13 +100,14 @@ extension UnsafeTreeV2ScalarHandle {
   @inlinable
   @inline(__always)
   func __get_value(_ p: _NodePtr) -> _Key {
-    __key(UnsafePair<_Value>.valuePointer(p)!.pointee)
+//    __key(UnsafePair<_Value>.valuePointer(p)!.pointee)
+    UnsafePair<_Value>.valuePointer(p)!.pointee
   }
 }
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeV2ScalarHandle {
   
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+//  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
   @inlinable
   @inline(__always)
@@ -103,7 +120,7 @@ extension UnsafeTreeHandleBase {
 
 // MARK: - TreeEndNodeProtocol
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeV2ScalarHandle {
   
   public typealias _Pointer = _NodePtr
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
@@ -176,7 +193,7 @@ extension UnsafeTreeV2ScalarHandle: TreeNodeProtocol {
 
 // MARK: -
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
   @inline(__always)
@@ -205,7 +222,7 @@ extension UnsafeTreeHandleBase {
 
 // MARK: - BeginNodeProtocol
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
   public var __begin_node_: _NodePtr {
@@ -223,7 +240,7 @@ extension UnsafeTreeHandleBase {
 
 // MARK: - EndNodeProtocol
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
   var __end_node: _NodePtr {
@@ -234,7 +251,7 @@ extension UnsafeTreeHandleBase {
 
 // MARK: - RootProtocol
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeV2ScalarHandle {
 
   #if !DEBUG
     @nonobjc
@@ -263,7 +280,7 @@ extension UnsafeTreeHandleBase {
 
 // MARK: - SizeProtocol
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
   var __size_: Int {
@@ -278,7 +295,7 @@ extension UnsafeTreeHandleBase {
 
 // MARK: - AllocatorProtocol
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
   @inline(__always)
@@ -293,7 +310,7 @@ extension UnsafeTreeHandleBase {
   }
 }
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
   @inline(__always)
@@ -326,11 +343,13 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 
 extension UnsafeTreeV2ScalarHandle {
 
-  @inlinable
-  @inline(never)
+//  @inlinable
+//  @inline(__always)
+  @usableFromInline
   func
   __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {
+    let value_comp = value_comp
     var __parent: _NodePtr = end
     var __nd = __root
     var __nd_ptr = __root_ptr()

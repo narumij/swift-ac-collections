@@ -103,6 +103,12 @@ extension UnsafeNodeFreshPoolV2 {
 
   @inlinable
   @inline(__always)
+  mutating func ___flushFreshPool() {
+    freshPool.clear()
+  }
+  
+  @inlinable
+  @inline(__always)
   mutating func ___cleanFreshPool() {
     freshPool.clear()
   }

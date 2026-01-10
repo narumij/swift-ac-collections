@@ -15,16 +15,17 @@ var defines: [String] = [
   //  "SKIP_MULTISET_INDEX_BUG",
   //  "PERFOMANCE_CHECK",
   "WITHOUT_SIZECHECK",
-  "USE_UNSAFE_TREE", // TODO: そのうち消す
+  "USE_UNSAFE_TREE",  // TODO: そのうち消す
   //"USE_OLD_FIND",
-//  "ALLOCATION_DRILL" // リリース時はオフ
+  //  "ALLOCATION_DRILL" // リリース時はオフ
+
+  //  "USE_FRESH_POOL_V1"
+
+
   
-//  "USE_FRESH_POOL_V1"
   
   
-  
-  
-//  "USE_FRESH_POOL_V2"
+  "USE_FRESH_POOL_V2"
 ]
 
 var _settings: [SwiftSetting] =
@@ -34,7 +35,7 @@ var _settings: [SwiftSetting] =
     // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。
     // 過去版が単純なコード補完に反応しにくい設計だったこともあり、サポートプロジェクトでこちらを採用しています。
     // サポートプロジェクトで不都合を最小限にとどめるための定義モードです。
-    
+
     .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),
     // CoWの挙動チェックを可能にするマクロ定義
     // アロケーション関連のテストを走らせるために必要
@@ -46,7 +47,7 @@ var _settings: [SwiftSetting] =
 
     .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
-    
+
     // .define("USE_SIMPLE_COPY_ON_WRITE"), // この定義は今後悩み
     // 注意: COMPATIBLE_ATCODER_2025が優先し、その場合この定義は無効になります。
     // 平衡二分探索木(赤黒木)の魅力と言えば、探索や削除の速度だと思います。
@@ -81,6 +82,10 @@ let package = Package(
     .package(
       url: "https://github.com/narumij/swift-ac-foundation",
       branch: "main"),
+
+    .package(
+      url: "https://github.com/apple/swift-collections",
+      from: "1.3.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -184,12 +189,13 @@ let package = Package(
       dependencies: [
         "AcCollections",
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
+        .product(name: "Collections", package: "swift-collections"),
       ],
       path: "Tests/Executables/MultiRoundTrip"),
     .executableTarget(
       name: "MarriedSource",
       dependencies: [
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation")
       ],
       path: "Tests/Executables/MarriedSource"),
   ]

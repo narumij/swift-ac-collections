@@ -289,9 +289,10 @@ extension UnsafeTreeV2 {
   @inline(__always)
   public func ensureCapacity(_ newCapacity: Int) {
     guard capacity < newCapacity else { return }
-    _buffer.withUnsafeMutablePointerToHeader {
-      $0.pointee.pushFreshBucket(capacity: newCapacity - capacity)
-    }
+//    _buffer.withUnsafeMutablePointerToHeader {
+//      $0.pointee.pushFreshBucket(capacity: newCapacity - capacity)
+//    }
+    withMutableHeader { $0.pushFreshBucket(capacity: newCapacity - capacity) }
   }
 }
 
@@ -299,10 +300,10 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func clear() {
+  func clear(keepingCapacity keepCapacity: Bool = false) {
     end.pointee.__left_ = nullptr
     _buffer.withUnsafeMutablePointerToHeader {
-      $0.pointee.clear()
+      $0.pointee.clear(keepingCapacity: keepCapacity)
     }
     _buffer.withUnsafeMutablePointerToElements {
       $0.pointee.clear()
@@ -316,8 +317,8 @@ extension UnsafeTreeV2 {
   /// O(1)
   @inlinable
   @inline(__always)
-  internal func __eraseAll() {
-    clear()
+  internal func __eraseAll(keepingCapacity keepCapacity: Bool = false) {
+    clear(keepingCapacity: keepCapacity)
 //    _buffer.withUnsafeMutablePointerToHeader {
 //      $0.pointee.___flushRecyclePool()
 //      $0.pointee.count = 0

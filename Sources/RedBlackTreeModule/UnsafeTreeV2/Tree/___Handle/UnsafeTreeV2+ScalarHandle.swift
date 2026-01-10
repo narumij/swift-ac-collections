@@ -93,7 +93,7 @@ extension UnsafeTreeV2ScalarHandle {
 extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase {}
 
 extension UnsafeTreeV2ScalarHandle: FindProtocol {}
-extension UnsafeTreeV2ScalarHandle: FindEqualProtocol, FindEqualProtocol_old {}
+extension UnsafeTreeV2ScalarHandle: FindEqualProtocol, FindEqualProtocol_std {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol {}
 extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol {}
 extension UnsafeTreeV2ScalarHandle: BoundProtocol {}

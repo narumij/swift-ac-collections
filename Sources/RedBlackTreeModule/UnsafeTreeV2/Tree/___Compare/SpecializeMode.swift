@@ -41,7 +41,7 @@ enum SpecializeMode {
   func synth_three_way<_Key: Comparable>(_ __l: _Key,_ __r: _Key) -> __eager_compare_result {
     switch self {
     case .asInt:
-      return __eager_compare_result((__r as! Int) - (__l as! Int))
+      return __eager_compare_result(__default_three_way_comparator((__l as! Int), (__r as! Int)))
     case .generic:
       return __eager_compare_result(__default_three_way_comparator(__l, __r))
     }

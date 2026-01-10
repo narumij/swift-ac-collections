@@ -8,7 +8,7 @@ let N = 2000
 #endif
 
 
-#if false
+#if true
 var fixtures: [RedBlackTreeSet<Int>] = .init(repeating: .init(minimumCapacity: N), count: N)
 
 for _ in 0..<1 {
@@ -17,11 +17,11 @@ for _ in 0..<1 {
       fixtures[i].insert(j)
     }
   }
-//  for j in 0..<N {
-//    for i in 0..<N {
-//      fixtures[i].remove(j)
-//    }
-//  }
+  for j in 0..<N {
+    for i in 0..<N {
+      fixtures[i].remove(j)
+    }
+  }
 }
 #else
 enum Base<K,V>: ValueComparer {

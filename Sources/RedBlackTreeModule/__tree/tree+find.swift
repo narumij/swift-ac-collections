@@ -87,11 +87,20 @@ extension FindLeafProtocol {
 }
 
 @usableFromInline
-protocol FindEqualProtocol: ValueProtocol, TreeNodeRefProtocol, RootProtocol, RootPtrProtocol,
+protocol FindEqualProtocol: ValueProtocol, TreeNodeRefProtocol
+{
+  func
+    __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+}
+
+extension FindEqualProtocol { }
+
+@usableFromInline
+protocol FindEqualProtocol_std: ValueProtocol, TreeNodeRefProtocol, RootProtocol, RootPtrProtocol,
   ThreeWayComparatorProtocol
 {}
 
-extension FindEqualProtocol {
+extension FindEqualProtocol_std {
 
   @inlinable
   @inline(__always)
@@ -127,6 +136,49 @@ extension FindEqualProtocol {
         return (__nd, __nd_ptr)
       }
     }
+  }
+}
+
+
+@usableFromInline
+protocol FindEqualProtocol_old: ValueProtocol, TreeNodeRefProtocol, RootProtocol, RootPtrProtocol {}
+
+extension FindEqualProtocol_old {
+
+  @inlinable
+  @inline(never)
+  func
+  __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+  {
+    var __parent: _NodePtr = end
+    var __nd = __root
+    var __nd_ptr = __root_ptr()
+    if __nd != nullptr {
+      while true {
+        if value_comp(__v, __get_value(__nd)) {
+          if __left_unsafe(__nd) != nullptr {
+            __nd_ptr = __left_ref(__nd)
+            __nd = __left_unsafe(__nd)
+          } else {
+            __parent = __nd
+            return (__parent, __left_ref(__parent))
+          }
+        } else if value_comp(__get_value(__nd), __v) {
+          if __right_(__nd) != nullptr {
+            __nd_ptr = __right_ref(__nd)
+            __nd = __right_(__nd)
+          } else {
+            __parent = __nd
+            return (__parent,__right_ref(__nd))
+          }
+        } else {
+          __parent = __nd
+          return (__parent,__nd_ptr)
+        }
+      }
+    }
+    __parent = __end_node
+    return (__parent, __left_ref(__parent))
   }
 }
 

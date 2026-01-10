@@ -42,6 +42,23 @@ extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   }
 }
 
+@usableFromInline
+enum ValueComp {
+  case normal
+  case asInt
+  
+  @inline(__always)
+  @usableFromInline
+  func value_comp<_Key: Comparable>(_ __l: _Key,_ __r: _Key) -> Bool {
+    switch self {
+    case .normal:
+      return __l < __r
+    case .asInt:
+      return (__l as! Int) < (__r as! Int)
+    }
+  }
+}
+
 extension UnsafeTreeV2ScalarHandle {
   
   @inline(__always)
@@ -50,7 +67,9 @@ extension UnsafeTreeV2ScalarHandle {
   
   @inline(__always)
   @usableFromInline
-  func value_comp(_ __l: _Key, _ __r: _Key) -> Bool { __l < __r }
+  func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
+    ValueComp.asInt.value_comp(__l, __r)
+  }
   
   @inline(__always)
   @usableFromInline

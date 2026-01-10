@@ -95,6 +95,8 @@ import XCTest
     RemoveProtocol, EraseProtocol, EraseUniqueProtocol, CompareProtocol, CompareMultiProtocol,
     BoundProtocol, NodeBitmapProtocol, FindEqualProtocol_std
 {
+    let isMulti: Bool = true
+    
     func __key(_ e: Element) -> Element {
       e
     }

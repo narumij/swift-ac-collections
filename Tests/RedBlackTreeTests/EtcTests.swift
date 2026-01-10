@@ -957,4 +957,17 @@ final class EtcTests: RedBlackTreeTestCase {
 //    XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead?.pointee.count, 100)
     XCTAssertEqual(fixture.capacity, 0)
   }
+  
+  struct TypeFixture<T> {
+    internal init() {
+      isInt = T.self == Int.self
+    }
+    var isInt: Bool
+  }
+  
+  func testTypeFixture() throws {
+    XCTAssertEqual(TypeFixture<Double>().isInt, false)
+    XCTAssertEqual(TypeFixture<Int>().isInt, true)
+    XCTAssertEqual(TypeFixture<Int64>().isInt, false)
+  }
 }

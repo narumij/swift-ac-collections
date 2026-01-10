@@ -21,13 +21,6 @@ var defines: [String] = [
 
   //  "USE_FRESH_POOL_V1"
 
-
-  
-  
-
-  
-  
-  
 //  "USE_FRESH_POOL_V2"
 ]
 
@@ -171,6 +164,7 @@ let package = Package(
       dependencies: [
         "AcCollections",
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
+        .product(name: "Collections", package: "swift-collections"),
       ],
       path: "Tests/Executables/SimpleInsert"),
     .executableTarget(

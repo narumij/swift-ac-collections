@@ -68,15 +68,12 @@ extension UnsafeTreeV2ScalarHandle {
   @inlinable
   @inline(__always)
   func __get_value(_ p: _NodePtr) -> _Key {
-//    __key(UnsafePair<_Value>.valuePointer(p)!.pointee)
     UnsafePair<_Value>.valuePointer(p)!.pointee
   }
 }
 
 extension UnsafeTreeV2ScalarHandle {
   
-//  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-
   @inlinable
   @inline(__always)
   public var nullptr: _NodePtr { origin.pointee.nullptr }
@@ -211,10 +208,7 @@ extension UnsafeTreeV2ScalarHandle {
 extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
-  var __end_node: _NodePtr {
-    end
-//    _buffer.withUnsafeMutablePointerToElements { $0.pointee.end_ptr }
-  }
+  var __end_node: _NodePtr { end }
 }
 
 // MARK: - RootProtocol
@@ -293,18 +287,11 @@ extension UnsafeTreeV2ScalarHandle {
   }
 }
 
+extension UnsafeTreeV2ScalarHandle: FindProtocol, FindEqualProtocol_old {}
 extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol {}
 extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol {}
-
-//extension UnsafeTreeV2ScalarHandle: CompareTrait {
-//  @inlinable
-//  @inline(__always)
-//  static var isMulti: Bool { false }
-//}
 extension UnsafeTreeV2ScalarHandle: BoundProtocol {}
-
-extension UnsafeTreeV2ScalarHandle: FindProtocol, FindEqualProtocol_old {}
 extension UnsafeTreeV2ScalarHandle: RemoveProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}

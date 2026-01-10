@@ -24,6 +24,17 @@ import Foundation
 
 extension UnsafeTreeV2 {
 
+  // TODO: grow関連の名前が混乱気味なので整理する
+  @inlinable
+  @inline(__always)
+  public func ensureCapacity(_ newCapacity: Int) {
+    guard capacity < newCapacity else { return }
+    withMutableHeader { $0.pushFreshBucket(capacity: newCapacity - capacity) }
+  }
+}
+
+extension UnsafeTreeV2 {
+
 
   @inlinable
   @inline(__always)

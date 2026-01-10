@@ -24,4 +24,13 @@ extension UnsafeTreeV2 {
       return try body(&header.pointee)
     }
   }
+  
+  @inlinable
+  @inline(__always)
+  internal func withandler<R>(_ body: (UnsafeTreeV2CommonHandle<_Value>) throws -> R) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, elements in
+      let handle = UnsafeTreeV2CommonHandle<_Value>(header: header, origin: elements)
+      return try body(handle)
+    }
+  }
 }

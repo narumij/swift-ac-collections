@@ -5,7 +5,7 @@ import Collections
 let N = 50
 #else
 let N = 2000
-//let N = 300_000
+//let N = 1_000_000
 #endif
 
 
@@ -35,6 +35,18 @@ for _ in 0..<2 {
 //    for i in 0..<N {
       fixtures[i].removeAll()
 //    }
+  }
+}
+#elseif true
+var fixtures: [RedBlackTreeSet<Int>] = .init(repeating: .init(), count: N)
+for k in 0..<1 {
+  for i in 0..<150 {
+    for j in 0..<1_000_000 {
+      fixtures[i].reserveCapacity(j)
+    }
+  }
+  for i in 0..<N {
+      fixtures[i].removeAll()
   }
 }
 #else

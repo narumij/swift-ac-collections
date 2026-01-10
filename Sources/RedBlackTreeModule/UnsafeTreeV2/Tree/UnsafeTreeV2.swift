@@ -284,45 +284,15 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  // TODO: grow関連の名前が混乱気味なので整理する
-  @inlinable
-  @inline(__always)
-  public func ensureCapacity(_ newCapacity: Int) {
-    guard capacity < newCapacity else { return }
-//    _buffer.withUnsafeMutablePointerToHeader {
-//      $0.pointee.pushFreshBucket(capacity: newCapacity - capacity)
-//    }
-    withMutableHeader { $0.pushFreshBucket(capacity: newCapacity - capacity) }
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  func clear(keepingCapacity keepCapacity: Bool = false) {
-    end.pointee.__left_ = nullptr
-    _buffer.withUnsafeMutablePointerToHeader {
-      $0.pointee.clear(keepingCapacity: keepCapacity)
-    }
-    _buffer.withUnsafeMutablePointerToElements {
-      $0.pointee.clear()
-    }
-  }
-}
-
-// TODO: ここに配置するのが適切には思えない。配置場所を再考する
-extension UnsafeTreeV2 {
-
   /// O(1)
   @inlinable
   @inline(__always)
   internal func __eraseAll(keepingCapacity keepCapacity: Bool = false) {
-    clear(keepingCapacity: keepCapacity)
-//    _buffer.withUnsafeMutablePointerToHeader {
-//      $0.pointee.___flushRecyclePool()
-//      $0.pointee.count = 0
-//    }
+    end.pointee.__left_ = nullptr
+    withandler { handler in
+      handler.header.pointee.clear(keepingCapacity: keepCapacity)
+      handler.origin.pointee.clear()
+    }
   }
 }
 

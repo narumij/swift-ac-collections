@@ -47,3 +47,18 @@ enum SpecializeMode {
     }
   }
 }
+
+@usableFromInline
+struct SpecializeModeHoge<_K> {
+  @inlinable
+  @inline(__always)
+  init() {
+    if _K.self == Int.self {
+      specializeMode = .asInt
+    } else {
+      specializeMode = .generic
+    }
+  }
+  @usableFromInline
+  var specializeMode: SpecializeMode
+}

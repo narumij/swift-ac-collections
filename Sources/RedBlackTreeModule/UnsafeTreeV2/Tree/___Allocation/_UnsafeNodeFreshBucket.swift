@@ -93,7 +93,7 @@ package struct _UnsafeNodeFreshBucket {
     while i < count {
       let c = p
       p = advance(p)
-#if false
+#if true
       UnsafeNode.deinitialize(T.self, c)
 #else
       if c.pointee.___needs_deinitialize {

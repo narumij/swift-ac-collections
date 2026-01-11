@@ -1,129 +1,129 @@
 Benchmark3
 
 UNSAFE_TREE_V2
-2026-01-11 17:19:15 +0000
+2026-01-11 17:25:10 +0000
 
-running reserveCapacity 2... done! (448.53 ms)
-running reserveCapacity 8... done! (521.08 ms)
-running reserveCapacity 32... done! (915.26 ms)
-running reserveCapacity 128... done! (1616.66 ms)
-running reserveCapacity 512... done! (1705.58 ms)
-running reserveCapacity 2048... done! (2247.88 ms)
-running reserveCapacity 8192... done! (1708.69 ms)
-running reserveCapacity 32768... done! (1530.39 ms)
-running reserveCapacity 131072... done! (1825.18 ms)
-running reserveCapacity 524288... done! (1554.85 ms)
-running reserveCapacity 2097152... done! (2052.71 ms)
-running reserveCapacity 8388608... done! (1641.98 ms)
-running init with range 2... done! (322.39 ms)
-running init with range 8... done! (417.33 ms)
-running init with range 32... done! (757.29 ms)
-running init with range 128... done! (1633.88 ms)
-running init with range 512... done! (2189.46 ms)
-running init with range 2048... done! (1732.83 ms)
-running init with range 8192... done! (1555.08 ms)
-running init with range 32768... done! (1901.98 ms)
-running init with range 131072... done! (1590.41 ms)
-running init with range 524288... done! (2237.21 ms)
-running init with range 2097152... done! (1748.57 ms)
-running init with range 8388608... done! (1288.97 ms)
-running copy 2... done! (527.74 ms)
-running copy 8... done! (706.19 ms)
-running copy 32... done! (1259.54 ms)
-running copy 128... done! (1813.87 ms)
-running copy 512... done! (1537.04 ms)
-running copy 2048... done! (1905.35 ms)
-running copy 8192... done! (1590.66 ms)
-running copy 32768... done! (2183.18 ms)
-running copy 131072... done! (1707.52 ms)
-running copy 524288... done! (1552.62 ms)
-running copy 2097152... done! (1952.13 ms)
-running copy 8388608... done! (2601.18 ms)
-running removeAll(true) 2... done! (377.17 ms)
-running removeAll(true) 8... done! (445.79 ms)
-running removeAll(true) 32... done! (696.17 ms)
-running removeAll(true) 128... done! (1541.86 ms)
-running removeAll(true) 512... done! (2003.16 ms)
-running removeAll(true) 2048... done! (1642.26 ms)
-running removeAll(true) 8192... done! (2355.87 ms)
-running removeAll(true) 32768... done! (1782.29 ms)
-running removeAll(true) 131072... done! (1572.91 ms)
-running removeAll(true) 524288... done! (2037.91 ms)
-running removeAll(true) 2097152... done! (1646.90 ms)
-running removeAll(true) 8388608... done! (2416.31 ms)
-running removeAll() 2... done! (356.74 ms)
-running removeAll() 8... done! (438.23 ms)
-running removeAll() 32... done! (690.00 ms)
-running removeAll() 128... done! (1581.57 ms)
-running removeAll() 512... done! (2007.49 ms)
-running removeAll() 2048... done! (1674.85 ms)
-running removeAll() 8192... done! (2368.64 ms)
-running removeAll() 32768... done! (1775.97 ms)
-running removeAll() 131072... done! (1544.20 ms)
-running removeAll() 524288... done! (2030.83 ms)
-running removeAll() 2097152... done! (1630.49 ms)
-running removeAll() 8388608... done! (2454.92 ms)
+running reserveCapacity 2... done! (433.47 ms)
+running reserveCapacity 8... done! (516.71 ms)
+running reserveCapacity 32... done! (926.53 ms)
+running reserveCapacity 128... done! (1577.47 ms)
+running reserveCapacity 512... done! (1730.37 ms)
+running reserveCapacity 2048... done! (2252.28 ms)
+running reserveCapacity 8192... done! (1721.33 ms)
+running reserveCapacity 32768... done! (1517.54 ms)
+running reserveCapacity 131072... done! (1832.56 ms)
+running reserveCapacity 524288... done! (1566.90 ms)
+running reserveCapacity 2097152... done! (2056.04 ms)
+running reserveCapacity 8388608... done! (1655.68 ms)
+running init with range 2... done! (320.48 ms)
+running init with range 8... done! (416.74 ms)
+running init with range 32... done! (751.21 ms)
+running init with range 128... done! (1636.24 ms)
+running init with range 512... done! (2198.67 ms)
+running init with range 2048... done! (1733.26 ms)
+running init with range 8192... done! (1537.63 ms)
+running init with range 32768... done! (1896.23 ms)
+running init with range 131072... done! (1590.10 ms)
+running init with range 524288... done! (2235.54 ms)
+running init with range 2097152... done! (1750.45 ms)
+running init with range 8388608... done! (1265.82 ms)
+running copy 2... done! (517.75 ms)
+running copy 8... done! (696.27 ms)
+running copy 32... done! (1227.72 ms)
+running copy 128... done! (1748.30 ms)
+running copy 512... done! (1510.67 ms)
+running copy 2048... done! (1886.67 ms)
+running copy 8192... done! (1592.49 ms)
+running copy 32768... done! (2154.64 ms)
+running copy 131072... done! (1708.26 ms)
+running copy 524288... done! (1516.49 ms)
+running copy 2097152... done! (1949.57 ms)
+running copy 8388608... done! (2659.93 ms)
+running removeAll(true) 2... done! (350.72 ms)
+running removeAll(true) 8... done! (418.62 ms)
+running removeAll(true) 32... done! (652.69 ms)
+running removeAll(true) 128... done! (1588.06 ms)
+running removeAll(true) 512... done! (1968.04 ms)
+running removeAll(true) 2048... done! (1617.74 ms)
+running removeAll(true) 8192... done! (2305.41 ms)
+running removeAll(true) 32768... done! (1750.21 ms)
+running removeAll(true) 131072... done! (1535.64 ms)
+running removeAll(true) 524288... done! (1978.90 ms)
+running removeAll(true) 2097152... done! (1621.18 ms)
+running removeAll(true) 8388608... done! (2285.36 ms)
+running removeAll() 2... done! (328.85 ms)
+running removeAll() 8... done! (402.25 ms)
+running removeAll() 32... done! (627.41 ms)
+running removeAll() 128... done! (1573.70 ms)
+running removeAll() 512... done! (1959.93 ms)
+running removeAll() 2048... done! (1606.08 ms)
+running removeAll() 8192... done! (2275.33 ms)
+running removeAll() 32768... done! (1752.41 ms)
+running removeAll() 131072... done! (1529.97 ms)
+running removeAll() 524288... done! (1965.36 ms)
+running removeAll() 2097152... done! (1634.79 ms)
+running removeAll() 8388608... done! (2301.14 ms)
 
 name                    time             std        iterations
 --------------------------------------------------------------
-reserveCapacity 2             334.000 ns ± 428.67 %    1000000
-reserveCapacity 8             417.000 ns ± 207.54 %    1000000
-reserveCapacity 32            791.000 ns ±  79.71 %    1000000
-reserveCapacity 128          1458.000 ns ±  73.05 %     986087
-reserveCapacity 512          2875.000 ns ±  22.58 %     488886
-reserveCapacity 2048         7791.000 ns ±  50.79 %     183980
-reserveCapacity 8192        27625.000 ns ±  10.21 %      48174
-reserveCapacity 32768      100459.000 ns ±   8.15 %      13432
-reserveCapacity 131072     376104.500 ns ±   4.88 %       3590
-reserveCapacity 524288    1491854.000 ns ±   4.25 %        922
-reserveCapacity 2097152   5863937.500 ns ±   3.74 %        234
-reserveCapacity 8388608  23742021.000 ns ±   1.80 %         58
-init with range 2             250.000 ns ± 121.78 %    1000000
-init with range 8             334.000 ns ±  79.78 %    1000000
-init with range 32            666.000 ns ±  42.07 %    1000000
-init with range 128          1958.000 ns ±  29.66 %     715042
-init with range 512          7042.000 ns ±  16.30 %     195776
-init with range 2048        28500.000 ns ±  12.12 %      48503
-init with range 8192       114250.000 ns ±   6.71 %      12275
-init with range 32768      451083.000 ns ±   3.84 %       3032
-init with range 131072    1818666.500 ns ±   3.61 %        752
-init with range 524288    7578958.000 ns ±   3.51 %        181
-init with range 2097152  30915625.000 ns ±   2.56 %         45
-init with range 8388608 124192791.000 ns ±   1.69 %          9
-copy 2                        458.000 ns ±  53.69 %    1000000
-copy 8                        584.000 ns ±  67.44 %    1000000
-copy 32                      1083.000 ns ±  39.47 %    1000000
-copy 128                     3250.000 ns ±  71.71 %     448930
-copy 512                    10709.000 ns ±  18.16 %     126845
-copy 2048                   44792.000 ns ±   8.43 %      30187
-copy 8192                  174583.000 ns ±   5.91 %       7745
-copy 32768                 705333.500 ns ±   4.49 %       1942
-copy 131072               2958395.500 ns ±   4.64 %        472
-copy 524288              12037500.000 ns ±   3.04 %        119
-copy 2097152             48190709.000 ns ±   3.05 %         29
-copy 8388608            194392292.000 ns ±   0.71 %          7
-removeAll(true) 2             292.000 ns ± 127.51 %    1000000
-removeAll(true) 8             375.000 ns ±  86.67 %    1000000
-removeAll(true) 32            584.000 ns ±  60.95 %    1000000
-removeAll(true) 128          1542.000 ns ±  66.26 %     834092
-removeAll(true) 512          5292.000 ns ±  20.36 %     256189
-removeAll(true) 2048        21125.000 ns ±  15.59 %      64334
-removeAll(true) 8192        84875.000 ns ±   7.07 %      15967
-removeAll(true) 32768      337542.000 ns ±   5.43 %       4055
-removeAll(true) 131072    1362125.000 ns ±   4.71 %       1025
-removeAll(true) 524288    5610812.500 ns ±   6.68 %        248
-removeAll(true) 2097152  22816083.000 ns ±   2.19 %         61
-removeAll(true) 8388608  91380750.000 ns ±   0.81 %         15
-removeAll() 2                 292.000 ns ±  80.32 %    1000000
-removeAll() 8                 375.000 ns ±  81.92 %    1000000
-removeAll() 32                583.000 ns ±  61.83 %    1000000
-removeAll() 128              1542.000 ns ±  37.03 %     864187
-removeAll() 512              5333.000 ns ±  22.86 %     256721
-removeAll() 2048            21625.000 ns ±  17.10 %      64062
-removeAll() 8192            85334.000 ns ±   6.74 %      16125
-removeAll() 32768          336667.000 ns ±   5.17 %       4044
-removeAll() 131072        1360125.000 ns ±   4.40 %       1003
-removeAll() 524288        5586604.500 ns ±   4.39 %        248
-removeAll() 2097152      22843479.000 ns ±   1.95 %         60
-removeAll() 8388608      92428416.000 ns ±   9.22 %         15
+reserveCapacity 2             334.000 ns ±  86.12 %    1000000
+reserveCapacity 8             417.000 ns ±  73.57 %    1000000
+reserveCapacity 32            792.000 ns ±  52.95 %    1000000
+reserveCapacity 128          1375.000 ns ±  29.26 %     992859
+reserveCapacity 512          2875.000 ns ±  26.43 %     496451
+reserveCapacity 2048         7791.000 ns ±  13.24 %     183652
+reserveCapacity 8192        27708.000 ns ±  10.66 %      48251
+reserveCapacity 32768      108791.000 ns ±   6.53 %      13245
+reserveCapacity 131072     402834.000 ns ±   5.01 %       3572
+reserveCapacity 524288    1560542.000 ns ±   4.12 %        922
+reserveCapacity 2097152   5983438.000 ns ±   3.57 %        232
+reserveCapacity 8388608  23789354.000 ns ±   1.66 %         58
+init with range 2             250.000 ns ±  82.22 %    1000000
+init with range 8             334.000 ns ±  74.80 %    1000000
+init with range 32            666.000 ns ±  44.68 %    1000000
+init with range 128          1958.000 ns ±  30.07 %     711443
+init with range 512          7042.000 ns ±  16.28 %     195899
+init with range 2048        28417.000 ns ±  11.48 %      48346
+init with range 8192       113791.000 ns ±   6.02 %      12167
+init with range 32768      448166.000 ns ±   3.75 %       3029
+init with range 131072    1817167.000 ns ±   3.17 %        752
+init with range 524288    7477417.000 ns ±   3.55 %        184
+init with range 2097152  30412458.500 ns ±   1.57 %         46
+init with range 8388608 122540667.000 ns ±   0.80 %          9
+copy 2                        417.000 ns ±  66.79 %    1000000
+copy 8                        584.000 ns ±  65.95 %    1000000
+copy 32                      1083.000 ns ±  41.32 %    1000000
+copy 128                     3000.000 ns ±  25.91 %     460778
+copy 512                    10667.000 ns ±  15.59 %     129724
+copy 2048                   44083.000 ns ±   7.05 %      31098
+copy 8192                  171583.000 ns ±   4.62 %       8017
+copy 32768                 679500.000 ns ±   2.00 %       2031
+copy 131072               2759667.000 ns ±   2.24 %        503
+copy 524288              11271937.000 ns ±   2.70 %        122
+copy 2097152             45987958.000 ns ±   1.46 %         31
+copy 8388608            184501729.500 ns ±   0.50 %          8
+removeAll(true) 2             292.000 ns ±  72.08 %    1000000
+removeAll(true) 8             334.000 ns ±  65.89 %    1000000
+removeAll(true) 32            542.000 ns ±  61.44 %    1000000
+removeAll(true) 128          1459.000 ns ±  39.98 %     929354
+removeAll(true) 512          5000.000 ns ±  20.31 %     272012
+removeAll(true) 2048        19792.000 ns ±  13.37 %      68298
+removeAll(true) 8192        79834.000 ns ±   6.57 %      17098
+removeAll(true) 32768      314417.000 ns ±   4.33 %       4350
+removeAll(true) 131072    1260333.000 ns ±   2.65 %       1093
+removeAll(true) 524288    5175250.000 ns ±   3.26 %        267
+removeAll(true) 2097152  21070021.000 ns ±   1.99 %         66
+removeAll(true) 8388608  83968646.000 ns ±   0.84 %         16
+removeAll() 2                 250.000 ns ±  78.31 %    1000000
+removeAll() 8                 333.000 ns ±  68.59 %    1000000
+removeAll() 32                542.000 ns ±  52.31 %    1000000
+removeAll() 128              1458.000 ns ±  30.65 %     951016
+removeAll() 512              4959.000 ns ±  18.07 %     280108
+removeAll() 2048            19916.000 ns ±  14.90 %      68996
+removeAll() 8192            79042.000 ns ±   7.80 %      17548
+removeAll() 32768          314208.000 ns ±   5.78 %       4397
+removeAll() 131072        1257188.000 ns ±   3.78 %       1108
+removeAll() 524288        5110833.000 ns ±   2.30 %        273
+removeAll() 2097152      20583291.500 ns ±   1.13 %         68
+removeAll() 8388608      81917167.000 ns ±   0.66 %         17
 Program ended with exit code: 0

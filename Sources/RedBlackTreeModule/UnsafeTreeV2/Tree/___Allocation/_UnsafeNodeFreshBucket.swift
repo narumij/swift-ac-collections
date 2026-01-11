@@ -23,9 +23,9 @@
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @frozen
 @usableFromInline
-package struct UnsafeNodeFreshBucket {
+package struct _UnsafeNodeFreshBucket {
 
-  public typealias Bucket = UnsafeNodeFreshBucket
+  public typealias Bucket = _UnsafeNodeFreshBucket
   public typealias BucketPointer = UnsafeMutablePointer<Bucket>
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
@@ -130,7 +130,7 @@ package struct UnsafeNodeFreshBucket {
 }
 
 #if DEBUG
-  extension UnsafeNodeFreshBucket {
+  extension _UnsafeNodeFreshBucket {
 
     func dump(label: String = "") {
       print("---- FreshBucket \(label) ----")

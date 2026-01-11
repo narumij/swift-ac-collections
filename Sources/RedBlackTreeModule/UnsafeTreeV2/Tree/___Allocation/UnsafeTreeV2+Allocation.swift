@@ -105,7 +105,7 @@ extension UnsafeTreeAllcation7 {
 
     // 若干計算は適当だが、スモールアロケーションの速度で出来ることをやり尽くすように制限している
     let limit1024 =
-      (1024 - MemoryLayout<UnsafeNodeFreshBucket>.stride)
+      (1024 - MemoryLayout<_UnsafeNodeFreshBucket>.stride)
       / (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
 
     if minimumCapacity <= limit1024 {
@@ -491,7 +491,7 @@ extension UnsafeTreeAllcation2 {
 
     let s0 = MemoryLayout<UnsafeNode>.stride
     let s1 = MemoryLayout<_Value>.stride
-    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
+    let s2 = MemoryLayout<_UnsafeNodeFreshBucket>.stride
     let a2 = 0  // MemoryLayout<UnsafeNodeFreshBucket<_Value>>.alignment
 
     if minimumCapacity <= 2 {
@@ -541,8 +541,8 @@ extension UnsafeTreeAllcation1 {
 
     let s0 = MemoryLayout<UnsafeNode>.stride
     let s1 = MemoryLayout<_Value>.stride
-    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
-    let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
+    let s2 = MemoryLayout<_UnsafeNodeFreshBucket>.stride
+    let a2 = MemoryLayout<_UnsafeNodeFreshBucket>.alignment
 
     let (small, large) = initializedCount < 2048 ? (31, 31) : (15, 15)
 

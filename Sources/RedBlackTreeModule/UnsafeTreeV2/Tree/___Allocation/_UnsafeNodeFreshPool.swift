@@ -46,7 +46,7 @@ where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
 }
 
 extension _UnsafeNodeFreshPool {
-  public typealias _Bucket = UnsafeNodeFreshBucket
+  public typealias _Bucket = _UnsafeNodeFreshBucket
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 }
 
@@ -286,7 +286,7 @@ extension _UnsafeNodeFreshPool {
       alignment: alignment)
     
     let header = UnsafeMutableRawPointer(header_storage)
-      .assumingMemoryBound(to: UnsafeNodeFreshBucket.self)
+      .assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
     
     let storage = UnsafeMutableRawPointer(header.advanced(by: 1))
 //      .alignedUp(toMultipleOf: alignment)
@@ -326,7 +326,7 @@ extension _UnsafeNodeFreshPool {
     let a0 = MemoryLayout<UnsafeNode>.alignment
     let s1 = MemoryLayout<_Value>.stride
     let a1 = MemoryLayout<_Value>.alignment
-    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
+    let s2 = MemoryLayout<_UnsafeNodeFreshBucket>.stride
     let s01 = s0 + s1
     let offset01 = max(0, a1 - a0)
     let size = s2 + (capacity == 0 ? 0 : s01 * capacity + offset01)
@@ -422,8 +422,8 @@ extension _UnsafeNodeFreshPool {
     let a0 = MemoryLayout<UnsafeNode>.alignment
     let s1 = MemoryLayout<_Value>.stride
     let a1 = MemoryLayout<_Value>.alignment
-    let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
-    let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
+    let s2 = MemoryLayout<_UnsafeNodeFreshBucket>.stride
+    let a2 = MemoryLayout<_UnsafeNodeFreshBucket>.alignment
     let s01 = s0 + s1
     let offset01 = max(0, a1 - a0)
     return (s2 + (capacity == 0 ? 0 : s01 * capacity + offset01), max(a0, a1))

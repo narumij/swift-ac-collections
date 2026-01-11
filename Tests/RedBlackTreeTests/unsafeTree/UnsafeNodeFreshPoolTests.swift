@@ -197,7 +197,7 @@ import XCTest
         
         do {
           let diff = Raw(bucket.pointee.start) - Raw(bucket)
-          let minimum = MemoryLayout<UnsafeNodeFreshBucket>.stride
+          let minimum = MemoryLayout<_UnsafeNodeFreshBucket>.stride
           let maximum = minimum + max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
           XCTAssertLessThanOrEqual(minimum, maximum)
           XCTAssertLessThanOrEqual(minimum, diff)
@@ -225,7 +225,7 @@ import XCTest
         
         do {
           let stride = (
-            bucket: MemoryLayout<UnsafeNodeFreshBucket>.stride,
+            bucket: MemoryLayout<_UnsafeNodeFreshBucket>.stride,
             element: MemoryLayout<_Value>.stride + MemoryLayout<UnsafeNode>.stride)
           let minimum = 0
           let maximum = max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
@@ -263,7 +263,7 @@ import XCTest
         
         do {
           let diff = Raw(bucket.pointee.start) - Raw(bucket)
-          let minimum = MemoryLayout<UnsafeNodeFreshBucket>.stride
+          let minimum = MemoryLayout<_UnsafeNodeFreshBucket>.stride
           let maximum = minimum + max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
           XCTAssertLessThanOrEqual(minimum, maximum)
           XCTAssertLessThanOrEqual(minimum, diff)
@@ -292,7 +292,7 @@ import XCTest
         
         do {
           let stride = (
-            bucket: MemoryLayout<UnsafeNodeFreshBucket>.stride,
+            bucket: MemoryLayout<_UnsafeNodeFreshBucket>.stride,
             element: MemoryLayout<_Value>.stride + MemoryLayout<UnsafeNode>.stride)
           let minimum = 0
           let maximum = max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
@@ -330,7 +330,7 @@ import XCTest
         
         do {
           let diff = Raw(bucket.pointee.start) - Raw(bucket)
-          let minimum = MemoryLayout<UnsafeNodeFreshBucket>.stride
+          let minimum = MemoryLayout<_UnsafeNodeFreshBucket>.stride
           let maximum = minimum + max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
           XCTAssertLessThanOrEqual(minimum, maximum)
           XCTAssertLessThanOrEqual(minimum, diff)
@@ -359,7 +359,7 @@ import XCTest
         
         do {
           let stride = (
-            bucket: MemoryLayout<UnsafeNodeFreshBucket>.stride,
+            bucket: MemoryLayout<_UnsafeNodeFreshBucket>.stride,
             element: MemoryLayout<_Value>.stride + MemoryLayout<UnsafeNode>.stride)
           let minimum = 0
           let maximum = max(0, MemoryLayout<_Value>.alignment - MemoryLayout<UnsafeNode>.alignment)
@@ -373,7 +373,7 @@ import XCTest
         XCTAssertEqual(
           Raw(bucket)
             .advanced(by:
-                        MemoryLayout<UnsafeNodeFreshBucket>.stride +
+                        MemoryLayout<_UnsafeNodeFreshBucket>.stride +
                       capacity * (MemoryLayout<_Value>.stride + MemoryLayout<UnsafeNode>.stride)
                       + max(0, MemoryLayout<UnsafeNode>.alignment - MemoryLayout<_Value>.alignment))
           - Raw(p), 0)

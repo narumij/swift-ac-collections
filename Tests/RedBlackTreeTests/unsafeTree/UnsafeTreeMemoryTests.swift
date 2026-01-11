@@ -32,7 +32,7 @@ final class UnsafeTreeMemoryTests: XCTestCase {
     XCTAssertLessThanOrEqual(MemoryLayout<UnsafeTreeV2Buffer<Int>.Header>.size, 64)
 #endif
     XCTAssertLessThanOrEqual(MemoryLayout<UnsafeNode>.size, 64)
-    XCTAssertLessThanOrEqual(MemoryLayout<UnsafeNodeFreshBucket>.size, 64)
+    XCTAssertLessThanOrEqual(MemoryLayout<_UnsafeNodeFreshBucket>.size, 64)
   }
 
   func testStride() throws {

@@ -150,6 +150,17 @@ let package = Package(
       swiftSettings: _settings
     ),
     .executableTarget(
+      name: "Benchmark3",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Benchmarks/Benchmark3",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
       name: "Executable",
       dependencies: [
         //         .product(name: "Collections", package: "swift-collections"),

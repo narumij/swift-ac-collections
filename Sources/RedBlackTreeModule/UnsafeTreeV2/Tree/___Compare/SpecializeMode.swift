@@ -43,6 +43,7 @@ enum SpecializeMode {
     
     /*
      Swift 6.2.3で以下のようにコンパイルされ、これは理想的なので変な特殊化をしないことにした
+     (ストア済みだからいいんだろうけど、cmp二個なのがあとで気になってきた)
      
      ; specialized __default_three_way_comparator<A>(_:_:)
      +0x00  cmp                 x1, x0

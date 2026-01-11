@@ -34,7 +34,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal func withMutableHeaderBody<R>(
+  internal func withMutables<R>(
     _ body: (
       inout UnsafeTreeV2Buffer<_Value>.Header,
       inout UnsafeTreeV2Origin

@@ -52,8 +52,10 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   ) {
     self._buffer = _buffer
     self.isReadOnly = isReadOnly
-    self.nullptr = _buffer.withUnsafeMutablePointerToElements { $0[0].nullptr }
-    self.end = _buffer.withUnsafeMutablePointerToElements { $0[0].end_ptr }
+    let origin = _buffer.withUnsafeMutablePointerToElements { $0 }
+    self.nullptr = origin.pointee.nullptr
+    self.end = origin.pointee.end_ptr
+    self.origin = origin
   }
 
   public typealias Base = Base
@@ -73,10 +75,13 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @usableFromInline
   let isReadOnly: Bool
+  
+  @usableFromInline
+  let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
 }
 
 extension UnsafeTreeV2 {
-
+  
   @inlinable
   public var count: Int { _buffer.header.count }
 
@@ -174,7 +179,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
+  internal func __copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
     assert(check())
     // 予定サイズを確定させる
     let newCapacity = max(minimumCapacity ?? 0, initializedCount)
@@ -256,6 +261,100 @@ extension UnsafeTreeV2 {
           _header_ptr.pointee.copyCount = source_header.pointee.copyCount &+ 1
         #endif
       }
+    }
+
+    assert(equiv(with: tree))
+    assert(tree.check())
+
+    return tree
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
+
+    assert(check())
+    // 予定サイズを確定させる
+    let newCapacity = max(minimumCapacity ?? 0, initializedCount)
+
+    //    return withMutables { source_header, source_origin in
+    // 予定サイズの木を作成する
+    let tree = UnsafeTreeV2.___create(minimumCapacity: newCapacity, nullptr: nullptr)
+    // freshPool内のfreshBucketは0〜1個となる
+    // CoW後の性能維持の為、freshBucket数は1を越えないこと
+    // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる
+    #if DEBUG
+      assert(tree._buffer.header.freshBucketCount <= 1)
+    #endif
+
+    let source_header = _buffer.header
+    let source_origin = origin.pointee
+
+    tree.withMutables { new_header, new_origin in
+
+      let source_begin = source_origin.begin_ptr
+      let source_end = source_origin.end_ptr
+
+      let _end_ptr = new_origin.end_ptr
+
+      @inline(__always)
+      func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
+        let index = ptr.pointee.___node_id_
+        return switch index {
+        case .nullptr:
+          nullptr
+        case .end:
+          _end_ptr
+        default:
+          new_header[index]
+        }
+      }
+
+      @inline(__always)
+      func node(_ s: UnsafeNode) -> UnsafeNode {
+        // 値は別途管理
+        return .init(
+          ___node_id_: s.___node_id_,
+          __left_: __ptr_(s.__left_),
+          __right_: __ptr_(s.__right_),
+          __parent_: __ptr_(s.__parent_),
+          __is_black_: s.__is_black_,
+          ___needs_deinitialize: s.___needs_deinitialize)
+      }
+
+      var source_nodes = source_header.makeFreshPoolIterator()
+
+      while let s = source_nodes.next(), let d = new_header.popFresh() {
+        // ノードを初期化
+        d.initialize(to: node(s.pointee))
+        // 値を初期化
+        if s.pointee.___needs_deinitialize {
+          UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
+        }
+      }
+
+      // ルートノードを設定
+      _end_ptr.pointee.__left_ = __ptr_(source_end.pointee.__left_)
+
+      // __begin_nodeを初期化
+      new_origin.begin_ptr = __ptr_(source_begin)
+
+      // その他管理情報をコピー
+      //#if USE_FRESH_POOL_V1
+      #if !USE_FRESH_POOL_V2
+        new_header.freshPoolUsedCount = source_header.freshPoolUsedCount
+      #endif
+      new_header.count = source_header.count
+      new_header.recycleHead = __ptr_(source_header.recycleHead)
+      //        assert(
+      //          _header_ptr.pointee.recycleHead.pointee.___node_id_
+      //            == source_header.pointee.recycleHead.pointee.___node_id_)
+
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        new_header.copyCount = source_header.copyCount &+ 1
+      #endif
+      //      }
+
     }
 
     assert(equiv(with: tree))

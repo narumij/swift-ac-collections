@@ -138,12 +138,14 @@ extension UnsafeTreeV2 {
   public var __begin_node_: _NodePtr {
 
     @inline(__always) get {
-      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr }
+//      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr }
+      origin.pointee.begin_ptr
     }
 
     @inline(__always)
     nonmutating set {
-      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr = newValue }
+      origin.pointee.begin_ptr = newValue
+//      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr = newValue }
     }
   }
 }
@@ -184,9 +186,10 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func __root_ptr() -> _NodeRef {
-    _buffer.withUnsafeMutablePointerToElements {
-      withUnsafeMutablePointer(to: &$0.pointee.end_node.__left_) { $0 }
-    }
+    withUnsafeMutablePointer(to: &origin.pointee.end_node.__left_) { $0 }
+//    _buffer.withUnsafeMutablePointerToElements {
+//      withUnsafeMutablePointer(to: &$0.pointee.end_node.__left_) { $0 }
+//    }
   }
 }
 

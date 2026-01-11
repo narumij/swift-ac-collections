@@ -41,6 +41,11 @@ public struct UnsafeTreeV2Origin {
     end_node.__right_ = nullptr
     end_node.__parent_ = nullptr
   }
+  @inlinable
+  var __root: _NodePtr {
+    get { end_ptr.pointee.__left_ }
+    set { end_ptr.pointee.__left_ = newValue }
+  }
 }
 
 public struct UnsafeTreeV2<Base: ___TreeBase> {
@@ -75,13 +80,13 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @usableFromInline
   let isReadOnly: Bool
-  
+
   @usableFromInline
   let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
 }
 
 extension UnsafeTreeV2 {
-  
+
   @inlinable
   public var count: Int { _buffer.header.count }
 
@@ -273,49 +278,49 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
 
+    // 番号の抜けが発生してるケースがあり、それは再利用プールにノードがいるケース
+    // その部分までコピーする必要があり、初期化済み数でのコピーとなる
     let initializedCount = initializedCount
-    
+
     assert(check())
     // 予定サイズを確定させる
     let newCapacity = max(minimumCapacity ?? 0, initializedCount)
 
-    //    return withMutables { source_header, source_origin in
     // 予定サイズの木を作成する
     let tree = UnsafeTreeV2.___create(minimumCapacity: newCapacity, nullptr: nullptr)
+
     // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
     // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる
     #if DEBUG
       assert(tree._buffer.header.freshBucketCount <= 1)
     #endif
-    
-    if initializedCount == 0 {
+
+    // 空の場合、そのまま返す
+    if count == 0 {
       return tree
     }
 
-    let source_header = _buffer.header
-    let source_origin = origin.pointee
+    let header = _buffer.header
+    let source = origin.pointee
 
-    tree.withMutables { new_header, new_origin in
+    tree.withMutables { newHeader, newOrigin in
 
-      let source_begin = source_origin.begin_ptr
-      let source_end = source_origin.end_ptr
+      // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
+      let bucket = newHeader.freshBucketHead!.pointee
 
-      let _end_ptr = new_origin.end_ptr
-
+      /// 同一番号の新ノードを取得する内部ユーティリティ
       @inline(__always)
       func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
         let index = ptr.pointee.___node_id_
         return switch index {
-        case .nullptr:
-          nullptr
-        case .end:
-          _end_ptr
-        default:
-          new_header[index]
+        case .nullptr: nullptr
+        case .end: newOrigin.end_ptr
+        default: bucket[index]
         }
       }
 
+      /// ノードを新ノードで再構築する内部ユーティリティ
       @inline(__always)
       func node(_ s: UnsafeNode) -> UnsafeNode {
         // 値は別途管理
@@ -328,39 +333,36 @@ extension UnsafeTreeV2 {
           ___needs_deinitialize: s.___needs_deinitialize)
       }
 
-      var source_nodes = source_header.makeFreshPoolIterator()
+      // 旧ノードを列挙する準備
+      var nodes = header.makeFreshPoolIterator()
 
-      while let s = source_nodes.next(), let d = new_header.popFresh() {
-        // ノードを初期化
+      // ノード番号順に利用歴があるノード全てについて移行作業を行う
+      while let s = nodes.next(), let d = newHeader.popFresh() {
+        // ノードを初期化する
         d.initialize(to: node(s.pointee))
-        // 値を初期化
+        // 必要な場合、値を初期化する
         if s.pointee.___needs_deinitialize {
           UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
         }
       }
 
       // ルートノードを設定
-      _end_ptr.pointee.__left_ = __ptr_(source_end.pointee.__left_)
+      newOrigin.__root = __ptr_(source.__root)
 
       // __begin_nodeを初期化
-      new_origin.begin_ptr = __ptr_(source_begin)
+      newOrigin.begin_ptr = __ptr_(source.begin_ptr)
 
       // その他管理情報をコピー
       //#if USE_FRESH_POOL_V1
       #if !USE_FRESH_POOL_V2
-        new_header.freshPoolUsedCount = source_header.freshPoolUsedCount
+        newHeader.freshPoolUsedCount = header.freshPoolUsedCount
       #endif
-      new_header.count = source_header.count
-      new_header.recycleHead = __ptr_(source_header.recycleHead)
-      //        assert(
-      //          _header_ptr.pointee.recycleHead.pointee.___node_id_
-      //            == source_header.pointee.recycleHead.pointee.___node_id_)
+      newHeader.count = header.count
+      newHeader.recycleHead = __ptr_(header.recycleHead)
 
       #if AC_COLLECTIONS_INTERNAL_CHECKS
-        new_header.copyCount = source_header.copyCount &+ 1
+        newHeader.copyCount = header.copyCount &+ 1
       #endif
-      //      }
-
     }
 
     assert(equiv(with: tree))

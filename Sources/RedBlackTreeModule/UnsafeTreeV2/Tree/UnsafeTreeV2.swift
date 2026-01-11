@@ -226,7 +226,11 @@ extension UnsafeTreeV2 {
     tree.withMutables { newHeader, newOrigin in
 
       // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
+      #if !USE_FRESH_POOL_V2
       let bucket = newHeader.freshBucketHead!.pointee
+      #else
+      let bucket = newHeader.freshPool.pointers!
+      #endif
 
       /// 同一番号の新ノードを取得する内部ユーティリティ
       @inline(__always)

@@ -20,6 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+@frozen
 public struct UnsafeTreeV2Origin: UnsafeTreePointer {
   @usableFromInline let nullptr: _NodePtr
   @usableFromInline var begin_ptr: _NodePtr

@@ -22,6 +22,7 @@
 
 // 最初に作ったヘルパー
 // 他にもinstantiateを避ける工夫をしていたが迷子になったので途中だが止めている
+@frozen
 public enum UnsafePair<_Value> {
 
   public typealias Pointer = UnsafePointer<UnsafeNode>

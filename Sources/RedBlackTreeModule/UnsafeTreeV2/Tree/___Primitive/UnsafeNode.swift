@@ -108,6 +108,7 @@
 ///    - このレイアウトを保証しているアロケータを更新せずに、
 ///      `UnsafeNode` のサイズやフィールド順序を変更してはならない。
 ///
+@frozen
 public struct UnsafeNode {
 
   public typealias Pointer = UnsafeMutablePointer<UnsafeNode>

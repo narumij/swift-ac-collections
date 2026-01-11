@@ -21,8 +21,6 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public struct UnsafeTreeV2Origin: UnsafeTreePointer {
-//  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-//  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   @usableFromInline let nullptr: _NodePtr
   @usableFromInline var begin_ptr: _NodePtr
   @usableFromInline let end_ptr: _NodePtr

@@ -52,17 +52,18 @@ extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
   //#if USE_FRESH_POOL_V1
   #if !USE_FRESH_POOL_V2
     //extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
-    // extension UnsafeTreeV2: UnsafeTreeAllcation3 {}
-    // extension UnsafeTreeV2: UnsafeTreeAllcation4 {}
-    //extension UnsafeTreeV2: UnsafeTreeAllcation5 {}
-    //extension UnsafeTreeV2: UnsafeTreeAllcation6 {} // 1.5
-    //extension UnsafeTreeV2: UnsafeTreeAllcation6_7 { // 1.125
-    //  // https://atcoder.jp/contests/abc411/submissions/72291000
-    //}
-    extension UnsafeTreeV2: UnsafeTreeAllcation6_9 {
-      // https://atcoder.jp/contests/abc411/submissions/72391453
-    }  // 1.25
-  //extension UnsafeTreeV2: UnsafeTreeAllcation6_8 {}
+    extension UnsafeTreeV2: UnsafeTreeAllcation3 {}  // 2.0
+  //extension UnsafeTreeV2: UnsafeTreeAllcation4 {}
+  //extension UnsafeTreeV2: UnsafeTreeAllcation5 {}
+  //extension UnsafeTreeV2: UnsafeTreeAllcation6 {} // 1.5
+  //extension UnsafeTreeV2: UnsafeTreeAllcation6_7 { // 1.125
+  //  // https://atcoder.jp/contests/abc411/submissions/72291000
+  //}
+
+  //extension UnsafeTreeV2: UnsafeTreeAllcation6_9 { // 1.25
+  //  // https://atcoder.jp/contests/abc411/submissions/72391453
+  //}
+  //  extension UnsafeTreeV2: UnsafeTreeAllcation6_8 {} // 1.0125
   //extension UnsafeTreeV2: UnsafeTreeAllcation7 {}
   #else
     extension UnsafeTreeV2: UnsafeTreeAllcation6_9 {}

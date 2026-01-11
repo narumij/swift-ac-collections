@@ -25,6 +25,7 @@ for count in (0..<limit).filter({ $0 % 2 == 1 }).map({ 1 << $0 }) {
 }
 
 #if false
+#if false
 for count in (0..<limit).filter({ $0 % 2 == 1 }).map({ 1 << $0 }) {
   let x = 16
   benchmark("reserveCapacity \(count) x \(x)") {
@@ -77,5 +78,6 @@ do {
     }
   }
 }
+#endif
 
 Benchmark.main()

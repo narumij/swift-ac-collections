@@ -324,10 +324,6 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
-    // TODO: 方式再検討
-    //    p != end && p?.pointee.__parent_ == nil
-    // これがなぜ動かないのかわからない
-    // 再利用時のフラグ設定漏れだった
     p.pointee.___needs_deinitialize != true
   }
 }

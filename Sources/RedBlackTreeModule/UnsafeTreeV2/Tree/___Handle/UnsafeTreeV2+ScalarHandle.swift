@@ -74,13 +74,13 @@ extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
   @inline(__always)
-  func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __eager_compare_result {
+  func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
     specializeMode.synth_three_way(__lhs, __rhs)
   }
 
   @inlinable
   @inline(__always)
-  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __eager_compare_result {
+  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
     specializeMode.synth_three_way(__lhs, __rhs)
   }
 }
@@ -98,7 +98,7 @@ extension UnsafeTreeV2ScalarHandle {
 
 extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase {}
 
-extension UnsafeTreeV2ScalarHandle: BoundProtocol, BoundAlgorithmProtocol_old {}
+extension UnsafeTreeV2ScalarHandle: BoundProtocol, BoundAlgorithmProtocol {}
 extension UnsafeTreeV2ScalarHandle: FindProtocol {}
 extension UnsafeTreeV2ScalarHandle: FindEqualProtocol, FindEqualProtocol_std {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol {}
@@ -106,3 +106,44 @@ extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol {}
 extension UnsafeTreeV2ScalarHandle: RemoveProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
+
+extension UnsafeTreeV2ScalarHandle {
+  
+#if false
+  @inlinable
+  @inline(__always)
+  internal func
+    __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+  {
+    var __nd = __root
+    if __nd == nullptr {
+      return (__end_node, __left_ref(end))
+    }
+    var __nd_ptr = __root_ptr()
+    let __comp = __lazy_synth_three_way_comparator
+
+    while true {
+
+      let __comp_res = __comp(__v, __get_value(__nd))
+
+      if __comp_res.__less() {
+        if __left_unsafe(__nd) == nullptr {
+          return (__nd, __left_ref(__nd))
+        }
+
+        __nd_ptr = __left_ref(__nd)
+        __nd = __left_unsafe(__nd)
+      } else if __comp_res.__greater() {
+        if __right_(__nd) == nullptr {
+          return (__nd, __right_ref(__nd))
+        }
+
+        __nd_ptr = __right_ref(__nd)
+        __nd = __right_(__nd)
+      } else {
+        return (__nd, __nd_ptr)
+      }
+    }
+  }
+#endif
+}

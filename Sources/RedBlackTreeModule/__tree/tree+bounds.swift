@@ -46,8 +46,7 @@ extension BoundProtocol {
 }
 
 @usableFromInline
-protocol BoundAlgorithmProtocol: BoundAlgorithmProtocol_common & ThreeWayComparatorProtocol
-{}
+protocol BoundAlgorithmProtocol: BoundAlgorithmProtocol_common & ThreeWayComparatorProtocol {}
 
 extension BoundAlgorithmProtocol {
 
@@ -78,24 +77,23 @@ extension BoundAlgorithmProtocol {
   @inlinable
   @inline(__always)
   internal func __lower_bound_unique(_ __v: _Key) -> _NodePtr {
-    #if false
-      // Benchmarkで速度低下がみられるので、一旦保留
-      // 最適化不足かとおもってlower bound専用を試したが変わらなかった
-      __lower_upper_bound_unique_impl(_LowerBound: true, __v)
-    #else
-      __lower_bound_multi(__v, __root, __end_node)
-    #endif
+    /*
+     三方比較が、Swift 6.2.3で以下のようにコンパイルされているのを確認したため、新しい方を利用することにした
+    
+     ; specialized __default_three_way_comparator<A>(_:_:)
+     +0x00  cmp                 x1, x0
+     +0x04  cset                w8, lt
+     +0x08  cmp                 x0, x1
+     +0x0c  csinv               x0, x8, xzr, ge
+     +0x10  ret
+     */
+    __lower_upper_bound_unique_impl(_LowerBound: true, __v)
   }
 
   @inlinable
   @inline(__always)
   internal func __upper_bound_unique(_ __v: _Key) -> _NodePtr {
-    #if false
-      // Benchmarkで速度低下がみられるので、一旦保留
-      __lower_upper_bound_unique_impl(_LowerBound: false, __v)
-    #else
-      __upper_bound_multi(__v, __root, __end_node)
-    #endif
+    __lower_upper_bound_unique_impl(_LowerBound: false, __v)
   }
 
   @inlinable
@@ -152,7 +150,6 @@ extension BoundAlgorithmProtocol_common {
     return __result
   }
 }
-
 
 @usableFromInline
 protocol BoundAlgorithmProtocol_old: BoundAlgorithmProtocol_common {}

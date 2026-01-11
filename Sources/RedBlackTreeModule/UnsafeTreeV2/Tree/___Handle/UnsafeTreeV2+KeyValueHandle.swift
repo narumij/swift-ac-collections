@@ -79,13 +79,13 @@ extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
   @inline(__always)
-  func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __eager_compare_result {
+  func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
     specializeMode.synth_three_way(__lhs, __rhs)
   }
 
   @inlinable
   @inline(__always)
-  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __eager_compare_result {
+  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
     specializeMode.synth_three_way(__lhs, __rhs)
   }
 }
@@ -103,7 +103,7 @@ extension UnsafeTreeV2KeyValueHandle {
 
 extension UnsafeTreeV2KeyValueHandle: UnsafeTreeHandleBase {}
 
-extension UnsafeTreeV2KeyValueHandle: BoundProtocol, BoundAlgorithmProtocol_old {}
+extension UnsafeTreeV2KeyValueHandle: BoundProtocol, BoundAlgorithmProtocol {}
 extension UnsafeTreeV2KeyValueHandle: FindProtocol {}
 extension UnsafeTreeV2KeyValueHandle: FindEqualProtocol, FindEqualProtocol_std {}
 extension UnsafeTreeV2KeyValueHandle: InsertNodeAtProtocol {}
@@ -111,3 +111,7 @@ extension UnsafeTreeV2KeyValueHandle: InsertUniqueProtocol {}
 extension UnsafeTreeV2KeyValueHandle: RemoveProtocol {}
 extension UnsafeTreeV2KeyValueHandle: EraseProtocol {}
 extension UnsafeTreeV2KeyValueHandle: EraseUniqueProtocol {}
+
+extension UnsafeTreeV2KeyValueHandle {
+  
+}

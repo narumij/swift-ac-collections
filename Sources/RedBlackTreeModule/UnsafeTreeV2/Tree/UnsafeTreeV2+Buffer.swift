@@ -90,12 +90,12 @@ extension UnsafeTreeV2Buffer {
     //#if USE_FRESH_POOL_V1
     #if !USE_FRESH_POOL_V2
       @usableFromInline let nullptr: _NodePtr
-      @usableFromInline var freshBucketCurrent: ReserverHeaderPointer?
+      @usableFromInline var freshBucketCurrent: BucketPointer?
       @usableFromInline var freshPoolCapacity: Int = 0
       @usableFromInline var freshPoolUsedCount: Int = 0
       @usableFromInline var recycleHead: _NodePtr
-      @usableFromInline var freshBucketHead: ReserverHeaderPointer?
-      @usableFromInline var freshBucketLast: ReserverHeaderPointer?
+      @usableFromInline var freshBucketHead: BucketPointer?
+      @usableFromInline var freshBucketLast: BucketPointer?
       @usableFromInline var count: Int = 0
       #if DEBUG
         @usableFromInline var freshBucketCount: Int = 0

@@ -33,9 +33,9 @@ where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
    */
   
   associatedtype _NodePtr
-  var freshBucketHead: ReserverHeaderPointer? { get set }
-  var freshBucketCurrent: ReserverHeaderPointer? { get set }
-  var freshBucketLast: ReserverHeaderPointer? { get set }
+  var freshBucketHead: BucketPointer? { get set }
+  var freshBucketCurrent: BucketPointer? { get set }
+  var freshBucketLast: BucketPointer? { get set }
   var freshPoolCapacity: Int { get set }
   var freshPoolUsedCount: Int { get set }
   var count: Int { get set }
@@ -47,7 +47,7 @@ where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
 
 extension UnsafeNodeFreshPool {
   public typealias Bucket = UnsafeNodeFreshBucket
-  public typealias ReserverHeaderPointer = UnsafeMutablePointer<Bucket>
+  public typealias BucketPointer = UnsafeMutablePointer<Bucket>
 }
 
 //#if USE_FRESH_POOL_V1
@@ -245,7 +245,7 @@ extension UnsafeNodeFreshPool {
   
   @inlinable
   @inline(__always)
-  static func deinitializeNodes(_ p: ReserverHeaderPointer) {
+  static func deinitializeNodes(_ p: BucketPointer) {
     let bucket = p.pointee
     var i = 0
     let count = bucket.count
@@ -275,7 +275,7 @@ extension UnsafeNodeFreshPool {
   
   @inlinable
   @inline(__always)
-  static func createBucket(capacity: Int) -> (ReserverHeaderPointer, capacity: Int) {
+  static func createBucket(capacity: Int) -> (BucketPointer, capacity: Int) {
     
     assert(capacity != 0)
     

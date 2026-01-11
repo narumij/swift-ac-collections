@@ -20,8 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public struct UnsafeTreeV2Origin {
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+public struct UnsafeTreeV2Origin: UnsafeTreePointer {
   @usableFromInline let nullptr: _NodePtr
   @usableFromInline var begin_ptr: _NodePtr
   @usableFromInline let end_ptr: _NodePtr
@@ -38,8 +37,21 @@ public struct UnsafeTreeV2Origin {
   mutating func clear() {
     begin_ptr = end_ptr
     end_node.__left_ = nullptr
-    end_node.__right_ = nullptr
-    end_node.__parent_ = nullptr
+    #if DEBUG
+      end_node.__right_ = nullptr
+      end_node.__parent_ = nullptr
+    #endif
+  }
+  @inlinable
+  @inline(__always)
+  var __root: _NodePtr {
+    get { end_ptr.pointee.__left_ }
+    set { end_ptr.pointee.__left_ = newValue }
+  }
+  @inlinable
+  @inline(__always)
+  internal func __root_ptr() -> _NodeRef {
+    withUnsafeMutablePointer(to: &end_ptr.pointee.__left_) { $0 }
   }
 }
 
@@ -52,8 +64,10 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   ) {
     self._buffer = _buffer
     self.isReadOnly = isReadOnly
-    self.nullptr = _buffer.withUnsafeMutablePointerToElements { $0[0].nullptr }
-    self.end = _buffer.withUnsafeMutablePointerToElements { $0[0].end_ptr }
+    let origin = _buffer.withUnsafeMutablePointerToElements { $0 }
+    self.nullptr = origin.pointee.nullptr
+    self.end = origin.pointee.end_ptr
+    self.origin = origin
   }
 
   public typealias Base = Base
@@ -73,19 +87,22 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @usableFromInline
   let isReadOnly: Bool
+
+  @usableFromInline
+  let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
 }
 
 extension UnsafeTreeV2 {
 
   @inlinable
-  public var count: Int { _buffer.header.count }
+  public var count: Int { withHeader { $0.count } }
 
   #if !DEBUG
     @inlinable
-    public var capacity: Int { _buffer.header.freshPoolCapacity }
+    public var capacity: Int { withHeader { $0.freshPoolCapacity } }
 
     @inlinable
-    public var initializedCount: Int { _buffer.header.freshPoolUsedCount }
+    public var initializedCount: Int { withHeader { $0.freshPoolUsedCount } }
   #else
     @inlinable
     public var capacity: Int {
@@ -175,11 +192,18 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
+
+    // 番号の抜けが発生してるケースがあり、それは再利用プールにノードがいるケース
+    // その部分までコピーする必要があり、初期化済み数でのコピーとなる
+    let initializedCount = initializedCount
+
     assert(check())
     // 予定サイズを確定させる
     let newCapacity = max(minimumCapacity ?? 0, initializedCount)
+
     // 予定サイズの木を作成する
     let tree = UnsafeTreeV2.___create(minimumCapacity: newCapacity, nullptr: nullptr)
+
     // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
     // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる
@@ -187,75 +211,73 @@ extension UnsafeTreeV2 {
       assert(tree._buffer.header.freshBucketCount <= 1)
     #endif
 
-    // 複数のバケットを新しい一つのバケットに連番通りにまとめ、その他管理情報をそのまま移す
-    // アドレスやバケット配置は変化するがそれ以外は変わらない状態となる
-    _buffer.withUnsafeMutablePointers { source_header, source_end in
+    #if AC_COLLECTIONS_INTERNAL_CHECKS
+      tree.withMutableHeader { $0.copyCount += 1 }
+    #endif
 
-      let source_begin = withUnsafeMutablePointer(to: &source_end.pointee.begin_ptr) { $0 }
-      let source_end = source_end.pointee.end_ptr
+    // 空の場合、そのまま返す
+    if count == 0 {
+      return tree
+    }
 
-      tree._buffer.withUnsafeMutablePointers { _header_ptr, _end_ptr in
+    let header = _buffer.header
+    let source = origin.pointee
 
-        let _begin_ptr = withUnsafeMutablePointer(to: &_end_ptr.pointee.begin_ptr) { $0 }
-        let _end_ptr = _end_ptr.pointee.end_ptr
+    tree.withMutables { newHeader, newOrigin in
 
-        @inline(__always)
-        func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
-          let index = ptr.pointee.___node_id_
-          return switch index {
-          case .nullptr:
-            nullptr
-          case .end:
-            _end_ptr
-          default:
-            _header_ptr.pointee[index]
-          }
+      // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
+      let bucket = newHeader.freshBucketHead!.pointee
+
+      /// 同一番号の新ノードを取得する内部ユーティリティ
+      @inline(__always)
+      func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
+        let index = ptr.pointee.___node_id_
+        return switch index {
+        case .nullptr: nullptr
+        case .end: newOrigin.end_ptr
+        default: bucket[index]
         }
-
-        @inline(__always)
-        func node(_ s: UnsafeNode) -> UnsafeNode {
-          // 値は別途管理
-          return .init(
-            ___node_id_: s.___node_id_,
-            __left_: __ptr_(s.__left_),
-            __right_: __ptr_(s.__right_),
-            __parent_: __ptr_(s.__parent_),
-            __is_black_: s.__is_black_,
-            ___needs_deinitialize: s.___needs_deinitialize)
-        }
-
-        var source_nodes = source_header.pointee.makeFreshPoolIterator()
-
-        while let s = source_nodes.next(), let d = _header_ptr.pointee.popFresh() {
-          // ノードを初期化
-          d.initialize(to: node(s.pointee))
-          // 値を初期化
-          if s.pointee.___needs_deinitialize {
-            UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
-          }
-        }
-
-        // ルートノードを設定
-        _end_ptr.pointee.__left_ = __ptr_(source_end.pointee.__left_)
-
-        // __begin_nodeを初期化
-        _begin_ptr.pointee = __ptr_(source_begin.pointee)
-
-        // その他管理情報をコピー
-        //#if USE_FRESH_POOL_V1
-        #if !USE_FRESH_POOL_V2
-          _header_ptr.pointee.freshPoolUsedCount = source_header.pointee.freshPoolUsedCount
-        #endif
-        _header_ptr.pointee.count = source_header.pointee.count
-        _header_ptr.pointee.recycleHead = __ptr_(source_header.pointee.recycleHead)
-        //        assert(
-        //          _header_ptr.pointee.recycleHead.pointee.___node_id_
-        //            == source_header.pointee.recycleHead.pointee.___node_id_)
-
-        #if AC_COLLECTIONS_INTERNAL_CHECKS
-          _header_ptr.pointee.copyCount = source_header.pointee.copyCount &+ 1
-        #endif
       }
+
+      /// ノードを新ノードで再構築する内部ユーティリティ
+      @inline(__always)
+      func node(_ s: UnsafeNode) -> UnsafeNode {
+        // 値は別途管理
+        return .init(
+          ___node_id_: s.___node_id_,
+          __left_: __ptr_(s.__left_),
+          __right_: __ptr_(s.__right_),
+          __parent_: __ptr_(s.__parent_),
+          __is_black_: s.__is_black_,
+          ___needs_deinitialize: s.___needs_deinitialize)
+      }
+
+      // 旧ノードを列挙する準備
+      var nodes = header.makeFreshPoolIterator()
+
+      // ノード番号順に利用歴があるノード全てについて移行作業を行う
+      while let s = nodes.next(), let d = newHeader.popFresh() {
+        // ノードを初期化する
+        d.initialize(to: node(s.pointee))
+        // 必要な場合、値を初期化する
+        if s.pointee.___needs_deinitialize {
+          UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
+        }
+      }
+
+      // ルートノードを設定
+      newOrigin.__root = __ptr_(source.__root)
+
+      // __begin_nodeを初期化
+      newOrigin.begin_ptr = __ptr_(source.begin_ptr)
+
+      // その他管理情報をコピー
+      newHeader.recycleHead = __ptr_(header.recycleHead)
+      newHeader.count = header.count
+      //#if USE_FRESH_POOL_V1
+      #if !USE_FRESH_POOL_V2
+        newHeader.freshPoolUsedCount = header.freshPoolUsedCount
+      #endif
     }
 
     assert(equiv(with: tree))
@@ -284,43 +306,13 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  // TODO: grow関連の名前が混乱気味なので整理する
-  @inlinable
-  @inline(__always)
-  public func ensureCapacity(_ newCapacity: Int) {
-    guard capacity < newCapacity else { return }
-    _buffer.withUnsafeMutablePointerToHeader {
-      $0.pointee.pushFreshBucket(capacity: newCapacity - capacity)
-    }
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  func clear() {
-    end.pointee.__left_ = nullptr
-    _buffer.withUnsafeMutablePointerToHeader {
-      $0.pointee.clear(_end_ptr: __end_node)
-    }
-    _buffer.withUnsafeMutablePointerToElements {
-      $0.pointee.clear()
-    }
-  }
-}
-
-// TODO: ここに配置するのが適切には思えない。配置場所を再考する
-extension UnsafeTreeV2 {
-
   /// O(1)
   @inlinable
   @inline(__always)
-  internal func __eraseAll() {
-    clear()
-    _buffer.withUnsafeMutablePointerToHeader {
-      $0.pointee.___flushRecyclePool()
-      $0.pointee.count = 0
+  internal func __eraseAll(keepingCapacity keepCapacity: Bool = false) {
+    withMutables { header, origin in
+      header.clear(keepingCapacity: keepCapacity)
+      origin.clear()
     }
   }
 }

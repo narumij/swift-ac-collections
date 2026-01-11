@@ -11,6 +11,9 @@ print("UNSAFE_TREE＿V2")
 print(Date.now)
 print()
 
+print("\(RedBlackTreeSet<Int>.buildInfo)")
+print()
+
 for count in [0, 32, 1024, 8192] {
   var fixture = Fixture<Int>(0..<count)
   benchmark("insert already presents \(count)") {

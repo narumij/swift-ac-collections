@@ -22,7 +22,8 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-protocol UnsafeNodeFreshPool where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
+protocol UnsafeNodeFreshPool: _ValueProtocol
+where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
   
   /*
    Design invariant:
@@ -31,7 +32,6 @@ protocol UnsafeNodeFreshPool where _NodePtr == UnsafeMutablePointer<UnsafeNode> 
    because index-based access is performed.
    */
   
-  associatedtype _Value
   associatedtype _NodePtr
   var freshBucketHead: ReserverHeaderPointer? { get set }
   var freshBucketCurrent: ReserverHeaderPointer? { get set }
@@ -101,7 +101,7 @@ extension UnsafeNodeFreshPool {
       reserverHead = h.pointee.next
     }
     freshPoolUsedCount = 0
-    count = 0
+    freshBucketCurrent = freshBucketHead
   }
 
   @inlinable
@@ -193,7 +193,8 @@ extension UnsafeNodeFreshPool {
     guard let p = popFresh() else {
       return nullptr
     }
-    assert(p.pointee.___node_id_ == .nullptr)
+    assert(p.pointee.___node_id_ == .debug)
+    UnsafeNode.bindValue(_Value.self, p)
     p.initialize(to: nullptr.create(id: freshPoolUsedCount))
     freshPoolUsedCount += 1
     count += 1
@@ -203,6 +204,18 @@ extension UnsafeNodeFreshPool {
 
 extension UnsafeNodeFreshPool {
 
+  @inlinable
+  @inline(__always)
+  var freshPoolActualCapacity: Int {
+    var count = 0
+    var p = freshBucketHead
+    while let h = p {
+      count += h.pointee.capacity
+      p = h.pointee.next
+    }
+    return count
+  }
+  
   @inlinable
   @inline(__always)
   var freshPoolActualCount: Int {
@@ -240,10 +253,11 @@ extension UnsafeNodeFreshPool {
     while i < count {
       let c = p
       p = UnsafePair<_Value>.advance(p)
-      if c.pointee.___needs_deinitialize {
-        UnsafeNode.deinitialize(_Value.self, c)
-      }
-      c.deinitialize(count: 1)
+      UnsafePair<_Value>.deinitialize(c)
+//      if c.pointee.___needs_deinitialize {
+//        UnsafeNode.deinitialize(_Value.self, c)
+//      }
+//      c.deinitialize(count: 1)
       i += 1
     }
 #if DEBUG
@@ -251,7 +265,7 @@ extension UnsafeNodeFreshPool {
       var c = 0
       var p = bucket.start
       while c < bucket.capacity {
-        p.pointee.___node_id_ = .nullptr
+        p.pointee.___node_id_ = .debug
         p = UnsafePair<_Value>.advance(p)
         c += 1
       }
@@ -290,7 +304,7 @@ extension UnsafeNodeFreshPool {
       var c = 0
       var p = header.pointee.start
       while c < capacity {
-        p.pointee.___node_id_ = .nullptr
+        p.pointee.___node_id_ = .debug
         p = UnsafePair<_Value>.advance(p)
         c += 1
       }

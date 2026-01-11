@@ -23,27 +23,30 @@
 import Foundation
 
 @usableFromInline
-protocol BoundProtocol: BoundAlgorithmProtocol & CompareTrait {}
+protocol BoundProtocol: TreePointer & _KeyProtocol & CompareTraitInstance {
+  func __lower_bound_unique(_ __v: _Key) -> _NodePtr
+  func __upper_bound_unique(_ __v: _Key) -> _NodePtr
+  func __lower_bound_multi(_ __v: _Key) -> _NodePtr
+  func __upper_bound_multi(_ __v: _Key) -> _NodePtr
+}
 
 extension BoundProtocol {
 
   @inlinable
   @inline(__always)
   internal func lower_bound(_ __v: _Key) -> _NodePtr {
-    Self.isMulti ? __lower_bound_multi(__v) : __lower_bound_unique(__v)
+    isMulti ? __lower_bound_multi(__v) : __lower_bound_unique(__v)
   }
 
   @inlinable
   @inline(__always)
   internal func upper_bound(_ __v: _Key) -> _NodePtr {
-    Self.isMulti ? __upper_bound_multi(__v) : __upper_bound_unique(__v)
+    isMulti ? __upper_bound_multi(__v) : __upper_bound_unique(__v)
   }
 }
 
 @usableFromInline
-protocol BoundAlgorithmProtocol: ValueProtocol & RootProtocol & EndNodeProtocol
-    & ThreeWayComparatorProtocol
-{}
+protocol BoundAlgorithmProtocol: BoundAlgorithmProtocol_common & ThreeWayComparatorProtocol {}
 
 extension BoundAlgorithmProtocol {
 
@@ -74,24 +77,23 @@ extension BoundAlgorithmProtocol {
   @inlinable
   @inline(__always)
   internal func __lower_bound_unique(_ __v: _Key) -> _NodePtr {
-    #if true
-      // Benchmarkで速度低下がみられるので、一旦保留
-      // 最適化不足かとおもってlower bound専用を試したが変わらなかった
-      __lower_upper_bound_unique_impl(_LowerBound: true, __v)
-    #else
-      __lower_bound_multi(__v, __root, __end_node)
-    #endif
+    /*
+     三方比較が、Swift 6.2.3で以下のようにコンパイルされているのを確認したため、新しい方を利用することにした
+    
+     ; specialized __default_three_way_comparator<A>(_:_:)
+     +0x00  cmp                 x1, x0
+     +0x04  cset                w8, lt
+     +0x08  cmp                 x0, x1
+     +0x0c  csinv               x0, x8, xzr, ge
+     +0x10  ret
+     */
+    __lower_upper_bound_unique_impl(_LowerBound: true, __v)
   }
 
   @inlinable
   @inline(__always)
   internal func __upper_bound_unique(_ __v: _Key) -> _NodePtr {
-    #if true
-      // Benchmarkで速度低下がみられるので、一旦保留
-      __lower_upper_bound_unique_impl(_LowerBound: false, __v)
-    #else
-      __upper_bound_multi(__v, __root, __end_node)
-    #endif
+    __lower_upper_bound_unique_impl(_LowerBound: false, __v)
   }
 
   @inlinable
@@ -105,6 +107,12 @@ extension BoundAlgorithmProtocol {
   internal func __upper_bound_multi(_ __v: _Key) -> _NodePtr {
     __upper_bound_multi(__v, __root, __end_node)
   }
+}
+
+@usableFromInline
+protocol BoundAlgorithmProtocol_common: ValueProtocol & RootProtocol & EndNodeProtocol {}
+
+extension BoundAlgorithmProtocol_common {
 
   @inlinable
   @inline(__always)
@@ -140,5 +148,35 @@ extension BoundAlgorithmProtocol {
       }
     }
     return __result
+  }
+}
+
+@usableFromInline
+protocol BoundAlgorithmProtocol_old: BoundAlgorithmProtocol_common {}
+
+extension BoundAlgorithmProtocol_old {
+
+  @inlinable
+  @inline(__always)
+  internal func __lower_bound_unique(_ __v: _Key) -> _NodePtr {
+    __lower_bound_multi(__v, __root, __end_node)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func __upper_bound_unique(_ __v: _Key) -> _NodePtr {
+    __upper_bound_multi(__v, __root, __end_node)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func __lower_bound_multi(_ __v: _Key) -> _NodePtr {
+    __lower_bound_multi(__v, __root, __end_node)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func __upper_bound_multi(_ __v: _Key) -> _NodePtr {
+    __upper_bound_multi(__v, __root, __end_node)
   }
 }

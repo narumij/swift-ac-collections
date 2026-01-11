@@ -1,4 +1,4 @@
-mkdir -p Tests/Executable/MarriedSource
+mkdir -p ./MarriedSource
 
 find ../../Sources/RedBlackTreeModule -name '*.swift' \
   | sort \

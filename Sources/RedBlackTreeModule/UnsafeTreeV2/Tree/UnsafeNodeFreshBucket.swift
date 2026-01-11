@@ -25,8 +25,8 @@
 @usableFromInline
 package struct UnsafeNodeFreshBucket {
 
-  public typealias Header = UnsafeNodeFreshBucket
-  public typealias HeaderPointer = UnsafeMutablePointer<Header>
+  public typealias Bucket = UnsafeNodeFreshBucket
+  public typealias BucketPointer = UnsafeMutablePointer<Bucket>
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
   @inlinable
@@ -42,13 +42,24 @@ package struct UnsafeNodeFreshBucket {
     self.stride = strice
     self.alignment = alignment
   }
-
+  
+  // 総量が64B以内となること
+  /// 利用数
   public var count: Int = 0
+  /// 保持数
   public let capacity: Int
+  /// 先頭ポインタ
   public let start: _NodePtr
+  /// UnsafeNodeと`_Value`のストライドの合算値
+  ///
+  /// 定数であるMemoryLayout.strideからとるのが常識的には速いが、
+  /// このケースではポインタ経由でのアクセスのためか、これをするとinstantiateが多発する
+  /// これを迂回するためにこちらで保持している
   public let stride: Int
+  /// UnsafeNodeと`_Value`のアライメントのうちどちらか大きい方
   public let alignment: Int
-  public var next: HeaderPointer? = nil
+  /// 次のバケットへのポインタ
+  public var next: BucketPointer? = nil
 
   @inlinable
   @inline(__always)

@@ -1,28 +1,30 @@
-// Copyright 2024-2026 narumij
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//  UnsafeTreeHandleBase.swift
+//  swift-ac-collections
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//  Created by narumij on 2026/01/10.
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
-//
-// Copyright © 2003-2025 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
-// The original license can be found at https://llvm.org/LICENSE.txt
-//
-// This Swift implementation includes modifications and adaptations made by narumij.
+
+@usableFromInline
+protocol UnsafeTreeHandleBase: TreeNodeProtocol & _TreeValue & UnsafeTreePointer {
+  var header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header> { get }
+  var origin: UnsafeMutablePointer<UnsafeTreeV2Origin> { get }
+}
+
+extension UnsafeTreeHandleBase {
+
+  @inlinable
+  @inline(__always)
+  public var nullptr: _NodePtr { origin.pointee.nullptr }
+
+  @inlinable
+  @inline(__always)
+  public var end: _NodePtr { origin.pointee.end_ptr }
+}
 
 // MARK: - TreeEndNodeProtocol
 
-extension UnsafeTreeV2: TreeEndNodeProtocol {
+extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
@@ -45,7 +47,7 @@ extension UnsafeTreeV2: TreeEndNodeProtocol {
 
 // MARK: - TreeNodeProtocol
 
-extension UnsafeTreeV2: TreeNodeProtocol {
+extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
@@ -92,7 +94,7 @@ extension UnsafeTreeV2: TreeNodeProtocol {
 
 // MARK: -
 
-extension UnsafeTreeV2: TreeNodeRefProtocol {
+extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
@@ -119,40 +121,27 @@ extension UnsafeTreeV2: TreeNodeRefProtocol {
   }
 }
 
-// MARK: - TreeNodeValueProtocol
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  func __get_value(_ p: _NodePtr) -> _Key {
-    Base.__key(UnsafePair<_Value>.valuePointer(p)!.pointee)
-  }
-}
-
 // MARK: - BeginNodeProtocol
 
-extension UnsafeTreeV2 {
+extension UnsafeTreeHandleBase {
 
   @inlinable
   public var __begin_node_: _NodePtr {
 
     @inline(__always) get {
-//      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr }
       origin.pointee.begin_ptr
     }
 
     @inline(__always)
     nonmutating set {
       origin.pointee.begin_ptr = newValue
-//      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr = newValue }
     }
   }
 }
 
 // MARK: - EndNodeProtocol
 
-extension UnsafeTreeV2 {
+extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
@@ -163,21 +152,21 @@ extension UnsafeTreeV2 {
 
 // MARK: - RootProtocol
 
-extension UnsafeTreeV2 {
+extension UnsafeTreeHandleBase {
 
   #if !DEBUG
     @nonobjc
     @inlinable
     @inline(__always)
     internal var __root: _NodePtr {
-      origin.pointee.__root
+      origin.pointee.end_node.__left_
     }
   #else
     @inlinable
     @inline(__always)
     internal var __root: _NodePtr {
-      get { origin.pointee.__root }
-      set { origin.pointee.__root = newValue }
+      get { end.pointee.__left_ }
+      set { end.pointee.__left_ = newValue }
     }
   #endif
 
@@ -186,18 +175,18 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func __root_ptr() -> _NodeRef {
-    origin.pointee.__root_ptr()
+    withUnsafeMutablePointer(to: &origin.pointee.end_node.__left_) { $0 }
   }
 }
 
 // MARK: - SizeProtocol
 
-extension UnsafeTreeV2 {
+extension UnsafeTreeHandleBase {
 
   @inlinable
   var __size_: Int {
     @inline(__always) get {
-      withHeader { $0.count }
+      header.pointee.count
     }
     nonmutating set {
       /* NOP */
@@ -207,68 +196,32 @@ extension UnsafeTreeV2 {
 
 // MARK: - AllocatorProtocol
 
-extension UnsafeTreeV2 {
+extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
   public func __construct_node(_ k: _Value) -> _NodePtr {
-    withMutableHeader {
-      $0.__construct_node(k)
-    }
+    header.pointee.__construct_node(k)
   }
 
   @inlinable
   @inline(__always)
   internal func destroy(_ p: _NodePtr) {
-    withMutableHeader {
-      $0.___pushRecycle(p)
-    }
+    header.pointee.___pushRecycle(p)
   }
 }
 
-extension UnsafeTreeV2 {
+extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
   internal func __value_(_ p: _NodePtr) -> _Value {
-    UnsafePair<Tree._Value>.valuePointer(p)!.pointee
+    UnsafePair<_Value>.valuePointer(p)!.pointee
   }
 
   @inlinable
   @inline(__always)
   internal func ___element(_ p: _NodePtr, _ __v: _Value) {
-    UnsafePair<Tree._Value>.valuePointer(p)!.pointee = __v
+    UnsafePair<_Value>.valuePointer(p)!.pointee = __v
   }
 }
-
-extension UnsafeTreeV2: ValueComparator {}
-extension UnsafeTreeV2: BoundProtocol {
-
-  @inlinable
-  @inline(__always)
-  public static var isMulti: Bool {
-    Base.isMulti
-  }
-
-  @inlinable
-  @inline(__always)
-  public var isMulti: Bool {
-    Base.isMulti
-  }
-}
-
-extension UnsafeTreeV2: FindProtocol {}
-extension UnsafeTreeV2: FindEqualProtocol, FindEqualProtocol_std {}
-extension UnsafeTreeV2: FindLeafProtocol {}
-extension UnsafeTreeV2: InsertNodeAtProtocol {}
-extension UnsafeTreeV2: InsertUniqueProtocol {}
-extension UnsafeTreeV2: InsertMultiProtocol {}
-extension UnsafeTreeV2: EqualProtocol {}
-extension UnsafeTreeV2: RemoveProtocol {}
-extension UnsafeTreeV2: EraseProtocol {}
-extension UnsafeTreeV2: EraseUniqueProtocol {}
-extension UnsafeTreeV2: EraseMultiProtocol {}
-extension UnsafeTreeV2: CompareBothProtocol {}
-extension UnsafeTreeV2: CountProtocol {}
-extension UnsafeTreeV2: InsertLastProtocol {}
-extension UnsafeTreeV2: CompareProtocol {}

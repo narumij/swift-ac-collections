@@ -21,14 +21,13 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeStorageProtocolV2: ___Root
+protocol ___UnsafeStorageProtocolV2: ___Root & _ValueProtocol
 where
   Base: ___TreeBase,
   Tree == UnsafeTreeV2<Base>,
   _Value == Tree._Value,
   _NodePtr == Tree._NodePtr
 {
-  associatedtype _Value
   associatedtype _NodePtr
   var __tree_: Tree { get set }
 }
@@ -94,11 +93,6 @@ extension ___UnsafeStorageProtocolV2 {
   @inline(__always)
   internal mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
 
-    if keepCapacity {
-      __tree_.__eraseAll()
-    } else {
-      __tree_ = .create(minimumCapacity: 0)
-    }
+    __tree_.__eraseAll(keepingCapacity: keepCapacity)
   }
 }
-

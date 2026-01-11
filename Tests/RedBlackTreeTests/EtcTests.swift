@@ -483,61 +483,61 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(result, [a.startIndex])
   }
 
-#if !USE_UNSAFE_TREE
-  func testSubRev6() throws {
-    let a = RedBlackTreeSet<Int>([0, 1, 2])
-    do {
-      var result = [_NodePtr]()
-      a[a.endIndex..<a.endIndex].reversed().___node_positions().forEach { i in
-        result.append(i.index)
+  #if !USE_UNSAFE_TREE
+    func testSubRev6() throws {
+      let a = RedBlackTreeSet<Int>([0, 1, 2])
+      do {
+        var result = [_NodePtr]()
+        a[a.endIndex..<a.endIndex].reversed().___node_positions().forEach { i in
+          result.append(i.index)
+        }
+        XCTAssertEqual(result, [])
       }
-      XCTAssertEqual(result, [])
-    }
-    do {
-      var result = [_NodePtr]()
-      a[a.endIndex..<a.endIndex].___node_positions().reversed().forEach { i in
-        result.append(i.index)
+      do {
+        var result = [_NodePtr]()
+        a[a.endIndex..<a.endIndex].___node_positions().reversed().forEach { i in
+          result.append(i.index)
+        }
+        XCTAssertEqual(result, [])
       }
-      XCTAssertEqual(result, [])
     }
-  }
-  
-  func testSubRev7() throws {
-    let a = RedBlackTreeSet<Int>([0, 1, 2])
-    do {
-      var result = [_NodePtr]()
-      a[a.startIndex..<a.startIndex].reversed().___node_positions().forEach { i in
-        result.append(i.index)
-      }
-      XCTAssertEqual(result, [])
-    }
-    do {
-      var result = [_NodePtr]()
-      a[a.startIndex..<a.startIndex].___node_positions().reversed().forEach { i in
-        result.append(i.index)
-      }
-      XCTAssertEqual(result, [])
-    }
-  }
 
-  func testSubRev8() throws {
-    let a = RedBlackTreeSet<Int>([0, 1, 2])
-    do {
-      var result = [_NodePtr]()
-      a[a.startIndex..<a.endIndex].reversed().___node_positions().forEach { i in
-        result.append(i.index)
+    func testSubRev7() throws {
+      let a = RedBlackTreeSet<Int>([0, 1, 2])
+      do {
+        var result = [_NodePtr]()
+        a[a.startIndex..<a.startIndex].reversed().___node_positions().forEach { i in
+          result.append(i.index)
+        }
+        XCTAssertEqual(result, [])
       }
-      XCTAssertEqual(result, [2, 1, 0])
-    }
-    do {
-      var result = [_NodePtr]()
-      a[a.startIndex..<a.endIndex].___node_positions().reversed().forEach { i in
-        result.append(i.index)
+      do {
+        var result = [_NodePtr]()
+        a[a.startIndex..<a.startIndex].___node_positions().reversed().forEach { i in
+          result.append(i.index)
+        }
+        XCTAssertEqual(result, [])
       }
-      XCTAssertEqual(result, [2, 1, 0])
     }
-  }
-#endif
+
+    func testSubRev8() throws {
+      let a = RedBlackTreeSet<Int>([0, 1, 2])
+      do {
+        var result = [_NodePtr]()
+        a[a.startIndex..<a.endIndex].reversed().___node_positions().forEach { i in
+          result.append(i.index)
+        }
+        XCTAssertEqual(result, [2, 1, 0])
+      }
+      do {
+        var result = [_NodePtr]()
+        a[a.startIndex..<a.endIndex].___node_positions().reversed().forEach { i in
+          result.append(i.index)
+        }
+        XCTAssertEqual(result, [2, 1, 0])
+      }
+    }
+  #endif
 
   func testSubRev9() throws {
     let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
@@ -790,7 +790,7 @@ final class EtcTests: RedBlackTreeTestCase {
       XCTAssertEqual(result, [2, 1, 0].map { a.startIndex + $0 })
     }
   }
-  
+
   static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
     typealias _Value = Int
     let (bufferSize, bufferAlignment) = UnsafePair<_Value>.allocationSize(capacity: capacity)
@@ -815,8 +815,8 @@ final class EtcTests: RedBlackTreeTestCase {
     let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
     let s01 = s0 + s1
     let o01 = a1 <= a0 ? 0 : a1 - a0
-    let o012 = max(a1,a0) <= a2 ? 0 : max(a0,a1) - a2
-    return (s2 + s01 * capacity + o01 + o012, max(a0,a1,a2))
+    let o012 = max(a1, a0) <= a2 ? 0 : max(a0, a1) - a2
+    return (s2 + s01 * capacity + o01 + o012, max(a0, a1, a2))
   }
 
   static func allocationCapacity(size: Int) -> Int {
@@ -829,9 +829,9 @@ final class EtcTests: RedBlackTreeTestCase {
     let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
     let s01 = s0 + s1
     let o01 = a0 <= a1 ? 0 : a0 - a1
-    return a2 <= max(a1,a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1,a0)) / s01
+    return a2 <= max(a1, a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1, a0)) / s01
   }
-  
+
   static func pagedCapacity(capacity: Int) -> Int {
     let size = Self.allocationSize2(capacity: capacity).size
     let pagedSize = ((size >> 10) + 1) << 10
@@ -846,46 +846,45 @@ final class EtcTests: RedBlackTreeTestCase {
     let a1 = MemoryLayout<_Value>.alignment
     let s2 = MemoryLayout<UnsafeNodeFreshBucket>.stride
     let a2 = MemoryLayout<UnsafeNodeFreshBucket>.alignment
-    
+
     var hoge: [(size: Int, capacity: Int)] = []
     for i in 0..<32 {
       let size = 1 << i
-      
+
       let s01 = a1 <= a0 ? (s0 + s1) : (s0 + s1)
       let o01 = a1 <= a0 ? 0 : a2 - a1
-      let capacity = a2 <= max(a1,a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1,a0)) / s01
-      
+      let capacity =
+        a2 <= max(a1, a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1, a0)) / s01
+
       XCTAssertGreaterThanOrEqual(
         size,
         capacity == 0 ? 0 : Self.allocationSize2(capacity: capacity).size)
       hoge.append((size, capacity))
     }
-    
+
     for capacity1 in 32..<1024 {
       let size = Self.allocationSize(capacity: capacity1).size
       let pagedSize = ((size >> 10) + 1) << 10
       let pagedCapacity = Self.allocationCapacity(size: pagedSize)
       XCTAssertLessThanOrEqual(Self.allocationSize(capacity: pagedCapacity).size, pagedSize)
     }
-    
+
     XCTAssertEqual(65537 / 1024, 65536 >> 10)
     let N = 1024
     XCTAssertEqual(1 << (Int.bitWidth - N.leadingZeroBitCount - 2), N / 2)
 
     do {
       let N = 4096
-//      XCTAssertEqual( N / 1024, 4)
-      XCTAssertEqual( (N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)), 4)
-      XCTAssertEqual( (N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)) * 1024, 4096)
-      XCTAssertEqual( ((N >> 10) + ((N - ((N >> 10) << 10)) == 0 ? 0 : 1)) << 10, 4096)
+      //      XCTAssertEqual( N / 1024, 4)
+      XCTAssertEqual((N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)), 4)
+      XCTAssertEqual((N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)) * 1024, 4096)
+      XCTAssertEqual(((N >> 10) + ((N - ((N >> 10) << 10)) == 0 ? 0 : 1)) << 10, 4096)
     }
 
-    
-    
-//    throw XCTSkip("\(hoge.filter { $0.capacity != 0 }.map(\.capacity))")
+    //    throw XCTSkip("\(hoge.filter { $0.capacity != 0 }.map(\.capacity))")
     throw XCTSkip("\(hoge.filter { $0.capacity != 0 })")
   }
-  
+
   // TODO: 再検討
   // __tree_prev_iterの不定動作を解消する場合、以下となるが、性能上の問題で保留となっている
   //  func testPtr5() throws {
@@ -902,4 +901,74 @@ final class EtcTests: RedBlackTreeTestCase {
   //      XCTAssertEqual(a.__tree_.__tree_prev_iter(a.startIndex.rawValue), .nullptr)
   //    }
   //  }
+
+  #if DEBUG
+    func testRoundTrip() throws {
+      var fixture = RedBlackTreeSet<Int>(minimumCapacity: 100)
+      for _ in 0..<1000 {
+        for i in 0..<100 {
+          fixture.insert(i)
+        }
+        for i in 0..<100 {
+          fixture.remove(i)
+        }
+      }
+      XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead?.pointee.count, 100)
+      XCTAssertEqual(fixture.capacity, 100)
+    }
+
+    func testRoundTrip2() throws {
+      var fixture = RedBlackTreeSet<Int>(minimumCapacity: 100)
+      let head = fixture.__tree_._buffer.header.freshBucketHead
+      XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 100)
+      for n in 0..<1 {
+        for i in 0..<100 {
+          fixture.insert(i)
+        }
+        for i in 0..<100 {
+          fixture.remove(i)
+        }
+        XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 100)
+        fixture.removeAll(keepingCapacity: true)
+        XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 100)
+      }
+      XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead, head)
+      //    XCTAssertEqual(fixture.__tree_.makeFreshPoolIterator().map(\.pointee.___node_id_).count, 100)
+      //    XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead?.pointee.count, 100)
+      XCTAssertEqual(fixture.capacity, 100)
+    }
+
+    func testRoundTrip3() throws {
+      var fixture = RedBlackTreeSet<Int>()
+      let head = fixture.__tree_._buffer.header.freshBucketHead
+      XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 0)
+      for n in 0..<1 {
+        for i in 0..<100 {
+          fixture.insert(i)
+        }
+        for i in 0..<100 {
+          fixture.remove(i)
+        }
+        fixture.removeAll(keepingCapacity: false)
+        XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 0)
+      }
+      XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead, head)
+      //    XCTAssertEqual(fixture.__tree_.makeFreshPoolIterator().map(\.pointee.___node_id_).count, 100)
+      //    XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead?.pointee.count, 100)
+      XCTAssertEqual(fixture.capacity, 0)
+    }
+  #endif
+
+  struct TypeFixture<T> {
+    internal init() {
+      isInt = T.self == Int.self
+    }
+    var isInt: Bool
+  }
+
+  func testTypeFixture() throws {
+    XCTAssertEqual(TypeFixture<Double>().isInt, false)
+    XCTAssertEqual(TypeFixture<Int>().isInt, true)
+    XCTAssertEqual(TypeFixture<Int64>().isInt, false)
+  }
 }

@@ -22,13 +22,30 @@
 
 import Foundation
 
-public protocol TreePointer {
+public protocol _TreePointer {
   associatedtype _NodePtr: Equatable
-  associatedtype _Pointer where _NodePtr == _Pointer
   associatedtype _NodeRef
+}
+
+public protocol TreePointer: _TreePointer
+where _NodePtr == _Pointer
+{
+  associatedtype _Pointer
   var nullptr: _NodePtr { get }
   var end: _NodePtr { get }
 }
+
+public protocol _KeyProtocol {
+  /// ツリーが比較に使用する値の型
+  associatedtype _Key
+}
+
+public protocol _ValueProtocol {
+  /// 要素の型
+  associatedtype _Value
+}
+
+public protocol _TreeValue: _KeyProtocol & _ValueProtocol {}
 
 // ルートノードの親相当の機能
 @usableFromInline
@@ -91,8 +108,7 @@ protocol TreeNodeRefProtocol: TreePointer {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol TreeNodeValueProtocol: TreePointer where _Key == __node_value_type {
-  associatedtype _Key
+protocol TreeNodeValueProtocol: TreePointer & _KeyProtocol where _Key == __node_value_type {
   associatedtype __node_value_type
   /// ノードから比較用の値を取り出す。
   /// SetやMultisetではElementに該当する
@@ -102,8 +118,7 @@ protocol TreeNodeValueProtocol: TreePointer where _Key == __node_value_type {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol TreeValueProtocol: TreePointer where _Value == __value_type {
-  associatedtype _Value
+protocol TreeValueProtocol: TreePointer & _ValueProtocol where _Value == __value_type {
   associatedtype __value_type
   /// ノードの値要素を取得する
   @inlinable func __value_(_ p: _NodePtr) -> __value_type
@@ -218,8 +233,7 @@ protocol SizeProtocol {
 // MARK: -
 
 @usableFromInline
-protocol AllocatorProtocol: TreePointer {
-  associatedtype _Value
+protocol AllocatorProtocol: TreePointer & _ValueProtocol {
   /// ノードを構築する
   func __construct_node(_ k: _Value) -> _NodePtr
   /// ノードを破棄する
@@ -229,11 +243,7 @@ protocol AllocatorProtocol: TreePointer {
 // MARK: common
 
 /// ツリー使用条件をインジェクションするためのプロトコル
-public protocol ValueComparer {
-  /// ツリーが比較に使用する値の型
-  associatedtype _Key
-  /// 要素の型
-  associatedtype _Value
+public protocol ValueComparer: _TreeValue, _TreeValue {
   /// 要素から比較キー値がとれること
   @inlinable static func __key(_: _Value) -> _Key
   /// 比較関数が実装されていること
@@ -273,44 +283,48 @@ extension ValueComparer where _Key: Equatable {
 }
 
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
-public protocol ValueComparator {
+public protocol ValueComparator: _TreeValue
+where
+  _Key == Base._Key,
+  _Value == Base._Value
+{
   associatedtype Base: ValueComparer
-  @inlinable static func __key(_ e: Base._Value) -> Base._Key
-  @inlinable static func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool
-  @inlinable static func value_equiv(_ lhs: Base._Key, _ rhs: Base._Key) -> Bool
-  @inlinable func __key(_ e: Base._Value) -> Base._Key
-  @inlinable func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool
+  @inlinable static func __key(_ e: _Value) -> _Key
+  @inlinable static func value_comp(_ a: _Key, _ b: _Key) -> Bool
+  @inlinable static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
+  @inlinable func __key(_ e: _Value) -> _Key
+  @inlinable func value_comp(_ a: _Key, _ b: _Key) -> Bool
 }
 
 extension ValueComparator {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ e: Base._Value) -> Base._Key {
+  public static func __key(_ e: _Value) -> _Key {
     Base.__key(e)
   }
 
   @inlinable
   @inline(__always)
-  public static func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool {
+  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     Base.value_comp(a, b)
   }
 
   @inlinable
   @inline(__always)
-  public static func value_equiv(_ lhs: Base._Key, _ rhs: Base._Key) -> Bool {
+  public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
     Base.value_equiv(lhs, rhs)
   }
 
   @inlinable
   @inline(__always)
-  public func __key(_ e: Base._Value) -> Base._Key {
+  public func __key(_ e: _Value) -> _Key {
     Base.__key(e)
   }
 
   @inlinable
   @inline(__always)
-  public func value_comp(_ a: Base._Key, _ b: Base._Key) -> Bool {
+  public func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     Base.value_comp(a, b)
   }
 }
@@ -319,13 +333,13 @@ extension ValueComparator {
 
   @inlinable
   @inline(__always)
-  internal static func with_value_equiv<T>(_ f: ((Base._Key, Base._Key) -> Bool) -> T) -> T {
+  internal static func with_value_equiv<T>(_ f: ((_Key, _Key) -> Bool) -> T) -> T {
     f(value_equiv)
   }
 
   @inlinable
   @inline(__always)
-  internal static func with_value_comp<T>(_ f: ((Base._Key, Base._Key) -> Bool) -> T) -> T {
+  internal static func with_value_comp<T>(_ f: ((_Key, _Key) -> Bool) -> T) -> T {
     f(value_comp)
   }
 }
@@ -335,7 +349,7 @@ extension ValueComparator where Base: ThreeWayComparator {
   @inlinable
   @inline(__always)
   internal func
-    __lazy_synth_three_way_comparator(_ __lhs: Base._Key, _ __rhs: Base._Key)
+    __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> Base.__compare_result
   {
     Base.__lazy_synth_three_way_comparator(__lhs, __rhs)

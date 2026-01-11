@@ -77,7 +77,7 @@ extension UnsafeTreeV2Buffer {
 extension UnsafeTreeV2Buffer {
 
   @frozen
-  public struct Header: UnsafeNodeRecyclePool {
+  public struct Header: _UnsafeNodeRecyclePool {
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     @inlinable

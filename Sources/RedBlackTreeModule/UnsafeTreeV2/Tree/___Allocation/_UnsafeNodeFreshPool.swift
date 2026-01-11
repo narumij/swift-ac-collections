@@ -135,8 +135,8 @@ extension _UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
-  func makeFreshPoolIterator() -> UnsafeNodeFreshPoolIterator<_Value> {
-    return UnsafeNodeFreshPoolIterator<_Value>(bucket: freshBucketHead, nullptr: nullptr)
+  func makeFreshPoolIterator() -> _UnsafeNodeFreshPoolIterator<_Value> {
+    return _UnsafeNodeFreshPoolIterator<_Value>(bucket: freshBucketHead, nullptr: nullptr)
   }
 }
 
@@ -144,8 +144,8 @@ extension _UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
-  func makeFreshBucketIterator() -> UnsafeNodeFreshBucketIterator<_Value> {
-    return UnsafeNodeFreshBucketIterator<_Value>(bucket: freshBucketHead)
+  func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_Value> {
+    return _UnsafeNodeFreshBucketIterator<_Value>(bucket: freshBucketHead)
   }
 }
 

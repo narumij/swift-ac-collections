@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol UnsafeNodeRecyclePool: _ValueProtocol
+protocol _UnsafeNodeRecyclePool: _ValueProtocol
 where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
   associatedtype _NodePtr
   var recycleHead: _NodePtr { get set }
@@ -30,7 +30,7 @@ where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
   var nullptr: _NodePtr { get }
 }
 
-extension UnsafeNodeRecyclePool {
+extension _UnsafeNodeRecyclePool {
 
   @inlinable
   @inline(__always)
@@ -78,7 +78,7 @@ extension UnsafeNodeRecyclePool {
   #endif
 }
 
-extension UnsafeNodeRecyclePool {
+extension _UnsafeNodeRecyclePool {
   #if DEBUG
     @inlinable
     @inline(__always)

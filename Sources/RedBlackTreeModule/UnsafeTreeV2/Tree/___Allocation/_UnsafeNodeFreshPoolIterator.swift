@@ -22,7 +22,7 @@
 
 /// 使用済みから初期化済みまでを列挙するイテレータ
 @usableFromInline
-struct UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence {
+struct _UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence {
 
   @usableFromInline
   typealias Bucket = _UnsafeNodeFreshBucket

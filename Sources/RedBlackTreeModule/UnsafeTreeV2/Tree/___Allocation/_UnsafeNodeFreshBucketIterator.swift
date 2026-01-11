@@ -22,7 +22,7 @@
 
 /// バケット(ノードを保持している塊)を走査するイテレータ
 @usableFromInline
-struct UnsafeNodeFreshBucketIterator<_Value>: IteratorProtocol, Sequence {
+struct _UnsafeNodeFreshBucketIterator<_Value>: IteratorProtocol, Sequence {
 
   @usableFromInline
   typealias Bucket = _UnsafeNodeFreshBucket

@@ -22,6 +22,67 @@
 
 import Foundation
 
+extension UnsafeTreeV2 {
+
+  /// 木の生成を行う
+  ///
+  /// サイズが0の場合に共有バッファを用いたインスタンスを返す。
+  /// ensureUniqueが利用できない場面では他の生成メソッドを利用すること。
+  @inlinable
+  @inline(__always)
+  internal static func create(
+    minimumCapacity nodeCapacity: Int
+  ) -> UnsafeTreeV2 {
+    nodeCapacity == 0
+      ? ___create()
+      : ___create(minimumCapacity: nodeCapacity, nullptr: UnsafeNode.nullptr)
+  }
+
+  /// シングルトンバッファを用いて高速に生成する
+  ///
+  /// 直接呼ぶ必要はほとんど無い
+  @inlinable
+  @inline(__always)
+  internal static func ___create() -> UnsafeTreeV2 {
+    assert(_emptyTreeStorage.header.freshPoolCapacity == 0)
+    return UnsafeTreeV2(
+      _buffer:
+        BufferPointer(
+          unsafeBufferObject: _emptyTreeStorage),
+      isReadOnly: true)
+  }
+
+  /// 通常の生成
+  ///
+  /// ensureUniqueが利用できない場面に限って直接呼ぶようにすること
+  @inlinable
+  @inline(__always)
+  internal static func ___create(
+    minimumCapacity nodeCapacity: Int,
+    nullptr: _NodePtr
+  ) -> UnsafeTreeV2 {
+    create(
+      unsafeBufferObject:
+        UnsafeTreeV2Buffer<Base._Value>
+        .create(
+          minimumCapacity: nodeCapacity,
+          nullptr: nullptr))
+  }
+
+  @inlinable
+  @inline(__always)
+  internal static func create(unsafeBufferObject buffer: AnyObject)
+    -> UnsafeTreeV2
+  {
+    return UnsafeTreeV2(
+      _buffer:
+        BufferPointer(
+          unsafeBufferObject: buffer))
+  }
+}
+
+// MARK: -
+
 extension UnsafeTreeV2 where Base._Key == Base._Value {
 
   /// ソート済みの配列から木を生成する

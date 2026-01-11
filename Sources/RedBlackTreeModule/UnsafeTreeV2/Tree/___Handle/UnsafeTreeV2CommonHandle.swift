@@ -27,7 +27,8 @@ extension UnsafeTreeV2 {
   )
     rethrows -> R
   {
-    try _buffer.withUnsafeMutablePointerToHeader { header in
+    // withUnsafeMutablePointerToHeaderだとスタックが一個ふえてみづらいので
+    try _buffer.withUnsafeMutablePointers { header, _ in
       return try body(header.pointee)
     }
   }
@@ -39,11 +40,12 @@ extension UnsafeTreeV2 {
   )
     rethrows -> R
   {
-    try _buffer.withUnsafeMutablePointerToHeader { header in
+    // withUnsafeMutablePointerToHeaderだとスタックが一個ふえてみづらいので
+    try _buffer.withUnsafeMutablePointers { header, _ in
       return try body(&header.pointee)
     }
   }
-  
+
   @inlinable
   @inline(__always)
   internal func withOrigin<R>(
@@ -51,11 +53,12 @@ extension UnsafeTreeV2 {
   )
     rethrows -> R
   {
-    try _buffer.withUnsafeMutablePointerToElements { origin in
+    // withUnsafeMutablePointerToElementsだとスタックが一個ふえてみづらいので
+    try _buffer.withUnsafeMutablePointers { _, origin in
       return try body(origin.pointee)
     }
   }
-  
+
   @inlinable
   @inline(__always)
   internal func withMutableOrigin<R>(
@@ -63,7 +66,8 @@ extension UnsafeTreeV2 {
   )
     rethrows -> R
   {
-    try _buffer.withUnsafeMutablePointerToElements { origin in
+    // withUnsafeMutablePointerToElementsだとスタックが一個ふえてみづらいので
+    try _buffer.withUnsafeMutablePointers { _, origin in
       return try body(&origin.pointee)
     }
   }

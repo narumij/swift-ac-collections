@@ -295,7 +295,7 @@ extension UnsafeTreeV2 {
         }
         // 検索の計算量がO(log *n*)
         let (__parent, __child) = tree.__find_equal(Base.__key(__v))
-        if tree.__ptr_(__child) == .nullptr {
+        if tree.__ptr_(__child) == tree.nullptr {
           let __h = tree.__construct_node(__v)
           // ならしO(1)
           tree.__insert_node_at(__parent, __child, __h)
@@ -315,10 +315,10 @@ extension UnsafeTreeV2 {
         if count == nil {
           Tree.ensureCapacity(tree: &tree)
         }
-        var __parent = _NodePtr.nullptr
+        var __parent = tree.nullptr
         // 検索の計算量がO(log *n*)
         let __child = tree.__find_leaf_high(&__parent, Base.__key(__v))
-        if tree.__ptr_(__child) == .nullptr {
+        if tree.__ptr_(__child) == tree.nullptr {
           let __h = tree.__construct_node(__v)
           // ならしO(1)
           tree.__insert_node_at(__parent, __child, __h)

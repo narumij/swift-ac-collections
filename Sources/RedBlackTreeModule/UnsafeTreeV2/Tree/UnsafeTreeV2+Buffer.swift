@@ -51,20 +51,18 @@ extension UnsafeTreeV2Buffer {
   ) -> UnsafeTreeV2Buffer {
 
     // end nodeしか用意しないので要素数は常に1
-
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 1) { managedBuffer in
-      // ヘッダーを準備する
-      var header = Header(nullptr: nullptr)
-      // ノードを確保する
-      if nodeCapacity > 0 {
-        header.pushFreshBucket(capacity: nodeCapacity)
-        assert(header.freshPoolCapacity >= nodeCapacity)
-      }
       // ヘッダを返却して以後はManagerBufferさんがよしなにする
-      return header
+      return Header(nullptr: nullptr)
     }
 
-    storage.withUnsafeMutablePointerToElements { tree in
+    storage.withUnsafeMutablePointers { header, tree in
+      // ノード数を確保
+      if nodeCapacity > 0 {
+        header.pointee.pushFreshBucket(capacity: nodeCapacity)
+        assert(header.pointee.freshPoolCapacity >= nodeCapacity)
+      }
+      // originを初期化
       tree.initialize(to: UnsafeTreeV2Origin(base: tree, nullptr: nullptr))
       assert(tree.pointee.end_ptr.pointee.___needs_deinitialize == true)
     }

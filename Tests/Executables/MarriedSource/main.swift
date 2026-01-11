@@ -12851,7 +12851,7 @@ import Foundation
       func headerNote() -> [Graphviz.NodeProperty] {
         var ll: [String] = []
         ll.append(contentsOf: [
-          "[Header]",
+          "[Bucket]",
           "capacity: \(capacity)",
           "__left_: \(nodeN(__left_))",
           "__begin_node: \(nodeN(__begin_node_))",

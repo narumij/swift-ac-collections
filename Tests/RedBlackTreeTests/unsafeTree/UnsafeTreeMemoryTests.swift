@@ -26,6 +26,14 @@ final class UnsafeTreeMemoryTests: XCTestCase {
     // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
     // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
   }
+  
+  func testSizes() throws {
+#if !DEBUG
+    XCTAssertLessThanOrEqual(MemoryLayout<UnsafeTreeV2Buffer<Int>.Header>.size, 64)
+#endif
+    XCTAssertLessThanOrEqual(MemoryLayout<UnsafeNode>.size, 64)
+    XCTAssertLessThanOrEqual(MemoryLayout<UnsafeNodeFreshBucket>.size, 64)
+  }
 
   func testStride() throws {
 #if !DEBUG

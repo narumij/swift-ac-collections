@@ -13,7 +13,7 @@ print("UNSAFE_TREE_V2")
 print(Date.now)
 print()
 
-let limit = 25
+let limit = 24
 
 for count in (0..<limit).filter({ $0 % 2 == 1 }).map({ 1 << $0 }) {
   benchmark("reserveCapacity \(count)") {

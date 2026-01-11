@@ -37,10 +37,10 @@ public struct UnsafeTreeV2Origin: UnsafeTreePointer {
   mutating func clear() {
     begin_ptr = end_ptr
     end_node.__left_ = nullptr
-#if DEBUG
-    end_node.__right_ = nullptr
-    end_node.__parent_ = nullptr
-#endif
+    #if DEBUG
+      end_node.__right_ = nullptr
+      end_node.__parent_ = nullptr
+    #endif
   }
   @inlinable
   @inline(__always)
@@ -211,6 +211,10 @@ extension UnsafeTreeV2 {
       assert(tree._buffer.header.freshBucketCount <= 1)
     #endif
 
+    #if AC_COLLECTIONS_INTERNAL_CHECKS
+      tree.withMutableHeader { $0.copyCount += 1 }
+    #endif
+
     // 空の場合、そのまま返す
     if count == 0 {
       return tree
@@ -268,15 +272,11 @@ extension UnsafeTreeV2 {
       newOrigin.begin_ptr = __ptr_(source.begin_ptr)
 
       // その他管理情報をコピー
+      newHeader.recycleHead = __ptr_(header.recycleHead)
+      newHeader.count = header.count
       //#if USE_FRESH_POOL_V1
       #if !USE_FRESH_POOL_V2
         newHeader.freshPoolUsedCount = header.freshPoolUsedCount
-      #endif
-      newHeader.count = header.count
-      newHeader.recycleHead = __ptr_(header.recycleHead)
-
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
-        newHeader.copyCount = header.copyCount &+ 1
       #endif
     }
 

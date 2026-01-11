@@ -20,8 +20,9 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public struct UnsafeTreeV2Origin {
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+public struct UnsafeTreeV2Origin: UnsafeTreePointer {
+//  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+//  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   @usableFromInline let nullptr: _NodePtr
   @usableFromInline var begin_ptr: _NodePtr
   @usableFromInline let end_ptr: _NodePtr
@@ -38,13 +39,21 @@ public struct UnsafeTreeV2Origin {
   mutating func clear() {
     begin_ptr = end_ptr
     end_node.__left_ = nullptr
+#if DEBUG
     end_node.__right_ = nullptr
     end_node.__parent_ = nullptr
+#endif
   }
   @inlinable
+  @inline(__always)
   var __root: _NodePtr {
     get { end_ptr.pointee.__left_ }
     set { end_ptr.pointee.__left_ = newValue }
+  }
+  @inlinable
+  @inline(__always)
+  internal func __root_ptr() -> _NodeRef {
+    withUnsafeMutablePointer(to: &end_ptr.pointee.__left_) { $0 }
   }
 }
 
@@ -303,10 +312,9 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func __eraseAll(keepingCapacity keepCapacity: Bool = false) {
-    end.pointee.__left_ = nullptr
-    withandler { handler in
-      handler.header.pointee.clear(keepingCapacity: keepCapacity)
-      handler.origin.pointee.clear()
+    withMutables { header, origin in
+      header.clear(keepingCapacity: keepCapacity)
+      origin.clear()
     }
   }
 }

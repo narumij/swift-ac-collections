@@ -155,9 +155,9 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
+  @inline(__always)
   var __end_node: _NodePtr {
-    end
-//    _buffer.withUnsafeMutablePointerToElements { $0.pointee.end_ptr }
+    origin.pointee.end_ptr
   }
 }
 
@@ -170,14 +170,14 @@ extension UnsafeTreeV2 {
     @inlinable
     @inline(__always)
     internal var __root: _NodePtr {
-      _buffer.withUnsafeMutablePointerToElements { $0.pointee.end_node.__left_ }
+      origin.pointee.__root
     }
   #else
     @inlinable
     @inline(__always)
     internal var __root: _NodePtr {
-      get { end.pointee.__left_ }
-      set { end.pointee.__left_ = newValue }
+      get { origin.pointee.__root }
+      set { origin.pointee.__root = newValue }
     }
   #endif
 
@@ -186,10 +186,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func __root_ptr() -> _NodeRef {
-    withUnsafeMutablePointer(to: &origin.pointee.end_node.__left_) { $0 }
-//    _buffer.withUnsafeMutablePointerToElements {
-//      withUnsafeMutablePointer(to: &$0.pointee.end_node.__left_) { $0 }
-//    }
+    origin.pointee.__root_ptr()
   }
 }
 
@@ -200,8 +197,8 @@ extension UnsafeTreeV2 {
   @inlinable
   var __size_: Int {
     @inline(__always) get {
-      _buffer.withUnsafeMutablePointerToHeader { $0.pointee.count }
-    }    
+      withHeader { $0.count }
+    }
     nonmutating set {
       /* NOP */
     }
@@ -215,16 +212,16 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   public func __construct_node(_ k: _Value) -> _NodePtr {
-    _buffer.withUnsafeMutablePointerToHeader { header in
-      header.pointee.__construct_node(k)
+    withMutableHeader {
+      $0.__construct_node(k)
     }
   }
 
   @inlinable
   @inline(__always)
   internal func destroy(_ p: _NodePtr) {
-    _buffer.withUnsafeMutablePointerToHeader {
-      $0.pointee.___pushRecycle(p)
+    withMutableHeader {
+      $0.___pushRecycle(p)
     }
   }
 }

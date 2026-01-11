@@ -88,13 +88,14 @@ extension UnsafeTreeV2ScalarHandle {
 // MARK: - TreeNodeValueProtocol
 
 extension UnsafeTreeV2ScalarHandle {
-
+  
   @inlinable
   @inline(__always)
   func __get_value(_ p: _NodePtr) -> _Key {
     UnsafePair<_Value>.valuePointer(p)!.pointee
   }
 }
+
 
 extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase {}
 

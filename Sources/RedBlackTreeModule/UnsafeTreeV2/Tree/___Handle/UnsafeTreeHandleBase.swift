@@ -144,9 +144,9 @@ extension UnsafeTreeHandleBase {
 extension UnsafeTreeHandleBase {
 
   @inlinable
+  @inline(__always)
   var __end_node: _NodePtr {
-    end
-    //    _buffer.withUnsafeMutablePointerToElements { $0.pointee.end_ptr }
+    origin.pointee.end_ptr
   }
 }
 

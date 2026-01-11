@@ -88,14 +88,14 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 extension UnsafeTreeV2 {
 
   @inlinable
-  public var count: Int { _buffer.header.count }
+  public var count: Int { withHeader { $0.count } }
 
   #if !DEBUG
     @inlinable
-    public var capacity: Int { _buffer.header.freshPoolCapacity }
+    public var capacity: Int { withHeader { $0.freshPoolCapacity } }
 
     @inlinable
-    public var initializedCount: Int { _buffer.header.freshPoolUsedCount }
+    public var initializedCount: Int { withHeader { $0.freshPoolUsedCount } }
   #else
     @inlinable
     public var capacity: Int {

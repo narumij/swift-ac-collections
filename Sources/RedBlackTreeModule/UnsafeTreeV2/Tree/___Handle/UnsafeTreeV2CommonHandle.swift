@@ -22,6 +22,18 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
+  internal func withHeader<R>(
+    _ body: (UnsafeTreeV2Buffer<_Value>.Header) throws -> R
+  )
+    rethrows -> R
+  {
+    try _buffer.withUnsafeMutablePointerToHeader { header in
+      return try body(header.pointee)
+    }
+  }
+
+  @inlinable
+  @inline(__always)
   internal func withMutableHeader<R>(
     _ body: (inout UnsafeTreeV2Buffer<_Value>.Header) throws -> R
   )

@@ -23,7 +23,12 @@
 import Foundation
 
 @usableFromInline
-protocol BoundProtocol: BoundAlgorithmProtocol & CompareTraitInstance {}
+protocol BoundProtocol: TreePointer & _KeyProtocol & CompareTraitInstance {
+  func __lower_bound_unique(_ __v: _Key) -> _NodePtr
+  func __upper_bound_unique(_ __v: _Key) -> _NodePtr
+  func __lower_bound_multi(_ __v: _Key) -> _NodePtr
+  func __upper_bound_multi(_ __v: _Key) -> _NodePtr
+}
 
 extension BoundProtocol {
 
@@ -41,8 +46,7 @@ extension BoundProtocol {
 }
 
 @usableFromInline
-protocol BoundAlgorithmProtocol: ValueProtocol & RootProtocol & EndNodeProtocol
-    & ThreeWayComparatorProtocol
+protocol BoundAlgorithmProtocol: BoundAlgorithmProtocol_common & ThreeWayComparatorProtocol
 {}
 
 extension BoundAlgorithmProtocol {
@@ -105,6 +109,12 @@ extension BoundAlgorithmProtocol {
   internal func __upper_bound_multi(_ __v: _Key) -> _NodePtr {
     __upper_bound_multi(__v, __root, __end_node)
   }
+}
+
+@usableFromInline
+protocol BoundAlgorithmProtocol_common: ValueProtocol & RootProtocol & EndNodeProtocol {}
+
+extension BoundAlgorithmProtocol_common {
 
   @inlinable
   @inline(__always)
@@ -140,5 +150,36 @@ extension BoundAlgorithmProtocol {
       }
     }
     return __result
+  }
+}
+
+
+@usableFromInline
+protocol BoundAlgorithmProtocol_old: BoundAlgorithmProtocol_common {}
+
+extension BoundAlgorithmProtocol_old {
+
+  @inlinable
+  @inline(__always)
+  internal func __lower_bound_unique(_ __v: _Key) -> _NodePtr {
+    __lower_bound_multi(__v, __root, __end_node)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func __upper_bound_unique(_ __v: _Key) -> _NodePtr {
+    __upper_bound_multi(__v, __root, __end_node)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func __lower_bound_multi(_ __v: _Key) -> _NodePtr {
+    __lower_bound_multi(__v, __root, __end_node)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func __upper_bound_multi(_ __v: _Key) -> _NodePtr {
+    __upper_bound_multi(__v, __root, __end_node)
   }
 }

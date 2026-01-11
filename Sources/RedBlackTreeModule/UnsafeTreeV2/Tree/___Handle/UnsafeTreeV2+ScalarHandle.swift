@@ -3,7 +3,7 @@
 /// `_Key`の取得に関して特殊化済みとなっている。
 ///
 /// その他に比較演算の強制キャストによる特殊化も盛り込まれている。
-/// 
+///
 @frozen
 @usableFromInline
 struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
@@ -98,11 +98,11 @@ extension UnsafeTreeV2ScalarHandle {
 
 extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase {}
 
+extension UnsafeTreeV2ScalarHandle: BoundProtocol, BoundAlgorithmProtocol_old {}
 extension UnsafeTreeV2ScalarHandle: FindProtocol {}
 extension UnsafeTreeV2ScalarHandle: FindEqualProtocol, FindEqualProtocol_std {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol {}
 extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol {}
-extension UnsafeTreeV2ScalarHandle: BoundProtocol {}
 extension UnsafeTreeV2ScalarHandle: RemoveProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}

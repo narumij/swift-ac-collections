@@ -317,26 +317,6 @@ extension UnsafeTreeV2 {
   }
 }
 
-// MARK: Predicate
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
-    p.pointee.___needs_deinitialize != true
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  internal var ___is_empty: Bool {
-    count == 0
-  }
-}
-
 // MARK: Refresh Pool Iterator
 
 //#if USE_FRESH_POOL_V1

@@ -28,7 +28,22 @@ func ___is_null_or_end__(pointerIndex: Int) -> Bool {
 }
 
 extension UnsafeTreeV2 {
-  
+
+  @inlinable
+  @inline(__always)
+  internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
+    p.pointee.___needs_deinitialize != true
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  internal var ___is_empty: Bool {
+    count == 0
+  }
+
   /// nullポインタまたはendポインタかどうかの判定
   ///
   /// この木では、llvmの`__tree`とはことなり、CoW対策でノード番号も保持している。
@@ -120,7 +135,8 @@ extension UnsafeTreeV2 {
 
     // begin -> true
     // end -> false
-    return p == nullptr || initializedCount <= p.pointee.___node_id_ || ___is_begin(p) || ___is_garbaged(p)
+    return p == nullptr || initializedCount <= p.pointee.___node_id_ || ___is_begin(p)
+      || ___is_garbaged(p)
   }
 
   /// 真の場合、操作は失敗する

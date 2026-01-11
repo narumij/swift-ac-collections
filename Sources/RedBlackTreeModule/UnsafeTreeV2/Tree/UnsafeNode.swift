@@ -305,6 +305,18 @@ extension UnsafeNode {
 
   @inlinable
   @inline(__always)
+  static func bindValue<_Value>(_ t: _Value.Type,_ p: UnsafeMutablePointer<UnsafeNode>) {
+    p.pointee.___needs_deinitialize = true
+    
+    UnsafeMutableRawPointer(p)
+      .bindMemory(to: UnsafeNode.self, capacity: 1)
+
+    UnsafeMutableRawPointer(p.advanced(by: 1))
+      .bindMemory(to: _Value.self, capacity: 1)
+  }
+
+  @inlinable
+  @inline(__always)
   static func initializeValue<_Value>(_ p: UnsafeMutablePointer<UnsafeNode>, to: _Value) {
     p.pointee.___needs_deinitialize = true
     
@@ -313,13 +325,13 @@ extension UnsafeNode {
 //        pointer.initialize(to: to)
 //      }
     
-    UnsafeMutableRawPointer(p.advanced(by: 1))
-      .bindMemory(to: _Value.self, capacity: 1)
-      .initialize(to: to)
-
 //    UnsafeMutableRawPointer(p.advanced(by: 1))
-//      .assumingMemoryBound(to: _Value.self)
+//      .bindMemory(to: _Value.self, capacity: 1)
 //      .initialize(to: to)
+
+    UnsafeMutableRawPointer(p.advanced(by: 1))
+      .assumingMemoryBound(to: _Value.self)
+      .initialize(to: to)
   }
 
   @inlinable

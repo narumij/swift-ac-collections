@@ -156,15 +156,18 @@ extension FreshPool {
 
     header.initialize(to: .init(pointer: self.storage))
 
-    #if DEBUG
       do {
         var c = 0
         var p = elements
         while c < capacity {
 
+          UnsafeNode.bindValue(_Value.self, p.assumingMemoryBound(to: UnsafeNode.self))
+
+#if DEBUG
           p.assumingMemoryBound(to: UnsafeNode.self)
             .pointee
-            .___node_id_ = .nullptr
+            .___node_id_ = .debug
+#endif
 
           p = UnsafeMutableRawPointer(
             UnsafePair<_Value>
@@ -173,7 +176,6 @@ extension FreshPool {
           c += 1
         }
       }
-    #endif
 
     return (header, elements, capacity)
   }

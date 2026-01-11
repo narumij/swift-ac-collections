@@ -258,17 +258,18 @@ extension UnsafeNodeFreshPool {
       c.deinitialize(count: 1)
       i += 1
     }
-#if DEBUG
     do {
       var c = 0
       var p = bucket.start
       while c < bucket.capacity {
+        UnsafeNode.bindValue(_Value.self, p)
+#if DEBUG
         p.pointee.___node_id_ = .debug
+#endif
         p = UnsafePair<_Value>.advance(p)
         c += 1
       }
     }
-#endif
   }
   
   @inlinable

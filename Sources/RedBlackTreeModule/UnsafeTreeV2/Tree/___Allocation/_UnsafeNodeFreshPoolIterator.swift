@@ -21,6 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 /// 使用済みから初期化済みまでを列挙するイテレータ
+@frozen
 @usableFromInline
 struct _UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence {
 

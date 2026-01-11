@@ -46,8 +46,8 @@ where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
 }
 
 extension UnsafeNodeFreshPool {
-  public typealias ReserverHeader = UnsafeNodeFreshBucket
-  public typealias ReserverHeaderPointer = UnsafeMutablePointer<ReserverHeader>
+  public typealias Bucket = UnsafeNodeFreshBucket
+  public typealias ReserverHeaderPointer = UnsafeMutablePointer<Bucket>
 }
 
 //#if USE_FRESH_POOL_V1
@@ -388,15 +388,15 @@ extension UnsafeNodeFreshPool {
   @inline(__always)
   static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
     let (bufferSize, bufferAlignment) = UnsafePair<_Value>.allocationSize(capacity: capacity)
-    return (bufferSize + MemoryLayout<ReserverHeader>.stride, bufferAlignment)
+    return (bufferSize + MemoryLayout<Bucket>.stride, bufferAlignment)
   }
 
   @inlinable
   @inline(__always)
   static func allocationSize() -> (size: Int, alignment: Int) {
     return (
-      MemoryLayout<ReserverHeader>.stride,
-      MemoryLayout<ReserverHeader>.alignment
+      MemoryLayout<Bucket>.stride,
+      MemoryLayout<Bucket>.alignment
     )
   }
 }

@@ -30,6 +30,7 @@
 /// 本質的にダイナミックキャストを含むのでインライン化されないと素の状態より性能が悪化します。
 ///
 /// しばらくこれで試してみます。
+@frozen
 @usableFromInline
 enum SpecializeMode {
   case asInt
@@ -76,6 +77,7 @@ enum SpecializeMode {
   }
 }
 
+@frozen
 @usableFromInline
 struct SpecializeModeHoge<_K> {
   @inlinable

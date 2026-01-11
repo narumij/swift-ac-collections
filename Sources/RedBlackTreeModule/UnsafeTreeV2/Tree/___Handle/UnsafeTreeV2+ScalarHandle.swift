@@ -1,3 +1,9 @@
+/// SetやMultiset用に特殊化されたハンドル
+///
+/// `_Key`の取得に関して特殊化済みとなっている。
+///
+/// その他に比較演算の強制キャストによる特殊化も盛り込まれている。
+/// 
 @frozen
 @usableFromInline
 struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {

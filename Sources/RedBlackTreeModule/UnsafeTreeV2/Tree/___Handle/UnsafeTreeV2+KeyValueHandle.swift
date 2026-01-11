@@ -1,6 +1,12 @@
+/// DictionaryやMultimap用に特殊化されたハンドル
+///
+/// `_Key`の取得に関して特殊化済みとなっている。
+///
+/// その他に比較演算の強制キャストによる特殊化も盛り込まれている。
+///
 @frozen
 @usableFromInline
-struct UnsafeTreeV2KeyValueHandle<_Key: Comparable,_MappedValue> {
+struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
   @inlinable
   internal init(
     header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header>,
@@ -14,7 +20,7 @@ struct UnsafeTreeV2KeyValueHandle<_Key: Comparable,_MappedValue> {
     self.specializeMode = specializeMode ?? SpecializeModeHoge<_Key>().specializeMode
   }
   @usableFromInline typealias _Key = _Key
-  @usableFromInline typealias _Value = RedBlackTreePair<_Key,_MappedValue>
+  @usableFromInline typealias _Value = RedBlackTreePair<_Key, _MappedValue>
   @usableFromInline typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   @usableFromInline typealias _Pointer = _NodePtr
   @usableFromInline typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
@@ -24,28 +30,33 @@ struct UnsafeTreeV2KeyValueHandle<_Key: Comparable,_MappedValue> {
   @usableFromInline var specializeMode: SpecializeMode
 }
 
-extension UnsafeTreeV2 where _Key: Comparable {
+extension UnsafeTreeV2
+where
+  Base: KeyValueComparer,
+  _Key: Comparable,
+  _Value == RedBlackTreePair<_Key, Base._MappedValue>
+{
 
-//  @usableFromInline
-//  typealias Handle = UnsafeTreeV2ScalarHandle<UnsafeTreeV2<Base>._Value>
-//
-//  @inlinable
-//  @inline(__always)
-//  internal func read<R>(_ body: (Handle) throws -> R) rethrows -> R {
-//    try _buffer.withUnsafeMutablePointers { header, elements in
-//      let handle = Handle(header: header, origin: elements)
-//      return try body(handle)
-//    }
-//  }
-//
-//  @inlinable
-//  @inline(__always)
-//  internal func update<R>(_ body: (Handle) throws -> R) rethrows -> R {
-//    try _buffer.withUnsafeMutablePointers { header, elements in
-//      let handle = Handle(header: header, origin: elements)
-//      return try body(handle)
-//    }
-//  }
+  @usableFromInline
+  typealias KeyValueHandle = UnsafeTreeV2KeyValueHandle<_Key, Base._MappedValue>
+
+  @inlinable
+  @inline(__always)
+  internal func read<R>(_ body: (KeyValueHandle) throws -> R) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, elements in
+      let handle = KeyValueHandle(header: header, origin: elements)
+      return try body(handle)
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func update<R>(_ body: (KeyValueHandle) throws -> R) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, elements in
+      let handle = KeyValueHandle(header: header, origin: elements)
+      return try body(handle)
+    }
+  }
 }
 
 extension UnsafeTreeV2KeyValueHandle {

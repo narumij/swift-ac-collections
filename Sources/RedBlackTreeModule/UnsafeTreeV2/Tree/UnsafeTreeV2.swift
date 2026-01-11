@@ -273,6 +273,8 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
 
+    let initializedCount = initializedCount
+    
     assert(check())
     // 予定サイズを確定させる
     let newCapacity = max(minimumCapacity ?? 0, initializedCount)
@@ -286,6 +288,10 @@ extension UnsafeTreeV2 {
     #if DEBUG
       assert(tree._buffer.header.freshBucketCount <= 1)
     #endif
+    
+    if initializedCount == 0 {
+      return tree
+    }
 
     let source_header = _buffer.header
     let source_origin = origin.pointee

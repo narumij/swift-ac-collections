@@ -17,7 +17,7 @@ var defines: [String] = [
   "WITHOUT_SIZECHECK",
   "USE_UNSAFE_TREE",  // TODO: そのうち消す
   //"USE_OLD_FIND",
-  //  "ALLOCATION_DRILL" // リリース時はオフ
+    "ALLOCATION_DRILL" // リリース時はオフ
 
   //  "USE_FRESH_POOL_V1"
 
@@ -158,6 +158,17 @@ let package = Package(
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
       ],
       path: "Benchmarks/Benchmark3",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "Benchmark4",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Benchmarks/Benchmark4",
       swiftSettings: _settings
     ),
     .executableTarget(

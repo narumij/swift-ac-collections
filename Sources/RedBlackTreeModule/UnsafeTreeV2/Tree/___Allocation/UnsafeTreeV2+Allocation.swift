@@ -32,37 +32,49 @@ protocol UnsafeTreeAllcationBodyV2: _ValueProtocol {
 extension UnsafeTreeV2: UnsafeTreeAllcationBodyV2 {}
 extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
 
+nonisolated(unsafe)
+  public var growSetting: (numer: Int, denom: Int, minimum: Int) = (1, 1, 1)
+
 // TODO: 確保サイズ毎所要時間をのアロケーションとデアロケーションの両方で測ること
 
 #if ALLOCATION_DRILL
+  extension RedBlackTreeSet {
+    /// 通常と異なり、シングルトンではない0サイズのインスタンスを返す
+    @inlinable
+    public static func allocationDrill() -> RedBlackTreeSet {
+      .init(__tree_: .___create(minimumCapacity: 0, nullptr: UnsafeNode.nullptr))
+    }
+  }
+
   extension UnsafeTreeV2 {
     @inlinable
     @inline(__always)
     internal func growCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
-      fatalError()
-    }
-  }
-  extension RedBlackTreeSet {
-    @inlinable
-    public static func allocationDrill() -> RedBlackTreeSet {
-      .init(__tree_: .___create(minimumCapacity: 0))
+
+      if linearly {
+        return Swift.max(
+          capacity,
+          minimumCapacity)
+      }
+      let (numer, denom, minimum) = growSetting
+      return Swift.max(minimumCapacity, capacity + max(capacity * numer / denom, minimum))
     }
   }
 #else
   //#if USE_FRESH_POOL_V1
   #if !USE_FRESH_POOL_V2
     //extension UnsafeTreeV2: UnsafeTreeAllcation2 {}
-  //extension UnsafeTreeV2: UnsafeTreeAllcation3 {}  // 2.0
-  //extension UnsafeTreeV2: UnsafeTreeAllcation4 {}
-  //extension UnsafeTreeV2: UnsafeTreeAllcation5 {}
-  extension UnsafeTreeV2: UnsafeTreeAllcation6 {} // 1.5
-  //extension UnsafeTreeV2: UnsafeTreeAllcation6_7 { // 1.125
-  //  // https://atcoder.jp/contests/abc411/submissions/72291000
-  //}
+    //extension UnsafeTreeV2: UnsafeTreeAllcation3 {}  // 2.0
+    //extension UnsafeTreeV2: UnsafeTreeAllcation4 {}
+    //extension UnsafeTreeV2: UnsafeTreeAllcation5 {}
+    //extension UnsafeTreeV2: UnsafeTreeAllcation6 {} // 1.5
+    //extension UnsafeTreeV2: UnsafeTreeAllcation6_7 { // 1.125
+    //  // https://atcoder.jp/contests/abc411/submissions/72291000
+    //}
 
-  //extension UnsafeTreeV2: UnsafeTreeAllcation6_9 { // 1.25
-  //  // https://atcoder.jp/contests/abc411/submissions/72391453
-  //}
+    extension UnsafeTreeV2: UnsafeTreeAllcation6_9 {  // 1.25
+      // https://atcoder.jp/contests/abc411/submissions/72391453
+    }
   //  extension UnsafeTreeV2: UnsafeTreeAllcation6_8 {} // 1.0125
   //extension UnsafeTreeV2: UnsafeTreeAllcation7 {}
   #else

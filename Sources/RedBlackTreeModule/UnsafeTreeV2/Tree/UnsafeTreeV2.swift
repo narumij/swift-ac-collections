@@ -108,6 +108,7 @@ extension UnsafeTreeV2 {
     public var capacity: Int {
       get { _buffer.header.freshPoolCapacity }
       set {
+        // TODO: setterが必要なテストをsetter不要にする
         _buffer.withUnsafeMutablePointerToHeader {
           $0.pointee.freshPoolCapacity = newValue
         }
@@ -118,6 +119,7 @@ extension UnsafeTreeV2 {
     public var initializedCount: Int {
       get { _buffer.header.freshPoolUsedCount }
       set {
+        // TODO: setterが必要なテストをsetter不要にする
         _buffer.withUnsafeMutablePointerToHeader {
           $0.pointee.freshPoolUsedCount = newValue
         }

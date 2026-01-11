@@ -12,11 +12,11 @@ import XCTest
 #if !USE_FRESH_POOL_V2
   @testable import RedBlackTreeModule
 
-  struct FreshPoolFixture<_Value>: UnsafeNodeFreshPool {
+  struct FreshPoolFixture<_Value>: _UnsafeNodeFreshPool {
     typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-    var freshBucketHead: ReserverHeaderPointer?
-    var freshBucketCurrent: ReserverHeaderPointer?
-    var freshBucketLast: ReserverHeaderPointer?
+    var freshBucketHead: _BucketPointer?
+    var freshBucketCurrent: _BucketPointer?
+    var freshBucketLast: _BucketPointer?
     var freshPoolCapacity: Int = 0
     var freshPoolUsedCount: Int = 0
     var count: Int = 0

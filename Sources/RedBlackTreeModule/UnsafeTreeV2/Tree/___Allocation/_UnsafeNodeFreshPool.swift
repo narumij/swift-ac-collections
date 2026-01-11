@@ -22,7 +22,7 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-protocol UnsafeNodeFreshPool: _ValueProtocol
+protocol _UnsafeNodeFreshPool: _ValueProtocol
 where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
   
   /*
@@ -33,9 +33,9 @@ where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
    */
   
   associatedtype _NodePtr
-  var freshBucketHead: BucketPointer? { get set }
-  var freshBucketCurrent: BucketPointer? { get set }
-  var freshBucketLast: BucketPointer? { get set }
+  var freshBucketHead: _BucketPointer? { get set }
+  var freshBucketCurrent: _BucketPointer? { get set }
+  var freshBucketLast: _BucketPointer? { get set }
   var freshPoolCapacity: Int { get set }
   var freshPoolUsedCount: Int { get set }
   var count: Int { get set }
@@ -45,14 +45,14 @@ where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
 #endif
 }
 
-extension UnsafeNodeFreshPool {
-  public typealias Bucket = UnsafeNodeFreshBucket
-  public typealias BucketPointer = UnsafeMutablePointer<Bucket>
+extension _UnsafeNodeFreshPool {
+  public typealias _Bucket = UnsafeNodeFreshBucket
+  public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 }
 
 //#if USE_FRESH_POOL_V1
 #if !USE_FRESH_POOL_V2
-extension UnsafeNodeFreshPool {
+extension _UnsafeNodeFreshPool {
 
   /*
    NOTE:
@@ -131,7 +131,7 @@ extension UnsafeNodeFreshPool {
   }
 }
 
-extension UnsafeNodeFreshPool {
+extension _UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
@@ -140,7 +140,7 @@ extension UnsafeNodeFreshPool {
   }
 }
 
-extension UnsafeNodeFreshPool {
+extension _UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
@@ -149,7 +149,7 @@ extension UnsafeNodeFreshPool {
   }
 }
 
-extension UnsafeNodeFreshPool {
+extension _UnsafeNodeFreshPool {
 
   /*
    IMPORTANT:
@@ -182,7 +182,7 @@ extension UnsafeNodeFreshPool {
 }
 
 
-extension UnsafeNodeFreshPool {
+extension _UnsafeNodeFreshPool {
 
   // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
   @inlinable
@@ -202,7 +202,7 @@ extension UnsafeNodeFreshPool {
   }
 }
 
-extension UnsafeNodeFreshPool {
+extension _UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
@@ -241,11 +241,11 @@ extension UnsafeNodeFreshPool {
   }
 }
 
-extension UnsafeNodeFreshPool {
+extension _UnsafeNodeFreshPool {
   
   @inlinable
   @inline(__always)
-  static func deinitializeNodes(_ p: BucketPointer) {
+  static func deinitializeNodes(_ p: _BucketPointer) {
     let bucket = p.pointee
     var i = 0
     let count = bucket.count
@@ -275,7 +275,7 @@ extension UnsafeNodeFreshPool {
   
   @inlinable
   @inline(__always)
-  static func createBucket(capacity: Int) -> (BucketPointer, capacity: Int) {
+  static func createBucket(capacity: Int) -> (_BucketPointer, capacity: Int) {
     
     assert(capacity != 0)
     
@@ -315,7 +315,7 @@ extension UnsafeNodeFreshPool {
   }
 }
 
-extension UnsafeNodeFreshPool {
+extension _UnsafeNodeFreshPool {
   
   @inlinable
   @inline(__always)
@@ -382,26 +382,26 @@ extension UnsafeNodeFreshPool {
 // MARK: - 作業用サイズ計算
 
 #if DEBUG
-extension UnsafeNodeFreshPool {
+extension _UnsafeNodeFreshPool {
 
   @inlinable
   @inline(__always)
   static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
     let (bufferSize, bufferAlignment) = UnsafePair<_Value>.allocationSize(capacity: capacity)
-    return (bufferSize + MemoryLayout<Bucket>.stride, bufferAlignment)
+    return (bufferSize + MemoryLayout<_Bucket>.stride, bufferAlignment)
   }
 
   @inlinable
   @inline(__always)
   static func allocationSize() -> (size: Int, alignment: Int) {
     return (
-      MemoryLayout<Bucket>.stride,
-      MemoryLayout<Bucket>.alignment
+      MemoryLayout<_Bucket>.stride,
+      MemoryLayout<_Bucket>.alignment
     )
   }
 }
 
-extension UnsafeNodeFreshPool {
+extension _UnsafeNodeFreshPool {
   
   @inlinable
   @inline(__always)
@@ -434,7 +434,7 @@ extension UnsafeNodeFreshPool {
 // MARK: - DEBUG
 
 #if DEBUG
-  extension UnsafeNodeFreshPool {
+  extension _UnsafeNodeFreshPool {
 
     func dumpFreshPool(label: String = "") {
       print("==== FreshPool \(label) ====")

@@ -30,21 +30,19 @@ public
 }
 
 public
-  protocol ThreeWayComparator
+protocol ThreeWayComparator: _KeyProtocol
 {
   associatedtype __compare_result: ThreeWayCompareResult
-  associatedtype _Key
-    
+  @inlinable
   static func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __compare_result
 }
 
 @usableFromInline
-protocol ThreeWayComparatorProtocol {
+protocol ThreeWayComparatorProtocol: _KeyProtocol {
   associatedtype __compare_result: ThreeWayCompareResult
-  associatedtype _Key
-  
+  @inlinable
   func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __compare_result
 }
@@ -52,6 +50,16 @@ protocol ThreeWayComparatorProtocol {
 @inlinable
 @inline(__always)
 package func __default_three_way_comparator<T: Comparable>(_ __lhs: T, _ __rhs: T) -> Int {
+  /*
+   Swift 6.2.3で以下のようにコンパイルされている。これは理想的。
+   
+   ; specialized __default_three_way_comparator<A>(_:_:)
+   +0x00  cmp                 x1, x0
+   +0x04  cset                w8, lt
+   +0x08  cmp                 x0, x1
+   +0x0c  csinv               x0, x8, xzr, ge
+   +0x10  ret
+   */
   if __lhs < __rhs {
     -1
   } else if __lhs > __rhs {
@@ -123,6 +131,19 @@ public
   @inlinable
   @inline(__always)
   public func __greater() -> Bool { __res_ > 0 }
+}
+
+public typealias __int_compare_result = Int
+
+extension Int: ThreeWayCompareResult { }
+
+extension Int {
+  @inlinable
+  @inline(__always)
+  public func __less() -> Bool { self < 0 }
+  @inlinable
+  @inline(__always)
+  public func __greater() -> Bool { self > 0 }
 }
 
 public protocol LazySynthThreeWayComparator: ThreeWayComparator

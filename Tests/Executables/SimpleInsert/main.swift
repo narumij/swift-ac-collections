@@ -1,5 +1,6 @@
 import MT19937
 import RedBlackTreeModule
+import Collections
 
 var mt = mt19937_64(seed: 0)
 

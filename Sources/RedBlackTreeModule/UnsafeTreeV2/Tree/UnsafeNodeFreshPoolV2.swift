@@ -29,9 +29,9 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-protocol UnsafeNodeFreshPoolV2 where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
+protocol UnsafeNodeFreshPoolV2: _ValueProtocol
+where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
 
-  associatedtype _Value
   associatedtype _NodePtr
   var freshPool: FreshPool<_Value> { get set }
   var count: Int { get set }
@@ -101,6 +101,12 @@ extension UnsafeNodeFreshPoolV2 {
     freshPool.dispose()
   }
 
+  @inlinable
+  @inline(__always)
+  mutating func ___flushFreshPool() {
+    freshPool.clear()
+  }
+  
   @inlinable
   @inline(__always)
   mutating func ___cleanFreshPool() {

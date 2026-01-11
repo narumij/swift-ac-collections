@@ -98,10 +98,7 @@ extension FindEqualProtocol { }
 @usableFromInline
 protocol FindEqualProtocol_std: ValueProtocol, TreeNodeRefProtocol, RootProtocol, RootPtrProtocol,
   ThreeWayComparatorProtocol
-{
-//  func __comp(_ __lhs: _Key, _ __rhs: _Key)
-//    -> __compare_result
-}
+{}
 
 extension FindEqualProtocol_std {
 
@@ -149,7 +146,7 @@ protocol FindEqualProtocol_old: ValueProtocol, TreeNodeRefProtocol, RootProtocol
 extension FindEqualProtocol_old {
 
   @inlinable
-  @inline(never)
+  @inline(__always)
   func
   __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {

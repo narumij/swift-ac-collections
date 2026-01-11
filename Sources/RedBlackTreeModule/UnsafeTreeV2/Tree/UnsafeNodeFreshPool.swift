@@ -22,7 +22,8 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-protocol UnsafeNodeFreshPool where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
+protocol UnsafeNodeFreshPool: _ValueProtocol
+where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
   
   /*
    Design invariant:
@@ -31,7 +32,6 @@ protocol UnsafeNodeFreshPool where _NodePtr == UnsafeMutablePointer<UnsafeNode> 
    because index-based access is performed.
    */
   
-  associatedtype _Value
   associatedtype _NodePtr
   var freshBucketHead: ReserverHeaderPointer? { get set }
   var freshBucketCurrent: ReserverHeaderPointer? { get set }
@@ -194,6 +194,7 @@ extension UnsafeNodeFreshPool {
       return nullptr
     }
     assert(p.pointee.___node_id_ == .debug)
+    UnsafeNode.bindValue(_Value.self, p)
     p.initialize(to: nullptr.create(id: freshPoolUsedCount))
     freshPoolUsedCount += 1
     count += 1
@@ -252,10 +253,11 @@ extension UnsafeNodeFreshPool {
     while i < count {
       let c = p
       p = UnsafePair<_Value>.advance(p)
-      if c.pointee.___needs_deinitialize {
-        UnsafeNode.deinitialize(_Value.self, c)
-      }
-      c.deinitialize(count: 1)
+      UnsafePair<_Value>.deinitialize(c)
+//      if c.pointee.___needs_deinitialize {
+//        UnsafeNode.deinitialize(_Value.self, c)
+//      }
+//      c.deinitialize(count: 1)
       i += 1
     }
 #if DEBUG

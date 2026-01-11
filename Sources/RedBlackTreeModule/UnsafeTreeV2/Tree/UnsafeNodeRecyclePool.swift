@@ -21,9 +21,8 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol UnsafeNodeRecyclePool
+protocol UnsafeNodeRecyclePool: _ValueProtocol
 where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
-  associatedtype _Value
   associatedtype _NodePtr
   var recycleHead: _NodePtr { get set }
   var count: Int { get set }
@@ -38,19 +37,19 @@ extension UnsafeNodeRecyclePool {
   mutating func ___pushRecycle(_ p: _NodePtr) {
     assert(p.pointee.___node_id_ > .end)
     assert(recycleHead != p)
+    count -= 1
     #if DEBUG
       p.pointee.___recycle_count += 1
     #endif
     // 値型の場合、この処理を削りたい誘惑がある
     UnsafePair<_Value>.valuePointer(p)?.deinitialize(count: 1)
-    p.pointee.___needs_deinitialize = false
-    p.pointee.__left_ = recycleHead
     #if GRAPHVIZ_DEBUG
       p!.pointee.__right_ = nil
       p!.pointee.__parent_ = nil
     #endif
+    p.pointee.___needs_deinitialize = false
+    p.pointee.__left_ = recycleHead
     recycleHead = p
-    count -= 1
   }
 
   @inlinable

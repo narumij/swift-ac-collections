@@ -63,7 +63,7 @@ extension ___UnsafeIndexBaseV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeBaseV2: ___UnsafeIndexBaseV2
+protocol ___UnsafeBaseV2: ___UnsafeIndexBaseV2 & _TreeValue
 where
   Base: ___TreeBase & ___TreeIndex,
   Tree == UnsafeTreeV2<Base, Base._Key, Base._Value,Base.__compare_result>,
@@ -74,8 +74,6 @@ where
 {
   associatedtype Index
   associatedtype Indices
-  associatedtype _Key
-  associatedtype _Value
   associatedtype Element
   var __tree_: Tree { get }
   var _start: _NodePtr { get }

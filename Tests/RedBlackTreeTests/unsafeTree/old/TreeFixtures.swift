@@ -93,8 +93,10 @@ import XCTest
     TreeFixtureBase<Element>,
     FindEqualProtocol, InsertNodeAtProtocol, InsertUniqueProtocol,
     RemoveProtocol, EraseProtocol, EraseUniqueProtocol, CompareProtocol, CompareMultiProtocol,
-    BoundProtocol, NodeBitmapProtocol
+    BoundProtocol, NodeBitmapProtocol, FindEqualProtocol_std, BoundAlgorithmProtocol
 {
+    let isMulti: Bool = true
+    
     func __key(_ e: Element) -> Element {
       e
     }

@@ -51,23 +51,20 @@ extension UnsafeTreeV2Buffer {
   ) -> UnsafeTreeV2Buffer {
 
     // end nodeしか用意しないので要素数は常に1
-
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 1) { managedBuffer in
-      return managedBuffer.withUnsafeMutablePointerToElements { tree in
+      // ヘッダを返却して以後はManagerBufferさんがよしなにする
+      return Header(nullptr: nullptr)
+    }
 
-        // endノード用に初期化する
-        tree.initialize(to: UnsafeTreeV2Origin(base: tree, nullptr: nullptr))
-        // ヘッダーを準備する
-        var header = Header(nullptr: nullptr)
-        // ノードを確保する
-        if nodeCapacity > 0 {
-          header.pushFreshBucket(capacity: nodeCapacity)
-          assert(header.freshPoolCapacity >= nodeCapacity)
-        }
-        assert(tree.pointee.end_ptr.pointee.___needs_deinitialize == true)
-        // ヘッダを返却して以後はManagerBufferさんがよしなにする
-        return header
+    storage.withUnsafeMutablePointers { header, tree in
+      // ノード数を確保
+      if nodeCapacity > 0 {
+        header.pointee.pushFreshBucket(capacity: nodeCapacity)
+        assert(header.pointee.freshPoolCapacity >= nodeCapacity)
       }
+      // originを初期化
+      tree.initialize(to: UnsafeTreeV2Origin(base: tree, nullptr: nullptr))
+      assert(tree.pointee.end_ptr.pointee.___needs_deinitialize == true)
     }
 
     assert(nodeCapacity <= storage.header.freshPoolCapacity)
@@ -117,8 +114,12 @@ extension UnsafeTreeV2Buffer {
 
     @inlinable
     @inline(__always)
-    internal mutating func clear() {
-      ___cleanFreshPool()
+    internal mutating func clear(keepingCapacity keepCapacity: Bool = false) {
+      if keepCapacity {
+        ___cleanFreshPool()
+      } else {
+        ___flushFreshPool()
+      }
       ___flushRecyclePool()
     }
   }

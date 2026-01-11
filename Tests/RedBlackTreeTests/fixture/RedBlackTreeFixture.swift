@@ -16,12 +16,12 @@ import XCTest
 #if DEBUG
   protocol RedBlackTreeDebugFixture: ___TreeBase {
     associatedtype Base: ___TreeBase
-    var __tree_: UnsafeTreeV2<Base,Base._Key> { get set }
+    var __tree_: UnsafeTreeV2<Base> { get set }
   }
 
   extension RedBlackTreeDebugFixture {
 
-    typealias _NodePtr = UnsafeTreeV2<Base,Base._Key>._NodePtr
+    typealias _NodePtr = UnsafeTreeV2<Base>._NodePtr
   }
 
   extension RedBlackTreeDebugFixture {

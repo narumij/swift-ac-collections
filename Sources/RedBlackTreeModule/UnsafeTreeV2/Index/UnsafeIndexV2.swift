@@ -28,7 +28,7 @@ import Foundation
 @frozen
 public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
 
-  public typealias Tree = UnsafeTreeV2<Base,Base._Key,Base._Value,Base.__compare_result>
+  public typealias Tree = UnsafeTreeV2<Base>
   public typealias Pointee = Tree.Pointee
   public typealias _NodePtr = Tree._NodePtr
 
@@ -203,7 +203,7 @@ extension UnsafeIndexV2 {
 
 #if DEBUG
   extension UnsafeIndexV2 {
-    fileprivate init(_unsafe_tree: Tree, rawValue: _NodePtr, node_id: Int) {
+    fileprivate init(_unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, node_id: Int) {
       self.__tree_ = _unsafe_tree
       self.rawValue = rawValue
       self.___node_id_ = node_id
@@ -211,10 +211,10 @@ extension UnsafeIndexV2 {
   }
 
   extension UnsafeIndexV2 {
-    internal static func unsafe(tree: Tree, rawValue: _NodePtr) -> Self {
+    internal static func unsafe(tree: UnsafeTreeV2<Base>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue, node_id: rawValue.pointee.___node_id_)
     }
-    internal static func unsafe(tree: Tree, rawValue: Int) -> Self {
+    internal static func unsafe(tree: UnsafeTreeV2<Base>, rawValue: Int) -> Self {
       if rawValue == .nullptr {
         return .init(_unsafe_tree: tree, rawValue: tree.nullptr, node_id: .nullptr)
       }
@@ -246,7 +246,7 @@ extension UnsafeIndexV2 {
 @inlinable
 @inline(__always)
 public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
-  -> UnsafeTreeV2<Base,Base._Key,Base._Value,Base.__compare_result>.Indices
+  -> UnsafeTreeV2<Base>.Indices
 {
   let indices = lhs.___indices
   let bounds = (lhs..<rhs).relative(to: indices)

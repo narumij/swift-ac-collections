@@ -1,4 +1,3 @@
-#if false
 #if COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeMultiMap {
@@ -166,5 +165,4 @@
       lexicographicallyPrecedes(other, by: <)
     }
   }
-#endif
 #endif

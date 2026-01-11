@@ -1,4 +1,3 @@
-#if false
 #if COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeSet {
@@ -124,5 +123,4 @@
       ___remove(from: lower, to: upper)
     }
   }
-#endif
 #endif

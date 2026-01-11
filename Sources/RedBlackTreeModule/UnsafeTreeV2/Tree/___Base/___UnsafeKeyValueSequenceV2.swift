@@ -24,7 +24,6 @@
 protocol ___UnsafeKeyValueSequenceV2: ___UnsafeBaseV2, ___TreeIndex
 where
   Base: KeyValueComparer,
-//_MappedValue == Base._MappedValue,
   Element == (key: _Key, value: _MappedValue),
   _Value == RedBlackTreePair<_Key, _MappedValue>
 {

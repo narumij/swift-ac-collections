@@ -26,11 +26,9 @@ extension RedBlackTreeIteratorV2.KeyValues {
 
   @frozen
   public struct Reversed: Sequence, IteratorProtocol {
-    public typealias Tree = UnsafeTreeV2<Base,Base._Key,Base._Value,Base.__compare_result>
-    public typealias _NodePtr = Tree._NodePtr
-    public typealias _Key = Tree._Key
+    public typealias Tree = UnsafeTreeV2<Base>
     public typealias _Value = Tree._Value
-    public typealias _MappedValue = Tree._MappedValue
+    public typealias _NodePtr = Tree._NodePtr
 
     @usableFromInline
     internal let __tree_: Tree
@@ -51,7 +49,7 @@ extension RedBlackTreeIteratorV2.KeyValues {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> (key: _Key, value: _MappedValue)? {
+    public mutating func next() -> (key: Base._Key, value: Base._MappedValue)? {
       guard _current != _start else { return nil }
       _current = _next
       _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : __tree_.nullptr
@@ -124,7 +122,7 @@ extension RedBlackTreeIteratorV2.KeyValues.Reversed {
 }
 
 extension RedBlackTreeIteratorV2.KeyValues.Reversed: Equatable
-where _Key: Equatable, _MappedValue: Equatable {
+where Base._Key: Equatable, Base._MappedValue: Equatable {
 
   @inlinable
   @inline(__always)
@@ -134,7 +132,7 @@ where _Key: Equatable, _MappedValue: Equatable {
 }
 
 extension RedBlackTreeIteratorV2.KeyValues.Reversed: Comparable
-where _Key: Comparable, _MappedValue: Comparable {
+where Base._Key: Comparable, Base._MappedValue: Comparable {
 
   @inlinable
   @inline(__always)

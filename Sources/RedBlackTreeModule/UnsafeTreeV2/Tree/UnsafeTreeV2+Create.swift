@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension UnsafeTreeV2 where _Key == _Value {
+extension UnsafeTreeV2 where Base._Key == Base._Value {
 
   /// ソート済みの配列から木を生成する
   ///
@@ -31,8 +31,8 @@ extension UnsafeTreeV2 where _Key == _Value {
   /// - Complexity: O(*n*)
   @inlinable
   internal static func
-    create_unique(sorted elements: __owned [_Value]) -> UnsafeTreeV2
-  where _Key: Comparable {
+    create_unique(sorted elements: __owned [Base._Value]) -> UnsafeTreeV2
+  where Base._Key: Comparable {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -59,9 +59,9 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   @inlinable
   internal static func create_unique<Element>(
     sorted elements: __owned [Element],
-    transform: (Element) -> _Value
+    transform: (Element) -> Base._Value
   ) -> UnsafeTreeV2
-  where _Key: Comparable {
+  where Base._Key: Comparable {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -88,10 +88,10 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   @inlinable
   internal static func create_unique<Element>(
     sorted elements: __owned [Element],
-    uniquingKeysWith combine: (_MappedValue, _MappedValue) throws -> _MappedValue,
-    transform: (Element) -> _Value
+    uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
+    transform: (Element) -> Base._Value
   ) rethrows -> UnsafeTreeV2
-  where _Key: Comparable {
+  where Base._Key: Comparable {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -123,9 +123,9 @@ extension UnsafeTreeV2 where Base: KeyValueComparer & ___UnsafeKeyValueSequenceV
   @inlinable
   internal static func create_unique<Element>(
     sorted elements: __owned [Element],
-    by keyForValue: (Element) throws -> _Key
+    by keyForValue: (Element) throws -> Base._Key
   ) rethrows -> UnsafeTreeV2
-  where _Key: Comparable, _MappedValue == [Element] {
+  where Base._Key: Comparable, Base._MappedValue == [Element] {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -158,7 +158,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer & ___UnsafeKeyValueSequenceV
     sorted elements: __owned [Element],
     by keyForValue: (Element) throws -> Base._Key
   ) rethrows -> UnsafeTreeV2
-  where _Key: Comparable, _MappedValue == Element {
+  where Base._Key: Comparable, Base._MappedValue == Element {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -185,8 +185,8 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal static func
-    create_multi(sorted elements: __owned [_Value]) -> UnsafeTreeV2
-  where _Key: Comparable {
+    create_multi(sorted elements: __owned [Base._Value]) -> UnsafeTreeV2
+  where Base._Key: Comparable {
 
     create_multi(sorted: elements) { $0 }
   }
@@ -199,9 +199,9 @@ extension UnsafeTreeV2 {
   @inlinable
   internal static func create_multi<Element>(
     sorted elements: __owned [Element],
-    transform: (Element) -> _Value
+    transform: (Element) -> Base._Value
   ) -> UnsafeTreeV2
-  where _Key: Comparable {
+  where Base._Key: Comparable {
 
     let count = elements.count
     let tree: Tree = .create(minimumCapacity: count)
@@ -226,7 +226,7 @@ extension UnsafeTreeV2 {
   /// - Complexity: O(*n*)
   @inlinable
   internal static func create<R>(range: __owned R) -> UnsafeTreeV2
-  where R: RangeExpression, R: Collection, R.Element == _Value {
+  where R: RangeExpression, R: Collection, R.Element == Base._Value {
 
     let tree: Tree = .create(minimumCapacity: range.count)
     // 初期化直後はO(1)
@@ -244,14 +244,14 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal static func create_unique<S>(naive sequence: __owned S) -> UnsafeTreeV2
-  where _Value == S.Element, S: Sequence {
+  where Base._Value == S.Element, S: Sequence {
 
     .___insert_range_unique(tree: .create(minimumCapacity: 0), sequence)
   }
 
   @inlinable
   internal static func create_unique<S>(
-    naive sequence: __owned S, transform: (S.Element) -> _Value
+    naive sequence: __owned S, transform: (S.Element) -> Base._Value
   ) -> UnsafeTreeV2
   where S: Sequence {
 
@@ -260,14 +260,14 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal static func create_multi<S>(naive sequence: __owned S) -> UnsafeTreeV2
-  where _Value == S.Element, S: Sequence {
+  where Base._Value == S.Element, S: Sequence {
 
     .___insert_range_multi(tree: .create(minimumCapacity: 0), sequence)
   }
 
   @inlinable
   internal static func create_multi<S>(
-    naive sequence: __owned S, transform: (S.Element) -> _Value
+    naive sequence: __owned S, transform: (S.Element) -> Base._Value
   )
     -> UnsafeTreeV2
   where S: Sequence {
@@ -285,7 +285,7 @@ extension UnsafeTreeV2 {
 
     @inlinable
     internal static func __create_unique<S>(sequence: __owned S) -> UnsafeTreeV2
-    where _Value == S.Element, S: Sequence {
+    where Base._Value == S.Element, S: Sequence {
 
       let count = (sequence as? (any Collection))?.count
       var tree: Tree = .create(minimumCapacity: count ?? 0)
@@ -307,7 +307,7 @@ extension UnsafeTreeV2 {
 
     @inlinable
     internal static func __create_multi<S>(sequence: __owned S) -> UnsafeTreeV2
-    where _Value == S.Element, S: Sequence {
+    where Base._Value == S.Element, S: Sequence {
 
       let count = (sequence as? (any Collection))?.count
       var tree: Tree = .create(minimumCapacity: count ?? 0)

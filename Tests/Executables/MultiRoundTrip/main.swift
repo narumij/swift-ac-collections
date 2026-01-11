@@ -50,7 +50,7 @@ for k in 0..<1 {
   }
 }
 #else
-enum Base<K: Comparable,V>: ValueComparer {
+enum Base<K,V>: ValueComparer {
   static func __key(_: V) -> K {
     fatalError()
   }
@@ -61,14 +61,14 @@ enum Base<K: Comparable,V>: ValueComparer {
   typealias _Value = V
 }
 
-struct Fixture<B,K,V> where B: ValueComparer, B._Key == K, K: Comparable, V == B._Value {
+struct Fixture<B,K> where B: ValueComparer, B._Key == K, K: Comparable {
   
   func comp(l: K, r: K) -> Bool {
     l < r
   }
 }
 
-var fixture = Fixture<Base<Int,Int>,Int,Int>()
+var fixture = Fixture<Base<Int,Int>,Int>()
 
 var result = false
 for _ in 0..<10000000 {

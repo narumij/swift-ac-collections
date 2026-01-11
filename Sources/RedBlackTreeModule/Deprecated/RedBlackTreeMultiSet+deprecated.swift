@@ -1,4 +1,3 @@
-#if false
 #if COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeMultiSet {
@@ -132,5 +131,4 @@
       return __tree_.___erase_multi(member) != 0 ? member : nil
     }
   }
-#endif
 #endif

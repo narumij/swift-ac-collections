@@ -55,7 +55,7 @@ public struct UnsafeTreeV2Origin: UnsafeTreePointer {
   }
 }
 
-public struct UnsafeTreeV2<Base: ___TreeBase,K,V,C> where K == Base._Key, V == Base._Value, C == Base.__compare_result {
+public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @inlinable
   internal init(
@@ -71,15 +71,14 @@ public struct UnsafeTreeV2<Base: ___TreeBase,K,V,C> where K == Base._Key, V == B
   }
 
   public typealias Base = Base
-  public typealias Tree = Self
-  public typealias Header = UnsafeTreeV2Buffer<_Value>.Header
+  public typealias Tree = UnsafeTreeV2<Base>
+  public typealias Header = UnsafeTreeV2Buffer<Base._Value>.Header
   public typealias Buffer = ManagedBuffer<Header, UnsafeTreeV2Origin>
   public typealias BufferPointer = ManagedBufferPointer<Header, UnsafeTreeV2Origin>
-  public typealias _Key = K
-  public typealias _Value = V
+  public typealias _Key = Base._Key
+  public typealias _Value = Base._Value
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
-  public typealias __compare_result = __eager_compare_result
 
   @usableFromInline
   var _buffer: BufferPointer
@@ -127,10 +126,6 @@ extension UnsafeTreeV2 {
   #endif
 }
 
-extension UnsafeTreeV2 where Base: KeyValueComparer {
-  public typealias _MappedValue = Base._MappedValue
-}
-
 // MARK: - 生成
 
 extension UnsafeTreeV2 {
@@ -174,7 +169,7 @@ extension UnsafeTreeV2 {
   ) -> UnsafeTreeV2 {
     create(
       unsafeBufferObject:
-        UnsafeTreeV2Buffer<_Value>
+        UnsafeTreeV2Buffer<Base._Value>
         .create(
           minimumCapacity: nodeCapacity,
           nullptr: nullptr))

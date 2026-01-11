@@ -245,16 +245,14 @@ protocol AllocatorProtocol: TreePointer & _ValueProtocol {
 /// ツリー使用条件をインジェクションするためのプロトコル
 public protocol ValueComparer: _TreeValue, _TreeValue {
   /// 要素から比較キー値がとれること
-  static func __key(_: _Value) -> _Key
+  @inlinable static func __key(_: _Value) -> _Key
   /// 比較関数が実装されていること
-  static func value_comp(_: _Key, _: _Key) -> Bool
+  @inlinable static func value_comp(_: _Key, _: _Key) -> Bool
 
-  static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
+  @inlinable static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
 }
 
-public protocol ValueComparerImpl: ValueComparer { }
-
-extension ValueComparerImpl {
+extension ValueComparer {
 
   @inlinable
   @inline(__always)
@@ -264,7 +262,7 @@ extension ValueComparerImpl {
 }
 
 // Comparableプロトコルの場合標準実装を付与する
-extension ValueComparerImpl where _Key: Comparable {
+extension ValueComparer where _Key: Comparable {
 
   /// Comparableプロトコルの場合の標準実装
   @inlinable
@@ -275,7 +273,7 @@ extension ValueComparerImpl where _Key: Comparable {
 }
 
 // Equatableプロトコルの場合標準実装を付与する
-extension ValueComparerImpl where _Key: Equatable {
+extension ValueComparer where _Key: Equatable {
 
   @inlinable
   @inline(__always)
@@ -348,9 +346,8 @@ extension ValueComparator {
 
 extension ValueComparator where Base: ThreeWayComparator {
 
-//  @inlinable
-//  @inline(__always)
-  @usableFromInline
+  @inlinable
+  @inline(__always)
   internal func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> Base.__compare_result

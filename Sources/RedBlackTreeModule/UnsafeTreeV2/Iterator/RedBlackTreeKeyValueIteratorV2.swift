@@ -26,11 +26,8 @@ extension RedBlackTreeIteratorV2 {
   public struct KeyValues: Sequence, IteratorProtocol
   where Base: KeyValueComparer {
 
-    public typealias Tree = UnsafeTreeV2<Base,Base._Key,Base._Value,Base.__compare_result>
+    public typealias Tree = UnsafeTreeV2<Base>
     public typealias _NodePtr = Tree._NodePtr
-    public typealias _Key = Tree._Key
-    public typealias _Value = Tree._Value
-    public typealias _MappedValue = Tree._MappedValue
 
     @usableFromInline
     internal let __tree_: Tree
@@ -50,7 +47,7 @@ extension RedBlackTreeIteratorV2 {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> (key: _Key, value: _MappedValue)? {
+    public mutating func next() -> (key: Base._Key, value: Base._MappedValue)? {
       guard _current != _end else { return nil }
       defer {
         _current = _next
@@ -95,7 +92,7 @@ extension RedBlackTreeIteratorV2.KeyValues where Base: KeyValueComparer {
 }
 
 extension RedBlackTreeIteratorV2.KeyValues: Equatable
-where _Key: Equatable, _MappedValue: Equatable {
+where Base._Key: Equatable, Base._MappedValue: Equatable {
 
   @inlinable
   @inline(__always)
@@ -105,7 +102,7 @@ where _Key: Equatable, _MappedValue: Equatable {
 }
 
 extension RedBlackTreeIteratorV2.KeyValues: Comparable
-where _Key: Comparable, _MappedValue: Comparable {
+where Base._Key: Comparable, Base._MappedValue: Comparable {
 
   @inlinable
   @inline(__always)

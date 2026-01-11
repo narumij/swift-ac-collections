@@ -28,8 +28,7 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
   @frozen
   public struct Values: Sequence, IteratorProtocol {
 
-    public typealias Tree = UnsafeTreeV2<Base,Base._Key,Base._Value,Base.__compare_result>
-    public typealias _Key = Tree._Key
+    public typealias Tree = UnsafeTreeV2<Base>
     public typealias _Value = Tree._Value
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 

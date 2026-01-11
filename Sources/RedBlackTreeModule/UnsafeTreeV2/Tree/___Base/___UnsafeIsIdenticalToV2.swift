@@ -23,16 +23,14 @@
 @usableFromInline
 protocol ___UnsafeIsIdenticalToV2 {
   associatedtype Base: ___TreeBase
-  var __tree_: __IIT_Tree { get }
-  var _start: __IIT_Tree._NodePtr { get }
-  var _end: __IIT_Tree._NodePtr { get }
+  var __tree_: UnsafeTreeV2<Base> { get }
+  var _start: UnsafeTreeV2<Base>._NodePtr { get }
+  var _end: UnsafeTreeV2<Base>._NodePtr { get }
 }
 
 // MARK: - Is Identical To
 
 extension ___UnsafeIsIdenticalToV2 {
-  
-  public typealias __IIT_Tree = UnsafeTreeV2<Base,Base._Key,Base._Value,Base.__compare_result>
 
   /// Returns a boolean value indicating whether this set is identical to
   /// `other`.

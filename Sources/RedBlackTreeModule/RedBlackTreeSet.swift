@@ -88,39 +88,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   }
 }
 
-extension RedBlackTreeSet: ___RedBlackTreeKeyOnlyBase {
-  public typealias Tree = UnsafeTreeV2<Self,Element,Element,__eager_compare_result>
-  @inlinable
-  @inline(__always)
-  public static func value_equiv(_ lhs: Element, _ rhs: Element) -> Bool {
-    lhs < rhs
-  }
-  @inlinable
-  @inline(__always)
-  public static func __key(_ __v: _Value) -> _Key {
-    __v
-  }
-  @inlinable
-  @inline(__always)
-  public static func value_comp(_ l: _Key, _ r: _Key) -> Bool {
-      l == r
-  }
-  @inlinable
-  @inline(__always)
-  public static func
-    __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
-    -> __eager_compare_result
-  {
-    let res = if __lhs < __rhs {
-      -1
-    } else if __lhs > __rhs {
-      1
-    } else {
-      0
-    }
-    return __eager_compare_result(res)
-  }
-}
+extension RedBlackTreeSet: ___RedBlackTreeKeyOnlyBase {}
 extension RedBlackTreeSet: CompareUniqueTrait {}
 extension RedBlackTreeSet: ScalarValueComparer {}
 

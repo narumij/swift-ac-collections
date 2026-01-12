@@ -427,7 +427,7 @@ extension RedBlackTreeSet {
   ) where R.Bound == Index {
 
     let bounds = bounds.relative(to: self)
-    _ensureUnique()
+    __tree_._ensureUnique()
     ___remove(
       from: bounds.lowerBound.rawValue(__tree_),
       to: bounds.upperBound.rawValue(__tree_))
@@ -439,7 +439,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    _ensureUnique()
+    __tree_._ensureUnique()
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }

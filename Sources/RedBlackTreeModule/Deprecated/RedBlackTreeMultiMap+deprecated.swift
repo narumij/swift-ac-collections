@@ -121,7 +121,7 @@
     @inlinable
     @inline(__always)
     public mutating func remove(contentsOf keyRange: Range<Key>) {
-      _strongEnsureUnique()
+      __tree_._strongEnsureUnique()
       let lower = ___lower_bound(keyRange.lowerBound)
       let upper = ___lower_bound(keyRange.upperBound)
       ___remove(from: lower, to: upper)
@@ -131,7 +131,7 @@
     @inlinable
     @inline(__always)
     public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
-      _strongEnsureUnique()
+      __tree_._strongEnsureUnique()
       let lower = ___lower_bound(keyRange.lowerBound)
       let upper = ___upper_bound(keyRange.upperBound)
       ___remove(from: lower, to: upper)

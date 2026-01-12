@@ -390,7 +390,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
-    _strongEnsureUnique()
+    __tree_._strongEnsureUnique()
     return __tree_.___erase_unique(member) ? member : nil
   }
 
@@ -400,7 +400,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    _ensureUnique()
+    __tree_._ensureUnique()
     guard let element = ___remove(at: index.rawValue(__tree_)) else {
       fatalError(.invalidIndex)
     }
@@ -443,7 +443,7 @@ extension RedBlackTreeMultiSet {
   ) where R.Bound == Index {
 
     let bounds = bounds.relative(to: self)
-    _ensureUnique()
+    __tree_._ensureUnique()
     ___remove(
       from: bounds.lowerBound.rawValue(__tree_),
       to: bounds.upperBound.rawValue(__tree_))
@@ -454,7 +454,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @discardableResult
   public mutating func removeAll(_ member: Element) -> Element? {
-    _strongEnsureUnique()
+    __tree_._strongEnsureUnique()
     return __tree_.___erase_multi(member) != 0 ? member : nil
   }
 }
@@ -464,7 +464,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    _ensureUnique()
+    __tree_._ensureUnique()
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }

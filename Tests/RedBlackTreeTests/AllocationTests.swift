@@ -98,7 +98,7 @@ final class AllocationTests: RedBlackTreeTestCase {
         var A = RedBlackTreeSet<Int>()
         let B = A
         XCTAssertTrue(A.__tree_.isIdentical(to: B.__tree_))
-        A._ensureUnique()
+        A.__tree_._ensureUnique()
         XCTAssertTrue(!A.__tree_.isIdentical(to: B.__tree_))
       }
 
@@ -109,13 +109,13 @@ final class AllocationTests: RedBlackTreeTestCase {
           // treeの保持が単一ではない場合
           let C = A.__tree_
           defer { _fixLifetime(C) }
-          A._ensureUnique()
+          A.__tree_._ensureUnique()
 #if false
           // シングルトンバッファを使っているので、コピーが発生するようになった
           // 弱ユニーク化は発火しないが
           XCTAssertEqual(A._copyCount, 0)
 #endif
-          A._strongEnsureUnique()
+          A.__tree_._strongEnsureUnique()
           // 強ユニーク化は発火すること
           XCTAssertEqual(A._copyCount, 1)
         }
@@ -162,7 +162,7 @@ final class AllocationTests: RedBlackTreeTestCase {
   
   func testHoge() throws {
     var a = RedBlackTreeSet<Int>()
-    a._ensureUnique()
+    a.__tree_._ensureUnique()
     XCTAssertEqual(a.capacity, 0)
     a.__tree_._buffer.header.pushFreshBucket(capacity: 512)
     XCTAssertGreaterThanOrEqual(a.capacity, 512)

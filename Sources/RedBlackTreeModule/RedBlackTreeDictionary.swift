@@ -309,7 +309,7 @@ extension RedBlackTreeDictionary {
         __ptr = __tree_.__construct_node(Self.___tree_value((key, defaultValue())))
         __tree_.__insert_node_at(__parent, __child, __ptr)
       } else {
-        _ensureUnique()
+        __tree_._ensureUnique()
       }
       yield &__tree_[__ptr].value
     }
@@ -539,7 +539,7 @@ extension RedBlackTreeDictionary {
       return nil
     }
     let value = __tree_.__value_(__i).value
-    _ensureUnique()
+    __tree_._ensureUnique()
     _ = __tree_.erase(__i)
     return value
   }
@@ -573,7 +573,7 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    _ensureUnique()
+    __tree_._ensureUnique()
     guard let element = ___remove(at: index.rawValue(__tree_)) else {
       fatalError(.invalidIndex)
     }
@@ -593,7 +593,7 @@ extension RedBlackTreeDictionary {
   ) where R.Bound == Index {
 
     let bounds = bounds.relative(to: self)
-    _ensureUnique()
+    __tree_._ensureUnique()
     ___remove(
       from: bounds.lowerBound.rawValue(__tree_),
       to: bounds.upperBound.rawValue(__tree_))
@@ -605,7 +605,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    _ensureUnique()
+    __tree_._ensureUnique()
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }

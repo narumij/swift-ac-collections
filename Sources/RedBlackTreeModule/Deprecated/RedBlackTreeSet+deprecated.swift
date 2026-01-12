@@ -106,7 +106,7 @@
     @inlinable
     @inline(__always)
     public mutating func remove(contentsOf elementRange: Range<Element>) {
-      _strongEnsureUnique()
+      __tree_._strongEnsureUnique()
       let lower = ___lower_bound(elementRange.lowerBound)
       let upper = ___lower_bound(elementRange.upperBound)
       ___remove(from: lower, to: upper)
@@ -117,7 +117,7 @@
     @inlinable
     @inline(__always)
     public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
-      _strongEnsureUnique()
+      __tree_._strongEnsureUnique()
       let lower = ___lower_bound(elementRange.lowerBound)
       let upper = ___upper_bound(elementRange.upperBound)
       ___remove(from: lower, to: upper)

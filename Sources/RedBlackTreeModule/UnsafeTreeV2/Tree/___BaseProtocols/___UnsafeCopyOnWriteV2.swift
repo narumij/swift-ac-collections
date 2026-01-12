@@ -71,28 +71,12 @@ extension ___UnsafeCopyOnWriteV2 {
 
   @inlinable
   @inline(__always)
-  internal mutating func _ensureUnique() {
-    if !_isKnownUniquelyReferenced_LV1() {
-      __tree_ = __tree_.copy()
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  internal mutating func _strongEnsureUnique() {
-    if !_isKnownUniquelyReferenced_LV2() {
-      __tree_ = __tree_.copy()
-    }
-  }
-
-  @inlinable
-  @inline(__always)
   internal mutating func _ensureUnique(
     transform: (UnsafeTreeV2<Base>) throws -> UnsafeTreeV2<Base>
   )
     rethrows
   {
-    _ensureUnique()
+    __tree_._ensureUnique()
     __tree_ = try transform(__tree_)
   }
 
@@ -197,10 +181,19 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
-
+  
   @inlinable
   @inline(__always)
   internal mutating func _ensureUnique() {
+    let isUnique = _buffer.isUniqueReference()
+    if !isUnique {
+      self = self.copy()
+    }
+  }
+  
+  @inlinable
+  @inline(__always)
+  internal mutating func _strongEnsureUnique() {
     let isUnique = _buffer.isUniqueReference()
     if !isUnique {
       self = self.copy()

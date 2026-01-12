@@ -313,7 +313,7 @@ extension RedBlackTreeMultiMap {
     guard !__tree_.___is_subscript_null(ptr.rawValue(__tree_)) else {
       return nil
     }
-    _ensureUnique()
+    __tree_._ensureUnique()
     let old = __tree_[ptr.rawValue(__tree_)]
     __tree_[ptr.rawValue(__tree_)].value = newValue
     return ___element(old)
@@ -436,7 +436,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @discardableResult
   public mutating func removeFirst(forKey key: Key) -> Bool {
-    _strongEnsureUnique()
+    __tree_._strongEnsureUnique()
     return __tree_.___erase_unique(key)
   }
 
@@ -445,7 +445,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @discardableResult
   public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
-    _ensureUnique()
+    __tree_._ensureUnique()
     return __tree_.___erase_unique(key)
   }
 
@@ -454,7 +454,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @discardableResult
   public mutating func removeAll(forKey key: Key) -> Int {
-    _strongEnsureUnique()
+    __tree_._strongEnsureUnique()
     return __tree_.___erase_multi(key)
   }
 
@@ -463,7 +463,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @discardableResult
   public mutating func removeAll(_unsafeForKey key: Key) -> Int {
-    _ensureUnique()
+    __tree_._ensureUnique()
     return __tree_.___erase_multi(key)
   }
 }
@@ -499,7 +499,7 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    _ensureUnique()
+    __tree_._ensureUnique()
     guard let element = ___remove(at: index.rawValue(__tree_)) else {
       fatalError(.invalidIndex)
     }
@@ -519,7 +519,7 @@ extension RedBlackTreeMultiMap {
   ) where R.Bound == Index {
 
     let bounds = bounds.relative(to: self)
-    _ensureUnique()
+    __tree_._ensureUnique()
     ___remove(
       from: bounds.lowerBound.rawValue(__tree_),
       to: bounds.upperBound.rawValue(__tree_))
@@ -531,7 +531,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    _ensureUnique()
+    __tree_._ensureUnique()
     ___removeAll(keepingCapacity: keepCapacity)
   }
 }

@@ -21,37 +21,11 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-typealias ReferenceCounter = ManagedBuffer<Void, Void>
-
-extension ManagedBuffer where Header == Void, Element == Void {
-
-  @inlinable
-  @inline(__always)
-  static func create() -> ManagedBuffer {
-    ManagedBuffer<Void, Void>.create(minimumCapacity: 0) { _ in }
-  }
-}
-
-@usableFromInline
 typealias UnsafeTreeV2Growth = UnsafeTreeAllcation6_9
 
 @usableFromInline
 protocol ___UnsafeCopyOnWriteV2: UnsafeTreeV2Growth {
   associatedtype Base: ___TreeBase
-  #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    /// 2段階CoWを実現するためのプロパティ
-    ///
-    /// 競技プログラミングでの利用ではできる限りCopyを避けたかった。
-    /// これを実現するためにコンテナ本体のユニーク参照と木のユニーク参照とを分けることにした。
-    ///
-    /// multimap等では中身の破壊が起きやすいので木のユニーク参照判定をしている。
-    ///
-    /// 性能が向上し、コピーを避ける必要があるかまだ判断がつかないので維持している。
-    ///
-    /// 一般的なCoW動作の方が一般向けと今のところ考えており、このモジュールを一般利用可能にするにあたっては、
-    /// これを利用しない判断をする可能性が高い。
-    var refCounter: ReferenceCounter { get set }
-  #endif
   var __tree_: UnsafeTreeV2<Base> { get set }
 }
 
@@ -59,17 +33,8 @@ extension ___UnsafeCopyOnWriteV2 {
 
   @inlinable
   @inline(__always)
-  internal mutating func _updateRefCounter() {
-    #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-//      refCounter = .create()
-    #endif
-  }
-
-  @inlinable
-  @inline(__always)
   internal mutating func _isBaseKnownUnique() -> Bool {
     #if true
-//      return isKnownUniquelyReferenced(&refCounter)
     return __tree_.isUniqueReference()
     #else
       return true
@@ -109,7 +74,6 @@ extension ___UnsafeCopyOnWriteV2 {
   internal mutating func _ensureUnique() {
     if !_isKnownUniquelyReferenced_LV1() {
       __tree_ = __tree_.copy()
-      _updateRefCounter()
     }
   }
 
@@ -118,7 +82,6 @@ extension ___UnsafeCopyOnWriteV2 {
   internal mutating func _strongEnsureUnique() {
     if !_isKnownUniquelyReferenced_LV2() {
       __tree_ = __tree_.copy()
-      _updateRefCounter()
     }
   }
 
@@ -157,7 +120,6 @@ extension ___UnsafeCopyOnWriteV2 {
     #else
       let isUnique = _isKnownUniquelyReferenced_LV1()
       if __tree_._ensureUniqueAndCapacity(to: minimumCapacity, isUnique: isUnique) {
-        _updateRefCounter()
       }
     #endif
   }
@@ -178,7 +140,6 @@ extension ___UnsafeCopyOnWriteV2 {
     let newCapacity = growCapacity(to: minimumCapacity, linearly: linearly)
     if !_isKnownUniquelyReferenced_LV1() {
       __tree_ = __tree_.copy(minimumCapacity: newCapacity)
-      _updateRefCounter()
     } else if shouldExpand {
       __tree_.executeCapacityGrow(newCapacity)
     }

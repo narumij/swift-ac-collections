@@ -72,20 +72,12 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   public
     typealias _Value = RedBlackTreePair<Key, Value>
 
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-  @usableFromInline
-  var refCounter: ReferenceCounter
-#endif
-  
   @usableFromInline
   var __tree_: Tree
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    refCounter = .create()
-#endif
   }
 }
 

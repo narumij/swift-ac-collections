@@ -64,20 +64,12 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias Base = Self
 
-  #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    @usableFromInline
-    var refCounter: ReferenceCounter
-  #endif
-
   @usableFromInline
   var __tree_: Tree
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
-    #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-      refCounter = .create()
-    #endif
   }
 }
 
@@ -255,8 +247,8 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  @inline(__always)
+//  @inlinable
+//  @inline(__always)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element

@@ -75,7 +75,7 @@ for x in q {
         e[vz].remove(vx)
       }
     }
-    e[vx].removeAll(keepingCapacity: true)
+    e[vx].removeAll()
   }
   fastPrint(m)
 }

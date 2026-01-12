@@ -26,6 +26,7 @@ final class _UnsafeNodeFreshPoolDeallocator {
   @usableFromInline let stride: Int
   @usableFromInline let deinitialize: (_NodePtr) -> Void
   @usableFromInline var freshBucketHead: _BucketPointer?
+  @usableFromInline var isBaseDeallocated: Bool = false
 
   @inlinable
   @inline(__always)

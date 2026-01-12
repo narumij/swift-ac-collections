@@ -973,7 +973,7 @@ final class EtcTests: RedBlackTreeTestCase {
   }
   
   func testMapBehavior() throws {
-    let a = RedBlackTreeSet<Int>(0..<1)
+    let a = RedBlackTreeSet<Int>(0..<10)
     do {
       let n = a.count
       XCTAssertEqual(n, 10)

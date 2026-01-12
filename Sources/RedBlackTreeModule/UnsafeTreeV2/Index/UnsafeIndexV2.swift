@@ -45,10 +45,10 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   internal var rawValue: _NodePtr {
     didSet { ___node_id_ = rawValue.pointee.___node_id_ }
   }
-  
+
   @usableFromInline
   internal var deallocator: Deallocator
-  
+
   @usableFromInline
   typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 
@@ -78,7 +78,7 @@ extension UnsafeTreeV2 where Base: ___TreeIndex {
   func equiv(_ l: UnsafeIndexV2<Base>, _ r: UnsafeIndexV2<Base>) -> Bool {
     return l.___node_id_ == r.___node_id_
   }
-  
+
   @inlinable
   func lessThan(_ l: UnsafeIndexV2<Base>, _ r: UnsafeIndexV2<Base>) -> Bool {
     let lhs = ___node_ptr(l)
@@ -149,7 +149,10 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var next: Self? {
-    guard !__tree_.___is_next_null(rawValue) else {
+    guard
+      !__tree_.___is_next_null(rawValue),
+      !deallocator.isBaseDeallocated
+    else {
       return nil
     }
     var next = self
@@ -163,7 +166,10 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var previous: Self? {
-    guard !__tree_.___is_prev_null(rawValue) else {
+    guard
+      !__tree_.___is_prev_null(rawValue),
+      !deallocator.isBaseDeallocated
+    else {
       return nil
     }
     var prev = self
@@ -219,7 +225,8 @@ extension UnsafeIndexV2 {
   public var pointee: Pointee? {
     guard
       !__tree_.___is_subscript_null(rawValue(__tree_)),
-      !__tree_.___is_garbaged(rawValue(__tree_))
+      !__tree_.___is_garbaged(rawValue(__tree_)),
+      !deallocator.isBaseDeallocated
     else { return nil }
     return Base.___pointee(UnsafePair<_Value>.valuePointer(rawValue(__tree_))!.pointee)
   }

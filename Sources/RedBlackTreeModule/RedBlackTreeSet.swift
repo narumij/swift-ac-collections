@@ -247,15 +247,15 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
-//  @inlinable
-//  @inline(__always)
+  @inlinable
+  @inline(__always)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    _ensureUniqueAndCapacity()
-    //    let (__r, __inserted) = __tree_.__insert_unique(newMember)
-    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
+    __tree_._ensureUniqueAndCapacity()
+        let (__r, __inserted) = __tree_.__insert_unique(newMember)
+//    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     return (__inserted, __inserted ? newMember : __tree_[__r])
   }
 
@@ -374,7 +374,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
-    _ensureUnique()
+    __tree_._ensureUnique()
     return __tree_.___erase_unique(member) ? member : nil
   }
 
@@ -384,7 +384,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    _ensureUnique()
+    __tree_._ensureUnique()
     guard let element = ___remove(at: index.rawValue(__tree_)) else {
       fatalError(.invalidIndex)
     }

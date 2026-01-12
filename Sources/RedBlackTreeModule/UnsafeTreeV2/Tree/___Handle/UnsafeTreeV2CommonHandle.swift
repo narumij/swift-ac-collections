@@ -22,6 +22,7 @@
 
 extension UnsafeTreeV2 {
 
+  /// 遅い。注意が必要
   @inlinable
   @inline(__always)
   internal func withHeader<R>(

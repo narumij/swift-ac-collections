@@ -144,7 +144,7 @@ extension ___UnsafeCopyOnWriteV2 {
   @inlinable
   @inline(__always)
   internal mutating func _ensureUniqueAndCapacity(to minimumCapacity: Int) {
-    #if true
+    #if false
       let shouldExpand = __tree_.capacity < minimumCapacity
       let newCapacity = growCapacity(to: minimumCapacity, linearly: false)
       if !_isKnownUniquelyReferenced_LV1() {

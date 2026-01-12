@@ -55,7 +55,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @usableFromInline
   let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
-  
+
   @usableFromInline
   var deallocator: _UnsafeNodeFreshPoolDeallocator {
     withMutableHeader { $0.deallocator }
@@ -65,14 +65,17 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 extension UnsafeTreeV2 {
 
   @inlinable
-  public var count: Int { withHeader { $0.count } }
+  @inline(__always)
+  public var count: Int { withMutableHeader { $0.count } }
 
   #if !DEBUG
     @inlinable
-    public var capacity: Int { withHeader { $0.freshPoolCapacity } }
+    @inline(__always)
+    public var capacity: Int { withMutableHeader { $0.freshPoolCapacity } }
 
     @inlinable
-    public var initializedCount: Int { withHeader { $0.freshPoolUsedCount } }
+    @inline(__always)
+    public var initializedCount: Int { withMutableHeader { $0.freshPoolUsedCount } }
   #else
     @inlinable
     public var capacity: Int {
@@ -192,4 +195,3 @@ extension UnsafeTreeV2 {
     #endif
   }
 }
-

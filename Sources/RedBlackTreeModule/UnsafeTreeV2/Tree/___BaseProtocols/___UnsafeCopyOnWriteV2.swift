@@ -119,8 +119,7 @@ extension ___UnsafeCopyOnWriteV2 {
       assert(__tree_.initializedCount <= __tree_.capacity)
     #else
       let isUnique = _isKnownUniquelyReferenced_LV1()
-      if __tree_._ensureUniqueAndCapacity(to: minimumCapacity, isUnique: isUnique) {
-      }
+      __tree_._ensureUniqueAndCapacity(to: minimumCapacity, isUnique: isUnique)
     #endif
   }
 
@@ -220,7 +219,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
-  mutating func _ensureUniqueAndCapacity(isUnique: Bool) -> Bool {
+  mutating func _ensureUniqueAndCapacity(isUnique: Bool) {
     _ensureUniqueAndCapacity(to: count + 1, isUnique: isUnique)
   }
 
@@ -229,19 +228,16 @@ extension UnsafeTreeV2 {
   mutating func _ensureUniqueAndCapacity(
     to minimumCapacity: Int,
     isUnique: Bool
-  ) -> Bool {
+  ) {
     let shouldExpand = capacity < minimumCapacity
     let newCapacity = growCapacity(to: minimumCapacity, linearly: false)
-    guard shouldExpand || !isUnique else { return false }
-    var isCopied = false
+    guard shouldExpand || !isUnique else { return }
     if !isUnique {
       self = self.copy(minimumCapacity: newCapacity)
-      isCopied = true
     } else if shouldExpand {
       executeCapacityGrow(newCapacity)
     }
     assert(initializedCount <= capacity)
-    return isCopied
   }
 }
 

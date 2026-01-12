@@ -63,6 +63,34 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   // CoWに関与できないので、Treeに対する破壊的変更は行わないこと
 }
 
+extension UnsafeTreeV2 where Base: ___TreeIndex {
+
+  @inlinable
+  func equiv(_ l: UnsafeIndexV2<Base>, _ r: UnsafeIndexV2<Base>) -> Bool {
+//    let lhs = ___node_ptr(l)
+//    let rhs = ___node_ptr(r)
+//    guard !___is_garbaged(lhs),
+//      !___is_garbaged(rhs)
+//    else {
+//      preconditionFailure(.garbagedIndex)
+//    }
+//    return ___ptr_comp(lhs, rhs)
+    return l.___node_id_ == r.___node_id_
+  }
+  
+  @inlinable
+  func lessThan(_ l: UnsafeIndexV2<Base>, _ r: UnsafeIndexV2<Base>) -> Bool {
+    let lhs = ___node_ptr(l)
+    let rhs = ___node_ptr(r)
+    guard !___is_garbaged(lhs),
+      !___is_garbaged(rhs)
+    else {
+      preconditionFailure(.garbagedIndex)
+    }
+    return ___ptr_comp(lhs, rhs)
+  }
+}
+
 extension UnsafeIndexV2: Comparable {
 
   /// - Complexity: O(1)
@@ -70,8 +98,8 @@ extension UnsafeIndexV2: Comparable {
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-//    lhs.rawValue == rhs.rawValue
-    lhs.__tree_.___node_ptr(lhs) == lhs.__tree_.___node_ptr(rhs)
+    //    lhs.rawValue == rhs.rawValue
+    lhs.___node_id_ == rhs.___node_id_
   }
 
   /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(1)
@@ -83,18 +111,7 @@ extension UnsafeIndexV2: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-    
-    // TODO: 木が異なる場合の動作が未定義なので直す
-
-    let __tree_ = lhs.__tree_
-
-    guard !__tree_.___is_garbaged(lhs.rawValue),
-      !__tree_.___is_garbaged(rhs.rawValue)
-    else {
-      preconditionFailure(.garbagedIndex)
-    }
-
-    return lhs.__tree_.___ptr_comp(lhs.rawValue, rhs.rawValue)
+    return lhs.__tree_.lessThan(lhs, rhs)
   }
 }
 
@@ -199,8 +216,11 @@ extension UnsafeIndexV2 {
   /// 無効な場合nilとなる
   @inlinable
   public var pointee: Pointee? {
-    __tree_.___is_subscript_null(rawValue)
-      ? nil : Base.___pointee(UnsafePair<_Value>.valuePointer(rawValue)!.pointee)
+    guard
+      !__tree_.___is_subscript_null(rawValue(__tree_)),
+      !__tree_.___is_garbaged(rawValue(__tree_))
+    else { return nil }
+    return Base.___pointee(UnsafePair<_Value>.valuePointer(rawValue(__tree_))!.pointee)
   }
 }
 

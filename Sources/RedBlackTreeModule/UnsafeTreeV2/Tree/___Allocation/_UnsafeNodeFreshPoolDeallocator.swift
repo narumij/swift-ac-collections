@@ -36,6 +36,11 @@ final class _UnsafeNodeFreshPoolDeallocator<_Value> {
     @usableFromInline var nullptr: UnsafeMutablePointer<UnsafeNode>
     @usableFromInline var freshBucketCount: Int
   }
+  @inlinable
+  @inline(__always)
+  public func isIdentical(to other: _UnsafeNodeFreshPoolDeallocator) -> Bool {
+    self === other
+  }
   deinit {
     freshPool.___deallocFreshPool()
   }

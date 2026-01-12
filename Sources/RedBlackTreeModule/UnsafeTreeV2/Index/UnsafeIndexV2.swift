@@ -35,6 +35,7 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   @usableFromInline
   typealias _Value = Tree._Value
 
+  // TODO: 木を保持しない設計及び実装への移行
   @usableFromInline
   internal let __tree_: Tree
 

@@ -70,7 +70,8 @@ extension UnsafeIndexV2: Comparable {
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-    lhs.rawValue == rhs.rawValue
+//    lhs.rawValue == rhs.rawValue
+    lhs.__tree_.___node_ptr(lhs) == lhs.__tree_.___node_ptr(rhs)
   }
 
   /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(1)
@@ -82,6 +83,8 @@ extension UnsafeIndexV2: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
+    
+    // TODO: 木が異なる場合の動作が未定義なので直す
 
     let __tree_ = lhs.__tree_
 

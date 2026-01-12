@@ -6,6 +6,35 @@
 //
 
 @usableFromInline
-final class _UnsafeNodeFreshPoolDeallocator {
-  
+final class _UnsafeNodeFreshPoolDeallocator<_Value> {
+  @inlinable
+  internal init(source: some _UnsafeNodeFreshPool) {
+    self.freshPool = .init(source: source)
+  }
+  @usableFromInline var freshPool: FreshPool
+  @usableFromInline
+  struct FreshPool: _UnsafeNodeFreshPool {
+    @inlinable
+    internal init(source: some _UnsafeNodeFreshPool) {
+      self.freshBucketHead = source.freshBucketHead
+      self.freshBucketCurrent = source.freshBucketCurrent
+      self.freshBucketLast = source.freshBucketLast
+      self.freshPoolCapacity = source.freshPoolCapacity
+      self.freshPoolUsedCount = source.freshPoolUsedCount
+      self.count = source.count
+      self.nullptr = source.nullptr
+      self.freshBucketCount = source.freshBucketCount
+    }
+    @usableFromInline var freshBucketHead: _BucketPointer?
+    @usableFromInline var freshBucketCurrent: _BucketPointer?
+    @usableFromInline var freshBucketLast: _BucketPointer?
+    @usableFromInline var freshPoolCapacity: Int
+    @usableFromInline var freshPoolUsedCount: Int
+    @usableFromInline var count: Int
+    @usableFromInline var nullptr: UnsafeMutablePointer<UnsafeNode>
+    @usableFromInline var freshBucketCount: Int
+  }
+  deinit {
+    freshPool.___deallocFreshPool()
+  }
 }

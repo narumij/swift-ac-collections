@@ -53,7 +53,7 @@ extension UnsafeTreeV2Buffer {
       @usableFromInline var count: Int = 0
     #endif
 
-    @usableFromInline var _deallocator: _UnsafeNodeFreshPoolDeallocator?
+    @usableFromInline var _deallocator: _UnsafeNodeFreshPoolDeallocator<_Value>?
 
     @inlinable @inline(__always)
     var needsDealloc: Bool {
@@ -61,7 +61,7 @@ extension UnsafeTreeV2Buffer {
     }
 
     @inlinable @inline(__always)
-    var deallocator: _UnsafeNodeFreshPoolDeallocator {
+    var deallocator: _UnsafeNodeFreshPoolDeallocator<_Value> {
       fatalError()
     }
 

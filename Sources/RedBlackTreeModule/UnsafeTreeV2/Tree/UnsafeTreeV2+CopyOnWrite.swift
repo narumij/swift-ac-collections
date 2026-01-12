@@ -33,16 +33,7 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2 {
-  
-  
-  @inlinable
-  @inline(__always)
-  internal func copy() -> UnsafeTreeV2 {
-    copy(minimumCapacity: capacity)
-  }
-}
-
+#if false
 extension UnsafeTreeV2 {
 
   @inlinable
@@ -116,6 +107,24 @@ extension UnsafeTreeV2 {
   internal static func ensureCapacity(tree: inout UnsafeTreeV2, minimumCapacity: Int) {
     if tree.capacity < minimumCapacity {
       tree.growthCapacity(to: minimumCapacity, linearly: false)
+    }
+  }
+}
+#endif
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  internal static func ensureCapacity(tree: inout UnsafeTreeV2) {
+    ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal static func ensureCapacity(tree: inout UnsafeTreeV2, minimumCapacity: Int) {
+    if tree.capacity < minimumCapacity {
+      tree.executeCapacityGrow(tree.growCapacity(to: minimumCapacity, linearly: false))
     }
   }
 }

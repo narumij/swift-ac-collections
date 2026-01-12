@@ -6,7 +6,7 @@
 //
 
 #if DEBUG
-
+// TODO: テストごと消す
 extension RedBlackTreeSet: ___UnsafeCopyOnWriteV2 { }
 extension RedBlackTreeMultiSet: ___UnsafeCopyOnWriteV2 { }
 extension RedBlackTreeDictionary: ___UnsafeCopyOnWriteV2 { }

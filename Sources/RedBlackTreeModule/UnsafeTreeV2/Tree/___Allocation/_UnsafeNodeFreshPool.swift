@@ -43,6 +43,7 @@ where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
 #if DEBUG
   var freshBucketCount: Int { get set }
 #endif
+  func didUpdateFreshBucketHead()
 }
 
 extension _UnsafeNodeFreshPool {
@@ -68,6 +69,7 @@ extension _UnsafeNodeFreshPool {
     let (pointer, capacity) = Self.createBucket(capacity: capacity)
     if freshBucketHead == nil {
       freshBucketHead = pointer
+      didUpdateFreshBucketHead()
     }
     if freshBucketCurrent == nil {
       freshBucketCurrent = pointer

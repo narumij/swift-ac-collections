@@ -8,40 +8,54 @@
 // インデックス等で`__tree_`を共有する設計だったが、デアロケータを共有する設計に移行する
 // 生成されて以後はこのオブジェクトが保持するメモリの寿命を一元で管理する
 @usableFromInline
-final class _UnsafeNodeFreshPoolDeallocator<_Value> {
+final class _UnsafeNodeFreshPoolDeallocator {
+  
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  public typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
+  
   @inlinable
-  internal init(source: some _UnsafeNodeFreshPool) {
-    self.freshPool = .init(source: source)
+  internal init(freshBucketHead: _BucketPointer?,
+                stride: Int,
+                deinitialize: @escaping (_NodePtr) -> Void)
+  {
+    self.freshBucketHead = freshBucketHead
+    self.stride = stride
+    self.deinitialize = deinitialize
   }
-  @usableFromInline var freshPool: FreshPool
-  @usableFromInline
-  struct FreshPool: _UnsafeNodeFreshPool {
-    @inlinable
-    internal init(source: some _UnsafeNodeFreshPool) {
-      self.freshBucketHead = source.freshBucketHead
-      self.freshBucketCurrent = source.freshBucketCurrent
-      self.freshBucketLast = source.freshBucketLast
-      self.freshPoolCapacity = source.freshPoolCapacity
-      self.freshPoolUsedCount = source.freshPoolUsedCount
-      self.count = source.count
-      self.nullptr = source.nullptr
-      self.freshBucketCount = source.freshBucketCount
-    }
-    @usableFromInline var freshBucketHead: _BucketPointer?
-    @usableFromInline var freshBucketCurrent: _BucketPointer?
-    @usableFromInline var freshBucketLast: _BucketPointer?
-    @usableFromInline var freshPoolCapacity: Int
-    @usableFromInline var freshPoolUsedCount: Int
-    @usableFromInline var count: Int
-    @usableFromInline var nullptr: UnsafeMutablePointer<UnsafeNode>
-    @usableFromInline var freshBucketCount: Int
-  }
+  
+  @usableFromInline let stride: Int
+  @usableFromInline let deinitialize: (_NodePtr) -> Void
+  @usableFromInline var freshBucketHead: _BucketPointer?
+
   @inlinable
   @inline(__always)
   public func isIdentical(to other: _UnsafeNodeFreshPoolDeallocator) -> Bool {
     self === other
   }
+  
+  @inlinable
+  @inline(__always)
+  func deinitializeNodes(_ p: _BucketPointer) {
+    let bucket = p.pointee
+    var i = 0
+    let count = bucket.count
+    var p = bucket.start
+    while i < count {
+      let c = p
+      p = p._advanced(raw: stride)
+      deinitialize(c)
+      i += 1
+    }
+  }
+
+  @inlinable
   deinit {
-    freshPool.___deallocFreshPool()
+    var reserverHead = freshBucketHead
+    while let h = reserverHead {
+      reserverHead = h.pointee.next
+      deinitializeNodes(h)
+      h.deinitialize(count: 1)
+      h.deallocate()
+    }
   }
 }

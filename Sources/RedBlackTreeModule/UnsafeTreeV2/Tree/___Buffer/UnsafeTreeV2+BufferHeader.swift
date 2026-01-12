@@ -53,23 +53,39 @@ extension UnsafeTreeV2Buffer {
       @usableFromInline var count: Int = 0
     #endif
 
-    @usableFromInline var _deallocator: _UnsafeNodeFreshPoolDeallocator<_Value>?
+    @inlinable @inline(never) // ホットじゃないのでinline化から除外したい
+    func didUpdateFreshBucketHead() {
+      _deallocator?.freshBucketHead = freshBucketHead
+    }
+
+    @usableFromInline var _deallocator: _UnsafeNodeFreshPoolDeallocator?
 
     @inlinable @inline(__always)
     var needsDealloc: Bool {
       _deallocator == nil
     }
 
-    @inlinable @inline(__always)
-    var deallocator: _UnsafeNodeFreshPoolDeallocator<_Value> {
+    @inlinable @inline(never)
+    var deallocator: _UnsafeNodeFreshPoolDeallocator {
       mutating get {
         // TODO: 一度の保証付きの実装にすること
         if _deallocator == nil {
-          _deallocator = .init(source: self)
+          _deallocator = .init(
+            freshBucketHead: freshBucketHead,
+            stride: MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride,
+            deinitialize: UnsafePair<_Value>.deinitialize)
         }
         return _deallocator!
       }
     }
+
+    #if DEBUG
+      @inlinable
+      @inline(__always)
+      mutating func createDeallocator() {
+        _ = deallocator
+      }
+    #endif
 
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       /// CoWの発火回数を観察するためのプロパティ

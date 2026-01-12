@@ -27,20 +27,23 @@ extension UnsafeTreeV2 {
   // TODO: grow関連の名前が混乱気味なので整理する
   @inlinable
   @inline(__always)
-  public func ensureCapacity(_ newCapacity: Int) {
+  public func executeCapacityGrow(_ newCapacity: Int) {
     guard capacity < newCapacity else { return }
     withMutableHeader { $0.pushFreshBucket(capacity: newCapacity - capacity) }
   }
 }
 
 extension UnsafeTreeV2 {
-
-
+  
+  
   @inlinable
   @inline(__always)
   internal func copy() -> UnsafeTreeV2 {
     copy(minimumCapacity: capacity)
   }
+}
+
+extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
@@ -63,13 +66,13 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func growthCapacity(to capacity: Int, linearly: Bool) {
-    ensureCapacity(growCapacity(to: capacity, linearly: linearly))
+    executeCapacityGrow(growCapacity(to: capacity, linearly: linearly))
   }
 
   @inlinable
   @inline(__always)
   internal func growthCapacity(to capacity: Int, limit: Int, linearly: Bool) {
-    ensureCapacity(Swift.min(growCapacity(to: capacity, linearly: linearly), limit))
+    executeCapacityGrow(Swift.min(growCapacity(to: capacity, linearly: linearly), limit))
   }
 }
 

@@ -38,6 +38,7 @@ nonisolated(unsafe)
 // TODO: 確保サイズ毎所要時間をのアロケーションとデアロケーションの両方で測ること
 
 #if ALLOCATION_DRILL
+  // TODO: 直すか消すかする
   extension RedBlackTreeSet {
     /// 通常と異なり、シングルトンではない0サイズのインスタンスを返す
     @inlinable

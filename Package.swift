@@ -17,7 +17,7 @@ var defines: [String] = [
   "WITHOUT_SIZECHECK",
   "USE_UNSAFE_TREE",  // TODO: そのうち消す
   //"USE_OLD_FIND",
-    "ALLOCATION_DRILL" // リリース時はオフ
+//    "ALLOCATION_DRILL" // リリース時はオフ
 
   //  "USE_FRESH_POOL_V1"
 
@@ -211,6 +211,14 @@ let package = Package(
         .product(name: "Collections", package: "swift-collections"),
       ],
       path: "Tests/Executables/MultiRoundTrip"),
+    .executableTarget(
+      name: "ABC411F",
+      dependencies: [
+        "AcCollections",
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+        .product(name: "Collections", package: "swift-collections"),
+      ],
+      path: "Tests/Executables/ABC411F"),
     .executableTarget(
       name: "MarriedSource",
       dependencies: [

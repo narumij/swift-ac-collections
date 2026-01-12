@@ -971,4 +971,26 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(TypeFixture<Int>().isInt, true)
     XCTAssertEqual(TypeFixture<Int64>().isInt, false)
   }
+  
+  func testMapBehavior() throws {
+    let a = RedBlackTreeSet<Int>(0..<1)
+    do {
+      let n = a.count
+      XCTAssertEqual(n, 10)
+      
+      var result = ContiguousArray<Int>()
+       result.reserveCapacity(n)
+
+       var i = a.startIndex
+
+       for _ in 0..<n {
+         result.append(a[i])
+         a.formIndex(after: &i)
+         XCTAssertNotEqual(i.rawValue, a.nullptr)
+       }
+
+      XCTAssertNotEqual(i.rawValue, a.nullptr)
+      XCTAssertEqual(a.endIndex, i)
+    }
+  }
 }

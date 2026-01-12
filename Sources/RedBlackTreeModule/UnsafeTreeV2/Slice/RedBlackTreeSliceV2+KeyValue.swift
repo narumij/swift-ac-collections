@@ -411,3 +411,23 @@ extension RedBlackTreeSliceV2.KeyValue: Comparable where _Key: Comparable, _Mapp
 // MARK: - Is Identical To
 
 extension RedBlackTreeSliceV2.KeyValue: ___UnsafeIsIdenticalToV2 {}
+
+
+// MARK: - CustomStringConvertible
+
+extension RedBlackTreeSliceV2.KeyValue: CustomStringConvertible {
+
+  @inlinable
+  public var description: String {
+    _dictionaryDescription(for: self)
+  }
+}
+
+// MARK: - CustomDebugStringConvertible
+
+extension RedBlackTreeSliceV2.KeyValue: CustomDebugStringConvertible {
+
+  public var debugDescription: String {
+    description
+  }
+}

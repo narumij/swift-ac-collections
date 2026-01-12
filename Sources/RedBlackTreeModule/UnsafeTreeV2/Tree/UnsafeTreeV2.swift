@@ -55,6 +55,11 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @usableFromInline
   let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
+  
+  @usableFromInline
+  var deallocator: _UnsafeNodeFreshPoolDeallocator {
+    withMutableHeader { $0.deallocator }
+  }
 }
 
 extension UnsafeTreeV2 {

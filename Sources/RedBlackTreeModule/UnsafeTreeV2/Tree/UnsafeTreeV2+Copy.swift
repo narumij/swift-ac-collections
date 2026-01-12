@@ -117,6 +117,8 @@ extension UnsafeTreeV2 {
       #if !USE_FRESH_POOL_V2
         newHeader.freshPoolUsedCount = header.freshPoolUsedCount
       #endif
+      
+      assert(newHeader._deallocator == nil)
     }
 
     assert(equiv(with: tree))

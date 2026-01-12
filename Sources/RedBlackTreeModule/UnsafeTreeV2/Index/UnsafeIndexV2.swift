@@ -42,7 +42,15 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   internal var ___node_id_: Int
 
   @usableFromInline
-  internal var rawValue: _NodePtr
+  internal var rawValue: _NodePtr {
+    didSet { ___node_id_ = rawValue.pointee.___node_id_ }
+  }
+  
+  @usableFromInline
+  internal var deallocator: Deallocator
+  
+  @usableFromInline
+  typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 
   // MARK: -
 
@@ -53,6 +61,7 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
     self.__tree_ = tree
     self.rawValue = rawValue
     self.___node_id_ = rawValue.pointee.___node_id_
+    self.deallocator = tree.deallocator
   }
 
   /*
@@ -67,14 +76,6 @@ extension UnsafeTreeV2 where Base: ___TreeIndex {
 
   @inlinable
   func equiv(_ l: UnsafeIndexV2<Base>, _ r: UnsafeIndexV2<Base>) -> Bool {
-//    let lhs = ___node_ptr(l)
-//    let rhs = ___node_ptr(r)
-//    guard !___is_garbaged(lhs),
-//      !___is_garbaged(rhs)
-//    else {
-//      preconditionFailure(.garbagedIndex)
-//    }
-//    return ___ptr_comp(lhs, rhs)
     return l.___node_id_ == r.___node_id_
   }
   
@@ -230,6 +231,7 @@ extension UnsafeIndexV2 {
       self.__tree_ = _unsafe_tree
       self.rawValue = rawValue
       self.___node_id_ = node_id
+      self.deallocator = _unsafe_tree.deallocator
     }
   }
 

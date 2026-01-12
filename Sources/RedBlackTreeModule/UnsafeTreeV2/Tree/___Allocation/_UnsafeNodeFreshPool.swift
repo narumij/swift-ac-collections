@@ -251,15 +251,16 @@ extension _UnsafeNodeFreshPool {
     let bucket = p.pointee
     var i = 0
     let count = bucket.count
+    let capacity = bucket.capacity
     var p = bucket.start
-    while i < count {
+    while i < capacity {
       let c = p
       p = UnsafePair<_Value>.advance(p)
-      UnsafePair<_Value>.deinitialize(c)
-//      if c.pointee.___needs_deinitialize {
-//        UnsafeNode.deinitialize(_Value.self, c)
-//      }
-//      c.deinitialize(count: 1)
+      if i < count, c.pointee.___needs_deinitialize {
+        UnsafePair<_Value>.deinitialize(c)
+      } else {
+        c.deinitialize(count: 1)
+      }
       i += 1
     }
 #if DEBUG

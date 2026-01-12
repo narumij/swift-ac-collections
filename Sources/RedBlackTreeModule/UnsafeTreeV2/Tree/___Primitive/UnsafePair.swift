@@ -122,6 +122,16 @@ public enum UnsafePair<_Value> {
   
   @inlinable
   @inline(__always)
+  static func deinitializeValueOnly(_ p: UnsafeMutablePointer<UnsafeNode>) {
+    if p.pointee.___needs_deinitialize {
+      UnsafeMutableRawPointer(p.advanced(by: 1))
+        .assumingMemoryBound(to: _Value.self)
+        .deinitialize(count: 1)
+    }
+  }
+  
+  @inlinable
+  @inline(__always)
   static func deinitialize(_ p: UnsafeMutablePointer<UnsafeNode>) {
     if p.pointee.___needs_deinitialize {
       UnsafeMutableRawPointer(p.advanced(by: 1))

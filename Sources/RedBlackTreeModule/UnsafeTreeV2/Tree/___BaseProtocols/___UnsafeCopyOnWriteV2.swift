@@ -140,6 +140,7 @@ extension ___UnsafeCopyOnWriteV2 {
   @inlinable
   @inline(__always)
   internal mutating func _ensureUniqueAndCapacity(to minimumCapacity: Int) {
+#if true
     let shouldExpand = __tree_.capacity < minimumCapacity
     let newCapacity = growCapacity(to: minimumCapacity, linearly: false)
     if !_isKnownUniquelyReferenced_LV1() {
@@ -149,6 +150,12 @@ extension ___UnsafeCopyOnWriteV2 {
       __tree_.executeCapacityGrow(newCapacity)
     }
     assert(__tree_.initializedCount <= __tree_.capacity)
+#else
+    let isUnique = _isKnownUniquelyReferenced_LV1()
+    if __tree_._ensureUniqueAndCapacity(to: minimumCapacity, isUnique: isUnique) {
+      _updateRefCounter()
+    }
+#endif
   }
 
   @inlinable
@@ -205,6 +212,78 @@ extension ___UnsafeCopyOnWriteV2 {
     if __tree_.capacity < min(limit, minimumCapacity) {
       let newCapacity = min(limit, growCapacity(to: minimumCapacity, linearly: linearly))
       __tree_.executeCapacityGrow(newCapacity)
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+  @inlinable
+  @inline(__always)
+  internal mutating func _ensureUnique(
+    isUnique: Bool,
+    transform: (UnsafeTreeV2<Base>) throws -> UnsafeTreeV2<Base>
+  )
+    rethrows -> Bool
+  {
+    let isCopied = _ensureUnique(isUnique: isUnique)
+    self = try transform(self)
+    return isCopied
+  }
+}
+
+extension UnsafeTreeV2 {
+  
+  @inlinable
+  @inline(__always)
+  internal mutating func _ensureUnique(isUnique: Bool) -> Bool {
+    if !isUnique {
+      self = self.copy()
+      return true
+    }
+    return false
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable @inline(__always)
+  mutating func _ensureUniqueAndCapacity(isUnique: Bool) -> Bool {
+    _ensureUniqueAndCapacity(to: count + 1, isUnique: isUnique)
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func _ensureUniqueAndCapacity(
+    to minimumCapacity: Int,
+    isUnique: Bool
+  ) -> Bool {
+    let shouldExpand = capacity < minimumCapacity
+    let newCapacity = growCapacity(to: minimumCapacity, linearly: false)
+    guard shouldExpand || !isUnique else { return false }
+    var isCopied = false
+    if !isUnique {
+      self = self.copy(minimumCapacity: newCapacity)
+      isCopied = true
+    } else if shouldExpand {
+      executeCapacityGrow(newCapacity)
+    }
+    assert(initializedCount <= capacity)
+    return isCopied
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable @inline(__always)
+  internal mutating func _ensureCapacity(limit: Int, linearly: Bool = false) {
+    _ensureCapacity(to: count + 1, limit: limit, linearly: linearly)
+  }
+
+  @inlinable @inline(__always)
+  internal mutating func _ensureCapacity(to minimumCapacity: Int, limit: Int, linearly: Bool) {
+    if capacity < minimumCapacity {
+      let newCapacity = min(limit, growCapacity(to: capacity, linearly: false))
+      executeCapacityGrow(newCapacity)
     }
   }
 }

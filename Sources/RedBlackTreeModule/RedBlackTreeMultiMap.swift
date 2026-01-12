@@ -81,15 +81,8 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
   var refCounter: ReferenceCounter
 #endif
   
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-  @usableFromInline
-  var __tree_: Tree {
-    didSet { refCounter = .create() }
-  }
-#else
   @usableFromInline
   var __tree_: Tree
-#endif
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {

@@ -16,13 +16,16 @@ final class _UnsafeNodeFreshPoolDeallocator {
   @inlinable
   internal init(freshBucketHead: _BucketPointer?,
                 stride: Int,
-                deinitialize: @escaping (_NodePtr) -> Void)
+                deinitialize: @escaping (_NodePtr) -> Void,
+                nullptr: _NodePtr)
   {
     self.freshBucketHead = freshBucketHead
     self.stride = stride
     self.deinitialize = deinitialize
+    self.nullptr = nullptr
   }
   
+  @usableFromInline let nullptr: _NodePtr
   @usableFromInline let stride: Int
   @usableFromInline let deinitialize: (_NodePtr) -> Void
   @usableFromInline var freshBucketHead: _BucketPointer?
@@ -58,5 +61,22 @@ final class _UnsafeNodeFreshPoolDeallocator {
       h.deinitialize(count: 1)
       h.deallocate()
     }
+  }
+  
+  @inlinable
+  @inline(__always)
+  subscript(___node_id_: Int) -> _NodePtr {
+    assert(___node_id_ >= 0)
+    var remaining = ___node_id_
+    var p = freshBucketHead
+    while let h = p {
+      let cap = h.pointee.capacity
+      if remaining < cap {
+        return h.pointee[remaining]
+      }
+      remaining -= cap
+      p = h.pointee.next
+    }
+    return nullptr
   }
 }

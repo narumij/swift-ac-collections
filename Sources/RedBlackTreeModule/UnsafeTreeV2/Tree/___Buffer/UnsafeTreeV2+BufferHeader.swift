@@ -73,7 +73,8 @@ extension UnsafeTreeV2Buffer {
           _deallocator = .init(
             freshBucketHead: freshBucketHead,
             stride: MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride,
-            deinitialize: UnsafePair<_Value>.deinitialize)
+            deinitialize: UnsafePair<_Value>.deinitialize,
+            nullptr: nullptr)
         }
         return _deallocator!
       }

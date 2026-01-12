@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol UnsafeTreeHandleBase: TreeNodeProtocol & _TreeValue & UnsafeTreePointer {
+protocol UnsafeTreeHandleBase: UnsafeTreeNodeProtocol & _TreeValue & UnsafeTreePointer, UnsafeTreeNodeRefProtocol {
   var header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header> { get }
   var origin: UnsafeMutablePointer<UnsafeTreeV2Origin> { get }
 }
@@ -35,105 +35,6 @@ extension UnsafeTreeHandleBase {
   @inlinable
   @inline(__always)
   public var end: _NodePtr { origin.pointee.end_ptr }
-}
-
-// MARK: - TreeEndNodeProtocol
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-  @inline(__always)
-  func __left_(_ p: _NodePtr) -> _NodePtr {
-    return p.pointee.__left_
-  }
-
-  @inlinable
-  @inline(__always)
-  func __left_unsafe(_ p: _NodePtr) -> _NodePtr {
-    return p.pointee.__left_
-  }
-
-  @inlinable
-  @inline(__always)
-  func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    lhs.pointee.__left_ = rhs
-  }
-}
-
-// MARK: - TreeNodeProtocol
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-  @inline(__always)
-  func __right_(_ p: _NodePtr) -> _NodePtr {
-    return p.pointee.__right_
-  }
-
-  @inlinable
-  @inline(__always)
-  func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    lhs.pointee.__right_ = rhs
-  }
-
-  @inlinable
-  @inline(__always)
-  func __is_black_(_ p: _NodePtr) -> Bool {
-    return p.pointee.__is_black_
-  }
-
-  @inlinable
-  @inline(__always)
-  func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
-    lhs.pointee.__is_black_ = rhs
-  }
-
-  @inlinable
-  @inline(__always)
-  func __parent_(_ p: _NodePtr) -> _NodePtr {
-    return p.pointee.__parent_
-  }
-
-  @inlinable
-  @inline(__always)
-  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
-    lhs.pointee.__parent_ = rhs
-  }
-
-  @inlinable
-  @inline(__always)
-  func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
-    return p.pointee.__parent_
-  }
-}
-
-// MARK: -
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-  @inline(__always)
-  func __left_ref(_ p: _NodePtr) -> _NodeRef {
-    return withUnsafeMutablePointer(to: &p.pointee.__left_) { $0 }
-  }
-
-  @inlinable
-  @inline(__always)
-  func __right_ref(_ p: _NodePtr) -> _NodeRef {
-    return withUnsafeMutablePointer(to: &p.pointee.__right_) { $0 }
-  }
-
-  @inlinable
-  @inline(__always)
-  public func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
-    rhs.pointee
-  }
-
-  @inlinable
-  @inline(__always)
-  func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
-    lhs.pointee = rhs
-  }
 }
 
 // MARK: - BeginNodeProtocol

@@ -32,8 +32,8 @@ public final class UnsafeTreeV2Buffer<_Value>:
   @inline(__always)
   deinit {
     withUnsafeMutablePointers { header, tree in
-      if header.pointee.needsDeallocate {
-        header.pointee.___deallocateFreshPool()
+      if header.pointee.needsDealloc {
+        header.pointee.___deallocFreshPool()
       }
       tree.deinitialize(count: 1)
     }

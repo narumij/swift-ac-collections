@@ -107,7 +107,7 @@ extension _UnsafeNodeFreshPool {
   @inlinable
   @inline(__always)
   mutating func ___flushFreshPool() {
-    ___deallocateFreshPool()
+    ___deallocFreshPool()
     freshBucketHead = nil
     freshBucketCurrent = nil
     freshBucketLast = nil
@@ -120,7 +120,7 @@ extension _UnsafeNodeFreshPool {
   
   @inlinable
   @inline(__always)
-  mutating func ___deallocateFreshPool() {
+  mutating func ___deallocFreshPool() {
     var reserverHead = freshBucketHead
     while let h = reserverHead {
       reserverHead = h.pointee.next

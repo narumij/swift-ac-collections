@@ -254,8 +254,8 @@ extension RedBlackTreeSet {
     inserted: Bool, memberAfterInsert: Element
   ) {
     __tree_._ensureUniqueAndCapacity()
-        let (__r, __inserted) = __tree_.__insert_unique(newMember)
-//    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
+//        let (__r, __inserted) = __tree_.__insert_unique(newMember)
+    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     return (__inserted, __inserted ? newMember : __tree_[__r])
   }
 
@@ -375,7 +375,7 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     __tree_._ensureUnique()
-    return __tree_.___erase_unique(member) ? member : nil
+    return __tree_.update { $0.___erase_unique(member) } ? member : nil
   }
 
   /// - Important: 削除後は、インデックスが無効になります。

@@ -4,7 +4,6 @@ import IOUtil
 
 
 
-
 import Foundation
 
 public protocol _TreePointer {
@@ -2535,12 +2534,7 @@ where Parameters: Comparable {
   var _rankLowest: _NodePtr
   
   @usableFromInline
-  var refCounter: ReferenceCounter
-
-  @usableFromInline
-  var __tree_: Tree {
-    didSet { refCounter = .create() }
-  }
+  var __tree_: Tree
 }
 
 extension ___LRUMemoizeStorage {
@@ -2553,8 +2547,6 @@ extension ___LRUMemoizeStorage {
     __tree_ = .___create(minimumCapacity: minimumCapacity, nullptr: UnsafeNode.nullptr)
     self.maxCount = maxCount
     (_rankHighest, _rankLowest) = (__tree_.nullptr, __tree_.nullptr)
-    
-    refCounter = .create()
   }
 
   @inlinable
@@ -2863,20 +2855,12 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   public
     typealias _Value = RedBlackTreePair<Key, Value>
 
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-  @usableFromInline
-  var refCounter: ReferenceCounter
-#endif
-  
   @usableFromInline
   var __tree_: Tree
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    refCounter = .create()
-#endif
   }
 }
 
@@ -3762,20 +3746,12 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
   public
     typealias _Value = RedBlackTreePair<Key, Value>
 
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-  @usableFromInline
-  var refCounter: ReferenceCounter
-#endif
-  
   @usableFromInline
   var __tree_: Tree
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    refCounter = .create()
-#endif
   }
 }
 
@@ -4580,20 +4556,12 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
   public
     typealias _Value = Element
 
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-  @usableFromInline
-  var refCounter: ReferenceCounter
-#endif
-  
   @usableFromInline
   var __tree_: Tree
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    refCounter = .create()
-#endif
   }
 }
 
@@ -5405,20 +5373,12 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias Base = Self
 
-  #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    @usableFromInline
-    var refCounter: ReferenceCounter
-  #endif
-
   @usableFromInline
   var __tree_: Tree
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
-    #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-      refCounter = .create()
-    #endif
   }
 }
 
@@ -5578,8 +5538,8 @@ extension RedBlackTreeSet {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    _ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
+    __tree_._ensureUniqueAndCapacity()
+        let (__r, __inserted) = __tree_.__insert_unique(newMember)
     return (__inserted, __inserted ? newMember : __tree_[__r])
   }
 
@@ -5675,7 +5635,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
-    _ensureUnique()
+    __tree_._ensureUnique()
     return __tree_.___erase_unique(member) ? member : nil
   }
 
@@ -5683,7 +5643,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    _ensureUnique()
+    __tree_._ensureUnique()
     guard let element = ___remove(at: index.rawValue(__tree_)) else {
       fatalError(.invalidIndex)
     }
@@ -8627,11 +8587,16 @@ extension _UnsafeNodeFreshPool {
     let bucket = p.pointee
     var i = 0
     let count = bucket.count
+    let capacity = bucket.capacity
     var p = bucket.start
-    while i < count {
+    while i < capacity {
       let c = p
       p = UnsafePair<_Value>.advance(p)
-      UnsafePair<_Value>.deinitialize(c)
+      if i < count, c.pointee.___needs_deinitialize {
+        UnsafePair<_Value>.deinitialize(c)
+      } else {
+        c.deinitialize(count: 1)
+      }
       i += 1
     }
 #if DEBUG
@@ -10111,26 +10076,11 @@ extension ___UnsafeCommonV2 {
 }
 
 @usableFromInline
-typealias ReferenceCounter = ManagedBuffer<Void, Void>
-
-extension ManagedBuffer where Header == Void, Element == Void {
-
-  @inlinable
-  @inline(__always)
-  static func create() -> ManagedBuffer {
-    ManagedBuffer<Void, Void>.create(minimumCapacity: 0) { _ in }
-  }
-}
-
-@usableFromInline
 typealias UnsafeTreeV2Growth = UnsafeTreeAllcation6_9
 
 @usableFromInline
 protocol ___UnsafeCopyOnWriteV2: UnsafeTreeV2Growth {
   associatedtype Base: ___TreeBase
-  #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    var refCounter: ReferenceCounter { get set }
-  #endif
   var __tree_: UnsafeTreeV2<Base> { get set }
 }
 
@@ -10138,16 +10088,9 @@ extension ___UnsafeCopyOnWriteV2 {
 
   @inlinable
   @inline(__always)
-  internal mutating func _updateRefCounter() {
-    #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    #endif
-  }
-
-  @inlinable
-  @inline(__always)
   internal mutating func _isBaseKnownUnique() -> Bool {
     #if true
-    return __tree_.isUniqueReference()
+    return __tree_._buffer.isUniqueReference()
     #else
       return true
     #endif
@@ -10174,7 +10117,7 @@ extension ___UnsafeCopyOnWriteV2 {
       if !_isKnownUniquelyReferenced_LV1() {
         return false
       }
-      if !__tree_.isUniqueReference() {
+    if !__tree_._buffer.isUniqueReference() {
         return false
       }
     #endif
@@ -10186,7 +10129,6 @@ extension ___UnsafeCopyOnWriteV2 {
   internal mutating func _ensureUnique() {
     if !_isKnownUniquelyReferenced_LV1() {
       __tree_ = __tree_.copy()
-      _updateRefCounter()
     }
   }
 
@@ -10195,7 +10137,6 @@ extension ___UnsafeCopyOnWriteV2 {
   internal mutating func _strongEnsureUnique() {
     if !_isKnownUniquelyReferenced_LV2() {
       __tree_ = __tree_.copy()
-      _updateRefCounter()
     }
   }
 
@@ -10213,7 +10154,11 @@ extension ___UnsafeCopyOnWriteV2 {
   @inlinable
   @inline(__always)
   internal mutating func _ensureUniqueAndCapacity() {
+#if false
     _ensureUniqueAndCapacity(to: __tree_.count + 1)
+#else
+    __tree_._ensureUniqueAndCapacity()
+#endif
     assert(__tree_.capacity > 0)
     assert(__tree_.capacity > __tree_.count)
   }
@@ -10232,10 +10177,7 @@ extension ___UnsafeCopyOnWriteV2 {
       }
       assert(__tree_.initializedCount <= __tree_.capacity)
     #else
-      let isUnique = _isKnownUniquelyReferenced_LV1()
-      if __tree_._ensureUniqueAndCapacity(to: minimumCapacity, isUnique: isUnique) {
-        _updateRefCounter()
-      }
+      __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
     #endif
   }
 
@@ -10255,7 +10197,6 @@ extension ___UnsafeCopyOnWriteV2 {
     let newCapacity = growCapacity(to: minimumCapacity, linearly: linearly)
     if !_isKnownUniquelyReferenced_LV1() {
       __tree_ = __tree_.copy(minimumCapacity: newCapacity)
-      _updateRefCounter()
     } else if shouldExpand {
       __tree_.executeCapacityGrow(newCapacity)
     }
@@ -10300,23 +10241,13 @@ extension ___UnsafeCopyOnWriteV2 {
 extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
-  internal mutating func isUniqueReference() -> Bool {
-    _buffer.isUniqueReference()
-  }
-}
-
-extension UnsafeTreeV2 {
-  @inlinable
-  @inline(__always)
   internal mutating func _ensureUnique(
-    isUnique: Bool,
     transform: (UnsafeTreeV2<Base>) throws -> UnsafeTreeV2<Base>
   )
-    rethrows -> Bool
+    rethrows
   {
-    let isCopied = _ensureUnique(isUnique: isUnique)
+    _ensureUnique()
     self = try transform(self)
-    return isCopied
   }
 }
 
@@ -10324,40 +10255,46 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal mutating func _ensureUnique(isUnique: Bool) -> Bool {
+  internal mutating func _ensureUnique() {
+    let isUnique = _buffer.isUniqueReference()
     if !isUnique {
       self = self.copy()
-      return true
     }
-    return false
   }
 }
 
 extension UnsafeTreeV2 {
 
-  @inlinable @inline(__always)
-  mutating func _ensureUniqueAndCapacity(isUnique: Bool) -> Bool {
-    _ensureUniqueAndCapacity(to: count + 1, isUnique: isUnique)
-  }
-
   @inlinable
   @inline(__always)
-  mutating func _ensureUniqueAndCapacity(
-    to minimumCapacity: Int,
-    isUnique: Bool
-  ) -> Bool {
-    let shouldExpand = capacity < minimumCapacity
-    let newCapacity = growCapacity(to: minimumCapacity, linearly: false)
-    guard shouldExpand || !isUnique else { return false }
-    var isCopied = false
-    if !isUnique {
-      self = self.copy(minimumCapacity: newCapacity)
-      isCopied = true
-    } else if shouldExpand {
-      executeCapacityGrow(newCapacity)
+  mutating func _ensureUniqueAndCapacity(to minimumCapacity: Int? = nil) {
+    
+    let isUnique = _buffer.isUniqueReference()
+
+    let growthCapacity: Int? = withMutableHeader { header in
+      
+      let minimumCapacity = minimumCapacity ?? (header.count + 1)
+      
+      let shouldExpand = header.freshPoolCapacity < minimumCapacity
+      
+      guard shouldExpand || !isUnique else { return nil }
+      
+      let growthCapacity = header.growthCapacity(to: minimumCapacity, linearly: false)
+      
+      if !isUnique {
+        return growthCapacity
+      }
+      
+      if shouldExpand {
+        header.executeCapacityGrow(growthCapacity)
+      }
+      
+      return nil
     }
-    assert(initializedCount <= capacity)
-    return isCopied
+    
+    if let growthCapacity {
+      self = self.copy(minimumCapacity: growthCapacity)
+    }
   }
 }
 
@@ -10374,6 +10311,33 @@ extension UnsafeTreeV2 {
       let newCapacity = min(limit, growCapacity(to: capacity, linearly: false))
       executeCapacityGrow(newCapacity)
     }
+  }
+}
+
+extension UnsafeTreeV2Buffer.Header {
+
+  @inlinable
+  @inline(never)
+  internal func growthCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        freshPoolCapacity,
+        minimumCapacity)
+    }
+
+
+    return Swift.max(minimumCapacity, freshPoolCapacity + max(freshPoolCapacity / 4, 2))
+  }
+}
+
+extension UnsafeTreeV2Buffer.Header {
+
+  @inlinable
+  @inline(__always)
+  public mutating func executeCapacityGrow(_ newCapacity: Int) {
+    guard freshPoolCapacity < newCapacity else { return }
+    pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
   }
 }
 
@@ -12951,6 +12915,16 @@ public enum UnsafePair<_Value> {
   
   @inlinable
   @inline(__always)
+  static func deinitializeValueOnly(_ p: UnsafeMutablePointer<UnsafeNode>) {
+    if p.pointee.___needs_deinitialize {
+      UnsafeMutableRawPointer(p.advanced(by: 1))
+        .assumingMemoryBound(to: _Value.self)
+        .deinitialize(count: 1)
+    }
+  }
+  
+  @inlinable
+  @inline(__always)
   static func deinitialize(_ p: UnsafeMutablePointer<UnsafeNode>) {
     if p.pointee.___needs_deinitialize {
       UnsafeMutableRawPointer(p.advanced(by: 1))
@@ -15077,7 +15051,8 @@ extension UnsafeTreeV2 {
 var (N, m): (Int,Int) = stdin()
 var p_rev = (0..<N) + []
 var p = (0..<N).map { [$0] }
-var e: [RedBlackTreeSet<Int>] = .init(repeating: .init(), count: N)
+var _e: [RedBlackTreeSet<Int>] = .init(repeating: .init(), count: N)
+let e = _e.withUnsafeMutableBufferPointer { $0.baseAddress! }
 var u: [Int] = []
 var v: [Int] = []
 for _ in 0..<m {

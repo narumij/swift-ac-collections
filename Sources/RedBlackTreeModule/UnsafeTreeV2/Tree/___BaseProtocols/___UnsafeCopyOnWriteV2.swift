@@ -262,7 +262,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2Buffer.Header {
 
   @inlinable
-  @inline(never)
+  @inline(__always)
   internal func growthCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
 
     if linearly {

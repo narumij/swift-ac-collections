@@ -296,8 +296,7 @@ extension _UnsafeNodeFreshPool {
           .init(
             start: UnsafePair<_Value>.pointer(from: storage),
             capacity: capacity,
-            strice: stride,
-            alignment: alignment))
+            strice: stride))
     
 #if DEBUG
     do {

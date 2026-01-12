@@ -34,13 +34,11 @@ package struct _UnsafeNodeFreshBucket {
   internal init(
     start: _NodePtr,
     capacity: Int,
-    strice: Int,
-    alignment: Int
+    strice: Int
   ) {
     self.start = start
     self.capacity = capacity
     self.stride = strice
-    self.alignment = alignment
   }
   
   // 総量が64B以内となること
@@ -56,8 +54,6 @@ package struct _UnsafeNodeFreshBucket {
   /// このケースではポインタ経由でのアクセスのためか、これをするとinstantiateが多発する
   /// これを迂回するためにこちらで保持している
   public let stride: Int
-  /// UnsafeNodeと`_Value`のアライメントのうちどちらか大きい方
-  public let alignment: Int
   /// 次のバケットへのポインタ
   public var next: BucketPointer? = nil
 

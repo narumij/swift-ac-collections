@@ -126,7 +126,7 @@ final class AllocationTests: RedBlackTreeTestCase {
       for i in 0..<1000 {
         let src = RedBlackTreeSet<Int>.Tree.create(minimumCapacity: i)
         for _ in 0..<100 {
-          let dst = src.copy()
+          let dst = src.copy(minimumCapacity: src.capacity)
           XCTAssertEqual(src.capacity, dst.capacity)
         }
       }

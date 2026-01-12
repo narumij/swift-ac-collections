@@ -21,10 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-typealias UnsafeTreeV2Growth = UnsafeTreeAllcation6_9
-
-@usableFromInline
-protocol ___UnsafeCopyOnWriteV2: UnsafeTreeV2Growth {
+protocol ___UnsafeCopyOnWriteV2 {
   associatedtype Base: ___TreeBase
   var __tree_: UnsafeTreeV2<Base> { get set }
 }
@@ -68,116 +65,6 @@ extension ___UnsafeCopyOnWriteV2 {
     #endif
     return true
   }
-
-  @inlinable
-  @inline(__always)
-  internal mutating func _ensureUnique(
-    transform: (UnsafeTreeV2<Base>) throws -> UnsafeTreeV2<Base>
-  )
-    rethrows
-  {
-    __tree_._ensureUnique()
-    __tree_ = try transform(__tree_)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal mutating func _ensureUniqueAndCapacity() {
-#if false
-    _ensureUniqueAndCapacity(to: __tree_.count + 1)
-#else
-    __tree_._ensureUniqueAndCapacity()
-#endif
-    assert(__tree_.capacity > 0)
-    assert(__tree_.capacity > __tree_.count)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal mutating func _ensureUniqueAndCapacity(to minimumCapacity: Int) {
-    #if false
-      let shouldExpand = __tree_.capacity < minimumCapacity
-      let newCapacity = growCapacity(to: minimumCapacity, linearly: false)
-      if !_isKnownUniquelyReferenced_LV1() {
-        __tree_ = __tree_.copy(minimumCapacity: newCapacity)
-        _updateRefCounter()
-      } else if shouldExpand {
-        __tree_.executeCapacityGrow(newCapacity)
-      }
-      assert(__tree_.initializedCount <= __tree_.capacity)
-    #else
-      __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
-    #endif
-  }
-
-  @inlinable
-  @inline(__always)
-  internal mutating func _ensureUniqueAndCapacity(limit: Int, linearly: Bool = false) {
-    _ensureUniqueAndCapacity(to: __tree_.count + 1, limit: limit, linearly: linearly)
-    assert(__tree_.capacity > 0)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal mutating func _ensureUniqueAndCapacity(
-    to minimumCapacity: Int, limit: Int, linearly: Bool
-  ) {
-    let shouldExpand = __tree_.capacity < minimumCapacity
-    let newCapacity = growCapacity(to: minimumCapacity, linearly: linearly)
-    if !_isKnownUniquelyReferenced_LV1() {
-      __tree_ = __tree_.copy(minimumCapacity: newCapacity)
-    } else if shouldExpand {
-      __tree_.executeCapacityGrow(newCapacity)
-    }
-    assert(__tree_.capacity >= minimumCapacity)
-    assert(__tree_.initializedCount <= __tree_.capacity)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal mutating func _ensureCapacity() {
-    _ensureCapacity(amount: 1)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal mutating func _ensureCapacity(amount: Int) {
-    let minimumCapacity = __tree_.count + amount
-    if __tree_.capacity < minimumCapacity {
-      let newCapacity = growCapacity(to: minimumCapacity, linearly: false)
-      __tree_.executeCapacityGrow(newCapacity)
-    }
-    assert(__tree_.capacity >= minimumCapacity)
-    assert(__tree_.initializedCount <= __tree_.capacity)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal mutating func _ensureCapacity(limit: Int, linearly: Bool = false) {
-    _ensureCapacity(to: __tree_.count + 1, limit: limit, linearly: linearly)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal mutating func _ensureCapacity(to minimumCapacity: Int, limit: Int, linearly: Bool) {
-    if __tree_.capacity < min(limit, minimumCapacity) {
-      let newCapacity = min(limit, growCapacity(to: minimumCapacity, linearly: linearly))
-      __tree_.executeCapacityGrow(newCapacity)
-    }
-  }
-}
-
-extension UnsafeTreeV2 {
-  @inlinable
-  @inline(__always)
-  internal mutating func _ensureUnique(
-    transform: (UnsafeTreeV2<Base>) throws -> UnsafeTreeV2<Base>
-  )
-    rethrows
-  {
-    _ensureUnique()
-    self = try transform(self)
-  }
 }
 
 extension UnsafeTreeV2 {
@@ -202,10 +89,23 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
+  @inlinable
+  @inline(__always)
+  internal mutating func _ensureUnique(
+    transform: (UnsafeTreeV2<Base>) throws -> UnsafeTreeV2<Base>
+  )
+    rethrows
+  {
+    _ensureUnique()
+    self = try transform(self)
+  }
+}
+
+extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  mutating func _ensureUniqueAndCapacity(to minimumCapacity: Int? = nil) {
+  mutating func _ensureUniqueAndCapacity(to minimumCapacity: Int? = nil, linearly: Bool = false) {
     
     let isUnique = _buffer.isUniqueReference()
 
@@ -217,7 +117,7 @@ extension UnsafeTreeV2 {
       
       guard shouldExpand || !isUnique else { return nil }
       
-      let growthCapacity = header.growthCapacity(to: minimumCapacity, linearly: false)
+      let growthCapacity = header.growthCapacity(to: minimumCapacity, linearly: linearly)
       
       if !isUnique {
         return growthCapacity

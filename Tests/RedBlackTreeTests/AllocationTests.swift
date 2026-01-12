@@ -59,7 +59,7 @@ final class AllocationTests: RedBlackTreeTestCase {
           XCTAssertEqual(set.__tree_.initializedCount, 5)
           XCTAssertEqual(set.__tree_.count, 0)
           XCTAssertEqual(set.__tree_._buffer.header.recycleCount, 5)
-          set._ensureUniqueAndCapacity(to: 1)
+          set.__tree_._ensureUniqueAndCapacity(to: 1)
           // リファレンスが2なので、CoWが発火する
 #if false
           // LV1が本体保持になっているので、結果が異なる
@@ -79,7 +79,7 @@ final class AllocationTests: RedBlackTreeTestCase {
           XCTAssertEqual(set.__tree_.initializedCount, 5)
           XCTAssertEqual(set.__tree_.count, 0)
           XCTAssertEqual(set.__tree_._buffer.header.recycleCount, 5)
-          set._ensureUniqueAndCapacity(to: 15)
+          set.__tree_._ensureUniqueAndCapacity(to: 15)
           // リファレンスが2なので、CoWが発火する
 #if false
           // LV1が本体保持になっているので、結果が異なる

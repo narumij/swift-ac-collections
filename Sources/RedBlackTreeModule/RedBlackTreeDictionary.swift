@@ -264,7 +264,7 @@ extension RedBlackTreeDictionary {
     @inline(__always) _modify {
       // UnsafeTree用の暫定処置
       // TODO: FIXME
-      _ensureUniqueAndCapacity()
+      __tree_._ensureUniqueAndCapacity()
       // TODO: もうすこしライフタイム管理に明るくなったら、再度ここのチューニングに取り組む
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == __tree_.nullptr {
@@ -302,7 +302,7 @@ extension RedBlackTreeDictionary {
       defer { _fixLifetime(self) }
       // UnsafeTree用の暫定処置
       // TODO: FIXME
-      _ensureUniqueAndCapacity()
+      __tree_._ensureUniqueAndCapacity()
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == __tree_.nullptr {
         assert(__tree_.capacity > __tree_.count)
@@ -408,7 +408,7 @@ extension RedBlackTreeDictionary {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    _ensureUniqueAndCapacity()
+    __tree_._ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(Self.___tree_value(newMember))
     return (__inserted, __inserted ? newMember : ___element(__tree_[__r]))
   }
@@ -424,7 +424,7 @@ extension RedBlackTreeDictionary {
     _ value: Value,
     forKey key: Key
   ) -> Value? {
-    _ensureUniqueAndCapacity()
+    __tree_._ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(Self.___tree_value((key, value)))
     guard !__inserted else { return nil }
     let oldMember = __tree_[__r]
@@ -437,7 +437,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
+    __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -453,7 +453,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
 
-    try _ensureUnique { __tree_ in
+    try __tree_._ensureUnique { __tree_ in
       try .___insert_range_unique(
         tree: __tree_,
         other: other.__tree_,
@@ -474,7 +474,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    try _ensureUnique { __tree_ in
+    try __tree_._ensureUnique { __tree_ in
       try .___insert_range_unique(
         tree: __tree_,
         other,

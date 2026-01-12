@@ -264,7 +264,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   @discardableResult
   public mutating func update(with newMember: Element) -> Element? {
-    _ensureUniqueAndCapacity()
+    __tree_._ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(newMember)
     guard !__inserted else { return nil }
     let oldMember = __tree_[__r]
@@ -277,7 +277,7 @@ extension RedBlackTreeSet {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
+    __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -291,7 +291,7 @@ extension RedBlackTreeSet {
   /// - Important: 空間計算量に余裕がある場合、formUnionの使用を推奨します
   @inlinable
   public mutating func merge(_ other: RedBlackTreeSet<Element>) {
-    _ensureUnique { __tree_ in
+    __tree_._ensureUnique { __tree_ in
       .___insert_range_unique(
         tree: __tree_,
         other: other.__tree_,
@@ -304,7 +304,7 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge(_ other: RedBlackTreeMultiSet<Element>) {
-    _ensureUnique { __tree_ in
+    __tree_._ensureUnique { __tree_ in
       .___insert_range_unique(
         tree: __tree_,
         other: other.__tree_,
@@ -317,7 +317,7 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge<S>(_ other: S) where S: Sequence, S.Element == Element {
-    _ensureUnique { __tree_ in
+    __tree_._ensureUnique { __tree_ in
       .___insert_range_unique(tree: __tree_, other)
     }
   }

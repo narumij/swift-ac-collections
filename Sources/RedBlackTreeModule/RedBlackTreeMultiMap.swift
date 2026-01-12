@@ -297,7 +297,7 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    _ensureUniqueAndCapacity()
+    __tree_._ensureUniqueAndCapacity()
     _ = __tree_.__insert_multi(Self.___tree_value(newMember))
     return (true, newMember)
   }
@@ -324,7 +324,7 @@ extension RedBlackTreeMultiMap {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
+    __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -338,7 +338,7 @@ extension RedBlackTreeMultiMap {
   /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
-    _ensureUnique { __tree_ in
+    __tree_._ensureUnique { __tree_ in
       .___insert_range_multi(
         tree: __tree_,
         other: other.__tree_,
@@ -351,7 +351,7 @@ extension RedBlackTreeMultiMap {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
-    _ensureUnique { __tree_ in
+    __tree_._ensureUnique { __tree_ in
       .___insert_range_multi(tree: __tree_, other.map { Self.___tree_value($0) })
     }
   }

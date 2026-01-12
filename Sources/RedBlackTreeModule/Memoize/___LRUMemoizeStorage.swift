@@ -92,7 +92,7 @@ extension ___LRUMemoizeStorage {
       if let newValue {
         if __tree_.count < maxCount {
           // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
-          _ensureCapacity(limit: maxCount)
+          __tree_._ensureCapacity(limit: maxCount)
         }
         if __tree_.count == maxCount {
           _ = __tree_.erase(___popRankLowest())

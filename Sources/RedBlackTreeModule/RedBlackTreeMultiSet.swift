@@ -246,7 +246,7 @@ extension RedBlackTreeMultiSet {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    _ensureUniqueAndCapacity()
+    __tree_._ensureUniqueAndCapacity()
     _ = __tree_.__insert_multi(newMember)
     return (true, newMember)
   }
@@ -256,7 +256,7 @@ extension RedBlackTreeMultiSet {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
+    __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -270,7 +270,7 @@ extension RedBlackTreeMultiSet {
   /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
-    _ensureUnique { __tree_ in
+    __tree_._ensureUnique { __tree_ in
       .___insert_range_multi(
         tree: __tree_,
         other: other.__tree_,
@@ -283,7 +283,7 @@ extension RedBlackTreeMultiSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
-    _ensureUnique { __tree_ in
+    __tree_._ensureUnique { __tree_ in
       .___insert_range_multi(
         tree: __tree_,
         other: other.__tree_,
@@ -296,7 +296,7 @@ extension RedBlackTreeMultiSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
-    _ensureUnique { __tree_ in
+    __tree_._ensureUnique { __tree_ in
       .___insert_range_multi(tree: __tree_, other)
     }
   }

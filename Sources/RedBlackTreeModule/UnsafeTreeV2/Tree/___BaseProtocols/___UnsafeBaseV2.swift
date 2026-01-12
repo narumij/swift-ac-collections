@@ -88,11 +88,11 @@ public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
 
 @usableFromInline
 protocol ___RedBlackTreeKeyOnlyBase:
-  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
+  ___UnsafeStorageProtocolV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyOnlySequenceV2
 {}
 @usableFromInline
 protocol ___RedBlackTreeKeyValuesBase:
-  ___UnsafeStorageProtocolV2 & ___UnsafeCopyOnWriteV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
+  ___UnsafeStorageProtocolV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyValueSequenceV2
 {}

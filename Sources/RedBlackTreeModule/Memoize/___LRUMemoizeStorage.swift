@@ -111,7 +111,7 @@ extension ___LRUMemoizeStorage {
   }
 }
 
-extension ___LRUMemoizeStorage: ___LRULinkList & ___UnsafeCopyOnWriteV2 & ___UnsafeStorageProtocolV2 {
+extension ___LRUMemoizeStorage: ___LRULinkList & ___UnsafeStorageProtocolV2 {
   
   public typealias Base = Self
 }

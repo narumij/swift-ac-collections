@@ -62,7 +62,13 @@ extension UnsafeTreeV2Buffer {
 
     @inlinable @inline(__always)
     var deallocator: _UnsafeNodeFreshPoolDeallocator<_Value> {
-      fatalError()
+      mutating get {
+        // TODO: 一度の保証付きの実装にすること
+        if _deallocator == nil {
+          _deallocator = .init(source: self)
+        }
+        return _deallocator!
+      }
     }
 
     #if AC_COLLECTIONS_INTERNAL_CHECKS

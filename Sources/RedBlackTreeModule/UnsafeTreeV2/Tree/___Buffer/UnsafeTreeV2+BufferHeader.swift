@@ -53,6 +53,16 @@ extension UnsafeTreeV2Buffer {
       @usableFromInline var count: Int = 0
     #endif
 
+    @usableFromInline var _deallocator: _UnsafeNodeFreshPoolDeallocator?
+
+    @usableFromInline var needsDeallocate: Bool {
+      _deallocator == nil
+    }
+
+    @usableFromInline var deallocator: _UnsafeNodeFreshPoolDeallocator {
+      fatalError()
+    }
+
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       /// CoWの発火回数を観察するためのプロパティ
       @usableFromInline internal var copyCount: UInt = 0

@@ -55,11 +55,13 @@ extension UnsafeTreeV2Buffer {
 
     @usableFromInline var _deallocator: _UnsafeNodeFreshPoolDeallocator?
 
-    @usableFromInline var needsDeallocate: Bool {
+    @inlinable @inline(__always)
+    var needsDeallocate: Bool {
       _deallocator == nil
     }
 
-    @usableFromInline var deallocator: _UnsafeNodeFreshPoolDeallocator {
+    @inlinable @inline(__always)
+    var deallocator: _UnsafeNodeFreshPoolDeallocator {
       fatalError()
     }
 

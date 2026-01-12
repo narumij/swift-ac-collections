@@ -57,11 +57,11 @@ where Parameters: Comparable {
   var _rankLowest: _NodePtr
   
   @usableFromInline
-  var referenceCounter: ReferenceCounter
+  var refCounter: ReferenceCounter
 
   @usableFromInline
   var __tree_: Tree {
-    didSet { referenceCounter = .create() }
+    didSet { refCounter = .create() }
   }
 }
 
@@ -80,7 +80,7 @@ extension ___LRUMemoizeStorage {
     // コピーが発生する前提の場合、別途ケアをする必要がある
     (_rankHighest, _rankLowest) = (__tree_.nullptr, __tree_.nullptr)
     
-    referenceCounter = .create()
+    refCounter = .create()
   }
 
   @inlinable

@@ -66,24 +66,17 @@ public struct RedBlackTreeSet<Element: Comparable> {
 
   #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
     @usableFromInline
-    var referenceCounter: ReferenceCounter
+    var refCounter: ReferenceCounter
   #endif
 
-  #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    @usableFromInline
-    var __tree_: Tree {
-      didSet { referenceCounter = .create() }
-    }
-  #else
-    @usableFromInline
-    var __tree_: Tree
-  #endif
+  @usableFromInline
+  var __tree_: Tree
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
     #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-      referenceCounter = .create()
+      refCounter = .create()
     #endif
   }
 }
@@ -269,7 +262,7 @@ extension RedBlackTreeSet {
     inserted: Bool, memberAfterInsert: Element
   ) {
     _ensureUniqueAndCapacity()
-//    let (__r, __inserted) = __tree_.__insert_unique(newMember)
+    //    let (__r, __inserted) = __tree_.__insert_unique(newMember)
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     return (__inserted, __inserted ? newMember : __tree_[__r])
   }

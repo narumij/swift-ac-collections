@@ -57,13 +57,13 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 
 #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
   @usableFromInline
-  var referenceCounter: ReferenceCounter
+  var refCounter: ReferenceCounter
 #endif
   
 #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
   @usableFromInline
   var __tree_: Tree {
-    didSet { referenceCounter = .create() }
+    didSet { refCounter = .create() }
   }
 #else
   @usableFromInline
@@ -74,7 +74,7 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
 #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    referenceCounter = .create()
+    refCounter = .create()
 #endif
   }
 }

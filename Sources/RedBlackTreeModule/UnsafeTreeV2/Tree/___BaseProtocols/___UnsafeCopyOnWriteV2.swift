@@ -47,7 +47,7 @@ protocol ___UnsafeCopyOnWriteV2 {
     ///
     /// 一般的なCoW動作の方が一般向けと今のところ考えており、このモジュールを一般利用可能にするにあたっては、
     /// これを利用しない判断をする可能性が高い。
-    var referenceCounter: ReferenceCounter { get set }
+    var refCounter: ReferenceCounter { get set }
   #endif
   var __tree_: UnsafeTreeV2<Base> { get set }
 }
@@ -56,10 +56,18 @@ extension ___UnsafeCopyOnWriteV2 {
 
   @inlinable
   @inline(__always)
+  internal mutating func _updateRefCounter() {
+    #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
+      refCounter = .create()
+    #endif
+  }
+
+  @inlinable
+  @inline(__always)
   internal mutating func _isKnownUniquelyReferenced_LV1() -> Bool {
     #if !DISABLE_COPY_ON_WRITE
       #if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-        !__tree_.isReadOnly && isKnownUniquelyReferenced(&referenceCounter)
+        !__tree_.isReadOnly && isKnownUniquelyReferenced(&refCounter)
       #else
         __tree_._buffer.isUniqueReference()
       #endif
@@ -87,6 +95,7 @@ extension ___UnsafeCopyOnWriteV2 {
   internal mutating func _ensureUnique() {
     if !_isKnownUniquelyReferenced_LV1() {
       __tree_ = __tree_.copy()
+      _updateRefCounter()
     }
   }
 
@@ -95,6 +104,7 @@ extension ___UnsafeCopyOnWriteV2 {
   internal mutating func _strongEnsureUnique() {
     if !_isKnownUniquelyReferenced_LV2() {
       __tree_ = __tree_.copy()
+      _updateRefCounter()
     }
   }
 
@@ -123,6 +133,7 @@ extension ___UnsafeCopyOnWriteV2 {
     let shouldExpand = __tree_.capacity < minimumCapacity
     if !_isKnownUniquelyReferenced_LV1() {
       __tree_ = __tree_.copy(growthCapacityTo: minimumCapacity, linearly: false)
+      _updateRefCounter()
     } else if shouldExpand {
       __tree_.growthCapacity(to: minimumCapacity, linearly: false)
     }
@@ -147,6 +158,7 @@ extension ___UnsafeCopyOnWriteV2 {
         growthCapacityTo: minimumCapacity,
         limit: limit,
         linearly: false)
+      _updateRefCounter()
     } else if shouldExpand {
       __tree_.growthCapacity(to: minimumCapacity, limit: limit, linearly: false)
     }
@@ -180,16 +192,16 @@ extension ___UnsafeCopyOnWriteV2 {
   @inlinable
   @inline(__always)
   internal mutating func _ensureCapacity(to minimumCapacity: Int, limit: Int, linearly: Bool) {
-//    assert(__tree_.capacity <= minimumCapacity)
+    //    assert(__tree_.capacity <= minimumCapacity)
     if __tree_.capacity < min(limit, minimumCapacity) {
       __tree_.growthCapacity(to: min(limit, minimumCapacity), limit: limit, linearly: false)
     }
-//    assert(__tree_.capacity >= minimumCapacity)
-//#if USE_FRESH_POOL_V1
-#if !USE_FRESH_POOL_V2
-    assert(__tree_.initializedCount <= __tree_.capacity)
-#else
-    assert(__tree_.initializedCount <= __tree_._buffer.header.freshPool.capacity)
-#endif
+    //    assert(__tree_.capacity >= minimumCapacity)
+    //#if USE_FRESH_POOL_V1
+    #if !USE_FRESH_POOL_V2
+      assert(__tree_.initializedCount <= __tree_.capacity)
+    #else
+      assert(__tree_.initializedCount <= __tree_._buffer.header.freshPool.capacity)
+    #endif
   }
 }

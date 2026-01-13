@@ -32,7 +32,7 @@ where Base: ___TreeBase {
   package typealias Tree = UnsafeTreeV2<Base>
 
   @usableFromInline
-  typealias ImmutableTree = UnsafeImmutableTree<Base>
+  package typealias ImmutableTree = UnsafeImmutableTree<Base>
 
   @usableFromInline
   package let __tree_: Tree

@@ -23,17 +23,6 @@
 // TODO: CoW挙動検討
 // 内部用シーケンスはCoW対象外でいいかもしれない
 
-@usableFromInline
-package protocol UnsafeTreeProtocol
-where
-  Tree == UnsafeTreeV2<Base>,
-  ImmutableTree == UnsafeImmutableTree<Base>
-{
-  associatedtype Base: ___TreeBase & ___TreeIndex
-  associatedtype Tree
-  associatedtype ImmutableTree
-}
-
 @frozen
 @usableFromInline
 package struct ___UnsafeValuesUnsafeV2<Base>: Sequence, IteratorProtocol, UnsafeTreePointer
@@ -44,8 +33,6 @@ where Base: ___TreeBase {
 
   @usableFromInline
   typealias ImmutableTree = UnsafeImmutableTree<Base>
-
-  //  public typealias _NodePtr = Tree._NodePtr
 
   @usableFromInline
   internal let __tree_: Tree

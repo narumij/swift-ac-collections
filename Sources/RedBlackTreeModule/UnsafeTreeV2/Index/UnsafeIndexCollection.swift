@@ -54,15 +54,16 @@ extension UnsafeIndexCollection {
 
   public struct Iterator: IteratorProtocol {
     
-    internal init(
-      startIndex: UnsafeIndexCollection<Base>.Index,
-      endIndex: UnsafeIndexCollection<Base>.Index
-    ) {
-      self.__tree_ = startIndex.__tree_
-      self._end = endIndex.rawValue
-      self._current = startIndex.rawValue
-      self._next = startIndex == endIndex ? __tree_.__end_node : __tree_.__tree_next(startIndex.rawValue)
-      self.deallocator = startIndex.deallocator
+    internal init(__tree_: ImmutableTree,
+                  start: _NodePtr,
+                  end: _NodePtr,
+                  deallocator: Deallocator) {
+      
+      self.__tree_ = __tree_
+      self._current = start
+      self._next = __tree_.__tree_next(start)
+      self._end = end
+      self.deallocator = deallocator
     }
     
     public typealias Tree = UnsafeTreeV2<Base>
@@ -83,7 +84,6 @@ extension UnsafeIndexCollection {
     internal var deallocator: Deallocator
 
     @inlinable
-    @inline(__always)
     internal func ___index(_ p: _NodePtr) -> Index {
       .init(
         __tree_: __tree_,
@@ -105,7 +105,10 @@ extension UnsafeIndexCollection {
 extension UnsafeIndexCollection: Sequence, Collection {
 
   public func makeIterator() -> Iterator {
-    .init(startIndex: startIndex, endIndex: endIndex)
+    .init(__tree_: startIndex.__tree_,
+          start: startIndex.rawValue,
+          end: endIndex.rawValue,
+          deallocator: startIndex.deallocator)
   }
 
   public func index(after i: Index) -> Index {

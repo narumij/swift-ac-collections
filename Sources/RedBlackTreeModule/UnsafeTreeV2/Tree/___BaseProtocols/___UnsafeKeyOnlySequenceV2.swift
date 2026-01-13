@@ -82,15 +82,15 @@ extension ___UnsafeKeyOnlySequenceV2 {
   @inlinable
   internal subscript(_checked position: Index) -> _Value {
     @inline(__always) _read {
-      __tree_.___ensureValid(subscript: position.rawValue(__tree_))
-      yield __tree_[position.rawValue(__tree_)]
+      __tree_.___ensureValid(subscript: __tree_.rawValue(position))
+      yield __tree_[__tree_.rawValue(position)]
     }
   }
 
   @inlinable
   internal subscript(_unchecked position: Index) -> _Value {
     @inline(__always) _read {
-      yield __tree_[position.rawValue(__tree_)]
+      yield __tree_[__tree_.rawValue(position)]
     }
   }
 }

@@ -41,9 +41,9 @@ extension ___UnsafeSubSequenceV2 {
   @inlinable
   @inline(__always)
   internal func ___contains(_ bounds: Range<Index>) -> Bool {
-    !__tree_.___is_offset_null(bounds.lowerBound.rawValue(__tree_))
-      && !__tree_.___is_offset_null(bounds.upperBound.rawValue(__tree_))
-      && __tree_.___ptr_range_contains(_start, _end, bounds.lowerBound.rawValue(__tree_))
-      && __tree_.___ptr_range_contains(_start, _end, bounds.upperBound.rawValue(__tree_))
+    !__tree_.___is_offset_null(__tree_.rawValue(bounds.lowerBound))
+    && !__tree_.___is_offset_null(__tree_.rawValue(bounds.upperBound))
+    && __tree_.___ptr_range_contains(_start, _end, __tree_.rawValue(bounds.lowerBound))
+    && __tree_.___ptr_range_contains(_start, _end, __tree_.rawValue(bounds.upperBound))
   }
 }

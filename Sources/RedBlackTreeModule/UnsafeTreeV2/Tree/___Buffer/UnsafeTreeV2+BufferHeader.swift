@@ -133,7 +133,7 @@ extension UnsafeTreeV2Buffer.Header {
   mutating func tearDown() {
     //#if USE_FRESH_POOL_V1
     #if !USE_FRESH_POOL_V2
-    if let _deallocator {
+    if let _ = _deallocator {
       self._deallocator = nil
       self.freshBucketHead = nil
       self.freshBucketCurrent = nil

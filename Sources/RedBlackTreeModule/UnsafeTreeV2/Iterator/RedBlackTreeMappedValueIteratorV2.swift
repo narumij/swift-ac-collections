@@ -25,11 +25,11 @@ import Foundation
 extension RedBlackTreeIteratorV2 {
   
   @frozen
-  public struct MappedValues: Sequence, IteratorProtocol
+  public struct MappedValues: Sequence, IteratorProtocol, UnsafeTreePointer
   where Base: KeyValueComparer
   {
     public typealias Tree = UnsafeTreeV2<Base>
-    public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+    public typealias _MappedValue = RedBlackTreeIteratorV2.Base._MappedValue
 
     @usableFromInline
     internal let __tree_: Tree
@@ -49,7 +49,7 @@ extension RedBlackTreeIteratorV2 {
     
     @inlinable
     @inline(__always)
-    public mutating func next() -> Base._MappedValue? {
+    public mutating func next() -> _MappedValue? {
       guard _current != _end else { return nil }
       defer {
         _current = _next
@@ -66,7 +66,7 @@ extension RedBlackTreeIteratorV2 {
   }
 }
 
-extension RedBlackTreeIteratorV2.MappedValues: Equatable where Base._MappedValue: Equatable {
+extension RedBlackTreeIteratorV2.MappedValues: Equatable where _MappedValue: Equatable {
 
   @inlinable
   @inline(__always)
@@ -75,7 +75,7 @@ extension RedBlackTreeIteratorV2.MappedValues: Equatable where Base._MappedValue
   }
 }
 
-extension RedBlackTreeIteratorV2.MappedValues: Comparable where Base._MappedValue: Comparable {
+extension RedBlackTreeIteratorV2.MappedValues: Comparable where _MappedValue: Comparable {
 
   @inlinable
   @inline(__always)
@@ -86,7 +86,7 @@ extension RedBlackTreeIteratorV2.MappedValues: Comparable where Base._MappedValu
 
 #if swift(>=5.5)
   extension RedBlackTreeIteratorV2.MappedValues: @unchecked Sendable
-  where Tree._Value: Sendable {}
+  where _MappedValue: Sendable {}
 #endif
 
 // MARK: - Is Identical To

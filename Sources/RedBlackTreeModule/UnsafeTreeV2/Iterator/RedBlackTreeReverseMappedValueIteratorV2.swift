@@ -53,6 +53,23 @@ extension RedBlackTreeIteratorV2.MappedValues {
     }
     
     @inlinable
+    internal init(
+      __tree_: ImmutableTree,
+      start: _NodePtr,
+      end: _NodePtr,
+      deallocator: Deallocator
+    ) {
+
+      self.__tree_ = __tree_
+      self._current = end
+      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
+      self._start = start
+      self._end = end
+      self._begin = __tree_.__begin_node_
+      self.deallocator = deallocator
+    }
+    
+    @inlinable
     @inline(__always)
     public mutating func next() -> _MappedValue? {
       guard _current != _start else { return nil }

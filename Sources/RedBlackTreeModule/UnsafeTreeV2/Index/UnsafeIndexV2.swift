@@ -70,9 +70,9 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   @inlinable
   @inline(__always)
   internal init(
-    __tree_: UnsafeImmutableTree<Base>,
-    rawValue: UnsafeIndexV2<Base>._NodePtr,
-    deallocator: UnsafeIndexV2<Base>.Deallocator
+    __tree_: ImmutableTree,
+    rawValue: _NodePtr,
+    deallocator: Deallocator
   ) {
     self.__tree_ = __tree_
     self.___node_id_ = rawValue.pointee.___node_id_
@@ -150,7 +150,7 @@ extension UnsafeIndexV2 {
   public func advanced(by n: Int) -> Self {
     return .init(
       __tree_: __tree_,
-      rawValue: __tree_.___tree_adv_iter(rawValue, by: n),
+      rawValue: __tree_.advanced(rawValue, by: n),
       deallocator: deallocator)
   }
 }

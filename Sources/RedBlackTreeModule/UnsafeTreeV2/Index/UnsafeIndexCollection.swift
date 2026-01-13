@@ -8,6 +8,13 @@
 public
   struct UnsafeIndexCollection<Base: ___TreeBase & ___TreeIndex>: UnsafeTreePointer
 {
+  @usableFromInline
+  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+    __tree_ = .init(__tree_: tree)
+    _start = start
+    _end = end
+    deallocator = tree.deallocator
+  }
 
   @usableFromInline
   internal init(

@@ -123,8 +123,8 @@ extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase {}
 
 extension UnsafeTreeV2ScalarHandle: BoundProtocol, BoundAlgorithmProtocol {}
 extension UnsafeTreeV2ScalarHandle: FindProtocol {}
-//extension UnsafeTreeV2ScalarHandle: FindEqualProtocol, FindEqualProtocol_std {}
-extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
+extension UnsafeTreeV2ScalarHandle: FindEqualProtocol, FindEqualProtocol_std {}
+//extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol {}
 extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol {}
 extension UnsafeTreeV2ScalarHandle: RemoveProtocol {}
@@ -133,7 +133,7 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 
 extension UnsafeTreeV2ScalarHandle {
   
-#if true
+#if false
   @inlinable
   @inline(__always)
   internal func

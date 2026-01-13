@@ -34,7 +34,7 @@ extension UnsafeTreeV2 where Base: ___TreeIndex {
 
 extension UnsafeTreeV2 where Base: ___TreeIndex {
 
-  public typealias Indices = UnsafeIndicesV2<Base>
+  public typealias Indices = UnsafeIndexV2Collection<Base>
 }
 
 extension UnsafeTreeV2 where Base: ___TreeIndex {

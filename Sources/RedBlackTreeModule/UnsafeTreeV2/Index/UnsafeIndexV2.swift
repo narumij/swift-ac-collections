@@ -283,7 +283,6 @@ extension UnsafeIndexV2 {
 
   @usableFromInline
   internal var ___unsafe_indices: UnsafeIndexV2Collection<Base> {
-    // UnsafeIndicesV2の改造は影響が大きく難しいので、あたらしいindicesを構築して逃げる必要がありそう
     .init(
       __tree_: __tree_,
       start: __tree_.__begin_node_,

@@ -82,7 +82,7 @@ where
 
 
 public typealias RedBlackTreeIndex = UnsafeIndexV2
-public typealias RedBlackTreeIndices = UnsafeIndicesV2
+public typealias RedBlackTreeIndices = UnsafeIndexV2Collection
 public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2
 public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
 

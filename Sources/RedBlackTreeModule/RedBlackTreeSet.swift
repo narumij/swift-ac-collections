@@ -191,13 +191,13 @@ extension RedBlackTreeSet {
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     __tree_.___ensureValid(
-      begin: bounds.lowerBound.rawValue(__tree_),
-      end: bounds.upperBound.rawValue(__tree_))
+      begin: __tree_.rawValue(bounds.lowerBound),
+      end: __tree_.rawValue(bounds.upperBound))
 
     return .init(
       tree: __tree_,
-      start: bounds.lowerBound.rawValue(__tree_),
-      end: bounds.upperBound.rawValue(__tree_))
+      start: __tree_.rawValue(bounds.lowerBound),
+      end: __tree_.rawValue(bounds.upperBound))
   }
 
   #if !COMPATIBLE_ATCODER_2025
@@ -431,8 +431,8 @@ extension RedBlackTreeSet {
     let bounds = bounds.relative(to: self)
     __tree_._ensureUnique()
     ___remove(
-      from: bounds.lowerBound.rawValue(__tree_),
-      to: bounds.upperBound.rawValue(__tree_))
+      from: __tree_.rawValue(bounds.lowerBound),
+      to: __tree_.rawValue(bounds.upperBound))
   }
 }
 

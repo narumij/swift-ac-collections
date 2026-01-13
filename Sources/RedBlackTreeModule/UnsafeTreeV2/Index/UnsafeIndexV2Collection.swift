@@ -12,6 +12,8 @@
 // TODO: 再度チューニングすること
 // 荒く書いた段階なのでいろいろ手抜きがある
 
+// TODO: 標準実装だとdistanceが重かった記憶。追加すること
+
 public
   struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>:
     UnsafeTreeProtocol, UnsafeImmutableIndexingProtocol

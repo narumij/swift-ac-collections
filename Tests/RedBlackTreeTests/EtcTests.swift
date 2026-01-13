@@ -972,6 +972,7 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(TypeFixture<Int64>().isInt, false)
   }
   
+#if DEBUG
   func testMapBehavior() throws {
     let a = RedBlackTreeSet<Int>(0..<10)
     do {
@@ -993,4 +994,5 @@ final class EtcTests: RedBlackTreeTestCase {
       XCTAssertEqual(a.endIndex, i)
     }
   }
+#endif
 }

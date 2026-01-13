@@ -6,7 +6,7 @@
 //
 
 public
-  struct UnsafeIndexCollection<Base: ___TreeBase & ___TreeIndex>: UnsafeTreePointer
+  struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>: UnsafeTreePointer
 {
   @usableFromInline
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -52,7 +52,7 @@ public
   public typealias Element = Index
 }
 
-extension UnsafeIndexCollection {
+extension UnsafeIndexV2Collection {
 
   @inlinable
   @inline(__always)
@@ -64,7 +64,7 @@ extension UnsafeIndexCollection {
   }
 }
 
-extension UnsafeIndexCollection: Sequence, Collection {
+extension UnsafeIndexV2Collection: Sequence, Collection {
 
   public var startIndex: Index { ___index(_start) }
   public var endIndex: Index { ___index(_end) }
@@ -95,7 +95,7 @@ extension UnsafeIndexCollection: Sequence, Collection {
     position
   }
 
-  public subscript(bounds: Range<Index>) -> UnsafeIndexCollection {
+  public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
     .init(
       __tree_: __tree_,
       start: bounds.lowerBound.rawValue,
@@ -104,7 +104,7 @@ extension UnsafeIndexCollection: Sequence, Collection {
   }
 }
 
-extension UnsafeIndexCollection {
+extension UnsafeIndexV2Collection {
 
   public struct Iterator: IteratorProtocol {
 
@@ -159,9 +159,20 @@ extension UnsafeIndexCollection {
   }
 }
 
-extension UnsafeIndexCollection {
+extension UnsafeIndexV2Collection {
 
   public struct Reversed: IteratorProtocol, Sequence {
+    
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      self.__tree_ = .init(__tree_: tree)
+      self._current = end
+      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
+      self._start = start
+      self._begin = __tree_.__begin_node_
+      self.deallocator = tree.deallocator
+    }
 
     @usableFromInline
     internal init(

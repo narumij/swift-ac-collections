@@ -282,7 +282,7 @@ extension UnsafeIndexV2 {
 extension UnsafeIndexV2 {
 
   @usableFromInline
-  internal var ___unsafe_indices: UnsafeIndexCollection<Base> {
+  internal var ___unsafe_indices: UnsafeIndexV2Collection<Base> {
     // UnsafeIndicesV2の改造は影響が大きく難しいので、あたらしいindicesを構築して逃げる必要がありそう
     .init(
       __tree_: __tree_,
@@ -297,7 +297,7 @@ extension UnsafeIndexV2 {
 @inlinable
 @inline(__always)
 public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
-  -> UnsafeIndexCollection<Base>
+  -> UnsafeIndexV2Collection<Base>
 {
   let indices = lhs.___unsafe_indices
   let bounds = (lhs..<rhs).relative(to: indices)

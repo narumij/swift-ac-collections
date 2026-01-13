@@ -13,7 +13,7 @@
 // 荒く書いた段階なのでいろいろ手抜きがある
 
 public
-  struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>: UnsafeTreePointer
+  struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>: UnsafeImmutableIndexingProtocol
 {
   @usableFromInline
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -57,18 +57,6 @@ public
   internal var deallocator: Deallocator
 
   public typealias Element = Index
-}
-
-extension UnsafeIndexV2Collection {
-
-  @inlinable
-  @inline(__always)
-  internal func ___index(_ p: _NodePtr) -> Index {
-    .init(
-      __tree_: __tree_,
-      rawValue: p,
-      deallocator: deallocator)
-  }
 }
 
 extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection {
@@ -117,7 +105,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
 
 extension UnsafeIndexV2Collection {
 
-  public struct Iterator: IteratorProtocol, UnsafeTreePointer {
+  public struct Iterator: IteratorProtocol, UnsafeImmutableIndexingProtocol {
 
     @usableFromInline
     internal init(
@@ -150,14 +138,6 @@ extension UnsafeIndexV2Collection {
     @usableFromInline
     internal var deallocator: Deallocator
 
-    @inlinable
-    internal func ___index(_ p: _NodePtr) -> Index {
-      .init(
-        __tree_: __tree_,
-        rawValue: p,
-        deallocator: deallocator)
-    }
-
     public mutating func next() -> Index? {
       guard _current != _end else { return nil }
       defer {
@@ -171,7 +151,7 @@ extension UnsafeIndexV2Collection {
 
 extension UnsafeIndexV2Collection {
 
-  public struct Reversed: IteratorProtocol, Sequence, UnsafeTreePointer {
+  public struct Reversed: IteratorProtocol, Sequence, UnsafeImmutableIndexingProtocol {
     
     @inlinable
     @inline(__always)
@@ -216,14 +196,6 @@ extension UnsafeIndexV2Collection {
 
     @usableFromInline
     internal var deallocator: Deallocator
-
-    @inlinable
-    internal func ___index(_ p: _NodePtr) -> Index {
-      .init(
-        __tree_: __tree_,
-        rawValue: p,
-        deallocator: deallocator)
-    }
 
     public mutating func next() -> Index? {
       guard _current != _start else { return nil }

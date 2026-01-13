@@ -25,25 +25,29 @@ import Foundation
 extension RedBlackTreeIteratorV2 {
 
   @frozen
-  public struct Keys: Sequence, IteratorProtocol, UnsafeTreePointer {
+  public struct Keys: Sequence, IteratorProtocol, UnsafeTreePointer, UnsafeImmutableIndexingProtocol {
 
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _Key = RedBlackTreeIteratorV2.Base._Key
 
     @usableFromInline
-    internal let __tree_: Tree
+    internal let __tree_: ImmutableTree
 
     @usableFromInline
     internal var _start, _end, _current, _next: _NodePtr
 
+    @usableFromInline
+    var deallocator: Deallocator
+
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.__tree_ = tree
+      self.__tree_ = .init(__tree_: tree)
       self._current = start
       self._start = start
       self._end = end
       self._next = start == tree.end ? tree.end : tree.__tree_next_iter(start)
+      self.deallocator = tree.deallocator
     }
 
     @inlinable
@@ -60,7 +64,7 @@ extension RedBlackTreeIteratorV2 {
     @inlinable
     @inline(__always)
     public func reversed() -> Reversed {
-      .init(tree: __tree_, start: _start, end: _end)
+      .init(__tree_: __tree_, start: _start, end: _end, deallocator: deallocator)
     }
   }
 }
@@ -90,4 +94,4 @@ extension RedBlackTreeIteratorV2.Keys: Comparable {
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIteratorV2.Keys: ___UnsafeIsIdenticalToV2 {}
+extension RedBlackTreeIteratorV2.Keys: ___UnsafeImmutableIsIdenticalToV2 {}

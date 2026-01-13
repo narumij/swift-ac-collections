@@ -41,7 +41,6 @@ extension RedBlackTreeIteratorV2.MappedValues {
     var poolLifespan: PoolLifespan
 
     @inlinable
-    @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.__tree_ = .init(__tree_: tree)
       self._current = end

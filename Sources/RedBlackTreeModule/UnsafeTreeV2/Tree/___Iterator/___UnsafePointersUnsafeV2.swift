@@ -20,8 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-// TODO: CoW挙動検討
-// 内部用シーケンスはCoW対象外でいいかもしれない
+// TODO: 利用時の寿命管理の確認
+// 寿命延長を行わないので、利用側で寿命安全を守る必要がある
 
 @frozen
 @usableFromInline

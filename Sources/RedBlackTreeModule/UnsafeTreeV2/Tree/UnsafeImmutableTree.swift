@@ -5,6 +5,9 @@
 //  Created by narumij on 2026/01/12.
 //
 
+// TODO: 利用時の寿命管理の確認
+// 寿命延長を行わないので、利用側で寿命安全を守る必要がある
+
 @usableFromInline
 package struct UnsafeImmutableTree<Base: ___TreeBase>: UnsafeTreeNodeProtocol {
 

@@ -40,7 +40,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(after i: Index) -> Index {
-    ___index(__tree_.___index(after: i.rawValue(__tree_)))
+    ___index(__tree_.___index(after: __tree_.rawValue(i)))
   }
 
   @inlinable
@@ -52,7 +52,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(before i: Index) -> Index {
-    ___index(__tree_.___index(before: i.rawValue(__tree_)))
+    ___index(__tree_.___index(before: __tree_.rawValue(i)))
   }
 
   @inlinable
@@ -64,7 +64,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(__tree_.___index(i.rawValue(__tree_), offsetBy: distance))
+    ___index(__tree_.___index(__tree_.rawValue(i), offsetBy: distance))
   }
 
   @inlinable
@@ -76,7 +76,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    ___index_or_nil(__tree_.___index(i.rawValue(__tree_), offsetBy: distance, limitedBy: limit.rawValue(__tree_)))
+    ___index_or_nil(__tree_.___index(__tree_.rawValue(i), offsetBy: distance, limitedBy: __tree_.rawValue(limit)))
   }
 
   @inlinable
@@ -125,7 +125,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _isValid(index: Index) -> Bool {
-    !__tree_.___is_subscript_null(index.rawValue(__tree_))
+    !__tree_.___is_subscript_null(__tree_.rawValue(index))
   }
 }
 
@@ -139,8 +139,8 @@ extension ___UnsafeIndexV2 where Self: Collection {
 
     let bounds = bounds.relative(to: self)
     return !__tree_.___is_range_null(
-      bounds.lowerBound.rawValue(__tree_),
-      bounds.upperBound.rawValue(__tree_))
+      __tree_.rawValue(bounds.lowerBound),
+      __tree_.rawValue(bounds.upperBound))
   }
 }
 
@@ -186,6 +186,6 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   @discardableResult
   public mutating func ___erase(_ ptr: Index) -> Index {
-    ___index(__tree_.erase(ptr.rawValue(__tree_)))
+    ___index(__tree_.erase(__tree_.rawValue(ptr)))
   }
 }

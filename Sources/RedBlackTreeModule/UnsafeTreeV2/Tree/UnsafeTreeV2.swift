@@ -197,4 +197,11 @@ extension UnsafeTreeV2 {
       self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
     #endif
   }
+  
+  @inlinable
+  @inline(__always)
+  internal func rawValue(_ index: Index) -> _NodePtr
+  where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
+    ___node_ptr(index)
+  }
 }

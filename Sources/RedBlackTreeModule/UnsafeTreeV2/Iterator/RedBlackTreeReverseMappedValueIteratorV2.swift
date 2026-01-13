@@ -25,27 +25,31 @@ import Foundation
 extension RedBlackTreeIteratorV2.MappedValues {
   
   @frozen
-  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer
+  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer, UnsafeImmutableIndexingProtocol
   where Base: KeyValueComparer
   {
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _MappedValue = RedBlackTreeIteratorV2.Base._MappedValue
 
     @usableFromInline
-    internal let __tree_: Tree
+    internal let __tree_: ImmutableTree
     
     @usableFromInline
     internal var _start, _end, _begin, _current, _next: _NodePtr
     
+    @usableFromInline
+    var deallocator: Deallocator
+
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.__tree_ = tree
+      self.__tree_ = .init(__tree_: tree)
       self._current = end
       self._next = end == start ? end : __tree_.__tree_prev_iter(end)
       self._start = start
       self._end = end
       self._begin = __tree_.__begin_node_
+      self.deallocator = tree.deallocator
     }
     
     @inlinable
@@ -84,4 +88,4 @@ extension RedBlackTreeIteratorV2.MappedValues.Reversed: Comparable where _Mapped
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIteratorV2.MappedValues.Reversed: ___UnsafeIsIdenticalToV2 {}
+extension RedBlackTreeIteratorV2.MappedValues.Reversed: ___UnsafeImmutableIsIdenticalToV2 {}

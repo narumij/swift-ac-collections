@@ -8,7 +8,7 @@
 // インデックス等で`__tree_`を共有する設計だったが、デアロケータを共有する設計に移行する
 // 生成されて以後はこのオブジェクトが保持するメモリの寿命を一元で管理する
 @usableFromInline
-final class _UnsafeNodeFreshPoolDeallocator {
+package final class _UnsafeNodeFreshPoolDeallocator {
   
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>

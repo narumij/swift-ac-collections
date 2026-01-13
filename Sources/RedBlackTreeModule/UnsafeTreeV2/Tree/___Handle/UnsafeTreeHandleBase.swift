@@ -32,11 +32,11 @@ extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
-  var nullptr: _NodePtr { origin.pointee.nullptr }
+  package var nullptr: _NodePtr { origin.pointee.nullptr }
 
   @inlinable
   @inline(__always)
-  var end: _NodePtr { origin.pointee.end_ptr }
+  package var end: _NodePtr { origin.pointee.end_ptr }
 }
 
 // MARK: - BeginNodeProtocol
@@ -44,7 +44,7 @@ extension UnsafeTreeHandleBase {
 extension UnsafeTreeHandleBase {
 
   @inlinable
-  var __begin_node_: _NodePtr {
+  package var __begin_node_: _NodePtr {
 
     @inline(__always) get {
       origin.pointee.begin_ptr
@@ -63,7 +63,7 @@ extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
-  var __end_node: _NodePtr {
+  package var __end_node: _NodePtr {
     origin.pointee.end_ptr
   }
 }
@@ -76,13 +76,13 @@ extension UnsafeTreeHandleBase {
     @nonobjc
     @inlinable
     @inline(__always)
-    var __root: _NodePtr {
+    package var __root: _NodePtr {
       origin.pointee.end_node.__left_
     }
   #else
     @inlinable
     @inline(__always)
-    var __root: _NodePtr {
+    package var __root: _NodePtr {
       get { end.pointee.__left_ }
       set { end.pointee.__left_ = newValue }
     }
@@ -92,7 +92,7 @@ extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
-  func __root_ptr() -> _NodeRef {
+  package func __root_ptr() -> _NodeRef {
     withUnsafeMutablePointer(to: &origin.pointee.end_node.__left_) { $0 }
   }
 }
@@ -102,7 +102,7 @@ extension UnsafeTreeHandleBase {
 extension UnsafeTreeHandleBase {
 
   @inlinable
-  var __size_: Int {
+  package var __size_: Int {
     @inline(__always) get {
       header.pointee.count
     }
@@ -118,13 +118,13 @@ extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
-  func __construct_node(_ k: _Value) -> _NodePtr {
+  package func __construct_node(_ k: _Value) -> _NodePtr {
     header.pointee.__construct_node(k)
   }
 
   @inlinable
   @inline(__always)
-  func destroy(_ p: _NodePtr) {
+  package func destroy(_ p: _NodePtr) {
     header.pointee.___pushRecycle(p)
   }
 }
@@ -133,13 +133,13 @@ extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
-  func __value_(_ p: _NodePtr) -> _Value {
+  package func __value_(_ p: _NodePtr) -> _Value {
     UnsafePair<_Value>.valuePointer(p)!.pointee
   }
 
   @inlinable
   @inline(__always)
-  func ___element(_ p: _NodePtr, _ __v: _Value) {
+  package func ___element(_ p: _NodePtr, _ __v: _Value) {
     UnsafePair<_Value>.valuePointer(p)!.pointee = __v
   }
 }

@@ -93,7 +93,6 @@ extension UnsafeImmutableTree {
 
 // MARK: -
 
-#if false
 extension UnsafeImmutableTree {
 
   @inlinable
@@ -101,7 +100,7 @@ extension UnsafeImmutableTree {
   internal func
     sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafePointersUnsafeV2<Base>
   {
-    .init(tree: self, start: __first, end: __last)
+    .init(__tree_: self, start: __first, end: __last)
   }
 
   @inlinable
@@ -110,7 +109,7 @@ extension UnsafeImmutableTree {
     unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
     -> ___UnsafePointersUnsafeV2<Base>
   {
-    .init(tree: self, __first: __first, __last: __last)
+    .init(__tree_: self, __first: __first, __last: __last)
   }
 
   @inlinable
@@ -119,7 +118,7 @@ extension UnsafeImmutableTree {
     unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
     -> ___UnsafeValuesUnsafeV2<Base>
   {
-    .init(tree: self, __first: __first, __last: __last)
+    .init(__tree_: self, __first: __first, __last: __last)
   }
 }
 
@@ -148,4 +147,3 @@ extension UnsafeImmutableTree {
     }
   }
 }
-#endif

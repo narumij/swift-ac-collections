@@ -25,17 +25,11 @@
 
 @frozen
 @usableFromInline
-package struct ___SafePointersUnsafeV2<Base>: Sequence, IteratorProtocol, UnsafeTreePointer
+package struct ___SafePointersUnsafeV2<Base>: Sequence, IteratorProtocol, UnsafeTreeProtocol
 where Base: ___TreeBase {
 
   @usableFromInline
-  package typealias Tree = UnsafeTreeV2<Base>
-
-  @usableFromInline
-  package typealias ImmutableTree = UnsafeImmutableTree<Base>
-
-  @usableFromInline
-  package let __tree_: Tree
+  package let __tree_: ImmutableTree
 
   @usableFromInline
   package var _start, _end, _current, _next: _NodePtr
@@ -43,11 +37,21 @@ where Base: ___TreeBase {
   @inlinable
   @inline(__always)
   package init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    self.__tree_ = tree
+    self.__tree_ = .init(__tree_: tree)
     self._current = start
     self._start = start
     self._end = end
     self._next = start == tree.end ? tree.end : tree.__tree_next_iter(start)
+  }
+
+  @inlinable
+  @inline(__always)
+  package init(__tree_: ImmutableTree, start: _NodePtr, end: _NodePtr) {
+    self.__tree_ = __tree_
+    self._current = start
+    self._start = start
+    self._end = end
+    self._next = start == __tree_.end ? __tree_.end : __tree_.__tree_next_iter(start)
   }
 
   @inlinable
@@ -64,7 +68,7 @@ where Base: ___TreeBase {
   @inlinable
   @inline(__always)
   internal func reversed() -> Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
+    .init(__tree_: __tree_, start: _start, end: _end)
   }
 }
 
@@ -72,14 +76,11 @@ extension ___SafePointersUnsafeV2 {
 
   @frozen
   @usableFromInline
-  package struct Reversed: Sequence, IteratorProtocol
+  package struct Reversed: Sequence, IteratorProtocol, UnsafeTreeProtocol
   where Base: ___TreeBase {
 
     @usableFromInline
-    internal typealias Tree = UnsafeTreeV2<Base>
-
-    @usableFromInline
-    internal let __tree_: Tree
+    internal let __tree_: ImmutableTree
 
     @usableFromInline
     internal var _start, _begin, _current, _next: _NodePtr
@@ -87,7 +88,17 @@ extension ___SafePointersUnsafeV2 {
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.__tree_ = tree
+      self.__tree_ = .init(__tree_: tree)
+      self._current = end
+      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
+      self._start = start
+      self._begin = __tree_.__begin_node_
+    }
+
+    @inlinable
+    @inline(__always)
+    package init(__tree_: ImmutableTree, start: _NodePtr, end: _NodePtr) {
+      self.__tree_ = __tree_
       self._current = end
       self._next = end == start ? end : __tree_.__tree_prev_iter(end)
       self._start = start

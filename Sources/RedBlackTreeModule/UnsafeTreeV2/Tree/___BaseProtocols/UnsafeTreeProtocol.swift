@@ -5,10 +5,8 @@
 //  Created by narumij on 2026/01/13.
 //
 
-
-
 @usableFromInline
-package protocol UnsafeTreeProtocol
+package protocol UnsafeTreeProtocol: UnsafeTreePointer
 where
   Tree == UnsafeTreeV2<Base>,
   ImmutableTree == UnsafeImmutableTree<Base>

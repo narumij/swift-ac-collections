@@ -13,7 +13,8 @@
 // 荒く書いた段階なのでいろいろ手抜きがある
 
 public
-  struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>: UnsafeImmutableIndexingProtocol
+  struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>:
+    UnsafeTreeProtocol, UnsafeImmutableIndexingProtocol
 {
   @usableFromInline
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -36,14 +37,6 @@ public
     self._end = end
     self.deallocator = deallocator
   }
-
-  public typealias Tree = UnsafeTreeV2<Base>
-  public typealias _NodePtr = Tree._NodePtr
-
-  @usableFromInline
-  typealias ImmutableTree = UnsafeImmutableTree<Base>
-  @usableFromInline
-  typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 
   public typealias Index = UnsafeIndexV2<Base>
 
@@ -105,7 +98,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
 
 extension UnsafeIndexV2Collection {
 
-  public struct Iterator: IteratorProtocol, UnsafeImmutableIndexingProtocol {
+  public struct Iterator: IteratorProtocol, UnsafeTreeProtocol, UnsafeImmutableIndexingProtocol {
 
     @usableFromInline
     internal init(
@@ -121,13 +114,6 @@ extension UnsafeIndexV2Collection {
       self._end = end
       self.deallocator = deallocator
     }
-
-    public typealias Tree = UnsafeTreeV2<Base>
-
-    @usableFromInline
-    typealias ImmutableTree = UnsafeImmutableTree<Base>
-    @usableFromInline
-    typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 
     @usableFromInline
     internal let __tree_: ImmutableTree
@@ -179,14 +165,6 @@ extension UnsafeIndexV2Collection {
       self._begin = __tree_.__begin_node_
       self.deallocator = deallocator
     }
-
-    public typealias Tree = UnsafeTreeV2<Base>
-    
-    @usableFromInline
-    typealias ImmutableTree = UnsafeImmutableTree<Base>
-    
-    @usableFromInline
-    typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 
     @usableFromInline
     internal let __tree_: ImmutableTree

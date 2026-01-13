@@ -6,9 +6,10 @@
 //
 
 @usableFromInline
-struct UnsafeImmutableTree<Base: ___TreeBase>: UnsafeTreeNodeProtocol {
+package struct UnsafeImmutableTree<Base: ___TreeBase>: UnsafeTreeNodeProtocol {
 
-  @usableFromInline typealias _Key = Base._Key
+  @usableFromInline
+  package typealias _Key = Base._Key
 
   @usableFromInline
   init(__tree_ tree: UnsafeTreeV2<Base>) {
@@ -30,7 +31,8 @@ struct UnsafeImmutableTree<Base: ___TreeBase>: UnsafeTreeNodeProtocol {
 
 extension UnsafeImmutableTree {
 
-  @usableFromInline var end: UnsafeMutablePointer<UnsafeNode> {
+  @usableFromInline
+  package var end: UnsafeMutablePointer<UnsafeNode> {
     __end_node
   }
 }

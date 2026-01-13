@@ -21,7 +21,9 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol UnsafeTreeHandleBase: UnsafeTreeNodeProtocol & _TreeValue & UnsafeTreePointer, UnsafeTreeNodeRefProtocol {
+package protocol UnsafeTreeHandleBase: UnsafeTreeNodeProtocol & _TreeValue & UnsafeTreePointer,
+  UnsafeTreeNodeRefProtocol
+{
   var header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header> { get }
   var origin: UnsafeMutablePointer<UnsafeTreeV2Origin> { get }
 }
@@ -30,11 +32,11 @@ extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
-  public var nullptr: _NodePtr { origin.pointee.nullptr }
+  var nullptr: _NodePtr { origin.pointee.nullptr }
 
   @inlinable
   @inline(__always)
-  public var end: _NodePtr { origin.pointee.end_ptr }
+  var end: _NodePtr { origin.pointee.end_ptr }
 }
 
 // MARK: - BeginNodeProtocol
@@ -42,7 +44,7 @@ extension UnsafeTreeHandleBase {
 extension UnsafeTreeHandleBase {
 
   @inlinable
-  public var __begin_node_: _NodePtr {
+  var __begin_node_: _NodePtr {
 
     @inline(__always) get {
       origin.pointee.begin_ptr
@@ -74,13 +76,13 @@ extension UnsafeTreeHandleBase {
     @nonobjc
     @inlinable
     @inline(__always)
-    internal var __root: _NodePtr {
+    var __root: _NodePtr {
       origin.pointee.end_node.__left_
     }
   #else
     @inlinable
     @inline(__always)
-    internal var __root: _NodePtr {
+    var __root: _NodePtr {
       get { end.pointee.__left_ }
       set { end.pointee.__left_ = newValue }
     }
@@ -90,7 +92,7 @@ extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
-  internal func __root_ptr() -> _NodeRef {
+  func __root_ptr() -> _NodeRef {
     withUnsafeMutablePointer(to: &origin.pointee.end_node.__left_) { $0 }
   }
 }
@@ -116,13 +118,13 @@ extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
-  public func __construct_node(_ k: _Value) -> _NodePtr {
+  func __construct_node(_ k: _Value) -> _NodePtr {
     header.pointee.__construct_node(k)
   }
 
   @inlinable
   @inline(__always)
-  internal func destroy(_ p: _NodePtr) {
+  func destroy(_ p: _NodePtr) {
     header.pointee.___pushRecycle(p)
   }
 }
@@ -131,13 +133,13 @@ extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
-  internal func __value_(_ p: _NodePtr) -> _Value {
+  func __value_(_ p: _NodePtr) -> _Value {
     UnsafePair<_Value>.valuePointer(p)!.pointee
   }
 
   @inlinable
   @inline(__always)
-  internal func ___element(_ p: _NodePtr, _ __v: _Value) {
+  func ___element(_ p: _NodePtr, _ __v: _Value) {
     UnsafePair<_Value>.valuePointer(p)!.pointee = __v
   }
 }

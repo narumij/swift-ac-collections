@@ -20,6 +20,9 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+// TODO: CoW挙動検討
+// 内部用シーケンスはCoW対象外でいいかもしれない
+
 @frozen
 @usableFromInline
 package struct ___SafePointersUnsafeV2<Base>: Sequence, IteratorProtocol

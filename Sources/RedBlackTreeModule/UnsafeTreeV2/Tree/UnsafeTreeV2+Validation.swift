@@ -27,16 +27,23 @@ func ___is_null_or_end__(pointerIndex: Int) -> Bool {
   ___is_null_or_end(pointerIndex)
 }
 
-extension UnsafeTreeV2 {
+@usableFromInline
+protocol Validation: UnsafeTreePointer {
+  var nullptr: _NodePtr { get }
+  var __root: _NodePtr { get }
+  var __end_node: _NodePtr { get }
+  var __begin_node_: _NodePtr { get }
+  var count: Int { get }
+  var initializedCount: Int { get }
+}
+
+extension Validation {
 
   @inlinable
   @inline(__always)
   internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
     p.pointee.___needs_deinitialize != true
   }
-}
-
-extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
@@ -77,7 +84,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func ___is_end(_ p: _NodePtr) -> Bool {
-    p == end
+    p == __end_node
   }
 
   /// - Complexity: O(1)
@@ -165,7 +172,7 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2 {
+extension Validation {
 
   @inlinable
   @inline(__always)
@@ -207,3 +214,5 @@ extension UnsafeTreeV2 {
     }
   }
 }
+
+extension UnsafeTreeV2: Validation {}

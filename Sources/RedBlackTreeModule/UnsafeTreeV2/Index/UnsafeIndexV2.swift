@@ -31,6 +31,9 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   public typealias Tree = UnsafeTreeV2<Base>
   public typealias Pointee = Tree.Pointee
   public typealias _NodePtr = Tree._NodePtr
+  
+  @usableFromInline
+  typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 
   @usableFromInline
   typealias _Value = Tree._Value
@@ -49,9 +52,6 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
 
   @usableFromInline
   internal var deallocator: Deallocator
-
-  @usableFromInline
-  typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 
   // MARK: -
 

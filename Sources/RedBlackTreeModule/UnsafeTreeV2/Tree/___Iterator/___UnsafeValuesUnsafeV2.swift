@@ -24,7 +24,7 @@
 // 内部用シーケンスはCoW対象外でいいかもしれない
 
 @usableFromInline
-protocol UnsafeTreeProtocol
+package protocol UnsafeTreeProtocol
 where
   Tree == UnsafeTreeV2<Base>,
   ImmutableTree == UnsafeImmutableTree<Base>

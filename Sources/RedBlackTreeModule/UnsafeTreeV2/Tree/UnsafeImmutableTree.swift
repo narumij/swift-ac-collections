@@ -100,6 +100,23 @@ extension UnsafeImmutableTree {
 
   @inlinable
   @inline(__always)
+  package func __value_(_ p: _NodePtr) -> Base._Value {
+    UnsafePair<Base._Value>.valuePointer(p)!.pointee
+  }
+
+  @inlinable
+  @inline(__always)
+  package func ___element(_ p: _NodePtr, _ __v: Base._Value) {
+    UnsafePair<Base._Value>.valuePointer(p)!.pointee = __v
+  }
+}
+
+// MARK: -
+
+extension UnsafeImmutableTree {
+
+  @inlinable
+  @inline(__always)
   internal func
     sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafePointersUnsafeV2<Base>
   {

@@ -246,11 +246,11 @@ extension UnsafeIndexV2 {
   @inlinable
   public var pointee: Pointee? {
     guard
-      !__immutable_tree_.___is_subscript_null(rawValue(__immutable_tree_)),
-      !__immutable_tree_.___is_garbaged(rawValue(__immutable_tree_)),
+      !__immutable_tree_.___is_subscript_null(rawValue),
+      !__immutable_tree_.___is_garbaged(rawValue),
       !deallocator.isBaseDeallocated
     else { return nil }
-    return Base.___pointee(UnsafePair<_Value>.valuePointer(rawValue(__immutable_tree_))!.pointee)
+    return Base.___pointee(UnsafePair<_Value>.valuePointer(rawValue)!.pointee)
   }
 }
 
@@ -393,7 +393,13 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  package func rawValue(_ tree: Any) -> _NodePtr {
+  package func rawValue(_ tree: Tree) -> _NodePtr {
+    tree.___node_ptr(self)
+  }
+
+  @inlinable
+  @inline(__always)
+  package var ___rawValue: _NodePtr {
     ___node_ptr(self)
   }
 

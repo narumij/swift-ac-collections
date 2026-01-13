@@ -385,7 +385,7 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_._ensureUnique()
-    guard let element = ___remove(at: index.rawValue(__tree_)) else {
+    guard let element = ___remove(at: __tree_.___node_ptr(index)) else {
       fatalError(.invalidIndex)
     }
     return element

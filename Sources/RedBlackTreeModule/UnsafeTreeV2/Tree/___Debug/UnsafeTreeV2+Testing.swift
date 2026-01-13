@@ -98,6 +98,9 @@
     package func equiv(with other: UnsafeTreeV2Buffer.Header) -> Bool {
       // freshPoolCapacityは等価判定不可
       assert(recycleCount == other.recycleCount)
+      assert(freshPoolActualCount == other.freshPoolActualCount)
+      assert(freshPoolUsedCount == other.freshPoolUsedCount)
+      assert(___recycleNodes == other.___recycleNodes)
       guard
         freshPoolUsedCount == other.freshPoolUsedCount,
         freshPoolActualCount == other.freshPoolActualCount,

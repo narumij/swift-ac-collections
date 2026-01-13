@@ -33,17 +33,16 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   public typealias _NodePtr = Tree._NodePtr
 
   @usableFromInline
+  typealias ImmutableTree = UnsafeImmutableTree<Base>
+  
+  @usableFromInline
   typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 
   @usableFromInline
   typealias _Value = Tree._Value
 
-  // TODO: 木を保持しない設計及び実装への移行
-//  @usableFromInline
-//  internal let __tree_: Tree
-
   @usableFromInline
-  internal let __immutable_tree_: UnsafeImmutableTree<Base>
+  internal let __tree_: ImmutableTree
 
   @usableFromInline
   internal var ___node_id_: Int
@@ -62,23 +61,20 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   @inline(__always)
   internal init(tree: Tree, rawValue: _NodePtr) {
     assert(rawValue != tree.nullptr)
-//    self.__tree_ = tree
     self.rawValue = rawValue
     self.___node_id_ = rawValue.pointee.___node_id_
     self.deallocator = tree.deallocator
-    self.__immutable_tree_ = .init(__tree_: tree)
+    self.__tree_ = .init(__tree_: tree)
   }
 
   @inlinable
   @inline(__always)
   internal init(
-//    __tree_: UnsafeIndexV2<Base>.Tree,
-    __immutable_tree_: UnsafeImmutableTree<Base>,
+    __tree_: UnsafeImmutableTree<Base>,
     rawValue: UnsafeIndexV2<Base>._NodePtr,
     deallocator: UnsafeIndexV2<Base>.Deallocator
   ) {
-//    self.__tree_ = __tree_
-    self.__immutable_tree_ = __immutable_tree_
+    self.__tree_ = __tree_
     self.___node_id_ = rawValue.pointee.___node_id_
     self.rawValue = rawValue
     self.deallocator = deallocator
@@ -126,7 +122,7 @@ extension UnsafeIndexV2: Comparable {
   public static func < (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
     // rhsよせでもいいかもしれない(2026/1/13)
-    return lhs.__immutable_tree_.lessThan(lhs.___node_ptr(lhs), lhs.___node_ptr(rhs))
+    return lhs.__tree_.lessThan(lhs.___node_ptr(lhs), lhs.___node_ptr(rhs))
   }
 }
 
@@ -140,25 +136,21 @@ extension UnsafeIndexV2 {
   //  @inline(__always)
   public func distance(to other: Self) -> Int {
     let other = ___node_ptr(other)
-    guard !__immutable_tree_.___is_garbaged(rawValue),
-      !__immutable_tree_.___is_garbaged(other)
+    guard !__tree_.___is_garbaged(rawValue),
+      !__tree_.___is_garbaged(other)
     else {
       preconditionFailure(.garbagedIndex)
     }
-    return __immutable_tree_.___signed_distance(rawValue, other)
+    return __tree_.___signed_distance(rawValue, other)
   }
 
   /// - Complexity: O(1)
   @inlinable
   //  @inline(__always)
   public func advanced(by n: Int) -> Self {
-//    return .init(
-//      tree: __tree_,
-//      rawValue: __immutable_tree_.___tree_adv_iter(rawValue, by: n))
     return .init(
-//      __tree_: __tree_,
-      __immutable_tree_: __immutable_tree_,
-      rawValue: __immutable_tree_.___tree_adv_iter(rawValue, by: n),
+      __tree_: __tree_,
+      rawValue: __tree_.___tree_adv_iter(rawValue, by: n),
       deallocator: deallocator)
   }
 }
@@ -172,7 +164,7 @@ extension UnsafeIndexV2 {
   @inline(__always)
   public var next: Self? {
     guard
-      !__immutable_tree_.___is_next_null(rawValue),
+      !__tree_.___is_next_null(rawValue),
       !deallocator.isBaseDeallocated
     else {
       return nil
@@ -189,7 +181,7 @@ extension UnsafeIndexV2 {
   @inline(__always)
   public var previous: Self? {
     guard
-      !__immutable_tree_.___is_prev_null(rawValue),
+      !__tree_.___is_prev_null(rawValue),
       !deallocator.isBaseDeallocated
     else {
       return nil
@@ -202,17 +194,17 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal mutating func ___unchecked_next() {
-    assert(!__immutable_tree_.___is_garbaged(rawValue))
-    assert(!__immutable_tree_.___is_end(rawValue))
-    rawValue = __immutable_tree_.__tree_next_iter(rawValue)
+    assert(!__tree_.___is_garbaged(rawValue))
+    assert(!__tree_.___is_end(rawValue))
+    rawValue = __tree_.__tree_next_iter(rawValue)
   }
 
   @inlinable
   @inline(__always)
   internal mutating func ___unchecked_prev() {
-    assert(!__immutable_tree_.___is_garbaged(rawValue))
-    assert(!__immutable_tree_.___is_begin(rawValue))
-    rawValue = __immutable_tree_.__tree_prev_iter(rawValue)
+    assert(!__tree_.___is_garbaged(rawValue))
+    assert(!__tree_.___is_begin(rawValue))
+    rawValue = __tree_.__tree_prev_iter(rawValue)
   }
 }
 
@@ -221,20 +213,20 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var isStart: Bool {
-    __immutable_tree_.___is_begin(rawValue)
+    __tree_.___is_begin(rawValue)
   }
 
   @inlinable
   @inline(__always)
   public var isEnd: Bool {
-    __immutable_tree_.___is_end(rawValue)
+    __tree_.___is_end(rawValue)
   }
 
   // 利用価値はないが、おまけ。
   @inlinable
   @inline(__always)
   public var isRoot: Bool {
-    __immutable_tree_.___is_root(rawValue)
+    __tree_.___is_root(rawValue)
   }
 }
 
@@ -246,8 +238,8 @@ extension UnsafeIndexV2 {
   @inlinable
   public var pointee: Pointee? {
     guard
-      !__immutable_tree_.___is_subscript_null(rawValue),
-      !__immutable_tree_.___is_garbaged(rawValue),
+      !__tree_.___is_subscript_null(rawValue),
+      !__tree_.___is_garbaged(rawValue),
       !deallocator.isBaseDeallocated
     else { return nil }
     return Base.___pointee(UnsafePair<_Value>.valuePointer(rawValue)!.pointee)
@@ -257,11 +249,10 @@ extension UnsafeIndexV2 {
 #if DEBUG
   extension UnsafeIndexV2 {
     fileprivate init(_unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, node_id: Int) {
-//      self.__tree_ = _unsafe_tree
       self.rawValue = rawValue
       self.___node_id_ = node_id
       self.deallocator = _unsafe_tree.deallocator
-      self.__immutable_tree_ = .init(__tree_: _unsafe_tree)
+      self.__tree_ = .init(__tree_: _unsafe_tree)
     }
   }
 
@@ -290,27 +281,15 @@ extension UnsafeIndexV2 {
 
 extension UnsafeIndexV2 {
   
-//  @available(*, deprecated, message: "リファクタリング完了後に維持が困難気味")
-//  @inlinable
-//  @inline(__always)
-//  internal var ___indices: UnsafeIndicesV2<Base> {
-//    // UnsafeIndicesV2の改造は影響が大きく難しいので、あたらしいindicesを構築して逃げる必要がありそう
-//    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node)
-//  }
-  
   @usableFromInline
   internal var ___unsafe_indices: UnsafeIndexCollection<Base> {
     // UnsafeIndicesV2の改造は影響が大きく難しいので、あたらしいindicesを構築して逃げる必要がありそう
-//    .init(
-//      startIndex: .init(tree: __tree_, rawValue: __tree_.__begin_node_),
-//      endIndex: .init(tree: __tree_, rawValue: __tree_.__end_node),
-//      deallocator: deallocator)
     .init(
-      startIndex: .init(__immutable_tree_: __immutable_tree_,
-                        rawValue: __immutable_tree_.__begin_node_,
+      startIndex: .init(__tree_: __tree_,
+                        rawValue: __tree_.__begin_node_,
                         deallocator: deallocator),
-      endIndex: .init(__immutable_tree_: __immutable_tree_,
-                      rawValue: __immutable_tree_.__end_node,
+      endIndex: .init(__tree_: __tree_,
+                      rawValue: __tree_.__end_node,
                       deallocator: deallocator),
       deallocator: deallocator)
   }
@@ -440,9 +419,9 @@ extension UnsafeIndexV2 {
   package subscript(_ p: Int) -> _NodePtr {
     switch p {
     case .nullptr:
-      return __immutable_tree_.nullptr
+      return __tree_.nullptr
     case .end:
-      return __immutable_tree_.__end_node
+      return __tree_.__end_node
     default:
       return deallocator[p]
     }
@@ -458,7 +437,7 @@ extension UnsafeIndexV2 {
     #if true
       // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
       // endはシングルトン的にしたい気持ちもある
-      return __immutable_tree_.isIdentical(to: index.__immutable_tree_)
+      return __tree_.isIdentical(to: index.__tree_)
         ? index.rawValue : self[index.___node_id_]
     #else
       self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])

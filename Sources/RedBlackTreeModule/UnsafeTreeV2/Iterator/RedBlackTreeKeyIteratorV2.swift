@@ -51,6 +51,22 @@ extension RedBlackTreeIteratorV2 {
     }
 
     @inlinable
+    internal init(
+      __tree_: ImmutableTree,
+      start: _NodePtr,
+      end: _NodePtr,
+      deallocator: Deallocator
+    ) {
+
+      self.__tree_ = __tree_
+      self._current = start
+      self._start = start
+      self._end = end
+      self._next = start == __tree_.end ? __tree_.end : __tree_.__tree_next_iter(start)
+      self.deallocator = deallocator
+    }
+    
+    @inlinable
     @inline(__always)
     public mutating func next() -> _Key? {
       guard _current != _end else { return nil }

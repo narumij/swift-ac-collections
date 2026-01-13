@@ -56,8 +56,13 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   @usableFromInline
   let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
 
+  /// ノードプールの寿命延長オブジェクト
+  ///
+  /// 元々はデアロケータだったが、添字アクセスが追加されている
+  ///
+  /// ここを境に名前が変わる
   @usableFromInline
-  var deallocator: _UnsafeNodeFreshPoolDeallocator {
+  var poolLifespan: _UnsafeNodeFreshPoolDeallocator {
     withMutableHeader { $0.deallocator }
   }
 }

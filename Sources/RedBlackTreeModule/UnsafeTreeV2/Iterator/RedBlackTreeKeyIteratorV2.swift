@@ -37,7 +37,7 @@ extension RedBlackTreeIteratorV2 {
     internal var _start, _end, _current, _next: _NodePtr
 
     @usableFromInline
-    var deallocator: Deallocator
+    var poolLifespan: PoolLifespan
 
     @inlinable
     @inline(__always)
@@ -47,7 +47,7 @@ extension RedBlackTreeIteratorV2 {
       self._start = start
       self._end = end
       self._next = start == tree.end ? tree.end : tree.__tree_next_iter(start)
-      self.deallocator = tree.deallocator
+      self.poolLifespan = tree.poolLifespan
     }
 
     @inlinable
@@ -55,7 +55,7 @@ extension RedBlackTreeIteratorV2 {
       __tree_: ImmutableTree,
       start: _NodePtr,
       end: _NodePtr,
-      deallocator: Deallocator
+      poolLifespan: PoolLifespan
     ) {
 
       self.__tree_ = __tree_
@@ -63,7 +63,7 @@ extension RedBlackTreeIteratorV2 {
       self._start = start
       self._end = end
       self._next = start == __tree_.end ? __tree_.end : __tree_.__tree_next_iter(start)
-      self.deallocator = deallocator
+      self.poolLifespan = poolLifespan
     }
     
     @inlinable
@@ -80,7 +80,7 @@ extension RedBlackTreeIteratorV2 {
     @inlinable
     @inline(__always)
     public func reversed() -> Reversed {
-      .init(__tree_: __tree_, start: _start, end: _end, deallocator: deallocator)
+      .init(__tree_: __tree_, start: _start, end: _end, poolLifespan: poolLifespan)
     }
   }
 }

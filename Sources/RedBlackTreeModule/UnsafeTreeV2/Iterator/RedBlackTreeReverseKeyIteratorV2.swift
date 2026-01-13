@@ -37,7 +37,7 @@ extension RedBlackTreeIteratorV2.Keys {
     internal var _start, _end, _begin, _current, _next: _NodePtr
     
     @usableFromInline
-    var deallocator: Deallocator
+    var poolLifespan: PoolLifespan
 
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -47,7 +47,7 @@ extension RedBlackTreeIteratorV2.Keys {
       self._start = start
       self._end = end
       self._begin = __tree_.__begin_node_
-      self.deallocator = tree.deallocator
+      self.poolLifespan = tree.poolLifespan
     }
 
     @inlinable
@@ -55,7 +55,7 @@ extension RedBlackTreeIteratorV2.Keys {
       __tree_: ImmutableTree,
       start: _NodePtr,
       end: _NodePtr,
-      deallocator: Deallocator
+      poolLifespan: PoolLifespan
     ) {
 
       self.__tree_ = __tree_
@@ -64,7 +64,7 @@ extension RedBlackTreeIteratorV2.Keys {
       self._start = start
       self._end = end
       self._begin = __tree_.__begin_node_
-      self.deallocator = deallocator
+      self.poolLifespan = poolLifespan
     }
 
     @inlinable

@@ -21,7 +21,7 @@ public
     __tree_ = .init(__tree_: tree)
     _start = start
     _end = end
-    deallocator = tree.deallocator
+    poolLifespan = tree.poolLifespan
   }
 
   @usableFromInline
@@ -29,13 +29,13 @@ public
     __tree_: ImmutableTree,
     start: _NodePtr,
     end: _NodePtr,
-    deallocator: Deallocator
+    poolLifespan: PoolLifespan
   ) {
 
     self.__tree_ = __tree_
     self._start = start
     self._end = end
-    self.deallocator = deallocator
+    self.poolLifespan = poolLifespan
   }
 
   // TODO: Intに変更する検討
@@ -49,7 +49,7 @@ public
   internal var _start, _end: _NodePtr
 
   @usableFromInline
-  internal var deallocator: Deallocator
+  internal var poolLifespan: PoolLifespan
 
   public typealias Element = Index
 }
@@ -64,7 +64,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
       __tree_: __tree_,
       start: _start,
       end: _end,
-      deallocator: deallocator)
+      poolLifespan: poolLifespan)
   }
 
   @inlinable
@@ -74,7 +74,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
       __tree_: __tree_,
       start: _start,
       end: _end,
-      deallocator: deallocator)
+      poolLifespan: poolLifespan)
   }
 
   public func index(after i: Index) -> Index {
@@ -95,7 +95,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
         __tree_: __tree_,
         start: bounds.lowerBound.rawValue,
         end: bounds.upperBound.rawValue,
-        deallocator: bounds.lowerBound.deallocator)
+        poolLifespan: bounds.lowerBound.poolLifespan)
     }
   #else
     @inlinable
@@ -119,14 +119,14 @@ extension UnsafeIndexV2Collection {
       __tree_: ImmutableTree,
       start: _NodePtr,
       end: _NodePtr,
-      deallocator: Deallocator
+      poolLifespan: PoolLifespan
     ) {
 
       self.__tree_ = __tree_
       self._current = start
       self._next = __tree_.__tree_next(start)
       self._end = end
-      self.deallocator = deallocator
+      self.poolLifespan = poolLifespan
     }
 
     @usableFromInline
@@ -136,7 +136,7 @@ extension UnsafeIndexV2Collection {
     internal var _current, _next, _end: _NodePtr
 
     @usableFromInline
-    internal var deallocator: Deallocator
+    internal var poolLifespan: PoolLifespan
 
     public mutating func next() -> Index? {
       guard _current != _end else { return nil }
@@ -161,7 +161,7 @@ extension UnsafeIndexV2Collection {
       self._next = end == start ? end : __tree_.__tree_prev_iter(end)
       self._start = start
       self._begin = __tree_.__begin_node_
-      self.deallocator = tree.deallocator
+      self.poolLifespan = tree.poolLifespan
     }
 
     @usableFromInline
@@ -169,7 +169,7 @@ extension UnsafeIndexV2Collection {
       __tree_: ImmutableTree,
       start: _NodePtr,
       end: _NodePtr,
-      deallocator: Deallocator
+      poolLifespan: PoolLifespan
     ) {
 
       self.__tree_ = __tree_
@@ -177,7 +177,7 @@ extension UnsafeIndexV2Collection {
       self._next = end == start ? end : __tree_.__tree_prev_iter(end)
       self._start = start
       self._begin = __tree_.__begin_node_
-      self.deallocator = deallocator
+      self.poolLifespan = poolLifespan
     }
 
     @usableFromInline
@@ -187,7 +187,7 @@ extension UnsafeIndexV2Collection {
     internal var _current, _next, _start, _begin: _NodePtr
 
     @usableFromInline
-    internal var deallocator: Deallocator
+    internal var poolLifespan: PoolLifespan
 
     public mutating func next() -> Index? {
       guard _current != _start else { return nil }

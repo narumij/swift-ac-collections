@@ -46,7 +46,7 @@ public struct UnsafeIndexV2<Base>: UnsafeTreeProtocol, UnsafeImmutableIndexingPr
   }
 
   @usableFromInline
-  internal var deallocator: Deallocator
+  internal var poolLifespan: PoolLifespan
 
   // MARK: -
 
@@ -56,7 +56,7 @@ public struct UnsafeIndexV2<Base>: UnsafeTreeProtocol, UnsafeImmutableIndexingPr
     assert(rawValue != tree.nullptr)
     self.rawValue = rawValue
     self.___node_id_ = rawValue.pointee.___node_id_
-    self.deallocator = tree.deallocator
+    self.poolLifespan = tree.poolLifespan
     self.__tree_ = .init(__tree_: tree)
   }
 
@@ -65,12 +65,12 @@ public struct UnsafeIndexV2<Base>: UnsafeTreeProtocol, UnsafeImmutableIndexingPr
   internal init(
     __tree_: ImmutableTree,
     rawValue: _NodePtr,
-    deallocator: Deallocator
+    poolLifespan: PoolLifespan
   ) {
     self.__tree_ = __tree_
     self.___node_id_ = rawValue.pointee.___node_id_
     self.rawValue = rawValue
-    self.deallocator = deallocator
+    self.poolLifespan = poolLifespan
   }
 
   /*
@@ -144,7 +144,7 @@ extension UnsafeIndexV2 {
     return .init(
       __tree_: __tree_,
       rawValue: __tree_.advanced(rawValue, by: n),
-      deallocator: deallocator)
+      poolLifespan: poolLifespan)
   }
 }
 
@@ -158,7 +158,7 @@ extension UnsafeIndexV2 {
   public var next: Self? {
     guard
       !__tree_.___is_next_null(rawValue),
-      !deallocator.isBaseDeallocated
+      !poolLifespan.isBaseDeallocated
     else {
       return nil
     }
@@ -175,7 +175,7 @@ extension UnsafeIndexV2 {
   public var previous: Self? {
     guard
       !__tree_.___is_prev_null(rawValue),
-      !deallocator.isBaseDeallocated
+      !poolLifespan.isBaseDeallocated
     else {
       return nil
     }
@@ -233,7 +233,7 @@ extension UnsafeIndexV2 {
     guard
       !__tree_.___is_subscript_null(rawValue),
       !__tree_.___is_garbaged(rawValue),
-      !deallocator.isBaseDeallocated
+      !poolLifespan.isBaseDeallocated
     else { return nil }
     return Base.___pointee(UnsafePair<_Value>.valuePointer(rawValue)!.pointee)
   }
@@ -244,7 +244,7 @@ extension UnsafeIndexV2 {
     fileprivate init(_unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, node_id: Int) {
       self.rawValue = rawValue
       self.___node_id_ = node_id
-      self.deallocator = _unsafe_tree.deallocator
+      self.poolLifespan = _unsafe_tree.poolLifespan
       self.__tree_ = .init(__tree_: _unsafe_tree)
     }
   }
@@ -280,7 +280,7 @@ extension UnsafeIndexV2 {
       __tree_: __tree_,
       start: __tree_.__begin_node_,
       end: __tree_.__end_node,
-      deallocator: deallocator)
+      poolLifespan: poolLifespan)
   }
 }
 
@@ -413,7 +413,7 @@ extension UnsafeIndexV2 {
     case .end:
       return __tree_.__end_node
     default:
-      return deallocator[p]
+      return poolLifespan[p]
     }
   }
 

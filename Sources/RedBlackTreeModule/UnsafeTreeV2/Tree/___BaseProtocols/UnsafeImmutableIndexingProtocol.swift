@@ -13,8 +13,10 @@ where
 {
   associatedtype Base: ___TreeBase & ___TreeIndex
   associatedtype Index
+  // TODO: 寿命延長を表す名前を検討する
   associatedtype Deallocator
   var __tree_: UnsafeImmutableTree<Base> { get }
+  // TODO: 寿命延長を表す名前を検討する
   var deallocator: Deallocator { get }
 }
 

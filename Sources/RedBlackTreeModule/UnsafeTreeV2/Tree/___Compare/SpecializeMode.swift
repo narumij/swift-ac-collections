@@ -77,6 +77,7 @@ enum SpecializeMode {
   }
 }
 
+// TODO: 名前てきとうすぎたので直すこと
 @frozen
 @usableFromInline
 struct SpecializeModeHoge<_K> {

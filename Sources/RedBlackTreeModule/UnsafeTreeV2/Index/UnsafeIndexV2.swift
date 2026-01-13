@@ -285,14 +285,9 @@ extension UnsafeIndexV2 {
   internal var ___unsafe_indices: UnsafeIndexCollection<Base> {
     // UnsafeIndicesV2の改造は影響が大きく難しいので、あたらしいindicesを構築して逃げる必要がありそう
     .init(
-      startIndex: .init(
-        __tree_: __tree_,
-        rawValue: __tree_.__begin_node_,
-        deallocator: deallocator),
-      endIndex: .init(
-        __tree_: __tree_,
-        rawValue: __tree_.__end_node,
-        deallocator: deallocator),
+      __tree_: __tree_,
+      start: __tree_.__begin_node_,
+      end: __tree_.__end_node,
       deallocator: deallocator)
   }
 }

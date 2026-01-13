@@ -49,6 +49,23 @@ extension RedBlackTreeIteratorV2.Values {
       self._begin = __tree_.__begin_node_
       self.poolLifespan = tree.poolLifespan
     }
+    
+    @inlinable
+    internal init(
+      __tree_: ImmutableTree,
+      start: _NodePtr,
+      end: _NodePtr,
+      poolLifespan: PoolLifespan
+    ) {
+
+      self.__tree_ = __tree_
+      self._current = end
+      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
+      self._start = start
+      self._end = end
+      self._begin = __tree_.__begin_node_
+      self.poolLifespan = poolLifespan
+    }
 
     @inlinable
     @inline(__always)

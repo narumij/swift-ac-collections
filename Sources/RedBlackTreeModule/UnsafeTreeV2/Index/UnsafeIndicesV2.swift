@@ -132,13 +132,13 @@ extension UnsafeIndicesV2: Collection, BidirectionalCollection {
   @inlinable
   @inline(__always)
   public func index(after i: Index) -> Index {
-    ___index(__tree_.___index(after: i.rawValue(__tree_)))
+    ___index(__tree_.___index(after: __tree_.rawValue(i)))
   }
 
   @inlinable
   @inline(__always)
   public func index(before i: Index) -> Index {
-    ___index(__tree_.___index(before: i.rawValue(__tree_)))
+    ___index(__tree_.___index(before: __tree_.rawValue(i)))
   }
 
   @inlinable
@@ -166,8 +166,8 @@ extension UnsafeIndicesV2: Collection, BidirectionalCollection {
   public subscript(bounds: Range<Index>) -> SubSequence {
     .init(
       tree: __tree_,
-      start: bounds.lowerBound.rawValue(__tree_),
-      end: bounds.upperBound.rawValue(__tree_))
+      start: __tree_.rawValue(bounds.lowerBound),
+      end: __tree_.rawValue(bounds.upperBound))
   }
 
   #if !COMPATIBLE_ATCODER_2025
@@ -177,8 +177,8 @@ extension UnsafeIndicesV2: Collection, BidirectionalCollection {
       let bounds: Range<Index> = bounds.relative(to: self)
       return .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue(__tree_),
-        end: bounds.upperBound.rawValue(__tree_))
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
     }
   #endif
 }

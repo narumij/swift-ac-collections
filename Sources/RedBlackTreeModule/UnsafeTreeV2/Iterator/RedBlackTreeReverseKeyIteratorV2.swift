@@ -25,10 +25,10 @@ import Foundation
 extension RedBlackTreeIteratorV2.Keys {
   
   @frozen
-  public struct Reversed: Sequence, IteratorProtocol {
+  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer {
     
     public typealias Tree = UnsafeTreeV2<Base>
-    public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+    public typealias _Key = RedBlackTreeIteratorV2.Base._Key
 
     @usableFromInline
     internal let __tree_: Tree
@@ -49,7 +49,7 @@ extension RedBlackTreeIteratorV2.Keys {
     
     @inlinable
     @inline(__always)
-    public mutating func next() -> Base._Key? {
+    public mutating func next() -> _Key? {
       guard _current != _start else { return nil }
       _current = _next
       _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : __tree_.nullptr
@@ -78,7 +78,7 @@ extension RedBlackTreeIteratorV2.Keys.Reversed: Comparable {
 
 #if swift(>=5.5)
   extension RedBlackTreeIteratorV2.Keys.Reversed: @unchecked Sendable
-  where Tree._Value: Sendable {}
+  where _Key: Sendable {}
 #endif
 
 // MARK: - Is Identical To

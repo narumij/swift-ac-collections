@@ -12,6 +12,7 @@ extension RedBlackTreeMultiSet: ___UnsafeCopyOnWriteV2 { }
 extension RedBlackTreeDictionary: ___UnsafeCopyOnWriteV2 { }
 extension RedBlackTreeMultiMap: ___UnsafeCopyOnWriteV2 { }
 
+// TODO: テストごと消す
 @usableFromInline
 protocol ___UnsafeCopyOnWriteV2 {
   associatedtype Base: ___TreeBase

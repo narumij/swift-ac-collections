@@ -335,13 +335,13 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     __tree_.___ensureValid(
-      begin: bounds.lowerBound.rawValue(__tree_),
-      end: bounds.upperBound.rawValue(__tree_))
+      begin: __tree_.rawValue(bounds.lowerBound),
+      end: __tree_.rawValue(bounds.upperBound))
 
     return .init(
       tree: __tree_,
-      start: bounds.lowerBound.rawValue(__tree_),
-      end: bounds.upperBound.rawValue(__tree_))
+      start: __tree_.rawValue(bounds.lowerBound),
+      end: __tree_.rawValue(bounds.upperBound))
   }
 
   #if !COMPATIBLE_ATCODER_2025
@@ -574,7 +574,7 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_._ensureUnique()
-    guard let element = ___remove(at: index.rawValue(__tree_)) else {
+    guard let element = ___remove(at: __tree_.rawValue(index)) else {
       fatalError(.invalidIndex)
     }
     return ___element(element)
@@ -595,8 +595,8 @@ extension RedBlackTreeDictionary {
     let bounds = bounds.relative(to: self)
     __tree_._ensureUnique()
     ___remove(
-      from: bounds.lowerBound.rawValue(__tree_),
-      to: bounds.upperBound.rawValue(__tree_))
+      from: __tree_.rawValue(bounds.lowerBound),
+      to: __tree_.rawValue(bounds.upperBound))
   }
 }
 

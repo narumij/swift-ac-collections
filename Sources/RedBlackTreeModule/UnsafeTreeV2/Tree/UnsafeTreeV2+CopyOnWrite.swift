@@ -79,7 +79,9 @@ extension UnsafeTreeV2 {
       _buffer.header._deallocator == nil
       ? true : isKnownUniquelyReferenced(&_buffer.header._deallocator!)
 
-    if !isTreeUnique || !isPoolUnique {
+    if isTreeUnique, isPoolUnique {
+      /* NOP */
+    } else {
       self = self.copy()
     }
   }

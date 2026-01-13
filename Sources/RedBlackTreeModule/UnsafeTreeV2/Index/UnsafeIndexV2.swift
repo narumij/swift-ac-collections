@@ -41,6 +41,9 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   // TODO: 木を保持しない設計及び実装への移行
   @usableFromInline
   internal let __tree_: Tree
+  
+  @usableFromInline
+  internal let __immutable_tree_: UnsafeImmutableTree<Base>
 
   @usableFromInline
   internal var ___node_id_: Int
@@ -63,6 +66,7 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
     self.rawValue = rawValue
     self.___node_id_ = rawValue.pointee.___node_id_
     self.deallocator = tree.deallocator
+    self.__immutable_tree_ = .init(__tree_: tree)
   }
 
   /*
@@ -138,7 +142,9 @@ extension UnsafeIndexV2 {
   @inlinable
   //  @inline(__always)
   public func advanced(by n: Int) -> Self {
-    return .init(tree: __tree_, rawValue: __tree_.___tree_adv_iter(rawValue, by: n))
+    return .init(
+      tree: __tree_,
+      rawValue: __immutable_tree_.___tree_adv_iter(rawValue, by: n))
   }
 }
 
@@ -151,7 +157,7 @@ extension UnsafeIndexV2 {
   @inline(__always)
   public var next: Self? {
     guard
-      !__tree_.___is_next_null(rawValue),
+      !__immutable_tree_.___is_next_null(rawValue),
       !deallocator.isBaseDeallocated
     else {
       return nil
@@ -168,7 +174,7 @@ extension UnsafeIndexV2 {
   @inline(__always)
   public var previous: Self? {
     guard
-      !__tree_.___is_prev_null(rawValue),
+      !__immutable_tree_.___is_prev_null(rawValue),
       !deallocator.isBaseDeallocated
     else {
       return nil
@@ -181,17 +187,17 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal mutating func ___unchecked_next() {
-    assert(!__tree_.___is_garbaged(rawValue))
-    assert(!__tree_.___is_end(rawValue))
-    rawValue = __tree_.__tree_next_iter(rawValue)
+    assert(!__immutable_tree_.___is_garbaged(rawValue))
+    assert(!__immutable_tree_.___is_end(rawValue))
+    rawValue = __immutable_tree_.__tree_next_iter(rawValue)
   }
 
   @inlinable
   @inline(__always)
   internal mutating func ___unchecked_prev() {
-    assert(!__tree_.___is_garbaged(rawValue))
-    assert(!__tree_.___is_begin(rawValue))
-    rawValue = __tree_.__tree_prev_iter(rawValue)
+    assert(!__immutable_tree_.___is_garbaged(rawValue))
+    assert(!__immutable_tree_.___is_begin(rawValue))
+    rawValue = __immutable_tree_.__tree_prev_iter(rawValue)
   }
 }
 
@@ -200,20 +206,20 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var isStart: Bool {
-    __tree_.___is_begin(rawValue)
+    __immutable_tree_.___is_begin(rawValue)
   }
 
   @inlinable
   @inline(__always)
   public var isEnd: Bool {
-    __tree_.___is_end(rawValue)
+    __immutable_tree_.___is_end(rawValue)
   }
 
   // 利用価値はないが、おまけ。
   @inlinable
   @inline(__always)
   public var isRoot: Bool {
-    __tree_.___is_root(rawValue)
+    __immutable_tree_.___is_root(rawValue)
   }
 }
 
@@ -225,8 +231,8 @@ extension UnsafeIndexV2 {
   @inlinable
   public var pointee: Pointee? {
     guard
-      !__tree_.___is_subscript_null(rawValue(__tree_)),
-      !__tree_.___is_garbaged(rawValue(__tree_)),
+      !__immutable_tree_.___is_subscript_null(rawValue(__tree_)),
+      !__immutable_tree_.___is_garbaged(rawValue(__tree_)),
       !deallocator.isBaseDeallocated
     else { return nil }
     return Base.___pointee(UnsafePair<_Value>.valuePointer(rawValue(__tree_))!.pointee)
@@ -240,6 +246,7 @@ extension UnsafeIndexV2 {
       self.rawValue = rawValue
       self.___node_id_ = node_id
       self.deallocator = _unsafe_tree.deallocator
+      self.__immutable_tree_ = .init(__tree_: _unsafe_tree)
     }
   }
 

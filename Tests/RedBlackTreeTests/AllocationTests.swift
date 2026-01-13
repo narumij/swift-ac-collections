@@ -63,7 +63,7 @@ final class AllocationTests: RedBlackTreeTestCase {
           // リファレンスが2なので、CoWが発火する
 #if false
           // LV1が本体保持になっているので、結果が異なる
-          XCTAssertFalse(storage.isIdentical(to: set.__tree_))
+          XCTAssertFalse(storage.isTriviallyIdentical(to: set.__tree_))
 #endif
           // ノードの配置はバラバラになりうるので、初期化されたサイズを下回ると、壊れる
           XCTAssertGreaterThanOrEqual(set.__tree_.capacity, initializedCount)
@@ -83,7 +83,7 @@ final class AllocationTests: RedBlackTreeTestCase {
           // リファレンスが2なので、CoWが発火する
 #if false
           // LV1が本体保持になっているので、結果が異なる
-          XCTAssertFalse(storage.isIdentical(to: set.__tree_))
+          XCTAssertFalse(storage.isTriviallyIdentical(to: set.__tree_))
 #endif
           // ノードの配置はバラバラになりうるので、初期化されたサイズを下回ると、壊れる
           XCTAssertGreaterThanOrEqual(set.__tree_.capacity, initializedCount)

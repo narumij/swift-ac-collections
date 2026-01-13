@@ -34,7 +34,7 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
 
   @usableFromInline
   typealias ImmutableTree = UnsafeImmutableTree<Base>
-  
+
   @usableFromInline
   typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 
@@ -280,17 +280,19 @@ extension UnsafeIndexV2 {
 #endif
 
 extension UnsafeIndexV2 {
-  
+
   @usableFromInline
   internal var ___unsafe_indices: UnsafeIndexCollection<Base> {
     // UnsafeIndicesV2の改造は影響が大きく難しいので、あたらしいindicesを構築して逃げる必要がありそう
     .init(
-      startIndex: .init(__tree_: __tree_,
-                        rawValue: __tree_.__begin_node_,
-                        deallocator: deallocator),
-      endIndex: .init(__tree_: __tree_,
-                      rawValue: __tree_.__end_node,
-                      deallocator: deallocator),
+      startIndex: .init(
+        __tree_: __tree_,
+        rawValue: __tree_.__begin_node_,
+        deallocator: deallocator),
+      endIndex: .init(
+        __tree_: __tree_,
+        rawValue: __tree_.__end_node,
+        deallocator: deallocator),
       deallocator: deallocator)
   }
 }
@@ -438,7 +440,8 @@ extension UnsafeIndexV2 {
       // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
       // endはシングルトン的にしたい気持ちもある
       return __tree_.isTriviallyIdentical(to: index.__tree_)
-        ? index.rawValue : self[index.___node_id_]
+        ? index.rawValue
+        : self[index.___node_id_]
     #else
       self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
     #endif

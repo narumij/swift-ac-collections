@@ -289,9 +289,12 @@ extension UnsafeIndexV2 {
 #endif
 
 extension UnsafeIndexV2 {
+  
+  @available(*, deprecated, message: "リファクタリング完了後に維持が困難気味")
   @inlinable
   @inline(__always)
   internal var ___indices: UnsafeIndicesV2<Base> {
+    // UnsafeIndicesV2の改造は影響が大きく難しいので、あたらしいindicesを構築して逃げる必要がありそう
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node)
   }
 }

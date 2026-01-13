@@ -5,8 +5,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue(__tree_),
-        end: bounds.upperBound.rawValue(__tree_))
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
     }
   }
 

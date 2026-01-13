@@ -379,13 +379,14 @@ public func - <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>) -> Int 
 
 extension UnsafeIndexV2 {
 
-  @available(*, deprecated, renamed: "__tree_.rawValue", message: "リファクタリング作業")
-  @inlinable
-  @inline(__always)
-  package func rawValue(_ tree: Tree) -> _NodePtr {
-    tree.___node_ptr(self)
-  }
+//  @available(*, deprecated, renamed: "__tree_.rawValue", message: "リファクタリング作業")
+//  @inlinable
+//  @inline(__always)
+//  package func rawValue(_ tree: Tree) -> _NodePtr {
+//    tree.___node_ptr(self)
+//  }
 
+  @available(*, deprecated, message: "リファクタリング作業")
   @inlinable
   @inline(__always)
   package var ___rawValue: _NodePtr {

@@ -62,11 +62,7 @@ extension UnsafeIndexCollection {
       self._end = endIndex.rawValue
       self._current = startIndex.rawValue
       self._next = startIndex == endIndex ? __tree_.__end_node : __tree_.__tree_next(startIndex.rawValue)
-
-      self.startIndex = startIndex
-      self.endIndex = endIndex
-      self.currentIndex = startIndex
-      self.nextIndex = startIndex.advanced(by: 1)
+      self.deallocator = startIndex.deallocator
     }
     
     public typealias Tree = UnsafeTreeV2<Base>
@@ -74,6 +70,8 @@ extension UnsafeIndexCollection {
 
     @usableFromInline
     typealias ImmutableTree = UnsafeImmutableTree<Base>
+    @usableFromInline
+    typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 
     @usableFromInline
     internal let __tree_: ImmutableTree
@@ -81,18 +79,16 @@ extension UnsafeIndexCollection {
     @usableFromInline
     internal var _current, _next, _end: _NodePtr
 
-    public var startIndex: Index
-    public var endIndex: Index
-    var currentIndex: Index
-    var nextIndex: Index
+    @usableFromInline
+    internal var deallocator: Deallocator
 
     @inlinable
     @inline(__always)
     internal func ___index(_ p: _NodePtr) -> Index {
       .init(
-        __tree_: endIndex.__tree_,
+        __tree_: __tree_,
         rawValue: p,
-        deallocator: endIndex.deallocator)
+        deallocator: deallocator)
     }
 
     public mutating func next() -> Index? {

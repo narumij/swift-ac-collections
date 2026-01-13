@@ -39,6 +39,7 @@ public
   }
 
   // TODO: Intに変更する検討
+  // 計算量が問題
   public typealias Index = UnsafeIndexV2<Base>
 
   @usableFromInline

@@ -25,9 +25,10 @@ import Foundation
 extension RedBlackTreeIteratorV2.Values {
 
   @frozen
-  public struct Reversed: Sequence, IteratorProtocol {
+  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer {
+    
     public typealias Tree = UnsafeTreeV2<Base>
-    public typealias _Value = Tree._Value
+    public typealias _Value = RedBlackTreeIteratorV2.Base._Value
 
     @usableFromInline
     internal let __tree_: Tree
@@ -48,7 +49,7 @@ extension RedBlackTreeIteratorV2.Values {
 
     @inlinable
     @inline(__always)
-    public mutating func next() -> Tree._Value? {
+    public mutating func next() -> _Value? {
       guard _current != _start else { return nil }
       _current = _next
       _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : __tree_.nullptr
@@ -61,7 +62,7 @@ extension RedBlackTreeIteratorV2.Values.Reversed {
   
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (Tree.Index, Tree._Value) throws -> Void) rethrows {
+  public func forEach(_ body: (Tree.Index, _Value) throws -> Void) rethrows {
     try __tree_.___rev_for_each_(__p: _start, __l: _end) {
       try body(__tree_.makeIndex(rawValue: $0), __tree_.__value_($0))
     }
@@ -107,7 +108,7 @@ extension RedBlackTreeIteratorV2.Values.Reversed: Comparable where Element: Comp
 
 #if swift(>=5.5)
   extension RedBlackTreeIteratorV2.Values.Reversed: @unchecked Sendable
-  where Tree._Value: Sendable {}
+  where _Value: Sendable {}
 #endif
 
 // MARK: - Is Identical To

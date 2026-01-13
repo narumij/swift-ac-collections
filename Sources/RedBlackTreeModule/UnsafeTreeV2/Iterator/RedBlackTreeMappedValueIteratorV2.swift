@@ -25,26 +25,31 @@ import Foundation
 extension RedBlackTreeIteratorV2 {
   
   @frozen
-  public struct MappedValues: Sequence, IteratorProtocol, UnsafeTreePointer
+  public struct MappedValues: Sequence, IteratorProtocol, UnsafeTreePointer, UnsafeImmutableIndexingProtocol
   where Base: KeyValueComparer
   {
+    
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _MappedValue = RedBlackTreeIteratorV2.Base._MappedValue
 
     @usableFromInline
-    internal let __tree_: Tree
+    internal let __tree_: ImmutableTree
     
     @usableFromInline
     internal var _start, _end, _current, _next: _NodePtr
     
+    @usableFromInline
+    var poolLifespan: PoolLifespan
+    
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.__tree_ = tree
+      self.__tree_ = .init(__tree_: tree)
       self._current = start
       self._start = start
       self._end = end
       self._next = start == tree.end ? tree.end : tree.__tree_next_iter(start)
+      self.poolLifespan = tree.poolLifespan
     }
     
     @inlinable
@@ -61,7 +66,7 @@ extension RedBlackTreeIteratorV2 {
     @inlinable
     @inline(__always)
     public func reversed() -> Reversed {
-      .init(tree: __tree_, start: _start, end: _end)
+      .init(__tree_: __tree_, start: _start, end: _end, poolLifespan: poolLifespan)
     }
   }
 }
@@ -91,4 +96,4 @@ extension RedBlackTreeIteratorV2.MappedValues: Comparable where _MappedValue: Co
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIteratorV2.MappedValues: ___UnsafeIsIdenticalToV2 {}
+extension RedBlackTreeIteratorV2.MappedValues: ___UnsafeImmutableIsIdenticalToV2 {}

@@ -224,6 +224,7 @@ let package = Package(
       dependencies: [
         .product(name: "AcFoundation", package: "swift-ac-foundation")
       ],
-      path: "Tests/Executables/MarriedSource"),
+      path: "Tests/Executables/MarriedSource",
+      exclude: ["RedBlackTree.swift_"]),
   ]
 )

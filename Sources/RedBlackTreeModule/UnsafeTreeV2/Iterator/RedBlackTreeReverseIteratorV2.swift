@@ -25,25 +25,29 @@ import Foundation
 extension RedBlackTreeIteratorV2.Values {
 
   @frozen
-  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer {
+  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer, UnsafeImmutableIndexingProtocol {
     
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _Value = RedBlackTreeIteratorV2.Base._Value
 
     @usableFromInline
-    internal let __tree_: Tree
+    internal let __tree_: ImmutableTree
 
     @usableFromInline
     internal var _start, _end, _begin, _current, _next: _NodePtr
 
+    @usableFromInline
+    var poolLifespan: _UnsafeNodeFreshPoolDeallocator
+    
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.__tree_ = tree
+      self.__tree_ = .init(__tree_: tree)
       self._current = end
       self._next = end == start ? end : __tree_.__tree_prev_iter(end)
       self._start = start
       self._end = end
       self._begin = __tree_.__begin_node_
+      self.poolLifespan = tree.poolLifespan
     }
 
     @inlinable
@@ -63,7 +67,7 @@ extension RedBlackTreeIteratorV2.Values.Reversed {
   @inline(__always)
   public func forEach(_ body: (Tree.Index, _Value) throws -> Void) rethrows {
     try __tree_.___rev_for_each_(__p: _start, __l: _end) {
-      try body(__tree_.makeIndex(rawValue: $0), __tree_.__value_($0))
+      try body(___index($0), __tree_.__value_($0))
     }
   }
 }
@@ -74,16 +78,20 @@ extension RedBlackTreeIteratorV2.Values.Reversed {
   @inlinable
   @inline(__always)
   public var indices: Tree.Indices.Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
+    .init(__tree_: __tree_, start: _start, end: _end, poolLifespan: poolLifespan)
   }
 }
 
 extension RedBlackTreeIteratorV2.Values.Reversed {
 
+  @available(*, deprecated, message: "危険になった為 (I think danger this is.)")
   @inlinable
   @inline(__always)
   package func ___node_positions() -> ___SafePointersUnsafeV2<Base>.Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
+    // 多分lifetime延長しないとクラッシュする
+    // と思ったけどしなかった。念のためlifetimeとdeprecated
+    defer { _fixLifetime(self) }
+    return .init(__tree_: __tree_, start: _start, end: _end)
   }
 }
 
@@ -112,4 +120,4 @@ extension RedBlackTreeIteratorV2.Values.Reversed: Comparable where Element: Comp
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIteratorV2.Values.Reversed: ___UnsafeIsIdenticalToV2 {}
+extension RedBlackTreeIteratorV2.Values.Reversed: ___UnsafeImmutableIsIdenticalToV2 {}

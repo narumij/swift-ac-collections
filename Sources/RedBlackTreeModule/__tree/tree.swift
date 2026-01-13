@@ -95,7 +95,7 @@ extension TreeNodeProtocol {
 }
 
 @usableFromInline
-protocol TreeNodeRefProtocol: TreePointer {
+package protocol TreeNodeRefProtocol: TreePointer {
   /// 左ノードへの参照を返す
   @inlinable func __left_ref(_: _NodePtr) -> _NodeRef
   /// 右ノードへの参照を返す

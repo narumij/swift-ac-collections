@@ -96,25 +96,25 @@ extension UnsafeTreeV2: TreeNodeRefProtocol {
 
   @inlinable
   @inline(__always)
-  func __left_ref(_ p: _NodePtr) -> _NodeRef {
+  package func __left_ref(_ p: _NodePtr) -> _NodeRef {
     return withUnsafeMutablePointer(to: &p.pointee.__left_) { $0 }
   }
 
   @inlinable
   @inline(__always)
-  func __right_ref(_ p: _NodePtr) -> _NodeRef {
+  package func __right_ref(_ p: _NodePtr) -> _NodeRef {
     return withUnsafeMutablePointer(to: &p.pointee.__right_) { $0 }
   }
 
   @inlinable
   @inline(__always)
-  public func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
+  package func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
     rhs.pointee
   }
 
   @inlinable
   @inline(__always)
-  func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
+  package func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
     lhs.pointee = rhs
   }
 }
@@ -125,7 +125,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func __get_value(_ p: _NodePtr) -> _Key {
+  package func __get_value(_ p: _NodePtr) -> _Key {
     Base.__key(UnsafePair<_Value>.valuePointer(p)!.pointee)
   }
 }
@@ -135,17 +135,17 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  public var __begin_node_: _NodePtr {
+  package var __begin_node_: _NodePtr {
 
     @inline(__always) get {
-//      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr }
+      //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr }
       origin.pointee.begin_ptr
     }
 
     @inline(__always)
     nonmutating set {
       origin.pointee.begin_ptr = newValue
-//      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr = newValue }
+      //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr = newValue }
     }
   }
 }
@@ -156,7 +156,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  var __end_node: _NodePtr {
+  package var __end_node: _NodePtr {
     origin.pointee.end_ptr
   }
 }
@@ -169,13 +169,13 @@ extension UnsafeTreeV2 {
     @nonobjc
     @inlinable
     @inline(__always)
-    internal var __root: _NodePtr {
+    package var __root: _NodePtr {
       origin.pointee.__root
     }
   #else
     @inlinable
     @inline(__always)
-    internal var __root: _NodePtr {
+    package var __root: _NodePtr {
       get { origin.pointee.__root }
       set { origin.pointee.__root = newValue }
     }
@@ -185,7 +185,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal func __root_ptr() -> _NodeRef {
+  package func __root_ptr() -> _NodeRef {
     origin.pointee.__root_ptr()
   }
 }
@@ -195,7 +195,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  var __size_: Int {
+  package var __size_: Int {
     @inline(__always) get {
       withHeader { $0.count }
     }
@@ -230,13 +230,13 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal func __value_(_ p: _NodePtr) -> _Value {
+  package func __value_(_ p: _NodePtr) -> _Value {
     UnsafePair<Tree._Value>.valuePointer(p)!.pointee
   }
 
   @inlinable
   @inline(__always)
-  internal func ___element(_ p: _NodePtr, _ __v: _Value) {
+  package func ___element(_ p: _NodePtr, _ __v: _Value) {
     UnsafePair<Tree._Value>.valuePointer(p)!.pointee = __v
   }
 }
@@ -246,7 +246,7 @@ extension UnsafeTreeV2: BoundProtocol {
 
   @inlinable
   @inline(__always)
-  public static var isMulti: Bool {
+  package static var isMulti: Bool {
     Base.isMulti
   }
 

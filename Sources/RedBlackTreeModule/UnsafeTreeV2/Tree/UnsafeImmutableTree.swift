@@ -6,10 +6,8 @@
 //
 
 @usableFromInline
-struct UnsafeImmutableTree<Base: ___TreeBase & ___TreeIndex>: UnsafeTreeNodeProtocol {
+struct UnsafeImmutableTree<Base: ___TreeBase>: UnsafeTreeNodeProtocol {
 
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-  public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   @usableFromInline typealias _Key = Base._Key
 
   @usableFromInline

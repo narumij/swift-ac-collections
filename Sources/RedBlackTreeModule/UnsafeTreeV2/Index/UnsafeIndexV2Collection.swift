@@ -117,7 +117,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
 
 extension UnsafeIndexV2Collection {
 
-  public struct Iterator: IteratorProtocol {
+  public struct Iterator: IteratorProtocol, UnsafeTreePointer {
 
     @usableFromInline
     internal init(
@@ -135,7 +135,6 @@ extension UnsafeIndexV2Collection {
     }
 
     public typealias Tree = UnsafeTreeV2<Base>
-    public typealias _NodePtr = Tree._NodePtr
 
     @usableFromInline
     typealias ImmutableTree = UnsafeImmutableTree<Base>
@@ -172,7 +171,7 @@ extension UnsafeIndexV2Collection {
 
 extension UnsafeIndexV2Collection {
 
-  public struct Reversed: IteratorProtocol, Sequence {
+  public struct Reversed: IteratorProtocol, Sequence, UnsafeTreePointer {
     
     @inlinable
     @inline(__always)
@@ -202,8 +201,7 @@ extension UnsafeIndexV2Collection {
     }
 
     public typealias Tree = UnsafeTreeV2<Base>
-    public typealias _NodePtr = Tree._NodePtr
-
+    
     @usableFromInline
     typealias ImmutableTree = UnsafeImmutableTree<Base>
     @usableFromInline

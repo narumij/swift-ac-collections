@@ -20,7 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public protocol UnsafeTreePointer: _TreePointer
+@usableFromInline
+protocol UnsafeTreePointer: _TreePointer
 where
   _NodePtr == UnsafeMutablePointer<UnsafeNode>,
   _NodeRef == UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>

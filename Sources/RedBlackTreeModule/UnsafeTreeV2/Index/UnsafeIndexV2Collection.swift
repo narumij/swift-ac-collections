@@ -204,6 +204,7 @@ extension UnsafeIndexV2Collection {
     
     @usableFromInline
     typealias ImmutableTree = UnsafeImmutableTree<Base>
+    
     @usableFromInline
     typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 

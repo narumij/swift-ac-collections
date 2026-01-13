@@ -25,13 +25,14 @@
 
 @frozen
 @usableFromInline
-struct ___UnsafePointersUnsafeV2<Base>: Sequence, IteratorProtocol
+package struct ___UnsafePointersUnsafeV2<Base>: Sequence, IteratorProtocol, UnsafeTreePointer
 where Base: ___TreeBase {
 
   @usableFromInline
   internal typealias Tree = UnsafeTreeV2<Base>
 
-  public typealias _NodePtr = Tree._NodePtr
+  @usableFromInline
+  typealias ImmutableTree = UnsafeImmutableTree<Base>
 
   @usableFromInline
   internal let __tree_: Tree
@@ -49,7 +50,7 @@ where Base: ___TreeBase {
 
   @inlinable
   @inline(__always)
-  internal mutating func next() -> _NodePtr? {
+  package mutating func next() -> _NodePtr? {
     guard __first != __last else { return nil }
     defer { __first = __tree_.__tree_next_iter(__first) }
     return __first

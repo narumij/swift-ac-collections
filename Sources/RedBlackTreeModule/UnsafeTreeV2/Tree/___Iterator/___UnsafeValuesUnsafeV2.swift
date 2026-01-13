@@ -23,15 +23,29 @@
 // TODO: CoW挙動検討
 // 内部用シーケンスはCoW対象外でいいかもしれない
 
+@usableFromInline
+protocol UnsafeTreeProtocol
+where
+  Tree == UnsafeTreeV2<Base>,
+  ImmutableTree == UnsafeImmutableTree<Base>
+{
+  associatedtype Base: ___TreeBase & ___TreeIndex
+  associatedtype Tree
+  associatedtype ImmutableTree
+}
+
 @frozen
 @usableFromInline
-struct ___UnsafeValuesUnsafeV2<Base>: Sequence, IteratorProtocol
+package struct ___UnsafeValuesUnsafeV2<Base>: Sequence, IteratorProtocol, UnsafeTreePointer
 where Base: ___TreeBase {
 
   @usableFromInline
-  internal typealias Tree = UnsafeTreeV2<Base>
+  package typealias Tree = UnsafeTreeV2<Base>
 
-  public typealias _NodePtr = Tree._NodePtr
+  @usableFromInline
+  typealias ImmutableTree = UnsafeImmutableTree<Base>
+
+  //  public typealias _NodePtr = Tree._NodePtr
 
   @usableFromInline
   internal let __tree_: Tree
@@ -49,7 +63,7 @@ where Base: ___TreeBase {
 
   @inlinable
   @inline(__always)
-  internal mutating func next() -> Tree._Value? {
+  package mutating func next() -> Tree._Value? {
     guard __first != __last else { return nil }
     defer { __first = __tree_.__tree_next_iter(__first) }
     return UnsafePair<Tree._Value>.valuePointer(__first)!.pointee

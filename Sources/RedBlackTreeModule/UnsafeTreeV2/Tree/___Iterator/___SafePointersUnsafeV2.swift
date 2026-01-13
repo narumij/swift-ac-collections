@@ -25,14 +25,14 @@
 
 @frozen
 @usableFromInline
-package struct ___SafePointersUnsafeV2<Base>: Sequence, IteratorProtocol
+package struct ___SafePointersUnsafeV2<Base>: Sequence, IteratorProtocol, UnsafeTreePointer
 where Base: ___TreeBase {
 
   @usableFromInline
   package typealias Tree = UnsafeTreeV2<Base>
 
   @usableFromInline
-  package typealias _NodePtr = Tree._NodePtr
+  typealias ImmutableTree = UnsafeImmutableTree<Base>
 
   @usableFromInline
   package let __tree_: Tree

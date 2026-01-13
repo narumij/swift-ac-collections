@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol UnsafeTreeNodeProtocol: TreeNodeProtocol
+package protocol UnsafeTreeNodeProtocol: TreeNodeProtocol
 where
   _NodePtr == UnsafeMutablePointer<UnsafeNode>,
   _NodeRef == UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>

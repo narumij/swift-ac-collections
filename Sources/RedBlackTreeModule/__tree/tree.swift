@@ -49,7 +49,7 @@ public protocol _TreeValue: _KeyProtocol & _ValueProtocol {}
 
 // ルートノードの親相当の機能
 @usableFromInline
-protocol TreeEndNodeProtocol: TreePointer {
+package protocol TreeEndNodeProtocol: TreePointer {
   /// 左ノードを返す
   ///
   /// 木を遡るケースではこちらが必ず必要
@@ -64,12 +64,12 @@ protocol TreeEndNodeProtocol: TreePointer {
 
 extension TreeEndNodeProtocol {
   @usableFromInline
-  typealias pointer = _Pointer
+  package typealias pointer = _Pointer
 }
 
 // 一般ノード相当の機能
 @usableFromInline
-protocol TreeNodeProtocol: TreeEndNodeProtocol {
+package protocol TreeNodeProtocol: TreeEndNodeProtocol {
   /// 右ノードを返す
   @inlinable func __right_(_: pointer) -> pointer
   /// 右ノードを更新する
@@ -91,7 +91,7 @@ protocol TreeNodeProtocol: TreeEndNodeProtocol {
 
 extension TreeNodeProtocol {
   @usableFromInline
-  typealias __parent_pointer = _Pointer
+  package typealias __parent_pointer = _Pointer
 }
 
 @usableFromInline

@@ -88,3 +88,62 @@ extension UnsafeImmutableTree {
     self.__end_node == other.__end_node
   }
 }
+
+// MARK: -
+
+#if false
+extension UnsafeImmutableTree {
+
+  @inlinable
+  @inline(__always)
+  internal func
+    sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafePointersUnsafeV2<Base>
+  {
+    .init(tree: self, start: __first, end: __last)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func
+    unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
+    -> ___UnsafePointersUnsafeV2<Base>
+  {
+    .init(tree: self, __first: __first, __last: __last)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func
+    unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
+    -> ___UnsafeValuesUnsafeV2<Base>
+  {
+    .init(tree: self, __first: __first, __last: __last)
+  }
+}
+
+extension UnsafeImmutableTree {
+
+  @inlinable
+  @inline(__always)
+  internal func
+    ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
+    rethrows
+  {
+    for __c in sequence(__p, __l) {
+      try body(__c)
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___rev_for_each_(
+    __p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void
+  )
+    rethrows
+  {
+    for __c in sequence(__p, __l).reversed() {
+      try body(__c)
+    }
+  }
+}
+#endif

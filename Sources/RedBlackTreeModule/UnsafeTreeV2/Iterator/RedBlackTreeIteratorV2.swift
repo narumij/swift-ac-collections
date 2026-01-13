@@ -31,24 +31,28 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
   public typealias Base = Base
 
   @frozen
-  public struct Values: Sequence, IteratorProtocol, UnsafeTreePointer {
+  public struct Values: Sequence, IteratorProtocol, UnsafeTreePointer, UnsafeImmutableIndexingProtocol {
 
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _Value = RedBlackTreeIteratorV2.Base._Value
 
     @usableFromInline
-    internal let __tree_: Tree
+    internal let __tree_: ImmutableTree
 
     @usableFromInline
     internal var _start, _end, _current, _next: _NodePtr
 
+    @usableFromInline
+    var poolLifespan: PoolLifespan
+
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.__tree_ = tree
+      self.__tree_ = .init(__tree_: tree)
       self._current = start
       self._start = start
       self._end = end
       self._next = start == tree.end ? tree.end : tree.__tree_next_iter(start)
+      self.poolLifespan = tree.poolLifespan
     }
 
     @inlinable
@@ -89,4 +93,4 @@ extension RedBlackTreeIteratorV2.Values: Comparable where _Value: Comparable {
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIteratorV2.Values: ___UnsafeIsIdenticalToV2 {}
+extension RedBlackTreeIteratorV2.Values: ___UnsafeImmutableIsIdenticalToV2 {}

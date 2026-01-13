@@ -98,6 +98,7 @@ extension UnsafeImmutableTree {
 
 extension UnsafeImmutableTree {
 
+  // TODO: `__value_`も名前混乱があるので、調査し、必要なら修正すること
   @inlinable
   @inline(__always)
   package func __value_(_ p: _NodePtr) -> Base._Value {

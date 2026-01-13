@@ -53,28 +53,55 @@ extension UnsafeIndexCollection {
   }
 
   public struct Iterator: IteratorProtocol {
+    
     internal init(
       startIndex: UnsafeIndexCollection<Base>.Index,
       endIndex: UnsafeIndexCollection<Base>.Index
     ) {
+      self.__tree_ = startIndex.__tree_
+      self._end = endIndex.rawValue
+      self._current = startIndex.rawValue
+      self._next = startIndex == endIndex ? __tree_.__end_node : __tree_.__tree_next(startIndex.rawValue)
+
       self.startIndex = startIndex
       self.endIndex = endIndex
       self.currentIndex = startIndex
       self.nextIndex = startIndex.advanced(by: 1)
     }
+    
+    public typealias Tree = UnsafeTreeV2<Base>
+    public typealias _NodePtr = Tree._NodePtr
+
+    @usableFromInline
+    typealias ImmutableTree = UnsafeImmutableTree<Base>
+
+    @usableFromInline
+    internal let __tree_: ImmutableTree
+
+    @usableFromInline
+    internal var _current, _next, _end: _NodePtr
 
     public var startIndex: Index
     public var endIndex: Index
     var currentIndex: Index
     var nextIndex: Index
 
-    public mutating func next() -> UnsafeIndexV2<Base>? {
-      guard currentIndex != endIndex else { return nil }
+    @inlinable
+    @inline(__always)
+    internal func ___index(_ p: _NodePtr) -> Index {
+      .init(
+        __tree_: endIndex.__tree_,
+        rawValue: p,
+        deallocator: endIndex.deallocator)
+    }
+
+    public mutating func next() -> Index? {
+      guard _current != _end else { return nil }
       defer {
-        currentIndex = nextIndex
-        nextIndex = nextIndex == endIndex ? endIndex : nextIndex.advanced(by: 1)
+        _current = _next
+        _next = _next == _end ? _end : __tree_.__tree_next(_next)
       }
-      return currentIndex
+      return ___index(_current)
     }
   }
 }

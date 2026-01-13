@@ -106,3 +106,12 @@ extension UnsafeImmutableTree {
     return result
   }
 }
+
+extension UnsafeImmutableTree {
+
+  @inlinable
+  @inline(__always)
+  internal func isIdentical(to other: UnsafeImmutableTree<Base>) -> Bool {
+    self.__end_node == other.__end_node
+  }
+}

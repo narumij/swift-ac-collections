@@ -1,18 +1,5 @@
+
 #if DEBUG
-  extension UnsafeTreeV2 {
-
-    package func ___NodePtr(_ p: Int) -> _NodePtr {
-      switch p {
-      case .nullptr:
-        return nullptr
-      case .end:
-        return end
-      default:
-        return _buffer.header[p]
-      }
-    }
-  }
-
   extension UnsafeTreeV2 {
 
     package func ___ptr_(_ p: _NodePtr) -> Int {

@@ -167,6 +167,20 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
+  // TODO: 名前が安直すぎる。いつか変更する
+  @inlinable
+  @inline(__always)
+  package func ___NodePtr(_ p: Int) -> _NodePtr {
+    switch p {
+    case .nullptr:
+      return nullptr
+    case .end:
+      return end
+    default:
+      return _buffer.header[p]
+    }
+  }
+
   /// インデックスをポインタに解決する
   ///
   /// 木が同一の場合、インデックスが保持するポインタを返す。
@@ -176,19 +190,8 @@ extension UnsafeTreeV2 {
   internal func ___node_ptr(_ index: Index) -> _NodePtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
     #if true
-      // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
+    // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
       // endはシングルトン的にしたい気持ちもある
-      @inline(__always)
-      func ___NodePtr(_ p: Int) -> _NodePtr {
-        switch p {
-        case .nullptr:
-          return nullptr
-        case .end:
-          return end
-        default:
-          return _buffer.header[p]
-        }
-      }
       return self.isIdentical(to: index.__tree_) ? index.rawValue : ___NodePtr(index.___node_id_)
     #else
       self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])

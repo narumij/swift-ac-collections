@@ -31,7 +31,7 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   public typealias Tree = UnsafeTreeV2<Base>
   public typealias Pointee = Tree.Pointee
   public typealias _NodePtr = Tree._NodePtr
-  
+
   @usableFromInline
   typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 
@@ -41,7 +41,7 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   // TODO: 木を保持しない設計及び実装への移行
   @usableFromInline
   internal let __tree_: Tree
-  
+
   @usableFromInline
   internal let __immutable_tree_: UnsafeImmutableTree<Base>
 
@@ -386,5 +386,41 @@ extension UnsafeIndexV2 {
   @inline(__always)
   package var _rawValue: Int {
     rawValue.pointee.___node_id_
+  }
+}
+
+// MARK: Index Resolver
+
+extension UnsafeIndexV2 {
+
+  // TODO: 名前が安直すぎる。いつか変更する
+  @inlinable
+  @inline(__always)
+  package func ___NodePtr(_ p: Int) -> _NodePtr {
+    switch p {
+    case .nullptr:
+      return __immutable_tree_.nullptr
+    case .end:
+      return __immutable_tree_.__end_node
+    default:
+      return deallocator[p]
+    }
+  }
+
+  /// インデックスをポインタに解決する
+  ///
+  /// 木が同一の場合、インデックスが保持するポインタを返す。
+  /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
+  @inlinable
+  @inline(__always)
+  internal func ___node_ptr(_ index: UnsafeIndexV2) -> _NodePtr {
+    #if true
+      // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
+      // endはシングルトン的にしたい気持ちもある
+      return __immutable_tree_.isIdentical(to: index.__immutable_tree_)
+        ? index.rawValue : ___NodePtr(index.___node_id_)
+    #else
+      self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
+    #endif
   }
 }

@@ -97,7 +97,7 @@ where Base._Key: Equatable, Base._MappedValue: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs, by: ==)
+    lhs.isTriviallyIdentical(to: rhs) || lhs.elementsEqual(rhs, by: ==)
   }
 }
 
@@ -107,7 +107,7 @@ where Base._Key: Comparable, Base._MappedValue: Comparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs, by: <)
+    !lhs.isTriviallyIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs, by: <)
   }
 }
 

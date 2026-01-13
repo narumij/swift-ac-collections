@@ -135,7 +135,7 @@ extension UnsafeTreeV2: Equatable where _Value: Equatable {
       return false
     }
 
-    if lhs.count == 0 || lhs.isIdentical(to: rhs) {
+    if lhs.count == 0 || lhs.isTriviallyIdentical(to: rhs) {
       return true
     }
 
@@ -152,7 +152,7 @@ extension UnsafeTreeV2: Comparable where _Value: Comparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
-    !lhs.isIdentical(to: rhs)
+    !lhs.isTriviallyIdentical(to: rhs)
       && lhs.lexicographicallyPrecedes(
         lhs.__begin_node_,
         lhs.__end_node,

@@ -87,8 +87,8 @@ extension ___UnsafeCommonV2 {
 
   @inlinable
   @inline(__always)
-  internal func _isIdentical(to other: Self) -> Bool {
-    __tree_.isIdentical(to: other.__tree_) && _start == other._start && _end == other._end
+  internal func _isTriviallyIdentical(to other: Self) -> Bool {
+    __tree_.isTriviallyIdentical(to: other.__tree_) && _start == other._start && _end == other._end
   }
 }
 

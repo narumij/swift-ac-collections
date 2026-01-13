@@ -837,19 +837,19 @@ extension RedBlackTreeSet {
   ///
   /// For any values `a`, `b`, and `c`:
   ///
-  /// - `a.isIdentical(to: a)` is always `true`. (Reflexivity)
-  /// - `a.isIdentical(to: b)` implies `b.isIdentical(to: a)`. (Symmetry)
-  /// - If `a.isIdentical(to: b)` and `b.isIdentical(to: c)` are both `true`,
-  ///   then `a.isIdentical(to: c)` is also `true`. (Transitivity)
-  /// - `a.isIdentical(b)` implies `a == b`
-  ///   - `a == b` does not imply `a.isIdentical(b)`
+  /// - `a.isTriviallyIdentical(to: a)` is always `true`. (Reflexivity)
+  /// - `a.isTriviallyIdentical(to: b)` implies `b.isTriviallyIdentical(to: a)`. (Symmetry)
+  /// - If `a.isTriviallyIdentical(to: b)` and `b.isTriviallyIdentical(to: c)` are both `true`,
+  ///   then `a.isTriviallyIdentical(to: c)` is also `true`. (Transitivity)
+  /// - `a.isTriviallyIdentical(b)` implies `a == b`
+  ///   - `a == b` does not imply `a.isTriviallyIdentical(b)`
   ///
   /// Values produced by copying the same value, with no intervening mutations,
   /// will compare identical:
   ///
   /// ```swift
   /// let d = c
-  /// print(c.isIdentical(to: d))
+  /// print(c.isTriviallyIdentical(to: d))
   /// // Prints true
   /// ```
   ///
@@ -861,8 +861,8 @@ extension RedBlackTreeSet {
   /// - Performance: O(1)
   @inlinable
   @inline(__always)
-  public func isIdentical(to other: Self) -> Bool {
-    _isIdentical(to: other)
+  public func isTriviallyIdentical(to other: Self) -> Bool {
+    _isTriviallyIdentical(to: other)
   }
 }
 

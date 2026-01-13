@@ -24,7 +24,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal func isIdentical(to other: UnsafeTreeV2) -> Bool {
+  internal func isTriviallyIdentical(to other: UnsafeTreeV2) -> Bool {
     self._buffer.buffer === other._buffer.buffer
   }
 }

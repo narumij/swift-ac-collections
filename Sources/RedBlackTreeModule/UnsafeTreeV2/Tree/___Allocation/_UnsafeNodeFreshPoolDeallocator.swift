@@ -33,7 +33,7 @@ final class _UnsafeNodeFreshPoolDeallocator {
 
   @inlinable
   @inline(__always)
-  public func isIdentical(to other: _UnsafeNodeFreshPoolDeallocator) -> Bool {
+  public func isTriviallyIdentical(to other: _UnsafeNodeFreshPoolDeallocator) -> Bool {
     self === other
   }
   

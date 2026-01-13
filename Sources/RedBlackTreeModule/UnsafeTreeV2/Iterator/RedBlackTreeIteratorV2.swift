@@ -66,7 +66,7 @@ extension RedBlackTreeIteratorV2.Values: Equatable where Tree._Value: Equatable 
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs)
+    lhs.isTriviallyIdentical(to: rhs) || lhs.elementsEqual(rhs)
   }
 }
 
@@ -75,7 +75,7 @@ extension RedBlackTreeIteratorV2.Values: Comparable where Tree._Value: Comparabl
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+    !lhs.isTriviallyIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
 

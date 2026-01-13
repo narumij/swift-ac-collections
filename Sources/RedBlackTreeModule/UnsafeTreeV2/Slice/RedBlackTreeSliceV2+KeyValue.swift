@@ -389,7 +389,7 @@ extension RedBlackTreeSliceV2.KeyValue: Equatable where _Key: Equatable, _Mapped
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.isIdentical(to: rhs) || lhs.elementsEqual(rhs, by: ==)
+    lhs.isTriviallyIdentical(to: rhs) || lhs.elementsEqual(rhs, by: ==)
   }
 }
 
@@ -399,7 +399,7 @@ extension RedBlackTreeSliceV2.KeyValue: Comparable where _Key: Comparable, _Mapp
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs.isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs, by: <)
+    !lhs.isTriviallyIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs, by: <)
   }
 }
 

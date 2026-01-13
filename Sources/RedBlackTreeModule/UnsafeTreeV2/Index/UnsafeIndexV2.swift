@@ -437,7 +437,7 @@ extension UnsafeIndexV2 {
     #if true
       // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
       // endはシングルトン的にしたい気持ちもある
-      return __tree_.isIdentical(to: index.__tree_)
+      return __tree_.isTriviallyIdentical(to: index.__tree_)
         ? index.rawValue : self[index.___node_id_]
     #else
       self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])

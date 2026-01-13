@@ -69,6 +69,21 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
     self.__immutable_tree_ = .init(__tree_: tree)
   }
 
+  @inlinable
+  @inline(__always)
+  internal init(
+    __tree_: UnsafeIndexV2<Base>.Tree,
+    __immutable_tree_: UnsafeImmutableTree<Base>,
+    rawValue: UnsafeIndexV2<Base>._NodePtr,
+    deallocator: UnsafeIndexV2<Base>.Deallocator
+  ) {
+    self.__tree_ = __tree_
+    self.__immutable_tree_ = __immutable_tree_
+    self.___node_id_ = rawValue.pointee.___node_id_
+    self.rawValue = rawValue
+    self.deallocator = deallocator
+  }
+
   /*
    invalidなポインタでの削除は、だんまりがいいように思う
    */
@@ -77,17 +92,10 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   // CoWに関与できないので、Treeに対する破壊的変更は行わないこと
 }
 
-extension UnsafeTreeV2 where Base: ___TreeIndex {
+extension UnsafeImmutableTree {
 
   @inlinable
-  func equiv(_ l: UnsafeIndexV2<Base>, _ r: UnsafeIndexV2<Base>) -> Bool {
-    return l.___node_id_ == r.___node_id_
-  }
-
-  @inlinable
-  func lessThan(_ l: UnsafeIndexV2<Base>, _ r: UnsafeIndexV2<Base>) -> Bool {
-    let lhs = ___node_ptr(l)
-    let rhs = ___node_ptr(r)
+  func lessThan(_ lhs: _NodePtr, _ rhs: _NodePtr) -> Bool {
     guard !___is_garbaged(lhs),
       !___is_garbaged(rhs)
     else {
@@ -117,7 +125,8 @@ extension UnsafeIndexV2: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-    return lhs.__tree_.lessThan(lhs, rhs)
+    // rhsよせでもいいかもしれない(2026/1/13)
+    return lhs.__immutable_tree_.lessThan(lhs.___node_ptr(lhs), lhs.___node_ptr(rhs))
   }
 }
 
@@ -130,21 +139,27 @@ extension UnsafeIndexV2 {
   @inlinable
   //  @inline(__always)
   public func distance(to other: Self) -> Int {
-    guard !__tree_.___is_garbaged(rawValue),
-      !__tree_.___is_garbaged(other.rawValue)
+    let other = ___node_ptr(other)
+    guard !__immutable_tree_.___is_garbaged(rawValue),
+      !__immutable_tree_.___is_garbaged(other)
     else {
       preconditionFailure(.garbagedIndex)
     }
-    return __tree_.___signed_distance(rawValue, other.rawValue)
+    return __immutable_tree_.___signed_distance(rawValue, other)
   }
 
   /// - Complexity: O(1)
   @inlinable
   //  @inline(__always)
   public func advanced(by n: Int) -> Self {
+//    return .init(
+//      tree: __tree_,
+//      rawValue: __immutable_tree_.___tree_adv_iter(rawValue, by: n))
     return .init(
-      tree: __tree_,
-      rawValue: __immutable_tree_.___tree_adv_iter(rawValue, by: n))
+      __tree_: __tree_,
+      __immutable_tree_: __immutable_tree_,
+      rawValue: __immutable_tree_.___tree_adv_iter(rawValue, by: n),
+      deallocator: deallocator)
   }
 }
 
@@ -231,11 +246,11 @@ extension UnsafeIndexV2 {
   @inlinable
   public var pointee: Pointee? {
     guard
-      !__immutable_tree_.___is_subscript_null(rawValue(__tree_)),
-      !__immutable_tree_.___is_garbaged(rawValue(__tree_)),
+      !__immutable_tree_.___is_subscript_null(rawValue(__immutable_tree_)),
+      !__immutable_tree_.___is_garbaged(rawValue(__immutable_tree_)),
       !deallocator.isBaseDeallocated
     else { return nil }
-    return Base.___pointee(UnsafePair<_Value>.valuePointer(rawValue(__tree_))!.pointee)
+    return Base.___pointee(UnsafePair<_Value>.valuePointer(rawValue(__immutable_tree_))!.pointee)
   }
 }
 
@@ -378,8 +393,8 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  package func rawValue(_ tree: Tree) -> _NodePtr {
-    tree.___node_ptr(self)
+  package func rawValue(_ tree: Any) -> _NodePtr {
+    ___node_ptr(self)
   }
 
   @inlinable
@@ -393,10 +408,9 @@ extension UnsafeIndexV2 {
 
 extension UnsafeIndexV2 {
 
-  // TODO: 名前が安直すぎる。いつか変更する
   @inlinable
   @inline(__always)
-  package func ___NodePtr(_ p: Int) -> _NodePtr {
+  package subscript(_ p: Int) -> _NodePtr {
     switch p {
     case .nullptr:
       return __immutable_tree_.nullptr
@@ -418,7 +432,7 @@ extension UnsafeIndexV2 {
       // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
       // endはシングルトン的にしたい気持ちもある
       return __immutable_tree_.isIdentical(to: index.__immutable_tree_)
-        ? index.rawValue : ___NodePtr(index.___node_id_)
+        ? index.rawValue : self[index.___node_id_]
     #else
       self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
     #endif

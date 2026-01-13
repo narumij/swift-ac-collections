@@ -37,7 +37,6 @@ extension RedBlackTreeIteratorV2.Values {
     internal var _start, _end, _begin, _current, _next: _NodePtr
 
     @inlinable
-    @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.__tree_ = tree
       self._current = end

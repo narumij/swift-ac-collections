@@ -64,7 +64,7 @@ extension UnsafeIndexV2Collection {
   }
 }
 
-extension UnsafeIndexV2Collection: Sequence, Collection {
+extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection {
 
   public var startIndex: Index { ___index(_start) }
   public var endIndex: Index { ___index(_end) }
@@ -86,11 +86,15 @@ extension UnsafeIndexV2Collection: Sequence, Collection {
       end: _end,
       deallocator: deallocator)
   }
-
+  
   public func index(after i: Index) -> Index {
     i.advanced(by: 1)
   }
 
+  public func index(before i: Index) -> Index {
+    i.advanced(by: -1)
+  }
+  
   public subscript(position: Index) -> Index {
     position
   }

@@ -39,8 +39,8 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   typealias _Value = Tree._Value
 
   // TODO: 木を保持しない設計及び実装への移行
-  @usableFromInline
-  internal let __tree_: Tree
+//  @usableFromInline
+//  internal let __tree_: Tree
 
   @usableFromInline
   internal let __immutable_tree_: UnsafeImmutableTree<Base>
@@ -62,7 +62,7 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   @inline(__always)
   internal init(tree: Tree, rawValue: _NodePtr) {
     assert(rawValue != tree.nullptr)
-    self.__tree_ = tree
+//    self.__tree_ = tree
     self.rawValue = rawValue
     self.___node_id_ = rawValue.pointee.___node_id_
     self.deallocator = tree.deallocator
@@ -72,12 +72,12 @@ public struct UnsafeIndexV2<Base> where Base: ___TreeBase & ___TreeIndex {
   @inlinable
   @inline(__always)
   internal init(
-    __tree_: UnsafeIndexV2<Base>.Tree,
+//    __tree_: UnsafeIndexV2<Base>.Tree,
     __immutable_tree_: UnsafeImmutableTree<Base>,
     rawValue: UnsafeIndexV2<Base>._NodePtr,
     deallocator: UnsafeIndexV2<Base>.Deallocator
   ) {
-    self.__tree_ = __tree_
+//    self.__tree_ = __tree_
     self.__immutable_tree_ = __immutable_tree_
     self.___node_id_ = rawValue.pointee.___node_id_
     self.rawValue = rawValue
@@ -156,7 +156,7 @@ extension UnsafeIndexV2 {
 //      tree: __tree_,
 //      rawValue: __immutable_tree_.___tree_adv_iter(rawValue, by: n))
     return .init(
-      __tree_: __tree_,
+//      __tree_: __tree_,
       __immutable_tree_: __immutable_tree_,
       rawValue: __immutable_tree_.___tree_adv_iter(rawValue, by: n),
       deallocator: deallocator)
@@ -257,7 +257,7 @@ extension UnsafeIndexV2 {
 #if DEBUG
   extension UnsafeIndexV2 {
     fileprivate init(_unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, node_id: Int) {
-      self.__tree_ = _unsafe_tree
+//      self.__tree_ = _unsafe_tree
       self.rawValue = rawValue
       self.___node_id_ = node_id
       self.deallocator = _unsafe_tree.deallocator
@@ -290,20 +290,28 @@ extension UnsafeIndexV2 {
 
 extension UnsafeIndexV2 {
   
-  @available(*, deprecated, message: "リファクタリング完了後に維持が困難気味")
-  @inlinable
-  @inline(__always)
-  internal var ___indices: UnsafeIndicesV2<Base> {
-    // UnsafeIndicesV2の改造は影響が大きく難しいので、あたらしいindicesを構築して逃げる必要がありそう
-    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node)
-  }
+//  @available(*, deprecated, message: "リファクタリング完了後に維持が困難気味")
+//  @inlinable
+//  @inline(__always)
+//  internal var ___indices: UnsafeIndicesV2<Base> {
+//    // UnsafeIndicesV2の改造は影響が大きく難しいので、あたらしいindicesを構築して逃げる必要がありそう
+//    .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node)
+//  }
   
   @usableFromInline
   internal var ___unsafe_indices: UnsafeIndexCollection<Base> {
     // UnsafeIndicesV2の改造は影響が大きく難しいので、あたらしいindicesを構築して逃げる必要がありそう
+//    .init(
+//      startIndex: .init(tree: __tree_, rawValue: __tree_.__begin_node_),
+//      endIndex: .init(tree: __tree_, rawValue: __tree_.__end_node),
+//      deallocator: deallocator)
     .init(
-      startIndex: .init(tree: __tree_, rawValue: __tree_.__begin_node_),
-      endIndex: .init(tree: __tree_, rawValue: __tree_.__end_node),
+      startIndex: .init(__immutable_tree_: __immutable_tree_,
+                        rawValue: __immutable_tree_.__begin_node_,
+                        deallocator: deallocator),
+      endIndex: .init(__immutable_tree_: __immutable_tree_,
+                      rawValue: __immutable_tree_.__end_node,
+                      deallocator: deallocator),
       deallocator: deallocator)
   }
 }

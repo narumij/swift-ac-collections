@@ -98,7 +98,7 @@ extension UnsafeTreeV2Buffer {
     internal mutating func clear(keepingCapacity keepCapacity: Bool = false) {
       if keepCapacity {
         ___cleanFreshPool()
-      } else {
+      } else if _deallocator == nil {
         ___flushFreshPool()
       }
       ___flushRecyclePool()
@@ -133,8 +133,20 @@ extension UnsafeTreeV2Buffer.Header {
   mutating func tearDown() {
     //#if USE_FRESH_POOL_V1
     #if !USE_FRESH_POOL_V2
+    if let _deallocator {
+      self._deallocator = nil
+      self.freshBucketHead = nil
+      self.freshBucketCurrent = nil
+      self.freshBucketLast = nil
+      self.freshPoolCapacity = 0
+      self.freshPoolUsedCount = 0
+#if DEBUG
+      self.freshBucketCount = 0
+#endif
+    } else {
       ___flushFreshPool()
-      count = 0
+    }
+    count = 0
     #else
       freshPool.dispose()
       freshPool = .init()

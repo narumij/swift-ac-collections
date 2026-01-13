@@ -33,7 +33,6 @@ public struct UnsafeIndicesV2<Base>: ___UnsafeIndexBaseV2 where Base: ___TreeBas
   public typealias _Value = Tree._Value
   public typealias _NodePtr = Tree._NodePtr
 
-  @available(*, deprecated, message: "除去予定")
   @usableFromInline
   internal let __tree_: Tree
 

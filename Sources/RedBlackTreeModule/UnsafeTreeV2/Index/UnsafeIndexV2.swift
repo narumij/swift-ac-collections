@@ -297,6 +297,15 @@ extension UnsafeIndexV2 {
     // UnsafeIndicesV2の改造は影響が大きく難しいので、あたらしいindicesを構築して逃げる必要がありそう
     .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node)
   }
+  
+  @usableFromInline
+  internal var ___unsafe_indices: UnsafeIndexCollection<Base> {
+    // UnsafeIndicesV2の改造は影響が大きく難しいので、あたらしいindicesを構築して逃げる必要がありそう
+    .init(
+      startIndex: .init(tree: __tree_, rawValue: __tree_.__begin_node_),
+      endIndex: .init(tree: __tree_, rawValue: __tree_.__end_node),
+      deallocator: deallocator)
+  }
 }
 
 // MARK: - Range Expression
@@ -304,9 +313,9 @@ extension UnsafeIndexV2 {
 @inlinable
 @inline(__always)
 public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
-  -> UnsafeTreeV2<Base>.Indices
+  -> UnsafeIndexCollection<Base>
 {
-  let indices = lhs.___indices
+  let indices = lhs.___unsafe_indices
   let bounds = (lhs..<rhs).relative(to: indices)
   return indices[bounds.lowerBound..<bounds.upperBound]
 }

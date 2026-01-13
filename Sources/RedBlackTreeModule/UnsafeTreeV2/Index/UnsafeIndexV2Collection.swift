@@ -38,6 +38,7 @@ public
     self.deallocator = deallocator
   }
 
+  // TODO: Intに変更する検討
   public typealias Index = UnsafeIndexV2<Base>
 
   @usableFromInline
@@ -74,7 +75,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
       end: _end,
       deallocator: deallocator)
   }
-  
+
   public func index(after i: Index) -> Index {
     i.advanced(by: 1)
   }
@@ -82,18 +83,30 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
   public func index(before i: Index) -> Index {
     i.advanced(by: -1)
   }
-  
+
   public subscript(position: Index) -> Index {
     position
   }
 
-  public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
-    .init(
-      __tree_: __tree_,
-      start: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue,
-      deallocator: bounds.lowerBound.deallocator)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
+      .init(
+        __tree_: __tree_,
+        start: bounds.lowerBound.rawValue,
+        end: bounds.upperBound.rawValue,
+        deallocator: bounds.lowerBound.deallocator)
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
+      let bounds: Range<Index> = bounds.relative(to: self)
+      return .init(
+        tree: __tree_,
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
+    }
+  #endif
 }
 
 extension UnsafeIndexV2Collection {
@@ -138,7 +151,7 @@ extension UnsafeIndexV2Collection {
 extension UnsafeIndexV2Collection {
 
   public struct Reversed: IteratorProtocol, Sequence, UnsafeImmutableIndexingProtocol {
-    
+
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -183,3 +196,11 @@ extension UnsafeIndexV2Collection {
     }
   }
 }
+
+#if swift(>=5.5)
+  extension UnsafeIndexV2Collection: @unchecked Sendable {}
+#endif
+
+// MARK: - Is Identical To
+
+extension UnsafeIndexV2Collection: ___UnsafeImmutableIsIdenticalToV2 {}

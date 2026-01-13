@@ -5,6 +5,13 @@
 //  Created by narumij on 2026/01/13.
 //
 
+// TODO: 仕様及び設計について再検討すること
+// プロトコル適合問題だけに対処して止まっている気がする
+// そもそも使いやすくすること自体が不可能かもしれない
+
+// TODO: 再度チューニングすること
+// 荒く書いた段階なのでいろいろ手抜きがある
+
 public
   struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>: UnsafeTreePointer
 {

@@ -20,12 +20,38 @@ struct UnsafeIndexCollection<Base: ___TreeBase & ___TreeIndex> {
   internal var deallocator: Deallocator
   
   public typealias Element = Index
+}
+
+extension UnsafeIndexCollection {
   
-  // TODO: 削除対策型イテレータの実装
-  // CoW抑制が効き出すと標準イテレータではクラッシュするはずなので
+  public struct Iterator: IteratorProtocol {
+    internal init(startIndex: UnsafeIndexCollection<Base>.Index,
+                  endIndex: UnsafeIndexCollection<Base>.Index) {
+      self.startIndex = startIndex
+      self.endIndex = endIndex
+      self.currentIndex = startIndex
+      self.nextIndex = startIndex.advanced(by: 1)
+    }
+    public var startIndex: Index
+    public var endIndex: Index
+    var currentIndex: Index
+    var nextIndex: Index
+    public mutating func next() -> UnsafeIndexV2<Base>? {
+      guard currentIndex != endIndex else { return nil }
+      defer {
+        currentIndex = nextIndex
+        nextIndex = nextIndex == endIndex ? endIndex : nextIndex.advanced(by: 1)
+      }
+      return currentIndex
+    }
+  }
 }
 
 extension UnsafeIndexCollection: Sequence,Collection {
+  
+  public func makeIterator() -> Iterator {
+    .init(startIndex: startIndex, endIndex: endIndex)
+  }
   
   public func index(after i: Index) -> Index {
     i.advanced(by: 1)

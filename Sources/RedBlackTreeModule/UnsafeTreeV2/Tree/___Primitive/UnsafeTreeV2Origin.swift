@@ -27,12 +27,17 @@ public struct UnsafeTreeV2Origin: UnsafeTreePointer {
   @usableFromInline let end_ptr: _NodePtr
   @usableFromInline var end_node: UnsafeNode
   @inlinable
-  init(base: UnsafeMutablePointer<UnsafeTreeV2Origin>, nullptr: _NodePtr) {
+  init(base: UnsafeMutablePointer<UnsafeTreeV2Origin>, nullptr: _NodePtr, end_ptr: _NodePtr?) {
     self.nullptr = nullptr
     end_node = nullptr.create(id: .end)
-    let e = withUnsafeMutablePointer(to: &base.pointee.end_node) { $0 }
-    end_ptr = e
-    begin_ptr = e
+    if let end_ptr {
+      self.end_ptr = end_ptr
+      begin_ptr = end_ptr
+    } else {
+      let e = withUnsafeMutablePointer(to: &base.pointee.end_node) { $0 }
+      self.end_ptr = e
+      begin_ptr = e
+    }
   }
   @inlinable
   mutating func clear() {

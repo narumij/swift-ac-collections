@@ -66,7 +66,7 @@ extension _UnsafeNodeFreshPoolV3 {
     //  @usableFromInline
     mutating func pushFreshBucket(capacity: Int) {
       assert(capacity != 0)
-      let (pointer, capacity) = Self.createBucket(capacity: capacity)
+      let (pointer, capacity) = Self.createBucket(capacity: capacity, nullptr: nullptr)
       if freshBucketHead == nil {
         freshBucketHead = pointer
         didUpdateFreshBucketHead()
@@ -256,20 +256,26 @@ extension _UnsafeNodeFreshPoolV3 {
 
     @inlinable
     @inline(__always)
-    static func createBucket(capacity: Int) -> (_BucketPointer, capacity: Int) {
+    static func createBucket(capacity: Int, nullptr: _NodePtr) -> (_BucketPointer, capacity: Int) {
 
       assert(capacity != 0)
 
       let (capacity, bytes, stride, alignment) = pagedCapacity(capacity: capacity)
 
       let header_storage = UnsafeMutableRawPointer.allocate(
-        byteCount: bytes,
+        byteCount: bytes + MemoryLayout<UnsafeNode>.stride,
         alignment: alignment)
 
       let header = UnsafeMutableRawPointer(header_storage)
         .assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
+      
+      let endNode = UnsafeMutableRawPointer(header.advanced(by: 1))
+        .bindMemory(to: UnsafeNode.self, capacity: 1)
+      
+      endNode.initialize(to: nullptr.create(id: .end))
 
       let storage = UnsafeMutableRawPointer(header.advanced(by: 1))
+        .advanced(by: MemoryLayout<UnsafeNode>.stride)
       //      .alignedUp(toMultipleOf: alignment)
 
       header.initialize(

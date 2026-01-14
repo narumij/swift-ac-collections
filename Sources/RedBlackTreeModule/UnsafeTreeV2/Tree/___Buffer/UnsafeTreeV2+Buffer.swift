@@ -67,7 +67,7 @@ extension UnsafeTreeV2Buffer {
         assert(header.pointee.freshPoolCapacity >= nodeCapacity)
       }
       // originを初期化
-      tree.initialize(to: UnsafeTreeV2Origin(base: tree, nullptr: nullptr))
+      tree.initialize(to: UnsafeTreeV2Origin(base: tree, nullptr: nullptr, end_ptr: nil))
       assert(tree.pointee.end_ptr.pointee.___needs_deinitialize == true)
     }
 

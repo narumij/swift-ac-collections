@@ -52,6 +52,14 @@ extension UnsafeTreeV2Buffer {
       @usableFromInline var freshPool: FreshPool<_Value> = .init()
       @usableFromInline var count: Int = 0
     #endif
+    
+    @usableFromInline
+    var __end_node: _NodePtr? {
+      freshBucketHead.map {
+        UnsafeMutableRawPointer($0.advanced(by: 1))
+          .assumingMemoryBound(to: UnsafeNode.self)
+      }
+    }
 
     @inlinable @inline(never)  // ホットじゃないのでinline化から除外したい
     func didUpdateFreshBucketHead() {

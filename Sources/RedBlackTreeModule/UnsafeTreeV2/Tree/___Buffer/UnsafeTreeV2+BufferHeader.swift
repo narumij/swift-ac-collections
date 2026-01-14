@@ -61,7 +61,7 @@ extension UnsafeTreeV2Buffer {
       @usableFromInline var count: Int = 0
     #endif
     
-    @usableFromInline
+    @inlinable @inline(__always)
     var __end_node: _NodePtr? {
       freshBucketHead.map {
         UnsafeMutableRawPointer($0.advanced(by: 1))

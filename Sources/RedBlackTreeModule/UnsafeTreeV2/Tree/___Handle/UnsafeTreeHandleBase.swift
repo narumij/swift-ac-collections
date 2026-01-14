@@ -77,7 +77,7 @@ extension UnsafeTreeHandleBase {
     @inlinable
     @inline(__always)
     package var __root: _NodePtr {
-      origin.pointee.end_node.__left_
+      origin.pointee.end_ptr.pointee.__left_
     }
   #else
     @inlinable

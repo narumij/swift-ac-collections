@@ -56,6 +56,9 @@ package final class _UnsafeNodeFreshPoolV3Deallocator {
   deinit {
     var reserverHead = freshBucketHead
     while let h = reserverHead {
+      UnsafeMutableRawPointer(h.advanced(by: 1))
+        .assumingMemoryBound(to: UnsafeNode.self)
+        .deinitialize(count: 1)
       reserverHead = h.pointee.next
       deinitializeNodes(h)
       h.deinitialize(count: 1)

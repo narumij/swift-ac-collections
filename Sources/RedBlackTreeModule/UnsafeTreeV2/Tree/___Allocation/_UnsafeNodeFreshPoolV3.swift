@@ -136,7 +136,7 @@ extension _UnsafeNodeFreshPoolV3 {
       var reserverHead = freshBucketHead
       while let h = reserverHead {
         reserverHead = h.pointee.next
-        Self.deinitializeNodes(h)
+        deinitializeNodes(h)
         h.deinitialize(count: 1)
         h.deallocate()
       }
@@ -235,12 +235,23 @@ extension _UnsafeNodeFreshPoolV3 {
 
     @inlinable
     @inline(__always)
-    static func deinitializeNodes(_ p: _BucketPointer) {
-      let bucket = p.pointee
+    func deinitializeNodes(_ b: _BucketPointer) {
+      var first = b == freshBucketHead
+      let bucket = b.pointee
       var i = 0
       let count = bucket.count
       let capacity = bucket.capacity
       var p = bucket.start
+      if first {
+        first = false
+        // バケット先頭の場合、NodeValueの前にEnd Nodeが先混まれているので、それを解放する
+        UnsafeMutableRawPointer(b.advanced(by: 1))
+          .assumingMemoryBound(to: UnsafeNode.self)
+          .deinitialize(count: 1)
+        p = UnsafeMutableRawPointer(b.advanced(by: 1))
+          .advanced(by: MemoryLayout<UnsafeNode>.stride)
+          .assumingMemoryBound(to: UnsafeNode.self)
+      }
       while i < capacity {
         let c = p
         p = UnsafePair<_Value>.advance(p)

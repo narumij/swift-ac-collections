@@ -17,5 +17,9 @@ class RedBlackTreeTestCase: XCTestCase {
     // assert(_emptyTreeStorage.header.freshPoolCapacity == 0)
 #endif
     RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
+    XCTAssertEqual(RedBlackTreeSet<Int>().capacity, 0, "\(name)")
+    if RedBlackTreeSet<Int>().capacity != 0 {
+      fatalError("singleton bufffer broken")
+    }
   }
 }

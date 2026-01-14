@@ -20,6 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+// TODO: V2のアイデアをV3と同じ方式で再度試す
+
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
 protocol _UnsafeNodeFreshPoolV3: _ValueProtocol

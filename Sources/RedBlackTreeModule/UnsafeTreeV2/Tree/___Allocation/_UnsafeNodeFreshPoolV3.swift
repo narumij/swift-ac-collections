@@ -63,22 +63,30 @@ extension _UnsafeNodeFreshPoolV3 {
      However, immediately after CoW, callers MUST ensure that
      only a single bucket exists to support index-based access.
      */
+
+    @inlinable
+    @inline(__always)
+    //  @usableFromInline
+    mutating func pushFreshHeadBucket(capacity: Int) {
+      assert(freshBucketHead == nil || capacity != 0)
+      let (pointer, capacity) = Self.createHeadBucket(capacity: capacity, nullptr: nullptr)
+      freshBucketHead = pointer
+      didUpdateFreshBucketHead()
+      freshBucketCurrent = pointer
+      freshBucketLast = pointer
+      self.freshPoolCapacity += capacity
+      #if DEBUG
+        freshBucketCount += 1
+      #endif
+    }
+
     @inlinable
     @inline(__always)
     //  @usableFromInline
     mutating func pushFreshBucket(capacity: Int) {
       assert(freshBucketHead == nil || capacity != 0)
-      let (pointer, capacity) = Self.createBucket(capacity: capacity, nullptr: nullptr)
-      if freshBucketHead == nil {
-        freshBucketHead = pointer
-        didUpdateFreshBucketHead()
-      }
-      if freshBucketCurrent == nil {
-        freshBucketCurrent = pointer
-      }
-      if let freshBucketLast {
-        freshBucketLast.pointee.next = pointer
-      }
+      let (pointer, capacity) = Self.createBucket(capacity: capacity)
+      freshBucketLast?.pointee.next = pointer
       freshBucketLast = pointer
       self.freshPoolCapacity += capacity
       #if DEBUG
@@ -258,11 +266,13 @@ extension _UnsafeNodeFreshPoolV3 {
 
     @inlinable
     @inline(__always)
-    static func createBucket(capacity: Int, nullptr: _NodePtr) -> (_BucketPointer, capacity: Int) {
+    static func createHeadBucket(capacity: Int, nullptr: _NodePtr) -> (
+      _BucketPointer, capacity: Int
+    ) {
 
-#if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
-      assert(capacity != 0)
-#endif
+      #if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
+        assert(capacity != 0)
+      #endif
 
       let (capacity, bytes, stride, alignment) = pagedCapacity(capacity: capacity)
 
@@ -272,16 +282,56 @@ extension _UnsafeNodeFreshPoolV3 {
 
       let header = UnsafeMutableRawPointer(header_storage)
         .assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
-      
+
       // x競プロ用としては、分岐して節約するよりこの程度なら分岐けずるほうがいいかもしれない
       // o甘くなかった。いまの成長率設定ではメモリの無駄が多すぎる
       let endNode = UnsafeMutableRawPointer(header.advanced(by: 1))
         .bindMemory(to: UnsafeNode.self, capacity: 1)
-      
+
       endNode.initialize(to: nullptr.create(id: .end))
 
       let storage = UnsafeMutableRawPointer(header.advanced(by: 1))
         .advanced(by: MemoryLayout<UnsafeNode>.stride)
+      //      .alignedUp(toMultipleOf: alignment)
+
+      header.initialize(
+        to:
+          .init(
+            start: UnsafePair<_Value>.pointer(from: storage),
+            capacity: capacity,
+            strice: stride))
+
+      #if DEBUG
+        do {
+          var c = 0
+          var p = header.pointee.start
+          while c < capacity {
+            p.pointee.___node_id_ = .debug
+            p = UnsafePair<_Value>.advance(p)
+            c += 1
+          }
+        }
+      #endif
+
+      return (header, capacity)
+    }
+
+    @inlinable
+    @inline(__always)
+    static func createBucket(capacity: Int) -> (_BucketPointer, capacity: Int) {
+
+      assert(capacity != 0)
+
+      let (capacity, bytes, stride, alignment) = pagedCapacity(capacity: capacity)
+
+      let header_storage = UnsafeMutableRawPointer.allocate(
+        byteCount: bytes,
+        alignment: alignment)
+
+      let header = UnsafeMutableRawPointer(header_storage)
+        .assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
+
+      let storage = UnsafeMutableRawPointer(header.advanced(by: 1))
       //      .alignedUp(toMultipleOf: alignment)
 
       header.initialize(

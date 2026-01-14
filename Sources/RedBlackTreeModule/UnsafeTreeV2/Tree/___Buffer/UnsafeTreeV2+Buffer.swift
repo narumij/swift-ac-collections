@@ -70,7 +70,7 @@ extension UnsafeTreeV2Buffer {
         // originを初期化
         tree.initialize(to: UnsafeTreeV2Origin(base: tree, nullptr: nullptr, end_ptr: nil))
       #else
-        header.pointee.pushFreshBucket(capacity: nodeCapacity)
+        header.pointee.pushFreshHeadBucket(capacity: nodeCapacity)
         assert(header.pointee.freshPoolCapacity >= nodeCapacity)
         let end_ptr = header.pointee.__end_node
         // originを初期化

@@ -53,7 +53,7 @@ extension UnsafeTreeV2Buffer {
       @usableFromInline var count: Int = 0
     #endif
 
-    @inlinable @inline(never) // ホットじゃないのでinline化から除外したい
+    @inlinable @inline(never)  // ホットじゃないのでinline化から除外したい
     func didUpdateFreshBucketHead() {
       _deallocator?.freshBucketHead = freshBucketHead
     }
@@ -106,11 +106,12 @@ extension UnsafeTreeV2Buffer {
   }
 }
 
-//#if USE_FRESH_POOL_V1
-#if !USE_FRESH_POOL_V2
+#if USE_FRESH_POOL_V1
   extension UnsafeTreeV2Buffer.Header: _UnsafeNodeFreshPool {}
-#else
+#elseif USE_FRESH_POOL_V2
   extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPoolV2 {}
+#else
+  extension UnsafeTreeV2Buffer.Header: _UnsafeNodeFreshPoolV3 {}
 #endif
 
 extension UnsafeTreeV2Buffer.Header {
@@ -133,20 +134,20 @@ extension UnsafeTreeV2Buffer.Header {
   mutating func tearDown() {
     //#if USE_FRESH_POOL_V1
     #if !USE_FRESH_POOL_V2
-    if let _ = _deallocator {
-      self._deallocator = nil
-      self.freshBucketHead = nil
-      self.freshBucketCurrent = nil
-      self.freshBucketLast = nil
-      self.freshPoolCapacity = 0
-      self.freshPoolUsedCount = 0
-#if DEBUG
-      self.freshBucketCount = 0
-#endif
-    } else {
-      ___flushFreshPool()
-    }
-    count = 0
+      if let _ = _deallocator {
+        self._deallocator = nil
+        self.freshBucketHead = nil
+        self.freshBucketCurrent = nil
+        self.freshBucketLast = nil
+        self.freshPoolCapacity = 0
+        self.freshPoolUsedCount = 0
+        #if DEBUG
+          self.freshBucketCount = 0
+        #endif
+      } else {
+        ___flushFreshPool()
+      }
+      count = 0
     #else
       freshPool.dispose()
       freshPool = .init()

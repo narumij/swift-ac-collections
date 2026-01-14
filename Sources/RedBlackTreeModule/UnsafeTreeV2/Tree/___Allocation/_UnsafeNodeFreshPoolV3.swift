@@ -273,7 +273,8 @@ extension _UnsafeNodeFreshPoolV3 {
       let header = UnsafeMutableRawPointer(header_storage)
         .assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
       
-      // 競プロ用としては、分岐して節約するよりこの程度なら分岐けずるほうがいいかもしれない
+      // x競プロ用としては、分岐して節約するよりこの程度なら分岐けずるほうがいいかもしれない
+      // o甘くなかった。いまの成長率設定ではメモリの無駄が多すぎる
       let endNode = UnsafeMutableRawPointer(header.advanced(by: 1))
         .bindMemory(to: UnsafeNode.self, capacity: 1)
       

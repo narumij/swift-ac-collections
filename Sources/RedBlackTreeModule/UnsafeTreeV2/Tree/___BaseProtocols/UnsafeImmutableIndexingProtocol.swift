@@ -9,7 +9,7 @@
 protocol UnsafeImmutableIndexingProtocol: UnsafeTreePointer
 where
   Index == UnsafeIndexV2<Base>,
-  PoolLifespan == _UnsafeNodeFreshPoolDeallocator
+  PoolLifespan == Deallocator
 {
   associatedtype Base: ___TreeBase & ___TreeIndex
   associatedtype Index

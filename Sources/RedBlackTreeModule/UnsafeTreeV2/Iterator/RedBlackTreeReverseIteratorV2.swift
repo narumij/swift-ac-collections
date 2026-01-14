@@ -37,7 +37,7 @@ extension RedBlackTreeIteratorV2.Values {
     internal var _start, _end, _begin, _current, _next: _NodePtr
 
     @usableFromInline
-    var poolLifespan: _UnsafeNodeFreshPoolDeallocator
+    var poolLifespan: PoolLifespan
     
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {

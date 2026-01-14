@@ -20,6 +20,14 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+#if USE_FRESH_POOL_V1
+    @usableFromInline
+    typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
+#else
+    @usableFromInline
+    typealias Deallocator = _UnsafeNodeFreshPoolV3Deallocator
+#endif
+
 extension UnsafeTreeV2Buffer {
 
   @frozen
@@ -66,7 +74,7 @@ extension UnsafeTreeV2Buffer {
       _deallocator?.freshBucketHead = freshBucketHead
     }
 
-    @usableFromInline var _deallocator: _UnsafeNodeFreshPoolDeallocator?
+    @usableFromInline var _deallocator: Deallocator?
 
     @inlinable @inline(__always)
     var needsDealloc: Bool {
@@ -74,7 +82,7 @@ extension UnsafeTreeV2Buffer {
     }
 
     @inlinable @inline(never)
-    var deallocator: _UnsafeNodeFreshPoolDeallocator {
+    var deallocator: Deallocator {
       mutating get {
         // TODO: 一度の保証付きの実装にすること
         if _deallocator == nil {

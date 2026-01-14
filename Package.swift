@@ -39,7 +39,7 @@ var _settings: [SwiftSetting] =
     // 対象のメソッドは必ずassertかXCTAssert...を介して利用する。
     // このため、リリース時はどちらにせよ無効になる
 
-    .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
+//    .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
 
     .define("USE_SIMPLE_COPY_ON_WRITE"),  // この定義は今後悩み

@@ -605,8 +605,12 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    __tree_._ensureUnique()
-    ___removeAll(keepingCapacity: keepCapacity)
+    if keepCapacity {
+      __tree_._ensureUnique()
+      ___removeAll(keepingCapacity: keepCapacity)
+    } else {
+      self = .init()
+    }
   }
 }
 

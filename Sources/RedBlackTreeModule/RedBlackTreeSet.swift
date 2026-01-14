@@ -254,7 +254,7 @@ extension RedBlackTreeSet {
     inserted: Bool, memberAfterInsert: Element
   ) {
     __tree_._ensureUniqueAndCapacity()
-//        let (__r, __inserted) = __tree_.__insert_unique(newMember)
+    //        let (__r, __inserted) = __tree_.__insert_unique(newMember)
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     return (__inserted, __inserted ? newMember : __tree_[__r])
   }
@@ -441,8 +441,12 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    __tree_._ensureUnique()
-    ___removeAll(keepingCapacity: keepCapacity)
+    if keepCapacity {
+      __tree_._ensureUnique()
+      ___removeAll(keepingCapacity: keepCapacity)
+    } else {
+      self = .init()
+    }
   }
 }
 

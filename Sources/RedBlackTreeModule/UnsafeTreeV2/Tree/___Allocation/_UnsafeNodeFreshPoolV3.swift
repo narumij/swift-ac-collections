@@ -65,7 +65,7 @@ extension _UnsafeNodeFreshPoolV3 {
     @inline(__always)
     //  @usableFromInline
     mutating func pushFreshBucket(capacity: Int) {
-      assert(capacity != 0)
+      assert(freshBucketHead == nil || capacity != 0)
       let (pointer, capacity) = Self.createBucket(capacity: capacity, nullptr: nullptr)
       if freshBucketHead == nil {
         freshBucketHead = pointer
@@ -258,7 +258,7 @@ extension _UnsafeNodeFreshPoolV3 {
     @inline(__always)
     static func createBucket(capacity: Int, nullptr: _NodePtr) -> (_BucketPointer, capacity: Int) {
 
-      assert(capacity != 0)
+//      assert(capacity != 0)
 
       let (capacity, bytes, stride, alignment) = pagedCapacity(capacity: capacity)
 

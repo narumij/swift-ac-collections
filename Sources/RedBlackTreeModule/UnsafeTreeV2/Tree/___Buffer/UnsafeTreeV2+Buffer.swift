@@ -62,12 +62,20 @@ extension UnsafeTreeV2Buffer {
 
     storage.withUnsafeMutablePointers { header, tree in
       // ノード数を確保
-      if nodeCapacity > 0 {
+      #if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
+        if nodeCapacity > 0 {
+          header.pointee.pushFreshBucket(capacity: nodeCapacity)
+          assert(header.pointee.freshPoolCapacity >= nodeCapacity)
+        }
+        // originを初期化
+        tree.initialize(to: UnsafeTreeV2Origin(base: tree, nullptr: nullptr, end_ptr: nil))
+      #else
         header.pointee.pushFreshBucket(capacity: nodeCapacity)
         assert(header.pointee.freshPoolCapacity >= nodeCapacity)
-      }
-      // originを初期化
-      tree.initialize(to: UnsafeTreeV2Origin(base: tree, nullptr: nullptr, end_ptr: nil))
+        let end_ptr = header.pointee.__end_node
+        // originを初期化
+        tree.initialize(to: UnsafeTreeV2Origin(base: tree, nullptr: nullptr, end_ptr: end_ptr))
+      #endif
       assert(tree.pointee.end_ptr.pointee.___needs_deinitialize == true)
     }
 

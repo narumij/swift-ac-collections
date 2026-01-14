@@ -114,6 +114,8 @@ extension UnsafeTreeV2Buffer {
   }
 }
 
+// #if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
+
 #if USE_FRESH_POOL_V1
   extension UnsafeTreeV2Buffer.Header: _UnsafeNodeFreshPool {}
 #elseif USE_FRESH_POOL_V2

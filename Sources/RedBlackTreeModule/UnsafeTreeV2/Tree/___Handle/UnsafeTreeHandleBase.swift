@@ -93,7 +93,7 @@ extension UnsafeTreeHandleBase {
   @inlinable
   @inline(__always)
   package func __root_ptr() -> _NodeRef {
-    withUnsafeMutablePointer(to: &origin.pointee.end_node.__left_) { $0 }
+    withUnsafeMutablePointer(to: &origin.pointee.end_ptr.pointee.__left_) { $0 }
   }
 }
 

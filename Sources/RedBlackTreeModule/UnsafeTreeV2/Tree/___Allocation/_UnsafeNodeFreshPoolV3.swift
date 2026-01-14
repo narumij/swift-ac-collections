@@ -258,7 +258,9 @@ extension _UnsafeNodeFreshPoolV3 {
     @inline(__always)
     static func createBucket(capacity: Int, nullptr: _NodePtr) -> (_BucketPointer, capacity: Int) {
 
-//      assert(capacity != 0)
+#if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
+      assert(capacity != 0)
+#endif
 
       let (capacity, bytes, stride, alignment) = pagedCapacity(capacity: capacity)
 

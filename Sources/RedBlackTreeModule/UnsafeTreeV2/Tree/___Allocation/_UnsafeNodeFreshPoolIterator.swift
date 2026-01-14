@@ -23,16 +23,13 @@
 /// 使用済みから初期化済みまでを列挙するイテレータ
 @frozen
 @usableFromInline
-struct _UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence {
+struct _UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence, UnsafeTreePointer {
 
   @usableFromInline
   typealias Bucket = _UnsafeNodeFreshBucket
 
   @usableFromInline
   typealias BucketPointer = UnsafeMutablePointer<Bucket>
-
-  @usableFromInline
-  typealias ElementPointer = UnsafeMutablePointer<UnsafeNode>
 
   @inlinable
   @inline(__always)
@@ -50,7 +47,7 @@ struct _UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence {
 
   @inlinable
   @inline(__always)
-  mutating func next() -> ElementPointer? {
+  mutating func next() -> _NodePtr? {
 
     while it == end, let bucket {
       self.bucket = bucket.pointee.next

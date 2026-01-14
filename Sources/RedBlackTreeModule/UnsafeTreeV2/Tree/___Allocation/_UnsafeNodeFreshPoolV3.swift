@@ -24,8 +24,7 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-protocol _UnsafeNodeFreshPoolV3: _ValueProtocol
-where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
+protocol _UnsafeNodeFreshPoolV3: _ValueProtocol, UnsafeTreePointer {
 
   /*
    Design invariant:
@@ -34,7 +33,6 @@ where _NodePtr == UnsafeMutablePointer<UnsafeNode> {
    because index-based access is performed.
    */
 
-  associatedtype _NodePtr
   var freshBucketHead: _BucketPointer? { get set }
   var freshBucketCurrent: _BucketPointer? { get set }
   var freshBucketLast: _BucketPointer? { get set }

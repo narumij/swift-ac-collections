@@ -85,16 +85,22 @@ extension UnsafeTreeV2Buffer: CustomStringConvertible {
 }
 
 /// The type-punned empty singleton storage instance.
-@usableFromInline
-nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.create(
-  minimumCapacity: 0, nullptr: UnsafeNode.nullptr)
+#if DEBUG
+  @usableFromInline
+  nonisolated(unsafe) package var _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.create(
+    minimumCapacity: 0, nullptr: UnsafeNode.nullptr)
+#else
+  @usableFromInline
+  nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.create(
+    minimumCapacity: 0, nullptr: UnsafeNode.nullptr)
+#endif
 
 // TODO: このシングルトンを破壊するテストコードを撲滅し根治すること
 
 @inlinable
 package func tearDown<T>(treeBuffer buffer: UnsafeTreeV2Buffer<T>) {
-  buffer.withUnsafeMutablePointers { h, e in
-    h.pointee.tearDown()
-    e.pointee.clear()
-  }
+  #if DEBUG
+    _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.create(
+      minimumCapacity: 0, nullptr: UnsafeNode.nullptr)
+  #endif
 }

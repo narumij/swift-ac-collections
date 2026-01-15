@@ -100,7 +100,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(1)
   @inlinable @inline(__always)
   public init() {
-    self.init(__tree_: .create(minimumCapacity: 0))
+    self.init(__tree_: .create())
   }
 
   /// - Complexity: O(1)

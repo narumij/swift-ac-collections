@@ -31,7 +31,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal static func create(
-    minimumCapacity nodeCapacity: Int
+    minimumCapacity nodeCapacity: Int = 0
   ) -> UnsafeTreeV2 {
     nodeCapacity == 0
       ? ___create()
@@ -307,7 +307,7 @@ extension UnsafeTreeV2 {
   internal static func create_unique<S>(naive sequence: __owned S) -> UnsafeTreeV2
   where Base._Value == S.Element, S: Sequence {
 
-    .___insert_range_unique(tree: .create(minimumCapacity: 0), sequence)
+    .___insert_range_unique(tree: .create(), sequence)
   }
 
   @inlinable
@@ -316,14 +316,14 @@ extension UnsafeTreeV2 {
   ) -> UnsafeTreeV2
   where S: Sequence {
 
-    .___insert_range_unique(tree: .create(minimumCapacity: 0), sequence, transform: transform)
+    .___insert_range_unique(tree: .create(), sequence, transform: transform)
   }
 
   @inlinable
   internal static func create_multi<S>(naive sequence: __owned S) -> UnsafeTreeV2
   where Base._Value == S.Element, S: Sequence {
 
-    .___insert_range_multi(tree: .create(minimumCapacity: 0), sequence)
+    .___insert_range_multi(tree: .create(), sequence)
   }
 
   @inlinable
@@ -333,7 +333,7 @@ extension UnsafeTreeV2 {
     -> UnsafeTreeV2
   where S: Sequence {
 
-    .___insert_range_multi(tree: .create(minimumCapacity: 0), sequence, transform: transform)
+    .___insert_range_multi(tree: .create(), sequence, transform: transform)
   }
 }
 

@@ -49,18 +49,18 @@ extension UnsafeTreeV2Buffer {
 
     //#if USE_FRESH_POOL_V1
     #if !USE_FRESH_POOL_V2
-      @usableFromInline let nullptr: _NodePtr
-      @usableFromInline var freshBucketCurrent: _BucketPointer?
-      @usableFromInline var freshPoolCapacity: Int = 0
-      @usableFromInline var freshPoolUsedCount: Int = 0
+      @usableFromInline var count: Int = 0
       @usableFromInline var recycleHead: _NodePtr
+      @usableFromInline var freshPoolCapacity: Int = 0
+      @usableFromInline var freshBucketCurrent: _BucketPointer?
+      @usableFromInline var freshPoolUsedCount: Int = 0
       @usableFromInline var freshBucketHead: _BucketPointer?
       @usableFromInline var freshBucketLast: _BucketPointer?
+      @usableFromInline let nullptr: _NodePtr
       #if !(USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2)
         @usableFromInline
         var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator
       #endif
-      @usableFromInline var count: Int = 0
       #if DEBUG
         @usableFromInline var freshBucketCount: Int = 0
       #endif
@@ -91,7 +91,7 @@ extension UnsafeTreeV2Buffer {
       _deallocator == nil
     }
 
-    @inlinable @inline(never)
+    @inlinable @inline(__always)
     var deallocator: Deallocator {
       mutating get {
         // TODO: 一度の保証付きの実装にすること

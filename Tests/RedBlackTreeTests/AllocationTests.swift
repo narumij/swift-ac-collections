@@ -15,7 +15,7 @@ final class AllocationTests: RedBlackTreeTestCase {
 
     func test0() throws {
       do {
-        let storage: Storage = .create(minimumCapacity: 0)
+        let storage: Storage = .create()
         XCTAssertEqual(storage.capacity, 0)
       }
       do {

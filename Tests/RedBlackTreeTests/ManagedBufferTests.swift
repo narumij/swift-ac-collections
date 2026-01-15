@@ -11,7 +11,7 @@ final class ManagedBufferTests: RedBlackTreeTestCase {
   }
 
   func testCreateZero() async throws {
-    let storage = ___Tree<Base>.create(minimumCapacity: 0)
+    let storage = ___Tree<Base>.create()
     XCTAssertEqual(storage.capacity, 0)
     XCTAssertEqual(storage.count, 0)
     XCTAssertEqual(storage.__root, .nullptr)

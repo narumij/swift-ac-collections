@@ -18,7 +18,7 @@ import XCTest
     }
 
     func testCreateZero() async throws {
-      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 0)
+      let storage = UnsafeTreeV2<Base>.create()
       XCTAssertEqual(storage.capacity, 0)
       XCTAssertEqual(storage.count, 0)
       XCTAssertEqual(storage.__root, storage.nullptr)

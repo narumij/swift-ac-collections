@@ -44,7 +44,6 @@ protocol _UnsafeNodeFreshPoolV3: UnsafeTreePointer {
   #if DEBUG
     var freshBucketCount: Int { get set }
   #endif
-  func didUpdateFreshBucketHead()
   var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator { get }
 }
 
@@ -70,10 +69,9 @@ extension _UnsafeNodeFreshPoolV3 {
     let (pointer, capacity) = freshBucketAllocator.createHeadBucket(
       capacity: capacity, nullptr: nullptr)
     freshBucketHead = pointer
-    didUpdateFreshBucketHead()
     freshBucketCurrent = pointer
     freshBucketLast = pointer
-    self.freshPoolCapacity += capacity
+    freshPoolCapacity += capacity
     #if DEBUG
       freshBucketCount += 1
     #endif
@@ -87,7 +85,7 @@ extension _UnsafeNodeFreshPoolV3 {
     let (pointer, capacity) = freshBucketAllocator.createBucket(capacity: capacity)
     freshBucketLast?.pointee.next = pointer
     freshBucketLast = pointer
-    self.freshPoolCapacity += capacity
+    freshPoolCapacity += capacity
     #if DEBUG
       freshBucketCount += 1
     #endif

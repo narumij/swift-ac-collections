@@ -79,10 +79,12 @@ extension UnsafeTreeV2Buffer {
       }
     }
 
-    @inlinable @inline(never)  // ホットじゃないのでinline化から除外したい
-    func didUpdateFreshBucketHead() {
-//      _deallocator?.freshBucketHead = freshBucketHead
-    }
+    #if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
+      @inlinable @inline(never)  // ホットじゃないのでinline化から除外したい
+      func didUpdateFreshBucketHead() {
+        //      _deallocator?.freshBucketHead = freshBucketHead
+      }
+    #endif
 
     @usableFromInline var _deallocator: Deallocator?
 
@@ -141,64 +143,203 @@ extension UnsafeTreeV2Buffer {
 #elseif USE_FRESH_POOL_V2
   extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPoolV2 {}
 #else
-  extension UnsafeTreeV2Buffer.Header: _UnsafeNodeFreshPoolV3 {}
 #endif
 
 #if !(USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2)
-extension UnsafeTreeV2Buffer.Header {
-  // TODO: ジェネリクスが外れたらPOOL V3に戻す
-  @inlinable
-  @inline(__always)
-  var freshPoolNumBytes: Int {
-    var bytes = 0
-    var p = freshBucketHead
-    while let h = p {
-      bytes += h.pointee.count * (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
-      p = h.pointee.next
+//  extension UnsafeTreeV2Buffer.Header: _UnsafeNodeFreshPoolV3 {}
+
+/* ------------ V3のインライン化はじまり  -------------  */
+
+  extension UnsafeTreeV2Buffer.Header {
+    @usableFromInline typealias _Bucket = _UnsafeNodeFreshBucket
+    @usableFromInline typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
+  }
+
+  extension UnsafeTreeV2Buffer.Header {
+
+    /*
+     NOTE:
+     Normally, FreshPool may grow by adding multiple buckets.
+     However, immediately after CoW, callers MUST ensure that
+     only a single bucket exists to support index-based access.
+     */
+
+    @inlinable
+    @inline(__always)
+    //  @usableFromInline
+    mutating func pushFreshHeadBucket(capacity: Int) {
+      assert(freshBucketHead == nil || capacity != 0)
+      let (pointer, capacity) = freshBucketAllocator.createHeadBucket(
+        capacity: capacity, nullptr: nullptr)
+      freshBucketHead = pointer
+      freshBucketCurrent = pointer
+      freshBucketLast = pointer
+      freshPoolCapacity += capacity
+      #if DEBUG
+        freshBucketCount += 1
+      #endif
     }
-    return bytes
+
+    @inlinable
+    @inline(__always)
+    //  @usableFromInline
+    mutating func pushFreshBucket(capacity: Int) {
+      assert(freshBucketHead == nil || capacity != 0)
+      let (pointer, capacity) = freshBucketAllocator.createBucket(capacity: capacity)
+      freshBucketLast?.pointee.next = pointer
+      freshBucketLast = pointer
+      freshPoolCapacity += capacity
+      #if DEBUG
+        freshBucketCount += 1
+      #endif
+    }
+
+    @inlinable
+    @inline(__always)
+    mutating func popFresh() -> _NodePtr? {
+      if let p = freshBucketCurrent?.pointee.pop() {
+        return p
+      }
+      freshBucketCurrent = freshBucketCurrent?.pointee.next
+      return freshBucketCurrent?.pointee.pop()
+    }
   }
-}
 
-extension UnsafeTreeV2Buffer.Header {
-  // TODO: ジェネリクスが外れたらPOOL V3に戻す
-  @inlinable
-  @inline(__always)
-  func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_Value> {
-    return _UnsafeNodeFreshBucketIterator<_Value>(bucket: freshBucketHead)
-  }
-}
+  extension UnsafeTreeV2Buffer.Header {
 
-extension UnsafeTreeV2Buffer.Header {
-  // TODO: ジェネリクスが外れたらPOOL V3に戻す？
-  @inlinable
-  @inline(__always)
-  func makeFreshPoolIterator() -> _UnsafeNodeFreshPoolIterator<_Value> {
-    return _UnsafeNodeFreshPoolIterator<_Value>(bucket: freshBucketHead, nullptr: nullptr)
-  }
-}
-
-extension UnsafeTreeV2Buffer.Header {
-
-  // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
-  // Headerに移すのが妥当かも。そうすれば_Value依存が消せる
-  @inlinable
-  @inline(__always)
-  mutating public
-    func ___popFresh() -> _NodePtr
-  {
-    assert(freshPoolUsedCount < freshPoolCapacity)
-    guard let p = popFresh() else {
+    /*
+     IMPORTANT:
+     After a Copy-on-Write operation, node access is performed via index-based
+     lookup. To guarantee O(1) address resolution and avoid bucket traversal,
+     the FreshPool must contain exactly ONE bucket at this point.
+    
+     Invariant:
+       - During and immediately after CoW, `reserverBucketCount == 1`
+       - Index-based access relies on a single contiguous bucket
+    
+     Violating this invariant may cause excessive traversal or undefined behavior.
+    */
+    @inlinable
+    @inline(__always)
+    subscript(___node_id_: Int) -> _NodePtr {
+      assert(___node_id_ >= 0)
+      var remaining = ___node_id_
+      var p = freshBucketHead
+      while let h = p {
+        let cap = h.pointee.capacity
+        if remaining < cap {
+          return h.pointee[remaining]
+        }
+        remaining -= cap
+        p = h.pointee.next
+      }
       return nullptr
     }
-    assert(p.pointee.___node_id_ == .debug)
-    UnsafeNode.bindValue(_Value.self, p)
-    p.initialize(to: nullptr.create(id: freshPoolUsedCount))
-    freshPoolUsedCount += 1
-    count += 1
-    return p
   }
-}
+
+  extension UnsafeTreeV2Buffer.Header {
+
+    @inlinable
+    @inline(__always)
+    mutating func ___flushFreshPool() {
+      freshBucketAllocator.deinitialize(freshBucketHead)
+      freshPoolUsedCount = 0
+      freshBucketCurrent = freshBucketHead
+    }
+
+    @inlinable
+    @inline(__always)
+    mutating func ___deallocFreshPool() {
+      freshBucketAllocator.deallocate(freshBucketHead)
+    }
+  }
+
+  extension UnsafeTreeV2Buffer.Header {
+    // TODO: ジェネリクスが外れたらPOOL V3に戻す
+    @inlinable
+    @inline(__always)
+    var freshPoolNumBytes: Int {
+      var bytes = 0
+      var p = freshBucketHead
+      while let h = p {
+        bytes += h.pointee.count * (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
+        p = h.pointee.next
+      }
+      return bytes
+    }
+  }
+
+  extension UnsafeTreeV2Buffer.Header {
+    // TODO: ジェネリクスが外れたらPOOL V3に戻す
+    @inlinable
+    @inline(__always)
+    func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_Value> {
+      return _UnsafeNodeFreshBucketIterator<_Value>(bucket: freshBucketHead)
+    }
+  }
+
+  extension UnsafeTreeV2Buffer.Header {
+    // TODO: ジェネリクスが外れたらPOOL V3に戻す？
+    @inlinable
+    @inline(__always)
+    func makeFreshPoolIterator() -> _UnsafeNodeFreshPoolIterator<_Value> {
+      return _UnsafeNodeFreshPoolIterator<_Value>(bucket: freshBucketHead, nullptr: nullptr)
+    }
+  }
+
+  extension UnsafeTreeV2Buffer.Header {
+
+    // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
+    // Headerに移すのが妥当かも。そうすれば_Value依存が消せる
+    @inlinable
+    @inline(__always)
+    mutating public
+      func ___popFresh() -> _NodePtr
+    {
+      assert(freshPoolUsedCount < freshPoolCapacity)
+      guard let p = popFresh() else {
+        return nullptr
+      }
+      assert(p.pointee.___node_id_ == .debug)
+      UnsafeNode.bindValue(_Value.self, p)
+      p.initialize(to: nullptr.create(id: freshPoolUsedCount))
+      freshPoolUsedCount += 1
+      count += 1
+      return p
+    }
+  }
+
+  #if DEBUG
+    extension UnsafeTreeV2Buffer.Header {
+
+      @inlinable
+      @inline(__always)
+      var freshPoolActualCapacity: Int {
+        var count = 0
+        var p = freshBucketHead
+        while let h = p {
+          count += h.pointee.capacity
+          p = h.pointee.next
+        }
+        return count
+      }
+
+      @inlinable
+      @inline(__always)
+      var freshPoolActualCount: Int {
+        var count = 0
+        var p = freshBucketHead
+        while let h = p {
+          count += h.pointee.count
+          p = h.pointee.next
+        }
+        return count
+      }
+    }
+  #endif
+
+/* ------------ V3のインライン化おわり  -------------  */
+
 #endif
 
 extension UnsafeTreeV2Buffer.Header {

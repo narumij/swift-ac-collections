@@ -123,7 +123,7 @@ let package = Package(
         .product(name: "Benchmark", package: "swift-benchmark"),
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
       ],
-      path: "Benchmarks/Benchmark0",
+      path: "Tests/Benchmarks/Benchmark0",
       swiftSettings: _settings
     ),
     .executableTarget(
@@ -133,7 +133,7 @@ let package = Package(
         .product(name: "Benchmark", package: "swift-benchmark"),
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
       ],
-      path: "Benchmarks/Benchmark1",
+      path: "Tests/Benchmarks/Benchmark1",
       swiftSettings: _settings
     ),
     .executableTarget(
@@ -144,7 +144,7 @@ let package = Package(
         .product(name: "Benchmark", package: "swift-benchmark"),
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
       ],
-      path: "Benchmarks/Benchmark2",
+      path: "Tests/Benchmarks/Benchmark2",
       swiftSettings: _settings
     ),
     .executableTarget(
@@ -155,7 +155,7 @@ let package = Package(
         .product(name: "Benchmark", package: "swift-benchmark"),
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
       ],
-      path: "Benchmarks/Benchmark3",
+      path: "Tests/Benchmarks/Benchmark3",
       swiftSettings: _settings
     ),
     .executableTarget(
@@ -166,7 +166,19 @@ let package = Package(
         .product(name: "Benchmark", package: "swift-benchmark"),
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
       ],
-      path: "Benchmarks/Benchmark4",
+      path: "Tests/Benchmarks/Benchmark4",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "Benchmark5",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+        .product(name: "Collections", package: "swift-collections"),
+      ],
+      path: "Tests/Benchmarks/Benchmark5",
       swiftSettings: _settings
     ),
     .executableTarget(

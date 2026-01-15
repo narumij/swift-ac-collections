@@ -69,6 +69,18 @@ package func __default_three_way_comparator<T: Comparable>(_ __lhs: T, _ __rhs: 
   }
 }
 
+@inlinable
+@inline(__always)
+package func ___default_three_way_comparator<T: Comparable>(_ __lhs: T, _ __rhs: T) -> ___enum_compare_result {
+  if __lhs < __rhs {
+    .less
+  } else if __lhs > __rhs {
+    .greater
+  } else {
+    .equal
+  }
+}
+
 // 特殊なキーを使いたい場合に使える
 public
   struct __lazy_compare_result<Base: ValueComparer>: ThreeWayCompareResult
@@ -133,6 +145,7 @@ public
   public func __greater() -> Bool { __res_ > 0 }
 }
 
+// 結局のところ最も速い
 public typealias __int_compare_result = Int
 
 extension Int: ThreeWayCompareResult { }
@@ -144,6 +157,20 @@ extension Int {
   @inlinable
   @inline(__always)
   public func __greater() -> Bool { self > 0 }
+}
+
+// 期待したほどじゃなかった
+public enum ___enum_compare_result: ThreeWayCompareResult {
+  case less, greater, equal
+  
+  @inlinable @inline(__always)
+  public func __less() -> Bool {
+    self == .less
+  }
+  @inlinable @inline(__always)
+  public func __greater() -> Bool {
+    self == .greater
+  }
 }
 
 public protocol LazySynthThreeWayComparator: ThreeWayComparator
@@ -186,8 +213,8 @@ extension HasDefaultThreeWayComparator where _Key: Comparable {
   @inline(__always)
   public static func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
-    -> __eager_compare_result
+    -> __int_compare_result
   {
-    __eager_compare_result(__default_three_way_comparator(__lhs, __rhs))
+    __default_three_way_comparator(__lhs, __rhs)
   }
 }

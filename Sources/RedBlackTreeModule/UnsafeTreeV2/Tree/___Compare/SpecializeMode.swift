@@ -58,6 +58,7 @@ enum SpecializeMode {
     }
   }
   
+#if true
   @inlinable
   @inline(__always)
   func synth_three_way<_Key: Comparable>(_ __l: _Key,_ __r: _Key) -> __int_compare_result {
@@ -75,6 +76,13 @@ enum SpecializeMode {
      +0x10  ret
      */
   }
+#else
+  @inlinable
+  @inline(__always)
+  func synth_three_way<_Key: Comparable>(_ __l: _Key,_ __r: _Key) -> ___enum_compare_result {
+    ___default_three_way_comparator(__l, __r)
+  }
+#endif
 }
 
 // TODO: 名前てきとうすぎたので直すこと

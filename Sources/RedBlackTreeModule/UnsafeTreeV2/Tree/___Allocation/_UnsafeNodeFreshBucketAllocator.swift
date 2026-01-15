@@ -23,8 +23,24 @@
 //
 // ## memory layout gap
 // |Bucket||Node|Value|Node|Value|...
-//        ^^-- alignment gap
+//        ^^-- bucket has alignment gap
 //
+//
+// ## Initial Capacity 0
+// |Bucket|Node|
+//
+// ## Resever Capacity to 1
+// |Bucket|Node|
+// |Bucket||Node|Value|
+//
+// ## Reserve Capacity to 2
+// |Bucket|Node|
+// |Bucket||Node|Value|
+// |Bucket||Node|Value|
+//
+// ## then Copy on Write occurs
+// |Bucket|Node||Node|Value|Node|Value|.......
+//                                    ^-- inlined
 //
 @usableFromInline
 struct _UnsafeNodeFreshBucketAllocator {

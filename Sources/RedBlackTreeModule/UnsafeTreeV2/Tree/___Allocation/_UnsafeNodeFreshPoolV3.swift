@@ -190,6 +190,7 @@ extension _UnsafeNodeFreshPoolV3 {
     mutating public
       func ___popFresh() -> _NodePtr
     {
+      assert(freshPoolUsedCount < freshPoolCapacity)
       guard let p = popFresh() else {
         return nullptr
       }

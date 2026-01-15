@@ -172,7 +172,7 @@ extension UnsafeTreeV2 {
   )
     rethrows -> UnsafeTreeV2
   {
-    var tree: Tree = .create(minimumCapacity: 0)
+    var tree: Tree = .___create(minimumCapacity: 0, nullptr: nullptr)
     var (__parent, __child) = tree.___max_ref()
     for __p in unsafeSequence(__first, __last)
     where try isIncluded(__value_(__p)) {

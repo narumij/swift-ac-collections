@@ -49,14 +49,14 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal static func ensureCapacity(tree: inout UnsafeTreeV2) {
-    tree._ensureCapacity()
+  internal static func ensureCapacity(tree: inout UnsafeTreeV2, linearly: Bool = false) {
+    tree._ensureCapacity(linearly: linearly)
   }
 
   @inlinable
   @inline(__always)
-  internal static func ensureCapacity(tree: inout UnsafeTreeV2, minimumCapacity: Int) {
-    tree._ensureCapacity(to: minimumCapacity, linearly: false)
+  internal static func ensureCapacity(tree: inout UnsafeTreeV2, minimumCapacity: Int, linearly: Bool = false) {
+    tree._ensureCapacity(to: minimumCapacity, linearly: linearly)
   }
 }
 
@@ -147,10 +147,10 @@ extension UnsafeTreeV2 {
   internal mutating func _ensureCapacity(to minimumCapacity: Int, linearly: Bool = false) {
     guard capacity < minimumCapacity else { return }
     let newCapacity = withHeader {
-      header in header._growthCapacity(to: capacity, linearly: linearly)
+      header in header._growthCapacity(to: minimumCapacity, linearly: linearly)
     }
     if isReadOnly {
-      self = self.copy(minimumCapacity: minimumCapacity)
+      self = self.copy(minimumCapacity: newCapacity)
     } else {
       assert(isReadOnly == false)
       executeCapacityGrow(newCapacity)
@@ -174,7 +174,7 @@ extension UnsafeTreeV2 {
       min(limit, header._growthCapacity(to: capacity, linearly: linearly))
     }
     if isReadOnly {
-      self = self.copy(minimumCapacity: minimumCapacity)
+      self = self.copy(minimumCapacity: newCapacity)
     } else {
       executeCapacityGrow(newCapacity)
     }

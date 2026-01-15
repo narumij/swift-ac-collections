@@ -118,6 +118,7 @@ extension UnsafeTreeV2 {
         newHeader.freshPoolUsedCount = header.freshPoolUsedCount
       #endif
       
+      assert(newHeader.count <= newHeader.freshPoolCapacity)
       assert(newHeader._deallocator == nil)
     }
 

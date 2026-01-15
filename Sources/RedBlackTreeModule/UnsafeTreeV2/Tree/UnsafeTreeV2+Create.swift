@@ -399,7 +399,7 @@ extension UnsafeTreeV2 where _Value: Decodable {
   internal static func create(from decoder: Decoder) throws -> UnsafeTreeV2 {
 
     var container = try decoder.unkeyedContainer()
-    var tree: Tree = .create(minimumCapacity: 0)
+    var tree: Tree = .___create(minimumCapacity: 0, nullptr: UnsafeNode.nullptr)
     if let count = container.count {
       Tree.ensureCapacity(tree: &tree, minimumCapacity: count)
     }

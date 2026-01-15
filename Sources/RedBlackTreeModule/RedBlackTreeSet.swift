@@ -402,6 +402,7 @@ extension RedBlackTreeSet {
     }
     // TODO: インデックスを使うコストが跳ね上がってるので、_NodePtrで消す実装にかえること
     // TODO: 全体的に無駄にIndexを利用している箇所を潰していくこと
+    // ちょっとましになっているので、TODOの内容自体を再検討する必要がある
     return remove(at: startIndex)
   }
 

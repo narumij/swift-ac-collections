@@ -22,9 +22,6 @@
 
 import Foundation
 
-// TODO: CoW挙動検討
-// iterator類はCoW対象外に持ち込んでもいいかもしれない
-
 @frozen
 public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex {
   

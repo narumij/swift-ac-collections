@@ -13,10 +13,10 @@ where
 {
   associatedtype Base: ___TreeBase & ___TreeIndex
   associatedtype Index
-  // TODO: 寿命延長を表す名前を検討する
+  // TODO: 寿命延長を表す名前を再検討する
   associatedtype PoolLifespan
   var __tree_: UnsafeImmutableTree<Base> { get }
-  // TODO: 寿命延長を表す名前を検討する
+  // TODO: 寿命延長を表す名前を再検討する
   var poolLifespan: PoolLifespan { get }
 }
 

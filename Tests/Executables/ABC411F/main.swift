@@ -12,7 +12,7 @@ let Q = 3 * 100000
 
 // 制約 0 <= u < v < N
 // if i != j then ([u[i],u[i]] != [u[j],v[j]])
-var uvSource: [(Int, Int)] = []  // TODO: これを生成
+var uvSource: [(Int, Int)] = []
 
 var uvWork = Set<SIMD2<Int>>()
 while uvWork.count < m {
@@ -23,7 +23,7 @@ while uvWork.count < m {
   }
 }
 uvSource = uvWork.map { ($0.x, $0.y) }
-var qSource: [Int] = []  // TODO: これを生成
+var qSource: [Int] = []
 while qSource.count < Q {
   qSource.append((0..<m).randomElement()!)
 }

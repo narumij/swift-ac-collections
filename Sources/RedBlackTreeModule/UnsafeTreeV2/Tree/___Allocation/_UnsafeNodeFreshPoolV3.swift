@@ -106,6 +106,7 @@ extension _UnsafeNodeFreshPoolV3 {
 extension _UnsafeNodeFreshPoolV3 {
 
   // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
+  // Headerに移すのが妥当かも。そうすれば_Value依存が消せる
   @inlinable
   @inline(__always)
   mutating public

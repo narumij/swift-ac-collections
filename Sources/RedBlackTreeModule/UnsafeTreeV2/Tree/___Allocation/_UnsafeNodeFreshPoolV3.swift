@@ -25,7 +25,7 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-protocol _UnsafeNodeFreshPoolV3: _ValueProtocol, UnsafeTreePointer {
+protocol _UnsafeNodeFreshPoolV3: UnsafeTreePointer {
 
   /*
    Design invariant:
@@ -106,28 +106,6 @@ extension _UnsafeNodeFreshPoolV3 {
 
 extension _UnsafeNodeFreshPoolV3 {
 
-  // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
-  // Headerに移すのが妥当かも。そうすれば_Value依存が消せる
-  @inlinable
-  @inline(__always)
-  mutating public
-    func ___popFresh() -> _NodePtr
-  {
-    assert(freshPoolUsedCount < freshPoolCapacity)
-    guard let p = popFresh() else {
-      return nullptr
-    }
-    assert(p.pointee.___node_id_ == .debug)
-    UnsafeNode.bindValue(_Value.self, p)
-    p.initialize(to: nullptr.create(id: freshPoolUsedCount))
-    freshPoolUsedCount += 1
-    count += 1
-    return p
-  }
-}
-
-extension _UnsafeNodeFreshPoolV3 {
-
   /*
    IMPORTANT:
    After a Copy-on-Write operation, node access is performed via index-based
@@ -172,15 +150,6 @@ extension _UnsafeNodeFreshPoolV3 {
   @inline(__always)
   mutating func ___deallocFreshPool() {
     freshBucketAllocator.deallocate(freshBucketHead)
-  }
-}
-
-extension _UnsafeNodeFreshPoolV3 {
-
-  @inlinable
-  @inline(__always)
-  func makeFreshPoolIterator() -> _UnsafeNodeFreshPoolIterator<_Value> {
-    return _UnsafeNodeFreshPoolIterator<_Value>(bucket: freshBucketHead, nullptr: nullptr)
   }
 }
 
@@ -237,27 +206,4 @@ extension _UnsafeNodeFreshPoolV3 {
     }
   }
 
-  extension _UnsafeNodeFreshPoolV3 {
-
-    @inlinable
-    @inline(__always)
-    var freshPoolNumBytes: Int {
-      var bytes = 0
-      var p = freshBucketHead
-      while let h = p {
-        bytes += h.pointee.count * (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
-        p = h.pointee.next
-      }
-      return bytes
-    }
-  }
-
-  extension _UnsafeNodeFreshPoolV3 {
-
-    @inlinable
-    @inline(__always)
-    func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_Value> {
-      return _UnsafeNodeFreshBucketIterator<_Value>(bucket: freshBucketHead)
-    }
-  }
 #endif

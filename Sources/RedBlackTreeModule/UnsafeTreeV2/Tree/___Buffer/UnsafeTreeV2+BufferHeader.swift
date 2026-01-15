@@ -144,6 +144,63 @@ extension UnsafeTreeV2Buffer {
   extension UnsafeTreeV2Buffer.Header: _UnsafeNodeFreshPoolV3 {}
 #endif
 
+#if !(USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2)
+extension UnsafeTreeV2Buffer.Header {
+  // TODO: ジェネリクスが外れたらPOOL V3に戻す
+  @inlinable
+  @inline(__always)
+  var freshPoolNumBytes: Int {
+    var bytes = 0
+    var p = freshBucketHead
+    while let h = p {
+      bytes += h.pointee.count * (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
+      p = h.pointee.next
+    }
+    return bytes
+  }
+}
+
+extension UnsafeTreeV2Buffer.Header {
+  // TODO: ジェネリクスが外れたらPOOL V3に戻す
+  @inlinable
+  @inline(__always)
+  func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_Value> {
+    return _UnsafeNodeFreshBucketIterator<_Value>(bucket: freshBucketHead)
+  }
+}
+
+extension UnsafeTreeV2Buffer.Header {
+  // TODO: ジェネリクスが外れたらPOOL V3に戻す？
+  @inlinable
+  @inline(__always)
+  func makeFreshPoolIterator() -> _UnsafeNodeFreshPoolIterator<_Value> {
+    return _UnsafeNodeFreshPoolIterator<_Value>(bucket: freshBucketHead, nullptr: nullptr)
+  }
+}
+
+extension UnsafeTreeV2Buffer.Header {
+
+  // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
+  // Headerに移すのが妥当かも。そうすれば_Value依存が消せる
+  @inlinable
+  @inline(__always)
+  mutating public
+    func ___popFresh() -> _NodePtr
+  {
+    assert(freshPoolUsedCount < freshPoolCapacity)
+    guard let p = popFresh() else {
+      return nullptr
+    }
+    assert(p.pointee.___node_id_ == .debug)
+    UnsafeNode.bindValue(_Value.self, p)
+    p.initialize(to: nullptr.create(id: freshPoolUsedCount))
+    freshPoolUsedCount += 1
+    count += 1
+    return p
+  }
+}
+#endif
+
 extension UnsafeTreeV2Buffer.Header {
 
   @inlinable

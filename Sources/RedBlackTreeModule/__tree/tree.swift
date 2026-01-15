@@ -32,6 +32,9 @@ where _NodePtr == _Pointer
 {
   associatedtype _Pointer
   var nullptr: _NodePtr { get }
+}
+
+public protocol TreeEndProtocol: _TreePointer {
   var end: _NodePtr { get }
 }
 
@@ -141,7 +144,7 @@ extension KeyProtocol {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol ValueProtocol: TreeNodeProtocol, TreeNodeValueProtocol {
+protocol ValueProtocol: TreeNodeProtocol, TreeNodeValueProtocol, TreeEndProtocol {
   /// キー同士を比較する。通常`<`と同じ
   @inlinable func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
 }

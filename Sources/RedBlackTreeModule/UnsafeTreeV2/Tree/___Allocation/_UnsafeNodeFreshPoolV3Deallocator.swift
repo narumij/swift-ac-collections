@@ -11,75 +11,33 @@
 package final class _UnsafeNodeFreshPoolV3Deallocator: UnsafeTreePointer {
 
   public typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
-
+  
   @inlinable
-  internal init(
-    freshBucketHead: _BucketPointer?,
-    stride: Int,
-    deinitialize: @escaping (_NodePtr) -> Void,
-    nullptr: _NodePtr
-  ) {
-    self.freshBucketHead = freshBucketHead
-    self.stride = stride
-    self.deinitialize = deinitialize
-    self.nullptr = nullptr
+  internal init(bucket: _BucketPointer?,
+                deallocator: _UnsafeNodeFreshBucketAllocator)
+  {
+    self.freshBucketHead = bucket
+    self.freshPoolDeallocator = deallocator
   }
-
-  @usableFromInline let nullptr: _NodePtr
-  @usableFromInline let stride: Int
-  @usableFromInline let deinitialize: (_NodePtr) -> Void
+  
   @usableFromInline var freshBucketHead: _BucketPointer?
   @usableFromInline var isBaseDeallocated: Bool = false
-
+  @usableFromInline let freshPoolDeallocator: _UnsafeNodeFreshBucketAllocator
+  
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: _UnsafeNodeFreshPoolDeallocator) -> Bool {
     self === other
   }
-
-  @inlinable
-  @inline(__always)
-  func deinitializeNodes(_ b: _BucketPointer) {
-    var first = b == freshBucketHead
-    let bucket = b.pointee
-    var i = 0
-    let count = bucket.count
-    var p = bucket.start
-    if first {
-      first = false
-      // バケット先頭の場合、NodeValueの前にEnd Nodeが先混まれているので、それを解放する
-      UnsafeMutableRawPointer(b.advanced(by: 1))
-        .assumingMemoryBound(to: UnsafeNode.self)
-        .deinitialize(count: 1)
-      p = UnsafeMutableRawPointer(b.advanced(by: 1))
-        .advanced(by: MemoryLayout<UnsafeNode>.stride)
-        .assumingMemoryBound(to: UnsafeNode.self)
-    }
-    while i < count {
-      let c = p
-      p = p._advanced(raw: stride)
-      deinitialize(c)
-      i += 1
-    }
-  }
-
+  
   @inlinable
   deinit {
-    var reserverHead = freshBucketHead
-    while let h = reserverHead {
-      UnsafeMutableRawPointer(h.advanced(by: 1))
-        .assumingMemoryBound(to: UnsafeNode.self)
-        .deinitialize(count: 1)
-      reserverHead = h.pointee.next
-      deinitializeNodes(h)
-      h.deinitialize(count: 1)
-      h.deallocate()
-    }
+    freshPoolDeallocator.deallocate(freshBucketHead)
   }
-
+  
   @inlinable
   @inline(__always)
-  subscript(___node_id_: Int) -> _NodePtr {
+  subscript(___node_id_: Int) -> _NodePtr? {
     assert(___node_id_ >= 0)
     var remaining = ___node_id_
     var p = freshBucketHead
@@ -91,6 +49,7 @@ package final class _UnsafeNodeFreshPoolV3Deallocator: UnsafeTreePointer {
       remaining -= cap
       p = h.pointee.next
     }
-    return nullptr
+    assert(false)
+    return nil
   }
 }

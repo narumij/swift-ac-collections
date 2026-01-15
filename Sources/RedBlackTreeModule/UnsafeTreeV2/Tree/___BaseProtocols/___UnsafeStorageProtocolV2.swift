@@ -86,13 +86,3 @@ extension ___UnsafeStorageProtocolV2 {
     return __tree_.erase(from, to)
   }
 }
-
-extension ___UnsafeStorageProtocolV2 {
-
-  @inlinable
-  @inline(__always)
-  internal mutating func ___removeAll(keepingCapacity keepCapacity: Bool = false) {
-
-    __tree_.__eraseAll(keepingCapacity: keepCapacity)
-  }
-}

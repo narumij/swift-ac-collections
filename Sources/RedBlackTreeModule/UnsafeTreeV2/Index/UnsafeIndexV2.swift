@@ -413,7 +413,7 @@ extension UnsafeIndexV2 {
     case .end:
       return __tree_.__end_node
     default:
-      return poolLifespan[p]
+      return poolLifespan[p] ?? __tree_.nullptr
     }
   }
 

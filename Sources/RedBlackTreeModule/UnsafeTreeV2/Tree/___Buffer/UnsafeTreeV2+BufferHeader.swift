@@ -20,12 +20,12 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-#if USE_FRESH_POOL_V1
-    @usableFromInline
-    typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
+#if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
+  @usableFromInline
+  typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 #else
-    @usableFromInline
-    typealias Deallocator = _UnsafeNodeFreshPoolV3Deallocator
+  @usableFromInline
+  typealias Deallocator = _UnsafeNodeFreshPoolV3Deallocator
 #endif
 
 extension UnsafeTreeV2Buffer {
@@ -39,6 +39,12 @@ extension UnsafeTreeV2Buffer {
     internal init(nullptr: _NodePtr) {
       self.nullptr = nullptr
       self.recycleHead = nullptr
+      #if !(USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2)
+        self.freshBucketAllocator = .init(valueType: _Value.self) {
+          $0.assumingMemoryBound(to: _Value.self)
+            .deinitialize(count: 1)
+        }
+      #endif
     }
 
     //#if USE_FRESH_POOL_V1
@@ -50,6 +56,10 @@ extension UnsafeTreeV2Buffer {
       @usableFromInline var recycleHead: _NodePtr
       @usableFromInline var freshBucketHead: _BucketPointer?
       @usableFromInline var freshBucketLast: _BucketPointer?
+      #if !(USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2)
+        @usableFromInline
+        var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator
+      #endif
       @usableFromInline var count: Int = 0
       #if DEBUG
         @usableFromInline var freshBucketCount: Int = 0
@@ -60,7 +70,7 @@ extension UnsafeTreeV2Buffer {
       @usableFromInline var freshPool: FreshPool<_Value> = .init()
       @usableFromInline var count: Int = 0
     #endif
-    
+
     @inlinable @inline(__always)
     var __end_node: _NodePtr? {
       freshBucketHead.map {
@@ -86,11 +96,17 @@ extension UnsafeTreeV2Buffer {
       mutating get {
         // TODO: 一度の保証付きの実装にすること
         if _deallocator == nil {
-          _deallocator = .init(
-            freshBucketHead: freshBucketHead,
-            stride: MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride,
-            deinitialize: UnsafePair<_Value>.deinitialize,
-            nullptr: nullptr)
+          #if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
+            _deallocator = .init(
+              freshBucketHead: freshBucketHead,
+              stride: MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride,
+              deinitialize: UnsafePair<_Value>.deinitialize,
+              nullptr: nullptr)
+          #else
+            _deallocator = .init(
+              bucket: freshBucketHead,
+              deallocator: freshBucketAllocator)
+          #endif
         }
         return _deallocator!
       }
@@ -111,12 +127,8 @@ extension UnsafeTreeV2Buffer {
 
     @inlinable
     @inline(__always)
-    internal mutating func clear(keepingCapacity keepCapacity: Bool = false) {
-      if keepCapacity {
-        ___cleanFreshPool()
-      } else if _deallocator == nil {
-        ___flushFreshPool()
-      }
+    internal mutating func deinitialize() {
+      ___flushFreshPool()
       ___flushRecyclePool()
     }
   }
@@ -144,33 +156,5 @@ extension UnsafeTreeV2Buffer.Header {
     UnsafeNode.initializeValue(p, to: k)
     assert(p.pointee.___node_id_ >= 0)
     return p
-  }
-}
-
-extension UnsafeTreeV2Buffer.Header {
-  @inlinable
-  mutating func tearDown() {
-    //#if USE_FRESH_POOL_V1
-    #if !USE_FRESH_POOL_V2
-      if let _ = _deallocator {
-        self._deallocator = nil
-        self.freshBucketHead = nil
-        self.freshBucketCurrent = nil
-        self.freshBucketLast = nil
-        self.freshPoolCapacity = 0
-        self.freshPoolUsedCount = 0
-        #if DEBUG
-          self.freshBucketCount = 0
-        #endif
-      } else {
-        ___flushFreshPool()
-      }
-      count = 0
-    #else
-      freshPool.dispose()
-      freshPool = .init()
-      count = 0
-    #endif
-    ___flushRecyclePool()
   }
 }

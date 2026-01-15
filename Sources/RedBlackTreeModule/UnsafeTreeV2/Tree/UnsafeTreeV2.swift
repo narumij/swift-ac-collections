@@ -128,9 +128,9 @@ extension UnsafeTreeV2 {
   /// O(1)
   @inlinable
   @inline(__always)
-  internal func __eraseAll(keepingCapacity keepCapacity: Bool = false) {
+  internal func deinitialize() {
     withMutables { header, origin in
-      header.clear(keepingCapacity: keepCapacity)
+      header.deinitialize()
       origin.clear()
     }
   }

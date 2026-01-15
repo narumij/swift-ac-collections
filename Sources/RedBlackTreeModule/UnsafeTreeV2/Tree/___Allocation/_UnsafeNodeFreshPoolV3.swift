@@ -44,6 +44,7 @@ protocol _UnsafeNodeFreshPoolV3: _ValueProtocol, UnsafeTreePointer {
     var freshBucketCount: Int { get set }
   #endif
   func didUpdateFreshBucketHead()
+  var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator { get }
 }
 
 extension _UnsafeNodeFreshPoolV3 {
@@ -51,158 +52,162 @@ extension _UnsafeNodeFreshPoolV3 {
   public typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
 }
 
-//#if USE_FRESH_POOL_V1
-#if !USE_FRESH_POOL_V2
-  extension _UnsafeNodeFreshPoolV3 {
+extension _UnsafeNodeFreshPoolV3 {
 
-    /*
-     NOTE:
-     Normally, FreshPool may grow by adding multiple buckets.
-     However, immediately after CoW, callers MUST ensure that
-     only a single bucket exists to support index-based access.
-     */
+  /*
+   NOTE:
+   Normally, FreshPool may grow by adding multiple buckets.
+   However, immediately after CoW, callers MUST ensure that
+   only a single bucket exists to support index-based access.
+   */
 
-    @inlinable
-    @inline(__always)
-    //  @usableFromInline
-    mutating func pushFreshHeadBucket(capacity: Int) {
-      assert(freshBucketHead == nil || capacity != 0)
-      let (pointer, capacity) = Self.createHeadBucket(capacity: capacity, nullptr: nullptr)
-      freshBucketHead = pointer
-      didUpdateFreshBucketHead()
-      freshBucketCurrent = pointer
-      freshBucketLast = pointer
-      self.freshPoolCapacity += capacity
-      #if DEBUG
-        freshBucketCount += 1
-      #endif
-    }
-
-    @inlinable
-    @inline(__always)
-    //  @usableFromInline
-    mutating func pushFreshBucket(capacity: Int) {
-      assert(freshBucketHead == nil || capacity != 0)
-      let (pointer, capacity) = Self.createBucket(capacity: capacity)
-      freshBucketLast?.pointee.next = pointer
-      freshBucketLast = pointer
-      self.freshPoolCapacity += capacity
-      #if DEBUG
-        freshBucketCount += 1
-      #endif
-    }
-
-    @inlinable
-    @inline(__always)
-    mutating func popFresh() -> _NodePtr? {
-      if let p = freshBucketCurrent?.pointee.pop() {
-        return p
-      }
-      freshBucketCurrent = freshBucketCurrent?.pointee.next
-      return freshBucketCurrent?.pointee.pop()
-    }
-
-    @inlinable
-    @inline(__always)
-    mutating func ___cleanFreshPool() {
-      var reserverHead = freshBucketHead
-      while let h = reserverHead {
-        h.pointee.clear(_Value.self)
-        reserverHead = h.pointee.next
-      }
-      freshPoolUsedCount = 0
-      freshBucketCurrent = freshBucketHead
-    }
-
-    @inlinable
-    @inline(__always)
-    mutating func ___flushFreshPool() {
-      ___deallocFreshPool()
-      freshBucketHead = nil
-      freshBucketCurrent = nil
-      freshBucketLast = nil
-      #if DEBUG
-        freshBucketCount = 0
-      #endif
-      freshPoolCapacity = 0
-      freshPoolUsedCount = 0
-    }
-
-    @inlinable
-    @inline(__always)
-    mutating func ___deallocFreshPool() {
-      var reserverHead = freshBucketHead
-      while let h = reserverHead {
-        reserverHead = h.pointee.next
-        deinitializeNodes(h)
-        h.deinitialize(count: 1)
-        h.deallocate()
-      }
-    }
+  @inlinable
+  @inline(__always)
+  //  @usableFromInline
+  mutating func pushFreshHeadBucket(capacity: Int) {
+    assert(freshBucketHead == nil || capacity != 0)
+    let (pointer, capacity) = freshBucketAllocator.createHeadBucket(
+      capacity: capacity, nullptr: nullptr)
+    freshBucketHead = pointer
+    didUpdateFreshBucketHead()
+    freshBucketCurrent = pointer
+    freshBucketLast = pointer
+    self.freshPoolCapacity += capacity
+    #if DEBUG
+      freshBucketCount += 1
+    #endif
   }
 
-  extension _UnsafeNodeFreshPoolV3 {
-
-    @inlinable
-    @inline(__always)
-    func makeFreshPoolIterator() -> _UnsafeNodeFreshPoolIterator<_Value> {
-      return _UnsafeNodeFreshPoolIterator<_Value>(bucket: freshBucketHead, nullptr: nullptr)
-    }
+  @inlinable
+  @inline(__always)
+  //  @usableFromInline
+  mutating func pushFreshBucket(capacity: Int) {
+    assert(freshBucketHead == nil || capacity != 0)
+    let (pointer, capacity) = freshBucketAllocator.createBucket(capacity: capacity)
+    freshBucketLast?.pointee.next = pointer
+    freshBucketLast = pointer
+    self.freshPoolCapacity += capacity
+    #if DEBUG
+      freshBucketCount += 1
+    #endif
   }
 
-  extension _UnsafeNodeFreshPoolV3 {
-
-    /*
-     IMPORTANT:
-     After a Copy-on-Write operation, node access is performed via index-based
-     lookup. To guarantee O(1) address resolution and avoid bucket traversal,
-     the FreshPool must contain exactly ONE bucket at this point.
-    
-     Invariant:
-       - During and immediately after CoW, `reserverBucketCount == 1`
-       - Index-based access relies on a single contiguous bucket
-    
-     Violating this invariant may cause excessive traversal or undefined behavior.
-    */
-    @inlinable
-    @inline(__always)
-    subscript(___node_id_: Int) -> _NodePtr {
-      assert(___node_id_ >= 0)
-      var remaining = ___node_id_
-      var p = freshBucketHead
-      while let h = p {
-        let cap = h.pointee.capacity
-        if remaining < cap {
-          return h.pointee[remaining]
-        }
-        remaining -= cap
-        p = h.pointee.next
-      }
-      return nullptr
-    }
-  }
-
-  extension _UnsafeNodeFreshPoolV3 {
-
-    // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
-    @inlinable
-    @inline(__always)
-    mutating public
-      func ___popFresh() -> _NodePtr
-    {
-      assert(freshPoolUsedCount < freshPoolCapacity)
-      guard let p = popFresh() else {
-        return nullptr
-      }
-      assert(p.pointee.___node_id_ == .debug)
-      UnsafeNode.bindValue(_Value.self, p)
-      p.initialize(to: nullptr.create(id: freshPoolUsedCount))
-      freshPoolUsedCount += 1
-      count += 1
+  @inlinable
+  @inline(__always)
+  mutating func popFresh() -> _NodePtr? {
+    if let p = freshBucketCurrent?.pointee.pop() {
       return p
     }
+    freshBucketCurrent = freshBucketCurrent?.pointee.next
+    return freshBucketCurrent?.pointee.pop()
+  }
+}
+
+extension _UnsafeNodeFreshPoolV3 {
+
+  // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
+  @inlinable
+  @inline(__always)
+  mutating public
+    func ___popFresh() -> _NodePtr
+  {
+    assert(freshPoolUsedCount < freshPoolCapacity)
+    guard let p = popFresh() else {
+      return nullptr
+    }
+    assert(p.pointee.___node_id_ == .debug)
+    UnsafeNode.bindValue(_Value.self, p)
+    p.initialize(to: nullptr.create(id: freshPoolUsedCount))
+    freshPoolUsedCount += 1
+    count += 1
+    return p
+  }
+}
+
+extension _UnsafeNodeFreshPoolV3 {
+
+  /*
+   IMPORTANT:
+   After a Copy-on-Write operation, node access is performed via index-based
+   lookup. To guarantee O(1) address resolution and avoid bucket traversal,
+   the FreshPool must contain exactly ONE bucket at this point.
+  
+   Invariant:
+     - During and immediately after CoW, `reserverBucketCount == 1`
+     - Index-based access relies on a single contiguous bucket
+  
+   Violating this invariant may cause excessive traversal or undefined behavior.
+  */
+  @inlinable
+  @inline(__always)
+  subscript(___node_id_: Int) -> _NodePtr {
+    assert(___node_id_ >= 0)
+    var remaining = ___node_id_
+    var p = freshBucketHead
+    while let h = p {
+      let cap = h.pointee.capacity
+      if remaining < cap {
+        return h.pointee[remaining]
+      }
+      remaining -= cap
+      p = h.pointee.next
+    }
+    return nullptr
+  }
+}
+
+extension _UnsafeNodeFreshPoolV3 {
+
+  @inlinable
+  @inline(__always)
+  mutating func ___flushFreshPool() {
+    freshBucketAllocator.deinitialize(freshBucketHead)
+    freshPoolUsedCount = 0
+    freshBucketCurrent = freshBucketHead
   }
 
+  @inlinable
+  @inline(__always)
+  mutating func ___deallocFreshPool() {
+    freshBucketAllocator.deallocate(freshBucketHead)
+  }
+}
+
+extension _UnsafeNodeFreshPoolV3 {
+
+  @inlinable
+  @inline(__always)
+  func makeFreshPoolIterator() -> _UnsafeNodeFreshPoolIterator<_Value> {
+    return _UnsafeNodeFreshPoolIterator<_Value>(bucket: freshBucketHead, nullptr: nullptr)
+  }
+}
+
+// MARK: - 作業用サイズ計算
+
+// MARK: - DEBUG
+
+#if DEBUG
+  extension _UnsafeNodeFreshPoolV3 {
+
+    func dumpFreshPool(label: String = "") {
+      print("==== FreshPoolV3 \(label) ====")
+      print(" bucketCount:", freshBucketCount)
+      print(" capacity:", freshPoolCapacity)
+      print(" usedCount:", freshPoolActualCount)
+
+      var i = 0
+      var p = freshBucketHead
+      while let h = p {
+        h.pointee.dump(label: "bucket[\(i)]")
+        p = h.pointee.next
+        i += 1
+      }
+      print("===========================")
+    }
+  }
+#endif
+
+#if DEBUG
   extension _UnsafeNodeFreshPoolV3 {
 
     @inlinable
@@ -230,282 +235,6 @@ extension _UnsafeNodeFreshPoolV3 {
     }
   }
 
-  extension _UnsafeNodeFreshPoolV3 {
-
-    @inlinable
-    @inline(__always)
-    func deinitializeNodes(_ b: _BucketPointer) {
-      var first = b == freshBucketHead
-      let bucket = b.pointee
-      var i = 0
-      let count = bucket.count
-      let capacity = bucket.capacity
-      var p = bucket.start
-      if first {
-        first = false
-        // バケット先頭の場合、NodeValueの前にEnd Nodeが先混まれているので、それを解放する
-        UnsafeMutableRawPointer(b.advanced(by: 1))
-          .assumingMemoryBound(to: UnsafeNode.self)
-          .deinitialize(count: 1)
-        p = UnsafeMutableRawPointer(b.advanced(by: 1))
-          .advanced(by: MemoryLayout<UnsafeNode>.stride)
-          .assumingMemoryBound(to: UnsafeNode.self)
-      }
-      while i < capacity {
-        let c = p
-        p = UnsafePair<_Value>.advance(p)
-        if i < count, c.pointee.___needs_deinitialize {
-          UnsafePair<_Value>.deinitialize(c)
-        } else {
-          c.deinitialize(count: 1)
-        }
-        i += 1
-      }
-      #if DEBUG
-        do {
-          var c = 0
-          var p = bucket.start
-          while c < bucket.capacity {
-            p.pointee.___node_id_ = .debug
-            p = UnsafePair<_Value>.advance(p)
-            c += 1
-          }
-        }
-      #endif
-    }
-
-    @inlinable
-    @inline(__always)
-    static func createHeadBucket(capacity: Int, nullptr: _NodePtr) -> (
-      _BucketPointer, capacity: Int
-    ) {
-
-      #if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
-        assert(capacity != 0)
-      #endif
-
-      let (capacity, bytes, stride, alignment) = pagedCapacity(capacity: capacity)
-
-      let header_storage = UnsafeMutableRawPointer.allocate(
-        byteCount: bytes + MemoryLayout<UnsafeNode>.stride,
-        alignment: alignment)
-
-      let header = UnsafeMutableRawPointer(header_storage)
-        .assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
-
-      // x競プロ用としては、分岐して節約するよりこの程度なら分岐けずるほうがいいかもしれない
-      // o甘くなかった。いまの成長率設定ではメモリの無駄が多すぎる
-      let endNode = UnsafeMutableRawPointer(header.advanced(by: 1))
-        .bindMemory(to: UnsafeNode.self, capacity: 1)
-
-      endNode.initialize(to: nullptr.create(id: .end))
-
-      let storage = UnsafeMutableRawPointer(header.advanced(by: 1))
-        .advanced(by: MemoryLayout<UnsafeNode>.stride)
-      //      .alignedUp(toMultipleOf: alignment)
-
-      header.initialize(
-        to:
-          .init(
-            start: UnsafePair<_Value>.pointer(from: storage),
-            capacity: capacity,
-            strice: stride))
-
-      #if DEBUG
-        do {
-          var c = 0
-          var p = header.pointee.start
-          while c < capacity {
-            p.pointee.___node_id_ = .debug
-            p = UnsafePair<_Value>.advance(p)
-            c += 1
-          }
-        }
-      #endif
-
-      return (header, capacity)
-    }
-
-    @inlinable
-    @inline(__always)
-    static func createBucket(capacity: Int) -> (_BucketPointer, capacity: Int) {
-
-      assert(capacity != 0)
-
-      let (capacity, bytes, stride, alignment) = pagedCapacity(capacity: capacity)
-
-      let header_storage = UnsafeMutableRawPointer.allocate(
-        byteCount: bytes,
-        alignment: alignment)
-
-      let header = UnsafeMutableRawPointer(header_storage)
-        .assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
-
-      let storage = UnsafeMutableRawPointer(header.advanced(by: 1))
-      //      .alignedUp(toMultipleOf: alignment)
-
-      header.initialize(
-        to:
-          .init(
-            start: UnsafePair<_Value>.pointer(from: storage),
-            capacity: capacity,
-            strice: stride))
-
-      #if DEBUG
-        do {
-          var c = 0
-          var p = header.pointee.start
-          while c < capacity {
-            p.pointee.___node_id_ = .debug
-            p = UnsafePair<_Value>.advance(p)
-            c += 1
-          }
-        }
-      #endif
-
-      return (header, capacity)
-    }
-  }
-
-  extension _UnsafeNodeFreshPoolV3 {
-
-    @inlinable
-    @inline(__always)
-    //  @usableFromInline
-    static func pagedCapacity(capacity: Int) -> (
-      capacity: Int, bytes: Int, stride: Int, alignment: Int
-    ) {
-
-      let s0 = MemoryLayout<UnsafeNode>.stride
-      let a0 = MemoryLayout<UnsafeNode>.alignment
-      let s1 = MemoryLayout<_Value>.stride
-      let a1 = MemoryLayout<_Value>.alignment
-      let s2 = MemoryLayout<_UnsafeNodeFreshBucket>.stride
-      let s01 = s0 + s1
-      let offset01 = max(0, a1 - a0)
-      let size = s2 + (capacity == 0 ? 0 : s01 * capacity + offset01)
-      let alignment = max(a0, a1)
-
-      /*
-       512B未満はスルーに
-       中間は要研究
-       4KB以上は分割確保に
-       */
-
-      #if false
-        // 1024B以下はsmall扱い。それ以上はページ扱い
-        if size <= 1024 {
-          return (capacity, size, s01, alignment)
-        }
-      #endif
-
-      #if false
-        // 割り算が重すぎと判断した場合、2のべきで近似して割り算代わりにシフトする
-        // それよりもメモリ効率の方が問題のような気がしている
-        let pagedSize = (size + 4095) & ~4095
-        let lz = Int.bitWidth - s01.leadingZeroBitCount
-        let mask = 1 << (lz - 1) - 1
-        let offset = (s01 & mask == 0) ? -1 : 0
-        let extra = (pagedSize - size) >> (lz + offset)
-
-        assert(abs(size / 4096 - pagedSize / 4096) <= 1)
-        return (
-          capacity + extra,
-          //      capacity,
-          pagedSize,
-          s01,
-          alignment
-        )
-      #elseif false
-        // 割り算バージョン
-        // 性能上重要なので数値ベタ書き推奨かもしれない
-        let pagedSize = (size + 4095) & ~4095
-        assert(abs(size / 4096 - pagedSize / 4096) <= 1)
-        return (
-          capacity + (pagedSize - size) / (s01),
-          //      capacity,
-          pagedSize,
-          s01,
-          alignment
-        )
-      #else
-        // キャパシティ変更しないバージョン
-        return (capacity, size, s01, alignment)
-      #endif
-    }
-  }
-
-  // MARK: - 作業用サイズ計算
-
-  #if DEBUG
-    extension _UnsafeNodeFreshPoolV3 {
-
-      @inlinable
-      @inline(__always)
-      static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
-        let (bufferSize, bufferAlignment) = UnsafePair<_Value>.allocationSize(capacity: capacity)
-        return (bufferSize + MemoryLayout<_Bucket>.stride, bufferAlignment)
-      }
-    }
-
-    extension _UnsafeNodeFreshPoolV3 {
-
-      @inlinable
-      @inline(__always)
-      static func _allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
-        let a0 = MemoryLayout<UnsafeNode>.alignment
-        let a1 = MemoryLayout<_Value>.alignment
-        let s0 = MemoryLayout<UnsafeNode>.stride
-        let s1 = MemoryLayout<_Value>.stride
-        let s01 = s0 + s1
-        let offset01 = max(0, a1 - a0)
-        return (capacity == 0 ? 0 : s01 * capacity + offset01, max(a0, a1))
-      }
-    }
-
-    extension _UnsafeNodeFreshPoolV3 {
-
-      @inlinable
-      @inline(__always)
-      static func allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
-        let s0 = MemoryLayout<UnsafeNode>.stride
-        let a0 = MemoryLayout<UnsafeNode>.alignment
-        let s1 = MemoryLayout<_Value>.stride
-        let a1 = MemoryLayout<_Value>.alignment
-        let s2 = MemoryLayout<_UnsafeNodeFreshBucket>.stride
-        let a2 = MemoryLayout<_UnsafeNodeFreshBucket>.alignment
-        let s01 = s0 + s1
-        let offset01 = max(0, a1 - a0)
-        return (s2 + (capacity == 0 ? 0 : s01 * capacity + offset01), max(a0, a1))
-      }
-    }
-  #endif
-
-  // MARK: - DEBUG
-
-  #if DEBUG
-    extension _UnsafeNodeFreshPoolV3 {
-
-      func dumpFreshPool(label: String = "") {
-        print("==== FreshPool \(label) ====")
-        print(" bucketCount:", freshBucketCount)
-        print(" capacity:", freshPoolCapacity)
-        print(" usedCount:", freshPoolActualCount)
-
-        var i = 0
-        var p = freshBucketHead
-        while let h = p {
-          h.pointee.dump(label: "bucket[\(i)]")
-          p = h.pointee.next
-          i += 1
-        }
-        print("===========================")
-      }
-    }
-  #endif
-#endif
-
-#if DEBUG
   extension _UnsafeNodeFreshPoolV3 {
 
     @inlinable

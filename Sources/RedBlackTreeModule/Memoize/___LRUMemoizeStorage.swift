@@ -138,7 +138,12 @@ extension ___LRUMemoizeStorage {
   @inlinable
   @inline(__always)
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    ___removeAll(keepingCapacity: keepCapacity)
+    if keepCapacity {
+      __tree_.deinitialize()
+    }
+    else {
+      self = .init()
+    }
   }
 }
 

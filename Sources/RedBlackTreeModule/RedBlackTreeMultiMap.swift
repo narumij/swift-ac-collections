@@ -533,7 +533,7 @@ extension RedBlackTreeMultiMap {
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity {
       __tree_._ensureUnique()
-      ___removeAll(keepingCapacity: keepCapacity)
+      __tree_.deinitialize()
     } else {
       self = .init()
     }

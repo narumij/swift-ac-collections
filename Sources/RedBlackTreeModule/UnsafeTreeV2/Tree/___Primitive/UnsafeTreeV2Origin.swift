@@ -50,6 +50,12 @@ public struct UnsafeTreeV2Origin: UnsafeTreePointer {
         end_node.__right_ = nullptr
         end_node.__parent_ = nullptr
       #endif
+    #else
+      begin_ptr.pointee.__left_ = nullptr
+      #if DEBUG
+        begin_ptr.pointee.__right_ = nullptr
+        begin_ptr.pointee.__parent_ = nullptr
+      #endif
     #endif
   }
   @inlinable

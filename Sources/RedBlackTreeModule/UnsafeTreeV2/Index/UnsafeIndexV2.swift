@@ -137,7 +137,7 @@ extension UnsafeIndexV2 {
     return __tree_.___signed_distance(rawValue, other)
   }
 
-  /// - Complexity: O(1)
+  /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func advanced(by n: Int) -> Self {
@@ -386,14 +386,14 @@ extension UnsafeIndexV2 {
 //    tree.___node_ptr(self)
 //  }
 
-  @available(*, deprecated, message: "リファクタリング作業")
-  @inlinable
-  @inline(__always)
-  package var ___rawValue: _NodePtr {
-    ___node_ptr(self)
-  }
+//  @available(*, deprecated, message: "リファクタリング作業")
+//  @inlinable
+//  @inline(__always)
+//  package var ___rawValue: _NodePtr {
+//    ___node_ptr(self)
+//  }
 
-  @inlinable
+  @available(*, deprecated, message: "リファクタリング作業")  @inlinable
   @inline(__always)
   package var _rawValue: Int {
     rawValue.pointee.___node_id_

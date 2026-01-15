@@ -16,8 +16,8 @@ var uvSource: [(Int, Int)] = []
 
 var uvWork = Set<SIMD2<Int>>()
 while uvWork.count < m {
-  let u = (0..<N).randomElement()!
-  let v = (u..<N).randomElement()!
+  let u = (0..<N).randomElement(using: &mt)!
+  let v = (u..<N).randomElement(using: &mt)!
   if !uvWork.contains([u, v]) {
     uvWork.insert([u, v])
   }
@@ -25,7 +25,7 @@ while uvWork.count < m {
 uvSource = uvWork.map { ($0.x, $0.y) }
 var qSource: [Int] = []
 while qSource.count < Q {
-  qSource.append((0..<m).randomElement()!)
+  qSource.append((0..<m).randomElement(using: &mt)!)
 }
 
 assert(uvSource.count == m)

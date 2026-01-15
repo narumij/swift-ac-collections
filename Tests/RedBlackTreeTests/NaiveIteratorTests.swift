@@ -10,25 +10,9 @@ import XCTest
 #if DEBUG
   @testable import RedBlackTreeModule
 
-  final class NaiveIteratorTests: XCTestCase {
+  final class NaiveIteratorTests: RedBlackTreeTestCase {
 
-    override func setUpWithError() throws {
-      // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-      // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-      // This is an example of a functional test case.
-      // Use XCTAssert and related functions to verify your tests produce the correct results.
-      // Any test you write for XCTest can be annotated as throws and async.
-      // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-      // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testForward() throws {
+    func testNaiveForward() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = ___UnsafeNaiveIterator(
         nullptr: a.__tree_.nullptr,
@@ -37,7 +21,7 @@ import XCTest
       XCTAssertEqual(it.map { a.__tree_[$0] }, [Int](0..<5))
     }
 
-    func testReverse() throws {
+    func testNaiveReverse() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = ___UnsafeNaiveRevIterator(
         nullptr: a.__tree_.nullptr,
@@ -48,29 +32,82 @@ import XCTest
 
     func testWrappedForward() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
-      var naive = ___UnsafeNaiveIterator(
-        nullptr: a.__tree_.nullptr,
-        __first: a.__tree_.__begin_node_,
-        __last: a.__tree_.__end_node)
-      let wrapped = ___UnsafeWrappedIterator(__current: naive.next(), naive: naive)
+      let wrapped = ___UnsafeRemoveAwareWrapper(
+        iterator: ___UnsafeNaiveIterator(
+          nullptr: a.__tree_.nullptr,
+          __first: a.__tree_.__begin_node_,
+          __last: a.__tree_.__end_node))
       XCTAssertEqual(wrapped.map { a.__tree_[$0] }, [Int](0..<5))
     }
 
     func testWrappedReverse() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
-      var naive = ___UnsafeNaiveRevIterator(
-        nullptr: a.__tree_.nullptr,
-        __first: a.__tree_.__begin_node_,
-        __last: a.__tree_.__end_node)
-      let wrapped = ___UnsafeWrappedRevIterator(__current: naive.next(), naive: naive)
+      let wrapped = ___UnsafeRemoveAwareWrapper(
+        iterator: ___UnsafeNaiveRevIterator(
+          nullptr: a.__tree_.nullptr,
+          __first: a.__tree_.__begin_node_,
+          __last: a.__tree_.__end_node))
       XCTAssertEqual(wrapped.map { a.__tree_[$0] }, [Int](0..<5).reversed())
     }
 
-    func testPerformanceExample() throws {
-      // This is an example of a performance test case.
-      self.measure {
-        // Put the code you want to measure the time of here.
-      }
+    func testValuesForward() throws {
+      let a = RedBlackTreeSet<Int>(0..<5)
+      let it = ___UnsafeValueWrapper<RedBlackTreeSet<Int>, ___UnsafeNaiveIterator>(
+        iterator: ___UnsafeNaiveIterator(
+          nullptr: a.__tree_.nullptr,
+          __first: a.__tree_.__begin_node_,
+          __last: a.__tree_.__end_node))
+      XCTAssertEqual(it.map { $0 }, [Int](0..<5))
     }
+
+    func testValuesReverse() throws {
+      let a = RedBlackTreeSet<Int>(0..<5)
+      let it = ___UnsafeValueWrapper<RedBlackTreeSet<Int>, ___UnsafeRemoveAwareWrapper>(
+        iterator: ___UnsafeRemoveAwareWrapper(
+          iterator:
+            ___UnsafeNaiveRevIterator(
+              nullptr: a.__tree_.nullptr,
+              __first: a.__tree_.__begin_node_,
+              __last: a.__tree_.__end_node)))
+      XCTAssertEqual(it.map { $0 }, [Int](0..<5).reversed())
+    }
+
+    func testRemoveProof_initial() throws {
+      var a = RedBlackTreeMultiSet<Int>((0..<5).flatMap { [$0, $0] })
+      let it = ___UnsafeRemoveProofIterator_initial<RedBlackTreeMultiSet<Int>>(
+        nullptr: a.__tree_.nullptr,
+        __first: a.__tree_.__begin_node_,
+        __last: a.__tree_.end,
+        __end_node: a.__tree_.__end_node,
+        __current: (a.startIndex.rawValue, 0))
+      for i in it {
+        print("a.removeAll", UnsafePair<Int>.valuePointer(i).pointee)
+        a.removeAll(UnsafePair<Int>.valuePointer(i).pointee)
+        print("a", a + [])
+      }
+      XCTAssertTrue(a.isEmpty)
+      XCTAssertEqual(a + [], [])
+    }
+
+    func testRemoveUnproof() throws {
+      
+      var a = RedBlackTreeMultiSet<Int>((0..<5).flatMap { [$0, $0] })
+      
+      let it = ___UnsafeRemoveProofWrapper(
+        sequence: ___UnsafeNaiveIterator(
+          nullptr: a.__tree_.nullptr,
+          __first: a.__tree_.__begin_node_,
+          __last: a.__tree_.__end_node))
+      
+      for i in AnySequence(it + []) {
+        print("a.removeAll", UnsafePair<Int>.valuePointer(i).pointee)
+        a.removeAll(UnsafePair<Int>.valuePointer(i).pointee)
+        print("a", a + [])
+      }
+      
+      XCTAssertTrue(a.isEmpty)
+      XCTAssertEqual(a + [], [])
+    }
+
   }
 #endif

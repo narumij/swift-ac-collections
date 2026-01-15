@@ -23,38 +23,110 @@
 // TODO: 利用時の寿命管理の確認
 // 寿命延長を行わないので、利用側で寿命安全を守る必要がある
 
+@usableFromInline
+struct ___UnsafeValueWrapper<Base: ___TreeBase, Source: IteratorProtocol>:
+  UnsafeTreePointer,
+  IteratorProtocol,
+  Sequence
+where
+  Source.Element == UnsafeMutablePointer<UnsafeNode>
+{
+  var iterator: Source
+  
+  internal init(iterator: Source) {
+    self.iterator = iterator
+  }
+  
+  @usableFromInline
+  mutating func next() -> Base._Value? {
+    return iterator.next().map {
+      UnsafePair<Base._Value>.valuePointer($0).pointee
+    }
+  }
+}
+
+@usableFromInline
+struct ___UnsafeKeyWrapper<Base: ___TreeBase, Source: IteratorProtocol>:
+  UnsafeTreePointer,
+  IteratorProtocol,
+  Sequence
+where
+  Source.Element == UnsafeMutablePointer<UnsafeNode>
+{
+  var iterator: Source
+  
+  internal init(iterator: Source) {
+    self.iterator = iterator
+  }
+  
+  @usableFromInline
+  mutating func next() -> Base._Key? {
+    return iterator.next().map {
+      Base.__key(UnsafePair<Base._Value>.valuePointer($0).pointee)
+    }
+  }
+}
+
+@usableFromInline
+struct ___UnsafeMappedValueWrapper<Base: ___TreeBase & KeyValueComparer, Source: IteratorProtocol>:
+  UnsafeTreePointer,
+  IteratorProtocol,
+  Sequence
+where
+  Source.Element == UnsafeMutablePointer<UnsafeNode>
+{
+  var iterator: Source
+  
+  internal init(iterator: Source) {
+    self.iterator = iterator
+  }
+  
+  @usableFromInline
+  mutating func next() -> Base._MappedValue? {
+    return iterator.next().map {
+      Base.___mapped_value(UnsafePair<Base._Value>.valuePointer($0).pointee)
+    }
+  }
+}
+
+
 @frozen
 @usableFromInline
 package struct ___UnsafeValuesUnsafeV2<Base>: Sequence, IteratorProtocol, UnsafeTreeProtocol
 where Base: ___TreeBase {
 
   @usableFromInline
-  package let __tree_: ImmutableTree
+  var source: ___UnsafeNaiveIterator
 
-  @usableFromInline
-  internal var __first, __last: _NodePtr
+  @inlinable
+  @inline(__always)
+  internal init(source: ___UnsafeNaiveIterator) {
+    self.source = source
+  }
 
   @inlinable
   @inline(__always)
   internal init(tree: Tree, __first: _NodePtr, __last: _NodePtr) {
-    self.__tree_ = .init(__tree_: tree)
-    self.__first = __first
-    self.__last = __last
+    self.init(
+      source: .init(
+        nullptr: tree.nullptr,
+        __first: __first,
+        __last: __last))
   }
 
   @inlinable
   @inline(__always)
   internal init(__tree_: ImmutableTree, __first: _NodePtr, __last: _NodePtr) {
-    self.__tree_ = __tree_
-    self.__first = __first
-    self.__last = __last
+    self.init(
+      source: .init(
+        nullptr: __tree_.nullptr,
+        __first: __first,
+        __last: __last))
   }
 
   @inlinable
   @inline(__always)
   package mutating func next() -> Tree._Value? {
-    guard __first != __last else { return nil }
-    defer { __first = __tree_.__tree_next_iter(__first) }
-    return UnsafePair<Tree._Value>.valuePointer(__first)!.pointee
+    return source.next().map { UnsafePair<Base._Value>.valuePointer($0).pointee }
   }
 }

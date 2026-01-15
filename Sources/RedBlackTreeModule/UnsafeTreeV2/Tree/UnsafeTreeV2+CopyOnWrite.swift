@@ -74,6 +74,8 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal mutating func _strongEnsureUnique() {
+//    return _ensureUnique()
+    
     let isTreeUnique = _buffer.isUniqueReference()
     let isPoolUnique =
       _buffer.header._deallocator == nil

@@ -63,7 +63,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   /// ここを境に名前が変わる
   @usableFromInline
   var poolLifespan: Deallocator {
-    withMutableHeader { $0.deallocator }
+    isReadOnly ? _emptyDeallocator : withMutableHeader { $0.deallocator }
   }
 }
 

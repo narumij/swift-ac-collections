@@ -25,7 +25,7 @@
   typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
 #else
   @usableFromInline
-  typealias Deallocator = _UnsafeNodeFreshPoolV3Deallocator
+  typealias Deallocator = _UnsafeNodeFreshPoolV3Deallocator2
 #endif
 
 extension UnsafeTreeV2Buffer {
@@ -81,7 +81,7 @@ extension UnsafeTreeV2Buffer {
 
     @inlinable @inline(never)  // ホットじゃないのでinline化から除外したい
     func didUpdateFreshBucketHead() {
-      _deallocator?.freshBucketHead = freshBucketHead
+//      _deallocator?.freshBucketHead = freshBucketHead
     }
 
     @usableFromInline var _deallocator: Deallocator?
@@ -103,7 +103,7 @@ extension UnsafeTreeV2Buffer {
               deinitialize: UnsafePair<_Value>.deinitialize,
               nullptr: nullptr)
           #else
-            _deallocator = .init(
+            _deallocator = .create(
               bucket: freshBucketHead,
               deallocator: freshBucketAllocator)
           #endif

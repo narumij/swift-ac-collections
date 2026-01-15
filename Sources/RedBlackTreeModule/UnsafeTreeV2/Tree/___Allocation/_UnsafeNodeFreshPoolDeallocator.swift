@@ -15,7 +15,7 @@ package final class _UnsafeNodeFreshPoolDeallocator: UnsafeTreePointer {
   @inlinable
   internal init(freshBucketHead: _BucketPointer?,
                 stride: Int,
-                deinitialize: @escaping (_NodePtr) -> Void,
+                deinitialize: @convention(thin) (_NodePtr) -> Void,
                 nullptr: _NodePtr)
   {
     self.freshBucketHead = freshBucketHead
@@ -26,7 +26,7 @@ package final class _UnsafeNodeFreshPoolDeallocator: UnsafeTreePointer {
   
   @usableFromInline let nullptr: _NodePtr
   @usableFromInline let stride: Int
-  @usableFromInline let deinitialize: (_NodePtr) -> Void
+  @usableFromInline let deinitialize: @convention(thin) (_NodePtr) -> Void
   @usableFromInline var freshBucketHead: _BucketPointer?
   @usableFromInline var isBaseDeallocated: Bool = false
 

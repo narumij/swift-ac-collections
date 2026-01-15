@@ -12,8 +12,6 @@
 // TODO: 再度チューニングすること
 // 荒く書いた段階なのでいろいろ手抜きがある
 
-// TODO: 標準実装だとdistanceが重かった記憶。追加すること
-
 public
   struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>:
     UnsafeTreeProtocol, UnsafeImmutableIndexingProtocol
@@ -55,6 +53,20 @@ public
 
   public typealias Element = Index
 }
+
+#if false
+// TODO: 標準実装だとdistanceが重かった記憶。追加すること
+// TODO: あとで仕上げる
+extension UnsafeIndexV2Collection {
+
+  /// - Complexity: O(log *n* + *k*)
+  @inlinable
+  @inline(__always)
+  public func distance(from start: Index, to end: Index) -> Int {
+    __tree_.___distance(from: start.rawValue, to: end.rawValue)
+  }
+}
+#endif
 
 extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection {
 

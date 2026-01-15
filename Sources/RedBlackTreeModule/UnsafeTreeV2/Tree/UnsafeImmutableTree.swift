@@ -168,3 +168,21 @@ extension UnsafeImmutableTree {
     }
   }
 }
+
+extension UnsafeImmutableTree {
+  
+  // この実装がないと、迷子になる?
+  @inlinable
+  @inline(__always)
+  internal func
+  ___distance(from start: _NodePtr, to end: _NodePtr) -> Int
+  {
+    guard
+      !___is_offset_null(start),
+      !___is_offset_null(end)
+    else {
+      fatalError(.invalidIndex)
+    }
+    return ___signed_distance(start, end)
+  }
+}

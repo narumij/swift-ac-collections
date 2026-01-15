@@ -42,7 +42,7 @@ extension Validation {
   @inlinable
   @inline(__always)
   internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
-    p.pointee.___needs_deinitialize != true
+    p.pointee.isGarbaged
   }
 
   @inlinable

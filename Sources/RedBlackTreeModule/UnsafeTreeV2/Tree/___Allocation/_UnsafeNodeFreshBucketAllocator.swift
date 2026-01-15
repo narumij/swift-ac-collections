@@ -25,8 +25,7 @@
 // |Bucket||Node|Value|Node|Value|...
 //        ^^-- alignment gap
 //
-// 
-
+//
 @usableFromInline
 struct _UnsafeNodeFreshBucketAllocator {
 

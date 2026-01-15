@@ -16,7 +16,7 @@ where
   var naive: AnySequence<_NodePtr>.Iterator
   
   func isGarbaged(_ p: _NodePtr) -> Bool {
-    p.pointee.___needs_deinitialize == false
+    p.pointee.isGarbaged
   }
   
   internal init(sequence: Source) {

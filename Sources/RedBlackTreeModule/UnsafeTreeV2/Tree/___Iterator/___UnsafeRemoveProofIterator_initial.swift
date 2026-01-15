@@ -46,7 +46,7 @@ struct ___UnsafeRemoveProofIterator_initial<Base: ___TreeBase>: UnsafeTreeNodePr
   }
   
   func isGarbaged(_ p: _NodePtr) -> Bool {
-    p.pointee.___needs_deinitialize == false
+    p.pointee.isGarbaged
   }
 
   mutating func recoverIfNeeds() {
@@ -62,7 +62,7 @@ struct ___UnsafeRemoveProofIterator_initial<Base: ___TreeBase>: UnsafeTreeNodePr
   mutating func next() -> _NodePtr? {
     recoverIfNeeds()
     guard let __current else { return nil }
-    assert(__current.0.pointee.___needs_deinitialize)
+    assert(!isGarbaged(__current.0))
     let __r = __current.0
     self.__current = naiveNext().map {
       assert($0.pointee.___needs_deinitialize)

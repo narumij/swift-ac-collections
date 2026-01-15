@@ -5,6 +5,28 @@
 //  Created by narumij on 2026/01/15.
 //
 
+// # Memory Layout
+//
+// ## Primary Bucket
+// |Bucket|Node||Node|Value|Node|Value|...
+//              ^--start
+// ^-- head
+//
+// ## Secondary and other Buckets
+// |Bucket||Node|Value|Node|Value|...
+//         ^--start
+// ^-- next
+//
+// ## special node
+// |Bucket|Node||Node|Value|Node|Value|...
+//          ^-- end node (end->left == root)
+//
+// ## memory layout gap
+// |Bucket||Node|Value|Node|Value|...
+//        ^^-- alignment gap
+//
+// 
+
 @usableFromInline
 struct _UnsafeNodeFreshBucketAllocator {
 

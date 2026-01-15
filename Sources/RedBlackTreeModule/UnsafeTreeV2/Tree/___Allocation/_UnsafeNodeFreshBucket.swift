@@ -25,8 +25,7 @@
 @usableFromInline
 package struct _UnsafeNodeFreshBucket {
 
-  public typealias Bucket = _UnsafeNodeFreshBucket
-  public typealias BucketPointer = UnsafeMutablePointer<Bucket>
+  public typealias _SelfPtr = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
   @inlinable
@@ -55,7 +54,7 @@ package struct _UnsafeNodeFreshBucket {
   /// これを迂回するためにこちらで保持している
   public let stride: Int
   /// 次のバケットへのポインタ
-  public var next: BucketPointer? = nil
+  public var next: _SelfPtr? = nil
 
   @inlinable
   @inline(__always)

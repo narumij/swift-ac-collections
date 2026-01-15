@@ -48,7 +48,7 @@ protocol _UnsafeNodeFreshPoolV3: _ValueProtocol, UnsafeTreePointer {
 
 extension _UnsafeNodeFreshPoolV3 {
   public typealias _Bucket = _UnsafeNodeFreshBucket
-  public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
+  public typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
 }
 
 //#if USE_FRESH_POOL_V1

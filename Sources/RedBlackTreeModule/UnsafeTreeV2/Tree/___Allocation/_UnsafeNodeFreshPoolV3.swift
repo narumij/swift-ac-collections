@@ -20,7 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-// TODO: V2のアイデアをV3と同じ方式で再度試す
+// DONE: V2のアイデアをV3と同じ方式で再度試す
+// メモリ確保での時間増加よりも現状のpopのほうが時間が少ないので、V2のアイデアは試さない
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline

@@ -93,7 +93,7 @@ import XCTest
       
       var a = RedBlackTreeMultiSet<Int>((0..<5).flatMap { [$0, $0] })
       
-      let it = ___UnsafeRemoveProofWrapper(
+      let it = ___UnsafeRemoveProofWrapper_naive(
         sequence: ___UnsafeNaiveIterator(
           nullptr: a.__tree_.nullptr,
           __first: a.__tree_.__begin_node_,

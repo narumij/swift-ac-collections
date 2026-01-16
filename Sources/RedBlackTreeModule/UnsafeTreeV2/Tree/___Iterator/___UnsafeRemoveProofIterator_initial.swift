@@ -6,6 +6,41 @@
 //
 
 // この方式は指定末尾を削除されると木の末尾まで突き抜けてしまう欠点がある
+// 削除を検知してboundで回復し続ける方法がとれそう
+
+// ポインタは解放チェック用
+// 値は回復操作用
+enum Bound<_NodePtr, _Value> {
+  // 回復方法がlower_bound
+  // つまり範囲の右側
+  case lower(_NodePtr, _Value)
+  // 回復方法がupper_bound
+  // つまり範囲の左側
+  case upper(_NodePtr, _Value)
+}
+
+enum Position<T: Comparable> {
+  // 値Tをもつ
+  case value(T)
+  // endなため値を持たない
+  case end
+}
+
+extension Position: Comparable {
+  static func < (lhs: Position<T>, rhs: Position<T>) -> Bool {
+    switch (lhs, rhs) {
+    // endのほうが大きい
+    case (.end, _): false
+    // endのほうが大きい
+    case (_, .end): true
+    // どちらでもない場合、値で決まる
+    case (.value(let l), .value(let r)): l < r
+    }
+  }
+}
+
+// TODO: 解放チェックと回復を木に実装する
+
 struct ___UnsafeRemoveProofIterator_initial<Base: ___TreeBase>: UnsafeTreeNodeProtocol,
   BoundAlgorithmProtocol_common, ValueComparator, IteratorProtocol, Sequence
 {
@@ -44,15 +79,15 @@ struct ___UnsafeRemoveProofIterator_initial<Base: ___TreeBase>: UnsafeTreeNodePr
     __first = __tree_next_iter(__first)
     return __r
   }
-  
+
   func isGarbaged(_ p: _NodePtr) -> Bool {
     p.pointee.isGarbaged
   }
 
   mutating func recoverIfNeeds() {
-    
+
     guard let __current, isGarbaged(__current.0) else { return }
-    
+
     let ub = __upper_bound_multi(__current.1, __root, __end_node)
     self.__first = ub == __last || ub == __end_node ? __end_node : ub
     self.__current = __first == __end_node ? nil : (__first, __get_value(__first))

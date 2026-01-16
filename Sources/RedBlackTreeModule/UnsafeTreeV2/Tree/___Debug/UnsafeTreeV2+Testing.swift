@@ -378,7 +378,7 @@ extension RedBlackTreeSet {
   }
 #else
   public static var buildInfo: String {
-    "not both, maybe pool v1"
+    "USE_FRESH_POOL_V3"
   }
 #endif
 }

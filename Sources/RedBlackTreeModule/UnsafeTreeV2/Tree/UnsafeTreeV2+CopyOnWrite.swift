@@ -205,6 +205,6 @@ extension UnsafeTreeV2Buffer.Header {
 
     // https://atcoder.jp/contests/abc411/submissions/72430351
 
-    return Swift.max(minimumCapacity, freshPoolCapacity + max(freshPoolCapacity / 8, 2))
+    return Swift.max(minimumCapacity, freshPoolCapacity + max(freshPoolCapacity / 8, 1))
   }
 }

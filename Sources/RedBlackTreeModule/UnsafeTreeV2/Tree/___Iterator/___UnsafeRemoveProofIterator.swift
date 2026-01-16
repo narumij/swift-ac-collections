@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-struct ___UnsafeRemoveProofWrapper<Source: Sequence>:
+struct ___UnsafeRemoveProofWrapper_naive<Source: Sequence>:
   UnsafeTreePointer,
   IteratorProtocol,
   Sequence

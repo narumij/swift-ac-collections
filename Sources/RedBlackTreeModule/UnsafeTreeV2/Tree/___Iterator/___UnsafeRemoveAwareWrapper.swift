@@ -15,6 +15,7 @@ where
 {
   var __current: Source.Element?
   var naive: Source
+  @usableFromInline
   internal init(iterator: Source) {
     var it = iterator
     self.__current = it.next()

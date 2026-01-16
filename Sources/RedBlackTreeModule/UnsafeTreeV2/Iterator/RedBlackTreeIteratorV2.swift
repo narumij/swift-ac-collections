@@ -28,11 +28,12 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
   public typealias Base = Base
 
   @frozen
-  public struct Values: Sequence, IteratorProtocol, UnsafeTreePointer, UnsafeImmutableIndexingProtocol {
+  public struct Values: Sequence, IteratorProtocol, UnsafeTreePointer {
 
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _Value = RedBlackTreeIteratorV2.Base._Value
 
+#if false
     @usableFromInline
     internal let __tree_: ImmutableTree
 
@@ -62,9 +63,30 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
       }
       return __tree_.__value_(_current)
     }
+#else
+    
+    @usableFromInline
+    var source: ___UnsafeRemoveAwareWrapper<___UnsafeNaiveIterator>
+    
+    @usableFromInline
+    var poolLifespan: Deallocator
+
+    @inlinable
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      self.poolLifespan = tree.poolLifespan
+      source = .init(iterator: .init(nullptr: tree.nullptr, __first: start, __last: end))
+    }
+    
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> _Value? {
+      source.next().map { UnsafePair<_Value>.valuePointer($0).pointee }
+    }
+#endif
   }
 }
 
+#if false
 extension RedBlackTreeIteratorV2.Values: Equatable where _Value: Equatable {
 
   @inlinable
@@ -82,6 +104,7 @@ extension RedBlackTreeIteratorV2.Values: Comparable where _Value: Comparable {
     !lhs.isTriviallyIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
+#endif
 
 #if swift(>=5.5)
   extension RedBlackTreeIteratorV2.Values: @unchecked Sendable
@@ -90,4 +113,6 @@ extension RedBlackTreeIteratorV2.Values: Comparable where _Value: Comparable {
 
 // MARK: - Is Identical To
 
+#if false
 extension RedBlackTreeIteratorV2.Values: ___UnsafeImmutableIsIdenticalToV2 {}
+#endif

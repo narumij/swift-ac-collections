@@ -110,7 +110,7 @@ struct _UnsafeNodeFreshBucketAllocator {
     deinitializeEndNode(b)
     deinitializeNodeAndValues(b)
     b.deinitialize(count: 1)
-    b.deallocate()
+    UnsafeMutableRawPointer(b)._deallocate()
   }
 
   @inlinable
@@ -118,7 +118,7 @@ struct _UnsafeNodeFreshBucketAllocator {
   func deallocBucket(_ b: _BucketPointer) {
     deinitializeNodeAndValues(b)
     b.deinitialize(count: 1)
-    b.deallocate()
+    UnsafeMutableRawPointer(b)._deallocate()
   }
 
   @inlinable
@@ -166,7 +166,7 @@ struct _UnsafeNodeFreshBucketAllocator {
 
     let (capacity, bytes, stride, alignment) = pagedCapacity(capacity: capacity)
 
-    let header_storage = UnsafeMutableRawPointer.allocate(
+    let header_storage = UnsafeMutableRawPointer._allocate(
       byteCount: bytes + MemoryLayout<UnsafeNode>.stride,
       alignment: alignment)
 
@@ -214,7 +214,7 @@ struct _UnsafeNodeFreshBucketAllocator {
 
     let (capacity, bytes, stride, alignment) = pagedCapacity(capacity: capacity)
 
-    let header_storage = UnsafeMutableRawPointer.allocate(
+    let header_storage = UnsafeMutableRawPointer._allocate(
       byteCount: bytes,
       alignment: alignment)
 

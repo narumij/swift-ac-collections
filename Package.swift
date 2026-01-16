@@ -90,8 +90,17 @@ let package = Package(
       swiftSettings: _settings
     ),
     .target(
+      name: "_Unsafe",
+      publicHeadersPath: "include",
+      cSettings: [
+        .headerSearchPath("include"),
+        .define("NDEBUG", .when(configuration: .release)),
+      ]),
+    .target(
       name: "RedBlackTreeModule",
-      dependencies: [],
+      dependencies: [
+        "_Unsafe"
+      ],
       exclude: ["MEMO.md"],
       swiftSettings: _settings
     ),

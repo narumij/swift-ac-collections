@@ -437,6 +437,98 @@ extension RedBlackTreeSet {
   }
 }
 
+// TODO: 赤黒木の一番の利点は削除の速さである反面、Swiftに寄せたい場合の赤黒木の弱点の一番が削除なので、
+// そこら辺にケアした方針及び設計修正が必要そう
+
+extension RedBlackTreeSet {
+
+  public mutating func remove(
+    from start: Element,
+    to end: Element,
+    where shouldBeRemoved: (Element) throws -> Bool
+  ) rethrows {
+    try removeSubrange(lowerBound(start)..<lowerBound(end), where: shouldBeRemoved)
+  }
+
+  public mutating func remove(
+    from start: Element,
+    through end: Element,
+    where shouldBeRemoved: (Element) throws -> Bool
+  ) rethrows {
+    try removeSubrange(lowerBound(start)..<upperBound(end), where: shouldBeRemoved)
+  }
+}
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  public mutating func removeSubrange<R: RangeExpression>(
+    _ bounds: R,
+    where shouldBeRemoved: (Element) throws -> Bool
+  ) rethrows where R.Bound == Index {
+
+    let bounds = bounds.relative(
+      to: Indices(
+        tree: __tree_,
+        start: __tree_.__begin_node_,
+        end: __tree_.__end_node))
+
+    __tree_._ensureUnique()
+
+    try __tree_.___erase_unique_if(
+      __tree_.rawValue(bounds.lowerBound),
+      __tree_.rawValue(bounds.upperBound),
+      shouldBeRemoved: shouldBeRemoved)
+  }
+}
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+    __tree_._ensureUnique()
+    try __tree_.___erase_unique_if(
+      __tree_.__begin_node_,
+      __tree_.__end_node,
+      shouldBeRemoved: shouldBeRemoved)
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  func ___erase_unique_if(
+    _ __first: _NodePtr,
+    _ __last: _NodePtr,
+    shouldBeRemoved: (_Key) throws -> Bool
+  ) rethrows {
+    var __first = __first
+    while __first != __last {
+      if try shouldBeRemoved(__get_value(__first)) {
+        __first = erase(__first)
+      } else {
+        __first = __tree_next_iter(__first)
+      }
+    }
+  }
+  
+//  @inlinable
+//  func ___erase_multi_if(
+//    _ __first: _NodePtr,
+//    _ __last: _NodePtr,
+//    shouldBeRemoved: (_Key) throws -> Bool
+//  ) rethrows {
+//    var __first = __first
+//    while __first != __last {
+//      if try shouldBeRemoved(__get_value(__first)) {
+//        __first = erase(__first)
+//      } else {
+//        __first = __tree_next_iter(__first)
+//      }
+//    }
+//  }
+}
+
 extension RedBlackTreeSet {
 
   /// - Complexity: O(1)

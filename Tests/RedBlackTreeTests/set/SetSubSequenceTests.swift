@@ -4,20 +4,20 @@
 // Tests target に追加して `swift test` で実行
 // モジュール名を合わせて下さい → YourPackageName
 
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 final class SetSubSequenceTests: RedBlackTreeTestCase {
-  
+
   func testEmptySlice() {
-    
+
     // 軽く心配になったが、release/AtCoder/2025でも同じ動作結果が得られた
-    
+
     let base = RedBlackTreeSet(0..<10)  // [0‥9]
-    
+
     do {
       let slice = base[base.startIndex..<base.startIndex]  // []
-      
+
       XCTAssertEqual(slice.count, 0)
       XCTAssertEqual(slice.first, nil)
       XCTAssertEqual(slice.last, nil)
@@ -26,11 +26,11 @@ final class SetSubSequenceTests: RedBlackTreeTestCase {
           from: slice.startIndex,
           to: slice.endIndex), 0)
     }
-    
+
     do {
       let mid = base.startIndex.advanced(by: 5)
       let slice = base[mid..<mid]  // []
-      
+
       XCTAssertEqual(slice.count, 0)
       XCTAssertEqual(slice.first, nil)
       XCTAssertEqual(slice.last, nil)
@@ -39,10 +39,10 @@ final class SetSubSequenceTests: RedBlackTreeTestCase {
           from: slice.startIndex,
           to: slice.endIndex), 0)
     }
-    
+
     do {
       let slice = base[base.endIndex..<base.endIndex]  // []
-      
+
       XCTAssertEqual(slice.count, 0)
       XCTAssertEqual(slice.first, nil)
       XCTAssertEqual(slice.last, nil)
@@ -67,7 +67,7 @@ final class SetSubSequenceTests: RedBlackTreeTestCase {
         from: slice.startIndex,
         to: slice.endIndex), 4)
   }
-  
+
   func testSliceSorted() {
     let base = RedBlackTreeSet(0..<10)  // [0‥9]
     let slice = base.elements(in: 2..<6)  // [2,3,4,5]

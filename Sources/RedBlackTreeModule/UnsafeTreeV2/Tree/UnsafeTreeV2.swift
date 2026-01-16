@@ -138,23 +138,23 @@ extension UnsafeTreeV2 {
 
 // MARK: Refresh Pool Iterator
 
-  extension UnsafeTreeV2 {
+extension UnsafeTreeV2 {
 
-    @inlinable
-    @inline(__always)
-    func makeFreshPoolIterator() -> _UnsafeNodeFreshPoolIterator<_Value> {
-      return _buffer.header.makeFreshPoolIterator()
-    }
+  @inlinable
+  @inline(__always)
+  func makeFreshPoolIterator() -> _UnsafeNodeFreshPoolIterator<_Value> {
+    return _buffer.header.makeFreshPoolIterator()
   }
+}
 
-  extension UnsafeTreeV2 {
+extension UnsafeTreeV2 {
 
-    @inlinable
-    @inline(__always)
-    func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_Value> {
-      return _UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
-    }
+  @inlinable
+  @inline(__always)
+  func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_Value> {
+    return _UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
   }
+}
 
 // MARK: Index Resolver
 
@@ -183,15 +183,15 @@ extension UnsafeTreeV2 {
   internal func ___node_ptr(_ index: Index) -> _NodePtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
     #if true
-    // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
+      // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
       // endはシングルトン的にしたい気持ちもある
-//      return self.isTriviallyIdentical(to: index.__tree_) ? index.rawValue : ___NodePtr(index.___node_id_)
-    return __end_node == index.__tree_.__end_node ? index.rawValue : ___NodePtr(index.___node_id_)
+      //      return self.isTriviallyIdentical(to: index.__tree_) ? index.rawValue : ___NodePtr(index.___node_id_)
+      return __end_node == index.__tree_.__end_node ? index.rawValue : ___NodePtr(index.___node_id_)
     #else
       self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
     #endif
   }
-  
+
   @inlinable
   @inline(__always)
   internal func rawValue(_ index: Index) -> _NodePtr

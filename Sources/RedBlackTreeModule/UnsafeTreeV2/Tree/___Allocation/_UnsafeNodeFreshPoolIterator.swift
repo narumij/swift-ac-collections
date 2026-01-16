@@ -54,7 +54,7 @@ struct _UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence, UnsafeT
       it = bucket.pointee.start
       end = UnsafePair<_Value>.advance(bucket.pointee.start, bucket.pointee.count)
     }
-    
+
     guard it != end else { return .none }
 
     let p = it

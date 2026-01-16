@@ -113,17 +113,17 @@ public struct UnsafeNode {
 
   public typealias Pointer = UnsafeMutablePointer<UnsafeNode>
 
-//  @inlinable
-//  @inline(__always)
-//  public init(
-//    ___node_id_: Int
-//  ) {
-//    self.init(
-//      ___node_id_: ___node_id_,
-//      __left_: Self.nullptr,
-//      __right_: Self.nullptr,
-//      __parent_: Self.nullptr)
-//  }
+  //  @inlinable
+  //  @inline(__always)
+  //  public init(
+  //    ___node_id_: Int
+  //  ) {
+  //    self.init(
+  //      ___node_id_: ___node_id_,
+  //      __left_: Self.nullptr,
+  //      __right_: Self.nullptr,
+  //      __parent_: Self.nullptr)
+  //  }
 
   @inlinable
   @inline(__always)
@@ -221,7 +221,7 @@ public struct UnsafeNode {
 }
 
 extension UnsafeNode {
-  
+
   /// 再利用プールに改修されている状態
   ///
   /// 初期化前のメモリの状態は不明だが、利用開始時に該当フラグがtrueとなり利用中を表す。
@@ -261,7 +261,7 @@ extension UnsafeNode {
 }
 
 extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
-  
+
   @inlinable
   var pointerIndex: Int {
     switch self {
@@ -274,19 +274,20 @@ extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
 }
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
-  
+
   @inlinable
   var pointerIndex: Int {
     pointee.___node_id_
   }
-  
+
   @inlinable
   @inline(__always)
   func create(id: Int) -> UnsafeNode {
-    .init(___node_id_: id,
-          __left_: self,
-          __right_: self,
-          __parent_: self)
+    .init(
+      ___node_id_: id,
+      __left_: self,
+      __right_: self,
+      __parent_: self)
   }
 }
 
@@ -324,9 +325,9 @@ extension UnsafeNode {
 
   @inlinable
   @inline(__always)
-  static func bindValue<_Value>(_ t: _Value.Type,_ p: UnsafeMutablePointer<UnsafeNode>) {
+  static func bindValue<_Value>(_ t: _Value.Type, _ p: UnsafeMutablePointer<UnsafeNode>) {
     p.pointee.___needs_deinitialize = true
-    
+
     UnsafeMutableRawPointer(p)
       .bindMemory(to: UnsafeNode.self, capacity: 1)
 
@@ -338,15 +339,15 @@ extension UnsafeNode {
   @inline(__always)
   static func initializeValue<_Value>(_ p: UnsafeMutablePointer<UnsafeNode>, to: _Value) {
     p.pointee.___needs_deinitialize = true
-    
-//    p.advanced(by: 1)
-//      .withMemoryRebound(to: _Value.self, capacity: 1) { pointer in
-//        pointer.initialize(to: to)
-//      }
-    
-//    UnsafeMutableRawPointer(p.advanced(by: 1))
-//      .bindMemory(to: _Value.self, capacity: 1)
-//      .initialize(to: to)
+
+    //    p.advanced(by: 1)
+    //      .withMemoryRebound(to: _Value.self, capacity: 1) { pointer in
+    //        pointer.initialize(to: to)
+    //      }
+
+    //    UnsafeMutableRawPointer(p.advanced(by: 1))
+    //      .bindMemory(to: _Value.self, capacity: 1)
+    //      .initialize(to: to)
 
     UnsafeMutableRawPointer(p.advanced(by: 1))
       .assumingMemoryBound(to: _Value.self)

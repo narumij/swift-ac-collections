@@ -615,10 +615,10 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.lowerBound(4), sub.endIndex)
     XCTAssertEqual(sub.count, 2)
     XCTAssertEqual(sub.map { $0 }, [2, 3])
-#if COMPATIBLE_ATCODER_2025
-    set.remove(contentsOf: 2..<4)
-    XCTAssertEqual(set.map { $0 }, [1, 4, 5])
-#endif
+    #if COMPATIBLE_ATCODER_2025
+      set.remove(contentsOf: 2..<4)
+      XCTAssertEqual(set.map { $0 }, [1, 4, 5])
+    #endif
   }
 
   func testSubsequence2() throws {
@@ -630,10 +630,10 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.lowerBound(5), sub.endIndex)
     XCTAssertEqual(sub.count, 3)
     XCTAssertEqual(sub.map { $0 }, [2, 3, 4])
-#if COMPATIBLE_ATCODER_2025
-    set.remove(contentsOf: 2...4)
-    XCTAssertEqual(set.map { $0 }, [1, 5])
-#endif
+    #if COMPATIBLE_ATCODER_2025
+      set.remove(contentsOf: 2...4)
+      XCTAssertEqual(set.map { $0 }, [1, 5])
+    #endif
   }
 
   func testSubsequence3() throws {
@@ -884,8 +884,8 @@ final class SetTests: RedBlackTreeTestCase {
     typealias Index = RedBlackTreeSet<Int>.Index
     #if DEBUG
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
-        // UnsafeTreeでは、範囲外のインデックスを作成できない
-        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
+      // UnsafeTreeでは、範囲外のインデックスを作成できない
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))

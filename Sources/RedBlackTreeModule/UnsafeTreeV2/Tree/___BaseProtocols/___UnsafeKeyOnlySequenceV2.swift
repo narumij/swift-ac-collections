@@ -24,7 +24,7 @@
 protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeBaseV2, ___TreeIndex where _Value == Element {}
 
 extension ___UnsafeKeyOnlySequenceV2 {
-  
+
   @inlinable
   @inline(__always)
   public static func ___pointee(_ __value: _Value) -> Element { __value }

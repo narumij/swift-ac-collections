@@ -1,5 +1,5 @@
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
   final class SetCopyOnWriteTests: RedBlackTreeTestCase {

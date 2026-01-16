@@ -17,7 +17,7 @@ struct ___UnsafeNaiveIterator:
     self.__first = __first
     self.__last = __last
   }
-  
+
   @usableFromInline
   mutating func next() -> _NodePtr? {
     guard __first != __last else { return nil }
@@ -25,7 +25,7 @@ struct ___UnsafeNaiveIterator:
     __first = __tree_next_iter(__first)
     return __r
   }
-  
+
   @usableFromInline
   let nullptr: _NodePtr
   var __first: _NodePtr
@@ -50,7 +50,7 @@ struct ___UnsafeNaiveRevIterator:
     __last = __tree_prev_iter(__last)
     return __last
   }
-  
+
   @usableFromInline
   let nullptr: _NodePtr
   let __first: _NodePtr

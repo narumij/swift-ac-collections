@@ -13,11 +13,15 @@ final class ReferenceTests: RedBlackTreeTestCase {
   nonisolated(unsafe) static var count: Int = 0
 
   class DeinitializeCounter: Comparable {
-    static func < (lhs: ReferenceTests.DeinitializeCounter, rhs: ReferenceTests.DeinitializeCounter) -> Bool {
+    static func < (lhs: ReferenceTests.DeinitializeCounter, rhs: ReferenceTests.DeinitializeCounter)
+      -> Bool
+    {
       lhs.num < rhs.num
     }
 
-    static func == (lhs: ReferenceTests.DeinitializeCounter, rhs: ReferenceTests.DeinitializeCounter) -> Bool {
+    static func == (
+      lhs: ReferenceTests.DeinitializeCounter, rhs: ReferenceTests.DeinitializeCounter
+    ) -> Bool {
       lhs.num == rhs.num
     }
 

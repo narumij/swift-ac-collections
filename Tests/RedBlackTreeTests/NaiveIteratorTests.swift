@@ -90,21 +90,21 @@ import XCTest
     }
 
     func testRemoveUnproof() throws {
-      
+
       var a = RedBlackTreeMultiSet<Int>((0..<5).flatMap { [$0, $0] })
-      
+
       let it = ___UnsafeRemoveProofWrapper_naive(
         sequence: ___UnsafeNaiveIterator(
           nullptr: a.__tree_.nullptr,
           __first: a.__tree_.__begin_node_,
           __last: a.__tree_.__end_node))
-      
+
       for i in AnySequence(it + []) {
         print("a.removeAll", i.__value_().pointee as Int)
         a.removeAll(i.__value_().pointee)
         print("a", a + [])
       }
-      
+
       XCTAssertTrue(a.isEmpty)
       XCTAssertEqual(a + [], [])
     }

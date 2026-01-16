@@ -77,7 +77,8 @@ import XCTest
     #if TREE_INVARIANT_CHECKS
       func testBalancing0() throws {
         __root = .node(__nodes.count)
-        __nodes.append(.init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .end))
+        __nodes.append(
+          .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .end))
         XCTAssertEqual(__nodes.count, 1)
         XCTAssertNotEqual(__root, nil)
         XCTAssertEqual(__left_(__root), .nullptr)

@@ -145,7 +145,7 @@ extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
   subscript(___node_id_: Int) -> _NodePtr? {
     header[___node_id_]
   }
-  
+
   @inlinable
   var isBaseDeallocated: Bool {
     get { header.isBaseDeallocated }
@@ -155,5 +155,6 @@ extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
 
 /// The type-punned empty singleton storage instance.
 @usableFromInline
-nonisolated(unsafe) package let _emptyDeallocator = _UnsafeNodeFreshPoolV3DeallocatorR2
+nonisolated(unsafe) package let _emptyDeallocator =
+  _UnsafeNodeFreshPoolV3DeallocatorR2
   .create(bucket: nil, deallocator: .init(valueType: Void.self, deinitialize: { _ in }))

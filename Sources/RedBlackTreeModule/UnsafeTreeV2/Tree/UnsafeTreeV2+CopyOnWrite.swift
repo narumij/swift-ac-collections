@@ -55,7 +55,9 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal static func ensureCapacity(tree: inout UnsafeTreeV2, minimumCapacity: Int, linearly: Bool = false) {
+  internal static func ensureCapacity(
+    tree: inout UnsafeTreeV2, minimumCapacity: Int, linearly: Bool = false
+  ) {
     tree._ensureCapacity(to: minimumCapacity, linearly: linearly)
   }
 }
@@ -74,8 +76,8 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal mutating func _strongEnsureUnique() {
-//    return _ensureUnique()
-    
+    //    return _ensureUnique()
+
     let isTreeUnique = _buffer.isUniqueReference()
     let isPoolUnique =
       _buffer.header._deallocator == nil
@@ -106,7 +108,9 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal mutating func _ensureUniqueAndCapacity(to minimumCapacity: Int? = nil, linearly: Bool = false) {
+  internal mutating func _ensureUniqueAndCapacity(
+    to minimumCapacity: Int? = nil, linearly: Bool = false
+  ) {
 
     let isUnique = _buffer.isUniqueReference()
 

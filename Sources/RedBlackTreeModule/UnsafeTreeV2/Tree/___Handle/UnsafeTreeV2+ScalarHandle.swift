@@ -110,14 +110,13 @@ extension UnsafeTreeV2ScalarHandle {
 // MARK: - TreeNodeValueProtocol
 
 extension UnsafeTreeV2ScalarHandle {
-  
+
   @inlinable
   @inline(__always)
   func __get_value(_ p: _NodePtr) -> _Key {
     p.__value_().pointee
   }
 }
-
 
 extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase {}
 
@@ -132,42 +131,42 @@ extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 
 extension UnsafeTreeV2ScalarHandle {
-  
-#if false
-  @inlinable
-  @inline(__always)
-  internal func
-    __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
-  {
-    var __nd = __root
-    if __nd == nullptr {
-      return (__end_node, __left_ref(end))
-    }
-    var __nd_ptr = __root_ptr()
-    let __comp = __lazy_synth_three_way_comparator
 
-    while true {
+  #if false
+    @inlinable
+    @inline(__always)
+    internal func
+      __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+    {
+      var __nd = __root
+      if __nd == nullptr {
+        return (__end_node, __left_ref(end))
+      }
+      var __nd_ptr = __root_ptr()
+      let __comp = __lazy_synth_three_way_comparator
 
-      let __comp_res = __comp(__v, __get_value(__nd))
+      while true {
 
-      if __comp_res.__less() {
-        if __left_unsafe(__nd) == nullptr {
-          return (__nd, __left_ref(__nd))
+        let __comp_res = __comp(__v, __get_value(__nd))
+
+        if __comp_res.__less() {
+          if __left_unsafe(__nd) == nullptr {
+            return (__nd, __left_ref(__nd))
+          }
+
+          __nd_ptr = __left_ref(__nd)
+          __nd = __left_unsafe(__nd)
+        } else if __comp_res.__greater() {
+          if __right_(__nd) == nullptr {
+            return (__nd, __right_ref(__nd))
+          }
+
+          __nd_ptr = __right_ref(__nd)
+          __nd = __right_(__nd)
+        } else {
+          return (__nd, __nd_ptr)
         }
-
-        __nd_ptr = __left_ref(__nd)
-        __nd = __left_unsafe(__nd)
-      } else if __comp_res.__greater() {
-        if __right_(__nd) == nullptr {
-          return (__nd, __right_ref(__nd))
-        }
-
-        __nd_ptr = __right_ref(__nd)
-        __nd = __right_(__nd)
-      } else {
-        return (__nd, __nd_ptr)
       }
     }
-  }
-#endif
+  #endif
 }

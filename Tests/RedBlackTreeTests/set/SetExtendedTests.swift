@@ -3,8 +3,8 @@
 //
 // YourPackageNameTests target に追加して `swift test` で実行
 
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 final class SetExtendedTests: RedBlackTreeTestCase {
 
@@ -16,42 +16,42 @@ final class SetExtendedTests: RedBlackTreeTestCase {
 
     // 破壊的 merge (Sequence)
     d1.merge(seq)
-    XCTAssertEqual(d1, [1,2,3,100])
+    XCTAssertEqual(d1, [1, 2, 3, 100])
 
     // 非破壊的 merging (Dictionary)
     let other: RedBlackTreeSet = [9, 4]
     let merged = d1.merging(other)
-    XCTAssertEqual(merged, [1,2,3,4,9,100])
-    XCTAssertEqual(d1, [1,2,3,100])  // 元は無変化
+    XCTAssertEqual(merged, [1, 2, 3, 4, 9, 100])
+    XCTAssertEqual(d1, [1, 2, 3, 100])  // 元は無変化
   }
-  
+
   func testMergeAndMergingAPIs_2() {
     var d1: RedBlackTreeSet = [1, 2]
     let seq: RedBlackTreeMultiSet = [100, 3]
 
     // 破壊的 merge (Sequence)
     d1.merge(seq)
-    XCTAssertEqual(d1, [1,2,3,100])
+    XCTAssertEqual(d1, [1, 2, 3, 100])
 
     // 非破壊的 merging (Dictionary)
     let other: RedBlackTreeMultiSet = [9, 4]
     let merged = d1.merging(other)
-    XCTAssertEqual(merged, [1,2,3,4,9,100])
-    XCTAssertEqual(d1, [1,2,3,100])  // 元は無変化
+    XCTAssertEqual(merged, [1, 2, 3, 4, 9, 100])
+    XCTAssertEqual(d1, [1, 2, 3, 100])  // 元は無変化
   }
-  
+
   func testMergeAndMergingAPIs_3() {
     var d1: RedBlackTreeSet = [1, 2]
     let seq = [100, 3]
 
     // 破壊的 merge (Sequence)
     d1.merge(seq)
-    XCTAssertEqual(d1, [1,2,3,100])
+    XCTAssertEqual(d1, [1, 2, 3, 100])
 
     // 非破壊的 merging (Dictionary)
     let other = [9, 4]
     let merged = d1.merging(other)
-    XCTAssertEqual(merged, [1,2,3,4,9,100])
-    XCTAssertEqual(d1, [1,2,3,100])  // 元は無変化
+    XCTAssertEqual(merged, [1, 2, 3, 4, 9, 100])
+    XCTAssertEqual(d1, [1, 2, 3, 100])  // 元は無変化
   }
 }

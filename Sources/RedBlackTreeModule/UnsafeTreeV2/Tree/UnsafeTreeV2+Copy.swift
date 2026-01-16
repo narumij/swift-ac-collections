@@ -109,8 +109,8 @@ extension UnsafeTreeV2 {
       // その他管理情報をコピー
       newHeader.recycleHead = __ptr_(header.recycleHead)
       newHeader.count = header.count
-        newHeader.freshPoolUsedCount = header.freshPoolUsedCount
-      
+      newHeader.freshPoolUsedCount = header.freshPoolUsedCount
+
       assert(newHeader.count <= newHeader.freshPoolCapacity)
       assert(newHeader._deallocator == nil)
     }

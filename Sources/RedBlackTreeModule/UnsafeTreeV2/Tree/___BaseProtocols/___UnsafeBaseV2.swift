@@ -80,7 +80,6 @@ where
   var _end: _NodePtr { get }
 }
 
-
 public typealias RedBlackTreeIndex = UnsafeIndexV2
 public typealias RedBlackTreeIndices = UnsafeIndexV2Collection
 public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2

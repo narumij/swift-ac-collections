@@ -1,4 +1,3 @@
-
 #if DEBUG
   extension UnsafeTreeV2 {
 
@@ -368,17 +367,17 @@ extension UnsafeTreeV2 {
 
 extension RedBlackTreeSet {
 
-#if USE_FRESH_POOL_V1
-  public static var buildInfo: String {
-    "USE_FRESH_POOL_V1"
-  }
-#elseif USE_FRESH_POOL_V2
-  public static var buildInfo: String {
-    "USE_FRESH_POOL_V2"
-  }
-#else
-  public static var buildInfo: String {
-    "USE_FRESH_POOL_V3"
-  }
-#endif
+  #if USE_FRESH_POOL_V1
+    public static var buildInfo: String {
+      "USE_FRESH_POOL_V1"
+    }
+  #elseif USE_FRESH_POOL_V2
+    public static var buildInfo: String {
+      "USE_FRESH_POOL_V2"
+    }
+  #else
+    public static var buildInfo: String {
+      "USE_FRESH_POOL_V3"
+    }
+  #endif
 }

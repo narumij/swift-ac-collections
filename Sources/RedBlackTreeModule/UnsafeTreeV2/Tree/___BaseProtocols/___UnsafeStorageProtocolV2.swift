@@ -33,7 +33,7 @@ where
 }
 
 extension ___UnsafeStorageProtocolV2 {
-  
+
   @inlinable
   @inline(__always)
   internal var _start: _NodePtr {

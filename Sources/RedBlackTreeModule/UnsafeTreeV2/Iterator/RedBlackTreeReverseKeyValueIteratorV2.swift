@@ -58,7 +58,7 @@ extension RedBlackTreeIteratorV2.KeyValues {
 }
 
 extension RedBlackTreeIteratorV2.KeyValues.Reversed {
-  
+
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Tree.Index, Tree._Value) throws -> Void) rethrows {

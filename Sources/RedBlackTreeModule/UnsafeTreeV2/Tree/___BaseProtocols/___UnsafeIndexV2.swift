@@ -76,7 +76,8 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    ___index_or_nil(__tree_.___index(__tree_.rawValue(i), offsetBy: distance, limitedBy: __tree_.rawValue(limit)))
+    ___index_or_nil(
+      __tree_.___index(__tree_.rawValue(i), offsetBy: distance, limitedBy: __tree_.rawValue(limit)))
   }
 
   @inlinable

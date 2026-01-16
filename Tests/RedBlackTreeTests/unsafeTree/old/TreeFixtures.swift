@@ -11,13 +11,13 @@ import XCTest
     RedBlackTreeTestCase,
     TreeNodeProtocol, RootProtocol, EndNodeProtocol,
     ___RedBlackTreeNodePoolProtocol
-{
+  {
     var nullptr: Int { .nullptr }
     var end: Int { .end }
-    
+
     typealias _NodePtr = _PointerIndex
     typealias _NodeRef = _PointerIndexRef
-    
+
     var __left_: _NodePtr = .nullptr
     var __begin_node_: _NodePtr = .end
 
@@ -43,7 +43,7 @@ import XCTest
     func __is_black_(_ p: _NodePtr) -> Bool { __nodes[p].__is_black_ }
     func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) { __nodes[lhs].__is_black_ = rhs }
     func __parent_unsafe(_ p: _NodePtr) -> _NodePtr { __nodes[p].__parent_ }
-//    func __root() -> _NodePtr { __left_ }
+    //    func __root() -> _NodePtr { __left_ }
 
     func ___initialize(_ e: Element) -> _NodePtr {
       let n = __nodes.count
@@ -64,10 +64,10 @@ import XCTest
       get { __left_ }
       set { __left_ = newValue }
     }
-    
-//    func __root(_ p: _NodePtr) {
-//      __left_ = p
-//    }
+
+    //    func __root(_ p: _NodePtr) {
+    //      __left_ = p
+    //    }
 
     func clear() {
       __left_ = .nullptr
@@ -94,9 +94,9 @@ import XCTest
     FindEqualProtocol, InsertNodeAtProtocol, InsertUniqueProtocol,
     RemoveProtocol, EraseProtocol, EraseUniqueProtocol, CompareProtocol, CompareMultiProtocol,
     BoundProtocol, NodeBitmapProtocol, FindEqualProtocol_std, BoundAlgorithmProtocol
-{
+  {
     let isMulti: Bool = true
-    
+
     func __key(_ e: Element) -> Element {
       e
     }
@@ -121,7 +121,7 @@ import XCTest
     func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
       ___ptr_comp_multi(l, r)
     }
-    
+
     func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __eager_compare_result {
       .init(__default_three_way_comparator(__lhs, __rhs))
     }

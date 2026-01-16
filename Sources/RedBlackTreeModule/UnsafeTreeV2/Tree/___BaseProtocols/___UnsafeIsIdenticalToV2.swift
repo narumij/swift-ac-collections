@@ -69,8 +69,7 @@ extension ___UnsafeIsIdenticalToV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeImmutableIsIdenticalToV2: UnsafeTreeProtocol
-{
+protocol ___UnsafeImmutableIsIdenticalToV2: UnsafeTreeProtocol {
   var __tree_: ImmutableTree { get }
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }

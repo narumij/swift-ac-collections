@@ -25,7 +25,8 @@ import Foundation
 extension RedBlackTreeIteratorV2 {
 
   @frozen
-  public struct Keys: Sequence, IteratorProtocol, UnsafeTreePointer, UnsafeImmutableIndexingProtocol {
+  public struct Keys: Sequence, IteratorProtocol, UnsafeTreePointer, UnsafeImmutableIndexingProtocol
+  {
 
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _Key = RedBlackTreeIteratorV2.Base._Key
@@ -64,7 +65,7 @@ extension RedBlackTreeIteratorV2 {
       self._next = start == __tree_.end ? __tree_.end : __tree_.__tree_next_iter(start)
       self.poolLifespan = poolLifespan
     }
-    
+
     @inlinable
     @inline(__always)
     public mutating func next() -> _Key? {
@@ -89,7 +90,7 @@ extension RedBlackTreeIteratorV2.Keys: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.isTriviallyIdentical(to: rhs) || Tree.with_value_equiv{ lhs.elementsEqual(rhs, by: $0) }
+    lhs.isTriviallyIdentical(to: rhs) || Tree.with_value_equiv { lhs.elementsEqual(rhs, by: $0) }
   }
 }
 
@@ -98,7 +99,8 @@ extension RedBlackTreeIteratorV2.Keys: Comparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs.isTriviallyIdentical(to: rhs) && Tree.with_value_equiv{ lhs.lexicographicallyPrecedes(rhs, by: $0) }
+    !lhs.isTriviallyIdentical(to: rhs)
+      && Tree.with_value_equiv { lhs.lexicographicallyPrecedes(rhs, by: $0) }
   }
 }
 

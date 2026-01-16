@@ -170,12 +170,12 @@ extension UnsafeImmutableTree {
 }
 
 extension UnsafeImmutableTree {
-  
+
   // この実装がないと、迷子になる?
   @inlinable
   @inline(__always)
   internal func
-  ___distance(from start: _NodePtr, to end: _NodePtr) -> Int
+    ___distance(from start: _NodePtr, to end: _NodePtr) -> Int
   {
     guard
       !___is_offset_null(start),

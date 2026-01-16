@@ -28,17 +28,17 @@ public struct UnsafeTreeV2Origin: UnsafeTreePointer {
   @inlinable
   init(base: UnsafeMutablePointer<UnsafeTreeV2Origin>, nullptr: _NodePtr, end_ptr: _NodePtr?) {
     self.nullptr = nullptr
-      self.end_ptr = end_ptr!
-      begin_ptr = end_ptr!
+    self.end_ptr = end_ptr!
+    begin_ptr = end_ptr!
   }
   @inlinable
   mutating func clear() {
     begin_ptr = end_ptr
-      begin_ptr.pointee.__left_ = nullptr
-      #if DEBUG
-        begin_ptr.pointee.__right_ = nullptr
-        begin_ptr.pointee.__parent_ = nullptr
-      #endif
+    begin_ptr.pointee.__left_ = nullptr
+    #if DEBUG
+      begin_ptr.pointee.__right_ = nullptr
+      begin_ptr.pointee.__parent_ = nullptr
+    #endif
   }
   @inlinable
   @inline(__always)

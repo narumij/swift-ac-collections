@@ -32,11 +32,11 @@ where
   Source.Element == UnsafeMutablePointer<UnsafeNode>
 {
   var iterator: Source
-  
+
   internal init(iterator: Source) {
     self.iterator = iterator
   }
-  
+
   @usableFromInline
   mutating func next() -> Base._Value? {
     return iterator.next().map {
@@ -54,11 +54,11 @@ where
   Source.Element == UnsafeMutablePointer<UnsafeNode>
 {
   var iterator: Source
-  
+
   internal init(iterator: Source) {
     self.iterator = iterator
   }
-  
+
   @usableFromInline
   mutating func next() -> Base._Key? {
     return iterator.next().map {
@@ -76,11 +76,11 @@ where
   Source.Element == UnsafeMutablePointer<UnsafeNode>
 {
   var iterator: Source
-  
+
   internal init(iterator: Source) {
     self.iterator = iterator
   }
-  
+
   @usableFromInline
   mutating func next() -> Base._MappedValue? {
     return iterator.next().map {
@@ -88,7 +88,6 @@ where
     }
   }
 }
-
 
 @frozen
 @usableFromInline

@@ -160,7 +160,8 @@ extension UnsafeTreeV2 {
     if __tree_.__root == __tree_.nullptr, __first != __last {
       // Make sure we always have a root node
       __tree_.__insert_node_at(
-        __tree_.end, __tree_.__left_ref(__tree_.end), __tree_.__construct_node(__source.__value_(__first)))
+        __tree_.end, __tree_.__left_ref(__tree_.end),
+        __tree_.__construct_node(__source.__value_(__first)))
       __first = __source.__tree_next_iter(__first)
     }
 
@@ -208,7 +209,8 @@ extension UnsafeTreeV2 {
     if __tree_.__root == __tree_.nullptr, let __element = it.next() {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
-        __tree_.end, __tree_.__left_ref(__tree_.end), __tree_.__construct_node(transform(__element)))
+        __tree_.end, __tree_.__left_ref(__tree_.end), __tree_.__construct_node(transform(__element))
+      )
     }
 
     if __tree_.__root == __tree_.nullptr { return __tree_ }
@@ -311,7 +313,8 @@ extension UnsafeTreeV2 {
     if __tree_.__root == __tree_.nullptr, let __element = it.next() {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
-        __tree_.end, __tree_.__left_ref(__tree_.end), __tree_.__construct_node(transform(__element)))
+        __tree_.end, __tree_.__left_ref(__tree_.end), __tree_.__construct_node(transform(__element))
+      )
     }
 
     if __tree_.__root == __tree_.nullptr { return __tree_ }

@@ -1,5 +1,5 @@
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
 
@@ -79,19 +79,19 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
   }
 
   #if COMPATIBLE_ATCODER_2025
-  /// remove(contentsOf:) が指定範囲の要素を削除すること（Range版）
-  func test_remove_contentsOf_Range() {
-    var set = RedBlackTreeSet([1, 2, 3, 4, 5])
-    set.remove(contentsOf: 2..<5)
-    XCTAssertEqual(set.sorted(), [1, 5], "指定Range内の要素を削除すること")
-  }
+    /// remove(contentsOf:) が指定範囲の要素を削除すること（Range版）
+    func test_remove_contentsOf_Range() {
+      var set = RedBlackTreeSet([1, 2, 3, 4, 5])
+      set.remove(contentsOf: 2..<5)
+      XCTAssertEqual(set.sorted(), [1, 5], "指定Range内の要素を削除すること")
+    }
 
-  /// remove(contentsOf:) が指定範囲の要素を削除すること（ClosedRange版）
-  func test_remove_contentsOf_ClosedRange() {
-    var set = RedBlackTreeSet([1, 2, 3, 4, 5])
-    set.remove(contentsOf: 2...4)
-    XCTAssertEqual(set.sorted(), [1, 5], "指定ClosedRange内の要素を削除すること")
-  }
+    /// remove(contentsOf:) が指定範囲の要素を削除すること（ClosedRange版）
+    func test_remove_contentsOf_ClosedRange() {
+      var set = RedBlackTreeSet([1, 2, 3, 4, 5])
+      set.remove(contentsOf: 2...4)
+      XCTAssertEqual(set.sorted(), [1, 5], "指定ClosedRange内の要素を削除すること")
+    }
   #endif
 }
 

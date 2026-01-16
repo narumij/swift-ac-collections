@@ -35,7 +35,7 @@ public struct _LinkingPair<Key, Value> {
   public var prev: _NodePtr
   public var next: _NodePtr
   public var value: Value
-  
+
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 }
 
@@ -84,7 +84,8 @@ extension ___LRULinkList {
   mutating func ___pop(_ __p: _NodePtr) -> _NodePtr {
 
     assert(
-      __p == _rankHighest || __tree_[__p].next != __tree_.nullptr || __tree_[__p].prev != __tree_.nullptr,
+      __p == _rankHighest || __tree_[__p].next != __tree_.nullptr
+        || __tree_[__p].prev != __tree_.nullptr,
       "did not contain \(__p) ptr.")
 
     defer {

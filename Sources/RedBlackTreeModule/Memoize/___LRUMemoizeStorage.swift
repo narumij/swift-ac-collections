@@ -55,7 +55,7 @@ where Parameters: Comparable {
 
   @usableFromInline
   var _rankLowest: _NodePtr
-  
+
   @usableFromInline
   var __tree_: Tree
 }
@@ -97,8 +97,8 @@ extension ___LRUMemoizeStorage {
         if __tree_.count == maxCount {
           _ = __tree_.erase(___popRankLowest())
         }
-#if !USE_UNSAFE_TREE
-        assert(__tree_.count < __tree_.capacity)
+        #if !USE_UNSAFE_TREE
+          assert(__tree_.count < __tree_.capacity)
         #endif
         let (__parent, __child) = __tree_.__find_equal(key)
         if __tree_.__ptr_(__child) == __tree_.nullptr {
@@ -112,7 +112,7 @@ extension ___LRUMemoizeStorage {
 }
 
 extension ___LRUMemoizeStorage: ___LRULinkList & ___UnsafeStorageProtocolV2 {
-  
+
   public typealias Base = Self
 }
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}
@@ -140,8 +140,7 @@ extension ___LRUMemoizeStorage {
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity {
       __tree_.deinitialize()
-    }
-    else {
+    } else {
       self = .init()
     }
   }

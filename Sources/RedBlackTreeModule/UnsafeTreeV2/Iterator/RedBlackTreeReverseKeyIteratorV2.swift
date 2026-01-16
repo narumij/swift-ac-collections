@@ -23,19 +23,21 @@
 import Foundation
 
 extension RedBlackTreeIteratorV2.Keys {
-  
+
   @frozen
-  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer, UnsafeImmutableIndexingProtocol {
-    
+  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer,
+    UnsafeImmutableIndexingProtocol
+  {
+
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _Key = RedBlackTreeIteratorV2.Base._Key
 
     @usableFromInline
     internal let __tree_: ImmutableTree
-    
+
     @usableFromInline
     internal var _start, _end, _begin, _current, _next: _NodePtr
-    
+
     @usableFromInline
     var poolLifespan: PoolLifespan
 
@@ -83,7 +85,7 @@ extension RedBlackTreeIteratorV2.Keys.Reversed: Equatable {
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.isTriviallyIdentical(to: rhs) || Tree.with_value_equiv{ lhs.elementsEqual(rhs, by: $0) }
+    lhs.isTriviallyIdentical(to: rhs) || Tree.with_value_equiv { lhs.elementsEqual(rhs, by: $0) }
   }
 }
 
@@ -92,7 +94,8 @@ extension RedBlackTreeIteratorV2.Keys.Reversed: Comparable {
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs.isTriviallyIdentical(to: rhs) && Tree.with_value_comp{ lhs.lexicographicallyPrecedes(rhs, by: $0) }
+    !lhs.isTriviallyIdentical(to: rhs)
+      && Tree.with_value_comp { lhs.lexicographicallyPrecedes(rhs, by: $0) }
   }
 }
 

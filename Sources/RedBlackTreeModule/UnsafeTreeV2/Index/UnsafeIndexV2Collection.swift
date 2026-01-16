@@ -55,17 +55,17 @@ public
 }
 
 #if false
-// TODO: 標準実装だとdistanceが重かった記憶。追加すること
-// TODO: あとで仕上げる
-extension UnsafeIndexV2Collection {
+  // TODO: 標準実装だとdistanceが重かった記憶。追加すること
+  // TODO: あとで仕上げる
+  extension UnsafeIndexV2Collection {
 
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  @inline(__always)
-  public func distance(from start: Index, to end: Index) -> Int {
-    __tree_.___distance(from: start.rawValue, to: end.rawValue)
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    @inline(__always)
+    public func distance(from start: Index, to end: Index) -> Int {
+      __tree_.___distance(from: start.rawValue, to: end.rawValue)
+    }
   }
-}
 #endif
 
 extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection {

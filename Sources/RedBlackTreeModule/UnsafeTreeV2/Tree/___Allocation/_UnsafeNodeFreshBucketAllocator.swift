@@ -59,7 +59,7 @@ struct _UnsafeNodeFreshBucketAllocator {
 
   @usableFromInline
   let _value: (stride: Int, alignment: Int)
-  
+
   @usableFromInline
   let nodeValueStride: Int
 
@@ -73,7 +73,7 @@ struct _UnsafeNodeFreshBucketAllocator {
       .assumingMemoryBound(to: UnsafeNode.self)
       .deinitialize(count: 1)
   }
-  
+
   @inlinable
   @inline(__always)
   func deinitializeNodeAndValues(_ b: _BucketPointer) {
@@ -153,7 +153,7 @@ struct _UnsafeNodeFreshBucketAllocator {
       .advanced(by: nodeValueStride * n)
       .assumingMemoryBound(to: UnsafeNode.self)
   }
-  
+
   @inlinable
   @inline(__always)
   public func createHeadBucket(capacity: Int, nullptr: _NodePtr) -> (
@@ -201,7 +201,7 @@ struct _UnsafeNodeFreshBucketAllocator {
 
     return (header, capacity)
   }
-  
+
   @inlinable
   @inline(__always)
   public func createBucket(capacity: Int) -> (_BucketPointer, capacity: Int) {

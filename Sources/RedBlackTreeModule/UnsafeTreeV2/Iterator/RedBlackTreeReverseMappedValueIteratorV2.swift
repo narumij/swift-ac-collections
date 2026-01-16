@@ -23,20 +23,20 @@
 import Foundation
 
 extension RedBlackTreeIteratorV2.MappedValues {
-  
+
   @frozen
-  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer, UnsafeImmutableIndexingProtocol
-  where Base: KeyValueComparer
-  {
+  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer,
+    UnsafeImmutableIndexingProtocol
+  where Base: KeyValueComparer {
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _MappedValue = RedBlackTreeIteratorV2.Base._MappedValue
 
     @usableFromInline
     internal let __tree_: ImmutableTree
-    
+
     @usableFromInline
     internal var _start, _end, _begin, _current, _next: _NodePtr
-    
+
     @usableFromInline
     var poolLifespan: PoolLifespan
 
@@ -50,7 +50,7 @@ extension RedBlackTreeIteratorV2.MappedValues {
       self._begin = __tree_.__begin_node_
       self.poolLifespan = tree.poolLifespan
     }
-    
+
     @inlinable
     internal init(
       __tree_: ImmutableTree,
@@ -67,7 +67,7 @@ extension RedBlackTreeIteratorV2.MappedValues {
       self._begin = __tree_.__begin_node_
       self.poolLifespan = poolLifespan
     }
-    
+
     @inlinable
     @inline(__always)
     public mutating func next() -> _MappedValue? {

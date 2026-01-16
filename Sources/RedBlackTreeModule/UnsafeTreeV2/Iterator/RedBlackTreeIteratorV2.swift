@@ -24,7 +24,7 @@ import Foundation
 
 @frozen
 public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex {
-  
+
   public typealias Base = Base
 
   @frozen
@@ -33,77 +33,77 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _Value = RedBlackTreeIteratorV2.Base._Value
 
-#if false
-    @usableFromInline
-    internal let __tree_: ImmutableTree
+    #if false
+      @usableFromInline
+      internal let __tree_: ImmutableTree
 
-    @usableFromInline
-    internal var _start, _end, _current, _next: _NodePtr
+      @usableFromInline
+      internal var _start, _end, _current, _next: _NodePtr
 
-    @usableFromInline
-    var poolLifespan: PoolLifespan
+      @usableFromInline
+      var poolLifespan: PoolLifespan
 
-    @inlinable
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.__tree_ = .init(__tree_: tree)
-      self._current = start
-      self._start = start
-      self._end = end
-      self._next = start == tree.end ? tree.end : tree.__tree_next_iter(start)
-      self.poolLifespan = tree.poolLifespan
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> _Value? {
-      guard _current != _end else { return nil }
-      defer {
-        _current = _next
-        _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
+      @inlinable
+      internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+        self.__tree_ = .init(__tree_: tree)
+        self._current = start
+        self._start = start
+        self._end = end
+        self._next = start == tree.end ? tree.end : tree.__tree_next_iter(start)
+        self.poolLifespan = tree.poolLifespan
       }
-      return __tree_.__value_(_current)
-    }
-#else
-    
-    @usableFromInline
-    var source: ___UnsafeRemoveAwareWrapper<___UnsafeNaiveIterator>
-    
-    @usableFromInline
-    var poolLifespan: Deallocator
 
-    @inlinable
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.poolLifespan = tree.poolLifespan
-      source = .init(iterator: .init(nullptr: tree.nullptr, __first: start, __last: end))
-    }
-    
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> _Value? {
-      source.next().map { $0.__value_().pointee }
-    }
-#endif
+      @inlinable
+      @inline(__always)
+      public mutating func next() -> _Value? {
+        guard _current != _end else { return nil }
+        defer {
+          _current = _next
+          _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
+        }
+        return __tree_.__value_(_current)
+      }
+    #else
+
+      @usableFromInline
+      var source: ___UnsafeRemoveAwareWrapper<___UnsafeNaiveIterator>
+
+      @usableFromInline
+      var poolLifespan: Deallocator
+
+      @inlinable
+      internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+        self.poolLifespan = tree.poolLifespan
+        source = .init(iterator: .init(nullptr: tree.nullptr, __first: start, __last: end))
+      }
+
+      @inlinable
+      @inline(__always)
+      public mutating func next() -> _Value? {
+        source.next().map { $0.__value_().pointee }
+      }
+    #endif
   }
 }
 
 #if false
-extension RedBlackTreeIteratorV2.Values: Equatable where _Value: Equatable {
+  extension RedBlackTreeIteratorV2.Values: Equatable where _Value: Equatable {
 
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.isTriviallyIdentical(to: rhs) || lhs.elementsEqual(rhs)
+    @inlinable
+    @inline(__always)
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+      lhs.isTriviallyIdentical(to: rhs) || lhs.elementsEqual(rhs)
+    }
   }
-}
 
-extension RedBlackTreeIteratorV2.Values: Comparable where _Value: Comparable {
+  extension RedBlackTreeIteratorV2.Values: Comparable where _Value: Comparable {
 
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs.isTriviallyIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+    @inlinable
+    @inline(__always)
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+      !lhs.isTriviallyIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+    }
   }
-}
 #endif
 
 #if swift(>=5.5)
@@ -114,5 +114,5 @@ extension RedBlackTreeIteratorV2.Values: Comparable where _Value: Comparable {
 // MARK: - Is Identical To
 
 #if false
-extension RedBlackTreeIteratorV2.Values: ___UnsafeImmutableIsIdenticalToV2 {}
+  extension RedBlackTreeIteratorV2.Values: ___UnsafeImmutableIsIdenticalToV2 {}
 #endif

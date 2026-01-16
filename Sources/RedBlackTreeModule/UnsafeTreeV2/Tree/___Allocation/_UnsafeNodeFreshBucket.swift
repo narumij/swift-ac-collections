@@ -39,7 +39,7 @@ package struct _UnsafeNodeFreshBucket {
     self.capacity = capacity
     self.stride = strice
   }
-  
+
   // 総量が64B以内となること
   /// 利用数
   public var count: Int = 0
@@ -88,18 +88,18 @@ package struct _UnsafeNodeFreshBucket {
     while i < count {
       let c = p
       p = advance(p)
-#if false
-      UnsafeNode.deinitialize(T.self, c)
-#else
-      if c.pointee.___needs_deinitialize {
-        UnsafeMutableRawPointer(
-          UnsafeMutablePointer<UnsafeNode>(c)
-            .advanced(by: 1)
-        )
-        .assumingMemoryBound(to: t.self)
-        .deinitialize(count: 1)
-      }
-#endif
+      #if false
+        UnsafeNode.deinitialize(T.self, c)
+      #else
+        if c.pointee.___needs_deinitialize {
+          UnsafeMutableRawPointer(
+            UnsafeMutablePointer<UnsafeNode>(c)
+              .advanced(by: 1)
+          )
+          .assumingMemoryBound(to: t.self)
+          .deinitialize(count: 1)
+        }
+      #endif
       c.deinitialize(count: 1)
       i += 1
     }

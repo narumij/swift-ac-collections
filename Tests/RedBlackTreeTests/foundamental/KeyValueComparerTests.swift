@@ -9,7 +9,7 @@ import RedBlackTreeModule
 import XCTest
 
 final class KeyValueComparerTests: RedBlackTreeTestCase, KeyValueComparer {
-  
+
   static func value_comp(_ l: _Key, _ r: _Key) -> Bool {
     l.internalKey < r.internalKey
   }
@@ -18,15 +18,15 @@ final class KeyValueComparerTests: RedBlackTreeTestCase, KeyValueComparer {
     var internalKey: Int
   }
   typealias _Value = (key: _Key, value: _MappedValue)
-  
+
   let keys: [_Key] = (0..<3).map { .init(internalKey: $0) }
 
   func testExample() throws {
-    
+
     XCTAssertTrue(Self.value_comp(keys[0], keys[1]))
     XCTAssertTrue(Self.value_comp(keys[1], keys[2]))
     XCTAssertTrue(Self.value_comp(keys[0], keys[2]))
-    
+
     XCTAssertFalse(Self.value_comp(keys[0], keys[0]))
     XCTAssertFalse(Self.value_comp(keys[1], keys[1]))
     XCTAssertFalse(Self.value_comp(keys[2], keys[2]))
@@ -34,11 +34,11 @@ final class KeyValueComparerTests: RedBlackTreeTestCase, KeyValueComparer {
     XCTAssertFalse(Self.value_comp(keys[1], keys[0]))
     XCTAssertFalse(Self.value_comp(keys[2], keys[1]))
     XCTAssertFalse(Self.value_comp(keys[2], keys[0]))
-    
+
     XCTAssertFalse(Self.value_equiv(keys[0], keys[1]))
     XCTAssertFalse(Self.value_equiv(keys[1], keys[2]))
     XCTAssertFalse(Self.value_equiv(keys[0], keys[2]))
-    
+
     XCTAssertTrue(Self.value_equiv(keys[0], keys[0]))
     XCTAssertTrue(Self.value_equiv(keys[1], keys[1]))
     XCTAssertTrue(Self.value_equiv(keys[2], keys[2]))

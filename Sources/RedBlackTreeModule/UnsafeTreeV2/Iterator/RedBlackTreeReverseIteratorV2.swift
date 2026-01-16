@@ -25,8 +25,10 @@ import Foundation
 extension RedBlackTreeIteratorV2.Values {
 
   @frozen
-  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer, UnsafeImmutableIndexingProtocol {
-    
+  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer,
+    UnsafeImmutableIndexingProtocol
+  {
+
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _Value = RedBlackTreeIteratorV2.Base._Value
 
@@ -38,7 +40,7 @@ extension RedBlackTreeIteratorV2.Values {
 
     @usableFromInline
     var poolLifespan: PoolLifespan
-    
+
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.__tree_ = .init(__tree_: tree)
@@ -49,7 +51,7 @@ extension RedBlackTreeIteratorV2.Values {
       self._begin = __tree_.__begin_node_
       self.poolLifespan = tree.poolLifespan
     }
-    
+
     @inlinable
     internal init(
       __tree_: ImmutableTree,
@@ -79,7 +81,7 @@ extension RedBlackTreeIteratorV2.Values {
 }
 
 extension RedBlackTreeIteratorV2.Values.Reversed {
-  
+
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Tree.Index, _Value) throws -> Void) rethrows {

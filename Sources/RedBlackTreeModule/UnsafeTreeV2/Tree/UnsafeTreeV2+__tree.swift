@@ -261,7 +261,7 @@ extension UnsafeTreeV2: FindProtocol {}
 extension UnsafeTreeV2: FindEqualProtocol, FindEqualProtocol_std {}
 extension UnsafeTreeV2: FindLeafProtocol {}
 extension UnsafeTreeV2: InsertNodeAtProtocol {}
-extension UnsafeTreeV2: InsertUniqueProtocol {}
+extension UnsafeTreeV2: InsertUniqueProtocol, InsertNodeAtProtocol_std {}
 extension UnsafeTreeV2: InsertMultiProtocol {}
 extension UnsafeTreeV2: EqualProtocol {}
 extension UnsafeTreeV2: RemoveProtocol {}

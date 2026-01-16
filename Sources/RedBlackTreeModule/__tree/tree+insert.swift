@@ -25,9 +25,18 @@ import Foundation
 @usableFromInline
 protocol InsertNodeAtProtocol:
   TreeNodeProtocol & TreeNodeRefProtocol & TreeEndProtocol & SizeProtocol & BeginNodeProtocol & EndNodeProtocol
-{}
+{
+  func
+    __insert_node_at(
+      _ __parent: _NodePtr, _ __child: _NodeRef,
+      _ __new_node: _NodePtr
+    )
+}
 
-extension InsertNodeAtProtocol {
+@usableFromInline
+protocol InsertNodeAtProtocol_std: InsertNodeAtProtocol {}
+
+extension InsertNodeAtProtocol_std {
 
   @inlinable
   @inline(__always)

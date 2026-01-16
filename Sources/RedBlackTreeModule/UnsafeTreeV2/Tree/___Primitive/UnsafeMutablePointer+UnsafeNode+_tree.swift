@@ -22,6 +22,7 @@ __root, have a non-null __parent_ field.
 /// Returns:  true if `__x` is a left child of its parent, else false
 /// Precondition:  `__x` != nullptr.
 @inlinable
+@inline(__always)
 internal func
   __tree_is_left_child(_ __x: UnsafeMutablePointer<UnsafeNode>) -> Bool
 {
@@ -200,6 +201,7 @@ internal func
 /// Effects:  Makes `__x`->`__right_` the subtree root with `__x` as its left child
 ///           while preserving in-order order.
 @inlinable
+@inline(__always)
 internal func
   __tree_left_rotate(_ __x: inout UnsafeMutablePointer<UnsafeNode>)
 {
@@ -214,7 +216,7 @@ internal func
   if __tree_is_left_child(__x) {
     __x.__parent_.__left_ = __y
   } else {
-    __x.__parent_.__right_ = __y
+    __x.__parent_unsafe.__right_ = __y
   }
   __y.__left_ = __x
   __x.__parent_ = __y
@@ -223,6 +225,7 @@ internal func
 /// Effects:  Makes `__x`->`__left_` the subtree root with `__x` as its right child
 ///           while preserving in-order order.
 @inlinable
+@inline(__always)
 internal func
   __tree_right_rotate(_ __x: inout UnsafeMutablePointer<UnsafeNode>)
 {
@@ -235,10 +238,9 @@ internal func
   }
   __y.__parent_ = __x.__parent_
   if __tree_is_left_child(__x) {
-
     __x.__parent_.__left_ = __y
   } else {
-    __x.__right_.__parent_ = __y
+    __x.__parent_unsafe.__right_ = __y
   }
   __y.__right_ = __x
   __x.__parent_ = __y
@@ -252,11 +254,13 @@ internal func
 /// Postcondition: `__tree_invariant(end_node->__left_)` == true.  end_node->`__left_`
 ///                may be different than the value passed in as `__root`.
 @inlinable
+@inline(__always)
 internal func
-  __tree_balance_after_insert(
-    _ __root: UnsafeMutablePointer<UnsafeNode>, _ __x: inout UnsafeMutablePointer<UnsafeNode>
+  _std__tree_balance_after_insert(
+    _ __root: UnsafeMutablePointer<UnsafeNode>, _ __x: UnsafeMutablePointer<UnsafeNode>
   )
 {
+  var __x = __x
   assert(__root != .nullptr, "Root of the tree shouldn't be null")
   assert(__x != .nullptr, "Can't attach null node to a leaf")
   __x.__is_black_ = __x == __root
@@ -314,7 +318,7 @@ internal func
 @inlinable
 @inline(__always)
 internal func
-  __tree_remove(_ __root: UnsafeMutablePointer<UnsafeNode>, _ __z: UnsafeMutablePointer<UnsafeNode>)
+  _std__tree_remove(_ __root: UnsafeMutablePointer<UnsafeNode>, _ __z: UnsafeMutablePointer<UnsafeNode>)
 {
   typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   assert(__root != .nullptr, "Root node should not be null")

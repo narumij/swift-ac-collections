@@ -8,37 +8,40 @@
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-  
-  @inlinable @inline(__always)
-  static var nullptr: _NodePtr { UnsafeNode.nullptr }
 
   @inlinable @inline(__always)
+  static var nullptr: _NodePtr {
+    _read { yield UnsafeNode.nullptr }
+  }
+
+  @inlinable
   var __left_: _NodePtr {
-    _read { yield pointee.__left_ }
-    _modify { yield &pointee.__left_ }
+    @inline(__always) _read { yield pointee.__left_ }
+    @inline(__always) _modify { yield &pointee.__left_ }
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   var __right_: _NodePtr {
-    _read { yield pointee.__right_ }
-    _modify { yield &pointee.__right_ }
+    @inline(__always) _read { yield pointee.__right_ }
+    @inline(__always) _modify { yield &pointee.__right_ }
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   var __parent_: _NodePtr {
-    _read { yield pointee.__parent_ }
-    _modify { yield &pointee.__parent_ }
+    @inline(__always) _read { yield pointee.__parent_ }
+    @inline(__always) _modify { yield &pointee.__parent_ }
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   var __parent_unsafe: _NodePtr {
-    _read { yield pointee.__parent_ }
+    @inline(__always) _read { yield pointee.__parent_ }
+    @inline(__always) _modify { yield &pointee.__parent_ }
   }
-  
-  @inlinable @inline(__always)
+
+  @inlinable
   var __is_black_: Bool {
-    _read { yield pointee.__is_black_ }
-    _modify { yield &pointee.__is_black_ }
+    @inline(__always) _read { yield pointee.__is_black_ }
+    @inline(__always) _modify { yield &pointee.__is_black_ }
   }
 }
 

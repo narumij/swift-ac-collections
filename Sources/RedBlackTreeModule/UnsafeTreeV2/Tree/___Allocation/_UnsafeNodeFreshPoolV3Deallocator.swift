@@ -27,7 +27,7 @@ package final class _UnsafeNodeFreshPoolV3Deallocator: UnsafeTreePointer {
 
   @inlinable
   @inline(__always)
-  public func isTriviallyIdentical(to other: _UnsafeNodeFreshPoolDeallocator) -> Bool {
+  public func isTriviallyIdentical(to other: _UnsafeNodeFreshPoolV3Deallocator) -> Bool {
     self === other
   }
 

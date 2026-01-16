@@ -56,8 +56,8 @@ package final class _UnsafeNodeFreshPoolV3Deallocator: UnsafeTreePointer {
 }
 
 @usableFromInline
-package final class _UnsafeNodeFreshPoolV3Deallocator2:
-  ManagedBuffer<_UnsafeNodeFreshPoolV3Deallocator2.Header, Void>, UnsafeTreePointer
+package final class _UnsafeNodeFreshPoolV3DeallocatorR2:
+  ManagedBuffer<_UnsafeNodeFreshPoolV3DeallocatorR2.Header, Void>, UnsafeTreePointer
 {
   public typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
 
@@ -66,17 +66,17 @@ package final class _UnsafeNodeFreshPoolV3Deallocator2:
     bucket: _BucketPointer?,
     deallocator: _UnsafeNodeFreshBucketAllocator
   )
-    -> _UnsafeNodeFreshPoolV3Deallocator2
+    -> _UnsafeNodeFreshPoolV3DeallocatorR2
   {
-    let storage = _UnsafeNodeFreshPoolV3Deallocator2.create(minimumCapacity: 0) { managedBuffer in
+    let storage = _UnsafeNodeFreshPoolV3DeallocatorR2.create(minimumCapacity: 0) { managedBuffer in
       return Header(freshBucketHead: bucket, freshPoolDeallocator: deallocator)
     }
-    return unsafeDowncast(storage, to: _UnsafeNodeFreshPoolV3Deallocator2.self)
+    return unsafeDowncast(storage, to: _UnsafeNodeFreshPoolV3DeallocatorR2.self)
   }
 
   @inlinable
   @inline(__always)
-  public func isTriviallyIdentical(to other: _UnsafeNodeFreshPoolV3Deallocator2) -> Bool {
+  public func isTriviallyIdentical(to other: _UnsafeNodeFreshPoolV3DeallocatorR2) -> Bool {
     self === other
   }
 
@@ -90,7 +90,7 @@ package final class _UnsafeNodeFreshPoolV3Deallocator2:
   }
 }
 
-extension _UnsafeNodeFreshPoolV3Deallocator2 {
+extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
 
   @frozen
   public
@@ -100,7 +100,7 @@ extension _UnsafeNodeFreshPoolV3Deallocator2 {
     @inlinable
     @inline(__always)
     internal init(
-      freshBucketHead: _UnsafeNodeFreshPoolV3Deallocator2.Header._BucketPointer? = nil,
+      freshBucketHead: _UnsafeNodeFreshPoolV3DeallocatorR2.Header._BucketPointer? = nil,
       freshPoolDeallocator: _UnsafeNodeFreshBucketAllocator, isBaseDeallocated: Bool = false
     ) {
       self.freshBucketHead = freshBucketHead
@@ -155,5 +155,5 @@ extension _UnsafeNodeFreshPoolV3Deallocator2 {
 
 /// The type-punned empty singleton storage instance.
 @usableFromInline
-nonisolated(unsafe) package let _emptyDeallocator = _UnsafeNodeFreshPoolV3Deallocator2
+nonisolated(unsafe) package let _emptyDeallocator = _UnsafeNodeFreshPoolV3DeallocatorR2
   .create(bucket: nil, deallocator: .init(valueType: Void.self, deinitialize: { _ in }))

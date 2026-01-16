@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
   @usableFromInline
-  typealias Deallocator = _UnsafeNodeFreshPoolV3Deallocator2
+  typealias Deallocator = _UnsafeNodeFreshPoolV3DeallocatorR2
 
 extension UnsafeTreeV2Buffer {
 

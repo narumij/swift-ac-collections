@@ -11,35 +11,38 @@
 // ポインタは解放チェック用
 // 値は回復操作用
 enum Bound<_NodePtr, _Value> {
-  // 回復方法がlower_bound
-  // つまり範囲の右側
+  // 範囲の左側。回復方法はupper_bound
+  // multで連続する値の中間や右側を消すと、値が異なる右を指すことになる。いまいち
   case lower(_NodePtr, _Value)
-  // 回復方法がupper_bound
-  // つまり範囲の左側
+  // 範囲の右側。回復方法はlower_bound
+  // multで連続する値の中間や右側を消すと、値が異なる左を指すことになる。いまいち
   case upper(_NodePtr, _Value)
 }
 
-enum Position<T: Comparable> {
+enum ___WrappedKey<_Key: Comparable> {
   // 値Tをもつ
-  case value(T)
+  case value(_Key)
   // endなため値を持たない
   case end
 }
 
-extension Position: Comparable {
-  static func < (lhs: Position<T>, rhs: Position<T>) -> Bool {
-    switch (lhs, rhs) {
+extension ___WrappedKey: Comparable {
+  static func < (__l: ___WrappedKey<_Key>, __r: ___WrappedKey<_Key>) -> Bool {
+    switch (__l, __r) {
     // endのほうが大きい
     case (.end, _): false
     // endのほうが大きい
     case (_, .end): true
     // どちらでもない場合、値で決まる
-    case (.value(let l), .value(let r)): l < r
+    case (.value(let _l), .value(let _r)): _l < _r
     }
   }
 }
 
-// TODO: 解放チェックと回復を木に実装する
+// ___WrappedKeyのアイデアは面白いが、ここまでケアするほうが異常な気がした。
+// 不正なポインタによるメモリ破壊やメモリエラーだけはしっかりとラップすることに主眼を置いた方がいいのでは？
+
+// TODO: 解放チェックと回復を検討する
 
 struct ___UnsafeRemoveProofIterator_initial<Base: ___TreeBase>: UnsafeTreeNodeProtocol,
   BoundAlgorithmProtocol_common, ValueComparator, IteratorProtocol, Sequence

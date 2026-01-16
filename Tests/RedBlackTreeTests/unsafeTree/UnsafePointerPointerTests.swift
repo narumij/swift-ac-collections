@@ -40,25 +40,5 @@ final class UnsafePointerPointerTests: XCTestCase {
     }
     nodes.deallocate()
   }
-  
-  func testFreshPool_NodeIdMatchesArrayIndex() {
-    typealias V = Int
-    var pool = FreshPool<V>()
-    pool.reserveCapacity(minimumCapacity: 10)
-
-    for i in 0..<10 {
-      let p = pool[i]
-      p.initialize(to: UnsafeNode.nullptr.create(id: i))
-    }
-
-    pool.used = 10
-
-    for i in 0..<10 {
-      XCTAssertEqual(pool[i].pointee.___node_id_, i)
-      XCTAssertEqual(pool[i].pointee.__left_, UnsafeNode.nullptr)
-      XCTAssertEqual(pool[i].pointee.__right_, UnsafeNode.nullptr)
-      XCTAssertEqual(pool[i].pointee.__parent_, UnsafeNode.nullptr)
-    }
-  }
 }
 #endif

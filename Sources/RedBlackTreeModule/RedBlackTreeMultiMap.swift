@@ -449,6 +449,7 @@ extension RedBlackTreeMultiMap {
     return __tree_.___erase_unique(key)
   }
 
+  // TODO: イテレータ利用の注意をドキュメントすること
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -458,6 +459,7 @@ extension RedBlackTreeMultiMap {
     return __tree_.___erase_multi(key)
   }
 
+  // TODO: CoWの挙動変更後、deprecatedまたは削除すること
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n* + *k*)
   @inlinable

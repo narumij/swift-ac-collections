@@ -871,7 +871,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
       // UnsafeTreeでは、範囲外のインデックスを作成できない
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
 #endif
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr as Int)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 2)))
@@ -895,7 +895,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, 5)
 
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr as Int)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 2)))

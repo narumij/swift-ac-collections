@@ -7,6 +7,34 @@
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  
+  @inlinable @inline(__always)
+  static var nullptr: _NodePtr { UnsafeNode.nullptr }
+
+  @inlinable @inline(__always)
+  var __left_: _NodePtr { pointee.__left_ }
+
+  @inlinable @inline(__always)
+  var __right_: _NodePtr { pointee.__right_ }
+
+  @inlinable @inline(__always)
+  var __parent_: _NodePtr { pointee.__parent_ }
+
+  @inlinable @inline(__always)
+  var __parent_unsafe: _NodePtr { pointee.__parent_ }
+  
+  @inlinable @inline(__always)
+  var __is_black_: Bool { pointee.__is_black_ }
+}
+
+//extension UnsafeMutablePointer where Pointee == UnsafeNode {
+//  @inlinable @inline(__always)
+//  var isGarbaged: Bool { pointee.isGarbaged }
+//}
+
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
+
   @inlinable
   @inline(__always)
   func __value_<_Value>() -> UnsafeMutablePointer<_Value> {

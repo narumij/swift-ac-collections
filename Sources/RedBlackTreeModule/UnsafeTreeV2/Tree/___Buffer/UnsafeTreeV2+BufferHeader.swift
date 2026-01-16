@@ -20,13 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-#if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
-  @usableFromInline
-  typealias Deallocator = _UnsafeNodeFreshPoolDeallocator
-#else
   @usableFromInline
   typealias Deallocator = _UnsafeNodeFreshPoolV3Deallocator2
-#endif
 
 extension UnsafeTreeV2Buffer {
 
@@ -39,16 +34,12 @@ extension UnsafeTreeV2Buffer {
     internal init(nullptr: _NodePtr) {
       self.nullptr = nullptr
       self.recycleHead = nullptr
-      #if !(USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2)
         self.freshBucketAllocator = .init(valueType: _Value.self) {
           $0.assumingMemoryBound(to: _Value.self)
             .deinitialize(count: 1)
         }
-      #endif
     }
 
-    //#if USE_FRESH_POOL_V1
-    #if !USE_FRESH_POOL_V2
       @usableFromInline var count: Int = 0
       @usableFromInline var recycleHead: _NodePtr
       @usableFromInline var freshPoolCapacity: Int = 0
@@ -57,19 +48,11 @@ extension UnsafeTreeV2Buffer {
       @usableFromInline var freshBucketHead: _BucketPointer?
       @usableFromInline var freshBucketLast: _BucketPointer?
       @usableFromInline let nullptr: _NodePtr
-      #if !(USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2)
         @usableFromInline
         var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator
-      #endif
       #if DEBUG
         @usableFromInline var freshBucketCount: Int = 0
       #endif
-    #else
-      @usableFromInline var recycleHead: _NodePtr
-      @usableFromInline let nullptr: _NodePtr
-      @usableFromInline var freshPool: FreshPool<_Value> = .init()
-      @usableFromInline var count: Int = 0
-    #endif
 
     @inlinable @inline(__always)
     var __end_node: _NodePtr? {
@@ -78,13 +61,6 @@ extension UnsafeTreeV2Buffer {
           .assumingMemoryBound(to: UnsafeNode.self)
       }
     }
-
-    #if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
-      @inlinable @inline(never)  // ホットじゃないのでinline化から除外したい
-      func didUpdateFreshBucketHead() {
-        //      _deallocator?.freshBucketHead = freshBucketHead
-      }
-    #endif
 
     @usableFromInline var _deallocator: Deallocator?
 
@@ -98,17 +74,9 @@ extension UnsafeTreeV2Buffer {
       mutating get {
         // TODO: 一度の保証付きの実装にすること
         if _deallocator == nil {
-          #if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
-            _deallocator = .init(
-              freshBucketHead: freshBucketHead,
-              stride: MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride,
-              deinitialize: UnsafePair<_Value>.deinitialize,
-              nullptr: nullptr)
-          #else
             _deallocator = .create(
               bucket: freshBucketHead,
               deallocator: freshBucketAllocator)
-          #endif
         }
         return _deallocator!
       }
@@ -135,18 +103,6 @@ extension UnsafeTreeV2Buffer {
     }
   }
 }
-
-// #if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
-
-#if USE_FRESH_POOL_V1
-  extension UnsafeTreeV2Buffer.Header: _UnsafeNodeFreshPool {}
-#elseif USE_FRESH_POOL_V2
-  extension UnsafeTreeV2Buffer.Header: UnsafeNodeFreshPoolV2 {}
-#else
-#endif
-
-#if !(USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2)
-//  extension UnsafeTreeV2Buffer.Header: _UnsafeNodeFreshPoolV3 {}
 
 /* ------------ V3のインライン化はじまり  -------------  */
 
@@ -339,8 +295,6 @@ extension UnsafeTreeV2Buffer {
   #endif
 
 /* ------------ V3のインライン化おわり  -------------  */
-
-#endif
 
 extension UnsafeTreeV2Buffer.Header {
 

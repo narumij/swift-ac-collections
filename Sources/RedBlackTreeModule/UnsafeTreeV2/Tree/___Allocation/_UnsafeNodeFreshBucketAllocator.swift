@@ -160,10 +160,6 @@ struct _UnsafeNodeFreshBucketAllocator {
     _BucketPointer, capacity: Int
   ) {
 
-    #if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
-      assert(capacity != 0)
-    #endif
-
     let (capacity, bytes, stride, alignment) = pagedCapacity(capacity: capacity)
 
     let header_storage = UnsafeMutableRawPointer._allocate(

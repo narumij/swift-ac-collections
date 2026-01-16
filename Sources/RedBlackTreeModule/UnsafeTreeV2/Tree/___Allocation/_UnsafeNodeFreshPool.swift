@@ -49,8 +49,6 @@ extension _UnsafeNodeFreshPool {
   public typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
 }
 
-//#if USE_FRESH_POOL_V1
-#if !USE_FRESH_POOL_V2
   extension _UnsafeNodeFreshPool {
 
     /*
@@ -429,7 +427,6 @@ extension _UnsafeNodeFreshPool {
       }
     }
   #endif
-#endif
 
 #if DEBUG
   extension _UnsafeNodeFreshPool {

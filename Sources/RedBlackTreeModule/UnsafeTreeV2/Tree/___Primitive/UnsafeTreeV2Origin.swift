@@ -25,38 +25,20 @@ public struct UnsafeTreeV2Origin: UnsafeTreePointer {
   @usableFromInline let nullptr: _NodePtr
   @usableFromInline var begin_ptr: _NodePtr
   @usableFromInline let end_ptr: _NodePtr
-  #if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
-    @usableFromInline var end_node: UnsafeNode
-  #endif
   @inlinable
   init(base: UnsafeMutablePointer<UnsafeTreeV2Origin>, nullptr: _NodePtr, end_ptr: _NodePtr?) {
     self.nullptr = nullptr
-    #if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
-      end_node = nullptr.create(id: .end)
-      let e = withUnsafeMutablePointer(to: &base.pointee.end_node) { $0 }
-      self.end_ptr = e
-      begin_ptr = e
-    #else
       self.end_ptr = end_ptr!
       begin_ptr = end_ptr!
-    #endif
   }
   @inlinable
   mutating func clear() {
     begin_ptr = end_ptr
-    #if USE_FRESH_POOL_V1 || USE_FRESH_POOL_V2
-      end_node.__left_ = nullptr
-      #if DEBUG
-        end_node.__right_ = nullptr
-        end_node.__parent_ = nullptr
-      #endif
-    #else
       begin_ptr.pointee.__left_ = nullptr
       #if DEBUG
         begin_ptr.pointee.__right_ = nullptr
         begin_ptr.pointee.__parent_ = nullptr
       #endif
-    #endif
   }
   @inlinable
   @inline(__always)

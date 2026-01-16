@@ -235,7 +235,7 @@ extension UnsafeIndexV2 {
       !__tree_.___is_garbaged(rawValue),
       !poolLifespan.isBaseDeallocated
     else { return nil }
-    return Base.___pointee(UnsafePair<_Value>.valuePointer(rawValue)!.pointee)
+    return Base.___pointee(rawValue.__value_().pointee)
   }
 }
 

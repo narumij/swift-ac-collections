@@ -51,7 +51,7 @@ struct ___UnsafeRemoveProofIterator_initial<Base: ___TreeBase>: UnsafeTreeNodePr
 {
 
   func value_util(_ p: _NodePtr) -> Base._Value {
-    UnsafePair<Base._Value>.valuePointer(p).pointee
+    p.__value_().pointee
   }
 
   func __get_value(_ p: _NodePtr) -> Base._Key {

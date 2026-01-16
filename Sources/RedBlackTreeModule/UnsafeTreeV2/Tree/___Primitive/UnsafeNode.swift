@@ -364,26 +364,3 @@ extension UnsafeNode {
     p.deinitialize(count: 1)
   }
 }
-
-extension UnsafeMutablePointer where Pointee == UnsafeNode {
-  
-  @inlinable
-  @inline(__always)
-  func _advanced(raw bytes: Int) -> UnsafeMutablePointer {
-    UnsafeMutableRawPointer(self)
-      .advanced(by: bytes)
-      .assumingMemoryBound(to: UnsafeNode.self)
-  }
-  
-  @inlinable
-  @inline(__always)
-  func _advanced(with stride: Int, count: Int) -> UnsafeMutablePointer {
-    _advanced(raw: (MemoryLayout<UnsafeNode>.stride + stride) * count)
-  }
-  
-  @inlinable
-  @inline(__always)
-  func _advanced<_Value>(with t: _Value.Type, count: Int) -> UnsafeMutablePointer {
-    _advanced(raw: (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride) * count)
-  }
-}

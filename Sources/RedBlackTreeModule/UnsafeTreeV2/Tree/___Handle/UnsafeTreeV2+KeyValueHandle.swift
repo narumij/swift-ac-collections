@@ -119,7 +119,7 @@ extension UnsafeTreeV2KeyValueHandle {
   @inlinable
   @inline(__always)
   func __get_value(_ p: _NodePtr) -> _Key {
-    UnsafePair<_Value>.valuePointer(p)!.pointee.key
+    p.__value_(as: _Value.self).pointee.key
   }
 }
 

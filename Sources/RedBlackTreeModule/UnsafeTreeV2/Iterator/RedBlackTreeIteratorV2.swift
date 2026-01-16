@@ -80,7 +80,7 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
     @inlinable
     @inline(__always)
     public mutating func next() -> _Value? {
-      source.next().map { UnsafePair<_Value>.valuePointer($0).pointee }
+      source.next().map { $0.__value_().pointee }
     }
 #endif
   }

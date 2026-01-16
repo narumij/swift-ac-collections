@@ -81,8 +81,8 @@ import XCTest
         __end_node: a.__tree_.__end_node,
         __current: (a.startIndex.rawValue, 0))
       for i in it {
-        print("a.removeAll", UnsafePair<Int>.valuePointer(i).pointee)
-        a.removeAll(UnsafePair<Int>.valuePointer(i).pointee)
+        print("a.removeAll", i.__value_().pointee as Int)
+        a.removeAll(i.__value_().pointee)
         print("a", a + [])
       }
       XCTAssertTrue(a.isEmpty)
@@ -100,8 +100,8 @@ import XCTest
           __last: a.__tree_.__end_node))
       
       for i in AnySequence(it + []) {
-        print("a.removeAll", UnsafePair<Int>.valuePointer(i).pointee)
-        a.removeAll(UnsafePair<Int>.valuePointer(i).pointee)
+        print("a.removeAll", i.__value_().pointee as Int)
+        a.removeAll(i.__value_().pointee)
         print("a", a + [])
       }
       

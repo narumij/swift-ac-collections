@@ -114,11 +114,11 @@ extension UnsafeTreeV2 {
   internal subscript(_ pointer: _NodePtr) -> _Value {
     @inline(__always) _read {
       assert(___initialized_contains(pointer))
-      yield UnsafeNode.valuePointer(pointer).pointee
+      yield pointer.__value_().pointee
     }
     @inline(__always) _modify {
       assert(___initialized_contains(pointer))
-      yield &UnsafeNode.valuePointer(pointer).pointee
+      yield &pointer.__value_().pointee
     }
   }
 }

@@ -134,12 +134,12 @@ extension UnsafeTreeHandleBase {
   @inlinable
   @inline(__always)
   package func __value_(_ p: _NodePtr) -> _Value {
-    UnsafePair<_Value>.valuePointer(p)!.pointee
+    p.__value_().pointee
   }
 
   @inlinable
   @inline(__always)
   package func ___element(_ p: _NodePtr, _ __v: _Value) {
-    UnsafePair<_Value>.valuePointer(p)!.pointee = __v
+    p.__value_().pointee = __v
   }
 }

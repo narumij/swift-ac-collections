@@ -40,7 +40,7 @@ extension _UnsafeNodeRecyclePool {
       p.pointee.___recycle_count += 1
     #endif
     // 値型の場合、この処理を削りたい誘惑がある
-    UnsafePair<_Value>.valuePointer(p)?.deinitialize(count: 1)
+    p.__value_(as: _Value.self).deinitialize(count: 1)
     #if GRAPHVIZ_DEBUG
       p!.pointee.__right_ = nil
       p!.pointee.__parent_ = nil

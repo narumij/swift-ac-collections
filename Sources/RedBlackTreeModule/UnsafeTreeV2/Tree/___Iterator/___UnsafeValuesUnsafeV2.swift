@@ -40,7 +40,7 @@ where
   @usableFromInline
   mutating func next() -> Base._Value? {
     return iterator.next().map {
-      UnsafePair<Base._Value>.valuePointer($0).pointee
+      $0.__value_().pointee
     }
   }
 }
@@ -62,7 +62,7 @@ where
   @usableFromInline
   mutating func next() -> Base._Key? {
     return iterator.next().map {
-      Base.__key(UnsafePair<Base._Value>.valuePointer($0).pointee)
+      Base.__key($0.__value_().pointee)
     }
   }
 }
@@ -84,7 +84,7 @@ where
   @usableFromInline
   mutating func next() -> Base._MappedValue? {
     return iterator.next().map {
-      Base.___mapped_value(UnsafePair<Base._Value>.valuePointer($0).pointee)
+      Base.___mapped_value($0.__value_().pointee)
     }
   }
 }
@@ -127,6 +127,6 @@ where Base: ___TreeBase {
   @inlinable
   @inline(__always)
   package mutating func next() -> Tree._Value? {
-    return source.next().map { UnsafePair<Base._Value>.valuePointer($0).pointee }
+    return source.next().map { $0.__value_().pointee }
   }
 }

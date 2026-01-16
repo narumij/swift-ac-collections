@@ -126,7 +126,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   package func __get_value(_ p: _NodePtr) -> _Key {
-    Base.__key(UnsafePair<_Value>.valuePointer(p)!.pointee)
+    Base.__key(p.__value_().pointee)
   }
 }
 
@@ -231,13 +231,13 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   package func __value_(_ p: _NodePtr) -> _Value {
-    UnsafePair<Tree._Value>.valuePointer(p)!.pointee
+    p.__value_().pointee
   }
 
   @inlinable
   @inline(__always)
   package func ___element(_ p: _NodePtr, _ __v: _Value) {
-    UnsafePair<Tree._Value>.valuePointer(p)!.pointee = __v
+    p.__value_().pointee = __v
   }
 }
 

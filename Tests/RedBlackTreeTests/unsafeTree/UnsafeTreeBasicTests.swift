@@ -69,7 +69,7 @@ import XCTest
         [0, 1, 2, 3])
 
       XCTAssertEqual(
-        storage.makeFreshPoolIterator().map { UnsafePair<Base._Value>.valuePointer($0).pointee },
+        storage.makeFreshPoolIterator().map { $0.__value_().pointee },
         [100, 200, 300, 400])
     }
 

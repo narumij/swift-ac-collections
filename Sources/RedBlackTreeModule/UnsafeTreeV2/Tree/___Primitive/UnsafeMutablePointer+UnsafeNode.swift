@@ -13,19 +13,33 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   static var nullptr: _NodePtr { UnsafeNode.nullptr }
 
   @inlinable @inline(__always)
-  var __left_: _NodePtr { pointee.__left_ }
+  var __left_: _NodePtr {
+    _read { yield pointee.__left_ }
+    _modify { yield &pointee.__left_ }
+  }
 
   @inlinable @inline(__always)
-  var __right_: _NodePtr { pointee.__right_ }
+  var __right_: _NodePtr {
+    _read { yield pointee.__right_ }
+    _modify { yield &pointee.__right_ }
+  }
 
   @inlinable @inline(__always)
-  var __parent_: _NodePtr { pointee.__parent_ }
+  var __parent_: _NodePtr {
+    _read { yield pointee.__parent_ }
+    _modify { yield &pointee.__parent_ }
+  }
 
   @inlinable @inline(__always)
-  var __parent_unsafe: _NodePtr { pointee.__parent_ }
+  var __parent_unsafe: _NodePtr {
+    _read { yield pointee.__parent_ }
+  }
   
   @inlinable @inline(__always)
-  var __is_black_: Bool { pointee.__is_black_ }
+  var __is_black_: Bool {
+    _read { yield pointee.__is_black_ }
+    _modify { yield &pointee.__is_black_ }
+  }
 }
 
 //extension UnsafeMutablePointer where Pointee == UnsafeNode {

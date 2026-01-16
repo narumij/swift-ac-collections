@@ -132,8 +132,7 @@ final class AllocationTests: RedBlackTreeTestCase {
       }
     }
 
-  //#if USE_FRESH_POOL_V1
-  #if !USE_FRESH_POOL_V2
+  #if false
     func testCapacityGrowth() throws {
       throw XCTSkip("メモリのチェックは別途追加すること")
       #if false

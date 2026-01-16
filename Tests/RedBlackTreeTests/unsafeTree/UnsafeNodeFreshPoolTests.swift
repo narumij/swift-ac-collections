@@ -8,8 +8,6 @@
 import XCTest
 
 #if DEBUG
-//#if USE_FRESH_POOL_V1
-#if !USE_FRESH_POOL_V2
   @testable import RedBlackTreeModule
 
 struct FreshPoolFixture<_Value>: _UnsafeNodeFreshPool {
@@ -397,5 +395,4 @@ struct FreshPoolFixture<_Value>: _UnsafeNodeFreshPool {
     }
 
   }
-#endif
 #endif

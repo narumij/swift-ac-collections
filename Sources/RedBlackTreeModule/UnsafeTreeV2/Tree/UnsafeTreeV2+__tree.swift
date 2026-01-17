@@ -139,13 +139,16 @@ extension UnsafeTreeV2 {
 
     @inline(__always) get {
       //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr }
-      origin.pointee.begin_ptr
+//      origin.pointee.begin_ptr
+      withMutableHeader { $0.begin_ptr }
     }
 
     @inline(__always)
     nonmutating set {
-      origin.pointee.begin_ptr = newValue
+//      origin.pointee.begin_ptr = newValue
       //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr = newValue }
+      withMutableHeader { $0.begin_ptr = newValue }
+
     }
   }
 }
@@ -157,7 +160,8 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   package var __end_node: _NodePtr {
-    origin.pointee.end_ptr
+//    origin.pointee.end_ptr
+    withMutableHeader { $0.end_ptr }
   }
 }
 
@@ -170,14 +174,14 @@ extension UnsafeTreeV2 {
     @inlinable
     @inline(__always)
     package var __root: _NodePtr {
-      origin.pointee.__root
+      get { withMutableHeader { $0.__root } }
     }
   #else
     @inlinable
     @inline(__always)
     package var __root: _NodePtr {
-      get { origin.pointee.__root }
-      set { origin.pointee.__root = newValue }
+      get { withMutableHeader { $0.__root } }
+      set { withMutableHeader { $0.__root = newValue } }
     }
   #endif
 
@@ -186,8 +190,8 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   package func __root_ptr() -> _NodeRef {
-    origin.pointee.__root_ptr()
-  }
+//    origin.pointee.__root_ptr()
+    withMutableHeader { $0.__root_ptr() }  }
 }
 
 // MARK: - SizeProtocol

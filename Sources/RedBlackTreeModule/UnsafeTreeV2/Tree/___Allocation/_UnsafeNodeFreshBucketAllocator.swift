@@ -259,6 +259,13 @@ struct _UnsafeNodeFreshBucketAllocator {
 
   @inlinable
   @inline(__always)
+  func end(from head: _BucketPointer) -> _NodePtr {
+    UnsafeMutableRawPointer(head.advanced(by: 1))
+      .assumingMemoryBound(to: UnsafeNode.self)
+  }
+
+  @inlinable
+  @inline(__always)
   func pagedCapacity(capacity: Int) -> (
     capacity: Int, bytes: Int, stride: Int, alignment: Int
   ) {

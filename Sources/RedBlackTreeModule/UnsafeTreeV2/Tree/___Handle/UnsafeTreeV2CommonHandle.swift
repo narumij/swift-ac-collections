@@ -49,38 +49,38 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @inlinable
-  @inline(__always)
-  internal func withOrigin<R>(
-    _ body: (UnsafeTreeV2Origin) throws -> R
-  )
-    rethrows -> R
-  {
-    // withUnsafeMutablePointerToElementsだとスタックが一個ふえてみづらいので
-    try _buffer.withUnsafeMutablePointers { _, origin in
-      return try body(origin.pointee)
-    }
-  }
+//  @inlinable
+//  @inline(__always)
+//  internal func withOrigin<R>(
+//    _ body: (UnsafeTreeV2Origin) throws -> R
+//  )
+//    rethrows -> R
+//  {
+//    // withUnsafeMutablePointerToElementsだとスタックが一個ふえてみづらいので
+//    try _buffer.withUnsafeMutablePointers { _, origin in
+//      return try body(origin.pointee)
+//    }
+//  }
 
-  @inlinable
-  @inline(__always)
-  internal func withMutableOrigin<R>(
-    _ body: (inout UnsafeTreeV2Origin) throws -> R
-  )
-    rethrows -> R
-  {
-    // withUnsafeMutablePointerToElementsだとスタックが一個ふえてみづらいので
-    try _buffer.withUnsafeMutablePointers { _, origin in
-      return try body(&origin.pointee)
-    }
-  }
+//  @inlinable
+//  @inline(__always)
+//  internal func withMutableOrigin<R>(
+//    _ body: (inout UnsafeTreeV2Origin) throws -> R
+//  )
+//    rethrows -> R
+//  {
+//    // withUnsafeMutablePointerToElementsだとスタックが一個ふえてみづらいので
+//    try _buffer.withUnsafeMutablePointers { _, origin in
+//      return try body(&origin.pointee)
+//    }
+//  }
 
   @inlinable
   @inline(__always)
   internal func withImmutables<R>(
     _ body: (
       UnsafeTreeV2BufferHeader,
-      UnsafeTreeV2Origin
+      Void
     ) throws -> R
   ) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
@@ -93,7 +93,7 @@ extension UnsafeTreeV2 {
   internal func withMutables<R>(
     _ body: (
       inout UnsafeTreeV2BufferHeader,
-      inout UnsafeTreeV2Origin
+      inout Void
     ) throws -> R
   ) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in

@@ -25,83 +25,101 @@ typealias Deallocator = _UnsafeNodeFreshPoolV3DeallocatorR2
 
 //extension UnsafeTreeV2Buffer {
 
-  @frozen
-  public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
-    public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+@frozen
+public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
-    @inlinable
-    @inline(__always)
-    internal init<_Value>(_ t: _Value.Type,nullptr: _NodePtr) {
-      self.nullptr = nullptr
-      self.recycleHead = nullptr
-      self.freshBucketAllocator = .init(valueType: _Value.self) {
-        $0.assumingMemoryBound(to: _Value.self)
-          .deinitialize(count: 1)
-      }
+  @inlinable
+  @inline(__always)
+  internal init<_Value>(_ t: _Value.Type, nullptr: _NodePtr, capacity: Int) {
+    let allocator = _UnsafeNodeFreshBucketAllocator(valueType: _Value.self) {
+      $0.assumingMemoryBound(to: _Value.self)
+        .deinitialize(count: 1)
     }
+    let (head,_) = allocator.createHeadBucket(capacity: capacity, nullptr: nullptr)
+    let end_ptr = allocator.end(from: head)
+    self.nullptr = nullptr
+    self.recycleHead = nullptr
+    self.freshBucketAllocator = allocator
+//    self.end_ptr = end_ptr
+    self.begin_ptr = end_ptr
+    self.pushFresBucket(head: head)
+  }
 
-    @usableFromInline var count: Int = 0
-    @usableFromInline var recycleHead: _NodePtr
-    @usableFromInline var freshPoolCapacity: Int = 0
-    @usableFromInline var freshBucketCurrent: _BucketPointer?
-    @usableFromInline var freshPoolUsedCount: Int = 0
-    @usableFromInline var freshBucketHead: _BucketPointer?
-    @usableFromInline var freshBucketLast: _BucketPointer?
-    @usableFromInline let nullptr: _NodePtr
-    @usableFromInline
-    var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator
-    #if DEBUG
-      @usableFromInline var freshBucketCount: Int = 0
-    #endif
+  @usableFromInline var count: Int = 0
+  @usableFromInline var recycleHead: _NodePtr
+  @usableFromInline var freshPoolCapacity: Int = 0
+  @usableFromInline var freshBucketCurrent: _BucketPointer?
+  @usableFromInline var freshPoolUsedCount: Int = 0
+  @usableFromInline var freshBucketHead: _BucketPointer?
+  @usableFromInline var freshBucketLast: _BucketPointer?
+  @usableFromInline let nullptr: _NodePtr
+  @usableFromInline var begin_ptr: _NodePtr
+//  @usableFromInline let end_ptr: _NodePtr
+  @usableFromInline
+  var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator
+  #if DEBUG
+    @usableFromInline var freshBucketCount: Int = 0
+  #endif
 
-    @inlinable @inline(__always)
-    var __end_node: _NodePtr? {
-      freshBucketHead.map {
-        UnsafeMutableRawPointer($0.advanced(by: 1))
-          .assumingMemoryBound(to: UnsafeNode.self)
+  @inlinable @inline(__always)
+  var end_ptr: _NodePtr {
+    freshBucketHead.map { freshBucketAllocator.end(from: $0) }!
+  }
+
+  @inlinable @inline(__always)
+  var __root: _NodePtr {
+    get { end_ptr.pointee.__left_ }
+    set { end_ptr.pointee.__left_ = newValue }
+  }
+  
+  @inlinable @inline(__always)
+  internal func __root_ptr() -> _NodeRef {
+    withUnsafeMutablePointer(to: &end_ptr.pointee.__left_) { $0 }
+  }
+
+  @usableFromInline var _deallocator: Deallocator?
+
+  @inlinable @inline(__always)
+  var needsDealloc: Bool {
+    _deallocator == nil
+  }
+
+  @inlinable @inline(__always)
+  var deallocator: Deallocator {
+    mutating get {
+      // TODO: 一度の保証付きの実装にすること
+      if _deallocator == nil {
+        _deallocator = .create(
+          bucket: freshBucketHead,
+          deallocator: freshBucketAllocator)
       }
-    }
-
-    @usableFromInline var _deallocator: Deallocator?
-
-    @inlinable @inline(__always)
-    var needsDealloc: Bool {
-      _deallocator == nil
-    }
-
-    @inlinable @inline(__always)
-    var deallocator: Deallocator {
-      mutating get {
-        // TODO: 一度の保証付きの実装にすること
-        if _deallocator == nil {
-          _deallocator = .create(
-            bucket: freshBucketHead,
-            deallocator: freshBucketAllocator)
-        }
-        return _deallocator!
-      }
-    }
-
-    #if DEBUG
-      @inlinable
-      @inline(__always)
-      mutating func createDeallocator() {
-        _ = deallocator
-      }
-    #endif
-
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
-      /// CoWの発火回数を観察するためのプロパティ
-      @usableFromInline internal var copyCount: UInt = 0
-    #endif
-
-    @inlinable
-    @inline(__always)
-    internal mutating func deinitialize() {
-      ___flushFreshPool()
-      ___flushRecyclePool()
+      return _deallocator!
     }
   }
+
+  #if DEBUG
+    @inlinable
+    @inline(__always)
+    mutating func createDeallocator() {
+      _ = deallocator
+    }
+  #endif
+
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    /// CoWの発火回数を観察するためのプロパティ
+    @usableFromInline internal var copyCount: UInt = 0
+  #endif
+
+  @inlinable
+  @inline(__always)
+  internal mutating func deinitialize() {
+    ___flushFreshPool()
+    ___flushRecyclePool()
+    begin_ptr = end_ptr
+    end_ptr.pointee.__left_ = nullptr
+  }
+}
 //}
 
 /* ------------ V3のインライン化はじまり  -------------  */
@@ -135,6 +153,22 @@ extension UnsafeTreeV2BufferHeader {
       freshBucketCount += 1
     #endif
   }
+  
+  @inlinable
+  @inline(__always)
+  mutating func pushFresBucket(head: _BucketPointer) {
+//    assert(freshBucketHead == nil || capacity != 0)
+//    let (pointer, capacity) = freshBucketAllocator.createHeadBucket(
+//      capacity: capacity, nullptr: nullptr)
+    freshBucketHead = head
+    freshBucketCurrent = head
+    freshBucketLast = head
+    freshPoolCapacity += head.pointee.capacity
+    #if DEBUG
+      freshBucketCount += 1
+    #endif
+  }
+
 
   @inlinable
   @inline(__always)
@@ -216,7 +250,7 @@ extension UnsafeTreeV2BufferHeader {
   @inline(__always)
   var freshPoolNumBytes: Int {
     var bytes = 0
-    var p = freshBucketHead
+    var p = freshBucketHead as _BucketPointer?
     while let h = p {
       bytes += h.pointee.count * freshBucketAllocator.nodeValueStride
       p = h.pointee.next
@@ -235,9 +269,9 @@ extension UnsafeTreeV2BufferHeader {
 }
 
 extension UnsafeTreeV2BufferHeader {
-  
+
   @usableFromInline typealias Iterator = _UnsafeNodeFreshPoolIterator
-  
+
   @inlinable
   @inline(__always)
   func makeFreshPoolIterator<T>() -> _UnsafeNodeFreshPoolIterator<T> {
@@ -259,7 +293,7 @@ extension UnsafeTreeV2BufferHeader {
       return nullptr
     }
     assert(p.pointee.___node_id_ == .debug)
-//    UnsafeNode.bindValue(_Value.self, p)
+    //    UnsafeNode.bindValue(_Value.self, p)
     p.initialize(to: nullptr.create(id: freshPoolUsedCount))
     freshPoolUsedCount += 1
     count += 1

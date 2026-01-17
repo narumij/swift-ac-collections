@@ -20,35 +20,35 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@frozen
-public struct UnsafeTreeV2Origin: UnsafeTreePointer {
-  @usableFromInline let nullptr: _NodePtr
-  @usableFromInline var begin_ptr: _NodePtr
-  @usableFromInline let end_ptr: _NodePtr
-  @inlinable
-  init(base: UnsafeMutablePointer<UnsafeTreeV2Origin>, nullptr: _NodePtr, end_ptr: _NodePtr?) {
-    self.nullptr = nullptr
-    self.end_ptr = end_ptr!
-    begin_ptr = end_ptr!
-  }
-  @inlinable
-  mutating func clear() {
-    begin_ptr = end_ptr
-    begin_ptr.pointee.__left_ = nullptr
-    #if DEBUG
-      begin_ptr.pointee.__right_ = nullptr
-      begin_ptr.pointee.__parent_ = nullptr
-    #endif
-  }
-  @inlinable
-  @inline(__always)
-  var __root: _NodePtr {
-    get { end_ptr.pointee.__left_ }
-    set { end_ptr.pointee.__left_ = newValue }
-  }
-  @inlinable
-  @inline(__always)
-  internal func __root_ptr() -> _NodeRef {
-    withUnsafeMutablePointer(to: &end_ptr.pointee.__left_) { $0 }
-  }
-}
+//@frozen
+//public struct UnsafeTreeV2Origin: UnsafeTreePointer {
+//  @usableFromInline let nullptr: _NodePtr
+//  @usableFromInline var begin_ptr: _NodePtr
+//  @usableFromInline let end_ptr: _NodePtr
+//  @inlinable
+//  init(base: UnsafeMutablePointer<UnsafeTreeV2Origin>, nullptr: _NodePtr, end_ptr: _NodePtr?) {
+//    self.nullptr = nullptr
+//    self.end_ptr = end_ptr!
+//    begin_ptr = end_ptr!
+//  }
+//  @inlinable
+//  mutating func clear() {
+//    begin_ptr = end_ptr
+//    begin_ptr.pointee.__left_ = nullptr
+//    #if DEBUG
+//      begin_ptr.pointee.__right_ = nullptr
+//      begin_ptr.pointee.__parent_ = nullptr
+//    #endif
+//  }
+//  @inlinable
+//  @inline(__always)
+//  var __root: _NodePtr {
+//    get { end_ptr.pointee.__left_ }
+//    set { end_ptr.pointee.__left_ = newValue }
+//  }
+//  @inlinable
+//  @inline(__always)
+//  internal func __root_ptr() -> _NodeRef {
+//    withUnsafeMutablePointer(to: &end_ptr.pointee.__left_) { $0 }
+//  }
+//}

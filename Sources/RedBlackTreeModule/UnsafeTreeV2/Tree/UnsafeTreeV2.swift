@@ -24,23 +24,23 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @inlinable
   internal init(
-    _buffer: ManagedBufferPointer<Header, UnsafeTreeV2Origin>,
+    _buffer: ManagedBufferPointer<Header, Void>,
     isReadOnly: Bool = false
   ) {
     self._buffer = _buffer
     self.isReadOnly = isReadOnly
-    let origin = _buffer.withUnsafeMutablePointerToElements { $0 }
-    self.nullptr = origin.pointee.nullptr
-    self.end = origin.pointee.end_ptr
-    self.origin = origin
+    let h = _buffer.withUnsafeMutablePointerToHeader { $0 }
+    self.nullptr = h.pointee.nullptr
+    self.end = h.pointee.end_ptr
+//    self.origin = origin
     self.specializeMode = SpecializeModeHoge<_Key>().specializeMode
   }
 
   public typealias Base = Base
   public typealias Tree = UnsafeTreeV2<Base>
   public typealias Header = UnsafeTreeV2BufferHeader
-  public typealias Buffer = ManagedBuffer<Header, UnsafeTreeV2Origin>
-  public typealias BufferPointer = ManagedBufferPointer<Header, UnsafeTreeV2Origin>
+  public typealias Buffer = ManagedBuffer<Header, Void>
+  public typealias BufferPointer = ManagedBufferPointer<Header, Void>
   public typealias _Key = Base._Key
   public typealias _Value = Base._Value
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
@@ -54,8 +54,8 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   @usableFromInline
   let isReadOnly: Bool
 
-  @usableFromInline
-  let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
+//  @usableFromInline
+//  let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
 
   @usableFromInline
   let specializeMode: SpecializeMode
@@ -135,7 +135,7 @@ extension UnsafeTreeV2 {
   internal func deinitialize() {
     withMutables { header, origin in
       header.deinitialize()
-      origin.clear()
+//      header.clear()
     }
   }
 }

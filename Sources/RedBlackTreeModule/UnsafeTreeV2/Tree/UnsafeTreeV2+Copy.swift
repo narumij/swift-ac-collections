@@ -56,9 +56,9 @@ extension UnsafeTreeV2 {
     }
 
     let header = _buffer.header
-    let source = origin.pointee
+//    let source = origin.pointee
 
-    tree.withMutables { newHeader, newOrigin in
+    tree.withMutableHeader { newHeader in
 
       // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
       let bucket = newHeader.freshBucketHead!.pointee
@@ -69,7 +69,7 @@ extension UnsafeTreeV2 {
         let index = ptr.pointee.___node_id_
         return switch index {
         case .nullptr: nullptr
-        case .end: newOrigin.end_ptr
+        case .end: newHeader.end_ptr
         default: bucket[index]
         }
       }
@@ -101,10 +101,10 @@ extension UnsafeTreeV2 {
       }
 
       // ルートノードを設定
-      newOrigin.__root = __ptr_(source.__root)
+      newHeader.__root = __ptr_(header.__root)
 
       // __begin_nodeを初期化
-      newOrigin.begin_ptr = __ptr_(source.begin_ptr)
+      newHeader.begin_ptr = __ptr_(header.begin_ptr)
 
       // その他管理情報をコピー
       newHeader.recycleHead = __ptr_(header.recycleHead)

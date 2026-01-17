@@ -25,18 +25,18 @@ package protocol UnsafeTreeHandleBase: UnsafeTreeNodeProtocol & _TreeValue & Uns
   UnsafeTreeNodeRefProtocol
 {
   var header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader> { get }
-  var origin: UnsafeMutablePointer<UnsafeTreeV2Origin> { get }
+//  var origin: UnsafeMutableRawPointer { get }
 }
 
 extension UnsafeTreeHandleBase {
 
   @inlinable
   @inline(__always)
-  package var nullptr: _NodePtr { origin.pointee.nullptr }
+  package var nullptr: _NodePtr { header.pointee.nullptr }
 
   @inlinable
   @inline(__always)
-  package var end: _NodePtr { origin.pointee.end_ptr }
+  package var end: _NodePtr { header.pointee.end_ptr }
 }
 
 // MARK: - BeginNodeProtocol
@@ -47,12 +47,12 @@ extension UnsafeTreeHandleBase {
   package var __begin_node_: _NodePtr {
 
     @inline(__always) get {
-      origin.pointee.begin_ptr
+      header.pointee.begin_ptr
     }
 
     @inline(__always)
     nonmutating set {
-      origin.pointee.begin_ptr = newValue
+      header.pointee.begin_ptr = newValue
     }
   }
 }
@@ -64,7 +64,7 @@ extension UnsafeTreeHandleBase {
   @inlinable
   @inline(__always)
   package var __end_node: _NodePtr {
-    origin.pointee.end_ptr
+    header.pointee.end_ptr
   }
 }
 
@@ -77,7 +77,7 @@ extension UnsafeTreeHandleBase {
     @inlinable
     @inline(__always)
     package var __root: _NodePtr {
-      origin.pointee.end_ptr.pointee.__left_
+      end.pointee.__left_
     }
   #else
     @inlinable
@@ -93,7 +93,7 @@ extension UnsafeTreeHandleBase {
   @inlinable
   @inline(__always)
   package func __root_ptr() -> _NodeRef {
-    withUnsafeMutablePointer(to: &origin.pointee.end_ptr.pointee.__left_) { $0 }
+    withUnsafeMutablePointer(to: &header.pointee.end_ptr.pointee.__left_) { $0 }
   }
 }
 

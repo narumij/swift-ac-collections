@@ -32,11 +32,11 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
   @inlinable
   internal init(
     header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>,
-    origin: UnsafeMutablePointer<UnsafeTreeV2Origin>,
+    origin: UnsafeMutableRawPointer,
     specializeMode: SpecializeMode? = nil
   ) {
     self.header = header
-    self.origin = origin
+//    self.origin = origin
     self.isMulti = false
     // 性能上とても重要だが、コンパイラ挙動に合わせての採用でとても場当たり的
     self.specializeMode = specializeMode ?? SpecializeModeHoge<_Key>().specializeMode
@@ -47,7 +47,7 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
   @usableFromInline typealias _Pointer = _NodePtr
   @usableFromInline typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
-  @usableFromInline let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
+//  @usableFromInline let origin: UnsafeMutableRawPointer
   @usableFromInline var isMulti: Bool
   @usableFromInline var specializeMode: SpecializeMode
 }

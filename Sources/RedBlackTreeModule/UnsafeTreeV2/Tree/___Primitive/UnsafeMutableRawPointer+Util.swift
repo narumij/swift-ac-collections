@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/16.
 //
 
-#if false
+#if USE_C_MALLOC
   import _Unsafe
   extension UnsafeMutableRawPointer {
     static func _unsafe_malloc(byteCount: Int, alignment: Int) -> UnsafeMutableRawPointer {

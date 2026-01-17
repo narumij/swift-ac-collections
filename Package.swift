@@ -18,6 +18,8 @@ var defines: [String] = [
   "USE_UNSAFE_TREE",  // TODO: そのうち消す
   //"USE_OLD_FIND",
   // "ALLOCATION_DRILL" // リリース時はオフ
+
+  "USE_C_MALLOC",
 ]
 
 var _settings: [SwiftSetting] =
@@ -47,6 +49,9 @@ var _settings: [SwiftSetting] =
     // 安全側に振る場合は、(COMPATIBLE_ATCODER_2025を無効にし)、この定義を有効にしてください。
   ]
   + defines.map { .define($0) }
+
+let dependencyMap = ["USE_C_MALLOC": "_malloc_free"]
+let additionalDepencencies = defines.compactMap { dependencyMap[$0] }
 
 let package = Package(
   name: "swift-ac-collections",
@@ -88,7 +93,7 @@ let package = Package(
       swiftSettings: _settings
     ),
     .target(
-      name: "_Unsafe",
+      name: "_malloc_free",
       publicHeadersPath: "include",
       cSettings: [
         .headerSearchPath("include"),
@@ -96,9 +101,7 @@ let package = Package(
       ]),
     .target(
       name: "RedBlackTreeModule",
-      dependencies: [
-        "_Unsafe"
-      ],
+      dependencies: [] + additionalDepencencies,
       exclude: ["MEMO.md"],
       swiftSettings: _settings
     ),

@@ -91,10 +91,10 @@
     }
   }
 
-  extension UnsafeTreeV2Buffer.Header {
+  extension UnsafeTreeV2BufferHeader {
 
     @inlinable
-    package func equiv(with other: UnsafeTreeV2Buffer.Header) -> Bool {
+    package func equiv(with other: UnsafeTreeV2BufferHeader) -> Bool {
       // freshPoolCapacityは等価判定不可
       assert(recycleCount == other.recycleCount)
       assert(freshPoolActualCount == other.freshPoolActualCount)

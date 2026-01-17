@@ -23,10 +23,10 @@
 @usableFromInline
 typealias Deallocator = _UnsafeNodeFreshPoolV3DeallocatorR2
 
-extension UnsafeTreeV2Buffer {
+//extension UnsafeTreeV2Buffer {
 
   @frozen
-  public struct Header: _UnsafeNodeRecyclePool {
+  public struct UnsafeTreeV2BufferHeader<_Value>: _UnsafeNodeRecyclePool {
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     @inlinable
@@ -102,16 +102,16 @@ extension UnsafeTreeV2Buffer {
       ___flushRecyclePool()
     }
   }
-}
+//}
 
 /* ------------ V3のインライン化はじまり  -------------  */
 
-extension UnsafeTreeV2Buffer.Header {
+extension UnsafeTreeV2BufferHeader {
   @usableFromInline typealias _Bucket = _UnsafeNodeFreshBucket
   @usableFromInline typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
 }
 
-extension UnsafeTreeV2Buffer.Header {
+extension UnsafeTreeV2BufferHeader {
 
   /*
    NOTE:
@@ -161,7 +161,7 @@ extension UnsafeTreeV2Buffer.Header {
   }
 }
 
-extension UnsafeTreeV2Buffer.Header {
+extension UnsafeTreeV2BufferHeader {
 
   /*
    IMPORTANT:
@@ -193,7 +193,7 @@ extension UnsafeTreeV2Buffer.Header {
   }
 }
 
-extension UnsafeTreeV2Buffer.Header {
+extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   @inline(__always)
@@ -210,7 +210,7 @@ extension UnsafeTreeV2Buffer.Header {
   }
 }
 
-extension UnsafeTreeV2Buffer.Header {
+extension UnsafeTreeV2BufferHeader {
   // TODO: ジェネリクスが外れたらPOOL V3に戻す
   @inlinable
   @inline(__always)
@@ -225,7 +225,7 @@ extension UnsafeTreeV2Buffer.Header {
   }
 }
 
-extension UnsafeTreeV2Buffer.Header {
+extension UnsafeTreeV2BufferHeader {
   // TODO: ジェネリクスが外れたらPOOL V3に戻す
   @inlinable
   @inline(__always)
@@ -234,16 +234,18 @@ extension UnsafeTreeV2Buffer.Header {
   }
 }
 
-extension UnsafeTreeV2Buffer.Header {
-  // TODO: ジェネリクスが外れたらPOOL V3に戻す？
+extension UnsafeTreeV2BufferHeader {
+  
+  @usableFromInline typealias Iterator = _UnsafeNodeFreshPoolIterator
+  
   @inlinable
   @inline(__always)
-  func makeFreshPoolIterator() -> _UnsafeNodeFreshPoolIterator<_Value> {
-    return _UnsafeNodeFreshPoolIterator<_Value>(bucket: freshBucketHead, nullptr: nullptr)
+  func makeFreshPoolIterator<T>() -> _UnsafeNodeFreshPoolIterator<T> {
+    return _UnsafeNodeFreshPoolIterator<T>(bucket: freshBucketHead, nullptr: nullptr)
   }
 }
 
-extension UnsafeTreeV2Buffer.Header {
+extension UnsafeTreeV2BufferHeader {
 
   // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
   // Headerに移すのが妥当かも。そうすれば_Value依存が消せる
@@ -266,7 +268,7 @@ extension UnsafeTreeV2Buffer.Header {
 }
 
 #if DEBUG
-  extension UnsafeTreeV2Buffer.Header {
+  extension UnsafeTreeV2BufferHeader {
 
     @inlinable
     @inline(__always)
@@ -296,11 +298,11 @@ extension UnsafeTreeV2Buffer.Header {
 
 /* ------------ V3のインライン化おわり  -------------  */
 
-extension UnsafeTreeV2Buffer.Header {
+extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   @inline(__always)
-  public mutating func __construct_node(_ k: _Value) -> _NodePtr {
+  public mutating func __construct_node<T>(_ k: T) -> _NodePtr {
     #if DEBUG
       assert(recycleCount >= 0)
     #endif

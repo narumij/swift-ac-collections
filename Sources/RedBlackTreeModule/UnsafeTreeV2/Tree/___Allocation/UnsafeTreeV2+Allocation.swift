@@ -15,7 +15,7 @@ protocol UnsafeTreeAllcationBodyV2: _ValueProtocol {
 }
 
 extension UnsafeTreeV2: UnsafeTreeAllcationBodyV2 {}
-extension UnsafeTreeV2Buffer.Header: UnsafeTreeAllocationHeader {}
+extension UnsafeTreeV2BufferHeader: UnsafeTreeAllocationHeader {}
 
 nonisolated(unsafe)
   public var growSetting: (numer: Int, denom: Int, minimum: Int) = (1, 1, 1)

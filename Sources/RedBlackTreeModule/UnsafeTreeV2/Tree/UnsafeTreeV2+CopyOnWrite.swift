@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension UnsafeTreeV2Buffer.Header {
+extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   @inline(__always)
@@ -187,7 +187,7 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2Buffer.Header {
+extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   @inline(__always)

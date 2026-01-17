@@ -31,7 +31,7 @@
 struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
   @inlinable
   internal init(
-    header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header>,
+    header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader<_Value>>,
     origin: UnsafeMutablePointer<UnsafeTreeV2Origin>,
     specializeMode: SpecializeMode? = nil
   ) {
@@ -46,7 +46,7 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
   @usableFromInline typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   @usableFromInline typealias _Pointer = _NodePtr
   @usableFromInline typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
-  @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2Buffer<_Value>.Header>
+  @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader<_Value>>
   @usableFromInline let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
   @usableFromInline var isMulti: Bool
   @usableFromInline var specializeMode: SpecializeMode

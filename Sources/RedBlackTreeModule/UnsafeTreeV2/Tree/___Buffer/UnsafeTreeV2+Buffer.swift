@@ -25,7 +25,7 @@ import Foundation
 // TODO: テスト整備後internalにする
 @_fixed_layout
 public final class UnsafeTreeV2Buffer<_Value>:
-  ManagedBuffer<UnsafeTreeV2Buffer<_Value>.Header, UnsafeTreeV2Origin>
+  ManagedBuffer<UnsafeTreeV2BufferHeader<_Value>, UnsafeTreeV2Origin>
 {
   // MARK: - 解放処理
   @inlinable
@@ -57,7 +57,7 @@ extension UnsafeTreeV2Buffer {
     // end nodeしか用意しないので要素数は常に1
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 1) { managedBuffer in
       // ヘッダを返却して以後はManagerBufferさんがよしなにする
-      return Header(nullptr: nullptr)
+      return .init(nullptr: nullptr)
     }
 
     storage.withUnsafeMutablePointers { header, tree in

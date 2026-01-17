@@ -88,7 +88,7 @@ extension UnsafeTreeV2 {
       }
 
       // 旧ノードを列挙する準備
-      var nodes = header.makeFreshPoolIterator()
+      var nodes = header.makeFreshPoolIterator() as UnsafeTreeV2<Base>.Header.Iterator<_Value>
 
       // ノード番号順に利用歴があるノード全てについて移行作業を行う
       while let s = nodes.next(), let d = newHeader.popFresh() {

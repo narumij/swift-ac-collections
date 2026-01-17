@@ -52,6 +52,9 @@ public
   internal var poolLifespan: PoolLifespan
 
   public typealias Element = Index
+
+  public typealias SubSequence = Self
+
 }
 
 #if false
@@ -103,23 +106,25 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
     position
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
-      .init(
+  public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
+    .init(
+      __tree_: __tree_,
+      start: bounds.lowerBound.rawValue,
+      end: bounds.upperBound.rawValue,
+      poolLifespan: bounds.lowerBound.poolLifespan)
+  }
+  
+  #if !COMPATIBLE_ATCODER_2025
+    @inlinable
+    @inline(__always)
+    public subscript<R>(bounds: R) -> UnsafeIndexV2Collection
+    where R: RangeExpression, R.Bound == Index {
+      let bounds: Range<Index> = bounds.relative(to: self)
+      return .init(
         __tree_: __tree_,
         start: bounds.lowerBound.rawValue,
         end: bounds.upperBound.rawValue,
         poolLifespan: bounds.lowerBound.poolLifespan)
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
-      let bounds: Range<Index> = bounds.relative(to: self)
-      return .init(
-        tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
     }
   #endif
 }

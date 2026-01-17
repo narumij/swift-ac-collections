@@ -301,33 +301,33 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   @inlinable
   @inline(__always)
   public func ... <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
-    -> UnsafeTreeV2<Base>.Indices
+    -> UnsafeIndexV2Collection<Base>
   {
-    let indices = lhs.___indices
+    let indices = lhs.___unsafe_indices
     let bounds = (lhs...rhs).relative(to: indices)
     return indices[bounds.lowerBound..<bounds.upperBound]
   }
 
   @inlinable
   @inline(__always)
-  public prefix func ..< <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeTreeV2<Base>.Indices {
-    let indices = rhs.___indices
+  public prefix func ..< <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2Collection<Base> {
+    let indices = rhs.___unsafe_indices
     let bounds = (..<rhs).relative(to: indices)
     return indices[bounds.lowerBound..<bounds.upperBound]
   }
 
   @inlinable
   @inline(__always)
-  public prefix func ... <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeTreeV2<Base>.Indices {
-    let indices = rhs.___indices
+  public prefix func ... <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2Collection<Base> {
+    let indices = rhs.___unsafe_indices
     let bounds = (...rhs).relative(to: indices)
     return indices[bounds.lowerBound..<bounds.upperBound]
   }
 
   @inlinable
   @inline(__always)
-  public postfix func ... <Base>(lhs: UnsafeIndexV2<Base>) -> UnsafeTreeV2<Base>.Indices {
-    let indices = lhs.___indices
+  public postfix func ... <Base>(lhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2Collection<Base> {
+    let indices = lhs.___unsafe_indices
     let bounds = (lhs...).relative(to: indices)
     return indices[bounds.lowerBound..<bounds.upperBound]
   }

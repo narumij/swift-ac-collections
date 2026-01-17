@@ -153,12 +153,12 @@ extension RedBlackTreeSliceV2 {
       let bounds: Range<Index> = bounds.relative(to: self)
       // TODO: ベースでの有効性しかチェックしていない。__containsのチェックにするか要検討
       __tree_.___ensureValid(
-        begin: bounds.lowerBound.rawValue(__tree_),
-        end: bounds.upperBound.rawValue(__tree_))
+        begin: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
       return .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue(__tree_),
-        end: bounds.upperBound.rawValue(__tree_))
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
     }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.

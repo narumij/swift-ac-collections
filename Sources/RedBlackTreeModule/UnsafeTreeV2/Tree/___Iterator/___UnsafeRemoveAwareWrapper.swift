@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-struct ___UnsafeRemoveAwareWrapper<Source: IteratorProtocol>:
+package struct ___UnsafeRemoveAwareWrapper<Source: IteratorProtocol>:
   UnsafeTreePointer,
   IteratorProtocol,
   Sequence
@@ -22,9 +22,11 @@ where
     self.naive = it
   }
   @usableFromInline
-  mutating func next() -> _NodePtr? {
+  package mutating func next() -> _NodePtr? {
     guard let __current else { return nil }
     self.__current = naive.next()
     return __current
   }
 }
+
+extension ___UnsafeRemoveAwareWrapper: Equatable where Source: Equatable { }

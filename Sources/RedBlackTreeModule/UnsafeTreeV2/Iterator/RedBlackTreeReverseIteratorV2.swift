@@ -86,7 +86,9 @@ extension RedBlackTreeIteratorV2.Values.Reversed {
   @inlinable
   @inline(__always)
   public var indices: Tree.Indices.Reversed {
-    .init(__tree_: __tree_, start: source.naive.__first, end: source.naive.__last, poolLifespan: poolLifespan)
+    .init(
+      __tree_: __tree_, start: source.naive.__first, end: source.naive.__last,
+      poolLifespan: poolLifespan)
   }
 }
 
@@ -95,11 +97,11 @@ extension RedBlackTreeIteratorV2.Values.Reversed {
   @available(*, deprecated, message: "危険になった為 (I think danger this is.)")
   @inlinable
   @inline(__always)
-  package func ___node_positions() -> ___UnsafeNaiveRevIterator {
+  package func ___node_positions() -> ___UnsafeRemoveAwareWrapper<___UnsafeNaiveRevIterator> {
     // 多分lifetime延長しないとクラッシュする
     // と思ったけどしなかった。念のためlifetimeとdeprecated
     defer { _fixLifetime(self) }
-    return source.naive //.init(__tree_: __tree_, start: _start, end: _end)
+    return source  //.init(__tree_: __tree_, start: _start, end: _end)
   }
 }
 
@@ -132,6 +134,6 @@ extension RedBlackTreeIteratorV2.Values.Reversed {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    __tree_.__end_node == other.__tree_.__end_node && source.naive == other.source.naive
+    __tree_.__end_node == other.__tree_.__end_node && source == other.source
   }
 }

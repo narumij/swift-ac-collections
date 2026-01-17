@@ -19,7 +19,7 @@ var defines: [String] = [
   //"USE_OLD_FIND",
   // "ALLOCATION_DRILL" // リリース時はオフ
 
-//  "USE_C_MALLOC",
+  "USE_C_MALLOC",
 ]
 
 var _settings: [SwiftSetting] =

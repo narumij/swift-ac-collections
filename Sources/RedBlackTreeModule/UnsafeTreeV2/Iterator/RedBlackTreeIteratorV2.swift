@@ -39,7 +39,7 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
     internal let __tree_: UnsafeImmutableTree<Base>
 
     @usableFromInline
-    var source: UnsafeIterator.RemoveAware<UnsafeIterator.Obverse>
+    var source: UnsafeIterator.RemoveAwarePointers
 
     @usableFromInline
     var poolLifespan: Deallocator

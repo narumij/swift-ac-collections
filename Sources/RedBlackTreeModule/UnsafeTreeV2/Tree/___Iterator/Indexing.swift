@@ -1,4 +1,11 @@
 //
+//  Indexing.swift
+//  swift-ac-collections
+//
+//  Created by narumij on 2026/01/17.
+//
+
+//
 //  ___UnsafePoolHolder.swift
 //  swift-ac-collections
 //
@@ -7,19 +14,22 @@
 
 extension UnsafeIterator {
   
-  public struct Movable<Source: IteratorProtocol>:
+  public struct Indexing<Base,Source: IteratorProtocol>:
     UnsafeTreePointer,
     UnsafeImmutableIndexingProtocol,
     IteratorProtocol,
     Sequence
   where
-  Source: UnsafeAssosiatedIterator,
-  Source.Base: ___TreeIndex
+Base: ___TreeBase & ___TreeIndex,
+  Source: Sequence,
+//Source: UnsafeIteratorProtocol,
+//  Source.Base: ___TreeIndex,
+  Source.Element == UnsafeMutablePointer<UnsafeNode>
   {
     @usableFromInline
     var __tree_: UnsafeImmutableTree<Base>
     
-    public typealias Base = Source.Base
+//    public typealias Base = Source.Base
     
     @usableFromInline
     typealias Index = UnsafeIndexV2<Base>
@@ -32,10 +42,10 @@ extension UnsafeIterator {
     
     @usableFromInline
     init(
-      tree: UnsafeTreeV2<Source.Base>,
+      tree: UnsafeTreeV2<Base>,
       start: _NodePtr,
       end: _NodePtr
-    ) {
+    ) where Source: UnsafeIteratorProtocol {
       self.init(
         __tree_: .init(__tree_: tree),
         source: .init(
@@ -47,11 +57,11 @@ extension UnsafeIterator {
     
     @usableFromInline
     init(
-      __tree_: UnsafeImmutableTree<Source.Base>,
+      __tree_: UnsafeImmutableTree<Base>,
       start: _NodePtr,
       end: _NodePtr,
       poolLifespan: Deallocator
-    ) {
+    ) where Source: UnsafeIteratorProtocol {
       self.init(
         __tree_: __tree_,
         source: .init(
@@ -70,27 +80,29 @@ extension UnsafeIterator {
       self.__tree_ = __tree_
     }
     
-    public mutating func next() -> Source.Element? {
-      source.next()
+    public mutating func next() -> UnsafeIndexV2<Base>? {
+      source.next().map {
+        ___index($0)
+      }
     }
   }
 }
 
-extension UnsafeIterator.Movable: Equatable where Source: Equatable {
+extension UnsafeIterator.Indexing: Equatable where Source: Equatable {
 
   public static func == (
-    lhs: UnsafeIterator.Movable<Source>, rhs: UnsafeIterator.Movable<Source>
+    lhs: UnsafeIterator.Indexing<Base,Source>, rhs: UnsafeIterator.Indexing<Base,Source>
   ) -> Bool {
     lhs.source == rhs.source
   }
 }
 
 #if swift(>=5.5)
-extension UnsafeIterator.Movable: @unchecked Sendable
+extension UnsafeIterator.Indexing: @unchecked Sendable
   where Source: Sendable {}
 #endif
 
-extension UnsafeIterator.Movable: Comparable where Source: Equatable, Element: Comparable {
+extension UnsafeIterator.Indexing: Comparable where Source: Equatable, Element: Comparable {
 
   @inlinable
   @inline(__always)

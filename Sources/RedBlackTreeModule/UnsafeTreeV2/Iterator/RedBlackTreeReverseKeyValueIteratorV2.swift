@@ -115,7 +115,7 @@ extension RedBlackTreeIteratorV2.KeyValues.Reversed {
 
   @inlinable
   @inline(__always)
-  package func ___node_positions() -> UnsafeIterator.RemoveAware<UnsafeIterator.Reverse> {
+  package func ___node_positions() -> UnsafeIterator.RemoveAwareReversePointers {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

@@ -22,6 +22,12 @@
 
 import Foundation
 
+#if true
+extension RedBlackTreeIteratorV2.Values {
+  
+    public typealias Reversed = UnsafeIterator.ValueReverse<Base>
+}
+#else
 extension RedBlackTreeIteratorV2.Values {
 
   @frozen
@@ -37,7 +43,7 @@ extension RedBlackTreeIteratorV2.Values {
     internal let __tree_: ImmutableTree
 
     @usableFromInline
-    var source: UnsafeIterator.RemoveAware<UnsafeIterator.Reverse>
+    var source: UnsafeIterator.RemoveAwareReversePointers
 
     @usableFromInline
     var poolLifespan: PoolLifespan
@@ -87,7 +93,7 @@ extension RedBlackTreeIteratorV2.Values.Reversed {
   @inline(__always)
   public var indices: Tree.Indices.Reversed {
     .init(
-      __tree_: __tree_, start: source.naive.__first, end: source.naive.__last,
+      __tree_: __tree_, start: source.source.__first, end: source.source.__last,
       poolLifespan: poolLifespan)
   }
 }
@@ -137,3 +143,4 @@ extension RedBlackTreeIteratorV2.Values.Reversed {
     __tree_.__end_node == other.__tree_.__end_node && source == other.source
   }
 }
+#endif

@@ -7,8 +7,7 @@
 
 extension UnsafeIterator {
   
-  @usableFromInline
-  package struct Obverse:
+  public struct Obverse:
     UnsafeTreePointer,
     UnsafeIteratorProtocol,
     IteratorProtocol,
@@ -22,8 +21,7 @@ extension UnsafeIterator {
       self.__last = __last
     }
     
-    @usableFromInline
-    package mutating func next() -> _NodePtr? {
+    public mutating func next() -> _NodePtr? {
       guard __current != __last else { return nil }
       let __r = __current
       __current = __tree_next_iter(__current)
@@ -38,8 +36,7 @@ extension UnsafeIterator {
     let __last: _NodePtr
   }
   
-  @usableFromInline
-  package struct Reverse:
+  public struct Reverse:
     UnsafeTreePointer,
     UnsafeIteratorProtocol,
     IteratorProtocol,
@@ -53,8 +50,7 @@ extension UnsafeIterator {
       self.__last = __last
     }
     
-    @usableFromInline
-    package mutating func next() -> _NodePtr? {
+    public mutating func next() -> _NodePtr? {
       guard __current != __first else { return nil }
       __current = __tree_prev_iter(__current)
       return __current
@@ -76,13 +72,13 @@ extension UnsafeIterator.Obverse {
   
   @inlinable
   @inline(__always)
-  package init<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr) {
+  public init<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr) {
     self.init(__first: start, __last: end)
   }
 
   @inlinable
   @inline(__always)
-  package init<Base: ___TreeBase>(
+  public init<Base: ___TreeBase>(
     __tree_: UnsafeImmutableTree<Base>, start: _NodePtr, end: _NodePtr
   ) {
     self.init(__first: start, __last: end)
@@ -93,13 +89,13 @@ extension UnsafeIterator.Reverse {
 
   @inlinable
   @inline(__always)
-  package init<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr) {
+  public init<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr) {
     self.init(__first: start, __last: end)
   }
 
   @inlinable
   @inline(__always)
-  package init<Base: ___TreeBase>(
+  public init<Base: ___TreeBase>(
     __tree_: UnsafeImmutableTree<Base>, start: _NodePtr, end: _NodePtr
   ) {
     self.init(__first: start, __last: end)

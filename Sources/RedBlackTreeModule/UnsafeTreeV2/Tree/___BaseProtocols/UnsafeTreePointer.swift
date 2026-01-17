@@ -26,3 +26,100 @@ where
   _NodePtr == UnsafeMutablePointer<UnsafeNode>,
   _NodeRef == UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
 {}
+
+@usableFromInline
+protocol FindEqualProtocol_ptr: UnsafeTreePointer, ValueProtocol, RootProtocol, RootPtrProtocol,
+  ThreeWayComparatorProtocol
+{}
+
+extension FindEqualProtocol_ptr {
+
+  @inlinable
+  @inline(__always)
+  internal func
+    __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+  {
+    var __nd = __root
+    if __nd == nullptr {
+      return (__end_node, end.__left_ref)
+    }
+    var __nd_ptr = __root_ptr()
+    let __comp = __lazy_synth_three_way_comparator
+
+    while true {
+
+      let __comp_res = __comp(__v, __nd.__value_().pointee)
+
+      if __comp_res.__less() {
+        if __nd.__left_ == nullptr {
+          return (__nd, __nd.__left_ref)
+        }
+
+        __nd_ptr = __nd.__left_ref
+        __nd = __nd.__left_
+      } else if __comp_res.__greater() {
+        if __nd.__right_ == nullptr {
+          return (__nd, __nd.__right_ref)
+        }
+
+        __nd_ptr = __nd.__right_ref
+        __nd = __nd.__right_
+      } else {
+        return (__nd, __nd_ptr)
+      }
+    }
+  }
+}
+
+@usableFromInline
+protocol InsertNodeAtProtocol_ptr: UnsafeTreePointer, InsertNodeAtProtocol, BeginNodeProtocol, EndNodeProtocol, SizeProtocol {}
+
+extension InsertNodeAtProtocol_ptr {
+
+  @inlinable
+  @inline(__always)
+  internal func
+    __insert_node_at(
+      _ __parent: _NodePtr, _ __child: _NodeRef,
+      _ __new_node: _NodePtr
+    )
+  {
+    var __new_node = __new_node
+    __new_node.__left_ = nullptr
+    __new_node.__right_ = nullptr
+    __new_node.__parent_ = __parent
+    // __new_node->__is_black_ is initialized in __tree_balance_after_insert
+    __child.pointee = __new_node
+    // unsafe operation not allowed
+    if __begin_node_.__left_ != nullptr {
+      __begin_node_ = __begin_node_.__left_
+    }
+    _std__tree_balance_after_insert(__end_node.__left_, __child.pointee)
+    __size_ += 1
+  }
+}
+
+@usableFromInline
+protocol RemoveProtocol_ptr: UnsafeTreePointer
+    & BeginNodeProtocol
+    & EndNodeProtocol
+    & SizeProtocol
+{
+  func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
+}
+
+extension RemoveProtocol_ptr {
+
+  @inlinable
+  @inline(__always)
+  internal func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {
+    var __r = __ptr
+    __r = __tree_next_iter(__r)
+    if __begin_node_ == __ptr {
+      __begin_node_ = __r
+    }
+    __size_ -= 1
+    _std__tree_remove(__end_node.__left_, __ptr)
+    return __r
+  }
+}

@@ -23,13 +23,19 @@
 import Foundation
 
 @usableFromInline
-protocol RemoveProtocol: TreeNodeProtocol
+protocol RemoveProtocol: TreePointer
+{
+  func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
+}
+
+@usableFromInline
+protocol RemoveProtocol_org: TreeNodeProtocol
     & BeginNodeProtocol
     & EndNodeProtocol
     & SizeProtocol
 {}
 
-extension RemoveProtocol {
+extension RemoveProtocol_org {
 
   @inlinable
   @inline(__always)

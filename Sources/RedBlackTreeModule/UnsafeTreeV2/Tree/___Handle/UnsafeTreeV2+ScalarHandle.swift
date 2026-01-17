@@ -133,38 +133,14 @@ extension UnsafeTreeV2ScalarHandle: BoundProtocol, BoundAlgorithmProtocol {}
 extension UnsafeTreeV2ScalarHandle: FindProtocol {}
 extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
 //extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
-extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol {
-
-  @inlinable
-  @inline(__always)
-  internal func
-    __insert_node_at(
-      _ __parent: _NodePtr, _ __child: _NodeRef,
-      _ __new_node: _NodePtr
-    )
-  {
-    var __new_node = __new_node
-    __new_node.__left_ = nullptr
-    __new_node.__right_ = nullptr
-    __new_node.__parent_ = __parent
-    // __new_node->__is_black_ is initialized in __tree_balance_after_insert
-    __child.pointee = __new_node
-    // unsafe operation not allowed
-    if __begin_node_.__left_ != nullptr {
-      __begin_node_ = __begin_node_.__left_
-    }
-    _std__tree_balance_after_insert(__end_node.__left_, __child.pointee)
-    assert(__tree_invariant(__root), "The tree invariants should hold")
-    __size_ += 1
-  }
-}
+extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol {}
-extension UnsafeTreeV2ScalarHandle: RemoveProtocol {}
+extension UnsafeTreeV2ScalarHandle: RemoveProtocol, RemoveProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 
 #if true
-  extension UnsafeTreeV2ScalarHandle: FindEqualProtocol_std {}
+  extension UnsafeTreeV2ScalarHandle: FindEqualProtocol_ptr {}
   extension UnsafeTreeV2ScalarHandle {
 
     @inlinable

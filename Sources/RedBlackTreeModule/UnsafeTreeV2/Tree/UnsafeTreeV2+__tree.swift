@@ -258,13 +258,13 @@ extension UnsafeTreeV2: BoundProtocol {
 }
 
 extension UnsafeTreeV2: FindProtocol {}
-extension UnsafeTreeV2: FindEqualProtocol, FindEqualProtocol_std {}
+extension UnsafeTreeV2: FindEqualProtocol, FindEqualProtocol_ptr {}
 extension UnsafeTreeV2: FindLeafProtocol {}
 extension UnsafeTreeV2: InsertNodeAtProtocol {}
-extension UnsafeTreeV2: InsertUniqueProtocol, InsertNodeAtProtocol_std {}
+extension UnsafeTreeV2: InsertUniqueProtocol, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2: InsertMultiProtocol {}
 extension UnsafeTreeV2: EqualProtocol {}
-extension UnsafeTreeV2: RemoveProtocol {}
+extension UnsafeTreeV2: RemoveProtocol, RemoveProtocol_org {}
 extension UnsafeTreeV2: EraseProtocol {}
 extension UnsafeTreeV2: EraseUniqueProtocol {}
 extension UnsafeTreeV2: EraseMultiProtocol {}

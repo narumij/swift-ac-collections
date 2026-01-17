@@ -33,7 +33,7 @@ struct ___UnsafeNaiveCollection:
   }
 
   @usableFromInline
-  func makeIterator() -> ___UnsafeNaiveIterator {
+  func makeIterator() -> UnsafeIterator.Obverse {
     .init(
       __first: startIndex,
       __last: endIndex)

@@ -116,7 +116,7 @@ extension UnsafeImmutableTree {
   @inlinable
   @inline(__always)
   internal func
-    sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeRemoveAwareWrapper<___UnsafeNaiveIterator>
+  sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> UnsafeIterator.RemoveAware<UnsafeIterator.Obverse>
   {
     .init(__tree_: self, start: __first, end: __last)
   }
@@ -134,7 +134,7 @@ extension UnsafeImmutableTree {
   @inline(__always)
   internal func
     unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
-    -> ___UnsafeValueWrapper<Base, ___UnsafeNaiveIterator>
+  -> UnsafeIterator.Value<Base, UnsafeIterator.Obverse>
   {
     .init(__tree_: self, start: __first, end: __last)
   }

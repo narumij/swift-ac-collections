@@ -37,7 +37,7 @@ extension RedBlackTreeIteratorV2.Values {
     internal let __tree_: ImmutableTree
 
     @usableFromInline
-    var source: ___UnsafeRemoveAwareWrapper<___UnsafeNaiveRevIterator>
+    var source: UnsafeIterator.RemoveAware<UnsafeIterator.Reverse>
 
     @usableFromInline
     var poolLifespan: PoolLifespan
@@ -97,7 +97,7 @@ extension RedBlackTreeIteratorV2.Values.Reversed {
   @available(*, deprecated, message: "危険になった為 (I think danger this is.)")
   @inlinable
   @inline(__always)
-  package func ___node_positions() -> ___UnsafeRemoveAwareWrapper<___UnsafeNaiveRevIterator> {
+  package func ___node_positions() -> UnsafeIterator.RemoveAware<UnsafeIterator.Reverse> {
     // 多分lifetime延長しないとクラッシュする
     // と思ったけどしなかった。念のためlifetimeとdeprecated
     defer { _fixLifetime(self) }

@@ -41,7 +41,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  package func ___node_positions() -> ___UnsafeRemoveAwareWrapper<___UnsafeNaiveIterator> {
+  package func ___node_positions() -> UnsafeIterator.RemoveAware<UnsafeIterator.Obverse> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

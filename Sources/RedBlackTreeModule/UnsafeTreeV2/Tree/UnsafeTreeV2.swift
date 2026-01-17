@@ -33,6 +33,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
     self.nullptr = origin.pointee.nullptr
     self.end = origin.pointee.end_ptr
     self.origin = origin
+    self.specializeMode = SpecializeModeHoge<_Key>().specializeMode
   }
 
   public typealias Base = Base
@@ -55,6 +56,9 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @usableFromInline
   let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
+
+  @usableFromInline
+  let specializeMode: SpecializeMode
 
   /// ノードプールの寿命延長オブジェクト
   ///

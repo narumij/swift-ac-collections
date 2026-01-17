@@ -49,7 +49,7 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
   @usableFromInline let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
   @usableFromInline var isMulti: Bool
-  @usableFromInline var specializeMode: SpecializeMode
+  @usableFromInline let specializeMode: SpecializeMode
 }
 
 extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
@@ -62,6 +62,15 @@ extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   internal func read<R>(_ body: (Handle) throws -> R) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
       let handle = Handle(header: header, origin: elements)
+      return try body(handle)
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func _i_update<R>(_ body: (UnsafeTreeV2ScalarHandle<Int>) throws -> R) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, elements in
+      let handle = UnsafeTreeV2ScalarHandle<Int>(header: header, origin: elements)
       return try body(handle)
     }
   }
@@ -154,7 +163,7 @@ extension UnsafeTreeV2ScalarHandle: RemoveProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 
-#if false
+#if true
   extension UnsafeTreeV2ScalarHandle: FindEqualProtocol_std {}
 #else
   extension UnsafeTreeV2ScalarHandle {
@@ -276,7 +285,6 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
       __emplace_unique_key_args(x)
     }
 
-    #if true
       @inlinable
 //      @inline(__always)
 //    @usableFromInline
@@ -297,23 +305,5 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
           return (__r.pointee, false)
         }
       }
-    #else
-      @inlinable
-      internal func
-        __emplace_unique_key_args(_ __k: _Value)
-        -> (__r: _NodeRef, __inserted: Bool)
-      {
-        var __parent = _NodePtr.nullptr
-        let __child = __find_equal(&__parent, __key(__k))
-        let __r = __child
-        var __inserted = false
-        if __ref_(__child) == .nullptr {
-          let __h = __construct_node(__k)
-          __insert_node_at(__parent, __child, __h)
-          __inserted = true
-        }
-        return (__r, __inserted)
-      }
-    #endif
   }
 #endif

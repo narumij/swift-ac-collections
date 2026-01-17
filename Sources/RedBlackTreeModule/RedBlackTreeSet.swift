@@ -255,7 +255,11 @@ extension RedBlackTreeSet {
   ) {
     __tree_._ensureUniqueAndCapacity()
     // let (__r, __inserted) = __tree_.__insert_unique(newMember)
-    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
+//    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
+    let (__r, __inserted) = switch __tree_.specializeMode {
+      case .asInt: __tree_._i_update { $0.__insert_unique(newMember as! Int) }
+      case .generic: __tree_.update { $0.__insert_unique(newMember) }
+      }
     return (__inserted, __inserted ? newMember : __tree_[__r])
   }
 
@@ -511,22 +515,22 @@ extension UnsafeTreeV2 {
       }
     }
   }
-  
-//  @inlinable
-//  func ___erase_multi_if(
-//    _ __first: _NodePtr,
-//    _ __last: _NodePtr,
-//    shouldBeRemoved: (_Key) throws -> Bool
-//  ) rethrows {
-//    var __first = __first
-//    while __first != __last {
-//      if try shouldBeRemoved(__get_value(__first)) {
-//        __first = erase(__first)
-//      } else {
-//        __first = __tree_next_iter(__first)
-//      }
-//    }
-//  }
+
+  //  @inlinable
+  //  func ___erase_multi_if(
+  //    _ __first: _NodePtr,
+  //    _ __last: _NodePtr,
+  //    shouldBeRemoved: (_Key) throws -> Bool
+  //  ) rethrows {
+  //    var __first = __first
+  //    while __first != __last {
+  //      if try shouldBeRemoved(__get_value(__first)) {
+  //        __first = erase(__first)
+  //      } else {
+  //        __first = __tree_next_iter(__first)
+  //      }
+  //    }
+  //  }
 }
 
 extension RedBlackTreeSet {

@@ -438,14 +438,14 @@ internal func
             __w.__is_black_ = __w.__parent_unsafe.__is_black_
             __w.__parent_unsafe.__is_black_ = true
             __w.__right_.__is_black_ = true
-            __tree_left_rotate(&__w.__parent_)
+            __tree_left_rotate(&__w.__parent_unsafe)
             break
           }
         } else {
           if (!__w.__is_black_) {
             __w.__is_black_ = true
-            __w.__parent_.__is_black_ = false
-            __tree_right_rotate(&__w.__parent_)
+            __w.__parent_unsafe.__is_black_ = false
+            __tree_right_rotate(&__w.__parent_unsafe)
             // __x is still valid
             // reset __root only if necessary
             if __root == __w.__right_ {
@@ -459,7 +459,7 @@ internal func
             && (__w.__right_ == .nullptr || __w.__right_.__is_black_))
           {
             __w.__is_black_ = false
-            __x = __w.__parent_
+            __x = __w.__parent_unsafe
             // __x can no longer be null
             if !__x.__is_black_ || __x == __root {
               __x.__is_black_ = true
@@ -478,13 +478,13 @@ internal func
               __tree_left_rotate(&__w)
               // __w is known not to be root, so root hasn't changed
               // reset sibling, and it still can't be null
-              __w = __w.__parent_
+              __w = __w.__parent_unsafe
             }
             // __w has a left red child, right child may be null
-            __w.__is_black_ = __w.__parent_.__is_black_
-            __w.__parent_.__is_black_ = true
+            __w.__is_black_ = __w.__parent_unsafe.__is_black_
+            __w.__parent_unsafe.__is_black_ = true
             __w.__left_.__is_black_ = true
-            __tree_right_rotate(&__w.__parent_)
+            __tree_right_rotate(&__w.__parent_unsafe)
             break
           }
         }

@@ -58,4 +58,9 @@ extension String {
   internal static func duplicateValue<Key>(for key: Key) -> String {
     "Dupricate values for key: '\(key)'"
   }
+  
+  @usableFromInline
+  internal static var alignnment: String {
+    "Memory allocation failed due to alignment constraints."
+  }
 }

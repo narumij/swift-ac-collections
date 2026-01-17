@@ -19,7 +19,7 @@ var defines: [String] = [
   //"USE_OLD_FIND",
   // "ALLOCATION_DRILL" // リリース時はオフ
 
-  "USE_C_MALLOC",
+//  "USE_C_MALLOC",
 ]
 
 var _settings: [SwiftSetting] =
@@ -51,7 +51,8 @@ var _settings: [SwiftSetting] =
   + defines.map { .define($0) }
 
 let dependencyMap = ["USE_C_MALLOC": "_malloc_free"]
-let additionalDepencencies = defines.compactMap { dependencyMap[$0] }
+let additionalDepencencies: [Target.Dependency] =
+  defines.contains("USE_C_MALLOC") ? ["_malloc_free"] : []
 
 let package = Package(
   name: "swift-ac-collections",

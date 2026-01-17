@@ -396,13 +396,13 @@ internal func
       //     see a black height >= 2 on the __x side and a black height
       //     of 1 on the __w side (__w must be a non-null black or a red
       //     with a non-null black child).
-      while true {
+      while (true) {
         if (!__tree_is_left_child(__w))  // if x is left child
         {
           if (!__w.__is_black_) {
             __w.__is_black_ = true
-            __w.__parent_.__is_black_ = false
-            __tree_left_rotate(&__w.__parent_)
+            __w.__parent_unsafe.__is_black_ = false
+            __tree_left_rotate(&__w.__parent_unsafe)
             // __x is still valid
             // reset __root only if necessary
             if (__root == __w.__left_) {
@@ -412,19 +412,17 @@ internal func
             __w = __w.__left_.__right_
           }
           // __w->__is_black_ is now true, __w may have null children
-          if ((__w.__left_ == .nullptr || __w.__left_.__is_black_)
-            && (__w.__right_ == .nullptr || __w.__right_.__is_black_))
-          {
+          if ((__w.__left_ == .nullptr || __w.__left_.__is_black_) &&
+              (__w.__right_ == .nullptr || __w.__right_.__is_black_)) {
             __w.__is_black_ = false
-            __x = __w.__parent_
+            __x = __w.__parent_unsafe
             // __x can no longer be null
-            if __x == __root || !__x.__is_black_ {
+            if (__x == __root || !__x.__is_black_) {
               __x.__is_black_ = true
               break
             }
             // reset sibling, and it still can't be null
-            __w =
-              __tree_is_left_child(__x) ? __x.__parent_.__right_ : __x.__parent_.__left_
+            __w = __tree_is_left_child(__x) ? __x.__parent_.__right_ : __x.__parent_.__left_
             // continue;
           } else  // __w has a red child
           {
@@ -435,11 +433,11 @@ internal func
               __tree_right_rotate(&__w)
               // __w is known not to be root, so root hasn't changed
               // reset sibling, and it still can't be null
-              __w = __w.__parent_
+              __w = __w.__parent_unsafe
             }
             // __w has a right red child, left child may be null
-            __w.__is_black_ = __w.__parent_.__is_black_
-            __w.__parent_.__is_black_ = true
+            __w.__is_black_ = __w.__parent_unsafe.__is_black_
+            __w.__parent_unsafe.__is_black_ = true
             __w.__right_.__is_black_ = true
             __tree_left_rotate(&__w.__parent_)
             break

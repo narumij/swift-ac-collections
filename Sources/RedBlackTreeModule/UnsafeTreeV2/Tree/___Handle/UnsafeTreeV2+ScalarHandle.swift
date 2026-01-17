@@ -139,7 +139,7 @@ extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 
 #if true
-  extension UnsafeTreeV2ScalarHandle: FindEqualProtocol_ptr {}
+  extension UnsafeTreeV2ScalarHandle: FindEqualProtocol_std {}
   extension UnsafeTreeV2ScalarHandle {
 
     @inlinable

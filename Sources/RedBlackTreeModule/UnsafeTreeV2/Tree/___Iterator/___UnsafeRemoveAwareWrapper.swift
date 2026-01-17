@@ -45,3 +45,8 @@ where
 }
 
 extension ___UnsafeRemoveAwareWrapper: Equatable where Source: Equatable {}
+
+#if swift(>=5.5)
+  extension ___UnsafeRemoveAwareWrapper: @unchecked Sendable
+  where Source: Sendable {}
+#endif

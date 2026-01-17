@@ -56,3 +56,8 @@
     }
   }
 #endif
+
+#if swift(>=5.5)
+  extension ___UnsafeRemoveCheckWrapper: @unchecked Sendable
+  where Source: Sendable {}
+#endif

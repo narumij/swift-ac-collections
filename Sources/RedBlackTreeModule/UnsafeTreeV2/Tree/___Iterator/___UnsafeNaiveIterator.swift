@@ -66,42 +66,58 @@ package struct ___UnsafeNaiveRevIterator:
   let __last: _NodePtr
 }
 
-@usableFromInline
-package protocol UnsafeIterator: UnsafeTreePointer {
+public protocol UnsafeIterator: UnsafeTreePointer {
   init<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr)
   init<Base: ___TreeBase>(__tree_: UnsafeImmutableTree<Base>, start: _NodePtr, end: _NodePtr)
+}
+
+public protocol UnsafeAssosiatedIterator: UnsafeTreePointer {
+  associatedtype Base: ___TreeBase
+  init(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr)
+  init(__tree_: UnsafeImmutableTree<Base>, start: _NodePtr, end: _NodePtr)
 }
 
 @usableFromInline
 package typealias ___UnsafePointersUnsafeV2 = ___UnsafeNaiveIterator
 
 extension ___UnsafePointersUnsafeV2 {
-  
+
   @inlinable
   @inline(__always)
   package init<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr) {
     self.init(__first: start, __last: end)
   }
-  
+
   @inlinable
   @inline(__always)
-  package init<Base: ___TreeBase>(__tree_: UnsafeImmutableTree<Base>, start: _NodePtr, end: _NodePtr) {
+  package init<Base: ___TreeBase>(
+    __tree_: UnsafeImmutableTree<Base>, start: _NodePtr, end: _NodePtr
+  ) {
     self.init(__first: start, __last: end)
   }
 }
 
 extension ___UnsafeNaiveRevIterator {
-  
+
   @inlinable
   @inline(__always)
   package init<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr) {
     self.init(__first: start, __last: end)
   }
-  
+
   @inlinable
   @inline(__always)
-  package init<Base: ___TreeBase>(__tree_: UnsafeImmutableTree<Base>, start: _NodePtr, end: _NodePtr) {
+  package init<Base: ___TreeBase>(
+    __tree_: UnsafeImmutableTree<Base>, start: _NodePtr, end: _NodePtr
+  ) {
     self.init(__first: start, __last: end)
   }
 }
 
+#if swift(>=5.5)
+  extension ___UnsafePointersUnsafeV2: @unchecked Sendable {}
+#endif
+
+#if swift(>=5.5)
+  extension ___UnsafeNaiveRevIterator: @unchecked Sendable {}
+#endif

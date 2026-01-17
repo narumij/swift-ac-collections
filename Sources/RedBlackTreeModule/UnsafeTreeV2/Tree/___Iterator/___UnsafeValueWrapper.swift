@@ -8,6 +8,7 @@
 @usableFromInline
 struct ___UnsafeValueWrapper<Base: ___TreeBase, Source: IteratorProtocol>:
   UnsafeTreePointer,
+  UnsafeAssosiatedIterator,
   IteratorProtocol,
   Sequence
 where
@@ -15,12 +16,12 @@ where
   Source: UnsafeIterator
 {
   @usableFromInline
-  init(tree: UnsafeTreeV2<Base>, __first: _NodePtr, __last: _NodePtr) {
+  init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr) {
     self.init(iterator: .init(tree: tree, start: __first, end: __last))
   }
 
   @usableFromInline
-  init(__tree_: UnsafeImmutableTree<Base>, __first: _NodePtr, __last: _NodePtr) {
+  init(__tree_: UnsafeImmutableTree<Base>, start __first: _NodePtr, end __last: _NodePtr) {
     self.init(iterator: .init(__tree_: __tree_, start: __first, end: __last))
   }
 
@@ -41,6 +42,7 @@ where
 @usableFromInline
 struct ___UnsafeKeyWrapper<Base: ___TreeBase, Source: IteratorProtocol>:
   UnsafeTreePointer,
+  UnsafeAssosiatedIterator,
   IteratorProtocol,
   Sequence
 where
@@ -48,12 +50,12 @@ where
   Source: UnsafeIterator
 {
   @usableFromInline
-  init(tree: UnsafeTreeV2<Base>, __first: _NodePtr, __last: _NodePtr) {
+  init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr) {
     self.init(iterator: .init(tree: tree, start: __first, end: __last))
   }
 
   @usableFromInline
-  init(__tree_: UnsafeImmutableTree<Base>, __first: _NodePtr, __last: _NodePtr) {
+  init(__tree_: UnsafeImmutableTree<Base>, start __first: _NodePtr, end __last: _NodePtr) {
     self.init(iterator: .init(__tree_: __tree_, start: __first, end: __last))
   }
 
@@ -74,6 +76,7 @@ where
 @usableFromInline
 struct ___UnsafeMappedValueWrapper<Base: ___TreeBase & KeyValueComparer, Source: IteratorProtocol>:
   UnsafeTreePointer,
+  UnsafeAssosiatedIterator,
   IteratorProtocol,
   Sequence
 where
@@ -81,12 +84,12 @@ where
   Source: UnsafeIterator
 {
   @usableFromInline
-  init(tree: UnsafeTreeV2<Base>, __first: _NodePtr, __last: _NodePtr) {
+  init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr) {
     self.init(iterator: .init(tree: tree, start: __first, end: __last))
   }
 
   @usableFromInline
-  init(__tree_: UnsafeImmutableTree<Base>, __first: _NodePtr, __last: _NodePtr) {
+  init(__tree_: UnsafeImmutableTree<Base>, start __first: _NodePtr, end __last: _NodePtr) {
     self.init(iterator: .init(__tree_: __tree_, start: __first, end: __last))
   }
 
@@ -103,3 +106,18 @@ where
     }
   }
 }
+
+#if swift(>=5.5)
+  extension ___UnsafeValueWrapper: @unchecked Sendable
+  where Source: Sendable {}
+#endif
+
+#if swift(>=5.5)
+  extension ___UnsafeKeyWrapper: @unchecked Sendable
+  where Source: Sendable {}
+#endif
+
+#if swift(>=5.5)
+  extension ___UnsafeMappedValueWrapper: @unchecked Sendable
+  where Source: Sendable {}
+#endif

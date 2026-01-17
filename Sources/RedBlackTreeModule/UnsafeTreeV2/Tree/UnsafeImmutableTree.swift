@@ -8,11 +8,9 @@
 // TODO: 利用時の寿命管理の確認
 // 寿命延長を行わないので、利用側で寿命安全を守る必要がある
 
-@usableFromInline
-package struct UnsafeImmutableTree<Base: ___TreeBase>: UnsafeTreeNodeProtocol {
+public struct UnsafeImmutableTree<Base: ___TreeBase>: UnsafeTreeNodeProtocol {
 
-  @usableFromInline
-  package typealias _Key = Base._Key
+  public typealias _Key = Base._Key
 
   @usableFromInline
   init(__tree_ tree: UnsafeTreeV2<Base>) {
@@ -34,8 +32,7 @@ package struct UnsafeImmutableTree<Base: ___TreeBase>: UnsafeTreeNodeProtocol {
 
 extension UnsafeImmutableTree {
 
-  @usableFromInline
-  package var end: UnsafeMutablePointer<UnsafeNode> {
+  public var end: UnsafeMutablePointer<UnsafeNode> {
     __end_node
   }
 }
@@ -139,7 +136,7 @@ extension UnsafeImmutableTree {
     unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
     -> ___UnsafeValueWrapper<Base, ___UnsafeNaiveIterator>
   {
-    .init(__tree_: self, __first: __first, __last: __last)
+    .init(__tree_: self, start: __first, end: __last)
   }
 }
 

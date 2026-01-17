@@ -97,9 +97,7 @@ extension ___LRUMemoizeStorage {
         if __tree_.count == maxCount {
           _ = __tree_.erase(___popRankLowest())
         }
-        #if !USE_UNSAFE_TREE
-          assert(__tree_.count < __tree_.capacity)
-        #endif
+        assert(__tree_.count < __tree_.capacity)
         let (__parent, __child) = __tree_.__find_equal(key)
         if __tree_.__ptr_(__child) == __tree_.nullptr {
           let __h = __tree_.__construct_node(.init(key, __tree_.nullptr, __tree_.nullptr, newValue))

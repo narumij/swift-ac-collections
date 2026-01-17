@@ -16,6 +16,24 @@ extension UnsafeIterator {
     typealias ValueReverse<Base: ___TreeBase & ___TreeIndex> = Movable<
       Value<Base, RemoveAware<Reverse>>
     >
+
+  public
+    typealias KeyObverse<Base: ___TreeBase & ___TreeIndex> = Movable<
+      Key<Base, RemoveAware<Obverse>>
+    >
+  public
+    typealias KeyReverse<Base: ___TreeBase & ___TreeIndex> = Movable<
+      Key<Base, RemoveAware<Reverse>>
+    >
+
+  public
+    typealias MappedValueObverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Movable<
+      MappedValue<Base, RemoveAware<Obverse>>
+    >
+  public
+    typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Movable<
+      MappedValue<Base, RemoveAware<Reverse>>
+    >
 }
 
 extension UnsafeIterator {
@@ -59,7 +77,7 @@ where
     .init(__tree_: __tree_, source: source.source, pool: poolLifespan)
   }
 
-  @available(*, deprecated, message: "危険になった為 (I think danger this is.)")
+  @available(*, deprecated, message: "危険になった為")
   @inlinable
   @inline(__always)
   package func ___node_positions() -> Source.Source {

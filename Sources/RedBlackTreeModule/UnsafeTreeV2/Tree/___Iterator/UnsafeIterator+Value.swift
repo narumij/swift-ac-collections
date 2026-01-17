@@ -37,8 +37,7 @@ extension UnsafeIterator {
     }
   }
 
-  @usableFromInline
-  struct Key<Base: ___TreeBase, Source: IteratorProtocol & Sequence>:
+  public struct Key<Base: ___TreeBase, Source: IteratorProtocol & Sequence>:
     UnsafeTreePointer,
     UnsafeAssosiatedIterator,
     IteratorProtocol,
@@ -47,16 +46,13 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>,
     Source: UnsafeIteratorProtocol
   {
-    @usableFromInline
-    var source: Source
+    public var source: Source
     
-    @usableFromInline
-    init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr) {
+    public init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr) {
       self.init(source: .init(tree: tree, start: __first, end: __last))
     }
 
-    @usableFromInline
-    init(__tree_: UnsafeImmutableTree<Base>, start __first: _NodePtr, end __last: _NodePtr) {
+    public init(__tree_: UnsafeImmutableTree<Base>, start __first: _NodePtr, end __last: _NodePtr) {
       self.init(source: .init(__tree_: __tree_, start: __first, end: __last))
     }
 
@@ -64,16 +60,14 @@ extension UnsafeIterator {
       self.source = source
     }
 
-    @usableFromInline
-    mutating func next() -> Base._Key? {
+    public mutating func next() -> Base._Key? {
       return source.next().map {
         Base.__key($0.__value_().pointee)
       }
     }
   }
 
-  @usableFromInline
-  struct MappedValue<Base: ___TreeBase & KeyValueComparer, Source: IteratorProtocol & Sequence>:
+  public struct MappedValue<Base: ___TreeBase & KeyValueComparer, Source: IteratorProtocol & Sequence>:
     UnsafeTreePointer,
     UnsafeAssosiatedIterator,
     IteratorProtocol,
@@ -82,24 +76,24 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>,
     Source: UnsafeIteratorProtocol
   {
-    @usableFromInline
+    public
     init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr) {
       self.init(source: .init(tree: tree, start: __first, end: __last))
     }
 
-    @usableFromInline
+    public
     init(__tree_: UnsafeImmutableTree<Base>, start __first: _NodePtr, end __last: _NodePtr) {
       self.init(source: .init(__tree_: __tree_, start: __first, end: __last))
     }
 
-    @usableFromInline
+    public
     var source: Source
 
     internal init(source: Source) {
       self.source = source
     }
 
-    @usableFromInline
+    public
     mutating func next() -> Base._MappedValue? {
       return source.next().map {
         Base.___mapped_value($0.__value_().pointee)

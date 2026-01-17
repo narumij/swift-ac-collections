@@ -85,16 +85,49 @@ extension UnsafeIterator.Movable: Equatable where Source: Equatable {
   }
 }
 
-#if swift(>=5.5)
-extension UnsafeIterator.Movable: @unchecked Sendable
-  where Source: Sendable {}
-#endif
-
 extension UnsafeIterator.Movable: Comparable where Source: Equatable, Element: Comparable {
 
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
+#if swift(>=5.5)
+extension UnsafeIterator.Movable: @unchecked Sendable
+  where Source: Sendable {}
+#endif
+
+extension UnsafeIterator.Movable {
+
+  @inlinable
+  @inline(__always)
+  public func forEach(_ body: (UnsafeIndexV2<Base>, Element) throws -> Void) rethrows
+  where Source.Source.Element == UnsafeMutablePointer<UnsafeNode> {
+    try zip(source.source, makeIterator()).forEach {
+      try body(___index($0), $1)
+    }
+  }
+}
+
+extension UnsafeIterator.Movable
+where
+  Source.Source.Element == UnsafeMutablePointer<UnsafeNode>
+{
+
+  /// - Complexity: O(1)
+  public var indices: UnsafeIterator.Indexing<Source.Base, Source.Source> {
+    .init(__tree_: __tree_, source: source.source, pool: poolLifespan)
+  }
+
+  @available(*, deprecated, message: "危険になった為")
+  @inlinable
+  @inline(__always)
+  package func ___node_positions() -> Source.Source {
+    // 多分lifetime延長しないとクラッシュする
+    // と思ったけどしなかった。念のためlifetimeとdeprecated
+    defer { _fixLifetime(self) }
+    return source.source
   }
 }

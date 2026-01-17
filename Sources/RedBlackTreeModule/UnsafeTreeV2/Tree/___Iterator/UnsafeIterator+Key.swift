@@ -1,5 +1,5 @@
 //
-//  ___UnsafeValueWrapper.swift
+//  UnsafeIterator+Key.swift
 //  swift-ac-collections
 //
 //  Created by narumij on 2026/01/17.
@@ -7,7 +7,7 @@
 
 extension UnsafeIterator {
 
-  public struct Value<Base: ___TreeBase, Source: IteratorProtocol & Sequence>:
+  public struct Key<Base: ___TreeBase, Source: IteratorProtocol & Sequence>:
     UnsafeTreePointer,
     UnsafeAssosiatedIterator,
     IteratorProtocol,
@@ -16,29 +16,29 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>,
     Source: UnsafeIteratorProtocol
   {
+    public var source: Source
+
     public init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr) {
-      self.init(iterator: .init(tree: tree, start: __first, end: __last))
+      self.init(source: .init(tree: tree, start: __first, end: __last))
     }
 
     public init(__tree_: UnsafeImmutableTree<Base>, start __first: _NodePtr, end __last: _NodePtr) {
-      self.init(iterator: .init(__tree_: __tree_, start: __first, end: __last))
+      self.init(source: .init(__tree_: __tree_, start: __first, end: __last))
     }
 
-    public var source: Source
-
-    internal init(iterator: Source) {
-      self.source = iterator
+    internal init(source: Source) {
+      self.source = source
     }
 
-    public mutating func next() -> Base._Value? {
+    public mutating func next() -> Base._Key? {
       return source.next().map {
-        $0.__value_().pointee
+        Base.__key($0.__value_().pointee)
       }
     }
   }
 }
 
 #if swift(>=5.5)
-  extension UnsafeIterator.Value: @unchecked Sendable
+  extension UnsafeIterator.Key: @unchecked Sendable
   where Source: Sendable {}
 #endif

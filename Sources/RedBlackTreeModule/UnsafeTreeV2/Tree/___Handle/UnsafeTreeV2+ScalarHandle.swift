@@ -132,7 +132,6 @@ extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase {}
 extension UnsafeTreeV2ScalarHandle: BoundProtocol, BoundAlgorithmProtocol {}
 extension UnsafeTreeV2ScalarHandle: FindProtocol {}
 extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
-//extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol {}
 extension UnsafeTreeV2ScalarHandle: RemoveProtocol, RemoveProtocol_ptr {}

@@ -8,6 +8,7 @@
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
 
   @inlinable @inline(__always)
   static var nullptr: _NodePtr {
@@ -43,6 +44,18 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     @inline(__always) _read { yield pointee.__is_black_ }
     @inline(__always) _modify { yield &pointee.__is_black_ }
   }
+  
+  @inlinable
+  @inline(__always)
+  var __left_ref: _NodeRef {
+    return withUnsafeMutablePointer(to: &pointee.__left_) { $0 }
+  }
+
+  @inlinable
+  @inline(__always)
+  var __right_ref: _NodeRef {
+    return withUnsafeMutablePointer(to: &pointee.__right_) { $0 }
+  }
 }
 
 //extension UnsafeMutablePointer where Pointee == UnsafeNode {
@@ -51,6 +64,12 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 //}
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
+
+  @inlinable
+  @inline(__always)
+  var __raw_value_: UnsafeMutableRawPointer {
+    UnsafeMutableRawPointer(advanced(by: 1))
+  }
 
   @inlinable
   @inline(__always)

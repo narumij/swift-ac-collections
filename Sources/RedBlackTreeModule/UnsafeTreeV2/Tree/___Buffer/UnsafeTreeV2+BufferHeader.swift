@@ -257,7 +257,7 @@ extension UnsafeTreeV2Buffer.Header {
       return nullptr
     }
     assert(p.pointee.___node_id_ == .debug)
-    UnsafeNode.bindValue(_Value.self, p)
+//    UnsafeNode.bindValue(_Value.self, p)
     p.initialize(to: nullptr.create(id: freshPoolUsedCount))
     freshPoolUsedCount += 1
     count += 1
@@ -305,7 +305,7 @@ extension UnsafeTreeV2Buffer.Header {
       assert(recycleCount >= 0)
     #endif
     let p = recycleHead.pointerIndex == .nullptr ? ___popFresh() : ___popRecycle()
-    UnsafeNode.initializeValue(p, to: k)
+    p.__value_().initialize(to: k)
     assert(p.pointee.___node_id_ >= 0)
     return p
   }

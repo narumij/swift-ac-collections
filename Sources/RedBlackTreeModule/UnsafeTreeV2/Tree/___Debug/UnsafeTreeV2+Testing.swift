@@ -70,7 +70,7 @@
   extension UnsafeNode {
 
     @inlinable
-    package func equiv(with tree: UnsafeNode) -> Bool {
+    package func equiv(with tree: borrowing UnsafeNode) -> Bool {
       assert(___node_id_ == tree.___node_id_)
       assert(__left_.pointee.___node_id_ == tree.__left_.pointee.___node_id_)
       assert(__right_.pointee.___node_id_ == tree.__right_.pointee.___node_id_)

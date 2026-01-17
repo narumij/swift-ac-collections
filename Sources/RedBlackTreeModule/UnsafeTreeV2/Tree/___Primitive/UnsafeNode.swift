@@ -109,7 +109,7 @@
 ///      `UnsafeNode` のサイズやフィールド順序を変更してはならない。
 ///
 @frozen
-public struct UnsafeNode {
+public struct UnsafeNode: ~Copyable {
 
   public typealias Pointer = UnsafeMutablePointer<UnsafeNode>
 

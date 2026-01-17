@@ -122,10 +122,10 @@ extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase {}
 
 extension UnsafeTreeV2ScalarHandle: BoundProtocol, BoundAlgorithmProtocol {}
 extension UnsafeTreeV2ScalarHandle: FindProtocol {}
-extension UnsafeTreeV2ScalarHandle: FindEqualProtocol, FindEqualProtocol_std {}
+extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
 //extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol {
-  
+
   @inlinable
   @inline(__always)
   internal func
@@ -154,17 +154,92 @@ extension UnsafeTreeV2ScalarHandle: RemoveProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 
-extension UnsafeTreeV2ScalarHandle {
+#if false
+  extension UnsafeTreeV2ScalarHandle: FindEqualProtocol_std {}
+#else
+  extension UnsafeTreeV2ScalarHandle {
 
-  #if false
     @inlinable
-    @inline(__always)
     internal func
       __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
     {
+      switch specializeMode {
+      case .asInt:
+        _i__find_equal(__v as! Int)
+      case .generic:
+        _g__find_equal(__v)
+      }
+    }
+    
+    /*
+     @usableFromInlineにすると、以下となる
+
+     ; UnsafeTreeV2ScalarHandle._i__find_equal(_:)
+     +0x00  ldr                 x1, [x2, #0x10]
+     +0x04  ldr                 x10, [x1]
+     +0x08  ldr                 x9, [x2]
+     +0x0c  cmp                 x10, x9
+     +0x10  b.ne                "UnsafeTreeV2ScalarHandle._i__find_equal(_:)+0x2c"
+     +0x14  mov                 x0, x1
+     +0x18  ret
+     +0x1c  ldr                 x10, [x8]
+     +0x20  mov                 x1, x8
+     +0x24  cmp                 x10, x9
+     +0x28  b.eq                "UnsafeTreeV2ScalarHandle._i__find_equal(_:)+0x50"
+     +0x2c  mov                 x8, x10
+     +0x30  ldr                 x10, [x10, #0x28]
+     +0x34  cmp                 x10, x0
+     +0x38  b.gt                "UnsafeTreeV2ScalarHandle._i__find_equal(_:)+0x1c"
+     +0x3c  b.ge                "UnsafeTreeV2ScalarHandle._i__find_equal(_:)+0x50"
+     +0x40  mov                 x1, x8
+     +0x44  ldr                 x10, [x1, #0x8]!
+     +0x48  cmp                 x10, x9
+     +0x4c  b.ne                "UnsafeTreeV2ScalarHandle._i__find_equal(_:)+0x2c"
+     +0x50  mov                 x0, x8
+     +0x54  ret
+     */
+    @inlinable
+    internal func
+      _i__find_equal(_ __v: Int) -> (__parent: _NodePtr, __child: _NodeRef)
+    {
       var __nd = __root
       if __nd == nullptr {
-        return (__end_node, __left_ref(end))
+        return (__end_node, end.__left_ref)
+      }
+      var __nd_ptr = __root_ptr()
+      let __comp = __default_three_way_comparator as (Int,Int) -> __int_compare_result
+
+      while true {
+
+        let __comp_res = __comp(__v, __nd.__value_(as: Int.self).pointee)
+
+        if __comp_res.__less() {
+          if __nd.__left_ == nullptr {
+            return (__nd, __nd.__left_ref)
+          }
+
+          __nd_ptr = __nd.__left_ref
+          __nd = __nd.__left_
+        } else if __comp_res.__greater() {
+          if __nd.__right_ == nullptr {
+            return (__nd, __nd.__right_ref)
+          }
+
+          __nd_ptr = __nd.__right_ref
+          __nd = __nd.__right_
+        } else {
+          return (__nd, __nd_ptr)
+        }
+      }
+    }
+    
+    @inlinable
+    internal func
+      _g__find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+    {
+      var __nd = __root
+      if __nd == nullptr {
+        return (__end_node, end.__left_ref)
       }
       var __nd_ptr = __root_ptr()
       let __comp = __lazy_synth_three_way_comparator
@@ -174,23 +249,71 @@ extension UnsafeTreeV2ScalarHandle {
         let __comp_res = __comp(__v, __get_value(__nd))
 
         if __comp_res.__less() {
-          if __left_unsafe(__nd) == nullptr {
-            return (__nd, __left_ref(__nd))
+          if __nd.__left_ == nullptr {
+            return (__nd, __nd.__left_ref)
           }
 
-          __nd_ptr = __left_ref(__nd)
-          __nd = __left_unsafe(__nd)
+          __nd_ptr = __nd.__left_ref
+          __nd = __nd.__left_
         } else if __comp_res.__greater() {
-          if __right_(__nd) == nullptr {
-            return (__nd, __right_ref(__nd))
+          if __nd.__right_ == nullptr {
+            return (__nd, __nd.__right_ref)
           }
 
-          __nd_ptr = __right_ref(__nd)
-          __nd = __right_(__nd)
+          __nd_ptr = __nd.__right_ref
+          __nd = __nd.__right_
         } else {
           return (__nd, __nd_ptr)
         }
       }
     }
-  #endif
-}
+    
+    @inlinable
+//    @inline(__always)
+    internal func
+      __insert_unique(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
+    {
+      __emplace_unique_key_args(x)
+    }
+
+    #if true
+      @inlinable
+//      @inline(__always)
+//    @usableFromInline
+      internal func
+        __emplace_unique_key_args(_ __k: _Value)
+        -> (__r: _NodePtr, __inserted: Bool)
+      {
+        let (__parent, __child) = __find_equal(__key(__k))
+        let __r = __child
+        if __child.pointee == nullptr {
+          let __h = __construct_node(__k)
+          __insert_node_at(__parent, __child, __h)
+          return (__h, true)
+        } else {
+          // __insert_node_atで挿入した場合、__rが破損する
+          // 既存コードの後続で使用しているのが実質Ptrなので、そちらを返すよう一旦修正
+          // 今回初めて破損したrefを使用したようで既存コードでの破損ref使用は大丈夫そう
+          return (__r.pointee, false)
+        }
+      }
+    #else
+      @inlinable
+      internal func
+        __emplace_unique_key_args(_ __k: _Value)
+        -> (__r: _NodeRef, __inserted: Bool)
+      {
+        var __parent = _NodePtr.nullptr
+        let __child = __find_equal(&__parent, __key(__k))
+        let __r = __child
+        var __inserted = false
+        if __ref_(__child) == .nullptr {
+          let __h = __construct_node(__k)
+          __insert_node_at(__parent, __child, __h)
+          __inserted = true
+        }
+        return (__r, __inserted)
+      }
+    #endif
+  }
+#endif

@@ -76,7 +76,7 @@ extension UnsafeTreeV2 {
 
       /// ノードを新ノードで再構築する内部ユーティリティ
       @inline(__always)
-      func node(_ s: UnsafeNode) -> UnsafeNode {
+      func node(_ s: borrowing UnsafeNode) -> UnsafeNode {
         // 値は別途管理
         return .init(
           ___node_id_: s.___node_id_,

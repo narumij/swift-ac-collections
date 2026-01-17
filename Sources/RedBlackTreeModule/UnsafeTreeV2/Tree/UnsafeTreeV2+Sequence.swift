@@ -189,7 +189,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func
-    sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafePointersUnsafeV2<Base>
+    sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___UnsafeRemoveAwareWrapper<___UnsafeNaiveIterator>
   {
     .init(tree: self, start: __first, end: __last)
   }
@@ -198,16 +198,16 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func
     unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
-    -> ___UnsafePointersUnsafeV2<Base>
+    -> ___UnsafePointersUnsafeV2
   {
-    .init(tree: self, __first: __first, __last: __last)
+    .init(tree: self, start: __first, end: __last)
   }
 
   @inlinable
   @inline(__always)
   internal func
     unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
-    -> ___UnsafeValuesUnsafeV2<Base>
+    -> ___UnsafeValueWrapper<Base, ___UnsafeNaiveIterator>
   {
     .init(tree: self, __first: __first, __last: __last)
   }

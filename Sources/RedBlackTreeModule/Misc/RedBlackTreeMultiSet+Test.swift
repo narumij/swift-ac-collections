@@ -41,7 +41,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  package func ___node_positions() -> ___SafePointersUnsafeV2<Base> {
+  package func ___node_positions() -> ___UnsafeRemoveAwareWrapper<___UnsafeNaiveIterator> {
     .init(tree: __tree_, start: _start, end: _end)
   }
 }

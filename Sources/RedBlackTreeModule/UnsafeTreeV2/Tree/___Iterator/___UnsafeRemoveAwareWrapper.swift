@@ -8,12 +8,27 @@
 @usableFromInline
 package struct ___UnsafeRemoveAwareWrapper<Source: IteratorProtocol>:
   UnsafeTreePointer,
+  UnsafeIterator,
   IteratorProtocol,
   Sequence
 where
-  Source.Element == UnsafeMutablePointer<UnsafeNode>
+  Source.Element == UnsafeMutablePointer<UnsafeNode>,
+  Source: UnsafeIterator
 {
+  @usableFromInline
+  package init<Base>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr)
+  where Base: ___TreeBase {
+    self.init(iterator: .init(tree: tree, start: start, end: end))
+  }
+
+  @usableFromInline
+  package init<Base>(__tree_: UnsafeImmutableTree<Base>, start: _NodePtr, end: _NodePtr)
+  where Base: ___TreeBase {
+    self.init(iterator: .init(__tree_: __tree_, start: start, end: end))
+  }
+
   var __current: Source.Element?
+  
   @usableFromInline var naive: Source
   @usableFromInline
   internal init(iterator: Source) {
@@ -29,4 +44,4 @@ where
   }
 }
 
-extension ___UnsafeRemoveAwareWrapper: Equatable where Source: Equatable { }
+extension ___UnsafeRemoveAwareWrapper: Equatable where Source: Equatable {}

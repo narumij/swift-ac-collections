@@ -65,42 +65,5 @@ import XCTest
               __last: a.__tree_.__end_node)))
       XCTAssertEqual(it.map { $0 }, [Int](0..<5).reversed())
     }
-
-    func testRemoveProof_initial() throws {
-      var a = RedBlackTreeMultiSet<Int>((0..<5).flatMap { [$0, $0] })
-      let it = ___UnsafeRemoveProofIterator_initial<RedBlackTreeMultiSet<Int>>(
-        nullptr: a.__tree_.nullptr,
-        __first: a.__tree_.__begin_node_,
-        __last: a.__tree_.end,
-        __end_node: a.__tree_.__end_node,
-        __current: (a.startIndex.rawValue, 0))
-      for i in it {
-        print("a.removeAll", i.__value_().pointee as Int)
-        a.removeAll(i.__value_().pointee)
-        print("a", a + [])
-      }
-      XCTAssertTrue(a.isEmpty)
-      XCTAssertEqual(a + [], [])
-    }
-
-    func testRemoveUnproof() throws {
-
-      var a = RedBlackTreeMultiSet<Int>((0..<5).flatMap { [$0, $0] })
-
-      let it = ___UnsafeRemoveProofWrapper_naive(
-        sequence: ___UnsafeNaiveIterator(
-          __first: a.__tree_.__begin_node_,
-          __last: a.__tree_.__end_node))
-
-      for i in AnySequence(it + []) {
-        print("a.removeAll", i.__value_().pointee as Int)
-        a.removeAll(i.__value_().pointee)
-        print("a", a + [])
-      }
-
-      XCTAssertTrue(a.isEmpty)
-      XCTAssertEqual(a + [], [])
-    }
-
   }
 #endif

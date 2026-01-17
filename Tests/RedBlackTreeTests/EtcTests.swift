@@ -391,12 +391,14 @@ final class EtcTests: RedBlackTreeTestCase {
     }
     XCTAssertEqual(set.reversed(), result)
   }
+  
   func testBackwordIterator2() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     let seq = AnySequence { set.reversed().indices }
     for i in seq {
       set.remove(at: i)
     }
+    XCTAssertEqual(set + [],[])
     XCTAssertTrue(set.isEmpty)
   }
 

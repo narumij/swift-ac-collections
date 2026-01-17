@@ -40,6 +40,12 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 
   @inlinable
+  var __set_parent: _NodePtr {
+    @inline(__always) _read { yield pointee.__parent_ }
+    @inline(__always) _modify { yield &pointee.__parent_ }
+  }
+
+  @inlinable
   var __is_black_: Bool {
     @inline(__always) _read { yield pointee.__is_black_ }
     @inline(__always) _modify { yield &pointee.__is_black_ }

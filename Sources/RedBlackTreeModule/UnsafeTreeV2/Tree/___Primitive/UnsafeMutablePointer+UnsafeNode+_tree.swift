@@ -354,19 +354,19 @@ internal func
   let __removed_black = __y.__is_black_
   // If we didn't remove __z, do so now by splicing in __y for __z,
   //    but copy __z's color.  This does not impact __x or __w.
-  if __y != __z {
+  if (__y != __z) {
     // __z->__left_ != nulptr but __z->__right_ might == __x == nullptr
     __y.__parent_ = __z.__parent_
-    if __tree_is_left_child(__z) {
+    if (__tree_is_left_child(__z)) {
       __y.__parent_.__left_ = __y
     } else {
-      __y.__parent_.__right_ = __y
+      __y.__parent_unsafe.__right_ = __y
     }
     __y.__left_ = __z.__left_
-    __y.__left_.__parent_ = __y
+    __y.__left_.__set_parent = __y
     __y.__right_ = __z.__right_
-    if __y.__right_ != .nullptr {
-      __y.__right_.__parent_ = __y
+    if (__y.__right_ != .nullptr) {
+      __y.__right_.__set_parent = __y
     }
     __y.__is_black_ = __z.__is_black_
     if __root == __z {

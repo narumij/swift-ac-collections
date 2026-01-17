@@ -336,10 +336,10 @@ internal func
   // __w is __x's possibly null uncle (will become __x's sibling)
   var __w: _NodePtr = .nullptr
   // link __x to __y's parent, and find __w
-  if __x != .nullptr {
+  if (__x != .nullptr) {
     __x.__parent_ = __y.__parent_
   }
-  if __tree_is_left_child(__y) {
+  if (__tree_is_left_child(__y)) {
     __y.__parent_.__left_ = __x
     if __y != __root {
       __w = __y.__parent_unsafe.__right_
@@ -375,7 +375,7 @@ internal func
   }
   // There is no need to rebalance if we removed a red, or if we removed
   //     the last node.
-  if __removed_black && __root != .nullptr {
+  if (__removed_black && __root != .nullptr) {
     // Rebalance:
     // __x has an implicit black color (transferred from the removed __y)
     //    associated with it, no matter what its color is.
@@ -388,7 +388,7 @@ internal func
     //   is either red with no children, else null, otherwise __y would have
     //   different black heights under left and right pointers.
     // if (__x == __root || __x != nullptr && !__x->__is_black_)
-    if __x != .nullptr {
+    if (__x != .nullptr) {
       __x.__is_black_ = true
     } else {
       //  Else __x isn't root, and is "doubly black", even though it may
@@ -397,23 +397,23 @@ internal func
       //     of 1 on the __w side (__w must be a non-null black or a red
       //     with a non-null black child).
       while true {
-        if !__tree_is_left_child(__w)  // if x is left child
+        if (!__tree_is_left_child(__w))  // if x is left child
         {
-          if !__w.__is_black_ {
+          if (!__w.__is_black_) {
             __w.__is_black_ = true
             __w.__parent_.__is_black_ = false
             __tree_left_rotate(&__w.__parent_)
             // __x is still valid
             // reset __root only if necessary
-            if __root == __w.__left_ {
+            if (__root == __w.__left_) {
               __root = __w
             }
             // reset sibling, and it still can't be null
             __w = __w.__left_.__right_
           }
           // __w->__is_black_ is now true, __w may have null children
-          if (__w.__left_ == .nullptr || __w.__left_.__is_black_)
-            && (__w.__right_ == .nullptr || __w.__right_.__is_black_)
+          if ((__w.__left_ == .nullptr || __w.__left_.__is_black_)
+            && (__w.__right_ == .nullptr || __w.__right_.__is_black_))
           {
             __w.__is_black_ = false
             __x = __w.__parent_
@@ -428,7 +428,7 @@ internal func
             // continue;
           } else  // __w has a red child
           {
-            if __w.__right_ == .nullptr || __w.__right_.__is_black_ {
+            if (__w.__right_ == .nullptr || __w.__right_.__is_black_) {
               // __w left child is non-null and red
               __w.__left_.__is_black_ = true
               __w.__is_black_ = false
@@ -445,7 +445,7 @@ internal func
             break
           }
         } else {
-          if !__w.__is_black_ {
+          if (!__w.__is_black_) {
             __w.__is_black_ = true
             __w.__parent_.__is_black_ = false
             __tree_right_rotate(&__w.__parent_)
@@ -458,8 +458,8 @@ internal func
             __w = __w.__right_.__left_
           }
           // __w->__is_black_ is now true, __w may have null children
-          if (__w.__left_ == .nullptr || __w.__left_.__is_black_)
-            && (__w.__right_ == .nullptr || __w.__right_.__is_black_)
+          if ((__w.__left_ == .nullptr || __w.__left_.__is_black_)
+            && (__w.__right_ == .nullptr || __w.__right_.__is_black_))
           {
             __w.__is_black_ = false
             __x = __w.__parent_
@@ -474,7 +474,7 @@ internal func
             // continue;
           } else  // __w has a red child
           {
-            if __w.__left_ == .nullptr || __w.__left_.__is_black_ {
+            if (__w.__left_ == .nullptr || __w.__left_.__is_black_) {
               // __w right child is non-null and red
               __w.__right_.__is_black_ = true
               __w.__is_black_ = false

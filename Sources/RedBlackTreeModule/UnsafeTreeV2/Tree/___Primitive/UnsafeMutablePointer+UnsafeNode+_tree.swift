@@ -366,8 +366,7 @@ internal func
     __y.__left_.__set_parent = __y
     __y.__right_ = __z.__right_
     if (__y.__right_ != .nullptr) {
-      __y.__right_.__set_parent = __y
-    }
+      __y.__right_.__set_parent = __y }
     __y.__is_black_ = __z.__is_black_
     if __root == __z {
       __root = __y

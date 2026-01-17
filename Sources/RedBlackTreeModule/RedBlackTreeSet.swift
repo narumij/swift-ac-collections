@@ -257,7 +257,7 @@ extension RedBlackTreeSet {
     // let (__r, __inserted) = __tree_.__insert_unique(newMember)
 //    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     let (__r, __inserted) = switch __tree_.specializeMode {
-      case .asInt: __tree_._i_update { $0.__insert_unique(newMember as! Int) }
+      case .asInt: __tree_._i_update { $0._i__insert_unique(newMember as! Int) }
       case .generic: __tree_.update { $0.__insert_unique(newMember) }
       }
     return (__inserted, __inserted ? newMember : __tree_[__r])

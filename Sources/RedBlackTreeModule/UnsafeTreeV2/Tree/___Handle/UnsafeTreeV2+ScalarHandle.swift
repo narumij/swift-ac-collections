@@ -165,21 +165,20 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 
 #if true
   extension UnsafeTreeV2ScalarHandle: FindEqualProtocol_std {}
-#else
   extension UnsafeTreeV2ScalarHandle {
 
     @inlinable
-    internal func
-      __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
-    {
-      switch specializeMode {
-      case .asInt:
-        _i__find_equal(__v as! Int)
-      case .generic:
-        _g__find_equal(__v)
+    @inline(__always)
+    package func _i__lazy_synth_three_way_comparator(_ __lhs: Int, _ __rhs: Int) -> Int {
+      if __lhs < __rhs {
+        -1
+      } else if __lhs > __rhs {
+        1
+      } else {
+        0
       }
     }
-    
+
     /*
      @usableFromInlineにすると、以下となる
 
@@ -208,6 +207,7 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
      +0x54  ret
      */
     @inlinable
+    @inline(__always)
     internal func
       _i__find_equal(_ __v: Int) -> (__parent: _NodePtr, __child: _NodeRef)
     {
@@ -216,7 +216,7 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
         return (__end_node, end.__left_ref)
       }
       var __nd_ptr = __root_ptr()
-      let __comp = __default_three_way_comparator as (Int,Int) -> __int_compare_result
+      let __comp = _i__lazy_synth_three_way_comparator
 
       while true {
 
@@ -243,56 +243,20 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
     }
     
     @inlinable
+    @inline(__always)
     internal func
-      _g__find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+      _i__insert_unique(_ x: Int) -> (__r: _NodePtr, __inserted: Bool)
     {
-      var __nd = __root
-      if __nd == nullptr {
-        return (__end_node, end.__left_ref)
-      }
-      var __nd_ptr = __root_ptr()
-      let __comp = __lazy_synth_three_way_comparator
-
-      while true {
-
-        let __comp_res = __comp(__v, __get_value(__nd))
-
-        if __comp_res.__less() {
-          if __nd.__left_ == nullptr {
-            return (__nd, __nd.__left_ref)
-          }
-
-          __nd_ptr = __nd.__left_ref
-          __nd = __nd.__left_
-        } else if __comp_res.__greater() {
-          if __nd.__right_ == nullptr {
-            return (__nd, __nd.__right_ref)
-          }
-
-          __nd_ptr = __nd.__right_ref
-          __nd = __nd.__right_
-        } else {
-          return (__nd, __nd_ptr)
-        }
-      }
-    }
-    
-    @inlinable
-//    @inline(__always)
-    internal func
-      __insert_unique(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
-    {
-      __emplace_unique_key_args(x)
+      _i__emplace_unique_key_args(x)
     }
 
       @inlinable
-//      @inline(__always)
-//    @usableFromInline
+    @inline(__always)
       internal func
-        __emplace_unique_key_args(_ __k: _Value)
+        _i__emplace_unique_key_args(_ __k: Int)
         -> (__r: _NodePtr, __inserted: Bool)
       {
-        let (__parent, __child) = __find_equal(__key(__k))
+        let (__parent, __child) = _i__find_equal(__k)
         let __r = __child
         if __child.pointee == nullptr {
           let __h = __construct_node(__k)
@@ -306,4 +270,5 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
         }
       }
   }
+#else
 #endif

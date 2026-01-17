@@ -199,16 +199,6 @@ extension UnsafeTreeV2BufferHeader {
         minimumCapacity)
     }
 
-    //    if minimumCapacity <= 2 {
-    //      return Swift.max(minimumCapacity, 2)
-    //    }
-    //
-    //    if minimumCapacity <= 4 {
-    //      return Swift.max(minimumCapacity, 4)
-    //    }
-
-    // https://atcoder.jp/contests/abc411/submissions/72430351
-
-    return Swift.max(minimumCapacity, freshPoolCapacity + max(freshPoolCapacity / 2, 2))
+    return Swift.max(minimumCapacity, max(4, freshPoolCapacity) + max(freshPoolCapacity / 4, 2))
   }
 }

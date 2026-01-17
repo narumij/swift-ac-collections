@@ -71,7 +71,9 @@ extension FindEqualProtocol_ptr {
 }
 
 @usableFromInline
-protocol InsertNodeAtProtocol_ptr: UnsafeTreePointer, InsertNodeAtProtocol, BeginNodeProtocol, EndNodeProtocol, SizeProtocol {}
+protocol InsertNodeAtProtocol_ptr: UnsafeTreePointer, InsertNodeAtProtocol, BeginNodeProtocol,
+  EndNodeProtocol, SizeProtocol
+{}
 
 extension InsertNodeAtProtocol_ptr {
 
@@ -120,5 +122,49 @@ extension RemoveProtocol_ptr {
     __size_ -= 1
     _std__tree_remove(__end_node.__left_, __ptr)
     return __r
+  }
+}
+
+@usableFromInline
+protocol FindEqualProtocol_ptr_old: UnsafeTreePointer, ValueProtocol,
+  RootProtocol, RootPtrProtocol
+{}
+
+extension FindEqualProtocol_ptr_old {
+
+  @inlinable
+  @inline(__always)
+  func
+    __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+  {
+    var __parent: _NodePtr = end
+    var __nd = __root
+    var __nd_ptr = __root_ptr()
+    if __nd != nullptr {
+      while true {
+        if value_comp(__v, __get_value(__nd)) {
+          if __nd.__left_ != .nullptr {
+            __nd_ptr = __nd.__left_ref
+            __nd = __nd.__left_
+          } else {
+            __parent = __nd
+            return (__parent, __parent.__left_ref)
+          }
+        } else if value_comp(__get_value(__nd), __v) {
+          if __nd.__right_ != nullptr {
+            __nd_ptr = __nd.__right_ref
+            __nd = __nd.__right_
+          } else {
+            __parent = __nd
+            return (__parent, __nd.__right_ref)
+          }
+        } else {
+          __parent = __nd
+          return (__parent, __nd_ptr)
+        }
+      }
+    }
+    __parent = __end_node
+    return (__parent, __parent.__left_ref)
   }
 }

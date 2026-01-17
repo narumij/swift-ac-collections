@@ -139,7 +139,7 @@ extension _UnsafeNodeFreshPoolV3 {
   @inlinable
   @inline(__always)
   mutating func ___flushFreshPool() {
-    freshBucketAllocator.deinitialize(freshBucketHead)
+    freshBucketAllocator.deinitialize(bucket: freshBucketHead)
     freshPoolUsedCount = 0
     freshBucketCurrent = freshBucketHead
   }
@@ -147,7 +147,7 @@ extension _UnsafeNodeFreshPoolV3 {
   @inlinable
   @inline(__always)
   mutating func ___deallocFreshPool() {
-    freshBucketAllocator.deallocate(freshBucketHead)
+    freshBucketAllocator.deallocate(bucket: freshBucketHead)
   }
 }
 

@@ -123,7 +123,7 @@ struct _UnsafeNodeFreshBucketAllocator {
 
   @inlinable
   @inline(__always)
-  public func deinitialize(_ b: _BucketPointer?) {
+  public func deinitialize(bucket b: _BucketPointer?) {
     var reserverHead = b
     while let h = reserverHead {
       reserverHead = h.pointee.next
@@ -134,7 +134,7 @@ struct _UnsafeNodeFreshBucketAllocator {
 
   @inlinable
   @inline(__always)
-  public func deallocate(_ b: _BucketPointer?) {
+  public func deallocate(bucket b: _BucketPointer?) {
     var reserverHead = b
     while let h = reserverHead {
       reserverHead = h.pointee.next

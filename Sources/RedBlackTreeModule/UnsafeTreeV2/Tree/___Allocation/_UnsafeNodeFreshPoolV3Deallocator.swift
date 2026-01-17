@@ -33,7 +33,7 @@ package final class _UnsafeNodeFreshPoolV3Deallocator: UnsafeTreePointer {
 
   @inlinable
   deinit {
-    freshPoolDeallocator.deallocate(freshBucketHead)
+    freshPoolDeallocator.deallocate(bucket: freshBucketHead)
   }
 
   @inlinable
@@ -118,7 +118,7 @@ extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
     @inlinable
     @inline(__always)
     func deallocate() {
-      freshPoolDeallocator.deallocate(freshBucketHead)
+      freshPoolDeallocator.deallocate(bucket: freshBucketHead)
     }
 
     @inlinable

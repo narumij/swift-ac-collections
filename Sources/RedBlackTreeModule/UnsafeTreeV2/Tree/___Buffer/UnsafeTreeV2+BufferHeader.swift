@@ -26,12 +26,12 @@ typealias Deallocator = _UnsafeNodeFreshPoolV3DeallocatorR2
 //extension UnsafeTreeV2Buffer {
 
   @frozen
-  public struct UnsafeTreeV2BufferHeader<_Value>: _UnsafeNodeRecyclePool {
+  public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     @inlinable
     @inline(__always)
-    internal init(nullptr: _NodePtr) {
+    internal init<_Value>(_ t: _Value.Type,nullptr: _NodePtr) {
       self.nullptr = nullptr
       self.recycleHead = nullptr
       self.freshBucketAllocator = .init(valueType: _Value.self) {
@@ -218,7 +218,7 @@ extension UnsafeTreeV2BufferHeader {
     var bytes = 0
     var p = freshBucketHead
     while let h = p {
-      bytes += h.pointee.count * (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride)
+      bytes += h.pointee.count * freshBucketAllocator.nodeValueStride
       p = h.pointee.next
     }
     return bytes
@@ -229,8 +229,8 @@ extension UnsafeTreeV2BufferHeader {
   // TODO: ジェネリクスが外れたらPOOL V3に戻す
   @inlinable
   @inline(__always)
-  func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_Value> {
-    return _UnsafeNodeFreshBucketIterator<_Value>(bucket: freshBucketHead)
+  func makeFreshBucketIterator<T>() -> _UnsafeNodeFreshBucketIterator<T> {
+    return _UnsafeNodeFreshBucketIterator<T>(bucket: freshBucketHead)
   }
 }
 

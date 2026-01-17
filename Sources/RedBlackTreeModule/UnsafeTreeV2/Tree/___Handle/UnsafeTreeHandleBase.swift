@@ -24,7 +24,7 @@
 package protocol UnsafeTreeHandleBase: UnsafeTreeNodeProtocol & _TreeValue & UnsafeTreePointer,
   UnsafeTreeNodeRefProtocol
 {
-  var header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader<_Value>> { get }
+  var header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader> { get }
   var origin: UnsafeMutablePointer<UnsafeTreeV2Origin> { get }
 }
 

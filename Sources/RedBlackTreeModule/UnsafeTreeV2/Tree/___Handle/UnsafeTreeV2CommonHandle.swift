@@ -26,7 +26,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func withHeader<R>(
-    _ body: (UnsafeTreeV2BufferHeader<_Value>) throws -> R
+    _ body: (UnsafeTreeV2BufferHeader) throws -> R
   )
     rethrows -> R
   {
@@ -39,7 +39,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func withMutableHeader<R>(
-    _ body: (inout UnsafeTreeV2BufferHeader<_Value>) throws -> R
+    _ body: (inout UnsafeTreeV2BufferHeader) throws -> R
   )
     rethrows -> R
   {
@@ -79,7 +79,7 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func withImmutables<R>(
     _ body: (
-      UnsafeTreeV2BufferHeader<_Value>,
+      UnsafeTreeV2BufferHeader,
       UnsafeTreeV2Origin
     ) throws -> R
   ) rethrows -> R {
@@ -92,7 +92,7 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func withMutables<R>(
     _ body: (
-      inout UnsafeTreeV2BufferHeader<_Value>,
+      inout UnsafeTreeV2BufferHeader,
       inout UnsafeTreeV2Origin
     ) throws -> R
   ) rethrows -> R {

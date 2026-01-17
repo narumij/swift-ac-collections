@@ -21,11 +21,12 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol _UnsafeNodeRecyclePool: _ValueProtocol, UnsafeTreePointer {
+protocol _UnsafeNodeRecyclePool: UnsafeTreePointer {
   var recycleHead: _NodePtr { get set }
   var count: Int { get set }
   var freshPoolUsedCount: Int { get set }
   var nullptr: _NodePtr { get }
+  var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator { get }
 }
 
 extension _UnsafeNodeRecyclePool {
@@ -40,7 +41,8 @@ extension _UnsafeNodeRecyclePool {
       p.pointee.___recycle_count += 1
     #endif
     // 値型の場合、この処理を削りたい誘惑がある
-    p.__value_(as: _Value.self).deinitialize(count: 1)
+//    p.__value_(as: _Value.self).deinitialize(count: 1)
+    freshBucketAllocator.deinitialize(UnsafeMutableRawPointer(p.advanced(by: 1)))
     #if GRAPHVIZ_DEBUG
       p!.pointee.__right_ = nil
       p!.pointee.__parent_ = nil

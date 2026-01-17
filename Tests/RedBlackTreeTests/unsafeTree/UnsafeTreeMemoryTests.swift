@@ -43,19 +43,7 @@ final class UnsafeTreeMemoryTests: XCTestCase {
   func testAligments0() throws {
     XCTAssertEqual(
       MemoryLayout<UnsafeNode>.alignment,
-      MemoryLayout<UnsafeTreeV2BufferHeader<Int32>>.alignment)
-  }
-
-  func testAligments1() throws {
-    XCTAssertEqual(
-      MemoryLayout<UnsafeNode>.alignment,
-      MemoryLayout<UnsafeTreeV2BufferHeader<Int>>.alignment)
-  }
-
-  func testAligments2() throws {
-    XCTAssertEqual(
-      MemoryLayout<UnsafeNode>.alignment,
-      MemoryLayout<UnsafeTreeV2BufferHeader<SIMD4<Float>>>.alignment)
+      MemoryLayout<UnsafeTreeV2BufferHeader>.alignment)
   }
 
   func testPerformanceExample() throws {

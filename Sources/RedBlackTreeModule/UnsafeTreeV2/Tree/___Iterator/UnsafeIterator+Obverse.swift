@@ -6,7 +6,7 @@
 //
 
 extension UnsafeIterator {
-  
+
   public struct Obverse:
     UnsafeTreePointer,
     UnsafeIteratorProtocol,
@@ -20,14 +20,14 @@ extension UnsafeIterator {
       self.__current = __first
       self.__last = __last
     }
-    
+
     public mutating func next() -> _NodePtr? {
       guard __current != __last else { return nil }
       let __r = __current
       __current = __tree_next_iter(__current)
       return __r
     }
-    
+
     @usableFromInline
     let __first: _NodePtr
     @usableFromInline
@@ -38,7 +38,7 @@ extension UnsafeIterator {
 }
 
 extension UnsafeIterator.Obverse {
-  
+
   @inlinable
   @inline(__always)
   public init<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr) {
@@ -55,5 +55,5 @@ extension UnsafeIterator.Obverse {
 }
 
 #if swift(>=5.5)
-extension UnsafeIterator.Obverse: @unchecked Sendable {}
+  extension UnsafeIterator.Obverse: @unchecked Sendable {}
 #endif

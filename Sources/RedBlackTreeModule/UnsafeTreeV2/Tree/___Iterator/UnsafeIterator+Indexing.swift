@@ -13,33 +13,29 @@
 //
 
 extension UnsafeIterator {
-  
-  public struct Indexing<Base,Source: IteratorProtocol>:
+
+  public struct Indexing<Base, Source: IteratorProtocol>:
     UnsafeTreePointer,
     UnsafeImmutableIndexingProtocol,
     IteratorProtocol,
     Sequence
   where
-Base: ___TreeBase & ___TreeIndex,
-  Source: Sequence,
-//Source: UnsafeIteratorProtocol,
-//  Source.Base: ___TreeIndex,
-  Source.Element == UnsafeMutablePointer<UnsafeNode>
+    Base: ___TreeBase & ___TreeIndex,
+    Source: Sequence,
+    Source.Element == UnsafeMutablePointer<UnsafeNode>
   {
     @usableFromInline
     var __tree_: UnsafeImmutableTree<Base>
-    
-//    public typealias Base = Source.Base
-    
+
     @usableFromInline
     typealias Index = UnsafeIndexV2<Base>
-    
+
     @usableFromInline
     typealias PoolLifespan = Deallocator
-    
+
     @usableFromInline
     var poolLifespan: _UnsafeNodeFreshPoolV3DeallocatorR2
-    
+
     @usableFromInline
     init(
       tree: UnsafeTreeV2<Base>,
@@ -54,7 +50,7 @@ Base: ___TreeBase & ___TreeIndex,
           end: end),
         pool: tree.poolLifespan)
     }
-    
+
     @usableFromInline
     init(
       __tree_: UnsafeImmutableTree<Base>,
@@ -70,16 +66,16 @@ Base: ___TreeBase & ___TreeIndex,
           end: end),
         pool: poolLifespan)
     }
-    
+
     @usableFromInline
     var source: Source
-    
+
     internal init(__tree_: UnsafeImmutableTree<Base>, source: Source, pool: Deallocator) {
       self.source = source
       self.poolLifespan = pool
       self.__tree_ = __tree_
     }
-    
+
     public mutating func next() -> UnsafeIndexV2<Base>? {
       source.next().map {
         ___index($0)
@@ -91,14 +87,14 @@ Base: ___TreeBase & ___TreeIndex,
 extension UnsafeIterator.Indexing: Equatable where Source: Equatable {
 
   public static func == (
-    lhs: UnsafeIterator.Indexing<Base,Source>, rhs: UnsafeIterator.Indexing<Base,Source>
+    lhs: UnsafeIterator.Indexing<Base, Source>, rhs: UnsafeIterator.Indexing<Base, Source>
   ) -> Bool {
     lhs.source == rhs.source
   }
 }
 
 #if swift(>=5.5)
-extension UnsafeIterator.Indexing: @unchecked Sendable
+  extension UnsafeIterator.Indexing: @unchecked Sendable
   where Source: Sendable {}
 #endif
 

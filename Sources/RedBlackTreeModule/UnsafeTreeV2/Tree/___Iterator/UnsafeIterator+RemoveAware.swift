@@ -6,28 +6,28 @@
 //
 
 extension UnsafeIterator {
-  
+
   public struct RemoveAware<Source: IteratorProtocol>:
     UnsafeTreePointer,
     UnsafeIteratorProtocol,
     IteratorProtocol,
     Sequence
   where
-  Source.Element == UnsafeMutablePointer<UnsafeNode>,
-  Source: UnsafeIteratorProtocol
+    Source.Element == UnsafeMutablePointer<UnsafeNode>,
+    Source: UnsafeIteratorProtocol
   {
     public init<Base>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr)
     where Base: ___TreeBase {
       self.init(iterator: .init(tree: tree, start: start, end: end))
     }
-    
+
     public init<Base>(__tree_: UnsafeImmutableTree<Base>, start: _NodePtr, end: _NodePtr)
     where Base: ___TreeBase {
       self.init(iterator: .init(__tree_: __tree_, start: start, end: end))
     }
-    
+
     var __current: Source.Element?
-    
+
     @usableFromInline var source: Source
     @usableFromInline
     internal init(iterator: Source) {
@@ -35,7 +35,7 @@ extension UnsafeIterator {
       self.__current = it.next()
       self.source = it
     }
-    
+
     public mutating func next() -> _NodePtr? {
       guard let __current else { return nil }
       self.__current = source.next()
@@ -47,6 +47,6 @@ extension UnsafeIterator {
 extension UnsafeIterator.RemoveAware: Equatable where Source: Equatable {}
 
 #if swift(>=5.5)
-extension UnsafeIterator.RemoveAware: @unchecked Sendable
+  extension UnsafeIterator.RemoveAware: @unchecked Sendable
   where Source: Sendable {}
 #endif

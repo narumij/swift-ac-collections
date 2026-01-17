@@ -6,30 +6,30 @@
 //
 
 extension UnsafeIterator {
-  
+
   public struct Movable<Source: IteratorProtocol>:
     UnsafeTreePointer,
     UnsafeImmutableIndexingProtocol,
     IteratorProtocol,
     Sequence
   where
-  Source: UnsafeAssosiatedIterator,
-  Source.Base: ___TreeIndex
+    Source: UnsafeAssosiatedIterator,
+    Source.Base: ___TreeIndex
   {
     @usableFromInline
     var __tree_: UnsafeImmutableTree<Base>
-    
+
     public typealias Base = Source.Base
-    
+
     @usableFromInline
     typealias Index = UnsafeIndexV2<Base>
-    
+
     @usableFromInline
     typealias PoolLifespan = Deallocator
-    
+
     @usableFromInline
     var poolLifespan: _UnsafeNodeFreshPoolV3DeallocatorR2
-    
+
     @usableFromInline
     init(
       tree: UnsafeTreeV2<Source.Base>,
@@ -44,7 +44,7 @@ extension UnsafeIterator {
           end: end),
         pool: tree.poolLifespan)
     }
-    
+
     @usableFromInline
     init(
       __tree_: UnsafeImmutableTree<Source.Base>,
@@ -60,16 +60,16 @@ extension UnsafeIterator {
           end: end),
         pool: poolLifespan)
     }
-    
+
     @usableFromInline
     var source: Source
-    
+
     internal init(__tree_: UnsafeImmutableTree<Base>, source: Source, pool: Deallocator) {
       self.source = source
       self.poolLifespan = pool
       self.__tree_ = __tree_
     }
-    
+
     public mutating func next() -> Source.Element? {
       source.next()
     }
@@ -95,7 +95,7 @@ extension UnsafeIterator.Movable: Comparable where Source: Equatable, Element: C
 }
 
 #if swift(>=5.5)
-extension UnsafeIterator.Movable: @unchecked Sendable
+  extension UnsafeIterator.Movable: @unchecked Sendable
   where Source: Sendable {}
 #endif
 

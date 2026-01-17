@@ -47,7 +47,7 @@ extension UnsafeIterator {
     Source: UnsafeIteratorProtocol
   {
     public var source: Source
-    
+
     public init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr) {
       self.init(source: .init(tree: tree, start: __first, end: __last))
     }
@@ -67,7 +67,9 @@ extension UnsafeIterator {
     }
   }
 
-  public struct MappedValue<Base: ___TreeBase & KeyValueComparer, Source: IteratorProtocol & Sequence>:
+  public struct MappedValue<
+    Base: ___TreeBase & KeyValueComparer, Source: IteratorProtocol & Sequence
+  >:
     UnsafeTreePointer,
     UnsafeAssosiatedIterator,
     IteratorProtocol,
@@ -77,24 +79,27 @@ extension UnsafeIterator {
     Source: UnsafeIteratorProtocol
   {
     public
-    init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr) {
+      init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr)
+    {
       self.init(source: .init(tree: tree, start: __first, end: __last))
     }
 
     public
-    init(__tree_: UnsafeImmutableTree<Base>, start __first: _NodePtr, end __last: _NodePtr) {
+      init(__tree_: UnsafeImmutableTree<Base>, start __first: _NodePtr, end __last: _NodePtr)
+    {
       self.init(source: .init(__tree_: __tree_, start: __first, end: __last))
     }
 
     public
-    var source: Source
+      var source: Source
 
     internal init(source: Source) {
       self.source = source
     }
 
     public
-    mutating func next() -> Base._MappedValue? {
+      mutating func next() -> Base._MappedValue?
+    {
       return source.next().map {
         Base.___mapped_value($0.__value_().pointee)
       }

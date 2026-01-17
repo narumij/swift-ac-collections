@@ -6,7 +6,7 @@
 //
 
 extension UnsafeIterator {
-  
+
   public struct Reverse:
     UnsafeTreePointer,
     UnsafeIteratorProtocol,
@@ -20,13 +20,13 @@ extension UnsafeIterator {
       self.__current = __last
       self.__last = __last
     }
-    
+
     public mutating func next() -> _NodePtr? {
       guard __current != __first else { return nil }
       __current = __tree_prev_iter(__current)
       return __current
     }
-    
+
     @usableFromInline
     let __first: _NodePtr
     @usableFromInline
@@ -54,5 +54,5 @@ extension UnsafeIterator.Reverse {
 }
 
 #if swift(>=5.5)
-extension UnsafeIterator.Reverse: @unchecked Sendable {}
+  extension UnsafeIterator.Reverse: @unchecked Sendable {}
 #endif

@@ -6,20 +6,20 @@
 //
 
 @usableFromInline
-struct ___UnsafeNaiveIterator:
-  UnsafeTreeNodeProtocol,
+package struct ___UnsafeNaiveIterator:
+  UnsafeTreePointer,
   IteratorProtocol,
-  Sequence
+  Sequence,
+  Equatable
 {
   @usableFromInline
-  internal init(nullptr: _NodePtr, __first: _NodePtr, __last: _NodePtr) {
-    self.nullptr = nullptr
+  internal init(__first: _NodePtr, __last: _NodePtr) {
     self.__first = __first
     self.__last = __last
   }
 
   @usableFromInline
-  mutating func next() -> _NodePtr? {
+  package mutating func next() -> _NodePtr? {
     guard __first != __last else { return nil }
     let __r = __first
     __first = __tree_next_iter(__first)
@@ -27,32 +27,32 @@ struct ___UnsafeNaiveIterator:
   }
 
   @usableFromInline
-  let nullptr: _NodePtr
   var __first: _NodePtr
   let __last: _NodePtr
 }
 
-struct ___UnsafeNaiveRevIterator:
-  UnsafeTreeNodeProtocol,
+@usableFromInline
+package struct ___UnsafeNaiveRevIterator:
+  UnsafeTreePointer,
   IteratorProtocol,
-  Sequence
+  Sequence,
+  Equatable
 {
   @usableFromInline
-  internal init(nullptr: _NodePtr, __first: _NodePtr, __last: _NodePtr) {
-    self.nullptr = nullptr
+  internal init(__first: _NodePtr, __last: _NodePtr) {
     self.__first = __first
     self.__last = __last
   }
 
   @usableFromInline
-  mutating func next() -> _NodePtr? {
+  package mutating func next() -> _NodePtr? {
     guard __last != __first else { return nil }
     __last = __tree_prev_iter(__last)
     return __last
   }
 
   @usableFromInline
-  let nullptr: _NodePtr
   let __first: _NodePtr
+  @usableFromInline
   var __last: _NodePtr
 }

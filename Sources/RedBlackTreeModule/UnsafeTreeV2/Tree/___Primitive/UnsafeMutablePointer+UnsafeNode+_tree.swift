@@ -321,6 +321,7 @@ internal func
   _std__tree_remove(_ __root: UnsafeMutablePointer<UnsafeNode>, _ __z: UnsafeMutablePointer<UnsafeNode>)
 {
   typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  assert(UnsafeNode.nullptr.pointee.nullCheck())
   assert(__root != .nullptr, "Root node should not be null")
   assert(__z != .nullptr, "The node to remove should not be null")
   assert(__tree_invariant(__root), "The tree invariants should hold")
@@ -493,4 +494,5 @@ internal func
       }
     }
   }
+  assert(UnsafeNode.nullptr.pointee.nullCheck())
 }

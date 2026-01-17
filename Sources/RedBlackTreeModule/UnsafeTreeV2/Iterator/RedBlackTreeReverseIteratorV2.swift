@@ -30,13 +30,14 @@ extension RedBlackTreeIteratorV2.Values {
   {
 
     public typealias Tree = UnsafeTreeV2<Base>
+    @usableFromInline typealias ImmutableTree = UnsafeImmutableTree<Base>
     public typealias _Value = RedBlackTreeIteratorV2.Base._Value
 
     @usableFromInline
     internal let __tree_: ImmutableTree
 
     @usableFromInline
-    internal var _start, _end, _begin, _current, _next: _NodePtr
+    var source: ___UnsafeRemoveAwareWrapper<___UnsafeNaiveRevIterator>
 
     @usableFromInline
     var poolLifespan: PoolLifespan
@@ -44,11 +45,7 @@ extension RedBlackTreeIteratorV2.Values {
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.__tree_ = .init(__tree_: tree)
-      self._current = end
-      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
-      self._start = start
-      self._end = end
-      self._begin = __tree_.__begin_node_
+      source = .init(iterator: .init(__first: start, __last: end))
       self.poolLifespan = tree.poolLifespan
     }
 
@@ -59,23 +56,15 @@ extension RedBlackTreeIteratorV2.Values {
       end: _NodePtr,
       poolLifespan: PoolLifespan
     ) {
-
+      source = .init(iterator: .init(__first: start, __last: end))
       self.__tree_ = __tree_
-      self._current = end
-      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
-      self._start = start
-      self._end = end
-      self._begin = __tree_.__begin_node_
       self.poolLifespan = poolLifespan
     }
 
     @inlinable
     @inline(__always)
     public mutating func next() -> _Value? {
-      guard _current != _start else { return nil }
-      _current = _next
-      _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : __tree_.nullptr
-      return __tree_.__value_(_current)
+      source.next().map { $0.__value_().pointee }
     }
   }
 }
@@ -85,7 +74,7 @@ extension RedBlackTreeIteratorV2.Values.Reversed {
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Tree.Index, _Value) throws -> Void) rethrows {
-    try __tree_.___rev_for_each_(__p: _start, __l: _end) {
+    try source.makeIterator().forEach {
       try body(___index($0), __tree_.__value_($0))
     }
   }
@@ -97,7 +86,7 @@ extension RedBlackTreeIteratorV2.Values.Reversed {
   @inlinable
   @inline(__always)
   public var indices: Tree.Indices.Reversed {
-    .init(__tree_: __tree_, start: _start, end: _end, poolLifespan: poolLifespan)
+    .init(__tree_: __tree_, start: source.naive.__first, end: source.naive.__last, poolLifespan: poolLifespan)
   }
 }
 
@@ -106,11 +95,11 @@ extension RedBlackTreeIteratorV2.Values.Reversed {
   @available(*, deprecated, message: "危険になった為 (I think danger this is.)")
   @inlinable
   @inline(__always)
-  package func ___node_positions() -> ___SafePointersUnsafeV2<Base>.Reversed {
+  package func ___node_positions() -> ___UnsafeNaiveRevIterator {
     // 多分lifetime延長しないとクラッシュする
     // と思ったけどしなかった。念のためlifetimeとdeprecated
     defer { _fixLifetime(self) }
-    return .init(__tree_: __tree_, start: _start, end: _end)
+    return source.naive //.init(__tree_: __tree_, start: _start, end: _end)
   }
 }
 
@@ -139,4 +128,10 @@ extension RedBlackTreeIteratorV2.Values.Reversed: Comparable where Element: Comp
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeIteratorV2.Values.Reversed: ___UnsafeImmutableIsIdenticalToV2 {}
+extension RedBlackTreeIteratorV2.Values.Reversed {
+  @inlinable
+  @inline(__always)
+  public func isTriviallyIdentical(to other: Self) -> Bool {
+    __tree_.__end_node == other.__tree_.__end_node && source.naive == other.source.naive
+  }
+}

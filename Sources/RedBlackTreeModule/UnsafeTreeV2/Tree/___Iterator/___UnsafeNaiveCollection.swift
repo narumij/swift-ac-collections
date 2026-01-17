@@ -7,20 +7,18 @@
 
 @usableFromInline
 struct ___UnsafeNaiveCollection:
-  UnsafeTreeNodeProtocol,
+  UnsafeTreePointer,
   Sequence,
   Collection
 {
   @usableFromInline
-  internal init(nullptr: _NodePtr, start: _NodePtr, end: _NodePtr) {
-    self.nullptr = nullptr
+  internal init(start: _NodePtr, end: _NodePtr) {
     self.startIndex = start
     self.endIndex = end
   }
 
   public typealias Index = _NodePtr
 
-  @usableFromInline let nullptr: _NodePtr
   @usableFromInline let startIndex: _NodePtr
   @usableFromInline let endIndex: _NodePtr
 
@@ -37,7 +35,6 @@ struct ___UnsafeNaiveCollection:
   @usableFromInline
   func makeIterator() -> ___UnsafeNaiveIterator {
     .init(
-      nullptr: nullptr,
       __first: startIndex,
       __last: endIndex)
   }

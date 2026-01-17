@@ -108,7 +108,6 @@ where Base: ___TreeBase {
   internal init(tree: Tree, __first: _NodePtr, __last: _NodePtr) {
     self.init(
       source: .init(
-        nullptr: tree.nullptr,
         __first: __first,
         __last: __last))
   }
@@ -118,7 +117,6 @@ where Base: ___TreeBase {
   internal init(__tree_: ImmutableTree, __first: _NodePtr, __last: _NodePtr) {
     self.init(
       source: .init(
-        nullptr: __tree_.nullptr,
         __first: __first,
         __last: __last))
   }

@@ -71,10 +71,14 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
       @usableFromInline
       var poolLifespan: Deallocator
 
+    @usableFromInline
+    internal var _end: _NodePtr
+
       @inlinable
       internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
         self.poolLifespan = tree.poolLifespan
-        source = .init(iterator: .init(nullptr: tree.nullptr, __first: start, __last: end))
+        source = .init(iterator: .init(__first: start, __last: end))
+        _end = tree.__end_node
       }
 
       @inlinable

@@ -14,7 +14,7 @@ where
   Source.Element == UnsafeMutablePointer<UnsafeNode>
 {
   var __current: Source.Element?
-  var naive: Source
+  @usableFromInline var naive: Source
   @usableFromInline
   internal init(iterator: Source) {
     var it = iterator

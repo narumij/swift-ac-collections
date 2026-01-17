@@ -466,8 +466,7 @@ internal func
               break
             }
             // reset sibling, and it still can't be null
-            __w =
-              __tree_is_left_child(__x) ? __x.__parent_.__right_ : __x.__parent_.__left_
+            __w = __tree_is_left_child(__x) ? __x.__parent_unsafe.__right_ : __x.__parent_.__left_
             // continue;
           } else  // __w has a red child
           {

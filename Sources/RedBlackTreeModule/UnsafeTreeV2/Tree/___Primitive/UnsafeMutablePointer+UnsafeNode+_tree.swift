@@ -342,12 +342,12 @@ internal func
   if __tree_is_left_child(__y) {
     __y.__parent_.__left_ = __x
     if __y != __root {
-      __w = __y.__parent_.__right_
+      __w = __y.__parent_unsafe.__right_
     } else {
       __root = __x
     }  // __w == nullptr
   } else {
-    __y.__parent_.__right_ = __x
+    __y.__parent_unsafe.__right_ = __x
     // __y can't be root if it is a right child
     __w = __y.__parent_.__left_
   }

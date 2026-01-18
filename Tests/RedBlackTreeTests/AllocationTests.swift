@@ -169,6 +169,12 @@ final class AllocationTests: RedBlackTreeTestCase {
       a.__tree_._buffer.header.pushFreshBucket(capacity: 512)
       XCTAssertGreaterThanOrEqual(a.capacity, 512)
     }
+  
+  func testEmptyIsNonUnique() throws {
+    var a = RedBlackTreeSet<Int>()
+    XCTAssertFalse(a.__tree_.isUnique())
+    XCTAssertTrue(a.__tree_.isReadOnly)
+  }
 
   #endif  // DEBUG
 }

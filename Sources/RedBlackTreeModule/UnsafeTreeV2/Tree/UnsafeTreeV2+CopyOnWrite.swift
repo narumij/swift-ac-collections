@@ -66,25 +66,24 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
+  internal mutating func isUnique() -> Bool {
+    _buffer.isUniqueReference()
+  }
+  
+  @inlinable
+  @inline(__always)
   internal mutating func _ensureUnique() {
-#if !USE_COPY_ON_WRITE
-    let isUnique = _buffer.isUniqueReference()
+    let isUnique = isUnique()
     if !isUnique {
       self = self.copy()
     }
-#else
-    let isUnique = !isReadOnly
-    if !isUnique {
-      self = self.copy()
-    }
-#endif
   }
 
   @inlinable
   @inline(__always)
   internal mutating func _strongEnsureUnique() {
     #if !USE_SIMPLE_COPY_ON_WRITE
-      let isTreeUnique = _buffer.isUniqueReference()
+      let isTreeUnique = isUnique()
       let isPoolUnique =
         _buffer.header._deallocator == nil
         ? true : isKnownUniquelyReferenced(&_buffer.header._deallocator!)
@@ -121,7 +120,7 @@ extension UnsafeTreeV2 {
     to minimumCapacity: Int? = nil, linearly: Bool = false
   ) {
 
-    let isUnique = _buffer.isUniqueReference()
+    let isUnique = isUnique()
 
     let growthCapacity: Int? = withMutableHeader { header in
 

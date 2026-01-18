@@ -1,54 +1,15 @@
-// Copyright 2024-2025 narumij
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//  unsafe_tree+bounds.swift
+//  swift-ac-collections
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//  Created by narumij on 2026/01/18.
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
-//
-// Copyright © 2003-2024 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
-// The original license can be found at https://llvm.org/LICENSE.txt
-//
-// This Swift implementation includes modifications and adaptations made by narumij.
-
-import Foundation
 
 @usableFromInline
-protocol BoundProtocol: BoundInteface & CompareTraitInstance {
-  func __lower_bound_unique(_ __v: _Key) -> _NodePtr
-  func __upper_bound_unique(_ __v: _Key) -> _NodePtr
-  func __lower_bound_multi(_ __v: _Key) -> _NodePtr
-  func __upper_bound_multi(_ __v: _Key) -> _NodePtr
-}
+protocol BoundAlgorithmProtocol_ptr: BoundAlgorithmProtocol_common_ptr & ThreeWayComparatorInterface
+{}
 
-extension BoundProtocol {
-
-  @inlinable
-  @inline(__always)
-  internal func lower_bound(_ __v: _Key) -> _NodePtr {
-    isMulti ? __lower_bound_multi(__v) : __lower_bound_unique(__v)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func upper_bound(_ __v: _Key) -> _NodePtr {
-    isMulti ? __upper_bound_multi(__v) : __upper_bound_unique(__v)
-  }
-}
-
-@usableFromInline
-protocol BoundAlgorithmProtocol: BoundAlgorithmProtocol_common & ThreeWayComparatorInterface {}
-
-extension BoundAlgorithmProtocol {
+extension BoundAlgorithmProtocol_ptr {
 
   @inlinable
   @inline(__always)
@@ -62,13 +23,13 @@ extension BoundAlgorithmProtocol {
       let __comp_res = __comp(__v, __get_value(__rt))
       if __comp_res.__less() {
         __result = __rt
-        __rt = __left_unsafe(__rt)
+        __rt = __rt.__left_
       } else if __comp_res.__greater() {
-        __rt = __right_(__rt)
+        __rt = __rt.__right_
       } else if _LowerBound {
         return __rt
       } else {
-        return __right_(__rt) != nullptr ? __tree_min(__right_(__rt)) : __result
+        return __rt.__right_ != nullptr ? __tree_min(__rt.__right_) : __result
       }
     }
     return __result
@@ -100,9 +61,11 @@ extension BoundAlgorithmProtocol {
 }
 
 @usableFromInline
-protocol BoundAlgorithmProtocol_common: ValueProtocol & RootInterface & EndNodeProtocol {}
+protocol BoundAlgorithmProtocol_common_ptr: _UnsafeNodePtrType, ValueCompInterface,
+  TreeNodeValueInterface, _nullptr_interface, RootInterface & EndNodeInterface
+{}
 
-extension BoundAlgorithmProtocol_common {
+extension BoundAlgorithmProtocol_common_ptr {
 
   @inlinable
   @inline(__always)
@@ -114,9 +77,9 @@ extension BoundAlgorithmProtocol_common {
     while __root != nullptr {
       if !value_comp(__get_value(__root), __v) {
         __result = __root
-        __root = __left_unsafe(__root)
+        __root = __root.__left_
       } else {
-        __root = __right_(__root)
+        __root = __root.__right_
       }
     }
     return __result
@@ -132,9 +95,9 @@ extension BoundAlgorithmProtocol_common {
     while __root != nullptr {
       if value_comp(__v, __get_value(__root)) {
         __result = __root
-        __root = __left_unsafe(__root)
+        __root = __root.__left_
       } else {
-        __root = __right_(__root)
+        __root = __root.__right_
       }
     }
     return __result
@@ -142,9 +105,9 @@ extension BoundAlgorithmProtocol_common {
 }
 
 @usableFromInline
-protocol BoundAlgorithmProtocol_old: BoundAlgorithmProtocol_common {}
+protocol BoundAlgorithmProtocol_old_ptr: BoundAlgorithmProtocol_common_ptr {}
 
-extension BoundAlgorithmProtocol_old {
+extension BoundAlgorithmProtocol_old_ptr {
 
   @inlinable
   @inline(__always)

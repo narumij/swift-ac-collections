@@ -27,14 +27,14 @@ public final class UnsafeTreeV2Buffer:
   ManagedBuffer<UnsafeTreeV2BufferHeader, Void>
 {
   // MARK: - 解放処理
+  @inlinable
   deinit {
-    withUnsafeMutablePointers { header, tree in
+    withUnsafeMutablePointers { header, _ in
       if header.pointee.needsDealloc {
         header.pointee.___deallocFreshPool()
       } else {
         header.pointee._deallocator?.isBaseDeallocated = true
       }
-      tree.deinitialize(count: 1)
     }
   }
 }
@@ -43,19 +43,18 @@ public final class UnsafeTreeV2Buffer:
 
 extension UnsafeTreeV2Buffer {
 
+  // __always必須
   @nonobjc
   @inlinable
-  @inline(never)
+  @inline(__always)
   internal static func create<_Value>(_ t: _Value.Type,
     minimumCapacity nodeCapacity: Int,
     nullptr: UnsafeMutablePointer<UnsafeNode>
   ) -> UnsafeTreeV2Buffer {
-
     // 要素数は常に0
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 0) { managedBuffer in
       return .init(_Value.self, nullptr: nullptr, capacity: nodeCapacity)
     }
-
     assert(nodeCapacity <= storage.header.freshPoolCapacity)
     return unsafeDowncast(storage, to: UnsafeTreeV2Buffer.self)
   }

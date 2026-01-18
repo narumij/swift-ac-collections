@@ -248,20 +248,12 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-//  @inline(__always)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
     __tree_._ensureUniqueAndCapacity()
-    // let (__r, __inserted) = __tree_.__insert_unique(newMember)
-        let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
-//    let (__r, __inserted) =
-//      switch __tree_.specializeMode {
-////      case .asInt: __tree_._i_update { $0._i__insert_unique(newMember as! Int) }
-//      case .asInt: __tree_._i_update { $0.__insert_unique(newMember as! Int) }
-//      case .generic: __tree_.update { $0.__insert_unique(newMember) }
-//      }
+    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     return (__inserted, __inserted ? newMember : __tree_[__r])
   }
 
@@ -377,17 +369,17 @@ extension RedBlackTreeSet {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-//  @inline(__always)
+  //  @inline(__always)
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     __tree_._ensureUnique()
-//    return __tree_.___erase_unique(member) ? member : nil
+    //    return __tree_.___erase_unique(member) ? member : nil
     return __tree_.update { $0.___erase_unique(member) } ? member : nil
-//    let result = switch __tree_.specializeMode {
-//    case .asInt: __tree_._i_update { $0.___erase_unique(member as! Int) }
-//    case .generic: __tree_.update { $0.___erase_unique(member) }
-//    }
-//    return result ? member : nil
+    //    let result = switch __tree_.specializeMode {
+    //    case .asInt: __tree_._i_update { $0.___erase_unique(member as! Int) }
+    //    case .generic: __tree_.update { $0.___erase_unique(member) }
+    //    }
+    //    return result ? member : nil
   }
 
   /// - Important: 削除後は、インデックスが無効になります。

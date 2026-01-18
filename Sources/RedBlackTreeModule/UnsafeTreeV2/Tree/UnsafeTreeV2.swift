@@ -123,13 +123,10 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  /// O(1)
   @inlinable
-  @inline(__always)
   internal func deinitialize() {
-    withMutables { header, origin in
+    withMutableHeader { header in
       header.deinitialize()
-//      header.clear()
     }
   }
 }

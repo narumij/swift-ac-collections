@@ -81,6 +81,7 @@ public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
 
   @usableFromInline var _deallocator: Deallocator?
 
+  @usableFromInline
   var needsDealloc: Bool {
     _deallocator == nil
   }

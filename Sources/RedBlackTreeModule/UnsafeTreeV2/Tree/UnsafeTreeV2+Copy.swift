@@ -57,7 +57,9 @@ extension UnsafeTreeV2 {
     let header = _buffer.header
 
     tree.withMutableHeader { newHeader in
-
+      #if true
+      header.copy(Base.self, to: &newHeader, nullptr: nullptr)
+      #else
       // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
       let bucket = newHeader.freshBucketHead!.accessor(_value: MemoryLayout<_Value>._value)!
 
@@ -94,8 +96,7 @@ extension UnsafeTreeV2 {
         d.initialize(to: node(s.pointee))
         // 必要な場合、値を初期化する
         if s.pointee.___needs_deinitialize {
-//          UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
-          d.__value_(as: _Value.self).initialize(to: s.__value_().pointee)
+          d.__value_().initialize(to: s.__value_().pointee as _Value)
         }
       }
 
@@ -112,11 +113,77 @@ extension UnsafeTreeV2 {
 
       assert(newHeader.count <= newHeader.freshPoolCapacity)
       assert(newHeader._deallocator == nil)
+      #endif
     }
 
     assert(equiv(with: tree))
     assert(tree.check())
 
     return tree
+  }
+}
+
+extension UnsafeTreeV2BufferHeader {
+  
+  @usableFromInline
+  func copy<Base>(_ t: Base.Type, to other: inout UnsafeTreeV2BufferHeader, nullptr: UnsafeMutablePointer<UnsafeNode>)
+  where Base: ___TreeBase {
+
+    typealias _Value = Base._Value
+    typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+
+    // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
+    let bucket = other.freshBucketHead!.accessor(_value: MemoryLayout<_Value>._value)!
+
+    /// 同一番号の新ノードを取得する内部ユーティリティ
+    @inline(__always)
+    func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
+      let index = ptr.pointee.___node_id_
+      return switch index {
+      case .nullptr: nullptr
+      case .end: other.end_ptr
+      default: bucket[index]
+      }
+    }
+
+    /// ノードを新ノードで再構築する内部ユーティリティ
+    @inline(__always)
+    func node(_ s: borrowing UnsafeNode) -> UnsafeNode {
+      // 値は別途管理
+      return .init(
+        ___node_id_: s.___node_id_,
+        __left_: __ptr_(s.__left_),
+        __right_: __ptr_(s.__right_),
+        __parent_: __ptr_(s.__parent_),
+        __is_black_: s.__is_black_,
+        ___needs_deinitialize: s.___needs_deinitialize)
+    }
+
+    // 旧ノードを列挙する準備
+    var nodes = makeFreshPoolIterator() as UnsafeTreeV2<Base>.Header.Iterator<_Value>
+
+    // ノード番号順に利用歴があるノード全てについて移行作業を行う
+    while let s = nodes.next(), let d = other.popFresh() {
+      // ノードを初期化する
+      d.initialize(to: node(s.pointee))
+      // 必要な場合、値を初期化する
+      if s.pointee.___needs_deinitialize {
+        d.__value_().initialize(to: s.__value_().pointee as _Value)
+      }
+    }
+
+    // ルートノードを設定
+    other.__root = __ptr_(__root)
+
+    // __begin_nodeを初期化
+    other.begin_ptr = __ptr_(begin_ptr)
+
+    // その他管理情報をコピー
+    other.recycleHead = __ptr_(recycleHead)
+    other.count = count
+    other.freshPoolUsedCount = freshPoolUsedCount
+
+    assert(other.count <= other.freshPoolCapacity)
+    assert(other._deallocator == nil)
   }
 }

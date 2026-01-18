@@ -60,13 +60,13 @@ extension UnsafeTreeV2Buffer {
   }
 }
 
-//extension UnsafeTreeV2Buffer: CustomStringConvertible {
-//  public var description: String {
-//    unsafe withUnsafeMutablePointerToHeader {
-//      "UnsafeTreeBuffer<\(_Value.self)>\(unsafe $0.pointee)"
-//    }
-//  }
-//}
+extension UnsafeTreeV2Buffer: CustomStringConvertible {
+  public var description: String {
+    unsafe withUnsafeMutablePointerToHeader {
+      "UnsafeTreeV2Buffer \(unsafe $0.pointee)"
+    }
+  }
+}
 
 /// The type-punned empty singleton storage instance.
 @usableFromInline

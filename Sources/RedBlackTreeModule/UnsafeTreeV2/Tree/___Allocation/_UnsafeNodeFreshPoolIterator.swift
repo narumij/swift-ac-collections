@@ -26,14 +26,11 @@
 struct _UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence, _UnsafeNodePtrType {
 
   @usableFromInline
-  typealias Bucket = _UnsafeNodeFreshBucket
-
-  @usableFromInline
-  typealias BucketPointer = UnsafeMutablePointer<Bucket>
+  typealias BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
 
   @inlinable
   @inline(__always)
-  internal init(bucket: BucketPointer?, nullptr: UnsafeMutablePointer<UnsafeNode>) {
+  internal init(bucket: BucketPointer?) {
     self.helper = bucket.flatMap { $0._counts(isHead: true, memoryLayout: MemoryLayout<_Value>._value) }
   }
 
@@ -46,7 +43,7 @@ struct _UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence, _Unsafe
     if let p = helper?.pop() {
       return p
     }
-    helper = helper?.next(memoryLayout: MemoryLayout<_Value>._value)
+    helper = helper?.nextCounts(memoryLayout: MemoryLayout<_Value>._value)
     return helper?.pop()
   }
 }

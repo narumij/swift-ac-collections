@@ -8,11 +8,11 @@
 @usableFromInline
 struct BucketIterator: _UnsafeNodePtrType {
   @inlinable
-  internal init(pointer: UnsafeMutablePointer<_UnsafeNodeFreshBucket>, start: UnsafeMutablePointer<UnsafeNode>, stride: Int, limit: Int) {
+  internal init(pointer: UnsafeMutablePointer<_UnsafeNodeFreshBucket>, start: UnsafeMutablePointer<UnsafeNode>, stride: Int, count: Int) {
     self.pointer = pointer
     self.start = start
     self.stride = stride
-    self.limit = limit
+    self.count = count
   }
   
   @usableFromInline
@@ -25,10 +25,10 @@ struct BucketIterator: _UnsafeNodePtrType {
   let stride: Int
   
   @usableFromInline
-  var limit: Int
+  var count: Int
   
   @usableFromInline
-  var count: Int = 0
+  var it: Int = 0
   
   @inlinable
   subscript(index: Int) -> _NodePtr {
@@ -42,14 +42,14 @@ struct BucketIterator: _UnsafeNodePtrType {
   
   @inlinable
   mutating func pop() -> _NodePtr? {
-    guard count < limit else { return nil }
-    let p = self[count]
-    count += 1
+    guard it < count else { return nil }
+    let p = self[it]
+    it += 1
     return p
   }
   
   @inlinable
-  func next(memoryLayout: (stride: Int, alignment: Int)) -> BucketIterator? {
+  func nextCounts(memoryLayout: (stride: Int, alignment: Int)) -> BucketIterator? {
     guard let next = pointer.pointee.next else { return nil }
     return next._counts(isHead: false, memoryLayout: memoryLayout)
   }
@@ -59,11 +59,11 @@ extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
   
   @inlinable
   func _counts(isHead: Bool, memoryLayout: (stride: Int, alignment: Int)) -> BucketIterator {
-    .init(pointer: self, start: pointer(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, limit: pointee.count)
+    .init(pointer: self, start: pointer(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.count)
   }
   
   @inlinable
   func _capacities(isHead: Bool, memoryLayout: (stride: Int, alignment: Int)) -> BucketIterator {
-    .init(pointer: self, start: pointer(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, limit: pointee.capacity)
+    .init(pointer: self, start: pointer(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.capacity)
   }
 }

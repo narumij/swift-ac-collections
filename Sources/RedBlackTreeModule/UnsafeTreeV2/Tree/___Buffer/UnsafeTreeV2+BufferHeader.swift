@@ -243,7 +243,7 @@ extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   func makeFreshPoolIterator<T>() -> _UnsafeNodeFreshPoolIterator<T> {
-    return _UnsafeNodeFreshPoolIterator<T>(bucket: freshBucketHead, nullptr: nullptr)
+    return _UnsafeNodeFreshPoolIterator<T>(bucket: freshBucketHead)
   }
 }
 

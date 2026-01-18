@@ -9,26 +9,23 @@
 @usableFromInline
 struct BucketAccessor: _UnsafeNodePtrType {
   
-  @inlinable
+  @usableFromInline
   internal init(pointer: UnsafeMutablePointer<_UnsafeNodeFreshBucket>, start: UnsafeMutablePointer<UnsafeNode>, stride: Int) {
     self.pointer = pointer
     self.start = start
     self.stride = stride
   }
   
-  @usableFromInline
   let pointer: UnsafeMutablePointer<_UnsafeNodeFreshBucket>
-  @usableFromInline
   let start: _NodePtr
-  @usableFromInline
   let stride: Int
   
-  @inlinable
+  @usableFromInline
   var capacity: Int {
     _read { yield pointer.pointee.capacity }
   }
   
-  @inlinable
+  @usableFromInline
   subscript(index: Int) -> _NodePtr {
     _read {
       yield
@@ -38,7 +35,7 @@ struct BucketAccessor: _UnsafeNodePtrType {
     }
   }
   
-  @inlinable
+  @usableFromInline
   func next(_value: (stride: Int, alignment: Int)) -> BucketAccessor? {
     guard let next = pointer.pointee.next else { return nil }
     return next._accessor(isHead: false, _value: _value)
@@ -48,6 +45,7 @@ struct BucketAccessor: _UnsafeNodePtrType {
 extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
   
   @inlinable
+  @inline(__always)
   func _accessor(isHead: Bool, _value: (stride: Int, alignment: Int)) -> BucketAccessor {
     .init(pointer: self, start: pointer(isHead: isHead, valueAlignment: _value.alignment), stride: MemoryLayout<UnsafeNode>.stride + _value.stride)
   }

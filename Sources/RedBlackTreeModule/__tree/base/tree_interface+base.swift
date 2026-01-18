@@ -5,6 +5,8 @@
 //  Created by narumij on 2026/01/18.
 //
 
+import Foundation
+
 public protocol _nullptr_interface: _PointerType {
   var nullptr: _Pointer { get }
 }

@@ -5,6 +5,8 @@
 //  Created by narumij on 2026/01/18.
 //
 
+import Foundation
+
 @usableFromInline
 protocol InsertNodeAtInterface: _NodePtrType {
   func __insert_node_at(

@@ -20,6 +20,7 @@ var defines: [String] = [
   // "ALLOCATION_DRILL" // リリース時はオフ
 
 //  "USE_C_MALLOC",
+  "USE_COPY_ON_WRITE",
 ]
 
 var _settings: [SwiftSetting] =

@@ -125,6 +125,7 @@ extension UnsafeTreeV2ScalarHandle {
   @inline(__always)
   public func __construct_node(_ k: _Value) -> _NodePtr {
     let p = header.pointee.__construct_raw_node()
+    // あえてのdefer
     defer { p.__value_().initialize(to: k) }
     return p
   }

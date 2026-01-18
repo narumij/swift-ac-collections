@@ -59,11 +59,11 @@ extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
   
   @inlinable
   func _counts(isHead: Bool, memoryLayout: (stride: Int, alignment: Int)) -> BucketIterator {
-    .init(pointer: self, start: pointer(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.count)
+    .init(pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.count)
   }
   
   @inlinable
   func _capacities(isHead: Bool, memoryLayout: (stride: Int, alignment: Int)) -> BucketIterator {
-    .init(pointer: self, start: pointer(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.capacity)
+    .init(pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.capacity)
   }
 }

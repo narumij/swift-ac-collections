@@ -67,10 +67,17 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal mutating func _ensureUnique() {
+#if !USE_COPY_ON_WRITE
     let isUnique = _buffer.isUniqueReference()
     if !isUnique {
       self = self.copy()
     }
+#else
+    let isUnique = !isReadOnly
+    if !isUnique {
+      self = self.copy()
+    }
+#endif
   }
 
   @inlinable

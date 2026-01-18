@@ -30,9 +30,9 @@ public struct _UnsafeNodeFreshBucket {
     self.capacity = capacity
   }
 
-  public var count: Int = 0
-  public let capacity: Int
   public var next: _SelfPtr? = nil
+  public let capacity: Int
+  public var count: Int = 0
 }
 
 extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
@@ -55,7 +55,7 @@ extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
   }
   
   @inlinable
-  func pointer(isHead: Bool, valueAlignment: Int) -> UnsafeMutablePointer<UnsafeNode> {
+  func start(isHead: Bool, valueAlignment: Int) -> UnsafeMutablePointer<UnsafeNode> {
     let headerAlignment = MemoryLayout<UnsafeNode>.alignment
     let elementAlignment = valueAlignment
     if elementAlignment <= headerAlignment {

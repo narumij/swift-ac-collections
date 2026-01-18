@@ -5,6 +5,9 @@
 //  Created by narumij on 2026/01/12.
 //
 
+/// 配列ベースのコードベースにポインタを載せるためのもの
+///
+/// 段階としては終わっている
 @usableFromInline
 package protocol UnsafeTreeNodeProtocol: TreeNodeInterface & _UnsafeNodePtrType {}
 

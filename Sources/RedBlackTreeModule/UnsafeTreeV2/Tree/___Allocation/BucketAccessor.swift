@@ -47,7 +47,7 @@ extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
   @inlinable
   @inline(__always)
   func _accessor(isHead: Bool, _value: (stride: Int, alignment: Int)) -> BucketAccessor {
-    .init(pointer: self, start: pointer(isHead: isHead, valueAlignment: _value.alignment), stride: MemoryLayout<UnsafeNode>.stride + _value.stride)
+    .init(pointer: self, start: start(isHead: isHead, valueAlignment: _value.alignment), stride: MemoryLayout<UnsafeNode>.stride + _value.stride)
   }
   
   @inlinable

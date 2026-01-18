@@ -20,127 +20,118 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@usableFromInline
-package protocol UnsafeTreeHandleBase: UnsafeTreeNodeProtocol & _TreeValueType & _UnsafeNodePtrType,
-  UnsafeTreeNodeRefProtocol
-{
-  var header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader> { get }
-//  var origin: UnsafeMutableRawPointer { get }
-}
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-extension UnsafeTreeHandleBase {
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
 
+  @inlinable @inline(__always)
+  static var nullptr: _NodePtr {
+    get { UnsafeNode.nullptr }
+  }
+
+  @inlinable
+  var __left_: _NodePtr {
+    _read { yield pointee.__left_ }
+    _modify { yield &pointee.__left_ }
+  }
+
+  @inlinable
+  var __right_: _NodePtr {
+    _read { yield pointee.__right_ }
+    _modify { yield &pointee.__right_ }
+  }
+
+  @inlinable
+  var __parent_: _NodePtr {
+    _read { yield pointee.__parent_ }
+    _modify { yield &pointee.__parent_ }
+  }
+
+  @inlinable
+  var __parent_unsafe: _NodePtr {
+    _read { yield pointee.__parent_ }
+    _modify { yield &pointee.__parent_ }
+  }
+
+  @inlinable
+  var __set_parent: _NodePtr {
+    _read { yield pointee.__parent_ }
+    _modify { yield &pointee.__parent_ }
+  }
+
+  @inlinable
+  var __is_black_: Bool {
+    _read { yield pointee.__is_black_ }
+    _modify { yield &pointee.__is_black_ }
+  }
+  
   @inlinable
   @inline(__always)
-  package var nullptr: _NodePtr { header.pointee.nullptr }
-
-  @inlinable
-  @inline(__always)
-  package var end: _NodePtr { header.pointee.end_ptr }
-}
-
-// MARK: - BeginNodeProtocol
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-  package var __begin_node_: _NodePtr {
-
-    @inline(__always) get {
-      header.pointee.begin_ptr
-    }
-
-    @inline(__always)
-    nonmutating set {
-      header.pointee.begin_ptr = newValue
-    }
-  }
-}
-
-// MARK: - EndNodeProtocol
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-  @inline(__always)
-  package var __end_node: _NodePtr {
-    header.pointee.end_ptr
-  }
-}
-
-// MARK: - RootProtocol
-
-extension UnsafeTreeHandleBase {
-
-  #if !DEBUG
-    @nonobjc
-    @inlinable
-    @inline(__always)
-    package var __root: _NodePtr {
-      header.pointee.root_ptr.pointee
-    }
-  #else
-    @inlinable
-    @inline(__always)
-    package var __root: _NodePtr {
-      get { end.pointee.__left_ }
-      set { end.pointee.__left_ = newValue }
-    }
-  #endif
-
-  // MARK: - RootPtrProtocol
-
-  @inlinable
-  @inline(__always)
-  package func __root_ptr() -> _NodeRef {
-    header.pointee.root_ptr
-  }
-}
-
-// MARK: - SizeProtocol
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-  package var __size_: Int {
-    @inline(__always) get {
-      header.pointee.count
-    }
-    nonmutating set {
-      /* NOP */
-    }
-  }
-}
-
-// MARK: - AllocatorProtocol
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-//  @inline(__always)
-  package func __construct_node<T>(_ k: T) -> _NodePtr {
-    header.pointee.__construct_node(k)
-  }
-
-  @usableFromInline
-//  @inlinable
-//  @inline(__always)
-  package func destroy(_ p: _NodePtr) {
-    header.pointee.___pushRecycle(p)
-  }
-}
-
-extension UnsafeTreeHandleBase {
-
-  @inlinable
-  @inline(__always)
-  package func __value_(_ p: _NodePtr) -> _Value {
-    p.__value_().pointee
+  var __left_ref: _NodeRef {
+    return withUnsafeMutablePointer(to: &pointee.__left_) { $0 }
   }
 
   @inlinable
   @inline(__always)
-  package func ___element(_ p: _NodePtr, _ __v: _Value) {
-    p.__value_().pointee = __v
+  var __right_ref: _NodeRef {
+    return withUnsafeMutablePointer(to: &pointee.__right_) { $0 }
+  }
+}
+
+//extension UnsafeMutablePointer where Pointee == UnsafeNode {
+//  @inlinable @inline(__always)
+//  var isGarbaged: Bool { pointee.isGarbaged }
+//}
+
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
+
+  @inlinable
+  @inline(__always)
+  var __raw_value_: UnsafeMutableRawPointer {
+    UnsafeMutableRawPointer(advanced(by: 1))
+  }
+
+  @inlinable
+  @inline(__always)
+  func __value_<_Value>() -> UnsafeMutablePointer<_Value> {
+    UnsafeMutableRawPointer(advanced(by: 1))
+      .assumingMemoryBound(to: _Value.self)
+  }
+
+  @inlinable
+  @inline(__always)
+  func __value_<_Value>(as t: _Value.Type) -> UnsafeMutablePointer<_Value> {
+    UnsafeMutableRawPointer(advanced(by: 1))
+      .assumingMemoryBound(to: _Value.self)
+  }
+
+  @inlinable
+  @inline(__always)
+  func __key<Base: ScalarValueComparer>(with t: Base.Type) -> UnsafeMutablePointer<Base._Key> {
+    __value_()
+  }
+}
+
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
+
+  @inlinable
+  @inline(__always)
+  func _advanced(raw bytes: Int) -> UnsafeMutablePointer {
+    UnsafeMutableRawPointer(self)
+      .advanced(by: bytes)
+      .assumingMemoryBound(to: UnsafeNode.self)
+  }
+
+  @inlinable
+  @inline(__always)
+  func _advanced(with stride: Int, count: Int) -> UnsafeMutablePointer {
+    _advanced(raw: (MemoryLayout<UnsafeNode>.stride + stride) * count)
+  }
+
+  @inlinable
+  @inline(__always)
+  func _advanced<_Value>(with t: _Value.Type, count: Int) -> UnsafeMutablePointer {
+    _advanced(raw: (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride) * count)
   }
 }

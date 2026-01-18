@@ -67,7 +67,7 @@ struct _UnsafeNodeFreshBucketAllocator {
   let deinitialize: (UnsafeMutableRawPointer) -> Void
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   func deinitializeEndNode(_ b: _BucketPointer) {
     UnsafeMutableRawPointer(b.advanced(by: 1))
       .assumingMemoryBound(to: UnsafeNode.self)
@@ -75,9 +75,9 @@ struct _UnsafeNodeFreshBucketAllocator {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   func deinitializeNodeAndValues(isHead: Bool, _ b: _BucketPointer) {
-    var it = b._counts(isHead: isHead, _value: _value)
+    var it = b._counts(isHead: isHead, memoryLayout: _value)
     while let p = it.pop() {
       if p.pointee.___needs_deinitialize {
         deinitialize(p.advanced(by: 1))
@@ -87,7 +87,7 @@ struct _UnsafeNodeFreshBucketAllocator {
     }
     #if DEBUG
       do {
-        var it = b._capacities(isHead: isHead, _value: _value)
+        var it = b._capacities(isHead: isHead, memoryLayout: _value)
         while let p = it.pop() {
           p.pointee.___node_id_ = .debug
         }
@@ -96,7 +96,7 @@ struct _UnsafeNodeFreshBucketAllocator {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   func deallocHeadBucket(_ b: _BucketPointer) {
     deinitializeEndNode(b)
     deinitializeNodeAndValues(isHead: true, b)
@@ -105,7 +105,7 @@ struct _UnsafeNodeFreshBucketAllocator {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   func deallocBucket(_ b: _BucketPointer) {
     deinitializeNodeAndValues(isHead: false, b)
     b.deinitialize(count: 1)
@@ -113,7 +113,7 @@ struct _UnsafeNodeFreshBucketAllocator {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   public func deinitialize(bucket b: _BucketPointer?) {
     var reserverHead = b
     var isHead = true
@@ -126,7 +126,7 @@ struct _UnsafeNodeFreshBucketAllocator {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   public func deallocate(bucket b: _BucketPointer?) {
     var reserverHead = b
     while let h = reserverHead {
@@ -140,7 +140,7 @@ struct _UnsafeNodeFreshBucketAllocator {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   func advance(_ p: _NodePtr, _ n: Int = 1) -> _NodePtr {
     UnsafeMutableRawPointer(p)
       .advanced(by: nodeValueStride * n)
@@ -177,7 +177,7 @@ struct _UnsafeNodeFreshBucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(isHead: true, _value: _value)
+        var it = header._capacities(isHead: true, memoryLayout: _value)
         while let p = it.pop() {
           p.pointee.___node_id_ = .debug
         }
@@ -188,7 +188,7 @@ struct _UnsafeNodeFreshBucketAllocator {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   public func createBucket(capacity: Int) -> (_BucketPointer, capacity: Int) {
 
     assert(capacity != 0)
@@ -211,7 +211,7 @@ struct _UnsafeNodeFreshBucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(isHead: false, _value: _value)
+        var it = header._capacities(isHead: false, memoryLayout: _value)
         while let p = it.pop() {
           p.pointee.___node_id_ = .debug
         }
@@ -222,7 +222,7 @@ struct _UnsafeNodeFreshBucketAllocator {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   func pointer(from storage: UnsafeMutableRawPointer) -> _NodePtr {
     let headerAlignment = MemoryLayout<UnsafeNode>.alignment
     let elementAlignment = _value.alignment
@@ -238,14 +238,14 @@ struct _UnsafeNodeFreshBucketAllocator {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   func end(from head: _BucketPointer) -> _NodePtr {
     UnsafeMutableRawPointer(head.advanced(by: 1))
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   func pagedCapacity(capacity: Int) -> (
     capacity: Int, bytes: Int, stride: Int, alignment: Int
   ) {

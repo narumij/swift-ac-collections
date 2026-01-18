@@ -126,6 +126,13 @@ extension UnsafeTreeV2ScalarHandle {
   }
 }
 
+extension UnsafeTreeV2ScalarHandle {
+
+  public mutating func __construct_node<T>(_ k: T) -> _NodePtr {
+    header.pointee.__construct_node(k)
+  }
+}
+
 extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase {}
 
 extension UnsafeTreeV2ScalarHandle: BoundProtocol, BoundAlgorithmProtocol {}

@@ -35,6 +35,41 @@ public struct _UnsafeNodeFreshBucket {
   public var next: _SelfPtr? = nil
 }
 
+extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
+  
+  @inlinable
+  @inline(__always)
+  var end_ptr: UnsafeMutablePointer<UnsafeNode> {
+    UnsafeMutableRawPointer(advanced(by: 1))
+      .assumingMemoryBound(to: UnsafeNode.self)
+  }
+  
+  @inlinable
+  func storage(isHead: Bool) -> UnsafeMutableRawPointer {
+    if isHead {
+      return UnsafeMutableRawPointer(self.advanced(by: 1))
+        .advanced(by: MemoryLayout<UnsafeNode>.stride)
+    } else {
+      return UnsafeMutableRawPointer(self.advanced(by: 1))
+    }
+  }
+  
+  @inlinable
+  func pointer(isHead: Bool, valueAlignment: Int) -> UnsafeMutablePointer<UnsafeNode> {
+    let headerAlignment = MemoryLayout<UnsafeNode>.alignment
+    let elementAlignment = valueAlignment
+    if elementAlignment <= headerAlignment {
+      return storage(isHead: isHead)
+        .assumingMemoryBound(to: UnsafeNode.self)
+    }
+    return storage(isHead: isHead)
+      .advanced(by: MemoryLayout<UnsafeNode>.stride)
+      .alignedUp(toMultipleOf: valueAlignment)
+      .advanced(by: -MemoryLayout<UnsafeNode>.stride)
+      .assumingMemoryBound(to: UnsafeNode.self)
+  }
+}
+
 #if DEBUG && false
   extension _UnsafeNodeFreshBucket {
 

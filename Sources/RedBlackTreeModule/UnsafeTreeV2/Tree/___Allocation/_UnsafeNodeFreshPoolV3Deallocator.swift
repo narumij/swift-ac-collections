@@ -41,14 +41,14 @@ package final class _UnsafeNodeFreshPoolV3Deallocator: UnsafeTreePointer {
   subscript(___node_id_: Int) -> _NodePtr? {
     assert(___node_id_ >= 0)
     var remaining = ___node_id_
-    var p = freshBucketHead?.helper(_value: freshPoolDeallocator._value)
+    var p = freshBucketHead?.accessor(_value: freshPoolDeallocator._value)
     while let h = p {
       let cap = h.capacity
       if remaining < cap {
         return h[remaining]
       }
       remaining -= cap
-      p = h.nextHelper(_value: freshPoolDeallocator._value)
+      p = h.next(_value: freshPoolDeallocator._value)
     }
     assert(false)
     return nil
@@ -120,14 +120,14 @@ extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
     subscript(___node_id_: Int) -> _NodePtr? {
       assert(___node_id_ >= 0)
       var remaining = ___node_id_
-      var p = freshBucketHead?.helper(_value: freshPoolDeallocator._value)
+      var p = freshBucketHead?.accessor(_value: freshPoolDeallocator._value)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {
           return h[remaining]
         }
         remaining -= cap
-        p = h.nextHelper(_value: freshPoolDeallocator._value)
+        p = h.next(_value: freshPoolDeallocator._value)
       }
       assert(false)
       return nil
@@ -139,7 +139,7 @@ extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
     header[___node_id_]
   }
 
-  @inlinable
+  @usableFromInline
   var isBaseDeallocated: Bool {
     get { header.isBaseDeallocated }
     set { withUnsafeMutablePointerToHeader { $0.pointee.isBaseDeallocated = newValue } }

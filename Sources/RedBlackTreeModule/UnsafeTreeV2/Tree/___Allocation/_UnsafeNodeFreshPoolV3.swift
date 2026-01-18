@@ -35,7 +35,7 @@ protocol _UnsafeNodeFreshPoolV3: UnsafeTreePointer {
    */
 
   var freshBucketHead: _BucketPointer? { get set }
-  var freshBucketCurrent: BucketHelper? { get set }
+  var freshBucketCurrent: BucketQueue? { get set }
   var freshBucketLast: _BucketPointer? { get set }
   var freshPoolCapacity: Int { get set }
   var freshPoolUsedCount: Int { get set }
@@ -70,7 +70,7 @@ extension _UnsafeNodeFreshPoolV3 {
     let (pointer, capacity) = freshBucketAllocator.createHeadBucket(
       capacity: capacity, nullptr: nullptr)
     freshBucketHead = pointer
-    freshBucketCurrent = pointer.helper(_value: memoryLayout)
+    freshBucketCurrent = pointer.queue(memoryLayout: memoryLayout)
     freshBucketLast = pointer
     freshPoolCapacity += capacity
     #if DEBUG
@@ -82,7 +82,7 @@ extension _UnsafeNodeFreshPoolV3 {
   @inline(__always)
   mutating func pushFresBucket(head: _BucketPointer) {
     freshBucketHead = head
-    freshBucketCurrent = head.helper(_value: memoryLayout)
+    freshBucketCurrent = head.queue(memoryLayout: memoryLayout)
     freshBucketLast = head
     freshPoolCapacity += head.pointee.capacity
     #if DEBUG
@@ -109,7 +109,7 @@ extension _UnsafeNodeFreshPoolV3 {
     if let p = freshBucketCurrent?.pop() {
       return p
     }
-    freshBucketCurrent = freshBucketCurrent?.nextHelper(_value: memoryLayout)
+    freshBucketCurrent = freshBucketCurrent?.next(_value: memoryLayout)
     return freshBucketCurrent?.pop()
   }
 }
@@ -133,14 +133,14 @@ extension _UnsafeNodeFreshPoolV3 {
   subscript(___node_id_: Int) -> _NodePtr {
     assert(___node_id_ >= 0)
     var remaining = ___node_id_
-    var p = freshBucketHead?.helper(_value: memoryLayout)
+    var p = freshBucketHead?.accessor(_value: memoryLayout)
     while let h = p {
       let cap = h.capacity
       if remaining < cap {
         return h[remaining]
       }
       remaining -= cap
-      p = h.nextHelper(_value: memoryLayout)
+      p = h.next(_value: memoryLayout)
     }
     return nullptr
   }
@@ -153,7 +153,7 @@ extension _UnsafeNodeFreshPoolV3 {
   mutating func ___flushFreshPool() {
     freshBucketAllocator.deinitialize(bucket: freshBucketHead)
     freshPoolUsedCount = 0
-    freshBucketCurrent = freshBucketHead?.helper(_value: memoryLayout)
+    freshBucketCurrent = freshBucketHead?.queue(memoryLayout: memoryLayout)
   }
 
   @inlinable

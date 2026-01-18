@@ -11,7 +11,7 @@ import XCTest
   @testable import RedBlackTreeModule
 
 struct FreshPoolFixture<_Value>: _UnsafeNodeFreshPoolV3 {
-  var freshBucketCurrent: RedBlackTreeModule.BucketHelper?
+  var freshBucketCurrent: RedBlackTreeModule.BucketQueue?
   
   var memoryLayout: (stride: Int, alignment: Int)
   

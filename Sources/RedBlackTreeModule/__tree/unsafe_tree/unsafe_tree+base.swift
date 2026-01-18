@@ -116,9 +116,8 @@ extension UnsafeTreeHandleBase {
 
 extension UnsafeTreeHandleBase {
 
-//  @inlinable
+  @inlinable
 //  @inline(__always)
-  @usableFromInline
   package func __construct_node<T>(_ k: T) -> _NodePtr {
     header.pointee.__construct_node(k)
   }

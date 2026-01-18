@@ -24,8 +24,9 @@ import Foundation
 
 extension UnsafeTreeV2 {
 
-  @inlinable
-  @inline(__always)
+//  @inlinable
+//  @inline(__always)
+  @usableFromInline
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
 
     // 番号の抜けが発生してるケースがあり、それは再利用プールにノードがいるケース
@@ -59,7 +60,7 @@ extension UnsafeTreeV2 {
     tree.withMutableHeader { newHeader in
 
       // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
-      let bucket = newHeader.freshBucketHead!.helper(_value: MemoryLayout<_Value>._value)!
+      let bucket = newHeader.freshBucketHead!.accessor(_value: MemoryLayout<_Value>._value)!
 
       /// 同一番号の新ノードを取得する内部ユーティリティ
       @inline(__always)
@@ -94,7 +95,8 @@ extension UnsafeTreeV2 {
         d.initialize(to: node(s.pointee))
         // 必要な場合、値を初期化する
         if s.pointee.___needs_deinitialize {
-          UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
+//          UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
+          d.__value_(as: _Value.self).initialize(to: s.__value_().pointee)
         }
       }
 

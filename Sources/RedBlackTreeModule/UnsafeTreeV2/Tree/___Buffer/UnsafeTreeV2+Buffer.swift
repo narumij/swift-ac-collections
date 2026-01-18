@@ -23,13 +23,10 @@
 import Foundation
 
 // TODO: テスト整備後internalにする
-@_fixed_layout
 public final class UnsafeTreeV2Buffer<_Value>:
   ManagedBuffer<UnsafeTreeV2BufferHeader, Void>
 {
   // MARK: - 解放処理
-  @inlinable
-  @inline(__always)
   deinit {
     withUnsafeMutablePointers { header, tree in
       if header.pointee.needsDealloc {
@@ -48,27 +45,16 @@ extension UnsafeTreeV2Buffer {
 
   @nonobjc
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal static func create(
     minimumCapacity nodeCapacity: Int,
     nullptr: UnsafeMutablePointer<UnsafeNode>
   ) -> UnsafeTreeV2Buffer {
 
-    // end nodeしか用意しないので要素数は常に1
+    // 要素数は常に0
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 0) { managedBuffer in
-      // ヘッダを返却して以後はManagerBufferさんがよしなにする
       return .init(_Value.self, nullptr: nullptr, capacity: nodeCapacity)
     }
-
-//    storage.withUnsafeMutablePointers { header, tree in
-//      // ノード数を確保
-//      header.pointee.pushFreshHeadBucket(capacity: nodeCapacity)
-//      assert(header.pointee.freshPoolCapacity >= nodeCapacity)
-//      let end_ptr = header.pointee.__end_node
-//      // originを初期化
-//      tree.initialize(to: UnsafeTreeV2Origin(base: tree, nullptr: nullptr, end_ptr: end_ptr))
-//      assert(tree.pointee.end_ptr.pointee.___needs_deinitialize == true)
-//    }
 
     assert(nodeCapacity <= storage.header.freshPoolCapacity)
     return unsafeDowncast(storage, to: UnsafeTreeV2Buffer.self)

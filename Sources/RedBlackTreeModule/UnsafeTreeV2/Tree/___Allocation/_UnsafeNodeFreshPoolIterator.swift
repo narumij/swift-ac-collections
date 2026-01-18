@@ -34,7 +34,7 @@ struct _UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence, UnsafeT
   @inlinable
   @inline(__always)
   internal init(bucket: BucketPointer?, nullptr: UnsafeMutablePointer<UnsafeNode>) {
-    self.helper = bucket.flatMap { $0._counts(isHead: true, _value: MemoryLayout<_Value>._value) }
+    self.helper = bucket.flatMap { $0._counts(isHead: true, memoryLayout: MemoryLayout<_Value>._value) }
   }
 
   @usableFromInline
@@ -46,7 +46,7 @@ struct _UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence, UnsafeT
     if let p = helper?.pop() {
       return p
     }
-    helper = helper?.nextCounts(_value: MemoryLayout<_Value>._value)
+    helper = helper?.next(memoryLayout: MemoryLayout<_Value>._value)
     return helper?.pop()
   }
 }

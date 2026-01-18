@@ -49,7 +49,7 @@ extension _UnsafeNodeRecyclePool {
     recycleHead = p
   }
 
-  @inlinable
+  @usableFromInline
   mutating func ___popRecycle() -> _NodePtr {
     let p = recycleHead
     recycleHead = p.pointee.__left_

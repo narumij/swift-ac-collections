@@ -120,8 +120,12 @@ extension UnsafeTreeV2ScalarHandle {
 
 extension UnsafeTreeV2ScalarHandle {
 
-  public func __construct_node<T>(_ k: T) -> _NodePtr {
-    header.pointee.__construct_node(k)
+  @inlinable
+  @inline(__always)
+  public func __construct_node(_ k: _Value) -> _NodePtr {
+    let p = header.pointee.__construct_raw_node()
+    defer { p.__value_().initialize(to: k) }
+    return p
   }
 }
 

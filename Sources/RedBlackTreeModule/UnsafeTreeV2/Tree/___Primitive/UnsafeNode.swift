@@ -276,6 +276,7 @@ extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
+  @inline(__always)
   var pointerIndex: Int {
     pointee.___node_id_
   }

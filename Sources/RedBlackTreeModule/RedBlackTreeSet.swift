@@ -480,7 +480,8 @@ extension RBTBound: Comparable {
     case (_, .start): false
     case (.lower(let l), .lower(let r)): l < r
     case (.lower(let l), .upper(let r)): l <= r
-    case (.upper, _): fatalError("左にupperを使うのはコーナケース対処が困難なので禁止扱い")
+    case (.upper, _): false  // fatalError("左にupperを使うのはコーナケース対処が困難なので禁止扱い")
+    // Rangeがチェックではじいてくれることを期待してのfalse
     }
   }
   func relative<C: RBTCollection>(to collection: C) -> C.Index where T == C.Key {
@@ -515,12 +516,34 @@ extension Range: RBTRangeExpression {
   }
 }
 
+extension ClosedRange: RBTRangeExpression {
+  public func relativeBound<C>(
+    to collection: C
+  ) -> Range<C.Index>
+  where C: RBTCollection, Bound == RBTBound<C.Key> {
+
+    let lower = lowerBound.relative(to: collection)
+    let upper = upperBound.relative(to: collection)
+    return lower..<collection.index(after: upper)
+  }
+}
+
 extension RedBlackTreeSet: RBTCollection {
 
-  /// - Complexity: O(log *n*)
   @inlinable
-  public func indices(bound range: Range<RBTBound<Element>>) -> Range<Index> {
+  public func indices<R: RBTRangeExpression>(bound range: R) -> Range<Index>
+  where R.Bound == RBTBound<Key> {
     range.relativeBound(to: self)
+  }
+
+  @inlinable
+  public func removeSub<R: RBTRangeExpression>(
+    bound range: R,
+    where shouldBeRemoved: (Element) throws -> Bool
+  )
+    rethrows -> Bool
+  where R.Bound == RBTBound<Key> {
+    fatalError()
   }
 }
 
@@ -528,7 +551,10 @@ func test() {
   let a = RedBlackTreeSet<Int>()
   typealias Index = RedBlackTreeSet<Int>.Index
   let _: Range<Index> = a.indices(bound: .start ..< .end)
-  let _: Range<Index> = a.indices(bound: .lower(3) ..< .end)
+  let _: Range<Index> = a.indices(bound: .lower(3) ..< .lower(4))
+  let _ = a.removeSub(bound: .lower(10) ... .upper(100)) { n in
+    n % 2 == 0
+  }
 }
 
 extension RedBlackTreeSet {

@@ -42,6 +42,8 @@
 // |Bucket|Node||Node|Value|Node|Value|.......
 //                                    ^-- inlined
 //
+// Inspired by the TrailingArray technique from Swift Collections.
+//
 @frozen
 @usableFromInline
 struct _UnsafeNodeFreshBucketAllocator {

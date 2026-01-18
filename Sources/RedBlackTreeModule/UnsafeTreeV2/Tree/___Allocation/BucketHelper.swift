@@ -18,21 +18,17 @@ struct BucketHelper: UnsafeTreePointer {
   
   @inlinable
   var capacity: Int {
-    @inline(__always)
     _read { yield pointer.pointee.capacity }
   }
   
   @inlinable
   var count: Int {
-    @inline(__always)
     _read { yield pointer.pointee.count }
-    @inline(__always)
     _modify { yield &pointer.pointee.count }
   }
   
   @inlinable
   subscript(index: Int) -> _NodePtr {
-    @inline(__always)
     _read {
       yield
       UnsafeMutableRawPointer(start)
@@ -139,6 +135,7 @@ struct BucketIterator: UnsafeTreePointer {
   
   @usableFromInline
   var count: Int = 0
+  
   @inlinable
   subscript(index: Int) -> _NodePtr {
     _read {
@@ -148,6 +145,7 @@ struct BucketIterator: UnsafeTreePointer {
         .assumingMemoryBound(to: UnsafeNode.self)
     }
   }
+  
   @inlinable
   mutating func pop() -> _NodePtr? {
     guard count < limit else { return nil }
@@ -155,6 +153,7 @@ struct BucketIterator: UnsafeTreePointer {
     count += 1
     return p
   }
+  
   @inlinable
   func nextCounts(_value: (stride: Int, alignment: Int)) -> BucketIterator? {
     guard let next = pointer.pointee.next else { return nil }

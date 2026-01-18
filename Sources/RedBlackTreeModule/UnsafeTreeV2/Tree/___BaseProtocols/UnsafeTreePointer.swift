@@ -78,7 +78,7 @@ protocol InsertNodeAtProtocol_ptr: UnsafeTreePointer, InsertNodeAtProtocol, Begi
 extension InsertNodeAtProtocol_ptr {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func
     __insert_node_at(
       _ __parent: _NodePtr, _ __child: _NodeRef,

@@ -103,7 +103,7 @@ protocol FindEqualProtocol_std: ValueProtocol, TreeNodeRefProtocol, RootProtocol
 extension FindEqualProtocol_std {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func
     __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {
@@ -146,7 +146,7 @@ protocol FindEqualProtocol_old: ValueProtocol, TreeNodeRefProtocol, RootProtocol
 extension FindEqualProtocol_old {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   func
   __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {

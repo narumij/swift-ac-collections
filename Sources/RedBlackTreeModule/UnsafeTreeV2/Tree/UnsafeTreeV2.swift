@@ -32,7 +32,6 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
     let h = _buffer.withUnsafeMutablePointerToHeader { $0 }
     self.nullptr = h.pointee.nullptr
     self.end = h.pointee.end_ptr
-//    self.origin = origin
     self.specializeMode = SpecializeModeHoge<_Key>().specializeMode
   }
 
@@ -53,9 +52,6 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @usableFromInline
   let isReadOnly: Bool
-
-//  @usableFromInline
-//  let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
 
   @usableFromInline
   let specializeMode: SpecializeMode

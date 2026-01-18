@@ -39,6 +39,7 @@ public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
     self.recycleHead = nullptr
     self.freshBucketAllocator = allocator
     self.begin_ptr = head.end_ptr
+    self.root_ptr = withUnsafeMutablePointer(to: &head.end_ptr.pointee.__left_) { $0 }
     self.pushFresBucket(head: head)
   }
 
@@ -51,6 +52,7 @@ public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
   @usableFromInline var freshBucketLast: _BucketPointer?
   @usableFromInline let nullptr: _NodePtr
   @usableFromInline var begin_ptr: _NodePtr
+  @usableFromInline var root_ptr: _NodeRef
   @usableFromInline
   var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator
   #if DEBUG
@@ -69,14 +71,12 @@ public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
 
   @inlinable
   var __root: _NodePtr {
-    get { end_ptr.pointee.__left_ }
-    set { end_ptr.pointee.__left_ = newValue }
+    get { root_ptr.pointee }
+    nonmutating set { root_ptr.pointee = newValue }
   }
   
   @inlinable
-  internal func __root_ptr() -> _NodeRef {
-    withUnsafeMutablePointer(to: &end_ptr.pointee.__left_) { $0 }
-  }
+  internal func __root_ptr() -> _NodeRef { root_ptr }
 
   @usableFromInline var _deallocator: Deallocator?
 
@@ -286,7 +286,6 @@ extension UnsafeTreeV2BufferHeader {
   // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
   // Headerに移すのが妥当かも。そうすれば_Value依存が消せる
   @inlinable
-  @inline(__always)
   mutating public
     func ___popFresh() -> _NodePtr
   {
@@ -306,7 +305,6 @@ extension UnsafeTreeV2BufferHeader {
 extension UnsafeTreeV2BufferHeader {
 
   @inlinable
-  @inline(__always)
   public mutating func __construct_node<T>(_ k: T) -> _NodePtr {
     #if DEBUG
       assert(recycleCount >= 0)

@@ -77,7 +77,7 @@ extension UnsafeTreeHandleBase {
     @inlinable
     @inline(__always)
     package var __root: _NodePtr {
-      end.pointee.__left_
+      header.pointee.root_ptr.pointee
     }
   #else
     @inlinable
@@ -93,7 +93,7 @@ extension UnsafeTreeHandleBase {
   @inlinable
   @inline(__always)
   package func __root_ptr() -> _NodeRef {
-    withUnsafeMutablePointer(to: &header.pointee.end_ptr.pointee.__left_) { $0 }
+    header.pointee.root_ptr
   }
 }
 
@@ -117,13 +117,13 @@ extension UnsafeTreeHandleBase {
 extension UnsafeTreeHandleBase {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   package func __construct_node<T>(_ k: T) -> _NodePtr {
     header.pointee.__construct_node(k)
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   package func destroy(_ p: _NodePtr) {
     header.pointee.___pushRecycle(p)
   }

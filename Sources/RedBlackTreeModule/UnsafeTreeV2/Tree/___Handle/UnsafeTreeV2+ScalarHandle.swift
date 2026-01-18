@@ -33,10 +33,11 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
   internal init(
     header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>,
     origin: UnsafeMutableRawPointer,
+    isMulti: Bool,
     specializeMode: SpecializeMode? = nil
   ) {
     self.header = header
-//    self.origin = origin
+    //    self.origin = origin
     self.isMulti = false
     // 性能上とても重要だが、コンパイラ挙動に合わせての採用でとても場当たり的
     self.specializeMode = specializeMode ?? SpecializeModeHoge<_Key>().specializeMode
@@ -47,7 +48,7 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
   @usableFromInline typealias _Pointer = _NodePtr
   @usableFromInline typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
-//  @usableFromInline let origin: UnsafeMutableRawPointer
+  //  @usableFromInline let origin: UnsafeMutableRawPointer
   @usableFromInline var isMulti: Bool
   @usableFromInline let specializeMode: SpecializeMode
 }
@@ -61,7 +62,8 @@ extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   @inline(__always)
   internal func read<R>(_ body: (Handle) throws -> R) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = Handle(header: header, origin: elements)
+      let handle = Handle(
+        header: header, origin: elements, isMulti: isMulti, specializeMode: specializeMode)
       return try body(handle)
     }
   }
@@ -70,7 +72,8 @@ extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   @inline(__always)
   internal func _i_update<R>(_ body: (UnsafeTreeV2ScalarHandle<Int>) throws -> R) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = UnsafeTreeV2ScalarHandle<Int>(header: header, origin: elements)
+      let handle = UnsafeTreeV2ScalarHandle<Int>(
+        header: header, origin: elements, isMulti: isMulti, specializeMode: specializeMode)
       return try body(handle)
     }
   }
@@ -79,7 +82,8 @@ extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   @inline(__always)
   internal func update<R>(_ body: (Handle) throws -> R) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = Handle(header: header, origin: elements)
+      let handle = Handle(
+        header: header, origin: elements, isMulti: isMulti, specializeMode: specializeMode)
       return try body(handle)
     }
   }
@@ -139,7 +143,7 @@ extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 
 #if true
-  extension UnsafeTreeV2ScalarHandle: FindEqualProtocol_std {}
+  extension UnsafeTreeV2ScalarHandle: FindEqualProtocol_ptr {}
   extension UnsafeTreeV2ScalarHandle {
 
     @inlinable
@@ -156,7 +160,7 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 
     /*
      @usableFromInlineにすると、以下となる
-
+    
      ; UnsafeTreeV2ScalarHandle._i__find_equal(_:)
      +0x00  ldr                 x1, [x2, #0x10]
      +0x04  ldr                 x10, [x1]
@@ -191,11 +195,11 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
         return (__end_node, end.__left_ref)
       }
       var __nd_ptr = __root_ptr()
-      let __comp = _i__lazy_synth_three_way_comparator
+//      let __comp = _i__lazy_synth_three_way_comparator
 
       while true {
 
-        let __comp_res = __comp(__v, __nd.__value_(as: Int.self).pointee)
+        let __comp_res = ___default_three_way_comparator(__v, __nd.__value_(as: Int.self).pointee)
 
         if __comp_res.__less() {
           if __nd.__left_ == nullptr {
@@ -216,7 +220,7 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
         }
       }
     }
-    
+
     @inlinable
     @inline(__always)
     internal func
@@ -225,25 +229,25 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
       _i__emplace_unique_key_args(x)
     }
 
-      @inlinable
+    @inlinable
     @inline(__always)
-      internal func
-        _i__emplace_unique_key_args(_ __k: Int)
-        -> (__r: _NodePtr, __inserted: Bool)
-      {
-        let (__parent, __child) = _i__find_equal(__k)
-        let __r = __child
-        if __child.pointee == nullptr {
-          let __h = __construct_node(__k)
-          __insert_node_at(__parent, __child, __h)
-          return (__h, true)
-        } else {
-          // __insert_node_atで挿入した場合、__rが破損する
-          // 既存コードの後続で使用しているのが実質Ptrなので、そちらを返すよう一旦修正
-          // 今回初めて破損したrefを使用したようで既存コードでの破損ref使用は大丈夫そう
-          return (__r.pointee, false)
-        }
+    internal func
+      _i__emplace_unique_key_args(_ __k: Int)
+      -> (__r: _NodePtr, __inserted: Bool)
+    {
+      let (__parent, __child) = _i__find_equal(__k)
+      let __r = __child
+      if __child.pointee == nullptr {
+        let __h = __construct_node(__k)
+        __insert_node_at(__parent, __child, __h)
+        return (__h, true)
+      } else {
+        // __insert_node_atで挿入した場合、__rが破損する
+        // 既存コードの後続で使用しているのが実質Ptrなので、そちらを返すよう一旦修正
+        // 今回初めて破損したrefを使用したようで既存コードでの破損ref使用は大丈夫そう
+        return (__r.pointee, false)
       }
+    }
   }
 #else
 #endif

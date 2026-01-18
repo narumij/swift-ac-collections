@@ -76,7 +76,7 @@ protocol InsertUniqueProtocol:
 extension InsertUniqueProtocol {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func
     __insert_unique(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
   {
@@ -84,7 +84,7 @@ extension InsertUniqueProtocol {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func
     __emplace_unique_key_args(_ __k: _Value)
     -> (__r: _NodePtr, __inserted: Bool)

@@ -29,6 +29,7 @@ public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
   @inlinable
+  @inline(__always)
   internal init<_Value>(_ t: _Value.Type, nullptr: _NodePtr, capacity: Int) {
     let allocator = _UnsafeNodeFreshBucketAllocator(valueType: _Value.self) {
       $0.assumingMemoryBound(to: _Value.self)

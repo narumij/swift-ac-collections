@@ -23,6 +23,10 @@
 @usableFromInline
 typealias Deallocator = _UnsafeNodeFreshPoolV3DeallocatorR2
 
+@inlinable @inline(__always)
+func _ref<T>(_ a: inout T) -> UnsafeMutablePointer<T> {
+  withUnsafeMutablePointer(to: &a) { $0 }
+}
 
 @frozen
 public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
@@ -35,12 +39,18 @@ public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
       $0.assumingMemoryBound(to: _Value.self)
         .deinitialize(count: 1)
     }
+    self.init(allocator: allocator, nullptr: nullptr, capacity: capacity)
+  }
+  
+  @inlinable
+  @inline(__always)
+  internal init(allocator: _UnsafeNodeFreshBucketAllocator, nullptr: _NodePtr, capacity: Int) {
     let (head,_) = allocator.createHeadBucket(capacity: capacity, nullptr: nullptr)
     self.nullptr = nullptr
     self.recycleHead = nullptr
     self.freshBucketAllocator = allocator
     self.begin_ptr = head.end_ptr
-    self.root_ptr = withUnsafeMutablePointer(to: &head.end_ptr.pointee.__left_) { $0 }
+    self.root_ptr = _ref(&head.end_ptr.pointee.__left_)
     self.pushFreshBucket(head: head)
   }
 

@@ -47,13 +47,29 @@ extension UnsafeTreeV2Buffer {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal static func create<_Value>(_ t: _Value.Type,
+  internal static func create<_Value>(
+    _ t: _Value.Type,
+    minimumCapacity nodeCapacity: Int,
+    nullptr: UnsafeMutablePointer<UnsafeNode>
+  ) -> UnsafeTreeV2Buffer {
+    return create(
+      allocator: .init(valueType: _Value.self) {
+        $0.assumingMemoryBound(to: _Value.self)
+          .deinitialize(count: 1)
+      },
+      minimumCapacity: nodeCapacity, nullptr: nullptr)
+  }
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal static func create(
+    allocator: _UnsafeNodeFreshBucketAllocator,
     minimumCapacity nodeCapacity: Int,
     nullptr: UnsafeMutablePointer<UnsafeNode>
   ) -> UnsafeTreeV2Buffer {
     // 要素数は常に0
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 0) { managedBuffer in
-      return .init(_Value.self, nullptr: nullptr, capacity: nodeCapacity)
+      return .init(allocator: allocator, nullptr: nullptr, capacity: nodeCapacity)
     }
     assert(nodeCapacity <= storage.header.freshPoolCapacity)
     return unsafeDowncast(storage, to: UnsafeTreeV2Buffer.self)
@@ -70,5 +86,4 @@ extension UnsafeTreeV2Buffer: CustomStringConvertible {
 
 /// The type-punned empty singleton storage instance.
 @usableFromInline
-nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer.create(Void.self,
-  minimumCapacity: 0, nullptr: UnsafeNode.nullptr)
+nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer.create(allocator: .create(), minimumCapacity: 0, nullptr: .nullptr)

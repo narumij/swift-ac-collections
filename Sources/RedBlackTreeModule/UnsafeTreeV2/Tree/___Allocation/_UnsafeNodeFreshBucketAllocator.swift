@@ -17,7 +17,7 @@
 //         ^--start
 // ^-- next
 //
-// ## special node
+// ## special node on Primari Bucket
 // |Bucket|Node||Node|Value|Node|Value|...
 //          ^-- end node (end->left == root)
 //
@@ -45,6 +45,10 @@
 @frozen
 @usableFromInline
 struct _UnsafeNodeFreshBucketAllocator {
+  
+  static func create() -> Self {
+    .init(valueType: Void.self, deinitialize: { _ in })
+  }
 
   @inlinable
   @inline(__always)

@@ -26,7 +26,6 @@ public struct _UnsafeNodeFreshBucket {
 
   public typealias _SelfPtr = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
 
-  @inlinable
   public init(capacity: Int) {
     self.capacity = capacity
   }

@@ -282,8 +282,7 @@ internal func
 ///                  nullptr if `__root` == `__x`), `__tree_invariant(__root)` == true.
 /// Postcondition: `__tree_invariant(end_node->__left_)` == true.  end_node->`__left_`
 ///                may be different than the value passed in as `__root`.
-@inlinable
-@inline(__always)
+@usableFromInline
 internal func
   _std__tree_balance_after_insert(
     _ __root: UnsafeMutablePointer<UnsafeNode>, _ __x: UnsafeMutablePointer<UnsafeNode>
@@ -344,8 +343,7 @@ internal func
 /// Postcondition: `__tree_invariant(end_node->__left_)` == true && end_node->`__left_`
 ///                nor any of its children refer to `__z`.  end_node->`__left_`
 ///                may be different than the value passed in as `__root`.
-@inlinable
-@inline(__always)
+@usableFromInline
 internal func
   _std__tree_remove(
     _ __root: UnsafeMutablePointer<UnsafeNode>, _ __z: UnsafeMutablePointer<UnsafeNode>

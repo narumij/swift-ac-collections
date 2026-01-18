@@ -32,7 +32,6 @@ protocol _UnsafeNodeRecyclePool: UnsafeTreePointer {
 extension _UnsafeNodeRecyclePool {
 
   @inlinable
-  @inline(__always)
   mutating func ___pushRecycle(_ p: _NodePtr) {
     assert(p.pointee.___node_id_ > .end)
     assert(recycleHead != p)
@@ -51,7 +50,6 @@ extension _UnsafeNodeRecyclePool {
   }
 
   @inlinable
-  @inline(__always)
   mutating func ___popRecycle() -> _NodePtr {
     let p = recycleHead
     recycleHead = p.pointee.__left_
@@ -60,16 +58,14 @@ extension _UnsafeNodeRecyclePool {
     return p
   }
 
-  @inlinable
-  @inline(__always)
+  @usableFromInline
   mutating func ___flushRecyclePool() {
     recycleHead = nullptr
     count = 0
   }
 
   #if DEBUG
-    @inlinable
-    @inline(__always)
+    @usableFromInline
     var recycleCount: Int {
       freshPoolUsedCount - count
     }
@@ -78,8 +74,7 @@ extension _UnsafeNodeRecyclePool {
 
 extension _UnsafeNodeRecyclePool {
   #if DEBUG
-    @inlinable
-    @inline(__always)
+    @usableFromInline
     internal var ___recycleNodes: [Int] {
       var nodes: [Int] = []
       var last = recycleHead

@@ -285,7 +285,6 @@ extension UnsafeTreeV2BufferHeader {
 
   // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
   // Headerに移すのが妥当かも。そうすれば_Value依存が消せる
-  @inlinable
   mutating public
     func ___popFresh() -> _NodePtr
   {
@@ -304,7 +303,6 @@ extension UnsafeTreeV2BufferHeader {
 
 extension UnsafeTreeV2BufferHeader {
 
-  @inlinable
   public mutating func __construct_node<T>(_ k: T) -> _NodePtr {
     #if DEBUG
       assert(recycleCount >= 0)

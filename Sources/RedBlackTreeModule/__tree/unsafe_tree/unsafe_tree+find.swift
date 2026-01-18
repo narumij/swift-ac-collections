@@ -92,3 +92,28 @@ extension FindEqualProtocol_ptr_old {
     return (__parent, __parent.__left_ref)
   }
 }
+
+@usableFromInline
+protocol FindProtocol_ptr: _UnsafeNodePtrType, FindInteface, FindEqualInterface, _nullptr_interface, EndInterface {}
+
+extension FindProtocol_ptr {
+
+  @inlinable
+  @inline(__always)
+  internal func find(_ __v: _Key) -> _NodePtr {
+    #if USE_OLD_FIND
+      let __p = lower_bound(__v)
+      if __p != end, !value_comp(__v, __get_value(__p)) {
+        return __p
+      }
+      return end
+    #else
+      // llvmの__treeに寄せたが、multimapの挙動が変わってしまうので保留
+      let (_, __match) = __find_equal(__v)
+    if __match.pointee == nullptr {
+        return end
+      }
+    return __match.pointee
+    #endif
+  }
+}

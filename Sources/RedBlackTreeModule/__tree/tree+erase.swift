@@ -54,7 +54,7 @@ extension EraseProtocol {
 }
 
 @usableFromInline
-protocol EraseUniqueProtocol: FindProtocol, EraseProtocol { }
+protocol EraseUniqueProtocol: FindInteface, EndInterface, EraseProtocol { }
 
 extension EraseUniqueProtocol {
   

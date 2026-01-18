@@ -91,9 +91,9 @@ import XCTest
 
   class TreeFixture<Element: Comparable>:
     TreeFixtureBase<Element>,
-    FindEqualProtocol, FindEqualProtocol_std,
-    InsertNodeAtProtocol, InsertNodeAtProtocol_std,
-    InsertUniqueProtocol, InsertUniqueProtocol_std,
+    FindEqualInterface, FindEqualProtocol_std,
+    InsertNodeAtInterface, InsertNodeAtProtocol_std,
+    InsertUniqueInterface, InsertUniqueProtocol_std,
     RemoveProtocol, EraseProtocol, EraseUniqueProtocol,
     CompareProtocol, CompareMultiProtocol,
     BoundProtocol, NodeBitmapProtocol,

@@ -86,12 +86,7 @@ extension FindLeafProtocol {
   }
 }
 
-@usableFromInline
-protocol FindEqualProtocol: _NodePtrType & _KeyType {
-  func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
-}
-
-extension FindEqualProtocol {}
+extension FindEqualInterface {}
 
 @usableFromInline
 protocol FindEqualProtocol_std: ValueProtocol, TreeNodeRefInterface, RootInterface, RootPtrProtocol,
@@ -180,9 +175,9 @@ extension FindEqualProtocol_old {
 }
 
 @usableFromInline
-protocol FindProtocol: BoundProtocol & EndProtocol & FindEqualProtocol & TreeNodeRefInterface {}
+protocol _FindProtocol: FindInteface & BoundProtocol & EndProtocol & FindEqualInterface & TreeNodeRefInterface {}
 
-extension FindProtocol {
+extension _FindProtocol {
 
   @inlinable
   @inline(__always)

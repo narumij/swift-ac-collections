@@ -10,6 +10,7 @@ protocol RemoveProtocol_ptr: _UnsafeNodePtrType
     & BeginNodeInterface
     & EndNodeInterface
     & SizeInterface
+    & RootInterface
 {
   func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
 }
@@ -25,7 +26,20 @@ extension RemoveProtocol_ptr {
       __begin_node_ = __r
     }
     __size_ -= 1
-    _std__tree_remove(__end_node.__left_, __ptr)
+//    _std__tree_remove(__end_node.__left_, __ptr)
+    _std__tree_remove(__root, __ptr)
     return __r
+  }
+  
+  @inlinable
+  @inline(__always)
+  internal func ___remove_node_pointer(_ __ptr: _NodePtr) {
+    if __begin_node_ == __ptr {
+      // 単に要素を削除したい場合、無駄な手間になるので限定してみた
+      __begin_node_ = __tree_next_iter(__ptr)
+    }
+    __size_ -= 1
+    // llvmと異なり木の保持の仕方がリッチなうえ型チェックが邪魔なので直接とった方がいい
+    _std__tree_remove(__root, __ptr)
   }
 }

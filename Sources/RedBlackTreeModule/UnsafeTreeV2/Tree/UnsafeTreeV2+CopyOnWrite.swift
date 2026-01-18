@@ -76,18 +76,20 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal mutating func _strongEnsureUnique() {
-    return _ensureUnique()
-    
-    let isTreeUnique = _buffer.isUniqueReference()
-    let isPoolUnique =
-      _buffer.header._deallocator == nil
-      ? true : isKnownUniquelyReferenced(&_buffer.header._deallocator!)
+    #if !USE_SIMPLE_COPY_ON_WRITE
+      let isTreeUnique = _buffer.isUniqueReference()
+      let isPoolUnique =
+        _buffer.header._deallocator == nil
+        ? true : isKnownUniquelyReferenced(&_buffer.header._deallocator!)
 
-    if isTreeUnique, isPoolUnique {
-      /* NOP */
-    } else {
-      self = self.copy()
-    }
+      if isTreeUnique, isPoolUnique {
+        /* NOP */
+      } else {
+        self = self.copy()
+      }
+    #else
+      return _ensureUnique()
+    #endif
   }
 }
 

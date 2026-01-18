@@ -85,6 +85,7 @@ extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
 extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
+  @inline(__always)
   func __key(_ __v: _Value) -> _Key { __v }
 
   @inlinable
@@ -131,7 +132,7 @@ extension UnsafeTreeV2ScalarHandle {
 
 extension UnsafeTreeV2ScalarHandle {
   
-  @usableFromInline
+  @inlinable
   var nullptr: UnsafeMutablePointer<UnsafeNode> {
     header.pointee.nullptr
   }

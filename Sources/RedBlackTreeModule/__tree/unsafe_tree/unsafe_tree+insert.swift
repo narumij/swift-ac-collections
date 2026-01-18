@@ -7,7 +7,7 @@
 
 @usableFromInline
 protocol InsertNodeAtProtocol_ptr: _UnsafeNodePtrType, InsertNodeAtInterface,
-  BeginNodeInterface, EndNodeProtocol, SizeInterface, _nullptr_interface
+  BeginNodeInterface, EndNodeProtocol, SizeInterface, _nullptr_interface, RootInterface
 {}
 
 extension InsertNodeAtProtocol_ptr {
@@ -30,7 +30,8 @@ extension InsertNodeAtProtocol_ptr {
     if __begin_node_.__left_ != nullptr {
       __begin_node_ = __begin_node_.__left_
     }
-    _std__tree_balance_after_insert(__end_node.__left_, __child.pointee)
+//    _std__tree_balance_after_insert(__end_node.__left_, __child.pointee)
+    _std__tree_balance_after_insert(__root, __child.pointee)
     __size_ += 1
   }
 }
@@ -42,7 +43,8 @@ protocol InsertUniqueProtocol_ptr: _UnsafeNodePtrType, InsertUniqueInterface & A
 
 extension InsertUniqueProtocol_ptr {
 
-  @usableFromInline
+  @inlinable
+  @inline(never)
   internal func
     __insert_unique(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
   {
@@ -50,6 +52,7 @@ extension InsertUniqueProtocol_ptr {
   }
 
   @inlinable
+  @inline(never)
   internal func
     __emplace_unique_key_args(_ __k: _Value)
     -> (__r: _NodePtr, __inserted: Bool)

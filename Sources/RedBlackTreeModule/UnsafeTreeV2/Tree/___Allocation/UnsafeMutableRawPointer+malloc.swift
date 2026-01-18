@@ -31,7 +31,7 @@
       return malloc(byteCount)
     }
     @inlinable
-    @inline(never)
+    @inline(__always)
     func _deallocate() {
       free(self)
     }
@@ -44,7 +44,7 @@
       .allocate(byteCount: byteCount, alignment: alignment)
     }
     @inlinable
-    @inline(never)
+    @inline(__always)
     func _deallocate() {
       self.deallocate()
     }

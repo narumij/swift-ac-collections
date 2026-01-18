@@ -24,9 +24,8 @@ import Foundation
 
 extension UnsafeTreeV2 {
 
-//  @inlinable
-//  @inline(__always)
-  @usableFromInline
+  @inlinable
+  @inline(__always)
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
 
     // 番号の抜けが発生してるケースがあり、それは再利用プールにノードがいるケース

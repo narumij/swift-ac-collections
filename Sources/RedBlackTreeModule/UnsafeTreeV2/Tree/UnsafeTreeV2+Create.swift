@@ -63,8 +63,9 @@ extension UnsafeTreeV2 {
   ) -> UnsafeTreeV2 {
     create(
       unsafeBufferObject:
-        UnsafeTreeV2Buffer<Base._Value>
+        UnsafeTreeV2Buffer
         .create(
+          _Value.self,
           minimumCapacity: nodeCapacity,
           nullptr: nullptr))
   }

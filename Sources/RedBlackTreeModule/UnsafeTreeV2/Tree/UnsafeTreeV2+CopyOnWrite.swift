@@ -24,7 +24,7 @@ import Foundation
 
 extension UnsafeTreeV2BufferHeader {
 
-  @usableFromInline
+  @inlinable
   internal mutating func executeCapacityGrow(_ newCapacity: Int) {
     guard freshPoolCapacity < newCapacity else { return }
     pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
@@ -33,7 +33,7 @@ extension UnsafeTreeV2BufferHeader {
 
 extension UnsafeTreeV2 {
 
-  @usableFromInline
+  @inlinable
   internal func executeCapacityGrow(_ newCapacity: Int) {
     withMutableHeader {
       $0.executeCapacityGrow(newCapacity)
@@ -45,12 +45,12 @@ extension UnsafeTreeV2 {
 
   // 以前の名残でクラスメソッド経由となっている。取り除くリファクタリングをして構わない
 
-  @usableFromInline
+  @inlinable
   internal static func ensureCapacity(tree: inout UnsafeTreeV2, linearly: Bool = false) {
     tree._ensureCapacity(linearly: linearly)
   }
 
-  @usableFromInline
+  @inlinable
   internal static func ensureCapacity(
     tree: inout UnsafeTreeV2, minimumCapacity: Int, linearly: Bool = false
   ) {
@@ -60,7 +60,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  @usableFromInline
+  @inlinable
   internal mutating func _ensureUnique() {
     let isUnique = _buffer.isUniqueReference()
     if !isUnique {
@@ -68,7 +68,7 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @usableFromInline
+  @inlinable
   internal mutating func _strongEnsureUnique() {
     //    return _ensureUnique()
 
@@ -99,7 +99,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  @usableFromInline
+  @inlinable
   internal mutating func _ensureUniqueAndCapacity(
     to minimumCapacity: Int? = nil, linearly: Bool = false
   ) {
@@ -182,7 +182,6 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2BufferHeader {
 
   @inlinable
-  @inline(__always)
   internal func _growthCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
 
     if linearly {

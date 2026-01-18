@@ -38,7 +38,7 @@ extension InsertNodeAtProtocol_ptr {
 
 @usableFromInline
 protocol InsertUniqueProtocol_ptr: UnsafeTreePointer, InsertUniqueProtocol & AllocatorProtocol
-    & __KeyProtocol // & TreeNodeRefProtocol
+    & __KeyProtocol
 {
   func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
 
@@ -49,7 +49,6 @@ protocol InsertUniqueProtocol_ptr: UnsafeTreePointer, InsertUniqueProtocol & All
 extension InsertUniqueProtocol_ptr {
 
   @inlinable
-  //  @inline(__always)
   internal func
     __insert_unique(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
   {
@@ -57,7 +56,6 @@ extension InsertUniqueProtocol_ptr {
   }
 
   @inlinable
-  //  @inline(__always)
   internal func
     __emplace_unique_key_args(_ __k: _Value)
     -> (__r: _NodePtr, __inserted: Bool)

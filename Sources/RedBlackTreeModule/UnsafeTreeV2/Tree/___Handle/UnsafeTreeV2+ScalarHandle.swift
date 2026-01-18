@@ -134,6 +134,12 @@ extension UnsafeTreeV2ScalarHandle {
 }
 
 extension UnsafeTreeV2ScalarHandle {
+  
+  @usableFromInline
+  var nullptr: UnsafeMutablePointer<UnsafeNode> {
+    header.pointee.nullptr
+  }
+
   @usableFromInline
   var __begin_node_: UnsafeMutablePointer<UnsafeNode> {
     get {
@@ -142,36 +148,6 @@ extension UnsafeTreeV2ScalarHandle {
     nonmutating set {
       header.pointee.begin_ptr = newValue
     }
-  }
-
-  @usableFromInline
-  var __end_node: UnsafeMutablePointer<UnsafeNode> {
-    header.pointee.end_ptr
-  }
-
-  @usableFromInline
-  var __size_: Int {
-    get {
-      header.pointee.count
-    }
-    nonmutating set {
-      header.pointee.count = newValue
-    }
-  }
-
-  @usableFromInline
-  var nullptr: UnsafeMutablePointer<UnsafeNode> {
-    header.pointee.nullptr
-  }
-
-  @usableFromInline
-  func __construct_node(_ k: _Key) -> UnsafeMutablePointer<UnsafeNode> {
-    header.pointee.__construct_node(k)
-  }
-
-  @usableFromInline
-  func destroy(_ p: UnsafeMutablePointer<UnsafeNode>) {
-    header.pointee.___pushRecycle(p)
   }
 
   @usableFromInline
@@ -188,6 +164,28 @@ extension UnsafeTreeV2ScalarHandle {
   var end: UnsafeMutablePointer<UnsafeNode> {
     header.pointee.end_ptr
   }
+
+  @usableFromInline
+  var __end_node: UnsafeMutablePointer<UnsafeNode> {
+    header.pointee.end_ptr
+  }
+
+  @inlinable
+  func __construct_node(_ k: _Key) -> UnsafeMutablePointer<UnsafeNode> {
+    header.pointee.__construct_node(k)
+  }
+
+  @usableFromInline
+  func destroy(_ p: UnsafeMutablePointer<UnsafeNode>) {
+    header.pointee.___pushRecycle(p)
+  }
+  
+  
+  @usableFromInline
+  var __size_: Int {
+    get { header.pointee.count }
+    nonmutating set { /* NOP */ }
+  }
 }
 
 //extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase {}
@@ -197,12 +195,12 @@ extension UnsafeTreeV2ScalarHandle {
 //extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
 //extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 
-extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
+extension UnsafeTreeV2ScalarHandle: FindEqualProtocol, FindEqualProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol, InsertUniqueProtocol_ptr {}
 
 #if true
-  extension UnsafeTreeV2ScalarHandle: FindEqualProtocol_ptr {}
+#else
   extension UnsafeTreeV2ScalarHandle {
 
     @inlinable
@@ -308,5 +306,4 @@ extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol, InsertUniqueProtocol_p
       }
     }
   }
-#else
 #endif

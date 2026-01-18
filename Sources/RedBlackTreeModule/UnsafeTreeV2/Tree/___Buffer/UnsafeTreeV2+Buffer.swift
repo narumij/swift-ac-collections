@@ -23,7 +23,7 @@
 import Foundation
 
 // TODO: テスト整備後internalにする
-public final class UnsafeTreeV2Buffer<_Value>:
+public final class UnsafeTreeV2Buffer:
   ManagedBuffer<UnsafeTreeV2BufferHeader, Void>
 {
   // MARK: - 解放処理
@@ -46,7 +46,7 @@ extension UnsafeTreeV2Buffer {
   @nonobjc
   @inlinable
 //  @inline(__always)
-  internal static func create(
+  internal static func create<_Value>(_ t: _Value.Type,
     minimumCapacity nodeCapacity: Int,
     nullptr: UnsafeMutablePointer<UnsafeNode>
   ) -> UnsafeTreeV2Buffer {
@@ -61,15 +61,15 @@ extension UnsafeTreeV2Buffer {
   }
 }
 
-extension UnsafeTreeV2Buffer: CustomStringConvertible {
-  public var description: String {
-    unsafe withUnsafeMutablePointerToHeader {
-      "UnsafeTreeBuffer<\(_Value.self)>\(unsafe $0.pointee)"
-    }
-  }
-}
+//extension UnsafeTreeV2Buffer: CustomStringConvertible {
+//  public var description: String {
+//    unsafe withUnsafeMutablePointerToHeader {
+//      "UnsafeTreeBuffer<\(_Value.self)>\(unsafe $0.pointee)"
+//    }
+//  }
+//}
 
 /// The type-punned empty singleton storage instance.
 @usableFromInline
-nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer<Void>.create(
+nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer.create(Void.self,
   minimumCapacity: 0, nullptr: UnsafeNode.nullptr)

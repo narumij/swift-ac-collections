@@ -197,6 +197,7 @@ extension UnsafeTreeV2ScalarHandle: InsertNodeAtInterface, InsertNodeAtProtocol_
 extension UnsafeTreeV2ScalarHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
 //extension UnsafeTreeV2ScalarHandle: ___EraseUniqueProtocol {}
 extension UnsafeTreeV2ScalarHandle: PointerCompareInterface, CompareTraitInterface, CompareBothInterface, CompareBothProtocol_ptr, CompareMultiProtocol_ptr, NodeBitmapProtocol_ptr {}
+extension UnsafeTreeV2ScalarHandle: DistanceProtocol_ptr, CountProtocol_ptr {}
 
 #if true
 #else

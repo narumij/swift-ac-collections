@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol CountProtocol: BoundAlgorithmProtocol & DistanceProtocol {}
+protocol CountProtocol: BoundAlgorithmProtocol & DistanceProtocol_std {}
 
 extension CountProtocol {
 

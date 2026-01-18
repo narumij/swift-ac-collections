@@ -23,9 +23,9 @@
 import Foundation
 
 @usableFromInline
-protocol DistanceProtocol: TreeNodeInterface & PointerCompareInterface {}
+protocol DistanceProtocol_std: TreeNodeInterface & PointerCompareInterface {}
 
-extension DistanceProtocol {
+extension DistanceProtocol_std {
 
   @usableFromInline
   typealias difference_type = Int

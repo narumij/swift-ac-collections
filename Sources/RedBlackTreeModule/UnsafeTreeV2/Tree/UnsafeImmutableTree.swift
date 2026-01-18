@@ -37,7 +37,7 @@ extension UnsafeImmutableTree {
   }
 }
 
-extension UnsafeImmutableTree: CompareBothProtocol_std, DistanceProtocol, CompareMultiProtocol_std {
+extension UnsafeImmutableTree: CompareBothProtocol_std, DistanceProtocol_std, CompareMultiProtocol_std {
 
   @usableFromInline
   func value_comp(_ l: Base._Key, _ r: Base._Key) -> Bool {

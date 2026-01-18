@@ -375,7 +375,7 @@ extension RedBlackTreeSet {
     __tree_._ensureUnique()
     //    return __tree_.___erase_unique(member) ? member : nil
     return __tree_.update { $0.___erase_unique(member) } ? member : nil
-//    return __tree_.update { $0.___erase_unique_(member) } ? member : nil
+    //    return __tree_.update { $0.___erase_unique_(member) } ? member : nil
     //    let result = switch __tree_.specializeMode {
     //    case .asInt: __tree_._i_update { $0.___erase_unique(member as! Int) }
     //    case .generic: __tree_.update { $0.___erase_unique(member) }
@@ -462,6 +462,73 @@ extension RedBlackTreeSet {
   ) rethrows {
     try removeSubrange(lowerBound(start)..<upperBound(end), where: shouldBeRemoved)
   }
+}
+
+public enum RBTBound<T: Comparable> {
+  case start
+  case lower(T)
+  case upper(T)
+  case end
+}
+
+extension RBTBound: Comparable {
+  public static func < (lhs: RBTBound<T>, rhs: RBTBound<T>) -> Bool {
+    switch (lhs, rhs) {
+    case (.start, _): true
+    case (_, .end): true
+    case (.end, _): false
+    case (_, .start): false
+    case (.lower(let l), .lower(let r)): l < r
+    case (.lower(let l), .upper(let r)): l <= r
+    case (.upper, _): fatalError("左にupperを使うのはコーナケース対処が困難なので禁止扱い")
+    }
+  }
+  func relative<C: RBTCollection>(to collection: C) -> C.Index where T == C.Key {
+    switch self {
+    case .start: collection.startIndex
+    case .end: collection.endIndex
+    case .lower(let l): collection.lowerBound(l)
+    case .upper(let r): collection.upperBound(r)
+    }
+  }
+}
+
+public protocol RBTCollection: Collection {
+  associatedtype Key
+  associatedtype Index
+  var startIndex: Index { get }
+  var endIndex: Index { get }
+  func lowerBound(_: Key) -> Index
+  func upperBound(_: Key) -> Index
+}
+
+public protocol RBTRangeExpression: RangeExpression {
+  func relativeBound<C: RBTCollection>(
+    to collection: C
+  ) -> Range<C.Index> where Bound == RBTBound<C.Key>
+}
+
+extension Range: RBTRangeExpression {
+  public func relativeBound<C>(to collection: C) -> Range<C.Index>
+  where C: RBTCollection, Bound == RBTBound<C.Key>, C.Key: Comparable {
+    lowerBound.relative(to: collection)..<upperBound.relative(to: collection)
+  }
+}
+
+extension RedBlackTreeSet: RBTCollection {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func indices(bound range: Range<RBTBound<Element>>) -> Range<Index> {
+    range.relativeBound(to: self)
+  }
+}
+
+func test() {
+  let a = RedBlackTreeSet<Int>()
+  typealias Index = RedBlackTreeSet<Int>.Index
+  let _: Range<Index> = a.indices(bound: .start ..< .end)
+  let _: Range<Index> = a.indices(bound: .lower(3) ..< .end)
 }
 
 extension RedBlackTreeSet {

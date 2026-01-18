@@ -32,15 +32,10 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
   @inlinable
   internal init(
     header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>,
-    origin: UnsafeMutableRawPointer,
-    isMulti: Bool,
-    specializeMode: SpecializeMode? = nil
+    isMulti: Bool
   ) {
     self.header = header
-    //    self.origin = origin
     self.isMulti = false
-    // 性能上とても重要だが、コンパイラ挙動に合わせての採用でとても場当たり的
-    self.specializeMode = specializeMode ?? SpecializeModeHoge<_Key>().specializeMode
   }
   @usableFromInline typealias _Key = _Key
   @usableFromInline typealias _Value = _Key
@@ -48,9 +43,7 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable> {
   @usableFromInline typealias _Pointer = _NodePtr
   @usableFromInline typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
-  //  @usableFromInline let origin: UnsafeMutableRawPointer
   @usableFromInline var isMulti: Bool
-  @usableFromInline let specializeMode: SpecializeMode
 }
 
 extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
@@ -63,7 +56,7 @@ extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   internal func read<R>(_ body: (Handle) throws -> R) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
       let handle = Handle(
-        header: header, origin: elements, isMulti: isMulti, specializeMode: specializeMode)
+        header: header, isMulti: isMulti)
       return try body(handle)
     }
   }
@@ -73,7 +66,7 @@ extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   internal func _i_update<R>(_ body: (UnsafeTreeV2ScalarHandle<Int>) throws -> R) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
       let handle = UnsafeTreeV2ScalarHandle<Int>(
-        header: header, origin: elements, isMulti: isMulti, specializeMode: specializeMode)
+        header: header, isMulti: isMulti)
       return try body(handle)
     }
   }
@@ -83,7 +76,7 @@ extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   internal func update<R>(_ body: (Handle) throws -> R) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
       let handle = Handle(
-        header: header, origin: elements, isMulti: isMulti, specializeMode: specializeMode)
+        header: header, isMulti: isMulti)
       return try body(handle)
     }
   }
@@ -98,25 +91,27 @@ extension UnsafeTreeV2ScalarHandle {
   @inlinable
   @inline(__always)
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
-    specializeMode.value_comp(__l, __r)
+//    specializeMode.value_comp(__l, __r)
+    __l < __r
   }
 
   @inlinable
   @inline(__always)
   func value_equiv(_ __l: _Key, _ __r: _Key) -> Bool {
-    specializeMode.value_equiv(__l, __r)
+//    specializeMode.value_equiv(__l, __r)
+    __l == __r
   }
 
   @inlinable
   @inline(__always)
   func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-    specializeMode.synth_three_way(__lhs, __rhs)
+    __default_three_way_comparator(__lhs, __rhs)
   }
 
   @inlinable
   @inline(__always)
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-    specializeMode.synth_three_way(__lhs, __rhs)
+    __default_three_way_comparator(__lhs, __rhs)
   }
 }
 

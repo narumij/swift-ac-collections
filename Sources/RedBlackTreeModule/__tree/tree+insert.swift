@@ -23,19 +23,19 @@
 import Foundation
 
 @usableFromInline
-protocol InsertNodeAtProtocol:
-  TreeNodeProtocol & TreeNodeRefProtocol & TreeEndProtocol & SizeProtocol & BeginNodeProtocol
-    & EndNodeProtocol
-{
-  func
-    __insert_node_at(
-      _ __parent: _NodePtr, _ __child: _NodeRef,
-      _ __new_node: _NodePtr
-    )
+protocol InsertNodeAtProtocol: _TreePointer {
+  func __insert_node_at(
+    _ __parent: _NodePtr,
+    _ __child: _NodeRef,
+    _ __new_node: _NodePtr
+  )
 }
 
 @usableFromInline
-protocol InsertNodeAtProtocol_std: InsertNodeAtProtocol {}
+protocol InsertNodeAtProtocol_std: InsertNodeAtProtocol,
+  TreeNodeProtocol & TreeNodeRefProtocol & TreeEndProtocol & SizeProtocol & BeginNodeProtocol
+    & EndNodeProtocol
+{}
 
 extension InsertNodeAtProtocol_std {
 
@@ -76,7 +76,7 @@ protocol InsertUniqueProtocol:
 extension InsertUniqueProtocol {
 
   @inlinable
-//  @inline(__always)
+  //  @inline(__always)
   internal func
     __insert_unique(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
   {
@@ -84,7 +84,7 @@ extension InsertUniqueProtocol {
   }
 
   @inlinable
-//  @inline(__always)
+  //  @inline(__always)
   internal func
     __emplace_unique_key_args(_ __k: _Value)
     -> (__r: _NodePtr, __inserted: Bool)
@@ -141,7 +141,8 @@ extension InsertMultiProtocol {
 
 @usableFromInline
 protocol InsertLastProtocol:
-  InsertNodeAtProtocol & AllocatorProtocol & RootProtocol & EndNodeProtocol
+  InsertNodeAtProtocol & AllocatorProtocol & RootProtocol & EndNodeProtocol & TreeNodeProtocol
+    & TreeNodeRefProtocol & EndProtocol
 {}
 
 extension InsertLastProtocol {

@@ -76,29 +76,20 @@ struct _UnsafeNodeFreshBucketAllocator {
 
   @inlinable
   @inline(__always)
-  func deinitializeNodeAndValues(_ b: _BucketPointer) {
-    let bucket = b.pointee
-    var i = 0
-    let count = bucket.count
-    var p = bucket.start
-    while i < count {
-      let c = p
-      p = advance(p)
-      if i < count, c.pointee.___needs_deinitialize {
-        deinitialize(c.advanced(by: 1))
+  func deinitializeNodeAndValues(isHead: Bool, _ b: _BucketPointer) {
+    var it = b._counts(isHead: isHead, _value: _value)
+    while let p = it.pop() {
+      if p.pointee.___needs_deinitialize {
+        deinitialize(p.advanced(by: 1))
       } else {
-        c.deinitialize(count: 1)
+        p.deinitialize(count: 1)
       }
-      i += 1
     }
     #if DEBUG
       do {
-        var c = 0
-        var p = bucket.start
-        while c < bucket.capacity {
+        var it = b._capacities(isHead: isHead, _value: _value)
+        while let p = it.pop() {
           p.pointee.___node_id_ = .debug
-          p = advance(p)
-          c += 1
         }
       }
     #endif
@@ -108,7 +99,7 @@ struct _UnsafeNodeFreshBucketAllocator {
   @inline(__always)
   func deallocHeadBucket(_ b: _BucketPointer) {
     deinitializeEndNode(b)
-    deinitializeNodeAndValues(b)
+    deinitializeNodeAndValues(isHead: true, b)
     b.deinitialize(count: 1)
     UnsafeMutableRawPointer(b)._deallocate()
   }
@@ -116,7 +107,7 @@ struct _UnsafeNodeFreshBucketAllocator {
   @inlinable
   @inline(__always)
   func deallocBucket(_ b: _BucketPointer) {
-    deinitializeNodeAndValues(b)
+    deinitializeNodeAndValues(isHead: false, b)
     b.deinitialize(count: 1)
     UnsafeMutableRawPointer(b)._deallocate()
   }
@@ -125,10 +116,12 @@ struct _UnsafeNodeFreshBucketAllocator {
   @inline(__always)
   public func deinitialize(bucket b: _BucketPointer?) {
     var reserverHead = b
+    var isHead = true
     while let h = reserverHead {
       reserverHead = h.pointee.next
-      deinitializeNodeAndValues(h)
+      deinitializeNodeAndValues(isHead: isHead,h)
       h.pointee.count = 0
+      isHead = false
     }
   }
 
@@ -169,8 +162,6 @@ struct _UnsafeNodeFreshBucketAllocator {
     let header = UnsafeMutableRawPointer(header_storage)
       .assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
 
-    // x競プロ用としては、分岐して節約するよりこの程度なら分岐けずるほうがいいかもしれない
-    // o甘くなかった。いまの成長率設定ではメモリの無駄が多すぎる
     let endNode = UnsafeMutableRawPointer(header.advanced(by: 1))
       .bindMemory(to: UnsafeNode.self, capacity: 1)
 
@@ -178,23 +169,17 @@ struct _UnsafeNodeFreshBucketAllocator {
 
     let storage = UnsafeMutableRawPointer(header.advanced(by: 1))
       .advanced(by: MemoryLayout<UnsafeNode>.stride)
-    //      .alignedUp(toMultipleOf: alignment)
 
     header.initialize(
       to:
         .init(
-          start: pointer(from: storage),
-          capacity: capacity,
-          strice: stride))
+          capacity: capacity))
 
     #if DEBUG
       do {
-        var c = 0
-        var p = header.pointee.start
-        while c < capacity {
+        var it = header._capacities(isHead: true, _value: _value)
+        while let p = it.pop() {
           p.pointee.___node_id_ = .debug
-          p = advance(p)
-          c += 1
         }
       }
     #endif
@@ -222,18 +207,13 @@ struct _UnsafeNodeFreshBucketAllocator {
     header.initialize(
       to:
         .init(
-          start: pointer(from: storage),
-          capacity: capacity,
-          strice: stride))
+          capacity: capacity))
 
     #if DEBUG
       do {
-        var c = 0
-        var p = header.pointee.start
-        while c < capacity {
+        var it = header._capacities(isHead: false, _value: _value)
+        while let p = it.pop() {
           p.pointee.___node_id_ = .debug
-          p = advance(p)
-          c += 1
         }
       }
     #endif
@@ -281,5 +261,6 @@ struct _UnsafeNodeFreshBucketAllocator {
     let alignment = max(a0, a1)
 
     return (capacity, size, s01, alignment)
+
   }
 }

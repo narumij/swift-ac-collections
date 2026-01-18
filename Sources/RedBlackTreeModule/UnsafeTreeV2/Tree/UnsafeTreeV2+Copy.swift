@@ -33,7 +33,6 @@ extension UnsafeTreeV2 {
     let initializedCount = initializedCount
 
     assert(check())
-    // 予定サイズを確定させる
     let newCapacity = max(minimumCapacity ?? 0, initializedCount)
 
     // 予定サイズの木を作成する
@@ -56,12 +55,11 @@ extension UnsafeTreeV2 {
     }
 
     let header = _buffer.header
-//    let source = origin.pointee
 
     tree.withMutableHeader { newHeader in
 
       // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
-      let bucket = newHeader.freshBucketHead!.pointee
+      let bucket = newHeader.freshBucketHead!.helper(_value: MemoryLayout<_Value>._value)!
 
       /// 同一番号の新ノードを取得する内部ユーティリティ
       @inline(__always)

@@ -155,4 +155,9 @@ struct BucketIterator: UnsafeTreePointer {
     count += 1
     return p
   }
+  @inlinable
+  func nextCounts(_value: (stride: Int, alignment: Int)) -> BucketIterator? {
+    guard let next = pointer.pointee.next else { return nil }
+    return next._counts(isHead: false, _value: _value)
+  }
 }

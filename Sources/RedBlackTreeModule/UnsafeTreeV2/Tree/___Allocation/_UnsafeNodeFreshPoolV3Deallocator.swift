@@ -41,14 +41,14 @@ package final class _UnsafeNodeFreshPoolV3Deallocator: UnsafeTreePointer {
   subscript(___node_id_: Int) -> _NodePtr? {
     assert(___node_id_ >= 0)
     var remaining = ___node_id_
-    var p = freshBucketHead
+    var p = freshBucketHead?.helper(_value: freshPoolDeallocator._value)
     while let h = p {
-      let cap = h.pointee.capacity
+      let cap = h.capacity
       if remaining < cap {
-        return h.pointee[remaining]
+        return h[remaining]
       }
       remaining -= cap
-      p = h.pointee.next
+      p = h.nextHelper(_value: freshPoolDeallocator._value)
     }
     assert(false)
     return nil
@@ -75,14 +75,11 @@ package final class _UnsafeNodeFreshPoolV3DeallocatorR2:
   }
 
   @inlinable
-  @inline(__always)
   public func isTriviallyIdentical(to other: _UnsafeNodeFreshPoolV3DeallocatorR2) -> Bool {
     self === other
   }
 
-  // MARK: - 解放処理
   @inlinable
-  @inline(__always)
   deinit {
     withUnsafeMutablePointerToHeader { header in
       header.pointee.deallocate()
@@ -98,7 +95,6 @@ extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
   {
 
     @inlinable
-    @inline(__always)
     internal init(
       freshBucketHead: _UnsafeNodeFreshPoolV3DeallocatorR2.Header._BucketPointer? = nil,
       freshPoolDeallocator: _UnsafeNodeFreshBucketAllocator, isBaseDeallocated: Bool = false
@@ -116,24 +112,22 @@ extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
     @usableFromInline var isBaseDeallocated: Bool = false
 
     @inlinable
-    @inline(__always)
     func deallocate() {
       freshPoolDeallocator.deallocate(bucket: freshBucketHead)
     }
 
     @inlinable
-    @inline(__always)
     subscript(___node_id_: Int) -> _NodePtr? {
       assert(___node_id_ >= 0)
       var remaining = ___node_id_
-      var p = freshBucketHead
+      var p = freshBucketHead?.helper(_value: freshPoolDeallocator._value)
       while let h = p {
-        let cap = h.pointee.capacity
+        let cap = h.capacity
         if remaining < cap {
-          return h.pointee[remaining]
+          return h[remaining]
         }
         remaining -= cap
-        p = h.pointee.next
+        p = h.nextHelper(_value: freshPoolDeallocator._value)
       }
       assert(false)
       return nil
@@ -141,7 +135,6 @@ extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
   }
 
   @inlinable
-  @inline(__always)
   subscript(___node_id_: Int) -> _NodePtr? {
     header[___node_id_]
   }

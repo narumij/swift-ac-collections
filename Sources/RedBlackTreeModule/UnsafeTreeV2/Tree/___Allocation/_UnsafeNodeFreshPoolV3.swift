@@ -35,7 +35,7 @@ protocol _UnsafeNodeFreshPoolV3: UnsafeTreePointer {
    */
 
   var freshBucketHead: _BucketPointer? { get set }
-  var freshBucketCurrent: _BucketPointer? { get set }
+  var freshBucketCurrent: BucketHelper? { get set }
   var freshBucketLast: _BucketPointer? { get set }
   var freshPoolCapacity: Int { get set }
   var freshPoolUsedCount: Int { get set }
@@ -45,6 +45,8 @@ protocol _UnsafeNodeFreshPoolV3: UnsafeTreePointer {
     var freshBucketCount: Int { get set }
   #endif
   var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator { get }
+  
+  var memoryLayout: (stride: Int, alignment: Int) { get }
 }
 
 extension _UnsafeNodeFreshPoolV3 {
@@ -63,15 +65,26 @@ extension _UnsafeNodeFreshPoolV3 {
 
   @inlinable
   @inline(__always)
-  //  @usableFromInline
   mutating func pushFreshHeadBucket(capacity: Int) {
     assert(freshBucketHead == nil || capacity != 0)
     let (pointer, capacity) = freshBucketAllocator.createHeadBucket(
       capacity: capacity, nullptr: nullptr)
     freshBucketHead = pointer
-    freshBucketCurrent = pointer
+    freshBucketCurrent = pointer.helper(_value: memoryLayout)
     freshBucketLast = pointer
     freshPoolCapacity += capacity
+    #if DEBUG
+      freshBucketCount += 1
+    #endif
+  }
+  
+  @inlinable
+  @inline(__always)
+  mutating func pushFresBucket(head: _BucketPointer) {
+    freshBucketHead = head
+    freshBucketCurrent = head.helper(_value: memoryLayout)
+    freshBucketLast = head
+    freshPoolCapacity += head.pointee.capacity
     #if DEBUG
       freshBucketCount += 1
     #endif
@@ -79,7 +92,6 @@ extension _UnsafeNodeFreshPoolV3 {
 
   @inlinable
   @inline(__always)
-  //  @usableFromInline
   mutating func pushFreshBucket(capacity: Int) {
     assert(freshBucketHead == nil || capacity != 0)
     let (pointer, capacity) = freshBucketAllocator.createBucket(capacity: capacity)
@@ -94,11 +106,11 @@ extension _UnsafeNodeFreshPoolV3 {
   @inlinable
   @inline(__always)
   mutating func popFresh() -> _NodePtr? {
-    if let p = freshBucketCurrent?.pointee.pop() {
+    if let p = freshBucketCurrent?.pop() {
       return p
     }
-    freshBucketCurrent = freshBucketCurrent?.pointee.next
-    return freshBucketCurrent?.pointee.pop()
+    freshBucketCurrent = freshBucketCurrent?.nextHelper(_value: memoryLayout)
+    return freshBucketCurrent?.pop()
   }
 }
 
@@ -121,14 +133,14 @@ extension _UnsafeNodeFreshPoolV3 {
   subscript(___node_id_: Int) -> _NodePtr {
     assert(___node_id_ >= 0)
     var remaining = ___node_id_
-    var p = freshBucketHead
+    var p = freshBucketHead?.helper(_value: memoryLayout)
     while let h = p {
-      let cap = h.pointee.capacity
+      let cap = h.capacity
       if remaining < cap {
-        return h.pointee[remaining]
+        return h[remaining]
       }
       remaining -= cap
-      p = h.pointee.next
+      p = h.nextHelper(_value: memoryLayout)
     }
     return nullptr
   }
@@ -141,7 +153,7 @@ extension _UnsafeNodeFreshPoolV3 {
   mutating func ___flushFreshPool() {
     freshBucketAllocator.deinitialize(bucket: freshBucketHead)
     freshPoolUsedCount = 0
-    freshBucketCurrent = freshBucketHead
+    freshBucketCurrent = freshBucketHead?.helper(_value: memoryLayout)
   }
 
   @inlinable
@@ -155,7 +167,28 @@ extension _UnsafeNodeFreshPoolV3 {
 
 // MARK: - DEBUG
 
-#if DEBUG
+extension _UnsafeNodeFreshPoolV3 {
+  @inlinable
+  @inline(__always)
+  func makeFreshBucketIterator<T>() -> _UnsafeNodeFreshBucketIterator<T> {
+    return _UnsafeNodeFreshBucketIterator<T>(bucket: freshBucketHead)
+  }
+}
+
+extension _UnsafeNodeFreshPoolV3 {
+
+  @usableFromInline typealias Iterator = _UnsafeNodeFreshPoolIterator
+
+  @inlinable
+  @inline(__always)
+  func makeFreshPoolIterator<T>() -> _UnsafeNodeFreshPoolIterator<T> {
+    return _UnsafeNodeFreshPoolIterator<T>(bucket: freshBucketHead, nullptr: nullptr)
+  }
+}
+
+
+
+#if DEBUG && false
   extension _UnsafeNodeFreshPoolV3 {
 
     func dumpFreshPool(label: String = "") {

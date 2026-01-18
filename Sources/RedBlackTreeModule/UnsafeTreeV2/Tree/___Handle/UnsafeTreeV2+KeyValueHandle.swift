@@ -130,7 +130,7 @@ extension UnsafeTreeV2KeyValueHandle: FindInteface, FindProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_std {}
 extension UnsafeTreeV2KeyValueHandle: InsertNodeAtInterface, InsertNodeAtProtocol_std {}
 extension UnsafeTreeV2KeyValueHandle: InsertUniqueInterface, InsertUniqueProtocol_std {}
-extension UnsafeTreeV2KeyValueHandle: RemoveProtocol, RemoveProtocol_ptr {}
+extension UnsafeTreeV2KeyValueHandle: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: EraseProtocol {}
 extension UnsafeTreeV2KeyValueHandle: EraseUniqueProtocol {}
 

@@ -8,7 +8,7 @@
 @usableFromInline
 protocol RemoveProtocol_ptr: _UnsafeNodePtrType
     & BeginNodeInterface
-    & EndNodeProtocol
+    & EndNodeInterface
     & SizeInterface
 {
   func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr

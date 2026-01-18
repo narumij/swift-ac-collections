@@ -94,7 +94,7 @@ import XCTest
     FindEqualInterface, FindEqualProtocol_std,
     InsertNodeAtInterface, InsertNodeAtProtocol_std,
     InsertUniqueInterface, InsertUniqueProtocol_std,
-    RemoveProtocol, EraseProtocol, EraseUniqueProtocol,
+    RemoveInteface, EraseProtocol, EraseUniqueProtocol,
     CompareProtocol, CompareMultiProtocol,
     BoundProtocol, NodeBitmapProtocol,
     BoundAlgorithmProtocol,

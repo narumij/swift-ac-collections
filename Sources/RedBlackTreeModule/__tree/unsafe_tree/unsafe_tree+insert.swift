@@ -7,8 +7,7 @@
 
 @usableFromInline
 protocol InsertNodeAtProtocol_ptr: _UnsafeNodePtrType, _nullptr_interface, InsertNodeAtInterface,
-  BeginNodeInterface,
-  EndNodeProtocol, SizeInterface
+  BeginNodeInterface, EndNodeProtocol, SizeInterface
 {}
 
 extension InsertNodeAtProtocol_ptr {
@@ -39,12 +38,7 @@ extension InsertNodeAtProtocol_ptr {
 @usableFromInline
 protocol InsertUniqueProtocol_ptr: _UnsafeNodePtrType, InsertUniqueInterface & AllocatorInterface
     & KeyInterface
-{
-  func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
-
-  func
-    __insert_node_at(_ __parent: _NodePtr, _ __child: _NodeRef, _ __new_node: _NodePtr)
-}
+{}
 
 extension InsertUniqueProtocol_ptr {
 

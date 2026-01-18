@@ -23,9 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol EraseProtocol: _nullptr_interface {
-  func destroy(_ p: _NodePtr)
-  func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
+protocol EraseProtocol: EraseInterface, RemoveInteface, AllocatorInterface {
 }
 
 extension EraseProtocol {
@@ -54,7 +52,7 @@ extension EraseProtocol {
 }
 
 @usableFromInline
-protocol EraseUniqueProtocol: FindInteface, EndInterface, EraseProtocol { }
+protocol EraseUniqueProtocol: EraseUniqueInteface, FindInteface, EndInterface, EraseInterface { }
 
 extension EraseUniqueProtocol {
   
@@ -71,7 +69,7 @@ extension EraseUniqueProtocol {
 }
 
 @usableFromInline
-protocol EraseMultiProtocol: EqualProtocol, EraseProtocol { }
+protocol EraseMultiProtocol: EraseMultiInteface, EqualInterface, EraseInterface { }
 
 extension EraseMultiProtocol {
   

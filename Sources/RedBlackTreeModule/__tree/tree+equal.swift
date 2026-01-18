@@ -23,7 +23,13 @@
 import Foundation
 
 @usableFromInline
-protocol EqualProtocol: BoundAlgorithmProtocol {}
+protocol EqualInterface: BoundAlgorithmProtocol {
+  func __equal_range_unique(_ __k: _Key) -> (_NodePtr, _NodePtr)
+  func __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)
+}
+
+@usableFromInline
+protocol EqualProtocol: EqualInterface, BoundAlgorithmProtocol {}
 
 extension EqualProtocol {
 

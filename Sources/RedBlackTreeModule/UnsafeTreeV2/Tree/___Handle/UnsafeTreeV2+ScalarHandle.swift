@@ -191,7 +191,7 @@ extension UnsafeTreeV2ScalarHandle {
 extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase {}
 extension UnsafeTreeV2ScalarHandle: BoundProtocol, BoundAlgorithmProtocol {}
 extension UnsafeTreeV2ScalarHandle: FindInteface, FindProtocol_ptr {}
-extension UnsafeTreeV2ScalarHandle: RemoveProtocol, RemoveProtocol_ptr {}
+extension UnsafeTreeV2ScalarHandle: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
 extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 

@@ -32,7 +32,6 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
     let h = _buffer.withUnsafeMutablePointerToHeader { $0 }
     self.nullptr = h.pointee.nullptr
     self.end = h.pointee.end_ptr
-    self.specializeMode = SpecializeModeHoge<_Key>().specializeMode
   }
 
   public typealias Base = Base
@@ -52,9 +51,6 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @usableFromInline
   let isReadOnly: Bool
-
-  @usableFromInline
-  let specializeMode: SpecializeMode
 
   /// ノードプールの寿命延長オブジェクト
   ///

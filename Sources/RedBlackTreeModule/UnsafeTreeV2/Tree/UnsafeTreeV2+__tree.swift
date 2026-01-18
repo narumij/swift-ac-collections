@@ -264,8 +264,8 @@ extension UnsafeTreeV2: BoundProtocol {
 extension UnsafeTreeV2: FindProtocol {}
 extension UnsafeTreeV2: FindEqualProtocol, FindEqualProtocol_ptr {}
 extension UnsafeTreeV2: FindLeafProtocol {}
-extension UnsafeTreeV2: InsertNodeAtProtocol {}
-extension UnsafeTreeV2: InsertUniqueProtocol, InsertNodeAtProtocol_ptr {}
+extension UnsafeTreeV2: InsertNodeAtProtocol, InsertNodeAtProtocol_ptr {}
+extension UnsafeTreeV2: InsertUniqueProtocol, InsertUniqueProtocol_std {}
 extension UnsafeTreeV2: InsertMultiProtocol {}
 extension UnsafeTreeV2: EqualProtocol {}
 extension UnsafeTreeV2: RemoveProtocol, RemoveProtocol_org {}

@@ -91,14 +91,14 @@ extension UnsafeTreeV2ScalarHandle {
   @inlinable
   @inline(__always)
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
-//    specializeMode.value_comp(__l, __r)
+    //    specializeMode.value_comp(__l, __r)
     __l < __r
   }
 
   @inlinable
   @inline(__always)
   func value_equiv(_ __l: _Key, _ __r: _Key) -> Bool {
-//    specializeMode.value_equiv(__l, __r)
+    //    specializeMode.value_equiv(__l, __r)
     __l == __r
   }
 
@@ -128,21 +128,78 @@ extension UnsafeTreeV2ScalarHandle {
 
 extension UnsafeTreeV2ScalarHandle {
 
-  public mutating func __construct_node<T>(_ k: T) -> _NodePtr {
+  public func __construct_node<T>(_ k: T) -> _NodePtr {
     header.pointee.__construct_node(k)
   }
 }
 
-extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase {}
+extension UnsafeTreeV2ScalarHandle {
+  @usableFromInline
+  var __begin_node_: UnsafeMutablePointer<UnsafeNode> {
+    get {
+      header.pointee.begin_ptr
+    }
+    nonmutating set {
+      header.pointee.begin_ptr = newValue
+    }
+  }
 
-extension UnsafeTreeV2ScalarHandle: BoundProtocol, BoundAlgorithmProtocol {}
-extension UnsafeTreeV2ScalarHandle: FindProtocol {}
+  @usableFromInline
+  var __end_node: UnsafeMutablePointer<UnsafeNode> {
+    header.pointee.end_ptr
+  }
+
+  @usableFromInline
+  var __size_: Int {
+    get {
+      header.pointee.count
+    }
+    nonmutating set {
+      header.pointee.count = newValue
+    }
+  }
+
+  @usableFromInline
+  var nullptr: UnsafeMutablePointer<UnsafeNode> {
+    header.pointee.nullptr
+  }
+
+  @usableFromInline
+  func __construct_node(_ k: _Key) -> UnsafeMutablePointer<UnsafeNode> {
+    header.pointee.__construct_node(k)
+  }
+
+  @usableFromInline
+  func destroy(_ p: UnsafeMutablePointer<UnsafeNode>) {
+    header.pointee.___pushRecycle(p)
+  }
+
+  @usableFromInline
+  var __root: UnsafeMutablePointer<UnsafeNode> {
+    header.pointee.root_ptr.pointee
+  }
+
+  @usableFromInline
+  func __root_ptr() -> UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>> {
+    header.pointee.root_ptr
+  }
+
+  @usableFromInline
+  var end: UnsafeMutablePointer<UnsafeNode> {
+    header.pointee.end_ptr
+  }
+}
+
+//extension UnsafeTreeV2ScalarHandle: UnsafeTreeHandleBase {}
+//extension UnsafeTreeV2ScalarHandle: BoundProtocol, BoundAlgorithmProtocol {}
+//extension UnsafeTreeV2ScalarHandle: FindProtocol {}
+//extension UnsafeTreeV2ScalarHandle: RemoveProtocol, RemoveProtocol_ptr {}
+//extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
+//extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
+
 extension UnsafeTreeV2ScalarHandle: FindEqualProtocol {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtProtocol, InsertNodeAtProtocol_ptr {}
-extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol {}
-extension UnsafeTreeV2ScalarHandle: RemoveProtocol, RemoveProtocol_ptr {}
-extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
-extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
+extension UnsafeTreeV2ScalarHandle: InsertUniqueProtocol, InsertUniqueProtocol_ptr {}
 
 #if true
   extension UnsafeTreeV2ScalarHandle: FindEqualProtocol_ptr {}
@@ -197,7 +254,7 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
         return (__end_node, end.__left_ref)
       }
       var __nd_ptr = __root_ptr()
-//      let __comp = _i__lazy_synth_three_way_comparator
+      //      let __comp = _i__lazy_synth_three_way_comparator
 
       while true {
 

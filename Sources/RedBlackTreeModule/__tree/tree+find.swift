@@ -87,13 +87,11 @@ extension FindLeafProtocol {
 }
 
 @usableFromInline
-protocol FindEqualProtocol: ValueProtocol, TreeNodeRefProtocol
-{
-  func
-    __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+protocol FindEqualProtocol: _TreePointer & _KeyProtocol {
+  func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
 }
 
-extension FindEqualProtocol { }
+extension FindEqualProtocol {}
 
 @usableFromInline
 protocol FindEqualProtocol_std: ValueProtocol, TreeNodeRefProtocol, RootProtocol, RootPtrProtocol,
@@ -103,7 +101,7 @@ protocol FindEqualProtocol_std: ValueProtocol, TreeNodeRefProtocol, RootProtocol
 extension FindEqualProtocol_std {
 
   @inlinable
-//  @inline(__always)
+  //  @inline(__always)
   internal func
     __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {
@@ -139,16 +137,15 @@ extension FindEqualProtocol_std {
   }
 }
 
-
 @usableFromInline
 protocol FindEqualProtocol_old: ValueProtocol, TreeNodeRefProtocol, RootProtocol, RootPtrProtocol {}
 
 extension FindEqualProtocol_old {
 
   @inlinable
-//  @inline(__always)
+  //  @inline(__always)
   func
-  __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+    __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {
     var __parent: _NodePtr = end
     var __nd = __root
@@ -169,11 +166,11 @@ extension FindEqualProtocol_old {
             __nd = __right_(__nd)
           } else {
             __parent = __nd
-            return (__parent,__right_ref(__nd))
+            return (__parent, __right_ref(__nd))
           }
         } else {
           __parent = __nd
-          return (__parent,__nd_ptr)
+          return (__parent, __nd_ptr)
         }
       }
     }
@@ -183,7 +180,7 @@ extension FindEqualProtocol_old {
 }
 
 @usableFromInline
-protocol FindProtocol: BoundProtocol & EndProtocol & FindEqualProtocol {}
+protocol FindProtocol: BoundProtocol & EndProtocol & FindEqualProtocol & TreeNodeRefProtocol {}
 
 extension FindProtocol {
 

@@ -62,7 +62,16 @@ extension InsertNodeAtProtocol_std {
 }
 
 @usableFromInline
-protocol InsertUniqueProtocol:
+protocol InsertUniqueProtocol: InsertNodeAtProtocol & _KeyProtocol {
+  func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+  func
+    __insert_node_at(
+      _ __parent: _NodePtr, _ __child: _NodeRef,
+      _ __new_node: _NodePtr)
+}
+
+@usableFromInline
+protocol InsertUniqueProtocol_std: InsertUniqueProtocol &
   AllocatorProtocol & KeyProtocol & TreeNodeRefProtocol
 {
   func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
@@ -73,7 +82,7 @@ protocol InsertUniqueProtocol:
       _ __new_node: _NodePtr)
 }
 
-extension InsertUniqueProtocol {
+extension InsertUniqueProtocol_std {
 
   @inlinable
   //  @inline(__always)

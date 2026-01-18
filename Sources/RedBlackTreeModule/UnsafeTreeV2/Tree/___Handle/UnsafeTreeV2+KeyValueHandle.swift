@@ -129,7 +129,7 @@ extension UnsafeTreeV2KeyValueHandle: BoundProtocol, BoundAlgorithmProtocol {}
 extension UnsafeTreeV2KeyValueHandle: FindProtocol {}
 extension UnsafeTreeV2KeyValueHandle: FindEqualProtocol, FindEqualProtocol_std {}
 extension UnsafeTreeV2KeyValueHandle: InsertNodeAtProtocol, InsertNodeAtProtocol_std {}
-extension UnsafeTreeV2KeyValueHandle: InsertUniqueProtocol {}
+extension UnsafeTreeV2KeyValueHandle: InsertUniqueProtocol, InsertUniqueProtocol_std {}
 extension UnsafeTreeV2KeyValueHandle: RemoveProtocol, RemoveProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: EraseProtocol {}
 extension UnsafeTreeV2KeyValueHandle: EraseUniqueProtocol {}

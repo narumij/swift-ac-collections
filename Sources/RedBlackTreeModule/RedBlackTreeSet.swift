@@ -381,7 +381,7 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     __tree_._ensureUnique()
-    return __tree_.update { $0.___erase_unique(member) } ? member : nil
+    return __tree_.___erase_unique(member) ? member : nil
 //    let result = switch __tree_.specializeMode {
 //    case .asInt: __tree_._i_update { $0.___erase_unique(member as! Int) }
 //    case .generic: __tree_.update { $0.___erase_unique(member) }

@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol FindEqualProtocol_ptr: UnsafeTreePointer, ValueProtocol, RootProtocol, RootPtrProtocol,
+protocol FindEqualProtocol_ptr: UnsafeTreePointer, __ValueProtocol, RootProtocol, ___RootPtrProtocol, EndProtocol, TreePointer,
   ThreeWayComparatorProtocol
 {}
 

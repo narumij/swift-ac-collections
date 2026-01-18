@@ -111,7 +111,7 @@ package protocol TreeNodeRefProtocol: TreePointer {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol TreeNodeValueProtocol: TreePointer & _KeyProtocol where _Key == __node_value_type {
+protocol TreeNodeValueProtocol: _TreePointer & _KeyProtocol where _Key == __node_value_type {
   associatedtype __node_value_type
   /// ノードから比較用の値を取り出す。
   /// SetやMultisetではElementに該当する
@@ -128,7 +128,13 @@ protocol TreeValueProtocol: TreePointer & _ValueProtocol where _Value == __value
 }
 
 @usableFromInline
-protocol KeyProtocol: TreeNodeValueProtocol, TreeValueProtocol {
+protocol __KeyProtocol: _KeyProtocol, _ValueProtocol {
+  /// 要素から比較用のキー値を取り出す。
+  @inlinable func __key(_ e: _Value) -> _Key
+}
+
+@usableFromInline
+protocol KeyProtocol: __KeyProtocol, TreeNodeValueProtocol, TreeValueProtocol {
   /// 要素から比較用のキー値を取り出す。
   @inlinable func __key(_ e: _Value) -> _Key
 }
@@ -144,13 +150,20 @@ extension KeyProtocol {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol ValueProtocol: TreeNodeProtocol, TreeNodeValueProtocol, TreeEndProtocol {
+protocol __ValueProtocol: TreeNodeValueProtocol {
+  /// キー同士を比較する。通常`<`と同じ
+  @inlinable func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
+}
+
+// 型の名前にねじれがあるので注意
+@usableFromInline
+protocol ValueProtocol: __ValueProtocol, TreeNodeProtocol, TreeNodeValueProtocol, TreeEndProtocol {
   /// キー同士を比較する。通常`<`と同じ
   @inlinable func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
 }
 
 @usableFromInline
-protocol BeginNodeProtocol: TreePointer {
+protocol BeginNodeProtocol: _TreePointer {
   /// 木の左端のノードを返す
   @inlinable var __begin_node_: _NodePtr { get nonmutating set }
 }
@@ -173,7 +186,7 @@ extension BeginProtocol {
 }
 
 @usableFromInline
-protocol EndNodeProtocol: TreePointer {
+protocol EndNodeProtocol: _TreePointer {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   var __end_node: _NodePtr { get }
 }
@@ -199,7 +212,7 @@ extension EndProtocol where _NodePtr == Int {
 }
 
 @usableFromInline
-protocol RootProtocol: TreePointer {
+protocol RootProtocol: _TreePointer {
   /// 木の根ノードを返す
   @inlinable var __root: _NodePtr { get }
 }
@@ -213,9 +226,13 @@ extension ___RootProtocol where _NodePtr == Int {
 }
 
 @usableFromInline
-protocol RootPtrProtocol: TreeNodeProtocol & TreeNodeRefProtocol & RootProtocol & EndProtocol {
+protocol ___RootPtrProtocol: _TreePointer {
   /// 木の根ノードへの参照を返す
   @inlinable func __root_ptr() -> _NodeRef
+}
+
+@usableFromInline
+protocol RootPtrProtocol: ___RootPtrProtocol & TreeNodeProtocol & TreeNodeRefProtocol & RootProtocol & EndProtocol {
 }
 
 extension RootPtrProtocol where _NodePtr == Int {

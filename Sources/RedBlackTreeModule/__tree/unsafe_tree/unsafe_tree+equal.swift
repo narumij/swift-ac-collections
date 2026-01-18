@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol EqualProtocol_ptr: _UnsafeNodePtrType, EqualInterface, BoundInteface, EndNodeInterface,  RootInterface, ThreeWayComparatorInterface, TreeNodeValueInterface {
+protocol EqualProtocol_ptr: _UnsafeNodePtrType, EqualInterface, BoundInteface, EndNodeInterface,  RootInterface, ThreeWayComparatorInterface, TreeNodeValueInterface, _nullptr_interface {
   
   func __lower_bound_multi(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
   func __upper_bound_multi(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
@@ -22,7 +22,7 @@ extension EqualProtocol_ptr {
     var __result = __end_node
     var __rt = __root
     let __comp = __lazy_synth_three_way_comparator
-    while __rt != .nullptr {
+    while __rt != nullptr {
       let __comp_res = __comp(__k, __get_value(__rt))
       if __comp_res.__less() {
         __result = __rt
@@ -32,7 +32,7 @@ extension EqualProtocol_ptr {
       } else {
         return (
           __rt,
-          __rt.__right_ != .nullptr
+          __rt.__right_ != nullptr
           ? __tree_min(__rt.__right_)
             : __result
         )
@@ -49,7 +49,7 @@ extension EqualProtocol_ptr {
     var __result = __end_node
     var __rt = __root
     let __comp = __lazy_synth_three_way_comparator
-    while __rt != .nullptr {
+    while __rt != nullptr {
       let __comp_res = __comp(__k, __get_value(__rt))
       if __comp_res.__less() {
         __result = __rt

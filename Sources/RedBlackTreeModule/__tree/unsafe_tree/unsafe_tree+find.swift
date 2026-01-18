@@ -8,36 +8,38 @@
 @usableFromInline
 protocol FindEqualProtocol_ptr: _UnsafeNodePtrType, ValueCompInterface, RootInterface,
   RootPtrInterface, EndInterface, EndNodeInterface,
-  ThreeWayComparatorInterface
-{}
+  ThreeWayComparatorInterface, _nullptr_interface
+{
+  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __compare_result
+}
 
 extension FindEqualProtocol_ptr {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func
     __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {
     var __nd = __root
-    if __nd == .nullptr {
+    if __nd == nullptr {
       return (__end_node, end.__left_ref)
     }
     var __nd_ptr = __root_ptr()
-    let __comp = __lazy_synth_three_way_comparator
+//    let __comp = __lazy_synth_three_way_comparator
 
     while true {
 
       let __comp_res = __comp(__v, __nd.__value_().pointee)
 
       if __comp_res.__less() {
-        if __nd.__left_ == .nullptr {
+        if __nd.__left_ == nullptr {
           return (__nd, __nd.__left_ref)
         }
 
         __nd_ptr = __nd.__left_ref
         __nd = __nd.__left_
       } else if __comp_res.__greater() {
-        if __nd.__right_ == .nullptr {
+        if __nd.__right_ == nullptr {
           return (__nd, __nd.__right_ref)
         }
 
@@ -51,8 +53,8 @@ extension FindEqualProtocol_ptr {
 }
 
 @usableFromInline
-protocol FindEqualProtocol_ptr_old: _UnsafeNodePtrType, ValueProtocol,
-  RootInterface, RootPtrInterface, EndNodeInterface
+protocol FindEqualProtocol_ptr_old: _UnsafeNodePtrType, ValueCompInterface,
+  RootInterface, RootPtrInterface, EndNodeInterface, EndInterface, _nullptr_interface, TreeNodeValueInterface
 {}
 
 extension FindEqualProtocol_ptr_old {
@@ -68,7 +70,7 @@ extension FindEqualProtocol_ptr_old {
     if __nd != nullptr {
       while true {
         if value_comp(__v, __get_value(__nd)) {
-          if __nd.__left_ != .nullptr {
+          if __nd.__left_ != nullptr {
             __nd_ptr = __nd.__left_ref
             __nd = __nd.__left_
           } else {
@@ -96,7 +98,7 @@ extension FindEqualProtocol_ptr_old {
 
 @usableFromInline
 protocol FindProtocol_ptr: _UnsafeNodePtrType, FindInteface, FindEqualInterface,
-  EndInterface
+  EndInterface, _nullptr_interface
 {}
 
 extension FindProtocol_ptr {
@@ -113,7 +115,7 @@ extension FindProtocol_ptr {
     #else
       // llvmの__treeに寄せたが、multimapの挙動が変わってしまうので保留
       let (_, __match) = __find_equal(__v)
-      if __match.pointee == .nullptr {
+      if __match.pointee == nullptr {
         return end
       }
       return __match.pointee

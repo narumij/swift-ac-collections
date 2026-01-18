@@ -8,7 +8,7 @@
 import Foundation
 
 @usableFromInline
-protocol RemoveInteface: _nullptr_interface
+protocol RemoveInteface: _NodePtrType
 {
   func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
 }

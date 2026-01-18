@@ -45,7 +45,7 @@ extension UnsafeTreeV2Buffer {
 
   @nonobjc
   @inlinable
-//  @inline(__always)
+  @inline(never)
   internal static func create<_Value>(_ t: _Value.Type,
     minimumCapacity nodeCapacity: Int,
     nullptr: UnsafeMutablePointer<UnsafeNode>

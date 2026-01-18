@@ -25,7 +25,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
 
-  @inlinable @inline(__always)
+//  @inlinable @inline(__always)
+  @usableFromInline
   static var nullptr: _NodePtr {
     get { UnsafeNode.nullptr }
   }

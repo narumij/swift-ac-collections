@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol DistanceProtocol: TreeNodeProtocol & PointerCompareProtocol {}
+protocol DistanceProtocol: TreeNodeInterface & PointerCompareProtocol {}
 
 extension DistanceProtocol {
 

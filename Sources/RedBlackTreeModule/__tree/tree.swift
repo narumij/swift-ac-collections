@@ -22,119 +22,10 @@
 
 import Foundation
 
-public protocol _TreePointer {
-  associatedtype _NodePtr: Equatable
-  associatedtype _NodeRef
-}
-
-public protocol TreePointer: _TreePointer
-where _NodePtr == _Pointer
-{
-  associatedtype _Pointer
-  var nullptr: _NodePtr { get }
-}
-
-public protocol TreeEndProtocol: _TreePointer {
-  var end: _NodePtr { get }
-}
-
-public protocol _KeyProtocol {
-  /// ツリーが比較に使用する値の型
-  associatedtype _Key
-}
-
-public protocol _ValueProtocol {
-  /// 要素の型
-  associatedtype _Value
-}
-
-public protocol _TreeValue: _KeyProtocol & _ValueProtocol {}
-
-// ルートノードの親相当の機能
-@usableFromInline
-package protocol TreeEndNodeProtocol: TreePointer {
-  /// 左ノードを返す
-  ///
-  /// 木を遡るケースではこちらが必ず必要
-  @inlinable func __left_(_: pointer) -> pointer
-  /// 左ノードを返す
-  ///
-  /// 根から末端に向かう処理は、こちらで足りる
-  @inlinable func __left_unsafe(_ p: pointer) -> pointer
-  /// 左ノードを更新する
-  @inlinable func __left_(_ lhs: pointer, _ rhs: pointer)
-}
-
-extension TreeEndNodeProtocol {
-  @usableFromInline
-  package typealias pointer = _Pointer
-}
-
-// 一般ノード相当の機能
-@usableFromInline
-package protocol TreeNodeProtocol: TreeEndNodeProtocol {
-  /// 右ノードを返す
-  @inlinable func __right_(_: pointer) -> pointer
-  /// 右ノードを更新する
-  @inlinable func __right_(_ lhs: pointer, _ rhs: pointer)
-  /// 色を返す
-  @inlinable func __is_black_(_: pointer) -> Bool
-  /// 色を更新する
-  @inlinable func __is_black_(_ lhs: pointer, _ rhs: Bool)
-  /// 親ノードを返す
-  @inlinable func __parent_(_: pointer) -> pointer
-  /// 親ノードを更新する
-  @inlinable func __parent_(_ lhs: pointer, _ rhs: pointer)
-  /// 親ノードを返す
-  ///
-  /// This is only to align the naming with C++.
-  /// C++と名前を揃えているだけのもの
-  @inlinable func __parent_unsafe(_: pointer) -> __parent_pointer
-}
-
-extension TreeNodeProtocol {
-  @usableFromInline
-  package typealias __parent_pointer = _Pointer
-}
+// MARK: -
 
 @usableFromInline
-package protocol TreeNodeRefProtocol: TreePointer {
-  /// 左ノードへの参照を返す
-  @inlinable func __left_ref(_: _NodePtr) -> _NodeRef
-  /// 右ノードへの参照を返す
-  @inlinable func __right_ref(_: _NodePtr) -> _NodeRef
-  /// 参照先を返す
-  @inlinable func __ptr_(_ rhs: _NodeRef) -> _NodePtr
-  /// 参照先を更新する
-  @inlinable func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr)
-}
-
-// 型の名前にねじれがあるので注意
-@usableFromInline
-protocol TreeNodeValueProtocol: _TreePointer & _KeyProtocol where _Key == __node_value_type {
-  associatedtype __node_value_type
-  /// ノードから比較用の値を取り出す。
-  /// SetやMultisetではElementに該当する
-  /// DictionaryやMultiMapではKeyに該当する
-  @inlinable func __get_value(_: _NodePtr) -> __node_value_type
-}
-
-// 型の名前にねじれがあるので注意
-@usableFromInline
-protocol TreeValueProtocol: TreePointer & _ValueProtocol where _Value == __value_type {
-  associatedtype __value_type
-  /// ノードの値要素を取得する
-  @inlinable func __value_(_ p: _NodePtr) -> __value_type
-}
-
-@usableFromInline
-protocol __KeyProtocol: _KeyProtocol, _ValueProtocol {
-  /// 要素から比較用のキー値を取り出す。
-  @inlinable func __key(_ e: _Value) -> _Key
-}
-
-@usableFromInline
-protocol KeyProtocol: __KeyProtocol, TreeNodeValueProtocol, TreeValueProtocol {
+protocol KeyProtocol: KeyInterface, TreeNodeValueInterface, TreeValueInterface {
   /// 要素から比較用のキー値を取り出す。
   @inlinable func __key(_ e: _Value) -> _Key
 }
@@ -150,26 +41,13 @@ extension KeyProtocol {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol __ValueProtocol: TreeNodeValueProtocol {
-  /// キー同士を比較する。通常`<`と同じ
-  @inlinable func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
-}
-
-// 型の名前にねじれがあるので注意
-@usableFromInline
-protocol ValueProtocol: __ValueProtocol, TreeNodeProtocol, TreeNodeValueProtocol, TreeEndProtocol {
+protocol ValueProtocol: ValueCompInterface, TreeNodeInterface, TreeNodeValueInterface, _end_interface {
   /// キー同士を比較する。通常`<`と同じ
   @inlinable func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
 }
 
 @usableFromInline
-protocol BeginNodeProtocol: _TreePointer {
-  /// 木の左端のノードを返す
-  @inlinable var __begin_node_: _NodePtr { get nonmutating set }
-}
-
-@usableFromInline
-protocol BeginProtocol: BeginNodeProtocol {
+protocol BeginProtocol: BeginNodeInterface {
   // __begin_node_が圧倒的に速いため
   @available(*, deprecated, renamed: "__begin_node_")
   /// 木の左端のノードを返す
@@ -186,7 +64,7 @@ extension BeginProtocol {
 }
 
 @usableFromInline
-protocol EndNodeProtocol: _TreePointer {
+protocol EndNodeProtocol: EndNodeInterface {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   var __end_node: _NodePtr { get }
 }
@@ -199,7 +77,7 @@ extension EndNodeProtocol where _NodePtr == Int {
 }
 
 @usableFromInline
-protocol EndProtocol: EndNodeProtocol {
+protocol EndProtocol: EndInterface {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable var end: _NodePtr { get }
 }
@@ -211,13 +89,7 @@ extension EndProtocol where _NodePtr == Int {
   internal var end: _NodePtr { .end }
 }
 
-@usableFromInline
-protocol RootProtocol: _TreePointer {
-  /// 木の根ノードを返す
-  @inlinable var __root: _NodePtr { get }
-}
-
-protocol ___RootProtocol: TreeNodeProtocol & EndProtocol {}
+protocol ___RootProtocol: TreeNodeInterface & EndNodeProtocol {}
 
 extension ___RootProtocol where _NodePtr == Int {
   @available(*, deprecated, message: "Kept only for the purpose of preventing loss of knowledge")
@@ -226,13 +98,7 @@ extension ___RootProtocol where _NodePtr == Int {
 }
 
 @usableFromInline
-protocol ___RootPtrProtocol: _TreePointer {
-  /// 木の根ノードへの参照を返す
-  @inlinable func __root_ptr() -> _NodeRef
-}
-
-@usableFromInline
-protocol RootPtrProtocol: ___RootPtrProtocol & TreeNodeProtocol & TreeNodeRefProtocol & RootProtocol & EndProtocol {
+protocol RootPtrProtocol: RootPtrInterface & TreeNodeInterface & TreeNodeRefInterface & RootInterface & EndProtocol & EndNodeProtocol {
 }
 
 extension RootPtrProtocol where _NodePtr == Int {
@@ -242,28 +108,12 @@ extension RootPtrProtocol where _NodePtr == Int {
   internal func __root_ptr() -> _NodeRef { __left_ref(__end_node) }
 }
 
-@usableFromInline
-protocol SizeProtocol {
-  /// 木のノードの数を返す
-  ///
-  /// 終端ノードは含まないはず
-  var __size_: Int { get nonmutating set }
-}
 
-// MARK: -
-
-@usableFromInline
-protocol AllocatorProtocol: TreePointer & _ValueProtocol {
-  /// ノードを構築する
-  func __construct_node(_ k: _Value) -> _NodePtr
-  /// ノードを破棄する
-  func destroy(_ p: _NodePtr)
-}
 
 // MARK: common
 
 /// ツリー使用条件をインジェクションするためのプロトコル
-public protocol ValueComparer: _TreeValue, _TreeValue {
+public protocol ValueComparer: _TreeValueType, _TreeValueType {
   /// 要素から比較キー値がとれること
   @inlinable static func __key(_: _Value) -> _Key
   /// 比較関数が実装されていること
@@ -303,7 +153,7 @@ extension ValueComparer where _Key: Equatable {
 }
 
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
-public protocol ValueComparator: _TreeValue
+public protocol ValueComparator: _TreeValueType
 where
   _Key == Base._Key,
   _Value == Base._Value

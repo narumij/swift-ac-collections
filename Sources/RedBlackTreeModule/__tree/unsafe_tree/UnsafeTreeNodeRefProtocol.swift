@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-package protocol UnsafeTreeNodeRefProtocol: TreeNodeRefProtocol & UnsafeTreePointer {}
+package protocol UnsafeTreeNodeRefProtocol: TreeNodeRefInterface & _UnsafeNodePtrType {}
 
 extension UnsafeTreeNodeRefProtocol {
 

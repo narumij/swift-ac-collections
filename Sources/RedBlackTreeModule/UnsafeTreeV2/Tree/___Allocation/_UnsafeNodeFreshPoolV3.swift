@@ -25,7 +25,7 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-protocol _UnsafeNodeFreshPoolV3: UnsafeTreePointer {
+protocol _UnsafeNodeFreshPoolV3: _UnsafeNodePtrType {
 
   /*
    Design invariant:

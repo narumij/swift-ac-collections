@@ -22,7 +22,7 @@
 
 import Foundation
 
-extension TreeNodeProtocol {
+extension TreeNodeInterface {
 
   /// Effects:  Makes `__x`->`__right_` the subtree root with `__x` as its left child
   ///           while preserving in-order order.

@@ -25,7 +25,7 @@ import Foundation
 extension RedBlackTreeIteratorV2.Keys {
 
   @frozen
-  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer,
+  public struct Reversed: Sequence, IteratorProtocol, _UnsafeNodePtrType,
     UnsafeImmutableIndexingProtocol
   {
 

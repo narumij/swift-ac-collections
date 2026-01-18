@@ -25,7 +25,7 @@ import Foundation
 extension RedBlackTreeIteratorV2.MappedValues {
 
   @frozen
-  public struct Reversed: Sequence, IteratorProtocol, UnsafeTreePointer,
+  public struct Reversed: Sequence, IteratorProtocol, _UnsafeNodePtrType,
     UnsafeImmutableIndexingProtocol
   where Base: KeyValueComparer {
     public typealias Tree = UnsafeTreeV2<Base>

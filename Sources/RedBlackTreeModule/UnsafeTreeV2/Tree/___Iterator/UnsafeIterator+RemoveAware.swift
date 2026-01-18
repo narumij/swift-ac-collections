@@ -8,7 +8,7 @@
 extension UnsafeIterator {
 
   public struct RemoveAware<Source: IteratorProtocol>:
-    UnsafeTreePointer,
+    _UnsafeNodePtrType,
     UnsafeIteratorProtocol,
     IteratorProtocol,
     Sequence

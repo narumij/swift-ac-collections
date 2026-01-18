@@ -8,7 +8,7 @@
 extension UnsafeIterator {
 
   public struct Reverse:
-    UnsafeTreePointer,
+    _UnsafeNodePtrType,
     UnsafeIteratorProtocol,
     IteratorProtocol,
     Sequence,

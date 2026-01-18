@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-package protocol UnsafeTreeHandleBase: UnsafeTreeNodeProtocol & _TreeValue & UnsafeTreePointer,
+package protocol UnsafeTreeHandleBase: UnsafeTreeNodeProtocol & _TreeValueType & _UnsafeNodePtrType,
   UnsafeTreeNodeRefProtocol
 {
   var header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader> { get }

@@ -23,16 +23,16 @@
 import Foundation
 
 @usableFromInline
-protocol RemoveProtocol: TreePointer
+protocol RemoveProtocol: _nullptr_interface
 {
   func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
 }
 
 @usableFromInline
-protocol RemoveProtocol_org: TreeNodeProtocol
-    & BeginNodeProtocol
+protocol RemoveProtocol_org: TreeNodeInterface
+    & BeginNodeInterface
     & EndNodeProtocol
-    & SizeProtocol
+    & SizeInterface
 {}
 
 extension RemoveProtocol_org {

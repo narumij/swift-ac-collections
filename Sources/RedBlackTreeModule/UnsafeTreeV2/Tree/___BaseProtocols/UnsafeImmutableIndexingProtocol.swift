@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol UnsafeImmutableIndexingProtocol: UnsafeTreePointer
+protocol UnsafeImmutableIndexingProtocol: _UnsafeNodePtrType
 where
   Index == UnsafeIndexV2<Base>,
   PoolLifespan == Deallocator

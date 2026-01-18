@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeStorageProtocolV2: ___Root & _ValueProtocol
+protocol ___UnsafeStorageProtocolV2: ___Root & _ValueType
 where
   Base: ___TreeBase,
   Tree == UnsafeTreeV2<Base>,

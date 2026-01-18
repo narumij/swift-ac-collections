@@ -6,7 +6,7 @@ protocol UnsafeTreeAllocationHeader {
 }
 
 @usableFromInline
-protocol UnsafeTreeAllcationBodyV2: _ValueProtocol {
+protocol UnsafeTreeAllcationBodyV2: _ValueType {
   associatedtype Header: UnsafeTreeAllocationHeader
   var _buffer: ManagedBufferPointer<Header, Void> { get }
   var capacity: Int { get }

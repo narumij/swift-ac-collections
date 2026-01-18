@@ -1,7 +1,7 @@
 
 @frozen
 @usableFromInline
-struct BucketQueue: UnsafeTreePointer {
+struct BucketQueue: _UnsafeNodePtrType {
   
   @inlinable
   internal init(pointer: UnsafeMutablePointer<_UnsafeNodeFreshBucket>, start: UnsafeMutablePointer<UnsafeNode>, stride: Int) {

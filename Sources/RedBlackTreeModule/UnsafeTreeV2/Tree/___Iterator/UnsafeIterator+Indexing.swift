@@ -15,7 +15,7 @@
 extension UnsafeIterator {
 
   public struct Indexing<Base, Source: IteratorProtocol>:
-    UnsafeTreePointer,
+    _UnsafeNodePtrType,
     UnsafeImmutableIndexingProtocol,
     IteratorProtocol,
     Sequence

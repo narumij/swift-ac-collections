@@ -8,7 +8,7 @@
 extension UnsafeIterator {
 
   public struct Movable<Source: IteratorProtocol>:
-    UnsafeTreePointer,
+    _UnsafeNodePtrType,
     UnsafeImmutableIndexingProtocol,
     IteratorProtocol,
     Sequence

@@ -6,8 +6,8 @@
 //
 
 @usableFromInline
-protocol FindEqualProtocol_ptr: UnsafeTreePointer, __ValueProtocol, RootProtocol, ___RootPtrProtocol, EndProtocol, TreePointer,
-  ThreeWayComparatorProtocol
+protocol FindEqualProtocol_ptr: _UnsafeNodePtrType, ValueCompInterface, RootInterface, RootPtrInterface, EndProtocol, _nullptr_interface, EndNodeProtocol,
+  ThreeWayComparatorInterface
 {}
 
 extension FindEqualProtocol_ptr {
@@ -50,8 +50,8 @@ extension FindEqualProtocol_ptr {
 }
 
 @usableFromInline
-protocol FindEqualProtocol_ptr_old: UnsafeTreePointer, ValueProtocol,
-  RootProtocol, RootPtrProtocol
+protocol FindEqualProtocol_ptr_old: _UnsafeNodePtrType, ValueProtocol,
+                                    RootInterface, RootPtrProtocol
 {}
 
 extension FindEqualProtocol_ptr_old {

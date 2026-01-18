@@ -9,7 +9,7 @@ import XCTest
 #if DEBUG
   class TreeFixtureBase<Element>:
     RedBlackTreeTestCase,
-    TreeNodeProtocol, RootProtocol, EndNodeProtocol,
+    TreeNodeInterface, RootInterface, EndNodeProtocol,
     ___RedBlackTreeNodePoolProtocol
   {
     var nullptr: Int { .nullptr }
@@ -91,10 +91,18 @@ import XCTest
 
   class TreeFixture<Element: Comparable>:
     TreeFixtureBase<Element>,
-    FindEqualProtocol, InsertNodeAtProtocol, InsertNodeAtProtocol_std, InsertUniqueProtocol,
-    RemoveProtocol, EraseProtocol, EraseUniqueProtocol, CompareProtocol, CompareMultiProtocol,
-    BoundProtocol, NodeBitmapProtocol, FindEqualProtocol_std, BoundAlgorithmProtocol, RemoveProtocol_org
-  {
+    FindEqualProtocol, FindEqualProtocol_std,
+    InsertNodeAtProtocol, InsertNodeAtProtocol_std,
+    InsertUniqueProtocol, InsertUniqueProtocol_std,
+    RemoveProtocol, EraseProtocol, EraseUniqueProtocol,
+    CompareProtocol, CompareMultiProtocol,
+    BoundProtocol, NodeBitmapProtocol,
+    BoundAlgorithmProtocol,
+    RemoveProtocol_org
+{
+    typealias _Value = Element
+    typealias __value_type = Element
+    
     let isMulti: Bool = true
 
     func __key(_ e: Element) -> Element {

@@ -8,7 +8,7 @@
 extension UnsafeIterator {
 
   public struct Value<Base: ___TreeBase, Source: IteratorProtocol & Sequence>:
-    UnsafeTreePointer,
+    _UnsafeNodePtrType,
     UnsafeAssosiatedIterator,
     IteratorProtocol,
     Sequence

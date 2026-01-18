@@ -22,7 +22,7 @@
 
 // MARK: - TreeEndNodeProtocol
 
-extension UnsafeTreeV2: TreeEndNodeProtocol {
+extension UnsafeTreeV2: _pointer_type {
 
   @inlinable
   @inline(__always)
@@ -45,7 +45,7 @@ extension UnsafeTreeV2: TreeEndNodeProtocol {
 
 // MARK: - TreeNodeProtocol
 
-extension UnsafeTreeV2: TreeNodeProtocol {
+extension UnsafeTreeV2: TreeNodeInterface {
 
   @inlinable
   @inline(__always)
@@ -92,7 +92,7 @@ extension UnsafeTreeV2: TreeNodeProtocol {
 
 // MARK: -
 
-extension UnsafeTreeV2: TreeNodeRefProtocol {
+extension UnsafeTreeV2: TreeNodeRefInterface {
 
   @inlinable
   @inline(__always)

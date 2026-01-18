@@ -6,10 +6,10 @@
 //
 
 @usableFromInline
-protocol RemoveProtocol_ptr: UnsafeTreePointer
-    & BeginNodeProtocol
+protocol RemoveProtocol_ptr: _UnsafeNodePtrType
+    & BeginNodeInterface
     & EndNodeProtocol
-    & SizeProtocol
+    & SizeInterface
 {
   func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
 }

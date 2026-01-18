@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol InsertNodeAtProtocol: _TreePointer {
+protocol InsertNodeAtProtocol: _NodePtrType {
   func __insert_node_at(
     _ __parent: _NodePtr,
     _ __child: _NodeRef,
@@ -33,7 +33,7 @@ protocol InsertNodeAtProtocol: _TreePointer {
 
 @usableFromInline
 protocol InsertNodeAtProtocol_std: InsertNodeAtProtocol,
-  TreeNodeProtocol & TreeNodeRefProtocol & TreeEndProtocol & SizeProtocol & BeginNodeProtocol
+  TreeNodeInterface & TreeNodeRefInterface & _end_interface & SizeInterface & BeginNodeInterface
     & EndNodeProtocol
 {}
 
@@ -62,7 +62,7 @@ extension InsertNodeAtProtocol_std {
 }
 
 @usableFromInline
-protocol InsertUniqueProtocol: InsertNodeAtProtocol & _KeyProtocol {
+protocol InsertUniqueProtocol: InsertNodeAtProtocol & _KeyType {
   func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   func
     __insert_node_at(
@@ -72,7 +72,7 @@ protocol InsertUniqueProtocol: InsertNodeAtProtocol & _KeyProtocol {
 
 @usableFromInline
 protocol InsertUniqueProtocol_std: InsertUniqueProtocol &
-  AllocatorProtocol & KeyProtocol & TreeNodeRefProtocol
+  AllocatorInterface & KeyProtocol & TreeNodeRefInterface
 {
   func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
 
@@ -115,7 +115,7 @@ extension InsertUniqueProtocol_std {
 
 @usableFromInline
 protocol InsertMultiProtocol:
-  AllocatorProtocol & KeyProtocol
+  AllocatorInterface & KeyProtocol
 {
 
   func
@@ -150,8 +150,8 @@ extension InsertMultiProtocol {
 
 @usableFromInline
 protocol InsertLastProtocol:
-  InsertNodeAtProtocol & AllocatorProtocol & RootProtocol & EndNodeProtocol & TreeNodeProtocol
-    & TreeNodeRefProtocol & EndProtocol
+  InsertNodeAtProtocol & AllocatorInterface & RootInterface & EndNodeProtocol & TreeNodeInterface
+    & TreeNodeRefInterface & EndProtocol
 {}
 
 extension InsertLastProtocol {

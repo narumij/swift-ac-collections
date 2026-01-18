@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol FindLeafProtocol: ValueProtocol, TreeNodeRefProtocol, RootProtocol, EndNodeProtocol {}
+protocol FindLeafProtocol: ValueProtocol, TreeNodeRefInterface, RootInterface, EndNodeProtocol {}
 
 extension FindLeafProtocol {
 
@@ -87,15 +87,15 @@ extension FindLeafProtocol {
 }
 
 @usableFromInline
-protocol FindEqualProtocol: _TreePointer & _KeyProtocol {
+protocol FindEqualProtocol: _NodePtrType & _KeyType {
   func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
 }
 
 extension FindEqualProtocol {}
 
 @usableFromInline
-protocol FindEqualProtocol_std: ValueProtocol, TreeNodeRefProtocol, RootProtocol, RootPtrProtocol,
-  ThreeWayComparatorProtocol
+protocol FindEqualProtocol_std: ValueProtocol, TreeNodeRefInterface, RootInterface, RootPtrProtocol,
+  ThreeWayComparatorInterface
 {}
 
 extension FindEqualProtocol_std {
@@ -138,7 +138,7 @@ extension FindEqualProtocol_std {
 }
 
 @usableFromInline
-protocol FindEqualProtocol_old: ValueProtocol, TreeNodeRefProtocol, RootProtocol, RootPtrProtocol {}
+protocol FindEqualProtocol_old: ValueProtocol, TreeNodeRefInterface, RootInterface, RootPtrProtocol {}
 
 extension FindEqualProtocol_old {
 
@@ -180,7 +180,7 @@ extension FindEqualProtocol_old {
 }
 
 @usableFromInline
-protocol FindProtocol: BoundProtocol & EndProtocol & FindEqualProtocol & TreeNodeRefProtocol {}
+protocol FindProtocol: BoundProtocol & EndProtocol & FindEqualProtocol & TreeNodeRefInterface {}
 
 extension FindProtocol {
 

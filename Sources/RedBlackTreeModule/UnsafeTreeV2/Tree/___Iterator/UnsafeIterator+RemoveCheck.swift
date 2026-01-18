@@ -31,7 +31,7 @@
 #else
   @usableFromInline
   struct ___UnsafeRemoveCheckWrapper<Source: IteratorProtocol>:
-    UnsafeTreePointer,
+    _UnsafeNodePtrType,
     IteratorProtocol,
     Sequence
   where

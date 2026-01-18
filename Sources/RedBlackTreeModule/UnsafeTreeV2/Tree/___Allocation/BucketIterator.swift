@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-struct BucketIterator: UnsafeTreePointer {
+struct BucketIterator: _UnsafeNodePtrType {
   @inlinable
   internal init(pointer: UnsafeMutablePointer<_UnsafeNodeFreshBucket>, start: UnsafeMutablePointer<UnsafeNode>, stride: Int, limit: Int) {
     self.pointer = pointer

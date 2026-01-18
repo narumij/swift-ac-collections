@@ -114,7 +114,7 @@ extension CompareUniqueProtocol {
 }
 
 @usableFromInline
-protocol CompareMultiProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {}
+protocol CompareMultiProtocol: TreeNodeInterface & RootInterface & EndProtocol {}
 
 extension CompareMultiProtocol {
 
@@ -230,7 +230,7 @@ extension CompareProtocol {
 }
 
 @usableFromInline
-protocol NodeBitmapProtocol: TreeNodeProtocol & RootProtocol & EndProtocol {}
+protocol NodeBitmapProtocol: TreeNodeInterface & RootInterface & EndProtocol {}
 
 extension NodeBitmapProtocol {
 

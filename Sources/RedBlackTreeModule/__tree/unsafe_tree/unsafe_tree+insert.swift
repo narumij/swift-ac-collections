@@ -6,9 +6,9 @@
 //
 
 @usableFromInline
-protocol InsertNodeAtProtocol_ptr: UnsafeTreePointer, TreePointer, InsertNodeAtProtocol,
-  BeginNodeProtocol,
-  EndNodeProtocol, SizeProtocol
+protocol InsertNodeAtProtocol_ptr: _UnsafeNodePtrType, _nullptr_interface, InsertNodeAtProtocol,
+  BeginNodeInterface,
+  EndNodeProtocol, SizeInterface
 {}
 
 extension InsertNodeAtProtocol_ptr {
@@ -37,8 +37,8 @@ extension InsertNodeAtProtocol_ptr {
 }
 
 @usableFromInline
-protocol InsertUniqueProtocol_ptr: UnsafeTreePointer, InsertUniqueProtocol & AllocatorProtocol
-    & __KeyProtocol
+protocol InsertUniqueProtocol_ptr: _UnsafeNodePtrType, InsertUniqueProtocol & AllocatorInterface
+    & KeyInterface
 {
   func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
 

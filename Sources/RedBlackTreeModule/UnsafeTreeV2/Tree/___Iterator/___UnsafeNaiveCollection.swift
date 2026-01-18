@@ -7,7 +7,7 @@
 
 @usableFromInline
 struct ___UnsafeNaiveCollection:
-  UnsafeTreePointer,
+  _UnsafeNodePtrType,
   Sequence,
   Collection
 {

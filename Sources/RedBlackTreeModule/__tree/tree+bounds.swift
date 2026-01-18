@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol BoundProtocol: TreePointer & _KeyProtocol & CompareTraitInstance {
+protocol BoundProtocol: _nullptr_interface & _KeyType & CompareTraitInstance {
   func __lower_bound_unique(_ __v: _Key) -> _NodePtr
   func __upper_bound_unique(_ __v: _Key) -> _NodePtr
   func __lower_bound_multi(_ __v: _Key) -> _NodePtr
@@ -46,7 +46,7 @@ extension BoundProtocol {
 }
 
 @usableFromInline
-protocol BoundAlgorithmProtocol: BoundAlgorithmProtocol_common & ThreeWayComparatorProtocol {}
+protocol BoundAlgorithmProtocol: BoundAlgorithmProtocol_common & ThreeWayComparatorInterface {}
 
 extension BoundAlgorithmProtocol {
 
@@ -110,7 +110,7 @@ extension BoundAlgorithmProtocol {
 }
 
 @usableFromInline
-protocol BoundAlgorithmProtocol_common: ValueProtocol & RootProtocol & EndNodeProtocol {}
+protocol BoundAlgorithmProtocol_common: ValueProtocol & RootInterface & EndNodeProtocol {}
 
 extension BoundAlgorithmProtocol_common {
 

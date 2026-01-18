@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-package protocol UnsafeTreeProtocol: UnsafeTreePointer
+package protocol UnsafeTreeProtocol: _UnsafeNodePtrType
 where
   Tree == UnsafeTreeV2<Base>,
   ImmutableTree == UnsafeImmutableTree<Base>

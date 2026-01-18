@@ -8,7 +8,7 @@
 extension UnsafeIterator {
 
   public struct MappedValue<Base, Source>:
-    UnsafeTreePointer,
+    _UnsafeNodePtrType,
     UnsafeAssosiatedIterator,
     IteratorProtocol,
     Sequence

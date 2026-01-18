@@ -80,7 +80,7 @@ public
   case __left_(_PointerIndex)
 }
 
-extension TreeNodeProtocol where _NodePtr == Int, _NodeRef == _PointerIndexRef {
+extension TreeNodeInterface where _NodePtr == Int, _NodeRef == _PointerIndexRef {
 
   @inlinable
   @inline(__always)
@@ -108,7 +108,7 @@ extension TreeNodeProtocol where _NodePtr == Int, _NodeRef == _PointerIndexRef {
   }
 }
 
-extension TreeNodeProtocol where _NodePtr == Int, _NodeRef == _PointerIndexRef {
+extension TreeNodeInterface where _NodePtr == Int, _NodeRef == _PointerIndexRef {
 
   @inlinable
   @inline(__always)

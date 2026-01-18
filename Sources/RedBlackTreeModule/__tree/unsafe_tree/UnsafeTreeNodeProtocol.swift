@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-package protocol UnsafeTreeNodeProtocol: TreeNodeProtocol & UnsafeTreePointer {}
+package protocol UnsafeTreeNodeProtocol: TreeNodeInterface & _UnsafeNodePtrType {}
 
 // MARK: - TreeEndNodeProtocol
 

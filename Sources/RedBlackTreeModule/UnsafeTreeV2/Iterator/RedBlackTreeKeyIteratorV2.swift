@@ -25,7 +25,7 @@ import Foundation
 extension RedBlackTreeIteratorV2 {
 
   @frozen
-  public struct Keys: Sequence, IteratorProtocol, UnsafeTreePointer, UnsafeImmutableIndexingProtocol
+  public struct Keys: Sequence, IteratorProtocol, _UnsafeNodePtrType, UnsafeImmutableIndexingProtocol
   {
 
     public typealias Tree = UnsafeTreeV2<Base>

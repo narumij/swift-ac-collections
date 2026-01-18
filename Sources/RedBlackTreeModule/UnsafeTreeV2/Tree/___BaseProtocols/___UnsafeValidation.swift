@@ -28,7 +28,7 @@ func ___is_null_or_end__(pointerIndex: Int) -> Bool {
 }
 
 @usableFromInline
-protocol Validation: UnsafeTreePointer {
+protocol Validation: _UnsafeNodePtrType {
   var nullptr: _NodePtr { get }
   var __root: _NodePtr { get }
   var __end_node: _NodePtr { get }

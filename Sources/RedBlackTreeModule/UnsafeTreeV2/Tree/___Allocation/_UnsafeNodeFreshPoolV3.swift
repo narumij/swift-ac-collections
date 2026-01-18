@@ -109,7 +109,7 @@ extension _UnsafeNodeFreshPoolV3 {
     if let p = freshBucketCurrent?.pop() {
       return p
     }
-    freshBucketCurrent = freshBucketCurrent?.next(_value: memoryLayout)
+    freshBucketCurrent = freshBucketCurrent?.next(memoryLayout: memoryLayout)
     return freshBucketCurrent?.pop()
   }
 }

@@ -1,6 +1,6 @@
 @frozen
 @usableFromInline
-struct BucketQueue: _UnsafeNodePtrType {
+struct BucketQueue {
 
   @usableFromInline
   internal init(
@@ -11,37 +11,30 @@ struct BucketQueue: _UnsafeNodePtrType {
     self.pointer = pointer
     self.start = start
     self.stride = stride
-    self.capacity = pointer.pointee.capacity
   }
 
   let pointer: UnsafeMutablePointer<_UnsafeNodeFreshBucket>
-  let start: _NodePtr
+  let start: UnsafeMutablePointer<UnsafeNode>
   let stride: Int
-  let capacity: Int
 
-  var count: Int {
-    get { pointer.pointee.count }
-    _modify { yield &pointer.pointee.count }
-  }
-
-  subscript(index: Int) -> _NodePtr {
+  subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
     UnsafeMutableRawPointer(start)
       .advanced(by: stride * index)
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
   @usableFromInline
-  mutating func pop() -> _NodePtr? {
-    guard count < capacity else { return nil }
-    let p = self[count]
-    count += 1
+  mutating func pop() -> UnsafeMutablePointer<UnsafeNode>? {
+    guard pointer.count < pointer.capacity else { return nil }
+    let p = self[pointer.count]
+    pointer.pointee.count += 1
     return p
   }
 
   @usableFromInline
-  func next(_value: (stride: Int, alignment: Int)) -> BucketQueue? {
+  func next(memoryLayout: (stride: Int, alignment: Int)) -> BucketQueue? {
     guard let next = pointer.pointee.next else { return nil }
-    return next._queue(isHead: false, memoryLayout: _value)
+    return next._queue(isHead: false, memoryLayout: memoryLayout)
   }
 }
 

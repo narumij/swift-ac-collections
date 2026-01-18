@@ -39,6 +39,16 @@ extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
   
   @inlinable
   @inline(__always)
+  public var next: UnsafeMutablePointer? { pointee.next }
+  @inlinable
+  @inline(__always)
+  public var capacity: Int { pointee.capacity }
+  @inlinable
+  @inline(__always)
+  public var count: Int { pointee.count }
+
+  @inlinable
+  @inline(__always)
   var end_ptr: UnsafeMutablePointer<UnsafeNode> {
     UnsafeMutableRawPointer(advanced(by: 1))
       .assumingMemoryBound(to: UnsafeNode.self)

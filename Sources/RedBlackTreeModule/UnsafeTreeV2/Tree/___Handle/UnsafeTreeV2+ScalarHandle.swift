@@ -107,6 +107,11 @@ extension UnsafeTreeV2ScalarHandle {
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
     __default_three_way_comparator(__lhs, __rhs)
   }
+  
+  @inlinable
+  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+    l.__value_(as: _Key.self) < r.__value_(as: _Key.self)
+  }
 }
 
 // MARK: - TreeNodeValueProtocol
@@ -191,6 +196,7 @@ extension UnsafeTreeV2ScalarHandle: FindEqualInterface, FindEqualProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
 //extension UnsafeTreeV2ScalarHandle: ___EraseUniqueProtocol {}
+extension UnsafeTreeV2ScalarHandle: PointerCompareInterface, CompareTraitInterface, CompareBothInterface, CompareBothProtocol_ptr, CompareMultiProtocol_ptr, NodeBitmapProtocol_ptr {}
 
 #if true
 #else

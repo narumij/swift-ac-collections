@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol BoundProtocol: BoundInteface & CompareTraitInstance {
+protocol BoundProtocol: BoundInteface & CompareTraitInterface {
   func __lower_bound_unique(_ __v: _Key) -> _NodePtr
   func __upper_bound_unique(_ __v: _Key) -> _NodePtr
   func __lower_bound_multi(_ __v: _Key) -> _NodePtr

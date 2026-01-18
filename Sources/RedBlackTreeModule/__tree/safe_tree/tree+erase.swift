@@ -57,7 +57,7 @@ protocol EraseUniqueProtocol: EraseUniqueInteface, FindInteface, EndInterface, E
 extension EraseUniqueProtocol {
   
   @inlinable
-  @inline(__always)
+  @inline(never)
   internal func ___erase_unique(_ __k: _Key) -> Bool {
     let __i = find(__k)
     if __i == end {

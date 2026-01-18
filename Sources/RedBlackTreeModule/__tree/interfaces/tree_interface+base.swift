@@ -137,10 +137,13 @@ protocol SizeInterface {
 protocol AllocatorInterface: _NodePtrType, _ValueType {
   /// ノードを構築する
   func __construct_node(_ k: _Value) -> _NodePtr
+}
+
+@usableFromInline
+protocol DellocatorInterface: _NodePtrType {
   /// ノードを破棄する
   func destroy(_ p: _NodePtr)
 }
-
 
 @usableFromInline
 protocol ThreeWayComparatorInterface: _KeyType {

@@ -9,7 +9,6 @@ import Foundation
 
 @usableFromInline
 protocol EraseInterface: _NodePtrType {
-//  func destroy(_ p: _NodePtr)
   func erase(_ __p: _NodePtr) -> _NodePtr
   func erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
 }

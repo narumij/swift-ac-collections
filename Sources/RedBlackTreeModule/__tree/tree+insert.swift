@@ -24,7 +24,8 @@ import Foundation
 
 @usableFromInline
 protocol InsertNodeAtProtocol:
-  TreeNodeProtocol & TreeNodeRefProtocol & TreeEndProtocol & SizeProtocol & BeginNodeProtocol & EndNodeProtocol
+  TreeNodeProtocol & TreeNodeRefProtocol & TreeEndProtocol & SizeProtocol & BeginNodeProtocol
+    & EndNodeProtocol
 {
   func
     __insert_node_at(
@@ -82,44 +83,25 @@ extension InsertUniqueProtocol {
     __emplace_unique_key_args(x)
   }
 
-  #if true
-    @inlinable
-    @inline(__always)
-    internal func
-      __emplace_unique_key_args(_ __k: _Value)
-      -> (__r: _NodePtr, __inserted: Bool)
-    {
-      let (__parent, __child) = __find_equal(__key(__k))
-      let __r = __child
-      if __ptr_(__child) == nullptr {
-        let __h = __construct_node(__k)
-        __insert_node_at(__parent, __child, __h)
-        return (__h, true)
-      } else {
-        // __insert_node_atで挿入した場合、__rが破損する
-        // 既存コードの後続で使用しているのが実質Ptrなので、そちらを返すよう一旦修正
-        // 今回初めて破損したrefを使用したようで既存コードでの破損ref使用は大丈夫そう
-        return (__ptr_(__r), false)
-      }
+  @inlinable
+  @inline(__always)
+  internal func
+    __emplace_unique_key_args(_ __k: _Value)
+    -> (__r: _NodePtr, __inserted: Bool)
+  {
+    let (__parent, __child) = __find_equal(__key(__k))
+    let __r = __child
+    if __ptr_(__child) == nullptr {
+      let __h = __construct_node(__k)
+      __insert_node_at(__parent, __child, __h)
+      return (__h, true)
+    } else {
+      // __insert_node_atで挿入した場合、__rが破損する
+      // 既存コードの後続で使用しているのが実質Ptrなので、そちらを返すよう一旦修正
+      // 今回初めて破損したrefを使用したようで既存コードでの破損ref使用は大丈夫そう
+      return (__ptr_(__r), false)
     }
-  #else
-    @inlinable
-    internal func
-      __emplace_unique_key_args(_ __k: _Value)
-      -> (__r: _NodeRef, __inserted: Bool)
-    {
-      var __parent = _NodePtr.nullptr
-      let __child = __find_equal(&__parent, __key(__k))
-      let __r = __child
-      var __inserted = false
-      if __ref_(__child) == .nullptr {
-        let __h = __construct_node(__k)
-        __insert_node_at(__parent, __child, __h)
-        __inserted = true
-      }
-      return (__r, __inserted)
-    }
-  #endif
+  }
 }
 
 @usableFromInline

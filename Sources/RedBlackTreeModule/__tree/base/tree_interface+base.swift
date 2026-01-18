@@ -134,7 +134,7 @@ protocol SizeInterface {
 // MARK: -
 
 @usableFromInline
-protocol AllocatorInterface: _nullptr_interface & _ValueType {
+protocol AllocatorInterface: _NodePtrType, _ValueType {
   /// ノードを構築する
   func __construct_node(_ k: _Value) -> _NodePtr
   /// ノードを破棄する

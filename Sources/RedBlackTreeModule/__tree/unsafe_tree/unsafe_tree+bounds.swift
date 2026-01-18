@@ -19,7 +19,7 @@ extension BoundAlgorithmProtocol_ptr {
     var __rt = __root
     var __result = __end_node
     let __comp = __lazy_synth_three_way_comparator
-    while __rt != nullptr {
+    while __rt != .nullptr {
       let __comp_res = __comp(__v, __get_value(__rt))
       if __comp_res.__less() {
         __result = __rt
@@ -29,7 +29,7 @@ extension BoundAlgorithmProtocol_ptr {
       } else if _LowerBound {
         return __rt
       } else {
-        return __rt.__right_ != nullptr ? __tree_min(__rt.__right_) : __result
+        return __rt.__right_ != .nullptr ? __tree_min(__rt.__right_) : __result
       }
     }
     return __result
@@ -62,7 +62,7 @@ extension BoundAlgorithmProtocol_ptr {
 
 @usableFromInline
 protocol BoundAlgorithmProtocol_common_ptr: _UnsafeNodePtrType, ValueCompInterface,
-  TreeNodeValueInterface, _nullptr_interface, RootInterface & EndNodeInterface
+  TreeNodeValueInterface, RootInterface & EndNodeInterface
 {}
 
 extension BoundAlgorithmProtocol_common_ptr {
@@ -74,7 +74,7 @@ extension BoundAlgorithmProtocol_common_ptr {
   {
     var (__root, __result) = (__root, __result)
 
-    while __root != nullptr {
+    while __root != .nullptr {
       if !value_comp(__get_value(__root), __v) {
         __result = __root
         __root = __root.__left_
@@ -92,7 +92,7 @@ extension BoundAlgorithmProtocol_common_ptr {
   {
     var (__root, __result) = (__root, __result)
 
-    while __root != nullptr {
+    while __root != .nullptr {
       if value_comp(__v, __get_value(__root)) {
         __result = __root
         __root = __root.__left_

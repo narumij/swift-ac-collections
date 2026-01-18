@@ -135,10 +135,10 @@ extension UnsafeTreeV2ScalarHandle {
 
 extension UnsafeTreeV2ScalarHandle {
   
-  @usableFromInline
-  var nullptr: UnsafeMutablePointer<UnsafeNode> {
-    header.pointee.nullptr
-  }
+//  @usableFromInline
+//  var nullptr: UnsafeMutablePointer<UnsafeNode> {
+//    header.pointee.nullptr
+//  }
 
   @usableFromInline
   var __begin_node_: UnsafeMutablePointer<UnsafeNode> {

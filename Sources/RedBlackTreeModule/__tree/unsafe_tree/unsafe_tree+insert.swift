@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol InsertNodeAtProtocol_ptr: _UnsafeNodePtrType, _nullptr_interface, InsertNodeAtInterface,
+protocol InsertNodeAtProtocol_ptr: _UnsafeNodePtrType, InsertNodeAtInterface,
   BeginNodeInterface, EndNodeProtocol, SizeInterface
 {}
 
@@ -21,13 +21,13 @@ extension InsertNodeAtProtocol_ptr {
     )
   {
     var __new_node = __new_node
-    __new_node.__left_ = nullptr
-    __new_node.__right_ = nullptr
+    __new_node.__left_ = .nullptr
+    __new_node.__right_ = .nullptr
     __new_node.__parent_ = __parent
     // __new_node->__is_black_ is initialized in __tree_balance_after_insert
     __child.pointee = __new_node
     // unsafe operation not allowed
-    if __begin_node_.__left_ != nullptr {
+    if __begin_node_.__left_ != .nullptr {
       __begin_node_ = __begin_node_.__left_
     }
     _std__tree_balance_after_insert(__end_node.__left_, __child.pointee)
@@ -42,7 +42,7 @@ protocol InsertUniqueProtocol_ptr: _UnsafeNodePtrType, InsertUniqueInterface & A
 
 extension InsertUniqueProtocol_ptr {
 
-  @inlinable
+  @usableFromInline
   internal func
     __insert_unique(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
   {
@@ -56,7 +56,7 @@ extension InsertUniqueProtocol_ptr {
   {
     let (__parent, __child) = __find_equal(__key(__k))
     let __r = __child
-    if __child.pointee == nullptr {
+    if __child.pointee == .nullptr {
       let __h = __construct_node(__k)
       __insert_node_at(__parent, __child, __h)
       return (__h, true)

@@ -377,11 +377,12 @@ extension RedBlackTreeSet {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     __tree_._ensureUnique()
-    return __tree_.___erase_unique(member) ? member : nil
+//    return __tree_.___erase_unique(member) ? member : nil
+    return __tree_.update { $0.___erase_unique(member) } ? member : nil
 //    let result = switch __tree_.specializeMode {
 //    case .asInt: __tree_._i_update { $0.___erase_unique(member as! Int) }
 //    case .generic: __tree_.update { $0.___erase_unique(member) }

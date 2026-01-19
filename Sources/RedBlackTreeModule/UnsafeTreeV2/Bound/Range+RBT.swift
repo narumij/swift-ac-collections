@@ -5,36 +5,20 @@
 //  Created by narumij on 2026/01/19.
 //
 
-extension Range: _UnsafeNodePtrType, RedBlackTreeRangeExpression {
+extension Range: RedBlackTreeRangeExpression {
   
-  public func _relativeRange<_Key,B>(relative: (Bound) -> B, after: (B) -> B) -> (B, B)
-  where Bound == RedBlackTreeBound<_Key> {
-    let l = relative(lowerBound)
-    let u = relative(upperBound)
-    return (l, u)
-  }
-  
-  public func __relativeRange<_Key, R>(
-    relative: (Bound) -> _NodePtr,
-    after: (_NodePtr) -> _NodePtr,
-    hoge: (_NodePtr, _NodePtr) -> R
-  )
-    -> R
+  public func withBounds<_Key, B, R>(
+    relative: (Bound) -> B,
+    after: (B) -> B,
+    _ body: (B, B) throws -> R
+  ) rethrows
+  -> R
   where Bound == RedBlackTreeBound<_Key> {
     
-    withExtendedLifetime(self) {
+    try withExtendedLifetime(self) {
       let l = relative(lowerBound)
       let u = relative(upperBound)
-      return hoge(l, u)
+      return try body(l, u)
     }
-  }
-
-  public func __relativeRange<_Key>(relative: (Bound) -> _NodePtr, after: (_NodePtr) -> _NodePtr) -> (_NodePtr, _NodePtr)
-  where Bound == RedBlackTreeBound<_Key> {
-    defer { _fixLifetime(lowerBound) }
-    defer { _fixLifetime(upperBound) }
-      let l = relative(lowerBound)
-      let u = relative(upperBound)
-      return (l, u)
   }
 }

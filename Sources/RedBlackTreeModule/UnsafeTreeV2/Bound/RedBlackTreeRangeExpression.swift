@@ -5,16 +5,13 @@
 //  Created by narumij on 2026/01/19.
 //
 
-public protocol RedBlackTreeRangeExpression: _UnsafeNodePtrType, RangeExpression {
+public protocol RedBlackTreeRangeExpression: RangeExpression {
 
-  func _relativeRange<_Key, B>(relative: (Bound) -> B, after: (B) -> B) -> (B, B)
-  where Bound == RedBlackTreeBound<_Key>
-
-  func __relativeRange<_Key, R>(
-    relative: (Bound) -> _NodePtr,
-    after: (_NodePtr) -> _NodePtr,
-    hoge: (_NodePtr, _NodePtr) -> R
-  )
+  func withBounds<_Key, B, R>(
+    relative: (Bound) -> B,
+    after: (B) -> B,
+    _ body: (B, B) throws -> R
+  ) rethrows
     -> R
   where Bound == RedBlackTreeBound<_Key>
 }
@@ -23,54 +20,59 @@ public protocol RedBlackTreeRangeExpression: _UnsafeNodePtrType, RangeExpression
 
 extension RedBlackTreeSet {
 
-  #if false
-    @inlinable
-    public func indices<R: RangeExpression>(bound range: R) -> Range<Index>
-    where
-      R.Bound == RedBlackTreeBound<_Key>,
-      R: RedBlackTreeRangeExpression
-    {
-      let (lower, upper) = range._relativeRange(
-        relative: { $0.relative(to: self) },
-        after: { self.index(after: $0) })
+  @inlinable
+  public func indices<R: RangeExpression>(bound range: R) -> Range<Index>
+  where
+    R.Bound == RedBlackTreeBound<_Key>,
+    R: RedBlackTreeRangeExpression
+  {
+    range.withBounds(
+      relative: { $0.relative(to: self) },
+      after: { self.index(after: $0) }
+    ) { lower, upper in
       return lower..<upper
     }
+  }
 
-    @inlinable
-    public func removeSub<R>(
-      bound range: R
-    )
-    where
-      R.Bound == RedBlackTreeBound<_Key>,
-      R: RedBlackTreeRangeExpression
-    {
-      let (lower, upper) = range._relativeRange(
-        relative: {
-          __tree_.relative(from: $0)
-        },
-        after: { __tree_next($0) })
-
+  @inlinable
+  public func removeSub<R>(
+    bound range: R
+  )
+  where
+    R.Bound == RedBlackTreeBound<_Key>,
+    R: RedBlackTreeRangeExpression
+  {
+    range.withBounds(
+      relative: {
+        __tree_.relative(from: $0)
+      },
+      after: { __tree_next($0) }
+    ) { lower, upper in
       _ = __tree_.erase(lower, upper)
     }
+  }
 
-    @inlinable
-    public func removeSub<R>(
-      bound range: R,
-      where shouldBeRemoved: (Element) throws -> Bool
-    ) rethrows
-    where
-      R.Bound == RedBlackTreeBound<_Key>,
-      R: RedBlackTreeRangeExpression
-    {
-      let (lower, upper) = range._relativeRange(
-        relative: {
-          __tree_.relative(from: $0)
-        },
-        after: { __tree_next($0) })
+  @inlinable
+  public func removeSub<R>(
+    bound range: R,
+    where shouldBeRemoved: (Element) throws -> Bool
+  ) rethrows
+  where
+    R.Bound == RedBlackTreeBound<_Key>,
+    R: RedBlackTreeRangeExpression
+  {
+    try range.withBounds(
+      relative: {
+        __tree_.relative(from: $0)
+      },
+      after: {
+        __tree_next($0)
+      }
+    ) { lower, upper in
 
       try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
-  #endif
+  }
 
   @inlinable
   public subscript<R>(bounds: R) -> SubSequence
@@ -78,9 +80,9 @@ extension RedBlackTreeSet {
     R.Bound == RedBlackTreeBound<_Key>,
     R: RedBlackTreeRangeExpression
   {
-    bounds.__relativeRange(
+    bounds.withBounds(
       relative: {
-        __tree_._relative(from: $0)
+        __tree_.relative(from: $0)
       },
       after: {
         __tree_next($0)
@@ -95,18 +97,16 @@ extension RedBlackTreeSet {
 func test() {
   let a = RedBlackTreeSet<Int>()
   typealias Index = RedBlackTreeSet<Int>.Index
-  #if false
-    let _: Range<Index> = a.indices(bound: .start ..< .end)
-    let _: Range<Index> = a.indices(bound: .lower(3) ..< .lower(4))
+  let _: Range<Index> = a.indices(bound: .start ..< .end)
+  let _: Range<Index> = a.indices(bound: .lower(3) ..< .lower(4))
 
-    let _ = a.removeSub(bound: .lower(10) ..< .lower(100)) { n in
-      n % 2 == 1
-    }
+  let _ = a.removeSub(bound: .lower(10) ..< .lower(100)) { n in
+    n % 2 == 1
+  }
 
-    let _ = a.removeSub(bound: .lower(10) ... .upper(100)) { n in
-      n % 2 == 0
-    }
-  #endif
+  let _ = a.removeSub(bound: .lower(10) ... .upper(100)) { n in
+    n % 2 == 0
+  }
 
   let _ = a[.lower(10) ... .end]
 }

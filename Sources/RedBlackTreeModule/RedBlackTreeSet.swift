@@ -480,7 +480,7 @@ extension RedBlackTreeSet {
 
     __tree_._ensureUnique()
 
-    try __tree_.___erase_unique_if(
+    try __tree_.___erase_if(
       __tree_.rawValue(bounds.lowerBound),
       __tree_.rawValue(bounds.upperBound),
       shouldBeRemoved: shouldBeRemoved)
@@ -492,7 +492,7 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     __tree_._ensureUnique()
-    try __tree_.___erase_unique_if(
+    try __tree_.___erase_if(
       __tree_.__begin_node_,
       __tree_.__end_node,
       shouldBeRemoved: shouldBeRemoved)
@@ -502,7 +502,7 @@ extension RedBlackTreeSet {
 extension UnsafeTreeV2 {
 
   @inlinable
-  func ___erase_unique_if(
+  func ___erase_if(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
     shouldBeRemoved: (_Key) throws -> Bool

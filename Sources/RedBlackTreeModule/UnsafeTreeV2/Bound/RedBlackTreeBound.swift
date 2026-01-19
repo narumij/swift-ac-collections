@@ -23,7 +23,8 @@ extension RedBlackTreeBound: Comparable {
     case (.lower(let l), .lower(let r)): l <= r
     case (.lower(let l), .upper(let r)): l < r
     case (.upper(let l), .upper(let r)): l <= r
-    case (.upper, lower): fatalError("左にupper右にlowerを使うのはコーナケース対処が困難なので禁止扱い")
+    case (.upper, lower): false
+      // fatalError("左にupper右にlowerを使うのはコーナケース対処が困難なので禁止扱い")
     // Rangeがチェックではじいてくれることを期待してのfalse
     }
   }

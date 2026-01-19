@@ -7,25 +7,10 @@
 
 extension ClosedRange: RedBlackTreeRangeExpression {
 
-  public func relativeRange<C>(to collection: C) -> Range<C.Index>
-  where C: RedBlackTreeCollectionProtocol, Bound == RedBlackTreeBound<C.Key> {
-
-    let lower = lowerBound.relative(to: collection)
-    let upper = upperBound.relative(to: collection)
-    
-    return lower..<collection.index(after: upper)
-  }
-}
-
-extension ClosedRange: UnsafeTreeRangeExpression {
-
-  @usableFromInline
-  func relativeRange<C>(to collection: C) -> UnsafeTreeRange
-  where C: UnsafeTreeCollectionProtocol, Bound == RedBlackTreeBound<C._Key> {
-
-    let lower = lowerBound.relative(to: collection)
-    let upper = upperBound.relative(to: collection)
-
-    return .init(__first: lower, __last: __tree_next(upper))
+  public func _relativeRange<_Key,B>(relative: (Bound) -> B, after: (B) -> B) -> (B, B)
+  where Bound == RedBlackTreeBound<_Key> {
+    let lower = relative(lowerBound)
+    let upper = relative(upperBound)
+    return (lower, after(upper))
   }
 }

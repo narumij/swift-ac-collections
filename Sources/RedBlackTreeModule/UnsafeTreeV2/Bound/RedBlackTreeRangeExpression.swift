@@ -6,29 +6,40 @@
 //
 
 public protocol RedBlackTreeRangeExpression: RangeExpression {
-  func relativeRange<C: RedBlackTreeCollectionProtocol>(
-    to collection: C
-  ) -> Range<C.Index> where Bound == RedBlackTreeBound<C.Key>
+  func _relativeRange<_Key, B>(relative: (Bound) -> B, after: (B) -> B) -> (B, B)
+  where Bound == RedBlackTreeBound<_Key>
 }
 
 // MARK: - RedBlackTreeSet
 
-extension RedBlackTreeSet: RedBlackTreeCollectionProtocol {
+extension RedBlackTreeSet {
 
   @inlinable
-  public func indices<R: RedBlackTreeRangeExpression>(bound range: R) -> Range<Index>
-  where R.Bound == RedBlackTreeBound<Key> {
-    range.relativeRange(to: self)
+  public func indices<R: RangeExpression>(bound range: R) -> Range<Index>
+  where
+    R.Bound == RedBlackTreeBound<_Key>,
+    R: RedBlackTreeRangeExpression
+  {
+    let (lower, upper) = range._relativeRange(
+      relative: { $0.relative(to: self) },
+      after: { self.index(after: $0) })
+    return lower..<upper
   }
 
   @inlinable
-  public func removeSub<R: RedBlackTreeRangeExpression>(
+  public func removeSub<R: RangeExpression>(
     bound range: R,
     where shouldBeRemoved: (Element) throws -> Bool
-  )
-    rethrows -> Bool
-  where R.Bound == RedBlackTreeBound<Key> {
-    fatalError()
+  ) rethrows
+  where
+    R.Bound == RedBlackTreeBound<_Key>,
+    R: RedBlackTreeRangeExpression
+  {
+    let (lower, upper) = range._relativeRange(
+      relative: { $0.relative(to: __tree_) },
+      after: { __tree_next($0) })
+
+    try __tree_.___erase_unique_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
   }
 }
 

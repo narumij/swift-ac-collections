@@ -8,8 +8,7 @@
 /// `[__first, __last)`
 ///
 @frozen
-@usableFromInline
-struct UnsafeTreeRange: _UnsafeNodePtrType, Equatable {
+public struct UnsafeTreeRange: _UnsafeNodePtrType, Equatable {
 
   var __first: _NodePtr
   var __last: _NodePtr

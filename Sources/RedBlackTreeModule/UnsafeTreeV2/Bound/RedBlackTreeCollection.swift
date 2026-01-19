@@ -5,7 +5,8 @@
 //  Created by narumij on 2026/01/19.
 //
 
-public protocol RedBlackTreeCollectionProtocol: Collection {
+@usableFromInline
+protocol RedBlackTreeBoundResolverProtocol: Collection {
   associatedtype Key
   associatedtype Index
   var startIndex: Index { get }
@@ -16,7 +17,8 @@ public protocol RedBlackTreeCollectionProtocol: Collection {
 
 extension RedBlackTreeBound {
 
-  func relative<C: RedBlackTreeCollectionProtocol>(to collection: C) -> C.Index where _Key == C.Key {
+  @usableFromInline
+  func relative<C: RedBlackTreeBoundResolverProtocol>(to collection: C) -> C.Index where _Key == C.Key {
     switch self {
     case .start: collection.startIndex
     case .end: collection.endIndex
@@ -26,16 +28,19 @@ extension RedBlackTreeBound {
   }
 }
 
+extension RedBlackTreeSet: RedBlackTreeBoundResolverProtocol {}
+
+
 @usableFromInline
-protocol UnsafeTreeCollectionProtocol:
+protocol UnsafeTreeBoundResolverProtocol:
   _UnsafeNodePtrType & _KeyType,
-  BeginNodeInterface & EndNodeInterface & BoundInteface,
-  Collection
+  BeginNodeInterface & EndNodeInterface & BoundInteface
 {}
 
 extension RedBlackTreeBound {
 
-  func relative<C: UnsafeTreeCollectionProtocol>(to collection: C) -> C._NodePtr where _Key == C._Key {
+  @usableFromInline
+  func relative<C: UnsafeTreeBoundResolverProtocol>(to collection: C) -> C._NodePtr where _Key == C._Key {
     switch self {
     case .start: collection.__begin_node_
     case .end: collection.__end_node
@@ -44,3 +49,5 @@ extension RedBlackTreeBound {
     }
   }
 }
+
+extension UnsafeTreeV2: UnsafeTreeBoundResolverProtocol {}

@@ -16,7 +16,7 @@ public protocol RedBlackTreeCollectionProtocol: Collection {
 
 extension RedBlackTreeBound {
 
-  func relative<C: RedBlackTreeCollectionProtocol>(to collection: C) -> C.Index where T == C.Key {
+  func relative<C: RedBlackTreeCollectionProtocol>(to collection: C) -> C.Index where _Key == C.Key {
     switch self {
     case .start: collection.startIndex
     case .end: collection.endIndex
@@ -35,7 +35,7 @@ protocol UnsafeTreeCollectionProtocol:
 
 extension RedBlackTreeBound {
 
-  func relative<C: UnsafeTreeCollectionProtocol>(to collection: C) -> C._NodePtr where T == C._Key {
+  func relative<C: UnsafeTreeCollectionProtocol>(to collection: C) -> C._NodePtr where _Key == C._Key {
     switch self {
     case .start: collection.__begin_node_
     case .end: collection.__end_node

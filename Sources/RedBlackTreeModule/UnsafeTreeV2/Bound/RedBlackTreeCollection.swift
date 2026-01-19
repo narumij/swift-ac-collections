@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/19.
 //
 
-public protocol RBTCollectionProtocol: Collection {
+public protocol RedBlackTreeCollectionProtocol: Collection {
   associatedtype Key
   associatedtype Index
   var startIndex: Index { get }
@@ -14,9 +14,9 @@ public protocol RBTCollectionProtocol: Collection {
   func upperBound(_: Key) -> Index
 }
 
-extension RBTBound {
+extension RedBlackTreeBound {
 
-  func relative<C: RBTCollectionProtocol>(to collection: C) -> C.Index where T == C.Key {
+  func relative<C: RedBlackTreeCollectionProtocol>(to collection: C) -> C.Index where T == C.Key {
     switch self {
     case .start: collection.startIndex
     case .end: collection.endIndex
@@ -33,7 +33,7 @@ protocol UnsafeTreeCollectionProtocol:
   Collection
 {}
 
-extension RBTBound {
+extension RedBlackTreeBound {
 
   func relative<C: UnsafeTreeCollectionProtocol>(to collection: C) -> C._NodePtr where T == C._Key {
     switch self {

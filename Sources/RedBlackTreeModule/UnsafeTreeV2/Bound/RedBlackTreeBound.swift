@@ -5,15 +5,15 @@
 //  Created by narumij on 2026/01/19.
 //
 
-public enum RBTBound<T: Comparable> {
+public enum RedBlackTreeBound<T: Comparable> {
   case start
   case lower(T)
   case upper(T)
   case end
 }
 
-extension RBTBound: Comparable {
-  public static func < (lhs: RBTBound<T>, rhs: RBTBound<T>) -> Bool {
+extension RedBlackTreeBound: Comparable {
+  public static func < (lhs: RedBlackTreeBound<T>, rhs: RedBlackTreeBound<T>) -> Bool {
     switch (lhs, rhs) {
     case (.start, _): true
     case (_, .end): true

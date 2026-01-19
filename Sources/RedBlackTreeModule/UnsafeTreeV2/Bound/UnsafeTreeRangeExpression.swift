@@ -11,5 +11,5 @@ protocol UnsafeTreeRangeExpression: RangeExpression {
 
   func relativeRange<C: UnsafeTreeCollectionProtocol>(
     to collection: C
-  ) -> UnsafeTreeRange where Bound == RBTBound<C._Key>
+  ) -> UnsafeTreeRange where Bound == RedBlackTreeBound<C._Key>
 }

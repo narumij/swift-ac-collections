@@ -5,29 +5,29 @@
 //  Created by narumij on 2026/01/19.
 //
 
-public protocol RBTRangeExpression: RangeExpression {
-  func relativeRange<C: RBTCollectionProtocol>(
+public protocol RedBlackTreeRangeExpression: RangeExpression {
+  func relativeRange<C: RedBlackTreeCollectionProtocol>(
     to collection: C
-  ) -> Range<C.Index> where Bound == RBTBound<C.Key>
+  ) -> Range<C.Index> where Bound == RedBlackTreeBound<C.Key>
 }
 
 // MARK: - RedBlackTreeSet
 
-extension RedBlackTreeSet: RBTCollectionProtocol {
+extension RedBlackTreeSet: RedBlackTreeCollectionProtocol {
 
   @inlinable
-  public func indices<R: RBTRangeExpression>(bound range: R) -> Range<Index>
-  where R.Bound == RBTBound<Key> {
+  public func indices<R: RedBlackTreeRangeExpression>(bound range: R) -> Range<Index>
+  where R.Bound == RedBlackTreeBound<Key> {
     range.relativeRange(to: self)
   }
 
   @inlinable
-  public func removeSub<R: RBTRangeExpression>(
+  public func removeSub<R: RedBlackTreeRangeExpression>(
     bound range: R,
     where shouldBeRemoved: (Element) throws -> Bool
   )
     rethrows -> Bool
-  where R.Bound == RBTBound<Key> {
+  where R.Bound == RedBlackTreeBound<Key> {
     fatalError()
   }
 }

@@ -5,10 +5,10 @@
 //  Created by narumij on 2026/01/19.
 //
 
-extension ClosedRange: RBTRangeExpression {
+extension ClosedRange: RedBlackTreeRangeExpression {
 
   public func relativeRange<C>(to collection: C) -> Range<C.Index>
-  where C: RBTCollectionProtocol, Bound == RBTBound<C.Key> {
+  where C: RedBlackTreeCollectionProtocol, Bound == RedBlackTreeBound<C.Key> {
 
     let lower = lowerBound.relative(to: collection)
     let upper = upperBound.relative(to: collection)
@@ -21,7 +21,7 @@ extension ClosedRange: UnsafeTreeRangeExpression {
 
   @usableFromInline
   func relativeRange<C>(to collection: C) -> UnsafeTreeRange
-  where C: UnsafeTreeCollectionProtocol, Bound == RBTBound<C._Key> {
+  where C: UnsafeTreeCollectionProtocol, Bound == RedBlackTreeBound<C._Key> {
 
     let lower = lowerBound.relative(to: collection)
     let upper = upperBound.relative(to: collection)

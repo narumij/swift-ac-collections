@@ -85,6 +85,17 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 //}
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
+  
+  func __slow_end() -> _NodePtr {
+    var __r = self
+    while __r.__parent_ != .nullptr {
+      __r = __r.__parent_
+    }
+    return __r
+  }
+}
+
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)

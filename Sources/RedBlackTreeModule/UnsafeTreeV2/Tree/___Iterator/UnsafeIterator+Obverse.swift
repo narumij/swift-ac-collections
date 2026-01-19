@@ -16,24 +16,19 @@ extension UnsafeIterator {
   {
     @usableFromInline
     internal init(__first: _NodePtr, __last: _NodePtr) {
-      self.__first = __first
       self.__current = __first
-      self.__last = __last
+      self.___tree_range = .init(__first: __first, __last: __last)
     }
-
+    
     public mutating func next() -> _NodePtr? {
-      guard __current != __last else { return nil }
-      let __r = __current
-      __current = __tree_next_iter(__current)
-      return __r
+      return ___tree_range.next(after: &__current)
     }
-
+    
     @usableFromInline
-    let __first: _NodePtr
+    let ___tree_range: UnsafeTreeRange
+    
     @usableFromInline
     var __current: _NodePtr
-    @usableFromInline
-    let __last: _NodePtr
   }
 }
 

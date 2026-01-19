@@ -14,19 +14,27 @@ extension UnsafeIterator {
     Sequence,
     Equatable
   {
+
+    @usableFromInline
+    internal init(___tree_range: UnsafeTreeRange) {
+      self.___tree_range = ___tree_range
+      self.__current = ___tree_range.__first
+    }
+
     @usableFromInline
     internal init(__first: _NodePtr, __last: _NodePtr) {
-      self.__current = __first
-      self.___tree_range = .init(__first: __first, __last: __last)
+      self.init(
+        ___tree_range:
+          UnsafeTreeRange(__first: __first, __last: __last))
     }
-    
+
     public mutating func next() -> _NodePtr? {
       return ___tree_range.next(after: &__current)
     }
-    
+
     @usableFromInline
     let ___tree_range: UnsafeTreeRange
-    
+
     @usableFromInline
     var __current: _NodePtr
   }

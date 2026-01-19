@@ -6,19 +6,19 @@
 //
 
 public protocol RBTRangeExpression: RangeExpression {
-  func relativeBound<C: RBTCollection>(
+  func relativeRange<C: RBTCollectionProtocol>(
     to collection: C
   ) -> Range<C.Index> where Bound == RBTBound<C.Key>
 }
 
 // MARK: - RedBlackTreeSet
 
-extension RedBlackTreeSet: RBTCollection {
+extension RedBlackTreeSet: RBTCollectionProtocol {
 
   @inlinable
   public func indices<R: RBTRangeExpression>(bound range: R) -> Range<Index>
   where R.Bound == RBTBound<Key> {
-    range.relativeBound(to: self)
+    range.relativeRange(to: self)
   }
 
   @inlinable

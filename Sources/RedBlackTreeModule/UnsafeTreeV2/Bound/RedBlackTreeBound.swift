@@ -19,18 +19,11 @@ extension RBTBound: Comparable {
     case (_, .end): true
     case (.end, _): false
     case (_, .start): false
-    case (.lower(let l), .lower(let r)): l < r
-    case (.lower(let l), .upper(let r)): l <= r
-    case (.upper, _): false  // fatalError("左にupperを使うのはコーナケース対処が困難なので禁止扱い")
+    case (.lower(let l), .lower(let r)): l <= r
+    case (.lower(let l), .upper(let r)): l < r
+    case (.upper(let l), .upper(let r)): l <= r
+    case (.upper, lower): false  // fatalError("左にupperを使うのはコーナケース対処が困難なので禁止扱い")
     // Rangeがチェックではじいてくれることを期待してのfalse
-    }
-  }
-  func relative<C: RBTCollection>(to collection: C) -> C.Index where T == C.Key {
-    switch self {
-    case .start: collection.startIndex
-    case .end: collection.endIndex
-    case .lower(let l): collection.lowerBound(l)
-    case .upper(let r): collection.upperBound(r)
     }
   }
 }

@@ -9,37 +9,37 @@
 
 public enum RedBlackTreeBoundsExpression<_Key> {
   public typealias Bound = RedBlackTreeBound<_Key>
-  case range(lhs: Bound, rhs: Bound)
-  case closedRange(lhs: Bound, rhs: Bound)
-  case partialRangeTo(rhs: Bound)
-  case partialRangeThrough(rhs: Bound)
-  case partialRangeFrom(lhs: Bound)
+  case range(from: Bound, to: Bound)
+  case closedRange(from: Bound, through: Bound)
+  case partialRangeTo(Bound)
+  case partialRangeThrough(Bound)
+  case partialRangeFrom(Bound)
 }
 
 public func ..< <_Key>(lhs: RedBlackTreeBound<_Key>, rhs: RedBlackTreeBound<_Key>)
   -> RedBlackTreeBoundsExpression<_Key>
 {
-  .range(lhs: lhs, rhs: rhs)
+  .range(from: lhs, to: rhs)
 }
 
 public func ... <_Key>(lhs: RedBlackTreeBound<_Key>, rhs: RedBlackTreeBound<_Key>)
   -> RedBlackTreeBoundsExpression<_Key>
 {
-  .closedRange(lhs: lhs, rhs: rhs)
+  .closedRange(from: lhs, through: rhs)
 }
 
 public prefix func ..< <_Key>(rhs: RedBlackTreeBound<_Key>)
   -> RedBlackTreeBoundsExpression<_Key>
 {
-  .partialRangeTo(rhs: rhs)
+  .partialRangeTo(rhs)
 }
 
 public prefix func ... <_Key>(rhs: RedBlackTreeBound<_Key>)
   -> RedBlackTreeBoundsExpression<_Key>
 {
-  .partialRangeThrough(rhs: rhs)
+  .partialRangeThrough(rhs)
 }
 
 public postfix func ... <_Key>(lhs: RedBlackTreeBound<_Key>) -> RedBlackTreeBoundsExpression<_Key> {
-  .partialRangeFrom(lhs: lhs)
+  .partialRangeFrom(lhs)
 }

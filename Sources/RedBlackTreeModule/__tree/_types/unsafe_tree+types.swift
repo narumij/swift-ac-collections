@@ -5,6 +5,7 @@
 //  Created by narumij on 2026/01/18.
 //
 
+/// ポインタベースの木の基本型定義
 public protocol _UnsafeNodePtrType: _NodePtrType
 where
   _NodePtr == UnsafeMutablePointer<UnsafeNode>,

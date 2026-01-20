@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// ノードを指す型の定義
+/// ノードを指す基本型の定義
 public protocol _NodePtrType {
   /// ノードを指す型
   associatedtype _NodePtr: Equatable

@@ -391,14 +391,14 @@ final class EtcTests: RedBlackTreeTestCase {
     }
     XCTAssertEqual(set.reversed(), result)
   }
-  
+
   func testBackwordIterator2() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     let seq = AnySequence { set.reversed().indices }
     for i in seq {
       set.remove(at: i)
     }
-    XCTAssertEqual(set + [],[])
+    XCTAssertEqual(set + [], [])
     XCTAssertTrue(set.isEmpty)
   }
 
@@ -997,15 +997,16 @@ final class EtcTests: RedBlackTreeTestCase {
       }
     }
   #endif
-  
+
   func testSubBound() throws {
     let a = RedBlackTreeSet<Int>(0..<100)
-    XCTAssertEqual(a[.lower(10) ..< .lower(20)] + [], (10..<20) + [])
+    XCTAssertEqual(a[lower(10) ..< lower(20)] + [], (10..<20) + [])
   }
-  
+
   func testRemoveSubBound() throws {
     var a = RedBlackTreeSet<Int>(0..<100)
-    a.removeSub(bounds: .lower(10) ..< .end)
+    a.removeSub(bounds: lower(10)..<end())
     XCTAssertEqual(a + [], (0..<10) + [])
   }
 }
+

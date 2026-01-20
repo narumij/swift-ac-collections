@@ -12,3 +12,18 @@ public enum RedBlackTreeBound<_Key>: _KeyType {
   case end
 }
 
+public func end<K>() -> RedBlackTreeBound<K> {
+  .end
+}
+
+public func lower<K>(_ k: K) -> RedBlackTreeBound<K> {
+  .lower(k)
+}
+
+public func upper<K>(_ k: K) -> RedBlackTreeBound<K> {
+  .upper(k)
+}
+
+public func start<K>() -> RedBlackTreeBound<K> {
+  .start
+}

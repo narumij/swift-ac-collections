@@ -76,7 +76,10 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
   public var startIndex: Index { ___index(_start) }
   public var endIndex: Index { ___index(_end) }
 
-  public func makeIterator() -> UnsafeIterator.IndexObverse<Base> {
+  public typealias Iterator = UnsafeIterator.IndexObverse<Base>
+  public typealias Reversed = UnsafeIterator.IndexReverse<Base>
+
+  public func makeIterator() -> Iterator {
     .init(
       __tree_: __tree_,
       start: _start,
@@ -179,7 +182,7 @@ extension UnsafeIndexV2Collection {
 }
 
 extension UnsafeIndexV2Collection {
-
+  #if false
   public struct Reversed: IteratorProtocol, Sequence, UnsafeImmutableIndexingProtocol {
 
     @inlinable
@@ -225,6 +228,7 @@ extension UnsafeIndexV2Collection {
       return ___index(_current)
     }
   }
+  #endif
 }
 
 #if swift(>=5.5)

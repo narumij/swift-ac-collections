@@ -27,6 +27,11 @@ public protocol _ValueType {
   associatedtype _Value
 }
 
+public protocol _MappedValueType {
+  /// キーバリューの場合のバリュー型
+  associatedtype _MappedValue
+}
+
 public protocol _TreeValueType: _KeyType & _ValueType {}
 
 public protocol _pointer_type: _PointerType

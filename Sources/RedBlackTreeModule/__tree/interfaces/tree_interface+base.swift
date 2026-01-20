@@ -152,3 +152,11 @@ protocol ThreeWayComparatorInterface: _KeyType {
   func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __compare_result
 }
+
+// MARK: -
+
+public protocol ScalarValueInterface: _KeyType & _ValueType
+where _Key == _Value { }
+
+public protocol KeyValueInterface: _KeyType & _ValueType & _MappedValueType
+{}

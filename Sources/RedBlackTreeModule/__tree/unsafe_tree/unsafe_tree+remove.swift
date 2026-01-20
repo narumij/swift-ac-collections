@@ -6,14 +6,14 @@
 //
 
 @usableFromInline
-protocol RemoveProtocol_ptr: _UnsafeNodePtrType
+protocol RemoveProtocol_ptr:
+  _UnsafeNodePtrType
     & BeginNodeInterface
     & EndNodeInterface
-    & SizeInterface
     & RootInterface
-{
-  func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
-}
+    & SizeInterface
+    & RemoveInteface
+{}
 
 extension RemoveProtocol_ptr {
 
@@ -26,11 +26,11 @@ extension RemoveProtocol_ptr {
       __begin_node_ = __r
     }
     __size_ -= 1
-//    _std__tree_remove(__end_node.__left_, __ptr)
+    // _std__tree_remove(__end_node.__left_, __ptr)
     _std__tree_remove(__root, __ptr)
     return __r
   }
-  
+
   @inlinable
   @inline(__always)
   internal func ___remove_node_pointer(_ __ptr: _NodePtr) {

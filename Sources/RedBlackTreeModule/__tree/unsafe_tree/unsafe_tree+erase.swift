@@ -8,7 +8,7 @@
 // 主流のeraseはsafe_treeのものをつかう
 
 @usableFromInline
-protocol ___EraseProtocol: RemoveProtocol_ptr, RemoveInteface, DellocatorInterface {
+protocol ___EraseProtocol: RemoveProtocol_ptr, RemoveInteface, DellocationInterface {
 }
 
 extension ___EraseProtocol {

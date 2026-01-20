@@ -7,13 +7,13 @@
 
 
 @usableFromInline
-protocol AllocatorInterface: _NodePtrType, _ValueType {
+protocol AllocationInterface: _NodePtrType, _ValueType {
   /// ノードを構築する
   func __construct_node(_ k: _Value) -> _NodePtr
 }
 
 @usableFromInline
-protocol DellocatorInterface: _NodePtrType {
-  /// ノードを破棄する
+protocol DellocationInterface: _NodePtrType {
+  /// ノードを破壊する
   func destroy(_ p: _NodePtr)
 }

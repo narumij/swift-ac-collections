@@ -37,7 +37,7 @@ extension InsertNodeAtProtocol_ptr {
 }
 
 @usableFromInline
-protocol InsertUniqueProtocol_ptr: _UnsafeNodePtrType, InsertUniqueInterface & AllocatorInterface
+protocol InsertUniqueProtocol_ptr: _UnsafeNodePtrType, InsertUniqueInterface & AllocationInterface
     & KeyInterface, _nullptr_interface
 {}
 

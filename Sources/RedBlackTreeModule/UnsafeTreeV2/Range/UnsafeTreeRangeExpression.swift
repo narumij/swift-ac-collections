@@ -45,15 +45,15 @@ extension UnsafeTreeRangeExpression {
   {
     switch self {
     case .range(let lhs, let rhs):
-      .init(__first: lhs, __last: rhs)
+      .init(___from: lhs, ___to: rhs)
     case .closedRange(let lhs, let rhs):
-      .init(__first: lhs, __last: __tree_next(rhs))
+      .init(___from: lhs, ___to: __tree_next(rhs))
     case .partialRangeTo(let rhs):
-      .init(__first: _begin, __last: rhs)
+      .init(___from: _begin, ___to: rhs)
     case .partialRangeThrough(let rhs):
-      .init(__first: _begin, __last: __tree_next(rhs))
+      .init(___from: _begin, ___to: __tree_next(rhs))
     case .partialRangeFrom(let lhs):
-      .init(__first: lhs, __last: _end)
+      .init(___from: lhs, ___to: _end)
     }
   }
 }

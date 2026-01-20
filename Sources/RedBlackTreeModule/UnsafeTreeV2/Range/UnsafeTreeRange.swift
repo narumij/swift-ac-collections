@@ -10,33 +10,33 @@
 @frozen
 public struct UnsafeTreeRange: _UnsafeNodePtrType, Equatable {
 
-  var __first: _NodePtr
-  var __last: _NodePtr
+  var ___from: _NodePtr
+  var ___to: _NodePtr
 
   @usableFromInline
-  internal init(__first: _NodePtr, __last: _NodePtr) {
+  internal init(___from: _NodePtr, ___to: _NodePtr) {
     // 回収済みポインタではないこと
-    assert(!__first.pointee.isGarbaged)
-    assert(!__last.pointee.isGarbaged)
+    assert(!___from.pointee.isGarbaged)
+    assert(!___to.pointee.isGarbaged)
     // 同一の木のポインタであることを保証すること
-    assert(__first.__slow_end() == __last.__slow_end())
+    assert(___from.__slow_end() == ___to.__slow_end())
 
-    self.__first = __first
-    self.__last = __last
+    self.___from = ___from
+    self.___to = ___to
   }
 }
 
 extension UnsafeTreeRange {
 
   func next(after __current: inout _NodePtr) -> _NodePtr? {
-    guard __current != __last else { return nil }
+    guard __current != ___to else { return nil }
     let __r = __current
     __current = __tree_next_iter(__current)
     return __r
   }
 
   func next(before __current: inout _NodePtr) -> _NodePtr? {
-    guard __current != __first else { return nil }
+    guard __current != ___from else { return nil }
     __current = __tree_prev_iter(__current)
     return __current
   }

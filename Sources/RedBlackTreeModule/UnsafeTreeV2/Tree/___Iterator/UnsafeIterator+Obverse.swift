@@ -18,14 +18,14 @@ extension UnsafeIterator {
     @usableFromInline
     internal init(___tree_range: UnsafeTreeRange) {
       self.___tree_range = ___tree_range
-      self.__current = ___tree_range.__first
+      self.__current = ___tree_range.___from
     }
 
     @usableFromInline
     internal init(__first: _NodePtr, __last: _NodePtr) {
       self.init(
         ___tree_range:
-          UnsafeTreeRange(__first: __first, __last: __last))
+          UnsafeTreeRange(___from: __first, ___to: __last))
     }
 
     public mutating func next() -> _NodePtr? {

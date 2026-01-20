@@ -56,11 +56,13 @@ extension _PointerIndex {
   }
 
   /// 数値を直接扱うことを避けるための初期化メソッド
+  @available(*, deprecated, message: "_NodePtrがIntからポインタに移行したので、概ね不要になったため")
   @inlinable
   @inline(__always)
   package static func node(_ p: Int) -> Self { p }
 }
 
+/// pointer indexでのsentinel判定関数
 @inlinable
 @inline(__always)
 package func ___is_null_or_end(_ ptr: _PointerIndex) -> Bool {

@@ -7,11 +7,16 @@
 
 public enum UnsafeTreeRangeExpression {
   public typealias Bound = UnsafeMutablePointer<UnsafeNode>
-  case range(lhs: Bound, rhs: Bound)
-  case closedRange(lhs: Bound, rhs: Bound)
-  case partialRangeTo(rhs: Bound)
-  case partialRangeThrough(rhs: Bound)
-  case partialRangeFrom(lhs: Bound)
+  /// `a..<b` のこと
+  case range(from: Bound, to: Bound)
+  /// `a...b` のこと
+  case closedRange(from: Bound, through: Bound)
+  /// `..<a` のこと
+  case partialRangeTo(Bound)
+  /// `...a` のこと
+  case partialRangeThrough(Bound)
+  /// `a...` のこと
+  case partialRangeFrom(Bound)
 }
 
 extension UnsafeTreeRangeExpression {
@@ -56,29 +61,29 @@ extension UnsafeTreeRangeExpression {
 public func ..< (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
   -> UnsafeTreeRangeExpression
 {
-  .range(lhs: lhs, rhs: rhs)
+  .range(from: lhs, to: rhs)
 }
 
 public func ... (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
   -> UnsafeTreeRangeExpression
 {
-  .closedRange(lhs: lhs, rhs: rhs)
+  .closedRange(from: lhs, through: rhs)
 }
 
 public prefix func ..< (rhs: UnsafeMutablePointer<UnsafeNode>)
   -> UnsafeTreeRangeExpression
 {
-  .partialRangeTo(rhs: rhs)
+  .partialRangeTo(rhs)
 }
 
 public prefix func ... (rhs: UnsafeMutablePointer<UnsafeNode>)
   -> UnsafeTreeRangeExpression
 {
-  .partialRangeThrough(rhs: rhs)
+  .partialRangeThrough(rhs)
 }
 
 public postfix func ... (lhs: UnsafeMutablePointer<UnsafeNode>)
   -> UnsafeTreeRangeExpression
 {
-  .partialRangeFrom(lhs: lhs)
+  .partialRangeFrom(lhs)
 }

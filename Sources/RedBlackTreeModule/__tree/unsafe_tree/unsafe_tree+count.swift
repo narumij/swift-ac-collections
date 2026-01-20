@@ -23,7 +23,15 @@
 import Foundation
 
 @usableFromInline
-protocol CountProtocol_ptr: _UnsafeNodePtrType, BoundInteface, RootInterface, ThreeWayComparatorInterface, _nullptr_interface, TreeNodeValueInterface, EndNodeInterface, BoundAlgorithmProtocol_common_ptr
+protocol CountProtocol_ptr:
+  _UnsafeNodePtrType
+    & EndNodeInterface
+    & RootInterface
+    & ThreeWayComparatorInterface
+    & BoundInteface
+    & TreeNodeValueInterface
+    & BoundAlgorithmProtocol_common_ptr
+    & _nullptr_interface
 where _InputIter == _NodePtr, difference_type == Int {
   associatedtype _InputIter
   associatedtype difference_type

@@ -22,9 +22,14 @@
 
 import Foundation
 
-
 @usableFromInline
-protocol CompareBothProtocol_ptr: _UnsafeNodePtrType, CompareBothInterface, CompareUniqueProtocol, CompareMultiInterface, NodeBitmapInterface {
+protocol CompareBothProtocol_ptr:
+  _UnsafeNodePtrType
+    & NodeBitmapInterface
+    & CompareUniqueProtocol
+    & CompareMultiInterface
+    & CompareBothInterface
+{
   var isMulti: Bool { get }
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }
@@ -65,7 +70,9 @@ extension CompareBothProtocol_ptr {
 }
 
 @usableFromInline
-protocol CompareMultiProtocol_ptr: _UnsafeNodePtrType & RootInterface & EndInterface & _nullptr_interface {}
+protocol CompareMultiProtocol_ptr: _UnsafeNodePtrType & RootInterface & EndInterface
+    & _nullptr_interface
+{}
 
 extension CompareMultiProtocol_ptr {
 
@@ -127,7 +134,9 @@ extension CompareMultiProtocol_ptr {
 }
 
 @usableFromInline
-protocol NodeBitmapProtocol_ptr: _UnsafeNodePtrType, NodeBitmapInterface & RootInterface & EndInterface, _nullptr_interface {}
+protocol NodeBitmapProtocol_ptr: _UnsafeNodePtrType, NodeBitmapInterface & RootInterface
+    & EndInterface, _nullptr_interface
+{}
 
 extension NodeBitmapProtocol_ptr {
 

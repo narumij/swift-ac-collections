@@ -6,7 +6,10 @@
 //
 
 @usableFromInline
-protocol DistanceProtocol_ptr: _UnsafeNodePtrType & PointerCompareInterface {}
+protocol DistanceProtocol_ptr:
+  _UnsafeNodePtrType
+    & PointerCompareInterface
+{}
 
 extension DistanceProtocol_ptr {
 

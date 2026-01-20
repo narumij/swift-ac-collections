@@ -7,12 +7,13 @@
 
 import Testing
 import RedBlackTreeModule
+import Foundation
 
 struct TestRedBlackTreeSetFatalError {
 
   @Test
-  func `削除済みインデックスを再度利用するとfatalErrorとなること`() async {
-    await #expect(processExitsWith: .failure) {
+  func `削除済みインデックスを再度利用した場合、SIGSEGV以外の方法で停止すること`() async {
+    await #expect(processExitsWith: .signal(SIGTRAP)) {
       var a = RedBlackTreeSet<Int>(0..<100)
       let it = a.startIndex
       a.remove(at: it)
@@ -21,8 +22,8 @@ struct TestRedBlackTreeSetFatalError {
   }
   
   @Test
-  func `末尾インデックスで削除するとfatalErrorとなること`() async {
-    await #expect(processExitsWith: .failure) {
+  func `末尾インデックスで削除した場合、SIGSEGV以外の方法で停止すること`() async {
+    await #expect(processExitsWith: .signal(SIGTRAP)) {
       var a = RedBlackTreeSet<Int>(0..<100)
       a.remove(at: a.endIndex)
     }

@@ -57,6 +57,7 @@ extension RedBlackTreeIteratorV2.KeyValues {
   }
 }
 
+#if COMPATIBLE_ATCODER_2025
 extension RedBlackTreeIteratorV2.KeyValues.Reversed {
 
   @inlinable
@@ -67,6 +68,7 @@ extension RedBlackTreeIteratorV2.KeyValues.Reversed {
     }
   }
 }
+#endif
 
 extension RedBlackTreeIteratorV2.KeyValues.Reversed {
 

@@ -56,8 +56,10 @@ extension ___UnsafeKeyOnlySequenceV2 {
   }
 }
 
+#if COMPATIBLE_ATCODER_2025
 extension ___UnsafeKeyOnlySequenceV2 {
 
+  @available(*, deprecated, message: "性能問題があり廃止")
   @inlinable
   @inline(__always)
   internal func _forEach(_ body: (Index, _Value) throws -> Void) rethrows {
@@ -66,6 +68,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
     }
   }
 }
+#endif
 
 extension ___UnsafeKeyOnlySequenceV2 {
 

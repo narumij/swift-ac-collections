@@ -116,7 +116,8 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public init<S>(multiKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
-    self.init(__tree_:
+    self.init(
+      __tree_:
         .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) {
           Self.___tree_value($0)
         })
@@ -132,7 +133,8 @@ extension RedBlackTreeMultiMap {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == S.Element {
-    self.init(__tree_: try .create_multi(
+    self.init(
+      __tree_: try .create_multi(
         sorted: try values.sorted {
           try keyForValue($0) < keyForValue($1)
         },
@@ -636,10 +638,11 @@ extension RedBlackTreeMultiMap {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    .init(__tree_: try __tree_.___filter(_start, _end) {
-          try isIncluded(___element($0))
-        }
-      )
+    .init(
+      __tree_: try __tree_.___filter(_start, _end) {
+        try isIncluded(___element($0))
+      }
+    )
   }
 }
 
@@ -681,12 +684,14 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
     try _forEach(body)
   }
 
-  /// 特殊なforEach
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try _forEach(body)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// 特殊なforEach
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  #endif
 
   #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(*n*)

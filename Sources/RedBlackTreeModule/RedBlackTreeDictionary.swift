@@ -115,7 +115,8 @@ extension RedBlackTreeDictionary {
   public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
 
-    self.init(__tree_: .create_unique(
+    self.init(
+      __tree_: .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
         transform: Self.___tree_value
       ))
@@ -131,7 +132,8 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    self.init(__tree_: try .create_unique(
+    self.init(
+      __tree_: try .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
         uniquingKeysWith: combine,
         transform: Self.___tree_value
@@ -148,7 +150,8 @@ extension RedBlackTreeDictionary {
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == [S.Element] {
 
-    self.init(__tree_: try .create_unique(
+    self.init(
+      __tree_: try .create_unique(
         sorted: try values.sorted {
           try keyForValue($0) < keyForValue($1)
         },
@@ -271,14 +274,14 @@ extension RedBlackTreeDictionary {
         var value: Value?
         defer {
           if let value {
-//            _ensureUniqueAndCapacity()
+            //            _ensureUniqueAndCapacity()
             let __h = __tree_.__construct_node(Self.___tree_value((key, value)))
             __tree_.__insert_node_at(__parent, __child, __h)
           }
         }
         yield &value
       } else {
-//        _ensureUnique()
+        //        _ensureUnique()
         var helper = ___ModifyHelper(pointer: &__tree_[__ptr].value)
         defer {
           if helper.isNil {
@@ -708,9 +711,10 @@ extension RedBlackTreeDictionary {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    .init(__tree_: try __tree_.___filter(_start, _end) {
-          try isIncluded(___element($0))
-        })
+    .init(
+      __tree_: try __tree_.___filter(_start, _end) {
+        try isIncluded(___element($0))
+      })
   }
 }
 
@@ -721,7 +725,7 @@ extension RedBlackTreeDictionary {
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
     -> RedBlackTreeDictionary<Key, T>
   {
-    .init(__tree_:  try __tree_.___mapValues(_start, _end, transform))
+    .init(__tree_: try __tree_.___mapValues(_start, _end, transform))
   }
 
   /// - Complexity: O(*n*)
@@ -754,12 +758,14 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
     try _forEach(body)
   }
 
-  /// 特殊なforEach
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try _forEach(body)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// 特殊なforEach
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  #endif
 
   #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(*n*)

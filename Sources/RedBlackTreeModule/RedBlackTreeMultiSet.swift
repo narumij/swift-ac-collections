@@ -595,12 +595,14 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
     try _forEach(body)
   }
 
-  /// 特殊なforEach
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
-    try _forEach(body)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// 特殊なforEach
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  #endif
 
   #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(*n*)

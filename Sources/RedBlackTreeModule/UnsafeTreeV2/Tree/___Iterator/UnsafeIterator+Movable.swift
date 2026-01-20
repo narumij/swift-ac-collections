@@ -99,8 +99,10 @@ extension UnsafeIterator.Movable: Comparable where Source: Equatable, Element: C
   where Source: Sendable {}
 #endif
 
+#if COMPATIBLE_ATCODER_2025
 extension UnsafeIterator.Movable {
 
+  @available(*, deprecated, message: "性能問題があり廃止")
   @inlinable
   @inline(__always)
   public func forEach(_ body: (UnsafeIndexV2<Base>, Element) throws -> Void) rethrows
@@ -110,6 +112,7 @@ extension UnsafeIterator.Movable {
     }
   }
 }
+#endif
 
 extension UnsafeIterator.Movable
 where

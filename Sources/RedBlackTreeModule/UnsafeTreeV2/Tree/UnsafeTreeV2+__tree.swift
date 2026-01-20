@@ -262,7 +262,14 @@ extension UnsafeTreeV2: BoundProtocol {
 }
 
 extension UnsafeTreeV2: FindProtocol_ptr {}
-extension UnsafeTreeV2: FindEqualInterface, FindEqualProtocol_std {}
+extension UnsafeTreeV2: FindEqualInterface, FindEqualProtocol_ptr {
+  
+  @inlinable
+  @inline(__always)
+  func __comp(_ __lhs: Base._Key, _ __rhs: Base._Key) -> Base.__compare_result {
+    __lazy_synth_three_way_comparator(__lhs, __rhs)
+  }
+}
 extension UnsafeTreeV2: FindLeafProtocol {}
 extension UnsafeTreeV2: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2: InsertUniqueInterface, InsertUniqueProtocol_ptr {}

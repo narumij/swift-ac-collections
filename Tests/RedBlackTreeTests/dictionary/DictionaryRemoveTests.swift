@@ -190,7 +190,11 @@ final class DictionaryRemoveTests: RedBlackTreeTestCase {
         members.___remove(at: i)
       }
       assert(members.count == 4)
+      #if COMPATIBLE_ATCODER_2025
       assert(members.keys() + [] == [0, 1, 8, 9])
+      #else
+      assert(members.keys + [] == [0, 1, 8, 9])
+      #endif
       XCTAssertEqual(AnySequence(members).map { $0.key }, [0, 1, 8, 9])
       XCTAssertEqual(AnyCollection(members).map { $0.key }, [0, 1, 8, 9])
       XCTAssertEqual(members.map { $0.key }, [0, 1, 8, 9])

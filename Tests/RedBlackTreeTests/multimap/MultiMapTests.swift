@@ -471,7 +471,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
         XCTAssertEqual(
           dict.updateValue(
             0,
-            at: Target<Int, Int>.Index.unsafe(tree: dict.__tree_, rawValue: .nullptr))?.value,
+            at: Target<Int, Int>.Index.unsafe(tree: dict.__tree_, rawValue: Int.nullptr))?.value,
           nil)
       #endif
       XCTAssertEqual(dict.updateValue(0, at: dict.endIndex)?.value, nil)

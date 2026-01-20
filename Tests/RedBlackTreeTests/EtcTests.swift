@@ -1002,4 +1002,10 @@ final class EtcTests: RedBlackTreeTestCase {
     let a = RedBlackTreeSet<Int>(0..<100)
     XCTAssertEqual(a[.lower(10) ..< .lower(20)] + [], (10..<20) + [])
   }
+  
+  func testRemoveSubBound() throws {
+    var a = RedBlackTreeSet<Int>(0..<100)
+    a.removeSub(bounds: .lower(10) ..< .end)
+    XCTAssertEqual(a + [], (0..<10) + [])
+  }
 }

@@ -290,46 +290,62 @@ extension UnsafeIndexV2 {
 @inlinable
 @inline(__always)
 public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
-  -> UnsafeIndexV2Collection<Base>
+  -> UnsafeIndexV2RangeExpression<Base>
 {
-  let indices = lhs.___unsafe_indices
-  let bounds = (lhs..<rhs).relative(to: indices)
-  return indices[bounds.lowerBound..<bounds.upperBound]
+  guard lhs.__tree_.isTriviallyIdentical(to: rhs.__tree_) else {
+    // TODO: 適切なエラーメッセージに変更
+    // 木のミスマッチを取り扱わない
+    fatalError(.invalidIndex)
+  }
+
+  return .init(
+    __tree_: lhs.__tree_, rawValue: lhs.rawValue..<rhs.rawValue, poolLifespan: lhs.poolLifespan)
 }
 
 #if !COMPATIBLE_ATCODER_2025
   @inlinable
   @inline(__always)
   public func ... <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
-    -> UnsafeIndexV2Collection<Base>
+    -> UnsafeIndexV2RangeExpression<Base>
   {
-    let indices = lhs.___unsafe_indices
-    let bounds = (lhs...rhs).relative(to: indices)
-    return indices[bounds.lowerBound..<bounds.upperBound]
+    guard lhs.__tree_.isTriviallyIdentical(to: rhs.__tree_) else {
+      // TODO: 適切なエラーメッセージに変更
+      // 木のミスマッチを取り扱わない
+      fatalError(.invalidIndex)
+    }
+
+    return .init(
+      __tree_: lhs.__tree_, rawValue: lhs.rawValue...rhs.rawValue, poolLifespan: lhs.poolLifespan)
   }
 
   @inlinable
   @inline(__always)
-  public prefix func ..< <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2Collection<Base> {
-    let indices = rhs.___unsafe_indices
-    let bounds = (..<rhs).relative(to: indices)
-    return indices[bounds.lowerBound..<bounds.upperBound]
+  public prefix func ..< <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
+    return .init(
+      __tree_: rhs.__tree_,
+      rawValue: ..<rhs.rawValue,
+      poolLifespan: rhs.poolLifespan)
   }
 
   @inlinable
   @inline(__always)
-  public prefix func ... <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2Collection<Base> {
-    let indices = rhs.___unsafe_indices
-    let bounds = (...rhs).relative(to: indices)
-    return indices[bounds.lowerBound..<bounds.upperBound]
+  public prefix func ... <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
+    guard let rhs = rhs.next else {
+      fatalError(.invalidIndex)
+    }
+    return .init(
+      __tree_: rhs.__tree_,
+      rawValue: ...rhs.rawValue,
+      poolLifespan: rhs.poolLifespan)
   }
 
   @inlinable
   @inline(__always)
-  public postfix func ... <Base>(lhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2Collection<Base> {
-    let indices = lhs.___unsafe_indices
-    let bounds = (lhs...).relative(to: indices)
-    return indices[bounds.lowerBound..<bounds.upperBound]
+  public postfix func ... <Base>(lhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
+    return .init(
+      __tree_: lhs.__tree_,
+      rawValue: lhs.rawValue...,
+      poolLifespan: lhs.poolLifespan)
   }
 #endif
 

@@ -8,6 +8,15 @@
 public enum UnsafeIterator {}
 
 extension UnsafeIterator {
+
+  public
+    typealias IndexObverse<Base: ___TreeBase & ___TreeIndex> =
+    Indexing<Base, RemoveAware<Obverse>>
+
+  public
+    typealias IndexReverse<Base: ___TreeBase & ___TreeIndex> =
+    Indexing<Base, RemoveAware<Reverse>>
+
   public
     typealias ValueObverse<Base: ___TreeBase & ___TreeIndex> = Movable<
       Value<Base, RemoveAware<Obverse>>

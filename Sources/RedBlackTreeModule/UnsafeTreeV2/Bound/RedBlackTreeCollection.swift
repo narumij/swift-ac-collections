@@ -33,8 +33,7 @@ extension RedBlackTreeSet: RedBlackTreeBoundResolverProtocol {}
 extension UnsafeTreeV2 {
   
   @usableFromInline
-  func relative(from b: RedBlackTreeBound<_Key>) -> _NodePtr
-  where _Key: Comparable {
+  func relative(from b: RedBlackTreeBound<_Key>) -> _NodePtr {
     switch b {
     case .start: __begin_node_
     case .end: __end_node

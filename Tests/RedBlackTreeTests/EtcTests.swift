@@ -431,14 +431,16 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(result, [a.startIndex + 0, a.startIndex + 1, a.startIndex + 2])
   }
 
-  func testSubObv() throws {
-    let a = RedBlackTreeSet<Int>([0, 1, 2])
-    var result = [RedBlackTreeSet<Int>.Index]()
-    a[a.startIndex..<a.endIndex].forEach { i, p in
-      result.append(i)
+  #if COMPATIBLE_ATCODER_2025
+    func testSubObv() throws {
+      let a = RedBlackTreeSet<Int>([0, 1, 2])
+      var result = [RedBlackTreeSet<Int>.Index]()
+      a[a.startIndex..<a.endIndex].forEach { i, p in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [a.startIndex + 0, a.startIndex + 1, a.startIndex + 2])
     }
-    XCTAssertEqual(result, [a.startIndex + 0, a.startIndex + 1, a.startIndex + 2])
-  }
+  #endif
 
   func testRev2() throws {
     let a = RedBlackTreeSet<Int>([0, 1, 2])
@@ -1000,7 +1002,7 @@ final class EtcTests: RedBlackTreeTestCase {
 
   func testSubBound() throws {
     let a = RedBlackTreeSet<Int>(0..<100)
-    XCTAssertEqual(a[lowerBound(10) ..< lowerBound(20)] + [], (10..<20) + [])
+    XCTAssertEqual(a[lowerBound(10)..<lowerBound(20)] + [], (10..<20) + [])
   }
 
   func testRemoveSubBound() throws {
@@ -1009,4 +1011,3 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(a + [], (0..<10) + [])
   }
 }
-

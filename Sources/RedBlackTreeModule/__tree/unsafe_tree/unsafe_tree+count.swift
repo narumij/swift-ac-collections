@@ -32,7 +32,10 @@ protocol CountProtocol_ptr:
     & TreeNodeValueInterface
     & BoundAlgorithmProtocol_common_ptr
     & _nullptr_interface
-where _InputIter == _NodePtr, difference_type == Int {
+where
+  _InputIter == _NodePtr,
+  difference_type == Int
+{
   associatedtype _InputIter
   associatedtype difference_type
   func

@@ -29,8 +29,8 @@ protocol CompareBothProtocol_ptr:
     & CompareUniqueProtocol
     & CompareMultiInterface
     & CompareBothInterface
+    & CompareTraitInterface
 {
-  var isMulti: Bool { get }
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }
 

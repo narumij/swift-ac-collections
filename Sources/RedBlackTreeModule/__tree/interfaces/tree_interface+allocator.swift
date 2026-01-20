@@ -5,9 +5,8 @@
 //  Created by narumij on 2026/01/21.
 //
 
-
 @usableFromInline
-protocol AllocationInterface: _NodePtrType, _ValueType {
+protocol AllocationInterface: _NodePtrType & _ValueType {
   /// ノードを構築する
   func __construct_node(_ k: _Value) -> _NodePtr
 }

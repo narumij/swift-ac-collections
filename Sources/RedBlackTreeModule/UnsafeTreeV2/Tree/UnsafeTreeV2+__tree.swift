@@ -246,7 +246,7 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2: ValueComparator {}
-extension UnsafeTreeV2: BoundProtocol {
+extension UnsafeTreeV2: BoundBothInterface {
 
   @inlinable
   @inline(__always)
@@ -274,6 +274,7 @@ extension UnsafeTreeV2: FindLeafProtocol {}
 extension UnsafeTreeV2: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
 extension UnsafeTreeV2: InsertMultiProtocol {}
+extension UnsafeTreeV2: BoundBothProtocol {}
 extension UnsafeTreeV2: EqualProtocol {}
 extension UnsafeTreeV2: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2: EraseProtocol {}

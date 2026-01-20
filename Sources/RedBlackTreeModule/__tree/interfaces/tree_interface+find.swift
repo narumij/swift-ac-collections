@@ -13,6 +13,6 @@ protocol FindEqualInterface: _NodePtrType & _KeyType {
 }
 
 @usableFromInline
-protocol FindInteface: _NodePtrType, _KeyType {
+protocol FindInteface: _NodePtrType & _KeyType {
   func find(_ __v: _Key) -> _NodePtr
 }

@@ -175,7 +175,7 @@ extension FindEqualProtocol_old {
 }
 
 @usableFromInline
-protocol FindProtocol_std: FindInteface & BoundProtocol & EndProtocol & FindEqualInterface & TreeNodeRefInterface {}
+protocol FindProtocol_std: FindInteface & BoundBothInterface & EndProtocol & FindEqualInterface & TreeNodeRefInterface {}
 
 extension FindProtocol_std {
 

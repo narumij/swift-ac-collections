@@ -23,10 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol EqualProtocol: EqualInterface, BoundInteface, EndNodeProtocol, RootPtrProtocol, ThreeWayComparatorInterface, TreeNodeValueInterface {
-  
-  func __lower_bound_multi(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
-  func __upper_bound_multi(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
+protocol EqualProtocol: EqualInterface, BoundBasicInterface, EndNodeProtocol, RootPtrProtocol, ThreeWayComparatorInterface, TreeNodeValueInterface {
 }
 
 extension EqualProtocol {

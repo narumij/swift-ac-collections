@@ -187,7 +187,7 @@ extension UnsafeTreeV2ScalarHandle {
   }
 }
 
-extension UnsafeTreeV2ScalarHandle: BoundProtocol, BoundAlgorithmProtocol_ptr {}
+extension UnsafeTreeV2ScalarHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: FindInteface, FindProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
@@ -198,3 +198,4 @@ extension UnsafeTreeV2ScalarHandle: InsertUniqueInterface, InsertUniqueProtocol_
 //extension UnsafeTreeV2ScalarHandle: ___EraseUniqueProtocol {}
 extension UnsafeTreeV2ScalarHandle: PointerCompareInterface, CompareTraitInterface, CompareBothInterface, CompareBothProtocol_ptr, CompareMultiProtocol_ptr, NodeBitmapProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: DistanceProtocol_ptr, CountProtocol_ptr {}
+

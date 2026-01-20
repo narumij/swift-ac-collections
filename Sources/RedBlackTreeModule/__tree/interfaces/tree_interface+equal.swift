@@ -6,9 +6,7 @@
 //
 
 @usableFromInline
-protocol EqualInterface: BoundInteface {
+protocol EqualInterface: _NodePtrType & _KeyType {
   func __equal_range_unique(_ __k: _Key) -> (_NodePtr, _NodePtr)
   func __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)
-  
-  
 }

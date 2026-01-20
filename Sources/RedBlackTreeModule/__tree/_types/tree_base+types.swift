@@ -25,20 +25,15 @@ import Foundation
 // 型の解決を制約の一致任せにしているといろいろしんどいので、
 // 型に関して辿ると一意にここら辺に定まるようにする
 
+
+// MARK: - Primitives
+
 /// ノードを指す基本型の定義
 public protocol _NodePtrType {
   /// ノードを指す型
   associatedtype _NodePtr: Equatable
   /// ノードを指すメンバへの参照型
   associatedtype _NodeRef
-}
-
-/// ノードポインタの別名の定義
-///
-/// 移植用
-public protocol _PointerType: _NodePtrType
-where _NodePtr == _Pointer {
-  associatedtype _Pointer
 }
 
 /// 比較用の値型の定義
@@ -59,8 +54,38 @@ public protocol _MappedValueType {
   associatedtype _MappedValue
 }
 
+/// 三方比較結果
+///
+/// <=>演算子に対応するものらしい
+public
+  protocol ThreeWayCompareResult
+{
+  @inlinable func __less() -> Bool
+  @inlinable func __greater() -> Bool
+}
+
+/// 三方比較結果型の定義
+public
+  protocol ThreeWayResultType
+{
+    /// 三方比較結果型
+  associatedtype __compare_result: ThreeWayCompareResult
+}
+
+// MARK: - Conditions
+
 /// ノードは必ず比較型と保持型を持つ
 public protocol _TreeValueType: _KeyType & _ValueType {}
+
+// MARK: - Aliases
+
+/// ノードポインタの別名の定義
+///
+/// 移植用
+public protocol _PointerType: _NodePtrType
+where _NodePtr == _Pointer {
+  associatedtype _Pointer
+}
 
 /// ノードポインタの別名の定義
 public protocol _pointer_type: _PointerType
@@ -92,22 +117,4 @@ protocol __value_type: _ValueType
 where __value_type == _Value {
   /// 保持型の別名
   associatedtype __value_type
-}
-
-/// 三方比較結果
-///
-/// <=>演算子に対応するものらしい
-public
-  protocol ThreeWayCompareResult
-{
-  @inlinable func __less() -> Bool
-  @inlinable func __greater() -> Bool
-}
-
-/// 三方比較結果型の定義
-public
-  protocol ThreeWayResultType
-{
-    /// 三方比較結果型
-  associatedtype __compare_result: ThreeWayCompareResult
 }

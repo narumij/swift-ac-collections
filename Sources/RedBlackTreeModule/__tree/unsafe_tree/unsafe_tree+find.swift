@@ -6,9 +6,15 @@
 //
 
 @usableFromInline
-protocol FindEqualProtocol_ptr: _UnsafeNodePtrType, ValueCompInterface, RootInterface,
-  RootPtrInterface, EndInterface, EndNodeInterface,
-  ThreeWayComparatorInterface, _nullptr_interface
+protocol FindEqualProtocol_ptr:
+  _UnsafeNodePtrType
+    & EndNodeInterface
+    & EndInterface
+    & RootInterface
+    & RootPtrInterface
+    & ValueCompInterface
+    & ThreeWayComparatorInterface
+    & _nullptr_interface
 {
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __compare_result
 }
@@ -16,17 +22,17 @@ protocol FindEqualProtocol_ptr: _UnsafeNodePtrType, ValueCompInterface, RootInte
 extension FindEqualProtocol_ptr {
 
   @inlinable
-//  @inline(__always)
+  //  @inline(__always)
   internal func
     __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {
     var __nd = __root
     if __nd == nullptr {
-//      return (__end_node, end.__left_ref)
+      //      return (__end_node, end.__left_ref)
       return (__end_node, __root_ptr())
     }
     var __nd_ptr = __root_ptr()
-//    let __comp = __lazy_synth_three_way_comparator
+    //    let __comp = __lazy_synth_three_way_comparator
 
     while true {
 
@@ -55,7 +61,8 @@ extension FindEqualProtocol_ptr {
 
 @usableFromInline
 protocol FindEqualProtocol_ptr_old: _UnsafeNodePtrType, ValueCompInterface,
-  RootInterface, RootPtrInterface, EndNodeInterface, EndInterface, _nullptr_interface, TreeNodeValueInterface
+  RootInterface, RootPtrInterface, EndNodeInterface, EndInterface, _nullptr_interface,
+  TreeNodeValueInterface
 {}
 
 extension FindEqualProtocol_ptr_old {

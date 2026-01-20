@@ -17,6 +17,7 @@ protocol InsertNodeAtInterface: _NodePtrType {
 }
 
 @usableFromInline
-protocol InsertUniqueInterface: _NodePtrType & _KeyType {
-  func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+protocol InsertUniqueInterface: _NodePtrType & _ValueType {
+  func __insert_unique(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
+  func __emplace_unique_key_args(_ __k: _Value) -> (__r: _NodePtr, __inserted: Bool)
 }

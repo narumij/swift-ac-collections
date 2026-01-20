@@ -77,6 +77,14 @@ public
 /// ノードは必ず比較型と保持型を持つ
 public protocol _TreeValueType: _KeyType & _ValueType {}
 
+/// SetやMultiSetは比較型と保持型が同じ
+public protocol ScalarValueType: _KeyType & _ValueType
+where _Key == _Value { }
+
+/// DictionaryやMultiMapは比較型と保持型ことなり制約なし、マップ型がある
+public protocol KeyValueType: _KeyType & _ValueType & _MappedValueType
+{}
+
 // MARK: - Aliases
 
 /// ノードポインタの別名の定義

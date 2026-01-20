@@ -158,9 +158,3 @@ protocol ThreeWayComparatorInterface: _KeyType {
 }
 
 // MARK: -
-
-public protocol ScalarValueInterface: _KeyType & _ValueType
-where _Key == _Value { }
-
-public protocol KeyValueInterface: _KeyType & _ValueType & _MappedValueType
-{}

@@ -24,7 +24,7 @@ import Foundation
 
 
 /// 要素とキーが一致する場合のひな形
-public protocol ScalarValueComparer: ScalarValueInterface & ValueComparer & HasDefaultThreeWayComparator {}
+public protocol ScalarValueComparer: ScalarValueType & ValueComparer & HasDefaultThreeWayComparator {}
 
 extension ScalarValueComparer {
 

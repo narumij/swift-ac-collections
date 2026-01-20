@@ -53,16 +53,18 @@ final class Performaces: RedBlackTreeTestCase {
       }
     }
 
-    func testPerformanceExample4() throws {
-      //    throw XCTSkip()
-      self.measure {
-        var set = RedBlackTreeSet<Int>(0..<10_000_000)
-        set
-          .forEach { i, v in
-            set.remove(at: i)
-          }
+    #if COMPATIBLE_ATCODER_2025
+      func testPerformanceExample4() throws {
+        //    throw XCTSkip()
+        self.measure {
+          var set = RedBlackTreeSet<Int>(0..<10_000_000)
+          set
+            .forEach { i, v in
+              set.remove(at: i)
+            }
+        }
       }
-    }
+    #endif
 
     func testPerformanceExample5() throws {
       //    throw XCTSkip()

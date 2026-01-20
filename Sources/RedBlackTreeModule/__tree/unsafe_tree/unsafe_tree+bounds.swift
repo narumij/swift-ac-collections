@@ -6,7 +6,10 @@
 //
 
 @usableFromInline
-protocol BoundAlgorithmProtocol_ptr: BoundAlgorithmProtocol_common_ptr & ThreeWayComparatorInterface, _nullptr_interface
+protocol BoundAlgorithmProtocol_ptr:
+  BoundAlgorithmProtocol_common_ptr
+    & ThreeWayComparatorInterface
+    & _nullptr_interface
 {}
 
 extension BoundAlgorithmProtocol_ptr {
@@ -61,8 +64,13 @@ extension BoundAlgorithmProtocol_ptr {
 }
 
 @usableFromInline
-protocol BoundAlgorithmProtocol_common_ptr: _UnsafeNodePtrType, ValueCompInterface,
-  TreeNodeValueInterface, RootInterface & EndNodeInterface, _nullptr_interface
+protocol BoundAlgorithmProtocol_common_ptr:
+  _UnsafeNodePtrType
+    & EndNodeInterface
+    & RootInterface
+    & TreeNodeValueInterface
+    & ValueCompInterface
+    & _nullptr_interface
 {}
 
 extension BoundAlgorithmProtocol_common_ptr {

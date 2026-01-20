@@ -187,9 +187,12 @@ extension ComparableThreeWayComparator {
   }
 }
 
-public protocol HasDefaultThreeWayComparator: ThreeWayComparator {}
+public protocol HasDefaultThreeWayComparator: ThreeWayComparator
+{}
 
-extension HasDefaultThreeWayComparator where _Key: Comparable {
+extension HasDefaultThreeWayComparator
+where _Key: Comparable,
+      __compare_result == __int_compare_result {
 
   @inlinable
   @inline(__always)

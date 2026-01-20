@@ -22,9 +22,8 @@
 
 import Foundation
 
-
 /// 要素がキーバリューの場合のひな形
-public protocol KeyValueComparer: KeyValueInterface, ValueComparer & HasDefaultThreeWayComparator {
+public protocol KeyValueComparer: KeyValueInterface & ValueComparer & HasDefaultThreeWayComparator {
   static func ___mapped_value(_ element: _Value) -> _MappedValue
   static func ___with_mapped_value<T>(_ element: inout _Value, _: (inout _MappedValue) throws -> T)
     rethrows -> T

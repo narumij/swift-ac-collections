@@ -50,6 +50,7 @@ extension _PointerIndex {
     -1
   }
 
+  /// メモリでバッグのためのダミー値
   @inlinable
   package static var debug: Self {
     -999

@@ -25,10 +25,7 @@ import Foundation
 // MARK: -
 
 @usableFromInline
-protocol KeyProtocol: KeyInterface, TreeNodeValueInterface, TreeValueInterface {
-  /// 要素から比較用のキー値を取り出す。
-  @inlinable func __key(_ e: _Value) -> _Key
-}
+protocol KeyProtocol: KeyInterface, TreeNodeValueInterface, TreeValueInterface {}
 
 extension KeyProtocol {
 
@@ -41,10 +38,7 @@ extension KeyProtocol {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol ValueProtocol: ValueCompInterface, TreeNodeInterface, TreeNodeValueInterface, _end_interface {
-  /// キー同士を比較する。通常`<`と同じ
-  @inlinable func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
-}
+protocol ValueProtocol: ValueCompInterface, TreeNodeInterface, TreeNodeValueInterface, _end_interface {}
 
 @usableFromInline
 protocol BeginProtocol: BeginNodeInterface {
@@ -64,10 +58,7 @@ extension BeginProtocol {
 }
 
 @usableFromInline
-protocol EndNodeProtocol: EndNodeInterface {
-  /// 終端ノード（木の右端の次の仮想ノード）を返す
-  var __end_node: _NodePtr { get }
-}
+protocol EndNodeProtocol: EndNodeInterface {}
 
 extension EndNodeProtocol where _NodePtr == Int {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
@@ -77,10 +68,7 @@ extension EndNodeProtocol where _NodePtr == Int {
 }
 
 @usableFromInline
-protocol EndProtocol: EndInterface {
-  /// 終端ノード（木の右端の次の仮想ノード）を返す
-  @inlinable var end: _NodePtr { get }
-}
+protocol EndProtocol: EndInterface {}
 
 extension EndProtocol where _NodePtr == Int {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
@@ -89,7 +77,7 @@ extension EndProtocol where _NodePtr == Int {
   internal var end: _NodePtr { .end }
 }
 
-protocol ___RootProtocol: TreeNodeInterface & EndNodeProtocol {}
+protocol ___RootProtocol: RootInterface & TreeNodeInterface & EndNodeProtocol {}
 
 extension ___RootProtocol where _NodePtr == Int {
   @available(*, deprecated, message: "Kept only for the purpose of preventing loss of knowledge")

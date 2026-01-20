@@ -21,6 +21,8 @@ var defines: [String] = [
 
 //  "USE_C_MALLOC",
   "USE_COPY_ON_WRITE",
+  
+//  "DEATH_TEST",
 ]
 
 var _settings: [SwiftSetting] =

@@ -80,14 +80,17 @@ extension RedBlackTreeSliceV2.KeyValue {
   #endif
 }
 
+#if COMPATIBLE_ATCODER_2025
 extension RedBlackTreeSliceV2.KeyValue {
 
+  @available(*, deprecated, message: "性能問題があり廃止")
   @inlinable
   @inline(__always)
   public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
     try _forEach(body)
   }
 }
+#endif
 
 extension RedBlackTreeSliceV2.KeyValue {
 

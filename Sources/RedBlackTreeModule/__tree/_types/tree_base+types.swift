@@ -81,7 +81,7 @@ public protocol _TreeValueType: _KeyType & _ValueType {}
 public protocol ScalarValueType: _KeyType & _ValueType
 where _Key == _Value { }
 
-/// DictionaryやMultiMapは比較型と保持型ことなり制約なし、マップ型がある
+/// DictionaryやMultiMapは比較型と保持型は異なり、制約なし、マップ値型がある
 public protocol KeyValueType: _KeyType & _ValueType & _MappedValueType
 {}
 

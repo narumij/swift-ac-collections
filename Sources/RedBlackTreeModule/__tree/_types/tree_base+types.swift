@@ -57,3 +57,16 @@ protocol __value_type: _ValueType
 where __value_type == _Value {
   associatedtype __value_type
 }
+
+public
+  protocol ThreeWayCompareResult
+{
+  @inlinable func __less() -> Bool
+  @inlinable func __greater() -> Bool
+}
+
+public
+  protocol ThreeWayResultType
+{
+  associatedtype __compare_result: ThreeWayCompareResult
+}

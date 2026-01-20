@@ -22,7 +22,8 @@ extension FindEqualProtocol_ptr {
   {
     var __nd = __root
     if __nd == nullptr {
-      return (__end_node, end.__left_ref)
+//      return (__end_node, end.__left_ref)
+      return (__end_node, __root_ptr())
     }
     var __nd_ptr = __root_ptr()
 //    let __comp = __lazy_synth_three_way_comparator

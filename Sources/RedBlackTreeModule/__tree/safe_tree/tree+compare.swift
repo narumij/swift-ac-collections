@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol CompareBothProtocol_std: CompareBothInterface, CompareUniqueProtocol, CompareMultiInterface, NodeBitmapProtocol_std {
+protocol CompareBothProtocol_std: PointerCompareInterface, CompareUniqueProtocol, CompareMultiInterface, NodeBitmapProtocol_std {
   var isMulti: Bool { get }
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }
@@ -63,7 +63,7 @@ extension CompareBothProtocol_std {
   }
 }
 
-public protocol CompareTrait: CompareTraitInterface {
+public protocol CompareTrait: IsMultiTraitInterface {
   static var isMulti: Bool { get }
 }
 
@@ -72,14 +72,14 @@ extension CompareTrait {
   public var isMulti: Bool { Self.isMulti }
 }
 
-public protocol CompareUniqueTrait: CompareTrait & CompareTraitInterface {}
+public protocol CompareUniqueTrait: CompareTrait & IsMultiTraitInterface {}
 
 extension CompareUniqueTrait {
   @inlinable @inline(__always)
   public static var isMulti: Bool { false }
 }
 
-public protocol CompareMultiTrait: CompareTrait & CompareTraitInterface {}
+public protocol CompareMultiTrait: CompareTrait & IsMultiTraitInterface {}
 
 extension CompareMultiTrait {
   @inlinable @inline(__always)

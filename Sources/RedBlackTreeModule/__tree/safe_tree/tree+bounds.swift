@@ -26,7 +26,7 @@ import Foundation
 protocol BoundBothProtocol:
   BoundInteface
     & BoundBothInterface
-    & CompareTraitInterface
+    & IsMultiTraitInterface
 {}
 
 extension BoundBothProtocol {

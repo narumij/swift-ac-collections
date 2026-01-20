@@ -10,12 +10,7 @@ protocol PointerCompareInterface: _NodePtrType {
   func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }
 
-@usableFromInline
-protocol CompareBothInterface: _NodePtrType {
-  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
-}
-
-public protocol CompareTraitInterface {
+public protocol IsMultiTraitInterface {
   var isMulti: Bool { get }
 }
 

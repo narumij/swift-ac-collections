@@ -25,11 +25,11 @@ import Foundation
 @usableFromInline
 protocol CompareBothProtocol_ptr:
   _UnsafeNodePtrType
+    & PointerCompareInterface
     & NodeBitmapInterface
     & CompareUniqueProtocol
     & CompareMultiInterface
-    & CompareBothInterface
-    & CompareTraitInterface
+    & IsMultiTraitInterface
 {
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }

@@ -7,10 +7,14 @@
 
 import Foundation
 
+/// nullへのインスタンスアクセス
+///
+/// nullptrへはグローバルアクセスもあるが、性能観点でインスタンスアクセスを利用している
 public protocol _nullptr_interface: _PointerType {
   var nullptr: _Pointer { get }
 }
 
+/// endへのインスタンスアクセス
 public protocol _end_interface: _NodePtrType {
   var end: _NodePtr { get }
 }

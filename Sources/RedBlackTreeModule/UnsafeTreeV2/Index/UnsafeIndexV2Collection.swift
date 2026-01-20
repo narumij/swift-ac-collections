@@ -76,7 +76,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
   public var startIndex: Index { ___index(_start) }
   public var endIndex: Index { ___index(_end) }
 
-  public func makeIterator() -> Iterator {
+  public func makeIterator() -> UnsafeIterator.IndexObverse<Base> {
     .init(
       __tree_: __tree_,
       start: _start,
@@ -113,24 +113,33 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
       end: bounds.upperBound.rawValue,
       poolLifespan: bounds.lowerBound.poolLifespan)
   }
-  
+
   #if !COMPATIBLE_ATCODER_2025
+    //    @inlinable
+    //    @inline(__always)
+    //    public subscript<R>(bounds: R) -> UnsafeIndexV2Collection
+    //    where R: RangeExpression, R.Bound == Index {
+    //      let bounds: Range<Index> = bounds.relative(to: self)
+    //      return .init(
+    //        __tree_: __tree_,
+    //        start: bounds.lowerBound.rawValue,
+    //        end: bounds.upperBound.rawValue,
+    //        poolLifespan: bounds.lowerBound.poolLifespan)
+    //    }
     @inlinable
     @inline(__always)
-    public subscript<R>(bounds: R) -> UnsafeIndexV2Collection
-    where R: RangeExpression, R.Bound == Index {
-      let bounds: Range<Index> = bounds.relative(to: self)
-      return .init(
-        __tree_: __tree_,
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue,
-        poolLifespan: bounds.lowerBound.poolLifespan)
+    public subscript(bounds: UnsafeIndexV2RangeExpression<Base>) -> UnsafeIndexV2Collection {
+      let (lower, upper) = bounds.rawValue.pair(
+        _begin: __tree_.__begin_node_,
+        _end: __tree_.__end_node)
+      return .init(__tree_: __tree_, start: lower, end: upper, poolLifespan: poolLifespan)
     }
   #endif
 }
 
 extension UnsafeIndexV2Collection {
 
+#if false
   public struct Iterator: IteratorProtocol, UnsafeTreeProtocol, UnsafeImmutableIndexingProtocol {
 
     @usableFromInline
@@ -166,6 +175,7 @@ extension UnsafeIndexV2Collection {
       return ___index(_current)
     }
   }
+#endif
 }
 
 extension UnsafeIndexV2Collection {

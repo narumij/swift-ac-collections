@@ -5,6 +5,7 @@
 //  Created by narumij on 2026/01/19.
 //
 
+#if false
 @usableFromInline
 protocol RedBlackTreeBoundResolverProtocol: Collection {
   associatedtype Key
@@ -29,6 +30,7 @@ extension RedBlackTreeBound {
 }
 
 extension RedBlackTreeSet: RedBlackTreeBoundResolverProtocol {}
+#endif
 
 extension UnsafeTreeV2 {
   

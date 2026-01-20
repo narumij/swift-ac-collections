@@ -16,6 +16,7 @@ public enum UnsafeTreeRangeExpression {
 
 extension UnsafeTreeRangeExpression {
   
+  @usableFromInline
   func pair(_begin: UnsafeMutablePointer<UnsafeNode>, _end: UnsafeMutablePointer<UnsafeNode>)
     -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)
   {
@@ -33,6 +34,7 @@ extension UnsafeTreeRangeExpression {
     }
   }
 
+  @usableFromInline
   func range(_begin: UnsafeMutablePointer<UnsafeNode>, _end: UnsafeMutablePointer<UnsafeNode>)
     -> UnsafeTreeRange
   {

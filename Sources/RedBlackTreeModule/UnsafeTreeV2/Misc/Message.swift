@@ -63,4 +63,10 @@ extension String {
   internal static var alignnment: String {
     "Memory allocation failed due to alignment constraints."
   }
+  
+  @usableFromInline
+  internal static var treeMissmatch: String {
+    // TODO: 適切なエラーメッセージに変更
+    "木が異なる"
+  }
 }

@@ -867,19 +867,19 @@ final class DictionaryTests: RedBlackTreeTestCase {
     typealias Index = RedBlackTreeDictionary<Int, String>.Index
     #if DEBUG
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
-#if !USE_UNSAFE_TREE
-      // UnsafeTreeでは、範囲外のインデックスを作成できない
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
-#endif
+      #if !USE_UNSAFE_TREE
+        // UnsafeTreeでは、範囲外のインデックスを作成できない
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
+      #endif
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr as Int)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 2)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 3)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
-#if !USE_UNSAFE_TREE
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
-#endif
+      #if !USE_UNSAFE_TREE
+        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
+      #endif
     #endif
   }
 
@@ -903,9 +903,9 @@ final class DictionaryTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 6)))
-    #if !USE_UNSAFE_TREE
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
-    #endif
+      #if !USE_UNSAFE_TREE
+        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
+      #endif
     #endif
   }
 
@@ -1111,14 +1111,16 @@ final class DictionaryTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testForEach_enumeration() throws {
-    let source = [0, 1, 2, 3, 4, 5].map { ($0, $0 * 10) }
-    let a = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: source)
-    var p: RedBlackTreeDictionary<Int, Int>.Index? = a.startIndex
-    a.forEach { i, v in
-      XCTAssertEqual(i, p)
-      XCTAssertEqual(RedBlackTreePair(a[p!]), RedBlackTreePair(v))
-      p = p?.next
+  #if COMPATIBLE_ATCODER_2025
+    func testForEach_enumeration() throws {
+      let source = [0, 1, 2, 3, 4, 5].map { ($0, $0 * 10) }
+      let a = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: source)
+      var p: RedBlackTreeDictionary<Int, Int>.Index? = a.startIndex
+      a.forEach { i, v in
+        XCTAssertEqual(i, p)
+        XCTAssertEqual(RedBlackTreePair(a[p!]), RedBlackTreePair(v))
+        p = p?.next
+      }
     }
-  }
+  #endif
 }

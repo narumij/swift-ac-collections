@@ -422,14 +422,16 @@ final class EtcTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testObv() throws {
-    let a = RedBlackTreeSet<Int>([0, 1, 2])
-    var result = [RedBlackTreeSet<Int>.Index]()
-    a.forEach { i, p in
-      result.append(i)
+  #if COMPATIBLE_ATCODER_2025
+    func testObv() throws {
+      let a = RedBlackTreeSet<Int>([0, 1, 2])
+      var result = [RedBlackTreeSet<Int>.Index]()
+      a.forEach { i, p in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [a.startIndex + 0, a.startIndex + 1, a.startIndex + 2])
     }
-    XCTAssertEqual(result, [a.startIndex + 0, a.startIndex + 1, a.startIndex + 2])
-  }
+  #endif
 
   #if COMPATIBLE_ATCODER_2025
     func testSubObv() throws {
@@ -442,50 +444,54 @@ final class EtcTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testRev2() throws {
-    let a = RedBlackTreeSet<Int>([0, 1, 2])
-    var result = [RedBlackTreeSet<Int>.Index]()
-    a.reversed().forEach { i, p in
-      result.append(i)
+  #if COMPATIBLE_ATCODER_2025
+    func testRev2() throws {
+      let a = RedBlackTreeSet<Int>([0, 1, 2])
+      var result = [RedBlackTreeSet<Int>.Index]()
+      a.reversed().forEach { i, p in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [a.startIndex + 2, a.startIndex + 1, a.startIndex + 0])
     }
-    XCTAssertEqual(result, [a.startIndex + 2, a.startIndex + 1, a.startIndex + 0])
-  }
+  #endif
 
-  func testSubRev2() throws {
-    let a = RedBlackTreeSet<Int>([0, 1, 2])
-    var result = [RedBlackTreeSet<Int>.Index]()
-    a[a.startIndex..<a.endIndex].reversed().forEach { i, p in
-      result.append(i)
+  #if COMPATIBLE_ATCODER_2025
+    func testSubRev2() throws {
+      let a = RedBlackTreeSet<Int>([0, 1, 2])
+      var result = [RedBlackTreeSet<Int>.Index]()
+      a[a.startIndex..<a.endIndex].reversed().forEach { i, p in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [a.startIndex + 2, a.startIndex + 1, a.startIndex + 0])
     }
-    XCTAssertEqual(result, [a.startIndex + 2, a.startIndex + 1, a.startIndex + 0])
-  }
 
-  func testSubRev3() throws {
-    let a = RedBlackTreeSet<Int>([0, 1, 2])
-    var result = [RedBlackTreeSet<Int>.Index]()
-    a[a.endIndex..<a.endIndex].reversed().forEach { i, p in
-      result.append(i)
+    func testSubRev3() throws {
+      let a = RedBlackTreeSet<Int>([0, 1, 2])
+      var result = [RedBlackTreeSet<Int>.Index]()
+      a[a.endIndex..<a.endIndex].reversed().forEach { i, p in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
     }
-    XCTAssertEqual(result, [])
-  }
 
-  func testSubRev4() throws {
-    let a = RedBlackTreeSet<Int>([0, 1, 2])
-    var result = [RedBlackTreeSet<Int>.Index]()
-    a[a.startIndex..<a.startIndex].reversed().forEach { i, p in
-      result.append(i)
+    func testSubRev4() throws {
+      let a = RedBlackTreeSet<Int>([0, 1, 2])
+      var result = [RedBlackTreeSet<Int>.Index]()
+      a[a.startIndex..<a.startIndex].reversed().forEach { i, p in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [])
     }
-    XCTAssertEqual(result, [])
-  }
 
-  func testSubRev5() throws {
-    let a = RedBlackTreeSet<Int>([0])
-    var result = [RedBlackTreeSet<Int>.Index]()
-    a[a.startIndex..<a.endIndex].reversed().forEach { i, p in
-      result.append(i)
+    func testSubRev5() throws {
+      let a = RedBlackTreeSet<Int>([0])
+      var result = [RedBlackTreeSet<Int>.Index]()
+      a[a.startIndex..<a.endIndex].reversed().forEach { i, p in
+        result.append(i)
+      }
+      XCTAssertEqual(result, [a.startIndex])
     }
-    XCTAssertEqual(result, [a.startIndex])
-  }
+  #endif
 
   #if !USE_UNSAFE_TREE
     func testSubRev6() throws {

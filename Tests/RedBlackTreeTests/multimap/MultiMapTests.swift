@@ -1278,16 +1278,18 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testForEach_enumeration() throws {
-    let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
-    let a = RedBlackTreeMultiMap<Int, Int>(multiKeysWithValues: source)
-    var p: RedBlackTreeMultiMap<Int, Int>.Index? = a.startIndex
-    a.forEach { i, v in
-      XCTAssertEqual(i, p)
-      XCTAssertTrue(a[p!] == v)
-      p = p?.next
+  #if COMPATIBLE_ATCODER_2025
+    func testForEach_enumeration() throws {
+      let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
+      let a = RedBlackTreeMultiMap<Int, Int>(multiKeysWithValues: source)
+      var p: RedBlackTreeMultiMap<Int, Int>.Index? = a.startIndex
+      a.forEach { i, v in
+        XCTAssertEqual(i, p)
+        XCTAssertTrue(a[p!] == v)
+        p = p?.next
+      }
     }
-  }
+  #endif
 
   #if !COMPATIBLE_ATCODER_2025
     func testInitNaive_with_Sequence() throws {

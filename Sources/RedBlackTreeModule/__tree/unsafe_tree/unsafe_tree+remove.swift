@@ -39,7 +39,7 @@ extension RemoveProtocol_ptr {
       __begin_node_ = __tree_next_iter(__ptr)
     }
     __size_ -= 1
-    // llvmと異なり木の保持の仕方がリッチなうえ型チェックが邪魔なので直接とった方がいい
+    // __root等は、llvmと異なり木の保持の仕方がリッチなうえ型チェックが邪魔なので直接とった方がいい
     _std__tree_remove(__root, __ptr)
   }
 }

@@ -27,11 +27,11 @@ extension UnsafeTreeV2 {
       return (relative(from: lhs), relative(from: rhs))
     case .closedRange(let lhs, let rhs):
       return (relative(from: lhs), __tree_next(relative(from: rhs)))
-    case .leftUnbound(let rhs):
+    case .partialRangeTo(let rhs):
       return (__begin_node_, relative(from: rhs))
-    case .leftUnboundRightClose(let rhs):
+    case .partialRangeThrough(let rhs):
       return (__begin_node_, __tree_next(relative(from: rhs)))
-    case .rithUnbound(let lhs):
+    case .partialRangeFrom(let lhs):
       return (relative(from: lhs), __end_node)
     }
   }

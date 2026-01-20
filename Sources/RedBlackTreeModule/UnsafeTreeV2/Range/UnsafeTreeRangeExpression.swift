@@ -9,9 +9,9 @@ public enum UnsafeTreeRangeExpression {
   public typealias Bound = UnsafeMutablePointer<UnsafeNode>
   case range(lhs: Bound, rhs: Bound)
   case closedRange(lhs: Bound, rhs: Bound)
-  case leftUnbound(rhs: Bound)
-  case leftUnboundRightClose(rhs: Bound)
-  case rithUnbound(lhs: Bound)
+  case partialRangeTo(rhs: Bound)
+  case partialRangeThrough(rhs: Bound)
+  case partialRangeFrom(lhs: Bound)
 }
 
 extension UnsafeTreeRangeExpression {
@@ -25,11 +25,11 @@ extension UnsafeTreeRangeExpression {
       (lhs, rhs)
     case .closedRange(let lhs, let rhs):
       (lhs, __tree_next(rhs))
-    case .leftUnbound(let rhs):
+    case .partialRangeTo(let rhs):
       (_begin, rhs)
-    case .leftUnboundRightClose(let rhs):
+    case .partialRangeThrough(let rhs):
       (_begin, __tree_next(rhs))
-    case .rithUnbound(let lhs):
+    case .partialRangeFrom(let lhs):
       (lhs, _end)
     }
   }
@@ -43,11 +43,11 @@ extension UnsafeTreeRangeExpression {
       .init(__first: lhs, __last: rhs)
     case .closedRange(let lhs, let rhs):
       .init(__first: lhs, __last: __tree_next(rhs))
-    case .leftUnbound(let rhs):
+    case .partialRangeTo(let rhs):
       .init(__first: _begin, __last: rhs)
-    case .leftUnboundRightClose(let rhs):
+    case .partialRangeThrough(let rhs):
       .init(__first: _begin, __last: __tree_next(rhs))
-    case .rithUnbound(let lhs):
+    case .partialRangeFrom(let lhs):
       .init(__first: lhs, __last: _end)
     }
   }
@@ -68,17 +68,17 @@ public func ... (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointe
 public prefix func ..< (rhs: UnsafeMutablePointer<UnsafeNode>)
   -> UnsafeTreeRangeExpression
 {
-  .leftUnbound(rhs: rhs)
+  .partialRangeTo(rhs: rhs)
 }
 
 public prefix func ... (rhs: UnsafeMutablePointer<UnsafeNode>)
   -> UnsafeTreeRangeExpression
 {
-  .leftUnboundRightClose(rhs: rhs)
+  .partialRangeThrough(rhs: rhs)
 }
 
 public postfix func ... (lhs: UnsafeMutablePointer<UnsafeNode>)
   -> UnsafeTreeRangeExpression
 {
-  .rithUnbound(lhs: lhs)
+  .partialRangeFrom(lhs: lhs)
 }

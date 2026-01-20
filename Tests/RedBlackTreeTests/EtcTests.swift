@@ -1015,5 +1015,7 @@ final class EtcTests: RedBlackTreeTestCase {
     var a = RedBlackTreeSet<Int>(0..<100)
     a.removeSub(bounds: lowerBound(10)..<end())
     XCTAssertEqual(a + [], (0..<10) + [])
+    
+    let b = ..<1
   }
 }

@@ -5,6 +5,8 @@
 //  Created by narumij on 2026/01/21.
 //
 
+// 配列インデックスベース用
+
 // ルートノードの親相当の機能
 @usableFromInline
 package protocol TreeEndNodeInterface: _nullptr_interface, _pointer_type {

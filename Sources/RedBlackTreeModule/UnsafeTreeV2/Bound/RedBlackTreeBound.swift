@@ -16,11 +16,11 @@ public func end<K>() -> RedBlackTreeBound<K> {
   .end
 }
 
-public func lower<K>(_ k: K) -> RedBlackTreeBound<K> {
+public func lowerBound<K>(_ k: K) -> RedBlackTreeBound<K> {
   .lower(k)
 }
 
-public func upper<K>(_ k: K) -> RedBlackTreeBound<K> {
+public func upperBound<K>(_ k: K) -> RedBlackTreeBound<K> {
   .upper(k)
 }
 

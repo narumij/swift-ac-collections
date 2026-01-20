@@ -43,20 +43,3 @@ public prefix func ... <_Key>(rhs: RedBlackTreeBound<_Key>)
 public postfix func ... <_Key>(lhs: RedBlackTreeBound<_Key>) -> RedBlackTreeBoundsExpression<_Key> {
   .rithUnbound(lhs: lhs)
 }
-
-
-func test() {
-  var a = RedBlackTreeSet<Int>()
-  typealias Index = RedBlackTreeSet<Int>.Index
-  let _ = a.indices(bounds: .start ..< .end)
-  let _ = a.indices(bounds: .lower(3) ..< .lower(4))
-  let _ = a.removeSub(bounds: .lower(10) ..< .lower(100)) { n in
-    n % 2 == 1
-  }
-  let _ = a.removeSub(bounds: .lower(10) ... .upper(100)) { n in
-    n % 2 == 0
-  }
-  let _ = a[.lower(10) ... .end]
-  let _ = a[...(.end)]
-  let _ = a[.start...]
-}

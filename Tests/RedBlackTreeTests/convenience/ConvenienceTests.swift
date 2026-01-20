@@ -401,6 +401,7 @@ final class ConvenienceTests: RedBlackTreeTestCase {
 //    XCTAssertNotEqual((set[set.startIndex ..< set.endIndex] as RedBlackTreeSet<Int>.UnfoldElementSequence ).map{ $0 }, [])
   }
   
+  #if COMPATIBLE_ATCODER_2025
   func testEnumerate() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
     set
@@ -409,6 +410,7 @@ final class ConvenienceTests: RedBlackTreeTestCase {
     }
     XCTAssertEqual(set, [])
   }
+  #endif
   
   func testEnumerate2() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]

@@ -150,20 +150,6 @@ extension UnsafeTreeV2BufferHeader {
    */
 
   @inlinable
-  mutating func pushFreshHeadBucket(capacity: Int) {
-    assert(freshBucketHead == nil || capacity != 0)
-    let (pointer, capacity) = freshBucketAllocator.createHeadBucket(
-      capacity: capacity, nullptr: nullptr)
-    freshBucketHead = pointer
-    freshBucketCurrent = pointer.queue(memoryLayout: memoryLayout)
-    freshBucketLast = pointer
-    freshPoolCapacity += capacity
-    #if DEBUG
-      freshBucketCount += 1
-    #endif
-  }
-  
-  @inlinable
   mutating func pushFreshBucket(head: _BucketPointer) {
     freshBucketHead = head
     freshBucketCurrent = head.queue(memoryLayout: memoryLayout)

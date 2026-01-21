@@ -9,10 +9,11 @@
 @usableFromInline
 package struct _MemoryLayout {
   
-  @inlinable
+#if DEBUG
   internal init<T>(_ t: T.Type) {
     self = MemoryLayout<T>._value
   }
+#endif
 
   @inlinable
   internal init<T0,T1>(_ t0: T0.Type,_ t1: T1.Type) {

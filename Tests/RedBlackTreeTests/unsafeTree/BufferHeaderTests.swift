@@ -60,19 +60,25 @@ import XCTest
       let end_back = header.end_ptr.pointee
 
       for i in 1..<100 {
+        let capa = header.freshPoolCapacity
         header.executeCapacityGrow(header.freshPoolCapacity + i)
+        XCTAssertEqual(header.freshPoolCapacity - capa, i)
+        XCTAssertEqual(header.freshPoolCapacity, header.freshPoolActualCapacity)
       }
       var pointers = Set<_NodePtr>()
       let count = (1..<100).reduce(0, +)
       for _ in 0..<count {
         // capacity回数popできること
-        let p = header.popFresh()
+        let p = header.___popFresh()
         XCTAssertNotEqual(p, nil)
-        pointers.insert(p!)
+        pointers.insert(p)
       }
       // capacity回数で使い切ること
       XCTAssertEqual(header.popFresh(), nil)
       XCTAssertEqual(header.freshBucketCurrent?.pop(), nil)
+      header.freshPoolCapacity += 1 // アサート回避
+      // 管理数に狂いが生じていても無理にポインタを返さない
+      XCTAssertEqual(header.___popFresh(), .nullptr)
       // popしたポインタはユニーク個数で指定数あること
       XCTAssertEqual(pointers.count, count)
       // end nodeは別腹であること

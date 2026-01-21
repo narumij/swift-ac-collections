@@ -171,5 +171,19 @@ import XCTest
       
       storage.deallocate()
     }
+    
+    func testEmptyDeinitializerDoNothingSmoke() throws {
+      let emptyAllocator = _BucketAllocator.create()
+      let memory = UnsafeMutableRawPointer.allocate(
+        byteCount: MemoryLayout<Int>.stride,
+        alignment: MemoryLayout<Int>.alignment)
+      let buf = memory.bindMemory(to: Int.self, capacity: 1)
+      buf.initialize(to: .zero)
+      emptyAllocator.deinitialize(memory)
+      XCTAssertEqual(buf.pointee, .zero)
+      emptyAllocator.deinitialize(memory)
+      buf.deinitialize(count: 1)
+      memory.deallocate()
+    }
   }
 #endif

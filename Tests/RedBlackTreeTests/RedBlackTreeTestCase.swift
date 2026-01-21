@@ -16,6 +16,8 @@ class RedBlackTreeTestCase: XCTestCase {
     }
 #if DEBUG
     XCTAssertNil(_emptyTreeStorage.header._deallocator)
+    XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)
+    XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCount, 0)
 #endif
   }
 }

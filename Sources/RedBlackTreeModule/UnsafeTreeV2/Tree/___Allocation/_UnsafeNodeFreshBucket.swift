@@ -24,13 +24,13 @@
 @frozen
 public struct _UnsafeNodeFreshBucket {
 
-  public typealias _SelfPtr = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
+  public typealias _NextBucket = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
 
   public init(capacity: Int) {
     self.capacity = capacity
   }
 
-  public var next: _SelfPtr? = nil
+  public var next: _NextBucket? = nil
   public let capacity: Int
   public var count: Int = 0
 }

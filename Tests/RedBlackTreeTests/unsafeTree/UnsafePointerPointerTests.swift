@@ -11,7 +11,7 @@ import XCTest
       let nodeCount = 10
       let nodes = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: nodeCount)
       for i in 0..<nodeCount {
-        (nodes + i).initialize(to: UnsafeNode.nullptr.create(id: i))
+        (nodes + i).initialize(to: .create(id: i))
       }
 
       // 2. UnsafeNode へのポインタを10個保持する生メモリを確保・初期化

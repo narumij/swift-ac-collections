@@ -10,50 +10,77 @@ import XCTest
 #if DEBUG
   @testable import RedBlackTreeModule
 
-  final class RecyclePoolTests: XCTestCase, _UnsafeNodePtrType, _UnsafeNodeRecyclePool {
-    var recycleHead: _NodePtr = .nullptr
-    var count: Int = 0
-    var freshPoolUsedCount: Int = 0
-    var nullptr: _NodePtr { .nullptr }
-    var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator = .init(
-      valueType: Bool.self, deinitialize: { $0.assumingMemoryBound(to: Bool.self).pointee = false })
-
+  final class RecyclePoolTests: XCTestCase {
+    
+    struct Fixture: _UnsafeNodePtrType, _UnsafeNodeRecyclePool {
+      var recycleHead: _NodePtr = .nullptr
+      var count: Int = 0
+      var freshPoolUsedCount: Int = 0
+      var nullptr: _NodePtr { .nullptr }
+      var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator = .init(
+        valueType: Bool.self, deinitialize: { $0.assumingMemoryBound(to: Bool.self).pointee = false })
+    }
+    
     struct FixtureNode {
       var node: UnsafeNode
       var initialized: Bool = true
       var padding: UInt64 = 0
     }
-
-    var fixtures: UnsafeMutablePointer<FixtureNode>!
+    
+    var fixture: Fixture = .init()
+    var nodes: UnsafeMutablePointer<FixtureNode>!
     
     let nodeCount = 10
 
     override func setUpWithError() throws {
       // Put setup code here. This method is called before the invocation of each test method in the class.
-      recycleHead = .nullptr
-      count = 0
-      fixtures = UnsafeMutablePointer<FixtureNode>.allocate(capacity: nodeCount)
+      fixture = .init()
+      nodes = UnsafeMutablePointer<FixtureNode>.allocate(capacity: nodeCount)
       for i in 0..<nodeCount {
-        fixtures
+        nodes
           .advanced(by: i)
           .initialize(to:
               .init(node: .create(id: i)))
       }
-      freshPoolUsedCount = nodeCount
+      fixture.count = nodeCount
+      fixture.freshPoolUsedCount = nodeCount
     }
 
     override func tearDownWithError() throws {
       // Put teardown code here. This method is called after the invocation of each test method in the class.
-      fixtures.deinitialize(count: nodeCount)
-      fixtures.deallocate()
+      nodes.deinitialize(count: nodeCount)
+      nodes.deallocate()
     }
 
-    func testExample() throws {
-      // This is an example of a functional test case.
-      // Use XCTAssert and related functions to verify your tests produce the correct results.
-      // Any test you write for XCTest can be annotated as throws and async.
-      // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-      // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func nodePointer(at i: Int) -> UnsafeMutablePointer<UnsafeNode> {
+      withUnsafeMutablePointer(to: &nodes.advanced(by: i).pointee.node) { $0 }
+    }
+    
+    func testPush() throws {
+      XCTAssertEqual(fixture.recycleHead, .nullptr)
+      for i in 0..<nodeCount {
+        XCTAssertEqual(fixture.recycleCount, i)
+        fixture.___pushRecycle(nodePointer(at: i))
+        XCTAssertNotEqual(fixture.recycleHead, .nullptr)
+        XCTAssertEqual(fixture.recycleCount, i + 1)
+      }
+      for i in 0..<nodeCount {
+        XCTAssertEqual(nodePointer(at: i).__value_(as: Bool.self).pointee, false)
+      }
+      for i in 0..<nodeCount {
+        XCTAssertEqual(fixture.recycleCount, nodeCount - i)
+        XCTAssertNotEqual(fixture.recycleHead, .nullptr)
+        _ = fixture.___popRecycle()
+        XCTAssertEqual(fixture.recycleCount, nodeCount - i - 1)
+      }
+    }
+    
+    func testFlushSmoke() throws {
+      for i in 0..<nodeCount {
+        fixture.___pushRecycle(nodePointer(at: i))
+      }
+      fixture.___flushRecyclePool()
+      XCTAssertEqual(fixture.recycleHead, .nullptr)
     }
 
     func testPerformanceExample() throws {

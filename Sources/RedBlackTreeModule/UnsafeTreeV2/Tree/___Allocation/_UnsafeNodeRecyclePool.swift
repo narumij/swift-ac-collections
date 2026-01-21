@@ -61,7 +61,7 @@ extension _UnsafeNodeRecyclePool {
   @usableFromInline
   mutating func ___flushRecyclePool() {
     recycleHead = nullptr
-    count = 0
+    count = 0 // これは不適切な気がする
   }
 
   #if DEBUG

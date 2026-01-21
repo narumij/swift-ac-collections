@@ -39,9 +39,7 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable>: _UnsafeNodePtrType {
   }
   @usableFromInline typealias _Key = _Key
   @usableFromInline typealias _Value = _Key
-//  @usableFromInline typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   @usableFromInline typealias _Pointer = _NodePtr
-//  @usableFromInline typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
   @usableFromInline var isMulti: Bool
 }
@@ -56,16 +54,6 @@ extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
   internal func read<R>(_ body: (Handle) throws -> R) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
       let handle = Handle(
-        header: header, isMulti: isMulti)
-      return try body(handle)
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func _i_update<R>(_ body: (UnsafeTreeV2ScalarHandle<Int>) throws -> R) rethrows -> R {
-    try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = UnsafeTreeV2ScalarHandle<Int>(
         header: header, isMulti: isMulti)
       return try body(handle)
     }
@@ -98,19 +86,14 @@ extension UnsafeTreeV2ScalarHandle {
     __l == __r
   }
 
-  @inlinable
-  func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-    __default_three_way_comparator(__lhs, __rhs)
-  }
+//  @inlinable
+//  func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
+//    __default_three_way_comparator(__lhs, __rhs)
+//  }
 
   @inlinable
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
     __default_three_way_comparator(__lhs, __rhs)
-  }
-  
-  @inlinable
-  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    l.__value_(as: _Key.self) < r.__value_(as: _Key.self)
   }
 }
 
@@ -173,12 +156,10 @@ extension UnsafeTreeV2ScalarHandle {
     header.pointee.end_ptr
   }
 
-
   @inlinable
   func destroy(_ p: UnsafeMutablePointer<UnsafeNode>) {
     header.pointee.___pushRecycle(p)
   }
-  
   
   @inlinable
   var __size_: Int {

@@ -27,7 +27,7 @@ protocol CountProtocol_ptr:
   _UnsafeNodePtrType
     & EndNodeInterface
     & RootInterface
-    & ThreeWayComparatorInterface
+    & ThreeWayCompInterface
     & BoundInteface
     & TreeNodeValueInterface
     & BoundAlgorithmProtocol_common_ptr
@@ -38,6 +38,7 @@ where
 {
   associatedtype _InputIter
   associatedtype difference_type
+
   func
     __distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
 }
@@ -57,7 +58,7 @@ extension CountProtocol_ptr {
   @inline(__always)
   internal func __count_unique(_ __k: _Key) -> size_type {
     var __rt: __node_pointer = __root
-    let __comp = __lazy_synth_three_way_comparator
+    // let __comp = __lazy_synth_three_way_comparator
     while __rt != nullptr {
       let __comp_res = __comp(__k, __get_value(__rt))
       if __comp_res.__less() {
@@ -76,7 +77,7 @@ extension CountProtocol_ptr {
   internal func __count_multi(_ __k: _Key) -> size_type {
     var __result: __iter_pointer = __end_node
     var __rt: __node_pointer = __root
-    let __comp = __lazy_synth_three_way_comparator
+    // let __comp = __lazy_synth_three_way_comparator
     while __rt != nullptr {
       let __comp_res = __comp(__k, __get_value(__rt))
       if __comp_res.__less() {

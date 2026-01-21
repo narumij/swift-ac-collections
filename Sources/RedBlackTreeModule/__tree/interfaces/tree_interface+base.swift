@@ -92,6 +92,11 @@ protocol ThreeWayComparatorInterface: _KeyType & _ThreeWayResultType {
     -> __compare_result
 }
 
+@usableFromInline
+protocol ThreeWayCompInterface: _KeyType & _ThreeWayResultType {
+  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __compare_result
+}
+
 // MARK: -
 
 @usableFromInline

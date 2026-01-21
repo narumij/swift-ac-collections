@@ -160,7 +160,8 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func contains(_ member: Element) -> Bool {
-    ___contains(member)
+//    ___contains(member)
+    __tree_.read { $0.__count_unique(member) != 0 }
   }
 }
 

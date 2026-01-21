@@ -13,26 +13,24 @@ protocol FindEqualProtocol_ptr:
     & RootInterface
     & RootPtrInterface
     & ValueCompInterface
-    & ThreeWayComparatorInterface
+    & ThreeWayCompInterface
     & _nullptr_interface
-{
-  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __compare_result
-}
+{}
 
 extension FindEqualProtocol_ptr {
 
   @inlinable
-  //  @inline(__always)
+  // @inline(__always)
   internal func
     __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {
     var __nd = __root
     if __nd == nullptr {
-      //      return (__end_node, end.__left_ref)
+      // return (__end_node, end.__left_ref)
       return (__end_node, __root_ptr())
     }
     var __nd_ptr = __root_ptr()
-    //    let __comp = __lazy_synth_three_way_comparator
+    // let __comp = __lazy_synth_three_way_comparator
 
     while true {
 

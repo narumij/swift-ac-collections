@@ -135,5 +135,5 @@ extension UnsafeTreeV2KeyValueHandle: EraseProtocol {}
 extension UnsafeTreeV2KeyValueHandle: EraseUniqueProtocol {}
 
 extension UnsafeTreeV2KeyValueHandle {
-
+  public typealias __compare_result = __int_compare_result
 }

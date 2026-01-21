@@ -187,7 +187,10 @@ extension UnsafeTreeV2ScalarHandle {
   }
 }
 
-extension UnsafeTreeV2ScalarHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
+extension UnsafeTreeV2ScalarHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {
+  @usableFromInline
+  typealias __compare_result = __int_compare_result
+}
 extension UnsafeTreeV2ScalarHandle: FindInteface, FindProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: EraseProtocol {}

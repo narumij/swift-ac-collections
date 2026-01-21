@@ -263,6 +263,7 @@ extension UnsafeTreeV2: BoundBothInterface {
 
 extension UnsafeTreeV2: FindProtocol_ptr {}
 extension UnsafeTreeV2: FindEqualInterface, FindEqualProtocol_ptr {
+  public typealias __compare_result = Base.__compare_result
   
   @inlinable
   @inline(__always)

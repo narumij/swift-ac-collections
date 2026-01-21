@@ -15,14 +15,14 @@ import Foundation
 ///
 /// nullptrへはグローバルアクセスもあるが、性能観点でインスタンスアクセスを利用している
 public protocol _nullptr_interface: _PointerType {
-  var nullptr: _Pointer { get }
+  @inlinable var nullptr: _Pointer { get }
 }
 
 /// endへのインスタンスアクセス
 ///
 /// end->leftが木の根
 public protocol _end_interface: _NodePtrType {
-  var end: _NodePtr { get }
+  @inlinable var end: _NodePtr { get }
 }
 
 @usableFromInline
@@ -34,7 +34,7 @@ protocol BeginNodeInterface: _NodePtrType {
 @usableFromInline
 protocol EndNodeInterface: _NodePtrType {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
-  var __end_node: _NodePtr { get }
+  @inlinable var __end_node: _NodePtr { get }
 }
 
 @usableFromInline
@@ -86,8 +86,7 @@ protocol ValueCompInterface: __node_value_type {
 // MARK: -
 
 @usableFromInline
-protocol ThreeWayComparatorInterface: _KeyType {
-  associatedtype __compare_result: ThreeWayCompareResult
+protocol ThreeWayComparatorInterface: _KeyType & ThreeWayResultType {
   @inlinable
   func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __compare_result
@@ -100,5 +99,5 @@ protocol SizeInterface {
   /// 木のノードの数を返す
   ///
   /// 終端ノードは含まないはず
-  var __size_: Int { get nonmutating set }
+  @inlinable var __size_: Int { get nonmutating set }
 }

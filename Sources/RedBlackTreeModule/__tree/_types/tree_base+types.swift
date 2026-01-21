@@ -66,7 +66,7 @@ public
 
 /// 三方比較結果型の定義
 public
-  protocol ThreeWayResultType
+  protocol _ThreeWayResultType
 {
     /// 三方比較結果型
   associatedtype __compare_result: ThreeWayCompareResult
@@ -78,11 +78,11 @@ public
 public protocol _TreeValueType: _KeyType & _ValueType {}
 
 /// SetやMultiSetは比較型と保持型が同じ
-public protocol ScalarValueType: _KeyType & _ValueType
+public protocol _ScalarValueType: _KeyType & _ValueType
 where _Key == _Value { }
 
 /// DictionaryやMultiMapは比較型と保持型は異なり、制約なし、マップ値型がある
-public protocol KeyValueType: _KeyType & _ValueType & _MappedValueType
+public protocol _KeyValueType: _KeyType & _ValueType & _MappedValueType
 {}
 
 // MARK: - Aliases

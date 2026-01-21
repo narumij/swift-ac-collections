@@ -23,7 +23,7 @@
 import Foundation
 
 public
-  protocol ThreeWayComparator: _KeyType & ThreeWayResultType
+  protocol ThreeWayComparator: _KeyType & _ThreeWayResultType
 {
   static func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)

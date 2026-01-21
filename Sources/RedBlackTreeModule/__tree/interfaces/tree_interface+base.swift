@@ -86,7 +86,7 @@ protocol ValueCompInterface: __node_value_type {
 // MARK: -
 
 @usableFromInline
-protocol ThreeWayComparatorInterface: _KeyType & ThreeWayResultType {
+protocol ThreeWayComparatorInterface: _KeyType & _ThreeWayResultType {
   @inlinable
   func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __compare_result

@@ -41,7 +41,7 @@
     @inlinable
     @inline(__always)
     static func _allocate(byteCount: Int, alignment: Int) -> UnsafeMutableRawPointer {
-      .allocate(byteCount: byteCount, alignment: alignment)
+      self.allocate(byteCount: byteCount, alignment: alignment)
     }
     @inlinable
     @inline(__always)

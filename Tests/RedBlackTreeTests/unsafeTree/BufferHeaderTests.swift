@@ -7,11 +7,10 @@
 
 import XCTest
 
-
 #if DEBUG
   @testable import RedBlackTreeModule
 
-  final class BufferHeaderTests: XCTestCase, _UnsafeNodePtrType {
+  final class BufferHeaderTests: PointerRedBlackTreeTestCase {
 
     typealias Fixture = UnsafeTreeV2BufferHeader
 

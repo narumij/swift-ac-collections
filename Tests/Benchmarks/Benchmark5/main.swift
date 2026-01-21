@@ -14,6 +14,7 @@ print()
 print("\(RedBlackTreeSet<Int>.buildInfo)")
 print()
 
+#if true
 for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
   benchmark("init RBT with Range \(count)") {
     var fixture = Fixture<Int>(0..<count)
@@ -83,6 +84,37 @@ for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
     for i in ii {
       fixture.append(i)
     }
+  }
+}
+#endif
+
+for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
+  let fixture = Fixture<Int>(0..<count)
+  benchmark("RBT first index of \(count)") {
+    let _ = fixture.firstIndex(of: (0..<count).randomElement() ?? 0)
+  }
+}
+
+for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
+  let fixture = Deque<Int>(0..<count)
+  benchmark("Deque first index of \(count)") {
+    let _ = fixture.firstIndex(of: (0..<count).randomElement() ?? 0)
+  }
+}
+
+for count in [1000000] {
+  var fixture = Fixture<Int>(0..<count)
+  var shuffled = (0..<count).shuffled()
+  benchmark("RBT remove \(count)") {
+    let _ = fixture.remove(shuffled.popLast() ?? 0)
+  }
+}
+
+for count in [1000000] {
+  var fixture = Deque<Int>(0..<count)
+  var shuffled = (0..<count).shuffled()
+  benchmark("Deque remove \(count)") {
+    let _ = fixture.remove(at: fixture.firstIndex(of: shuffled.popLast() ?? 0) ?? 0)
   }
 }
 

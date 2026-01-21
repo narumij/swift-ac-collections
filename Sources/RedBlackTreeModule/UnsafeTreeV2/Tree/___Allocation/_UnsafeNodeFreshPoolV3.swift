@@ -177,6 +177,7 @@ extension _UnsafeNodeFreshPoolV3 {
 }
 #endif
 
+#if DEBUG && false
 extension _UnsafeNodeFreshPoolV3 {
 
   @usableFromInline typealias Iterator = _UnsafeNodeFreshPoolIterator
@@ -187,8 +188,7 @@ extension _UnsafeNodeFreshPoolV3 {
     return _UnsafeNodeFreshPoolIterator<T>(bucket: freshBucketHead)
   }
 }
-
-
+#endif
 
 #if DEBUG && false
   extension _UnsafeNodeFreshPoolV3 {

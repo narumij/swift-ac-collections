@@ -27,106 +27,108 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
+    #if false
+      // 番号の抜けが発生してるケースがあり、それは再利用プールにノードがいるケース
+      // その部分までコピーする必要があり、初期化済み数でのコピーとなる
+      let initializedCount = initializedCount
+
+      assert(check())
+      let newCapacity = max(minimumCapacity ?? 0, initializedCount)
+
+      // 予定サイズの木を作成する
+      let tree = UnsafeTreeV2.___create(minimumCapacity: newCapacity, nullptr: nullptr)
+
+      // freshPool内のfreshBucketは0〜1個となる
+      // CoW後の性能維持の為、freshBucket数は1を越えないこと
+      // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる
+      #if DEBUG
+        assert(tree._buffer.header.freshBucketCount <= 1)
+      #endif
+
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        tree.withMutableHeader { $0.copyCount += 1 }
+      #endif
+
+      // 空の場合、そのまま返す
+      if count == 0 {
+        return tree
+      }
+
+      let header = _buffer.header
+
+      tree.withMutableHeader { newHeader in
+        header._copy(Base.self, to: &newHeader, nullptr: nullptr)
+      }
+
+      assert(equiv(with: tree))
+      assert(tree.check())
+
+      return tree
+    #else
+      assert(check())
+      let tree = withMutableHeader { header in
+        UnsafeTreeV2.create(
+          unsafeBufferObject:
+            header.copyBuffer(Base.self, minimumCapacity: minimumCapacity))
+      }
+      assert(count == 0 || initializedCount == tree.initializedCount)
+      assert(count == 0 || equiv(with: tree))
+      assert(tree.check())
+      return tree
+    #endif
+  }
+}
+
+extension UnsafeTreeV2BufferHeader {
+
+  @inlinable
+  @inline(__always)
+  internal func copyBuffer<Base>(_ t: Base.Type, minimumCapacity: Int? = nil) -> UnsafeTreeV2Buffer
+  where Base: ___TreeBase {
 
     // 番号の抜けが発生してるケースがあり、それは再利用プールにノードがいるケース
     // その部分までコピーする必要があり、初期化済み数でのコピーとなる
-    let initializedCount = initializedCount
-
-    assert(check())
-    let newCapacity = max(minimumCapacity ?? 0, initializedCount)
+    let newCapacity = max(minimumCapacity ?? 0, freshPoolUsedCount)
 
     // 予定サイズの木を作成する
-    let tree = UnsafeTreeV2.___create(minimumCapacity: newCapacity, nullptr: nullptr)
+    let _newBuffer =
+      UnsafeTreeV2Buffer
+      .create(
+        Base._Value.self,
+        minimumCapacity: newCapacity,
+        nullptr: nullptr)
 
     // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
     // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる
     #if DEBUG
-      assert(tree._buffer.header.freshBucketCount <= 1)
+      assert(_newBuffer.header.freshBucketCount <= 1)
     #endif
 
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
-      tree.withMutableHeader { $0.copyCount += 1 }
-    #endif
+    _newBuffer.withUnsafeMutablePointerToHeader { newHeader in
 
-    // 空の場合、そのまま返す
-    if count == 0 {
-      return tree
-    }
-
-    let header = _buffer.header
-
-    tree.withMutableHeader { newHeader in
-      #if true
-      header.copy(Base.self, to: &newHeader, nullptr: nullptr)
-      #else
-      // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
-      let bucket = newHeader.freshBucketHead!.accessor(_value: MemoryLayout<_Value>._value)!
-
-      /// 同一番号の新ノードを取得する内部ユーティリティ
-      @inline(__always)
-      func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
-        let index = ptr.pointee.___node_id_
-        return switch index {
-        case .nullptr: nullptr
-        case .end: newHeader.end_ptr
-        default: bucket[index]
-        }
-      }
-
-      /// ノードを新ノードで再構築する内部ユーティリティ
-      @inline(__always)
-      func node(_ s: borrowing UnsafeNode) -> UnsafeNode {
-        // 値は別途管理
-        return .init(
-          ___node_id_: s.___node_id_,
-          __left_: __ptr_(s.__left_),
-          __right_: __ptr_(s.__right_),
-          __parent_: __ptr_(s.__parent_),
-          __is_black_: s.__is_black_,
-          ___needs_deinitialize: s.___needs_deinitialize)
-      }
-
-      // 旧ノードを列挙する準備
-      var nodes = header.makeFreshPoolIterator() as UnsafeTreeV2<Base>.Header.Iterator<_Value>
-
-      // ノード番号順に利用歴があるノード全てについて移行作業を行う
-      while let s = nodes.next(), let d = newHeader.popFresh() {
-        // ノードを初期化する
-        d.initialize(to: node(s.pointee))
-        // 必要な場合、値を初期化する
-        if s.pointee.___needs_deinitialize {
-          d.__value_().initialize(to: s.__value_().pointee as _Value)
-        }
-      }
-
-      // ルートノードを設定
-      newHeader.__root = __ptr_(header.__root)
-
-      // __begin_nodeを初期化
-      newHeader.begin_ptr = __ptr_(header.begin_ptr)
-
-      // その他管理情報をコピー
-      newHeader.recycleHead = __ptr_(header.recycleHead)
-      newHeader.count = header.count
-      newHeader.freshPoolUsedCount = header.freshPoolUsedCount
-
-      assert(newHeader.count <= newHeader.freshPoolCapacity)
-      assert(newHeader._deallocator == nil)
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        newHeader.pointee.copyCount += 1
       #endif
+
+      // 空の場合、そのまま返す
+      if count == 0 {
+        return
+      }
+
+      _copy(Base.self, to: &newHeader.pointee, nullptr: nullptr)
+
+      assert(freshPoolUsedCount == newHeader.pointee.freshPoolUsedCount)
     }
 
-    assert(equiv(with: tree))
-    assert(tree.check())
-
-    return tree
+    return _newBuffer
   }
-}
 
-extension UnsafeTreeV2BufferHeader {
-  
   @usableFromInline
-  func copy<Base>(_ t: Base.Type, to other: inout UnsafeTreeV2BufferHeader, nullptr: UnsafeMutablePointer<UnsafeNode>)
+  func _copy<Base>(
+    _ t: Base.Type, to other: inout UnsafeTreeV2BufferHeader,
+    nullptr: UnsafeMutablePointer<UnsafeNode>
+  )
   where Base: ___TreeBase {
 
     typealias _Value = Base._Value
@@ -160,7 +162,7 @@ extension UnsafeTreeV2BufferHeader {
     }
 
     // 旧ノードを列挙する準備
-    var nodes = makeFreshPoolIterator() as UnsafeTreeV2<Base>.Header.Iterator<_Value>
+    var nodes = makeFreshPoolIterator() as Iterator<_Value>
 
     // ノード番号順に利用歴があるノード全てについて移行作業を行う
     while let s = nodes.next(), let d = other.popFresh() {
@@ -182,6 +184,9 @@ extension UnsafeTreeV2BufferHeader {
     other.recycleHead = __ptr_(recycleHead)
     other.count = count
     other.freshPoolUsedCount = freshPoolUsedCount
+
+    assert(other.freshPoolUsedCount == freshPoolUsedCount)
+    assert(other.count == count)
 
     assert(other.count <= other.freshPoolCapacity)
     assert(other._deallocator == nil)

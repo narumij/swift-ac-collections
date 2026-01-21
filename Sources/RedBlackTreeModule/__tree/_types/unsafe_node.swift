@@ -260,6 +260,19 @@ extension UnsafeNode {
   }
 }
 
+extension UnsafeNode {
+  
+  @inlinable
+  @inline(__always)
+  static func create(id: Int) -> UnsafeNode {
+    .init(
+      ___node_id_: id,
+      __left_: Self.nullptr,
+      __right_: Self.nullptr,
+      __parent_: Self.nullptr)
+  }
+}
+
 extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
 
   @inlinable
@@ -280,17 +293,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   var pointerIndex: Int {
     pointee.___node_id_
   }
-
-  @inlinable
-  @inline(__always)
-  func create(id: Int) -> UnsafeNode {
-    .init(
-      ___node_id_: id,
-      __left_: self,
-      __right_: self,
-      __parent_: self)
-  }
 }
+
 
 extension UnsafeNode {
 

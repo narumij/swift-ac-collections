@@ -173,7 +173,7 @@ struct _UnsafeNodeFreshBucketAllocator {
     let endNode = UnsafeMutableRawPointer(header.advanced(by: 1))
       .bindMemory(to: UnsafeNode.self, capacity: 1)
 
-    endNode.initialize(to: nullptr.create(id: .end))
+    endNode.initialize(to: .create(id: .end))
     header.initialize(to: .init(capacity: capacity))
 
     #if DEBUG

@@ -26,14 +26,13 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   @inlinable
   @inline(__always)
   internal init(
-    _buffer: ManagedBufferPointer<Header, Void>,
-    isReadOnly: Bool = false
+    _buffer: ManagedBufferPointer<Header, Void>
   ) {
     self._buffer = _buffer
-    self.isReadOnly = isReadOnly
     let h = _buffer.withUnsafeMutablePointerToHeader { $0 }
     self.nullptr = h.pointee.nullptr
     self.end = h.pointee.end_ptr
+    self.isReadOnly = _buffer.buffer === _emptyTreeStorage
   }
 
   public typealias Base = Base

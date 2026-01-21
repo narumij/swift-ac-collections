@@ -48,8 +48,7 @@ extension UnsafeTreeV2 {
     return UnsafeTreeV2(
       _buffer:
         BufferPointer(
-          unsafeBufferObject: _emptyTreeStorage),
-      isReadOnly: true)
+          unsafeBufferObject: _emptyTreeStorage))
   }
 
   /// 通常の生成

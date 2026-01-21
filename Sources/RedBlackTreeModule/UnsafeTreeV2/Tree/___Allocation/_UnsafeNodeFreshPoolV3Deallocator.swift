@@ -15,7 +15,7 @@ package final class _UnsafeNodeFreshPoolV3Deallocator: _UnsafeNodePtrType {
   @inlinable
   internal init(
     bucket: _BucketPointer?,
-    deallocator: _UnsafeNodeFreshBucketAllocator
+    deallocator: _BucketAllocator
   ) {
     self.freshBucketHead = bucket
     self.freshPoolDeallocator = deallocator
@@ -23,7 +23,7 @@ package final class _UnsafeNodeFreshPoolV3Deallocator: _UnsafeNodePtrType {
 
   @usableFromInline var freshBucketHead: _BucketPointer?
   @usableFromInline var isBaseDeallocated: Bool = false
-  @usableFromInline let freshPoolDeallocator: _UnsafeNodeFreshBucketAllocator
+  @usableFromInline let freshPoolDeallocator: _BucketAllocator
 
   @inlinable
   @inline(__always)
@@ -64,7 +64,7 @@ package final class _UnsafeNodeFreshPoolV3DeallocatorR2:
   @inlinable
   static func create(
     bucket: _BucketPointer?,
-    deallocator: _UnsafeNodeFreshBucketAllocator
+    deallocator: _BucketAllocator
   )
     -> _UnsafeNodeFreshPoolV3DeallocatorR2
   {
@@ -97,7 +97,7 @@ extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
     @inlinable
     internal init(
       freshBucketHead: _UnsafeNodeFreshPoolV3DeallocatorR2.Header._BucketPointer? = nil,
-      freshPoolDeallocator: _UnsafeNodeFreshBucketAllocator, isBaseDeallocated: Bool = false
+      freshPoolDeallocator: _BucketAllocator, isBaseDeallocated: Bool = false
     ) {
       self.freshBucketHead = freshBucketHead
       self.freshPoolDeallocator = freshPoolDeallocator
@@ -108,7 +108,7 @@ extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
     typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
 
     @usableFromInline var freshBucketHead: _BucketPointer?
-    @usableFromInline let freshPoolDeallocator: _UnsafeNodeFreshBucketAllocator
+    @usableFromInline let freshPoolDeallocator: _BucketAllocator
     @usableFromInline var isBaseDeallocated: Bool = false
 
     @inlinable

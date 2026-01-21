@@ -46,7 +46,7 @@
 //
 @frozen
 @usableFromInline
-struct _UnsafeNodeFreshBucketAllocator {
+struct _BucketAllocator {
   
   static func create() -> Self {
     .init(valueType: Void.self, deinitialize: { _ in })

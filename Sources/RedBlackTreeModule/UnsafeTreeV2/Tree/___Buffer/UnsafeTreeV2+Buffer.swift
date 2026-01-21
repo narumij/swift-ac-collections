@@ -63,7 +63,7 @@ extension UnsafeTreeV2Buffer {
   @inlinable
   @inline(__always)
   internal static func create(
-    allocator: _UnsafeNodeFreshBucketAllocator,
+    allocator: _BucketAllocator,
     minimumCapacity nodeCapacity: Int,
     nullptr: UnsafeMutablePointer<UnsafeNode>
   ) -> UnsafeTreeV2Buffer {

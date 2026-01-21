@@ -26,7 +26,7 @@ protocol _UnsafeNodeRecyclePool: _UnsafeNodePtrType {
   var count: Int { get set }
   var freshPoolUsedCount: Int { get set }
   var nullptr: _NodePtr { get }
-  var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator { get }
+  var freshBucketAllocator: _BucketAllocator { get }
 }
 
 extension _UnsafeNodeRecyclePool {

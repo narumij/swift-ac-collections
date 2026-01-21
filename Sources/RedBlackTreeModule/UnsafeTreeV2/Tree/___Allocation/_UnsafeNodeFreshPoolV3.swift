@@ -44,7 +44,7 @@ protocol _UnsafeNodeFreshPoolV3: _UnsafeNodePtrType {
   #if DEBUG
     var freshBucketCount: Int { get set }
   #endif
-  var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator { get }
+  var freshBucketAllocator: _BucketAllocator { get }
   
   var memoryLayout: (stride: Int, alignment: Int) { get }
 }

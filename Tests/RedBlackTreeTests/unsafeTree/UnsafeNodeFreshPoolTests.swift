@@ -29,7 +29,7 @@ struct FreshPoolFixture<_Value>: _UnsafeNodeFreshPoolV3 {
     var count: Int = 0
     var freshBucketCount: Int = 0
     var nullptr: _NodePtr { UnsafeNode.nullptr }
-    var freshBucketAllocator: RedBlackTreeModule._UnsafeNodeFreshBucketAllocator
+    var freshBucketAllocator: RedBlackTreeModule._BucketAllocator
   }
 
   final class UnsafeNodeFreshPoolTests: XCTestCase {

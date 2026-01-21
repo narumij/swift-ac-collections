@@ -35,7 +35,7 @@ public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
   @inlinable
   @inline(__always)
   internal init<_Value>(_ t: _Value.Type, nullptr: _NodePtr, capacity: Int) {
-    let allocator = _UnsafeNodeFreshBucketAllocator(valueType: _Value.self) {
+    let allocator = _BucketAllocator(valueType: _Value.self) {
       $0.assumingMemoryBound(to: _Value.self)
         .deinitialize(count: 1)
     }
@@ -44,7 +44,7 @@ public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
   
   @inlinable
   @inline(__always)
-  internal init(allocator: _UnsafeNodeFreshBucketAllocator, nullptr: _NodePtr, capacity: Int) {
+  internal init(allocator: _BucketAllocator, nullptr: _NodePtr, capacity: Int) {
     let (head,_) = allocator.createHeadBucket(capacity: capacity, nullptr: nullptr)
     self.nullptr = nullptr
     self.recycleHead = nullptr
@@ -65,7 +65,7 @@ public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
   @usableFromInline var begin_ptr: _NodePtr
   @usableFromInline var root_ptr: _NodeRef
   @usableFromInline
-  var freshBucketAllocator: _UnsafeNodeFreshBucketAllocator
+  var freshBucketAllocator: _BucketAllocator
   #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
   #endif

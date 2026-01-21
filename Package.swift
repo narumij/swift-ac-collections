@@ -45,6 +45,7 @@ var _settings: [SwiftSetting] =
     .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
 
+    // TODO: デフォルトで単純CoWとなるようにする（multi系のテストが問題)
 //    .define("USE_SIMPLE_COPY_ON_WRITE"),  // この定義は今後悩み
     // 注意: COMPATIBLE_ATCODER_2025が優先し、その場合この定義は無効になります。
     // 平衡二分探索木(赤黒木)の魅力と言えば、探索や削除の速度だと思います。

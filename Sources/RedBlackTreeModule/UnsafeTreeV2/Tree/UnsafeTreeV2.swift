@@ -82,6 +82,7 @@ extension UnsafeTreeV2 {
   #else
     @inlinable
     public var capacity: Int {
+      @inline(__always)
       get { _buffer.header.freshPoolCapacity }
       set {
         // TODO: setterが必要なテストをsetter不要にする
@@ -93,6 +94,7 @@ extension UnsafeTreeV2 {
 
     @inlinable
     public var initializedCount: Int {
+      @inline(__always)
       get { _buffer.header.freshPoolUsedCount }
       set {
         // TODO: setterが必要なテストをsetter不要にする

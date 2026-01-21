@@ -57,7 +57,7 @@ public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
   @usableFromInline var count: Int = 0
   @usableFromInline var recycleHead: _NodePtr
   @usableFromInline var freshPoolCapacity: Int = 0
-  @usableFromInline var freshBucketCurrent: BucketQueue?
+  @usableFromInline var freshBucketCurrent: _BucketQueue?
   @usableFromInline var freshPoolUsedCount: Int = 0
   @usableFromInline var freshBucketHead: _BucketPointer?
   @usableFromInline var freshBucketLast: _BucketPointer?
@@ -242,12 +242,14 @@ extension UnsafeTreeV2BufferHeader {
   }
 }
 
+#if false
 extension UnsafeTreeV2BufferHeader {
   @inlinable
   func makeFreshBucketIterator<T>() -> _UnsafeNodeFreshBucketIterator<T> {
     return _UnsafeNodeFreshBucketIterator<T>(bucket: freshBucketHead)
   }
 }
+#endif
 
 extension UnsafeTreeV2BufferHeader {
 

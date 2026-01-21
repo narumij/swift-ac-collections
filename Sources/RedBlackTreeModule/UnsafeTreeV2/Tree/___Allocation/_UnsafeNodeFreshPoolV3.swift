@@ -35,7 +35,7 @@ protocol _UnsafeNodeFreshPoolV3: _UnsafeNodePtrType {
    */
 
   var freshBucketHead: _BucketPointer? { get set }
-  var freshBucketCurrent: BucketQueue? { get set }
+  var freshBucketCurrent: _BucketQueue? { get set }
   var freshBucketLast: _BucketPointer? { get set }
   var freshPoolCapacity: Int { get set }
   var freshPoolUsedCount: Int { get set }
@@ -167,6 +167,7 @@ extension _UnsafeNodeFreshPoolV3 {
 
 // MARK: - DEBUG
 
+#if false
 extension _UnsafeNodeFreshPoolV3 {
   @inlinable
   @inline(__always)
@@ -174,6 +175,7 @@ extension _UnsafeNodeFreshPoolV3 {
     return _UnsafeNodeFreshBucketIterator<T>(bucket: freshBucketHead)
   }
 }
+#endif
 
 extension _UnsafeNodeFreshPoolV3 {
 

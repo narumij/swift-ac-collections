@@ -144,6 +144,7 @@ extension UnsafeTreeV2 {
   }
 }
 
+#if false
 extension UnsafeTreeV2 {
 
   @inlinable
@@ -152,6 +153,7 @@ extension UnsafeTreeV2 {
     return _UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
   }
 }
+#endif
 
 // MARK: Index Resolver
 

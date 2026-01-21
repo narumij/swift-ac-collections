@@ -7,7 +7,7 @@
 
 @frozen
 @usableFromInline
-struct BucketAccessor: _UnsafeNodePtrType {
+struct _BucketAccessor: _UnsafeNodePtrType {
   
   @usableFromInline
   internal init(pointer: UnsafeMutablePointer<_UnsafeNodeFreshBucket>, start: UnsafeMutablePointer<UnsafeNode>, stride: Int) {
@@ -36,7 +36,7 @@ struct BucketAccessor: _UnsafeNodePtrType {
   }
   
   @usableFromInline
-  func next(_value: (stride: Int, alignment: Int)) -> BucketAccessor? {
+  func next(_value: (stride: Int, alignment: Int)) -> _BucketAccessor? {
     guard let next = pointer.pointee.next else { return nil }
     return next._accessor(isHead: false, _value: _value)
   }
@@ -46,12 +46,12 @@ extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
   
   @inlinable
   @inline(__always)
-  func _accessor(isHead: Bool, _value: (stride: Int, alignment: Int)) -> BucketAccessor {
+  func _accessor(isHead: Bool, _value: (stride: Int, alignment: Int)) -> _BucketAccessor {
     .init(pointer: self, start: start(isHead: isHead, valueAlignment: _value.alignment), stride: MemoryLayout<UnsafeNode>.stride + _value.stride)
   }
   
   @inlinable
-  func accessor(_value: (stride: Int, alignment: Int)) -> BucketAccessor? {
+  func accessor(_value: (stride: Int, alignment: Int)) -> _BucketAccessor? {
     _accessor(isHead: true, _value: _value)
   }
 }

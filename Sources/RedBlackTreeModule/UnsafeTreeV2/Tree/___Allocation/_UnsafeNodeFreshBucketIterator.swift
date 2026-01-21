@@ -20,6 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+#if false
 /// バケット(ノードを保持している塊)を走査するイテレータ
 @frozen
 @usableFromInline
@@ -47,3 +48,4 @@ struct _UnsafeNodeFreshBucketIterator<_Value>: IteratorProtocol, Sequence {
     return bucket
   }
 }
+#endif

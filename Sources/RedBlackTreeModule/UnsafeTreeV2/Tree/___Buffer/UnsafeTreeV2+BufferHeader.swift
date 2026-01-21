@@ -71,7 +71,7 @@ public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
   #endif
   
   @inlinable
-  var memoryLayout: (stride: Int, alignment: Int) {
+  var memoryLayout: _MemoryLayout {
     freshBucketAllocator._value
   }
 

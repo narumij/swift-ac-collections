@@ -46,7 +46,7 @@ protocol _UnsafeNodeFreshPoolV3: _UnsafeNodePtrType {
   #endif
   var freshBucketAllocator: _BucketAllocator { get }
   
-  var memoryLayout: (stride: Int, alignment: Int) { get }
+  var memoryLayout: _MemoryLayout { get }
 }
 
 extension _UnsafeNodeFreshPoolV3 {

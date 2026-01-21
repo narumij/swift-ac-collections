@@ -49,7 +49,7 @@ struct _BucketIterator: _UnsafeNodePtrType {
   }
   
   @inlinable
-  func nextCounts(memoryLayout: (stride: Int, alignment: Int)) -> _BucketIterator? {
+  func nextCounts(memoryLayout: _MemoryLayout) -> _BucketIterator? {
     guard let next = pointer.pointee.next else { return nil }
     return next._counts(isHead: false, memoryLayout: memoryLayout)
   }
@@ -58,12 +58,12 @@ struct _BucketIterator: _UnsafeNodePtrType {
 extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
   
   @inlinable
-  func _counts(isHead: Bool, memoryLayout: (stride: Int, alignment: Int)) -> _BucketIterator {
+  func _counts(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketIterator {
     .init(pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.count)
   }
   
   @inlinable
-  func _capacities(isHead: Bool, memoryLayout: (stride: Int, alignment: Int)) -> _BucketIterator {
+  func _capacities(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketIterator {
     .init(pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.capacity)
   }
 }

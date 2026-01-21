@@ -32,7 +32,7 @@ struct _BucketQueue {
   }
 
   @usableFromInline
-  func next(memoryLayout: (stride: Int, alignment: Int)) -> _BucketQueue? {
+  func next(memoryLayout: _MemoryLayout) -> _BucketQueue? {
     guard let next = pointer.pointee.next else { return nil }
     return next._queue(isHead: false, memoryLayout: memoryLayout)
   }
@@ -42,14 +42,14 @@ extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
 
   @inlinable
   @inline(__always)
-  func _queue(isHead: Bool, memoryLayout: (stride: Int, alignment: Int)) -> _BucketQueue {
+  func _queue(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketQueue {
     .init(
       pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment),
       stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride)
   }
 
   @inlinable
-  func queue(memoryLayout: (stride: Int, alignment: Int)) -> _BucketQueue? {
+  func queue(memoryLayout: _MemoryLayout) -> _BucketQueue? {
     return _queue(isHead: true, memoryLayout: memoryLayout)
   }
 }
@@ -57,5 +57,5 @@ extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
 extension MemoryLayout {
 
   @inlinable
-  static var _value: (stride: Int, alignment: Int) { (stride, alignment) }
+  static var _value: _MemoryLayout { .init(stride: stride, alignment: alignment) }
 }

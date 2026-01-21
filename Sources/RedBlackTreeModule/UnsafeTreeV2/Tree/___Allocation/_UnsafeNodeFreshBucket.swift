@@ -65,7 +65,7 @@ extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
   }
   
   @inlinable
-  func start(isHead: Bool, valueAlignment: Int) -> UnsafeMutablePointer<UnsafeNode> {
+  package func start(isHead: Bool, valueAlignment: Int) -> UnsafeMutablePointer<UnsafeNode> {
     let headerAlignment = MemoryLayout<UnsafeNode>.alignment
     let elementAlignment = valueAlignment
     if elementAlignment <= headerAlignment {

@@ -264,7 +264,7 @@ extension UnsafeNode {
   
   @inlinable
   @inline(__always)
-  static func create(id: Int) -> UnsafeNode {
+  package static func create(id: Int) -> UnsafeNode {
     .init(
       ___node_id_: id,
       __left_: Self.nullptr,

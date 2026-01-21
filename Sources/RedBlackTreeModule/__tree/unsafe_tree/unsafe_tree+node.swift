@@ -112,7 +112,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)
-  func __value_<_Value>(as t: _Value.Type) -> UnsafeMutablePointer<_Value> {
+  package func __value_<_Value>(as t: _Value.Type) -> UnsafeMutablePointer<_Value> {
     UnsafeMutableRawPointer(advanced(by: 1))
       .assumingMemoryBound(to: _Value.self)
   }

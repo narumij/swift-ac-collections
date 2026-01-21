@@ -13,7 +13,7 @@ import XCTest
 struct FreshPoolFixture<_Value>: _UnsafeNodeFreshPoolV3 {
   var freshBucketCurrent: RedBlackTreeModule._BucketQueue?
   
-  var memoryLayout: (stride: Int, alignment: Int)
+  var memoryLayout: _MemoryLayout
   
 
     func didUpdateFreshBucketHead() {

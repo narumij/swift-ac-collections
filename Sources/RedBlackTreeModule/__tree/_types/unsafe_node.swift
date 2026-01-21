@@ -273,6 +273,8 @@ extension UnsafeNode {
   }
 }
 
+extension UnsafeNode: Equatable { }
+
 extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
 
   @inlinable

@@ -115,6 +115,16 @@ extension UnsafeIndexV2: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
+    switch (lhs.___node_id_, rhs.___node_id_) {
+    case (.nullptr, _), (_, .nullptr):
+      fatalError(.invalidIndex)
+    case (.end, _):
+      return false
+    case (_, .end):
+      return true
+    default:
+      break
+    }
     // rhsよせでもいいかもしれない(2026/1/13)
     return lhs.__tree_.lessThan(lhs.___node_ptr(lhs), lhs.___node_ptr(rhs))
   }

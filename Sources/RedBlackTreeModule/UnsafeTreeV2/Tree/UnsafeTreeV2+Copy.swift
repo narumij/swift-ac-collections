@@ -133,7 +133,7 @@ extension UnsafeTreeV2BufferHeader {
     typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
-    let bucket = other.freshBucketHead!.accessor(_value: MemoryLayout<_Value>._value)!
+    let bucket = other.freshBucketHead!.accessor(_value: MemoryLayout<_Value>._memoryLayout)!
 
     /// 同一番号の新ノードを取得する内部ユーティリティ
     @inline(__always)

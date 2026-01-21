@@ -11,7 +11,7 @@ package struct _MemoryLayout {
   
 #if DEBUG
   internal init<T>(_ t: T.Type) {
-    self = MemoryLayout<T>._value
+    self = MemoryLayout<T>._memoryLayout
   }
 #endif
 

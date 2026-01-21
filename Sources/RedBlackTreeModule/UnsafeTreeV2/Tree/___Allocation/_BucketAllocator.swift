@@ -57,7 +57,7 @@ package struct _BucketAllocator {
   public init<_Value>(
     valueType: _Value.Type, deinitialize: @escaping (UnsafeMutableRawPointer) -> Void
   ) {
-    self._value = MemoryLayout<_Value>._value
+    self._value = MemoryLayout<_Value>._memoryLayout
     self._pair = .init(UnsafeNode.self, _Value.self)
     self.deinitialize = deinitialize
   }

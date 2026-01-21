@@ -57,5 +57,5 @@ extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
 extension MemoryLayout {
 
   @inlinable
-  static var _value: _MemoryLayout { .init(stride: stride, alignment: alignment) }
+  static var _memoryLayout: _MemoryLayout { .init(stride: stride, alignment: alignment) }
 }

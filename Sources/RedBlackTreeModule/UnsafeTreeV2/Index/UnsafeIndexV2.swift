@@ -47,7 +47,7 @@ where Base: ___TreeBase & ___TreeIndex {
   }
 
   @usableFromInline
-  internal var poolLifespan: _TiedRawBuffer
+  internal var tied: _TiedRawBuffer
 
   // MARK: -
 
@@ -57,7 +57,7 @@ where Base: ___TreeBase & ___TreeIndex {
     assert(rawValue != tree.nullptr)
     self.rawValue = rawValue
     self.___node_id_ = rawValue.pointee.___node_id_
-    self.poolLifespan = tree.tied
+    self.tied = tree.tied
     self.__tree_ = .init(__tree_: tree)
   }
 
@@ -66,12 +66,12 @@ where Base: ___TreeBase & ___TreeIndex {
   internal init(
     __tree_: ImmutableTree,
     rawValue: _NodePtr,
-    poolLifespan: _TiedRawBuffer
+    tie: _TiedRawBuffer
   ) {
     self.__tree_ = __tree_
     self.___node_id_ = rawValue.pointee.___node_id_
     self.rawValue = rawValue
-    self.poolLifespan = poolLifespan
+    self.tied = tie
   }
 
   /*
@@ -155,7 +155,7 @@ extension UnsafeIndexV2 {
     return .init(
       __tree_: __tree_,
       rawValue: __tree_.advanced(rawValue, by: n),
-      poolLifespan: poolLifespan)
+      tie: tied)
   }
 }
 
@@ -169,7 +169,7 @@ extension UnsafeIndexV2 {
   public var next: Self? {
     guard
       !__tree_.___is_next_null(rawValue),
-      !poolLifespan.isBaseDeallocated
+      !tied.isBaseDeallocated
     else {
       return nil
     }
@@ -186,7 +186,7 @@ extension UnsafeIndexV2 {
   public var previous: Self? {
     guard
       !__tree_.___is_prev_null(rawValue),
-      !poolLifespan.isBaseDeallocated
+      !tied.isBaseDeallocated
     else {
       return nil
     }
@@ -244,7 +244,7 @@ extension UnsafeIndexV2 {
     guard
       !__tree_.___is_subscript_null(rawValue),
       !__tree_.___is_garbaged(rawValue),
-      !poolLifespan.isBaseDeallocated
+      !tied.isBaseDeallocated
     else { return nil }
     return Base.___pointee(rawValue.__value_().pointee)
   }
@@ -255,7 +255,7 @@ extension UnsafeIndexV2 {
     fileprivate init(_unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, node_id: Int) {
       self.rawValue = rawValue
       self.___node_id_ = node_id
-      self.poolLifespan = _unsafe_tree.tied
+      self.tied = _unsafe_tree.tied
       self.__tree_ = .init(__tree_: _unsafe_tree)
     }
   }
@@ -364,7 +364,7 @@ extension UnsafeIndexV2 {
     case .end:
       return __tree_.__end_node
     default:
-      return poolLifespan[p] ?? __tree_.nullptr
+      return tied[p] ?? __tree_.nullptr
     }
   }
 

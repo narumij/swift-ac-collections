@@ -39,7 +39,7 @@ extension RedBlackTreeIteratorV2 {
     internal var _start, _end, _current, _next: _NodePtr
 
     @usableFromInline
-    var poolLifespan: _TiedRawBuffer
+    var tied: _TiedRawBuffer
 
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -48,7 +48,7 @@ extension RedBlackTreeIteratorV2 {
       self._start = start
       self._end = end
       self._next = start == tree.end ? tree.end : tree.__tree_next_iter(start)
-      self.poolLifespan = tree.tied
+      self.tied = tree.tied
     }
 
     @inlinable
@@ -56,7 +56,7 @@ extension RedBlackTreeIteratorV2 {
       __tree_: ImmutableTree,
       start: _NodePtr,
       end: _NodePtr,
-      poolLifespan: _TiedRawBuffer
+      tie: _TiedRawBuffer
     ) {
 
       self.__tree_ = __tree_
@@ -64,7 +64,7 @@ extension RedBlackTreeIteratorV2 {
       self._start = start
       self._end = end
       self._next = start == __tree_.end ? __tree_.end : __tree_.__tree_next_iter(start)
-      self.poolLifespan = poolLifespan
+      self.tied = tie
     }
 
     @inlinable
@@ -81,7 +81,7 @@ extension RedBlackTreeIteratorV2 {
     @inlinable
     @inline(__always)
     public func reversed() -> Reversed {
-      .init(__tree_: __tree_, start: _start, end: _end, poolLifespan: poolLifespan)
+      .init(__tree_: __tree_, start: _start, end: _end, tie: tied)
     }
   }
 }

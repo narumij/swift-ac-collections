@@ -21,7 +21,7 @@ public
     __tree_ = .init(__tree_: tree)
     _start = start
     _end = end
-    poolLifespan = tree.tied
+    tied = tree.tied
   }
 
   @usableFromInline
@@ -29,13 +29,13 @@ public
     __tree_: ImmutableTree,
     start: _NodePtr,
     end: _NodePtr,
-    poolLifespan: _TiedRawBuffer
+    tie: _TiedRawBuffer
   ) {
 
     self.__tree_ = __tree_
     self._start = start
     self._end = end
-    self.poolLifespan = poolLifespan
+    self.tied = tie
   }
 
   // TODO: Intに変更する検討
@@ -49,7 +49,7 @@ public
   internal var _start, _end: _NodePtr
 
   @usableFromInline
-  internal var poolLifespan: _TiedRawBuffer
+  internal var tied: _TiedRawBuffer
 
   public typealias Element = Index
 
@@ -84,7 +84,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
       __tree_: __tree_,
       start: _start,
       end: _end,
-      poolLifespan: poolLifespan)
+      tie: tied)
   }
 
   @inlinable
@@ -94,7 +94,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
       __tree_: __tree_,
       start: _start,
       end: _end,
-      poolLifespan: poolLifespan)
+      tie: tied)
   }
 
   public func index(after i: Index) -> Index {
@@ -114,7 +114,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
       __tree_: __tree_,
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue,
-      poolLifespan: bounds.lowerBound.poolLifespan)
+      tie: bounds.lowerBound.tied)
   }
 
   #if !COMPATIBLE_ATCODER_2025
@@ -135,7 +135,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
       let (lower, upper) = bounds.rawValue.pair(
         _begin: __tree_.__begin_node_,
         _end: __tree_.__end_node)
-      return .init(__tree_: __tree_, start: lower, end: upper, poolLifespan: poolLifespan)
+      return .init(__tree_: __tree_, start: lower, end: upper, tie: tied)
     }
   #endif
 }

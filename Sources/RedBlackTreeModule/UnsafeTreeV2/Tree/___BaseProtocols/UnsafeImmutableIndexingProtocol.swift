@@ -15,7 +15,7 @@ where
   // TODO: 寿命延長を表す名前を再検討する
   var __tree_: UnsafeImmutableTree<Base> { get }
   // TODO: 寿命延長を表す名前を再検討する
-  var poolLifespan: _TiedRawBuffer { get }
+  var tied: _TiedRawBuffer { get }
 }
 
 extension UnsafeImmutableIndexingProtocol {
@@ -25,6 +25,6 @@ extension UnsafeImmutableIndexingProtocol {
     .init(
       __tree_: __tree_,
       rawValue: p,
-      poolLifespan: poolLifespan)
+      tie: tied)
   }
 }

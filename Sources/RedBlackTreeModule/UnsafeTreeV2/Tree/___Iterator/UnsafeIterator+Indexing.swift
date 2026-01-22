@@ -31,7 +31,7 @@ extension UnsafeIterator {
     typealias Index = UnsafeIndexV2<Base>
 
     @usableFromInline
-    var poolLifespan: _TiedRawBuffer
+    var tied: _TiedRawBuffer
 
     @usableFromInline
     init(
@@ -45,7 +45,7 @@ extension UnsafeIterator {
           tree: tree,
           start: start,
           end: end),
-        pool: tree.tied)
+        tie: tree.tied)
     }
 
     @usableFromInline
@@ -53,7 +53,7 @@ extension UnsafeIterator {
       __tree_: UnsafeImmutableTree<Base>,
       start: _NodePtr,
       end: _NodePtr,
-      poolLifespan: _TiedRawBuffer
+      tie: _TiedRawBuffer
     ) where Source: UnsafeIteratorProtocol {
       self.init(
         __tree_: __tree_,
@@ -61,15 +61,15 @@ extension UnsafeIterator {
           __tree_: __tree_,
           start: start,
           end: end),
-        pool: poolLifespan)
+        tie: tie)
     }
 
     @usableFromInline
     var source: Source
 
-    internal init(__tree_: UnsafeImmutableTree<Base>, source: Source, pool: _TiedRawBuffer) {
+    internal init(__tree_: UnsafeImmutableTree<Base>, source: Source, tie: _TiedRawBuffer) {
       self.source = source
-      self.poolLifespan = pool
+      self.tied = tie
       self.__tree_ = __tree_
     }
 

@@ -39,7 +39,7 @@ extension RedBlackTreeIteratorV2.Keys {
     internal var _start, _end, _begin, _current, _next: _NodePtr
 
     @usableFromInline
-    var poolLifespan: _TiedRawBuffer
+    var tied: _TiedRawBuffer
 
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -49,7 +49,7 @@ extension RedBlackTreeIteratorV2.Keys {
       self._start = start
       self._end = end
       self._begin = __tree_.__begin_node_
-      self.poolLifespan = tree.tied
+      self.tied = tree.tied
     }
 
     @inlinable
@@ -57,7 +57,7 @@ extension RedBlackTreeIteratorV2.Keys {
       __tree_: ImmutableTree,
       start: _NodePtr,
       end: _NodePtr,
-      poolLifespan: _TiedRawBuffer
+      tie: _TiedRawBuffer
     ) {
 
       self.__tree_ = __tree_
@@ -66,7 +66,7 @@ extension RedBlackTreeIteratorV2.Keys {
       self._start = start
       self._end = end
       self._begin = __tree_.__begin_node_
-      self.poolLifespan = poolLifespan
+      self.tied = tie
     }
 
     @inlinable

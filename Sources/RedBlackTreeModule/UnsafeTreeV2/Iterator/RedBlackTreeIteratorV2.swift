@@ -42,7 +42,7 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
     var source: UnsafeIterator.RemoveAwarePointers
 
     @usableFromInline
-    var poolLifespan: _TiedRawBuffer
+    var tied: _TiedRawBuffer
 
     @usableFromInline
     internal var _end: _NodePtr
@@ -50,7 +50,7 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.__tree_ = .init(__tree_: tree)
-      self.poolLifespan = tree.tied
+      self.tied = tree.tied
       source = .init(iterator: .init(__first: start, __last: end))
       _end = tree.__end_node
     }

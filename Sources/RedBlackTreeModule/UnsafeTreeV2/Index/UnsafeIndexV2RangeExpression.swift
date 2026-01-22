@@ -23,7 +23,7 @@ where Base: ___TreeBase & ___TreeIndex {
   internal var rawValue: UnsafeTreeRangeExpression
 
   @usableFromInline
-  internal var poolLifespan: _TiedRawBuffer
+  internal var tied: _TiedRawBuffer
 
   // MARK: -
 
@@ -31,7 +31,7 @@ where Base: ___TreeBase & ___TreeIndex {
   @inline(__always)
   internal init(tree: Tree, rawValue: UnsafeTreeRangeExpression) {
     self.rawValue = rawValue
-    self.poolLifespan = tree.tied
+    self.tied = tree.tied
     self.__tree_ = .init(__tree_: tree)
   }
 
@@ -40,11 +40,11 @@ where Base: ___TreeBase & ___TreeIndex {
   internal init(
     __tree_: ImmutableTree,
     rawValue: UnsafeTreeRangeExpression,
-    poolLifespan: _TiedRawBuffer
+    tie: _TiedRawBuffer
   ) {
     self.__tree_ = __tree_
     self.rawValue = rawValue
-    self.poolLifespan = poolLifespan
+    self.tied = tie
   }
 }
 
@@ -54,7 +54,7 @@ extension UnsafeIndexV2RangeExpression: Sequence {
 
   public func makeIterator() -> Iterator {
     let (lower, upper) = rawValue.pair(_begin: __tree_.__begin_node_, _end: __tree_.__end_node)
-    return .init(__tree_: __tree_, start: lower, end: upper, poolLifespan: poolLifespan)
+    return .init(__tree_: __tree_, start: lower, end: upper, tie: tied)
   }
 }
 
@@ -70,7 +70,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   }
 
   return .init(
-    __tree_: lhs.__tree_, rawValue: lhs.rawValue..<rhs.rawValue, poolLifespan: lhs.poolLifespan)
+    __tree_: lhs.__tree_, rawValue: lhs.rawValue..<rhs.rawValue, tie: lhs.tied)
 }
 
 #if !COMPATIBLE_ATCODER_2025
@@ -86,7 +86,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
       fatalError(.invalidIndex)
     }
     return .init(
-      __tree_: lhs.__tree_, rawValue: lhs.rawValue...rhs.rawValue, poolLifespan: lhs.poolLifespan)
+      __tree_: lhs.__tree_, rawValue: lhs.rawValue...rhs.rawValue, tie: lhs.tied)
   }
 
   @inlinable
@@ -95,7 +95,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
     return .init(
       __tree_: rhs.__tree_,
       rawValue: ..<rhs.rawValue,
-      poolLifespan: rhs.poolLifespan)
+      tie: rhs.tied)
   }
 
   @inlinable
@@ -107,7 +107,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
     return .init(
       __tree_: rhs.__tree_,
       rawValue: ...rhs.rawValue,
-      poolLifespan: rhs.poolLifespan)
+      tie: rhs.tied)
   }
 
   @inlinable
@@ -116,6 +116,6 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
     return .init(
       __tree_: lhs.__tree_,
       rawValue: lhs.rawValue...,
-      poolLifespan: lhs.poolLifespan)
+      tie: lhs.tied)
   }
 #endif

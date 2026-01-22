@@ -917,7 +917,7 @@ final class EtcTests: RedBlackTreeTestCase {
       var fixture = RedBlackTreeSet<Int>(minimumCapacity: 100)
       let head = fixture.__tree_._buffer.header.freshBucketHead
       XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 100)
-      for n in 0..<1 {
+      for _ in 0..<1 {
         for i in 0..<100 {
           fixture.insert(i)
         }
@@ -938,7 +938,7 @@ final class EtcTests: RedBlackTreeTestCase {
       var fixture = RedBlackTreeSet<Int>()
       let head = fixture.__tree_._buffer.header.freshBucketHead
       XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 0)
-      for n in 0..<1 {
+      for _ in 0..<1 {
         for i in 0..<100 {
           fixture.insert(i)
         }
@@ -1002,6 +1002,6 @@ final class EtcTests: RedBlackTreeTestCase {
     a.removeSub(bounds: lowerBound(10)..<end())
     XCTAssertEqual(a + [], (0..<10) + [])
     
-    let b = ..<1
+    _ = ..<1
   }
 }

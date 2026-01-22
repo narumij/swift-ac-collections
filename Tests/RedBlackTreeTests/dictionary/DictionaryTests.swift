@@ -459,12 +459,12 @@ final class DictionaryTests: RedBlackTreeTestCase {
   #if DEBUG
     func testIndexLimit3() throws {
       let set = [0: 0, 1: 10, 2: 20, 3: 30, 4: 40] as RedBlackTreeDictionary<Int, Int>
-      XCTAssertEqual(set.startIndex.rawIndex, .node(0))
-      XCTAssertEqual(set.index(before: set.endIndex).rawIndex, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).rawIndex, .node(4))
+      XCTAssertEqual(set.startIndex.rawIndex, 0)
+      XCTAssertEqual(set.index(before: set.endIndex).rawIndex, 4)
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).rawIndex, 4)
       XCTAssertEqual(
-        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.rawIndex, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).rawIndex, .node(0))
+        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.rawIndex, 4)
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).rawIndex, 0)
       XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
       XCTAssertNotEqual(
         set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),

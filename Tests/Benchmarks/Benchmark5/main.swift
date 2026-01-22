@@ -135,7 +135,6 @@ for count in [1000000] {
 
 for count in [1000000] {
   var fixture = Fixture<Int>(0..<count)
-  var shuffled = (0..<count).shuffled()
   benchmark("RBT popFirst \(count)") {
     let _ = fixture.popFirst()
   }
@@ -143,7 +142,6 @@ for count in [1000000] {
 
 for count in [1000000] {
   var fixture = Array<Int>(0..<count)
-  var shuffled = (0..<count).shuffled()
   benchmark("Array popLast \(count)") {
     let _ = fixture.popLast()
   }
@@ -151,7 +149,6 @@ for count in [1000000] {
 
 for count in [1000000] {
   var fixture = Heap<Int>(0..<count)
-  var shuffled = (0..<count).shuffled()
   benchmark("Heap popMin \(count)") {
     let _ = fixture.popMin()
   }
@@ -159,7 +156,6 @@ for count in [1000000] {
 
 for count in [1000000] {
   var fixture = Deque<Int>(0..<count)
-  var shuffled = (0..<count).shuffled()
   benchmark("Deque popMin \(count)") {
     let _ = fixture.popFirst()
   }

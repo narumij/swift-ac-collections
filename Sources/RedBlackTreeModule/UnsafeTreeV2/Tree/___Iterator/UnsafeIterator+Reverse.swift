@@ -10,6 +10,7 @@ extension UnsafeIterator {
   public struct Reverse:
     _UnsafeNodePtrType,
     UnsafeIteratorProtocol,
+    ReverseIterator,
     IteratorProtocol,
     Sequence,
     Equatable
@@ -51,7 +52,8 @@ extension UnsafeIterator.Reverse {
 
   @inlinable
   @inline(__always)
-  public init(start: _NodePtr, end: _NodePtr
+  public init(
+    start: _NodePtr, end: _NodePtr
   ) {
     self.init(__first: start, __last: end)
   }

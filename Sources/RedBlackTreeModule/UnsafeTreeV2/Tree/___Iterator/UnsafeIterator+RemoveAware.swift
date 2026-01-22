@@ -57,15 +57,18 @@ extension UnsafeIterator {
 extension UnsafeIterator.RemoveAware: ObverseIterator
 where
   Source: ObverseIterator,
-  Source.Reversed: UnsafeIteratorProtocol
+  Source.ReversedIterator: UnsafeIteratorProtocol
 {
-  public func reversed() -> UnsafeIterator.RemoveAware<Source.Reversed> {
+  public func reversed() -> UnsafeIterator.RemoveAware<Source.ReversedIterator> {
     .init(source: source.reversed())
   }
-  public typealias Reversed = UnsafeIterator.RemoveAware<Source.Reversed>
+  public typealias Reversed = UnsafeIterator.RemoveAware<Source.ReversedIterator>
 }
 
 extension UnsafeIterator.RemoveAware: Equatable where Source: Equatable {}
+
+extension UnsafeIterator.RemoveAware: ReverseIterator
+where Source: ReverseIterator {}
 
 #if swift(>=5.5)
   extension UnsafeIterator.RemoveAware: @unchecked Sendable

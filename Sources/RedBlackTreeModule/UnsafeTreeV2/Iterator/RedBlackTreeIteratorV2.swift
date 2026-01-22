@@ -26,7 +26,6 @@ import Foundation
 public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex {
   
   public typealias Base = Base
-  
 }
 
 extension RedBlackTreeIteratorV2 {

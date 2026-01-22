@@ -14,7 +14,7 @@ extension UnsafeIterator {
     Sequence
   where
     Source: UnsafeAssosiatedIterator,
-    Source.Base: ___TreeIndex
+    Source.Base: ___TreeBase & ___TreeIndex
   {
     public typealias Base = Source.Base
 
@@ -113,7 +113,8 @@ where
 
 extension UnsafeIterator.Tied
 where
-  Source.Base: KeyValueComparer
+  Source.Base: KeyValueComparer,
+  Self: ReverseIterator
 {
   #if COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
@@ -133,27 +134,29 @@ where
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var keys: RedBlackTreeIteratorV2<Base>.Keys<Base>.Reversed {
+    public var keys: UnsafeIterator.KeyReverse<Base> {
       .init(start: source._start, end: source._end, tie: tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var values: RedBlackTreeIteratorV2<Base>.MappedValues.Reversed {
+    public var values: UnsafeIterator.MappedValueReverse<Base> {
       .init(start: source._start, end: source._end, tie: tied)
     }
   #endif
 }
 
-//extension UnsafeIterator.Tied: ObverseIterator
-//where
-//  Source: ObverseIterator,
-//  Source.Reversed: UnsafeAssosiatedIterator & Sequence,
-//  Source.Reversed.Base: ___TreeIndex
-//{
-//  public func reversed() -> UnsafeIterator.Tied<Source.Reversed> {
-//    .init(source: source.reversed(), tie: tied)
-//  }
-//  public typealias Reversed = UnsafeIterator.Tied<Source.Reversed>
-//}
+extension UnsafeIterator.Tied: ObverseIterator
+where
+  Source: ObverseIterator,
+  Source.ReversedIterator: UnsafeAssosiatedIterator & Sequence,
+  Source.ReversedIterator.Base: ___TreeBase & ___TreeIndex
+{
+  public func reversed() -> UnsafeIterator.Tied<Source.ReversedIterator> {
+    .init(source: source.reversed(), tie: tied)
+  }
+}
+
+extension UnsafeIterator.Tied: ReverseIterator
+where Source: ReverseIterator {}

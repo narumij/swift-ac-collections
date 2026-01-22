@@ -5,13 +5,6 @@
 //  Created by narumij on 2026/01/17.
 //
 
-//
-//  ___UnsafePoolHolder.swift
-//  swift-ac-collections
-//
-//  Created by narumij on 2026/01/17.
-//
-
 extension UnsafeIterator {
 
   public struct TiedIndexing<Base, Source: IteratorProtocol>:
@@ -85,10 +78,13 @@ extension UnsafeIterator.TiedIndexing: Comparable where Source: Equatable, Eleme
 extension UnsafeIterator.TiedIndexing: ObverseIterator
 where
   Source: ObverseIterator,
-  Source.Reversed: UnsafeIteratorProtocol & Sequence
+  Source.ReversedIterator: UnsafeIteratorProtocol & Sequence
 {
-  public func reversed() -> UnsafeIterator.TiedIndexing<Base,Source.Reversed> {
+  public func reversed() -> UnsafeIterator.TiedIndexing<Base,Source.ReversedIterator> {
     .init(source: source.reversed(), tie: tied)
   }
-  public typealias Reversed = UnsafeIterator.TiedIndexing<Base,Source.Reversed>
+  public typealias Reversed = UnsafeIterator.TiedIndexing<Base,Source.ReversedIterator>
 }
+
+extension UnsafeIterator.TiedIndexing: ReverseIterator
+where Source: ReverseIterator {}

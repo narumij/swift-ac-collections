@@ -6,10 +6,16 @@
 //
 
 public protocol ObverseIterator: IteratorProtocol
-where Element == Reversed.Element {
-  associatedtype Reversed: IteratorProtocol
-  func reversed() -> Reversed
+where Element == ReversedIterator.Element {
+  associatedtype ReversedIterator: IteratorProtocol
+  func reversed() -> ReversedIterator
 }
+
+extension ObverseIterator {
+  public typealias Reversed = ReversedIterator
+}
+
+public protocol ReverseIterator: IteratorProtocol {}
 
 public protocol UnsafeIteratorProtocol: _UnsafeNodePtrType, IteratorProtocol {
   init(start: _NodePtr, end: _NodePtr)

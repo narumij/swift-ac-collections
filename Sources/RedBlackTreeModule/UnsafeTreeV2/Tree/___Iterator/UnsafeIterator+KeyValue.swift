@@ -64,10 +64,13 @@ extension UnsafeIterator {
 extension UnsafeIterator.KeyValue: ObverseIterator
 where
   Source: ObverseIterator,
-  Source.Reversed: UnsafeIteratorProtocol & Sequence
+  Source.ReversedIterator: UnsafeIteratorProtocol & Sequence
 {
-  public func reversed() -> UnsafeIterator.KeyValue<Base,Source.Reversed> {
+  public func reversed() -> UnsafeIterator.KeyValue<Base,Source.ReversedIterator> {
     .init(source: source.reversed())
   }
-  public typealias Reversed = UnsafeIterator.KeyValue<Base,Source.Reversed>
+  public typealias Reversed = UnsafeIterator.KeyValue<Base,Source.ReversedIterator>
 }
+
+extension UnsafeIterator.KeyValue: ReverseIterator
+where Source: ReverseIterator {}

@@ -61,10 +61,13 @@ extension UnsafeIterator {
 extension UnsafeIterator.MappedValue: ObverseIterator
 where
   Source: ObverseIterator,
-  Source.Reversed: UnsafeIteratorProtocol & Sequence
+  Source.ReversedIterator: UnsafeIteratorProtocol & Sequence
 {
-  public func reversed() -> UnsafeIterator.MappedValue<Base,Source.Reversed> {
+  public func reversed() -> UnsafeIterator.MappedValue<Base,Source.ReversedIterator> {
     .init(source: source.reversed())
   }
-  public typealias Reversed = UnsafeIterator.MappedValue<Base,Source.Reversed>
+  public typealias Reversed = UnsafeIterator.MappedValue<Base,Source.ReversedIterator>
 }
+
+extension UnsafeIterator.MappedValue: ReverseIterator
+where Source: ReverseIterator {}

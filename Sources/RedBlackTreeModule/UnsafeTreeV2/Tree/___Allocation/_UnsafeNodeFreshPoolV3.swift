@@ -50,8 +50,7 @@ protocol _UnsafeNodeFreshPoolV3: _UnsafeNodePtrType {
 }
 
 extension _UnsafeNodeFreshPoolV3 {
-  public typealias _Bucket = _UnsafeNodeFreshBucket
-  public typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
+  public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 }
 
 extension _UnsafeNodeFreshPoolV3 {

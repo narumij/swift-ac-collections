@@ -62,7 +62,7 @@ package struct _BucketAllocator {
     self.deinitialize = deinitialize
   }
 
-  public typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
+  public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
   @usableFromInline
@@ -154,7 +154,7 @@ package struct _BucketAllocator {
       alignment: alignment)
 
     let header = UnsafeMutableRawPointer(header_storage)
-      .assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
+      .assumingMemoryBound(to: _Bucket.self)
 
     let endNode = UnsafeMutableRawPointer(header.advanced(by: 1))
       .bindMemory(to: UnsafeNode.self, capacity: 1)
@@ -187,7 +187,7 @@ package struct _BucketAllocator {
       alignment: alignment)
 
     let header = UnsafeMutableRawPointer(header_storage)
-      .assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
+      .assumingMemoryBound(to: _Bucket.self)
 
     header.initialize(to: .init(capacity: capacity))
 
@@ -209,7 +209,7 @@ package struct _BucketAllocator {
   ) {
     let a0 = MemoryLayout<UnsafeNode>.alignment
     let a1 = _value.alignment
-    let s2 = MemoryLayout<_UnsafeNodeFreshBucket>.stride
+    let s2 = MemoryLayout<_Bucket>.stride
     let s01 = _pair.stride
     let offset01 = max(0, a1 - a0)
     let size = s2 + (capacity == 0 ? 0 : s01 * capacity + offset01)

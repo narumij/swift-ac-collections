@@ -10,13 +10,13 @@
 package struct _BucketAccessor: _UnsafeNodePtrType {
   
   @usableFromInline
-  package init(pointer: UnsafeMutablePointer<_UnsafeNodeFreshBucket>, start: UnsafeMutablePointer<UnsafeNode>, stride: Int) {
+  package init(pointer: UnsafeMutablePointer<_Bucket>, start: UnsafeMutablePointer<UnsafeNode>, stride: Int) {
     self.pointer = pointer
     self.start = start
     self.stride = stride
   }
   
-  let pointer: UnsafeMutablePointer<_UnsafeNodeFreshBucket>
+  let pointer: UnsafeMutablePointer<_Bucket>
   let start: _NodePtr
   let stride: Int
   
@@ -42,7 +42,7 @@ package struct _BucketAccessor: _UnsafeNodePtrType {
   }
 }
 
-extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
+extension UnsafeMutablePointer where Pointee == _Bucket {
   
   @inlinable
   @inline(__always)

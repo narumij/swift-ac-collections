@@ -44,12 +44,12 @@ import XCTest
       let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
       //      let bytes = storage.bindMemory(to: UInt8.self, capacity: byteSize)
       storage.initializeMemory(as: UInt8.self, repeating: 0xE8, count: byteSize)
-      let header = storage.assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
+      let header = storage.assumingMemoryBound(to: _Bucket.self)
       let start = storage
-        .assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
+        .assumingMemoryBound(to: _Bucket.self)
         .start(isHead: true, valueAlignment: MemoryLayout<_Value>.alignment)
       XCTAssertNotEqual(start, storage)
-      for i in 0..<MemoryLayout<_UnsafeNodeFreshBucket>.stride {
+      for i in 0..<MemoryLayout<_Bucket>.stride {
         UnsafeMutableRawPointer(header)
           .assumingMemoryBound(to: UInt8.self)
           .advanced(by: i)
@@ -83,7 +83,7 @@ import XCTest
         counts[byte, default: 0] += 1
       }
       // 数が合わない場合、メモリ範囲が重なっている可能性がある
-      XCTAssertEqual(counts[1], MemoryLayout<_UnsafeNodeFreshBucket>.stride)
+      XCTAssertEqual(counts[1], MemoryLayout<_Bucket>.stride)
       XCTAssertEqual(counts[2], MemoryLayout<UnsafeNode>.stride * (capacity + 1))
       XCTAssertEqual(counts[3] ?? 0, MemoryLayout<_Value>.stride * capacity)
       // capacity番目の開始アドレスとは、確保メモリの末尾の次
@@ -96,7 +96,7 @@ import XCTest
       } else {
         // capacityが0の場合、確保サイズにアライメント調整分が含まれないため、startは範囲外を示す
         // capacity == 0の場合、ヘッダとend nodeピッタリのサイズとなる
-        XCTAssertLessThanOrEqual(byteSize, MemoryLayout<_UnsafeNodeFreshBucket>.stride + MemoryLayout<UnsafeNode>.stride ,"\(_Value.self)")
+        XCTAssertLessThanOrEqual(byteSize, MemoryLayout<_Bucket>.stride + MemoryLayout<UnsafeNode>.stride ,"\(_Value.self)")
       }
       
       storage.deallocate()
@@ -125,12 +125,12 @@ import XCTest
       let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
       //      let bytes = storage.bindMemory(to: UInt8.self, capacity: byteSize)
       storage.initializeMemory(as: UInt8.self, repeating: 0xE8, count: byteSize)
-      let header = storage.assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
+      let header = storage.assumingMemoryBound(to: _Bucket.self)
       let start = storage
-        .assumingMemoryBound(to: _UnsafeNodeFreshBucket.self)
+        .assumingMemoryBound(to: _Bucket.self)
         .start(isHead: false, valueAlignment: MemoryLayout<_Value>.alignment)
       XCTAssertNotEqual(start, storage)
-      for i in 0..<MemoryLayout<_UnsafeNodeFreshBucket>.stride {
+      for i in 0..<MemoryLayout<_Bucket>.stride {
         storage
           .assumingMemoryBound(to: UInt8.self)
           .advanced(by: i)
@@ -158,7 +158,7 @@ import XCTest
         counts[byte, default: 0] += 1
       }
       // 数が合わない場合、メモリ範囲が重なっている可能性がある
-      XCTAssertEqual(counts[1], MemoryLayout<_UnsafeNodeFreshBucket>.stride)
+      XCTAssertEqual(counts[1], MemoryLayout<_Bucket>.stride)
       XCTAssertEqual(counts[2], MemoryLayout<UnsafeNode>.stride * capacity)
       XCTAssertEqual(counts[3], MemoryLayout<_Value>.stride * capacity)
       // capacity番目の開始アドレスとは、確保メモリの末尾の次

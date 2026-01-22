@@ -10,7 +10,7 @@
 @usableFromInline
 package final class _UnsafeNodeFreshPoolV3Deallocator: _UnsafeNodePtrType {
 
-  public typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
+  public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 
   @inlinable
   internal init(
@@ -59,7 +59,7 @@ package final class _UnsafeNodeFreshPoolV3Deallocator: _UnsafeNodePtrType {
 package final class _UnsafeNodeFreshPoolV3DeallocatorR2:
   ManagedBuffer<_UnsafeNodeFreshPoolV3DeallocatorR2.Header, Void>, _UnsafeNodePtrType
 {
-  public typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
+  public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 
   @inlinable
   static func create(
@@ -105,7 +105,7 @@ extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
     }
 
     @usableFromInline
-    typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
+    typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 
     @usableFromInline var freshBucketHead: _BucketPointer?
     @usableFromInline let freshPoolDeallocator: _BucketAllocator

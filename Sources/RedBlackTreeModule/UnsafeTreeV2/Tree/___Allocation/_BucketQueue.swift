@@ -4,7 +4,7 @@ struct _BucketQueue {
 
   @usableFromInline
   internal init(
-    pointer: UnsafeMutablePointer<_UnsafeNodeFreshBucket>,
+    pointer: UnsafeMutablePointer<_Bucket>,
     start: UnsafeMutablePointer<UnsafeNode>,
     stride: Int
   ) {
@@ -13,7 +13,7 @@ struct _BucketQueue {
     self.stride = stride
   }
 
-  let pointer: UnsafeMutablePointer<_UnsafeNodeFreshBucket>
+  let pointer: UnsafeMutablePointer<_Bucket>
   let start: UnsafeMutablePointer<UnsafeNode>
   let stride: Int
 
@@ -38,7 +38,7 @@ struct _BucketQueue {
   }
 }
 
-extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
+extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
   @inline(__always)

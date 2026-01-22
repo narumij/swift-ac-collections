@@ -136,8 +136,7 @@ extension UnsafeTreeV2BufferHeader: _UnsafeNodeFreshPoolV3 {}
 /* ------------ V3のインライン化はじまり  -------------  */
 
 extension UnsafeTreeV2BufferHeader {
-  public typealias _Bucket = _UnsafeNodeFreshBucket
-  public typealias _BucketPointer = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
+  public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 }
 
 extension UnsafeTreeV2BufferHeader {

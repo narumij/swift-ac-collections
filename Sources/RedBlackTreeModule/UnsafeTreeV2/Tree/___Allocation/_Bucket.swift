@@ -22,9 +22,9 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @frozen
-public struct _UnsafeNodeFreshBucket {
+public struct _Bucket {
 
-  public typealias _NextBucket = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
+  public typealias _NextBucket = UnsafeMutablePointer<_Bucket>
 
   public init(capacity: Int) {
     self.capacity = capacity
@@ -35,7 +35,7 @@ public struct _UnsafeNodeFreshBucket {
   public var count: Int = 0
 }
 
-extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
+extension UnsafeMutablePointer where Pointee == _Bucket {
   
   @inlinable
   @inline(__always)

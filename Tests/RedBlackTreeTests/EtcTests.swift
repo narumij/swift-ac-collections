@@ -804,10 +804,10 @@ final class EtcTests: RedBlackTreeTestCase {
   static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
     typealias _Value = Int
     let (bufferSize, bufferAlignment) = UnsafePair<_Value>.allocationSize(capacity: capacity)
-    let numBytes = MemoryLayout<_UnsafeNodeFreshBucket>.stride + bufferSize
-    let headerAlignment = MemoryLayout<_UnsafeNodeFreshBucket>.alignment
+    let numBytes = MemoryLayout<_Bucket>.stride + bufferSize
+    let headerAlignment = MemoryLayout<_Bucket>.alignment
     if bufferAlignment <= headerAlignment {
-      return (numBytes, MemoryLayout<_UnsafeNodeFreshBucket>.alignment)
+      return (numBytes, MemoryLayout<_Bucket>.alignment)
     }
     return (
       numBytes + bufferAlignment - headerAlignment,
@@ -821,8 +821,8 @@ final class EtcTests: RedBlackTreeTestCase {
     let a0 = MemoryLayout<UnsafeNode>.alignment
     let s1 = MemoryLayout<_Value>.stride
     let a1 = MemoryLayout<_Value>.alignment
-    let s2 = MemoryLayout<_UnsafeNodeFreshBucket>.stride
-    let a2 = MemoryLayout<_UnsafeNodeFreshBucket>.alignment
+    let s2 = MemoryLayout<_Bucket>.stride
+    let a2 = MemoryLayout<_Bucket>.alignment
     let s01 = s0 + s1
     let o01 = a1 <= a0 ? 0 : a1 - a0
     let o012 = max(a1, a0) <= a2 ? 0 : max(a0, a1) - a2
@@ -835,8 +835,8 @@ final class EtcTests: RedBlackTreeTestCase {
     let a0 = MemoryLayout<UnsafeNode>.alignment
     let s1 = MemoryLayout<_Value>.stride
     let a1 = MemoryLayout<_Value>.alignment
-    let s2 = MemoryLayout<_UnsafeNodeFreshBucket>.stride
-    let a2 = MemoryLayout<_UnsafeNodeFreshBucket>.alignment
+    let s2 = MemoryLayout<_Bucket>.stride
+    let a2 = MemoryLayout<_Bucket>.alignment
     let s01 = s0 + s1
     let o01 = a0 <= a1 ? 0 : a0 - a1
     return a2 <= max(a1, a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1, a0)) / s01
@@ -854,8 +854,8 @@ final class EtcTests: RedBlackTreeTestCase {
     let a0 = MemoryLayout<UnsafeNode>.alignment
     let s1 = MemoryLayout<_Value>.stride
     let a1 = MemoryLayout<_Value>.alignment
-    let s2 = MemoryLayout<_UnsafeNodeFreshBucket>.stride
-    let a2 = MemoryLayout<_UnsafeNodeFreshBucket>.alignment
+    let s2 = MemoryLayout<_Bucket>.stride
+    let a2 = MemoryLayout<_Bucket>.alignment
 
     var hoge: [(size: Int, capacity: Int)] = []
     for i in 0..<32 {

@@ -25,7 +25,7 @@
 @usableFromInline
 package struct _UnsafeNodeFreshBucketV3 {
 
-  public typealias _SelfPtr = UnsafeMutablePointer<_UnsafeNodeFreshBucket>
+  public typealias _SelfPtr = UnsafeMutablePointer<_Bucket>
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
   @inlinable

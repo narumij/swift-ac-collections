@@ -21,25 +21,12 @@ public
   public typealias Iterator = UnsafeIterator.IndexObverse<Base>
   public typealias Reversed = UnsafeIterator.IndexReverse<Base>
 
-  @usableFromInline
-  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    _start = start
-    _end = end
-    tied = tree.tied
-  }
-
-  @usableFromInline
-  internal init(
-    __tree_: ImmutableTree,
-    start: _NodePtr,
-    end: _NodePtr,
-    tie: _TiedRawBuffer
-  ) {
-
-    self._start = start
-    self._end = end
-    self.tied = tie
-  }
+//  @usableFromInline
+//  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+//    _start = start
+//    _end = end
+//    tied = tree.tied
+//  }
 
   @usableFromInline
   internal init(

@@ -28,7 +28,7 @@ extension UnsafeTreeV2 where Base: ___TreeIndex {
   @inlinable
   @inline(__always)
   internal func makeIndex(rawValue: _NodePtr) -> Index {
-    .init(tree: self, rawValue: rawValue)
+    .init(rawValue: rawValue, tie: tied)
   }
 }
 

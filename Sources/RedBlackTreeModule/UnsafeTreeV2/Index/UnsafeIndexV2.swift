@@ -59,28 +59,6 @@ where Base: ___TreeBase & ___TreeIndex {
 
   @inlinable
   @inline(__always)
-  internal init(tree: Tree, rawValue: _NodePtr) {
-    assert(rawValue != .nullptr)
-    assert(!rawValue.___is_garbaged)
-    self.rawValue = rawValue
-    self.tied = tree.tied
-  }
-
-  @inlinable
-  @inline(__always)
-  internal init(
-    __tree_: ImmutableTree,
-    rawValue: _NodePtr,
-    tie: _TiedRawBuffer
-  ) {
-    assert(rawValue != .nullptr)
-    assert(!rawValue.___is_garbaged)
-    self.rawValue = rawValue
-    self.tied = tie
-  }
-  
-  @inlinable
-  @inline(__always)
   internal init(
     rawValue: _NodePtr,
     tie: _TiedRawBuffer

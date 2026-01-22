@@ -65,7 +65,7 @@ extension RedBlackTreeSet {
     -> UnsafeIndexV2Collection<Self>
   {
     let (lhs, rhs) = __tree_.relative(to: range)
-    return .init(tree: __tree_, start: lhs, end: rhs)
+    return .init(start: lhs, end: rhs, tie: __tree_.tied)
   }
 }
 

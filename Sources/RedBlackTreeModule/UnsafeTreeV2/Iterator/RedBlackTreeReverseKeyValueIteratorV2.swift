@@ -106,14 +106,14 @@ extension RedBlackTreeIteratorV2.KeyValues.Reversed where Base: KeyValueComparer
     @inlinable
     @inline(__always)
     public var keys: RedBlackTreeIteratorV2<Base>.Keys.Reversed {
-      .init(tree: __tree_, start: _start, end: _end)
+      .init(start: _start, end: _end, tie: __tree_.tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var values: RedBlackTreeIteratorV2<Base>.MappedValues.Reversed {
-      .init(tree: __tree_, start: _start, end: _end)
+      .init(start: _start, end: _end, tie: __tree_.tied)
     }
   #endif
 }

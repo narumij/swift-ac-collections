@@ -152,6 +152,8 @@ extension _TiedRawBuffer {
   }
 }
 
+// TODO: 空の場合のインデックスやレンジの動作が課題となる。
+
 /// The type-punned empty singleton storage instance.
 @usableFromInline
 nonisolated(unsafe) package let _emptyDeallocator =

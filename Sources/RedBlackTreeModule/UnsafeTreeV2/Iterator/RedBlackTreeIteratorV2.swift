@@ -23,11 +23,11 @@
 import Foundation
 
 @frozen
-public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex {
-  
-  public typealias Base = Base
-}
+public enum RedBlackTreeIteratorV2 {}
 
 extension RedBlackTreeIteratorV2 {
   public typealias Values = UnsafeIterator.ValueObverse
+  public typealias Keys = UnsafeIterator.KeyObverse
+  public typealias KeyValues = UnsafeIterator.KeyValueObverse
+  public typealias MappedValues = UnsafeIterator.MappedValueObverse
 }

@@ -63,7 +63,7 @@ extension RedBlackTreeSliceV2.KeyValue {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._KeyValues<Base> {
+  public __consuming func makeIterator() -> Tree._KeyValues {
     _makeIterator()
   }
 }
@@ -315,7 +315,7 @@ extension RedBlackTreeSliceV2.KeyValue {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func reversed() -> Tree._KeyValues<Base>.Reversed {
+  public func reversed() -> Tree._KeyValues.Reversed {
     _reversed()
   }
 }
@@ -332,8 +332,8 @@ extension RedBlackTreeSliceV2.KeyValue {
 
 extension RedBlackTreeSliceV2.KeyValue {
 
-  public typealias Keys = RedBlackTreeIteratorV2<Base>.Keys<Base>
-  public typealias Values = RedBlackTreeIteratorV2<Base>.MappedValues<Base>
+  public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
+  public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
   #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)

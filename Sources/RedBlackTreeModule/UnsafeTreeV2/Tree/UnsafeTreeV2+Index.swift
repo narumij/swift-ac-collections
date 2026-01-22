@@ -39,12 +39,12 @@ extension UnsafeTreeV2 where Base: ___TreeIndex {
 
 extension UnsafeTreeV2 where Base: ___TreeIndex {
 
-  public typealias _Values = RedBlackTreeIteratorV2<Base>.Values
+  public typealias _Values = RedBlackTreeIteratorV2.Values<Base>
 }
 
 extension UnsafeTreeV2 where Base: KeyValueComparer & ___TreeIndex {
 
-  public typealias _KeyValues = RedBlackTreeIteratorV2<Base>.KeyValues
+  public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
 }
 
 extension UnsafeTreeV2 {

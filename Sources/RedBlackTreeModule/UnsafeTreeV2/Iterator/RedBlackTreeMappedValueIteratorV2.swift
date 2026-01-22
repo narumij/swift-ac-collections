@@ -23,5 +23,4 @@
 import Foundation
 
 extension RedBlackTreeIteratorV2 {
-  public typealias MappedValues = UnsafeIterator.MappedValueObverse
 }

@@ -62,10 +62,10 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Element = (key: Key, value: Value)
 
   public
-    typealias Keys = RedBlackTreeIteratorV2<Self>.Keys<Base>
+    typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
 
   public
-    typealias Values = RedBlackTreeIteratorV2<Self>.MappedValues<Base>
+    typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
   public
     typealias _Key = Key
@@ -678,7 +678,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func makeIterator() -> Tree._KeyValues<Base> {
+  public func makeIterator() -> Tree._KeyValues {
     _makeIterator()
   }
 
@@ -826,7 +826,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func reversed() -> Tree._KeyValues<Base>.Reversed {
+  public func reversed() -> Tree._KeyValues.Reversed {
     _reversed()
   }
 

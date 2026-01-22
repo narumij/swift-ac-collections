@@ -21,5 +21,4 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 extension RedBlackTreeIteratorV2 {
-  public typealias KeyValues = UnsafeIterator.KeyValueObverse
 }

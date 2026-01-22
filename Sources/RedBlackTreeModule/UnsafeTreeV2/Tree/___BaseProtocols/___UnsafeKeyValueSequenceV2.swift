@@ -117,21 +117,21 @@ extension ___UnsafeKeyValueSequenceV2 {
 
   @inlinable
   @inline(__always)
-  internal func _makeIterator() -> Tree._KeyValues<Base> {
+  internal func _makeIterator() -> Tree._KeyValues {
     .init(start: _start, end: _end, tie: __tree_.tied)
   }
 
   @inlinable
   @inline(__always)
-  internal func _reversed() -> Tree._KeyValues<Base>.Reversed {
+  internal func _reversed() -> Tree._KeyValues.Reversed {
     .init(start: _start, end: _end, tie: __tree_.tied)
   }
 }
 
 extension ___UnsafeKeyValueSequenceV2 {
 
-  public typealias Keys = RedBlackTreeIteratorV2<Base>.Keys<Base>
-  public typealias Values = RedBlackTreeIteratorV2<Base>.MappedValues<Base>
+  public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
+  public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
   @inlinable
   @inline(__always)

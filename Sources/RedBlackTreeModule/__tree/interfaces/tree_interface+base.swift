@@ -76,6 +76,12 @@ protocol KeyInterface: _KeyType, _ValueType {
   @inlinable func __key(_ e: _Value) -> _Key
 }
 
+@usableFromInline
+protocol MappedValueInteface: _KeyValueType {
+  
+  @inlinable func ___mapped_value(_ element: _Value) -> _MappedValue
+}
+
 // 型の名前にねじれがあるので注意
 @usableFromInline
 protocol ValueCompInterface: __node_value_type {

@@ -141,7 +141,8 @@ extension ValueComparer where _Key: Equatable {
 }
 
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
-public protocol ValueComparator: _TreeValueType
+@usableFromInline
+protocol ValueComparator: _TreeValueType & KeyInterface & ValueCompInterface
 where
   _Key == Base._Key,
   _Value == Base._Value
@@ -150,8 +151,6 @@ where
   @inlinable static func __key(_ e: _Value) -> _Key
   @inlinable static func value_comp(_ a: _Key, _ b: _Key) -> Bool
   @inlinable static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
-  @inlinable func __key(_ e: _Value) -> _Key
-  @inlinable func value_comp(_ a: _Key, _ b: _Key) -> Bool
 }
 
 extension ValueComparator {

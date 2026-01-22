@@ -109,7 +109,8 @@ where pointer == _Pointer {
 /// ノードポインタの別名の定義
 ///
 /// C++では左だけがあるノードをキャストして利用する都合や、余り事情は分からないが別名がいろいろある
-public protocol _parent_pointer_type: _PointerType
+@usableFromInline
+package protocol _parent_pointer_type: _PointerType
 where __parent_pointer == _Pointer {
   associatedtype __parent_pointer
 }

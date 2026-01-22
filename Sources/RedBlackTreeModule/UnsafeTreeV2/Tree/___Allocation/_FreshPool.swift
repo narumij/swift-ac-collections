@@ -25,7 +25,7 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @usableFromInline
-protocol _UnsafeNodeFreshPoolV3: _UnsafeNodePtrType {
+protocol _FreshPool: _UnsafeNodePtrType {
 
   /*
    Design invariant:
@@ -49,11 +49,11 @@ protocol _UnsafeNodeFreshPoolV3: _UnsafeNodePtrType {
   var memoryLayout: _MemoryLayout { get }
 }
 
-extension _UnsafeNodeFreshPoolV3 {
+extension _FreshPool {
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 }
 
-extension _UnsafeNodeFreshPoolV3 {
+extension _FreshPool {
 
   /*
    NOTE:
@@ -98,7 +98,7 @@ extension _UnsafeNodeFreshPoolV3 {
   }
 }
 
-extension _UnsafeNodeFreshPoolV3 {
+extension _FreshPool {
 
   /*
    IMPORTANT:
@@ -130,7 +130,7 @@ extension _UnsafeNodeFreshPoolV3 {
   }
 }
 
-extension _UnsafeNodeFreshPoolV3 {
+extension _FreshPool {
 
   @usableFromInline
 //  @inlinable
@@ -163,7 +163,7 @@ extension _UnsafeNodeFreshPoolV3 {
 }
 #endif
 
-extension _UnsafeNodeFreshPoolV3 {
+extension _FreshPool {
 
   @usableFromInline typealias Iterator = _UnsafeNodeFreshPoolIterator
 
@@ -196,7 +196,7 @@ extension _UnsafeNodeFreshPoolV3 {
 #endif
 
 #if DEBUG
-  extension _UnsafeNodeFreshPoolV3 {
+  extension _FreshPool {
 
     @inlinable
     @inline(__always)

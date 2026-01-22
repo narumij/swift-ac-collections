@@ -10,7 +10,7 @@ import XCTest
 #if DEBUG
   @testable import RedBlackTreeModule
 
-  struct FreshPoolFixture<_Value>: _UnsafeNodeFreshPoolV3 {
+  struct FreshPoolFixture<_Value>: _FreshPool {
     var freshBucketCurrent: RedBlackTreeModule._BucketQueue?
 
     var memoryLayout: _MemoryLayout

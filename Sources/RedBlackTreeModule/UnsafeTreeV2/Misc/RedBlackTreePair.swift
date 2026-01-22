@@ -45,7 +45,7 @@ public struct RedBlackTreePair<Key, Value> {
   }
 
   public var key: Key
-  public var value: Value
+  public var value: Value // mapped_valueのほうが、混乱が経るのでいい気がしてきている
   public var tuple: (Key, Value) { (key, value) }
 
   @inlinable

@@ -27,7 +27,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable @inline(__always)
   static var nullptr: _NodePtr {
-    get { UnsafeNode.nullptr }
+    UnsafeNode.nullptr
   }
 
   @inlinable
@@ -65,7 +65,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     _read { yield pointee.__is_black_ }
     _modify { yield &pointee.__is_black_ }
   }
-  
+
   @inlinable
   @inline(__always)
   var __left_ref: _NodeRef {
@@ -85,7 +85,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 //}
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
-  
+
   func __slow_end() -> _NodePtr {
     var __r = self
     while __r.__parent_ != .nullptr {
@@ -119,15 +119,26 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)
-  func __key_ptr<Base: _ScalarValueType>(with t: Base.Type) -> UnsafeMutablePointer<Base._Key> {
+  func __key_ptr<Base: _ScalarValueType>(with t: Base.Type)
+    -> UnsafeMutablePointer<Base._Key>
+  {
     __value_()
   }
-  
+
   @inlinable
   @inline(__always)
-  func __key_ptr<Base: _KeyValueType>(with t: Base.Type) -> UnsafeMutablePointer<Base._Key>
-  where Base._Value == RedBlackTreePair<Base._Key,Base._MappedValue> {
-    _ref(to: &__value_(as: RedBlackTreePair<Base._Key,Base._MappedValue>.self).pointee.key)
+  func __key_ptr<Base: _KeyValuePairType>(with t: Base.Type)
+    -> UnsafeMutablePointer<Base._Key>
+  {
+    _ref(to: &__value_(as: Base.Pair.self).pointee.key)
+  }
+
+  @inlinable
+  @inline(__always)
+  func __mapped_value_ptr<Base: _KeyValuePairType>(with t: Base.Type)
+    -> UnsafeMutablePointer<Base._MappedValue>
+  {
+    _ref(to: &__value_(as: Base.Pair.self).pointee.value)
   }
 }
 

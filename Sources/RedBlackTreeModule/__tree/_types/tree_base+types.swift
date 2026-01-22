@@ -85,6 +85,13 @@ where _Key == _Value { }
 public protocol _KeyValueType: _KeyType & _ValueType & _MappedValueType
 {}
 
+public protocol _KeyValuePairType: _KeyValueType
+{}
+
+extension _KeyValuePairType {
+  public typealias Pair = RedBlackTreePair<_Key,_MappedValue>
+}
+
 // MARK: - Aliases
 
 /// ノードポインタの別名の定義

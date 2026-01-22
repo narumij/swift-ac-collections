@@ -16,13 +16,13 @@ extension UnsafeTreeNodeRefProtocol {
   @inlinable
   @inline(__always)
   func __left_ref(_ p: _NodePtr) -> _NodeRef {
-    return _ref(&p.pointee.__left_)
+    return _ref(to: &p.pointee.__left_)
   }
 
   @inlinable
   @inline(__always)
   func __right_ref(_ p: _NodePtr) -> _NodeRef {
-    return _ref(&p.pointee.__right_)
+    return _ref(to: &p.pointee.__right_)
   }
 
   @inlinable

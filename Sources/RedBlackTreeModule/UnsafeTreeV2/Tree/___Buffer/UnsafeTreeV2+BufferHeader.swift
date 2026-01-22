@@ -47,7 +47,7 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
     self.recycleHead = nullptr
     self.freshBucketAllocator = allocator
     self.begin_ptr = head.end_ptr
-    self.root_ptr = _ref(&head.end_ptr.pointee.__left_)
+    self.root_ptr = _ref(to: &head.end_ptr.pointee.__left_)
     self.pushFreshBucket(head: head)
   }
 

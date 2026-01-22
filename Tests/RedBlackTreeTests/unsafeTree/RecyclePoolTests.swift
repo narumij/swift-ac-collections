@@ -53,7 +53,7 @@ import XCTest
     }
 
     func nodePointer(at i: Int) -> UnsafeMutablePointer<UnsafeNode> {
-      _ref(&nodes.advanced(by: i).pointee.node)
+      _ref(to: &nodes.advanced(by: i).pointee.node)
     }
     
     func testPush() throws {

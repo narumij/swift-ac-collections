@@ -38,6 +38,8 @@ protocol Validation: _UnsafeNodePtrType {
 }
 
 extension Validation {
+  
+  // TODO: ポインタ自身が可能なことは移管していくこと
 
   @inlinable
   @inline(__always)

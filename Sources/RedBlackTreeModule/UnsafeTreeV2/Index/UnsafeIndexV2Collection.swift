@@ -16,6 +16,11 @@ public
   struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>:
     UnsafeTreeProtocol, UnsafeImmutableIndexingProtocol
 {
+  public typealias Element = Index
+  public typealias SubSequence = Self
+  public typealias Iterator = UnsafeIterator.IndexObverse<Base>
+  public typealias Reversed = UnsafeIterator.IndexReverse<Base>
+
   @usableFromInline
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
     __tree_ = .init(__tree_: tree)
@@ -50,11 +55,6 @@ public
 
   @usableFromInline
   internal var tied: _TiedRawBuffer
-
-  public typealias Element = Index
-
-  public typealias SubSequence = Self
-
 }
 
 #if false
@@ -76,9 +76,6 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
   public var startIndex: Index { ___index(_start) }
   public var endIndex: Index { ___index(_end) }
 
-  public typealias Iterator = UnsafeIterator.IndexObverse<Base>
-  public typealias Reversed = UnsafeIterator.IndexReverse<Base>
-
   public func makeIterator() -> Iterator {
     .init(
       __tree_: __tree_,
@@ -87,8 +84,6 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
       tie: tied)
   }
 
-  @inlinable
-  @inline(__always)
   public func reversed() -> Reversed {
     .init(
       __tree_: __tree_,
@@ -118,116 +113,12 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
   }
 
   #if !COMPATIBLE_ATCODER_2025
-    //    @inlinable
-    //    @inline(__always)
-    //    public subscript<R>(bounds: R) -> UnsafeIndexV2Collection
-    //    where R: RangeExpression, R.Bound == Index {
-    //      let bounds: Range<Index> = bounds.relative(to: self)
-    //      return .init(
-    //        __tree_: __tree_,
-    //        start: bounds.lowerBound.rawValue,
-    //        end: bounds.upperBound.rawValue,
-    //        poolLifespan: bounds.lowerBound.poolLifespan)
-    //    }
-    @inlinable
-    @inline(__always)
     public subscript(bounds: UnsafeIndexV2RangeExpression<Base>) -> UnsafeIndexV2Collection {
       let (lower, upper) = bounds.rawValue.pair(
         _begin: __tree_.__begin_node_,
         _end: __tree_.__end_node)
       return .init(__tree_: __tree_, start: lower, end: upper, tie: tied)
     }
-  #endif
-}
-
-extension UnsafeIndexV2Collection {
-
-#if false
-  public struct Iterator: IteratorProtocol, UnsafeTreeProtocol, UnsafeImmutableIndexingProtocol {
-
-    @usableFromInline
-    internal init(
-      __tree_: ImmutableTree,
-      start: _NodePtr,
-      end: _NodePtr,
-      poolLifespan: PoolLifespan
-    ) {
-
-      self.__tree_ = __tree_
-      self._current = start
-      self._next = __tree_.__tree_next(start)
-      self._end = end
-      self.poolLifespan = poolLifespan
-    }
-
-    @usableFromInline
-    internal let __tree_: ImmutableTree
-
-    @usableFromInline
-    internal var _current, _next, _end: _NodePtr
-
-    @usableFromInline
-    internal var poolLifespan: PoolLifespan
-
-    public mutating func next() -> Index? {
-      guard _current != _end else { return nil }
-      defer {
-        _current = _next
-        _next = _next == _end ? _end : __tree_.__tree_next(_next)
-      }
-      return ___index(_current)
-    }
-  }
-#endif
-}
-
-extension UnsafeIndexV2Collection {
-  #if false
-  public struct Reversed: IteratorProtocol, Sequence, UnsafeImmutableIndexingProtocol {
-
-    @inlinable
-    @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.__tree_ = .init(__tree_: tree)
-      self._current = end
-      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
-      self._start = start
-      self._begin = __tree_.__begin_node_
-      self.poolLifespan = tree.poolLifespan
-    }
-
-    @usableFromInline
-    internal init(
-      __tree_: ImmutableTree,
-      start: _NodePtr,
-      end: _NodePtr,
-      poolLifespan: PoolLifespan
-    ) {
-
-      self.__tree_ = __tree_
-      self._current = end
-      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
-      self._start = start
-      self._begin = __tree_.__begin_node_
-      self.poolLifespan = poolLifespan
-    }
-
-    @usableFromInline
-    internal let __tree_: ImmutableTree
-
-    @usableFromInline
-    internal var _current, _next, _start, _begin: _NodePtr
-
-    @usableFromInline
-    internal var poolLifespan: PoolLifespan
-
-    public mutating func next() -> Index? {
-      guard _current != _start else { return nil }
-      _current = _next
-      _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : __tree_.nullptr
-      return ___index(_current)
-    }
-  }
   #endif
 }
 

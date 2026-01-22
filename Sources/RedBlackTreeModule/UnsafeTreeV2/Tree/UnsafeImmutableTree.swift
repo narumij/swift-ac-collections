@@ -69,10 +69,12 @@ extension UnsafeImmutableTree {
     while n != 0 {
       if n < 0 {
         // 後ろと区別したくてnullptrにしてたが、一周回るとendなのでendにしてみる
+        // TODO: fatalErrorにするか検討
         if __ptr_ == __begin_node_ { return __end_node }
         __ptr_ = __tree_prev_iter(__ptr_)
         n += 1
       } else {
+        // TODO: fatalErrorにするか検討
         if __ptr_ == __end_node { return __end_node }
         __ptr_ = __tree_next_iter(__ptr_)
         n -= 1

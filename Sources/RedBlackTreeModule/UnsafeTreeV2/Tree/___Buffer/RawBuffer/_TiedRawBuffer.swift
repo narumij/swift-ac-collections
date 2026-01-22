@@ -13,6 +13,7 @@ package final class _TiedRawBuffer:
 {
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 
+  @nonobjc
   @inlinable
   static func create(
     bucket: _BucketPointer?,
@@ -26,6 +27,7 @@ package final class _TiedRawBuffer:
     return unsafeDowncast(storage, to: _TiedRawBuffer.self)
   }
 
+  @nonobjc
   @inlinable
   public func isTriviallyIdentical(to other: _TiedRawBuffer) -> Bool {
     self === other
@@ -87,11 +89,13 @@ extension _TiedRawBuffer {
     }
   }
 
+  @nonobjc
   @inlinable
   subscript(___node_id_: Int) -> _NodePtr? {
     header[___node_id_]
   }
 
+  @nonobjc
   @usableFromInline
   var isValueAccessAllowed: Bool {
     get { header.isValueAccessAllowed }

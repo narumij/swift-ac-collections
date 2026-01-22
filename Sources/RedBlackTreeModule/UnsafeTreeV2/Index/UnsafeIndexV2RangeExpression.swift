@@ -31,7 +31,7 @@ where Base: ___TreeBase & ___TreeIndex {
   @inline(__always)
   internal init(tree: Tree, rawValue: UnsafeTreeRangeExpression) {
     self.rawValue = rawValue
-    self.poolLifespan = tree.poolLifespan
+    self.poolLifespan = tree.tied
     self.__tree_ = .init(__tree_: tree)
   }
 

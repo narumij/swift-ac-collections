@@ -48,7 +48,7 @@ extension RedBlackTreeIteratorV2 {
       self._start = start
       self._end = end
       self._next = start == tree.end ? tree.end : tree.__tree_next_iter(start)
-      self.poolLifespan = tree.poolLifespan
+      self.poolLifespan = tree.tied
     }
 
     @inlinable

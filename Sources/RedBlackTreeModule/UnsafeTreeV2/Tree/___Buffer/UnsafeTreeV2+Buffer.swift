@@ -33,7 +33,7 @@ public final class UnsafeTreeV2Buffer:
       if header.pointee.needsDealloc {
         header.pointee.___deallocFreshPool()
       } else {
-        header.pointee._deallocator?.isBaseDeallocated = true
+        header.pointee._tied?.isBaseDeallocated = true
       }
     }
   }

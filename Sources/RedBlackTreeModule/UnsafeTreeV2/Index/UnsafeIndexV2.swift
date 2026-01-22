@@ -57,7 +57,7 @@ where Base: ___TreeBase & ___TreeIndex {
     assert(rawValue != tree.nullptr)
     self.rawValue = rawValue
     self.___node_id_ = rawValue.pointee.___node_id_
-    self.poolLifespan = tree.poolLifespan
+    self.poolLifespan = tree.tied
     self.__tree_ = .init(__tree_: tree)
   }
 
@@ -255,7 +255,7 @@ extension UnsafeIndexV2 {
     fileprivate init(_unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, node_id: Int) {
       self.rawValue = rawValue
       self.___node_id_ = node_id
-      self.poolLifespan = _unsafe_tree.poolLifespan
+      self.poolLifespan = _unsafe_tree.tied
       self.__tree_ = .init(__tree_: _unsafe_tree)
     }
   }

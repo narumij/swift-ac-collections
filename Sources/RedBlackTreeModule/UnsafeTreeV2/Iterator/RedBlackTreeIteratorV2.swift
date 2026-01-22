@@ -50,7 +50,7 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.__tree_ = .init(__tree_: tree)
-      self.poolLifespan = tree.poolLifespan
+      self.poolLifespan = tree.tied
       source = .init(iterator: .init(__first: start, __last: end))
       _end = tree.__end_node
     }

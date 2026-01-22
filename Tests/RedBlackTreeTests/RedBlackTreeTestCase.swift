@@ -15,7 +15,7 @@ class RedBlackTreeTestCase: XCTestCase {
       fatalError("singleton bufffer broken")
     }
 #if DEBUG
-    XCTAssertNil(_emptyTreeStorage.header._deallocator)
+    XCTAssertNil(_emptyTreeStorage.header._tied)
     XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)
     XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCount, 0)
 #endif

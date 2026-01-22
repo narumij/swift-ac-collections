@@ -89,30 +89,30 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @inlinable
   internal func __root_ptr() -> _NodeRef { root_ptr }
 
-  @usableFromInline var _deallocator: _TiedRawBuffer?
+  @usableFromInline var _tied: _TiedRawBuffer?
 
   @usableFromInline
   var needsDealloc: Bool {
-    _deallocator == nil
+    _tied == nil
   }
 
   @inlinable
-  var deallocator: _TiedRawBuffer {
+  var tied: _TiedRawBuffer {
     mutating get {
       // TODO: 一度の保証付きの実装にすること
-      if _deallocator == nil {
-        _deallocator = .create(
+      if _tied == nil {
+        _tied = .create(
           bucket: freshBucketHead,
           deallocator: freshBucketAllocator)
       }
-      return _deallocator!
+      return _tied!
     }
   }
 
   #if DEBUG
     @inlinable
     mutating func createDeallocator() {
-      _ = deallocator
+      _ = tied
     }
   #endif
 

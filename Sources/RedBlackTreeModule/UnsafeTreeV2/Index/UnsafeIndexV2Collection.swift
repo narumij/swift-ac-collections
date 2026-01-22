@@ -21,7 +21,7 @@ public
     __tree_ = .init(__tree_: tree)
     _start = start
     _end = end
-    poolLifespan = tree.poolLifespan
+    poolLifespan = tree.tied
   }
 
   @usableFromInline

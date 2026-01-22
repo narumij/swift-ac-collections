@@ -189,6 +189,6 @@ extension UnsafeTreeV2BufferHeader {
     assert(other.count == count)
 
     assert(other.count <= other.freshPoolCapacity)
-    assert(other._deallocator == nil)
+    assert(other._tied == nil)
   }
 }

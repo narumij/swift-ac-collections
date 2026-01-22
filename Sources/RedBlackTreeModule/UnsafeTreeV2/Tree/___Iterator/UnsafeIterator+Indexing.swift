@@ -45,7 +45,7 @@ extension UnsafeIterator {
           tree: tree,
           start: start,
           end: end),
-        pool: tree.poolLifespan)
+        pool: tree.tied)
     }
 
     @usableFromInline

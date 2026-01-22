@@ -85,8 +85,8 @@ extension UnsafeTreeV2 {
     #if !USE_SIMPLE_COPY_ON_WRITE
       let isTreeUnique = isUnique()
       let isPoolUnique =
-        _buffer.header._deallocator == nil
-        ? true : isKnownUniquelyReferenced(&_buffer.header._deallocator!)
+        _buffer.header._tied == nil
+        ? true : isKnownUniquelyReferenced(&_buffer.header._tied!)
 
       if isTreeUnique, isPoolUnique {
         /* NOP */

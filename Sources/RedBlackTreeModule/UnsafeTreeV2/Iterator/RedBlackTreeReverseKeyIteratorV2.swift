@@ -49,7 +49,7 @@ extension RedBlackTreeIteratorV2.Keys {
       self._start = start
       self._end = end
       self._begin = __tree_.__begin_node_
-      self.poolLifespan = tree.poolLifespan
+      self.poolLifespan = tree.tied
     }
 
     @inlinable

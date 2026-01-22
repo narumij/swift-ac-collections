@@ -6,7 +6,8 @@
 //
 
 @usableFromInline
-struct _BucketIterator: _UnsafeNodePtrType {
+struct _BucketTraverser: _UnsafeNodePtrType {
+  
   @inlinable
   internal init(pointer: UnsafeMutablePointer<_UnsafeNodeFreshBucket>, start: UnsafeMutablePointer<UnsafeNode>, stride: Int, count: Int) {
     self.pointer = pointer
@@ -49,7 +50,7 @@ struct _BucketIterator: _UnsafeNodePtrType {
   }
   
   @inlinable
-  func nextCounts(memoryLayout: _MemoryLayout) -> _BucketIterator? {
+  func nextCounts(memoryLayout: _MemoryLayout) -> _BucketTraverser? {
     guard let next = pointer.pointee.next else { return nil }
     return next._counts(isHead: false, memoryLayout: memoryLayout)
   }
@@ -58,12 +59,12 @@ struct _BucketIterator: _UnsafeNodePtrType {
 extension UnsafeMutablePointer where Pointee == _UnsafeNodeFreshBucket {
   
   @inlinable
-  func _counts(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketIterator {
+  func _counts(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketTraverser {
     .init(pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.count)
   }
   
   @inlinable
-  func _capacities(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketIterator {
+  func _capacities(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketTraverser {
     .init(pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.capacity)
   }
 }

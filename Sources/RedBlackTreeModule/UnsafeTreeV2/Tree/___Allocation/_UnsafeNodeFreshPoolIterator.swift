@@ -40,7 +40,7 @@ struct _UnsafeNodeFreshPoolIterator<_Value>: IteratorProtocol, Sequence, _Unsafe
   }
 
   @usableFromInline
-  var helper: _BucketIterator?
+  var helper: _BucketTraverser?
 
   @inlinable
   @inline(__always)

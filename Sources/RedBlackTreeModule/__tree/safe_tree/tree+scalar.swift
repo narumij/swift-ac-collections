@@ -22,9 +22,15 @@
 
 import Foundation
 
-/// 要素がキーバリューの場合のひな形
-public protocol KeyValueComparer: _KeyValueType & ValueComparer & HasDefaultThreeWayComparator {
-  static func ___mapped_value(_ element: _Value) -> _MappedValue
-  static func ___with_mapped_value<T>(_ element: inout _Value, _: (inout _MappedValue) throws -> T)
-    rethrows -> T
+// TODO: プロトコルインジェクションを整理すること
+// __treenの基本要素ではないので、別カテゴリがいい
+
+/// 要素とキーが一致する場合のひな形
+public protocol ScalarValueComparer: _ScalarValueType & ValueComparer & HasDefaultThreeWayComparator {}
+
+extension ScalarValueComparer {
+
+  @inlinable
+  @inline(__always)
+  public static func __key(_ e: _Value) -> _Key { e }
 }

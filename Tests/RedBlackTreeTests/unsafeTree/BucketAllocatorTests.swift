@@ -19,7 +19,7 @@ import XCTest
     override func tearDownWithError() throws {
       // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-    
+
     func testHeadAllocationSize() throws {
       for n in [0] + (0..<12).map({ 1 << $0 }) {
         try checkHeadAllocationSize(Int8.self, capacity: n)
@@ -36,18 +36,17 @@ import XCTest
         try checkHeadAllocationSize(SIMD32<Int>.self, capacity: n)
       }
     }
-    
+
     func checkHeadAllocationSize<_Value>(_ t: _Value.Type, capacity: Int) throws {
       let allocator = _BucketAllocator(valueType: _Value.self) { _ in }
       var (byteSize, alignment) = allocator.otherCapacity(capacity: capacity)
+      byteSize += MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride
       byteSize += MemoryLayout<UnsafeNode>.stride
       let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
       //      let bytes = storage.bindMemory(to: UInt8.self, capacity: byteSize)
       storage.initializeMemory(as: UInt8.self, repeating: 0xE8, count: byteSize)
       let header = storage.assumingMemoryBound(to: _Bucket.self)
-      let start = storage
-        .assumingMemoryBound(to: _Bucket.self)
-        .start(isHead: true, valueAlignment: MemoryLayout<_Value>.alignment)
+      let start = header.start(isHead: true, valueAlignment: MemoryLayout<_Value>.alignment)
       XCTAssertNotEqual(start, storage)
       for i in 0..<MemoryLayout<_Bucket>.stride {
         UnsafeMutableRawPointer(header)
@@ -55,8 +54,14 @@ import XCTest
           .advanced(by: i)
           .pointee = 1
       }
+      for i in 0..<MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride {
+        UnsafeMutableRawPointer(header.begin_ptr)
+          .assumingMemoryBound(to: UInt8.self)
+          .advanced(by: i)
+          .pointee = 4
+      }
       for i in 0..<MemoryLayout<UnsafeNode>.stride {
-        UnsafeMutableRawPointer(header.advanced(by: 1))
+        UnsafeMutableRawPointer(header.end_ptr)
           .assumingMemoryBound(to: UInt8.self)
           .advanced(by: i)
           .pointee = 2
@@ -77,28 +82,34 @@ import XCTest
             .pointee = 3
         }
       }
-      var counts: [UInt8:Int] = [:]
+      var counts: [UInt8: Int] = [:]
       for i in 0..<byteSize {
         let byte = storage.assumingMemoryBound(to: UInt8.self).advanced(by: i).pointee
         counts[byte, default: 0] += 1
       }
       // 数が合わない場合、メモリ範囲が重なっている可能性がある
       XCTAssertEqual(counts[1], MemoryLayout<_Bucket>.stride)
+      XCTAssertEqual(counts[4], MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride)
       XCTAssertEqual(counts[2], MemoryLayout<UnsafeNode>.stride * (capacity + 1))
       XCTAssertEqual(counts[3] ?? 0, MemoryLayout<_Value>.stride * capacity)
       // capacity番目の開始アドレスとは、確保メモリの末尾の次
       // 数が多い場合、確保範囲を越えて書いている可能性がある
-      // アライメント調整は確保アドレスに応じて変動する？
-      // 最大アライメントに合わせたメモリ確保をしているので、ぴったりに出来そうなきもする
+      // アライメント調整は確保アドレスに応じて変動する
       if capacity != 0 {
         XCTAssertLessThanOrEqual(storage.distance(to: start), byteSize, "\(_Value.self)")
-        XCTAssertLessThanOrEqual(storage.distance(to: accessor[capacity]), byteSize, "\(_Value.self)")
+        XCTAssertLessThanOrEqual(
+          storage.distance(to: accessor[capacity]), byteSize, "\(_Value.self)")
       } else {
         // capacityが0の場合、確保サイズにアライメント調整分が含まれないため、startは範囲外を示す
-        // capacity == 0の場合、ヘッダとend nodeピッタリのサイズとなる
-        XCTAssertLessThanOrEqual(byteSize, MemoryLayout<_Bucket>.stride + MemoryLayout<UnsafeNode>.stride ,"\(_Value.self)")
+        // capacity == 0の場合、ヘッダとbegin ptrとend nodeピッタリのサイズとなる
+        XCTAssertLessThanOrEqual(
+          byteSize,
+          MemoryLayout<_Bucket>.stride
+            + MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride
+            + MemoryLayout<UnsafeNode>.stride,
+          "\(_Value.self)")
       }
-      
+
       storage.deallocate()
     }
 
@@ -118,7 +129,7 @@ import XCTest
         try checkOtherAllocationSize(SIMD32<Int>.self, capacity: n)
       }
     }
-    
+
     func checkOtherAllocationSize<_Value>(_ t: _Value.Type, capacity: Int) throws {
       let allocator = _BucketAllocator(valueType: _Value.self) { _ in }
       let (byteSize, alignment) = allocator.otherCapacity(capacity: capacity)
@@ -126,7 +137,8 @@ import XCTest
       //      let bytes = storage.bindMemory(to: UInt8.self, capacity: byteSize)
       storage.initializeMemory(as: UInt8.self, repeating: 0xE8, count: byteSize)
       let header = storage.assumingMemoryBound(to: _Bucket.self)
-      let start = storage
+      let start =
+        storage
         .assumingMemoryBound(to: _Bucket.self)
         .start(isHead: false, valueAlignment: MemoryLayout<_Value>.alignment)
       XCTAssertNotEqual(start, storage)
@@ -152,7 +164,7 @@ import XCTest
             .pointee = 3
         }
       }
-      var counts: [UInt8:Int] = [:]
+      var counts: [UInt8: Int] = [:]
       for i in 0..<byteSize {
         let byte = storage.assumingMemoryBound(to: UInt8.self).advanced(by: i).pointee
         counts[byte, default: 0] += 1
@@ -166,12 +178,12 @@ import XCTest
       // アライメント調整は確保アドレスに応じて変動する？
       // 最大アライメントに合わせたメモリ確保をしているので、ぴったりに出来そうなきもする
       XCTAssertLessThanOrEqual(storage.distance(to: accessor[capacity]), byteSize)
-      
+
       // 追加分に関して容量0は許容しない仕様なので、テストしていない
-      
+
       storage.deallocate()
     }
-    
+
     func testEmptyDeinitializerDoNothingSmoke() throws {
       let emptyAllocator = _BucketAllocator.create()
       let memory = UnsafeMutableRawPointer.allocate(

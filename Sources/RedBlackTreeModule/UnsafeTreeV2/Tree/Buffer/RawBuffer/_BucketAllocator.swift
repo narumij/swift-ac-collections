@@ -151,14 +151,15 @@ package struct _BucketAllocator {
     let (bytes, alignment) = otherCapacity(capacity: capacity)
 
     let header_storage = UnsafeMutableRawPointer._allocate(
-      byteCount: bytes + MemoryLayout<UnsafeNode>.stride,
+      byteCount: bytes
+      + MemoryLayout<UnsafeNode>.stride
+      + MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride,
       alignment: alignment)
 
     let header = UnsafeMutableRawPointer(header_storage)
       .assumingMemoryBound(to: _Bucket.self)
 
-    let endNode = UnsafeMutableRawPointer(header.advanced(by: 1))
-      .bindMemory(to: UnsafeNode.self, capacity: 1)
+    let endNode = header.end_ptr
 
     endNode.initialize(to: .create(id: .end))
     header.initialize(to: .init(capacity: capacity))

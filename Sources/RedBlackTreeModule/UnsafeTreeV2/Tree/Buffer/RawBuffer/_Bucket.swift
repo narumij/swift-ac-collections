@@ -49,18 +49,24 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
   @inline(__always)
-  var end_ptr: UnsafeMutablePointer<UnsafeNode> {
+  var begin_ptr: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>> {
     UnsafeMutableRawPointer(advanced(by: 1))
+      .assumingMemoryBound(to: UnsafeMutablePointer<UnsafeNode>.self)
+  }
+  
+  @inlinable
+  @inline(__always)
+  var end_ptr: UnsafeMutablePointer<UnsafeNode> {
+    UnsafeMutableRawPointer(begin_ptr.advanced(by: 1))
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
   @inlinable
   func storage(isHead: Bool) -> UnsafeMutableRawPointer {
     if isHead {
-      return UnsafeMutableRawPointer(self.advanced(by: 1))
-        .advanced(by: MemoryLayout<UnsafeNode>.stride)
+      return UnsafeMutableRawPointer(end_ptr.advanced(by: 1))
     } else {
-      return UnsafeMutableRawPointer(self.advanced(by: 1))
+      return UnsafeMutableRawPointer(advanced(by: 1))
     }
   }
 

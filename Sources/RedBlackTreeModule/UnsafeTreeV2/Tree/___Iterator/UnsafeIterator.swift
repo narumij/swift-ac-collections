@@ -43,6 +43,15 @@ extension UnsafeIterator {
     typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
       MappedValue<Base, RemoveAware<Reverse>>
     >
+
+  public
+    typealias KeyValueObverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
+      KeyValue<Base, RemoveAware<Obverse>>
+    >
+  public
+    typealias KeyValueReverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
+      KeyValue<Base, RemoveAware<Reverse>>
+    >
 }
 
 extension UnsafeIterator {

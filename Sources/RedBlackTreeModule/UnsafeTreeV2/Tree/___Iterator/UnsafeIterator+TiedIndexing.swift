@@ -25,9 +25,6 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>
   {
     @usableFromInline
-    var __tree_: UnsafeImmutableTree<Base>?
-
-    @usableFromInline
     typealias Index = UnsafeIndexV2<Base>
 
     @usableFromInline

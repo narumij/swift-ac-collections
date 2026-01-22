@@ -16,9 +16,6 @@ extension UnsafeIterator {
     Source: UnsafeAssosiatedIterator,
     Source.Base: ___TreeIndex
   {
-    @usableFromInline
-    var __tree_: UnsafeImmutableTree<Base>?
-
     public typealias Base = Source.Base
 
     @usableFromInline

@@ -22,10 +22,6 @@ extension UnsafeIterator {
       self.init(source: .init(start: __first, end: __last))
     }
 
-    public init(__tree_: UnsafeImmutableTree<Base>, start __first: _NodePtr, end __last: _NodePtr) {
-      self.init(source: .init(start: __first, end: __last))
-    }
-    
     public init(_ t: Base.Type, start: _NodePtr, end: _NodePtr) {
       self.init(source: .init(start: start, end: end))
     }

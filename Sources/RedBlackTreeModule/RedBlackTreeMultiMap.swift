@@ -62,7 +62,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Element = (key: Key, value: Value)
 
   public
-    typealias Keys = RedBlackTreeIteratorV2<Self>.Keys
+    typealias Keys = RedBlackTreeIteratorV2<Self>.Keys<Base>
 
   public
     typealias Values = RedBlackTreeIteratorV2<Self>.MappedValues
@@ -847,7 +847,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public var keys: Keys {
-      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node)
+      .init(start: __tree_.__begin_node_, end: __tree_.__end_node, tie: __tree_.tied)
     }
 
     /// - Complexity: O(1)

@@ -133,7 +133,7 @@ where
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var keys: RedBlackTreeIteratorV2<Base>.Keys.Reversed {
+  public var keys: RedBlackTreeIteratorV2<Base>.Keys<Base>.Reversed {
     .init(start: source._start, end: source._end, tie: tied)
   }
 

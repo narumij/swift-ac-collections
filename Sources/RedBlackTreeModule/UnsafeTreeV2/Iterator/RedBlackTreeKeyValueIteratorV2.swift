@@ -77,8 +77,8 @@ extension RedBlackTreeIteratorV2.KeyValues where Base: KeyValueComparer {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var keys: RedBlackTreeIteratorV2<Base>.Keys {
-      .init(tree: __tree_, start: _start, end: _end)
+    public var keys: RedBlackTreeIteratorV2.Keys<Base> {
+      .init(start: _start, end: _end, tie: __tree_.tied)
     }
 
     /// - Complexity: O(1)

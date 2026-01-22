@@ -130,13 +130,13 @@ extension ___UnsafeKeyValueSequenceV2 {
 
 extension ___UnsafeKeyValueSequenceV2 {
 
-  public typealias Keys = RedBlackTreeIteratorV2<Base>.Keys
+  public typealias Keys = RedBlackTreeIteratorV2<Base>.Keys<Base>
   public typealias Values = RedBlackTreeIteratorV2<Base>.MappedValues
 
   @inlinable
   @inline(__always)
   internal func _keys() -> Keys {
-    .init(tree: __tree_, start: _start, end: _end)
+    .init(start: _start, end: _end, tie: __tree_.tied)
   }
 
   /// - Complexity: O(1)

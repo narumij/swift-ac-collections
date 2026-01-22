@@ -22,6 +22,11 @@
 
 import Foundation
 
+#if true
+extension RedBlackTreeIteratorV2 {
+  public typealias Keys = UnsafeIterator.KeyObverse
+}
+#else
 extension RedBlackTreeIteratorV2 {
 
   @frozen
@@ -112,3 +117,4 @@ extension RedBlackTreeIteratorV2.Keys: Comparable {
 // MARK: - Is Identical To
 
 extension RedBlackTreeIteratorV2.Keys: ___UnsafeImmutableIsIdenticalToV2 {}
+#endif

@@ -97,7 +97,14 @@ extension _TiedRawBuffer {
   @nonobjc
   @inlinable
   @inline(__always)
-  var __end_ptr: _NodePtr? {
+  var begin_ptr: UnsafeMutablePointer<_NodePtr>? {
+    header.bucketHead?.begin_ptr
+  }
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  var end_ptr: _NodePtr? {
     header.bucketHead?.end_ptr
   }
   
@@ -106,6 +113,36 @@ extension _TiedRawBuffer {
   var isValueAccessAllowed: Bool {
     get { header.isValueAccessAllowed }
     set { withUnsafeMutablePointerToHeader { $0.pointee.isValueAccessAllowed = newValue } }
+  }
+  
+  @nonobjc
+  @usableFromInline
+  func rawRange(_ rangeExpression: UnsafeTreeRangeExpression) -> (_NodePtr, _NodePtr)?
+  {
+    guard
+      let begin_ptr,
+      let end_ptr
+    else {
+      return nil
+    }
+    
+    return rangeExpression
+      .rawRange(_begin: begin_ptr.pointee, _end: end_ptr)
+  }
+  
+  @nonobjc
+  @usableFromInline
+  func range(_ rangeExpression: UnsafeTreeRangeExpression) -> UnsafeTreeRange?
+  {
+    guard
+      let begin_ptr,
+      let end_ptr
+    else {
+      return nil
+    }
+    
+    return rangeExpression
+      .range(_begin: begin_ptr.pointee, _end: end_ptr)
   }
 }
 

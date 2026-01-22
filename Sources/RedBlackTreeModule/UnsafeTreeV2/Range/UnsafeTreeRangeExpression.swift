@@ -40,7 +40,7 @@ extension UnsafeTreeRangeExpression {
   }
 
   @usableFromInline
-  func pair(_begin: UnsafeMutablePointer<UnsafeNode>, _end: UnsafeMutablePointer<UnsafeNode>)
+  func rawRange(_begin: UnsafeMutablePointer<UnsafeNode>, _end: UnsafeMutablePointer<UnsafeNode>)
     -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)
   {
     switch self {

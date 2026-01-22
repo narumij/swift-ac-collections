@@ -114,9 +114,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
 
   #if !COMPATIBLE_ATCODER_2025
     public subscript(bounds: UnsafeIndexV2RangeExpression<Base>) -> UnsafeIndexV2Collection {
-      let (lower, upper) = bounds.rawValue.pair(
-        _begin: __tree_.__begin_node_,
-        _end: __tree_.__end_node)
+      let (lower, upper) = tied.rawRange(bounds.rawValue)!
       return .init(__tree_: __tree_, start: lower, end: upper, tie: tied)
     }
   #endif

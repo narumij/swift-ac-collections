@@ -53,7 +53,7 @@ extension UnsafeIndexV2RangeExpression: Sequence {
   public typealias Iterator = UnsafeIterator.IndexObverse<Base>
 
   public func makeIterator() -> Iterator {
-    let (lower, upper) = rawValue.pair(_begin: __tree_.__begin_node_, _end: __tree_.__end_node)
+    let (lower, upper) = tied.rawRange(rawValue)!
     return .init(__tree_: __tree_, start: lower, end: upper, tie: tied)
   }
 }

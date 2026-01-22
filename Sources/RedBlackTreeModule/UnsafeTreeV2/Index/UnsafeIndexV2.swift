@@ -394,7 +394,7 @@ extension UnsafeIndexV2 {
     case .nullptr:
       return .nullptr
     case .end:
-      return tied.__end_ptr!
+      return tied.end_ptr!
     default:
       return tied[p] ?? .nullptr
     }

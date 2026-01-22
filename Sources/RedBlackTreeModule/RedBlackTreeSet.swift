@@ -371,7 +371,6 @@ extension RedBlackTreeSet {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-  @inline(never)
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     __tree_._ensureUnique()
@@ -388,7 +387,6 @@ extension RedBlackTreeSet {
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_._ensureUnique()
@@ -401,7 +399,6 @@ extension RedBlackTreeSet {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
     guard !isEmpty else {

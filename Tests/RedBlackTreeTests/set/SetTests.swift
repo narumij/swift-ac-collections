@@ -325,12 +325,12 @@ final class SetTests: RedBlackTreeTestCase {
   #if DEBUG
     func testIndexLimit3() throws {
       let set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set.startIndex._rawValue, .node(0))
-      XCTAssertEqual(set.index(before: set.endIndex)._rawValue, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1)._rawValue, .node(4))
+      XCTAssertEqual(set.startIndex.rawIndex, .node(0))
+      XCTAssertEqual(set.index(before: set.endIndex).rawIndex, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).rawIndex, .node(4))
       XCTAssertEqual(
-        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?._rawValue, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5)._rawValue, .node(0))
+        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.rawIndex, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).rawIndex, .node(0))
       XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
       XCTAssertNotEqual(
         set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),
@@ -513,31 +513,31 @@ final class SetTests: RedBlackTreeTestCase {
   #if DEBUG
     func testLowerBound() throws {
       let numbers: RedBlackTreeSet = [1, 3, 5]
-      XCTAssertEqual(numbers.lowerBound(0)._rawValue, 0)
-      XCTAssertEqual(numbers.lowerBound(1)._rawValue, 0)
-      XCTAssertEqual(numbers.lowerBound(2)._rawValue, 1)
-      XCTAssertEqual(numbers.lowerBound(3)._rawValue, 1)
-      XCTAssertEqual(numbers.lowerBound(4)._rawValue, 2)
-      XCTAssertEqual(numbers.lowerBound(5)._rawValue, 2)
-      XCTAssertEqual(numbers.lowerBound(6)._rawValue, .end)
+      XCTAssertEqual(numbers.lowerBound(0).rawIndex, 0)
+      XCTAssertEqual(numbers.lowerBound(1).rawIndex, 0)
+      XCTAssertEqual(numbers.lowerBound(2).rawIndex, 1)
+      XCTAssertEqual(numbers.lowerBound(3).rawIndex, 1)
+      XCTAssertEqual(numbers.lowerBound(4).rawIndex, 2)
+      XCTAssertEqual(numbers.lowerBound(5).rawIndex, 2)
+      XCTAssertEqual(numbers.lowerBound(6).rawIndex, .end)
     }
 
     func testUpperBound() throws {
       let numbers: RedBlackTreeSet = [1, 3, 5]
-      XCTAssertEqual(numbers.upperBound(0)._rawValue, 0)
-      XCTAssertEqual(numbers.upperBound(1)._rawValue, 1)
-      XCTAssertEqual(numbers.upperBound(2)._rawValue, 1)
-      XCTAssertEqual(numbers.upperBound(3)._rawValue, 2)
-      XCTAssertEqual(numbers.upperBound(4)._rawValue, 2)
-      XCTAssertEqual(numbers.upperBound(5)._rawValue, .end)
-      XCTAssertEqual(numbers.upperBound(6)._rawValue, .end)
+      XCTAssertEqual(numbers.upperBound(0).rawIndex, 0)
+      XCTAssertEqual(numbers.upperBound(1).rawIndex, 1)
+      XCTAssertEqual(numbers.upperBound(2).rawIndex, 1)
+      XCTAssertEqual(numbers.upperBound(3).rawIndex, 2)
+      XCTAssertEqual(numbers.upperBound(4).rawIndex, 2)
+      XCTAssertEqual(numbers.upperBound(5).rawIndex, .end)
+      XCTAssertEqual(numbers.upperBound(6).rawIndex, .end)
     }
 
     func testFirstIndex() throws {
       var members: RedBlackTreeSet = [1, 3, 5, 7, 9]
-      XCTAssertEqual(members.firstIndex(of: 3)?._rawValue, .init(1))
+      XCTAssertEqual(members.firstIndex(of: 3)?.rawIndex, .init(1))
       XCTAssertEqual(members.firstIndex(of: 2), nil)
-      XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?._rawValue, .init(2))
+      XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?.rawIndex, .init(2))
       XCTAssertEqual(members.firstIndex(where: { $0 > 9 }), nil)
       XCTAssertEqual(members.sorted(), [1, 3, 5, 7, 9])
       XCTAssertEqual(members.removeFirst(), 1)
@@ -594,12 +594,12 @@ final class SetTests: RedBlackTreeTestCase {
     func testIndexAfter() throws {
       do {
         let s: RedBlackTreeSet<Int> = []
-        XCTAssertEqual(s.startIndex._rawValue, .end)
+        XCTAssertEqual(s.startIndex.rawIndex, .end)
       }
       do {
         let s: RedBlackTreeSet<Int> = [1]
-        XCTAssertEqual(s.startIndex._rawValue, .node(0))
-        XCTAssertEqual(s.index(after: s.startIndex)._rawValue, .end)
+        XCTAssertEqual(s.startIndex.rawIndex, .node(0))
+        XCTAssertEqual(s.index(after: s.startIndex).rawIndex, .end)
       }
     }
   #endif
@@ -883,9 +883,9 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = RedBlackTreeSet<Int>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawIndex, -1)
       // UnsafeTreeでは、範囲外のインデックスを作成できない
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawIndex, -2)
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr as Int)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))
@@ -903,8 +903,8 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertTrue(set.isValid(index: set.endIndex))
     typealias Index = RedBlackTreeSet<Int>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, 5)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawIndex, -1)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawIndex, 5)
 
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr as Int)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))

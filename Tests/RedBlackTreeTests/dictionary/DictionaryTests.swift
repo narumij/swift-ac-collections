@@ -459,12 +459,12 @@ final class DictionaryTests: RedBlackTreeTestCase {
   #if DEBUG
     func testIndexLimit3() throws {
       let set = [0: 0, 1: 10, 2: 20, 3: 30, 4: 40] as RedBlackTreeDictionary<Int, Int>
-      XCTAssertEqual(set.startIndex._rawValue, .node(0))
-      XCTAssertEqual(set.index(before: set.endIndex)._rawValue, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1)._rawValue, .node(4))
+      XCTAssertEqual(set.startIndex.rawIndex, .node(0))
+      XCTAssertEqual(set.index(before: set.endIndex).rawIndex, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).rawIndex, .node(4))
       XCTAssertEqual(
-        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?._rawValue, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5)._rawValue, .node(0))
+        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.rawIndex, .node(4))
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).rawIndex, .node(0))
       XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
       XCTAssertNotEqual(
         set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),
@@ -866,7 +866,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = RedBlackTreeDictionary<Int, String>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawIndex, -1)
       #if !USE_UNSAFE_TREE
         // UnsafeTreeでは、範囲外のインデックスを作成できない
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
@@ -892,8 +892,8 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertTrue(set.isValid(index: set.endIndex))
     typealias Index = RedBlackTreeDictionary<Int, String>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, 5)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawIndex, -1)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawIndex, 5)
 
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr as Int)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))

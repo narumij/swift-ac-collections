@@ -372,12 +372,12 @@ extension UnsafeIndexV2 {
   //  }
 
   // めんどくさい
-  @available(*, deprecated, message: "リファクタリング作業")
-  @inlinable
-  @inline(__always)
-  package var _rawValue: Int {
-    rawValue.pointee.___node_id_
-  }
+//  @available(*, deprecated, message: "リファクタリング作業")
+//  @inlinable
+//  @inline(__always)
+//  package var rawIndex: Int {
+//    rawValue.pointee.___node_id_
+//  }
 }
 
 // MARK: Index Resolver

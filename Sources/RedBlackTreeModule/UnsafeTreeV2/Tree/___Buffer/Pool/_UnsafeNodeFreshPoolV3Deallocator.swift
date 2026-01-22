@@ -8,56 +8,8 @@
 // インデックス等で`__tree_`を共有する設計だったが、デアロケータを共有する設計に移行する
 // 生成されて以後はこのオブジェクトが保持するメモリの寿命を一元で管理する
 @usableFromInline
-package final class _UnsafeNodeFreshPoolV3Deallocator: _UnsafeNodePtrType {
-
-  public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
-
-  @inlinable
-  internal init(
-    bucket: _BucketPointer?,
-    deallocator: _BucketAllocator
-  ) {
-    self.freshBucketHead = bucket
-    self.freshPoolDeallocator = deallocator
-  }
-
-  @usableFromInline var freshBucketHead: _BucketPointer?
-  @usableFromInline var isBaseDeallocated: Bool = false
-  @usableFromInline let freshPoolDeallocator: _BucketAllocator
-
-  @inlinable
-  @inline(__always)
-  public func isTriviallyIdentical(to other: _UnsafeNodeFreshPoolV3Deallocator) -> Bool {
-    self === other
-  }
-
-  @inlinable
-  deinit {
-    freshPoolDeallocator.deallocate(bucket: freshBucketHead)
-  }
-
-  @inlinable
-  @inline(__always)
-  subscript(___node_id_: Int) -> _NodePtr? {
-    assert(___node_id_ >= 0)
-    var remaining = ___node_id_
-    var p = freshBucketHead?.accessor(_value: freshPoolDeallocator._value)
-    while let h = p {
-      let cap = h.capacity
-      if remaining < cap {
-        return h[remaining]
-      }
-      remaining -= cap
-      p = h.next(_value: freshPoolDeallocator._value)
-    }
-    assert(false)
-    return nil
-  }
-}
-
-@usableFromInline
-package final class _UnsafeNodeFreshPoolV3DeallocatorR2:
-  ManagedBuffer<_UnsafeNodeFreshPoolV3DeallocatorR2.Header, Void>, _UnsafeNodePtrType
+package final class _TiedRawBuffer:
+  ManagedBuffer<_TiedRawBuffer.Header, Void>, _UnsafeNodePtrType
 {
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 
@@ -66,16 +18,16 @@ package final class _UnsafeNodeFreshPoolV3DeallocatorR2:
     bucket: _BucketPointer?,
     deallocator: _BucketAllocator
   )
-    -> _UnsafeNodeFreshPoolV3DeallocatorR2
+    -> _TiedRawBuffer
   {
-    let storage = _UnsafeNodeFreshPoolV3DeallocatorR2.create(minimumCapacity: 0) { managedBuffer in
+    let storage = _TiedRawBuffer.create(minimumCapacity: 0) { managedBuffer in
       return Header(freshBucketHead: bucket, freshPoolDeallocator: deallocator)
     }
-    return unsafeDowncast(storage, to: _UnsafeNodeFreshPoolV3DeallocatorR2.self)
+    return unsafeDowncast(storage, to: _TiedRawBuffer.self)
   }
 
   @inlinable
-  public func isTriviallyIdentical(to other: _UnsafeNodeFreshPoolV3DeallocatorR2) -> Bool {
+  public func isTriviallyIdentical(to other: _TiedRawBuffer) -> Bool {
     self === other
   }
 
@@ -87,7 +39,7 @@ package final class _UnsafeNodeFreshPoolV3DeallocatorR2:
   }
 }
 
-extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
+extension _TiedRawBuffer {
 
   @frozen
   public
@@ -96,7 +48,7 @@ extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
 
     @inlinable
     internal init(
-      freshBucketHead: _UnsafeNodeFreshPoolV3DeallocatorR2.Header._BucketPointer? = nil,
+      freshBucketHead: _TiedRawBuffer.Header._BucketPointer? = nil,
       freshPoolDeallocator: _BucketAllocator, isBaseDeallocated: Bool = false
     ) {
       self.freshBucketHead = freshBucketHead
@@ -149,5 +101,5 @@ extension _UnsafeNodeFreshPoolV3DeallocatorR2 {
 /// The type-punned empty singleton storage instance.
 @usableFromInline
 nonisolated(unsafe) package let _emptyDeallocator =
-  _UnsafeNodeFreshPoolV3DeallocatorR2
+_TiedRawBuffer
   .create(bucket: nil, deallocator: .init(valueType: Void.self, deinitialize: { _ in }))

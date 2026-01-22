@@ -42,7 +42,7 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
     var source: UnsafeIterator.RemoveAwarePointers
 
     @usableFromInline
-    var poolLifespan: Deallocator
+    var poolLifespan: _TiedRawBuffer
 
     @usableFromInline
     internal var _end: _NodePtr

@@ -20,8 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@usableFromInline
-typealias Deallocator = _UnsafeNodeFreshPoolV3DeallocatorR2
+//@usableFromInline
+//typealias Deallocator = _TiedRawBuffer
 
 @inlinable @inline(__always)
 func _ref<T>(_ a: inout T) -> UnsafeMutablePointer<T> {
@@ -89,7 +89,7 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @inlinable
   internal func __root_ptr() -> _NodeRef { root_ptr }
 
-  @usableFromInline var _deallocator: Deallocator?
+  @usableFromInline var _deallocator: _TiedRawBuffer?
 
   @usableFromInline
   var needsDealloc: Bool {
@@ -97,7 +97,7 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
   }
 
   @inlinable
-  var deallocator: Deallocator {
+  var deallocator: _TiedRawBuffer {
     mutating get {
       // TODO: 一度の保証付きの実装にすること
       if _deallocator == nil {

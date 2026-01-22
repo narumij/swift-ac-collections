@@ -9,7 +9,7 @@
 protocol UnsafeImmutableIndexingProtocol: _UnsafeNodePtrType
 where
   Index == UnsafeIndexV2<Base>,
-  PoolLifespan == Deallocator
+  PoolLifespan == _TiedRawBuffer
 {
   associatedtype Base: ___TreeBase & ___TreeIndex
   associatedtype Index

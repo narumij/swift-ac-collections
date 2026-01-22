@@ -59,7 +59,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   ///
   /// ここを境に名前が変わる
   @usableFromInline
-  var poolLifespan: Deallocator {
+  var poolLifespan: _TiedRawBuffer {
     isReadOnly ? _emptyDeallocator : withMutableHeader { $0.deallocator }
   }
 }

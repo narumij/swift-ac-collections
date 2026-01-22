@@ -14,7 +14,7 @@
 
 extension UnsafeIterator {
 
-  public struct Indexing<Base, Source: IteratorProtocol>:
+  public struct TiedIndexing<Base, Source: IteratorProtocol>:
     _UnsafeNodePtrType,
     UnsafeImmutableIndexingProtocol,
     IteratorProtocol,
@@ -75,21 +75,21 @@ extension UnsafeIterator {
   }
 }
 
-extension UnsafeIterator.Indexing: Equatable where Source: Equatable {
+extension UnsafeIterator.TiedIndexing: Equatable where Source: Equatable {
 
   public static func == (
-    lhs: UnsafeIterator.Indexing<Base, Source>, rhs: UnsafeIterator.Indexing<Base, Source>
+    lhs: UnsafeIterator.TiedIndexing<Base, Source>, rhs: UnsafeIterator.TiedIndexing<Base, Source>
   ) -> Bool {
     lhs.source == rhs.source
   }
 }
 
 #if swift(>=5.5)
-  extension UnsafeIterator.Indexing: @unchecked Sendable
+  extension UnsafeIterator.TiedIndexing: @unchecked Sendable
   where Source: Sendable {}
 #endif
 
-extension UnsafeIterator.Indexing: Comparable where Source: Equatable, Element: Comparable {
+extension UnsafeIterator.TiedIndexing: Comparable where Source: Equatable, Element: Comparable {
 
   @inlinable
   @inline(__always)

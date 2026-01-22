@@ -11,36 +11,36 @@ extension UnsafeIterator {
 
   public
     typealias IndexObverse<Base: ___TreeBase & ___TreeIndex> =
-    Indexing<Base, RemoveAware<Obverse>>
+    TiedIndexing<Base, RemoveAware<Obverse>>
 
   public
     typealias IndexReverse<Base: ___TreeBase & ___TreeIndex> =
-    Indexing<Base, RemoveAware<Reverse>>
+    TiedIndexing<Base, RemoveAware<Reverse>>
 
   public
-    typealias ValueObverse<Base: ___TreeBase & ___TreeIndex> = Movable<
+    typealias ValueObverse<Base: ___TreeBase & ___TreeIndex> = Tied<
       Value<Base, RemoveAware<Obverse>>
     >
   public
-    typealias ValueReverse<Base: ___TreeBase & ___TreeIndex> = Movable<
+    typealias ValueReverse<Base: ___TreeBase & ___TreeIndex> = Tied<
       Value<Base, RemoveAware<Reverse>>
     >
 
   public
-    typealias KeyObverse<Base: ___TreeBase & ___TreeIndex> = Movable<
+    typealias KeyObverse<Base: ___TreeBase & ___TreeIndex> = Tied<
       Key<Base, RemoveAware<Obverse>>
     >
   public
-    typealias KeyReverse<Base: ___TreeBase & ___TreeIndex> = Movable<
+    typealias KeyReverse<Base: ___TreeBase & ___TreeIndex> = Tied<
       Key<Base, RemoveAware<Reverse>>
     >
 
   public
-    typealias MappedValueObverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Movable<
+    typealias MappedValueObverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
       MappedValue<Base, RemoveAware<Obverse>>
     >
   public
-    typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Movable<
+    typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
       MappedValue<Base, RemoveAware<Reverse>>
     >
 }

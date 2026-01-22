@@ -7,7 +7,7 @@
 
 extension UnsafeIterator {
 
-  public struct Movable<Source: IteratorProtocol>:
+  public struct Tied<Source: IteratorProtocol>:
     _UnsafeNodePtrType,
     UnsafeImmutableIndexingProtocol,
     IteratorProtocol,
@@ -55,16 +55,16 @@ extension UnsafeIterator {
   }
 }
 
-extension UnsafeIterator.Movable: Equatable where Source: Equatable {
+extension UnsafeIterator.Tied: Equatable where Source: Equatable {
 
   public static func == (
-    lhs: UnsafeIterator.Movable<Source>, rhs: UnsafeIterator.Movable<Source>
+    lhs: UnsafeIterator.Tied<Source>, rhs: UnsafeIterator.Tied<Source>
   ) -> Bool {
     lhs.source == rhs.source
   }
 }
 
-extension UnsafeIterator.Movable: Comparable where Source: Equatable, Element: Comparable {
+extension UnsafeIterator.Tied: Comparable where Source: Equatable, Element: Comparable {
 
   @inlinable
   @inline(__always)
@@ -74,7 +74,7 @@ extension UnsafeIterator.Movable: Comparable where Source: Equatable, Element: C
 }
 
 #if swift(>=5.5)
-  extension UnsafeIterator.Movable: @unchecked Sendable
+  extension UnsafeIterator.Tied: @unchecked Sendable
   where Source: Sendable {}
 #endif
 
@@ -93,13 +93,13 @@ extension UnsafeIterator.Movable {
 }
 #endif
 
-extension UnsafeIterator.Movable
+extension UnsafeIterator.Tied
 where
   Source.Source.Element == UnsafeMutablePointer<UnsafeNode>
 {
 
   /// - Complexity: O(1)
-  public var indices: UnsafeIterator.Indexing<Source.Base, Source.Source> {
+  public var indices: UnsafeIterator.TiedIndexing<Source.Base, Source.Source> {
     .init(source: source.source, tie: tied)
   }
 

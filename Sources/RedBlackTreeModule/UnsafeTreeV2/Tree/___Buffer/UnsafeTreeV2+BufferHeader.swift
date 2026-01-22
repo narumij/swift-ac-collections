@@ -293,7 +293,12 @@ extension UnsafeTreeV2BufferHeader {
       return nullptr
     }
     assert(p.pointee.___node_id_ == .debug)
+#if true
+    p.initialize(to: nullptr.pointee)
+    p.pointee.___node_id_ = freshPoolUsedCount
+#else
     p.initialize(to: .create(id: freshPoolUsedCount))
+#endif
     freshPoolUsedCount += 1
     count += 1
     return p

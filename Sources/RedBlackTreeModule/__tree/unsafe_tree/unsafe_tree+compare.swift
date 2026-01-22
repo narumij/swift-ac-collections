@@ -51,19 +51,24 @@ extension CompareBothProtocol_ptr {
 
     if isMulti {
 
-      //      name                         time             std         iterations
-      //      --------------------------------------------------------------------
-      //      index compare 1000        19416.000 ns ±  10.13 %       69751
-      //      index compare 1000000 109517708.000 ns ±   2.03 %          13
+      // TODO: ポインタ版になったので再度はかりなおすこと
+      #if false
+        //      name                         time             std         iterations
+        //      --------------------------------------------------------------------
+        //      index compare 1000        19416.000 ns ±  10.13 %       69751
+        //      index compare 1000000 109517708.000 ns ±   2.03 %          13
 
-      //      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_multi(l, r))
+        return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_multi(l, r))
+      
+      #else
+        //      name                         time             std         iterations
+        //      --------------------------------------------------------------------
+        //      index compare 1000        11917.000 ns ±   8.25 %     114822
+        //      index compare 1000000  54229021.000 ns ±   3.62 %         24
 
-      //      name                         time             std         iterations
-      //      --------------------------------------------------------------------
-      //      index compare 1000        11917.000 ns ±   8.25 %     114822
-      //      index compare 1000000  54229021.000 ns ±   3.62 %         24
-
-      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_bitmap(l, r))
+        return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_bitmap(l, r))
+      
+      #endif
     }
     return ___ptr_comp_unique(l, r)
   }
@@ -194,7 +199,13 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 func ___ptr_comp_bitmap(
   _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
 ) -> Bool {
+  assert(!__l.___is_null, "Left node shouldn't be null")
+  assert(!__r.___is_null, "Right node shouldn't be null")
+  assert(!__l.___is_end, "Left node shouldn't be end")
+  assert(!__r.___is_end, "Right node shouldn't be end")
+
   assert(___ptr_comp_multi(__l, __r) == (__l.___ptr_bitmap_128() < __r.___ptr_bitmap_128()))
+
   // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
   return __l.___ptr_bitmap_128() < __r.___ptr_bitmap_128()
 }

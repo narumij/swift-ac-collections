@@ -685,7 +685,7 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func makeIterator() -> Tree._Values {
+  public func makeIterator() -> Tree._Values<Base> {
     _makeIterator()
   }
 
@@ -825,7 +825,7 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func reversed() -> Tree._Values.Reversed {
+  public func reversed() -> Tree._Values<Base>.Reversed {
     _reversed()
   }
 

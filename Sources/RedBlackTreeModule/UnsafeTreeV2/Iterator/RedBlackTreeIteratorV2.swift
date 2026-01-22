@@ -26,8 +26,15 @@ import Foundation
 public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex {
   
   public typealias Base = Base
+  
+//  public typealias Values = UnsafeIterator.ValueObverse
 }
 
+#if true
+extension RedBlackTreeIteratorV2 {
+  public typealias Values = UnsafeIterator.ValueObverse
+}
+#else
 extension RedBlackTreeIteratorV2 {
 
   @frozen
@@ -98,3 +105,4 @@ extension RedBlackTreeIteratorV2.Values {
     __tree_!.__end_node == other.__tree_!.__end_node && source == other.source
   }
 }
+#endif

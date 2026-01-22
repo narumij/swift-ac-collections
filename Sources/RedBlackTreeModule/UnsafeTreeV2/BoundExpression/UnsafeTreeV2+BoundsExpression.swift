@@ -40,6 +40,8 @@ extension UnsafeTreeV2 {
 // MARK: -
 
 extension RedBlackTreeSet {
+  
+  // TODO: 新APIを整理し、全てのコレクションに展開する
 
   public mutating func removeSub(bounds range: RedBlackTreeBoundsExpression<Element>) {
     let (lhs, rhs) = __tree_.relative(to: range)

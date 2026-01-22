@@ -97,16 +97,23 @@ extension UnsafeImmutableTree {
   }
 }
 
-extension UnsafeIndexV2: Comparable {
-
+extension UnsafeIndexV2: Equatable {
+  
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
+    
+    // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
+    
     //    lhs.rawValue == rhs.rawValue
     lhs.___node_id_ == rhs.___node_id_
   }
+}
+
+// 本当は削除したいが、Collection適応でRange適応が必須なため、仕方なく残している
+extension UnsafeIndexV2: Comparable {
 
   /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(1)
   ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n*)
@@ -117,6 +124,9 @@ extension UnsafeIndexV2: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
+    
+    // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
+
     switch (lhs.___node_id_, rhs.___node_id_) {
     case (.nullptr, _), (_, .nullptr):
       fatalError(.invalidIndex)

@@ -134,14 +134,16 @@ extension UnsafeTreeV2 {
 
 // MARK: Refresh Pool Iterator
 
+#if DEBUG
 extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func makeFreshPoolIterator() -> _UnsafeNodeFreshPoolIterator<_Value> {
+  func makeFreshPoolIterator() -> _FreshPoolPopIterator<_Value> {
     return _buffer.header.makeFreshPoolIterator()
   }
 }
+#endif
 
 #if false
 extension UnsafeTreeV2 {

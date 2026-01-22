@@ -165,12 +165,12 @@ extension _UnsafeNodeFreshPoolV3 {
 
 extension _FreshPool {
 
-  @usableFromInline typealias Iterator = _UnsafeNodeFreshPoolIterator
+  @usableFromInline typealias PopIterator = _FreshPoolPopIterator
 
   @inlinable
 //  @inline(__always)
-  func makeFreshPoolIterator<T>() -> _UnsafeNodeFreshPoolIterator<T> {
-    return _UnsafeNodeFreshPoolIterator<T>(bucket: freshBucketHead)
+  func makeFreshPoolIterator<T>() -> _FreshPoolPopIterator<T> {
+    return _FreshPoolPopIterator<T>(bucket: freshBucketHead)
   }
 }
 

@@ -162,7 +162,7 @@ extension UnsafeTreeV2BufferHeader {
     }
 
     // 旧ノードを列挙する準備
-    var nodes = makeFreshPoolIterator() as Iterator<_Value>
+    var nodes = makeFreshPoolIterator() as PopIterator<_Value>
 
     // ノード番号順に利用歴があるノード全てについて移行作業を行う
     while let s = nodes.next(), let d = other.popFresh() {

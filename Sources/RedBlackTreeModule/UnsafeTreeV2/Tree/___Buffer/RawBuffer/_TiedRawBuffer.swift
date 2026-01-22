@@ -21,7 +21,7 @@ package final class _TiedRawBuffer:
     -> _TiedRawBuffer
   {
     let storage = _TiedRawBuffer.create(minimumCapacity: 0) { managedBuffer in
-      return Header(freshBucketHead: bucket, freshPoolDeallocator: deallocator)
+      return Header(bucketHead: bucket, deallocator: deallocator)
     }
     return unsafeDowncast(storage, to: _TiedRawBuffer.self)
   }
@@ -48,38 +48,39 @@ extension _TiedRawBuffer {
 
     @inlinable
     internal init(
-      freshBucketHead: _TiedRawBuffer.Header._BucketPointer? = nil,
-      freshPoolDeallocator: _BucketAllocator, isBaseDeallocated: Bool = false
+      bucketHead: _TiedRawBuffer.Header._BucketPointer? = nil,
+      deallocator: _BucketAllocator,
+      isValueAccessAllowed: Bool = true
     ) {
-      self.freshBucketHead = freshBucketHead
-      self.freshPoolDeallocator = freshPoolDeallocator
-      self.isValueAccessAllowed = isBaseDeallocated
+      self.bucketHead = bucketHead
+      self.deallocator = deallocator
+      self.isValueAccessAllowed = isValueAccessAllowed
     }
 
     @usableFromInline
     typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 
-    @usableFromInline var freshBucketHead: _BucketPointer?
-    @usableFromInline let freshPoolDeallocator: _BucketAllocator
-    @usableFromInline var isValueAccessAllowed: Bool = true
+    @usableFromInline var bucketHead: _BucketPointer?
+    @usableFromInline let deallocator: _BucketAllocator
+    @usableFromInline var isValueAccessAllowed: Bool
 
     @inlinable
     func deallocate() {
-      freshPoolDeallocator.deallocate(bucket: freshBucketHead)
+      deallocator.deallocate(bucket: bucketHead)
     }
 
     @inlinable
     subscript(___node_id_: Int) -> _NodePtr? {
       assert(___node_id_ >= 0)
       var remaining = ___node_id_
-      var p = freshBucketHead?.accessor(_value: freshPoolDeallocator._value)
+      var p = bucketHead?.accessor(_value: deallocator._value)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {
           return h[remaining]
         }
         remaining -= cap
-        p = h.next(_value: freshPoolDeallocator._value)
+        p = h.next(_value: deallocator._value)
       }
       assert(false)
       return nil
@@ -91,12 +92,6 @@ extension _TiedRawBuffer {
     header[___node_id_]
   }
 
-//  @usableFromInline
-//  var isBaseDeallocated: Bool {
-//    get { !header.isValueAccessAllowed }
-//    set { withUnsafeMutablePointerToHeader { $0.pointee.isValueAccessAllowed = !newValue } }
-//  }
-  
   @usableFromInline
   var isValueAccessAllowed: Bool {
     get { header.isValueAccessAllowed }
@@ -107,5 +102,5 @@ extension _TiedRawBuffer {
 /// The type-punned empty singleton storage instance.
 @usableFromInline
 nonisolated(unsafe) package let _emptyDeallocator =
-_TiedRawBuffer
+  _TiedRawBuffer
   .create(bucket: nil, deallocator: .init(valueType: Void.self, deinitialize: { _ in }))

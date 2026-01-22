@@ -27,82 +27,8 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
   
   public typealias Base = Base
   
-//  public typealias Values = UnsafeIterator.ValueObverse
 }
 
-#if true
 extension RedBlackTreeIteratorV2 {
   public typealias Values = UnsafeIterator.ValueObverse
 }
-#else
-extension RedBlackTreeIteratorV2 {
-
-  @frozen
-  public struct Values: Sequence, IteratorProtocol, _UnsafeNodePtrType,
-    UnsafeImmutableIndexingProtocol
-  {
-
-    public typealias Tree = UnsafeTreeV2<Base>
-    public typealias _Value = RedBlackTreeIteratorV2.Base._Value
-
-    @usableFromInline
-    internal var __tree_: UnsafeImmutableTree<Base>?
-
-    @usableFromInline
-    var source: UnsafeIterator.RemoveAwarePointers
-
-    @usableFromInline
-    var tied: _TiedRawBuffer
-
-    @usableFromInline
-    internal var _end: _NodePtr
-
-    @inlinable
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-      self.__tree_ = .init(__tree_: tree)
-      self.tied = tree.tied
-      source = .init(source: .init(__first: start, __last: end))
-      _end = tree.__end_node
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> _Value? {
-      source.next().map { $0.__value_().pointee }
-    }
-  }
-}
-
-extension RedBlackTreeIteratorV2.Values: Equatable where _Value: Equatable {
-
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.isTriviallyIdentical(to: rhs) || lhs.elementsEqual(rhs)
-  }
-}
-
-extension RedBlackTreeIteratorV2.Values: Comparable where _Value: Comparable {
-
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs.isTriviallyIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
-  }
-}
-
-#if swift(>=5.5)
-  extension RedBlackTreeIteratorV2.Values: @unchecked Sendable
-  where _Value: Sendable {}
-#endif
-
-// MARK: - Is Identical To
-
-extension RedBlackTreeIteratorV2.Values {
-  @inlinable
-  @inline(__always)
-  public func isTriviallyIdentical(to other: Self) -> Bool {
-    __tree_!.__end_node == other.__tree_!.__end_node && source == other.source
-  }
-}
-#endif

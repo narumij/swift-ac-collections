@@ -11,9 +11,9 @@ public enum UnsafeTreeRangeExpression: Equatable {
   case range(from: Bound, to: Bound)
   /// `a...b` のこと
   case closedRange(from: Bound, through: Bound)
-  /// `..<a` のこと
+  /// `..<b` のこと
   case partialRangeTo(Bound)
-  /// `...a` のこと
+  /// `...b` のこと
   case partialRangeThrough(Bound)
   /// `a...` のこと
   case partialRangeFrom(Bound)

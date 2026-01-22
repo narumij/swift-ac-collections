@@ -23,8 +23,5 @@
 import Foundation
 
 extension RedBlackTreeIteratorV2.Values {
-  
-  // TODO: 対応関係がおかしい。修正すること
-  
 //  public typealias Reversed = UnsafeIterator.ValueReverse<Base>
 }

@@ -38,6 +38,7 @@ where Base: ___TreeBase & ___TreeIndex {
   typealias _Value = Tree._Value
 
   // endのみか、定数倍を許容できるならendすら保持せずともインデックスの機能維持は可能そう
+  // tied raw bufferがendを返せるようにしたので、将来的に不要
   @usableFromInline
   internal let __tree_: ImmutableTree
 

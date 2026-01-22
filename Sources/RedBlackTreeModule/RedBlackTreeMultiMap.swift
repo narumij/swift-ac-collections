@@ -91,7 +91,11 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap: ___RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeMultiMap: CompareMultiTrait {}
-extension RedBlackTreeMultiMap: KeyValueComparer {}
+extension RedBlackTreeMultiMap: KeyValueComparer {
+  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> RedBlackTreePair<Key, Value> {
+    p.__value_().pointee
+  }  
+}
 
 // MARK: - Creating a MultiMap
 

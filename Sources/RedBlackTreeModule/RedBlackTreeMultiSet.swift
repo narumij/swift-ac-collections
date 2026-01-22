@@ -70,7 +70,11 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet: ___RedBlackTreeKeyOnlyBase {}
 extension RedBlackTreeMultiSet: CompareMultiTrait {}
-extension RedBlackTreeMultiSet: ScalarValueComparer {}
+extension RedBlackTreeMultiSet: ScalarValueComparer {
+  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {
+    p.__value_().pointee
+  }
+}
 
 // MARK: - Creating a MultSet
 

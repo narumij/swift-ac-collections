@@ -8,7 +8,11 @@
 import RedBlackTreeModule
 import XCTest
 
-final class KeyValueComparerTests: RedBlackTreeTestCase, KeyValueComparer {
+final class KeyValueComparerTests: RedBlackTreeTestCase, KeyValueComparer, CompareUniqueTrait {
+  
+  static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeModule.UnsafeNode>) -> (key: _Key, value: _MappedValue) {
+    fatalError()
+  }
 
   static func value_comp(_ l: _Key, _ r: _Key) -> Bool {
     l.internalKey < r.internalKey

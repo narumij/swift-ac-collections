@@ -87,7 +87,12 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeDictionary: CompareUniqueTrait {}
-extension RedBlackTreeDictionary: KeyValueComparer {}
+extension RedBlackTreeDictionary: KeyValueComparer {
+  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> RedBlackTreePair<Key, Value>
+  {
+    p.__value_().pointee
+  }
+}
 
 // MARK: - Creating a Dictionay
 

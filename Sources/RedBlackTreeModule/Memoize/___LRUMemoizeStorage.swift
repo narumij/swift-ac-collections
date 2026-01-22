@@ -115,6 +115,10 @@ extension ___LRUMemoizeStorage: ___LRULinkList & ___UnsafeStorageProtocolV2 {
 }
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}
 extension ___LRUMemoizeStorage: KeyValueComparer {
+  
+  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> KeyValue {
+    p.__value_().pointee
+  }
 
   @inlinable
   @inline(__always)

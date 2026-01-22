@@ -57,7 +57,7 @@ package struct _BucketAllocator {
   public init<_Value>(
     valueType: _Value.Type, deinitialize: @escaping (UnsafeMutableRawPointer) -> Void
   ) {
-    self._value = MemoryLayout<_Value>._memoryLayout
+    self.memoryLayout = MemoryLayout<_Value>._memoryLayout
     self._pair = .init(UnsafeNode.self, _Value.self)
     self.deinitialize = deinitialize
   }
@@ -66,7 +66,7 @@ package struct _BucketAllocator {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
   @usableFromInline
-  let _value: _MemoryLayout
+  let memoryLayout: _MemoryLayout
 
   @usableFromInline
   package let _pair: _MemoryLayout
@@ -83,7 +83,7 @@ package struct _BucketAllocator {
 
   @inlinable
   func deinitializeNodeAndValues(isHead: Bool, _ b: _BucketPointer) {
-    var it = b._counts(isHead: isHead, memoryLayout: _value)
+    var it = b._counts(isHead: isHead, memoryLayout: memoryLayout)
     while let p = it.pop() {
       if p.pointee.___needs_deinitialize {
         deinitialize(p.advanced(by: 1))
@@ -93,7 +93,7 @@ package struct _BucketAllocator {
     }
     #if DEBUG
       do {
-        var it = b._capacities(isHead: isHead, memoryLayout: _value)
+        var it = b._capacities(isHead: isHead, memoryLayout: memoryLayout)
         while let p = it.pop() {
           p.pointee.___node_id_ = .debug
         }
@@ -164,7 +164,7 @@ package struct _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(isHead: true, memoryLayout: _value)
+        var it = header._capacities(isHead: true, memoryLayout: memoryLayout)
         while let p = it.pop() {
           p.pointee.___node_id_ = .debug
         }
@@ -193,7 +193,7 @@ package struct _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(isHead: false, memoryLayout: _value)
+        var it = header._capacities(isHead: false, memoryLayout: memoryLayout)
         while let p = it.pop() {
           p.pointee.___node_id_ = .debug
         }
@@ -208,7 +208,7 @@ package struct _BucketAllocator {
     bytes: Int, alignment: Int
   ) {
     let a0 = MemoryLayout<UnsafeNode>.alignment
-    let a1 = _value.alignment
+    let a1 = memoryLayout.alignment
     let s2 = MemoryLayout<_Bucket>.stride
     let s01 = _pair.stride
     let offset01 = max(0, a1 - a0)

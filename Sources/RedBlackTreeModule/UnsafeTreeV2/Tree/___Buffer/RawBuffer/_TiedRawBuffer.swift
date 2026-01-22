@@ -73,14 +73,14 @@ extension _TiedRawBuffer {
     subscript(___node_id_: Int) -> _NodePtr? {
       assert(___node_id_ >= 0)
       var remaining = ___node_id_
-      var p = bucketHead?.accessor(_value: deallocator._value)
+      var p = bucketHead?.accessor(_value: deallocator.memoryLayout)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {
           return h[remaining]
         }
         remaining -= cap
-        p = h.next(_value: deallocator._value)
+        p = h.next(_value: deallocator.memoryLayout)
       }
       assert(false)
       return nil

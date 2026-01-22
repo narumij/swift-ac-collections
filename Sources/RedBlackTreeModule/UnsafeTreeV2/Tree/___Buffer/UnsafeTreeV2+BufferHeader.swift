@@ -23,10 +23,7 @@
 //@usableFromInline
 //typealias Deallocator = _TiedRawBuffer
 
-@inlinable @inline(__always)
-func _ref<T>(_ a: inout T) -> UnsafeMutablePointer<T> {
-  withUnsafeMutablePointer(to: &a) { $0 }
-}
+
 
 @frozen
 public struct UnsafeTreeV2BufferHeader: _RecyclePool {
@@ -72,7 +69,7 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
   
   @inlinable
   var memoryLayout: _MemoryLayout {
-    freshBucketAllocator._value
+    freshBucketAllocator.memoryLayout
   }
 
   @inlinable
@@ -108,13 +105,6 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
       return _tied!
     }
   }
-
-  #if DEBUG
-    @inlinable
-    mutating func createDeallocator() {
-      _ = tiedRawBuffer
-    }
-  #endif
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
     /// CoWの発火回数を観察するためのプロパティ

@@ -69,13 +69,13 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   @inlinable
   @inline(__always)
   var __left_ref: _NodeRef {
-    return withUnsafeMutablePointer(to: &pointee.__left_) { $0 }
+    _ref(&pointee.__left_)
   }
 
   @inlinable
   @inline(__always)
   var __right_ref: _NodeRef {
-    return withUnsafeMutablePointer(to: &pointee.__right_) { $0 }
+    _ref(&pointee.__right_)
   }
 }
 
@@ -145,4 +145,9 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   func _advanced<_Value>(with t: _Value.Type, count: Int) -> UnsafeMutablePointer {
     _advanced(raw: (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride) * count)
   }
+}
+
+@inlinable @inline(__always)
+package func _ref<T>(_ a: inout T) -> UnsafeMutablePointer<T> {
+  withUnsafeMutablePointer(to: &a) { $0 }
 }

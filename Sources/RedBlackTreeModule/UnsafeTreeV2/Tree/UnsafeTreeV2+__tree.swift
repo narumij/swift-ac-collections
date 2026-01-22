@@ -97,13 +97,13 @@ extension UnsafeTreeV2: TreeNodeRefInterface {
   @inlinable
   @inline(__always)
   package func __left_ref(_ p: _NodePtr) -> _NodeRef {
-    return withUnsafeMutablePointer(to: &p.pointee.__left_) { $0 }
+    return _ref(&p.pointee.__left_)
   }
 
   @inlinable
   @inline(__always)
   package func __right_ref(_ p: _NodePtr) -> _NodeRef {
-    return withUnsafeMutablePointer(to: &p.pointee.__right_) { $0 }
+    return _ref(&p.pointee.__right_)
   }
 
   @inlinable

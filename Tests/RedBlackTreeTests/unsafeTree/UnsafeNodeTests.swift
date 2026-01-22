@@ -14,7 +14,7 @@ import XCTest
 
     class Fixture: InsertNodeAtProtocol_ptr {
       init(_ end: inout UnsafeNode) {
-        let e_p = withUnsafeMutablePointer(to: &end) { $0 }
+        let e_p = _ref(&end)
         __begin_node_ = e_p
         __end_node = e_p
       }

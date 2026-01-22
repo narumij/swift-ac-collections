@@ -208,6 +208,7 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
 
     @usableFromInline
     mutating func ___deallocFreshPool() {
+      assert(_tied == nil)
       freshBucketAllocator.deallocate(bucket: freshBucketHead)
     }
   }

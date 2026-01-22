@@ -70,7 +70,6 @@ where Base: ___TreeBase & ___TreeIndex {
     assert(rawValue != .nullptr)
     assert(!rawValue.___is_garbaged)
     self.rawValue = rawValue
-//    self.___raw_index = rawValue.pointee.___raw_index
     self.tied = tree.tied
     self.__tree_ = .init(__tree_: tree)
   }
@@ -85,7 +84,6 @@ where Base: ___TreeBase & ___TreeIndex {
     assert(rawValue != .nullptr)
     assert(!rawValue.___is_garbaged)
     self.__tree_ = __tree_
-//    self.___raw_index = rawValue.pointee.___raw_index
     self.rawValue = rawValue
     self.tied = tie
   }
@@ -96,19 +94,6 @@ where Base: ___TreeBase & ___TreeIndex {
 
   // 性能上の問題でCoWに関与できない設計としている
   // CoWに関与できないので、Treeに対する破壊的変更は行わないこと
-}
-
-extension UnsafeImmutableTree {
-
-  @inlinable
-  func lessThan(_ lhs: _NodePtr, _ rhs: _NodePtr) -> Bool {
-    guard !lhs.___is_garbaged,
-      !rhs.___is_garbaged
-    else {
-      preconditionFailure(.garbagedIndex)
-    }
-    return ___ptr_comp(lhs, rhs)
-  }
 }
 
 extension UnsafeIndexV2: Equatable {
@@ -161,7 +146,6 @@ extension UnsafeIndexV2: Comparable {
     
     // rhsよせでもいいかもしれない(2026/1/13)
     
-//    return lhs.__tree_.lessThan(lhs.___node_ptr(lhs), lhs.___node_ptr(rhs))
     return Base.___ptr_comp(lhs.rawValue, rhs.rawValue)
   }
 }
@@ -182,7 +166,7 @@ extension UnsafeIndexV2 {
     else {
       preconditionFailure(.garbagedIndex)
     }
-    return __tree_.___signed_distance(rawValue, other)
+    return Base.___signed_distance(rawValue, other)
   }
 
   /// - Complexity: O(*d*)
@@ -191,7 +175,7 @@ extension UnsafeIndexV2 {
   public func advanced(by n: Int) -> Self {
     return .init(
       __tree_: __tree_,
-      rawValue: __tree_.advanced(rawValue, by: n),
+      rawValue: Base.advanced(rawValue, by: n),
       tie: tied)
   }
 }
@@ -221,15 +205,24 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var previous: Self? {
+    guard !rawValue.___is_null else {
+      fatalError(.invalidIndex)
+    }
+    
+    let prev = __tree_prev_iter(rawValue)
+    
     guard
-      !__tree_.___is_prev_null(rawValue),
+      !rawValue.___is_garbaged,
+      !prev.___is_null,
+      !prev.___is_garbaged,
       tied.isValueAccessAllowed
     else {
       return nil
     }
-    var prev = self
-    prev.___unchecked_prev()
-    return prev
+    
+    var result = self
+    result.rawValue = prev
+    return result
   }
 
   @inlinable

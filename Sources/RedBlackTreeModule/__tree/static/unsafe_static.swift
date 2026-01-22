@@ -8,9 +8,7 @@
 import Foundation
 
 public protocol CompareStaticProtocol:
-  IsMultiTraitStaticInterface,
-  PointerCompareStaticInterface,
-  CompareUniqueStaticInterface
+  _UnsafeNodePtrType & IsMultiTraitStaticInterface & CompareUniqueStaticInterface
 {}
 
 extension CompareStaticProtocol {

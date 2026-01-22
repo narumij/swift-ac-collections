@@ -141,6 +141,13 @@ extension UnsafeIndexV2: Comparable {
 
     // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
 
+    guard
+      !lhs.rawValue.___is_garbaged,
+      !rhs.rawValue.___is_garbaged
+    else {
+      preconditionFailure(.garbagedIndex)
+    }
+
     switch (lhs.rawIndex, rhs.rawIndex) {
     case (.nullptr, _), (_, .nullptr):
       fatalError(.invalidIndex)
@@ -151,8 +158,11 @@ extension UnsafeIndexV2: Comparable {
     default:
       break
     }
+    
     // rhsよせでもいいかもしれない(2026/1/13)
-    return lhs.__tree_.lessThan(lhs.___node_ptr(lhs), lhs.___node_ptr(rhs))
+    
+//    return lhs.__tree_.lessThan(lhs.___node_ptr(lhs), lhs.___node_ptr(rhs))
+    return Base.___ptr_comp(lhs.rawValue, rhs.rawValue)
   }
 }
 

@@ -17,13 +17,15 @@ public protocol TreeValueStaticInterface: _NodePtrType & _ValueType {
   static func __value_(_ p: _NodePtr) -> _Value
 }
 
-public protocol TreeNodeValueStaticInterface: _KeyType & _KeyStaticInterface & TreeValueStaticInterface {
+public protocol TreeNodeValueStaticInterface: _KeyType & _KeyStaticInterface
+    & TreeValueStaticInterface
+{
   associatedtype _NodePtr
   static func __get_value(_: _NodePtr) -> _Key
 }
 
 extension TreeNodeValueStaticInterface {
-  
+
   public static func __get_value(_ p: _NodePtr) -> _Key {
     __key(__value_(p))
   }
@@ -33,20 +35,14 @@ public protocol IsMultiTraitStaticInterface {
   static var isMulti: Bool { get }
 }
 
-public protocol PointerCompareStaticInterface: _UnsafeNodePtrType {
-  static func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
-}
-
 public protocol CompareUniqueStaticInterface: _UnsafeNodePtrType {
   static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }
 
 public protocol PointerCompareStaticProtocol:
-  PointerCompareStaticInterface
-    & TreeNodeValueStaticInterface
+  TreeNodeValueStaticInterface
     & ValueCompStaticInterface
     & CompareStaticProtocol
-    & CompareUniqueStaticInterface
 {}
 
 extension PointerCompareStaticProtocol {

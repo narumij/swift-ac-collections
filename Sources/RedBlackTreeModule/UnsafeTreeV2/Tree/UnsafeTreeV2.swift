@@ -186,7 +186,7 @@ extension UnsafeTreeV2 {
       // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
       // endはシングルトン的にしたい気持ちもある
       //      return self.isTriviallyIdentical(to: index.__tree_) ? index.rawValue : ___NodePtr(index.___node_id_)
-      return __end_node == index.__tree_.__end_node ? index.rawValue : ___NodePtr(index.___node_id_)
+      return __end_node == index.__tree_.__end_node ? index.rawValue : ___NodePtr(index.rawIndex)
     #else
       self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
     #endif

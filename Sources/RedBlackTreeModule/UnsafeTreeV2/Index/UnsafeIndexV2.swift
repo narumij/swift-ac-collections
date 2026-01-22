@@ -44,7 +44,7 @@ where Base: ___TreeBase & ___TreeIndex {
 
   // メモリが解放される危険は解消したので、これを保持する必要性がなくなっている
   @usableFromInline
-  internal var ___node_id_: Int {
+  internal var rawIndex: Int {
     rawValue.pointee.___node_id_
   }
 
@@ -122,7 +122,7 @@ extension UnsafeIndexV2: Equatable {
     // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
 
     //    lhs.rawValue == rhs.rawValue
-    lhs.___node_id_ == rhs.___node_id_
+    lhs.rawIndex == rhs.rawIndex
   }
 }
 
@@ -141,7 +141,7 @@ extension UnsafeIndexV2: Comparable {
 
     // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
 
-    switch (lhs.___node_id_, rhs.___node_id_) {
+    switch (lhs.rawIndex, rhs.rawIndex) {
     case (.nullptr, _), (_, .nullptr):
       fatalError(.invalidIndex)
     case (.end, _):
@@ -409,7 +409,7 @@ extension UnsafeIndexV2 {
       // endはシングルトン的にしたい気持ちもある
       return __tree_.isTriviallyIdentical(to: index.__tree_)
         ? index.rawValue
-        : self[index.___node_id_]
+        : self[index.rawIndex]
     #else
       self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
     #endif

@@ -30,6 +30,9 @@ public
     -> __compare_result
 }
 
+// TODO: プロトコルインジェクションを整理すること
+// __treenの基本要素ではないので、別カテゴリがいい
+
 public protocol LazySynthThreeWayComparator: ThreeWayComparator
 where Self: ValueComparer {}
 

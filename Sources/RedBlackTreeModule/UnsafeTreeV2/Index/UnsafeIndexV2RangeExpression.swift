@@ -86,9 +86,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   @inlinable
   @inline(__always)
   public prefix func ..< <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
-    return .init(
-      rawValue: ..<rhs.rawValue,
-      tie: rhs.tied)
+    return .init(rawValue: ..<rhs.rawValue, tie: rhs.tied)
   }
 
   @inlinable
@@ -97,16 +95,12 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
     guard let rhs = rhs.next else {
       fatalError(.invalidIndex)
     }
-    return .init(
-      rawValue: ...rhs.rawValue,
-      tie: rhs.tied)
+    return .init(rawValue: ...rhs.rawValue, tie: rhs.tied)
   }
 
   @inlinable
   @inline(__always)
   public postfix func ... <Base>(lhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
-    return .init(
-      rawValue: lhs.rawValue...,
-      tie: lhs.tied)
+    return .init(rawValue: lhs.rawValue..., tie: lhs.tied)
   }
 #endif

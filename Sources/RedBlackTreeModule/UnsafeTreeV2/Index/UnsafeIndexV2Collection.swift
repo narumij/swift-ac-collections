@@ -64,17 +64,11 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
   public var endIndex: Index { ___index(_end) }
 
   public func makeIterator() -> Iterator {
-    .init(
-      start: _start,
-      end: _end,
-      tie: tied)
+    .init(start: _start, end: _end, tie: tied)
   }
 
   public func reversed() -> Reversed {
-    .init(
-      start: _start,
-      end: _end,
-      tie: tied)
+    .init(start: _start, end: _end, tie: tied)
   }
 
   public func index(after i: Index) -> Index {

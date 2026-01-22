@@ -38,6 +38,9 @@ extension UnsafeIterator {
 
     public mutating func next() -> _NodePtr? {
       guard let __current else { return nil }
+      guard !__current.pointee.isGarbaged else {
+        fatalError(.invalidIndex)
+      }
       self.__current = source.next()
       return __current
     }

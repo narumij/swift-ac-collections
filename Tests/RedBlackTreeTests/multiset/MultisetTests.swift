@@ -390,6 +390,7 @@ final class MultisetTests: RedBlackTreeTestCase {
     }
   #endif
 
+#if COMPATIBLE_ATCODER_2025
   func testRandom() throws {
     var set = RedBlackTreeMultiSet<Int>()
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -455,6 +456,7 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
   }
+  #endif
 
   func testRandom3() throws {
     var set = RedBlackTreeMultiSet<Int>()

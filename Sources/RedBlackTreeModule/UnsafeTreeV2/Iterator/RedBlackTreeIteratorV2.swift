@@ -51,7 +51,7 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.__tree_ = .init(__tree_: tree)
       self.tied = tree.tied
-      source = .init(iterator: .init(__first: start, __last: end))
+      source = .init(source: .init(__first: start, __last: end))
       _end = tree.__end_node
     }
 

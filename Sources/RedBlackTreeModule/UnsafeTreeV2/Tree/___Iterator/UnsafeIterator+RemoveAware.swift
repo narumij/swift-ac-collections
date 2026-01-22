@@ -18,20 +18,24 @@ extension UnsafeIterator {
   {
     public init<Base>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr)
     where Base: ___TreeBase {
-      self.init(iterator: .init(tree: tree, start: start, end: end))
+      self.init(source: .init(start: start, end: end))
     }
 
     public init<Base>(__tree_: UnsafeImmutableTree<Base>, start: _NodePtr, end: _NodePtr)
     where Base: ___TreeBase {
-      self.init(iterator: .init(__tree_: __tree_, start: start, end: end))
+      self.init(source: .init(start: start, end: end))
+    }
+
+    public init( start: _NodePtr, end: _NodePtr) {
+      self.init(source: .init(start: start, end: end))
     }
 
     var __current: Source.Element?
 
     @usableFromInline var source: Source
     @usableFromInline
-    internal init(iterator: Source) {
-      var it = iterator
+    internal init(source: Source) {
+      var it = source
       self.__current = it.next()
       self.source = it
     }

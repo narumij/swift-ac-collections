@@ -8,6 +8,7 @@
 public protocol UnsafeIteratorProtocol: _UnsafeNodePtrType {
   init<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr)
   init<Base: ___TreeBase>(__tree_: UnsafeImmutableTree<Base>, start: _NodePtr, end: _NodePtr)
+  init(start: _NodePtr, end: _NodePtr)
 }
 
 public protocol UnsafeAssosiatedIterator: _UnsafeNodePtrType {

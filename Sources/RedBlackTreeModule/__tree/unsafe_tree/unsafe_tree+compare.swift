@@ -52,6 +52,7 @@ extension CompareBothProtocol_ptr {
     if isMulti {
 
       // TODO: ポインタ版になったので再度はかりなおすこと
+      
       #if false
         //      name                         time             std         iterations
         //      --------------------------------------------------------------------

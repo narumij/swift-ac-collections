@@ -370,6 +370,7 @@ extension UnsafeIndexV2 {
   //    ___node_ptr(self)
   //  }
 
+  // めんどくさい
   @available(*, deprecated, message: "リファクタリング作業")
   @inlinable
   @inline(__always)

@@ -81,7 +81,7 @@ extension RedBlackTreeIteratorV2.KeyValues.Reversed {
   @inlinable
   @inline(__always)
   public var indices: Tree.Indices.Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
+    .init(start: _start, end: _end, tie: __tree_.tied)
   }
 }
 

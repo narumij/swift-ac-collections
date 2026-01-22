@@ -29,19 +29,6 @@ extension UnsafeIterator {
 
     @usableFromInline
     var tied: _TiedRawBuffer
-
-    @usableFromInline
-    init(
-      tree: UnsafeTreeV2<Base>,
-      start: _NodePtr,
-      end: _NodePtr
-    ) where Source: UnsafeIteratorProtocol {
-      self.init(
-        source: .init(
-          start: start,
-          end: end),
-        tie: tree.tied)
-    }
     
     @usableFromInline
     init(

@@ -169,7 +169,7 @@ extension UnsafeIndexV2 {
   public var next: Self? {
     guard
       !__tree_.___is_next_null(rawValue),
-      !tied.isBaseDeallocated
+      tied.isValueAccessAllowed
     else {
       return nil
     }
@@ -186,7 +186,7 @@ extension UnsafeIndexV2 {
   public var previous: Self? {
     guard
       !__tree_.___is_prev_null(rawValue),
-      !tied.isBaseDeallocated
+      tied.isValueAccessAllowed
     else {
       return nil
     }
@@ -244,7 +244,7 @@ extension UnsafeIndexV2 {
     guard
       !__tree_.___is_subscript_null(rawValue),
       !__tree_.___is_garbaged(rawValue),
-      !tied.isBaseDeallocated
+      tied.isValueAccessAllowed
     else { return nil }
     return Base.___pointee(rawValue.__value_().pointee)
   }

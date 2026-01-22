@@ -33,7 +33,7 @@ public final class UnsafeTreeV2Buffer:
       if header.pointee.isRawBufferUniquelyOwned {
         header.pointee.___deallocFreshPool()
       } else {
-        header.pointee._tied?.isBaseDeallocated = true
+        header.pointee._tied?.isValueAccessAllowed = false
       }
     }
   }

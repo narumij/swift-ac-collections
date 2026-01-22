@@ -53,7 +53,7 @@ extension _TiedRawBuffer {
     ) {
       self.freshBucketHead = freshBucketHead
       self.freshPoolDeallocator = freshPoolDeallocator
-      self.isBaseDeallocated = isBaseDeallocated
+      self.isValueAccessAllowed = isBaseDeallocated
     }
 
     @usableFromInline
@@ -61,7 +61,7 @@ extension _TiedRawBuffer {
 
     @usableFromInline var freshBucketHead: _BucketPointer?
     @usableFromInline let freshPoolDeallocator: _BucketAllocator
-    @usableFromInline var isBaseDeallocated: Bool = false
+    @usableFromInline var isValueAccessAllowed: Bool = true
 
     @inlinable
     func deallocate() {
@@ -91,10 +91,16 @@ extension _TiedRawBuffer {
     header[___node_id_]
   }
 
+//  @usableFromInline
+//  var isBaseDeallocated: Bool {
+//    get { !header.isValueAccessAllowed }
+//    set { withUnsafeMutablePointerToHeader { $0.pointee.isValueAccessAllowed = !newValue } }
+//  }
+  
   @usableFromInline
-  var isBaseDeallocated: Bool {
-    get { header.isBaseDeallocated }
-    set { withUnsafeMutablePointerToHeader { $0.pointee.isBaseDeallocated = newValue } }
+  var isValueAccessAllowed: Bool {
+    get { header.isValueAccessAllowed }
+    set { withUnsafeMutablePointerToHeader { $0.pointee.isValueAccessAllowed = newValue } }
   }
 }
 

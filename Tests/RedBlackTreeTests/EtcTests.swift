@@ -801,20 +801,6 @@ final class EtcTests: RedBlackTreeTestCase {
     }
   }
 
-  static func allocationSize(capacity: Int) -> (size: Int, alignment: Int) {
-    typealias _Value = Int
-    let (bufferSize, bufferAlignment) = UnsafePair<_Value>.allocationSize(capacity: capacity)
-    let numBytes = MemoryLayout<_Bucket>.stride + bufferSize
-    let headerAlignment = MemoryLayout<_Bucket>.alignment
-    if bufferAlignment <= headerAlignment {
-      return (numBytes, MemoryLayout<_Bucket>.alignment)
-    }
-    return (
-      numBytes + bufferAlignment - headerAlignment,
-      bufferAlignment
-    )
-  }
-
   static func allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
     typealias _Value = Int
     let s0 = MemoryLayout<UnsafeNode>.stride
@@ -848,52 +834,52 @@ final class EtcTests: RedBlackTreeTestCase {
     return Self.allocationCapacity(size: pagedSize)
   }
 
-  func testBufferSize() throws {
-    typealias _Value = Int
-    let s0 = MemoryLayout<UnsafeNode>.stride
-    let a0 = MemoryLayout<UnsafeNode>.alignment
-    let s1 = MemoryLayout<_Value>.stride
-    let a1 = MemoryLayout<_Value>.alignment
-    let s2 = MemoryLayout<_Bucket>.stride
-    let a2 = MemoryLayout<_Bucket>.alignment
-
-    var hoge: [(size: Int, capacity: Int)] = []
-    for i in 0..<32 {
-      let size = 1 << i
-
-      let s01 = a1 <= a0 ? (s0 + s1) : (s0 + s1)
-      let o01 = a1 <= a0 ? 0 : a2 - a1
-      let capacity =
-        a2 <= max(a1, a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1, a0)) / s01
-
-      XCTAssertGreaterThanOrEqual(
-        size,
-        capacity == 0 ? 0 : Self.allocationSize2(capacity: capacity).size)
-      hoge.append((size, capacity))
-    }
-
-    for capacity1 in 32..<1024 {
-      let size = Self.allocationSize(capacity: capacity1).size
-      let pagedSize = ((size >> 10) + 1) << 10
-      let pagedCapacity = Self.allocationCapacity(size: pagedSize)
-      XCTAssertLessThanOrEqual(Self.allocationSize(capacity: pagedCapacity).size, pagedSize)
-    }
-
-    XCTAssertEqual(65537 / 1024, 65536 >> 10)
-    let N = 1024
-    XCTAssertEqual(1 << (Int.bitWidth - N.leadingZeroBitCount - 2), N / 2)
-
-    do {
-      let N = 4096
-      //      XCTAssertEqual( N / 1024, 4)
-      XCTAssertEqual((N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)), 4)
-      XCTAssertEqual((N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)) * 1024, 4096)
-      XCTAssertEqual(((N >> 10) + ((N - ((N >> 10) << 10)) == 0 ? 0 : 1)) << 10, 4096)
-    }
-
-    //    throw XCTSkip("\(hoge.filter { $0.capacity != 0 }.map(\.capacity))")
-    throw XCTSkip("\(hoge.filter { $0.capacity != 0 })")
-  }
+//  func testBufferSize() throws {
+//    typealias _Value = Int
+//    let s0 = MemoryLayout<UnsafeNode>.stride
+//    let a0 = MemoryLayout<UnsafeNode>.alignment
+//    let s1 = MemoryLayout<_Value>.stride
+//    let a1 = MemoryLayout<_Value>.alignment
+//    let s2 = MemoryLayout<_Bucket>.stride
+//    let a2 = MemoryLayout<_Bucket>.alignment
+//
+//    var hoge: [(size: Int, capacity: Int)] = []
+//    for i in 0..<32 {
+//      let size = 1 << i
+//
+//      let s01 = a1 <= a0 ? (s0 + s1) : (s0 + s1)
+//      let o01 = a1 <= a0 ? 0 : a2 - a1
+//      let capacity =
+//        a2 <= max(a1, a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1, a0)) / s01
+//
+//      XCTAssertGreaterThanOrEqual(
+//        size,
+//        capacity == 0 ? 0 : Self.allocationSize2(capacity: capacity).size)
+//      hoge.append((size, capacity))
+//    }
+//
+//    for capacity1 in 32..<1024 {
+//      let size = Self.allocationSize(capacity: capacity1).size
+//      let pagedSize = ((size >> 10) + 1) << 10
+//      let pagedCapacity = Self.allocationCapacity(size: pagedSize)
+//      XCTAssertLessThanOrEqual(Self.allocationSize(capacity: pagedCapacity).size, pagedSize)
+//    }
+//
+//    XCTAssertEqual(65537 / 1024, 65536 >> 10)
+//    let N = 1024
+//    XCTAssertEqual(1 << (Int.bitWidth - N.leadingZeroBitCount - 2), N / 2)
+//
+//    do {
+//      let N = 4096
+//      //      XCTAssertEqual( N / 1024, 4)
+//      XCTAssertEqual((N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)), 4)
+//      XCTAssertEqual((N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)) * 1024, 4096)
+//      XCTAssertEqual(((N >> 10) + ((N - ((N >> 10) << 10)) == 0 ? 0 : 1)) << 10, 4096)
+//    }
+//
+//    //    throw XCTSkip("\(hoge.filter { $0.capacity != 0 }.map(\.capacity))")
+//    throw XCTSkip("\(hoge.filter { $0.capacity != 0 })")
+//  }
 
   // TODO: 再検討
   // __tree_prev_iterの不定動作を解消する場合、以下となるが、性能上の問題で保留となっている

@@ -116,10 +116,10 @@ public struct UnsafeNode {
   //  @inlinable
   //  @inline(__always)
   //  public init(
-  //    ___node_id_: Int
+  //    ___raw_index: Int
   //  ) {
   //    self.init(
-  //      ___node_id_: ___node_id_,
+  //      ___raw_index: ___raw_index,
   //      __left_: Self.nullptr,
   //      __right_: Self.nullptr,
   //      __parent_: Self.nullptr)
@@ -128,14 +128,14 @@ public struct UnsafeNode {
   @inlinable
   @inline(__always)
   public init(
-    ___node_id_: Int,
+    ___raw_index: Int,
     __left_: Pointer,
     __right_: Pointer,
     __parent_: Pointer,
     __is_black_: Bool = false,
     ___needs_deinitialize: Bool = true
   ) {
-    self.___raw_index = ___node_id_
+    self.___raw_index = ___raw_index
     self.__left_ = __left_
     self.__right_ = __right_
     self.__parent_ = __parent_
@@ -248,7 +248,7 @@ extension UnsafeNode {
       nullptr.initialize(
         to:
           .init(
-            ___node_id_: .nullptr,
+            ___raw_index: .nullptr,
             __left_: nullptr,
             __right_: nullptr,
             __parent_: nullptr))
@@ -266,7 +266,7 @@ extension UnsafeNode {
   @inline(__always)
   package static func create(id: Int) -> UnsafeNode {
     .init(
-      ___node_id_: id,
+      ___raw_index: id,
       __left_: Self.nullptr,
       __right_: Self.nullptr,
       __parent_: Self.nullptr)

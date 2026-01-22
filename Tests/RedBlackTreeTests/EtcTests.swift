@@ -943,7 +943,7 @@ final class EtcTests: RedBlackTreeTestCase {
         XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 100)
       }
       XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead, head)
-      //    XCTAssertEqual(fixture.__tree_.makeFreshPoolIterator().map(\.pointee.___node_id_).count, 100)
+      //    XCTAssertEqual(fixture.__tree_.makeFreshPoolIterator().map(\.pointee.___raw_index).count, 100)
       //    XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead?.pointee.count, 100)
       XCTAssertEqual(fixture.capacity, 100)
     }
@@ -963,7 +963,7 @@ final class EtcTests: RedBlackTreeTestCase {
         XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 0)
       }
       XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead, head)
-      //    XCTAssertEqual(fixture.__tree_.makeFreshPoolIterator().map(\.pointee.___node_id_).count, 100)
+      //    XCTAssertEqual(fixture.__tree_.makeFreshPoolIterator().map(\.pointee.___raw_index).count, 100)
       //    XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead?.pointee.count, 100)
       XCTAssertEqual(fixture.capacity, 0)
     }

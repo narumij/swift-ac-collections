@@ -40,7 +40,7 @@ extension UnsafeTreeV2 {
 
       // freshPool内のfreshBucketは0〜1個となる
       // CoW後の性能維持の為、freshBucket数は1を越えないこと
-      // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる
+      // バケット数が1に保たれていると、フォールバックの___raw_indexによるアクセスがO(1)になる
       #if DEBUG
         assert(tree._buffer.header.freshBucketCount <= 1)
       #endif
@@ -100,7 +100,7 @@ extension UnsafeTreeV2BufferHeader {
 
     // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
-    // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる
+    // バケット数が1に保たれていると、フォールバックの___raw_indexによるアクセスがO(1)になる
     #if DEBUG
       assert(_newBuffer.header.freshBucketCount <= 1)
     #endif
@@ -153,7 +153,7 @@ extension UnsafeTreeV2BufferHeader {
     func node(_ s: borrowing UnsafeNode) -> UnsafeNode {
       // 値は別途管理
       return .init(
-        ___node_id_: s.___raw_index,
+        ___raw_index: s.___raw_index,
         __left_: __ptr_(s.__left_),
         __right_: __ptr_(s.__right_),
         __parent_: __ptr_(s.__parent_),

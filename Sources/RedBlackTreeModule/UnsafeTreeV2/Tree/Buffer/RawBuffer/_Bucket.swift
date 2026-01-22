@@ -100,7 +100,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
             format: " [%02lld] ptr=%p id=%lld %@",
             i,
             p,
-            p.pointee.___node_id_,
+            p.pointee.___raw_index,
             marker
           )
         )

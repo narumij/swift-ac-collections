@@ -70,7 +70,7 @@ where Base: ___TreeBase & ___TreeIndex {
     assert(rawValue != .nullptr)
     assert(!rawValue.___is_garbaged)
     self.rawValue = rawValue
-//    self.___node_id_ = rawValue.pointee.___node_id_
+//    self.___raw_index = rawValue.pointee.___raw_index
     self.tied = tree.tied
     self.__tree_ = .init(__tree_: tree)
   }
@@ -85,7 +85,7 @@ where Base: ___TreeBase & ___TreeIndex {
     assert(rawValue != .nullptr)
     assert(!rawValue.___is_garbaged)
     self.__tree_ = __tree_
-//    self.___node_id_ = rawValue.pointee.___node_id_
+//    self.___raw_index = rawValue.pointee.___raw_index
     self.rawValue = rawValue
     self.tied = tie
   }
@@ -279,9 +279,9 @@ extension UnsafeIndexV2 {
 
 #if DEBUG
   extension UnsafeIndexV2 {
-    fileprivate init(_unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, node_id: Int) {
+    fileprivate init(_unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, rawIndex: Int) {
       self.rawValue = rawValue
-//      self.___node_id_ = node_id
+//      self.___raw_index = ___raw_index
       self.tied = _unsafe_tree.tied
       self.__tree_ = .init(__tree_: _unsafe_tree)
     }
@@ -289,18 +289,18 @@ extension UnsafeIndexV2 {
 
   extension UnsafeIndexV2 {
     internal static func unsafe(tree: UnsafeTreeV2<Base>, rawValue: _NodePtr) -> Self {
-      .init(_unsafe_tree: tree, rawValue: rawValue, node_id: rawValue.pointee.___raw_index)
+      .init(_unsafe_tree: tree, rawValue: rawValue, rawIndex: rawValue.pointee.___raw_index)
     }
     internal static func unsafe(tree: UnsafeTreeV2<Base>, rawValue: Int) -> Self {
       if rawValue == .nullptr {
-        return .init(_unsafe_tree: tree, rawValue: tree.nullptr, node_id: .nullptr)
+        return .init(_unsafe_tree: tree, rawValue: tree.nullptr, rawIndex: .nullptr)
       }
       if rawValue == .end {
-        return .init(_unsafe_tree: tree, rawValue: tree.end, node_id: .end)
+        return .init(_unsafe_tree: tree, rawValue: tree.end, rawIndex: .end)
       }
       return .init(
         _unsafe_tree: tree, rawValue: tree._buffer.header[rawValue],
-        node_id: tree._buffer.header[rawValue].pointee.___raw_index)
+        rawIndex: tree._buffer.header[rawValue].pointee.___raw_index)
     }
   }
 #endif
@@ -376,7 +376,7 @@ extension UnsafeIndexV2 {
 //  @inlinable
 //  @inline(__always)
 //  package var rawIndex: Int {
-//    rawValue.pointee.___node_id_
+//    rawValue.pointee.___raw_index
 //  }
 }
 
@@ -411,7 +411,7 @@ extension UnsafeIndexV2 {
         ? index.rawValue
         : self[index.rawIndex]
     #else
-      self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
+      self === index.__tree_ ? index.rawValue : (_header[index.___raw_index])
     #endif
   }
 }

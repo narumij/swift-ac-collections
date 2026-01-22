@@ -114,9 +114,9 @@ extension _FreshPool {
   */
   @inlinable
   @inline(__always)
-  subscript(___node_id_: Int) -> _NodePtr {
-    assert(___node_id_ >= 0)
-    var remaining = ___node_id_
+  subscript(___raw_index: Int) -> _NodePtr {
+    assert(___raw_index >= 0)
+    var remaining = ___raw_index
     var p = freshBucketHead?.accessor(_value: memoryLayout)
     while let h = p {
       let cap = h.capacity

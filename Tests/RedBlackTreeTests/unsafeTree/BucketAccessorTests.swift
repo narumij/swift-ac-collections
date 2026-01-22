@@ -42,7 +42,7 @@ final class BucketAccessorTests: XCTestCase {
       var sum = 0
       for _ in 0..<1_000_000 {
         for j in 0..<capacity {
-          sum += accessor[j].pointee.___node_id_
+          sum += accessor[j].pointee.___raw_index
         }
       }
     }

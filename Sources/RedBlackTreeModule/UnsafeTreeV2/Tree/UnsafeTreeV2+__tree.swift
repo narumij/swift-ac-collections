@@ -275,13 +275,13 @@ extension UnsafeTreeV2: FindLeafProtocol {}
 extension UnsafeTreeV2: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
 extension UnsafeTreeV2: InsertMultiProtocol {}
-extension UnsafeTreeV2: BoundBothProtocol {}
+extension UnsafeTreeV2: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
 extension UnsafeTreeV2: EqualProtocol {}
 extension UnsafeTreeV2: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2: EraseProtocol {}
 extension UnsafeTreeV2: EraseUniqueProtocol {}
 extension UnsafeTreeV2: EraseMultiProtocol {}
-extension UnsafeTreeV2: CompareBothProtocol_std, CompareMultiProtocol_ptr {}
-extension UnsafeTreeV2: CountProtocol {}
+extension UnsafeTreeV2: CompareBothProtocol_ptr, CompareMultiProtocol_ptr, NodeBitmapProtocol_ptr {}
+extension UnsafeTreeV2: CountProtocol_ptr, DistanceProtocol_ptr {}
 extension UnsafeTreeV2: InsertLastProtocol {}
 extension UnsafeTreeV2: CompareProtocol {}

@@ -55,13 +55,20 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 
   @usableFromInline
+  internal var ___is_null: Bool {
+//    assert(__parent_ != .nullptr || pointee.___node_id_ == .end)
+    return self == .nullptr
+  }
+  
+  @usableFromInline
   internal var ___is_end: Bool {
-    pointee.___node_id_ == .end
+    assert(__parent_ != .nullptr || pointee.___node_id_ == .end)
+    return __parent_ == .nullptr
   }
 
   @usableFromInline
-  internal var ___is_slow_root: Bool {
-    __slow_end().__left_ == self
+  internal var ___is_root: Bool {
+    __parent_.___is_end
   }
   
   // そもそもチェックとして厳密ではない。garbagedの厳密さが十分ならチェック用かも

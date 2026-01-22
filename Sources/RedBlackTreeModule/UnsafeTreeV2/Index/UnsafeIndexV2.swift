@@ -256,7 +256,7 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var isRoot: Bool {
-    rawValue.___is_slow_root
+    rawValue.___is_root
   }
 }
 

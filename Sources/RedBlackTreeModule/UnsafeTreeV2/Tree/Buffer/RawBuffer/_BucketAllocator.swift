@@ -8,8 +8,8 @@
 // # Memory Layout
 //
 // ## Primary Bucket
-// |Bucket|Node||Node|Value|Node|Value|...
-//              ^--start
+// |Bucket|ptr|Node||Node|Value|Node|Value|...
+//                  ^--start
 // ^-- head
 //
 // ## Secondary and other Buckets
@@ -17,9 +17,12 @@
 //         ^--start
 // ^-- next
 //
-// ## special node on Primari Bucket
-// |Bucket|Node||Node|Value|Node|Value|...
-//          ^-- end node (end->left == root)
+// ## special node on Primary Bucket
+// |Bucket|ptr|Node||Node|Value|Node|Value|...
+//              ^-- end node (end->left == root)
+//
+// |Bucket|ptr|Node||Node|Value|Node|Value|...
+//          ^-- begin (begin == __tree_min(end->left))
 //
 // ## memory layout gap
 // |Bucket||Node|Value|Node|Value|...
@@ -27,19 +30,19 @@
 //
 //
 // ## Initial Capacity 0
-// |Bucket|Node|
+// |Bucket|ptr|Node|
 //
 // ## Resever Capacity to 1
-// |Bucket|Node|
+// |Bucket|ptr|Node|
 // |Bucket||Node|Value|
 //
 // ## Reserve Capacity to 2
-// |Bucket|Node|
+// |Bucket|ptr|Node|
 // |Bucket||Node|Value|
 // |Bucket||Node|Value|
 //
 // ## then Copy on Write occurs
-// |Bucket|Node||Node|Value|Node|Value|.......
+// |Bucket|ptr|Node||Node|Value|Node|Value|.......
 //                                    ^-- inlined
 //
 // Inspired by the TrailingArray technique from Swift Collections.

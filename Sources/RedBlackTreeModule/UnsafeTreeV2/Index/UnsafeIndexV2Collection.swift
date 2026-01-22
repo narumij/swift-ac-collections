@@ -22,12 +22,7 @@ public
   public typealias Reversed = UnsafeIterator.IndexReverse<Base>
 
   @usableFromInline
-  internal init(
-    start: _NodePtr,
-    end: _NodePtr,
-    tie: _TiedRawBuffer
-  ) {
-
+  internal init(start: _NodePtr, end: _NodePtr, tie: _TiedRawBuffer) {
     self._start = start
     self._end = end
     self.tied = tie

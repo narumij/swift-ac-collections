@@ -26,10 +26,7 @@ where Base: ___TreeBase & ___TreeIndex {
 
   @inlinable
   @inline(__always)
-  internal init(
-    rawValue: UnsafeTreeRangeExpression,
-    tie: _TiedRawBuffer
-  ) {
+  internal init(rawValue: UnsafeTreeRangeExpression, tie: _TiedRawBuffer) {
     self.rawValue = rawValue
     self.tied = tie
   }

@@ -138,10 +138,7 @@ extension UnsafeIndexV2 {
   //  @inline(__always)
   public func distance(to other: Self) -> Int {
     let other = ___node_ptr(other)
-    guard
-      !rawValue.___is_garbaged,
-      !other.___is_garbaged
-    else {
+    guard !rawValue.___is_garbaged, !other.___is_garbaged else {
       preconditionFailure(.garbagedIndex)
     }
     return Base.___signed_distance(rawValue, other)
@@ -151,9 +148,7 @@ extension UnsafeIndexV2 {
   @inlinable
   //  @inline(__always)
   public func advanced(by n: Int) -> Self {
-    return .init(
-      rawValue: Base.advanced(rawValue, by: n),
-      tie: tied)
+    return .init(rawValue: Base.advanced(rawValue, by: n), tie: tied)
   }
 }
 

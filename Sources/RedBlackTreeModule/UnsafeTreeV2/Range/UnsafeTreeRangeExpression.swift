@@ -20,24 +20,26 @@ public enum UnsafeTreeRangeExpression: Equatable {
 }
 
 extension UnsafeTreeRangeExpression {
-  
-//  @usableFromInline
-//  func _slow_pair()
-//    -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)
-//  {
-//    switch self {
-//    case .range(let lhs, let rhs):
-//      (lhs, rhs)
-//    case .closedRange(let lhs, let rhs):
-//      (lhs, __tree_next(rhs))
-//    case .partialRangeTo(let rhs):
-//      (rhs.__slow_begin(), rhs)
-//    case .partialRangeThrough(let rhs):
-//      (rhs.__slow_begin(), __tree_next(rhs))
-//    case .partialRangeFrom(let lhs):
-//      (lhs, lhs.__slow_end())
-//    }
-//  }
+
+#if false
+  @usableFromInline
+  func _slow_pair()
+    -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)
+  {
+    switch self {
+    case .range(let lhs, let rhs):
+      (lhs, rhs)
+    case .closedRange(let lhs, let rhs):
+      (lhs, __tree_next(rhs))
+    case .partialRangeTo(let rhs):
+      (rhs.__slow_begin(), rhs)
+    case .partialRangeThrough(let rhs):
+      (rhs.__slow_begin(), __tree_next(rhs))
+    case .partialRangeFrom(let lhs):
+      (lhs, lhs.__slow_end())
+    }
+  }
+#endif
 
   @usableFromInline
   func rawRange(_begin: UnsafeMutablePointer<UnsafeNode>, _end: UnsafeMutablePointer<UnsafeNode>)

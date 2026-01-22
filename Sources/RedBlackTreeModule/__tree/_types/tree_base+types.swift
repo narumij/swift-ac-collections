@@ -25,7 +25,6 @@ import Foundation
 // 型の解決を制約の一致任せにしているといろいろしんどいので、
 // 型に関して辿ると一意にここら辺に定まるようにする
 
-
 // MARK: - Primitives
 
 /// ノードを指す基本型の定義
@@ -68,7 +67,7 @@ public
 public
   protocol _ThreeWayResultType
 {
-    /// 三方比較結果型
+  /// 三方比較結果型
   associatedtype __compare_result: ThreeWayCompareResult
 }
 
@@ -79,17 +78,16 @@ public protocol _TreeValueType: _KeyType & _ValueType {}
 
 /// SetやMultiSetは比較型と保持型が同じ
 public protocol _ScalarValueType: _KeyType & _ValueType
-where _Key == _Value { }
+where _Key == _Value {}
 
 /// DictionaryやMultiMapは比較型と保持型は異なり、制約なし、マップ値型がある
-public protocol _KeyValueType: _KeyType & _ValueType & _MappedValueType
-{}
+public protocol _KeyValueType: _KeyType & _ValueType & _MappedValueType {}
 
-public protocol _KeyValuePairType: _KeyValueType
-{}
+/// DictionaryやMultiMapは内部のキーバリュー値にRedBlackTreePairを用いている
+public protocol _KeyValuePairType: _KeyValueType {}
 
 extension _KeyValuePairType {
-  public typealias Pair = RedBlackTreePair<_Key,_MappedValue>
+  public typealias Pair = RedBlackTreePair<_Key, _MappedValue>
 }
 
 // MARK: - Aliases
@@ -104,18 +102,16 @@ where _NodePtr == _Pointer {
 
 /// ノードポインタの別名の定義
 public protocol _pointer_type: _PointerType
-where pointer == _Pointer
-{
-    associatedtype pointer
+where pointer == _Pointer {
+  associatedtype pointer
 }
 
 /// ノードポインタの別名の定義
 ///
 /// C++では左だけがあるノードをキャストして利用する都合や、余り事情は分からないが別名がいろいろある
 public protocol _parent_pointer_type: _PointerType
-where __parent_pointer == _Pointer
-{
-    associatedtype __parent_pointer
+where __parent_pointer == _Pointer {
+  associatedtype __parent_pointer
 }
 
 /// 比較型の別名定義

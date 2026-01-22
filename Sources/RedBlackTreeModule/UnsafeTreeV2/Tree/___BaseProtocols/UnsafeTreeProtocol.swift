@@ -8,10 +8,8 @@
 @usableFromInline
 package protocol UnsafeTreeProtocol: _UnsafeNodePtrType
 where
-  Tree == UnsafeTreeV2<Base>,
-  ImmutableTree == UnsafeImmutableTree<Base>
+  Tree == UnsafeTreeV2<Base>
 {
   associatedtype Base: ___TreeBase
   associatedtype Tree
-  associatedtype ImmutableTree
 }

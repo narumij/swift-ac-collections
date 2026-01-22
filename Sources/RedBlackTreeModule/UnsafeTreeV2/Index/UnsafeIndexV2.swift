@@ -47,7 +47,14 @@ where Base: ___TreeBase & ___TreeIndex {
 
   @usableFromInline
   internal var rawValue: _NodePtr {
-    didSet { ___node_id_ = rawValue.pointee.___node_id_ }
+    didSet {
+      guard rawValue != .nullptr,
+        !rawValue.___is_garbaged
+      else {
+        fatalError(.invalidIndex)
+      }
+      ___node_id_ = rawValue.pointee.___node_id_
+    }
   }
 
   @usableFromInline
@@ -58,7 +65,8 @@ where Base: ___TreeBase & ___TreeIndex {
   @inlinable
   @inline(__always)
   internal init(tree: Tree, rawValue: _NodePtr) {
-    assert(rawValue != tree.nullptr)
+    assert(rawValue != .nullptr)
+    assert(!rawValue.___is_garbaged)
     self.rawValue = rawValue
     self.___node_id_ = rawValue.pointee.___node_id_
     self.tied = tree.tied
@@ -72,6 +80,8 @@ where Base: ___TreeBase & ___TreeIndex {
     rawValue: _NodePtr,
     tie: _TiedRawBuffer
   ) {
+    assert(rawValue != .nullptr)
+    assert(!rawValue.___is_garbaged)
     self.__tree_ = __tree_
     self.___node_id_ = rawValue.pointee.___node_id_
     self.rawValue = rawValue
@@ -90,8 +100,8 @@ extension UnsafeImmutableTree {
 
   @inlinable
   func lessThan(_ lhs: _NodePtr, _ rhs: _NodePtr) -> Bool {
-    guard !___is_garbaged(lhs),
-      !___is_garbaged(rhs)
+    guard !lhs.___is_garbaged,
+      !rhs.___is_garbaged
     else {
       preconditionFailure(.garbagedIndex)
     }
@@ -100,15 +110,15 @@ extension UnsafeImmutableTree {
 }
 
 extension UnsafeIndexV2: Equatable {
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-    
+
     // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
-    
+
     //    lhs.rawValue == rhs.rawValue
     lhs.___node_id_ == rhs.___node_id_
   }
@@ -126,7 +136,7 @@ extension UnsafeIndexV2: Comparable {
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-    
+
     // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
 
     switch (lhs.___node_id_, rhs.___node_id_) {
@@ -154,8 +164,9 @@ extension UnsafeIndexV2 {
   //  @inline(__always)
   public func distance(to other: Self) -> Int {
     let other = ___node_ptr(other)
-    guard !__tree_.___is_garbaged(rawValue),
-      !__tree_.___is_garbaged(other)
+    guard
+      !rawValue.___is_garbaged,
+      !other.___is_garbaged
     else {
       preconditionFailure(.garbagedIndex)
     }
@@ -182,7 +193,7 @@ extension UnsafeIndexV2 {
   @inline(__always)
   public var next: Self? {
     guard
-      !__tree_.___is_next_null(rawValue),
+      !rawValue.___is_next_null,
       tied.isValueAccessAllowed
     else {
       return nil
@@ -212,17 +223,17 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal mutating func ___unchecked_next() {
-    assert(!__tree_.___is_garbaged(rawValue))
-    assert(!__tree_.___is_end(rawValue))
-    rawValue = __tree_.__tree_next_iter(rawValue)
+    assert(!rawValue.___is_garbaged)
+    assert(!rawValue.___is_end)
+    rawValue = __tree_next_iter(rawValue)
   }
 
   @inlinable
   @inline(__always)
   internal mutating func ___unchecked_prev() {
-    assert(!__tree_.___is_garbaged(rawValue))
-    assert(!__tree_.___is_begin(rawValue))
-    rawValue = __tree_.__tree_prev_iter(rawValue)
+    assert(!rawValue.___is_garbaged)
+    assert(!rawValue.___is_slow_begin)
+    rawValue = __tree_prev_iter(rawValue)
   }
 }
 
@@ -231,20 +242,20 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var isStart: Bool {
-    __tree_.___is_begin(rawValue)
+    rawValue.___is_slow_begin
   }
 
   @inlinable
   @inline(__always)
   public var isEnd: Bool {
-    __tree_.___is_end(rawValue)
+    rawValue.___is_end
   }
 
   // 利用価値はないが、おまけ。
   @inlinable
   @inline(__always)
   public var isRoot: Bool {
-    __tree_.___is_root(rawValue)
+    rawValue.___is_slow_root
   }
 }
 
@@ -256,8 +267,8 @@ extension UnsafeIndexV2 {
   @inlinable
   public var pointee: Pointee? {
     guard
-      !__tree_.___is_subscript_null(rawValue),
-      !__tree_.___is_garbaged(rawValue),
+      !rawValue.___is_subscript_null,
+      !rawValue.___is_garbaged,
       tied.isValueAccessAllowed
     else { return nil }
     return Base.___pointee(rawValue.__value_().pointee)

@@ -57,8 +57,8 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @usableFromInline let nullptr: _NodePtr
   @usableFromInline var begin_ptr: UnsafeMutablePointer<_NodePtr>
   @usableFromInline var root_ptr: _NodeRef
-  @usableFromInline
-  var freshBucketAllocator: _BucketAllocator
+  @usableFromInline var freshBucketAllocator: _BucketAllocator
+  
   #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
   #endif

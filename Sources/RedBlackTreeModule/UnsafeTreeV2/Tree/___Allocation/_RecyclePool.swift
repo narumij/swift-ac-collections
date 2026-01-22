@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol _UnsafeNodeRecyclePool: _UnsafeNodePtrType {
+protocol _RecyclePool: _UnsafeNodePtrType {
   var recycleHead: _NodePtr { get set }
   var count: Int { get set }
   var freshPoolUsedCount: Int { get set }
@@ -29,7 +29,7 @@ protocol _UnsafeNodeRecyclePool: _UnsafeNodePtrType {
   var freshBucketAllocator: _BucketAllocator { get }
 }
 
-extension _UnsafeNodeRecyclePool {
+extension _RecyclePool {
 
   @inlinable
   mutating func ___pushRecycle(_ p: _NodePtr) {
@@ -72,7 +72,7 @@ extension _UnsafeNodeRecyclePool {
   #endif
 }
 
-extension _UnsafeNodeRecyclePool {
+extension _RecyclePool {
   #if DEBUG
     @usableFromInline
     internal var ___recycleNodes: [Int] {

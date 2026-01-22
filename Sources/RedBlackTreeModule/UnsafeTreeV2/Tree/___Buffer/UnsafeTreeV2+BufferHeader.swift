@@ -29,7 +29,7 @@ func _ref<T>(_ a: inout T) -> UnsafeMutablePointer<T> {
 }
 
 @frozen
-public struct UnsafeTreeV2BufferHeader: _UnsafeNodeRecyclePool {
+public struct UnsafeTreeV2BufferHeader: _RecyclePool {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
   @inlinable

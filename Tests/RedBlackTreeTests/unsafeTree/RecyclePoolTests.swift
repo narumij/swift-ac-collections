@@ -12,7 +12,7 @@ import XCTest
 
   final class RecyclePoolTests: XCTestCase {
     
-    struct Fixture: _UnsafeNodePtrType, _UnsafeNodeRecyclePool {
+    struct Fixture: _UnsafeNodePtrType, _RecyclePool {
       var recycleHead: _NodePtr = .nullptr
       var count: Int = 0
       var freshPoolUsedCount: Int = 0

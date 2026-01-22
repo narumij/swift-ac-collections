@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/20.
 //
 
-public enum UnsafeTreeRangeExpression {
+public enum UnsafeTreeRangeExpression: Equatable {
   public typealias Bound = UnsafeMutablePointer<UnsafeNode>
   /// `a..<b` のこと
   case range(from: Bound, to: Bound)

@@ -130,4 +130,11 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
 
 // MARK: - Is Identical To
 
-//extension UnsafeIndexV2Collection: ___UnsafeImmutableIsIdenticalToV2 {}
+extension UnsafeIndexV2Collection {
+
+  @inlinable
+  @inline(__always)
+  public func isTriviallyIdentical(to other: Self) -> Bool {
+    tied === other.tied && _start == other._start && _end == other._end
+  }
+}

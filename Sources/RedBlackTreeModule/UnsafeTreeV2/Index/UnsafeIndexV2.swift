@@ -59,10 +59,7 @@ where Base: ___TreeBase & ___TreeIndex {
 
   @inlinable
   @inline(__always)
-  internal init(
-    rawValue: _NodePtr,
-    tie: _TiedRawBuffer
-  ) {
+  internal init(rawValue: _NodePtr, tie: _TiedRawBuffer) {
     assert(rawValue != .nullptr)
     assert(!rawValue.___is_garbaged)
     self.rawValue = rawValue

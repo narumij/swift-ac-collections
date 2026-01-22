@@ -64,23 +64,8 @@ extension _UnsafeNodeFreshPoolV3 {
    */
 
   @inlinable
-  @inline(__always)
-  mutating func pushFreshHeadBucket(capacity: Int) {
-    assert(freshBucketHead == nil || capacity != 0)
-    let (pointer, capacity) = freshBucketAllocator.createHeadBucket(
-      capacity: capacity, nullptr: nullptr)
-    freshBucketHead = pointer
-    freshBucketCurrent = pointer.queue(memoryLayout: memoryLayout)
-    freshBucketLast = pointer
-    freshPoolCapacity += capacity
-    #if DEBUG
-      freshBucketCount += 1
-    #endif
-  }
-  
-  @inlinable
-  @inline(__always)
-  mutating func pushFresBucket(head: _BucketPointer) {
+//  @inline(__always)
+  mutating func pushFreshBucket(head: _BucketPointer) {
     freshBucketHead = head
     freshBucketCurrent = head.queue(memoryLayout: memoryLayout)
     freshBucketLast = head
@@ -91,10 +76,10 @@ extension _UnsafeNodeFreshPoolV3 {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   mutating func pushFreshBucket(capacity: Int) {
     assert(freshBucketHead == nil || capacity != 0)
-    let (pointer, capacity) = freshBucketAllocator.createBucket(capacity: capacity)
+    let (pointer, _) = freshBucketAllocator.createBucket(capacity: capacity)
     freshBucketLast?.pointee.next = pointer
     freshBucketLast = pointer
     freshPoolCapacity += capacity
@@ -104,7 +89,7 @@ extension _UnsafeNodeFreshPoolV3 {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   mutating func popFresh() -> _NodePtr? {
     if let p = freshBucketCurrent?.pop() {
       return p
@@ -148,16 +133,18 @@ extension _UnsafeNodeFreshPoolV3 {
 
 extension _UnsafeNodeFreshPoolV3 {
 
-  @inlinable
-  @inline(__always)
+  @usableFromInline
+//  @inlinable
+//  @inline(__always)
   mutating func ___flushFreshPool() {
     freshBucketAllocator.deinitialize(bucket: freshBucketHead)
     freshPoolUsedCount = 0
     freshBucketCurrent = freshBucketHead?.queue(memoryLayout: memoryLayout)
   }
 
-  @inlinable
-  @inline(__always)
+  @usableFromInline
+//  @inlinable
+//  @inline(__always)
   mutating func ___deallocFreshPool() {
     freshBucketAllocator.deallocate(bucket: freshBucketHead)
   }
@@ -177,18 +164,16 @@ extension _UnsafeNodeFreshPoolV3 {
 }
 #endif
 
-#if DEBUG && false
 extension _UnsafeNodeFreshPoolV3 {
 
   @usableFromInline typealias Iterator = _UnsafeNodeFreshPoolIterator
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   func makeFreshPoolIterator<T>() -> _UnsafeNodeFreshPoolIterator<T> {
     return _UnsafeNodeFreshPoolIterator<T>(bucket: freshBucketHead)
   }
 }
-#endif
 
 #if DEBUG && false
   extension _UnsafeNodeFreshPoolV3 {

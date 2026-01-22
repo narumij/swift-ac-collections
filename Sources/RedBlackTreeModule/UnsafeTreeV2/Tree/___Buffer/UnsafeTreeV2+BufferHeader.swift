@@ -163,7 +163,7 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   mutating func pushFreshBucket(capacity: Int) {
     assert(freshBucketHead == nil || capacity != 0)
-    let (pointer, capacity) = freshBucketAllocator.createBucket(capacity: capacity)
+    let (pointer, _) = freshBucketAllocator.createBucket(capacity: capacity)
     freshBucketLast?.pointee.next = pointer
     freshBucketLast = pointer
     freshPoolCapacity += capacity

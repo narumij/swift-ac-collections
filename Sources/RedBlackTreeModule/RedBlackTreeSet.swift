@@ -159,6 +159,7 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
+  @inline(never)
   public func contains(_ member: Element) -> Bool {
 //    ___contains(member)
     __tree_.read { $0.__count_unique(member) != 0 }
@@ -370,7 +371,7 @@ extension RedBlackTreeSet {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-  //  @inline(__always)
+  @inline(never)
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     __tree_._ensureUnique()

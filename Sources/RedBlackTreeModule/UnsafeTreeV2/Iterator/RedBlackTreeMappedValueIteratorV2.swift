@@ -81,7 +81,7 @@ extension RedBlackTreeIteratorV2 {
     @inlinable
     @inline(__always)
     public func reversed() -> Reversed {
-      .init(__tree_: __tree_!, start: _start, end: _end, tie: tied)
+      .init(start: _start, end: _end, tie: tied)
     }
   }
 }

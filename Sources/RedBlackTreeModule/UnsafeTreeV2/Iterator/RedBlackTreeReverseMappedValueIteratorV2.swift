@@ -22,6 +22,12 @@
 
 import Foundation
 
+#if true
+extension RedBlackTreeIteratorV2.MappedValues {
+  public typealias Reversed = UnsafeIterator.MappedValueReverse<Base>
+}
+#else
+
 extension RedBlackTreeIteratorV2.MappedValues {
 
   @frozen
@@ -105,3 +111,4 @@ extension RedBlackTreeIteratorV2.MappedValues.Reversed: Comparable where _Mapped
 // MARK: - Is Identical To
 
 extension RedBlackTreeIteratorV2.MappedValues.Reversed: ___UnsafeImmutableIsIdenticalToV2 {}
+#endif

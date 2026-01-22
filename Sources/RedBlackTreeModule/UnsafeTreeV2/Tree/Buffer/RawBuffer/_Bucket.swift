@@ -36,7 +36,7 @@ public struct _Bucket {
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
-  
+
   @inlinable
   @inline(__always)
   public var next: UnsafeMutablePointer? { pointee.next }
@@ -53,7 +53,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
     UnsafeMutableRawPointer(advanced(by: 1))
       .assumingMemoryBound(to: UnsafeNode.self)
   }
-  
+
   @inlinable
   func storage(isHead: Bool) -> UnsafeMutableRawPointer {
     if isHead {
@@ -63,7 +63,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
       return UnsafeMutableRawPointer(self.advanced(by: 1))
     }
   }
-  
+
   @inlinable
   package func start(isHead: Bool, valueAlignment: Int) -> UnsafeMutablePointer<UnsafeNode> {
     let headerAlignment = MemoryLayout<UnsafeNode>.alignment

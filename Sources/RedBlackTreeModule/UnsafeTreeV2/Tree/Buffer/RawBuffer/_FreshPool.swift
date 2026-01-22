@@ -45,7 +45,7 @@ protocol _FreshPool: _UnsafeNodePtrType {
     var freshBucketCount: Int { get set }
   #endif
   var freshBucketAllocator: _BucketAllocator { get }
-  
+
   var memoryLayout: _MemoryLayout { get }
 }
 
@@ -63,7 +63,7 @@ extension _FreshPool {
    */
 
   @inlinable
-//  @inline(__always)
+  //  @inline(__always)
   mutating func pushFreshBucket(head: _BucketPointer) {
     freshBucketHead = head
     freshBucketCurrent = head.queue(memoryLayout: memoryLayout)
@@ -75,7 +75,7 @@ extension _FreshPool {
   }
 
   @inlinable
-//  @inline(__always)
+  //  @inline(__always)
   mutating func pushFreshBucket(capacity: Int) {
     assert(freshBucketHead == nil || capacity != 0)
     let (pointer, _) = freshBucketAllocator.createBucket(capacity: capacity)
@@ -88,7 +88,7 @@ extension _FreshPool {
   }
 
   @inlinable
-//  @inline(__always)
+  //  @inline(__always)
   mutating func popFresh() -> _NodePtr? {
     if let p = freshBucketCurrent?.pop() {
       return p
@@ -133,8 +133,8 @@ extension _FreshPool {
 extension _FreshPool {
 
   @usableFromInline
-//  @inlinable
-//  @inline(__always)
+  //  @inlinable
+  //  @inline(__always)
   mutating func ___flushFreshPool() {
     freshBucketAllocator.deinitialize(bucket: freshBucketHead)
     freshPoolUsedCount = 0
@@ -142,8 +142,8 @@ extension _FreshPool {
   }
 
   @usableFromInline
-//  @inlinable
-//  @inline(__always)
+  //  @inlinable
+  //  @inline(__always)
   mutating func ___deallocFreshPool() {
     freshBucketAllocator.deallocate(bucket: freshBucketHead)
   }
@@ -154,13 +154,13 @@ extension _FreshPool {
 // MARK: - DEBUG
 
 #if false
-extension _UnsafeNodeFreshPoolV3 {
-  @inlinable
-  @inline(__always)
-  func makeFreshBucketIterator<T>() -> _UnsafeNodeFreshBucketIterator<T> {
-    return _UnsafeNodeFreshBucketIterator<T>(bucket: freshBucketHead)
+  extension _UnsafeNodeFreshPoolV3 {
+    @inlinable
+    @inline(__always)
+    func makeFreshBucketIterator<T>() -> _UnsafeNodeFreshBucketIterator<T> {
+      return _UnsafeNodeFreshBucketIterator<T>(bucket: freshBucketHead)
+    }
   }
-}
 #endif
 
 extension _FreshPool {
@@ -168,7 +168,7 @@ extension _FreshPool {
   @usableFromInline typealias PopIterator = _FreshPoolPopIterator
 
   @inlinable
-//  @inline(__always)
+  //  @inline(__always)
   func makeFreshPoolIterator<T>() -> _FreshPoolPopIterator<T> {
     return _FreshPoolPopIterator<T>(bucket: freshBucketHead)
   }

@@ -8,30 +8,35 @@
 @frozen
 @usableFromInline
 struct _BucketTraverser: _UnsafeNodePtrType {
-  
+
   @inlinable
-  internal init(pointer: UnsafeMutablePointer<_Bucket>, start: UnsafeMutablePointer<UnsafeNode>, stride: Int, count: Int) {
+  internal init(
+    pointer: UnsafeMutablePointer<_Bucket>,
+    start: UnsafeMutablePointer<UnsafeNode>,
+    stride: Int,
+    count: Int
+  ) {
     self.pointer = pointer
     self.start = start
     self.stride = stride
     self.count = count
   }
-  
+
   @usableFromInline
   let pointer: UnsafeMutablePointer<_Bucket>
-  
+
   @usableFromInline
   let start: _NodePtr
-  
+
   @usableFromInline
   let stride: Int
-  
+
   @usableFromInline
   var count: Int
-  
+
   @usableFromInline
   var it: Int = 0
-  
+
   @inlinable
   subscript(index: Int) -> _NodePtr {
     _read {
@@ -41,7 +46,7 @@ struct _BucketTraverser: _UnsafeNodePtrType {
         .assumingMemoryBound(to: UnsafeNode.self)
     }
   }
-  
+
   @inlinable
   mutating func pop() -> _NodePtr? {
     guard it < count else { return nil }
@@ -49,7 +54,7 @@ struct _BucketTraverser: _UnsafeNodePtrType {
     it += 1
     return p
   }
-  
+
   @inlinable
   func nextCounts(memoryLayout: _MemoryLayout) -> _BucketTraverser? {
     guard let next = pointer.pointee.next else { return nil }
@@ -58,14 +63,18 @@ struct _BucketTraverser: _UnsafeNodePtrType {
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
-  
+
   @inlinable
   func _counts(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketTraverser {
-    .init(pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.count)
+    .init(
+      pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment),
+      stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.count)
   }
-  
+
   @inlinable
   func _capacities(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketTraverser {
-    .init(pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment), stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.capacity)
+    .init(
+      pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment),
+      stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.capacity)
   }
 }

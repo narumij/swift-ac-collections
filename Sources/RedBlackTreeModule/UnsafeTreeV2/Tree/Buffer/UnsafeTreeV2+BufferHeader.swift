@@ -20,11 +20,6 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-//@usableFromInline
-//typealias Deallocator = _TiedRawBuffer
-
-
-
 @frozen
 public struct UnsafeTreeV2BufferHeader: _RecyclePool {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
@@ -38,11 +33,11 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
     }
     self.init(allocator: allocator, nullptr: nullptr, capacity: capacity)
   }
-  
+
   @inlinable
   @inline(__always)
   internal init(allocator: _BucketAllocator, nullptr: _NodePtr, capacity: Int) {
-    let (head,_) = allocator.createHeadBucket(capacity: capacity, nullptr: nullptr)
+    let (head, _) = allocator.createHeadBucket(capacity: capacity, nullptr: nullptr)
     self.nullptr = nullptr
     self.recycleHead = nullptr
     self.freshBucketAllocator = allocator
@@ -66,7 +61,7 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
   #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
   #endif
-  
+
   @inlinable
   var memoryLayout: _MemoryLayout {
     freshBucketAllocator.memoryLayout
@@ -82,7 +77,7 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
     get { root_ptr.pointee }
     nonmutating set { root_ptr.pointee = newValue }
   }
-  
+
   @inlinable
   internal func __root_ptr() -> _NodeRef { root_ptr }
 
@@ -121,151 +116,151 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
 }
 
 #if false
-extension UnsafeTreeV2BufferHeader: _UnsafeNodeFreshPoolV3 {}
+  extension UnsafeTreeV2BufferHeader: _FreshPool {}
 #else
-/* ------------ V3のインライン化はじまり  -------------  */
+  /* ------------ _FreshPoolのインライン化はじまり  -------------  */
 
-extension UnsafeTreeV2BufferHeader {
-  public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
-}
-
-extension UnsafeTreeV2BufferHeader {
-
-  /*
-   NOTE:
-   Normally, FreshPool may grow by adding multiple buckets.
-   However, immediately after CoW, callers MUST ensure that
-   only a single bucket exists to support index-based access.
-   */
-
-  @inlinable
-  mutating func pushFreshBucket(head: _BucketPointer) {
-    freshBucketHead = head
-    freshBucketCurrent = head.queue(memoryLayout: memoryLayout)
-    freshBucketLast = head
-    freshPoolCapacity += head.pointee.capacity
-    #if DEBUG
-      freshBucketCount += 1
-    #endif
+  extension UnsafeTreeV2BufferHeader {
+    public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
   }
 
-  @inlinable
-  mutating func pushFreshBucket(capacity: Int) {
-    assert(freshBucketHead == nil || capacity != 0)
-    let (pointer, _) = freshBucketAllocator.createBucket(capacity: capacity)
-    freshBucketLast?.pointee.next = pointer
-    freshBucketLast = pointer
-    freshPoolCapacity += capacity
-    #if DEBUG
-      freshBucketCount += 1
-    #endif
-  }
-
-  @inlinable
-  mutating func popFresh() -> _NodePtr? {
-    if let p = freshBucketCurrent?.pop() {
-      return p
-    }
-    freshBucketCurrent = freshBucketCurrent?.next(memoryLayout: memoryLayout)
-    return freshBucketCurrent?.pop()
-  }
-}
-
-extension UnsafeTreeV2BufferHeader {
-
-  /*
-   IMPORTANT:
-   After a Copy-on-Write operation, node access is performed via index-based
-   lookup. To guarantee O(1) address resolution and avoid bucket traversal,
-   the FreshPool must contain exactly ONE bucket at this point.
-  
-   Invariant:
-     - During and immediately after CoW, `reserverBucketCount == 1`
-     - Index-based access relies on a single contiguous bucket
-  
-   Violating this invariant may cause excessive traversal or undefined behavior.
-  */
-  @inlinable
-  subscript(___node_id_: Int) -> _NodePtr {
-    assert(___node_id_ >= 0)
-    var remaining = ___node_id_
-    var p = freshBucketHead?.accessor(_value: memoryLayout)
-    while let h = p {
-      let cap = h.capacity
-      if remaining < cap {
-        return h[remaining]
-      }
-      remaining -= cap
-      p = h.next(_value: memoryLayout)
-    }
-    return nullptr
-  }
-}
-
-extension UnsafeTreeV2BufferHeader {
-
-  @usableFromInline
-  mutating func ___flushFreshPool() {
-    freshBucketAllocator.deinitialize(bucket: freshBucketHead)
-    freshPoolUsedCount = 0
-    freshBucketCurrent = freshBucketHead?.queue(memoryLayout: memoryLayout)
-  }
-
-  @usableFromInline
-  mutating func ___deallocFreshPool() {
-    freshBucketAllocator.deallocate(bucket: freshBucketHead)
-  }
-}
-
-#if false
-extension UnsafeTreeV2BufferHeader {
-  @inlinable
-  func makeFreshBucketIterator<T>() -> _UnsafeNodeFreshBucketIterator<T> {
-    return _UnsafeNodeFreshBucketIterator<T>(bucket: freshBucketHead)
-  }
-}
-#endif
-
-extension UnsafeTreeV2BufferHeader {
-
-  @usableFromInline typealias PopIterator = _FreshPoolPopIterator
-
-  @inlinable
-  func makeFreshPoolIterator<T>() -> _FreshPoolPopIterator<T> {
-    return _FreshPoolPopIterator<T>(bucket: freshBucketHead)
-  }
-}
-
-#if DEBUG
   extension UnsafeTreeV2BufferHeader {
 
+    /*
+     NOTE:
+     Normally, FreshPool may grow by adding multiple buckets.
+     However, immediately after CoW, callers MUST ensure that
+     only a single bucket exists to support index-based access.
+     */
+
     @inlinable
-    @inline(__always)
-    var freshPoolActualCapacity: Int {
-      var count = 0
-      var p = freshBucketHead
-      while let h = p {
-        count += h.pointee.capacity
-        p = h.pointee.next
-      }
-      return count
+    mutating func pushFreshBucket(head: _BucketPointer) {
+      freshBucketHead = head
+      freshBucketCurrent = head.queue(memoryLayout: memoryLayout)
+      freshBucketLast = head
+      freshPoolCapacity += head.pointee.capacity
+      #if DEBUG
+        freshBucketCount += 1
+      #endif
     }
 
     @inlinable
-    @inline(__always)
-    var freshPoolActualCount: Int {
-      var count = 0
-      var p = freshBucketHead
-      while let h = p {
-        count += h.pointee.count
-        p = h.pointee.next
+    mutating func pushFreshBucket(capacity: Int) {
+      assert(freshBucketHead == nil || capacity != 0)
+      let (pointer, _) = freshBucketAllocator.createBucket(capacity: capacity)
+      freshBucketLast?.pointee.next = pointer
+      freshBucketLast = pointer
+      freshPoolCapacity += capacity
+      #if DEBUG
+        freshBucketCount += 1
+      #endif
+    }
+
+    @inlinable
+    mutating func popFresh() -> _NodePtr? {
+      if let p = freshBucketCurrent?.pop() {
+        return p
       }
-      return count
+      freshBucketCurrent = freshBucketCurrent?.next(memoryLayout: memoryLayout)
+      return freshBucketCurrent?.pop()
     }
   }
-#endif
 
-/* ------------ V3のインライン化おわり  -------------  */
+  extension UnsafeTreeV2BufferHeader {
+
+    /*
+     IMPORTANT:
+     After a Copy-on-Write operation, node access is performed via index-based
+     lookup. To guarantee O(1) address resolution and avoid bucket traversal,
+     the FreshPool must contain exactly ONE bucket at this point.
+    
+     Invariant:
+       - During and immediately after CoW, `reserverBucketCount == 1`
+       - Index-based access relies on a single contiguous bucket
+    
+     Violating this invariant may cause excessive traversal or undefined behavior.
+    */
+    @inlinable
+    subscript(___node_id_: Int) -> _NodePtr {
+      assert(___node_id_ >= 0)
+      var remaining = ___node_id_
+      var p = freshBucketHead?.accessor(_value: memoryLayout)
+      while let h = p {
+        let cap = h.capacity
+        if remaining < cap {
+          return h[remaining]
+        }
+        remaining -= cap
+        p = h.next(_value: memoryLayout)
+      }
+      return nullptr
+    }
+  }
+
+  extension UnsafeTreeV2BufferHeader {
+
+    @usableFromInline
+    mutating func ___flushFreshPool() {
+      freshBucketAllocator.deinitialize(bucket: freshBucketHead)
+      freshPoolUsedCount = 0
+      freshBucketCurrent = freshBucketHead?.queue(memoryLayout: memoryLayout)
+    }
+
+    @usableFromInline
+    mutating func ___deallocFreshPool() {
+      freshBucketAllocator.deallocate(bucket: freshBucketHead)
+    }
+  }
+
+  #if false
+    extension UnsafeTreeV2BufferHeader {
+      @inlinable
+      func makeFreshBucketIterator<T>() -> _UnsafeNodeFreshBucketIterator<T> {
+        return _UnsafeNodeFreshBucketIterator<T>(bucket: freshBucketHead)
+      }
+    }
+  #endif
+
+  extension UnsafeTreeV2BufferHeader {
+
+    @usableFromInline typealias PopIterator = _FreshPoolPopIterator
+
+    @inlinable
+    func makeFreshPoolIterator<T>() -> _FreshPoolPopIterator<T> {
+      return _FreshPoolPopIterator<T>(bucket: freshBucketHead)
+    }
+  }
+
+  #if DEBUG
+    extension UnsafeTreeV2BufferHeader {
+
+      @inlinable
+      @inline(__always)
+      var freshPoolActualCapacity: Int {
+        var count = 0
+        var p = freshBucketHead
+        while let h = p {
+          count += h.pointee.capacity
+          p = h.pointee.next
+        }
+        return count
+      }
+
+      @inlinable
+      @inline(__always)
+      var freshPoolActualCount: Int {
+        var count = 0
+        var p = freshBucketHead
+        while let h = p {
+          count += h.pointee.count
+          p = h.pointee.next
+        }
+        return count
+      }
+    }
+  #endif
+
+/* ------------ _FreshPoolのインライン化おわり  -------------  */
 
 #endif
 
@@ -282,12 +277,12 @@ extension UnsafeTreeV2BufferHeader {
       return nullptr
     }
     assert(p.pointee.___node_id_ == .debug)
-#if true
-    p.initialize(to: nullptr.pointee)
-    p.pointee.___node_id_ = freshPoolUsedCount
-#else
-    p.initialize(to: .create(id: freshPoolUsedCount))
-#endif
+    #if true
+      p.initialize(to: nullptr.pointee)
+      p.pointee.___node_id_ = freshPoolUsedCount
+    #else
+      p.initialize(to: .create(id: freshPoolUsedCount))
+    #endif
     freshPoolUsedCount += 1
     count += 1
     return p
@@ -306,7 +301,7 @@ extension UnsafeTreeV2BufferHeader {
     assert(p.pointee.___node_id_ >= 0)
     return p
   }
-  
+
   public mutating func __construct_node<T>(_ k: T) -> _NodePtr {
     #if DEBUG
       assert(recycleCount >= 0)

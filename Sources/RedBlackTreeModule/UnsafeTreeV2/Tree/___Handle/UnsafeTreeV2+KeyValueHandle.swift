@@ -32,14 +32,11 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
   @inlinable
   internal init(
     header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>,
-    origin: UnsafeMutableRawPointer,
-    specializeMode: SpecializeMode? = nil
+    origin: UnsafeMutableRawPointer
   ) {
     self.header = header
 //    self.origin = origin
     self.isMulti = false
-    // 性能上とても重要だが、コンパイラ挙動に合わせての採用でとても場当たり的
-    self.specializeMode = specializeMode ?? SpecializeModeHoge<_Key>().specializeMode
   }
   @usableFromInline typealias _Key = _Key
   @usableFromInline typealias _Value = RedBlackTreePair<_Key, _MappedValue>
@@ -49,7 +46,6 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
 //  @usableFromInline let origin: UnsafeMutableRawPointer
   @usableFromInline var isMulti: Bool
-  @usableFromInline var specializeMode: SpecializeMode
 }
 
 extension UnsafeTreeV2
@@ -88,27 +84,24 @@ extension UnsafeTreeV2KeyValueHandle {
   func __key(_ __v: _Value) -> _Key { __v.key }
 
   @inlinable
-  @inline(__always)
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
-    specializeMode.value_comp(__l, __r)
+    __l < __r
   }
 
   @inlinable
-  @inline(__always)
   func value_equiv(_ __l: _Key, _ __r: _Key) -> Bool {
-    specializeMode.value_equiv(__l, __r)
+    __l == __r
   }
 
   @inlinable
   @inline(__always)
   func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-    specializeMode.synth_three_way(__lhs, __rhs)
+    __default_three_way_comparator(__lhs, __rhs)
   }
 
   @inlinable
-  @inline(__always)
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-    specializeMode.synth_three_way(__lhs, __rhs)
+    __default_three_way_comparator(__lhs, __rhs)
   }
 }
 

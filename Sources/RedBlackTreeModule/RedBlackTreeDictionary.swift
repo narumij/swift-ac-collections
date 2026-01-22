@@ -61,7 +61,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias Keys = RedBlackTreeIteratorV2<Self>.Keys<Base>
 
   public
-    typealias Values = RedBlackTreeIteratorV2<Self>.MappedValues
+    typealias Values = RedBlackTreeIteratorV2<Self>.MappedValues<Base>
 
   public
     typealias _Key = Key

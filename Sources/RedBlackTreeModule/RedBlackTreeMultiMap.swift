@@ -65,7 +65,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Keys = RedBlackTreeIteratorV2<Self>.Keys<Base>
 
   public
-    typealias Values = RedBlackTreeIteratorV2<Self>.MappedValues
+    typealias Values = RedBlackTreeIteratorV2<Self>.MappedValues<Base>
 
   public
     typealias _Key = Key
@@ -218,7 +218,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public func values(forKey key: Key) -> Values {
     let (lo, hi) = __tree_.__equal_range_multi(key)
-    return .init(tree: __tree_, start: lo, end: hi)
+    return .init(start: lo, end: hi, tie: __tree_.tied)
   }
 }
 
@@ -854,7 +854,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public var values: Values {
-      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node)
+      .init(start: __tree_.__begin_node_, end: __tree_.__end_node, tie: __tree_.tied)
     }
   #endif
 }
@@ -884,7 +884,7 @@ extension RedBlackTreeMultiMap {
     @inline(__always)
     public subscript(key: Key) -> Values {
       let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
-      return .init(tree: __tree_, start: lo, end: hi)
+      return .init(start: lo, end: hi, tie: __tree_.tied)
     }
   #endif
 }

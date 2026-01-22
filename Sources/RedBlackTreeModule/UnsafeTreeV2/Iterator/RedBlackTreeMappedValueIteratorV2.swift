@@ -22,6 +22,11 @@
 
 import Foundation
 
+#if true
+extension RedBlackTreeIteratorV2 {
+  public typealias MappedValues = UnsafeIterator.MappedValueObverse
+}
+#else
 extension RedBlackTreeIteratorV2 {
 
   @frozen
@@ -112,3 +117,4 @@ extension RedBlackTreeIteratorV2.MappedValues: Comparable where _MappedValue: Co
 // MARK: - Is Identical To
 
 extension RedBlackTreeIteratorV2.MappedValues: ___UnsafeImmutableIsIdenticalToV2 {}
+#endif

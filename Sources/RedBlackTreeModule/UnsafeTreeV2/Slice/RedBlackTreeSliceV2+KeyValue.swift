@@ -333,7 +333,7 @@ extension RedBlackTreeSliceV2.KeyValue {
 extension RedBlackTreeSliceV2.KeyValue {
 
   public typealias Keys = RedBlackTreeIteratorV2<Base>.Keys<Base>
-  public typealias Values = RedBlackTreeIteratorV2<Base>.MappedValues
+  public typealias Values = RedBlackTreeIteratorV2<Base>.MappedValues<Base>
 
   #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)

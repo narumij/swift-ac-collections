@@ -22,9 +22,9 @@
 
 @inlinable
 @inline(__always)
-func ___is_null_or_end__(pointerIndex: Int) -> Bool {
+func ___is_null_or_end__(rawIndex: Int) -> Bool {
   // 名前が衝突するしパッケージ名を書きたくないため中継している
-  ___is_null_or_end(pointerIndex)
+  ___is_null_or_end(rawIndex)
 }
 
 @usableFromInline
@@ -46,7 +46,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   internal var ___is_null_or_end: Bool {
-    ___is_null_or_end__(pointerIndex: pointee.___node_id_)
+    ___is_null_or_end__(rawIndex: pointee.___node_id_)
   }
 
   @usableFromInline
@@ -135,7 +135,7 @@ extension Validation {
   @inlinable
   @inline(__always)
   internal func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
-    ___is_null_or_end__(pointerIndex: ptr.pointee.___node_id_)
+    ___is_null_or_end__(rawIndex: ptr.pointee.___node_id_)
   }
 
   /// - Complexity: O(1)

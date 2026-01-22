@@ -278,7 +278,7 @@ extension UnsafeNode: Equatable {}
 extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
 
   @inlinable
-  var pointerIndex: Int {
+  var rawIndex: Int {
     switch self {
     case .none:
       return .nullptr
@@ -292,7 +292,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)
-  var pointerIndex: Int {
+  var rawIndex: Int {
     pointee.___node_id_
   }
 }

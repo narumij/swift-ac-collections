@@ -22,6 +22,24 @@ public enum UnsafeTreeRangeExpression {
 extension UnsafeTreeRangeExpression {
   
   @usableFromInline
+  func _slow_pair()
+    -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)
+  {
+    switch self {
+    case .range(let lhs, let rhs):
+      (lhs, rhs)
+    case .closedRange(let lhs, let rhs):
+      (lhs, __tree_next(rhs))
+    case .partialRangeTo(let rhs):
+      (rhs.__slow_begin(), rhs)
+    case .partialRangeThrough(let rhs):
+      (rhs.__slow_begin(), __tree_next(rhs))
+    case .partialRangeFrom(let lhs):
+      (lhs, lhs.__slow_end())
+    }
+  }
+
+  @usableFromInline
   func pair(_begin: UnsafeMutablePointer<UnsafeNode>, _end: UnsafeMutablePointer<UnsafeNode>)
     -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)
   {

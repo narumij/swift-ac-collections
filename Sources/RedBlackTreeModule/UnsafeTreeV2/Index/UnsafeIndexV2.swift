@@ -392,11 +392,11 @@ extension UnsafeIndexV2 {
   package subscript(_ p: Int) -> _NodePtr {
     switch p {
     case .nullptr:
-      return __tree_.nullptr
+      return .nullptr
     case .end:
-      return __tree_.__end_node
+      return tied.__end_ptr!
     default:
-      return tied[p] ?? __tree_.nullptr
+      return tied[p] ?? .nullptr
     }
   }
 
@@ -410,7 +410,7 @@ extension UnsafeIndexV2 {
     #if true
       // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
       // endはシングルトン的にしたい気持ちもある
-      return __tree_.isTriviallyIdentical(to: index.__tree_)
+    return tied === index.tied
         ? index.rawValue
         : self[index.rawIndex]
     #else

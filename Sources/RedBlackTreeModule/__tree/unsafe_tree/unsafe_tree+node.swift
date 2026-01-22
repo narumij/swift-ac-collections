@@ -93,6 +93,10 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     }
     return __r
   }
+  
+  func __slow_begin() -> _NodePtr {
+    __tree_min(__slow_end().__left_)
+  }
 }
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {

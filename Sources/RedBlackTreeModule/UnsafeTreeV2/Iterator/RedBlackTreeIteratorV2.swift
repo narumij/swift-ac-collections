@@ -24,8 +24,11 @@ import Foundation
 
 @frozen
 public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex {
-
+  
   public typealias Base = Base
+}
+
+extension RedBlackTreeIteratorV2 {
 
   @frozen
   public struct Values: Sequence, IteratorProtocol, _UnsafeNodePtrType,

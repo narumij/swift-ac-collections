@@ -6,6 +6,7 @@
 //
 
 #if false
+// TODO: 現行互換実装の作業をする
 @usableFromInline
 protocol RedBlackTreeBoundResolverProtocol: Collection
 where Base: ___TreeBase & ___TreeIndex, Index == UnsafeIndexV2<Base> {
@@ -55,6 +56,3 @@ extension RedBlackTreeMultiSet: RedBlackTreeBoundResolverProtocol {}
 extension RedBlackTreeDictionary: RedBlackTreeBoundResolverProtocol {}
 extension RedBlackTreeMultiMap: RedBlackTreeBoundResolverProtocol {}
 #endif
-
-// MARK: -
-

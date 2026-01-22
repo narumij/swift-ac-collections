@@ -22,6 +22,11 @@
 
 import Foundation
 
+#if true
+extension RedBlackTreeIteratorV2.Keys {
+  public typealias Reversed = UnsafeIterator.KeyReverse<Base>
+}
+#else
 extension RedBlackTreeIteratorV2.Keys {
 
   @frozen
@@ -107,3 +112,4 @@ extension RedBlackTreeIteratorV2.Keys.Reversed: Comparable {
 // MARK: - Is Identical To
 
 extension RedBlackTreeIteratorV2.Keys.Reversed: ___UnsafeImmutableIsIdenticalToV2 {}
+#endif

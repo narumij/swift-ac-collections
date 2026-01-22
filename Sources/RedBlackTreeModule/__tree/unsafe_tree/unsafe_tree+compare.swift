@@ -22,13 +22,13 @@
 
 import Foundation
 
+// クラスメソッドに移管できると、Indexの軽量化のめどが立つ
+
 @usableFromInline
 protocol CompareBothProtocol_ptr:
   _UnsafeNodePtrType
     & PointerCompareInterface
-    & NodeBitmapInterface
     & CompareUniqueProtocol
-    & CompareMultiInterface
     & IsMultiTraitInterface
 {
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
@@ -69,76 +69,68 @@ extension CompareBothProtocol_ptr {
   }
 }
 
-@usableFromInline
-protocol CompareMultiProtocol_ptr: _UnsafeNodePtrType & RootInterface & EndInterface
-    & _nullptr_interface
-{}
-
-extension CompareMultiProtocol_ptr {
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   // ノードの高さを数える
   @inlinable
   @inline(__always)
-  internal func ___ptr_height(_ __p: _NodePtr) -> Int {
-    assert(__p != nullptr, "Node shouldn't be null")
+  internal func ___ptr_height() -> Int {
+    assert(!___is_null, "Node shouldn't be null")
     var __h = 0
-    var __p = __p
-    while __p != __root, __p != end {
+    var __p = self
+    while !__p.___is_root, !__p.___is_end {  // endチェックは余計な気がする
       __p = __p.__parent_
       __h += 1
     }
     return __h
   }
-
-  // ノードの大小を比較する
-  @inlinable
-  //  @inline(__always)
-  internal func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
-    assert(__l != nullptr, "Left node shouldn't be null")
-    assert(__r != nullptr, "Right node shouldn't be null")
-    guard
-      __l != end,
-      __r != end,
-      __l != __r
-    else {
-      return __l != end && __r == end
-    }
-    var (__l, __lh) = (__l, ___ptr_height(__l))
-    var (__r, __rh) = (__r, ___ptr_height(__r))
-    // __rの高さを詰める
-    while __lh < __rh {
-      // 共通祖先が__lだった場合
-      if __r.__parent_ == __l {
-        // __rが左でなければ（つまり右）、__lが小さい
-        return !__tree_is_left_child(__r)
-      }
-      (__r, __rh) = (__r.__parent_, __rh - 1)
-    }
-    // __lの高さを詰める
-    while __lh > __rh {
-      // 共通祖先が__rだった場合
-      if __l.__parent_ == __r {
-        // __lが左であれば、__lが小さい
-        return __tree_is_left_child(__l)
-      }
-      (__l, __lh) = (__l.__parent_, __lh - 1)
-    }
-    // 親が一致するまで、両方の高さを詰める
-    while __l.__parent_ != __r.__parent_ {
-      (__l, __r) = (__l.__parent_, __r.__parent_)
-    }
-    // 共通祖先が__lと__r以外だった場合
-    // 共通祖先の左が__lであれば、__lが小さい
-    return __tree_is_left_child(__l)
-  }
 }
 
-@usableFromInline
-protocol NodeBitmapProtocol_ptr: _UnsafeNodePtrType, NodeBitmapInterface & RootInterface
-    & EndInterface, _nullptr_interface
-{}
+// ノードの大小を比較する
+@inlinable
+//  @inline(__always)
+internal func ___ptr_comp_multi(
+  _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
+) -> Bool {
+  assert(!__l.___is_null, "Left node shouldn't be null")
+  assert(!__r.___is_null, "Right node shouldn't be null")
+  guard
+    !__l.___is_end,
+    !__r.___is_end,
+    __l != __r
+  else {
+    return !__l.___is_end && __r.___is_end
+  }
+  var (__l, __lh) = (__l, __l.___ptr_height())
+  var (__r, __rh) = (__r, __r.___ptr_height())
+  // __rの高さを詰める
+  while __lh < __rh {
+    // 共通祖先が__lだった場合
+    if __r.__parent_ == __l {
+      // __rが左でなければ（つまり右）、__lが小さい
+      return !__tree_is_left_child(__r)
+    }
+    (__r, __rh) = (__r.__parent_, __rh - 1)
+  }
+  // __lの高さを詰める
+  while __lh > __rh {
+    // 共通祖先が__rだった場合
+    if __l.__parent_ == __r {
+      // __lが左であれば、__lが小さい
+      return __tree_is_left_child(__l)
+    }
+    (__l, __lh) = (__l.__parent_, __lh - 1)
+  }
+  // 親が一致するまで、両方の高さを詰める
+  while __l.__parent_ != __r.__parent_ {
+    (__l, __r) = (__l.__parent_, __r.__parent_)
+  }
+  // 共通祖先が__lと__r以外だった場合
+  // 共通祖先の左が__lであれば、__lが小さい
+  return __tree_is_left_child(__l)
+}
 
-extension NodeBitmapProtocol_ptr {
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
   ///
@@ -149,13 +141,13 @@ extension NodeBitmapProtocol_ptr {
   /// (実際にはUIntで64bit幅)
   @inlinable
   @inline(__always)
-  internal func ___ptr_bitmap(_ __p: _NodePtr) -> UInt {
-    assert(__p != nullptr, "Node shouldn't be null")
-    assert(__p != end, "Node shouldn't be end")
+  internal func ___ptr_bitmap() -> UInt {
+    assert(!___is_null, "Node shouldn't be null")
+    assert(!___is_end, "Node shouldn't be end")
     var __f: UInt = 1  // 終端flag
     var __h = 1  // 終端flag分
-    var __p = __p
-    while __p != __root, __p != end {
+    var __p = self
+    while !__p.___is_root {
       __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< __h
       __p = __p.__parent_
       __h &+= 1
@@ -167,12 +159,12 @@ extension NodeBitmapProtocol_ptr {
   // 128bit幅でかつ、必要なレジスタ数が削減されている
   @inlinable
   @inline(__always)
-  internal func ___ptr_bitmap_128(_ __p: _NodePtr) -> UInt128 {
-    assert(__p != nullptr, "Node shouldn't be null")
-    assert(__p != end, "Node shouldn't be end")
+  internal func ___ptr_bitmap_128() -> UInt128 {
+    assert(!___is_null, "Node shouldn't be null")
+    assert(!___is_end, "Node shouldn't be end")
     var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
-    var __p = __p
-    while __p != __root, __p != end {
+    var __p = self
+    while !__p.___is_root {
       __f &>>= 1
       __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt128.bitWidth &- 1)
       __p = __p.__parent_
@@ -183,23 +175,26 @@ extension NodeBitmapProtocol_ptr {
   // 64bit幅でかつ、必要なレジスタ数が削減されている
   @inlinable
   @inline(__always)
-  internal func ___ptr_bitmap_64(_ __p: _NodePtr) -> UInt {
-    assert(__p != nullptr, "Node shouldn't be null")
-    assert(__p != end, "Node shouldn't be end")
+  internal func ___ptr_bitmap_64() -> UInt {
+    assert(!___is_null, "Node shouldn't be null")
+    assert(!___is_end, "Node shouldn't be end")
     var __f: UInt = 1 &<< (UInt.bitWidth &- 1)
-    var __p = __p
-    while __p != __root, __p != end {
+    var __p = self
+    while !__p.___is_root {
       __f &>>= 1
       __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt.bitWidth &- 1)
       __p = __p.__parent_
     }
     return __f
   }
+}
 
-  @inlinable
-  @inline(__always)
-  internal func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
-    // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
-    ___ptr_bitmap_128(__l) < ___ptr_bitmap_128(__r)
-  }
+@inlinable
+@inline(__always)
+func ___ptr_comp_bitmap(
+  _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
+) -> Bool {
+  assert(___ptr_comp_multi(__l, __r) == (__l.___ptr_bitmap_128() < __r.___ptr_bitmap_128()))
+  // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
+  return __l.___ptr_bitmap_128() < __r.___ptr_bitmap_128()
 }

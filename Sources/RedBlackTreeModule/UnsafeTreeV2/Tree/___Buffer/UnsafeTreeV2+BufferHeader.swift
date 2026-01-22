@@ -92,7 +92,7 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @usableFromInline var _tied: _TiedRawBuffer?
 
   @usableFromInline
-  var needsDealloc: Bool {
+  var isRawBufferUniquelyOwned: Bool {
     _tied == nil
   }
 

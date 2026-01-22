@@ -30,7 +30,7 @@ public final class UnsafeTreeV2Buffer:
   @inlinable
   deinit {
     withUnsafeMutablePointers { header, _ in
-      if header.pointee.needsDealloc {
+      if header.pointee.isRawBufferUniquelyOwned {
         header.pointee.___deallocFreshPool()
       } else {
         header.pointee._tied?.isBaseDeallocated = true

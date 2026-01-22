@@ -277,10 +277,10 @@ extension UnsafeTreeV2BufferHeader {
     guard let p = popFresh() else {
       return nullptr
     }
-    assert(p.pointee.___node_id_ == .debug)
+    assert(p.pointee.___raw_index == .debug)
     #if true
       p.initialize(to: nullptr.pointee)
-      p.pointee.___node_id_ = freshPoolUsedCount
+      p.pointee.___raw_index = freshPoolUsedCount
     #else
       p.initialize(to: .create(id: freshPoolUsedCount))
     #endif
@@ -299,7 +299,7 @@ extension UnsafeTreeV2BufferHeader {
       assert(recycleCount >= 0)
     #endif
     let p = recycleHead.rawIndex == .nullptr ? ___popFresh() : ___popRecycle()
-    assert(p.pointee.___node_id_ >= 0)
+    assert(p.pointee.___raw_index >= 0)
     return p
   }
 
@@ -309,7 +309,7 @@ extension UnsafeTreeV2BufferHeader {
     #endif
     let p = recycleHead.rawIndex == .nullptr ? ___popFresh() : ___popRecycle()
     p.__value_().initialize(to: k)
-    assert(p.pointee.___node_id_ >= 0)
+    assert(p.pointee.___raw_index >= 0)
     return p
   }
 }

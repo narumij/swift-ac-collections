@@ -33,7 +33,7 @@ extension _RecyclePool {
 
   @inlinable
   mutating func ___pushRecycle(_ p: _NodePtr) {
-    assert(p.pointee.___node_id_ > .end)
+    assert(p.pointee.___raw_index > .end)
     assert(recycleHead != p)
     count -= 1
     #if DEBUG
@@ -79,7 +79,7 @@ extension _RecyclePool {
       var nodes: [Int] = []
       var last = recycleHead
       while last != nullptr {
-        nodes.append(last.pointee.___node_id_)
+        nodes.append(last.pointee.___raw_index)
         last = last.pointee.__left_
       }
       return nodes

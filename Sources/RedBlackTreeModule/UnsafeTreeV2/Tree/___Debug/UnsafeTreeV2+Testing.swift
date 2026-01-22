@@ -2,11 +2,11 @@
   extension UnsafeTreeV2 {
 
     package func ___ptr_(_ p: _NodePtr) -> Int {
-      p.pointee.___node_id_
+      p.pointee.___raw_index
     }
 
     package func __left_(_ p: Int) -> Int {
-      __left_(___NodePtr(p)).pointee.___node_id_
+      __left_(___NodePtr(p)).pointee.___raw_index
     }
 
     package func __left_(_ p: Int, _ l: Int) {
@@ -14,7 +14,7 @@
     }
 
     package func __right_(_ p: Int) -> Int {
-      __right_(___NodePtr(p)).pointee.___node_id_
+      __right_(___NodePtr(p)).pointee.___raw_index
     }
 
     package func __right_(_ p: Int, _ l: Int) {
@@ -22,7 +22,7 @@
     }
 
     package func __parent_(_ p: Int) -> Int {
-      __parent_(___NodePtr(p)).pointee.___node_id_
+      __parent_(___NodePtr(p)).pointee.___raw_index
     }
 
     package func __parent_(_ p: Int, _ l: Int) {
@@ -56,11 +56,11 @@
   }
 
   extension UnsafeMutablePointer where Pointee == UnsafeNode {
-    package var index: Int { pointee.___node_id_ }
+    package var index: Int { pointee.___raw_index }
   }
 
   extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
-    package var index: Int { self?.pointee.___node_id_ ?? .nullptr }
+    package var index: Int { self?.pointee.___raw_index ?? .nullptr }
   }
 #endif
 
@@ -71,17 +71,17 @@
 
     @inlinable
     package func equiv(with tree: UnsafeNode) -> Bool {
-      assert(___node_id_ == tree.___node_id_)
-      assert(__left_.pointee.___node_id_ == tree.__left_.pointee.___node_id_)
-      assert(__right_.pointee.___node_id_ == tree.__right_.pointee.___node_id_)
-      assert(__parent_.pointee.___node_id_ == tree.__parent_.pointee.___node_id_)
+      assert(___raw_index == tree.___raw_index)
+      assert(__left_.pointee.___raw_index == tree.__left_.pointee.___raw_index)
+      assert(__right_.pointee.___raw_index == tree.__right_.pointee.___raw_index)
+      assert(__parent_.pointee.___raw_index == tree.__parent_.pointee.___raw_index)
       assert(__is_black_ == tree.__is_black_)
       assert(___needs_deinitialize == tree.___needs_deinitialize)
       guard
-        ___node_id_ == tree.___node_id_,
-        __left_.pointee.___node_id_ == tree.__left_.pointee.___node_id_,
-        __right_.pointee.___node_id_ == tree.__right_.pointee.___node_id_,
-        __parent_.pointee.___node_id_ == tree.__parent_.pointee.___node_id_,
+        ___raw_index == tree.___raw_index,
+        __left_.pointee.___raw_index == tree.__left_.pointee.___raw_index,
+        __right_.pointee.___raw_index == tree.__right_.pointee.___raw_index,
+        __parent_.pointee.___raw_index == tree.__parent_.pointee.___raw_index,
         __is_black_ == tree.__is_black_,
         ___needs_deinitialize == tree.___needs_deinitialize
       else {
@@ -127,7 +127,7 @@
 //              return $0.pointee.equiv(with: $1.pointee)
 //            }))
 
-      assert(__begin_node_.pointee.___node_id_ == tree.__begin_node_.pointee.___node_id_)
+      assert(__begin_node_.pointee.___raw_index == tree.__begin_node_.pointee.___raw_index)
       assert(_buffer.header.equiv(with: tree._buffer.header))
       guard
 
@@ -141,8 +141,8 @@
               $0.pointee.equiv(with: $1.pointee)
             }),
 
-        __begin_node_.pointee.___node_id_
-          == tree.__begin_node_.pointee.___node_id_,
+        __begin_node_.pointee.___raw_index
+          == tree.__begin_node_.pointee.___raw_index,
 
         _buffer.header.equiv(with: tree._buffer.header)
 
@@ -157,14 +157,14 @@
 
     @inlinable
     package func nullCheck() -> Bool {
-      assert(___node_id_ == .nullptr)
+      assert(___raw_index == .nullptr)
       assert(__left_ == UnsafeNode.nullptr)
       assert(__right_ == UnsafeNode.nullptr)
       assert(__parent_ == UnsafeNode.nullptr)
       assert(__is_black_ == false)
       assert(___needs_deinitialize == true)
       guard
-        ___node_id_ == .nullptr,
+        ___raw_index == .nullptr,
         __right_ == UnsafeNode.nullptr,
         __right_ == UnsafeNode.nullptr,
         __parent_ == UnsafeNode.nullptr,
@@ -179,12 +179,12 @@
 
     @inlinable
     package func endCheck() -> Bool {
-      assert(___node_id_ == .end)
+      assert(___raw_index == .end)
       assert(__right_ == UnsafeNode.nullptr)
       assert(__parent_ == UnsafeNode.nullptr)
       assert(__is_black_ == false)
       guard
-        ___node_id_ == .end,
+        ___raw_index == .end,
         __right_ == UnsafeNode.nullptr,
         __parent_ == UnsafeNode.nullptr,
         __is_black_ == false,

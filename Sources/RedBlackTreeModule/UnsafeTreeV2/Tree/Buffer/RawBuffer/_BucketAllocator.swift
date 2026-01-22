@@ -96,7 +96,7 @@ package struct _BucketAllocator {
       do {
         var it = b._capacities(isHead: isHead, memoryLayout: memoryLayout)
         while let p = it.pop() {
-          p.pointee.___node_id_ = .debug
+          p.pointee.___raw_index = .debug
         }
       }
     #endif
@@ -167,7 +167,7 @@ package struct _BucketAllocator {
       do {
         var it = header._capacities(isHead: true, memoryLayout: memoryLayout)
         while let p = it.pop() {
-          p.pointee.___node_id_ = .debug
+          p.pointee.___raw_index = .debug
         }
       }
     #endif
@@ -196,7 +196,7 @@ package struct _BucketAllocator {
       do {
         var it = header._capacities(isHead: false, memoryLayout: memoryLayout)
         while let p = it.pop() {
-          p.pointee.___node_id_ = .debug
+          p.pointee.___raw_index = .debug
         }
       }
     #endif

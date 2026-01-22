@@ -26,7 +26,7 @@ import XCTest
       // 3. 各ポインタが正しく元の UnsafeNode を指しているか検証
       for i in 0..<nodeCount {
         let p = (ptrArray + i).pointee
-        XCTAssertEqual(p.pointee.___node_id_, i)
+        XCTAssertEqual(p.pointee.___raw_index, i)
         XCTAssertTrue(p == nodes + i)
       }
 

@@ -25,7 +25,7 @@ extension UnsafeNode {
   #if DEBUG
     @inlinable
     func debugDescription(resolve: (Pointer?) -> Int?) -> String {
-      let id = ___node_id_
+      let id = ___raw_index
       let l = resolve(__left_)
       let r = resolve(__right_)
       let p = resolve(__parent_)

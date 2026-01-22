@@ -135,7 +135,7 @@ public struct UnsafeNode {
     __is_black_: Bool = false,
     ___needs_deinitialize: Bool = true
   ) {
-    self.___node_id_ = ___node_id_
+    self.___raw_index = ___node_id_
     self.__left_ = __left_
     self.__right_ = __right_
     self.__parent_ = __parent_
@@ -202,7 +202,7 @@ public struct UnsafeNode {
   /// この ID を用いて等価なノード同士を対応付けることができる。
   ///
   /// nullptrは-2、endは-1をIDにもつ
-  public var ___node_id_: Int
+  public var ___raw_index: Int
 
   // メモリ管理をちゃんとするために隙間にねじ込んだ
   // TODO: メモリ管理に整合性があるか考慮すること
@@ -283,7 +283,7 @@ extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
     case .none:
       return .nullptr
     case .some(let wrapped):
-      return wrapped.pointee.___node_id_
+      return wrapped.pointee.___raw_index
     }
   }
 }
@@ -293,7 +293,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   @inlinable
   @inline(__always)
   var rawIndex: Int {
-    pointee.___node_id_
+    pointee.___raw_index
   }
 }
 

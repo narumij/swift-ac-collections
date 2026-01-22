@@ -45,7 +45,7 @@ where Base: ___TreeBase & ___TreeIndex {
   // メモリが解放される危険は解消したので、これを保持する必要性がなくなっている
   @usableFromInline
   internal var rawIndex: Int {
-    rawValue.pointee.___node_id_
+    rawValue.pointee.___raw_index
   }
 
   @usableFromInline
@@ -289,7 +289,7 @@ extension UnsafeIndexV2 {
 
   extension UnsafeIndexV2 {
     internal static func unsafe(tree: UnsafeTreeV2<Base>, rawValue: _NodePtr) -> Self {
-      .init(_unsafe_tree: tree, rawValue: rawValue, node_id: rawValue.pointee.___node_id_)
+      .init(_unsafe_tree: tree, rawValue: rawValue, node_id: rawValue.pointee.___raw_index)
     }
     internal static func unsafe(tree: UnsafeTreeV2<Base>, rawValue: Int) -> Self {
       if rawValue == .nullptr {
@@ -300,7 +300,7 @@ extension UnsafeIndexV2 {
       }
       return .init(
         _unsafe_tree: tree, rawValue: tree._buffer.header[rawValue],
-        node_id: tree._buffer.header[rawValue].pointee.___node_id_)
+        node_id: tree._buffer.header[rawValue].pointee.___raw_index)
     }
   }
 #endif

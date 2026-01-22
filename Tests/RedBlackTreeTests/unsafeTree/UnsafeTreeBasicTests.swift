@@ -54,18 +54,18 @@ import XCTest
 
       do {
         var it = storage.makeFreshPoolIterator()
-        XCTAssertEqual(it.next().map(\.pointee.___node_id_), 0)
-        XCTAssertEqual(it.next().map(\.pointee.___node_id_), 1)
-        XCTAssertEqual(it.next().map(\.pointee.___node_id_), 2)
-        XCTAssertEqual(it.next().map(\.pointee.___node_id_), 3)
-        XCTAssertEqual(it.next().map(\.pointee.___node_id_), nil)
-        XCTAssertEqual(it.next().map(\.pointee.___node_id_), nil)
+        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 0)
+        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 1)
+        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 2)
+        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 3)
+        XCTAssertEqual(it.next().map(\.pointee.___raw_index), nil)
+        XCTAssertEqual(it.next().map(\.pointee.___raw_index), nil)
       }
 
       //      throw XCTSkip()
 
       XCTAssertEqual(
-        storage.makeFreshPoolIterator().map(\.pointee.___node_id_),
+        storage.makeFreshPoolIterator().map(\.pointee.___raw_index),
         [0, 1, 2, 3])
 
       XCTAssertEqual(

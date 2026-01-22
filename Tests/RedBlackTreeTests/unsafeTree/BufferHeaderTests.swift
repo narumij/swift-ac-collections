@@ -86,7 +86,7 @@ import XCTest
       
       for p in pointers {
         // 0未満はsentinelなので、アサートではねられる
-        p.pointee.___node_id_ = Int.max
+        p.pointee.___raw_index = Int.max
         header.___pushRecycle(p)
         XCTAssertNotEqual(header.recycleHead, .nullptr)
       }

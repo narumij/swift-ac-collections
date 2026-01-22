@@ -46,7 +46,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   internal var ___is_null_or_end: Bool {
-    ___is_null_or_end__(rawIndex: pointee.___node_id_)
+    ___is_null_or_end__(rawIndex: pointee.___raw_index)
   }
 
   @usableFromInline
@@ -62,7 +62,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   
   @usableFromInline
   internal var ___is_end: Bool {
-    assert(__parent_ != .nullptr || pointee.___node_id_ == .end)
+    assert(__parent_ != .nullptr || pointee.___raw_index == .end)
     return __parent_ == .nullptr
   }
 
@@ -73,7 +73,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   
   // そもそもチェックとして厳密ではない。garbagedの厳密さが十分ならチェック用かも
   internal func ___initialized_contains(_ initializedCount: Int) -> Bool {
-    0..<initializedCount ~= pointee.___node_id_
+    0..<initializedCount ~= pointee.___raw_index
   }
   
   @inlinable
@@ -135,7 +135,7 @@ extension Validation {
   @inlinable
   @inline(__always)
   internal func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
-    ___is_null_or_end__(rawIndex: ptr.pointee.___node_id_)
+    ___is_null_or_end__(rawIndex: ptr.pointee.___raw_index)
   }
 
   /// - Complexity: O(1)
@@ -163,7 +163,7 @@ extension Validation {
   @inlinable
   @inline(__always)
   internal func ___initialized_contains(_ p: _NodePtr) -> Bool {
-    0..<initializedCount ~= p.pointee.___node_id_
+    0..<initializedCount ~= p.pointee.___raw_index
   }
 
   /// 真の場合、操作は失敗する
@@ -180,7 +180,7 @@ extension Validation {
     //    return !___initialized_contains(p) || ___is_garbaged(p)
     // begin -> false
     // end -> true
-    return ___is_null_or_end(p) || initializedCount <= p.pointee.___node_id_ || ___is_garbaged(p)
+    return ___is_null_or_end(p) || initializedCount <= p.pointee.___raw_index || ___is_garbaged(p)
   }
 
   /// 真の場合、操作は失敗する
@@ -207,7 +207,7 @@ extension Validation {
 
     // begin -> true
     // end -> false
-    return p == nullptr || initializedCount <= p.pointee.___node_id_ || ___is_begin(p)
+    return p == nullptr || initializedCount <= p.pointee.___raw_index || ___is_begin(p)
       || ___is_garbaged(p)
   }
 
@@ -220,7 +220,7 @@ extension Validation {
   @inlinable
   @inline(__always)
   internal func ___is_offset_null(_ p: _NodePtr) -> Bool {
-    return p == nullptr || initializedCount <= p.pointee.___node_id_ || ___is_garbaged(p)
+    return p == nullptr || initializedCount <= p.pointee.___raw_index || ___is_garbaged(p)
   }
 
   /// 真の場合、操作は失敗する

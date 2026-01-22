@@ -10,11 +10,11 @@ extension UnsafeIterator {
   public struct Obverse:
     _UnsafeNodePtrType,
     UnsafeIteratorProtocol,
+    ObverseIterator,
     IteratorProtocol,
     Sequence,
     Equatable
   {
-
     @usableFromInline
     internal init(___tree_range: UnsafeTreeRange) {
       self.___tree_range = ___tree_range
@@ -45,16 +45,16 @@ extension UnsafeIterator {
 
     @usableFromInline
     var __current: _NodePtr
+    
+    public typealias Reversed = Reverse
+    
+    public func reversed() -> UnsafeIterator.Reverse {
+      .init(___tree_range: ___tree_range)
+    }
   }
 }
 
 extension UnsafeIterator.Obverse {
-
-  @inlinable
-  @inline(__always)
-  public init<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr) {
-    self.init(__first: start, __last: end)
-  }
 
   @inlinable
   @inline(__always)

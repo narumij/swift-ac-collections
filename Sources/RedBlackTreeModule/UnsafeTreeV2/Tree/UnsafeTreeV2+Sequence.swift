@@ -200,7 +200,7 @@ extension UnsafeTreeV2 {
     unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
     -> UnsafeIterator.Obverse
   {
-    .init(tree: self, start: __first, end: __last)
+    .init(start: __first, end: __last)
   }
 
   @inlinable

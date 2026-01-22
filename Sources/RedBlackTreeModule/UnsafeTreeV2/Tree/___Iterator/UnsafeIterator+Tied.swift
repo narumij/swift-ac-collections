@@ -115,33 +115,45 @@ extension UnsafeIterator.Tied
 where
   Source.Base: KeyValueComparer
 {
-#if COMPATIBLE_ATCODER_2025
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func keys() -> RedBlackTreeIteratorV2<Base>.Keys.Reversed {
-    .init(start: source._start, end: source._end, tie: tied)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func keys() -> RedBlackTreeIteratorV2<Base>.Keys.Reversed {
+      .init(start: source._start, end: source._end, tie: tied)
+    }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func values() -> RedBlackTreeIteratorV2<Base>.MappedValues.Reversed {
-    .init(start: source._start, end: source._end, tie: tied)
-  }
-#else
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var keys: RedBlackTreeIteratorV2<Base>.Keys<Base>.Reversed {
-    .init(start: source._start, end: source._end, tie: tied)
-  }
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func values() -> RedBlackTreeIteratorV2<Base>.MappedValues.Reversed {
+      .init(start: source._start, end: source._end, tie: tied)
+    }
+  #else
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var keys: RedBlackTreeIteratorV2<Base>.Keys<Base>.Reversed {
+      .init(start: source._start, end: source._end, tie: tied)
+    }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var values: RedBlackTreeIteratorV2<Base>.MappedValues.Reversed {
-    .init(start: source._start, end: source._end, tie: tied)
-  }
-#endif
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var values: RedBlackTreeIteratorV2<Base>.MappedValues.Reversed {
+      .init(start: source._start, end: source._end, tie: tied)
+    }
+  #endif
 }
+
+//extension UnsafeIterator.Tied: ObverseIterator
+//where
+//  Source: ObverseIterator,
+//  Source.Reversed: UnsafeAssosiatedIterator & Sequence,
+//  Source.Reversed.Base: ___TreeIndex
+//{
+//  public func reversed() -> UnsafeIterator.Tied<Source.Reversed> {
+//    .init(source: source.reversed(), tie: tied)
+//  }
+//  public typealias Reversed = UnsafeIterator.Tied<Source.Reversed>
+//}

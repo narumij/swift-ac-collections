@@ -24,7 +24,7 @@ extension UnsafeIterator {
     public init(start: _NodePtr, end: _NodePtr) {
       self.init(source: .init(start: start, end: end))
     }
-    
+
     public var _start: UnsafeMutablePointer<UnsafeNode> {
       source._start
     }
@@ -52,6 +52,17 @@ extension UnsafeIterator {
       return __current
     }
   }
+}
+
+extension UnsafeIterator.RemoveAware: ObverseIterator
+where
+  Source: ObverseIterator,
+  Source.Reversed: UnsafeIteratorProtocol
+{
+  public func reversed() -> UnsafeIterator.RemoveAware<Source.Reversed> {
+    .init(source: source.reversed())
+  }
+  public typealias Reversed = UnsafeIterator.RemoveAware<Source.Reversed>
 }
 
 extension UnsafeIterator.RemoveAware: Equatable where Source: Equatable {}

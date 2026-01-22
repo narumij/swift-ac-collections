@@ -50,3 +50,14 @@ extension UnsafeIterator {
   extension UnsafeIterator.Value: @unchecked Sendable
   where Source: Sendable {}
 #endif
+
+extension UnsafeIterator.Value: ObverseIterator
+where
+  Source: ObverseIterator,
+  Source.Reversed: UnsafeIteratorProtocol & Sequence
+{
+  public func reversed() -> UnsafeIterator.Value<Base,Source.Reversed> {
+    .init(source: source.reversed())
+  }
+  public typealias Reversed = UnsafeIterator.Value<Base,Source.Reversed>
+}

@@ -81,3 +81,14 @@ extension UnsafeIterator.TiedIndexing: Comparable where Source: Equatable, Eleme
     lhs.lexicographicallyPrecedes(rhs)
   }
 }
+
+extension UnsafeIterator.TiedIndexing: ObverseIterator
+where
+  Source: ObverseIterator,
+  Source.Reversed: UnsafeIteratorProtocol & Sequence
+{
+  public func reversed() -> UnsafeIterator.TiedIndexing<Base,Source.Reversed> {
+    .init(source: source.reversed(), tie: tied)
+  }
+  public typealias Reversed = UnsafeIterator.TiedIndexing<Base,Source.Reversed>
+}

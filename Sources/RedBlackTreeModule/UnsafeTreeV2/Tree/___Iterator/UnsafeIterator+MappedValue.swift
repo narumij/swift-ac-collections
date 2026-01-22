@@ -57,3 +57,14 @@ extension UnsafeIterator {
   extension UnsafeIterator.MappedValue: @unchecked Sendable
   where Source: Sendable {}
 #endif
+
+extension UnsafeIterator.MappedValue: ObverseIterator
+where
+  Source: ObverseIterator,
+  Source.Reversed: UnsafeIteratorProtocol & Sequence
+{
+  public func reversed() -> UnsafeIterator.MappedValue<Base,Source.Reversed> {
+    .init(source: source.reversed())
+  }
+  public typealias Reversed = UnsafeIterator.MappedValue<Base,Source.Reversed>
+}

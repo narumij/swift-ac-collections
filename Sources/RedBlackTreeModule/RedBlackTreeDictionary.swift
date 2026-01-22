@@ -753,7 +753,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func makeIterator() -> Tree._KeyValues {
+  public func makeIterator() -> Tree._KeyValues<Base> {
     _makeIterator()
   }
 
@@ -912,7 +912,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func reversed() -> Tree._KeyValues.Reversed {
+  public func reversed() -> Tree._KeyValues<Base>.Reversed {
     _reversed()
   }
 

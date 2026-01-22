@@ -117,13 +117,13 @@ extension ___UnsafeKeyValueSequenceV2 {
 
   @inlinable
   @inline(__always)
-  internal func _makeIterator() -> Tree._KeyValues {
-    .init(tree: __tree_, start: _start, end: _end)
+  internal func _makeIterator() -> Tree._KeyValues<Base> {
+    .init(start: _start, end: _end, tie: __tree_.tied)
   }
 
   @inlinable
   @inline(__always)
-  internal func _reversed() -> Tree._KeyValues.Reversed {
+  internal func _reversed() -> Tree._KeyValues<Base>.Reversed {
     .init(start: _start, end: _end, tie: __tree_.tied)
   }
 }

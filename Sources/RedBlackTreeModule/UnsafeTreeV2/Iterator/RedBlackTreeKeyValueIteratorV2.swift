@@ -20,6 +20,11 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+#if true
+extension RedBlackTreeIteratorV2 {
+  public typealias KeyValues = UnsafeIterator.KeyValueObverse
+}
+#else
 extension RedBlackTreeIteratorV2 {
 
   @frozen
@@ -118,3 +123,4 @@ where Base._Key: Comparable, Base._MappedValue: Comparable {
 // MARK: - Is Identical To
 
 extension RedBlackTreeIteratorV2.KeyValues: ___UnsafeIsIdenticalToV2 {}
+#endif

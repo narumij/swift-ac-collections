@@ -119,8 +119,15 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)
-  func __key<Base: ScalarValueComparer>(with t: Base.Type) -> UnsafeMutablePointer<Base._Key> {
+  func __key_ptr<Base: _ScalarValueType>(with t: Base.Type) -> UnsafeMutablePointer<Base._Key> {
     __value_()
+  }
+  
+  @inlinable
+  @inline(__always)
+  func __key_ptr<Base: _KeyValueType>(with t: Base.Type) -> UnsafeMutablePointer<Base._Key>
+  where Base._Value == RedBlackTreePair<Base._Key,Base._MappedValue> {
+    _ref(to: &__value_(as: RedBlackTreePair<Base._Key,Base._MappedValue>.self).pointee.key)
   }
 }
 

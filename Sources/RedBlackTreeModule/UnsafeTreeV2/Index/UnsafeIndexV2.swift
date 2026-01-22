@@ -26,7 +26,7 @@ import Foundation
 ///
 /// C++の双方向イテレータに近い内容となっている
 @frozen
-public struct UnsafeIndexV2<Base>: UnsafeTreeProtocol, UnsafeImmutableIndexingProtocol
+public struct UnsafeIndexV2<Base>: UnsafeTreeProtocol, UnsafeIndexingProtocol
 where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = UnsafeTreeV2<Base>

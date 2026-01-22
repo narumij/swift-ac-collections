@@ -7,7 +7,7 @@
 
 @frozen
 public struct UnsafeIndexV2RangeExpression<Base>: UnsafeTreeProtocol,
-  UnsafeImmutableIndexingProtocol
+  UnsafeIndexingProtocol
 where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = UnsafeTreeV2<Base>

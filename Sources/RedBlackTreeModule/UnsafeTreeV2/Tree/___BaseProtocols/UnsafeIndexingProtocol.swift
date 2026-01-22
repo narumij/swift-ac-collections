@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol UnsafeImmutableIndexingProtocol: _UnsafeNodePtrType
+protocol UnsafeIndexingProtocol: _UnsafeNodePtrType
 where
   Index == UnsafeIndexV2<Base>
 {
@@ -15,7 +15,7 @@ where
   var tied: _TiedRawBuffer { get }
 }
 
-extension UnsafeImmutableIndexingProtocol {
+extension UnsafeIndexingProtocol {
   @inlinable
   @inline(__always)
   package func ___index(_ p: _NodePtr) -> Index {

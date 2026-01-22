@@ -37,9 +37,11 @@ where Base: ___TreeBase & ___TreeIndex {
   @usableFromInline
   typealias _Value = Tree._Value
 
+  // endのみか、定数倍を許容できるならendすら保持せずともインデックスの機能維持は可能そう
   @usableFromInline
   internal let __tree_: ImmutableTree
 
+  // メモリが解放される危険は解消したので、これを保持する必要性がなくなっている
   @usableFromInline
   internal var ___node_id_: Int
 
@@ -356,7 +358,8 @@ extension UnsafeIndexV2 {
   //    ___node_ptr(self)
   //  }
 
-  @available(*, deprecated, message: "リファクタリング作業") @inlinable
+  @available(*, deprecated, message: "リファクタリング作業")
+  @inlinable
   @inline(__always)
   package var _rawValue: Int {
     rawValue.pointee.___node_id_

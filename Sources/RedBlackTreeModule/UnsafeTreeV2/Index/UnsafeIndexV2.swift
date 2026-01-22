@@ -43,7 +43,9 @@ where Base: ___TreeBase & ___TreeIndex {
 
   // メモリが解放される危険は解消したので、これを保持する必要性がなくなっている
   @usableFromInline
-  internal var ___node_id_: Int
+  internal var ___node_id_: Int {
+    rawValue.pointee.___node_id_
+  }
 
   @usableFromInline
   internal var rawValue: _NodePtr {
@@ -53,7 +55,6 @@ where Base: ___TreeBase & ___TreeIndex {
       else {
         fatalError(.invalidIndex)
       }
-      ___node_id_ = rawValue.pointee.___node_id_
     }
   }
 
@@ -68,7 +69,7 @@ where Base: ___TreeBase & ___TreeIndex {
     assert(rawValue != .nullptr)
     assert(!rawValue.___is_garbaged)
     self.rawValue = rawValue
-    self.___node_id_ = rawValue.pointee.___node_id_
+//    self.___node_id_ = rawValue.pointee.___node_id_
     self.tied = tree.tied
     self.__tree_ = .init(__tree_: tree)
   }
@@ -83,7 +84,7 @@ where Base: ___TreeBase & ___TreeIndex {
     assert(rawValue != .nullptr)
     assert(!rawValue.___is_garbaged)
     self.__tree_ = __tree_
-    self.___node_id_ = rawValue.pointee.___node_id_
+//    self.___node_id_ = rawValue.pointee.___node_id_
     self.rawValue = rawValue
     self.tied = tie
   }
@@ -279,7 +280,7 @@ extension UnsafeIndexV2 {
   extension UnsafeIndexV2 {
     fileprivate init(_unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, node_id: Int) {
       self.rawValue = rawValue
-      self.___node_id_ = node_id
+//      self.___node_id_ = node_id
       self.tied = _unsafe_tree.tied
       self.__tree_ = .init(__tree_: _unsafe_tree)
     }

@@ -51,12 +51,11 @@ extension _TiedRawBuffer {
     @inlinable
     internal init(
       bucketHead: _TiedRawBuffer.Header._BucketPointer? = nil,
-      deallocator: _BucketAllocator,
-      isValueAccessAllowed: Bool = true
+      deallocator: _BucketAllocator
     ) {
       self.bucketHead = bucketHead
       self.deallocator = deallocator
-      self.isValueAccessAllowed = isValueAccessAllowed
+      self.isValueAccessAllowed = true
     }
 
     @usableFromInline
@@ -95,6 +94,13 @@ extension _TiedRawBuffer {
     header[___node_id_]
   }
 
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  var __end_ptr: _NodePtr? {
+    header.bucketHead?.end_ptr
+  }
+  
   @nonobjc
   @usableFromInline
   var isValueAccessAllowed: Bool {

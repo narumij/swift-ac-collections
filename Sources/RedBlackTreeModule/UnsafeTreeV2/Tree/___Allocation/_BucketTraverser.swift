@@ -5,6 +5,7 @@
 //  Created by narumij on 2026/01/18.
 //
 
+@frozen
 @usableFromInline
 struct _BucketTraverser: _UnsafeNodePtrType {
   

@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/21.
 //
 
-
+@frozen
 @usableFromInline
 package struct _MemoryLayout {
   

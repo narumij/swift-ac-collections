@@ -23,7 +23,7 @@ where Base: ___TreeBase & ___TreeIndex {
   internal var rawValue: UnsafeTreeRangeExpression
 
   @usableFromInline
-  internal var poolLifespan: PoolLifespan
+  internal var poolLifespan: _TiedRawBuffer
 
   // MARK: -
 
@@ -40,7 +40,7 @@ where Base: ___TreeBase & ___TreeIndex {
   internal init(
     __tree_: ImmutableTree,
     rawValue: UnsafeTreeRangeExpression,
-    poolLifespan: PoolLifespan
+    poolLifespan: _TiedRawBuffer
   ) {
     self.__tree_ = __tree_
     self.rawValue = rawValue

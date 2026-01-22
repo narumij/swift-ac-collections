@@ -29,7 +29,7 @@ public
     __tree_: ImmutableTree,
     start: _NodePtr,
     end: _NodePtr,
-    poolLifespan: PoolLifespan
+    poolLifespan: _TiedRawBuffer
   ) {
 
     self.__tree_ = __tree_
@@ -49,7 +49,7 @@ public
   internal var _start, _end: _NodePtr
 
   @usableFromInline
-  internal var poolLifespan: PoolLifespan
+  internal var poolLifespan: _TiedRawBuffer
 
   public typealias Element = Index
 

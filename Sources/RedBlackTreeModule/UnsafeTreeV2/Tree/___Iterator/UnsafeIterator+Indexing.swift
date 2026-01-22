@@ -31,9 +31,6 @@ extension UnsafeIterator {
     typealias Index = UnsafeIndexV2<Base>
 
     @usableFromInline
-    typealias PoolLifespan = _TiedRawBuffer
-
-    @usableFromInline
     var poolLifespan: _TiedRawBuffer
 
     @usableFromInline

@@ -39,7 +39,7 @@ extension RedBlackTreeIteratorV2 {
     internal var _start, _end, _current, _next: _NodePtr
 
     @usableFromInline
-    var poolLifespan: PoolLifespan
+    var poolLifespan: _TiedRawBuffer
 
     @inlinable
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
@@ -56,7 +56,7 @@ extension RedBlackTreeIteratorV2 {
       __tree_: ImmutableTree,
       start: _NodePtr,
       end: _NodePtr,
-      poolLifespan: PoolLifespan
+      poolLifespan: _TiedRawBuffer
     ) {
 
       self.__tree_ = __tree_

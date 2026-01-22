@@ -8,16 +8,14 @@
 @usableFromInline
 protocol UnsafeImmutableIndexingProtocol: _UnsafeNodePtrType
 where
-  Index == UnsafeIndexV2<Base>,
-  PoolLifespan == _TiedRawBuffer
+  Index == UnsafeIndexV2<Base>
 {
   associatedtype Base: ___TreeBase & ___TreeIndex
   associatedtype Index
   // TODO: 寿命延長を表す名前を再検討する
-  associatedtype PoolLifespan
   var __tree_: UnsafeImmutableTree<Base> { get }
   // TODO: 寿命延長を表す名前を再検討する
-  var poolLifespan: PoolLifespan { get }
+  var poolLifespan: _TiedRawBuffer { get }
 }
 
 extension UnsafeImmutableIndexingProtocol {

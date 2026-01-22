@@ -49,7 +49,7 @@ where Base: ___TreeBase & ___TreeIndex {
 }
 
 extension UnsafeIndexV2RangeExpression: Sequence {
-  
+
   public typealias Iterator = UnsafeIterator.IndexObverse<Base>
 
   public func makeIterator() -> Iterator {

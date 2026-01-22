@@ -97,7 +97,7 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
   }
 
   @inlinable
-  var tied: _TiedRawBuffer {
+  var tiedRawBuffer: _TiedRawBuffer {
     mutating get {
       // TODO: 一度の保証付きの実装にすること
       if _tied == nil {
@@ -112,7 +112,7 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
   #if DEBUG
     @inlinable
     mutating func createDeallocator() {
-      _ = tied
+      _ = tiedRawBuffer
     }
   #endif
 

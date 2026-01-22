@@ -363,10 +363,12 @@ extension RedBlackTreeSet {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   public mutating func popFirst() -> Element? {
-    guard !isEmpty else { return nil }
-    return remove(at: startIndex)
+//    guard !isEmpty else { return nil }
+//    return remove(at: startIndex)
+    __tree_._ensureUnique()
+    return ___remove_first()
   }
 }
 

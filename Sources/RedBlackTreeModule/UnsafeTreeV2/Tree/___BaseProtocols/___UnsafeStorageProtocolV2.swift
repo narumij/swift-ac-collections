@@ -66,6 +66,18 @@ extension ___UnsafeStorageProtocolV2 {
   @inlinable
   @inline(__always)
   @discardableResult
+  internal mutating func ___remove_first() -> _Value? {
+    guard !__tree_.___is_empty else {
+      return nil
+    }
+    let e = __tree_[__tree_.__begin_node_]
+    _ = __tree_.erase(__tree_.__begin_node_)
+    return e
+  }
+
+  @inlinable
+  @inline(__always)
+  @discardableResult
   internal mutating func ___remove(at ptr: _NodePtr) -> _Value? {
     guard !__tree_.___is_subscript_null(ptr) else {
       return nil

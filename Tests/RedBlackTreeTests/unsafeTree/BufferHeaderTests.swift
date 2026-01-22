@@ -27,7 +27,7 @@ import XCTest
       XCTAssertEqual(header.recycleHead, .nullptr)
       XCTAssertEqual(header.end_ptr.rawIndex, .end)
       XCTAssertEqual(header.end_ptr.__left_, .nullptr)
-      XCTAssertEqual(header.begin_ptr, header.end_ptr)
+      XCTAssertEqual(header.begin_ptr.pointee, header.end_ptr)
       XCTAssertEqual(header.freshBucketCurrent?.pop(), nil)
       header.___deallocFreshPool()
     }
@@ -38,7 +38,7 @@ import XCTest
         XCTAssertEqual(header.recycleHead, .nullptr)
         XCTAssertEqual(header.end_ptr.rawIndex, .end)
         XCTAssertEqual(header.end_ptr.__left_, .nullptr)
-        XCTAssertEqual(header.begin_ptr, header.end_ptr)
+        XCTAssertEqual(header.begin_ptr.pointee, header.end_ptr)
         var pointers = Set<_NodePtr>()
         for _ in 0..<i {
           // capacity回数popできること

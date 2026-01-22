@@ -49,11 +49,11 @@ extension UnsafeTreeHandleBase {
   package var __begin_node_: _NodePtr {
 
     @inline(__always) get {
-      header.pointee.begin_ptr
+      header.pointee.begin_ptr.pointee
     }
 
     nonmutating set {
-      header.pointee.begin_ptr = newValue
+      header.pointee.begin_ptr.pointee = newValue
     }
   }
 }

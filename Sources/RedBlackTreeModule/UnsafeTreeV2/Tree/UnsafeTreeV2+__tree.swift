@@ -140,14 +140,14 @@ extension UnsafeTreeV2 {
     @inline(__always) get {
       //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr }
 //      origin.pointee.begin_ptr
-      withMutableHeader { $0.begin_ptr }
+      withMutableHeader { $0.begin_ptr.pointee }
     }
 
     @inline(__always)
     nonmutating set {
 //      origin.pointee.begin_ptr = newValue
       //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr = newValue }
-      withMutableHeader { $0.begin_ptr = newValue }
+      withMutableHeader { $0.begin_ptr.pointee = newValue }
 
     }
   }

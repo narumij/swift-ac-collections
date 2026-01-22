@@ -178,7 +178,7 @@ extension UnsafeTreeV2BufferHeader {
     other.__root = __ptr_(__root)
 
     // __begin_nodeを初期化
-    other.begin_ptr = __ptr_(begin_ptr)
+    other.begin_ptr.pointee = __ptr_(begin_ptr.pointee)
 
     // その他管理情報をコピー
     other.recycleHead = __ptr_(recycleHead)

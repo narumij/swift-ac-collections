@@ -129,10 +129,10 @@ extension UnsafeTreeV2ScalarHandle {
   @inlinable
   var __begin_node_: UnsafeMutablePointer<UnsafeNode> {
     get {
-      header.pointee.begin_ptr
+      header.pointee.begin_ptr.pointee
     }
     nonmutating set {
-      header.pointee.begin_ptr = newValue
+      header.pointee.begin_ptr.pointee = newValue
     }
   }
 

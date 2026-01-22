@@ -41,7 +41,8 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
     self.nullptr = nullptr
     self.recycleHead = nullptr
     self.freshBucketAllocator = allocator
-    self.begin_ptr = head.end_ptr
+    self.begin_ptr = head.begin_ptr
+    self.begin_ptr.pointee = head.end_ptr
     self.root_ptr = _ref(to: &head.end_ptr.pointee.__left_)
     self.pushFreshBucket(head: head)
   }
@@ -54,7 +55,7 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @usableFromInline var freshBucketHead: _BucketPointer?
   @usableFromInline var freshBucketLast: _BucketPointer?
   @usableFromInline let nullptr: _NodePtr
-  @usableFromInline var begin_ptr: _NodePtr
+  @usableFromInline var begin_ptr: UnsafeMutablePointer<_NodePtr>
   @usableFromInline var root_ptr: _NodeRef
   @usableFromInline
   var freshBucketAllocator: _BucketAllocator
@@ -110,7 +111,7 @@ public struct UnsafeTreeV2BufferHeader: _RecyclePool {
   internal mutating func deinitialize() {
     ___flushFreshPool()
     ___flushRecyclePool()
-    begin_ptr = end_ptr
+    begin_ptr.pointee = end_ptr
     end_ptr.pointee.__left_ = nullptr
   }
 }

@@ -8,6 +8,7 @@
 // TODO: 利用時の寿命管理の確認
 // 寿命延長を行わないので、利用側で寿命安全を守る必要がある
 
+@available(*, deprecated, message: "TiedRawBuffer方式への移行のため")
 public struct UnsafeImmutableTree<Base: ___TreeBase>: UnsafeTreeNodeProtocol {
 
   public typealias _Key = Base._Key

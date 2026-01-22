@@ -23,7 +23,7 @@ extension UnsafeIterator {
 
     @usableFromInline
     var tied: _TiedRawBuffer
-    
+
     @usableFromInline
     init(
       start: _NodePtr,
@@ -76,18 +76,18 @@ extension UnsafeIterator.Tied: Comparable where Source: Equatable, Element: Comp
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-extension UnsafeIterator.Movable {
+  extension UnsafeIterator.Tied {
 
-  @available(*, deprecated, message: "性能問題があり廃止")
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (UnsafeIndexV2<Base>, Element) throws -> Void) rethrows
-  where Source.Source.Element == UnsafeMutablePointer<UnsafeNode> {
-    try zip(source.source, makeIterator()).forEach {
-      try body(___index($0), $1)
+    @available(*, deprecated, message: "性能問題があり廃止")
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (UnsafeIndexV2<Base>, Element) throws -> Void) rethrows
+    where Source.Source.Element == UnsafeMutablePointer<UnsafeNode> {
+      try zip(source.source, makeIterator()).forEach {
+        try body(___index($0), $1)
+      }
     }
   }
-}
 #endif
 
 extension UnsafeIterator.Tied
@@ -109,4 +109,39 @@ where
     defer { _fixLifetime(self) }
     return source.source
   }
+}
+
+extension UnsafeIterator.Tied
+where
+  Source.Base: KeyValueComparer
+{
+#if COMPATIBLE_ATCODER_2025
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func keys() -> RedBlackTreeIteratorV2<Base>.Keys.Reversed {
+    .init(start: source._start, end: source._end, tie: tied)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func values() -> RedBlackTreeIteratorV2<Base>.MappedValues.Reversed {
+    .init(start: source._start, end: source._end, tie: tied)
+  }
+#else
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var keys: RedBlackTreeIteratorV2<Base>.Keys.Reversed {
+    .init(start: source._start, end: source._end, tie: tied)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var values: RedBlackTreeIteratorV2<Base>.MappedValues.Reversed {
+    .init(start: source._start, end: source._end, tie: tied)
+  }
+#endif
 }

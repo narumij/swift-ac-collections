@@ -20,6 +20,14 @@ extension UnsafeIterator {
       self.__current = __last
       self.__last = __last
     }
+    
+    public var _start: UnsafeMutablePointer<UnsafeNode> {
+      __first
+    }
+
+    public var _end: UnsafeMutablePointer<UnsafeNode> {
+      __last
+    }
 
     public mutating func next() -> _NodePtr? {
       guard __current != __first else { return nil }

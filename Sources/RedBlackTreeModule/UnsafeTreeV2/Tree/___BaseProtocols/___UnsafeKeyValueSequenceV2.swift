@@ -124,7 +124,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   @inlinable
   @inline(__always)
   internal func _reversed() -> Tree._KeyValues.Reversed {
-    .init(tree: __tree_, start: _start, end: _end)
+    .init(start: _start, end: _end, tie: __tree_.tied)
   }
 }
 

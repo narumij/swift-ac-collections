@@ -27,6 +27,14 @@ extension UnsafeIterator {
         ___tree_range:
           UnsafeTreeRange(___from: __first, ___to: __last))
     }
+    
+    public var _start: UnsafeMutablePointer<UnsafeNode> {
+      ___tree_range.___from
+    }
+
+    public var _end: UnsafeMutablePointer<UnsafeNode> {
+      ___tree_range.___to
+    }
 
     public mutating func next() -> _NodePtr? {
       return ___tree_range.next(after: &__current)

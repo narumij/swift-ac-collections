@@ -22,7 +22,7 @@
 
 import Foundation
 
-#if false
+#if true
 extension RedBlackTreeIteratorV2.KeyValues {
   public typealias Reversed = UnsafeIterator.KeyValueReverse<Base>
 }

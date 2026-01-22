@@ -35,6 +35,14 @@ extension UnsafeIterator {
       self.source = source
     }
 
+    public var _start: UnsafeMutablePointer<UnsafeNode> {
+      source._start
+    }
+
+    public var _end: UnsafeMutablePointer<UnsafeNode> {
+      source._end
+    }
+    
     public
       mutating func next() -> Base._MappedValue?
     {

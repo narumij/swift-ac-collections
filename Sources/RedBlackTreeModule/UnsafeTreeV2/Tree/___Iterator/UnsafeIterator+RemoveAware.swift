@@ -24,6 +24,14 @@ extension UnsafeIterator {
     public init(start: _NodePtr, end: _NodePtr) {
       self.init(source: .init(start: start, end: end))
     }
+    
+    public var _start: UnsafeMutablePointer<UnsafeNode> {
+      source._start
+    }
+
+    public var _end: UnsafeMutablePointer<UnsafeNode> {
+      source._end
+    }
 
     var __current: Source.Element?
 

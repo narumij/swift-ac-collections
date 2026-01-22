@@ -100,6 +100,9 @@ extension RootPtrProtocol where _NodePtr == Int {
 
 // MARK: common
 
+// TODO: プロトコルインジェクションを整理すること
+// __treenの基本要素ではないので、別カテゴリがいい
+
 /// ツリー使用条件をインジェクションするためのプロトコル
 public protocol ValueComparer: _TreeValueType, _TreeValueType {
   /// 要素から比較キー値がとれること

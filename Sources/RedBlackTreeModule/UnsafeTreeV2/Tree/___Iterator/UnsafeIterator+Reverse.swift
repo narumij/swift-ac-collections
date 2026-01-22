@@ -46,14 +46,6 @@ extension UnsafeIterator.Reverse {
 
   @inlinable
   @inline(__always)
-  public init<Base: ___TreeBase>(
-    __tree_: UnsafeImmutableTree<Base>, start: _NodePtr, end: _NodePtr
-  ) {
-    self.init(__first: start, __last: end)
-  }
-  
-  @inlinable
-  @inline(__always)
   public init(start: _NodePtr, end: _NodePtr
   ) {
     self.init(__first: start, __last: end)

@@ -25,7 +25,7 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>
   {
     @usableFromInline
-    var __tree_: UnsafeImmutableTree<Base>
+    var __tree_: UnsafeImmutableTree<Base>?
 
     @usableFromInline
     typealias Index = UnsafeIndexV2<Base>
@@ -40,25 +40,20 @@ extension UnsafeIterator {
       end: _NodePtr
     ) where Source: UnsafeIteratorProtocol {
       self.init(
-        __tree_: .init(__tree_: tree),
         source: .init(
-          tree: tree,
           start: start,
           end: end),
         tie: tree.tied)
     }
-
+    
     @usableFromInline
     init(
-      __tree_: UnsafeImmutableTree<Base>,
       start: _NodePtr,
       end: _NodePtr,
       tie: _TiedRawBuffer
     ) where Source: UnsafeIteratorProtocol {
       self.init(
-        __tree_: __tree_,
         source: .init(
-          __tree_: __tree_,
           start: start,
           end: end),
         tie: tie)
@@ -67,10 +62,9 @@ extension UnsafeIterator {
     @usableFromInline
     var source: Source
 
-    internal init(__tree_: UnsafeImmutableTree<Base>, source: Source, tie: _TiedRawBuffer) {
+    internal init(source: Source, tie: _TiedRawBuffer) {
       self.source = source
       self.tied = tie
-      self.__tree_ = __tree_
     }
 
     public mutating func next() -> UnsafeIndexV2<Base>? {

@@ -13,8 +13,6 @@ where
   associatedtype Base: ___TreeBase & ___TreeIndex
   associatedtype Index
   // TODO: 寿命延長を表す名前を再検討する
-  var __tree_: UnsafeImmutableTree<Base> { get }
-  // TODO: 寿命延長を表す名前を再検討する
   var tied: _TiedRawBuffer { get }
 }
 
@@ -23,7 +21,6 @@ extension UnsafeImmutableIndexingProtocol {
   @inline(__always)
   package func ___index(_ p: _NodePtr) -> Index {
     .init(
-      __tree_: __tree_,
       rawValue: p,
       tie: tied)
   }

@@ -37,11 +37,6 @@ where Base: ___TreeBase & ___TreeIndex {
   @usableFromInline
   typealias _Value = Tree._Value
 
-  // endのみか、定数倍を許容できるならendすら保持せずともインデックスの機能維持は可能そう
-  // tied raw bufferがendを返せるようにしたので、将来的に不要
-  @usableFromInline
-  internal let __tree_: ImmutableTree
-
   // メモリが解放される危険は解消したので、これを保持する必要性がなくなっている
   @usableFromInline
   internal var rawIndex: Int {
@@ -71,7 +66,6 @@ where Base: ___TreeBase & ___TreeIndex {
     assert(!rawValue.___is_garbaged)
     self.rawValue = rawValue
     self.tied = tree.tied
-    self.__tree_ = .init(__tree_: tree)
   }
 
   @inlinable
@@ -83,7 +77,18 @@ where Base: ___TreeBase & ___TreeIndex {
   ) {
     assert(rawValue != .nullptr)
     assert(!rawValue.___is_garbaged)
-    self.__tree_ = __tree_
+    self.rawValue = rawValue
+    self.tied = tie
+  }
+  
+  @inlinable
+  @inline(__always)
+  internal init(
+    rawValue: _NodePtr,
+    tie: _TiedRawBuffer
+  ) {
+    assert(rawValue != .nullptr)
+    assert(!rawValue.___is_garbaged)
     self.rawValue = rawValue
     self.tied = tie
   }
@@ -174,7 +179,6 @@ extension UnsafeIndexV2 {
   //  @inline(__always)
   public func advanced(by n: Int) -> Self {
     return .init(
-      __tree_: __tree_,
       rawValue: Base.advanced(rawValue, by: n),
       tie: tied)
   }
@@ -284,9 +288,7 @@ extension UnsafeIndexV2 {
   extension UnsafeIndexV2 {
     fileprivate init(_unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, rawIndex: Int) {
       self.rawValue = rawValue
-//      self.___raw_index = ___raw_index
       self.tied = _unsafe_tree.tied
-      self.__tree_ = .init(__tree_: _unsafe_tree)
     }
   }
 

@@ -70,7 +70,7 @@ extension ___UnsafeIsIdenticalToV2 {
 
 @usableFromInline
 protocol ___UnsafeImmutableIsIdenticalToV2: UnsafeTreeProtocol {
-  var __tree_: ImmutableTree { get }
+  var __tree_: ImmutableTree? { get }
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
@@ -112,6 +112,6 @@ extension ___UnsafeImmutableIsIdenticalToV2 {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    __tree_.isTriviallyIdentical(to: other.__tree_) && _start == other._start && _end == other._end
+    __tree_!.isTriviallyIdentical(to: other.__tree_!) && _start == other._start && _end == other._end
   }
 }

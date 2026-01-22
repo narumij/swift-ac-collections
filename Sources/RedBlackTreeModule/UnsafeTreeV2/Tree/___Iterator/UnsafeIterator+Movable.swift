@@ -17,7 +17,7 @@ extension UnsafeIterator {
     Source.Base: ___TreeIndex
   {
     @usableFromInline
-    var __tree_: UnsafeImmutableTree<Base>
+    var __tree_: UnsafeImmutableTree<Base>?
 
     public typealias Base = Source.Base
 
@@ -34,7 +34,6 @@ extension UnsafeIterator {
       end: _NodePtr
     ) {
       self.init(
-        __tree_: .init(__tree_: tree),
         source: .init(
           tree: tree,
           start: start,
@@ -43,28 +42,11 @@ extension UnsafeIterator {
     }
 
     @usableFromInline
-    init(
-      __tree_: UnsafeImmutableTree<Source.Base>,
-      start: _NodePtr,
-      end: _NodePtr,
-      tie: _TiedRawBuffer
-    ) {
-      self.init(
-        __tree_: __tree_,
-        source: .init(
-          __tree_: __tree_,
-          start: start,
-          end: end),
-        tie: tie)
-    }
-
-    @usableFromInline
     var source: Source
 
-    internal init(__tree_: UnsafeImmutableTree<Base>, source: Source, tie: _TiedRawBuffer) {
+    internal init(source: Source, tie: _TiedRawBuffer) {
       self.source = source
       self.tied = tie
-      self.__tree_ = __tree_
     }
 
     public mutating func next() -> Source.Element? {
@@ -118,7 +100,7 @@ where
 
   /// - Complexity: O(1)
   public var indices: UnsafeIterator.Indexing<Source.Base, Source.Source> {
-    .init(__tree_: __tree_, source: source.source, tie: tied)
+    .init(source: source.source, tie: tied)
   }
 
   @available(*, deprecated, message: "危険になった為")

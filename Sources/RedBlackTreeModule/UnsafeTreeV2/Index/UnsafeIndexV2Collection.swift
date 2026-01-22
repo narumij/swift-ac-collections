@@ -23,7 +23,6 @@ public
 
   @usableFromInline
   internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    __tree_ = .init(__tree_: tree)
     _start = start
     _end = end
     tied = tree.tied
@@ -37,7 +36,18 @@ public
     tie: _TiedRawBuffer
   ) {
 
-    self.__tree_ = __tree_
+    self._start = start
+    self._end = end
+    self.tied = tie
+  }
+
+  @usableFromInline
+  internal init(
+    start: _NodePtr,
+    end: _NodePtr,
+    tie: _TiedRawBuffer
+  ) {
+
     self._start = start
     self._end = end
     self.tied = tie
@@ -46,9 +56,6 @@ public
   // TODO: Intに変更する検討
   // 計算量が問題
   public typealias Index = UnsafeIndexV2<Base>
-
-  @usableFromInline
-  internal let __tree_: ImmutableTree
 
   @usableFromInline
   internal var _start, _end: _NodePtr
@@ -78,7 +85,6 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
 
   public func makeIterator() -> Iterator {
     .init(
-      __tree_: __tree_,
       start: _start,
       end: _end,
       tie: tied)
@@ -86,7 +92,6 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
 
   public func reversed() -> Reversed {
     .init(
-      __tree_: __tree_,
       start: _start,
       end: _end,
       tie: tied)
@@ -106,7 +111,6 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
 
   public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
     .init(
-      __tree_: __tree_,
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue,
       tie: bounds.lowerBound.tied)
@@ -115,7 +119,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
   #if !COMPATIBLE_ATCODER_2025
     public subscript(bounds: UnsafeIndexV2RangeExpression<Base>) -> UnsafeIndexV2Collection {
       let (lower, upper) = tied.rawRange(bounds.rawValue)!
-      return .init(__tree_: __tree_, start: lower, end: upper, tie: tied)
+      return .init(start: lower, end: upper, tie: tied)
     }
   #endif
 }
@@ -126,4 +130,4 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
 
 // MARK: - Is Identical To
 
-extension UnsafeIndexV2Collection: ___UnsafeImmutableIsIdenticalToV2 {}
+//extension UnsafeIndexV2Collection: ___UnsafeImmutableIsIdenticalToV2 {}

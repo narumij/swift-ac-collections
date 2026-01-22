@@ -31,7 +31,7 @@ import XCTest
     func testWrappedForward() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let wrapped = UnsafeIterator.RemoveAware(
-        iterator: UnsafeIterator.Obverse(
+        source: UnsafeIterator.Obverse(
           __first: a.__tree_.__begin_node_,
           __last: a.__tree_.__end_node))
       XCTAssertEqual(wrapped.map { a.__tree_[$0] }, [Int](0..<5))
@@ -40,7 +40,7 @@ import XCTest
     func testWrappedReverse() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let wrapped = UnsafeIterator.RemoveAware(
-        iterator: UnsafeIterator.Reverse(
+        source: UnsafeIterator.Reverse(
           __first: a.__tree_.__begin_node_,
           __last: a.__tree_.__end_node))
       XCTAssertEqual(wrapped.map { a.__tree_[$0] }, [Int](0..<5).reversed())
@@ -49,7 +49,7 @@ import XCTest
     func testValuesForward() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = UnsafeIterator.Value<RedBlackTreeSet<Int>, UnsafeIterator.Obverse>(
-        iterator: .init(
+        source: .init(
           __first: a.__tree_.__begin_node_,
           __last: a.__tree_.__end_node))
       XCTAssertEqual(it.map { $0 }, [Int](0..<5))
@@ -58,7 +58,7 @@ import XCTest
     func testValuesReverse() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = UnsafeIterator.Value<RedBlackTreeSet<Int>, UnsafeIterator.Reverse>(
-        iterator: .init(
+        source: .init(
           __first: a.__tree_.__begin_node_,
           __last: a.__tree_.__end_node))
       XCTAssertEqual(it.map { $0 }, [Int](0..<5).reversed())

@@ -17,9 +17,6 @@ where Base: ___TreeBase & ___TreeIndex {
   typealias _Value = Tree._Value
 
   @usableFromInline
-  internal let __tree_: ImmutableTree
-
-  @usableFromInline
   internal var rawValue: UnsafeTreeRangeExpression
 
   @usableFromInline
@@ -32,7 +29,6 @@ where Base: ___TreeBase & ___TreeIndex {
   internal init(tree: Tree, rawValue: UnsafeTreeRangeExpression) {
     self.rawValue = rawValue
     self.tied = tree.tied
-    self.__tree_ = .init(__tree_: tree)
   }
 
   @inlinable
@@ -42,7 +38,16 @@ where Base: ___TreeBase & ___TreeIndex {
     rawValue: UnsafeTreeRangeExpression,
     tie: _TiedRawBuffer
   ) {
-    self.__tree_ = __tree_
+    self.rawValue = rawValue
+    self.tied = tie
+  }
+  
+  @inlinable
+  @inline(__always)
+  internal init(
+    rawValue: UnsafeTreeRangeExpression,
+    tie: _TiedRawBuffer
+  ) {
     self.rawValue = rawValue
     self.tied = tie
   }
@@ -54,7 +59,7 @@ extension UnsafeIndexV2RangeExpression: Sequence {
 
   public func makeIterator() -> Iterator {
     let (lower, upper) = tied.rawRange(rawValue)!
-    return .init(__tree_: __tree_, start: lower, end: upper, tie: tied)
+    return .init(start: lower, end: upper, tie: tied)
   }
 }
 
@@ -65,12 +70,11 @@ extension UnsafeIndexV2RangeExpression: Sequence {
 public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   -> UnsafeIndexV2RangeExpression<Base>
 {
-  guard lhs.__tree_.isTriviallyIdentical(to: rhs.__tree_) else {
+  guard lhs.tied === rhs.tied else {
     fatalError(.treeMissmatch)
   }
 
-  return .init(
-    __tree_: lhs.__tree_, rawValue: lhs.rawValue..<rhs.rawValue, tie: lhs.tied)
+  return .init(rawValue: lhs.rawValue..<rhs.rawValue, tie: lhs.tied)
 }
 
 #if !COMPATIBLE_ATCODER_2025
@@ -79,21 +83,19 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   public func ... <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
     -> UnsafeIndexV2RangeExpression<Base>
   {
-    guard lhs.__tree_.isTriviallyIdentical(to: rhs.__tree_) else {
+    guard lhs.tied === rhs.tied else {
       fatalError(.treeMissmatch)
     }
     guard let rhs = rhs.next else {
       fatalError(.invalidIndex)
     }
-    return .init(
-      __tree_: lhs.__tree_, rawValue: lhs.rawValue...rhs.rawValue, tie: lhs.tied)
+    return .init(rawValue: lhs.rawValue...rhs.rawValue, tie: lhs.tied)
   }
 
   @inlinable
   @inline(__always)
   public prefix func ..< <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
     return .init(
-      __tree_: rhs.__tree_,
       rawValue: ..<rhs.rawValue,
       tie: rhs.tied)
   }
@@ -105,7 +107,6 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
       fatalError(.invalidIndex)
     }
     return .init(
-      __tree_: rhs.__tree_,
       rawValue: ...rhs.rawValue,
       tie: rhs.tied)
   }
@@ -114,7 +115,6 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   @inline(__always)
   public postfix func ... <Base>(lhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
     return .init(
-      __tree_: lhs.__tree_,
       rawValue: lhs.rawValue...,
       tie: lhs.tied)
   }

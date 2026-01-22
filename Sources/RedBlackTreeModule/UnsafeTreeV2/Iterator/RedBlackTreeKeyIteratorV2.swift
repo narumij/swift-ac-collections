@@ -32,7 +32,7 @@ extension RedBlackTreeIteratorV2 {
     public typealias _Key = RedBlackTreeIteratorV2.Base._Key
 
     @usableFromInline
-    internal let __tree_: ImmutableTree
+    internal var __tree_: ImmutableTree?
 
     @usableFromInline
     internal var _start, _end, _current, _next: _NodePtr
@@ -72,15 +72,15 @@ extension RedBlackTreeIteratorV2 {
       guard _current != _end else { return nil }
       defer {
         _current = _next
-        _next = _next == _end ? _end : __tree_.__tree_next_iter(_next)
+        _next = _next == _end ? _end : __tree_!.__tree_next_iter(_next)
       }
-      return __tree_.__get_value(_current)
+      return __tree_!.__get_value(_current)
     }
 
     @inlinable
     @inline(__always)
     public func reversed() -> Reversed {
-      .init(__tree_: __tree_, start: _start, end: _end, tie: tied)
+      .init(__tree_: __tree_!, start: _start, end: _end, tie: tied)
     }
   }
 }

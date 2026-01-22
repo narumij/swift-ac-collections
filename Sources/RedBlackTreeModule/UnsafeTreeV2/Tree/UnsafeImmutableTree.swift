@@ -120,7 +120,7 @@ extension UnsafeImmutableTree {
   internal func
   sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> UnsafeIterator.RemoveAwarePointers
   {
-    .init(__tree_: self, start: __first, end: __last)
+    .init(start: __first, end: __last)
   }
 
   @inlinable
@@ -129,7 +129,7 @@ extension UnsafeImmutableTree {
     unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
     -> UnsafeIterator.Obverse
   {
-    .init(__tree_: self, start: __first, end: __last)
+    .init(start: __first, end: __last)
   }
 
   @inlinable
@@ -138,7 +138,7 @@ extension UnsafeImmutableTree {
     unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
   -> UnsafeIterator.Value<Base, UnsafeIterator.Obverse>
   {
-    .init(__tree_: self, start: __first, end: __last)
+    .init(Base.self, start: __first, end: __last)
   }
 }
 

@@ -36,7 +36,7 @@ public enum RedBlackTreeIteratorV2<Base> where Base: ___TreeBase & ___TreeIndex 
     public typealias _Value = RedBlackTreeIteratorV2.Base._Value
 
     @usableFromInline
-    internal let __tree_: UnsafeImmutableTree<Base>
+    internal var __tree_: UnsafeImmutableTree<Base>?
 
     @usableFromInline
     var source: UnsafeIterator.RemoveAwarePointers
@@ -92,6 +92,6 @@ extension RedBlackTreeIteratorV2.Values {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    __tree_.__end_node == other.__tree_.__end_node && source == other.source
+    __tree_!.__end_node == other.__tree_!.__end_node && source == other.source
   }
 }

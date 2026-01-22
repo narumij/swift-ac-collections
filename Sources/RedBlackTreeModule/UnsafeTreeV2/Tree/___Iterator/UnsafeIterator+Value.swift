@@ -17,17 +17,17 @@ extension UnsafeIterator {
     Source: UnsafeIteratorProtocol
   {
     public init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr) {
-      self.init(iterator: .init(tree: tree, start: __first, end: __last))
+      self.init(source: .init(start: __first, end: __last))
     }
 
-    public init(__tree_: UnsafeImmutableTree<Base>, start __first: _NodePtr, end __last: _NodePtr) {
-      self.init(iterator: .init(__tree_: __tree_, start: __first, end: __last))
+    public init(_ t: Base.Type, start: _NodePtr, end: _NodePtr) {
+      self.init(source: .init(start: start, end: end))
     }
 
     public var source: Source
 
-    internal init(iterator: Source) {
-      self.source = iterator
+    internal init(source: Source) {
+      self.source = source
     }
 
     public mutating func next() -> Base._Value? {

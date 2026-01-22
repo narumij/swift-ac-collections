@@ -33,7 +33,7 @@ extension RedBlackTreeIteratorV2.Keys {
     public typealias _Key = RedBlackTreeIteratorV2.Base._Key
 
     @usableFromInline
-    internal let __tree_: ImmutableTree
+    internal var __tree_: ImmutableTree?
 
     @usableFromInline
     internal var _start, _end, _begin, _current, _next: _NodePtr
@@ -45,10 +45,10 @@ extension RedBlackTreeIteratorV2.Keys {
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       self.__tree_ = .init(__tree_: tree)
       self._current = end
-      self._next = end == start ? end : __tree_.__tree_prev_iter(end)
+      self._next = end == start ? end : __tree_!.__tree_prev_iter(end)
       self._start = start
       self._end = end
-      self._begin = __tree_.__begin_node_
+      self._begin = __tree_!.__begin_node_
       self.tied = tree.tied
     }
 
@@ -74,8 +74,8 @@ extension RedBlackTreeIteratorV2.Keys {
     public mutating func next() -> _Key? {
       guard _current != _start else { return nil }
       _current = _next
-      _next = _current != _begin ? __tree_.__tree_prev_iter(_current) : __tree_.nullptr
-      return __tree_.__get_value(_current)
+      _next = _current != _begin ? __tree_!.__tree_prev_iter(_current) : __tree_!.nullptr
+      return __tree_!.__get_value(_current)
     }
   }
 }

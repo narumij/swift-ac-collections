@@ -23,6 +23,7 @@ var defines: [String] = [
   "USE_COPY_ON_WRITE",
   
 //  "DEATH_TEST",
+  "BENCHMARK"
 ]
 
 var _settings: [SwiftSetting] =
@@ -194,6 +195,18 @@ let package = Package(
         .product(name: "Collections", package: "swift-collections"),
       ],
       path: "Tests/Benchmarks/Benchmark5",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "Benchmark6",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+        .product(name: "Collections", package: "swift-collections"),
+      ],
+      path: "Tests/Benchmarks/Benchmark6",
       swiftSettings: _settings
     ),
     .executableTarget(

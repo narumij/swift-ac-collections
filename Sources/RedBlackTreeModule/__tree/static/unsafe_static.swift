@@ -31,7 +31,7 @@ extension CompareStaticProtocol {
 
       // TODO: ポインタ版になったので再度はかりなおすこと
 
-      #if false
+      #if true
         //      name                         time             std         iterations
         //      --------------------------------------------------------------------
         //      index compare 1000        19416.000 ns ±  10.13 %       69751
@@ -56,7 +56,11 @@ extension CompareStaticProtocol {
 @inlinable
 @inline(__always)
 internal func
-  __distance(_ __first: UnsafeMutablePointer<UnsafeNode>, _ __last: UnsafeMutablePointer<UnsafeNode>) -> Int
+  __distance(
+    _ __first: UnsafeMutablePointer<UnsafeNode>,
+    _ __last: UnsafeMutablePointer<UnsafeNode>
+  )
+  -> Int
 {
   var __first = __first
   var __r = 0
@@ -67,6 +71,26 @@ internal func
   return __r
 }
 
+@inlinable
+@inline(__always)
+internal func
+  ___dual_distance(
+    _ __first: UnsafeMutablePointer<UnsafeNode>,
+    _ __last: UnsafeMutablePointer<UnsafeNode>
+  )
+  -> Int
+{
+  var __next = __first
+  var __prev = __first
+  var __r = 0
+  while __next != __last, __prev != __last {
+    __next = __next.___is_null ? __next : __tree_next(__next)
+    __prev = __prev.___is_null ? __prev : __tree_prev_iter(__prev)
+    __r += 1
+  }
+  return __next == __last ? __r : -__r
+}
+
 extension CompareStaticProtocol {
 
   @usableFromInline
@@ -75,22 +99,25 @@ extension CompareStaticProtocol {
   @usableFromInline
   typealias _InputIter = _NodePtr
 
-
   @inlinable
   @inline(__always)
   static func
     ___signed_distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
   {
-    guard __first != __last else { return 0 }
-    var (__first, __last) = (__first, __last)
-    var sign = 1
-    if ___ptr_comp(__last, __first) {
-      swap(&__first, &__last)
-      sign = -1
-    }
-    return sign * __distance(__first, __last)
+    #if false
+      guard __first != __last else { return 0 }
+      var (__first, __last) = (__first, __last)
+      var sign = 1
+      if ___ptr_comp(__last, __first) {
+        swap(&__first, &__last)
+        sign = -1
+      }
+      return sign * __distance(__first, __last)
+    #else
+      return ___dual_distance(__first, __last)
+    #endif
   }
-  
+
   public static func advanced(_ __ptr_: _NodePtr, by n: Int) -> _NodePtr {
     if __ptr_.___is_offset_null {
       fatalError(.invalidIndex)

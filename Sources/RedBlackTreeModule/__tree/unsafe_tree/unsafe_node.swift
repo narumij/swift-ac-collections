@@ -210,15 +210,16 @@ public struct UnsafeNode {
     public var ___recycle_count: Int = 0
   #endif
 
-  @usableFromInline
-  nonisolated(unsafe) static let null: UnsafeNode.Null = .init()
 
   // non optionalを選択したのは、コードのあちこちにチェックコードが自動で挟まって遅くなることを懸念しての措置
   // nullptrは定数でもなにかコストがかかっていた記憶もある
   // 過去のコードベースで再度調査してこういった諸々の問題が杞憂だった場合、optionalに変更してnullptrにnil変更しても良い
   @usableFromInline
-  nonisolated(unsafe) static let nullptr: UnsafeMutablePointer<UnsafeNode> = null.nullptr
+  nonisolated(unsafe) static let nullptr: UnsafeMutablePointer<UnsafeNode> =   _singletonNull.nullptr
 }
+
+@usableFromInline
+nonisolated(unsafe) let _singletonNull: UnsafeNode.Null2 = .create()
 
 extension UnsafeNode {
 
@@ -262,14 +263,43 @@ extension UnsafeNode {
 
 extension UnsafeNode {
 
+  @usableFromInline
+  final class Null2: ManagedBuffer<Int, UnsafeNode> {
+    @nonobjc
+    @inlinable
+    @inline(__always)
+    var nullptr: UnsafeMutablePointer<UnsafeNode> {
+      withUnsafeMutablePointerToElements { $0 }
+    }
+    @inlinable
+    deinit {
+      _ = withUnsafeMutablePointers { header, elements in
+        elements.deinitialize(count: header.pointee)
+      }
+    }
+    @nonobjc
+    @inlinable
+    @inline(__always)
+    internal static func create() -> Null2 {
+      let storage = Null2.create(minimumCapacity: 1) { $0.capacity }
+      storage.withUnsafeMutablePointerToElements { nullptr in
+        nullptr.initialize(to: .create(id: .nullptr, nullptr: nullptr))
+      }
+      return unsafeDowncast(storage, to: Null2.self)
+    }
+  }
+}
+
+extension UnsafeNode {
+
   @inlinable
   @inline(__always)
-  package static func create(id: Int) -> UnsafeNode {
+  package static func create(id: Int, nullptr: UnsafeMutablePointer<UnsafeNode>) -> UnsafeNode {
     .init(
       ___raw_index: id,
-      __left_: Self.nullptr,
-      __right_: Self.nullptr,
-      __parent_: Self.nullptr)
+      __left_: nullptr,
+      __right_: nullptr,
+      __parent_: nullptr)
   }
 }
 

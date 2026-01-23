@@ -164,7 +164,7 @@ package struct _BucketAllocator {
 
     let endNode = header.end_ptr
 
-    endNode.initialize(to: .create(id: .end))
+    endNode.initialize(to: .create(id: .end, nullptr: nullptr))
     header.initialize(to: .init(capacity: capacity))
 
     #if DEBUG

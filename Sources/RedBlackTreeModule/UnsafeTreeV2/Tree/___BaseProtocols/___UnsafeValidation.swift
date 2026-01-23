@@ -95,6 +95,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     return self == .nullptr || ___is_slow_begin || ___is_garbaged
   }
   
+  @inlinable
   internal var ___is_offset_null: Bool {
     return self == .nullptr || ___is_garbaged
   }

@@ -160,7 +160,32 @@ extension UnsafeIndexV2 {
   @inlinable
   //  @inline(__always)
   public func advanced(by n: Int) -> Self {
-    return .init(rawValue: Base.advanced(rawValue, by: n), tie: tied)
+//    return .init(rawValue: Base.advanced(rawValue, by: n), tie: tied)
+    if rawValue.___is_offset_null {
+      fatalError(.invalidIndex)
+    }
+    var n = n
+    var __ptr_ = rawValue
+    while n != 0 {
+      if n < 0 {
+        // 後ろと区別したくてnullptrにしてたが、一周回るとendなのでendにしてみる
+        // TODO: fatalErrorにするか検討
+        if __tree_prev_iter(__ptr_).___is_null {
+          return .init(rawValue: tied.end_ptr!, tie: tied)
+        }
+        __ptr_ = __tree_prev_iter(__ptr_)
+        n += 1
+      } else {
+        // TODO: fatalErrorにするか検討
+        if __ptr_.___is_end { return .init(rawValue: __ptr_, tie: tied) }
+        __ptr_ = __tree_next_iter(__ptr_)
+        n -= 1
+      }
+      if __ptr_ == .nullptr {
+        break
+      }
+    }
+    return .init(rawValue: __ptr_, tie: tied)
   }
 }
 

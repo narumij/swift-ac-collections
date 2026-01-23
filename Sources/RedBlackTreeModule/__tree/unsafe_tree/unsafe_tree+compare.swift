@@ -35,6 +35,7 @@ protocol CompareBothProtocol_ptr:
 }
 
 extension CompareBothProtocol_ptr {
+  
   @inlinable
   @inline(__always)
   internal func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
@@ -51,7 +52,8 @@ extension CompareBothProtocol_ptr {
 
     if isMulti {
 
-      // TODO: ポインタ版になったので再度はかりなおすこと
+      // DONE: ポインタ版になったので再度はかりなおすこと
+      // ___ptr_comp_multiのほうがはやく、改良版はさらに速くなった
 
       #if true
         //      name                         time             std         iterations
@@ -184,7 +186,7 @@ internal func ___ptr_comp_multi(
     }
   }
   // 共通祖先が__lと__r以外だった場合
-  // 共通祖先の左が__lであれば、__lが小さい
+  // 共通祖先の左の子のほうが小さい。それが__lであれば真を返す。
   return __tree_is_left_child(__l)
 }
 

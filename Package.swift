@@ -23,7 +23,7 @@ var defines: [String] = [
   "USE_COPY_ON_WRITE",
 
   
-    "DEATH_TEST",
+  //  "DEATH_TEST",
   //  "BENCHMARK",
 ]
 

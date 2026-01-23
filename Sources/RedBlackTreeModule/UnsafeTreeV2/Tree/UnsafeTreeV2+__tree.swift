@@ -285,3 +285,5 @@ extension UnsafeTreeV2: CompareBothProtocol_ptr {}
 extension UnsafeTreeV2: CountProtocol_ptr, DistanceProtocol_ptr {}
 extension UnsafeTreeV2: InsertLastProtocol {}
 extension UnsafeTreeV2: CompareProtocol {}
+
+extension UnsafeTreeV2: SafeEraseProtocol, SafeEraseMultiProtocol {}

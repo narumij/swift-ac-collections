@@ -22,4 +22,20 @@ extension UnsafeTreeV2 {
       }
     }
   }
+  
+  @inlinable
+  func ___safe_erase_if(
+    _ __first: _NodePtr,
+    _ __last: _NodePtr,
+    shouldBeRemoved: (_Key) throws -> Bool
+  ) rethrows {
+    var __first = __first
+    while __first != __last, __first != __end_node {
+      if try shouldBeRemoved(__get_value(__first)) {
+        __first = erase(__first)
+      } else {
+        __first = __tree_next_iter(__first)
+      }
+    }
+  }
 }

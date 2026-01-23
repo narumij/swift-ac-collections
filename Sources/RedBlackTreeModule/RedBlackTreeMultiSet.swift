@@ -844,7 +844,7 @@ extension RedBlackTreeMultiSet: CustomDebugStringConvertible {
 extension RedBlackTreeMultiSet: CustomReflectable {
   /// The custom mirror for this instance.
   public var customMirror: Mirror {
-    Mirror(self, unlabeledChildren: self, displayStyle: .set)
+    Mirror(self, unlabeledChildren: self + [], displayStyle: .set)
   }
 }
 

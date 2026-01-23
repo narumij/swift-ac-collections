@@ -20,20 +20,36 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  func relative<K>(to boundsExpression: RedBlackTreeBoundsExpression<K>) -> (_NodePtr, _NodePtr)
+//  func relative<K>(to boundsExpression: RedBlackTreeBoundsExpression<K>) -> (_NodePtr, _NodePtr)
+//  where K == _Key {
+//    switch boundsExpression {
+//    case .range(let lhs, let rhs):
+//      return (relative(from: lhs), relative(from: rhs))
+//    case .closedRange(let lhs, let rhs):
+//      return (relative(from: lhs), __tree_next(relative(from: rhs)))
+//    case .partialRangeTo(let rhs):
+//      return (__begin_node_, relative(from: rhs))
+//    case .partialRangeThrough(let rhs):
+//      return (__begin_node_, __tree_next(relative(from: rhs)))
+//    case .partialRangeFrom(let lhs):
+//      return (relative(from: lhs), __end_node)
+//    }
+//  }
+
+  func relative<K>(to boundsExpression: RedBlackTreeBoundsExpression<K>)
+    -> UnsafeTreeRangeExpression
   where K == _Key {
     switch boundsExpression {
     case .range(let lhs, let rhs):
-      return (relative(from: lhs), relative(from: rhs))
+      return .range(from: relative(from: lhs), to: relative(from: rhs))
     case .closedRange(let lhs, let rhs):
-      return (relative(from: lhs), __tree_next(relative(from: rhs)))
+      return .closedRange(from: relative(from: lhs), through: relative(from: rhs))
     case .partialRangeTo(let rhs):
-      return (__begin_node_, relative(from: rhs))
+      return .partialRangeTo(relative(from: rhs))
     case .partialRangeThrough(let rhs):
-      return (__begin_node_, __tree_next(relative(from: rhs)))
+      return .partialRangeThrough(relative(from: rhs))
     case .partialRangeFrom(let lhs):
-      return (relative(from: lhs), __end_node)
+      return .partialRangeFrom(relative(from: lhs))
     }
   }
 }
-

@@ -110,9 +110,8 @@ extension ___UnsafeStorageProtocolV2 {
     guard !__tree_.___is_end(from) else {
       return __tree_.end
     }
-    return __tree_.erase(from, to)
+    return __tree_.___safe_erase(from, to)
   }
-
 
   @inlinable
   public mutating func ___remove(_ rawRange: UnsafeTreeRangeExpression) {

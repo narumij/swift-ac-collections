@@ -7,7 +7,7 @@
 
 extension UnsafeIterator {
 
-  public struct RemoveAware<Source: IteratorProtocol>:
+  public struct _RemoveAware<Source: IteratorProtocol>:
     _UnsafeNodePtrType,
     UnsafeIteratorProtocol,
     IteratorProtocol,
@@ -16,8 +16,8 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>,
     Source: UnsafeIteratorProtocol
   {
-    public init(start: _NodePtr, end: _NodePtr) {
-      self.init(source: .init(start: start, end: end))
+    public init(_start: _NodePtr, _end: _NodePtr) {
+      self.init(source: .init(_start: _start, _end: _end))
     }
 
     public var _start: UnsafeMutablePointer<UnsafeNode> {
@@ -49,23 +49,23 @@ extension UnsafeIterator {
   }
 }
 
-extension UnsafeIterator.RemoveAware: ObverseIterator
+extension UnsafeIterator._RemoveAware: ObverseIterator
 where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeIteratorProtocol
 {
-  public func reversed() -> UnsafeIterator.RemoveAware<Source.ReversedIterator> {
+  public func reversed() -> UnsafeIterator._RemoveAware<Source.ReversedIterator> {
     .init(source: source.reversed())
   }
-  public typealias Reversed = UnsafeIterator.RemoveAware<Source.ReversedIterator>
+  public typealias Reversed = UnsafeIterator._RemoveAware<Source.ReversedIterator>
 }
 
-extension UnsafeIterator.RemoveAware: Equatable where Source: Equatable {}
+extension UnsafeIterator._RemoveAware: Equatable where Source: Equatable {}
 
-extension UnsafeIterator.RemoveAware: ReverseIterator
+extension UnsafeIterator._RemoveAware: ReverseIterator
 where Source: ReverseIterator {}
 
 #if swift(>=5.5)
-  extension UnsafeIterator.RemoveAware: @unchecked Sendable
+  extension UnsafeIterator._RemoveAware: @unchecked Sendable
   where Source: Sendable {}
 #endif

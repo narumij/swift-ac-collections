@@ -7,7 +7,7 @@
 
 extension UnsafeIterator {
 
-  public struct Obverse:
+  public struct _Obverse:
     _UnsafeNodePtrType,
     UnsafeIteratorProtocol,
     ObverseIterator,
@@ -46,24 +46,24 @@ extension UnsafeIterator {
     @usableFromInline
     var __current: _NodePtr
     
-    public typealias Reversed = Reverse
+    public typealias Reversed = _Reverse
     
-    public func reversed() -> UnsafeIterator.Reverse {
+    public func reversed() -> UnsafeIterator._Reverse {
       .init(___tree_range: ___tree_range)
     }
   }
 }
 
-extension UnsafeIterator.Obverse {
+extension UnsafeIterator._Obverse {
 
   @inlinable
   @inline(__always)
-  public init(start: _NodePtr, end: _NodePtr
+  public init(_start: _NodePtr, _end: _NodePtr
   ) {
-    self.init(__first: start, __last: end)
+    self.init(__first: _start, __last: _end)
   }
 }
 
 #if swift(>=5.5)
-  extension UnsafeIterator.Obverse: @unchecked Sendable {}
+  extension UnsafeIterator._Obverse: @unchecked Sendable {}
 #endif

@@ -7,7 +7,7 @@
 
 extension UnsafeIterator {
 
-  public struct Reverse:
+  public struct _Reverse:
     _UnsafeNodePtrType,
     UnsafeIteratorProtocol,
     ReverseIterator,
@@ -48,17 +48,17 @@ extension UnsafeIterator {
   }
 }
 
-extension UnsafeIterator.Reverse {
+extension UnsafeIterator._Reverse {
 
   @inlinable
   @inline(__always)
   public init(
-    start: _NodePtr, end: _NodePtr
+    _start: _NodePtr, _end: _NodePtr
   ) {
-    self.init(__first: start, __last: end)
+    self.init(__first: _start, __last: _end)
   }
 }
 
 #if swift(>=5.5)
-  extension UnsafeIterator.Reverse: @unchecked Sendable {}
+  extension UnsafeIterator._Reverse: @unchecked Sendable {}
 #endif

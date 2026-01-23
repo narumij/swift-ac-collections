@@ -18,7 +18,7 @@ extension ObverseIterator {
 public protocol ReverseIterator: IteratorProtocol {}
 
 public protocol UnsafeIteratorProtocol: _UnsafeNodePtrType, IteratorProtocol {
-  init(start: _NodePtr, end: _NodePtr)
+  init(_start: _NodePtr, _end: _NodePtr)
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
@@ -26,8 +26,8 @@ public protocol UnsafeIteratorProtocol: _UnsafeNodePtrType, IteratorProtocol {
 public protocol UnsafeAssosiatedIterator: _UnsafeNodePtrType, IteratorProtocol {
   associatedtype Base: ___TreeBase
   associatedtype Source: IteratorProtocol & Sequence
-  init(_ t: Base.Type, start: _NodePtr, end: _NodePtr)
-  var source: Source { get }
+  init(_ t: Base.Type, _start: _NodePtr, _end: _NodePtr)
+  var _source: Source { get }
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }

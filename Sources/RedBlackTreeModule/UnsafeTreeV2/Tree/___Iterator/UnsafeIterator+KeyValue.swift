@@ -7,7 +7,7 @@
 
 extension UnsafeIterator {
 
-  public struct KeyValue<Base, Source>:
+  public struct _KeyValue<Base, Source>:
     _UnsafeNodePtrType,
     UnsafeAssosiatedIterator,
     IteratorProtocol,
@@ -21,32 +21,32 @@ extension UnsafeIterator {
     public
       init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr)
     {
-      self.init(source: .init(start: __first, end: __last))
+      self.init(source: .init(_start: __first, _end: __last))
     }
 
-    public init(_ t: Base.Type, start: _NodePtr, end: _NodePtr) {
-      self.init(source: .init(start: start, end: end))
+    public init(_ t: Base.Type, _start: _NodePtr, _end: _NodePtr) {
+      self.init(source: .init(_start: _start, _end: _end))
     }
 
     public
-      var source: Source
+      var _source: Source
 
     internal init(source: Source) {
-      self.source = source
+      self._source = source
     }
     
     public var _start: UnsafeMutablePointer<UnsafeNode> {
-      source._start
+      _source._start
     }
 
     public var _end: UnsafeMutablePointer<UnsafeNode> {
-      source._end
+      _source._end
     }
 
     public
       mutating func next() -> (key: Base._Key, value: Base._MappedValue)?
     {
-      return source.next().map {
+      return _source.next().map {
         (
           Base.__key($0.__value_().pointee),
           Base.___mapped_value($0.__value_().pointee)
@@ -57,20 +57,20 @@ extension UnsafeIterator {
 }
 
 #if swift(>=5.5)
-  extension UnsafeIterator.KeyValue: @unchecked Sendable
+  extension UnsafeIterator._KeyValue: @unchecked Sendable
   where Source: Sendable {}
 #endif
 
-extension UnsafeIterator.KeyValue: ObverseIterator
+extension UnsafeIterator._KeyValue: ObverseIterator
 where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeIteratorProtocol & Sequence
 {
-  public func reversed() -> UnsafeIterator.KeyValue<Base,Source.ReversedIterator> {
-    .init(source: source.reversed())
+  public func reversed() -> UnsafeIterator._KeyValue<Base,Source.ReversedIterator> {
+    .init(source: _source.reversed())
   }
-  public typealias Reversed = UnsafeIterator.KeyValue<Base,Source.ReversedIterator>
+  public typealias Reversed = UnsafeIterator._KeyValue<Base,Source.ReversedIterator>
 }
 
-extension UnsafeIterator.KeyValue: ReverseIterator
+extension UnsafeIterator._KeyValue: ReverseIterator
 where Source: ReverseIterator {}

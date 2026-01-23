@@ -30,17 +30,17 @@ extension UnsafeIterator {
       tie: _TiedRawBuffer
     ) where Source: UnsafeIteratorProtocol {
       self.init(
-        source: .init(
-          start: start,
-          end: end),
+        _source: .init(
+          _start: start,
+          _end: end),
         tie: tie)
     }
 
     @usableFromInline
     var source: Source
 
-    internal init(source: Source, tie: _TiedRawBuffer) {
-      self.source = source
+    internal init(_source: Source, tie: _TiedRawBuffer) {
+      self.source = _source
       self.tied = tie
     }
 
@@ -81,7 +81,7 @@ where
   Source.ReversedIterator: UnsafeIteratorProtocol & Sequence
 {
   public func reversed() -> UnsafeIterator.TiedIndexing<Base,Source.ReversedIterator> {
-    .init(source: source.reversed(), tie: tied)
+    .init(_source: source.reversed(), tie: tied)
   }
   public typealias Reversed = UnsafeIterator.TiedIndexing<Base,Source.ReversedIterator>
 }

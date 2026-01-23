@@ -7,7 +7,7 @@
 
 extension UnsafeIterator {
 
-  public struct MappedValue<Base, Source>:
+  public struct _MappedValue<Base, Source>:
     _UnsafeNodePtrType,
     UnsafeAssosiatedIterator,
     IteratorProtocol,
@@ -18,29 +18,29 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>
   {
     
-    public init(_ t: Base.Type, start: _NodePtr, end: _NodePtr) {
-      self.init(source: .init(start: start, end: end))
+    public init(_ t: Base.Type, _start: _NodePtr, _end: _NodePtr) {
+      self.init(source: .init(_start: _start, _end: _end))
     }
 
     public
-      var source: Source
+      var _source: Source
 
     internal init(source: Source) {
-      self.source = source
+      self._source = source
     }
 
     public var _start: UnsafeMutablePointer<UnsafeNode> {
-      source._start
+      _source._start
     }
 
     public var _end: UnsafeMutablePointer<UnsafeNode> {
-      source._end
+      _source._end
     }
     
     public
       mutating func next() -> Base._MappedValue?
     {
-      return source.next().map {
+      return _source.next().map {
         Base.___mapped_value($0.__value_().pointee)
       }
     }
@@ -48,20 +48,20 @@ extension UnsafeIterator {
 }
 
 #if swift(>=5.5)
-  extension UnsafeIterator.MappedValue: @unchecked Sendable
+  extension UnsafeIterator._MappedValue: @unchecked Sendable
   where Source: Sendable {}
 #endif
 
-extension UnsafeIterator.MappedValue: ObverseIterator
+extension UnsafeIterator._MappedValue: ObverseIterator
 where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeIteratorProtocol & Sequence
 {
-  public func reversed() -> UnsafeIterator.MappedValue<Base,Source.ReversedIterator> {
-    .init(source: source.reversed())
+  public func reversed() -> UnsafeIterator._MappedValue<Base,Source.ReversedIterator> {
+    .init(source: _source.reversed())
   }
-  public typealias Reversed = UnsafeIterator.MappedValue<Base,Source.ReversedIterator>
+  public typealias Reversed = UnsafeIterator._MappedValue<Base,Source.ReversedIterator>
 }
 
-extension UnsafeIterator.MappedValue: ReverseIterator
+extension UnsafeIterator._MappedValue: ReverseIterator
 where Source: ReverseIterator {}

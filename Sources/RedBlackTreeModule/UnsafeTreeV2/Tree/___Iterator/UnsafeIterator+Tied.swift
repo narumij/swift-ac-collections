@@ -31,18 +31,18 @@ extension UnsafeIterator {
       tie: _TiedRawBuffer
     ) {
       self.init(
-        source: .init(
+        _source: .init(
           Source.Base.self,
-          start: start,
-          end: end),
+          _start: start,
+          _end: end),
         tie: tie)
     }
 
     @usableFromInline
     var source: Source
 
-    internal init(source: Source, tie: _TiedRawBuffer) {
-      self.source = source
+    internal init(_source: Source, tie: _TiedRawBuffer) {
+      self.source = _source
       self.tied = tie
     }
 
@@ -97,7 +97,7 @@ where
 
   /// - Complexity: O(1)
   public var indices: UnsafeIterator.TiedIndexing<Source.Base, Source.Source> {
-    .init(source: source.source, tie: tied)
+    .init(_source: source._source, tie: tied)
   }
 
   @available(*, deprecated, message: "危険になった為")
@@ -107,7 +107,7 @@ where
     // 多分lifetime延長しないとクラッシュする
     // と思ったけどしなかった。念のためlifetimeとdeprecated
     defer { _fixLifetime(self) }
-    return source.source
+    return source._source
   }
 }
 
@@ -154,7 +154,7 @@ where
   Source.ReversedIterator.Base: ___TreeBase & ___TreeIndex
 {
   public func reversed() -> UnsafeIterator.Tied<Source.ReversedIterator> {
-    .init(source: source.reversed(), tie: tied)
+    .init(_source: source.reversed(), tie: tied)
   }
 }
 

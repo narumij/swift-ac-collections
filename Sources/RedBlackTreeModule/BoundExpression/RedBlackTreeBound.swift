@@ -12,6 +12,8 @@ public enum RedBlackTreeBound<_Key>: _KeyType {
   case end
 }
 
+// TODO: 以下を公開にするかどうかは要再検討
+
 public func end<K>() -> RedBlackTreeBound<K> {
   .end
 }

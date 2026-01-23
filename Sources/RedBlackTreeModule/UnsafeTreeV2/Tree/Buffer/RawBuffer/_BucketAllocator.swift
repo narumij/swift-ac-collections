@@ -217,8 +217,7 @@ package struct _BucketAllocator {
     let s2 = MemoryLayout<_Bucket>.stride
     let s01 = _pair.stride
     let offset01 = max(0, a1 - a0)
-    let size = s2 + (capacity == 0 ? 0 : s01 * capacity + offset01)
-    let alignment = max(a0, a1)
-    return (size, alignment)
+    let size = s2 + s01 * capacity + (capacity == 0 ? 0 : offset01)
+    return (size, _pair.alignment)
   }
 }

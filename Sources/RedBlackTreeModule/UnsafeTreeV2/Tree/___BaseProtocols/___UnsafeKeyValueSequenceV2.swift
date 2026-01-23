@@ -211,7 +211,7 @@ extension ___UnsafeKeyValueSequenceV2 {
     -> RedBlackTreeSliceV2<Base>.KeyValue
   {
     let (lower, upper) = __tree_.rawRange(rawRange)
-    guard lower == upper || __tree_.___ptr_comp(lower, upper) else {
+    guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
       fatalError(.invalidIndex)
     }
     return .init(tree: __tree_, start: lower, end: upper)

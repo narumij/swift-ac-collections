@@ -95,16 +95,26 @@ extension ___UnsafeStorageProtocolV2 {
       return __tree_.end
     }
     __tree_.___ensureValid(begin: from, end: to)
+    #if !COMPATIBLE_ATCODER_2025
+    guard __tree_.isValidRawRange(lower: from, upper: to) else {
+      fatalError(.invalidIndex)
+    }
+    #endif
     return __tree_.erase(from, to)
   }
-  
-  
+
   @inlinable
   public mutating func ___remove(_ rawRange: UnsafeTreeRangeExpression) {
     let (lower, upper) = __tree_.rawRange(rawRange)
-    guard lower == upper || __tree_.___ptr_comp(lower, upper) else {
+    guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
       fatalError(.invalidIndex)
     }
+    ___remove(from: lower, to: upper)
+  }
+
+  @inlinable
+  public mutating func ___unchecked_remove(_ rawRange: UnsafeTreeRangeExpression) {
+    let (lower, upper) = __tree_.rawRange(rawRange)
     ___remove(from: lower, to: upper)
   }
 }

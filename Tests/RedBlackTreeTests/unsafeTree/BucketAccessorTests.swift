@@ -25,7 +25,7 @@ final class BucketAccessorTests: XCTestCase {
     
     let capacity = 1_000_000
     let allocator = _BucketAllocator(valueType: _Value.self) { _ in }
-    let (byteSize, alignment) = allocator.otherCapacity(capacity: capacity)
+    let (byteSize, alignment) = (allocator.otherCapacity(capacity: capacity), allocator._pair.alignment)
     let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
     let header = storage.assumingMemoryBound(to: _Bucket.self)
     let accessor = _BucketAccessor(

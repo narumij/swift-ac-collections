@@ -64,6 +64,7 @@ package struct _BucketAllocator {
     self.memoryLayout = MemoryLayout<_Value>._memoryLayout
     self._pair = .init(UnsafeNode.self, _Value.self)
     self.deinitialize = deinitialize
+    self.capacityOffset = max(0, memoryLayout.alignment - MemoryLayout<UnsafeNode>.alignment)
   }
 
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
@@ -74,6 +75,9 @@ package struct _BucketAllocator {
 
   @usableFromInline
   package let _pair: _MemoryLayout
+
+  @usableFromInline
+  package let capacityOffset: Int
 
   @usableFromInline
   let deinitialize: (UnsafeMutableRawPointer) -> Void
@@ -151,12 +155,12 @@ package struct _BucketAllocator {
     _BucketPointer, capacity: Int
   ) {
 
-    let (bytes, alignment) = otherCapacity(capacity: capacity)
+    let (bytes, alignment) = (otherCapacity(capacity: capacity), _pair.alignment)
 
     let header_storage = UnsafeMutableRawPointer._allocate(
       byteCount: bytes
-      + MemoryLayout<UnsafeNode>.stride
-      + MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride,
+        + MemoryLayout<UnsafeNode>.stride
+        + MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride,
       alignment: alignment)
 
     let header = UnsafeMutableRawPointer(header_storage)
@@ -185,7 +189,7 @@ package struct _BucketAllocator {
 
     assert(capacity != 0)
 
-    let (bytes, alignment) = otherCapacity(capacity: capacity)
+    let (bytes, alignment) = (otherCapacity(capacity: capacity), _pair.alignment)
 
     let header_storage = UnsafeMutableRawPointer._allocate(
       byteCount: bytes,
@@ -209,15 +213,10 @@ package struct _BucketAllocator {
   }
 
   @usableFromInline
-  package func otherCapacity(capacity: Int) -> (
-    bytes: Int, alignment: Int
-  ) {
-    let a0 = MemoryLayout<UnsafeNode>.alignment
-    let a1 = memoryLayout.alignment
+  package func otherCapacity(capacity: Int) -> Int {
     let s2 = MemoryLayout<_Bucket>.stride
     let s01 = _pair.stride
-    let offset01 = max(0, a1 - a0)
-    let size = s2 + s01 * capacity + (capacity == 0 ? 0 : offset01)
-    return (size, _pair.alignment)
+    let size = s2 + s01 * capacity + (capacity == 0 ? 0 : capacityOffset)
+    return size
   }
 }

@@ -9,48 +9,54 @@ public enum UnsafeIterator {}
 
 extension UnsafeIterator {
 
+  #if COMPATIBLE_ATCODER_2025 || true
+    public typealias _RemoveTrait = _RemoveAware
+  #else
+    public typealias _RemoveTrait = _RemoveCheck
+  #endif
+
   public
     typealias IndexObverse<Base: ___TreeBase & ___TreeIndex> =
-    TiedIndexing<Base, _RemoveAware<_Obverse>>
+    TiedIndexing<Base, _RemoveTrait<_Obverse>>
 
   public
     typealias IndexReverse<Base: ___TreeBase & ___TreeIndex> =
-    TiedIndexing<Base, _RemoveAware<_Reverse>>
+    TiedIndexing<Base, _RemoveTrait<_Reverse>>
 
   public
     typealias ValueObverse<Base: ___TreeBase & ___TreeIndex> = Tied<
-      _Value<Base, _RemoveAware<_Obverse>>
+      _Value<Base, _RemoveTrait<_Obverse>>
     >
   public
     typealias ValueReverse<Base: ___TreeBase & ___TreeIndex> = Tied<
-      _Value<Base, _RemoveAware<_Reverse>>
+      _Value<Base, _RemoveTrait<_Reverse>>
     >
 
   public
     typealias KeyObverse<Base: ___TreeBase & ___TreeIndex> = Tied<
-      _Key<Base, _RemoveAware<_Obverse>>
+      _Key<Base, _RemoveTrait<_Obverse>>
     >
   public
     typealias KeyReverse<Base: ___TreeBase & ___TreeIndex> = Tied<
-      _Key<Base, _RemoveAware<_Reverse>>
+      _Key<Base, _RemoveTrait<_Reverse>>
     >
 
   public
     typealias MappedValueObverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
-      _MappedValue<Base, _RemoveAware<_Obverse>>
+      _MappedValue<Base, _RemoveTrait<_Obverse>>
     >
   public
     typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
-      _MappedValue<Base, _RemoveAware<_Reverse>>
+      _MappedValue<Base, _RemoveTrait<_Reverse>>
     >
 
   public
     typealias KeyValueObverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
-      _KeyValue<Base, _RemoveAware<_Obverse>>
+      _KeyValue<Base, _RemoveTrait<_Obverse>>
     >
   public
     typealias KeyValueReverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
-      _KeyValue<Base, _RemoveAware<_Reverse>>
+      _KeyValue<Base, _RemoveTrait<_Reverse>>
     >
 }
 

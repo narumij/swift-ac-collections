@@ -5,59 +5,62 @@
 //  Created by narumij on 2026/01/16.
 //
 
-#if false
-  @usableFromInline
-  struct ___UnsafeRemoveCheckWrapper<Source: IteratorProtocol>:
-    UnsafeTreePointer,
-    IteratorProtocol,
-    Sequence
-  where
-    Source.Element == UnsafeMutablePointer<UnsafeNode>
-  {
-    var naive: Source
-    internal init(iterator: Source) {
-      self.naive = iterator
-    }
-    @usableFromInline
-    mutating func next() -> _NodePtr? {
-      let n = naive.next()
-      guard let n else { return nil }
-      guard n.pointee.isGarbaged != true else {
-        fatalError(.invalidIndex)
-      }
-      return n
-    }
-  }
-#else
-  @usableFromInline
-  struct ___UnsafeRemoveCheckWrapper<Source: IteratorProtocol>:
+extension UnsafeIterator {
+
+  public struct _RemoveCheck<Source: IteratorProtocol>:
     _UnsafeNodePtrType,
+    UnsafeIteratorProtocol,
     IteratorProtocol,
     Sequence
   where
-    Source.Element == UnsafeMutablePointer<UnsafeNode>
+    Source.Element == UnsafeMutablePointer<UnsafeNode>,
+    Source: UnsafeIteratorProtocol
   {
-    var __current: Source.Element?
-    var naive: Source
-    @usableFromInline
-    internal init(iterator: Source) {
-      var it = iterator
-      self.__current = it.next()
-      self.naive = it
+    public init(_start: _NodePtr, _end: _NodePtr) {
+      self.init(source: .init(_start: _start, _end: _end))
     }
+
+    public var _start: UnsafeMutablePointer<UnsafeNode> {
+      source._start
+    }
+
+    public var _end: UnsafeMutablePointer<UnsafeNode> {
+      source._end
+    }
+
+    @usableFromInline var source: Source
     @usableFromInline
-    mutating func next() -> _NodePtr? {
-      guard let __current else { return nil }
-      guard !__current.pointee.isGarbaged else {
-        fatalError(.invalidIndex)
+    internal init(source: Source) {
+      self.source = source
+    }
+
+    public mutating func next() -> _NodePtr? {
+      guard let result = source.next() else { return nil }
+      guard !result.___is_garbaged else {
+        fatalError(.garbagedIndex)
       }
-      self.__current = naive.next()
-      return __current
+      return result
     }
   }
-#endif
+}
+
+extension UnsafeIterator._RemoveCheck: ObverseIterator
+where
+  Source: ObverseIterator,
+  Source.ReversedIterator: UnsafeIteratorProtocol
+{
+  public func reversed() -> UnsafeIterator._RemoveAware<Source.ReversedIterator> {
+    .init(source: source.reversed())
+  }
+  public typealias Reversed = UnsafeIterator._RemoveAware<Source.ReversedIterator>
+}
+
+extension UnsafeIterator._RemoveCheck: Equatable where Source: Equatable {}
+
+extension UnsafeIterator._RemoveCheck: ReverseIterator
+where Source: ReverseIterator {}
 
 #if swift(>=5.5)
-  extension ___UnsafeRemoveCheckWrapper: @unchecked Sendable
+  extension UnsafeIterator._RemoveCheck: @unchecked Sendable
   where Source: Sendable {}
 #endif

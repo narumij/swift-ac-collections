@@ -48,7 +48,8 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   @usableFromInline
   var _buffer: BufferPointer
 
-  public let nullptr, end: _NodePtr
+  @usableFromInline
+  package let nullptr, end: _NodePtr
 
   @usableFromInline
   let isReadOnly: Bool
@@ -64,23 +65,29 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   }
 }
 
+extension UnsafeTreeV2: CustomStringConvertible {
+  public var description: String {
+    "UnsafeTreeV2<\(Base._Value.self)>._Storage\(_buffer.header)"
+  }
+}
+
 extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  public var count: Int { withMutableHeader { $0.count } }
+  var count: Int { withMutableHeader { $0.count } }
 
   #if !DEBUG
     @inlinable
     @inline(__always)
-    public var capacity: Int { withMutableHeader { $0.freshPoolCapacity } }
+    var capacity: Int { withMutableHeader { $0.freshPoolCapacity } }
 
     @inlinable
     @inline(__always)
-    public var initializedCount: Int { withMutableHeader { $0.freshPoolUsedCount } }
+    var initializedCount: Int { withMutableHeader { $0.freshPoolUsedCount } }
   #else
     @inlinable
-    public var capacity: Int {
+    var capacity: Int {
       @inline(__always)
       get { _buffer.header.freshPoolCapacity }
       set {
@@ -92,7 +99,7 @@ extension UnsafeTreeV2 {
     }
 
     @inlinable
-    public var initializedCount: Int {
+    var initializedCount: Int {
       @inline(__always)
       get { _buffer.header.freshPoolUsedCount }
       set {

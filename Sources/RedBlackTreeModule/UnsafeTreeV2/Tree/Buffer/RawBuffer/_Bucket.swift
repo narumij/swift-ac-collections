@@ -22,7 +22,8 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @frozen
-public struct _Bucket {
+@usableFromInline
+package struct _Bucket {
 
   public typealias _NextBucket = UnsafeMutablePointer<_Bucket>
 
@@ -39,13 +40,13 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
   @inline(__always)
-  public var next: UnsafeMutablePointer? { pointee.next }
+  var next: UnsafeMutablePointer? { pointee.next }
   @inlinable
   @inline(__always)
-  public var capacity: Int { pointee.capacity }
+  var capacity: Int { pointee.capacity }
   @inlinable
   @inline(__always)
-  public var count: Int { pointee.count }
+  var count: Int { pointee.count }
 
   @inlinable
   @inline(__always)

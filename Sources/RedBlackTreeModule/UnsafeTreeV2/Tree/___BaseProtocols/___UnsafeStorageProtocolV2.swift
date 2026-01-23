@@ -102,6 +102,17 @@ extension ___UnsafeStorageProtocolV2 {
     #endif
     return __tree_.erase(from, to)
   }
+  
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  internal mutating func ___unchecked_remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
+    guard !__tree_.___is_end(from) else {
+      return __tree_.end
+    }
+    return __tree_.erase(from, to)
+  }
+
 
   @inlinable
   public mutating func ___remove(_ rawRange: UnsafeTreeRangeExpression) {
@@ -115,6 +126,6 @@ extension ___UnsafeStorageProtocolV2 {
   @inlinable
   public mutating func ___unchecked_remove(_ rawRange: UnsafeTreeRangeExpression) {
     let (lower, upper) = __tree_.rawRange(rawRange)
-    ___remove(from: lower, to: upper)
+    ___unchecked_remove(from: lower, to: upper)
   }
 }

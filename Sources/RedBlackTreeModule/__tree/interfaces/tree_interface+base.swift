@@ -14,14 +14,16 @@ import Foundation
 /// nullへのインスタンスアクセス
 ///
 /// nullptrへはグローバルアクセスもあるが、性能観点でインスタンスアクセスを利用している
-public protocol _nullptr_interface: _PointerType {
+@usableFromInline
+package protocol _nullptr_interface: _PointerType {
   @inlinable var nullptr: _Pointer { get }
 }
 
 /// endへのインスタンスアクセス
 ///
 /// end->leftが木の根
-public protocol _end_interface: _NodePtrType {
+@usableFromInline
+package protocol _end_interface: _NodePtrType {
   @inlinable var end: _NodePtr { get }
 }
 

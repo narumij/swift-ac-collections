@@ -774,7 +774,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  public typealias SubSequence = RedBlackTreeSliceV2<Base>
+  public typealias SubSequence = RedBlackTreeSliceV2<Base>.KeyOnly
 }
 
 // MARK: - Index Range

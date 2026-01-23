@@ -1,6 +1,6 @@
 #if COMPATIBLE_ATCODER_2025
 
-  extension RedBlackTreeSlice {
+  extension RedBlackTreeSlice.KeyOnly {
     @available(*, deprecated)
     public subscript(_unsafe position: Index) -> Element {
       @inline(__always) _read {

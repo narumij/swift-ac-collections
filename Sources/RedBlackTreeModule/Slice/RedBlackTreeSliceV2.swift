@@ -22,42 +22,53 @@
 
 import Foundation
 
-@frozen
-public struct RedBlackTreeSliceV2<Base>: ___UnsafeCommonV2 & ___UnsafeSubSequenceV2
-    & ___UnsafeIndexV2 & ___UnsafeKeyOnlySequenceV2
-where Base: ___TreeBase & ___TreeIndex {
+public enum RedBlackTreeSliceV2<Base> {
 
-  public typealias Tree = UnsafeTreeV2<Base>
-  public typealias _NodePtr = Tree._NodePtr
-  public typealias _Key = Tree._Key
-  public typealias _Value = Tree._Value
-  public typealias Element = Tree._Value
-  public typealias Index = Tree.Index
-  public typealias Indices = Tree.Indices
-  public typealias SubSequence = Self
+}
 
-  @usableFromInline
-  internal let __tree_: Tree
+extension RedBlackTreeSliceV2 {
 
-  @usableFromInline
-  internal var _start, _end: _NodePtr
+  @frozen
+  public struct KeyOnly: ___UnsafeCommonV2 & ___UnsafeSubSequenceV2
+      & ___UnsafeIndexV2 & ___UnsafeKeyOnlySequenceV2
+  where
+    Base: ___TreeBase & ___TreeIndex,
+    Base._Key == Base._Value,
+    Base._Key: Comparable
+  {
 
-  @inlinable
-  @inline(__always)
-  internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
-    __tree_ = tree
-    _start = start
-    _end = end
+    public typealias Tree = UnsafeTreeV2<Base>
+    public typealias _NodePtr = Tree._NodePtr
+    public typealias _Key = Tree._Key
+    public typealias _Value = Tree._Value
+    public typealias Element = Tree._Value
+    public typealias Index = Tree.Index
+    public typealias Indices = Tree.Indices
+    public typealias SubSequence = Self
+
+    @usableFromInline
+    internal let __tree_: Tree
+
+    @usableFromInline
+    internal var _start, _end: _NodePtr
+
+    @inlinable
+    @inline(__always)
+    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+      __tree_ = tree
+      _start = start
+      _end = end
+    }
   }
 }
 
 #if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSliceV2: Sequence & Collection & BidirectionalCollection {}
+  extension RedBlackTreeSliceV2.KeyOnly: Sequence & Collection & BidirectionalCollection {}
 #else
-  extension RedBlackTreeSliceV2: Sequence {}
+  extension RedBlackTreeSliceV2.KeyOnly: Sequence {}
 #endif
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(1)
   @inlinable
@@ -67,7 +78,7 @@ extension RedBlackTreeSliceV2 {
   }
 }
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   #if !COMPATIBLE_ATCODER_2025
     // 2025でpublicになってなかったのは痛恨のミス。でも標準実装が動くはず
@@ -80,7 +91,7 @@ extension RedBlackTreeSliceV2 {
 }
 
 #if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSliceV2 {
+  extension RedBlackTreeSliceV2.KeyOnly {
 
     @available(*, deprecated, message: "性能問題があり廃止")
     @inlinable
@@ -91,7 +102,7 @@ extension RedBlackTreeSliceV2 {
   }
 #endif
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(log `Base.count` + `count`)
   @inlinable
@@ -99,7 +110,7 @@ extension RedBlackTreeSliceV2 {
   public var count: Int { _count }
 }
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(1)
   @inlinable
@@ -113,7 +124,7 @@ extension RedBlackTreeSliceV2 {
 }
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSliceV2 {
+  extension RedBlackTreeSliceV2.KeyOnly {
 
     /// - Complexity: O(1)
     @inlinable
@@ -133,11 +144,11 @@ extension RedBlackTreeSliceV2 {
 
     /// - Complexity: O(`count`)
     @inlinable
-    public func firstIndex(of member: Element) -> Index? where Base._Key == Element, Base._Value == Element, Element: Equatable {
+    public func firstIndex(of member: Element) -> Index? {
       ___first_index { $0 == member }
     }
-    
-    /// - Complexity: O(*n*)
+
+    /// - Complexity: O(`count`)
     @inlinable
     public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
       try ___first_index(where: predicate)
@@ -145,7 +156,7 @@ extension RedBlackTreeSliceV2 {
   }
 #endif
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(1)
   @inlinable
@@ -156,7 +167,7 @@ extension RedBlackTreeSliceV2 {
   }
 }
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   #if !COMPATIBLE_ATCODER_2025
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -170,23 +181,23 @@ extension RedBlackTreeSliceV2 {
   #endif
 }
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
-#if COMPATIBLE_ATCODER_2025
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @inline(__always)
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    // TODO: ベースでの有効性しかチェックしていない。__containsのチェックにするか要検討
-    __tree_.___ensureValid(
-      begin: __tree_.rawValue(bounds.lowerBound),
-      end: __tree_.rawValue(bounds.upperBound))
-    return .init(
-      tree: __tree_,
-      start: __tree_.rawValue(bounds.lowerBound),
-      end: __tree_.rawValue(bounds.upperBound))
-  }
-#endif
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @inline(__always)
+    public subscript(bounds: Range<Index>) -> SubSequence {
+      // TODO: ベースでの有効性しかチェックしていない。__containsのチェックにするか要検討
+      __tree_.___ensureValid(
+        begin: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
+      return .init(
+        tree: __tree_,
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
+    }
+  #endif
 
   #if !COMPATIBLE_ATCODER_2025 && false
     @inlinable
@@ -229,7 +240,7 @@ extension RedBlackTreeSliceV2 {
   #endif
 }
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -239,7 +250,7 @@ extension RedBlackTreeSliceV2 {
   }
 }
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(1)
   @inlinable
@@ -275,7 +286,7 @@ extension RedBlackTreeSliceV2 {
   }
 }
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(1)
   @inlinable
@@ -314,7 +325,7 @@ extension RedBlackTreeSliceV2 {
 
 // MARK: - Utility
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   /// Indexがsubscriptやremoveで利用可能か判別します
   ///
@@ -331,7 +342,7 @@ extension RedBlackTreeSliceV2 {
 }
 
 #if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSliceV2 {
+  extension RedBlackTreeSliceV2.KeyOnly {
 
     /// RangeExpressionがsubscriptやremoveで利用可能か判別します
     ///
@@ -351,7 +362,7 @@ extension RedBlackTreeSliceV2 {
   }
 #endif
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(1)
   @inlinable
@@ -361,7 +372,7 @@ extension RedBlackTreeSliceV2 {
   }
 }
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(1)
   @inlinable
@@ -371,7 +382,7 @@ extension RedBlackTreeSliceV2 {
   }
 }
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(*n*)
   @inlinable
@@ -381,7 +392,7 @@ extension RedBlackTreeSliceV2 {
   }
 }
 
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -404,7 +415,7 @@ extension RedBlackTreeSliceV2 {
   }
 }
 
-extension RedBlackTreeSliceV2 where _Value: Equatable {
+extension RedBlackTreeSliceV2.KeyOnly where _Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -416,7 +427,7 @@ extension RedBlackTreeSliceV2 where _Value: Equatable {
   }
 }
 
-extension RedBlackTreeSliceV2 where _Value: Comparable {
+extension RedBlackTreeSliceV2.KeyOnly where _Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -428,7 +439,7 @@ extension RedBlackTreeSliceV2 where _Value: Comparable {
   }
 }
 
-extension RedBlackTreeSliceV2: Equatable where _Value: Equatable {
+extension RedBlackTreeSliceV2.KeyOnly: Equatable where _Value: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
@@ -438,7 +449,7 @@ extension RedBlackTreeSliceV2: Equatable where _Value: Equatable {
   }
 }
 
-extension RedBlackTreeSliceV2: Comparable where _Value: Comparable {
+extension RedBlackTreeSliceV2.KeyOnly: Comparable where _Value: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
@@ -449,10 +460,10 @@ extension RedBlackTreeSliceV2: Comparable where _Value: Comparable {
 }
 
 #if swift(>=5.5)
-  extension RedBlackTreeSliceV2: @unchecked Sendable
+  extension RedBlackTreeSliceV2.KeyOnly: @unchecked Sendable
   where Element: Sendable {}
 #endif
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeSliceV2: ___UnsafeIsIdenticalToV2 {}
+extension RedBlackTreeSliceV2.KeyOnly: ___UnsafeIsIdenticalToV2 {}

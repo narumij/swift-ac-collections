@@ -6,7 +6,7 @@
 //
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
     public typealias _RangeExpression = UnsafeIndexV2RangeExpression<Base>
 

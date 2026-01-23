@@ -24,12 +24,11 @@ import Foundation
 
 extension RedBlackTreeSliceV2 {
 
-  @frozen
-  public struct KeyValue: ___UnsafeCommonV2 & ___UnsafeSubSequenceV2 & ___UnsafeIndexV2
-      & ___UnsafeKeyValueSequenceV2
+  public struct KeyValue: ___UnsafeCommonV2 & ___UnsafeSubSequenceV2
+      & ___UnsafeIndexV2 & ___UnsafeKeyValueSequenceV2
   where
-    Base: KeyValueComparer,
-    _Value == RedBlackTreePair<Base._Key, Base._MappedValue>
+    Base: ___TreeBase & ___TreeIndex & KeyValueComparer,
+    Base._Value == RedBlackTreePair<Base._Key, Base._MappedValue>
   {
 
     public typealias Tree = UnsafeTreeV2<Base>
@@ -135,28 +134,19 @@ extension RedBlackTreeSliceV2.KeyValue {
       return ___element(__tree_[__tree_prev_iter(_end)])
     }
 
-//    @inlinable
-//    public func firstIndex(of member: Element) -> Index? where Base._Key == Element {
-//      let ptr = __tree_.__ptr_(__tree_.__find_equal(member.key).__child)
-//      return ___index_or_nil(ptr)
-//    }
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func firstIndex(of key: _Key) -> Index? {
+      ___first_index { ($0 as _Value).key == key }
+    }
+
+    /// - Complexity: O(*n*)
+    @inlinable
+    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+      try ___first_index(where: predicate)
+    }
   }
 #endif
-
-extension RedBlackTreeSliceV2.KeyValue {
-
-//  /// - Complexity: O(log *n*)
-//  @inlinable
-//  public func firstIndex(of key: _Key) -> Index? {
-//    ___first_index(of: key)
-//  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
-  }
-}
 
 extension RedBlackTreeSliceV2.KeyValue {
 
@@ -270,14 +260,14 @@ extension RedBlackTreeSliceV2.KeyValue {
     _index(after: i)
   }
 
-#if !COMPATIBLE_ATCODER_2025
-  @inlinable
-  //  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-    _index(i, offsetBy: distance)
-  }
-#endif
+  #if !COMPATIBLE_ATCODER_2025
+    @inlinable
+    //  @inline(__always)
+    public func index(_ i: Index, offsetBy distance: Int) -> Index {
+      // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
+      _index(i, offsetBy: distance)
+    }
+  #endif
 
   /// - Complexity: O(*d*)
   @inlinable

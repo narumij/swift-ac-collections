@@ -21,7 +21,8 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeBaseV2, ___TreeIndex where _Value == Element {}
+protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeBaseV2, ___TreeIndex, _ScalarValueType
+where _Value == Element, Element: Comparable {}
 
 extension ___UnsafeKeyOnlySequenceV2 {
 
@@ -102,7 +103,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
 
   @inlinable
   public func ___subscript(_ rawRange: UnsafeTreeRangeExpression)
-    -> RedBlackTreeSliceV2<Base>
+  -> RedBlackTreeSliceV2<Base>.KeyOnly
   {
     let (lower, upper) = __tree_.rawRange(rawRange)
     __tree_.___ensureValid(begin: lower, end: upper)
@@ -114,7 +115,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
   
   @inlinable
   public func ___unchecked_subscript(_ rawRange: UnsafeTreeRangeExpression)
-    -> RedBlackTreeSliceV2<Base>
+  -> RedBlackTreeSliceV2<Base>.KeyOnly
   {
     let (lower, upper) = __tree_.rawRange(rawRange)
     return .init(tree: __tree_, start: lower, end: upper)

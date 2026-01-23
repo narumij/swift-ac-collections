@@ -20,7 +20,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
     try super.tearDownWithError()
   }
 
-  #if false
+  #if COMPATIBLE_ATCODER_2025
     func testABC385D(N: Int, M: Int, x: Int, y: Int, _xy: [(Int, Int)], _dc: [(String, Int)]) throws
     {
       //    var (N, M, x, y) = (Int.stdin, Int.stdin, Int.stdin, Int.stdin)
@@ -88,7 +88,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
         switch c {
         case "U":
           let new_y = y + d
-          xy[x]?.remove(from: y, through: new_y) { v in
+          xy[x]?.removeBounds(lowerBound(y)..<upperBound(new_y)) { v in
             ans += 1
             yx[v]?.remove(x)
             return true
@@ -96,7 +96,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
           y = new_y
         case "D":
           let new_y = y - d
-          xy[x]?.remove(from: new_y, through: y) { v in
+          xy[x]?.removeBounds(lowerBound(new_y)..<upperBound(y)) { v in
             ans += 1
             yx[v]?.remove(x)
             return true
@@ -104,7 +104,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
           y = new_y
         case "L":
           let new_x = x - d
-          yx[y]?.remove(from: new_x, through: x) { v in
+          yx[y]?.removeBounds(lowerBound(new_x)..<upperBound(x)) { v in
             ans += 1
             xy[v]?.remove(y)
             return true
@@ -112,7 +112,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
           x = new_x
         case "R":
           let new_x = x + d
-          yx[y]?.remove(from: x, through: new_x) { v in
+          yx[y]?.removeBounds(lowerBound(x)..<upperBound(new_x)) { v in
             ans += 1
             xy[v]?.remove(y)
             return true

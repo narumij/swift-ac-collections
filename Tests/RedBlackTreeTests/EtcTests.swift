@@ -995,9 +995,48 @@ final class EtcTests: RedBlackTreeTestCase {
   #endif
 
   #if !COMPATIBLE_ATCODER_2025
+    func testBoundsSmoke() throws {
+      var a = RedBlackTreeSet<Int>()
+      typealias Index = RedBlackTreeSet<Int>.Index
+      throw XCTSkip("動かす想定で書いてなかった。コンパイルだけ確認できればいい")
+      let _ = a.indices(bounds: .start ..< .end)
+      let _ = a.indices(bounds: .lower(3) ..< .lower(4))
+      let _ = a.removeBounds(.lower(10) ..< .lower(100)) { n in
+        n % 2 == 1
+      }
+      let _ = a.removeBounds(.lower(10) ... .upper(100)) { n in
+        n % 2 == 0
+      }
+      let _ = a[.lower(10) ... .end]
+      let _ = a[...(.end)]
+      let _ = a[.start...]
+      let _ = a[start()...]
+      let _ = a[lowerBound(100)...]
+      let _ = a[lowerBound(100)..<end()]
+    }
+
     func testBounds() throws {
       let a = RedBlackTreeSet<Int>(0..<100)
       XCTAssertEqual(a[lowerBound(10)..<lowerBound(20)] + [], (10..<20) + [])
+      XCTAssertEqual(a[lowerBound(10)...lowerBound(20)] + [], (10...20) + [])
+      XCTAssertEqual(a[..<lowerBound(50)] + [], (0..<50) + [])
+      XCTAssertEqual(a[...lowerBound(50)] + [], (0...50) + [])
+      XCTAssertEqual(a[lowerBound(90)...] + [], (90..<100) + [])
+      XCTAssertEqual(a[upperBound(10)..<lowerBound(20)] + [], (11..<20) + [])
+      XCTAssertEqual(a[upperBound(10)...lowerBound(20)] + [], (11...20) + [])
+      XCTAssertEqual(a[lowerBound(10)..<upperBound(20)] + [], (10..<21) + [])
+      XCTAssertEqual(a[lowerBound(10)...upperBound(20)] + [], (10...21) + [])
+      XCTAssertEqual(a[..<upperBound(50)] + [], (0..<51) + [])
+      XCTAssertEqual(a[...upperBound(50)] + [], (0...51) + [])
+      XCTAssertEqual(a[upperBound(90)...] + [], (91..<100) + [])
+      
+      XCTAssertEqual(a[start()..<end()] + [], (0..<100) + [])
+      XCTAssertEqual(a[start()...lowerBound(20)] + [], (0...20) + [])
+      XCTAssertEqual(a[start()..<end()] + [], (0..<100) + [])
+      XCTAssertEqual(a[start()...upperBound(20)] + [], (0...21) + [])
+      XCTAssertEqual(a[..<end()] + [], (0..<100) + [])
+      XCTAssertEqual(a[...upperBound(50)] + [], (0...51) + [])
+      XCTAssertEqual(a[start()...] + [], (0..<100) + [])
     }
 
     func testRemoveBounds() throws {

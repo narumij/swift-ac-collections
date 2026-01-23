@@ -1,12 +1,12 @@
 //
-//  RedBlackTreeSet+Bounds.swift
+//  RedBlackTreeMultiSet+Bounds.swift
 //  swift-ac-collections
 //
 //  Created by narumij on 2026/01/23.
 //
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet {
+  extension RedBlackTreeMultiSet {
 
     // TODO: 新APIを整理し、全てのコレクションに展開する
 

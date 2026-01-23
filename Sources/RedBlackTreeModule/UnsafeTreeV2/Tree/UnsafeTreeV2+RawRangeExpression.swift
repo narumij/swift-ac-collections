@@ -15,6 +15,6 @@ extension UnsafeTreeV2 {
   @inlinable
   func isValidRawRange(lower: _NodePtr, upper: _NodePtr) -> Bool {
     // lower <= upper は、upper > lowerなので
-    !___ptr_comp(upper, lower)
+    !lower.___is_null && !upper.___is_null && !___ptr_comp(upper, lower)
   }
 }

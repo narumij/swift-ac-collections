@@ -1,7 +1,7 @@
 // from https://github.com/apple/swift-collections/blob/main/Sources/InternalCollectionsUtilities/Descriptions.swift
 // license https://github.com/apple/swift-collections/blob/main/LICENSE.txt
 @inlinable
-package func _arrayDescription<C: Collection>(
+package func _arrayDescription<C: Sequence>(
   for elements: C
 ) -> String {
   var result = "["

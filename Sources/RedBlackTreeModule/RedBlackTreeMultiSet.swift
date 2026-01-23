@@ -197,7 +197,7 @@ extension RedBlackTreeMultiSet {
       end: __tree_.rawValue(bounds.upperBound))
   }
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025 && false
     @inlinable
     @inline(__always)
     public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
@@ -434,24 +434,26 @@ extension RedBlackTreeMultiSet {
     return remove(at: index(before: endIndex))
   }
 
-  /// Removes the specified subrange of elements from the collection.
-  ///
-  /// - Important: 削除後は、subrangeのインデックスが無効になります。
-  /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
-  ///     range must be valid indices of the collection.
-  /// - Returns: The key-value pair that correspond to `index`.
-  /// - Complexity: O(`m ) where  `m` is the size of `bounds`
-  @inlinable
-  public mutating func removeSubrange<R: RangeExpression>(
-    _ bounds: R
-  ) where R.Bound == Index {
+  #if COMPATIBLE_ATCODER_2025
+    /// Removes the specified subrange of elements from the collection.
+    ///
+    /// - Important: 削除後は、subrangeのインデックスが無効になります。
+    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
+    ///     range must be valid indices of the collection.
+    /// - Returns: The key-value pair that correspond to `index`.
+    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
+    @inlinable
+    public mutating func removeSubrange<R: RangeExpression>(
+      _ bounds: R
+    ) where R.Bound == Index {
 
-    let bounds = bounds.relative(to: self)
-    __tree_._ensureUnique()
-    ___remove(
-      from: __tree_.rawValue(bounds.lowerBound),
-      to: __tree_.rawValue(bounds.upperBound))
-  }
+      let bounds = bounds.relative(to: self)
+      __tree_._ensureUnique()
+      ___remove(
+        from: __tree_.rawValue(bounds.lowerBound),
+        to: __tree_.rawValue(bounds.upperBound))
+    }
+  #endif
 
   // TODO: イテレータ利用の注意をドキュメントすること
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -584,7 +586,13 @@ extension RedBlackTreeMultiSet {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {}
+#else
+  extension RedBlackTreeMultiSet: Sequence {}
+#endif
+
+extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(1)
   @inlinable
@@ -716,15 +724,17 @@ extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {
     _isValid(index: index)
   }
 
-  /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
-  where R.Bound == Index {
-    _isValid(bounds)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
+    where R.Bound == Index {
+      _isValid(bounds)
+    }
+  #endif
 
   /// - Complexity: O(1)
   @inlinable

@@ -819,14 +819,12 @@ extension RedBlackTreeSet: CustomDebugStringConvertible {
 
 // MARK: - CustomReflectable
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet: CustomReflectable {
-    /// The custom mirror for this instance.
-    public var customMirror: Mirror {
-      Mirror(self, unlabeledChildren: self, displayStyle: .set)
-    }
+extension RedBlackTreeSet: CustomReflectable {
+  /// The custom mirror for this instance.
+  public var customMirror: Mirror {
+    Mirror(self, unlabeledChildren: self, displayStyle: .set)
   }
-#endif
+}
 
 // MARK: - Is Identical To
 

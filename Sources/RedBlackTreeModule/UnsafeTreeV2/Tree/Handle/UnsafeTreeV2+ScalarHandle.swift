@@ -180,7 +180,6 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 extension UnsafeTreeV2ScalarHandle: FindEqualInterface, FindEqualProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
-//extension UnsafeTreeV2ScalarHandle: ___EraseUniqueProtocol {}
 extension UnsafeTreeV2ScalarHandle: PointerCompareInterface, IsMultiTraitInterface, CompareBothProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: DistanceProtocol_ptr, CountProtocol_ptr {}
 

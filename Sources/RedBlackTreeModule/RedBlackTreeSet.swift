@@ -165,7 +165,7 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(never)
   public func contains(_ member: Element) -> Bool {
-//    ___contains(member)
+    //    ___contains(member)
     __tree_.read { $0.__count_unique(member) != 0 }
   }
 }
@@ -192,21 +192,23 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    __tree_.___ensureValid(
-      begin: __tree_.rawValue(bounds.lowerBound),
-      end: __tree_.rawValue(bounds.upperBound))
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public subscript(bounds: Range<Index>) -> SubSequence {
+      __tree_.___ensureValid(
+        begin: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
 
-    return .init(
-      tree: __tree_,
-      start: __tree_.rawValue(bounds.lowerBound),
-      end: __tree_.rawValue(bounds.upperBound))
-  }
+      return .init(
+        tree: __tree_,
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
+    }
+  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025 && false
     @inlinable
     @inline(__always)
     public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
@@ -363,10 +365,10 @@ extension RedBlackTreeSet {
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
-//  @inline(__always)
+  //  @inline(__always)
   public mutating func popFirst() -> Element? {
-//    guard !isEmpty else { return nil }
-//    return remove(at: startIndex)
+    //    guard !isEmpty else { return nil }
+    //    return remove(at: startIndex)
     __tree_._ensureUnique()
     return ___remove_first()
   }
@@ -427,24 +429,26 @@ extension RedBlackTreeSet {
     return remove(at: index(before: endIndex))
   }
 
-  /// Removes the specified subrange of elements from the collection.
-  ///
-  /// - Important: 削除後は、subrangeのインデックスが無効になります。
-  /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
-  ///     range must be valid indices of the collection.
-  /// - Returns: The key-value pair that correspond to `index`.
-  /// - Complexity: O(`m ) where  `m` is the size of `bounds`
-  @inlinable
-  public mutating func removeSubrange<R: RangeExpression>(
-    _ bounds: R
-  ) where R.Bound == Index {
+  #if COMPATIBLE_ATCODER_2025
+    /// Removes the specified subrange of elements from the collection.
+    ///
+    /// - Important: 削除後は、subrangeのインデックスが無効になります。
+    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
+    ///     range must be valid indices of the collection.
+    /// - Returns: The key-value pair that correspond to `index`.
+    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
+    @inlinable
+    public mutating func removeSubrange<R: RangeExpression>(
+      _ bounds: R
+    ) where R.Bound == Index {
 
-    let bounds = bounds.relative(to: self)
-    __tree_._ensureUnique()
-    ___remove(
-      from: __tree_.rawValue(bounds.lowerBound),
-      to: __tree_.rawValue(bounds.upperBound))
-  }
+      let bounds = bounds.relative(to: self)
+      __tree_._ensureUnique()
+      ___remove(
+        from: __tree_.rawValue(bounds.lowerBound),
+        to: __tree_.rawValue(bounds.upperBound))
+    }
+  #endif
 }
 
 // TODO: 赤黒木の一番の利点は削除の速さである反面、Swiftに寄せたい場合の赤黒木の弱点の一番が削除なので、
@@ -609,6 +613,7 @@ extension RedBlackTreeSet {
 }
 
 #if !COMPATIBLE_ATCODER_2025
+// BoundExpressionにより不要になった
   extension RedBlackTreeSet {
     /// 値レンジ `[start, end)` に含まれる要素のスライス
     /// - Complexity: O(log *n*)
@@ -645,7 +650,13 @@ extension RedBlackTreeSet {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {}
+#else
+  extension RedBlackTreeSet: Sequence {}
+#endif
+
+extension RedBlackTreeSet {
 
   /// - Complexity: O(1)
   @inlinable
@@ -777,15 +788,17 @@ extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {
     _isValid(index: index)
   }
 
-  /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
-  where R.Bound == Index {
-    _isValid(bounds)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
+    where R.Bound == Index {
+      _isValid(bounds)
+    }
+  #endif
 
   /// - Complexity: O(1)
   @inlinable
@@ -877,7 +890,7 @@ extension RedBlackTreeSet: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    _arrayDescription(for: self)
+    _arrayDescription(for: self + [])
   }
 }
 
@@ -892,12 +905,14 @@ extension RedBlackTreeSet: CustomDebugStringConvertible {
 
 // MARK: - CustomReflectable
 
-extension RedBlackTreeSet: CustomReflectable {
-  /// The custom mirror for this instance.
-  public var customMirror: Mirror {
-    Mirror(self, unlabeledChildren: self, displayStyle: .set)
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet: CustomReflectable {
+    /// The custom mirror for this instance.
+    public var customMirror: Mirror {
+      Mirror(self, unlabeledChildren: self, displayStyle: .set)
+    }
   }
-}
+#endif
 
 // MARK: - Is Identical To
 

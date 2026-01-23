@@ -1,5 +1,28 @@
 # RedBlackTreeModule
 
+## 新方針
+
+### 動機
+
+非常に高速になってきて、Copy on Writeが発生することがとてももったいなくなった
+
+### 内容
+
+- 赤黒木の良さを活かすようにする
+- 赤黒木の良さを殺すものを廃止する
+
+### 具体的に
+
+- Collection及びBidirectionalCollectionの廃止
+- 代わりにRangeExpressionの独自実装をする
+- Copy on Writeを自然と避けることができるAPIに移行する
+- for文での範囲削除を非推奨とし、専用APIをまわす
+- 削除対策イテレータを廃止して、削除チェックイテレータに変更する
+- 二段階強度Copy on Writeの廃止
+
+__以下は古い内容__
+-------------------
+
 ## コレクション
 
 - RedBlackTreeSet

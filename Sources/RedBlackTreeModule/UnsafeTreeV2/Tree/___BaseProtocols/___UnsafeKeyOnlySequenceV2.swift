@@ -110,6 +110,14 @@ extension ___UnsafeKeyOnlySequenceV2 {
     }
     return .init(tree: __tree_, start: lower, end: upper)
   }
+  
+  @inlinable
+  public func ___unchecked_subscript(_ rawRange: UnsafeTreeRangeExpression)
+    -> RedBlackTreeSliceV2<Base>
+  {
+    let (lower, upper) = __tree_.rawRange(rawRange)
+    return .init(tree: __tree_, start: lower, end: upper)
+  }
 }
 
 extension ___UnsafeKeyOnlySequenceV2 {

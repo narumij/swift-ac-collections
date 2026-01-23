@@ -101,7 +101,10 @@ extension ___UnsafeStorageProtocolV2 {
   
   @inlinable
   public mutating func ___remove(_ rawRange: UnsafeTreeRangeExpression) {
-    let (l, u) = __tree_.rawRange(rawRange)
-    ___remove(from: l, to: u)
+    let (lower, upper) = __tree_.rawRange(rawRange)
+    guard lower == upper || __tree_.___ptr_comp(lower, upper) else {
+      fatalError(.invalidIndex)
+    }
+    ___remove(from: lower, to: upper)
   }
 }

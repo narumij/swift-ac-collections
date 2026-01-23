@@ -9,7 +9,7 @@
 @usableFromInline
 struct _BucketTraverser: _UnsafeNodePtrType {
 
-  @inlinable
+  @usableFromInline
   internal init(
     pointer: UnsafeMutablePointer<_Bucket>,
     start: UnsafeMutablePointer<UnsafeNode>,
@@ -22,22 +22,12 @@ struct _BucketTraverser: _UnsafeNodePtrType {
     self.count = count
   }
 
-  @usableFromInline
   let pointer: UnsafeMutablePointer<_Bucket>
-
-  @usableFromInline
   let start: _NodePtr
-
-  @usableFromInline
   let stride: Int
-
-  @usableFromInline
   var count: Int
-
-  @usableFromInline
   var it: Int = 0
 
-  @inlinable
   subscript(index: Int) -> _NodePtr {
     _read {
       yield
@@ -47,7 +37,7 @@ struct _BucketTraverser: _UnsafeNodePtrType {
     }
   }
 
-  @inlinable
+  @usableFromInline
   mutating func pop() -> _NodePtr? {
     guard it < count else { return nil }
     let p = self[it]
@@ -55,7 +45,7 @@ struct _BucketTraverser: _UnsafeNodePtrType {
     return p
   }
 
-  @inlinable
+  @usableFromInline
   func nextCounts(memoryLayout: _MemoryLayout) -> _BucketTraverser? {
     guard let next = pointer.pointee.next else { return nil }
     return next._counts(isHead: false, memoryLayout: memoryLayout)
@@ -73,7 +63,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
       count: pointee.count)
   }
 
-  @inlinable
+  @usableFromInline
   func _capacities(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketTraverser {
     .init(
       pointer: self,

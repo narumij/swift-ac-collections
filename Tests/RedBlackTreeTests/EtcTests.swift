@@ -1029,7 +1029,7 @@ final class EtcTests: RedBlackTreeTestCase {
       XCTAssertEqual(a[..<upperBound(50)] + [], (0..<51) + [])
       XCTAssertEqual(a[...upperBound(50)] + [], (0...51) + [])
       XCTAssertEqual(a[upperBound(90)...] + [], (91..<100) + [])
-      
+
       XCTAssertEqual(a[start()..<end()] + [], (0..<100) + [])
       XCTAssertEqual(a[start()...lowerBound(20)] + [], (0...20) + [])
       XCTAssertEqual(a[start()..<end()] + [], (0..<100) + [])
@@ -1044,5 +1044,29 @@ final class EtcTests: RedBlackTreeTestCase {
       a.removeBounds(lowerBound(10)..<end())
       XCTAssertEqual(a + [], (0..<10) + [])
     }
+
+    func testUnchecked() throws {
+      let a = RedBlackTreeSet<Int>(0..<100)
+//      XCTAssertEqual(
+//        a[unchecked: lowerBound(50)...upperBound(10)].reversed() + [],
+//        (50..<100) + [],
+//        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
+//      XCTAssertEqual(
+//        a[unchecked: end()...start()] + [],
+//        [],
+//        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
+//      XCTAssertEqual(
+//        a[unchecked: a.lowerBound(50)...a.lowerBound(10)] + [],
+//        (50..<100) + [],
+//        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
+//      XCTAssertEqual(
+//        a[unchecked: a.endIndex...a.startIndex] + [],
+//        [],
+//        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
+      
+//      XCTAssertEqual(a[unchecked: a.startIndex...a.endIndex] + [], [])
+//      XCTAssertEqual((0..<100)[0...100] + [], [])
+    }
+
   #endif
 }

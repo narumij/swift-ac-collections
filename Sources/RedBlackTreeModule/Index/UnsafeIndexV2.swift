@@ -74,6 +74,16 @@ where Base: ___TreeBase & ___TreeIndex {
   // CoWに関与できないので、Treeに対する破壊的変更は行わないこと
 }
 
+extension UnsafeIndexV2 {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public static func === (lhs: Self, rhs: Self) -> Bool {
+    lhs.rawValue == rhs.rawValue
+  }
+}
+
 extension UnsafeIndexV2: Equatable {
 
   /// - Complexity: O(1)
@@ -89,6 +99,7 @@ extension UnsafeIndexV2: Equatable {
   }
 }
 
+#if COMPATIBLE_ATCODER_2025
 // 本当は削除したいが、Collection適応でRange適応が必須なため、仕方なく残している
 extension UnsafeIndexV2: Comparable {
 
@@ -127,6 +138,7 @@ extension UnsafeIndexV2: Comparable {
     return Base.___ptr_comp(lhs.rawValue, rhs.rawValue)
   }
 }
+#endif
 
 // Stridableできるが、Range<Index>に標準実装が生えることと、
 // その実装が要素アクセスのたびに範囲チェックを行うことを嫌って、Stridableをやめている

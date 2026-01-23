@@ -870,14 +870,18 @@ final class MultisetTests: RedBlackTreeTestCase {
     let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
     let sub = set[set.index(after: set.lowerBound(2))..<set.upperBound(2)]
     XCTAssertEqual(sub.map { $0 }, [2, 2])
+#if COMPATIBLE_ATCODER_2025
     XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.upperBound(2))
+#endif
   }
 
   func testIndex3() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
     let sub = set[set.index(after: set.lowerBound(2))...set.index(before: set.upperBound(2))]
     XCTAssertEqual(sub.map { $0 }, [2, 2])
+#if COMPATIBLE_ATCODER_2025
     XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.index(before: set.upperBound(2)))
+#endif
   }
 
   #if !COMPATIBLE_ATCODER_2025
@@ -897,7 +901,9 @@ final class MultisetTests: RedBlackTreeTestCase {
       let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
       let sub = set[unchecked: set.index(after: set.lowerBound(2))..<set.upperBound(2)]
       XCTAssertEqual(sub.map { $0 }, [2, 2])
+#if COMPATIBLE_ATCODER_2025
       XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.upperBound(2))
+#endif
     }
 
     func testIndex6() throws {
@@ -905,7 +911,9 @@ final class MultisetTests: RedBlackTreeTestCase {
       let sub = set[
         unchecked: set.index(after: set.lowerBound(2))...set.index(before: set.upperBound(2))]
       XCTAssertEqual(sub.map { $0 }, [2, 2])
+#if COMPATIBLE_ATCODER_2025
       XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.index(before: set.upperBound(2)))
+#endif
     }
   #endif
 

@@ -29,9 +29,12 @@ struct UnsafeTreeRange: _UnsafeNodePtrType, Equatable {
 
 extension UnsafeTreeRange {
 
-  /// 最悪でもnullかendで止まる
-  func faultTorelantNext(after __current: inout _NodePtr) -> _NodePtr? {
-    guard __current != ___to, !__current.___is_null_or_end else { return nil }
+  /// 最悪でもendで止まる
+  func boundsCheckedNext(after __current: inout _NodePtr) -> _NodePtr? {
+    guard __current != ___to else { return nil }
+    guard !__current.___is_end else {
+      fatalError(.outOfBounds)
+    }
     let __r = __current
     __current = __tree_next_iter(__current)
     return __r
@@ -40,8 +43,11 @@ extension UnsafeTreeRange {
   /// 最悪でもnullで止まる
   ///
   /// end開始のケースがあるため、endで弾くことはできない
-  func faultTorelantNext(before __current: inout _NodePtr) -> _NodePtr? {
-    guard __current != ___from, !__current.___is_null else { return nil }
+  func boundsCheckedNext(before __current: inout _NodePtr) -> _NodePtr? {
+    guard __current != ___from else { return nil }
+    guard !__current.___is_null else {
+      fatalError(.outOfBounds)
+    }
     __current = __tree_prev_iter(__current)
     return __current
   }

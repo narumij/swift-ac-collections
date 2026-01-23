@@ -183,6 +183,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
+#if COMPATIBLE_ATCODER_2025
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -196,6 +197,7 @@ extension RedBlackTreeMultiSet {
       start: __tree_.rawValue(bounds.lowerBound),
       end: __tree_.rawValue(bounds.upperBound))
   }
+  #endif
 
   #if !COMPATIBLE_ATCODER_2025 && false
     @inlinable

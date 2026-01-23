@@ -143,6 +143,7 @@ extension ___UnsafeIndexV2 where Self: Sequence {
   }
 }
 
+#if COMPATIBLE_ATCODER_2025
 extension ___UnsafeIndexV2 where Self: Collection {
 
   @inlinable
@@ -157,6 +158,7 @@ extension ___UnsafeIndexV2 where Self: Collection {
       __tree_.rawValue(bounds.upperBound))
   }
 }
+#endif
 
 extension ___UnsafeIndexV2 where Base: CompareUniqueTrait {
 

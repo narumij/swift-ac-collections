@@ -66,6 +66,7 @@ extension UnsafeIterator.TiedIndexing: Equatable where Source: Equatable {
   where Source: Sendable {}
 #endif
 
+#if COMPATIBLE_ATCODER_2025
 extension UnsafeIterator.TiedIndexing: Comparable where Source: Equatable, Element: Comparable {
 
   @inlinable
@@ -74,6 +75,7 @@ extension UnsafeIterator.TiedIndexing: Comparable where Source: Equatable, Eleme
     lhs.lexicographicallyPrecedes(rhs)
   }
 }
+#endif
 
 extension UnsafeIterator.TiedIndexing: ObverseIterator
 where

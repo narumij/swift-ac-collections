@@ -49,17 +49,19 @@ extension UnsafeTreeRangeExpression {
   {
     switch self {
     case .range(let lhs, let rhs):
-      (lhs, rhs)
+      return (lhs, rhs)
     case .closedRange(let lhs, let rhs):
-      (lhs, __tree_next(rhs))
+      guard !rhs.___is_end else { fatalError(.outOfBounds) }
+      return (lhs, __tree_next(rhs))
     case .partialRangeTo(let rhs):
-      (_begin, rhs)
+      return (_begin, rhs)
     case .partialRangeThrough(let rhs):
-      (_begin, __tree_next(rhs))
+      guard !rhs.___is_end else { fatalError(.outOfBounds) }
+      return (_begin, __tree_next(rhs))
     case .partialRangeFrom(let lhs):
-      (lhs, _end)
+      return (lhs, _end)
     case .unboundedRange:
-      (_begin, _end)
+      return (_begin, _end)
     }
   }
 

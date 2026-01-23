@@ -38,6 +38,7 @@ extension ___UnsafeSubSequenceV2 {
     !__tree_.___is_subscript_null(i) && __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
 
+#if COMPATIBLE_ATCODER_2025
   @inlinable
   @inline(__always)
   internal func ___contains(_ bounds: Range<Index>) -> Bool {
@@ -46,4 +47,5 @@ extension ___UnsafeSubSequenceV2 {
       && __tree_.___ptr_range_contains(_start, _end, __tree_.rawValue(bounds.lowerBound))
       && __tree_.___ptr_range_contains(_start, _end, __tree_.rawValue(bounds.upperBound))
   }
+  #endif
 }

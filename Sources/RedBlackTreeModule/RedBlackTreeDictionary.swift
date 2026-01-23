@@ -338,6 +338,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+#if COMPATIBLE_ATCODER_2025
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -351,8 +352,9 @@ extension RedBlackTreeDictionary {
       start: __tree_.rawValue(bounds.lowerBound),
       end: __tree_.rawValue(bounds.upperBound))
   }
+  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025 && false
     @inlinable
     @inline(__always)
     public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
@@ -588,6 +590,7 @@ extension RedBlackTreeDictionary {
     return ___element(element)
   }
 
+#if COMPATIBLE_ATCODER_2025
   /// Removes the specified subrange of elements from the collection.
   ///
   /// - Important: 削除後は、subrangeのインデックスが無効になります。
@@ -606,6 +609,7 @@ extension RedBlackTreeDictionary {
       from: __tree_.rawValue(bounds.lowerBound),
       to: __tree_.rawValue(bounds.upperBound))
   }
+  #endif
 }
 
 extension RedBlackTreeDictionary {
@@ -748,7 +752,13 @@ extension RedBlackTreeDictionary {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection {
+#if COMPATIBLE_ATCODER_2025
+extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection {}
+#else
+extension RedBlackTreeDictionary: Sequence {}
+#endif
+
+extension RedBlackTreeDictionary {
 
   /// - Complexity: O(1)
   @inlinable
@@ -899,6 +909,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
     _isValid(index: index)
   }
 
+#if COMPATIBLE_ATCODER_2025
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
   /// - Complexity: O(1)
@@ -908,6 +919,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   where R.Bound == Index {
     _isValid(bounds)
   }
+  #endif
 
   /// - Complexity: O(1)
   @inlinable
@@ -1017,7 +1029,7 @@ extension RedBlackTreeDictionary: CustomDebugStringConvertible {
 extension RedBlackTreeDictionary: CustomReflectable {
   /// The custom mirror for this instance.
   public var customMirror: Mirror {
-    Mirror(self, unlabeledChildren: self, displayStyle: .dictionary)
+    Mirror(self, unlabeledChildren: self + [], displayStyle: .dictionary)
   }
 }
 

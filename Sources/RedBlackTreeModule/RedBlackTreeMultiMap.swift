@@ -226,6 +226,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+#if COMPATIBLE_ATCODER_2025
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -239,8 +240,9 @@ extension RedBlackTreeMultiMap {
       start: __tree_.rawValue(bounds.lowerBound),
       end: __tree_.rawValue(bounds.upperBound))
   }
+  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025 && false
     @inlinable
     @inline(__always)
     public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
@@ -514,6 +516,7 @@ extension RedBlackTreeMultiMap {
     return ___element(element)
   }
 
+#if COMPATIBLE_ATCODER_2025
   /// Removes the specified subrange of elements from the collection.
   ///
   /// - Important: 削除後は、subrangeのインデックスが無効になります。
@@ -532,6 +535,7 @@ extension RedBlackTreeMultiMap {
       from: __tree_.rawValue(bounds.lowerBound),
       to: __tree_.rawValue(bounds.upperBound))
   }
+#endif
 }
 
 extension RedBlackTreeMultiMap {
@@ -673,7 +677,13 @@ extension RedBlackTreeMultiMap {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
+#if COMPATIBLE_ATCODER_2025
+extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {}
+#else
+extension RedBlackTreeMultiMap: Sequence {}
+#endif
+
+extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(1)
   @inlinable
@@ -813,6 +823,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
     _isValid(index: index)
   }
 
+#if COMPATIBLE_ATCODER_2025
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
   /// - Complexity: O(1)
@@ -822,6 +833,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   where R.Bound == Index {
     _isValid(bounds)
   }
+#endif
 
   /// - Complexity: O(1)
   @inlinable
@@ -949,7 +961,7 @@ extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
 extension RedBlackTreeMultiMap: CustomReflectable {
   /// The custom mirror for this instance.
   public var customMirror: Mirror {
-    Mirror(self, unlabeledChildren: self, displayStyle: .dictionary)
+    Mirror(self, unlabeledChildren: self + [], displayStyle: .dictionary)
   }
 }
 

@@ -54,7 +54,13 @@ public
   }
 #endif
 
-extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection {
+#if COMPATIBLE_ATCODER_2025
+extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection {}
+#else
+extension UnsafeIndexV2Collection: Sequence {}
+#endif
+
+extension UnsafeIndexV2Collection {
 
   public var startIndex: Index { ___index(_start) }
   public var endIndex: Index { ___index(_end) }
@@ -79,12 +85,14 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
     position
   }
 
+#if COMPATIBLE_ATCODER_2025
   public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
     .init(
       start: bounds.lowerBound.rawValue,
       end: bounds.upperBound.rawValue,
       tie: bounds.lowerBound.tied)
   }
+  #endif
 
   #if !COMPATIBLE_ATCODER_2025
     public subscript(bounds: UnsafeIndexV2RangeExpression<Base>) -> UnsafeIndexV2Collection {

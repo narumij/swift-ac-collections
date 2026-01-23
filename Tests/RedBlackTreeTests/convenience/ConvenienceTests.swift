@@ -5,8 +5,8 @@
 //  Created by narumij on 2024/09/16.
 //
 
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 final class ConvenienceTests: RedBlackTreeTestCase {
 
@@ -19,7 +19,7 @@ final class ConvenienceTests: RedBlackTreeTestCase {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     try super.tearDownWithError()
   }
-  
+
   func test_set_LT_GT() throws {
     var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set.count, 5)
@@ -327,7 +327,7 @@ final class ConvenienceTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.greaterThanOrEqual(5), nil)
     XCTAssertEqual(set.sorted(), [])
   }
-  
+
   func testRedBlackTreeConveniences() throws {
     let numbers: RedBlackTreeSet = [1, 3, 5, 7, 9]
 
@@ -341,7 +341,7 @@ final class ConvenienceTests: RedBlackTreeTestCase {
     XCTAssertEqual(numbers.greaterThan(5), 7)
     XCTAssertEqual(numbers.greaterThanOrEqual(5), 5)
   }
-  
+
   func testSetErase() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
     var it = set.lowerBound(2)
@@ -351,19 +351,19 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       defer { set.remove(at: i) }
       it = set.index(after: it)
     }
-    XCTAssertEqual(set, [1,6])
+    XCTAssertEqual(set, [1, 6])
   }
-  
+
   func testSetErase2() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
     var it = set.lowerBound(2)
     let end = set.upperBound(5)
-    while it < end {
+    while it != end {
       it = set.erase(at: it)
     }
-    XCTAssertEqual(set, [1,6])
+    XCTAssertEqual(set, [1, 6])
   }
-  
+
   func testMultietErase() throws {
     var set: RedBlackTreeMultiSet<Int> = [1, 2, 2, 2, 3, 4]
     var it = set.lowerBound(2)
@@ -373,58 +373,62 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       defer { set.remove(at: i) }
       it = set.index(after: it)
     }
-    XCTAssertEqual(set, [1,3,4])
+    XCTAssertEqual(set, [1, 3, 4])
   }
 
   func testSetIndexRange0() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
-    XCTAssertTrue(set.startIndex < set.endIndex)
-    XCTAssertFalse(set.startIndex > set.endIndex)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertTrue(set.startIndex < set.endIndex)
+      XCTAssertFalse(set.startIndex > set.endIndex)
+    #endif
     XCTAssertFalse(set.startIndex == set.endIndex)
-    _ = set.startIndex ..< set.endIndex
-    XCTAssertNotEqual(set[set.startIndex ..< set.endIndex] + [], [])
-    
-    XCTAssertTrue(set.lowerBound(2) < set.upperBound(4))
-    XCTAssertFalse(set.lowerBound(2) > set.upperBound(4))
+    _ = set.startIndex..<set.endIndex
+    XCTAssertNotEqual(set[set.startIndex..<set.endIndex] + [], [])
+
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertTrue(set.lowerBound(2) < set.upperBound(4))
+      XCTAssertFalse(set.lowerBound(2) > set.upperBound(4))
+    #endif
     XCTAssertFalse(set.lowerBound(2) == set.upperBound(4))
-    _ = set.lowerBound(2) ..< set.upperBound(4)
+    _ = set.lowerBound(2)..<set.upperBound(4)
   }
-  
+
   func testSetIndexRange() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
-    XCTAssertEqual(set[set.startIndex ..< set.endIndex] + [], [1, 2, 3, 4, 5, 6])
-    XCTAssertEqual(set[set.lowerBound(2) ..< set.upperBound(4)].map{ $0 }, [2, 3, 4])
-    XCTAssertEqual(set[set.startIndex ..< set.startIndex].map{ $0 }, [])
-    XCTAssertEqual(set[set.endIndex ..< set.endIndex].map{ $0 }, [])
-//    XCTAssertNotEqual((set[set.startIndex ..< set.endIndex] as RedBlackTreeSet<Int>.ElementSequence ).map{ $0 }, [])
+    XCTAssertEqual(set[set.startIndex..<set.endIndex] + [], [1, 2, 3, 4, 5, 6])
+    XCTAssertEqual(set[set.lowerBound(2)..<set.upperBound(4)].map { $0 }, [2, 3, 4])
+    XCTAssertEqual(set[set.startIndex..<set.startIndex].map { $0 }, [])
+    XCTAssertEqual(set[set.endIndex..<set.endIndex].map { $0 }, [])
+    //    XCTAssertNotEqual((set[set.startIndex ..< set.endIndex] as RedBlackTreeSet<Int>.ElementSequence ).map{ $0 }, [])
 
-//    XCTAssertNotEqual((set[set.startIndex ..< set.endIndex] as RedBlackTreeSet<Int>.UnfoldElementSequence ).map{ $0 }, [])
+    //    XCTAssertNotEqual((set[set.startIndex ..< set.endIndex] as RedBlackTreeSet<Int>.UnfoldElementSequence ).map{ $0 }, [])
   }
-  
+
   #if COMPATIBLE_ATCODER_2025
-  func testEnumerate() throws {
-    var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
-    set
-      .forEach { i, v in
-      set.remove(at: i)
+    func testEnumerate() throws {
+      var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+      set
+        .forEach { i, v in
+          set.remove(at: i)
+        }
+      XCTAssertEqual(set, [])
     }
-    XCTAssertEqual(set, [])
-  }
   #endif
-  
+
   func testEnumerate2() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
     set
       .forEach { v in
-      set.remove(v)
-    }
+        set.remove(v)
+      }
     XCTAssertEqual(set, [])
   }
-  
+
   func testEnumerate3() throws {
     var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
-//    var it: IndexingIterator<RedBlackTreeSet<Int>> = set.makeIterator()
-//    var it: IndexingIterator<RedBlackTreeSet<Int>.Tree> = set.makeIterator()
+    //    var it: IndexingIterator<RedBlackTreeSet<Int>> = set.makeIterator()
+    //    var it: IndexingIterator<RedBlackTreeSet<Int>.Tree> = set.makeIterator()
     var it = set.makeIterator()
     while let element = it.next() {
       set.remove(element)
@@ -436,41 +440,45 @@ final class ConvenienceTests: RedBlackTreeTestCase {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
     XCTAssertEqual(set.reduce(0) { $0 + $1 }, 21)
   }
-  
+
   func testSubSeq() throws {
     var _: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
-//    var seq: Slice<RedBlackTreeSet<Int>> = RedBlackTreeSet<Int>.SubSequence(base: set, bounds: set.startIndex ..< set.endIndex)
-//    XCTAssertEqual(seq.map{ $0 }, [1, 2, 3, 4, 5, 6])
+    //    var seq: Slice<RedBlackTreeSet<Int>> = RedBlackTreeSet<Int>.SubSequence(base: set, bounds: set.startIndex ..< set.endIndex)
+    //    XCTAssertEqual(seq.map{ $0 }, [1, 2, 3, 4, 5, 6])
   }
 
   func testSubSeq2() throws {
-//    throw XCTSkip()
-    let set: RedBlackTreeSet<Int> = .init((0 ..< 10_000).reversed())
-    for _ in 0 ..< 1000 {
-      var (a,b) = ((0 ..< 10_000).randomElement()!, (0 ..< 10_000).randomElement()!)
+    //    throw XCTSkip()
+    let set: RedBlackTreeSet<Int> = .init((0..<10_000).reversed())
+    for _ in 0..<1000 {
+      var (a, b) = ((0..<10_000).randomElement()!, (0..<10_000).randomElement()!)
       if a > b { swap(&a, &b) }
       let lo = set.lowerBound(a)
       let hi = set.upperBound(b)
+#if COMPATIBLE_ATCODER_2025
       guard lo > hi, a < b else { continue }
+#endif
       // 数値比較で大小が逆転している場合、標準のdistance実装では迷子になってクラッシュする
       // distanceを実装することで、クラッシュせずに動く
-//      let seq: RedBlackTreeSet<Int>.___SubSequence = set[a ..< b]
-      let seq = set.elements(in: a ..< b)
+      //      let seq: RedBlackTreeSet<Int>.___SubSequence = set[a ..< b]
+      let seq = set.elements(in: a..<b)
+#if COMPATIBLE_ATCODER_2025
       XCTAssertNotEqual(seq + [], [])
+#endif
       XCTAssertEqual(seq + [], seq.sorted())
       XCTAssertTrue(seq.allSatisfy { $0 >= a })
     }
   }
-  
+
   func testRemoveSubrange1() throws {
-    var set: RedBlackTreeSet<Int> = [2,4,6,8,10]
-    set.removeSubrange(3 ..< 8)
-    XCTAssertEqual(set + [], [2,8,10])
+    var set: RedBlackTreeSet<Int> = [2, 4, 6, 8, 10]
+    set.removeSubrange(3..<8)
+    XCTAssertEqual(set + [], [2, 8, 10])
   }
-  
+
   func testRemoveSubrange2() throws {
-    var set: RedBlackTreeSet<Int> = [2,4,6,8,10]
-    set.removeSubrange(3 ... 8)
-    XCTAssertEqual(set + [], [2,10])
+    var set: RedBlackTreeSet<Int> = [2, 4, 6, 8, 10]
+    set.removeSubrange(3...8)
+    XCTAssertEqual(set + [], [2, 10])
   }
 }

@@ -37,7 +37,7 @@ extension UnsafeIterator {
     }
 
     public mutating func next() -> _NodePtr? {
-      return ___tree_range.faultTorelantNext(before: &__current)
+      return ___tree_range.boundsCheckedNext(before: &__current)
     }
 
     @usableFromInline

@@ -58,10 +58,7 @@ extension UnsafeIndexV2RangeExpression {
 public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   -> UnsafeIndexV2RangeExpression<Base>
 {
-  guard lhs.tied === rhs.tied else {
-    fatalError(.treeMissmatch)
-  }
-
+  guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
   return .init(rawValue: lhs.rawValue..<rhs.rawValue, tie: lhs.tied)
 }
 
@@ -71,12 +68,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   public func ... <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
     -> UnsafeIndexV2RangeExpression<Base>
   {
-    guard lhs.tied === rhs.tied else {
-      fatalError(.treeMissmatch)
-    }
-    guard !rhs.isEnd else {
-      fatalError(.invalidIndex)
-    }
+    guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
     return .init(rawValue: lhs.rawValue...rhs.rawValue, tie: lhs.tied)
   }
 
@@ -89,9 +81,6 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   @inlinable
   @inline(__always)
   public prefix func ... <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
-    guard !rhs.isEnd else {
-      fatalError(.invalidIndex)
-    }
     return .init(rawValue: ...rhs.rawValue, tie: rhs.tied)
   }
 

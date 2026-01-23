@@ -36,7 +36,7 @@ extension String {
 
   @usableFromInline
   internal static var outOfBounds: String {
-    "RedBlackTree index is out of Bound."
+    "Index out of bounds. <RedBlackTree>"
   }
 
   @usableFromInline

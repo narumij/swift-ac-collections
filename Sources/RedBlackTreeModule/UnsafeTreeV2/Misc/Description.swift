@@ -21,11 +21,11 @@ package func _arrayDescription<C: Sequence>(
 // from https://github.com/apple/swift-collections/blob/main/Sources/InternalCollectionsUtilities/Descriptions.swift
 // license https://github.com/apple/swift-collections/blob/main/LICENSE.txt
 @inlinable
-package func _dictionaryDescription<Key, Value, C: Collection>(
+package func _dictionaryDescription<Key, Value, C: Sequence>(
   for elements: C
 ) -> String where C.Element == (key: Key, value: Value) {
-  guard !elements.isEmpty else { return "[:]" }
-  var result = "["
+//  guard !elements.isEmpty else { return "[:]" }
+  var result = ""
   var first = true
   for (key, value) in elements {
     if first {
@@ -37,6 +37,8 @@ package func _dictionaryDescription<Key, Value, C: Collection>(
     result += ": "
     debugPrint(value, terminator: "", to: &result)
   }
-  result += "]"
-  return result
+  if result.isEmpty {
+    result = ":"
+  }
+  return "[" + result + "]"
 }

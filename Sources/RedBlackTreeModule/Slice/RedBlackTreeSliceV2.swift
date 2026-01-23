@@ -163,6 +163,7 @@ extension RedBlackTreeSliceV2 {
 
 extension RedBlackTreeSliceV2 {
 
+#if COMPATIBLE_ATCODER_2025
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
@@ -176,6 +177,7 @@ extension RedBlackTreeSliceV2 {
       start: __tree_.rawValue(bounds.lowerBound),
       end: __tree_.rawValue(bounds.upperBound))
   }
+#endif
 
   #if !COMPATIBLE_ATCODER_2025 && false
     @inlinable

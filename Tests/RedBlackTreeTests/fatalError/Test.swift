@@ -30,7 +30,7 @@
       }
     }
 
-    #if !COMPATIBLE_ATCODER_2025
+    #if !COMPATIBLE_ATCODER_2025 && `かつ、コピーオンライト抑制をはじめた場合`
       @Test
       func
         `MMultiSetRemoveTests testSmokeRemove0 removeAllで不正化したインデックスを使用した場合、SIGSEGV以外の方法で停止すること`()
@@ -43,6 +43,10 @@
           for i in s {
             s.removeAll(i)
           }
+          #expect(s + [] == [])
+          #if DEBUG && `かつ、強化コピーオンライトがまだ有効な場合`
+          #expect(s._copyCount == 1)
+          #endif
         }
       }
 
@@ -134,6 +138,80 @@
             set.removeAll(i)
             //        XCTAssertTrue(set.___tree_invariant())
           }
+        }
+      }
+    #endif
+
+    #if !COMPATIBLE_ATCODER_2025
+      @Test
+      func `区間不正の場合、SIGSEGV以外の方法で停止すること (1)`() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let a = RedBlackTreeSet<Int>(0..<100)
+          _ = a[unchecked: lowerBound(50)...upperBound(10)] + []
+        }
+      }
+
+      @Test
+      func `区間不正の場合、SIGSEGV以外の方法で停止すること (2)`() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let a = RedBlackTreeSet<Int>(0..<100)
+          _ = a[unchecked: end()...start()] + []
+        }
+      }
+
+      @Test
+      func `区間不正の場合、SIGSEGV以外の方法で停止すること (3)`() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let a = RedBlackTreeSet<Int>(0..<100)
+          _ = a[unchecked: a.lowerBound(50)...a.lowerBound(10)] + []
+        }
+      }
+
+      @Test
+      func `区間不正の場合、SIGSEGV以外の方法で停止すること (4)`() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let a = RedBlackTreeSet<Int>(0..<100)
+          _ = a[unchecked: a.endIndex...a.startIndex] + []
+        }
+      }
+
+      @Test
+      func `区間不正の場合、SIGSEGV以外の方法で停止すること Rev (1)`() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let a = RedBlackTreeSet<Int>(0..<100)
+          _ = a[unchecked: lowerBound(50)...upperBound(10)].reversed() + []
+        }
+      }
+
+      @Test
+      func `区間不正の場合、SIGSEGV以外の方法で停止すること Rev (2)`() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let a = RedBlackTreeSet<Int>(0..<100)
+          _ = a[unchecked: end()...start()].reversed() + []
+        }
+      }
+
+      @Test
+      func `区間不正の場合、SIGSEGV以外の方法で停止すること Rev (3)`() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let a = RedBlackTreeSet<Int>(0..<100)
+          _ = a[unchecked: a.lowerBound(50)...a.lowerBound(10)].reversed() + []
+        }
+      }
+
+      @Test
+      func `区間不正の場合、SIGSEGV以外の方法で停止すること Rev (4)`() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let a = RedBlackTreeSet<Int>(0..<100)
+          _ = a[unchecked: a.endIndex...a.startIndex].reversed() + []
+        }
+      }
+
+      @Test
+      func `範囲外を指定した場合、SIGSEGV以外の方法で停止すること`() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let a = RedBlackTreeSet<Int>(0..<100)
+          _ = a[a.startIndex...a.endIndex]
         }
       }
     #endif

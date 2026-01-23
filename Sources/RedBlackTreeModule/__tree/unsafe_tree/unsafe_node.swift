@@ -215,11 +215,11 @@ public struct UnsafeNode {
   // nullptrは定数でもなにかコストがかかっていた記憶もある
   // 過去のコードベースで再度調査してこういった諸々の問題が杞憂だった場合、optionalに変更してnullptrにnil変更しても良い
   @usableFromInline
-  nonisolated(unsafe) static let nullptr: UnsafeMutablePointer<UnsafeNode> =   _singletonNull.nullptr
+  nonisolated(unsafe) static let nullptr: UnsafeMutablePointer<UnsafeNode> = _singletonNull.nullptr
 }
 
 @usableFromInline
-nonisolated(unsafe) let _singletonNull: UnsafeNode.Null2 = .create()
+nonisolated(unsafe) let _singletonNull: UnsafeNode.Null = .create()
 
 extension UnsafeNode {
 
@@ -242,29 +242,7 @@ extension UnsafeNode {
 extension UnsafeNode {
 
   @usableFromInline
-  final class Null {
-    fileprivate let nullptr: UnsafeMutablePointer<UnsafeNode>
-    fileprivate init() {
-      nullptr = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
-      nullptr.initialize(
-        to:
-          .init(
-            ___raw_index: .nullptr,
-            __left_: nullptr,
-            __right_: nullptr,
-            __parent_: nullptr))
-    }
-    deinit {
-      nullptr.deinitialize(count: 1)
-      nullptr.deallocate()
-    }
-  }
-}
-
-extension UnsafeNode {
-
-  @usableFromInline
-  final class Null2: ManagedBuffer<Int, UnsafeNode> {
+  final class Null: ManagedBuffer<Int, UnsafeNode> {
     @nonobjc
     @inlinable
     @inline(__always)
@@ -280,12 +258,12 @@ extension UnsafeNode {
     @nonobjc
     @inlinable
     @inline(__always)
-    internal static func create() -> Null2 {
-      let storage = Null2.create(minimumCapacity: 1) { $0.capacity }
+    internal static func create() -> Null {
+      let storage = Null.create(minimumCapacity: 1) { $0.capacity }
       storage.withUnsafeMutablePointerToElements { nullptr in
         nullptr.initialize(to: .create(id: .nullptr, nullptr: nullptr))
       }
-      return unsafeDowncast(storage, to: Null2.self)
+      return unsafeDowncast(storage, to: Null.self)
     }
   }
 }

@@ -1,14 +1,14 @@
 //
-//  RedBlackTreeSet+RangeExpression.swift
+//  RedBlackTreeSlice+RangeExpression.swift
 //  swift-ac-collections
 //
-//  Created by narumij on 2026/01/23.
+//  Created by narumij on 2026/01/24.
 //
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet {
+  extension RedBlackTreeSliceV2 {
 
-    public typealias _RangeExpression = UnsafeIndexV2RangeExpression<Self>
+    public typealias _RangeExpression = UnsafeIndexV2RangeExpression<Base>
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
@@ -42,34 +42,6 @@
     @inlinable
     public subscript(unchecked bounds: _RangeExpression) -> SubSequence {
       ___unchecked_subscript(bounds.rawRange)
-    }
-
-    @inlinable
-    public mutating func removeSubrange(_ bounds: UnboundedRange) {
-      __tree_._ensureUnique()
-      ___remove(.unboundedRange)
-    }
-
-    @inlinable
-    public mutating func removeSubrange(_ bounds: _RangeExpression) {
-      __tree_._ensureUnique()
-      ___remove(bounds.rawRange)
-    }
-
-    @inlinable
-    public mutating func removeSubrange(
-      _ bounds: _RangeExpression,
-      where shouldBeRemoved: (Element) throws -> Bool
-    ) rethrows {
-
-      __tree_._ensureUnique()
-      let (lower, upper) = __tree_.rawRange(bounds.rawRange)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
-      }
-      try __tree_.___erase_if(
-        lower, upper,
-        shouldBeRemoved: shouldBeRemoved)
     }
   }
 #endif

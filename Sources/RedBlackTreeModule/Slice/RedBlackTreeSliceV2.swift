@@ -23,7 +23,9 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeSliceV2<Base>: ___UnsafeCommonV2 & ___UnsafeSubSequenceV2 & ___UnsafeIndexV2 &  ___UnsafeKeyOnlySequenceV2 where Base: ___TreeBase & ___TreeIndex {
+public struct RedBlackTreeSliceV2<Base>: ___UnsafeCommonV2 & ___UnsafeSubSequenceV2
+    & ___UnsafeIndexV2 & ___UnsafeKeyOnlySequenceV2
+where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = UnsafeTreeV2<Base>
   public typealias _NodePtr = Tree._NodePtr
@@ -48,7 +50,11 @@ public struct RedBlackTreeSliceV2<Base>: ___UnsafeCommonV2 & ___UnsafeSubSequenc
   }
 }
 
-extension RedBlackTreeSliceV2: Sequence & Collection & BidirectionalCollection {}
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSliceV2: Sequence & Collection & BidirectionalCollection {}
+#else
+  extension RedBlackTreeSliceV2: Sequence {}
+#endif
 
 extension RedBlackTreeSliceV2 {
 
@@ -62,26 +68,26 @@ extension RedBlackTreeSliceV2 {
 
 extension RedBlackTreeSliceV2 {
 
-#if !COMPATIBLE_ATCODER_2025
-  // 2025でpublicになってなかったのは痛恨のミス。でも標準実装が動くはず
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _forEach(body)
-  }
-#endif
+  #if !COMPATIBLE_ATCODER_2025
+    // 2025でpublicになってなかったのは痛恨のミス。でも標準実装が動くはず
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  #endif
 }
 
 #if COMPATIBLE_ATCODER_2025
-extension RedBlackTreeSliceV2 {
+  extension RedBlackTreeSliceV2 {
 
-  @available(*, deprecated, message: "性能問題があり廃止")
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try _forEach(body)
+    @available(*, deprecated, message: "性能問題があり廃止")
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
   }
-}
 #endif
 
 extension RedBlackTreeSliceV2 {
@@ -104,6 +110,31 @@ extension RedBlackTreeSliceV2 {
   @inline(__always)
   public var endIndex: Index { _endIndex }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSliceV2 {
+
+    @inlinable
+    @inline(__always)
+    public var first: Element? {
+      guard !___is_empty else { return nil }
+      return __tree_[_start]
+    }
+
+    @inlinable
+    @inline(__always)
+    public var last: Element? {
+      guard !___is_empty else { return nil }
+      return __tree_[__tree_prev_iter(_end)]
+    }
+
+    @inlinable
+    public func firstIndex(of member: Element) -> Index? where Base._Key == Element {
+      let ptr = __tree_.__ptr_(__tree_.__find_equal(member).__child)
+      return ___index_or_nil(ptr)
+    }
+  }
+#endif
 
 extension RedBlackTreeSliceV2 {
 
@@ -146,7 +177,7 @@ extension RedBlackTreeSliceV2 {
       end: __tree_.rawValue(bounds.upperBound))
   }
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025 && false
     @inlinable
     @inline(__always)
     public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
@@ -215,6 +246,15 @@ extension RedBlackTreeSliceV2 {
     _index(after: i)
   }
 
+  #if !COMPATIBLE_ATCODER_2025
+    @inlinable
+    //  @inline(__always)
+    public func index(_ i: Index, offsetBy distance: Int) -> Index {
+      // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
+      _index(i, offsetBy: distance)
+    }
+  #endif
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
@@ -279,24 +319,26 @@ extension RedBlackTreeSliceV2 {
   }
 }
 
-extension RedBlackTreeSliceV2 {
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSliceV2 {
 
-  /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity:
-  ///
-  ///   ベースがset, map, dictionaryの場合、O(1)
-  ///
-  ///   ベースがmultiset, multimapの場合 O(log *n*)
-  @inlinable
-  @inline(__always)
-  public func isValid<R: RangeExpression>(
-    _ bounds: R
-  ) -> Bool where R.Bound == Index {
-    let bounds = bounds.relative(to: self)
-    return ___contains(bounds)
+    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity:
+    ///
+    ///   ベースがset, map, dictionaryの場合、O(1)
+    ///
+    ///   ベースがmultiset, multimapの場合 O(log *n*)
+    @inlinable
+    @inline(__always)
+    public func isValid<R: RangeExpression>(
+      _ bounds: R
+    ) -> Bool where R.Bound == Index {
+      let bounds = bounds.relative(to: self)
+      return ___contains(bounds)
+    }
   }
-}
+#endif
 
 extension RedBlackTreeSliceV2 {
 

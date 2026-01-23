@@ -29,6 +29,7 @@ where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = UnsafeTreeV2<Base>
   public typealias _NodePtr = Tree._NodePtr
+  public typealias _Key = Tree._Key
   public typealias _Value = Tree._Value
   public typealias Element = Tree._Value
   public typealias Index = Tree.Index
@@ -92,7 +93,7 @@ extension RedBlackTreeSliceV2 {
 
 extension RedBlackTreeSliceV2 {
 
-  /// - Complexity: O(log *n* + *k*)
+  /// - Complexity: O(log `Base.count` + `count`)
   @inlinable
   @inline(__always)
   public var count: Int { _count }
@@ -114,24 +115,32 @@ extension RedBlackTreeSliceV2 {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSliceV2 {
 
+    /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var first: Element? {
-      guard !___is_empty else { return nil }
+      guard _start != _end else { return nil }
       return __tree_[_start]
     }
 
+    /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var last: Element? {
-      guard !___is_empty else { return nil }
+      guard _start != _end else { return nil }
       return __tree_[__tree_prev_iter(_end)]
     }
 
+    /// - Complexity: O(`count`)
     @inlinable
-    public func firstIndex(of member: Element) -> Index? where Base._Key == Element {
-      let ptr = __tree_.__ptr_(__tree_.__find_equal(member).__child)
-      return ___index_or_nil(ptr)
+    public func firstIndex(of member: Element) -> Index? where Base._Key == Element, Base._Value == Element, Element: Equatable {
+      ___first_index { $0 == member }
+    }
+    
+    /// - Complexity: O(*n*)
+    @inlinable
+    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+      try ___first_index(where: predicate)
     }
   }
 #endif

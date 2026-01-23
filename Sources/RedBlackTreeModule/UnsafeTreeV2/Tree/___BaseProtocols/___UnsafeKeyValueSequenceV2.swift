@@ -24,8 +24,9 @@
 protocol ___UnsafeKeyValueSequenceV2: ___UnsafeBaseV2, ___TreeIndex
 where
   Base: KeyValueComparer,
-  Element == (key: _Key, value: _MappedValue),
-  _Value == RedBlackTreePair<_Key, _MappedValue>
+  Base._MappedValue == _MappedValue,
+  _Value == RedBlackTreePair<_Key, _MappedValue>,
+  Element == (key: _Key, value: _MappedValue)
 {
   associatedtype _MappedValue
 }
@@ -159,17 +160,17 @@ extension ___UnsafeKeyValueSequenceV2 {
 }
 
 #if COMPATIBLE_ATCODER_2025
-extension ___UnsafeKeyValueSequenceV2 {
+  extension ___UnsafeKeyValueSequenceV2 {
 
-  @available(*, deprecated, message: "性能問題があり廃止")
-  @inlinable
-  @inline(__always)
-  internal func _forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0), Self.___element(__tree_[$0]))
+    @available(*, deprecated, message: "性能問題があり廃止")
+    @inlinable
+    @inline(__always)
+    internal func _forEach(_ body: (Index, Element) throws -> Void) rethrows {
+      try __tree_.___for_each_(__p: _start, __l: _end) {
+        try body(___index($0), Self.___element(__tree_[$0]))
+      }
     }
   }
-}
 #endif
 
 extension ___UnsafeKeyValueSequenceV2 {
@@ -200,6 +201,20 @@ extension ___UnsafeKeyValueSequenceV2 {
     @inline(__always) get {
       return ___element(__tree_[__tree_.rawValue(position)])
     }
+  }
+}
+
+extension ___UnsafeKeyValueSequenceV2 {
+
+  @inlinable
+  public func ___subscript(_ rawRange: UnsafeTreeRangeExpression)
+    -> RedBlackTreeSliceV2<Base>.KeyValue
+  {
+    let (lower, upper) = __tree_.rawRange(rawRange)
+    guard lower == upper || __tree_.___ptr_comp(lower, upper) else {
+      fatalError(.invalidIndex)
+    }
+    return .init(tree: __tree_, start: lower, end: upper)
   }
 }
 

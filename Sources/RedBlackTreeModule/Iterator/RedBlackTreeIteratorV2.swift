@@ -22,7 +22,6 @@
 
 import Foundation
 
-@frozen
 public enum RedBlackTreeIteratorV2 {}
 
 extension RedBlackTreeIteratorV2 {

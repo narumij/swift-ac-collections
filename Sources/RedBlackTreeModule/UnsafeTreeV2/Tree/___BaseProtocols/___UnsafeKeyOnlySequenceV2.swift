@@ -100,6 +100,20 @@ extension ___UnsafeKeyOnlySequenceV2 {
 
 extension ___UnsafeKeyOnlySequenceV2 {
 
+  @inlinable
+  public func ___subscript(_ rawRange: UnsafeTreeRangeExpression)
+    -> RedBlackTreeSliceV2<Base>
+  {
+    let (lower, upper) = __tree_.rawRange(rawRange)
+    guard lower == upper || __tree_.___ptr_comp(lower, upper) else {
+      fatalError(.invalidIndex)
+    }
+    return .init(tree: __tree_, start: lower, end: upper)
+  }
+}
+
+extension ___UnsafeKeyOnlySequenceV2 {
+
   // めんどくさくなったので、KeyValue側では標準実装を使っている
   @inlinable
   @inline(__always)

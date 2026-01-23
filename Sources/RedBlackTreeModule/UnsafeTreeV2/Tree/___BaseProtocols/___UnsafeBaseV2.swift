@@ -90,6 +90,7 @@ protocol ___RedBlackTreeKeyOnlyBase:
   ___UnsafeStorageProtocolV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyOnlySequenceV2
 {}
+
 @usableFromInline
 protocol ___RedBlackTreeKeyValuesBase:
   ___UnsafeStorageProtocolV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2

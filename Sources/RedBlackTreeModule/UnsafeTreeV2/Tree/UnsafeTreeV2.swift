@@ -37,9 +37,9 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   public typealias Base = Base
   public typealias Tree = UnsafeTreeV2<Base>
-  public typealias Header = UnsafeTreeV2BufferHeader
-  public typealias Buffer = ManagedBuffer<Header, Void>
-  public typealias BufferPointer = ManagedBufferPointer<Header, Void>
+  @usableFromInline typealias Header = UnsafeTreeV2BufferHeader
+  @usableFromInline typealias Buffer = ManagedBuffer<Header, Void>
+  @usableFromInline typealias BufferPointer = ManagedBufferPointer<Header, Void>
   public typealias _Key = Base._Key
   public typealias _Value = Base._Value
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>

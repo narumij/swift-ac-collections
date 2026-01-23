@@ -21,7 +21,8 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @frozen
-public struct UnsafeTreeV2BufferHeader: _RecyclePool {
+@usableFromInline
+package struct UnsafeTreeV2BufferHeader: _RecyclePool {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
   @inlinable

@@ -16,11 +16,6 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>,
     Source: UnsafeIteratorProtocol
   {
-    public init<Base>(tree: UnsafeTreeV2<Base>, start: _NodePtr, end: _NodePtr)
-    where Base: ___TreeBase {
-      self.init(source: .init(start: start, end: end))
-    }
-
     public init(start: _NodePtr, end: _NodePtr) {
       self.init(source: .init(start: start, end: end))
     }

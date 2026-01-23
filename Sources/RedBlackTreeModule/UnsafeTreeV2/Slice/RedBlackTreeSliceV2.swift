@@ -22,9 +22,6 @@
 
 import Foundation
 
-// TODO: CoW挙動検討
-// SliceはCoW対象でいいかもしれない
-
 @frozen
 public struct RedBlackTreeSliceV2<Base>: ___UnsafeCommonV2 & ___UnsafeSubSequenceV2 & ___UnsafeIndexV2 &  ___UnsafeKeyOnlySequenceV2 where Base: ___TreeBase & ___TreeIndex {
 

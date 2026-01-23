@@ -42,7 +42,7 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   package func ___node_positions() -> UnsafeIterator.RemoveAwarePointers {
-    .init(tree: __tree_, start: _start, end: _end)
+    .init(start: _start, end: _end)
   }
 }
 

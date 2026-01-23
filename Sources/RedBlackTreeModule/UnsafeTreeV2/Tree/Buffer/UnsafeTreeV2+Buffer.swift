@@ -22,8 +22,8 @@
 
 import Foundation
 
-// TODO: テスト整備後internalにする
-public final class UnsafeTreeV2Buffer:
+@usableFromInline
+package final class UnsafeTreeV2Buffer:
   ManagedBuffer<UnsafeTreeV2BufferHeader, Void>
 {
   // MARK: - 解放処理

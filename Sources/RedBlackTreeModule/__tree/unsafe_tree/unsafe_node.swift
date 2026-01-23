@@ -283,99 +283,11 @@ extension UnsafeNode {
 
 extension UnsafeNode: Equatable {}
 
-extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
-
-  @inlinable
-  var rawIndex: Int {
-    switch self {
-    case .none:
-      return .nullptr
-    case .some(let wrapped):
-      return wrapped.pointee.___raw_index
-    }
-  }
-}
-
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)
   var rawIndex: Int {
     pointee.___raw_index
-  }
-}
-
-extension UnsafeNode {
-
-  @inlinable
-  @inline(__always)
-  static func valuePointer<_Value>(_ pointer: UnsafeMutablePointer<Self>?) -> UnsafeMutablePointer<
-    _Value
-  >? {
-    guard let pointer else { return nil }
-    return UnsafeMutableRawPointer(pointer.advanced(by: 1))
-      .assumingMemoryBound(to: _Value.self)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func valuePointer<_Value>(_ pointer: UnsafeMutablePointer<Self>) -> UnsafeMutablePointer<
-    _Value
-  > {
-    UnsafeMutableRawPointer(pointer.advanced(by: 1))
-      .assumingMemoryBound(to: _Value.self)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func value<_Value>(_ pointer: UnsafeMutablePointer<Self>) -> _Value {
-    UnsafeMutableRawPointer(pointer.advanced(by: 1))
-      .assumingMemoryBound(to: _Value.self)
-      .pointee
-  }
-}
-
-extension UnsafeNode {
-
-  @inlinable
-  @inline(__always)
-  static func bindValue<_Value>(_ t: _Value.Type, _ p: UnsafeMutablePointer<UnsafeNode>) {
-    p.pointee.___needs_deinitialize = true
-
-    UnsafeMutableRawPointer(p)
-      .bindMemory(to: UnsafeNode.self, capacity: 1)
-
-    UnsafeMutableRawPointer(p.advanced(by: 1))
-      .bindMemory(to: _Value.self, capacity: 1)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func initializeValue<_Value>(_ p: UnsafeMutablePointer<UnsafeNode>, to: _Value) {
-    p.pointee.___needs_deinitialize = true
-
-    //    p.advanced(by: 1)
-    //      .withMemoryRebound(to: _Value.self, capacity: 1) { pointer in
-    //        pointer.initialize(to: to)
-    //      }
-
-    //    UnsafeMutableRawPointer(p.advanced(by: 1))
-    //      .bindMemory(to: _Value.self, capacity: 1)
-    //      .initialize(to: to)
-
-    UnsafeMutableRawPointer(p.advanced(by: 1))
-      .assumingMemoryBound(to: _Value.self)
-      .initialize(to: to)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func deinitialize<_Value>(_ t: _Value.Type, _ p: UnsafeMutablePointer<UnsafeNode>) {
-    if p.pointee.___needs_deinitialize {
-      UnsafeMutableRawPointer(p.advanced(by: 1))
-        .assumingMemoryBound(to: _Value.self)
-        .deinitialize(count: 1)
-    }
-    p.deinitialize(count: 1)
   }
 }

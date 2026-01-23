@@ -231,15 +231,15 @@ import XCTest
       }
       XCTAssertEqual(storage.lower_bound(3).index, 3)
       var begin = storage.__begin_node_
-      XCTAssertEqual(UnsafeNode.value(begin), 0)
+      XCTAssertEqual(begin.__value_().pointee, 0)
       begin = storage.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 1)
+      XCTAssertEqual(begin.__value_().pointee, 1)
       begin = storage.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 2)
+      XCTAssertEqual(begin.__value_().pointee, 2)
       begin = storage.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 3)
+      XCTAssertEqual(begin.__value_().pointee, 3)
       begin = storage.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 4)
+      XCTAssertEqual(begin.__value_().pointee, 4)
       begin = storage.__tree_next_iter(begin)
       XCTAssertEqual(begin, storage.end)
     }
@@ -273,15 +273,15 @@ import XCTest
 
       XCTAssertEqual(copy.lower_bound(3).index, 3)
       var begin = copy.__begin_node_
-      XCTAssertEqual(UnsafeNode.value(begin), 0)
+      XCTAssertEqual(begin.__value_().pointee, 0)
       begin = copy.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 1)
+      XCTAssertEqual(begin.__value_().pointee, 1)
       begin = copy.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 2)
+      XCTAssertEqual(begin.__value_().pointee, 2)
       begin = copy.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 3)
+      XCTAssertEqual(begin.__value_().pointee, 3)
       begin = copy.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 4)
+      XCTAssertEqual(begin.__value_().pointee, 4)
       begin = copy.__tree_next_iter(begin)
       XCTAssertEqual(begin, copy.end)
     }

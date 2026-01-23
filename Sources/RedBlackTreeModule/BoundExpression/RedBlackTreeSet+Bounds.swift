@@ -43,7 +43,7 @@
 
     public mutating func removeBounds(unchecked bounds: RedBlackTreeBoundsExpression<Element>) {
       let (lower, upper) = __tree_.rawRange(__tree_.relative(to: bounds))
-      _ = __tree_.___safe_erase(lower, upper)
+      _ = __tree_.___fault_torelant_erase(lower, upper)
     }
 
     public mutating func removeBounds(
@@ -62,7 +62,7 @@
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       let (lower, upper) = __tree_.rawRange(__tree_.relative(to: bounds))
-      try __tree_.___safe_erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
+      try __tree_.___fault_torelant_erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
   }
 #endif

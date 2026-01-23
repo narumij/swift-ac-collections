@@ -40,7 +40,7 @@ import XCTest
         nodes
           .advanced(by: i)
           .initialize(to:
-              .init(node: .create(id: i)))
+              .init(node: .create(id: i, nullptr: UnsafeNode.nullptr)))
       }
       fixture.count = nodeCount
       fixture.freshPoolUsedCount = nodeCount

@@ -23,7 +23,8 @@
 import Foundation
 
 @usableFromInline
-protocol EraseProtocol: EraseInterface, RemoveInteface, DellocationInterface {}
+protocol EraseProtocol: EraseInterface, RemoveInteface, DellocationInterface
+ {}
 
 extension EraseProtocol {
 

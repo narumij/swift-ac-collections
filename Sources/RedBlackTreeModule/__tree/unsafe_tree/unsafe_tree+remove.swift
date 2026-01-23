@@ -13,6 +13,7 @@ protocol RemoveProtocol_ptr:
     & RootInterface
     & SizeInterface
     & RemoveInteface
+    & TreeAlgorithm
 {}
 
 extension RemoveProtocol_ptr {

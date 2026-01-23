@@ -14,6 +14,7 @@ protocol InsertNodeAtProtocol_ptr:
     & RootInterface
     & SizeInterface
     & _nullptr_interface
+    & TreeAlgorithm
 {}
 
 extension InsertNodeAtProtocol_ptr {

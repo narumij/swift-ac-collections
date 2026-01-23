@@ -36,11 +36,15 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable>: _UnsafeNodePtrType {
   ) {
     self.header = header
     self.isMulti = false
+    self.nullptr = header.pointee.nullptr
+    self.root_ptr = header.pointee.root_ptr
   }
   @usableFromInline typealias _Key = _Key
   @usableFromInline typealias _Value = _Key
   @usableFromInline typealias _Pointer = _NodePtr
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
+  @usableFromInline let nullptr: _NodePtr
+  @usableFromInline let root_ptr: UnsafeMutablePointer<_NodePtr>
   @usableFromInline var isMulti: Bool
 }
 
@@ -122,11 +126,6 @@ extension UnsafeTreeV2ScalarHandle {
 extension UnsafeTreeV2ScalarHandle {
   
   @inlinable
-  var nullptr: UnsafeMutablePointer<UnsafeNode> {
-    header.pointee.nullptr
-  }
-
-  @inlinable
   var __begin_node_: UnsafeMutablePointer<UnsafeNode> {
     get {
       header.pointee.begin_ptr.pointee
@@ -137,13 +136,15 @@ extension UnsafeTreeV2ScalarHandle {
   }
 
   @inlinable
+  @inline(__always)
   var __root: UnsafeMutablePointer<UnsafeNode> {
-    header.pointee.root_ptr.pointee
+    root_ptr.pointee
   }
 
   @inlinable
+  @inline(__always)
   func __root_ptr() -> UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>> {
-    header.pointee.root_ptr
+    root_ptr
   }
 
   @inlinable

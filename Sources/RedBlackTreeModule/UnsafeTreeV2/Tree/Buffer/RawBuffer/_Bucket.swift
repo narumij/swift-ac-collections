@@ -65,17 +65,17 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   @inlinable
   func storage(isHead: Bool) -> UnsafeMutableRawPointer {
     if isHead {
-      return UnsafeMutableRawPointer(end_ptr.advanced(by: 1))
+      UnsafeMutableRawPointer(end_ptr.advanced(by: 1))
     } else {
-      return UnsafeMutableRawPointer(advanced(by: 1))
+      UnsafeMutableRawPointer(advanced(by: 1))
     }
   }
 
   @inlinable
+  @inline(__always)
   package func start(isHead: Bool, valueAlignment: Int) -> UnsafeMutablePointer<UnsafeNode> {
     let headerAlignment = MemoryLayout<UnsafeNode>.alignment
-    let elementAlignment = valueAlignment
-    if elementAlignment <= headerAlignment {
+    if valueAlignment <= headerAlignment {
       return storage(isHead: isHead)
         .assumingMemoryBound(to: UnsafeNode.self)
     }

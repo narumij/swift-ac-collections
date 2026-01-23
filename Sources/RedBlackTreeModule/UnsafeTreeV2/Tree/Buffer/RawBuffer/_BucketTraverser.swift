@@ -64,17 +64,21 @@ struct _BucketTraverser: _UnsafeNodePtrType {
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
-  @inlinable
+  @usableFromInline
   func _counts(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketTraverser {
     .init(
-      pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment),
-      stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.count)
+      pointer: self,
+      start: start(isHead: isHead, valueAlignment: memoryLayout.alignment),
+      stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride,
+      count: pointee.count)
   }
 
   @inlinable
   func _capacities(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketTraverser {
     .init(
-      pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment),
-      stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride, count: pointee.capacity)
+      pointer: self,
+      start: start(isHead: isHead, valueAlignment: memoryLayout.alignment),
+      stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride,
+      count: pointee.capacity)
   }
 }

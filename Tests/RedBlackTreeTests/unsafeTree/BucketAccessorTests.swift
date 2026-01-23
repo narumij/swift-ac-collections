@@ -33,7 +33,7 @@ final class BucketAccessorTests: XCTestCase {
       start: header.start(isHead: false, valueAlignment: MemoryLayout<_Value>.alignment),
       stride: allocator._pair.stride)
     for i in 0..<capacity {
-      accessor[i].initialize(to: .create(id: .zero))
+      accessor[i].initialize(to: .create(id: .zero, nullptr: UnsafeNode.nullptr))
       accessor[i].__value_(as: _Value.self).initialize(to: .zero)
     }
     // This is an example of a performance test case.

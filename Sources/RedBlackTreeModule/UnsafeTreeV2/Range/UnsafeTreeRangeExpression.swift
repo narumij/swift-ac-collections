@@ -17,6 +17,8 @@ public enum UnsafeTreeRangeExpression: Equatable {
   case partialRangeThrough(Bound)
   /// `a...` のこと
   case partialRangeFrom(Bound)
+  /// `...` のこと
+  case unboundedRange
 }
 
 extension UnsafeTreeRangeExpression {
@@ -56,6 +58,8 @@ extension UnsafeTreeRangeExpression {
       (_begin, __tree_next(rhs))
     case .partialRangeFrom(let lhs):
       (lhs, _end)
+    case .unboundedRange:
+      (_begin, _end)
     }
   }
 
@@ -74,6 +78,8 @@ extension UnsafeTreeRangeExpression {
       .init(___from: _begin, ___to: __tree_next(rhs))
     case .partialRangeFrom(let lhs):
       .init(___from: lhs, ___to: _end)
+    case .unboundedRange:
+        .init(___from: _begin, ___to: _end)
     }
   }
 }

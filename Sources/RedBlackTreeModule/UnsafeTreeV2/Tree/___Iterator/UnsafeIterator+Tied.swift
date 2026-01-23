@@ -83,7 +83,7 @@ extension UnsafeIterator.Tied: Comparable where Source: Equatable, Element: Comp
     @inline(__always)
     public func forEach(_ body: (UnsafeIndexV2<Base>, Element) throws -> Void) rethrows
     where Source.Source.Element == UnsafeMutablePointer<UnsafeNode> {
-      try zip(source.source, makeIterator()).forEach {
+      try zip(source._source, makeIterator()).forEach {
         try body(___index($0), $1)
       }
     }
@@ -120,14 +120,14 @@ where
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func keys() -> RedBlackTreeIteratorV2<Base>.Keys.Reversed {
+    public func keys() -> UnsafeIterator.KeyReverse<Base> {
       .init(start: source._start, end: source._end, tie: tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func values() -> RedBlackTreeIteratorV2<Base>.MappedValues.Reversed {
+    public func values() -> UnsafeIterator.MappedValueReverse<Base> {
       .init(start: source._start, end: source._end, tie: tied)
     }
   #else

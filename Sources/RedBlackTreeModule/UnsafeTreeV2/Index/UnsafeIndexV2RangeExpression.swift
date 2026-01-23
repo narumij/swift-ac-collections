@@ -17,7 +17,7 @@ where Base: ___TreeBase & ___TreeIndex {
   typealias _Value = Tree._Value
 
   @usableFromInline
-  internal var rawValue: UnsafeTreeRangeExpression
+  internal var rawRange: UnsafeTreeRangeExpression
 
   @usableFromInline
   internal var tied: _TiedRawBuffer
@@ -27,7 +27,7 @@ where Base: ___TreeBase & ___TreeIndex {
   @inlinable
   @inline(__always)
   internal init(rawValue: UnsafeTreeRangeExpression, tie: _TiedRawBuffer) {
-    self.rawValue = rawValue
+    self.rawRange = rawValue
     self.tied = tie
   }
 }
@@ -37,7 +37,7 @@ extension UnsafeIndexV2RangeExpression: Sequence {
   public typealias Iterator = UnsafeIterator.IndexObverse<Base>
 
   public func makeIterator() -> Iterator {
-    let (lower, upper) = tied.rawRange(rawValue)!
+    let (lower, upper) = tied.rawRange(rawRange)!
     return .init(start: lower, end: upper, tie: tied)
   }
 }
@@ -47,7 +47,7 @@ extension UnsafeIndexV2RangeExpression {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    tied === other.tied && rawValue == other.rawValue
+    tied === other.tied && rawRange == other.rawRange
   }
 }
 
@@ -74,7 +74,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
     guard lhs.tied === rhs.tied else {
       fatalError(.treeMissmatch)
     }
-    guard let rhs = rhs.next else {
+    guard !rhs.isEnd else {
       fatalError(.invalidIndex)
     }
     return .init(rawValue: lhs.rawValue...rhs.rawValue, tie: lhs.tied)
@@ -89,7 +89,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   @inlinable
   @inline(__always)
   public prefix func ... <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
-    guard let rhs = rhs.next else {
+    guard !rhs.isEnd else {
       fatalError(.invalidIndex)
     }
     return .init(rawValue: ...rhs.rawValue, tie: rhs.tied)
@@ -101,3 +101,59 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
     return .init(rawValue: lhs.rawValue..., tie: lhs.tied)
   }
 #endif
+
+// MARK: -
+
+#if !COMPATIBLE_ATCODER_2025
+extension RedBlackTreeSet {
+  
+  @inlinable
+  public func isValid(_ bounds: UnboundedRange) -> Bool {
+    _isValid(.unboundedRange) // 常にtrueな気がする
+  }
+  
+  @inlinable
+  public func isValid(_ bounds: UnsafeIndexV2RangeExpression<Self>) -> Bool {
+    _isValid(bounds.rawRange)
+  }
+  
+  @inlinable
+  public subscript(bounds: UnboundedRange) -> SubSequence {
+    ___subscript(.unboundedRange)
+  }
+  
+  @inlinable
+  public subscript(bounds: UnsafeIndexV2RangeExpression<Self>) -> SubSequence {
+    ___subscript(bounds.rawRange)
+  }
+  
+  @inlinable
+  public mutating func removeSubrange(_ bounds: UnboundedRange) {
+    __tree_._ensureUnique()
+    ___remove(.unboundedRange)
+  }
+  
+  @inlinable
+  public mutating func removeSubrange(_ bounds: UnsafeIndexV2RangeExpression<Self>) {
+    __tree_._ensureUnique()
+    ___remove(bounds.rawRange)
+  }
+}
+#endif
+
+extension RedBlackTreeSet {
+  
+  @inlinable
+  public func ___subscript(_ rawRange: UnsafeTreeRangeExpression) -> SubSequence {
+    let (l, u) = __tree_.rawRange(rawRange)
+    return .init(tree: __tree_, start: l, end: u)
+  }
+}
+
+extension UnsafeTreeV2 {
+  
+  @inlinable
+  func rawRange(_ range: UnsafeTreeRangeExpression) -> (lower: _NodePtr, upper: _NodePtr) {
+    range.rawRange(_begin: __begin_node_, _end: __end_node)
+  }
+}

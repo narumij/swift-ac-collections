@@ -130,6 +130,19 @@ extension ___UnsafeIndexV2 {
   }
 }
 
+extension ___UnsafeIndexV2 where Self: Sequence {
+  
+  @inlinable
+  @inline(__always)
+  internal func _isValid(
+    _ rawRange: UnsafeTreeRangeExpression
+  ) -> Bool {
+
+    let (l,u) = __tree_.rawRange(rawRange)
+    return !__tree_.___is_range_null(l,u)
+  }
+}
+
 extension ___UnsafeIndexV2 where Self: Collection {
 
   @inlinable

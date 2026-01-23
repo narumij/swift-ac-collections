@@ -276,6 +276,8 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(b.endIndex.advanced(by: -2).pointee, 1)
     XCTAssertEqual(a[...a.endIndex.advanced(by: -1)] + [], [0, 1, 2])
     XCTAssertEqual(a[..<a.endIndex.advanced(by: -1)] + [], [0, 1])
+    XCTAssertNotEqual(b.endIndex, b.endIndex.advanced(by: -1))
+    //    throw XCTSkip()
     XCTAssertEqual(b[...b.endIndex.advanced(by: -1)] + [], [0, 1, 2])
     XCTAssertEqual(b[..<b.endIndex.advanced(by: -1)] + [], [0, 1])
     XCTAssertTrue(b[(b.startIndex + 1)...].elementsEqual([1, 2]))
@@ -834,52 +836,52 @@ final class EtcTests: RedBlackTreeTestCase {
     return Self.allocationCapacity(size: pagedSize)
   }
 
-//  func testBufferSize() throws {
-//    typealias _Value = Int
-//    let s0 = MemoryLayout<UnsafeNode>.stride
-//    let a0 = MemoryLayout<UnsafeNode>.alignment
-//    let s1 = MemoryLayout<_Value>.stride
-//    let a1 = MemoryLayout<_Value>.alignment
-//    let s2 = MemoryLayout<_Bucket>.stride
-//    let a2 = MemoryLayout<_Bucket>.alignment
-//
-//    var hoge: [(size: Int, capacity: Int)] = []
-//    for i in 0..<32 {
-//      let size = 1 << i
-//
-//      let s01 = a1 <= a0 ? (s0 + s1) : (s0 + s1)
-//      let o01 = a1 <= a0 ? 0 : a2 - a1
-//      let capacity =
-//        a2 <= max(a1, a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1, a0)) / s01
-//
-//      XCTAssertGreaterThanOrEqual(
-//        size,
-//        capacity == 0 ? 0 : Self.allocationSize2(capacity: capacity).size)
-//      hoge.append((size, capacity))
-//    }
-//
-//    for capacity1 in 32..<1024 {
-//      let size = Self.allocationSize(capacity: capacity1).size
-//      let pagedSize = ((size >> 10) + 1) << 10
-//      let pagedCapacity = Self.allocationCapacity(size: pagedSize)
-//      XCTAssertLessThanOrEqual(Self.allocationSize(capacity: pagedCapacity).size, pagedSize)
-//    }
-//
-//    XCTAssertEqual(65537 / 1024, 65536 >> 10)
-//    let N = 1024
-//    XCTAssertEqual(1 << (Int.bitWidth - N.leadingZeroBitCount - 2), N / 2)
-//
-//    do {
-//      let N = 4096
-//      //      XCTAssertEqual( N / 1024, 4)
-//      XCTAssertEqual((N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)), 4)
-//      XCTAssertEqual((N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)) * 1024, 4096)
-//      XCTAssertEqual(((N >> 10) + ((N - ((N >> 10) << 10)) == 0 ? 0 : 1)) << 10, 4096)
-//    }
-//
-//    //    throw XCTSkip("\(hoge.filter { $0.capacity != 0 }.map(\.capacity))")
-//    throw XCTSkip("\(hoge.filter { $0.capacity != 0 })")
-//  }
+  //  func testBufferSize() throws {
+  //    typealias _Value = Int
+  //    let s0 = MemoryLayout<UnsafeNode>.stride
+  //    let a0 = MemoryLayout<UnsafeNode>.alignment
+  //    let s1 = MemoryLayout<_Value>.stride
+  //    let a1 = MemoryLayout<_Value>.alignment
+  //    let s2 = MemoryLayout<_Bucket>.stride
+  //    let a2 = MemoryLayout<_Bucket>.alignment
+  //
+  //    var hoge: [(size: Int, capacity: Int)] = []
+  //    for i in 0..<32 {
+  //      let size = 1 << i
+  //
+  //      let s01 = a1 <= a0 ? (s0 + s1) : (s0 + s1)
+  //      let o01 = a1 <= a0 ? 0 : a2 - a1
+  //      let capacity =
+  //        a2 <= max(a1, a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1, a0)) / s01
+  //
+  //      XCTAssertGreaterThanOrEqual(
+  //        size,
+  //        capacity == 0 ? 0 : Self.allocationSize2(capacity: capacity).size)
+  //      hoge.append((size, capacity))
+  //    }
+  //
+  //    for capacity1 in 32..<1024 {
+  //      let size = Self.allocationSize(capacity: capacity1).size
+  //      let pagedSize = ((size >> 10) + 1) << 10
+  //      let pagedCapacity = Self.allocationCapacity(size: pagedSize)
+  //      XCTAssertLessThanOrEqual(Self.allocationSize(capacity: pagedCapacity).size, pagedSize)
+  //    }
+  //
+  //    XCTAssertEqual(65537 / 1024, 65536 >> 10)
+  //    let N = 1024
+  //    XCTAssertEqual(1 << (Int.bitWidth - N.leadingZeroBitCount - 2), N / 2)
+  //
+  //    do {
+  //      let N = 4096
+  //      //      XCTAssertEqual( N / 1024, 4)
+  //      XCTAssertEqual((N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)), 4)
+  //      XCTAssertEqual((N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)) * 1024, 4096)
+  //      XCTAssertEqual(((N >> 10) + ((N - ((N >> 10) << 10)) == 0 ? 0 : 1)) << 10, 4096)
+  //    }
+  //
+  //    //    throw XCTSkip("\(hoge.filter { $0.capacity != 0 }.map(\.capacity))")
+  //    throw XCTSkip("\(hoge.filter { $0.capacity != 0 })")
+  //  }
 
   // TODO: 再検討
   // __tree_prev_iterの不定動作を解消する場合、以下となるが、性能上の問題で保留となっている
@@ -992,16 +994,16 @@ final class EtcTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testSubBound() throws {
-    let a = RedBlackTreeSet<Int>(0..<100)
-    XCTAssertEqual(a[lowerBound(10)..<lowerBound(20)] + [], (10..<20) + [])
-  }
+  #if !COMPATIBLE_ATCODER_2025
+    func testBounds() throws {
+      let a = RedBlackTreeSet<Int>(0..<100)
+      XCTAssertEqual(a[lowerBound(10)..<lowerBound(20)] + [], (10..<20) + [])
+    }
 
-  func testRemoveSubBound() throws {
-    var a = RedBlackTreeSet<Int>(0..<100)
-    a.removeSub(bounds: lowerBound(10)..<end())
-    XCTAssertEqual(a + [], (0..<10) + [])
-    
-    _ = ..<1
-  }
+    func testRemoveBounds() throws {
+      var a = RedBlackTreeSet<Int>(0..<100)
+      a.removeBounds(lowerBound(10)..<end())
+      XCTAssertEqual(a + [], (0..<10) + [])
+    }
+  #endif
 }

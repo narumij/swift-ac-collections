@@ -30,6 +30,7 @@ public
 
   // TODO: Intに変更する検討
   // 計算量が問題
+  // そもそもとして、Collection適合を廃止する方向になっている
   public typealias Index = UnsafeIndexV2<Base>
 
   @usableFromInline
@@ -87,7 +88,7 @@ extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection
 
   #if !COMPATIBLE_ATCODER_2025
     public subscript(bounds: UnsafeIndexV2RangeExpression<Base>) -> UnsafeIndexV2Collection {
-      let (lower, upper) = tied.rawRange(bounds.rawValue)!
+      let (lower, upper) = tied.rawRange(bounds.rawRange)!
       return .init(start: lower, end: upper, tie: tied)
     }
   #endif

@@ -97,4 +97,11 @@ extension ___UnsafeStorageProtocolV2 {
     __tree_.___ensureValid(begin: from, end: to)
     return __tree_.erase(from, to)
   }
+  
+  
+  @inlinable
+  public mutating func ___remove(_ rawRange: UnsafeTreeRangeExpression) {
+    let (l, u) = __tree_.rawRange(rawRange)
+    ___remove(from: l, to: u)
+  }
 }

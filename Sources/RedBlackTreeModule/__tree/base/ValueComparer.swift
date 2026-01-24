@@ -5,33 +5,32 @@
 //  Created by narumij on 2026/01/24.
 //
 
-
 /*
  日本語で整理
- 
+
  _NodePtrから_Keyを取り出す知識を、3箇所がもてる
  - Base
  - Tree
  - Handle
- 
+
  利用側ではこれを選べるようにしたい
- 
+
  _NodePtrから_Keyを取り出すとき、手法が二つある
  - 値
  - ポインタ
- 
+
  利用側でこれえらを選べるようにしたい
- 
+
  木が知識を持ってるケースは今のところないので、
  最終的に4パターンから利用側が選べるような設計に整理したい
- 
+
  決める主体として、二つがある
  - Base
  - 自身
- 
+
  UnsafeTreeV2はクラスが決めるようにしたい
  ハンドルは自分が決めるようにしたい
- 
+
  _TreeNode_KeyInterfaceに集約できてるかどうか、まず整理する
  その後_TreeNode_KeyInterfaceの利用の仕方について整理する
  */
@@ -41,50 +40,19 @@
 // TODO: プロトコルインジェクションを整理すること
 // __treenの基本要素ではないので、別カテゴリがいい
 
-/// ツリー使用条件をインジェクションするためのプロトコル
+
+
+/// `__key(_:)`を定義するとプロトコルで他のBase系メソッドを生成するプロトコル
 public protocol ValueComparer:
   _TreeValueType
+    & _BaseKey_LessThanProtocol
+    & _BaseKey_EquivProtocol
+    & _BaseNode_PtrUniqueCompProtocol
+    & _BaseNode_PtrCompProtocol
     & _BaseNode_KeyProtocol
-    & _BaseNode_UniqueCompProtocol
     & _BaseRawValue_KeyInterface
-    & _BaseKey_LessThanInterface
-    & _BaseKey_EquivInterface
-{
-  /// 要素から比較キー値がとれること
-  @inlinable static func __key(_: _RawValue) -> _Key
-  /// 比較関数が実装されていること
-  @inlinable static func value_comp(_: _Key, _: _Key) -> Bool
-}
+{}
 
-extension ValueComparer {
-
-  @inlinable
-  @inline(__always)
-  public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
-    !value_comp(lhs, rhs) && !value_comp(rhs, lhs)
-  }
-}
-
-// Comparableプロトコルの場合標準実装を付与する
-extension ValueComparer where _Key: Comparable {
-
-  /// Comparableプロトコルの場合の標準実装
-  @inlinable
-  @inline(__always)
-  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    a < b
-  }
-}
-
-// Equatableプロトコルの場合標準実装を付与する
-extension ValueComparer where _Key: Equatable {
-
-  @inlinable
-  @inline(__always)
-  public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
-    lhs == rhs
-  }
-}
 
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 @usableFromInline

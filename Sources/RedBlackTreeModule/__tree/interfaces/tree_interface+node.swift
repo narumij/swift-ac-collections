@@ -44,6 +44,7 @@ package protocol TreeNodeAccessInterface: TreeEndNodeAccessInterface, _parent_po
   @inlinable func __parent_unsafe(_: pointer) -> __parent_pointer
 }
 
+// 同名実装はない。TreeAlgorithmBaseProtocol_stdあたりに実装が付随している
 @usableFromInline
 package protocol TreeNodeRefAccessInterface: _nullptr_interface {
   /// 左ノードへの参照を返す

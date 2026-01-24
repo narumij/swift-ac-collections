@@ -23,9 +23,15 @@
 import Foundation
 
 @usableFromInline
-protocol InsertNodeAtProtocol_std: InsertNodeAtInterface, TreeAlgorithmInterface,
-                                   TreeNodeAccessInterface & TreeNodeRefAccessInterface & _end_interface & SizeInterface & BeginNodeInterface
-    & EndNodeProtocol
+protocol InsertNodeAtProtocol_std:
+  InsertNodeAtInterface
+    & TreeNodeAccessInterface
+    & TreeNodeRefAccessInterface
+    & BeginNodeInterface
+    & EndNodeInterface
+    & SizeInterface
+    & TreeAlgorithmInterface
+    & _end_interface
 {}
 
 extension InsertNodeAtProtocol_std {
@@ -53,8 +59,11 @@ extension InsertNodeAtProtocol_std {
 }
 
 @usableFromInline
-protocol InsertUniqueProtocol_std: InsertUniqueInterface &
-  AllocationInterface & KeyProtocol & TreeNodeRefAccessInterface
+protocol InsertUniqueProtocol_std:
+  InsertUniqueInterface
+    & TreeNodeRefAccessInterface
+    & _TreeRawValue_KeyInterface
+    & AllocationInterface
 {
   func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
 
@@ -96,7 +105,8 @@ extension InsertUniqueProtocol_std {
 }
 
 @usableFromInline
-protocol InsertMultiProtocol: AllocationInterface & _TreeRawValue_KeyInterface & FindLeafInterface & InsertNodeAtInterface & _nullptr_interface
+protocol InsertMultiProtocol: AllocationInterface & _TreeRawValue_KeyInterface & FindLeafInterface
+    & InsertNodeAtInterface & _nullptr_interface
 {}
 
 extension InsertMultiProtocol {
@@ -125,14 +135,20 @@ protocol InsertLastInterface: _NodePtrType & _RawValueType {
   func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef)
   func ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _RawValue)
     -> (__parent: _NodePtr, __child: _NodeRef)
-  func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _RawValue) -> _NodePtr
+  //  func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _RawValue) -> _NodePtr
   func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _RawValue) -> _NodePtr
 }
 
 @usableFromInline
-protocol InsertLastProtocol: InsertLastInterface &
-  InsertNodeAtInterface & AllocationInterface & RootInterface & EndNodeProtocol & TreeNodeAccessInterface
-    & TreeNodeRefAccessInterface & EndProtocol
+protocol InsertLastProtocol:
+  InsertLastInterface
+    & TreeNodeAccessInterface
+    & TreeNodeRefAccessInterface
+    & RootInterface
+    & EndNodeInterface
+    & EndInterface
+    & InsertNodeAtInterface
+    & AllocationInterface
 {}
 
 extension InsertLastProtocol {

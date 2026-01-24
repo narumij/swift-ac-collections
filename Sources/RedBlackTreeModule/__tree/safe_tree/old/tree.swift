@@ -25,11 +25,13 @@ import Foundation
 // MARK: -
 
 @usableFromInline
-protocol KeyProtocol: _TreeRawValue_KeyInterface, _TreeNode_KeyInterface,
-  _TreeNode_RawValueInterface
+protocol _TreeNode_KeyProtocol:
+  _TreeNode_KeyInterface
+    & _TreeRawValue_KeyInterface
+    & _TreeNode_RawValueInterface
 {}
 
-extension KeyProtocol {
+extension _TreeNode_KeyProtocol {
 
   #if true
     @inlinable
@@ -48,8 +50,11 @@ extension KeyProtocol {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol ValueProtocol: _TreeKey_CompInterface, TreeNodeAccessInterface, _TreeNode_KeyInterface,
-  _end_interface
+protocol ValueProtocol:
+  TreeNodeAccessInterface
+    & _TreeNode_KeyInterface
+    & _TreeKey_CompInterface
+    & _end_interface
 {}
 
 @usableFromInline

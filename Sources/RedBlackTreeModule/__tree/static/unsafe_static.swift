@@ -7,11 +7,14 @@
 
 import Foundation
 
-public protocol CompareStaticProtocol:
-  _UnsafeNodePtrType & _Base_MultiTraitInterface & CompareUniqueStaticInterface
+public protocol _BaseNode_PtrCompProtocol:
+  _UnsafeNodePtrType
+    & _BaseNode_PtrUniqueCompInterface
+    & _BaseNode_PtrCompInterface
+    & _Base_MultiTraitInterface
 {}
 
-extension CompareStaticProtocol {
+extension _BaseNode_PtrCompProtocol {
 
   @inlinable
   @inline(__always)
@@ -92,7 +95,7 @@ internal func
   return __r
 }
 
-extension CompareStaticProtocol {
+extension _BaseNode_PtrCompProtocol {
 
   @usableFromInline
   typealias difference_type = Int

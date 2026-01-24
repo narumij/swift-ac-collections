@@ -62,6 +62,10 @@ public protocol _Base_MultiTraitInterface {
   static var isMulti: Bool { get }
 }
 
-public protocol CompareUniqueStaticInterface: _UnsafeNodePtrType {
+public protocol _BaseNode_PtrUniqueCompInterface: _UnsafeNodePtrType {
   static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
+}
+
+public protocol _BaseNode_PtrCompInterface: _UnsafeNodePtrType {
+  static func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }

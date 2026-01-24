@@ -23,9 +23,11 @@
 import Foundation
 
 @usableFromInline
-protocol RemoveProtocol_std: TreeNodeAccessInterface & TreeAlgorithmInterface
+protocol RemoveProtocol_std:
+  TreeNodeAccessInterface
+    & TreeAlgorithmInterface
     & BeginNodeInterface
-    & EndNodeProtocol
+    & EndNodeInterface
     & SizeInterface
 {}
 

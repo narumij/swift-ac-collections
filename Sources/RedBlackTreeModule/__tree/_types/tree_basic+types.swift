@@ -35,18 +35,19 @@ public protocol _NodePtrType {
   associatedtype _NodeRef
 }
 
-/// 比較用の値型の定義
-public protocol _KeyType {
-  /// 比較用の値型
-  associatedtype _Key
-}
-
 /// ノードが保持する値型の定義
 public protocol _RawValueType {
   /// ノードが保持する値型
   associatedtype _RawValue
 }
 
+/// 比較用の値型の定義
+public protocol _KeyType {
+  /// 比較用の値型
+  associatedtype _Key
+}
+
+// TODO: しばらく様子を見たのち、_MappedValueを_Valueに名称変更するか検討すること
 /// キーに対応する値型の定義
 public protocol _MappedValueType {
   /// キーに対応する値型

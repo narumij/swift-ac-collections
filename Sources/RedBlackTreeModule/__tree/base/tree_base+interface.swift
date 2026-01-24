@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/24.
 //
 
-public protocol _BaseNode_ValueInterface: _NodePtrType & _RawValueType {
+public protocol _BaseNode_RawValueInterface: _NodePtrType & _RawValueType {
   static func __value_(_ p: _NodePtr) -> _RawValue
 }
 
@@ -24,12 +24,12 @@ protocol _BaseNodeKeyInterface: _NodePtrType & _KeyType & __node_value_type {
 }
 #endif
 
-public protocol _BaseValue_KeyInterface: _KeyType & _RawValueType {
+public protocol _BaseRawValue_KeyInterface: _KeyType & _RawValueType {
   /// 要素から比較キー値がとれること
   static func __key(_: _RawValue) -> _Key
 }
 
-public protocol _BaseValue_MappedValueInterface: _RawValueType & _MappedValueType {
+public protocol _BaseRawValue_MappedValueInterface: _RawValueType & _MappedValueType {
   static func ___mapped_value(_: _RawValue) -> _MappedValue
 }
 

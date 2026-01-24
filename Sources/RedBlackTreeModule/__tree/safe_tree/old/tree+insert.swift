@@ -96,7 +96,7 @@ extension InsertUniqueProtocol_std {
 }
 
 @usableFromInline
-protocol InsertMultiProtocol: AllocationInterface & _TreeValue_KeyInterface & FindLeafInterface & InsertNodeAtInterface & _nullptr_interface
+protocol InsertMultiProtocol: AllocationInterface & _TreeRawValue_KeyInterface & FindLeafInterface & InsertNodeAtInterface & _nullptr_interface
 {}
 
 extension InsertMultiProtocol {

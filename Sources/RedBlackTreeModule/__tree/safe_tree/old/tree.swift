@@ -25,7 +25,7 @@ import Foundation
 // MARK: -
 
 @usableFromInline
-protocol KeyProtocol: _TreeValue_KeyInterface, _TreeNode_KeyInterface, _TreeNode_ValueInterface {}
+protocol KeyProtocol: _TreeRawValue_KeyInterface, _TreeNode_KeyInterface, _TreeNode_RawValueInterface {}
 
 extension KeyProtocol {
 

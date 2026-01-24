@@ -25,7 +25,7 @@ import Foundation
 public protocol _PairValueType: _KeyValueType
 where _RawValue == RedBlackTreePair<_Key, _MappedValue> {}
 
-public protocol PairValue_KeyProtocol: _PairValueType & _BaseValue_KeyInterface {}
+public protocol PairValue_KeyProtocol: _PairValueType & _BaseRawValue_KeyInterface {}
 
 extension PairValue_KeyProtocol {
 
@@ -34,7 +34,7 @@ extension PairValue_KeyProtocol {
   public static func __key(_ __v: _RawValue) -> _Key { __v.key }
 }
 
-public protocol PairValue_MappedValueProtocol: _PairValueType & _BaseValue_MappedValueInterface {}
+public protocol PairValue_MappedValueProtocol: _PairValueType & _BaseRawValue_MappedValueInterface {}
 
 extension PairValue_MappedValueProtocol {
 
@@ -62,7 +62,7 @@ extension PairValue_WithMappedValueProtocol {
 
 /// 要素がキーバリューの場合のひな形
 public protocol KeyValueComparer: _KeyValueType & ValueComparer & HasDefaultThreeWayComparator
-    & _BaseValue_MappedValueInterface & WithMappedValueInterface
+    & _BaseRawValue_MappedValueInterface & WithMappedValueInterface
 {}
 
 extension KeyValueComparer where _RawValue == RedBlackTreePair<_Key, _MappedValue> {

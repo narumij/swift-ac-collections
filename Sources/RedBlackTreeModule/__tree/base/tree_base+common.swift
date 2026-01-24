@@ -5,8 +5,8 @@
 //  Created by narumij on 2026/01/24.
 //
 
-public protocol _BaseNode_KeyProtocol: _BaseNode_KeyInterface & _BaseValue_KeyInterface
-    & _BaseNode_ValueInterface
+public protocol _BaseNode_KeyProtocol: _BaseNode_KeyInterface & _BaseRawValue_KeyInterface
+    & _BaseNode_RawValueInterface
 {
   static func __get_value(_: _NodePtr) -> _Key
 }

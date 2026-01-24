@@ -25,7 +25,7 @@ import Foundation
 // TODO: プロトコルインジェクションを整理すること
 // __treenの基本要素ではないので、別カテゴリがいい
 
-public protocol ScalarValueKeyProtocol: _ScalarValueType & _BaseValue_KeyInterface {}
+public protocol ScalarValueKeyProtocol: _ScalarValueType & _BaseRawValue_KeyInterface {}
 
 extension ScalarValueKeyProtocol {
 

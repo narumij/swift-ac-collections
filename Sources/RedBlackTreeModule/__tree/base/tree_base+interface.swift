@@ -10,6 +10,8 @@ public protocol _BaseNode_RawValueInterface: _NodePtrType & _RawValueType {
 }
 
 #if true
+  // 非常に重要なポイントなので元ソース尊重よりもわかりやすさを優先しつつ、
+  // エクスキューズ的に#ifで元の名前をリスペクトする感じ？
   public protocol _BaseNode_KeyInterface: _NodePtrType, _KeyType {
     static func __get_value(_: _NodePtr) -> _Key
   }

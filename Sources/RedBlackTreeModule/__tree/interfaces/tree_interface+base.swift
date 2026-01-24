@@ -74,6 +74,8 @@ protocol RootPtrInterface: _NodePtrType {
 // MARK: -
 
 #if true
+// 非常に重要なポイントなので元ソース尊重よりもわかりやすさを優先しつつ、
+// エクスキューズ的に#ifで元の名前をリスペクトする感じ？
 @usableFromInline
 protocol _TreeNode_KeyInterface: _NodePtrType & _KeyType {
   /// ノードから比較用の値を取り出す。

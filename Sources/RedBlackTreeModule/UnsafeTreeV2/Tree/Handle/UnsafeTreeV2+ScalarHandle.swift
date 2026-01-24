@@ -90,11 +90,6 @@ extension UnsafeTreeV2ScalarHandle {
     __l == __r
   }
 
-//  @inlinable
-//  func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-//    __default_three_way_comparator(__lhs, __rhs)
-//  }
-
   @inlinable
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
     __default_three_way_comparator(__lhs, __rhs)

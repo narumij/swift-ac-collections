@@ -283,7 +283,7 @@ extension TreeAlgorithmProtocol_ptr {
   @inlinable
   @inline(never)
   package func
-    _std__tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
+    _ptr__tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
   {
     var __x = __x
     assert(__root != nullptr, "Root of the tree shouldn't be null")
@@ -343,7 +343,7 @@ extension TreeAlgorithmProtocol_ptr {
   @inlinable
   @inline(never)
   package func
-    _std__tree_remove(_ __root: _NodePtr, _ __z: _NodePtr)
+    _ptr__tree_remove(_ __root: _NodePtr, _ __z: _NodePtr)
   {
     typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
     assert(__root != nullptr, "Root node should not be null")

@@ -32,6 +32,8 @@
  UnsafeTreeV2はクラスが決めるようにしたい
  ハンドルは自分が決めるようにしたい
  
+ _TreeNode_KeyInterfaceに集約できてるかどうか、まず整理する
+ その後_TreeNode_KeyInterfaceの利用の仕方について整理する
  */
 
 // MARK: common

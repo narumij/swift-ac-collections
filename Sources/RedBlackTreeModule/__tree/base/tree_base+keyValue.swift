@@ -22,7 +22,7 @@
 
 import Foundation
 
-public protocol _PairValueType: _KeyValueType
+public protocol _PairValueType: _KeyValueRawType
 where _RawValue == RedBlackTreePair<_Key, _MappedValue> {}
 
 public protocol PairValue_KeyProtocol: _PairValueType & _BaseRawValue_KeyInterface {}
@@ -61,7 +61,7 @@ extension PairValue_WithMappedValueProtocol {
 // __treenの基本要素ではないので、別カテゴリがいい
 
 /// 要素がキーバリューの場合のひな形
-public protocol KeyValueComparer: _KeyValueType & ValueComparer & HasDefaultThreeWayComparator
+public protocol KeyValueComparer: _KeyValueRawType & ValueComparer & HasDefaultThreeWayComparator
     & _BaseRawValue_MappedValueInterface & WithMappedValueInterface
 {}
 

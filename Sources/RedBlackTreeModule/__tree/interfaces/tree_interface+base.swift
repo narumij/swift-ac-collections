@@ -79,7 +79,7 @@ protocol _TreeRawValue_KeyInterface: _KeyType, _RawValueType {
 }
 
 @usableFromInline
-protocol _TreeRawValue_MappedValueInteface: _KeyValueType {
+protocol _TreeRawValue_MappedValueInteface: _KeyValueRawType {
   
   @inlinable func ___mapped_value(_ element: _RawValue) -> _MappedValue
 }

@@ -123,7 +123,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)
-  func __key_ptr<Base: _ScalarValueType>(with t: Base.Type)
+  func __key_ptr<Base: _ScalarRawType>(with t: Base.Type)
     -> UnsafeMutablePointer<Base._Key>
   {
     __value_()
@@ -131,7 +131,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)
-  func __key_ptr<Base: _KeyValuePairType>(with t: Base.Type)
+  func __key_ptr<Base: _PairRawType>(with t: Base.Type)
     -> UnsafeMutablePointer<Base._Key>
   {
     _ref(to: &__value_(as: Base.Pair.self).pointee.key)
@@ -139,7 +139,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)
-  func __mapped_value_ptr<Base: _KeyValuePairType>(with t: Base.Type)
+  func __mapped_value_ptr<Base: _PairRawType>(with t: Base.Type)
     -> UnsafeMutablePointer<Base._MappedValue>
   {
     _ref(to: &__value_(as: Base.Pair.self).pointee.value)

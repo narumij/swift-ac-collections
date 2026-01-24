@@ -60,16 +60,16 @@ public protocol _MappedValueType {
 public protocol _TreeValueType: _KeyType & _RawValueType {}
 
 /// SetやMultiSetは比較型と保持型が同じ
-public protocol _ScalarValueType: _KeyType & _RawValueType
+public protocol _ScalarRawType: _KeyType & _RawValueType
 where _Key == _RawValue {}
 
 /// DictionaryやMultiMapは比較型と保持型は異なり、制約なし、マップ値型がある
-public protocol _KeyValueType: _KeyType & _RawValueType & _MappedValueType {}
+public protocol _KeyValueRawType: _KeyType & _RawValueType & _MappedValueType {}
 
 /// DictionaryやMultiMapは内部のキーバリュー値にRedBlackTreePairを用いている
-public protocol _KeyValuePairType: _KeyValueType {}
+public protocol _PairRawType: _KeyValueRawType {}
 
-extension _KeyValuePairType {
+extension _PairRawType {
   public typealias Pair = RedBlackTreePair<_Key, _MappedValue>
 }
 

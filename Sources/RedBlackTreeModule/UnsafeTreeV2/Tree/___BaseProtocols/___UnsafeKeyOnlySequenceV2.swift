@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeBaseV2, ___TreeIndex, _ScalarValueType
+protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeBaseV2, ___TreeIndex, _ScalarRawType
 where _RawValue == Element, Element: Comparable {}
 
 extension ___UnsafeKeyOnlySequenceV2 {

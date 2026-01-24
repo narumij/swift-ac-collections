@@ -75,13 +75,13 @@ protocol _TreeNode_ValueInterface: _nullptr_interface & _RawValueType & __value_
 @usableFromInline
 protocol _TreeValue_KeyInterface: _KeyType, _RawValueType {
   /// 要素から比較用のキー値を取り出す。
-  @inlinable func __key(_ e: _Value) -> _Key
+  @inlinable func __key(_ e: _RawValue) -> _Key
 }
 
 @usableFromInline
 protocol _TreeValue_MappedValueInteface: _KeyValueType {
   
-  @inlinable func ___mapped_value(_ element: _Value) -> _MappedValue
+  @inlinable func ___mapped_value(_ element: _RawValue) -> _MappedValue
 }
 
 // 型の名前にねじれがあるので注意

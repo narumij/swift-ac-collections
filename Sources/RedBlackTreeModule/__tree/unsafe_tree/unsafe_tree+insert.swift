@@ -59,7 +59,7 @@ extension InsertUniqueProtocol_ptr {
   @inlinable
   @inline(never)
   internal func
-    __insert_unique(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
+    __insert_unique(_ x: _RawValue) -> (__r: _NodePtr, __inserted: Bool)
   {
     __emplace_unique_key_args(x)
   }
@@ -67,7 +67,7 @@ extension InsertUniqueProtocol_ptr {
   @inlinable
   @inline(never)
   internal func
-    __emplace_unique_key_args(_ __k: _Value)
+    __emplace_unique_key_args(_ __k: _RawValue)
     -> (__r: _NodePtr, __inserted: Bool)
   {
     let (__parent, __child) = __find_equal(__key(__k))
@@ -112,7 +112,7 @@ extension InsertLastProtocol_ptr {
   @inlinable
   @inline(__always)
   internal func
-    ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _Value)
+    ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _RawValue)
     -> (__parent: _NodePtr, __child: _NodeRef)
   {
     let __p = __construct_node(__k)
@@ -124,7 +124,7 @@ extension InsertLastProtocol_ptr {
   // 分岐の有無の差だとおもわれる
   @inlinable
   @inline(__always)
-  internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr {
+  internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _RawValue) -> _NodePtr {
     let __child = __p == end ? __end_node.__left_ref : __p.__right_ref
     //                        ^--- これの差
     let __h = __construct_node(__k)
@@ -134,7 +134,7 @@ extension InsertLastProtocol_ptr {
 
   @inlinable
   @inline(__always)
-  internal func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr {
+  internal func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _RawValue) -> _NodePtr {
     let __child = __p.__left_ref
     let __h = __construct_node(__k)
     __insert_node_at(__p, __child, __h)

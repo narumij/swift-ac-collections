@@ -64,7 +64,7 @@ extension UnsafeTreeV2 {
       unsafeBufferObject:
         UnsafeTreeV2Buffer
         .create(
-          _Value.self,
+          _RawValue.self,
           minimumCapacity: nodeCapacity,
           nullptr: nullptr))
   }
@@ -83,7 +83,7 @@ extension UnsafeTreeV2 {
 
 // MARK: -
 
-extension UnsafeTreeV2 where Base._Key == Base._Value {
+extension UnsafeTreeV2 where Base._Key == Base._RawValue {
 
   /// ソート済みの配列から木を生成する
   ///
@@ -92,7 +92,7 @@ extension UnsafeTreeV2 where Base._Key == Base._Value {
   /// - Complexity: O(*n*)
   @inlinable
   internal static func
-    create_unique(sorted elements: __owned [Base._Value]) -> UnsafeTreeV2
+    create_unique(sorted elements: __owned [Base._RawValue]) -> UnsafeTreeV2
   where Base._Key: Comparable {
 
     let count = elements.count
@@ -120,7 +120,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   @inlinable
   internal static func create_unique<Element>(
     sorted elements: __owned [Element],
-    transform: (Element) -> Base._Value
+    transform: (Element) -> Base._RawValue
   ) -> UnsafeTreeV2
   where Base._Key: Comparable {
 
@@ -150,7 +150,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   internal static func create_unique<Element>(
     sorted elements: __owned [Element],
     uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
-    transform: (Element) -> Base._Value
+    transform: (Element) -> Base._RawValue
   ) rethrows -> UnsafeTreeV2
   where Base._Key: Comparable {
 
@@ -246,7 +246,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal static func
-    create_multi(sorted elements: __owned [Base._Value]) -> UnsafeTreeV2
+    create_multi(sorted elements: __owned [Base._RawValue]) -> UnsafeTreeV2
   where Base._Key: Comparable {
 
     create_multi(sorted: elements) { $0 }
@@ -260,7 +260,7 @@ extension UnsafeTreeV2 {
   @inlinable
   internal static func create_multi<Element>(
     sorted elements: __owned [Element],
-    transform: (Element) -> Base._Value
+    transform: (Element) -> Base._RawValue
   ) -> UnsafeTreeV2
   where Base._Key: Comparable {
 
@@ -287,7 +287,7 @@ extension UnsafeTreeV2 {
   /// - Complexity: O(*n*)
   @inlinable
   internal static func create<R>(range: __owned R) -> UnsafeTreeV2
-  where R: RangeExpression, R: Collection, R.Element == Base._Value {
+  where R: RangeExpression, R: Collection, R.Element == Base._RawValue {
 
     let tree: Tree = .create(minimumCapacity: range.count)
     // 初期化直後はO(1)
@@ -305,14 +305,14 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal static func create_unique<S>(naive sequence: __owned S) -> UnsafeTreeV2
-  where Base._Value == S.Element, S: Sequence {
+  where Base._RawValue == S.Element, S: Sequence {
 
     .___insert_range_unique(tree: .create(), sequence)
   }
 
   @inlinable
   internal static func create_unique<S>(
-    naive sequence: __owned S, transform: (S.Element) -> Base._Value
+    naive sequence: __owned S, transform: (S.Element) -> Base._RawValue
   ) -> UnsafeTreeV2
   where S: Sequence {
 
@@ -321,14 +321,14 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal static func create_multi<S>(naive sequence: __owned S) -> UnsafeTreeV2
-  where Base._Value == S.Element, S: Sequence {
+  where Base._RawValue == S.Element, S: Sequence {
 
     .___insert_range_multi(tree: .create(), sequence)
   }
 
   @inlinable
   internal static func create_multi<S>(
-    naive sequence: __owned S, transform: (S.Element) -> Base._Value
+    naive sequence: __owned S, transform: (S.Element) -> Base._RawValue
   )
     -> UnsafeTreeV2
   where S: Sequence {
@@ -393,7 +393,7 @@ extension UnsafeTreeV2 {
 
 // MARK: -
 
-extension UnsafeTreeV2 where _Value: Decodable {
+extension UnsafeTreeV2 where _RawValue: Decodable {
 
   @inlinable
   internal static func create(from decoder: Decoder) throws -> UnsafeTreeV2 {
@@ -406,7 +406,7 @@ extension UnsafeTreeV2 where _Value: Decodable {
 
     var (__parent, __child) = tree.___max_ref()
     while !container.isAtEnd {
-      let __k = try container.decode(_Value.self)
+      let __k = try container.decode(_RawValue.self)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
     }
 

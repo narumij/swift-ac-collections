@@ -33,13 +33,13 @@ extension ___UnsafeCommonV2 {
 
   @inlinable
   @inline(__always)
-  internal var ___first: _Value? {
+  internal var ___first: _RawValue? {
     ___is_empty ? nil : __tree_[_start]
   }
 
   @inlinable
   @inline(__always)
-  internal var ___last: _Value? {
+  internal var ___last: _RawValue? {
     ___is_empty ? nil : __tree_[__tree_.__tree_prev_iter(_end)]
   }
 }
@@ -78,7 +78,7 @@ extension ___UnsafeCommonV2 {
 
   @inlinable
   @inline(__always)
-  internal var ___value_comp: (_Value, _Value) -> Bool {
+  internal var ___value_comp: (_RawValue, _RawValue) -> Bool {
     { __tree_.value_comp(Base.__key($0), Base.__key($1)) }
   }
 }

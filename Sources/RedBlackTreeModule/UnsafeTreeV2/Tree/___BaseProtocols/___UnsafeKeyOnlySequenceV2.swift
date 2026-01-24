@@ -22,26 +22,26 @@
 
 @usableFromInline
 protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeBaseV2, ___TreeIndex, _ScalarValueType
-where _Value == Element, Element: Comparable {}
+where _RawValue == Element, Element: Comparable {}
 
 extension ___UnsafeKeyOnlySequenceV2 {
 
   @inlinable
   @inline(__always)
-  public static func ___pointee(_ __value: _Value) -> Element { __value }
+  public static func ___pointee(_ __value: _RawValue) -> Element { __value }
 }
 
 extension ___UnsafeKeyOnlySequenceV2 {
 
   @inlinable
   @inline(__always)
-  internal func _makeIterator() -> Tree._Values {
+  internal func _makeIterator() -> Tree._RawValues {
     .init(start: _start, end: _end, tie: __tree_.tied)
   }
 
   @inlinable
   @inline(__always)
-  internal func _reversed() -> Tree._Values.Reversed {
+  internal func _reversed() -> Tree._RawValues.Reversed {
     .init(start: _start, end: _end, tie: __tree_.tied)
   }
 }
@@ -50,7 +50,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
 
   @inlinable
   @inline(__always)
-  internal func _forEach(_ body: (_Value) throws -> Void) rethrows {
+  internal func _forEach(_ body: (_RawValue) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(__tree_[$0])
     }
@@ -63,7 +63,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
   @available(*, deprecated, message: "性能問題があり廃止")
   @inlinable
   @inline(__always)
-  internal func _forEach(_ body: (Index, _Value) throws -> Void) rethrows {
+  internal func _forEach(_ body: (Index, _RawValue) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(___index($0), __tree_[$0])
     }
@@ -76,7 +76,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
   /// - Complexity: O(*n*)
   @inlinable
   @inline(__always)
-  internal func _sorted() -> [_Value] {
+  internal func _sorted() -> [_RawValue] {
     __tree_.___copy_to_array(_start, _end)
   }
 }
@@ -84,7 +84,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
 extension ___UnsafeKeyOnlySequenceV2 {
 
   @inlinable
-  internal subscript(_checked position: Index) -> _Value {
+  internal subscript(_checked position: Index) -> _RawValue {
     @inline(__always) _read {
       __tree_.___ensureValid(subscript: __tree_.rawValue(position))
       yield __tree_[__tree_.rawValue(position)]
@@ -92,7 +92,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
   }
 
   @inlinable
-  internal subscript(_unchecked position: Index) -> _Value {
+  internal subscript(_unchecked position: Index) -> _RawValue {
     @inline(__always) _read {
       yield __tree_[__tree_.rawValue(position)]
     }
@@ -128,7 +128,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
   @inlinable
   @inline(__always)
   internal func _elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
+    _ other: OtherSequence, by areEquivalent: (_RawValue, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
     try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
   }
@@ -137,8 +137,8 @@ extension ___UnsafeKeyOnlySequenceV2 {
   @inlinable
   @inline(__always)
   internal func _lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
+    _ other: OtherSequence, by areInIncreasingOrder: (_RawValue, _RawValue) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, _RawValue == OtherSequence.Element {
     try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
   }
 }
@@ -147,7 +147,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
 
   @inlinable
   @inline(__always)
-  public mutating func ___element(at ptr: _NodePtr) -> _Value? {
+  public mutating func ___element(at ptr: _NodePtr) -> _RawValue? {
     guard !__tree_.___is_subscript_null(ptr) else {
       return nil
     }

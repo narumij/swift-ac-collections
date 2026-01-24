@@ -21,20 +21,20 @@ final class BucketAccessorTests: XCTestCase {
   #if !DEBUG
   func testPerformanceExample() throws {
     
-    typealias _Value = Int
+    typealias _RawValue = Int
     
     let capacity = 1_000_000
-    let allocator = _BucketAllocator(valueType: _Value.self) { _ in }
+    let allocator = _BucketAllocator(valueType: _RawValue.self) { _ in }
     let (byteSize, alignment) = (allocator.otherCapacity(capacity: capacity), allocator._pair.alignment)
     let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
     let header = storage.assumingMemoryBound(to: _Bucket.self)
     let accessor = _BucketAccessor(
       pointer: header,
-      start: header.start(isHead: false, valueAlignment: MemoryLayout<_Value>.alignment),
+      start: header.start(isHead: false, valueAlignment: MemoryLayout<_RawValue>.alignment),
       stride: allocator._pair.stride)
     for i in 0..<capacity {
       accessor[i].initialize(to: .create(id: .zero, nullptr: UnsafeNode.nullptr))
-      accessor[i].__value_(as: _Value.self).initialize(to: .zero)
+      accessor[i].__value_(as: _RawValue.self).initialize(to: .zero)
     }
     // This is an example of a performance test case.
     self.measure {

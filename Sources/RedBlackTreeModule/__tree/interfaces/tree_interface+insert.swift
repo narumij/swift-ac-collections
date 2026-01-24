@@ -18,6 +18,6 @@ protocol InsertNodeAtInterface: _NodePtrType {
 
 @usableFromInline
 protocol InsertUniqueInterface: _NodePtrType & _RawValueType {
-  func __insert_unique(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
-  func __emplace_unique_key_args(_ __k: _Value) -> (__r: _NodePtr, __inserted: Bool)
+  func __insert_unique(_ x: _RawValue) -> (__r: _NodePtr, __inserted: Bool)
+  func __emplace_unique_key_args(_ __k: _RawValue) -> (__r: _NodePtr, __inserted: Bool)
 }

@@ -94,7 +94,7 @@ extension UnsafeTreeV2BufferHeader {
     let _newBuffer =
       UnsafeTreeV2Buffer
       .create(
-        Base._Value.self,
+        Base._RawValue.self,
         minimumCapacity: newCapacity,
         nullptr: nullptr)
 
@@ -131,11 +131,11 @@ extension UnsafeTreeV2BufferHeader {
   )
   where Base: ___TreeBase {
 
-    typealias _Value = Base._Value
+    typealias _RawValue = Base._RawValue
     typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
-    let bucket = other.freshBucketHead!.accessor(_value: MemoryLayout<_Value>._memoryLayout)!
+    let bucket = other.freshBucketHead!.accessor(_value: MemoryLayout<_RawValue>._memoryLayout)!
 
     /// 同一番号の新ノードを取得する内部ユーティリティ
     @inline(__always)
@@ -162,7 +162,7 @@ extension UnsafeTreeV2BufferHeader {
     }
 
     // 旧ノードを列挙する準備
-    var nodes = makeFreshPoolIterator() as PopIterator<_Value>
+    var nodes = makeFreshPoolIterator() as PopIterator<_RawValue>
 
     // ノード番号順に利用歴があるノード全てについて移行作業を行う
     while let s = nodes.next(), let d = other.popFresh() {
@@ -170,7 +170,7 @@ extension UnsafeTreeV2BufferHeader {
       d.initialize(to: node(s.pointee))
       // 必要な場合、値を初期化する
       if s.pointee.___needs_deinitialize {
-        d.__value_().initialize(to: s.__value_().pointee as _Value)
+        d.__value_().initialize(to: s.__value_().pointee as _RawValue)
       }
     }
 

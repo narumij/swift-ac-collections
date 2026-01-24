@@ -7,7 +7,7 @@
   }
 
   @usableFromInline
-  protocol UnsafeTreeAllcationBodyV2: _ValueType {
+  protocol UnsafeTreeAllcationBodyV2: _RawValueType {
     associatedtype Header: UnsafeTreeAllocationHeader
     var _buffer: ManagedBufferPointer<Header, Void> { get }
     var capacity: Int { get }

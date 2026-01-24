@@ -31,7 +31,7 @@ extension ScalarValueKeyProtocol {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ __v: _Value) -> _Key { __v }
+  public static func __key(_ __v: _RawValue) -> _Key { __v }
 }
 
 // MARK: -

@@ -28,12 +28,12 @@ extension RedBlackTreeSliceV2 {
       & ___UnsafeIndexV2 & ___UnsafeKeyValueSequenceV2
   where
     Base: ___TreeBase & ___TreeIndex & KeyValueComparer,
-    Base._Value == RedBlackTreePair<Base._Key, Base._MappedValue>
+    Base._RawValue == RedBlackTreePair<Base._Key, Base._MappedValue>
   {
 
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _Key = Base._Key
-    public typealias _Value = Tree._Value
+    public typealias _RawValue = Tree._RawValue
     public typealias _MappedValue = Base._MappedValue
     public typealias Element = (key: _Key, value: _MappedValue)
     public typealias Index = Tree.Index
@@ -137,7 +137,7 @@ extension RedBlackTreeSliceV2.KeyValue {
     /// - Complexity: O(log *n*)
     @inlinable
     public func firstIndex(of key: _Key) -> Index? {
-      ___first_index { ($0 as _Value).key == key }
+      ___first_index { ($0 as _RawValue).key == key }
     }
 
     /// - Complexity: O(*n*)

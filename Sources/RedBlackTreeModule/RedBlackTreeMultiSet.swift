@@ -53,7 +53,7 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
     typealias _Key = Element
 
   public
-    typealias _Value = Element
+    typealias _RawValue = Element
 
   @usableFromInline
   var __tree_: Tree
@@ -599,13 +599,13 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func makeIterator() -> Tree._Values {
+  public func makeIterator() -> Tree._RawValues {
     _makeIterator()
   }
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (_Value) throws -> Void) rethrows {
+  public func forEach(_ body: (_RawValue) throws -> Void) rethrows {
     try _forEach(body)
   }
 
@@ -613,7 +613,7 @@ extension RedBlackTreeMultiSet {
     /// 特殊なforEach
     @inlinable
     @inline(__always)
-    public func forEach(_ body: (Index, _Value) throws -> Void) rethrows {
+    public func forEach(_ body: (Index, _RawValue) throws -> Void) rethrows {
       try _forEach(body)
     }
   #endif
@@ -704,7 +704,7 @@ extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(1)
   @inlinable
-  public subscript(position: Index) -> _Value {
+  public subscript(position: Index) -> _RawValue {
     @inline(__always) _read { yield self[_checked: position] }
   }
 
@@ -712,7 +712,7 @@ extension RedBlackTreeMultiSet {
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable
-    public subscript(unchecked position: Index) -> _Value {
+    public subscript(unchecked position: Index) -> _RawValue {
       @inline(__always) _read { yield self[_unchecked: position] }
     }
   #endif
@@ -741,7 +741,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func reversed() -> Tree._Values.Reversed {
+  public func reversed() -> Tree._RawValues.Reversed {
     _reversed()
   }
 
@@ -757,7 +757,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @inline(__always)
   public func elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
+    _ other: OtherSequence, by areEquivalent: (_RawValue, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
     try _elementsEqual(other, by: areEquivalent)
   }
@@ -767,8 +767,8 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (_Value, _Value) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
+    _ other: OtherSequence, by areInIncreasingOrder: (_RawValue, _RawValue) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, _RawValue == OtherSequence.Element {
     try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }

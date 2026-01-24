@@ -33,15 +33,15 @@ extension RedBlackTreeSliceV2 {
       & ___UnsafeIndexV2 & ___UnsafeKeyOnlySequenceV2
   where
     Base: ___TreeBase & ___TreeIndex,
-    Base._Key == Base._Value,
+    Base._Key == Base._RawValue,
     Base._Key: Comparable
   {
 
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _NodePtr = Tree._NodePtr
     public typealias _Key = Tree._Key
-    public typealias _Value = Tree._Value
-    public typealias Element = Tree._Value
+    public typealias _RawValue = Tree._RawValue
+    public typealias Element = Tree._RawValue
     public typealias Index = Tree.Index
     public typealias Indices = Tree.Indices
     public typealias SubSequence = Self
@@ -73,7 +73,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._Values {
+  public __consuming func makeIterator() -> Tree._RawValues {
     _makeIterator()
   }
 }
@@ -367,7 +367,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func reversed() -> Tree._Values.Reversed {
+  public func reversed() -> Tree._RawValues.Reversed {
     _reversed()
   }
 }
@@ -415,7 +415,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   }
 }
 
-extension RedBlackTreeSliceV2.KeyOnly where _Value: Equatable {
+extension RedBlackTreeSliceV2.KeyOnly where _RawValue: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -427,7 +427,7 @@ extension RedBlackTreeSliceV2.KeyOnly where _Value: Equatable {
   }
 }
 
-extension RedBlackTreeSliceV2.KeyOnly where _Value: Comparable {
+extension RedBlackTreeSliceV2.KeyOnly where _RawValue: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -439,7 +439,7 @@ extension RedBlackTreeSliceV2.KeyOnly where _Value: Comparable {
   }
 }
 
-extension RedBlackTreeSliceV2.KeyOnly: Equatable where _Value: Equatable {
+extension RedBlackTreeSliceV2.KeyOnly: Equatable where _RawValue: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
@@ -449,7 +449,7 @@ extension RedBlackTreeSliceV2.KeyOnly: Equatable where _Value: Equatable {
   }
 }
 
-extension RedBlackTreeSliceV2.KeyOnly: Comparable where _Value: Comparable {
+extension RedBlackTreeSliceV2.KeyOnly: Comparable where _RawValue: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable

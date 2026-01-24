@@ -107,7 +107,7 @@ import XCTest
       Self.__lazy_synth_three_way_comparator(__lhs, __rhs)
     }
 
-    typealias _Value = Element
+    typealias _RawValue = Element
     typealias __value_type = Element
 
     let isMulti: Bool = true

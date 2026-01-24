@@ -7,7 +7,7 @@
 
 extension UnsafeIterator {
 
-  public struct _Value<Base: ___TreeBase, Source: IteratorProtocol & Sequence>:
+  public struct _RawValue<Base: ___TreeBase, Source: IteratorProtocol & Sequence>:
     _UnsafeNodePtrType,
     UnsafeAssosiatedIterator,
     IteratorProtocol,
@@ -34,7 +34,7 @@ extension UnsafeIterator {
       _source._end
     }
 
-    public mutating func next() -> Base._Value? {
+    public mutating func next() -> Base._RawValue? {
       return _source.next().map {
         $0.__value_().pointee
       }
@@ -43,20 +43,20 @@ extension UnsafeIterator {
 }
 
 #if swift(>=5.5)
-  extension UnsafeIterator._Value: @unchecked Sendable
+  extension UnsafeIterator._RawValue: @unchecked Sendable
   where Source: Sendable {}
 #endif
 
-extension UnsafeIterator._Value: ObverseIterator
+extension UnsafeIterator._RawValue: ObverseIterator
 where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeIteratorProtocol & Sequence
 {
-  public func reversed() -> UnsafeIterator._Value<Base,Source.ReversedIterator> {
+  public func reversed() -> UnsafeIterator._RawValue<Base,Source.ReversedIterator> {
     .init(source: _source.reversed())
   }
-  public typealias Reversed = UnsafeIterator._Value<Base,Source.ReversedIterator>
+  public typealias Reversed = UnsafeIterator._RawValue<Base,Source.ReversedIterator>
 }
 
-extension UnsafeIterator._Value: ReverseIterator
+extension UnsafeIterator._RawValue: ReverseIterator
 where Source: ReverseIterator {}

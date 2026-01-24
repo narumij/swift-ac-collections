@@ -37,11 +37,11 @@
       __is_black_(___NodePtr(p), b)
     }
 
-    package func __value_(_ p: Int) -> _Value {
+    package func __value_(_ p: Int) -> _RawValue {
       __value_(___NodePtr(p))
     }
 
-    package func ___element(_ p: Int, _ __v: _Value) {
+    package func ___element(_ p: Int, _ __v: _RawValue) {
       ___element(___NodePtr(p), __v)
     }
   }

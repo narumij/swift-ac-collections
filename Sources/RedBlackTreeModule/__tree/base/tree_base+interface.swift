@@ -6,7 +6,7 @@
 //
 
 public protocol _BaseNode_ValueInterface: _NodePtrType & _RawValueType {
-  static func __value_(_ p: _NodePtr) -> _Value
+  static func __value_(_ p: _NodePtr) -> _RawValue
 }
 
 #if true
@@ -26,11 +26,11 @@ protocol _BaseNodeKeyInterface: _NodePtrType & _KeyType & __node_value_type {
 
 public protocol _BaseValue_KeyInterface: _KeyType & _RawValueType {
   /// 要素から比較キー値がとれること
-  static func __key(_: _Value) -> _Key
+  static func __key(_: _RawValue) -> _Key
 }
 
 public protocol _BaseValue_MappedValueInterface: _RawValueType & _MappedValueType {
-  static func ___mapped_value(_: _Value) -> _MappedValue
+  static func ___mapped_value(_: _RawValue) -> _MappedValue
 }
 
 public protocol _BaseKey_CompInterface: _KeyType {
@@ -47,7 +47,7 @@ public protocol _BaseKey_EquivInterface: _KeyType {
 
 public protocol WithMappedValueInterface: _RawValueType & _MappedValueType {
   static func ___with_mapped_value<T>(
-    _ element: inout _Value, _ f: (inout _MappedValue) throws -> T
+    _ element: inout _RawValue, _ f: (inout _MappedValue) throws -> T
   ) rethrows -> T
 }
 

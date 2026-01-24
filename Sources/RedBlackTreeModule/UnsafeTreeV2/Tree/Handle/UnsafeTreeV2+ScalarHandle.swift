@@ -40,7 +40,7 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable>: _UnsafeNodePtrType {
     self.root_ptr = header.pointee.root_ptr
   }
   @usableFromInline typealias _Key = _Key
-  @usableFromInline typealias _Value = _Key
+  @usableFromInline typealias _RawValue = _Key
   @usableFromInline typealias _Pointer = _NodePtr
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
   @usableFromInline let nullptr: _NodePtr
@@ -48,10 +48,10 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable>: _UnsafeNodePtrType {
   @usableFromInline var isMulti: Bool
 }
 
-extension UnsafeTreeV2 where _Key == _Value, _Key: Comparable {
+extension UnsafeTreeV2 where _Key == _RawValue, _Key: Comparable {
 
   @usableFromInline
-  typealias Handle = UnsafeTreeV2ScalarHandle<UnsafeTreeV2<Base>._Value>
+  typealias Handle = UnsafeTreeV2ScalarHandle<UnsafeTreeV2<Base>._RawValue>
 
   @inlinable
   @inline(__always)
@@ -78,7 +78,7 @@ extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
   @inline(__always)
-  func __key(_ __v: _Value) -> _Key { __v }
+  func __key(_ __v: _RawValue) -> _Key { __v }
 
   @inlinable
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
@@ -115,7 +115,7 @@ extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
   @inline(__always)
-  public func __construct_node(_ k: _Value) -> _NodePtr {
+  public func __construct_node(_ k: _RawValue) -> _NodePtr {
     let p = header.pointee.__construct_raw_node()
     // あえてのdefer
     defer { p.__value_().initialize(to: k) }

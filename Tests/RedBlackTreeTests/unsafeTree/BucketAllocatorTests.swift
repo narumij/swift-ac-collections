@@ -37,8 +37,8 @@ import XCTest
       }
     }
 
-    func checkHeadAllocationSize<_Value>(_ t: _Value.Type, capacity: Int) throws {
-      let allocator = _BucketAllocator(valueType: _Value.self) { _ in }
+    func checkHeadAllocationSize<_RawValue>(_ t: _RawValue.Type, capacity: Int) throws {
+      let allocator = _BucketAllocator(valueType: _RawValue.self) { _ in }
       var (byteSize, alignment) = (allocator.otherCapacity(capacity: capacity), allocator._pair.alignment)
       byteSize += MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride
       byteSize += MemoryLayout<UnsafeNode>.stride
@@ -46,7 +46,7 @@ import XCTest
       //      let bytes = storage.bindMemory(to: UInt8.self, capacity: byteSize)
       storage.initializeMemory(as: UInt8.self, repeating: 0xE8, count: byteSize)
       let header = storage.assumingMemoryBound(to: _Bucket.self)
-      let start = header.start(isHead: true, valueAlignment: MemoryLayout<_Value>.alignment)
+      let start = header.start(isHead: true, valueAlignment: MemoryLayout<_RawValue>.alignment)
       XCTAssertNotEqual(start, storage)
       for i in 0..<MemoryLayout<_Bucket>.stride {
         UnsafeMutableRawPointer(header)
@@ -75,8 +75,8 @@ import XCTest
             .advanced(by: j)
             .pointee = 2
         }
-        for k in 0..<MemoryLayout<_Value>.stride {
-          UnsafeMutableRawPointer(accessor[i].__value_(as: _Value.self))
+        for k in 0..<MemoryLayout<_RawValue>.stride {
+          UnsafeMutableRawPointer(accessor[i].__value_(as: _RawValue.self))
             .assumingMemoryBound(to: UInt8.self)
             .advanced(by: k)
             .pointee = 3
@@ -91,14 +91,14 @@ import XCTest
       XCTAssertEqual(counts[1], MemoryLayout<_Bucket>.stride)
       XCTAssertEqual(counts[4], MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride)
       XCTAssertEqual(counts[2], MemoryLayout<UnsafeNode>.stride * (capacity + 1))
-      XCTAssertEqual(counts[3] ?? 0, MemoryLayout<_Value>.stride * capacity)
+      XCTAssertEqual(counts[3] ?? 0, MemoryLayout<_RawValue>.stride * capacity)
       // capacity番目の開始アドレスとは、確保メモリの末尾の次
       // 数が多い場合、確保範囲を越えて書いている可能性がある
       // アライメント調整は確保アドレスに応じて変動する
       if capacity != 0 {
-        XCTAssertLessThanOrEqual(storage.distance(to: start), byteSize, "\(_Value.self)")
+        XCTAssertLessThanOrEqual(storage.distance(to: start), byteSize, "\(_RawValue.self)")
         XCTAssertLessThanOrEqual(
-          storage.distance(to: accessor[capacity]), byteSize, "\(_Value.self)")
+          storage.distance(to: accessor[capacity]), byteSize, "\(_RawValue.self)")
       } else {
         // capacityが0の場合、確保サイズにアライメント調整分が含まれないため、startは範囲外を示す
         // capacity == 0の場合、ヘッダとbegin ptrとend nodeピッタリのサイズとなる
@@ -107,7 +107,7 @@ import XCTest
           MemoryLayout<_Bucket>.stride
             + MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride
             + MemoryLayout<UnsafeNode>.stride,
-          "\(_Value.self)")
+          "\(_RawValue.self)")
       }
 
       storage.deallocate()
@@ -130,8 +130,8 @@ import XCTest
       }
     }
 
-    func checkOtherAllocationSize<_Value>(_ t: _Value.Type, capacity: Int) throws {
-      let allocator = _BucketAllocator(valueType: _Value.self) { _ in }
+    func checkOtherAllocationSize<_RawValue>(_ t: _RawValue.Type, capacity: Int) throws {
+      let allocator = _BucketAllocator(valueType: _RawValue.self) { _ in }
       let (byteSize, alignment) = (allocator.otherCapacity(capacity: capacity), allocator._pair.alignment)
       let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
       //      let bytes = storage.bindMemory(to: UInt8.self, capacity: byteSize)
@@ -140,7 +140,7 @@ import XCTest
       let start =
         storage
         .assumingMemoryBound(to: _Bucket.self)
-        .start(isHead: false, valueAlignment: MemoryLayout<_Value>.alignment)
+        .start(isHead: false, valueAlignment: MemoryLayout<_RawValue>.alignment)
       XCTAssertNotEqual(start, storage)
       for i in 0..<MemoryLayout<_Bucket>.stride {
         storage
@@ -157,8 +157,8 @@ import XCTest
             .advanced(by: j)
             .pointee = 2
         }
-        for k in 0..<MemoryLayout<_Value>.stride {
-          UnsafeMutableRawPointer(accessor[i].__value_(as: _Value.self))
+        for k in 0..<MemoryLayout<_RawValue>.stride {
+          UnsafeMutableRawPointer(accessor[i].__value_(as: _RawValue.self))
             .assumingMemoryBound(to: UInt8.self)
             .advanced(by: k)
             .pointee = 3
@@ -172,7 +172,7 @@ import XCTest
       // 数が合わない場合、メモリ範囲が重なっている可能性がある
       XCTAssertEqual(counts[1], MemoryLayout<_Bucket>.stride)
       XCTAssertEqual(counts[2], MemoryLayout<UnsafeNode>.stride * capacity)
-      XCTAssertEqual(counts[3], MemoryLayout<_Value>.stride * capacity)
+      XCTAssertEqual(counts[3], MemoryLayout<_RawValue>.stride * capacity)
       // capacity番目の開始アドレスとは、確保メモリの末尾の次
       // 数が多い場合、確保範囲を越えて書いている可能性がある
       // アライメント調整は確保アドレスに応じて変動する？

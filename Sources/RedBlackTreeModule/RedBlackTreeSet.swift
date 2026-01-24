@@ -59,7 +59,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
     typealias _Key = Element
 
   public
-    typealias _Value = Element
+    typealias _RawValue = Element
 
   public
     typealias Base = Self
@@ -575,7 +575,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func makeIterator() -> Tree._Values {
+  public func makeIterator() -> Tree._RawValues {
     _makeIterator()
   }
 
@@ -688,7 +688,7 @@ extension RedBlackTreeSet {
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable
-    public subscript(unchecked position: Index) -> _Value {
+    public subscript(unchecked position: Index) -> _RawValue {
       @inline(__always) _read { yield self[_unchecked: position] }
     }
   #endif
@@ -717,7 +717,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func reversed() -> Tree._Values.Reversed {
+  public func reversed() -> Tree._RawValues.Reversed {
     _reversed()
   }
 

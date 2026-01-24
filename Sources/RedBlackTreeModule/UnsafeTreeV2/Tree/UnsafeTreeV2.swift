@@ -41,7 +41,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   @usableFromInline typealias Buffer = ManagedBuffer<Header, Void>
   @usableFromInline typealias BufferPointer = ManagedBufferPointer<Header, Void>
   public typealias _Key = Base._Key
-  public typealias _Value = Base._Value
+  public typealias _RawValue = Base._RawValue
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
 
@@ -67,7 +67,7 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
 extension UnsafeTreeV2: CustomStringConvertible {
   public var description: String {
-    "UnsafeTreeV2<\(Base._Value.self)>._Storage\(_buffer.header)"
+    "UnsafeTreeV2<\(Base._RawValue.self)>._Storage\(_buffer.header)"
   }
 }
 
@@ -117,7 +117,7 @@ extension UnsafeTreeV2 {
   // _NodePtrがIntだった頃の名残
   @nonobjc
   @inlinable
-  internal subscript(_ pointer: _NodePtr) -> _Value {
+  internal subscript(_ pointer: _NodePtr) -> _RawValue {
     @inline(__always) _read {
       assert(___initialized_contains(pointer))
       yield pointer.__value_().pointee
@@ -146,7 +146,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func makeFreshPoolIterator() -> _FreshPoolPopIterator<_Value> {
+  func makeFreshPoolIterator() -> _FreshPoolPopIterator<_RawValue> {
     return _buffer.header.makeFreshPoolIterator()
   }
 }

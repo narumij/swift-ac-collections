@@ -27,9 +27,9 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
 
   @inlinable
   @inline(__always)
-  internal init<_Value>(_ t: _Value.Type, nullptr: _NodePtr, capacity: Int) {
-    let allocator = _BucketAllocator(valueType: _Value.self) {
-      $0.assumingMemoryBound(to: _Value.self)
+  internal init<_RawValue>(_ t: _RawValue.Type, nullptr: _NodePtr, capacity: Int) {
+    let allocator = _BucketAllocator(valueType: _RawValue.self) {
+      $0.assumingMemoryBound(to: _RawValue.self)
         .deinitialize(count: 1)
     }
     self.init(allocator: allocator, nullptr: nullptr, capacity: capacity)

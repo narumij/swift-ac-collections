@@ -109,16 +109,16 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)
-  func __value_<_Value>() -> UnsafeMutablePointer<_Value> {
+  func __value_<_RawValue>() -> UnsafeMutablePointer<_RawValue> {
     UnsafeMutableRawPointer(advanced(by: 1))
-      .assumingMemoryBound(to: _Value.self)
+      .assumingMemoryBound(to: _RawValue.self)
   }
 
   @inlinable
   @inline(__always)
-  package func __value_<_Value>(as t: _Value.Type) -> UnsafeMutablePointer<_Value> {
+  package func __value_<_RawValue>(as t: _RawValue.Type) -> UnsafeMutablePointer<_RawValue> {
     UnsafeMutableRawPointer(advanced(by: 1))
-      .assumingMemoryBound(to: _Value.self)
+      .assumingMemoryBound(to: _RawValue.self)
   }
 
   @inlinable
@@ -164,8 +164,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)
-  func _advanced<_Value>(with t: _Value.Type, count: Int) -> UnsafeMutablePointer {
-    _advanced(raw: (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_Value>.stride) * count)
+  func _advanced<_RawValue>(with t: _RawValue.Type, count: Int) -> UnsafeMutablePointer {
+    _advanced(raw: (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_RawValue>.stride) * count)
   }
 }
 

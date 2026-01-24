@@ -14,7 +14,7 @@
 public protocol ValueComparer: _TreeValueType & _BaseNode_KeyProtocol & _BaseKey_CompInterface & _BaseNode_KeyProtocol & PointerCompareStaticProtocol &
 _BaseValue_KeyInterface & _BaseKey_CompInterface & _BaseKey_EquivInterface {
   /// 要素から比較キー値がとれること
-  @inlinable static func __key(_: _Value) -> _Key
+  @inlinable static func __key(_: _RawValue) -> _Key
   /// 比較関数が実装されていること
   @inlinable static func value_comp(_: _Key, _: _Key) -> Bool
 }
@@ -54,10 +54,10 @@ extension ValueComparer where _Key: Equatable {
 protocol ValueComparator: _TreeValueType & _TreeValue_KeyInterface & _TreeKey_CompInterface
 where
   _Key == Base._Key,
-  _Value == Base._Value
+  _RawValue == Base._RawValue
 {
   associatedtype Base: ValueComparer
-  @inlinable static func __key(_ e: _Value) -> _Key
+  @inlinable static func __key(_ e: _RawValue) -> _Key
   @inlinable static func value_comp(_ a: _Key, _ b: _Key) -> Bool
   @inlinable static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
 }
@@ -66,7 +66,7 @@ extension ValueComparator {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ e: _Value) -> _Key {
+  public static func __key(_ e: _RawValue) -> _Key {
     Base.__key(e)
   }
 
@@ -84,7 +84,7 @@ extension ValueComparator {
 
   @inlinable
   @inline(__always)
-  public func __key(_ e: _Value) -> _Key {
+  public func __key(_ e: _RawValue) -> _Key {
     Base.__key(e)
   }
 

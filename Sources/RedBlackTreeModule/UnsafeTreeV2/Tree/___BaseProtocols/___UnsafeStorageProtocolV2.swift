@@ -25,7 +25,7 @@ protocol ___UnsafeStorageProtocolV2: ___Root & _RawValueType
 where
   Base: ___TreeBase,
   Tree == UnsafeTreeV2<Base>,
-  _Value == Tree._Value,
+  _RawValue == Tree._RawValue,
   _NodePtr == Tree._NodePtr
 {
   associatedtype _NodePtr
@@ -66,7 +66,7 @@ extension ___UnsafeStorageProtocolV2 {
   @inlinable
   @inline(__always)
   @discardableResult
-  internal mutating func ___remove_first() -> _Value? {
+  internal mutating func ___remove_first() -> _RawValue? {
     guard !__tree_.___is_empty else {
       return nil
     }
@@ -78,7 +78,7 @@ extension ___UnsafeStorageProtocolV2 {
   @inlinable
   @inline(__always)
   @discardableResult
-  internal mutating func ___remove(at ptr: _NodePtr) -> _Value? {
+  internal mutating func ___remove(at ptr: _NodePtr) -> _RawValue? {
     guard !__tree_.___is_subscript_null(ptr) else {
       return nil
     }

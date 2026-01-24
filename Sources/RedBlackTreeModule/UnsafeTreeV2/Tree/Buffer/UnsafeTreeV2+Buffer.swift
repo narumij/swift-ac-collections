@@ -47,14 +47,14 @@ extension UnsafeTreeV2Buffer {
   @nonobjc
   @inlinable
   @inline(__always)
-  internal static func create<_Value>(
-    _ t: _Value.Type,
+  internal static func create<_RawValue>(
+    _ t: _RawValue.Type,
     minimumCapacity nodeCapacity: Int,
     nullptr: UnsafeMutablePointer<UnsafeNode>
   ) -> UnsafeTreeV2Buffer {
     return create(
-      allocator: .init(valueType: _Value.self) {
-        $0.assumingMemoryBound(to: _Value.self)
+      allocator: .init(valueType: _RawValue.self) {
+        $0.assumingMemoryBound(to: _RawValue.self)
           .deinitialize(count: 1)
       },
       minimumCapacity: nodeCapacity, nullptr: nullptr)

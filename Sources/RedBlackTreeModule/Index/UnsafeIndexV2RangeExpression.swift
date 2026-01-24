@@ -14,7 +14,7 @@ where Base: ___TreeBase & ___TreeIndex {
   public typealias Pointee = Tree.Pointee
 
   @usableFromInline
-  typealias _Value = Tree._Value
+  typealias _RawValue = Tree._RawValue
 
   @usableFromInline
   internal var rawRange: UnsafeTreeRangeExpression

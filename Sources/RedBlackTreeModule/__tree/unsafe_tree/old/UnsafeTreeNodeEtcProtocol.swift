@@ -119,7 +119,7 @@ extension UnsafeTreeAccessHandleBase {
 
   @inlinable
   @inline(__always)
-  package func __construct_node(_ k: _Value) -> _NodePtr {
+  package func __construct_node(_ k: _RawValue) -> _NodePtr {
     let p = header.pointee.__construct_raw_node()
     defer { p.__value_().initialize(to: k) }
     return p
@@ -136,13 +136,13 @@ extension UnsafeTreeAccessHandleBase {
 
   @inlinable
   @inline(__always)
-  package func __value_(_ p: _NodePtr) -> _Value {
+  package func __value_(_ p: _NodePtr) -> _RawValue {
     p.__value_().pointee
   }
 
   @inlinable
   @inline(__always)
-  package func ___element(_ p: _NodePtr, _ __v: _Value) {
+  package func ___element(_ p: _NodePtr, _ __v: _RawValue) {
     p.__value_().pointee = __v
   }
 }

@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-extension UnsafeTreeV2: Hashable where _Value: Hashable {
+extension UnsafeTreeV2: Hashable where _RawValue: Hashable {
 
   @inlinable
   public func hash(into hasher: inout Hasher) {

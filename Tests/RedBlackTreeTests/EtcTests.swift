@@ -804,11 +804,11 @@ final class EtcTests: RedBlackTreeTestCase {
   }
 
   static func allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
-    typealias _Value = Int
+    typealias _RawValue = Int
     let s0 = MemoryLayout<UnsafeNode>.stride
     let a0 = MemoryLayout<UnsafeNode>.alignment
-    let s1 = MemoryLayout<_Value>.stride
-    let a1 = MemoryLayout<_Value>.alignment
+    let s1 = MemoryLayout<_RawValue>.stride
+    let a1 = MemoryLayout<_RawValue>.alignment
     let s2 = MemoryLayout<_Bucket>.stride
     let a2 = MemoryLayout<_Bucket>.alignment
     let s01 = s0 + s1
@@ -818,11 +818,11 @@ final class EtcTests: RedBlackTreeTestCase {
   }
 
   static func allocationCapacity(size: Int) -> Int {
-    typealias _Value = Int
+    typealias _RawValue = Int
     let s0 = MemoryLayout<UnsafeNode>.stride
     let a0 = MemoryLayout<UnsafeNode>.alignment
-    let s1 = MemoryLayout<_Value>.stride
-    let a1 = MemoryLayout<_Value>.alignment
+    let s1 = MemoryLayout<_RawValue>.stride
+    let a1 = MemoryLayout<_RawValue>.alignment
     let s2 = MemoryLayout<_Bucket>.stride
     let a2 = MemoryLayout<_Bucket>.alignment
     let s01 = s0 + s1
@@ -837,7 +837,7 @@ final class EtcTests: RedBlackTreeTestCase {
   }
 
   //  func testBufferSize() throws {
-  //    typealias _Value = Int
+  //    typealias _RawValue = Int
   //    let s0 = MemoryLayout<UnsafeNode>.stride
   //    let a0 = MemoryLayout<UnsafeNode>.alignment
   //    let s1 = MemoryLayout<_Value>.stride

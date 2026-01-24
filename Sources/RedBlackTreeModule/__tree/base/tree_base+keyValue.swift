@@ -23,7 +23,7 @@
 import Foundation
 
 public protocol _PairValueType: _KeyValueType
-where _Value == RedBlackTreePair<_Key, _MappedValue> {}
+where _RawValue == RedBlackTreePair<_Key, _MappedValue> {}
 
 public protocol PairValue_KeyProtocol: _PairValueType & _BaseValue_KeyInterface {}
 
@@ -31,7 +31,7 @@ extension PairValue_KeyProtocol {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ __v: _Value) -> _Key { __v.key }
+  public static func __key(_ __v: _RawValue) -> _Key { __v.key }
 }
 
 public protocol PairValue_MappedValueProtocol: _PairValueType & _BaseValue_MappedValueInterface {}
@@ -40,7 +40,7 @@ extension PairValue_MappedValueProtocol {
 
   @inlinable
   @inline(__always)
-  public static func ___mapped_value(_ __v: _Value) -> _MappedValue { __v.value }
+  public static func ___mapped_value(_ __v: _RawValue) -> _MappedValue { __v.value }
 }
 
 public protocol PairValue_WithMappedValueProtocol: _PairValueType & WithMappedValueInterface {}
@@ -50,7 +50,7 @@ extension PairValue_WithMappedValueProtocol {
   @inlinable
   @inline(__always)
   public static func ___with_mapped_value<ResultType>(
-    _ __v: inout _Value,
+    _ __v: inout _RawValue,
     _ __body: (inout _MappedValue) throws -> ResultType
   ) rethrows -> ResultType {
     try __body(&__v.value)
@@ -65,20 +65,20 @@ public protocol KeyValueComparer: _KeyValueType & ValueComparer & HasDefaultThre
     & _BaseValue_MappedValueInterface & WithMappedValueInterface
 {}
 
-extension KeyValueComparer where _Value == RedBlackTreePair<_Key, _MappedValue> {
+extension KeyValueComparer where _RawValue == RedBlackTreePair<_Key, _MappedValue> {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ element: _Value) -> _Key { element.key }
+  public static func __key(_ element: _RawValue) -> _Key { element.key }
 
   @inlinable
   @inline(__always)
-  public static func ___mapped_value(_ element: _Value) -> _MappedValue { element.value }
+  public static func ___mapped_value(_ element: _RawValue) -> _MappedValue { element.value }
 
   @inlinable
   @inline(__always)
   public static func ___with_mapped_value<T>(
-    _ element: inout _Value, _ f: (inout _MappedValue) throws -> T
+    _ element: inout _RawValue, _ f: (inout _MappedValue) throws -> T
   ) rethrows -> T {
     try f(&element.value)
   }

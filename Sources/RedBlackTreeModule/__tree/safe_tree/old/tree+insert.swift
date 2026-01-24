@@ -69,7 +69,7 @@ extension InsertUniqueProtocol_std {
   @inlinable
   //  @inline(__always)
   internal func
-    __insert_unique(_ x: _Value) -> (__r: _NodePtr, __inserted: Bool)
+    __insert_unique(_ x: _RawValue) -> (__r: _NodePtr, __inserted: Bool)
   {
     __emplace_unique_key_args(x)
   }
@@ -77,7 +77,7 @@ extension InsertUniqueProtocol_std {
   @inlinable
   //  @inline(__always)
   internal func
-    __emplace_unique_key_args(_ __k: _Value)
+    __emplace_unique_key_args(_ __k: _RawValue)
     -> (__r: _NodePtr, __inserted: Bool)
   {
     let (__parent, __child) = __find_equal(__key(__k))
@@ -103,14 +103,14 @@ extension InsertMultiProtocol {
 
   @inlinable
   @inline(__always)
-  internal func __insert_multi(_ x: _Value) -> _NodePtr {
+  internal func __insert_multi(_ x: _RawValue) -> _NodePtr {
     __emplace_multi(x)
   }
 
   @inlinable
   @inline(__always)
   internal func
-    __emplace_multi(_ __k: _Value) -> _NodePtr
+    __emplace_multi(_ __k: _RawValue) -> _NodePtr
   {
     let __h = __construct_node(__k)
     var __parent = nullptr
@@ -123,10 +123,10 @@ extension InsertMultiProtocol {
 @usableFromInline
 protocol InsertLastInterface: _NodePtrType & _RawValueType {
   func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef)
-  func ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _Value)
+  func ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _RawValue)
     -> (__parent: _NodePtr, __child: _NodeRef)
-  func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr
-  func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr
+  func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _RawValue) -> _NodePtr
+  func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _RawValue) -> _NodePtr
 }
 
 @usableFromInline
@@ -150,7 +150,7 @@ extension InsertLastProtocol {
   @inlinable
   @inline(__always)
   internal func
-    ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _Value)
+    ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _RawValue)
     -> (__parent: _NodePtr, __child: _NodeRef)
   {
     let __p = __construct_node(__k)
@@ -162,7 +162,7 @@ extension InsertLastProtocol {
   // 分岐の有無の差だとおもわれる
   @inlinable
   @inline(__always)
-  internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr {
+  internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _RawValue) -> _NodePtr {
     let __child = __p == end ? __left_ref(__end_node) : __right_ref(__p)
     //                        ^--- これの差
     let __h = __construct_node(__k)
@@ -172,7 +172,7 @@ extension InsertLastProtocol {
 
   @inlinable
   @inline(__always)
-  internal func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr {
+  internal func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _RawValue) -> _NodePtr {
     let __child = __left_ref(__p)
     let __h = __construct_node(__k)
     __insert_node_at(__p, __child, __h)

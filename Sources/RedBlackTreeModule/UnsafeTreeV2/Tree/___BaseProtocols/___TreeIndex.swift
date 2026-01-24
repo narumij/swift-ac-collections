@@ -22,5 +22,5 @@
 
 public protocol ___TreeIndex: _RawValueType {
   associatedtype Pointee
-  static func ___pointee(_ __value: _Value) -> Pointee
+  static func ___pointee(_ __value: _RawValue) -> Pointee
 }

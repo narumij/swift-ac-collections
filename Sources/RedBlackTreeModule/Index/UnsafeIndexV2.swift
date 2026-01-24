@@ -33,7 +33,7 @@ where Base: ___TreeBase & ___TreeIndex {
   public typealias Pointee = Tree.Pointee
 
   @usableFromInline
-  typealias _Value = Tree._Value
+  typealias _RawValue = Tree._RawValue
 
   // メモリが解放される危険は解消したので、これを保持する必要性がなくなっている
   @usableFromInline
@@ -317,7 +317,7 @@ extension UnsafeIndexV2 {
 
 #if swift(>=5.5)
   extension UnsafeIndexV2: @unchecked Sendable
-  where _Value: Sendable {}
+  where _RawValue: Sendable {}
 #endif
 
 // MARK: - Convenience

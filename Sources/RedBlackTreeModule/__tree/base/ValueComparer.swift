@@ -11,7 +11,7 @@
 // __treenの基本要素ではないので、別カテゴリがいい
 
 /// ツリー使用条件をインジェクションするためのプロトコル
-public protocol ValueComparer: _TreeValueType & _BaseNode_KeyProtocol & _BaseKey_CompInterface & _BaseNode_KeyProtocol & PointerCompareStaticProtocol &
+public protocol ValueComparer: _TreeValueType & _BaseNode_KeyProtocol & _BaseKey_CompInterface & _BaseNode_KeyProtocol & _BaseNode_UniqueCompProtocol &
 _BaseRawValue_KeyInterface & _BaseKey_CompInterface & _BaseKey_EquivInterface {
   /// 要素から比較キー値がとれること
   @inlinable static func __key(_: _RawValue) -> _Key

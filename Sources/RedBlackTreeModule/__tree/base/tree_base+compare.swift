@@ -5,13 +5,13 @@
 //  Created by narumij on 2026/01/22.
 //
 
-public protocol PointerCompareStaticProtocol:
+public protocol _BaseNode_UniqueCompProtocol:
   CompareStaticProtocol
     & _BaseNode_KeyProtocol
     & _BaseKey_CompInterface
 {}
 
-extension PointerCompareStaticProtocol {
+extension _BaseNode_UniqueCompProtocol {
 
   public static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     assert(!l.___is_null, "Node shouldn't be null")

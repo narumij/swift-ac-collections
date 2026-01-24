@@ -45,7 +45,7 @@ extension BoundBothProtocol {
 }
 
 @usableFromInline
-protocol BoundAlgorithmProtocol: BoundAlgorithmProtocol_common & ThreeWayComparatorInterface {}
+protocol BoundAlgorithmProtocol: BoundAlgorithmProtocol_common & _TreeKey_LazyThreeWayCompInterface {}
 
 extension BoundAlgorithmProtocol {
 

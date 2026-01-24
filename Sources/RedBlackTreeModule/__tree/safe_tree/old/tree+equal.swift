@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol EqualProtocol_std: EqualInterface, BoundBasicInterface, EndNodeProtocol, RootPtrProtocol, ThreeWayComparatorInterface, TreeNodeValueInterface {
+protocol EqualProtocol_std: EqualInterface, BoundBasicInterface, EndNodeProtocol, RootPtrProtocol, _TreeKey_LazyThreeWayCompInterface, _TreeNode_KeyInterface {
 }
 
 extension EqualProtocol_std {

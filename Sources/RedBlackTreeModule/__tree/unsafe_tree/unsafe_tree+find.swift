@@ -11,7 +11,7 @@ protocol GetValueInterface: _NodePtrType, _KeyType {
 }
 
 @usableFromInline
-protocol FindLeafProtocol_ptr: _UnsafeNodePtrType, FindLeafInterface, GetValueInterface, RootInterface, RootPtrInterface, EndNodeInterface, _nullptr_interface, ValueCompInterface, _ValueType {}
+protocol FindLeafProtocol_ptr: _UnsafeNodePtrType, FindLeafInterface, GetValueInterface, RootInterface, RootPtrInterface, EndNodeInterface, _nullptr_interface, _TreeKey_CompInterface, _ValueType {}
 
 extension FindLeafProtocol_ptr {
 
@@ -82,8 +82,8 @@ protocol FindEqualProtocol_ptr:
     & EndInterface
     & RootInterface
     & RootPtrInterface
-    & ValueCompInterface
-    & ThreeWayCompInterface
+    & _TreeKey_CompInterface
+    & _TreeKey_ThreeWayCompInterface
     & _nullptr_interface
 {}
 
@@ -128,9 +128,9 @@ extension FindEqualProtocol_ptr {
 }
 
 @usableFromInline
-protocol FindEqualProtocol_ptr_old: _UnsafeNodePtrType, ValueCompInterface,
+protocol FindEqualProtocol_ptr_old: _UnsafeNodePtrType, _TreeKey_CompInterface,
   RootInterface, RootPtrInterface, EndNodeInterface, EndInterface, _nullptr_interface,
-  TreeNodeValueInterface
+  _TreeNode_KeyInterface
 {}
 
 extension FindEqualProtocol_ptr_old {

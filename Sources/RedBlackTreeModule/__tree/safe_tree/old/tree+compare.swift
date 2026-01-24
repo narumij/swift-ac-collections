@@ -87,7 +87,7 @@ extension CompareMultiTrait {
 }
 
 @usableFromInline
-protocol CompareUniqueProtocol: TreeNodeValueInterface, EndInterface, _nullptr_interface, ValueCompInterface {}
+protocol CompareUniqueProtocol: _TreeNode_KeyInterface, EndInterface, _nullptr_interface, _TreeKey_CompInterface {}
 
 extension CompareUniqueProtocol {
 

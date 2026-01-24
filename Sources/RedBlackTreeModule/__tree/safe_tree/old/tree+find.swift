@@ -96,7 +96,7 @@ extension FindEqualInterface {}
 
 @usableFromInline
 protocol FindEqualProtocol_std: ValueProtocol, TreeNodeRefAccessInterface, RootInterface, RootPtrProtocol,
-  ThreeWayComparatorInterface
+  _TreeKey_LazyThreeWayCompInterface
 {}
 
 extension FindEqualProtocol_std {

@@ -27,9 +27,9 @@ protocol CountProtocol_ptr:
   _UnsafeNodePtrType
     & EndNodeInterface
     & RootInterface
-    & ThreeWayCompInterface
+    & _TreeKey_ThreeWayCompInterface
     & BoundInteface
-    & TreeNodeValueInterface
+    & _TreeNode_KeyInterface
     & BoundAlgorithmProtocol_common_ptr
     & _nullptr_interface
 where

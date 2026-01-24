@@ -51,7 +51,7 @@ extension ValueComparer where _Key: Equatable {
 
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 @usableFromInline
-protocol ValueComparator: _TreeValueType & KeyInterface & ValueCompInterface
+protocol ValueComparator: _TreeValueType & _TreeValue_KeyInterface & _TreeKey_CompInterface
 where
   _Key == Base._Key,
   _Value == Base._Value

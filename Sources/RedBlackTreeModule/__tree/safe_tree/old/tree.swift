@@ -25,7 +25,7 @@ import Foundation
 // MARK: -
 
 @usableFromInline
-protocol KeyProtocol: KeyInterface, TreeNodeValueInterface, TreeValueInterface {}
+protocol KeyProtocol: _TreeValue_KeyInterface, _TreeNode_KeyInterface, _TreeNode_ValueInterface {}
 
 extension KeyProtocol {
 
@@ -38,7 +38,7 @@ extension KeyProtocol {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol ValueProtocol: ValueCompInterface, TreeNodeAccessInterface, TreeNodeValueInterface, _end_interface {}
+protocol ValueProtocol: _TreeKey_CompInterface, TreeNodeAccessInterface, _TreeNode_KeyInterface, _end_interface {}
 
 @usableFromInline
 protocol BeginProtocol: BeginNodeInterface {

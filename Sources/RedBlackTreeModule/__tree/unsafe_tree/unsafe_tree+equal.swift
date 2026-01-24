@@ -11,8 +11,8 @@ protocol EqualProtocol_ptr:
     & EndNodeInterface
     & RootInterface
     & EqualInterface
-    & TreeNodeValueInterface
-    & ThreeWayComparatorInterface
+    & _TreeNode_KeyInterface
+    & _TreeKey_LazyThreeWayCompInterface
     & _nullptr_interface
 {
   func __lower_bound_multi(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr

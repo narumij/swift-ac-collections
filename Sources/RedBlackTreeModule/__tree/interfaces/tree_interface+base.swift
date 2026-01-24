@@ -58,7 +58,7 @@ protocol RootPtrInterface: _NodePtrType {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol TreeNodeValueInterface: _NodePtrType & _KeyType & __node_value_type {
+protocol _TreeNode_KeyInterface: _NodePtrType & _KeyType & __node_value_type {
   /// ノードから比較用の値を取り出す。
   /// SetやMultisetではElementに該当する
   /// DictionaryやMultiMapではKeyに該当する
@@ -67,26 +67,26 @@ protocol TreeNodeValueInterface: _NodePtrType & _KeyType & __node_value_type {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol TreeValueInterface: _nullptr_interface & _ValueType & __value_type {
+protocol _TreeNode_ValueInterface: _nullptr_interface & _ValueType & __value_type {
   /// ノードの値要素を取得する
   @inlinable func __value_(_ p: _NodePtr) -> __value_type
 }
 
 @usableFromInline
-protocol KeyInterface: _KeyType, _ValueType {
+protocol _TreeValue_KeyInterface: _KeyType, _ValueType {
   /// 要素から比較用のキー値を取り出す。
   @inlinable func __key(_ e: _Value) -> _Key
 }
 
 @usableFromInline
-protocol MappedValueInteface: _KeyValueType {
+protocol _TreeValue_MappedValueInteface: _KeyValueType {
   
   @inlinable func ___mapped_value(_ element: _Value) -> _MappedValue
 }
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol ValueCompInterface: __node_value_type {
+protocol _TreeKey_CompInterface: __node_value_type {
   /// キー同士を比較する。通常`<`と同じ
   @inlinable func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
 }
@@ -94,14 +94,14 @@ protocol ValueCompInterface: __node_value_type {
 // MARK: -
 
 @usableFromInline
-protocol ThreeWayComparatorInterface: _KeyType & _ThreeWayResultType {
+protocol _TreeKey_LazyThreeWayCompInterface: _KeyType & _ThreeWayResultType {
   @inlinable
   func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __compare_result
 }
 
 @usableFromInline
-protocol ThreeWayCompInterface: _KeyType & _ThreeWayResultType {
+protocol _TreeKey_ThreeWayCompInterface: _KeyType & _ThreeWayResultType {
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __compare_result
 }
 

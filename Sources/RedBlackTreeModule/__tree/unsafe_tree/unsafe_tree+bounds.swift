@@ -8,7 +8,7 @@
 @usableFromInline
 protocol BoundAlgorithmProtocol_ptr:
   BoundAlgorithmProtocol_common_ptr
-    & ThreeWayCompInterface
+    & _TreeKey_ThreeWayCompInterface
     & _nullptr_interface
 {}
 
@@ -68,8 +68,8 @@ protocol BoundAlgorithmProtocol_common_ptr:
   _UnsafeNodePtrType
     & EndNodeInterface
     & RootInterface
-    & TreeNodeValueInterface
-    & ValueCompInterface
+    & _TreeNode_KeyInterface
+    & _TreeKey_CompInterface
     & _nullptr_interface
 {}
 

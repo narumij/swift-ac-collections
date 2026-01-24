@@ -13,6 +13,9 @@ public protocol _BaseNode_RawValueInterface: _NodePtrType & _RawValueType {
   // 非常に重要なポイントなので元ソース尊重よりもわかりやすさを優先しつつ、
   // エクスキューズ的に#ifで元の名前をリスペクトする感じ？
   public protocol _BaseNode_KeyInterface: _NodePtrType, _KeyType {
+    /// ノードから比較用の値を取り出す。
+    /// SetやMultisetではElementに該当する
+    /// DictionaryやMultiMapではKeyに該当する
     static func __get_value(_: _NodePtr) -> _Key
   }
 #else

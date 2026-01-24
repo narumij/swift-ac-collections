@@ -22,8 +22,9 @@
 
 import Foundation
 
-public
-  protocol ThreeWayComparator: _KeyType & _ThreeWayResultType
+public protocol _BaseKey_LazyThreeWayCompInterface:
+  _KeyType
+    & _ThreeWayResultType
 {
   static func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
@@ -33,7 +34,7 @@ public
 // TODO: プロトコルインジェクションを整理すること
 // __treenの基本要素ではないので、別カテゴリがいい
 
-public protocol LazySynthThreeWayComparator: ThreeWayComparator
+public protocol LazySynthThreeWayComparator: _BaseKey_LazyThreeWayCompInterface
 where Self: ValueComparer {}
 
 extension LazySynthThreeWayComparator {
@@ -48,7 +49,7 @@ extension LazySynthThreeWayComparator {
   }
 }
 
-public protocol ComparableThreeWayComparator: ThreeWayComparator
+public protocol ComparableThreeWayComparator: _BaseKey_LazyThreeWayCompInterface
 where _Key: Comparable {}
 
 extension ComparableThreeWayComparator {
@@ -65,7 +66,7 @@ extension ComparableThreeWayComparator {
   }
 }
 
-public protocol HasDefaultThreeWayComparator: ThreeWayComparator
+public protocol HasDefaultThreeWayComparator: _BaseKey_LazyThreeWayCompInterface
 where _Key: Comparable, __compare_result == __int_compare_result {}
 
 extension HasDefaultThreeWayComparator {

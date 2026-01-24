@@ -40,19 +40,15 @@
 // TODO: プロトコルインジェクションを整理すること
 // __treenの基本要素ではないので、別カテゴリがいい
 
-
-
 /// `__key(_:)`を定義するとプロトコルで他のBase系メソッドを生成するプロトコル
 public protocol ValueComparer:
   _TreeValueType
     & _BaseKey_LessThanProtocol
-    & _BaseKey_EquivProtocol
     & _BaseNode_PtrUniqueCompProtocol
     & _BaseNode_PtrCompProtocol
     & _BaseNode_KeyProtocol
     & _BaseRawValue_KeyInterface
 {}
-
 
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 @usableFromInline
@@ -60,14 +56,16 @@ protocol ValueComparator:
   _TreeValueType
     & _TreeRawValue_KeyInterface
     & _TreeKey_CompInterface
+    & _BaseRawValue_KeyInterface
+    & _BaseKey_LessThanInterface
 where
   _Key == Base._Key,
   _RawValue == Base._RawValue
 {
-  associatedtype Base: ValueComparer
-  @inlinable static func __key(_ e: _RawValue) -> _Key
-  @inlinable static func value_comp(_ a: _Key, _ b: _Key) -> Bool
-  @inlinable static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
+  associatedtype
+    Base:
+      _BaseRawValue_KeyInterface
+        & _BaseKey_LessThanInterface
 }
 
 extension ValueComparator {
@@ -83,12 +81,9 @@ extension ValueComparator {
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     Base.value_comp(a, b)
   }
+}
 
-  @inlinable
-  @inline(__always)
-  public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
-    Base.value_equiv(lhs, rhs)
-  }
+extension ValueComparator {
 
   @inlinable
   @inline(__always)
@@ -103,26 +98,11 @@ extension ValueComparator {
   }
 }
 
-extension ValueComparator {
+extension ValueComparator where Base: _BaseKey_LazyThreeWayCompInterface {
 
   @inlinable
   @inline(__always)
-  internal static func with_value_equiv<T>(_ f: ((_Key, _Key) -> Bool) -> T) -> T {
-    f(value_equiv)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal static func with_value_comp<T>(_ f: ((_Key, _Key) -> Bool) -> T) -> T {
-    f(value_comp)
-  }
-}
-
-extension ValueComparator where Base: ThreeWayComparator {
-
-  @inlinable
-  @inline(__always)
-  internal func
+  func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> Base.__compare_result
   {

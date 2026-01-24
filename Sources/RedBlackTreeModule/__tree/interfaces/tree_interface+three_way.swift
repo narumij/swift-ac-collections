@@ -22,3 +22,17 @@ public
   /// 三方比較結果型
   associatedtype __compare_result: ThreeWayCompareResult
 }
+
+// MARK: -
+
+@usableFromInline
+protocol _TreeKey_LazyThreeWayCompInterface: _KeyType & _ThreeWayResultType {
+  @inlinable
+  func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
+    -> __compare_result
+}
+
+@usableFromInline
+protocol _TreeKey_ThreeWayCompInterface: _KeyType & _ThreeWayResultType {
+  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __compare_result
+}

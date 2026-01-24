@@ -33,17 +33,5 @@ final class KeyValueComparerTests2: RedBlackTreeTestCase, KeyValueComparer, Comp
     XCTAssertFalse(Self.value_comp(keys[1], keys[0]))
     XCTAssertFalse(Self.value_comp(keys[2], keys[1]))
     XCTAssertFalse(Self.value_comp(keys[2], keys[0]))
-
-    XCTAssertFalse(Self.value_equiv(keys[0], keys[1]))
-    XCTAssertFalse(Self.value_equiv(keys[1], keys[2]))
-    XCTAssertFalse(Self.value_equiv(keys[0], keys[2]))
-
-    XCTAssertTrue(Self.value_equiv(keys[0], keys[0]))
-    XCTAssertTrue(Self.value_equiv(keys[1], keys[1]))
-    XCTAssertTrue(Self.value_equiv(keys[2], keys[2]))
-
-    XCTAssertFalse(Self.value_equiv(keys[1], keys[0]))
-    XCTAssertFalse(Self.value_equiv(keys[2], keys[1]))
-    XCTAssertFalse(Self.value_equiv(keys[2], keys[0]))
   }
 }

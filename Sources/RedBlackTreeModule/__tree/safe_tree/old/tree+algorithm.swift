@@ -22,13 +22,17 @@
 
 import Foundation
 
-extension TreeNodeInterface {
+// 一般ノード相当の機能
+@usableFromInline
+package protocol TreeAlgorithmProtocol_std: TreeNodeInterface {}
+
+extension TreeAlgorithmProtocol_std {
 
   /// Effects:  Makes `__x`->`__right_` the subtree root with `__x` as its left child
   ///           while preserving in-order order.
   @inlinable
   @inline(__always)
-  internal func
+  package func
     __tree_left_rotate(_ __x: _NodePtr)
   {
     assert(__x != nullptr, "node shouldn't be null")
@@ -52,7 +56,7 @@ extension TreeNodeInterface {
   ///           while preserving in-order order.
   @inlinable
   @inline(__always)
-  internal func
+  package func
     __tree_right_rotate(_ __x: _NodePtr)
   {
     assert(__x != nullptr, "node shouldn't be null")
@@ -64,7 +68,7 @@ extension TreeNodeInterface {
     }
     __parent_(__y, __parent_(__x))
     if __tree_is_left_child(__x) {
-      
+
       __left_(__parent_(__x), __y)
     } else {
       __right_(__parent_(__x), __y)
@@ -82,7 +86,7 @@ extension TreeNodeInterface {
   ///                may be different than the value passed in as `__root`.
   @inlinable
   @inline(__always)
-  internal func
+  package func
     __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
   {
     assert(__root != nullptr, "Root of the tree shouldn't be null")
@@ -142,7 +146,7 @@ extension TreeNodeInterface {
   ///                may be different than the value passed in as `__root`.
   @inlinable
   @inline(__always)
-  internal func
+  package func
     __tree_remove(_ __root: _NodePtr, _ __z: _NodePtr)
   {
     assert(__root != nullptr, "Root node should not be null")

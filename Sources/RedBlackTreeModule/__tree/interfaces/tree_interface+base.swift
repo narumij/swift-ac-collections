@@ -114,3 +114,6 @@ protocol SizeInterface {
   /// 終端ノードは含まないはず
   @inlinable var __size_: Int { get nonmutating set }
 }
+
+// MARK: -
+

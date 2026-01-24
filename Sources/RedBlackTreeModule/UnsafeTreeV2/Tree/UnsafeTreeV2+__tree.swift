@@ -45,7 +45,7 @@ extension UnsafeTreeV2: _pointer_type {
 
 // MARK: - TreeNodeProtocol
 
-extension UnsafeTreeV2: TreeNodeInterface {
+extension UnsafeTreeV2: TreeAlgorithmProtocol_std {
 
   @inlinable
   @inline(__always)
@@ -271,19 +271,20 @@ extension UnsafeTreeV2: FindEqualInterface, FindEqualProtocol_ptr {
     __lazy_synth_three_way_comparator(__lhs, __rhs)
   }
 }
-extension UnsafeTreeV2: FindLeafProtocol {}
+extension UnsafeTreeV2: FindLeafProtocol_ptr {}
 extension UnsafeTreeV2: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
 extension UnsafeTreeV2: InsertMultiProtocol {}
 extension UnsafeTreeV2: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
-extension UnsafeTreeV2: EqualProtocol {}
+extension UnsafeTreeV2: EqualProtocol_ptr {}
 extension UnsafeTreeV2: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2: EraseProtocol {}
 extension UnsafeTreeV2: EraseUniqueProtocol {}
 extension UnsafeTreeV2: EraseMultiProtocol {}
 extension UnsafeTreeV2: CompareBothProtocol_ptr {}
 extension UnsafeTreeV2: CountProtocol_ptr, DistanceProtocol_ptr {}
-extension UnsafeTreeV2: InsertLastProtocol {}
+extension UnsafeTreeV2: InsertLastProtocol_ptr {}
 extension UnsafeTreeV2: CompareProtocol {}
+extension UnsafeTreeV2: TreeAlgorithmBaseProtocol_ptr {}
 
 extension UnsafeTreeV2: FaultTorelantEraseProtocol, FaultTorelantEraseMultiProtocol {}

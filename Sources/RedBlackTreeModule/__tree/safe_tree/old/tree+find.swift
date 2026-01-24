@@ -23,7 +23,13 @@
 import Foundation
 
 @usableFromInline
-protocol FindLeafProtocol: ValueProtocol, TreeNodeRefInterface, RootInterface, EndNodeProtocol {}
+protocol FindLeafInterface: _NodePtrType & _KeyType {
+  func __find_leaf_low(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
+  func __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
+}
+
+@usableFromInline
+protocol FindLeafProtocol: FindLeafInterface, ValueProtocol, TreeNodeRefInterface, RootInterface, EndNodeProtocol {}
 
 extension FindLeafProtocol {
 

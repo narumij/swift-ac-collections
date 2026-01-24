@@ -24,7 +24,7 @@ package protocol TreeEndNodeInterface: _nullptr_interface, _pointer_type {
 
 // 一般ノード相当の機能
 @usableFromInline
-package protocol TreeNodeInterface: TreeEndNodeInterface, _parent_pointer_type {
+package protocol TreeNodeInterface: TreeEndNodeInterface, _parent_pointer_type, TreeAlgorithmBaseInterface {
   /// 右ノードを返す
   @inlinable func __right_(_: pointer) -> pointer
   /// 右ノードを更新する

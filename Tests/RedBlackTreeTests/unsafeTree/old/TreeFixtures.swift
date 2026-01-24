@@ -9,7 +9,8 @@ import XCTest
 #if DEBUG
   class TreeFixtureBase<Element>:
     RedBlackTreeTestCase,
-    TreeNodeInterface, RootInterface, EndNodeProtocol,
+    TreeAlgorithmBaseProtocol_std,
+    TreeAlgorithmProtocol_std, RootInterface, EndNodeProtocol,
     ___RedBlackTreeNodePoolProtocol
   {
     var nullptr: Int { .nullptr }
@@ -99,7 +100,7 @@ import XCTest
     CompareProtocol, CompareMultiProtocol_std,
     BoundBothProtocol, NodeBitmapProtocol_std,
     BoundAlgorithmProtocol,
-    RemoveProtocol_org,
+    RemoveProtocol_std,
     HasDefaultThreeWayComparator
   {
     func __lazy_synth_three_way_comparator(_ __lhs: Element, _ __rhs: Element) -> Int {

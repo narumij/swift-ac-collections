@@ -23,13 +23,13 @@
 import Foundation
 
 @usableFromInline
-protocol RemoveProtocol_org: TreeNodeInterface
+protocol RemoveProtocol_std: TreeNodeInterface & TreeAlgorithmInterface
     & BeginNodeInterface
     & EndNodeProtocol
     & SizeInterface
 {}
 
-extension RemoveProtocol_org {
+extension RemoveProtocol_std {
 
   @inlinable
   @inline(__always)

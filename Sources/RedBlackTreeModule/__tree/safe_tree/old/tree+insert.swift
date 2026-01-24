@@ -23,8 +23,8 @@
 import Foundation
 
 @usableFromInline
-protocol InsertNodeAtProtocol_std: InsertNodeAtInterface,
-  TreeNodeInterface & TreeNodeRefInterface & _end_interface & SizeInterface & BeginNodeInterface
+protocol InsertNodeAtProtocol_std: InsertNodeAtInterface, TreeAlgorithmInterface,
+                                   TreeNodeInterface & TreeNodeRefInterface & _end_interface & SizeInterface & BeginNodeInterface
     & EndNodeProtocol
 {}
 
@@ -96,18 +96,8 @@ extension InsertUniqueProtocol_std {
 }
 
 @usableFromInline
-protocol InsertMultiProtocol:
-  AllocationInterface & KeyProtocol
-{
-
-  func
-    __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
-
-  func
-    __insert_node_at(
-      _ __parent: _NodePtr, _ __child: _NodeRef,
-      _ __new_node: _NodePtr)
-}
+protocol InsertMultiProtocol: AllocationInterface & KeyInterface & FindLeafInterface & InsertNodeAtInterface & _nullptr_interface
+{}
 
 extension InsertMultiProtocol {
 
@@ -131,7 +121,16 @@ extension InsertMultiProtocol {
 }
 
 @usableFromInline
-protocol InsertLastProtocol:
+protocol InsertLastInterface: _NodePtrType & _ValueType {
+  func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef)
+  func ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _Value)
+    -> (__parent: _NodePtr, __child: _NodeRef)
+  func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr
+  func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr
+}
+
+@usableFromInline
+protocol InsertLastProtocol: InsertLastInterface &
   InsertNodeAtInterface & AllocationInterface & RootInterface & EndNodeProtocol & TreeNodeInterface
     & TreeNodeRefInterface & EndProtocol
 {}

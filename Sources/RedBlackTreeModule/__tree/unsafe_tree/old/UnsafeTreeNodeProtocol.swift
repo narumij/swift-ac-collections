@@ -9,7 +9,7 @@
 ///
 /// 段階としては終わっている
 @usableFromInline
-package protocol UnsafeTreeNodeProtocol: TreeNodeInterface & _UnsafeNodePtrType {}
+package protocol UnsafeTreeNodeProtocol: TreeAlgorithmProtocol_std & _UnsafeNodePtrType {}
 
 // MARK: - TreeEndNodeProtocol
 

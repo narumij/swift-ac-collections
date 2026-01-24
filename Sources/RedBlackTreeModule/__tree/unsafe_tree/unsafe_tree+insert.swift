@@ -14,7 +14,7 @@ protocol InsertNodeAtProtocol_ptr:
     & RootInterface
     & SizeInterface
     & _nullptr_interface
-    & TreeAlgorithm
+    & TreeAlgorithmProtocol_ptr
 {}
 
 extension InsertNodeAtProtocol_ptr {
@@ -44,9 +44,14 @@ extension InsertNodeAtProtocol_ptr {
 }
 
 @usableFromInline
-protocol InsertUniqueProtocol_ptr: _UnsafeNodePtrType, InsertNodeAtInterface & InsertUniqueInterface
+protocol InsertUniqueProtocol_ptr:
+  _UnsafeNodePtrType
+    & KeyInterface
+    & InsertNodeAtInterface
+    & InsertUniqueInterface
+    & FindEqualInterface
     & AllocationInterface
-    & KeyInterface, _nullptr_interface, FindEqualInterface
+    & _nullptr_interface
 {}
 
 extension InsertUniqueProtocol_ptr {
@@ -77,5 +82,62 @@ extension InsertUniqueProtocol_ptr {
       // 今回初めて破損したrefを使用したようで既存コードでの破損ref使用は大丈夫そう
       return (__r.pointee, false)
     }
+  }
+}
+
+@usableFromInline
+protocol InsertLastProtocol_ptr:
+  _UnsafeNodePtrType
+    & InsertLastInterface
+    & InsertNodeAtInterface
+    & AllocationInterface
+    & EndInterface
+    & EndNodeProtocol
+    & RootInterface
+    & _nullptr_interface
+{}
+
+extension InsertLastProtocol_ptr {
+
+  @inlinable
+  @inline(__always)
+  internal func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef) {
+    if __root == nullptr {
+      return (__end_node, __end_node.__left_ref)
+    }
+    let __parent = __tree_max(__root)
+    return (__parent, __parent.__right_ref)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func
+    ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _Value)
+    -> (__parent: _NodePtr, __child: _NodeRef)
+  {
+    let __p = __construct_node(__k)
+    __insert_node_at(__parent, __child, __p)
+    return (__p, __p.__right_ref)
+  }
+
+  // こちらのほうがAPIとしては収まりがいいが、かすかに上のモノの方が速い
+  // 分岐の有無の差だとおもわれる
+  @inlinable
+  @inline(__always)
+  internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr {
+    let __child = __p == end ? __end_node.__left_ref : __p.__right_ref
+    //                        ^--- これの差
+    let __h = __construct_node(__k)
+    __insert_node_at(__p, __child, __h)
+    return __h
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _Value) -> _NodePtr {
+    let __child = __p.__left_ref
+    let __h = __construct_node(__k)
+    __insert_node_at(__p, __child, __h)
+    return __h
   }
 }

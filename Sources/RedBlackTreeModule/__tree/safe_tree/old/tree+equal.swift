@@ -23,10 +23,10 @@
 import Foundation
 
 @usableFromInline
-protocol EqualProtocol: EqualInterface, BoundBasicInterface, EndNodeProtocol, RootPtrProtocol, ThreeWayComparatorInterface, TreeNodeValueInterface {
+protocol EqualProtocol_std: EqualInterface, BoundBasicInterface, EndNodeProtocol, RootPtrProtocol, ThreeWayComparatorInterface, TreeNodeValueInterface {
 }
 
-extension EqualProtocol {
+extension EqualProtocol_std {
 
   @inlinable
   @inline(__always)

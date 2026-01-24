@@ -183,3 +183,5 @@ extension UnsafeTreeV2ScalarHandle: InsertUniqueInterface, InsertUniqueProtocol_
 extension UnsafeTreeV2ScalarHandle: PointerCompareInterface, IsMultiTraitInterface, CompareBothProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: DistanceProtocol_ptr, CountProtocol_ptr {}
 
+extension UnsafeTreeV2ScalarHandle: TreeAlgorithmBaseProtocol_ptr {}
+extension UnsafeTreeV2ScalarHandle: TreeAlgorithmProtocol_ptr {}

@@ -37,19 +37,17 @@
 
 // MARK: common
 
-// TODO: プロトコルインジェクションを整理すること
-// __treenの基本要素ではないので、別カテゴリがいい
+// TODO: 名称変更
 
 /// `__key(_:)`を定義するとプロトコルで他のBase系メソッドを生成するプロトコル
 public protocol ValueComparer:
-  _TreeValueType
+  _BaseType
     & _BaseRawValue_KeyInterface
     & _BaseKey_LessThanProtocol
     & _BaseNode_PtrUniqueCompProtocol
     & _BaseNode_PtrCompProtocol
     & _BaseNode_KeyProtocol
-where _Key: Comparable
-{}
+where _Key: Comparable {}
 
 // MARK: -
 
@@ -61,9 +59,6 @@ public protocol ScalarValueComparer:
 {}
 
 extension ScalarValueComparer {}
-
-// TODO: プロトコルインジェクションを整理すること
-// __treenの基本要素ではないので、別カテゴリがいい
 
 /// 要素がキーバリューの場合のひな形
 public protocol KeyValueComparer:

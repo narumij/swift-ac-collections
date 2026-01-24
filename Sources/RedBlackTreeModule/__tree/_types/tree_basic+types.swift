@@ -56,16 +56,17 @@ public protocol _MappedValueType {
 
 // MARK: - Conditions
 
-/// ノードは必ず比較型と保持型を持つ
-public protocol _TreeValueType: _KeyType & _RawValueType {}  // 存在意義が???
+/// 必ず比較型と保持型を持つ
+public protocol _BaseType: _KeyType & _RawValueType {}
 
 /// SetやMultiSetは比較型と保持型が同じ
-public protocol _ScalarBaseType: _KeyType & _RawValueType
+public protocol _ScalarBaseType: _BaseType
 where _RawValue == _Key {}
 
-/// DictionaryやMultiMapは比較型と保持型は異なり、制約なし、マップ値型がある
-public protocol _KeyValueBaseType: _KeyType & _RawValueType & _MappedValueType {}
+/// DictionaryやMultiMapは比較型と保持型は互いに異なり、マップ値型がある
+public protocol _KeyValueBaseType: _BaseType & _MappedValueType {}
 
+/// DictionaryやMultiMapは保持型にRedBlackTreePairを用いる
 public protocol _PairBaseType: _KeyValueBaseType
 where _RawValue == RedBlackTreePair<_Key, _MappedValue> {}
 

@@ -5,10 +5,12 @@
 //  Created by narumij on 2026/01/25.
 //
 
+// TODO: 名称変更
+
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 @usableFromInline
 protocol ValueComparator:
-  _TreeValueType
+  _BaseType
     & _TreeRawValue_KeyInterface
     & _TreeKey_CompInterface
     & _BaseRawValue_KeyInterface

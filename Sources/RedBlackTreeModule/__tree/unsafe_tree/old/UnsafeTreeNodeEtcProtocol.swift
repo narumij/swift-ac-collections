@@ -25,7 +25,7 @@
 /// 段階としては終わっている
 @usableFromInline
 package protocol UnsafeTreeAccessHandleBase:
-  _TreeValueType & _UnsafeNodePtrType & UnsafeTreeNodeAccessProtocol & UnsafeTreeNodeRefAccessProtocol
+  _BaseType & _UnsafeNodePtrType & UnsafeTreeNodeAccessProtocol & UnsafeTreeNodeRefAccessProtocol
 {
   var header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader> { get }
 }

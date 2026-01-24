@@ -6,12 +6,16 @@
 //
 
 @usableFromInline
-protocol GetValueInterface: _NodePtrType, _KeyType {
-  func __get_value(_ p: _NodePtr) -> _Key
-}
-
-@usableFromInline
-protocol FindLeafProtocol_ptr: _UnsafeNodePtrType, FindLeafInterface, GetValueInterface, RootInterface, RootPtrInterface, EndNodeInterface, _nullptr_interface, _TreeKey_CompInterface, _RawValueType {}
+protocol FindLeafProtocol_ptr:
+  _UnsafeNodePtrType
+    & _TreeNode_KeyInterface
+    & _TreeKey_CompInterface
+    & FindLeafInterface
+    & RootInterface
+    & RootPtrInterface
+    & EndNodeInterface
+    & _nullptr_interface
+{}
 
 extension FindLeafProtocol_ptr {
 
@@ -74,16 +78,15 @@ extension FindLeafProtocol_ptr {
   }
 }
 
-
 @usableFromInline
 protocol FindEqualProtocol_ptr:
   _UnsafeNodePtrType
+    & _TreeKey_ThreeWayCompInterface
+    & _TreeNode_KeyInterface
     & EndNodeInterface
     & EndInterface
     & RootInterface
     & RootPtrInterface
-    & _TreeKey_CompInterface
-    & _TreeKey_ThreeWayCompInterface
     & _nullptr_interface
 {}
 
@@ -128,9 +131,15 @@ extension FindEqualProtocol_ptr {
 }
 
 @usableFromInline
-protocol FindEqualProtocol_ptr_old: _UnsafeNodePtrType, _TreeKey_CompInterface,
-  RootInterface, RootPtrInterface, EndNodeInterface, EndInterface, _nullptr_interface,
-  _TreeNode_KeyInterface
+protocol FindEqualProtocol_ptr_old:
+  _UnsafeNodePtrType
+    & _TreeKey_CompInterface
+    & _TreeNode_KeyInterface
+    & RootInterface
+    & RootPtrInterface
+    & EndNodeInterface
+    & EndInterface
+    & _nullptr_interface
 {}
 
 extension FindEqualProtocol_ptr_old {
@@ -173,8 +182,12 @@ extension FindEqualProtocol_ptr_old {
 }
 
 @usableFromInline
-protocol FindProtocol_ptr: _UnsafeNodePtrType, FindInteface, FindEqualInterface,
-  EndInterface, _nullptr_interface
+protocol FindProtocol_ptr:
+  _UnsafeNodePtrType
+    & FindInteface
+    & FindEqualInterface
+    & EndInterface
+    & _nullptr_interface
 {}
 
 extension FindProtocol_ptr {

@@ -48,14 +48,6 @@ extension _TreeNode_KeyProtocol {
   #endif
 }
 
-// 型の名前にねじれがあるので注意
-@usableFromInline
-protocol ValueProtocol:
-  TreeNodeAccessInterface
-    & _TreeNode_KeyInterface
-    & _TreeKey_CompInterface
-    & _end_interface
-{}
 
 @usableFromInline
 protocol BeginProtocol: BeginNodeInterface {

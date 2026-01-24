@@ -146,3 +146,11 @@ protocol SizeInterface {
 
 // MARK: -
 
+// 型の名前にねじれがあるので注意
+@usableFromInline
+protocol ValueInterface:
+  TreeNodeAccessInterface
+    & _TreeNode_KeyInterface
+    & _TreeKey_CompInterface
+    & _end_interface
+{}

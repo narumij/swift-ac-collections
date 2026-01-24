@@ -10,7 +10,7 @@ protocol InsertNodeAtProtocol_ptr:
   _UnsafeNodePtrType
     & InsertNodeAtInterface
     & BeginNodeInterface
-    & EndNodeProtocol
+    & EndNodeInterface
     & RootInterface
     & SizeInterface
     & _nullptr_interface

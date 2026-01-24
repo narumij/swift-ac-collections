@@ -99,7 +99,7 @@ extension BoundAlgorithmProtocol {
 }
 
 @usableFromInline
-protocol BoundAlgorithmProtocol_common: ValueProtocol & RootInterface & EndNodeProtocol {}
+protocol BoundAlgorithmProtocol_common: ValueInterface & RootInterface & EndNodeProtocol {}
 
 extension BoundAlgorithmProtocol_common {
 

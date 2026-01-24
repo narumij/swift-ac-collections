@@ -28,14 +28,16 @@ import Foundation
 protocol CompareBothProtocol_ptr:
   _UnsafeNodePtrType
     & PointerCompareInterface
-    & CompareUniqueProtocol
+    & _TreeKey_CompInterface
     & IsMultiTraitInterface
+    & _nullptr_interface
+    & EndInterface
 {
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }
 
 extension CompareBothProtocol_ptr {
-  
+
   @inlinable
   @inline(__always)
   internal func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
@@ -79,7 +81,6 @@ extension CompareBothProtocol_ptr {
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-
 }
 
 // ノードの高さを数える
@@ -101,8 +102,9 @@ internal func ___ptr_height(_ __p: UnsafeMutablePointer<UnsafeNode>) -> Int {
 //  @inline(__always)
 internal func ___ptr_comp_multi_org(
   _ __l: UnsafeMutablePointer<UnsafeNode>,
-  _ __r: UnsafeMutablePointer<UnsafeNode>)
--> Bool
+  _ __r: UnsafeMutablePointer<UnsafeNode>
+)
+  -> Bool
 {
   assert(!__l.___is_null, "Left node shouldn't be null")
   assert(!__r.___is_null, "Right node shouldn't be null")
@@ -146,8 +148,9 @@ internal func ___ptr_comp_multi_org(
 //  @inline(__always)
 internal func ___ptr_comp_multi(
   _ __l: UnsafeMutablePointer<UnsafeNode>,
-  _ __r: UnsafeMutablePointer<UnsafeNode>)
--> Bool
+  _ __r: UnsafeMutablePointer<UnsafeNode>
+)
+  -> Bool
 {
   assert(!__l.___is_null, "Left node shouldn't be null")
   assert(!__r.___is_null, "Right node shouldn't be null")
@@ -233,7 +236,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 
   // 64bit幅でかつ、必要なレジスタ数が削減されている
-  
+
   @inlinable
   @inline(__always)
   internal func ___ptr_bitmap_64() -> UInt {
@@ -265,6 +268,6 @@ func ___ptr_comp_bitmap(
 
   // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
   return __l.___ptr_bitmap_128() < __r.___ptr_bitmap_128()
-//  return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
-//  return __l.___ptr_bitmap() < __r.___ptr_bitmap()
+  //  return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
+  //  return __l.___ptr_bitmap() < __r.___ptr_bitmap()
 }

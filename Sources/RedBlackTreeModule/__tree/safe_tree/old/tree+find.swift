@@ -29,7 +29,7 @@ protocol FindLeafInterface: _NodePtrType & _KeyType {
 }
 
 @usableFromInline
-protocol FindLeafProtocol: FindLeafInterface, ValueProtocol, TreeNodeRefAccessInterface, RootInterface, EndNodeProtocol {}
+protocol FindLeafProtocol: FindLeafInterface, ValueInterface, TreeNodeRefAccessInterface, RootInterface, EndNodeProtocol {}
 
 extension FindLeafProtocol {
 
@@ -95,7 +95,7 @@ extension FindLeafProtocol {
 extension FindEqualInterface {}
 
 @usableFromInline
-protocol FindEqualProtocol_std: ValueProtocol, TreeNodeRefAccessInterface, RootInterface, RootPtrProtocol,
+protocol FindEqualProtocol_std: ValueInterface, TreeNodeRefAccessInterface, RootInterface, RootPtrProtocol,
   _TreeKey_LazyThreeWayCompInterface
 {}
 
@@ -139,7 +139,7 @@ extension FindEqualProtocol_std {
 }
 
 @usableFromInline
-protocol FindEqualProtocol_old: ValueProtocol, TreeNodeRefAccessInterface, RootInterface, RootPtrProtocol {}
+protocol FindEqualProtocol_old: ValueInterface, TreeNodeRefAccessInterface, RootInterface, RootPtrProtocol {}
 
 extension FindEqualProtocol_old {
 

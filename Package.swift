@@ -13,7 +13,7 @@ var defines: [String] = [
   //  "DISABLE_COPY_ON_WRITE", // やや危険。クラッシュは減った。Unit Testが通らない箇所が増える
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "SKIP_MULTISET_INDEX_BUG",
-  //  "PERFOMANCE_CHECK",
+  //    "PERFOMANCE_CHECK",
   "WITHOUT_SIZECHECK",
   "USE_UNSAFE_TREE",  // TODO: そのうち消す
   //"USE_OLD_FIND",
@@ -22,9 +22,9 @@ var defines: [String] = [
   //  "USE_C_MALLOC",
   "USE_COPY_ON_WRITE",
 
-  
   //  "DEATH_TEST",
   //  "BENCHMARK",
+  //  "ENABLE_PERFORMANCE_TESTING"
 ]
 
 var _settings: [SwiftSetting] =

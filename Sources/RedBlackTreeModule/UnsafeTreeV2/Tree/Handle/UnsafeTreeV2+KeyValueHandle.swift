@@ -116,7 +116,7 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 }
 
-extension UnsafeTreeV2KeyValueHandle: UnsafeTreeHandleBase {}
+extension UnsafeTreeV2KeyValueHandle: UnsafeTreeAccessHandleBase {}
 
 extension UnsafeTreeV2KeyValueHandle: BoundBothProtocol, BoundAlgorithmProtocol {}
 extension UnsafeTreeV2KeyValueHandle: FindInteface, FindProtocol_ptr {}

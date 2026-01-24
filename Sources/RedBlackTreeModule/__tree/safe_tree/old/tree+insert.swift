@@ -24,7 +24,7 @@ import Foundation
 
 @usableFromInline
 protocol InsertNodeAtProtocol_std: InsertNodeAtInterface, TreeAlgorithmInterface,
-                                   TreeNodeInterface & TreeNodeRefInterface & _end_interface & SizeInterface & BeginNodeInterface
+                                   TreeNodeAccessInterface & TreeNodeRefAccessInterface & _end_interface & SizeInterface & BeginNodeInterface
     & EndNodeProtocol
 {}
 
@@ -54,7 +54,7 @@ extension InsertNodeAtProtocol_std {
 
 @usableFromInline
 protocol InsertUniqueProtocol_std: InsertUniqueInterface &
-  AllocationInterface & KeyProtocol & TreeNodeRefInterface
+  AllocationInterface & KeyProtocol & TreeNodeRefAccessInterface
 {
   func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
 
@@ -131,8 +131,8 @@ protocol InsertLastInterface: _NodePtrType & _ValueType {
 
 @usableFromInline
 protocol InsertLastProtocol: InsertLastInterface &
-  InsertNodeAtInterface & AllocationInterface & RootInterface & EndNodeProtocol & TreeNodeInterface
-    & TreeNodeRefInterface & EndProtocol
+  InsertNodeAtInterface & AllocationInterface & RootInterface & EndNodeProtocol & TreeNodeAccessInterface
+    & TreeNodeRefAccessInterface & EndProtocol
 {}
 
 extension InsertLastProtocol {

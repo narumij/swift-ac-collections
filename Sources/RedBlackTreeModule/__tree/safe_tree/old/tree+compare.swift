@@ -104,7 +104,7 @@ extension CompareUniqueProtocol {
 }
 
 @usableFromInline
-protocol CompareMultiProtocol_std: TreeNodeInterface & RootInterface & EndInterface {}
+protocol CompareMultiProtocol_std: TreeNodeAccessInterface & RootInterface & EndInterface {}
 
 extension CompareMultiProtocol_std {
 
@@ -225,7 +225,7 @@ protocol NodeBitmapInterface: _NodePtrType {
 }
 
 @usableFromInline
-protocol NodeBitmapProtocol_std: NodeBitmapInterface & TreeNodeInterface & RootInterface & EndInterface {}
+protocol NodeBitmapProtocol_std: NodeBitmapInterface & TreeNodeAccessInterface & RootInterface & EndInterface {}
 
 extension NodeBitmapProtocol_std {
 

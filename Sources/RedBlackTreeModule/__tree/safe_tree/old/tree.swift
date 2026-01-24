@@ -38,7 +38,7 @@ extension KeyProtocol {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol ValueProtocol: ValueCompInterface, TreeNodeInterface, TreeNodeValueInterface, _end_interface {}
+protocol ValueProtocol: ValueCompInterface, TreeNodeAccessInterface, TreeNodeValueInterface, _end_interface {}
 
 @usableFromInline
 protocol BeginProtocol: BeginNodeInterface {
@@ -77,7 +77,7 @@ extension EndProtocol where _NodePtr == Int {
   internal var end: _NodePtr { .end }
 }
 
-protocol ___RootProtocol: RootInterface & TreeNodeInterface & EndNodeProtocol {}
+protocol ___RootProtocol: RootInterface & TreeNodeAccessInterface & EndNodeProtocol {}
 
 extension ___RootProtocol where _NodePtr == Int {
   @available(*, deprecated, message: "Kept only for the purpose of preventing loss of knowledge")
@@ -86,7 +86,7 @@ extension ___RootProtocol where _NodePtr == Int {
 }
 
 @usableFromInline
-protocol RootPtrProtocol: RootPtrInterface & TreeNodeInterface & TreeNodeRefInterface & RootInterface & EndProtocol & EndNodeProtocol {
+protocol RootPtrProtocol: RootPtrInterface & TreeNodeAccessInterface & TreeNodeRefAccessInterface & RootInterface & EndProtocol & EndNodeProtocol {
 }
 
 extension RootPtrProtocol where _NodePtr == Int {

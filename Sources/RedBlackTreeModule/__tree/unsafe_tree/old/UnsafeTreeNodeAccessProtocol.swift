@@ -9,11 +9,11 @@
 ///
 /// 段階としては終わっている
 @usableFromInline
-package protocol UnsafeTreeNodeProtocol: TreeAlgorithmProtocol_std & _UnsafeNodePtrType {}
+package protocol UnsafeTreeNodeAccessProtocol: TreeNodeAccessInterface & _UnsafeNodePtrType {}
 
 // MARK: - TreeEndNodeProtocol
 
-extension UnsafeTreeNodeProtocol {
+extension UnsafeTreeNodeAccessProtocol {
 
   @inlinable
   @inline(__always)
@@ -36,7 +36,7 @@ extension UnsafeTreeNodeProtocol {
 
 // MARK: - TreeNodeProtocol
 
-extension UnsafeTreeNodeProtocol {
+extension UnsafeTreeNodeAccessProtocol {
 
   @inlinable
   @inline(__always)

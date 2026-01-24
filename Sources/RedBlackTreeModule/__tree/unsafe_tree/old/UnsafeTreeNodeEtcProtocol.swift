@@ -24,13 +24,13 @@
 ///
 /// 段階としては終わっている
 @usableFromInline
-package protocol UnsafeTreeHandleBase:
-  _TreeValueType & _UnsafeNodePtrType & UnsafeTreeNodeProtocol & UnsafeTreeNodeRefProtocol
+package protocol UnsafeTreeAccessHandleBase:
+  _TreeValueType & _UnsafeNodePtrType & UnsafeTreeNodeAccessProtocol & UnsafeTreeNodeRefAccessProtocol
 {
   var header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader> { get }
 }
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeAccessHandleBase {
 
   @inlinable
   @inline(__always)
@@ -43,7 +43,7 @@ extension UnsafeTreeHandleBase {
 
 // MARK: - BeginNodeProtocol
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeAccessHandleBase {
 
   @inlinable
   package var __begin_node_: _NodePtr {
@@ -60,7 +60,7 @@ extension UnsafeTreeHandleBase {
 
 // MARK: - EndNodeProtocol
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeAccessHandleBase {
 
   @inlinable
   @inline(__always)
@@ -71,7 +71,7 @@ extension UnsafeTreeHandleBase {
 
 // MARK: - RootProtocol
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeAccessHandleBase {
 
   #if !DEBUG
     @nonobjc
@@ -100,7 +100,7 @@ extension UnsafeTreeHandleBase {
 
 // MARK: - SizeProtocol
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeAccessHandleBase {
 
   @inlinable
   package var __size_: Int {
@@ -115,7 +115,7 @@ extension UnsafeTreeHandleBase {
 
 // MARK: - AllocatorProtocol
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeAccessHandleBase {
 
   @inlinable
   @inline(__always)
@@ -132,7 +132,7 @@ extension UnsafeTreeHandleBase {
   }
 }
 
-extension UnsafeTreeHandleBase {
+extension UnsafeTreeAccessHandleBase {
 
   @inlinable
   @inline(__always)

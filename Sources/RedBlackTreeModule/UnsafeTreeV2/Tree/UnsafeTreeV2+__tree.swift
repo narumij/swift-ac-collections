@@ -92,7 +92,7 @@ extension UnsafeTreeV2: TreeAlgorithmProtocol_std {
 
 // MARK: -
 
-extension UnsafeTreeV2: TreeNodeRefInterface {
+extension UnsafeTreeV2: TreeNodeRefAccessInterface {
 
   @inlinable
   @inline(__always)

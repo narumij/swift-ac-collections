@@ -9,9 +9,9 @@
 ///
 /// 段階としては終わっている
 @usableFromInline
-package protocol UnsafeTreeNodeRefProtocol: TreeNodeRefInterface & _UnsafeNodePtrType {}
+package protocol UnsafeTreeNodeRefAccessProtocol: TreeNodeRefAccessInterface & _UnsafeNodePtrType {}
 
-extension UnsafeTreeNodeRefProtocol {
+extension UnsafeTreeNodeRefAccessProtocol {
 
   @inlinable
   @inline(__always)

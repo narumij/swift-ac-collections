@@ -23,7 +23,7 @@
 import Foundation
 
 @usableFromInline
-protocol TreeAlgorithmBaseProtocol_std: TreeAlgorithmInterface & TreeAlgorithmBaseInterface & TreeNodeInterface {}
+protocol TreeAlgorithmBaseProtocol_std: TreeAlgorithmInterface & TreeAlgorithmBaseInterface & TreeNodeAccessInterface {}
 
 extension TreeAlgorithmBaseProtocol_std {
 
@@ -224,7 +224,7 @@ extension TreeAlgorithmBaseProtocol_std {
 
 // 一般ノード相当の機能
 @usableFromInline
-package protocol TreeAlgorithmProtocol_std: TreeNodeInterface {}
+package protocol TreeAlgorithmProtocol_std: TreeNodeAccessInterface {}
 
 extension TreeAlgorithmProtocol_std {
 

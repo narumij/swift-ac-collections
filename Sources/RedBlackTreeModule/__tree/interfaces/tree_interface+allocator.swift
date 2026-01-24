@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol AllocationInterface: _NodePtrType & _ValueType {
+protocol AllocationInterface: _NodePtrType & _RawValueType {
   /// ノードを構築する
   func __construct_node(_ k: _Value) -> _NodePtr
 }

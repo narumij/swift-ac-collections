@@ -11,7 +11,7 @@ protocol GetValueInterface: _NodePtrType, _KeyType {
 }
 
 @usableFromInline
-protocol FindLeafProtocol_ptr: _UnsafeNodePtrType, FindLeafInterface, GetValueInterface, RootInterface, RootPtrInterface, EndNodeInterface, _nullptr_interface, _TreeKey_CompInterface, _ValueType {}
+protocol FindLeafProtocol_ptr: _UnsafeNodePtrType, FindLeafInterface, GetValueInterface, RootInterface, RootPtrInterface, EndNodeInterface, _nullptr_interface, _TreeKey_CompInterface, _RawValueType {}
 
 extension FindLeafProtocol_ptr {
 

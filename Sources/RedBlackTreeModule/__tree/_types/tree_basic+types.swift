@@ -42,7 +42,7 @@ public protocol _KeyType {
 }
 
 /// ノードが保持する値型の定義
-public protocol _ValueType {
+public protocol _RawValueType {
   /// ノードが保持する値型
   associatedtype _Value
 }
@@ -56,14 +56,14 @@ public protocol _MappedValueType {
 // MARK: - Conditions
 
 /// ノードは必ず比較型と保持型を持つ
-public protocol _TreeValueType: _KeyType & _ValueType {}
+public protocol _TreeValueType: _KeyType & _RawValueType {}
 
 /// SetやMultiSetは比較型と保持型が同じ
-public protocol _ScalarValueType: _KeyType & _ValueType
+public protocol _ScalarValueType: _KeyType & _RawValueType
 where _Key == _Value {}
 
 /// DictionaryやMultiMapは比較型と保持型は異なり、制約なし、マップ値型がある
-public protocol _KeyValueType: _KeyType & _ValueType & _MappedValueType {}
+public protocol _KeyValueType: _KeyType & _RawValueType & _MappedValueType {}
 
 /// DictionaryやMultiMapは内部のキーバリュー値にRedBlackTreePairを用いている
 public protocol _KeyValuePairType: _KeyValueType {}
@@ -107,7 +107,7 @@ where __node_value_type == _Key {
 
 /// 保持型の別名定義
 @usableFromInline
-protocol __value_type: _ValueType
+protocol __value_type: _RawValueType
 where __value_type == _Value {
   /// 保持型の別名
   associatedtype __value_type

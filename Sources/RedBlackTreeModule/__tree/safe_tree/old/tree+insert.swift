@@ -121,7 +121,7 @@ extension InsertMultiProtocol {
 }
 
 @usableFromInline
-protocol InsertLastInterface: _NodePtrType & _ValueType {
+protocol InsertLastInterface: _NodePtrType & _RawValueType {
   func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef)
   func ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _Value)
     -> (__parent: _NodePtr, __child: _NodeRef)

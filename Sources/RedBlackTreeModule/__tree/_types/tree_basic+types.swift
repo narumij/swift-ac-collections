@@ -66,6 +66,9 @@ where _Key == _RawValue {}
 /// DictionaryやMultiMapは比較型と保持型は異なり、制約なし、マップ値型がある
 public protocol _KeyValueRawType: _KeyType & _RawValueType & _MappedValueType {}
 
+public protocol _PairValueType: _KeyValueRawType
+where _RawValue == RedBlackTreePair<_Key, _MappedValue> {}
+
 /// DictionaryやMultiMapは内部のキーバリュー値にRedBlackTreePairを用いている
 public protocol _PairRawType: _KeyValueRawType {}
 

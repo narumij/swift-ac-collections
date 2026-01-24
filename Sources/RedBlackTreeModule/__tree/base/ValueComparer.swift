@@ -121,3 +121,43 @@ extension ValueComparator where Base: ThreeWayComparator {
     Base.__lazy_synth_three_way_comparator(__lhs, __rhs)
   }
 }
+
+
+// MARK: -
+
+/// 要素とキーが一致する場合のひな形
+public protocol ScalarValueComparer:
+  _BaseRawValue_KeyProtocol
+    & ValueComparer
+    & HasDefaultThreeWayComparator
+{}
+
+extension ScalarValueComparer {}
+
+
+// TODO: プロトコルインジェクションを整理すること
+// __treenの基本要素ではないので、別カテゴリがいい
+
+/// 要素がキーバリューの場合のひな形
+public protocol KeyValueComparer: _KeyValueRawType & ValueComparer & HasDefaultThreeWayComparator
+    & _BaseRawValue_MappedValueInterface & WithMappedValueInterface
+{}
+
+extension KeyValueComparer where _RawValue == RedBlackTreePair<_Key, _MappedValue> {
+
+  @inlinable
+  @inline(__always)
+  public static func __key(_ element: _RawValue) -> _Key { element.key }
+
+  @inlinable
+  @inline(__always)
+  public static func ___mapped_value(_ element: _RawValue) -> _MappedValue { element.value }
+
+  @inlinable
+  @inline(__always)
+  public static func ___with_mapped_value<T>(
+    _ element: inout _RawValue, _ f: (inout _MappedValue) throws -> T
+  ) rethrows -> T {
+    try f(&element.value)
+  }
+}

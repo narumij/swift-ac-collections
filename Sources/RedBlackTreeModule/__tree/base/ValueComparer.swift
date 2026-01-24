@@ -48,6 +48,7 @@ public protocol ValueComparer:
     & _BaseNode_PtrUniqueCompProtocol
     & _BaseNode_PtrCompProtocol
     & _BaseNode_KeyProtocol
+where _Key: Comparable
 {}
 
 // MARK: -
@@ -55,8 +56,8 @@ public protocol ValueComparer:
 /// 要素とキーが一致する場合のひな形
 public protocol ScalarValueComparer:
   ValueComparer
+    & _ScalarBaseType
     & _ScalarBaseRawValue_KeyProtocol
-    & HasDefaultThreeWayComparator
 {}
 
 extension ScalarValueComparer {}
@@ -67,28 +68,31 @@ extension ScalarValueComparer {}
 /// 要素がキーバリューの場合のひな形
 public protocol KeyValueComparer:
   ValueComparer
+    & _KeyValueBaseType
     & _BaseRawValue_KeyInterface
     & _BaseRawValue_MappedValueInterface
     & WithMappedValueInterface
-
-    & HasDefaultThreeWayComparator
 {}
+
+// LRUキャッシュがPairではないので、統一できなかった
+// デコレーターパターン化できれば統一できそうだが、それはまたいずれ
 
 extension KeyValueComparer where _RawValue == RedBlackTreePair<_Key, _MappedValue> {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ element: _RawValue) -> _Key { element.key }
+  public static func __key(_ __v: _RawValue) -> _Key { __v.key }
 
   @inlinable
   @inline(__always)
-  public static func ___mapped_value(_ element: _RawValue) -> _MappedValue { element.value }
+  public static func ___mapped_value(_ __v: _RawValue) -> _MappedValue { __v.value }
 
   @inlinable
   @inline(__always)
-  public static func ___with_mapped_value<T>(
-    _ element: inout _RawValue, _ f: (inout _MappedValue) throws -> T
-  ) rethrows -> T {
-    try f(&element.value)
+  public static func ___with_mapped_value<ResultType>(
+    _ __v: inout _RawValue,
+    _ __body: (inout _MappedValue) throws -> ResultType
+  ) rethrows -> ResultType {
+    try __body(&__v.value)
   }
 }

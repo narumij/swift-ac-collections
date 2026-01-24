@@ -261,13 +261,13 @@ extension UnsafeTreeV2: BoundBothInterface {
   }
 }
 
+extension UnsafeTreeV2: IntThreeWayComparator {}
 extension UnsafeTreeV2: FindProtocol_ptr {}
 extension UnsafeTreeV2: FindEqualInterface, FindEqualProtocol_ptr {
-  public typealias __compare_result = Base.__compare_result
   
   @inlinable
   @inline(__always)
-  func __comp(_ __lhs: Base._Key, _ __rhs: Base._Key) -> Base.__compare_result {
+  package func __comp(_ __lhs: Base._Key, _ __rhs: Base._Key) -> __compare_result {
     __lazy_synth_three_way_comparator(__lhs, __rhs)
   }
 }

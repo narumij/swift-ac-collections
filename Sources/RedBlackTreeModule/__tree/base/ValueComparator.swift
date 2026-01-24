@@ -53,29 +53,23 @@ extension ValueComparator {
   }
 }
 
-extension ValueComparator where Base: _BaseKey_LazyThreeWayCompInterface {
-
+extension ValueComparator where Base: _BaseRawValue_MappedValueInterface {
+  
   @usableFromInline
-  typealias __compare_result = Base.__compare_result
-
+  typealias _MappedValue = Base._MappedValue
+  
   @inlinable
   @inline(__always)
-  static func
-    __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
-    -> __compare_result
-  {
-    Base.__lazy_synth_three_way_comparator(__lhs, __rhs)
+  static func ___mapped_value(_ __v: _RawValue) -> _MappedValue {
+    Base.___mapped_value(__v)
   }
 }
 
-extension ValueComparator where Base: _BaseKey_LazyThreeWayCompInterface {
-
+extension ValueComparator where Base: _BaseRawValue_MappedValueInterface {
+  
   @inlinable
   @inline(__always)
-  func
-    __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
-    -> __compare_result
-  {
-    Base.__lazy_synth_three_way_comparator(__lhs, __rhs)
+  func ___mapped_value(_ __v: _RawValue) -> _MappedValue {
+    Base.___mapped_value(__v)
   }
 }

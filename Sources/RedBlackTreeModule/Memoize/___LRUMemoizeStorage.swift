@@ -109,7 +109,7 @@ extension ___LRUMemoizeStorage {
   }
 }
 
-extension ___LRUMemoizeStorage: ___LRULinkList & ___UnsafeStorageProtocolV2 {
+extension ___LRUMemoizeStorage: ___LRULinkList & ___UnsafeStorageProtocolV2 & IntThreeWayComparator {
 
   public typealias Base = Self
 }

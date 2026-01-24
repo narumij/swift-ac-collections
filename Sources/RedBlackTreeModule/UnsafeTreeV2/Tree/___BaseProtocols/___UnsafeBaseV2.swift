@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public typealias ___TreeBase = ValueComparer & CompareTrait & _BaseKey_LazyThreeWayCompInterface
+public typealias ___TreeBase = ValueComparer & CompareTrait
 
 // コレクション実装の基点
 public protocol ___Root {

@@ -12,7 +12,7 @@ import XCTest
 
   final class UnsafeTreeBasicTests: RedBlackTreeTestCase {
 
-    enum Base: ScalarValueComparer & CompareUniqueTrait & HasDefaultThreeWayComparator {
+    enum Base: ScalarValueComparer & CompareUniqueTrait & IntThreeWayComparator {
       static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeModule.UnsafeNode>) -> Int {
         fatalError()
       }

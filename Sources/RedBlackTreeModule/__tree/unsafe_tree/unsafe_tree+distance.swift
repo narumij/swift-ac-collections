@@ -74,6 +74,7 @@ extension DistanceProtocol_ptr {
   }
 }
 
+#if false
 extension RedBlackTreeSet {
 
   public func ___comp_distance(start: Index, end: Index) -> Int {
@@ -96,3 +97,4 @@ extension RedBlackTreeSet {
     ___ptr_comp_bitmap(__tree_.rawValue(start), __tree_.rawValue(end))
   }
 }
+#endif

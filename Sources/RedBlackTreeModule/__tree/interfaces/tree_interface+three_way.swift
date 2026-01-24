@@ -16,8 +16,8 @@ public
 }
 
 /// 三方比較結果型の定義
-public
-  protocol _ThreeWayResultType
+@usableFromInline
+ package protocol _ThreeWayResultType
 {
   /// 三方比較結果型
   associatedtype __compare_result: ThreeWayCompareResult
@@ -25,14 +25,14 @@ public
 
 // MARK: -
 
-@usableFromInline
+@usableFromInline package
 protocol _TreeKey_LazyThreeWayCompInterface: _KeyType & _ThreeWayResultType {
   @inlinable
   func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __compare_result
 }
 
-@usableFromInline
+@usableFromInline package
 protocol _TreeKey_ThreeWayCompInterface: _KeyType & _ThreeWayResultType {
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __compare_result
 }

@@ -101,7 +101,7 @@ import XCTest
     BoundBothProtocol, NodeBitmapProtocol_std,
     BoundAlgorithmProtocol,
     RemoveProtocol_std,
-    HasDefaultThreeWayComparator
+    IntThreeWayComparator
   {
     func __lazy_synth_three_way_comparator(_ __lhs: Element, _ __rhs: Element) -> Int {
       Self.__lazy_synth_three_way_comparator(__lhs, __rhs)

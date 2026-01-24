@@ -49,7 +49,7 @@ extension KeyValueComparer where _RawValue == _LinkingPair<_Key, _MappedValue> {
 }
 
 @usableFromInline
-protocol ___LRULinkList: KeyValueComparer & CompareTrait & _BaseKey_LazyThreeWayCompInterface
+protocol ___LRULinkList: KeyValueComparer & CompareTrait
 where _RawValue == _LinkingPair<_Key, _MappedValue> {
   associatedtype Value
   var __tree_: Tree { get set }

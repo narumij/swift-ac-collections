@@ -7,7 +7,7 @@
 
 // 特殊なキーを使いたい場合に使える
 public
-  struct __lazy_compare_result<Base: ValueComparer>: ThreeWayCompareResult
+  struct __lazy_compare_result<Base: _BaseKey_LessThanInterface>: ThreeWayCompareResult
 {
   public typealias LHS = Base._Key
   public typealias RHS = Base._Key

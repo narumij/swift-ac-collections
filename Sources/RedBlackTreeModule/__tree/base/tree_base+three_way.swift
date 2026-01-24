@@ -22,26 +22,20 @@
 
 import Foundation
 
-public protocol _BaseKey_LazyThreeWayCompInterface:
-  _KeyType
-    & _ThreeWayResultType
-{
-  static func
-    __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
-    -> __compare_result
-}
+// 三方比較関連は各現場で決定する方針に変わった。コレクション側では決定しない
 
-// TODO: プロトコルインジェクションを整理すること
-// __treenの基本要素ではないので、別カテゴリがいい
-
-public protocol LazySynthThreeWayComparator: _BaseKey_LazyThreeWayCompInterface
-where Self: ValueComparer {}
+@usableFromInline
+package
+  protocol LazySynthThreeWayComparator: _TreeKey_LazyThreeWayCompInterface
+where
+  Self: _BaseKey_LessThanInterface, __compare_result == __lazy_compare_result<Self>
+{}
 
 extension LazySynthThreeWayComparator {
 
   @inlinable
   @inline(__always)
-  public static func
+  public func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __lazy_compare_result<Self>
   {
@@ -49,14 +43,16 @@ extension LazySynthThreeWayComparator {
   }
 }
 
-public protocol ComparableThreeWayComparator: _BaseKey_LazyThreeWayCompInterface
-where _Key: Comparable {}
+@usableFromInline
+package
+  protocol ComparableThreeWayComparator: _TreeKey_LazyThreeWayCompInterface
+where _Key: Comparable, __compare_result == __comparable_compare_result<_Key> {}
 
 extension ComparableThreeWayComparator {
 
   @inlinable
   @inline(__always)
-  public static func
+  public func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __comparable_compare_result<
       _Key
@@ -66,14 +62,16 @@ extension ComparableThreeWayComparator {
   }
 }
 
-public protocol HasDefaultThreeWayComparator: _BaseKey_LazyThreeWayCompInterface
+@usableFromInline
+package
+  protocol IntThreeWayComparator: _TreeKey_LazyThreeWayCompInterface
 where _Key: Comparable, __compare_result == __int_compare_result {}
 
-extension HasDefaultThreeWayComparator {
+extension IntThreeWayComparator {
 
   @inlinable
   @inline(__always)
-  public static func
+  public func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __int_compare_result
   {

@@ -21,7 +21,7 @@ extension _BaseNode_KeyProtocol {
 public protocol _BaseNode_UniqueCompProtocol:
   CompareStaticProtocol
     & _BaseNode_KeyProtocol
-    & _BaseKey_CompInterface
+    & _BaseKey_LessThanInterface
 {}
 
 extension _BaseNode_UniqueCompProtocol {

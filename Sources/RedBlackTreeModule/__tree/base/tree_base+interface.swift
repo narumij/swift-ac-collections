@@ -33,7 +33,7 @@ public protocol _BaseRawValue_MappedValueInterface: _RawValueType & _MappedValue
   static func ___mapped_value(_: _RawValue) -> _MappedValue
 }
 
-public protocol _BaseKey_CompInterface: _KeyType {
+public protocol _BaseKey_LessThanInterface: _KeyType {
   /// 比較関数が実装されていること
   static func value_comp(_: _Key, _: _Key) -> Bool
 }

@@ -128,7 +128,7 @@ extension ValueComparator where Base: ThreeWayComparator {
 
 /// 要素とキーが一致する場合のひな形
 public protocol ScalarValueComparer:
-  _BaseRawValue_KeyProtocol
+  _BaseScalarRawValue_KeyProtocol
     & ValueComparer
     & HasDefaultThreeWayComparator
 {}

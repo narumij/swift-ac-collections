@@ -45,7 +45,7 @@ extension UnsafeTreeV2: _pointer_type {
 
 // MARK: - TreeNodeProtocol
 
-extension UnsafeTreeV2: TreeAlgorithmProtocol_std {
+extension UnsafeTreeV2: TreeNodeAccessInterface {
 
   @inlinable
   @inline(__always)
@@ -286,5 +286,6 @@ extension UnsafeTreeV2: CountProtocol_ptr, DistanceProtocol_ptr {}
 extension UnsafeTreeV2: InsertLastProtocol_ptr {}
 extension UnsafeTreeV2: CompareProtocol {}
 extension UnsafeTreeV2: TreeAlgorithmBaseProtocol_ptr {}
+extension UnsafeTreeV2: TreeAlgorithmProtocol_ptr {}
 
 extension UnsafeTreeV2: FaultTorelantEraseProtocol, FaultTorelantEraseMultiProtocol {}

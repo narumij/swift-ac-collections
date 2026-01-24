@@ -10,7 +10,7 @@ import XCTest
   class TreeFixtureBase<Element>:
     RedBlackTreeTestCase,
     TreeAlgorithmBaseProtocol_std,
-    TreeAlgorithmProtocol_std, RootInterface, EndNodeProtocol,
+    TreeNodeAccessInterface, RootInterface, EndNodeProtocol,
     ___RedBlackTreeNodePoolProtocol
   {
     var nullptr: Int { .nullptr }

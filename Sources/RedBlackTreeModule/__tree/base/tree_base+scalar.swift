@@ -25,12 +25,22 @@ import Foundation
 // TODO: プロトコルインジェクションを整理すること
 // __treenの基本要素ではないので、別カテゴリがいい
 
-/// 要素とキーが一致する場合のひな形
-public protocol ScalarValueComparer: _ScalarValueType & ValueComparer & HasDefaultThreeWayComparator {}
+public protocol ScalarValueKeyProtocol: _ScalarValueType & _BaseValue_KeyInterface {}
 
-extension ScalarValueComparer {
+extension ScalarValueKeyProtocol {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ e: _Value) -> _Key { e }
+  public static func __key(_ __v: _Value) -> _Key { __v }
 }
+
+// MARK: -
+
+/// 要素とキーが一致する場合のひな形
+public protocol ScalarValueComparer:
+  ScalarValueKeyProtocol
+    & ValueComparer
+    & HasDefaultThreeWayComparator
+{}
+
+extension ScalarValueComparer {}

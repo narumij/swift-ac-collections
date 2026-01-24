@@ -57,7 +57,7 @@ import XCTest
     mutating func
       __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
     {
-      __tree_.__tree_balance_after_insert(__root, __x)
+      __tree_._std__tree_balance_after_insert(__root, __x)
     }
   }
 

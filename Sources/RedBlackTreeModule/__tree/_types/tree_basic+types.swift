@@ -53,24 +53,6 @@ public protocol _MappedValueType {
   associatedtype _MappedValue
 }
 
-/// 三方比較結果
-///
-/// <=>演算子に対応するものらしい
-public
-  protocol ThreeWayCompareResult
-{
-  @inlinable func __less() -> Bool
-  @inlinable func __greater() -> Bool
-}
-
-/// 三方比較結果型の定義
-public
-  protocol _ThreeWayResultType
-{
-  /// 三方比較結果型
-  associatedtype __compare_result: ThreeWayCompareResult
-}
-
 // MARK: - Conditions
 
 /// ノードは必ず比較型と保持型を持つ

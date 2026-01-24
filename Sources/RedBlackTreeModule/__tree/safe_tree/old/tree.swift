@@ -48,7 +48,6 @@ extension _TreeNode_KeyProtocol {
   #endif
 }
 
-
 @usableFromInline
 protocol BeginProtocol: BeginNodeInterface {
   // __begin_node_が圧倒的に速いため

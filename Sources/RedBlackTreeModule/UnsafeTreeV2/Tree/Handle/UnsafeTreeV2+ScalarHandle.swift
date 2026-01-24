@@ -107,7 +107,7 @@ extension UnsafeTreeV2ScalarHandle {
 
   @inlinable
   func __get_value(_ p: _NodePtr) -> _Key {
-    p.__value_().pointee
+    p.__value_(as: _RawValue.self).pointee
   }
 }
 

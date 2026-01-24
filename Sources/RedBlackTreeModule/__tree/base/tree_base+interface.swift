@@ -53,7 +53,7 @@ public protocol WithMappedValueInterface: _RawValueType & _MappedValueType {
 
 // MARK: -
 
-public protocol IsMultiTraitStaticInterface {
+public protocol _Base_MultiTraitInterface {
   static var isMulti: Bool { get }
 }
 

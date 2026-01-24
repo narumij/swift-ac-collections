@@ -15,6 +15,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// TODO: BoundsExpressionのmap型への展開
+
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 

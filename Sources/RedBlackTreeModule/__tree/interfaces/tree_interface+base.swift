@@ -11,6 +11,23 @@ import Foundation
 // ふるまいの基底として抽出が必要になった
 // それがtree_interface群
 
+/*
+ protocolの分類
+ 
+ 型について語ってるだけのものはsuffixにTypeを使う
+ 型を利用してメソッドについて語ってるだけのものはSuffixにInterfaceを使う
+ 実装が混じってるものや未分類はsuffixにProtocolを使う
+ 移行の追加suffixは、配列ベースがstdかorg、ポインタベースはptr
+ たまに気分でsuffixナシをつかう
+ 
+ つまるところ、パスカルケースのプロトコル命名では、うそやまぎらわしいは許さないこと
+ 
+ TypeやInterfaceは、キャメルケースにし、一意に定まるようにする
+ 元のソースを尊重した別名系のものはスネークケースにする
+ 
+ */
+
+// TODO: 非常に重要なプロトコルなので、スネークケースでは無く、キャメルケースにする
 /// nullへのインスタンスアクセス
 ///
 /// nullptrへはグローバルアクセスもあるが、性能観点でインスタンスアクセスを利用している
@@ -56,6 +73,15 @@ protocol RootPtrInterface: _NodePtrType {
 
 // MARK: -
 
+#if true
+@usableFromInline
+protocol _TreeNode_KeyInterface: _NodePtrType & _KeyType {
+  /// ノードから比較用の値を取り出す。
+  /// SetやMultisetではElementに該当する
+  /// DictionaryやMultiMapではKeyに該当する
+  @inlinable func __get_value(_: _NodePtr) -> _Key
+}
+#else
 // 型の名前にねじれがあるので注意
 @usableFromInline
 protocol _TreeNode_KeyInterface: _NodePtrType & _KeyType & __node_value_type {
@@ -64,6 +90,7 @@ protocol _TreeNode_KeyInterface: _NodePtrType & _KeyType & __node_value_type {
   /// DictionaryやMultiMapではKeyに該当する
   @inlinable func __get_value(_: _NodePtr) -> __node_value_type
 }
+#endif
 
 // 型の名前にねじれがあるので注意
 @usableFromInline

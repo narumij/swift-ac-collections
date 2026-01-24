@@ -25,20 +25,32 @@ import Foundation
 // MARK: -
 
 @usableFromInline
-protocol KeyProtocol: _TreeRawValue_KeyInterface, _TreeNode_KeyInterface, _TreeNode_RawValueInterface {}
+protocol KeyProtocol: _TreeRawValue_KeyInterface, _TreeNode_KeyInterface,
+  _TreeNode_RawValueInterface
+{}
 
 extension KeyProtocol {
 
-  @inlinable
-  @inline(__always)
-  internal func __get_value(_ p: _NodePtr) -> __node_value_type {
-    __key(__value_(p))
-  }
+  #if true
+    @inlinable
+    @inline(__always)
+    internal func __get_value(_ p: _NodePtr) -> _Key {
+      __key(__value_(p))
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    internal func __get_value(_ p: _NodePtr) -> __node_value_type {
+      __key(__value_(p))
+    }
+  #endif
 }
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol ValueProtocol: _TreeKey_CompInterface, TreeNodeAccessInterface, _TreeNode_KeyInterface, _end_interface {}
+protocol ValueProtocol: _TreeKey_CompInterface, TreeNodeAccessInterface, _TreeNode_KeyInterface,
+  _end_interface
+{}
 
 @usableFromInline
 protocol BeginProtocol: BeginNodeInterface {
@@ -86,7 +98,9 @@ extension ___RootProtocol where _NodePtr == Int {
 }
 
 @usableFromInline
-protocol RootPtrProtocol: RootPtrInterface & TreeNodeAccessInterface & TreeNodeRefAccessInterface & RootInterface & EndProtocol & EndNodeProtocol {
+protocol RootPtrProtocol: RootPtrInterface & TreeNodeAccessInterface & TreeNodeRefAccessInterface
+    & RootInterface & EndProtocol & EndNodeProtocol
+{
 }
 
 extension RootPtrProtocol where _NodePtr == Int {
@@ -95,6 +109,3 @@ extension RootPtrProtocol where _NodePtr == Int {
   @inline(__always)
   internal func __root_ptr() -> _NodeRef { __left_ref(__end_node) }
 }
-
-
-

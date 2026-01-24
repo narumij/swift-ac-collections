@@ -22,9 +22,9 @@
 
 import Foundation
 
-public protocol _BaseScalarRawValue_KeyProtocol: _ScalarRawType & _BaseRawValue_KeyInterface {}
+public protocol _ScalarBaseRawValue_KeyProtocol: _ScalarBaseType & _BaseRawValue_KeyInterface {}
 
-extension _BaseScalarRawValue_KeyProtocol {
+extension _ScalarBaseRawValue_KeyProtocol {
 
   @inlinable
   @inline(__always)

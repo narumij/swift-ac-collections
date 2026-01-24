@@ -43,82 +43,20 @@
 /// `__key(_:)`を定義するとプロトコルで他のBase系メソッドを生成するプロトコル
 public protocol ValueComparer:
   _TreeValueType
+    & _BaseRawValue_KeyInterface
     & _BaseKey_LessThanProtocol
     & _BaseNode_PtrUniqueCompProtocol
     & _BaseNode_PtrCompProtocol
     & _BaseNode_KeyProtocol
-    & _BaseRawValue_KeyInterface
 {}
-
-/// ツリー使用条件をインジェクションされる側の実装プロトコル
-@usableFromInline
-protocol ValueComparator:
-  _TreeValueType
-    & _TreeRawValue_KeyInterface
-    & _TreeKey_CompInterface
-    & _BaseRawValue_KeyInterface
-    & _BaseKey_LessThanInterface
-where
-  _Key == Base._Key,
-  _RawValue == Base._RawValue
-{
-  associatedtype
-    Base:
-      _BaseRawValue_KeyInterface
-        & _BaseKey_LessThanInterface
-}
-
-extension ValueComparator {
-
-  @inlinable
-  @inline(__always)
-  public static func __key(_ e: _RawValue) -> _Key {
-    Base.__key(e)
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    Base.value_comp(a, b)
-  }
-}
-
-extension ValueComparator {
-
-  @inlinable
-  @inline(__always)
-  public func __key(_ e: _RawValue) -> _Key {
-    Base.__key(e)
-  }
-
-  @inlinable
-  @inline(__always)
-  public func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    Base.value_comp(a, b)
-  }
-}
-
-extension ValueComparator where Base: _BaseKey_LazyThreeWayCompInterface {
-
-  @inlinable
-  @inline(__always)
-  func
-    __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
-    -> Base.__compare_result
-  {
-    Base.__lazy_synth_three_way_comparator(__lhs, __rhs)
-  }
-}
 
 // MARK: -
 
 /// 要素とキーが一致する場合のひな形
 public protocol ScalarValueComparer:
-  _ScalarRawType
-    & _BaseScalarRawValue_KeyProtocol
-
+  ValueComparer
+    & _ScalarBaseRawValue_KeyProtocol
     & HasDefaultThreeWayComparator
-    & ValueComparer
 {}
 
 extension ScalarValueComparer {}
@@ -128,13 +66,12 @@ extension ScalarValueComparer {}
 
 /// 要素がキーバリューの場合のひな形
 public protocol KeyValueComparer:
-  _KeyValueRawType
+  ValueComparer
     & _BaseRawValue_KeyInterface
     & _BaseRawValue_MappedValueInterface
     & WithMappedValueInterface
 
     & HasDefaultThreeWayComparator
-    & ValueComparer
 {}
 
 extension KeyValueComparer where _RawValue == RedBlackTreePair<_Key, _MappedValue> {

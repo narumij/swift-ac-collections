@@ -22,27 +22,27 @@
 
 import Foundation
 
-public protocol _BasePairRawValue_KeyProtocol: _PairValueType & _BaseRawValue_KeyInterface {}
+public protocol _PairBaseRawValue_KeyProtocol: _PairBaseType & _BaseRawValue_KeyInterface {}
 
-extension _BasePairRawValue_KeyProtocol {
+extension _PairBaseRawValue_KeyProtocol {
 
   @inlinable
   @inline(__always)
   public static func __key(_ __v: _RawValue) -> _Key { __v.key }
 }
 
-public protocol _BasePairRawValue_MappedValueProtocol: _PairValueType
+public protocol _PairBaseRawValue_MappedValueProtocol: _PairBaseType
     & _BaseRawValue_MappedValueInterface
 {}
 
-extension _BasePairRawValue_MappedValueProtocol {
+extension _PairBaseRawValue_MappedValueProtocol {
 
   @inlinable
   @inline(__always)
   public static func ___mapped_value(_ __v: _RawValue) -> _MappedValue { __v.value }
 }
 
-public protocol _BasePairRawValue_WithMappedValueProtocol: _PairValueType & WithMappedValueInterface {}
+public protocol _BasePairRawValue_WithMappedValueProtocol: _PairBaseType & WithMappedValueInterface {}
 
 extension _BasePairRawValue_WithMappedValueProtocol {
 

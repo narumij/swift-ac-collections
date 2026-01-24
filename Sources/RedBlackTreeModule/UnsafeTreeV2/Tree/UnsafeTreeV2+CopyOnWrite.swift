@@ -22,54 +22,93 @@
 
 import Foundation
 
-extension UnsafeTreeV2 {
+extension UnsafeTreeV2BufferHeader {
 
-  // TODO: grow関連の名前が混乱気味なので整理する
   @inlinable
   @inline(__always)
-  public func ensureCapacity(_ newCapacity: Int) {
-    guard capacity < newCapacity else { return }
-    withMutableHeader { $0.pushFreshBucket(capacity: newCapacity - capacity) }
+  internal mutating func executeCapacityGrow(_ newCapacity: Int) {
+    guard freshPoolCapacity < newCapacity else { return }
+    pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
   }
 }
 
 extension UnsafeTreeV2 {
 
+  @inlinable
+  @inline(__always)
+  internal func executeCapacityGrow(_ newCapacity: Int) {
+    withMutableHeader {
+      $0.executeCapacityGrow(newCapacity)
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  // 以前の名残でクラスメソッド経由となっている。取り除くリファクタリングをして構わない
 
   @inlinable
   @inline(__always)
-  internal func copy() -> UnsafeTreeV2 {
-    copy(minimumCapacity: capacity)
+  internal static func ensureCapacity(tree: inout UnsafeTreeV2, linearly: Bool = false) {
+    tree._ensureCapacity(linearly: linearly)
   }
 
   @inlinable
   @inline(__always)
-  internal func copy(growthCapacityTo capacity: Int, linearly: Bool) -> UnsafeTreeV2 {
-    copy(
-      minimumCapacity:
-        growCapacity(to: capacity, linearly: linearly))
+  internal static func ensureCapacity(
+    tree: inout UnsafeTreeV2, minimumCapacity: Int, linearly: Bool = false
+  ) {
+    tree._ensureCapacity(to: minimumCapacity, linearly: linearly)
   }
+}
+
+extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal func copy(growthCapacityTo capacity: Int, limit: Int, linearly: Bool) -> UnsafeTreeV2 {
-    copy(
-      minimumCapacity:
-        Swift.min(
-          growCapacity(to: capacity, linearly: linearly),
-          limit))
+  internal mutating func isUnique() -> Bool {
+    _buffer.isUniqueReference()
   }
   
   @inlinable
   @inline(__always)
-  internal func growthCapacity(to capacity: Int, linearly: Bool) {
-    ensureCapacity(growCapacity(to: capacity, linearly: linearly))
+  internal mutating func _ensureUnique() {
+    let isUnique = isUnique()
+    if !isUnique {
+      self = self.copy()
+    }
   }
 
   @inlinable
   @inline(__always)
-  internal func growthCapacity(to capacity: Int, limit: Int, linearly: Bool) {
-    ensureCapacity(Swift.min(growCapacity(to: capacity, linearly: linearly), limit))
+  internal mutating func _strongEnsureUnique() {
+    #if !USE_SIMPLE_COPY_ON_WRITE
+      let isTreeUnique = isUnique()
+      let isPoolUnique =
+        _buffer.header._tied == nil
+        ? true : isKnownUniquelyReferenced(&_buffer.header._tied!)
+
+      if isTreeUnique, isPoolUnique {
+        /* NOP */
+      } else {
+        self = self.copy()
+      }
+    #else
+      return _ensureUnique()
+    #endif
+  }
+}
+
+extension UnsafeTreeV2 {
+  @inlinable
+  @inline(__always)
+  internal mutating func _ensureUnique(
+    transform: (UnsafeTreeV2<Base>) throws -> UnsafeTreeV2<Base>
+  )
+    rethrows
+  {
+    _ensureUnique()
+    self = try transform(self)
   }
 }
 
@@ -77,42 +116,97 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal static func _isKnownUniquelyReferenced(tree: inout UnsafeTreeV2) -> Bool {
-    #if !DISABLE_COPY_ON_WRITE
-    !tree.isReadOnly && tree._buffer.isUniqueReference()
-    #else
-      true
-    #endif
-  }
+  internal mutating func _ensureUniqueAndCapacity(
+    to minimumCapacity: Int? = nil, linearly: Bool = false
+  ) {
 
-  @inlinable
-  @inline(__always)
-  internal static func ensureUniqueAndCapacity(tree: inout UnsafeTreeV2) {
-    ensureUniqueAndCapacity(tree: &tree, minimumCapacity: tree.count + 1)
-  }
+    let isUnique = isUnique()
 
-  @inlinable
-  @inline(__always)
-  internal static func ensureUniqueAndCapacity(tree: inout UnsafeTreeV2, minimumCapacity: Int) {
-    let shouldExpand = tree.capacity < minimumCapacity
-    if !_isKnownUniquelyReferenced(tree: &tree) {
-      tree = tree.copy(growthCapacityTo: minimumCapacity, linearly: false)
-    } else if shouldExpand {
-      _ = tree.growCapacity(to: minimumCapacity, linearly: false)
+    let growthCapacity: Int? = withMutableHeader { header in
+
+      let minimumCapacity = minimumCapacity ?? (header.count + 1)
+
+      let shouldExpand = header.freshPoolCapacity < minimumCapacity
+
+      guard shouldExpand || !isUnique else { return nil }
+
+      let growthCapacity = header._growthCapacity(to: minimumCapacity, linearly: linearly)
+
+      if !isUnique {
+        return growthCapacity
+      }
+
+      if shouldExpand {
+        assert(isReadOnly == false)
+        header.executeCapacityGrow(growthCapacity)
+      }
+
+      return nil
+    }
+
+    if let growthCapacity {
+      self = self.copy(minimumCapacity: growthCapacity)
     }
   }
+}
 
-  @inlinable
-  @inline(__always)
-  internal static func ensureCapacity(tree: inout UnsafeTreeV2) {
-    ensureCapacity(tree: &tree, minimumCapacity: tree.count + 1)
+extension UnsafeTreeV2 {
+
+  @inlinable @inline(__always)
+  internal mutating func _ensureCapacity(linearly: Bool = false) {
+    _ensureCapacity(to: count + 1, linearly: linearly)
   }
 
+  @inlinable @inline(__always)
+  internal mutating func _ensureCapacity(to minimumCapacity: Int, linearly: Bool = false) {
+    guard capacity < minimumCapacity else { return }
+    let newCapacity = withHeader {
+      header in header._growthCapacity(to: minimumCapacity, linearly: linearly)
+    }
+    if isReadOnly {
+      self = self.copy(minimumCapacity: newCapacity)
+    } else {
+      assert(isReadOnly == false)
+      executeCapacityGrow(newCapacity)
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable @inline(__always)
+  internal mutating func _ensureCapacity(limit: Int, linearly: Bool = false) {
+    _ensureCapacity(to: count + 1, limit: limit, linearly: linearly)
+  }
+
+  @inlinable @inline(__always)
+  internal mutating func _ensureCapacity(
+    to minimumCapacity: Int, limit: Int, linearly: Bool = false
+  ) {
+    guard capacity < minimumCapacity else { return }
+    let newCapacity = withHeader { header in
+      min(limit, header._growthCapacity(to: capacity, linearly: linearly))
+    }
+    if isReadOnly {
+      self = self.copy(minimumCapacity: newCapacity)
+    } else {
+      executeCapacityGrow(newCapacity)
+    }
+  }
+}
+
+extension UnsafeTreeV2BufferHeader {
+
   @inlinable
   @inline(__always)
-  internal static func ensureCapacity(tree: inout UnsafeTreeV2, minimumCapacity: Int) {
-    if tree.capacity < minimumCapacity {
-      tree.growthCapacity(to: minimumCapacity, linearly: false)
+  internal func _growthCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+
+    if linearly {
+      return Swift.max(
+        freshPoolCapacity,
+        minimumCapacity)
     }
+
+    return Swift.max(minimumCapacity, max(4, freshPoolCapacity) + max(freshPoolCapacity / 8, 1))
   }
 }

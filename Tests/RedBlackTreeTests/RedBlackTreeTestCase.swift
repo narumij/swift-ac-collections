@@ -1,21 +1,25 @@
-import XCTest
 #if DEBUG
 @testable import RedBlackTreeModule
 #else
 import RedBlackTreeModule
 #endif
+import XCTest
 
 class RedBlackTreeTestCase: XCTestCase {
 
-  override func setUpWithError() throws {
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
-  }
-  
+  override func setUpWithError() throws {}
+
   override func tearDownWithError() throws {
+    XCTAssertEqual(RedBlackTreeSet<Int>().capacity, 0, "\(name)")
+    if RedBlackTreeSet<Int>().capacity != 0 {
+      fatalError("singleton bufffer broken")
+    }
 #if DEBUG
-    // TODO: シングルトン破壊の原因を潰すこと
-    // assert(_emptyTreeStorage.header.freshPoolCapacity == 0)
+    XCTAssertNil(_emptyTreeStorage.header._tied)
+    XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)
+    XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCount, 0)
 #endif
-    RedBlackTreeModule.tearDown(treeBuffer: _emptyTreeStorage)
   }
 }
+
+class PointerRedBlackTreeTestCase: RedBlackTreeTestCase, _UnsafeNodePtrType {}

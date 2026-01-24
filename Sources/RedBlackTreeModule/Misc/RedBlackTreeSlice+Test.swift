@@ -1,13 +1,13 @@
-extension RedBlackTreeSliceV2 {
+extension RedBlackTreeSliceV2.KeyOnly {
 
-  package func ___node_positions() -> ___SafePointersUnsafeV2<Base> {
-    .init(tree: __tree_, start: _start, end: _end)
+  package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {
+    .init(_start: _start, _end: _end)
   }
 }
 
 extension RedBlackTreeSliceV2.KeyValue {
 
-    package func ___node_positions() -> ___SafePointersUnsafeV2<Base> {
-      .init(tree: __tree_, start: _start, end: _end)
+  package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {
+      .init(_start: _start, _end: _end)
     }
 }

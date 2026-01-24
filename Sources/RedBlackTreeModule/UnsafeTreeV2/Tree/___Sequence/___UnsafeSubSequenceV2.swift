@@ -31,19 +31,21 @@ extension ___UnsafeSubSequenceV2 {
   internal var _count: Int {
     __tree_.___distance(from: _start, to: _end)
   }
-  
+
   @inlinable
   @inline(__always)
   internal func ___contains(_ i: _NodePtr) -> Bool {
     !__tree_.___is_subscript_null(i) && __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
 
+#if COMPATIBLE_ATCODER_2025
   @inlinable
   @inline(__always)
   internal func ___contains(_ bounds: Range<Index>) -> Bool {
-    !__tree_.___is_offset_null(bounds.lowerBound.rawValue(__tree_))
-      && !__tree_.___is_offset_null(bounds.upperBound.rawValue(__tree_))
-      && __tree_.___ptr_range_contains(_start, _end, bounds.lowerBound.rawValue(__tree_))
-      && __tree_.___ptr_range_contains(_start, _end, bounds.upperBound.rawValue(__tree_))
+    !__tree_.___is_offset_null(__tree_.rawValue(bounds.lowerBound))
+      && !__tree_.___is_offset_null(__tree_.rawValue(bounds.upperBound))
+      && __tree_.___ptr_range_contains(_start, _end, __tree_.rawValue(bounds.lowerBound))
+      && __tree_.___ptr_range_contains(_start, _end, __tree_.rawValue(bounds.upperBound))
   }
+  #endif
 }

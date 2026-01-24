@@ -36,7 +36,7 @@ extension String {
 
   @usableFromInline
   internal static var outOfBounds: String {
-    "RedBlackTree index is out of Bound."
+    "Index out of bounds. <RedBlackTree>"
   }
 
   @usableFromInline
@@ -57,5 +57,16 @@ extension String {
   @usableFromInline
   internal static func duplicateValue<Key>(for key: Key) -> String {
     "Dupricate values for key: '\(key)'"
+  }
+  
+  @usableFromInline
+  internal static var alignnment: String {
+    "Memory allocation failed due to alignment constraints."
+  }
+  
+  @usableFromInline
+  internal static var treeMissmatch: String {
+    // TODO: 適切なエラーメッセージに変更
+    "木が異なる"
   }
 }

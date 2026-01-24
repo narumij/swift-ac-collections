@@ -1,10 +1,10 @@
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 final class RedBlackTreeSetInitializationTests: RedBlackTreeTestCase {
 
   // MARK: - 「空なものは空である」と「空でないものは空ではない」のトートロジー
-  
+
   /// 空の初期化が成功し、プロパティが空を示していること
   func test_emptyInitialization() {
     // 事前条件: 空のマルチセットを初期化
@@ -47,7 +47,7 @@ final class RedBlackTreeSetInitializationTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.isEmpty, "空でではないこと")
     XCTAssertEqual(set.count, expected.count, "要素数が期待通りであること")
   }
-  
+
   /// Rangeからの初期化が範囲通りの要素数を、プロパティが示していること
   func test_reverseRangeInitialization() {
     // 事前条件: for(i = 3; i >= 0; --i) { }
@@ -58,7 +58,7 @@ final class RedBlackTreeSetInitializationTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.isEmpty, "空でではないこと")
     XCTAssertEqual(set.count, expected.count, "要素数が期待通りであること")
   }
-  
+
   // MARK: - キャパシティは別腹
 
   /// reserveCapacityにより容量が指定値以上に増加し、要素数を指すプロパティが変化しないこと
@@ -79,7 +79,7 @@ final class RedBlackTreeSetInitializationTests: RedBlackTreeTestCase {
     XCTAssertTrue(set.isEmpty, "容量予約後も空のまま変化しないこと")
     XCTAssertEqual(set.count, 0, "最小容量指定後も要素数0のまま変化しないこと")
   }
-  
+
   /// reserveCapacityにより容量が指定値以上に増加し、要素数を指すプロパティが変化しないこと
   func test_reserveCapacity_shouldIncreaseCapacity() {
     var set = RedBlackTreeSet<Int>(1...3)

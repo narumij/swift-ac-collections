@@ -5,8 +5,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue(__tree_),
-        end: bounds.upperBound.rawValue(__tree_))
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
     }
   }
 
@@ -104,7 +104,7 @@
     /// - Complexity: O(log *n* + *k*)
     @inlinable
     public mutating func remove(contentsOf elementRange: Range<Element>) {
-      _strongEnsureUnique()
+      __tree_._strongEnsureUnique()
       let lower = ___lower_bound(elementRange.lowerBound)
       let upper = ___lower_bound(elementRange.upperBound)
       ___remove(from: lower, to: upper)
@@ -113,7 +113,7 @@
     /// - Complexity: O(log *n* : *k*)
     @inlinable
     public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
-      _strongEnsureUnique()
+      __tree_._strongEnsureUnique()
       let lower = ___lower_bound(elementRange.lowerBound)
       let upper = ___upper_bound(elementRange.upperBound)
       ___remove(from: lower, to: upper)
@@ -127,7 +127,7 @@
     @inlinable
     @discardableResult
     public mutating func removeAll(_unsafe member: Element) -> Element? {
-      _ensureUnique()
+      __tree_._ensureUnique()
       return __tree_.___erase_multi(member) != 0 ? member : nil
     }
   }

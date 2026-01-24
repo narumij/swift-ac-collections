@@ -19,7 +19,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   package func ___is_garbaged(_ index: Index) -> Bool {
-    __tree_.___is_garbaged(index.rawValue(__tree_))
+    __tree_.___is_garbaged(__tree_.rawValue(index))
   }
 }
 
@@ -41,7 +41,8 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  package func ___node_positions() -> ___SafePointersUnsafeV2<Base> {
-    .init(tree: __tree_, start: _start, end: _end)
+  package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {
+    .init(_start: _start, _end: _end)
   }
 }
+

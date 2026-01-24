@@ -1,5 +1,5 @@
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 final class SetPointerTests: RedBlackTreeTestCase {
 
@@ -29,14 +29,14 @@ final class SetPointerTests: RedBlackTreeTestCase {
       XCTAssertEqual(it.pointee, 1)
       XCTAssertNotNil(it.previous)
       XCTAssertNotNil(it.next)
-      members.remove(at: it)
-      XCTAssertTrue(members.___is_garbaged(it))
-      XCTAssertNil(it.pointee)
+      members.remove(at: it)  // itが分離するようになった
+      XCTAssertTrue(members.___is_garbaged(it))  // membersにとっては無効
+      XCTAssertNil(it.pointee)  // it自体は過去の木に結びついていて有効
       XCTAssertNil(it.previous)
       XCTAssertNil(it.next)
     }
   }
-  
+
   func testPointerNext() throws {
     XCTAssertEqual(members.startIndex.pointee, 0)
     XCTAssertEqual(members.startIndex.next?.pointee, 1)

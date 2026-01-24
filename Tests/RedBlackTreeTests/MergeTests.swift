@@ -42,7 +42,7 @@ final class MergeTests: RedBlackTreeTestCase {
     XCTAssertEqual(lhs + [], [1, 2, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6])
     XCTAssertEqual(rhs + [], [4, 4, 5, 5, 6, 6])
   }
-  
+
   func testMultietAndSequence() throws {
     var lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6]
     let rhs: RedBlackTreeMultiSet<Int> = [4, 4, 5, 5, 6, 6]
@@ -51,39 +51,46 @@ final class MergeTests: RedBlackTreeTestCase {
     XCTAssertEqual(rhs + [], [4, 4, 5, 5, 6, 6])
   }
 
-  
   func testMultietAndClosedRange() throws {
     var lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6]
-    lhs.insert(contentsOf: 1 ... 6)
+    lhs.insert(contentsOf: 1...6)
     XCTAssertEqual(lhs + [], [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6])
   }
-  
+
   func testDictionaryAndDictionary() throws {
-    var lhs: RedBlackTreeDictionary<String,String> = ["イートハーブの香る":"なんとか","Hoge":"Hogehoge", "foo":"bar"]
-    let rhs: RedBlackTreeDictionary<String,String> = ["イートハーブの香る":"香り", "Hoge":"Poge"]
+    var lhs: RedBlackTreeDictionary<String, String> = [
+      "イートハーブの香る": "なんとか", "Hoge": "Hogehoge", "foo": "bar",
+    ]
+    let rhs: RedBlackTreeDictionary<String, String> = ["イートハーブの香る": "香り", "Hoge": "Poge"]
     lhs.merge(rhs, uniquingKeysWith: { $1 })
-    XCTAssertEqual(lhs.dictionary, ["イートハーブの香る":"香り","foo":"bar","Hoge":"Poge"])
-    XCTAssertEqual(rhs.dictionary, ["イートハーブの香る":"香り","Hoge":"Poge"])
+    XCTAssertEqual(lhs.dictionary, ["イートハーブの香る": "香り", "foo": "bar", "Hoge": "Poge"])
+    XCTAssertEqual(rhs.dictionary, ["イートハーブの香る": "香り", "Hoge": "Poge"])
   }
-  
+
   func testDictionaryAndDictionary2() throws {
-    var lhs: RedBlackTreeDictionary<String,String> = ["イートハーブの香る":"なんとか","Hoge":"Hogehoge", "foo":"bar"]
-    let rhs: RedBlackTreeDictionary<String,String> = ["イートハーブの香る":"香り", "Hoge":"Poge"]
-    lhs.merge(rhs) { first,_ in first }
-    XCTAssertEqual(lhs.dictionary, ["イートハーブの香る":"なんとか","foo":"bar","Hoge":"Hogehoge"])
-    XCTAssertEqual(rhs.dictionary, ["イートハーブの香る":"香り", "Hoge":"Poge"])
+    var lhs: RedBlackTreeDictionary<String, String> = [
+      "イートハーブの香る": "なんとか", "Hoge": "Hogehoge", "foo": "bar",
+    ]
+    let rhs: RedBlackTreeDictionary<String, String> = ["イートハーブの香る": "香り", "Hoge": "Poge"]
+    lhs.merge(rhs) { first, _ in first }
+    XCTAssertEqual(lhs.dictionary, ["イートハーブの香る": "なんとか", "foo": "bar", "Hoge": "Hogehoge"])
+    XCTAssertEqual(rhs.dictionary, ["イートハーブの香る": "香り", "Hoge": "Poge"])
   }
-  
+
   func testDictionaryAndSequence() throws {
-    var lhs: RedBlackTreeDictionary<String,String> = ["イートハーブの香る":"なんとか","Hoge":"Hogehoge", "foo":"bar"]
-    lhs.merge( [("イートハーブの香る","香り"), ("Hoge","Poge")], uniquingKeysWith: { $1 })
-    XCTAssertEqual(lhs.dictionary, ["イートハーブの香る":"香り","foo":"bar","Hoge":"Poge"])
+    var lhs: RedBlackTreeDictionary<String, String> = [
+      "イートハーブの香る": "なんとか", "Hoge": "Hogehoge", "foo": "bar",
+    ]
+    lhs.merge([("イートハーブの香る", "香り"), ("Hoge", "Poge")], uniquingKeysWith: { $1 })
+    XCTAssertEqual(lhs.dictionary, ["イートハーブの香る": "香り", "foo": "bar", "Hoge": "Poge"])
   }
 
   func testDictionaryAndSequence2() throws {
-    var lhs: RedBlackTreeDictionary<String,String> = ["イートハーブの香る":"なんとか","Hoge":"Hogehoge", "foo":"bar"]
-    lhs.merge( [("イートハーブの香る","香り"), ("Hoge","Poge")]) { first,_ in first }
-    XCTAssertEqual(lhs.dictionary, ["イートハーブの香る":"なんとか","foo":"bar","Hoge":"Hogehoge"])
+    var lhs: RedBlackTreeDictionary<String, String> = [
+      "イートハーブの香る": "なんとか", "Hoge": "Hogehoge", "foo": "bar",
+    ]
+    lhs.merge([("イートハーブの香る", "香り"), ("Hoge", "Poge")]) { first, _ in first }
+    XCTAssertEqual(lhs.dictionary, ["イートハーブの香る": "なんとか", "foo": "bar", "Hoge": "Hogehoge"])
   }
 }
 

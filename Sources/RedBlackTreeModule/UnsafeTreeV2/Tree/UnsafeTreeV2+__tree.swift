@@ -22,112 +22,112 @@
 
 // MARK: - TreeEndNodeProtocol
 
-extension UnsafeTreeV2: TreeEndNodeProtocol {
+extension UnsafeTreeV2: _pointer_type {
 
   @inlinable
   @inline(__always)
-  func __left_(_ p: _NodePtr) -> _NodePtr {
+  package func __left_(_ p: _NodePtr) -> _NodePtr {
     return p.pointee.__left_
   }
 
   @inlinable
   @inline(__always)
-  func __left_unsafe(_ p: _NodePtr) -> _NodePtr {
+  package func __left_unsafe(_ p: _NodePtr) -> _NodePtr {
     return p.pointee.__left_
   }
 
   @inlinable
   @inline(__always)
-  func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+  package func __left_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
     lhs.pointee.__left_ = rhs
   }
 }
 
 // MARK: - TreeNodeProtocol
 
-extension UnsafeTreeV2: TreeNodeProtocol {
+extension UnsafeTreeV2: TreeNodeAccessInterface {
 
   @inlinable
   @inline(__always)
-  func __right_(_ p: _NodePtr) -> _NodePtr {
+  package func __right_(_ p: _NodePtr) -> _NodePtr {
     return p.pointee.__right_
   }
 
   @inlinable
   @inline(__always)
-  func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+  package func __right_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
     lhs.pointee.__right_ = rhs
   }
 
   @inlinable
   @inline(__always)
-  func __is_black_(_ p: _NodePtr) -> Bool {
+  package func __is_black_(_ p: _NodePtr) -> Bool {
     return p.pointee.__is_black_
   }
 
   @inlinable
   @inline(__always)
-  func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
+  package func __is_black_(_ lhs: _NodePtr, _ rhs: Bool) {
     lhs.pointee.__is_black_ = rhs
   }
 
   @inlinable
   @inline(__always)
-  func __parent_(_ p: _NodePtr) -> _NodePtr {
+  package func __parent_(_ p: _NodePtr) -> _NodePtr {
     return p.pointee.__parent_
   }
 
   @inlinable
   @inline(__always)
-  func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
+  package func __parent_(_ lhs: _NodePtr, _ rhs: _NodePtr) {
     lhs.pointee.__parent_ = rhs
   }
 
   @inlinable
   @inline(__always)
-  func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
+  package func __parent_unsafe(_ p: _NodePtr) -> _NodePtr {
     return p.pointee.__parent_
   }
 }
 
 // MARK: -
 
-extension UnsafeTreeV2: TreeNodeRefProtocol {
+extension UnsafeTreeV2: TreeNodeRefAccessInterface {
 
   @inlinable
   @inline(__always)
-  func __left_ref(_ p: _NodePtr) -> _NodeRef {
-    return withUnsafeMutablePointer(to: &p.pointee.__left_) { $0 }
+  package func __left_ref(_ p: _NodePtr) -> _NodeRef {
+    return _ref(to: &p.pointee.__left_)
   }
 
   @inlinable
   @inline(__always)
-  func __right_ref(_ p: _NodePtr) -> _NodeRef {
-    return withUnsafeMutablePointer(to: &p.pointee.__right_) { $0 }
+  package func __right_ref(_ p: _NodePtr) -> _NodeRef {
+    return _ref(to: &p.pointee.__right_)
   }
 
   @inlinable
   @inline(__always)
-  public func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
+  package func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
     rhs.pointee
   }
 
   @inlinable
   @inline(__always)
-  func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
+  package func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
     lhs.pointee = rhs
   }
 }
 
 // MARK: - TreeNodeValueProtocol
 
-extension UnsafeTreeV2 {
+extension UnsafeTreeV2: _TreeNode_KeyProtocol {
 
-  @inlinable
-  @inline(__always)
-  func __get_value(_ p: _NodePtr) -> _Key {
-    Base.__key(UnsafePair<_Value>.valuePointer(p)!.pointee)
-  }
+//  @inlinable
+//  @inline(__always)
+//  package func __get_value(_ p: _NodePtr) -> _Key {
+//    Base.__key(p.__value_().pointee)
+//  }
 }
 
 // MARK: - BeginNodeProtocol
@@ -135,17 +135,20 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  public var __begin_node_: _NodePtr {
+  package var __begin_node_: _NodePtr {
 
     @inline(__always) get {
-//      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr }
-      origin.pointee.begin_ptr
+      //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr }
+//      origin.pointee.begin_ptr
+      withMutableHeader { $0.begin_ptr.pointee }
     }
 
     @inline(__always)
     nonmutating set {
-      origin.pointee.begin_ptr = newValue
-//      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr = newValue }
+//      origin.pointee.begin_ptr = newValue
+      //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr = newValue }
+      withMutableHeader { $0.begin_ptr.pointee = newValue }
+
     }
   }
 }
@@ -156,8 +159,9 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  var __end_node: _NodePtr {
-    origin.pointee.end_ptr
+  package var __end_node: _NodePtr {
+//    origin.pointee.end_ptr
+    withMutableHeader { $0.end_ptr }
   }
 }
 
@@ -169,15 +173,15 @@ extension UnsafeTreeV2 {
     @nonobjc
     @inlinable
     @inline(__always)
-    internal var __root: _NodePtr {
-      origin.pointee.__root
+    package var __root: _NodePtr {
+      get { withMutableHeader { $0.__root } }
     }
   #else
     @inlinable
     @inline(__always)
-    internal var __root: _NodePtr {
-      get { origin.pointee.__root }
-      set { origin.pointee.__root = newValue }
+    package var __root: _NodePtr {
+      get { withMutableHeader { $0.__root } }
+      set { withMutableHeader { $0.__root = newValue } }
     }
   #endif
 
@@ -185,9 +189,9 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal func __root_ptr() -> _NodeRef {
-    origin.pointee.__root_ptr()
-  }
+  package func __root_ptr() -> _NodeRef {
+//    origin.pointee.__root_ptr()
+    withMutableHeader { $0.__root_ptr() }  }
 }
 
 // MARK: - SizeProtocol
@@ -195,7 +199,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  var __size_: Int {
+  package var __size_: Int {
     @inline(__always) get {
       withHeader { $0.count }
     }
@@ -211,7 +215,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  public func __construct_node(_ k: _Value) -> _NodePtr {
+  public func __construct_node(_ k: _RawValue) -> _NodePtr {
     withMutableHeader {
       $0.__construct_node(k)
     }
@@ -230,23 +234,23 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal func __value_(_ p: _NodePtr) -> _Value {
-    UnsafePair<Tree._Value>.valuePointer(p)!.pointee
+  package func __value_(_ p: _NodePtr) -> _RawValue {
+    p.__value_().pointee
   }
 
   @inlinable
   @inline(__always)
-  internal func ___element(_ p: _NodePtr, _ __v: _Value) {
-    UnsafePair<Tree._Value>.valuePointer(p)!.pointee = __v
+  package func ___element(_ p: _NodePtr, _ __v: _RawValue) {
+    p.__value_().pointee = __v
   }
 }
 
 extension UnsafeTreeV2: ValueComparator {}
-extension UnsafeTreeV2: BoundProtocol {
+extension UnsafeTreeV2: BoundBothInterface {
 
   @inlinable
   @inline(__always)
-  public static var isMulti: Bool {
+  package static var isMulti: Bool {
     Base.isMulti
   }
 
@@ -257,18 +261,31 @@ extension UnsafeTreeV2: BoundProtocol {
   }
 }
 
-extension UnsafeTreeV2: FindProtocol {}
-extension UnsafeTreeV2: FindEqualProtocol, FindEqualProtocol_std {}
-extension UnsafeTreeV2: FindLeafProtocol {}
-extension UnsafeTreeV2: InsertNodeAtProtocol {}
-extension UnsafeTreeV2: InsertUniqueProtocol {}
+extension UnsafeTreeV2: IntThreeWayComparator {}
+extension UnsafeTreeV2: FindProtocol_ptr {}
+extension UnsafeTreeV2: FindEqualInterface, FindEqualProtocol_ptr {
+  
+  @inlinable
+  @inline(__always)
+  package func __comp(_ __lhs: Base._Key, _ __rhs: Base._Key) -> __compare_result {
+    __lazy_synth_three_way_comparator(__lhs, __rhs)
+  }
+}
+extension UnsafeTreeV2: FindLeafProtocol_ptr {}
+extension UnsafeTreeV2: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
+extension UnsafeTreeV2: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
 extension UnsafeTreeV2: InsertMultiProtocol {}
-extension UnsafeTreeV2: EqualProtocol {}
-extension UnsafeTreeV2: RemoveProtocol {}
+extension UnsafeTreeV2: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
+extension UnsafeTreeV2: EqualProtocol_ptr {}
+extension UnsafeTreeV2: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2: EraseProtocol {}
 extension UnsafeTreeV2: EraseUniqueProtocol {}
 extension UnsafeTreeV2: EraseMultiProtocol {}
-extension UnsafeTreeV2: CompareBothProtocol {}
-extension UnsafeTreeV2: CountProtocol {}
-extension UnsafeTreeV2: InsertLastProtocol {}
+extension UnsafeTreeV2: CompareBothProtocol_ptr, CompareUniqueProtocol {}
+extension UnsafeTreeV2: CountProtocol_ptr, DistanceProtocol_ptr {}
+extension UnsafeTreeV2: InsertLastProtocol_ptr {}
 extension UnsafeTreeV2: CompareProtocol {}
+extension UnsafeTreeV2: TreeAlgorithmBaseProtocol_ptr {}
+extension UnsafeTreeV2: TreeAlgorithmProtocol_ptr {}
+
+extension UnsafeTreeV2: FaultTorelantEraseProtocol, FaultTorelantEraseMultiProtocol {}

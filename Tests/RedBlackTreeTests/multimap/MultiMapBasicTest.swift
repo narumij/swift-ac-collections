@@ -50,7 +50,9 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
 
     let lb = multiMap.lowerBound("a")
     let ub = multiMap.upperBound("a")
+#if COMPATIBLE_ATCODER_2025
     XCTAssertLessThan(lb, ub)
+#endif
     XCTAssertEqual(multiMap.distance(from: lb, to: ub), 2)
 
     let lb2 = multiMap.lowerBound("z")

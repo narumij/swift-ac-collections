@@ -40,7 +40,7 @@ where Parameters: Comparable {
     typealias KeyValue = _LinkingPair<_Key, _MappedValue>
 
   public
-    typealias _Value = KeyValue
+    typealias _RawValue = KeyValue
 
   public
     typealias _Key = Key
@@ -55,14 +55,9 @@ where Parameters: Comparable {
 
   @usableFromInline
   var _rankLowest: _NodePtr
-  
-  @usableFromInline
-  var referenceCounter: ReferenceCounter
 
   @usableFromInline
-  var __tree_: Tree {
-    didSet { referenceCounter = .create() }
-  }
+  var __tree_: Tree
 }
 
 extension ___LRUMemoizeStorage {
@@ -79,8 +74,6 @@ extension ___LRUMemoizeStorage {
     // インデックス時代はそれでこまらなかった
     // コピーが発生する前提の場合、別途ケアをする必要がある
     (_rankHighest, _rankLowest) = (__tree_.nullptr, __tree_.nullptr)
-    
-    referenceCounter = .create()
   }
 
   @inlinable
@@ -99,14 +92,12 @@ extension ___LRUMemoizeStorage {
       if let newValue {
         if __tree_.count < maxCount {
           // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
-          _ensureCapacity(limit: maxCount)
+          __tree_._ensureCapacity(limit: maxCount)
         }
         if __tree_.count == maxCount {
           _ = __tree_.erase(___popRankLowest())
         }
-#if !USE_UNSAFE_TREE
         assert(__tree_.count < __tree_.capacity)
-        #endif
         let (__parent, __child) = __tree_.__find_equal(key)
         if __tree_.__ptr_(__child) == __tree_.nullptr {
           let __h = __tree_.__construct_node(.init(key, __tree_.nullptr, __tree_.nullptr, newValue))
@@ -118,23 +109,27 @@ extension ___LRUMemoizeStorage {
   }
 }
 
-extension ___LRUMemoizeStorage: ___LRULinkList & ___UnsafeCopyOnWriteV2 & ___UnsafeStorageProtocolV2 {
-  
+extension ___LRUMemoizeStorage: ___LRULinkList & ___UnsafeStorageProtocolV2 & IntThreeWayComparator {
+
   public typealias Base = Self
 }
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}
 extension ___LRUMemoizeStorage: KeyValueComparer {
+  
+  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> KeyValue {
+    p.__value_().pointee
+  }
 
   @inlinable
   @inline(__always)
-  public static func ___mapped_value(_ element: _Value) -> _MappedValue {
+  public static func ___mapped_value(_ element: _RawValue) -> _MappedValue {
     element.value
   }
 
   @inlinable
   @inline(__always)
   public static func ___with_mapped_value<T>(
-    _ element: inout _Value, _ f: (inout _MappedValue) throws -> T
+    _ element: inout _RawValue, _ f: (inout _MappedValue) throws -> T
   ) rethrows -> T {
     try f(&element.value)
   }
@@ -145,7 +140,11 @@ extension ___LRUMemoizeStorage {
   @inlinable
   @inline(__always)
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    ___removeAll(keepingCapacity: keepCapacity)
+    if keepCapacity {
+      __tree_.deinitialize()
+    } else {
+      self = .init()
+    }
   }
 }
 

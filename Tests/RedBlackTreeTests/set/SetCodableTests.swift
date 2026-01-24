@@ -1,8 +1,8 @@
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 class CodableFixture: RedBlackTreeTestCase {
-  
+
   let encoder: JSONEncoder = {
     let e = JSONEncoder()
     e.keyEncodingStrategy = .convertToSnakeCase
@@ -19,13 +19,13 @@ class CodableFixture: RedBlackTreeTestCase {
 }
 
 #if !COMPATIBLE_ATCODER_2025
-final class SetCodableTests: CodableFixture {
+  final class SetCodableTests: CodableFixture {
 
-  func testRoundTrip() throws {
-    let u = RedBlackTreeSet<Int>(0..<10)
-    let data = try encoder.encode(u)
-    let v = try decoder.decode(RedBlackTreeSet<Int>.self, from: data)
-    XCTAssertEqual(v, u)
+    func testRoundTrip() throws {
+      let u = RedBlackTreeSet<Int>(0..<10)
+      let data = try encoder.encode(u)
+      let v = try decoder.decode(RedBlackTreeSet<Int>.self, from: data)
+      XCTAssertEqual(v, u)
+    }
   }
-}
 #endif

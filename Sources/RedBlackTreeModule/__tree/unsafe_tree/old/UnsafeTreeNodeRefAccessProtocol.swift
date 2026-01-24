@@ -1,0 +1,39 @@
+//
+//  UnsafeTreeNodeRefProtocol.swift
+//  swift-ac-collections
+//
+//  Created by narumij on 2026/01/12.
+//
+
+/// 配列ベースのコードベースにポインタを載せるためのもの
+///
+/// 段階としては終わっている
+@usableFromInline
+package protocol UnsafeTreeNodeRefAccessProtocol: TreeNodeRefAccessInterface & _UnsafeNodePtrType {}
+
+extension UnsafeTreeNodeRefAccessProtocol {
+
+  @inlinable
+  @inline(__always)
+  func __left_ref(_ p: _NodePtr) -> _NodeRef {
+    return _ref(to: &p.pointee.__left_)
+  }
+
+  @inlinable
+  @inline(__always)
+  func __right_ref(_ p: _NodePtr) -> _NodeRef {
+    return _ref(to: &p.pointee.__right_)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func __ptr_(_ rhs: _NodeRef) -> _NodePtr {
+    rhs.pointee
+  }
+
+  @inlinable
+  @inline(__always)
+  func __ptr_(_ lhs: _NodeRef, _ rhs: _NodePtr) {
+    lhs.pointee = rhs
+  }
+}

@@ -1,0 +1,222 @@
+//
+//  _UnsafeNodeFreshBucketDeallocator.swift
+//  swift-ac-collections
+//
+//  Created by narumij on 2026/01/15.
+//
+
+// # Memory Layout
+//
+// ## Primary Bucket
+// |Bucket|ptr|Node||Node|Value|Node|Value|...
+//                  ^--start
+// ^-- head
+//
+// ## Secondary and other Buckets
+// |Bucket||Node|Value|Node|Value|...
+//         ^--start
+// ^-- next
+//
+// ## special node on Primary Bucket
+// |Bucket|ptr|Node||Node|Value|Node|Value|...
+//              ^-- end node (end->left == root)
+//
+// |Bucket|ptr|Node||Node|Value|Node|Value|...
+//          ^-- begin (begin == __tree_min(end->left))
+//
+// ## memory layout gap
+// |Bucket||Node|Value|Node|Value|...
+//        ^^-- bucket has alignment gap
+//
+//
+// ## Initial Capacity 0
+// |Bucket|ptr|Node|
+//
+// ## Resever Capacity to 1
+// |Bucket|ptr|Node|
+// |Bucket||Node|Value|
+//
+// ## Reserve Capacity to 2
+// |Bucket|ptr|Node|
+// |Bucket||Node|Value|
+// |Bucket||Node|Value|
+//
+// ## then Copy on Write occurs
+// |Bucket|ptr|Node||Node|Value|Node|Value|.......
+//                                    ^-- inlined
+//
+// Inspired by the TrailingArray technique from Swift Collections.
+//
+@frozen
+@usableFromInline
+package struct _BucketAllocator {
+
+  static func create() -> Self {
+    .init(valueType: Void.self, deinitialize: { _ in })
+  }
+
+  @inlinable
+  @inline(__always)
+  public init<_RawValue>(
+    valueType: _RawValue.Type,
+    deinitialize: @escaping (UnsafeMutableRawPointer) -> Void
+  ) {
+    self.memoryLayout = MemoryLayout<_RawValue>._memoryLayout
+    self._pair = .init(UnsafeNode.self, _RawValue.self)
+    self.deinitialize = deinitialize
+    self.capacityOffset = max(0, memoryLayout.alignment - MemoryLayout<UnsafeNode>.alignment)
+  }
+
+  public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+
+  @usableFromInline
+  let memoryLayout: _MemoryLayout
+
+  @usableFromInline
+  package let _pair: _MemoryLayout
+
+  @usableFromInline
+  package let capacityOffset: Int
+
+  @usableFromInline
+  let deinitialize: (UnsafeMutableRawPointer) -> Void
+
+  @inlinable
+  func deinitializeEndNode(_ b: _BucketPointer) {
+    UnsafeMutableRawPointer(b.advanced(by: 1))
+      .assumingMemoryBound(to: UnsafeNode.self)
+      .deinitialize(count: 1)
+  }
+
+  @inlinable
+  func deinitializeNodeAndValues(isHead: Bool, _ b: _BucketPointer) {
+    var it = b._counts(isHead: isHead, memoryLayout: memoryLayout)
+    while let p = it.pop() {
+      if p.pointee.___needs_deinitialize {
+        deinitialize(p.advanced(by: 1))
+      } else {
+        p.deinitialize(count: 1)
+      }
+    }
+    #if DEBUG
+      do {
+        var it = b._capacities(isHead: isHead, memoryLayout: memoryLayout)
+        while let p = it.pop() {
+          p.pointee.___raw_index = .debug
+        }
+      }
+    #endif
+  }
+
+  @inlinable
+  func deallocHeadBucket(_ b: _BucketPointer) {
+    deinitializeEndNode(b)
+    deinitializeNodeAndValues(isHead: true, b)
+    b.deinitialize(count: 1)
+    UnsafeMutableRawPointer(b)._deallocate()
+  }
+
+  @inlinable
+  func deallocBucket(_ b: _BucketPointer) {
+    deinitializeNodeAndValues(isHead: false, b)
+    b.deinitialize(count: 1)
+    UnsafeMutableRawPointer(b)._deallocate()
+  }
+
+  @inlinable
+  public func deinitialize(bucket b: _BucketPointer?) {
+    var reserverHead = b
+    var isHead = true
+    while let h = reserverHead {
+      reserverHead = h.pointee.next
+      deinitializeNodeAndValues(isHead: isHead, h)
+      h.pointee.count = 0
+      isHead = false
+    }
+  }
+
+  @inlinable
+  public func deallocate(bucket b: _BucketPointer?) {
+    var reserverHead = b
+    while let h = reserverHead {
+      reserverHead = h.pointee.next
+      if h == b {
+        deallocHeadBucket(h)
+      } else {
+        deallocBucket(h)
+      }
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public func createHeadBucket(capacity: Int, nullptr: _NodePtr) -> (
+    _BucketPointer, capacity: Int
+  ) {
+
+    let (bytes, alignment) = (otherCapacity(capacity: capacity), _pair.alignment)
+
+    let header_storage = UnsafeMutableRawPointer._allocate(
+      byteCount: bytes
+        + MemoryLayout<UnsafeNode>.stride
+        + MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride,
+      alignment: alignment)
+
+    let header = UnsafeMutableRawPointer(header_storage)
+      .assumingMemoryBound(to: _Bucket.self)
+
+    let endNode = header.end_ptr
+
+    endNode.initialize(to: .create(id: .end, nullptr: nullptr))
+    header.initialize(to: .init(capacity: capacity))
+
+    #if DEBUG
+      do {
+        var it = header._capacities(isHead: true, memoryLayout: memoryLayout)
+        while let p = it.pop() {
+          p.pointee.___raw_index = .debug
+        }
+      }
+    #endif
+
+    return (header, capacity)
+  }
+
+  @inlinable
+  @inline(__always)
+  public func createBucket(capacity: Int) -> (_BucketPointer, capacity: Int) {
+
+    assert(capacity != 0)
+
+    let (bytes, alignment) = (otherCapacity(capacity: capacity), _pair.alignment)
+
+    let header_storage = UnsafeMutableRawPointer._allocate(
+      byteCount: bytes,
+      alignment: alignment)
+
+    let header = UnsafeMutableRawPointer(header_storage)
+      .assumingMemoryBound(to: _Bucket.self)
+
+    header.initialize(to: .init(capacity: capacity))
+
+    #if DEBUG
+      do {
+        var it = header._capacities(isHead: false, memoryLayout: memoryLayout)
+        while let p = it.pop() {
+          p.pointee.___raw_index = .debug
+        }
+      }
+    #endif
+
+    return (header, capacity)
+  }
+
+  @usableFromInline
+  package func otherCapacity(capacity: Int) -> Int {
+    let s2 = MemoryLayout<_Bucket>.stride
+    let s01 = _pair.stride
+    let size = s2 + s01 * capacity + (capacity == 0 ? 0 : capacityOffset)
+    return size
+  }
+}

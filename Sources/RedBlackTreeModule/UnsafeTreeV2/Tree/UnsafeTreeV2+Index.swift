@@ -28,23 +28,23 @@ extension UnsafeTreeV2 where Base: ___TreeIndex {
   @inlinable
   @inline(__always)
   internal func makeIndex(rawValue: _NodePtr) -> Index {
-    .init(tree: self, rawValue: rawValue)
+    .init(rawValue: rawValue, tie: tied)
   }
 }
 
 extension UnsafeTreeV2 where Base: ___TreeIndex {
 
-  public typealias Indices = UnsafeIndicesV2<Base>
+  public typealias Indices = UnsafeIndexV2Collection<Base>
 }
 
 extension UnsafeTreeV2 where Base: ___TreeIndex {
 
-  public typealias _Values = RedBlackTreeIteratorV2<Base>.Values
+  public typealias _RawValues = RedBlackTreeIteratorV2.Values<Base>
 }
 
 extension UnsafeTreeV2 where Base: KeyValueComparer & ___TreeIndex {
 
-  public typealias _KeyValues = RedBlackTreeIteratorV2<Base>.KeyValues
+  public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
 }
 
 extension UnsafeTreeV2 {

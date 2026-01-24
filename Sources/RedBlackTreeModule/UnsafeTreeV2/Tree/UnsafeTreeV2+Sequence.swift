@@ -70,7 +70,7 @@ extension UnsafeTreeV2 {
   @inlinable
   internal func elementsEqual<OtherSequence>(
     _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
-    by areEquivalent: (_Value, OtherSequence.Element) throws -> Bool
+    by areEquivalent: (_RawValue, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
     try unsafeValues(__first, __last).elementsEqual(other, by: areEquivalent)
   }
@@ -81,8 +81,8 @@ extension UnsafeTreeV2 {
   @inlinable
   internal func lexicographicallyPrecedes<OtherSequence>(
     _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
-    by areInIncreasingOrder: (_Value, _Value) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, _Value == OtherSequence.Element {
+    by areInIncreasingOrder: (_RawValue, _RawValue) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, _RawValue == OtherSequence.Element {
     try unsafeValues(__first, __last).lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
@@ -91,7 +91,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal func
-    ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_Value]
+    ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_RawValue]
   {
     let count = __distance(__first, __last)
     return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
@@ -108,7 +108,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal func
-    ___copy_to_array<T>(_ __first: _NodePtr, _ __last: _NodePtr, transform: (_Value) -> T)
+    ___copy_to_array<T>(_ __first: _NodePtr, _ __last: _NodePtr, transform: (_RawValue) -> T)
     -> [T]
   {
     let count = __distance(__first, __last)
@@ -125,7 +125,7 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2: Equatable where _Value: Equatable {
+extension UnsafeTreeV2: Equatable where _RawValue: Equatable {
 
   @inlinable
   @inline(__always)
@@ -135,7 +135,7 @@ extension UnsafeTreeV2: Equatable where _Value: Equatable {
       return false
     }
 
-    if lhs.count == 0 || lhs.isIdentical(to: rhs) {
+    if lhs.count == 0 || lhs.isTriviallyIdentical(to: rhs) {
       return true
     }
 
@@ -147,12 +147,12 @@ extension UnsafeTreeV2: Equatable where _Value: Equatable {
   }
 }
 
-extension UnsafeTreeV2: Comparable where _Value: Comparable {
+extension UnsafeTreeV2: Comparable where _RawValue: Comparable {
 
   @inlinable
   @inline(__always)
   public static func < (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
-    !lhs.isIdentical(to: rhs)
+    !lhs.isTriviallyIdentical(to: rhs)
       && lhs.lexicographicallyPrecedes(
         lhs.__begin_node_,
         lhs.__end_node,
@@ -168,11 +168,11 @@ extension UnsafeTreeV2 {
   internal func ___filter(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
-    _ isIncluded: (_Value) throws -> Bool
+    _ isIncluded: (_RawValue) throws -> Bool
   )
     rethrows -> UnsafeTreeV2
   {
-    var tree: Tree = .create(minimumCapacity: 0)
+    var tree: Tree = .___create(minimumCapacity: 0, nullptr: nullptr)
     var (__parent, __child) = tree.___max_ref()
     for __p in unsafeSequence(__first, __last)
     where try isIncluded(__value_(__p)) {
@@ -189,27 +189,26 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func
-    sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> ___SafePointersUnsafeV2<Base>
+  sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> UnsafeIterator._RemoveAwarePointers
   {
-    .init(tree: self, start: __first, end: __last)
+    .init(_start: __first, _end: __last)
   }
 
   @inlinable
   @inline(__always)
   internal func
     unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
-    -> ___UnsafePointersUnsafeV2<Base>
+    -> UnsafeIterator._Obverse
   {
-    .init(tree: self, __first: __first, __last: __last)
+    .init(_start: __first, _end: __last)
   }
 
   @inlinable
   @inline(__always)
   internal func
     unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
-    -> ___UnsafeValuesUnsafeV2<Base>
+  -> UnsafeIterator._RawValue<Base, UnsafeIterator._Obverse>
   {
-    .init(tree: self, __first: __first, __last: __last)
+    .init(Base.self, _start: __first, _end: __last)
   }
 }
-

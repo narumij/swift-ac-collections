@@ -3,8 +3,8 @@
 //
 // Tests target に追加して `swift test` / Xcode ⌘-U で実行
 
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 final class RedBlackTreeSetBidirectionalTests: RedBlackTreeTestCase {
 

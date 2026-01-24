@@ -33,7 +33,7 @@ import XCTest
       }
       XCTAssertEqual(f.__tree_.header.freshBucketCount, 5)
     }
-    
+
     func testExample3() throws {
       var f = RedBlackTreeSet<Int>()
       allocationChunkSize = 3

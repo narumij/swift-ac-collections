@@ -58,10 +58,10 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias Element = (key: Key, value: Value)
 
   public
-    typealias Keys = RedBlackTreeIteratorV2<Self>.Keys
+    typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
 
   public
-    typealias Values = RedBlackTreeIteratorV2<Self>.MappedValues
+    typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
   public
     typealias _Key = Key
@@ -70,29 +70,14 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias _MappedValue = Value
 
   public
-    typealias _Value = RedBlackTreePair<Key, Value>
+    typealias _RawValue = RedBlackTreePair<Key, Value>
 
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-  @usableFromInline
-  var referenceCounter: ReferenceCounter
-#endif
-  
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-  @usableFromInline
-  var __tree_: Tree {
-    didSet { referenceCounter = .create() }
-  }
-#else
   @usableFromInline
   var __tree_: Tree
-#endif
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    referenceCounter = .create()
-#endif
   }
 }
 
@@ -102,7 +87,12 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: ___RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeDictionary: CompareUniqueTrait {}
-extension RedBlackTreeDictionary: KeyValueComparer {}
+extension RedBlackTreeDictionary: KeyValueComparer {
+  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> RedBlackTreePair<Key, Value>
+  {
+    p.__value_().pointee
+  }
+}
 
 // MARK: - Creating a Dictionay
 
@@ -112,7 +102,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public init() {
-    self.init(__tree_: .create(minimumCapacity: 0))
+    self.init(__tree_: .create())
   }
 
   /// - Complexity: O(1)
@@ -130,7 +120,8 @@ extension RedBlackTreeDictionary {
   public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
 
-    self.init(__tree_: .create_unique(
+    self.init(
+      __tree_: .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
         transform: Self.___tree_value
       ))
@@ -146,7 +137,8 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    self.init(__tree_: try .create_unique(
+    self.init(
+      __tree_: try .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
         uniquingKeysWith: combine,
         transform: Self.___tree_value
@@ -163,7 +155,8 @@ extension RedBlackTreeDictionary {
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == [S.Element] {
 
-    self.init(__tree_: try .create_unique(
+    self.init(
+      __tree_: try .create_unique(
         sorted: try values.sorted {
           try keyForValue($0) < keyForValue($1)
         },
@@ -279,21 +272,21 @@ extension RedBlackTreeDictionary {
     @inline(__always) _modify {
       // UnsafeTree用の暫定処置
       // TODO: FIXME
-      _ensureUniqueAndCapacity()
+      __tree_._ensureUniqueAndCapacity()
       // TODO: もうすこしライフタイム管理に明るくなったら、再度ここのチューニングに取り組む
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == __tree_.nullptr {
         var value: Value?
         defer {
           if let value {
-//            _ensureUniqueAndCapacity()
+            //            _ensureUniqueAndCapacity()
             let __h = __tree_.__construct_node(Self.___tree_value((key, value)))
             __tree_.__insert_node_at(__parent, __child, __h)
           }
         }
         yield &value
       } else {
-//        _ensureUnique()
+        //        _ensureUnique()
         var helper = ___ModifyHelper(pointer: &__tree_[__ptr].value)
         defer {
           if helper.isNil {
@@ -317,14 +310,14 @@ extension RedBlackTreeDictionary {
       defer { _fixLifetime(self) }
       // UnsafeTree用の暫定処置
       // TODO: FIXME
-      _ensureUniqueAndCapacity()
+      __tree_._ensureUniqueAndCapacity()
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == __tree_.nullptr {
         assert(__tree_.capacity > __tree_.count)
         __ptr = __tree_.__construct_node(Self.___tree_value((key, defaultValue())))
         __tree_.__insert_node_at(__parent, __child, __ptr)
       } else {
-        _ensureUnique()
+        __tree_._ensureUnique()
       }
       yield &__tree_[__ptr].value
     }
@@ -345,34 +338,36 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+#if COMPATIBLE_ATCODER_2025
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     __tree_.___ensureValid(
-      begin: bounds.lowerBound.rawValue(__tree_),
-      end: bounds.upperBound.rawValue(__tree_))
+      begin: __tree_.rawValue(bounds.lowerBound),
+      end: __tree_.rawValue(bounds.upperBound))
 
     return .init(
       tree: __tree_,
-      start: bounds.lowerBound.rawValue(__tree_),
-      end: bounds.upperBound.rawValue(__tree_))
+      start: __tree_.rawValue(bounds.lowerBound),
+      end: __tree_.rawValue(bounds.upperBound))
   }
+  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025 && false
     @inlinable
     @inline(__always)
     public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
       let bounds: Range<Index> = bounds.relative(to: self)
 
       __tree_.___ensureValid(
-        begin: bounds.lowerBound.rawValue(__tree_),
-        end: bounds.upperBound.rawValue(__tree_))
+        begin: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
 
       return .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue(__tree_),
-        end: bounds.upperBound.rawValue(__tree_))
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
     }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -382,8 +377,8 @@ extension RedBlackTreeDictionary {
     public subscript(unchecked bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue(__tree_),
-        end: bounds.upperBound.rawValue(__tree_))
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
     }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -395,8 +390,8 @@ extension RedBlackTreeDictionary {
       let bounds: Range<Index> = bounds.relative(to: self)
       return .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue(__tree_),
-        end: bounds.upperBound.rawValue(__tree_))
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
     }
   #endif
 }
@@ -423,7 +418,7 @@ extension RedBlackTreeDictionary {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    _ensureUniqueAndCapacity()
+    __tree_._ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(Self.___tree_value(newMember))
     return (__inserted, __inserted ? newMember : ___element(__tree_[__r]))
   }
@@ -439,7 +434,7 @@ extension RedBlackTreeDictionary {
     _ value: Value,
     forKey key: Key
   ) -> Value? {
-    _ensureUniqueAndCapacity()
+    __tree_._ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(Self.___tree_value((key, value)))
     guard !__inserted else { return nil }
     let oldMember = __tree_[__r]
@@ -452,7 +447,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
+    __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -468,7 +463,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
 
-    try _ensureUnique { __tree_ in
+    try __tree_._ensureUnique { __tree_ in
       try .___insert_range_unique(
         tree: __tree_,
         other: other.__tree_,
@@ -489,7 +484,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    try _ensureUnique { __tree_ in
+    try __tree_._ensureUnique { __tree_ in
       try .___insert_range_unique(
         tree: __tree_,
         other,
@@ -554,7 +549,7 @@ extension RedBlackTreeDictionary {
       return nil
     }
     let value = __tree_.__value_(__i).value
-    _ensureUnique()
+    __tree_._ensureUnique()
     _ = __tree_.erase(__i)
     return value
   }
@@ -588,13 +583,14 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    _ensureUnique()
-    guard let element = ___remove(at: index.rawValue(__tree_)) else {
+    __tree_._ensureUnique()
+    guard let element = ___remove(at: __tree_.rawValue(index)) else {
       fatalError(.invalidIndex)
     }
     return ___element(element)
   }
 
+#if COMPATIBLE_ATCODER_2025
   /// Removes the specified subrange of elements from the collection.
   ///
   /// - Important: 削除後は、subrangeのインデックスが無効になります。
@@ -608,11 +604,12 @@ extension RedBlackTreeDictionary {
   ) where R.Bound == Index {
 
     let bounds = bounds.relative(to: self)
-    _ensureUnique()
+    __tree_._ensureUnique()
     ___remove(
-      from: bounds.lowerBound.rawValue(__tree_),
-      to: bounds.upperBound.rawValue(__tree_))
+      from: __tree_.rawValue(bounds.lowerBound),
+      to: __tree_.rawValue(bounds.upperBound))
   }
+  #endif
 }
 
 extension RedBlackTreeDictionary {
@@ -620,8 +617,12 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    _ensureUnique()
-    ___removeAll(keepingCapacity: keepCapacity)
+    if keepCapacity {
+      __tree_._ensureUnique()
+      __tree_.deinitialize()
+    } else {
+      self = .init()
+    }
   }
 }
 
@@ -719,9 +720,10 @@ extension RedBlackTreeDictionary {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    .init(__tree_: try __tree_.___filter(_start, _end) {
-          try isIncluded(___element($0))
-        })
+    .init(
+      __tree_: try __tree_.___filter(_start, _end) {
+        try isIncluded(___element($0))
+      })
   }
 }
 
@@ -732,7 +734,7 @@ extension RedBlackTreeDictionary {
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
     -> RedBlackTreeDictionary<Key, T>
   {
-    .init(__tree_:  try __tree_.___mapValues(_start, _end, transform))
+    .init(__tree_: try __tree_.___mapValues(_start, _end, transform))
   }
 
   /// - Complexity: O(*n*)
@@ -750,7 +752,13 @@ extension RedBlackTreeDictionary {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection {
+#if COMPATIBLE_ATCODER_2025
+extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection {}
+#else
+extension RedBlackTreeDictionary: Sequence {}
+#endif
+
+extension RedBlackTreeDictionary {
 
   /// - Complexity: O(1)
   @inlinable
@@ -765,12 +773,14 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
     try _forEach(body)
   }
 
-  /// 特殊なforEach
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try _forEach(body)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// 特殊なforEach
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  #endif
 
   #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(*n*)
@@ -899,6 +909,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
     _isValid(index: index)
   }
 
+#if COMPATIBLE_ATCODER_2025
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
   /// - Complexity: O(1)
@@ -908,6 +919,7 @@ extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection 
   where R.Bound == Index {
     _isValid(bounds)
   }
+  #endif
 
   /// - Complexity: O(1)
   @inlinable
@@ -1017,7 +1029,7 @@ extension RedBlackTreeDictionary: CustomDebugStringConvertible {
 extension RedBlackTreeDictionary: CustomReflectable {
   /// The custom mirror for this instance.
   public var customMirror: Mirror {
-    Mirror(self, unlabeledChildren: self, displayStyle: .dictionary)
+    Mirror(self, unlabeledChildren: self + [], displayStyle: .dictionary)
   }
 }
 
@@ -1033,19 +1045,19 @@ extension RedBlackTreeDictionary {
   ///
   /// For any values `a`, `b`, and `c`:
   ///
-  /// - `a.isIdentical(to: a)` is always `true`. (Reflexivity)
-  /// - `a.isIdentical(to: b)` implies `b.isIdentical(to: a)`. (Symmetry)
-  /// - If `a.isIdentical(to: b)` and `b.isIdentical(to: c)` are both `true`,
-  ///   then `a.isIdentical(to: c)` is also `true`. (Transitivity)
-  /// - `a.isIdentical(b)` implies `a == b`
-  ///   - `a == b` does not imply `a.isIdentical(b)`
+  /// - `a.isTriviallyIdentical(to: a)` is always `true`. (Reflexivity)
+  /// - `a.isTriviallyIdentical(to: b)` implies `b.isTriviallyIdentical(to: a)`. (Symmetry)
+  /// - If `a.isTriviallyIdentical(to: b)` and `b.isTriviallyIdentical(to: c)` are both `true`,
+  ///   then `a.isTriviallyIdentical(to: c)` is also `true`. (Transitivity)
+  /// - `a.isTriviallyIdentical(b)` implies `a == b`
+  ///   - `a == b` does not imply `a.isTriviallyIdentical(b)`
   ///
   /// Values produced by copying the same value, with no intervening mutations,
   /// will compare identical:
   ///
   /// ```swift
   /// let d = c
-  /// print(c.isIdentical(to: d))
+  /// print(c.isTriviallyIdentical(to: d))
   /// // Prints true
   /// ```
   ///
@@ -1057,8 +1069,8 @@ extension RedBlackTreeDictionary {
   /// - Performance: O(1)
   @inlinable
   @inline(__always)
-  public func isIdentical(to other: Self) -> Bool {
-    _isIdentical(to: other)
+  public func isTriviallyIdentical(to other: Self) -> Bool {
+    _isTriviallyIdentical(to: other)
   }
 }
 

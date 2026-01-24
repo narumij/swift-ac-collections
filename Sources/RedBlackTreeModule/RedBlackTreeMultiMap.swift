@@ -62,10 +62,10 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Element = (key: Key, value: Value)
 
   public
-    typealias Keys = RedBlackTreeIteratorV2<Self>.Keys
+    typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
 
   public
-    typealias Values = RedBlackTreeIteratorV2<Self>.MappedValues
+    typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
   public
     typealias _Key = Key
@@ -74,29 +74,14 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias _MappedValue = Value
 
   public
-    typealias _Value = RedBlackTreePair<Key, Value>
+    typealias _RawValue = RedBlackTreePair<Key, Value>
 
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-  @usableFromInline
-  var referenceCounter: ReferenceCounter
-#endif
-  
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-  @usableFromInline
-  var __tree_: Tree {
-    didSet { referenceCounter = .create() }
-  }
-#else
   @usableFromInline
   var __tree_: Tree
-#endif
 
   @inlinable @inline(__always)
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
-#if !USE_SIMPLE_COPY_ON_WRITE || COMPATIBLE_ATCODER_2025
-    referenceCounter = .create()
-#endif
   }
 }
 
@@ -106,7 +91,11 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap: ___RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeMultiMap: CompareMultiTrait {}
-extension RedBlackTreeMultiMap: KeyValueComparer {}
+extension RedBlackTreeMultiMap: KeyValueComparer {
+  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> RedBlackTreePair<Key, Value> {
+    p.__value_().pointee
+  }  
+}
 
 // MARK: - Creating a MultiMap
 
@@ -115,7 +104,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(1)
   @inlinable @inline(__always)
   public init() {
-    self.init(__tree_: .create(minimumCapacity: 0))
+    self.init(__tree_: .create())
   }
 
   /// - Complexity: O(1)
@@ -131,7 +120,8 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public init<S>(multiKeysWithValues keysAndValues: __owned S)
   where S: Sequence, S.Element == (Key, Value) {
-    self.init(__tree_:
+    self.init(
+      __tree_:
         .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) {
           Self.___tree_value($0)
         })
@@ -147,7 +137,8 @@ extension RedBlackTreeMultiMap {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == S.Element {
-    self.init(__tree_: try .create_multi(
+    self.init(
+      __tree_: try .create_multi(
         sorted: try values.sorted {
           try keyForValue($0) < keyForValue($1)
         },
@@ -227,7 +218,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public func values(forKey key: Key) -> Values {
     let (lo, hi) = __tree_.__equal_range_multi(key)
-    return .init(tree: __tree_, start: lo, end: hi)
+    return .init(start: lo, end: hi, tie: __tree_.tied)
   }
 }
 
@@ -235,34 +226,36 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+#if COMPATIBLE_ATCODER_2025
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     __tree_.___ensureValid(
-      begin: bounds.lowerBound.rawValue(__tree_),
-      end: bounds.upperBound.rawValue(__tree_))
+      begin: __tree_.rawValue(bounds.lowerBound),
+      end: __tree_.rawValue(bounds.upperBound))
 
     return .init(
       tree: __tree_,
-      start: bounds.lowerBound.rawValue(__tree_),
-      end: bounds.upperBound.rawValue(__tree_))
+      start: __tree_.rawValue(bounds.lowerBound),
+      end: __tree_.rawValue(bounds.upperBound))
   }
+  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025 && false
     @inlinable
     @inline(__always)
     public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
       let bounds: Range<Index> = bounds.relative(to: self)
 
       __tree_.___ensureValid(
-        begin: bounds.lowerBound.rawValue(__tree_),
-        end: bounds.upperBound.rawValue(__tree_))
+        begin: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
 
       return .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue(__tree_),
-        end: bounds.upperBound.rawValue(__tree_))
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
     }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -272,8 +265,8 @@ extension RedBlackTreeMultiMap {
     public subscript(unchecked bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue(__tree_),
-        end: bounds.upperBound.rawValue(__tree_))
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
     }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
@@ -285,8 +278,8 @@ extension RedBlackTreeMultiMap {
       let bounds: Range<Index> = bounds.relative(to: self)
       return .init(
         tree: __tree_,
-        start: bounds.lowerBound.rawValue(__tree_),
-        end: bounds.upperBound.rawValue(__tree_))
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
     }
   #endif
 }
@@ -312,7 +305,7 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    _ensureUniqueAndCapacity()
+    __tree_._ensureUniqueAndCapacity()
     _ = __tree_.__insert_multi(Self.___tree_value(newMember))
     return (true, newMember)
   }
@@ -325,12 +318,12 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   @discardableResult
   public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
-    guard !__tree_.___is_subscript_null(ptr.rawValue(__tree_)) else {
+    guard !__tree_.___is_subscript_null(__tree_.rawValue(ptr)) else {
       return nil
     }
-    _ensureUnique()
-    let old = __tree_[ptr.rawValue(__tree_)]
-    __tree_[ptr.rawValue(__tree_)].value = newValue
+    __tree_._ensureUnique()
+    let old = __tree_[__tree_.rawValue(ptr)]
+    __tree_[__tree_.rawValue(ptr)].value = newValue
     return ___element(old)
   }
 }
@@ -339,7 +332,7 @@ extension RedBlackTreeMultiMap {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    _ensureUniqueAndCapacity(to: minimumCapacity)
+    __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -353,7 +346,7 @@ extension RedBlackTreeMultiMap {
   /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
-    _ensureUnique { __tree_ in
+    __tree_._ensureUnique { __tree_ in
       .___insert_range_multi(
         tree: __tree_,
         other: other.__tree_,
@@ -366,7 +359,7 @@ extension RedBlackTreeMultiMap {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
-    _ensureUnique { __tree_ in
+    __tree_._ensureUnique { __tree_ in
       .___insert_range_multi(tree: __tree_, other.map { Self.___tree_value($0) })
     }
   }
@@ -451,7 +444,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @discardableResult
   public mutating func removeFirst(forKey key: Key) -> Bool {
-    _strongEnsureUnique()
+    __tree_._strongEnsureUnique()
     return __tree_.___erase_unique(key)
   }
 
@@ -460,25 +453,27 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @discardableResult
   public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
-    _ensureUnique()
+    __tree_._ensureUnique()
     return __tree_.___erase_unique(key)
   }
 
+  // TODO: イテレータ利用の注意をドキュメントすること
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @discardableResult
   public mutating func removeAll(forKey key: Key) -> Int {
-    _strongEnsureUnique()
+    __tree_._strongEnsureUnique()
     return __tree_.___erase_multi(key)
   }
 
+  // TODO: CoWの挙動変更後、deprecatedまたは削除すること
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @discardableResult
   public mutating func removeAll(_unsafeForKey key: Key) -> Int {
-    _ensureUnique()
+    __tree_._ensureUnique()
     return __tree_.___erase_multi(key)
   }
 }
@@ -514,13 +509,14 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    _ensureUnique()
-    guard let element = ___remove(at: index.rawValue(__tree_)) else {
+    __tree_._ensureUnique()
+    guard let element = ___remove(at: __tree_.rawValue(index)) else {
       fatalError(.invalidIndex)
     }
     return ___element(element)
   }
 
+#if COMPATIBLE_ATCODER_2025
   /// Removes the specified subrange of elements from the collection.
   ///
   /// - Important: 削除後は、subrangeのインデックスが無効になります。
@@ -534,11 +530,12 @@ extension RedBlackTreeMultiMap {
   ) where R.Bound == Index {
 
     let bounds = bounds.relative(to: self)
-    _ensureUnique()
+    __tree_._ensureUnique()
     ___remove(
-      from: bounds.lowerBound.rawValue(__tree_),
-      to: bounds.upperBound.rawValue(__tree_))
+      from: __tree_.rawValue(bounds.lowerBound),
+      to: __tree_.rawValue(bounds.upperBound))
   }
+#endif
 }
 
 extension RedBlackTreeMultiMap {
@@ -546,8 +543,12 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    _ensureUnique()
-    ___removeAll(keepingCapacity: keepCapacity)
+    if keepCapacity {
+      __tree_._ensureUnique()
+      __tree_.deinitialize()
+    } else {
+      self = .init()
+    }
   }
 }
 
@@ -645,10 +646,11 @@ extension RedBlackTreeMultiMap {
   public func filter(
     _ isIncluded: (Element) throws -> Bool
   ) rethrows -> Self {
-    .init(__tree_: try __tree_.___filter(_start, _end) {
-          try isIncluded(___element($0))
-        }
-      )
+    .init(
+      __tree_: try __tree_.___filter(_start, _end) {
+        try isIncluded(___element($0))
+      }
+    )
   }
 }
 
@@ -675,7 +677,13 @@ extension RedBlackTreeMultiMap {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
+#if COMPATIBLE_ATCODER_2025
+extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {}
+#else
+extension RedBlackTreeMultiMap: Sequence {}
+#endif
+
+extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(1)
   @inlinable
@@ -690,12 +698,14 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
     try _forEach(body)
   }
 
-  /// 特殊なforEach
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-    try _forEach(body)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// 特殊なforEach
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  #endif
 
   #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(*n*)
@@ -813,6 +823,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
     _isValid(index: index)
   }
 
+#if COMPATIBLE_ATCODER_2025
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
   /// - Complexity: O(1)
@@ -822,6 +833,7 @@ extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {
   where R.Bound == Index {
     _isValid(bounds)
   }
+#endif
 
   /// - Complexity: O(1)
   @inlinable
@@ -847,14 +859,14 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public var keys: Keys {
-      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node)
+      .init(start: __tree_.__begin_node_, end: __tree_.__end_node, tie: __tree_.tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var values: Values {
-      .init(tree: __tree_, start: __tree_.__begin_node_, end: __tree_.__end_node)
+      .init(start: __tree_.__begin_node_, end: __tree_.__end_node, tie: __tree_.tied)
     }
   #endif
 }
@@ -884,7 +896,7 @@ extension RedBlackTreeMultiMap {
     @inline(__always)
     public subscript(key: Key) -> Values {
       let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
-      return .init(tree: __tree_, start: lo, end: hi)
+      return .init(start: lo, end: hi, tie: __tree_.tied)
     }
   #endif
 }
@@ -949,7 +961,7 @@ extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
 extension RedBlackTreeMultiMap: CustomReflectable {
   /// The custom mirror for this instance.
   public var customMirror: Mirror {
-    Mirror(self, unlabeledChildren: self, displayStyle: .dictionary)
+    Mirror(self, unlabeledChildren: self + [], displayStyle: .dictionary)
   }
 }
 
@@ -965,19 +977,19 @@ extension RedBlackTreeMultiMap {
   ///
   /// For any values `a`, `b`, and `c`:
   ///
-  /// - `a.isIdentical(to: a)` is always `true`. (Reflexivity)
-  /// - `a.isIdentical(to: b)` implies `b.isIdentical(to: a)`. (Symmetry)
-  /// - If `a.isIdentical(to: b)` and `b.isIdentical(to: c)` are both `true`,
-  ///   then `a.isIdentical(to: c)` is also `true`. (Transitivity)
-  /// - `a.isIdentical(b)` implies `a == b`
-  ///   - `a == b` does not imply `a.isIdentical(b)`
+  /// - `a.isTriviallyIdentical(to: a)` is always `true`. (Reflexivity)
+  /// - `a.isTriviallyIdentical(to: b)` implies `b.isTriviallyIdentical(to: a)`. (Symmetry)
+  /// - If `a.isTriviallyIdentical(to: b)` and `b.isTriviallyIdentical(to: c)` are both `true`,
+  ///   then `a.isTriviallyIdentical(to: c)` is also `true`. (Transitivity)
+  /// - `a.isTriviallyIdentical(b)` implies `a == b`
+  ///   - `a == b` does not imply `a.isTriviallyIdentical(b)`
   ///
   /// Values produced by copying the same value, with no intervening mutations,
   /// will compare identical:
   ///
   /// ```swift
   /// let d = c
-  /// print(c.isIdentical(to: d))
+  /// print(c.isTriviallyIdentical(to: d))
   /// // Prints true
   /// ```
   ///
@@ -989,8 +1001,8 @@ extension RedBlackTreeMultiMap {
   /// - Performance: O(1)
   @inlinable
   @inline(__always)
-  public func isIdentical(to other: Self) -> Bool {
-    _isIdentical(to: other)
+  public func isTriviallyIdentical(to other: Self) -> Bool {
+    _isTriviallyIdentical(to: other)
   }
 }
 

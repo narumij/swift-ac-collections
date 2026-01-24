@@ -459,12 +459,12 @@ final class DictionaryTests: RedBlackTreeTestCase {
   #if DEBUG
     func testIndexLimit3() throws {
       let set = [0: 0, 1: 10, 2: 20, 3: 30, 4: 40] as RedBlackTreeDictionary<Int, Int>
-      XCTAssertEqual(set.startIndex._rawValue, .node(0))
-      XCTAssertEqual(set.index(before: set.endIndex)._rawValue, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1)._rawValue, .node(4))
+      XCTAssertEqual(set.startIndex.rawIndex, 0)
+      XCTAssertEqual(set.index(before: set.endIndex).rawIndex, 4)
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).rawIndex, 4)
       XCTAssertEqual(
-        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?._rawValue, .node(4))
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5)._rawValue, .node(0))
+        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.rawIndex, 4)
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).rawIndex, 0)
       XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
       XCTAssertNotEqual(
         set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),
@@ -557,10 +557,11 @@ final class DictionaryTests: RedBlackTreeTestCase {
   }
 
   func testSubsequence4() throws {
-    //      let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    //      let sub = set[1..<3]
+    let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+    let sub = set[1..<3]
     throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
-    //      XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
+    // スキップを直そうとしたが、テストの意図がよく分からない。当時のたまたまの仕様になっているような
+    XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
   }
 
   func testSubsequence5() throws {
@@ -865,20 +866,20 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = RedBlackTreeDictionary<Int, String>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
-#if !USE_UNSAFE_TREE
-      // UnsafeTreeでは、範囲外のインデックスを作成できない
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
-#endif
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawIndex, -1)
+      #if !USE_UNSAFE_TREE
+        // UnsafeTreeでは、範囲外のインデックスを作成できない
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, -2)
+      #endif
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr as Int)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 2)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 3)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
-#if !USE_UNSAFE_TREE
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
-#endif
+      #if !USE_UNSAFE_TREE
+        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
+      #endif
     #endif
   }
 
@@ -891,10 +892,10 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertTrue(set.isValid(index: set.endIndex))
     typealias Index = RedBlackTreeDictionary<Int, String>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1)._rawValue, -1)
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5)._rawValue, 5)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: -1).rawIndex, -1)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawValue: 5).rawIndex, 5)
 
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr)))
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: .nullptr as Int)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 1)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 2)))
@@ -902,9 +903,9 @@ final class DictionaryTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 4)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 5)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 6)))
-    #if !USE_UNSAFE_TREE
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
-    #endif
+      #if !USE_UNSAFE_TREE
+        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawValue: 7)))
+      #endif
     #endif
   }
 
@@ -1110,14 +1111,16 @@ final class DictionaryTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testForEach_enumeration() throws {
-    let source = [0, 1, 2, 3, 4, 5].map { ($0, $0 * 10) }
-    let a = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: source)
-    var p: RedBlackTreeDictionary<Int, Int>.Index? = a.startIndex
-    a.forEach { i, v in
-      XCTAssertEqual(i, p)
-      XCTAssertEqual(RedBlackTreePair(a[p!]), RedBlackTreePair(v))
-      p = p?.next
+  #if COMPATIBLE_ATCODER_2025
+    func testForEach_enumeration() throws {
+      let source = [0, 1, 2, 3, 4, 5].map { ($0, $0 * 10) }
+      let a = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: source)
+      var p: RedBlackTreeDictionary<Int, Int>.Index? = a.startIndex
+      a.forEach { i, v in
+        XCTAssertEqual(i, p)
+        XCTAssertEqual(RedBlackTreePair(a[p!]), RedBlackTreePair(v))
+        p = p?.next
+      }
     }
-  }
+  #endif
 }

@@ -13,15 +13,18 @@ var defines: [String] = [
   //  "DISABLE_COPY_ON_WRITE", // やや危険。クラッシュは減った。Unit Testが通らない箇所が増える
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "SKIP_MULTISET_INDEX_BUG",
-  //  "PERFOMANCE_CHECK",
+  //    "PERFOMANCE_CHECK",
   "WITHOUT_SIZECHECK",
   "USE_UNSAFE_TREE",  // TODO: そのうち消す
   //"USE_OLD_FIND",
-  //  "ALLOCATION_DRILL" // リリース時はオフ
+  // "ALLOCATION_DRILL" // リリース時はオフ
 
-  //  "USE_FRESH_POOL_V1"
+  //  "USE_C_MALLOC",
+  "USE_COPY_ON_WRITE",
 
-//  "USE_FRESH_POOL_V2"
+  //  "DEATH_TEST",
+  //  "BENCHMARK",
+  //  "ENABLE_PERFORMANCE_TESTING"
 ]
 
 var _settings: [SwiftSetting] =
@@ -44,13 +47,18 @@ var _settings: [SwiftSetting] =
     .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
 
-    // .define("USE_SIMPLE_COPY_ON_WRITE"), // この定義は今後悩み
+    // TODO: デフォルトで単純CoWとなるようにする（multi系のテストが問題)
+    //    .define("USE_SIMPLE_COPY_ON_WRITE"),  // この定義は今後悩み
     // 注意: COMPATIBLE_ATCODER_2025が優先し、その場合この定義は無効になります。
     // 平衡二分探索木(赤黒木)の魅力と言えば、探索や削除の速度だと思います。
     // CoWが効くと都度コピーが発生し、この魅力が損なわれてしまうため、現在はキャンセル気味の動作となっています。
     // 安全側に振る場合は、(COMPATIBLE_ATCODER_2025を無効にし)、この定義を有効にしてください。
   ]
   + defines.map { .define($0) }
+
+let dependencyMap = ["USE_C_MALLOC": "_malloc_free"]
+let additionalDepencencies: [Target.Dependency] =
+  defines.contains("USE_C_MALLOC") ? ["_malloc_free"] : []
 
 let package = Package(
   name: "swift-ac-collections",
@@ -92,8 +100,15 @@ let package = Package(
       swiftSettings: _settings
     ),
     .target(
+      name: "_malloc_free",
+      publicHeadersPath: "include",
+      cSettings: [
+        .headerSearchPath("include"),
+        .define("NDEBUG", .when(configuration: .release)),
+      ]),
+    .target(
       name: "RedBlackTreeModule",
-      dependencies: [],
+      dependencies: [] + additionalDepencencies,
       exclude: ["MEMO.md"],
       swiftSettings: _settings
     ),
@@ -125,7 +140,7 @@ let package = Package(
         .product(name: "Benchmark", package: "swift-benchmark"),
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
       ],
-      path: "Benchmarks/Benchmark0",
+      path: "Tests/Benchmarks/Benchmark0",
       swiftSettings: _settings
     ),
     .executableTarget(
@@ -135,7 +150,7 @@ let package = Package(
         .product(name: "Benchmark", package: "swift-benchmark"),
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
       ],
-      path: "Benchmarks/Benchmark1",
+      path: "Tests/Benchmarks/Benchmark1",
       swiftSettings: _settings
     ),
     .executableTarget(
@@ -146,7 +161,53 @@ let package = Package(
         .product(name: "Benchmark", package: "swift-benchmark"),
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
       ],
-      path: "Benchmarks/Benchmark2",
+      path: "Tests/Benchmarks/Benchmark2",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "Benchmark3",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Tests/Benchmarks/Benchmark3",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "Benchmark4",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Tests/Benchmarks/Benchmark4",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "Benchmark5",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+        .product(name: "Collections", package: "swift-collections"),
+      ],
+      path: "Tests/Benchmarks/Benchmark5",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "Benchmark6",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+        .product(name: "Collections", package: "swift-collections"),
+      ],
+      path: "Tests/Benchmarks/Benchmark6",
       swiftSettings: _settings
     ),
     .executableTarget(
@@ -190,10 +251,19 @@ let package = Package(
       ],
       path: "Tests/Executables/MultiRoundTrip"),
     .executableTarget(
+      name: "ABC411F",
+      dependencies: [
+        "AcCollections",
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+        .product(name: "Collections", package: "swift-collections"),
+      ],
+      path: "Tests/Executables/ABC411F"),
+    .executableTarget(
       name: "MarriedSource",
       dependencies: [
         .product(name: "AcFoundation", package: "swift-ac-foundation")
       ],
-      path: "Tests/Executables/MarriedSource"),
+      path: "Tests/Executables/MarriedSource",
+      exclude: ["RedBlackTree.swift_"]),
   ]
 )

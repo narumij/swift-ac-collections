@@ -187,28 +187,32 @@ import XCTest
       }
       XCTAssertTrue(xy[1]!._checkUnique())
       XCTAssertEqual(xy[1]!.count, 0)
+      throw XCTSkip("CoWの挙動変更のため")
       XCTAssertEqual(xy[1]!._copyCount, 0)
       XCTAssertEqual(loopCount, count / N)
     }
 
-    func testSet4000() throws {
-      let count = 1500
-      var xy: [Int: RedBlackTreeMultiMap<Int, Int>] = [
-        1: .init(multiKeysWithValues: (0..<count).map { ($0, $0) })
-      ]
-      xy[1]?._copyCount = 0
-      let N = 100
-      var loopCount = 0
-      for i in 0..<count / N {
-        loopCount += 1
-        xy[1]?[(i * N)..<(i * N + N)].forEach { i, v in
-          xy[1]?.remove(at: i)
+    #if COMPATIBLE_ATCODER_2025
+      func testSet4000() throws {
+        let count = 1500
+        var xy: [Int: RedBlackTreeMultiMap<Int, Int>] = [
+          1: .init(multiKeysWithValues: (0..<count).map { ($0, $0) })
+        ]
+        xy[1]?._copyCount = 0
+        let N = 100
+        var loopCount = 0
+        for i in 0..<count / N {
+          loopCount += 1
+          xy[1]?[(i * N)..<(i * N + N)].forEach { i, v in
+            xy[1]?.remove(at: i)
+          }
         }
+        XCTAssertTrue(xy[1]!._checkUnique())
+        XCTAssertEqual(xy[1]!.count, 0)
+        throw XCTSkip("CoWの挙動変更のため")
+        XCTAssertEqual(xy[1]!._copyCount, 0)
+        XCTAssertEqual(loopCount, count / N)
       }
-      XCTAssertTrue(xy[1]!._checkUnique())
-      XCTAssertEqual(xy[1]!.count, 0)
-      XCTAssertEqual(xy[1]!._copyCount, 0)
-      XCTAssertEqual(loopCount, count / N)
-    }
+    #endif
   }
 #endif

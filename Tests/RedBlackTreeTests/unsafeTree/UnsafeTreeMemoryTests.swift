@@ -5,9 +5,8 @@
 //  Created by narumij on 2026/01/07.
 //
 
-import XCTest
-
 import RedBlackTreeModule
+import XCTest
 
 final class UnsafeTreeMemoryTests: XCTestCase {
 
@@ -26,34 +25,22 @@ final class UnsafeTreeMemoryTests: XCTestCase {
     // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
     // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
   }
-  
+
   func testSizes() throws {
-#if !DEBUG
-    XCTAssertLessThanOrEqual(MemoryLayout<UnsafeTreeV2Buffer<Int>.Header>.size, 64)
-#endif
     XCTAssertLessThanOrEqual(MemoryLayout<UnsafeNode>.size, 64)
-    XCTAssertLessThanOrEqual(MemoryLayout<UnsafeNodeFreshBucket>.size, 64)
+    XCTAssertLessThanOrEqual(MemoryLayout<_Bucket>.size, 64)
   }
 
   func testStride() throws {
-#if !DEBUG
-    XCTAssertEqual(MemoryLayout<UnsafeNode>.stride, 40)
-#endif
-  }
-  
-  func testAligments0() throws {
-    XCTAssertEqual(MemoryLayout<UnsafeNode>.alignment,
-                   MemoryLayout<UnsafeTreeV2Buffer<Int32>.Header>.alignment)
-  }
-  
-  func testAligments1() throws {
-    XCTAssertEqual(MemoryLayout<UnsafeNode>.alignment,
-                   MemoryLayout<UnsafeTreeV2Buffer<Int>.Header>.alignment)
+    #if !DEBUG
+      XCTAssertEqual(MemoryLayout<UnsafeNode>.stride, 40)
+    #endif
   }
 
-  func testAligments2() throws {
-    XCTAssertEqual(MemoryLayout<UnsafeNode>.alignment,
-                   MemoryLayout<UnsafeTreeV2Buffer<SIMD4<Float>>.Header>.alignment)
+  func testAligments0() throws {
+    XCTAssertEqual(
+      MemoryLayout<UnsafeNode>.alignment,
+      MemoryLayout<UnsafeTreeV2BufferHeader>.alignment)
   }
 
   func testPerformanceExample() throws {

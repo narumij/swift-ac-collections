@@ -20,94 +20,78 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public struct UnsafeTreeV2Origin: UnsafeTreePointer {
-  @usableFromInline let nullptr: _NodePtr
-  @usableFromInline var begin_ptr: _NodePtr
-  @usableFromInline let end_ptr: _NodePtr
-  @usableFromInline var end_node: UnsafeNode
-  @inlinable
-  init(base: UnsafeMutablePointer<UnsafeTreeV2Origin>, nullptr: _NodePtr) {
-    self.nullptr = nullptr
-    end_node = nullptr.create(id: .end)
-    let e = withUnsafeMutablePointer(to: &base.pointee.end_node) { $0 }
-    end_ptr = e
-    begin_ptr = e
-  }
-  @inlinable
-  mutating func clear() {
-    begin_ptr = end_ptr
-    end_node.__left_ = nullptr
-    #if DEBUG
-      end_node.__right_ = nullptr
-      end_node.__parent_ = nullptr
-    #endif
-  }
-  @inlinable
-  @inline(__always)
-  var __root: _NodePtr {
-    get { end_ptr.pointee.__left_ }
-    set { end_ptr.pointee.__left_ = newValue }
-  }
-  @inlinable
-  @inline(__always)
-  internal func __root_ptr() -> _NodeRef {
-    withUnsafeMutablePointer(to: &end_ptr.pointee.__left_) { $0 }
-  }
-}
-
+@frozen
 public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @inlinable
+  @inline(__always)
   internal init(
-    _buffer: ManagedBufferPointer<Header, UnsafeTreeV2Origin>,
-    isReadOnly: Bool = false
+    _buffer: ManagedBufferPointer<Header, Void>
   ) {
     self._buffer = _buffer
-    self.isReadOnly = isReadOnly
-    let origin = _buffer.withUnsafeMutablePointerToElements { $0 }
-    self.nullptr = origin.pointee.nullptr
-    self.end = origin.pointee.end_ptr
-    self.origin = origin
+    let h = _buffer.withUnsafeMutablePointerToHeader { $0 }
+    self.nullptr = h.pointee.nullptr
+    self.end = h.pointee.end_ptr
+    self.isReadOnly = _buffer.buffer === _emptyTreeStorage
   }
 
   public typealias Base = Base
   public typealias Tree = UnsafeTreeV2<Base>
-  public typealias Header = UnsafeTreeV2Buffer<Base._Value>.Header
-  public typealias Buffer = ManagedBuffer<Header, UnsafeTreeV2Origin>
-  public typealias BufferPointer = ManagedBufferPointer<Header, UnsafeTreeV2Origin>
+  @usableFromInline typealias Header = UnsafeTreeV2BufferHeader
+  @usableFromInline typealias Buffer = ManagedBuffer<Header, Void>
+  @usableFromInline typealias BufferPointer = ManagedBufferPointer<Header, Void>
   public typealias _Key = Base._Key
-  public typealias _Value = Base._Value
+  public typealias _RawValue = Base._RawValue
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
 
   @usableFromInline
   var _buffer: BufferPointer
 
-  public let nullptr, end: _NodePtr
+  @usableFromInline
+  package let nullptr, end: _NodePtr
 
   @usableFromInline
   let isReadOnly: Bool
 
+  /// ノードプールの寿命延長オブジェクト
+  ///
+  /// 元々はデアロケータだったが、添字アクセスが追加されている
+  ///
+  /// ここを境に名前が変わる
   @usableFromInline
-  let origin: UnsafeMutablePointer<UnsafeTreeV2Origin>
+  var tied: _TiedRawBuffer {
+    isReadOnly ? _emptyDeallocator : withMutableHeader { $0.tiedRawBuffer }
+  }
+}
+
+extension UnsafeTreeV2: CustomStringConvertible {
+  public var description: String {
+    "UnsafeTreeV2<\(Base._RawValue.self)>._Storage\(_buffer.header)"
+  }
 }
 
 extension UnsafeTreeV2 {
 
   @inlinable
-  public var count: Int { withHeader { $0.count } }
+  @inline(__always)
+  var count: Int { withMutableHeader { $0.count } }
 
   #if !DEBUG
     @inlinable
-    public var capacity: Int { withHeader { $0.freshPoolCapacity } }
+    @inline(__always)
+    var capacity: Int { withMutableHeader { $0.freshPoolCapacity } }
 
     @inlinable
-    public var initializedCount: Int { withHeader { $0.freshPoolUsedCount } }
+    @inline(__always)
+    var initializedCount: Int { withMutableHeader { $0.freshPoolUsedCount } }
   #else
     @inlinable
-    public var capacity: Int {
+    var capacity: Int {
+      @inline(__always)
       get { _buffer.header.freshPoolCapacity }
       set {
+        // TODO: setterが必要なテストをsetter不要にする
         _buffer.withUnsafeMutablePointerToHeader {
           $0.pointee.freshPoolCapacity = newValue
         }
@@ -115,9 +99,11 @@ extension UnsafeTreeV2 {
     }
 
     @inlinable
-    public var initializedCount: Int {
+    var initializedCount: Int {
+      @inline(__always)
       get { _buffer.header.freshPoolUsedCount }
       set {
+        // TODO: setterが必要なテストをsetter不要にする
         _buffer.withUnsafeMutablePointerToHeader {
           $0.pointee.freshPoolUsedCount = newValue
         }
@@ -126,256 +112,74 @@ extension UnsafeTreeV2 {
   #endif
 }
 
-// MARK: - 生成
-
-extension UnsafeTreeV2 {
-
-  /// 木の生成を行う
-  ///
-  /// サイズが0の場合に共有バッファを用いたインスタンスを返す。
-  /// ensureUniqueが利用できない場面では他の生成メソッドを利用すること。
-  @inlinable
-  @inline(__always)
-  internal static func create(
-    minimumCapacity nodeCapacity: Int
-  ) -> UnsafeTreeV2 {
-    nodeCapacity == 0
-      ? ___create()
-      : ___create(minimumCapacity: nodeCapacity, nullptr: UnsafeNode.nullptr)
-  }
-
-  /// シングルトンバッファを用いて高速に生成する
-  ///
-  /// 直接呼ぶ必要はほとんど無い
-  @inlinable
-  @inline(__always)
-  internal static func ___create() -> UnsafeTreeV2 {
-    assert(_emptyTreeStorage.header.freshPoolCapacity == 0)
-    return UnsafeTreeV2(
-      _buffer:
-        BufferPointer(
-          unsafeBufferObject: _emptyTreeStorage),
-      isReadOnly: true)
-  }
-
-  /// 通常の生成
-  ///
-  /// ensureUniqueが利用できない場面に限って直接呼ぶようにすること
-  @inlinable
-  @inline(__always)
-  internal static func ___create(
-    minimumCapacity nodeCapacity: Int,
-    nullptr: _NodePtr
-  ) -> UnsafeTreeV2 {
-    create(
-      unsafeBufferObject:
-        UnsafeTreeV2Buffer<Base._Value>
-        .create(
-          minimumCapacity: nodeCapacity,
-          nullptr: nullptr))
-  }
-
-  @inlinable
-  @inline(__always)
-  internal static func create(unsafeBufferObject buffer: AnyObject)
-    -> UnsafeTreeV2
-  {
-    return UnsafeTreeV2(
-      _buffer:
-        BufferPointer(
-          unsafeBufferObject: buffer))
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
-
-    // 番号の抜けが発生してるケースがあり、それは再利用プールにノードがいるケース
-    // その部分までコピーする必要があり、初期化済み数でのコピーとなる
-    let initializedCount = initializedCount
-
-    assert(check())
-    // 予定サイズを確定させる
-    let newCapacity = max(minimumCapacity ?? 0, initializedCount)
-
-    // 予定サイズの木を作成する
-    let tree = UnsafeTreeV2.___create(minimumCapacity: newCapacity, nullptr: nullptr)
-
-    // freshPool内のfreshBucketは0〜1個となる
-    // CoW後の性能維持の為、freshBucket数は1を越えないこと
-    // バケット数が1に保たれていると、フォールバックの___node_idによるアクセスがO(1)になる
-    #if DEBUG
-      assert(tree._buffer.header.freshBucketCount <= 1)
-    #endif
-
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
-      tree.withMutableHeader { $0.copyCount += 1 }
-    #endif
-
-    // 空の場合、そのまま返す
-    if count == 0 {
-      return tree
-    }
-
-    let header = _buffer.header
-    let source = origin.pointee
-
-    tree.withMutables { newHeader, newOrigin in
-
-      // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
-      let bucket = newHeader.freshBucketHead!.pointee
-
-      /// 同一番号の新ノードを取得する内部ユーティリティ
-      @inline(__always)
-      func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
-        let index = ptr.pointee.___node_id_
-        return switch index {
-        case .nullptr: nullptr
-        case .end: newOrigin.end_ptr
-        default: bucket[index]
-        }
-      }
-
-      /// ノードを新ノードで再構築する内部ユーティリティ
-      @inline(__always)
-      func node(_ s: UnsafeNode) -> UnsafeNode {
-        // 値は別途管理
-        return .init(
-          ___node_id_: s.___node_id_,
-          __left_: __ptr_(s.__left_),
-          __right_: __ptr_(s.__right_),
-          __parent_: __ptr_(s.__parent_),
-          __is_black_: s.__is_black_,
-          ___needs_deinitialize: s.___needs_deinitialize)
-      }
-
-      // 旧ノードを列挙する準備
-      var nodes = header.makeFreshPoolIterator()
-
-      // ノード番号順に利用歴があるノード全てについて移行作業を行う
-      while let s = nodes.next(), let d = newHeader.popFresh() {
-        // ノードを初期化する
-        d.initialize(to: node(s.pointee))
-        // 必要な場合、値を初期化する
-        if s.pointee.___needs_deinitialize {
-          UnsafeNode.initializeValue(d, to: UnsafeNode.value(s) as _Value)
-        }
-      }
-
-      // ルートノードを設定
-      newOrigin.__root = __ptr_(source.__root)
-
-      // __begin_nodeを初期化
-      newOrigin.begin_ptr = __ptr_(source.begin_ptr)
-
-      // その他管理情報をコピー
-      newHeader.recycleHead = __ptr_(header.recycleHead)
-      newHeader.count = header.count
-      //#if USE_FRESH_POOL_V1
-      #if !USE_FRESH_POOL_V2
-        newHeader.freshPoolUsedCount = header.freshPoolUsedCount
-      #endif
-    }
-
-    assert(equiv(with: tree))
-    assert(tree.check())
-
-    return tree
-  }
-}
-
 extension UnsafeTreeV2 {
 
   // _NodePtrがIntだった頃の名残
   @nonobjc
   @inlinable
-  internal subscript(_ pointer: _NodePtr) -> _Value {
+  internal subscript(_ pointer: _NodePtr) -> _RawValue {
     @inline(__always) _read {
       assert(___initialized_contains(pointer))
-      yield UnsafeNode.valuePointer(pointer).pointee
+      yield pointer.__value_().pointee
     }
     @inline(__always) _modify {
       assert(___initialized_contains(pointer))
-      yield &UnsafeNode.valuePointer(pointer).pointee
+      yield &pointer.__value_().pointee
     }
   }
 }
 
 extension UnsafeTreeV2 {
 
-  /// O(1)
   @inlinable
-  @inline(__always)
-  internal func __eraseAll(keepingCapacity keepCapacity: Bool = false) {
-    withMutables { header, origin in
-      header.clear(keepingCapacity: keepCapacity)
-      origin.clear()
+  internal func deinitialize() {
+    withMutableHeader { header in
+      header.deinitialize()
     }
-  }
-}
-
-// MARK: Predicate
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func ___is_garbaged(_ p: _NodePtr) -> Bool {
-    // TODO: 方式再検討
-    //    p != end && p?.pointee.__parent_ == nil
-    // これがなぜ動かないのかわからない
-    // 再利用時のフラグ設定漏れだった
-    p.pointee.___needs_deinitialize != true
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  internal var ___is_empty: Bool {
-    count == 0
   }
 }
 
 // MARK: Refresh Pool Iterator
 
-//#if USE_FRESH_POOL_V1
-#if !USE_FRESH_POOL_V2
-  extension UnsafeTreeV2 {
+#if DEBUG
+extension UnsafeTreeV2 {
 
-    @inlinable
-    @inline(__always)
-    func makeFreshPoolIterator() -> UnsafeNodeFreshPoolIterator<_Value> {
-      return _buffer.header.makeFreshPoolIterator()
-    }
+  @inlinable
+  @inline(__always)
+  func makeFreshPoolIterator() -> _FreshPoolPopIterator<_RawValue> {
+    return _buffer.header.makeFreshPoolIterator()
   }
+}
+#endif
 
-  extension UnsafeTreeV2 {
+#if false
+extension UnsafeTreeV2 {
 
-    @inlinable
-    @inline(__always)
-    func makeFreshBucketIterator() -> UnsafeNodeFreshBucketIterator<_Value> {
-      return UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
-    }
+  @inlinable
+  @inline(__always)
+  func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_Value> {
+    return _UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
   }
-#else
-  extension UnsafeTreeV2 {
-
-    @inlinable
-    @inline(__always)
-    func makeFreshPoolIterator() -> UnsafeNodeFreshPoolV2Iterator<_Value> {
-      return _buffer.header.makeFreshPoolIterator()
-    }
-  }
+}
 #endif
 
 // MARK: Index Resolver
 
 extension UnsafeTreeV2 {
+
+  // TODO: 名前が安直すぎる。いつか変更する
+  @inlinable
+  @inline(__always)
+  package func ___NodePtr(_ p: Int) -> _NodePtr {
+    switch p {
+    case .nullptr:
+      return nullptr
+    case .end:
+      return end
+    default:
+      return _buffer.header[p]
+    }
+  }
 
   /// インデックスをポインタに解決する
   ///
@@ -388,70 +192,17 @@ extension UnsafeTreeV2 {
     #if true
       // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
       // endはシングルトン的にしたい気持ちもある
-      @inline(__always)
-      func ___NodePtr(_ p: Int) -> _NodePtr {
-        switch p {
-        case .nullptr:
-          return nullptr
-        case .end:
-          return end
-        default:
-          return _buffer.header[p]
-        }
-      }
-      return self.isIdentical(to: index.__tree_) ? index.rawValue : ___NodePtr(index.___node_id_)
+      //      return self.isTriviallyIdentical(to: index.__tree_) ? index.rawValue : ___NodePtr(index.___raw_index)
+    return tied === index.tied ? index.rawValue : ___NodePtr(index.rawIndex)
     #else
-      self === index.__tree_ ? index.rawValue : (_header[index.___node_id_])
+      self === index.__tree_ ? index.rawValue : (_header[index.___raw_index])
     #endif
   }
-}
 
-extension UnsafeTreeV2 {
-
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    /// CoWの発火回数を観察するためのプロパティ
-    @usableFromInline
-    internal var copyCount: UInt {
-      get { _buffer.header.copyCount }
-      set {
-        _buffer.withUnsafeMutablePointerToHeader {
-          $0.pointee.copyCount = newValue
-        }
-      }
-    }
-  #endif
-}
-
-// MARK: -
-
-extension UnsafeTreeV2 {
-
-  #if DEBUG
-    @inlinable
-    func _nodeID(_ p: _NodePtr) -> Int? {
-      return p.pointee.___node_id_
-    }
-  #endif
-}
-
-extension UnsafeTreeV2 {
-
-  #if DEBUG
-    func dumpTree(label: String = "") {
-      print("==== UnsafeTree \(label) ====")
-      print(" count:", count)
-      print(" freshPool:", _buffer.header.freshPoolActualCount, "/", capacity)
-      print(" destroyCount:", _buffer.header.recycleCount)
-      print(" root:", __root.pointee.___node_id_ as Any)
-      print(" begin:", __begin_node_.pointee.___node_id_ as Any)
-
-      var it = makeFreshPoolIterator()
-      while let p = it.next() {
-        print(
-          p.pointee.debugDescription { self._nodeID($0!) }
-        )
-      }
-      print("============================")
-    }
-  #endif
+  @inlinable
+  @inline(__always)
+  internal func rawValue(_ index: Index) -> _NodePtr
+  where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
+    ___node_ptr(index)
+  }
 }

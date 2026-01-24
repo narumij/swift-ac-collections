@@ -1,0 +1,35 @@
+Benchmark3
+
+UnsafeTreeAllcation6_9
+
+UNSAFE_TREE_V2
+2026-01-11 18:59:11 +0000
+
+running reserveCapacity 2... done! (335.23 ms)
+running reserveCapacity 8... done! (472.98 ms)
+running reserveCapacity 32... done! (689.07 ms)
+running reserveCapacity 128... done! (1064.03 ms)
+running reserveCapacity 512... done! (1635.67 ms)
+running reserveCapacity 2048... done! (2142.09 ms)
+running reserveCapacity 8192... done! (1656.36 ms)
+running reserveCapacity 32768... done! (2296.49 ms)
+running reserveCapacity 131072... done! (1737.02 ms)
+running reserveCapacity 524288... done! (1530.42 ms)
+running reserveCapacity 2097152... done! (1922.80 ms)
+running reserveCapacity 8388608... done! (1612.77 ms)
+
+name                    time            std        iterations
+-------------------------------------------------------------
+reserveCapacity 2            250.000 ns ±  71.30 %    1000000
+reserveCapacity 8            416.000 ns ±  23.56 %    1000000
+reserveCapacity 32           584.000 ns ±  27.40 %    1000000
+reserveCapacity 128          917.000 ns ±  18.49 %    1000000
+reserveCapacity 512         2000.000 ns ±   9.79 %     701029
+reserveCapacity 2048        6375.000 ns ±  11.65 %     219200
+reserveCapacity 8192       22958.000 ns ±   3.73 %      60778
+reserveCapacity 32768      79917.000 ns ±   3.66 %      17431
+reserveCapacity 131072    300750.000 ns ±   1.49 %       4638
+reserveCapacity 524288   1181459.000 ns ±   0.86 %       1182
+reserveCapacity 2097152  4693167.000 ns ±   0.38 %        298
+reserveCapacity 8388608 18733000.000 ns ±   0.29 %         75
+Program ended with exit code: 0

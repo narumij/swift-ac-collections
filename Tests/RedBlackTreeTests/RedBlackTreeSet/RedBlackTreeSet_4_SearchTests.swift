@@ -1,5 +1,5 @@
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 final class RedBlackTreeSetSearchTests: RedBlackTreeTestCase {
 

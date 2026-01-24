@@ -21,11 +21,6 @@ import XCTest
 
   extension RedBlackTreeDebugFixture {
 
-    typealias _NodePtr = UnsafeTreeV2<Base>._NodePtr
-  }
-
-  extension RedBlackTreeDebugFixture {
-
     func __left_(_ p: _NodePtr) -> _NodePtr {
       __tree_.__left_(p)
     }
@@ -62,7 +57,7 @@ import XCTest
     mutating func
       __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
     {
-      __tree_.__tree_balance_after_insert(__root, __x)
+      __tree_._ptr__tree_balance_after_insert(__root, __x)
     }
   }
 

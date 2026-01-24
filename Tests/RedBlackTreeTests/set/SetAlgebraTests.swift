@@ -76,14 +76,14 @@ final class SetAlgebraTests: RedBlackTreeTestCase {
     let rhs: RedBlackTreeSet<Int> = [3, 4, 5, 6]
     assertEquiv(lhs.intersection(rhs), [3, 4])
   }
-  
+
   func testDiff0() throws {
     var lhs: RedBlackTreeSet<Int> = [1, 2, 3, 4]
     let rhs: RedBlackTreeSet<Int> = [3, 4, 5, 6]
     lhs.formDifference(rhs)
     assertEquiv(lhs, [1, 2])
   }
-  
+
   func testDiff1() throws {
     let lhs: RedBlackTreeSet<Int> = [1, 2, 3, 4]
     let rhs: RedBlackTreeSet<Int> = [3, 4, 5, 6]

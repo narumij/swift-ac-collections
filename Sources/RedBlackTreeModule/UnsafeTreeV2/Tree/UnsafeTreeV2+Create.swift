@@ -22,7 +22,68 @@
 
 import Foundation
 
-extension UnsafeTreeV2 where Base._Key == Base._Value {
+extension UnsafeTreeV2 {
+
+  /// 木の生成を行う
+  ///
+  /// サイズが0の場合に共有バッファを用いたインスタンスを返す。
+  /// ensureUniqueが利用できない場面では他の生成メソッドを利用すること。
+  @inlinable
+  @inline(__always)
+  internal static func create(
+    minimumCapacity nodeCapacity: Int = 0
+  ) -> UnsafeTreeV2 {
+    nodeCapacity == 0
+      ? ___create()
+      : ___create(minimumCapacity: nodeCapacity, nullptr: UnsafeNode.nullptr)
+  }
+
+  /// シングルトンバッファを用いて高速に生成する
+  ///
+  /// 直接呼ぶ必要はほとんど無い
+  @inlinable
+  @inline(__always)
+  internal static func ___create() -> UnsafeTreeV2 {
+    assert(_emptyTreeStorage.header.freshPoolCapacity == 0)
+    return UnsafeTreeV2(
+      _buffer:
+        BufferPointer(
+          unsafeBufferObject: _emptyTreeStorage))
+  }
+
+  /// 通常の生成
+  ///
+  /// ensureUniqueが利用できない場面に限って直接呼ぶようにすること
+  @inlinable
+  @inline(__always)
+  internal static func ___create(
+    minimumCapacity nodeCapacity: Int,
+    nullptr: _NodePtr
+  ) -> UnsafeTreeV2 {
+    create(
+      unsafeBufferObject:
+        UnsafeTreeV2Buffer
+        .create(
+          _RawValue.self,
+          minimumCapacity: nodeCapacity,
+          nullptr: nullptr))
+  }
+
+  @inlinable
+  @inline(__always)
+  internal static func create(unsafeBufferObject buffer: AnyObject)
+    -> UnsafeTreeV2
+  {
+    return UnsafeTreeV2(
+      _buffer:
+        BufferPointer(
+          unsafeBufferObject: buffer))
+  }
+}
+
+// MARK: -
+
+extension UnsafeTreeV2 where Base._Key == Base._RawValue {
 
   /// ソート済みの配列から木を生成する
   ///
@@ -31,7 +92,7 @@ extension UnsafeTreeV2 where Base._Key == Base._Value {
   /// - Complexity: O(*n*)
   @inlinable
   internal static func
-    create_unique(sorted elements: __owned [Base._Value]) -> UnsafeTreeV2
+    create_unique(sorted elements: __owned [Base._RawValue]) -> UnsafeTreeV2
   where Base._Key: Comparable {
 
     let count = elements.count
@@ -59,7 +120,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   @inlinable
   internal static func create_unique<Element>(
     sorted elements: __owned [Element],
-    transform: (Element) -> Base._Value
+    transform: (Element) -> Base._RawValue
   ) -> UnsafeTreeV2
   where Base._Key: Comparable {
 
@@ -89,7 +150,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   internal static func create_unique<Element>(
     sorted elements: __owned [Element],
     uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
-    transform: (Element) -> Base._Value
+    transform: (Element) -> Base._RawValue
   ) rethrows -> UnsafeTreeV2
   where Base._Key: Comparable {
 
@@ -185,7 +246,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal static func
-    create_multi(sorted elements: __owned [Base._Value]) -> UnsafeTreeV2
+    create_multi(sorted elements: __owned [Base._RawValue]) -> UnsafeTreeV2
   where Base._Key: Comparable {
 
     create_multi(sorted: elements) { $0 }
@@ -199,7 +260,7 @@ extension UnsafeTreeV2 {
   @inlinable
   internal static func create_multi<Element>(
     sorted elements: __owned [Element],
-    transform: (Element) -> Base._Value
+    transform: (Element) -> Base._RawValue
   ) -> UnsafeTreeV2
   where Base._Key: Comparable {
 
@@ -226,7 +287,7 @@ extension UnsafeTreeV2 {
   /// - Complexity: O(*n*)
   @inlinable
   internal static func create<R>(range: __owned R) -> UnsafeTreeV2
-  where R: RangeExpression, R: Collection, R.Element == Base._Value {
+  where R: RangeExpression, R: Collection, R.Element == Base._RawValue {
 
     let tree: Tree = .create(minimumCapacity: range.count)
     // 初期化直後はO(1)
@@ -244,35 +305,35 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal static func create_unique<S>(naive sequence: __owned S) -> UnsafeTreeV2
-  where Base._Value == S.Element, S: Sequence {
+  where Base._RawValue == S.Element, S: Sequence {
 
-    .___insert_range_unique(tree: .create(minimumCapacity: 0), sequence)
+    .___insert_range_unique(tree: .create(), sequence)
   }
 
   @inlinable
   internal static func create_unique<S>(
-    naive sequence: __owned S, transform: (S.Element) -> Base._Value
+    naive sequence: __owned S, transform: (S.Element) -> Base._RawValue
   ) -> UnsafeTreeV2
   where S: Sequence {
 
-    .___insert_range_unique(tree: .create(minimumCapacity: 0), sequence, transform: transform)
+    .___insert_range_unique(tree: .create(), sequence, transform: transform)
   }
 
   @inlinable
   internal static func create_multi<S>(naive sequence: __owned S) -> UnsafeTreeV2
-  where Base._Value == S.Element, S: Sequence {
+  where Base._RawValue == S.Element, S: Sequence {
 
-    .___insert_range_multi(tree: .create(minimumCapacity: 0), sequence)
+    .___insert_range_multi(tree: .create(), sequence)
   }
 
   @inlinable
   internal static func create_multi<S>(
-    naive sequence: __owned S, transform: (S.Element) -> Base._Value
+    naive sequence: __owned S, transform: (S.Element) -> Base._RawValue
   )
     -> UnsafeTreeV2
   where S: Sequence {
 
-    .___insert_range_multi(tree: .create(minimumCapacity: 0), sequence, transform: transform)
+    .___insert_range_multi(tree: .create(), sequence, transform: transform)
   }
 }
 
@@ -295,7 +356,7 @@ extension UnsafeTreeV2 {
         }
         // 検索の計算量がO(log *n*)
         let (__parent, __child) = tree.__find_equal(Base.__key(__v))
-        if tree.__ptr_(__child) == .nullptr {
+        if tree.__ptr_(__child) == tree.nullptr {
           let __h = tree.__construct_node(__v)
           // ならしO(1)
           tree.__insert_node_at(__parent, __child, __h)
@@ -315,10 +376,10 @@ extension UnsafeTreeV2 {
         if count == nil {
           Tree.ensureCapacity(tree: &tree)
         }
-        var __parent = _NodePtr.nullptr
+        var __parent = tree.nullptr
         // 検索の計算量がO(log *n*)
         let __child = tree.__find_leaf_high(&__parent, Base.__key(__v))
-        if tree.__ptr_(__child) == .nullptr {
+        if tree.__ptr_(__child) == tree.nullptr {
           let __h = tree.__construct_node(__v)
           // ならしO(1)
           tree.__insert_node_at(__parent, __child, __h)
@@ -332,20 +393,20 @@ extension UnsafeTreeV2 {
 
 // MARK: -
 
-extension UnsafeTreeV2 where _Value: Decodable {
+extension UnsafeTreeV2 where _RawValue: Decodable {
 
   @inlinable
   internal static func create(from decoder: Decoder) throws -> UnsafeTreeV2 {
 
     var container = try decoder.unkeyedContainer()
-    var tree: Tree = .create(minimumCapacity: 0)
+    var tree: Tree = .___create(minimumCapacity: 0, nullptr: UnsafeNode.nullptr)
     if let count = container.count {
       Tree.ensureCapacity(tree: &tree, minimumCapacity: count)
     }
 
     var (__parent, __child) = tree.___max_ref()
     while !container.isAtEnd {
-      let __k = try container.decode(_Value.self)
+      let __k = try container.decode(_RawValue.self)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
     }
 

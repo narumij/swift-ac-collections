@@ -12,13 +12,16 @@ import XCTest
 
   final class UnsafeTreeBasicTests: RedBlackTreeTestCase {
 
-    enum Base: ScalarValueComparer & CompareUniqueTrait & HasDefaultThreeWayComparator {
+    enum Base: ScalarValueComparer & CompareUniqueTrait & IntThreeWayComparator {
+      static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeModule.UnsafeNode>) -> Int {
+        fatalError()
+      }
       typealias _Key = Int
       typealias Element = Int
     }
 
     func testCreateZero() async throws {
-      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 0)
+      let storage = UnsafeTreeV2<Base>.create()
       XCTAssertEqual(storage.capacity, 0)
       XCTAssertEqual(storage.count, 0)
       XCTAssertEqual(storage.__root, storage.nullptr)
@@ -54,22 +57,22 @@ import XCTest
 
       do {
         var it = storage.makeFreshPoolIterator()
-        XCTAssertEqual(it.next().map(\.pointee.___node_id_), 0)
-        XCTAssertEqual(it.next().map(\.pointee.___node_id_), 1)
-        XCTAssertEqual(it.next().map(\.pointee.___node_id_), 2)
-        XCTAssertEqual(it.next().map(\.pointee.___node_id_), 3)
-        XCTAssertEqual(it.next().map(\.pointee.___node_id_), nil)
-        XCTAssertEqual(it.next().map(\.pointee.___node_id_), nil)
+        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 0)
+        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 1)
+        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 2)
+        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 3)
+        XCTAssertEqual(it.next().map(\.pointee.___raw_index), nil)
+        XCTAssertEqual(it.next().map(\.pointee.___raw_index), nil)
       }
 
       //      throw XCTSkip()
 
       XCTAssertEqual(
-        storage.makeFreshPoolIterator().map(\.pointee.___node_id_),
+        storage.makeFreshPoolIterator().map(\.pointee.___raw_index),
         [0, 1, 2, 3])
 
       XCTAssertEqual(
-        storage.makeFreshPoolIterator().map { UnsafePair<Base._Value>.valuePointer($0).pointee },
+        storage.makeFreshPoolIterator().map { $0.__value_().pointee },
         [100, 200, 300, 400])
     }
 
@@ -135,9 +138,7 @@ import XCTest
       storage._buffer.header.___pushRecycle(storage._buffer.header[2])
       storage._buffer.header.___pushRecycle(storage._buffer.header[3])
       XCTAssertTrue(storage.check())
-      #if !USE_FRESH_POOL_V2
-        storage.withMutableHeader { $0.count = 4 }
-      #endif
+      storage.withMutableHeader { $0.count = 4 }
       let copy = storage.copy(minimumCapacity: 100)
       XCTAssertEqual(storage._buffer.header.___recycleNodes, copy._buffer.header.___recycleNodes)
       var (s, c) = (storage._buffer.header.recycleHead, copy._buffer.header.recycleHead)
@@ -230,15 +231,15 @@ import XCTest
       }
       XCTAssertEqual(storage.lower_bound(3).index, 3)
       var begin = storage.__begin_node_
-      XCTAssertEqual(UnsafeNode.value(begin), 0)
+      XCTAssertEqual(begin.__value_().pointee, 0)
       begin = storage.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 1)
+      XCTAssertEqual(begin.__value_().pointee, 1)
       begin = storage.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 2)
+      XCTAssertEqual(begin.__value_().pointee, 2)
       begin = storage.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 3)
+      XCTAssertEqual(begin.__value_().pointee, 3)
       begin = storage.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 4)
+      XCTAssertEqual(begin.__value_().pointee, 4)
       begin = storage.__tree_next_iter(begin)
       XCTAssertEqual(begin, storage.end)
     }
@@ -272,15 +273,15 @@ import XCTest
 
       XCTAssertEqual(copy.lower_bound(3).index, 3)
       var begin = copy.__begin_node_
-      XCTAssertEqual(UnsafeNode.value(begin), 0)
+      XCTAssertEqual(begin.__value_().pointee, 0)
       begin = copy.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 1)
+      XCTAssertEqual(begin.__value_().pointee, 1)
       begin = copy.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 2)
+      XCTAssertEqual(begin.__value_().pointee, 2)
       begin = copy.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 3)
+      XCTAssertEqual(begin.__value_().pointee, 3)
       begin = copy.__tree_next_iter(begin)
-      XCTAssertEqual(UnsafeNode.value(begin), 4)
+      XCTAssertEqual(begin.__value_().pointee, 4)
       begin = copy.__tree_next_iter(begin)
       XCTAssertEqual(begin, copy.end)
     }

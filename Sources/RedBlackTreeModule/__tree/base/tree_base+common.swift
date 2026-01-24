@@ -5,6 +5,8 @@
 //  Created by narumij on 2026/01/24.
 //
 
+/// Index用のメソッド中継
+///
 /// `__key(_:)`が定義されてる場合に`__get_value(_:)`を定義する
 public protocol _BaseNode_KeyProtocol:
   _BaseNode_KeyInterface
@@ -21,10 +23,11 @@ extension _BaseNode_KeyProtocol {
   }
 }
 
+/// Index用のメソッド中継
 public protocol _BaseNode_PtrUniqueCompProtocol:
-  _BaseNode_KeyProtocol
+  _BaseNode_PtrUniqueCompInterface
     & _BaseKey_LessThanInterface
-    & _BaseNode_PtrUniqueCompInterface
+    & _BaseNode_KeyProtocol
 {}
 
 extension _BaseNode_PtrUniqueCompProtocol {

@@ -22,7 +22,6 @@
 
 import Foundation
 
-
 public protocol _BasePairValue_KeyProtocol: _PairValueType & _BaseRawValue_KeyInterface {}
 
 extension _BasePairValue_KeyProtocol {
@@ -32,7 +31,9 @@ extension _BasePairValue_KeyProtocol {
   public static func __key(_ __v: _RawValue) -> _Key { __v.key }
 }
 
-public protocol _BasePairValue_MappedValueProtocol: _PairValueType & _BaseRawValue_MappedValueInterface {}
+public protocol _BasePairValue_MappedValueProtocol: _PairValueType
+    & _BaseRawValue_MappedValueInterface
+{}
 
 extension _BasePairValue_MappedValueProtocol {
 

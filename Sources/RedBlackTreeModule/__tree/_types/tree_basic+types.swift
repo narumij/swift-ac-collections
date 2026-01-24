@@ -57,7 +57,7 @@ public protocol _MappedValueType {
 // MARK: - Conditions
 
 /// ノードは必ず比較型と保持型を持つ
-public protocol _TreeValueType: _KeyType & _RawValueType {} // 存在意義が???
+public protocol _TreeValueType: _KeyType & _RawValueType {}  // 存在意義が???
 
 /// SetやMultiSetは比較型と保持型が同じ
 public protocol _ScalarRawType: _KeyType & _RawValueType

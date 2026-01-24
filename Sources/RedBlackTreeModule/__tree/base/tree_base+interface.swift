@@ -10,18 +10,18 @@ public protocol _BaseNode_RawValueInterface: _NodePtrType & _RawValueType {
 }
 
 #if true
-public protocol _BaseNode_KeyInterface: _NodePtrType, _KeyType {
-  static func __get_value(_: _NodePtr) -> _Key
-}
+  public protocol _BaseNode_KeyInterface: _NodePtrType, _KeyType {
+    static func __get_value(_: _NodePtr) -> _Key
+  }
 #else
-// 型の名前にねじれがあるので注意
-@usableFromInline
-protocol _BaseNodeKeyInterface: _NodePtrType & _KeyType & __node_value_type {
-  /// ノードから比較用の値を取り出す。
-  /// SetやMultisetではElementに該当する
-  /// DictionaryやMultiMapではKeyに該当する
-  static func __get_value(_: _NodePtr) -> __node_value_type
-}
+  // 型の名前にねじれがあるので注意
+  @usableFromInline
+  protocol _BaseNode_KeyInterface: _NodePtrType & _KeyType & __node_value_type {
+    /// ノードから比較用の値を取り出す。
+    /// SetやMultisetではElementに該当する
+    /// DictionaryやMultiMapではKeyに該当する
+    static func __get_value(_: _NodePtr) -> __node_value_type
+  }
 #endif
 
 public protocol _BaseRawValue_KeyInterface: _KeyType & _RawValueType {

@@ -11,8 +11,10 @@
 // __treenの基本要素ではないので、別カテゴリがいい
 
 /// ツリー使用条件をインジェクションするためのプロトコル
-public protocol ValueComparer: _TreeValueType & _BaseNode_KeyProtocol & _BaseKey_CompInterface & _BaseNode_KeyProtocol & _BaseNode_UniqueCompProtocol &
-_BaseRawValue_KeyInterface & _BaseKey_CompInterface & _BaseKey_EquivInterface {
+public protocol ValueComparer: _TreeValueType & _BaseNode_KeyProtocol & _BaseKey_CompInterface
+    & _BaseNode_KeyProtocol & _BaseNode_UniqueCompProtocol & _BaseRawValue_KeyInterface
+    & _BaseKey_CompInterface & _BaseKey_EquivInterface
+{
   /// 要素から比較キー値がとれること
   @inlinable static func __key(_: _RawValue) -> _Key
   /// 比較関数が実装されていること
@@ -122,7 +124,6 @@ extension ValueComparator where Base: ThreeWayComparator {
   }
 }
 
-
 // MARK: -
 
 /// 要素とキーが一致する場合のひな形
@@ -133,7 +134,6 @@ public protocol ScalarValueComparer:
 {}
 
 extension ScalarValueComparer {}
-
 
 // TODO: プロトコルインジェクションを整理すること
 // __treenの基本要素ではないので、別カテゴリがいい

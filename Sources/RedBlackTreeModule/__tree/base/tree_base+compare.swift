@@ -82,26 +82,4 @@ extension _BaseNode_PtrUniqueCompProtocol {
   }
 }
 
-extension _BaseNode_PtrCompProtocol {
 
-  @usableFromInline
-  typealias difference_type = Int
-
-  @usableFromInline
-  typealias _InputIter = _NodePtr
-
-  @inlinable
-  @inline(__always)
-  static func
-    ___signed_distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
-  {
-    guard __first != __last else { return 0 }
-    var (__first, __last) = (__first, __last)
-    var sign = 1
-    if ___ptr_comp(__last, __first) {
-      swap(&__first, &__last)
-      sign = -1
-    }
-    return sign * __distance(__first, __last)
-  }
-}

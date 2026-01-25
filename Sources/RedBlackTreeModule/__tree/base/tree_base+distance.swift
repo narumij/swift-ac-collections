@@ -15,11 +15,29 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _Tree_IsMultiTraitProtocol:
-  _Tree_IsMultiTraitInterface & _Base_IsMultiTraitInterface
-{}
+// TODO: 別のプロトコルにする
+// 手抜きをしてしまって、微妙に違うプロトコルにぶら下がっている
 
-extension _Tree_IsMultiTraitProtocol {
-  @inlinable @inline(__always)
-  public var isMulti: Bool { Self.isMulti }
+extension _BaseNode_PtrCompProtocol {
+
+  @usableFromInline
+  typealias difference_type = Int
+
+  @usableFromInline
+  typealias _InputIter = _NodePtr
+
+  @inlinable
+  @inline(__always)
+  static func
+    ___signed_distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
+  {
+    guard __first != __last else { return 0 }
+    var (__first, __last) = (__first, __last)
+    var sign = 1
+    if ___ptr_comp(__last, __first) {
+      swap(&__first, &__last)
+      sign = -1
+    }
+    return sign * __distance(__first, __last)
+  }
 }

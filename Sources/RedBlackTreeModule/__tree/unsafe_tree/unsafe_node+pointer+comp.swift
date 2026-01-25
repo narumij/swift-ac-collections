@@ -1,56 +1,19 @@
+//===----------------------------------------------------------------------===//
 //
-//  unsafe_node+pointer+comp.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/01/25.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
-
-// ノードの大小を比較する
-@inlinable
-//  @inline(__always)
-internal func ___ptr_comp_multi_org(
-  _ __l: UnsafeMutablePointer<UnsafeNode>,
-  _ __r: UnsafeMutablePointer<UnsafeNode>
-)
-  -> Bool
-{
-  assert(!__l.___is_null, "Left node shouldn't be null")
-  assert(!__r.___is_null, "Right node shouldn't be null")
-  guard
-    !__l.___is_end,
-    !__r.___is_end,
-    __l != __r
-  else {
-    return !__l.___is_end && __r.___is_end
-  }
-  var (__l, __lh) = (__l, ___ptr_height(__l))
-  var (__r, __rh) = (__r, ___ptr_height(__r))
-  // __rの高さを詰める
-  while __lh < __rh {
-    // 共通祖先が__lだった場合
-    if __r.__parent_ == __l {
-      // __rが左でなければ（つまり右）、__lが小さい
-      return !__tree_is_left_child(__r)
-    }
-    (__r, __rh) = (__r.__parent_, __rh - 1)
-  }
-  // __lの高さを詰める
-  while __lh > __rh {
-    // 共通祖先が__rだった場合
-    if __l.__parent_ == __r {
-      // __lが左であれば、__lが小さい
-      return __tree_is_left_child(__l)
-    }
-    (__l, __lh) = (__l.__parent_, __lh - 1)
-  }
-  // 親が一致するまで、両方の高さを詰める
-  while __l.__parent_ != __r.__parent_ {
-    (__l, __r) = (__l.__parent_, __r.__parent_)
-  }
-  // 共通祖先が__lと__r以外だった場合
-  // 共通祖先の左が__lであれば、__lが小さい
-  return __tree_is_left_child(__l)
-}
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 @inlinable
 //  @inline(__always)
@@ -100,6 +63,54 @@ internal func ___ptr_comp_multi(
   // 共通祖先の左の子のほうが小さい。それが__lであれば真を返す。
   return __tree_is_left_child(__l)
 }
+
+// ノードの大小を比較する
+@inlinable
+//  @inline(__always)
+internal func ___ptr_comp_multi_org(
+  _ __l: UnsafeMutablePointer<UnsafeNode>,
+  _ __r: UnsafeMutablePointer<UnsafeNode>
+)
+  -> Bool
+{
+  assert(!__l.___is_null, "Left node shouldn't be null")
+  assert(!__r.___is_null, "Right node shouldn't be null")
+  guard
+    !__l.___is_end,
+    !__r.___is_end,
+    __l != __r
+  else {
+    return !__l.___is_end && __r.___is_end
+  }
+  var (__l, __lh) = (__l, ___ptr_height(__l))
+  var (__r, __rh) = (__r, ___ptr_height(__r))
+  // __rの高さを詰める
+  while __lh < __rh {
+    // 共通祖先が__lだった場合
+    if __r.__parent_ == __l {
+      // __rが左でなければ（つまり右）、__lが小さい
+      return !__tree_is_left_child(__r)
+    }
+    (__r, __rh) = (__r.__parent_, __rh - 1)
+  }
+  // __lの高さを詰める
+  while __lh > __rh {
+    // 共通祖先が__rだった場合
+    if __l.__parent_ == __r {
+      // __lが左であれば、__lが小さい
+      return __tree_is_left_child(__l)
+    }
+    (__l, __lh) = (__l.__parent_, __lh - 1)
+  }
+  // 親が一致するまで、両方の高さを詰める
+  while __l.__parent_ != __r.__parent_ {
+    (__l, __r) = (__l.__parent_, __r.__parent_)
+  }
+  // 共通祖先が__lと__r以外だった場合
+  // 共通祖先の左が__lであれば、__lが小さい
+  return __tree_is_left_child(__l)
+}
+
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 

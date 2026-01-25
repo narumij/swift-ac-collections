@@ -15,7 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-public enum RedBlackTreeBound<_Key>: _KeyType {
+public enum RedBlackTreeBound<_Key> {
   case start
   case lower(_Key)
   case upper(_Key)

@@ -111,3 +111,77 @@ for _ in 0 ..< M {
 print(x, y, ans)
 #endif
 
+#if false
+
+var (N, M, x, y) = (Int.stdin, Int.stdin, Int.stdin, Int.stdin)
+var xy: [Int:RedBlackTreeSet<Int>] = [:]
+var yx: [Int:RedBlackTreeSet<Int>] = [:]
+var _xy: [Int:[Int]] = [:]
+var _yx: [Int:[Int]] = [:]
+for _ in 0..<N {
+  let (xx, yy) = (Int.stdin, Int.stdin)
+  _xy[xx, default: []].append(yy)
+  _yx[yy, default: []].append(xx)
+}
+for (k,v) in _xy {
+  xy[k] = .init(v)
+}
+for (k,v) in _yx {
+  yx[k] = .init(v)
+}
+
+var ans = 0
+for _ in 0 ..< M {
+  let (c, d) = (Character.stdin, Int.stdin)
+  switch c {
+  case "U":
+    let new_y = y + d
+      xy[x]?.sequence(from: y, through: new_y).forEach { i, v in
+      ans += 1
+      yx[v]?.remove(x)
+      xy[x]?.remove(at: i)
+    }
+    y = new_y
+  case "D":
+    let new_y = y - d
+    xy[x]?.sequence(from: new_y, through: y).forEach { i, v in
+      ans += 1
+      yx[v]?.remove(x)
+      xy[x]?.remove(at: i)
+    }
+    y = new_y
+  case "L":
+    let new_x = x - d
+    yx[y]?.sequence(from: new_x, through: x).forEach { i, v in
+      ans += 1
+      xy[v]?.remove(y)
+      yx[y]?.remove(at: i)
+    }
+    x = new_x
+  case "R":
+    let new_x = x + d
+    yx[y]?.sequence(from: x, through: new_x).forEach { i, v in
+      ans += 1
+      xy[v]?.remove(y)
+      yx[y]?.remove(at: i)
+    }
+    x = new_x
+  default:
+    break
+  }
+}
+
+print(x, y, ans)
+
+extension RedBlackTreeSet {
+  public func sequence(from start: Element, to end: Element) -> SubSequence {
+    self[lowerBound(start)..<lowerBound(end)]
+  }
+}
+extension RedBlackTreeSet {
+  public func sequence(from start: Element, through end: Element) -> SubSequence {
+    self[lowerBound(start)..<upperBound(end)]
+  }
+}
+#endif
+

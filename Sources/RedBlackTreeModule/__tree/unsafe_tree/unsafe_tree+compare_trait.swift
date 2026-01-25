@@ -23,3 +23,7 @@ extension _Tree_IsMultiTraitProtocol {
   @inlinable @inline(__always)
   public var isMulti: Bool { Self.isMulti }
 }
+
+#if COMPATIBLE_ATCODER_2025
+public typealias CompareTrait = _Tree_IsMultiTraitProtocol
+#endif

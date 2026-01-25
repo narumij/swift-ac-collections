@@ -59,10 +59,20 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @usableFromInline var begin_ptr: UnsafeMutablePointer<_NodePtr>
   @usableFromInline var root_ptr: _NodeRef
   @usableFromInline var freshBucketAllocator: _BucketAllocator
-  
+
+  @usableFromInline var _tied: _TiedRawBuffer?
+
   #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
   #endif
+
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    /// CoWの発火回数を観察するためのプロパティ
+    @usableFromInline internal var copyCount: UInt = 0
+  #endif
+}
+
+extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   var memoryLayout: _MemoryLayout {
@@ -83,8 +93,6 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @inlinable
   internal func __root_ptr() -> _NodeRef { root_ptr }
 
-  @usableFromInline var _tied: _TiedRawBuffer?
-
   @usableFromInline
   var isRawBufferUniquelyOwned: Bool {
     _tied == nil
@@ -102,11 +110,6 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
       return _tied!
     }
   }
-
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    /// CoWの発火回数を観察するためのプロパティ
-    @usableFromInline internal var copyCount: UInt = 0
-  #endif
 
   @inlinable
   internal mutating func deinitialize() {

@@ -26,7 +26,7 @@
 import Foundation
 
 @usableFromInline
-protocol DistanceProtocol_std: TreeNodeAccessInterface & PointerCompareInterface {}
+protocol DistanceProtocol_std: TreeNodeAccessInterface & _TreeNode_PtrCompInterface {}
 
 extension DistanceProtocol_std {
 

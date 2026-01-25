@@ -16,20 +16,21 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol PointerCompareInterface: _NodePtrType {
+protocol _TreeNode_PtrCompInterface: _NodePtrType {
   func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }
 
-public protocol IsMultiTraitInterface {
-  var isMulti: Bool { get }
-}
-
 @usableFromInline
-protocol CompareMultiInterface: _NodePtrType {
+protocol _TreeNode_PtrCompMultiInterface: _NodePtrType {
   func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
 }
 
 @usableFromInline
-protocol NodeBitmapInterface: _NodePtrType {
+protocol _TreeNode_PtrCompBitmapInterface: _NodePtrType {
   func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
 }
+
+public protocol _Tree_IsMultiTraitInterface {
+  var isMulti: Bool { get }
+}
+

@@ -15,13 +15,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 public protocol _BaseNode_PtrCompProtocol:
   _UnsafeNodePtrType
     & _BaseNode_PtrUniqueCompInterface
     & _BaseNode_PtrCompInterface
-    & _Base_MultiTraitInterface
+    & _Base_IsMultiTraitInterface
 {}
 
 extension _BaseNode_PtrCompProtocol {
@@ -66,43 +64,22 @@ extension _BaseNode_PtrCompProtocol {
   }
 }
 
-// 遅い
-@inlinable
-@inline(__always)
-internal func
-  ___dual_distance(
-    _ __first: UnsafeMutablePointer<UnsafeNode>,
-    _ __last: UnsafeMutablePointer<UnsafeNode>
-  )
-  -> Int
-{
-  var __next = __first
-  var __prev = __first
-  var __r = 0
-  while __next != __last, __prev != __last {
-    __next = __next.___is_null ? __next : __tree_next(__next)
-    __prev = __prev.___is_null ? __prev : __tree_prev_iter(__prev)
-    __r += 1
-  }
-  return __next == __last ? __r : -__r
-}
+/// Index用のメソッド中継
+public protocol _BaseNode_PtrUniqueCompProtocol:
+  _BaseNode_PtrUniqueCompInterface
+    & _BaseKey_LessThanInterface
+    & _BaseNode_KeyProtocol
+{}
 
-@inlinable
-@inline(__always)
-internal func
-  __distance(
-    _ __first: UnsafeMutablePointer<UnsafeNode>,
-    _ __last: UnsafeMutablePointer<UnsafeNode>
-  )
-  -> Int
-{
-  var __first = __first
-  var __r = 0
-  while __first != __last {
-    __first = __tree_next(__first)
-    __r += 1
+extension _BaseNode_PtrUniqueCompProtocol {
+
+  public static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+    assert(!l.___is_null, "Node shouldn't be null")
+    assert(!l.___is_end, "Node shouldn't be end")
+    assert(!r.___is_null, "Node shouldn't be null")
+    assert(!r.___is_end, "Node shouldn't be end")
+    return value_comp(__get_value(l), __get_value(r))
   }
-  return __r
 }
 
 extension _BaseNode_PtrCompProtocol {

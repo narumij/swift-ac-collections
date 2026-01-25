@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 @usableFromInline
 protocol CountProtocol_ptr:
   _UnsafeNodePtrType

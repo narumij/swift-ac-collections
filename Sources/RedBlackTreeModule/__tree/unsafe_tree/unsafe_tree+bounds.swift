@@ -19,7 +19,7 @@
 protocol BoundBothProtocol:
   BoundInteface
     & BoundBothInterface
-    & IsMultiTraitInterface
+    & _Tree_IsMultiTraitInterface
 {}
 
 extension BoundBothProtocol {

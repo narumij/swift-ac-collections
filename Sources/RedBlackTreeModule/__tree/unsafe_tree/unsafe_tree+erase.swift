@@ -15,7 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 @usableFromInline
 protocol EraseProtocol: EraseInterface, RemoveInteface, DellocationInterface
  {}

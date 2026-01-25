@@ -26,7 +26,7 @@
 import Foundation
 
 @usableFromInline
-protocol CompareBothProtocol_std: PointerCompareInterface, CompareUniqueProtocol, CompareMultiInterface, NodeBitmapProtocol_std {
+protocol CompareBothProtocol_std: _TreeNode_PtrCompInterface, _TreeNode_PtrCompUniqueProtocol, _TreeNode_PtrCompMultiInterface, NodeBitmapProtocol_std {
   var isMulti: Bool { get }
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }
@@ -130,7 +130,7 @@ extension CompareMultiProtocol_std {
 
 
 @usableFromInline
-protocol NodeBitmapProtocol_std: NodeBitmapInterface & TreeNodeAccessInterface & RootInterface & EndInterface {}
+protocol NodeBitmapProtocol_std: _TreeNode_PtrCompBitmapInterface & TreeNodeAccessInterface & RootInterface & EndInterface {}
 
 extension NodeBitmapProtocol_std {
 

@@ -281,7 +281,7 @@ extension UnsafeTreeV2: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2: EraseProtocol {}
 extension UnsafeTreeV2: EraseUniqueProtocol {}
 extension UnsafeTreeV2: EraseMultiProtocol {}
-extension UnsafeTreeV2: CompareBothProtocol_ptr, CompareUniqueProtocol {}
+extension UnsafeTreeV2: _TreeNode_PtrCompProtocol, _TreeNode_PtrCompUniqueProtocol {}
 extension UnsafeTreeV2: CountProtocol_ptr, DistanceProtocol_ptr {}
 extension UnsafeTreeV2: InsertLastProtocol_ptr {}
 extension UnsafeTreeV2: CompareProtocol {}

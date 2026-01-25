@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 public protocol _PairBaseRawValue_KeyProtocol: _PairBaseType & _BaseRawValue_KeyInterface {}
 
 extension _PairBaseRawValue_KeyProtocol {

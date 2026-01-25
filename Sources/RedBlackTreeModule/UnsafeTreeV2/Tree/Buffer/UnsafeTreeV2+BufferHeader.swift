@@ -300,7 +300,7 @@ extension UnsafeTreeV2BufferHeader {
     #if DEBUG
       assert(recycleCount >= 0)
     #endif
-    let p = recycleHead.rawIndex == .nullptr ? ___popFresh() : ___popRecycle()
+    let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
     assert(p.pointee.___raw_index >= 0)
     return p
   }
@@ -309,7 +309,7 @@ extension UnsafeTreeV2BufferHeader {
     #if DEBUG
       assert(recycleCount >= 0)
     #endif
-    let p = recycleHead.rawIndex == .nullptr ? ___popFresh() : ___popRecycle()
+    let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
     p.__value_().initialize(to: k)
     assert(p.pointee.___raw_index >= 0)
     return p

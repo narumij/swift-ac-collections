@@ -39,16 +39,15 @@ extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   //  @inline(never)
-  internal func copy<Base>(_ t: Base.Type, minimumCapacity: Int? = nil) -> UnsafeTreeV2<Base> {
+  internal func copy<Base>(minimumCapacity: Int? = nil) -> UnsafeTreeV2<Base> {
     UnsafeTreeV2<Base>.create(
       unsafeBufferObject:
-        copyBuffer(Base.self, minimumCapacity: minimumCapacity))
+        copyBuffer(Base._RawValue.self, minimumCapacity: minimumCapacity))
   }
 
   @inlinable
   //  @inline(__always)
-  internal func copyBuffer<Base>(_ t: Base.Type, minimumCapacity: Int? = nil) -> UnsafeTreeV2Buffer
-  where Base: ___TreeBase {
+  internal func copyBuffer<_RawValue>(_ t: _RawValue.Type, minimumCapacity: Int? = nil) -> UnsafeTreeV2Buffer {
 
     // 番号の抜けが発生してるケースがあり、それは再利用プールにノードがいるケース
     // その部分までコピーする必要があり、初期化済み数でのコピーとなる
@@ -58,7 +57,7 @@ extension UnsafeTreeV2BufferHeader {
     let _newBuffer =
       UnsafeTreeV2Buffer
       .create(
-        Base._RawValue.self,
+        _RawValue.self,
         minimumCapacity: newCapacity,
         nullptr: nullptr)
 
@@ -80,7 +79,7 @@ extension UnsafeTreeV2BufferHeader {
         return
       }
 
-      _copy(Base.self, to: &newHeader.pointee, nullptr: nullptr)
+      _copy(_RawValue.self, to: &newHeader.pointee, nullptr: nullptr)
 
       assert(freshPoolUsedCount == newHeader.pointee.freshPoolUsedCount)
     }
@@ -89,13 +88,11 @@ extension UnsafeTreeV2BufferHeader {
   }
 
   @inlinable
-  func _copy<Base>(
-    _ t: Base.Type, to other: inout UnsafeTreeV2BufferHeader,
+  func _copy<_RawValue>(
+    _ t: _RawValue.Type, to other: inout UnsafeTreeV2BufferHeader,
     nullptr: UnsafeMutablePointer<UnsafeNode>
-  )
-  where Base: ___TreeBase {
+  ) {
 
-    typealias _RawValue = Base._RawValue
     typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す

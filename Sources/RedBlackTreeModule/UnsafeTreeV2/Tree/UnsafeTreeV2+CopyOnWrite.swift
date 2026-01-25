@@ -66,7 +66,7 @@ extension UnsafeTreeV2 {
     let isUnique = isUnique()
     guard !isUnique else { return }
     withMutableHeader { header in
-      self = header.copy(Base.self)
+      self = header.copy()
     }
   }
 
@@ -106,7 +106,7 @@ extension UnsafeTreeV2 {
         to: minimumCapacity,
         linearly: linearly)
       if !isUnique {
-        self = header.copy(Base.self, minimumCapacity: growthCapacity)
+        self = header.copy(minimumCapacity: growthCapacity)
         return
       }
       assert(isReadOnly == false)
@@ -128,7 +128,7 @@ extension UnsafeTreeV2 {
         to: minimumCapacity,
         linearly: linearly)
       if isReadOnly {
-        self = header.copy(Base.self, minimumCapacity: growthCapacity)
+        self = header.copy(minimumCapacity: growthCapacity)
         return
       }
       assert(isReadOnly == false)
@@ -154,7 +154,7 @@ extension UnsafeTreeV2 {
       let limitedCapacity = min(limit, growthCapacity)
       assert(growthCapacity > 0)
       if isReadOnly {
-        self = header.copy(Base.self, minimumCapacity: limitedCapacity)
+        self = header.copy(minimumCapacity: limitedCapacity)
         return
       }
       assert(isReadOnly == false)

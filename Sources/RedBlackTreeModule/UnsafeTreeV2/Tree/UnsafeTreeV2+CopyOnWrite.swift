@@ -29,6 +29,9 @@ func growth(from count: Int, to minimum: Int) -> Int {
   return Swift.max(minimum, count + max(1, count))
 }
 
+// Bench0は以下がよい
+// return Swift.max(minimum, count + max(1, count >> 3))
+
 extension UnsafeTreeV2BufferHeader {
 
   @inlinable

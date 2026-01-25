@@ -201,7 +201,7 @@ extension UnsafeTreeV2 {
   @inlinable
   package var __size_: Int {
     @inline(__always) get {
-      withHeader { $0.count }
+      withMutableHeader { $0.count }
     }
     nonmutating set {
       /* NOP */

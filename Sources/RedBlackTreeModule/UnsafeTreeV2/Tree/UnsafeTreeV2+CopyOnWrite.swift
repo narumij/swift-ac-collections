@@ -26,20 +26,9 @@ extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   @inline(__always)
-  internal mutating func executeCapacityGrow(_ newCapacity: Int) {
+  internal mutating func grow(_ newCapacity: Int) {
     guard freshPoolCapacity < newCapacity else { return }
     pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func executeCapacityGrow(_ newCapacity: Int) {
-    withMutableHeader {
-      $0.executeCapacityGrow(newCapacity)
-    }
   }
 }
 
@@ -133,7 +122,7 @@ extension UnsafeTreeV2 {
         return
       }
       assert(isReadOnly == false)
-      header.executeCapacityGrow(growthCapacity)
+      header.grow(growthCapacity)
     }
   }
 }
@@ -142,7 +131,7 @@ extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
   internal mutating func _ensureCapacity(to minimumCapacity: Int? = nil, linearly: Bool = false) {
-    
+
     withMutableHeader { header in
       let minimumCapacity = minimumCapacity ?? (header.count + 1)
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
@@ -155,7 +144,7 @@ extension UnsafeTreeV2 {
         return
       }
       assert(isReadOnly == false)
-      header.executeCapacityGrow(growthCapacity)
+      header.grow(growthCapacity)
     }
   }
 }
@@ -166,19 +155,20 @@ extension UnsafeTreeV2 {
   internal mutating func _ensureCapacity(
     to minimumCapacity: Int? = nil, limit: Int, linearly: Bool = false
   ) {
+
     withMutableHeader { header in
       let minimumCapacity = minimumCapacity ?? (header.count + 1)
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
       guard shouldExpand else { return }
-      let growthCapacity = min(limit, header._growthCapacity(
+      let growthCapacity = header._growthCapacity(
         to: minimumCapacity,
-        linearly: linearly))
+        linearly: linearly)
       if isReadOnly {
-        self = header.copy(Base.self, minimumCapacity: growthCapacity)
+        self = header.copy(Base.self, minimumCapacity: min(limit, growthCapacity))
         return
       }
       assert(isReadOnly == false)
-      header.executeCapacityGrow(growthCapacity)
+      header.grow(growthCapacity)
     }
   }
 }

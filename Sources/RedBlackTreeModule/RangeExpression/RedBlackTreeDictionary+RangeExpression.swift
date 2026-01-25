@@ -65,7 +65,7 @@
     @inlinable
     public mutating func removeSubrange(
       _ bounds: _RangeExpression,
-      where shouldBeRemoved: (Key) throws -> Bool
+      where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
       __tree_._ensureUnique()
@@ -75,7 +75,7 @@
       }
       try __tree_.___erase_if(
         lower, upper,
-        shouldBeRemoved: { try shouldBeRemoved(Self.__key($0)) })
+        shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
     }
   }
 #endif

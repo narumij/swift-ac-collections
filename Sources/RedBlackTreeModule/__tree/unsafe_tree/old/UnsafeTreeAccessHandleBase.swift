@@ -138,10 +138,4 @@ extension UnsafeTreeAccessHandleBase {
   package func __value_(_ p: _NodePtr) -> _RawValue {
     p.__value_().pointee
   }
-
-  @inlinable
-  @inline(__always)
-  package func ___element(_ p: _NodePtr, _ __v: _RawValue) {
-    p.__value_().pointee = __v
-  }
 }

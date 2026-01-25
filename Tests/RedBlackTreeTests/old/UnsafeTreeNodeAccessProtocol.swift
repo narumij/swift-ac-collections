@@ -5,6 +5,9 @@
 //  Created by narumij on 2026/01/12.
 //
 
+#if DEBUG
+  @testable import RedBlackTreeModule
+
 /// 配列ベースのコードベースにポインタを載せるためのもの
 ///
 /// 段階としては終わっている
@@ -80,3 +83,4 @@ extension UnsafeTreeNodeAccessProtocol {
     return p.pointee.__parent_
   }
 }
+#endif

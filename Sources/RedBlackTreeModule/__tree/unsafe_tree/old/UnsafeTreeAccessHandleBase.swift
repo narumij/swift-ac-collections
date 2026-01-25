@@ -23,6 +23,9 @@
 /// 配列ベースのコードベースにポインタを載せるためのもの
 ///
 /// 段階としては終わっている
+///
+/// まだkey value handleが使っている
+// TODO: リファクタリングを行い、取り除くこと
 @usableFromInline
 package protocol UnsafeTreeAccessHandleBase: _BaseType & _UnsafeNodePtrType
 {

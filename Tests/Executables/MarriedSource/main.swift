@@ -82,7 +82,7 @@ for _ in 0 ..< M {
   switch c {
   case "U":
     let new_y = y + d
-    xy[x]?.removeBounds(lowerBound(y)..<upperBound(new_y)) { v in
+    xy[x]?.removeBounds(unchecked: lowerBound(y)..<upperBound(new_y)) { v in
       ans += 1
       yx[v]?.remove(x)
       return true
@@ -90,7 +90,7 @@ for _ in 0 ..< M {
     y = new_y
   case "D":
     let new_y = y - d
-    xy[x]?.removeBounds(lowerBound(new_y)..<upperBound(y)) { v in
+    xy[x]?.removeBounds(unchecked: lowerBound(new_y)..<upperBound(y)) { v in
       ans += 1
       yx[v]?.remove(x)
       return true
@@ -98,7 +98,7 @@ for _ in 0 ..< M {
     y = new_y
   case "L":
     let new_x = x - d
-    yx[y]?.removeBounds(lowerBound(new_x)..<upperBound(x)) { v in
+    yx[y]?.removeBounds(unchecked: lowerBound(new_x)..<upperBound(x)) { v in
       ans += 1
       xy[v]?.remove(y)
       return true
@@ -106,7 +106,7 @@ for _ in 0 ..< M {
     x = new_x
   case "R":
     let new_x = x + d
-    yx[y]?.removeBounds(lowerBound(x)..<upperBound(new_x)) { v in
+    yx[y]?.removeBounds(unchecked: lowerBound(x)..<upperBound(new_x)) { v in
       ans += 1
       xy[v]?.remove(y)
       return true

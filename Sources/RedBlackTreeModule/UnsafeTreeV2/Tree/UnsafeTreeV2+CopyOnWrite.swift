@@ -17,7 +17,8 @@
 
 import Foundation
 
-// https://atcoder.jp/contests/abc411/submissions/72753580
+// https://atcoder.jp/contests/abc411/submissions/72757331
+// ぶれがひどい
 
 @inlinable
 func growth(from count: Int, to minimum: Int) -> Int {

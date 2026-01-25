@@ -27,29 +27,24 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   @inline(__always)
   internal mutating func grow(_ newCapacity: Int) {
-    guard freshPoolCapacity < newCapacity else { return }
+    assert(freshPoolCapacity < newCapacity)
     pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
   }
 }
 
-extension UnsafeTreeV2 {
-
-  // 以前の名残でクラスメソッド経由となっている。取り除くリファクタリングをして構わない
+extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   @inline(__always)
-  internal static func ensureCapacity(tree: inout UnsafeTreeV2, linearly: Bool = false) {
-    tree._ensureCapacity(linearly: linearly)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal static func ensureCapacity(
-    tree: inout UnsafeTreeV2, minimumCapacity: Int, linearly: Bool = false
-  ) {
-    tree._ensureCapacity(to: minimumCapacity, linearly: linearly)
+  internal func _growthCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+    if linearly {
+      return minimumCapacity
+    }
+    return Swift.max(minimumCapacity, max(4, count) + max(count / 8, 1))
   }
 }
+
+// MARK: -
 
 extension UnsafeTreeV2 {
 
@@ -89,22 +84,8 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
-  @inlinable
-  @inline(__always)
-  internal mutating func _ensureUnique(
-    transform: (UnsafeTreeV2<Base>) throws -> UnsafeTreeV2<Base>
-  )
-    rethrows
-  {
-    _ensureUnique()
-    self = try transform(self)
-  }
-}
 
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal mutating func _ensureUniqueAndCapacity(
     to minimumCapacity: Int? = nil, linearly: Bool = false
   ) {
@@ -173,14 +154,38 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2BufferHeader {
+// MARK: -
+
+extension UnsafeTreeV2 {
+  
+  @inlinable @inline(__always)
+  internal mutating func _ensureUnique(
+    transform: (UnsafeTreeV2) throws -> UnsafeTreeV2
+  )
+    rethrows
+  {
+    _ensureUnique()
+    self = try transform(self)
+  }
+}
+
+// MARK: -
+
+extension UnsafeTreeV2 {
+
+  // 以前の名残でクラスメソッド経由となっている。取り除くリファクタリングをして構わない
 
   @inlinable
   @inline(__always)
-  internal func _growthCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
-    if linearly {
-      return minimumCapacity
-    }
-    return Swift.max(minimumCapacity, max(4, count) + max(count / 8, 1))
+  internal static func ensureCapacity(tree: inout UnsafeTreeV2, linearly: Bool = false) {
+    tree._ensureCapacity(linearly: linearly)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal static func ensureCapacity(
+    tree: inout UnsafeTreeV2, minimumCapacity: Int, linearly: Bool = false
+  ) {
+    tree._ensureCapacity(to: minimumCapacity, linearly: linearly)
   }
 }

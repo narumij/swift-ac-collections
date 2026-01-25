@@ -46,12 +46,12 @@
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      _ = __tree_.erase(lower, upper)
+      __tree_.___erase(lower, upper)
     }
 
     public mutating func removeBounds(unchecked range: RedBlackTreeBoundsExpression<Key>) {
       let (lower, upper) = __tree_.rawRange(__tree_.relative(to: range))
-      _ = __tree_.erase(lower, upper)
+      __tree_.___erase(lower, upper)
     }
 
     public mutating func removeBounds(

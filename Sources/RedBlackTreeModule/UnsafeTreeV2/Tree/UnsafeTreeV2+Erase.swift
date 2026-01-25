@@ -8,6 +8,20 @@
 extension UnsafeTreeV2 {
 
   @inlinable
+  func ___erase(
+    _ __first: _NodePtr,
+    _ __last: _NodePtr
+  ) {
+    var __first = __first
+    while __first != __last {
+      guard !__first.___is_end else {
+        fatalError(.outOfBounds)
+      }
+      __first = erase(__first)
+    }
+  }
+
+  @inlinable
   func ___erase_if(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
@@ -15,6 +29,9 @@ extension UnsafeTreeV2 {
   ) rethrows {
     var __first = __first
     while __first != __last {
+      guard !__first.___is_end else {
+        fatalError(.outOfBounds)
+      }
       if try shouldBeRemoved(__value_(__first)) {
         __first = erase(__first)
       } else {
@@ -22,20 +39,7 @@ extension UnsafeTreeV2 {
       }
     }
   }
-  
-  @inlinable
-  func ___fault_torelant_erase_if(
-    _ __first: _NodePtr,
-    _ __last: _NodePtr,
-    shouldBeRemoved: (_Key) throws -> Bool
-  ) rethrows {
-    var __first = __first
-    while __first != __last, __first.___is_null_or_end {
-      if try shouldBeRemoved(__get_value(__first)) {
-        __first = erase(__first)
-      } else {
-        __first = __tree_next_iter(__first)
-      }
-    }
-  }
+
+  // fault torelantはたまたま動いてるやつを認識できず、Swiftらしくないので、やめることに
+  // TODO: 他のfault torelant動作を探し、消す
 }

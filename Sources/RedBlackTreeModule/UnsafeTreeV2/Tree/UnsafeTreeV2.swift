@@ -28,8 +28,6 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   internal init(_buffer: ManagedBufferPointer<Header, Void>) {
 
     self._buffer = _buffer
-    let nullptr = _buffer.withUnsafeMutablePointerToHeader { $0.pointee.nullptr }
-    self.nullptr = nullptr
   }
 
   public typealias Base = Base
@@ -44,13 +42,15 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @usableFromInline
   var _buffer: BufferPointer
-
-  @usableFromInline
-  package let nullptr: _NodePtr
 }
 
 extension UnsafeTreeV2 {
 
+  @inlinable @inline(__always)
+  package var nullptr: _NodePtr {
+    withMutableHeader { $0.nullptr }
+  }
+  
   @inlinable @inline(__always)
   package var end: _NodePtr {
     withMutableHeader { $0.end_ptr }

@@ -274,6 +274,9 @@ extension RedBlackTreeDictionary {
       // TODO: FIXME
       __tree_._ensureUniqueAndCapacity()
       // TODO: もうすこしライフタイム管理に明るくなったら、再度ここのチューニングに取り組む
+      
+      // TODO: 内部がポインタに変更になったので、それに合わせた設計に変更すること
+      
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == __tree_.nullptr {
         var value: Value?
@@ -310,6 +313,9 @@ extension RedBlackTreeDictionary {
       defer { _fixLifetime(self) }
       // UnsafeTree用の暫定処置
       // TODO: FIXME
+      
+      // TODO: 内部がポインタに変更になったので、それに合わせた設計に変更すること
+
       __tree_._ensureUniqueAndCapacity()
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == __tree_.nullptr {
@@ -328,6 +334,9 @@ extension RedBlackTreeDictionary {
   internal func _prepareForKeyingModify(
     _ key: Key
   ) -> (__parent: Tree._NodePtr, __child: Tree._NodeRef, __ptr: Tree._NodePtr) {
+    
+    // TODO: 内部がポインタに変更になったので、それに合わせた設計に変更すること
+
     let (__parent, __child) = __tree_.__find_equal(key)
     let __ptr = __tree_.__ptr_(__child)
     return (__parent, __child, __ptr)

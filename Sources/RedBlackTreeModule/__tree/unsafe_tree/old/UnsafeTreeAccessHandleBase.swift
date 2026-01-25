@@ -23,9 +23,11 @@
 /// 配列ベースのコードベースにポインタを載せるためのもの
 ///
 /// 段階としては終わっている
+///
+/// まだkey value handleが使っている
+// TODO: リファクタリングを行い、取り除くこと
 @usableFromInline
-package protocol UnsafeTreeAccessHandleBase:
-  _BaseType & _UnsafeNodePtrType & UnsafeTreeNodeAccessProtocol & UnsafeTreeNodeRefAccessProtocol
+package protocol UnsafeTreeAccessHandleBase: _BaseType & _UnsafeNodePtrType
 {
   var header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader> { get }
 }
@@ -138,11 +140,5 @@ extension UnsafeTreeAccessHandleBase {
   @inline(__always)
   package func __value_(_ p: _NodePtr) -> _RawValue {
     p.__value_().pointee
-  }
-
-  @inlinable
-  @inline(__always)
-  package func ___element(_ p: _NodePtr, _ __v: _RawValue) {
-    p.__value_().pointee = __v
   }
 }

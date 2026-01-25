@@ -20,7 +20,8 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
+#if DEBUG
+  @testable import RedBlackTreeModule
 
 @usableFromInline
 protocol TreeAlgorithmBaseProtocol_std: TreeAlgorithmInterface & TreeAlgorithmBaseInterface & TreeNodeAccessInterface {}
@@ -523,3 +524,4 @@ extension TreeAlgorithmProtocol_std {
     }
   }
 }
+#endif

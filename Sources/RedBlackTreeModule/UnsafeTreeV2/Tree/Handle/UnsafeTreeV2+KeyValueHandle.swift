@@ -111,16 +111,16 @@ extension UnsafeTreeV2KeyValueHandle {
 
 extension UnsafeTreeV2KeyValueHandle: UnsafeTreeAccessHandleBase {}
 
-extension UnsafeTreeV2KeyValueHandle: BoundBothProtocol, BoundAlgorithmProtocol {}
+extension UnsafeTreeV2KeyValueHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: FindInteface, FindProtocol_ptr {}
-extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_std {}
-extension UnsafeTreeV2KeyValueHandle: InsertNodeAtInterface, InsertNodeAtProtocol_std {}
-extension UnsafeTreeV2KeyValueHandle: InsertUniqueInterface, InsertUniqueProtocol_std {}
-extension UnsafeTreeV2KeyValueHandle: RemoveInteface, RemoveProtocol_std {}
+extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr {}
+extension UnsafeTreeV2KeyValueHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
+extension UnsafeTreeV2KeyValueHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
+extension UnsafeTreeV2KeyValueHandle: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: EraseProtocol {}
 extension UnsafeTreeV2KeyValueHandle: EraseUniqueProtocol {}
-extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmBaseProtocol_std {}
-extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmProtocol_std {}
+extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmBaseProtocol_ptr {}
+extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmProtocol_ptr {}
 
 extension UnsafeTreeV2KeyValueHandle {
   public typealias __compare_result = __int_compare_result

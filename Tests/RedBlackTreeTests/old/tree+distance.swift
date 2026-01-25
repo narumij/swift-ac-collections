@@ -20,29 +20,49 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+#if DEBUG
+  @testable import RedBlackTreeModule
+
 import Foundation
 
 @usableFromInline
-protocol RemoveProtocol_std:
-  TreeNodeAccessInterface
-    & TreeAlgorithmInterface
-    & BeginNodeInterface
-    & EndNodeInterface
-    & SizeInterface
-{}
+protocol DistanceProtocol_std: TreeNodeAccessInterface & _TreeNode_PtrCompInterface {}
 
-extension RemoveProtocol_std {
+extension DistanceProtocol_std {
+
+  @usableFromInline
+  typealias difference_type = Int
+
+  @usableFromInline
+  typealias _InputIter = _NodePtr
 
   @inlinable
   @inline(__always)
-  internal func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {
-    var __r = __ptr
-    __r = __tree_next_iter(__r)
-    if __begin_node_ == __ptr {
-      __begin_node_ = __r
+  internal func
+    __distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
+  {
+    var __first = __first
+    var __r = 0
+    while __first != __last {
+      __first = __tree_next(__first)
+      __r += 1
     }
-    __size_ -= 1
-    __tree_remove(__left_(__end_node), __ptr)
     return __r
   }
+
+  @inlinable
+  @inline(__always)
+  internal func
+    ___signed_distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
+  {
+    guard __first != __last else { return 0 }
+    var (__first, __last) = (__first, __last)
+    var sign = 1
+    if ___ptr_comp(__last, __first) {
+      swap(&__first, &__last)
+      sign = -1
+    }
+    return sign * __distance(__first, __last)
+  }
 }
+#endif

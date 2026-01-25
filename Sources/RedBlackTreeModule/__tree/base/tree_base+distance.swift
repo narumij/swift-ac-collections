@@ -15,22 +15,29 @@
 //
 //===----------------------------------------------------------------------===//
 
-@usableFromInline
-protocol _TreeNode_PtrCompInterface: _NodePtrType {
-  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
-}
+// TODO: 別のプロトコルにする
+// 手抜きをしてしまって、微妙に違うプロトコルにぶら下がっている
 
-@usableFromInline
-protocol _TreeNode_PtrCompMultiInterface: _NodePtrType {
-  func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
-}
+extension _BaseNode_PtrCompProtocol {
 
-@usableFromInline
-protocol _TreeNode_PtrCompBitmapInterface: _NodePtrType {
-  func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
-}
+  @usableFromInline
+  typealias difference_type = Int
 
-public protocol _Tree_IsMultiTraitInterface {
-  var isMulti: Bool { get }
-}
+  @usableFromInline
+  typealias _InputIter = _NodePtr
 
+  @inlinable
+  @inline(__always)
+  static func
+    ___signed_distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
+  {
+    guard __first != __last else { return 0 }
+    var (__first, __last) = (__first, __last)
+    var sign = 1
+    if ___ptr_comp(__last, __first) {
+      swap(&__first, &__last)
+      sign = -1
+    }
+    return sign * __distance(__first, __last)
+  }
+}

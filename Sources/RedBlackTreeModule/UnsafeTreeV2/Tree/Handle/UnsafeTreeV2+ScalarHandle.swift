@@ -168,7 +168,7 @@ extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
 extension UnsafeTreeV2ScalarHandle: FindEqualInterface, FindEqualProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2ScalarHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
-extension UnsafeTreeV2ScalarHandle: PointerCompareInterface, IsMultiTraitInterface, CompareBothProtocol_ptr, CompareUniqueProtocol {}
+extension UnsafeTreeV2ScalarHandle: _TreeNode_PtrCompInterface, _Tree_IsMultiTraitInterface, _TreeNode_PtrCompProtocol, _TreeNode_PtrCompUniqueProtocol {}
 extension UnsafeTreeV2ScalarHandle: DistanceProtocol_ptr, CountProtocol_ptr {}
 
 extension UnsafeTreeV2ScalarHandle: TreeAlgorithmBaseProtocol_ptr {}

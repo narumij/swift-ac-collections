@@ -20,29 +20,10 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+#if DEBUG
+  @testable import RedBlackTreeModule
+
 import Foundation
-
-@usableFromInline
-protocol BoundBothProtocol:
-  BoundInteface
-    & BoundBothInterface
-    & IsMultiTraitInterface
-{}
-
-extension BoundBothProtocol {
-
-  @inlinable
-  @inline(__always)
-  internal func lower_bound(_ __v: _Key) -> _NodePtr {
-    isMulti ? __lower_bound_multi(__v) : __lower_bound_unique(__v)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func upper_bound(_ __v: _Key) -> _NodePtr {
-    isMulti ? __upper_bound_multi(__v) : __upper_bound_unique(__v)
-  }
-}
 
 @usableFromInline
 protocol BoundAlgorithmProtocol: BoundAlgorithmProtocol_common & _TreeKey_LazyThreeWayCompInterface {}
@@ -169,3 +150,4 @@ extension BoundAlgorithmProtocol_old {
     __upper_bound_multi(__v, __root, __end_node)
   }
 }
+#endif

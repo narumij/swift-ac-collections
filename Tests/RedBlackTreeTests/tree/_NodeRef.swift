@@ -1,6 +1,7 @@
 import Foundation
 import RedBlackTreeModule
 
+#if DEBUG
 extension _PointerIndexRef {
   var index: Int! {
     switch self {
@@ -11,3 +12,4 @@ extension _PointerIndexRef {
     }
   }
 }
+#endif

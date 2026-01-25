@@ -20,13 +20,10 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
+#if DEBUG
+  @testable import RedBlackTreeModule
 
-@usableFromInline
-protocol FindLeafInterface: _NodePtrType & _KeyType {
-  func __find_leaf_low(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
-  func __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
-}
+import Foundation
 
 @usableFromInline
 protocol FindLeafProtocol: FindLeafInterface, ValueInterface, TreeNodeRefAccessInterface, RootInterface, EndNodeProtocol {}
@@ -204,3 +201,4 @@ extension FindProtocol_std {
     #endif
   }
 }
+#endif

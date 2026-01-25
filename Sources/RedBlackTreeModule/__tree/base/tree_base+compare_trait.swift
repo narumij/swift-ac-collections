@@ -15,22 +15,20 @@
 //
 //===----------------------------------------------------------------------===//
 
-@usableFromInline
-protocol _TreeNode_PtrCompInterface: _NodePtrType {
-  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
+// TODO: ちぐはぐってるので、あらためて整理すること
+
+// _Tree_IsMultiTraitProtocolはBaseでは機能してないはず
+
+public protocol CompareUniqueTrait: _Tree_IsMultiTraitProtocol & _Base_IsMultiTraitInterface {}
+
+extension CompareUniqueTrait {
+  @inlinable @inline(__always)
+  public static var isMulti: Bool { false }
 }
 
-@usableFromInline
-protocol _TreeNode_PtrCompMultiInterface: _NodePtrType {
-  func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
-}
+public protocol CompareMultiTrait: _Tree_IsMultiTraitProtocol & _Base_IsMultiTraitInterface {}
 
-@usableFromInline
-protocol _TreeNode_PtrCompBitmapInterface: _NodePtrType {
-  func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
+extension CompareMultiTrait {
+  @inlinable @inline(__always)
+  public static var isMulti: Bool { true }
 }
-
-public protocol _Tree_IsMultiTraitInterface {
-  var isMulti: Bool { get }
-}
-

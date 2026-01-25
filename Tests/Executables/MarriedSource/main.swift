@@ -6,7 +6,6 @@ import AcFoundation
 import IOUtil
 
 
-
 // ----
 
 #if false
@@ -63,11 +62,20 @@ for _ in 0..<Q {
 var (N, M, x, y) = (Int.stdin, Int.stdin, Int.stdin, Int.stdin)
 var xy: [Int: RedBlackTreeSet<Int>] = [:]
 var yx: [Int: RedBlackTreeSet<Int>] = [:]
+var _xy: [Int:[Int]] = [:]
+var _yx: [Int:[Int]] = [:]
 for _ in 0..<N {
   let (xx, yy) = (Int.stdin, Int.stdin)
-  xy[xx, default: []].insert(yy)
-  yx[yy, default: []].insert(xx)
+  _xy[xx, default: []].append(yy)
+  _yx[yy, default: []].append(xx)
 }
+for (k,v) in _xy {
+  xy[k] = .init(v)
+}
+for (k,v) in _yx {
+  yx[k] = .init(v)
+}
+
 var ans = 0
 for _ in 0 ..< M {
   let (c, d) = (Character.stdin, Int.stdin)
@@ -112,7 +120,6 @@ print(x, y, ans)
 #endif
 
 #if false
-
 var (N, M, x, y) = (Int.stdin, Int.stdin, Int.stdin, Int.stdin)
 var xy: [Int:RedBlackTreeSet<Int>] = [:]
 var yx: [Int:RedBlackTreeSet<Int>] = [:]
@@ -172,16 +179,5 @@ for _ in 0 ..< M {
 }
 
 print(x, y, ans)
-
-extension RedBlackTreeSet {
-  public func sequence(from start: Element, to end: Element) -> SubSequence {
-    self[lowerBound(start)..<lowerBound(end)]
-  }
-}
-extension RedBlackTreeSet {
-  public func sequence(from start: Element, through end: Element) -> SubSequence {
-    self[lowerBound(start)..<upperBound(end)]
-  }
-}
 #endif
 

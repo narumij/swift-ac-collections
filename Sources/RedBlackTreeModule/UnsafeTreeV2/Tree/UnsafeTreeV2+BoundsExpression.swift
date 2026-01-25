@@ -7,7 +7,7 @@
 
 extension UnsafeTreeV2 {
 
-  @usableFromInline
+  @inlinable @inline(__always)
   func relative(from b: RedBlackTreeBound<_Key>) -> _NodePtr {
     switch b {
     case .start: __begin_node_
@@ -20,22 +20,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-//  func relative<K>(to boundsExpression: RedBlackTreeBoundsExpression<K>) -> (_NodePtr, _NodePtr)
-//  where K == _Key {
-//    switch boundsExpression {
-//    case .range(let lhs, let rhs):
-//      return (relative(from: lhs), relative(from: rhs))
-//    case .closedRange(let lhs, let rhs):
-//      return (relative(from: lhs), __tree_next(relative(from: rhs)))
-//    case .partialRangeTo(let rhs):
-//      return (__begin_node_, relative(from: rhs))
-//    case .partialRangeThrough(let rhs):
-//      return (__begin_node_, __tree_next(relative(from: rhs)))
-//    case .partialRangeFrom(let lhs):
-//      return (relative(from: lhs), __end_node)
-//    }
-//  }
-
+  @inlinable @inline(__always)
   func relative<K>(to boundsExpression: RedBlackTreeBoundsExpression<K>)
     -> UnsafeTreeRangeExpression
   where K == _Key {

@@ -72,6 +72,7 @@
       try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
 
+    @inlinable @inline(__always)
     public mutating func removeBounds(
       unchecked bounds: RedBlackTreeBoundsExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool

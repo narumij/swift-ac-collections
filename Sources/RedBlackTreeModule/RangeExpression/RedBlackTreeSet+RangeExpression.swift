@@ -83,5 +83,18 @@
         lower, upper,
         shouldBeRemoved: shouldBeRemoved)
     }
+    
+    @inlinable
+    public mutating func removeSubrange(
+      unchecked bounds: _RangeExpression,
+      where shouldBeRemoved: (Element) throws -> Bool
+    ) rethrows {
+
+      __tree_._ensureUnique()
+      let (lower, upper) = __tree_.rawRange(bounds.rawRange)
+      try __tree_.___erase_if(
+        lower, upper,
+        shouldBeRemoved: shouldBeRemoved)
+    }
   }
 #endif

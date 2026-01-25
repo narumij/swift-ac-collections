@@ -5,6 +5,8 @@ import Foundation
 import AcFoundation
 import IOUtil
 
+
+
 // ----
 
 #if false
@@ -56,3 +58,56 @@ for _ in 0..<Q {
   fastPrint(m)
 }
 #endif
+
+#if false
+var (N, M, x, y) = (Int.stdin, Int.stdin, Int.stdin, Int.stdin)
+var xy: [Int: RedBlackTreeSet<Int>] = [:]
+var yx: [Int: RedBlackTreeSet<Int>] = [:]
+for _ in 0..<N {
+  let (xx, yy) = (Int.stdin, Int.stdin)
+  xy[xx, default: []].insert(yy)
+  yx[yy, default: []].insert(xx)
+}
+var ans = 0
+for _ in 0 ..< M {
+  let (c, d) = (Character.stdin, Int.stdin)
+  switch c {
+  case "U":
+    let new_y = y + d
+    xy[x]?.removeBounds(lowerBound(y)..<upperBound(new_y)) { v in
+      ans += 1
+      yx[v]?.remove(x)
+      return true
+    }
+    y = new_y
+  case "D":
+    let new_y = y - d
+    xy[x]?.removeBounds(lowerBound(new_y)..<upperBound(y)) { v in
+      ans += 1
+      yx[v]?.remove(x)
+      return true
+    }
+    y = new_y
+  case "L":
+    let new_x = x - d
+    yx[y]?.removeBounds(lowerBound(new_x)..<upperBound(x)) { v in
+      ans += 1
+      xy[v]?.remove(y)
+      return true
+    }
+    x = new_x
+  case "R":
+    let new_x = x + d
+    yx[y]?.removeBounds(lowerBound(x)..<upperBound(new_x)) { v in
+      ans += 1
+      xy[v]?.remove(y)
+      return true
+    }
+    x = new_x
+  default:
+    break
+  }
+}
+print(x, y, ans)
+#endif
+

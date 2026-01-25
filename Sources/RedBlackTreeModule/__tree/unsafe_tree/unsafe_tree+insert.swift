@@ -128,7 +128,7 @@ protocol InsertLastProtocol_ptr:
     & InsertNodeAtInterface
     & AllocationInterface
     & EndInterface
-    & EndNodeProtocol
+    & EndNodeInterface
     & RootInterface
     & _nullptr_interface
 {}

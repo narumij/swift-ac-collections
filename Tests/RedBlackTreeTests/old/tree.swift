@@ -20,6 +20,9 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+#if DEBUG
+  @testable import RedBlackTreeModule
+
 import Foundation
 
 // MARK: -
@@ -118,3 +121,4 @@ public
   /// 左ノードへの参照
   case __left_(_PointerIndex)
 }
+#endif

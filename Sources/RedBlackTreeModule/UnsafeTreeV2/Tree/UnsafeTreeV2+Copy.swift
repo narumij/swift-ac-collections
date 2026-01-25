@@ -47,7 +47,9 @@ extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   //  @inline(__always)
-  internal func copyBuffer<_RawValue>(_ t: _RawValue.Type, minimumCapacity: Int? = nil) -> UnsafeTreeV2Buffer {
+  internal func copyBuffer<_RawValue>(_ t: _RawValue.Type, minimumCapacity: Int? = nil)
+    -> UnsafeTreeV2Buffer
+  {
 
     // 番号の抜けが発生してるケースがあり、それは再利用プールにノードがいるケース
     // その部分までコピーする必要があり、初期化済み数でのコピーとなる

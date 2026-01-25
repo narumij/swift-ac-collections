@@ -96,6 +96,32 @@ extension InsertUniqueProtocol_ptr {
 }
 
 @usableFromInline
+protocol InsertMultiProtocol: AllocationInterface & _TreeRawValue_KeyInterface & FindLeafInterface
+    & InsertNodeAtInterface & _nullptr_interface
+{}
+
+extension InsertMultiProtocol {
+
+  @inlinable
+  @inline(__always)
+  internal func __insert_multi(_ x: _RawValue) -> _NodePtr {
+    __emplace_multi(x)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func
+    __emplace_multi(_ __k: _RawValue) -> _NodePtr
+  {
+    let __h = __construct_node(__k)
+    var __parent = nullptr
+    let __child = __find_leaf_high(&__parent, __key(__k))
+    __insert_node_at(__parent, __child, __h)
+    return __h
+  }
+}
+
+@usableFromInline
 protocol InsertLastProtocol_ptr:
   _UnsafeNodePtrType
     & InsertLastInterface

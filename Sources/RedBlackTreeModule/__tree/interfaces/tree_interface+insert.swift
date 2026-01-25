@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 @usableFromInline
 protocol InsertNodeAtInterface: _NodePtrType {
   func __insert_node_at(
@@ -30,4 +28,13 @@ protocol InsertNodeAtInterface: _NodePtrType {
 protocol InsertUniqueInterface: _NodePtrType & _RawValueType {
   func __insert_unique(_ x: _RawValue) -> (__r: _NodePtr, __inserted: Bool)
   func __emplace_unique_key_args(_ __k: _RawValue) -> (__r: _NodePtr, __inserted: Bool)
+}
+
+@usableFromInline
+protocol InsertLastInterface: _NodePtrType & _RawValueType {
+  func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef)
+  func ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _RawValue)
+    -> (__parent: _NodePtr, __child: _NodeRef)
+  //  func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _RawValue) -> _NodePtr
+  func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _RawValue) -> _NodePtr
 }

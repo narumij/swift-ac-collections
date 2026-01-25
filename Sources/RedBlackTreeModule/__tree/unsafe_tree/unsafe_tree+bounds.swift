@@ -16,6 +16,28 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
+protocol BoundBothProtocol:
+  BoundInteface
+    & BoundBothInterface
+    & IsMultiTraitInterface
+{}
+
+extension BoundBothProtocol {
+
+  @inlinable
+  @inline(__always)
+  internal func lower_bound(_ __v: _Key) -> _NodePtr {
+    isMulti ? __lower_bound_multi(__v) : __lower_bound_unique(__v)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func upper_bound(_ __v: _Key) -> _NodePtr {
+    isMulti ? __upper_bound_multi(__v) : __upper_bound_unique(__v)
+  }
+}
+
+@usableFromInline
 protocol BoundAlgorithmProtocol_ptr:
   BoundAlgorithmProtocol_common_ptr
     & _TreeKey_ThreeWayCompInterface

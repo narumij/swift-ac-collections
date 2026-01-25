@@ -15,7 +15,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
+@usableFromInline
+protocol FindLeafInterface: _NodePtrType & _KeyType {
+  func __find_leaf_low(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
+  func __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
+}
 
 @usableFromInline
 protocol FindEqualInterface: _NodePtrType & _KeyType {

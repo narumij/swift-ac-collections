@@ -63,46 +63,6 @@ extension CompareBothProtocol_std {
   }
 }
 
-public protocol CompareTrait: IsMultiTraitInterface {
-  static var isMulti: Bool { get }
-}
-
-extension CompareTrait {
-  @inlinable @inline(__always)
-  public var isMulti: Bool { Self.isMulti }
-}
-
-public protocol CompareUniqueTrait: CompareTrait & IsMultiTraitInterface {}
-
-extension CompareUniqueTrait {
-  @inlinable @inline(__always)
-  public static var isMulti: Bool { false }
-}
-
-public protocol CompareMultiTrait: CompareTrait & IsMultiTraitInterface {}
-
-extension CompareMultiTrait {
-  @inlinable @inline(__always)
-  public static var isMulti: Bool { true }
-}
-
-@usableFromInline
-protocol CompareUniqueProtocol: _TreeNode_KeyInterface, EndInterface, _nullptr_interface, _TreeKey_CompInterface {}
-
-extension CompareUniqueProtocol {
-
-  /// multisetでも、インデックス比較に関して不正な結果だが、レンジで使う限り落ちはしない
-  @inlinable
-  @inline(__always)
-  internal func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    assert(l != nullptr, "Node shouldn't be null")
-    assert(l != end, "Node shouldn't be end")
-    assert(r != nullptr, "Node shouldn't be null")
-    assert(r != end, "Node shouldn't be end")
-    return value_comp(__get_value(l), __get_value(r))
-  }
-}
-
 @usableFromInline
 protocol CompareMultiProtocol_std: TreeNodeAccessInterface & RootInterface & EndInterface {}
 
@@ -165,64 +125,6 @@ extension CompareMultiProtocol_std {
   }
 }
 
-@usableFromInline
-protocol CompareProtocol: PointerCompareInterface {}
-
-extension CompareProtocol {
-
-  @inlinable
-  @inline(__always)
-  internal func
-    ___ptr_less_than(_ l: _NodePtr, _ r: _NodePtr) -> Bool
-  {
-    ___ptr_comp(l, r)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func
-    ___ptr_less_than_or_equal(_ l: _NodePtr, _ r: _NodePtr) -> Bool
-  {
-    !___ptr_comp(r, l)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func
-    ___ptr_greator_than(_ l: _NodePtr, _ r: _NodePtr) -> Bool
-  {
-    ___ptr_comp(r, l)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func
-    ___ptr_greator_than_or_equal(_ l: _NodePtr, _ r: _NodePtr) -> Bool
-  {
-    !___ptr_comp(l, r)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func
-    ___ptr_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool
-  {
-    ___ptr_less_than_or_equal(l, p) && ___ptr_less_than(p, r)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func
-    ___ptr_closed_range_contains(_ l: _NodePtr, _ r: _NodePtr, _ p: _NodePtr) -> Bool
-  {
-    ___ptr_less_than_or_equal(l, p) && ___ptr_less_than_or_equal(p, r)
-  }
-}
-
-@usableFromInline
-protocol NodeBitmapInterface: _NodePtrType {
-  func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
-}
 
 @usableFromInline
 protocol NodeBitmapProtocol_std: NodeBitmapInterface & TreeNodeAccessInterface & RootInterface & EndInterface {}

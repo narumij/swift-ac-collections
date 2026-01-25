@@ -5,19 +5,6 @@
 //  Created by narumij on 2026/01/19.
 //
 
-/// 赤黒木の参照型を表す内部enum
-///
-/// (現在はプロトコルのテスト用に使っている)
-//@available(*, deprecated, message: "もうつかっていない。配列インデックス方式の名残。")
-public
-  enum _PointerIndexRef: Equatable
-{
-  /// 右ノードへの参照
-  case __right_(_PointerIndex)
-  /// 左ノードへの参照
-  case __left_(_PointerIndex)
-}
-
 extension TreeAlgorithmProtocol_std where _NodePtr == Int, _NodeRef == _PointerIndexRef {
 
   @inlinable

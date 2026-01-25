@@ -28,3 +28,8 @@ public protocol IsMultiTraitInterface {
 protocol CompareMultiInterface: _NodePtrType {
   func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
 }
+
+@usableFromInline
+protocol NodeBitmapInterface: _NodePtrType {
+  func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
+}

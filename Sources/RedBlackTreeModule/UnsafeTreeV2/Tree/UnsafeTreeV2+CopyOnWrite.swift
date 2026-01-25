@@ -17,6 +17,28 @@
 
 import Foundation
 
+// https://atcoder.jp/contests/abc411/submissions/72753580
+
+@inlinable
+func growth(from count: Int, to minimum: Int) -> Int {
+  // TODO: ジャッジ搭載のタイミングで再度チューニングすること
+  if count < 3 {
+    return Swift.max(minimum, count << 1)
+  }
+  return Swift.max(minimum, count + max(1, count))
+}
+
+extension UnsafeTreeV2BufferHeader {
+  
+  @inlinable
+  @inline(__always)
+  internal func _growthCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
+    linearly ? minimumCapacity : growth(from: count, to: minimumCapacity)
+  }
+}
+
+// MARK: -
+
 extension UnsafeTreeV2BufferHeader {
 
   @inlinable
@@ -24,25 +46,6 @@ extension UnsafeTreeV2BufferHeader {
   internal mutating func grow(_ newCapacity: Int) {
     assert(freshPoolCapacity < newCapacity)
     pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
-  }
-}
-
-extension UnsafeTreeV2BufferHeader {
-
-  // https://atcoder.jp/contests/abc411/submissions/72753241
-  
-  @inlinable
-  @inline(__always)
-  internal func _growthCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
-    if linearly {
-      return minimumCapacity
-    }
-
-    if count < 3 {
-      return Swift.max(minimumCapacity, count << 1)
-    }
-
-    return Swift.max(minimumCapacity, count + max(1, count >> 3))
   }
 }
 

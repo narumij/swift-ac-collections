@@ -64,8 +64,9 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal mutating func _ensureUnique() {
     let isUnique = isUnique()
-    if !isUnique {
-      self = self.copy()
+    guard !isUnique else { return }
+    withMutableHeader { header in
+      self = header.copy(Base.self)
     }
   }
 

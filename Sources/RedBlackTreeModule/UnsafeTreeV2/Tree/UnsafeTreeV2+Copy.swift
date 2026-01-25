@@ -26,7 +26,7 @@ extension UnsafeTreeV2 {
     let tree = withMutableHeader { header in
       UnsafeTreeV2.create(
         unsafeBufferObject:
-          header.copyBuffer(Base.self, minimumCapacity: minimumCapacity))
+          header.copyBuffer(Base._RawValue.self, minimumCapacity: minimumCapacity))
     }
     assert(count == 0 || initializedCount == tree.initializedCount)
     assert(count == 0 || equiv(with: tree))

@@ -75,7 +75,7 @@
       }
       try __tree_.___erase_if(
         lower, upper,
-        shouldBeRemoved: shouldBeRemoved)
+        shouldBeRemoved: { try shouldBeRemoved(Self.__key($0)) })
     }
   }
 #endif

@@ -5,6 +5,9 @@
 //  Created by narumij on 2026/01/19.
 //
 
+#if DEBUG
+  @testable import RedBlackTreeModule
+
 extension TreeAlgorithmProtocol_std where _NodePtr == Int, _NodeRef == _PointerIndexRef {
 
   @inlinable
@@ -46,3 +49,4 @@ extension TreeAlgorithmProtocol_std where _NodePtr == Int, _NodeRef == _PointerI
     }
   }
 }
+#endif

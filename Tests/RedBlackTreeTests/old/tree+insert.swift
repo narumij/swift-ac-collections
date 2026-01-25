@@ -20,6 +20,9 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+#if DEBUG
+  @testable import RedBlackTreeModule
+
 import Foundation
 
 @usableFromInline
@@ -160,3 +163,4 @@ extension InsertLastProtocol {
     return __h
   }
 }
+#endif

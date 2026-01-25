@@ -20,6 +20,9 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+#if DEBUG
+  @testable import RedBlackTreeModule
+
 import Foundation
 
 @usableFromInline
@@ -46,3 +49,4 @@ extension RemoveProtocol_std {
     return __r
   }
 }
+#endif

@@ -20,6 +20,9 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+#if DEBUG
+  @testable import RedBlackTreeModule
+
 import Foundation
 
 @usableFromInline
@@ -147,3 +150,4 @@ extension BoundAlgorithmProtocol_old {
     __upper_bound_multi(__v, __root, __end_node)
   }
 }
+#endif

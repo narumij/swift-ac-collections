@@ -20,6 +20,9 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+#if DEBUG
+  @testable import RedBlackTreeModule
+
 import Foundation
 
 @usableFromInline
@@ -62,3 +65,4 @@ extension DistanceProtocol_std {
     return sign * __distance(__first, __last)
   }
 }
+#endif

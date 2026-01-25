@@ -61,7 +61,7 @@ import XCTest
 
       for i in 1..<100 {
         let capa = header.freshPoolCapacity
-        header.executeCapacityGrow(header.freshPoolCapacity + i)
+        header.grow(header.freshPoolCapacity + i)
         XCTAssertEqual(header.freshPoolCapacity - capa, i)
         XCTAssertEqual(header.freshPoolCapacity, header.freshPoolActualCapacity)
       }

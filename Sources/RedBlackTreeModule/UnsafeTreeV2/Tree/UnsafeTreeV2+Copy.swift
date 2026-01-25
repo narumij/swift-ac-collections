@@ -1,24 +1,19 @@
-// Copyright 2024-2026 narumij
+//===----------------------------------------------------------------------===//
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// This source file is part of the swift-ac-collections project
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
 // This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
 //
-// Copyright © 2003-2025 The LLVM Project.
+// Copyright © 2003-2026 The LLVM Project.
 // Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 import Foundation
 
@@ -27,62 +22,31 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
-    #if false
-      // 番号の抜けが発生してるケースがあり、それは再利用プールにノードがいるケース
-      // その部分までコピーする必要があり、初期化済み数でのコピーとなる
-      let initializedCount = initializedCount
-
-      assert(check())
-      let newCapacity = max(minimumCapacity ?? 0, initializedCount)
-
-      // 予定サイズの木を作成する
-      let tree = UnsafeTreeV2.___create(minimumCapacity: newCapacity, nullptr: nullptr)
-
-      // freshPool内のfreshBucketは0〜1個となる
-      // CoW後の性能維持の為、freshBucket数は1を越えないこと
-      // バケット数が1に保たれていると、フォールバックの___raw_indexによるアクセスがO(1)になる
-      #if DEBUG
-        assert(tree._buffer.header.freshBucketCount <= 1)
-      #endif
-
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
-        tree.withMutableHeader { $0.copyCount += 1 }
-      #endif
-
-      // 空の場合、そのまま返す
-      if count == 0 {
-        return tree
-      }
-
-      let header = _buffer.header
-
-      tree.withMutableHeader { newHeader in
-        header._copy(Base.self, to: &newHeader, nullptr: nullptr)
-      }
-
-      assert(equiv(with: tree))
-      assert(tree.check())
-
-      return tree
-    #else
-      assert(check())
-      let tree = withMutableHeader { header in
-        UnsafeTreeV2.create(
-          unsafeBufferObject:
-            header.copyBuffer(Base.self, minimumCapacity: minimumCapacity))
-      }
-      assert(count == 0 || initializedCount == tree.initializedCount)
-      assert(count == 0 || equiv(with: tree))
-      assert(tree.check())
-      return tree
-    #endif
+    assert(check())
+    let tree = withMutableHeader { header in
+      UnsafeTreeV2.create(
+        unsafeBufferObject:
+          header.copyBuffer(Base.self, minimumCapacity: minimumCapacity))
+    }
+    assert(count == 0 || initializedCount == tree.initializedCount)
+    assert(count == 0 || equiv(with: tree))
+    assert(tree.check())
+    return tree
   }
 }
 
 extension UnsafeTreeV2BufferHeader {
 
   @inlinable
-  @inline(__always)
+  //  @inline(never)
+  internal func copy<Base>(_ t: Base.Type, minimumCapacity: Int? = nil) -> UnsafeTreeV2<Base> {
+    UnsafeTreeV2<Base>.create(
+      unsafeBufferObject:
+        copyBuffer(Base.self, minimumCapacity: minimumCapacity))
+  }
+
+  @inlinable
+  //  @inline(__always)
   internal func copyBuffer<Base>(_ t: Base.Type, minimumCapacity: Int? = nil) -> UnsafeTreeV2Buffer
   where Base: ___TreeBase {
 
@@ -124,7 +88,7 @@ extension UnsafeTreeV2BufferHeader {
     return _newBuffer
   }
 
-  @usableFromInline
+  @inlinable
   func _copy<Base>(
     _ t: Base.Type, to other: inout UnsafeTreeV2BufferHeader,
     nullptr: UnsafeMutablePointer<UnsafeNode>

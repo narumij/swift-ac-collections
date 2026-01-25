@@ -25,34 +25,41 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @inlinable
   @inline(__always)
-  internal init(
-    _buffer: ManagedBufferPointer<Header, Void>
-  ) {
+  internal init(_buffer: ManagedBufferPointer<Header, Void>) {
+
     self._buffer = _buffer
-    let h = _buffer.withUnsafeMutablePointerToHeader { $0 }
-    self.nullptr = h.pointee.nullptr
-    self.end = h.pointee.end_ptr
-    self.isReadOnly = _buffer.buffer === _emptyTreeStorage
+    let nullptr = _buffer.withUnsafeMutablePointerToHeader { $0.pointee.nullptr }
+    self.nullptr = nullptr
   }
 
   public typealias Base = Base
   public typealias Tree = UnsafeTreeV2<Base>
-  @usableFromInline typealias Header = UnsafeTreeV2BufferHeader
-  @usableFromInline typealias Buffer = ManagedBuffer<Header, Void>
-  @usableFromInline typealias BufferPointer = ManagedBufferPointer<Header, Void>
   public typealias _Key = Base._Key
   public typealias _RawValue = Base._RawValue
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
+  @usableFromInline typealias Header = UnsafeTreeV2BufferHeader
+  @usableFromInline typealias Buffer = ManagedBuffer<Header, Void>
+  @usableFromInline typealias BufferPointer = ManagedBufferPointer<Header, Void>
 
   @usableFromInline
   var _buffer: BufferPointer
 
   @usableFromInline
-  package let nullptr, end: _NodePtr
+  package let nullptr: _NodePtr
+}
 
-  @usableFromInline
-  let isReadOnly: Bool
+extension UnsafeTreeV2 {
+
+  @inlinable @inline(__always)
+  package var end: _NodePtr {
+    withMutableHeader { $0.end_ptr }
+  }
+
+  @inlinable @inline(__always)
+  var isReadOnly: Bool {
+    _buffer.buffer === _emptyTreeStorage
+  }
 
   /// ノードプールの寿命延長オブジェクト
   ///
@@ -61,7 +68,9 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   /// ここを境に名前が変わる
   @usableFromInline
   var tied: _TiedRawBuffer {
-    isReadOnly ? _emptyDeallocator : withMutableHeader { $0.tiedRawBuffer }
+    // コンパイラ最適化に頼らないためにベタ書き
+    _buffer.buffer === _emptyTreeStorage
+      ? _emptyDeallocator : withMutableHeader { $0.tiedRawBuffer }
   }
 }
 
@@ -142,25 +151,25 @@ extension UnsafeTreeV2 {
 // MARK: Refresh Pool Iterator
 
 #if DEBUG
-extension UnsafeTreeV2 {
+  extension UnsafeTreeV2 {
 
-  @inlinable
-  @inline(__always)
-  func makeFreshPoolIterator() -> _FreshPoolPopIterator<_RawValue> {
-    return _buffer.header.makeFreshPoolIterator()
+    @inlinable
+    @inline(__always)
+    func makeFreshPoolIterator() -> _FreshPoolPopIterator<_RawValue> {
+      return _buffer.header.makeFreshPoolIterator()
+    }
   }
-}
 #endif
 
 #if false
-extension UnsafeTreeV2 {
+  extension UnsafeTreeV2 {
 
-  @inlinable
-  @inline(__always)
-  func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_Value> {
-    return _UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
+    @inlinable
+    @inline(__always)
+    func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_Value> {
+      return _UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
+    }
   }
-}
 #endif
 
 // MARK: Index Resolver
@@ -193,7 +202,7 @@ extension UnsafeTreeV2 {
       // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
       // endはシングルトン的にしたい気持ちもある
       //      return self.isTriviallyIdentical(to: index.__tree_) ? index.rawValue : ___NodePtr(index.___raw_index)
-    return tied === index.tied ? index.rawValue : ___NodePtr(index.rawIndex)
+      return tied === index.tied ? index.rawValue : ___NodePtr(index.rawIndex)
     #else
       self === index.__tree_ ? index.rawValue : (_header[index.___raw_index])
     #endif

@@ -29,7 +29,7 @@ func growth(from count: Int, to minimum: Int) -> Int {
 }
 
 extension UnsafeTreeV2BufferHeader {
-  
+
   @inlinable
   @inline(__always)
   internal func _growthCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
@@ -143,18 +143,20 @@ extension UnsafeTreeV2 {
   ) {
 
     withMutableHeader { header in
-      let minimumCapacity = minimumCapacity ?? (header.count + 1)
+      let minimumCapacity = min(limit, minimumCapacity ?? (header.count + 1))
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
       guard shouldExpand else { return }
       let growthCapacity = header._growthCapacity(
         to: minimumCapacity,
         linearly: linearly)
+      let limitedCapacity = min(limit, growthCapacity)
+      assert(growthCapacity > 0)
       if isReadOnly {
-        self = header.copy(Base.self, minimumCapacity: min(limit, growthCapacity))
+        self = header.copy(Base.self, minimumCapacity: limitedCapacity)
         return
       }
       assert(isReadOnly == false)
-      header.grow(growthCapacity)
+      header.grow(limitedCapacity)
     }
   }
 }

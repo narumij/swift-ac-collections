@@ -29,13 +29,20 @@ extension UnsafeTreeV2BufferHeader {
 
 extension UnsafeTreeV2BufferHeader {
 
+  // https://atcoder.jp/contests/abc411/submissions/72753241
+  
   @inlinable
   @inline(__always)
   internal func _growthCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
     if linearly {
       return minimumCapacity
     }
-    return Swift.max(minimumCapacity, max(4, count) + max(count / 8, 1))
+
+    if count < 3 {
+      return Swift.max(minimumCapacity, count << 1)
+    }
+
+    return Swift.max(minimumCapacity, count + max(1, count >> 3))
   }
 }
 
@@ -152,7 +159,7 @@ extension UnsafeTreeV2 {
 // MARK: -
 
 extension UnsafeTreeV2 {
-  
+
   @inlinable @inline(__always)
   internal mutating func _ensureUnique(
     transform: (UnsafeTreeV2) throws -> UnsafeTreeV2

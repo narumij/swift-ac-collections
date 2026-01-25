@@ -5,10 +5,6 @@ import Foundation
 import AcFoundation
 import IOUtil
 
-
-
-
-
 // ----
 
 #if false
@@ -55,7 +51,7 @@ for _ in 0..<Q {
         e[vz].remove(vx)
       }
     }
-    e[vx].removeAll(keepingCapacity: true)
+    e[vx].removeAll()
   }
   fastPrint(m)
 }

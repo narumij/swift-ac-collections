@@ -69,7 +69,7 @@ extension UnsafeTreeV2 {
   internal mutating func isUnique() -> Bool {
     _buffer.isUniqueReference()
   }
-  
+
   @inlinable
   @inline(__always)
   internal mutating func _ensureUnique() {
@@ -119,33 +119,22 @@ extension UnsafeTreeV2 {
   internal mutating func _ensureUniqueAndCapacity(
     to minimumCapacity: Int? = nil, linearly: Bool = false
   ) {
-
     let isUnique = isUnique()
 
-    let growthCapacity: Int? = withMutableHeader { header in
-
+    withMutableHeader { header in
       let minimumCapacity = minimumCapacity ?? (header.count + 1)
-
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
-
-      guard shouldExpand || !isUnique else { return nil }
-
-      let growthCapacity = header._growthCapacity(to: minimumCapacity, linearly: linearly)
-
+      guard shouldExpand || !isUnique else { return }
+      let growthCapacity = _growthCapacity(
+        from: header.count,
+        to: minimumCapacity,
+        linearly: linearly)
       if !isUnique {
-        return growthCapacity
+        self = header.copy(Base.self, minimumCapacity: growthCapacity)
+        return
       }
-
-      if shouldExpand {
-        assert(isReadOnly == false)
-        header.executeCapacityGrow(growthCapacity)
-      }
-
-      return nil
-    }
-
-    if let growthCapacity {
-      self = self.copy(minimumCapacity: growthCapacity)
+      assert(isReadOnly == false)
+      header.executeCapacityGrow(growthCapacity)
     }
   }
 }
@@ -185,7 +174,7 @@ extension UnsafeTreeV2 {
   ) {
     guard capacity < minimumCapacity else { return }
     let newCapacity = withHeader { header in
-      min(limit, header._growthCapacity(to: capacity, linearly: linearly))
+      min(limit, header._growthCapacity(to: minimumCapacity, linearly: linearly))
     }
     if isReadOnly {
       self = self.copy(minimumCapacity: newCapacity)
@@ -209,4 +198,13 @@ extension UnsafeTreeV2BufferHeader {
 
     return Swift.max(minimumCapacity, max(4, freshPoolCapacity) + max(freshPoolCapacity / 8, 1))
   }
+}
+
+@inlinable
+func _growthCapacity(from count: Int, to minimum: Int, linearly: Bool) -> Int {
+  if linearly {
+    return minimum
+  }
+  //  return Swift.max(minimum, Int(Double(capacity) * 1.6180339887))
+  return Swift.max(minimum, max(4, count) + max(count / 8, 1))
 }

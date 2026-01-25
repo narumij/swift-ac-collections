@@ -158,18 +158,25 @@ final class MemoizeCacheLRUTests: RedBlackTreeTestCase {
   func testMaximum2() throws {
     var cache = ___LRUMemoizeStorage<TestKey, Int>(minimumCapacity: 0, maxCount: 5)
     cache[0] = 0
+    assert(cache.capacity <= cache.maxCount)
     XCTAssertEqual(cache[0], 0)
     cache[1] = 1
+    assert(cache.capacity <= cache.maxCount)
     XCTAssertEqual(cache[0], 0)
     cache[2] = 2
+    assert(cache.capacity <= cache.maxCount)
     XCTAssertEqual(cache[0], 0)
     cache[3] = 3
+    assert(cache.capacity <= cache.maxCount)
     XCTAssertEqual(cache[0], 0)
     cache[4] = 4
+    assert(cache.capacity <= cache.maxCount)
     XCTAssertEqual(cache[0], 0)
     XCTAssertEqual(cache._rankLowest.index, 1)
     var i = 5
     while cache.count < cache.capacity {
+      XCTAssertLessThanOrEqual(cache.capacity, cache.maxCount)
+      assert(cache.capacity <= cache.maxCount)
       cache[i] = i
       i += 1
       XCTAssertEqual(cache[0], 0)

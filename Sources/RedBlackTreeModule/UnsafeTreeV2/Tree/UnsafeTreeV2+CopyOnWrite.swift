@@ -17,14 +17,15 @@
 
 import Foundation
 
-extension UnsafeTreeV2BufferHeader {
+// https://atcoder.jp/contests/abc411/submissions/72753580
 
-  @inlinable
-  @inline(__always)
-  internal mutating func grow(_ newCapacity: Int) {
-    assert(freshPoolCapacity < newCapacity)
-    pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
+@inlinable
+func growth(from count: Int, to minimum: Int) -> Int {
+  // TODO: ジャッジ搭載のタイミングで再度チューニングすること
+  if count < 3 {
+    return Swift.max(minimum, count << 1)
   }
+  return Swift.max(minimum, count + max(1, count))
 }
 
 extension UnsafeTreeV2BufferHeader {
@@ -32,10 +33,19 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   @inline(__always)
   internal func _growthCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
-    if linearly {
-      return minimumCapacity
-    }
-    return Swift.max(minimumCapacity, max(4, count) + max(count / 8, 1))
+    linearly ? minimumCapacity : growth(from: count, to: minimumCapacity)
+  }
+}
+
+// MARK: -
+
+extension UnsafeTreeV2BufferHeader {
+
+  @inlinable
+  @inline(__always)
+  internal mutating func grow(_ newCapacity: Int) {
+    assert(freshPoolCapacity < newCapacity)
+    pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
   }
 }
 
@@ -133,18 +143,20 @@ extension UnsafeTreeV2 {
   ) {
 
     withMutableHeader { header in
-      let minimumCapacity = minimumCapacity ?? (header.count + 1)
+      let minimumCapacity = min(limit, minimumCapacity ?? (header.count + 1))
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
       guard shouldExpand else { return }
       let growthCapacity = header._growthCapacity(
         to: minimumCapacity,
         linearly: linearly)
+      let limitedCapacity = min(limit, growthCapacity)
+      assert(growthCapacity > 0)
       if isReadOnly {
-        self = header.copy(Base.self, minimumCapacity: min(limit, growthCapacity))
+        self = header.copy(Base.self, minimumCapacity: limitedCapacity)
         return
       }
       assert(isReadOnly == false)
-      header.grow(growthCapacity)
+      header.grow(limitedCapacity)
     }
   }
 }
@@ -152,7 +164,7 @@ extension UnsafeTreeV2 {
 // MARK: -
 
 extension UnsafeTreeV2 {
-  
+
   @inlinable @inline(__always)
   internal mutating func _ensureUnique(
     transform: (UnsafeTreeV2) throws -> UnsafeTreeV2

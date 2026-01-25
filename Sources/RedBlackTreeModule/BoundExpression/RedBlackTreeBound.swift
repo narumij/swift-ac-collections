@@ -15,6 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+@frozen
 public enum RedBlackTreeBound<_Key> {
   case start
   case lower(_Key)

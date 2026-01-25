@@ -17,6 +17,7 @@
 
 // MARK: - RedBlackTreeSet
 
+@frozen
 public enum RedBlackTreeBoundsExpression<_Key> {
   public typealias Bound = RedBlackTreeBound<_Key>
   case range(from: Bound, to: Bound)
@@ -26,30 +27,35 @@ public enum RedBlackTreeBoundsExpression<_Key> {
   case partialRangeFrom(Bound)
 }
 
+@inlinable @inline(__always)
 public func ..< <_Key>(lhs: RedBlackTreeBound<_Key>, rhs: RedBlackTreeBound<_Key>)
   -> RedBlackTreeBoundsExpression<_Key>
 {
   .range(from: lhs, to: rhs)
 }
 
+@inlinable @inline(__always)
 public func ... <_Key>(lhs: RedBlackTreeBound<_Key>, rhs: RedBlackTreeBound<_Key>)
   -> RedBlackTreeBoundsExpression<_Key>
 {
   .closedRange(from: lhs, through: rhs)
 }
 
+@inlinable @inline(__always)
 public prefix func ..< <_Key>(rhs: RedBlackTreeBound<_Key>)
   -> RedBlackTreeBoundsExpression<_Key>
 {
   .partialRangeTo(rhs)
 }
 
+@inlinable @inline(__always)
 public prefix func ... <_Key>(rhs: RedBlackTreeBound<_Key>)
   -> RedBlackTreeBoundsExpression<_Key>
 {
   .partialRangeThrough(rhs)
 }
 
+@inlinable @inline(__always)
 public postfix func ... <_Key>(lhs: RedBlackTreeBound<_Key>) -> RedBlackTreeBoundsExpression<_Key> {
   .partialRangeFrom(lhs)
 }

@@ -40,7 +40,25 @@ extension CompareMultiTrait {
   public static var isMulti: Bool { true }
 }
 
-// クラスメソッドに移管できると、Indexの軽量化のめどが立つ
+@usableFromInline
+protocol CompareUniqueProtocol: _TreeNode_KeyInterface, EndInterface, _nullptr_interface, _TreeKey_CompInterface {}
+
+extension CompareUniqueProtocol {
+
+  /// multisetでも、インデックス比較に関して不正な結果だが、レンジで使う限り落ちはしない
+  @inlinable
+  @inline(__always)
+  internal func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+    assert(l != nullptr, "Node shouldn't be null")
+    assert(l != end, "Node shouldn't be end")
+    assert(r != nullptr, "Node shouldn't be null")
+    assert(r != end, "Node shouldn't be end")
+    return value_comp(__get_value(l), __get_value(r))
+  }
+}
+
+// DONE: クラスメソッドに移管できると、Indexの軽量化のめどが立つ
+// TODO: 余力あるときにこちらを削減するか検討
 
 @usableFromInline
 protocol CompareBothProtocol_ptr:
@@ -95,10 +113,6 @@ extension CompareBothProtocol_ptr {
     }
     return ___ptr_comp_unique(l, r)
   }
-}
-
-extension UnsafeMutablePointer where Pointee == UnsafeNode {
-
 }
 
 // ノードの高さを数える
@@ -288,23 +302,6 @@ func ___ptr_comp_bitmap(
   return __l.___ptr_bitmap_128() < __r.___ptr_bitmap_128()
   //  return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
   //  return __l.___ptr_bitmap() < __r.___ptr_bitmap()
-}
-
-@usableFromInline
-protocol CompareUniqueProtocol: _TreeNode_KeyInterface, EndInterface, _nullptr_interface, _TreeKey_CompInterface {}
-
-extension CompareUniqueProtocol {
-
-  /// multisetでも、インデックス比較に関して不正な結果だが、レンジで使う限り落ちはしない
-  @inlinable
-  @inline(__always)
-  internal func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    assert(l != nullptr, "Node shouldn't be null")
-    assert(l != end, "Node shouldn't be end")
-    assert(r != nullptr, "Node shouldn't be null")
-    assert(r != end, "Node shouldn't be end")
-    return value_comp(__get_value(l), __get_value(r))
-  }
 }
 
 @usableFromInline

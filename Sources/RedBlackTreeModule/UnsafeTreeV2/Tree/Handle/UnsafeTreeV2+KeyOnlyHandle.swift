@@ -22,7 +22,7 @@
 ///
 @frozen
 @usableFromInline
-struct UnsafeTreeV2ScalarHandle<_Key: Comparable>: _UnsafeNodePtrType {
+struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {
   @inlinable
   internal init(
     header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>,
@@ -45,7 +45,7 @@ struct UnsafeTreeV2ScalarHandle<_Key: Comparable>: _UnsafeNodePtrType {
 extension UnsafeTreeV2 where _Key == _RawValue, _Key: Comparable {
 
   @usableFromInline
-  typealias Handle = UnsafeTreeV2ScalarHandle<UnsafeTreeV2<Base>._RawValue>
+  typealias Handle = UnsafeTreeV2KeyOnlyHandle<UnsafeTreeV2<Base>._RawValue>
 
   @inlinable
   @inline(__always)
@@ -68,7 +68,7 @@ extension UnsafeTreeV2 where _Key == _RawValue, _Key: Comparable {
   }
 }
 
-extension UnsafeTreeV2ScalarHandle {
+extension UnsafeTreeV2KeyOnlyHandle {
 
   @inlinable
   @inline(__always)
@@ -92,7 +92,7 @@ extension UnsafeTreeV2ScalarHandle {
 
 // MARK: - TreeNodeValueProtocol
 
-extension UnsafeTreeV2ScalarHandle {
+extension UnsafeTreeV2KeyOnlyHandle {
 
   @inlinable
   func __get_value(_ p: _NodePtr) -> _Key {
@@ -100,7 +100,7 @@ extension UnsafeTreeV2ScalarHandle {
   }
 }
 
-extension UnsafeTreeV2ScalarHandle {
+extension UnsafeTreeV2KeyOnlyHandle {
 
   @inlinable
   @inline(__always)
@@ -112,7 +112,7 @@ extension UnsafeTreeV2ScalarHandle {
   }
 }
 
-extension UnsafeTreeV2ScalarHandle {
+extension UnsafeTreeV2KeyOnlyHandle {
   
   @inlinable
   var __begin_node_: UnsafeMutablePointer<UnsafeNode> {
@@ -158,19 +158,19 @@ extension UnsafeTreeV2ScalarHandle {
   }
 }
 
-extension UnsafeTreeV2ScalarHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {
+extension UnsafeTreeV2KeyOnlyHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {
   @usableFromInline
   typealias __compare_result = __int_compare_result
 }
-extension UnsafeTreeV2ScalarHandle: FindInteface, FindProtocol_ptr {}
-extension UnsafeTreeV2ScalarHandle: RemoveInteface, RemoveProtocol_ptr {}
-extension UnsafeTreeV2ScalarHandle: EraseProtocol {}
-extension UnsafeTreeV2ScalarHandle: EraseUniqueProtocol {}
-extension UnsafeTreeV2ScalarHandle: FindEqualInterface, FindEqualProtocol_ptr {}
-extension UnsafeTreeV2ScalarHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
-extension UnsafeTreeV2ScalarHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
-extension UnsafeTreeV2ScalarHandle: _TreeNode_PtrCompInterface, _Tree_IsMultiTraitInterface, _TreeNode_PtrCompProtocol, _TreeNode_PtrCompUniqueProtocol {}
-extension UnsafeTreeV2ScalarHandle: DistanceProtocol_ptr, CountProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: FindInteface, FindProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: RemoveInteface, RemoveProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: EraseProtocol {}
+extension UnsafeTreeV2KeyOnlyHandle: EraseUniqueProtocol {}
+extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface, FindEqualProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: _TreeNode_PtrCompInterface, _Tree_IsMultiTraitInterface, _TreeNode_PtrCompProtocol, _TreeNode_PtrCompUniqueProtocol {}
+extension UnsafeTreeV2KeyOnlyHandle: DistanceProtocol_ptr, CountProtocol_ptr {}
 
-extension UnsafeTreeV2ScalarHandle: TreeAlgorithmBaseProtocol_ptr {}
-extension UnsafeTreeV2ScalarHandle: TreeAlgorithmProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmBaseProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmProtocol_ptr {}

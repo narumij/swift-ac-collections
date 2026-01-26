@@ -8,7 +8,7 @@
 import RedBlackTreeModule
 import XCTest
 
-final class UnsafeTreeMemoryTests: XCTestCase {
+final class UnsafeTreeMemoryTests: RedBlackTreeTestCase {
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.

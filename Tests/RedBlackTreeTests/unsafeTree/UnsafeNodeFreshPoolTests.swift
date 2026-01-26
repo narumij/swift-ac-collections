@@ -31,7 +31,7 @@ import XCTest
     var freshBucketAllocator: RedBlackTreeModule._BucketAllocator
   }
 
-  final class UnsafeNodeFreshPoolTests: XCTestCase {
+  final class UnsafeNodeFreshPoolTests: RedBlackTreeTestCase {
 
     override func setUpWithError() throws {
       // Put setup code here. This method is called before the invocation of each test method in the class.

@@ -3,7 +3,7 @@ import XCTest
 #if DEBUG
   @testable import RedBlackTreeModule
 
-  final class UnsafePointerPointerTests: XCTestCase {
+  final class UnsafePointerPointerTests: RedBlackTreeTestCase {
 
     func testPointerOfPointerPointsToOriginalNodes() {
 

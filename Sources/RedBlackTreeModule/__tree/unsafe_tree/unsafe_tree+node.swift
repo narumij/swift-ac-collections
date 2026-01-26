@@ -96,6 +96,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
+  // TODO: 名称変更
+  // 型名の変更で意味が合わなくなっている
   @inlinable
   @inline(__always)
   var __raw_value_: UnsafeMutableRawPointer {

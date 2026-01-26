@@ -96,10 +96,8 @@ extension UnsafeTreeV2BufferHeader {
   func copyHeader<_RawValue>(
     _ t: _RawValue.Type,
     to other: inout UnsafeTreeV2BufferHeader,
-    nullptr: UnsafeMutablePointer<UnsafeNode>
+    nullptr: _NodePtr
   ) {
-
-    typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
     let bucket = other.freshBucketHead!.accessor(_value: MemoryLayout<_RawValue>._memoryLayout)!

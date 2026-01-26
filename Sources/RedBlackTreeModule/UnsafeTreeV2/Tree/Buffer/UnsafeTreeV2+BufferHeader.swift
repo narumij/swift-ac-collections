@@ -56,6 +56,8 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @usableFromInline var freshBucketAllocator: _BucketAllocator
 
   /// IndexやIteratorを結ぶ共有メモリオブジェクトの内部プロパティ
+  ///
+  /// - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
   @usableFromInline var _tied: _TiedRawBuffer?
 
   #if DEBUG

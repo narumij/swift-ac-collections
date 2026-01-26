@@ -23,6 +23,16 @@ package final class _TiedRawBuffer:
 {
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 
+  @inlinable
+  deinit {
+    withUnsafeMutablePointerToHeader { header in
+      header.pointee.deallocate()
+    }
+  }
+}
+
+extension _TiedRawBuffer {
+
   @nonobjc
   @inlinable
   static func create(
@@ -36,28 +46,23 @@ package final class _TiedRawBuffer:
     }
     return unsafeDowncast(storage, to: _TiedRawBuffer.self)
   }
+}
 
+extension _TiedRawBuffer {
   @nonobjc
   @inlinable
   public func isTriviallyIdentical(to other: _TiedRawBuffer) -> Bool {
     self === other
   }
-
-  @inlinable
-  deinit {
-    withUnsafeMutablePointerToHeader { header in
-      header.pointee.deallocate()
-    }
-  }
 }
 
 extension _TiedRawBuffer {
-  
+
   @frozen
   public
-  struct Header
+    struct Header
   {
-    
+
     @inlinable
     internal init(
       bucketHead: _TiedRawBuffer.Header._BucketPointer? = nil,
@@ -67,19 +72,19 @@ extension _TiedRawBuffer {
       self.deallocator = deallocator
       self.isValueAccessAllowed = true
     }
-    
+
     @usableFromInline
     typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
-    
+
     @usableFromInline var bucketHead: _BucketPointer?
     @usableFromInline let deallocator: _BucketAllocator
     @usableFromInline var isValueAccessAllowed: Bool
-    
+
     @inlinable
     func deallocate() {
       deallocator.deallocate(bucket: bucketHead)
     }
-    
+
     @inlinable
     subscript(___raw_index: Int) -> _NodePtr? {
       assert(___raw_index >= 0)
@@ -100,27 +105,27 @@ extension _TiedRawBuffer {
 }
 
 extension _TiedRawBuffer {
-  
+
   @nonobjc
   @inlinable
   subscript(___raw_index: Int) -> _NodePtr? {
     header[___raw_index]
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
   var begin_ptr: UnsafeMutablePointer<_NodePtr>? {
     header.bucketHead?.begin_ptr
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
   var end_ptr: _NodePtr? {
     header.bucketHead?.end_ptr
   }
-  
+
   @nonobjc
   @usableFromInline
   var isValueAccessAllowed: Bool {
@@ -133,31 +138,31 @@ extension _TiedRawBuffer {
 
   @nonobjc
   @usableFromInline
-  func rawRange(_ rangeExpression: UnsafeTreeRangeExpression) -> (_NodePtr, _NodePtr)?
-  {
+  func rawRange(_ rangeExpression: UnsafeTreeRangeExpression) -> (_NodePtr, _NodePtr)? {
     guard
       let begin_ptr,
       let end_ptr
     else {
       return nil
     }
-    
-    return rangeExpression
+
+    return
+      rangeExpression
       .rawRange(_begin: begin_ptr.pointee, _end: end_ptr)
   }
-  
+
   @nonobjc
   @usableFromInline
-  func range(_ rangeExpression: UnsafeTreeRangeExpression) -> UnsafeTreeRange?
-  {
+  func range(_ rangeExpression: UnsafeTreeRangeExpression) -> UnsafeTreeRange? {
     guard
       let begin_ptr,
       let end_ptr
     else {
       return nil
     }
-    
-    return rangeExpression
+
+    return
+      rangeExpression
       .range(_begin: begin_ptr.pointee, _end: end_ptr)
   }
 }

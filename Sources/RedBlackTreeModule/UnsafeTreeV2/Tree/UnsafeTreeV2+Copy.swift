@@ -30,7 +30,7 @@ extension UnsafeTreeV2 {
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
     assert(check())
     let tree = withMutableHeader { header in
-      UnsafeTreeV2.create(
+      UnsafeTreeV2._create(
         unsafeBufferObject:
           header.copyBuffer(Base._RawValue.self, minimumCapacity: minimumCapacity))
     }
@@ -52,7 +52,7 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   //  @inline(never)
   internal func copy<Base>(minimumCapacity: Int? = nil) -> UnsafeTreeV2<Base> {
-    UnsafeTreeV2<Base>.create(
+    UnsafeTreeV2<Base>._create(
       unsafeBufferObject:
         copyBuffer(Base._RawValue.self, minimumCapacity: minimumCapacity))
   }

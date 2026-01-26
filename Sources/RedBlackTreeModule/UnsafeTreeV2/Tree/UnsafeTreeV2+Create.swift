@@ -34,8 +34,8 @@ extension UnsafeTreeV2 {
     minimumCapacity nodeCapacity: Int = 0
   ) -> UnsafeTreeV2 {
     nodeCapacity == 0
-      ? ___create()
-      : ___create(minimumCapacity: nodeCapacity, nullptr: UnsafeNode.nullptr)
+      ? _createWithEmptySingleton()
+      : _createWithNewBuffer(minimumCapacity: nodeCapacity, nullptr: UnsafeNode.nullptr)
   }
 
   /// シングルトンバッファを用いて高速に生成する
@@ -43,7 +43,7 @@ extension UnsafeTreeV2 {
   /// 直接呼ぶ必要はほとんど無い
   @inlinable
   @inline(__always)
-  internal static func ___create() -> UnsafeTreeV2 {
+  internal static func _createWithEmptySingleton() -> UnsafeTreeV2 {
     assert(_emptyTreeStorage.header.freshPoolCapacity == 0)
     return UnsafeTreeV2(
       _buffer:
@@ -56,11 +56,11 @@ extension UnsafeTreeV2 {
   /// ensureUniqueが利用できない場面に限って直接呼ぶようにすること
   @inlinable
   @inline(__always)
-  internal static func ___create(
+  internal static func _createWithNewBuffer(
     minimumCapacity nodeCapacity: Int,
     nullptr: _NodePtr
   ) -> UnsafeTreeV2 {
-    create(
+    _create(
       unsafeBufferObject:
         UnsafeTreeV2Buffer
         .create(
@@ -71,7 +71,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal static func create(unsafeBufferObject buffer: AnyObject)
+  internal static func _create(unsafeBufferObject buffer: AnyObject)
     -> UnsafeTreeV2
   {
     return UnsafeTreeV2(
@@ -399,7 +399,7 @@ extension UnsafeTreeV2 where _RawValue: Decodable {
   internal static func create(from decoder: Decoder) throws -> UnsafeTreeV2 {
 
     var container = try decoder.unkeyedContainer()
-    var tree: Tree = .___create(minimumCapacity: 0, nullptr: UnsafeNode.nullptr)
+    var tree: Tree = ._createWithNewBuffer(minimumCapacity: 0, nullptr: UnsafeNode.nullptr)
     if let count = container.count {
       Tree.ensureCapacity(tree: &tree, minimumCapacity: count)
     }

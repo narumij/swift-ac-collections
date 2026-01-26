@@ -21,7 +21,7 @@ extension UnsafeTreeV2 {
   func ___erase(
     _ __first: _NodePtr,
     _ __last: _NodePtr
-  ) {
+  ) -> _NodePtr {
     var __first = __first
     while __first != __last {
       guard !__first.___is_end else {
@@ -29,6 +29,7 @@ extension UnsafeTreeV2 {
       }
       __first = erase(__first)
     }
+    return __last
   }
 
   @inlinable
@@ -36,7 +37,7 @@ extension UnsafeTreeV2 {
     _ __first: _NodePtr,
     _ __last: _NodePtr,
     shouldBeRemoved: (_RawValue) throws -> Bool
-  ) rethrows {
+  ) rethrows -> _NodePtr {
     var __first = __first
     while __first != __last {
       guard !__first.___is_end else {
@@ -48,6 +49,7 @@ extension UnsafeTreeV2 {
         __first = __tree_next_iter(__first)
       }
     }
+    return __last
   }
 
   // fault torelantはたまたま動いてるやつを認識できず、Swiftらしくないので、やめることに

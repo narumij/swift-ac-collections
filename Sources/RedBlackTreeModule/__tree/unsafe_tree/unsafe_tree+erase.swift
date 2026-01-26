@@ -21,6 +21,7 @@ protocol EraseProtocol: EraseInterface, RemoveInteface, DellocationInterface
 
 extension EraseProtocol {
 
+  /// - WARNING: メモリ破壊の可能性がある。
   @inlinable
   @inline(__always)
   internal func
@@ -30,7 +31,8 @@ extension EraseProtocol {
     destroy(__p)
     return __r
   }
-
+  
+  /// - WARNING: メモリ破壊の可能性がある。範囲検査済みの場合にのみ用いること
   @inlinable
   @inline(__always)
   internal func
@@ -49,6 +51,7 @@ protocol EraseUniqueProtocol: EraseUniqueInteface, FindInteface, EndInterface, E
 
 extension EraseUniqueProtocol {
   
+  /// メモリ破壊できない
   @inlinable
   @inline(never)
   internal func ___erase_unique(_ __k: _Key) -> Bool {
@@ -66,50 +69,13 @@ protocol EraseMultiProtocol: EraseMultiInteface, EqualInterface, EraseInterface 
 
 extension EraseMultiProtocol {
   
+  /// メモリ破壊できない
   @inlinable
   @inline(__always)
   internal func ___erase_multi(_ __k: _Key) -> Int {
     var __p = __equal_range_multi(__k)
     var __r = 0
     while __p.0 != __p.1 {
-      defer { __r += 1 }
-      __p.0 = erase(__p.0)
-    }
-    return __r
-  }
-}
-
-@usableFromInline
-protocol FaultTorelantEraseProtocol: _UnsafeNodePtrType, EraseInterface, EndNodeInterface {}
-
-extension FaultTorelantEraseProtocol {
-  
-  /// 最悪でもnullかendで止まる
-  @inlinable
-  @inline(__always)
-  internal func
-  ___fault_torelant_erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
-  {
-    var __f = __f
-    while __f != __l, !__f.___is_null_or_end {
-      __f = erase(__f)
-    }
-    return __l
-  }
-}
-
-@usableFromInline
-protocol FaultTorelantEraseMultiProtocol: _UnsafeNodePtrType, _KeyType, EqualInterface, EraseInterface, EndNodeInterface {}
-
-extension FaultTorelantEraseMultiProtocol {
-
-  /// 最悪でもnullかendで止まる
-  @inlinable
-  @inline(__always)
-  internal func ___fault_torelant_erase_multi(_ __k: _Key) -> Int {
-    var __p = __equal_range_multi(__k)
-    var __r = 0
-    while __p.0 != __p.1, !__p.0.___is_null_or_end {
       defer { __r += 1 }
       __p.0 = erase(__p.0)
     }

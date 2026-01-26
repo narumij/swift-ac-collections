@@ -252,7 +252,7 @@ extension RedBlackTreeMultiSet {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    __tree_._ensureUniqueAndCapacity()
+    __tree_.ensureUniqueAndCapacity()
     _ = __tree_.__insert_multi(newMember)
     return (true, newMember)
   }
@@ -262,7 +262,7 @@ extension RedBlackTreeMultiSet {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
+    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -276,7 +276,7 @@ extension RedBlackTreeMultiSet {
   /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_multi(
         tree: __tree_,
         other: other.__tree_,
@@ -289,7 +289,7 @@ extension RedBlackTreeMultiSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_multi(
         tree: __tree_,
         other: other.__tree_,
@@ -302,7 +302,7 @@ extension RedBlackTreeMultiSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_multi(tree: __tree_, other)
     }
   }
@@ -406,7 +406,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    __tree_._ensureUnique()
+    __tree_.ensureUnique()
     guard let element = ___remove(at: __tree_.rawValue(index)) else {
       fatalError(.invalidIndex)
     }
@@ -450,7 +450,7 @@ extension RedBlackTreeMultiSet {
     ) where R.Bound == Index {
 
       let bounds = bounds.relative(to: self)
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       ___remove(
         from: __tree_.rawValue(bounds.lowerBound),
         to: __tree_.rawValue(bounds.upperBound))
@@ -474,7 +474,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       __tree_.deinitialize()
     } else {
       self = .init()

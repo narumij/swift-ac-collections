@@ -219,7 +219,7 @@ extension RedBlackTreeSet {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    __tree_._ensureUniqueAndCapacity()
+    __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     return (__inserted, __inserted ? newMember : __tree_[__r])
   }
@@ -229,7 +229,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   @discardableResult
   public mutating func update(with newMember: Element) -> Element? {
-    __tree_._ensureUniqueAndCapacity()
+    __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(newMember)
     guard !__inserted else { return nil }
     let oldMember = __tree_[__r]
@@ -242,7 +242,7 @@ extension RedBlackTreeSet {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
+    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -256,7 +256,7 @@ extension RedBlackTreeSet {
   /// - Important: 空間計算量に余裕がある場合、formUnionの使用を推奨します
   @inlinable
   public mutating func merge(_ other: RedBlackTreeSet<Element>) {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_unique(
         tree: __tree_,
         other: other.__tree_,
@@ -269,7 +269,7 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge(_ other: RedBlackTreeMultiSet<Element>) {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_unique(
         tree: __tree_,
         other: other.__tree_,
@@ -282,7 +282,7 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge<S>(_ other: S) where S: Sequence, S.Element == Element {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_unique(tree: __tree_, other)
     }
   }
@@ -328,7 +328,7 @@ extension RedBlackTreeSet {
   public mutating func popFirst() -> Element? {
     //    guard !isEmpty else { return nil }
     //    return remove(at: startIndex)
-    __tree_._ensureUnique()
+    __tree_.ensureUnique()
     return ___remove_first()
   }
 }
@@ -340,7 +340,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
-    __tree_._ensureUnique()
+    __tree_.ensureUnique()
     //    return __tree_.___erase_unique(member) ? member : nil
     return __tree_.update { $0.___erase_unique(member) } ? member : nil
     //    return __tree_.update { $0.___erase_unique_(member) } ? member : nil
@@ -356,7 +356,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    __tree_._ensureUnique()
+    __tree_.ensureUnique()
     guard let element = ___remove(at: __tree_.___node_ptr(index)) else {
       fatalError(.invalidIndex)
     }
@@ -402,7 +402,7 @@ extension RedBlackTreeSet {
     ) where R.Bound == Index {
 
       let bounds = bounds.relative(to: self)
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       ___remove(
         from: __tree_.rawValue(bounds.lowerBound),
         to: __tree_.rawValue(bounds.upperBound))
@@ -414,7 +414,7 @@ extension RedBlackTreeSet {
 
   @inlinable
   public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-    __tree_._ensureUnique()
+    __tree_.ensureUnique()
     try __tree_.___erase_if(
       __tree_.__begin_node_,
       __tree_.__end_node,
@@ -428,7 +428,7 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       __tree_.deinitialize()
     } else {
       self = .init()

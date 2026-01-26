@@ -272,7 +272,7 @@ extension RedBlackTreeDictionary {
     @inline(__always) _modify {
       // UnsafeTree用の暫定処置
       // TODO: FIXME
-      __tree_._ensureUniqueAndCapacity()
+      __tree_.ensureUniqueAndCapacity()
       // TODO: もうすこしライフタイム管理に明るくなったら、再度ここのチューニングに取り組む
       
       // TODO: 内部がポインタに変更になったので、それに合わせた設計に変更すること
@@ -316,14 +316,14 @@ extension RedBlackTreeDictionary {
       
       // TODO: 内部がポインタに変更になったので、それに合わせた設計に変更すること
 
-      __tree_._ensureUniqueAndCapacity()
+      __tree_.ensureUniqueAndCapacity()
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == __tree_.nullptr {
         assert(__tree_.capacity > __tree_.count)
         __ptr = __tree_.__construct_node(Self.___tree_value((key, defaultValue())))
         __tree_.__insert_node_at(__parent, __child, __ptr)
       } else {
-        __tree_._ensureUnique()
+        __tree_.ensureUnique()
       }
       yield &__tree_[__ptr].value
     }
@@ -427,7 +427,7 @@ extension RedBlackTreeDictionary {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    __tree_._ensureUniqueAndCapacity()
+    __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(Self.___tree_value(newMember))
     return (__inserted, __inserted ? newMember : ___element(__tree_[__r]))
   }
@@ -443,7 +443,7 @@ extension RedBlackTreeDictionary {
     _ value: Value,
     forKey key: Key
   ) -> Value? {
-    __tree_._ensureUniqueAndCapacity()
+    __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(Self.___tree_value((key, value)))
     guard !__inserted else { return nil }
     let oldMember = __tree_[__r]
@@ -456,7 +456,7 @@ extension RedBlackTreeDictionary {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
+    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -472,7 +472,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
 
-    try __tree_._ensureUnique { __tree_ in
+    try __tree_.ensureUnique { __tree_ in
       try .___insert_range_unique(
         tree: __tree_,
         other: other.__tree_,
@@ -493,7 +493,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    try __tree_._ensureUnique { __tree_ in
+    try __tree_.ensureUnique { __tree_ in
       try .___insert_range_unique(
         tree: __tree_,
         other,
@@ -558,7 +558,7 @@ extension RedBlackTreeDictionary {
       return nil
     }
     let value = __tree_.__value_(__i).value
-    __tree_._ensureUnique()
+    __tree_.ensureUnique()
     _ = __tree_.erase(__i)
     return value
   }
@@ -592,7 +592,7 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    __tree_._ensureUnique()
+    __tree_.ensureUnique()
     guard let element = ___remove(at: __tree_.rawValue(index)) else {
       fatalError(.invalidIndex)
     }
@@ -613,7 +613,7 @@ extension RedBlackTreeDictionary {
   ) where R.Bound == Index {
 
     let bounds = bounds.relative(to: self)
-    __tree_._ensureUnique()
+    __tree_.ensureUnique()
     ___remove(
       from: __tree_.rawValue(bounds.lowerBound),
       to: __tree_.rawValue(bounds.upperBound))
@@ -627,7 +627,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       __tree_.deinitialize()
     } else {
       self = .init()

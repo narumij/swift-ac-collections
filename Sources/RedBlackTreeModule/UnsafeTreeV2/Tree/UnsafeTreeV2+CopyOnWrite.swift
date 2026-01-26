@@ -65,7 +65,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal mutating func _ensureUnique() {
+  internal mutating func ensureUnique() {
     let isUnique = isUnique()
     guard !isUnique else { return }
     withMutableHeader { header in
@@ -96,7 +96,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
-  internal mutating func _ensureUniqueAndCapacity(
+  internal mutating func ensureUniqueAndCapacity(
     to minimumCapacity: Int? = nil, linearly: Bool = false
   ) {
     let isUnique = isUnique()
@@ -121,7 +121,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
-  internal mutating func _ensureCapacity(to minimumCapacity: Int? = nil, linearly: Bool = false) {
+  internal mutating func ensureCapacity(to minimumCapacity: Int? = nil, linearly: Bool = false) {
 
     withMutableHeader { header in
       let minimumCapacity = minimumCapacity ?? (header.count + 1)
@@ -143,7 +143,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
-  internal mutating func _ensureCapacity(
+  internal mutating func ensureCapacity(
     to minimumCapacity: Int? = nil, limit: Int, linearly: Bool = false
   ) {
 
@@ -171,12 +171,12 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
-  internal mutating func _ensureUnique(
+  internal mutating func ensureUnique(
     transform: (UnsafeTreeV2) throws -> UnsafeTreeV2
   )
     rethrows
   {
-    _ensureUnique()
+    ensureUnique()
     self = try transform(self)
   }
 }
@@ -190,7 +190,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal static func ensureCapacity(tree: inout UnsafeTreeV2, linearly: Bool = false) {
-    tree._ensureCapacity(linearly: linearly)
+    tree.ensureCapacity(linearly: linearly)
   }
 
   @inlinable
@@ -198,6 +198,6 @@ extension UnsafeTreeV2 {
   internal static func ensureCapacity(
     tree: inout UnsafeTreeV2, minimumCapacity: Int, linearly: Bool = false
   ) {
-    tree._ensureCapacity(to: minimumCapacity, linearly: linearly)
+    tree.ensureCapacity(to: minimumCapacity, linearly: linearly)
   }
 }

@@ -305,7 +305,7 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    __tree_._ensureUniqueAndCapacity()
+    __tree_.ensureUniqueAndCapacity()
     _ = __tree_.__insert_multi(Self.___tree_value(newMember))
     return (true, newMember)
   }
@@ -321,7 +321,7 @@ extension RedBlackTreeMultiMap {
     guard !__tree_.___is_subscript_null(__tree_.rawValue(ptr)) else {
       return nil
     }
-    __tree_._ensureUnique()
+    __tree_.ensureUnique()
     let old = __tree_[__tree_.rawValue(ptr)]
     __tree_[__tree_.rawValue(ptr)].value = newValue
     return ___element(old)
@@ -332,7 +332,7 @@ extension RedBlackTreeMultiMap {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
+    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -346,7 +346,7 @@ extension RedBlackTreeMultiMap {
   /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_multi(
         tree: __tree_,
         other: other.__tree_,
@@ -359,7 +359,7 @@ extension RedBlackTreeMultiMap {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_multi(tree: __tree_, other.map { Self.___tree_value($0) })
     }
   }
@@ -453,7 +453,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @discardableResult
   public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
-    __tree_._ensureUnique()
+    __tree_.ensureUnique()
     return __tree_.___erase_unique(key)
   }
 
@@ -473,7 +473,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @discardableResult
   public mutating func removeAll(_unsafeForKey key: Key) -> Int {
-    __tree_._ensureUnique()
+    __tree_.ensureUnique()
     return __tree_.___erase_multi(key)
   }
 }
@@ -509,7 +509,7 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    __tree_._ensureUnique()
+    __tree_.ensureUnique()
     guard let element = ___remove(at: __tree_.rawValue(index)) else {
       fatalError(.invalidIndex)
     }
@@ -530,7 +530,7 @@ extension RedBlackTreeMultiMap {
   ) where R.Bound == Index {
 
     let bounds = bounds.relative(to: self)
-    __tree_._ensureUnique()
+    __tree_.ensureUnique()
     ___remove(
       from: __tree_.rawValue(bounds.lowerBound),
       to: __tree_.rawValue(bounds.upperBound))
@@ -544,7 +544,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       __tree_.deinitialize()
     } else {
       self = .init()

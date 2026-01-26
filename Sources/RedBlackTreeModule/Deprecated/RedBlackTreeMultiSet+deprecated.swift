@@ -127,7 +127,7 @@
     @inlinable
     @discardableResult
     public mutating func removeAll(_unsafe member: Element) -> Element? {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       return __tree_.___erase_multi(member) != 0 ? member : nil
     }
   }

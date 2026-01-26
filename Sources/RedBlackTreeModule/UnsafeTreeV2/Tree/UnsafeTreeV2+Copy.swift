@@ -81,7 +81,7 @@ extension UnsafeTreeV2BufferHeader {
         return
       }
 
-      _copy(_RawValue.self, to: &newHeader.pointee, nullptr: nullptr)
+      copyHeader(_RawValue.self, to: &newHeader.pointee, nullptr: nullptr)
 
       assert(freshPoolUsedCount == newHeader.pointee.freshPoolUsedCount)
     }
@@ -90,8 +90,9 @@ extension UnsafeTreeV2BufferHeader {
   }
 
   @inlinable
-  func _copy<_RawValue>(
-    _ t: _RawValue.Type, to other: inout UnsafeTreeV2BufferHeader,
+  func copyHeader<_RawValue>(
+    _ t: _RawValue.Type,
+    to other: inout UnsafeTreeV2BufferHeader,
     nullptr: UnsafeMutablePointer<UnsafeNode>
   ) {
 

@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
-/// 初期化済みを列挙するイテレータ
+/// 使用歴ありのノードを列挙するイテレータ
 @frozen
 @usableFromInline
 struct _FreshPoolUsedIterator<_Value>: IteratorProtocol, Sequence, _UnsafeNodePtrType {

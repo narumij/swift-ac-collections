@@ -13,6 +13,7 @@ final class MultiMapPointerTests: RedBlackTreeTestCase {
 
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    members = .init()
     try super.tearDownWithError()
   }
   

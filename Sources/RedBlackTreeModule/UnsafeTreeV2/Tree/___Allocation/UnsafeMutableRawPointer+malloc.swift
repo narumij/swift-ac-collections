@@ -41,12 +41,23 @@
     @inlinable
     @inline(__always)
     static func _allocate(byteCount: Int, alignment: Int) -> UnsafeMutableRawPointer {
-      self.allocate(byteCount: byteCount, alignment: alignment)
+      #if DEBUG
+      allocatedCount += 1
+      #endif
+      return self.allocate(byteCount: byteCount, alignment: alignment)
     }
     @inlinable
     @inline(__always)
     func _deallocate() {
+      #if DEBUG
+      deallocatedCount += 1
+      #endif
       self.deallocate()
     }
   }
+#endif
+
+#if DEBUG
+@usableFromInline nonisolated(unsafe) var allocatedCount = 0
+@usableFromInline nonisolated(unsafe) var deallocatedCount = 0
 #endif

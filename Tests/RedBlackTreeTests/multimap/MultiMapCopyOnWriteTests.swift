@@ -16,6 +16,7 @@ import XCTest
     }
 
     override func tearDownWithError() throws {
+      tree = .init()
       try super.tearDownWithError()
     }
 

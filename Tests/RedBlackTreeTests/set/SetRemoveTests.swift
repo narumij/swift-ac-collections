@@ -25,6 +25,7 @@ final class SetRemoveTests: RedBlackTreeTestCase {
 
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    members = .init()
     try super.tearDownWithError()
   }
 
@@ -162,6 +163,7 @@ final class SetRemoveTest_5000: RedBlackTreeTestCase {
 
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    members = .init()
     try super.tearDownWithError()
   }
 
@@ -196,6 +198,7 @@ final class SetRemoveTest_10: RedBlackTreeTestCase {
 
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    members = .init()
     try super.tearDownWithError()
   }
 

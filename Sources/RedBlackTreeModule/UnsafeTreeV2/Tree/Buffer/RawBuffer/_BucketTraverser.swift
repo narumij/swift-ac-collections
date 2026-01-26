@@ -17,7 +17,7 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 // accessor、traverser、queueと似た3種は、場面毎に特化したチューニングができるよう分かれている
-// traverserはusedIterator及びcopy用
+// traverserはusedIterator及びcopyとdeinitialize用
 @frozen
 @usableFromInline
 struct _BucketTraverser: _UnsafeNodePtrType {

@@ -39,7 +39,7 @@ import XCTest
 
     func checkHeadAllocationSize<_RawValue>(_ t: _RawValue.Type, capacity: Int) throws {
       let allocator = _BucketAllocator(valueType: _RawValue.self) { _ in }
-      var (byteSize, alignment) = (allocator.otherCapacity(capacity: capacity), allocator._pair.alignment)
+      var (byteSize, alignment) = (allocator._allocationSize(capacity: capacity), allocator._pair.alignment)
       byteSize += MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride
       byteSize += MemoryLayout<UnsafeNode>.stride
       let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
@@ -132,7 +132,7 @@ import XCTest
 
     func checkOtherAllocationSize<_RawValue>(_ t: _RawValue.Type, capacity: Int) throws {
       let allocator = _BucketAllocator(valueType: _RawValue.self) { _ in }
-      let (byteSize, alignment) = (allocator.otherCapacity(capacity: capacity), allocator._pair.alignment)
+      let (byteSize, alignment) = (allocator._allocationSize(capacity: capacity), allocator._pair.alignment)
       let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
       //      let bytes = storage.bindMemory(to: UInt8.self, capacity: byteSize)
       storage.initializeMemory(as: UInt8.self, repeating: 0xE8, count: byteSize)

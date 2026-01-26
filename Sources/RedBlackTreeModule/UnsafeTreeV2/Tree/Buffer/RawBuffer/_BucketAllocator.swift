@@ -94,73 +94,9 @@ package struct _BucketAllocator {
 
   @usableFromInline
   let deinitialize: (UnsafeMutableRawPointer) -> Void
+}
 
-  @inlinable
-  func deinitializeEndNode(_ b: _BucketPointer) {
-    UnsafeMutableRawPointer(b.advanced(by: 1))
-      .assumingMemoryBound(to: UnsafeNode.self)
-      .deinitialize(count: 1)
-  }
-
-  @inlinable
-  func deinitializeNodeAndValues(isHead: Bool, _ b: _BucketPointer) {
-    var it = b._counts(isHead: isHead, memoryLayout: memoryLayout)
-    while let p = it.pop() {
-      if p.pointee.___needs_deinitialize {
-        deinitialize(p.advanced(by: 1))
-      } else {
-        p.deinitialize(count: 1)
-      }
-    }
-    #if DEBUG
-      do {
-        var it = b._capacities(isHead: isHead, memoryLayout: memoryLayout)
-        while let p = it.pop() {
-          p.pointee.___raw_index = .debug
-        }
-      }
-    #endif
-  }
-
-  @inlinable
-  func deallocHeadBucket(_ b: _BucketPointer) {
-    deinitializeEndNode(b)
-    deinitializeNodeAndValues(isHead: true, b)
-    b.deinitialize(count: 1)
-    UnsafeMutableRawPointer(b)._deallocate()
-  }
-
-  @inlinable
-  func deallocBucket(_ b: _BucketPointer) {
-    deinitializeNodeAndValues(isHead: false, b)
-    b.deinitialize(count: 1)
-    UnsafeMutableRawPointer(b)._deallocate()
-  }
-
-  @inlinable
-  public func deinitialize(bucket b: _BucketPointer?) {
-    var reserverHead = b
-    var isHead = true
-    while let h = reserverHead {
-      reserverHead = h.pointee.next
-      deinitializeNodeAndValues(isHead: isHead, h)
-      h.pointee.count = 0
-      isHead = false
-    }
-  }
-
-  @inlinable
-  public func deallocate(bucket b: _BucketPointer?) {
-    var reserverHead = b
-    while let h = reserverHead {
-      reserverHead = h.pointee.next
-      if h == b {
-        deallocHeadBucket(h)
-      } else {
-        deallocBucket(h)
-      }
-    }
-  }
+extension _BucketAllocator {
 
   @inlinable
   @inline(__always)
@@ -168,7 +104,7 @@ package struct _BucketAllocator {
     _BucketPointer, capacity: Int
   ) {
 
-    let (bytes, alignment) = (otherCapacity(capacity: capacity), _pair.alignment)
+    let (bytes, alignment) = (_allocationSize(capacity: capacity), _pair.alignment)
 
     let header_storage = UnsafeMutableRawPointer._allocate(
       byteCount: bytes
@@ -202,7 +138,7 @@ package struct _BucketAllocator {
 
     assert(capacity != 0)
 
-    let (bytes, alignment) = (otherCapacity(capacity: capacity), _pair.alignment)
+    let (bytes, alignment) = (_allocationSize(capacity: capacity), _pair.alignment)
 
     let header_storage = UnsafeMutableRawPointer._allocate(
       byteCount: bytes,
@@ -224,12 +160,99 @@ package struct _BucketAllocator {
 
     return (header, capacity)
   }
+}
+
+extension _BucketAllocator {
 
   @usableFromInline
-  package func otherCapacity(capacity: Int) -> Int {
+  package func _allocationSize(capacity: Int) -> Int {
     let s2 = MemoryLayout<_Bucket>.stride
     let s01 = _pair.stride
     let size = s2 + s01 * capacity + (capacity == 0 ? 0 : capacityOffset)
     return size
+  }
+}
+
+extension _BucketAllocator {
+  
+  @inlinable
+  public func deinitialize(bucket b: _BucketPointer?) {
+    var reserverHead = b
+    var isHead = true
+    while let h = reserverHead {
+      reserverHead = h.pointee.next
+      _deinitializeNodeAndValues(isHead: isHead, h)
+      h.pointee.count = 0
+      isHead = false
+    }
+  }
+}
+
+extension _BucketAllocator {
+
+  @inlinable
+  public func deallocate(bucket b: _BucketPointer?) {
+    var reserverHead = b
+    while let h = reserverHead {
+      reserverHead = h.pointee.next
+      if h == b {
+        _deallocHeadBucket(h)
+      } else {
+        _deallocBucket(h)
+      }
+    }
+  }
+}
+
+extension _BucketAllocator {
+
+  @inlinable
+  func _deallocHeadBucket(_ b: _BucketPointer) {
+    _deinitializeNodeAndValues(isHead: true, b)
+    _deinitializeEndNode(b)
+    _deinitializeBeginNode(b)
+    b.deinitialize(count: 1)
+    UnsafeMutableRawPointer(b)._deallocate()
+  }
+
+  @inlinable
+  func _deallocBucket(_ b: _BucketPointer) {
+    _deinitializeNodeAndValues(isHead: false, b)
+    b.deinitialize(count: 1)
+    UnsafeMutableRawPointer(b)._deallocate()
+  }
+  
+  @inlinable
+  func _deinitializeBeginNode(_ b: _BucketPointer) {
+    UnsafeMutableRawPointer(b.begin_ptr)
+      .assumingMemoryBound(to: UnsafeMutablePointer<UnsafeNode>.self)
+      .deinitialize(count: 1)
+  }
+
+  @inlinable
+  func _deinitializeEndNode(_ b: _BucketPointer) {
+    UnsafeMutableRawPointer(b.end_ptr)
+      .assumingMemoryBound(to: UnsafeNode.self)
+      .deinitialize(count: 1)
+  }
+
+  @inlinable
+  func _deinitializeNodeAndValues(isHead: Bool, _ b: _BucketPointer) {
+    var it = b._counts(isHead: isHead, memoryLayout: memoryLayout)
+    while let p = it.pop() {
+      if p.pointee.___needs_deinitialize {
+        deinitialize(p.advanced(by: 1))
+      } else {
+        p.deinitialize(count: 1)
+      }
+    }
+    #if DEBUG
+      do {
+        var it = b._capacities(isHead: isHead, memoryLayout: memoryLayout)
+        while let p = it.pop() {
+          p.pointee.___raw_index = .debug
+        }
+      }
+    #endif
   }
 }

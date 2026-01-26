@@ -36,8 +36,8 @@ extension _RecyclePool {
     #endif
     freshBucketAllocator.deinitialize(p.advanced(by: 1))
     #if GRAPHVIZ_DEBUG
-      p!.pointee.__right_ = nil
-      p!.pointee.__parent_ = nil
+      p.pointee.__right_ = nullptr
+      p.pointee.__parent_ = nullptr
     #endif
     p.pointee.___needs_deinitialize = false
     p.pointee.__left_ = recycleHead
@@ -60,7 +60,7 @@ extension _RecyclePool {
   }
 }
 
-#if DEBUG
+#if DEBUG || GRAPHVIZ_DEBUG
   extension _RecyclePool {
     
     @usableFromInline

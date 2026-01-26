@@ -58,6 +58,7 @@ struct _BucketQueue {
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
+  // TODO: secondaryなメソッドの命名が雑なのを直す
   @inlinable
   @inline(__always)
   func _queue(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketQueue {

@@ -65,6 +65,8 @@ struct _BucketTraverser: _UnsafeNodePtrType {
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
+  // TODO: secondaryなメソッドの命名が雑なのを直す
+
   @usableFromInline
   func _counts(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketTraverser {
     .init(

@@ -54,6 +54,7 @@ extension UnsafeTreeV2Buffer {
       },
       minimumCapacity: nodeCapacity, nullptr: nullptr)
   }
+  
   @nonobjc
   @inlinable
   @inline(__always)

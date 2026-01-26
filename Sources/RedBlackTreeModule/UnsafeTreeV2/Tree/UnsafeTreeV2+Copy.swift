@@ -19,6 +19,12 @@ import Foundation
 
 extension UnsafeTreeV2 {
 
+  /// 木のコピーを作成する
+  ///
+  /// - Parameters:
+  ///   - minimumCapacity: 新しいバッファに確保する最小容量。
+  ///     - `nil` の場合はコピー元と同じ容量を使用する。
+  ///     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
   @inlinable
   @inline(__always)
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
@@ -37,7 +43,12 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2BufferHeader {
 
-  /// 木をコピーする
+  /// 木のコピーを作成する
+  ///
+  /// - Parameters:
+  ///   - minimumCapacity: 新しいバッファに確保する最小容量。
+  ///     - `nil` の場合はコピー元と同じ容量を使用する。
+  ///     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
   @inlinable
   //  @inline(never)
   internal func copy<Base>(minimumCapacity: Int? = nil) -> UnsafeTreeV2<Base> {
@@ -46,7 +57,13 @@ extension UnsafeTreeV2BufferHeader {
         copyBuffer(Base._RawValue.self, minimumCapacity: minimumCapacity))
   }
   
-  /// バッファオブジェクトをコピーする
+  /// バッファオブジェクトのコピーを作成する。
+  ///
+  /// - Parameters:
+  ///   - t: 木の要素値型（ヘッダは型消去されているため、引数で受け取る）
+  ///   - minimumCapacity: 新しいバッファに確保する最小容量。
+  ///     - `nil` の場合はコピー元と同じ容量を使用する。
+  ///     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
   @inlinable
   //  @inline(__always)
   internal func copyBuffer<_RawValue>(_ t: _RawValue.Type, minimumCapacity: Int? = nil)
@@ -91,7 +108,12 @@ extension UnsafeTreeV2BufferHeader {
     return _newBuffer
   }
 
-  /// ヘッダの内容をコピーする
+  /// ヘッダの内容を空のヘッダにコピーする。
+  ///
+  /// - Parameters:
+  ///   - t: 木の要素値型（ヘッダは型消去されているため、引数で受け取る）
+  ///   - other: コピー先のヘッダ（あらかじめ容量が確保されている必要がある）
+  ///   - nullptr: ヌルポインタ （型情報アクセスのオーバーヘッドを避けるため、呼び出し元のものを再利用する）
   @inlinable
   func copyHeader<_RawValue>(
     _ t: _RawValue.Type,

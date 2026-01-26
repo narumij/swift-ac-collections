@@ -1,9 +1,19 @@
+//===----------------------------------------------------------------------===//
 //
-//  _UnsafeNodeFreshPooDeallocator.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/01/12.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 // インデックス等で`__tree_`を共有する設計だったが、デアロケータを共有する設計に移行する
 // 生成されて以後はこのオブジェクトが保持するメモリの寿命を一元で管理する

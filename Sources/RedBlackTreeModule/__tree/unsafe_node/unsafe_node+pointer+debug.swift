@@ -67,11 +67,7 @@
     print("Root")
 
     let depth = dirs.count
-    let headCount = maxVisible / 2
-    let tailCount = maxVisible / 2
-
-    let head = dirs.prefix(headCount)
-    let tail = dirs.suffix(tailCount)
+    guard depth > 0 else { return }
 
     var indent = ""
 
@@ -80,22 +76,29 @@
       indent += last ? "    " : "│   "
     }
 
-    // Head segment
+    // --- Case 1: small path → print normally
+    if depth <= maxVisible {
+      for i in 0..<depth {
+        emit(dirs[i], last: i == depth - 1)
+      }
+      return
+    }
+
+    // --- Case 2: large path → truncated display
+    let headCount = maxVisible / 2
+    let tailCount = maxVisible / 2
+
+    let head = dirs.prefix(headCount)
+    let tail = dirs.suffix(tailCount)
+
     for d in head {
       emit(d, last: false)
     }
 
-    // Ellipsis if truncated
-    if depth > maxVisible {
-      emit("… (depth \(depth - maxVisible))", last: false)
-    }
+    emit("… (depth \(depth - maxVisible))", last: false)
 
-    // Tail segment
-    var idx = 0
-    for d in tail {
-      let last = (idx == tail.count - 1)
-      emit(d, last: last)
-      idx &+= 1
+    for i in 0..<tail.count {
+      emit(tail[i], last: i == tail.count - 1)
     }
   }
 

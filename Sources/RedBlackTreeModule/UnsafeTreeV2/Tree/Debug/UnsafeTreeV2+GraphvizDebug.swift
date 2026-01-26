@@ -165,6 +165,9 @@ import Foundation
   }
 
   extension Array where Element == Graphviz.EdgeProperty {
+    static var begin: [Graphviz.EdgeProperty] {
+      [.label(""),.labelAngle(45)]
+    }
     static var left: [Graphviz.EdgeProperty] {
       [.label("left"),.labelAngle(45)]
     }
@@ -348,7 +351,7 @@ import Foundation
       }
       if __begin_node_ != nullptr {
         digraph.edges.append(
-          .init(from: ("begin", .s), to: (node(__begin_node_), .n), properties: .left))
+          .init(from: ("begin", .s), to: (node(__begin_node_), .n), properties: .begin))
       }
       if destroyNode != nullptr {
         digraph.edges.append(

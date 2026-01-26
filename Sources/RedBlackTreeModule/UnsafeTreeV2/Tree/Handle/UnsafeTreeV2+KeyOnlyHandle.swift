@@ -38,7 +38,7 @@ struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {
   @usableFromInline typealias _Pointer = _NodePtr
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
   @usableFromInline let nullptr: _NodePtr
-  @usableFromInline let root_ptr: UnsafeMutablePointer<_NodePtr>
+  @usableFromInline let root_ptr: _NodeRef
   @usableFromInline var isMulti: Bool
 }
 
@@ -115,7 +115,7 @@ extension UnsafeTreeV2KeyOnlyHandle {
 extension UnsafeTreeV2KeyOnlyHandle {
   
   @inlinable
-  var __begin_node_: UnsafeMutablePointer<UnsafeNode> {
+  var __begin_node_: _NodePtr {
     get {
       header.pointee.begin_ptr.pointee
     }
@@ -126,28 +126,28 @@ extension UnsafeTreeV2KeyOnlyHandle {
 
   @inlinable
   @inline(__always)
-  var __root: UnsafeMutablePointer<UnsafeNode> {
+  var __root: _NodePtr {
     root_ptr.pointee
   }
 
   @inlinable
   @inline(__always)
-  func __root_ptr() -> UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>> {
+  func __root_ptr() -> _NodeRef {
     root_ptr
   }
 
   @inlinable
-  var end: UnsafeMutablePointer<UnsafeNode> {
+  var end: _NodePtr {
     header.pointee.end_ptr
   }
 
   @inlinable
-  var __end_node: UnsafeMutablePointer<UnsafeNode> {
+  var __end_node: _NodePtr {
     header.pointee.end_ptr
   }
 
   @inlinable
-  func destroy(_ p: UnsafeMutablePointer<UnsafeNode>) {
+  func destroy(_ p: _NodePtr) {
     header.pointee.___pushRecycle(p)
   }
   

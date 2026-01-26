@@ -57,6 +57,8 @@
 //
 // Inspired by the TrailingArray technique from Swift Collections.
 //
+
+// NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @frozen
 @usableFromInline
 package struct _BucketAllocator {

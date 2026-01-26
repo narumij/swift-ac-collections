@@ -102,7 +102,7 @@ extension UnsafeTreeV2BufferHeader {
     // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
     let bucket = other.freshBucketHead!.accessor(_value: MemoryLayout<_RawValue>._memoryLayout)!
 
-    /// 同一番号の新ノードを取得する内部ユーティリティ
+    /// 同一番号の新ノードを取得するメソッド内ユーティリティ
     @inline(__always)
     func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
       let index = ptr.pointee.___raw_index
@@ -113,7 +113,7 @@ extension UnsafeTreeV2BufferHeader {
       }
     }
 
-    /// ノードを新ノードで再構築する内部ユーティリティ
+    /// ノードを新ノードで再構築するメソッド内ユーティリティ
     @inline(__always)
     func node(_ s: borrowing UnsafeNode) -> UnsafeNode {
       // 値は別途管理

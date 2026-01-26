@@ -284,6 +284,7 @@ import XCTest
       XCTAssertEqual(begin.__value_().pointee, 4)
       begin = copy.__tree_next_iter(begin)
       XCTAssertEqual(begin, copy.end)
+      XCTAssertTrue(__tree_invariant(storage.__root))
     }
   }
 #endif

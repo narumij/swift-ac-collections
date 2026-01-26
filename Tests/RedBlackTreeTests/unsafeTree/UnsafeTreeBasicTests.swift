@@ -56,7 +56,7 @@ import XCTest
       _ = storage.__construct_node(400)
 
       do {
-        var it = storage.makeFreshPoolIterator()
+        var it = storage.makeUsedNodeIterator()
         XCTAssertEqual(it.next().map(\.pointee.___raw_index), 0)
         XCTAssertEqual(it.next().map(\.pointee.___raw_index), 1)
         XCTAssertEqual(it.next().map(\.pointee.___raw_index), 2)
@@ -68,11 +68,11 @@ import XCTest
       //      throw XCTSkip()
 
       XCTAssertEqual(
-        storage.makeFreshPoolIterator().map(\.pointee.___raw_index),
+        storage.makeUsedNodeIterator().map(\.pointee.___raw_index),
         [0, 1, 2, 3])
 
       XCTAssertEqual(
-        storage.makeFreshPoolIterator().map { $0.__value_().pointee },
+        storage.makeUsedNodeIterator().map { $0.__value_().pointee },
         [100, 200, 300, 400])
     }
 

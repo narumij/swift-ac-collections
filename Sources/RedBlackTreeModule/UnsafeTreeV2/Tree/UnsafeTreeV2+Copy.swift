@@ -141,7 +141,8 @@ extension UnsafeTreeV2BufferHeader {
 
     // ルートノードを設定
     other.__root = __ptr_(__root)
-
+    assert(__tree_invariant(other.__root))
+    
     // __begin_nodeを初期化
     other.begin_ptr.pointee = __ptr_(begin_ptr.pointee)
 

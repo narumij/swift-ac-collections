@@ -49,7 +49,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
     UnsafeMutableRawPointer(advanced(by: 1))
       .assumingMemoryBound(to: UnsafeMutablePointer<UnsafeNode>.self)
   }
-  
+
   @inlinable
   @inline(__always)
   var end_ptr: UnsafeMutablePointer<UnsafeNode> {
@@ -81,36 +81,3 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 }
-
-#if DEBUG && false
-  extension _UnsafeNodeFreshBucket {
-
-    func dump(label: String = "") {
-      print("---- FreshBucket \(label) ----")
-      print(" capacity:", capacity)
-      print(" count:", count)
-
-      var i = 0
-      var p = start
-      while i < capacity {
-        let isUsed = i < count
-        let marker =
-          (count == i) ? "<- current" : isUsed ? "[used]" : "[free]"
-
-        print(
-          String(
-            format: " [%02lld] ptr=%p id=%lld %@",
-            i,
-            p,
-            p.pointee.___raw_index,
-            marker
-          )
-        )
-
-        p = advance(p)
-        i += 1
-      }
-      print("-----------------------------")
-    }
-  }
-#endif

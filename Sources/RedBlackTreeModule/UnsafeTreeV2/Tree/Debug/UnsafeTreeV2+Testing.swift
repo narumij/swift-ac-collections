@@ -134,9 +134,9 @@
         __end_node.pointee
           .equiv(with: tree.__end_node.pointee),
 
-        makeFreshPoolIterator()
+        makeUsedNodeIterator()
           .elementsEqual(
-            tree.makeFreshPoolIterator(),
+            tree.makeUsedNodeIterator(),
             by: {
               $0.pointee.equiv(with: $1.pointee)
             }),

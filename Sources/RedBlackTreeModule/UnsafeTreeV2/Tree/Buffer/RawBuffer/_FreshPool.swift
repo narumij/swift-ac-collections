@@ -157,12 +157,12 @@ extension _FreshPool {
 
 extension _FreshPool {
 
-  @usableFromInline typealias PopIterator = _FreshPoolPopIterator
+  @usableFromInline typealias PopIterator = _FreshPoolUsedIterator
 
   @inlinable
   //  @inline(__always)
-  func makeFreshPoolIterator<T>() -> _FreshPoolPopIterator<T> {
-    return _FreshPoolPopIterator<T>(bucket: freshBucketHead)
+  func makeFreshPoolIterator<T>() -> _FreshPoolUsedIterator<T> {
+    return _FreshPoolUsedIterator<T>(bucket: freshBucketHead)
   }
 }
 

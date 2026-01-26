@@ -155,8 +155,8 @@ extension UnsafeTreeV2 {
 
     @inlinable
     @inline(__always)
-    func makeFreshPoolIterator() -> _FreshPoolPopIterator<_RawValue> {
-      return _buffer.header.makeFreshPoolIterator()
+    func makeUsedNodeIterator() -> _FreshPoolUsedIterator<_RawValue> {
+      return _buffer.header.makeUsedNodeIterator()
     }
   }
 #endif

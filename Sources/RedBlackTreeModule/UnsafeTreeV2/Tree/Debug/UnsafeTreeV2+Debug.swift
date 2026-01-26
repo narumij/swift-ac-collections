@@ -44,7 +44,7 @@ extension UnsafeTreeV2 {
       print(" root:", __root.pointee.___raw_index as Any)
       print(" begin:", __begin_node_.pointee.___raw_index as Any)
 
-      var it = makeFreshPoolIterator()
+      var it = makeUsedNodeIterator()
       while let p = it.next() {
         print(
           p.pointee.debugDescription { self._nodeID($0!) }

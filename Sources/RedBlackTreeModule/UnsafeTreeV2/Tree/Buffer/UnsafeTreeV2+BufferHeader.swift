@@ -224,11 +224,11 @@ extension UnsafeTreeV2BufferHeader {
 
   extension UnsafeTreeV2BufferHeader {
 
-    @usableFromInline typealias PopIterator = _FreshPoolPopIterator
+    @usableFromInline typealias UsedIterator = _FreshPoolUsedIterator
 
     @inlinable
-    func makeFreshPoolIterator<T>() -> _FreshPoolPopIterator<T> {
-      return _FreshPoolPopIterator<T>(bucket: freshBucketHead)
+    func makeUsedNodeIterator<T>() -> _FreshPoolUsedIterator<T> {
+      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead)
     }
   }
 

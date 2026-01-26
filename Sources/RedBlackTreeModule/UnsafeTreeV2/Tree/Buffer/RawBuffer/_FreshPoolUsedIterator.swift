@@ -15,10 +15,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// 使用済みから初期化済みまでを列挙するイテレータ
+/// 初期化済みを列挙するイテレータ
 @frozen
 @usableFromInline
-struct _FreshPoolPopIterator<_Value>: IteratorProtocol, Sequence, _UnsafeNodePtrType {
+struct _FreshPoolUsedIterator<_Value>: IteratorProtocol, Sequence, _UnsafeNodePtrType {
 
   @usableFromInline
   typealias BucketPointer = UnsafeMutablePointer<_Bucket>

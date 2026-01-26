@@ -37,6 +37,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2BufferHeader {
 
+  /// 木をコピーする
   @inlinable
   //  @inline(never)
   internal func copy<Base>(minimumCapacity: Int? = nil) -> UnsafeTreeV2<Base> {
@@ -44,7 +45,8 @@ extension UnsafeTreeV2BufferHeader {
       unsafeBufferObject:
         copyBuffer(Base._RawValue.self, minimumCapacity: minimumCapacity))
   }
-
+  
+  /// バッファオブジェクトをコピーする
   @inlinable
   //  @inline(__always)
   internal func copyBuffer<_RawValue>(_ t: _RawValue.Type, minimumCapacity: Int? = nil)
@@ -89,6 +91,7 @@ extension UnsafeTreeV2BufferHeader {
     return _newBuffer
   }
 
+  /// ヘッダの内容をコピーする
   @inlinable
   func copyHeader<_RawValue>(
     _ t: _RawValue.Type,
@@ -126,10 +129,10 @@ extension UnsafeTreeV2BufferHeader {
     }
 
     // 旧ノードを列挙する準備
-    var nodes = makeFreshPoolIterator() as PopIterator<_RawValue>
+    var usedNodes = makeUsedNodeIterator() as UsedIterator<_RawValue>
 
     // ノード番号順に利用歴があるノード全てについて移行作業を行う
-    while let s = nodes.next(), let d = other.popFresh() {
+    while let s = usedNodes.next(), let d = other.popFresh() {
       // ノードを初期化する
       d.initialize(to: node(s.pointee))
       // 必要な場合、値を初期化する

@@ -58,17 +58,16 @@ extension _RecyclePool {
     recycleHead = nullptr
     count = 0  // これは不適切な気がする
   }
+}
 
-  #if DEBUG
+#if DEBUG
+  extension _RecyclePool {
+    
     @usableFromInline
     var recycleCount: Int {
       freshPoolUsedCount - count
     }
-  #endif
-}
 
-extension _RecyclePool {
-  #if DEBUG
     @usableFromInline
     internal var ___recycleNodes: [Int] {
       var nodes: [Int] = []
@@ -79,5 +78,5 @@ extension _RecyclePool {
       }
       return nodes
     }
-  #endif
-}
+  }
+#endif

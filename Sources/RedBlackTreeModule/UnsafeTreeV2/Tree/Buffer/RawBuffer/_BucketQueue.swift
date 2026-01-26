@@ -53,7 +53,7 @@ struct _BucketQueue {
 
   @usableFromInline
   func next(memoryLayout: _MemoryLayout) -> _BucketQueue? {
-    guard let next = pointer.pointee.next else { return nil }
+    guard let next = pointer.next else { return nil }
     return next._queue(isHead: false, memoryLayout: memoryLayout)
   }
 }

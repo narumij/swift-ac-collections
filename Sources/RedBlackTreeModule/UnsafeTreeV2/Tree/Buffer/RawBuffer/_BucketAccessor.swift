@@ -53,7 +53,7 @@ package struct _BucketAccessor: _UnsafeNodePtrType {
 
   @usableFromInline
   func next(_value: _MemoryLayout) -> _BucketAccessor? {
-    guard let next = pointer.pointee.next else { return nil }
+    guard let next = pointer.next else { return nil }
     return next._accessor(isHead: false, _value: _value)
   }
 }

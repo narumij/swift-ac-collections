@@ -76,22 +76,30 @@ package struct _BucketAllocator {
     self.memoryLayout = MemoryLayout<_RawValue>._memoryLayout
     self._pair = .init(UnsafeNode.self, _RawValue.self)
     self.deinitialize = deinitialize
-    self.capacityOffset = max(0, memoryLayout.alignment - MemoryLayout<UnsafeNode>.alignment)
+    self.startOffset = max(0, memoryLayout.alignment - MemoryLayout<UnsafeNode>.alignment)
   }
 
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
-  /// `_RawValue`のstrideとalignement
+  /// `_RawValue` のstrideとalignement
   @usableFromInline
   let memoryLayout: _MemoryLayout
-
+  
+  /// `Node|Value` のペア形式でのstrideとalignment
   @usableFromInline
   package let _pair: _MemoryLayout
 
+  
+  /// ```
+  /// |Bucket| |Node|Value|Node|Value|...
+  ///        ^ ^
+  ///       この部分のサイズ
+  /// ```
   @usableFromInline
-  package let capacityOffset: Int
-
+  package let startOffset: Int
+  
+  /// 型を消去した `_RawValue` のdeinitializer
   @usableFromInline
   let deinitialize: (UnsafeMutableRawPointer) -> Void
 }
@@ -170,7 +178,7 @@ extension _BucketAllocator {
   package func _allocationSize(capacity: Int) -> Int {
     let s2 = MemoryLayout<_Bucket>.stride
     let s01 = _pair.stride
-    let size = s2 + s01 * capacity + (capacity == 0 ? 0 : capacityOffset)
+    let size = s2 + s01 * capacity + (capacity == 0 ? 0 : startOffset)
     return size
   }
 }

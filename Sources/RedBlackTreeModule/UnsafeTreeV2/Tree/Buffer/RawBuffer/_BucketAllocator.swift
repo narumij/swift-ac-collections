@@ -80,6 +80,7 @@ package struct _BucketAllocator {
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
+  /// `_RawValue`のstrideとalignement
   @usableFromInline
   let memoryLayout: _MemoryLayout
 

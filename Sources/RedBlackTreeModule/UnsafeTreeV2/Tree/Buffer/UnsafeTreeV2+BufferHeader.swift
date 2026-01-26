@@ -55,6 +55,7 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @usableFromInline var root_ptr: _NodeRef
   @usableFromInline var freshBucketAllocator: _BucketAllocator
 
+  /// IndexやIteratorを結ぶ共有メモリオブジェクトの内部プロパティ
   @usableFromInline var _tied: _TiedRawBuffer?
 
   #if DEBUG
@@ -69,6 +70,7 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
 
 extension UnsafeTreeV2BufferHeader {
 
+  /// `_RawValue`のstrideとalignement
   @inlinable
   var memoryLayout: _MemoryLayout {
     freshBucketAllocator.memoryLayout
@@ -88,11 +90,17 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   internal func __root_ptr() -> _NodeRef { root_ptr }
 
+  /// IndexやIteratorとのメモリ共有が発生してないことを示す
   @usableFromInline
   var isRawBufferUniquelyOwned: Bool {
     _tied == nil
   }
 
+  /// IndexやIteratorを結ぶ共有メモリ
+  ///
+  /// ヘッダーにとっては解放責任のデタッチ先
+  ///
+  /// - WARNING: 触ると生成されるので不必要に触らないこと
   @inlinable
   var tiedRawBuffer: _TiedRawBuffer {
     mutating get {
@@ -105,7 +113,8 @@ extension UnsafeTreeV2BufferHeader {
       return _tied!
     }
   }
-
+  
+  /// 確保済みメモリの内容を未初期化に戻し、木を空にする
   @inlinable
   internal mutating func deinitialize() {
     ___flushFreshPool()

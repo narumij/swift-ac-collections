@@ -116,8 +116,10 @@ extension _BucketAllocator {
       .assumingMemoryBound(to: _Bucket.self)
 
     let endNode = header.end_ptr
+    let beginPtr = header.begin_ptr
 
     endNode.initialize(to: .create(id: .end, nullptr: nullptr))
+    beginPtr.initialize(to: endNode)
     header.initialize(to: .init(capacity: capacity))
 
     #if DEBUG

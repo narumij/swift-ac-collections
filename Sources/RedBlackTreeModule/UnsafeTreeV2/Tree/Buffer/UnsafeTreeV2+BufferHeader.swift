@@ -35,13 +35,13 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @inline(__always)
   internal init(allocator: _BucketAllocator, nullptr: _NodePtr, capacity: Int) {
     let (head, _) = allocator.createHeadBucket(capacity: capacity, nullptr: nullptr)
-    self.nullptr = nullptr
     self.recycleHead = nullptr
-    self.freshBucketAllocator = allocator
+    self.nullptr = nullptr
     self.begin_ptr = head.begin_ptr
-    self.begin_ptr.pointee = head.end_ptr
     self.root_ptr = _ref(to: &head.end_ptr.pointee.__left_)
+    self.freshBucketAllocator = allocator
     self.pushFreshBucket(head: head)
+    assert(begin_ptr.pointee == head.end_ptr)
   }
 
   @usableFromInline var count: Int = 0
@@ -52,7 +52,7 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @usableFromInline var freshBucketHead: _BucketPointer?
   @usableFromInline var freshBucketLast: _BucketPointer?
   @usableFromInline let nullptr: _NodePtr
-  @usableFromInline var begin_ptr: UnsafeMutablePointer<_NodePtr>
+  @usableFromInline var begin_ptr: _NodeRef
   @usableFromInline var root_ptr: _NodeRef
   @usableFromInline var freshBucketAllocator: _BucketAllocator
 

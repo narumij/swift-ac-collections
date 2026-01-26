@@ -254,3 +254,72 @@ internal func __tree_invariant_checked(
 
   return true
 }
+
+#if DEBUG
+
+@inlinable
+func dumpInvariantViolation(
+  root: UnsafeMutablePointer<UnsafeNode>,
+  error: RBInvariantViolation,
+  label: String = ""
+) {
+  let title = "==== RB Invariant Violation \(label) ===="
+  print(title)
+  defer { print(String(repeating: "-", count: title.count)) }
+
+  // --- Extract node from error
+  let node: UnsafeMutablePointer<UnsafeNode>
+  switch error {
+  case let .rootParentNull(n),
+       let .rootNotLeftChild(n),
+       let .rootNotBlack(n),
+       let .leftParentMismatch(n),
+       let .rightParentMismatch(n),
+       let .leftRightAlias(n),
+       let .redRed(n),
+       let .leftSubtreeInvalid(n),
+       let .blackHeightMismatch(n):
+    node = n
+  }
+
+  // --- Reason
+  print("Violation:", error.description)
+
+  // --- Node info
+  print(
+    "Node:",
+    "ptr=", node,
+    "id=", describePointerIndex(node.pointee.___raw_index),
+    "color=", node.__is_black_ ? "black" : "red"
+  )
+
+  // --- Dump path Root → Node
+  print()
+  print("Path:")
+  dumpPath(root: root, target: node)
+
+  print()
+}
+
+#endif
+
+#if DEBUG
+
+@inlinable
+func checkTreeInvariantOrDump(
+  root: UnsafeMutablePointer<UnsafeNode>,
+  label: String = ""
+) -> Bool {
+  do {
+    _ = try __tree_invariant_checked(root)
+    return true
+  } catch let err as RBInvariantViolation {
+    dumpInvariantViolation(root: root, error: err, label: label)
+    return false
+  } catch {
+    print("Unknown invariant error:", error)
+    return false
+  }
+}
+
+#endif

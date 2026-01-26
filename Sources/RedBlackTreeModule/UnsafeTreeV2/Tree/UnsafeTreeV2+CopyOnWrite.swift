@@ -17,20 +17,25 @@
 
 import Foundation
 
-// https://atcoder.jp/contests/abc411/submissions/72757331
-// ぶれがひどい
-
 @inlinable
 func growth(from count: Int, to minimum: Int) -> Int {
   // TODO: ジャッジ搭載のタイミングで再度チューニングすること
   if count < 3 {
     return Swift.max(minimum, count << 1)
   }
-  return Swift.max(minimum, count + max(1, count))
+  // しばらく黄金比を試してみる
+  return Swift.max(minimum, count + (count >> 1) + (count >> 4) + (count >> 5) + (count >> 8))
 }
+
+// ぶれがひどい
+// https://atcoder.jp/contests/abc411/submissions/72757331
+//return Swift.max(minimum, count + max(1, count))
 
 // Bench0は以下がよい
 // return Swift.max(minimum, count + max(1, count >> 3))
+
+// 黄金比の4項近似
+//return Swift.max(minimum, count + (count >> 1) + (count >> 4) + (count >> 5) + (count >> 8))
 
 extension UnsafeTreeV2BufferHeader {
 

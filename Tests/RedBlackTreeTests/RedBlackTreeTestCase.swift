@@ -9,9 +9,12 @@ class RedBlackTreeTestCase: XCTestCase {
 
   override func setUpWithError() throws {
 #if DEBUG
+    // TODO: 以下のアサートが止まるケースがあることについて、理由を調査すること
+//    assert(deallocatedCount == 0) // アサート(a)
     // シングルトンはテストケース期間に開放されず、数があわなくなるので、その調整
     let dummy = RedBlackTreeSet<Int>()
     allocatedCount = 0
+    // アサート(a)時はdeallocatedCount = 0をコメントアウト
     deallocatedCount = 0
 #endif
   }

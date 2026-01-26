@@ -21,10 +21,14 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   @inlinable
   @inline(__always)
   internal init(_buffer: ManagedBufferPointer<Header, Void>) {
-
     self._buffer = _buffer
   }
 
+  @usableFromInline
+  var _buffer: BufferPointer
+}
+
+extension UnsafeTreeV2 {
   public typealias Base = Base
   public typealias Tree = UnsafeTreeV2<Base>
   public typealias _Key = Base._Key
@@ -34,9 +38,6 @@ public struct UnsafeTreeV2<Base: ___TreeBase> {
   @usableFromInline typealias Header = UnsafeTreeV2BufferHeader
   @usableFromInline typealias Buffer = ManagedBuffer<Header, Void>
   @usableFromInline typealias BufferPointer = ManagedBufferPointer<Header, Void>
-
-  @usableFromInline
-  var _buffer: BufferPointer
 }
 
 extension UnsafeTreeV2 {
@@ -45,7 +46,7 @@ extension UnsafeTreeV2 {
   package var nullptr: _NodePtr {
     withMutableHeader { $0.nullptr }
   }
-  
+
   @inlinable @inline(__always)
   package var end: _NodePtr {
     withMutableHeader { $0.end_ptr }
@@ -203,6 +204,9 @@ extension UnsafeTreeV2 {
     #endif
   }
 
+  // TODO: rename検討
+  // Indexについて作業しているときは不自然に感じなかったが、
+  // 今は全体でRawValueというとノード保持の値型なので、不適切になってしまっている
   @inlinable
   @inline(__always)
   internal func rawValue(_ index: Index) -> _NodePtr

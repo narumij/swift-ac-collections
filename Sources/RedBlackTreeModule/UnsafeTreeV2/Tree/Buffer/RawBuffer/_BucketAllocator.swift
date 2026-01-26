@@ -100,6 +100,11 @@ package struct _BucketAllocator {
   package let startOffset: Int
   
   /// 型を消去した `_RawValue` のdeinitializer
+  ///
+  /// Genericsで型を特定した解放処理では、実行時に型情報へのアクセスが毎度かかり高コストなので、これを削減するためにこのようにしてある
+  ///
+  /// 普段からその方についてよく知ってるケースでは軽減されるのだが、解放処理専門といった時々しか型に触れないインスタンスで高コストになりがち
+  ///
   @usableFromInline
   let deinitialize: (UnsafeMutableRawPointer) -> Void
 }

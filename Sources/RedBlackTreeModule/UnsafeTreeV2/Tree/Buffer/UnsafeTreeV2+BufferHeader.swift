@@ -73,7 +73,7 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
 
 extension UnsafeTreeV2BufferHeader {
 
-  /// `_RawValue`のstrideとalignement
+  /// `_Payload`のstrideとalignement
   @inlinable
   var memoryLayout: _MemoryLayout {
     freshBucketAllocator.memoryLayout

@@ -23,12 +23,12 @@ extension RedBlackTreeSliceV2 {
       & ___UnsafeIndexV2 & ___UnsafeKeyValueSequenceV2
   where
     Base: ___TreeBase & ___TreeIndex & KeyValueComparer,
-    Base._RawValue == RedBlackTreePair<Base._Key, Base._MappedValue>
+    Base._Payload == RedBlackTreePair<Base._Key, Base._MappedValue>
   {
 
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _Key = Base._Key
-    public typealias _RawValue = Tree._RawValue
+    public typealias _RawValue = Tree._Payload
     public typealias _MappedValue = Base._MappedValue
     public typealias Element = (key: _Key, value: _MappedValue)
     public typealias Index = Tree.Index

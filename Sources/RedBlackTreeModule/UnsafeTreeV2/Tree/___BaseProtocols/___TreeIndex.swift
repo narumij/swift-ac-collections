@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public protocol ___TreeIndex: _RawValueType {
+public protocol ___TreeIndex: _PayloadType {
   associatedtype Pointee
-  static func ___pointee(_ __value: _RawValue) -> Pointee
+  static func ___pointee(_ __value: _Payload) -> Pointee
 }

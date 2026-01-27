@@ -31,40 +31,40 @@ public protocol _NodePtrType {
   associatedtype _NodeRef
 }
 
-/// ノードが保持する値型の定義
-public protocol _RawValueType {
-  /// ノードが保持する値型
-  associatedtype _RawValue
+/// ノードの積載値型の定義
+public protocol _PayloadType {
+  /// ノードの積載値型
+  associatedtype _Payload
 }
 
-/// 比較用の値型の定義
+/// 比較値型の定義
 public protocol _KeyType {
-  /// 比較用の値型
+  /// 比較値型
   associatedtype _Key
 }
 
 // TODO: しばらく様子を見たのち、_MappedValueを_Valueに名称変更するか検討すること
-/// キーに対応する値型の定義
+/// キーバリュー積載時の対応値値型の定義
 public protocol _MappedValueType {
-  /// キーに対応する値型
+  /// キーバリュー積載時の対応値値型
   associatedtype _MappedValue
 }
 
 // MARK: - Conditions
 
-/// 必ず比較型と保持型を持つ
-public protocol _BaseType: _KeyType & _RawValueType {}
+/// 必ず比較型と積載型を持つ
+public protocol _BaseType: _KeyType & _PayloadType {}
 
-/// SetやMultiSetは比較型と保持型が同じ
+/// SetやMultiSetは比較型と積載型が同じ
 public protocol _ScalarBaseType: _BaseType
-where _RawValue == _Key {}
+where _Payload == _Key {}
 
-/// DictionaryやMultiMapは比較型と保持型は互いに異なり、マップ値型がある
+/// DictionaryやMultiMapは比較型と積載型は互いに異なり、マップ値型がある
 public protocol _KeyValueBaseType: _BaseType & _MappedValueType {}
 
-/// DictionaryやMultiMapは保持型にRedBlackTreePairを用いる
+/// DictionaryやMultiMapは積載型にRedBlackTreePairを用いる
 public protocol _PairBaseType: _KeyValueBaseType
-where _RawValue == RedBlackTreePair<_Key, _MappedValue> {}
+where _Payload == RedBlackTreePair<_Key, _MappedValue> {}
 
 // MARK: - Aliases
 
@@ -101,8 +101,8 @@ where __node_value_type == _Key {
 
 /// 保持型の別名定義
 @usableFromInline
-protocol __value_type: _RawValueType
-where __value_type == _RawValue {
+protocol __value_type: _PayloadType
+where __value_type == _Payload {
   /// 保持型の別名
   associatedtype __value_type
 }

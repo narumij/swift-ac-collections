@@ -44,7 +44,7 @@ extension UnsafeIterator {
       _source._end
     }
 
-    public mutating func next() -> Base._RawValue? {
+    public mutating func next() -> Base._Payload? {
       return _source.next().map {
         $0.__value_().pointee
       }

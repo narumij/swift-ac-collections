@@ -837,7 +837,7 @@ final class EtcTests: RedBlackTreeTestCase {
   }
 
   //  func testBufferSize() throws {
-  //    typealias _RawValue = Int
+  //    typealias _Payload = Int
   //    let s0 = MemoryLayout<UnsafeNode>.stride
   //    let a0 = MemoryLayout<UnsafeNode>.alignment
   //    let s1 = MemoryLayout<_Value>.stride

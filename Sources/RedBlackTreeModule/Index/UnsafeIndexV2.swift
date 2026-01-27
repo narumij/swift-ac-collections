@@ -28,7 +28,7 @@ where Base: ___TreeBase & ___TreeIndex {
   public typealias Pointee = Tree.Pointee
 
   @usableFromInline
-  typealias _RawValue = Tree._RawValue
+  typealias _RawValue = Tree._Payload
 
   // メモリが解放される危険は解消したので、これを保持する必要性がなくなっている
   @usableFromInline

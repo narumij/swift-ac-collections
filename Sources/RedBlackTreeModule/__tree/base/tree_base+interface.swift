@@ -15,8 +15,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _BaseNode_RawValueInterface: _NodePtrType & _RawValueType {
-  static func __value_(_ p: _NodePtr) -> _RawValue
+public protocol _BaseNode_RawValueInterface: _NodePtrType & _PayloadType {
+  static func __value_(_ p: _NodePtr) -> _Payload
 }
 
 #if true
@@ -39,13 +39,13 @@ public protocol _BaseNode_RawValueInterface: _NodePtrType & _RawValueType {
   }
 #endif
 
-public protocol _BaseRawValue_KeyInterface: _KeyType & _RawValueType {
+public protocol _BaseRawValue_KeyInterface: _KeyType & _PayloadType {
   /// 要素から比較キー値がとれること
-  static func __key(_: _RawValue) -> _Key
+  static func __key(_: _Payload) -> _Key
 }
 
-public protocol _BaseRawValue_MappedValueInterface: _RawValueType & _MappedValueType {
-  static func ___mapped_value(_: _RawValue) -> _MappedValue
+public protocol _BaseRawValue_MappedValueInterface: _PayloadType & _MappedValueType {
+  static func ___mapped_value(_: _Payload) -> _MappedValue
 }
 
 public protocol _BaseKey_LessThanInterface: _KeyType {
@@ -60,9 +60,9 @@ public protocol _BaseKey_EquivInterface: _KeyType {
 
 // MARK: -
 
-public protocol WithMappedValueInterface: _RawValueType & _MappedValueType {
+public protocol WithMappedValueInterface: _PayloadType & _MappedValueType {
   static func ___with_mapped_value<T>(
-    _ element: inout _RawValue, _ f: (inout _MappedValue) throws -> T
+    _ element: inout _Payload, _ f: (inout _MappedValue) throws -> T
   ) rethrows -> T
 }
 

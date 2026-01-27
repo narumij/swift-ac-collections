@@ -42,7 +42,7 @@ extension UnsafeTreeV2 {
   func ___erase_if(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
-    shouldBeRemoved: (_RawValue) throws -> Bool
+    shouldBeRemoved: (_Payload) throws -> Bool
   ) rethrows -> _NodePtr {
     var __first = __first
     while __first != __last {
@@ -61,7 +61,7 @@ extension UnsafeTreeV2 {
   func ___checking_erase_if(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
-    shouldBeRemoved: (_RawValue) throws -> Bool
+    shouldBeRemoved: (_Payload) throws -> Bool
   ) rethrows -> _NodePtr {
     var __first = __first
     while __first != __last {

@@ -65,7 +65,7 @@ extension UnsafeTreeV2 {
   @inlinable
   internal func elementsEqual<OtherSequence>(
     _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
-    by areEquivalent: (_RawValue, OtherSequence.Element) throws -> Bool
+    by areEquivalent: (_Payload, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
     try unsafeValues(__first, __last).elementsEqual(other, by: areEquivalent)
   }
@@ -76,8 +76,8 @@ extension UnsafeTreeV2 {
   @inlinable
   internal func lexicographicallyPrecedes<OtherSequence>(
     _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
-    by areInIncreasingOrder: (_RawValue, _RawValue) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, _RawValue == OtherSequence.Element {
+    by areInIncreasingOrder: (_Payload, _Payload) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, _Payload == OtherSequence.Element {
     try unsafeValues(__first, __last).lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
@@ -86,7 +86,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal func
-    ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_RawValue]
+    ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_Payload]
   {
     let count = __distance(__first, __last)
     return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
@@ -103,7 +103,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal func
-    ___copy_to_array<T>(_ __first: _NodePtr, _ __last: _NodePtr, transform: (_RawValue) -> T)
+    ___copy_to_array<T>(_ __first: _NodePtr, _ __last: _NodePtr, transform: (_Payload) -> T)
     -> [T]
   {
     let count = __distance(__first, __last)
@@ -120,7 +120,7 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2: Equatable where _RawValue: Equatable {
+extension UnsafeTreeV2: Equatable where _Payload: Equatable {
 
   @inlinable
   @inline(__always)
@@ -142,7 +142,7 @@ extension UnsafeTreeV2: Equatable where _RawValue: Equatable {
   }
 }
 
-extension UnsafeTreeV2: Comparable where _RawValue: Comparable {
+extension UnsafeTreeV2: Comparable where _Payload: Comparable {
 
   @inlinable
   @inline(__always)
@@ -163,7 +163,7 @@ extension UnsafeTreeV2 {
   internal func ___filter(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
-    _ isIncluded: (_RawValue) throws -> Bool
+    _ isIncluded: (_Payload) throws -> Bool
   )
     rethrows -> UnsafeTreeV2
   {

@@ -38,13 +38,13 @@ extension ___UnsafeBaseSequenceV2 {
 
   @inlinable
   @inline(__always)
-  internal func ___min() -> _RawValue? {
+  internal func ___min() -> _Payload? {
     __tree_.__root == __tree_.nullptr ? nil : __tree_[__tree_.__tree_min(__tree_.__root)]
   }
 
   @inlinable
   @inline(__always)
-  internal func ___max() -> _RawValue? {
+  internal func ___max() -> _Payload? {
     __tree_.__root == __tree_.nullptr ? nil : __tree_[__tree_.__tree_max(__tree_.__root)]
   }
 }

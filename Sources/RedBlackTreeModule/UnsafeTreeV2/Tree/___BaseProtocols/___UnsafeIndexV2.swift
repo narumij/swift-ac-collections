@@ -93,7 +93,7 @@ extension ___UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  internal func ___first_index(where predicate: (_RawValue) throws -> Bool) rethrows -> Index? {
+  internal func ___first_index(where predicate: (_Payload) throws -> Bool) rethrows -> Index? {
     var result: Index?
     try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
       if try predicate(__tree_[__p]) {
@@ -109,8 +109,8 @@ extension ___UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  internal func ___first(where predicate: (_RawValue) throws -> Bool) rethrows -> _RawValue? {
-    var result: _RawValue?
+  internal func ___first(where predicate: (_Payload) throws -> Bool) rethrows -> _Payload? {
+    var result: _Payload?
     try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
       if try predicate(__tree_[__p]) {
         result = __tree_[__p]

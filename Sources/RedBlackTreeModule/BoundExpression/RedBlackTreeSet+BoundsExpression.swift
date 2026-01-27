@@ -91,7 +91,8 @@
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
+      // O(log N)使って範囲チェックしてるので、末尾チェックなしのループで削除する
+      try __tree_.___unchecked_erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
 
     @inlinable @inline(__always)

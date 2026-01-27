@@ -55,11 +55,9 @@ extension UnsafeTreeV2 {
     _buffer.buffer === _emptyTreeStorage
   }
 
-  /// ノードプールの寿命延長オブジェクト
+  /// 木に紐付いている生バッファ
   ///
-  /// 元々はデアロケータだったが、添字アクセスが追加されている
-  ///
-  /// ここを境に名前が変わる
+  /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
   @usableFromInline
   var tied: _TiedRawBuffer {
     // コンパイラ最適化に頼らないためにベタ書き

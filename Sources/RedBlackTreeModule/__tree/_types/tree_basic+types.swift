@@ -44,22 +44,22 @@ public protocol _KeyType {
 }
 
 // TODO: しばらく様子を見たのち、_MappedValueを_Valueに名称変更するか検討すること
-/// キーバリュー積載時の対応値値型の定義
+/// キーバリュー積載時の対応値型の定義
 public protocol _MappedValueType {
-  /// キーバリュー積載時の対応値値型
+  /// キーバリュー積載時の対応値型
   associatedtype _MappedValue
 }
 
 // MARK: - Conditions
 
-/// 必ず比較型と積載型を持つ
-public protocol _BaseType: _KeyType & _PayloadType {}
+/// 必ず積載型と比較型を持つ
+public protocol _BaseType: _PayloadType & _KeyType {}
 
-/// SetやMultiSetは比較型と積載型が同じ
+/// SetやMultiSetは積載型と比較型が同じ
 public protocol _ScalarBaseType: _BaseType
 where _Payload == _Key {}
 
-/// DictionaryやMultiMapは比較型と積載型は互いに異なり、マップ値型がある
+/// DictionaryやMultiMapは積載型と比較型は互いに異なり、対応値型がある
 public protocol _KeyValueBaseType: _BaseType & _MappedValueType {}
 
 /// DictionaryやMultiMapは積載型にRedBlackTreePairを用いる
@@ -99,7 +99,7 @@ where __node_value_type == _Key {
   associatedtype __node_value_type
 }
 
-/// 保持型の別名定義
+/// 積載型の別名定義
 @usableFromInline
 protocol __value_type: _PayloadType
 where __value_type == _Payload {

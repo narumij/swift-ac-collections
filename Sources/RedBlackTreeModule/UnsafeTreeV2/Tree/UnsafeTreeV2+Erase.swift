@@ -18,6 +18,7 @@
 extension UnsafeTreeV2 {
 
   @inlinable
+  @discardableResult
   func ___erase(
     _ __first: _NodePtr,
     _ __last: _NodePtr
@@ -33,6 +34,7 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
+  @discardableResult
   func ___erase_if(
     _ __first: _NodePtr,
     _ __last: _NodePtr,

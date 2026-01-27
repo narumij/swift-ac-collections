@@ -52,13 +52,13 @@
 
     @inlinable
     public mutating func removeSubrange(_ bounds: UnboundedRange) {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       ___remove(.unboundedRange)
     }
 
     @inlinable
     public mutating func removeSubrange(_ bounds: _RangeExpression) {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       ___remove(bounds.rawRange)
     }
 
@@ -68,7 +68,7 @@
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       let (lower, upper) = __tree_.rawRange(bounds.rawRange)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)

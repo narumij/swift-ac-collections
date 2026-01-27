@@ -1067,6 +1067,16 @@ final class EtcTests: RedBlackTreeTestCase {
 //      XCTAssertEqual(a[unchecked: a.startIndex...a.endIndex] + [], [])
 //      XCTAssertEqual((0..<100)[0...100] + [], [])
     }
+  
+  func testBound() throws {
+    var a = RedBlackTreeSet<Int>((0..<100).filter { $0 % 5 == 0 })
+    XCTAssertEqual(a[.start], 0)
+    XCTAssertEqual(a[.lower(0)], 0)
+    XCTAssertEqual(a[.lower(3)], 5)
+    XCTAssertEqual(a[.upper(5)], 10)
+    XCTAssertEqual(a[.end], nil)
+  }
+
 
   #endif
 }

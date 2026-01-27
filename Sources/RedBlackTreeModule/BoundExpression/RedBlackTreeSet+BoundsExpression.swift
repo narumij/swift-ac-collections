@@ -21,6 +21,28 @@
   extension RedBlackTreeSet {
 
     // TODO: 新APIを整理し、全てのコレクションに展開する
+    
+    @inlinable
+    public subscript(bound: RedBlackTreeBound<Element>) -> Element? {
+      let p = __tree_.relative(from: bound)
+      guard !p.___is_null_or_end else { return nil }
+      return __tree_[p]
+    }
+    
+    public func index(_ bound: RedBlackTreeBound<Element>) -> Index
+    {
+      return ___index(__tree_.relative(from: bound))
+    }
+    
+    public mutating func remove(_ bound: RedBlackTreeBound<Element>) -> Element? {
+      __tree_.ensureUnique()
+      let p = __tree_.relative(from: bound)
+      guard !p.___is_null_or_end else { return nil }
+      guard let element = ___remove(at: __tree_.relative(from: bound)) else {
+        fatalError(.invalidIndex)
+      }
+      return element
+    }
 
     public subscript(bounds: RedBlackTreeBoundsExpression<Element>) -> SubSequence {
       let (lower, upper) = __tree_.rawRange(__tree_.relative(to: bounds))
@@ -46,7 +68,7 @@
     }
 
     public mutating func removeBounds(_ bounds: RedBlackTreeBoundsExpression<Element>) {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       let (lower, upper) = __tree_.rawRange(__tree_.relative(to: bounds))
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
@@ -55,7 +77,7 @@
     }
 
     public mutating func removeBounds(unchecked bounds: RedBlackTreeBoundsExpression<Element>) {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       let (lower, upper) = __tree_.rawRange(__tree_.relative(to: bounds))
       __tree_.___erase(lower, upper)
     }
@@ -64,7 +86,7 @@
       _ bounds: RedBlackTreeBoundsExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       let (lower, upper) = __tree_.rawRange(__tree_.relative(to: bounds))
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
@@ -77,7 +99,7 @@
       unchecked bounds: RedBlackTreeBoundsExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       let (lower, upper) = __tree_.rawRange(__tree_.relative(to: bounds))
       try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }

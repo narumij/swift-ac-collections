@@ -42,7 +42,7 @@
     }
 
     public mutating func removeBounds(_ range: RedBlackTreeBoundsExpression<Element>) {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       let (lower, upper) = __tree_.rawRange(__tree_.relative(to: range))
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
@@ -51,7 +51,7 @@
     }
 
     public mutating func removeBounds(unchecked range: RedBlackTreeBoundsExpression<Element>) {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       let (lower, upper) = __tree_.rawRange(__tree_.relative(to: range))
       __tree_.___erase(lower, upper)
     }
@@ -60,7 +60,7 @@
       _ range: RedBlackTreeBoundsExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       let (lower, upper) = __tree_.rawRange(__tree_.relative(to: range))
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
@@ -72,7 +72,7 @@
       unchecked range: RedBlackTreeBoundsExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       let (lower, upper) = __tree_.rawRange(__tree_.relative(to: range))
       try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }

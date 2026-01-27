@@ -80,7 +80,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 //}
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
-
+  
+  /// ルートのペアレントまたはペアレントがヌルなのがend
   func __slow_end() -> _NodePtr {
     var __r = self
     while __r.__parent_ != .nullptr {
@@ -89,6 +90,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     return __r
   }
   
+  /// ルートからたどれる最小値ノードがbegin
   func __slow_begin() -> _NodePtr {
     __tree_min(__slow_end().__left_)
   }
@@ -96,6 +98,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
+  /// ```
+  /// ...|Node|RawValue|Node...
+  ///    |    ^--__raw_value_
+  ///    ^self
+  /// ```
   // TODO: 名称変更
   // 型名の変更で意味が合わなくなっている
   @inlinable
@@ -104,6 +111,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     UnsafeMutableRawPointer(advanced(by: 1))
   }
 
+  /// ```
+  /// ...|Node|RawValue|Node...
+  ///    |    ^--__value_
+  ///    ^self
+  /// ```
   @inlinable
   @inline(__always)
   func __value_<_RawValue>() -> UnsafeMutablePointer<_RawValue> {
@@ -111,6 +123,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       .assumingMemoryBound(to: _RawValue.self)
   }
 
+  /// ```
+  /// ...|Node|RawValue|Node...
+  ///    |    ^--__value_
+  ///    ^self
+  /// ```
   @inlinable
   @inline(__always)
   package func __value_<_RawValue>(as t: _RawValue.Type) -> UnsafeMutablePointer<_RawValue> {
@@ -118,6 +135,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       .assumingMemoryBound(to: _RawValue.self)
   }
 
+  /// ```
+  /// ...|Node|Value|Node...
+  ///    |    ^--__key_ptr
+  ///    ^self
+  /// ```
   @inlinable
   @inline(__always)
   func __key_ptr<Base: _ScalarBaseType>(with t: Base.Type)
@@ -126,6 +148,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     __value_()
   }
 
+  /// ```
+  /// ...|Node|Key|MappedValue|Node...
+  ///    |    ^--__key_ptr
+  ///    ^self
+  /// ```
   @inlinable
   @inline(__always)
   func __key_ptr<Base: _PairBaseType>(with t: Base.Type)
@@ -134,6 +161,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     _ref(to: &__value_(as: Base._RawValue.self).pointee.key)
   }
 
+  /// ```
+  /// ...|Node|Key|MappedValue|Node...
+  ///    |        ^--__mapped_value_ptr
+  ///    ^self
+  /// ```
   @inlinable
   @inline(__always)
   func __mapped_value_ptr<Base: _PairBaseType>(with t: Base.Type)
@@ -153,12 +185,22 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
+  /// ```
+  /// ...|Node|stride|Node|stride|...
+  ///    |           ^self       |
+  ///    ^--_advanced -1         ^--_advanced +1
+  /// ```
   @inlinable
   @inline(__always)
   func _advanced(with stride: Int, count: Int) -> UnsafeMutablePointer {
     _advanced(raw: (MemoryLayout<UnsafeNode>.stride + stride) * count)
   }
 
+  /// ```
+  /// ...|Node|RawValue|Node|RawValue|...
+  ///    |             ^self         |
+  ///    ^--_advanced -1             ^--_advanced +1
+  /// ```
   @inlinable
   @inline(__always)
   func _advanced<_RawValue>(with t: _RawValue.Type, count: Int) -> UnsafeMutablePointer {

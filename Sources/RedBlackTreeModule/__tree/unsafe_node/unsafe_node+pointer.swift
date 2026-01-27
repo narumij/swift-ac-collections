@@ -106,8 +106,10 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
+  /// ペイロードの生ポインタ
+  ///
   /// ```
-  /// ...|Node|RawValue|Node...
+  /// ...|Node|Payload|Node...
   ///    |    ^--__raw_value_
   ///    ^self
   /// ```
@@ -115,15 +117,19 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   // 型名の変更で意味が合わなくなっている
   @inlinable
   @inline(__always)
-  var __raw_value_: UnsafeMutableRawPointer {
+  var __payload_: UnsafeMutableRawPointer {
     UnsafeMutableRawPointer(advanced(by: 1))
   }
 
+  /// ペイロードを値とみなしたポインタ
+  ///
   /// ```
   /// ...|Node|RawValue|Node...
   ///    |    ^--__value_
   ///    ^self
   /// ```
+  ///
+  /// 型推論で型が決定する
   @inlinable
   @inline(__always)
   func __value_<_RawValue>() -> UnsafeMutablePointer<_RawValue> {
@@ -131,11 +137,15 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       .assumingMemoryBound(to: _RawValue.self)
   }
 
+  /// ペイロードを値とみなしたポインタ
+  ///
   /// ```
   /// ...|Node|RawValue|Node...
   ///    |    ^--__value_
   ///    ^self
   /// ```
+  ///
+  /// 引数で型が決定する
   @inlinable
   @inline(__always)
   package func __value_<_RawValue>(as t: _RawValue.Type) -> UnsafeMutablePointer<_RawValue> {
@@ -143,8 +153,10 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       .assumingMemoryBound(to: _RawValue.self)
   }
 
+  /// `_RawValue`と`_Key`が一致する場合に、 ペイロードをキーとみなしたポインタ
+  ///
   /// ```
-  /// ...|Node|Value|Node...
+  /// ...|Node|RawValue|Node...
   ///    |    ^--__key_ptr
   ///    ^self
   /// ```
@@ -156,6 +168,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     __value_()
   }
 
+  /// `_RawValue`が`Pair`の場合のキーへのポインタ
+  ///
   /// ```
   /// ...|Node|Key|MappedValue|Node...
   ///    |    ^--__key_ptr
@@ -169,6 +183,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     _ref(to: &__value_(as: Base._RawValue.self).pointee.key)
   }
 
+  /// `_RawValue`が`Pair`の場合のバリューへのポインタ
+  ///
   /// ```
   /// ...|Node|Key|MappedValue|Node...
   ///    |        ^--__mapped_value_ptr
@@ -193,6 +209,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
+  /// 単位移動量と移動量を指定して、他のノードを取得する
+  ///
   /// ```
   /// ...|Node|stride|Node|stride|...
   ///    |           ^self       |
@@ -204,6 +222,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     _advanced(raw: (MemoryLayout<UnsafeNode>.stride + stride) * count)
   }
 
+  /// 型と移動量を指定して、他のノードを取得する
+  ///
   /// ```
   /// ...|Node|RawValue|Node|RawValue|...
   ///    |             ^self         |

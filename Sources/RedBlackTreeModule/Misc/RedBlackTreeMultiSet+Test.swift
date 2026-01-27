@@ -31,12 +31,6 @@ extension RedBlackTreeMultiSet {
       set { __tree_.copyCount = newValue }
     }
   }
-
-//  extension RedBlackTreeMultiSet {
-//    package mutating func _checkUnique() -> Bool {
-//      _isKnownUniquelyReferenced_LV2()
-//    }
-//  }
 #endif
 
 extension RedBlackTreeMultiSet {

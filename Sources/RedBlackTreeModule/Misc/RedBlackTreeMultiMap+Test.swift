@@ -31,12 +31,6 @@ extension RedBlackTreeMultiMap {
       set { __tree_.copyCount = newValue }
     }
   }
-
-//  extension RedBlackTreeMultiMap {
-//    package mutating func _checkUnique() -> Bool {
-//      _isKnownUniquelyReferenced_LV2()
-//    }
-//  }
 #endif
 
 extension RedBlackTreeMultiMap {

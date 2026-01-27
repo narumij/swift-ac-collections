@@ -31,12 +31,6 @@ extension RedBlackTreeDictionary {
       set { __tree_.copyCount = newValue }
     }
   }
-
-//  extension RedBlackTreeDictionary {
-//    package mutating func _checkUnique() -> Bool {
-//      _isKnownUniquelyReferenced_LV2()
-//    }
-//  }
 #endif
 
 extension RedBlackTreeDictionary {

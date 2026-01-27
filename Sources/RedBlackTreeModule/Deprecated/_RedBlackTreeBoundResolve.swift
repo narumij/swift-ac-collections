@@ -6,7 +6,6 @@
 //
 
 #if COMPATIBLE_ATCODER_2025
-  // TODO: 現行互換実装の作業をする
 
   @usableFromInline
   protocol RedBlackTreeBoundResolverProtocol: Collection

@@ -17,8 +17,6 @@
 
 extension UnsafeIterator {
   
-  // TODO: end_ptrで停止するバージョンの検討
-
   public struct _Obverse:
     _UnsafeNodePtrType,
     UnsafeIteratorProtocol,

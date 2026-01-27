@@ -123,14 +123,14 @@ public struct UnsafeNode {
   @inlinable
   @inline(__always)
   public init(
-    ___raw_index: Int,
+    ___tracking_tag: _TrackingTag,
     __left_: Pointer,
     __right_: Pointer,
     __parent_: Pointer,
     __is_black_: Bool = false,
     ___needs_deinitialize: Bool = true
   ) {
-    self.___raw_index = ___raw_index
+    self.___tracking_tag = ___tracking_tag
     self.__left_ = __left_
     self.__right_ = __right_
     self.__parent_ = __parent_
@@ -178,26 +178,39 @@ public struct UnsafeNode {
   /// ノード直後に配置された値を解放すべきかを判断するために、
   /// 低レベルのアロケータ／プールで使用される。
   public var ___needs_deinitialize: Bool
+
   // IndexアクセスでCoWが発生した場合のフォローバックとなる
   // TODO: 不変性が維持されているか考慮すること
-  /// A temporary node identifier assigned in initialization order.
+  /// A lightweight tracking tag used to identify and correlate nodes.
   ///
-  /// Used during CoW reconstruction to preserve tree structural identity.
-  /// Intended for use during copy operations only.
-  /// After CoW splits tree instances, this ID allows equivalent nodes
-  /// to be associated across the copies.
+  /// This tag is **not** part of the tree's logical key and must not be used
+  /// for ordering or lookup semantics.
+  ///
+  /// Primary purposes:
+  /// - Tracking node identity across Copy-on-Write (CoW) operations
+  /// - Distinguishing sentinel nodes (e.g. nullptr, end, debug)
+  /// - Supporting debugging, diagnostics, and structural verification
+  ///
+  /// Special values:
+  /// - `nullptr` uses `-2`
+  /// - `end` uses `-1`
   ///
   /// ---
   ///
-  /// ノードが初期化された順に付与される一時的な識別子
+  /// ノードを追跡・識別するための軽量タグ。
   ///
-  /// CoW 再構築時に木構造の同一性を維持するために使用される。
-  /// 通常はコピー処理中にのみ参照される。
-  /// CoW により木のインスタンスが分離した後でも、
-  /// この ID を用いて等価なノード同士を対応付けることができる。
+  /// この値は木の論理キーではなく、
+  /// 順序付けや検索には使用してはならない。
   ///
-  /// nullptrは-2、endは-1をIDにもつ
-  public var ___raw_index: Int
+  /// 主な用途:
+  /// - Copy-on-Write (CoW) 時のノード同一性の維持
+  /// - nullptr / end / debug などの特殊ノードの識別
+  /// - デバッグ・診断・構造検証の補助
+  ///
+  /// 特殊値:
+  /// - `nullptr` は `-2`
+  /// - `end` は `-1`
+  public var ___tracking_tag: _TrackingTag
 
   // メモリ管理をちゃんとするために隙間にねじ込んだ
   // TODO: メモリ管理に整合性があるか考慮すること
@@ -205,12 +218,11 @@ public struct UnsafeNode {
     public var ___recycle_count: Int = 0
   #endif
 
-
   // non optionalを選択したのは、コードのあちこちにチェックコードが自動で挟まって遅くなることを懸念しての措置
   // nullptrは定数でもなにかコストがかかっていた記憶もある
   // 過去のコードベースで再度調査してこういった諸々の問題が杞憂だった場合、optionalに変更してnullptrにnil変更しても良い
   @usableFromInline nonisolated(unsafe)
-  package static let nullptr: UnsafeMutablePointer<UnsafeNode> = _singletonNull.nullptr
+    package static let nullptr: UnsafeMutablePointer<UnsafeNode> = _singletonNull.nullptr
 }
 
 @usableFromInline
@@ -256,7 +268,7 @@ extension UnsafeNode {
     internal static func create() -> Null {
       let storage = Null.create(minimumCapacity: 1) { $0.capacity }
       storage.withUnsafeMutablePointerToElements { nullptr in
-        nullptr.initialize(to: .create(id: .nullptr, nullptr: nullptr))
+        nullptr.initialize(to: .create(tag: .nullptr, nullptr: nullptr))
       }
       return unsafeDowncast(storage, to: Null.self)
     }
@@ -267,9 +279,9 @@ extension UnsafeNode {
 
   @inlinable
   @inline(__always)
-  package static func create(id: Int, nullptr: UnsafeMutablePointer<UnsafeNode>) -> UnsafeNode {
+  package static func create(tag: Int, nullptr: UnsafeMutablePointer<UnsafeNode>) -> UnsafeNode {
     .init(
-      ___raw_index: id,
+      ___tracking_tag: tag,
       __left_: nullptr,
       __right_: nullptr,
       __parent_: nullptr)
@@ -282,7 +294,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)
-  var rawIndex: Int {
-    pointee.___raw_index
+  var rawIndex: _TrackingTag {
+    pointee.___tracking_tag
   }
 }

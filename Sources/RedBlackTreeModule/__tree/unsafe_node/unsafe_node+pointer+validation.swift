@@ -7,9 +7,9 @@
 
 @inlinable
 @inline(__always)
-func ___is_null_or_end__(rawIndex: Int) -> Bool {
+func ___is_null_or_end__(trackingTag: _TrackingTag) -> Bool {
   // 名前が衝突するしパッケージ名を書きたくないため中継している
-  ___is_null_or_end(rawIndex)
+  ___is_null_or_end(trackingTag)
 }
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
@@ -21,7 +21,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   internal var ___is_null_or_end: Bool {
-    ___is_null_or_end__(rawIndex: pointee.___raw_index)
+    ___is_null_or_end__(trackingTag: pointee.___tracking_tag)
   }
 
   @usableFromInline
@@ -37,7 +37,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   
   @usableFromInline
   internal var ___is_end: Bool {
-    assert(__parent_ != .nullptr || pointee.___raw_index == .end)
+    assert(__parent_ != .nullptr || pointee.___tracking_tag == .end)
     return __parent_ == .nullptr
   }
 
@@ -48,7 +48,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   
   // そもそもチェックとして厳密ではない。garbagedの厳密さが十分ならチェック用かも
   internal func ___initialized_contains(_ initializedCount: Int) -> Bool {
-    0..<initializedCount ~= pointee.___raw_index
+    0..<initializedCount ~= pointee.___tracking_tag
   }
   
   @inlinable

@@ -11,7 +11,7 @@ import XCTest
       let nodeCount = 10
       let nodes = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: nodeCount)
       for i in 0..<nodeCount {
-        (nodes + i).initialize(to: .create(id: i, nullptr: UnsafeNode.nullptr))
+        (nodes + i).initialize(to: .create(tag: i, nullptr: UnsafeNode.nullptr))
       }
 
       // 2. UnsafeNode へのポインタを10個保持する生メモリを確保・初期化
@@ -26,7 +26,7 @@ import XCTest
       // 3. 各ポインタが正しく元の UnsafeNode を指しているか検証
       for i in 0..<nodeCount {
         let p = (ptrArray + i).pointee
-        XCTAssertEqual(p.pointee.___raw_index, i)
+        XCTAssertEqual(p.pointee.___tracking_tag, i)
         XCTAssertTrue(p == nodes + i)
       }
 

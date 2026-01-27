@@ -66,7 +66,7 @@ extension Validation {
   @inlinable
   @inline(__always)
   internal func ___is_null_or_end(_ ptr: _NodePtr) -> Bool {
-    ___is_null_or_end__(rawIndex: ptr.pointee.___raw_index)
+    ___is_null_or_end__(trackingTag: ptr.pointee.___tracking_tag)
   }
 
   /// - Complexity: O(1)
@@ -94,7 +94,7 @@ extension Validation {
   @inlinable
   @inline(__always)
   internal func ___initialized_contains(_ p: _NodePtr) -> Bool {
-    0..<initializedCount ~= p.pointee.___raw_index
+    0..<initializedCount ~= p.pointee.___tracking_tag
   }
 
   /// 真の場合、操作は失敗する
@@ -111,7 +111,7 @@ extension Validation {
     //    return !___initialized_contains(p) || ___is_garbaged(p)
     // begin -> false
     // end -> true
-    return ___is_null_or_end(p) || initializedCount <= p.pointee.___raw_index || ___is_garbaged(p)
+    return ___is_null_or_end(p) || initializedCount <= p.pointee.___tracking_tag || ___is_garbaged(p)
   }
 
   /// 真の場合、操作は失敗する
@@ -138,7 +138,7 @@ extension Validation {
 
     // begin -> true
     // end -> false
-    return p == nullptr || initializedCount <= p.pointee.___raw_index || ___is_begin(p)
+    return p == nullptr || initializedCount <= p.pointee.___tracking_tag || ___is_begin(p)
       || ___is_garbaged(p)
   }
 
@@ -151,7 +151,7 @@ extension Validation {
   @inlinable
   @inline(__always)
   internal func ___is_offset_null(_ p: _NodePtr) -> Bool {
-    return p == nullptr || initializedCount <= p.pointee.___raw_index || ___is_garbaged(p)
+    return p == nullptr || initializedCount <= p.pointee.___tracking_tag || ___is_garbaged(p)
   }
 
   /// 真の場合、操作は失敗する

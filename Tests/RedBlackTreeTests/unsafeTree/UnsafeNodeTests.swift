@@ -25,13 +25,13 @@ import XCTest
       var nullptr: _NodePtr { .nullptr }
     }
 
-    var end: UnsafeNode = .create(id: .end, nullptr: UnsafeNode.nullptr)
+    var end: UnsafeNode = .create(tag: .end, nullptr: UnsafeNode.nullptr)
     var nodes: [UnsafeNode] = []
     let count = 10
 
     override func setUpWithError() throws {
-      end = .create(id: .end, nullptr: UnsafeNode.nullptr)
-      nodes = .init(repeating: .create(id: .debug, nullptr: UnsafeNode.nullptr), count: count)
+      end = .create(tag: .end, nullptr: UnsafeNode.nullptr)
+      nodes = .init(repeating: .create(tag: .debug, nullptr: UnsafeNode.nullptr), count: count)
     }
 
     override func tearDownWithError() throws {

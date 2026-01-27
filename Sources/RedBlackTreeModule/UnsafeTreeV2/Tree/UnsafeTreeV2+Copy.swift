@@ -127,7 +127,7 @@ extension UnsafeTreeV2BufferHeader {
     /// 同一番号の新ノードを取得するメソッド内ユーティリティ
     @inline(__always)
     func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
-      let index = ptr.pointee.___raw_index
+      let index = ptr.pointee.___tracking_tag
       return switch index {
       case .nullptr: nullptr
       case .end: other.end_ptr
@@ -140,7 +140,7 @@ extension UnsafeTreeV2BufferHeader {
     func node(_ s: borrowing UnsafeNode) -> UnsafeNode {
       // 値は別途管理
       return .init(
-        ___raw_index: s.___raw_index,
+        ___tracking_tag: s.___tracking_tag,
         __left_: __ptr_(s.__left_),
         __right_: __ptr_(s.__right_),
         __parent_: __ptr_(s.__parent_),

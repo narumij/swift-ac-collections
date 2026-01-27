@@ -28,7 +28,7 @@ extension UnsafeTreeV2 {
   #if DEBUG
     @inlinable
     func _nodeID(_ p: _NodePtr) -> Int? {
-      return p.pointee.___raw_index
+      return p.pointee.___tracking_tag
     }
   #endif
 }
@@ -41,8 +41,8 @@ extension UnsafeTreeV2 {
       print(" count:", count)
       print(" freshPool:", _buffer.header.freshPoolActualCount, "/", capacity)
       print(" destroyCount:", _buffer.header.recycleCount)
-      print(" root:", __root.pointee.___raw_index as Any)
-      print(" begin:", __begin_node_.pointee.___raw_index as Any)
+      print(" root:", __root.pointee.___tracking_tag as Any)
+      print(" begin:", __begin_node_.pointee.___tracking_tag as Any)
 
       var it = makeUsedNodeIterator()
       while let p = it.next() {

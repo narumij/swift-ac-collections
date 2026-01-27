@@ -16,7 +16,7 @@ import XCTest
     var nullptr: Int { .nullptr }
     var end: Int { .end }
 
-    typealias _NodePtr = _PointerIndex
+    typealias _NodePtr = _TrackingTag
     typealias _NodeRef = _PointerIndexRef
 
     var __left_: _NodePtr = .nullptr
@@ -25,7 +25,7 @@ import XCTest
     var __nodes: [___Node] = []
     var __values: [Element] = []
 
-    var ___destroy_node: _PointerIndex = .nullptr
+    var ___destroy_node: _TrackingTag = .nullptr
     var ___destroy_count: Int = 0
 
     func __left_(_ p: _NodePtr) -> _NodePtr { p == .end ? __left_ : __nodes[p].__left_ }
@@ -103,7 +103,7 @@ import XCTest
     RemoveProtocol_std,
     IntThreeWayComparator
   {
-    typealias _RawValue = Element
+    typealias _Payload = Element
     typealias __value_type = Element
 
     let isMulti: Bool = true

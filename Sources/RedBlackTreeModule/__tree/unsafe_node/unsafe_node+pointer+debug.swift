@@ -103,7 +103,7 @@
   }
 
   @inlinable
-  func describePointerIndex(_ id: _PointerIndex) -> String {
+  func describePointerIndex(_ id: _TrackingTag) -> String {
     switch id {
     case .nullptr: return "nullptr"
     case .end: return "end"
@@ -136,7 +136,7 @@
       print(
         "Target:",
         "ptr=", last,
-        "id=", describePointerIndex(last.pointee.___raw_index)
+        "tag=", describePointerIndex(last.pointee.___tracking_tag)
       )
     } else {
       print("Target: <none>")
@@ -289,7 +289,7 @@ func dumpInvariantViolation(
   print(
     "Node:",
     "ptr=", node,
-    "id=", describePointerIndex(node.pointee.___raw_index),
+    "tag=", describePointerIndex(node.pointee.___tracking_tag),
     "color=", node.__is_black_ ? "black" : "red"
   )
 

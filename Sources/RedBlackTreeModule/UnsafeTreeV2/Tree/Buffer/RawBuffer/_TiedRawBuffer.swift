@@ -86,9 +86,9 @@ extension _TiedRawBuffer {
     }
 
     @inlinable
-    subscript(___raw_index: Int) -> _NodePtr? {
-      assert(___raw_index >= 0)
-      var remaining = ___raw_index
+    subscript(___tracking_tag: _TrackingTag) -> _NodePtr? {
+      assert(___tracking_tag >= 0)
+      var remaining = ___tracking_tag
       var p = bucketHead?.accessor(_value: deallocator.memoryLayout)
       while let h = p {
         let cap = h.capacity
@@ -108,8 +108,8 @@ extension _TiedRawBuffer {
 
   @nonobjc
   @inlinable
-  subscript(___raw_index: Int) -> _NodePtr? {
-    header[___raw_index]
+  subscript(___tracking_tag: _TrackingTag) -> _NodePtr? {
+    header[___tracking_tag]
   }
 
   @nonobjc

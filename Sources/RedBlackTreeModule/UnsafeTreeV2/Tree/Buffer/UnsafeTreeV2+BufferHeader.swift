@@ -193,9 +193,9 @@ extension UnsafeTreeV2BufferHeader {
      Violating this invariant may cause excessive traversal or undefined behavior.
     */
     @inlinable
-    subscript(___raw_index: Int) -> _NodePtr {
-      assert(___raw_index >= 0)
-      var remaining = ___raw_index
+    subscript(___tracking_tag: _TrackingTag) -> _NodePtr {
+      assert(___tracking_tag >= 0)
+      var remaining = ___tracking_tag
       var p = freshBucketHead?.accessor(_value: memoryLayout)
       while let h = p {
         let cap = h.capacity
@@ -287,10 +287,10 @@ extension UnsafeTreeV2BufferHeader {
     guard let p = popFresh() else {
       return nullptr
     }
-    assert(p.pointee.___raw_index == .debug)
+    assert(p.pointee.___tracking_tag == .debug)
     #if true
       p.initialize(to: nullptr.pointee)
-      p.pointee.___raw_index = freshPoolUsedCount
+      p.pointee.___tracking_tag = freshPoolUsedCount
     #else
       p.initialize(to: .create(id: freshPoolUsedCount))
     #endif
@@ -309,7 +309,7 @@ extension UnsafeTreeV2BufferHeader {
       assert(recycleCount >= 0)
     #endif
     let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
-    assert(p.pointee.___raw_index >= 0)
+    assert(p.pointee.___tracking_tag >= 0)
     return p
   }
 
@@ -319,7 +319,7 @@ extension UnsafeTreeV2BufferHeader {
     #endif
     let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
     p.__value_().initialize(to: k)
-    assert(p.pointee.___raw_index >= 0)
+    assert(p.pointee.___tracking_tag >= 0)
     return p
   }
 }

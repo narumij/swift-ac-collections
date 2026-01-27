@@ -131,7 +131,7 @@ extension _BucketAllocator {
     let endNode = header.end_ptr
     let beginPtr = header.begin_ptr
 
-    endNode.initialize(to: .create(id: .end, nullptr: nullptr))
+    endNode.initialize(to: .create(tag: .end, nullptr: nullptr))
     beginPtr.initialize(to: endNode)
     header.initialize(to: .init(capacity: capacity))
 
@@ -139,7 +139,7 @@ extension _BucketAllocator {
       do {
         var it = header._capacities(isHead: true, memoryLayout: memoryLayout)
         while let p = it.pop() {
-          p.pointee.___raw_index = .debug
+          p.pointee.___tracking_tag = .debug
         }
       }
     #endif
@@ -168,7 +168,7 @@ extension _BucketAllocator {
       do {
         var it = header._capacities(isHead: false, memoryLayout: memoryLayout)
         while let p = it.pop() {
-          p.pointee.___raw_index = .debug
+          p.pointee.___tracking_tag = .debug
         }
       }
     #endif
@@ -265,7 +265,7 @@ extension _BucketAllocator {
       do {
         var it = b._capacities(isHead: isHead, memoryLayout: memoryLayout)
         while let p = it.pop() {
-          p.pointee.___raw_index = .debug
+          p.pointee.___tracking_tag = .debug
         }
       }
     #endif

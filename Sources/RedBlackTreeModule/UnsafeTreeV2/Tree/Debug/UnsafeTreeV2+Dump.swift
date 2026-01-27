@@ -61,16 +61,16 @@ extension UnsafeTreeV2BufferHeader {
 
     if begin_ptr.pointee != nullptr {
       print(" begin_ptr              :", begin_ptr.pointee,
-            "id:", begin_ptr.pointee.pointee.___raw_index)
+            "tag:", begin_ptr.pointee.pointee.___tracking_tag)
     } else {
       print(" begin_ptr              : nullptr")
     }
 
     print(" root_ptr               :", __root,
-          "id:", __root.pointee.___raw_index)
+          "tag:", __root.pointee.___tracking_tag)
 
     print(" end_ptr                :", end_ptr,
-          "id:", end_ptr.pointee.___raw_index)
+          "tag:", end_ptr.pointee.___tracking_tag)
 
     print(" tiedRawBuffer present  :", _tied != nil)
     print(" uniquelyOwned          :", isRawBufferUniquelyOwned)
@@ -150,7 +150,7 @@ extension UnsafeTreeV2BufferHeader {
 
       if isHead {
         let endNode = bucket.end_ptr
-        print("  end node :", endNode, "id:", endNode.pointee.___raw_index)
+        print("  end node :", endNode, "tag:", endNode.pointee.___tracking_tag)
       }
 
       print("  ---- entries ----")
@@ -171,10 +171,10 @@ extension UnsafeTreeV2BufferHeader {
 
         print(
           String(
-            format: "   [%03d] node=%p id=%lld %@",
+            format: "   [%03d] node=%p tag=%lld %@",
             i,
             node,
-            node.pointee.___raw_index,
+            node.pointee.___tracking_tag,
             marker
           )
         )
@@ -232,7 +232,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
 
     if isHead {
       let endNode = end_ptr
-      print(" end node   :", endNode, "id:", endNode.pointee.___raw_index)
+      print(" end node   :", endNode, "tag:", endNode.pointee.___tracking_tag)
     }
 
     print(" ---- entries ----")
@@ -250,10 +250,10 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
 
       print(
         String(
-          format: " [%03d] node=%p id=%lld %@",
+          format: " [%03d] node=%p tag=%lld %@",
           i,
           node,
-          node.pointee.___raw_index,
+          node.pointee.___tracking_tag,
           marker
         )
       )
@@ -305,7 +305,7 @@ extension _RecyclePool {
           format: " [%03d] node=%p id=%lld recycle_count=%lld needs_deinit=%@ next=%@",
           i,
           p,
-          node.___raw_index,
+          node.___tracking_tag,
           node.___recycle_count,
           node.___needs_deinitialize ? "true" : "false",
           nextDesc
@@ -370,7 +370,7 @@ extension _TiedRawBuffer {
 
         if isHead {
           let endNode = bucket.end_ptr
-          print("  end node :", endNode, "id:", endNode.pointee.___raw_index)
+          print("  end node :", endNode, "tag:", endNode.pointee.___tracking_tag)
         }
 
         p = bucket.pointee.next
@@ -382,13 +382,13 @@ extension _TiedRawBuffer {
       print(" totalUsed             :", totalUsed)
 
       if let begin = self.begin_ptr?.pointee {
-        print(" begin_ptr             :", begin, "id:", begin.pointee.___raw_index)
+        print(" begin_ptr             :", begin, "tag:", begin.pointee.___tracking_tag)
       } else {
         print(" begin_ptr             : nullptr")
       }
 
       if let end = self.end_ptr {
-        print(" end_ptr               :", end, "id:", end.pointee.___raw_index)
+        print(" end_ptr               :", end, "tag:", end.pointee.___tracking_tag)
       } else {
         print(" end_ptr               : nullptr")
       }

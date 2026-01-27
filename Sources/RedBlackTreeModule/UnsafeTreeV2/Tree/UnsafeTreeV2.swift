@@ -175,7 +175,7 @@ extension UnsafeTreeV2 {
   // TODO: 名前が安直すぎる。いつか変更する
   @inlinable
   @inline(__always)
-  package func ___NodePtr(_ p: Int) -> _NodePtr {
+  package func ___NodePtr(_ p: _TrackingTag) -> _NodePtr {
     switch p {
     case .nullptr:
       return nullptr
@@ -198,7 +198,7 @@ extension UnsafeTreeV2 {
       // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
       // endはシングルトン的にしたい気持ちもある
       //      return self.isTriviallyIdentical(to: index.__tree_) ? index.rawValue : ___NodePtr(index.___raw_index)
-      return tied === index.tied ? index.rawValue : ___NodePtr(index.rawIndex)
+      return tied === index.tied ? index.rawValue : ___NodePtr(index.trackingTag)
     #else
       self === index.__tree_ ? index.rawValue : (_header[index.___raw_index])
     #endif

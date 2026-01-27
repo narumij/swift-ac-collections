@@ -27,9 +27,9 @@
 /// endはルートノードを保持するオブジェクトを指すかわりに、-1で表現している
 ///
 /// llvmの`__tree`ではポインタとイテレータが使われているが、イテレータはこのインデックスで代替している
-public typealias _PointerIndex = Int
+public typealias _TrackingTag = Int
 
-extension _PointerIndex {
+extension _TrackingTag {
 
   /// 赤黒木のIndexで、nullを表す
   @inlinable
@@ -48,17 +48,11 @@ extension _PointerIndex {
   package static var debug: Self {
     -999
   }
-
-  /// 数値を直接扱うことを避けるための初期化メソッド
-  @available(*, deprecated, message: "_NodePtrがIntからポインタに移行したので、概ね不要になったため")
-  @inlinable
-  @inline(__always)
-  package static func node(_ p: Int) -> Self { p }
 }
 
 /// pointer indexでのsentinel判定関数
 @inlinable
 @inline(__always)
-package func ___is_null_or_end(_ ptr: _PointerIndex) -> Bool {
+package func ___is_null_or_end(_ ptr: _TrackingTag) -> Bool {
   ptr < 0
 }

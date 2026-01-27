@@ -281,7 +281,7 @@ import Foundation
         case end:
           return "end"
         default:
-          return "\(i.pointee.___raw_index)"
+          return "\(i.pointee.___tracking_tag)"
         }
       }
       func nodeN(_ i: _NodePtr) -> String {
@@ -291,7 +291,7 @@ import Foundation
         case end:
           return "end"
         default:
-          return "#\(i.pointee.___raw_index)"
+          return "#\(i.pointee.___tracking_tag)"
         }
       }
       func nodeV(_ i: _NodePtr) -> String {
@@ -300,8 +300,8 @@ import Foundation
         } else {
           let c = String("\(i.__value_(as: _Payload.self).pointee)".flatMap { $0 == "\n" ? ["\n", "n"] : [$0] })
           //          let l: String = "\\\"\(c)\\\"\\n#\(i)"
-          let l: String = "\(c)\\n\\n#\(i.pointee.___raw_index)"
-          return "\(i.pointee.___raw_index) [label = \"\(l)\"];"
+          let l: String = "\(c)\\n\\n#\(i.pointee.___tracking_tag)"
+          return "\(i.pointee.___tracking_tag) [tag = \"\(l)\"];"
         }
       }
       func headerNote() -> [Graphviz.NodeProperty] {

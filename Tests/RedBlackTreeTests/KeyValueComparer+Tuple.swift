@@ -10,20 +10,20 @@ import RedBlackTreeModule
 // KeyValueの内部実装はPairに移行済み
 // 以下はテストでのみ使っている
 
-extension KeyValueComparer where _RawValue == (key: _Key, value: _MappedValue) {
+extension KeyValueComparer where _Payload == (key: _Key, value: _MappedValue) {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ element: _RawValue) -> _Key { element.key }
+  public static func __key(_ element: _Payload) -> _Key { element.key }
 
   @inlinable
   @inline(__always)
-  public static func ___mapped_value(_ element: _RawValue) -> _MappedValue { element.value }
+  public static func ___mapped_value(_ element: _Payload) -> _MappedValue { element.value }
 
   @inlinable
   @inline(__always)
   public static func ___with_mapped_value<T>(
-    _ element: inout _RawValue, _ f: (inout _MappedValue) throws -> T
+    _ element: inout _Payload, _ f: (inout _MappedValue) throws -> T
   ) rethrows -> T {
     try f(&element.value)
   }

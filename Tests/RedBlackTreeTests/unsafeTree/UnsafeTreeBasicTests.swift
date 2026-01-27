@@ -57,18 +57,18 @@ import XCTest
 
       do {
         var it = storage.makeUsedNodeIterator()
-        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 0)
-        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 1)
-        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 2)
-        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 3)
-        XCTAssertEqual(it.next().map(\.pointee.___raw_index), nil)
-        XCTAssertEqual(it.next().map(\.pointee.___raw_index), nil)
+        XCTAssertEqual(it.next().map(\.pointee.___tracking_tag), 0)
+        XCTAssertEqual(it.next().map(\.pointee.___tracking_tag), 1)
+        XCTAssertEqual(it.next().map(\.pointee.___tracking_tag), 2)
+        XCTAssertEqual(it.next().map(\.pointee.___tracking_tag), 3)
+        XCTAssertEqual(it.next().map(\.pointee.___tracking_tag), nil)
+        XCTAssertEqual(it.next().map(\.pointee.___tracking_tag), nil)
       }
 
       //      throw XCTSkip()
 
       XCTAssertEqual(
-        storage.makeUsedNodeIterator().map(\.pointee.___raw_index),
+        storage.makeUsedNodeIterator().map(\.pointee.___tracking_tag),
         [0, 1, 2, 3])
 
       XCTAssertEqual(

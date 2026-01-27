@@ -15,13 +15,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-// TODO: BoundsExpressionのmap型への展開
-
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    // TODO: 新APIを整理し、全てのコレクションに展開する
-    
     @inlinable
     public subscript(bound: RedBlackTreeBound<Element>) -> Element? {
       let p = bound.relative(to: __tree_)

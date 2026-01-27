@@ -53,6 +53,7 @@ public
 #if false
   // TODO: 標準実装だとdistanceが重かった記憶。追加すること
   // TODO: あとで仕上げる
+  // そもそもインデックスコレクションの削除を検討している
   extension UnsafeIndexV2Collection {
 
     /// - Complexity: O(log *n* + *k*)

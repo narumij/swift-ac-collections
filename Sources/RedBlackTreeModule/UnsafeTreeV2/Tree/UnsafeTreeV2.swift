@@ -82,39 +82,13 @@ extension UnsafeTreeV2 {
   @inline(__always)
   var count: Int { withMutableHeader { $0.count } }
 
-  #if !DEBUG
-    @inlinable
-    @inline(__always)
-    var capacity: Int { withMutableHeader { $0.freshPoolCapacity } }
+  @inlinable
+  @inline(__always)
+  var capacity: Int { withMutableHeader { $0.freshPoolCapacity } }
 
-    @inlinable
-    @inline(__always)
-    var initializedCount: Int { withMutableHeader { $0.freshPoolUsedCount } }
-  #else
-    @inlinable
-    var capacity: Int {
-      @inline(__always)
-      get { _buffer.header.freshPoolCapacity }
-      set {
-        // TODO: setterが必要なテストをsetter不要にする
-        _buffer.withUnsafeMutablePointerToHeader {
-          $0.pointee.freshPoolCapacity = newValue
-        }
-      }
-    }
-
-    @inlinable
-    var initializedCount: Int {
-      @inline(__always)
-      get { _buffer.header.freshPoolUsedCount }
-      set {
-        // TODO: setterが必要なテストをsetter不要にする
-        _buffer.withUnsafeMutablePointerToHeader {
-          $0.pointee.freshPoolUsedCount = newValue
-        }
-      }
-    }
-  #endif
+  @inlinable
+  @inline(__always)
+  var initializedCount: Int { withMutableHeader { $0.freshPoolUsedCount } }
 }
 
 extension UnsafeTreeV2 {

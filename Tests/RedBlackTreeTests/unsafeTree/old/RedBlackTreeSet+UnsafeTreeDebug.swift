@@ -14,17 +14,6 @@
             __parent_: __tree_.__parent_($0))
         }
       }
-      set {
-        __tree_._buffer.header.___flushRecyclePool()
-        __tree_.initializedCount = newValue.count
-        newValue.enumerated().forEach {
-          i, v in
-          __tree_.__is_black_(i, v.__is_black_)
-          __tree_.__left_(i, v.__left_)
-          __tree_.__right_(i, v.__right_)
-          __tree_.__parent_(i, v.__parent_)
-        }
-      }
     }
 
     @inlinable
@@ -32,13 +21,6 @@
       get {
         (0..<__tree_.initializedCount).map {
           __tree_.__value_($0)
-        }
-      }
-      set {
-        __tree_.initializedCount = newValue.count
-        newValue.enumerated().forEach {
-          i, v in
-          __tree_.___element(i, v)
         }
       }
     }

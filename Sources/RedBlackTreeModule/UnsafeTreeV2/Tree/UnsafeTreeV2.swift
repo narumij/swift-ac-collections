@@ -18,14 +18,12 @@
 @frozen
 public struct UnsafeTreeV2<Base: ___TreeBase> {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal init(_buffer: ManagedBufferPointer<Header, Void>) {
     self._buffer = _buffer
   }
 
-  @usableFromInline
-  var _buffer: BufferPointer
+  @usableFromInline var _buffer: BufferPointer
 }
 
 extension UnsafeTreeV2 {

@@ -52,9 +52,9 @@ package struct _BucketAccessor: _UnsafeNodePtrType {
   }
 
   @usableFromInline
-  func next(_value: _MemoryLayout) -> _BucketAccessor? {
+  func next(payload: _MemoryLayout) -> _BucketAccessor? {
     guard let next = pointer.next else { return nil }
-    return next._accessor(isHead: false, _value: _value)
+    return next._accessor(isHead: false, payload: payload)
   }
 }
 
@@ -62,14 +62,14 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
   @inline(__always)
-  func _accessor(isHead: Bool, _value: _MemoryLayout) -> _BucketAccessor {
+  func _accessor(isHead: Bool, payload: _MemoryLayout) -> _BucketAccessor {
     .init(
-      pointer: self, start: start(isHead: isHead, valueAlignment: _value.alignment),
-      stride: MemoryLayout<UnsafeNode>.stride + _value.stride)
+      pointer: self, start: start(isHead: isHead, valueAlignment: payload.alignment),
+      stride: MemoryLayout<UnsafeNode>.stride + payload.stride)
   }
 
   @inlinable
-  func accessor(_value: _MemoryLayout) -> _BucketAccessor? {
-    _accessor(isHead: true, _value: _value)
+  func accessor(payload: _MemoryLayout) -> _BucketAccessor? {
+    _accessor(isHead: true, payload: payload)
   }
 }

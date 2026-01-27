@@ -110,7 +110,7 @@ extension _FreshPool {
   subscript(___raw_index: Int) -> _NodePtr {
     assert(___raw_index >= 0)
     var remaining = ___raw_index
-    var p = freshBucketHead?.accessor(_value: memoryLayout)
+    var p = freshBucketHead?.accessor(payload: memoryLayout)
     while let h = p {
       let cap = h.capacity
       if remaining < cap {

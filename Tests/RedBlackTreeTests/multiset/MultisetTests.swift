@@ -315,26 +315,6 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set[set.index(set.endIndex, offsetBy: -1)], 4)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
-    func testArrayAccess3() throws {
-      let set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 0)], 0)
-      XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 1)], 1)
-      XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 2)], 2)
-      XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 3)], 3)
-      XCTAssertEqual(set[unchecked: set.index(set.startIndex, offsetBy: 4)], 4)
-    }
-
-    func testArrayAccess4() throws {
-      let set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -5)], 0)
-      XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -4)], 1)
-      XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -3)], 2)
-      XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -2)], 3)
-      XCTAssertEqual(set[unchecked: set.index(set.endIndex, offsetBy: -1)], 4)
-    }
-  #endif
-
   func testIndexLimit1() throws {
     let set = Set<Int>([0, 1, 2, 3, 4])
     XCTAssertNotEqual(

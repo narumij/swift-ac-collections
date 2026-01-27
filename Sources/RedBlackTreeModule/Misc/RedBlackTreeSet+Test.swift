@@ -31,11 +31,11 @@ extension RedBlackTreeSet {
     }
   }
 
-  extension RedBlackTreeSet {
-    package mutating func _checkUnique() -> Bool {
-      _isKnownUniquelyReferenced_LV2()
-    }
-  }
+//  extension RedBlackTreeSet {
+//    package mutating func _checkUnique() -> Bool {
+//      _isKnownUniquelyReferenced_LV2()
+//    }
+//  }
 #endif
 
 extension RedBlackTreeSet {

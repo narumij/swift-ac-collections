@@ -232,12 +232,12 @@
       assert(count <= capacity)
       assert(initializedCount <= capacity)
       assert(isReadOnly ? count == 0 : true)
-      assert(try! __tree_invariant_checked(__root))
+      assert(__tree_invariant(__root))
       guard
         UnsafeNode.nullptr.pointee.nullCheck(),
         end.pointee.endCheck(),
         count == 0 ? emptyCheck() : true,
-        (try? __tree_invariant_checked(__root)) == true,
+        __tree_invariant(__root),
         count >= 0,
         count <= initializedCount,
         count <= capacity,

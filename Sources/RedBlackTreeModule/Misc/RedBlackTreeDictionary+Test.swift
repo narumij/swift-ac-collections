@@ -32,11 +32,11 @@ extension RedBlackTreeDictionary {
     }
   }
 
-  extension RedBlackTreeDictionary {
-    package mutating func _checkUnique() -> Bool {
-      _isKnownUniquelyReferenced_LV2()
-    }
-  }
+//  extension RedBlackTreeDictionary {
+//    package mutating func _checkUnique() -> Bool {
+//      _isKnownUniquelyReferenced_LV2()
+//    }
+//  }
 #endif
 
 extension RedBlackTreeDictionary {

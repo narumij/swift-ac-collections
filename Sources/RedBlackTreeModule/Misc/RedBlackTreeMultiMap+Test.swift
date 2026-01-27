@@ -32,11 +32,11 @@ extension RedBlackTreeMultiMap {
     }
   }
 
-  extension RedBlackTreeMultiMap {
-    package mutating func _checkUnique() -> Bool {
-      _isKnownUniquelyReferenced_LV2()
-    }
-  }
+//  extension RedBlackTreeMultiMap {
+//    package mutating func _checkUnique() -> Bool {
+//      _isKnownUniquelyReferenced_LV2()
+//    }
+//  }
 #endif
 
 extension RedBlackTreeMultiMap {

@@ -23,9 +23,9 @@
 
 // MARK: - Primitives
 
-/// ノードを指す基本型の定義
+/// ノードポインタ型の定義
 public protocol _NodePtrType {
-  /// ノードを指す型
+  /// ノードポインタ型
   ///
   /// _模式図_
   /// ```
@@ -33,7 +33,7 @@ public protocol _NodePtrType {
   ///    ^_NodePtr
   /// ```
   associatedtype _NodePtr: Equatable
-  /// ノードへの参照型
+  /// ノード参照ポインタ型
   ///
   /// _模式図_
   /// ```

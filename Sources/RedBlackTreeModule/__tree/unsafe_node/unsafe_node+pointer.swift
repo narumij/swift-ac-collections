@@ -81,6 +81,10 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
   
+  /// ゆっくりendを返す
+  ///
+  /// どのくらいゆっくりかというとO(log N)ぐらい
+  ///
   /// ルートのペアレントまたはペアレントがヌルなのがend
   func __slow_end() -> _NodePtr {
     var __r = self
@@ -90,6 +94,10 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     return __r
   }
   
+  /// ゆっくりbeginを返す
+  ///
+  /// どのくらいゆっくりかというとO(log N)ぐらい
+  ///
   /// ルートからたどれる最小値ノードがbegin
   func __slow_begin() -> _NodePtr {
     __tree_min(__slow_end().__left_)

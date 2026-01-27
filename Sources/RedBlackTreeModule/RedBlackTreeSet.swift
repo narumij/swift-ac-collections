@@ -190,25 +190,6 @@ extension RedBlackTreeSet {
 
 // MARK: - Range Accessing Elements
 
-extension RedBlackTreeSet {
-
-  #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public subscript(bounds: Range<Index>) -> SubSequence {
-      __tree_.___ensureValid(
-        begin: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-
-      return .init(
-        tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-  #endif
-}
-
 // MARK: - Insertion
 
 extension RedBlackTreeSet {
@@ -387,27 +368,6 @@ extension RedBlackTreeSet {
     }
     return remove(at: index(before: endIndex))
   }
-
-  #if COMPATIBLE_ATCODER_2025
-    /// Removes the specified subrange of elements from the collection.
-    ///
-    /// - Important: 削除後は、subrangeのインデックスが無効になります。
-    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
-    ///     range must be valid indices of the collection.
-    /// - Returns: The key-value pair that correspond to `index`.
-    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
-    @inlinable
-    public mutating func removeSubrange<R: RangeExpression>(
-      _ bounds: R
-    ) where R.Bound == Index {
-
-      let bounds = bounds.relative(to: self)
-      __tree_.ensureUnique()
-      ___remove(
-        from: __tree_.rawValue(bounds.lowerBound),
-        to: __tree_.rawValue(bounds.upperBound))
-    }
-  #endif
 }
 
 extension RedBlackTreeSet {
@@ -564,11 +524,7 @@ extension RedBlackTreeSet {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {}
-#else
-  extension RedBlackTreeSet: Sequence {}
-#endif
+extension RedBlackTreeSet: Sequence {}
 
 extension RedBlackTreeSet {
 
@@ -584,15 +540,6 @@ extension RedBlackTreeSet {
   public func forEach(_ body: (Element) throws -> Void) rethrows {
     try _forEach(body)
   }
-
-  #if COMPATIBLE_ATCODER_2025
-    /// 特殊なforEach
-    @inlinable
-    @inline(__always)
-    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-      try _forEach(body)
-    }
-  #endif
 
   #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(*n*)
@@ -692,18 +639,6 @@ extension RedBlackTreeSet {
   public func isValid(index: Index) -> Bool {
     _isValid(index: index)
   }
-
-  #if COMPATIBLE_ATCODER_2025
-    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-    ///
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
-    where R.Bound == Index {
-      _isValid(bounds)
-    }
-  #endif
 
   /// - Complexity: O(1)
   @inlinable

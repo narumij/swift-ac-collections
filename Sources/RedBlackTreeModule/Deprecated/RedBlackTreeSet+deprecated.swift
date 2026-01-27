@@ -1,3 +1,9 @@
+
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet: Collection, BidirectionalCollection {}
+#endif
+
 #if COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeSet {
@@ -114,6 +120,74 @@
       let lower = ___lower_bound(elementRange.lowerBound)
       let upper = ___upper_bound(elementRange.upperBound)
       ___remove(from: lower, to: upper)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public subscript(bounds: Range<Index>) -> SubSequence {
+      __tree_.___ensureValid(
+        begin: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
+
+      return .init(
+        tree: __tree_,
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
+    }
+}
+#endif
+
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+    /// Removes the specified subrange of elements from the collection.
+    ///
+    /// - Important: 削除後は、subrangeのインデックスが無効になります。
+    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
+    ///     range must be valid indices of the collection.
+    /// - Returns: The key-value pair that correspond to `index`.
+    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
+    @inlinable
+    public mutating func removeSubrange<R: RangeExpression>(
+      _ bounds: R
+    ) where R.Bound == Index {
+
+      let bounds = bounds.relative(to: self)
+      __tree_.ensureUnique()
+      ___remove(
+        from: __tree_.rawValue(bounds.lowerBound),
+        to: __tree_.rawValue(bounds.upperBound))
+    }
+  }
+#endif
+
+
+#if COMPATIBLE_ATCODER_2025
+  /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
+  where R.Bound == Index {
+    _isValid(bounds)
+  }
+#endif
+
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+    /// 特殊なforEach
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+      try _forEach(body)
     }
   }
 #endif

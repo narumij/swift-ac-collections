@@ -55,7 +55,7 @@ public protocol _PayloadValueType {
   /// _模式図_
   /// ```
   /// ...|Node|Payload|Node...
-  ///    |    ^--_Payload
+  ///    |    ^--_PayloadValue
   ///    ^_NodePtr
   /// ```
   associatedtype _PayloadValue
@@ -67,7 +67,8 @@ public protocol _KeyType {
   ///
   /// _模式図_
   /// ```
-  /// ...|Node|(Key, ?)|Node...
+  /// ...|Node|Payload |Node...
+  ///    |    |(Key, ?)|
   ///    |    ^--_Key
   ///    ^_NodePtr
   /// ```
@@ -82,8 +83,9 @@ public protocol _MappedValueType {
   ///
   /// _模式図_
   /// ```
-  /// ...|Node|(Key, MappedValue)|Node...
-  ///    |          ^--_MappedValue
+  /// ...|Node|     Payload      |Node...
+  ///    |    |(Key, MappedValue)|
+  ///    |           ^--_MappedValue
   ///    ^_NodePtr
   /// ```
   associatedtype _MappedValue

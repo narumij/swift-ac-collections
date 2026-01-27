@@ -63,7 +63,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
     @available(*, deprecated, message: "性能問題があり廃止")
     @inlinable
     @inline(__always)
-    internal func _forEach(_ body: (Index, _RawValue) throws -> Void) rethrows {
+    internal func _forEach(_ body: (Index, _Payload) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _start, __l: _end) {
         try body(___index($0), __tree_[$0])
       }

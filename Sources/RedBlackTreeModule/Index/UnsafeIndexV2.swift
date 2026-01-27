@@ -116,7 +116,7 @@ extension UnsafeIndexV2: Comparable {
       preconditionFailure(.garbagedIndex)
     }
 
-    switch (lhs.rawIndex, rhs.rawIndex) {
+    switch (lhs.trackingTag, rhs.trackingTag) {
     case (.nullptr, _), (_, .nullptr):
       fatalError(.invalidIndex)
     case (.end, _):

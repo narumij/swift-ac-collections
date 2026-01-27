@@ -25,7 +25,7 @@ final class BucketAccessorTests: RedBlackTreeTestCase {
     
     let capacity = 1_000_000
     let allocator = _BucketAllocator(valueType: _RawValue.self) { _ in }
-    let (byteSize, alignment) = (allocator.otherCapacity(capacity: capacity), allocator._pair.alignment)
+    let (byteSize, alignment) = (allocator._allocationSize(capacity: capacity), allocator._pair.alignment)
     let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
     let header = storage.assumingMemoryBound(to: _Bucket.self)
     let accessor = _BucketAccessor(

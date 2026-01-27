@@ -131,33 +131,33 @@ extension ___UnsafeIndexV2 {
 }
 
 extension ___UnsafeIndexV2 where Self: Sequence {
-  
+
   @inlinable
   @inline(__always)
   internal func _isValid(
     _ rawRange: UnsafeTreeRangeExpression
   ) -> Bool {
 
-    let (l,u) = __tree_.rawRange(rawRange)
-    return !__tree_.___is_range_null(l,u)
+    let (l, u) = rawRange.relative(to: __tree_)
+    return !__tree_.___is_range_null(l, u)
   }
 }
 
 #if COMPATIBLE_ATCODER_2025
-extension ___UnsafeIndexV2 where Self: Collection {
+  extension ___UnsafeIndexV2 where Self: Collection {
 
-  @inlinable
-  @inline(__always)
-  internal func _isValid<R: RangeExpression>(
-    _ bounds: R
-  ) -> Bool where R.Bound == Index {
+    @inlinable
+    @inline(__always)
+    internal func _isValid<R: RangeExpression>(
+      _ bounds: R
+    ) -> Bool where R.Bound == Index {
 
-    let bounds = bounds.relative(to: self)
-    return !__tree_.___is_range_null(
-      __tree_.rawValue(bounds.lowerBound),
-      __tree_.rawValue(bounds.upperBound))
+      let bounds = bounds.relative(to: self)
+      return !__tree_.___is_range_null(
+        __tree_.rawValue(bounds.lowerBound),
+        __tree_.rawValue(bounds.upperBound))
+    }
   }
-}
 #endif
 
 extension ___UnsafeIndexV2 where Base: CompareUniqueTrait {

@@ -96,13 +96,13 @@ extension ___UnsafeStorageProtocolV2 {
     }
     __tree_.___ensureValid(begin: from, end: to)
     #if !COMPATIBLE_ATCODER_2025
-    guard __tree_.isValidRawRange(lower: from, upper: to) else {
-      fatalError(.invalidIndex)
-    }
+      guard __tree_.isValidRawRange(lower: from, upper: to) else {
+        fatalError(.invalidIndex)
+      }
     #endif
     return __tree_.erase(from, to)
   }
-  
+
   @inlinable
   @inline(__always)
   @discardableResult
@@ -115,7 +115,7 @@ extension ___UnsafeStorageProtocolV2 {
 
   @inlinable
   public mutating func ___remove(_ rawRange: UnsafeTreeRangeExpression) {
-    let (lower, upper) = __tree_.rawRange(rawRange)
+    let (lower, upper) = rawRange.relative(to: __tree_)
     guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
       fatalError(.invalidIndex)
     }
@@ -124,7 +124,7 @@ extension ___UnsafeStorageProtocolV2 {
 
   @inlinable
   public mutating func ___unchecked_remove(_ rawRange: UnsafeTreeRangeExpression) {
-    let (lower, upper) = __tree_.rawRange(rawRange)
+    let (lower, upper) = rawRange.relative(to: __tree_)
     ___unchecked_remove(from: lower, to: upper)
   }
 }

@@ -69,7 +69,7 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let (lower, upper) = __tree_.rawRange(bounds.rawRange)
+      let (lower, upper) = bounds.rawRange.relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }

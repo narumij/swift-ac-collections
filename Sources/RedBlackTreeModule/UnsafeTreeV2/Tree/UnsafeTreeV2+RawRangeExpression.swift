@@ -17,11 +17,6 @@
 
 extension UnsafeTreeV2 {
 
-  @inlinable @inline(__always)
-  func rawRange(_ range: UnsafeTreeRangeExpression) -> (lower: _NodePtr, upper: _NodePtr) {
-    range.rawRange(_begin: __begin_node_, _end: __end_node)
-  }
-  
   @inlinable
   func isValidRawRange(lower: _NodePtr, upper: _NodePtr) -> Bool {
     // lower <= upper は、upper > lowerなので

@@ -210,18 +210,18 @@ extension ___UnsafeKeyValueSequenceV2 {
   public func ___subscript(_ rawRange: UnsafeTreeRangeExpression)
     -> RedBlackTreeSliceV2<Base>.KeyValue
   {
-    let (lower, upper) = __tree_.rawRange(rawRange)
+    let (lower, upper) = rawRange.relative(to: __tree_)
     guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
       fatalError(.invalidIndex)
     }
     return .init(tree: __tree_, start: lower, end: upper)
   }
-  
+
   @inlinable
   public func ___unchecked_subscript(_ rawRange: UnsafeTreeRangeExpression)
-  -> RedBlackTreeSliceV2<Base>.KeyValue
+    -> RedBlackTreeSliceV2<Base>.KeyValue
   {
-    let (lower, upper) = __tree_.rawRange(rawRange)
+    let (lower, upper) = rawRange.relative(to: __tree_)
     return .init(tree: __tree_, start: lower, end: upper)
   }
 }

@@ -33,25 +33,48 @@ public enum UnsafeTreeRangeExpression: Equatable {
 
 extension UnsafeTreeRangeExpression {
 
-#if false
+  #if false
+    @usableFromInline
+    func _slow_pair()
+      -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)
+    {
+      switch self {
+      case .range(let lhs, let rhs):
+        (lhs, rhs)
+      case .closedRange(let lhs, let rhs):
+        (lhs, __tree_next(rhs))
+      case .partialRangeTo(let rhs):
+        (rhs.__slow_begin(), rhs)
+      case .partialRangeThrough(let rhs):
+        (rhs.__slow_begin(), __tree_next(rhs))
+      case .partialRangeFrom(let lhs):
+        (lhs, lhs.__slow_end())
+      }
+    }
+  #endif
+
   @usableFromInline
-  func _slow_pair()
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)
-  {
+  where Base: ___TreeBase {
+    let (_begin, _end) = (__tree_.__begin_node_, __tree_.__end_node)
     switch self {
     case .range(let lhs, let rhs):
-      (lhs, rhs)
+      return (lhs, rhs)
     case .closedRange(let lhs, let rhs):
-      (lhs, __tree_next(rhs))
+      guard !rhs.___is_end else { fatalError(.outOfBounds) }
+      return (lhs, __tree_next(rhs))
     case .partialRangeTo(let rhs):
-      (rhs.__slow_begin(), rhs)
+      return (_begin, rhs)
     case .partialRangeThrough(let rhs):
-      (rhs.__slow_begin(), __tree_next(rhs))
+      guard !rhs.___is_end else { fatalError(.outOfBounds) }
+      return (_begin, __tree_next(rhs))
     case .partialRangeFrom(let lhs):
-      (lhs, lhs.__slow_end())
+      return (lhs, _end)
+    case .unboundedRange:
+      return (_begin, _end)
     }
   }
-#endif
 
   @usableFromInline
   func rawRange(_begin: UnsafeMutablePointer<UnsafeNode>, _end: UnsafeMutablePointer<UnsafeNode>)
@@ -91,7 +114,7 @@ extension UnsafeTreeRangeExpression {
     case .partialRangeFrom(let lhs):
       .init(___from: lhs, ___to: _end)
     case .unboundedRange:
-        .init(___from: _begin, ___to: _end)
+      .init(___from: _begin, ___to: _end)
     }
   }
 }

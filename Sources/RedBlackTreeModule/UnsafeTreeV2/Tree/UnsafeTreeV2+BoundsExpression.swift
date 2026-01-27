@@ -32,7 +32,7 @@ extension RedBlackTreeBound {
 extension RedBlackTreeBoundsExpression {
 
   @inlinable @inline(__always)
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> UnsafeTreeRangeExpression
+  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> UnsafeTreeRangeExpression
   where Base: ___TreeBase, Base._Key == _Key {
     switch self {
     case .range(let lhs, let rhs):
@@ -46,5 +46,13 @@ extension RedBlackTreeBoundsExpression {
     case .partialRangeFrom(let lhs):
       return .partialRangeFrom(lhs.relative(to: __tree_))
     }
+  }
+
+  @inlinable @inline(__always)
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> (
+    UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>
+  )
+  where Base: ___TreeBase, Base._Key == _Key {
+    _relative(to: __tree_).relative(to: __tree_)
   }
 }

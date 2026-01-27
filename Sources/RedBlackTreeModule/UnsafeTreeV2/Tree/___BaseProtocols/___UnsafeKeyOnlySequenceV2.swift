@@ -58,17 +58,17 @@ extension ___UnsafeKeyOnlySequenceV2 {
 }
 
 #if COMPATIBLE_ATCODER_2025
-extension ___UnsafeKeyOnlySequenceV2 {
+  extension ___UnsafeKeyOnlySequenceV2 {
 
-  @available(*, deprecated, message: "性能問題があり廃止")
-  @inlinable
-  @inline(__always)
-  internal func _forEach(_ body: (Index, _RawValue) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(___index($0), __tree_[$0])
+    @available(*, deprecated, message: "性能問題があり廃止")
+    @inlinable
+    @inline(__always)
+    internal func _forEach(_ body: (Index, _RawValue) throws -> Void) rethrows {
+      try __tree_.___for_each_(__p: _start, __l: _end) {
+        try body(___index($0), __tree_[$0])
+      }
     }
   }
-}
 #endif
 
 extension ___UnsafeKeyOnlySequenceV2 {
@@ -103,21 +103,21 @@ extension ___UnsafeKeyOnlySequenceV2 {
 
   @inlinable
   public func ___subscript(_ rawRange: UnsafeTreeRangeExpression)
-  -> RedBlackTreeSliceV2<Base>.KeyOnly
+    -> RedBlackTreeSliceV2<Base>.KeyOnly
   {
-    let (lower, upper) = __tree_.rawRange(rawRange)
+    let (lower, upper) = rawRange.relative(to: __tree_)
     __tree_.___ensureValid(begin: lower, end: upper)
     guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
       fatalError(.invalidIndex)
     }
     return .init(tree: __tree_, start: lower, end: upper)
   }
-  
+
   @inlinable
   public func ___unchecked_subscript(_ rawRange: UnsafeTreeRangeExpression)
-  -> RedBlackTreeSliceV2<Base>.KeyOnly
+    -> RedBlackTreeSliceV2<Base>.KeyOnly
   {
-    let (lower, upper) = __tree_.rawRange(rawRange)
+    let (lower, upper) = rawRange.relative(to: __tree_)
     return .init(tree: __tree_, start: lower, end: upper)
   }
 }

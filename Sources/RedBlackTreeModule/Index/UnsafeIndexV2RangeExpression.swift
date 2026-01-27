@@ -54,6 +54,14 @@ extension UnsafeIndexV2RangeExpression: Sequence {
 
 extension UnsafeIndexV2RangeExpression {
 
+  @usableFromInline
+  func relative(to __tree_: Tree) -> (_NodePtr, _NodePtr) {
+    rawRange.relative(to: __tree_)
+  }
+}
+
+extension UnsafeIndexV2RangeExpression {
+
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
@@ -102,4 +110,3 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
 #endif
 
 // MARK: -
-

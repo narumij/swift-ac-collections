@@ -75,7 +75,7 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let (lower, upper) = __tree_.rawRange(bounds.rawRange)
+      let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
@@ -83,7 +83,7 @@
         lower, upper,
         shouldBeRemoved: shouldBeRemoved)
     }
-    
+
     @inlinable
     public mutating func removeSubrange(
       unchecked bounds: _RangeExpression,
@@ -91,7 +91,7 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let (lower, upper) = __tree_.rawRange(bounds.rawRange)
+      let (lower, upper) = bounds.relative(to: __tree_)
       try __tree_.___erase_if(
         lower, upper,
         shouldBeRemoved: shouldBeRemoved)

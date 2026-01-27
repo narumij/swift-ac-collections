@@ -94,44 +94,44 @@ extension UnsafeIndexV2: Equatable {
 }
 
 #if COMPATIBLE_ATCODER_2025
-// 本当は削除したいが、Collection適応でRange適応が必須なため、仕方なく残している
-extension UnsafeIndexV2: Comparable {
+  // 本当は削除したいが、Collection適応でRange適応が必須なため、仕方なく残している
+  extension UnsafeIndexV2: Comparable {
 
-  /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(1)
-  ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n*)
-  ///
-  ///   内部動作がユニークな場合、値の比較で解決できますが、
-  ///   内部動作がマルチの場合、ノード位置での比較となるので重くなります。
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
+    /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(1)
+    ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n*)
+    ///
+    ///   内部動作がユニークな場合、値の比較で解決できますが、
+    ///   内部動作がマルチの場合、ノード位置での比較となるので重くなります。
+    @inlinable
+    @inline(__always)
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+      // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
 
-    // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
+      // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
 
-    guard
-      !lhs.rawValue.___is_garbaged,
-      !rhs.rawValue.___is_garbaged
-    else {
-      preconditionFailure(.garbagedIndex)
+      guard
+        !lhs.rawValue.___is_garbaged,
+        !rhs.rawValue.___is_garbaged
+      else {
+        preconditionFailure(.garbagedIndex)
+      }
+
+      switch (lhs.trackingTag, rhs.trackingTag) {
+      case (.nullptr, _), (_, .nullptr):
+        fatalError(.invalidIndex)
+      case (.end, _):
+        return false
+      case (_, .end):
+        return true
+      default:
+        break
+      }
+
+      // rhsよせでもいいかもしれない(2026/1/13)
+
+      return Base.___ptr_comp(lhs.rawValue, rhs.rawValue)
     }
-
-    switch (lhs.trackingTag, rhs.trackingTag) {
-    case (.nullptr, _), (_, .nullptr):
-      fatalError(.invalidIndex)
-    case (.end, _):
-      return false
-    case (_, .end):
-      return true
-    default:
-      break
-    }
-    
-    // rhsよせでもいいかもしれない(2026/1/13)
-    
-    return Base.___ptr_comp(lhs.rawValue, rhs.rawValue)
   }
-}
 #endif
 
 // Stridableできるが、Range<Index>に標準実装が生えることと、
@@ -154,7 +154,7 @@ extension UnsafeIndexV2 {
   @inlinable
   //  @inline(__always)
   public func advanced(by n: Int) -> Self {
-//    return .init(rawValue: Base.advanced(rawValue, by: n), tie: tied)
+    //    return .init(rawValue: Base.advanced(rawValue, by: n), tie: tied)
     if rawValue.___is_offset_null {
       fatalError(.invalidIndex)
     }
@@ -211,9 +211,9 @@ extension UnsafeIndexV2 {
     guard !rawValue.___is_null else {
       fatalError(.invalidIndex)
     }
-    
+
     let prev = __tree_prev_iter(rawValue)
-    
+
     guard
       !rawValue.___is_garbaged,
       !prev.___is_null,
@@ -222,7 +222,7 @@ extension UnsafeIndexV2 {
     else {
       return nil
     }
-    
+
     var result = self
     result.rawValue = prev
     return result
@@ -285,7 +285,9 @@ extension UnsafeIndexV2 {
 
 #if DEBUG
   extension UnsafeIndexV2 {
-    fileprivate init(_unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, trackingTag: _TrackingTag) {
+    fileprivate init(
+      _unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, trackingTag: _TrackingTag
+    ) {
       self.rawValue = rawValue
       self.tied = _unsafe_tree.tied
     }
@@ -386,7 +388,7 @@ extension UnsafeIndexV2 {
     #if true
       // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
       // endはシングルトン的にしたい気持ちもある
-    return tied === index.tied
+      return tied === index.tied
         ? index.rawValue
         : self[index.trackingTag]
     #else

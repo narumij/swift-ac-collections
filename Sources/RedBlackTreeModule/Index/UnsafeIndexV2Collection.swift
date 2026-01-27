@@ -50,25 +50,10 @@ public
   internal var tied: _TiedRawBuffer
 }
 
-#if false
-  // TODO: 標準実装だとdistanceが重かった記憶。追加すること
-  // TODO: あとで仕上げる
-  // そもそもインデックスコレクションの削除を検討している
-  extension UnsafeIndexV2Collection {
-
-    /// - Complexity: O(log *n* + *k*)
-    @inlinable
-    @inline(__always)
-    public func distance(from start: Index, to end: Index) -> Int {
-      __tree_.___distance(from: start.rawValue, to: end.rawValue)
-    }
-  }
-#endif
-
 #if COMPATIBLE_ATCODER_2025
-extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection {}
+  extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection {}
 #else
-extension UnsafeIndexV2Collection: Sequence {}
+  extension UnsafeIndexV2Collection: Sequence {}
 #endif
 
 extension UnsafeIndexV2Collection {
@@ -96,13 +81,13 @@ extension UnsafeIndexV2Collection {
     position
   }
 
-#if COMPATIBLE_ATCODER_2025
-  public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
-    .init(
-      start: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue,
-      tie: bounds.lowerBound.tied)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
+      .init(
+        start: bounds.lowerBound.rawValue,
+        end: bounds.upperBound.rawValue,
+        tie: bounds.lowerBound.tied)
+    }
   #endif
 
   #if !COMPATIBLE_ATCODER_2025

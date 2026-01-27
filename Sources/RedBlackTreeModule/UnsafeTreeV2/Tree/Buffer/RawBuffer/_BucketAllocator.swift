@@ -255,7 +255,7 @@ extension _BucketAllocator {
   func _deinitializeNodeAndValues(isHead: Bool, _ b: _BucketPointer) {
     var it = b._counts(isHead: isHead, memoryLayout: memoryLayout)
     while let p = it.pop() {
-      if p.pointee.___needs_deinitialize {
+      if p.pointee.___has_payload_content {
         deinitialize(p.advanced(by: 1))
       } else {
         p.deinitialize(count: 1)

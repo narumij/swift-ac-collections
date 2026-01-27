@@ -41,7 +41,7 @@ extension UnsafeNode {
           L: \(l.map(String.init) ?? "nil")
           R: \(r.map(String.init) ?? "nil")
           P: \(p.map(String.init) ?? "nil")
-          needsDeinit: \(___needs_deinitialize)
+          needsDeinit: \(___has_payload_content)
           recycleCount: \(rc)
         """
     }

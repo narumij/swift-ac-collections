@@ -76,7 +76,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
 //extension UnsafeMutablePointer where Pointee == UnsafeNode {
 //  @inlinable @inline(__always)
-//  var isGarbaged: Bool { pointee.isGarbaged }
+//  var isPayloadEmpty: Bool { pointee.isPayloadEmpty }
 //}
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {

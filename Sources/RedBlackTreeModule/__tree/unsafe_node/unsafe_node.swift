@@ -108,18 +108,6 @@ public struct UnsafeNode {
 
   public typealias Pointer = UnsafeMutablePointer<UnsafeNode>
 
-  //  @inlinable
-  //  @inline(__always)
-  //  public init(
-  //    ___raw_index: Int
-  //  ) {
-  //    self.init(
-  //      ___raw_index: ___raw_index,
-  //      __left_: Self.nullptr,
-  //      __right_: Self.nullptr,
-  //      __parent_: Self.nullptr)
-  //  }
-
   @inlinable
   @inline(__always)
   public init(
@@ -128,14 +116,14 @@ public struct UnsafeNode {
     __right_: Pointer,
     __parent_: Pointer,
     __is_black_: Bool = false,
-    ___needs_deinitialize: Bool = true
+    ___has_payload_content: Bool = true
   ) {
     self.___tracking_tag = ___tracking_tag
     self.__left_ = __left_
     self.__right_ = __right_
     self.__parent_ = __parent_
     self.__is_black_ = __is_black_
-    self.___needs_deinitialize = ___needs_deinitialize
+    self.___has_payload_content = ___has_payload_content
   }
 
   /// Left child pointer of this red-black tree node.
@@ -167,17 +155,21 @@ public struct UnsafeNode {
   /// 赤黒木ノードの色を表すフラグ。
   /// `true` の場合は黒、`false` の場合は赤。
   public var __is_black_: Bool = false
-  /// Indicates whether the associated value requires deinitialization.
+
+  /// Indicates whether the payload stored after this node is currently loaded.
   ///
-  /// This flag is used by low-level allocators / pools to determine
-  /// whether the value stored after this node should be deinitialized.
+  /// When `true`, the associated payload memory is initialized and must be
+  /// deinitialized before reuse.
+  /// When `false`, the node is considered free / recycled.
   ///
   /// ---
   ///
-  /// 値の解放（deinitialize）が必要かどうかを示すフラグ。
-  /// ノード直後に配置された値を解放すべきかを判断するために、
-  /// 低レベルのアロケータ／プールで使用される。
-  public var ___needs_deinitialize: Bool
+  /// ノード直後に配置されたペイロードが有効（ロード済み）かどうかを示すフラグ。
+  ///
+  /// `true` の場合、ペイロードは初期化済みで解放対象となる。
+  /// `false` の場合、ペイロードは未使用または回収済み。
+  ///
+  public var ___has_payload_content: Bool
 
   // IndexアクセスでCoWが発生した場合のフォローバックとなる
   // TODO: 不変性が維持されているか考慮すること
@@ -242,7 +234,7 @@ extension UnsafeNode {
   @inlinable
   @inline(__always)
   var isGarbaged: Bool {
-    !___needs_deinitialize
+    !___has_payload_content
   }
 }
 

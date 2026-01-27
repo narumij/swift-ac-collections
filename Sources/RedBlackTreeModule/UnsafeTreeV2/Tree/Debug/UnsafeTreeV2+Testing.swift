@@ -76,14 +76,14 @@
       assert(__right_.pointee.___tracking_tag == tree.__right_.pointee.___tracking_tag)
       assert(__parent_.pointee.___tracking_tag == tree.__parent_.pointee.___tracking_tag)
       assert(__is_black_ == tree.__is_black_)
-      assert(___needs_deinitialize == tree.___needs_deinitialize)
+      assert(___has_payload_content == tree.___has_payload_content)
       guard
         ___tracking_tag == tree.___tracking_tag,
         __left_.pointee.___tracking_tag == tree.__left_.pointee.___tracking_tag,
         __right_.pointee.___tracking_tag == tree.__right_.pointee.___tracking_tag,
         __parent_.pointee.___tracking_tag == tree.__parent_.pointee.___tracking_tag,
         __is_black_ == tree.__is_black_,
-        ___needs_deinitialize == tree.___needs_deinitialize
+        ___has_payload_content == tree.___has_payload_content
       else {
         return false
       }
@@ -162,7 +162,7 @@
       assert(__right_ == UnsafeNode.nullptr)
       assert(__parent_ == UnsafeNode.nullptr)
       assert(__is_black_ == false)
-      assert(___needs_deinitialize == true)
+      assert(___has_payload_content == true)
       guard
         ___tracking_tag == .nullptr,
         __right_ == UnsafeNode.nullptr,
@@ -170,7 +170,7 @@
         __parent_ == UnsafeNode.nullptr,
         __is_black_ == false,
         // 判定を簡略化するための措置
-        ___needs_deinitialize == true
+        ___has_payload_content == true
       else {
         return false
       }
@@ -189,7 +189,7 @@
         __parent_ == UnsafeNode.nullptr,
         __is_black_ == false,
         // 判定を簡略化するための措置
-        ___needs_deinitialize == true
+        ___has_payload_content == true
       else {
         return false
       }
@@ -211,7 +211,7 @@
         __tree_invariant(__root),
         end.pointee.__left_ == UnsafeNode.nullptr,
         __begin_node_ == end,
-        end.pointee.___needs_deinitialize == true,
+        end.pointee.___has_payload_content == true,
         count == 0,
         count <= initializedCount,
         count <= capacity,

@@ -39,7 +39,7 @@ extension _RecyclePool {
       p.pointee.__right_ = nullptr
       p.pointee.__parent_ = nullptr
     #endif
-    p.pointee.___needs_deinitialize = false
+    p.pointee.___has_payload_content = false
     p.pointee.__left_ = recycleHead
     recycleHead = p
   }
@@ -49,7 +49,7 @@ extension _RecyclePool {
     let p = recycleHead
     recycleHead = p.pointee.__left_
     count += 1
-    p.pointee.___needs_deinitialize = true
+    p.pointee.___has_payload_content = true
     return p
   }
 

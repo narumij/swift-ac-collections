@@ -307,7 +307,7 @@ extension _RecyclePool {
           p,
           node.___tracking_tag,
           node.___recycle_count,
-          node.___needs_deinitialize ? "true" : "false",
+          node.___has_payload_content ? "true" : "false",
           nextDesc
         )
       )

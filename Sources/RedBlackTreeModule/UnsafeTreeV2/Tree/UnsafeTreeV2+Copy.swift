@@ -56,7 +56,7 @@ extension UnsafeTreeV2BufferHeader {
       unsafeBufferObject:
         copyBuffer(Base._Payload.self, minimumCapacity: minimumCapacity))
   }
-  
+
   /// バッファオブジェクトのコピーを作成する。
   ///
   /// - Parameters:
@@ -145,7 +145,7 @@ extension UnsafeTreeV2BufferHeader {
         __right_: __ptr_(s.__right_),
         __parent_: __ptr_(s.__parent_),
         __is_black_: s.__is_black_,
-        ___needs_deinitialize: s.___needs_deinitialize)
+        ___has_payload_content: s.___has_payload_content)
     }
 
     // 旧ノードを列挙する準備
@@ -156,7 +156,7 @@ extension UnsafeTreeV2BufferHeader {
       // ノードを初期化する
       d.initialize(to: node(s.pointee))
       // 必要な場合、値を初期化する
-      if s.pointee.___needs_deinitialize {
+      if s.pointee.___has_payload_content {
         d.__value_().initialize(to: s.__value_().pointee as _RawValue)
       }
     }
@@ -164,7 +164,7 @@ extension UnsafeTreeV2BufferHeader {
     // ルートノードを設定
     other.__root = __ptr_(__root)
     assert(__tree_invariant(other.__root))
-    
+
     // __begin_nodeを初期化
     other.begin_ptr.pointee = __ptr_(begin_ptr.pointee)
 

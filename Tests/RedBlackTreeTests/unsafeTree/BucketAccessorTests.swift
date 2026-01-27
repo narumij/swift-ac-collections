@@ -33,7 +33,7 @@ final class BucketAccessorTests: RedBlackTreeTestCase {
       start: header.start(isHead: false, valueAlignment: MemoryLayout<_RawValue>.alignment),
       stride: allocator._pair.stride)
     for i in 0..<capacity {
-      accessor[i].initialize(to: .create(id: .zero, nullptr: UnsafeNode.nullptr))
+      accessor[i].initialize(to: .create(tag: .zero, nullptr: UnsafeNode.nullptr))
       accessor[i].__value_(as: _RawValue.self).initialize(to: .zero)
     }
     // This is an example of a performance test case.
@@ -42,7 +42,7 @@ final class BucketAccessorTests: RedBlackTreeTestCase {
       var sum = 0
       for _ in 0..<1_000_000 {
         for j in 0..<capacity {
-          sum += accessor[j].pointee.___raw_index
+          sum += accessor[j].pointee.___tracking_tag
         }
       }
     }

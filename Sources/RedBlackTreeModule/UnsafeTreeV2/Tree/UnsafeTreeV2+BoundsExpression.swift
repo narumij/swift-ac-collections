@@ -15,36 +15,36 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension UnsafeTreeV2 {
+extension RedBlackTreeBound {
 
   @inlinable @inline(__always)
-  func relative(from b: RedBlackTreeBound<_Key>) -> _NodePtr {
-    switch b {
-    case .start: __begin_node_
-    case .end: __end_node
-    case .lower(let l): lower_bound(l)
-    case .upper(let r): upper_bound(r)
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> UnsafeMutablePointer<UnsafeNode>
+  where Base: ___TreeBase, Base._Key == _Key {
+    switch self {
+    case .start: __tree_.__begin_node_
+    case .end: __tree_.__end_node
+    case .lower(let l): __tree_.lower_bound(l)
+    case .upper(let r): __tree_.upper_bound(r)
     }
   }
 }
 
-extension UnsafeTreeV2 {
+extension RedBlackTreeBoundsExpression {
 
   @inlinable @inline(__always)
-  func relative<K>(to boundsExpression: RedBlackTreeBoundsExpression<K>)
-    -> UnsafeTreeRangeExpression
-  where K == _Key {
-    switch boundsExpression {
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> UnsafeTreeRangeExpression
+  where Base: ___TreeBase, Base._Key == _Key {
+    switch self {
     case .range(let lhs, let rhs):
-      return .range(from: relative(from: lhs), to: relative(from: rhs))
+      return .range(from: lhs.relative(to: __tree_), to: rhs.relative(to: __tree_))
     case .closedRange(let lhs, let rhs):
-      return .closedRange(from: relative(from: lhs), through: relative(from: rhs))
+      return .closedRange(from: lhs.relative(to: __tree_), through: rhs.relative(to: __tree_))
     case .partialRangeTo(let rhs):
-      return .partialRangeTo(relative(from: rhs))
+      return .partialRangeTo(rhs.relative(to: __tree_))
     case .partialRangeThrough(let rhs):
-      return .partialRangeThrough(relative(from: rhs))
+      return .partialRangeThrough(rhs.relative(to: __tree_))
     case .partialRangeFrom(let lhs):
-      return .partialRangeFrom(relative(from: lhs))
+      return .partialRangeFrom(lhs.relative(to: __tree_))
     }
   }
 }

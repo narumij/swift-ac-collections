@@ -198,47 +198,6 @@ extension RedBlackTreeMultiSet {
       end: __tree_.rawValue(bounds.upperBound))
   }
   #endif
-
-  #if !COMPATIBLE_ATCODER_2025 && false
-    @inlinable
-    @inline(__always)
-    public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
-      let bounds: Range<Index> = bounds.relative(to: self)
-
-      __tree_.___ensureValid(
-        begin: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-
-      return .init(
-        tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public subscript(unchecked bounds: Range<Index>) -> SubSequence {
-      .init(
-        tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public subscript<R>(unchecked bounds: R) -> SubSequence
-    where R: RangeExpression, R.Bound == Index {
-      let bounds: Range<Index> = bounds.relative(to: self)
-      return .init(
-        tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-  #endif
 }
 
 // MARK: - Insert

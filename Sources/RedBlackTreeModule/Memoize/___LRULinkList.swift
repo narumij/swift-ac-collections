@@ -122,23 +122,3 @@ extension ___LRULinkList {
     return _rankLowest
   }
 }
-
-extension ___LRULinkList {
-
-  /// インデックスをポインタに解決する
-  ///
-  /// 木が同一の場合、インデックスが保持するポインタを返す。
-  /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
-  @inlinable
-  @inline(__always)
-  internal func ___node_ptr(_ index: _TrackingTag) -> _NodePtr {
-    switch index {
-    case .nullptr:
-      return __tree_.nullptr
-    case .end:
-      return __tree_.end
-    default:
-      return __tree_._buffer.header[index]
-    }
-  }
-}

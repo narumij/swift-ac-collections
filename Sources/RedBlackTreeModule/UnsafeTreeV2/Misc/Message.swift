@@ -66,7 +66,6 @@ extension String {
   
   @usableFromInline
   internal static var treeMissmatch: String {
-    // TODO: 適切なエラーメッセージに変更
-    "木が異なる"
+    "RedBlackTree instances do not match."
   }
 }

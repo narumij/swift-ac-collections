@@ -15,10 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// TODO: 余力あるときにこちらを削減するか検討
-// ハンドルがBaseではなく_PayloadValueでの特殊化を行っていて、static版を利用できない
-// このため併存となりそう。併存してることの明記は必要そう
-
 @usableFromInline
 protocol _TreeNode_PtrCompProtocol:
   _UnsafeNodePtrType

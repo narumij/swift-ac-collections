@@ -131,7 +131,7 @@ extension ___LRULinkList {
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
   @inline(__always)
-  internal func ___node_ptr(_ index: Int) -> _NodePtr {
+  internal func ___node_ptr(_ index: _TrackingTag) -> _NodePtr {
     switch index {
     case .nullptr:
       return __tree_.nullptr

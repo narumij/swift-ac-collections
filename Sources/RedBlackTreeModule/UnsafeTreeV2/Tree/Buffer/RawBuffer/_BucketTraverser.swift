@@ -59,9 +59,9 @@ struct _BucketTraverser: _UnsafeNodePtrType {
   }
 
   @usableFromInline
-  func nextCounts(memoryLayout: _MemoryLayout) -> _BucketTraverser? {
+  func nextCounts(payload: _MemoryLayout) -> _BucketTraverser? {
     guard let next = pointer.next else { return nil }
-    return next._counts(isHead: false, memoryLayout: memoryLayout)
+    return next._counts(isHead: false, payload: payload)
   }
 }
 
@@ -70,20 +70,20 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   // TODO: secondaryなメソッドの命名が雑なのを直す
 
   @usableFromInline
-  func _counts(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketTraverser {
+  func _counts(isHead: Bool, payload: _MemoryLayout) -> _BucketTraverser {
     .init(
       pointer: self,
-      start: start(isHead: isHead, valueAlignment: memoryLayout.alignment),
-      stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride,
+      start: start(isHead: isHead, valueAlignment: payload.alignment),
+      stride: MemoryLayout<UnsafeNode>.stride + payload.stride,
       count: pointee.count)
   }
 
   @usableFromInline
-  func _capacities(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketTraverser {
+  func _capacities(isHead: Bool, payload: _MemoryLayout) -> _BucketTraverser {
     .init(
       pointer: self,
-      start: start(isHead: isHead, valueAlignment: memoryLayout.alignment),
-      stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride,
+      start: start(isHead: isHead, valueAlignment: payload.alignment),
+      stride: MemoryLayout<UnsafeNode>.stride + payload.stride,
       count: pointee.capacity)
   }
 }

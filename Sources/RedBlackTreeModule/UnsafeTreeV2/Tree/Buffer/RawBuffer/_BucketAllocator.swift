@@ -137,7 +137,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(isHead: true, memoryLayout: memoryLayout)
+        var it = header._capacities(isHead: true, payload: memoryLayout)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -166,7 +166,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(isHead: false, memoryLayout: memoryLayout)
+        var it = header._capacities(isHead: false, payload: memoryLayout)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -253,7 +253,7 @@ extension _BucketAllocator {
 
   @inlinable
   func _deinitializeNodeAndValues(isHead: Bool, _ b: _BucketPointer) {
-    var it = b._counts(isHead: isHead, memoryLayout: memoryLayout)
+    var it = b._counts(isHead: isHead, payload: memoryLayout)
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
         deinitialize(p.advanced(by: 1))
@@ -263,7 +263,7 @@ extension _BucketAllocator {
     }
     #if DEBUG
       do {
-        var it = b._capacities(isHead: isHead, memoryLayout: memoryLayout)
+        var it = b._capacities(isHead: isHead, payload: memoryLayout)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }

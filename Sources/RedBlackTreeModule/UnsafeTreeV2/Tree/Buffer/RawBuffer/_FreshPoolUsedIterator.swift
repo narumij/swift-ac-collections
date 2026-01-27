@@ -30,7 +30,7 @@ struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _Unsaf
     self.helper = bucket.flatMap {
       $0._counts(
         isHead: true,
-        memoryLayout:
+        payload:
           MemoryLayout<_PayloadValue>._memoryLayout)
     }
   }
@@ -44,7 +44,7 @@ struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _Unsaf
     if let p = helper?.pop() {
       return p
     }
-    helper = helper?.nextCounts(memoryLayout: MemoryLayout<_PayloadValue>._memoryLayout)
+    helper = helper?.nextCounts(payload: MemoryLayout<_PayloadValue>._memoryLayout)
     return helper?.pop()
   }
 }

@@ -157,7 +157,7 @@ extension UnsafeTreeV2BufferHeader {
 
       var it = bucket._capacities(
         isHead: isHead,
-        memoryLayout: memoryLayout
+        payload: memoryLayout
       )
 
       var i = 0
@@ -237,7 +237,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
 
     print(" ---- entries ----")
 
-    var it = _capacities(isHead: isHead, memoryLayout: memoryLayout)
+    var it = _capacities(isHead: isHead, payload: memoryLayout)
     var i = 0
 
     while let node = it.pop() {

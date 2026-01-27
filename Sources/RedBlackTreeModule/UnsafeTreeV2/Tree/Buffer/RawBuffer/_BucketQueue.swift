@@ -52,9 +52,9 @@ struct _BucketQueue {
   }
 
   @usableFromInline
-  func next(memoryLayout: _MemoryLayout) -> _BucketQueue? {
+  func next(payload: _MemoryLayout) -> _BucketQueue? {
     guard let next = pointer.next else { return nil }
-    return next._queue(isHead: false, memoryLayout: memoryLayout)
+    return next._queue(isHead: false, payload: payload)
   }
 }
 
@@ -63,15 +63,15 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   // TODO: secondaryなメソッドの命名が雑なのを直す
   @inlinable
   @inline(__always)
-  func _queue(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketQueue {
+  func _queue(isHead: Bool, payload: _MemoryLayout) -> _BucketQueue {
     .init(
-      pointer: self, start: start(isHead: isHead, valueAlignment: memoryLayout.alignment),
-      stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride)
+      pointer: self, start: start(isHead: isHead, valueAlignment: payload.alignment),
+      stride: MemoryLayout<UnsafeNode>.stride + payload.stride)
   }
 
   @inlinable
-  func queue(memoryLayout: _MemoryLayout) -> _BucketQueue? {
-    return _queue(isHead: true, memoryLayout: memoryLayout)
+  func queue(payload: _MemoryLayout) -> _BucketQueue? {
+    return _queue(isHead: true, payload: payload)
   }
 }
 

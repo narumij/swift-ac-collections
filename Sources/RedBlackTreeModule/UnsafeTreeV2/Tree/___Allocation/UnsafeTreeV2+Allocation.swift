@@ -491,7 +491,7 @@
       let s0 = MemoryLayout<UnsafeNode>.stride
       let s1 = MemoryLayout<_Value>.stride
       let s2 = MemoryLayout<_UnsafeNodeFreshBucket>.stride
-      let a2 = 0  // MemoryLayout<UnsafeNodeFreshBucket<_Value>>.alignment
+      let a2 = 0  // MemoryLayout<UnsafeNodeFreshBucket<_PayloadValue>>.alignment
 
       if minimumCapacity <= 2 {
         return 3

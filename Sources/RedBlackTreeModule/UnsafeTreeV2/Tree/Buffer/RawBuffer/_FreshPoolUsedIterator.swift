@@ -19,7 +19,7 @@
 /// 使用歴ありのノードを列挙するイテレータ
 @frozen
 @usableFromInline
-struct _FreshPoolUsedIterator<_Value>: IteratorProtocol, Sequence, _UnsafeNodePtrType {
+struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _UnsafeNodePtrType {
 
   @usableFromInline
   typealias BucketPointer = UnsafeMutablePointer<_Bucket>
@@ -31,7 +31,7 @@ struct _FreshPoolUsedIterator<_Value>: IteratorProtocol, Sequence, _UnsafeNodePt
       $0._counts(
         isHead: true,
         memoryLayout:
-          MemoryLayout<_Value>._memoryLayout)
+          MemoryLayout<_PayloadValue>._memoryLayout)
     }
   }
 
@@ -44,7 +44,7 @@ struct _FreshPoolUsedIterator<_Value>: IteratorProtocol, Sequence, _UnsafeNodePt
     if let p = helper?.pop() {
       return p
     }
-    helper = helper?.nextCounts(memoryLayout: MemoryLayout<_Value>._memoryLayout)
+    helper = helper?.nextCounts(memoryLayout: MemoryLayout<_PayloadValue>._memoryLayout)
     return helper?.pop()
   }
 }

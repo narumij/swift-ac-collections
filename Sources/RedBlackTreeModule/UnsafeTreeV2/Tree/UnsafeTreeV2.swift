@@ -162,8 +162,8 @@ extension UnsafeTreeV2 {
 
     @inlinable
     @inline(__always)
-    func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_Value> {
-      return _UnsafeNodeFreshBucketIterator<_Value>(bucket: _buffer.header.freshBucketHead)
+    func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_PayloadValue> {
+      return _UnsafeNodeFreshBucketIterator<_PayloadValue>(bucket: _buffer.header.freshBucketHead)
     }
   }
 #endif

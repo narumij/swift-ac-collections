@@ -840,8 +840,8 @@ final class EtcTests: RedBlackTreeTestCase {
   //    typealias _Payload = Int
   //    let s0 = MemoryLayout<UnsafeNode>.stride
   //    let a0 = MemoryLayout<UnsafeNode>.alignment
-  //    let s1 = MemoryLayout<_Value>.stride
-  //    let a1 = MemoryLayout<_Value>.alignment
+  //    let s1 = MemoryLayout<_PayloadValue>.stride
+  //    let a1 = MemoryLayout<_PayloadValue>.alignment
   //    let s2 = MemoryLayout<_Bucket>.stride
   //    let a2 = MemoryLayout<_Bucket>.alignment
   //

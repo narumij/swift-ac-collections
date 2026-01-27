@@ -341,7 +341,7 @@ extension UnsafeTreeV2 {
 
     @inlinable
     internal static func __create_unique<S>(sequence: __owned S) -> UnsafeTreeV2
-    where Base._Value == S.Element, S: Sequence {
+    where Base._PayloadValue == S.Element, S: Sequence {
 
       let count = (sequence as? (any Collection))?.count
       var tree: Tree = .create(minimumCapacity: count ?? 0)
@@ -363,7 +363,7 @@ extension UnsafeTreeV2 {
 
     @inlinable
     internal static func __create_multi<S>(sequence: __owned S) -> UnsafeTreeV2
-    where Base._Value == S.Element, S: Sequence {
+    where Base._PayloadValue == S.Element, S: Sequence {
 
       let count = (sequence as? (any Collection))?.count
       var tree: Tree = .create(minimumCapacity: count ?? 0)

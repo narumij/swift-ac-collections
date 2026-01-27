@@ -26,20 +26,49 @@
 /// ノードを指す基本型の定義
 public protocol _NodePtrType {
   /// ノードを指す型
+  ///
+  /// _模式図_
+  /// ```
+  /// ...|Node|Payload|Node...
+  ///    ^_NodePtr
+  /// ```
   associatedtype _NodePtr: Equatable
-  /// ノードを指すメンバへの参照型
+  /// ノードへの参照型
+  ///
+  /// _模式図_
+  /// ```
+  /// ...|           Node           |
+  ///    |left|right|parent|is_black|
+  ///    |    |     ^_NodeRef
+  ///    |    ^_NodeRef
+  ///    ^_NodeRef
+  /// ```
   associatedtype _NodeRef
 }
 
 /// ノードの積載値型の定義
 public protocol _PayloadType {
   /// ノードの積載値型
+  ///
+  /// _模式図_
+  /// ```
+  /// ...|Node|Payload|Node...
+  ///    |    ^--_Payload
+  ///    ^_NodePtr
+  /// ```
   associatedtype _Payload
 }
 
 /// 比較値型の定義
 public protocol _KeyType {
   /// 比較値型
+  ///
+  /// _模式図_
+  /// ```
+  /// ...|Node|(Key, ?)|Node...
+  ///    |    ^--_Key
+  ///    ^_NodePtr
+  /// ```
   associatedtype _Key
 }
 
@@ -47,6 +76,13 @@ public protocol _KeyType {
 /// キーバリュー積載時の対応値型の定義
 public protocol _MappedValueType {
   /// キーバリュー積載時の対応値型
+  ///
+  /// _模式図_
+  /// ```
+  /// ...|Node|(Key, MappedValue)|Node...
+  ///    |          ^--_MappedValue
+  ///    ^_NodePtr
+  /// ```
   associatedtype _MappedValue
 }
 

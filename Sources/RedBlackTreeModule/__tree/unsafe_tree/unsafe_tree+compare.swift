@@ -25,7 +25,7 @@ protocol _TreeNode_PtrCompProtocol:
     & _TreeNode_PtrCompInterface
     & _TreeKey_CompInterface
     & _Tree_IsMultiTraitInterface
-    & _nullptr_interface
+    & NullPtrInterface
     & EndInterface
 {
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
@@ -78,7 +78,7 @@ extension _TreeNode_PtrCompProtocol {
 protocol _TreeNode_PtrCompUniqueProtocol:
   _TreeNode_KeyInterface
     & EndInterface
-    & _nullptr_interface
+    & NullPtrInterface
     & _TreeKey_CompInterface
 {}
 

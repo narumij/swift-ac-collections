@@ -23,7 +23,7 @@ protocol InsertNodeAtProtocol_ptr:
     & EndNodeInterface
     & RootInterface
     & SizeInterface
-    & _nullptr_interface
+    & NullPtrInterface
     & TreeAlgorithmProtocol_ptr
 {}
 
@@ -61,7 +61,7 @@ protocol InsertUniqueProtocol_ptr:
     & InsertUniqueInterface
     & FindEqualInterface
     & AllocationInterface
-    & _nullptr_interface
+    & NullPtrInterface
 {}
 
 extension InsertUniqueProtocol_ptr {
@@ -97,7 +97,7 @@ extension InsertUniqueProtocol_ptr {
 
 @usableFromInline
 protocol InsertMultiProtocol: AllocationInterface & _TreeRawValue_KeyInterface & FindLeafInterface
-    & InsertNodeAtInterface & _nullptr_interface
+    & InsertNodeAtInterface & NullPtrInterface
 {}
 
 extension InsertMultiProtocol {
@@ -130,7 +130,7 @@ protocol InsertLastProtocol_ptr:
     & EndInterface
     & EndNodeInterface
     & RootInterface
-    & _nullptr_interface
+    & NullPtrInterface
 {}
 
 extension InsertLastProtocol_ptr {

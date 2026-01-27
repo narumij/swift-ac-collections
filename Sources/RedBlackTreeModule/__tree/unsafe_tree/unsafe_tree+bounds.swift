@@ -41,7 +41,7 @@ extension BoundBothProtocol {
 protocol BoundAlgorithmProtocol_ptr:
   BoundAlgorithmProtocol_common_ptr
     & _TreeKey_ThreeWayCompInterface
-    & _nullptr_interface
+    & NullPtrInterface
 {}
 
 extension BoundAlgorithmProtocol_ptr {
@@ -102,7 +102,7 @@ protocol BoundAlgorithmProtocol_common_ptr:
     & RootInterface
     & _TreeNode_KeyInterface
     & _TreeKey_CompInterface
-    & _nullptr_interface
+    & NullPtrInterface
 {}
 
 extension BoundAlgorithmProtocol_common_ptr {

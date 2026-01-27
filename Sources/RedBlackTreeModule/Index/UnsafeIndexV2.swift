@@ -30,7 +30,6 @@ where Base: ___TreeBase & ___TreeIndex {
   @usableFromInline
   typealias _RawValue = Tree._Payload
 
-  // メモリが解放される危険は解消したので、これを保持する必要性がなくなっている
   @usableFromInline
   internal var trackingTag: _TrackingTag {
     rawValue.pointee.___tracking_tag

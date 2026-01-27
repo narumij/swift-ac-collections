@@ -25,7 +25,7 @@ import XCTest
     func testEmptyInitial() throws {
       var header = Fixture(Int.self, nullptr: .nullptr, capacity: 0)
       XCTAssertEqual(header.recycleHead, .nullptr)
-      XCTAssertEqual(header.end_ptr.rawIndex, .end)
+      XCTAssertEqual(header.end_ptr.trackingTag, .end)
       XCTAssertEqual(header.end_ptr.__left_, .nullptr)
       XCTAssertEqual(header.begin_ptr.pointee, header.end_ptr)
       XCTAssertEqual(header.freshBucketCurrent?.pop(), nil)
@@ -36,7 +36,7 @@ import XCTest
       for i in 1..<100 {
         var header = Fixture(Int.self, nullptr: .nullptr, capacity: i)
         XCTAssertEqual(header.recycleHead, .nullptr)
-        XCTAssertEqual(header.end_ptr.rawIndex, .end)
+        XCTAssertEqual(header.end_ptr.trackingTag, .end)
         XCTAssertEqual(header.end_ptr.__left_, .nullptr)
         XCTAssertEqual(header.begin_ptr.pointee, header.end_ptr)
         var pointers = Set<_NodePtr>()

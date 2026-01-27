@@ -15,7 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension UnsafeTreeV2: Hashable where _Payload: Hashable {
+extension UnsafeTreeV2: Hashable where _PayloadValue: Hashable {
 
   @inlinable
   public func hash(into hasher: inout Hasher) {

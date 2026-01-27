@@ -14,11 +14,11 @@ extension UnsafeTreeV2 {
     print(title)
     defer { print(String(repeating: "=", count: title.count)) }
 
-    print(" valueType :", _Payload.self)
+    print(" valueType :", _PayloadValue.self)
     print(" count     :", count)
     print(" capacity  :", capacity)
 
-    let layout = MemoryLayout<_Payload>._memoryLayout
+    let layout = MemoryLayout<_PayloadValue>._memoryLayout
 
     _buffer.header.dumpHeader(label: "Header")
     _buffer.header.dumpFreshPool(label: "FreshPool", memoryLayout: layout)

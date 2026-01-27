@@ -21,7 +21,7 @@ final class KeyValueComparerTests: RedBlackTreeTestCase, KeyValueComparer, Compa
   struct _Key {
     var internalKey: Int
   }
-  typealias _Payload = (key: _Key, value: _MappedValue)
+  typealias _PayloadValue = (key: _Key, value: _MappedValue)
 
   let keys: [_Key] = (0..<3).map { .init(internalKey: $0) }
 

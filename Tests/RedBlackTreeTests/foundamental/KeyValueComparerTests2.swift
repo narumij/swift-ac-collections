@@ -16,7 +16,7 @@ final class KeyValueComparerTests2: RedBlackTreeTestCase, KeyValueComparer, Comp
 
   typealias _MappedValue = Int
   typealias _Key = Int
-  typealias _Payload = (key: _Key, value: _MappedValue)
+  typealias _PayloadValue = (key: _Key, value: _MappedValue)
 
   let keys: [_Key] = (0..<3) + []
 

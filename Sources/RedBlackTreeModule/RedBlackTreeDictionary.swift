@@ -70,7 +70,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
     typealias _MappedValue = Value
 
   public
-    typealias _Payload = RedBlackTreePair<Key, Value>
+    typealias _PayloadValue = RedBlackTreePair<Key, Value>
 
   @usableFromInline
   var __tree_: Tree

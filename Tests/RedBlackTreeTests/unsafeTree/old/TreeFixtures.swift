@@ -103,7 +103,7 @@ import XCTest
     RemoveProtocol_std,
     IntThreeWayComparator
   {
-    typealias _Payload = Element
+    typealias _PayloadValue = Element
     typealias __value_type = Element
 
     let isMulti: Bool = true

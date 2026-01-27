@@ -28,15 +28,15 @@ extension RedBlackTreeSliceV2 {
       & ___UnsafeIndexV2 & ___UnsafeKeyOnlySequenceV2
   where
     Base: ___TreeBase & ___TreeIndex,
-    Base._Key == Base._Payload,
+    Base._Key == Base._PayloadValue,
     Base._Key: Comparable
   {
 
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _NodePtr = Tree._NodePtr
     public typealias _Key = Tree._Key
-    public typealias _RawValue = Tree._Payload
-    public typealias Element = Tree._Payload
+    public typealias _RawValue = Tree._PayloadValue
+    public typealias Element = Tree._PayloadValue
     public typealias Index = Tree.Index
     public typealias Indices = Tree.Indices
     public typealias SubSequence = Self

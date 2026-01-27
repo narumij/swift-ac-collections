@@ -49,7 +49,7 @@ public protocol _NodePtrType {
 }
 
 /// ノードの積載値型の定義
-public protocol _PayloadType {
+public protocol _PayloadValueType {
   /// ノードの積載値型
   ///
   /// _模式図_
@@ -58,7 +58,7 @@ public protocol _PayloadType {
   ///    |    ^--_Payload
   ///    ^_NodePtr
   /// ```
-  associatedtype _Payload
+  associatedtype _PayloadValue
 }
 
 /// 比較値型の定義
@@ -92,18 +92,18 @@ public protocol _MappedValueType {
 // MARK: - Conditions
 
 /// 必ず積載型と比較型を持つ
-public protocol _BaseType: _PayloadType & _KeyType {}
+public protocol _BaseType: _PayloadValueType & _KeyType {}
 
 /// SetやMultiSetは積載型と比較型が同じ
 public protocol _ScalarBaseType: _BaseType
-where _Payload == _Key {}
+where _PayloadValue == _Key {}
 
 /// DictionaryやMultiMapは積載型と比較型は互いに異なり、対応値型がある
 public protocol _KeyValueBaseType: _BaseType & _MappedValueType {}
 
 /// DictionaryやMultiMapは積載型にRedBlackTreePairを用いる
 public protocol _PairBaseType: _KeyValueBaseType
-where _Payload == RedBlackTreePair<_Key, _MappedValue> {}
+where _PayloadValue == RedBlackTreePair<_Key, _MappedValue> {}
 
 // MARK: - Aliases
 
@@ -140,8 +140,8 @@ where __node_value_type == _Key {
 
 /// 積載型の別名定義
 @usableFromInline
-protocol __value_type: _PayloadType
-where __value_type == _Payload {
+protocol __value_type: _PayloadValueType
+where __value_type == _PayloadValue {
   /// 保持型の別名
   associatedtype __value_type
 }

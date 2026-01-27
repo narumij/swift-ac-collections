@@ -180,7 +180,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   func __key_ptr<Base: _PairBaseType>(with t: Base.Type)
     -> UnsafeMutablePointer<Base._Key>
   {
-    _ref(to: &__value_(as: Base._Payload.self).pointee.key)
+    _ref(to: &__value_(as: Base._PayloadValue.self).pointee.key)
   }
 
   /// `_RawValue`が`Pair`の場合のバリューへのポインタ
@@ -195,7 +195,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   func __mapped_value_ptr<Base: _PairBaseType>(with t: Base.Type)
     -> UnsafeMutablePointer<Base._MappedValue>
   {
-    _ref(to: &__value_(as: Base._Payload.self).pointee.value)
+    _ref(to: &__value_(as: Base._PayloadValue.self).pointee.value)
   }
 }
 

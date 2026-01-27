@@ -39,18 +39,18 @@ public struct _LinkingPair<Key, Value> {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 }
 
-extension KeyValueComparer where _Payload == _LinkingPair<_Key, _MappedValue> {
+extension KeyValueComparer where _PayloadValue == _LinkingPair<_Key, _MappedValue> {
 
   @inlinable @inline(__always)
-  public static func __key(_ element: _Payload) -> _Key { element.key }
+  public static func __key(_ element: _PayloadValue) -> _Key { element.key }
 
   @inlinable @inline(__always)
-  public static func __value(_ element: _Payload) -> _MappedValue { element.value }
+  public static func __value(_ element: _PayloadValue) -> _MappedValue { element.value }
 }
 
 @usableFromInline
 protocol ___LRULinkList: KeyValueComparer & _Tree_IsMultiTraitProtocol
-where _Payload == _LinkingPair<_Key, _MappedValue> {
+where _PayloadValue == _LinkingPair<_Key, _MappedValue> {
   associatedtype Value
   var __tree_: Tree { get set }
   var _rankHighest: _NodePtr { get set }

@@ -28,7 +28,7 @@ where Base: ___TreeBase & ___TreeIndex {
   public typealias Pointee = Tree.Pointee
 
   @usableFromInline
-  typealias _RawValue = Tree._Payload
+  typealias _RawValue = Tree._PayloadValue
 
   @usableFromInline
   internal var trackingTag: _TrackingTag {

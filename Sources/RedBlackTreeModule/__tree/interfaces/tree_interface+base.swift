@@ -104,21 +104,21 @@ protocol _TreeNode_KeyInterface: _NodePtrType & _KeyType & __node_value_type {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol _TreeNode_RawValueInterface: _nullptr_interface & _PayloadType & __value_type {
+protocol _TreeNode_RawValueInterface: _nullptr_interface & _PayloadValueType & __value_type {
   /// ノードの値要素を取得する
   @inlinable func __value_(_ p: _NodePtr) -> __value_type
 }
 
 @usableFromInline
-protocol _TreeRawValue_KeyInterface: _KeyType, _PayloadType {
+protocol _TreeRawValue_KeyInterface: _KeyType, _PayloadValueType {
   /// 要素から比較用のキー値を取り出す。
-  @inlinable func __key(_ e: _Payload) -> _Key
+  @inlinable func __key(_ e: _PayloadValue) -> _Key
 }
 
 @usableFromInline
 protocol _TreeRawValue_MappedValueInteface: _KeyValueBaseType {
   
-  @inlinable func ___mapped_value(_ element: _Payload) -> _MappedValue
+  @inlinable func ___mapped_value(_ element: _PayloadValue) -> _MappedValue
 }
 
 // 型の名前にねじれがあるので注意

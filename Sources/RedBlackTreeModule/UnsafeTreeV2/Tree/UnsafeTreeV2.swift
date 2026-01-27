@@ -32,7 +32,7 @@ extension UnsafeTreeV2 {
   public typealias Base = Base
   public typealias Tree = UnsafeTreeV2<Base>
   public typealias _Key = Base._Key
-  public typealias _Payload = Base._Payload
+  public typealias _PayloadValue = Base._PayloadValue
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   @usableFromInline typealias Header = UnsafeTreeV2BufferHeader
@@ -72,7 +72,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2: CustomStringConvertible {
   public var description: String {
-    "UnsafeTreeV2<\(Base._Payload.self)>._Storage\(_buffer.header)"
+    "UnsafeTreeV2<\(Base._PayloadValue.self)>._Storage\(_buffer.header)"
   }
 }
 
@@ -122,7 +122,7 @@ extension UnsafeTreeV2 {
   // _NodePtrがIntだった頃の名残
   @nonobjc
   @inlinable
-  internal subscript(_ pointer: _NodePtr) -> _Payload {
+  internal subscript(_ pointer: _NodePtr) -> _PayloadValue {
     @inline(__always) _read {
       assert(___initialized_contains(pointer))
       yield pointer.__value_().pointee
@@ -151,7 +151,7 @@ extension UnsafeTreeV2 {
 
     @inlinable
     @inline(__always)
-    func makeUsedNodeIterator() -> _FreshPoolUsedIterator<_Payload> {
+    func makeUsedNodeIterator() -> _FreshPoolUsedIterator<_PayloadValue> {
       return _buffer.header.makeUsedNodeIterator()
     }
   }

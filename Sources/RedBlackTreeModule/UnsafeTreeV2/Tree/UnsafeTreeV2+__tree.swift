@@ -210,7 +210,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  public func __construct_node(_ k: _Payload) -> _NodePtr {
+  public func __construct_node(_ k: _PayloadValue) -> _NodePtr {
     withMutableHeader {
       $0.__construct_node(k)
     }
@@ -229,13 +229,13 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package func __value_(_ p: _NodePtr) -> _Payload {
+  package func __value_(_ p: _NodePtr) -> _PayloadValue {
     p.__value_().pointee
   }
 
   @inlinable
   @inline(__always)
-  package func ___element(_ p: _NodePtr, _ __v: _Payload) {
+  package func ___element(_ p: _NodePtr, _ __v: _PayloadValue) {
     p.__value_().pointee = __v
   }
 }

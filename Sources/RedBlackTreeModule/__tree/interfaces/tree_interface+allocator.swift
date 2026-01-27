@@ -16,9 +16,9 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol AllocationInterface: _NodePtrType & _PayloadType {
+protocol AllocationInterface: _NodePtrType & _PayloadValueType {
   /// ノードを構築する
-  func __construct_node(_ k: _Payload) -> _NodePtr
+  func __construct_node(_ k: _PayloadValue) -> _NodePtr
 }
 
 @usableFromInline

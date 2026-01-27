@@ -25,7 +25,7 @@ protocol ___UnsafeKeyValueSequenceV2: ___UnsafeBaseV2, ___TreeIndex
 where
   Base: KeyValueComparer,
   Base._MappedValue == _MappedValue,
-  _Payload == RedBlackTreePair<_Key, _MappedValue>,
+  _PayloadValue == RedBlackTreePair<_Key, _MappedValue>,
   Element == (key: _Key, value: _MappedValue)
 {
   associatedtype _MappedValue
@@ -35,19 +35,19 @@ extension ___UnsafeKeyValueSequenceV2 {
 
   @inlinable
   @inline(__always)
-  internal static func ___element(_ __value: _Payload) -> Element {
+  internal static func ___element(_ __value: _PayloadValue) -> Element {
     (__value.key, __value.value)
   }
 
   @inlinable
   @inline(__always)
-  internal static func ___tree_value(_ __element: Element) -> _Payload {
+  internal static func ___tree_value(_ __element: Element) -> _PayloadValue {
     RedBlackTreePair(__element.key, __element.value)
   }
 
   @inlinable
   @inline(__always)
-  public static func ___pointee(_ __value: _Payload) -> Element {
+  public static func ___pointee(_ __value: _PayloadValue) -> Element {
     Self.___element(__value)
   }
 }
@@ -56,7 +56,7 @@ extension ___UnsafeKeyValueSequenceV2 {
 
   @inlinable
   @inline(__always)
-  internal func ___element(_ __value: _Payload) -> Element {
+  internal func ___element(_ __value: _PayloadValue) -> Element {
     Self.___element(__value)
   }
 }
@@ -108,7 +108,7 @@ extension ___UnsafeKeyValueSequenceV2 {
 
   @inlinable
   @inline(__always)
-  internal func ___value_for(_ __k: _Key) -> _Payload? {
+  internal func ___value_for(_ __k: _Key) -> _PayloadValue? {
     let __ptr = __tree_.find(__k)
     return __tree_.___is_null_or_end(__ptr) ? nil : __tree_[__ptr]
   }
@@ -231,7 +231,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   // あえてElementを返していない
   @inlinable
   @inline(__always)
-  public mutating func ___element(at ptr: _NodePtr) -> _Payload? {
+  public mutating func ___element(at ptr: _NodePtr) -> _PayloadValue? {
     guard !__tree_.___is_subscript_null(ptr) else {
       return nil
     }

@@ -40,7 +40,7 @@ where Parameters: Comparable {
     typealias KeyValue = _LinkingPair<_Key, _MappedValue>
 
   public
-    typealias _Payload = KeyValue
+    typealias _PayloadValue = KeyValue
 
   public
     typealias _Key = Key
@@ -122,14 +122,14 @@ extension ___LRUMemoizeStorage: KeyValueComparer {
 
   @inlinable
   @inline(__always)
-  public static func ___mapped_value(_ element: _Payload) -> _MappedValue {
+  public static func ___mapped_value(_ element: _PayloadValue) -> _MappedValue {
     element.value
   }
 
   @inlinable
   @inline(__always)
   public static func ___with_mapped_value<T>(
-    _ element: inout _Payload, _ f: (inout _MappedValue) throws -> T
+    _ element: inout _PayloadValue, _ f: (inout _MappedValue) throws -> T
   ) rethrows -> T {
     try f(&element.value)
   }

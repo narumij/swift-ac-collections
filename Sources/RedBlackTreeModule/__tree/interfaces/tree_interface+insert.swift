@@ -25,16 +25,16 @@ protocol InsertNodeAtInterface: _NodePtrType {
 }
 
 @usableFromInline
-protocol InsertUniqueInterface: _NodePtrType & _PayloadType {
-  func __insert_unique(_ x: _Payload) -> (__r: _NodePtr, __inserted: Bool)
-  func __emplace_unique_key_args(_ __k: _Payload) -> (__r: _NodePtr, __inserted: Bool)
+protocol InsertUniqueInterface: _NodePtrType & _PayloadValueType {
+  func __insert_unique(_ x: _PayloadValue) -> (__r: _NodePtr, __inserted: Bool)
+  func __emplace_unique_key_args(_ __k: _PayloadValue) -> (__r: _NodePtr, __inserted: Bool)
 }
 
 @usableFromInline
-protocol InsertLastInterface: _NodePtrType & _PayloadType {
+protocol InsertLastInterface: _NodePtrType & _PayloadValueType {
   func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef)
-  func ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _Payload)
+  func ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _PayloadValue)
     -> (__parent: _NodePtr, __child: _NodeRef)
   //  func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _RawValue) -> _NodePtr
-  func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _Payload) -> _NodePtr
+  func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr
 }

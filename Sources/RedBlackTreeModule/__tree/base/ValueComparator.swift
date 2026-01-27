@@ -27,7 +27,7 @@ protocol ValueComparator:
     & _BaseKey_LessThanInterface
 where
   _Key == Base._Key,
-  _Payload == Base._Payload
+  _PayloadValue == Base._PayloadValue
 {
   associatedtype
     Base:
@@ -39,7 +39,7 @@ extension ValueComparator {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ e: _Payload) -> _Key {
+  public static func __key(_ e: _PayloadValue) -> _Key {
     Base.__key(e)
   }
 
@@ -54,7 +54,7 @@ extension ValueComparator {
 
   @inlinable
   @inline(__always)
-  public func __key(_ e: _Payload) -> _Key {
+  public func __key(_ e: _PayloadValue) -> _Key {
     Base.__key(e)
   }
 
@@ -72,7 +72,7 @@ extension ValueComparator where Base: _BaseRawValue_MappedValueInterface {
   
   @inlinable
   @inline(__always)
-  static func ___mapped_value(_ __v: _Payload) -> _MappedValue {
+  static func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue {
     Base.___mapped_value(__v)
   }
 }
@@ -81,7 +81,7 @@ extension ValueComparator where Base: _BaseRawValue_MappedValueInterface {
   
   @inlinable
   @inline(__always)
-  func ___mapped_value(_ __v: _Payload) -> _MappedValue {
+  func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue {
     Base.___mapped_value(__v)
   }
 }

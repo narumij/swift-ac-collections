@@ -21,11 +21,11 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeStorageProtocolV2: ___Root & _PayloadType
+protocol ___UnsafeStorageProtocolV2: ___Root & _PayloadValueType
 where
   Base: ___TreeBase,
   Tree == UnsafeTreeV2<Base>,
-  _Payload == Tree._Payload,
+  _PayloadValue == Tree._PayloadValue,
   _NodePtr == Tree._NodePtr
 {
   associatedtype _NodePtr
@@ -66,7 +66,7 @@ extension ___UnsafeStorageProtocolV2 {
   @inlinable
   @inline(__always)
   @discardableResult
-  internal mutating func ___remove_first() -> _Payload? {
+  internal mutating func ___remove_first() -> _PayloadValue? {
     guard !__tree_.___is_empty else { return nil }
     let e = __tree_[__tree_.__begin_node_]
     _ = __tree_.erase(__tree_.__begin_node_)
@@ -76,7 +76,7 @@ extension ___UnsafeStorageProtocolV2 {
   @inlinable
   @inline(__always)
   @discardableResult
-  internal mutating func ___remove(at ptr: _NodePtr) -> _Payload? {
+  internal mutating func ___remove(at ptr: _NodePtr) -> _PayloadValue? {
     guard !__tree_.___is_subscript_null(ptr) else { return nil }
     let e = __tree_[ptr]
     _ = __tree_.erase(ptr)

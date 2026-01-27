@@ -298,7 +298,7 @@ import Foundation
         if i == end {
           return "end"
         } else {
-          let c = String("\(i.__value_(as: _Payload.self).pointee)".flatMap { $0 == "\n" ? ["\n", "n"] : [$0] })
+          let c = String("\(i.__value_(as: _PayloadValue.self).pointee)".flatMap { $0 == "\n" ? ["\n", "n"] : [$0] })
           //          let l: String = "\\\"\(c)\\\"\\n#\(i)"
           let l: String = "\(c)\\n\\n#\(i.pointee.___tracking_tag)"
           return "\(i.pointee.___tracking_tag) [tag = \"\(l)\"];"

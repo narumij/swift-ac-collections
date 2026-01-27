@@ -70,7 +70,7 @@ where
   Index == Tree.Index,
   Indices == Tree.Indices,
   _Key == Tree._Key,
-  _Payload == Tree._Payload
+  _PayloadValue == Tree._PayloadValue
 {
   associatedtype Index
   associatedtype Indices

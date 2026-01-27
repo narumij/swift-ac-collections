@@ -81,7 +81,7 @@ extension InsertUniqueProtocol_std {
   @inlinable
   //  @inline(__always)
   internal func
-    __insert_unique(_ x: _Payload) -> (__r: _NodePtr, __inserted: Bool)
+    __insert_unique(_ x: _PayloadValue) -> (__r: _NodePtr, __inserted: Bool)
   {
     __emplace_unique_key_args(x)
   }
@@ -89,7 +89,7 @@ extension InsertUniqueProtocol_std {
   @inlinable
   //  @inline(__always)
   internal func
-    __emplace_unique_key_args(_ __k: _Payload)
+    __emplace_unique_key_args(_ __k: _PayloadValue)
     -> (__r: _NodePtr, __inserted: Bool)
   {
     let (__parent, __child) = __find_equal(__key(__k))
@@ -134,7 +134,7 @@ extension InsertLastProtocol {
   @inlinable
   @inline(__always)
   internal func
-    ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _Payload)
+    ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _PayloadValue)
     -> (__parent: _NodePtr, __child: _NodeRef)
   {
     let __p = __construct_node(__k)
@@ -146,7 +146,7 @@ extension InsertLastProtocol {
   // 分岐の有無の差だとおもわれる
   @inlinable
   @inline(__always)
-  internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _Payload) -> _NodePtr {
+  internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
     let __child = __p == end ? __left_ref(__end_node) : __right_ref(__p)
     //                        ^--- これの差
     let __h = __construct_node(__k)
@@ -156,7 +156,7 @@ extension InsertLastProtocol {
 
   @inlinable
   @inline(__always)
-  internal func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _Payload) -> _NodePtr {
+  internal func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
     let __child = __left_ref(__p)
     let __h = __construct_node(__k)
     __insert_node_at(__p, __child, __h)

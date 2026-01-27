@@ -22,7 +22,7 @@ extension UnsafeTreeV2 {
   /// 対応する末尾チェック無しは`__tree`のerase(_:_:)となる
   @inlinable
   @discardableResult
-  func ___erase(
+  func ___checking_erase(
     _ __first: _NodePtr,
     _ __last: _NodePtr
   ) -> _NodePtr {
@@ -39,7 +39,7 @@ extension UnsafeTreeV2 {
   /// 末尾チェック無しの削除ループ
   @inlinable
   @discardableResult
-  func ___unchecked_erase_if(
+  func ___erase_if(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
     shouldBeRemoved: (_RawValue) throws -> Bool
@@ -58,7 +58,7 @@ extension UnsafeTreeV2 {
   /// 末尾チェック付きの削除ループ
   @inlinable
   @discardableResult
-  func ___erase_if(
+  func ___checking_erase_if(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
     shouldBeRemoved: (_RawValue) throws -> Bool

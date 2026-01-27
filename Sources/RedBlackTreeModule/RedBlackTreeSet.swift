@@ -415,7 +415,7 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     __tree_.ensureUnique()
-    try __tree_.___erase_if(
+    try __tree_.___checking_erase_if(
       __tree_.__begin_node_,
       __tree_.__end_node,
       shouldBeRemoved: shouldBeRemoved)

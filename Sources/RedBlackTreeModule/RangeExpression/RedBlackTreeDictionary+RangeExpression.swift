@@ -73,7 +73,7 @@
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(
+      try __tree_.___checking_erase_if(
         lower, upper,
         shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
     }

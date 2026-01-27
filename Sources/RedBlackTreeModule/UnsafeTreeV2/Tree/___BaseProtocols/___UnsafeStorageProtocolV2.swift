@@ -67,9 +67,7 @@ extension ___UnsafeStorageProtocolV2 {
   @inline(__always)
   @discardableResult
   internal mutating func ___remove_first() -> _RawValue? {
-    guard !__tree_.___is_empty else {
-      return nil
-    }
+    guard !__tree_.___is_empty else { return nil }
     let e = __tree_[__tree_.__begin_node_]
     _ = __tree_.erase(__tree_.__begin_node_)
     return e
@@ -79,9 +77,7 @@ extension ___UnsafeStorageProtocolV2 {
   @inline(__always)
   @discardableResult
   internal mutating func ___remove(at ptr: _NodePtr) -> _RawValue? {
-    guard !__tree_.___is_subscript_null(ptr) else {
-      return nil
-    }
+    guard !__tree_.___is_subscript_null(ptr) else { return nil }
     let e = __tree_[ptr]
     _ = __tree_.erase(ptr)
     return e
@@ -91,15 +87,11 @@ extension ___UnsafeStorageProtocolV2 {
   @inline(__always)
   @discardableResult
   internal mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
-    guard !__tree_.___is_end(from) else {
-      return __tree_.end
-    }
+    guard !__tree_.___is_end(from) else { return __tree_.end }
     __tree_.___ensureValid(begin: from, end: to)
-    #if !COMPATIBLE_ATCODER_2025
-      guard __tree_.isValidRawRange(lower: from, upper: to) else {
-        fatalError(.invalidIndex)
-      }
-    #endif
+    guard __tree_.isValidRawRange(lower: from, upper: to) else {
+      fatalError(.invalidIndex)
+    }
     return __tree_.erase(from, to)
   }
 
@@ -107,18 +99,13 @@ extension ___UnsafeStorageProtocolV2 {
   @inline(__always)
   @discardableResult
   internal mutating func ___unchecked_remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
-    guard !__tree_.___is_end(from) else {
-      return __tree_.end
-    }
-    return __tree_.___erase(from, to)
+    guard !__tree_.___is_end(from) else { return __tree_.end }
+    return __tree_.___checking_erase(from, to)
   }
 
   @inlinable
   public mutating func ___remove(_ rawRange: UnsafeTreeRangeExpression) {
     let (lower, upper) = rawRange.relative(to: __tree_)
-    guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
-      fatalError(.invalidIndex)
-    }
     ___remove(from: lower, to: upper)
   }
 

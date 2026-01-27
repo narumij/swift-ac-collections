@@ -31,8 +31,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @usableFromInline
   internal var ___is_null: Bool {
-//    assert(__parent_ != .nullptr || pointee.___raw_index == .end)
-    return pointee.___tracking_tag == .nullptr
+    pointee.___tracking_tag == .nullptr
   }
   
   @usableFromInline
@@ -44,11 +43,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   @usableFromInline
   internal var ___is_root: Bool {
     __parent_.___is_end
-  }
-  
-  // そもそもチェックとして厳密ではない。garbagedの厳密さが十分ならチェック用かも
-  internal func ___initialized_contains(_ initializedCount: Int) -> Bool {
-    0..<initializedCount ~= pointee.___tracking_tag
   }
   
   @inlinable

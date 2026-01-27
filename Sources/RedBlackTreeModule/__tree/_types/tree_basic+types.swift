@@ -35,12 +35,13 @@ public protocol _NodePtrType {
   ///    ^_NodePtr
   /// ```
   associatedtype _NodePtr: Equatable
+  
   /// ノード参照ポインタ型
   ///
   /// _模式図_
   /// ```
-  /// ...|           Node           |
-  ///    |left|right|parent|is_black|
+  /// ...|             Node             |
+  ///    |left|right|parent|is_black|etc|
   ///    |    |     ^_NodeRef
   ///    |    ^_NodeRef
   ///    ^_NodeRef
@@ -65,19 +66,25 @@ public protocol _PayloadValueType {
 public protocol _KeyType {
   /// 比較値型
   ///
-  /// _模式図_
+  /// set, multiset
   /// ```
-  /// ...|Node|Payload |Node...
-  ///    |    |(Key, ?)|
-  ///    |    ^--_Key
+  /// ...|Node|Payload|Node...
+  ///    |    |Key    |
+  ///    |     ^--_Key
+  ///    ^_NodePtr
+  /// ```
+  ///
+  /// dictionary, multimap, etc
+  /// ```
+  /// ...|Node|     Payload      |Node...
+  ///    |    |(Key, MappedValue)|
+  ///    |      ^--_Key
   ///    ^_NodePtr
   /// ```
   associatedtype _Key
 }
 
 /// キーバリュー積載時の対応値型の定義
-///
-/// `_Value`という型名はこのコードベースでは中途半端で混乱の元なので使用しない方針とする
 public protocol _MappedValueType {
   /// キーバリュー積載時の対応値型
   ///
@@ -93,7 +100,16 @@ public protocol _MappedValueType {
 
 // MARK: - Conditions
 
+/// 基本型
+///
 /// 必ず積載型と比較型を持つ
+///
+/// 型名に`Base`をもつのは、クラスレベルでの制約や定義をもつことを表す。
+///
+/// インスタンスレベルは`Tree`となる
+///
+/// 制約や定義が木のインスタンスに適用されるかどうかは木の実装次第
+///
 public protocol _BaseType: _PayloadValueType & _KeyType {}
 
 /// SetやMultiSetは積載型と比較型が同じ

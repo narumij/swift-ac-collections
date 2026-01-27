@@ -146,6 +146,7 @@ public struct UnsafeNode {
   ///
   /// 赤黒木ノードの親ノードを指すポインタ。
   public var __parent_: Pointer
+  
   /// Color flag of this red-black tree node.
   ///
   /// `true` indicates black, `false` indicates red.
@@ -204,9 +205,8 @@ public struct UnsafeNode {
   /// - `end` は `-1`
   public var ___tracking_tag: _TrackingTag
 
-  // メモリ管理をちゃんとするために隙間にねじ込んだ
-  // TODO: メモリ管理に整合性があるか考慮すること
   #if DEBUG
+    /// 再利用された回数
     public var ___recycle_count: Int = 0
   #endif
 

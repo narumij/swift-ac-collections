@@ -128,6 +128,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   /// ```
   ///
   /// 型推論で型が決定する
+  ///
+  /// インスタンス名は既存踏襲で`__value_`。型としてはより明確な`_PayloadValue`となる。
   @inlinable
   @inline(__always)
   func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue> {
@@ -144,6 +146,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   /// ```
   ///
   /// 引数で型が決定する
+  ///
+  /// インスタンス名は既存踏襲で`__value_`。型としてはより明確な`_PayloadValue`となる。
   @inlinable
   @inline(__always)
   package func __value_<_PayloadValue>(as t: _PayloadValue.Type) -> UnsafeMutablePointer<
@@ -162,7 +166,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   /// ```
   @inlinable
   @inline(__always)
-  func __key_ptr<Base: _ScalarBaseType>(with t: Base.Type)
+  func __key_ptr<Base: _ScalarBaseType>(of t: Base.Type)
     -> UnsafeMutablePointer<Base._Key>
   {
     __value_()
@@ -177,7 +181,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   /// ```
   @inlinable
   @inline(__always)
-  func __key_ptr<Base: _PairBaseType>(with t: Base.Type)
+  func __key_ptr<Base: _PairBaseType>(of t: Base.Type)
     -> UnsafeMutablePointer<Base._Key>
   {
     _ref(to: &__value_(as: Base._PayloadValue.self).pointee.key)
@@ -192,7 +196,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   /// ```
   @inlinable
   @inline(__always)
-  func __mapped_value_ptr<Base: _PairBaseType>(with t: Base.Type)
+  func __mapped_value_ptr<Base: _PairBaseType>(of t: Base.Type)
     -> UnsafeMutablePointer<Base._MappedValue>
   {
     _ref(to: &__value_(as: Base._PayloadValue.self).pointee.value)
@@ -209,7 +213,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
-  /// 単位移動量と移動量を指定して、他のノードを取得する
+  /// 単位移動量と移動量を指定して、他のノードアドレスを取得する
   ///
   /// ```
   /// ...|Node|stride|Node|stride|...
@@ -222,12 +226,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     _advanced(raw: (MemoryLayout<UnsafeNode>.stride + stride) * count)
   }
 
-  /// 型と移動量を指定して、他のノードを取得する
+  /// 型と移動量を指定して、他のノードアドレスを取得する
   ///
   /// ```
   /// ...|Node|PayloadValue|Node|PayloadValue|...
-  ///    |                 ^self             |
-  ///    ^--_advanced -1                     ^--_advanced +1
+  ///    ^--_advanced -1   ^--self           ^--_advanced +1
   /// ```
   @inlinable
   @inline(__always)

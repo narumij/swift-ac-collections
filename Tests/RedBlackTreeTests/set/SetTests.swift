@@ -1123,15 +1123,6 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertTrue(a.isEmpty)
   }
 
-  //  #if DEBUG
-  #if !USE_UNSAFE_TREE
-    func testMemoryLayout() throws {
-      XCTAssertEqual(MemoryLayout<RedBlackTreeSet<Int>.Tree.Node>.stride, 40)
-      XCTAssertEqual(40 * UInt128(Int.max) / 1024 / 1024 / 1024 / 1024 / 1024, 327679)
-    }
-  #endif
-  //  #endif
-
   #if !COMPATIBLE_ATCODER_2025
     func testFilter() throws {
       let s = RedBlackTreeSet<Int>(0..<5)

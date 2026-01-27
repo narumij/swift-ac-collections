@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/03.
 //
 
-#if DEBUG && !USE_UNSAFE_TREE
+#if DEBUG && false
   extension RedBlackTreeSet {
 
     @inlinable

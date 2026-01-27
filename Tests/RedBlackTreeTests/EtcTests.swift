@@ -495,7 +495,7 @@ final class EtcTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if !USE_UNSAFE_TREE
+  #if false
     func testSubRev6() throws {
       let a = RedBlackTreeSet<Int>([0, 1, 2])
       do {

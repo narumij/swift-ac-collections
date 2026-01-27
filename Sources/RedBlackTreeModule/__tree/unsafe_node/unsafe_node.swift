@@ -172,8 +172,6 @@ public struct UnsafeNode {
   ///
   public var ___has_payload_content: Bool
 
-  // IndexアクセスでCoWが発生した場合のフォローバックとなる
-  // TODO: 不変性が維持されているか考慮すること
   /// A lightweight tracking tag used to identify and correlate nodes.
   ///
   /// This tag is **not** part of the tree's logical key and must not be used

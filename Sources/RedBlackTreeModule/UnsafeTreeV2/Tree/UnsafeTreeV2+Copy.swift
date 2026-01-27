@@ -66,7 +66,7 @@ extension UnsafeTreeV2BufferHeader {
   ///     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
   @inlinable
   //  @inline(__always)
-  internal func copyBuffer<_RawValue>(_ t: _RawValue.Type, minimumCapacity: Int? = nil)
+  internal func copyBuffer<_PayloadValue>(_ t: _PayloadValue.Type, minimumCapacity: Int? = nil)
     -> UnsafeTreeV2Buffer
   {
 
@@ -78,7 +78,7 @@ extension UnsafeTreeV2BufferHeader {
     let _newBuffer =
       UnsafeTreeV2Buffer
       .create(
-        _RawValue.self,
+        _PayloadValue.self,
         minimumCapacity: newCapacity,
         nullptr: nullptr)
 
@@ -100,7 +100,7 @@ extension UnsafeTreeV2BufferHeader {
         return
       }
 
-      copyHeader(_RawValue.self, to: &newHeader.pointee, nullptr: nullptr)
+      copyHeader(_PayloadValue.self, to: &newHeader.pointee, nullptr: nullptr)
 
       assert(freshPoolUsedCount == newHeader.pointee.freshPoolUsedCount)
     }
@@ -115,14 +115,14 @@ extension UnsafeTreeV2BufferHeader {
   ///   - other: コピー先のヘッダ（あらかじめ容量が確保されている必要がある）
   ///   - nullptr: ヌルポインタ （型情報アクセスのオーバーヘッドを避けるため、呼び出し元のものを再利用する）
   @inlinable
-  func copyHeader<_RawValue>(
-    _ t: _RawValue.Type,
+  func copyHeader<_PayloadValue>(
+    _ t: _PayloadValue.Type,
     to other: inout UnsafeTreeV2BufferHeader,
     nullptr: _NodePtr
   ) {
 
     // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
-    let bucket = other.freshBucketHead!.accessor(payload: MemoryLayout<_RawValue>._memoryLayout)!
+    let bucket = other.freshBucketHead!.accessor(payload: MemoryLayout<_PayloadValue>._memoryLayout)!
 
     /// 同一番号の新ノードを取得するメソッド内ユーティリティ
     @inline(__always)
@@ -149,7 +149,7 @@ extension UnsafeTreeV2BufferHeader {
     }
 
     // 旧ノードを列挙する準備
-    var usedNodes = makeUsedNodeIterator() as UsedIterator<_RawValue>
+    var usedNodes = makeUsedNodeIterator() as UsedIterator<_PayloadValue>
 
     // ノード番号順に利用歴があるノード全てについて移行作業を行う
     while let s = usedNodes.next(), let d = other.popFresh() {
@@ -157,7 +157,7 @@ extension UnsafeTreeV2BufferHeader {
       d.initialize(to: node(s.pointee))
       // 必要な場合、値を初期化する
       if s.pointee.___has_payload_content {
-        d.__value_().initialize(to: s.__value_().pointee as _RawValue)
+        d.__value_().initialize(to: s.__value_().pointee as _PayloadValue)
       }
     }
 

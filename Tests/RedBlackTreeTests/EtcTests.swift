@@ -804,11 +804,11 @@ final class EtcTests: RedBlackTreeTestCase {
   }
 
   static func allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
-    typealias _RawValue = Int
+    typealias _PayloadValue = Int
     let s0 = MemoryLayout<UnsafeNode>.stride
     let a0 = MemoryLayout<UnsafeNode>.alignment
-    let s1 = MemoryLayout<_RawValue>.stride
-    let a1 = MemoryLayout<_RawValue>.alignment
+    let s1 = MemoryLayout<_PayloadValue>.stride
+    let a1 = MemoryLayout<_PayloadValue>.alignment
     let s2 = MemoryLayout<_Bucket>.stride
     let a2 = MemoryLayout<_Bucket>.alignment
     let s01 = s0 + s1
@@ -818,11 +818,11 @@ final class EtcTests: RedBlackTreeTestCase {
   }
 
   static func allocationCapacity(size: Int) -> Int {
-    typealias _RawValue = Int
+    typealias _PayloadValue = Int
     let s0 = MemoryLayout<UnsafeNode>.stride
     let a0 = MemoryLayout<UnsafeNode>.alignment
-    let s1 = MemoryLayout<_RawValue>.stride
-    let a1 = MemoryLayout<_RawValue>.alignment
+    let s1 = MemoryLayout<_PayloadValue>.stride
+    let a1 = MemoryLayout<_PayloadValue>.alignment
     let s2 = MemoryLayout<_Bucket>.stride
     let a2 = MemoryLayout<_Bucket>.alignment
     let s01 = s0 + s1

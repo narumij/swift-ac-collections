@@ -69,14 +69,14 @@ package struct _BucketAllocator {
 
   @inlinable
   @inline(__always)
-  public init<_RawValue>(
-    valueType: _RawValue.Type,
+  public init<_PayloadValue>(
+    valueType: _PayloadValue.Type,
     deinitialize: @escaping (UnsafeMutableRawPointer) -> Void
   ) {
-    self.memoryLayout = MemoryLayout<_RawValue>._memoryLayout
-    self._pair = .init(UnsafeNode.self, _RawValue.self)
+    self.payload = MemoryLayout<_PayloadValue>._memoryLayout
+    self._pair = .init(UnsafeNode.self, _PayloadValue.self)
     self.deinitialize = deinitialize
-    self.startOffset = max(0, memoryLayout.alignment - MemoryLayout<UnsafeNode>.alignment)
+    self.startOffset = max(0, payload.alignment - MemoryLayout<UnsafeNode>.alignment)
   }
 
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
@@ -84,7 +84,7 @@ package struct _BucketAllocator {
 
   /// `_Payload` のstrideとalignement
   @usableFromInline
-  let memoryLayout: _MemoryLayout
+  let payload: _MemoryLayout
   
   /// `Node|Value` のペア形式でのstrideとalignment
   @usableFromInline
@@ -137,7 +137,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(isHead: true, payload: memoryLayout)
+        var it = header._capacities(isHead: true, payload: payload)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -166,7 +166,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(isHead: false, payload: memoryLayout)
+        var it = header._capacities(isHead: false, payload: payload)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -253,7 +253,7 @@ extension _BucketAllocator {
 
   @inlinable
   func _deinitializeNodeAndValues(isHead: Bool, _ b: _BucketPointer) {
-    var it = b._counts(isHead: isHead, payload: memoryLayout)
+    var it = b._counts(isHead: isHead, payload: payload)
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
         deinitialize(p.advanced(by: 1))
@@ -263,7 +263,7 @@ extension _BucketAllocator {
     }
     #if DEBUG
       do {
-        var it = b._capacities(isHead: isHead, payload: memoryLayout)
+        var it = b._capacities(isHead: isHead, payload: payload)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }

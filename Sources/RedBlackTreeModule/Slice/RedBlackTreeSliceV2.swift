@@ -35,7 +35,7 @@ extension RedBlackTreeSliceV2 {
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _NodePtr = Tree._NodePtr
     public typealias _Key = Tree._Key
-    public typealias _RawValue = Tree._PayloadValue
+    public typealias _PayloadValue = Tree._PayloadValue
     public typealias Element = Tree._PayloadValue
     public typealias Index = Tree.Index
     public typealias Indices = Tree.Indices
@@ -68,7 +68,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._RawValues {
+  public __consuming func makeIterator() -> Tree._PayloadValues {
     _makeIterator()
   }
 }
@@ -362,7 +362,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func reversed() -> Tree._RawValues.Reversed {
+  public func reversed() -> Tree._PayloadValues.Reversed {
     _reversed()
   }
 }
@@ -410,7 +410,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   }
 }
 
-extension RedBlackTreeSliceV2.KeyOnly where _RawValue: Equatable {
+extension RedBlackTreeSliceV2.KeyOnly where _PayloadValue: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -422,7 +422,7 @@ extension RedBlackTreeSliceV2.KeyOnly where _RawValue: Equatable {
   }
 }
 
-extension RedBlackTreeSliceV2.KeyOnly where _RawValue: Comparable {
+extension RedBlackTreeSliceV2.KeyOnly where _PayloadValue: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -434,7 +434,7 @@ extension RedBlackTreeSliceV2.KeyOnly where _RawValue: Comparable {
   }
 }
 
-extension RedBlackTreeSliceV2.KeyOnly: Equatable where _RawValue: Equatable {
+extension RedBlackTreeSliceV2.KeyOnly: Equatable where _PayloadValue: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
@@ -444,7 +444,7 @@ extension RedBlackTreeSliceV2.KeyOnly: Equatable where _RawValue: Equatable {
   }
 }
 
-extension RedBlackTreeSliceV2.KeyOnly: Comparable where _RawValue: Comparable {
+extension RedBlackTreeSliceV2.KeyOnly: Comparable where _PayloadValue: Comparable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable

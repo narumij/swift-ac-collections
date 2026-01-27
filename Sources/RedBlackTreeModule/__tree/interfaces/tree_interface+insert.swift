@@ -35,6 +35,6 @@ protocol InsertLastInterface: _NodePtrType & _PayloadValueType {
   func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef)
   func ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _PayloadValue)
     -> (__parent: _NodePtr, __child: _NodeRef)
-  //  func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _RawValue) -> _NodePtr
+  //  func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr
   func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr
 }

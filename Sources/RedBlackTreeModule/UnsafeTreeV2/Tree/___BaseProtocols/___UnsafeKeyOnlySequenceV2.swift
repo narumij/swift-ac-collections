@@ -35,13 +35,13 @@ extension ___UnsafeKeyOnlySequenceV2 {
 
   @inlinable
   @inline(__always)
-  internal func _makeIterator() -> Tree._RawValues {
+  internal func _makeIterator() -> Tree._PayloadValues {
     .init(start: _start, end: _end, tie: __tree_.tied)
   }
 
   @inlinable
   @inline(__always)
-  internal func _reversed() -> Tree._RawValues.Reversed {
+  internal func _reversed() -> Tree._PayloadValues.Reversed {
     .init(start: _start, end: _end, tie: __tree_.tied)
   }
 }

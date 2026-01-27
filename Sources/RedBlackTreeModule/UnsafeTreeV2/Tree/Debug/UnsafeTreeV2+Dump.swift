@@ -21,7 +21,7 @@ extension UnsafeTreeV2 {
     let layout = MemoryLayout<_PayloadValue>._memoryLayout
 
     _buffer.header.dumpHeader(label: "Header")
-    _buffer.header.dumpFreshPool(label: "FreshPool", memoryLayout: layout)
+    _buffer.header.dumpFreshPool(label: "FreshPool", payload: layout)
     _buffer.header.dumpRecyclePool(label: "RecyclePool")
   }
 }
@@ -79,8 +79,8 @@ extension UnsafeTreeV2BufferHeader {
       print(" copyCount              :", copyCount)
     #endif
 
-    print(" valueStride            :", memoryLayout.stride)
-    print(" valueAlignment         :", memoryLayout.alignment)
+    print(" valueStride            :", payload.stride)
+    print(" valueAlignment         :", payload.alignment)
   }
 }
 
@@ -93,20 +93,20 @@ extension UnsafeTreeV2BufferHeader {
 extension UnsafeTreeV2BufferHeader {
 
   @usableFromInline
-  func dumpFreshPool<_RawValue>(
-    _ t: _RawValue.Type,
+  func dumpFreshPool<_PayloadValue>(
+    _ t: _PayloadValue.Type,
     label: String = ""
   ) {
     dumpFreshPool(
       label: label,
-      memoryLayout: MemoryLayout<_RawValue>._memoryLayout
+      payload: MemoryLayout<_PayloadValue>._memoryLayout
     )
   }
 
   @usableFromInline
   func dumpFreshPool(
     label: String = "",
-    memoryLayout: _MemoryLayout
+    payload: _MemoryLayout
   ) {
     let title = "==== FreshPool Dump \(label) ===="
     print(title)
@@ -119,8 +119,8 @@ extension UnsafeTreeV2BufferHeader {
     print(" actual usedCount    :", freshPoolActualCount)
 
     print(" nodeCount (tree)    :", count)
-    print(" valueStride         :", memoryLayout.stride)
-    print(" valueAlignment      :", memoryLayout.alignment)
+    print(" valueStride         :", payload.stride)
+    print(" valueAlignment      :", payload.alignment)
 
     var bucketIndex = 0
     var p = freshBucketHead
@@ -141,9 +141,9 @@ extension UnsafeTreeV2BufferHeader {
 
       let start = bucket.start(
         isHead: isHead,
-        valueAlignment: memoryLayout.alignment
+        valueAlignment: payload.alignment
       )
-      let stride = MemoryLayout<UnsafeNode>.stride + memoryLayout.stride
+      let stride = MemoryLayout<UnsafeNode>.stride + payload.stride
 
       print("  start ptr:", start)
       print("  stride   :", stride)
@@ -157,7 +157,7 @@ extension UnsafeTreeV2BufferHeader {
 
       var it = bucket._capacities(
         isHead: isHead,
-        payload: memoryLayout
+        payload: payload
       )
 
       var i = 0
@@ -198,14 +198,14 @@ extension UnsafeTreeV2BufferHeader {
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @usableFromInline
-  func dump<_RawValue>(
-    _ t: _RawValue.Type,
+  func dump<_PayloadValue>(
+    _ t: _PayloadValue.Type,
     label: String = "",
     isHead: Bool = true
   ) {
     dump(
       label: label,
-      memoryLayout: MemoryLayout<_RawValue>._memoryLayout,
+      payload: MemoryLayout<_PayloadValue>._memoryLayout,
       isHead: isHead
     )
   }
@@ -213,18 +213,18 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   @usableFromInline
   func dump(
     label: String = "",
-    memoryLayout: _MemoryLayout,
+    payload: _MemoryLayout,
     isHead: Bool = true
   ) {
     print("---- Bucket Dump \(label) ----")
     print(" isHead     :", isHead)
     print(" capacity   :", pointee.capacity)
     print(" count      :", pointee.count)
-    print(" alignment  :", memoryLayout.alignment)
-    print(" valueStride:", memoryLayout.stride)
+    print(" alignment  :", payload.alignment)
+    print(" valueStride:", payload.stride)
 
-    let start = start(isHead: isHead, valueAlignment: memoryLayout.alignment)
-    let stride = MemoryLayout<UnsafeNode>.stride + memoryLayout.stride
+    let start = start(isHead: isHead, valueAlignment: payload.alignment)
+    let stride = MemoryLayout<UnsafeNode>.stride + payload.stride
 
     print(" header ptr :", self)
     print(" start ptr  :", start)
@@ -237,7 +237,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
 
     print(" ---- entries ----")
 
-    var it = _capacities(isHead: isHead, payload: memoryLayout)
+    var it = _capacities(isHead: isHead, payload: payload)
     var i = 0
 
     while let node = it.pop() {
@@ -342,8 +342,8 @@ extension _TiedRawBuffer {
 
       print(" bucketHead            :", h.bucketHead == nil ? "nullptr" : "\(h.bucketHead!)")
       print(" valueAccessAllowed    :", h.isValueAccessAllowed)
-      print(" valueStride           :", h.deallocator.memoryLayout.stride)
-      print(" valueAlignment        :", h.deallocator.memoryLayout.alignment)
+      print(" valueStride           :", h.deallocator.payload.stride)
+      print(" valueAlignment        :", h.deallocator.payload.alignment)
 
       var bucketCount = 0
       var totalCapacity = 0

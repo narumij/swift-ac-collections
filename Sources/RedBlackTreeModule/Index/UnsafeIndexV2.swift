@@ -28,7 +28,7 @@ where Base: ___TreeBase & ___TreeIndex {
   public typealias Pointee = Tree.Pointee
 
   @usableFromInline
-  typealias _RawValue = Tree._PayloadValue
+  typealias _PayloadValue = Tree._PayloadValue
 
   @usableFromInline
   internal var trackingTag: _TrackingTag {
@@ -311,7 +311,7 @@ extension UnsafeIndexV2 {
 
 #if swift(>=5.5)
   extension UnsafeIndexV2: @unchecked Sendable
-  where _RawValue: Sendable {}
+  where _PayloadValue: Sendable {}
 #endif
 
 // MARK: - Convenience

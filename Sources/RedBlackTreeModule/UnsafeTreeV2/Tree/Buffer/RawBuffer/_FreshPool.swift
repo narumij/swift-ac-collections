@@ -39,7 +39,7 @@ protocol _FreshPool: _UnsafeNodePtrType {
   #endif
   var freshBucketAllocator: _BucketAllocator { get }
 
-  var memoryLayout: _MemoryLayout { get }
+  var payload: _MemoryLayout { get }
 }
 
 extension _FreshPool {
@@ -59,7 +59,7 @@ extension _FreshPool {
   //  @inline(__always)
   mutating func pushFreshBucket(head: _BucketPointer) {
     freshBucketHead = head
-    freshBucketCurrent = head.queue(payload: memoryLayout)
+    freshBucketCurrent = head.queue(payload: payload)
     freshBucketLast = head
     freshPoolCapacity += head.pointee.capacity
     #if DEBUG
@@ -86,7 +86,7 @@ extension _FreshPool {
     if let p = freshBucketCurrent?.pop() {
       return p
     }
-    freshBucketCurrent = freshBucketCurrent?.next(payload: memoryLayout)
+    freshBucketCurrent = freshBucketCurrent?.next(payload: payload)
     return freshBucketCurrent?.pop()
   }
 }
@@ -110,14 +110,14 @@ extension _FreshPool {
   subscript(___tracking_tag: Int) -> _NodePtr {
     assert(___tracking_tag >= 0)
     var remaining = ___tracking_tag
-    var p = freshBucketHead?.accessor(payload: memoryLayout)
+    var p = freshBucketHead?.accessor(payload: payload)
     while let h = p {
       let cap = h.capacity
       if remaining < cap {
         return h[remaining]
       }
       remaining -= cap
-      p = h.next(payload: memoryLayout)
+      p = h.next(payload: payload)
     }
     return nullptr
   }
@@ -131,7 +131,7 @@ extension _FreshPool {
   mutating func ___flushFreshPool() {
     freshBucketAllocator.deinitialize(bucket: freshBucketHead)
     freshPoolUsedCount = 0
-    freshBucketCurrent = freshBucketHead?.queue(payload: memoryLayout)
+    freshBucketCurrent = freshBucketHead?.queue(payload: payload)
   }
 
   @usableFromInline

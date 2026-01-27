@@ -89,14 +89,14 @@ extension _TiedRawBuffer {
     subscript(___tracking_tag: _TrackingTag) -> _NodePtr? {
       assert(___tracking_tag >= 0)
       var remaining = ___tracking_tag
-      var p = bucketHead?.accessor(payload: deallocator.memoryLayout)
+      var p = bucketHead?.accessor(payload: deallocator.payload)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {
           return h[remaining]
         }
         remaining -= cap
-        p = h.next(payload: deallocator.memoryLayout)
+        p = h.next(payload: deallocator.payload)
       }
       assert(false)
       return nil

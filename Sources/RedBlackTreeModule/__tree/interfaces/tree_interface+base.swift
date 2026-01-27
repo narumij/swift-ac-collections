@@ -104,7 +104,7 @@ protocol _TreeNode_KeyInterface: _NodePtrType & _KeyType & __node_value_type {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol _TreeNode_RawValueInterface: _nullptr_interface & _PayloadValueType & __value_type {
+protocol _TreeNode_PayloadValueInterface: _nullptr_interface & _PayloadValueType & __value_type {
   /// ノードの値要素を取得する
   @inlinable func __value_(_ p: _NodePtr) -> __value_type
 }

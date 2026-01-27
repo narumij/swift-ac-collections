@@ -13,7 +13,7 @@ import XCTest
   struct FreshPoolFixture<_PayloadValue>: _FreshPool {
     var freshBucketCurrent: RedBlackTreeModule._BucketQueue?
 
-    var memoryLayout: _MemoryLayout
+    var payload: _MemoryLayout
 
     func didUpdateFreshBucketHead() {
 
@@ -86,9 +86,9 @@ import XCTest
     // TODO: FIXME
     #if false
       func testAlignment1() throws {
-        typealias _RawValue = UInt8
-        typealias Fixture = FreshPoolFixture<_RawValue>
-        XCTAssertEqual(MemoryLayout<_RawValue>.alignment, 1)
+        typealias _PayloadValue = UInt8
+        typealias Fixture = FreshPoolFixture<_PayloadValue>
+        XCTAssertEqual(MemoryLayout<_PayloadValue>.alignment, 1)
         for i in [0, 1, 256, 1024] {
           do {
             let (size1, alignment1) = Fixture.allocationSize(capacity: i)
@@ -97,7 +97,7 @@ import XCTest
             XCTAssertEqual(alignment1, alignment2)
           }
           do {
-            let (size1, alignment1) = UnsafePair<_RawValue>.allocationSize(capacity: i)
+            let (size1, alignment1) = UnsafePair<_PayloadValue>.allocationSize(capacity: i)
             let (size2, alignment2) = Fixture._allocationSize2(capacity: i)
             XCTAssertEqual(size1, size2, "capacity = \(i) [\(size1), \(size2)]")
             XCTAssertEqual(alignment1, alignment2)
@@ -106,9 +106,9 @@ import XCTest
       }
 
       func testAlignment2() throws {
-        typealias _RawValue = UInt16
-        typealias Fixture = FreshPoolFixture<_RawValue>
-        XCTAssertEqual(MemoryLayout<_RawValue>.alignment, 2)
+        typealias _PayloadValue = UInt16
+        typealias Fixture = FreshPoolFixture<_PayloadValue>
+        XCTAssertEqual(MemoryLayout<_PayloadValue>.alignment, 2)
         for i in [0, 1, 256, 1024] {
           do {
             let (size1, alignment1) = Fixture.allocationSize(capacity: i)
@@ -116,7 +116,7 @@ import XCTest
             XCTAssertEqual(size1, size2)
           }
           do {
-            let (size1, alignment1) = UnsafePair<_RawValue>.allocationSize(capacity: i)
+            let (size1, alignment1) = UnsafePair<_PayloadValue>.allocationSize(capacity: i)
             let (size2, alignment2) = Fixture._allocationSize2(capacity: i)
             XCTAssertEqual(size1, size2)
           }
@@ -124,9 +124,9 @@ import XCTest
       }
 
       func testAlignment4() throws {
-        typealias _RawValue = UInt32
-        typealias Fixture = FreshPoolFixture<_RawValue>
-        XCTAssertEqual(MemoryLayout<_RawValue>.alignment, 4)
+        typealias _PayloadValue = UInt32
+        typealias Fixture = FreshPoolFixture<_PayloadValue>
+        XCTAssertEqual(MemoryLayout<_PayloadValue>.alignment, 4)
         for i in [0, 1, 256, 1024] {
           do {
             let (size1, alignment1) = Fixture.allocationSize(capacity: i)
@@ -134,7 +134,7 @@ import XCTest
             XCTAssertEqual(size1, size2)
           }
           do {
-            let (size1, alignment1) = UnsafePair<_RawValue>.allocationSize(capacity: i)
+            let (size1, alignment1) = UnsafePair<_PayloadValue>.allocationSize(capacity: i)
             let (size2, alignment2) = Fixture._allocationSize2(capacity: i)
             XCTAssertEqual(size1, size2)
           }
@@ -142,56 +142,56 @@ import XCTest
       }
 
       func testAlignment8() throws {
-        typealias _RawValue = Int
-        typealias Fixture = FreshPoolFixture<_RawValue>
-        XCTAssertEqual(MemoryLayout<_RawValue>.alignment, 8)
+        typealias _PayloadValue = Int
+        typealias Fixture = FreshPoolFixture<_PayloadValue>
+        XCTAssertEqual(MemoryLayout<_PayloadValue>.alignment, 8)
         for i in [0, 1, 256, 1024] {
           do {
             let (size1, alignment1) = Fixture.allocationSize(capacity: i)
             let (size2, alignment2) = Fixture.allocationSize2(capacity: i)
             XCTAssertEqual(size1, size2)
-            XCTAssertEqual(alignment1, MemoryLayout<_RawValue>.alignment)
-            XCTAssertEqual(alignment2, MemoryLayout<_RawValue>.alignment)
+            XCTAssertEqual(alignment1, MemoryLayout<_PayloadValue>.alignment)
+            XCTAssertEqual(alignment2, MemoryLayout<_PayloadValue>.alignment)
           }
           do {
-            let (size1, alignment1) = UnsafePair<_RawValue>.allocationSize(capacity: i)
+            let (size1, alignment1) = UnsafePair<_PayloadValue>.allocationSize(capacity: i)
             let (size2, alignment2) = Fixture._allocationSize2(capacity: i)
             XCTAssertEqual(size1, size2)
-            XCTAssertEqual(alignment1, MemoryLayout<_RawValue>.alignment)
-            XCTAssertEqual(alignment2, MemoryLayout<_RawValue>.alignment)
+            XCTAssertEqual(alignment1, MemoryLayout<_PayloadValue>.alignment)
+            XCTAssertEqual(alignment2, MemoryLayout<_PayloadValue>.alignment)
           }
         }
       }
 
       func testAlignment16() throws {
-        typealias _RawValue = SIMD4<Float>
-        typealias Fixture = FreshPoolFixture<_RawValue>
-        XCTAssertEqual(MemoryLayout<_RawValue>.alignment, 16)
+        typealias _PayloadValue = SIMD4<Float>
+        typealias Fixture = FreshPoolFixture<_PayloadValue>
+        XCTAssertEqual(MemoryLayout<_PayloadValue>.alignment, 16)
         for i in [0, 1, 256, 1024] {
           do {
             let (size1, alignment1) = Fixture.allocationSize(capacity: i)
             let (size2, alignment2) = Fixture.allocationSize2(capacity: i)
             XCTAssertEqual(size1, size2)
-            XCTAssertEqual(alignment1, MemoryLayout<_RawValue>.alignment)
-            XCTAssertEqual(alignment2, MemoryLayout<_RawValue>.alignment)
+            XCTAssertEqual(alignment1, MemoryLayout<_PayloadValue>.alignment)
+            XCTAssertEqual(alignment2, MemoryLayout<_PayloadValue>.alignment)
           }
           do {
-            let (size1, alignment1) = UnsafePair<_RawValue>.allocationSize(capacity: i)
+            let (size1, alignment1) = UnsafePair<_PayloadValue>.allocationSize(capacity: i)
             let (size2, alignment2) = Fixture._allocationSize2(capacity: i)
             XCTAssertEqual(size1, size2)
-            XCTAssertEqual(alignment1, MemoryLayout<_RawValue>.alignment)
-            XCTAssertEqual(alignment2, MemoryLayout<_RawValue>.alignment)
+            XCTAssertEqual(alignment1, MemoryLayout<_PayloadValue>.alignment)
+            XCTAssertEqual(alignment2, MemoryLayout<_PayloadValue>.alignment)
           }
         }
       }
 
       func testAllocationSize0() throws {
-        typealias _RawValue = Int32
-        typealias Fixture = FreshPoolFixture<_RawValue>
+        typealias _PayloadValue = Int32
+        typealias Fixture = FreshPoolFixture<_PayloadValue>
         typealias Raw = UnsafeRawPointer
         for _capacity in [2, 3, 5, 7, 11, 13, 1024, 1024 * 32] {
           let (_, bytes, stride, alignment) = Fixture.pagedCapacity(capacity: _capacity)
-          let (bucket, capacity) = FreshPoolFixture<_RawValue>.createBucket(capacity: _capacity)
+          let (bucket, capacity) = FreshPoolFixture<_PayloadValue>.createBucket(capacity: _capacity)
           XCTAssertEqual(bucket.pointee.stride, stride)
           //        XCTAssertEqual(bucket.pointee.alignment, alignment)
           var p = bucket.pointee.start
@@ -201,17 +201,17 @@ import XCTest
             pp = pp.advanced(by: stride)
             XCTAssertEqual(p, pp)
             XCTAssertEqual(
-              Raw(UnsafePair<_RawValue>.valuePointer(p)),
-              Raw(UnsafePair<_RawValue>.valuePointer(p)).alignedUp(for: _RawValue.self))
+              Raw(UnsafePair<_PayloadValue>.valuePointer(p)),
+              Raw(UnsafePair<_PayloadValue>.valuePointer(p)).alignedUp(for: _PayloadValue.self))
             XCTAssertEqual(
-              Raw(p.advanced(by: 1)).alignedUp(for: _RawValue.self), Raw(p.advanced(by: 1)))
+              Raw(p.advanced(by: 1)).alignedUp(for: _PayloadValue.self), Raw(p.advanced(by: 1)))
           }
 
           do {
             let diff = Raw(bucket.pointee.start) - Raw(bucket)
             let minimum = MemoryLayout<_UnsafeNodeFreshBucket>.stride
             let maximum =
-              minimum + max(0, MemoryLayout<_RawValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
+              minimum + max(0, MemoryLayout<_PayloadValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
             XCTAssertLessThanOrEqual(minimum, maximum)
             XCTAssertLessThanOrEqual(minimum, diff)
             XCTAssertLessThanOrEqual(diff, maximum)
@@ -221,7 +221,7 @@ import XCTest
             let diff = Raw(bucket).advanced(by: bytes) - Raw(p)
             let minimum = 0
             let maximum = max(
-              0, MemoryLayout<_RawValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
+              0, MemoryLayout<_PayloadValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
             XCTAssertLessThanOrEqual(minimum, maximum)
             XCTAssertLessThanOrEqual(minimum, diff)
             XCTAssertLessThanOrEqual(diff, maximum)
@@ -232,10 +232,10 @@ import XCTest
               Raw(bucket).advanced(by: bytes)
               - Raw(
                 Raw(bucket.pointee.advance(p, offset: -1).advanced(by: 1))
-                  .assumingMemoryBound(to: _RawValue.self).advanced(by: 1))
+                  .assumingMemoryBound(to: _PayloadValue.self).advanced(by: 1))
             let minimum = 0
             let maximum = max(
-              0, MemoryLayout<_RawValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
+              0, MemoryLayout<_PayloadValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
             XCTAssertLessThanOrEqual(minimum, maximum)
             XCTAssertLessThanOrEqual(minimum, diff)
             XCTAssertLessThanOrEqual(diff, maximum)
@@ -244,11 +244,11 @@ import XCTest
           do {
             let stride = (
               bucket: MemoryLayout<_UnsafeNodeFreshBucket>.stride,
-              element: MemoryLayout<_RawValue>.stride + MemoryLayout<UnsafeNode>.stride
+              element: MemoryLayout<_PayloadValue>.stride + MemoryLayout<UnsafeNode>.stride
             )
             let minimum = 0
             let maximum = max(
-              0, MemoryLayout<_RawValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
+              0, MemoryLayout<_PayloadValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
 
             let diff = Raw(bucket).advanced(by: stride.bucket + capacity * stride.element) - Raw(p)
             XCTAssertLessThanOrEqual(minimum, maximum)
@@ -256,19 +256,19 @@ import XCTest
             XCTAssertLessThanOrEqual(diff, maximum)
           }
 
-          bucket.pointee.clear(_RawValue.self)
+          bucket.pointee.clear(_PayloadValue.self)
           bucket.deinitialize(count: 1)
           bucket.deallocate()
         }
       }
 
       func testAllocationSize1() throws {
-        typealias _RawValue = Int
-        typealias Fixture = FreshPoolFixture<_RawValue>
+        typealias _PayloadValue = Int
+        typealias Fixture = FreshPoolFixture<_PayloadValue>
         typealias Raw = UnsafeRawPointer
         for _capacity in [2, 3, 5, 7, 11, 13, 1024, 1024 * 32] {
           let (_, bytes, stride, alignment) = Fixture.pagedCapacity(capacity: _capacity)
-          let (bucket, capacity) = FreshPoolFixture<_RawValue>.createBucket(capacity: _capacity)
+          let (bucket, capacity) = FreshPoolFixture<_PayloadValue>.createBucket(capacity: _capacity)
           XCTAssertEqual(bucket.pointee.stride, stride)
           //        XCTAssertEqual(bucket.pointee.alignment, alignment)
           var p = bucket.pointee.start
@@ -278,17 +278,17 @@ import XCTest
             pp = pp.advanced(by: stride)
             XCTAssertEqual(p, pp)
             XCTAssertEqual(
-              Raw(UnsafePair<_RawValue>.valuePointer(p)),
-              Raw(UnsafePair<_RawValue>.valuePointer(p)).alignedUp(for: _RawValue.self))
+              Raw(UnsafePair<_PayloadValue>.valuePointer(p)),
+              Raw(UnsafePair<_PayloadValue>.valuePointer(p)).alignedUp(for: _PayloadValue.self))
             XCTAssertEqual(
-              Raw(p.advanced(by: 1)).alignedUp(for: _RawValue.self), Raw(p.advanced(by: 1)))
+              Raw(p.advanced(by: 1)).alignedUp(for: _PayloadValue.self), Raw(p.advanced(by: 1)))
           }
 
           do {
             let diff = Raw(bucket.pointee.start) - Raw(bucket)
             let minimum = MemoryLayout<_UnsafeNodeFreshBucket>.stride
             let maximum =
-              minimum + max(0, MemoryLayout<_RawValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
+              minimum + max(0, MemoryLayout<_PayloadValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
             XCTAssertLessThanOrEqual(minimum, maximum)
             XCTAssertLessThanOrEqual(minimum, diff)
             XCTAssertLessThanOrEqual(diff, maximum)
@@ -298,7 +298,7 @@ import XCTest
             let diff = Raw(bucket).advanced(by: bytes) - Raw(p)
             let minimum = 0
             let maximum = max(
-              0, MemoryLayout<_RawValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
+              0, MemoryLayout<_PayloadValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
             XCTAssertLessThanOrEqual(minimum, maximum)
             XCTAssertLessThanOrEqual(minimum, diff)
             XCTAssertLessThanOrEqual(diff, maximum)
@@ -309,10 +309,10 @@ import XCTest
               Raw(bucket).advanced(by: bytes)
               - Raw(
                 Raw(bucket.pointee.advance(p, offset: -1).advanced(by: 1))
-                  .assumingMemoryBound(to: _RawValue.self).advanced(by: 1))
+                  .assumingMemoryBound(to: _PayloadValue.self).advanced(by: 1))
             let minimum = 0
             let maximum = max(
-              0, MemoryLayout<_RawValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
+              0, MemoryLayout<_PayloadValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
             XCTAssertLessThanOrEqual(minimum, maximum)
             XCTAssertLessThanOrEqual(minimum, diff)
             XCTAssertLessThanOrEqual(diff, maximum)
@@ -321,11 +321,11 @@ import XCTest
           do {
             let stride = (
               bucket: MemoryLayout<_UnsafeNodeFreshBucket>.stride,
-              element: MemoryLayout<_RawValue>.stride + MemoryLayout<UnsafeNode>.stride
+              element: MemoryLayout<_PayloadValue>.stride + MemoryLayout<UnsafeNode>.stride
             )
             let minimum = 0
             let maximum = max(
-              0, MemoryLayout<_RawValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
+              0, MemoryLayout<_PayloadValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
 
             let diff = Raw(bucket).advanced(by: stride.bucket + capacity * stride.element) - Raw(p)
             XCTAssertLessThanOrEqual(minimum, maximum)
@@ -333,19 +333,19 @@ import XCTest
             XCTAssertLessThanOrEqual(diff, maximum)
           }
 
-          bucket.pointee.clear(_RawValue.self)
+          bucket.pointee.clear(_PayloadValue.self)
           bucket.deinitialize(count: 1)
           bucket.deallocate()
         }
       }
 
       func testAllocationSize2() throws {
-        typealias _RawValue = SIMD4<Float>
-        typealias Fixture = FreshPoolFixture<_RawValue>
+        typealias _PayloadValue = SIMD4<Float>
+        typealias Fixture = FreshPoolFixture<_PayloadValue>
         typealias Raw = UnsafeRawPointer
         for _capacity in [2, 3, 5, 7, 11, 13, 1024, 1024 * 32] {
           let (_, bytes, stride, alignment) = Fixture.pagedCapacity(capacity: _capacity)
-          let (bucket, capacity) = FreshPoolFixture<_RawValue>.createBucket(capacity: _capacity)
+          let (bucket, capacity) = FreshPoolFixture<_PayloadValue>.createBucket(capacity: _capacity)
           XCTAssertEqual(bucket.pointee.stride, stride)
           //        XCTAssertEqual(bucket.pointee.alignment, alignment)
           var p = bucket.pointee.start
@@ -355,17 +355,17 @@ import XCTest
             pp = pp.advanced(by: stride)
             XCTAssertEqual(p, pp)
             XCTAssertEqual(
-              Raw(UnsafePair<_RawValue>.valuePointer(p)),
-              Raw(UnsafePair<_RawValue>.valuePointer(p)).alignedUp(for: _RawValue.self))
+              Raw(UnsafePair<_PayloadValue>.valuePointer(p)),
+              Raw(UnsafePair<_PayloadValue>.valuePointer(p)).alignedUp(for: _PayloadValue.self))
             XCTAssertEqual(
-              Raw(p.advanced(by: 1)).alignedUp(for: _RawValue.self), Raw(p.advanced(by: 1)))
+              Raw(p.advanced(by: 1)).alignedUp(for: _PayloadValue.self), Raw(p.advanced(by: 1)))
           }
 
           do {
             let diff = Raw(bucket.pointee.start) - Raw(bucket)
             let minimum = MemoryLayout<_UnsafeNodeFreshBucket>.stride
             let maximum =
-              minimum + max(0, MemoryLayout<_RawValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
+              minimum + max(0, MemoryLayout<_PayloadValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
             XCTAssertLessThanOrEqual(minimum, maximum)
             XCTAssertLessThanOrEqual(minimum, diff)
             XCTAssertLessThanOrEqual(diff, maximum)
@@ -375,7 +375,7 @@ import XCTest
             let diff = Raw(bucket).advanced(by: bytes) - Raw(p)
             let minimum = 0
             let maximum = max(
-              0, MemoryLayout<_RawValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
+              0, MemoryLayout<_PayloadValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
             XCTAssertLessThanOrEqual(minimum, maximum)
             XCTAssertLessThanOrEqual(minimum, diff)
             XCTAssertLessThanOrEqual(diff, maximum)
@@ -386,10 +386,10 @@ import XCTest
               Raw(bucket).advanced(by: bytes)
               - Raw(
                 Raw(bucket.pointee.advance(p, offset: -1).advanced(by: 1))
-                  .assumingMemoryBound(to: _RawValue.self).advanced(by: 1))
+                  .assumingMemoryBound(to: _PayloadValue.self).advanced(by: 1))
             let minimum = 0
             let maximum = max(
-              0, MemoryLayout<_RawValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
+              0, MemoryLayout<_PayloadValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
             XCTAssertLessThanOrEqual(minimum, maximum)
             XCTAssertLessThanOrEqual(minimum, diff)
             XCTAssertLessThanOrEqual(diff, maximum)
@@ -400,11 +400,11 @@ import XCTest
           do {
             let stride = (
               bucket: MemoryLayout<_UnsafeNodeFreshBucket>.stride,
-              element: MemoryLayout<_RawValue>.stride + MemoryLayout<UnsafeNode>.stride
+              element: MemoryLayout<_PayloadValue>.stride + MemoryLayout<UnsafeNode>.stride
             )
             let minimum = 0
             let maximum = max(
-              0, MemoryLayout<_RawValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
+              0, MemoryLayout<_PayloadValue>.alignment - MemoryLayout<UnsafeNode>.alignment)
 
             let diff = Raw(bucket).advanced(by: stride.bucket + capacity * stride.element) - Raw(p)
             XCTAssertLessThanOrEqual(minimum, maximum)
@@ -417,10 +417,10 @@ import XCTest
               .advanced(
                 by:
                   MemoryLayout<_UnsafeNodeFreshBucket>.stride + capacity
-                  * (MemoryLayout<_RawValue>.stride + MemoryLayout<UnsafeNode>.stride)
-                  + max(0, MemoryLayout<UnsafeNode>.alignment - MemoryLayout<_RawValue>.alignment))
+                  * (MemoryLayout<_PayloadValue>.stride + MemoryLayout<UnsafeNode>.stride)
+                  + max(0, MemoryLayout<UnsafeNode>.alignment - MemoryLayout<_PayloadValue>.alignment))
               - Raw(p), 0)
-          bucket.pointee.clear(_RawValue.self)
+          bucket.pointee.clear(_PayloadValue.self)
           bucket.deinitialize(count: 1)
           bucket.deallocate()
         }

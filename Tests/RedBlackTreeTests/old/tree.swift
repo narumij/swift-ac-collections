@@ -31,7 +31,7 @@ import Foundation
 protocol _TreeNode_KeyProtocol:
   _TreeNode_KeyInterface
     & _TreeRawValue_KeyInterface
-    & _TreeNode_RawValueInterface
+    & _TreeNode_PayloadValueInterface
 {}
 
 extension _TreeNode_KeyProtocol {

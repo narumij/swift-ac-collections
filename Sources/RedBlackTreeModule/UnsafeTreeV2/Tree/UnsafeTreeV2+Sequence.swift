@@ -202,7 +202,7 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func
     unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
-  -> UnsafeIterator._RawValue<Base, UnsafeIterator._Obverse>
+  -> UnsafeIterator._Payload<Base, UnsafeIterator._Obverse>
   {
     .init(Base.self, _start: __first, _end: __last)
   }

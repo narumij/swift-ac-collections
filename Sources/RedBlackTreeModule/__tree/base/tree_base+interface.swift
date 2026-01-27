@@ -15,7 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _BaseNode_RawValueInterface: _NodePtrType & _PayloadValueType {
+public protocol _BaseNode_PayloadValueInterface: _NodePtrType & _PayloadValueType {
   static func __value_(_ p: _NodePtr) -> _PayloadValue
 }
 

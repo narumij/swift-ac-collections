@@ -153,7 +153,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       .assumingMemoryBound(to: _PayloadValue.self)
   }
 
-  /// `_RawValue`と`_Key`が一致する場合に、 ペイロードをキーとみなしたポインタ
+  /// `_PayloadValue`と`_Key`が一致する場合に、 ペイロードをキーとみなしたポインタ
   ///
   /// ```
   /// ...|Node|Key|Node...
@@ -168,7 +168,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     __value_()
   }
 
-  /// `_RawValue`が`Pair`の場合のキーへのポインタ
+  /// `_PayloadValue`が`Pair`の場合のキーへのポインタ
   ///
   /// ```
   /// ...|Node|Key|MappedValue|Node...
@@ -183,7 +183,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     _ref(to: &__value_(as: Base._PayloadValue.self).pointee.key)
   }
 
-  /// `_RawValue`が`Pair`の場合のバリューへのポインタ
+  /// `_PayloadValue`が`Pair`の場合のバリューへのポインタ
   ///
   /// ```
   /// ...|Node|Key|MappedValue|Node...

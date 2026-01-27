@@ -23,9 +23,9 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
 
   @inlinable
   @inline(__always)
-  internal init<_RawValue>(_ t: _RawValue.Type, nullptr: _NodePtr, capacity: Int) {
-    let allocator = _BucketAllocator(valueType: _RawValue.self) {
-      $0.assumingMemoryBound(to: _RawValue.self)
+  internal init<_PayloadValue>(_ t: _PayloadValue.Type, nullptr: _NodePtr, capacity: Int) {
+    let allocator = _BucketAllocator(valueType: _PayloadValue.self) {
+      $0.assumingMemoryBound(to: _PayloadValue.self)
         .deinitialize(count: 1)
     }
     self.init(allocator: allocator, nullptr: nullptr, capacity: capacity)
@@ -75,8 +75,8 @@ extension UnsafeTreeV2BufferHeader {
 
   /// `_Payload`のstrideとalignement
   @inlinable
-  var memoryLayout: _MemoryLayout {
-    freshBucketAllocator.memoryLayout
+  var payload: _MemoryLayout {
+    freshBucketAllocator.payload
   }
 
   @inlinable
@@ -148,7 +148,7 @@ extension UnsafeTreeV2BufferHeader {
     @inlinable
     mutating func pushFreshBucket(head: _BucketPointer) {
       freshBucketHead = head
-      freshBucketCurrent = head.queue(payload: memoryLayout)
+      freshBucketCurrent = head.queue(payload: payload)
       freshBucketLast = head
       freshPoolCapacity += head.pointee.capacity
       #if DEBUG
@@ -173,7 +173,7 @@ extension UnsafeTreeV2BufferHeader {
       if let p = freshBucketCurrent?.pop() {
         return p
       }
-      freshBucketCurrent = freshBucketCurrent?.next(payload: memoryLayout)
+      freshBucketCurrent = freshBucketCurrent?.next(payload: payload)
       return freshBucketCurrent?.pop()
     }
   }
@@ -196,14 +196,14 @@ extension UnsafeTreeV2BufferHeader {
     subscript(___tracking_tag: _TrackingTag) -> _NodePtr {
       assert(___tracking_tag >= 0)
       var remaining = ___tracking_tag
-      var p = freshBucketHead?.accessor(payload: memoryLayout)
+      var p = freshBucketHead?.accessor(payload: payload)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {
           return h[remaining]
         }
         remaining -= cap
-        p = h.next(payload: memoryLayout)
+        p = h.next(payload: payload)
       }
       return nullptr
     }
@@ -215,7 +215,7 @@ extension UnsafeTreeV2BufferHeader {
     mutating func ___flushFreshPool() {
       freshBucketAllocator.deinitialize(bucket: freshBucketHead)
       freshPoolUsedCount = 0
-      freshBucketCurrent = freshBucketHead?.queue(payload: memoryLayout)
+      freshBucketCurrent = freshBucketHead?.queue(payload: payload)
     }
 
     @usableFromInline

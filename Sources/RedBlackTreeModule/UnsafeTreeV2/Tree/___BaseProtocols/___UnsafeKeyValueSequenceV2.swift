@@ -195,13 +195,6 @@ extension ___UnsafeKeyValueSequenceV2 {
       return ___element(__tree_[__tree_.rawValue(position)])
     }
   }
-
-  @inlinable
-  internal subscript(_unchecked position: Index) -> (key: _Key, value: _MappedValue) {
-    @inline(__always) get {
-      return ___element(__tree_[__tree_.rawValue(position)])
-    }
-  }
 }
 
 extension ___UnsafeKeyValueSequenceV2 {

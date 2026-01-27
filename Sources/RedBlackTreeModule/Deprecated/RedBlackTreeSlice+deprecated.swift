@@ -1,12 +1,6 @@
 #if COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeSlice.KeyOnly {
-    @available(*, deprecated)
-    public subscript(_unsafe position: Index) -> Element {
-      @inline(__always) _read {
-        yield self[_unchecked: position]
-      }
-    }
 
     @available(*, deprecated)
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
@@ -18,11 +12,6 @@
   }
 
   extension RedBlackTreeSliceV2.KeyValue {
-
-    @available(*, deprecated)
-    public subscript(_unsafe position: Index) -> (key: _Key, value: _MappedValue) {
-      @inline(__always) get { self[_unchecked: position] }
-    }
 
     @available(*, deprecated)
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {

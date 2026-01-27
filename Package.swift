@@ -7,7 +7,7 @@ import PackageDescription
 var defines: [String] = [
   //  "AC_COLLECTIONS_INTERNAL_CHECKS",
   //  "TREE_INVARIANT_CHECKS",
-    "GRAPHVIZ_DEBUG",
+  "GRAPHVIZ_DEBUG",
   //  "USING_ALGORITHMS",
   //  "USING_COLLECTIONS",
   //  "DISABLE_COPY_ON_WRITE", // やや危険。クラッシュは減った。Unit Testが通らない箇所が増える

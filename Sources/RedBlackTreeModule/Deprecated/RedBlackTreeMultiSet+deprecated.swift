@@ -10,13 +10,6 @@
     }
   }
 
-  extension RedBlackTreeMultiSet {
-    @available(*, deprecated)
-    public subscript(_unsafe position: Index) -> Element {
-      @inline(__always) _read { yield self[_unchecked: position] }
-    }
-  }
-
   // Rangeの使い方としておかしいので、便利だが将来的に削除することにした
   extension RedBlackTreeMultiSet {
 

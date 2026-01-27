@@ -91,12 +91,12 @@ extension ___UnsafeKeyOnlySequenceV2 {
     }
   }
 
-  @inlinable
-  internal subscript(_unchecked position: Index) -> _PayloadValue {
-    @inline(__always) _read {
-      yield __tree_[__tree_.rawValue(position)]
-    }
-  }
+//  @inlinable
+//  internal subscript(_unchecked position: Index) -> _PayloadValue {
+//    @inline(__always) _read {
+//      yield __tree_[__tree_.rawValue(position)]
+//    }
+//  }
 }
 
 extension ___UnsafeKeyOnlySequenceV2 {

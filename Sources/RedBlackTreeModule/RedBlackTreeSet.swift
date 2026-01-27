@@ -684,15 +684,6 @@ extension RedBlackTreeSet {
     @inline(__always) _read { yield self[_checked: position] }
   }
 
-  #if !COMPATIBLE_ATCODER_2025
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(unchecked position: Index) -> _PayloadValue {
-      @inline(__always) _read { yield self[_unchecked: position] }
-    }
-  #endif
-
   /// Indexがsubscriptやremoveで利用可能か判別します
   ///
   /// - Complexity: O(1)

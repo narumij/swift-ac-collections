@@ -164,20 +164,6 @@ extension RedBlackTreeSliceV2.KeyOnly {
 
 extension RedBlackTreeSliceV2.KeyOnly {
 
-  #if !COMPATIBLE_ATCODER_2025
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(unchecked position: Index) -> Element {
-      @inline(__always) _read {
-        yield self[_unchecked: position]
-      }
-    }
-  #endif
-}
-
-extension RedBlackTreeSliceV2.KeyOnly {
-
   #if COMPATIBLE_ATCODER_2025
     /// - Complexity: O(log *n*)
     @inlinable

@@ -803,17 +803,6 @@ extension RedBlackTreeMultiMap {
     @inline(__always) get { self[_checked: position] }
   }
 
-  #if !COMPATIBLE_ATCODER_2025
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    //    public subscript(unchecked position: Index) -> Element {
-    public subscript(unchecked position: Index) -> (key: Key, value: Value) {
-      //      @inline(__always) get { ___element(self[_unchecked: position]) }
-      @inline(__always) get { self[_unchecked: position] }
-    }
-  #endif
-
   /// Indexがsubscriptやremoveで利用可能か判別します
   ///
   /// - Complexity: O(1)

@@ -11,13 +11,6 @@
   }
 
   extension RedBlackTreeMultiMap {
-    @available(*, deprecated)
-    public subscript(_unsafe position: Index) -> (key: Key, value: Value) {
-      @inline(__always) get { self[_unchecked: position] }
-    }
-  }
-
-  extension RedBlackTreeMultiMap {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)

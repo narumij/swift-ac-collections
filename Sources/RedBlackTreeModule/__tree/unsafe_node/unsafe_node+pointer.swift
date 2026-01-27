@@ -207,6 +207,15 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)
+  var trackingTag: _TrackingTag {
+    pointee.___tracking_tag
+  }
+}
+
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
+
+  @inlinable
+  @inline(__always)
   func _advanced(raw bytes: Int) -> UnsafeMutablePointer {
     UnsafeMutableRawPointer(self)
       .advanced(by: bytes)

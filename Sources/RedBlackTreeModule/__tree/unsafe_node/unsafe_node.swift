@@ -281,12 +281,3 @@ extension UnsafeNode {
 }
 
 extension UnsafeNode: Equatable {}
-
-extension UnsafeMutablePointer where Pointee == UnsafeNode {
-
-  @inlinable
-  @inline(__always)
-  var trackingTag: _TrackingTag {
-    pointee.___tracking_tag
-  }
-}

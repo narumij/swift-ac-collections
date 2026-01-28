@@ -211,7 +211,7 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func update(with newMember: Element) -> Element? {
     __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(newMember)
+    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     guard !__inserted else { return nil }
     let oldMember = __tree_[__r]
     __tree_[__r] = newMember

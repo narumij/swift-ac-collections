@@ -17,6 +17,7 @@
 
 // TODO:範囲不正がfatalになるかどうかのテストを追加すること
 
+// 新形式
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
@@ -107,6 +108,28 @@
       try __tree_.___checking_erase_if(
         lower, upper,
         shouldBeRemoved: shouldBeRemoved)
+    }
+  }
+#endif
+
+// 旧形式
+#if !COMPATIBLE_ATCODER_2025
+  // BoundExpressionにより不要になった
+  extension RedBlackTreeSet {
+    /// 値レンジ `[start, end)` に含まれる要素のスライス
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func sequence(from start: Element, to end: Element) -> SubSequence {
+      // APIはstride関数とsequence関数を参考にした
+      .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
+    }
+
+    /// 値レンジ `[start, end]` に含まれる要素のスライス
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func sequence(from start: Element, through end: Element) -> SubSequence {
+      // APIはstride関数とsequence関数を参考にした
+      .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
     }
   }
 #endif

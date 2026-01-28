@@ -312,7 +312,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-  
+
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
@@ -328,7 +328,7 @@ extension RedBlackTreeSet {
     //    }
     //    return result ? member : nil
   }
-  
+
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -340,7 +340,7 @@ extension RedBlackTreeSet {
     }
     return element
   }
-  
+
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -355,17 +355,17 @@ extension RedBlackTreeSet {
 }
 
 #if !COMPATIBLE_ATCODER_2025
-extension RedBlackTreeSet {
+  extension RedBlackTreeSet {
 
-  @inlinable
-  public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-    __tree_.ensureUnique()
-    try __tree_.___checking_erase_if(
-      __tree_.__begin_node_,
-      __tree_.__end_node,
-      shouldBeRemoved: shouldBeRemoved)
+    @inlinable
+    public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+      __tree_.ensureUnique()
+      try __tree_.___checking_erase_if(
+        __tree_.__begin_node_,
+        __tree_.__end_node,
+        shouldBeRemoved: shouldBeRemoved)
+    }
   }
-}
 #endif
 
 extension RedBlackTreeSet {
@@ -471,27 +471,6 @@ extension RedBlackTreeSet {
     try ___first_index(where: predicate)
   }
 }
-
-#if !COMPATIBLE_ATCODER_2025
-  // BoundExpressionにより不要になった
-  extension RedBlackTreeSet {
-    /// 値レンジ `[start, end)` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Element, to end: Element) -> SubSequence {
-      // APIはstride関数とsequence関数を参考にした
-      .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
-    }
-
-    /// 値レンジ `[start, end]` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Element, through end: Element) -> SubSequence {
-      // APIはstride関数とsequence関数を参考にした
-      .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
-    }
-  }
-#endif
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {

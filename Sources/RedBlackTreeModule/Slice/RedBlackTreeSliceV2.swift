@@ -111,14 +111,6 @@ extension RedBlackTreeSliceV2.KeyOnly {
       return __tree_[_start]
     }
 
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var last: Element? {
-      guard _start != _end else { return nil }
-      return __tree_[__tree_prev_iter(_end)]
-    }
-
     /// - Complexity: O(`count`)
     @inlinable
     public func firstIndex(of member: Element) -> Index? {
@@ -252,16 +244,6 @@ extension RedBlackTreeSliceV2.KeyOnly {
   @inline(__always)
   public func reversed() -> Tree._PayloadValues.Reversed {
     _reversed()
-  }
-}
-
-extension RedBlackTreeSliceV2.KeyOnly {
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var indices: Indices {
-    _indices
   }
 }
 

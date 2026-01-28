@@ -181,7 +181,7 @@ extension RedBlackTreeSet {
     ___first
   }
 
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
+  /// - Complexity: O(log `count`)
   @inlinable
   public var last: Element? {
     ___last

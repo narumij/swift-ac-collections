@@ -257,6 +257,7 @@ final class EtcTests: RedBlackTreeTestCase {
     _ = [String: String]()
   }
 
+  #if COMPATIBLE_ATCODER_2025
   func testIndices() throws {
     _ = RedBlackTreeSet<Int>().indices
     _ = RedBlackTreeMultiSet<Int>().indices
@@ -265,6 +266,7 @@ final class EtcTests: RedBlackTreeTestCase {
     let s = RedBlackTreeSet<Int>()
     _ = s[s.startIndex..<s.endIndex].indices
   }
+  #endif
 
   func testRange() throws {
     let a = [0, 1, 2]

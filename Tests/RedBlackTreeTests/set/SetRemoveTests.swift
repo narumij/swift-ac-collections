@@ -283,7 +283,7 @@ final class SetRemoveTest_10: RedBlackTreeTestCase {
     }
   #endif
 
-  #if true
+  #if COMPATIBLE_ATCODER_2025
     func testRemoveWithSubIndices() throws {
       for i in members.elements(in: 2..<8).indices {
         members.remove(at: i)

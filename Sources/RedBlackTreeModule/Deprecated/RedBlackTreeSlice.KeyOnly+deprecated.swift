@@ -66,3 +66,15 @@
     }
   }
 #endif
+
+#if COMPATIBLE_ATCODER_2025
+extension RedBlackTreeSliceV2.KeyOnly {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var indices: Indices {
+    _indices
+  }
+}
+#endif

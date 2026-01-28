@@ -262,37 +262,39 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testRemoveWithSubIndices() throws {
-    var members = RedBlackTreeMultiSet<Int>(0..<10)
-    for i in members.elements(in: 2..<8).indices {
-      members.remove(at: i)
+  #if COMPATIBLE_ATCODER_2025
+    func testRemoveWithSubIndices() throws {
+      var members = RedBlackTreeMultiSet<Int>(0..<10)
+      for i in members.elements(in: 2..<8).indices {
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members + [], [0, 1, 8, 9])
     }
-    XCTAssertEqual(members + [], [0, 1, 8, 9])
-  }
 
-  func testRemoveWithSubIndices2() throws {
-    var members = RedBlackTreeMultiSet<Int>(0..<10)
-    members.elements(in: 2..<8).indices.forEach { i in
-      members.remove(at: i)
+    func testRemoveWithSubIndices2() throws {
+      var members = RedBlackTreeMultiSet<Int>(0..<10)
+      members.elements(in: 2..<8).indices.forEach { i in
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members + [], [0, 1, 8, 9])
     }
-    XCTAssertEqual(members + [], [0, 1, 8, 9])
-  }
 
-  func testRemoveWithSubIndices3() throws {
-    var members = RedBlackTreeMultiSet<Int>(0..<10)
-    for i in members.elements(in: 2..<8).indices.reversed() {
-      members.remove(at: i)
+    func testRemoveWithSubIndices3() throws {
+      var members = RedBlackTreeMultiSet<Int>(0..<10)
+      for i in members.elements(in: 2..<8).indices.reversed() {
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members + [], [0, 1, 8, 9])
     }
-    XCTAssertEqual(members + [], [0, 1, 8, 9])
-  }
 
-  func testRemoveWithSubIndices4() throws {
-    var members = RedBlackTreeMultiSet<Int>(0..<10)
-    members.elements(in: 2..<8).indices.reversed().forEach { i in
-      members.remove(at: i)
+    func testRemoveWithSubIndices4() throws {
+      var members = RedBlackTreeMultiSet<Int>(0..<10)
+      members.elements(in: 2..<8).indices.reversed().forEach { i in
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members + [], [0, 1, 8, 9])
     }
-    XCTAssertEqual(members + [], [0, 1, 8, 9])
-  }
+  #endif
 
   #if DEBUG
     func testRemoveWithSub___Indices() throws {

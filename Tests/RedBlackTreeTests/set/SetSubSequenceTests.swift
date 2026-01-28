@@ -15,42 +15,44 @@ final class SetSubSequenceTests: RedBlackTreeTestCase {
 
     let base = RedBlackTreeSet(0..<10)  // [0‥9]
 
-    do {
-      let slice = base[base.startIndex..<base.startIndex]  // []
+    #if COMPATIBLE_ATCODER_2025
+      do {
+        let slice = base[base.startIndex..<base.startIndex]  // []
 
-      XCTAssertEqual(slice.count, 0)
-      XCTAssertEqual(slice.first, nil)
-      XCTAssertEqual(slice.last, nil)
-      XCTAssertEqual(
-        slice.distance(
-          from: slice.startIndex,
-          to: slice.endIndex), 0)
-    }
+        XCTAssertEqual(slice.count, 0)
+        XCTAssertEqual(slice.first, nil)
+        XCTAssertEqual(slice.last, nil)
+        XCTAssertEqual(
+          slice.distance(
+            from: slice.startIndex,
+            to: slice.endIndex), 0)
+      }
 
-    do {
-      let mid = base.startIndex.advanced(by: 5)
-      let slice = base[mid..<mid]  // []
+      do {
+        let mid = base.startIndex.advanced(by: 5)
+        let slice = base[mid..<mid]  // []
 
-      XCTAssertEqual(slice.count, 0)
-      XCTAssertEqual(slice.first, nil)
-      XCTAssertEqual(slice.last, nil)
-      XCTAssertEqual(
-        slice.distance(
-          from: slice.startIndex,
-          to: slice.endIndex), 0)
-    }
+        XCTAssertEqual(slice.count, 0)
+        XCTAssertEqual(slice.first, nil)
+        XCTAssertEqual(slice.last, nil)
+        XCTAssertEqual(
+          slice.distance(
+            from: slice.startIndex,
+            to: slice.endIndex), 0)
+      }
 
-    do {
-      let slice = base[base.endIndex..<base.endIndex]  // []
+      do {
+        let slice = base[base.endIndex..<base.endIndex]  // []
 
-      XCTAssertEqual(slice.count, 0)
-      XCTAssertEqual(slice.first, nil)
-      XCTAssertEqual(slice.last, nil)
-      XCTAssertEqual(
-        slice.distance(
-          from: slice.startIndex,
-          to: slice.endIndex), 0)
-    }
+        XCTAssertEqual(slice.count, 0)
+        XCTAssertEqual(slice.first, nil)
+        XCTAssertEqual(slice.last, nil)
+        XCTAssertEqual(
+          slice.distance(
+            from: slice.startIndex,
+            to: slice.endIndex), 0)
+      }
+    #endif
   }
 
   // MARK: 基本プロパティ -------------------------------------------------
@@ -61,7 +63,9 @@ final class SetSubSequenceTests: RedBlackTreeTestCase {
 
     XCTAssertEqual(slice.count, 4)
     XCTAssertEqual(slice.first, 2)
-    XCTAssertEqual(slice.last, 5)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(slice.last, 5)
+    #endif
     XCTAssertEqual(
       slice.distance(
         from: slice.startIndex,

@@ -332,6 +332,7 @@ extension RedBlackTreeSetBidirectionalCollectionTests {
   }
 }
 
+#if COMPATIBLE_ATCODER_2025
 extension RedBlackTreeSetBidirectionalCollectionTests {
 
   /// SubSequenceのindices()で正しいインデックスを列挙できること
@@ -344,3 +345,4 @@ extension RedBlackTreeSetBidirectionalCollectionTests {
     XCTAssertEqual(indices, [2, 3, 4])
   }
 }
+#endif

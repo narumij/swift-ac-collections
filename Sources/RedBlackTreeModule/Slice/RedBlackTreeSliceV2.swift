@@ -17,9 +17,7 @@
 
 import Foundation
 
-public enum RedBlackTreeSliceV2<Base> {
-
-}
+public enum RedBlackTreeSliceV2<Base> {}
 
 extension RedBlackTreeSliceV2 {
 

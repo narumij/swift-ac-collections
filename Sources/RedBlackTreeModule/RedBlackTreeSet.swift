@@ -307,10 +307,8 @@ extension RedBlackTreeSet {
   @inlinable
   //  @inline(__always)
   public mutating func popFirst() -> Element? {
-    //    guard !isEmpty else { return nil }
-    //    return remove(at: startIndex)
     __tree_.ensureUnique()
-    return ___remove_first()
+    return ___remove_first()?.payload
   }
 }
 
@@ -338,7 +336,7 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
-    guard let element = ___remove(at: __tree_.___node_ptr(index)) else {
+    guard let (_, element) = ___remove(at: __tree_.___node_ptr(index)) else {
       fatalError(.invalidIndex)
     }
     return element
@@ -349,13 +347,11 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
-    guard !isEmpty else {
+    __tree_.ensureUnique()
+    guard let element = ___remove_first() else {
       preconditionFailure(.emptyFirst)
     }
-    // TODO: インデックスを使うコストが跳ね上がってるので、_NodePtrで消す実装にかえること
-    // TODO: 全体的に無駄にIndexを利用している箇所を潰していくこと
-    // ちょっとましになっているので、TODOの内容自体を再検討する必要がある
-    return remove(at: startIndex)
+    return element.payload
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -363,10 +359,11 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
-    guard !isEmpty else {
+    __tree_.ensureUnique()
+    guard let element = ___remove_last() else {
       preconditionFailure(.emptyLast)
     }
-    return remove(at: index(before: endIndex))
+    return element.payload
   }
 }
 

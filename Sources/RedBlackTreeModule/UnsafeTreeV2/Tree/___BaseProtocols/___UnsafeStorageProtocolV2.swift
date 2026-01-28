@@ -36,25 +36,25 @@ extension ___UnsafeStorageProtocolV2 {
 
   @inlinable
   @inline(__always)
-  internal var _start: _NodePtr {
+  package var _start: _NodePtr {
     __tree_.__begin_node_
   }
 
   @inlinable
   @inline(__always)
-  internal var _end: _NodePtr {
+  package var _end: _NodePtr {
     __tree_.__end_node
   }
 
   @inlinable
   @inline(__always)
-  internal var ___count: Int {
+  package var ___count: Int {
     __tree_.count
   }
 
   @inlinable
   @inline(__always)
-  internal var ___capacity: Int {
+  package var ___capacity: Int {
     __tree_.capacity
   }
 }
@@ -66,28 +66,45 @@ extension ___UnsafeStorageProtocolV2 {
   @inlinable
   @inline(__always)
   @discardableResult
-  internal mutating func ___remove_first() -> _PayloadValue? {
-    guard !__tree_.___is_empty else { return nil }
-    let e = __tree_[__tree_.__begin_node_]
-    _ = __tree_.erase(__tree_.__begin_node_)
-    return e
+  package mutating func ___remove_first() -> (__r: _NodePtr, payload: _PayloadValue)? {
+    guard _start != _end else { return nil }
+    let ___e = __tree_[_start]
+    let __r = __tree_.erase(_start)
+    return (__r, ___e)
   }
 
   @inlinable
   @inline(__always)
   @discardableResult
-  internal mutating func ___remove(at ptr: _NodePtr) -> _PayloadValue? {
-    guard !__tree_.___is_subscript_null(ptr) else { return nil }
-    let e = __tree_[ptr]
-    _ = __tree_.erase(ptr)
-    return e
+  package mutating func ___remove_last() -> (__r: _NodePtr, payload: _PayloadValue)? {
+    guard _start != _end else { return nil }
+    let ___l = __tree_prev_iter(_end)
+    let ___e = __tree_[___l]
+    let __r = __tree_.erase(___l)
+    return (__r, ___e)
   }
+}
+
+extension ___UnsafeStorageProtocolV2 {
 
   @inlinable
   @inline(__always)
   @discardableResult
-  internal mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
-    guard !__tree_.___is_end(from) else { return __tree_.end }
+  package mutating func ___remove(at ptr: _NodePtr) -> (__r: _NodePtr, payload: _PayloadValue)? {
+    guard !ptr.___is_subscript_null else { return nil }
+    let ___e = __tree_[ptr]
+    let __r = __tree_.erase(ptr)
+    return (__r, ___e)
+  }
+}
+
+extension ___UnsafeStorageProtocolV2 {
+
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  package mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
+    guard from != _end else { return __tree_.end }
     __tree_.___ensureValid(begin: from, end: to)
     guard __tree_.isValidRawRange(lower: from, upper: to) else {
       fatalError(.invalidIndex)
@@ -98,20 +115,20 @@ extension ___UnsafeStorageProtocolV2 {
   @inlinable
   @inline(__always)
   @discardableResult
-  internal mutating func ___unchecked_remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
-    guard !__tree_.___is_end(from) else { return __tree_.end }
+  package mutating func ___unchecked_remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
+    guard from != _end else { return __tree_.end }
     return __tree_.___checking_erase(from, to)
   }
 
   @inlinable
-  public mutating func ___remove(_ rawRange: UnsafeTreeRangeExpression) {
+  package mutating func ___remove(_ rawRange: UnsafeTreeRangeExpression) -> _NodePtr {
     let (lower, upper) = rawRange.relative(to: __tree_)
-    ___remove(from: lower, to: upper)
+    return ___remove(from: lower, to: upper)
   }
 
   @inlinable
-  public mutating func ___unchecked_remove(_ rawRange: UnsafeTreeRangeExpression) {
+  package mutating func ___unchecked_remove(_ rawRange: UnsafeTreeRangeExpression) -> _NodePtr {
     let (lower, upper) = rawRange.relative(to: __tree_)
-    ___unchecked_remove(from: lower, to: upper)
+    return ___unchecked_remove(from: lower, to: upper)
   }
 }

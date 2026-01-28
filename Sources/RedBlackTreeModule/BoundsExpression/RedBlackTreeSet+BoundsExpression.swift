@@ -34,7 +34,7 @@
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)
       guard !p.___is_null_or_end else { return nil }
-      guard let element = ___remove(at: p) else {
+      guard let (_, element) = ___remove(at: p) else {
         fatalError(.invalidIndex)
       }
       return element

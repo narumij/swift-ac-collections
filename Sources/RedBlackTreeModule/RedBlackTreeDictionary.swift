@@ -274,9 +274,9 @@ extension RedBlackTreeDictionary {
       // TODO: FIXME
       __tree_.ensureUniqueAndCapacity()
       // TODO: もうすこしライフタイム管理に明るくなったら、再度ここのチューニングに取り組む
-      
+
       // TODO: 内部がポインタに変更になったので、それに合わせた設計に変更すること
-      
+
       let (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == __tree_.nullptr {
         var value: Value?
@@ -313,7 +313,7 @@ extension RedBlackTreeDictionary {
       defer { _fixLifetime(self) }
       // UnsafeTree用の暫定処置
       // TODO: FIXME
-      
+
       // TODO: 内部がポインタに変更になったので、それに合わせた設計に変更すること
 
       __tree_.ensureUniqueAndCapacity()
@@ -334,7 +334,7 @@ extension RedBlackTreeDictionary {
   internal func _prepareForKeyingModify(
     _ key: Key
   ) -> (__parent: Tree._NodePtr, __child: Tree._NodeRef, __ptr: Tree._NodePtr) {
-    
+
     // TODO: 内部がポインタに変更になったので、それに合わせた設計に変更すること
 
     let (__parent, __child) = __tree_.__find_equal(key)
@@ -347,20 +347,20 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-#if COMPATIBLE_ATCODER_2025
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    __tree_.___ensureValid(
-      begin: __tree_.rawValue(bounds.lowerBound),
-      end: __tree_.rawValue(bounds.upperBound))
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public subscript(bounds: Range<Index>) -> SubSequence {
+      __tree_.___ensureValid(
+        begin: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
 
-    return .init(
-      tree: __tree_,
-      start: __tree_.rawValue(bounds.lowerBound),
-      end: __tree_.rawValue(bounds.upperBound))
-  }
+      return .init(
+        tree: __tree_,
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
+    }
   #endif
 }
 
@@ -552,31 +552,31 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
-    guard let element = ___remove(at: __tree_.rawValue(index)) else {
+    guard let (_, element) = ___remove(at: __tree_.rawValue(index)) else {
       fatalError(.invalidIndex)
     }
     return ___element(element)
   }
 
-#if COMPATIBLE_ATCODER_2025
-  /// Removes the specified subrange of elements from the collection.
-  ///
-  /// - Important: 削除後は、subrangeのインデックスが無効になります。
-  /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
-  ///     range must be valid indices of the collection.
-  /// - Returns: The key-value pair that correspond to `index`.
-  /// - Complexity: O(`m ) where  `m` is the size of `bounds`
-  @inlinable
-  public mutating func removeSubrange<R: RangeExpression>(
-    _ bounds: R
-  ) where R.Bound == Index {
+  #if COMPATIBLE_ATCODER_2025
+    /// Removes the specified subrange of elements from the collection.
+    ///
+    /// - Important: 削除後は、subrangeのインデックスが無効になります。
+    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
+    ///     range must be valid indices of the collection.
+    /// - Returns: The key-value pair that correspond to `index`.
+    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
+    @inlinable
+    public mutating func removeSubrange<R: RangeExpression>(
+      _ bounds: R
+    ) where R.Bound == Index {
 
-    let bounds = bounds.relative(to: self)
-    __tree_.ensureUnique()
-    ___remove(
-      from: __tree_.rawValue(bounds.lowerBound),
-      to: __tree_.rawValue(bounds.upperBound))
-  }
+      let bounds = bounds.relative(to: self)
+      __tree_.ensureUnique()
+      ___remove(
+        from: __tree_.rawValue(bounds.lowerBound),
+        to: __tree_.rawValue(bounds.upperBound))
+    }
   #endif
 }
 
@@ -721,9 +721,9 @@ extension RedBlackTreeDictionary {
 // MARK: - BidirectionalCollection
 
 #if COMPATIBLE_ATCODER_2025
-extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection {}
+  extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection {}
 #else
-extension RedBlackTreeDictionary: Sequence {}
+  extension RedBlackTreeDictionary: Sequence {}
 #endif
 
 extension RedBlackTreeDictionary {
@@ -866,16 +866,16 @@ extension RedBlackTreeDictionary {
     _isValid(index: index)
   }
 
-#if COMPATIBLE_ATCODER_2025
-  /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
-  where R.Bound == Index {
-    _isValid(bounds)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
+    where R.Bound == Index {
+      _isValid(bounds)
+    }
   #endif
 
   /// - Complexity: O(1)

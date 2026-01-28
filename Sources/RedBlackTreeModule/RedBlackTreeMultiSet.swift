@@ -366,7 +366,7 @@ extension RedBlackTreeMultiSet {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
-    guard let element = ___remove(at: __tree_.rawValue(index)) else {
+    guard let (_, element) = ___remove(at: __tree_.rawValue(index)) else {
       fatalError(.invalidIndex)
     }
     return element

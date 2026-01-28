@@ -16,6 +16,8 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet: ___MutableUnsafeBaseV2 {}
+
   extension RedBlackTreeSet {
 
     @inlinable
@@ -24,12 +26,11 @@
       guard !p.___is_null_or_end else { return nil }
       return __tree_[p]
     }
-    
-    public func index(_ bound: RedBlackTreeBound<Element>) -> Index
-    {
+
+    public func index(_ bound: RedBlackTreeBound<Element>) -> Index {
       return ___index(bound.relative(to: __tree_))
     }
-    
+
     public mutating func remove(_ bound: RedBlackTreeBound<Element>) -> Element? {
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)
@@ -40,13 +41,33 @@
       return element
     }
 
-    public subscript(bounds: RedBlackTreeBoundsExpression<Element>) -> SubSequence {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
+    #if false
+      public subscript(bounds: RedBlackTreeBoundsExpression<Element>) -> SubSequence {
+        let (lower, upper) = bounds.relative(to: __tree_)
+        guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+          fatalError(.invalidIndex)
+        }
+        return .init(tree: __tree_, start: lower, end: upper)
       }
-      return .init(tree: __tree_, start: lower, end: upper)
-    }
+    #else
+      subscript(bounds: RedBlackTreeBoundsExpression<Element>)
+        -> RedBlackTreeKeyOnlyRangeView<Self>
+      {
+        @inline(__always)
+        get {
+          let (lower, upper) = bounds.relative(to: __tree_)
+          return .init(_base: self, _start: lower, _end: upper)
+        }
+        @inline(__always)
+        _modify {
+          let (lower, upper) = bounds.relative(to: __tree_)
+          var view = RedBlackTreeKeyOnlyRangeView(_base: self, _start: lower, _end: upper)
+          self = .init()
+          defer { self = view._base }
+          yield &view
+        }
+      }
+    #endif
 
     public subscript(unchecked bounds: RedBlackTreeBoundsExpression<Element>) -> SubSequence {
       let (lower, upper) = bounds.relative(to: __tree_)
@@ -62,7 +83,7 @@
       }
       return .init(start: lower, end: upper, tie: __tree_.tied)
     }
-    
+
     public mutating func removeBounds(_ bounds: RedBlackTreeBoundsExpression<Element>) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)

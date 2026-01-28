@@ -80,6 +80,15 @@ where
   var _end: _NodePtr { get }
 }
 
+@usableFromInline
+protocol ___MutableUnsafeBaseV2: ___Root
+where
+  Base: ___TreeBase & ___TreeIndex,
+  Tree == UnsafeTreeV2<Base>
+{
+  var __tree_: Tree { get set }
+}
+
 public typealias RedBlackTreeIndex = UnsafeIndexV2
 public typealias RedBlackTreeIndices = UnsafeIndexV2Collection
 public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2

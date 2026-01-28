@@ -22,7 +22,7 @@ public indirect enum RedBlackTreeBound<_Key> {
   case upper(_Key)
   case end
   case advanced(Self, by: Int)
-  case previous(Self)
+  case prev(Self)
   case next(Self)
 }
 
@@ -42,4 +42,16 @@ public func upperBound<K>(_ k: K) -> RedBlackTreeBound<K> {
 
 public func start<K>() -> RedBlackTreeBound<K> {
   .start
+}
+
+public func next<K>(_ b: RedBlackTreeBound<K>) -> RedBlackTreeBound<K> {
+  .next(b)
+}
+
+public func prev<K>(_ b: RedBlackTreeBound<K>) -> RedBlackTreeBound<K> {
+  .prev(b)
+}
+
+public func advanced<K>(_ b: RedBlackTreeBound<K>, by offset: Int) -> RedBlackTreeBound<K> {
+  .advanced(b, by: offset)
 }

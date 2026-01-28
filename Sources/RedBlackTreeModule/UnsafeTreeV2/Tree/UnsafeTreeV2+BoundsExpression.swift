@@ -34,18 +34,6 @@ extension RedBlackTreeBound {
     case .upper(let r):
       return __tree_.upper_bound(r)
 
-    case .previous(let __self):
-      return
-        Self
-        .advanced(__self, by: -1)
-        .relative(to: __tree_)
-
-    case .next(let __self):
-      return
-        Self
-        .advanced(__self, by: 1)
-        .relative(to: __tree_)
-
     case .advanced(let __self, by: var offset):
       var __p = __self.relative(to: __tree_)
       // 初期状態でnullが来る可能性はほぼないが、念のためにfatal
@@ -67,6 +55,19 @@ extension RedBlackTreeBound {
         }
       }
       return __p
+
+    case .prev(let __self):
+      return
+        Self
+        .advanced(__self, by: -1)
+        .relative(to: __tree_)
+
+    case .next(let __self):
+      return
+        Self
+        .advanced(__self, by: 1)
+        .relative(to: __tree_)
+
     }
   }
 }
@@ -78,15 +79,19 @@ extension RedBlackTreeBoundsExpression {
   where Base: ___TreeBase, Base._Key == _Key {
     switch self {
     case .range(let lhs, let rhs):
-      return .range(from: lhs.relative(to: __tree_), to: rhs.relative(to: __tree_))
+      .range(
+        from: lhs.relative(to: __tree_),
+        to: rhs.relative(to: __tree_))
     case .closedRange(let lhs, let rhs):
-      return .closedRange(from: lhs.relative(to: __tree_), through: rhs.relative(to: __tree_))
+      .closedRange(
+        from: lhs.relative(to: __tree_),
+        through: rhs.relative(to: __tree_))
     case .partialRangeTo(let rhs):
-      return .partialRangeTo(rhs.relative(to: __tree_))
+      .partialRangeTo(rhs.relative(to: __tree_))
     case .partialRangeThrough(let rhs):
-      return .partialRangeThrough(rhs.relative(to: __tree_))
+      .partialRangeThrough(rhs.relative(to: __tree_))
     case .partialRangeFrom(let lhs):
-      return .partialRangeFrom(lhs.relative(to: __tree_))
+      .partialRangeFrom(lhs.relative(to: __tree_))
     }
   }
 

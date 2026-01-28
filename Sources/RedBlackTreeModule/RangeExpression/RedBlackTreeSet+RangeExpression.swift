@@ -59,25 +59,25 @@
     @inlinable
     public mutating func removeSubrange(_ bounds: UnboundedRange) {
       __tree_.ensureUnique()
-      ___remove(.unboundedRange)
+      _ = ___remove(.unboundedRange)
     }
 
     @inlinable
     public mutating func removeSubrange(_ bounds: _RangeExpression) {
       __tree_.ensureUnique()
-      ___remove(bounds.rawRange)
+      _ = ___remove(bounds.rawRange)
     }
-    
+
     @inlinable
     public mutating func removeSubrange(unchecked bounds: UnboundedRange) {
       __tree_.ensureUnique()
-      ___unchecked_remove(.unboundedRange)
+      _ = ___unchecked_remove(.unboundedRange)
     }
 
     @inlinable
     public mutating func removeSubrange(unchecked bounds: _RangeExpression) {
       __tree_.ensureUnique()
-      ___unchecked_remove(bounds.rawRange)
+      _ = ___unchecked_remove(bounds.rawRange)
     }
 
     @inlinable

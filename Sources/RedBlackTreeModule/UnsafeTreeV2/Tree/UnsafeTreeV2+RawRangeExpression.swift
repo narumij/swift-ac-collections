@@ -22,7 +22,9 @@ extension UnsafeTreeV2 {
 
     guard
       !lower.___is_null,
-      !upper.___is_null
+      !upper.___is_null,
+      !lower.___is_garbaged,
+      !upper.___is_garbaged
     else {
       fatalError(.invalidIndex)
     }
@@ -39,5 +41,11 @@ extension UnsafeTreeV2 {
     }
 
     return true
+  }
+  
+  @inlinable
+  func isValidRawRange(range: UnsafeTreeRangeExpression) -> Bool {
+    let (lower, upper) = range.relative(to: self)
+    return isValidRawRange(lower: lower, upper: upper)
   }
 }

@@ -193,7 +193,7 @@
 
     /// - Important: 削除したメンバーを指すインデックスが無効になります。
     /// - Complexity: O(1)
-    @available(*, deprecated, renamed: "popMin")
+    // @available(*, deprecated, renamed: "popMin")
     @inlinable
     //  @inline(__always)
     public mutating func popFirst() -> Element? {
@@ -205,7 +205,7 @@
   extension RedBlackTreeSet {
     /// - Important: 削除したメンバーを指すインデックスが無効になります。
     /// - Complexity: O(log *n*), where *n* is the number of elements.
-    @available(*, deprecated)
+    // @available(*, deprecated)
     @inlinable
     @discardableResult
     public mutating func removeLast() -> Element {

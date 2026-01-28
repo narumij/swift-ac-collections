@@ -175,6 +175,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
+  // 以前の設計の際になにかを迂回した痕跡なのだけれども、なぜが思い出せない
   @inlinable @inline(__always)
   internal mutating func ensureUnique(
     transform: (UnsafeTreeV2) throws -> UnsafeTreeV2

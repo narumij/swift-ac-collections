@@ -27,13 +27,27 @@
     where _Key == C._Key {
       switch self {
       case .start:
-        collection.startIndex
+        return collection.startIndex
       case .end:
-        collection.endIndex
+        return collection.endIndex
       case .lower(let l):
-        collection.lowerBound(l)
+        return collection.lowerBound(l)
       case .upper(let r):
-        collection.upperBound(r)
+        return collection.upperBound(r)
+      case .advanced(let __self, by: var offset):
+        let i = __self.relative(to: collection)
+        return collection.index(i, offsetBy: offset)
+      case .prev(let __self):
+        return
+          RedBlackTreeBound
+          .advanced(__self, by: -1)
+          .relative(to: collection)
+      case .next(let __self):
+        return
+          RedBlackTreeBound
+          .advanced(__self, by: 1)
+          .relative(to: collection)
+
       }
     }
   }

@@ -3,7 +3,6 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-
   extension RedBlackTreeSet {
     @available(*, deprecated)
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
@@ -165,14 +164,16 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-  /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
-  where R.Bound == Index {
-    _isValid(bounds)
+  extension RedBlackTreeSet {
+    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
+    where R.Bound == Index {
+      _isValid(bounds)
+    }
   }
 #endif
 

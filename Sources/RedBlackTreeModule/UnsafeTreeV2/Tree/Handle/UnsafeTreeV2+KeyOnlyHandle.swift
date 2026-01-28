@@ -23,7 +23,7 @@
 @frozen
 @usableFromInline
 struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {
-  
+
   @inlinable @inline(__always)
   internal init(
     header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>,
@@ -34,14 +34,14 @@ struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {
     self.root_ptr = header.pointee.root_ptr
     self.isMulti = isMulti
   }
-  
+
   @usableFromInline typealias _Key = _Key
   @usableFromInline typealias _PayloadValue = _Key
   @usableFromInline typealias _Pointer = _NodePtr
-  
+
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
   @usableFromInline let nullptr: _NodePtr
-  @usableFromInline let root_ptr: _NodeRef // root_refのほうが名前として妥当かも
+  @usableFromInline let root_ptr: _NodeRef  // root_refのほうが名前として妥当かも
   @usableFromInline let isMulti: Bool
 }
 
@@ -90,7 +90,7 @@ extension UnsafeTreeV2KeyOnlyHandle {
 }
 
 extension UnsafeTreeV2KeyOnlyHandle {
-  
+
   @inlinable
   var __begin_node_: _NodePtr {
     get {
@@ -127,18 +127,20 @@ extension UnsafeTreeV2KeyOnlyHandle {
   func destroy(_ p: _NodePtr) {
     header.pointee.___pushRecycle(p)
   }
-  
+
   @inlinable
   var __size_: Int {
     get { header.pointee.count }
-    nonmutating set { /* NOP */ }
+    nonmutating set { /* NOP */  }
   }
 }
 
-extension UnsafeTreeV2KeyOnlyHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {
+extension UnsafeTreeV2KeyOnlyHandle {
   @usableFromInline
   typealias __compare_result = __int_compare_result
 }
+
+extension UnsafeTreeV2KeyOnlyHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: FindInteface, FindProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: EraseProtocol {}
@@ -146,7 +148,9 @@ extension UnsafeTreeV2KeyOnlyHandle: EraseUniqueProtocol {}
 extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface, FindEqualProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
-extension UnsafeTreeV2KeyOnlyHandle: _TreeNode_PtrCompInterface, _Tree_IsMultiTraitInterface, _TreeNode_PtrCompProtocol, _TreeNode_PtrCompUniqueProtocol {}
+extension UnsafeTreeV2KeyOnlyHandle: _TreeNode_PtrCompInterface, _Tree_IsMultiTraitInterface,
+  _TreeNode_PtrCompProtocol, _TreeNode_PtrCompUniqueProtocol
+{}
 extension UnsafeTreeV2KeyOnlyHandle: DistanceProtocol_ptr, CountProtocol_ptr {}
 
 extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmBaseProtocol_ptr {}

@@ -92,6 +92,7 @@
       _ bounds: RedBlackTreeBoundsExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
+      reserveCapacity(capacity)
       var (lower, upper) = relative(to: bounds)
       while lower != upper, lower != endIndex {
         if try shouldBeRemoved(self[lower]) {

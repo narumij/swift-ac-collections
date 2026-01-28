@@ -133,12 +133,21 @@ for count in [1000000] {
   }
 }
 
+#if COMPATIBLE_ATCODER_2025
 for count in [1000000] {
   var fixture = Fixture<Int>(0..<count)
   benchmark("RBT popFirst \(count)") {
     let _ = fixture.popFirst()
   }
 }
+#else
+for count in [1000000] {
+  var fixture = Fixture<Int>(0..<count)
+  benchmark("RBT popMin \(count)") {
+    let _ = fixture.popMin()
+  }
+}
+#endif
 
 for count in [1000000] {
   var fixture = Array<Int>(0..<count)

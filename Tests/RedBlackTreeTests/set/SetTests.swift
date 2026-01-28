@@ -898,16 +898,29 @@ final class SetTests: RedBlackTreeTestCase {
     #endif
   }
 
-  func testPopFirst() {
-    do {
-      var d = RedBlackTreeSet<Int>()
-      XCTAssertNil(d.popFirst())
+  #if COMPATIBLE_ATCODER_2025
+    func testPopFirst() {
+      do {
+        var d = RedBlackTreeSet<Int>()
+        XCTAssertNil(d.popFirst())
+      }
+      do {
+        var d: RedBlackTreeSet<Int> = [1]
+        XCTAssertEqual(d.popFirst(), 1)
+      }
     }
-    do {
-      var d: RedBlackTreeSet<Int> = [1]
-      XCTAssertEqual(d.popFirst(), 1)
+  #else
+    func testPopMin() {
+      do {
+        var d = RedBlackTreeSet<Int>()
+        XCTAssertNil(d.popMin())
+      }
+      do {
+        var d: RedBlackTreeSet<Int> = [1]
+        XCTAssertEqual(d.popMin(), 1)
+      }
     }
-  }
+  #endif
 
   func testEqual1() throws {
     do {

@@ -117,19 +117,21 @@ final class SetRemoveTests: RedBlackTreeTestCase {
     XCTAssertEqual(members.count, 0)
   }
 
-  func testRemoveLast() throws {
-    members = [1, 3, 5, 7, 9]
-    XCTAssertEqual(members.removeLast(), 9)
-    XCTAssertEqual(members.count, 4)
-    XCTAssertEqual(members.removeLast(), 7)
-    XCTAssertEqual(members.count, 3)
-    XCTAssertEqual(members.removeLast(), 5)
-    XCTAssertEqual(members.count, 2)
-    XCTAssertEqual(members.removeLast(), 3)
-    XCTAssertEqual(members.count, 1)
-    XCTAssertEqual(members.removeLast(), 1)
-    XCTAssertEqual(members.count, 0)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testRemoveLast() throws {
+      members = [1, 3, 5, 7, 9]
+      XCTAssertEqual(members.removeLast(), 9)
+      XCTAssertEqual(members.count, 4)
+      XCTAssertEqual(members.removeLast(), 7)
+      XCTAssertEqual(members.count, 3)
+      XCTAssertEqual(members.removeLast(), 5)
+      XCTAssertEqual(members.count, 2)
+      XCTAssertEqual(members.removeLast(), 3)
+      XCTAssertEqual(members.count, 1)
+      XCTAssertEqual(members.removeLast(), 1)
+      XCTAssertEqual(members.count, 0)
+    }
+  #endif
 
   func testRemoveSubrange() throws {
     for l in 0..<10 {

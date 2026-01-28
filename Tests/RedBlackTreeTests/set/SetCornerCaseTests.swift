@@ -112,8 +112,10 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
           XCTAssertEqual(rbTree.removeFirst(), stdSet.min()!)
           stdSet.remove(stdSet.min()!)
         case 3 where !rbTree.isEmpty:  // removeLast
+#if COMPATIBLE_ATCODER_2025
           XCTAssertEqual(rbTree.removeLast(), stdSet.max()!)
           stdSet.remove(stdSet.max()!)
+#endif
         default:
           continue
         }
@@ -126,7 +128,11 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
 
   func testPopFirstAndSubtracting() {
     var s: RedBlackTreeSet = [3, 1, 2]
+#if COMPATIBLE_ATCODER_2025
     XCTAssertEqual(s.popFirst(), 1)
+#else
+    XCTAssertEqual(s.popMin(), 1)
+#endif
     XCTAssertEqual(s.sorted(), [2, 3])
 
     let sub = s.subtracting([2])

@@ -302,11 +302,10 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
   //  @inline(__always)
-  public mutating func popFirst() -> Element? {
+  public mutating func popMin() -> Element? {
     __tree_.ensureUnique()
     return ___remove_first()?.payload
   }
@@ -355,6 +354,7 @@ extension RedBlackTreeSet {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
 extension RedBlackTreeSet {
 
   @inlinable
@@ -366,6 +366,7 @@ extension RedBlackTreeSet {
       shouldBeRemoved: shouldBeRemoved)
   }
 }
+#endif
 
 extension RedBlackTreeSet {
 

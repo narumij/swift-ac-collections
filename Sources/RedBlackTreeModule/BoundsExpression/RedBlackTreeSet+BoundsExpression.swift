@@ -50,7 +50,7 @@
         return .init(tree: __tree_, start: lower, end: upper)
       }
     #else
-      subscript(bounds: RedBlackTreeBoundsExpression<Element>)
+      public subscript(bounds: RedBlackTreeBoundsExpression<Element>)
         -> RedBlackTreeKeyOnlyRangeView<Self>
       {
         @inline(__always)

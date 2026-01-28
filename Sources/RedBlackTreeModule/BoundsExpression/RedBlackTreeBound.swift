@@ -26,10 +26,10 @@ public indirect enum RedBlackTreeBound<_Key> {
   case next(Self)
 }
 
-extension RedBlackTreeBound {  
-  var next: Self { .next(self) }
-  var prev: Self { .prev(self) }
-  func advanced(by offset: Int) -> Self {
+extension RedBlackTreeBound {
+  public var next: Self { .next(self) }
+  public var prev: Self { .prev(self) }
+  public func advanced(by offset: Int) -> Self {
     .advanced(self, by: offset)
   }
 }

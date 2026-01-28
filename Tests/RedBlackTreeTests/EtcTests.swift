@@ -1017,50 +1017,65 @@ final class EtcTests: RedBlackTreeTestCase {
       let _ = a[lowerBound(100)..<end()]
     }
 
-    #if false
-      func testBounds() throws {
-        let a = RedBlackTreeSet<Int>(0..<100)
-        XCTAssertEqual(a[lowerBound(10)..<lowerBound(20)] + [], (10..<20) + [])
-        XCTAssertEqual(a[lowerBound(10)...lowerBound(20)] + [], (10...20) + [])
-        XCTAssertEqual(a[..<lowerBound(50)] + [], (0..<50) + [])
-        XCTAssertEqual(a[...lowerBound(50)] + [], (0...50) + [])
-        XCTAssertEqual(a[lowerBound(90)...] + [], (90..<100) + [])
-        XCTAssertEqual(a[upperBound(10)..<lowerBound(20)] + [], (11..<20) + [])
-        XCTAssertEqual(a[upperBound(10)...lowerBound(20)] + [], (11...20) + [])
-        XCTAssertEqual(a[lowerBound(10)..<upperBound(20)] + [], (10..<21) + [])
-        XCTAssertEqual(a[lowerBound(10)...upperBound(20)] + [], (10...21) + [])
-        XCTAssertEqual(a[..<upperBound(50)] + [], (0..<51) + [])
-        XCTAssertEqual(a[...upperBound(50)] + [], (0...51) + [])
-        XCTAssertEqual(a[upperBound(90)...] + [], (91..<100) + [])
+    func testBounds() throws {
+      let a = RedBlackTreeSet<Int>(0..<100)
+      XCTAssertEqual(a[lowerBound(10)..<lowerBound(20)] + [], (10..<20) + [])
+      XCTAssertEqual(a[lowerBound(10)...lowerBound(20)] + [], (10...20) + [])
+      XCTAssertEqual(a[..<lowerBound(50)] + [], (0..<50) + [])
+      XCTAssertEqual(a[...lowerBound(50)] + [], (0...50) + [])
+      XCTAssertEqual(a[lowerBound(90)...] + [], (90..<100) + [])
+      XCTAssertEqual(a[upperBound(10)..<lowerBound(20)] + [], (11..<20) + [])
+      XCTAssertEqual(a[upperBound(10)...lowerBound(20)] + [], (11...20) + [])
+      XCTAssertEqual(a[lowerBound(10)..<upperBound(20)] + [], (10..<21) + [])
+      XCTAssertEqual(a[lowerBound(10)...upperBound(20)] + [], (10...21) + [])
+      XCTAssertEqual(a[..<upperBound(50)] + [], (0..<51) + [])
+      XCTAssertEqual(a[...upperBound(50)] + [], (0...51) + [])
+      XCTAssertEqual(a[upperBound(90)...] + [], (91..<100) + [])
 
-        XCTAssertEqual(a[start()..<end()] + [], (0..<100) + [])
-        XCTAssertEqual(a[start()...lowerBound(20)] + [], (0...20) + [])
-        XCTAssertEqual(a[start()..<end()] + [], (0..<100) + [])
-        XCTAssertEqual(a[start()...upperBound(20)] + [], (0...21) + [])
-        XCTAssertEqual(a[..<end()] + [], (0..<100) + [])
-        XCTAssertEqual(a[...upperBound(50)] + [], (0...51) + [])
-        XCTAssertEqual(a[start()...] + [], (0..<100) + [])
-      }
-    #endif
-
-//    func testRemoveBounds() throws {
-//      var a = RedBlackTreeSet<Int>(0..<100)
-//      a.removeBounds(lowerBound(10)..<end())
-//      XCTAssertEqual(a + [], (0..<10) + [])
-//    }
-
-  func testRemoveBounds() throws {
-    
-    var a = RedBlackTreeSet<Int>(0..<20)
-    
-    a[lowerBound(10).advanced(by: 2)..<end()].removeSubrange {
-      $0 % 2 == 0
+      XCTAssertEqual(a[start()..<end()] + [], (0..<100) + [])
+      XCTAssertEqual(a[start()...lowerBound(20)] + [], (0...20) + [])
+      XCTAssertEqual(a[start()..<end()] + [], (0..<100) + [])
+      XCTAssertEqual(a[start()...upperBound(20)] + [], (0...21) + [])
+      XCTAssertEqual(a[..<end()] + [], (0..<100) + [])
+      XCTAssertEqual(a[...upperBound(50)] + [], (0...51) + [])
+      XCTAssertEqual(a[start()...] + [], (0..<100) + [])
     }
-    
-    XCTAssertEqual(a + [], (0..<20).filter{ $0 < 12 || $0 % 2 != 0 })
-    
-    XCTAssertEqual(a._copyCount, 0)
-  }
+
+    //    func testRemoveBounds() throws {
+    //      var a = RedBlackTreeSet<Int>(0..<100)
+    //      a.removeBounds(lowerBound(10)..<end())
+    //      XCTAssertEqual(a + [], (0..<10) + [])
+    //    }
+
+    func testRemoveBounds() throws {
+
+      var a = RedBlackTreeSet<Int>(0..<20)
+
+      a[lowerBound(10).advanced(by: 2)..<end()].removeSubrange {
+        $0 % 2 == 0
+      }
+
+      XCTAssertEqual(a + [], (0..<20).filter { $0 < 12 || $0 % 2 != 0 })
+      #if DEBUG
+        XCTAssertEqual(a._copyCount, 0)
+      #endif
+    }
+
+    func testRemoveBounds2() throws {
+
+      let set = RedBlackTreeSet<Int>(0..<20)
+      var range = set[lowerBound(10).advanced(by: 2)..<end()]
+
+      range.removeSubrange {
+        $0 % 2 == 0
+      }
+
+      XCTAssertEqual(set + [], (0..<20) + [])
+      #if DEBUG
+        XCTAssertEqual(set._copyCount, 0)
+        XCTAssertEqual(range._copyCount, 1)
+      #endif
+    }
 
     func testUnchecked() throws {
       let a = RedBlackTreeSet<Int>(0..<100)

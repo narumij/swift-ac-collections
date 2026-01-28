@@ -22,27 +22,132 @@
 
 import Foundation
 
-/// `RedBlackTreeSet` は、`Element` 型の要素を一意に格納するための
-/// 赤黒木（Red-Black Tree）ベースの集合型です。
+/// # RedBlackTreeSet
 ///
-/// ### 使用例
+/// `RedBlackTreeSet` は、**赤黒木を用いて実装された、一意要素の順序付き集合**です。
+///
+/// 標準の `Set` と同様に、各要素は **高々一度だけ** 登場し、
+/// **効率的な所属判定（membership test）** を提供します。
+/// 一方で `Set` と異なり、`RedBlackTreeSet` は **要素をソート順（比較順）に保持** し、
+/// **順序付き走査** や **範囲検索** を効率的にサポートします。
+///
+/// この型は、**順序付き集合**・**高速検索**・
+/// **安定した計算量保証** を同時に満たしたい用途に適しています。
+///
 /// ```swift
-/// var set: RedBlackTreeSet = [3, 1, 4, 1, 5, 9]
-/// print(set) // 出力例: [1, 3, 4, 5, 9]
+/// let set: RedBlackTreeSet = [3, 1, 4, 1, 5]
+/// // => [1, 3, 4, 5]
+/// ```
 ///
-/// set.insert(2)
-/// print(set.contains(2)) // 出力例: true
+/// ## 等価性（Equality）
 ///
-/// // 要素の削除
-/// set.remove(9)
-/// print(set) // 出力例: [1, 2, 3, 4, 5]
+/// 2つの `RedBlackTreeSet` は、**同じ要素を含む場合に等しい**とみなされます。
 ///
-/// // イテレーション
-/// for element in set {
-///     print(element)
+/// 要素は常にソート順に保持されるため、**挿入順は等価性に影響しません**。
+/// これは標準 `Set` と同じ意味論です。
+///
+/// ```swift
+/// let a: RedBlackTreeSet = [1, 2, 3]
+/// let b: RedBlackTreeSet = [3, 2, 1]
+/// a == b // true
+/// ```
+///
+/// ## 順序と走査（Ordering & Traversal）
+///
+/// `RedBlackTreeSet` は **要素を比較順に保持** します。
+///
+/// - `min` / `max`
+/// - 昇順・降順イテレーション
+/// - `lowerBound` / `upperBound`
+/// - 範囲ベースの探索
+///
+/// といった操作を **O(log N)** で提供します。
+///
+/// ```swift
+/// set.lowerBound(3)
+/// set.upperBound(3)
+///
+/// for value in set {
+///   print(value) // 昇順
 /// }
 /// ```
-/// - Important: `RedBlackTreeSet` はスレッドセーフではありません。
+///
+/// ## 挿入・削除（Insertion & Removal）
+///
+/// 赤黒木により、**挿入・削除・検索はすべて O(log N)** の計算量で保証されます。
+///
+/// ```swift
+/// set.insert(10)
+/// set.remove(3)
+/// set.contains(5)
+/// ```
+///
+/// 重複値は許可されず、挿入時に既存要素がある場合は
+/// **無視または更新** されます。
+///
+/// ## 範囲操作（Range Operations）
+///
+/// `RedBlackTreeSet` は **範囲ベースの効率的な操作**をサポートします。
+///
+/// - 範囲削除
+/// - 範囲イテレーション
+/// - 区間検索（range queries）
+///
+/// ```swift
+/// let subset = set.range(3..<10) // TODO: コード例を修正
+/// ```
+///
+/// これらは、木構造を活かして **線形走査を避ける** 実装が可能です。
+///
+/// ## パフォーマンス特性（Performance Characteristics）
+///
+/// ### 要素検索（Lookup）
+///
+/// - **O(log N)** の最悪計算量保証
+/// - ハッシュに依存しないため、**衝突劣化が発生しません**
+///
+/// ### 挿入・削除（Insertion & Removal）
+///
+/// - **O(log N)**
+/// - 木の高さが平衡に保たれるため、**安定した性能**
+///
+/// ### 順序付き走査（Ordered Traversal）
+///
+/// - **O(N)** で昇順・降順走査
+/// - 中間ノードからの継続走査も効率的
+///
+/// ### メモリ特性（Memory Characteristics）
+///
+/// - 各要素はノードとして個別に管理される
+/// - `Array` や `HashTable` ベース構造より **ポインタオーバーヘッドがある**
+/// - 代わりに、**範囲検索・順序操作・最悪計算量保証** を提供
+///
+/// ## ハッシュ不要の利点（No Hashing Required）
+///
+/// `RedBlackTreeSet` はハッシュに依存しないため、以下の利点があります。
+///
+/// - `Hashable` 不要（`Comparable` のみ）
+/// - 悪意ある入力による **DoS 的ハッシュ衝突** を回避
+/// - **性能の予測可能性が高い**
+///
+/// ## Set / OrderedSet との使い分け
+///
+/// | 型                 | 内部構造           | 検索       | 順序     | 範囲検索 | 最悪計算量保証 |
+/// | ------------------ | ------------------ | ---------- | -------- | -------- | ---------------- |
+/// | `Set`              | Hash Table         | O(1) avg   | ❌       | ❌       | ❌               |
+/// | `OrderedSet`       | Array + Hash       | O(1) avg   | 挿入順   | ❌       | ❌               |
+/// | `RedBlackTreeSet`  | Red-Black Tree     | O(log N)   | ソート順 | ✅       | ✅               |
+///
+/// ## 使いどころ（When to Use）
+///
+/// `RedBlackTreeSet` は次のようなケースに向いています。
+///
+/// - **順序付き集合** が必要
+/// - **範囲検索 / lowerBound / upperBound** を多用
+/// - **最悪計算量の保証** が重要
+/// - **ハッシュ品質に依存したくない**
+/// - **アルゴリズム競技 / DB / インデックス / ルーティング構造**
+///
 @frozen
 public struct RedBlackTreeSet<Element: Comparable> {
 

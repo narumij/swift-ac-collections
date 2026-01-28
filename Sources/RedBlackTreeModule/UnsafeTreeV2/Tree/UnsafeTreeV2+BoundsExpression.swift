@@ -58,13 +58,13 @@ extension RedBlackTreeBound {
 
     case .prev(let __self):
       return
-        Self
+        RedBlackTreeBound
         .advanced(__self, by: -1)
         .relative(to: __tree_)
 
     case .next(let __self):
       return
-        Self
+        RedBlackTreeBound
         .advanced(__self, by: 1)
         .relative(to: __tree_)
 
@@ -101,7 +101,11 @@ extension RedBlackTreeBoundsExpression {
       UnsafeMutablePointer<UnsafeNode>,
       UnsafeMutablePointer<UnsafeNode>
     )
-  where Base: ___TreeBase, Base._Key == _Key {
-    _relative(to: __tree_).relative(to: __tree_)
+  where
+    Base: ___TreeBase,
+    Base._Key == _Key
+  {
+    _relative(to: __tree_)
+      .relative(to: __tree_)
   }
 }

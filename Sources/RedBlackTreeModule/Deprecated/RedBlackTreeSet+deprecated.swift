@@ -1,5 +1,3 @@
-
-
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet: Collection, BidirectionalCollection {}
 #endif
@@ -125,7 +123,7 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-extension RedBlackTreeSet {
+  extension RedBlackTreeSet {
 
     /// - Complexity: O(1)
     @inlinable
@@ -140,9 +138,8 @@ extension RedBlackTreeSet {
         start: __tree_.rawValue(bounds.lowerBound),
         end: __tree_.rawValue(bounds.upperBound))
     }
-}
+  }
 #endif
-
 
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
@@ -167,7 +164,6 @@ extension RedBlackTreeSet {
   }
 #endif
 
-
 #if COMPATIBLE_ATCODER_2025
   /// RangeExpressionがsubscriptやremoveで利用可能か判別します
   ///
@@ -180,7 +176,6 @@ extension RedBlackTreeSet {
   }
 #endif
 
-
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
     /// 特殊なforEach
@@ -188,6 +183,23 @@ extension RedBlackTreeSet {
     @inline(__always)
     public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
       try _forEach(body)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @available(*, deprecated)
+    @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      __tree_.ensureUnique()
+      guard let element = ___remove_last() else {
+        preconditionFailure(.emptyLast)
+      }
+      return element.payload
     }
   }
 #endif

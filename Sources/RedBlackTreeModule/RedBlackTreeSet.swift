@@ -313,7 +313,7 @@ extension RedBlackTreeSet {
 }
 
 extension RedBlackTreeSet {
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
@@ -329,7 +329,7 @@ extension RedBlackTreeSet {
     //    }
     //    return result ? member : nil
   }
-
+  
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -341,7 +341,7 @@ extension RedBlackTreeSet {
     }
     return element
   }
-
+  
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -350,18 +350,6 @@ extension RedBlackTreeSet {
     __tree_.ensureUnique()
     guard let element = ___remove_first() else {
       preconditionFailure(.emptyFirst)
-    }
-    return element.payload
-  }
-
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  @discardableResult
-  public mutating func removeLast() -> Element {
-    __tree_.ensureUnique()
-    guard let element = ___remove_last() else {
-      preconditionFailure(.emptyLast)
     }
     return element.payload
   }

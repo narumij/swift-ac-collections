@@ -23,49 +23,26 @@
 @frozen
 @usableFromInline
 struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {
-  @inlinable
+  
+  @inlinable @inline(__always)
   internal init(
     header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>,
     isMulti: Bool
   ) {
     self.header = header
-    self.isMulti = false
     self.nullptr = header.pointee.nullptr
     self.root_ptr = header.pointee.root_ptr
+    self.isMulti = isMulti
   }
+  
   @usableFromInline typealias _Key = _Key
   @usableFromInline typealias _PayloadValue = _Key
   @usableFromInline typealias _Pointer = _NodePtr
+  
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
   @usableFromInline let nullptr: _NodePtr
-  @usableFromInline let root_ptr: _NodeRef
-  @usableFromInline var isMulti: Bool
-}
-
-extension UnsafeTreeV2 where _Key == _PayloadValue, _Key: Comparable {
-
-  @usableFromInline
-  typealias Handle = UnsafeTreeV2KeyOnlyHandle<UnsafeTreeV2<Base>._PayloadValue>
-
-  @inlinable
-  @inline(__always)
-  internal func read<R>(_ body: (Handle) throws -> R) rethrows -> R {
-    try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = Handle(
-        header: header, isMulti: isMulti)
-      return try body(handle)
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func update<R>(_ body: (Handle) throws -> R) rethrows -> R {
-    try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = Handle(
-        header: header, isMulti: isMulti)
-      return try body(handle)
-    }
-  }
+  @usableFromInline let root_ptr: _NodeRef // root_refのほうが名前として妥当かも
+  @usableFromInline let isMulti: Bool
 }
 
 extension UnsafeTreeV2KeyOnlyHandle {

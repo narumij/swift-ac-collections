@@ -16,11 +16,14 @@
 //===----------------------------------------------------------------------===//
 
 @frozen
-public enum RedBlackTreeBound<_Key> {
+public indirect enum RedBlackTreeBound<_Key> {
   case start
   case lower(_Key)
   case upper(_Key)
   case end
+  case advanced(Self, by: Int)
+  case previous(Self)
+  case next(Self)
 }
 
 // TODO: 以下を公開にするかどうかは要再検討

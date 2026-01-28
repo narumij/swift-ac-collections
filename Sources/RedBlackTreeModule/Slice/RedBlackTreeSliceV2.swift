@@ -57,11 +57,7 @@ extension RedBlackTreeSliceV2 {
   }
 }
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSliceV2.KeyOnly: Sequence & Collection & BidirectionalCollection {}
-#else
-  extension RedBlackTreeSliceV2.KeyOnly: Sequence {}
-#endif
+extension RedBlackTreeSliceV2.KeyOnly: Sequence {}
 
 extension RedBlackTreeSliceV2.KeyOnly {
 
@@ -84,18 +80,6 @@ extension RedBlackTreeSliceV2.KeyOnly {
     }
   #endif
 }
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSliceV2.KeyOnly {
-
-    @available(*, deprecated, message: "性能問題があり廃止")
-    @inlinable
-    @inline(__always)
-    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-      try _forEach(body)
-    }
-  }
-#endif
 
 extension RedBlackTreeSliceV2.KeyOnly {
 
@@ -160,25 +144,6 @@ extension RedBlackTreeSliceV2.KeyOnly {
       yield self[_checked: position]
     }
   }
-}
-
-extension RedBlackTreeSliceV2.KeyOnly {
-
-  #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(log *n*)
-    @inlinable
-    @inline(__always)
-    public subscript(bounds: Range<Index>) -> SubSequence {
-      // TODO: ベースでの有効性しかチェックしていない。__containsのチェックにするか要検討
-      __tree_.___ensureValid(
-        begin: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-      return .init(
-        tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-  #endif
 }
 
 extension RedBlackTreeSliceV2.KeyOnly {
@@ -281,27 +246,6 @@ extension RedBlackTreeSliceV2.KeyOnly {
     ___contains(__tree_.rawValue(i))
   }
 }
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSliceV2.KeyOnly {
-
-    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-    ///
-    /// - Complexity:
-    ///
-    ///   ベースがset, map, dictionaryの場合、O(1)
-    ///
-    ///   ベースがmultiset, multimapの場合 O(log *n*)
-    @inlinable
-    @inline(__always)
-    public func isValid<R: RangeExpression>(
-      _ bounds: R
-    ) -> Bool where R.Bound == Index {
-      let bounds = bounds.relative(to: self)
-      return ___contains(bounds)
-    }
-  }
-#endif
 
 extension RedBlackTreeSliceV2.KeyOnly {
 

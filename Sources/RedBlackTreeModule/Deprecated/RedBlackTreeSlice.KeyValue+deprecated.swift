@@ -1,0 +1,87 @@
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSliceV2.KeyValue: Collection & BidirectionalCollection {}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSliceV2.KeyValue {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func keys() -> Keys {
+      _keys()
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func values() -> Values {
+      _values()
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSliceV2.KeyValue {
+
+    @available(*, deprecated, message: "性能問題があり廃止")
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSliceV2.KeyValue {
+
+    @available(*, deprecated)
+    public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
+      .init(
+        tree: __tree_,
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSliceV2.KeyValue {
+
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @inline(__always)
+    public subscript(bounds: Range<Index>) -> SubSequence {
+      // TODO: ベースでの有効性しかチェックしていない。__containsのチェックにするか要検討
+      __tree_.___ensureValid(
+        begin: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
+      return .init(
+        tree: __tree_,
+        start: __tree_.rawValue(bounds.lowerBound),
+        end: __tree_.rawValue(bounds.upperBound))
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSliceV2.KeyValue {
+
+    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity:
+    ///
+    ///   ベースがset, map, dictionaryの場合、O(1)
+    ///
+    ///   ベースがmultiset, multimapの場合 O(log *n*)
+    @inlinable
+    @inline(__always)
+    public func isValid<R: RangeExpression>(
+      _ bounds: R
+    ) -> Bool where R.Bound == Index {
+      let bounds = bounds.relative(to: self)
+      return ___contains(bounds)
+    }
+  }
+#endif

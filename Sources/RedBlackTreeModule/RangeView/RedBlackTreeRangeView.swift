@@ -5,14 +5,12 @@
 //  Created by narumij on 2026/01/29.
 //
 
-struct RedBlackTreeKeyOnlyRangeView<Base>: _UnsafeNodePtrType
-where
-  Base: ___MutableUnsafeBaseV2 & _ScalarBaseType
+struct RedBlackTreeKeyOnlyRangeView<Base: ___TreeBase & ___TreeIndex>: ___MutableUnsafeBaseV2
 {
-  public typealias Element = Base.Base._PayloadValue
+  public typealias Element = Base._PayloadValue
 
   @usableFromInline
-  internal var _base: Base
+  internal var __tree_: Tree
 
   @usableFromInline
   internal let _start, _end: _NodePtr
@@ -20,17 +18,15 @@ where
 
 extension RedBlackTreeKeyOnlyRangeView {
 
-  @usableFromInline
-  internal var __tree_: Base.Tree {
-    _base.__tree_
-  }
-}
-
-extension RedBlackTreeKeyOnlyRangeView {
-
   @inlinable
-  public mutating func remove(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-    _base.__tree_.ensureUnique()
+  public mutating func removeSubrange() {
+    __tree_.ensureUnique()
+    __tree_.___checking_erase(_start, _end)
+  }
+  
+  @inlinable
+  public mutating func removeSubrange(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+    __tree_.ensureUnique()
     try __tree_.___checking_erase_if(_start, _end, shouldBeRemoved: shouldBeRemoved)
   }
 }

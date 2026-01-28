@@ -56,14 +56,16 @@
         @inline(__always)
         get {
           let (lower, upper) = bounds.relative(to: __tree_)
-          return .init(_base: self, _start: lower, _end: upper)
+          return .init(__tree_: __tree_, _start: lower, _end: upper)
         }
         @inline(__always)
         _modify {
           let (lower, upper) = bounds.relative(to: __tree_)
-          var view = RedBlackTreeKeyOnlyRangeView(_base: self, _start: lower, _end: upper)
+          // BoundsExpressionでは範囲不正を防止するのは時に難しいと思うので、
+          // CやC++のforのように、範囲不正があっても単にループが回らない挙動にするほうが良さそう
+          var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
           self = .init()
-          defer { self = view._base }
+          defer { self = .init(__tree_: view.__tree_) }
           yield &view
         }
       }

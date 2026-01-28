@@ -81,10 +81,7 @@ where
 }
 
 @usableFromInline
-protocol ___MutableUnsafeBaseV2: ___Root
-where
-  Base: ___TreeBase & ___TreeIndex,
-  Tree == UnsafeTreeV2<Base>
+protocol ___MutableUnsafeBaseV2: ___UnsafeBaseV2
 {
   var __tree_: Tree { get set }
 }

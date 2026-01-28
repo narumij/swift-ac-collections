@@ -1053,11 +1053,13 @@ final class EtcTests: RedBlackTreeTestCase {
     
     var a = RedBlackTreeSet<Int>(0..<20)
     
-    a[lowerBound(10)..<end()].remove {
+    a[lowerBound(10).advanced(by: 2)..<end()].removeSubrange {
       $0 % 2 == 0
     }
     
-    XCTAssertEqual(a + [], (0..<20).filter{ $0 < 10 || $0 % 2 != 0 })
+    XCTAssertEqual(a + [], (0..<20).filter{ $0 < 12 || $0 % 2 != 0 })
+    
+    XCTAssertEqual(a._copyCount, 0)
   }
 
     func testUnchecked() throws {

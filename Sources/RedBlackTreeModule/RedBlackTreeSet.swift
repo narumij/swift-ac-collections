@@ -73,7 +73,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   }
 }
 
-extension RedBlackTreeSet: ___RedBlackTreeKeyOnlyBase {}
+extension RedBlackTreeSet: _RedBlackTreeKeyOnlyBase {}
 extension RedBlackTreeSet: CompareUniqueTrait {}
 extension RedBlackTreeSet: ScalarValueComparer {
   public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {

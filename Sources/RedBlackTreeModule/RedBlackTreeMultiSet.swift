@@ -68,7 +68,7 @@ extension RedBlackTreeMultiSet {
   public typealias Base = Self
 }
 
-extension RedBlackTreeMultiSet: ___RedBlackTreeKeyOnlyBase {}
+extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyBase {}
 extension RedBlackTreeMultiSet: CompareMultiTrait {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {
   public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {

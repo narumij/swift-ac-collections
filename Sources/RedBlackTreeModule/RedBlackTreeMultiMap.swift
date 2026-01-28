@@ -89,7 +89,7 @@ extension RedBlackTreeMultiMap {
   public typealias Base = Self
 }
 
-extension RedBlackTreeMultiMap: ___RedBlackTreeKeyValuesBase {}
+extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeMultiMap: CompareMultiTrait {}
 extension RedBlackTreeMultiMap: KeyValueComparer {
   public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> RedBlackTreePair<Key, Value> {

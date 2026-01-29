@@ -35,9 +35,8 @@ extension TrackingTag_: RawRepresentable {
     case 0...:
       self = .tag(value)
     default:
-      break
+      return nil
     }
-    return nil
   }
 
   public var rawValue: _RawTrackingTag {

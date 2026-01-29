@@ -97,7 +97,7 @@
     }
     @inlinable
     func ___NodePtr(_ p: Int) -> _NodePtr {
-      __tree_.___NodePtr(p)
+      __tree_[_raw: p]
     }
     @inlinable
     var nullptr: _NodePtr { __tree_.nullptr }

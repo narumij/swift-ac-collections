@@ -1001,8 +1001,11 @@ final class EtcTests: RedBlackTreeTestCase {
       var a = RedBlackTreeSet<Int>()
       typealias Index = RedBlackTreeSet<Int>.Index
       throw XCTSkip("動かす想定で書いてなかった。コンパイルだけ確認できればいい")
+      #if false
+      // indexを廃止しようとしている
       let _ = a.indices(bounds: .start ..< .end)
       let _ = a.indices(bounds: .lower(3) ..< .lower(4))
+      #endif
       let _ = a.removeBounds(.lower(10) ..< .lower(100)) { n in
         n % 2 == 1
       }

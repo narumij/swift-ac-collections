@@ -181,21 +181,23 @@ extension RedBlackTreeSetRemoveTests {
 
 extension RedBlackTreeSetRemoveTests {
 
-  /// SubSequence内で削除後にindexが無効化されること
-  func test_isValid_index_inSubSequence_afterRemoval() throws {
-    // 事前条件: 集合に[1, 2, 3, 4, 5]
-    var set = RedBlackTreeSet([1, 2, 3, 4, 5])
-    let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
-    let subIndex = sub.startIndex  // index pointing to 2
+  #if COMPATIBLE_ATCODER_2025
+    /// SubSequence内で削除後にindexが無効化されること
+    func test_isValid_index_inSubSequence_afterRemoval() throws {
+      // 事前条件: 集合に[1, 2, 3, 4, 5]
+      var set = RedBlackTreeSet([1, 2, 3, 4, 5])
+      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
+      let subIndex = sub.startIndex  // index pointing to 2
 
-    // 実行: 削除（2を削除する）
-    let element = sub[subIndex]
-    XCTAssertEqual(element, 2)
-    _ = set.remove(element)
+      // 実行: 削除（2を削除する）
+      let element = sub[subIndex]
+      XCTAssertEqual(element, 2)
+      _ = set.remove(element)
 
-    // 事後条件:
-    // - 削除したindexは無効になること
-    throw XCTSkip("CoWの挙動変更のため")
-    XCTAssertFalse(sub.isValid(index: subIndex), "削除後、SubSequenceのindexは無効になること")
-  }
+      // 事後条件:
+      // - 削除したindexは無効になること
+      throw XCTSkip("CoWの挙動変更のため")
+      XCTAssertFalse(sub.isValid(index: subIndex), "削除後、SubSequenceのindexは無効になること")
+    }
+  #endif
 }

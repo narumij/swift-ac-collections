@@ -8,7 +8,7 @@
 public struct RedBlackTreeKeyOnlyRangeView<Base>: ___UnsafeMutableTreeBaseV2,
   ___UnsafeSubSequenceV2
 where
-  Base: ___TreeBase,
+  Base: ___TreeBase & ___TreeIndex,
   Base._Key == Base._PayloadValue,
   Base._Key: Comparable
 {
@@ -56,8 +56,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> AnyIterator<Element> {
-    fatalError()
+  public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Base> {
+    .init(start: _start, end: _end, tie: __tree_.tied)
   }
 }
 
@@ -114,12 +114,16 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var startIndex: RedBlackTreeTrackingTag { .create(_start_tag) }
+  public var startIndex: RedBlackTreeTrackingTag {
+    .create(_start_tag)
+  }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var endIndex: RedBlackTreeTrackingTag { .create(_end_tag) }
+  public var endIndex: RedBlackTreeTrackingTag {
+    .create(_end_tag)
+  }
 }
 
 #if !COMPATIBLE_ATCODER_2025

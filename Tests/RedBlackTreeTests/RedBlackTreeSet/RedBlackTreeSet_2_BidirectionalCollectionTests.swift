@@ -213,6 +213,9 @@ extension RedBlackTreeSetBidirectionalCollectionTests {
     let set = RedBlackTreeSet([1, 2, 3, 4, 5])
     let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
 
+    assert(sub.startIndex != nil)
+    assert(sub.endIndex != nil)
+    
     // 実行: distance(from: start, to: end)を計算すること
     let dist = sub.distance(from: sub.startIndex, to: sub.endIndex)
 
@@ -306,43 +309,45 @@ extension RedBlackTreeSetBidirectionalCollectionTests {
     XCTAssertEqual(sub[idx], 4)  // 事後条件: 直前の要素(4)を指すこと
   }
 
-  /// SubSequenceの範囲指定サブスクリプトが正しく動作すること
-  func test_subSequence_subscript_range() {
-    // 事前条件: 集合に[1,2,3,4,5,6,7]を用意すること
-    let set = RedBlackTreeSet([1, 2, 3, 4, 5, 6, 7])
-    let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4,5,6]
+  #if COMPATIBLE_ATCODER_2025
+    /// SubSequenceの範囲指定サブスクリプトが正しく動作すること
+    func test_subSequence_subscript_range() {
+      // 事前条件: 集合に[1,2,3,4,5,6,7]を用意すること
+      let set = RedBlackTreeSet([1, 2, 3, 4, 5, 6, 7])
+      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4,5,6]
 
-    let rangeStart = sub.index(after: sub.startIndex)
-    let rangeEnd = sub.index(before: sub.endIndex)
-    let slicedSub = sub[rangeStart..<rangeEnd]  // [3,4,5]
+      let rangeStart = sub.index(after: sub.startIndex)
+      let rangeEnd = sub.index(before: sub.endIndex)
+      let slicedSub = sub[rangeStart..<rangeEnd]  // [3,4,5]
 
-    // 実行: forEachで要素を列挙すること
-    var elements: [Int] = []
-    slicedSub.forEach { elements.append($0) }
+      // 実行: forEachで要素を列挙すること
+      var elements: [Int] = []
+      slicedSub.forEach { elements.append($0) }
 
-    // 事後条件:
-    // - 列挙結果が[3,4,5]であること
-    XCTAssertEqual(elements, [3, 4, 5])
-    // - countが3であること
-    XCTAssertEqual(slicedSub.count, 3)
-    // - startIndexが3を指すこと
-    XCTAssertEqual(slicedSub[slicedSub.startIndex], 3)
-    // - index(before: endIndex)が5を指すこと
-    XCTAssertEqual(slicedSub[slicedSub.index(before: slicedSub.endIndex)], 5)
-  }
+      // 事後条件:
+      // - 列挙結果が[3,4,5]であること
+      XCTAssertEqual(elements, [3, 4, 5])
+      // - countが3であること
+      XCTAssertEqual(slicedSub.count, 3)
+      // - startIndexが3を指すこと
+      XCTAssertEqual(slicedSub[slicedSub.startIndex], 3)
+      // - index(before: endIndex)が5を指すこと
+      XCTAssertEqual(slicedSub[slicedSub.index(before: slicedSub.endIndex)], 5)
+    }
+  #endif
 }
 
 #if COMPATIBLE_ATCODER_2025
-extension RedBlackTreeSetBidirectionalCollectionTests {
+  extension RedBlackTreeSetBidirectionalCollectionTests {
 
-  /// SubSequenceのindices()で正しいインデックスを列挙できること
-  func test_subSequence_indices() {
-    let set = RedBlackTreeSet([1, 2, 3, 4, 5])
-    let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
+    /// SubSequenceのindices()で正しいインデックスを列挙できること
+    func test_subSequence_indices() {
+      let set = RedBlackTreeSet([1, 2, 3, 4, 5])
+      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
 
-    let indices = sub.indices.map { sub[$0] }
+      let indices = sub.indices.map { sub[$0] }
 
-    XCTAssertEqual(indices, [2, 3, 4])
+      XCTAssertEqual(indices, [2, 3, 4])
+    }
   }
-}
 #endif

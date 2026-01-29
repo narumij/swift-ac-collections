@@ -38,10 +38,30 @@
       ___subscript(.unboundedRange)
     }
 
-    @inlinable
-    public subscript(bounds: _RangeExpression) -> SubSequence {
-      ___subscript(bounds.rawRange)
-    }
+    #if false
+      @inlinable
+      public subscript(bounds: _RangeExpression) -> SubSequence {
+        ___subscript(bounds.rawRange)
+      }
+    #else
+      public subscript(bounds: _RangeExpression)
+        -> RedBlackTreeKeyOnlyRangeView<Self>
+      {
+        @inline(__always)
+        get {
+          let (lower, upper) = bounds.relative(to: __tree_)
+          return .init(__tree_: __tree_, _start: lower, _end: upper)
+        }
+        @inline(__always)
+        _modify {
+          let (lower, upper) = bounds.relative(to: __tree_)
+          var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
+          self = RedBlackTreeSet()
+          defer { self = .init(__tree_: view.__tree_) }
+          yield &view
+        }
+      }
+    #endif
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
@@ -121,7 +141,10 @@
     @inlinable
     public func sequence(from start: Element, to end: Element) -> SubSequence {
       // APIはstride関数とsequence関数を参考にした
-      .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
+      .init(
+        tree: __tree_,
+        start: __tree_.lower_bound(start),
+        end: __tree_.lower_bound(end))
     }
 
     /// 値レンジ `[start, end]` に含まれる要素のスライス
@@ -129,7 +152,10 @@
     @inlinable
     public func sequence(from start: Element, through end: Element) -> SubSequence {
       // APIはstride関数とsequence関数を参考にした
-      .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
+      .init(
+        tree: __tree_,
+        start: __tree_.lower_bound(start),
+        end: __tree_.upper_bound(end))
     }
   }
 #endif

@@ -29,16 +29,32 @@ public protocol ___Root {
 }
 
 @usableFromInline
-protocol ___UnsafeIndexBaseV2: ___Root
+protocol ___UnsafeTreeBaseV2: ___Root, _UnsafeNodePtrType
 where
-  Base: ___TreeBase & ___TreeIndex,
+  Base: ___TreeBase,
   Tree == UnsafeTreeV2<Base>,
-  Index == Tree.Index,
   _NodePtr == Tree._NodePtr
 {
-  associatedtype Index
-  associatedtype _NodePtr
   var __tree_: Tree { get }
+}
+
+@usableFromInline
+protocol ___UnsafeRangeBaseV2: ___UnsafeTreeBaseV2 & _BaseType
+where
+  _Key == Base._Key,
+  _PayloadValue == Base._PayloadValue
+{
+  var _start: _NodePtr { get }
+  var _end: _NodePtr { get }
+}
+
+@usableFromInline
+protocol ___UnsafeIndexBaseV2: ___UnsafeTreeBaseV2
+where
+  Base: ___TreeIndex,
+  Index == UnsafeTreeV2<Base>.Index
+{
+  associatedtype Index
 }
 
 extension ___UnsafeIndexBaseV2 {
@@ -63,7 +79,7 @@ extension ___UnsafeIndexBaseV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeBaseV2: ___UnsafeIndexBaseV2 & _BaseType
+protocol ___UnsafeIndexRangeBaseV2: ___UnsafeRangeBaseV2 & ___UnsafeIndexBaseV2
 where
   Base: ___TreeBase & ___TreeIndex,
   Tree == UnsafeTreeV2<Base>,
@@ -81,7 +97,7 @@ where
 }
 
 @usableFromInline
-protocol ___MutableUnsafeBaseV2: ___UnsafeBaseV2
+protocol ___UnsafeMutableTreeBaseV2: ___UnsafeTreeBaseV2
 {
   var __tree_: Tree { get set }
 }

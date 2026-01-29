@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet: ___MutableUnsafeBaseV2 {}
+  extension RedBlackTreeSet: ___UnsafeMutableTreeBaseV2 {}
 
   extension RedBlackTreeSet {
 
@@ -40,6 +40,8 @@
       }
       return element
     }
+    
+    // MARK: -
 
     #if false
       public subscript(bounds: RedBlackTreeBoundsExpression<Element>) -> SubSequence {
@@ -53,13 +55,11 @@
       public subscript(bounds: RedBlackTreeBoundsExpression<Element>)
         -> RedBlackTreeKeyOnlyRangeView<Self>
       {
-        @inline(__always)
-        get {
+        @inline(__always) get {
           let (lower, upper) = bounds.relative(to: __tree_)
           return .init(__tree_: __tree_, _start: lower, _end: upper)
         }
-        @inline(__always)
-        _modify {
+        @inline(__always) _modify {
           let (lower, upper) = bounds.relative(to: __tree_)
           // BoundsExpressionでは範囲不正を防止するのは時に難しいと思うので、
           // CやC++のforのように、範囲不正があっても単にループが回らない挙動にするほうが良さそう

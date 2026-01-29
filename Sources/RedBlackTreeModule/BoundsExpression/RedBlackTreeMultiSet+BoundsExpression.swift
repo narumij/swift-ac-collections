@@ -17,6 +17,18 @@
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
+    
+    public mutating func remove(_ bound: RedBlackTreeBound<Element>) -> Element? {
+      __tree_.ensureUnique()
+      let p = bound.relative(to: __tree_)
+      guard !p.___is_null_or_end else { return nil }
+      guard let (_, element) = ___remove(at: p) else {
+        fatalError(.invalidIndex)
+      }
+      return element
+    }
+
+    // MARK: -
 
     public subscript(bounds: RedBlackTreeBoundsExpression<Element>) -> SubSequence {
       let (lower, upper) = bounds.relative(to: __tree_)

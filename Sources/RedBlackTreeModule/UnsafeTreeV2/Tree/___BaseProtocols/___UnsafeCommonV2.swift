@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeCommonV2: ___UnsafeBaseV2 {}
+protocol ___UnsafeCommonV2: ___UnsafeIndexRangeBaseV2 {}
 
 extension ___UnsafeCommonV2 {
 
@@ -93,6 +93,7 @@ extension ___UnsafeCommonV2 {
 }
 
 extension ___UnsafeCommonV2 {
+  
   @inlinable
   @inline(__always)
   internal var _indices: Indices {

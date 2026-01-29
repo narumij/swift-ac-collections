@@ -21,6 +21,19 @@ final class ABC358DTests: RedBlackTreeTestCase {
   }
 
   #if true
+  func testABC358D(N: Int, M: Int, _A: [Int], B: [Int]) throws {
+    var A = RedBlackTreeMultiSet(_A)
+    var ans = 0
+    for b in B {
+      guard let i = A.remove(lowerBound(b)) else {
+        ans = -1
+        break
+      }
+      ans += i
+    }
+    print(ans)
+  }
+  #else
     func testABC358D(N: Int, M: Int, _A: [Int], B: [Int]) throws {
       var A = RedBlackTreeMultiSet(_A)
       var ans = 0

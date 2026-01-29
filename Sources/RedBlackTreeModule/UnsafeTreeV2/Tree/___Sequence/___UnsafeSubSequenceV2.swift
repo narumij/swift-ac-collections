@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeSubSequenceV2: ___UnsafeBaseV2 {}
+protocol ___UnsafeSubSequenceV2: ___UnsafeRangeBaseV2 {}
 
 extension ___UnsafeSubSequenceV2 {
 

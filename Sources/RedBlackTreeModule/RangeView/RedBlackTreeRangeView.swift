@@ -5,10 +5,10 @@
 //  Created by narumij on 2026/01/29.
 //
 
-public struct RedBlackTreeKeyOnlyRangeView<Base>: ___MutableUnsafeBaseV2,
-  ___UnsafeKeyOnlySequenceV2, ___UnsafeSubSequenceV2, ___UnsafeIndexV2
+public struct RedBlackTreeKeyOnlyRangeView<Base>: ___UnsafeMutableTreeBaseV2,
+  ___UnsafeSubSequenceV2
 where
-  Base: ___TreeBase & ___TreeIndex,
+  Base: ___TreeBase,
   Base._Key == Base._PayloadValue,
   Base._Key: Comparable
 {
@@ -20,7 +20,6 @@ where
   }
 
   public typealias Element = Base._PayloadValue
-  public typealias Index = Tree.Index
 
   @usableFromInline
   internal var __tree_: Tree
@@ -49,8 +48,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> Tree._PayloadValues {
-    _makeIterator()
+  public __consuming func makeIterator() -> AnyIterator<Element> {
+    fatalError()
   }
 }
 
@@ -140,7 +139,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public func distance(from start: _TrackingTag, to end: _TrackingTag) -> Int {
-    __tree_.___distance(from: _start, to: _end)
+    __tree_.___distance(
+      from: __tree_[_unchecked_tag: start],
+      to: __tree_[_unchecked_tag: end])
   }
 }
 
@@ -150,7 +151,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public func index(before i: _TrackingTag) -> _TrackingTag {
-    __tree_.___index(before: __tree_[tag: i])
+    __tree_
+      .___index(before: __tree_[tag: i])
       .trackingTag
   }
 
@@ -158,7 +160,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public func index(after i: _TrackingTag) -> _TrackingTag {
-    __tree_.___index(after: __tree_[tag: i])
+    __tree_
+      .___index(after: __tree_[tag: i])
       .trackingTag
   }
 
@@ -166,7 +169,8 @@ extension RedBlackTreeKeyOnlyRangeView {
     @inlinable
     //  @inline(__always)
     public func index(_ i: _TrackingTag, offsetBy distance: Int) -> _TrackingTag {
-      __tree_.___index(__tree_[tag: i], offsetBy: distance)
+      __tree_
+        .___index(__tree_[tag: i], offsetBy: distance)
         .trackingTag
     }
   #endif
@@ -177,7 +181,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   public func index(_ i: _TrackingTag, offsetBy distance: Int, limitedBy limit: _TrackingTag)
     -> _TrackingTag?
   {
-    __tree_.___index(__tree_[tag: i], offsetBy: distance, limitedBy: __tree_[tag: limit])?
+    __tree_
+      .___index(__tree_[tag: i], offsetBy: distance, limitedBy: __tree_[tag: limit])?
       .trackingTag
   }
 }

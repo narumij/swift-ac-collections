@@ -514,14 +514,18 @@ extension RedBlackTreeMultiSet {
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Element, to end: Element) -> SubSequence {
-      .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
+      .init(tree: __tree_,
+            start: __tree_.lower_bound(start),
+            end: __tree_.lower_bound(end))
     }
 
     /// 値レンジ `[start, end]` に含まれる要素のスライス
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Element, through end: Element) -> SubSequence {
-      .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
+      .init(tree: __tree_,
+            start: __tree_.lower_bound(start),
+            end: __tree_.upper_bound(end))
     }
   }
 #endif

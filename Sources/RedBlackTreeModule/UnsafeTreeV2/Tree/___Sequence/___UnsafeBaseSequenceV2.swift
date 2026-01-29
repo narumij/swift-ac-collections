@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeBaseSequenceV2: ___UnsafeBaseV2 {
+protocol ___UnsafeBaseSequenceV2: ___UnsafeIndexRangeBaseV2 {
   func ___index_or_nil(_ p: _NodePtr) -> Index?
 }
 
@@ -53,26 +53,14 @@ extension ___UnsafeBaseSequenceV2 {
 
   @inlinable
   @inline(__always)
-  internal func ___lower_bound(_ __k: _Key) -> _NodePtr {
-    __tree_.lower_bound(__k)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___upper_bound(_ __k: _Key) -> _NodePtr {
-    __tree_.upper_bound(__k)
-  }
-
-  @inlinable
-  @inline(__always)
   internal func ___index_lower_bound(_ __k: _Key) -> Index {
-    ___index(___lower_bound(__k))
+    ___index(__tree_.lower_bound(__k))
   }
 
   @inlinable
   @inline(__always)
   internal func ___index_upper_bound(_ __k: _Key) -> Index {
-    ___index(___upper_bound(__k))
+    ___index(__tree_.upper_bound(__k))
   }
 }
 
@@ -85,3 +73,4 @@ extension ___UnsafeBaseSequenceV2 {
     return ___index_or_nil(ptr)
   }
 }
+

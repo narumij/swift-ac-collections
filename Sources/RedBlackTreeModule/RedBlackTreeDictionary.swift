@@ -667,14 +667,18 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Key, to end: Key) -> SubSequence {
-      .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
+      .init(tree: __tree_,
+            start: __tree_.lower_bound(start),
+            end: __tree_.lower_bound(end))
     }
 
     /// キーレンジ `[start, end]` に含まれる要素のスライス
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Key, through end: Key) -> SubSequence {
-      .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
+      .init(tree: __tree_,
+            start: __tree_.lower_bound(start),
+            end: __tree_.upper_bound(end))
     }
   }
 #endif

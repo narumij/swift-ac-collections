@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyValueSequenceV2: ___UnsafeBaseV2, ___TreeIndex
+protocol ___UnsafeKeyValueSequenceV2: ___UnsafeIndexRangeBaseV2, ___TreeIndex
 where
   Base: KeyValueComparer,
   Base._MappedValue == _MappedValue,

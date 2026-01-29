@@ -333,10 +333,10 @@ import Foundation
       }
       let initializedCount = _buffer.header.freshPoolUsedCount
       let destroyNode = _buffer.header.recycleHead
-      let reds = (0..<initializedCount).map(___NodePtr).filter(isRed).map(nodeV)
-      let blacks = (0..<initializedCount).map(___NodePtr).filter(isBlack).map(nodeV)
-      let lefts: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map(___NodePtr).filter(hasLeft).map(leftPair)
-      let rights: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map(___NodePtr).filter(hasRight).map(rightPair)
+      let reds = (0..<initializedCount).map{ self[_unchecked_tag: $0] }.filter(isRed).map(nodeV)
+      let blacks = (0..<initializedCount).map{ self[_unchecked_tag: $0] }.filter(isBlack).map(nodeV)
+      let lefts: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map{ self[_unchecked_tag: $0] }.filter(hasLeft).map(leftPair)
+      let rights: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map{ self[_unchecked_tag: $0] }.filter(hasRight).map(rightPair)
       var digraph = Graphviz.Digraph()
       digraph.options.append(.splines(.line))
       digraph.nodes.append((.red, reds))

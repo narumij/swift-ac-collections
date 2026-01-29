@@ -88,7 +88,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
         switch c {
         case "U":
           let new_y = y + d
-          xy[x]?.removeBounds(lowerBound(y)..<upperBound(new_y)) { v in
+          xy[x]?[lowerBound(y)..<upperBound(new_y)].removeSubrange { v in
             ans += 1
             yx[v]?.remove(x)
             return true
@@ -96,7 +96,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
           y = new_y
         case "D":
           let new_y = y - d
-          xy[x]?.removeBounds(lowerBound(new_y)..<upperBound(y)) { v in
+          xy[x]?[lowerBound(new_y)..<upperBound(y)].removeSubrange { v in
             ans += 1
             yx[v]?.remove(x)
             return true

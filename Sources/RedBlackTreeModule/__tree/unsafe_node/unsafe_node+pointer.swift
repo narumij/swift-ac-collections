@@ -115,7 +115,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   /// ```
   @inlinable
   @inline(__always)
-  var __payload_: UnsafeMutableRawPointer {
+  var __raw_payload_: UnsafeMutableRawPointer {
     UnsafeMutableRawPointer(advanced(by: 1))
   }
 
@@ -251,4 +251,22 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 @inlinable @inline(__always)
 package func _ref<T>(to a: inout T) -> UnsafeMutablePointer<T> {
   withUnsafeMutablePointer(to: &a) { $0 }
+}
+
+
+@usableFromInline
+struct PayloadPointer<_PayloadValue> {
+  let pointer: UnsafeMutablePointer<UnsafeNode>
+  @usableFromInline
+  var pointee: _PayloadValue? {
+    pointer.pointee.___has_payload_content ? pointer.__value_().pointee : nil
+  }
+}
+
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
+
+  @usableFromInline
+  func __payload_<T>(as t: T.Type = T.self) -> PayloadPointer<T> {
+    .init(pointer: self)
+  }
 }

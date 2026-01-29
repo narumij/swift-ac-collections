@@ -142,19 +142,37 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  // TODO: 名前が安直すぎる。いつか変更する
   @inlinable
   @inline(__always)
-  package func ___NodePtr(_ p: _TrackingTag) -> _NodePtr {
-    switch p {
+  package subscript(tag tag: _TrackingTag) -> _NodePtr {
+    
+    let ___r = self[_unchecked_tag: tag]
+    
+    guard
+      !___r.___is_null,
+      !___r.___is_garbaged
+    else {
+      fatalError(.invalidIndex)
+    }
+    
+    return ___r
+  }
+
+  @inlinable
+  @inline(__always)
+  package subscript(_unchecked_tag tag: _TrackingTag) -> _NodePtr {
+    switch tag {
     case .nullptr:
       return nullptr
     case .end:
       return end
     default:
-      return _buffer.header[p]
+      return _buffer.header[tag]
     }
   }
+}
+
+extension UnsafeTreeV2 {
 
   /// インデックスをポインタに解決する
   ///
@@ -164,14 +182,7 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func ___node_ptr(_ index: Index) -> _NodePtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-    #if true
-      // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
-      // endはシングルトン的にしたい気持ちもある
-      //      return self.isTriviallyIdentical(to: index.__tree_) ? index.rawValue : ___NodePtr(index.___raw_index)
-      return tied === index.tied ? index.rawValue : ___NodePtr(index.trackingTag)
-    #else
-      self === index.__tree_ ? index.rawValue : (_header[index.___raw_index])
-    #endif
+    tied === index.tied ? index.rawValue : self[_unchecked_tag: index.trackingTag]
   }
 
   // TODO: rename検討

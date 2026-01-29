@@ -1049,15 +1049,16 @@ final class EtcTests: RedBlackTreeTestCase {
 
     func testRemoveBounds() throws {
 
-      var a = RedBlackTreeSet<Int>(0..<20)
+      var set = RedBlackTreeSet<Int>(0..<20)
 
-      a[lowerBound(10).advanced(by: 2)..<end()].removeSubrange {
+      set[lowerBound(10).advanced(by: 2)..<end()].removeSubrange {
         $0 % 2 == 0
       }
 
-      XCTAssertEqual(a + [], (0..<20).filter { $0 < 12 || $0 % 2 != 0 })
+      XCTAssertEqual(set + [], (0..<20).filter { $0 < 12 || $0 % 2 != 0 })
+      
       #if DEBUG
-        XCTAssertEqual(a._copyCount, 0)
+        XCTAssertEqual(set._copyCount, 0)
       #endif
     }
 
@@ -1071,6 +1072,7 @@ final class EtcTests: RedBlackTreeTestCase {
       }
 
       XCTAssertEqual(set + [], (0..<20) + [])
+      
       #if DEBUG
         XCTAssertEqual(set._copyCount, 0)
         XCTAssertEqual(range._copyCount, 1)

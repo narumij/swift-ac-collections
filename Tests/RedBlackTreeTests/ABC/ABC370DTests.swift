@@ -39,11 +39,11 @@ final class ABC370DTests: RedBlackTreeTestCase {
           continue
         }
 
-        if let r = g2[C].lowerBound(R).previous?.pointee {
+        if let r = g2[C][lowerBound(R).prev] {
           erase(r, C)
         }
 
-        if let r = g2[C].lowerBound(R).pointee {
+        if let r = g2[C][lowerBound(R)] {
           erase(r, C)
         }
 

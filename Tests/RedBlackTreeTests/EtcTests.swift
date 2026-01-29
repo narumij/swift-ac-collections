@@ -1015,6 +1015,9 @@ final class EtcTests: RedBlackTreeTestCase {
       let _ = a[start()...]
       let _ = a[lowerBound(100)...]
       let _ = a[lowerBound(100)..<end()]
+      
+      let _ = a[lowerBound(100)]
+      let _ = a[lowerBound(100).advanced(by: 1)]
     }
 
     func testBounds() throws {

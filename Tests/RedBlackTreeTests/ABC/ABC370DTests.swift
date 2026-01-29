@@ -39,7 +39,7 @@ final class ABC370DTests: RedBlackTreeTestCase {
           continue
         }
 
-        if let r = g2[C][lowerBound(R).prev] {
+        if let r = g2[C][lowerBound(R).previous] {
           erase(r, C)
         }
 

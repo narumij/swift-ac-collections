@@ -5,13 +5,13 @@
 //  Created by narumij on 2026/01/29.
 //
 
-public enum TrackingTag: Equatable {
+public enum TrackingTag_: Equatable {
   case end
   case tag(_TrackingTag)
 }
 
 #if DEBUG
-  extension TrackingTag: ExpressibleByIntegerLiteral {
+  extension TrackingTag_: ExpressibleByIntegerLiteral {
 
     public init(integerLiteral value: _TrackingTag) {
       switch value {
@@ -24,92 +24,102 @@ public enum TrackingTag: Equatable {
       }
     }
   }
-
-  extension TrackingTag: RawRepresentable {
-
-    public init?(rawValue value: _TrackingTag) {
-      switch value {
-      case .end:
-        self = .end
-      case 0...:
-        self = .tag(value)
-      default:
-        break
-      }
-      return nil
-    }
-
-    public var rawValue: _TrackingTag {
-      switch self {
-      case .end:
-        .end
-      case .tag(let _TrackingTag):
-        _TrackingTag
-      }
-    }
-  }
 #endif
 
-func test() {
+extension TrackingTag_: RawRepresentable {
 
-  func hoge(_: TrackingTag?) {
-    fatalError()
+  public init?(rawValue value: _TrackingTag) {
+    switch value {
+    case .end:
+      self = .end
+    case 0...:
+      self = .tag(value)
+    default:
+      break
+    }
+    return nil
   }
 
-  func hoge(_: TrackingTagRangeExpression) {
-    fatalError()
+  public var rawValue: _TrackingTag {
+    switch self {
+    case .end:
+      .end
+    case .tag(let _TrackingTag):
+      _TrackingTag
+    }
   }
+}
 
-  hoge(nil)
+public typealias RedBlackTreeTrackingTag = Optional<TrackingTag_>
+
+extension Optional where Wrapped == TrackingTag_ {
   
-  #if DEBUG
-    hoge(1..<(.end))
-  #endif
+  @usableFromInline
+  static func create(_ t: _TrackingTag) -> Self {
+    TrackingTag_(rawValue: t)
+  }
+
+  @usableFromInline
+  static func create(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Self {
+    (t?.trackingTag).flatMap { TrackingTag_(rawValue: $0) }
+  }
+  
+  @inlinable @inline(__always)
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> UnsafeMutablePointer<UnsafeNode>
+  where Base: ___TreeBase {
+    switch self {
+    case .none:
+      return __tree_.nullptr
+    case .some(.end):
+      return __tree_.__end_node
+    case .some(.tag(let raw)):
+      return __tree_[_raw: raw]
+    }
+  }
 }
 
 // これはfor文では使えない
 public enum TrackingTagRangeExpression: Equatable {
-  public typealias Bound = TrackingTag
+  public typealias Bound = RedBlackTreeTrackingTag
   /// `a..<b` のこと
-  case range(from: TrackingTag, to: TrackingTag)
+  case range(from: RedBlackTreeTrackingTag, to: RedBlackTreeTrackingTag)
   /// `a...b` のこと
-  case closedRange(from: TrackingTag, through: TrackingTag)
+  case closedRange(from: RedBlackTreeTrackingTag, through: RedBlackTreeTrackingTag)
   /// `..<b` のこと
-  case partialRangeTo(TrackingTag)
+  case partialRangeTo(RedBlackTreeTrackingTag)
   /// `...b` のこと
-  case partialRangeThrough(TrackingTag)
+  case partialRangeThrough(RedBlackTreeTrackingTag)
   /// `a...` のこと
-  case partialRangeFrom(TrackingTag)
+  case partialRangeFrom(RedBlackTreeTrackingTag)
   /// `...` のこと
   case unboundedRange
 }
 
-// 標準Rangeと名前衝突する可能性が高いが、対策してもどこかに残りそう
-public func ..< (lhs: TrackingTag, rhs: TrackingTag)
+public func ..< (lhs: RedBlackTreeTrackingTag, rhs: RedBlackTreeTrackingTag)
   -> TrackingTagRangeExpression
 {
   .range(from: lhs, to: rhs)
 }
 
-public func ... (lhs: TrackingTag, rhs: TrackingTag)
+public func ... (lhs: RedBlackTreeTrackingTag, rhs: RedBlackTreeTrackingTag)
   -> TrackingTagRangeExpression
 {
   .closedRange(from: lhs, through: rhs)
 }
 
-public prefix func ..< (rhs: TrackingTag)
+public prefix func ..< (rhs: RedBlackTreeTrackingTag)
   -> TrackingTagRangeExpression
 {
   .partialRangeTo(rhs)
 }
 
-public prefix func ... (rhs: TrackingTag)
+public prefix func ... (rhs: RedBlackTreeTrackingTag)
   -> TrackingTagRangeExpression
 {
   .partialRangeThrough(rhs)
 }
 
-public postfix func ... (lhs: TrackingTag)
+public postfix func ... (lhs: RedBlackTreeTrackingTag)
   -> TrackingTagRangeExpression
 {
   .partialRangeFrom(lhs)

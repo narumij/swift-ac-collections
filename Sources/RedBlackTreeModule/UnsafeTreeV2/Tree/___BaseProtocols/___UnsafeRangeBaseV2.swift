@@ -19,4 +19,17 @@ extension ___UnsafeRangeBaseV2 {
     }
     return result
   }
+  
+  @inlinable
+  @inline(__always)
+  internal func ___first_tracking_tag(where predicate: (_PayloadValue) throws -> Bool) rethrows -> RedBlackTreeTrackingTag {
+    var raw: _TrackingTag = .nullptr
+    try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
+      if try predicate(__tree_[__p]) {
+        raw = __p.trackingTag
+        cont = false
+      }
+    }
+    return .create(raw)
+  }
 }

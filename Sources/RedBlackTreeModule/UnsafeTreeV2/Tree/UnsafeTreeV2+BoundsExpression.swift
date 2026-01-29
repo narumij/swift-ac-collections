@@ -18,8 +18,13 @@
 extension RedBlackTreeBound {
 
   @inlinable @inline(__always)
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> UnsafeMutablePointer<UnsafeNode>
-  where Base: ___TreeBase, Base._Key == _Key {
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> UnsafeMutablePointer<UnsafeNode>
+  where
+    Base: ___TreeBase,
+    Base._Key == _Key
+  {
+
     switch self {
 
     case .start:
@@ -28,33 +33,31 @@ extension RedBlackTreeBound {
     case .end:
       return __tree_.__end_node
 
-    case .lower(let l):
-      return __tree_.lower_bound(l)
+    case .lower(let __v):
+      return __tree_.lower_bound(__v)
 
-    case .upper(let r):
-      return __tree_.upper_bound(r)
+    case .upper(let __v):
+      return __tree_.upper_bound(__v)
 
-    case .advanced(let __self, by: var offset):
-      var __p = __self.relative(to: __tree_)
+    case .find(let __v):
+      return __tree_.find(__v)
+
+    case .advanced(let __self, by: let offset):
+      let __p = __self.relative(to: __tree_)
       // 初期状態でnullが来る可能性はほぼないが、念のためにfatal
       guard !__p.___is_null else {
         fatalError(.invalidIndex)
       }
-      while offset != 0 {
-        if offset < 0 {
-          let _prev = __tree_prev_iter(__p)
-          // nullの場合更新せずにループ終了
-          guard !_prev.___is_null else { break }
-          __p = _prev
-          offset += 1
-        } else {
-          // endの場合次への操作をせずにループ終了
-          guard !__p.___is_end else { break }
-          __p = __tree_next_iter(__p)
-          offset -= 1
-        }
+      return ___tree_adv_iter(__p, offset)
+
+    case .limitedAdvanced(let __self, by: let offset, limit: let __limit):
+      let __p = __self.relative(to: __tree_)
+      let __l = __limit.relative(to: __tree_)
+      // 初期状態でnullが来る可能性はほぼないが、念のためにfatal
+      guard !__p.___is_null else {
+        fatalError(.invalidIndex)
       }
-      return __p
+      return ___tree_adv_iter(__p, offset, __l)
 
     case .prev(let __self):
       return
@@ -76,22 +79,34 @@ extension RedBlackTreeBoundsExpression {
 
   @inlinable @inline(__always)
   func _relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> UnsafeTreeRangeExpression
-  where Base: ___TreeBase, Base._Key == _Key {
+  where
+    Base: ___TreeBase,
+    Base._Key == _Key
+  {
     switch self {
+
     case .range(let lhs, let rhs):
-      .range(
+      return .range(
         from: lhs.relative(to: __tree_),
         to: rhs.relative(to: __tree_))
+
     case .closedRange(let lhs, let rhs):
-      .closedRange(
+      return .closedRange(
         from: lhs.relative(to: __tree_),
         through: rhs.relative(to: __tree_))
+
     case .partialRangeTo(let rhs):
-      .partialRangeTo(rhs.relative(to: __tree_))
+      return .partialRangeTo(rhs.relative(to: __tree_))
+
     case .partialRangeThrough(let rhs):
-      .partialRangeThrough(rhs.relative(to: __tree_))
+      return .partialRangeThrough(rhs.relative(to: __tree_))
+
     case .partialRangeFrom(let lhs):
-      .partialRangeFrom(lhs.relative(to: __tree_))
+      return .partialRangeFrom(lhs.relative(to: __tree_))
+
+    case .equalRange(let __v):
+      let (lower,upper) = __tree_.isMulti ? __tree_.__equal_range_multi(__v) : __tree_.__equal_range_unique(__v)
+      return .range(from: lower, to: upper)
     }
   }
 

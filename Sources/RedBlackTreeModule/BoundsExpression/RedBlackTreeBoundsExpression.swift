@@ -25,6 +25,7 @@ public enum RedBlackTreeBoundsExpression<_Key> {
   case partialRangeTo(Bound)
   case partialRangeThrough(Bound)
   case partialRangeFrom(Bound)
+  case equalRange(_Key)
 }
 
 @inlinable @inline(__always)
@@ -58,4 +59,11 @@ public prefix func ... <_Key>(rhs: RedBlackTreeBound<_Key>)
 @inlinable @inline(__always)
 public postfix func ... <_Key>(lhs: RedBlackTreeBound<_Key>) -> RedBlackTreeBoundsExpression<_Key> {
   .partialRangeFrom(lhs)
+}
+
+@inlinable @inline(__always)
+public func equalRange<_Key>(_ __v: _Key)
+  -> RedBlackTreeBoundsExpression<_Key>
+{
+  .equalRange(__v)
 }

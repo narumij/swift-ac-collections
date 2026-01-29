@@ -28,16 +28,24 @@ where
   internal var _start_tag, _end_tag: _TrackingTag
 }
 
+#if AC_COLLECTIONS_INTERNAL_CHECKS
+  extension RedBlackTreeKeyOnlyRangeView {
+    package var _copyCount: UInt {
+      __tree_.copyCount
+    }
+  }
+#endif
+
 extension RedBlackTreeKeyOnlyRangeView {
 
   @usableFromInline
   var _start: _NodePtr {
-    __tree_[_unchecked_tag: _start_tag]
+    __tree_[_raw: _start_tag]
   }
 
   @usableFromInline
   var _end: _NodePtr {
-    __tree_[_unchecked_tag: _end_tag]
+    __tree_[_raw: _end_tag]
   }
 }
 
@@ -68,20 +76,26 @@ extension RedBlackTreeKeyOnlyRangeView {
   }
 }
 
-#if AC_COLLECTIONS_INTERNAL_CHECKS
-  extension RedBlackTreeKeyOnlyRangeView {
-    package var _copyCount: UInt {
-      __tree_.copyCount
-    }
-  }
-#endif
-
 extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  public subscript(unchecked tag: _TrackingTag) -> Element? {
-    __tree_[_unchecked_tag: tag].__payload_().pointee
+  public subscript(raw trackingTag: _TrackingTag) -> Element? {
+    let ptr = __tree_[_raw: trackingTag]
+    guard !ptr.___is_null_or_end, !ptr.___is_garbaged else {
+      fatalError(.invalidIndex)
+    }
+    return ptr.__payload_().pointee
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  public subscript(tag: RedBlackTreeTrackingTag) -> Element? {
+    let ptr = tag.relative(to: __tree_)
+    guard !ptr.___is_null_or_end, !ptr.___is_garbaged else {
+      fatalError(.invalidIndex)
+    }
+    return ptr.__payload_().pointee
   }
 }
 
@@ -100,12 +114,12 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var startIndex: _TrackingTag { _start_tag }
+  public var startIndex: RedBlackTreeTrackingTag { .create(_start_tag) }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var endIndex: _TrackingTag { _end_tag }
+  public var endIndex: RedBlackTreeTrackingTag { .create(_end_tag) }
 }
 
 #if !COMPATIBLE_ATCODER_2025
@@ -121,13 +135,13 @@ extension RedBlackTreeKeyOnlyRangeView {
 
     /// - Complexity: O( log `count` )
     @inlinable
-    public func firstIndex(of member: Element) -> _TrackingTag? {
+    public func firstIndex(of member: Element) -> RedBlackTreeTrackingTag {
       ___first_tracking_tag { $0 == member }
     }
 
     /// - Complexity: O( `count` )
     @inlinable
-    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> _TrackingTag? {
+    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> RedBlackTreeTrackingTag {
       try ___first_tracking_tag(where: predicate)
     }
   }
@@ -138,10 +152,10 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
-  public func distance(from start: _TrackingTag, to end: _TrackingTag) -> Int {
+  public func distance(from start: RedBlackTreeTrackingTag, to end: RedBlackTreeTrackingTag) -> Int {
     __tree_.___distance(
-      from: __tree_[_unchecked_tag: start],
-      to: __tree_[_unchecked_tag: end])
+      from: start.relative(to: __tree_),
+      to: end.relative(to: __tree_))
   }
 }
 
@@ -149,41 +163,30 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
-  public func index(before i: _TrackingTag) -> _TrackingTag {
-    __tree_
-      .___index(before: __tree_[tag: i])
-      .trackingTag
+  public func index(before i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
+    .create(__tree_.___index(before: i.relative(to: __tree_)))
   }
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
-  public func index(after i: _TrackingTag) -> _TrackingTag {
-    __tree_
-      .___index(after: __tree_[tag: i])
-      .trackingTag
+  public func index(after i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
+    .create(__tree_.___index(after: i.relative(to: __tree_)))
   }
 
-  #if !COMPATIBLE_ATCODER_2025
-    @inlinable
-    //  @inline(__always)
-    public func index(_ i: _TrackingTag, offsetBy distance: Int) -> _TrackingTag {
-      __tree_
-        .___index(__tree_[tag: i], offsetBy: distance)
-        .trackingTag
-    }
-  #endif
-
-  /// - Complexity: O(*d*)
+  /// - Complexity: O(`distance`)
   @inlinable
-  //  @inline(__always)
-  public func index(_ i: _TrackingTag, offsetBy distance: Int, limitedBy limit: _TrackingTag)
-    -> _TrackingTag?
+  public func index(_ i: RedBlackTreeTrackingTag, offsetBy distance: Int) -> RedBlackTreeTrackingTag {
+    .create(__tree_.___index(i.relative(to: __tree_), offsetBy: distance))
+  }
+
+  /// - Complexity: O(`distance`)
+  @inlinable
+  public func index(_ i: RedBlackTreeTrackingTag, offsetBy distance: Int, limitedBy limit: RedBlackTreeTrackingTag)
+    -> RedBlackTreeTrackingTag
   {
-    __tree_
-      .___index(__tree_[tag: i], offsetBy: distance, limitedBy: __tree_[tag: limit])?
-      .trackingTag
+    .create(
+      __tree_.___index(
+        i.relative(to: __tree_), offsetBy: distance, limitedBy: limit.relative(to: __tree_)))
   }
 }
 
@@ -192,21 +195,21 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func formIndex(after i: inout _TrackingTag) {
-    i = index(after: i)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(before i: inout _TrackingTag) {
+  public func formIndex(before i: inout RedBlackTreeTrackingTag) {
     i = index(before: i)
   }
 
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func formIndex(after i: inout RedBlackTreeTrackingTag) {
+    i = index(after: i)
+  }
+
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
-  public func formIndex(_ i: inout _TrackingTag, offsetBy distance: Int) {
+  public func formIndex(_ i: inout RedBlackTreeTrackingTag, offsetBy distance: Int) {
     i = index(i, offsetBy: distance)
   }
 
@@ -214,7 +217,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public func formIndex(
-    _ i: inout _TrackingTag, offsetBy distance: Int, limitedBy limit: _TrackingTag
+    _ i: inout RedBlackTreeTrackingTag, offsetBy distance: Int, limitedBy limit: RedBlackTreeTrackingTag
   )
     -> Bool
   {
@@ -227,6 +230,22 @@ extension RedBlackTreeKeyOnlyRangeView {
 }
 
 // 以下は実験的な実装。Viewには載せない
+
+extension RedBlackTreeKeyOnlyRangeView {
+
+  @inlinable
+  @discardableResult
+  public mutating func remove(at index: RedBlackTreeTrackingTag) -> Element {
+    __tree_.ensureUnique()
+    let ptr = index.relative(to: __tree_)
+    guard !ptr.___is_null, !ptr.___is_end, !ptr.___is_garbaged else {
+      fatalError(.invalidIndex)
+    }
+    let ___e = __tree_[ptr]
+    _ = __tree_.erase(ptr)
+    return ___e
+  }
+}
 
 extension RedBlackTreeKeyOnlyRangeView {
 
@@ -243,8 +262,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-  public func lowerBound(_ member: Element) -> _TrackingTag {
-    __tree_.lower_bound(member).trackingTag
+  public func lowerBound(_ member: Element) -> RedBlackTreeTrackingTag {
+    .create(__tree_.lower_bound(member))
   }
 
   /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
@@ -261,7 +280,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-  public func upperBound(_ member: Element) -> _TrackingTag {
-    __tree_.upper_bound(member).trackingTag
+  public func upperBound(_ member: Element) -> RedBlackTreeTrackingTag {
+    .create(__tree_.upper_bound(member))
   }
 }

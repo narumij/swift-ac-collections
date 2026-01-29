@@ -20,21 +20,30 @@ public indirect enum RedBlackTreeBound<_Key> {
   case start
   case lower(_Key)
   case upper(_Key)
+  case find(_Key)
   case end
   case advanced(Self, by: Int)
+  case limitedAdvanced(Self, by: Int, limit: Self)
   case prev(Self)
   case next(Self)
 }
 
 extension RedBlackTreeBound {
   public var next: Self { .next(self) }
-  public var prev: Self { .prev(self) }
+  public var previous: Self { .prev(self) }
   public func advanced(by offset: Int) -> Self {
     .advanced(self, by: offset)
+  }
+  public func advanced(by offset: Int, limit: Self) -> Self {
+    .limitedAdvanced(self, by: offset, limit: limit)
   }
 }
 
 // TODO: 以下を公開にするかどうかは要再検討
+
+public func start<K>() -> RedBlackTreeBound<K> {
+  .start
+}
 
 public func end<K>() -> RedBlackTreeBound<K> {
   .end
@@ -48,18 +57,6 @@ public func upperBound<K>(_ k: K) -> RedBlackTreeBound<K> {
   .upper(k)
 }
 
-public func start<K>() -> RedBlackTreeBound<K> {
-  .start
-}
-
-public func next<K>(_ b: RedBlackTreeBound<K>) -> RedBlackTreeBound<K> {
-  .next(b)
-}
-
-public func prev<K>(_ b: RedBlackTreeBound<K>) -> RedBlackTreeBound<K> {
-  .prev(b)
-}
-
-public func advanced<K>(_ b: RedBlackTreeBound<K>, by offset: Int) -> RedBlackTreeBound<K> {
-  .advanced(b, by: offset)
+public func find<K>(_ k: K) -> RedBlackTreeBound<K> {
+  .find(k)
 }

@@ -30,6 +30,10 @@
     public func index(_ bound: RedBlackTreeBound<Element>) -> Index {
       return ___index(bound.relative(to: __tree_))
     }
+    
+    public func trackingTag(_ bound: RedBlackTreeBound<Element>) -> RedBlackTreeTrackingTag {
+      return .init(rawValue: bound.relative(to: __tree_).trackingTag)
+    }
 
     public mutating func remove(_ bound: RedBlackTreeBound<Element>) -> Element? {
       __tree_.ensureUnique()

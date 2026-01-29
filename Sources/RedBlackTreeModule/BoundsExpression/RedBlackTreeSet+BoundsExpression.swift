@@ -20,6 +20,7 @@
 
   extension RedBlackTreeSet {
 
+    // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
     @inlinable
     public subscript(bound: RedBlackTreeBound<Element>) -> Element? {
       let p = bound.relative(to: __tree_)
@@ -27,14 +28,11 @@
       return __tree_[p]
     }
 
-    public func index(_ bound: RedBlackTreeBound<Element>) -> Index {
-      return ___index(bound.relative(to: __tree_))
-    }
-    
     public func trackingTag(_ bound: RedBlackTreeBound<Element>) -> RedBlackTreeTrackingTag {
       return .init(rawValue: bound.relative(to: __tree_).trackingTag)
     }
 
+    // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
     public mutating func remove(_ bound: RedBlackTreeBound<Element>) -> Element? {
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)
@@ -44,7 +42,7 @@
       }
       return element
     }
-    
+
     // MARK: -
 
     #if false
@@ -60,37 +58,45 @@
         -> RedBlackTreeKeyOnlyRangeView<Self>
       {
         @inline(__always) get {
-          let (lower, upper) = bounds.relative(to: __tree_)
+          let (lower, upper) = __tree_.fullSanitize(bounds.relative(to: __tree_))
           return .init(__tree_: __tree_, _start: lower, _end: upper)
         }
         @inline(__always) _modify {
-          let (lower, upper) = bounds.relative(to: __tree_)
-          // BoundsExpressionでは範囲不正を防止するのは時に難しいと思うので、
-          // CやC++のforのように、範囲不正があっても単にループが回らない挙動にするほうが良さそう
+          let (lower, upper) = __tree_.fullSanitize(bounds.relative(to: __tree_))
           var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
-          self = .init()
-          defer { self = .init(__tree_: view.__tree_) }
+          self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
+          defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
           yield &view
         }
       }
     #endif
 
-    public subscript(unchecked bounds: RedBlackTreeBoundsExpression<Element>) -> SubSequence {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      return .init(tree: __tree_, start: lower, end: upper)
+    public func count(
+      _ bounds: RedBlackTreeBoundsExpression<Element>
+    )
+      -> Int?
+    {
+      guard let d = distance(bounds), d >= 0 else {
+        return nil
+      }
+      return d
     }
 
-    public func indices(bounds: RedBlackTreeBoundsExpression<Element>)
-      -> UnsafeIndexV2Collection<Self>
+    public func distance(
+      _ bounds: RedBlackTreeBoundsExpression<Element>
+    )
+      -> Int?
     {
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard lower == upper || __tree_.___ptr_comp(lower, upper) else {
-        fatalError(.invalidIndex)
+      guard !lower.___is_null_or_end, !upper.___is_null else {
+        return nil
       }
-      return .init(start: lower, end: upper, tie: __tree_.tied)
+      return __tree_.___distance(from: lower, to: upper)
     }
 
-    public mutating func removeBounds(_ bounds: RedBlackTreeBoundsExpression<Element>) {
+    public mutating func removeBounds(
+      _ bounds: RedBlackTreeBoundsExpression<Element>
+    ) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
@@ -99,7 +105,9 @@
       __tree_.___checking_erase(lower, upper)
     }
 
-    public mutating func removeBounds(unchecked bounds: RedBlackTreeBoundsExpression<Element>) {
+    public mutating func removeBounds(
+      unchecked bounds: RedBlackTreeBoundsExpression<Element>
+    ) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       __tree_.___checking_erase(lower, upper)

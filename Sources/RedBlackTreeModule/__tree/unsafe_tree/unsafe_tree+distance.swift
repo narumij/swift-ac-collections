@@ -76,7 +76,7 @@ extension DistanceProtocol_ptr {
   internal func
     ___signed_distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
   {
-    #if false
+    #if true
       return ___comp_distance(__first, __last)
     #else
       return ___dual_distance(__first, __last)

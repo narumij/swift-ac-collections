@@ -49,3 +49,26 @@ extension UnsafeTreeV2 {
     return isValidRawRange(lower: lower, upper: upper)
   }
 }
+
+extension UnsafeTreeV2 {
+  
+  @inlinable
+  func usnafeSanitize(_ tuple: (lower: _NodePtr, upper: _NodePtr)) -> (_NodePtr,_NodePtr) {
+    let (lower, upper) = tuple
+    assert(!lower.___is_garbaged)
+    assert(!upper.___is_garbaged)
+    guard !lower.___is_null_or_end, !upper.___is_null else {
+      return (__end_node, __end_node)
+    }
+    return (lower, upper)
+  }
+  
+  @inlinable
+  func fullSanitize(_ tuple: (lower: _NodePtr, upper: _NodePtr)) -> (_NodePtr,_NodePtr) {
+    var (lower, upper) = usnafeSanitize(tuple)
+    if lower != upper, !___ptr_comp(lower, upper) {
+      swap(&lower, &upper)
+    }
+    return (lower, upper)
+  }
+}

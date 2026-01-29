@@ -49,7 +49,9 @@ extension ___UnsafeCommonV2 {
   @inlinable
   @inline(__always)
   internal func _distance(from start: Index, to end: Index) -> Int {
-    __tree_.___distance(from: __tree_.rawValue(start), to: __tree_.rawValue(end))
+    __tree_.___distance(
+      from: __tree_._remap_to_ptr(start),
+      to: __tree_._remap_to_ptr(end))
   }
 }
 
@@ -93,7 +95,7 @@ extension ___UnsafeCommonV2 {
 }
 
 extension ___UnsafeCommonV2 {
-  
+
   @inlinable
   @inline(__always)
   internal var _indices: Indices {

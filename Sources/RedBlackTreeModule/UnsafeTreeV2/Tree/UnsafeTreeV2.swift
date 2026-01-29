@@ -142,22 +142,6 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-//  @inlinable
-//  @inline(__always)
-//  package subscript(tag tag: _TrackingTag) -> _NodePtr {
-//    
-//    let ___r = self[unchecked: tag]
-//    
-//    guard
-//      !___r.___is_null,
-//      !___r.___is_garbaged
-//    else {
-//      fatalError(.invalidIndex)
-//    }
-//    
-//    return ___r
-//  }
-
   @inlinable
   @inline(__always)
   package subscript(_raw tag: _TrackingTag) -> _NodePtr {
@@ -180,18 +164,8 @@ extension UnsafeTreeV2 {
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
   @inline(__always)
-  internal func ___node_ptr(_ index: Index) -> _NodePtr
+  internal func _remap_to_ptr(_ index: Index) -> _NodePtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
     tied === index.tied ? index.rawValue : self[_raw: index.trackingTag]
-  }
-
-  // TODO: rename検討
-  // Indexについて作業しているときは不自然に感じなかったが、
-  // 今は全体でRawValueというとノード保持の値型なので、不適切になってしまっている
-  @inlinable
-  @inline(__always)
-  internal func rawValue(_ index: Index) -> _NodePtr
-  where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-    ___node_ptr(index)
   }
 }

@@ -233,7 +233,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    ___contains(__tree_.rawValue(i))
+    ___contains(__tree_._remap_to_ptr(i))
   }
 }
 

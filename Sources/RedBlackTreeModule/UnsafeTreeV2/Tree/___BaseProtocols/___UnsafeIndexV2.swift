@@ -40,7 +40,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(after i: Index) -> Index {
-    ___index(__tree_.___index(after: __tree_.rawValue(i)))
+    ___index(__tree_.___index(after: __tree_._remap_to_ptr(i)))
   }
 
   @inlinable
@@ -52,7 +52,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(before i: Index) -> Index {
-    ___index(__tree_.___index(before: __tree_.rawValue(i)))
+    ___index(__tree_.___index(before: __tree_._remap_to_ptr(i)))
   }
 
   @inlinable
@@ -64,7 +64,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(__tree_.___index(__tree_.rawValue(i), offsetBy: distance))
+    ___index(__tree_.___index(__tree_._remap_to_ptr(i), offsetBy: distance))
   }
 
   @inlinable
@@ -77,7 +77,7 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index_or_nil(
-      __tree_.___index(__tree_.rawValue(i), offsetBy: distance, limitedBy: __tree_.rawValue(limit)))
+      __tree_.___index(__tree_._remap_to_ptr(i), offsetBy: distance, limitedBy: __tree_._remap_to_ptr(limit)))
   }
 
   @inlinable
@@ -126,7 +126,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _isValid(index: Index) -> Bool {
-    !__tree_.___is_subscript_null(__tree_.rawValue(index))
+    !__tree_.___is_subscript_null(__tree_._remap_to_ptr(index))
   }
 }
 
@@ -202,6 +202,6 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   @discardableResult
   public mutating func ___erase(_ ptr: Index) -> Index {
-    ___index(__tree_.erase(__tree_.rawValue(ptr)))
+    ___index(__tree_.erase(__tree_._remap_to_ptr(ptr)))
   }
 }

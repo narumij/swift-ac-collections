@@ -19,7 +19,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   package func ___is_garbaged(_ index: Index) -> Bool {
-    __tree_.___is_garbaged(__tree_.rawValue(index))
+    __tree_.___is_garbaged(__tree_._remap_to_ptr(index))
   }
 }
 

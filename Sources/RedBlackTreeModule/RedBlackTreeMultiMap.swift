@@ -277,12 +277,12 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   @discardableResult
   public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
-    guard !__tree_.___is_subscript_null(__tree_.rawValue(ptr)) else {
+    guard !__tree_.___is_subscript_null(__tree_._remap_to_ptr(ptr)) else {
       return nil
     }
     __tree_.ensureUnique()
-    let old = __tree_[__tree_.rawValue(ptr)]
-    __tree_[__tree_.rawValue(ptr)].value = newValue
+    let old = __tree_[__tree_._remap_to_ptr(ptr)]
+    __tree_[__tree_._remap_to_ptr(ptr)].value = newValue
     return ___element(old)
   }
 }
@@ -469,7 +469,7 @@ extension RedBlackTreeMultiMap {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
-    guard let (_, element) = ___remove(at: __tree_.rawValue(index)) else {
+    guard let (_, element) = ___remove(at: __tree_._remap_to_ptr(index)) else {
       fatalError(.invalidIndex)
     }
     return ___element(element)

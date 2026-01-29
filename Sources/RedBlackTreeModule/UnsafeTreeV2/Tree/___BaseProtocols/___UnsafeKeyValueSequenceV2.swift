@@ -191,8 +191,8 @@ extension ___UnsafeKeyValueSequenceV2 {
   @inlinable
   internal subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
     @inline(__always) get {
-      __tree_.___ensureValid(subscript: __tree_.rawValue(position))
-      return ___element(__tree_[__tree_.rawValue(position)])
+      __tree_.___ensureValid(subscript: __tree_._remap_to_ptr(position))
+      return ___element(__tree_[__tree_._remap_to_ptr(position)])
     }
   }
 }

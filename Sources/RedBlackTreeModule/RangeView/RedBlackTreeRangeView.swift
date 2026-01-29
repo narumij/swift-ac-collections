@@ -25,7 +25,7 @@ where
   internal var __tree_: Tree
 
   @usableFromInline
-  internal var _start_tag, _end_tag: _TrackingTag
+  internal var _start_tag, _end_tag: _RawTrackingTag
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -80,7 +80,7 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  public subscript(raw trackingTag: _TrackingTag) -> Element? {
+  subscript(raw trackingTag: _RawTrackingTag) -> Element? {
     let ptr = __tree_[_raw: trackingTag]
     guard !ptr.___is_null_or_end, !ptr.___is_garbaged else {
       fatalError(.invalidIndex)
@@ -249,36 +249,11 @@ extension RedBlackTreeKeyOnlyRangeView {
 
 extension RedBlackTreeKeyOnlyRangeView {
 
-  /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
-  /// 最初の位置（`Index`）を返します。
-  ///
-  /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
-  /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
-  /// - `lowerBound(3)` は要素 `3` の位置を返します。
-  /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
-  /// - `lowerBound(10)` は `endIndex` を返します。
-  ///
-  /// - Parameter member: 二分探索で検索したい要素
-  /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func lowerBound(_ member: Element) -> RedBlackTreeTrackingTag {
     .create(__tree_.lower_bound(member))
   }
 
-  /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
-  /// 最初の位置（`Index`）を返します。
-  ///
-  /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
-  /// - `upperBound(3)` は要素 `5` の位置を返します。
-  ///   （`3` より大きい値が最初に現れる場所）
-  /// - `upperBound(5)` は要素 `7` の位置を返します。
-  ///   （`5` と等しい要素は含まないため、`5` の直後）
-  /// - `upperBound(9)` は `endIndex` を返します。
-  ///
-  /// - Parameter member: 二分探索で検索したい要素
-  /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func upperBound(_ member: Element) -> RedBlackTreeTrackingTag {
     .create(__tree_.upper_bound(member))

@@ -87,7 +87,7 @@ extension _TiedRawBuffer {
     }
 
     @inlinable
-    subscript(___tracking_tag: _TrackingTag) -> _NodePtr? {
+    subscript(___tracking_tag: _RawTrackingTag) -> _NodePtr? {
       assert(___tracking_tag >= 0)
       var remaining = ___tracking_tag
       var p = bucketHead?.accessor(payload: deallocator.payload)
@@ -109,7 +109,7 @@ extension _TiedRawBuffer {
 
   @nonobjc
   @inlinable
-  subscript(___tracking_tag: _TrackingTag) -> _NodePtr? {
+  subscript(___tracking_tag: _RawTrackingTag) -> _NodePtr? {
     header[___tracking_tag]
   }
 

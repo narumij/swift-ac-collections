@@ -38,10 +38,10 @@
 /// - `-1` : end（終端ノード）
 /// - `-999` : デバッグ用途のダミー値
 ///
-public typealias _TrackingTag = Int
+public typealias _RawTrackingTag = Int
 
 
-extension _TrackingTag {
+extension _RawTrackingTag {
 
   /// 赤黒木の`_TrackingTag`で、nullを表す
   @inlinable
@@ -68,6 +68,6 @@ extension _TrackingTag {
 /// `0` 以上は通常ノード、`0` 未満は sentinel として扱われる。
 @inlinable
 @inline(__always)
-package func ___is_null_or_end(_ ptr: _TrackingTag) -> Bool {
+package func ___is_null_or_end(_ ptr: _RawTrackingTag) -> Bool {
   ptr < 0
 }

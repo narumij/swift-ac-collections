@@ -117,8 +117,8 @@ public
   enum _PointerIndexRef: Equatable
 {
   /// 右ノードへの参照
-  case __right_(_TrackingTag)
+  case __right_(_RawTrackingTag)
   /// 左ノードへの参照
-  case __left_(_TrackingTag)
+  case __left_(_RawTrackingTag)
 }
 #endif

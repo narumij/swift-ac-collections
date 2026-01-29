@@ -144,7 +144,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package subscript(_raw tag: _TrackingTag) -> _NodePtr {
+  package subscript(_raw tag: _RawTrackingTag) -> _NodePtr {
     switch tag {
     case .nullptr:
       return nullptr

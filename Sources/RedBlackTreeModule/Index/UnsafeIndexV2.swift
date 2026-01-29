@@ -31,7 +31,7 @@ where Base: ___TreeBase & ___TreeIndex {
   typealias _PayloadValue = Tree._PayloadValue
 
   @usableFromInline
-  internal var trackingTag: _TrackingTag {
+  internal var trackingTag: _RawTrackingTag {
     rawValue.pointee.___tracking_tag
   }
 
@@ -286,7 +286,7 @@ extension UnsafeIndexV2 {
 #if DEBUG
   extension UnsafeIndexV2 {
     fileprivate init(
-      _unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, trackingTag: _TrackingTag
+      _unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, trackingTag: _RawTrackingTag
     ) {
       self.rawValue = rawValue
       self.tied = _unsafe_tree.tied
@@ -297,7 +297,7 @@ extension UnsafeIndexV2 {
     internal static func unsafe(tree: UnsafeTreeV2<Base>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue, trackingTag: rawValue.pointee.___tracking_tag)
     }
-    internal static func unsafe(tree: UnsafeTreeV2<Base>, trackingTag: _TrackingTag) -> Self {
+    internal static func unsafe(tree: UnsafeTreeV2<Base>, trackingTag: _RawTrackingTag) -> Self {
       if trackingTag == .nullptr {
         return .init(_unsafe_tree: tree, rawValue: tree.nullptr, trackingTag: .nullptr)
       }
@@ -367,7 +367,7 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  package subscript(_ p: _TrackingTag) -> _NodePtr {
+  package subscript(_ p: _RawTrackingTag) -> _NodePtr {
     switch p {
     case .nullptr:
       return .nullptr

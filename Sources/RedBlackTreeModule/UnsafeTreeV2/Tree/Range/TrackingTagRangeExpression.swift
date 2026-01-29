@@ -7,13 +7,13 @@
 
 public enum TrackingTag_: Equatable {
   case end
-  case tag(_TrackingTag)
+  case tag(_RawTrackingTag)
 }
 
 #if DEBUG
   extension TrackingTag_: ExpressibleByIntegerLiteral {
 
-    public init(integerLiteral value: _TrackingTag) {
+    public init(integerLiteral value: _RawTrackingTag) {
       switch value {
       case .end:
         self = .end
@@ -28,7 +28,7 @@ public enum TrackingTag_: Equatable {
 
 extension TrackingTag_: RawRepresentable {
 
-  public init?(rawValue value: _TrackingTag) {
+  public init?(rawValue value: _RawTrackingTag) {
     switch value {
     case .end:
       self = .end
@@ -40,7 +40,7 @@ extension TrackingTag_: RawRepresentable {
     return nil
   }
 
-  public var rawValue: _TrackingTag {
+  public var rawValue: _RawTrackingTag {
     switch self {
     case .end:
       .end
@@ -55,7 +55,7 @@ public typealias RedBlackTreeTrackingTag = Optional<TrackingTag_>
 extension Optional where Wrapped == TrackingTag_ {
   
   @usableFromInline
-  static func create(_ t: _TrackingTag) -> Self {
+  static func create(_ t: _RawTrackingTag) -> Self {
     TrackingTag_(rawValue: t)
   }
 

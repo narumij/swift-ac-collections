@@ -8,8 +8,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
+        start: __tree_._remap_to_ptr(bounds.lowerBound),
+        end: __tree_._remap_to_ptr(bounds.upperBound))
     }
   }
 
@@ -70,8 +70,8 @@
     public func elements(in range: Range<Element>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: ___lower_bound(range.lowerBound),
-        end: ___lower_bound(range.upperBound))
+        start: __tree_.lower_bound(range.lowerBound),
+        end: __tree_.lower_bound(range.upperBound))
     }
 
     /// 値レンジ `[lower, upper]` に含まれる要素のスライス
@@ -90,8 +90,8 @@
     public func elements(in range: ClosedRange<Element>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: ___lower_bound(range.lowerBound),
-        end: ___upper_bound(range.upperBound))
+        start: __tree_.lower_bound(range.lowerBound),
+        end: __tree_.upper_bound(range.upperBound))
     }
   }
 
@@ -103,8 +103,8 @@
     @inline(__always)
     public mutating func remove(contentsOf elementRange: Range<Element>) {
       __tree_._strongEnsureUnique()
-      let lower = ___lower_bound(elementRange.lowerBound)
-      let upper = ___lower_bound(elementRange.upperBound)
+      let lower = __tree_.lower_bound(elementRange.lowerBound)
+      let upper = __tree_.lower_bound(elementRange.upperBound)
       ___remove(from: lower, to: upper)
     }
 
@@ -114,8 +114,8 @@
     @inline(__always)
     public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
       __tree_._strongEnsureUnique()
-      let lower = ___lower_bound(elementRange.lowerBound)
-      let upper = ___upper_bound(elementRange.upperBound)
+      let lower = __tree_.lower_bound(elementRange.lowerBound)
+      let upper = __tree_.upper_bound(elementRange.upperBound)
       ___remove(from: lower, to: upper)
     }
   }
@@ -129,13 +129,13 @@
     @inline(__always)
     public subscript(bounds: Range<Index>) -> SubSequence {
       __tree_.___ensureValid(
-        begin: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
+        begin: __tree_._remap_to_ptr(bounds.lowerBound),
+        end: __tree_._remap_to_ptr(bounds.upperBound))
 
       return .init(
         tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
+        start: __tree_._remap_to_ptr(bounds.lowerBound),
+        end: __tree_._remap_to_ptr(bounds.upperBound))
     }
   }
 #endif
@@ -157,8 +157,8 @@
       let bounds = bounds.relative(to: self)
       __tree_.ensureUnique()
       ___remove(
-        from: __tree_.rawValue(bounds.lowerBound),
-        to: __tree_.rawValue(bounds.upperBound))
+        from: __tree_._remap_to_ptr(bounds.lowerBound),
+        to: __tree_._remap_to_ptr(bounds.upperBound))
     }
   }
 #endif

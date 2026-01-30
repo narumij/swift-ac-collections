@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeSubSequenceV2: UnsafeTreeRangeProtocol {}
+protocol ___UnsafeSubSequenceV2: UnsafeTreeRangeProtocol, UnsafeIndexBinding {}
 
 extension ___UnsafeSubSequenceV2 {
 
@@ -42,10 +42,10 @@ extension ___UnsafeSubSequenceV2 {
   @inlinable
   @inline(__always)
   internal func ___contains(_ bounds: Range<Index>) -> Bool {
-    !__tree_.___is_offset_null(__tree_.rawValue(bounds.lowerBound))
-      && !__tree_.___is_offset_null(__tree_.rawValue(bounds.upperBound))
-      && __tree_.___ptr_range_contains(_start, _end, __tree_.rawValue(bounds.lowerBound))
-      && __tree_.___ptr_range_contains(_start, _end, __tree_.rawValue(bounds.upperBound))
+    !__tree_.___is_offset_null(__tree_._remap_to_ptr(bounds.lowerBound))
+      && !__tree_.___is_offset_null(__tree_._remap_to_ptr(bounds.upperBound))
+      && __tree_.___ptr_range_contains(_start, _end, __tree_._remap_to_ptr(bounds.lowerBound))
+      && __tree_.___ptr_range_contains(_start, _end, __tree_._remap_to_ptr(bounds.upperBound))
   }
   #endif
 }

@@ -82,7 +82,11 @@ extension UnsafeIterator.Tied: Comparable where Source: Equatable, Element: Comp
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-  extension UnsafeIterator.Tied {
+extension UnsafeIterator.Tied
+where
+  Source.Source.Element == UnsafeMutablePointer<UnsafeNode>,
+  Base: ___TreeIndex
+{
 
     @available(*, deprecated, message: "性能問題があり廃止")
     @inlinable
@@ -90,7 +94,7 @@ extension UnsafeIterator.Tied: Comparable where Source: Equatable, Element: Comp
     public func forEach(_ body: (UnsafeIndexV2<Base>, Element) throws -> Void) rethrows
     where Source.Source.Element == UnsafeMutablePointer<UnsafeNode> {
       try zip(source._source, makeIterator()).forEach {
-        try body(___index($0), $1)
+        try body(.init(rawValue: $0, tie: tied), $1)
       }
     }
   }

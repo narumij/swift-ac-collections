@@ -47,7 +47,8 @@
           RedBlackTreeBound
           .advanced(__self, by: 1)
           .relative(to: collection)
-
+      default:
+        fatalError("NOT IMPLEMENTED YET")
       }
     }
   }
@@ -82,6 +83,8 @@
           lhs.relative(to: self),
           endIndex
         )
+      default:
+        fatalError("NOT IMPLEMENTED YET")
       }
     }
   }

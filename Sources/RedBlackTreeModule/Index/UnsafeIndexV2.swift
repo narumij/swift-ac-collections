@@ -128,7 +128,7 @@ extension UnsafeIndexV2: Equatable {
         preconditionFailure(.garbagedIndex)
       }
 
-      switch (lhs.trackingTag, rhs.trackingTag) {
+      switch (lhs._rawTag, rhs._rawTag) {
       case (.nullptr, _), (_, .nullptr):
         fatalError(.invalidIndex)
       case (.end, _):

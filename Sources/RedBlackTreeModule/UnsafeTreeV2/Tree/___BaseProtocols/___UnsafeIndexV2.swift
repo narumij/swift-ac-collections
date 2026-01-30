@@ -165,8 +165,8 @@ extension ___UnsafeIndexV2 where Self: Sequence {
 
       let bounds = bounds.relative(to: self)
       return !__tree_.___is_range_null(
-        __tree_.rawValue(bounds.lowerBound),
-        __tree_.rawValue(bounds.upperBound))
+        __tree_._remap_to_ptr(bounds.lowerBound),
+        __tree_._remap_to_ptr(bounds.upperBound))
     }
   }
 #endif

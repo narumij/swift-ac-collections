@@ -20,7 +20,7 @@ final class ABC358DTests: RedBlackTreeTestCase {
     try super.tearDownWithError()
   }
 
-  #if true
+  #if !COMPATIBLE_ATCODER_2025
   func testABC358D(N: Int, M: Int, _A: [Int], B: [Int]) throws {
     var A = RedBlackTreeMultiSet(_A)
     var ans = 0

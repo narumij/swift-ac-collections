@@ -189,13 +189,13 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public subscript(bounds: Range<Index>) -> SubSequence {
     __tree_.___ensureValid(
-      begin: __tree_.rawValue(bounds.lowerBound),
-      end: __tree_.rawValue(bounds.upperBound))
+      begin: __tree_._remap_to_ptr(bounds.lowerBound),
+      end: __tree_._remap_to_ptr(bounds.upperBound))
 
     return .init(
       tree: __tree_,
-      start: __tree_.rawValue(bounds.lowerBound),
-      end: __tree_.rawValue(bounds.upperBound))
+      start: __tree_._remap_to_ptr(bounds.lowerBound),
+      end: __tree_._remap_to_ptr(bounds.upperBound))
   }
   #endif
 }
@@ -411,8 +411,8 @@ extension RedBlackTreeMultiSet {
       let bounds = bounds.relative(to: self)
       __tree_.ensureUnique()
       ___remove(
-        from: __tree_.rawValue(bounds.lowerBound),
-        to: __tree_.rawValue(bounds.upperBound))
+        from: __tree_._remap_to_ptr(bounds.lowerBound),
+        to: __tree_._remap_to_ptr(bounds.upperBound))
     }
   #endif
 

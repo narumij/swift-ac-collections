@@ -33,17 +33,23 @@ protocol ___UnsafeTreeBaseV2: ___Root, _UnsafeNodePtrType
 where
   Base: ___TreeBase,
   Tree == UnsafeTreeV2<Base>,
-  _NodePtr == Tree._NodePtr
+  _Key == Base._Key,
+  _PayloadValue == Base._PayloadValue
 {
+  associatedtype _Key
+  associatedtype _PayloadValue
+  associatedtype Element
+
   var __tree_: Tree { get }
 }
 
 @usableFromInline
-protocol ___UnsafeRangeBaseV2: ___UnsafeTreeBaseV2 & _BaseType
-where
-  _Key == Base._Key,
-  _PayloadValue == Base._PayloadValue
-{
+protocol ___UnsafeMutableTreeBaseV2: ___UnsafeTreeBaseV2 {
+  var __tree_: Tree { get set }
+}
+
+@usableFromInline
+protocol ___UnsafeRangeBaseV2: ___UnsafeTreeBaseV2 {
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
@@ -52,9 +58,11 @@ where
 protocol ___UnsafeIndexBaseV2: ___UnsafeTreeBaseV2
 where
   Base: ___TreeIndex,
-  Index == UnsafeTreeV2<Base>.Index
+  Index == UnsafeTreeV2<Base>.Index,
+  Indices == UnsafeTreeV2<Base>.Indices
 {
   associatedtype Index
+  associatedtype Indices
 }
 
 extension ___UnsafeIndexBaseV2 {
@@ -79,28 +87,7 @@ extension ___UnsafeIndexBaseV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeIndexRangeBaseV2: ___UnsafeRangeBaseV2 & ___UnsafeIndexBaseV2
-where
-  Base: ___TreeBase & ___TreeIndex,
-  Tree == UnsafeTreeV2<Base>,
-  Index == Tree.Index,
-  Indices == Tree.Indices,
-  _Key == Tree._Key,
-  _PayloadValue == Tree._PayloadValue
-{
-  associatedtype Index
-  associatedtype Indices
-  associatedtype Element
-  var __tree_: Tree { get }
-  var _start: _NodePtr { get }
-  var _end: _NodePtr { get }
-}
-
-@usableFromInline
-protocol ___UnsafeMutableTreeBaseV2: ___UnsafeTreeBaseV2
-{
-  var __tree_: Tree { get set }
-}
+protocol ___UnsafeIndexRangeBaseV2: ___UnsafeRangeBaseV2 & ___UnsafeIndexBaseV2 {}
 
 public typealias RedBlackTreeIndex = UnsafeIndexV2
 public typealias RedBlackTreeIndices = UnsafeIndexV2Collection

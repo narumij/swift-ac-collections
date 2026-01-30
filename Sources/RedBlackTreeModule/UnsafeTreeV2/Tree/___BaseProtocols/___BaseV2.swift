@@ -21,6 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 public typealias ___TreeBase = ValueComparer & _Tree_IsMultiTraitProtocol
+public typealias ___TreeIndex = _BasePaylodValue_ElementInterface
 
 // コレクション実装の基点
 public protocol ___Root {

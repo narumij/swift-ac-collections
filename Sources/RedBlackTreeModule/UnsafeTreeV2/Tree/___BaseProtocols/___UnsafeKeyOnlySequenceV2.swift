@@ -21,15 +21,8 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeIndexRangeBaseV2, ___TreeIndex, _ScalarBaseType
+protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeIndexRangeBaseV2, ___TreeIndex, _ScalarBaseType, _ScalarBase_ElementProtocol
 where _PayloadValue == Element, Element: Comparable {}
-
-extension ___UnsafeKeyOnlySequenceV2 {
-
-  @inlinable
-  @inline(__always)
-  public static func ___pointee(_ __value: _PayloadValue) -> Element { __value }
-}
 
 extension ___UnsafeKeyOnlySequenceV2 {
 

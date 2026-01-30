@@ -291,7 +291,7 @@ extension UnsafeIndexV2 {
       !rawValue.___is_garbaged,
       tied.isValueAccessAllowed
     else { return nil }
-    return Base.___pointee(rawValue.__value_().pointee)
+    return Base.__element_(rawValue.__value_().pointee)
   }
 }
 

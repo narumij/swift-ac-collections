@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyValueSequenceV2: ___UnsafeIndexRangeBaseV2, ___TreeIndex
+protocol ___UnsafeKeyValueSequenceV2: ___UnsafeIndexRangeBaseV2, ___TreeIndex, _PairBase_ElementProtocol
 where
   Base: KeyValueComparer,
   Base._MappedValue == _MappedValue,
@@ -33,22 +33,11 @@ where
 
 extension ___UnsafeKeyValueSequenceV2 {
 
-  @inlinable
-  @inline(__always)
-  internal static func ___element(_ __value: _PayloadValue) -> Element {
-    (__value.key, __value.value)
-  }
-
+  // TODO: これを共通インターフェースの一部に引き上げたい
   @inlinable
   @inline(__always)
   internal static func ___tree_value(_ __element: Element) -> _PayloadValue {
     RedBlackTreePair(__element.key, __element.value)
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func ___pointee(_ __value: _PayloadValue) -> Element {
-    Self.___element(__value)
   }
 }
 
@@ -57,7 +46,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   @inlinable
   @inline(__always)
   internal func ___element(_ __value: _PayloadValue) -> Element {
-    Self.___element(__value)
+    Self.__element_(__value)
   }
 }
 
@@ -154,7 +143,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   @inline(__always)
   internal func _forEach(_ body: (Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(Self.___element(__tree_[$0]))
+      try body(Self.__element_(__tree_[$0]))
     }
   }
 }
@@ -179,7 +168,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   @inlinable
   @inline(__always)
   internal func _sorted() -> [Element] {
-    __tree_.___copy_to_array(_start, _end, transform: Self.___element)
+    __tree_.___copy_to_array(_start, _end, transform: Self.__element_)
   }
 }
 

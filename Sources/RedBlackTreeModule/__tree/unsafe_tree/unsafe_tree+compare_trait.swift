@@ -15,15 +15,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _Tree_IsMultiTraitProtocol:
-  _Tree_IsMultiTraitInterface & _Base_IsMultiTraitInterface
-{}
-
-extension _Tree_IsMultiTraitProtocol {
-  @inlinable @inline(__always)
-  public var isMulti: Bool { Self.isMulti }
-}
+public typealias _Tree_IsMultiTraitProtocol = _Base_IsMultiTraitInterface
 
 #if COMPATIBLE_ATCODER_2025
-public typealias CompareTrait = _Tree_IsMultiTraitProtocol
+public typealias CompareTrait = _Base_IsMultiTraitInterface
 #endif

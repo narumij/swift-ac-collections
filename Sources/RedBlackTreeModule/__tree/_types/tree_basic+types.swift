@@ -133,6 +133,39 @@ where Element == _Key {}
 public protocol _KeyValueElementType: _KeyValueBaseType, _ElementType
 where Element == (key: _Key, value: _MappedValue) {}
 
+// MARK: -
+
+public protocol _BasePaylodValue_ElementInterface: _PayloadValueType, _ElementType {
+  static func __element_(_ __value: _PayloadValue) -> Element
+}
+
+public protocol _ScalarBase_ElementProtocol:
+  _BasePaylodValue_ElementInterface
+    & _ScalarElementType
+{}
+
+extension _ScalarBase_ElementProtocol {
+
+  @inlinable
+  @inline(__always)
+  public static func __element_(_ __value: _PayloadValue) -> Element { __value }
+}
+
+public protocol _PairBase_ElementProtocol:
+  _BasePaylodValue_ElementInterface
+    & _PairBaseType
+    & _KeyValueElementType
+{}
+
+extension _PairBase_ElementProtocol {
+
+  @inlinable
+  @inline(__always)
+  public static func __element_(_ __value: _PayloadValue) -> Element {
+    (__value.key, __value.value)
+  }
+}
+
 // MARK: - Aliases
 
 /// ノードポインタの別名の定義

@@ -33,8 +33,6 @@ extension _BaseNode_KeyProtocol {
   }
 }
 
-
-
 public protocol _BaseKey_LessThanProtocol: _BaseKey_LessThanInterface {}
 
 extension _BaseKey_LessThanProtocol where _Key: Comparable {
@@ -65,8 +63,4 @@ extension _BaseKey_EquivProtocol where _Key: Equatable {
   public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
     lhs == rhs
   }
-}
-
-public protocol _Base_ElementInterface: _PayloadValueType, _ElementType {
-  static func __element_(_ __value: _PayloadValue) -> Element
 }

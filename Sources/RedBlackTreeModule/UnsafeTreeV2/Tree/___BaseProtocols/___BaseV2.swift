@@ -1,27 +1,22 @@
-// Copyright 2024-2026 narumij
+//===----------------------------------------------------------------------===//
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// This source file is part of the swift-ac-collections project
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
 // This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
 //
-// Copyright © 2003-2025 The LLVM Project.
+// Copyright © 2003-2026 The LLVM Project.
 // Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 #if COMPATIBLE_ATCODER_2025
-public typealias CompareTrait = _Base_IsMultiTraitInterface
+  public typealias CompareTrait = _Base_IsMultiTraitInterface
 #endif
 
 public typealias ___TreeBase = ValueComparer & _Base_IsMultiTraitInterface
@@ -35,35 +30,50 @@ public protocol ___Root {
   associatedtype Tree
 }
 
+/// LRUキャッシュは異なるが、それ以外はBaseをホストしている
 public protocol __BaseHosting: ___Root
 where Base == Self {}
 
-public protocol _KeyBride: ___Root, _KeyType
+/// ベースのキー型を受け継ぐ
+public protocol _KeyBride:
+  ___Root
+    & _KeyType
 where
   Base: _KeyType,
   _Key == Base._Key
 {}
 
-public protocol _PayloadValueBride: ___Root, _PayloadValueType
+/// ベースの積載型を受け継ぐ
+public protocol _PayloadValueBride:
+  ___Root
+    & _PayloadValueType
 where
   Base: _PayloadValueType,
   _PayloadValue == Base._PayloadValue
 {}
 
-public protocol _MappedValueBride: ___Root, _MappedValueType
+/// ベースのバリュー型を受け継ぐ
+public protocol _MappedValueBride:
+  ___Root
+    & _MappedValueType
 where
   Base: _MappedValueType,
   _MappedValue == Base._MappedValue
 {}
 
-public protocol _ElementBride: ___Root, _ElementType
+/// ベースの要素型を受け継ぐ
+public protocol _ElementBride:
+  ___Root
+    & _ElementType
 where
   Base: _ElementType,
   Element == Base.Element
 {}
 
 @usableFromInline
-package protocol UnsafeTreeProtocol: ___Root, _UnsafeNodePtrType
+package protocol UnsafeTreeProtocol:
+  ___Root
+    & _UnsafeNodePtrType
 where
   Base: ___TreeBase,
   Tree == UnsafeTreeV2<Base>
@@ -80,13 +90,19 @@ protocol ___UnsafeMutableTreeBaseV2: ___UnsafeTreeBaseV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeRangeBaseV2: ___UnsafeTreeBaseV2, _UnsafeNodePtrType, _PayloadValueBride {
+protocol ___UnsafeRangeBaseV2:
+  ___UnsafeTreeBaseV2
+    & _UnsafeNodePtrType
+    & _PayloadValueBride
+{
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
 
 @usableFromInline
-protocol ___UnsafeIndexBaseV2: ___UnsafeTreeBaseV2, _UnsafeNodePtrType
+protocol ___UnsafeIndexBaseV2:
+  ___UnsafeTreeBaseV2
+    & _UnsafeNodePtrType
 where
   Base: ___TreeIndex,
   Index == UnsafeTreeV2<Base>.Index

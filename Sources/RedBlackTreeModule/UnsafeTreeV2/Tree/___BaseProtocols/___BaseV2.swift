@@ -51,18 +51,15 @@ public protocol _ElementBride: ___Root & _ElementType
 where Element == Base.Element, Base: _ElementType {}
 
 /// 木にどれを使うのかしっている
-@usableFromInline
-package protocol UnsafeTreeBinding: ___Root & _UnsafeNodePtrType
+public protocol UnsafeTreeBinding: ___Root & _UnsafeNodePtrType
 where Tree == UnsafeTreeV2<Base>, Base: ___TreeBase {}
 
-@usableFromInline
-protocol UnsafeIndexBinding: UnsafeTreeBinding
+public protocol UnsafeIndexBinding: UnsafeTreeBinding
 where Index == UnsafeTreeV2<Base>.Index, Base: ___TreeIndex {
   associatedtype Index
 }
 
-@usableFromInline
-protocol UnsafeIndicesBinding: UnsafeTreeBinding
+public protocol UnsafeIndicesBinding: UnsafeTreeBinding
 where Indices == UnsafeTreeV2<Base>.Indices, Base: ___TreeIndex {
   associatedtype Indices
 }

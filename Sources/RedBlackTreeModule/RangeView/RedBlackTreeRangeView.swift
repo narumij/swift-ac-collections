@@ -6,7 +6,7 @@
 //
 
 public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost,
-  ___UnsafeSubSequenceV2
+  ___UnsafeSubSequenceV2, ___UnsafeCommonV2
 where
   Base: ___TreeBase,
   Base._Key == Base._PayloadValue
@@ -102,10 +102,10 @@ extension RedBlackTreeKeyOnlyRangeView {
 
 extension RedBlackTreeKeyOnlyRangeView {
 
-  /// - Complexity: O(log `Base.count` + `count`)
+  /// - Complexity: O(`count`)
   @inlinable
   @inline(__always)
-  public var count: Int { _count }
+  public var count: Int { ___count }
 }
 
 extension RedBlackTreeKeyOnlyRangeView {

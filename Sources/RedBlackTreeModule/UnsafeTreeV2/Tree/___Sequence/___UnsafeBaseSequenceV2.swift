@@ -30,6 +30,12 @@ where
 }
 
 extension ___UnsafeBaseSequenceV2 {
+  
+  @inlinable
+  @inline(__always)
+  internal var ___count: Int {
+    __tree_.count
+  }
 
   @inlinable
   @inline(__always)
@@ -37,6 +43,28 @@ extension ___UnsafeBaseSequenceV2 {
     __tree_.__count_unique(__k) != 0
   }
 }
+
+extension ___UnsafeBaseSequenceV2 {
+
+  @inlinable
+  @inline(__always)
+  package var _start: _NodePtr {
+    __tree_.__begin_node_
+  }
+
+  @inlinable
+  @inline(__always)
+  package var _end: _NodePtr {
+    __tree_.__end_node
+  }
+
+  @inlinable
+  @inline(__always)
+  package var ___capacity: Int {
+    __tree_.capacity
+  }
+}
+
 
 extension ___UnsafeBaseSequenceV2 {
 

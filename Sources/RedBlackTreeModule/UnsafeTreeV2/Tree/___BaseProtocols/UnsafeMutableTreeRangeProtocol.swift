@@ -1,62 +1,14 @@
-//===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+//  UnsafeMutableTreeRangeProtocol.swift
+//  swift-ac-collections
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+//  Created by narumij on 2026/01/31.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
-//
-// Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
-// The original license can be found at https://llvm.org/LICENSE.txt
-//
-// This Swift implementation includes modifications and adaptations made by narumij.
-//
-//===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol ___UnsafeStorageProtocolV2: ___Root & _PayloadValueType
-where
-  Base: ___TreeBase,
-  Tree == UnsafeTreeV2<Base>,
-  _PayloadValue == Tree._PayloadValue,
-  _NodePtr == Tree._NodePtr
-{
-  associatedtype _NodePtr
-  var __tree_: Tree { get set }
-}
+protocol UnsafeMutableTreeRangeProtocol: UnsafeMutableTreeRangeBaseInterface, _PayloadValueBride {}
 
-extension ___UnsafeStorageProtocolV2 {
-
-  @inlinable
-  @inline(__always)
-  package var _start: _NodePtr {
-    __tree_.__begin_node_
-  }
-
-  @inlinable
-  @inline(__always)
-  package var _end: _NodePtr {
-    __tree_.__end_node
-  }
-
-  @inlinable
-  @inline(__always)
-  package var ___count: Int {
-    __tree_.count
-  }
-
-  @inlinable
-  @inline(__always)
-  package var ___capacity: Int {
-    __tree_.capacity
-  }
-}
-
-// MARK: - Remove
-
-extension ___UnsafeStorageProtocolV2 {
+extension UnsafeMutableTreeRangeProtocol {
 
   @inlinable
   @inline(__always)
@@ -80,7 +32,7 @@ extension ___UnsafeStorageProtocolV2 {
   }
 }
 
-extension ___UnsafeStorageProtocolV2 {
+extension UnsafeMutableTreeRangeProtocol {
 
   @inlinable
   @inline(__always)
@@ -93,7 +45,7 @@ extension ___UnsafeStorageProtocolV2 {
   }
 }
 
-extension ___UnsafeStorageProtocolV2 {
+extension UnsafeMutableTreeRangeProtocol {
 
   @inlinable
   @inline(__always)

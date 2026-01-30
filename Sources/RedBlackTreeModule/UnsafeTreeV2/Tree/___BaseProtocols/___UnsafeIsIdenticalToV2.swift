@@ -21,11 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIsIdenticalToV2: UnsafeTreeBinding {
-  var __tree_: Tree { get }
-  var _start: _NodePtr { get }
-  var _end: _NodePtr { get }
-}
+protocol ___UnsafeIsIdenticalToV2: UnsafeTreeRangeProtocol {}
 
 // MARK: - Is Identical To
 
@@ -64,6 +60,6 @@ extension ___UnsafeIsIdenticalToV2 {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    __tree_.isTriviallyIdentical(to: other.__tree_) && _start == other._start && _end == other._end
+    _isTriviallyIdentical(to: other)
   }
 }

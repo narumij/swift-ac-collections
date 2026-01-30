@@ -155,7 +155,7 @@ extension UnsafeIndexV2 {
   @inlinable
   //  @inline(__always)
   public func distance(to other: Self) -> Int {
-    let other = ___node_ptr(other)
+    let other = _remap_to_ptr(other)
     guard !rawValue.___is_garbaged, !other.___is_garbaged else {
       preconditionFailure(.garbagedIndex)
     }
@@ -262,7 +262,7 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var isStart: Bool {
-    rawValue.___is_slow_begin
+    rawValue == tied.begin_ptr?.pointee
   }
 
   @inlinable
@@ -306,9 +306,11 @@ extension UnsafeIndexV2 {
   }
 
   extension UnsafeIndexV2 {
+    
     internal static func unsafe(tree: UnsafeTreeV2<Base>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue, trackingTag: rawValue.pointee.___tracking_tag)
     }
+    
     internal static func unsafe(tree: UnsafeTreeV2<Base>, rawTag: _RawTrackingTag) -> Self {
       if rawTag == .nullptr {
         return .init(_unsafe_tree: tree, rawValue: tree.nullptr, trackingTag: .nullptr)
@@ -317,7 +319,8 @@ extension UnsafeIndexV2 {
         return .init(_unsafe_tree: tree, rawValue: tree.end, trackingTag: .end)
       }
       return .init(
-        _unsafe_tree: tree, rawValue: tree._buffer.header[rawTag],
+        _unsafe_tree: tree,
+        rawValue: tree._buffer.header[rawTag],
         trackingTag: tree._buffer.header[rawTag].pointee.___tracking_tag)
     }
   }
@@ -396,15 +399,7 @@ extension UnsafeIndexV2 {
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
   @inline(__always)
-  internal func ___node_ptr(_ index: UnsafeIndexV2) -> _NodePtr {
-    #if true
-      // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
-      // endはシングルトン的にしたい気持ちもある
-      return tied === index.tied
-        ? index.rawValue
-    : self[_raw: index._rawTag]
-    #else
-      self === index.__tree_ ? index.rawValue : (_header[index.___raw_index])
-    #endif
+  internal func _remap_to_ptr(_ index: UnsafeIndexV2) -> _NodePtr {
+      tied === index.tied ? index.rawValue : self[_raw: index._rawTag]
   }
 }

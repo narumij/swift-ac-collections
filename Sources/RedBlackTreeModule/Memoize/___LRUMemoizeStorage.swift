@@ -109,10 +109,15 @@ extension ___LRUMemoizeStorage {
   }
 }
 
-extension ___LRUMemoizeStorage: ___LRULinkList & ___UnsafeStorageProtocolV2 & IntThreeWayComparator {
-
-  public typealias Base = Self
+extension ___LRUMemoizeStorage: ___LRULinkList & UnsafeMutableTreeRangeProtocol & IntThreeWayComparator & __BaseHosting {
+  
+  @inlinable @inline(__always)
+  var _start: _NodePtr { __tree_.__begin_node_ }
+  
+  @inlinable @inline(__always)
+  var _end: _NodePtr { __tree_.__end_node }
 }
+
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}
 extension ___LRUMemoizeStorage: KeyValueComparer {
   
@@ -151,10 +156,10 @@ extension ___LRUMemoizeStorage {
 extension ___LRUMemoizeStorage {
 
   @inlinable
-  public var count: Int { ___count }
+  public var count: Int { __tree_.count }
 
   @inlinable
-  public var capacity: Int { ___capacity }
+  public var capacity: Int { __tree_.capacity }
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS

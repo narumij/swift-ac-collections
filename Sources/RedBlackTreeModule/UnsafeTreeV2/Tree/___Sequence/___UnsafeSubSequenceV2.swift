@@ -21,15 +21,15 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeSubSequenceV2: UnsafeTreeRangeInterface {}
+protocol ___UnsafeSubSequenceV2: UnsafeTreeRangeProtocol {}
 
 extension ___UnsafeSubSequenceV2 {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
-  internal var _count: Int {
-    __tree_.___distance(from: _start, to: _end)
+  internal var ___count: Int {
+    __tree_.__distance(_start, _end)
   }
 
   @inlinable

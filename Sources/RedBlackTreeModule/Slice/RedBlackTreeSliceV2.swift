@@ -87,7 +87,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   /// - Complexity: O(log `Base.count` + `count`)
   @inlinable
   @inline(__always)
-  public var count: Int { _count }
+  public var count: Int { ___count }
 }
 
 extension RedBlackTreeSliceV2.KeyOnly {

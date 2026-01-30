@@ -21,28 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeCommonV2: UnsafeTreeRangeInterface, _PayloadValueBride, _KeyBride {}
-
-extension ___UnsafeCommonV2 {
-
-  @inlinable
-  @inline(__always)
-  internal var ___is_empty: Bool {
-    __tree_.___is_empty || _start == _end
-  }
-
-  @inlinable
-  @inline(__always)
-  internal var ___first: _PayloadValue? {
-    ___is_empty ? nil : __tree_[_start]
-  }
-
-  @inlinable
-  @inline(__always)
-  internal var ___last: _PayloadValue? {
-    ___is_empty ? nil : __tree_[__tree_.__tree_prev_iter(_end)]
-  }
-}
+protocol ___UnsafeCommonV2: UnsafeTreeRangeProtocol, _PayloadValueBride, _KeyBride {}
 
 extension ___UnsafeCommonV2 {
 
@@ -71,14 +50,5 @@ extension ___UnsafeCommonV2 {
   @inline(__always)
   internal var ___value_comp: (_PayloadValue, _PayloadValue) -> Bool {
     { __tree_.value_comp(Base.__key($0), Base.__key($1)) }
-  }
-}
-
-extension ___UnsafeCommonV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func _isTriviallyIdentical(to other: Self) -> Bool {
-    __tree_.isTriviallyIdentical(to: other.__tree_) && _start == other._start && _end == other._end
   }
 }

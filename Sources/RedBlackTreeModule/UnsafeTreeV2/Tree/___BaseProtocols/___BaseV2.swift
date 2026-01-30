@@ -86,6 +86,13 @@ protocol UnsafeTreeRangeBaseInterface: UnsafeTreeHost {
   var _end: _NodePtr { get }
 }
 
+/// 区間指定メンバー
+@usableFromInline
+protocol UnsafeMutableTreeRangeBaseInterface: UnsafeMutableTreeHost {
+  var _start: _NodePtr { get }
+  var _end: _NodePtr { get }
+}
+
 @usableFromInline
 protocol ___UnsafeIndexBaseV2: UnsafeIndexBinding, UnsafeTreeHost {}
 
@@ -115,7 +122,7 @@ protocol ___UnsafeIndicesBaseV2: UnsafeIndicesBinding {}
 
 @usableFromInline
 protocol ___UnsafeIndexRangeBaseV2:
-  UnsafeTreeRangeInterface
+  UnsafeTreeRangeProtocol
     & ___UnsafeIndexBaseV2
     & ___UnsafeIndicesBaseV2
 {}
@@ -127,7 +134,7 @@ public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
 
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase:
-  ___UnsafeStorageProtocolV2
+  UnsafeMutableTreeRangeProtocol
     & ___UnsafeCommonV2
     & ___UnsafeIndexV2
     & ___UnsafeBaseSequenceV2
@@ -136,7 +143,7 @@ protocol _RedBlackTreeKeyOnlyBase:
 
 @usableFromInline
 protocol _RedBlackTreeKeyValuesBase:
-  ___UnsafeStorageProtocolV2
+  UnsafeMutableTreeRangeProtocol
     & ___UnsafeCommonV2
     & ___UnsafeIndexV2
     & ___UnsafeBaseSequenceV2

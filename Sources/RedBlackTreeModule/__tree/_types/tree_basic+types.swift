@@ -123,22 +123,30 @@ public protocol _KeyValueBaseType: _BaseType & _MappedValueType {}
 public protocol _PairBaseType: _KeyValueBaseType
 where _PayloadValue == RedBlackTreePair<_Key, _MappedValue> {}
 
+// MARK: -
+
+/// 各コレクションの要素はここまでの型と関連があるが、必ずしも一致するとは限らない
 public protocol _ElementType {
+  /// コレクションの要素型
   associatedtype Element
 }
 
+/// SetやMultiSetはコレクション要素型がキーと一致していること
 public protocol _ScalarElementType: _ScalarBaseType, _ElementType
 where Element == _Key {}
 
+/// DictionaryやMultiMapのコレクション要素型はキーバリューのタプルになってること
 public protocol _KeyValueElementType: _KeyValueBaseType, _ElementType
 where Element == (key: _Key, value: _MappedValue) {}
 
 // MARK: -
 
+/// 積載型からコレクション要素型への変換方法を示すこと
 public protocol _BasePaylodValue_ElementInterface: _PayloadValueType, _ElementType {
   static func __element_(_ __value: _PayloadValue) -> Element
 }
 
+/// SetやMultiSetの、積載型からコレクション要素型への変換方法
 public protocol _ScalarBase_ElementProtocol:
   _BasePaylodValue_ElementInterface
     & _ScalarElementType
@@ -151,6 +159,7 @@ extension _ScalarBase_ElementProtocol {
   public static func __element_(_ __value: _PayloadValue) -> Element { __value }
 }
 
+/// DictionaryやMultiMapの積載型がペアの場合、コレクション要素型への変換方法
 public protocol _PairBase_ElementProtocol:
   _BasePaylodValue_ElementInterface
     & _PairBaseType

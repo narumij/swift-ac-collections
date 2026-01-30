@@ -5,6 +5,9 @@
 //  Created by narumij on 2026/01/29.
 //
 
+@usableFromInline
+protocol UnsafeTreeRangeInterface: UnsafeTreeRangeBaseInterface, _PayloadValueBride {}
+
 extension UnsafeTreeRangeInterface {
   
   @inlinable

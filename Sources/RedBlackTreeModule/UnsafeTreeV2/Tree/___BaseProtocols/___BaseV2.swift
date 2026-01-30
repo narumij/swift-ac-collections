@@ -35,84 +35,59 @@ public protocol __BaseHosting: ___Root
 where Base == Self {}
 
 /// ベースのキー型を受け継ぐ
-public protocol _KeyBride:
-  ___Root
-    & _KeyType
-where
-  Base: _KeyType,
-  _Key == Base._Key
-{}
+public protocol _KeyBride: ___Root & _KeyType
+where _Key == Base._Key, Base: _KeyType {}
 
 /// ベースの積載型を受け継ぐ
-public protocol _PayloadValueBride:
-  ___Root
-    & _PayloadValueType
-where
-  Base: _PayloadValueType,
-  _PayloadValue == Base._PayloadValue
-{}
+public protocol _PayloadValueBride: ___Root & _PayloadValueType
+where _PayloadValue == Base._PayloadValue, Base: _PayloadValueType {}
 
 /// ベースのバリュー型を受け継ぐ
-public protocol _MappedValueBride:
-  ___Root
-    & _MappedValueType
-where
-  Base: _MappedValueType,
-  _MappedValue == Base._MappedValue
-{}
+public protocol _MappedValueBride: ___Root & _MappedValueType
+where _MappedValue == Base._MappedValue, Base: _MappedValueType {}
 
 /// ベースの要素型を受け継ぐ
-public protocol _ElementBride:
-  ___Root
-    & _ElementType
-where
-  Base: _ElementType,
-  Element == Base.Element
-{}
+public protocol _ElementBride: ___Root & _ElementType
+where Element == Base.Element, Base: _ElementType {}
 
 /// 木にどれを使うのかしっている
 @usableFromInline
-package protocol UnsafeTreeBinding:
-  ___Root
-    & _UnsafeNodePtrType
-where
-  Base: ___TreeBase,
-  Tree == UnsafeTreeV2<Base>
-{}
+package protocol UnsafeTreeBinding: ___Root & _UnsafeNodePtrType
+where Tree == UnsafeTreeV2<Base>, Base: ___TreeBase {}
 
-/// 生木の共通の持ち方
+@usableFromInline
+protocol UnsafeIndexBinding: UnsafeTreeBinding
+where Index == UnsafeTreeV2<Base>.Index, Base: ___TreeIndex {
+  associatedtype Index
+}
+
+@usableFromInline
+protocol UnsafeIndicesBinding: UnsafeTreeBinding
+where Indices == UnsafeTreeV2<Base>.Indices, Base: ___TreeIndex {
+  associatedtype Indices
+}
+
+/// 共通生木メンバー
 @usableFromInline
 protocol UnsafeTreeHost: UnsafeTreeBinding {
   var __tree_: Tree { get }
 }
 
-/// 変更可能生木の共通の持ち方
+/// 変更可能共通生木メンバー
 @usableFromInline
 protocol UnsafeMutableTreeHost: UnsafeTreeHost {
   var __tree_: Tree { get set }
 }
 
-/// 区間指定付き生木の持ち方
+/// 区間指定メンバー
 @usableFromInline
-protocol UnsafeTreeRangeInterface:
-  UnsafeTreeHost
-    & _UnsafeNodePtrType
-    & _PayloadValueBride
-{
+protocol UnsafeTreeRangeBaseInterface: UnsafeTreeHost {
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
 
 @usableFromInline
-protocol ___UnsafeIndexBaseV2:
-  UnsafeTreeHost
-    & _UnsafeNodePtrType
-where
-  Base: ___TreeIndex,
-  Index == UnsafeTreeV2<Base>.Index
-{
-  associatedtype Index
-}
+protocol ___UnsafeIndexBaseV2: UnsafeIndexBinding, UnsafeTreeHost {}
 
 extension ___UnsafeIndexBaseV2 {
 
@@ -136,13 +111,7 @@ extension ___UnsafeIndexBaseV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeIndicesBaseV2: UnsafeTreeHost
-where
-  Base: ___TreeIndex,
-  Indices == UnsafeTreeV2<Base>.Indices
-{
-  associatedtype Indices
-}
+protocol ___UnsafeIndicesBaseV2: UnsafeIndicesBinding {}
 
 @usableFromInline
 protocol ___UnsafeIndexRangeBaseV2:

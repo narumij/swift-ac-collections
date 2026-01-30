@@ -38,7 +38,7 @@ where Base: ___TreeBase & ___TreeIndex {
   typealias _PayloadValue = Tree._PayloadValue
 
   @usableFromInline
-  internal var _trackingTag: _RawTrackingTag {
+  internal var _rawTag: _RawTrackingTag {
     rawValue.pointee.___tracking_tag
   }
   
@@ -101,7 +101,7 @@ extension UnsafeIndexV2: Equatable {
     // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
 
     //    lhs.rawValue == rhs.rawValue
-    lhs._trackingTag == rhs._trackingTag
+    lhs._rawTag == rhs._rawTag
   }
 }
 
@@ -309,16 +309,16 @@ extension UnsafeIndexV2 {
     internal static func unsafe(tree: UnsafeTreeV2<Base>, rawValue: _NodePtr) -> Self {
       .init(_unsafe_tree: tree, rawValue: rawValue, trackingTag: rawValue.pointee.___tracking_tag)
     }
-    internal static func unsafe(tree: UnsafeTreeV2<Base>, trackingTag: _RawTrackingTag) -> Self {
-      if trackingTag == .nullptr {
+    internal static func unsafe(tree: UnsafeTreeV2<Base>, rawTag: _RawTrackingTag) -> Self {
+      if rawTag == .nullptr {
         return .init(_unsafe_tree: tree, rawValue: tree.nullptr, trackingTag: .nullptr)
       }
-      if trackingTag == .end {
+      if rawTag == .end {
         return .init(_unsafe_tree: tree, rawValue: tree.end, trackingTag: .end)
       }
       return .init(
-        _unsafe_tree: tree, rawValue: tree._buffer.header[trackingTag],
-        trackingTag: tree._buffer.header[trackingTag].pointee.___tracking_tag)
+        _unsafe_tree: tree, rawValue: tree._buffer.header[rawTag],
+        trackingTag: tree._buffer.header[rawTag].pointee.___tracking_tag)
     }
   }
 #endif
@@ -402,7 +402,7 @@ extension UnsafeIndexV2 {
       // endはシングルトン的にしたい気持ちもある
       return tied === index.tied
         ? index.rawValue
-    : self[_raw: index._trackingTag]
+    : self[_raw: index._rawTag]
     #else
       self === index.__tree_ ? index.rawValue : (_header[index.___raw_index])
     #endif

@@ -866,13 +866,13 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = RedBlackTreeDictionary<Int, String>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, trackingTag: -1).trackingTag, -1)
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: .nullptr as Int)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: 0)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: 1)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: 2)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: 3)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: 4)))
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: -1).trackingTag, -1)
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
     #endif
   }
 
@@ -885,17 +885,17 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertTrue(set.isValid(index: set.endIndex))
     typealias Index = RedBlackTreeDictionary<Int, String>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, trackingTag: -1).trackingTag, -1)
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, trackingTag: 5).trackingTag, 5)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: -1).trackingTag, -1)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).trackingTag, 5)
 
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: .nullptr as Int)))
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: 0)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: 1)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: 2)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: 3)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: 4)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: 5)))
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, trackingTag: 6)))
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 5)))
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 6)))
     #endif
   }
 

@@ -9,8 +9,7 @@ public struct RedBlackTreeKeyOnlyRangeView<Base>: ___UnsafeMutableTreeBaseV2,
   ___UnsafeSubSequenceV2
 where
   Base: ___TreeBase & ___TreeIndex,
-  Base._Key == Base._PayloadValue,
-  Base._Key: Comparable
+  Base._Key == Base._PayloadValue
 {
   @usableFromInline
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _NodePtr, _end: _NodePtr) {
@@ -80,7 +79,7 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  subscript(raw trackingTag: _RawTrackingTag) -> Element? {
+  subscript(_raw trackingTag: _RawTrackingTag) -> Element? {
     let ptr = __tree_[_raw: trackingTag]
     guard !ptr.___is_null_or_end, !ptr.___is_garbaged else {
       fatalError(.invalidIndex)
@@ -248,18 +247,5 @@ extension RedBlackTreeKeyOnlyRangeView {
     let ___e = __tree_[ptr]
     _ = __tree_.erase(ptr)
     return ___e
-  }
-}
-
-extension RedBlackTreeKeyOnlyRangeView {
-
-  @inlinable
-  public func lowerBound(_ member: Element) -> RedBlackTreeTrackingTag {
-    .create(__tree_.lower_bound(member))
-  }
-
-  @inlinable
-  public func upperBound(_ member: Element) -> RedBlackTreeTrackingTag {
-    .create(__tree_.upper_bound(member))
   }
 }

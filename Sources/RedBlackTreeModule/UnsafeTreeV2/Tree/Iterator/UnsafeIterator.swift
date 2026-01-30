@@ -35,11 +35,11 @@ extension UnsafeIterator {
     TiedIndexing<Base, _RemoveTrait<_Reverse>>
 
   public
-    typealias ValueObverse<Base: ___TreeBase & ___TreeIndex> = Tied<
+    typealias ValueObverse<Base: ___TreeBase> = Tied<
       _Payload<Base, _RemoveTrait<_Obverse>>
     >
   public
-    typealias ValueReverse<Base: ___TreeBase & ___TreeIndex> = Tied<
+    typealias ValueReverse<Base: ___TreeBase> = Tied<
       _Payload<Base, _RemoveTrait<_Reverse>>
     >
 

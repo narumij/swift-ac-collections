@@ -19,17 +19,13 @@ extension UnsafeIterator {
 
   public struct Tied<Source: IteratorProtocol>:
     _UnsafeNodePtrType,
-    UnsafeIndexingProtocol,
     IteratorProtocol,
     Sequence
   where
     Source: UnsafeAssosiatedIterator,
-    Source.Base: ___TreeBase & ___TreeIndex
+    Source.Base: ___TreeBase
   {
     public typealias Base = Source.Base
-
-    @usableFromInline
-    typealias Index = UnsafeIndexV2<Base>
 
     @usableFromInline
     var tied: _TiedRawBuffer
@@ -102,7 +98,8 @@ extension UnsafeIterator.Tied: Comparable where Source: Equatable, Element: Comp
 
 extension UnsafeIterator.Tied
 where
-  Source.Source.Element == UnsafeMutablePointer<UnsafeNode>
+  Source.Source.Element == UnsafeMutablePointer<UnsafeNode>,
+  Base: ___TreeIndex
 {
 
   /// - Complexity: O(1)
@@ -124,6 +121,7 @@ where
 extension UnsafeIterator.Tied
 where
   Source.Base: KeyValueComparer,
+  Base: ___TreeIndex,
   Self: ReverseIterator
 {
   #if COMPATIBLE_ATCODER_2025
@@ -161,7 +159,7 @@ extension UnsafeIterator.Tied: ObverseIterator
 where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeAssosiatedIterator & Sequence,
-  Source.ReversedIterator.Base: ___TreeBase & ___TreeIndex
+  Source.ReversedIterator.Base: ___TreeBase
 {
   public func reversed() -> UnsafeIterator.Tied<Source.ReversedIterator> {
     .init(_source: source.reversed(), tie: tied)

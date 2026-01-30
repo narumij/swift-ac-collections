@@ -18,7 +18,7 @@
 extension UnsafeTreeV2 where Base: ___TreeIndex {
 
   public typealias Index = UnsafeIndexV2<Base>
-  public typealias Pointee = Base.Pointee
+  public typealias Pointee = Base.Element
 
   @inlinable
   @inline(__always)

@@ -29,18 +29,13 @@ public protocol ___Root {
 }
 
 @usableFromInline
-protocol ___UnsafeTreeBaseV2: ___Root, _UnsafeNodePtrType
+protocol ___UnsafeTreeBaseV2: ___Root, _BaseType, _ElementType
 where
   Base: ___TreeBase,
   Tree == UnsafeTreeV2<Base>,
   _Key == Base._Key,
   _PayloadValue == Base._PayloadValue
 {
-  associatedtype _Key
-  associatedtype _PayloadValue
-  
-  associatedtype Element
-
   var __tree_: Tree { get }
 }
 
@@ -50,13 +45,13 @@ protocol ___UnsafeMutableTreeBaseV2: ___UnsafeTreeBaseV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeRangeBaseV2: ___UnsafeTreeBaseV2 {
+protocol ___UnsafeRangeBaseV2: ___UnsafeTreeBaseV2, _UnsafeNodePtrType {
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
 
 @usableFromInline
-protocol ___UnsafeIndexBaseV2: ___UnsafeTreeBaseV2
+protocol ___UnsafeIndexBaseV2: ___UnsafeTreeBaseV2, _UnsafeNodePtrType
 where
   Base: ___TreeIndex,
   Index == UnsafeTreeV2<Base>.Index

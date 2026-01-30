@@ -66,3 +66,7 @@ extension _BaseKey_EquivProtocol where _Key: Equatable {
     lhs == rhs
   }
 }
+
+public protocol _Base_ElementInterface: _PayloadValueType, _ElementType {
+  static func __element_(_ __value: _PayloadValue) -> Element
+}

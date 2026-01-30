@@ -35,7 +35,7 @@ public protocol _NodePtrType {
   ///    ^_NodePtr
   /// ```
   associatedtype _NodePtr: Equatable
-  
+
   /// ノード参照ポインタ型
   ///
   /// _模式図_
@@ -122,6 +122,16 @@ public protocol _KeyValueBaseType: _BaseType & _MappedValueType {}
 /// DictionaryやMultiMapは積載型にRedBlackTreePairを用いる
 public protocol _PairBaseType: _KeyValueBaseType
 where _PayloadValue == RedBlackTreePair<_Key, _MappedValue> {}
+
+public protocol _ElementType {
+  associatedtype Element
+}
+
+public protocol _ScalarElementType: _ScalarBaseType, _ElementType
+where Element == _Key {}
+
+public protocol _KeyValueElementType: _KeyValueBaseType, _ElementType
+where Element == (key: _Key, value: _MappedValue) {}
 
 // MARK: - Aliases
 

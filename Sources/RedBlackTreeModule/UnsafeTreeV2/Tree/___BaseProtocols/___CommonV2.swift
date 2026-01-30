@@ -82,20 +82,3 @@ extension ___UnsafeCommonV2 {
     __tree_.isTriviallyIdentical(to: other.__tree_) && _start == other._start && _end == other._end
   }
 }
-
-extension ___UnsafeCommonV2 where Self: ___UnsafeIndexRangeBaseV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func _distance(from start: Index, to end: Index) -> Int {
-    __tree_.___distance(
-      from: __tree_._remap_to_ptr(start),
-      to: __tree_._remap_to_ptr(end))
-  }
-
-  @inlinable
-  @inline(__always)
-  internal var _indices: Indices {
-    .init(start: _start, end: _end, tie: __tree_.tied)
-  }
-}

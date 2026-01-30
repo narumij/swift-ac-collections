@@ -21,7 +21,18 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIndexV2: ___UnsafeIndexRangeBaseV2 {}
+protocol ___UnsafeIndexV2: ___UnsafeRangeBaseV2 & ___UnsafeIndexBaseV2 {}
+
+extension ___UnsafeIndexV2 {
+  
+  @inlinable
+  @inline(__always)
+  internal func _distance(from start: Index, to end: Index) -> Int {
+    __tree_.___distance(
+      from: __tree_._remap_to_ptr(start),
+      to: __tree_._remap_to_ptr(end))
+  }
+}
 
 extension ___UnsafeIndexV2 {
 
@@ -203,5 +214,14 @@ extension ___UnsafeIndexV2 {
   @discardableResult
   public mutating func ___erase(_ ptr: Index) -> Index {
     ___index(__tree_.erase(__tree_._remap_to_ptr(ptr)))
+  }
+}
+
+extension ___UnsafeIndexV2 where Self: ___UnsafeIndicesBaseV2 {
+
+  @inlinable
+  @inline(__always)
+  internal var _indices: Indices {
+    .init(start: _start, end: _end, tie: __tree_.tied)
   }
 }

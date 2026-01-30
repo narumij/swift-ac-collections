@@ -38,6 +38,7 @@ where
 {
   associatedtype _Key
   associatedtype _PayloadValue
+  
   associatedtype Element
 
   var __tree_: Tree { get }
@@ -58,11 +59,9 @@ protocol ___UnsafeRangeBaseV2: ___UnsafeTreeBaseV2 {
 protocol ___UnsafeIndexBaseV2: ___UnsafeTreeBaseV2
 where
   Base: ___TreeIndex,
-  Index == UnsafeTreeV2<Base>.Index,
-  Indices == UnsafeTreeV2<Base>.Indices
+  Index == UnsafeTreeV2<Base>.Index
 {
   associatedtype Index
-  associatedtype Indices
 }
 
 extension ___UnsafeIndexBaseV2 {
@@ -87,7 +86,20 @@ extension ___UnsafeIndexBaseV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeIndexRangeBaseV2: ___UnsafeRangeBaseV2 & ___UnsafeIndexBaseV2 {}
+protocol ___UnsafeIndicesBaseV2: ___UnsafeTreeBaseV2
+where
+  Base: ___TreeIndex,
+  Indices == UnsafeTreeV2<Base>.Indices
+{
+  associatedtype Indices
+}
+
+@usableFromInline
+protocol ___UnsafeIndexRangeBaseV2:
+  ___UnsafeRangeBaseV2
+    & ___UnsafeIndexBaseV2
+    & ___UnsafeIndicesBaseV2
+{}
 
 public typealias RedBlackTreeIndex = UnsafeIndexV2
 public typealias RedBlackTreeIndices = UnsafeIndexV2Collection
@@ -96,12 +108,18 @@ public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
 
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase:
-  ___UnsafeStorageProtocolV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
+  ___UnsafeStorageProtocolV2
+    & ___UnsafeCommonV2
+    & ___UnsafeIndexV2
+    & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyOnlySequenceV2
 {}
 
 @usableFromInline
 protocol _RedBlackTreeKeyValuesBase:
-  ___UnsafeStorageProtocolV2 & ___UnsafeCommonV2 & ___UnsafeIndexV2 & ___UnsafeBaseSequenceV2
+  ___UnsafeStorageProtocolV2
+    & ___UnsafeCommonV2
+    & ___UnsafeIndexV2
+    & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyValueSequenceV2
 {}

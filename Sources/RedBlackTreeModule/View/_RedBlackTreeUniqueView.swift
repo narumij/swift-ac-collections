@@ -59,8 +59,8 @@ extension _RedBlackTreeUniqueView {
 
   /// - Complexity: O(log `count`)
   @inlinable
-  public __consuming func findEqual(_ member: _Key) -> Index? {
-    ___first_index(of: member)
+  public __consuming func find(_ member: _Key) -> Index? {
+    ___index_or_nil(__tree_.find(member))
   }
 }
 

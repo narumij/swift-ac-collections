@@ -110,7 +110,7 @@ extension ___UnsafeIndexBaseV2 {
   @inlinable
   @inline(__always)
   internal func ___index_or_nil(_ p: _NodePtr?) -> Index? {
-    p.map { ___index($0) }
+    p.flatMap { ___index_or_nil($0) }
   }
 }
 

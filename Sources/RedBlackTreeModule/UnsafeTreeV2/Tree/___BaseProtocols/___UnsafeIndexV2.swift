@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIndexV2: ___UnsafeRangeBaseV2 & ___UnsafeIndexBaseV2 {}
+protocol ___UnsafeIndexV2: ___UnsafeRangeBaseV2 & ___UnsafeIndexBaseV2 & _PayloadValueBride {}
 
 extension ___UnsafeIndexV2 {
   

@@ -21,7 +21,11 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeBaseSequenceV2: ___UnsafeIndexRangeBaseV2 {
+protocol ___UnsafeBaseSequenceV2: ___UnsafeIndexRangeBaseV2, _PayloadValueType, _KeyType
+where
+  _PayloadValue == Base._PayloadValue,
+  _Key == Base._Key
+{
   func ___index_or_nil(_ p: _NodePtr) -> Index?
 }
 
@@ -73,4 +77,3 @@ extension ___UnsafeBaseSequenceV2 {
     return ___index_or_nil(ptr)
   }
 }
-

@@ -21,15 +21,11 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyValueSequenceV2: ___UnsafeIndexRangeBaseV2, ___TreeIndex, _PairBase_ElementProtocol
+protocol ___UnsafeKeyValueSequenceV2: ___UnsafeIndexRangeBaseV2, _PairBase_ElementProtocol,
+  _PayloadValueBride, _KeyBride, _MappedValueBride
 where
-  Base: KeyValueComparer,
-  Base._MappedValue == _MappedValue,
-  _PayloadValue == RedBlackTreePair<_Key, _MappedValue>,
-  Element == (key: _Key, value: _MappedValue)
-{
-  associatedtype _MappedValue
-}
+  Base: KeyValueComparer
+{}
 
 extension ___UnsafeKeyValueSequenceV2 {
 

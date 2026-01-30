@@ -15,8 +15,3 @@
 //
 //===----------------------------------------------------------------------===//
 
-public typealias _Tree_IsMultiTraitProtocol = _Base_IsMultiTraitInterface
-
-#if COMPATIBLE_ATCODER_2025
-public typealias CompareTrait = _Base_IsMultiTraitInterface
-#endif

@@ -20,23 +20,57 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-public typealias ___TreeBase = ValueComparer & _Tree_IsMultiTraitProtocol
+#if COMPATIBLE_ATCODER_2025
+public typealias CompareTrait = _Base_IsMultiTraitInterface
+#endif
+
+public typealias ___TreeBase = ValueComparer & _Base_IsMultiTraitInterface
 public typealias ___TreeIndex = _BasePaylodValue_ElementInterface
 
 // コレクション実装の基点
 public protocol ___Root {
+  /// 木の基本情報
   associatedtype Base
+  /// 木
   associatedtype Tree
 }
 
+public protocol __BaseHosting: ___Root
+where Base == Self {}
+
+public protocol _KeyBride: ___Root, _KeyType
+where
+  Base: _KeyType,
+  _Key == Base._Key
+{}
+
+public protocol _PayloadValueBride: ___Root, _PayloadValueType
+where
+  Base: _PayloadValueType,
+  _PayloadValue == Base._PayloadValue
+{}
+
+public protocol _MappedValueBride: ___Root, _MappedValueType
+where
+  Base: _MappedValueType,
+  _MappedValue == Base._MappedValue
+{}
+
+public protocol _ElementBride: ___Root, _ElementType
+where
+  Base: _ElementType,
+  Element == Base.Element
+{}
+
 @usableFromInline
-protocol ___UnsafeTreeBaseV2: ___Root, _BaseType, _ElementType
+package protocol UnsafeTreeProtocol: ___Root, _UnsafeNodePtrType
 where
   Base: ___TreeBase,
-  Tree == UnsafeTreeV2<Base>,
-  _Key == Base._Key,
-  _PayloadValue == Base._PayloadValue
-{
+  Tree == UnsafeTreeV2<Base>
+{}
+
+@usableFromInline
+protocol ___UnsafeTreeBaseV2: UnsafeTreeProtocol {
   var __tree_: Tree { get }
 }
 
@@ -46,7 +80,7 @@ protocol ___UnsafeMutableTreeBaseV2: ___UnsafeTreeBaseV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeRangeBaseV2: ___UnsafeTreeBaseV2, _UnsafeNodePtrType {
+protocol ___UnsafeRangeBaseV2: ___UnsafeTreeBaseV2, _UnsafeNodePtrType, _PayloadValueBride {
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }

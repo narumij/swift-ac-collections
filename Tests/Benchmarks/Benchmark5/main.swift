@@ -62,6 +62,7 @@ for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
 }
 #endif
 
+#if false
 reset()
 for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
   let ii = (0..<count).shuffled(using: &mt)
@@ -105,6 +106,7 @@ for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
     }
   }
 }
+#endif
 
 reset()
 for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128, 1024 * 1024] {
@@ -196,6 +198,30 @@ for count in [1000000] {
   var fixture = Deque<Int>(0..<count)
   benchmark("Deque popMin \(count)") {
     let _ = fixture.popFirst()
+  }
+}
+
+reset()
+for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
+  let fixture = Fixture<Int>((0..<count).shuffled(using: &mt))
+  benchmark("RBT sorted() \(count)") {
+    _ = fixture.sorted()
+  }
+}
+
+reset()
+for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
+  let fixture = Array<Int>((0..<count).shuffled(using: &mt))
+  benchmark("Array sorted() \(count)") {
+    _ = fixture.sorted()
+  }
+}
+
+reset()
+for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
+  let fixture = Heap<Int>((0..<count).shuffled(using: &mt))
+  benchmark("Heap sorted() \(count)") {
+    _ = fixture.unordered.sorted()
   }
 }
 

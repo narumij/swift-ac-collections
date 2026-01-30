@@ -17,6 +17,13 @@
 
 import Foundation
 
+// このポインタを保持している構造体は性能面でやはり必要
+// 必要ではあるがIndexと言い張るのはキメラ的すぎてよろしくない
+// なにか別の名前と概念を割り当てる。
+// 本体コレクションのインデックス操作APIは廃止の方向
+
+// 補助的にTrackingTagは提供する
+
 /// 赤黒木のノードへのインデックス
 ///
 /// C++の双方向イテレータに近い内容となっている
@@ -31,8 +38,13 @@ where Base: ___TreeBase & ___TreeIndex {
   typealias _PayloadValue = Tree._PayloadValue
 
   @usableFromInline
-  internal var trackingTag: _RawTrackingTag {
+  internal var _trackingTag: _RawTrackingTag {
     rawValue.pointee.___tracking_tag
+  }
+  
+  @usableFromInline
+  internal var trackingTag: RedBlackTreeTrackingTag {
+    .create(rawValue.pointee.___tracking_tag)
   }
 
   @usableFromInline
@@ -89,7 +101,7 @@ extension UnsafeIndexV2: Equatable {
     // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
 
     //    lhs.rawValue == rhs.rawValue
-    lhs.trackingTag == rhs.trackingTag
+    lhs._trackingTag == rhs._trackingTag
   }
 }
 
@@ -367,7 +379,7 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  package subscript(_ p: _RawTrackingTag) -> _NodePtr {
+  package subscript(_raw p: _RawTrackingTag) -> _NodePtr {
     switch p {
     case .nullptr:
       return .nullptr
@@ -390,7 +402,7 @@ extension UnsafeIndexV2 {
       // endはシングルトン的にしたい気持ちもある
       return tied === index.tied
         ? index.rawValue
-        : self[index.trackingTag]
+    : self[_raw: index._trackingTag]
     #else
       self === index.__tree_ ? index.rawValue : (_header[index.___raw_index])
     #endif

@@ -60,7 +60,7 @@ extension Optional where Wrapped == TrackingTag_ {
 
   @usableFromInline
   static func create(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Self {
-    (t?.trackingTag).flatMap { TrackingTag_(rawValue: $0) }
+    t.flatMap { TrackingTag_(rawValue: $0.trackingTag) }
   }
   
   @inlinable @inline(__always)

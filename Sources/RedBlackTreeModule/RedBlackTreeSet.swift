@@ -616,7 +616,7 @@ extension RedBlackTreeSet {
     @inlinable
     @inline(__always)
     public func sorted() -> [Element] {
-      _sorted()
+      __tree_.___copy_all_to_array()
     }
   #endif
 

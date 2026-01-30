@@ -86,6 +86,41 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal func
+    ___copy_all_to_array() -> [_PayloadValue]
+  {
+    return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      initializedCount = count
+      var buffer = buffer.baseAddress!
+      var __first = __begin_node_
+      let __last = __end_node
+      while __first != __last {
+        buffer.initialize(to: self[__first])
+        buffer = buffer + 1
+        __first = __tree_next_iter(__first)
+      }
+    }
+  }
+  
+  @inlinable
+  internal func
+    ___copy_all_to_array<T>(transform: (_PayloadValue) -> T)
+    -> [T]
+  {
+    return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      initializedCount = count
+      var buffer = buffer.baseAddress!
+      var __first = __begin_node_
+      let __last = __end_node
+      while __first != __last {
+        buffer.initialize(to: transform(self[__first]))
+        buffer = buffer + 1
+        __first = __tree_next_iter(__first)
+      }
+    }
+  }
+
+  @inlinable
+  internal func
     ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
   {
     let count = __distance(__first, __last)

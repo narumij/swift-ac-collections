@@ -22,8 +22,11 @@ public enum RedBlackTreeSliceV2<Base> {}
 extension RedBlackTreeSliceV2 {
 
   @frozen
-  public struct KeyOnly: ___UnsafeCommonV2 & ___UnsafeSubSequenceV2
-      & ___UnsafeIndexV2 & ___UnsafeKeyOnlySequenceV2
+  public struct KeyOnly:
+    ___UnsafeCommonV2
+      & ___UnsafeSubSequenceV2
+      & ___UnsafeIndexV2
+      & ___UnsafeKeyOnlySequenceV2
   where
     Base: ___TreeBase & ___TreeIndex,
     Base._Key == Base._PayloadValue,

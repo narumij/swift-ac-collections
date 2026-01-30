@@ -43,9 +43,10 @@ extension ___UnsafeKeyValueSequenceV2 {
 
 extension ___UnsafeKeyValueSequenceV2 {
 
+  // TODO: リファクタリング検討
   @inlinable
   @inline(__always)
-  internal func ___element(_ __value: _PayloadValue) -> Element {
+  internal func __element_(_ __value: _PayloadValue) -> Element {
     Self.__element_(__value)
   }
 }
@@ -55,13 +56,13 @@ extension ___UnsafeKeyValueSequenceV2 where Self: ___UnsafeCommonV2 {
   @inlinable
   @inline(__always)
   internal var ___first: Element? {
-    ___first.map(___element)
+    ___first.map(__element_)
   }
 
   @inlinable
   @inline(__always)
   internal var ___last: Element? {
-    ___last.map(___element)
+    ___last.map(__element_)
   }
 }
 
@@ -69,13 +70,13 @@ extension ___UnsafeKeyValueSequenceV2 where Self: ___UnsafeBaseSequenceV2 {
 
   @inlinable
   internal func ___min() -> Element? {
-    ___min().map(___element)
+    ___min().map(__element_)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   internal func ___max() -> Element? {
-    ___max().map(___element)
+    ___max().map(__element_)
   }
 }
 
@@ -83,13 +84,13 @@ extension ___UnsafeKeyValueSequenceV2 where Self: ___UnsafeIndexV2 {
 
   @inlinable
   internal func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___first { try predicate(___element($0)) }.map(___element)
+    try ___first { try predicate(__element_($0)) }.map(__element_)
   }
 
   /// - Complexity: O(*n*)
   @inlinable
   internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index { try predicate(___element($0)) }
+    try ___first_index { try predicate(__element_($0)) }
   }
 }
 
@@ -181,7 +182,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   internal subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
     @inline(__always) get {
       __tree_.___ensureValid(subscript: __tree_._remap_to_ptr(position))
-      return ___element(__tree_[__tree_._remap_to_ptr(position)])
+      return __element_(__tree_[__tree_._remap_to_ptr(position)])
     }
   }
 }

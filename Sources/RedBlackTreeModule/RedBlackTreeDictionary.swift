@@ -388,7 +388,7 @@ extension RedBlackTreeDictionary {
   ) {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(Self.___tree_value(newMember))
-    return (__inserted, __inserted ? newMember : ___element(__tree_[__r]))
+    return (__inserted, __inserted ? newMember : __element_(__tree_[__r]))
   }
 }
 
@@ -555,7 +555,7 @@ extension RedBlackTreeDictionary {
     guard let (_, element) = ___remove(at: __tree_._remap_to_ptr(index)) else {
       fatalError(.invalidIndex)
     }
-    return ___element(element)
+    return __element_(element)
   }
 
   #if COMPATIBLE_ATCODER_2025
@@ -694,7 +694,7 @@ extension RedBlackTreeDictionary {
   ) rethrows -> Self {
     .init(
       __tree_: try __tree_.___filter(_start, _end) {
-        try isIncluded(___element($0))
+        try isIncluded(__element_($0))
       })
   }
 }

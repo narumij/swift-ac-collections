@@ -19,8 +19,11 @@ import Foundation
 
 extension RedBlackTreeSliceV2 {
 
-  public struct KeyValue: ___UnsafeCommonV2 & ___UnsafeSubSequenceV2
-      & ___UnsafeIndexV2 & ___UnsafeKeyValueSequenceV2
+  public struct KeyValue:
+    ___UnsafeCommonV2
+      & ___UnsafeSubSequenceV2
+      & ___UnsafeIndexV2
+      & ___UnsafeKeyValueSequenceV2
   where
     Base: ___TreeBase & ___TreeIndex & KeyValueComparer,
     Base._PayloadValue == RedBlackTreePair<Base._Key, Base._MappedValue>
@@ -103,14 +106,14 @@ extension RedBlackTreeSliceV2.KeyValue {
     @inline(__always)
     public var first: Element? {
       guard !___is_empty else { return nil }
-      return ___element(__tree_[_start])
+      return __element_(__tree_[_start])
     }
 
     @inlinable
     @inline(__always)
     public var last: Element? {
       guard !___is_empty else { return nil }
-      return ___element(__tree_[__tree_prev_iter(_end)])
+      return __element_(__tree_[__tree_prev_iter(_end)])
     }
 
     /// - Complexity: O(log *n*)

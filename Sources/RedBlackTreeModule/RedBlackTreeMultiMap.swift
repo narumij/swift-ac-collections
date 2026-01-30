@@ -283,7 +283,7 @@ extension RedBlackTreeMultiMap {
     __tree_.ensureUnique()
     let old = __tree_[__tree_._remap_to_ptr(ptr)]
     __tree_[__tree_._remap_to_ptr(ptr)].value = newValue
-    return ___element(old)
+    return __element_(old)
   }
 }
 
@@ -472,7 +472,7 @@ extension RedBlackTreeMultiMap {
     guard let (_, element) = ___remove(at: __tree_._remap_to_ptr(index)) else {
       fatalError(.invalidIndex)
     }
-    return ___element(element)
+    return __element_(element)
   }
 
 #if COMPATIBLE_ATCODER_2025
@@ -611,7 +611,7 @@ extension RedBlackTreeMultiMap {
   ) rethrows -> Self {
     .init(
       __tree_: try __tree_.___filter(_start, _end) {
-        try isIncluded(___element($0))
+        try isIncluded(__element_($0))
       }
     )
   }

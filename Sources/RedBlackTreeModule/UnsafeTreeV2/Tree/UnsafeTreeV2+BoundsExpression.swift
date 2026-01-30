@@ -42,22 +42,17 @@ extension RedBlackTreeBound {
     case .find(let __v):
       return __tree_.find(__v)
 
-    case .advanced(let __self, by: let offset):
+    case .advanced(let __self, by: let offset, limit: let __limit):
       let __p = __self.relative(to: __tree_)
-      // 初期状態でnullが来る可能性はほぼないが、念のためにfatal
       guard !__p.___is_null else {
         fatalError(.invalidIndex)
       }
+      if let __limit {
+        let __l = __limit.relative(to: __tree_)
+        return ___tree_adv_iter(__p, offset, __l)
+      }
+      // 初期状態でnullが来る可能性はほぼないが、念のためにfatal
       return ___tree_adv_iter(__p, offset)
-
-    case .limitedAdvanced(let __self, by: let offset, limit: let __limit):
-      let __p = __self.relative(to: __tree_)
-      let __l = __limit.relative(to: __tree_)
-      // 初期状態でnullが来る可能性はほぼないが、念のためにfatal
-      guard !__p.___is_null else {
-        fatalError(.invalidIndex)
-      }
-      return ___tree_adv_iter(__p, offset, __l)
 
     case .prev(let __self):
       return
@@ -105,7 +100,8 @@ extension RedBlackTreeBoundsExpression {
       return .partialRangeFrom(lhs.relative(to: __tree_))
 
     case .equalRange(let __v):
-      let (lower,upper) = __tree_.isMulti ? __tree_.__equal_range_multi(__v) : __tree_.__equal_range_unique(__v)
+      let (lower, upper) =
+        __tree_.isMulti ? __tree_.__equal_range_multi(__v) : __tree_.__equal_range_unique(__v)
       return .range(from: lower, to: upper)
     }
   }

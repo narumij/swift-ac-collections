@@ -22,8 +22,7 @@ public indirect enum RedBlackTreeBound<_Key> {
   case upper(_Key)
   case find(_Key)
   case end
-  case advanced(Self, by: Int)
-  case limitedAdvanced(Self, by: Int, limit: Self)
+  case advanced(Self, by: Int, limit: Self? = nil)
   case prev(Self)
   case next(Self)
 }
@@ -31,11 +30,8 @@ public indirect enum RedBlackTreeBound<_Key> {
 extension RedBlackTreeBound {
   public var next: Self { .next(self) }
   public var previous: Self { .prev(self) }
-  public func advanced(by offset: Int) -> Self {
-    .advanced(self, by: offset)
-  }
-  public func advanced(by offset: Int, limit: Self) -> Self {
-    .limitedAdvanced(self, by: offset, limit: limit)
+  public func advanced(by offset: Int, limit: Self? = nil) -> Self {
+    .advanced(self, by: offset, limit: limit)
   }
 }
 

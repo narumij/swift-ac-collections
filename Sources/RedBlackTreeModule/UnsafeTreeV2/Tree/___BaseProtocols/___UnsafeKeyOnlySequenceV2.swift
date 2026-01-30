@@ -129,15 +129,3 @@ extension ___UnsafeKeyOnlySequenceV2 {
     try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
   }
 }
-
-//extension ___UnsafeKeyOnlySequenceV2 {
-//
-//  @inlinable
-//  @inline(__always)
-//  public mutating func ___element(at ptr: _NodePtr) -> _PayloadValue? {
-//    guard !__tree_.___is_subscript_null(ptr) else {
-//      return nil
-//    }
-//    return __tree_[ptr]
-//  }
-//}

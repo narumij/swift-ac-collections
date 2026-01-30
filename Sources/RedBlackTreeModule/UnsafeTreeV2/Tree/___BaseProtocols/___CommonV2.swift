@@ -23,21 +23,7 @@
 @usableFromInline
 protocol ___UnsafeCommonV2: UnsafeTreeRangeProtocol, _PayloadValueBride, _KeyBride {}
 
-extension ___UnsafeCommonV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func ___is_valid(_ index: _NodePtr) -> Bool {
-    !__tree_.___is_subscript_null(index)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___is_valid_range(_ p: _NodePtr, _ l: _NodePtr) -> Bool {
-    !__tree_.___is_range_null(p, l)
-  }
-}
-
+#if DEBUG
 extension ___UnsafeCommonV2 {
 
   @inlinable
@@ -52,3 +38,4 @@ extension ___UnsafeCommonV2 {
     { __tree_.value_comp(Base.__key($0), Base.__key($1)) }
   }
 }
+#endif

@@ -204,16 +204,3 @@ extension ___UnsafeKeyValueSequenceV2 {
     return .init(tree: __tree_, start: lower, end: upper)
   }
 }
-
-extension ___UnsafeKeyValueSequenceV2 {
-
-  // あえてElementを返していない
-  @inlinable
-  @inline(__always)
-  public mutating func ___element(at ptr: _NodePtr) -> _PayloadValue? {
-    guard !__tree_.___is_subscript_null(ptr) else {
-      return nil
-    }
-    return __tree_[ptr]
-  }
-}

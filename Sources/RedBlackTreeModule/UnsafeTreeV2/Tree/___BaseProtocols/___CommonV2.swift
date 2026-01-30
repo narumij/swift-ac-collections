@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeCommonV2: ___UnsafeIndexRangeBaseV2 {}
+protocol ___UnsafeCommonV2: ___UnsafeRangeBaseV2 {}
 
 extension ___UnsafeCommonV2 {
 
@@ -41,17 +41,6 @@ extension ___UnsafeCommonV2 {
   @inline(__always)
   internal var ___last: _PayloadValue? {
     ___is_empty ? nil : __tree_[__tree_.__tree_prev_iter(_end)]
-  }
-}
-
-extension ___UnsafeCommonV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func _distance(from start: Index, to end: Index) -> Int {
-    __tree_.___distance(
-      from: __tree_._remap_to_ptr(start),
-      to: __tree_._remap_to_ptr(end))
   }
 }
 
@@ -94,7 +83,15 @@ extension ___UnsafeCommonV2 {
   }
 }
 
-extension ___UnsafeCommonV2 {
+extension ___UnsafeCommonV2 where Self: ___UnsafeIndexRangeBaseV2 {
+
+  @inlinable
+  @inline(__always)
+  internal func _distance(from start: Index, to end: Index) -> Int {
+    __tree_.___distance(
+      from: __tree_._remap_to_ptr(start),
+      to: __tree_._remap_to_ptr(end))
+  }
 
   @inlinable
   @inline(__always)

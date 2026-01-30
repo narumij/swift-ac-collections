@@ -8,7 +8,7 @@
 public struct RedBlackTreeKeyOnlyRangeView<Base>: ___UnsafeMutableTreeBaseV2,
   ___UnsafeSubSequenceV2
 where
-  Base: ___TreeBase & ___TreeIndex,
+  Base: ___TreeBase,
   Base._Key == Base._PayloadValue
 {
   @usableFromInline

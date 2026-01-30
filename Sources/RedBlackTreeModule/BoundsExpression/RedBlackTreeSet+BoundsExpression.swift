@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet: ___UnsafeMutableTreeBaseV2 {}
+  extension RedBlackTreeSet: UnsafeMutableTreeHost {}
 
   extension RedBlackTreeSet {
 

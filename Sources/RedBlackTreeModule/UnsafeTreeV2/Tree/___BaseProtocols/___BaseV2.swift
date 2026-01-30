@@ -70,8 +70,9 @@ where
   Element == Base.Element
 {}
 
+/// 木にどれを使うのかしっている
 @usableFromInline
-package protocol UnsafeTreeProtocol:
+package protocol UnsafeTreeBinding:
   ___Root
     & _UnsafeNodePtrType
 where
@@ -79,19 +80,22 @@ where
   Tree == UnsafeTreeV2<Base>
 {}
 
+/// 生木の共通の持ち方
 @usableFromInline
-protocol ___UnsafeTreeBaseV2: UnsafeTreeProtocol {
+protocol UnsafeTreeHost: UnsafeTreeBinding {
   var __tree_: Tree { get }
 }
 
+/// 変更可能生木の共通の持ち方
 @usableFromInline
-protocol ___UnsafeMutableTreeBaseV2: ___UnsafeTreeBaseV2 {
+protocol UnsafeMutableTreeHost: UnsafeTreeHost {
   var __tree_: Tree { get set }
 }
 
+/// 区間指定付き生木の持ち方
 @usableFromInline
-protocol ___UnsafeRangeBaseV2:
-  ___UnsafeTreeBaseV2
+protocol UnsafeTreeRangeInterface:
+  UnsafeTreeHost
     & _UnsafeNodePtrType
     & _PayloadValueBride
 {
@@ -101,7 +105,7 @@ protocol ___UnsafeRangeBaseV2:
 
 @usableFromInline
 protocol ___UnsafeIndexBaseV2:
-  ___UnsafeTreeBaseV2
+  UnsafeTreeHost
     & _UnsafeNodePtrType
 where
   Base: ___TreeIndex,
@@ -132,7 +136,7 @@ extension ___UnsafeIndexBaseV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeIndicesBaseV2: ___UnsafeTreeBaseV2
+protocol ___UnsafeIndicesBaseV2: UnsafeTreeHost
 where
   Base: ___TreeIndex,
   Indices == UnsafeTreeV2<Base>.Indices
@@ -142,7 +146,7 @@ where
 
 @usableFromInline
 protocol ___UnsafeIndexRangeBaseV2:
-  ___UnsafeRangeBaseV2
+  UnsafeTreeRangeInterface
     & ___UnsafeIndexBaseV2
     & ___UnsafeIndicesBaseV2
 {}

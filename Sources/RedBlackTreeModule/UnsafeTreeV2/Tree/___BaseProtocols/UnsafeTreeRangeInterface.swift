@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/29.
 //
 
-extension ___UnsafeRangeBaseV2 {
+extension UnsafeTreeRangeInterface {
   
   @inlinable
   @inline(__always)

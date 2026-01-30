@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/29.
 //
 
-public struct RedBlackTreeKeyOnlyRangeView<Base>: ___UnsafeMutableTreeBaseV2,
+public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost,
   ___UnsafeSubSequenceV2
 where
   Base: ___TreeBase,

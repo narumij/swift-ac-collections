@@ -32,7 +32,7 @@ import Foundation
   }
 
 #if true
-  extension ___UnsafeTreeBaseV2 {
+  extension UnsafeTreeHost {
 
     /// グラフビズオブジェクトを生成します
     ///

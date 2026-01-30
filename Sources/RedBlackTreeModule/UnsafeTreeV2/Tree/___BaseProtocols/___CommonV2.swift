@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeCommonV2: ___UnsafeRangeBaseV2, _PayloadValueBride, _KeyBride {}
+protocol ___UnsafeCommonV2: UnsafeTreeRangeInterface, _PayloadValueBride, _KeyBride {}
 
 extension ___UnsafeCommonV2 {
 

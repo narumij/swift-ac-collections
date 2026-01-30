@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIsIdenticalToV2: UnsafeTreeProtocol {
+protocol ___UnsafeIsIdenticalToV2: UnsafeTreeBinding {
   var __tree_: Tree { get }
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }

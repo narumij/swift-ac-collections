@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 @frozen
-public struct UnsafeIndexV2RangeExpression<Base>: UnsafeTreeProtocol,
+public struct UnsafeIndexV2RangeExpression<Base>: UnsafeTreeBinding,
   UnsafeIndexingProtocol
 where Base: ___TreeBase & ___TreeIndex {
 

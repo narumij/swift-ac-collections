@@ -20,8 +20,8 @@
     
     public mutating func remove(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       __tree_.ensureUnique()
-      let p = bound._relative(to: __tree_)
-      guard !p.___is_null_or_end else { return nil }
+      let p = bound.relative(to: __tree_)
+      guard let p = try? p.get(), !p.___is_null_or_end else { return nil }
       guard let (_, element) = ___remove(at: p) else {
         fatalError(.invalidIndex)
       }
@@ -31,7 +31,7 @@
     // MARK: -
 
     public subscript(bounds: RedBlackTreeBoundRangeExpression<Element>) -> SubSequence {
-      let (lower, upper) = bounds._relative(to: __tree_)
+      let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
@@ -39,14 +39,14 @@
     }
 
     public subscript(unchecked bounds: RedBlackTreeBoundRangeExpression<Element>) -> SubSequence {
-      let (lower, upper) = bounds._relative(to: __tree_)
+      let (lower, upper) = bounds.relative(to: __tree_)
       return .init(tree: __tree_, start: lower, end: upper)
     }
 
     public func indices(bounds: RedBlackTreeBoundRangeExpression<Element>)
       -> UnsafeIndexV2Collection<Self>
     {
-      let (lower, upper) = bounds._relative(to: __tree_)
+      let (lower, upper) = bounds.relative(to: __tree_)
       guard lower == upper || __tree_.___ptr_comp(lower, upper) else {
         fatalError(.invalidIndex)
       }
@@ -55,7 +55,7 @@
     
     public mutating func removeBounds(_ bounds: RedBlackTreeBoundRangeExpression<Element>) {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds._relative(to: __tree_)
+      let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
@@ -64,7 +64,7 @@
 
     public mutating func removeBounds(unchecked bounds: RedBlackTreeBoundRangeExpression<Element>) {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds._relative(to: __tree_)
+      let (lower, upper) = bounds.relative(to: __tree_)
       __tree_.___checking_erase(lower, upper)
     }
 
@@ -73,7 +73,7 @@
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds._relative(to: __tree_)
+      let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
@@ -85,7 +85,7 @@
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds._relative(to: __tree_)
+      let (lower, upper) = bounds.relative(to: __tree_)
       try __tree_.___checking_erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
   }

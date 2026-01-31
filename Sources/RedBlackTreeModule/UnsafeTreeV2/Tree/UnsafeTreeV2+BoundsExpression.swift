@@ -109,7 +109,7 @@ extension RedBlackTreeBoundRangeExpression {
   }
 
   @usableFromInline
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> (
       Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>,
       Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
@@ -121,59 +121,9 @@ extension RedBlackTreeBoundRangeExpression {
     relative(to: __tree_)
       .relative(to: __tree_)
   }
-}
 
-extension RedBlackTreeBoundExpression {
-
-  @inlinable @inline(__always)
-  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> UnsafeMutablePointer<UnsafeNode>
-  where
-    Base: ___TreeBase,
-    Base._Key == _Key
-  {
-    try! relative(to: __tree_).get()
-  }
-}
-
-extension RedBlackTreeBoundRangeExpression {
-
-  @inlinable @inline(__always)
-  func ___relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> UnsafeTreeRangeExpression
-  where
-    Base: ___TreeBase,
-    Base._Key == _Key
-  {
-    switch self {
-
-    case .range(let lhs, let rhs):
-      return .range(
-        from: lhs._relative(to: __tree_),
-        to: rhs._relative(to: __tree_))
-
-    case .closedRange(let lhs, let rhs):
-      return .closedRange(
-        from: lhs._relative(to: __tree_),
-        through: rhs._relative(to: __tree_))
-
-    case .partialRangeTo(let rhs):
-      return .partialRangeTo(rhs._relative(to: __tree_))
-
-    case .partialRangeThrough(let rhs):
-      return .partialRangeThrough(rhs._relative(to: __tree_))
-
-    case .partialRangeFrom(let lhs):
-      return .partialRangeFrom(lhs._relative(to: __tree_))
-
-    case .equalRange(let __v):
-      let (lower, upper) =
-        __tree_.isMulti ? __tree_.__equal_range_multi(__v) : __tree_.__equal_range_unique(__v)
-      return .range(from: lower, to: upper)
-    }
-  }
-
-  @inlinable @inline(__always)
-  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+  @usableFromInline
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> (
       UnsafeMutablePointer<UnsafeNode>,
       UnsafeMutablePointer<UnsafeNode>
@@ -182,7 +132,46 @@ extension RedBlackTreeBoundRangeExpression {
     Base: ___TreeBase,
     Base._Key == _Key
   {
-    ___relative(to: __tree_)
-      ._relative(to: __tree_)
+    unwrapLowerUpper(
+      relative(to: __tree_)
+        .relative(to: __tree_))
+      ?? (__tree_.__end_node, __tree_.__end_node)
+  }
+
+  @inlinable @inline(__always)
+  func unwrapLowerUpperOrFatal(
+    _ bounds: (
+      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>,
+      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
+    )
+  ) -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>) {
+    switch bounds {
+    case (.success(let l), .success(let u)):
+      return (l, u)
+
+    case (.failure(let e), .success):
+      fatalError("lower failed: \(e)")
+
+    case (.success, .failure(let e)):
+      fatalError("upper failed: \(e)")
+
+    case (.failure(let le), .failure(let ue)):
+      fatalError("both failed: lower=\(le), upper=\(ue)")
+    }
+  }
+
+  @inlinable @inline(__always)
+  func unwrapLowerUpper(
+    _ bounds: (
+      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>,
+      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
+    )
+  ) -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)? {
+    switch bounds {
+    case (.success(let l), .success(let u)):
+      return (l, u)
+    default:
+      return nil
+    }
   }
 }

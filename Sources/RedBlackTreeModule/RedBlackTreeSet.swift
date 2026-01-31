@@ -424,14 +424,7 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
     __tree_.ensureUnique()
-    //    return __tree_.___erase_unique(member) ? member : nil
     return __tree_.update { $0.___erase_unique(member) } ? member : nil
-    //    return __tree_.update { $0.___erase_unique_(member) } ? member : nil
-    //    let result = switch __tree_.specializeMode {
-    //    case .asInt: __tree_._i_update { $0.___erase_unique(member as! Int) }
-    //    case .generic: __tree_.update { $0.___erase_unique(member) }
-    //    }
-    //    return result ? member : nil
   }
 
   /// - Important: 削除後は、インデックスが無効になります。
@@ -440,7 +433,7 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
-    guard let (_, element) = ___remove(at: __tree_._remap_to_ptr(index)) else {
+    guard let (_, element) = ___remove(at: try! __tree_._remap_to_safe_ptr(index).get()) else {
       fatalError(.invalidIndex)
     }
     return element

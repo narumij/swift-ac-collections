@@ -154,6 +154,31 @@ extension UnsafeTreeV2 {
       return _buffer.header[tag]
     }
   }
+  
+  public typealias SafePtr = Result<_NodePtr, BoundRelativeError>
+
+  @inlinable
+  @inline(__always)
+  package subscript(tag: _RawTrackingTag) -> SafePtr {
+    switch tag {
+    case .nullptr:
+      return .failure(.null)
+    case .end:
+      return .success(end)
+    default:
+      guard tag < capacity else {
+        return .failure(.unknown)
+      }
+      let p = _buffer.header[tag]
+      return p.___is_garbaged ? .failure(.garbaged) : .success(p)
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  package subscript(tag: RedBlackTreeTrackingTag) -> SafePtr {
+    tag.map { self[$0.rawValue] } ?? .failure(.null)
+  }
 }
 
 extension UnsafeTreeV2 {
@@ -162,10 +187,27 @@ extension UnsafeTreeV2 {
   ///
   /// 木が同一の場合、インデックスが保持するポインタを返す。
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
+  @available(*, deprecated, renamed: "_remap_to_safe_ptr")
   @inlinable
   @inline(__always)
   internal func _remap_to_ptr(_ index: Index) -> _NodePtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
     tied === index.tied ? index.rawValue : self[_raw: index._rawTag]
+  }
+  
+  @inlinable
+  @inline(__always)
+  internal func _remap_to_safe_ptr(_ index: Index) -> SafePtr
+  where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
+    if tied === index.tied {
+      if index.rawValue.___is_null {
+        return .failure(.null)
+      } else if index.rawValue.___is_garbaged {
+        return .failure(.garbaged)
+      } else {
+        return .success(index.rawValue)
+      }
+    }
+    return self[index._rawTag]
   }
 }

@@ -15,18 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-public enum BoundRelativeError: Error {
-  /// nullptrに到達した
-  ///
-  /// 平衡木の下限を超えた操作を行ったことを表す
-  case lowerOutOfBounds
-
-  /// endを越えようとした
-  ///
-  /// 平衡木の上限を超えた操作を行ったことを表す
-  case upperOutOfBounds
-}
-
 @frozen
 public indirect enum RedBlackTreeBoundExpression<_Key> {
   case start

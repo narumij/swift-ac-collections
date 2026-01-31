@@ -29,8 +29,8 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   internal func _distance(from start: Index, to end: Index) -> Int {
     __tree_.___distance(
-      from: __tree_._remap_to_ptr(start),
-      to: __tree_._remap_to_ptr(end))
+      from: try! __tree_._remap_to_safe_ptr(start).get(),
+      to: try! __tree_._remap_to_safe_ptr(end).get())
   }
 }
 
@@ -51,7 +51,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(after i: Index) -> Index {
-    ___index(__tree_.___index(after: __tree_._remap_to_ptr(i)))
+    ___index(__tree_.___index(after: try! __tree_._remap_to_safe_ptr(i).get()))
   }
 
   @inlinable
@@ -63,7 +63,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(before i: Index) -> Index {
-    ___index(__tree_.___index(before: __tree_._remap_to_ptr(i)))
+    ___index(__tree_.___index(before: try! __tree_._remap_to_safe_ptr(i).get()))
   }
 
   @inlinable
@@ -75,7 +75,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(__tree_.___index(__tree_._remap_to_ptr(i), offsetBy: distance))
+    ___index(__tree_.___index(try! __tree_._remap_to_safe_ptr(i).get(), offsetBy: distance))
   }
 
   @inlinable
@@ -88,7 +88,7 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index_or_nil(
-      __tree_.___index(__tree_._remap_to_ptr(i), offsetBy: distance, limitedBy: __tree_._remap_to_ptr(limit)))
+      __tree_.___index(try! __tree_._remap_to_safe_ptr(i).get(), offsetBy: distance, limitedBy: try! __tree_._remap_to_safe_ptr(limit).get()))
   }
 
   @inlinable
@@ -213,7 +213,7 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   @discardableResult
   public mutating func ___erase(_ ptr: Index) -> Index {
-    ___index(__tree_.erase(__tree_._remap_to_ptr(ptr)))
+    ___index(__tree_.erase(try! __tree_._remap_to_safe_ptr(ptr).get()))
   }
 }
 

@@ -63,12 +63,19 @@ extension UnsafeTreeV2 {
     return (lower, upper)
   }
   
+//  @inlinable
+//  func fullSanitize(_ tuple: (lower: _NodePtr, upper: _NodePtr)) -> (_NodePtr,_NodePtr) {
+//    // この実装まちがっている
+//    var (lower, upper) = usnafeSanitize(tuple)
+//    if lower != upper, !___ptr_comp(lower, upper) {
+//      swap(&lower, &upper)
+//    }
+//    return (lower, upper)
+//  }
+  
   @inlinable
-  func fullSanitize(_ tuple: (lower: _NodePtr, upper: _NodePtr)) -> (_NodePtr,_NodePtr) {
-    var (lower, upper) = usnafeSanitize(tuple)
-    if lower != upper, !___ptr_comp(lower, upper) {
-      swap(&lower, &upper)
-    }
-    return (lower, upper)
+  func rangeSanitize(_ tuple: (lower: _NodePtr, upper: _NodePtr)) -> (_NodePtr,_NodePtr) {
+    let (lower, upper) = tuple
+    return !___ptr_comp(upper, lower) ? (lower, upper) : (__end_node,__end_node)
   }
 }

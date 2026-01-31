@@ -15,6 +15,18 @@
 //
 //===----------------------------------------------------------------------===//
 
+public enum BoundRelativeError: Error {
+  /// nullptrに到達した
+  ///
+  /// 平衡木の下限を超えた操作を行ったことを表す
+  case lowerOutOfBounds
+
+  /// endを越えようとした
+  ///
+  /// 平衡木の上限を超えた操作を行ったことを表す
+  case upperOutOfBounds
+}
+
 @frozen
 public indirect enum RedBlackTreeBound<_Key> {
   case start
@@ -22,16 +34,16 @@ public indirect enum RedBlackTreeBound<_Key> {
   case upper(_Key)
   case find(_Key)
   case end
-  case advanced(Self, by: Int, limit: Self? = nil)
-  case prev(Self)
-  case next(Self)
+  case advanced(Self, by: Int)
+  case before(Self)
+  case after(Self)
 }
 
 extension RedBlackTreeBound {
-  public var next: Self { .next(self) }
-  public var previous: Self { .prev(self) }
-  public func advanced(by offset: Int, limit: Self? = nil) -> Self {
-    .advanced(self, by: offset, limit: limit)
+  public var after: Self { .after(self) }
+  public var before: Self { .before(self) }
+  public func advanced(by offset: Int) -> Self {
+    .advanced(self, by: offset)
   }
 }
 

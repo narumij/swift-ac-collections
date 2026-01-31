@@ -15,11 +15,13 @@
 //
 //===----------------------------------------------------------------------===//
 
+import Foundation
+
 extension RedBlackTreeBound {
 
   @inlinable @inline(__always)
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> UnsafeMutablePointer<UnsafeNode>
+  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
   where
     Base: ___TreeBase,
     Base._Key == _Key
@@ -28,45 +30,49 @@ extension RedBlackTreeBound {
     switch self {
 
     case .start:
-      return __tree_.__begin_node_
+      return .success(__tree_.__begin_node_)
 
     case .end:
-      return __tree_.__end_node
+      return .success(__tree_.__end_node)
 
     case .lower(let __v):
-      return __tree_.lower_bound(__v)
+      return .success(__tree_.lower_bound(__v))
 
     case .upper(let __v):
-      return __tree_.upper_bound(__v)
+      return .success(__tree_.upper_bound(__v))
 
     case .find(let __v):
-      return __tree_.find(__v)
+      return .success(__tree_.find(__v))
 
-    case .advanced(let __self, by: let offset, limit: let __limit):
-      let __p = __self.relative(to: __tree_)
-      guard !__p.___is_null else {
-        fatalError(.invalidIndex)
+    case .advanced(let __self, by: let offset):
+      let __p = __self._relative(to: __tree_)
+      return __p.flatMap { __p in
+        ___tree_adv_iter(__p, offset)
       }
-      if let __limit {
-        let __l = __limit.relative(to: __tree_)
-        return ___tree_adv_iter(__p, offset, __l)
-      }
-      // 初期状態でnullが来る可能性はほぼないが、念のためにfatal
-      return ___tree_adv_iter(__p, offset)
 
-    case .prev(let __self):
+    case .before(let __self):
       return
         RedBlackTreeBound
         .advanced(__self, by: -1)
-        .relative(to: __tree_)
+        ._relative(to: __tree_)
 
-    case .next(let __self):
+    case .after(let __self):
       return
         RedBlackTreeBound
         .advanced(__self, by: 1)
-        .relative(to: __tree_)
+        ._relative(to: __tree_)
 
     }
+  }
+
+  @inlinable @inline(__always)
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> UnsafeMutablePointer<UnsafeNode>
+  where
+    Base: ___TreeBase,
+    Base._Key == _Key
+  {
+    try! _relative(to: __tree_).get()
   }
 }
 

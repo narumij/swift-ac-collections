@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 public enum UnsafeTreeRangeExpression2: Equatable {
-  public typealias Bound = Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
+  public typealias Bound = SafePtr
   /// `a..<b` のこと
   case range(from: Bound, to: Bound)
   /// `a...b` のこと
@@ -33,24 +33,16 @@ public enum UnsafeTreeRangeExpression2: Equatable {
 
 extension UnsafeTreeRangeExpression2 {
 
-  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>)
-    -> Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
-  {
+  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
     .success(__tree_.__begin_node_)
   }
 
-  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>)
-    -> Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
-  {
+  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
     .success(__tree_.__end_node)
   }
 
   @usableFromInline
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> (
-      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>,
-      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
-    )
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> (SafePtr, SafePtr)
   where Base: ___TreeBase {
     switch self {
     case .range(let lhs, let rhs):
@@ -69,32 +61,22 @@ extension UnsafeTreeRangeExpression2 {
   }
 }
 
-public func ..< (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeRangeExpression2
-{
-  .range(from: .success(lhs), to: .success(rhs))
+public func ..< (lhs: SafePtr, rhs: SafePtr) -> UnsafeTreeRangeExpression2 {
+  .range(from: lhs, to: rhs)
 }
 
-public func ... (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeRangeExpression2
-{
-  .closedRange(from: .success(lhs), through: .success(rhs))
+public func ... (lhs: SafePtr, rhs: SafePtr) -> UnsafeTreeRangeExpression2 {
+  .closedRange(from: lhs, through: rhs)
 }
 
-public prefix func ..< (rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeRangeExpression2
-{
-  .partialRangeTo(.success(rhs))
+public prefix func ..< (rhs: SafePtr) -> UnsafeTreeRangeExpression2 {
+  .partialRangeTo(rhs)
 }
 
-public prefix func ... (rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeRangeExpression2
-{
-  .partialRangeThrough(.success(rhs))
+public prefix func ... (rhs: SafePtr) -> UnsafeTreeRangeExpression2 {
+  .partialRangeThrough(rhs)
 }
 
-public postfix func ... (lhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeRangeExpression2
-{
-  .partialRangeFrom(.success(lhs))
+public postfix func ... (lhs: SafePtr) -> UnsafeTreeRangeExpression2 {
+  .partialRangeFrom(lhs)
 }

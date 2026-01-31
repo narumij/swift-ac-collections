@@ -53,24 +53,16 @@ extension UnsafeTreeRangeExpression {
     }
   #endif
 
-  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>)
-    -> Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
-  {
+  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
     .success(__tree_.__begin_node_)
   }
 
-  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>)
-    -> Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
-  {
+  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
     .success(__tree_.__end_node)
   }
 
   @usableFromInline
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> (
-      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>,
-      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
-    )
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> (SafePtr, SafePtr)
   where Base: ___TreeBase {
     switch self {
     case .range(let lhs, let rhs):

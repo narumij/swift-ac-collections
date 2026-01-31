@@ -21,7 +21,7 @@ extension RedBlackTreeBoundExpression {
 
   @inlinable @inline(__always)
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
+    -> Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
   where
     Base: ___TreeBase,
     Base._Key == _Key
@@ -111,8 +111,8 @@ extension RedBlackTreeBoundRangeExpression {
   @usableFromInline
   func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> (
-      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>,
-      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
+      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>,
+      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
     )
   where
     Base: ___TreeBase,
@@ -141,8 +141,8 @@ extension RedBlackTreeBoundRangeExpression {
   @inlinable @inline(__always)
   func unwrapLowerUpperOrFatal(
     _ bounds: (
-      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>,
-      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
+      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>,
+      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
     )
   ) -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>) {
     switch bounds {
@@ -163,8 +163,8 @@ extension RedBlackTreeBoundRangeExpression {
   @inlinable @inline(__always)
   func unwrapLowerUpper(
     _ bounds: (
-      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>,
-      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
+      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>,
+      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
     )
   ) -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)? {
     switch bounds {

@@ -54,17 +54,12 @@ where Element == Base.Element, Base: _ElementType {}
 public protocol UnsafeTreeBinding: ___Root & _UnsafeNodePtrType
 where Tree == UnsafeTreeV2<Base>, Base: ___TreeBase {}
 
-public protocol SafePointer
-where SafePtr == Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError> {
-  associatedtype SafePtr
-}
-
-public protocol UnsafeIndexBinding: UnsafeTreeBinding, SafePointer
+public protocol UnsafeIndexBinding: UnsafeTreeBinding
 where Index == UnsafeTreeV2<Base>.Index, Base: ___TreeIndex {
   associatedtype Index
 }
 
-public protocol UnsafeIndicesBinding: UnsafeTreeBinding, SafePointer
+public protocol UnsafeIndicesBinding: UnsafeTreeBinding
 where Indices == UnsafeTreeV2<Base>.Indices, Base: ___TreeIndex {
   associatedtype Indices
 }

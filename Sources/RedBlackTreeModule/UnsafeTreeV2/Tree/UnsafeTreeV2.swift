@@ -155,8 +155,6 @@ extension UnsafeTreeV2 {
     }
   }
   
-  public typealias SafePtr = Result<_NodePtr, BoundRelativeError>
-
   @inlinable
   @inline(__always)
   package subscript(tag: _RawTrackingTag) -> SafePtr {

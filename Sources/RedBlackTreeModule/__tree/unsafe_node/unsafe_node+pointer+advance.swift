@@ -8,21 +8,10 @@
 @inlinable
 @inline(__always)
 internal func
-  ___tree_adv_iter(
-    _ __x: UnsafeMutablePointer<UnsafeNode>,
-    _ __n: Int
-  )
-  -> Result<
-    UnsafeMutablePointer<UnsafeNode>,
-    BoundRelativeError
-  >
+  ___tree_adv_iter(_ __x: UnsafeMutablePointer<UnsafeNode>, _ __n: Int)
+  -> SafePtr
 {
-  typealias ResultType = Result<
-    UnsafeMutablePointer<UnsafeNode>,
-    BoundRelativeError
-  >
-
-  var __x: ResultType = .success(__x)
+  var __x: SafePtr = .success(__x)
 
   var __n = __n
   if __n < 0 {
@@ -43,11 +32,7 @@ internal func
 @inlinable
 @inline(__always)
 internal func
-  ___tree_next_iter(_ __x: UnsafeMutablePointer<UnsafeNode>)
-  -> Result<
-    UnsafeMutablePointer<UnsafeNode>,
-    BoundRelativeError
-  >
+  ___tree_next_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> SafePtr
 {
   // endへの操作は失敗
   __x.___is_end ? .failure(.upperOutOfBounds) : .success(__tree_next_iter(__x))
@@ -58,18 +43,14 @@ internal func
 @inlinable
 @inline(__always)
 internal func
-  ___tree_prev_iter(_ __x: UnsafeMutablePointer<UnsafeNode>)
-  -> Result<
-    UnsafeMutablePointer<UnsafeNode>,
-    BoundRelativeError
-  >
+  ___tree_prev_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> SafePtr
 {
   let __x = __tree_prev_iter(__x)
   // nullptrの発生は失敗
   return __x.___is_null ? .failure(.lowerOutOfBounds) : .success(__x)
 }
 
-public enum BoundRelativeError: Error {
+public enum SafePtrError: Error {
   case null
   case garbaged
   case unknown
@@ -84,3 +65,5 @@ public enum BoundRelativeError: Error {
   /// 平衡木の上限を超えた操作を行ったことを表す
   case upperOutOfBounds
 }
+
+public typealias SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>

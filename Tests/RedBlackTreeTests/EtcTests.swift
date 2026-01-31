@@ -1006,10 +1006,10 @@ final class EtcTests: RedBlackTreeTestCase {
       let _ = a.indices(bounds: .start ..< .end)
       let _ = a.indices(bounds: .lower(3) ..< .lower(4))
       #endif
-      let _ = a.removeBounds(.lower(10) ..< .lower(100)) { n in
+      let _ = a.removeAll(in: .lower(10) ..< .lower(100)) { n in
         n % 2 == 1
       }
-      let _ = a.removeBounds(.lower(10) ... .upper(100)) { n in
+      let _ = a.removeAll(in: .lower(10) ... .upper(100)) { n in
         n % 2 == 0
       }
       let _ = a[.lower(10) ... .end]
@@ -1057,7 +1057,7 @@ final class EtcTests: RedBlackTreeTestCase {
 
       var set = RedBlackTreeSet<Int>(0..<20)
 
-      set[lowerBound(10).advanced(by: 2)..<end()].removeSubrange {
+      set[lowerBound(10).advanced(by: 2)..<end()].removeAll {
         $0 % 2 == 0
       }
 
@@ -1073,7 +1073,7 @@ final class EtcTests: RedBlackTreeTestCase {
       let set = RedBlackTreeSet<Int>(0..<20)
       var range = set[lowerBound(10).advanced(by: 2)..<end()]
 
-      range.removeSubrange {
+      range.removeAll {
         $0 % 2 == 0
       }
 

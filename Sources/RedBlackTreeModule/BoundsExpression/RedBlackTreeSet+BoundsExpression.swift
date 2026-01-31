@@ -94,8 +94,8 @@
       return __tree_.___distance(from: lower, to: upper)
     }
 
-    public mutating func removeBounds(
-      _ bounds: RedBlackTreeBoundsExpression<Element>
+    public mutating func removeAll(
+      in bounds: RedBlackTreeBoundsExpression<Element>
     ) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
@@ -113,8 +113,8 @@
       __tree_.___checking_erase(lower, upper)
     }
 
-    public mutating func removeBounds(
-      _ bounds: RedBlackTreeBoundsExpression<Element>,
+    public mutating func removeAll(
+      in bounds: RedBlackTreeBoundsExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()

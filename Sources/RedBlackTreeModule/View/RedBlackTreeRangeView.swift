@@ -63,13 +63,13 @@ extension RedBlackTreeKeyOnlyRangeView {
 extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
-  public mutating func removeSubrange() {
+  public mutating func removeAll() {
     __tree_.ensureUnique()
     __tree_.___checking_erase(_start, _end)
   }
 
   @inlinable
-  public mutating func removeSubrange(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+  public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     __tree_.ensureUnique()
     try __tree_.___checking_erase_if(_start, _end, shouldBeRemoved: shouldBeRemoved)
   }

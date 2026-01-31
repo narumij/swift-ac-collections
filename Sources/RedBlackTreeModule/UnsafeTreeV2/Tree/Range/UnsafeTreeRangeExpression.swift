@@ -53,6 +53,41 @@ extension UnsafeTreeRangeExpression {
     }
   #endif
 
+  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>)
+    -> Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
+  {
+    .success(__tree_.__begin_node_)
+  }
+
+  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>)
+    -> Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
+  {
+    .success(__tree_.__end_node)
+  }
+
+  @usableFromInline
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> (
+      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>,
+      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
+    )
+  where Base: ___TreeBase {
+    switch self {
+    case .range(let lhs, let rhs):
+      return (.success(lhs), .success(rhs))
+    case .closedRange(let lhs, let rhs):
+      return (.success(lhs), ___tree_next_iter(rhs))
+    case .partialRangeTo(let rhs):
+      return (_start(__tree_), .success(rhs))
+    case .partialRangeThrough(let rhs):
+      return (_start(__tree_), ___tree_next_iter(rhs))
+    case .partialRangeFrom(let lhs):
+      return (.success(lhs), _end(__tree_))
+    case .unboundedRange:
+      return (_start(__tree_), _end(__tree_))
+    }
+  }
+
   @usableFromInline
   func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)

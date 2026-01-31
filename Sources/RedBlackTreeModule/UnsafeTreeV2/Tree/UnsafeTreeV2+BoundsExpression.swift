@@ -64,6 +64,66 @@ extension RedBlackTreeBoundExpression {
 
     }
   }
+}
+
+extension RedBlackTreeBoundRangeExpression {
+
+  @inlinable @inline(__always)
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> UnsafeTreeRangeExpression2
+  where
+    Base: ___TreeBase,
+    Base._Key == _Key
+  {
+    switch self {
+
+    case .range(let from, let to):
+      return .range(
+        from: from.relative(to: __tree_),
+        to: to.relative(to: __tree_))
+
+    case .closedRange(let from, let through):
+      return .closedRange(
+        from: from.relative(to: __tree_),
+        through: through.relative(to: __tree_))
+
+    case .partialRangeTo(let to):
+      return .partialRangeTo(to.relative(to: __tree_))
+
+    case .partialRangeThrough(let through):
+      return .partialRangeThrough(through.relative(to: __tree_))
+
+    case .partialRangeFrom(let from):
+      return .partialRangeFrom(from.relative(to: __tree_))
+
+    case .equalRange(let __v):
+      let (lower, upper) =
+        __tree_.isMulti
+        ? __tree_.__equal_range_multi(__v)
+        : __tree_.__equal_range_unique(__v)
+
+      return .range(
+        from: .success(lower),
+        to: .success(upper))
+    }
+  }
+
+  @usableFromInline
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> (
+      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>,
+      Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
+    )
+  where
+    Base: ___TreeBase,
+    Base._Key == _Key
+  {
+    relative(to: __tree_)
+      .relative(to: __tree_)
+  }
+}
+
+extension RedBlackTreeBoundExpression {
 
   @inlinable @inline(__always)
   func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)

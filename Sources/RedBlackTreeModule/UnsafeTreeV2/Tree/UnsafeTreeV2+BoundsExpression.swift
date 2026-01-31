@@ -17,10 +17,10 @@
 
 import Foundation
 
-extension RedBlackTreeBound {
+extension RedBlackTreeBoundExpression {
 
   @inlinable @inline(__always)
-  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> Result<UnsafeMutablePointer<UnsafeNode>, BoundRelativeError>
   where
     Base: ___TreeBase,
@@ -45,38 +45,38 @@ extension RedBlackTreeBound {
       return .success(__tree_.find(__v))
 
     case .advanced(let __self, by: let offset):
-      let __p = __self._relative(to: __tree_)
+      let __p = __self.relative(to: __tree_)
       return __p.flatMap { __p in
         ___tree_adv_iter(__p, offset)
       }
 
     case .before(let __self):
       return
-        RedBlackTreeBound
+        RedBlackTreeBoundExpression
         .advanced(__self, by: -1)
-        ._relative(to: __tree_)
+        .relative(to: __tree_)
 
     case .after(let __self):
       return
-        RedBlackTreeBound
+        RedBlackTreeBoundExpression
         .advanced(__self, by: 1)
-        ._relative(to: __tree_)
+        .relative(to: __tree_)
 
     }
   }
 
   @inlinable @inline(__always)
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> UnsafeMutablePointer<UnsafeNode>
   where
     Base: ___TreeBase,
     Base._Key == _Key
   {
-    try! _relative(to: __tree_).get()
+    try! relative(to: __tree_).get()
   }
 }
 
-extension RedBlackTreeBoundsExpression {
+extension RedBlackTreeBoundRangeExpression {
 
   @inlinable @inline(__always)
   func _relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> UnsafeTreeRangeExpression
@@ -88,22 +88,22 @@ extension RedBlackTreeBoundsExpression {
 
     case .range(let lhs, let rhs):
       return .range(
-        from: lhs.relative(to: __tree_),
-        to: rhs.relative(to: __tree_))
+        from: lhs._relative(to: __tree_),
+        to: rhs._relative(to: __tree_))
 
     case .closedRange(let lhs, let rhs):
       return .closedRange(
-        from: lhs.relative(to: __tree_),
-        through: rhs.relative(to: __tree_))
+        from: lhs._relative(to: __tree_),
+        through: rhs._relative(to: __tree_))
 
     case .partialRangeTo(let rhs):
-      return .partialRangeTo(rhs.relative(to: __tree_))
+      return .partialRangeTo(rhs._relative(to: __tree_))
 
     case .partialRangeThrough(let rhs):
-      return .partialRangeThrough(rhs.relative(to: __tree_))
+      return .partialRangeThrough(rhs._relative(to: __tree_))
 
     case .partialRangeFrom(let lhs):
-      return .partialRangeFrom(lhs.relative(to: __tree_))
+      return .partialRangeFrom(lhs._relative(to: __tree_))
 
     case .equalRange(let __v):
       let (lower, upper) =

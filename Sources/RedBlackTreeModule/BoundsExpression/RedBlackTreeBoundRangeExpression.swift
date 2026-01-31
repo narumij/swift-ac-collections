@@ -18,8 +18,8 @@
 // MARK: - RedBlackTreeSet
 
 @frozen
-public enum RedBlackTreeBoundsExpression<_Key> {
-  public typealias Bound = RedBlackTreeBound<_Key>
+public enum RedBlackTreeBoundRangeExpression<_Key> {
+  public typealias Bound = RedBlackTreeBoundExpression<_Key>
   case range(from: Bound, to: Bound)
   case closedRange(from: Bound, through: Bound)
   case partialRangeTo(Bound)
@@ -29,41 +29,41 @@ public enum RedBlackTreeBoundsExpression<_Key> {
 }
 
 @inlinable @inline(__always)
-public func ..< <_Key>(lhs: RedBlackTreeBound<_Key>, rhs: RedBlackTreeBound<_Key>)
-  -> RedBlackTreeBoundsExpression<_Key>
+public func ..< <_Key>(lhs: RedBlackTreeBoundExpression<_Key>, rhs: RedBlackTreeBoundExpression<_Key>)
+  -> RedBlackTreeBoundRangeExpression<_Key>
 {
   .range(from: lhs, to: rhs)
 }
 
 @inlinable @inline(__always)
-public func ... <_Key>(lhs: RedBlackTreeBound<_Key>, rhs: RedBlackTreeBound<_Key>)
-  -> RedBlackTreeBoundsExpression<_Key>
+public func ... <_Key>(lhs: RedBlackTreeBoundExpression<_Key>, rhs: RedBlackTreeBoundExpression<_Key>)
+  -> RedBlackTreeBoundRangeExpression<_Key>
 {
   .closedRange(from: lhs, through: rhs)
 }
 
 @inlinable @inline(__always)
-public prefix func ..< <_Key>(rhs: RedBlackTreeBound<_Key>)
-  -> RedBlackTreeBoundsExpression<_Key>
+public prefix func ..< <_Key>(rhs: RedBlackTreeBoundExpression<_Key>)
+  -> RedBlackTreeBoundRangeExpression<_Key>
 {
   .partialRangeTo(rhs)
 }
 
 @inlinable @inline(__always)
-public prefix func ... <_Key>(rhs: RedBlackTreeBound<_Key>)
-  -> RedBlackTreeBoundsExpression<_Key>
+public prefix func ... <_Key>(rhs: RedBlackTreeBoundExpression<_Key>)
+  -> RedBlackTreeBoundRangeExpression<_Key>
 {
   .partialRangeThrough(rhs)
 }
 
 @inlinable @inline(__always)
-public postfix func ... <_Key>(lhs: RedBlackTreeBound<_Key>) -> RedBlackTreeBoundsExpression<_Key> {
+public postfix func ... <_Key>(lhs: RedBlackTreeBoundExpression<_Key>) -> RedBlackTreeBoundRangeExpression<_Key> {
   .partialRangeFrom(lhs)
 }
 
 @inlinable @inline(__always)
 public func equalRange<_Key>(_ __v: _Key)
-  -> RedBlackTreeBoundsExpression<_Key>
+  -> RedBlackTreeBoundRangeExpression<_Key>
 {
   .equalRange(__v)
 }

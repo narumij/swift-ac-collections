@@ -22,20 +22,24 @@
 
     // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
     @inlinable
-    public subscript(bound: RedBlackTreeBound<Element>) -> Element? {
-      let p = bound.relative(to: __tree_)
-      guard !p.___is_null_or_end else { return nil }
+    public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
+      guard
+        let p = try? bound.relative(to: __tree_).get(),
+        !p.___is_null_or_end
+      else {
+        return nil
+      }
       return __tree_[p]
     }
 
-    public func trackingTag(_ bound: RedBlackTreeBound<Element>) -> RedBlackTreeTrackingTag {
-      return .init(rawValue: bound.relative(to: __tree_).trackingTag)
+    public func trackingTag(_ bound: RedBlackTreeBoundExpression<Element>) -> RedBlackTreeTrackingTag {
+      return .init(rawValue: bound._relative(to: __tree_).trackingTag)
     }
 
     // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
-    public mutating func remove(_ bound: RedBlackTreeBound<Element>) -> Element? {
+    public mutating func remove(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       __tree_.ensureUnique()
-      let p = bound.relative(to: __tree_)
+      let p = bound._relative(to: __tree_)
       guard !p.___is_null_or_end else { return nil }
       guard let (_, element) = ___remove(at: p) else {
         fatalError(.invalidIndex)
@@ -54,7 +58,7 @@
         return .init(tree: __tree_, start: lower, end: upper)
       }
     #else
-      public subscript(bounds: RedBlackTreeBoundsExpression<Element>)
+      public subscript(bounds: RedBlackTreeBoundRangeExpression<Element>)
         -> RedBlackTreeKeyOnlyRangeView<Self>
       {
         @inline(__always) get {
@@ -72,7 +76,7 @@
     #endif
 
     public func count(
-      _ bounds: RedBlackTreeBoundsExpression<Element>
+      _ bounds: RedBlackTreeBoundRangeExpression<Element>
     )
       -> Int?
     {
@@ -83,7 +87,7 @@
     }
 
     public func distance(
-      _ bounds: RedBlackTreeBoundsExpression<Element>
+      _ bounds: RedBlackTreeBoundRangeExpression<Element>
     )
       -> Int?
     {
@@ -95,7 +99,7 @@
     }
 
     public mutating func removeAll(
-      in bounds: RedBlackTreeBoundsExpression<Element>
+      in bounds: RedBlackTreeBoundRangeExpression<Element>
     ) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
@@ -106,7 +110,7 @@
     }
 
     public mutating func removeBounds(
-      unchecked bounds: RedBlackTreeBoundsExpression<Element>
+      unchecked bounds: RedBlackTreeBoundRangeExpression<Element>
     ) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
@@ -114,7 +118,7 @@
     }
 
     public mutating func removeAll(
-      in bounds: RedBlackTreeBoundsExpression<Element>,
+      in bounds: RedBlackTreeBoundRangeExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()
@@ -126,7 +130,7 @@
     }
 
     public mutating func removeBounds(
-      unchecked bounds: RedBlackTreeBoundsExpression<Element>,
+      unchecked bounds: RedBlackTreeBoundRangeExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()

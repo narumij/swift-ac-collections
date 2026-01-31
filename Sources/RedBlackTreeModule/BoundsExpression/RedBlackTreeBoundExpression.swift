@@ -28,7 +28,7 @@ public enum BoundRelativeError: Error {
 }
 
 @frozen
-public indirect enum RedBlackTreeBound<_Key> {
+public indirect enum RedBlackTreeBoundExpression<_Key> {
   case start
   case lower(_Key)
   case upper(_Key)
@@ -39,7 +39,7 @@ public indirect enum RedBlackTreeBound<_Key> {
   case after(Self)
 }
 
-extension RedBlackTreeBound {
+extension RedBlackTreeBoundExpression {
   public var after: Self { .after(self) }
   public var before: Self { .before(self) }
   public func advanced(by offset: Int) -> Self {
@@ -49,22 +49,22 @@ extension RedBlackTreeBound {
 
 // TODO: 以下を公開にするかどうかは要再検討
 
-public func start<K>() -> RedBlackTreeBound<K> {
+public func start<K>() -> RedBlackTreeBoundExpression<K> {
   .start
 }
 
-public func end<K>() -> RedBlackTreeBound<K> {
+public func end<K>() -> RedBlackTreeBoundExpression<K> {
   .end
 }
 
-public func lowerBound<K>(_ k: K) -> RedBlackTreeBound<K> {
+public func lowerBound<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
   .lower(k)
 }
 
-public func upperBound<K>(_ k: K) -> RedBlackTreeBound<K> {
+public func upperBound<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
   .upper(k)
 }
 
-public func find<K>(_ k: K) -> RedBlackTreeBound<K> {
+public func find<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
   .find(k)
 }

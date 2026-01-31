@@ -18,7 +18,7 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
-    public subscript(bounds: RedBlackTreeBoundsExpression<Key>) -> SubSequence {
+    public subscript(bounds: RedBlackTreeBoundRangeExpression<Key>) -> SubSequence {
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
@@ -26,12 +26,12 @@
       return .init(tree: __tree_, start: lower, end: upper)
     }
 
-    public subscript(unchecked bounds: RedBlackTreeBoundsExpression<Key>) -> SubSequence {
+    public subscript(unchecked bounds: RedBlackTreeBoundRangeExpression<Key>) -> SubSequence {
       let (lower, upper) = bounds.relative(to: __tree_)
       return .init(tree: __tree_, start: lower, end: upper)
     }
 
-    public func indices(bounds: RedBlackTreeBoundsExpression<Key>)
+    public func indices(bounds: RedBlackTreeBoundRangeExpression<Key>)
       -> UnsafeIndexV2Collection<Self>
     {
       let (lower, upper) = bounds.relative(to: __tree_)
@@ -41,7 +41,7 @@
       return .init(start: lower, end: upper, tie: __tree_.tied)
     }
     
-    public mutating func removeBounds(_ bounds: RedBlackTreeBoundsExpression<Key>) {
+    public mutating func removeBounds(_ bounds: RedBlackTreeBoundRangeExpression<Key>) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
@@ -50,14 +50,14 @@
       __tree_.___checking_erase(lower, upper)
     }
 
-    public mutating func removeBounds(unchecked bounds: RedBlackTreeBoundsExpression<Key>) {
+    public mutating func removeBounds(unchecked bounds: RedBlackTreeBoundRangeExpression<Key>) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       __tree_.___checking_erase(lower, upper)
     }
 
     public mutating func removeBounds(
-      _ bounds: RedBlackTreeBoundsExpression<Key>,
+      _ bounds: RedBlackTreeBoundRangeExpression<Key>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()
@@ -69,7 +69,7 @@
     }
 
     public mutating func removeBounds(
-      unchecked bounds: RedBlackTreeBoundsExpression<Key>,
+      unchecked bounds: RedBlackTreeBoundRangeExpression<Key>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()

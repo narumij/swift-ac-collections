@@ -79,7 +79,7 @@ extension RedBlackTreeBoundExpression {
 extension RedBlackTreeBoundRangeExpression {
 
   @inlinable @inline(__always)
-  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> UnsafeTreeRangeExpression
+  func ___relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> UnsafeTreeRangeExpression
   where
     Base: ___TreeBase,
     Base._Key == _Key
@@ -113,7 +113,7 @@ extension RedBlackTreeBoundRangeExpression {
   }
 
   @inlinable @inline(__always)
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> (
       UnsafeMutablePointer<UnsafeNode>,
       UnsafeMutablePointer<UnsafeNode>
@@ -122,7 +122,7 @@ extension RedBlackTreeBoundRangeExpression {
     Base: ___TreeBase,
     Base._Key == _Key
   {
-    _relative(to: __tree_)
-      .relative(to: __tree_)
+    ___relative(to: __tree_)
+      ._relative(to: __tree_)
   }
 }

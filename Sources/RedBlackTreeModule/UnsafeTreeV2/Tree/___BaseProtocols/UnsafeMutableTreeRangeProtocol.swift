@@ -69,13 +69,13 @@ extension UnsafeMutableTreeRangeProtocol {
 
   @inlinable
   package mutating func ___remove(_ rawRange: UnsafeTreeRangeExpression) -> _NodePtr {
-    let (lower, upper) = rawRange.relative(to: __tree_)
+    let (lower, upper) = rawRange._relative(to: __tree_)
     return ___remove(from: lower, to: upper)
   }
 
   @inlinable
   package mutating func ___unchecked_remove(_ rawRange: UnsafeTreeRangeExpression) -> _NodePtr {
-    let (lower, upper) = rawRange.relative(to: __tree_)
+    let (lower, upper) = rawRange._relative(to: __tree_)
     return ___unchecked_remove(from: lower, to: upper)
   }
 }

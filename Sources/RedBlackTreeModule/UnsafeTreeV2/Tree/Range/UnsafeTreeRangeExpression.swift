@@ -54,7 +54,7 @@ extension UnsafeTreeRangeExpression {
   #endif
 
   @usableFromInline
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)
   where Base: ___TreeBase {
     let (_begin, _end) = (__tree_.__begin_node_, __tree_.__end_node)

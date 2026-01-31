@@ -62,11 +62,11 @@
         -> RedBlackTreeKeyOnlyRangeView<Self>
       {
         @inline(__always) get {
-          let (lower, upper) = __tree_.fullSanitize(bounds.relative(to: __tree_))
+          let (lower, upper) = __tree_.fullSanitize(bounds._relative(to: __tree_))
           return .init(__tree_: __tree_, _start: lower, _end: upper)
         }
         @inline(__always) _modify {
-          let (lower, upper) = __tree_.fullSanitize(bounds.relative(to: __tree_))
+          let (lower, upper) = __tree_.fullSanitize(bounds._relative(to: __tree_))
           var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
           self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
           defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
@@ -91,7 +91,7 @@
     )
       -> Int?
     {
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds._relative(to: __tree_)
       guard !lower.___is_null_or_end, !upper.___is_null else {
         return nil
       }
@@ -102,7 +102,7 @@
       in bounds: RedBlackTreeBoundRangeExpression<Element>
     ) {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds._relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
@@ -113,7 +113,7 @@
       unchecked bounds: RedBlackTreeBoundRangeExpression<Element>
     ) {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds._relative(to: __tree_)
       __tree_.___checking_erase(lower, upper)
     }
 
@@ -122,7 +122,7 @@
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds._relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
@@ -134,7 +134,7 @@
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds._relative(to: __tree_)
       try __tree_.___checking_erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
   }

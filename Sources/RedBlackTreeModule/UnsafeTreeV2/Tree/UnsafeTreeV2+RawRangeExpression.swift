@@ -45,7 +45,7 @@ extension UnsafeTreeV2 {
   
   @inlinable
   func isValidRawRange(range: UnsafeTreeRangeExpression) -> Bool {
-    let (lower, upper) = range.relative(to: self)
+    let (lower, upper) = range._relative(to: self)
     return isValidRawRange(lower: lower, upper: upper)
   }
 }

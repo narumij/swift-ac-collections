@@ -149,7 +149,7 @@ extension ___UnsafeIndexV2 where Self: Sequence {
     _ rawRange: UnsafeTreeRangeExpression
   ) -> Bool {
 
-    let (l, u) = rawRange.relative(to: __tree_)
+    let (l, u) = rawRange._relative(to: __tree_)
     return !__tree_.___is_range_null(l, u)
   }
 }

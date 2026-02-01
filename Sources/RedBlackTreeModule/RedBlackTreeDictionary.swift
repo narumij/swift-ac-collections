@@ -352,14 +352,10 @@ extension RedBlackTreeDictionary {
     @inlinable
     @inline(__always)
     public subscript(bounds: Range<Index>) -> SubSequence {
-      __tree_.___ensureValid(
-        begin: __tree_._remap_to_ptr(bounds.lowerBound),
-        end: __tree_._remap_to_ptr(bounds.upperBound))
-
       return .init(
         tree: __tree_,
-        start: __tree_._remap_to_ptr(bounds.lowerBound),
-        end: __tree_._remap_to_ptr(bounds.upperBound))
+        start: try! __tree_._remap_to_safe_ptr(bounds.lowerBound).get(),
+        end: try! __tree_._remap_to_safe_ptr(bounds.upperBound).get())
     }
   #endif
 }
@@ -574,8 +570,8 @@ extension RedBlackTreeDictionary {
       let bounds = bounds.relative(to: self)
       __tree_.ensureUnique()
       ___remove(
-        from: __tree_._remap_to_ptr(bounds.lowerBound),
-        to: __tree_._remap_to_ptr(bounds.upperBound))
+        from: try! __tree_._remap_to_safe_ptr(bounds.lowerBound).get(),
+        to: try! __tree_._remap_to_safe_ptr(bounds.upperBound).get())
     }
   #endif
 }

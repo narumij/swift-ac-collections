@@ -35,17 +35,20 @@ extension ___UnsafeSubSequenceV2 {
   @inlinable
   @inline(__always)
   internal func ___contains(_ i: _NodePtr) -> Bool {
-    !__tree_.___is_subscript_null(i) && __tree_.___ptr_closed_range_contains(_start, _end, i)
+    __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
 
-#if COMPATIBLE_ATCODER_2025
-  @inlinable
-  @inline(__always)
-  internal func ___contains(_ bounds: Range<Index>) -> Bool {
-    !__tree_.___is_offset_null(__tree_._remap_to_ptr(bounds.lowerBound))
-      && !__tree_.___is_offset_null(__tree_._remap_to_ptr(bounds.upperBound))
-      && __tree_.___ptr_range_contains(_start, _end, __tree_._remap_to_ptr(bounds.lowerBound))
-      && __tree_.___ptr_range_contains(_start, _end, __tree_._remap_to_ptr(bounds.upperBound))
-  }
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    @inline(__always)
+    internal func ___contains(_ bounds: Range<Index>) -> Bool {
+      guard let l = try? __tree_._remap_to_safe_ptr(bounds.lowerBound).get(),
+            let u = try? __tree_._remap_to_safe_ptr(bounds.upperBound).get()
+      else {
+        return false
+      }
+      return __tree_.___ptr_range_contains(_start, _end, l)
+        && __tree_.___ptr_range_contains(_start, _end, u)
+    }
   #endif
 }

@@ -19,7 +19,7 @@
     func upperBound(_: _Key) -> Index
   }
 
-  extension RedBlackTreeBound {
+  extension RedBlackTreeBoundExpression {
 
     @usableFromInline
     func relative<C: RedBlackTreeBoundResolverProtocol>(to collection: C)
@@ -37,14 +37,14 @@
       case .advanced(let __self, by: var offset):
         let i = __self.relative(to: collection)
         return collection.index(i, offsetBy: offset)
-      case .prev(let __self):
+      case .before(let __self):
         return
-          RedBlackTreeBound
+          RedBlackTreeBoundExpression
           .advanced(__self, by: -1)
           .relative(to: collection)
-      case .next(let __self):
+      case .after(let __self):
         return
-          RedBlackTreeBound
+          RedBlackTreeBoundExpression
           .advanced(__self, by: 1)
           .relative(to: collection)
       default:
@@ -55,7 +55,7 @@
 
   extension RedBlackTreeBoundResolverProtocol {
 
-    func relative<K>(to boundsExpression: RedBlackTreeBoundsExpression<K>) -> (Index, Index)
+    func relative<K>(to boundsExpression: RedBlackTreeBoundRangeExpression<K>) -> (Index, Index)
     where K == _Key {
       switch boundsExpression {
       case .range(let lhs, let rhs):
@@ -92,7 +92,7 @@
   extension RedBlackTreeSet: RedBlackTreeBoundResolverProtocol {
 
     public mutating func removeBounds(
-      _ bounds: RedBlackTreeBoundsExpression<Element>,
+      _ bounds: RedBlackTreeBoundRangeExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       reserveCapacity(capacity)

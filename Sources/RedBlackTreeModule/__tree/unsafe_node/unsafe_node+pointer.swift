@@ -270,3 +270,27 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     .init(pointer: self)
   }
 }
+
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
+
+  @usableFromInline
+  var isValid: Bool {
+    return !___is_null && !___is_garbaged
+  }
+
+  @usableFromInline
+  var checked: UnsafeMutablePointer {
+    guard isValid else {
+      fatalError(.invalidIndex)
+    }
+    return self
+  }
+  
+  @usableFromInline
+  var next_checked: UnsafeMutablePointer {
+    guard isValid, !___is_end else {
+      fatalError(.invalidIndex)
+    }
+    return self
+  }
+}

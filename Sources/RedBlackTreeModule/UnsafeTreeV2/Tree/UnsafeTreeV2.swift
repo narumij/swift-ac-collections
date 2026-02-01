@@ -94,11 +94,11 @@ extension UnsafeTreeV2 {
   @inlinable
   internal subscript(_ pointer: _NodePtr) -> _PayloadValue {
     @inline(__always) _read {
-      assert(___initialized_contains(pointer))
+      assert(pointer.isValid && !pointer.___is_end)
       yield pointer.__value_().pointee
     }
     @inline(__always) _modify {
-      assert(___initialized_contains(pointer))
+      assert(pointer.isValid && !pointer.___is_end)
       yield &pointer.__value_().pointee
     }
   }

@@ -81,7 +81,7 @@ extension ___LRUMemoizeStorage {
     @inline(__always)
     mutating get {
       let __ptr = __tree_.find(key)
-      if __tree_.___is_null_or_end(__ptr) {
+      if __ptr.___is_null_or_end {
         return nil
       }
       ___prepend(___pop(__ptr))

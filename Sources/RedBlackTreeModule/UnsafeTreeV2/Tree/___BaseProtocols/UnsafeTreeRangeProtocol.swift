@@ -13,7 +13,7 @@ extension UnsafeTreeRangeProtocol {
   @inlinable
   @inline(__always)
   internal var ___is_empty: Bool {
-    __tree_.___is_empty || _start == _end
+    __tree_.count == 0 || _start == _end
   }
 
   @inlinable

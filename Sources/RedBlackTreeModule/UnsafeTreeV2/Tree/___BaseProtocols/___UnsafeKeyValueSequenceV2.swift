@@ -96,7 +96,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   @inline(__always)
   internal func ___value_for(_ __k: _Key) -> _PayloadValue? {
     let __ptr = __tree_.find(__k)
-    return __tree_.___is_null_or_end(__ptr) ? nil : __tree_[__ptr]
+    return __ptr.___is_null_or_end ? nil : __tree_[__ptr]
   }
 }
 

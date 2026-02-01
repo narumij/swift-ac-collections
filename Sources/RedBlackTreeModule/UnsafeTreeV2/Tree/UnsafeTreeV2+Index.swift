@@ -51,8 +51,8 @@ extension UnsafeTreeV2 {
     ___distance(from start: _NodePtr, to end: _NodePtr) -> Int
   {
     guard
-      !___is_offset_null(start),
-      !___is_offset_null(end)
+      start.isValid,
+      end.isValid
     else {
       fatalError(.invalidIndex)
     }
@@ -62,8 +62,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func ___index(after i: _NodePtr) -> _NodePtr {
-    ___ensureValid(after: i)
-    return __tree_next(i)
+    return __tree_next(i.next_checked)
   }
 
   @inlinable
@@ -75,8 +74,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func ___index(before i: _NodePtr) -> _NodePtr {
-    ___ensureValid(before: i)
-    return __tree_prev_iter(i)
+    return __tree_prev_iter(i.checked)
   }
 
   @inlinable
@@ -88,9 +86,8 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func ___index(_ i: _NodePtr, offsetBy distance: Int) -> _NodePtr {
-    ___ensureValid(offset: i)
     var distance = distance
-    var i = i
+    var i = i.checked
     while distance != 0 {
       if 0 < distance {
         guard i != __end_node else {
@@ -121,9 +118,8 @@ extension UnsafeTreeV2 {
     ___index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
     -> _NodePtr?
   {
-    ___ensureValid(offset: i)
     var distance = distance
-    var i = i
+    var i = i.checked
     while distance != 0 {
       if i == limit {
         return nil
@@ -161,31 +157,30 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func
-    ___tree_adv_iter(_ i: _NodePtr, by distance: Int) -> _NodePtr
-  {
-    ___ensureValid(offset: i)
-    var distance = distance
-    var result: _NodePtr = i
-    while distance != 0 {
-      if 0 < distance {
-        if result == __end_node { return result }
-        result = __tree_next_iter(result)
-        distance -= 1
-      } else {
-        if result == __begin_node_ {
-          // 後ろと区別したくてnullptrにしてたが、一周回るとendなのでendにしてみる
-          result = end
-          return result
-        }
-        result = __tree_prev_iter(result)
-        distance += 1
-      }
-    }
-    return result
-  }
-}
+//extension UnsafeTreeV2 {
+//
+//  @inlinable
+//  @inline(__always)
+//  internal func
+//    ___tree_adv_iter(_ i: _NodePtr, by distance: Int) -> _NodePtr
+//  {
+//    var distance = distance
+//    var result: _NodePtr = i.checked
+//    while distance != 0 {
+//      if 0 < distance {
+//        if result == __end_node { return result }
+//        result = __tree_next_iter(result)
+//        distance -= 1
+//      } else {
+//        if result == __begin_node_ {
+//          // 後ろと区別したくてnullptrにしてたが、一周回るとendなのでendにしてみる
+//          result = end
+//          return result
+//        }
+//        result = __tree_prev_iter(result)
+//        distance += 1
+//      }
+//    }
+//    return result
+//  }
+//}

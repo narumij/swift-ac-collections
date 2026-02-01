@@ -153,7 +153,7 @@ extension ___UnsafeIndexV2 where Self: Sequence {
   ) -> Bool {
 
     let (l, u) = rawRange._relative(to: __tree_)
-    return !__tree_.___is_range_null(l, u)
+    return l.isValid && u.isValid
   }
 }
 
@@ -167,9 +167,12 @@ extension ___UnsafeIndexV2 where Self: Sequence {
     ) -> Bool where R.Bound == Index {
 
       let bounds = bounds.relative(to: self)
-      return !__tree_.___is_range_null(
-        __tree_._remap_to_ptr(bounds.lowerBound),
-        __tree_._remap_to_ptr(bounds.upperBound))
+      if
+        let _ = try? __tree_._remap_to_safe_ptr(bounds.lowerBound).get(),
+        let _ = try? __tree_._remap_to_safe_ptr(bounds.upperBound).get() {
+        return true
+      }
+      return false
     }
   }
 #endif

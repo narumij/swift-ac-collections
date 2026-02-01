@@ -42,14 +42,14 @@ extension RedBlackTreeSliceV2 {
     internal let __tree_: Tree
 
     @usableFromInline
-    internal var _start, _end: _NodePtr
+    internal var _unchecked_start, _unchecked_end: _NodePtr
 
     @inlinable
     @inline(__always)
     internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
       __tree_ = tree
-      _start = start
-      _end = end
+      _unchecked_start = start
+      _unchecked_end = end
     }
   }
 }
@@ -57,6 +57,12 @@ extension RedBlackTreeSliceV2 {
 extension RedBlackTreeSliceV2.KeyValue: Sequence {}
 
 extension RedBlackTreeSliceV2.KeyValue {
+  
+  @usableFromInline
+  var _start: _NodePtr { _unchecked_start.checked }
+
+  @usableFromInline
+  var _end: _NodePtr { _unchecked_end.checked }
 
   /// - Complexity: O(1)
   @inlinable

@@ -5,8 +5,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: __tree_._remap_to_ptr(bounds.lowerBound),
-        end: __tree_._remap_to_ptr(bounds.upperBound))
+        start: try! __tree_._remap_to_safe_ptr(bounds.lowerBound).get(),
+        end: try! __tree_._remap_to_safe_ptr(bounds.upperBound).get())
     }
   }
 

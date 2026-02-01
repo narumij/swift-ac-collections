@@ -21,7 +21,7 @@ extension RedBlackTreeMultiMap {
   package func ___is_garbaged(_ index: Index) -> Bool {
     switch __tree_._remap_to_safe_ptr(index) {
     case .success(let p):
-      return __tree_.___is_garbaged(p)
+      return p.___is_garbaged
     case .failure(.garbaged):
       return true
     case .failure:

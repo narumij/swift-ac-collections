@@ -433,10 +433,10 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
-    guard let (_, element) = ___remove(at: try! __tree_._remap_to_safe_ptr(index).get()) else {
+    guard case .success(let __p) = __tree_._remap_to_safe_(index) else {
       fatalError(.invalidIndex)
     }
-    return element
+    return _unchecked_remove(at: __p).payload
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。

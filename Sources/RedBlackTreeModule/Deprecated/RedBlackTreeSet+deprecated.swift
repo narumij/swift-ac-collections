@@ -8,8 +8,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: try! __tree_._remap_to_safe_ptr(bounds.lowerBound).get(),
-        end: try! __tree_._remap_to_safe_ptr(bounds.upperBound).get())
+        start: try! __tree_._remap_to_safe_(bounds.lowerBound).get(),
+        end: try! __tree_._remap_to_safe_(bounds.upperBound).get())
     }
   }
 
@@ -130,8 +130,8 @@
     public subscript(bounds: Range<Index>) -> SubSequence {
       return .init(
         tree: __tree_,
-        start: try! __tree_._remap_to_safe_ptr(bounds.lowerBound).get(),
-        end: try! __tree_._remap_to_safe_ptr(bounds.upperBound).get())
+        start: try! __tree_._remap_to_safe_(bounds.lowerBound).get(),
+        end: try! __tree_._remap_to_safe_(bounds.upperBound).get())
     }
   }
 #endif
@@ -153,8 +153,8 @@
       let bounds = bounds.relative(to: self)
       __tree_.ensureUnique()
       ___remove(
-      from: try! __tree_._remap_to_safe_ptr(bounds.lowerBound).get(),
-      to: try! __tree_._remap_to_safe_ptr(bounds.upperBound).get())
+      from: try! __tree_._remap_to_safe_(bounds.lowerBound).get(),
+      to: try! __tree_._remap_to_safe_(bounds.upperBound).get())
     }
   }
 #endif

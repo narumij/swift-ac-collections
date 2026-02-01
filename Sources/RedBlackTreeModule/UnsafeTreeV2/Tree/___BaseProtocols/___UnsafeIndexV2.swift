@@ -29,8 +29,8 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   internal func _distance(from start: Index, to end: Index) -> Int {
     __tree_.___distance(
-      from: try! __tree_._remap_to_safe_ptr(start).get(),
-      to: try! __tree_._remap_to_safe_ptr(end).get())
+      from: try! __tree_._remap_to_safe_(start).get(),
+      to: try! __tree_._remap_to_safe_(end).get())
   }
 }
 
@@ -51,7 +51,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(after i: Index) -> Index {
-    ___index(__tree_.___index(after: try! __tree_._remap_to_safe_ptr(i).get()))
+    ___index(__tree_.___index(after: try! __tree_._remap_to_safe_(i).get()))
   }
 
   @inlinable
@@ -63,7 +63,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(before i: Index) -> Index {
-    ___index(__tree_.___index(before: try! __tree_._remap_to_safe_ptr(i).get()))
+    ___index(__tree_.___index(before: try! __tree_._remap_to_safe_(i).get()))
   }
 
   @inlinable
@@ -75,7 +75,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(__tree_.___index(try! __tree_._remap_to_safe_ptr(i).get(), offsetBy: distance))
+    ___index(__tree_.___index(try! __tree_._remap_to_safe_(i).get(), offsetBy: distance))
   }
 
   @inlinable
@@ -88,7 +88,7 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index_or_nil(
-      __tree_.___index(try! __tree_._remap_to_safe_ptr(i).get(), offsetBy: distance, limitedBy: try! __tree_._remap_to_safe_ptr(limit).get()))
+      __tree_.___index(try! __tree_._remap_to_safe_(i).get(), offsetBy: distance, limitedBy: try! __tree_._remap_to_safe_(limit).get()))
   }
 
   @inlinable
@@ -137,7 +137,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _isValid(index: Index) -> Bool {
-    if let p = try? __tree_._remap_to_safe_ptr(index).get() {
+    if let p = try? __tree_._remap_to_safe_(index).get() {
       return !p.___is_end
     }
     return false
@@ -168,8 +168,8 @@ extension ___UnsafeIndexV2 where Self: Sequence {
 
       let bounds = bounds.relative(to: self)
       if
-        let _ = try? __tree_._remap_to_safe_ptr(bounds.lowerBound).get(),
-        let _ = try? __tree_._remap_to_safe_ptr(bounds.upperBound).get() {
+        let _ = try? __tree_._remap_to_safe_(bounds.lowerBound).get(),
+        let _ = try? __tree_._remap_to_safe_(bounds.upperBound).get() {
         return true
       }
       return false
@@ -219,7 +219,7 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   @discardableResult
   public mutating func ___erase(_ ptr: Index) -> Index {
-    ___index(__tree_.erase(try! __tree_._remap_to_safe_ptr(ptr).get()))
+    ___index(__tree_.erase(try! __tree_._remap_to_safe_(ptr).get()))
   }
 }
 

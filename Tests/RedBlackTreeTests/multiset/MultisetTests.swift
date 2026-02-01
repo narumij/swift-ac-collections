@@ -117,17 +117,16 @@ final class MultisetTests: RedBlackTreeTestCase {
   #if DEBUG
     func testRemoveAt() throws {
       var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set.___remove(at: set.__tree_.__begin_node_)?.payload, 0)
+      XCTAssertEqual(set._unchecked_remove(at: set.__tree_.__begin_node_).payload, 0)
       XCTAssertEqual(set.sorted(), [1, 2, 3, 4])
-      XCTAssertEqual(set.___remove(at: set.__tree_.__begin_node_)?.payload, 1)
+      XCTAssertEqual(set._unchecked_remove(at: set.__tree_.__begin_node_).payload, 1)
       XCTAssertEqual(set.sorted(), [2, 3, 4])
-      XCTAssertEqual(set.___remove(at: set.__tree_.__begin_node_)?.payload, 2)
+      XCTAssertEqual(set._unchecked_remove(at: set.__tree_.__begin_node_).payload, 2)
       XCTAssertEqual(set.sorted(), [3, 4])
-      XCTAssertEqual(set.___remove(at: set.__tree_.__begin_node_)?.payload, 3)
+      XCTAssertEqual(set._unchecked_remove(at: set.__tree_.__begin_node_).payload, 3)
       XCTAssertEqual(set.sorted(), [4])
-      XCTAssertEqual(set.___remove(at: set.__tree_.__begin_node_)?.payload, 4)
+      XCTAssertEqual(set._unchecked_remove(at: set.__tree_.__begin_node_).payload, 4)
       XCTAssertEqual(set.sorted(), [])
-      XCTAssertEqual(set.___remove(at: set.__tree_.__begin_node_)?.payload, nil)
     }
   #endif
 

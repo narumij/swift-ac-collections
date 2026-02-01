@@ -80,7 +80,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
   @inlinable
   internal subscript(_checked position: Index) -> _PayloadValue {
     @inline(__always) _read {
-      yield __tree_[try! __tree_._remap_to_safe_ptr(position).get()]
+      yield __tree_[try! __tree_._remap_to_safe_(position).get()]
     }
   }
 }

@@ -21,11 +21,10 @@
     public mutating func remove(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)
-      guard let p = try? p.get(), !p.___is_null_or_end else { return nil }
-      guard let (_, element) = ___remove(at: p) else {
-        fatalError(.invalidIndex)
+      guard let p = try? p.get(), !p.___is_null_or_end else {
+        return nil
       }
-      return element
+      return _unchecked_remove(at: p).payload
     }
 
     // MARK: -

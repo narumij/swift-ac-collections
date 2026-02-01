@@ -23,24 +23,16 @@
     // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
     @inlinable
     public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
-      guard
-        let p = try? bound.relative(to: __tree_).get(),
-        !p.___is_end
-      else {
-        return nil
-      }
+      let p = bound.relative(to: __tree_)
+      guard let p = try? p.get(), !p.___is_end else { return nil }
       return __tree_[p]
     }
 
     public func trackingTag(_ bound: RedBlackTreeBoundExpression<Element>)
       -> RedBlackTreeTrackingTag?
     {
-      guard
-        let p = try? bound.relative(to: __tree_).get(),
-        !p.___is_end
-      else {
-        return nil
-      }
+      let p = bound.relative(to: __tree_)
+      guard let p = try? p.get(), !p.___is_end else { return nil }
       return .init(rawValue: p.trackingTag)
     }
 
@@ -48,11 +40,8 @@
     public mutating func remove(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)
-      guard let p = try? p.get(), !p.___is_null_or_end else { return nil }
-      guard let (_, element) = ___remove(at: p) else {
-        fatalError(.invalidIndex)
-      }
-      return element
+      guard let p = try? p.get(), !p.___is_end else { return nil }
+      return _unchecked_remove(at: p).payload
     }
 
     // MARK: -

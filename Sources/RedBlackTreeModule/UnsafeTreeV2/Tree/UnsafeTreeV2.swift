@@ -174,17 +174,8 @@ extension UnsafeTreeV2 {
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
   @inline(__always)
-  internal func _remap_to_safe_ptr(_ index: Index) -> SafePtr
+  internal func _remap_to_safe_(_ index: Index) -> SafePtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-    if tied === index.tied {
-      if index.rawValue.___is_null {
-        return .failure(.null)
-      } else if index.rawValue.___is_garbaged {
-        return .failure(.garbaged)
-      } else {
-        return .success(index.rawValue)
-      }
-    }
-    return self[index._rawTag]
+    tied === index.tied ? index.rawValue.safe : self[index._rawTag]
   }
 }

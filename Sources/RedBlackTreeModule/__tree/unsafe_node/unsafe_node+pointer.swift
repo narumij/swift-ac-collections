@@ -293,4 +293,15 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     }
     return self
   }
+
+  @usableFromInline
+  var safe: SafePtr {
+    if ___is_null {
+      return .failure(.null)
+    } else if ___is_garbaged {
+      return .failure(.garbaged)
+    } else {
+      return .success(self)
+    }
+  }
 }

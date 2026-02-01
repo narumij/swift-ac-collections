@@ -15,9 +15,7 @@ extension UnsafeMutableTreeRangeProtocol {
   @discardableResult
   package mutating func ___remove_first() -> (__r: _NodePtr, payload: _PayloadValue)? {
     guard _start != _end else { return nil }
-    let ___e = __tree_[_start]
-    let __r = __tree_.erase(_start)
-    return (__r, ___e)
+    return _unchecked_remove(at: _start)
   }
 
   @inlinable
@@ -25,10 +23,7 @@ extension UnsafeMutableTreeRangeProtocol {
   @discardableResult
   package mutating func ___remove_last() -> (__r: _NodePtr, payload: _PayloadValue)? {
     guard _start != _end else { return nil }
-    let ___l = __tree_prev_iter(_end)
-    let ___e = __tree_[___l]
-    let __r = __tree_.erase(___l)
-    return (__r, ___e)
+    return _unchecked_remove(at: __tree_prev_iter(_end))
   }
 }
 
@@ -37,8 +32,7 @@ extension UnsafeMutableTreeRangeProtocol {
   @inlinable
   @inline(__always)
   @discardableResult
-  package mutating func ___remove(at ptr: _NodePtr) -> (__r: _NodePtr, payload: _PayloadValue)? {
-    guard !ptr.___is_subscript_null else { return nil }
+  package mutating func _unchecked_remove(at ptr: _NodePtr) -> (__r: _NodePtr, payload: _PayloadValue) {
     let ___e = __tree_[ptr]
     let __r = __tree_.erase(ptr)
     return (__r, ___e)

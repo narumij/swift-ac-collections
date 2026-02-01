@@ -240,7 +240,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     func testRemoveWith___Indices() throws {
       var members = RedBlackTreeMultiSet<Int>(0..<10)
       for i in members.___node_positions() {
-        members.___remove(at: i)
+        members._unchecked_remove(at: i)
       }
       XCTAssertEqual(members + [], [])
     }
@@ -248,7 +248,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     func testRemoveWith___Indices2() throws {
       var members = RedBlackTreeMultiSet<Int>(0..<10)
       members.___node_positions().forEach { i in
-        members.___remove(at: i)
+        members._unchecked_remove(at: i)
       }
       XCTAssertEqual(members + [], [])
     }
@@ -256,7 +256,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     func testRemoveWith___Indices3() throws {
       var members = RedBlackTreeMultiSet<Int>(0..<10)
       members.___node_positions().reversed().forEach { i in
-        members.___remove(at: i)
+        members._unchecked_remove(at: i)
       }
       XCTAssertEqual(members + [], [])
     }
@@ -300,7 +300,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     func testRemoveWithSub___Indices() throws {
       var members = RedBlackTreeMultiSet<Int>(0..<10)
       for i in members.elements(in: 2..<8).___node_positions() {
-        members.___remove(at: i)
+        members._unchecked_remove(at: i)
       }
       XCTAssertEqual(members + [], [0, 1, 8, 9])
     }
@@ -308,7 +308,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     func testRemoveWithSub___Indices2() throws {
       var members = RedBlackTreeMultiSet<Int>(0..<10)
       members.elements(in: 2..<8).___node_positions().forEach { i in
-        members.___remove(at: i)
+        members._unchecked_remove(at: i)
       }
       XCTAssertEqual(members + [], [0, 1, 8, 9])
     }
@@ -316,7 +316,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     func testRemoveWithSub___Indices4() throws {
       var members = RedBlackTreeMultiSet<Int>(0..<10)
       members.elements(in: 2..<8).___node_positions().reversed().forEach { i in
-        members.___remove(at: i)
+        members._unchecked_remove(at: i)
       }
       XCTAssertEqual(members + [], [0, 1, 8, 9])
     }

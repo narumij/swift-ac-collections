@@ -33,6 +33,68 @@ public enum UnsafeTreeRangeExpression: Equatable {
 
 extension UnsafeTreeRangeExpression {
 
+  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
+    .success(__tree_.__begin_node_)
+  }
+
+  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
+    .success(__tree_.__end_node)
+  }
+
+  @usableFromInline
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> (SafePtr, SafePtr)
+  where Base: ___TreeBase {
+    switch self {
+    case .range(let lhs, let rhs):
+      return (lhs.safe, rhs.safe)
+    case .closedRange(let lhs, let rhs):
+      return (lhs.safe, rhs.safe.flatMap { ___tree_next_iter($0) })
+    case .partialRangeTo(let rhs):
+      return (_start(__tree_), rhs.safe)
+    case .partialRangeThrough(let rhs):
+      return (_start(__tree_), rhs.safe.flatMap { ___tree_next_iter($0) })
+    case .partialRangeFrom(let lhs):
+      return (lhs.safe, _end(__tree_))
+    case .unboundedRange:
+      return (_start(__tree_), _end(__tree_))
+    }
+  }
+}
+
+extension UnsafeTreeRangeExpression {
+
+  func _start(_ tied: _TiedRawBuffer) -> SafePtr {
+    tied.begin_ptr.map { .success($0.pointee) } ?? .failure(.null)
+  }
+
+  func _end(_ tied: _TiedRawBuffer) -> SafePtr {
+    tied.end_ptr.map { .success($0) } ?? .failure(.null)
+  }
+
+  @usableFromInline
+  func relative(to tied: _TiedRawBuffer) -> (SafePtr, SafePtr) {
+    guard tied.isValueAccessAllowed else {
+      return (.failure(.notAllowed), .failure(.notAllowed))
+    }
+    switch self {
+    case .range(let lhs, let rhs):
+      return (lhs.safe, rhs.safe)
+    case .closedRange(let lhs, let rhs):
+      return (lhs.safe, rhs.safe.flatMap { ___tree_next_iter($0) })
+    case .partialRangeTo(let rhs):
+      return (_start(tied), rhs.safe)
+    case .partialRangeThrough(let rhs):
+      return (_start(tied), rhs.safe.flatMap { ___tree_next_iter($0) })
+    case .partialRangeFrom(let lhs):
+      return (lhs.safe, _end(tied))
+    case .unboundedRange:
+      return (_start(tied), _end(tied))
+    }
+  }
+}
+
+extension UnsafeTreeRangeExpression {
+
   #if false
     @usableFromInline
     func _slow_pair()
@@ -52,126 +114,4 @@ extension UnsafeTreeRangeExpression {
       }
     }
   #endif
-
-  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
-    .success(__tree_.__begin_node_)
-  }
-
-  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
-    .success(__tree_.__end_node)
-  }
-
-  @usableFromInline
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> (SafePtr, SafePtr)
-  where Base: ___TreeBase {
-    switch self {
-    case .range(let lhs, let rhs):
-      return (.success(lhs), .success(rhs))
-    case .closedRange(let lhs, let rhs):
-      return (.success(lhs), ___tree_next_iter(rhs))
-    case .partialRangeTo(let rhs):
-      return (_start(__tree_), .success(rhs))
-    case .partialRangeThrough(let rhs):
-      return (_start(__tree_), ___tree_next_iter(rhs))
-    case .partialRangeFrom(let lhs):
-      return (.success(lhs), _end(__tree_))
-    case .unboundedRange:
-      return (_start(__tree_), _end(__tree_))
-    }
-  }
-
-  @usableFromInline
-  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)
-  where Base: ___TreeBase {
-    let (_begin, _end) = (__tree_.__begin_node_, __tree_.__end_node)
-    switch self {
-    case .range(let lhs, let rhs):
-      return (lhs, rhs)
-    case .closedRange(let lhs, let rhs):
-      guard !rhs.___is_end else { fatalError(.outOfBounds) }
-      return (lhs, __tree_next(rhs))
-    case .partialRangeTo(let rhs):
-      return (_begin, rhs)
-    case .partialRangeThrough(let rhs):
-      guard !rhs.___is_end else { fatalError(.outOfBounds) }
-      return (_begin, __tree_next(rhs))
-    case .partialRangeFrom(let lhs):
-      return (lhs, _end)
-    case .unboundedRange:
-      return (_begin, _end)
-    }
-  }
-
-  @usableFromInline
-  func rawRange(_begin: UnsafeMutablePointer<UnsafeNode>, _end: UnsafeMutablePointer<UnsafeNode>)
-    -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)
-  {
-    switch self {
-    case .range(let lhs, let rhs):
-      return (lhs, rhs)
-    case .closedRange(let lhs, let rhs):
-      guard !rhs.___is_end else { fatalError(.outOfBounds) }
-      return (lhs, __tree_next(rhs))
-    case .partialRangeTo(let rhs):
-      return (_begin, rhs)
-    case .partialRangeThrough(let rhs):
-      guard !rhs.___is_end else { fatalError(.outOfBounds) }
-      return (_begin, __tree_next(rhs))
-    case .partialRangeFrom(let lhs):
-      return (lhs, _end)
-    case .unboundedRange:
-      return (_begin, _end)
-    }
-  }
-
-  @usableFromInline
-  func range(_begin: UnsafeMutablePointer<UnsafeNode>, _end: UnsafeMutablePointer<UnsafeNode>)
-    -> UnsafeTreeRange
-  {
-    switch self {
-    case .range(let lhs, let rhs):
-      .init(___from: lhs, ___to: rhs)
-    case .closedRange(let lhs, let rhs):
-      .init(___from: lhs, ___to: __tree_next(rhs))
-    case .partialRangeTo(let rhs):
-      .init(___from: _begin, ___to: rhs)
-    case .partialRangeThrough(let rhs):
-      .init(___from: _begin, ___to: __tree_next(rhs))
-    case .partialRangeFrom(let lhs):
-      .init(___from: lhs, ___to: _end)
-    case .unboundedRange:
-      .init(___from: _begin, ___to: _end)
-    }
-  }
-}
-
-public func ..< (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeRangeExpression
-{
-  .range(from: lhs, to: rhs)
-}
-
-public func ... (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeRangeExpression
-{
-  .closedRange(from: lhs, through: rhs)
-}
-
-public prefix func ..< (rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeRangeExpression
-{
-  .partialRangeTo(rhs)
-}
-
-public prefix func ... (rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeRangeExpression
-{
-  .partialRangeThrough(rhs)
-}
-
-public postfix func ... (lhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeRangeExpression
-{
-  .partialRangeFrom(lhs)
 }

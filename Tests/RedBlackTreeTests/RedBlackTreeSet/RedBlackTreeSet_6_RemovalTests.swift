@@ -82,7 +82,7 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     #if COMPATIBLE_ATCODER_2025
     set.removeSubrange(start..<end)
     #else
-    set.removeSubrange(start..<end)
+    set.removeAll(in: start..<end)
     #endif
     XCTAssertEqual(set.sorted(), [1, 5], "指定範囲の要素を削除すること")
   }

@@ -135,39 +135,6 @@ extension _TiedRawBuffer {
   }
 }
 
-extension _TiedRawBuffer {
-
-  @nonobjc
-  @usableFromInline
-  func rawRange(_ rangeExpression: UnsafeTreeRangeExpression) -> (_NodePtr, _NodePtr)? {
-    guard
-      let begin_ptr,
-      let end_ptr
-    else {
-      return nil
-    }
-
-    return
-      rangeExpression
-      .rawRange(_begin: begin_ptr.pointee, _end: end_ptr)
-  }
-
-  @nonobjc
-  @usableFromInline
-  func range(_ rangeExpression: UnsafeTreeRangeExpression) -> UnsafeTreeRange? {
-    guard
-      let begin_ptr,
-      let end_ptr
-    else {
-      return nil
-    }
-
-    return
-      rangeExpression
-      .range(_begin: begin_ptr.pointee, _end: end_ptr)
-  }
-}
-
 // TODO: 空の場合のインデックスやレンジの動作が課題となる。
 
 /// The type-punned empty singleton storage instance.

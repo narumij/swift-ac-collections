@@ -92,7 +92,7 @@ extension UnsafeIndexV2Collection {
 
   #if !COMPATIBLE_ATCODER_2025
     public subscript(bounds: UnsafeIndexV2RangeExpression<Base>) -> UnsafeIndexV2Collection {
-      let (lower, upper) = tied.rawRange(bounds.rawRange)!
+      let (lower, upper) = unwrapLowerUpperOrFatal(bounds.rawRange.relative(to: tied))
       return .init(start: lower, end: upper, tie: tied)
     }
   #endif

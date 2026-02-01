@@ -27,8 +27,10 @@ extension RedBlackTreeSliceV2.KeyValue {
 
     @inlinable
     public func isValid(_ bounds: _RangeExpression) -> Bool {
-      let (l, u) = bounds.rawRange._relative(to: __tree_)
-      return l.isValid && u.isValid
+      if let (l, u) = unwrapLowerUpper(bounds.rawRange.relative(to: __tree_)) {
+        return l.isValid && u.isValid
+      }
+      return false
     }
 
     @inlinable

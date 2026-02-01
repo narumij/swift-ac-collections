@@ -99,7 +99,11 @@ import XCTest
         if let lo = xy[1]?.lowerBound(i * N),
           let hi = xy[1]?.upperBound(i * N + N)
         {
-          xy[1]?.removeSubrange(lo..<hi)
+          #if COMPATIBLE_ATCODER_2025
+            xy[1]?.removeSubrange(lo..<hi)
+          #else
+            xy[1]?.removeAll(in: lo..<hi)
+          #endif
         }
       }
       XCTAssertEqual(xy[1]!.count, 0)

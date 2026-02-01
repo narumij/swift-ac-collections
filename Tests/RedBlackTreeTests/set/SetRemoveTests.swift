@@ -136,7 +136,11 @@ final class SetRemoveTests: RedBlackTreeTestCase {
     for l in 0..<10 {
       for h in l...10 {
         members = [1, 3, 5, 7, 9]
+#if COMPATIBLE_ATCODER_2025
         members.removeSubrange(members.lowerBound(l)..<members.upperBound(h))
+#else
+        members.removeAll(in: members.lowerBound(l)..<members.upperBound(h))
+#endif
         XCTAssertEqual(members + [], [1, 3, 5, 7, 9].filter { !(l...h).contains($0) })
       }
     }

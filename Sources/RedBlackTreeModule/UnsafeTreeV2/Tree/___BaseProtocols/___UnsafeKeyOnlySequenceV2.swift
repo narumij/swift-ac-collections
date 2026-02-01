@@ -69,8 +69,8 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   public func ___subscript(_ rawRange: UnsafeTreeRangeExpression)
     -> RedBlackTreeSliceV2<Base>.KeyOnly
   {
-    let (lower, upper) = rawRange._relative(to: __tree_)
-    guard __tree_.isValidRawRange(lower: lower.checked, upper: upper.checked) else {
+    let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
+    guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
       fatalError(.invalidIndex)
     }
     return .init(tree: __tree_, start: lower, end: upper)
@@ -80,7 +80,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   public func ___unchecked_subscript(_ rawRange: UnsafeTreeRangeExpression)
     -> RedBlackTreeSliceV2<Base>.KeyOnly
   {
-    let (lower, upper) = rawRange._relative(to: __tree_)
+    let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
     return .init(tree: __tree_, start: lower, end: upper)
   }
   
@@ -88,7 +88,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   public func ___subscript(_ rawRange: UnsafeTreeRangeExpression)
     -> RedBlackTreeKeyOnlyRangeView<Base>
   {
-    let (lower, upper) = rawRange._relative(to: __tree_)
+    let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
     guard __tree_.isValidRawRange(lower: lower.checked, upper: upper.checked) else {
       fatalError(.invalidIndex)
     }
@@ -99,7 +99,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   public func ___unchecked_subscript(_ rawRange: UnsafeTreeRangeExpression)
   -> RedBlackTreeKeyOnlyRangeView<Base>
   {
-    let (lower, upper) = rawRange._relative(to: __tree_)
+    let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
     return .init(__tree_: __tree_, _start: lower, _end: upper)
   }
 }
@@ -123,19 +123,6 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   ) rethrows -> Bool where OtherSequence: Sequence, _PayloadValue == OtherSequence.Element {
     try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
   }
-}
-
-extension ___UnsafeKeyOnlySequenceV2__ {
-
-//  @inlinable
-//  @inline(__always)
-//  internal func _isValid(
-//    _ rawRange: UnsafeTreeRangeExpression
-//  ) -> Bool {
-//
-//    let (l, u) = rawRange._relative(to: __tree_)
-//    return l.isValid && u.isValid
-//  }
 }
 
 @usableFromInline

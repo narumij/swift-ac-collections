@@ -47,7 +47,7 @@ extension UnsafeIndexV2RangeExpression: Sequence {
   public typealias Iterator = UnsafeIterator.IndexObverse<Base>
 
   public func makeIterator() -> Iterator {
-    let (lower, upper) = tied.rawRange(rawRange)!
+    let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: tied))
     return .init(start: lower, end: upper, tie: tied)
   }
 }
@@ -56,7 +56,7 @@ extension UnsafeIndexV2RangeExpression {
 
   @usableFromInline
   func relative(to __tree_: Tree) -> (_NodePtr, _NodePtr) {
-    rawRange._relative(to: __tree_)
+    unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
   }
 }
 
@@ -77,7 +77,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   -> UnsafeIndexV2RangeExpression<Base>
 {
   guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
-  return .init(rawValue: lhs.rawValue..<rhs.rawValue, tie: lhs.tied)
+  return .init(rawValue: .range(from: lhs.rawValue, to: rhs.rawValue), tie: lhs.tied)
 }
 
 #if !COMPATIBLE_ATCODER_2025
@@ -87,25 +87,25 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
     -> UnsafeIndexV2RangeExpression<Base>
   {
     guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
-    return .init(rawValue: lhs.rawValue...rhs.rawValue, tie: lhs.tied)
+    return .init(rawValue: .closedRange(from: lhs.rawValue, through: rhs.rawValue), tie: lhs.tied)
   }
 
   @inlinable
   @inline(__always)
   public prefix func ..< <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
-    return .init(rawValue: ..<rhs.rawValue, tie: rhs.tied)
+    return .init(rawValue: .partialRangeTo(rhs.rawValue), tie: rhs.tied)
   }
 
   @inlinable
   @inline(__always)
   public prefix func ... <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
-    return .init(rawValue: ...rhs.rawValue, tie: rhs.tied)
+    return .init(rawValue: .partialRangeThrough(rhs.rawValue), tie: rhs.tied)
   }
 
   @inlinable
   @inline(__always)
   public postfix func ... <Base>(lhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
-    return .init(rawValue: lhs.rawValue..., tie: lhs.tied)
+    return .init(rawValue: .partialRangeFrom(lhs.rawValue), tie: lhs.tied)
   }
 #endif
 

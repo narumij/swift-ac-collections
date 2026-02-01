@@ -82,6 +82,7 @@ public enum SafePtrError: Error {
   case garbaged
   case unknown
   case limit
+  case notAllowed
 
   /// nullptrに到達した
   ///

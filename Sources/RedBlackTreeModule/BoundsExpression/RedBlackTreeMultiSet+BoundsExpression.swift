@@ -17,42 +17,73 @@
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
-    
+
+    // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
+    @inlinable
+    public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
+      let p = bound.relative(to: __tree_)
+      guard let p = try? p.get(), !p.___is_end else { return nil }
+      return __tree_[p]
+    }
+
+    // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
     public mutating func remove(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)
-      guard let p = try? p.get(), !p.___is_null_or_end else {
-        return nil
-      }
+      guard let p = try? p.get(), !p.___is_end else { return nil }
       return _unchecked_remove(at: p).payload
+    }
+
+    public func trackingTag(_ bound: RedBlackTreeBoundExpression<Element>)
+      -> RedBlackTreeTrackingTag?
+    {
+      let p = bound.relative(to: __tree_)
+      guard let p = try? p.get(), !p.___is_end else { return nil }
+      return .init(rawValue: p.trackingTag)
     }
 
     // MARK: -
 
-    public subscript(bounds: RedBlackTreeBoundRangeExpression<Element>) -> SubSequence {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
+    public func count(
+      _ bounds: RedBlackTreeBoundRangeExpression<Element>
+    )
+      -> Int?
+    {
+      guard let d = distance(bounds), d >= 0 else {
+        return nil
       }
-      return .init(tree: __tree_, start: lower, end: upper)
+      return d
     }
 
-    public subscript(unchecked bounds: RedBlackTreeBoundRangeExpression<Element>) -> SubSequence {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      return .init(tree: __tree_, start: lower, end: upper)
-    }
-
-    public func indices(bounds: RedBlackTreeBoundRangeExpression<Element>)
-      -> UnsafeIndexV2Collection<Self>
+    public func distance(
+      _ bounds: RedBlackTreeBoundRangeExpression<Element>
+    )
+      -> Int?
     {
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard lower == upper || __tree_.___ptr_comp(lower, upper) else {
-        fatalError(.invalidIndex)
+      guard !lower.___is_null_or_end, !upper.___is_null else {
+        return nil
       }
-      return .init(start: lower, end: upper, tie: __tree_.tied)
+      return __tree_.___distance(from: lower, to: upper)
     }
-    
-    public mutating func removeBounds(_ bounds: RedBlackTreeBoundRangeExpression<Element>) {
+
+    public subscript(bounds: RedBlackTreeBoundRangeExpression<Element>)
+      -> RedBlackTreeKeyOnlyRangeView<Self>
+    {
+      @inline(__always) get {
+        let (lower, upper) = __tree_.rangeSanitize(bounds.relative(to: __tree_))
+        return .init(__tree_: __tree_, _start: lower, _end: upper)
+      }
+      @inline(__always) _modify {
+        let (lower, upper) = __tree_.rangeSanitize(bounds.relative(to: __tree_))
+        var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
+        self = RedBlackTreeMultiSet()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeMultiSet(__tree_: view.__tree_) }
+        yield &view
+      }
+    }
+
+    public mutating func removeAll(in bounds: RedBlackTreeBoundRangeExpression<Element>) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
@@ -61,14 +92,8 @@
       __tree_.___checking_erase(lower, upper)
     }
 
-    public mutating func removeBounds(unchecked bounds: RedBlackTreeBoundRangeExpression<Element>) {
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      __tree_.___checking_erase(lower, upper)
-    }
-
-    public mutating func removeBounds(
-      _ bounds: RedBlackTreeBoundRangeExpression<Element>,
+    public mutating func removeAll(
+      in bounds: RedBlackTreeBoundRangeExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()
@@ -76,15 +101,6 @@
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___checking_erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
-    }
-
-    public mutating func removeBounds(
-      unchecked bounds: RedBlackTreeBoundRangeExpression<Element>,
-      where shouldBeRemoved: (Element) throws -> Bool
-    ) rethrows {
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
       try __tree_.___checking_erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
   }

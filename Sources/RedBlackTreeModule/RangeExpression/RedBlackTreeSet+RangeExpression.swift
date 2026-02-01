@@ -40,28 +40,28 @@
     @inlinable
     public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower.checked, upper: upper.checked) else {
+      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       return .init(__tree_: __tree_, _start: lower, _end: upper)
     }
 
     @inlinable
-    public mutating func removeSubrange(_ bounds: UnboundedRange) {
+    public mutating func removeAll(in bounds: UnboundedRange) {
       __tree_.ensureUnique()
       _ = ___remove(from: _start, to: _end)
     }
     
     @inlinable
-    public mutating func removeSubrange(_ bounds: TrackingTagRangeExpression) {
+    public mutating func removeAll(in bounds: TrackingTagRangeExpression) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       _ = ___remove(from: lower, to: upper)
     }
 
     @inlinable
-    public mutating func removeSubrange(
-      _ bounds: TrackingTagRangeExpression,
+    public mutating func removeAll(
+      in bounds: TrackingTagRangeExpression,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 

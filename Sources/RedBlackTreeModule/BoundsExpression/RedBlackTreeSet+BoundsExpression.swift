@@ -28,14 +28,6 @@
       return __tree_[p]
     }
 
-    public func trackingTag(_ bound: RedBlackTreeBoundExpression<Element>)
-      -> RedBlackTreeTrackingTag?
-    {
-      let p = bound.relative(to: __tree_)
-      guard let p = try? p.get(), !p.___is_end else { return nil }
-      return .init(rawValue: p.trackingTag)
-    }
-
     // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
     public mutating func remove(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       __tree_.ensureUnique()
@@ -44,33 +36,15 @@
       return _unchecked_remove(at: p).payload
     }
 
-    // MARK: -
+    public func trackingTag(_ bound: RedBlackTreeBoundExpression<Element>)
+      -> RedBlackTreeTrackingTag?
+    {
+      let p = bound.relative(to: __tree_)
+      guard let p = try? p.get(), !p.___is_end else { return nil }
+      return .init(rawValue: p.trackingTag)
+    }
 
-    #if false
-      public subscript(bounds: RedBlackTreeBoundsExpression<Element>) -> SubSequence {
-        let (lower, upper) = bounds.relative(to: __tree_)
-        guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
-          fatalError(.invalidIndex)
-        }
-        return .init(tree: __tree_, start: lower, end: upper)
-      }
-    #else
-      public subscript(bounds: RedBlackTreeBoundRangeExpression<Element>)
-        -> RedBlackTreeKeyOnlyRangeView<Self>
-      {
-        @inline(__always) get {
-          let (lower, upper) = __tree_.rangeSanitize(bounds.relative(to: __tree_))
-          return .init(__tree_: __tree_, _start: lower, _end: upper)
-        }
-        @inline(__always) _modify {
-          let (lower, upper) = __tree_.rangeSanitize(bounds.relative(to: __tree_))
-          var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
-          self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
-          defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
-          yield &view
-        }
-      }
-    #endif
+    // MARK: -
 
     public func count(
       _ bounds: RedBlackTreeBoundRangeExpression<Element>
@@ -95,6 +69,22 @@
       return __tree_.___distance(from: lower, to: upper)
     }
 
+    public subscript(bounds: RedBlackTreeBoundRangeExpression<Element>)
+      -> RedBlackTreeKeyOnlyRangeView<Self>
+    {
+      @inline(__always) get {
+        let (lower, upper) = __tree_.rangeSanitize(bounds.relative(to: __tree_))
+        return .init(__tree_: __tree_, _start: lower, _end: upper)
+      }
+      @inline(__always) _modify {
+        let (lower, upper) = __tree_.rangeSanitize(bounds.relative(to: __tree_))
+        var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
+        self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
+        yield &view
+      }
+    }
+
     public mutating func removeAll(
       in bounds: RedBlackTreeBoundRangeExpression<Element>
     ) {
@@ -103,14 +93,6 @@
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      __tree_.___checking_erase(lower, upper)
-    }
-
-    public mutating func removeBounds(
-      unchecked bounds: RedBlackTreeBoundRangeExpression<Element>
-    ) {
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
       __tree_.___checking_erase(lower, upper)
     }
 
@@ -124,15 +106,6 @@
         fatalError(.invalidIndex)
       }
       try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
-    }
-
-    public mutating func removeBounds(
-      unchecked bounds: RedBlackTreeBoundRangeExpression<Element>,
-      where shouldBeRemoved: (Element) throws -> Bool
-    ) rethrows {
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      try __tree_.___checking_erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
   }
 #endif

@@ -204,15 +204,15 @@ extension ___UnsafeKeyValueSequenceV2 {
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 where Self: Sequence {
-
-  @inlinable
-  @inline(__always)
-  internal func _isValid(
-    _ rawRange: UnsafeTreeRangeExpression
-  ) -> Bool {
-
-    let (l, u) = rawRange._relative(to: __tree_)
-    return l.isValid && u.isValid
-  }
-}
+//extension ___UnsafeKeyValueSequenceV2 where Self: Sequence {
+//
+//  @inlinable
+//  @inline(__always)
+//  internal func _isValid(
+//    _ rawRange: UnsafeTreeRangeExpression
+//  ) -> Bool {
+//
+//    let (l, u) = rawRange._relative(to: __tree_)
+//    return l.isValid && u.isValid
+//  }
+//}

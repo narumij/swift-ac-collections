@@ -22,12 +22,13 @@
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      _isValid(.unboundedRange)  // 常にtrueな気がする
+      true
     }
 
     @inlinable
     public func isValid(_ bounds: _RangeExpression) -> Bool {
-      _isValid(bounds.rawRange)
+      let (l, u) = bounds.rawRange._relative(to: __tree_)
+      return l.isValid && u.isValid
     }
 
     @inlinable
@@ -53,13 +54,14 @@
     @inlinable
     public mutating func removeSubrange(_ bounds: UnboundedRange) {
       __tree_.ensureUnique()
-      _ = ___remove(.unboundedRange)
+      _ = ___remove(from: _start, to: _end)
     }
 
     @inlinable
     public mutating func removeSubrange(_ bounds: _RangeExpression) {
       __tree_.ensureUnique()
-      _ = ___remove(bounds.rawRange)
+      let (lower, upper) = bounds.rawRange._relative(to: __tree_)
+      _ = ___remove(from: lower, to: upper)
     }
 
     @inlinable

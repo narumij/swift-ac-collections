@@ -26,7 +26,8 @@ extension UnsafeTreeV2 {
       !lower.___is_garbaged,
       !upper.___is_garbaged
     else {
-      fatalError(.invalidIndex)
+//      fatalError(.invalidIndex)
+      return false
     }
 
     if upper.___is_end {
@@ -37,31 +38,32 @@ extension UnsafeTreeV2 {
       // lower <= upper は、upper > lowerなので
       !___ptr_comp(upper, lower)
     else {
-      fatalError(.outOfRange)
+      return false
+//      fatalError(.outOfRange)
     }
 
     return true
   }
   
-  @inlinable
-  func isValidRawRange(range: UnsafeTreeRangeExpression) -> Bool {
-    let (lower, upper) = range._relative(to: self)
-    return isValidRawRange(lower: lower, upper: upper)
-  }
+//  @inlinable
+//  func isValidRawRange(range: UnsafeTreeRangeExpression) -> Bool {
+//    let (lower, upper) = range._relative(to: self)
+//    return isValidRawRange(lower: lower, upper: upper)
+//  }
 }
 
 extension UnsafeTreeV2 {
   
-  @inlinable
-  func usnafeSanitize(_ tuple: (lower: _NodePtr, upper: _NodePtr)) -> (_NodePtr,_NodePtr) {
-    let (lower, upper) = tuple
-    assert(!lower.___is_garbaged)
-    assert(!upper.___is_garbaged)
-    guard !lower.___is_null_or_end, !upper.___is_null else {
-      return (__end_node, __end_node)
-    }
-    return (lower, upper)
-  }
+//  @inlinable
+//  func usnafeSanitize(_ tuple: (lower: _NodePtr, upper: _NodePtr)) -> (_NodePtr,_NodePtr) {
+//    let (lower, upper) = tuple
+//    assert(!lower.___is_garbaged)
+//    assert(!upper.___is_garbaged)
+//    guard !lower.___is_null_or_end, !upper.___is_null else {
+//      return (__end_node, __end_node)
+//    }
+//    return (lower, upper)
+//  }
   
 //  @inlinable
 //  func fullSanitize(_ tuple: (lower: _NodePtr, upper: _NodePtr)) -> (_NodePtr,_NodePtr) {

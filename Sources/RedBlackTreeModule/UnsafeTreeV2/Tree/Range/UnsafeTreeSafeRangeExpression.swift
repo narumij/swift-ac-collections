@@ -15,7 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-public enum UnsafeTreeRangeExpression2: Equatable {
+public enum UnsafeTreeSafeRangeExpression: Equatable {
   public typealias Bound = SafePtr
   /// `a..<b` のこと
   case range(from: Bound, to: Bound)
@@ -31,7 +31,7 @@ public enum UnsafeTreeRangeExpression2: Equatable {
   case unboundedRange
 }
 
-extension UnsafeTreeRangeExpression2 {
+extension UnsafeTreeSafeRangeExpression {
 
   func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
     .success(__tree_.__begin_node_)
@@ -42,7 +42,7 @@ extension UnsafeTreeRangeExpression2 {
   }
 
   @usableFromInline
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> (SafePtr, SafePtr)
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> (_from: SafePtr, _to: SafePtr)
   where Base: ___TreeBase {
     switch self {
     case .range(let lhs, let rhs):
@@ -61,22 +61,53 @@ extension UnsafeTreeRangeExpression2 {
   }
 }
 
-public func ..< (lhs: SafePtr, rhs: SafePtr) -> UnsafeTreeRangeExpression2 {
+public func ..< (lhs: SafePtr, rhs: SafePtr) -> UnsafeTreeSafeRangeExpression {
   .range(from: lhs, to: rhs)
 }
 
-public func ... (lhs: SafePtr, rhs: SafePtr) -> UnsafeTreeRangeExpression2 {
+public func ... (lhs: SafePtr, rhs: SafePtr) -> UnsafeTreeSafeRangeExpression {
   .closedRange(from: lhs, through: rhs)
 }
 
-public prefix func ..< (rhs: SafePtr) -> UnsafeTreeRangeExpression2 {
+public prefix func ..< (rhs: SafePtr) -> UnsafeTreeSafeRangeExpression {
   .partialRangeTo(rhs)
 }
 
-public prefix func ... (rhs: SafePtr) -> UnsafeTreeRangeExpression2 {
+public prefix func ... (rhs: SafePtr) -> UnsafeTreeSafeRangeExpression {
   .partialRangeThrough(rhs)
 }
 
-public postfix func ... (lhs: SafePtr) -> UnsafeTreeRangeExpression2 {
+public postfix func ... (lhs: SafePtr) -> UnsafeTreeSafeRangeExpression {
   .partialRangeFrom(lhs)
+}
+
+@inlinable @inline(__always)
+func unwrapLowerUpperOrFatal(_ bounds: (SafePtr, SafePtr))
+  -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)
+{
+  switch bounds {
+  case (.success(let l), .success(let u)):
+    return (l, u)
+
+  case (.failure(let e), .success):
+    fatalError("lower failed: \(e)")
+
+  case (.success, .failure(let e)):
+    fatalError("upper failed: \(e)")
+
+  case (.failure(let le), .failure(let ue)):
+    fatalError("both failed: lower=\(le), upper=\(ue)")
+  }
+}
+
+@inlinable @inline(__always)
+func unwrapLowerUpper(_ bounds: (SafePtr, SafePtr))
+  -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)?
+{
+  switch bounds {
+  case (.success(let l), .success(let u)):
+    return (l, u)
+  default:
+    return nil
+  }
 }

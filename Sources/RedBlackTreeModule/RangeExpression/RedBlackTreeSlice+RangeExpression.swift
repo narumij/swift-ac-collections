@@ -22,12 +22,13 @@
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      _isValid(.unboundedRange)  // 常にtrueな気がする
+      return _start.isValid && _end.isValid
     }
 
     @inlinable
     public func isValid(_ bounds: _RangeExpression) -> Bool {
-      _isValid(bounds.rawRange)
+      let (l, u) = bounds.rawRange._relative(to: __tree_)
+      return l.isValid && u.isValid
     }
 
     @inlinable
@@ -47,20 +48,6 @@
         fatalError(.invalidIndex)
       }
       return .init(__tree_: __tree_, _start: lower, _end: upper)
-    }
-
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(unchecked bounds: UnboundedRange) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      ___unchecked_subscript(.unboundedRange)
-    }
-
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(unchecked bounds: _RangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      ___unchecked_subscript(bounds.rawRange)
     }
   }
 #endif

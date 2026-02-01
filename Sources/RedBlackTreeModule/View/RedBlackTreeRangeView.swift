@@ -248,6 +248,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   }
 }
 
+#if false
 // 以下は実験的な実装。Viewには載せない
 
 extension RedBlackTreeKeyOnlyRangeView {
@@ -262,6 +263,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     return _unchecked_remove(at: __p).payload
   }
 }
+#endif
 
 extension RedBlackTreeKeyOnlyRangeView {
   /// Indexがsubscriptやremoveで利用可能か判別します
@@ -312,7 +314,7 @@ extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Equatable {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    _elementsEqual(other, by: ==)
+    elementsEqual(other, by: ==)
   }
 }
 
@@ -324,7 +326,7 @@ extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Comparable {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    _lexicographicallyPrecedes(other, by: <)
+    lexicographicallyPrecedes(other, by: <)
   }
 }
 

@@ -127,15 +127,15 @@ extension ___UnsafeKeyOnlySequenceV2__ {
 
 extension ___UnsafeKeyOnlySequenceV2__ {
 
-  @inlinable
-  @inline(__always)
-  internal func _isValid(
-    _ rawRange: UnsafeTreeRangeExpression
-  ) -> Bool {
-
-    let (l, u) = rawRange._relative(to: __tree_)
-    return l.isValid && u.isValid
-  }
+//  @inlinable
+//  @inline(__always)
+//  internal func _isValid(
+//    _ rawRange: UnsafeTreeRangeExpression
+//  ) -> Bool {
+//
+//    let (l, u) = rawRange._relative(to: __tree_)
+//    return l.isValid && u.isValid
+//  }
 }
 
 @usableFromInline

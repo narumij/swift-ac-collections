@@ -21,18 +21,11 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    public typealias _RangeExpression = UnsafeIndexV2RangeExpression<Self>
-
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      _isValid(.unboundedRange)  // 常にtrueな気がする
+      true
     }
 
-    @inlinable
-    public func isValid(_ bounds: _RangeExpression) -> Bool {
-      _isValid(bounds.rawRange)
-    }
-    
     @inlinable
     public func isValid(_ bounds: TrackingTagRangeExpression) -> Bool {
       let (l, u) = bounds.relative(to: __tree_)
@@ -43,31 +36,6 @@
     public subscript(bounds: UnboundedRange) -> SubSequence {
       ___subscript(.unboundedRange)
     }
-
-    #if false
-      @inlinable
-      public subscript(bounds: _RangeExpression) -> SubSequence {
-        ___subscript(bounds.rawRange)
-      }
-    #else
-      public subscript(bounds: _RangeExpression)
-        -> RedBlackTreeKeyOnlyRangeView<Self>
-      {
-        @inline(__always)
-        get {
-          let (lower, upper) = bounds.relative(to: __tree_)
-          return .init(__tree_: __tree_, _start: lower, _end: upper)
-        }
-        @inline(__always)
-        _modify {
-          let (lower, upper) = bounds.relative(to: __tree_)
-          var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
-          self = RedBlackTreeSet()
-          defer { self = .init(__tree_: view.__tree_) }
-          yield &view
-        }
-      }
-    #endif
     
     @inlinable
     public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
@@ -78,30 +46,10 @@
       return .init(__tree_: __tree_, _start: lower, _end: upper)
     }
 
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(unchecked bounds: UnboundedRange) -> SubSequence {
-      ___unchecked_subscript(.unboundedRange)
-    }
-
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(unchecked bounds: _RangeExpression) -> SubSequence {
-      ___unchecked_subscript(bounds.rawRange)
-    }
-
     @inlinable
     public mutating func removeSubrange(_ bounds: UnboundedRange) {
       __tree_.ensureUnique()
-      _ = ___remove(.unboundedRange)
-    }
-
-    @inlinable
-    public mutating func removeSubrange(_ bounds: _RangeExpression) {
-      __tree_.ensureUnique()
-      _ = ___remove(bounds.rawRange)
+      _ = ___remove(from: _start, to: _end)
     }
     
     @inlinable
@@ -112,20 +60,8 @@
     }
 
     @inlinable
-    public mutating func removeSubrange(unchecked bounds: UnboundedRange) {
-      __tree_.ensureUnique()
-      _ = ___unchecked_remove(.unboundedRange)
-    }
-
-    @inlinable
-    public mutating func removeSubrange(unchecked bounds: _RangeExpression) {
-      __tree_.ensureUnique()
-      _ = ___unchecked_remove(bounds.rawRange)
-    }
-
-    @inlinable
     public mutating func removeSubrange(
-      _ bounds: _RangeExpression,
+      _ bounds: TrackingTagRangeExpression,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
@@ -135,19 +71,6 @@
         fatalError(.invalidIndex)
       }
       try __tree_.___erase_if(
-        lower, upper,
-        shouldBeRemoved: shouldBeRemoved)
-    }
-
-    @inlinable
-    public mutating func removeSubrange(
-      unchecked bounds: _RangeExpression,
-      where shouldBeRemoved: (Element) throws -> Bool
-    ) rethrows {
-
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      try __tree_.___checking_erase_if(
         lower, upper,
         shouldBeRemoved: shouldBeRemoved)
     }

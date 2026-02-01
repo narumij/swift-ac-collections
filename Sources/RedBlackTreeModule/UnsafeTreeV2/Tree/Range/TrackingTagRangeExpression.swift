@@ -11,19 +11,19 @@ public enum TrackingTag_: Equatable {
 }
 
 #if DEBUG
-//  extension TrackingTag_: ExpressibleByIntegerLiteral {
-//
-//    public init(integerLiteral value: _RawTrackingTag) {
-//      switch value {
-//      case .end:
-//        self = .end
-//      case 0...:
-//        self = .tag(value)
-//      default:
-//        fatalError(.invalidIndex)
-//      }
-//    }
-//  }
+  //  extension TrackingTag_: ExpressibleByIntegerLiteral {
+  //
+  //    public init(integerLiteral value: _RawTrackingTag) {
+  //      switch value {
+  //      case .end:
+  //        self = .end
+  //      case 0...:
+  //        self = .tag(value)
+  //      default:
+  //        fatalError(.invalidIndex)
+  //      }
+  //    }
+  //  }
 
   extension TrackingTag_ {
 
@@ -88,9 +88,9 @@ extension Optional where Wrapped == TrackingTag_ {
       self
     }
 
-    internal static func unsafe<Base>(tree: UnsafeTreeV2<Base>, rawValue: _NodePtr) -> Self {
-      .create(rawValue)
-    }
+//    internal static func unsafe<Base>(tree: UnsafeTreeV2<Base>, rawValue: _NodePtr) -> Self {
+//      .create(rawValue)
+//    }
 
     internal static func unsafe<Base>(tree: UnsafeTreeV2<Base>, rawTag: _RawTrackingTag) -> Self {
       if rawTag == .nullptr {
@@ -155,7 +155,7 @@ extension TrackingTagRangeExpression {
 
   @inlinable @inline(__always)
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> UnsafeTreeRangeExpression2
+    -> UnsafeTreeSafeRangeExpression
   where
     Base: ___TreeBase
   {
@@ -185,18 +185,18 @@ extension TrackingTagRangeExpression {
     }
   }
 
-  @usableFromInline
-  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> (
-      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>,
-      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
-    )
-  where
-    Base: ___TreeBase
-  {
-    relative(to: __tree_)
-      .relative(to: __tree_)
-  }
+//  @usableFromInline
+//  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+//    -> (
+//      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>,
+//      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
+//    )
+//  where
+//    Base: ___TreeBase
+//  {
+//    relative(to: __tree_)
+//      .relative(to: __tree_)
+//  }
 
   @usableFromInline
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
@@ -211,42 +211,5 @@ extension TrackingTagRangeExpression {
       relative(to: __tree_)
         .relative(to: __tree_))
       ?? (__tree_.__end_node, __tree_.__end_node)
-  }
-
-  @inlinable @inline(__always)
-  func unwrapLowerUpperOrFatal(
-    _ bounds: (
-      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>,
-      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
-    )
-  ) -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>) {
-    switch bounds {
-    case (.success(let l), .success(let u)):
-      return (l, u)
-
-    case (.failure(let e), .success):
-      fatalError("lower failed: \(e)")
-
-    case (.success, .failure(let e)):
-      fatalError("upper failed: \(e)")
-
-    case (.failure(let le), .failure(let ue)):
-      fatalError("both failed: lower=\(le), upper=\(ue)")
-    }
-  }
-
-  @inlinable @inline(__always)
-  func unwrapLowerUpper(
-    _ bounds: (
-      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>,
-      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
-    )
-  ) -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)? {
-    switch bounds {
-    case (.success(let l), .success(let u)):
-      return (l, u)
-    default:
-      return nil
-    }
   }
 }

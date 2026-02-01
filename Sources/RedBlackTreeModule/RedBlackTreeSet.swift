@@ -412,7 +412,7 @@ extension RedBlackTreeSet {
     __tree_.ensureUnique()
     return ___remove_first()?.payload
   }
-  
+
   /// - Complexity: O(log `count`)
   @inlinable
   //  @inline(__always)
@@ -564,8 +564,10 @@ extension RedBlackTreeSet {
 
     /// - Complexity: O( log `count` )
     @inlinable
-    public func firstIndex(of member: Element) -> RedBlackTreeTrackingTag {
-      .create(__tree_.find(member))
+    public func firstIndex(of member: Element)
+      -> RedBlackTreeTrackingTag
+    {
+      .create(__tree_.find(member)).flatMap { $0 == .end ? nil : $0 }
     }
 
     /// - Complexity: O( `count` )

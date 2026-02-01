@@ -36,6 +36,7 @@ public enum TrackingTag_: Equatable {
 
 extension TrackingTag_: RawRepresentable {
 
+  @inlinable
   public init?(rawValue value: _RawTrackingTag) {
     switch value {
     case .end:
@@ -47,6 +48,7 @@ extension TrackingTag_: RawRepresentable {
     }
   }
 
+  @inlinable
   public var rawValue: _RawTrackingTag {
     switch self {
     case .end:
@@ -61,12 +63,12 @@ public typealias RedBlackTreeTrackingTag = TrackingTag_?
 
 extension Optional where Wrapped == TrackingTag_ {
 
-  @usableFromInline
+  @inlinable
   static func create(_ t: _RawTrackingTag) -> Self {
     TrackingTag_(rawValue: t)
   }
 
-  @usableFromInline
+  @inlinable
   static func create(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Self {
     t.flatMap { TrackingTag_(rawValue: $0.trackingTag) }
   }
@@ -87,10 +89,6 @@ extension Optional where Wrapped == TrackingTag_ {
     internal var trackingTag: RedBlackTreeTrackingTag {
       self
     }
-
-//    internal static func unsafe<Base>(tree: UnsafeTreeV2<Base>, rawValue: _NodePtr) -> Self {
-//      .create(rawValue)
-//    }
 
     internal static func unsafe<Base>(tree: UnsafeTreeV2<Base>, rawTag: _RawTrackingTag) -> Self {
       if rawTag == .nullptr {
@@ -184,19 +182,6 @@ extension TrackingTagRangeExpression {
       return .unboundedRange
     }
   }
-
-//  @usableFromInline
-//  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-//    -> (
-//      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>,
-//      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
-//    )
-//  where
-//    Base: ___TreeBase
-//  {
-//    relative(to: __tree_)
-//      .relative(to: __tree_)
-//  }
 
   @usableFromInline
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>)

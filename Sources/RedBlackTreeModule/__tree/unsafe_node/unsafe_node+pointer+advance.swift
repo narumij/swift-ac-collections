@@ -10,6 +10,31 @@ public typealias SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError
 @inlinable
 @inline(__always)
 internal func
+  ___tree_next_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> SafePtr
+{
+  __x.___is_end
+    // endへの操作は失敗
+    ? .failure(.upperOutOfBounds)
+    : .success(__tree_next_iter(__x))
+}
+
+/// Returns:  pointer to the previous in-order node before `__x`.
+/// Note: `__x` may be the end node.
+@inlinable
+@inline(__always)
+internal func
+  ___tree_prev_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> SafePtr
+{
+  let __x = __tree_prev_iter(__x)
+  // nullptrの発生は失敗
+  return __x.___is_null
+    ? .failure(.lowerOutOfBounds)
+    : .success(__x)
+}
+
+@inlinable
+@inline(__always)
+internal func
   ___tree_adv_iter(_ __x: UnsafeMutablePointer<UnsafeNode>, _ __n: Int)
   -> SafePtr
 {
@@ -55,27 +80,6 @@ internal func
   }
 
   return __x
-}
-
-@inlinable
-@inline(__always)
-internal func
-  ___tree_next_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> SafePtr
-{
-  // endへの操作は失敗
-  __x.___is_end ? .failure(.upperOutOfBounds) : .success(__tree_next_iter(__x))
-}
-
-/// Returns:  pointer to the previous in-order node before `__x`.
-/// Note: `__x` may be the end node.
-@inlinable
-@inline(__always)
-internal func
-  ___tree_prev_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> SafePtr
-{
-  let __x = __tree_prev_iter(__x)
-  // nullptrの発生は失敗
-  return __x.___is_null ? .failure(.lowerOutOfBounds) : .success(__x)
 }
 
 public enum SafePtrError: Error {

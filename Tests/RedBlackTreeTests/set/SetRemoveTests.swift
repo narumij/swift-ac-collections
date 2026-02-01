@@ -233,33 +233,35 @@ final class SetRemoveTest_10: RedBlackTreeTestCase {
     }
   #endif
 
-  func testRemoveWithIndices1() throws {
-    for i in members.indices {
-      members.remove(at: i)
+  #if COMPATIBLE_ATCODER_2025
+    func testRemoveWithIndices1() throws {
+      for i in members.indices {
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members + [], [])
     }
-    XCTAssertEqual(members + [], [])
-  }
 
-  func testRemoveWithIndices2() throws {
-    members.indices.forEach { i in
-      members.remove(at: i)
+    func testRemoveWithIndices2() throws {
+      members.indices.forEach { i in
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members + [], [])
     }
-    XCTAssertEqual(members + [], [])
-  }
 
-  func testRemoveWithIndices3() throws {
-    for i in members.indices.reversed() {
-      members.remove(at: i)
+    func testRemoveWithIndices3() throws {
+      for i in members.indices.reversed() {
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members + [], [])
     }
-    XCTAssertEqual(members + [], [])
-  }
 
-  func testRemoveWithIndices4() throws {
-    members.indices.reversed().forEach { i in
-      members.remove(at: i)
+    func testRemoveWithIndices4() throws {
+      members.indices.reversed().forEach { i in
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members + [], [])
     }
-    XCTAssertEqual(members + [], [])
-  }
+  #endif
 
   #if DEBUG
     func testRemoveWith___Indices() throws {

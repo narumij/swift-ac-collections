@@ -15,7 +15,7 @@ print()
 
 for count in [0,32,256,1024,8192,10000,100000,1000000] {
   let fixture = Fixture<Int>(0..<count)
-  let indices = fixture.indices.shuffled(using: &mt)
+  let indices = fixture.__indices.shuffled(using: &mt)
   benchmark("remove shuffled \(count)") {
     var f = fixture
     for i in indices {

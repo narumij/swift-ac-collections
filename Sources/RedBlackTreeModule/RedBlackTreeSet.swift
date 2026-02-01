@@ -783,9 +783,9 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var indices: AnySequence<RedBlackTreeTrackingTag> {
-      // TODO: 新しい実装をする、あるいは廃止する
-      AnySequence(_indices.map(\.trackingTag))
+    package var __indices: [RedBlackTreeTrackingTag] {
+      // TODO: 基本的に廃止
+      _indices.map(\.trackingTag)
     }
   }
 
@@ -794,8 +794,8 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func reversed() -> AnySequence<Element> {
-      AnySequence(_reversed())
+    public func reversed() -> Tree._PayloadValues.ReversedIterator {
+      _reversed()
     }
   }
 #endif

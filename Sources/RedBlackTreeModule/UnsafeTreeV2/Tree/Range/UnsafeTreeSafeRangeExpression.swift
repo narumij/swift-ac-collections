@@ -61,6 +61,8 @@ extension UnsafeTreeSafeRangeExpression {
   }
 }
 
+// MARK: -
+
 public func ..< (lhs: SafePtr, rhs: SafePtr) -> UnsafeTreeSafeRangeExpression {
   .range(from: lhs, to: rhs)
 }
@@ -81,6 +83,40 @@ public postfix func ... (lhs: SafePtr) -> UnsafeTreeSafeRangeExpression {
   .partialRangeFrom(lhs)
 }
 
+// MARK: -
+
+public func ..< (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
+  -> UnsafeTreeSafeRangeExpression
+{
+  .range(from: lhs.safe, to: rhs.safe)
+}
+
+public func ... (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
+  -> UnsafeTreeSafeRangeExpression
+{
+  .closedRange(from: lhs.safe, through: rhs.safe)
+}
+
+public prefix func ..< (rhs: UnsafeMutablePointer<UnsafeNode>)
+  -> UnsafeTreeSafeRangeExpression
+{
+  .partialRangeTo(rhs.safe)
+}
+
+public prefix func ... (rhs: UnsafeMutablePointer<UnsafeNode>)
+  -> UnsafeTreeSafeRangeExpression
+{
+  .partialRangeThrough(rhs.safe)
+}
+
+public postfix func ... (lhs: UnsafeMutablePointer<UnsafeNode>)
+  -> UnsafeTreeSafeRangeExpression
+{
+  .partialRangeFrom(lhs.safe)
+}
+
+// MARK: -
+
 @inlinable @inline(__always)
 func unwrapLowerUpperOrFatal(_ bounds: (SafePtr, SafePtr))
   -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)
@@ -99,6 +135,8 @@ func unwrapLowerUpperOrFatal(_ bounds: (SafePtr, SafePtr))
     fatalError("both failed: lower=\(le), upper=\(ue)")
   }
 }
+
+// MARK: -
 
 @inlinable @inline(__always)
 func unwrapLowerUpper(_ bounds: (SafePtr, SafePtr))

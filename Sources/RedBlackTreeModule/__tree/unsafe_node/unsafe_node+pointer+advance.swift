@@ -5,6 +5,8 @@
 //  Created by narumij on 2026/01/29.
 //
 
+public typealias SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
+
 @inlinable
 @inline(__always)
 internal func
@@ -93,8 +95,6 @@ public enum SafePtrError: Error {
   /// 平衡木の上限を超えた操作を行ったことを表す
   case upperOutOfBounds
 }
-
-public typealias SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
 
 extension Result
 where

@@ -137,7 +137,10 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _isValid(index: Index) -> Bool {
-    !__tree_.___is_subscript_null(__tree_._remap_to_ptr(index))
+    if let p = try? __tree_._remap_to_safe_ptr(index).get() {
+      return !p.___is_end
+    }
+    return false
   }
 }
 

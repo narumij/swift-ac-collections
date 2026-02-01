@@ -64,16 +64,9 @@ extension Optional where Wrapped == TrackingTag_ {
   }
   
   @inlinable @inline(__always)
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> UnsafeMutablePointer<UnsafeNode>
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> SafePtr
   where Base: ___TreeBase {
-    switch self {
-    case .none:
-      return __tree_.nullptr
-    case .some(.end):
-      return __tree_.__end_node
-    case .some(.tag(let raw)):
-      return __tree_[_raw: raw]
-    }
+    __tree_[self]
   }
 }
 

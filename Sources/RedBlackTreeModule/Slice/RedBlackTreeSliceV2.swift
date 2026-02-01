@@ -236,7 +236,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    ___contains(__tree_._remap_to_ptr(i))
+    (try? __tree_._remap_to_safe_ptr(i).map { ___contains($0) }.get()) ?? false
   }
 }
 

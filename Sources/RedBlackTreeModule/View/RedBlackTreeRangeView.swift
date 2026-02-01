@@ -14,8 +14,8 @@ where
   @usableFromInline
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _NodePtr, _end: _NodePtr) {
     self.__tree_ = __tree_
-    self._start_tag = _start.trackingTag
-    self._end_tag = _end.trackingTag
+    self.startIndex = .create(_start.trackingTag)
+    self.endIndex = .create(_end.trackingTag)
   }
 
   public typealias Element = Base._PayloadValue
@@ -23,8 +23,7 @@ where
   @usableFromInline
   internal var __tree_: Tree
 
-  @usableFromInline
-  internal var _start_tag, _end_tag: _RawTrackingTag
+  public let startIndex, endIndex: RedBlackTreeTrackingTag
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -39,12 +38,12 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   @usableFromInline
   var _start: _NodePtr {
-    __tree_[_raw: _start_tag]
+    try! __tree_[startIndex].get()
   }
 
   @usableFromInline
   var _end: _NodePtr {
-    __tree_[_raw: _end_tag]
+    try! __tree_[endIndex].get()
   }
 }
 
@@ -79,22 +78,8 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  subscript(_raw trackingTag: _RawTrackingTag) -> Element? {
-    let ptr = __tree_[_raw: trackingTag]
-    guard !ptr.___is_null_or_end, !ptr.___is_garbaged else {
-      fatalError(.invalidIndex)
-    }
-    return ptr.__payload_().pointee
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
   public subscript(tag: RedBlackTreeTrackingTag) -> Element? {
-    let ptr = tag.relative(to: __tree_)
-    guard !ptr.___is_null_or_end, !ptr.___is_garbaged else {
-      fatalError(.invalidIndex)
-    }
-    return ptr.__payload_().pointee
+    (try? __tree_[tag].get())?.__payload_().pointee
   }
 }
 
@@ -108,22 +93,22 @@ extension RedBlackTreeKeyOnlyRangeView {
   public var count: Int { ___count }
 }
 
-extension RedBlackTreeKeyOnlyRangeView {
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var startIndex: RedBlackTreeTrackingTag {
-    .create(_start_tag)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var endIndex: RedBlackTreeTrackingTag {
-    .create(_end_tag)
-  }
-}
+//extension RedBlackTreeKeyOnlyRangeView {
+//
+//  /// - Complexity: O(1)
+//  @inlinable
+//  @inline(__always)
+//  public var startIndex: RedBlackTreeTrackingTag {
+//    startIndex
+//  }
+//
+//  /// - Complexity: O(1)
+//  @inlinable
+//  @inline(__always)
+//  public var endIndex: RedBlackTreeTrackingTag {
+//    endIndex
+//  }
+//}
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeKeyOnlyRangeView {
@@ -157,8 +142,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inline(__always)
   public func distance(from start: RedBlackTreeTrackingTag, to end: RedBlackTreeTrackingTag) -> Int {
     __tree_.___distance(
-      from: start.relative(to: __tree_),
-      to: end.relative(to: __tree_))
+      from: try! start.relative(to: __tree_).get(),
+      to: try! end.relative(to: __tree_).get())
   }
 }
 
@@ -167,19 +152,19 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   public func index(before i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
-    .create(__tree_.___index(before: i.relative(to: __tree_)))
+    .create(__tree_.___index(before: try! i.relative(to: __tree_).get()))
   }
 
   /// - Complexity: O(1)
   @inlinable
   public func index(after i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
-    .create(__tree_.___index(after: i.relative(to: __tree_)))
+    .create(__tree_.___index(after: try! i.relative(to: __tree_).get()))
   }
 
   /// - Complexity: O(`distance`)
   @inlinable
   public func index(_ i: RedBlackTreeTrackingTag, offsetBy distance: Int) -> RedBlackTreeTrackingTag {
-    .create(__tree_.___index(i.relative(to: __tree_), offsetBy: distance))
+    .create(__tree_.___index(try! i.relative(to: __tree_).get(), offsetBy: distance))
   }
 
   /// - Complexity: O(`distance`)
@@ -189,7 +174,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   {
     .create(
       __tree_.___index(
-        i.relative(to: __tree_), offsetBy: distance, limitedBy: limit.relative(to: __tree_)))
+        try! i.relative(to: __tree_).get(),
+        offsetBy: distance,
+        limitedBy: try! limit.relative(to: __tree_).get()))
   }
 }
 
@@ -240,8 +227,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   @discardableResult
   public mutating func remove(at index: RedBlackTreeTrackingTag) -> Element {
     __tree_.ensureUnique()
-    let ptr = index.relative(to: __tree_)
-    guard !ptr.___is_null, !ptr.___is_end, !ptr.___is_garbaged else {
+    guard let ptr = try? index.relative(to: __tree_).get(),
+          !ptr.___is_end else {
       fatalError(.invalidIndex)
     }
     let ___e = __tree_[ptr]

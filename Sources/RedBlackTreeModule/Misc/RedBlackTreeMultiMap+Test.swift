@@ -19,7 +19,14 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   package func ___is_garbaged(_ index: Index) -> Bool {
-    __tree_.___is_garbaged(__tree_._remap_to_ptr(index))
+    switch __tree_._remap_to_safe_ptr(index) {
+    case .success(let p):
+      return __tree_.___is_garbaged(p)
+    case .failure(.garbaged):
+      return true
+    case .failure:
+      return false
+    }
   }
 }
 

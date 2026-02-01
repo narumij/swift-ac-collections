@@ -96,10 +96,6 @@
       __tree_._ptr__tree_balance_after_insert(__root, __x)
     }
     @inlinable
-    func ___NodePtr(_ p: Int) -> _NodePtr {
-      __tree_[_raw: p]
-    }
-    @inlinable
     var nullptr: _NodePtr { __tree_.nullptr }
     @inlinable
     var end: _NodePtr { __tree_.end }

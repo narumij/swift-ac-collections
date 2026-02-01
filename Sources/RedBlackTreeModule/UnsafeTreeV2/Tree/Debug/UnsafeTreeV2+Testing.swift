@@ -6,43 +6,43 @@
     }
 
     package func __left_(_ p: Int) -> Int {
-      __left_(self[_raw: p]).pointee.___tracking_tag
+      (try? self[p].get()).map { __left_($0).trackingTag } ?? .nullptr
     }
 
     package func __left_(_ p: Int, _ l: Int) {
-      __left_(self[_raw: p], self[_raw: p])
+      __left_(try! self[p].get(), try! self[l].get())
     }
 
     package func __right_(_ p: Int) -> Int {
-      __right_(self[_raw: p]).pointee.___tracking_tag
+      __right_(try! self[p].get()).trackingTag
     }
 
     package func __right_(_ p: Int, _ l: Int) {
-      __right_(self[_raw: p], self[_raw: p])
+      __right_(try! self[p].get(), try! self[l].get())
     }
 
     package func __parent_(_ p: Int) -> Int {
-      __parent_(self[_raw: p]).pointee.___tracking_tag
+      __parent_(try! self[p].get()).trackingTag
     }
 
     package func __parent_(_ p: Int, _ l: Int) {
-      __parent_(self[_raw: p], self[_raw: p])
+      __parent_(try! self[p].get(), try! self[l].get())
     }
 
     package func __is_black_(_ p: Int) -> Bool {
-      __is_black_(self[_raw: p])
+      __is_black_(try! self[p].get())
     }
 
     package func __is_black_(_ p: Int, _ b: Bool) {
-      __is_black_(self[_raw: p], b)
+      __is_black_(try! self[p].get(), b)
     }
 
     package func __value_(_ p: Int) -> _PayloadValue {
-      __value_(self[_raw: p])
+      __value_(try! self[p].get())
     }
 
     package func ___element(_ p: Int, _ __v: _PayloadValue) {
-      ___element(self[_raw: p], __v)
+      ___element(try! self[p].get(), __v)
     }
   }
 
@@ -56,11 +56,11 @@
   }
 
   extension UnsafeMutablePointer where Pointee == UnsafeNode {
-    package var index: Int { pointee.___tracking_tag }
+    package var index: Int { trackingTag }
   }
 
   extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
-    package var index: Int { self?.pointee.___tracking_tag ?? .nullptr }
+    package var index: Int { self?.trackingTag ?? .nullptr }
   }
 #endif
 

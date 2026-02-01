@@ -21,11 +21,13 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeIndexRangeBaseV2, _ScalarBase_ElementProtocol,
+protocol ___UnsafeKeyOnlySequenceV2__: UnsafeTreeRangeBaseInterface, _ScalarBase_ElementProtocol,
   _PayloadValueBride, _KeyBride
+where
+  Base: ___TreeIndex
 {}
 
-extension ___UnsafeKeyOnlySequenceV2 {
+extension ___UnsafeKeyOnlySequenceV2__ {
 
   @inlinable
   @inline(__always)
@@ -40,7 +42,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
   }
 }
 
-extension ___UnsafeKeyOnlySequenceV2 {
+extension ___UnsafeKeyOnlySequenceV2__ {
 
   @inlinable
   @inline(__always)
@@ -51,21 +53,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
   }
 }
 
-#if COMPATIBLE_ATCODER_2025
-  extension ___UnsafeKeyOnlySequenceV2 {
-
-    @available(*, deprecated, message: "性能問題があり廃止")
-    @inlinable
-    @inline(__always)
-    internal func _forEach(_ body: (Index, _PayloadValue) throws -> Void) rethrows {
-      try __tree_.___for_each_(__p: _start, __l: _end) {
-        try body(___index($0), __tree_[$0])
-      }
-    }
-  }
-#endif
-
-extension ___UnsafeKeyOnlySequenceV2 {
+extension ___UnsafeKeyOnlySequenceV2__ {
 
   /// - Complexity: O(*n*)
   @inlinable
@@ -75,17 +63,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
   }
 }
 
-extension ___UnsafeKeyOnlySequenceV2 {
-
-  @inlinable
-  internal subscript(_checked position: Index) -> _PayloadValue {
-    @inline(__always) _read {
-      yield __tree_[try! __tree_._remap_to_safe_(position).get()]
-    }
-  }
-}
-
-extension ___UnsafeKeyOnlySequenceV2 {
+extension ___UnsafeKeyOnlySequenceV2__ {
 
   @inlinable
   public func ___subscript(_ rawRange: UnsafeTreeRangeExpression)
@@ -107,7 +85,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
   }
 }
 
-extension ___UnsafeKeyOnlySequenceV2 {
+extension ___UnsafeKeyOnlySequenceV2__ {
 
   // めんどくさくなったので、KeyValue側では標準実装を使っている
   @inlinable
@@ -127,3 +105,43 @@ extension ___UnsafeKeyOnlySequenceV2 {
     try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
   }
 }
+
+extension ___UnsafeKeyOnlySequenceV2__ {
+
+  @inlinable
+  @inline(__always)
+  internal func _isValid(
+    _ rawRange: UnsafeTreeRangeExpression
+  ) -> Bool {
+
+    let (l, u) = rawRange._relative(to: __tree_)
+    return l.isValid && u.isValid
+  }
+}
+
+@usableFromInline
+protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, ___UnsafeIndexBaseV2 {}
+
+#if COMPATIBLE_ATCODER_2025
+  extension ___UnsafeKeyOnlySequenceV2 {
+
+    @available(*, deprecated, message: "性能問題があり廃止")
+    @inlinable
+    @inline(__always)
+    internal func _forEach(_ body: (Index, _PayloadValue) throws -> Void) rethrows {
+      try __tree_.___for_each_(__p: _start, __l: _end) {
+        try body(___index($0), __tree_[$0])
+      }
+    }
+  }
+
+  extension ___UnsafeKeyOnlySequenceV2 {
+
+    @inlinable
+    internal subscript(_checked position: Index) -> _PayloadValue {
+      @inline(__always) _read {
+        yield __tree_[try! __tree_._remap_to_safe_(position).get()]
+      }
+    }
+  }
+#endif

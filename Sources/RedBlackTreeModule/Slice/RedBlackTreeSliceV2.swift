@@ -134,6 +134,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   }
 #endif
 
+#if COMPATIBLE_ATCODER_2025
 extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(1)
@@ -144,6 +145,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
     }
   }
 }
+#endif
 
 extension RedBlackTreeSliceV2.KeyOnly {
 

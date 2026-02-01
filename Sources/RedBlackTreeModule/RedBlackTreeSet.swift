@@ -172,7 +172,12 @@ public struct RedBlackTreeSet<Element: Comparable> {
   }
 }
 
+#if COMPATIBLE_ATCODER_2025
 extension RedBlackTreeSet: _RedBlackTreeKeyOnlyBase {}
+#else
+extension RedBlackTreeSet: _RedBlackTreeKeyOnlyBase2 {}
+#endif
+
 extension RedBlackTreeSet: CompareUniqueTrait {}
 extension RedBlackTreeSet: ScalarValueComparer {
   public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {
@@ -724,8 +729,8 @@ extension RedBlackTreeSet {
     /// - Important:
     ///  要素及びノードが削除された場合、インデックスは無効になります。
     /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
-//    public
-//      typealias Index = RedBlackTreeTrackingTag
+    public
+      typealias Index = RedBlackTreeTrackingTag
   }
 
   extension RedBlackTreeSet {

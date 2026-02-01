@@ -115,13 +115,22 @@ extension ___UnsafeIndexBaseV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeIndicesBaseV2: UnsafeIndicesBinding {}
+protocol UnsafeIndicesProtoocl: UnsafeTreeRangeBaseInterface & UnsafeIndicesBinding {}
+
+extension UnsafeIndicesProtoocl {
+  
+  @inlinable
+  @inline(__always)
+  internal var _indices: Indices {
+    .init(start: _start, end: _end, tie: __tree_.tied)
+  }
+}
 
 @usableFromInline
 protocol ___UnsafeIndexRangeBaseV2:
   UnsafeTreeRangeProtocol
     & ___UnsafeIndexBaseV2
-    & ___UnsafeIndicesBaseV2
+    & UnsafeIndicesBinding
 {}
 
 public typealias RedBlackTreeIndex = UnsafeIndexV2
@@ -136,6 +145,7 @@ protocol _RedBlackTreeKeyOnlyBase:
     & ___UnsafeIndexV2
     & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyOnlySequenceV2
+    & UnsafeIndicesProtoocl
 {}
 
 @usableFromInline
@@ -145,4 +155,14 @@ protocol _RedBlackTreeKeyValuesBase:
     & ___UnsafeIndexV2
     & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyValueSequenceV2
+    & UnsafeIndicesProtoocl
+{}
+
+@usableFromInline
+protocol _RedBlackTreeKeyOnlyBase2:
+  UnsafeMutableTreeRangeProtocol
+    & ___UnsafeCommonV2
+    & ___UnsafeBaseSequenceV2__
+    & ___UnsafeKeyOnlySequenceV2__
+    & UnsafeIndicesProtoocl
 {}

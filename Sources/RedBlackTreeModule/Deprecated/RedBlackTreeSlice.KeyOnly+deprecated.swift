@@ -65,6 +65,8 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
+extension RedBlackTreeSliceV2.KeyOnly: ___UnsafeIndicesBaseV2 {}
+
 extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(1)

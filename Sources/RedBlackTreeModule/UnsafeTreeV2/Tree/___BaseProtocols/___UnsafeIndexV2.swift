@@ -120,22 +120,6 @@ extension ___UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  internal func ___first(where predicate: (_PayloadValue) throws -> Bool) rethrows -> _PayloadValue? {
-    var result: _PayloadValue?
-    try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
-      if try predicate(__tree_[__p]) {
-        result = __tree_[__p]
-        cont = false
-      }
-    }
-    return result
-  }
-}
-
-extension ___UnsafeIndexV2 {
-
-  @inlinable
-  @inline(__always)
   internal func _isValid(index: Index) -> Bool {
     if let p = try? __tree_._remap_to_safe_(index).get() {
       return !p.___is_end
@@ -144,18 +128,18 @@ extension ___UnsafeIndexV2 {
   }
 }
 
-extension ___UnsafeIndexV2 where Self: Sequence {
-
-  @inlinable
-  @inline(__always)
-  internal func _isValid(
-    _ rawRange: UnsafeTreeRangeExpression
-  ) -> Bool {
-
-    let (l, u) = rawRange._relative(to: __tree_)
-    return l.isValid && u.isValid
-  }
-}
+//extension ___UnsafeIndexV2 where Self: Sequence {
+//
+//  @inlinable
+//  @inline(__always)
+//  internal func _isValid(
+//    _ rawRange: UnsafeTreeRangeExpression
+//  ) -> Bool {
+//
+//    let (l, u) = rawRange._relative(to: __tree_)
+//    return l.isValid && u.isValid
+//  }
+//}
 
 #if COMPATIBLE_ATCODER_2025
   extension ___UnsafeIndexV2 where Self: Collection {
@@ -223,11 +207,12 @@ extension ___UnsafeIndexV2 {
   }
 }
 
-extension ___UnsafeIndexV2 where Self: ___UnsafeIndicesBaseV2 {
+//extension ___UnsafeIndexV2 where Self: ___UnsafeIndicesBaseV2 {
+//
+//  @inlinable
+//  @inline(__always)
+//  internal var _indices: Indices {
+//    .init(start: _start, end: _end, tie: __tree_.tied)
+//  }
+//}
 
-  @inlinable
-  @inline(__always)
-  internal var _indices: Indices {
-    .init(start: _start, end: _end, tie: __tree_.tied)
-  }
-}

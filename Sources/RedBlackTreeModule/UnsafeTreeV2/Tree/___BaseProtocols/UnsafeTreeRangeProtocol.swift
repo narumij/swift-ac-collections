@@ -30,6 +30,22 @@ extension UnsafeTreeRangeProtocol {
 }
 
 extension UnsafeTreeRangeProtocol {
+
+  @inlinable
+  @inline(__always)
+  internal func ___first(where predicate: (_PayloadValue) throws -> Bool) rethrows -> _PayloadValue? {
+    var result: _PayloadValue?
+    try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
+      if try predicate(__tree_[__p]) {
+        result = __tree_[__p]
+        cont = false
+      }
+    }
+    return result
+  }
+}
+
+extension UnsafeTreeRangeProtocol {
   
   @inlinable
   @inline(__always)

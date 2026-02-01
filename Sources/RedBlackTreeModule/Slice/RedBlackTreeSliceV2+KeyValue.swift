@@ -24,6 +24,7 @@ extension RedBlackTreeSliceV2 {
       & ___UnsafeSubSequenceV2
       & ___UnsafeIndexV2
       & ___UnsafeKeyValueSequenceV2
+      & UnsafeIndicesProtoocl
   where
     Base: ___TreeBase & ___TreeIndex & KeyValueComparer,
     Base._PayloadValue == RedBlackTreePair<Base._Key, Base._MappedValue>
@@ -57,7 +58,7 @@ extension RedBlackTreeSliceV2 {
 extension RedBlackTreeSliceV2.KeyValue: Sequence {}
 
 extension RedBlackTreeSliceV2.KeyValue {
-  
+
   @usableFromInline
   var _start: _NodePtr { _unchecked_start.checked }
 

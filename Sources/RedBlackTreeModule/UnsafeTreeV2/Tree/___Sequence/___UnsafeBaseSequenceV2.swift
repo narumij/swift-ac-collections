@@ -21,15 +21,14 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeBaseSequenceV2: ___UnsafeIndexRangeBaseV2, _PayloadValueType, _KeyType
+protocol ___UnsafeBaseSequenceV2__: UnsafeTreeHost, _PayloadValueType, _KeyType
 where
   _PayloadValue == Base._PayloadValue,
   _Key == Base._Key
 {
-  func ___index_or_nil(_ p: _NodePtr) -> Index?
 }
 
-extension ___UnsafeBaseSequenceV2 {
+extension ___UnsafeBaseSequenceV2__ {
   
   @inlinable
   @inline(__always)
@@ -44,7 +43,7 @@ extension ___UnsafeBaseSequenceV2 {
   }
 }
 
-extension ___UnsafeBaseSequenceV2 {
+extension ___UnsafeBaseSequenceV2__ {
 
   @inlinable
   @inline(__always)
@@ -66,7 +65,7 @@ extension ___UnsafeBaseSequenceV2 {
 }
 
 
-extension ___UnsafeBaseSequenceV2 {
+extension ___UnsafeBaseSequenceV2__ {
 
   @inlinable
   @inline(__always)
@@ -79,6 +78,17 @@ extension ___UnsafeBaseSequenceV2 {
   internal func ___max() -> _PayloadValue? {
     __tree_.__root == __tree_.nullptr ? nil : __tree_[__tree_.__tree_max(__tree_.__root)]
   }
+}
+
+// MARK: -
+
+@usableFromInline
+protocol ___UnsafeBaseSequenceV2: ___UnsafeBaseSequenceV2__, ___UnsafeIndexRangeBaseV2, _PayloadValueType, _KeyType
+where
+  _PayloadValue == Base._PayloadValue,
+  _Key == Base._Key
+{
+  func ___index_or_nil(_ p: _NodePtr) -> Index?
 }
 
 extension ___UnsafeBaseSequenceV2 {

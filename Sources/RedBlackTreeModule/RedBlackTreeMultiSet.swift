@@ -183,16 +183,16 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-#if COMPATIBLE_ATCODER_2025
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    return .init(
-      tree: __tree_,
-      start: try! __tree_._remap_to_safe_(bounds.lowerBound).get(),
-      end: try! __tree_._remap_to_safe_(bounds.upperBound).get())
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public subscript(bounds: Range<Index>) -> SubSequence {
+      return .init(
+        tree: __tree_,
+        start: try! __tree_._remap_to_safe_(bounds.lowerBound).get(),
+        end: try! __tree_._remap_to_safe_(bounds.upperBound).get())
+    }
   #endif
 }
 
@@ -510,18 +510,20 @@ extension RedBlackTreeMultiSet {
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Element, to end: Element) -> SubSequence {
-      .init(tree: __tree_,
-            start: __tree_.lower_bound(start),
-            end: __tree_.lower_bound(end))
+      .init(
+        tree: __tree_,
+        start: __tree_.lower_bound(start),
+        end: __tree_.lower_bound(end))
     }
 
     /// 値レンジ `[start, end]` に含まれる要素のスライス
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Element, through end: Element) -> SubSequence {
-      .init(tree: __tree_,
-            start: __tree_.lower_bound(start),
-            end: __tree_.upper_bound(end))
+      .init(
+        tree: __tree_,
+        start: __tree_.lower_bound(start),
+        end: __tree_.upper_bound(end))
     }
   }
 #endif
@@ -661,11 +663,13 @@ extension RedBlackTreeMultiSet {
     _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
 
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: Index) -> _PayloadValue {
-    @inline(__always) _read { yield self[_checked: position] }
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> _PayloadValue {
+      @inline(__always) _read { yield self[_checked: position] }
+    }
+  #endif
 
   /// Indexがsubscriptやremoveで利用可能か判別します
   ///

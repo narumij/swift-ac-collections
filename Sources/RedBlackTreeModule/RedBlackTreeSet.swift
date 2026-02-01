@@ -154,12 +154,6 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias Element = Element
 
-  /// - Important:
-  ///  要素及びノードが削除された場合、インデックスは無効になります。
-  /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
-  public
-    typealias Index = Tree.Index
-
   public
     typealias _Key = Element
 
@@ -270,7 +264,6 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(never)
   public func contains(_ member: Element) -> Bool {
-    //    ___contains(member)
     __tree_.read { $0.__count_unique(member) != 0 }
   }
 }
@@ -427,18 +420,6 @@ extension RedBlackTreeSet {
     return __tree_.update { $0.___erase_unique(member) } ? member : nil
   }
 
-  /// - Important: 削除後は、インデックスが無効になります。
-  /// - Complexity: O(1)
-  @inlinable
-  @discardableResult
-  public mutating func remove(at index: Index) -> Element {
-    __tree_.ensureUnique()
-    guard case .success(let __p) = __tree_._remap_to_safe_(index) else {
-      fatalError(.invalidIndex)
-    }
-    return _unchecked_remove(at: __p).payload
-  }
-
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
@@ -480,54 +461,7 @@ extension RedBlackTreeSet {
   }
 }
 
-// MARK: Finding Elements
-
-extension RedBlackTreeSet {
-
-  /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
-  /// 最初の位置（`Index`）を返します。
-  ///
-  /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
-  /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
-  /// - `lowerBound(3)` は要素 `3` の位置を返します。
-  /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
-  /// - `lowerBound(10)` は `endIndex` を返します。
-  ///
-  /// - Parameter member: 二分探索で検索したい要素
-  /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  public func lowerBound(_ member: Element) -> Index {
-    ___index_lower_bound(member)
-  }
-
-  /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
-  /// 最初の位置（`Index`）を返します。
-  ///
-  /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
-  /// - `upperBound(3)` は要素 `5` の位置を返します。
-  ///   （`3` より大きい値が最初に現れる場所）
-  /// - `upperBound(5)` は要素 `7` の位置を返します。
-  ///   （`5` と等しい要素は含まないため、`5` の直後）
-  /// - `upperBound(9)` は `endIndex` を返します。
-  ///
-  /// - Parameter member: 二分探索で検索したい要素
-  /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  public func upperBound(_ member: Element) -> Index {
-    ___index_upper_bound(member)
-  }
-}
-
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
-    ___index_equal_range(element)
-  }
-}
+// MARK: -
 
 extension RedBlackTreeSet {
 
@@ -552,21 +486,6 @@ extension RedBlackTreeSet {
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first(where: predicate)
-  }
-}
-
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  public func firstIndex(of member: Element) -> Index? {
-    ___first_index(of: member)
-  }
-
-  /// - Complexity: O(*n*), where *n* is the number of elements.
-  @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
   }
 }
 
@@ -612,96 +531,394 @@ extension RedBlackTreeSet {
       __tree_.___copy_all_to_array()
     }
   #endif
+}
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var startIndex: Index { _startIndex }
+// MARK: -
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var endIndex: Index { _endIndex }
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
 
-  /// - Complexity: O(*d* + log *n*)
-  @inlinable
-  //  @inline(__always)
-  public func distance(from start: Index, to end: Index) -> Int {
-    _distance(from: start, to: end)
+    /// - Important:
+    ///  要素及びノードが削除された場合、インデックスは無効になります。
+    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    public
+      typealias Index = Tree.Index
   }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func index(after i: Index) -> Index {
-    _index(after: i)
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func firstIndex(of member: Element) -> Index? {
+      ___first_index(of: member)
+    }
+
+    /// - Complexity: O(*n*), where *n* is the number of elements.
+    @inlinable
+    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+      try ___first_index(where: predicate)
+    }
   }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(after i: inout Index) {
-    _formIndex(after: &i)
+  extension RedBlackTreeSet {
+
+    /// - Important: 削除後は、インデックスが無効になります。
+    /// - Complexity: O(1)
+    @inlinable
+    @discardableResult
+    public mutating func remove(at index: Index) -> Element {
+      __tree_.ensureUnique()
+      guard case .success(let __p) = __tree_._remap_to_safe_(index) else {
+        fatalError(.invalidIndex)
+      }
+      return _unchecked_remove(at: __p).payload
+    }
   }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func index(before i: Index) -> Index {
-    _index(before: i)
+  // MARK: Finding Elements
+
+  extension RedBlackTreeSet {
+
+    /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
+    /// 最初の位置（`Index`）を返します。
+    ///
+    /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
+    /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
+    /// - `lowerBound(3)` は要素 `3` の位置を返します。
+    /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
+    /// - `lowerBound(10)` は `endIndex` を返します。
+    ///
+    /// - Parameter member: 二分探索で検索したい要素
+    /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func lowerBound(_ member: Element) -> Index {
+      ___index_lower_bound(member)
+    }
+
+    /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
+    /// 最初の位置（`Index`）を返します。
+    ///
+    /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
+    /// - `upperBound(3)` は要素 `5` の位置を返します。
+    ///   （`3` より大きい値が最初に現れる場所）
+    /// - `upperBound(5)` は要素 `7` の位置を返します。
+    ///   （`5` と等しい要素は含まないため、`5` の直後）
+    /// - `upperBound(9)` は `endIndex` を返します。
+    ///
+    /// - Parameter member: 二分探索で検索したい要素
+    /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func upperBound(_ member: Element) -> Index {
+      ___index_upper_bound(member)
+    }
   }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(before i: inout Index) {
-    _formIndex(before: &i)
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
+      ___index_equal_range(element)
+    }
   }
 
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    _index(i, offsetBy: distance)
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var startIndex: Index { _startIndex }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var endIndex: Index { _endIndex }
+
+    /// - Complexity: O(*d* + log *n*)
+    @inlinable
+    //  @inline(__always)
+    public func distance(from start: Index, to end: Index) -> Int {
+      _distance(from: start, to: end)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func index(after i: Index) -> Index {
+      _index(after: i)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(after i: inout Index) {
+      _formIndex(after: &i)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func index(before i: Index) -> Index {
+      _index(before: i)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(before i: inout Index) {
+      _formIndex(before: &i)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func index(_ i: Index, offsetBy distance: Int) -> Index {
+      _index(i, offsetBy: distance)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func formIndex(_ i: inout Index, offsetBy distance: Int) {
+      _formIndex(&i, offsetBy: distance)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+      _index(i, offsetBy: distance, limitedBy: limit)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
+      -> Bool
+    {
+      _formIndex(&i, offsetBy: distance, limitedBy: limit)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always) _read { yield self[_checked: position] }
+    }
+
+    /// Indexがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func isValid(index: Index) -> Bool {
+      _isValid(index: index)
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    /// - Important:
+    ///  要素及びノードが削除された場合、インデックスは無効になります。
+    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+//    public
+//      typealias Index = RedBlackTreeTrackingTag
   }
 
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    _formIndex(&i, offsetBy: distance)
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O( log `count` )
+    @inlinable
+    public func firstIndex(of member: Element) -> RedBlackTreeTrackingTag {
+      ___first_tracking_tag { $0 == member }
+    }
+
+    /// - Complexity: O( `count` )
+    @inlinable
+    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
+      -> RedBlackTreeTrackingTag
+    {
+      try ___first_tracking_tag(where: predicate)
+    }
   }
 
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    _index(i, offsetBy: distance, limitedBy: limit)
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var startIndex: RedBlackTreeTrackingTag { .create(_start) }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var endIndex: RedBlackTreeTrackingTag { .create(_end) }
   }
 
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Bool
-  {
-    _formIndex(&i, offsetBy: distance, limitedBy: limit)
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    @inline(__always)
+    public func distance(from start: RedBlackTreeTrackingTag, to end: RedBlackTreeTrackingTag)
+      -> Int
+    {
+      __tree_.___distance(
+        from: try! start.relative(to: __tree_).get(),
+        to: try! end.relative(to: __tree_).get())
+    }
   }
 
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: Index) -> Element {
-    @inline(__always) _read { yield self[_checked: position] }
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func equalRange(_ element: Element) -> (
+      lower: RedBlackTreeTrackingTag, upper: RedBlackTreeTrackingTag
+    ) {
+      let (lower, upper) = __tree_.__equal_range_unique(element)
+      return (.create(lower), .create(upper))
+    }
   }
 
-  /// Indexがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid(index: Index) -> Bool {
-    _isValid(index: index)
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public func index(before i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
+      try? i.relative(to: __tree_)
+        .flatMap { ___tree_prev_iter($0) }
+        .map { .create($0) }
+        .get()
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    public func index(after i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
+      try? i.relative(to: __tree_)
+        .flatMap { ___tree_next_iter($0) }
+        .map { .create($0) }
+        .get()
+    }
+
+    /// - Complexity: O(`distance`)
+    @inlinable
+    public func index(_ i: RedBlackTreeTrackingTag, offsetBy distance: Int)
+      -> RedBlackTreeTrackingTag
+    {
+      try? i.relative(to: __tree_)
+        .flatMap { ___tree_adv_iter($0, distance) }
+        .map { .create($0) }
+        .get()
+    }
+
+    /// - Complexity: O(`distance`)
+    @inlinable
+    public func index(
+      _ i: RedBlackTreeTrackingTag, offsetBy distance: Int, limitedBy limit: RedBlackTreeTrackingTag
+    )
+      -> RedBlackTreeTrackingTag
+    {
+      let __l = limit.relative(to: __tree_)
+      return try? i.relative(to: __tree_)
+        .flatMap { ___tree_adv_iter($0, distance, __l) }
+        .map { .create($0) }
+        .get()
+    }
   }
+
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(before i: inout RedBlackTreeTrackingTag) {
+      i = index(before: i)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(after i: inout RedBlackTreeTrackingTag) {
+      i = index(after: i)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func formIndex(_ i: inout RedBlackTreeTrackingTag, offsetBy distance: Int) {
+      i = index(i, offsetBy: distance)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    @inline(__always)
+    public func formIndex(
+      _ i: inout RedBlackTreeTrackingTag,
+      offsetBy distance: Int,
+      limitedBy limit: RedBlackTreeTrackingTag
+    )
+      -> Bool
+    {
+      if let result = index(i, offsetBy: distance, limitedBy: limit) {
+        i = result
+        return true
+      }
+      return false
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    @discardableResult
+    public mutating func remove(at index: RedBlackTreeTrackingTag) -> Element {
+      __tree_.ensureUnique()
+      guard case .success(let __p) = index.relative(to: __tree_) else {
+        fatalError(.invalidIndex)
+      }
+      return _unchecked_remove(at: __p).payload
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: RedBlackTreeTrackingTag) -> Element {
+      @inline(__always) get {
+        guard
+          let p: _NodePtr = try? __tree_[position].get(),
+          !p.___is_end
+        else {
+          fatalError(.invalidIndex)
+        }
+        return p.__value_().pointee
+      }
+    }
+
+    /// Indexがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func isValid(index: RedBlackTreeTrackingTag) -> Bool {
+      guard
+        let p: _NodePtr = try? __tree_[index].get(),
+        !p.___is_end
+      else {
+        return false
+      }
+      return true
+    }
+  }
+
+#endif
+
+extension RedBlackTreeSet {
 
   /// - Complexity: O(1)
   @inlinable

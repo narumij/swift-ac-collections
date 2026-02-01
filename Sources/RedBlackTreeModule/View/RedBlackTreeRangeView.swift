@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/29.
 //
 
-public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost,
+public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeRangeProtocol,
   ___UnsafeSubSequenceV2, ___UnsafeCommonV2
 where
   Base: ___TreeBase & ___TreeIndex,
@@ -129,7 +129,9 @@ extension RedBlackTreeKeyOnlyRangeView {
 
     /// - Complexity: O( `count` )
     @inlinable
-    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> RedBlackTreeTrackingTag {
+    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
+      -> RedBlackTreeTrackingTag
+    {
       try ___first_tracking_tag(where: predicate)
     }
   }
@@ -140,7 +142,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
-  public func distance(from start: RedBlackTreeTrackingTag, to end: RedBlackTreeTrackingTag) -> Int {
+  public func distance(from start: RedBlackTreeTrackingTag, to end: RedBlackTreeTrackingTag) -> Int
+  {
     __tree_.___distance(
       from: try! start.relative(to: __tree_).get(),
       to: try! end.relative(to: __tree_).get())
@@ -152,31 +155,43 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   public func index(before i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
-    .create(__tree_.___index(before: try! i.relative(to: __tree_).get()))
+    try? i.relative(to: __tree_)
+      .flatMap { ___tree_prev_iter($0) }
+      .map { .create($0) }
+      .get()
   }
 
   /// - Complexity: O(1)
   @inlinable
   public func index(after i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
-    .create(__tree_.___index(after: try! i.relative(to: __tree_).get()))
+    try? i.relative(to: __tree_)
+      .flatMap { ___tree_next_iter($0) }
+      .map { .create($0) }
+      .get()
   }
 
   /// - Complexity: O(`distance`)
   @inlinable
-  public func index(_ i: RedBlackTreeTrackingTag, offsetBy distance: Int) -> RedBlackTreeTrackingTag {
-    .create(__tree_.___index(try! i.relative(to: __tree_).get(), offsetBy: distance))
+  public func index(_ i: RedBlackTreeTrackingTag, offsetBy distance: Int) -> RedBlackTreeTrackingTag
+  {
+    try? i.relative(to: __tree_)
+      .flatMap { ___tree_adv_iter($0, distance) }
+      .map { .create($0) }
+      .get()
   }
 
   /// - Complexity: O(`distance`)
   @inlinable
-  public func index(_ i: RedBlackTreeTrackingTag, offsetBy distance: Int, limitedBy limit: RedBlackTreeTrackingTag)
+  public func index(
+    _ i: RedBlackTreeTrackingTag, offsetBy distance: Int, limitedBy limit: RedBlackTreeTrackingTag
+  )
     -> RedBlackTreeTrackingTag
   {
-    .create(
-      __tree_.___index(
-        try! i.relative(to: __tree_).get(),
-        offsetBy: distance,
-        limitedBy: try! limit.relative(to: __tree_).get()))
+    let __l = limit.relative(to: __tree_)
+    return try? i.relative(to: __tree_)
+      .flatMap { ___tree_adv_iter($0, distance, __l) }
+      .map { .create($0) }
+      .get()
   }
 }
 
@@ -207,7 +222,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public func formIndex(
-    _ i: inout RedBlackTreeTrackingTag, offsetBy distance: Int, limitedBy limit: RedBlackTreeTrackingTag
+    _ i: inout RedBlackTreeTrackingTag,
+    offsetBy distance: Int,
+    limitedBy limit: RedBlackTreeTrackingTag
   )
     -> Bool
   {
@@ -227,12 +244,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   @discardableResult
   public mutating func remove(at index: RedBlackTreeTrackingTag) -> Element {
     __tree_.ensureUnique()
-    guard let ptr = try? index.relative(to: __tree_).get(),
-          !ptr.___is_end else {
+    guard case .success(let __p) = index.relative(to: __tree_) else {
       fatalError(.invalidIndex)
     }
-    let ___e = __tree_[ptr]
-    _ = __tree_.erase(ptr)
-    return ___e
+    return _unchecked_remove(at: __p).payload
   }
 }

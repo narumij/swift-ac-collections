@@ -18,7 +18,7 @@ extension RedBlackTreeSet {
 
   @inlinable
   @inline(__always)
-  package func ___is_garbaged(_ index: Index) -> Bool {
+  package func ___is_garbaged(_ index: Tree.Index) -> Bool {
     switch __tree_._remap_to_safe_(index) {
     case .success(let p):
       return p.___is_garbaged

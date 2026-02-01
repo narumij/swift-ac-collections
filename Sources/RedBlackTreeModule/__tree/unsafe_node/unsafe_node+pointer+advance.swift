@@ -32,6 +32,31 @@ internal func
 @inlinable
 @inline(__always)
 internal func
+___tree_adv_iter(_ __x: UnsafeMutablePointer<UnsafeNode>, _ __n: Int,_ __l: SafePtr)
+  -> SafePtr
+{
+  var __x: SafePtr = .success(__x)
+
+  var __n = __n
+  if __n < 0 {
+    while __n != 0, __x != __l {
+      __x = __x.flatMap { ___tree_prev_iter($0) }
+      __n += 1
+    }
+  } else {
+    while __n != 0, __x != __l {
+      __x = __x.flatMap { ___tree_next_iter($0) }
+      __n -= 1
+    }
+  }
+
+  return __x
+}
+
+
+@inlinable
+@inline(__always)
+internal func
   ___tree_next_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> SafePtr
 {
   // endへの操作は失敗

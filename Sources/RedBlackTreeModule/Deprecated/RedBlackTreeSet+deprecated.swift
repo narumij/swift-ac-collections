@@ -416,3 +416,19 @@
     }
   }
 #endif
+
+#if COMPATIBLE_ATCODER_2025
+// MARK: - SubSequence
+
+extension RedBlackTreeSet {
+
+  public typealias SubSequence = RedBlackTreeSliceV2<Base>.KeyOnly
+}
+
+// MARK: - Index Range
+
+extension RedBlackTreeSet {
+
+  public typealias Indices = Tree.Indices
+}
+#endif

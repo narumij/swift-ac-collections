@@ -33,8 +33,8 @@
     }
 
     @inlinable
-    public subscript(bounds: UnboundedRange) -> SubSequence {
-      ___subscript(.unboundedRange)
+    public subscript(bounds: UnboundedRange) -> RedBlackTreeKeyOnlyRangeView<Base> {
+      .init(__tree_: __tree_, _start: _start, _end: _end)
     }
     
     @inlinable

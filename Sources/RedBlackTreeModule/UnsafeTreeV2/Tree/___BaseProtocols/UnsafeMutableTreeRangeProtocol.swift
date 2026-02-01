@@ -23,7 +23,7 @@ extension UnsafeMutableTreeRangeProtocol {
   @discardableResult
   package mutating func ___remove_last() -> (__r: _NodePtr, payload: _PayloadValue)? {
     guard _start != _end else { return nil }
-    return _unchecked_remove(at: __tree_prev_iter(_end))
+    return _unchecked_remove(at: __tree_.__tree_prev_iter(_end))
   }
 }
 

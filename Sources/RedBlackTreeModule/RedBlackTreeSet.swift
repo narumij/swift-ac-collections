@@ -412,6 +412,14 @@ extension RedBlackTreeSet {
     __tree_.ensureUnique()
     return ___remove_first()?.payload
   }
+  
+  /// - Complexity: O(log `count`)
+  @inlinable
+  //  @inline(__always)
+  public mutating func popMax() -> Element? {
+    __tree_.ensureUnique()
+    return ___remove_last()?.payload
+  }
 }
 
 extension RedBlackTreeSet {
@@ -548,8 +556,8 @@ extension RedBlackTreeSet {
     /// - Important:
     ///  要素及びノードが削除された場合、インデックスは無効になります。
     /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
-    public
-      typealias Index = RedBlackTreeTrackingTag
+    public typealias Index = RedBlackTreeTrackingTag
+    public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Base>
   }
 
   extension RedBlackTreeSet {
@@ -557,7 +565,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of member: Element) -> RedBlackTreeTrackingTag {
-      .create(__tree_.__find_equal(member).__child.pointee)
+      .create(__tree_.find(member))
     }
 
     /// - Complexity: O( `count` )
@@ -842,20 +850,6 @@ extension RedBlackTreeSet {
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     _lexicographicallyPrecedes(other, by: <)
   }
-}
-
-// MARK: - SubSequence
-
-extension RedBlackTreeSet {
-
-  public typealias SubSequence = RedBlackTreeSliceV2<Base>.KeyOnly
-}
-
-// MARK: - Index Range
-
-extension RedBlackTreeSet {
-
-  public typealias Indices = Tree.Indices
 }
 
 // MARK: - Protocol Adaption

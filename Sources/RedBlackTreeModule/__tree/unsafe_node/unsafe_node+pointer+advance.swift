@@ -109,8 +109,8 @@ where
     self.flatMap { _node_ptr in
       // validなpointerがendやnullに変化することはない
       _node_ptr.___is_garbaged
-        ? .success(_node_ptr)
-        : .failure(.garbaged)
+        ? .failure(.garbaged)
+        : .success(_node_ptr)
     }
   }
 }

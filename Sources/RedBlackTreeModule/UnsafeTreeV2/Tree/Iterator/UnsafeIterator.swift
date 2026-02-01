@@ -28,51 +28,51 @@ extension UnsafeIterator {
 
   public
     typealias IndexObverse<Base: ___TreeBase & ___TreeIndex> =
-    TiedIndexing<Base, _RemoveTrait<_Obverse>>
+    TiedIndexing<Base, _RemoveTrait<_Obverse2>>
 
   public
     typealias IndexReverse<Base: ___TreeBase & ___TreeIndex> =
-    TiedIndexing<Base, _RemoveTrait<_Reverse>>
+    TiedIndexing<Base, _RemoveTrait<_Reverse2>>
 
   public
     typealias ValueObverse<Base: ___TreeBase> = Tied<
-      _Payload<Base, _RemoveTrait<_Obverse>>
+      _Payload<Base, _RemoveTrait<_Obverse2>>
     >
   public
     typealias ValueReverse<Base: ___TreeBase> = Tied<
-      _Payload<Base, _RemoveTrait<_Reverse>>
+      _Payload<Base, _RemoveTrait<_Reverse2>>
     >
 
   public
     typealias KeyObverse<Base: ___TreeBase & ___TreeIndex> = Tied<
-      _Key<Base, _RemoveTrait<_Obverse>>
+      _Key<Base, _RemoveTrait<_Obverse2>>
     >
   public
     typealias KeyReverse<Base: ___TreeBase & ___TreeIndex> = Tied<
-      _Key<Base, _RemoveTrait<_Reverse>>
+      _Key<Base, _RemoveTrait<_Reverse2>>
     >
 
   public
     typealias MappedValueObverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
-      _MappedValue<Base, _RemoveTrait<_Obverse>>
+      _MappedValue<Base, _RemoveTrait<_Obverse2>>
     >
   public
     typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
-      _MappedValue<Base, _RemoveTrait<_Reverse>>
+      _MappedValue<Base, _RemoveTrait<_Reverse2>>
     >
 
   public
     typealias KeyValueObverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
-      _KeyValue<Base, _RemoveTrait<_Obverse>>
+      _KeyValue<Base, _RemoveTrait<_Obverse2>>
     >
   public
     typealias KeyValueReverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
-      _KeyValue<Base, _RemoveTrait<_Reverse>>
+      _KeyValue<Base, _RemoveTrait<_Reverse2>>
     >
 }
 
 extension UnsafeIterator {
-  public typealias _RemoveAwarePointers = _RemoveAware<_Obverse>
-  public typealias _NaivePointers = _Obverse
-  public typealias _RemoveAwareReversePointers = _RemoveAware<_Reverse>
+  public typealias _RemoveAwarePointers = _RemoveAware<_Obverse2>
+  public typealias _NaivePointers = _Obverse2
+  public typealias _RemoveAwareReversePointers = _RemoveAware<_Reverse2>
 }

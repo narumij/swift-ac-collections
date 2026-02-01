@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 extension UnsafeIterator {
-  
+
   public struct _Obverse:
     _UnsafeNodePtrType,
     UnsafeIteratorProtocol,
@@ -37,7 +37,7 @@ extension UnsafeIterator {
         ___tree_range:
           UnsafeTreeRange(___from: __first, ___to: __last))
     }
-    
+
     public var _start: UnsafeMutablePointer<UnsafeNode> {
       ___tree_range.___from
     }
@@ -55,9 +55,9 @@ extension UnsafeIterator {
 
     @usableFromInline
     var __current: _NodePtr
-    
+
     public typealias Reversed = _Reverse
-    
+
     public func reversed() -> UnsafeIterator._Reverse {
       .init(___tree_range: ___tree_range)
     }
@@ -68,7 +68,8 @@ extension UnsafeIterator._Obverse {
 
   @inlinable
   @inline(__always)
-  public init(_start: _NodePtr, _end: _NodePtr
+  public init(
+    _start: _NodePtr, _end: _NodePtr
   ) {
     self.init(__first: _start, __last: _end)
   }

@@ -32,7 +32,7 @@ internal func
 @inlinable
 @inline(__always)
 internal func
-___tree_adv_iter(_ __x: UnsafeMutablePointer<UnsafeNode>, _ __n: Int,_ __l: SafePtr)
+  ___tree_adv_iter(_ __x: UnsafeMutablePointer<UnsafeNode>, _ __n: Int, _ __l: SafePtr)
   -> SafePtr
 {
   var __x: SafePtr = .success(__x)
@@ -54,7 +54,6 @@ ___tree_adv_iter(_ __x: UnsafeMutablePointer<UnsafeNode>, _ __n: Int,_ __l: Safe
 
   return __x
 }
-
 
 @inlinable
 @inline(__always)
@@ -96,3 +95,18 @@ public enum SafePtrError: Error {
 }
 
 public typealias SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
+
+extension Result
+where
+  Success == UnsafeMutablePointer<UnsafeNode>,
+  Failure == SafePtrError
+{
+  var checked: Result {
+    self.flatMap { _node_ptr in
+      // validなpointerがendやnullに変化することはない
+      _node_ptr.___is_garbaged
+        ? .success(_node_ptr)
+        : .failure(.garbaged)
+    }
+  }
+}

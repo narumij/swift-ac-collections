@@ -20,10 +20,10 @@
 @frozen
 @usableFromInline
 struct UnsafeTreeSafeRange: _UnsafeNodePtrType, Equatable {
-  var ___from: _NodePtr
-  var ___to: _NodePtr
+  var ___from: SafePtr
+  var ___to: SafePtr
   @usableFromInline
-  internal init(___from: _NodePtr, ___to: _NodePtr) {
+  internal init(___from: SafePtr, ___to: SafePtr) {
     self.___from = ___from
     self.___to = ___to
   }
@@ -31,17 +31,39 @@ struct UnsafeTreeSafeRange: _UnsafeNodePtrType, Equatable {
 
 extension UnsafeTreeSafeRange {
 
-//  func boundsCheckedNext(after __current: inout _NodePtr) -> SafePtr? {
-//    guard __current != ___to else { return nil }
-//    let __r = __current
-//    __current = try? ___tree_next_iter(__current).get()
-//    return __r
-//  }
+  func boundsCheckedNext(after __current: inout SafePtr) -> _NodePtr? {
+    let __checked_current = __current.checked
+    // 範囲終端が壊れてたらオコ！
+    guard let _end = try? ___to.checked.get() else {
+      fatalError(.invalidIndex)
+    }
+    // current が壊れてたらオコ！
+    guard let _p = try? __checked_current.get() else {
+      fatalError(.invalidIndex)
+    }
+    // 終端に到達
+    guard _p != _end else { return nil }
+    __current = __checked_current.flatMap { ___tree_next_iter($0) }
+    return _p
+  }
 
-//  func boundsCheckedNext(before __current: inout SafePtr) -> _NodePtr? {
-//    __current = __current.checked
-//    guard __current != ___from.checked else { return nil }
-//    __current = __current.flatMap { ___tree_prev_iter($0) }
-//    return try? __current.map { $0.checked }.get()
-//  }
+  func boundsCheckedNext(before __current: inout SafePtr) -> _NodePtr? {
+    let _checked_current = __current.checked
+    // 範囲 ___from が壊れてたらオコ！
+    guard let start = try? ___from.checked.get() else {
+      fatalError(.invalidIndex)
+    }
+    // __current が壊れてたらオコ！
+    guard let cur = try? _checked_current.get() else {
+      fatalError(.invalidIndex)
+    }
+    // ___from に到達（exclusive）なら終了
+    guard cur != start else { return nil }
+    __current = _checked_current.flatMap { ___tree_prev_iter($0) }
+    // prev の結果が壊れてたらオコ！（end→start の途中で壊れた）
+    guard let p = try? __current.get() else {
+      fatalError(.invalidIndex)
+    }
+    return p
+  }
 }

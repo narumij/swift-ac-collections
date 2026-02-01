@@ -203,33 +203,35 @@ final class SetRemoveTest_10: RedBlackTreeTestCase {
     try super.tearDownWithError()
   }
 
-  func testRemoveWithRange1() throws {
-    for i in members.startIndex..<members.endIndex {
-      members.remove(at: i)
+  #if COMPATIBLE_ATCODER_2025
+    func testRemoveWithRange1() throws {
+      for i in members.startIndex..<members.endIndex {
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members + [], [])
     }
-    XCTAssertEqual(members + [], [])
-  }
 
-  func testRemoveWithRange2() throws {
-    (members.startIndex..<members.endIndex).forEach { i in
-      members.remove(at: i)
+    func testRemoveWithRange2() throws {
+      (members.startIndex..<members.endIndex).forEach { i in
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members + [], [])
     }
-    XCTAssertEqual(members + [], [])
-  }
 
-  func testRemoveWithRange3() throws {
-    for i in (members.startIndex..<members.endIndex).reversed() {
-      members.remove(at: i)
+    func testRemoveWithRange3() throws {
+      for i in (members.startIndex..<members.endIndex).reversed() {
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members + [], [])
     }
-    XCTAssertEqual(members + [], [])
-  }
 
-  func testRemoveWithRange4() throws {
-    (members.startIndex..<members.endIndex).reversed().forEach { i in
-      members.remove(at: i)
+    func testRemoveWithRange4() throws {
+      (members.startIndex..<members.endIndex).reversed().forEach { i in
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members + [], [])
     }
-    XCTAssertEqual(members + [], [])
-  }
+  #endif
 
   func testRemoveWithIndices1() throws {
     for i in members.indices {

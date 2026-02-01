@@ -39,12 +39,14 @@ ___tree_adv_iter(_ __x: UnsafeMutablePointer<UnsafeNode>, _ __n: Int,_ __l: Safe
 
   var __n = __n
   if __n < 0 {
-    while __n != 0, __x != __l {
+    while __n != 0 {
+      guard __x != __l else { return .failure(.limit) }
       __x = __x.flatMap { ___tree_prev_iter($0) }
       __n += 1
     }
   } else {
-    while __n != 0, __x != __l {
+    while __n != 0 {
+      guard __x != __l else { return .failure(.limit) }
       __x = __x.flatMap { ___tree_next_iter($0) }
       __n -= 1
     }
@@ -79,6 +81,7 @@ public enum SafePtrError: Error {
   case null
   case garbaged
   case unknown
+  case limit
 
   /// nullptrに到達した
   ///

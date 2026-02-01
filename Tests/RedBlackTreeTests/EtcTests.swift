@@ -57,6 +57,7 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), 3)
   }
 
+  #if COMPATIBLE_ATCODER_2025
   func testExample4() throws {
     let b: RedBlackTreeSet<Int> = [1, 2, 3, 4]
     XCTAssertEqual(b.endIndex.distance(to: b.startIndex), -4)
@@ -90,6 +91,7 @@ final class EtcTests: RedBlackTreeTestCase {
     //    c = c.advanced(by: -1)
     //    print(b[c])
   }
+  #endif
 
   class A: Hashable, Comparable {
     static func < (lhs: A, rhs: A) -> Bool {
@@ -268,6 +270,7 @@ final class EtcTests: RedBlackTreeTestCase {
     }
   #endif
 
+  #if COMPATIBLE_ATCODER_2025
   func testRange() throws {
     let a = [0, 1, 2]
     let b = RedBlackTreeSet<Int>([0, 1, 2])
@@ -286,6 +289,7 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertTrue(b[..<(b.endIndex - 1)].elementsEqual([0, 1]))
     XCTAssertTrue(b[...].elementsEqual([0, 1, 2]))
   }
+  #endif
 
   #if false
     func testCapacity() throws {
@@ -386,6 +390,7 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
   }
 
+  #if COMPATIBLE_ATCODER_2025
   func testBackwordIterator1() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     let seq = AnySequence { set.indices.reversed() }
@@ -405,6 +410,7 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(set + [], [])
     XCTAssertTrue(set.isEmpty)
   }
+  #endif
 
   func testCompare() throws {
     XCTAssertTrue([0] < [0, 1])
@@ -415,7 +421,7 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertFalse(AnySequence([0, 0]).lexicographicallyPrecedes([0, 1], by: >))
   }
 
-  #if DEBUG
+  #if DEBUG && COMPATIBLE_ATCODER_2025
     func testRev() throws {
       let a = RedBlackTreeSet<Int>([0, 1, 2])
       var result = [Int]()
@@ -972,7 +978,7 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(TypeFixture<Int64>().isInt, false)
   }
 
-  #if DEBUG
+  #if DEBUG && COMPATIBLE_ATCODER_2025
     func testMapBehavior() throws {
       let a = RedBlackTreeSet<Int>(0..<10)
       do {
@@ -1116,6 +1122,12 @@ final class EtcTests: RedBlackTreeTestCase {
       XCTAssertEqual(a[.upper(5)], 10)
       XCTAssertEqual(a[.end], nil)
     }
+  
+  func testLimitedBy() throws {
+    var a = Array(0..<100)
+    let i = a.index(10, offsetBy: 11, limitedBy: 20)
+    XCTAssertNil(i)
+  }
 
   #endif
 }

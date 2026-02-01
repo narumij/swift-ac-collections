@@ -663,7 +663,7 @@ extension RedBlackTreeMultiSet {
     _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
 
-  #if COMPATIBLE_ATCODER_2025
+  #if COMPATIBLE_ATCODER_2025 || true
     /// - Complexity: O(1)
     @inlinable
     public subscript(position: Index) -> _PayloadValue {

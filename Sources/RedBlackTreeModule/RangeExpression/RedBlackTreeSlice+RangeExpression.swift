@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
-extension RedBlackTreeSliceV2.KeyOnly {
+  extension RedBlackTreeSliceV2.KeyOnly {
 
     public typealias _RangeExpression = UnsafeIndexV2RangeExpression<Base>
 
@@ -31,26 +31,35 @@ extension RedBlackTreeSliceV2.KeyOnly {
     }
 
     @inlinable
-    public subscript(bounds: UnboundedRange) -> SubSequence {
+    public subscript(bounds: UnboundedRange) -> RedBlackTreeKeyOnlyRangeView<Base> {
       ___subscript(.unboundedRange)
     }
 
     @inlinable
-    public subscript(bounds: _RangeExpression) -> SubSequence {
+    public subscript(bounds: _RangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
       ___subscript(bounds.rawRange)
+    }
+
+    @inlinable
+    public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
+      let (lower, upper) = bounds.relative(to: __tree_)
+      guard __tree_.isValidRawRange(lower: lower.checked, upper: upper.checked) else {
+        fatalError(.invalidIndex)
+      }
+      return .init(__tree_: __tree_, _start: lower, _end: upper)
     }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable
-    public subscript(unchecked bounds: UnboundedRange) -> SubSequence {
+    public subscript(unchecked bounds: UnboundedRange) -> RedBlackTreeKeyOnlyRangeView<Base> {
       ___unchecked_subscript(.unboundedRange)
     }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable
-    public subscript(unchecked bounds: _RangeExpression) -> SubSequence {
+    public subscript(unchecked bounds: _RangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
       ___unchecked_subscript(bounds.rawRange)
     }
   }

@@ -11,17 +11,25 @@ public enum TrackingTag_: Equatable {
 }
 
 #if DEBUG
-  extension TrackingTag_: ExpressibleByIntegerLiteral {
+//  extension TrackingTag_: ExpressibleByIntegerLiteral {
+//
+//    public init(integerLiteral value: _RawTrackingTag) {
+//      switch value {
+//      case .end:
+//        self = .end
+//      case 0...:
+//        self = .tag(value)
+//      default:
+//        fatalError(.invalidIndex)
+//      }
+//    }
+//  }
 
-    public init(integerLiteral value: _RawTrackingTag) {
-      switch value {
-      case .end:
-        self = .end
-      case 0...:
-        self = .tag(value)
-      default:
-        fatalError(.invalidIndex)
-      }
+  extension TrackingTag_ {
+
+    @usableFromInline
+    internal var trackingTag: RedBlackTreeTrackingTag {
+      self
     }
   }
 #endif
@@ -49,10 +57,10 @@ extension TrackingTag_: RawRepresentable {
   }
 }
 
-public typealias RedBlackTreeTrackingTag = Optional<TrackingTag_>
+public typealias RedBlackTreeTrackingTag = TrackingTag_?
 
 extension Optional where Wrapped == TrackingTag_ {
-  
+
   @usableFromInline
   static func create(_ t: _RawTrackingTag) -> Self {
     TrackingTag_(rawValue: t)
@@ -62,13 +70,39 @@ extension Optional where Wrapped == TrackingTag_ {
   static func create(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Self {
     t.flatMap { TrackingTag_(rawValue: $0.trackingTag) }
   }
-  
+
   @inlinable @inline(__always)
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> SafePtr
   where Base: ___TreeBase {
     __tree_[self]
   }
 }
+
+#if DEBUG
+  extension Optional where Wrapped == TrackingTag_ {
+
+    public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+
+    @usableFromInline
+    internal var trackingTag: RedBlackTreeTrackingTag {
+      self
+    }
+
+    internal static func unsafe<Base>(tree: UnsafeTreeV2<Base>, rawValue: _NodePtr) -> Self {
+      .create(rawValue)
+    }
+
+    internal static func unsafe<Base>(tree: UnsafeTreeV2<Base>, rawTag: _RawTrackingTag) -> Self {
+      if rawTag == .nullptr {
+        return nil
+      }
+      if rawTag == .end {
+        return .end
+      }
+      return .init(rawValue: rawTag)
+    }
+  }
+#endif
 
 // これはfor文では使えない
 public enum TrackingTagRangeExpression: Equatable {
@@ -115,4 +149,104 @@ public postfix func ... (lhs: RedBlackTreeTrackingTag)
   -> TrackingTagRangeExpression
 {
   .partialRangeFrom(lhs)
+}
+
+extension TrackingTagRangeExpression {
+
+  @inlinable @inline(__always)
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> UnsafeTreeRangeExpression2
+  where
+    Base: ___TreeBase
+  {
+    switch self {
+
+    case .range(let from, let to):
+      return .range(
+        from: from.relative(to: __tree_),
+        to: to.relative(to: __tree_))
+
+    case .closedRange(let from, let through):
+      return .closedRange(
+        from: from.relative(to: __tree_),
+        through: through.relative(to: __tree_))
+
+    case .partialRangeTo(let to):
+      return .partialRangeTo(to.relative(to: __tree_))
+
+    case .partialRangeThrough(let through):
+      return .partialRangeThrough(through.relative(to: __tree_))
+
+    case .partialRangeFrom(let from):
+      return .partialRangeFrom(from.relative(to: __tree_))
+
+    case .unboundedRange:
+      return .unboundedRange
+    }
+  }
+
+  @usableFromInline
+  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> (
+      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>,
+      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
+    )
+  where
+    Base: ___TreeBase
+  {
+    relative(to: __tree_)
+      .relative(to: __tree_)
+  }
+
+  @usableFromInline
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> (
+      UnsafeMutablePointer<UnsafeNode>,
+      UnsafeMutablePointer<UnsafeNode>
+    )
+  where
+    Base: ___TreeBase
+  {
+    unwrapLowerUpper(
+      relative(to: __tree_)
+        .relative(to: __tree_))
+      ?? (__tree_.__end_node, __tree_.__end_node)
+  }
+
+  @inlinable @inline(__always)
+  func unwrapLowerUpperOrFatal(
+    _ bounds: (
+      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>,
+      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
+    )
+  ) -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>) {
+    switch bounds {
+    case (.success(let l), .success(let u)):
+      return (l, u)
+
+    case (.failure(let e), .success):
+      fatalError("lower failed: \(e)")
+
+    case (.success, .failure(let e)):
+      fatalError("upper failed: \(e)")
+
+    case (.failure(let le), .failure(let ue)):
+      fatalError("both failed: lower=\(le), upper=\(ue)")
+    }
+  }
+
+  @inlinable @inline(__always)
+  func unwrapLowerUpper(
+    _ bounds: (
+      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>,
+      Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
+    )
+  ) -> (UnsafeMutablePointer<UnsafeNode>, UnsafeMutablePointer<UnsafeNode>)? {
+    switch bounds {
+    case (.success(let l), .success(let u)):
+      return (l, u)
+    default:
+      return nil
+    }
+  }
 }

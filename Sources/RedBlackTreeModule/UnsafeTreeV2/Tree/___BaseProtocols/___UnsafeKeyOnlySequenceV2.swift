@@ -83,6 +83,25 @@ extension ___UnsafeKeyOnlySequenceV2__ {
     let (lower, upper) = rawRange._relative(to: __tree_)
     return .init(tree: __tree_, start: lower, end: upper)
   }
+  
+  @inlinable
+  public func ___subscript(_ rawRange: UnsafeTreeRangeExpression)
+    -> RedBlackTreeKeyOnlyRangeView<Base>
+  {
+    let (lower, upper) = rawRange._relative(to: __tree_)
+    guard __tree_.isValidRawRange(lower: lower.checked, upper: upper.checked) else {
+      fatalError(.invalidIndex)
+    }
+    return .init(__tree_: __tree_, _start: lower, _end: upper)
+  }
+
+  @inlinable
+  public func ___unchecked_subscript(_ rawRange: UnsafeTreeRangeExpression)
+  -> RedBlackTreeKeyOnlyRangeView<Base>
+  {
+    let (lower, upper) = rawRange._relative(to: __tree_)
+    return .init(__tree_: __tree_, _start: lower, _end: upper)
+  }
 }
 
 extension ___UnsafeKeyOnlySequenceV2__ {
@@ -134,14 +153,14 @@ protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, ___UnsafeInde
       }
     }
   }
+#endif
 
-  extension ___UnsafeKeyOnlySequenceV2 {
+extension ___UnsafeKeyOnlySequenceV2 {
 
-    @inlinable
-    internal subscript(_checked position: Index) -> _PayloadValue {
-      @inline(__always) _read {
-        yield __tree_[try! __tree_._remap_to_safe_(position).get()]
-      }
+  @inlinable
+  internal subscript(_checked position: Index) -> _PayloadValue {
+    @inline(__always) _read {
+      yield __tree_[try! __tree_._remap_to_safe_(position).get()]
     }
   }
-#endif
+}

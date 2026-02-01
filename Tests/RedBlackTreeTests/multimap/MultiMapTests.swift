@@ -546,12 +546,12 @@ final class MultiMapTests: RedBlackTreeTestCase {
   #if DEBUG
     func testIndexLimit3() throws {
       let set = [0: 0, 1: 10, 2: 20, 3: 30, 4: 40] as Target<Int, Int>
-      XCTAssertEqual(set.startIndex.trackingTag, 0)
-      XCTAssertEqual(set.index(before: set.endIndex).trackingTag, 4)
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).trackingTag, 4)
+      XCTAssertEqual(set.startIndex.trackingTag?.rawValue, 0)
+      XCTAssertEqual(set.index(before: set.endIndex).trackingTag?.rawValue, 4)
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).trackingTag?.rawValue, 4)
       XCTAssertEqual(
-        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.trackingTag, 4)
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).trackingTag, 0)
+        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.trackingTag?.rawValue, 4)
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).trackingTag?.rawValue, 0)
       XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
       XCTAssertNotEqual(
         set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),
@@ -1059,9 +1059,9 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = Target<Int, String>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: -1).trackingTag, -1)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: -1).trackingTag?.rawValue, -1)
       // UnsafeTreeは範囲外のインデックスを作成できない
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).trackingTag, nil)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).trackingTag?.rawValue, nil)
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
@@ -1081,8 +1081,8 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertTrue(set.isValid(index: set.endIndex))
     typealias Index = Target<Int, String>.Index
     #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: -1).trackingTag, -1)
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).trackingTag, 5)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: -1).trackingTag?.rawValue, -1)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).trackingTag?.rawValue, 5)
 
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))

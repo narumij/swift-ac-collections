@@ -6,7 +6,7 @@
 //
 
 public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeRangeProtocol,
-  ___UnsafeSubSequenceV2, ___UnsafeCommonV2
+  ___UnsafeSubSequenceV2, ___UnsafeCommonV2, ___UnsafeKeyOnlySequenceV2__
 where
   Base: ___TreeBase & ___TreeIndex,
   Base._Key == Base._PayloadValue
@@ -80,6 +80,18 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   public subscript(tag: RedBlackTreeTrackingTag) -> Element? {
     (try? __tree_[tag].get())?.__payload_().pointee
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView {
+  
+  @inlinable
+  public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
+    let (lower, upper) = bounds.relative(to: __tree_)
+    guard __tree_.isValidRawRange(lower: lower.checked, upper: upper.checked) else {
+      fatalError(.invalidIndex)
+    }
+    return .init(__tree_: __tree_, _start: lower, _end: upper)
   }
 }
 
@@ -248,5 +260,106 @@ extension RedBlackTreeKeyOnlyRangeView {
       fatalError(.invalidIndex)
     }
     return _unchecked_remove(at: __p).payload
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView {
+  /// Indexがsubscriptやremoveで利用可能か判別します
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func isValid(index: RedBlackTreeTrackingTag) -> Bool {
+    guard
+      let p: _NodePtr = try? __tree_[index].get(),
+      !p.___is_end,
+      ___contains(p)
+    else {
+      return false
+    }
+    return true
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func elementsEqual<OtherSequence>(
+    _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence {
+    try _elementsEqual(other, by: areEquivalent)
+  }
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func lexicographicallyPrecedes<OtherSequence>(
+    _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
+    try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Equatable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    _elementsEqual(other, by: ==)
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Comparable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  @inline(__always)
+  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    _lexicographicallyPrecedes(other, by: <)
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView: Equatable where _PayloadValue: Equatable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  @inline(__always)
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.isTriviallyIdentical(to: rhs) || lhs.elementsEqual(rhs)
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView: Comparable where _PayloadValue: Comparable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  @inline(__always)
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    !lhs.isTriviallyIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
+#if swift(>=5.5)
+  extension RedBlackTreeKeyOnlyRangeView: @unchecked Sendable
+  where Element: Sendable {}
+#endif
+
+// MARK: - Is Identical To
+
+extension RedBlackTreeKeyOnlyRangeView: ___UnsafeIsIdenticalToV2 {}
+
+extension RedBlackTreeKeyOnlyRangeView {
+
+  package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {
+    .init(_start: _start, _end: _end)
   }
 }

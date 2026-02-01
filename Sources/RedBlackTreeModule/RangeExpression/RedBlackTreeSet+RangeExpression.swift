@@ -32,6 +32,12 @@
     public func isValid(_ bounds: _RangeExpression) -> Bool {
       _isValid(bounds.rawRange)
     }
+    
+    @inlinable
+    public func isValid(_ bounds: TrackingTagRangeExpression) -> Bool {
+      let (l, u) = bounds.relative(to: __tree_)
+      return l.isValid && u.isValid
+    }
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> SubSequence {
@@ -62,6 +68,15 @@
         }
       }
     #endif
+    
+    @inlinable
+    public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
+      let (lower, upper) = bounds.relative(to: __tree_)
+      guard __tree_.isValidRawRange(lower: lower.checked, upper: upper.checked) else {
+        fatalError(.invalidIndex)
+      }
+      return .init(__tree_: __tree_, _start: lower, _end: upper)
+    }
 
     /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
@@ -87,6 +102,13 @@
     public mutating func removeSubrange(_ bounds: _RangeExpression) {
       __tree_.ensureUnique()
       _ = ___remove(bounds.rawRange)
+    }
+    
+    @inlinable
+    public mutating func removeSubrange(_ bounds: TrackingTagRangeExpression) {
+      __tree_.ensureUnique()
+      let (lower, upper) = bounds.relative(to: __tree_)
+      _ = ___remove(from: lower, to: upper)
     }
 
     @inlinable
@@ -139,23 +161,25 @@
     /// 値レンジ `[start, end)` に含まれる要素のスライス
     /// - Complexity: O(log *n*)
     @inlinable
-    public func sequence(from start: Element, to end: Element) -> SubSequence {
+    public func sequence(from start: Element, to end: Element)
+    -> RedBlackTreeKeyOnlyRangeView<Base> {
       // APIはstride関数とsequence関数を参考にした
       .init(
-        tree: __tree_,
-        start: __tree_.lower_bound(start),
-        end: __tree_.lower_bound(end))
+        __tree_: __tree_,
+        _start: __tree_.lower_bound(start),
+        _end: __tree_.lower_bound(end))
     }
 
     /// 値レンジ `[start, end]` に含まれる要素のスライス
     /// - Complexity: O(log *n*)
     @inlinable
-    public func sequence(from start: Element, through end: Element) -> SubSequence {
+    public func sequence(from start: Element, through end: Element)
+    ->  RedBlackTreeKeyOnlyRangeView<Base> {
       // APIはstride関数とsequence関数を参考にした
       .init(
-        tree: __tree_,
-        start: __tree_.lower_bound(start),
-        end: __tree_.upper_bound(end))
+        __tree_: __tree_,
+        _start: __tree_.lower_bound(start),
+        _end: __tree_.upper_bound(end))
     }
   }
 #endif

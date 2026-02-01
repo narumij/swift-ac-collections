@@ -173,9 +173,9 @@ public struct RedBlackTreeSet<Element: Comparable> {
 }
 
 #if COMPATIBLE_ATCODER_2025
-extension RedBlackTreeSet: _RedBlackTreeKeyOnlyBase {}
+  extension RedBlackTreeSet: _RedBlackTreeKeyOnlyBase {}
 #else
-extension RedBlackTreeSet: _RedBlackTreeKeyOnlyBase2 {}
+  extension RedBlackTreeSet: _RedBlackTreeKeyOnlyBase2 {}
 #endif
 
 extension RedBlackTreeSet: CompareUniqueTrait {}
@@ -721,6 +721,26 @@ extension RedBlackTreeSet {
       _isValid(index: index)
     }
   }
+
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var indices: Indices {
+      _indices
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func reversed() -> Tree._PayloadValues.Reversed {
+      _reversed()
+    }
+  }
 #endif
 
 #if !COMPATIBLE_ATCODER_2025
@@ -774,6 +794,44 @@ extension RedBlackTreeSet {
       __tree_.___distance(
         from: try! start.relative(to: __tree_).get(),
         to: try! end.relative(to: __tree_).get())
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
+    /// 最初の位置（`Index`）を返します。
+    ///
+    /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
+    /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
+    /// - `lowerBound(3)` は要素 `3` の位置を返します。
+    /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
+    /// - `lowerBound(10)` は `endIndex` を返します。
+    ///
+    /// - Parameter member: 二分探索で検索したい要素
+    /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func lowerBound(_ member: Element) -> Index {
+      .create(__tree_.lower_bound(member))
+    }
+
+    /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
+    /// 最初の位置（`Index`）を返します。
+    ///
+    /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
+    /// - `upperBound(3)` は要素 `5` の位置を返します。
+    ///   （`3` より大きい値が最初に現れる場所）
+    /// - `upperBound(5)` は要素 `7` の位置を返します。
+    ///   （`5` と等しい要素は含まないため、`5` の直後）
+    /// - `upperBound(9)` は `endIndex` を返します。
+    ///
+    /// - Parameter member: 二分探索で検索したい要素
+    /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func upperBound(_ member: Element) -> Index {
+      .create(__tree_.upper_bound(member))
     }
   }
 
@@ -921,23 +979,28 @@ extension RedBlackTreeSet {
     }
   }
 
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var indices: AnySequence<RedBlackTreeTrackingTag> {
+      AnySequence(_indices.map(\.trackingTag))
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func reversed() -> AnySequence<Element> {
+      AnySequence(_reversed())
+    }
+  }
 #endif
 
 extension RedBlackTreeSet {
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func reversed() -> Tree._PayloadValues.Reversed {
-    _reversed()
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var indices: Indices {
-    _indices
-  }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.

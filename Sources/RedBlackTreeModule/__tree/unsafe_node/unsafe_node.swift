@@ -146,7 +146,7 @@ public struct UnsafeNode {
   ///
   /// 赤黒木ノードの親ノードを指すポインタ。
   public var __parent_: Pointer
-  
+
   /// Color flag of this red-black tree node.
   ///
   /// `true` indicates black, `false` indicates red.
@@ -171,6 +171,11 @@ public struct UnsafeNode {
   /// `false` の場合、ペイロードは未使用または回収済み。
   ///
   public var ___has_payload_content: Bool
+
+  #if DEBUG || true
+    /// 再利用された回数
+    public var ___recycle_count: UInt32 = 0
+  #endif
 
   /// A lightweight tracking tag used to identify and correlate nodes.
   ///
@@ -202,11 +207,6 @@ public struct UnsafeNode {
   /// - `nullptr` は `-2`
   /// - `end` は `-1`
   public var ___tracking_tag: _RawTrackingTag
-
-  #if DEBUG
-    /// 再利用された回数
-    public var ___recycle_count: Int = 0
-  #endif
 
   // non optionalを選択したのは、コードのあちこちにチェックコードが自動で挟まって遅くなることを懸念しての措置
   // nullptrは定数でもなにかコストがかかっていた記憶もある

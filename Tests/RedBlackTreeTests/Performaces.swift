@@ -49,7 +49,11 @@ final class Performaces: RedBlackTreeTestCase {
       //    throw XCTSkip()
       self.measure {
         var set = RedBlackTreeSet<Int>(0..<10_000_000)
-        set.removeSubrange(set.startIndex..<set.endIndex)
+        #if COMPATIBLE_ATCODER_2025
+          set.removeSubrange(set.startIndex..<set.endIndex)
+        #else
+          set.removeAll(in: set.startIndex..<set.endIndex)
+        #endif
       }
     }
 

@@ -31,8 +31,8 @@ extension _RecyclePool {
     assert(p.pointee.___tracking_tag > .end)
     assert(recycleHead != p)
     count -= 1
-    #if DEBUG
-      p.pointee.___recycle_count += 1
+    #if DEBUG || true
+      p.pointee.___recycle_count &+= 1
     #endif
     freshBucketAllocator.deinitialize(p.advanced(by: 1))
     #if GRAPHVIZ_DEBUG

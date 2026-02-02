@@ -30,7 +30,7 @@ extension UnsafeNode {
       let r = resolve(__right_)
       let p = resolve(__parent_)
       let color = __is_black_ ? "B" : "R"
-      #if DEBUG
+      #if DEBUG || true
         let rc = ___recycle_count
       #else
         let rc = -1

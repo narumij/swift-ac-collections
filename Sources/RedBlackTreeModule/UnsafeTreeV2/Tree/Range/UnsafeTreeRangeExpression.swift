@@ -34,11 +34,11 @@ public enum UnsafeTreeRangeExpression: Equatable {
 extension UnsafeTreeRangeExpression {
 
   func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
-    .success(__tree_.__begin_node_)
+    success(__tree_.__begin_node_)
   }
 
   func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
-    .success(__tree_.__end_node)
+    success(__tree_.__end_node)
   }
 
   @usableFromInline
@@ -48,11 +48,11 @@ extension UnsafeTreeRangeExpression {
     case .range(let lhs, let rhs):
       return (lhs.safe, rhs.safe)
     case .closedRange(let lhs, let rhs):
-      return (lhs.safe, rhs.safe.flatMap { ___tree_next_iter($0) })
+      return (lhs.safe, rhs.safe.flatMap { ___tree_next_iter($0.pointer) })
     case .partialRangeTo(let rhs):
       return (_start(__tree_), rhs.safe)
     case .partialRangeThrough(let rhs):
-      return (_start(__tree_), rhs.safe.flatMap { ___tree_next_iter($0) })
+      return (_start(__tree_), rhs.safe.flatMap { ___tree_next_iter($0.pointer) })
     case .partialRangeFrom(let lhs):
       return (lhs.safe, _end(__tree_))
     case .unboundedRange:
@@ -64,11 +64,11 @@ extension UnsafeTreeRangeExpression {
 extension UnsafeTreeRangeExpression {
 
   func _start(_ tied: _TiedRawBuffer) -> SafePtr {
-    tied.begin_ptr.map { .success($0.pointee) } ?? .failure(.null)
+    tied.begin_ptr.map { success($0.pointee) } ?? .failure(.null)
   }
 
   func _end(_ tied: _TiedRawBuffer) -> SafePtr {
-    tied.end_ptr.map { .success($0) } ?? .failure(.null)
+    tied.end_ptr.map { success($0) } ?? .failure(.null)
   }
 
   @usableFromInline
@@ -80,11 +80,11 @@ extension UnsafeTreeRangeExpression {
     case .range(let lhs, let rhs):
       return (lhs.safe, rhs.safe)
     case .closedRange(let lhs, let rhs):
-      return (lhs.safe, rhs.safe.flatMap { ___tree_next_iter($0) })
+      return (lhs.safe, rhs.safe.flatMap { ___tree_next_iter($0.pointer) })
     case .partialRangeTo(let rhs):
       return (_start(tied), rhs.safe)
     case .partialRangeThrough(let rhs):
-      return (_start(tied), rhs.safe.flatMap { ___tree_next_iter($0) })
+      return (_start(tied), rhs.safe.flatMap { ___tree_next_iter($0.pointer) })
     case .partialRangeFrom(let lhs):
       return (lhs.safe, _end(tied))
     case .unboundedRange:

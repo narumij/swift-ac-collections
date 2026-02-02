@@ -244,7 +244,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    (try? __tree_._remap_to_safe_(i).map { ___contains($0) }.get()) ?? false
+    (try? __tree_._remap_to_safe_(i).map { ___contains($0.pointer) }.get()) ?? false
   }
 }
 

@@ -34,11 +34,11 @@ public enum UnsafeTreeSafeRangeExpression: Equatable {
 extension UnsafeTreeSafeRangeExpression {
 
   func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
-    .success(__tree_.__begin_node_)
+    success(__tree_.__begin_node_)
   }
 
   func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
-    .success(__tree_.__end_node)
+    success(__tree_.__end_node)
   }
 
   @usableFromInline
@@ -48,11 +48,11 @@ extension UnsafeTreeSafeRangeExpression {
     case .range(let lhs, let rhs):
       return (lhs, rhs)
     case .closedRange(let lhs, let rhs):
-      return (lhs, rhs.flatMap { ___tree_next_iter($0) })
+      return (lhs, rhs.flatMap { ___tree_next_iter($0.pointer) })
     case .partialRangeTo(let rhs):
       return (_start(__tree_), rhs)
     case .partialRangeThrough(let rhs):
-      return (_start(__tree_), rhs.flatMap { ___tree_next_iter($0) })
+      return (_start(__tree_), rhs.flatMap { ___tree_next_iter($0.pointer) })
     case .partialRangeFrom(let lhs):
       return (lhs, _end(__tree_))
     case .unboundedRange:
@@ -123,7 +123,7 @@ func unwrapLowerUpperOrFatal(_ bounds: (SafePtr, SafePtr))
 {
   switch bounds {
   case (.success(let l), .success(let u)):
-    return (l, u)
+    return (l.pointer, u.pointer)
 
   case (.failure(let e), .success):
     fatalError("lower failed: \(e)")
@@ -144,7 +144,7 @@ func unwrapLowerUpper(_ bounds: (SafePtr, SafePtr))
 {
   switch bounds {
   case (.success(let l), .success(let u)):
-    return (l, u)
+    return (l.pointer, u.pointer)
   default:
     return nil
   }

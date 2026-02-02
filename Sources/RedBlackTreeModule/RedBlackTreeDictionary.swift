@@ -551,7 +551,7 @@ extension RedBlackTreeDictionary {
     guard case .success(let __p) = __tree_._remap_to_safe_(index) else {
       fatalError(.invalidIndex)
     }
-    return __element_(_unchecked_remove(at: __p).payload)
+    return __element_(_unchecked_remove(at: __p.pointer).payload)
   }
 
   #if COMPATIBLE_ATCODER_2025

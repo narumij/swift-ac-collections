@@ -601,8 +601,8 @@ extension RedBlackTreeSet {
       -> Int
     {
       __tree_.___distance(
-        from: try! start.relative(to: __tree_).get(),
-        to: try! end.relative(to: __tree_).get())
+        from: try! start.relative(to: __tree_).get().pointer,
+        to: try! end.relative(to: __tree_).get().pointer)
     }
   }
 
@@ -662,7 +662,7 @@ extension RedBlackTreeSet {
     @inlinable
     public func index(before i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
       try? i.relative(to: __tree_)
-        .flatMap { ___tree_prev_iter($0) }
+        .flatMap { ___tree_prev_iter($0.pointer) }
         .map { .create($0) }
         .get()
     }
@@ -671,7 +671,7 @@ extension RedBlackTreeSet {
     @inlinable
     public func index(after i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
       try? i.relative(to: __tree_)
-        .flatMap { ___tree_next_iter($0) }
+        .flatMap { ___tree_next_iter($0.pointer) }
         .map { .create($0) }
         .get()
     }
@@ -682,7 +682,7 @@ extension RedBlackTreeSet {
       -> RedBlackTreeTrackingTag
     {
       try? i.relative(to: __tree_)
-        .flatMap { ___tree_adv_iter($0, distance) }
+        .flatMap { ___tree_adv_iter($0.pointer, distance) }
         .map { .create($0) }
         .get()
     }
@@ -696,7 +696,7 @@ extension RedBlackTreeSet {
     {
       let __l = limit.relative(to: __tree_)
       return try? i.relative(to: __tree_)
-        .flatMap { ___tree_adv_iter($0, distance, __l) }
+        .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
         .map { .create($0) }
         .get()
     }
@@ -752,7 +752,7 @@ extension RedBlackTreeSet {
       guard case .success(let __p) = index.relative(to: __tree_) else {
         fatalError(.invalidIndex)
       }
-      return _unchecked_remove(at: __p).payload
+      return _unchecked_remove(at: __p.pointer).payload
     }
   }
 
@@ -763,7 +763,7 @@ extension RedBlackTreeSet {
     public subscript(position: RedBlackTreeTrackingTag) -> Element {
       @inline(__always) get {
         guard
-          let p: _NodePtr = try? __tree_[position].get(),
+          let p: _NodePtr = try? __tree_[position].get().pointer,
           !p.___is_end
         else {
           fatalError(.invalidIndex)
@@ -779,7 +779,7 @@ extension RedBlackTreeSet {
     @inline(__always)
     public func isValid(index: RedBlackTreeTrackingTag) -> Bool {
       guard
-        let p: _NodePtr = try? __tree_[index].get(),
+        let p: _NodePtr = try? __tree_[index].get().pointer,
         !p.___is_end
       else {
         return false

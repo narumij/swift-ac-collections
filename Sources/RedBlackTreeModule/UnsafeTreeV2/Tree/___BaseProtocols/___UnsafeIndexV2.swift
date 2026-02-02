@@ -29,8 +29,8 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   internal func _distance(from start: Index, to end: Index) -> Int {
     __tree_.___distance(
-      from: try! __tree_._remap_to_safe_(start).get(),
-      to: try! __tree_._remap_to_safe_(end).get())
+      from: try! __tree_._remap_to_safe_(start).get().pointer,
+      to: try! __tree_._remap_to_safe_(end).get().pointer)
   }
 }
 
@@ -51,7 +51,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(after i: Index) -> Index {
-    ___index(__tree_.___index(after: try! __tree_._remap_to_safe_(i).get()))
+    ___index(__tree_.___index(after: try! __tree_._remap_to_safe_(i).get().pointer))
   }
 
   @inlinable
@@ -63,7 +63,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(before i: Index) -> Index {
-    ___index(__tree_.___index(before: try! __tree_._remap_to_safe_(i).get()))
+    ___index(__tree_.___index(before: try! __tree_._remap_to_safe_(i).get().pointer))
   }
 
   @inlinable
@@ -75,7 +75,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(__tree_.___index(try! __tree_._remap_to_safe_(i).get(), offsetBy: distance))
+    ___index(__tree_.___index(try! __tree_._remap_to_safe_(i).get().pointer, offsetBy: distance))
   }
 
   @inlinable
@@ -88,7 +88,7 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     ___index_or_nil(
-      __tree_.___index(try! __tree_._remap_to_safe_(i).get(), offsetBy: distance, limitedBy: try! __tree_._remap_to_safe_(limit).get()))
+      __tree_.___index(try! __tree_._remap_to_safe_(i).get().pointer, offsetBy: distance, limitedBy: try! __tree_._remap_to_safe_(limit).get().pointer))
   }
 
   @inlinable
@@ -203,7 +203,7 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   @discardableResult
   public mutating func ___erase(_ ptr: Index) -> Index {
-    ___index(__tree_.erase(try! __tree_._remap_to_safe_(ptr).get()))
+    ___index(__tree_.erase(try! __tree_._remap_to_safe_(ptr).get().pointer))
   }
 }
 

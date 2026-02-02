@@ -365,7 +365,7 @@ extension RedBlackTreeMultiSet {
     guard case .success(let __p) = __tree_._remap_to_safe_(index) else {
       fatalError(.invalidIndex)
     }
-    return _unchecked_remove(at: __p).payload
+    return _unchecked_remove(at: __p.pointer).payload
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。

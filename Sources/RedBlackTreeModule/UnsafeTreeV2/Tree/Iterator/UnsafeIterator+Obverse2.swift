@@ -53,17 +53,17 @@ extension UnsafeIterator {
       // 終端に到達
       guard _p != _end else { return nil }
       
-      _safe_current = _checked_current.flatMap { ___tree_next_iter($0) }
+      _safe_current = _checked_current.flatMap { ___tree_next_iter($0.pointer) }
       
-      return _p
+      return _p.pointer
     }
 
     public var _start: _NodePtr {
-      try! _safe_start.get()
+      try! _safe_start.get().pointer
     }
 
     public var _end: _NodePtr {
-      try! _safe_end.get()
+      try! _safe_end.get().pointer
     }
     
     public typealias Reversed = _Reverse2

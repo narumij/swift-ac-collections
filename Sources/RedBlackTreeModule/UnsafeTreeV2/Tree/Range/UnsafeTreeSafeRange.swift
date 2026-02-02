@@ -43,8 +43,8 @@ extension UnsafeTreeSafeRange {
     }
     // 終端に到達
     guard _p != _end else { return nil }
-    __current = __checked_current.flatMap { ___tree_next_iter($0) }
-    return _p
+    __current = __checked_current.flatMap { ___tree_next_iter($0.pointer) }
+    return _p.pointer
   }
 
   func boundsCheckedNext(before __current: inout SafePtr) -> _NodePtr? {
@@ -59,11 +59,11 @@ extension UnsafeTreeSafeRange {
     }
     // ___from に到達（exclusive）なら終了
     guard cur != start else { return nil }
-    __current = _checked_current.flatMap { ___tree_prev_iter($0) }
+    __current = _checked_current.flatMap { ___tree_prev_iter($0.pointer) }
     // prev の結果が壊れてたらオコ！（end→start の途中で壊れた）
     guard let p = try? __current.get() else {
       fatalError(.invalidIndex)
     }
-    return p
+    return p.pointer
   }
 }

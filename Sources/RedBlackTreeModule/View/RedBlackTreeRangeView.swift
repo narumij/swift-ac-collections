@@ -38,12 +38,12 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   @usableFromInline
   var _start: _NodePtr {
-    try! __tree_[startIndex].get()
+    try! __tree_[startIndex].get().pointer
   }
 
   @usableFromInline
   var _end: _NodePtr {
-    try! __tree_[endIndex].get()
+    try! __tree_[endIndex].get().pointer
   }
 }
 
@@ -79,7 +79,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   public subscript(tag: RedBlackTreeTrackingTag) -> Element? {
-    (try? __tree_[tag].get())?.__payload_().pointee
+    (try? __tree_[tag].get().pointer)?.__payload_().pointee
   }
 }
 
@@ -157,8 +157,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   public func distance(from start: RedBlackTreeTrackingTag, to end: RedBlackTreeTrackingTag) -> Int
   {
     __tree_.___distance(
-      from: try! start.relative(to: __tree_).get(),
-      to: try! end.relative(to: __tree_).get())
+      from: try! start.relative(to: __tree_).get().pointer,
+      to: try! end.relative(to: __tree_).get().pointer)
   }
 }
 
@@ -168,7 +168,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   public func index(before i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
     try? i.relative(to: __tree_)
-      .flatMap { ___tree_prev_iter($0) }
+      .flatMap { ___tree_prev_iter($0.pointer) }
       .map { .create($0) }
       .get()
   }
@@ -177,7 +177,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   public func index(after i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
     try? i.relative(to: __tree_)
-      .flatMap { ___tree_next_iter($0) }
+      .flatMap { ___tree_next_iter($0.pointer) }
       .map { .create($0) }
       .get()
   }
@@ -187,7 +187,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   public func index(_ i: RedBlackTreeTrackingTag, offsetBy distance: Int) -> RedBlackTreeTrackingTag
   {
     try? i.relative(to: __tree_)
-      .flatMap { ___tree_adv_iter($0, distance) }
+      .flatMap { ___tree_adv_iter($0.pointer, distance) }
       .map { .create($0) }
       .get()
   }
@@ -201,7 +201,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   {
     let __l = limit.relative(to: __tree_)
     return try? i.relative(to: __tree_)
-      .flatMap { ___tree_adv_iter($0, distance, __l) }
+      .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
       .map { .create($0) }
       .get()
   }
@@ -273,7 +273,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inline(__always)
   public func isValid(index: RedBlackTreeTrackingTag) -> Bool {
     guard
-      let p: _NodePtr = try? __tree_[index].get(),
+      let p: _NodePtr = try? __tree_[index].get().pointer,
       !p.___is_end,
       ___contains(p)
     else {

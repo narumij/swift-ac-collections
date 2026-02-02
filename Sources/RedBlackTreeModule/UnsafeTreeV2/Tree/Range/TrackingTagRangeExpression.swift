@@ -72,6 +72,11 @@ extension Optional where Wrapped == TrackingTag_ {
   static func create(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Self {
     t.flatMap { TrackingTag_(rawValue: $0.trackingTag) }
   }
+  
+  @inlinable
+  static func create(_ t: _NodePtrElementalSeal?) -> Self {
+    t.flatMap { TrackingTag_(rawValue: $0.trackingTag) }
+  }
 
   @inlinable @inline(__always)
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> SafePtr

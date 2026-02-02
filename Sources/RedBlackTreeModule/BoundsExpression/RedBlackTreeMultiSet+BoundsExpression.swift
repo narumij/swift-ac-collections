@@ -22,7 +22,7 @@
     @inlinable
     public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       let p = bound.relative(to: __tree_)
-      guard let p = try? p.get(), !p.___is_end else { return nil }
+      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return __tree_[p]
     }
 
@@ -30,7 +30,7 @@
     public mutating func remove(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)
-      guard let p = try? p.get(), !p.___is_end else { return nil }
+      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return _unchecked_remove(at: p).payload
     }
 
@@ -38,7 +38,7 @@
       -> RedBlackTreeTrackingTag?
     {
       let p = bound.relative(to: __tree_)
-      guard let p = try? p.get(), !p.___is_end else { return nil }
+      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return .init(rawValue: p.trackingTag)
     }
 

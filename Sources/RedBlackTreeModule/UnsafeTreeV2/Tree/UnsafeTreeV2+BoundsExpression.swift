@@ -21,7 +21,7 @@ extension RedBlackTreeBoundExpression {
 
   @inlinable @inline(__always)
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
+    -> SafePtr
   where
     Base: ___TreeBase,
     Base._Key == _Key
@@ -30,24 +30,24 @@ extension RedBlackTreeBoundExpression {
     switch self {
 
     case .start:
-      return .success(__tree_.__begin_node_)
+      return success(__tree_.__begin_node_)
 
     case .end:
-      return .success(__tree_.__end_node)
+      return success(__tree_.__end_node)
 
     case .lower(let __v):
-      return .success(__tree_.lower_bound(__v))
+      return success(__tree_.lower_bound(__v))
 
     case .upper(let __v):
-      return .success(__tree_.upper_bound(__v))
+      return success(__tree_.upper_bound(__v))
 
     case .find(let __v):
-      return .success(__tree_.find(__v))
+      return success(__tree_.find(__v))
 
     case .advanced(let __self, by: let offset):
       let __p = __self.relative(to: __tree_)
       return __p.flatMap { __p in
-        ___tree_adv_iter(__p, offset)
+        ___tree_adv_iter(__p.pointer, offset)
       }
 
     case .before(let __self):
@@ -103,8 +103,8 @@ extension RedBlackTreeBoundRangeExpression {
         : __tree_.__equal_range_unique(__v)
 
       return .range(
-        from: .success(lower),
-        to: .success(upper))
+        from: success(lower),
+        to: success(upper))
     }
   }
 

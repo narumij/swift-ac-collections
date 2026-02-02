@@ -149,13 +149,13 @@ extension UnsafeTreeV2 {
     case .nullptr:
       return .failure(.null)
     case .end:
-      return .success(end)
+      return success(end)
     default:
       guard tag < capacity else {
         return .failure(.unknown)
       }
       let p = _buffer.header[tag]
-      return p.___is_garbaged ? .failure(.garbaged) : .success(p)
+      return p.___is_garbaged ? .failure(.garbaged) : success(p)
     }
   }
 

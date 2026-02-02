@@ -301,7 +301,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     } else if ___is_garbaged {
       return .failure(.garbaged)
     } else {
-      return .success(self)
+      return success(self)
     }
   }
 }

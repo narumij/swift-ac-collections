@@ -53,22 +53,22 @@ extension UnsafeIterator {
       // start に到達（exclusive）なら終了
       guard cur != start else { return nil }
       
-      _safe_current = _checked_current.flatMap { ___tree_prev_iter($0) }
+      _safe_current = _checked_current.flatMap { ___tree_prev_iter($0.pointer) }
       
       // prev の結果が壊れてたらオコ！（end→start の途中で壊れた）
       guard let p = try? _safe_current.get() else {
         fatalError(.invalidIndex)
       }
       
-      return p
+      return p.pointer
     }
 
     public var _start: _NodePtr {
-      try! _safe_start.get()
+      try! _safe_start.get().pointer
     }
 
     public var _end: _NodePtr {
-      try! _safe_end.get()
+      try! _safe_end.get().pointer
     }
   }
 }

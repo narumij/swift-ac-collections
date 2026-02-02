@@ -763,7 +763,7 @@ extension RedBlackTreeSet {
     public subscript(position: TaggedSeal) -> Element {
       @inline(__always) get {
         guard
-          let p: _NodePtr = try? __tree_[position].get().pointer,
+          let p: _NodePtr = try? __tree_[position].get(),
           !p.___is_end
         else {
           fatalError(.invalidIndex)
@@ -779,7 +779,7 @@ extension RedBlackTreeSet {
     @inline(__always)
     public func isValid(index: TaggedSeal) -> Bool {
       guard
-        let p: _NodePtr = try? __tree_[index].get().pointer,
+        let p: _NodePtr = try? __tree_[index].get(),
         !p.___is_end
       else {
         return false

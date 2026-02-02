@@ -18,8 +18,11 @@
 
 ### 具体的に
 
+- Collection類似APIをびっくり最小を維持する最低限だけ用意する
+- Swiftの知識で一旦それっぽく使える状態を維持
+
 - Collection及びBidirectionalCollectionの廃止
-- 代わりにRangeExpressionの独自実装をする
+- RangeExpressionは独自実装をする
 - Copy on Writeを自然と避けることができるAPIに移行する
 - for文での範囲削除を非推奨とし、専用APIをまわす
 - 削除対策イテレータを廃止して、削除チェックイテレータに変更する

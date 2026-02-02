@@ -67,3 +67,30 @@ internal func
   }
   return __r
 }
+
+@inlinable
+@inline(__always)
+internal func __distance(_ __first: _SafePtr, _ __last: _SafePtr)
+  -> Result<Int, SafePtrError>
+{
+
+  switch __last {
+  case .failure(let e): return .failure(e)
+  default: break
+  }
+
+  var __first = __first
+  var __r = 0
+  while __first != __last {
+
+    switch __first {
+    case .failure(let e): return .failure(e)
+    default: break
+    }
+
+    __first = __first.flatMap { ___tree_next_iter($0) }
+    __r += 1
+  }
+
+  return .success(__r)
+}

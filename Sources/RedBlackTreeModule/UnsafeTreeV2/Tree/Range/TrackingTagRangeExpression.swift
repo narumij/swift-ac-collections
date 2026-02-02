@@ -68,7 +68,7 @@ extension Optional where Wrapped == TagSeal_ {
 
   // タグをsalt付きに移行する場合、タグの生成は木だけが行うよう準備する必要がある
   // 競プロ用としてはsaltなしでいい。一般用として必要かどうかの判断となっていく
-  
+
   @inlinable
   static func create(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Self {
     t.flatMap { TagSeal_(rawValue: ($0.trackingTag, $0.pointee.___recycle_count)) }
@@ -82,7 +82,7 @@ extension Optional where Wrapped == TagSeal_ {
   @inlinable @inline(__always)
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> _SealedPtr
   where Base: ___TreeBase {
-    __tree_[self]
+    __tree_[self].seal
   }
 }
 

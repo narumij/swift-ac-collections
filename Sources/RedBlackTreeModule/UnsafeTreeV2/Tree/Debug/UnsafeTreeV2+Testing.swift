@@ -6,43 +6,43 @@
     }
 
     package func __left_(_ p: Int) -> Int {
-      (try? self[p].get()).map { __left_($0.pointer).trackingTag } ?? .nullptr
+      (try? self[_rawTag: p].get()).map { __left_($0).trackingTag } ?? .nullptr
     }
 
     package func __left_(_ p: Int, _ l: Int) {
-      __left_(try! self[p].get().pointer, try! self[l].get().pointer)
+      __left_(try! self[_rawTag: p].get(), try! self[_rawTag: l].get())
     }
 
     package func __right_(_ p: Int) -> Int {
-      __right_(try! self[p].get().pointer).trackingTag
+      __right_(try! self[_rawTag: p].get()).trackingTag
     }
 
     package func __right_(_ p: Int, _ l: Int) {
-      __right_(try! self[p].get().pointer, try! self[l].get().pointer)
+      __right_(try! self[_rawTag: p].get(), try! self[_rawTag: l].get())
     }
 
     package func __parent_(_ p: Int) -> Int {
-      __parent_(try! self[p].get().pointer).trackingTag
+      __parent_(try! self[_rawTag: p].get()).trackingTag
     }
 
     package func __parent_(_ p: Int, _ l: Int) {
-      __parent_(try! self[p].get().pointer, try! self[l].get().pointer)
+      __parent_(try! self[_rawTag: p].get(), try! self[_rawTag: l].get())
     }
 
     package func __is_black_(_ p: Int) -> Bool {
-      __is_black_(try! self[p].get().pointer)
+      __is_black_(try! self[_rawTag: p].get())
     }
 
     package func __is_black_(_ p: Int, _ b: Bool) {
-      __is_black_(try! self[p].get().pointer, b)
+      __is_black_(try! self[_rawTag: p].get(), b)
     }
 
     package func __value_(_ p: Int) -> _PayloadValue {
-      __value_(try! self[p].get().pointer)
+      __value_(try! self[_rawTag: p].get())
     }
 
     package func ___element(_ p: Int, _ __v: _PayloadValue) {
-      ___element(try! self[p].get().pointer, __v)
+      ___element(try! self[_rawTag: p].get(), __v)
     }
   }
 
@@ -118,14 +118,14 @@
     package func equiv(with tree: UnsafeTreeV2) -> Bool {
       // isReadOnlyは等価判定不可
       assert(__end_node.pointee.equiv(with: tree.__end_node.pointee))
-//      assert(
-//        makeFreshPoolIterator()
-//          .elementsEqual(
-//            tree.makeFreshPoolIterator(),
-//            by: {
-//              assert($0.pointee.equiv(with: $1.pointee))
-//              return $0.pointee.equiv(with: $1.pointee)
-//            }))
+      //      assert(
+      //        makeFreshPoolIterator()
+      //          .elementsEqual(
+      //            tree.makeFreshPoolIterator(),
+      //            by: {
+      //              assert($0.pointee.equiv(with: $1.pointee))
+      //              return $0.pointee.equiv(with: $1.pointee)
+      //            }))
 
       assert(__begin_node_.pointee.___tracking_tag == tree.__begin_node_.pointee.___tracking_tag)
       assert(_buffer.header.equiv(with: tree._buffer.header))

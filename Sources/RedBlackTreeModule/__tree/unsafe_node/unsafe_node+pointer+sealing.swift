@@ -18,27 +18,28 @@ public struct _NodePtrSealing: Equatable {
   /// ご神体
   @usableFromInline var pointer: _NodePtr
   /// 封印
-  @usableFromInline var gen: UnsafeNode.Seal
+  @usableFromInline var seal: UnsafeNode.Seal
 
   @inlinable
   @inline(__always)
   init(_ p: _NodePtr) {
     pointer = p
-    gen = p.pointee.___recycle_count
+    seal = p.pointee.___recycle_count
   }
 
   /// 封印が剥がされているかどうかを返す
   ///
   /// 結果が偽で封印が有効な場合は現世ノードであることをあらわす.
   ///
+  /// 封印が剥がされたものは呪物扱い
   @inlinable
   @inline(__always)
   var isUnsealed: Bool {
     // 死後と転生後を判定している
-    // destroyで回収されてgabagedになるとそれは死後の世界.
+    // destroyで回収されてgarbagedになるとそれは死後の世界.
     // 再度転生するとgarbagedではなくなる.
     // recycle countが不一致となれば現世のノードを指していないことがわかる.
-    pointer.___is_garbaged || pointer.pointee.___recycle_count != gen
+    pointer.___is_garbaged || pointer.pointee.___recycle_count != seal
   }
 
   // MARK: - Convenience

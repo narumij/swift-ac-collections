@@ -5,43 +5,6 @@
 //  Created by narumij on 2026/01/29.
 //
 
-/// NOTE:
-/// The naming here intentionally leans toward a slightly poetic / fantasy-inspired style.
-/// Apologies if it feels a bit overdone — it helps convey the intended semantics.
-@frozen
-public struct _NodePtrElementalSeal: Equatable {
-  @usableFromInline var pointer: UnsafeMutablePointer<UnsafeNode>
-  @usableFromInline var gen: UInt32
-  @inlinable
-  init(_ p: UnsafeMutablePointer<UnsafeNode>) {
-    pointer = p
-    gen = p.pointee.___recycle_count
-  }
-  @inlinable
-  var isBlessing: Bool {
-    pointer.pointee.___recycle_count == gen
-  }
-  @inlinable
-  var ___is_end: Bool {
-    pointer.___is_end
-  }
-  @inlinable
-  var ___is_garbaged: Bool {
-    pointer.___is_garbaged
-  }
-  @inlinable
-  var trackingTag: Int {
-    pointer.trackingTag
-  }
-}
-
-public typealias SafePtr = Result<_NodePtrElementalSeal, SafePtrError>
-
-@inlinable
-func success(_ p: UnsafeMutablePointer<UnsafeNode>) -> SafePtr {
-  .success(.init(p))
-}
-
 @inlinable
 @inline(__always)
 internal func
@@ -117,35 +80,3 @@ internal func
   return __x
 }
 
-public enum SafePtrError: Error {
-  case null
-  case garbaged
-  case unknown
-  case limit
-  case notAllowed
-
-  /// nullptrに到達した
-  ///
-  /// 平衡木の下限を超えた操作を行ったことを表す
-  case lowerOutOfBounds
-
-  /// endを越えようとした
-  ///
-  /// 平衡木の上限を超えた操作を行ったことを表す
-  case upperOutOfBounds
-}
-
-extension Result
-where
-  Success == _NodePtrElementalSeal,
-  Failure == SafePtrError
-{
-  var checked: Result {
-    self.flatMap { _node_ptr in
-      // validなpointerがendやnullに変化することはない
-      _node_ptr.pointer.___is_garbaged
-        ? .failure(.garbaged)
-        : .success(_node_ptr)
-    }
-  }
-}

@@ -173,8 +173,9 @@ public struct UnsafeNode {
   public var ___has_payload_content: Bool
 
   #if DEBUG || true
+  public typealias RecycleCountType = UInt32
     /// 再利用された回数
-    public var ___recycle_count: UInt32 = 0
+    public var ___recycle_count: RecycleCountType = 0
   #endif
 
   /// A lightweight tracking tag used to identify and correlate nodes.

@@ -74,7 +74,7 @@ extension Optional where Wrapped == TrackingTag_ {
   }
   
   @inlinable
-  static func create(_ t: _NodePtrElementalSeal?) -> Self {
+  static func create(_ t: _NodePtrSealing?) -> Self {
     t.flatMap { TrackingTag_(rawValue: $0.trackingTag) }
   }
 

@@ -21,7 +21,7 @@ extension RedBlackTreeBoundExpression {
 
   @inlinable @inline(__always)
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> SafePtr
+    -> _SealedPtr
   where
     Base: ___TreeBase,
     Base._Key == _Key
@@ -47,7 +47,7 @@ extension RedBlackTreeBoundExpression {
     case .advanced(let __self, by: let offset):
       let __p = __self.relative(to: __tree_)
       return __p.flatMap { __p in
-        ___tree_adv_iter(__p.pointer, offset)
+        ___tree_adv_iter(__p.pointer, offset).seal
       }
 
     case .before(let __self):

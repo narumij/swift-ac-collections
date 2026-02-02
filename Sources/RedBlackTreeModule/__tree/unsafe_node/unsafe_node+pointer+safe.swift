@@ -5,11 +5,13 @@
 //  Created by narumij on 2026/02/02.
 //
 
-public typealias SafePtr = Result<_NodePtrSealing, SafePtrError>
+public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
+
+public typealias _SealedPtr = Result<_NodePtrSealing, SafePtrError>
 
 @inlinable
 @inline(__always)
-func success(_ p: UnsafeMutablePointer<UnsafeNode>) -> SafePtr {
+func success(_ p: UnsafeMutablePointer<UnsafeNode>) -> _SealedPtr {
   assert(!p.___is_garbaged)
   return .success(.init(p))
 }
@@ -83,5 +85,16 @@ where
   @inlinable
   var unchecked_trackingTag: Result<RedBlackTreeTrackingTag, SafePtrError> {
     map { .create($0) }
+  }
+}
+
+extension Result
+where
+  Success == UnsafeMutablePointer<UnsafeNode>,
+  Failure == SafePtrError
+{
+  @inlinable
+  var seal: _SealedPtr {
+    map { $0.seal }
   }
 }

@@ -144,7 +144,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package subscript(tag: _RawTrackingTag) -> SafePtr {
+  package subscript(tag: _RawTrackingTag) -> _SealedPtr {
     switch tag {
     case .nullptr:
       return .failure(.null)
@@ -161,7 +161,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package func resolve(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> SafePtr {
+  package func resolve(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> _SealedPtr {
     switch raw {
     case .nullptr:
       return .failure(.null)
@@ -180,7 +180,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package subscript(tag: RedBlackTreeTrackingTag) -> SafePtr {
+  package subscript(tag: RedBlackTreeTrackingTag) -> _SealedPtr {
     tag.map { resolve(raw: $0.rawValue.raw, seal: $0.rawValue.seal) } ?? .failure(.null)
   }
 }
@@ -193,7 +193,7 @@ extension UnsafeTreeV2 {
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
   @inline(__always)
-  internal func _remap_to_safe_(_ index: Index) -> SafePtr
+  internal func _remap_to_safe_(_ index: Index) -> _SealedPtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
     tied === index.tied ? index.rawValue.safe : self[index._rawTag]
   }

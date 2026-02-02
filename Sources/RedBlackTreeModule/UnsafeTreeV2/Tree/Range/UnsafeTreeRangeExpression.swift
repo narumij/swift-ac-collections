@@ -33,26 +33,26 @@ public enum UnsafeTreeRangeExpression: Equatable {
 
 extension UnsafeTreeRangeExpression {
 
-  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
+  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _SealedPtr {
     success(__tree_.__begin_node_)
   }
 
-  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> SafePtr {
+  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _SealedPtr {
     success(__tree_.__end_node)
   }
 
   @usableFromInline
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> (SafePtr, SafePtr)
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> (_SealedPtr, _SealedPtr)
   where Base: ___TreeBase {
     switch self {
     case .range(let lhs, let rhs):
       return (lhs.safe, rhs.safe)
     case .closedRange(let lhs, let rhs):
-      return (lhs.safe, rhs.safe.flatMap { ___tree_next_iter($0.pointer) })
+      return (lhs.safe, rhs.safe.flatMap { ___tree_next_iter($0.pointer) }.seal)
     case .partialRangeTo(let rhs):
       return (_start(__tree_), rhs.safe)
     case .partialRangeThrough(let rhs):
-      return (_start(__tree_), rhs.safe.flatMap { ___tree_next_iter($0.pointer) })
+      return (_start(__tree_), rhs.safe.flatMap { ___tree_next_iter($0.pointer) }.seal)
     case .partialRangeFrom(let lhs):
       return (lhs.safe, _end(__tree_))
     case .unboundedRange:
@@ -63,16 +63,16 @@ extension UnsafeTreeRangeExpression {
 
 extension UnsafeTreeRangeExpression {
 
-  func _start(_ tied: _TiedRawBuffer) -> SafePtr {
+  func _start(_ tied: _TiedRawBuffer) -> _SealedPtr {
     tied.begin_ptr.map { success($0.pointee) } ?? .failure(.null)
   }
 
-  func _end(_ tied: _TiedRawBuffer) -> SafePtr {
+  func _end(_ tied: _TiedRawBuffer) -> _SealedPtr {
     tied.end_ptr.map { success($0) } ?? .failure(.null)
   }
 
   @usableFromInline
-  func relative(to tied: _TiedRawBuffer) -> (SafePtr, SafePtr) {
+  func relative(to tied: _TiedRawBuffer) -> (_SealedPtr, _SealedPtr) {
     guard tied.isValueAccessAllowed else {
       return (.failure(.notAllowed), .failure(.notAllowed))
     }
@@ -80,11 +80,11 @@ extension UnsafeTreeRangeExpression {
     case .range(let lhs, let rhs):
       return (lhs.safe, rhs.safe)
     case .closedRange(let lhs, let rhs):
-      return (lhs.safe, rhs.safe.flatMap { ___tree_next_iter($0.pointer) })
+      return (lhs.safe, rhs.safe.flatMap { ___tree_next_iter($0.pointer) }.seal)
     case .partialRangeTo(let rhs):
       return (_start(tied), rhs.safe)
     case .partialRangeThrough(let rhs):
-      return (_start(tied), rhs.safe.flatMap { ___tree_next_iter($0.pointer) })
+      return (_start(tied), rhs.safe.flatMap { ___tree_next_iter($0.pointer) }.seal)
     case .partialRangeFrom(let lhs):
       return (lhs.safe, _end(tied))
     case .unboundedRange:

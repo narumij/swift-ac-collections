@@ -80,7 +80,7 @@ extension Optional where Wrapped == TrackingTag_ {
   }
 
   @inlinable @inline(__always)
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> SafePtr
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> _SealedPtr
   where Base: ___TreeBase {
     __tree_[self]
   }

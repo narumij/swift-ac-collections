@@ -20,10 +20,10 @@
 @frozen
 @usableFromInline
 struct UnsafeTreeSafeRange: _UnsafeNodePtrType, Equatable {
-  var ___from: SafePtr
-  var ___to: SafePtr
+  var ___from: _SealedPtr
+  var ___to: _SealedPtr
   @usableFromInline
-  internal init(___from: SafePtr, ___to: SafePtr) {
+  internal init(___from: _SealedPtr, ___to: _SealedPtr) {
     self.___from = ___from
     self.___to = ___to
   }
@@ -31,7 +31,7 @@ struct UnsafeTreeSafeRange: _UnsafeNodePtrType, Equatable {
 
 extension UnsafeTreeSafeRange {
 
-  func boundsCheckedNext(after __current: inout SafePtr) -> _NodePtr? {
+  func boundsCheckedNext(after __current: inout _SealedPtr) -> _NodePtr? {
     let __checked_current = __current.checked
     // 範囲終端が壊れてたらオコ！
     guard let _end = try? ___to.checked.get() else {
@@ -43,11 +43,11 @@ extension UnsafeTreeSafeRange {
     }
     // 終端に到達
     guard _p != _end else { return nil }
-    __current = __checked_current.flatMap { ___tree_next_iter($0.pointer) }
+    __current = __checked_current.flatMap { ___tree_next_iter($0.pointer) }.seal
     return _p.pointer
   }
 
-  func boundsCheckedNext(before __current: inout SafePtr) -> _NodePtr? {
+  func boundsCheckedNext(before __current: inout _SealedPtr) -> _NodePtr? {
     let _checked_current = __current.checked
     // 範囲 ___from が壊れてたらオコ！
     guard let start = try? ___from.checked.get() else {
@@ -59,7 +59,7 @@ extension UnsafeTreeSafeRange {
     }
     // ___from に到達（exclusive）なら終了
     guard cur != start else { return nil }
-    __current = _checked_current.flatMap { ___tree_prev_iter($0.pointer) }
+    __current = _checked_current.flatMap { ___tree_prev_iter($0.pointer) }.seal
     // prev の結果が壊れてたらオコ！（end→start の途中で壊れた）
     guard let p = try? __current.get() else {
       fatalError(.invalidIndex)

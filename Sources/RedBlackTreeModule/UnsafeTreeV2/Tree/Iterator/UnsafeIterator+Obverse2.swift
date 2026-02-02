@@ -34,7 +34,7 @@ extension UnsafeIterator {
     }
 
     @usableFromInline
-    var _safe_start, _safe_end, _safe_current: SafePtr
+    var _safe_start, _safe_end, _safe_current: _SealedPtr
 
     public mutating func next() -> _NodePtr? {
       
@@ -53,7 +53,7 @@ extension UnsafeIterator {
       // 終端に到達
       guard _p != _end else { return nil }
       
-      _safe_current = _checked_current.flatMap { ___tree_next_iter($0.pointer) }
+      _safe_current = _checked_current.flatMap { ___tree_next_iter($0.pointer) }.seal
       
       return _p.pointer
     }

@@ -295,7 +295,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 
   @usableFromInline
-  var safe: SafePtr {
+  var safe: _SealedPtr {
     if ___is_null {
       return .failure(.null)
     } else if ___is_garbaged {
@@ -303,5 +303,10 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     } else {
       return success(self)
     }
+  }
+  
+  @usableFromInline
+  var seal: _NodePtrSealing {
+    .init(self)
   }
 }

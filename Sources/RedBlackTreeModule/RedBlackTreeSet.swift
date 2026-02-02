@@ -696,7 +696,7 @@ extension RedBlackTreeSet {
     {
       let __l = limit.relative(to: __tree_)
       return try? i.relative(to: __tree_)
-        .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
+        .flatMap { ___tree_adv_iter($0.pointer, distance, __l.pointer) }
         .map { .create($0) }
         .get()
     }

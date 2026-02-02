@@ -110,7 +110,7 @@ extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
   }
 
   @inlinable
-  var trackingTag: Result<RedBlackTreeTrackingTag, SafePtrError> {
+  var trackingTag: Result<TaggedSeal, SafePtrError> {
     purified.map { .create($0) }
   }
 
@@ -120,12 +120,20 @@ extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
   }
 
   @inlinable
-  var unchecked_trackingTag: Result<RedBlackTreeTrackingTag, SafePtrError> {
+  var unchecked_trackingTag: Result<TaggedSeal, SafePtrError> {
     map { .create($0) }
   }
 }
 
 extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
+  
+  @usableFromInline
+  internal var isValid: Bool {
+    switch self {
+    case .success: true
+    default: false
+    }
+  }
   
   @usableFromInline
   internal var ___is_end: Bool? {
@@ -135,6 +143,14 @@ extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SafePtrError {
   
+  @usableFromInline
+  internal var isValid: Bool {
+    switch self {
+    case .success: true
+    default: false
+    }
+  }
+
   @usableFromInline
   internal var ___is_end: Bool? {
     try? map { $0.___is_end }.get()

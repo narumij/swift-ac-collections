@@ -556,7 +556,7 @@ extension RedBlackTreeSet {
     /// - Important:
     ///  要素及びノードが削除された場合、インデックスは無効になります。
     /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
-    public typealias Index = RedBlackTreeTrackingTag
+    public typealias Index = TaggedSeal
     public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Base>
   }
 
@@ -565,7 +565,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of member: Element)
-      -> RedBlackTreeTrackingTag
+      -> TaggedSeal
     {
       .create(__tree_.find(member)).flatMap { $0 == .end ? nil : $0 }
     }
@@ -573,7 +573,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O( `count` )
     @inlinable
     public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
-      -> RedBlackTreeTrackingTag
+      -> TaggedSeal
     {
       try ___first_tracking_tag(where: predicate)
     }
@@ -584,12 +584,12 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var startIndex: RedBlackTreeTrackingTag { .create(_start) }
+    public var startIndex: TaggedSeal { .create(_start) }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var endIndex: RedBlackTreeTrackingTag { .create(_end) }
+    public var endIndex: TaggedSeal { .create(_end) }
   }
 
   extension RedBlackTreeSet {
@@ -597,7 +597,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n* + *k*)
     @inlinable
     @inline(__always)
-    public func distance(from start: RedBlackTreeTrackingTag, to end: RedBlackTreeTrackingTag)
+    public func distance(from start: TaggedSeal, to end: TaggedSeal)
       -> Int
     {
       __tree_.___distance(
@@ -649,7 +649,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func equalRange(_ element: Element) -> (
-      lower: RedBlackTreeTrackingTag, upper: RedBlackTreeTrackingTag
+      lower: TaggedSeal, upper: TaggedSeal
     ) {
       let (lower, upper) = __tree_.__equal_range_unique(element)
       return (.create(lower), .create(upper))
@@ -660,7 +660,7 @@ extension RedBlackTreeSet {
 
     /// - Complexity: O(1)
     @inlinable
-    public func index(before i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
+    public func index(before i: TaggedSeal) -> TaggedSeal {
       try? i.relative(to: __tree_)
         .flatMap { ___tree_prev_iter($0.pointer) }
         .map { .create($0) }
@@ -669,7 +669,7 @@ extension RedBlackTreeSet {
 
     /// - Complexity: O(1)
     @inlinable
-    public func index(after i: RedBlackTreeTrackingTag) -> RedBlackTreeTrackingTag {
+    public func index(after i: TaggedSeal) -> TaggedSeal {
       try? i.relative(to: __tree_)
         .flatMap { ___tree_next_iter($0.pointer) }
         .map { .create($0) }
@@ -678,8 +678,8 @@ extension RedBlackTreeSet {
 
     /// - Complexity: O(`distance`)
     @inlinable
-    public func index(_ i: RedBlackTreeTrackingTag, offsetBy distance: Int)
-      -> RedBlackTreeTrackingTag
+    public func index(_ i: TaggedSeal, offsetBy distance: Int)
+      -> TaggedSeal
     {
       try? i.relative(to: __tree_)
         .flatMap { ___tree_adv_iter($0.pointer, distance) }
@@ -690,9 +690,9 @@ extension RedBlackTreeSet {
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(
-      _ i: RedBlackTreeTrackingTag, offsetBy distance: Int, limitedBy limit: RedBlackTreeTrackingTag
+      _ i: TaggedSeal, offsetBy distance: Int, limitedBy limit: TaggedSeal
     )
-      -> RedBlackTreeTrackingTag
+      -> TaggedSeal
     {
       let __l = limit.relative(to: __tree_)
       return try? i.relative(to: __tree_)
@@ -707,21 +707,21 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func formIndex(before i: inout RedBlackTreeTrackingTag) {
+    public func formIndex(before i: inout TaggedSeal) {
       i = index(before: i)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func formIndex(after i: inout RedBlackTreeTrackingTag) {
+    public func formIndex(after i: inout TaggedSeal) {
       i = index(after: i)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
     //  @inline(__always)
-    public func formIndex(_ i: inout RedBlackTreeTrackingTag, offsetBy distance: Int) {
+    public func formIndex(_ i: inout TaggedSeal, offsetBy distance: Int) {
       i = index(i, offsetBy: distance)
     }
 
@@ -729,9 +729,9 @@ extension RedBlackTreeSet {
     @inlinable
     @inline(__always)
     public func formIndex(
-      _ i: inout RedBlackTreeTrackingTag,
+      _ i: inout TaggedSeal,
       offsetBy distance: Int,
-      limitedBy limit: RedBlackTreeTrackingTag
+      limitedBy limit: TaggedSeal
     )
       -> Bool
     {
@@ -747,7 +747,7 @@ extension RedBlackTreeSet {
 
     @inlinable
     @discardableResult
-    public mutating func remove(at index: RedBlackTreeTrackingTag) -> Element {
+    public mutating func remove(at index: TaggedSeal) -> Element {
       __tree_.ensureUnique()
       guard case .success(let __p) = index.relative(to: __tree_) else {
         fatalError(.invalidIndex)
@@ -760,7 +760,7 @@ extension RedBlackTreeSet {
 
     /// - Complexity: O(1)
     @inlinable
-    public subscript(position: RedBlackTreeTrackingTag) -> Element {
+    public subscript(position: TaggedSeal) -> Element {
       @inline(__always) get {
         guard
           let p: _NodePtr = try? __tree_[position].get().pointer,
@@ -777,7 +777,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func isValid(index: RedBlackTreeTrackingTag) -> Bool {
+    public func isValid(index: TaggedSeal) -> Bool {
       guard
         let p: _NodePtr = try? __tree_[index].get().pointer,
         !p.___is_end
@@ -793,7 +793,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    package var __indices: [RedBlackTreeTrackingTag] {
+    package var __indices: [TaggedSeal] {
       // TODO: 基本的に廃止
       _indices.map(\.trackingTag)
     }

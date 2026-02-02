@@ -62,7 +62,7 @@ extension UnsafeTreeRangeProtocol {
   
   @inlinable
   @inline(__always)
-  internal func ___first_tracking_tag(where predicate: (_PayloadValue) throws -> Bool) rethrows -> RedBlackTreeTrackingTag {
+  internal func ___first_tracking_tag(where predicate: (_PayloadValue) throws -> Bool) rethrows -> TaggedSeal {
     var __r = UnsafeNode.nullptr
     try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
       if try predicate(__tree_[__p]) {

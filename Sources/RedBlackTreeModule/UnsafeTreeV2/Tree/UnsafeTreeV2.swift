@@ -173,7 +173,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package subscript(tag: RedBlackTreeTrackingTag) -> _SealedPtr {
+  package subscript(tag: TaggedSeal) -> _SealedPtr {
     tag.map { resolve(raw: $0.rawValue.raw, seal: $0.rawValue.seal) } ?? .failure(.null)
   }
 }

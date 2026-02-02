@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/29.
 //
 
-public enum TrackingTag_: Equatable {
+public enum TagSeal_: Equatable {
   case end
   case tag(raw: _RawTrackingTag, seal: UnsafeNode.Seal)
 }
@@ -25,7 +25,7 @@ public enum TrackingTag_: Equatable {
   //    }
   //  }
 
-  extension TrackingTag_ {
+  extension TagSeal_ {
 
     @usableFromInline
     internal var _rawTag: _RawTrackingTag {
@@ -37,7 +37,7 @@ public enum TrackingTag_: Equatable {
   }
 #endif
 
-extension TrackingTag_: RawRepresentable {
+extension TagSeal_: RawRepresentable {
 
   @inlinable
   public init?(rawValue value: (raw: _RawTrackingTag, seal: UnsafeNode.Seal)) {
@@ -62,21 +62,21 @@ extension TrackingTag_: RawRepresentable {
   }
 }
 
-public typealias RedBlackTreeTrackingTag = TrackingTag_?
+public typealias TaggedSeal = TagSeal_?
 
-extension Optional where Wrapped == TrackingTag_ {
+extension Optional where Wrapped == TagSeal_ {
 
   // タグをsalt付きに移行する場合、タグの生成は木だけが行うよう準備する必要がある
   // 競プロ用としてはsaltなしでいい。一般用として必要かどうかの判断となっていく
   
   @inlinable
   static func create(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Self {
-    t.flatMap { TrackingTag_(rawValue: ($0.trackingTag, $0.pointee.___recycle_count)) }
+    t.flatMap { TagSeal_(rawValue: ($0.trackingTag, $0.pointee.___recycle_count)) }
   }
 
   @inlinable
   static func create(_ t: _NodePtrSealing?) -> Self {
-    t.flatMap { TrackingTag_(rawValue: ($0.pointer.trackingTag, $0.seal)) }
+    t.flatMap { TagSeal_(rawValue: ($0.pointer.trackingTag, $0.seal)) }
   }
 
   @inlinable @inline(__always)
@@ -87,7 +87,7 @@ extension Optional where Wrapped == TrackingTag_ {
 }
 
 #if DEBUG
-  extension Optional where Wrapped == TrackingTag_ {
+  extension Optional where Wrapped == TagSeal_ {
 
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
@@ -114,46 +114,46 @@ extension Optional where Wrapped == TrackingTag_ {
 
 // これはfor文では使えない
 public enum TrackingTagRangeExpression: Equatable {
-  public typealias Bound = RedBlackTreeTrackingTag
+  public typealias Bound = TaggedSeal
   /// `a..<b` のこと
-  case range(from: RedBlackTreeTrackingTag, to: RedBlackTreeTrackingTag)
+  case range(from: TaggedSeal, to: TaggedSeal)
   /// `a...b` のこと
-  case closedRange(from: RedBlackTreeTrackingTag, through: RedBlackTreeTrackingTag)
+  case closedRange(from: TaggedSeal, through: TaggedSeal)
   /// `..<b` のこと
-  case partialRangeTo(RedBlackTreeTrackingTag)
+  case partialRangeTo(TaggedSeal)
   /// `...b` のこと
-  case partialRangeThrough(RedBlackTreeTrackingTag)
+  case partialRangeThrough(TaggedSeal)
   /// `a...` のこと
-  case partialRangeFrom(RedBlackTreeTrackingTag)
+  case partialRangeFrom(TaggedSeal)
   /// `...` のこと
   case unboundedRange
 }
 
-public func ..< (lhs: RedBlackTreeTrackingTag, rhs: RedBlackTreeTrackingTag)
+public func ..< (lhs: TaggedSeal, rhs: TaggedSeal)
   -> TrackingTagRangeExpression
 {
   .range(from: lhs, to: rhs)
 }
 
-public func ... (lhs: RedBlackTreeTrackingTag, rhs: RedBlackTreeTrackingTag)
+public func ... (lhs: TaggedSeal, rhs: TaggedSeal)
   -> TrackingTagRangeExpression
 {
   .closedRange(from: lhs, through: rhs)
 }
 
-public prefix func ..< (rhs: RedBlackTreeTrackingTag)
+public prefix func ..< (rhs: TaggedSeal)
   -> TrackingTagRangeExpression
 {
   .partialRangeTo(rhs)
 }
 
-public prefix func ... (rhs: RedBlackTreeTrackingTag)
+public prefix func ... (rhs: TaggedSeal)
   -> TrackingTagRangeExpression
 {
   .partialRangeThrough(rhs)
 }
 
-public postfix func ... (lhs: RedBlackTreeTrackingTag)
+public postfix func ... (lhs: TaggedSeal)
   -> TrackingTagRangeExpression
 {
   .partialRangeFrom(lhs)

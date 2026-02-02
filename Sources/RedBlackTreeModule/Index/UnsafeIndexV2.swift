@@ -45,7 +45,7 @@ where Base: ___TreeBase & ___TreeIndex {
   }
   
   @usableFromInline
-  internal var trackingTag: RedBlackTreeTrackingTag {
+  internal var trackingTag: TaggedSeal {
     .create(rawValue)
   }
 

@@ -15,11 +15,27 @@ func success(_ p: UnsafeMutablePointer<UnsafeNode>) -> SafePtr {
 }
 
 public enum SafePtrError: Error {
+  /// nullptrが生じた
   case null
+  /// 回収された
+  ///
+  /// ただし、unsealedにも含まれる。こちらは封印前に失敗した場合のみとなる
   case garbaged
+  /// 知らない
+  ///
+  /// 何か変なことしてんちゃう？
   case unknown
+  /// 指定された限界を越えて操作した
+  ///
+  /// `index(_:by:limit:)` で指定された `limit` を越える移動を試みた
   case limit
+  /// 未許可
+  ///
+  /// 半分わすれたが、多分大本の木が解放済み
   case notAllowed
+  /// 封印が剥がされた
+  ///
+  /// 封印を剥がして転生しちゃったみたい
   case unsealed
 
   /// nullptrに到達した

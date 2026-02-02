@@ -1,15 +1,25 @@
+//===----------------------------------------------------------------------===//
 //
-//  unsafe_node+pointer+sealing.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/02/02.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 /// ノードに封印を施す
 ///
 /// 転生前のノードと転生後のノードを同一として扱うことを避けるための仕組み
 ///
-/// 封が剥がされ、解かれた場合、現世のノードではないことを表す
+/// 封が剥がされ、封印が解かれた場合、現世のノードではないことを表す
 ///
 @frozen
 public struct _NodePtrSealing: Equatable {
@@ -20,8 +30,7 @@ public struct _NodePtrSealing: Equatable {
   /// 封印
   @usableFromInline var seal: UnsafeNode.Seal
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   init(_p: _NodePtr) {
     pointer = _p
     seal = _p.pointee.___recycle_count
@@ -37,58 +46,21 @@ public struct _NodePtrSealing: Equatable {
   /// 結果が偽で封印が有効な場合は現世ノードであることをあらわす.
   ///
   /// 封印が剥がされたものは呪物扱い
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   var isUnsealed: Bool {
     // 死後と転生後を判定している
-    // destroyで回収されてgarbagedになるとそれは死後の世界.
+    // destroyで回収されてgarbagedになるとそれは死後.
     // 再度転生するとgarbagedではなくなる.
-    // recycle countが不一致となれば現世のノードを指していないことがわかる.
+    // recycle countが不一致となれば転生済みノードであることがわかる.
     pointer.___is_garbaged || pointer.pointee.___recycle_count != seal
   }
   
-  @inlinable
-  @inline(__always)
+  /// お清め
+  @inlinable @inline(__always)
   var purified: _SealedPtr {
     // validなpointerがendやnullに変化することはない
     isUnsealed ? .failure(.unsealed) : .success(self)
   }
-
-  // MARK: - Convenience
-
-//  @inlinable
-//  var pointee: UnsafeNode {
-//    _read { yield pointer.pointee }
-//    _modify {
-//      guard !isUnsealed else {
-//        fatalError(.invalidIndex)
-//      }
-//      yield &pointer.pointee
-//    }
-//  }
-//  @inlinable
-//  @inline(__always)
-//  var trackingTag: Int {
-//    pointer.pointee.___tracking_tag
-//  }
-//  @inlinable
-//  @inline(__always)
-//  var ___is_null: Bool {
-//    pointer.___is_null
-//  }
-//  @inlinable
-//  @inline(__always)
-//  var ___is_null_or_end: Bool {
-//    pointer.___is_null_or_end
-//  }
-  @inlinable
-  @inline(__always)
-  var ___is_end: Bool {
-    pointer.___is_end
-  }
-//  @inlinable
-//  @inline(__always)
-//  var ___is_garbaged: Bool {
-//    pointer.___is_garbaged
-//  }
 }
+
+// ふざけてるのが半分。残り半分は通常使わない言葉や概念から以外と大切な部分であることを察してもらうため。

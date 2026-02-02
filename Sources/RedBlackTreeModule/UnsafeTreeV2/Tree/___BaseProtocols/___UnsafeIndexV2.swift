@@ -121,10 +121,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _isValid(index: Index) -> Bool {
-    if let p = try? __tree_._remap_to_safe_(index).get() {
-      return !p.___is_end
-    }
-    return false
+    __tree_._remap_to_safe_(index).___is_end == false
   }
 }
 

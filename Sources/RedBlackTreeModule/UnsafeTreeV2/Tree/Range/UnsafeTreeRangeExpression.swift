@@ -16,6 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 public enum UnsafeTreeRangeExpression: Equatable {
+  // deprecatedにするか、せめてsealingにする必要がある
   public typealias Bound = UnsafeMutablePointer<UnsafeNode>
   /// `a..<b` のこと
   case range(from: Bound, to: Bound)
@@ -46,15 +47,15 @@ extension UnsafeTreeRangeExpression {
   where Base: ___TreeBase {
     switch self {
     case .range(let lhs, let rhs):
-      return (lhs.safe, rhs.safe)
+      return (lhs.sealed, rhs.sealed)
     case .closedRange(let lhs, let rhs):
-      return (lhs.safe, rhs.safe.flatMap { ___tree_next_iter($0.pointer) }.seal)
+      return (lhs.sealed, rhs.sealed.flatMap { ___tree_next_iter($0.pointer) }.seal)
     case .partialRangeTo(let rhs):
-      return (_start(__tree_), rhs.safe)
+      return (_start(__tree_), rhs.sealed)
     case .partialRangeThrough(let rhs):
-      return (_start(__tree_), rhs.safe.flatMap { ___tree_next_iter($0.pointer) }.seal)
+      return (_start(__tree_), rhs.sealed.flatMap { ___tree_next_iter($0.pointer) }.seal)
     case .partialRangeFrom(let lhs):
-      return (lhs.safe, _end(__tree_))
+      return (lhs.sealed, _end(__tree_))
     case .unboundedRange:
       return (_start(__tree_), _end(__tree_))
     }
@@ -78,15 +79,15 @@ extension UnsafeTreeRangeExpression {
     }
     switch self {
     case .range(let lhs, let rhs):
-      return (lhs.safe, rhs.safe)
+      return (lhs.sealed, rhs.sealed)
     case .closedRange(let lhs, let rhs):
-      return (lhs.safe, rhs.safe.flatMap { ___tree_next_iter($0.pointer) }.seal)
+      return (lhs.sealed, rhs.sealed.flatMap { ___tree_next_iter($0.pointer) }.seal)
     case .partialRangeTo(let rhs):
-      return (_start(tied), rhs.safe)
+      return (_start(tied), rhs.sealed)
     case .partialRangeThrough(let rhs):
-      return (_start(tied), rhs.safe.flatMap { ___tree_next_iter($0.pointer) }.seal)
+      return (_start(tied), rhs.sealed.flatMap { ___tree_next_iter($0.pointer) }.seal)
     case .partialRangeFrom(let lhs):
-      return (lhs.safe, _end(tied))
+      return (lhs.sealed, _end(tied))
     case .unboundedRange:
       return (_start(tied), _end(tied))
     }

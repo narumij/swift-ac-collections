@@ -32,9 +32,9 @@ struct UnsafeTreeSafeRange: _UnsafeNodePtrType, Equatable {
 extension UnsafeTreeSafeRange {
 
   func boundsCheckedNext(after __current: inout _SealedPtr) -> _NodePtr? {
-    let __checked_current = __current.checked
+    let __checked_current = __current.purified
     // 範囲終端が壊れてたらオコ！
-    guard let _end = try? ___to.checked.get() else {
+    guard let _end = try? ___to.purified.get() else {
       fatalError(.invalidIndex)
     }
     // current が壊れてたらオコ！
@@ -48,9 +48,9 @@ extension UnsafeTreeSafeRange {
   }
 
   func boundsCheckedNext(before __current: inout _SealedPtr) -> _NodePtr? {
-    let _checked_current = __current.checked
+    let _checked_current = __current.purified
     // 範囲 ___from が壊れてたらオコ！
-    guard let start = try? ___from.checked.get() else {
+    guard let start = try? ___from.purified.get() else {
       fatalError(.invalidIndex)
     }
     // __current が壊れてたらオコ！

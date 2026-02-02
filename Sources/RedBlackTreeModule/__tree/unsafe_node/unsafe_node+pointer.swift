@@ -272,12 +272,12 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 }
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
-
+  
   @usableFromInline
   var isValid: Bool {
     return !___is_null && !___is_garbaged
   }
-
+  
   @usableFromInline
   var checked: UnsafeMutablePointer {
     guard isValid else {
@@ -292,21 +292,5 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       fatalError(.invalidIndex)
     }
     return self
-  }
-
-  @usableFromInline
-  var safe: _SealedPtr {
-    if ___is_null {
-      return .failure(.null)
-    } else if ___is_garbaged {
-      return .failure(.garbaged)
-    } else {
-      return success(self)
-    }
-  }
-  
-  @usableFromInline
-  var seal: _NodePtrSealing {
-    .init(self)
   }
 }

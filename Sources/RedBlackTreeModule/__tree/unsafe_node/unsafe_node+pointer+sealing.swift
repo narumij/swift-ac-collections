@@ -22,9 +22,14 @@ public struct _NodePtrSealing: Equatable {
 
   @inlinable
   @inline(__always)
-  init(_ p: _NodePtr) {
-    pointer = p
-    seal = p.pointee.___recycle_count
+  init(_p: _NodePtr) {
+    pointer = _p
+    seal = _p.pointee.___recycle_count
+  }
+  
+  @inlinable
+  static func uncheckedSeal(_ _p: _NodePtr) -> _NodePtrSealing {
+    .init(_p: _p)
   }
 
   /// 封印が剥がされているかどうかを返す
@@ -41,42 +46,49 @@ public struct _NodePtrSealing: Equatable {
     // recycle countが不一致となれば現世のノードを指していないことがわかる.
     pointer.___is_garbaged || pointer.pointee.___recycle_count != seal
   }
+  
+  @inlinable
+  @inline(__always)
+  var purified: _SealedPtr {
+    // validなpointerがendやnullに変化することはない
+    isUnsealed ? .failure(.unsealed) : .success(self)
+  }
 
   // MARK: - Convenience
 
-  @inlinable
-  var pointee: UnsafeNode {
-    _read { yield pointer.pointee }
-    _modify {
-      guard !isUnsealed else {
-        fatalError(.invalidIndex)
-      }
-      yield &pointer.pointee
-    }
-  }
-  @inlinable
-  @inline(__always)
-  var trackingTag: Int {
-    pointer.pointee.___tracking_tag
-  }
-  @inlinable
-  @inline(__always)
-  var ___is_null: Bool {
-    pointer.___is_null
-  }
-  @inlinable
-  @inline(__always)
-  var ___is_null_or_end: Bool {
-    pointer.___is_null_or_end
-  }
+//  @inlinable
+//  var pointee: UnsafeNode {
+//    _read { yield pointer.pointee }
+//    _modify {
+//      guard !isUnsealed else {
+//        fatalError(.invalidIndex)
+//      }
+//      yield &pointer.pointee
+//    }
+//  }
+//  @inlinable
+//  @inline(__always)
+//  var trackingTag: Int {
+//    pointer.pointee.___tracking_tag
+//  }
+//  @inlinable
+//  @inline(__always)
+//  var ___is_null: Bool {
+//    pointer.___is_null
+//  }
+//  @inlinable
+//  @inline(__always)
+//  var ___is_null_or_end: Bool {
+//    pointer.___is_null_or_end
+//  }
   @inlinable
   @inline(__always)
   var ___is_end: Bool {
     pointer.___is_end
   }
-  @inlinable
-  @inline(__always)
-  var ___is_garbaged: Bool {
-    pointer.___is_garbaged
-  }
+//  @inlinable
+//  @inline(__always)
+//  var ___is_garbaged: Bool {
+//    pointer.___is_garbaged
+//  }
 }

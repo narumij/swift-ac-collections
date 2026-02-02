@@ -73,6 +73,6 @@ extension UnsafeIterator {
 
 extension UnsafeIterator {
   public typealias _RemoveAwarePointers = _RemoveAware<_Obverse2>
-  public typealias _NaivePointers = _Obverse2
+  public typealias _NaivePointers = _Obverse
   public typealias _RemoveAwareReversePointers = _RemoveAware<_Reverse2>
 }

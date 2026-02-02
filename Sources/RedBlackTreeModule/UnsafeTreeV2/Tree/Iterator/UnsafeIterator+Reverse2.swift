@@ -28,9 +28,9 @@ extension UnsafeIterator {
     @inlinable
     @inline(__always)
     public init(_start: _NodePtr, _end: _NodePtr) {
-      self._safe_start = _start.safe
-      self._safe_end = _end.safe
-      self._safe_current = _end.safe
+      self._safe_start = _start.sealed
+      self._safe_end = _end.sealed
+      self._safe_current = _end.sealed
     }
 
     @usableFromInline
@@ -38,22 +38,22 @@ extension UnsafeIterator {
 
     public mutating func next() -> _NodePtr? {
       
-      let _checked_current = _safe_current.checked
+      let _purified_current = _safe_current.purified
       
       // 範囲 start が壊れてたらオコ！
-      guard let start = try? _safe_start.checked.get() else {
+      guard let start = try? _safe_start.purified.get() else {
         fatalError(.invalidIndex)
       }
 
       // current が壊れてたらオコ！
-      guard let cur = try? _checked_current.get() else {
+      guard let cur = try? _purified_current.get() else {
         fatalError(.invalidIndex)
       }
 
       // start に到達（exclusive）なら終了
       guard cur != start else { return nil }
       
-      _safe_current = _checked_current.flatMap { ___tree_prev_iter($0.pointer) }.seal
+      _safe_current = _purified_current.flatMap { ___tree_prev_iter($0.pointer) }.seal
       
       // prev の結果が壊れてたらオコ！（end→start の途中で壊れた）
       guard let p = try? _safe_current.get() else {

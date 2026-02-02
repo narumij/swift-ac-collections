@@ -146,16 +146,9 @@ extension UnsafeTreeV2 {
   @inline(__always)
   package subscript(tag: _RawTrackingTag) -> _SealedPtr {
     switch tag {
-    case .nullptr:
-      return .failure(.null)
-    case .end:
-      return success(end)
-    default:
-      guard tag < capacity else {
-        return .failure(.unknown)
-      }
-      let p = _buffer.header[tag]
-      return p.___is_garbaged ? .failure(.garbaged) : success(p)
+    case .nullptr: .failure(.null)
+    case .end: .success(.uncheckedSeal(end))
+    default: tag < capacity ? _buffer.header[tag].sealed : .failure(.unknown)
     }
   }
 
@@ -166,7 +159,7 @@ extension UnsafeTreeV2 {
     case .nullptr:
       return .failure(.null)
     case .end:
-      return success(end)
+      return .success(.uncheckedSeal(end))
     default:
       guard raw < capacity else {
         return .failure(.unknown)
@@ -174,7 +167,7 @@ extension UnsafeTreeV2 {
       let p = _buffer.header[raw]
       return p.___is_garbaged || p.pointee.___recycle_count != seal
         ? .failure(.unsealed)
-        : success(p)
+        : .success(.uncheckedSeal(p))
     }
   }
 
@@ -195,7 +188,7 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func _remap_to_safe_(_ index: Index) -> _SealedPtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-    tied === index.tied ? index.rawValue.safe : self[index._rawTag]
+    tied === index.tied ? index.rawValue.sealed : self[index._rawTag]
   }
 
   #if COMPATIBLE_ATCODER_2025

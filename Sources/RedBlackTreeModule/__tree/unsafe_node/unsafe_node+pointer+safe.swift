@@ -7,13 +7,54 @@
 
 public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
 
+extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SafePtrError {
+  @inlinable @inline(__always)
+  var seal: _SealedPtr { flatMap { $0.sealed } }
+}
+
 public typealias _SealedPtr = Result<_NodePtrSealing, SafePtrError>
+
+extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
+  @inlinable @inline(__always)
+  var purified: Result { flatMap { $0.purified } }
+}
+
+extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
+
+  @inlinable @inline(__always)
+  var safe: _SafePtr { map { $0.pointer } }
+}
+
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
+
+  @inlinable @inline(__always)
+  var safe: _SafePtr {
+    if ___is_null {
+      return .failure(.null)
+    } else if ___is_garbaged {
+      return .failure(.garbaged)
+    } else {
+      return .success(self)
+    }
+  }
+
+  @inlinable @inline(__always)
+  var sealed: _SealedPtr {
+    if ___is_null {
+      return .failure(.null)
+    } else if ___is_garbaged {
+      return .failure(.garbaged)
+    } else {
+      return .success(.uncheckedSeal(self))
+    }
+  }
+}
 
 @inlinable
 @inline(__always)
 func success(_ p: UnsafeMutablePointer<UnsafeNode>) -> _SealedPtr {
   assert(!p.___is_garbaged)
-  return .success(.init(p))
+  return .success(.uncheckedSeal(p))
 }
 
 public enum SafePtrError: Error {
@@ -51,50 +92,25 @@ public enum SafePtrError: Error {
   case upperOutOfBounds
 }
 
-extension Result
-where
-  Success == _NodePtrSealing,
-  Failure == SafePtrError
-{
-  @inlinable
-  @inline(__always)
-  var checked: Result {
-    self.flatMap { _node_ptr in
-      // validなpointerがendやnullに変化することはない
-      _node_ptr.isUnsealed
-        ? .failure(.unsealed)
-        : .success(_node_ptr)
-    }
-  }
-  
+extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
+
   @inlinable
   var pointer: Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError> {
-    checked.map { $0.pointer }
+    purified.map { $0.pointer }
   }
-  
+
   @inlinable
   var trackingTag: Result<RedBlackTreeTrackingTag, SafePtrError> {
-    checked.map { .create($0) }
+    purified.map { .create($0) }
   }
 
   @inlinable
   var unchecked_pointer: Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError> {
     map { $0.pointer }
   }
-  
+
   @inlinable
   var unchecked_trackingTag: Result<RedBlackTreeTrackingTag, SafePtrError> {
     map { .create($0) }
-  }
-}
-
-extension Result
-where
-  Success == UnsafeMutablePointer<UnsafeNode>,
-  Failure == SafePtrError
-{
-  @inlinable
-  var seal: _SealedPtr {
-    map { $0.seal }
   }
 }

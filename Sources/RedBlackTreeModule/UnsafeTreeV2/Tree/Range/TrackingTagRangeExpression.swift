@@ -70,6 +70,7 @@ extension Optional where Wrapped == TrackingTag_ {
   }
 
   // タグをsalt付きに移行する場合、タグの生成は木だけが行うよう準備する必要がある
+  // 競プロ用としてはsaltなしでいい。一般用として必要かどうかの判断となっていく
   
   @inlinable
   static func create(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Self {

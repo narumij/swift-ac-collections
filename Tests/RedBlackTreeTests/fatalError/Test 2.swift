@@ -18,12 +18,12 @@
         var a = RedBlackTreeSet((0..<5).map { $0 * 5 })
         var it = a[a.firstIndex(of: 5)..<a.firstIndex(of: 20)].makeIterator()
         #expect(a + [] == [0, 5, 10, 15, 20])
-        #expect(a.firstIndex(of: 20)?.trackingTag?.rawValue == 4)
+        #expect(a.firstIndex(of: 20)?.rawValue.raw == 4)
         a.remove(20)
-        #expect(a.firstIndex(of: 1)?.trackingTag?.rawValue == nil)
+        #expect(a.firstIndex(of: 1)?.rawValue.raw == nil)
         #expect(a + [] == [0, 5, 10, 15])
         #expect(it.next() == nil) // ここで落ちる
-        #expect(it.next() == nil)
+//        #expect(it.next() == nil)
       }
     }
 
@@ -33,14 +33,14 @@
         var a = RedBlackTreeSet((0..<5).map { $0 * 5 })
         var it = a[a.firstIndex(of: 5)..<a.firstIndex(of: 20)].makeIterator()
         #expect(a + [] == [0, 5, 10, 15, 20])
-        #expect(a.firstIndex(of: 20)?.trackingTag?.rawValue == 4)
+        #expect(a.firstIndex(of: 20)?.rawValue.raw == 4)
         a.remove(20)
         a.insert(1)
-        #expect(a.firstIndex(of: 1)?.trackingTag?.rawValue == 4)
+        #expect(a.firstIndex(of: 1)?.rawValue.raw == 4)
         #expect(a + [] == [0, 1, 5, 10, 15])
         #expect(it.next() == 5) // ここで落ちてほしい
-        #expect(it.next() == 10)
-        #expect(it.next() == 15)
+//        #expect(it.next() == 10)
+//        #expect(it.next() == 15)
       }
     }
 
@@ -50,16 +50,18 @@
         var a = RedBlackTreeSet((0..<5).map { $0 * 5 })
         var it = a[a.firstIndex(of: 5)..<a.firstIndex(of: 20)].makeIterator()
         #expect(a + [] == [0, 5, 10, 15, 20])
-        #expect(a.firstIndex(of: 20)?.trackingTag?.rawValue == 4)
+        #expect(a.firstIndex(of: 20)?.rawValue.raw == 4)
         a.remove(20)
         a.insert(30)
         a.insert(25)
-        #expect(a.firstIndex(of: 30)?.trackingTag?.rawValue == 4)
+        #expect(a.firstIndex(of: 30)?.rawValue.raw == 4)
         #expect(a + [] == [0, 5, 10, 15, 25, 30])
         #expect(it.next() == 5) // ここで落ちてほしい
-        #expect(it.next() == 10)
-        #expect(it.next() == 15)
-        #expect(it.next() == 25)// おちない
+//        #expect(it.next() == 10)
+//        #expect(it.next() == 15)
+//        #expect(it.next() == 25)// おちない
+        // なおってしまった。
+        // だが、ちゃんと把握できていない
       }
     }
 

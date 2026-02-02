@@ -158,12 +158,31 @@ extension UnsafeTreeV2 {
       return p.___is_garbaged ? .failure(.garbaged) : success(p)
     }
   }
+  
+  @inlinable
+  @inline(__always)
+  package func resolve(tag: _RawTrackingTag, seal: UnsafeNode.Seal) -> SafePtr {
+    switch tag {
+    case .nullptr:
+      return .failure(.null)
+    case .end:
+      return success(end)
+    default:
+      guard tag < capacity else {
+        return .failure(.unknown)
+      }
+      let p = _buffer.header[tag]
+      if p.pointee.___recycle_count != seal {
+        return .failure(.unsealed)
+      }
+      return p.___is_garbaged ? .failure(.garbaged) : success(p)
+    }
+  }
 
   @inlinable
   @inline(__always)
   package subscript(tag: RedBlackTreeTrackingTag) -> SafePtr {
-    // TODO: genチェック
-    tag.map { self[$0.rawValue.0] } ?? .failure(.null)
+    tag.map { resolve(tag: $0.rawValue.raw, seal: $0.rawValue.seal) } ?? .failure(.null)
   }
 }
 
@@ -177,6 +196,7 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func _remap_to_safe_(_ index: Index) -> SafePtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
+    // TODO: Sealedに移行
     tied === index.tied ? index.rawValue.safe : self[index._rawTag]
   }
 }

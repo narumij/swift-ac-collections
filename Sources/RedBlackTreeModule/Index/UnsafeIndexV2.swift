@@ -24,6 +24,8 @@ import Foundation
 
 // 補助的にTrackingTagは提供する
 
+// TODO: Sealedに移行
+
 /// 赤黒木のノードへのインデックス
 ///
 /// C++の双方向イテレータに近い内容となっている

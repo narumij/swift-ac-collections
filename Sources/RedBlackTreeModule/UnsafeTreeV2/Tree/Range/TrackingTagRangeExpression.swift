@@ -7,7 +7,7 @@
 
 public enum TrackingTag_: Equatable {
   case end
-  case tag(raw: _RawTrackingTag, seal: UnsafeNode.RecycleCountType)
+  case tag(raw: _RawTrackingTag, seal: UnsafeNode.Seal)
 }
 
 #if DEBUG
@@ -37,7 +37,7 @@ public enum TrackingTag_: Equatable {
 extension TrackingTag_: RawRepresentable {
 
   @inlinable
-  public init?(rawValue value: (raw: _RawTrackingTag, seal: UnsafeNode.RecycleCountType)) {
+  public init?(rawValue value: (raw: _RawTrackingTag, seal: UnsafeNode.Seal)) {
     switch value {
     case (.end, _):
       self = .end
@@ -49,7 +49,7 @@ extension TrackingTag_: RawRepresentable {
   }
 
   @inlinable
-  public var rawValue: (raw: _RawTrackingTag, seal: UnsafeNode.RecycleCountType) {
+  public var rawValue: (raw: _RawTrackingTag, seal: UnsafeNode.Seal) {
     switch self {
     case .end:
       (.end, 0)

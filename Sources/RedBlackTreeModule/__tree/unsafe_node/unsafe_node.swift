@@ -173,12 +173,12 @@ public struct UnsafeNode {
   public var ___has_payload_content: Bool
 
   #if DEBUG || true
-  public typealias RecycleCountType = UInt32
+  public typealias Seal = UInt32
   // salt付きに変更することで、まったく縁の無い木のノードを受け付けにくくすることができる
   // saltは新規作成時のみ更新され、コピーでは継承することで、CoWまたぎには影響しない
   // 将来の実装課題
     /// 再利用された回数
-    public var ___recycle_count: RecycleCountType = 0
+    public var ___recycle_count: Seal = 0
   #endif
 
   /// A lightweight tracking tag used to identify and correlate nodes.

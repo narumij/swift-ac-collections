@@ -9,7 +9,7 @@
 public struct _NodePtrSealing: Equatable {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   @usableFromInline var pointer: _NodePtr
-  @usableFromInline var gen: UnsafeNode.RecycleCountType
+  @usableFromInline var gen: UnsafeNode.Seal
   @inlinable
   @inline(__always)
   init(_ p: _NodePtr) {

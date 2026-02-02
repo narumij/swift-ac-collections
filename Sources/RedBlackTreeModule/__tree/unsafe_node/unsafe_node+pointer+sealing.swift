@@ -5,22 +5,44 @@
 //  Created by narumij on 2026/02/02.
 //
 
+/// ノードに封印を施す
+///
+/// 転生前のノードと転生後のノードを同一として扱うことを避けるための仕組み
+///
+/// 封が剥がされ、解かれた場合、現世のノードではないことを表す
+///
 @frozen
 public struct _NodePtrSealing: Equatable {
+  /// ご神体の御名
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  /// ご神体
   @usableFromInline var pointer: _NodePtr
+  /// 封印
   @usableFromInline var gen: UnsafeNode.Seal
+
   @inlinable
   @inline(__always)
   init(_ p: _NodePtr) {
     pointer = p
     gen = p.pointee.___recycle_count
   }
+
+  /// 封印が剥がされているかどうかを返す
+  ///
+  /// 結果が偽で封印が有効な場合は現世ノードであることをあらわす.
+  ///
   @inlinable
   @inline(__always)
   var isUnsealed: Bool {
+    // 死後と転生後を判定している
+    // destroyで回収されてgabagedになるとそれは死後の世界.
+    // 再度転生するとgarbagedではなくなる.
+    // recycle countが不一致となれば現世のノードを指していないことがわかる.
     pointer.___is_garbaged || pointer.pointee.___recycle_count != gen
   }
+
+  // MARK: - Convenience
+
   @inlinable
   var pointee: UnsafeNode {
     _read { yield pointer.pointee }
@@ -57,4 +79,3 @@ public struct _NodePtrSealing: Equatable {
     pointer.___is_garbaged
   }
 }
-

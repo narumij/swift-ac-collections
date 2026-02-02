@@ -8,8 +8,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: try! __tree_._remap_to_safe_(bounds.lowerBound).get(),
-        end: try! __tree_._remap_to_safe_(bounds.upperBound).get())
+        start: try! __tree_._remap_to_safe_2(bounds.lowerBound).get(),
+        end: try! __tree_._remap_to_safe_2(bounds.upperBound).get())
     }
   }
 
@@ -130,8 +130,8 @@
     public subscript(bounds: Range<Index>) -> SubSequence {
       return .init(
         tree: __tree_,
-        start: try! __tree_._remap_to_safe_(bounds.lowerBound).get(),
-        end: try! __tree_._remap_to_safe_(bounds.upperBound).get())
+        start: try! __tree_._remap_to_safe_2(bounds.lowerBound).get(),
+        end: try! __tree_._remap_to_safe_2(bounds.upperBound).get())
     }
   }
 #endif
@@ -153,8 +153,8 @@
       let bounds = bounds.relative(to: self)
       __tree_.ensureUnique()
       ___remove(
-      from: try! __tree_._remap_to_safe_(bounds.lowerBound).get(),
-      to: try! __tree_._remap_to_safe_(bounds.upperBound).get())
+      from: try! __tree_._remap_to_safe_2(bounds.lowerBound).get(),
+      to: try! __tree_._remap_to_safe_2(bounds.upperBound).get())
     }
   }
 #endif
@@ -247,7 +247,7 @@
     @discardableResult
     public mutating func remove(at index: Index) -> Element {
       __tree_.ensureUnique()
-      guard case .success(let __p) = __tree_._remap_to_safe_(index) else {
+      guard case .success(let __p) = __tree_._remap_to_safe_2(index) else {
         fatalError(.invalidIndex)
       }
       return _unchecked_remove(at: __p).payload

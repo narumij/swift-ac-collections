@@ -195,7 +195,18 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func _remap_to_safe_(_ index: Index) -> SafePtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-    // TODO: Sealedに移行
     tied === index.tied ? index.rawValue.safe : self[index._rawTag]
   }
+
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    @inline(__always)
+    internal func _remap_to_safe_2(_ index: Index) -> Result<
+      UnsafeMutablePointer<UnsafeNode>, SafePtrError
+    >
+    where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
+      // TODO: Sealedに移行
+      tied === index.tied ? .success(index.rawValue) : self[index._rawTag].pointer
+    }
+  #endif
 }

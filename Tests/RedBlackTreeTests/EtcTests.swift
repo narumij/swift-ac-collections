@@ -1133,15 +1133,31 @@ final class EtcTests: RedBlackTreeTestCase {
       XCTAssertNil(i)
     }
 
-//    func testIteratorInvariant() throws {
-//      var a = RedBlackTreeSet((0..<5).map{ $0 * 5 })
-//      var it = a[a.firstIndex(of: 5)..<a.firstIndex(of: 20)].makeIterator()
-//      XCTAssertEqual(a + [], [0,5,10,15,20])
-//      XCTAssertEqual(a.firstIndex(of: 20)?.trackingTag?.rawValue, 4)
-//      a.remove(20)
-//      XCTAssertEqual(a + [], [0,5,10,15])
-//      XCTAssertEqual(it + [], [5,10]) // ここで落ちる
-//    }
+    //    func testIteratorInvariant() throws {
+    //      var a = RedBlackTreeSet((0..<5).map{ $0 * 5 })
+    //      var it = a[a.firstIndex(of: 5)..<a.firstIndex(of: 20)].makeIterator()
+    //      XCTAssertEqual(a + [], [0,5,10,15,20])
+    //      XCTAssertEqual(a.firstIndex(of: 20)?.trackingTag?.rawValue, 4)
+    //      a.remove(20)
+    //      XCTAssertEqual(a + [], [0,5,10,15])
+    //      XCTAssertEqual(it + [], [5,10]) // ここで落ちる
+    //    }
+
+    func testItertor() throws {
+      var a = RedBlackTreeSet((0..<10).map { $0 * 5 })
+//      var it = a[a.lowerBound(5)..<a.firstIndex(of: 45)].makeIterator()
+      var it = a[lowerBound(5)..<find(45)].makeIterator()
+      a.remove(15)  // 二つ先以降を消しても影響がない
+      a.remove(35)  // 二つ先以降を消しても影響がない
+//      a.remove(45)  // 二つ先以降を消しても影響がない
+      XCTAssertEqual(it.next(), 5)
+      XCTAssertEqual(it.next(), 10)
+      XCTAssertEqual(it.next(), 20)
+      XCTAssertEqual(it.next(), 25)
+      XCTAssertEqual(it.next(), 30)
+      XCTAssertEqual(it.next(), 40)
+//      XCTAssertEqual(it.next(), 45)
+    }
 
   #endif
 }

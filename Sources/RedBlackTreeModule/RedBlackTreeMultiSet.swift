@@ -190,8 +190,8 @@ extension RedBlackTreeMultiSet {
     public subscript(bounds: Range<Index>) -> SubSequence {
       return .init(
         tree: __tree_,
-        start: try! __tree_._remap_to_safe_(bounds.lowerBound).get(),
-        end: try! __tree_._remap_to_safe_(bounds.upperBound).get())
+        start: try! __tree_._remap_to_safe_2(bounds.lowerBound).get(),
+        end: try! __tree_._remap_to_safe_2(bounds.upperBound).get())
     }
   #endif
 }
@@ -407,8 +407,8 @@ extension RedBlackTreeMultiSet {
       let bounds = bounds.relative(to: self)
       __tree_.ensureUnique()
       ___remove(
-        from: try! __tree_._remap_to_safe_(bounds.lowerBound).get(),
-        to: try! __tree_._remap_to_safe_(bounds.upperBound).get())
+        from: try! __tree_._remap_to_safe_2(bounds.lowerBound).get(),
+        to: try! __tree_._remap_to_safe_2(bounds.upperBound).get())
     }
   #endif
 

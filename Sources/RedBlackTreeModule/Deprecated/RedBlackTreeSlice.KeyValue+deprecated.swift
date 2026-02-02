@@ -40,8 +40,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: try! __tree_._remap_to_safe_(bounds.lowerBound).get(),
-        end: try! __tree_._remap_to_safe_(bounds.upperBound).get())
+        start: try! __tree_._remap_to_safe_2(bounds.lowerBound).get(),
+        end: try! __tree_._remap_to_safe_2(bounds.upperBound).get())
     }
   }
 #endif
@@ -56,8 +56,8 @@
       // TODO: ベースでの有効性しかチェックしていない。__containsのチェックにするか要検討
       return .init(
         tree: __tree_,
-        start: try! __tree_._remap_to_safe_(bounds.lowerBound).get(),
-        end: try! __tree_._remap_to_safe_(bounds.upperBound).get())
+        start: try! __tree_._remap_to_safe_2(bounds.lowerBound).get(),
+        end: try! __tree_._remap_to_safe_2(bounds.upperBound).get())
     }
   }
 #endif

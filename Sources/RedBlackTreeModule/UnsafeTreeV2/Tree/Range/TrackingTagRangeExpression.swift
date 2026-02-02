@@ -28,8 +28,11 @@ public enum TrackingTag_: Equatable {
   extension TrackingTag_ {
 
     @usableFromInline
-    package var trackingTag: RedBlackTreeTrackingTag {
-      self
+    internal var _rawTag: _RawTrackingTag {
+      switch self {
+      case .end: .end
+      case .tag(raw: let rag, seal: _): rag
+      }
     }
   }
 #endif
@@ -63,12 +66,6 @@ public typealias RedBlackTreeTrackingTag = TrackingTag_?
 
 extension Optional where Wrapped == TrackingTag_ {
 
-  @available(*, deprecated, renamed: "create", message: "封印不全になるので、deprecated")
-  @inlinable
-  static func create(_ t: _RawTrackingTag) -> Self {
-    fatalError("DEPRECATED")
-  }
-
   // タグをsalt付きに移行する場合、タグの生成は木だけが行うよう準備する必要がある
   // 競プロ用としてはsaltなしでいい。一般用として必要かどうかの判断となっていく
   
@@ -95,8 +92,12 @@ extension Optional where Wrapped == TrackingTag_ {
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     @usableFromInline
-    internal var trackingTag: RedBlackTreeTrackingTag {
-      self
+    internal var _rawTag: _RawTrackingTag {
+      switch self {
+      case .none: .nullptr
+      case .end: .end
+      case .tag(raw: let rag, seal: _): rag
+      }
     }
 
     internal static func unsafe<Base>(tree: UnsafeTreeV2<Base>, rawTag: _RawTrackingTag) -> Self {
@@ -106,7 +107,7 @@ extension Optional where Wrapped == TrackingTag_ {
       if rawTag == .end {
         return .end
       }
-      return .create((try! tree[rawTag].get()))
+      return .init(rawValue: (rawTag, 0))
     }
   }
 #endif

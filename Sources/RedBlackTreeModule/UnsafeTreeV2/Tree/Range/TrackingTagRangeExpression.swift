@@ -28,7 +28,7 @@ public enum TrackingTag_: Equatable {
   extension TrackingTag_ {
 
     @usableFromInline
-    internal var trackingTag: RedBlackTreeTrackingTag {
+    package var trackingTag: RedBlackTreeTrackingTag {
       self
     }
   }

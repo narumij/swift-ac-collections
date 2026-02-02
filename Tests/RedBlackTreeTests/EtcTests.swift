@@ -1133,5 +1133,15 @@ final class EtcTests: RedBlackTreeTestCase {
       XCTAssertNil(i)
     }
 
+//    func testIteratorInvariant() throws {
+//      var a = RedBlackTreeSet((0..<5).map{ $0 * 5 })
+//      var it = a[a.firstIndex(of: 5)..<a.firstIndex(of: 20)].makeIterator()
+//      XCTAssertEqual(a + [], [0,5,10,15,20])
+//      XCTAssertEqual(a.firstIndex(of: 20)?.trackingTag?.rawValue, 4)
+//      a.remove(20)
+//      XCTAssertEqual(a + [], [0,5,10,15])
+//      XCTAssertEqual(it + [], [5,10]) // ここで落ちる
+//    }
+
   #endif
 }

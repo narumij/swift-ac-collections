@@ -41,7 +41,7 @@
     {
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
-      return .init(rawValue: p.trackingTag)
+      return .create(p)
     }
 
     // MARK: -

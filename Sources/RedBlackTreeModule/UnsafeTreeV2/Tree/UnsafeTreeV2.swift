@@ -162,7 +162,8 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   package subscript(tag: RedBlackTreeTrackingTag) -> SafePtr {
-    tag.map { self[$0.rawValue] } ?? .failure(.null)
+    // TODO: genチェック
+    tag.map { self[$0.rawValue.0] } ?? .failure(.null)
   }
 }
 

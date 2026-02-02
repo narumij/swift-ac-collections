@@ -44,7 +44,7 @@ where Base: ___TreeBase & ___TreeIndex {
   
   @usableFromInline
   internal var trackingTag: RedBlackTreeTrackingTag {
-    .create(rawValue.pointee.___tracking_tag)
+    .create(rawValue)
   }
 
   @usableFromInline

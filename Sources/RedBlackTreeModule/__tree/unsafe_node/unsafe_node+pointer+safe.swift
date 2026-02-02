@@ -56,7 +56,7 @@ where
   
   @inlinable
   var trackingTag: Result<RedBlackTreeTrackingTag, SafePtrError> {
-    checked.map { .init(rawValue: $0.trackingTag) }
+    checked.map { .create($0) }
   }
 
   @inlinable
@@ -66,6 +66,6 @@ where
   
   @inlinable
   var unchecked_trackingTag: Result<RedBlackTreeTrackingTag, SafePtrError> {
-    map { .init(rawValue: $0.trackingTag) }
+    map { .create($0) }
   }
 }

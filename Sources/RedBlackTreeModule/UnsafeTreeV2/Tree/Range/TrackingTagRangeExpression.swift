@@ -7,7 +7,7 @@
 
 public enum TrackingTag_: Equatable {
   case end
-  case tag(_RawTrackingTag)
+  case tag(raw: _RawTrackingTag, seal: UnsafeNode.RecycleCountType)
 }
 
 #if DEBUG
@@ -37,24 +37,24 @@ public enum TrackingTag_: Equatable {
 extension TrackingTag_: RawRepresentable {
 
   @inlinable
-  public init?(rawValue value: _RawTrackingTag) {
+  public init?(rawValue value: (raw: _RawTrackingTag, seal: UnsafeNode.RecycleCountType)) {
     switch value {
-    case .end:
+    case (.end, _):
       self = .end
-    case 0...:
-      self = .tag(value)
+    case (0..., _):
+      self = .tag(raw: value.raw, seal: value.seal)
     default:
       return nil
     }
   }
 
   @inlinable
-  public var rawValue: _RawTrackingTag {
+  public var rawValue: (raw: _RawTrackingTag, seal: UnsafeNode.RecycleCountType) {
     switch self {
     case .end:
-      .end
-    case .tag(let _TrackingTag):
-      _TrackingTag
+      (.end, 0)
+    case .tag(let _TrackingTag, let gen):
+      (_TrackingTag, gen)
     }
   }
 }
@@ -63,19 +63,20 @@ public typealias RedBlackTreeTrackingTag = TrackingTag_?
 
 extension Optional where Wrapped == TrackingTag_ {
 
+  @available(*, deprecated, renamed: "create", message: "封印不全になるので、deprecated")
   @inlinable
   static func create(_ t: _RawTrackingTag) -> Self {
-    TrackingTag_(rawValue: t)
+    fatalError("DEPRECATED")
   }
 
   @inlinable
   static func create(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Self {
-    t.flatMap { TrackingTag_(rawValue: $0.trackingTag) }
+    t.flatMap { TrackingTag_(rawValue: ($0.trackingTag, $0.pointee.___recycle_count)) }
   }
-  
+
   @inlinable
   static func create(_ t: _NodePtrSealing?) -> Self {
-    t.flatMap { TrackingTag_(rawValue: $0.trackingTag) }
+    t.flatMap { TrackingTag_(rawValue: ($0.trackingTag, $0.gen)) }
   }
 
   @inlinable @inline(__always)
@@ -102,7 +103,7 @@ extension Optional where Wrapped == TrackingTag_ {
       if rawTag == .end {
         return .end
       }
-      return .init(rawValue: rawTag)
+      return .create((try! tree[rawTag].get()))
     }
   }
 #endif

@@ -14,8 +14,8 @@ where
   @usableFromInline
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _NodePtr, _end: _NodePtr) {
     self.__tree_ = __tree_
-    self.startIndex = .create(_start.trackingTag)
-    self.endIndex = .create(_end.trackingTag)
+    self.startIndex = .create(_start)
+    self.endIndex = .create(_end)
   }
 
   public typealias Element = Base._PayloadValue

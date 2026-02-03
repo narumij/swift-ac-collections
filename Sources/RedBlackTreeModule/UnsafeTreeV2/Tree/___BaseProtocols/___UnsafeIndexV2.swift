@@ -121,22 +121,9 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _isValid(index: Index) -> Bool {
-    __tree_._remap_to_safe_(index).___is_end == false
+    __tree_._remap_to_safe_(index).purified.___is_end == false
   }
 }
-
-//extension ___UnsafeIndexV2 where Self: Sequence {
-//
-//  @inlinable
-//  @inline(__always)
-//  internal func _isValid(
-//    _ rawRange: UnsafeTreeRangeExpression
-//  ) -> Bool {
-//
-//    let (l, u) = rawRange._relative(to: __tree_)
-//    return l.isValid && u.isValid
-//  }
-//}
 
 #if COMPATIBLE_ATCODER_2025
   extension ___UnsafeIndexV2 where Self: Collection {

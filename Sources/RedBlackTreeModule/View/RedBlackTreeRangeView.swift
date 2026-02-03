@@ -38,8 +38,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   @usableFromInline
   var _range: (_NodePtr, _NodePtr) {
     guard
-      let _start = try? __tree_.resolve(startIndex).get(),
-      let _end = try? __tree_.resolve(endIndex).get()
+      let _start = __tree_.resolve(startIndex).optionalPointer,
+      let _end = __tree_.resolve(endIndex).optionalPointer
     else {
       return (__tree_.__end_node, __tree_.__end_node)
     }
@@ -430,7 +430,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     @inline(__always)
     public func isValid(index: Index) -> Bool {
       guard
-        let i: _NodePtr = try? __tree_.resolve(index).get(),
+        let i: _NodePtr = __tree_.resolve(index).optionalPointer,
         !i.___is_end
       else {
         return false

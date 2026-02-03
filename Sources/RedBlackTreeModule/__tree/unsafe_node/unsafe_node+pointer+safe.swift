@@ -105,11 +105,6 @@ public enum SafePtrError: Error {
 extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
 
   @inlinable
-  var pointer: Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError> {
-    purified.map { $0.pointer }
-  }
-
-  @inlinable
   var trackingTag: Result<TaggedSeal, SafePtrError> {
     purified.map { $0.tag }
   }

@@ -82,7 +82,7 @@ extension Optional where Wrapped == TagSeal_ {
   @inlinable @inline(__always)
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> _SafePtr
   where Base: ___TreeBase {
-    __tree_.resolve(self)
+    __tree_.resolve(self).purified.map { $0.pointer }
   }
 }
 

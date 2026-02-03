@@ -51,7 +51,7 @@ where Base: ___TreeBase & ___TreeIndex {
 
   @usableFromInline
   internal var rawValue: _NodePtr {
-    get { (try? sealed.pointer.get()) ?? .nullptr }
+    get { sealed.optionalPointer ?? .nullptr }
     set { sealed = newValue.sealed }
   }
 

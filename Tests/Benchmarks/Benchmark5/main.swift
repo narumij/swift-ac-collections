@@ -108,6 +108,7 @@ for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
 }
 #endif
 
+#if false
 reset()
 for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128, 1024 * 1024] {
   let fixture = Fixture<Int>(0..<count)
@@ -232,6 +233,7 @@ for count in [1000000] {
     let _ = fixture.popLast()
   }
 }
+#endif
 
 reset()
 for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
@@ -249,4 +251,27 @@ for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
   }
 }
 
+reset()
+for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
+  let fixture = Fixture<Int>((0..<count).shuffled(using: &mt))
+  benchmark("RBT reversed() \(count)") {
+    _ = fixture.reversed() + []
+  }
+}
+
+reset()
+for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
+  let fixture = Array<Int>((0..<count).shuffled(using: &mt))
+  benchmark("Array sorted().reversed() \(count)") {
+    _ = fixture.sorted().reversed() + []
+  }
+}
+
+reset()
+for count in [0, 32, 1024, 8192, 1024 * 32, 1024 * 128] {
+  let fixture = Array<Int>(0..<count)
+  benchmark("Array reversed() \(count)") {
+    _ = fixture.reversed() + []
+  }
+}
 Benchmark.main()

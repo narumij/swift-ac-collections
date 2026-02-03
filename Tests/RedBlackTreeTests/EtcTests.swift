@@ -1145,19 +1145,44 @@ final class EtcTests: RedBlackTreeTestCase {
 
     func testItertor() throws {
       var a = RedBlackTreeSet((0..<10).map { $0 * 5 })
-//      var it = a[a.lowerBound(5)..<a.firstIndex(of: 45)].makeIterator()
+      //      var it = a[a.lowerBound(5)..<a.firstIndex(of: 45)].makeIterator()
       var it = a[lowerBound(5)..<find(45)].makeIterator()
       a.remove(15)  // 二つ先以降を消しても影響がない
       a.remove(35)  // 二つ先以降を消しても影響がない
-//      a.remove(45)  // 二つ先以降を消しても影響がない
+      //      a.remove(45)  // 二つ先以降を消しても影響がない
       XCTAssertEqual(it.next(), 5)
       XCTAssertEqual(it.next(), 10)
       XCTAssertEqual(it.next(), 20)
       XCTAssertEqual(it.next(), 25)
       XCTAssertEqual(it.next(), 30)
       XCTAssertEqual(it.next(), 40)
-//      XCTAssertEqual(it.next(), 45)
+      //      XCTAssertEqual(it.next(), 45)
     }
 
+    func testRangeView() throws {
+      var a = RedBlackTreeSet(0..<20)
+      var b = a[start()..<lowerBound(10)]
+      XCTAssertEqual(b.popFirst(), 0)
+      XCTAssertEqual(b.popFirst(), 1)
+      XCTAssertEqual(b.popFirst(), 2)
+      XCTAssertEqual(b.popFirst(), 3)
+      XCTAssertEqual(b.popFirst(), 4)
+      XCTAssertEqual(b.popFirst(), 5)
+      XCTAssertEqual(b.popFirst(), 6)
+      XCTAssertEqual(b.popFirst(), 7)
+      XCTAssertEqual(b.popFirst(), 8)
+      XCTAssertEqual(b.popFirst(), 9)
+      XCTAssertEqual(b.popFirst(), nil)
+      XCTAssertEqual(b.unranged() + [], (10..<20) + [])
+      XCTAssertEqual(a + [], (0..<20) + [])
+    }
+
+    func testRangeView2() throws {
+      let a = RedBlackTreeSet(0..<20)
+      var b = a[start()..<lowerBound(10)]
+      while let _ = b.popFirst() {}
+      XCTAssertEqual(b.unranged() + [], (10..<20) + [])
+      XCTAssertEqual(a + [], (0..<20) + [])
+    }
   #endif
 }

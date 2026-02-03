@@ -804,8 +804,8 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func reversed() -> Tree._PayloadValues.ReversedIterator {
-      _reversed()
+    public func reversed() -> [Element] {
+      __tree_.___rev_copy_all_to_array()
     }
   }
 #endif

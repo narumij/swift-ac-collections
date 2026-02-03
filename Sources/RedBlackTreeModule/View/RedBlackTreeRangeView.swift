@@ -5,11 +5,8 @@
 //  Created by narumij on 2026/01/29.
 //
 
-public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeRangeProtocol,
-  ___UnsafeSubSequenceV2, ___UnsafeCommonV2, ___UnsafeKeyOnlySequenceV2__
-where
-  Base: ___TreeBase & ___TreeIndex,
-  Base._Key == Base._PayloadValue
+public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost & _ScalarBase_ElementProtocol
+where Base: ___TreeBase
 {
   @usableFromInline
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _NodePtr, _end: _NodePtr) {
@@ -23,7 +20,8 @@ where
   @usableFromInline
   internal var __tree_: Tree
 
-  public let startIndex, endIndex: TaggedSeal
+  public var startIndex: TaggedSeal
+  public let endIndex: TaggedSeal
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -35,16 +33,6 @@ where
 #endif
 
 extension RedBlackTreeKeyOnlyRangeView {
-
-  @usableFromInline
-  var _start: _NodePtr {
-    try! __tree_[startIndex].get()
-  }
-
-  @usableFromInline
-  var _end: _NodePtr {
-    try! __tree_[endIndex].get()
-  }
 
   @usableFromInline
   var _range: (_NodePtr, _NodePtr) {
@@ -66,47 +54,35 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Base> {
-    .init(start: _start, end: _end, tie: __tree_.tied)
+    let (_start, _end) = _range
+    return .init(start: _start, end: _end, tie: __tree_.tied)
   }
-}
-
-extension RedBlackTreeKeyOnlyRangeView {
-
+  
   @inlinable
-  public mutating func removeAll() {
-    __tree_.ensureUnique()
-    __tree_.___checking_erase(_start, _end)
-  }
-
-  @inlinable
-  public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-    __tree_.ensureUnique()
-    try __tree_.___checking_erase_if(_start, _end, shouldBeRemoved: shouldBeRemoved)
-  }
-}
-
-extension RedBlackTreeKeyOnlyRangeView {
-
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(tag: TaggedSeal) -> Element? {
-    (try? __tree_[tag].get())?.__payload_().pointee
-  }
-}
-
-extension RedBlackTreeKeyOnlyRangeView {
-
-  @inlinable
-  public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
-    let (lower, upper) = bounds.relative(to: __tree_)
-    guard __tree_.isValidRawRange(lower: lower.checked, upper: upper.checked) else {
-      fatalError(.invalidIndex)
-    }
-    return .init(__tree_: __tree_, _start: lower, _end: upper)
+  @inline(__always)
+  public __consuming func reversed() -> [Element] {
+    let (_start, _end) = _range
+    return __tree_.___rev_copy_to_array(_start, _end)
   }
 }
 
 // MARK: -
+
+@usableFromInline
+internal protocol BaseInit {
+  associatedtype Tree
+  init(__tree_: Tree)
+}
+
+extension RedBlackTreeSet: BaseInit {}
+
+extension RedBlackTreeKeyOnlyRangeView
+where
+  Base: BaseInit,
+  Base.Tree == UnsafeTreeV2<Base>
+{
+  func unranged() -> Base { Base(__tree_: __tree_) }
+}
 
 extension RedBlackTreeKeyOnlyRangeView {
 
@@ -114,191 +90,96 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public var count: Int {
-    let (l,u) = _range
-    return (try? ___safe_distance(l,u).get()) ?? 0
+    let (l, u) = _range
+    return (try? ___safe_distance(l, u).get()) ?? 0
   }
 }
 
-//extension RedBlackTreeKeyOnlyRangeView {
-//
-//  /// - Complexity: O(1)
+extension RedBlackTreeKeyOnlyRangeView {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var first: Element? {
+    let (_start, _end) = _range
+    guard _start != _end else { return nil }
+    return __tree_[_start]
+  }
+
+  @inlinable
+  @inline(__always)
+  public var last: Element? {
+    let (_start, _end) = _range
+    guard _start != _end else { return nil }
+    return __tree_[__tree_prev_iter(_end)]
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView {
+
+  @inlinable
+  @discardableResult
+  public mutating func popFirst() -> Element? {
+    __tree_.ensureUnique()
+    let (_start, _end) = _range
+    guard _start != _end else { return nil }
+    let (_p, _r) = _unchecked_remove(at: _start)
+    startIndex = .create(_p)
+    return _r
+  }
+
+  @inlinable
+  @discardableResult
+  public mutating func popLast() -> Element? {
+    __tree_.ensureUnique()
+    let (_start, _end) = _range
+    guard _start != _end else { return nil }
+    return _unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
+  }
+
+  @inlinable
+  @discardableResult
+  public mutating func removeFirst() -> Element {
+    __tree_.ensureUnique()
+    let (_start, _end) = _range
+    guard _start != _end else { fatalError(.emptyFirst) }
+    let (_p, _r) = _unchecked_remove(at: _start)
+    startIndex = .create(_p)
+    return _r
+  }
+
+  @inlinable
+  @discardableResult
+  public mutating func removeLast() -> Element {
+    __tree_.ensureUnique()
+    let (_start, _end) = _range
+    guard _start != _end else { fatalError(.emptyLast) }
+    return _unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
+  }
+
+  @inlinable
+  public mutating func removeAll() {
+    __tree_.ensureUnique()
+    let (_start, _end) = _range
+    __tree_.___checking_erase(_start, _end)
+  }
+
+  @inlinable
+  public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+    __tree_.ensureUnique()
+    let (_start, _end) = _range
+    try __tree_.___checking_erase_if(_start, _end, shouldBeRemoved: shouldBeRemoved)
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView {
+
+  // 不要
+  
 //  @inlinable
-//  @inline(__always)
-//  public var startIndex: RedBlackTreeTrackingTag {
-//    startIndex
+//  public var isValid: Bool {
+//    __tree_[startIndex].isValid && __tree_[endIndex].isValid
 //  }
-//
-//  /// - Complexity: O(1)
-//  @inlinable
-//  @inline(__always)
-//  public var endIndex: RedBlackTreeTrackingTag {
-//    endIndex
-//  }
-//}
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeKeyOnlyRangeView {
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var first: Element? {
-      guard _start != _end else { return nil }
-      return __tree_[_start]
-    }
-
-    /// - Complexity: O( log `count` )
-    @inlinable
-    public func firstIndex(of member: Element) -> TaggedSeal {
-      ___first_tracking_tag { $0 == member }
-    }
-
-    /// - Complexity: O( `count` )
-    @inlinable
-    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
-      -> TaggedSeal
-    {
-      try ___first_tracking_tag(where: predicate)
-    }
-  }
-#endif
-
-extension RedBlackTreeKeyOnlyRangeView {
-
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  @inline(__always)
-  public func distance(from start: TaggedSeal, to end: TaggedSeal) -> Int {
-    __tree_.___distance(
-      from: try! start.relative(to: __tree_).get().pointer,
-      to: try! end.relative(to: __tree_).get().pointer)
-  }
-}
-
-extension RedBlackTreeKeyOnlyRangeView {
-
-  /// - Complexity: O(1)
-  @inlinable
-  public func index(before i: TaggedSeal) -> TaggedSeal {
-    try? i.relative(to: __tree_)
-      .flatMap { ___tree_prev_iter($0.pointer) }
-      .map { .create($0) }
-      .get()
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public func index(after i: TaggedSeal) -> TaggedSeal {
-    try? i.relative(to: __tree_)
-      .flatMap { ___tree_next_iter($0.pointer) }
-      .map { .create($0) }
-      .get()
-  }
-
-  /// - Complexity: O(`distance`)
-  @inlinable
-  public func index(_ i: TaggedSeal, offsetBy distance: Int) -> TaggedSeal {
-    try? i.relative(to: __tree_)
-      .flatMap { ___tree_adv_iter($0.pointer, distance) }
-      .map { .create($0) }
-      .get()
-  }
-
-  /// - Complexity: O(`distance`)
-  @inlinable
-  public func index(
-    _ i: TaggedSeal, offsetBy distance: Int, limitedBy limit: TaggedSeal
-  )
-    -> TaggedSeal
-  {
-    let __l = limit.relative(to: __tree_)
-    return try? i.relative(to: __tree_)
-      .flatMap { ___tree_adv_iter($0.pointer, distance, __l.pointer) }
-      .map { .create($0) }
-      .get()
-  }
-}
-
-extension RedBlackTreeKeyOnlyRangeView {
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(before i: inout TaggedSeal) {
-    i = index(before: i)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(after i: inout TaggedSeal) {
-    i = index(after: i)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func formIndex(_ i: inout TaggedSeal, offsetBy distance: Int) {
-    i = index(i, offsetBy: distance)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  @inline(__always)
-  public func formIndex(
-    _ i: inout TaggedSeal,
-    offsetBy distance: Int,
-    limitedBy limit: TaggedSeal
-  )
-    -> Bool
-  {
-    if let result = index(i, offsetBy: distance, limitedBy: limit) {
-      i = result
-      return true
-    }
-    return false
-  }
-}
-
-#if false
-  // 以下は実験的な実装。Viewには載せない
-
-  extension RedBlackTreeKeyOnlyRangeView {
-
-    @inlinable
-    @discardableResult
-    public mutating func remove(at index: RedBlackTreeTrackingTag) -> Element {
-      __tree_.ensureUnique()
-      guard case .success(let __p) = index.relative(to: __tree_) else {
-        fatalError(.invalidIndex)
-      }
-      return _unchecked_remove(at: __p).payload
-    }
-  }
-#endif
-
-extension RedBlackTreeKeyOnlyRangeView {
-
-  @inlinable
-  public var isValid: Bool {
-    __tree_[startIndex].isValid && __tree_[endIndex].isValid
-  }
-
-  /// Indexがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid(index: TaggedSeal) -> Bool {
-    guard
-      let p: _NodePtr = try? __tree_[index].get(),
-      !p.___is_end,
-      ___contains(p)
-    else {
-      return false
-    }
-    return true
-  }
 }
 
 extension RedBlackTreeKeyOnlyRangeView {
@@ -310,7 +191,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   public func elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
-    try _elementsEqual(other, by: areEquivalent)
+    let (_start, _end) = _range
+    return try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -320,7 +202,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   public func lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
-    try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+    let (_start, _end) = _range
+    return try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
   }
 }
 
@@ -375,11 +258,168 @@ extension RedBlackTreeKeyOnlyRangeView: Comparable where _PayloadValue: Comparab
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeKeyOnlyRangeView: ___UnsafeIsIdenticalToV2 {}
+extension RedBlackTreeKeyOnlyRangeView {
+
+  @inlinable
+  @inline(__always)
+  public func isTriviallyIdentical(to other: Self) -> Bool {
+    let (_start, _end) = _range
+    let (_other_start, _other_end) = other._range
+    return __tree_.isTriviallyIdentical(to: other.__tree_) && _start == _other_start
+      && _end == _other_end
+  }
+}
 
 extension RedBlackTreeKeyOnlyRangeView {
 
   package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {
-    .init(_start: _start, _end: _end)
+    let (_start, _end) = _range
+    return .init(_start: _start, _end: _end)
   }
 }
+
+// MARK: -
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeKeyOnlyRangeView {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(tag: TaggedSeal) -> Element? {
+      (try? __tree_[tag].get())?.__payload_().pointee
+    }
+  }
+
+  extension RedBlackTreeKeyOnlyRangeView {
+
+    @inlinable
+    public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
+      let (lower, upper) = bounds.relative(to: __tree_)
+      guard __tree_.isValidRawRange(lower: lower.checked, upper: upper.checked) else {
+        fatalError(.invalidIndex)
+      }
+      return .init(__tree_: __tree_, _start: lower, _end: upper)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeKeyOnlyRangeView {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public func index(before i: TaggedSeal) -> TaggedSeal {
+      try? i.relative(to: __tree_)
+        .flatMap { ___tree_prev_iter($0.pointer) }
+        .map { .create($0) }
+        .get()
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    public func index(after i: TaggedSeal) -> TaggedSeal {
+      try? i.relative(to: __tree_)
+        .flatMap { ___tree_next_iter($0.pointer) }
+        .map { .create($0) }
+        .get()
+    }
+
+    /// - Complexity: O(`distance`)
+    @inlinable
+    public func index(_ i: TaggedSeal, offsetBy distance: Int) -> TaggedSeal {
+      try? i.relative(to: __tree_)
+        .flatMap { ___tree_adv_iter($0.pointer, distance) }
+        .map { .create($0) }
+        .get()
+    }
+
+    /// - Complexity: O(`distance`)
+    @inlinable
+    public func index(
+      _ i: TaggedSeal, offsetBy distance: Int, limitedBy limit: TaggedSeal
+    )
+      -> TaggedSeal
+    {
+      let __l = limit.relative(to: __tree_)
+      return try? i.relative(to: __tree_)
+        .flatMap { ___tree_adv_iter($0.pointer, distance, __l.pointer) }
+        .map { .create($0) }
+        .get()
+    }
+  }
+
+  extension RedBlackTreeKeyOnlyRangeView {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(before i: inout TaggedSeal) {
+      i = index(before: i)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(after i: inout TaggedSeal) {
+      i = index(after: i)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func formIndex(_ i: inout TaggedSeal, offsetBy distance: Int) {
+      i = index(i, offsetBy: distance)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    @inline(__always)
+    public func formIndex(
+      _ i: inout TaggedSeal,
+      offsetBy distance: Int,
+      limitedBy limit: TaggedSeal
+    )
+      -> Bool
+    {
+      if let result = index(i, offsetBy: distance, limitedBy: limit) {
+        i = result
+        return true
+      }
+      return false
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeKeyOnlyRangeView {
+
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    @inline(__always)
+    public func distance(from start: TaggedSeal, to end: TaggedSeal) -> Int {
+      __tree_.___distance(
+        from: try! start.relative(to: __tree_).get().pointer,
+        to: try! end.relative(to: __tree_).get().pointer)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeKeyOnlyRangeView {
+    /// Indexがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func isValid(index: TaggedSeal) -> Bool {
+      guard
+        let p: _NodePtr = try? __tree_[index].get(),
+        !p.___is_end,
+        ___contains(p)
+      else {
+        return false
+      }
+      return true
+    }
+  }
+#endif

@@ -72,8 +72,20 @@ protocol UnsafeTreeHost: UnsafeTreeBinding {
 
 /// 変更可能共通生木メンバー
 @usableFromInline
-protocol UnsafeMutableTreeHost: UnsafeTreeHost {
+protocol UnsafeMutableTreeHost: UnsafeTreeHost, _PayloadValueBride {
   var __tree_: Tree { get set }
+}
+
+extension UnsafeMutableTreeHost {
+  
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  package mutating func _unchecked_remove(at ptr: _NodePtr) -> (__r: _NodePtr, payload: _PayloadValue) {
+    let ___e = __tree_[ptr]
+    let __r = __tree_.erase(ptr)
+    return (__r, ___e)
+  }
 }
 
 /// 区間指定メンバー

@@ -41,25 +41,22 @@ where Base: ___TreeBase & ___TreeIndex {
 
   @usableFromInline
   internal var _rawTag: _RawTrackingTag {
-    (try? sealed.trackingTag.map(\._rawTag).get()) ?? .nullptr
+    (try? sealed.map(\.tag).map(\._rawTag).get()) ?? .nullptr
   }
 
   @usableFromInline
   internal var trackingTag: TaggedSeal {
-    try? sealed.trackingTag.get()
+    try? sealed.map(\.tag).get()
   }
 
   @usableFromInline
-  internal var rawValue: _NodePtr {
-    get { sealed.optionalPointer ?? .nullptr }
-    set { sealed = newValue.sealed }
-  }
+  internal var rawValue: _NodePtr { sealed.pointer! }
 
   @usableFromInline
   internal var tied: _TiedRawBuffer
 
   @usableFromInline
-  var sealed: _SealedPtr
+  internal var sealed: _SealedPtr
 
   // MARK: -
 
@@ -68,7 +65,6 @@ where Base: ___TreeBase & ___TreeIndex {
   internal init(rawValue: _NodePtr, tie: _TiedRawBuffer) {
     assert(rawValue != .nullptr)
     assert(!rawValue.___is_garbaged)
-    //    self.rawValue = rawValue
     self.tied = tie
     self.sealed = rawValue.sealed
   }
@@ -87,7 +83,7 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public static func === (lhs: Self, rhs: Self) -> Bool {
-    lhs.rawValue == rhs.rawValue
+    lhs.sealed == rhs.sealed
   }
 }
 
@@ -101,8 +97,7 @@ extension UnsafeIndexV2: Equatable {
 
     // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
 
-    //    lhs.rawValue == rhs.rawValue
-    lhs._rawTag == rhs._rawTag
+    lhs.trackingTag == rhs.trackingTag
   }
 }
 
@@ -118,31 +113,12 @@ extension UnsafeIndexV2: Equatable {
     @inlinable
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
-      // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-
-      // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
-
-      guard
-        !lhs.rawValue.___is_garbaged,
-        !rhs.rawValue.___is_garbaged
+      guard let r = rhs.sealed.pointer,
+        let l = rhs.resolve(lhs.trackingTag).pointer
       else {
         preconditionFailure(.garbagedIndex)
       }
-
-      switch (lhs._rawTag, rhs._rawTag) {
-      case (.nullptr, _), (_, .nullptr):
-        fatalError(.invalidIndex)
-      case (.end, _):
-        return false
-      case (_, .end):
-        return true
-      default:
-        break
-      }
-
-      // rhsよせでもいいかもしれない(2026/1/13)
-
-      return Base.___ptr_comp(lhs.rawValue, rhs.rawValue)
+      return Base.___ptr_comp(l, r)
     }
   }
 #endif
@@ -158,8 +134,8 @@ extension UnsafeIndexV2 {
   public func distance(to other: Self) -> Int {
     let other = _remap_to_safe_(other)
     guard
-      let from = sealed.optionalPointer,
-      let to = other.optionalPointer
+      let from = sealed.pointer,
+      let to = other.pointer
     else {
       preconditionFailure(.garbagedIndex)
     }
@@ -236,7 +212,7 @@ extension UnsafeIndexV2 {
   @inlinable
   public var pointee: Pointee? {
     guard
-      sealed.purified.isValid,
+      sealed.isValid,
       sealed.___is_end == false,
       tied.isValueAccessAllowed
     else {
@@ -346,7 +322,7 @@ extension UnsafeIndexV2 {
       return tied[raw].map { .success(.uncheckedSeal($0, seal)) } ?? .failure(.null)
     }
   }
-  
+
   @inlinable
   @inline(__always)
   package func resolve(_ tag: TaggedSeal) -> _SealedPtr {

@@ -105,11 +105,6 @@ public enum SafePtrError: Error {
 extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
 
   @inlinable
-  var trackingTag: Result<TaggedSeal, SafePtrError> {
-    purified.map { $0.tag }
-  }
-
-  @inlinable
   var unchecked_pointer: Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError> {
     map { $0.pointer }
   }
@@ -121,43 +116,43 @@ extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
 }
 
 extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
-  
+
   @usableFromInline
   internal var isValid: Bool {
-    switch self {
+    switch purified {
     case .success: true
     default: false
     }
   }
-  
+
   @usableFromInline
   internal var ___is_end: Bool? {
-    try? map { $0.pointer.___is_end }.get()
+    try? purified.map { $0.pointer.___is_end }.get()
   }
-  
+
   @usableFromInline
   internal var ___is_root: Bool? {
-    try? map { $0.pointer.__parent_.___is_end }.get()
+    try? purified.map { $0.pointer.__parent_.___is_end }.get()
   }
-  
+
   @usableFromInline
   internal func __is_equals(_ p: UnsafeMutablePointer<UnsafeNode>) -> Bool? {
-    try? map { $0.pointer == p }.get()
+    try? purified.map { $0.pointer == p }.get()
   }
-  
+
   @usableFromInline
   func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
-    try? map { $0.pointer.__value_() }.get()
+    try? purified.map { $0.pointer.__value_() }.get()
   }
-  
+
   @inlinable
-  var optionalPointer: UnsafeMutablePointer<UnsafeNode>? {
+  var pointer: UnsafeMutablePointer<UnsafeNode>? {
     try? purified.map { $0.pointer }.get()
   }
 }
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SafePtrError {
-  
+
   @usableFromInline
   internal var isValid: Bool {
     switch self {

@@ -57,7 +57,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _formIndex(after i: inout Index) {
-    __tree_.___formIndex(after: &i.rawValue)
+    i = _index(after: i)
   }
 
   @inlinable
@@ -69,7 +69,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _formIndex(before i: inout Index) {
-    __tree_.___formIndex(before: &i.rawValue)
+    i = _index(before: i)
   }
 
   @inlinable
@@ -81,7 +81,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _formIndex(_ i: inout Index, offsetBy distance: Int) {
-    __tree_.___formIndex(&i.rawValue, offsetBy: distance)
+    i = _index(i, offsetBy: distance)
   }
 
   @inlinable
@@ -96,7 +96,11 @@ extension ___UnsafeIndexV2 {
   internal func _formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
-    __tree_.___formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
+    if let ii = _index(i, offsetBy: distance, limitedBy: limit) {
+      i = ii
+      return true
+    }
+    return false
   }
 }
 
@@ -121,7 +125,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _isValid(index: Index) -> Bool {
-    __tree_._remap_to_safe_(index).purified.___is_end == false
+    __tree_._remap_to_safe_(index).___is_end == false
   }
 }
 

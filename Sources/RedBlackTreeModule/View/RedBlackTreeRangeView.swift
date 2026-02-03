@@ -45,6 +45,17 @@ extension RedBlackTreeKeyOnlyRangeView {
   var _end: _NodePtr {
     try! __tree_[endIndex].get()
   }
+
+  @usableFromInline
+  var _range: (_NodePtr, _NodePtr) {
+    guard
+      let _start = try? __tree_[startIndex].get(),
+      let _end = try? __tree_[endIndex].get()
+    else {
+      return (__tree_.__end_node, __tree_.__end_node)
+    }
+    return (_start, _end)
+  }
 }
 
 extension RedBlackTreeKeyOnlyRangeView: Sequence {}
@@ -103,11 +114,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public var count: Int {
-    (try? __distance(
-      __tree_[startIndex],
-      __tree_[endIndex]
-    )
-    .get()) ?? 0
+    let (l,u) = _range
+    return (try? ___safe_distance(l,u).get()) ?? 0
   }
 }
 

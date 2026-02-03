@@ -70,27 +70,18 @@ internal func
 
 @inlinable
 @inline(__always)
-internal func __distance(_ __first: _SafePtr, _ __last: _SafePtr)
+internal func
+  ___safe_distance(
+    _ __first: UnsafeMutablePointer<UnsafeNode>,
+    _ __last: UnsafeMutablePointer<UnsafeNode>
+  )
   -> Result<Int, SafePtrError>
 {
-
-  switch __last {
-  case .failure(let e): return .failure(e)
-  default: break
-  }
-
-  var __first = __first
+  var __first = _SafePtr.success(__first)
   var __r = 0
-  while __first != __last {
-
-    switch __first {
-    case .failure(let e): return .failure(e)
-    default: break
-    }
-
-    __first = __first.flatMap { ___tree_next_iter($0) }
+  while case .success(let ___f) = __first, ___f != __last {
+    __first = ___tree_next_iter(___f)
     __r += 1
   }
-
-  return .success(__r)
+  return __first.map { _ in __r }
 }

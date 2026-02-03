@@ -537,16 +537,26 @@ extension RedBlackTreeSet {
       try _forEach(body)
     }
   #endif
+}
 
-  #if !COMPATIBLE_ATCODER_2025
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
     /// - Complexity: O(*n*)
     @inlinable
     @inline(__always)
     public func sorted() -> [Element] {
       __tree_.___copy_all_to_array()
     }
-  #endif
-}
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func reversed() -> [Element] {
+      __tree_.___rev_copy_all_to_array()
+    }
+  }
+#endif
 
 // MARK: -
 
@@ -763,7 +773,7 @@ extension RedBlackTreeSet {
     public subscript(position: TaggedSeal) -> Element {
       @inline(__always) get {
         guard
-          let p: _NodePtr = try? __tree_[position].get(),
+          let p: _NodePtr = try? __tree_.resolve(position).get(),
           !p.___is_end
         else {
           fatalError(.invalidIndex)
@@ -779,7 +789,7 @@ extension RedBlackTreeSet {
     @inline(__always)
     public func isValid(index: TaggedSeal) -> Bool {
       guard
-        let p: _NodePtr = try? __tree_[index].get(),
+        let p: _NodePtr = try? __tree_.resolve(index).get(),
         !p.___is_end
       else {
         return false
@@ -796,16 +806,6 @@ extension RedBlackTreeSet {
     package var __indices: [TaggedSeal] {
       // TODO: 基本的に廃止
       _indices.map(\.trackingTag)
-    }
-  }
-
-  extension RedBlackTreeSet {
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public func reversed() -> [Element] {
-      __tree_.___rev_copy_all_to_array()
     }
   }
 #endif

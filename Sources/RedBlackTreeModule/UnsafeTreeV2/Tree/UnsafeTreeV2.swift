@@ -173,7 +173,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package subscript(tag: TaggedSeal) -> _SafePtr {
+  package func resolve(_ tag: TaggedSeal) -> _SafePtr {
     tag.map { resolve(raw: $0.rawValue.raw, seal: $0.rawValue.seal) } ?? .failure(.null)
   }
 }
@@ -199,7 +199,7 @@ extension UnsafeTreeV2 {
     >
     where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
       // TODO: Sealedに移行
-      tied === index.tied ? .success(index.rawValue) : self[index._rawTag].pointer
+      tied === index.tied ? .success(index.rawValue) : self[_rawTag: index._rawTag]
     }
   #endif
 }

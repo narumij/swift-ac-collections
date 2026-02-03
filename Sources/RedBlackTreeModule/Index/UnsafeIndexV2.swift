@@ -24,7 +24,7 @@ import Foundation
 
 // 補助的にTrackingTagは提供する
 
-// TODO: Sealedに移行
+// sealed化した結果、本当の不安が払拭されてしまい、このままでもべつにいっかという気持ちがわいている
 
 /// 赤黒木のノードへのインデックス
 ///
@@ -114,7 +114,7 @@ extension UnsafeIndexV2: Equatable {
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
       guard let r = rhs.sealed.pointer,
-        let l = rhs.resolve(lhs.trackingTag).pointer
+        let l = rhs._remap_to_sealed_(lhs).pointer
       else {
         preconditionFailure(.garbagedIndex)
       }
@@ -132,10 +132,9 @@ extension UnsafeIndexV2 {
   @inlinable
   //  @inline(__always)
   public func distance(to other: Self) -> Int {
-    let other = _remap_to_safe_(other)
     guard
       let from = sealed.pointer,
-      let to = other.pointer
+      let to = _remap_to_sealed_(other).pointer
     else {
       preconditionFailure(.garbagedIndex)
     }
@@ -146,9 +145,9 @@ extension UnsafeIndexV2 {
   @inlinable
   //  @inline(__always)
   public func advanced(by n: Int) -> Self {
-    let adv = sealed.purified.flatMap { ___tree_adv_iter($0.pointer, n) }.seal
+    let adv = sealed.purified.flatMap { ___tree_adv_iter($0.pointer, n) }
     var result = self
-    result.sealed = adv
+    result.sealed = adv.seal
     return result
   }
 }
@@ -161,10 +160,10 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var next: Self? {
-    let next = sealed.purified.flatMap { ___tree_next_iter($0.pointer) }.seal
+    let next = sealed.purified.flatMap { ___tree_next_iter($0.pointer) }
     guard next.isValid, tied.isValueAccessAllowed else { return nil }
     var result = self
-    result.sealed = next
+    result.sealed = next.seal
     return result
   }
 
@@ -174,10 +173,10 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var previous: Self? {
-    let prev = sealed.purified.flatMap { ___tree_prev_iter($0.pointer) }.seal
+    let prev = sealed.purified.flatMap { ___tree_prev_iter($0.pointer) }
     guard prev.isValid, tied.isValueAccessAllowed else { return nil }
     var result = self
-    result.sealed = prev
+    result.sealed = prev.seal
     return result
   }
 }
@@ -309,7 +308,7 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  package func resolve(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> _SealedPtr {
+  package func _resolve(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> _SealedPtr {
     switch raw {
     case .nullptr:
       return .failure(.null)
@@ -319,19 +318,22 @@ extension UnsafeIndexV2 {
       guard raw < tied.capacity else {
         return .failure(.unknown)
       }
-      return tied[raw].map { .success(.uncheckedSeal($0, seal)) } ?? .failure(.null)
+      return tied[raw]
+        .map { .success(.uncheckedSeal($0, seal)) }
+        ?? .failure(.null)
     }
   }
 
   @inlinable
   @inline(__always)
-  package func resolve(_ tag: TaggedSeal) -> _SealedPtr {
-    tag.map { resolve(raw: $0.rawValue.raw, seal: $0.rawValue.seal) } ?? .failure(.null)
+  package func _resolve(_ tag: TaggedSeal) -> _SealedPtr {
+    tag.map { _resolve(raw: $0.rawValue.raw, seal: $0.rawValue.seal) }
+      ?? .failure(.null)
   }
 
   @inlinable
   @inline(__always)
-  internal func _remap_to_safe_(_ index: UnsafeIndexV2) -> _SealedPtr {
-    tied === index.tied ? index.sealed : resolve(index.trackingTag)
+  internal func _remap_to_sealed_(_ index: UnsafeIndexV2) -> _SealedPtr {
+    tied === index.tied ? index.sealed : _resolve(index.trackingTag)
   }
 }

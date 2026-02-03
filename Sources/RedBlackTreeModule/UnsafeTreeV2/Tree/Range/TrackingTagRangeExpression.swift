@@ -80,9 +80,9 @@ extension Optional where Wrapped == TagSeal_ {
   }
 
   @inlinable @inline(__always)
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> _SealedPtr
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> _SafePtr
   where Base: ___TreeBase {
-    __tree_[self].seal
+    __tree_[self]
   }
 }
 
@@ -171,22 +171,22 @@ extension TrackingTagRangeExpression {
 
     case .range(let from, let to):
       return .range(
-        from: from.relative(to: __tree_),
-        to: to.relative(to: __tree_))
+        from: from.relative(to: __tree_).seal,
+        to: to.relative(to: __tree_).seal)
 
     case .closedRange(let from, let through):
       return .closedRange(
-        from: from.relative(to: __tree_),
-        through: through.relative(to: __tree_))
+        from: from.relative(to: __tree_).seal,
+        through: through.relative(to: __tree_).seal)
 
     case .partialRangeTo(let to):
-      return .partialRangeTo(to.relative(to: __tree_))
+      return .partialRangeTo(to.relative(to: __tree_).seal)
 
     case .partialRangeThrough(let through):
-      return .partialRangeThrough(through.relative(to: __tree_))
+      return .partialRangeThrough(through.relative(to: __tree_).seal)
 
     case .partialRangeFrom(let from):
-      return .partialRangeFrom(from.relative(to: __tree_))
+      return .partialRangeFrom(from.relative(to: __tree_).seal)
 
     case .unboundedRange:
       return .unboundedRange

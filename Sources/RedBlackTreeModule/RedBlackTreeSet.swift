@@ -601,8 +601,8 @@ extension RedBlackTreeSet {
       -> Int
     {
       __tree_.___distance(
-        from: try! start.relative(to: __tree_).get().pointer,
-        to: try! end.relative(to: __tree_).get().pointer)
+        from: try! start.relative(to: __tree_).get(),
+        to: try! end.relative(to: __tree_).get())
     }
   }
 
@@ -662,7 +662,7 @@ extension RedBlackTreeSet {
     @inlinable
     public func index(before i: TaggedSeal) -> TaggedSeal {
       try? i.relative(to: __tree_)
-        .flatMap { ___tree_prev_iter($0.pointer) }
+        .flatMap { ___tree_prev_iter($0) }
         .map { .create($0) }
         .get()
     }
@@ -671,7 +671,7 @@ extension RedBlackTreeSet {
     @inlinable
     public func index(after i: TaggedSeal) -> TaggedSeal {
       try? i.relative(to: __tree_)
-        .flatMap { ___tree_next_iter($0.pointer) }
+        .flatMap { ___tree_next_iter($0) }
         .map { .create($0) }
         .get()
     }
@@ -682,7 +682,7 @@ extension RedBlackTreeSet {
       -> TaggedSeal
     {
       try? i.relative(to: __tree_)
-        .flatMap { ___tree_adv_iter($0.pointer, distance) }
+        .flatMap { ___tree_adv_iter($0, distance) }
         .map { .create($0) }
         .get()
     }
@@ -696,7 +696,7 @@ extension RedBlackTreeSet {
     {
       let __l = limit.relative(to: __tree_)
       return try? i.relative(to: __tree_)
-        .flatMap { ___tree_adv_iter($0.pointer, distance, __l.pointer) }
+        .flatMap { ___tree_adv_iter($0, distance, __l) }
         .map { .create($0) }
         .get()
     }
@@ -752,7 +752,7 @@ extension RedBlackTreeSet {
       guard case .success(let __p) = index.relative(to: __tree_) else {
         fatalError(.invalidIndex)
       }
-      return _unchecked_remove(at: __p.pointer).payload
+      return _unchecked_remove(at: __p).payload
     }
   }
 

@@ -5,9 +5,9 @@
 //  Created by narumij on 2026/01/29.
 //
 
-public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost & _ScalarBase_ElementProtocol
-where Base: ___TreeBase
-{
+public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost
+    & _ScalarBase_ElementProtocol
+where Base: ___TreeBase {
   @usableFromInline
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _NodePtr, _end: _NodePtr) {
     self.__tree_ = __tree_
@@ -57,7 +57,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     let (_start, _end) = _range
     return .init(start: _start, end: _end, tie: __tree_.tied)
   }
-  
+
   @inlinable
   @inline(__always)
   public __consuming func reversed() -> [Element] {
@@ -92,6 +92,18 @@ extension RedBlackTreeKeyOnlyRangeView {
   public var count: Int {
     let (l, u) = _range
     return (try? ___safe_distance(l, u).get()) ?? 0
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView {
+
+  /// - Complexity: O(log *n* + *k*)
+  @inlinable
+  @inline(__always)
+  public func distance(from start: TaggedSeal, to end: TaggedSeal) -> Int {
+    __tree_.___distance(
+      from: try! start.relative(to: __tree_).get(),
+      to: try! end.relative(to: __tree_).get())
   }
 }
 
@@ -175,11 +187,11 @@ extension RedBlackTreeKeyOnlyRangeView {
 extension RedBlackTreeKeyOnlyRangeView {
 
   // 不要
-  
-//  @inlinable
-//  public var isValid: Bool {
-//    __tree_[startIndex].isValid && __tree_[endIndex].isValid
-//  }
+
+  //  @inlinable
+  //  public var isValid: Bool {
+  //    __tree_[startIndex].isValid && __tree_[endIndex].isValid
+  //  }
 }
 
 extension RedBlackTreeKeyOnlyRangeView {
@@ -386,20 +398,6 @@ extension RedBlackTreeKeyOnlyRangeView {
         return true
       }
       return false
-    }
-  }
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeKeyOnlyRangeView {
-
-    /// - Complexity: O(log *n* + *k*)
-    @inlinable
-    @inline(__always)
-    public func distance(from start: TaggedSeal, to end: TaggedSeal) -> Int {
-      __tree_.___distance(
-        from: try! start.relative(to: __tree_).get().pointer,
-        to: try! end.relative(to: __tree_).get().pointer)
     }
   }
 #endif

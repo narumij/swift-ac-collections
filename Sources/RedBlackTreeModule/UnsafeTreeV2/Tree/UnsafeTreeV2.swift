@@ -165,6 +165,7 @@ extension UnsafeTreeV2 {
         return .failure(.unknown)
       }
       let p = _buffer.header[raw]
+      // 再度シールしないしくみもつくる
       return p.___is_garbaged || p.pointee.___recycle_count != seal
         ? .failure(.unsealed)
         : .success(p)
@@ -188,7 +189,7 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func _remap_to_safe_(_ index: Index) -> _SealedPtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-    tied === index.tied ? index.rawValue.sealed : self[_rawTag: index._rawTag].seal
+    tied === index.tied ? index.sealed.purified : self[_rawTag: index._rawTag].seal
   }
 
   #if COMPATIBLE_ATCODER_2025

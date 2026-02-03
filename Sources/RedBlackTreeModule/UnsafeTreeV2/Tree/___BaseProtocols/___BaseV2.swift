@@ -171,7 +171,7 @@ protocol _RedBlackTreeKeyValuesBase:
 {}
 
 @usableFromInline
-protocol _RedBlackTreeKeyOnlyBase2:
+protocol _RedBlackTreeKeyOnlyBase__:
   UnsafeMutableTreeRangeProtocol
     & ___UnsafeCommonV2
     & ___UnsafeBaseSequenceV2__

@@ -111,7 +111,7 @@ extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
 
   @inlinable
   var trackingTag: Result<TaggedSeal, SafePtrError> {
-    purified.map { .create($0) }
+    purified.map { $0.tag }
   }
 
   @inlinable
@@ -121,7 +121,7 @@ extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
 
   @inlinable
   var unchecked_trackingTag: Result<TaggedSeal, SafePtrError> {
-    map { .create($0) }
+    map { $0.tag }
   }
 }
 
@@ -138,6 +138,26 @@ extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
   @usableFromInline
   internal var ___is_end: Bool? {
     try? map { $0.pointer.___is_end }.get()
+  }
+  
+  @usableFromInline
+  internal var ___is_root: Bool? {
+    try? map { $0.pointer.__parent_.___is_end }.get()
+  }
+  
+  @usableFromInline
+  internal func __is_equals(_ p: UnsafeMutablePointer<UnsafeNode>) -> Bool? {
+    try? map { $0.pointer == p }.get()
+  }
+  
+  @usableFromInline
+  func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
+    try? map { $0.pointer.__value_() }.get()
+  }
+  
+  @inlinable
+  var optionalPointer: UnsafeMutablePointer<UnsafeNode>? {
+    try? purified.map { $0.pointer }.get()
   }
 }
 

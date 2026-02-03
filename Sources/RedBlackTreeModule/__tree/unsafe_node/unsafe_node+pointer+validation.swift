@@ -46,7 +46,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   
   @usableFromInline
   internal var ___is_end: Bool {
-    assert(__parent_ != .nullptr || pointee.___tracking_tag == .end)
+//    assert(__parent_ != .nullptr || pointee.___tracking_tag == .end)
     return pointee.___tracking_tag == .end
   }
 

@@ -32,13 +32,23 @@ public struct _NodePtrSealing: Equatable {
 
   @inlinable @inline(__always)
   init(_p: _NodePtr) {
-    pointer = _p
-    seal = _p.pointee.___recycle_count
+    self.init(_p: _p, _seal: _p.pointee.___recycle_count)
   }
-  
+
+  @inlinable @inline(__always)
+  init(_p: _NodePtr,_seal: UnsafeNode.Seal) {
+    pointer = _p
+    seal = _seal
+  }
+
   @inlinable
   static func uncheckedSeal(_ _p: _NodePtr) -> _NodePtrSealing {
     .init(_p: _p)
+  }
+
+  @inlinable
+  static func uncheckedSeal(_ _p: _NodePtr,_ seal: UnsafeNode.Seal) -> _NodePtrSealing {
+    .init(_p: _p, _seal: seal)
   }
 
   /// 封印が剥がされているかどうかを返す
@@ -60,6 +70,11 @@ public struct _NodePtrSealing: Equatable {
   var purified: _SealedPtr {
     // validなpointerがendやnullに変化することはない
     isUnsealed ? .failure(.unsealed) : .success(self)
+  }
+  
+  @inlinable @inline(__always)
+  var tag: TaggedSeal {
+    .init(rawValue: (pointer.pointee.___tracking_tag, seal))
   }
 }
 

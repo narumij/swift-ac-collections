@@ -20,7 +20,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   package func ___is_garbaged(_ index: Tree.Index) -> Bool {
     switch __tree_._remap_to_safe_(index) {
-    case .failure(.garbaged):
+    case .failure:
       return true
     default:
       return false

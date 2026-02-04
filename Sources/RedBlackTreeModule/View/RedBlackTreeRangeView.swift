@@ -13,8 +13,6 @@ where Base: ___TreeBase {
     self.__tree_ = __tree_
     self.startIndex = try! _start.unchecked_trackingTag.get()
     self.endIndex = try! _end.unchecked_trackingTag.get()
-    assert(startIndex.check)
-    assert(endIndex.check)
   }
 
   public typealias Index = TaggedSeal

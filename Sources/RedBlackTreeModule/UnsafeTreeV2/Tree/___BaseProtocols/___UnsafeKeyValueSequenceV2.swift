@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyValueSequenceV2__: UnsafeTreeRangeBaseInterface, _PairBase_ElementProtocol,
+protocol ___UnsafeKeyValueSequenceV2__: UnsafeTreeSealedRangeBaseInterface, _PairBase_ElementProtocol,
   _PayloadValueBride, _KeyBride, _MappedValueBride
 where
   Base: KeyValueComparer & _BasePaylodValue_ElementInterface
@@ -111,13 +111,13 @@ extension ___UnsafeKeyValueSequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _makeIterator() -> Tree._KeyValues {
-    .init(start: _start.sealed, end: _end.sealed, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
 
   @inlinable
   @inline(__always)
   internal func _reversed() -> Tree._KeyValues.Reversed {
-    .init(start: _start.sealed, end: _end.sealed, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
 }
 
@@ -129,14 +129,14 @@ extension ___UnsafeKeyValueSequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _keys() -> Keys {
-    .init(start: _start.sealed, end: _end.sealed, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   internal func _values() -> Values {
-    .init(start: _start.sealed, end: _end.sealed, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
 }
 
@@ -145,7 +145,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _forEach(_ body: (Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
+    try __tree_.___for_each_(__p: _sealed_start.pointer!, __l: _sealed_end.pointer!) {
       try body(Self.__element_(__tree_[$0]))
     }
   }
@@ -157,7 +157,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _sorted() -> [Element] {
-    __tree_.___copy_to_array(_start, _end, transform: Self.__element_)
+    __tree_.___copy_to_array(_sealed_start.pointer!, _sealed_end.pointer!, transform: Self.__element_)
   }
 }
 

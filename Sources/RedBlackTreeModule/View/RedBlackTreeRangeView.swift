@@ -318,19 +318,17 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   public func index(before i: Index) -> Index {
-    try? i.relative(to: __tree_)
+    i.relative(to: __tree_)
       .flatMap { ___tree_prev_iter($0) }
-      .map { .create($0) }
-      .get()
+      .flatMap { .create($0) }
   }
 
   /// - Complexity: O(1)
   @inlinable
   public func index(after i: Index) -> Index {
-    try? i.relative(to: __tree_)
+    i.relative(to: __tree_)
       .flatMap { ___tree_next_iter($0) }
-      .map { .create($0) }
-      .get()
+      .flatMap { .create($0) }
   }
 }
 
@@ -354,10 +352,9 @@ extension RedBlackTreeKeyOnlyRangeView {
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
-      try? i.relative(to: __tree_)
+      i.relative(to: __tree_)
         .flatMap { ___tree_adv_iter($0, distance) }
-        .map { .create($0) }
-        .get()
+        .flatMap { .create($0) }
     }
 
     /// - Complexity: O(`distance`)
@@ -365,7 +362,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     public func index(
       _ i: Index, offsetBy distance: Int, limitedBy limit: Index
     )
-      -> Index
+      -> Index?
     {
       let __l = limit.relative(to: __tree_)
       return try? i.relative(to: __tree_)

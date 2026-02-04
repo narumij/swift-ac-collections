@@ -985,7 +985,7 @@ final class MultisetTests: RedBlackTreeTestCase {
     #if DEBUG
     XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: -1)._rawTag, -1)
       // UnsafeTreeでは、範囲外のインデックスを作成できない
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).trackingTag, nil)
+    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).trackingTag._rawTag, .nullptr)
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))

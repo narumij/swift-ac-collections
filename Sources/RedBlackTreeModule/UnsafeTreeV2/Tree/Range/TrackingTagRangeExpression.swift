@@ -62,22 +62,24 @@ extension TagSeal_: RawRepresentable {
   }
 }
 
-public typealias TaggedSeal = TagSeal_?
+public typealias TaggedSeal = Result<TagSeal_, SafePtrError>
 
-// Optionalではなく、Resultがいいかもしれない
-extension Optional where Wrapped == TagSeal_ {
-
+extension Result where Success == TagSeal_, Failure == SafePtrError {
   // タグをsalt付きに移行する場合、タグの生成は木だけが行うよう準備する必要がある
   // 競プロ用としてはsaltなしでいい。一般用として必要かどうかの判断となっていく
 
   @inlinable
-  static func create(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Self {
+  static func create(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Result {
     t.flatMap { TagSeal_(rawValue: ($0.trackingTag, $0.pointee.___recycle_count)) }
+      .map { .success($0) }
+    ?? .failure(.null)
   }
-
+  
   @inlinable
-  static func create(_ t: _NodePtrSealing?) -> Self {
+  static func create(_ t: _NodePtrSealing?) -> Result {
     t.flatMap { TagSeal_(rawValue: ($0.pointer.trackingTag, $0.seal)) }
+      .map { .success($0) }
+    ?? .failure(.null)
   }
 
   @inlinable @inline(__always)
@@ -88,27 +90,26 @@ extension Optional where Wrapped == TagSeal_ {
 }
 
 #if DEBUG
-  extension Optional where Wrapped == TagSeal_ {
+extension Result where Success == TagSeal_, Failure == SafePtrError {
 
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     @usableFromInline
     internal var _rawTag: _RawTrackingTag {
-      switch self {
-      case .none: .nullptr
-      case .end: .end
-      case .tag(raw: let rag, seal: _): rag
+      guard let tag = try? get() else {
+        return .nullptr
       }
+      return tag._rawTag
     }
 
     internal static func unsafe<Base>(tree: UnsafeTreeV2<Base>, rawTag: _RawTrackingTag) -> Self {
       if rawTag == .nullptr {
-        return nil
+        return .failure(.null)
       }
       if rawTag == .end {
-        return .end
+        return .success(.end)
       }
-      return .init(rawValue: (rawTag, 0))
+      return .success(.tag(raw: rawTag, seal: 0))
     }
   }
 #endif

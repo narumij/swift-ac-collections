@@ -154,13 +154,11 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package func resolve(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> _SealedPtr {
-    switch raw {
-    case .nullptr:
-      return .failure(.null)
+  package func resolve(tag: TagSeal_) -> _SealedPtr {
+    switch tag {
     case .end:
       return end.sealed
-    default:
+    case .tag(raw: let raw, seal: let seal):
       guard raw < capacity else {
         return .failure(.unknown)
       }
@@ -171,7 +169,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   package func resolve(_ tag: TaggedSeal) -> _SealedPtr {
-    tag.map { resolve(raw: $0.rawValue.raw, seal: $0.rawValue.seal) } ?? .failure(.null)
+    tag.flatMap { resolve(tag: $0) }
   }
 }
 
@@ -185,7 +183,7 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func _remap_to_safe_(_ index: Index) -> _SealedPtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-    tied === index.tied ? index.sealed : self.resolve(index.trackingTag)
+    tied === index.tied ? index.sealed : self.resolve(index.trackingTag).purified
   }
 
   #if COMPATIBLE_ATCODER_2025

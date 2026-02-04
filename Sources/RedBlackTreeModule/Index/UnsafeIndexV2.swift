@@ -49,7 +49,7 @@ where Base: ___TreeBase & ___TreeIndex {
 
   @usableFromInline
   internal var trackingTag: TaggedSeal {
-    try? sealed.map(\.tag).get()
+    sealed.flatMap(\.tag)
   }
 
   @usableFromInline
@@ -311,27 +311,24 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  package func _resolve(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> _SealedPtr {
-    switch raw {
-    case .nullptr:
-      return .failure(.null)
+  package func resolve(tag: TagSeal_) -> _SealedPtr {
+    switch tag {
     case .end:
       return tied.end_ptr.map { $0.sealed } ?? .failure(.null)
-    default:
+    case .tag(raw: let raw, seal: let seal):
       guard raw < tied.capacity else {
         return .failure(.unknown)
       }
       return tied[raw]
-        .map { .success(.uncheckedSeal($0, seal)) }
-        ?? .failure(.null)
+      .map { .success(.uncheckedSeal($0, seal)) }
+      ?? .failure(.null)
     }
   }
 
   @inlinable
   @inline(__always)
   package func _resolve(_ tag: TaggedSeal) -> _SealedPtr {
-    tag.map { _resolve(raw: $0.rawValue.raw, seal: $0.rawValue.seal) }
-      ?? .failure(.null)
+    tag.flatMap { resolve(tag: $0) }
   }
 
   @inlinable

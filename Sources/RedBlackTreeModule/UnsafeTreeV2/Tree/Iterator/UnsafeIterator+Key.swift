@@ -44,6 +44,14 @@ extension UnsafeIterator {
       _source._end
     }
     
+    public var _sealed_start: _SealedPtr {
+      _source._sealed_start
+    }
+
+    public var _sealed_end: _SealedPtr {
+      _source._sealed_end
+    }
+    
     public mutating func next() -> Base._Key? {
       return _source.next().map {
         Base.__key($0.__value_().pointee)

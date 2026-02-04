@@ -127,7 +127,8 @@ extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
 
   @usableFromInline
   internal var ___is_end: Bool? {
-    try? purified.map { $0.pointer.___is_end }.get()
+    // endは世代が変わらなず、成仏もしないのでお清めお祓いが無駄
+    try? map { $0.pointer.___is_end }.get()
   }
 
   @usableFromInline

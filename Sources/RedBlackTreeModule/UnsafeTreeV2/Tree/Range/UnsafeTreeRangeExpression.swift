@@ -15,6 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if false
 public enum UnsafeTreeRangeExpression: Equatable {
   // deprecatedにするか、せめてsealingにする必要がある
   public typealias Bound = UnsafeMutablePointer<UnsafeNode>
@@ -116,3 +117,4 @@ extension UnsafeTreeRangeExpression {
     }
   #endif
 }
+#endif

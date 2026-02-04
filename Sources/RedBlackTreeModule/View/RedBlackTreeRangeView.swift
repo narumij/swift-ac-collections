@@ -426,7 +426,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     @inline(__always)
     public func isValid(index: Index) -> Bool {
       guard
-        let i: _NodePtr = __tree_.resolve(index).optionalPointer,
+        let i: _NodePtr = __tree_.resolve(index).pointer,
         !i.___is_end
       else {
         return false

@@ -63,6 +63,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   }
 }
 
+#if false
 extension ___UnsafeKeyOnlySequenceV2__ {
 
   @inlinable
@@ -103,6 +104,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
     return .init(__tree_: __tree_, _start: lower, _end: upper)
   }
 }
+#endif
 
 extension ___UnsafeKeyOnlySequenceV2__ {
 

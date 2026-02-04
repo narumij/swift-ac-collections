@@ -182,6 +182,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   }
 }
 
+#if false
 extension ___UnsafeKeyValueSequenceV2 {
 
   @inlinable
@@ -203,6 +204,7 @@ extension ___UnsafeKeyValueSequenceV2 {
     return .init(tree: __tree_, start: lower, end: upper)
   }
 }
+#endif
 
 extension ___UnsafeKeyValueSequenceV2 {
 

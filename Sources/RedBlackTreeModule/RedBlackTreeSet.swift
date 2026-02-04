@@ -575,15 +575,15 @@ extension RedBlackTreeSet {
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of member: Element)
-      -> TaggedSeal
+      -> TaggedSeal?
     {
-      .create(__tree_.find(member)).flatMap { $0 == .end ? nil : $0 }
+      .create_as_optional(__tree_.find(member))
     }
 
     /// - Complexity: O( `count` )
     @inlinable
     public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
-      -> TaggedSeal
+      -> TaggedSeal?
     {
       try ___first_tracking_tag(where: predicate)
     }
@@ -611,8 +611,8 @@ extension RedBlackTreeSet {
       -> Int
     {
       __tree_.___distance(
-        from: try! start.relative(to: __tree_).get(),
-        to: try! end.relative(to: __tree_).get())
+        from: start.relative(to: __tree_).pointer!,
+        to: end.relative(to: __tree_).pointer!)
     }
   }
 
@@ -671,19 +671,19 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     public func index(before i: TaggedSeal) -> TaggedSeal {
-      try? i.relative(to: __tree_)
+      i.relative(to: __tree_)
+        .map(\.pointer)
         .flatMap { ___tree_prev_iter($0) }
-        .map { .create($0) }
-        .get()
+        .flatMap { .create($0) }
     }
 
     /// - Complexity: O(1)
     @inlinable
     public func index(after i: TaggedSeal) -> TaggedSeal {
-      try? i.relative(to: __tree_)
+      i.relative(to: __tree_)
+        .map(\.pointer)
         .flatMap { ___tree_next_iter($0) }
-        .map { .create($0) }
-        .get()
+        .flatMap { .create($0) }
     }
 
     /// - Complexity: O(`distance`)
@@ -691,10 +691,10 @@ extension RedBlackTreeSet {
     public func index(_ i: TaggedSeal, offsetBy distance: Int)
       -> TaggedSeal
     {
-      try? i.relative(to: __tree_)
+      i.relative(to: __tree_)
+        .map(\.pointer)
         .flatMap { ___tree_adv_iter($0, distance) }
-        .map { .create($0) }
-        .get()
+        .flatMap { .create($0) }
     }
 
     /// - Complexity: O(`distance`)
@@ -702,10 +702,11 @@ extension RedBlackTreeSet {
     public func index(
       _ i: TaggedSeal, offsetBy distance: Int, limitedBy limit: TaggedSeal
     )
-      -> TaggedSeal
+      -> TaggedSeal?
     {
-      let __l = limit.relative(to: __tree_)
+      let __l = limit.relative(to: __tree_).map(\.pointer)
       return try? i.relative(to: __tree_)
+        .map(\.pointer)
         .flatMap { ___tree_adv_iter($0, distance, __l) }
         .map { .create($0) }
         .get()
@@ -759,7 +760,7 @@ extension RedBlackTreeSet {
     @discardableResult
     public mutating func remove(at index: TaggedSeal) -> Element {
       __tree_.ensureUnique()
-      guard case .success(let __p) = index.relative(to: __tree_) else {
+      guard case .success(let __p) = index.relative(to: __tree_).unchecked_pointer else {
         fatalError(.invalidIndex)
       }
       return _unchecked_remove(at: __p).payload

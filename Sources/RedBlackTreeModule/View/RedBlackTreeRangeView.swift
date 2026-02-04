@@ -116,8 +116,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
     __tree_.___distance(
-      from: try! start.relative(to: __tree_).get(),
-      to: try! end.relative(to: __tree_).get())
+      from: start.relative(to: __tree_).pointer!,
+      to: end.relative(to: __tree_).pointer!)
   }
 }
 
@@ -302,6 +302,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   public subscript(tag: Index) -> Element {
     try! tag.relative(to: __tree_)
+      .map { $0.pointer }
       .map { $0.__value_().pointee }
       .get()
   }
@@ -309,7 +310,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   public subscript(result tag: Index) -> Result<Element, SafePtrError> {
-    tag.relative(to: __tree_).map { $0.__value_().pointee }
+    tag.relative(to: __tree_)
+      .map { $0.pointer }
+      .map { $0.__value_().pointee }
   }
 }
 
@@ -319,6 +322,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   public func index(before i: Index) -> Index {
     i.relative(to: __tree_)
+      .map { $0.pointer }
       .flatMap { ___tree_prev_iter($0) }
       .flatMap { .create($0) }
   }
@@ -327,6 +331,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   public func index(after i: Index) -> Index {
     i.relative(to: __tree_)
+      .map { $0.pointer }
       .flatMap { ___tree_next_iter($0) }
       .flatMap { .create($0) }
   }
@@ -352,8 +357,8 @@ extension RedBlackTreeKeyOnlyRangeView {
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
-      i.relative(to: __tree_)
-        .flatMap { ___tree_adv_iter($0, distance) }
+      i.relative(to: __tree_).purified
+        .flatMap { ___tree_adv_iter($0.pointer, distance) }
         .flatMap { .create($0) }
     }
 
@@ -364,9 +369,9 @@ extension RedBlackTreeKeyOnlyRangeView {
     )
       -> Index?
     {
-      let __l = limit.relative(to: __tree_)
-      return try? i.relative(to: __tree_)
-        .flatMap { ___tree_adv_iter($0, distance, __l) }
+      let __l = limit.relative(to: __tree_).map { $0.pointer }
+      return try? i.relative(to: __tree_).purified
+        .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
         .map { .create($0) }
         .get()
     }

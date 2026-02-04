@@ -68,29 +68,43 @@ extension Result where Success == TagSeal_, Failure == SafePtrError {
   // タグをsalt付きに移行する場合、タグの生成は木だけが行うよう準備する必要がある
   // 競プロ用としてはsaltなしでいい。一般用として必要かどうかの判断となっていく
 
+  /// 失敗とendを除外する
+  @inlinable
+  static func create_as_optional(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Result? {
+    t.flatMap { TagSeal_(rawValue: ($0.trackingTag, $0.pointee.___recycle_count)) }
+      .flatMap {
+        switch $0 {
+        case .end:
+          return nil
+        case .tag:
+          return .success($0)
+        }
+      }
+  }
+
   @inlinable
   static func create(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Result {
     t.flatMap { TagSeal_(rawValue: ($0.trackingTag, $0.pointee.___recycle_count)) }
       .map { .success($0) }
-    ?? .failure(.null)
+      ?? .failure(.null)
   }
-  
+
   @inlinable
   static func create(_ t: _NodePtrSealing?) -> Result {
     t.flatMap { TagSeal_(rawValue: ($0.pointer.trackingTag, $0.seal)) }
       .map { .success($0) }
-    ?? .failure(.null)
+      ?? .failure(.null)
   }
 
   @inlinable @inline(__always)
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> _SafePtr
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> _SealedPtr
   where Base: ___TreeBase {
-    __tree_.resolve(self).purified.map { $0.pointer }
+    __tree_.resolve(self)
   }
 }
 
 #if DEBUG
-extension Result where Success == TagSeal_, Failure == SafePtrError {
+  extension Result where Success == TagSeal_, Failure == SafePtrError {
 
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
@@ -100,6 +114,14 @@ extension Result where Success == TagSeal_, Failure == SafePtrError {
         return .nullptr
       }
       return tag._rawTag
+    }
+
+    @usableFromInline
+    package var rawValue: (raw: _RawTrackingTag, seal: UnsafeNode.Seal)? {
+      guard let tag = try? get() else {
+        return nil
+      }
+      return tag.rawValue
     }
 
     internal static func unsafe<Base>(tree: UnsafeTreeV2<Base>, rawTag: _RawTrackingTag) -> Self {
@@ -173,22 +195,22 @@ extension TrackingTagRangeExpression {
 
     case .range(let from, let to):
       return .range(
-        from: from.relative(to: __tree_).seal,
-        to: to.relative(to: __tree_).seal)
+        from: from.relative(to: __tree_),
+        to: to.relative(to: __tree_))
 
     case .closedRange(let from, let through):
       return .closedRange(
-        from: from.relative(to: __tree_).seal,
-        through: through.relative(to: __tree_).seal)
+        from: from.relative(to: __tree_),
+        through: through.relative(to: __tree_))
 
     case .partialRangeTo(let to):
-      return .partialRangeTo(to.relative(to: __tree_).seal)
+      return .partialRangeTo(to.relative(to: __tree_))
 
     case .partialRangeThrough(let through):
-      return .partialRangeThrough(through.relative(to: __tree_).seal)
+      return .partialRangeThrough(through.relative(to: __tree_))
 
     case .partialRangeFrom(let from):
-      return .partialRangeFrom(from.relative(to: __tree_).seal)
+      return .partialRangeFrom(from.relative(to: __tree_))
 
     case .unboundedRange:
       return .unboundedRange

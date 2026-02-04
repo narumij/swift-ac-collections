@@ -35,7 +35,7 @@
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      ___subscript(UnsafeTreeSafeRangeExpression.unboundedRange)
+      ___subscript(UnsafeTreeSealedRangeExpression.unboundedRange)
     }
 
     @inlinable

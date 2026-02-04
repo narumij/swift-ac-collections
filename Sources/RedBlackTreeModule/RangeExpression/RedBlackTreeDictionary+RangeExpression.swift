@@ -35,7 +35,7 @@
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> SubSequence {
-      ___subscript(UnsafeTreeSafeRangeExpression.unboundedRange)
+      ___subscript(UnsafeTreeSealedRangeExpression.unboundedRange)
     }
 
     @inlinable
@@ -45,7 +45,7 @@
 
     @inlinable
     public subscript(unchecked bounds: UnboundedRange) -> SubSequence {
-      ___unchecked_subscript(UnsafeTreeSafeRangeExpression.unboundedRange)
+      ___unchecked_subscript(UnsafeTreeSealedRangeExpression.unboundedRange)
     }
 
     @inlinable

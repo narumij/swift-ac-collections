@@ -34,11 +34,11 @@ extension UnsafeTreeSafeRange {
   func boundsCheckedNext(after __current: inout _SealedPtr) -> _NodePtr? {
     let __checked_current = __current.purified
     // 範囲終端が壊れてたらオコ！
-    guard let _end = try? ___to.purified.get() else {
+    guard let _end = ___to.sealing else {
       fatalError(.invalidIndex)
     }
     // current が壊れてたらオコ！
-    guard let _p = try? __checked_current.get() else {
+    guard let _p = __checked_current.unchecked_sealing else {
       fatalError(.invalidIndex)
     }
     // 終端に到達
@@ -50,11 +50,11 @@ extension UnsafeTreeSafeRange {
   func boundsCheckedNext(before __current: inout _SealedPtr) -> _NodePtr? {
     let _checked_current = __current.purified
     // 範囲 ___from が壊れてたらオコ！
-    guard let start = try? ___from.purified.get() else {
+    guard let start = ___from.sealing else {
       fatalError(.invalidIndex)
     }
     // __current が壊れてたらオコ！
-    guard let cur = try? _checked_current.get() else {
+    guard let cur = _checked_current.unchecked_sealing else {
       fatalError(.invalidIndex)
     }
     // ___from に到達（exclusive）なら終了

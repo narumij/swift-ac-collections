@@ -29,7 +29,7 @@ where Base: ___TreeBase & ___TreeIndex {
   typealias _PayloadValue = Tree._PayloadValue
 
   @usableFromInline
-  internal var rawRange: UnsafeTreeRangeExpression
+  internal var rawRange: UnsafeTreeSafeRangeExpression
 
   @usableFromInline
   internal var tied: _TiedRawBuffer
@@ -38,7 +38,7 @@ where Base: ___TreeBase & ___TreeIndex {
 
   @inlinable
   @inline(__always)
-  internal init(rawValue: UnsafeTreeRangeExpression, tie: _TiedRawBuffer) {
+  internal init(rawValue: UnsafeTreeSafeRangeExpression, tie: _TiedRawBuffer) {
     self.rawRange = rawValue
     self.tied = tie
   }
@@ -79,7 +79,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   -> UnsafeIndexV2RangeExpression<Base>
 {
   guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
-  return .init(rawValue: .range(from: lhs.rawValue, to: rhs.rawValue), tie: lhs.tied)
+  return .init(rawValue: .range(from: lhs.sealed, to: rhs.sealed), tie: lhs.tied)
 }
 
 #if !COMPATIBLE_ATCODER_2025
@@ -89,25 +89,25 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
     -> UnsafeIndexV2RangeExpression<Base>
   {
     guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
-    return .init(rawValue: .closedRange(from: lhs.rawValue, through: rhs.rawValue), tie: lhs.tied)
+    return .init(rawValue: .closedRange(from: lhs.sealed, through: rhs.sealed), tie: lhs.tied)
   }
 
   @inlinable
   @inline(__always)
   public prefix func ..< <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
-    return .init(rawValue: .partialRangeTo(rhs.rawValue), tie: rhs.tied)
+    return .init(rawValue: .partialRangeTo(rhs.sealed), tie: rhs.tied)
   }
 
   @inlinable
   @inline(__always)
   public prefix func ... <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
-    return .init(rawValue: .partialRangeThrough(rhs.rawValue), tie: rhs.tied)
+    return .init(rawValue: .partialRangeThrough(rhs.sealed), tie: rhs.tied)
   }
 
   @inlinable
   @inline(__always)
   public postfix func ... <Base>(lhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
-    return .init(rawValue: .partialRangeFrom(lhs.rawValue), tie: lhs.tied)
+    return .init(rawValue: .partialRangeFrom(lhs.sealed), tie: lhs.tied)
   }
 #endif
 

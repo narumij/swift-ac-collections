@@ -127,7 +127,7 @@ extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
 
   @usableFromInline
   internal var ___is_end: Bool? {
-    // endは世代が変わらなず、成仏もしないのでお清めお祓いが無駄
+    // endは世代が変わらず、成仏もしないのでお清めお祓いが無駄
     try? map { $0.pointer.___is_end }.get()
   }
 
@@ -149,6 +149,16 @@ extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
   @inlinable
   var pointer: UnsafeMutablePointer<UnsafeNode>? {
     try? purified.map { $0.pointer }.get()
+  }
+  
+  @inlinable
+  var sealing: _NodePtrSealing? {
+    try? purified.map { $0 }.get()
+  }
+  
+  @inlinable
+  var unchecked_sealing: _NodePtrSealing? {
+    try? map { $0 }.get()
   }
 }
 

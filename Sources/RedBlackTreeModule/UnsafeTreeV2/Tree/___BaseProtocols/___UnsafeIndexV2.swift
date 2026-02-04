@@ -125,7 +125,8 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _isValid(index: Index) -> Bool {
-    __tree_._remap_to_safe_(index).___is_end == false
+    // ___is_endのみを判定するわけじゃないので、お清めお祓いが必要
+    __tree_._remap_to_safe_(index).purified.___is_end == false
   }
 }
 

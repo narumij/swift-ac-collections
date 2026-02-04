@@ -42,6 +42,8 @@ extension UnsafeTreeSafeRangeExpression {
     __tree_.__end_node.sealed
   }
 
+  // TODO: FIXME
+  // たぶん解決が不足している
   @usableFromInline
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> (_from: _SealedPtr, _to: _SealedPtr)
@@ -65,6 +67,39 @@ extension UnsafeTreeSafeRangeExpression {
   }
 }
 
+extension UnsafeTreeSafeRangeExpression {
+
+  func _start(_ tied: _TiedRawBuffer) -> _SealedPtr {
+    tied.begin_ptr.map { success($0.pointee) } ?? .failure(.null)
+  }
+
+  func _end(_ tied: _TiedRawBuffer) -> _SealedPtr {
+    tied.end_ptr.map { success($0) } ?? .failure(.null)
+  }
+
+  // TODO: FIXME
+  // たぶん解決が不足している
+  @usableFromInline
+  func relative(to tied: _TiedRawBuffer) -> (_SealedPtr, _SealedPtr) {
+    guard tied.isValueAccessAllowed else {
+      return (.failure(.notAllowed), .failure(.notAllowed))
+    }
+    switch self {
+    case .range(let lhs, let rhs):
+      return (lhs, rhs)
+    case .closedRange(let lhs, let rhs):
+      return (lhs, rhs.flatMap { ___tree_next_iter($0.pointer) }.seal)
+    case .partialRangeTo(let rhs):
+      return (_start(tied), rhs)
+    case .partialRangeThrough(let rhs):
+      return (_start(tied), rhs.flatMap { ___tree_next_iter($0.pointer) }.seal)
+    case .partialRangeFrom(let lhs):
+      return (lhs, _end(tied))
+    case .unboundedRange:
+      return (_start(tied), _end(tied))
+    }
+  }
+}
 // MARK: -
 
 public func ..< (lhs: _SealedPtr, rhs: _SealedPtr) -> UnsafeTreeSafeRangeExpression {

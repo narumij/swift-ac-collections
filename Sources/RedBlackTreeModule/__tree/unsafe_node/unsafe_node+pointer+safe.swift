@@ -160,3 +160,15 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
     try? map { $0.___is_end }.get()
   }
 }
+
+extension Result where Failure == SealError {
+  @usableFromInline
+  internal func isError(_ e: SealError) -> Bool {
+    switch self {
+    case .success:
+      return false
+    case .failure(let failure):
+      return failure == e
+    }
+  }
+}

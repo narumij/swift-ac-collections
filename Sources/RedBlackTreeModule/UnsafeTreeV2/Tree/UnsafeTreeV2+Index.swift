@@ -61,126 +61,29 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal func ___index(after i: _NodePtr) -> _NodePtr {
-    return __tree_next(i.next_checked)
+  internal func ___index(after i: _SealedPtr) -> _SealedPtr {
+    i.flatMap { ___tree_next_iter($0.pointer) }.seal
   }
 
   @inlinable
   @inline(__always)
-  internal func ___formIndex(after i: inout _NodePtr) {
-    i = ___index(after: i)
+  internal func ___index(before i: _SealedPtr) -> _SealedPtr {
+    i.flatMap { ___tree_prev_iter($0.pointer) }.seal
   }
 
   @inlinable
   @inline(__always)
-  internal func ___index(before i: _NodePtr) -> _NodePtr {
-    return __tree_prev_iter(i.checked)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___formIndex(before i: inout _NodePtr) {
-    i = ___index(before: i)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___index(_ i: _NodePtr, offsetBy distance: Int) -> _NodePtr {
-    var distance = distance
-    var i = i.checked
-    while distance != 0 {
-      if 0 < distance {
-        guard i != __end_node else {
-          fatalError(.outOfBounds)
-        }
-        i = ___index(after: i)
-        distance -= 1
-      } else {
-        guard i != __begin_node_ else {
-          fatalError(.outOfBounds)
-        }
-        i = ___index(before: i)
-        distance += 1
-      }
-    }
-    return i
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___formIndex(_ i: inout _NodePtr, offsetBy distance: Int) {
-    i = ___index(i, offsetBy: distance)
+  internal func ___index(_ i: _SealedPtr, offsetBy distance: Int) -> _SealedPtr {
+    i.flatMap { ___tree_adv_iter($0.pointer, distance) }.seal
   }
 
   @inlinable
   @inline(__always)
   internal func
-    ___index(_ i: _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr)
-    -> _NodePtr?
+    ___index(_ i: _SealedPtr, offsetBy distance: Int, limitedBy limit: _SealedPtr)
+    -> _SealedPtr?
   {
-    var distance = distance
-    var i = i.checked
-    while distance != 0 {
-      if i == limit {
-        return nil
-      }
-      if 0 < distance {
-        guard i != __end_node else {
-          fatalError(.outOfBounds)
-        }
-        i = ___index(after: i)
-        distance -= 1
-      } else {
-        guard i != __begin_node_ else {
-          fatalError(.outOfBounds)
-        }
-        i = ___index(before: i)
-        distance += 1
-      }
-    }
-    return i
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func
-    ___formIndex(
-      _ i: inout _NodePtr, offsetBy distance: Int, limitedBy limit: _NodePtr
-    )
-    -> Bool
-  {
-    if let ii = ___index(i, offsetBy: distance, limitedBy: limit) {
-      i = ii
-      return true
-    }
-    return false
+    let i = i.flatMap { ___tree_adv_iter($0.pointer, distance, limit.unchecked_pointer) }.seal
+    return i.isError(.limit) ? nil : i
   }
 }
-
-//extension UnsafeTreeV2 {
-//
-//  @inlinable
-//  @inline(__always)
-//  internal func
-//    ___tree_adv_iter(_ i: _NodePtr, by distance: Int) -> _NodePtr
-//  {
-//    var distance = distance
-//    var result: _NodePtr = i.checked
-//    while distance != 0 {
-//      if 0 < distance {
-//        if result == __end_node { return result }
-//        result = __tree_next_iter(result)
-//        distance -= 1
-//      } else {
-//        if result == __begin_node_ {
-//          // 後ろと区別したくてnullptrにしてたが、一周回るとendなのでendにしてみる
-//          result = end
-//          return result
-//        }
-//        result = __tree_prev_iter(result)
-//        distance += 1
-//      }
-//    }
-//    return result
-//  }
-//}

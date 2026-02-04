@@ -46,7 +46,7 @@ extension UnsafeMutableTreeRangeProtocol {
   @discardableResult
   package mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
     guard from != _end else { return __tree_.end }
-    guard __tree_.isValidRawRange(lower: from.checked, upper: to.checked) else {
+    guard __tree_.isValidRawRange(lower: from, upper: to) else {
       fatalError(.invalidIndex)
     }
     return __tree_.erase(from, to)

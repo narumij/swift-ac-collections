@@ -1127,12 +1127,6 @@ final class EtcTests: RedBlackTreeTestCase {
       XCTAssertEqual(a[.end], nil)
     }
 
-    func testLimitedBy() throws {
-      var a = Array(0..<100)
-      let i = a.index(10, offsetBy: 11, limitedBy: 20)
-      XCTAssertNil(i)
-    }
-
     //    func testIteratorInvariant() throws {
     //      var a = RedBlackTreeSet((0..<5).map{ $0 * 5 })
     //      var it = a[a.firstIndex(of: 5)..<a.firstIndex(of: 20)].makeIterator()
@@ -1185,4 +1179,16 @@ final class EtcTests: RedBlackTreeTestCase {
       XCTAssertEqual(a + [], (0..<20) + [])
     }
   #endif
+  
+  func testLimitedBy() throws {
+    var a = Array(0..<100)
+    XCTAssertNotNil(a.index(10, offsetBy: 10, limitedBy: 20))
+    XCTAssertNil(a.index(10, offsetBy: 11, limitedBy: 20))
+  }
+  
+  func testLimitedBy2() throws {
+    var a = RedBlackTreeSet(0..<100)
+    XCTAssertNotNil(a.index(a.lowerBound(10), offsetBy: 10, limitedBy: a.lowerBound(20)))
+    XCTAssertNil(a.index(a.lowerBound(10), offsetBy: 11, limitedBy: a.lowerBound(20)))
+  }
 }

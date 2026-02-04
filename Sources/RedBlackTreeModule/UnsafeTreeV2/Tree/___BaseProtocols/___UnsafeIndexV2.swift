@@ -21,10 +21,12 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIndexV2: UnsafeTreeRangeProtocol & UnsafeTreeSealedRangeProtocol & ___UnsafeIndexBaseV2 & _PayloadValueBride {}
+protocol ___UnsafeIndexV2: UnsafeTreeRangeProtocol & UnsafeTreeSealedRangeProtocol
+    & ___UnsafeIndexBaseV2 & _PayloadValueBride
+{}
 
 extension ___UnsafeIndexV2 {
-  
+
   @inlinable
   @inline(__always)
   internal func _distance(from start: Index, to end: Index) -> Int {
@@ -51,7 +53,9 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(after i: Index) -> Index {
-    ___index(__tree_.___index(after: try! __tree_._remap_to_safe_(i).get().pointer))
+    var i = i
+    i.sealed = __tree_.___index(after: __tree_._remap_to_safe_(i))
+    return i
   }
 
   @inlinable
@@ -63,7 +67,9 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(before i: Index) -> Index {
-    ___index(__tree_.___index(before: try! __tree_._remap_to_safe_(i).get().pointer))
+    var i = i
+    i.sealed = __tree_.___index(before: __tree_._remap_to_safe_(i))
+    return i
   }
 
   @inlinable
@@ -75,7 +81,9 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(__tree_.___index(try! __tree_._remap_to_safe_(i).get().pointer, offsetBy: distance))
+    var i = i
+    i.sealed = __tree_.___index(__tree_._remap_to_safe_(i), offsetBy: distance)
+    return i
   }
 
   @inlinable
@@ -87,8 +95,17 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    ___index_or_nil(
-      __tree_.___index(try! __tree_._remap_to_safe_(i).get().pointer, offsetBy: distance, limitedBy: try! __tree_._remap_to_safe_(limit).get().pointer))
+    guard
+      let sealed = __tree_.___index(
+        __tree_._remap_to_safe_(i),
+        offsetBy: distance,
+        limitedBy: __tree_._remap_to_safe_(limit))
+    else {
+      return nil
+    }
+    var i = i
+    i.sealed = sealed
+    return i
   }
 
   @inlinable
@@ -105,7 +122,7 @@ extension ___UnsafeIndexV2 {
 }
 
 extension ___UnsafeIndexV2 {
-  
+
   @inlinable
   @inline(__always)
   internal func ___first_index(where predicate: (_PayloadValue) throws -> Bool) rethrows -> Index? {
@@ -125,8 +142,7 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _isValid(index: Index) -> Bool {
-    // ___is_endのみを判定するわけじゃないので、お清めお祓いが必要
-    __tree_._remap_to_safe_(index).purified.___is_end == false
+    __tree_._remap_to_safe_(index).___is_end == false
   }
 }
 
@@ -140,9 +156,9 @@ extension ___UnsafeIndexV2 {
     ) -> Bool where R.Bound == Index {
 
       let bounds = bounds.relative(to: self)
-      if
-        let _ = try? __tree_._remap_to_safe_(bounds.lowerBound).get(),
-        let _ = try? __tree_._remap_to_safe_(bounds.upperBound).get() {
+      if let _ = try? __tree_._remap_to_safe_(bounds.lowerBound).get(),
+        let _ = try? __tree_._remap_to_safe_(bounds.upperBound).get()
+      {
         return true
       }
       return false
@@ -204,4 +220,3 @@ extension ___UnsafeIndexV2 {
 //    .init(start: _start, end: _end, tie: __tree_.tied)
 //  }
 //}
-

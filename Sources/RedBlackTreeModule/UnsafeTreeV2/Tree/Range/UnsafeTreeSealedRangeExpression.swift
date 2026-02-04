@@ -124,6 +124,7 @@ public postfix func ... (lhs: _SealedPtr) -> UnsafeTreeSealedRangeExpression {
 
 // MARK: -
 
+#if false
 public func ..< (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
   -> UnsafeTreeSealedRangeExpression
 {
@@ -153,6 +154,7 @@ public postfix func ... (lhs: UnsafeMutablePointer<UnsafeNode>)
 {
   .partialRangeFrom(lhs.sealed)
 }
+#endif
 
 // MARK: -
 

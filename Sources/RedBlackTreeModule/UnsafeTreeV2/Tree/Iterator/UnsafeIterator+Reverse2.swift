@@ -27,10 +27,16 @@ extension UnsafeIterator {
   {
     @inlinable
     @inline(__always)
+    public init(_start: _SealedPtr, _end: _SealedPtr) {
+      self._safe_start = _start
+      self._safe_end = _end
+      self._safe_current = _end
+    }
+
+    @inlinable
+    @inline(__always)
     public init(_start: _NodePtr, _end: _NodePtr) {
-      self._safe_start = _start.sealed
-      self._safe_end = _end.sealed
-      self._safe_current = _end.sealed
+      self.init(_start: _start.sealed, _end: _end.sealed)
     }
 
     @usableFromInline

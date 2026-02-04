@@ -60,6 +60,10 @@ extension UnsafeIterator {
 
 extension UnsafeIterator._Reverse {
 
+  public init(_start: _SealedPtr, _end: _SealedPtr) {
+    self.init(_start: _start.pointer!, _end: _end.pointer!)
+  }
+
   @inlinable
   @inline(__always)
   public init(

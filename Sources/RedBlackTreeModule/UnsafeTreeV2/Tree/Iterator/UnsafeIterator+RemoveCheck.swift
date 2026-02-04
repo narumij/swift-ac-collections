@@ -26,6 +26,10 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>,
     Source: UnsafeIteratorProtocol
   {
+    public init(_start: _SealedPtr, _end: _SealedPtr) {
+      self.init(source: .init(_start: _start, _end: _end))
+    }
+
     public init(_start: _NodePtr, _end: _NodePtr) {
       self.init(source: .init(_start: _start, _end: _end))
     }

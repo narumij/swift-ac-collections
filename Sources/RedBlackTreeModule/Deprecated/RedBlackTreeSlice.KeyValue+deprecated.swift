@@ -40,8 +40,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: try! __tree_._remap_to_safe_2(bounds.lowerBound).get(),
-        end: try! __tree_._remap_to_safe_2(bounds.upperBound).get())
+        start: __tree_._remap_to_safe_(bounds.lowerBound).pointer!,
+        end: __tree_._remap_to_safe_(bounds.upperBound).pointer!)
     }
   }
 #endif
@@ -54,10 +54,11 @@
     @inline(__always)
     public subscript(bounds: Range<Index>) -> SubSequence {
       // TODO: ベースでの有効性しかチェックしていない。__containsのチェックにするか要検討
+      // TODO: sealedの扱いがやや古いのでいつか修正すること
       return .init(
         tree: __tree_,
-        start: try! __tree_._remap_to_safe_2(bounds.lowerBound).get(),
-        end: try! __tree_._remap_to_safe_2(bounds.upperBound).get())
+        start: __tree_._remap_to_safe_(bounds.lowerBound).pointer!,
+        end: __tree_._remap_to_safe_(bounds.upperBound).pointer!)
     }
   }
 #endif

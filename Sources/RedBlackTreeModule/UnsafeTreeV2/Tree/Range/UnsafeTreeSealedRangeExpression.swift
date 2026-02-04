@@ -42,8 +42,6 @@ extension UnsafeTreeSealedRangeExpression {
     __tree_.__end_node.sealed
   }
 
-  // TODO: FIXME
-  // たぶん解決が不足している
   @usableFromInline
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> (_from: _SealedPtr, _to: _SealedPtr)
@@ -77,8 +75,6 @@ extension UnsafeTreeSealedRangeExpression {
     tied.end_ptr.map { $0.sealed } ?? .failure(.null)
   }
 
-  // TODO: FIXME
-  // たぶん解決が不足している
   @usableFromInline
   func relative(to tied: _TiedRawBuffer) -> (_SealedPtr, _SealedPtr) {
     guard tied.isValueAccessAllowed else {

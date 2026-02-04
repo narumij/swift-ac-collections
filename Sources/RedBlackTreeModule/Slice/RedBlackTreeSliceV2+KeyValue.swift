@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// TODO: sealed化
-
 import Foundation
 
 extension RedBlackTreeSliceV2 {

@@ -158,11 +158,11 @@ extension UnsafeTreeV2 {
     switch tag {
     case .end:
       return end.sealed
-    case .tag(raw: let raw, seal: let seal):
+    case .tag(let raw, let seal):
       guard raw < capacity else {
         return .failure(.unknown)
       }
-      return .success(.uncheckedSeal(_buffer.header[raw],seal))
+      return .success(.uncheckedSeal(_buffer.header[raw], seal))
     }
   }
 
@@ -185,16 +185,4 @@ extension UnsafeTreeV2 {
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
     tied === index.tied ? index.sealed : self.resolve(index.trackingTag).purified
   }
-
-  #if COMPATIBLE_ATCODER_2025
-    @inlinable
-    @inline(__always)
-    internal func _remap_to_safe_2(_ index: Index) -> Result<
-      UnsafeMutablePointer<UnsafeNode>, SafePtrError
-    >
-    where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-      // TODO: Sealedに移行
-      tied === index.tied ? .success(index.rawValue) : self[_rawTag: index._rawTag]
-    }
-  #endif
 }

@@ -40,9 +40,6 @@ public
     self.tied = tie
   }
 
-  // TODO: Intに変更する検討
-  // 計算量が問題
-  // そもそもとして、Collection適合を廃止する方向になっている
   public typealias Index = UnsafeIndexV2<Base>
 
   @usableFromInline

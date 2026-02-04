@@ -233,8 +233,8 @@ extension RedBlackTreeMultiMap {
   public subscript(bounds: Range<Index>) -> SubSequence {
     return .init(
       tree: __tree_,
-      start: try! __tree_._remap_to_safe_2(bounds.lowerBound).get(),
-      end: try! __tree_._remap_to_safe_2(bounds.upperBound).get())
+      start: __tree_._remap_to_safe_(bounds.lowerBound).pointer!,
+      end: __tree_._remap_to_safe_(bounds.upperBound).pointer!)
   }
   #endif
 }
@@ -488,8 +488,8 @@ extension RedBlackTreeMultiMap {
     let bounds = bounds.relative(to: self)
     __tree_.ensureUnique()
     ___remove(
-      from: try! __tree_._remap_to_safe_2(bounds.lowerBound).get(),
-      to: try! __tree_._remap_to_safe_2(bounds.upperBound).get())
+      from: __tree_._remap_to_safe_(bounds.lowerBound).pointer!,
+      to: __tree_._remap_to_safe_(bounds.upperBound).pointer!)
   }
 #endif
 }

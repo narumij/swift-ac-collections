@@ -140,14 +140,14 @@ extension ___UnsafeIndexBaseV2 {
 }
 
 @usableFromInline
-protocol UnsafeIndicesProtoocl: UnsafeTreeRangeBaseInterface & UnsafeIndicesBinding {}
+protocol UnsafeIndicesProtoocl: UnsafeTreeSealedRangeBaseInterface & UnsafeIndicesBinding {}
 
 extension UnsafeIndicesProtoocl {
   
   @inlinable
   @inline(__always)
   internal var _indices: Indices {
-    .init(start: _start.sealed, end: _end.sealed, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
 }
 

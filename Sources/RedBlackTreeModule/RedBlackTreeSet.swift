@@ -571,7 +571,7 @@ extension RedBlackTreeSet {
   }
 
   extension RedBlackTreeSet {
-
+    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of member: Element)
@@ -580,6 +580,7 @@ extension RedBlackTreeSet {
       .create_as_optional(__tree_.find(member))
     }
 
+    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
     /// - Complexity: O( `count` )
     @inlinable
     public func firstIndex(where predicate: (Element) throws -> Bool) rethrows

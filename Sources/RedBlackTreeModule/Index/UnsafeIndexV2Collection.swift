@@ -96,8 +96,8 @@ extension UnsafeIndexV2Collection {
   #if COMPATIBLE_ATCODER_2025
     public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
       .init(
-        start: bounds.lowerBound.rawValue,
-        end: bounds.upperBound.rawValue,
+        start: bounds.lowerBound.sealed,
+        end: bounds.upperBound.sealed,
         tie: bounds.lowerBound.tied)
     }
   #endif

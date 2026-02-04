@@ -9,8 +9,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: __tree_._remap_to_safe_(bounds.lowerBound).pointer!,
-        end: __tree_._remap_to_safe_(bounds.upperBound).pointer!)
+        start: __tree_._remap_to_safe_(bounds.lowerBound),
+        end: __tree_._remap_to_safe_(bounds.upperBound))
     }
   }
 #endif
@@ -38,8 +38,8 @@
       // TODO: sealedの扱いがやや古いのでいつか修正すること
       return .init(
         tree: __tree_,
-        start: __tree_._remap_to_safe_(bounds.lowerBound).pointer!,
-        end: __tree_._remap_to_safe_(bounds.upperBound).pointer!)
+        start: __tree_._remap_to_safe_(bounds.lowerBound),
+        end: __tree_._remap_to_safe_(bounds.upperBound))
     }
   }
 #endif

@@ -93,7 +93,7 @@ extension RedBlackTreeKeyOnlyRangeView {
 // MARK: -
 
 @usableFromInline
-internal protocol BaseInit {
+package protocol BaseInit {
   associatedtype Tree
   init(__tree_: Tree)
 }
@@ -105,7 +105,7 @@ where
   Base: BaseInit,
   Base.Tree == UnsafeTreeV2<Base>
 {
-  func unranged() -> Base {
+  package func unranged() -> Base {
     Base(__tree_: __tree_)
   }
 }
@@ -356,8 +356,8 @@ extension RedBlackTreeKeyOnlyRangeView {
 
     @inlinable
     public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower.checked, upper: upper.checked) else {
+      let (lower, upper) = bounds.__relative(to: __tree_)
+      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       return .init(__tree_: __tree_, _start: lower, _end: upper)

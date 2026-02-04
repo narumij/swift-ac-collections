@@ -5,8 +5,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: __tree_._remap_to_safe_(bounds.lowerBound).pointer!,
-        end: __tree_._remap_to_safe_(bounds.upperBound).pointer!)
+        start: __tree_._remap_to_safe_(bounds.lowerBound),
+        end: __tree_._remap_to_safe_(bounds.upperBound))
     }
   }
 
@@ -83,8 +83,8 @@
     public func elements(in range: Range<Key>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: __tree_.lower_bound(range.lowerBound),
-        end: __tree_.lower_bound(range.upperBound))
+        start: __tree_.lower_bound(range.lowerBound).sealed,
+        end: __tree_.lower_bound(range.upperBound).sealed)
     }
 
     /// キーレンジ `[lower, upper]` に含まれる要素のスライス
@@ -103,8 +103,8 @@
     public func elements(in range: ClosedRange<Key>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: __tree_.lower_bound(range.lowerBound),
-        end: __tree_.upper_bound(range.upperBound))
+        start: __tree_.lower_bound(range.lowerBound).sealed,
+        end: __tree_.upper_bound(range.upperBound).sealed)
     }
   }
 

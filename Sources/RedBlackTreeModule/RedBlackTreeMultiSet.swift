@@ -190,8 +190,8 @@ extension RedBlackTreeMultiSet {
     public subscript(bounds: Range<Index>) -> SubSequence {
       return .init(
         tree: __tree_,
-        start: __tree_._remap_to_safe_(bounds.lowerBound).pointer!,
-        end: __tree_._remap_to_safe_(bounds.upperBound).pointer!)
+        start: __tree_._remap_to_safe_(bounds.lowerBound),
+        end: __tree_._remap_to_safe_(bounds.upperBound))
     }
   #endif
 }

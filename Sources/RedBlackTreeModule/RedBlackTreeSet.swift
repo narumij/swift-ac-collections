@@ -167,7 +167,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   var __tree_: Tree
 
   @inlinable @inline(__always)
-  internal init(__tree_: Tree) {
+  package init(__tree_: Tree) {
     self.__tree_ = __tree_
   }
 }

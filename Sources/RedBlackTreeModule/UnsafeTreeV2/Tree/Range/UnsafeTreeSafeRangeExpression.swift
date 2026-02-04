@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 public enum UnsafeTreeSafeRangeExpression: Equatable {
-  
+
   public typealias Bound = _SealedPtr
   /// `a..<b` のこと
   case range(from: Bound, to: Bound)
@@ -43,8 +43,11 @@ extension UnsafeTreeSafeRangeExpression {
   }
 
   @usableFromInline
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> (_from: _SealedPtr, _to: _SealedPtr)
-  where Base: ___TreeBase {
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> (_from: _SealedPtr, _to: _SealedPtr)
+  where
+    Base: ___TreeBase
+  {
     switch self {
     case .range(let lhs, let rhs):
       return (lhs, rhs)

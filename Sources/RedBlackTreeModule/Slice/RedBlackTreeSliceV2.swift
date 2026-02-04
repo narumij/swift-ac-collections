@@ -15,6 +15,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// TODO: sealed化
+
 import Foundation
 
 public enum RedBlackTreeSliceV2<Base> {}

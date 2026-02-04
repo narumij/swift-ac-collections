@@ -49,8 +49,8 @@ extension UnsafeIndexV2RangeExpression: Sequence {
   public typealias Iterator = UnsafeIterator.IndexObverse<Base>
 
   public func makeIterator() -> Iterator {
-    let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: tied))
-    return .init(start: lower.sealed, end: upper.sealed, tie: tied)
+    let (lower, upper) = rawRange.relative(to: tied)
+    return .init(start: lower, end: upper, tie: tied)
   }
 }
 

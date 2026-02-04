@@ -77,11 +77,11 @@ extension UnsafeIndexV2Collection {
   public var endIndex: Index { ___index(_end) }
 
   public func makeIterator() -> Iterator {
-    .init(start: _start.sealed, end: _end.sealed, tie: tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: tied)
   }
 
   public func reversed() -> Reversed {
-    .init(start: _start.sealed, end: _end.sealed, tie: tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: tied)
   }
 
   public func index(after i: Index) -> Index {

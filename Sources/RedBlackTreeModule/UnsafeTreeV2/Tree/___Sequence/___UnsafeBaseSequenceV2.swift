@@ -21,12 +21,8 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeBaseSequenceV2__: UnsafeTreeHost, _PayloadValueType, _KeyType
-where
-  _PayloadValue == Base._PayloadValue,
-  _Key == Base._Key
-{
-}
+protocol ___UnsafeBaseSequenceV2__: UnsafeTreeHost, _PayloadValueBride, _KeyBride
+{}
 
 extension ___UnsafeBaseSequenceV2__ {
   
@@ -96,10 +92,7 @@ extension ___UnsafeBaseSequenceV2__ {
 // MARK: -
 
 @usableFromInline
-protocol ___UnsafeBaseSequenceV2: ___UnsafeBaseSequenceV2__, ___UnsafeIndexRangeBaseV2, _PayloadValueType, _KeyType
-where
-  _PayloadValue == Base._PayloadValue,
-  _Key == Base._Key
+protocol ___UnsafeBaseSequenceV2: ___UnsafeBaseSequenceV2__, ___UnsafeIndexRangeBaseV2, _PayloadValueBride, _KeyBride
 {
   func ___index_or_nil(_ p: _NodePtr) -> Index?
 }

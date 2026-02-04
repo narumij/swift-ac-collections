@@ -21,13 +21,19 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyValueSequenceV2: ___UnsafeIndexRangeBaseV2, _PairBase_ElementProtocol,
+protocol ___UnsafeKeyValueSequenceV2__: UnsafeTreeRangeBaseInterface, _PairBase_ElementProtocol,
   _PayloadValueBride, _KeyBride, _MappedValueBride
+where
+  Base: KeyValueComparer & _BasePaylodValue_ElementInterface
+{}
+
+@usableFromInline
+protocol ___UnsafeKeyValueSequenceV2: ___UnsafeKeyValueSequenceV2__, ___UnsafeIndexRangeBaseV2,  _PayloadValueBride, _KeyBride, _MappedValueBride
 where
   Base: KeyValueComparer
 {}
 
-extension ___UnsafeKeyValueSequenceV2 {
+extension ___UnsafeKeyValueSequenceV2__ {
 
   // TODO: これを共通インターフェースの一部に引き上げたい
   @inlinable
@@ -37,7 +43,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 {
+extension ___UnsafeKeyValueSequenceV2__ {
 
   // TODO: リファクタリング検討
   @inlinable
@@ -47,7 +53,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 where Self: ___UnsafeCommonV2 {
+extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeCommonV2 {
 
   @inlinable
   @inline(__always)
@@ -62,7 +68,7 @@ extension ___UnsafeKeyValueSequenceV2 where Self: ___UnsafeCommonV2 {
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 where Self: ___UnsafeBaseSequenceV2 {
+extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeBaseSequenceV2 {
 
   @inlinable
   internal func ___min() -> Element? {
@@ -76,7 +82,7 @@ extension ___UnsafeKeyValueSequenceV2 where Self: ___UnsafeBaseSequenceV2 {
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 where Self: ___UnsafeIndexV2 {
+extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeIndexV2 {
 
   @inlinable
   internal func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
@@ -90,7 +96,7 @@ extension ___UnsafeKeyValueSequenceV2 where Self: ___UnsafeIndexV2 {
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 {
+extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
   @inline(__always)
@@ -100,7 +106,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 {
+extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
   @inline(__always)
@@ -115,7 +121,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 {
+extension ___UnsafeKeyValueSequenceV2__ {
 
   public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
   public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
@@ -134,7 +140,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 {
+extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
   @inline(__always)
@@ -142,6 +148,38 @@ extension ___UnsafeKeyValueSequenceV2 {
     try __tree_.___for_each_(__p: _start, __l: _end) {
       try body(Self.__element_(__tree_[$0]))
     }
+  }
+}
+
+extension ___UnsafeKeyValueSequenceV2__ {
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  @inline(__always)
+  internal func _sorted() -> [Element] {
+    __tree_.___copy_to_array(_start, _end, transform: Self.__element_)
+  }
+}
+
+extension ___UnsafeKeyValueSequenceV2__ {
+
+  @inlinable
+  public func ___subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
+    -> RedBlackTreeSliceV2<Base>.KeyValue
+  {
+    let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
+    guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+      fatalError(.invalidIndex)
+    }
+    return .init(tree: __tree_, start: lower, end: upper)
+  }
+
+  @inlinable
+  public func ___unchecked_subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
+    -> RedBlackTreeSliceV2<Base>.KeyValue
+  {
+    let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
+    return .init(tree: __tree_, start: lower, end: upper)
   }
 }
 
@@ -161,16 +199,6 @@ extension ___UnsafeKeyValueSequenceV2 {
 
 extension ___UnsafeKeyValueSequenceV2 {
 
-  /// - Complexity: O(*n*)
-  @inlinable
-  @inline(__always)
-  internal func _sorted() -> [Element] {
-    __tree_.___copy_to_array(_start, _end, transform: Self.__element_)
-  }
-}
-
-extension ___UnsafeKeyValueSequenceV2 {
-
   // コンパイラの型推論のバグを踏んでいると想定し、型をちゃんと書くことにし、様子を見ている
   // -> 今の設計だと影響があるが、過去のバグはこの方法では迂回できないことが確認できている
 
@@ -179,27 +207,5 @@ extension ___UnsafeKeyValueSequenceV2 {
     @inline(__always) get {
       return __element_(__tree_[try! __tree_._remap_to_safe_(position).get().pointer])
     }
-  }
-}
-
-extension ___UnsafeKeyValueSequenceV2 {
-
-  @inlinable
-  public func ___subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
-    -> RedBlackTreeSliceV2<Base>.KeyValue
-  {
-    let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
-    guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
-      fatalError(.invalidIndex)
-    }
-    return .init(tree: __tree_, start: lower, end: upper)
-  }
-
-  @inlinable
-  public func ___unchecked_subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
-    -> RedBlackTreeSliceV2<Base>.KeyValue
-  {
-    let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
-    return .init(tree: __tree_, start: lower, end: upper)
   }
 }

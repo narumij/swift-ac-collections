@@ -70,7 +70,7 @@ extension RedBlackTreeBoundRangeExpression {
 
   @inlinable @inline(__always)
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> UnsafeTreeSafeRangeExpression
+    -> UnsafeTreeSealedRangeExpression
   where
     Base: ___TreeBase,
     Base._Key == _Key

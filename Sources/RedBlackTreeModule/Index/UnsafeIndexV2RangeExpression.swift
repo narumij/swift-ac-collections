@@ -29,7 +29,7 @@ where Base: ___TreeBase & ___TreeIndex {
   typealias _PayloadValue = Tree._PayloadValue
 
   @usableFromInline
-  internal var rawRange: UnsafeTreeSafeRangeExpression
+  internal var rawRange: UnsafeTreeSealedRangeExpression
 
   @usableFromInline
   internal var tied: _TiedRawBuffer
@@ -38,7 +38,7 @@ where Base: ___TreeBase & ___TreeIndex {
 
   @inlinable
   @inline(__always)
-  internal init(rawValue: UnsafeTreeSafeRangeExpression, tie: _TiedRawBuffer) {
+  internal init(rawValue: UnsafeTreeSealedRangeExpression, tie: _TiedRawBuffer) {
     self.rawRange = rawValue
     self.tied = tie
   }

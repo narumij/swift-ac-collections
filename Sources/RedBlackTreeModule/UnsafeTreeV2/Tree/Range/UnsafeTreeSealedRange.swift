@@ -19,7 +19,7 @@
 ///
 @frozen
 @usableFromInline
-struct UnsafeTreeSafeRange: _UnsafeNodePtrType, Equatable {
+struct UnsafeTreeSealedRange: _UnsafeNodePtrType, Equatable {
   var ___from: _SealedPtr
   var ___to: _SealedPtr
   @usableFromInline
@@ -29,7 +29,7 @@ struct UnsafeTreeSafeRange: _UnsafeNodePtrType, Equatable {
   }
 }
 
-extension UnsafeTreeSafeRange {
+extension UnsafeTreeSealedRange {
 
   func boundsCheckedNext(after __current: inout _SealedPtr) -> _NodePtr? {
     let __checked_current = __current.purified

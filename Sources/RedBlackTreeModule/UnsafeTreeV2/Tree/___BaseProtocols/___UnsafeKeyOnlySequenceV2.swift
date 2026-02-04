@@ -66,7 +66,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
 extension ___UnsafeKeyOnlySequenceV2__ {
 
   @inlinable
-  public func ___subscript(_ rawRange: UnsafeTreeSafeRangeExpression)
+  public func ___subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
     -> RedBlackTreeSliceV2<Base>.KeyOnly
   {
     let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
@@ -77,7 +77,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   }
 
   @inlinable
-  public func ___unchecked_subscript(_ rawRange: UnsafeTreeSafeRangeExpression)
+  public func ___unchecked_subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
     -> RedBlackTreeSliceV2<Base>.KeyOnly
   {
     let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
@@ -85,7 +85,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   }
   
   @inlinable
-  public func ___subscript(_ rawRange: UnsafeTreeSafeRangeExpression)
+  public func ___subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
     -> RedBlackTreeKeyOnlyRangeView<Base>
   {
     let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
@@ -96,7 +96,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   }
 
   @inlinable
-  public func ___unchecked_subscript(_ rawRange: UnsafeTreeSafeRangeExpression)
+  public func ___unchecked_subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
   -> RedBlackTreeKeyOnlyRangeView<Base>
   {
     let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))

@@ -15,7 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-public enum UnsafeTreeSafeRangeExpression: Equatable {
+public enum UnsafeTreeSealedRangeExpression: Equatable {
 
   public typealias Bound = _SealedPtr
   /// `a..<b` のこと
@@ -32,7 +32,7 @@ public enum UnsafeTreeSafeRangeExpression: Equatable {
   case unboundedRange
 }
 
-extension UnsafeTreeSafeRangeExpression {
+extension UnsafeTreeSealedRangeExpression {
 
   func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _SealedPtr {
     __tree_.__begin_node_.sealed
@@ -67,7 +67,7 @@ extension UnsafeTreeSafeRangeExpression {
   }
 }
 
-extension UnsafeTreeSafeRangeExpression {
+extension UnsafeTreeSealedRangeExpression {
 
   func _start(_ tied: _TiedRawBuffer) -> _SealedPtr {
     tied.begin_ptr.map { success($0.pointee) } ?? .failure(.null)
@@ -102,54 +102,54 @@ extension UnsafeTreeSafeRangeExpression {
 }
 // MARK: -
 
-public func ..< (lhs: _SealedPtr, rhs: _SealedPtr) -> UnsafeTreeSafeRangeExpression {
+public func ..< (lhs: _SealedPtr, rhs: _SealedPtr) -> UnsafeTreeSealedRangeExpression {
   .range(from: lhs, to: rhs)
 }
 
-public func ... (lhs: _SealedPtr, rhs: _SealedPtr) -> UnsafeTreeSafeRangeExpression {
+public func ... (lhs: _SealedPtr, rhs: _SealedPtr) -> UnsafeTreeSealedRangeExpression {
   .closedRange(from: lhs, through: rhs)
 }
 
-public prefix func ..< (rhs: _SealedPtr) -> UnsafeTreeSafeRangeExpression {
+public prefix func ..< (rhs: _SealedPtr) -> UnsafeTreeSealedRangeExpression {
   .partialRangeTo(rhs)
 }
 
-public prefix func ... (rhs: _SealedPtr) -> UnsafeTreeSafeRangeExpression {
+public prefix func ... (rhs: _SealedPtr) -> UnsafeTreeSealedRangeExpression {
   .partialRangeThrough(rhs)
 }
 
-public postfix func ... (lhs: _SealedPtr) -> UnsafeTreeSafeRangeExpression {
+public postfix func ... (lhs: _SealedPtr) -> UnsafeTreeSealedRangeExpression {
   .partialRangeFrom(lhs)
 }
 
 // MARK: -
 
 public func ..< (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeSafeRangeExpression
+  -> UnsafeTreeSealedRangeExpression
 {
   .range(from: lhs.sealed, to: rhs.sealed)
 }
 
 public func ... (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeSafeRangeExpression
+  -> UnsafeTreeSealedRangeExpression
 {
   .closedRange(from: lhs.sealed, through: rhs.sealed)
 }
 
 public prefix func ..< (rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeSafeRangeExpression
+  -> UnsafeTreeSealedRangeExpression
 {
   .partialRangeTo(rhs.sealed)
 }
 
 public prefix func ... (rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeSafeRangeExpression
+  -> UnsafeTreeSealedRangeExpression
 {
   .partialRangeThrough(rhs.sealed)
 }
 
 public postfix func ... (lhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeSafeRangeExpression
+  -> UnsafeTreeSealedRangeExpression
 {
   .partialRangeFrom(lhs.sealed)
 }

@@ -808,14 +808,14 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public var keys: Keys {
-      .init(start: __tree_.__begin_node_.sealed, end: __tree_.__end_node.sealed, tie: __tree_.tied)
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var values: Values {
-      .init(start: __tree_.__begin_node_.sealed, end: __tree_.__end_node.sealed, tie: __tree_.tied)
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
     }
   #endif
 }

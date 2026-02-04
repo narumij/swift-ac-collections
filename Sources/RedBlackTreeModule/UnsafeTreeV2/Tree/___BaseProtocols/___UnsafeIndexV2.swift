@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIndexV2: UnsafeTreeRangeProtocol & ___UnsafeIndexBaseV2 & _PayloadValueBride {}
+protocol ___UnsafeIndexV2: UnsafeTreeRangeProtocol & UnsafeTreeSealedRangeProtocol & ___UnsafeIndexBaseV2 & _PayloadValueBride {}
 
 extension ___UnsafeIndexV2 {
   
@@ -110,7 +110,7 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   internal func ___first_index(where predicate: (_PayloadValue) throws -> Bool) rethrows -> Index? {
     var result: Index?
-    try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
+    try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
       if try predicate(__tree_[__p]) {
         result = ___index(__p)
         cont = false

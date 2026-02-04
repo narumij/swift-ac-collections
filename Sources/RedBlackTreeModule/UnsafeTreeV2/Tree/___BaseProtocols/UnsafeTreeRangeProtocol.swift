@@ -9,7 +9,7 @@
 protocol UnsafeTreeRangeProtocol: UnsafeTreeRangeBaseInterface, _PayloadValueBride {}
 
 extension UnsafeTreeRangeProtocol {
-  
+
   @inlinable
   @inline(__always)
   internal var ___is_empty: Bool {
@@ -33,9 +33,24 @@ extension UnsafeTreeRangeProtocol {
 
   @inlinable
   @inline(__always)
-  internal func ___first(where predicate: (_PayloadValue) throws -> Bool) rethrows -> _PayloadValue? {
+  internal func _isTriviallyIdentical(to other: Self) -> Bool {
+    __tree_.isTriviallyIdentical(to: other.__tree_) && _start == other._start && _end == other._end
+  }
+}
+
+// MARK: -
+
+@usableFromInline
+protocol UnsafeTreeSealedRangeProtocol: UnsafeTreeSealedRangeBaseInterface, _PayloadValueBride {}
+
+extension UnsafeTreeSealedRangeProtocol {
+
+  @inlinable
+  @inline(__always)
+  internal func ___first(where predicate: (_PayloadValue) throws -> Bool) rethrows -> _PayloadValue?
+  {
     var result: _PayloadValue?
-    try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
+    try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
       if try predicate(__tree_[__p]) {
         result = __tree_[__p]
         cont = false
@@ -45,13 +60,15 @@ extension UnsafeTreeRangeProtocol {
   }
 }
 
-extension UnsafeTreeRangeProtocol {
-  
+extension UnsafeTreeSealedRangeProtocol {
+
   @inlinable
   @inline(__always)
-  internal func ___first_tracking_tag(where predicate: (_PayloadValue) throws -> Bool) rethrows -> _RawTrackingTag? {
+  internal func ___first_tracking_tag(where predicate: (_PayloadValue) throws -> Bool) rethrows
+    -> _RawTrackingTag?
+  {
     var result: _RawTrackingTag?
-    try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
+    try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
       if try predicate(__tree_[__p]) {
         result = __p.trackingTag
         cont = false
@@ -59,26 +76,19 @@ extension UnsafeTreeRangeProtocol {
     }
     return result
   }
-  
+
   @inlinable
   @inline(__always)
-  internal func ___first_tracking_tag(where predicate: (_PayloadValue) throws -> Bool) rethrows -> TaggedSeal? {
+  internal func ___first_tracking_tag(where predicate: (_PayloadValue) throws -> Bool) rethrows
+    -> TaggedSeal?
+  {
     var __r = UnsafeNode.nullptr
-    try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
+    try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
       if try predicate(__tree_[__p]) {
         __r = __p
         cont = false
       }
     }
     return .create_as_optional(__r)
-  }
-}
-
-extension UnsafeTreeRangeProtocol {
-  
-  @inlinable
-  @inline(__always)
-  internal func _isTriviallyIdentical(to other: Self) -> Bool {
-    __tree_.isTriviallyIdentical(to: other.__tree_) && _start == other._start && _end == other._end
   }
 }

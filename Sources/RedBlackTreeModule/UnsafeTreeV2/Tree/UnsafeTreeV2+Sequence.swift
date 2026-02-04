@@ -20,7 +20,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func
-    ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
+    ___for_each_(__p: _SealedPtr, __l: _SealedPtr, body: (_NodePtr) throws -> Void)
     rethrows
   {
     for __c in sequence(__p, __l) {
@@ -31,7 +31,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func ___rev_for_each_(
-    __p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void
+    __p: _SealedPtr, __l: _SealedPtr, body: (_NodePtr) throws -> Void
   )
     rethrows
   {
@@ -46,7 +46,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func ___for_each(
-    __p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void
+    __p: _SealedPtr, __l: _SealedPtr, body: (_NodePtr, inout Bool) throws -> Void
   )
     rethrows
   {
@@ -257,9 +257,9 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func
-    sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> UnsafeIterator._RemoveAwarePointers
+    sequence(_ __first: _SealedPtr, _ __last: _SealedPtr) -> UnsafeIterator._RemoveAwarePointers
   {
-    .init(_start: __first.sealed, _end: __last.sealed)
+    .init(_start: __first, _end: __last)
   }
 
   @inlinable

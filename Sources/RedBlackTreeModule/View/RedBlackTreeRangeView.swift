@@ -46,6 +46,8 @@ extension RedBlackTreeKeyOnlyRangeView {
 //    return (_start, _end)
 //  }
   
+  // TODO: _NodePtrであるべきか、_SealedPtrであるべきか。使い分けの吟味
+  
   @usableFromInline
   var _range: (_SealedPtr, _SealedPtr) {
     let _start = __tree_.resolve(startIndex)

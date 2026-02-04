@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyValueSequenceV2__: UnsafeTreeSealedRangeBaseInterface, _PairBase_ElementProtocol,
+protocol ___UnsafeKeyValueSequenceV2__: UnsafeTreeSealedRangeProtocol, _PairBase_ElementProtocol,
   _PayloadValueBride, _KeyBride, _MappedValueBride
 where
   Base: KeyValueComparer & _BasePaylodValue_ElementInterface
@@ -145,7 +145,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _forEach(_ body: (Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _sealed_start.pointer!, __l: _sealed_end.pointer!) {
+    try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
       try body(Self.__element_(__tree_[$0]))
     }
   }

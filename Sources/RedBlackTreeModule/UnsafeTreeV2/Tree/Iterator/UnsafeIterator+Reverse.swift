@@ -47,11 +47,11 @@ extension UnsafeIterator {
     }
     
     public var _sealed_start: _SealedPtr {
-      ___tree_range.___from.sealed
+      fatalError()
     }
 
     public var _sealed_end: _SealedPtr {
-      ___tree_range.___to.sealed
+      fatalError()
     }
 
     public mutating func next() -> _NodePtr? {

@@ -19,36 +19,20 @@
 public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SafePtrError {
+  /// ポインタが変化した場合に用いる
+  ///
+  /// 重ねてsealしないこと
   @inlinable @inline(__always)
   var seal: _SealedPtr { flatMap { $0.sealed } }
 }
 
 public typealias _SealedPtr = Result<_NodePtrSealing, SafePtrError>
 
-extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
-  @inlinable @inline(__always)
-  var purified: Result { flatMap { $0.purified } }
-}
-
-extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
-
-  @inlinable @inline(__always)
-  var safe: _SafePtr { map { $0.pointer } }
-}
-
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  @inlinable @inline(__always)
-  var safe: _SafePtr {
-    if ___is_null {
-      return .failure(.null)
-    } else if ___is_garbaged {
-      return .failure(.garbaged)
-    } else {
-      return .success(self)
-    }
-  }
-
+  /// ポインタを渡すときまたは受け取ったときに用いる
+  ///
+  /// 重ねてsealしないこと
   @inlinable @inline(__always)
   var sealed: _SealedPtr {
     if ___is_null {
@@ -59,6 +43,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       return .success(.uncheckedSeal(self))
     }
   }
+}
+
+extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
+  @inlinable @inline(__always)
+  var purified: Result { flatMap { $0.purified } }
 }
 
 public enum SafePtrError: Error {

@@ -32,16 +32,6 @@ extension UnsafeIterator {
     }
 
     public
-      init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr)
-    {
-      self.init(source: .init(_start: __first.sealed, _end: __last.sealed))
-    }
-
-    public init(_ t: Base.Type, _start: _NodePtr, _end: _NodePtr) {
-      self.init(source: .init(_start: _start.sealed, _end: _end.sealed))
-    }
-
-    public
       var _source: Source
 
     internal init(source: Source) {

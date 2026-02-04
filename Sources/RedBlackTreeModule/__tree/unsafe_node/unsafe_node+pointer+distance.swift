@@ -75,7 +75,7 @@ internal func
     _ __first: UnsafeMutablePointer<UnsafeNode>,
     _ __last: UnsafeMutablePointer<UnsafeNode>
   )
-  -> Result<Int, SafePtrError>
+  -> Result<Int, SealError>
 {
   var __first = _SafePtr.success(__first)
   var __r = 0

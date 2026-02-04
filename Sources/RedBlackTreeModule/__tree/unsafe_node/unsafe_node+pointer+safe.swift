@@ -16,9 +16,9 @@
 //===----------------------------------------------------------------------===//
 
 /// ポインタ操作でいちいちsealingしたくない場合に使う
-public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
+public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
 
-extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SafePtrError {
+extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
   /// ポインタが変化した場合に用いる
   ///
   /// 重ねてsealしないこと
@@ -26,7 +26,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   var seal: _SealedPtr { flatMap { $0.sealed } }
 }
 
-public typealias _SealedPtr = Result<_NodePtrSealing, SafePtrError>
+public typealias _SealedPtr = Result<_NodePtrSealing, SealError>
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
@@ -45,12 +45,12 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 }
 
-extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
+extension Result where Success == _NodePtrSealing, Failure == SealError {
   @inlinable @inline(__always)
   var purified: Result { flatMap { $0.purified } }
 }
 
-public enum SafePtrError: Error {
+public enum SealError: Error {
   /// nullptrが生じた
   case null
   /// 回収された
@@ -85,20 +85,20 @@ public enum SafePtrError: Error {
   case upperOutOfBounds
 }
 
-extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
+extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @inlinable
-  var unchecked_pointer: Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError> {
+  var unchecked_pointer: Result<UnsafeMutablePointer<UnsafeNode>, SealError> {
     map { $0.pointer }
   }
 
   @inlinable
-  var unchecked_trackingTag: Result<TaggedSeal, SafePtrError> {
+  var unchecked_trackingTag: Result<TaggedSeal, SealError> {
     map { $0.tag }
   }
 }
 
-extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
+extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @usableFromInline
   internal var isValid: Bool {
@@ -145,7 +145,7 @@ extension Result where Success == _NodePtrSealing, Failure == SafePtrError {
   }
 }
 
-extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SafePtrError {
+extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
 
   @usableFromInline
   internal var isValid: Bool {

@@ -80,9 +80,9 @@ extension TagSeal_: RawRepresentable {
   }
 }
 
-public typealias TaggedSeal = Result<TagSeal_, SafePtrError>
+public typealias TaggedSeal = Result<TagSeal_, SealError>
 
-extension Result where Success == TagSeal_, Failure == SafePtrError {
+extension Result where Success == TagSeal_, Failure == SealError {
   // タグをsalt付きに移行する場合、タグの生成は木だけが行うよう準備する必要がある
   // 競プロ用としてはsaltなしでいい。一般用として必要かどうかの判断となっていく
 
@@ -122,7 +122,7 @@ extension Result where Success == TagSeal_, Failure == SafePtrError {
 }
 
 #if DEBUG
-  extension Result where Success == TagSeal_, Failure == SafePtrError {
+  extension Result where Success == TagSeal_, Failure == SealError {
     
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 

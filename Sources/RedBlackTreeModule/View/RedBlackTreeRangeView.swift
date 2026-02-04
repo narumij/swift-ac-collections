@@ -325,7 +325,7 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  public subscript(result tag: Index) -> Result<Element, SafePtrError> {
+  public subscript(result tag: Index) -> Result<Element, SealError> {
     tag.relative(to: __tree_)
       .map { $0.pointer }
       .map { $0.__value_().pointee }

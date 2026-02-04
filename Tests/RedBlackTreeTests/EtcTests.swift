@@ -429,7 +429,7 @@ final class EtcTests: RedBlackTreeTestCase {
     func testRev() throws {
       let a = RedBlackTreeSet<Int>([0, 1, 2])
       var result = [Int]()
-      a.__tree_.___rev_for_each_(__p: a.startIndex.rawValue, __l: a.endIndex.rawValue) { p in
+      a.__tree_.___rev_for_each_(__p: a.startIndex.sealed, __l: a.endIndex.sealed) { p in
         result.append(p.index)
       }
       XCTAssertEqual(result, [2, 1, 0])

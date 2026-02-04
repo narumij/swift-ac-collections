@@ -70,11 +70,11 @@ extension UnsafeTreeSealedRangeExpression {
 extension UnsafeTreeSealedRangeExpression {
 
   func _start(_ tied: _TiedRawBuffer) -> _SealedPtr {
-    tied.begin_ptr.map { success($0.pointee) } ?? .failure(.null)
+    tied.begin_ptr.map { $0.pointee.sealed } ?? .failure(.null)
   }
 
   func _end(_ tied: _TiedRawBuffer) -> _SealedPtr {
-    tied.end_ptr.map { success($0) } ?? .failure(.null)
+    tied.end_ptr.map { $0.sealed } ?? .failure(.null)
   }
 
   // TODO: FIXME

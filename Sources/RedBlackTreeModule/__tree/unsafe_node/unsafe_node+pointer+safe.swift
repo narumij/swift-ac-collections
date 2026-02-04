@@ -61,13 +61,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 }
 
-@inlinable
-@inline(__always)
-func success(_ p: UnsafeMutablePointer<UnsafeNode>) -> _SealedPtr {
-  assert(!p.___is_garbaged)
-  return .success(.uncheckedSeal(p))
-}
-
 public enum SafePtrError: Error {
   /// nullptrが生じた
   case null

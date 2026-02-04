@@ -30,19 +30,19 @@ extension RedBlackTreeBoundExpression {
     switch self {
 
     case .start:
-      return success(__tree_.__begin_node_)
+      return __tree_.__begin_node_.sealed
 
     case .end:
-      return success(__tree_.__end_node)
+      return __tree_.__end_node.sealed
 
     case .lower(let __v):
-      return success(__tree_.lower_bound(__v))
+      return __tree_.lower_bound(__v).sealed
 
     case .upper(let __v):
-      return success(__tree_.upper_bound(__v))
+      return __tree_.upper_bound(__v).sealed
 
     case .find(let __v):
-      return success(__tree_.find(__v))
+      return __tree_.find(__v).sealed
 
     case .advanced(let __self, by: let offset):
       let __p = __self.relative(to: __tree_)
@@ -103,8 +103,8 @@ extension RedBlackTreeBoundRangeExpression {
         : __tree_.__equal_range_unique(__v)
 
       return .range(
-        from: success(lower),
-        to: success(upper))
+        from: lower.sealed,
+        to: upper.sealed)
     }
   }
 

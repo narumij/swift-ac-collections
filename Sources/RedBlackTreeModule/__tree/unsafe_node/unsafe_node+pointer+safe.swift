@@ -15,6 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+/// ポインタ操作でいちいちsealingしたくない場合に使う
 public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SafePtrError>
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SafePtrError {

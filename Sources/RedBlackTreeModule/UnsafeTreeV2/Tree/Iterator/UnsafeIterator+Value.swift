@@ -32,6 +32,7 @@ extension UnsafeIterator {
 
     public var _source: Source
 
+    @usableFromInline
     internal init(source: Source) {
       self._source = source
     }

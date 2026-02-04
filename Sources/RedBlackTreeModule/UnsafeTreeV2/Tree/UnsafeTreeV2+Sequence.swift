@@ -277,6 +277,6 @@ extension UnsafeTreeV2 {
     unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
     -> UnsafeIterator._Payload<Base, UnsafeIterator._Obverse>
   {
-    .init(Base.self, _start: __first.sealed, _end: __last.sealed)
+    .init(source: .init(__first: __first, __last: __last))
   }
 }

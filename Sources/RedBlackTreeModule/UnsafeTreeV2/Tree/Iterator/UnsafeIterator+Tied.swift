@@ -32,15 +32,15 @@ extension UnsafeIterator {
 
     @usableFromInline
     init(
-      start: _NodePtr,
-      end: _NodePtr,
+      start: _SealedPtr,
+      end: _SealedPtr,
       tie: _TiedRawBuffer
     ) {
       self.init(
         _source: .init(
           Source.Base.self,
-          _start: start.sealed,
-          _end: end.sealed),
+          _start: start,
+          _end: end),
         tie: tie)
     }
 
@@ -133,28 +133,28 @@ where
     @inlinable
     @inline(__always)
     public func keys() -> UnsafeIterator.KeyReverse<Base> {
-      .init(start: source._start, end: source._end, tie: tied)
+      .init(start: source._start.sealed, end: source._end.sealed, tie: tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public func values() -> UnsafeIterator.MappedValueReverse<Base> {
-      .init(start: source._start, end: source._end, tie: tied)
+      .init(start: source._start.sealed, end: source._end.sealed, tie: tied)
     }
   #else
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var keys: UnsafeIterator.KeyReverse<Base> {
-      .init(start: source._start, end: source._end, tie: tied)
+      .init(start: source._start.sealed, end: source._end.sealed, tie: tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var values: UnsafeIterator.MappedValueReverse<Base> {
-      .init(start: source._start, end: source._end, tie: tied)
+      .init(start: source._start.sealed, end: source._end.sealed, tie: tied)
     }
   #endif
 }

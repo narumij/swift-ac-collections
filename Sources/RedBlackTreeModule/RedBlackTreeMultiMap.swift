@@ -218,7 +218,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public func values(forKey key: Key) -> Values {
     let (lo, hi) = __tree_.__equal_range_multi(key)
-    return .init(start: lo, end: hi, tie: __tree_.tied)
+    return .init(start: lo.sealed, end: hi.sealed, tie: __tree_.tied)
   }
 }
 
@@ -808,14 +808,14 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public var keys: Keys {
-      .init(start: __tree_.__begin_node_, end: __tree_.__end_node, tie: __tree_.tied)
+      .init(start: __tree_.__begin_node_.sealed, end: __tree_.__end_node.sealed, tie: __tree_.tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var values: Values {
-      .init(start: __tree_.__begin_node_, end: __tree_.__end_node, tie: __tree_.tied)
+      .init(start: __tree_.__begin_node_.sealed, end: __tree_.__end_node.sealed, tie: __tree_.tied)
     }
   #endif
 }

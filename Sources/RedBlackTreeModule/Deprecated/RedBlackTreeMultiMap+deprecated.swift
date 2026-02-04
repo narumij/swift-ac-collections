@@ -22,7 +22,7 @@
     @inlinable
     @inline(__always)
     public func values() -> Values {
-      .init(start: __tree_.__begin_node_, end: __tree_.__end_node, tie: __tree_.tied)
+      .init(start: __tree_.__begin_node_.sealed, end: __tree_.__end_node.sealed, tie: __tree_.tied)
     }
   }
 

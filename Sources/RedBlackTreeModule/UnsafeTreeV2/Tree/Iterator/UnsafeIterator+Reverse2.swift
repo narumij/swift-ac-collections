@@ -28,20 +28,19 @@ extension UnsafeIterator {
     @inlinable
     @inline(__always)
     public init(_start: _SealedPtr, _end: _SealedPtr) {
-      self._safe_start = _start
-      self._safe_end = _end
-      self._safe_current = _end
+      self._sealed_start = _start
+      self._sealed_end = _end
+      self._sealed_current = _end
     }
 
-    @usableFromInline
-    var _safe_start, _safe_end, _safe_current: _SealedPtr
+    public var _sealed_start, _sealed_end, _sealed_current: _SealedPtr
 
     public mutating func next() -> _NodePtr? {
       
-      let _purified_current = _safe_current.purified
+      let _purified_current = _sealed_current.purified
       
       // 範囲 start が壊れてたらオコ！
-      guard let start = try? _safe_start.purified.get() else {
+      guard let start = try? _sealed_start.purified.get() else {
         fatalError(.invalidIndex)
       }
 
@@ -53,10 +52,10 @@ extension UnsafeIterator {
       // start に到達（exclusive）なら終了
       guard cur != start else { return nil }
       
-      _safe_current = _purified_current.flatMap { ___tree_prev_iter($0.pointer) }.seal
+      _sealed_current = _purified_current.flatMap { ___tree_prev_iter($0.pointer) }.seal
       
       // prev の結果が壊れてたらオコ！（end→start の途中で壊れた）
-      guard let p = try? _safe_current.get() else {
+      guard let p = try? _sealed_current.get() else {
         fatalError(.invalidIndex)
       }
       
@@ -64,11 +63,11 @@ extension UnsafeIterator {
     }
 
     public var _start: _NodePtr {
-      try! _safe_start.get().pointer
+      try! _sealed_start.get().pointer
     }
 
     public var _end: _NodePtr {
-      try! _safe_end.get().pointer
+      try! _sealed_end.get().pointer
     }
   }
 }

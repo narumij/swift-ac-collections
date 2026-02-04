@@ -37,6 +37,14 @@ extension UnsafeIterator {
     public var _end: UnsafeMutablePointer<UnsafeNode> {
       source._end
     }
+    
+    public var _sealed_start: _SealedPtr {
+      source._sealed_start
+    }
+
+    public var _sealed_end: _SealedPtr {
+      source._sealed_end
+    }
 
     var __current: Source.Element?
 

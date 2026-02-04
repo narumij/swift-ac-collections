@@ -28,20 +28,19 @@ extension UnsafeIterator {
     @inlinable
     @inline(__always)
     public init(_start: _SealedPtr, _end: _SealedPtr) {
-      self._safe_start = _start
-      self._safe_end = _end
-      self._safe_current = _start
+      self._sealed_start = _start
+      self._sealed_end = _end
+      self._sealed_current = _start
     }
 
-    @usableFromInline
-    var _safe_start, _safe_end, _safe_current: _SealedPtr
+    public var _sealed_start, _sealed_end, _sealed_current: _SealedPtr
 
     public mutating func next() -> _NodePtr? {
       
-      let _purified_current = _safe_current.purified
+      let _purified_current = _sealed_current.purified
       
       // 範囲終端が壊れてたらオコ！
-      guard let _end = try? _safe_end.purified.get() else {
+      guard let _end = try? _sealed_end.purified.get() else {
         fatalError(.invalidIndex)
       }
 
@@ -53,23 +52,23 @@ extension UnsafeIterator {
       // 終端に到達
       guard _p != _end else { return nil }
       
-      _safe_current = _purified_current.flatMap { ___tree_next_iter($0.pointer) }.seal
+      _sealed_current = _purified_current.flatMap { ___tree_next_iter($0.pointer) }.seal
       
       return _p.pointer
     }
 
     public var _start: _NodePtr {
-      try! _safe_start.get().pointer
+      try! _sealed_start.get().pointer
     }
 
     public var _end: _NodePtr {
-      try! _safe_end.get().pointer
+      try! _sealed_end.get().pointer
     }
     
     public typealias Reversed = _Reverse2
 
     public func reversed() -> UnsafeIterator._Reverse2 {
-      .init(_start: _safe_start, _end: _safe_end)
+      .init(_start: _sealed_start, _end: _sealed_end)
     }
   }
 }

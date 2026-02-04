@@ -31,6 +31,8 @@ public protocol UnsafeIteratorProtocol: _UnsafeNodePtrType, IteratorProtocol {
   init(_start: _SealedPtr, _end: _SealedPtr)
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
+  var _sealed_start: _SealedPtr { get }
+  var _sealed_end: _SealedPtr { get }
 }
 
 public protocol UnsafeAssosiatedIterator: _UnsafeNodePtrType, IteratorProtocol {

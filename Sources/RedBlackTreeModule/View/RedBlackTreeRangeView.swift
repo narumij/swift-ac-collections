@@ -35,13 +35,25 @@ where Base: ___TreeBase {
 
 extension RedBlackTreeKeyOnlyRangeView {
 
+//  @usableFromInline
+//  var _range: (_NodePtr, _NodePtr) {
+//    guard
+//      let _start = __tree_.resolve(startIndex).pointer,
+//      let _end = __tree_.resolve(endIndex).pointer
+//    else {
+//      return (__tree_.__end_node, __tree_.__end_node)
+//    }
+//    return (_start, _end)
+//  }
+  
   @usableFromInline
-  var _range: (_NodePtr, _NodePtr) {
+  var _range: (_SealedPtr, _SealedPtr) {
+    let _start = __tree_.resolve(startIndex)
+    let _end = __tree_.resolve(endIndex)
     guard
-      let _start = __tree_.resolve(startIndex).pointer,
-      let _end = __tree_.resolve(endIndex).pointer
+      _start.isValid, _end.isValid
     else {
-      return (__tree_.__end_node, __tree_.__end_node)
+      return (__tree_.__end_node.sealed, __tree_.__end_node.sealed)
     }
     return (_start, _end)
   }
@@ -56,7 +68,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inline(__always)
   public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Base> {
     let (_start, _end) = _range
-    return .init(start: _start.sealed, end: _end.sealed, tie: __tree_.tied)
+    return .init(start: _start, end: _end, tie: __tree_.tied)
   }
 
   /// - Complexity: O(`count`)
@@ -64,7 +76,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inline(__always)
   public __consuming func sorted() -> [Element] {
     let (_start, _end) = _range
-    return __tree_.___copy_to_array(_start, _end)
+    return __tree_.___copy_to_array(_start.pointer!, _end.pointer!)
   }
 
   /// - Complexity: O(`count`)
@@ -72,7 +84,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inline(__always)
   public __consuming func reversed() -> [Element] {
     let (_start, _end) = _range
-    return __tree_.___rev_copy_to_array(_start, _end)
+    return __tree_.___rev_copy_to_array(_start.pointer!, _end.pointer!)
   }
 }
 
@@ -105,7 +117,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inline(__always)
   public var count: Int {
     let (l, u) = _range
-    return (try? ___safe_distance(l, u).get()) ?? 0
+    return (try? ___safe_distance(l.pointer!, u.pointer!).get()) ?? 0
   }
 }
 
@@ -129,7 +141,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   public var first: Element? {
     let (_start, _end) = _range
     guard _start != _end else { return nil }
-    return __tree_[_start]
+    return __tree_[_start.pointer!]
   }
 
   @inlinable
@@ -137,7 +149,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   public var last: Element? {
     let (_start, _end) = _range
     guard _start != _end else { return nil }
-    return __tree_[__tree_prev_iter(_end)]
+    return __tree_[__tree_prev_iter(_end.pointer!)]
   }
 }
 
@@ -149,7 +161,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     __tree_.ensureUnique()
     let (_start, _end) = _range
     guard _start != _end else { return nil }
-    let (_p, _r) = _unchecked_remove(at: _start)
+    let (_p, _r) = _unchecked_remove(at: _start.pointer!)
     startIndex = .create(_p)
     return _r
   }
@@ -160,7 +172,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     __tree_.ensureUnique()
     let (_start, _end) = _range
     guard _start != _end else { return nil }
-    return _unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
+    return _unchecked_remove(at: __tree_.__tree_prev_iter(_end.pointer!)).payload
   }
 
   @inlinable
@@ -169,7 +181,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     __tree_.ensureUnique()
     let (_start, _end) = _range
     guard _start != _end else { fatalError(.emptyFirst) }
-    let (_p, _r) = _unchecked_remove(at: _start)
+    let (_p, _r) = _unchecked_remove(at: _start.pointer!)
     startIndex = .create(_p)
     return _r
   }
@@ -180,21 +192,21 @@ extension RedBlackTreeKeyOnlyRangeView {
     __tree_.ensureUnique()
     let (_start, _end) = _range
     guard _start != _end else { fatalError(.emptyLast) }
-    return _unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
+    return _unchecked_remove(at: __tree_.__tree_prev_iter(_end.pointer!)).payload
   }
 
   @inlinable
   public mutating func removeAll() {
     __tree_.ensureUnique()
     let (_start, _end) = _range
-    __tree_.___checking_erase(_start, _end)
+    __tree_.___checking_erase(_start.pointer!, _end.pointer!)
   }
 
   @inlinable
   public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     __tree_.ensureUnique()
     let (_start, _end) = _range
-    try __tree_.___checking_erase_if(_start, _end, shouldBeRemoved: shouldBeRemoved)
+    try __tree_.___checking_erase_if(_start.pointer!, _end.pointer!, shouldBeRemoved: shouldBeRemoved)
   }
 }
 
@@ -208,7 +220,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
     let (_start, _end) = _range
-    return try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
+    return try __tree_.elementsEqual(_start.pointer!, _end.pointer!, other, by: areEquivalent)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -219,7 +231,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
     let (_start, _end) = _range
-    return try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
+    return try __tree_.lexicographicallyPrecedes(_start.pointer!, _end.pointer!, other, by: areInIncreasingOrder)
   }
 }
 
@@ -290,7 +302,7 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {
     let (_start, _end) = _range
-    return .init(_start: _start.sealed, _end: _end.sealed)
+    return .init(_start: _start, _end: _end)
   }
 }
 
@@ -434,7 +446,7 @@ extension RedBlackTreeKeyOnlyRangeView {
         return false
       }
       let (_start, _end) = _range
-      return __tree_.___ptr_closed_range_contains(_start, _end, i)
+      return __tree_.___ptr_closed_range_contains(_start.pointer!, _end.pointer!, i)
     }
   }
 #endif

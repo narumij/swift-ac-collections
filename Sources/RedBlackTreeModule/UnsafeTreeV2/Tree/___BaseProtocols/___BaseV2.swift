@@ -95,11 +95,24 @@ protocol UnsafeTreeRangeBaseInterface: UnsafeTreeHost {
   var _end: _NodePtr { get }
 }
 
+@usableFromInline
+protocol UnsafeTreeSealedRangeBaseInterface: UnsafeTreeHost {
+  var _sealed_start: _SealedPtr { get }
+  var _sealed_end: _SealedPtr { get }
+}
+
 /// 変更可能区間指定メンバー
 @usableFromInline
 protocol UnsafeMutableTreeRangeBaseInterface: UnsafeMutableTreeHost {
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
+}
+
+/// 変更可能区間指定メンバー
+@usableFromInline
+protocol UnsafeMutableTreeSealedRangeBaseInterface: UnsafeMutableTreeHost {
+  var _sealed_start: _SealedPtr { get }
+  var _sealed_end: _SealedPtr { get }
 }
 
 @usableFromInline

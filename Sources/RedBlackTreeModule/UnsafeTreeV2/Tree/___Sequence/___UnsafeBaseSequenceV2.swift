@@ -56,6 +56,19 @@ extension ___UnsafeBaseSequenceV2__ {
   package var _end: _NodePtr {
     __tree_.__end_node
   }
+  
+  @inlinable
+  @inline(__always)
+  package var _sealed_start: _SealedPtr {
+    __tree_.__begin_node_.sealed
+  }
+
+  @inlinable
+  @inline(__always)
+  package var _sealed_end: _SealedPtr {
+    __tree_.__end_node.sealed
+  }
+
 
   @inlinable
   @inline(__always)

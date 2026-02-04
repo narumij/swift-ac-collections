@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyOnlySequenceV2__: UnsafeTreeRangeBaseInterface, _ScalarBase_ElementProtocol,
+protocol ___UnsafeKeyOnlySequenceV2__: UnsafeTreeSealedRangeBaseInterface, _ScalarBase_ElementProtocol,
   _PayloadValueBride, _KeyBride
 where
   Base: ___TreeIndex
@@ -32,13 +32,13 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _makeIterator() -> Tree._PayloadValues {
-    .init(start: _start.sealed, end: _end.sealed, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
 
   @inlinable
   @inline(__always)
   internal func _reversed() -> Tree._PayloadValues.Reversed {
-    .init(start: _start.sealed, end: _end.sealed, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
 }
 
@@ -47,7 +47,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _forEach(_ body: (_PayloadValue) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
+    try __tree_.___for_each_(__p: _sealed_start.pointer!, __l: _sealed_end.pointer!) {
       try body(__tree_[$0])
     }
   }
@@ -59,7 +59,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _sorted() -> [_PayloadValue] {
-    __tree_.___copy_to_array(_start, _end)
+    __tree_.___copy_to_array(_sealed_start.pointer!, _sealed_end.pointer!)
   }
 }
 
@@ -112,7 +112,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   internal func _elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (_PayloadValue, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
-    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
+    try __tree_.elementsEqual(_sealed_start.pointer!, _sealed_end.pointer!, other, by: areEquivalent)
   }
 
   // 制約で値の型が一致する必要があり、KeyValue側では標準実装を使っている
@@ -121,7 +121,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   internal func _lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (_PayloadValue, _PayloadValue) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, _PayloadValue == OtherSequence.Element {
-    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
+    try __tree_.lexicographicallyPrecedes(_sealed_start.pointer!, _sealed_end.pointer!, other, by: areInIncreasingOrder)
   }
 }
 
@@ -135,7 +135,7 @@ protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, ___UnsafeInde
     @inlinable
     @inline(__always)
     internal func _forEach(_ body: (Index, _PayloadValue) throws -> Void) rethrows {
-      try __tree_.___for_each_(__p: _start, __l: _end) {
+      try __tree_.___for_each_(__p: _sealed_start.pointer!, __l: _sealed_end.pointer!) {
         try body(___index($0), __tree_[$0])
       }
     }

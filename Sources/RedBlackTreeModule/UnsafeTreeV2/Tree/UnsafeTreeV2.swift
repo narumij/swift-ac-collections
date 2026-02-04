@@ -183,6 +183,6 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func _remap_to_safe_(_ index: Index) -> _SealedPtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-    tied === index.tied ? index.sealed : self.resolve(index.trackingTag).purified
+    tied === index.tied ? index.sealed : self.resolve(index.trackingTag)
   }
 }

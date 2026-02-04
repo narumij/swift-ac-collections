@@ -59,6 +59,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     return .init(start: _start, end: _end, tie: __tree_.tied)
   }
 
+  /// - Complexity: O(`count`)
   @inlinable
   @inline(__always)
   public __consuming func sorted() -> [Element] {
@@ -66,6 +67,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     return __tree_.___copy_to_array(_start, _end)
   }
 
+  /// - Complexity: O(`count`)
   @inlinable
   @inline(__always)
   public __consuming func reversed() -> [Element] {
@@ -89,8 +91,12 @@ where
   Base: BaseInit,
   Base.Tree == UnsafeTreeV2<Base>
 {
-  func unranged() -> Base { Base(__tree_: __tree_) }
+  func unranged() -> Base {
+    Base(__tree_: __tree_)
+  }
 }
+
+// MARK: -
 
 extension RedBlackTreeKeyOnlyRangeView {
 
@@ -190,16 +196,6 @@ extension RedBlackTreeKeyOnlyRangeView {
     let (_start, _end) = _range
     try __tree_.___checking_erase_if(_start, _end, shouldBeRemoved: shouldBeRemoved)
   }
-}
-
-extension RedBlackTreeKeyOnlyRangeView {
-
-  // 不要
-
-  //  @inlinable
-  //  public var isValid: Bool {
-  //    __tree_[startIndex].isValid && __tree_[endIndex].isValid
-  //  }
 }
 
 extension RedBlackTreeKeyOnlyRangeView {

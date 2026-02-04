@@ -41,7 +41,10 @@ where Base: ___TreeBase & ___TreeIndex {
 
   @usableFromInline
   internal var _rawTag: _RawTrackingTag {
-    (try? sealed.map(\.tag).map(\._rawTag).get()) ?? .nullptr
+    // benchmark5で謎のコンパイルエラーが発生する
+    // バグ報告はいったん見送り
+    // (try? sealed.map(\.tag).map(\._rawTag).get()) ?? .nullptr
+    (try? sealed.map(\.pointer.pointee.___tracking_tag).get()) ?? .nullptr
   }
 
   @usableFromInline

@@ -31,7 +31,7 @@ extension UnsafeIterator {
     }
     
     public init(_ t: Base.Type, _start: _NodePtr, _end: _NodePtr) {
-      self.init(source: .init(_start: _start, _end: _end))
+      self.init(source: .init(_start: _start.sealed, _end: _end.sealed))
     }
 
     public var _source: Source

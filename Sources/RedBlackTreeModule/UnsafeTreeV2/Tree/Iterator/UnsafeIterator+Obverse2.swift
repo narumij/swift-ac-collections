@@ -33,12 +33,6 @@ extension UnsafeIterator {
       self._safe_current = _start
     }
 
-    @inlinable
-    @inline(__always)
-    public init(_start: _NodePtr, _end: _NodePtr) {
-      self.init(_start: _start.sealed, _end: _end.sealed)
-    }
-
     @usableFromInline
     var _safe_start, _safe_end, _safe_current: _SealedPtr
 
@@ -75,7 +69,7 @@ extension UnsafeIterator {
     public typealias Reversed = _Reverse2
 
     public func reversed() -> UnsafeIterator._Reverse2 {
-      .init(_start: _start, _end: _end)
+      .init(_start: _safe_start, _end: _safe_end)
     }
   }
 }

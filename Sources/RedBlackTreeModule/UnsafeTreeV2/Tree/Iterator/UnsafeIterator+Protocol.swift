@@ -29,7 +29,6 @@ public protocol ReverseIterator: IteratorProtocol {}
 
 public protocol UnsafeIteratorProtocol: _UnsafeNodePtrType, IteratorProtocol {
   init(_start: _SealedPtr, _end: _SealedPtr)
-  init(_start: _NodePtr, _end: _NodePtr)
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }

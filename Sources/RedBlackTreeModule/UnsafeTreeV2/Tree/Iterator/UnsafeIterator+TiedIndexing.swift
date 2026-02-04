@@ -41,8 +41,8 @@ extension UnsafeIterator {
     ) where Source: UnsafeIteratorProtocol {
       self.init(
         _source: .init(
-          _start: start,
-          _end: end),
+          _start: start.sealed,
+          _end: end.sealed),
         tie: tie)
     }
 

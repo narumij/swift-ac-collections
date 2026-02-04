@@ -66,18 +66,8 @@ extension UnsafeIterator {
 
 extension UnsafeIterator._Obverse {
 
-  @inlinable
-  @inline(__always)
   public init(_start: _SealedPtr, _end: _SealedPtr) {
-    self.init(_start: _start.pointer!, _end: _end.pointer!)
-  }
-
-  @inlinable
-  @inline(__always)
-  public init(
-    _start: _NodePtr, _end: _NodePtr
-  ) {
-    self.init(__first: _start, __last: _end)
+    self.init(__first: _start.pointer!, __last: _end.pointer!)
   }
 }
 

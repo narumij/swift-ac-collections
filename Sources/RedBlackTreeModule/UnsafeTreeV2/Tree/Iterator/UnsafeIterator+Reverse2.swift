@@ -33,12 +33,6 @@ extension UnsafeIterator {
       self._safe_current = _end
     }
 
-    @inlinable
-    @inline(__always)
-    public init(_start: _NodePtr, _end: _NodePtr) {
-      self.init(_start: _start.sealed, _end: _end.sealed)
-    }
-
     @usableFromInline
     var _safe_start, _safe_end, _safe_current: _SealedPtr
 

@@ -512,8 +512,8 @@ extension RedBlackTreeMultiSet {
     public func sequence(from start: Element, to end: Element) -> SubSequence {
       .init(
         tree: __tree_,
-        start: __tree_.lower_bound(start),
-        end: __tree_.lower_bound(end))
+        start: __tree_.lower_bound(start).sealed,
+        end: __tree_.lower_bound(end).sealed)
     }
 
     /// 値レンジ `[start, end]` に含まれる要素のスライス
@@ -522,8 +522,8 @@ extension RedBlackTreeMultiSet {
     public func sequence(from start: Element, through end: Element) -> SubSequence {
       .init(
         tree: __tree_,
-        start: __tree_.lower_bound(start),
-        end: __tree_.upper_bound(end))
+        start: __tree_.lower_bound(start).sealed,
+        end: __tree_.upper_bound(end).sealed)
     }
   }
 #endif

@@ -147,7 +147,7 @@ extension UnsafeIndicesProtoocl {
   @inlinable
   @inline(__always)
   internal var _indices: Indices {
-    .init(start: _start, end: _end, tie: __tree_.tied)
+    .init(start: _start.sealed, end: _end.sealed, tie: __tree_.tied)
   }
 }
 

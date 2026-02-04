@@ -50,10 +50,10 @@ extension RedBlackTreeSliceV2 {
 
     @inlinable
     @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+    internal init(tree: Tree, start: _SealedPtr, end: _SealedPtr) {
       __tree_ = tree
-      _sealed_start = start.sealed
-      _sealed_end = end.sealed
+      _sealed_start = start
+      _sealed_end = end
     }
   }
 }

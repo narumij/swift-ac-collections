@@ -278,6 +278,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     return !___is_null && !___is_garbaged
   }
   
+  @available(*, deprecated)
   @usableFromInline
   var checked: UnsafeMutablePointer {
     guard isValid else {
@@ -286,6 +287,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     return self
   }
   
+  @available(*, deprecated)
   @usableFromInline
   var next_checked: UnsafeMutablePointer {
     guard isValid, !___is_end else {

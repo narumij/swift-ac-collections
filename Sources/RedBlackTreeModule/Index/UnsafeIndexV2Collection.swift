@@ -34,9 +34,9 @@ public
   public typealias Reversed = UnsafeIterator.IndexReverse<Base>
 
   @usableFromInline
-  internal init(start: _NodePtr, end: _NodePtr, tie: _TiedRawBuffer) {
-    self._sealed_start = start.sealed
-    self._sealed_end = end.sealed
+  internal init(start: _SealedPtr, end: _SealedPtr, tie: _TiedRawBuffer) {
+    self._sealed_start = start
+    self._sealed_end = end
     self.tied = tie
   }
 
@@ -50,12 +50,12 @@ public
 }
 
 extension UnsafeIndexV2Collection {
-  
+
   @usableFromInline
   var _start: _NodePtr {
     _sealed_start.pointer!
   }
-  
+
   @usableFromInline
   var _end: _NodePtr {
     _sealed_end.pointer!
@@ -104,7 +104,7 @@ extension UnsafeIndexV2Collection {
 
   #if !COMPATIBLE_ATCODER_2025
     public subscript(bounds: UnsafeIndexV2RangeExpression<Base>) -> UnsafeIndexV2Collection {
-      let (lower, upper) = unwrapLowerUpperOrFatal(bounds.rawRange.relative(to: tied))
+      let (lower, upper) = bounds.rawRange.relative(to: tied)
       return .init(start: lower, end: upper, tie: tied)
     }
   #endif

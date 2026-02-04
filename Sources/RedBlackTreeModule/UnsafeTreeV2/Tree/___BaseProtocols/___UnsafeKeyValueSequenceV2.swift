@@ -167,7 +167,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
   public func ___subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
     -> RedBlackTreeSliceV2<Base>.KeyValue
   {
-    let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
+    let (lower, upper) = rawRange.relative(to: __tree_)
     guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
       fatalError(.invalidIndex)
     }
@@ -178,7 +178,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
   public func ___unchecked_subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
     -> RedBlackTreeSliceV2<Base>.KeyValue
   {
-    let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
+    let (lower, upper) = rawRange.relative(to: __tree_)
     return .init(tree: __tree_, start: lower, end: upper)
   }
 }

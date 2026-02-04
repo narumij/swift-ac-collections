@@ -35,11 +35,25 @@ extension UnsafeTreeV2 {
     }
 
     guard
-      // lower <= upper は、upper > lowerなので
-      !___ptr_comp(upper, lower)
+      lower == upper || ___ptr_comp(lower, upper)
     else {
       return false
-//      fatalError(.outOfRange)
+    }
+
+    return true
+  }
+  
+  @inlinable
+  func isValidRawRange(lower: _SealedPtr, upper: _SealedPtr) -> Bool {
+
+    guard let lower = lower.pointer, let upper = upper.pointer else {
+      return false
+    }
+
+    guard
+      lower == upper || ___ptr_comp(lower, upper)
+    else {
+      return false
     }
 
     return true
@@ -52,5 +66,14 @@ extension UnsafeTreeV2 {
   func rangeSanitize(_ tuple: (lower: _NodePtr, upper: _NodePtr)) -> (_NodePtr,_NodePtr) {
     let (lower, upper) = tuple
     return !___ptr_comp(upper, lower) ? (lower, upper) : (__end_node,__end_node)
+  }
+  
+  @inlinable
+  func rangeSanitize(_ tuple: (lower: _SealedPtr, upper: _SealedPtr)) -> (_SealedPtr,_SealedPtr) {
+    let (lower, upper) = tuple
+    guard let l = lower.pointer, let u = upper.pointer else {
+      return (__end_node.sealed, __end_node.sealed)
+    }
+    return !___ptr_comp(u, l) ? (lower, upper) : (__end_node.sealed,__end_node.sealed)
   }
 }

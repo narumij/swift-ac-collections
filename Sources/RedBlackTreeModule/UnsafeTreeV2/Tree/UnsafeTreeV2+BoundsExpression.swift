@@ -123,4 +123,17 @@ extension RedBlackTreeBoundRangeExpression {
         .relative(to: __tree_))
       ?? (__tree_.__end_node, __tree_.__end_node)
   }
+
+  @usableFromInline
+  func __relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> (
+      _SealedPtr,
+      _SealedPtr
+    )
+  where
+    Base: ___TreeBase,
+    Base._Key == _Key
+  {
+    relative(to: __tree_).relative(to: __tree_)
+  }
 }

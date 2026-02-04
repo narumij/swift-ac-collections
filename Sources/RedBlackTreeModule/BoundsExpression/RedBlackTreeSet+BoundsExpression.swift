@@ -73,11 +73,11 @@
       -> RedBlackTreeKeyOnlyRangeView<Self>
     {
       @inline(__always) get {
-        let (lower, upper) = __tree_.rangeSanitize(bounds.relative(to: __tree_))
+        let (lower, upper) = __tree_.rangeSanitize(bounds.__relative(to: __tree_))
         return .init(__tree_: __tree_, _start: lower, _end: upper)
       }
       @inline(__always) _modify {
-        let (lower, upper) = __tree_.rangeSanitize(bounds.relative(to: __tree_))
+        let (lower, upper) = __tree_.rangeSanitize(bounds.__relative(to: __tree_))
         var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
         self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
         defer { self = RedBlackTreeSet(__tree_: view.__tree_) }

@@ -34,12 +34,12 @@
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      .init(__tree_: __tree_, _start: _start, _end: _end)
+      .init(__tree_: __tree_, _start: _sealed_start, _end: _sealed_end)
     }
     
     @inlinable
     public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds.__relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
@@ -89,8 +89,8 @@
       // APIはstride関数とsequence関数を参考にした
       .init(
         __tree_: __tree_,
-        _start: __tree_.lower_bound(start),
-        _end: __tree_.lower_bound(end))
+        _start: __tree_.lower_bound(start).sealed,
+        _end: __tree_.lower_bound(end).sealed)
     }
 
     /// 値レンジ `[start, end]` に含まれる要素のスライス
@@ -101,8 +101,8 @@
       // APIはstride関数とsequence関数を参考にした
       .init(
         __tree_: __tree_,
-        _start: __tree_.lower_bound(start),
-        _end: __tree_.upper_bound(end))
+        _start: __tree_.lower_bound(start).sealed,
+        _end: __tree_.upper_bound(end).sealed)
     }
   }
 #endif

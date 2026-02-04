@@ -34,10 +34,28 @@ public enum TagSeal_: Equatable {
       case .tag(raw: let rag, seal: _): rag
       }
     }
+    
+    @usableFromInline
+    var check: Bool {
+      switch self {
+      case .end: true
+      case .tag(raw: let r, seal: _): !___is_null_or_end(r)
+      }
+    }
   }
 #endif
 
 extension TagSeal_: RawRepresentable {
+  
+  @inlinable
+  static func create(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> Self {
+    switch raw {
+    case .end: return .end
+    case 0...: return .tag(raw: raw, seal: seal)
+    default:
+      fatalError(.invalidIndex)
+    }
+  }
 
   @inlinable
   public init?(rawValue value: (raw: _RawTrackingTag, seal: UnsafeNode.Seal)) {
@@ -105,7 +123,7 @@ extension Result where Success == TagSeal_, Failure == SafePtrError {
 
 #if DEBUG
   extension Result where Success == TagSeal_, Failure == SafePtrError {
-
+    
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     @usableFromInline
@@ -133,6 +151,15 @@ extension Result where Success == TagSeal_, Failure == SafePtrError {
       }
       return .success(.tag(raw: rawTag, seal: 0))
     }
+    
+    @usableFromInline
+    var check: Bool {
+      switch self {
+      case .failure: true
+      case .success(let t): t.check
+      }
+    }
+
   }
 #endif
 
@@ -231,4 +258,15 @@ extension TrackingTagRangeExpression {
         .relative(to: __tree_))
       ?? (__tree_.__end_node, __tree_.__end_node)
   }
+  
+  @usableFromInline
+  func __relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> (_SealedPtr, _SealedPtr)
+  where
+    Base: ___TreeBase
+  {
+      relative(to: __tree_)
+        .relative(to: __tree_)
+  }
+
 }

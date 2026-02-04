@@ -9,10 +9,12 @@ public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost
     & _ScalarBase_ElementProtocol, BidirectionalSequence
 where Base: ___TreeBase {
   @usableFromInline
-  internal init(__tree_: UnsafeTreeV2<Base>, _start: _NodePtr, _end: _NodePtr) {
+  internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
-    self.startIndex = .create(_start)
-    self.endIndex = .create(_end)
+    self.startIndex = try! _start.unchecked_trackingTag.get()
+    self.endIndex = try! _end.unchecked_trackingTag.get()
+    assert(startIndex.check)
+    assert(endIndex.check)
   }
 
   public typealias Index = TaggedSeal

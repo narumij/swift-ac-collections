@@ -19,7 +19,7 @@
   extension RedBlackTreeDictionary {
 
     public subscript(bounds: RedBlackTreeBoundRangeExpression<Key>) -> SubSequence {
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds.__relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
@@ -27,15 +27,15 @@
     }
 
     public subscript(unchecked bounds: RedBlackTreeBoundRangeExpression<Key>) -> SubSequence {
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds.__relative(to: __tree_)
       return .init(tree: __tree_, start: lower, end: upper)
     }
 
     public func indices(bounds: RedBlackTreeBoundRangeExpression<Key>)
       -> UnsafeIndexV2Collection<Self>
     {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard lower == upper || __tree_.___ptr_comp(lower, upper) else {
+      let (lower, upper) = bounds.__relative(to: __tree_)
+      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       return .init(start: lower, end: upper, tie: __tree_.tied)

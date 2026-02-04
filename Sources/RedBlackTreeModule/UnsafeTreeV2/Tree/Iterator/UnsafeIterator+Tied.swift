@@ -133,28 +133,28 @@ where
     @inlinable
     @inline(__always)
     public func keys() -> UnsafeIterator.KeyReverse<Base> {
-      .init(start: source._start.sealed, end: source._end.sealed, tie: tied)
+      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public func values() -> UnsafeIterator.MappedValueReverse<Base> {
-      .init(start: source._start.sealed, end: source._end.sealed, tie: tied)
+      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
     }
   #else
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var keys: UnsafeIterator.KeyReverse<Base> {
-      .init(start: source._start.sealed, end: source._end.sealed, tie: tied)
+      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var values: UnsafeIterator.MappedValueReverse<Base> {
-      .init(start: source._start.sealed, end: source._end.sealed, tie: tied)
+      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
     }
   #endif
 }

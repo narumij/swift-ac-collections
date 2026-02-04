@@ -845,7 +845,7 @@ extension RedBlackTreeMultiMap {
     @inline(__always)
     public subscript(key: Key) -> Values {
       let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
-      return .init(start: lo, end: hi, tie: __tree_.tied)
+      return .init(start: lo.sealed, end: hi.sealed, tie: __tree_.tied)
     }
   #endif
 }

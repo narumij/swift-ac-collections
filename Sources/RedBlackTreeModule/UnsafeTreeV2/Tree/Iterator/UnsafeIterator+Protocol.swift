@@ -29,8 +29,6 @@ public protocol ReverseIterator: IteratorProtocol {}
 
 public protocol UnsafeIteratorProtocol: _UnsafeNodePtrType, IteratorProtocol {
   init(_start: _SealedPtr, _end: _SealedPtr)
-  var _start: _NodePtr { get }
-  var _end: _NodePtr { get }
   var _sealed_start: _SealedPtr { get }
   var _sealed_end: _SealedPtr { get }
 }
@@ -40,8 +38,6 @@ public protocol UnsafeAssosiatedIterator: _UnsafeNodePtrType, IteratorProtocol {
   associatedtype Source: IteratorProtocol & Sequence
   init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr)
   var _source: Source { get }
-  var _start: _NodePtr { get }
-  var _end: _NodePtr { get }
   var _sealed_start: _SealedPtr { get }
   var _sealed_end: _SealedPtr { get }
 }

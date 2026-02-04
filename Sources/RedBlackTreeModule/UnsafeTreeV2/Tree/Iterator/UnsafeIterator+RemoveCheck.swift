@@ -29,14 +29,6 @@ extension UnsafeIterator {
     public init(_start: _SealedPtr, _end: _SealedPtr) {
       self.init(source: .init(_start: _start, _end: _end))
     }
-
-    public var _start: UnsafeMutablePointer<UnsafeNode> {
-      source._start
-    }
-
-    public var _end: UnsafeMutablePointer<UnsafeNode> {
-      source._end
-    }
     
     public var _sealed_start: _SealedPtr {
       source._sealed_start

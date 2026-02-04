@@ -56,14 +56,6 @@ extension UnsafeIterator {
       
       return _p.pointer
     }
-
-    public var _start: _NodePtr {
-      try! _sealed_start.get().pointer
-    }
-
-    public var _end: _NodePtr {
-      try! _sealed_end.get().pointer
-    }
     
     public typealias Reversed = _Reverse2
 

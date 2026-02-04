@@ -61,14 +61,6 @@ extension UnsafeIterator {
       
       return p.pointer
     }
-
-    public var _start: _NodePtr {
-      try! _sealed_start.get().pointer
-    }
-
-    public var _end: _NodePtr {
-      try! _sealed_end.get().pointer
-    }
   }
 }
 

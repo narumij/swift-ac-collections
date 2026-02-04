@@ -29,6 +29,9 @@ public struct _NodePtrSealing: Equatable {
   @usableFromInline var pointer: _NodePtr
   /// 封印
   @usableFromInline var seal: UnsafeNode.Seal
+  
+  // UnsafeNode.SealはUInt32となっていて、オーバーフローして一周すると、
+  // かたわれどきが生じて同一判定となるが、これは仕様
 
   @inlinable @inline(__always)
   init(_p: _NodePtr) {

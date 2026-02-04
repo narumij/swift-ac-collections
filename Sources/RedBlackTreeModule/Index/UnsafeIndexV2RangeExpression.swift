@@ -15,6 +15,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// TODO: sealed化
+
 @frozen
 public struct UnsafeIndexV2RangeExpression<Base>: UnsafeTreeBinding,
   UnsafeIndexingProtocol

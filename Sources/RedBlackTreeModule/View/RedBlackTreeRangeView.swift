@@ -290,7 +290,7 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {
     let (_start, _end) = _range
-    return .init(_start: _start, _end: _end)
+    return .init(_start: _start.sealed, _end: _end.sealed)
   }
 }
 

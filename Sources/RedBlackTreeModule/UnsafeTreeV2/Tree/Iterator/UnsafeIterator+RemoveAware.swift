@@ -30,10 +30,6 @@ extension UnsafeIterator {
       self.init(source: .init(_start: _start, _end: _end))
     }
 
-    public init(_start: _NodePtr, _end: _NodePtr) {
-      self.init(source: .init(_start: _start.sealed, _end: _end.sealed))
-    }
-
     public var _start: UnsafeMutablePointer<UnsafeNode> {
       source._start
     }

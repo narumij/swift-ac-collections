@@ -37,7 +37,6 @@ public protocol UnsafeAssosiatedIterator: _UnsafeNodePtrType, IteratorProtocol {
   associatedtype Base: ___TreeBase
   associatedtype Source: IteratorProtocol & Sequence
   init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr)
-  init(_ t: Base.Type, _start: _NodePtr, _end: _NodePtr)
   var _source: Source { get }
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }

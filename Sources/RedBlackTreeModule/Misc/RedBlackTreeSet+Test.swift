@@ -40,7 +40,7 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {
-    .init(_start: _start, _end: _end)
+    .init(_start: _start.sealed, _end: _end.sealed)
   }
 }
 

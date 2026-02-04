@@ -39,8 +39,8 @@ extension UnsafeIterator {
       self.init(
         _source: .init(
           Source.Base.self,
-          _start: start,
-          _end: end),
+          _start: start.sealed,
+          _end: end.sealed),
         tie: tie)
     }
 

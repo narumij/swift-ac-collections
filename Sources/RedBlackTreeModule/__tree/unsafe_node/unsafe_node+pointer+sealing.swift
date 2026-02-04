@@ -36,7 +36,7 @@ public struct _NodePtrSealing: Equatable {
   }
 
   @inlinable @inline(__always)
-  init(_p: _NodePtr,_seal: UnsafeNode.Seal) {
+  init(_p: _NodePtr, _seal: UnsafeNode.Seal) {
     pointer = _p
     seal = _seal
   }
@@ -47,7 +47,7 @@ public struct _NodePtrSealing: Equatable {
   }
 
   @inlinable
-  static func uncheckedSeal(_ _p: _NodePtr,_ seal: UnsafeNode.Seal) -> _NodePtrSealing {
+  static func uncheckedSeal(_ _p: _NodePtr, _ seal: UnsafeNode.Seal) -> _NodePtrSealing {
     .init(_p: _p, _seal: seal)
   }
 
@@ -64,14 +64,14 @@ public struct _NodePtrSealing: Equatable {
     // recycle countが不一致となれば転生済みノードであることがわかる.
     pointer.___is_garbaged || pointer.pointee.___recycle_count != seal
   }
-  
+
   /// お清め
   @inlinable @inline(__always)
   var purified: _SealedPtr {
     // validなpointerがendやnullに変化することはない
     isUnsealed ? .failure(.unsealed) : .success(self)
   }
-  
+
   @inlinable @inline(__always)
   var tag: TaggedSeal {
     .init(rawValue: (pointer.pointee.___tracking_tag, seal))

@@ -43,10 +43,10 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   internal var ___is_null: Bool {
     pointee.___tracking_tag == .nullptr
   }
-  
+
   @usableFromInline
   internal var ___is_end: Bool {
-//    assert(__parent_ != .nullptr || pointee.___tracking_tag == .end)
+    //    assert(__parent_ != .nullptr || pointee.___tracking_tag == .end)
     return pointee.___tracking_tag == .end
   }
 
@@ -54,7 +54,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   internal var ___is_root: Bool {
     __parent_.___is_end
   }
-  
+
   @inlinable
   internal var ___is_subscript_null: Bool {
     // 初期化済みチェックでnullptrとendは除外される
@@ -63,7 +63,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     // end -> true
     return ___is_null_or_end || ___is_garbaged
   }
-  
+
   @inlinable
   internal var ___is_next_null: Bool {
     ___is_subscript_null
@@ -73,7 +73,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   internal var ___is_slow_prev_null: Bool {
     return self == .nullptr || ___is_slow_begin || ___is_garbaged
   }
-  
+
   @inlinable
   internal var ___is_offset_null: Bool {
     return self == .nullptr || ___is_garbaged

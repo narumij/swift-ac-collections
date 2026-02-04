@@ -64,6 +64,7 @@ extension TagSeal_: RawRepresentable {
 
 public typealias TaggedSeal = TagSeal_?
 
+// Optionalではなく、Resultがいいかもしれない
 extension Optional where Wrapped == TagSeal_ {
 
   // タグをsalt付きに移行する場合、タグの生成は木だけが行うよう準備する必要がある

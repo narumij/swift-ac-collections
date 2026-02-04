@@ -35,8 +35,8 @@ public
 
   @usableFromInline
   internal init(start: _NodePtr, end: _NodePtr, tie: _TiedRawBuffer) {
-    self._start = start
-    self._end = end
+    self._sealed_start = start.sealed
+    self._sealed_end = end.sealed
     self.tied = tie
   }
 
@@ -46,10 +46,23 @@ public
   public typealias Index = UnsafeIndexV2<Base>
 
   @usableFromInline
-  internal var _start, _end: _NodePtr
+  internal var _sealed_start, _sealed_end: _SealedPtr
 
   @usableFromInline
   internal var tied: _TiedRawBuffer
+}
+
+extension UnsafeIndexV2Collection {
+  
+  @usableFromInline
+  var _start: _NodePtr {
+    _sealed_start.pointer!
+  }
+  
+  @usableFromInline
+  var _end: _NodePtr {
+    _sealed_end.pointer!
+  }
 }
 
 #if COMPATIBLE_ATCODER_2025

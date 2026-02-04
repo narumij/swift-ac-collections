@@ -50,7 +50,7 @@ extension UnsafeIndexV2RangeExpression: Sequence {
 
   public func makeIterator() -> Iterator {
     let (lower, upper) = unwrapLowerUpperOrFatal(rawRange.relative(to: tied))
-    return .init(start: lower, end: upper, tie: tied)
+    return .init(start: lower.sealed, end: upper.sealed, tie: tied)
   }
 }
 

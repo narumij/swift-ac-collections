@@ -35,14 +35,14 @@ extension UnsafeIterator {
     
     @usableFromInline
     init(
-      start: _NodePtr,
-      end: _NodePtr,
+      start: _SealedPtr,
+      end: _SealedPtr,
       tie: _TiedRawBuffer
     ) where Source: UnsafeIteratorProtocol {
       self.init(
         _source: .init(
-          _start: start.sealed,
-          _end: end.sealed),
+          _start: start,
+          _end: end),
         tie: tie)
     }
 

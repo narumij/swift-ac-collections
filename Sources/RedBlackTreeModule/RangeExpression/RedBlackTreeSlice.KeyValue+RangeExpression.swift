@@ -35,7 +35,7 @@ extension RedBlackTreeSliceV2.KeyValue {
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> SubSequence {
-      ___subscript(UnsafeTreeSealedRangeExpression.unboundedRange)
+      ___subscript(.unboundedRange)
     }
 
     @inlinable

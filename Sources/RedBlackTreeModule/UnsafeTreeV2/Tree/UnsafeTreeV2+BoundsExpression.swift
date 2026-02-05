@@ -108,24 +108,8 @@ extension RedBlackTreeBoundRangeExpression {
     }
   }
 
-//  @usableFromInline
-//  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-//    -> (
-//      UnsafeMutablePointer<UnsafeNode>,
-//      UnsafeMutablePointer<UnsafeNode>
-//    )
-//  where
-//    Base: ___TreeBase,
-//    Base._Key == _Key
-//  {
-//    unwrapLowerUpper(
-//      relative(to: __tree_)
-//        .relative(to: __tree_))
-//      ?? (__tree_.__end_node, __tree_.__end_node)
-//  }
-
   @usableFromInline
-  func __relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> (
       _SealedPtr,
       _SealedPtr

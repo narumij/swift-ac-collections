@@ -60,7 +60,7 @@
     )
       -> Int?
     {
-      let (lower, upper) = unwrapLowerUpper(bounds.__relative(to: __tree_)) ?? (_end,_end)
+      let (lower, upper) = unwrapLowerUpper(bounds.relative(to: __tree_)) ?? (_end, _end)
       guard !lower.___is_null_or_end, !upper.___is_null else {
         return nil
       }
@@ -71,11 +71,11 @@
       -> RedBlackTreeKeyOnlyRangeView<Self>
     {
       @inline(__always) get {
-        let (lower, upper) = __tree_.rangeSanitize(bounds.__relative(to: __tree_))
+        let (lower, upper) = __tree_.rangeSanitize(bounds.relative(to: __tree_))
         return .init(__tree_: __tree_, _start: lower, _end: upper)
       }
       @inline(__always) _modify {
-        let (lower, upper) = __tree_.rangeSanitize(bounds.__relative(to: __tree_))
+        let (lower, upper) = __tree_.rangeSanitize(bounds.relative(to: __tree_))
         var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
         self = RedBlackTreeMultiSet()  // yield中のCoWキャンセル。考えた人賢い
         defer { self = RedBlackTreeMultiSet(__tree_: view.__tree_) }
@@ -85,7 +85,7 @@
 
     public mutating func removeAll(in bounds: RedBlackTreeBoundRangeExpression<Element>) {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.__relative(to: __tree_)
+      let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
@@ -97,11 +97,12 @@
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.__relative(to: __tree_)
+      let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___checking_erase_if(lower.pointer!, upper.pointer!, shouldBeRemoved: shouldBeRemoved)
+      try __tree_.___checking_erase_if(
+        lower.pointer!, upper.pointer!, shouldBeRemoved: shouldBeRemoved)
     }
   }
 #endif

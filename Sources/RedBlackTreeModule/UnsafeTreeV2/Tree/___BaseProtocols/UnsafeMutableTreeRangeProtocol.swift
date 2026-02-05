@@ -27,18 +27,6 @@ extension UnsafeMutableTreeRangeProtocol {
   }
 }
 
-//extension UnsafeMutableTreeRangeProtocol {
-//
-//  @inlinable
-//  @inline(__always)
-//  @discardableResult
-//  package mutating func _unchecked_remove(at ptr: _NodePtr) -> (__r: _NodePtr, payload: _PayloadValue) {
-//    let ___e = __tree_[ptr]
-//    let __r = __tree_.erase(ptr)
-//    return (__r, ___e)
-//  }
-//}
-
 extension UnsafeMutableTreeRangeProtocol {
 
   @inlinable
@@ -59,16 +47,4 @@ extension UnsafeMutableTreeRangeProtocol {
     guard from != _end else { return __tree_.end }
     return __tree_.___checking_erase(from, to)
   }
-
-//  @inlinable
-//  package mutating func ___remove(_ rawRange: UnsafeTreeRangeExpression) -> _NodePtr {
-//    let (lower, upper) = rawRange._relative(to: __tree_)
-//    return ___remove(from: lower, to: upper)
-//  }
-//
-//  @inlinable
-//  package mutating func ___unchecked_remove(_ rawRange: UnsafeTreeRangeExpression) -> _NodePtr {
-//    let (lower, upper) = rawRange._relative(to: __tree_)
-//    return ___unchecked_remove(from: lower, to: upper)
-//  }
 }

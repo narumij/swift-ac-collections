@@ -60,7 +60,7 @@
     )
       -> Int?
     {
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = unwrapLowerUpper(bounds.__relative(to: __tree_)) ?? (_end,_end)
       guard !lower.___is_null_or_end, !upper.___is_null else {
         return nil
       }
@@ -85,11 +85,11 @@
 
     public mutating func removeAll(in bounds: RedBlackTreeBoundRangeExpression<Element>) {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds.__relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      __tree_.___checking_erase(lower, upper)
+      __tree_.___checking_erase(lower.pointer!, upper.pointer!)
     }
 
     public mutating func removeAll(
@@ -97,11 +97,11 @@
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds.__relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___checking_erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
+      try __tree_.___checking_erase_if(lower.pointer!, upper.pointer!, shouldBeRemoved: shouldBeRemoved)
     }
   }
 #endif

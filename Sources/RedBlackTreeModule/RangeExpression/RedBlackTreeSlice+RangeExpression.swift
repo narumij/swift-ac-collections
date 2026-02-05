@@ -45,7 +45,7 @@
 
     @inlinable
     public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      let (lower, upper) = bounds.__relative(to: __tree_)
+      let (lower, upper) = bounds._relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }

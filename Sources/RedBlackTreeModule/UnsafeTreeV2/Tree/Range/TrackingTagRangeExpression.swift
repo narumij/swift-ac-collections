@@ -245,7 +245,7 @@ extension TrackingTagRangeExpression {
   }
   
   @usableFromInline
-  func __relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> (_SealedPtr, _SealedPtr)
   where
     Base: ___TreeBase

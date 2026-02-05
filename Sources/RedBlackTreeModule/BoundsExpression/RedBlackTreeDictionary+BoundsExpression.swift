@@ -43,17 +43,17 @@
     
     public mutating func removeBounds(_ bounds: RedBlackTreeBoundRangeExpression<Key>) {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds.__relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      __tree_.___checking_erase(lower, upper)
+      __tree_.___checking_erase(lower.pointer!, upper.pointer!)
     }
 
     public mutating func removeBounds(unchecked bounds: RedBlackTreeBoundRangeExpression<Key>) {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      __tree_.___checking_erase(lower, upper)
+      let (lower, upper) = bounds.__relative(to: __tree_)
+      __tree_.___checking_erase(lower.pointer!, upper.pointer!)
     }
 
     public mutating func removeBounds(
@@ -61,11 +61,11 @@
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds.__relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___checking_erase_if(lower, upper, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
+      try __tree_.___checking_erase_if(lower.pointer!, upper.pointer!, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
     }
 
     public mutating func removeBounds(
@@ -73,8 +73,8 @@
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      try __tree_.___checking_erase_if(lower, upper, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
+      let (lower, upper) = bounds.__relative(to: __tree_)
+      try __tree_.___checking_erase_if(lower.pointer!, upper.pointer!, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
     }
   }
 #endif

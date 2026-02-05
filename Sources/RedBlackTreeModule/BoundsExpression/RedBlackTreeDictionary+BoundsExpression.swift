@@ -20,7 +20,7 @@
 
     public subscript(bounds: RedBlackTreeBoundRangeExpression<Key>) -> SubSequence {
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       return .init(tree: __tree_, start: lower, end: upper)
@@ -35,7 +35,7 @@
       -> UnsafeIndexV2Collection<Self>
     {
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       return .init(start: lower, end: upper, tie: __tree_.tied)
@@ -44,7 +44,7 @@
     public mutating func removeBounds(_ bounds: RedBlackTreeBoundRangeExpression<Key>) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       __tree_.___checking_erase(lower.pointer!, upper.pointer!)
@@ -62,7 +62,7 @@
     ) rethrows {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       try __tree_.___checking_erase_if(

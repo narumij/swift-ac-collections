@@ -70,7 +70,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
     -> RedBlackTreeSliceV2<Base>.KeyOnly
   {
     let (lower, upper) = rawRange.relative(to: __tree_)
-    guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+    guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
       fatalError(.invalidIndex)
     }
     return .init(tree: __tree_, start: lower, end: upper)
@@ -89,7 +89,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
     -> RedBlackTreeKeyOnlyRangeView<Base>
   {
     let (lower, upper) = rawRange.relative(to: __tree_)
-    guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+    guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
       fatalError(.invalidIndex)
     }
     return .init(__tree_: __tree_, _start: lower, _end: upper)

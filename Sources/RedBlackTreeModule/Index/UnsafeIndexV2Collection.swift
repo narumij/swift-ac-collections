@@ -104,7 +104,7 @@ extension UnsafeIndexV2Collection {
 
   #if !COMPATIBLE_ATCODER_2025
     public subscript(bounds: UnsafeIndexV2RangeExpression<Base>) -> UnsafeIndexV2Collection {
-      let (lower, upper) = bounds.rawRange.relative(to: tied)
+      let (lower, upper) = bounds.relative(to: tied)
       return .init(start: lower, end: upper, tie: tied)
     }
   #endif

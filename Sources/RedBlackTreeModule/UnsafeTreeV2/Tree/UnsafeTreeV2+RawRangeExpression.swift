@@ -18,39 +18,11 @@
 extension UnsafeTreeV2 {
 
   @inlinable
-  func isValidRawRange(lower: _NodePtr, upper: _NodePtr) -> Bool {
+  func isValidSealedRange(lower: _SealedPtr, upper: _SealedPtr) -> Bool {
 
     guard
-      !lower.___is_null,
-      !upper.___is_null,
-      !lower.___is_garbaged,
-      !upper.___is_garbaged
-    else {
-//      fatalError(.invalidIndex)
-      return false
-    }
-
-    if upper.___is_end {
-      return true
-    }
-
-    guard
-      lower == upper || ___ptr_comp(lower, upper)
-    else {
-      return false
-    }
-
-    return true
-  }
-  
-  @inlinable
-  func isValidRawRange(lower: _SealedPtr, upper: _SealedPtr) -> Bool {
-
-    guard let lower = lower.pointer, let upper = upper.pointer else {
-      return false
-    }
-
-    guard
+      let lower = lower.pointer,
+      let upper = upper.pointer,
       lower == upper || ___ptr_comp(lower, upper)
     else {
       return false
@@ -61,19 +33,19 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
-  
+
   @inlinable
-  func rangeSanitize(_ tuple: (lower: _NodePtr, upper: _NodePtr)) -> (_NodePtr,_NodePtr) {
+  func sanitizeSealedRange(_ tuple: (lower: _SealedPtr, upper: _SealedPtr))
+    -> (_SealedPtr, _SealedPtr)
+  {
     let (lower, upper) = tuple
-    return !___ptr_comp(upper, lower) ? (lower, upper) : (__end_node,__end_node)
-  }
-  
-  @inlinable
-  func rangeSanitize(_ tuple: (lower: _SealedPtr, upper: _SealedPtr)) -> (_SealedPtr,_SealedPtr) {
-    let (lower, upper) = tuple
-    guard let l = lower.pointer, let u = upper.pointer else {
-      return (__end_node.sealed, __end_node.sealed)
+    guard
+      let l = lower.pointer,
+      let u = upper.pointer
+    else {
+      let e = __end_node.sealed
+      return (e, e)
     }
-    return !___ptr_comp(u, l) ? (lower, upper) : (__end_node.sealed,__end_node.sealed)
+    return !___ptr_comp(u, l) ? (lower, upper) : (__end_node.sealed, __end_node.sealed)
   }
 }

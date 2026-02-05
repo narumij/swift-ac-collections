@@ -71,11 +71,11 @@
       -> RedBlackTreeKeyOnlyRangeView<Self>
     {
       @inline(__always) get {
-        let (lower, upper) = __tree_.rangeSanitize(bounds.relative(to: __tree_))
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
         return .init(__tree_: __tree_, _start: lower, _end: upper)
       }
       @inline(__always) _modify {
-        let (lower, upper) = __tree_.rangeSanitize(bounds.relative(to: __tree_))
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
         var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
         self = RedBlackTreeMultiSet()  // yield中のCoWキャンセル。考えた人賢い
         defer { self = RedBlackTreeMultiSet(__tree_: view.__tree_) }
@@ -86,7 +86,7 @@
     public mutating func removeAll(in bounds: RedBlackTreeBoundRangeExpression<Element>) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       __tree_.___checking_erase(lower.pointer!, upper.pointer!)
@@ -98,7 +98,7 @@
     ) rethrows {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       try __tree_.___checking_erase_if(

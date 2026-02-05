@@ -40,7 +40,7 @@
     @inlinable
     public subscript(bounds: TaggedSealRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       return .init(__tree_: __tree_, _start: lower, _end: upper)
@@ -67,7 +67,7 @@
 
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       try __tree_.___erase_if(

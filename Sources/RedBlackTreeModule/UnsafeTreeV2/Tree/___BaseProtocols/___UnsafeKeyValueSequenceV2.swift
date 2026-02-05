@@ -168,7 +168,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
     -> RedBlackTreeSliceV2<Base>.KeyValue
   {
     let (lower, upper) = rawRange.relative(to: __tree_)
-    guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+    guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
       fatalError(.invalidIndex)
     }
     return .init(tree: __tree_, start: lower, end: upper)

@@ -27,10 +27,8 @@
 
     @inlinable
     public func isValid(_ bounds: _RangeExpression) -> Bool {
-      if let (l, u) = unwrapLowerUpper(bounds.relative(to: __tree_)) {
-        return l.isValid && u.isValid
-      }
-      return false
+      let (l, u) = bounds.relative(to: __tree_)
+      return l.isValid && u.isValid
     }
 
     @inlinable

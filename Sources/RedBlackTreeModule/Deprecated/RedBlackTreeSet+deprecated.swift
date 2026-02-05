@@ -8,8 +8,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: __tree_._remap_to_safe_(bounds.lowerBound),
-        end: __tree_._remap_to_safe_(bounds.upperBound))
+        start: __tree_.__sealed_(bounds.lowerBound),
+        end: __tree_.__sealed_(bounds.upperBound))
     }
   }
 
@@ -130,8 +130,8 @@
     public subscript(bounds: Range<Index>) -> SubSequence {
       return .init(
         tree: __tree_,
-        start: __tree_._remap_to_safe_(bounds.lowerBound),
-        end: __tree_._remap_to_safe_(bounds.upperBound))
+        start: __tree_.__sealed_(bounds.lowerBound),
+        end: __tree_.__sealed_(bounds.upperBound))
     }
   }
 #endif
@@ -153,8 +153,8 @@
       let bounds = bounds.relative(to: self)
       __tree_.ensureUnique()
       ___remove(
-      from: __tree_._remap_to_safe_(bounds.lowerBound).pointer!,
-      to: __tree_._remap_to_safe_(bounds.upperBound).pointer!)
+      from: __tree_.__sealed_(bounds.lowerBound).pointer!,
+      to: __tree_.__sealed_(bounds.upperBound).pointer!)
     }
   }
 #endif
@@ -247,7 +247,7 @@
     @discardableResult
     public mutating func remove(at index: Index) -> Element {
       __tree_.ensureUnique()
-      guard case .success(let __p) = __tree_._remap_to_safe_(index).unchecked_pointer else {
+      guard case .success(let __p) = __tree_.__sealed_(index).unchecked_pointer else {
         fatalError(.invalidIndex)
       }
       return _unchecked_remove(at: __p).payload

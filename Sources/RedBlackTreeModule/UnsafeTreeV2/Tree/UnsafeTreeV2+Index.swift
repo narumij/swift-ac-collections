@@ -48,13 +48,13 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func
-    ___distance(from start: _NodePtr, to end: _NodePtr) -> Int
+    ___distance(from start: _SealedPtr, to end: _SealedPtr) -> Int?
   {
     guard
-      start.isValid,
-      end.isValid
+      let start = start.purified.pointer,
+      let end = end.purified.pointer
     else {
-      fatalError(.invalidIndex)
+      return nil
     }
     return ___signed_distance(start, end)
   }

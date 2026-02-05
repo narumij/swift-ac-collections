@@ -60,10 +60,7 @@
     )
       -> Int?
     {
-      let (lower, upper) = unwrapLowerUpper(bounds.relative(to: __tree_)) ?? (_end, _end)
-      guard !lower.___is_null_or_end, !upper.___is_null else {
-        return nil
-      }
+      let (lower, upper) = bounds.relative(to: __tree_)
       return __tree_.___distance(from: lower, to: upper)
     }
 

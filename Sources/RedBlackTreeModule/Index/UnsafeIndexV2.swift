@@ -117,7 +117,7 @@ extension UnsafeIndexV2: Equatable {
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
       guard let r = rhs.sealed.pointer,
-        let l = rhs._remap_to_sealed_(lhs).pointer
+        let l = rhs.__sealed_(lhs).pointer
       else {
         preconditionFailure(.garbagedIndex)
       }
@@ -137,7 +137,7 @@ extension UnsafeIndexV2 {
   public func distance(to other: Self) -> Int {
     guard
       let from = sealed.pointer,
-      let to = _remap_to_sealed_(other).pointer
+      let to = __sealed_(other).pointer
     else {
       preconditionFailure(.garbagedIndex)
     }
@@ -333,7 +333,7 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  internal func _remap_to_sealed_(_ index: UnsafeIndexV2) -> _SealedPtr {
+  internal func __sealed_(_ index: UnsafeIndexV2) -> _SealedPtr {
     tied === index.tied ? index.sealed : _resolve(index.trackingTag)
   }
 }

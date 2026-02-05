@@ -22,15 +22,13 @@
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      return _start.isValid && _end.isValid
+      return _start.sealed.isValid && _end.sealed.isValid
     }
 
     @inlinable
     public func isValid(_ bounds: _RangeExpression) -> Bool {
-      if let (l, u) = unwrapLowerUpper(bounds.rawRange.relative(to: __tree_)) {
-        return l.isValid && u.isValid
-      }
-      return false
+      let (l, u) = bounds.rawRange.relative(to: __tree_)
+      return l.isValid && u.isValid
     }
 
     @inlinable

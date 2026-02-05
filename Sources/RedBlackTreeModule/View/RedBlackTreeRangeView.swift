@@ -129,9 +129,14 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    __tree_.___distance(
-      from: start.relative(to: __tree_).pointer!,
-      to: end.relative(to: __tree_).pointer!)
+    guard
+      let d = __tree_.___distance(
+        from: start.relative(to: __tree_),
+        to: end.relative(to: __tree_))
+    else {
+      fatalError(.invalidIndex)
+    }
+    return d
   }
 }
 

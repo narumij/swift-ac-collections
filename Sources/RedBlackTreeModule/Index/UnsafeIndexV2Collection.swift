@@ -70,8 +70,8 @@ extension UnsafeIndexV2Collection {
 
 extension UnsafeIndexV2Collection {
 
-  public var startIndex: Index { ___index(_start) }
-  public var endIndex: Index { ___index(_end) }
+  public var startIndex: Index { ___index(_start.sealed) }
+  public var endIndex: Index { ___index(_end.sealed) }
 
   public func makeIterator() -> Iterator {
     .init(start: _sealed_start, end: _sealed_end, tie: tied)

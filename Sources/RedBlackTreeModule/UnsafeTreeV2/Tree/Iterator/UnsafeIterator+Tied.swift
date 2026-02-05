@@ -94,7 +94,7 @@ where
     public func forEach(_ body: (UnsafeIndexV2<Base>, Element) throws -> Void) rethrows
     where Source.Source.Element == UnsafeMutablePointer<UnsafeNode> {
       try zip(source._source, makeIterator()).forEach {
-        try body(.init(rawValue: $0, tie: tied), $1)
+        try body(.init(sealed: $0.sealed, tie: tied), $1)
       }
     }
   }

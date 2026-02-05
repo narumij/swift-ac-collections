@@ -191,7 +191,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
     @inline(__always)
     internal func _forEach(_ body: (Index, Element) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-        try body(___index($0), Self.__element_(__tree_[$0]))
+        try body(___index($0.sealed), Self.__element_(__tree_[$0]))
       }
     }
   }

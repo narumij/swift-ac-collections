@@ -136,7 +136,7 @@ protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, ___UnsafeInde
     @inline(__always)
     internal func _forEach(_ body: (Index, _PayloadValue) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-        try body(___index($0), __tree_[$0])
+        try body(___index($0.sealed), __tree_[$0])
       }
     }
   }

@@ -93,7 +93,7 @@ extension ___UnsafeBaseSequenceV2__ {
 @usableFromInline
 protocol ___UnsafeBaseSequenceV2: ___UnsafeBaseSequenceV2__, ___UnsafeIndexRangeBaseV2, _PayloadValueBride, _KeyBride
 {
-  func ___index_or_nil(_ p: _NodePtr) -> Index?
+  func ___index_or_nil(_ p: _SealedPtr) -> Index?
 }
 
 extension ___UnsafeBaseSequenceV2 {
@@ -101,13 +101,13 @@ extension ___UnsafeBaseSequenceV2 {
   @inlinable
   @inline(__always)
   internal func ___index_lower_bound(_ __k: _Key) -> Index {
-    ___index(__tree_.lower_bound(__k))
+    ___index(__tree_.lower_bound(__k).sealed)
   }
 
   @inlinable
   @inline(__always)
   internal func ___index_upper_bound(_ __k: _Key) -> Index {
-    ___index(__tree_.upper_bound(__k))
+    ___index(__tree_.upper_bound(__k).sealed)
   }
 }
 
@@ -117,6 +117,6 @@ extension ___UnsafeBaseSequenceV2 {
   @inline(__always)
   internal func ___first_index(of member: _Key) -> Index? {
     let ptr = __tree_.__ptr_(__tree_.__find_equal(member).__child)
-    return ___index_or_nil(ptr)
+    return ___index_or_nil(ptr.sealed)
   }
 }

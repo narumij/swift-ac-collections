@@ -30,21 +30,6 @@ extension UnsafeTreeSealedRangeProtocol {
   @inlinable
   @inline(__always)
   internal func ___first_tracking_tag(where predicate: (_PayloadValue) throws -> Bool) rethrows
-    -> _RawTrackingTag?
-  {
-    var result: _RawTrackingTag?
-    try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
-      if try predicate(__tree_[__p]) {
-        result = __p.trackingTag
-        cont = false
-      }
-    }
-    return result
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___first_tracking_tag(where predicate: (_PayloadValue) throws -> Bool) rethrows
     -> TaggedSeal?
   {
     var __r = UnsafeNode.nullptr

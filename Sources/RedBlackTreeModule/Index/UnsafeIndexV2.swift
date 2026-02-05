@@ -63,13 +63,10 @@ where Base: ___TreeBase & ___TreeIndex {
 
   // MARK: -
 
-  @inlinable
-  @inline(__always)
-  internal init(rawValue: _NodePtr, tie: _TiedRawBuffer) {
-    assert(rawValue != .nullptr)
-    assert(!rawValue.___is_garbaged)
+  @inlinable @inline(__always)
+  internal init(sealed: _SealedPtr, tie: _TiedRawBuffer) {
     self.tied = tie
-    self.sealed = rawValue.sealed
+    self.sealed = sealed
   }
 
   /*

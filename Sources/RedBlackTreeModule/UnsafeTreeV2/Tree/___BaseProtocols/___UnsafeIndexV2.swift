@@ -44,13 +44,13 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal var _startIndex: Index {
-    ___index(_start)
+    ___index(_start.sealed)
   }
 
   @inlinable
   @inline(__always)
   internal var _endIndex: Index {
-    ___index(_end)
+    ___index(_end.sealed)
   }
 
   @inlinable
@@ -132,7 +132,7 @@ extension ___UnsafeIndexV2 {
     var result: Index?
     try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
       if try predicate(__tree_[__p]) {
-        result = ___index(__p)
+        result = ___index(__p.sealed)
         cont = false
       }
     }
@@ -183,7 +183,7 @@ extension ___UnsafeIndexV2 where Base: CompareUniqueTrait {
   @inline(__always)
   internal func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
     let (lo, hi) = ___equal_range(k)
-    return (___index(lo), ___index(hi))
+    return (___index(lo.sealed), ___index(hi.sealed))
   }
 }
 
@@ -200,7 +200,7 @@ extension ___UnsafeIndexV2 where Base: CompareMultiTrait {
   @inline(__always)
   internal func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
     let (lo, hi) = ___equal_range(k)
-    return (___index(lo), ___index(hi))
+    return (___index(lo.sealed), ___index(hi.sealed))
   }
 }
 
@@ -212,7 +212,7 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   @discardableResult
   public mutating func ___erase(_ ptr: Index) -> Index {
-    ___index(__tree_.erase(try! __tree_.__sealed_(ptr).get().pointer))
+    ___index(__tree_.erase(try! __tree_.__sealed_(ptr).get().pointer).sealed)
   }
 }
 

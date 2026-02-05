@@ -247,7 +247,7 @@
     @discardableResult
     public mutating func remove(at index: Index) -> Element {
       __tree_.ensureUnique()
-      guard case .success(let __p) = __tree_.__sealed_(index).unchecked_pointer else {
+      guard let __p = __tree_.__sealed_(index).pointer else {
         fatalError(.invalidIndex)
       }
       return _unchecked_remove(at: __p).payload

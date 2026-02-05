@@ -16,9 +16,10 @@ where Index == UnsafeIndexV2<Base>
 }
 
 extension UnsafeIndexingProtocol {
+  
   @inlinable
   @inline(__always)
-  package func ___index(_ p: _NodePtr) -> Index {
-    Index(rawValue: p, tie: tied)
+  package func ___index(_ p: _SealedPtr) -> Index {
+    Index(sealed: p, tie: tied)
   }
 }

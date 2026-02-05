@@ -60,7 +60,7 @@ extension _RedBlackTreeUniqueView {
   /// - Complexity: O(log `count`)
   @inlinable
   public __consuming func find(_ member: _Key) -> Index? {
-    ___index_or_nil(__tree_.find(member))
+    ___index_or_nil(__tree_.find(member).sealed)
   }
 }
 

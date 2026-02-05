@@ -673,8 +673,7 @@ extension RedBlackTreeSet {
     @inlinable
     public func index(before i: TaggedSeal) -> TaggedSeal {
       i.relative(to: __tree_)
-        .map(\.pointer)
-        .flatMap { ___tree_prev_iter($0) }
+        .flatMap { ___tree_prev_iter($0.pointer) }
         .flatMap { .create($0) }
     }
 
@@ -682,8 +681,7 @@ extension RedBlackTreeSet {
     @inlinable
     public func index(after i: TaggedSeal) -> TaggedSeal {
       i.relative(to: __tree_)
-        .map(\.pointer)
-        .flatMap { ___tree_next_iter($0) }
+        .flatMap { ___tree_next_iter($0.pointer) }
         .flatMap { .create($0) }
     }
 
@@ -693,8 +691,7 @@ extension RedBlackTreeSet {
       -> TaggedSeal
     {
       i.relative(to: __tree_)
-        .map(\.pointer)
-        .flatMap { ___tree_adv_iter($0, distance) }
+        .flatMap { ___tree_adv_iter($0.pointer, distance) }
         .flatMap { .create($0) }
     }
 
@@ -707,8 +704,7 @@ extension RedBlackTreeSet {
     {
       let __l = limit.relative(to: __tree_).map(\.pointer)
       return try? i.relative(to: __tree_)
-        .map(\.pointer)
-        .flatMap { ___tree_adv_iter($0, distance, __l) }
+        .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
         .map { .create($0) }
         .get()
     }

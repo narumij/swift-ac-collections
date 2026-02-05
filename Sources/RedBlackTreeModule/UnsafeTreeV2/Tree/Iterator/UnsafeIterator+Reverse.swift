@@ -25,27 +25,22 @@ extension UnsafeIterator {
     Sequence,
     Equatable
   {
-    @usableFromInline
-    internal init(___tree_range: UnsafeTreeRange) {
-      self.___tree_range = ___tree_range
-      self.__current = ___tree_range.___to
-    }
-
-    @usableFromInline
-    internal init(__first: _NodePtr, __last: _NodePtr) {
-      self.init(
-        ___tree_range:
-          UnsafeTreeRange(___from: __first, ___to: __last))
-    }
-
-    public var _start: UnsafeMutablePointer<UnsafeNode> {
-      ___tree_range.___from
-    }
-
-    public var _end: UnsafeMutablePointer<UnsafeNode> {
-      ___tree_range.___to
+    public init(_start: _SealedPtr, _end: _SealedPtr) {
+      self._start = _start.pointer!
+      self._end = _end.pointer!
+      self._current = _end.pointer!
     }
     
+    public init(_start: _NodePtr, _end: _NodePtr) {
+      self._start = _start
+      self._end = _end
+      self._current = _end
+    }
+
+    public let _start: _NodePtr
+    public let _end: _NodePtr
+    public var _current: _NodePtr
+
     public var _sealed_start: _SealedPtr {
       fatalError()
     }
@@ -55,21 +50,14 @@ extension UnsafeIterator {
     }
 
     public mutating func next() -> _NodePtr? {
-      return ___tree_range.boundsCheckedNext(before: &__current)
+      guard _current != _start else { return nil }
+      // 最悪でもnullで止まる
+      guard !_current.___is_null else {
+        fatalError(.outOfBounds)
+      }
+      _current = __tree_prev_iter(_current)
+      return _current
     }
-
-    @usableFromInline
-    let ___tree_range: UnsafeTreeRange
-
-    @usableFromInline
-    var __current: _NodePtr
-  }
-}
-
-extension UnsafeIterator._Reverse {
-
-  public init(_start: _SealedPtr, _end: _SealedPtr) {
-    self.init(__first: _start.pointer!, __last: _end.pointer!)
   }
 }
 

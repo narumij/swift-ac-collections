@@ -268,7 +268,7 @@ extension UnsafeTreeV2 {
     unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
     -> UnsafeIterator._Obverse
   {
-    .init(__first: __first, __last: __last)
+    .init(_start: __first, _end: __last)
   }
 
   @inlinable
@@ -277,6 +277,6 @@ extension UnsafeTreeV2 {
     unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
     -> UnsafeIterator._Payload<Base, UnsafeIterator._Obverse>
   {
-    .init(source: .init(__first: __first, __last: __last))
+    .init(source: .init(_start: __first, _end: __last))
   }
 }

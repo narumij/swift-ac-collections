@@ -28,7 +28,7 @@
 
     @inlinable
     public func isValid(_ bounds: TrackingTagRangeExpression) -> Bool {
-      let (l, u) = bounds.relative(to: __tree_)
+      let (l, u) = bounds.__relative(to: __tree_)
       return l.isValid && u.isValid
     }
 
@@ -55,8 +55,8 @@
     @inlinable
     public mutating func removeAll(in bounds: TrackingTagRangeExpression) {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      _ = ___remove(from: lower, to: upper)
+      let (lower, upper) = bounds.__relative(to: __tree_)
+      _ = ___remove(from: lower.pointer!, to: upper.pointer!)
     }
 
     @inlinable
@@ -66,12 +66,12 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds.__relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       try __tree_.___erase_if(
-        lower, upper,
+        lower.pointer!, upper.pointer!,
         shouldBeRemoved: shouldBeRemoved)
     }
   }

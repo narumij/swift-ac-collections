@@ -109,15 +109,7 @@ extension ___LRUMemoizeStorage {
   }
 }
 
-extension ___LRUMemoizeStorage: ___LRULinkList & UnsafeMutableTreeRangeProtocol & IntThreeWayComparator & __BaseHosting {
-  
-  @inlinable @inline(__always)
-  var _start: _NodePtr { __tree_.__begin_node_ }
-  
-  @inlinable @inline(__always)
-  var _end: _NodePtr { __tree_.__end_node }
-}
-
+extension ___LRUMemoizeStorage: ___LRULinkList & IntThreeWayComparator {}
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}
 extension ___LRUMemoizeStorage: KeyValueComparer {
   

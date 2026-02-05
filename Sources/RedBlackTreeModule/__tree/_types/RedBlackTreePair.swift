@@ -19,7 +19,7 @@
 public struct RedBlackTreePair<Key, Value> {
 
   @inlinable @inline(__always)
-  internal init(key: Key, value: Value) {
+  package init(key: Key, value: Value) {
     self.key = key
     self.value = value
   }

@@ -163,10 +163,10 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var next: Self? {
-    let next = sealed.purified.flatMap { ___tree_next_iter($0.pointer) }
+    let next = sealed.purified.flatMap { ___tree_next_iter($0.pointer) }.seal
     guard next.isValid, tied.isValueAccessAllowed else { return nil }
     var result = self
-    result.sealed = next.seal
+    result.sealed = next
     return result
   }
 
@@ -176,10 +176,10 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var previous: Self? {
-    let prev = sealed.purified.flatMap { ___tree_prev_iter($0.pointer) }
+    let prev = sealed.purified.flatMap { ___tree_prev_iter($0.pointer) }.seal
     guard prev.isValid, tied.isValueAccessAllowed else { return nil }
     var result = self
-    result.sealed = prev.seal
+    result.sealed = prev
     return result
   }
 }
@@ -188,21 +188,8 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  public var isStart: Bool {
-    tied.begin_ptr.flatMap { sealed.__is_equals($0.pointee) } ?? false
-  }
-
-  @inlinable
-  @inline(__always)
   public var isEnd: Bool {
     sealed.___is_end ?? false
-  }
-
-  // 利用価値はないが、おまけ。
-  @inlinable
-  @inline(__always)
-  public var isRoot: Bool {
-    sealed.___is_root ?? false
   }
 }
 

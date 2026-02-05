@@ -749,7 +749,7 @@ extension RedBlackTreeSet {
     @discardableResult
     public mutating func remove(at index: Index) -> Element {
       __tree_.ensureUnique()
-      guard case .success(let __p) = index.relative(to: __tree_).unchecked_pointer else {
+      guard case .success(let __p) = index.relative(to: __tree_).temporaryUnseal else {
         fatalError(.invalidIndex)
       }
       return _unchecked_remove(at: __p).payload

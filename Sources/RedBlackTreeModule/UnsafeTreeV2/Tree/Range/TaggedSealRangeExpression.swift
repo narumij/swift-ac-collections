@@ -6,7 +6,7 @@
 //
 
 // これはfor文では使えない
-public enum TrackingTagRangeExpression: Equatable {
+public enum TaggedSealRangeExpression: Equatable {
   public typealias Bound = TaggedSeal
   /// `a..<b` のこと
   case range(from: TaggedSeal, to: TaggedSeal)
@@ -23,36 +23,36 @@ public enum TrackingTagRangeExpression: Equatable {
 }
 
 public func ..< (lhs: TaggedSeal, rhs: TaggedSeal)
-  -> TrackingTagRangeExpression
+  -> TaggedSealRangeExpression
 {
   .range(from: lhs, to: rhs)
 }
 
 public func ... (lhs: TaggedSeal, rhs: TaggedSeal)
-  -> TrackingTagRangeExpression
+  -> TaggedSealRangeExpression
 {
   .closedRange(from: lhs, through: rhs)
 }
 
 public prefix func ..< (rhs: TaggedSeal)
-  -> TrackingTagRangeExpression
+  -> TaggedSealRangeExpression
 {
   .partialRangeTo(rhs)
 }
 
 public prefix func ... (rhs: TaggedSeal)
-  -> TrackingTagRangeExpression
+  -> TaggedSealRangeExpression
 {
   .partialRangeThrough(rhs)
 }
 
 public postfix func ... (lhs: TaggedSeal)
-  -> TrackingTagRangeExpression
+  -> TaggedSealRangeExpression
 {
   .partialRangeFrom(lhs)
 }
 
-extension TrackingTagRangeExpression {
+extension TaggedSealRangeExpression {
 
   @inlinable @inline(__always)
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>)

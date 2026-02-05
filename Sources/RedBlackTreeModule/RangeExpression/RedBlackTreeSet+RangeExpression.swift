@@ -27,7 +27,7 @@
     }
 
     @inlinable
-    public func isValid(_ bounds: TrackingTagRangeExpression) -> Bool {
+    public func isValid(_ bounds: TaggedSealRangeExpression) -> Bool {
       let (l, u) = bounds.relative(to: __tree_)
       return l.isValid && u.isValid
     }
@@ -38,7 +38,7 @@
     }
     
     @inlinable
-    public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
+    public subscript(bounds: TaggedSealRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
@@ -53,7 +53,7 @@
     }
     
     @inlinable
-    public mutating func removeAll(in bounds: TrackingTagRangeExpression) {
+    public mutating func removeAll(in bounds: TaggedSealRangeExpression) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       _ = ___remove(from: lower.pointer!, to: upper.pointer!)
@@ -61,7 +61,7 @@
 
     @inlinable
     public mutating func removeAll(
-      in bounds: TrackingTagRangeExpression,
+      in bounds: TaggedSealRangeExpression,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 

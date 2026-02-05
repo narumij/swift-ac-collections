@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-package protocol TreeAlgorithmBaseProtocol_ptr: _UnsafeNodePtrType, NullPtrInterface {}
+package protocol TreeAlgorithmBaseProtocol_ptr: _UnsafeNodePtrType, NullPtrInterface, TreeAlgorithmBaseInterface {}
 
 extension TreeAlgorithmBaseProtocol_ptr {
   
@@ -229,7 +229,7 @@ extension TreeAlgorithmBaseProtocol_ptr {
 // MARK: -
 
 @usableFromInline
-package protocol TreeAlgorithmProtocol_ptr: _UnsafeNodePtrType, NullPtrInterface {}
+package protocol TreeAlgorithmProtocol_ptr: _UnsafeNodePtrType, NullPtrInterface, TreeAlgorithmBaseInterface {}
 
 extension TreeAlgorithmProtocol_ptr {
 

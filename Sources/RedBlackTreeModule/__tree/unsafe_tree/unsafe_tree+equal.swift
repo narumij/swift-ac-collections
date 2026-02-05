@@ -24,6 +24,7 @@ protocol EqualProtocol_ptr:
     & _TreeNode_KeyInterface
     & _TreeKey_LazyThreeWayCompInterface
     & NullPtrInterface
+    & TreeAlgorithmBaseInterface
 {
   func __lower_bound_multi(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
   func __upper_bound_multi(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr

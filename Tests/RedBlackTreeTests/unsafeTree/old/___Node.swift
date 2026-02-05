@@ -25,7 +25,7 @@ import RedBlackTreeModule
 
 public struct ___Node {
 
-  public typealias _NodePtr = _PointerIndex
+  public typealias _NodePtr = _RawTrackingTag
 
   public var __right_: _NodePtr
   public var __left_: _NodePtr

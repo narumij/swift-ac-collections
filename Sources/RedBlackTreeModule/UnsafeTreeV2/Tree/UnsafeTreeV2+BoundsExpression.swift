@@ -1,55 +1,139 @@
+//===----------------------------------------------------------------------===//
 //
-//  UnsafeTreeV2+BoundsExpression.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/01/20.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
-extension UnsafeTreeV2 {
+import Foundation
 
-  @usableFromInline
-  func relative(from b: RedBlackTreeBound<_Key>) -> _NodePtr {
-    switch b {
-    case .start: __begin_node_
-    case .end: __end_node
-    case .lower(let l): lower_bound(l)
-    case .upper(let r): upper_bound(r)
+extension RedBlackTreeBoundExpression {
+
+  @inlinable @inline(__always)
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> _SealedPtr
+  where
+    Base: ___TreeBase,
+    Base._Key == _Key
+  {
+
+    switch self {
+
+    case .start:
+      return __tree_.__begin_node_.sealed
+
+    case .end:
+      return __tree_.__end_node.sealed
+
+    case .lower(let __v):
+      return __tree_.lower_bound(__v).sealed
+
+    case .upper(let __v):
+      return __tree_.upper_bound(__v).sealed
+
+    case .find(let __v):
+      return __tree_.find(__v).sealed
+
+    case .advanced(let __self, by: let offset):
+      let __p = __self.relative(to: __tree_)
+      return __p.flatMap { __p in
+        ___tree_adv_iter(__p.pointer, offset).seal
+      }
+
+    case .before(let __self):
+      return
+        RedBlackTreeBoundExpression
+        .advanced(__self, by: -1)
+        .relative(to: __tree_)
+
+    case .after(let __self):
+      return
+        RedBlackTreeBoundExpression
+        .advanced(__self, by: 1)
+        .relative(to: __tree_)
+
     }
   }
 }
 
-extension UnsafeTreeV2 {
+extension RedBlackTreeBoundRangeExpression {
 
-//  func relative<K>(to boundsExpression: RedBlackTreeBoundsExpression<K>) -> (_NodePtr, _NodePtr)
-//  where K == _Key {
-//    switch boundsExpression {
-//    case .range(let lhs, let rhs):
-//      return (relative(from: lhs), relative(from: rhs))
-//    case .closedRange(let lhs, let rhs):
-//      return (relative(from: lhs), __tree_next(relative(from: rhs)))
-//    case .partialRangeTo(let rhs):
-//      return (__begin_node_, relative(from: rhs))
-//    case .partialRangeThrough(let rhs):
-//      return (__begin_node_, __tree_next(relative(from: rhs)))
-//    case .partialRangeFrom(let lhs):
-//      return (relative(from: lhs), __end_node)
-//    }
-//  }
+  @inlinable @inline(__always)
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> UnsafeTreeSealedRangeExpression
+  where
+    Base: ___TreeBase,
+    Base._Key == _Key
+  {
+    switch self {
 
-  func relative<K>(to boundsExpression: RedBlackTreeBoundsExpression<K>)
-    -> UnsafeTreeRangeExpression
-  where K == _Key {
-    switch boundsExpression {
-    case .range(let lhs, let rhs):
-      return .range(from: relative(from: lhs), to: relative(from: rhs))
-    case .closedRange(let lhs, let rhs):
-      return .closedRange(from: relative(from: lhs), through: relative(from: rhs))
-    case .partialRangeTo(let rhs):
-      return .partialRangeTo(relative(from: rhs))
-    case .partialRangeThrough(let rhs):
-      return .partialRangeThrough(relative(from: rhs))
-    case .partialRangeFrom(let lhs):
-      return .partialRangeFrom(relative(from: lhs))
+    case .range(let from, let to):
+      return .range(
+        from: from.relative(to: __tree_),
+        to: to.relative(to: __tree_))
+
+    case .closedRange(let from, let through):
+      return .closedRange(
+        from: from.relative(to: __tree_),
+        through: through.relative(to: __tree_))
+
+    case .partialRangeTo(let to):
+      return .partialRangeTo(to.relative(to: __tree_))
+
+    case .partialRangeThrough(let through):
+      return .partialRangeThrough(through.relative(to: __tree_))
+
+    case .partialRangeFrom(let from):
+      return .partialRangeFrom(from.relative(to: __tree_))
+
+    case .equalRange(let __v):
+      let (lower, upper) =
+        __tree_.isMulti
+        ? __tree_.__equal_range_multi(__v)
+        : __tree_.__equal_range_unique(__v)
+
+      return .range(
+        from: lower.sealed,
+        to: upper.sealed)
     }
+  }
+
+  @usableFromInline
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> (
+      UnsafeMutablePointer<UnsafeNode>,
+      UnsafeMutablePointer<UnsafeNode>
+    )
+  where
+    Base: ___TreeBase,
+    Base._Key == _Key
+  {
+    unwrapLowerUpper(
+      relative(to: __tree_)
+        .relative(to: __tree_))
+      ?? (__tree_.__end_node, __tree_.__end_node)
+  }
+
+  @usableFromInline
+  func __relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> (
+      _SealedPtr,
+      _SealedPtr
+    )
+  where
+    Base: ___TreeBase,
+    Base._Key == _Key
+  {
+    relative(to: __tree_).relative(to: __tree_)
   }
 }

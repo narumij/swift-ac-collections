@@ -19,14 +19,20 @@ import Foundation
 
 extension UnsafeTreeV2 {
 
+  /// 木のコピーを作成する
+  ///
+  /// - Parameters:
+  ///   - minimumCapacity: 新しいバッファに確保する最小容量。
+  ///     - `nil` の場合はコピー元と同じ容量を使用する。
+  ///     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
   @inlinable
   @inline(__always)
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
     assert(check())
     let tree = withMutableHeader { header in
-      UnsafeTreeV2.create(
+      UnsafeTreeV2._create(
         unsafeBufferObject:
-          header.copyBuffer(Base.self, minimumCapacity: minimumCapacity))
+          header.copyBuffer(Base._PayloadValue.self, minimumCapacity: minimumCapacity))
     }
     assert(count == 0 || initializedCount == tree.initializedCount)
     assert(count == 0 || equiv(with: tree))
@@ -37,18 +43,32 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2BufferHeader {
 
+  /// 木のコピーを作成する
+  ///
+  /// - Parameters:
+  ///   - minimumCapacity: 新しいバッファに確保する最小容量。
+  ///     - `nil` の場合はコピー元と同じ容量を使用する。
+  ///     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
   @inlinable
   //  @inline(never)
-  internal func copy<Base>(_ t: Base.Type, minimumCapacity: Int? = nil) -> UnsafeTreeV2<Base> {
-    UnsafeTreeV2<Base>.create(
+  internal func copy<Base>(minimumCapacity: Int? = nil) -> UnsafeTreeV2<Base> {
+    UnsafeTreeV2<Base>._create(
       unsafeBufferObject:
-        copyBuffer(Base.self, minimumCapacity: minimumCapacity))
+        copyBuffer(Base._PayloadValue.self, minimumCapacity: minimumCapacity))
   }
 
+  /// バッファオブジェクトのコピーを作成する。
+  ///
+  /// - Parameters:
+  ///   - t: 木の要素値型（ヘッダは型消去されているため、引数で受け取る）
+  ///   - minimumCapacity: 新しいバッファに確保する最小容量。
+  ///     - `nil` の場合はコピー元と同じ容量を使用する。
+  ///     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
   @inlinable
   //  @inline(__always)
-  internal func copyBuffer<Base>(_ t: Base.Type, minimumCapacity: Int? = nil) -> UnsafeTreeV2Buffer
-  where Base: ___TreeBase {
+  internal func copyBuffer<_PayloadValue>(_ t: _PayloadValue.Type, minimumCapacity: Int? = nil)
+    -> UnsafeTreeV2Buffer
+  {
 
     // 番号の抜けが発生してるケースがあり、それは再利用プールにノードがいるケース
     // その部分までコピーする必要があり、初期化済み数でのコピーとなる
@@ -58,7 +78,7 @@ extension UnsafeTreeV2BufferHeader {
     let _newBuffer =
       UnsafeTreeV2Buffer
       .create(
-        Base._RawValue.self,
+        _PayloadValue.self,
         minimumCapacity: newCapacity,
         nullptr: nullptr)
 
@@ -80,7 +100,7 @@ extension UnsafeTreeV2BufferHeader {
         return
       }
 
-      _copy(Base.self, to: &newHeader.pointee, nullptr: nullptr)
+      copyHeader(_PayloadValue.self, to: &newHeader.pointee, nullptr: nullptr)
 
       assert(freshPoolUsedCount == newHeader.pointee.freshPoolUsedCount)
     }
@@ -88,23 +108,26 @@ extension UnsafeTreeV2BufferHeader {
     return _newBuffer
   }
 
+  /// ヘッダの内容を空のヘッダにコピーする。
+  ///
+  /// - Parameters:
+  ///   - t: 木の要素値型（ヘッダは型消去されているため、引数で受け取る）
+  ///   - other: コピー先のヘッダ（あらかじめ容量が確保されている必要がある）
+  ///   - nullptr: ヌルポインタ （型情報アクセスのオーバーヘッドを避けるため、呼び出し元のものを再利用する）
   @inlinable
-  func _copy<Base>(
-    _ t: Base.Type, to other: inout UnsafeTreeV2BufferHeader,
-    nullptr: UnsafeMutablePointer<UnsafeNode>
-  )
-  where Base: ___TreeBase {
-
-    typealias _RawValue = Base._RawValue
-    typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  func copyHeader<_PayloadValue>(
+    _ t: _PayloadValue.Type,
+    to other: inout UnsafeTreeV2BufferHeader,
+    nullptr: _NodePtr
+  ) {
 
     // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
-    let bucket = other.freshBucketHead!.accessor(_value: MemoryLayout<_RawValue>._memoryLayout)!
+    let bucket = other.freshBucketHead!.accessor(payload: MemoryLayout<_PayloadValue>._memoryLayout)!
 
-    /// 同一番号の新ノードを取得する内部ユーティリティ
+    /// 同一番号の新ノードを取得するメソッド内ユーティリティ
     @inline(__always)
     func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
-      let index = ptr.pointee.___raw_index
+      let index = ptr.pointee.___tracking_tag
       return switch index {
       case .nullptr: nullptr
       case .end: other.end_ptr
@@ -112,34 +135,35 @@ extension UnsafeTreeV2BufferHeader {
       }
     }
 
-    /// ノードを新ノードで再構築する内部ユーティリティ
+    /// ノードを新ノードで再構築するメソッド内ユーティリティ
     @inline(__always)
     func node(_ s: borrowing UnsafeNode) -> UnsafeNode {
       // 値は別途管理
       return .init(
-        ___raw_index: s.___raw_index,
+        ___tracking_tag: s.___tracking_tag,
         __left_: __ptr_(s.__left_),
         __right_: __ptr_(s.__right_),
         __parent_: __ptr_(s.__parent_),
         __is_black_: s.__is_black_,
-        ___needs_deinitialize: s.___needs_deinitialize)
+        ___has_payload_content: s.___has_payload_content)
     }
 
     // 旧ノードを列挙する準備
-    var nodes = makeFreshPoolIterator() as PopIterator<_RawValue>
+    var usedNodes = makeUsedNodeIterator() as UsedIterator<_PayloadValue>
 
     // ノード番号順に利用歴があるノード全てについて移行作業を行う
-    while let s = nodes.next(), let d = other.popFresh() {
+    while let s = usedNodes.next(), let d = other.popFresh() {
       // ノードを初期化する
       d.initialize(to: node(s.pointee))
       // 必要な場合、値を初期化する
-      if s.pointee.___needs_deinitialize {
-        d.__value_().initialize(to: s.__value_().pointee as _RawValue)
+      if s.pointee.___has_payload_content {
+        d.__value_().initialize(to: s.__value_().pointee as _PayloadValue)
       }
     }
 
     // ルートノードを設定
     other.__root = __ptr_(__root)
+    assert(__tree_invariant(other.__root))
 
     // __begin_nodeを初期化
     other.begin_ptr.pointee = __ptr_(begin_ptr.pointee)

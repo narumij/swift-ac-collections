@@ -33,7 +33,7 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
     self.isMulti = false
   }
   @usableFromInline typealias _Key = _Key
-  @usableFromInline typealias _RawValue = RedBlackTreePair<_Key, _MappedValue>
+  @usableFromInline typealias _PayloadValue = RedBlackTreePair<_Key, _MappedValue>
   @usableFromInline typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   @usableFromInline typealias _Pointer = _NodePtr
   @usableFromInline typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
@@ -45,7 +45,7 @@ extension UnsafeTreeV2
 where
   Base: KeyValueComparer,
   _Key: Comparable,
-  _RawValue == RedBlackTreePair<_Key, Base._MappedValue>
+  _PayloadValue == RedBlackTreePair<_Key, Base._MappedValue>
 {
 
   @usableFromInline
@@ -74,7 +74,7 @@ extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
   @inline(__always)
-  func __key(_ __v: _RawValue) -> _Key { __v.key }
+  func __key(_ __v: _PayloadValue) -> _Key { __v.key }
 
   @inlinable
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
@@ -105,7 +105,7 @@ extension UnsafeTreeV2KeyValueHandle {
   @inlinable
   @inline(__always)
   func __get_value(_ p: _NodePtr) -> _Key {
-    p.__value_(as: _RawValue.self).pointee.key
+    p.__value_(as: _PayloadValue.self).pointee.key
   }
 }
 

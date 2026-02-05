@@ -24,7 +24,7 @@ protocol FindLeafProtocol_ptr:
     & RootInterface
     & RootPtrInterface
     & EndNodeInterface
-    & _nullptr_interface
+    & NullPtrInterface
 {}
 
 extension FindLeafProtocol_ptr {
@@ -97,7 +97,7 @@ protocol FindEqualProtocol_ptr:
     & EndInterface
     & RootInterface
     & RootPtrInterface
-    & _nullptr_interface
+    & NullPtrInterface
 {}
 
 extension FindEqualProtocol_ptr {
@@ -149,7 +149,7 @@ protocol FindEqualProtocol_ptr_old:
     & RootPtrInterface
     & EndNodeInterface
     & EndInterface
-    & _nullptr_interface
+    & NullPtrInterface
 {}
 
 extension FindEqualProtocol_ptr_old {
@@ -197,7 +197,7 @@ protocol FindProtocol_ptr:
     & FindInteface
     & FindEqualInterface
     & EndInterface
-    & _nullptr_interface
+    & NullPtrInterface
 {}
 
 extension FindProtocol_ptr {

@@ -1,25 +1,21 @@
-// Copyright 2024-2026 narumij
+//===----------------------------------------------------------------------===//
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// This source file is part of the swift-ac-collections project
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
 // This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
 //
-// Copyright © 2003-2025 The LLVM Project.
+// Copyright © 2003-2026 The LLVM Project.
 // Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
+// NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @frozen
 @usableFromInline
 package struct UnsafeTreeV2BufferHeader: _RecyclePool {
@@ -27,9 +23,9 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
 
   @inlinable
   @inline(__always)
-  internal init<_RawValue>(_ t: _RawValue.Type, nullptr: _NodePtr, capacity: Int) {
-    let allocator = _BucketAllocator(valueType: _RawValue.self) {
-      $0.assumingMemoryBound(to: _RawValue.self)
+  internal init<_PayloadValue>(_ t: _PayloadValue.Type, nullptr: _NodePtr, capacity: Int) {
+    let allocator = _BucketAllocator(valueType: _PayloadValue.self) {
+      $0.assumingMemoryBound(to: _PayloadValue.self)
         .deinitialize(count: 1)
     }
     self.init(allocator: allocator, nullptr: nullptr, capacity: capacity)
@@ -39,13 +35,13 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @inline(__always)
   internal init(allocator: _BucketAllocator, nullptr: _NodePtr, capacity: Int) {
     let (head, _) = allocator.createHeadBucket(capacity: capacity, nullptr: nullptr)
-    self.nullptr = nullptr
     self.recycleHead = nullptr
-    self.freshBucketAllocator = allocator
+    self.nullptr = nullptr
     self.begin_ptr = head.begin_ptr
-    self.begin_ptr.pointee = head.end_ptr
     self.root_ptr = _ref(to: &head.end_ptr.pointee.__left_)
+    self.freshBucketAllocator = allocator
     self.pushFreshBucket(head: head)
+    assert(begin_ptr.pointee == head.end_ptr)
   }
 
   @usableFromInline var count: Int = 0
@@ -56,17 +52,31 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @usableFromInline var freshBucketHead: _BucketPointer?
   @usableFromInline var freshBucketLast: _BucketPointer?
   @usableFromInline let nullptr: _NodePtr
-  @usableFromInline var begin_ptr: UnsafeMutablePointer<_NodePtr>
+  @usableFromInline var begin_ptr: _NodeRef
   @usableFromInline var root_ptr: _NodeRef
   @usableFromInline var freshBucketAllocator: _BucketAllocator
-  
+
+  /// IndexやIteratorを結ぶ共有メモリオブジェクトの内部プロパティ
+  ///
+  /// - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
+  @usableFromInline var _tied: _TiedRawBuffer?
+
   #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
   #endif
 
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    /// CoWの発火回数を観察するためのプロパティ
+    @usableFromInline internal var copyCount: UInt = 0
+  #endif
+}
+
+extension UnsafeTreeV2BufferHeader {
+
+  /// `_Payload`のstrideとalignement
   @inlinable
-  var memoryLayout: _MemoryLayout {
-    freshBucketAllocator.memoryLayout
+  var payload: _MemoryLayout {
+    freshBucketAllocator.payload
   }
 
   @inlinable
@@ -83,13 +93,17 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @inlinable
   internal func __root_ptr() -> _NodeRef { root_ptr }
 
-  @usableFromInline var _tied: _TiedRawBuffer?
-
+  /// IndexやIteratorとのメモリ共有が発生してないことを示す
   @usableFromInline
   var isRawBufferUniquelyOwned: Bool {
     _tied == nil
   }
 
+  /// IndexやIteratorを結ぶ共有メモリ
+  ///
+  /// ヘッダーにとっては解放責任のデタッチ先
+  ///
+  /// - WARNING: 触ると生成されるので不必要に触らないこと
   @inlinable
   var tiedRawBuffer: _TiedRawBuffer {
     mutating get {
@@ -102,12 +116,8 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
       return _tied!
     }
   }
-
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    /// CoWの発火回数を観察するためのプロパティ
-    @usableFromInline internal var copyCount: UInt = 0
-  #endif
-
+  
+  /// 確保済みメモリの内容を未初期化に戻し、木を空にする
   @inlinable
   internal mutating func deinitialize() {
     ___flushFreshPool()
@@ -138,7 +148,7 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
     @inlinable
     mutating func pushFreshBucket(head: _BucketPointer) {
       freshBucketHead = head
-      freshBucketCurrent = head.queue(memoryLayout: memoryLayout)
+      freshBucketCurrent = head.queue(payload: payload)
       freshBucketLast = head
       freshPoolCapacity += head.pointee.capacity
       #if DEBUG
@@ -163,7 +173,7 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
       if let p = freshBucketCurrent?.pop() {
         return p
       }
-      freshBucketCurrent = freshBucketCurrent?.next(memoryLayout: memoryLayout)
+      freshBucketCurrent = freshBucketCurrent?.next(payload: payload)
       return freshBucketCurrent?.pop()
     }
   }
@@ -183,17 +193,17 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
      Violating this invariant may cause excessive traversal or undefined behavior.
     */
     @inlinable
-    subscript(___raw_index: Int) -> _NodePtr {
-      assert(___raw_index >= 0)
-      var remaining = ___raw_index
-      var p = freshBucketHead?.accessor(_value: memoryLayout)
+    subscript(___tracking_tag: _RawTrackingTag) -> _NodePtr {
+      assert(___tracking_tag >= 0)
+      var remaining = ___tracking_tag
+      var p = freshBucketHead?.accessor(payload: payload)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {
           return h[remaining]
         }
         remaining -= cap
-        p = h.next(_value: memoryLayout)
+        p = h.next(payload: payload)
       }
       return nullptr
     }
@@ -205,7 +215,7 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
     mutating func ___flushFreshPool() {
       freshBucketAllocator.deinitialize(bucket: freshBucketHead)
       freshPoolUsedCount = 0
-      freshBucketCurrent = freshBucketHead?.queue(memoryLayout: memoryLayout)
+      freshBucketCurrent = freshBucketHead?.queue(payload: payload)
     }
 
     @usableFromInline
@@ -226,11 +236,11 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
 
   extension UnsafeTreeV2BufferHeader {
 
-    @usableFromInline typealias PopIterator = _FreshPoolPopIterator
+    @usableFromInline typealias UsedIterator = _FreshPoolUsedIterator
 
     @inlinable
-    func makeFreshPoolIterator<T>() -> _FreshPoolPopIterator<T> {
-      return _FreshPoolPopIterator<T>(bucket: freshBucketHead)
+    func makeUsedNodeIterator<T>() -> _FreshPoolUsedIterator<T> {
+      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead)
     }
   }
 
@@ -269,8 +279,6 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
 
 extension UnsafeTreeV2BufferHeader {
 
-  // TODO: いろいろ試すための壁で、いまは余り意味が無いのでタイミングでインライン化する
-  // Headerに移すのが妥当かも。そうすれば_Value依存が消せる
   @inlinable
   mutating public
     func ___popFresh() -> _NodePtr
@@ -279,10 +287,10 @@ extension UnsafeTreeV2BufferHeader {
     guard let p = popFresh() else {
       return nullptr
     }
-    assert(p.pointee.___raw_index == .debug)
+    assert(p.pointee.___tracking_tag == .debug)
     #if true
       p.initialize(to: nullptr.pointee)
-      p.pointee.___raw_index = freshPoolUsedCount
+      p.pointee.___tracking_tag = freshPoolUsedCount
     #else
       p.initialize(to: .create(id: freshPoolUsedCount))
     #endif
@@ -300,8 +308,8 @@ extension UnsafeTreeV2BufferHeader {
     #if DEBUG
       assert(recycleCount >= 0)
     #endif
-    let p = recycleHead.rawIndex == .nullptr ? ___popFresh() : ___popRecycle()
-    assert(p.pointee.___raw_index >= 0)
+    let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
+    assert(p.pointee.___tracking_tag >= 0)
     return p
   }
 
@@ -309,9 +317,9 @@ extension UnsafeTreeV2BufferHeader {
     #if DEBUG
       assert(recycleCount >= 0)
     #endif
-    let p = recycleHead.rawIndex == .nullptr ? ___popFresh() : ___popRecycle()
+    let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
     p.__value_().initialize(to: k)
-    assert(p.pointee.___raw_index >= 0)
+    assert(p.pointee.___tracking_tag >= 0)
     return p
   }
 }

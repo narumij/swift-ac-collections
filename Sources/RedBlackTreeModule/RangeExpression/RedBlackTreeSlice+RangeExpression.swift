@@ -16,42 +16,40 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
-extension RedBlackTreeSliceV2.KeyOnly {
+  extension RedBlackTreeSliceV2.KeyOnly {
 
     public typealias _RangeExpression = UnsafeIndexV2RangeExpression<Base>
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      _isValid(.unboundedRange)  // 常にtrueな気がする
+      return _start.isValid && _end.isValid
     }
 
     @inlinable
     public func isValid(_ bounds: _RangeExpression) -> Bool {
-      _isValid(bounds.rawRange)
+      if let (l, u) = unwrapLowerUpper(bounds.rawRange.relative(to: __tree_)) {
+        return l.isValid && u.isValid
+      }
+      return false
     }
 
     @inlinable
-    public subscript(bounds: UnboundedRange) -> SubSequence {
-      ___subscript(.unboundedRange)
+    public subscript(bounds: UnboundedRange) -> RedBlackTreeKeyOnlyRangeView<Base> {
+      ___subscript(UnsafeTreeSealedRangeExpression.unboundedRange)
     }
 
     @inlinable
-    public subscript(bounds: _RangeExpression) -> SubSequence {
+    public subscript(bounds: _RangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
       ___subscript(bounds.rawRange)
     }
 
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
     @inlinable
-    public subscript(unchecked bounds: UnboundedRange) -> SubSequence {
-      ___unchecked_subscript(.unboundedRange)
-    }
-
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(unchecked bounds: _RangeExpression) -> SubSequence {
-      ___unchecked_subscript(bounds.rawRange)
+    public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
+      let (lower, upper) = bounds.__relative(to: __tree_)
+      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+        fatalError(.invalidIndex)
+      }
+      return .init(__tree_: __tree_, _start: lower, _end: upper)
     }
   }
 #endif

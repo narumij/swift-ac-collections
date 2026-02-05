@@ -21,50 +21,159 @@
 
 // 三方比較に関してはどこに配置するか迷っている（型がインターフェースを参照しているため）
 
+// `_Value`という型名はこのコードベースでは中途半端で混乱の元なので使用しない方針とする
+
 // MARK: - Primitives
 
-/// ノードを指す基本型の定義
+/// ノードポインタ型の定義
 public protocol _NodePtrType {
-  /// ノードを指す型
+  /// ノードポインタ型
+  ///
+  /// _模式図_
+  /// ```
+  /// ...|Node|Payload|Node...
+  ///    ^_NodePtr
+  /// ```
   associatedtype _NodePtr: Equatable
-  /// ノードを指すメンバへの参照型
+
+  /// ノード参照ポインタ型
+  ///
+  /// _模式図_
+  /// ```
+  /// ...|             Node             |
+  ///    |left|right|parent|is_black|etc|
+  ///    |    |     ^_NodeRef
+  ///    |    ^_NodeRef
+  ///    ^_NodeRef
+  /// ```
   associatedtype _NodeRef
 }
 
-/// ノードが保持する値型の定義
-public protocol _RawValueType {
-  /// ノードが保持する値型
-  associatedtype _RawValue
+/// ノードの積載値型の定義
+public protocol _PayloadValueType {
+  /// ノードの積載値型
+  ///
+  /// _模式図_
+  /// ```
+  /// ...|Node|Payload|Node...
+  ///    |    ^--_PayloadValue
+  ///    ^_NodePtr
+  /// ```
+  associatedtype _PayloadValue
 }
 
-/// 比較用の値型の定義
+/// 比較値型の定義
 public protocol _KeyType {
-  /// 比較用の値型
+  /// 比較値型
+  ///
+  /// set, multiset
+  /// ```
+  /// ...|Node|Payload|Node...
+  ///    |    |Key    |
+  ///    |     ^--_Key
+  ///    ^_NodePtr
+  /// ```
+  ///
+  /// dictionary, multimap, etc
+  /// ```
+  /// ...|Node|     Payload      |Node...
+  ///    |    |(Key, MappedValue)|
+  ///    |      ^--_Key
+  ///    ^_NodePtr
+  /// ```
   associatedtype _Key
 }
 
-// TODO: しばらく様子を見たのち、_MappedValueを_Valueに名称変更するか検討すること
-/// キーに対応する値型の定義
+/// キーバリュー積載時の対応値型の定義
 public protocol _MappedValueType {
-  /// キーに対応する値型
+  /// キーバリュー積載時の対応値型
+  ///
+  /// _模式図_
+  /// ```
+  /// ...|Node|     Payload      |Node...
+  ///    |    |(Key, MappedValue)|
+  ///    |           ^--_MappedValue
+  ///    ^_NodePtr
+  /// ```
   associatedtype _MappedValue
 }
 
 // MARK: - Conditions
 
-/// 必ず比較型と保持型を持つ
-public protocol _BaseType: _KeyType & _RawValueType {}
+/// 基本型
+///
+/// 必ず積載型と比較型を持つ
+///
+/// 型名に`Base`をもつのは、クラスレベルでの制約や定義をもつことを表す。
+///
+/// インスタンスレベルは`Tree`となる
+///
+/// 制約や定義が木のインスタンスに適用されるかどうかは木の実装次第
+///
+public protocol _BaseType: _PayloadValueType & _KeyType {}
 
-/// SetやMultiSetは比較型と保持型が同じ
+/// SetやMultiSetは積載型と比較型が同じ
 public protocol _ScalarBaseType: _BaseType
-where _RawValue == _Key {}
+where _PayloadValue == _Key {}
 
-/// DictionaryやMultiMapは比較型と保持型は互いに異なり、マップ値型がある
+/// DictionaryやMultiMapは積載型と比較型は互いに異なり、対応値型がある
 public protocol _KeyValueBaseType: _BaseType & _MappedValueType {}
 
-/// DictionaryやMultiMapは保持型にRedBlackTreePairを用いる
+/// DictionaryやMultiMapは積載型にRedBlackTreePairを用いる
 public protocol _PairBaseType: _KeyValueBaseType
-where _RawValue == RedBlackTreePair<_Key, _MappedValue> {}
+where _PayloadValue == RedBlackTreePair<_Key, _MappedValue> {}
+
+// MARK: -
+
+/// 各コレクションの要素はここまでの型と関連があるが、必ずしも一致するとは限らない
+public protocol _ElementType {
+  /// コレクションの要素型
+  associatedtype Element
+}
+
+/// SetやMultiSetはコレクション要素型がキーと一致していること
+public protocol _ScalarElementType: _ScalarBaseType, _ElementType
+where Element == _Key {}
+
+/// DictionaryやMultiMapのコレクション要素型はキーバリューのタプルになってること
+public protocol _KeyValueElementType: _KeyValueBaseType, _ElementType
+where Element == (key: _Key, value: _MappedValue) {}
+
+// MARK: -
+
+/// 積載型からコレクション要素型への変換方法を示すこと
+public protocol _BasePaylodValue_ElementInterface: _PayloadValueType, _ElementType {
+  static func __element_(_ __value: _PayloadValue) -> Element
+}
+
+/// SetやMultiSetの、積載型からコレクション要素型への変換方法
+public protocol _ScalarBase_ElementProtocol:
+  _BasePaylodValue_ElementInterface
+    & _ScalarElementType
+{}
+
+extension _ScalarBase_ElementProtocol {
+
+  @inlinable
+  @inline(__always)
+  public static func __element_(_ __value: _PayloadValue) -> Element { __value }
+}
+
+/// DictionaryやMultiMapの積載型がペアの場合、コレクション要素型への変換方法
+public protocol _PairBase_ElementProtocol:
+  _BasePaylodValue_ElementInterface
+    & _PairBaseType
+    & _KeyValueElementType
+{}
+
+extension _PairBase_ElementProtocol {
+
+  @inlinable
+  @inline(__always)
+  public static func __element_(_ __value: _PayloadValue) -> Element {
+    (__value.key, __value.value)
+  }
+}
 
 // MARK: - Aliases
 
@@ -99,10 +208,10 @@ where __node_value_type == _Key {
   associatedtype __node_value_type
 }
 
-/// 保持型の別名定義
+/// 積載型の別名定義
 @usableFromInline
-protocol __value_type: _RawValueType
-where __value_type == _RawValue {
+protocol __value_type: _PayloadValueType
+where __value_type == _PayloadValue {
   /// 保持型の別名
   associatedtype __value_type
 }

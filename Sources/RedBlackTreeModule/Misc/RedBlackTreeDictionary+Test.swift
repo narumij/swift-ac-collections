@@ -15,11 +15,16 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary {
-
+  
   @inlinable
   @inline(__always)
   package func ___is_garbaged(_ index: Index) -> Bool {
-    __tree_.___is_garbaged(__tree_.rawValue(index))
+    switch __tree_._remap_to_safe_(index).purified {
+    case .failure:
+      return true
+    default:
+      return false
+    }
   }
 }
 
@@ -31,18 +36,12 @@ extension RedBlackTreeDictionary {
       set { __tree_.copyCount = newValue }
     }
   }
-
-  extension RedBlackTreeDictionary {
-    package mutating func _checkUnique() -> Bool {
-      _isKnownUniquelyReferenced_LV2()
-    }
-  }
 #endif
 
 extension RedBlackTreeDictionary {
 
   package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {
-    .init(_start: _start, _end: _end)
+    .init(_start: _sealed_start, _end: _sealed_end)
   }
 }
 

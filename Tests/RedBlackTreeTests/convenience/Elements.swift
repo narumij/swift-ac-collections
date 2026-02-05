@@ -2,19 +2,19 @@ import RedBlackTreeModule
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
-    subscript(bounds: Range<Element>) -> SubSequence {
+    subscript(bounds: Range<Element>) -> RedBlackTreeKeyOnlyRangeView<Base> {
       elements(in: bounds)
     }
-    subscript(bounds: ClosedRange<Element>) -> SubSequence {
+    subscript(bounds: ClosedRange<Element>) -> RedBlackTreeKeyOnlyRangeView<Base> {
       elements(in: bounds)
     }
   }
   extension RedBlackTreeSet {
-    func elements(in range: Range<Element>) -> SubSequence {
+    func elements(in range: Range<Element>) -> RedBlackTreeKeyOnlyRangeView<Base> {
       sequence(from: range.lowerBound, to: range.upperBound)
     }
 
-    func elements(in range: ClosedRange<Element>) -> SubSequence {
+    func elements(in range: ClosedRange<Element>) -> RedBlackTreeKeyOnlyRangeView<Base> {
       sequence(from: range.lowerBound, through: range.upperBound)
     }
   }

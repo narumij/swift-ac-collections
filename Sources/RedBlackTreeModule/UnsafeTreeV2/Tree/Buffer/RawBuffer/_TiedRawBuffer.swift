@@ -1,17 +1,38 @@
+//===----------------------------------------------------------------------===//
 //
-//  _UnsafeNodeFreshPooDeallocator.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/01/12.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
-// インデックス等で`__tree_`を共有する設計だったが、デアロケータを共有する設計に移行する
-// 生成されて以後はこのオブジェクトが保持するメモリの寿命を一元で管理する
+/// 木に紐付いている生バッファ
+///
+/// インデックスやイテレータを利用した際に生成され、それ以後メモリの解放責任を負う
 @usableFromInline
 package final class _TiedRawBuffer:
   ManagedBuffer<_TiedRawBuffer.Header, Void>, _UnsafeNodePtrType
 {
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
+
+  @inlinable
+  deinit {
+    withUnsafeMutablePointerToHeader { header in
+      header.pointee.deallocate()
+    }
+  }
+}
+
+extension _TiedRawBuffer {
 
   @nonobjc
   @inlinable
@@ -26,28 +47,23 @@ package final class _TiedRawBuffer:
     }
     return unsafeDowncast(storage, to: _TiedRawBuffer.self)
   }
+}
 
+extension _TiedRawBuffer {
   @nonobjc
   @inlinable
   public func isTriviallyIdentical(to other: _TiedRawBuffer) -> Bool {
     self === other
   }
-
-  @inlinable
-  deinit {
-    withUnsafeMutablePointerToHeader { header in
-      header.pointee.deallocate()
-    }
-  }
 }
 
 extension _TiedRawBuffer {
-  
+
   @frozen
   public
-  struct Header
+    struct Header
   {
-    
+
     @inlinable
     internal init(
       bucketHead: _TiedRawBuffer.Header._BucketPointer? = nil,
@@ -57,31 +73,31 @@ extension _TiedRawBuffer {
       self.deallocator = deallocator
       self.isValueAccessAllowed = true
     }
-    
+
     @usableFromInline
     typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
-    
+
     @usableFromInline var bucketHead: _BucketPointer?
     @usableFromInline let deallocator: _BucketAllocator
     @usableFromInline var isValueAccessAllowed: Bool
-    
+
     @inlinable
     func deallocate() {
       deallocator.deallocate(bucket: bucketHead)
     }
-    
+
     @inlinable
-    subscript(___raw_index: Int) -> _NodePtr? {
-      assert(___raw_index >= 0)
-      var remaining = ___raw_index
-      var p = bucketHead?.accessor(_value: deallocator.memoryLayout)
+    subscript(___tracking_tag: _RawTrackingTag) -> _NodePtr? {
+      assert(___tracking_tag >= 0)
+      var remaining = ___tracking_tag
+      var p = bucketHead?.accessor(payload: deallocator.payload)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {
           return h[remaining]
         }
         remaining -= cap
-        p = h.next(_value: deallocator.memoryLayout)
+        p = h.next(payload: deallocator.payload)
       }
       assert(false)
       return nil
@@ -90,65 +106,32 @@ extension _TiedRawBuffer {
 }
 
 extension _TiedRawBuffer {
-  
+
   @nonobjc
   @inlinable
-  subscript(___raw_index: Int) -> _NodePtr? {
-    header[___raw_index]
+  subscript(___tracking_tag: _RawTrackingTag) -> _NodePtr? {
+    header[___tracking_tag]
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
   var begin_ptr: UnsafeMutablePointer<_NodePtr>? {
     header.bucketHead?.begin_ptr
   }
-  
+
   @nonobjc
   @inlinable
   @inline(__always)
   var end_ptr: _NodePtr? {
     header.bucketHead?.end_ptr
   }
-  
+
   @nonobjc
   @usableFromInline
   var isValueAccessAllowed: Bool {
     get { header.isValueAccessAllowed }
     set { withUnsafeMutablePointerToHeader { $0.pointee.isValueAccessAllowed = newValue } }
-  }
-}
-
-extension _TiedRawBuffer {
-
-  @nonobjc
-  @usableFromInline
-  func rawRange(_ rangeExpression: UnsafeTreeRangeExpression) -> (_NodePtr, _NodePtr)?
-  {
-    guard
-      let begin_ptr,
-      let end_ptr
-    else {
-      return nil
-    }
-    
-    return rangeExpression
-      .rawRange(_begin: begin_ptr.pointee, _end: end_ptr)
-  }
-  
-  @nonobjc
-  @usableFromInline
-  func range(_ rangeExpression: UnsafeTreeRangeExpression) -> UnsafeTreeRange?
-  {
-    guard
-      let begin_ptr,
-      let end_ptr
-    else {
-      return nil
-    }
-    
-    return rangeExpression
-      .range(_begin: begin_ptr.pointee, _end: end_ptr)
   }
 }
 

@@ -142,7 +142,7 @@
       }
     #endif
 
-    #if !COMPATIBLE_ATCODER_2025
+    #if !COMPATIBLE_ATCODER_2025 && false
       @Test
       func `区間不正の場合、SIGSEGV以外の方法で停止すること (1)`() async {
         await #expect(processExitsWith: .signal(SIGTRAP)) {

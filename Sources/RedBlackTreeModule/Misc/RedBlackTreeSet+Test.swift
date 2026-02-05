@@ -18,8 +18,13 @@ extension RedBlackTreeSet {
 
   @inlinable
   @inline(__always)
-  package func ___is_garbaged(_ index: Index) -> Bool {
-    __tree_.___is_garbaged(__tree_.rawValue(index))
+  package func ___is_garbaged(_ index: Tree.Index) -> Bool {
+    switch __tree_._remap_to_safe_(index).purified {
+    case .failure:
+      return true
+    default:
+      return false
+    }
   }
 }
 
@@ -30,18 +35,12 @@ extension RedBlackTreeSet {
       set { __tree_.copyCount = newValue }
     }
   }
-
-  extension RedBlackTreeSet {
-    package mutating func _checkUnique() -> Bool {
-      _isKnownUniquelyReferenced_LV2()
-    }
-  }
 #endif
 
 extension RedBlackTreeSet {
 
   package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {
-    .init(_start: _start, _end: _end)
+    .init(_start: _sealed_start, _end: _sealed_end)
   }
 }
 

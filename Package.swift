@@ -7,7 +7,7 @@ import PackageDescription
 var defines: [String] = [
   //  "AC_COLLECTIONS_INTERNAL_CHECKS",
   //  "TREE_INVARIANT_CHECKS",
-  //  "GRAPHVIZ_DEBUG",
+  "GRAPHVIZ_DEBUG",
   //  "USING_ALGORITHMS",
   //  "USING_COLLECTIONS",
   //  "DISABLE_COPY_ON_WRITE", // やや危険。クラッシュは減った。Unit Testが通らない箇所が増える
@@ -15,14 +15,13 @@ var defines: [String] = [
   //  "SKIP_MULTISET_INDEX_BUG",
   //    "PERFOMANCE_CHECK",
   "WITHOUT_SIZECHECK",
-  "USE_UNSAFE_TREE",  // TODO: そのうち消す
   //"USE_OLD_FIND",
   // "ALLOCATION_DRILL" // リリース時はオフ
 
   //  "USE_C_MALLOC",
   "USE_COPY_ON_WRITE",
 
-  //  "DEATH_TEST",
+//    "DEATH_TEST",
   //  "BENCHMARK",
   //  "ENABLE_PERFORMANCE_TESTING"
 ]

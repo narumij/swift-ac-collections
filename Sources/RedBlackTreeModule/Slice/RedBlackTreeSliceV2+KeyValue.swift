@@ -19,16 +19,20 @@ import Foundation
 
 extension RedBlackTreeSliceV2 {
 
-  public struct KeyValue: ___UnsafeCommonV2 & ___UnsafeSubSequenceV2
-      & ___UnsafeIndexV2 & ___UnsafeKeyValueSequenceV2
+  public struct KeyValue:
+    ___UnsafeCommonV2
+      & ___UnsafeSubSequenceV2
+      & ___UnsafeIndexV2
+      & ___UnsafeKeyValueSequenceV2
+      & UnsafeIndicesProtoocl
   where
     Base: ___TreeBase & ___TreeIndex & KeyValueComparer,
-    Base._RawValue == RedBlackTreePair<Base._Key, Base._MappedValue>
+    Base._PayloadValue == RedBlackTreePair<Base._Key, Base._MappedValue>
   {
 
     public typealias Tree = UnsafeTreeV2<Base>
     public typealias _Key = Base._Key
-    public typealias _RawValue = Tree._RawValue
+    public typealias _PayloadValue = Tree._PayloadValue
     public typealias _MappedValue = Base._MappedValue
     public typealias Element = (key: _Key, value: _MappedValue)
     public typealias Index = Tree.Index
@@ -39,25 +43,27 @@ extension RedBlackTreeSliceV2 {
     internal let __tree_: Tree
 
     @usableFromInline
-    internal var _start, _end: _NodePtr
+    internal var _sealed_start, _sealed_end: _SealedPtr
 
     @inlinable
     @inline(__always)
-    internal init(tree: Tree, start: _NodePtr, end: _NodePtr) {
+    internal init(tree: Tree, start: _SealedPtr, end: _SealedPtr) {
       __tree_ = tree
-      _start = start
-      _end = end
+      _sealed_start = start
+      _sealed_end = end
     }
   }
 }
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSliceV2.KeyValue: Sequence & Collection & BidirectionalCollection {}
-#else
-  extension RedBlackTreeSliceV2.KeyValue: Sequence {}
-#endif
+extension RedBlackTreeSliceV2.KeyValue: Sequence {}
 
 extension RedBlackTreeSliceV2.KeyValue {
+
+  @usableFromInline
+  var _start: _NodePtr { _sealed_start.pointer! }
+
+  @usableFromInline
+  var _end: _NodePtr { _sealed_end.pointer! }
 
   /// - Complexity: O(1)
   @inlinable
@@ -79,24 +85,12 @@ extension RedBlackTreeSliceV2.KeyValue {
   #endif
 }
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSliceV2.KeyValue {
-
-    @available(*, deprecated, message: "性能問題があり廃止")
-    @inlinable
-    @inline(__always)
-    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-      try _forEach(body)
-    }
-  }
-#endif
-
 extension RedBlackTreeSliceV2.KeyValue {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)
-  public var count: Int { _count }
+  public var count: Int { ___count }
 }
 
 extension RedBlackTreeSliceV2.KeyValue {
@@ -119,20 +113,20 @@ extension RedBlackTreeSliceV2.KeyValue {
     @inline(__always)
     public var first: Element? {
       guard !___is_empty else { return nil }
-      return ___element(__tree_[_start])
+      return __element_(__tree_[_start])
     }
 
     @inlinable
     @inline(__always)
     public var last: Element? {
       guard !___is_empty else { return nil }
-      return ___element(__tree_[__tree_prev_iter(_end)])
+      return __element_(__tree_[__tree_prev_iter(_end)])
     }
 
     /// - Complexity: O(log *n*)
     @inlinable
     public func firstIndex(of key: _Key) -> Index? {
-      ___first_index { ($0 as _RawValue).key == key }
+      ___first_index { ($0 as _PayloadValue).key == key }
     }
 
     /// - Complexity: O(*n*)
@@ -152,79 +146,6 @@ extension RedBlackTreeSliceV2.KeyValue {
     //    @inline(__always) get { ___element(self[_checked: position]) }
     @inline(__always) get { self[_checked: position] }
   }
-}
-
-extension RedBlackTreeSliceV2.KeyValue {
-
-  #if !COMPATIBLE_ATCODER_2025
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    //    public subscript(unchecked position: Index) -> Element {
-    public subscript(unchecked position: Index) -> (key: _Key, value: _MappedValue) {
-      //      @inline(__always) get { ___element(self[_unchecked: position]) }
-      @inline(__always) get { self[_unchecked: position] }
-    }
-  #endif
-}
-
-extension RedBlackTreeSliceV2.KeyValue {
-
-  #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(log *n*)
-    @inlinable
-    @inline(__always)
-    public subscript(bounds: Range<Index>) -> SubSequence {
-      // TODO: ベースでの有効性しかチェックしていない。__containsのチェックにするか要検討
-      __tree_.___ensureValid(
-        begin: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-      return .init(
-        tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-  #endif
-
-  #if !COMPATIBLE_ATCODER_2025 && false
-    @inlinable
-    @inline(__always)
-    public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
-      let bounds: Range<Index> = bounds.relative(to: self)
-      // TODO: ベースでの有効性しかチェックしていない。__containsのチェックにするか要検討
-      __tree_.___ensureValid(
-        begin: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-      return .init(
-        tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public subscript(unchecked bounds: Range<Index>) -> SubSequence {
-      .init(
-        tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public subscript<R>(unchecked bounds: R) -> SubSequence
-    where R: RangeExpression, R.Bound == Index {
-      let bounds: Range<Index> = bounds.relative(to: self)
-      return .init(
-        tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-  #endif
 }
 
 extension RedBlackTreeSliceV2.KeyValue {
@@ -324,29 +245,8 @@ extension RedBlackTreeSliceV2.KeyValue {
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    ___contains(__tree_.rawValue(i))
+    (try? __tree_._remap_to_safe_(i).map { ___contains($0.pointer) }.get()) ?? false
   }
-}
-
-extension RedBlackTreeSliceV2.KeyValue {
-
-  #if COMPATIBLE_ATCODER_2025
-    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-    ///
-    /// - Complexity:
-    ///
-    ///   ベースがset, map, dictionaryの場合、O(1)
-    ///
-    ///   ベースがmultiset, multimapの場合 O(log *n*)
-    @inlinable
-    @inline(__always)
-    public func isValid<R: RangeExpression>(
-      _ bounds: R
-    ) -> Bool where R.Bound == Index {
-      let bounds = bounds.relative(to: self)
-      return ___contains(bounds)
-    }
-  #endif
 }
 
 extension RedBlackTreeSliceV2.KeyValue {

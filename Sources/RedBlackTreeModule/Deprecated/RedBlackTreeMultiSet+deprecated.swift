@@ -5,15 +5,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-  }
-
-  extension RedBlackTreeMultiSet {
-    @available(*, deprecated)
-    public subscript(_unsafe position: Index) -> Element {
-      @inline(__always) _read { yield self[_unchecked: position] }
+        start: __tree_._remap_to_safe_(bounds.lowerBound),
+        end: __tree_._remap_to_safe_(bounds.upperBound))
     }
   }
 
@@ -74,8 +67,8 @@
     public func elements(in range: Range<Element>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: ___lower_bound(range.lowerBound),
-        end: ___lower_bound(range.upperBound))
+        start: __tree_.lower_bound(range.lowerBound).sealed,
+        end: __tree_.lower_bound(range.upperBound).sealed)
     }
 
     /// 値レンジ `[lower, upper]` に含まれる要素のスライス
@@ -94,8 +87,8 @@
     public func elements(in range: ClosedRange<Element>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: ___lower_bound(range.lowerBound),
-        end: ___upper_bound(range.upperBound))
+        start: __tree_.lower_bound(range.lowerBound).sealed,
+        end: __tree_.upper_bound(range.upperBound).sealed)
     }
   }
 
@@ -105,8 +98,8 @@
     @inlinable
     public mutating func remove(contentsOf elementRange: Range<Element>) {
       __tree_._strongEnsureUnique()
-      let lower = ___lower_bound(elementRange.lowerBound)
-      let upper = ___lower_bound(elementRange.upperBound)
+      let lower = __tree_.lower_bound(elementRange.lowerBound)
+      let upper = __tree_.lower_bound(elementRange.upperBound)
       ___remove(from: lower, to: upper)
     }
 
@@ -114,8 +107,8 @@
     @inlinable
     public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
       __tree_._strongEnsureUnique()
-      let lower = ___lower_bound(elementRange.lowerBound)
-      let upper = ___upper_bound(elementRange.upperBound)
+      let lower = __tree_.lower_bound(elementRange.lowerBound)
+      let upper = __tree_.upper_bound(elementRange.upperBound)
       ___remove(from: lower, to: upper)
     }
   }
@@ -127,7 +120,7 @@
     @inlinable
     @discardableResult
     public mutating func removeAll(_unsafe member: Element) -> Element? {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       return __tree_.___erase_multi(member) != 0 ? member : nil
     }
   }

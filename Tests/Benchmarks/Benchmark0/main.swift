@@ -106,6 +106,14 @@ do {
   }
 }
 
+benchmark("remove 1000000 (2)") {
+    var fixture = Fixture<Int>(0..<1000000)
+    for i in 0..<1000000 {
+        fixture.remove(i)
+    }
+    _ = fixture
+}
+
 do {
   for count in [0, 32, 1024, 8192] {
     benchmark("randomElement \(count)") {

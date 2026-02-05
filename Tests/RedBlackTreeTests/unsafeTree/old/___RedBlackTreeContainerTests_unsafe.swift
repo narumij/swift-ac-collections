@@ -17,91 +17,93 @@ import XCTest
 
     let capacity = 32
 
-    func fixtureEmpty(_ tree: inout RedBlackTreeSet<Int>) {
-      tree.__nodes = []
-      tree.__root(tree.__tree_.nullptr)
-      XCTAssertTrue(tree.___tree_invariant())
-    }
+    #if false
+      func fixtureEmpty(_ tree: inout RedBlackTreeSet<Int>) {
+        tree.__nodes = []
+        tree.__root(tree.__tree_.nullptr)
+        XCTAssertTrue(tree.___tree_invariant())
+      }
 
-    func fixture0_10_20(_ tree: inout RedBlackTreeSet<Int>) {
-      tree.__nodes = [
-        .init(__is_black_: true, __left_: 1, __right_: 2, __parent_: .end),
-        .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: 0),
-        .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: 0),
-      ]
-      tree.___elements = [
-        10,
-        0,
-        20,
-      ]
-      tree.__root(tree.___NodePtr(0))
-      tree.__tree_.__begin_node_ = tree.___NodePtr(1)
-      XCTAssertTrue(tree.___tree_invariant())
-    }
-
-    func fixture0_1_2_3_4_5_6(_ tree: inout RedBlackTreeSet<Int>) {
-      tree.__nodes = [
-        .init(__is_black_: true, __left_: 1, __right_: 4, __parent_: .end),
-        .init(__is_black_: false, __left_: 2, __right_: 3, __parent_: 0),
-        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 1),
-        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 1),
-        .init(__is_black_: false, __left_: 5, __right_: 6, __parent_: 0),
-        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 4),
-        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 4),
-      ]
-      tree.___elements = [
-        3,
-        1,
-        0,
-        2,
-        4,
-        5,
-        6,
-      ]
-      tree.__root(tree.___NodePtr(0))
-      //        tree.___header.size = tree.___nodes.count
-      XCTAssertEqual(tree.___header.freshPoolUsedCount, 7)
-      tree.__begin_node_ = tree.___NodePtr(2)
-      XCTAssertTrue(tree.___tree_invariant())
-    }
-
-    func testRootInvaliant() throws {
-
-      var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
-      XCTAssertTrue(tree.___tree_invariant())
-
-      tree.__nodes = [
-        .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: .end)
-      ]
-
-      #if TREE_INVARIANT_CHECKS
-        tree.__root(tree.nullptr)
-        XCTAssertFalse(tree.__tree_.__tree_invariant(tree.___NodePtr(0)))
-
+      func fixture0_10_20(_ tree: inout RedBlackTreeSet<Int>) {
+        tree.__nodes = [
+          .init(__is_black_: true, __left_: 1, __right_: 2, __parent_: .end),
+          .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: 0),
+          .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: 0),
+        ]
+        tree.___elements = [
+          10,
+          0,
+          20,
+        ]
         tree.__root(tree.___NodePtr(0))
-        XCTAssertTrue(tree.__tree_.__tree_invariant(tree.__root))
-      #endif
+        tree.__tree_.__begin_node_ = tree.___NodePtr(1)
+        XCTAssertTrue(tree.___tree_invariant())
+      }
 
-      #if TREE_INVARIANT_CHECKS
+      func fixture0_1_2_3_4_5_6(_ tree: inout RedBlackTreeSet<Int>) {
         tree.__nodes = [
-          .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .end)
+          .init(__is_black_: true, __left_: 1, __right_: 4, __parent_: .end),
+          .init(__is_black_: false, __left_: 2, __right_: 3, __parent_: 0),
+          .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 1),
+          .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 1),
+          .init(__is_black_: false, __left_: 5, __right_: 6, __parent_: 0),
+          .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 4),
+          .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: 4),
         ]
-        XCTAssertFalse(tree.__tree_.__tree_invariant(tree.__root))
+        tree.___elements = [
+          3,
+          1,
+          0,
+          2,
+          4,
+          5,
+          6,
+        ]
+        tree.__root(tree.___NodePtr(0))
+        //        tree.___header.size = tree.___nodes.count
+        XCTAssertEqual(tree.___header.freshPoolUsedCount, 7)
+        tree.__begin_node_ = tree.___NodePtr(2)
+        XCTAssertTrue(tree.___tree_invariant())
+      }
+
+      func testRootInvaliant() throws {
+
+        var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
+        XCTAssertTrue(tree.___tree_invariant())
 
         tree.__nodes = [
-          .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
+          .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: .end)
         ]
-        XCTAssertFalse(tree.__tree_.__tree_invariant(tree.__root))
-      #endif
-    }
 
-    func testFixtures() {
+        #if TREE_INVARIANT_CHECKS
+          tree.__root(tree.nullptr)
+          XCTAssertFalse(tree.__tree_.__tree_invariant(tree.___NodePtr(0)))
 
-      var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
-      fixtureEmpty(&tree)
-      fixture0_10_20(&tree)
-      fixture0_1_2_3_4_5_6(&tree)
-    }
+          tree.__root(tree.___NodePtr(0))
+          XCTAssertTrue(tree.__tree_.__tree_invariant(tree.__root))
+        #endif
+
+        #if TREE_INVARIANT_CHECKS
+          tree.__nodes = [
+            .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .end)
+          ]
+          XCTAssertFalse(tree.__tree_.__tree_invariant(tree.__root))
+
+          tree.__nodes = [
+            .init(__is_black_: true, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
+          ]
+          XCTAssertFalse(tree.__tree_.__tree_invariant(tree.__root))
+        #endif
+      }
+
+      func testFixtures() {
+
+        var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
+        fixtureEmpty(&tree)
+        fixture0_10_20(&tree)
+        fixture0_1_2_3_4_5_6(&tree)
+      }
+    #endif
 
     #if false
       func testMin() {
@@ -158,26 +160,28 @@ import XCTest
       }
     #endif
 
-    func testBalancing0() throws {
-      var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
-      fixtureEmpty(&tree)
-      tree.__left_ = tree.___NodePtr(tree.__nodes.count)
-      tree.__nodes.append(
-        .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .end))
-      tree.__tree_.__begin_node_ = tree.___NodePtr(0)
-      XCTAssertEqual(tree.__nodes.count, 1)
-      XCTAssertNotEqual(tree.__root, nil)
-      XCTAssertNotEqual(tree.__tree_.__parent_(tree.__root), nil)
-      XCTAssertEqual(tree.__left_(tree.__root).index, .nullptr)
-      XCTAssertEqual(tree.__right_(tree.__root).index, .nullptr)
-      #if TREE_INVARIANT_CHECKS
-        XCTAssertFalse(tree.___tree_invariant())
-      #endif
-      tree.__tree_balance_after_insert(tree.__root, tree.___NodePtr(0))
-      #if TREE_INVARIANT_CHECKS
-        XCTAssertTrue(tree.___tree_invariant())
-      #endif
-    }
+    #if false
+      func testBalancing0() throws {
+        var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
+        fixtureEmpty(&tree)
+        tree.__left_ = tree.___NodePtr(tree.__nodes.count)
+        tree.__nodes.append(
+          .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .end))
+        tree.__tree_.__begin_node_ = tree.___NodePtr(0)
+        XCTAssertEqual(tree.__nodes.count, 1)
+        XCTAssertNotEqual(tree.__root, nil)
+        XCTAssertNotEqual(tree.__tree_.__parent_(tree.__root), nil)
+        XCTAssertEqual(tree.__left_(tree.__root).index, .nullptr)
+        XCTAssertEqual(tree.__right_(tree.__root).index, .nullptr)
+        #if TREE_INVARIANT_CHECKS
+          XCTAssertFalse(tree.___tree_invariant())
+        #endif
+        tree.__tree_balance_after_insert(tree.__root, tree.___NodePtr(0))
+        #if TREE_INVARIANT_CHECKS
+          XCTAssertTrue(tree.___tree_invariant())
+        #endif
+      }
+    #endif
 
     func testRemove3() throws {
 
@@ -234,23 +238,25 @@ import XCTest
       }
     }
 
-    func testFindEqual0() throws {
-      var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
-      fixtureEmpty(&tree)
-      do {
-        let __k = 5
-        let (__parent, __child) = tree.__tree_.__find_equal(__k)
-        XCTAssertEqual(__parent.index, .end)
-        XCTAssertEqual(__child, tree.__tree_.__left_ref(tree.___NodePtr(.end)))
+    #if false
+      func testFindEqual0() throws {
+        var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
+        fixtureEmpty(&tree)
+        do {
+          let __k = 5
+          let (__parent, __child) = tree.__tree_.__find_equal(__k)
+          XCTAssertEqual(__parent.index, .end)
+          XCTAssertEqual(__child, tree.__tree_.__left_ref(tree.___NodePtr(.end)))
+        }
+        do {
+          tree.__left_ = tree.nullptr
+          let __k = 5
+          let (__parent, __child) = tree.__tree_.__find_equal(__k)
+          XCTAssertEqual(__parent.index, .end)
+          XCTAssertEqual(__child, tree.__tree_.__left_ref(tree.___NodePtr(.end)))
+        }
       }
-      do {
-        tree.__left_ = tree.nullptr
-        let __k = 5
-        let (__parent, __child) = tree.__tree_.__find_equal(__k)
-        XCTAssertEqual(__parent.index, .end)
-        XCTAssertEqual(__child, tree.__tree_.__left_ref(tree.___NodePtr(.end)))
-      }
-    }
+    #endif
 
     #if false
       func testFindEqual1() throws {

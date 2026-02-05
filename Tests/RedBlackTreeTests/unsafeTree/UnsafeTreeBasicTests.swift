@@ -56,23 +56,23 @@ import XCTest
       _ = storage.__construct_node(400)
 
       do {
-        var it = storage.makeFreshPoolIterator()
-        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 0)
-        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 1)
-        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 2)
-        XCTAssertEqual(it.next().map(\.pointee.___raw_index), 3)
-        XCTAssertEqual(it.next().map(\.pointee.___raw_index), nil)
-        XCTAssertEqual(it.next().map(\.pointee.___raw_index), nil)
+        var it = storage.makeUsedNodeIterator()
+        XCTAssertEqual(it.next().map(\.pointee.___tracking_tag), 0)
+        XCTAssertEqual(it.next().map(\.pointee.___tracking_tag), 1)
+        XCTAssertEqual(it.next().map(\.pointee.___tracking_tag), 2)
+        XCTAssertEqual(it.next().map(\.pointee.___tracking_tag), 3)
+        XCTAssertEqual(it.next().map(\.pointee.___tracking_tag), nil)
+        XCTAssertEqual(it.next().map(\.pointee.___tracking_tag), nil)
       }
 
       //      throw XCTSkip()
 
       XCTAssertEqual(
-        storage.makeFreshPoolIterator().map(\.pointee.___raw_index),
+        storage.makeUsedNodeIterator().map(\.pointee.___tracking_tag),
         [0, 1, 2, 3])
 
       XCTAssertEqual(
-        storage.makeFreshPoolIterator().map { $0.__value_().pointee },
+        storage.makeUsedNodeIterator().map { $0.__value_().pointee },
         [100, 200, 300, 400])
     }
 
@@ -284,6 +284,7 @@ import XCTest
       XCTAssertEqual(begin.__value_().pointee, 4)
       begin = copy.__tree_next_iter(begin)
       XCTAssertEqual(begin, copy.end)
+      XCTAssertTrue(__tree_invariant(storage.__root))
     }
   }
 #endif

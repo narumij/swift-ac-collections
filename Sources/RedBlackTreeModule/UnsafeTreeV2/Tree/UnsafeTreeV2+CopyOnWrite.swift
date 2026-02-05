@@ -17,17 +17,25 @@
 
 import Foundation
 
-// https://atcoder.jp/contests/abc411/submissions/72757331
-// ぶれがひどい
-
 @inlinable
 func growth(from count: Int, to minimum: Int) -> Int {
   // TODO: ジャッジ搭載のタイミングで再度チューニングすること
   if count < 3 {
     return Swift.max(minimum, count << 1)
   }
-  return Swift.max(minimum, count + max(1, count))
+  // しばらく黄金比を試してみる
+  return Swift.max(minimum, count + (count >> 1) + (count >> 4) + (count >> 5) + (count >> 8))
 }
+
+// ぶれがひどい
+// https://atcoder.jp/contests/abc411/submissions/72757331
+//return Swift.max(minimum, count + max(1, count))
+
+// Bench0は以下がよい
+// return Swift.max(minimum, count + max(1, count >> 3))
+
+// 黄金比の4項近似
+//return Swift.max(minimum, count + (count >> 1) + (count >> 4) + (count >> 5) + (count >> 8))
 
 extension UnsafeTreeV2BufferHeader {
 
@@ -62,10 +70,11 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal mutating func _ensureUnique() {
+  internal mutating func ensureUnique() {
     let isUnique = isUnique()
-    if !isUnique {
-      self = self.copy()
+    guard !isUnique else { return }
+    withMutableHeader { header in
+      self = header.copy()
     }
   }
 
@@ -92,7 +101,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
-  internal mutating func _ensureUniqueAndCapacity(
+  internal mutating func ensureUniqueAndCapacity(
     to minimumCapacity: Int? = nil, linearly: Bool = false
   ) {
     let isUnique = isUnique()
@@ -105,7 +114,7 @@ extension UnsafeTreeV2 {
         to: minimumCapacity,
         linearly: linearly)
       if !isUnique {
-        self = header.copy(Base.self, minimumCapacity: growthCapacity)
+        self = header.copy(minimumCapacity: growthCapacity)
         return
       }
       assert(isReadOnly == false)
@@ -117,7 +126,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
-  internal mutating func _ensureCapacity(to minimumCapacity: Int? = nil, linearly: Bool = false) {
+  internal mutating func ensureCapacity(to minimumCapacity: Int? = nil, linearly: Bool = false) {
 
     withMutableHeader { header in
       let minimumCapacity = minimumCapacity ?? (header.count + 1)
@@ -127,7 +136,7 @@ extension UnsafeTreeV2 {
         to: minimumCapacity,
         linearly: linearly)
       if isReadOnly {
-        self = header.copy(Base.self, minimumCapacity: growthCapacity)
+        self = header.copy(minimumCapacity: growthCapacity)
         return
       }
       assert(isReadOnly == false)
@@ -139,7 +148,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
-  internal mutating func _ensureCapacity(
+  internal mutating func ensureCapacity(
     to minimumCapacity: Int? = nil, limit: Int, linearly: Bool = false
   ) {
 
@@ -153,7 +162,7 @@ extension UnsafeTreeV2 {
       let limitedCapacity = min(limit, growthCapacity)
       assert(growthCapacity > 0)
       if isReadOnly {
-        self = header.copy(Base.self, minimumCapacity: limitedCapacity)
+        self = header.copy(minimumCapacity: limitedCapacity)
         return
       }
       assert(isReadOnly == false)
@@ -166,13 +175,14 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
+  // 以前の設計の際になにかを迂回した痕跡なのだけれども、なぜが思い出せない
   @inlinable @inline(__always)
-  internal mutating func _ensureUnique(
+  internal mutating func ensureUnique(
     transform: (UnsafeTreeV2) throws -> UnsafeTreeV2
   )
     rethrows
   {
-    _ensureUnique()
+    ensureUnique()
     self = try transform(self)
   }
 }
@@ -186,7 +196,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal static func ensureCapacity(tree: inout UnsafeTreeV2, linearly: Bool = false) {
-    tree._ensureCapacity(linearly: linearly)
+    tree.ensureCapacity(linearly: linearly)
   }
 
   @inlinable
@@ -194,6 +204,6 @@ extension UnsafeTreeV2 {
   internal static func ensureCapacity(
     tree: inout UnsafeTreeV2, minimumCapacity: Int, linearly: Bool = false
   ) {
-    tree._ensureCapacity(to: minimumCapacity, linearly: linearly)
+    tree.ensureCapacity(to: minimumCapacity, linearly: linearly)
   }
 }

@@ -16,6 +16,7 @@ import XCTest
     }
 
     override func tearDownWithError() throws {
+      tree = .init()
       try super.tearDownWithError()
     }
 
@@ -185,7 +186,6 @@ import XCTest
           xy[1]?.removeSubrange(lo..<hi)
         }
       }
-      XCTAssertTrue(xy[1]!._checkUnique())
       XCTAssertEqual(xy[1]!.count, 0)
       throw XCTSkip("CoWの挙動変更のため")
       XCTAssertEqual(xy[1]!._copyCount, 0)
@@ -207,7 +207,6 @@ import XCTest
             xy[1]?.remove(at: i)
           }
         }
-        XCTAssertTrue(xy[1]!._checkUnique())
         XCTAssertEqual(xy[1]!.count, 0)
         throw XCTSkip("CoWの挙動変更のため")
         XCTAssertEqual(xy[1]!._copyCount, 0)

@@ -67,3 +67,21 @@ internal func
   }
   return __r
 }
+
+@inlinable
+@inline(__always)
+internal func
+  ___safe_distance(
+    _ __first: UnsafeMutablePointer<UnsafeNode>,
+    _ __last: UnsafeMutablePointer<UnsafeNode>
+  )
+  -> Result<Int, SealError>
+{
+  var __first = _SafePtr.success(__first)
+  var __r = 0
+  while case .success(let ___f) = __first, ___f != __last {
+    __first = ___tree_next_iter(___f)
+    __r += 1
+  }
+  return __first.map { _ in __r }
+}

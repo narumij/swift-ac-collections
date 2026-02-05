@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 @frozen
-public struct UnsafeIndexV2RangeExpression<Base>: UnsafeTreeProtocol,
+public struct UnsafeIndexV2RangeExpression<Base>: UnsafeTreeBinding,
   UnsafeIndexingProtocol
 where Base: ___TreeBase & ___TreeIndex {
 
@@ -24,10 +24,10 @@ where Base: ___TreeBase & ___TreeIndex {
   public typealias Pointee = Tree.Pointee
 
   @usableFromInline
-  typealias _RawValue = Tree._RawValue
+  typealias _PayloadValue = Tree._PayloadValue
 
   @usableFromInline
-  internal var rawRange: UnsafeTreeRangeExpression
+  internal var rawRange: UnsafeTreeSealedRangeExpression
 
   @usableFromInline
   internal var tied: _TiedRawBuffer
@@ -36,7 +36,7 @@ where Base: ___TreeBase & ___TreeIndex {
 
   @inlinable
   @inline(__always)
-  internal init(rawValue: UnsafeTreeRangeExpression, tie: _TiedRawBuffer) {
+  internal init(rawValue: UnsafeTreeSealedRangeExpression, tie: _TiedRawBuffer) {
     self.rawRange = rawValue
     self.tied = tie
   }
@@ -47,8 +47,16 @@ extension UnsafeIndexV2RangeExpression: Sequence {
   public typealias Iterator = UnsafeIterator.IndexObverse<Base>
 
   public func makeIterator() -> Iterator {
-    let (lower, upper) = tied.rawRange(rawRange)!
+    let (lower, upper) = rawRange.relative(to: tied)
     return .init(start: lower, end: upper, tie: tied)
+  }
+}
+
+extension UnsafeIndexV2RangeExpression {
+
+  @usableFromInline
+  func relative(to __tree_: Tree) -> (_NodePtr, _NodePtr) {
+    unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
   }
 }
 
@@ -69,7 +77,7 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   -> UnsafeIndexV2RangeExpression<Base>
 {
   guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
-  return .init(rawValue: lhs.rawValue..<rhs.rawValue, tie: lhs.tied)
+  return .init(rawValue: .range(from: lhs.sealed, to: rhs.sealed), tie: lhs.tied)
 }
 
 #if !COMPATIBLE_ATCODER_2025
@@ -79,27 +87,26 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
     -> UnsafeIndexV2RangeExpression<Base>
   {
     guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
-    return .init(rawValue: lhs.rawValue...rhs.rawValue, tie: lhs.tied)
+    return .init(rawValue: .closedRange(from: lhs.sealed, through: rhs.sealed), tie: lhs.tied)
   }
 
   @inlinable
   @inline(__always)
   public prefix func ..< <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
-    return .init(rawValue: ..<rhs.rawValue, tie: rhs.tied)
+    return .init(rawValue: .partialRangeTo(rhs.sealed), tie: rhs.tied)
   }
 
   @inlinable
   @inline(__always)
   public prefix func ... <Base>(rhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
-    return .init(rawValue: ...rhs.rawValue, tie: rhs.tied)
+    return .init(rawValue: .partialRangeThrough(rhs.sealed), tie: rhs.tied)
   }
 
   @inlinable
   @inline(__always)
   public postfix func ... <Base>(lhs: UnsafeIndexV2<Base>) -> UnsafeIndexV2RangeExpression<Base> {
-    return .init(rawValue: lhs.rawValue..., tie: lhs.tied)
+    return .init(rawValue: .partialRangeFrom(lhs.sealed), tie: lhs.tied)
   }
 #endif
 
 // MARK: -
-

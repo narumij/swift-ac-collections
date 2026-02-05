@@ -1,24 +1,19 @@
-// Copyright 2024-2026 narumij
+//===----------------------------------------------------------------------===//
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// This source file is part of the swift-ac-collections project
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
 // This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
 //
-// Copyright © 2003-2025 The LLVM Project.
+// Copyright © 2003-2026 The LLVM Project.
 // Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 extension UnsafeTreeV2 {
 
@@ -32,7 +27,7 @@ extension UnsafeTreeV2 {
   ) -> UnsafeTreeV2
   where
     UnsafeTreeV2<Other>._Key == _Key,
-    UnsafeTreeV2<Other>._RawValue == _RawValue
+    UnsafeTreeV2<Other>._PayloadValue == _PayloadValue
   {
     if __first == __last {
       return __tree_
@@ -88,7 +83,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   ) rethrows -> UnsafeTreeV2
   where
     UnsafeTreeV2<Other>._Key == _Key,
-    UnsafeTreeV2<Other>._RawValue == _RawValue
+    UnsafeTreeV2<Other>._PayloadValue == _PayloadValue
   {
     if __first == __last {
       return __tree_
@@ -145,7 +140,7 @@ extension UnsafeTreeV2 {
   ) -> UnsafeTreeV2
   where
     UnsafeTreeV2<Other>._Key == _Key,
-    UnsafeTreeV2<Other>._RawValue == _RawValue
+    UnsafeTreeV2<Other>._PayloadValue == _PayloadValue
   {
     if __first == __last {
       return __tree_
@@ -191,7 +186,7 @@ extension UnsafeTreeV2 {
   @inlinable
   internal static func ___insert_range_unique<S>(tree __tree_: UnsafeTreeV2, _ __source: __owned S)
     -> UnsafeTreeV2
-  where Base._RawValue == S.Element, S: Sequence {
+  where Base._PayloadValue == S.Element, S: Sequence {
     return ___insert_range_unique(tree: __tree_, __source) { $0 }
   }
 
@@ -199,7 +194,7 @@ extension UnsafeTreeV2 {
   internal static func ___insert_range_unique<S>(
     tree __tree_: UnsafeTreeV2,
     _ __source: __owned S,
-    transform: (S.Element) -> Base._RawValue
+    transform: (S.Element) -> Base._PayloadValue
   ) -> UnsafeTreeV2
   where S: Sequence {
     var __tree_ = __tree_
@@ -245,7 +240,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
     tree __tree_: UnsafeTreeV2,
     _ __source: S,
     uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
-    transform __t_: (S.Element) -> Base._RawValue
+    transform __t_: (S.Element) -> Base._PayloadValue
   )
     rethrows -> UnsafeTreeV2
   where
@@ -293,7 +288,7 @@ extension UnsafeTreeV2 {
   @inlinable
   internal static func
     ___insert_range_multi<S>(tree __tree_: UnsafeTreeV2, _ __source: __owned S) -> UnsafeTreeV2
-  where Base._RawValue == S.Element, S: Sequence {
+  where Base._PayloadValue == S.Element, S: Sequence {
     ___insert_range_multi(tree: __tree_, __source) { $0 }
   }
 
@@ -302,7 +297,7 @@ extension UnsafeTreeV2 {
     ___insert_range_multi<S>(
       tree __tree_: UnsafeTreeV2,
       _ __source: __owned S,
-      transform: (S.Element) -> Base._RawValue
+      transform: (S.Element) -> Base._PayloadValue
     )
     -> UnsafeTreeV2
   where S: Sequence {

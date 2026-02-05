@@ -18,37 +18,31 @@
 @frozen
 public struct RedBlackTreePair<Key, Value> {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal init(key: Key, value: Value) {
     self.key = key
     self.value = value
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   package init(_ key: Key, _ value: Value) {
     self.key = key
     self.value = value
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   package init(_ tuple: (Key, Value)) {
-    self.key = tuple.0
-    self.value = tuple.1
+    (key, value) = tuple
   }
 
   public var key: Key
   public var value: Value  // mapped_valueのほうが、混乱が減るのでいい気がしてきている
   public var tuple: (Key, Value) { (key, value) }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public var first: Key { key }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public var second: Value { value }
 }
 

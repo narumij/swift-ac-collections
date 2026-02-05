@@ -25,12 +25,12 @@ extension UnsafeNode {
   #if DEBUG
     @inlinable
     func debugDescription(resolve: (Pointer?) -> Int?) -> String {
-      let id = ___raw_index
+      let id = ___tracking_tag
       let l = resolve(__left_)
       let r = resolve(__right_)
       let p = resolve(__parent_)
       let color = __is_black_ ? "B" : "R"
-      #if DEBUG
+      #if DEBUG || true
         let rc = ___recycle_count
       #else
         let rc = -1
@@ -41,7 +41,7 @@ extension UnsafeNode {
           L: \(l.map(String.init) ?? "nil")
           R: \(r.map(String.init) ?? "nil")
           P: \(p.map(String.init) ?? "nil")
-          needsDeinit: \(___needs_deinitialize)
+          needsDeinit: \(___has_payload_content)
           recycleCount: \(rc)
         """
     }

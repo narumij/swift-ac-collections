@@ -111,7 +111,6 @@ internal func ___ptr_comp_multi_org(
   return __tree_is_left_child(__l)
 }
 
-
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す

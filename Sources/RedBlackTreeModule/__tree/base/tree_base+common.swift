@@ -21,7 +21,7 @@
 public protocol _BaseNode_KeyProtocol:
   _BaseNode_KeyInterface
     & _BaseRawValue_KeyInterface
-    & _BaseNode_RawValueInterface
+    & _BaseNode_PayloadValueInterface
 {
   static func __get_value(_: _NodePtr) -> _Key
 }
@@ -32,8 +32,6 @@ extension _BaseNode_KeyProtocol {
     __key(__value_(p))
   }
 }
-
-
 
 public protocol _BaseKey_LessThanProtocol: _BaseKey_LessThanInterface {}
 

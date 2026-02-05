@@ -82,20 +82,20 @@ public protocol KeyValueComparer:
 // LRUキャッシュがPairではないので、統一できなかった
 // デコレーターパターン化できれば統一できそうだが、それはまたいずれ
 
-extension KeyValueComparer where _RawValue == RedBlackTreePair<_Key, _MappedValue> {
+extension KeyValueComparer where _PayloadValue == RedBlackTreePair<_Key, _MappedValue> {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ __v: _RawValue) -> _Key { __v.key }
+  public static func __key(_ __v: _PayloadValue) -> _Key { __v.key }
 
   @inlinable
   @inline(__always)
-  public static func ___mapped_value(_ __v: _RawValue) -> _MappedValue { __v.value }
+  public static func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue { __v.value }
 
   @inlinable
   @inline(__always)
   public static func ___with_mapped_value<ResultType>(
-    _ __v: inout _RawValue,
+    _ __v: inout _PayloadValue,
     _ __body: (inout _MappedValue) throws -> ResultType
   ) rethrows -> ResultType {
     try __body(&__v.value)

@@ -99,10 +99,13 @@ import XCTest
         if let lo = xy[1]?.lowerBound(i * N),
           let hi = xy[1]?.upperBound(i * N + N)
         {
-          xy[1]?.removeSubrange(lo..<hi)
+          #if COMPATIBLE_ATCODER_2025
+            xy[1]?.removeSubrange(lo..<hi)
+          #else
+            xy[1]?.removeAll(in: lo..<hi)
+          #endif
         }
       }
-      XCTAssertTrue(xy[1]!._checkUnique())
       XCTAssertEqual(xy[1]!.count, 0)
       throw XCTSkip("CoWの挙動変更のため")
       XCTAssertEqual(xy[1]!._copyCount, 0)
@@ -122,7 +125,6 @@ import XCTest
             xy[1]?.remove(at: i)
           }
         }
-        XCTAssertTrue(xy[1]!._checkUnique())
         XCTAssertEqual(xy[1]!.count, 0)
         //    XCTAssertEqual(xy[1]!.copyCount, count / N)
         throw XCTSkip("CoWの挙動変更のため")

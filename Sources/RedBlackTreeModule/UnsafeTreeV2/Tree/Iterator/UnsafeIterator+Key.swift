@@ -1,9 +1,19 @@
+//===----------------------------------------------------------------------===//
 //
-//  UnsafeIterator+Key.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/01/17.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 extension UnsafeIterator {
 
@@ -18,24 +28,20 @@ extension UnsafeIterator {
   {
     public var _source: Source
 
-    public init(tree: UnsafeTreeV2<Base>, start __first: _NodePtr, end __last: _NodePtr) {
-      self.init(source: .init(_start: __first, _end: __last))
-    }
-
-    public init(_ t: Base.Type, _start: _NodePtr, _end: _NodePtr) {
+    public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
       self.init(source: .init(_start: _start, _end: _end))
     }
 
     internal init(source: Source) {
       self._source = source
     }
-
-    public var _start: UnsafeMutablePointer<UnsafeNode> {
-      _source._start
+    
+    public var _sealed_start: _SealedPtr {
+      _source._sealed_start
     }
 
-    public var _end: UnsafeMutablePointer<UnsafeNode> {
-      _source._end
+    public var _sealed_end: _SealedPtr {
+      _source._sealed_end
     }
     
     public mutating func next() -> Base._Key? {

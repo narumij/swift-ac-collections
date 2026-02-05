@@ -58,7 +58,7 @@ enum Base<K,V>: ValueComparer {
     fatalError()
   }
   typealias _Key = K
-  typealias _RawValue = V
+  typealias _PayloadValue = V
 }
 
 struct Fixture<B,K> where B: ValueComparer, B._Key == K, K: Comparable {

@@ -192,155 +192,174 @@ extension RedBlackTreeSetBidirectionalCollectionTests {
     XCTAssertEqual(collected, [20, 30, 40])
   }
 
-  /// SubSequenceのstartIndex, endIndex, countが正しく動作すること
-  func test_subSequence_index_count() {
-    // 事前条件: 集合に[1,2,3,4,5]を用意すること
-    let set = RedBlackTreeSet([1, 2, 3, 4, 5])
-    let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
+  #if COMPATIBLE_ATCODER_2025
+    /// SubSequenceのstartIndex, endIndex, countが正しく動作すること
+    func test_subSequence_index_count() {
+      // 事前条件: 集合に[1,2,3,4,5]を用意すること
+      let set = RedBlackTreeSet([1, 2, 3, 4, 5])
+      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
 
-    // 実行および事後条件:
-    // - countが3であること
-    XCTAssertEqual(sub.count, 3)
-    // - startIndexが2を指すこと
-    XCTAssertEqual(sub[sub.startIndex], 2)
-    // - index(before: endIndex)が4を指すこと
-    XCTAssertEqual(sub[sub.index(before: sub.endIndex)], 4)
-  }
+      // 実行および事後条件:
+      // - countが3であること
+      XCTAssertEqual(sub.count, 3)
+      // - startIndexが2を指すこと
+      XCTAssertEqual(sub[sub.startIndex], 2)
+      // - index(before: endIndex)が4を指すこと
+      XCTAssertEqual(sub[sub.index(before: sub.endIndex)], 4)
+    }
+  #endif
 
-  /// SubSequenceのdistance(from:to:)が正しい距離を返すこと
-  func test_subSequence_distance() {
-    // 事前条件: 集合に[1,2,3,4,5]を用意すること
-    let set = RedBlackTreeSet([1, 2, 3, 4, 5])
-    let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
+  #if COMPATIBLE_ATCODER_2025
+    /// SubSequenceのdistance(from:to:)が正しい距離を返すこと
+    func test_subSequence_distance() {
+      // 事前条件: 集合に[1,2,3,4,5]を用意すること
+      let set = RedBlackTreeSet([1, 2, 3, 4, 5])
+      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
 
-    // 実行: distance(from: start, to: end)を計算すること
-    let dist = sub.distance(from: sub.startIndex, to: sub.endIndex)
+      assert(sub.startIndex != nil)
+      assert(sub.endIndex != nil)
 
-    // 事後条件:
-    // - 計算結果がsub.count(3)であること
-    XCTAssertEqual(dist, sub.count)
-  }
+      // 実行: distance(from: start, to: end)を計算すること
+      let dist = sub.distance(from: sub.startIndex, to: sub.endIndex)
 
-  /// SubSequenceのindex(after:)とindex(before:)が正しく動作すること
-  func test_subSequence_index_navigation() {
-    // 事前条件: 集合に[10,20,30,40,50]を用意すること
-    let set = RedBlackTreeSet([10, 20, 30, 40, 50])
-    let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [20,30,40]
+      // 事後条件:
+      // - 計算結果がsub.count(3)であること
+      XCTAssertEqual(dist, sub.count)
+    }
+  #endif
 
-    // 実行: index(after: start)およびindex(before: end)を取得すること
-    let start = sub.startIndex
-    let after = sub.index(after: start)
-    let beforeEnd = sub.index(before: sub.endIndex)
+  #if COMPATIBLE_ATCODER_2025
+    /// SubSequenceのindex(after:)とindex(before:)が正しく動作すること
+    func test_subSequence_index_navigation() {
+      // 事前条件: 集合に[10,20,30,40,50]を用意すること
+      let set = RedBlackTreeSet([10, 20, 30, 40, 50])
+      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [20,30,40]
 
-    // 事後条件:
-    // - afterが30を指すこと
-    XCTAssertEqual(sub[after], 30)
-    // - beforeEndが40を指すこと
-    XCTAssertEqual(sub[beforeEnd], 40)
-  }
+      // 実行: index(after: start)およびindex(before: end)を取得すること
+      let start = sub.startIndex
+      let after = sub.index(after: start)
+      let beforeEnd = sub.index(before: sub.endIndex)
+
+      // 事後条件:
+      // - afterが30を指すこと
+      XCTAssertEqual(sub[after], 30)
+      // - beforeEndが40を指すこと
+      XCTAssertEqual(sub[beforeEnd], 40)
+    }
+  #endif
 }
 
 extension RedBlackTreeSetBidirectionalCollectionTests {
 
-  /// SubSequenceのindex(_:offsetBy:)とformIndex(offsetBy:)が正しく動作すること
-  func test_subSequence_index_offsetBy_and_formIndex_offsetBy() {
-    // 事前条件: 集合に[10,20,30,40,50]を用意すること
-    let set = RedBlackTreeSet([10, 20, 30, 40, 50])
-    let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [20,30,40]
+  #if COMPATIBLE_ATCODER_2025
+    /// SubSequenceのindex(_:offsetBy:)とformIndex(offsetBy:)が正しく動作すること
+    func test_subSequence_index_offsetBy_and_formIndex_offsetBy() {
+      // 事前条件: 集合に[10,20,30,40,50]を用意すること
+      let set = RedBlackTreeSet([10, 20, 30, 40, 50])
+      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [20,30,40]
 
-    // 実行: index(offsetBy:)およびformIndex(offsetBy:)を呼び出すこと
-    let start = sub.startIndex
+      // 実行: index(offsetBy:)およびformIndex(offsetBy:)を呼び出すこと
+      let start = sub.startIndex
 
-    // index(offsetBy:)で2つ先の要素を取得すること
-    let offsetIndex = sub.index(start, offsetBy: 2)
-    XCTAssertEqual(sub[offsetIndex], 40)  // 事後条件: offsetIndexが40を指すこと
+      // index(offsetBy:)で2つ先の要素を取得すること
+      let offsetIndex = sub.index(start, offsetBy: 2)
+      XCTAssertEqual(sub[offsetIndex], 40)  // 事後条件: offsetIndexが40を指すこと
 
-    // formIndex(offsetBy:)で2つ先に移動できること
-    var formIndex = start
-    sub.formIndex(&formIndex, offsetBy: 2)
-    XCTAssertEqual(sub[formIndex], 40)  // 事後条件: formIndexが40を指すこと
-  }
+      // formIndex(offsetBy:)で2つ先に移動できること
+      var formIndex = start
+      sub.formIndex(&formIndex, offsetBy: 2)
+      XCTAssertEqual(sub[formIndex], 40)  // 事後条件: formIndexが40を指すこと
+    }
+  #endif
 
-  /// SubSequenceのindex(_:offsetBy:limitedBy:)とformIndex(offsetBy:limitedBy:)が正しく動作すること
-  func test_subSequence_index_offsetBy_limitedBy_and_formIndex_offsetBy_limitedBy() throws {
-    // 事前条件: 集合に[1,2,3,4,5]を用意すること
-    let set = RedBlackTreeSet([1, 2, 3, 4, 5])
-    let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
+  #if COMPATIBLE_ATCODER_2025
+    /// SubSequenceのindex(_:offsetBy:limitedBy:)とformIndex(offsetBy:limitedBy:)が正しく動作すること
+    func test_subSequence_index_offsetBy_limitedBy_and_formIndex_offsetBy_limitedBy() throws {
+      // 事前条件: 集合に[1,2,3,4,5]を用意すること
+      let set = RedBlackTreeSet([1, 2, 3, 4, 5])
+      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
 
-    let start = sub.startIndex
-    let limit = sub.index(after: start)
+      let start = sub.startIndex
+      let limit = sub.index(after: start)
 
-    // 実行: index(offsetBy:limitedBy:)とformIndex(offsetBy:limitedBy:)を呼び出すこと
+      // 実行: index(offsetBy:limitedBy:)とformIndex(offsetBy:limitedBy:)を呼び出すこと
 
-    // index(offsetBy:limitedBy:)成功パターン
-    let indexLimitedSuccess = sub.index(start, offsetBy: 1, limitedBy: limit)
-    XCTAssertEqual(indexLimitedSuccess, limit)  // 事後条件: 成功時にlimitを返すこと
+      // index(offsetBy:limitedBy:)成功パターン
+      let indexLimitedSuccess = sub.index(start, offsetBy: 1, limitedBy: limit)
+      XCTAssertEqual(indexLimitedSuccess, limit)  // 事後条件: 成功時にlimitを返すこと
 
-    // index(offsetBy:limitedBy:)失敗パターン
-    let indexLimitedFail = sub.index(start, offsetBy: 3, limitedBy: limit)
-    XCTAssertNil(indexLimitedFail)  // 事後条件: 失敗時にnilを返すこと
+      // index(offsetBy:limitedBy:)失敗パターン
+      let indexLimitedFail = sub.index(start, offsetBy: 3, limitedBy: limit)
+      XCTAssertNil(indexLimitedFail)  // 事後条件: 失敗時にnilを返すこと
 
-    // formIndex(offsetBy:limitedBy:)成功パターン
-    var formIndexSuccess = start
-    let success = sub.formIndex(&formIndexSuccess, offsetBy: 1, limitedBy: limit)
-    XCTAssertTrue(success)  // 事後条件: 成功時にtrueを返すこと
-    XCTAssertEqual(formIndexSuccess, limit)  // 事後条件: インデックスがlimitを指すこと
+      // formIndex(offsetBy:limitedBy:)成功パターン
+      var formIndexSuccess = start
+      let success = sub.formIndex(&formIndexSuccess, offsetBy: 1, limitedBy: limit)
+      XCTAssertTrue(success)  // 事後条件: 成功時にtrueを返すこと
+      XCTAssertEqual(formIndexSuccess, limit)  // 事後条件: インデックスがlimitを指すこと
 
-    // formIndex(offsetBy:limitedBy:)失敗パターン
-    var formIndexFail = start
-    let fail = sub.formIndex(&formIndexFail, offsetBy: 3, limitedBy: limit)
-    XCTAssertFalse(fail)  // 事後条件: 失敗時にfalseを返すこと
-    throw XCTSkip("Arrayでも失敗するので、一旦スキップ")
-    XCTAssertEqual(formIndexFail, start)  // 事後条件: インデックスが変わらないこと
-  }
+      // formIndex(offsetBy:limitedBy:)失敗パターン
+      var formIndexFail = start
+      let fail = sub.formIndex(&formIndexFail, offsetBy: 3, limitedBy: limit)
+      XCTAssertFalse(fail)  // 事後条件: 失敗時にfalseを返すこと
+      throw XCTSkip("Arrayでも失敗するので、一旦スキップ")
+      XCTAssertEqual(formIndexFail, start)  // 事後条件: インデックスが変わらないこと
+    }
+  #endif
 
-  /// SubSequenceのformIndex(before:)が正しく動作すること
-  func test_subSequence_formIndex_before() {
-    // 事前条件: 集合に[1,2,3,4,5]を用意すること
-    let set = RedBlackTreeSet([1, 2, 3, 4, 5])
-    let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
+  #if COMPATIBLE_ATCODER_2025
+    /// SubSequenceのformIndex(before:)が正しく動作すること
+    func test_subSequence_formIndex_before() {
+      // 事前条件: 集合に[1,2,3,4,5]を用意すること
+      let set = RedBlackTreeSet([1, 2, 3, 4, 5])
+      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
 
-    // 実行: formIndex(before:)でendIndexの直前に移動できること
-    var idx = sub.endIndex
-    sub.formIndex(before: &idx)
-    XCTAssertEqual(sub[idx], 4)  // 事後条件: 直前の要素(4)を指すこと
-  }
+      // 実行: formIndex(before:)でendIndexの直前に移動できること
+      var idx = sub.endIndex
+      sub.formIndex(before: &idx)
+      XCTAssertEqual(sub[idx], 4)  // 事後条件: 直前の要素(4)を指すこと
+    }
+  #endif
 
-  /// SubSequenceの範囲指定サブスクリプトが正しく動作すること
-  func test_subSequence_subscript_range() {
-    // 事前条件: 集合に[1,2,3,4,5,6,7]を用意すること
-    let set = RedBlackTreeSet([1, 2, 3, 4, 5, 6, 7])
-    let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4,5,6]
+  #if COMPATIBLE_ATCODER_2025
+    /// SubSequenceの範囲指定サブスクリプトが正しく動作すること
+    func test_subSequence_subscript_range() {
+      // 事前条件: 集合に[1,2,3,4,5,6,7]を用意すること
+      let set = RedBlackTreeSet([1, 2, 3, 4, 5, 6, 7])
+      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4,5,6]
 
-    let rangeStart = sub.index(after: sub.startIndex)
-    let rangeEnd = sub.index(before: sub.endIndex)
-    let slicedSub = sub[rangeStart..<rangeEnd]  // [3,4,5]
+      let rangeStart = sub.index(after: sub.startIndex)
+      let rangeEnd = sub.index(before: sub.endIndex)
+      let slicedSub = sub[rangeStart..<rangeEnd]  // [3,4,5]
 
-    // 実行: forEachで要素を列挙すること
-    var elements: [Int] = []
-    slicedSub.forEach { elements.append($0) }
+      // 実行: forEachで要素を列挙すること
+      var elements: [Int] = []
+      slicedSub.forEach { elements.append($0) }
 
-    // 事後条件:
-    // - 列挙結果が[3,4,5]であること
-    XCTAssertEqual(elements, [3, 4, 5])
-    // - countが3であること
-    XCTAssertEqual(slicedSub.count, 3)
-    // - startIndexが3を指すこと
-    XCTAssertEqual(slicedSub[slicedSub.startIndex], 3)
-    // - index(before: endIndex)が5を指すこと
-    XCTAssertEqual(slicedSub[slicedSub.index(before: slicedSub.endIndex)], 5)
-  }
+      // 事後条件:
+      // - 列挙結果が[3,4,5]であること
+      XCTAssertEqual(elements, [3, 4, 5])
+      // - countが3であること
+      XCTAssertEqual(slicedSub.count, 3)
+      // - startIndexが3を指すこと
+      XCTAssertEqual(slicedSub[slicedSub.startIndex], 3)
+      // - index(before: endIndex)が5を指すこと
+      XCTAssertEqual(slicedSub[slicedSub.index(before: slicedSub.endIndex)], 5)
+    }
+  #endif
 }
 
-extension RedBlackTreeSetBidirectionalCollectionTests {
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetBidirectionalCollectionTests {
 
-  /// SubSequenceのindices()で正しいインデックスを列挙できること
-  func test_subSequence_indices() {
-    let set = RedBlackTreeSet([1, 2, 3, 4, 5])
-    let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
+    /// SubSequenceのindices()で正しいインデックスを列挙できること
+    func test_subSequence_indices() {
+      let set = RedBlackTreeSet([1, 2, 3, 4, 5])
+      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
 
-    let indices = sub.indices.map { sub[$0] }
+      let indices = sub.indices.map { sub[$0] }
 
-    XCTAssertEqual(indices, [2, 3, 4])
+      XCTAssertEqual(indices, [2, 3, 4])
+    }
   }
-}
+#endif

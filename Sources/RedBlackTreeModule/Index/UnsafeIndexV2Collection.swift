@@ -15,6 +15,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// TODO: sealed化
+
 // TODO: 仕様及び設計について再検討すること
 // プロトコル適合問題だけに対処して止まっている気がする
 // そもそも使いやすくすること自体が不可能かもしれない
@@ -24,7 +26,7 @@
 
 public
   struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>:
-    UnsafeTreeProtocol, UnsafeIndexingProtocol
+    UnsafeTreeBinding, UnsafeIndexingProtocol
 {
   public typealias Element = Index
   public typealias SubSequence = Self
@@ -32,42 +34,38 @@ public
   public typealias Reversed = UnsafeIterator.IndexReverse<Base>
 
   @usableFromInline
-  internal init(start: _NodePtr, end: _NodePtr, tie: _TiedRawBuffer) {
-    self._start = start
-    self._end = end
+  internal init(start: _SealedPtr, end: _SealedPtr, tie: _TiedRawBuffer) {
+    self._sealed_start = start
+    self._sealed_end = end
     self.tied = tie
   }
 
-  // TODO: Intに変更する検討
-  // 計算量が問題
-  // そもそもとして、Collection適合を廃止する方向になっている
   public typealias Index = UnsafeIndexV2<Base>
 
   @usableFromInline
-  internal var _start, _end: _NodePtr
+  internal var _sealed_start, _sealed_end: _SealedPtr
 
   @usableFromInline
   internal var tied: _TiedRawBuffer
 }
 
-#if false
-  // TODO: 標準実装だとdistanceが重かった記憶。追加すること
-  // TODO: あとで仕上げる
-  extension UnsafeIndexV2Collection {
+extension UnsafeIndexV2Collection {
 
-    /// - Complexity: O(log *n* + *k*)
-    @inlinable
-    @inline(__always)
-    public func distance(from start: Index, to end: Index) -> Int {
-      __tree_.___distance(from: start.rawValue, to: end.rawValue)
-    }
+  @usableFromInline
+  var _start: _NodePtr {
+    _sealed_start.pointer!
   }
-#endif
+
+  @usableFromInline
+  var _end: _NodePtr {
+    _sealed_end.pointer!
+  }
+}
 
 #if COMPATIBLE_ATCODER_2025
-extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection {}
+  extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection {}
 #else
-extension UnsafeIndexV2Collection: Sequence {}
+  extension UnsafeIndexV2Collection: Sequence {}
 #endif
 
 extension UnsafeIndexV2Collection {
@@ -76,11 +74,11 @@ extension UnsafeIndexV2Collection {
   public var endIndex: Index { ___index(_end) }
 
   public func makeIterator() -> Iterator {
-    .init(start: _start, end: _end, tie: tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: tied)
   }
 
   public func reversed() -> Reversed {
-    .init(start: _start, end: _end, tie: tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: tied)
   }
 
   public func index(after i: Index) -> Index {
@@ -95,18 +93,18 @@ extension UnsafeIndexV2Collection {
     position
   }
 
-#if COMPATIBLE_ATCODER_2025
-  public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
-    .init(
-      start: bounds.lowerBound.rawValue,
-      end: bounds.upperBound.rawValue,
-      tie: bounds.lowerBound.tied)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
+      .init(
+        start: bounds.lowerBound.sealed,
+        end: bounds.upperBound.sealed,
+        tie: bounds.lowerBound.tied)
+    }
   #endif
 
   #if !COMPATIBLE_ATCODER_2025
     public subscript(bounds: UnsafeIndexV2RangeExpression<Base>) -> UnsafeIndexV2Collection {
-      let (lower, upper) = tied.rawRange(bounds.rawRange)!
+      let (lower, upper) = bounds.rawRange.relative(to: tied)
       return .init(start: lower, end: upper, tie: tied)
     }
   #endif

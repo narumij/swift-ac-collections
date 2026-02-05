@@ -29,22 +29,24 @@ final class RedBlackTreeSetBidirectionalTests: RedBlackTreeTestCase {
 
   // MARK: ── forward / backward iteration consistency ─────────────
 
-  func testForwardAndBackwardIteration() {
-    let s: RedBlackTreeSet = [1, 3, 5, 7, 9]
-    // forward
-    var fwd: [Int] = []
-    for idx in s.indices { fwd.append(s[idx]) }
-    // backward
-    var bwd: [Int] = []
-    var i = s.index(before: s.endIndex)
-    while true {
-      bwd.append(s[i])
-      if i == s.startIndex { break }
-      i = s.index(before: i)
+  #if COMPATIBLE_ATCODER_2025
+    func testForwardAndBackwardIteration() {
+      let s: RedBlackTreeSet = [1, 3, 5, 7, 9]
+      // forward
+      var fwd: [Int] = []
+      for idx in s.indices { fwd.append(s[idx]) }
+      // backward
+      var bwd: [Int] = []
+      var i = s.index(before: s.endIndex)
+      while true {
+        bwd.append(s[i])
+        if i == s.startIndex { break }
+        i = s.index(before: i)
+      }
+      XCTAssertEqual(fwd, [1, 3, 5, 7, 9])
+      XCTAssertEqual(bwd, [9, 7, 5, 3, 1])
     }
-    XCTAssertEqual(fwd, [1, 3, 5, 7, 9])
-    XCTAssertEqual(bwd, [9, 7, 5, 3, 1])
-  }
+  #endif
 
   // MARK: ── offsetBy / limitedBy ─────────────────────────────────
 

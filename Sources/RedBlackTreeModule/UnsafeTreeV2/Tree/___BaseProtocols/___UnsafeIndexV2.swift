@@ -21,7 +21,20 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIndexV2: ___UnsafeBaseV2 {}
+protocol ___UnsafeIndexV2: UnsafeTreeRangeProtocol & UnsafeTreeSealedRangeProtocol
+    & ___UnsafeIndexBaseV2 & _PayloadValueBride
+{}
+
+extension ___UnsafeIndexV2 {
+
+  @inlinable
+  @inline(__always)
+  internal func _distance(from start: Index, to end: Index) -> Int {
+    __tree_.___distance(
+      from: try! __tree_._remap_to_safe_(start).get().pointer,
+      to: try! __tree_._remap_to_safe_(end).get().pointer)
+  }
+}
 
 extension ___UnsafeIndexV2 {
 
@@ -40,44 +53,59 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _index(after i: Index) -> Index {
-    ___index(__tree_.___index(after: __tree_.rawValue(i)))
+    var i = i
+    i.sealed = __tree_.___index(after: __tree_._remap_to_safe_(i))
+    return i
   }
 
   @inlinable
   @inline(__always)
   internal func _formIndex(after i: inout Index) {
-    __tree_.___formIndex(after: &i.rawValue)
+    i = _index(after: i)
   }
 
   @inlinable
   @inline(__always)
   internal func _index(before i: Index) -> Index {
-    ___index(__tree_.___index(before: __tree_.rawValue(i)))
+    var i = i
+    i.sealed = __tree_.___index(before: __tree_._remap_to_safe_(i))
+    return i
   }
 
   @inlinable
   @inline(__always)
   internal func _formIndex(before i: inout Index) {
-    __tree_.___formIndex(before: &i.rawValue)
+    i = _index(before: i)
   }
 
   @inlinable
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int) -> Index {
-    ___index(__tree_.___index(__tree_.rawValue(i), offsetBy: distance))
+    var i = i
+    i.sealed = __tree_.___index(__tree_._remap_to_safe_(i), offsetBy: distance)
+    return i
   }
 
   @inlinable
   @inline(__always)
   internal func _formIndex(_ i: inout Index, offsetBy distance: Int) {
-    __tree_.___formIndex(&i.rawValue, offsetBy: distance)
+    i = _index(i, offsetBy: distance)
   }
 
   @inlinable
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    ___index_or_nil(
-      __tree_.___index(__tree_.rawValue(i), offsetBy: distance, limitedBy: __tree_.rawValue(limit)))
+    guard
+      let sealed = __tree_.___index(
+        __tree_._remap_to_safe_(i),
+        offsetBy: distance,
+        limitedBy: __tree_._remap_to_safe_(limit))
+    else {
+      return nil
+    }
+    var i = i
+    i.sealed = sealed
+    return i
   }
 
   @inlinable
@@ -85,7 +113,11 @@ extension ___UnsafeIndexV2 {
   internal func _formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
-    __tree_.___formIndex(&i.rawValue, offsetBy: distance, limitedBy: limit.rawValue)
+    if let ii = _index(i, offsetBy: distance, limitedBy: limit) {
+      i = ii
+      return true
+    }
+    return false
   }
 }
 
@@ -93,9 +125,9 @@ extension ___UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  internal func ___first_index(where predicate: (_RawValue) throws -> Bool) rethrows -> Index? {
+  internal func ___first_index(where predicate: (_PayloadValue) throws -> Bool) rethrows -> Index? {
     var result: Index?
-    try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
+    try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
       if try predicate(__tree_[__p]) {
         result = ___index(__p)
         cont = false
@@ -109,55 +141,30 @@ extension ___UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  internal func ___first(where predicate: (_RawValue) throws -> Bool) rethrows -> _RawValue? {
-    var result: _RawValue?
-    try __tree_.___for_each(__p: _start, __l: _end) { __p, cont in
-      if try predicate(__tree_[__p]) {
-        result = __tree_[__p]
-        cont = false
-      }
-    }
-    return result
-  }
-}
-
-extension ___UnsafeIndexV2 {
-
-  @inlinable
-  @inline(__always)
   internal func _isValid(index: Index) -> Bool {
-    !__tree_.___is_subscript_null(__tree_.rawValue(index))
-  }
-}
-
-extension ___UnsafeIndexV2 where Self: Sequence {
-  
-  @inlinable
-  @inline(__always)
-  internal func _isValid(
-    _ rawRange: UnsafeTreeRangeExpression
-  ) -> Bool {
-
-    let (l,u) = __tree_.rawRange(rawRange)
-    return !__tree_.___is_range_null(l,u)
+    // ___is_endのみを判定するわけじゃないので、お清めお祓いが必要
+    __tree_._remap_to_safe_(index).purified.___is_end == false
   }
 }
 
 #if COMPATIBLE_ATCODER_2025
-extension ___UnsafeIndexV2 where Self: Collection {
+  extension ___UnsafeIndexV2 where Self: Collection {
 
-  @inlinable
-  @inline(__always)
-  internal func _isValid<R: RangeExpression>(
-    _ bounds: R
-  ) -> Bool where R.Bound == Index {
+    @inlinable
+    @inline(__always)
+    internal func _isValid<R: RangeExpression>(
+      _ bounds: R
+    ) -> Bool where R.Bound == Index {
 
-    let bounds = bounds.relative(to: self)
-    return !__tree_.___is_range_null(
-      __tree_.rawValue(bounds.lowerBound),
-      __tree_.rawValue(bounds.upperBound))
+      let bounds = bounds.relative(to: self)
+      if let _ = try? __tree_._remap_to_safe_(bounds.lowerBound).get(),
+        let _ = try? __tree_._remap_to_safe_(bounds.upperBound).get()
+      {
+        return true
+      }
+      return false
+    }
   }
-}
 #endif
 
 extension ___UnsafeIndexV2 where Base: CompareUniqueTrait {
@@ -202,6 +209,15 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   @discardableResult
   public mutating func ___erase(_ ptr: Index) -> Index {
-    ___index(__tree_.erase(__tree_.rawValue(ptr)))
+    ___index(__tree_.erase(try! __tree_._remap_to_safe_(ptr).get().pointer))
   }
 }
+
+//extension ___UnsafeIndexV2 where Self: ___UnsafeIndicesBaseV2 {
+//
+//  @inlinable
+//  @inline(__always)
+//  internal var _indices: Indices {
+//    .init(start: _start, end: _end, tie: __tree_.tied)
+//  }
+//}

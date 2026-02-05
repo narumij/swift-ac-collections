@@ -22,17 +22,20 @@
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      _isValid(.unboundedRange)  // 常にtrueな気がする
+      true
     }
 
     @inlinable
     public func isValid(_ bounds: _RangeExpression) -> Bool {
-      _isValid(bounds.rawRange)
+      if let (l, u) = unwrapLowerUpper(bounds.rawRange.relative(to: __tree_)) {
+        return l.isValid && u.isValid
+      }
+      return false
     }
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> SubSequence {
-      ___subscript(.unboundedRange)
+      ___subscript(UnsafeTreeSealedRangeExpression.unboundedRange)
     }
 
     @inlinable
@@ -42,7 +45,7 @@
 
     @inlinable
     public subscript(unchecked bounds: UnboundedRange) -> SubSequence {
-      ___unchecked_subscript(.unboundedRange)
+      ___unchecked_subscript(UnsafeTreeSealedRangeExpression.unboundedRange)
     }
 
     @inlinable
@@ -52,14 +55,15 @@
 
     @inlinable
     public mutating func removeSubrange(_ bounds: UnboundedRange) {
-      __tree_._ensureUnique()
-      ___remove(.unboundedRange)
+      __tree_.ensureUnique()
+      _ = ___remove(from: _start, to: _end)
     }
 
     @inlinable
     public mutating func removeSubrange(_ bounds: _RangeExpression) {
-      __tree_._ensureUnique()
-      ___remove(bounds.rawRange)
+      __tree_.ensureUnique()
+      let (lower, upper) = unwrapLowerUpperOrFatal(bounds.rawRange.relative(to: __tree_))
+      _ = ___remove(from: lower, to: upper)
     }
 
     @inlinable
@@ -68,12 +72,12 @@
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
-      __tree_._ensureUnique()
-      let (lower, upper) = __tree_.rawRange(bounds.rawRange)
+      __tree_.ensureUnique()
+      let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(
+      try __tree_.___checking_erase_if(
         lower, upper,
         shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
     }

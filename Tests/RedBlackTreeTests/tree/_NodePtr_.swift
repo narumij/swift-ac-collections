@@ -1,7 +1,7 @@
 import Foundation
 import RedBlackTreeModule
 
-extension _PointerIndex {
+extension _RawTrackingTag {
   var offset: Int! {
     switch self {
     case .end:
@@ -14,6 +14,6 @@ extension _PointerIndex {
   }
 }
 
-extension _PointerIndex {
+extension _RawTrackingTag {
   var index: Int! { self }
 }

@@ -17,38 +17,49 @@
 
 import Foundation
 
+// このポインタを保持している構造体は性能面でやはり必要
+// 必要ではあるがIndexと言い張るのはキメラ的すぎてよろしくない
+// なにか別の名前と概念を割り当てる。
+// 本体コレクションのインデックス操作APIは廃止の方向
+
+// 補助的にTrackingTagは提供する
+
+// sealed化した結果、本当の不安が払拭されてしまい、このままでもべつにいっかという気持ちがわいている
+
 /// 赤黒木のノードへのインデックス
 ///
 /// C++の双方向イテレータに近い内容となっている
 @frozen
-public struct UnsafeIndexV2<Base>: UnsafeTreeProtocol, UnsafeIndexingProtocol
+public struct UnsafeIndexV2<Base>: UnsafeTreeBinding, UnsafeIndexingProtocol
 where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = UnsafeTreeV2<Base>
   public typealias Pointee = Tree.Pointee
 
   @usableFromInline
-  typealias _RawValue = Tree._RawValue
+  typealias _PayloadValue = Tree._PayloadValue
 
-  // メモリが解放される危険は解消したので、これを保持する必要性がなくなっている
   @usableFromInline
-  internal var rawIndex: Int {
-    rawValue.pointee.___raw_index
+  internal var _rawTag: _RawTrackingTag {
+    // benchmark5で謎のコンパイルエラーが発生する
+    // バグ報告はいったん見送り
+    // (try? sealed.map(\.tag).map(\._rawTag).get()) ?? .nullptr
+    (try? sealed.map(\.pointer.pointee.___tracking_tag).get()) ?? .nullptr
   }
 
   @usableFromInline
-  internal var rawValue: _NodePtr {
-    didSet {
-      guard rawValue != .nullptr,
-        !rawValue.___is_garbaged
-      else {
-        fatalError(.invalidIndex)
-      }
-    }
+  internal var trackingTag: TaggedSeal {
+    sealed.flatMap(\.tag)
   }
+
+  @usableFromInline
+  internal var rawValue: _NodePtr { sealed.pointer! }
 
   @usableFromInline
   internal var tied: _TiedRawBuffer
+
+  @usableFromInline
+  internal var sealed: _SealedPtr
 
   // MARK: -
 
@@ -57,8 +68,8 @@ where Base: ___TreeBase & ___TreeIndex {
   internal init(rawValue: _NodePtr, tie: _TiedRawBuffer) {
     assert(rawValue != .nullptr)
     assert(!rawValue.___is_garbaged)
-    self.rawValue = rawValue
     self.tied = tie
+    self.sealed = rawValue.sealed
   }
 
   /*
@@ -75,7 +86,7 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public static func === (lhs: Self, rhs: Self) -> Bool {
-    lhs.rawValue == rhs.rawValue
+    lhs.sealed == rhs.sealed
   }
 }
 
@@ -89,50 +100,30 @@ extension UnsafeIndexV2: Equatable {
 
     // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
 
-    //    lhs.rawValue == rhs.rawValue
-    lhs.rawIndex == rhs.rawIndex
+    lhs.trackingTag == rhs.trackingTag
   }
 }
 
 #if COMPATIBLE_ATCODER_2025
-// 本当は削除したいが、Collection適応でRange適応が必須なため、仕方なく残している
-extension UnsafeIndexV2: Comparable {
+  // 本当は削除したいが、Collection適応でRange適応が必須なため、仕方なく残している
+  extension UnsafeIndexV2: Comparable {
 
-  /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(1)
-  ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n*)
-  ///
-  ///   内部動作がユニークな場合、値の比較で解決できますが、
-  ///   内部動作がマルチの場合、ノード位置での比較となるので重くなります。
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
-
-    // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
-
-    guard
-      !lhs.rawValue.___is_garbaged,
-      !rhs.rawValue.___is_garbaged
-    else {
-      preconditionFailure(.garbagedIndex)
+    /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(1)
+    ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n*)
+    ///
+    ///   内部動作がユニークな場合、値の比較で解決できますが、
+    ///   内部動作がマルチの場合、ノード位置での比較となるので重くなります。
+    @inlinable
+    @inline(__always)
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+      guard let r = rhs.sealed.pointer,
+        let l = rhs._remap_to_sealed_(lhs).pointer
+      else {
+        preconditionFailure(.garbagedIndex)
+      }
+      return Base.___ptr_comp(l, r)
     }
-
-    switch (lhs.rawIndex, rhs.rawIndex) {
-    case (.nullptr, _), (_, .nullptr):
-      fatalError(.invalidIndex)
-    case (.end, _):
-      return false
-    case (_, .end):
-      return true
-    default:
-      break
-    }
-    
-    // rhsよせでもいいかもしれない(2026/1/13)
-    
-    return Base.___ptr_comp(lhs.rawValue, rhs.rawValue)
   }
-}
 #endif
 
 // Stridableできるが、Range<Index>に標準実装が生えることと、
@@ -144,43 +135,23 @@ extension UnsafeIndexV2 {
   @inlinable
   //  @inline(__always)
   public func distance(to other: Self) -> Int {
-    let other = ___node_ptr(other)
-    guard !rawValue.___is_garbaged, !other.___is_garbaged else {
+    guard
+      let from = sealed.pointer,
+      let to = _remap_to_sealed_(other).pointer
+    else {
       preconditionFailure(.garbagedIndex)
     }
-    return Base.___signed_distance(rawValue, other)
+    return Base.___signed_distance(from, to)
   }
 
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func advanced(by n: Int) -> Self {
-//    return .init(rawValue: Base.advanced(rawValue, by: n), tie: tied)
-    if rawValue.___is_offset_null {
-      fatalError(.invalidIndex)
-    }
-    var n = n
-    var __ptr_ = rawValue
-    while n != 0 {
-      if n < 0 {
-        // 後ろと区別したくてnullptrにしてたが、一周回るとendなのでendにしてみる
-        // TODO: fatalErrorにするか検討
-        if __tree_prev_iter(__ptr_).___is_null {
-          return .init(rawValue: tied.end_ptr!, tie: tied)
-        }
-        __ptr_ = __tree_prev_iter(__ptr_)
-        n += 1
-      } else {
-        // TODO: fatalErrorにするか検討
-        if __ptr_.___is_end { return .init(rawValue: __ptr_, tie: tied) }
-        __ptr_ = __tree_next_iter(__ptr_)
-        n -= 1
-      }
-      if __ptr_ == .nullptr {
-        break
-      }
-    }
-    return .init(rawValue: __ptr_, tie: tied)
+    let adv = sealed.purified.flatMap { ___tree_adv_iter($0.pointer, n) }
+    var result = self
+    result.sealed = adv.seal
+    return result
   }
 }
 
@@ -192,15 +163,11 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var next: Self? {
-    guard
-      !rawValue.___is_next_null,
-      tied.isValueAccessAllowed
-    else {
-      return nil
-    }
-    var next = self
-    next.___unchecked_next()
-    return next
+    let next = sealed.purified.flatMap { ___tree_next_iter($0.pointer) }
+    guard next.isValid, tied.isValueAccessAllowed else { return nil }
+    var result = self
+    result.sealed = next.seal
+    return result
   }
 
   /// 前のイテレータを返す
@@ -209,40 +176,11 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var previous: Self? {
-    guard !rawValue.___is_null else {
-      fatalError(.invalidIndex)
-    }
-    
-    let prev = __tree_prev_iter(rawValue)
-    
-    guard
-      !rawValue.___is_garbaged,
-      !prev.___is_null,
-      !prev.___is_garbaged,
-      tied.isValueAccessAllowed
-    else {
-      return nil
-    }
-    
+    let prev = sealed.purified.flatMap { ___tree_prev_iter($0.pointer) }
+    guard prev.isValid, tied.isValueAccessAllowed else { return nil }
     var result = self
-    result.rawValue = prev
+    result.sealed = prev.seal
     return result
-  }
-
-  @inlinable
-  @inline(__always)
-  internal mutating func ___unchecked_next() {
-    assert(!rawValue.___is_garbaged)
-    assert(!rawValue.___is_end)
-    rawValue = __tree_next_iter(rawValue)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal mutating func ___unchecked_prev() {
-    assert(!rawValue.___is_garbaged)
-    assert(!rawValue.___is_slow_begin)
-    rawValue = __tree_prev_iter(rawValue)
   }
 }
 
@@ -251,20 +189,20 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var isStart: Bool {
-    rawValue.___is_slow_begin
+    tied.begin_ptr.flatMap { sealed.__is_equals($0.pointee) } ?? false
   }
 
   @inlinable
   @inline(__always)
   public var isEnd: Bool {
-    rawValue.___is_end
+    sealed.___is_end ?? false
   }
 
   // 利用価値はないが、おまけ。
   @inlinable
   @inline(__always)
   public var isRoot: Bool {
-    rawValue.___is_root
+    sealed.___is_root ?? false
   }
 }
 
@@ -276,43 +214,50 @@ extension UnsafeIndexV2 {
   @inlinable
   public var pointee: Pointee? {
     guard
-      !rawValue.___is_subscript_null,
-      !rawValue.___is_garbaged,
+      sealed.isValid,
+      sealed.___is_end == false,
       tied.isValueAccessAllowed
-    else { return nil }
-    return Base.___pointee(rawValue.__value_().pointee)
+    else {
+      return nil
+    }
+    return Base.__element_(sealed.__value_()!.pointee)
   }
 }
 
 #if DEBUG
   extension UnsafeIndexV2 {
-    fileprivate init(_unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, rawIndex: Int) {
-      self.rawValue = rawValue
+    fileprivate init(
+      _unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, trackingTag: _RawTrackingTag
+    ) {
       self.tied = _unsafe_tree.tied
+      self.sealed = rawValue.sealed
     }
   }
 
   extension UnsafeIndexV2 {
+
     internal static func unsafe(tree: UnsafeTreeV2<Base>, rawValue: _NodePtr) -> Self {
-      .init(_unsafe_tree: tree, rawValue: rawValue, rawIndex: rawValue.pointee.___raw_index)
+      .init(_unsafe_tree: tree, rawValue: rawValue, trackingTag: rawValue.pointee.___tracking_tag)
     }
-    internal static func unsafe(tree: UnsafeTreeV2<Base>, rawValue: Int) -> Self {
-      if rawValue == .nullptr {
-        return .init(_unsafe_tree: tree, rawValue: tree.nullptr, rawIndex: .nullptr)
+
+    internal static func unsafe(tree: UnsafeTreeV2<Base>, rawTag: _RawTrackingTag) -> Self {
+      if rawTag == .nullptr {
+        return .init(_unsafe_tree: tree, rawValue: tree.nullptr, trackingTag: .nullptr)
       }
-      if rawValue == .end {
-        return .init(_unsafe_tree: tree, rawValue: tree.end, rawIndex: .end)
+      if rawTag == .end {
+        return .init(_unsafe_tree: tree, rawValue: tree.end, trackingTag: .end)
       }
       return .init(
-        _unsafe_tree: tree, rawValue: tree._buffer.header[rawValue],
-        rawIndex: tree._buffer.header[rawValue].pointee.___raw_index)
+        _unsafe_tree: tree,
+        rawValue: tree._buffer.header[rawTag],
+        trackingTag: tree._buffer.header[rawTag].pointee.___tracking_tag)
     }
   }
 #endif
 
 #if swift(>=5.5)
   extension UnsafeIndexV2: @unchecked Sendable
-  where _RawValue: Sendable {}
+  where _PayloadValue: Sendable {}
 #endif
 
 // MARK: - Convenience
@@ -366,32 +311,29 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  package subscript(_ p: Int) -> _NodePtr {
-    switch p {
-    case .nullptr:
-      return .nullptr
+  package func resolve(tag: TagSeal_) -> _SealedPtr {
+    switch tag {
     case .end:
-      return tied.end_ptr!
-    default:
-      return tied[p] ?? .nullptr
+      return tied.end_ptr.map { $0.sealed } ?? .failure(.null)
+    case .tag(raw: let raw, seal: let seal):
+      guard raw < tied.capacity else {
+        return .failure(.unknown)
+      }
+      return tied[raw]
+      .map { .success(.uncheckedSeal($0, seal)) }
+      ?? .failure(.null)
     }
   }
 
-  /// インデックスをポインタに解決する
-  ///
-  /// 木が同一の場合、インデックスが保持するポインタを返す。
-  /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
   @inline(__always)
-  internal func ___node_ptr(_ index: UnsafeIndexV2) -> _NodePtr {
-    #if true
-      // .endが考慮されていないことがきになったが、テストが通ってしまっているので問題が見つかるまで保留
-      // endはシングルトン的にしたい気持ちもある
-    return tied === index.tied
-        ? index.rawValue
-        : self[index.rawIndex]
-    #else
-      self === index.__tree_ ? index.rawValue : (_header[index.___raw_index])
-    #endif
+  package func _resolve(_ tag: TaggedSeal) -> _SealedPtr {
+    tag.flatMap { resolve(tag: $0) }
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func _remap_to_sealed_(_ index: UnsafeIndexV2) -> _SealedPtr {
+    tied === index.tied ? index.sealed : _resolve(index.trackingTag)
   }
 }

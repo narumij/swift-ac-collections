@@ -1,31 +1,26 @@
-// Copyright 2024-2026 narumij
+//===----------------------------------------------------------------------===//
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// This source file is part of the swift-ac-collections project
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
 // This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
 //
-// Copyright © 2003-2025 The LLVM Project.
+// Copyright © 2003-2026 The LLVM Project.
 // Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
   internal func
-    ___for_each_(__p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void)
+    ___for_each_(__p: _SealedPtr, __l: _SealedPtr, body: (_NodePtr) throws -> Void)
     rethrows
   {
     for __c in sequence(__p, __l) {
@@ -36,7 +31,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func ___rev_for_each_(
-    __p: _NodePtr, __l: _NodePtr, body: (_NodePtr) throws -> Void
+    __p: _SealedPtr, __l: _SealedPtr, body: (_NodePtr) throws -> Void
   )
     rethrows
   {
@@ -51,7 +46,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func ___for_each(
-    __p: _NodePtr, __l: _NodePtr, body: (_NodePtr, inout Bool) throws -> Void
+    __p: _SealedPtr, __l: _SealedPtr, body: (_NodePtr, inout Bool) throws -> Void
   )
     rethrows
   {
@@ -70,7 +65,7 @@ extension UnsafeTreeV2 {
   @inlinable
   internal func elementsEqual<OtherSequence>(
     _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
-    by areEquivalent: (_RawValue, OtherSequence.Element) throws -> Bool
+    by areEquivalent: (_PayloadValue, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
     try unsafeValues(__first, __last).elementsEqual(other, by: areEquivalent)
   }
@@ -81,8 +76,8 @@ extension UnsafeTreeV2 {
   @inlinable
   internal func lexicographicallyPrecedes<OtherSequence>(
     _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
-    by areInIncreasingOrder: (_RawValue, _RawValue) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, _RawValue == OtherSequence.Element {
+    by areInIncreasingOrder: (_PayloadValue, _PayloadValue) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, _PayloadValue == OtherSequence.Element {
     try unsafeValues(__first, __last).lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }
@@ -91,13 +86,13 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal func
-    ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_RawValue]
+    ___copy_all_to_array() -> [_PayloadValue]
   {
-    let count = __distance(__first, __last)
     return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
       initializedCount = count
       var buffer = buffer.baseAddress!
-      var __first = __first
+      var __first = __begin_node_
+      let __last = __end_node
       while __first != __last {
         buffer.initialize(to: self[__first])
         buffer = buffer + 1
@@ -108,14 +103,31 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal func
-    ___copy_to_array<T>(_ __first: _NodePtr, _ __last: _NodePtr, transform: (_RawValue) -> T)
-    -> [T]
+    ___rev_copy_all_to_array() -> [_PayloadValue]
   {
-    let count = __distance(__first, __last)
     return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
       initializedCount = count
       var buffer = buffer.baseAddress!
-      var __first = __first
+      let __first = __begin_node_
+      var __last = __end_node
+      while __first != __last {
+        __last = __tree_prev_iter(__last)
+        buffer.initialize(to: self[__last])
+        buffer = buffer + 1
+      }
+    }
+  }
+
+  @inlinable
+  internal func
+    ___copy_all_to_array<T>(transform: (_PayloadValue) -> T)
+    -> [T]
+  {
+    return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      initializedCount = count
+      var buffer = buffer.baseAddress!
+      var __first = __begin_node_
+      let __last = __end_node
       while __first != __last {
         buffer.initialize(to: transform(self[__first]))
         buffer = buffer + 1
@@ -123,9 +135,65 @@ extension UnsafeTreeV2 {
       }
     }
   }
+
+  @inlinable
+  internal func
+    ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
+  {
+    var result: [_PayloadValue] = []
+    var __first = __first
+    while __first != __last {
+      result.append(self[__first])
+      __first = __tree_next_iter(__first)
+    }
+    return result
+  }
+
+  @inlinable
+  internal func
+    ___rev_copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
+  {
+    var result: [_PayloadValue] = []
+    var __last = __last
+    while __first != __last {
+      __last = __tree_prev_iter(__last)
+      result.append(self[__last])
+    }
+    return result
+  }
+
+  @inlinable
+  internal func
+    ___copy_to_array<T>(
+      _ __first: _NodePtr, _ __last: _NodePtr, transform: (_PayloadValue) -> T
+    ) -> [T]
+  {
+    var result: [T] = []
+    var __first = __first
+    while __first != __last {
+      result.append(transform(self[__first]))
+      __first = __tree_next_iter(__first)
+    }
+    return result
+  }
+
+  @inlinable
+  internal func
+    ___rev_copy_to_array<T>(
+      _ __first: _NodePtr, _ __last: _NodePtr, transform: (_PayloadValue) -> T
+    ) -> [T]
+  {
+    var result: [T] = []
+    var __last = __last
+    while __first != __last {
+      __last = __tree_prev_iter(__last)
+      result.append(transform(self[__last]))
+    }
+    return result
+  }
 }
 
-extension UnsafeTreeV2: Equatable where _RawValue: Equatable {
+extension UnsafeTreeV2: Equatable where _PayloadValue: Equatable {
 
   @inlinable
   @inline(__always)
@@ -147,7 +215,7 @@ extension UnsafeTreeV2: Equatable where _RawValue: Equatable {
   }
 }
 
-extension UnsafeTreeV2: Comparable where _RawValue: Comparable {
+extension UnsafeTreeV2: Comparable where _PayloadValue: Comparable {
 
   @inlinable
   @inline(__always)
@@ -168,11 +236,11 @@ extension UnsafeTreeV2 {
   internal func ___filter(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
-    _ isIncluded: (_RawValue) throws -> Bool
+    _ isIncluded: (_PayloadValue) throws -> Bool
   )
     rethrows -> UnsafeTreeV2
   {
-    var tree: Tree = .___create(minimumCapacity: 0, nullptr: nullptr)
+    var tree: Tree = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
     var (__parent, __child) = tree.___max_ref()
     for __p in unsafeSequence(__first, __last)
     where try isIncluded(__value_(__p)) {
@@ -189,7 +257,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func
-  sequence(_ __first: _NodePtr, _ __last: _NodePtr) -> UnsafeIterator._RemoveAwarePointers
+    sequence(_ __first: _SealedPtr, _ __last: _SealedPtr) -> UnsafeIterator._RemoveAwarePointers
   {
     .init(_start: __first, _end: __last)
   }
@@ -200,15 +268,15 @@ extension UnsafeTreeV2 {
     unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
     -> UnsafeIterator._Obverse
   {
-    .init(_start: __first, _end: __last)
+    .init(__first: __first, __last: __last)
   }
 
   @inlinable
   @inline(__always)
   internal func
     unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
-  -> UnsafeIterator._RawValue<Base, UnsafeIterator._Obverse>
+    -> UnsafeIterator._Payload<Base, UnsafeIterator._Obverse>
   {
-    .init(Base.self, _start: __first, _end: __last)
+    .init(source: .init(__first: __first, __last: __last))
   }
 }

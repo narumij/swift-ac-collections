@@ -10,7 +10,7 @@ import XCTest
 #if DEBUG
   @testable import RedBlackTreeModule
 
-  final class RecyclePoolTests: XCTestCase {
+  final class RecyclePoolTests: RedBlackTreeTestCase {
     
     struct Fixture: _UnsafeNodePtrType, _RecyclePool {
       var recycleHead: _NodePtr = .nullptr
@@ -40,7 +40,7 @@ import XCTest
         nodes
           .advanced(by: i)
           .initialize(to:
-              .init(node: .create(id: i, nullptr: UnsafeNode.nullptr)))
+              .init(node: .create(tag: i, nullptr: UnsafeNode.nullptr)))
       }
       fixture.count = nodeCount
       fixture.freshPoolUsedCount = nodeCount

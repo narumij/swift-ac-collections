@@ -39,18 +39,18 @@ public struct _LinkingPair<Key, Value> {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 }
 
-extension KeyValueComparer where _RawValue == _LinkingPair<_Key, _MappedValue> {
+extension KeyValueComparer where _PayloadValue == _LinkingPair<_Key, _MappedValue> {
 
   @inlinable @inline(__always)
-  public static func __key(_ element: _RawValue) -> _Key { element.key }
+  public static func __key(_ element: _PayloadValue) -> _Key { element.key }
 
   @inlinable @inline(__always)
-  public static func __value(_ element: _RawValue) -> _MappedValue { element.value }
+  public static func __value(_ element: _PayloadValue) -> _MappedValue { element.value }
 }
 
 @usableFromInline
-protocol ___LRULinkList: KeyValueComparer & _Tree_IsMultiTraitProtocol
-where _RawValue == _LinkingPair<_Key, _MappedValue> {
+protocol ___LRULinkList: KeyValueComparer & _Base_IsMultiTraitInterface
+where _PayloadValue == _LinkingPair<_Key, _MappedValue> {
   associatedtype Value
   var __tree_: Tree { get set }
   var _rankHighest: _NodePtr { get set }
@@ -120,25 +120,5 @@ extension ___LRULinkList {
     }
 
     return _rankLowest
-  }
-}
-
-extension ___LRULinkList {
-
-  /// インデックスをポインタに解決する
-  ///
-  /// 木が同一の場合、インデックスが保持するポインタを返す。
-  /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
-  @inlinable
-  @inline(__always)
-  internal func ___node_ptr(_ index: Int) -> _NodePtr {
-    switch index {
-    case .nullptr:
-      return __tree_.nullptr
-    case .end:
-      return __tree_.end
-    default:
-      return __tree_._buffer.header[index]
-    }
   }
 }

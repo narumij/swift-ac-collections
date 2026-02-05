@@ -1,9 +1,19 @@
+//===----------------------------------------------------------------------===//
 //
-//  ___UnsafeWrappedIterator.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/01/15.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 extension UnsafeIterator {
 
@@ -16,16 +26,16 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>,
     Source: UnsafeIteratorProtocol
   {
-    public init(_start: _NodePtr, _end: _NodePtr) {
+    public init(_start: _SealedPtr, _end: _SealedPtr) {
       self.init(source: .init(_start: _start, _end: _end))
     }
-
-    public var _start: UnsafeMutablePointer<UnsafeNode> {
-      source._start
+    
+    public var _sealed_start: _SealedPtr {
+      source._sealed_start
     }
 
-    public var _end: UnsafeMutablePointer<UnsafeNode> {
-      source._end
+    public var _sealed_end: _SealedPtr {
+      source._sealed_end
     }
 
     var __current: Source.Element?

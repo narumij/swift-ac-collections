@@ -22,8 +22,6 @@
 
 import Foundation
 
-// TODO: ちゃんと動くのか確認すること
-
 #if GRAPHVIZ_DEBUG
   extension UnsafeTreeV2 {
 
@@ -33,8 +31,8 @@ import Foundation
     }
   }
 
-#if false
-  extension ___RedBlackTreeBase {
+#if true
+  extension UnsafeTreeHost {
 
     /// グラフビズオブジェクトを生成します
     ///
@@ -165,6 +163,9 @@ import Foundation
   }
 
   extension Array where Element == Graphviz.EdgeProperty {
+    static var begin: [Graphviz.EdgeProperty] {
+      [.label(""),.labelAngle(45)]
+    }
     static var left: [Graphviz.EdgeProperty] {
       [.label("left"),.labelAngle(45)]
     }
@@ -242,7 +243,7 @@ import Foundation
     }
   }
 
-  extension UnsafeTree {
+  extension UnsafeTreeV2 {
 
     func buildGraphviz() -> Graphviz.Digraph {
       func isRed(_ i: _NodePtr) -> Bool {
@@ -257,28 +258,28 @@ import Foundation
       func hasRight(_ i: _NodePtr) -> Bool {
         __right_(i) != nullptr
       }
-      func offset(_ i: _NodePtr) -> Int? {
+      func offset(_ i: _NodePtr) -> _NodePtr? {
         switch i {
         case end:
           return nil
         case nullptr:
           return nil
         default:
-          return i?.pointee.index
+          return i
         }
       }
-      func leftPair(_ i: _NodePtr) -> (_NodePtr, Int) {
-        (i, offset(__left_(i)) ?? .end)
+      func leftPair(_ i: _NodePtr) -> (_NodePtr, _NodePtr) {
+        (i, offset(__left_(i)) ?? end)
       }
-      func rightPair(_ i: _NodePtr) -> (_NodePtr, Int) {
-        (i, offset(__right_(i)) ?? .end)
+      func rightPair(_ i: _NodePtr) -> (_NodePtr, _NodePtr) {
+        (i, offset(__right_(i)) ?? end)
       }
       func node(_ i: _NodePtr) -> String {
         switch i {
         case end:
           return "end"
         default:
-          return "\(i?.pointee.index ?? .nullptr)"
+          return "\(i.pointee.___tracking_tag)"
         }
       }
       func nodeN(_ i: _NodePtr) -> String {
@@ -288,17 +289,17 @@ import Foundation
         case end:
           return "end"
         default:
-          return "#\(i?.pointee.index ?? .nullptr)"
+          return "#\(i.pointee.___tracking_tag)"
         }
       }
       func nodeV(_ i: _NodePtr) -> String {
         if i == end {
           return "end"
         } else {
-          let c = String("\(i!.pointee.__value_)".flatMap { $0 == "\n" ? ["\n", "n"] : [$0] })
+          let c = String("\(i.__value_(as: _PayloadValue.self).pointee)".flatMap { $0 == "\n" ? ["\n", "n"] : [$0] })
           //          let l: String = "\\\"\(c)\\\"\\n#\(i)"
-          let l: String = "\(c)\\n\\n#\(i?.pointee.index ?? .nullptr)"
-          return "\(i?.pointee.index ?? .nullptr) [label = \"\(l)\"];"
+          let l: String = "\(c)\\n\\n#\(i.pointee.___tracking_tag)"
+          return "\(i.pointee.___tracking_tag) [tag = \"\(l)\"];"
         }
       }
       func headerNote() -> [Graphviz.NodeProperty] {
@@ -308,16 +309,16 @@ import Foundation
         ll.append(contentsOf: [
           "[Header]",
           "capacity: \(capacity)",
-          "__left_: \(nodeN(__left_))",
+          "__left_: \(nodeN(__end_node.__left_))",
           "__begin_node: \(nodeN(__begin_node_))",
           "initializedCount: \(initializedCount)",
-          "destroyCount: \(destroyCount)",
-          "destroyNode: \(nodeN(destroyNode))",
+          "destroyCount: \(_buffer.header.recycleCount)",
+          "destroyNode: \(nodeN(_buffer.header.recycleHead))",
           "[etc]",
-          "__tree_invariant: \(__tree_invariant(__root()))",
+          "__tree_invariant: \(__tree_invariant(__root))",
         ])
         #if AC_COLLECTIONS_INTERNAL_CHECKS
-          ll.append("- copyCount: \(_header.copyCount)")
+        ll.append("- copyCount: \(_buffer.header.copyCount)")
         #endif
 
         let l = ll.joined(separator: "\\n")
@@ -330,23 +331,25 @@ import Foundation
           .fontColor(.black),
         ]
       }
-      let reds = (0..<initializedCount).filter(isRed).map(nodeV)
-      let blacks = (0..<initializedCount).filter(isBlack).map(nodeV)
-      let lefts: [(Int, Int)] = (0..<initializedCount).filter(hasLeft).map(leftPair)
-      let rights: [(Int, Int)] = (0..<initializedCount).filter(hasRight).map(rightPair)
+      let initializedCount = _buffer.header.freshPoolUsedCount
+      let destroyNode = _buffer.header.recycleHead
+      let reds = (0..<initializedCount).map{ try! self[_rawTag: $0].get() }.filter(isRed).map(nodeV)
+      let blacks = (0..<initializedCount).map{ try! self[_rawTag: $0].get() }.filter(isBlack).map(nodeV)
+      let lefts: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map{ try! self[_rawTag: $0].get() }.filter(hasLeft).map(leftPair)
+      let rights: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map{ try! self[_rawTag: $0].get() }.filter(hasRight).map(rightPair)
       var digraph = Graphviz.Digraph()
       digraph.options.append(.splines(.line))
       digraph.nodes.append((.red, reds))
       digraph.nodes.append((.blue, ["begin", "stack", "end"]))
       digraph.nodes.append((.black, blacks))
       digraph.nodes.append((headerNote(), ["header"]))
-      if __root() != nullptr {
+      if __root != nullptr {
         digraph.edges.append(
-          .init(from: (node(end), .sw), to: (node(__root()), .n), properties: .left))
+          .init(from: (node(end), .sw), to: (node(__root), .n), properties: .left))
       }
       if __begin_node_ != nullptr {
         digraph.edges.append(
-          .init(from: ("begin", .s), to: (node(__begin_node_), .n), properties: .left))
+          .init(from: ("begin", .s), to: (node(__begin_node_), .n), properties: .begin))
       }
       if destroyNode != nullptr {
         digraph.edges.append(

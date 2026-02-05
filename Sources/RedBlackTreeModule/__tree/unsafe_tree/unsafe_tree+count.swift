@@ -24,7 +24,7 @@ protocol CountProtocol_ptr:
     & BoundInteface
     & _TreeNode_KeyInterface
     & BoundAlgorithmProtocol_common_ptr
-    & _nullptr_interface
+    & NullPtrInterface
 where
   _InputIter == _NodePtr,
   difference_type == Int

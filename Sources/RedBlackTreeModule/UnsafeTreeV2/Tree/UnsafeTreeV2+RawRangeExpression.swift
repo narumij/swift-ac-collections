@@ -1,20 +1,79 @@
+//===----------------------------------------------------------------------===//
 //
-//  UnsafeTreeV2+RawRange.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/01/23.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 extension UnsafeTreeV2 {
 
   @inlinable
-  func rawRange(_ range: UnsafeTreeRangeExpression) -> (lower: _NodePtr, upper: _NodePtr) {
-    range.rawRange(_begin: __begin_node_, _end: __end_node)
+  func isValidRawRange(lower: _NodePtr, upper: _NodePtr) -> Bool {
+
+    guard
+      !lower.___is_null,
+      !upper.___is_null,
+      !lower.___is_garbaged,
+      !upper.___is_garbaged
+    else {
+//      fatalError(.invalidIndex)
+      return false
+    }
+
+    if upper.___is_end {
+      return true
+    }
+
+    guard
+      lower == upper || ___ptr_comp(lower, upper)
+    else {
+      return false
+    }
+
+    return true
   }
   
   @inlinable
-  func isValidRawRange(lower: _NodePtr, upper: _NodePtr) -> Bool {
-    // lower <= upper は、upper > lowerなので
-    !lower.___is_null && !upper.___is_null && !___ptr_comp(upper, lower)
+  func isValidRawRange(lower: _SealedPtr, upper: _SealedPtr) -> Bool {
+
+    guard let lower = lower.pointer, let upper = upper.pointer else {
+      return false
+    }
+
+    guard
+      lower == upper || ___ptr_comp(lower, upper)
+    else {
+      return false
+    }
+
+    return true
+  }
+}
+
+extension UnsafeTreeV2 {
+  
+  @inlinable
+  func rangeSanitize(_ tuple: (lower: _NodePtr, upper: _NodePtr)) -> (_NodePtr,_NodePtr) {
+    let (lower, upper) = tuple
+    return !___ptr_comp(upper, lower) ? (lower, upper) : (__end_node,__end_node)
+  }
+  
+  @inlinable
+  func rangeSanitize(_ tuple: (lower: _SealedPtr, upper: _SealedPtr)) -> (_SealedPtr,_SealedPtr) {
+    let (lower, upper) = tuple
+    guard let l = lower.pointer, let u = upper.pointer else {
+      return (__end_node.sealed, __end_node.sealed)
+    }
+    return !___ptr_comp(u, l) ? (lower, upper) : (__end_node.sealed,__end_node.sealed)
   }
 }

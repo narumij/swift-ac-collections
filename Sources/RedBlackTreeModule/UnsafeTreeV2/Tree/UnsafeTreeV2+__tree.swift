@@ -1,24 +1,19 @@
-// Copyright 2024-2026 narumij
+//===----------------------------------------------------------------------===//
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// This source file is part of the swift-ac-collections project
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
 // This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
 //
-// Copyright © 2003-2025 The LLVM Project.
+// Copyright © 2003-2026 The LLVM Project.
 // Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 // MARK: - TreeEndNodeProtocol
 
@@ -215,7 +210,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  public func __construct_node(_ k: _RawValue) -> _NodePtr {
+  public func __construct_node(_ k: _PayloadValue) -> _NodePtr {
     withMutableHeader {
       $0.__construct_node(k)
     }
@@ -234,13 +229,13 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package func __value_(_ p: _NodePtr) -> _RawValue {
+  package func __value_(_ p: _NodePtr) -> _PayloadValue {
     p.__value_().pointee
   }
 
   @inlinable
   @inline(__always)
-  package func ___element(_ p: _NodePtr, _ __v: _RawValue) {
+  package func ___element(_ p: _NodePtr, _ __v: _PayloadValue) {
     p.__value_().pointee = __v
   }
 }
@@ -287,5 +282,3 @@ extension UnsafeTreeV2: InsertLastProtocol_ptr {}
 extension UnsafeTreeV2: CompareProtocol {}
 extension UnsafeTreeV2: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2: TreeAlgorithmProtocol_ptr {}
-
-extension UnsafeTreeV2: FaultTorelantEraseProtocol, FaultTorelantEraseMultiProtocol {}

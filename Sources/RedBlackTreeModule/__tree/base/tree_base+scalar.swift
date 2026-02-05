@@ -21,5 +21,5 @@ extension _ScalarBaseRawValue_KeyProtocol {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ __v: _RawValue) -> _Key { __v }
+  public static func __key(_ __v: _PayloadValue) -> _Key { __v }
 }

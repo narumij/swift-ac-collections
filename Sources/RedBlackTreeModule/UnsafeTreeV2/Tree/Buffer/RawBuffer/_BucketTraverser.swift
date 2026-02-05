@@ -1,10 +1,23 @@
+//===----------------------------------------------------------------------===//
 //
-//  BucketIterator.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/01/18.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
+// NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
+// accessor、traverser、queueと似た3種は、場面毎に特化したチューニングができるよう分かれている
+// traverserはusedIterator及びcopyとdeinitialize用
 @frozen
 @usableFromInline
 struct _BucketTraverser: _UnsafeNodePtrType {
@@ -46,29 +59,29 @@ struct _BucketTraverser: _UnsafeNodePtrType {
   }
 
   @usableFromInline
-  func nextCounts(memoryLayout: _MemoryLayout) -> _BucketTraverser? {
-    guard let next = pointer.pointee.next else { return nil }
-    return next._counts(isHead: false, memoryLayout: memoryLayout)
+  func nextCounts(payload: _MemoryLayout) -> _BucketTraverser? {
+    guard let next = pointer.next else { return nil }
+    return next._counts(isHead: false, payload: payload)
   }
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @usableFromInline
-  func _counts(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketTraverser {
+  func _counts(isHead: Bool, payload: _MemoryLayout) -> _BucketTraverser {
     .init(
       pointer: self,
-      start: start(isHead: isHead, valueAlignment: memoryLayout.alignment),
-      stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride,
+      start: start(isHead: isHead, valueAlignment: payload.alignment),
+      stride: MemoryLayout<UnsafeNode>.stride + payload.stride,
       count: pointee.count)
   }
 
   @usableFromInline
-  func _capacities(isHead: Bool, memoryLayout: _MemoryLayout) -> _BucketTraverser {
+  func _capacities(isHead: Bool, payload: _MemoryLayout) -> _BucketTraverser {
     .init(
       pointer: self,
-      start: start(isHead: isHead, valueAlignment: memoryLayout.alignment),
-      stride: MemoryLayout<UnsafeNode>.stride + memoryLayout.stride,
+      start: start(isHead: isHead, valueAlignment: payload.alignment),
+      stride: MemoryLayout<UnsafeNode>.stride + payload.stride,
       count: pointee.capacity)
   }
 }

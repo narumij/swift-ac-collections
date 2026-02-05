@@ -22,44 +22,143 @@
 
 import Foundation
 
-/// `RedBlackTreeSet` は、`Element` 型の要素を一意に格納するための
-/// 赤黒木（Red-Black Tree）ベースの集合型です。
+/// # RedBlackTreeSet
 ///
-/// ### 使用例
+/// `RedBlackTreeSet` は、**赤黒木を用いて実装された、一意要素の順序付き集合**です。
+///
+/// 標準の `Set` と同様に、各要素は **高々一度だけ** 登場し、
+/// **効率的な所属判定（membership test）** を提供します。
+/// 一方で `Set` と異なり、`RedBlackTreeSet` は **要素をソート順（比較順）に保持** し、
+/// **順序付き走査** や **範囲検索** を効率的にサポートします。
+///
+/// この型は、**順序付き集合**・**高速検索**・
+/// **安定した計算量保証** を同時に満たしたい用途に適しています。
+///
 /// ```swift
-/// var set: RedBlackTreeSet = [3, 1, 4, 1, 5, 9]
-/// print(set) // 出力例: [1, 3, 4, 5, 9]
+/// let set: RedBlackTreeSet = [3, 1, 4, 1, 5]
+/// // => [1, 3, 4, 5]
+/// ```
 ///
-/// set.insert(2)
-/// print(set.contains(2)) // 出力例: true
+/// ## 等価性（Equality）
 ///
-/// // 要素の削除
-/// set.remove(9)
-/// print(set) // 出力例: [1, 2, 3, 4, 5]
+/// 2つの `RedBlackTreeSet` は、**同じ要素を含む場合に等しい**とみなされます。
 ///
-/// // イテレーション
-/// for element in set {
-///     print(element)
+/// 要素は常にソート順に保持されるため、**挿入順は等価性に影響しません**。
+/// これは標準 `Set` と同じ意味論です。
+///
+/// ```swift
+/// let a: RedBlackTreeSet = [1, 2, 3]
+/// let b: RedBlackTreeSet = [3, 2, 1]
+/// a == b // true
+/// ```
+///
+/// ## 順序と走査（Ordering & Traversal）
+///
+/// `RedBlackTreeSet` は **要素を比較順に保持** します。
+///
+/// - `min` / `max`
+/// - 昇順・降順イテレーション
+/// - `lowerBound` / `upperBound`
+/// - 範囲ベースの探索
+///
+/// といった操作を **O(log N)** で提供します。
+///
+/// ```swift
+/// set.lowerBound(3)
+/// set.upperBound(3)
+///
+/// for value in set {
+///   print(value) // 昇順
 /// }
 /// ```
-/// - Important: `RedBlackTreeSet` はスレッドセーフではありません。
+///
+/// ## 挿入・削除（Insertion & Removal）
+///
+/// 赤黒木により、**挿入・削除・検索はすべて O(log N)** の計算量で保証されます。
+///
+/// ```swift
+/// set.insert(10)
+/// set.remove(3)
+/// set.contains(5)
+/// ```
+///
+/// 重複値は許可されず、挿入時に既存要素がある場合は
+/// **無視または更新** されます。
+///
+/// ## 範囲操作（Range Operations）
+///
+/// `RedBlackTreeSet` は **範囲ベースの効率的な操作**をサポートします。
+///
+/// - 範囲削除
+/// - 範囲イテレーション
+/// - 区間検索（range queries）
+///
+/// ```swift
+/// let subset = set.range(3..<10) // TODO: コード例を修正
+/// ```
+///
+/// これらは、木構造を活かして **線形走査を避ける** 実装が可能です。
+///
+/// ## パフォーマンス特性（Performance Characteristics）
+///
+/// ### 要素検索（Lookup）
+///
+/// - **O(log N)** の最悪計算量保証
+/// - ハッシュに依存しないため、**衝突劣化が発生しません**
+///
+/// ### 挿入・削除（Insertion & Removal）
+///
+/// - **O(log N)**
+/// - 木の高さが平衡に保たれるため、**安定した性能**
+///
+/// ### 順序付き走査（Ordered Traversal）
+///
+/// - **O(N)** で昇順・降順走査
+/// - 中間ノードからの継続走査も効率的
+///
+/// ### メモリ特性（Memory Characteristics）
+///
+/// - 各要素はノードとして個別に管理される
+/// - `Array` や `HashTable` ベース構造より **ポインタオーバーヘッドがある**
+/// - 代わりに、**範囲検索・順序操作・最悪計算量保証** を提供
+///
+/// ## ハッシュ不要の利点（No Hashing Required）
+///
+/// `RedBlackTreeSet` はハッシュに依存しないため、以下の利点があります。
+///
+/// - `Hashable` 不要（`Comparable` のみ）
+/// - 悪意ある入力による **DoS 的ハッシュ衝突** を回避
+/// - **性能の予測可能性が高い**
+///
+/// ## Set / OrderedSet との使い分け
+///
+/// | 型                 | 内部構造           | 検索       | 順序     | 範囲検索 | 最悪計算量保証 |
+/// | ------------------ | ------------------ | ---------- | -------- | -------- | ---------------- |
+/// | `Set`              | Hash Table         | O(1) avg   | ❌       | ❌       | ❌               |
+/// | `OrderedSet`       | Array + Hash       | O(1) avg   | 挿入順   | ❌       | ❌               |
+/// | `RedBlackTreeSet`  | Red-Black Tree     | O(log N)   | ソート順 | ✅       | ✅               |
+///
+/// ## 使いどころ（When to Use）
+///
+/// `RedBlackTreeSet` は次のようなケースに向いています。
+///
+/// - **順序付き集合** が必要
+/// - **範囲検索 / lowerBound / upperBound** を多用
+/// - **最悪計算量の保証** が重要
+/// - **ハッシュ品質に依存したくない**
+/// - **アルゴリズム競技 / DB / インデックス / ルーティング構造**
+///
 @frozen
 public struct RedBlackTreeSet<Element: Comparable> {
 
   public
     typealias Element = Element
 
-  /// - Important:
-  ///  要素及びノードが削除された場合、インデックスは無効になります。
-  /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
-  public
-    typealias Index = Tree.Index
-
   public
     typealias _Key = Element
 
   public
-    typealias _RawValue = Element
+    typealias _PayloadValue = Element
 
   public
     typealias Base = Self
@@ -68,12 +167,17 @@ public struct RedBlackTreeSet<Element: Comparable> {
   var __tree_: Tree
 
   @inlinable @inline(__always)
-  internal init(__tree_: Tree) {
+  package init(__tree_: Tree) {
     self.__tree_ = __tree_
   }
 }
 
-extension RedBlackTreeSet: ___RedBlackTreeKeyOnlyBase {}
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet: _RedBlackTreeKeyOnlyBase {}
+#else
+  extension RedBlackTreeSet: _RedBlackTreeKeyOnlyBase__ {}
+#endif
+
 extension RedBlackTreeSet: CompareUniqueTrait {}
 extension RedBlackTreeSet: ScalarValueComparer {
   public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {
@@ -165,7 +269,6 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(never)
   public func contains(_ member: Element) -> Bool {
-    //    ___contains(member)
     __tree_.read { $0.__count_unique(member) != 0 }
   }
 }
@@ -181,7 +284,7 @@ extension RedBlackTreeSet {
     ___first
   }
 
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
+  /// - Complexity: O(log `count`)
   @inlinable
   public var last: Element? {
     ___last
@@ -189,25 +292,6 @@ extension RedBlackTreeSet {
 }
 
 // MARK: - Range Accessing Elements
-
-extension RedBlackTreeSet {
-
-  #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public subscript(bounds: Range<Index>) -> SubSequence {
-      __tree_.___ensureValid(
-        begin: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-
-      return .init(
-        tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-  #endif
-}
 
 // MARK: - Insertion
 
@@ -219,7 +303,7 @@ extension RedBlackTreeSet {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    __tree_._ensureUniqueAndCapacity()
+    __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     return (__inserted, __inserted ? newMember : __tree_[__r])
   }
@@ -229,8 +313,8 @@ extension RedBlackTreeSet {
   @inline(__always)
   @discardableResult
   public mutating func update(with newMember: Element) -> Element? {
-    __tree_._ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(newMember)
+    __tree_.ensureUniqueAndCapacity()
+    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     guard !__inserted else { return nil }
     let oldMember = __tree_[__r]
     __tree_[__r] = newMember
@@ -242,7 +326,7 @@ extension RedBlackTreeSet {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
+    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -256,7 +340,7 @@ extension RedBlackTreeSet {
   /// - Important: 空間計算量に余裕がある場合、formUnionの使用を推奨します
   @inlinable
   public mutating func merge(_ other: RedBlackTreeSet<Element>) {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_unique(
         tree: __tree_,
         other: other.__tree_,
@@ -269,7 +353,7 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge(_ other: RedBlackTreeMultiSet<Element>) {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_unique(
         tree: __tree_,
         other: other.__tree_,
@@ -282,7 +366,7 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge<S>(_ other: S) where S: Sequence, S.Element == Element {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_unique(tree: __tree_, other)
     }
   }
@@ -321,15 +405,20 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
   //  @inline(__always)
-  public mutating func popFirst() -> Element? {
-    //    guard !isEmpty else { return nil }
-    //    return remove(at: startIndex)
-    __tree_._ensureUnique()
-    return ___remove_first()
+  public mutating func popMin() -> Element? {
+    __tree_.ensureUnique()
+    return ___remove_first()?.payload
+  }
+
+  /// - Complexity: O(log `count`)
+  @inlinable
+  //  @inline(__always)
+  public mutating func popMax() -> Element? {
+    __tree_.ensureUnique()
+    return ___remove_last()?.payload
   }
 }
 
@@ -340,27 +429,8 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
-    __tree_._ensureUnique()
-    //    return __tree_.___erase_unique(member) ? member : nil
+    __tree_.ensureUnique()
     return __tree_.update { $0.___erase_unique(member) } ? member : nil
-    //    return __tree_.update { $0.___erase_unique_(member) } ? member : nil
-    //    let result = switch __tree_.specializeMode {
-    //    case .asInt: __tree_._i_update { $0.___erase_unique(member as! Int) }
-    //    case .generic: __tree_.update { $0.___erase_unique(member) }
-    //    }
-    //    return result ? member : nil
-  }
-
-  /// - Important: 削除後は、インデックスが無効になります。
-  /// - Complexity: O(1)
-  @inlinable
-  @discardableResult
-  public mutating func remove(at index: Index) -> Element {
-    __tree_._ensureUnique()
-    guard let element = ___remove(at: __tree_.___node_ptr(index)) else {
-      fatalError(.invalidIndex)
-    }
-    return element
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -368,59 +438,27 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
-    guard !isEmpty else {
+    __tree_.ensureUnique()
+    guard let element = ___remove_first() else {
       preconditionFailure(.emptyFirst)
     }
-    // TODO: インデックスを使うコストが跳ね上がってるので、_NodePtrで消す実装にかえること
-    // TODO: 全体的に無駄にIndexを利用している箇所を潰していくこと
-    // ちょっとましになっているので、TODOの内容自体を再検討する必要がある
-    return remove(at: startIndex)
+    return element.payload
   }
+}
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  @discardableResult
-  public mutating func removeLast() -> Element {
-    guard !isEmpty else {
-      preconditionFailure(.emptyLast)
-    }
-    return remove(at: index(before: endIndex))
-  }
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
 
-  #if COMPATIBLE_ATCODER_2025
-    /// Removes the specified subrange of elements from the collection.
-    ///
-    /// - Important: 削除後は、subrangeのインデックスが無効になります。
-    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
-    ///     range must be valid indices of the collection.
-    /// - Returns: The key-value pair that correspond to `index`.
-    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
     @inlinable
-    public mutating func removeSubrange<R: RangeExpression>(
-      _ bounds: R
-    ) where R.Bound == Index {
-
-      let bounds = bounds.relative(to: self)
-      __tree_._ensureUnique()
-      ___remove(
-        from: __tree_.rawValue(bounds.lowerBound),
-        to: __tree_.rawValue(bounds.upperBound))
+    public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+      __tree_.ensureUnique()
+      try __tree_.___checking_erase_if(
+        __tree_.__begin_node_,
+        __tree_.__end_node,
+        shouldBeRemoved: shouldBeRemoved)
     }
-  #endif
-}
-
-extension RedBlackTreeSet {
-
-  @inlinable
-  public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-    __tree_._ensureUnique()
-    try __tree_.___erase_if(
-      __tree_.__begin_node_,
-      __tree_.__end_node,
-      shouldBeRemoved: shouldBeRemoved)
   }
-}
+#endif
 
 extension RedBlackTreeSet {
 
@@ -428,7 +466,7 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       __tree_.deinitialize()
     } else {
       self = .init()
@@ -436,54 +474,7 @@ extension RedBlackTreeSet {
   }
 }
 
-// MARK: Finding Elements
-
-extension RedBlackTreeSet {
-
-  /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
-  /// 最初の位置（`Index`）を返します。
-  ///
-  /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
-  /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
-  /// - `lowerBound(3)` は要素 `3` の位置を返します。
-  /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
-  /// - `lowerBound(10)` は `endIndex` を返します。
-  ///
-  /// - Parameter member: 二分探索で検索したい要素
-  /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  public func lowerBound(_ member: Element) -> Index {
-    ___index_lower_bound(member)
-  }
-
-  /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
-  /// 最初の位置（`Index`）を返します。
-  ///
-  /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
-  /// - `upperBound(3)` は要素 `5` の位置を返します。
-  ///   （`3` より大きい値が最初に現れる場所）
-  /// - `upperBound(5)` は要素 `7` の位置を返します。
-  ///   （`5` と等しい要素は含まないため、`5` の直後）
-  /// - `upperBound(9)` は `endIndex` を返します。
-  ///
-  /// - Parameter member: 二分探索で検索したい要素
-  /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  public func upperBound(_ member: Element) -> Index {
-    ___index_upper_bound(member)
-  }
-}
-
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
-    ___index_equal_range(element)
-  }
-}
+// MARK: -
 
 extension RedBlackTreeSet {
 
@@ -511,42 +502,6 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  public func firstIndex(of member: Element) -> Index? {
-    ___first_index(of: member)
-  }
-
-  /// - Complexity: O(*n*), where *n* is the number of elements.
-  @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
-  }
-}
-
-#if !COMPATIBLE_ATCODER_2025
-  // BoundExpressionにより不要になった
-  extension RedBlackTreeSet {
-    /// 値レンジ `[start, end)` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Element, to end: Element) -> SubSequence {
-      // APIはstride関数とsequence関数を参考にした
-      .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
-    }
-
-    /// 値レンジ `[start, end]` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Element, through end: Element) -> SubSequence {
-      // APIはstride関数とsequence関数を参考にした
-      .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
-    }
-  }
-#endif
-
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
@@ -564,169 +519,300 @@ extension RedBlackTreeSet {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet: Sequence, Collection, BidirectionalCollection {}
-#else
-  extension RedBlackTreeSet: Sequence {}
-#endif
+extension RedBlackTreeSet: Sequence {}
 
 extension RedBlackTreeSet {
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func makeIterator() -> Tree._RawValues {
+  public func makeIterator() -> Tree._PayloadValues {
     _makeIterator()
   }
 
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _forEach(body)
-  }
-
-  #if COMPATIBLE_ATCODER_2025
-    /// 特殊なforEach
+  #if false
     @inlinable
     @inline(__always)
-    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+    public func forEach(_ body: (Element) throws -> Void) rethrows {
       try _forEach(body)
     }
   #endif
+}
 
-  #if !COMPATIBLE_ATCODER_2025
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
     /// - Complexity: O(*n*)
     @inlinable
     @inline(__always)
     public func sorted() -> [Element] {
-      _sorted()
+      __tree_.___copy_all_to_array()
     }
-  #endif
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var startIndex: Index { _startIndex }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var endIndex: Index { _endIndex }
-
-  /// - Complexity: O(*d* + log *n*)
-  @inlinable
-  //  @inline(__always)
-  public func distance(from start: Index, to end: Index) -> Int {
-    _distance(from: start, to: end)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func index(after i: Index) -> Index {
-    _index(after: i)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(after i: inout Index) {
-    _formIndex(after: &i)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func index(before i: Index) -> Index {
-    _index(before: i)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(before i: inout Index) {
-    _formIndex(before: &i)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    _index(i, offsetBy: distance)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    _formIndex(&i, offsetBy: distance)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    _index(i, offsetBy: distance, limitedBy: limit)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Bool
-  {
-    _formIndex(&i, offsetBy: distance, limitedBy: limit)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: Index) -> Element {
-    @inline(__always) _read { yield self[_checked: position] }
-  }
-
-  #if !COMPATIBLE_ATCODER_2025
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
     /// - Complexity: O(1)
     @inlinable
-    public subscript(unchecked position: Index) -> _RawValue {
-      @inline(__always) _read { yield self[_unchecked: position] }
+    @inline(__always)
+    public func reversed() -> [Element] {
+      __tree_.___rev_copy_all_to_array()
     }
-  #endif
+  }
+#endif
 
-  /// Indexがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid(index: Index) -> Bool {
-    _isValid(index: index)
+// MARK: -
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    /// - Important:
+    ///  要素及びノードが削除された場合、インデックスは無効になります。
+    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    public typealias Index = TaggedSeal
+    public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Base>
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+  extension RedBlackTreeSet {
+    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
+    /// - Complexity: O( log `count` )
+    @inlinable
+    public func firstIndex(of member: Element)
+      -> TaggedSeal?
+    {
+      .create_as_optional(__tree_.find(member))
+    }
+
+    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
+    /// - Complexity: O( `count` )
+    @inlinable
+    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
+      -> TaggedSeal?
+    {
+      try ___first_tracking_tag(where: predicate)
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var startIndex: TaggedSeal { .create(_start) }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var endIndex: TaggedSeal { .create(_end) }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    @inline(__always)
+    public func distance(from start: TaggedSeal, to end: TaggedSeal)
+      -> Int
+    {
+      __tree_.___distance(
+        from: start.relative(to: __tree_).pointer!,
+        to: end.relative(to: __tree_).pointer!)
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
+    /// 最初の位置（`Index`）を返します。
+    ///
+    /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
+    /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
+    /// - `lowerBound(3)` は要素 `3` の位置を返します。
+    /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
+    /// - `lowerBound(10)` は `endIndex` を返します。
+    ///
+    /// - Parameter member: 二分探索で検索したい要素
+    /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func lowerBound(_ member: Element) -> Index {
+      .create(__tree_.lower_bound(member))
+    }
+
+    /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
+    /// 最初の位置（`Index`）を返します。
+    ///
+    /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
+    /// - `upperBound(3)` は要素 `5` の位置を返します。
+    ///   （`3` より大きい値が最初に現れる場所）
+    /// - `upperBound(5)` は要素 `7` の位置を返します。
+    ///   （`5` と等しい要素は含まないため、`5` の直後）
+    /// - `upperBound(9)` は `endIndex` を返します。
+    ///
+    /// - Parameter member: 二分探索で検索したい要素
+    /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func upperBound(_ member: Element) -> Index {
+      .create(__tree_.upper_bound(member))
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func equalRange(_ element: Element) -> (
+      lower: TaggedSeal, upper: TaggedSeal
+    ) {
+      let (lower, upper) = __tree_.__equal_range_unique(element)
+      return (.create(lower), .create(upper))
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public func index(before i: TaggedSeal) -> TaggedSeal {
+      i.relative(to: __tree_)
+        .map(\.pointer)
+        .flatMap { ___tree_prev_iter($0) }
+        .flatMap { .create($0) }
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    public func index(after i: TaggedSeal) -> TaggedSeal {
+      i.relative(to: __tree_)
+        .map(\.pointer)
+        .flatMap { ___tree_next_iter($0) }
+        .flatMap { .create($0) }
+    }
+
+    /// - Complexity: O(`distance`)
+    @inlinable
+    public func index(_ i: TaggedSeal, offsetBy distance: Int)
+      -> TaggedSeal
+    {
+      i.relative(to: __tree_)
+        .map(\.pointer)
+        .flatMap { ___tree_adv_iter($0, distance) }
+        .flatMap { .create($0) }
+    }
+
+    /// - Complexity: O(`distance`)
+    @inlinable
+    public func index(
+      _ i: TaggedSeal, offsetBy distance: Int, limitedBy limit: TaggedSeal
+    )
+      -> TaggedSeal?
+    {
+      let __l = limit.relative(to: __tree_).map(\.pointer)
+      return try? i.relative(to: __tree_)
+        .map(\.pointer)
+        .flatMap { ___tree_adv_iter($0, distance, __l) }
+        .map { .create($0) }
+        .get()
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(before i: inout TaggedSeal) {
+      i = index(before: i)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(after i: inout TaggedSeal) {
+      i = index(after: i)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func formIndex(_ i: inout TaggedSeal, offsetBy distance: Int) {
+      i = index(i, offsetBy: distance)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    @inline(__always)
+    public func formIndex(
+      _ i: inout TaggedSeal,
+      offsetBy distance: Int,
+      limitedBy limit: TaggedSeal
+    )
+      -> Bool
+    {
+      if let result = index(i, offsetBy: distance, limitedBy: limit) {
+        i = result
+        return true
+      }
+      return false
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    @discardableResult
+    public mutating func remove(at index: TaggedSeal) -> Element {
+      __tree_.ensureUnique()
+      guard case .success(let __p) = index.relative(to: __tree_).unchecked_pointer else {
+        fatalError(.invalidIndex)
+      }
+      return _unchecked_remove(at: __p).payload
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: TaggedSeal) -> Element {
+      @inline(__always) get {
+        guard
+          let p: _NodePtr = __tree_.resolve(position).pointer,
+          !p.___is_end
+        else {
+          fatalError(.invalidIndex)
+        }
+        return p.__value_().pointee
+      }
+    }
+
+    /// Indexがsubscriptやremoveで利用可能か判別します
     ///
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
-    where R.Bound == Index {
-      _isValid(bounds)
+    public func isValid(index: TaggedSeal) -> Bool {
+      guard
+        let p: _NodePtr = __tree_.resolve(index).pointer,
+        !p.___is_end
+      else {
+        return false
+      }
+      return true
     }
-  #endif
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func reversed() -> Tree._RawValues.Reversed {
-    _reversed()
   }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var indices: Indices {
-    _indices
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    package var __indices: [TaggedSeal] {
+      // TODO: 基本的に廃止
+      _indices.map(\.trackingTag)
+    }
   }
+#endif
+
+extension RedBlackTreeSet {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -768,20 +854,6 @@ extension RedBlackTreeSet {
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     _lexicographicallyPrecedes(other, by: <)
   }
-}
-
-// MARK: - SubSequence
-
-extension RedBlackTreeSet {
-
-  public typealias SubSequence = RedBlackTreeSliceV2<Base>.KeyOnly
-}
-
-// MARK: - Index Range
-
-extension RedBlackTreeSet {
-
-  public typealias Indices = Tree.Indices
 }
 
 // MARK: - Protocol Adaption

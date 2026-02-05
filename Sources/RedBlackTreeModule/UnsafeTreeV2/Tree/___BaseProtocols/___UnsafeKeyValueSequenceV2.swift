@@ -21,115 +21,107 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyValueSequenceV2: ___UnsafeBaseV2, ___TreeIndex
+protocol ___UnsafeKeyValueSequenceV2__: UnsafeTreeSealedRangeProtocol, _PairBase_ElementProtocol,
+  _PayloadValueBride, _KeyBride, _MappedValueBride
 where
-  Base: KeyValueComparer,
-  Base._MappedValue == _MappedValue,
-  _RawValue == RedBlackTreePair<_Key, _MappedValue>,
-  Element == (key: _Key, value: _MappedValue)
-{
-  associatedtype _MappedValue
-}
+  Base: KeyValueComparer & _BasePaylodValue_ElementInterface
+{}
 
-extension ___UnsafeKeyValueSequenceV2 {
+@usableFromInline
+protocol ___UnsafeKeyValueSequenceV2: ___UnsafeKeyValueSequenceV2__, ___UnsafeIndexRangeBaseV2,  _PayloadValueBride, _KeyBride, _MappedValueBride
+where
+  Base: KeyValueComparer
+{}
 
+extension ___UnsafeKeyValueSequenceV2__ {
+
+  // TODO: これを共通インターフェースの一部に引き上げたい
   @inlinable
   @inline(__always)
-  internal static func ___element(_ __value: _RawValue) -> Element {
-    (__value.key, __value.value)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal static func ___tree_value(_ __element: Element) -> _RawValue {
+  internal static func ___tree_value(_ __element: Element) -> _PayloadValue {
     RedBlackTreePair(__element.key, __element.value)
   }
+}
 
+extension ___UnsafeKeyValueSequenceV2__ {
+
+  // TODO: リファクタリング検討
   @inlinable
   @inline(__always)
-  public static func ___pointee(_ __value: _RawValue) -> Element {
-    Self.___element(__value)
+  internal func __element_(_ __value: _PayloadValue) -> Element {
+    Self.__element_(__value)
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func ___element(_ __value: _RawValue) -> Element {
-    Self.___element(__value)
-  }
-}
-
-extension ___UnsafeKeyValueSequenceV2 where Self: ___UnsafeCommonV2 {
+extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeCommonV2 {
 
   @inlinable
   @inline(__always)
   internal var ___first: Element? {
-    ___first.map(___element)
+    ___first.map(__element_)
   }
 
   @inlinable
   @inline(__always)
   internal var ___last: Element? {
-    ___last.map(___element)
+    ___last.map(__element_)
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 where Self: ___UnsafeBaseSequenceV2 {
+extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeBaseSequenceV2 {
 
   @inlinable
   internal func ___min() -> Element? {
-    ___min().map(___element)
+    ___min().map(__element_)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   internal func ___max() -> Element? {
-    ___max().map(___element)
+    ___max().map(__element_)
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 where Self: ___UnsafeIndexV2 {
+extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeIndexV2 {
 
   @inlinable
   internal func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___first { try predicate(___element($0)) }.map(___element)
+    try ___first { try predicate(__element_($0)) }.map(__element_)
   }
 
   /// - Complexity: O(*n*)
   @inlinable
   internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index { try predicate(___element($0)) }
+    try ___first_index { try predicate(__element_($0)) }
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 {
+extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
   @inline(__always)
-  internal func ___value_for(_ __k: _Key) -> _RawValue? {
+  internal func ___value_for(_ __k: _Key) -> _PayloadValue? {
     let __ptr = __tree_.find(__k)
-    return __tree_.___is_null_or_end(__ptr) ? nil : __tree_[__ptr]
+    return __ptr.___is_null_or_end ? nil : __tree_[__ptr]
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 {
+extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
   @inline(__always)
   internal func _makeIterator() -> Tree._KeyValues {
-    .init(start: _start, end: _end, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
 
   @inlinable
   @inline(__always)
   internal func _reversed() -> Tree._KeyValues.Reversed {
-    .init(start: _start, end: _end, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 {
+extension ___UnsafeKeyValueSequenceV2__ {
 
   public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
   public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
@@ -137,25 +129,57 @@ extension ___UnsafeKeyValueSequenceV2 {
   @inlinable
   @inline(__always)
   internal func _keys() -> Keys {
-    .init(start: _start, end: _end, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   internal func _values() -> Values {
-    .init(start: _start, end: _end, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2 {
+extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
   @inline(__always)
   internal func _forEach(_ body: (Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _start, __l: _end) {
-      try body(Self.___element(__tree_[$0]))
+    try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
+      try body(Self.__element_(__tree_[$0]))
     }
+  }
+}
+
+extension ___UnsafeKeyValueSequenceV2__ {
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  @inline(__always)
+  internal func _sorted() -> [Element] {
+    __tree_.___copy_to_array(_sealed_start.pointer!, _sealed_end.pointer!, transform: Self.__element_)
+  }
+}
+
+extension ___UnsafeKeyValueSequenceV2__ {
+
+  @inlinable
+  public func ___subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
+    -> RedBlackTreeSliceV2<Base>.KeyValue
+  {
+    let (lower, upper) = rawRange.relative(to: __tree_)
+    guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+      fatalError(.invalidIndex)
+    }
+    return .init(tree: __tree_, start: lower, end: upper)
+  }
+
+  @inlinable
+  public func ___unchecked_subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
+    -> RedBlackTreeSliceV2<Base>.KeyValue
+  {
+    let (lower, upper) = rawRange.relative(to: __tree_)
+    return .init(tree: __tree_, start: lower, end: upper)
   }
 }
 
@@ -166,22 +190,12 @@ extension ___UnsafeKeyValueSequenceV2 {
     @inlinable
     @inline(__always)
     internal func _forEach(_ body: (Index, Element) throws -> Void) rethrows {
-      try __tree_.___for_each_(__p: _start, __l: _end) {
-        try body(___index($0), Self.___element(__tree_[$0]))
+      try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
+        try body(___index($0), Self.__element_(__tree_[$0]))
       }
     }
   }
 #endif
-
-extension ___UnsafeKeyValueSequenceV2 {
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  @inline(__always)
-  internal func _sorted() -> [Element] {
-    __tree_.___copy_to_array(_start, _end, transform: Self.___element)
-  }
-}
 
 extension ___UnsafeKeyValueSequenceV2 {
 
@@ -191,50 +205,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   @inlinable
   internal subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
     @inline(__always) get {
-      __tree_.___ensureValid(subscript: __tree_.rawValue(position))
-      return ___element(__tree_[__tree_.rawValue(position)])
+      return __element_(__tree_[try! __tree_._remap_to_safe_(position).get().pointer])
     }
-  }
-
-  @inlinable
-  internal subscript(_unchecked position: Index) -> (key: _Key, value: _MappedValue) {
-    @inline(__always) get {
-      return ___element(__tree_[__tree_.rawValue(position)])
-    }
-  }
-}
-
-extension ___UnsafeKeyValueSequenceV2 {
-
-  @inlinable
-  public func ___subscript(_ rawRange: UnsafeTreeRangeExpression)
-    -> RedBlackTreeSliceV2<Base>.KeyValue
-  {
-    let (lower, upper) = __tree_.rawRange(rawRange)
-    guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
-      fatalError(.invalidIndex)
-    }
-    return .init(tree: __tree_, start: lower, end: upper)
-  }
-  
-  @inlinable
-  public func ___unchecked_subscript(_ rawRange: UnsafeTreeRangeExpression)
-  -> RedBlackTreeSliceV2<Base>.KeyValue
-  {
-    let (lower, upper) = __tree_.rawRange(rawRange)
-    return .init(tree: __tree_, start: lower, end: upper)
-  }
-}
-
-extension ___UnsafeKeyValueSequenceV2 {
-
-  // あえてElementを返していない
-  @inlinable
-  @inline(__always)
-  public mutating func ___element(at ptr: _NodePtr) -> _RawValue? {
-    guard !__tree_.___is_subscript_null(ptr) else {
-      return nil
-    }
-    return __tree_[ptr]
   }
 }

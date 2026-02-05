@@ -21,11 +21,16 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeBaseSequenceV2: ___UnsafeBaseV2 {
-  func ___index_or_nil(_ p: _NodePtr) -> Index?
-}
+protocol ___UnsafeBaseSequenceV2__: UnsafeTreeHost, _PayloadValueBride, _KeyBride
+{}
 
-extension ___UnsafeBaseSequenceV2 {
+extension ___UnsafeBaseSequenceV2__ {
+  
+  @inlinable
+  @inline(__always)
+  internal var ___count: Int {
+    __tree_.count
+  }
 
   @inlinable
   @inline(__always)
@@ -34,45 +39,75 @@ extension ___UnsafeBaseSequenceV2 {
   }
 }
 
-extension ___UnsafeBaseSequenceV2 {
+extension ___UnsafeBaseSequenceV2__ {
 
   @inlinable
   @inline(__always)
-  internal func ___min() -> _RawValue? {
+  package var _start: _NodePtr {
+    __tree_.__begin_node_
+  }
+
+  @inlinable
+  @inline(__always)
+  package var _end: _NodePtr {
+    __tree_.__end_node
+  }
+  
+  @inlinable
+  @inline(__always)
+  package var _sealed_start: _SealedPtr {
+    __tree_.__begin_node_.sealed
+  }
+
+  @inlinable
+  @inline(__always)
+  package var _sealed_end: _SealedPtr {
+    __tree_.__end_node.sealed
+  }
+
+
+  @inlinable
+  @inline(__always)
+  package var ___capacity: Int {
+    __tree_.capacity
+  }
+}
+
+extension ___UnsafeBaseSequenceV2__ {
+
+  @inlinable
+  @inline(__always)
+  internal func ___min() -> _PayloadValue? {
     __tree_.__root == __tree_.nullptr ? nil : __tree_[__tree_.__tree_min(__tree_.__root)]
   }
 
   @inlinable
   @inline(__always)
-  internal func ___max() -> _RawValue? {
+  internal func ___max() -> _PayloadValue? {
     __tree_.__root == __tree_.nullptr ? nil : __tree_[__tree_.__tree_max(__tree_.__root)]
   }
+}
+
+// MARK: -
+
+@usableFromInline
+protocol ___UnsafeBaseSequenceV2: ___UnsafeBaseSequenceV2__, ___UnsafeIndexRangeBaseV2, _PayloadValueBride, _KeyBride
+{
+  func ___index_or_nil(_ p: _NodePtr) -> Index?
 }
 
 extension ___UnsafeBaseSequenceV2 {
 
   @inlinable
   @inline(__always)
-  internal func ___lower_bound(_ __k: _Key) -> _NodePtr {
-    __tree_.lower_bound(__k)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___upper_bound(_ __k: _Key) -> _NodePtr {
-    __tree_.upper_bound(__k)
-  }
-
-  @inlinable
-  @inline(__always)
   internal func ___index_lower_bound(_ __k: _Key) -> Index {
-    ___index(___lower_bound(__k))
+    ___index(__tree_.lower_bound(__k))
   }
 
   @inlinable
   @inline(__always)
   internal func ___index_upper_bound(_ __k: _Key) -> Index {
-    ___index(___upper_bound(__k))
+    ___index(__tree_.upper_bound(__k))
   }
 }
 

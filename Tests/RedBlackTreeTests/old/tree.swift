@@ -31,7 +31,7 @@ import Foundation
 protocol _TreeNode_KeyProtocol:
   _TreeNode_KeyInterface
     & _TreeRawValue_KeyInterface
-    & _TreeNode_RawValueInterface
+    & _TreeNode_PayloadValueInterface
 {}
 
 extension _TreeNode_KeyProtocol {
@@ -117,8 +117,8 @@ public
   enum _PointerIndexRef: Equatable
 {
   /// 右ノードへの参照
-  case __right_(_PointerIndex)
+  case __right_(_RawTrackingTag)
   /// 左ノードへの参照
-  case __left_(_PointerIndex)
+  case __left_(_RawTrackingTag)
 }
 #endif

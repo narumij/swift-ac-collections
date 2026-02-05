@@ -1,13 +1,21 @@
+//===----------------------------------------------------------------------===//
 //
-//  ___UnsafeNaiveIterator.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/01/15.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 extension UnsafeIterator {
-  
-  // TODO: end_ptrで停止するバージョンの検討
 
   public struct _Obverse:
     _UnsafeNodePtrType,
@@ -29,13 +37,21 @@ extension UnsafeIterator {
         ___tree_range:
           UnsafeTreeRange(___from: __first, ___to: __last))
     }
-    
+
     public var _start: UnsafeMutablePointer<UnsafeNode> {
       ___tree_range.___from
     }
 
     public var _end: UnsafeMutablePointer<UnsafeNode> {
       ___tree_range.___to
+    }
+    
+    public var _sealed_start: _SealedPtr {
+      fatalError()
+    }
+
+    public var _sealed_end: _SealedPtr {
+      fatalError()
     }
 
     public mutating func next() -> _NodePtr? {
@@ -47,9 +63,9 @@ extension UnsafeIterator {
 
     @usableFromInline
     var __current: _NodePtr
-    
+
     public typealias Reversed = _Reverse
-    
+
     public func reversed() -> UnsafeIterator._Reverse {
       .init(___tree_range: ___tree_range)
     }
@@ -58,11 +74,8 @@ extension UnsafeIterator {
 
 extension UnsafeIterator._Obverse {
 
-  @inlinable
-  @inline(__always)
-  public init(_start: _NodePtr, _end: _NodePtr
-  ) {
-    self.init(__first: _start, __last: _end)
+  public init(_start: _SealedPtr, _end: _SealedPtr) {
+    self.init(__first: _start.pointer!, __last: _end.pointer!)
   }
 }
 

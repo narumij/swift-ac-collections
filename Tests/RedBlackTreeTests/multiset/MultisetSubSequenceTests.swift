@@ -6,8 +6,8 @@
 //   - BidirectionalCollection の規約を満たすか
 //   - 基 multiset 変化時に index が無効化されるか
 
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 final class RedBlackTreeMultisetSubSequenceTests: RedBlackTreeTestCase {
 
@@ -20,7 +20,9 @@ final class RedBlackTreeMultisetSubSequenceTests: RedBlackTreeTestCase {
 
     XCTAssertEqual(slice.count, 6)
     XCTAssertEqual(slice.first, 1)
-    XCTAssertEqual(slice.last, 3)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(slice.last, 3)
+    #endif
     XCTAssertEqual(
       slice.distance(
         from: slice.startIndex,
@@ -77,10 +79,10 @@ final class RedBlackTreeMultisetSubSequenceTests: RedBlackTreeTestCase {
   // MARK: index invalidation after base mutation ------------------------
 
   func testIndexInvalidationAfterBaseMutation() throws {
-#if !USE_OLD_FIND
-    throw XCTSkip("挙動が変わるためスキップ")
-#endif
-    
+    #if !USE_OLD_FIND
+      throw XCTSkip("挙動が変わるためスキップ")
+    #endif
+
     var base: RedBlackTreeMultiSet = [1, 1, 2, 2, 3]
     let slice = base.elements(in: 1...2)  // 1,1,2,2
 
@@ -91,6 +93,6 @@ final class RedBlackTreeMultisetSubSequenceTests: RedBlackTreeTestCase {
 
     throw XCTSkip("setと統一の動作ならばFalseだが、multiset特有の事情でCoWが発生するため、未対応")
 
-//    XCTAssertFalse(slice.isValid(index: idx))
+    //    XCTAssertFalse(slice.isValid(index: idx))
   }
 }

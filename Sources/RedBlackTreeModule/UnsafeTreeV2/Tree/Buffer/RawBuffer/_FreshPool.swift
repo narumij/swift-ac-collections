@@ -1,29 +1,22 @@
-// Copyright 2024-2026 narumij
+//===----------------------------------------------------------------------===//
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// This source file is part of the swift-ac-collections project
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
 // This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
 //
-// Copyright © 2003-2025 The LLVM Project.
+// Copyright © 2003-2026 The LLVM Project.
 // Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
-
-// DONE: V2のアイデアをV3と同じ方式で再度試す
-// メモリ確保での時間増加よりも現状のpopのほうが時間が少ないので、V2のアイデアは試さない
+//
+//===----------------------------------------------------------------------===//
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
+// とはいえ、これは作業用。実際にはBufferHeaderにコピペインライン化している
 @usableFromInline
 protocol _FreshPool: _UnsafeNodePtrType {
 
@@ -46,7 +39,7 @@ protocol _FreshPool: _UnsafeNodePtrType {
   #endif
   var freshBucketAllocator: _BucketAllocator { get }
 
-  var memoryLayout: _MemoryLayout { get }
+  var payload: _MemoryLayout { get }
 }
 
 extension _FreshPool {
@@ -66,7 +59,7 @@ extension _FreshPool {
   //  @inline(__always)
   mutating func pushFreshBucket(head: _BucketPointer) {
     freshBucketHead = head
-    freshBucketCurrent = head.queue(memoryLayout: memoryLayout)
+    freshBucketCurrent = head.queue(payload: payload)
     freshBucketLast = head
     freshPoolCapacity += head.pointee.capacity
     #if DEBUG
@@ -93,7 +86,7 @@ extension _FreshPool {
     if let p = freshBucketCurrent?.pop() {
       return p
     }
-    freshBucketCurrent = freshBucketCurrent?.next(memoryLayout: memoryLayout)
+    freshBucketCurrent = freshBucketCurrent?.next(payload: payload)
     return freshBucketCurrent?.pop()
   }
 }
@@ -114,17 +107,17 @@ extension _FreshPool {
   */
   @inlinable
   @inline(__always)
-  subscript(___raw_index: Int) -> _NodePtr {
-    assert(___raw_index >= 0)
-    var remaining = ___raw_index
-    var p = freshBucketHead?.accessor(_value: memoryLayout)
+  subscript(___tracking_tag: Int) -> _NodePtr {
+    assert(___tracking_tag >= 0)
+    var remaining = ___tracking_tag
+    var p = freshBucketHead?.accessor(payload: payload)
     while let h = p {
       let cap = h.capacity
       if remaining < cap {
         return h[remaining]
       }
       remaining -= cap
-      p = h.next(_value: memoryLayout)
+      p = h.next(payload: payload)
     }
     return nullptr
   }
@@ -138,7 +131,7 @@ extension _FreshPool {
   mutating func ___flushFreshPool() {
     freshBucketAllocator.deinitialize(bucket: freshBucketHead)
     freshPoolUsedCount = 0
-    freshBucketCurrent = freshBucketHead?.queue(memoryLayout: memoryLayout)
+    freshBucketCurrent = freshBucketHead?.queue(payload: payload)
   }
 
   @usableFromInline
@@ -165,12 +158,12 @@ extension _FreshPool {
 
 extension _FreshPool {
 
-  @usableFromInline typealias PopIterator = _FreshPoolPopIterator
+  @usableFromInline typealias PopIterator = _FreshPoolUsedIterator
 
   @inlinable
   //  @inline(__always)
-  func makeFreshPoolIterator<T>() -> _FreshPoolPopIterator<T> {
-    return _FreshPoolPopIterator<T>(bucket: freshBucketHead)
+  func makeFreshPoolIterator<T>() -> _FreshPoolUsedIterator<T> {
+    return _FreshPoolUsedIterator<T>(bucket: freshBucketHead)
   }
 }
 

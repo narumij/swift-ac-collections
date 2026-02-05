@@ -28,7 +28,6 @@ final class AllocationTests: RedBlackTreeTestCase {
       }
     }
 
-    // TODO: FIXME
     func test1() throws {
       do {
         // countがゼロになった場合、一旦リセットしてもいい気はするが、しばらく保留
@@ -59,7 +58,7 @@ final class AllocationTests: RedBlackTreeTestCase {
           XCTAssertEqual(set.__tree_.initializedCount, 5)
           XCTAssertEqual(set.__tree_.count, 0)
           XCTAssertEqual(set.__tree_._buffer.header.recycleCount, 5)
-          set.__tree_._ensureUniqueAndCapacity(to: 1)
+          set.__tree_.ensureUniqueAndCapacity(to: 1)
           // リファレンスが2なので、CoWが発火する
           #if false
             // LV1が本体保持になっているので、結果が異なる
@@ -79,7 +78,7 @@ final class AllocationTests: RedBlackTreeTestCase {
           XCTAssertEqual(set.__tree_.initializedCount, 5)
           XCTAssertEqual(set.__tree_.count, 0)
           XCTAssertEqual(set.__tree_._buffer.header.recycleCount, 5)
-          set.__tree_._ensureUniqueAndCapacity(to: 15)
+          set.__tree_.ensureUniqueAndCapacity(to: 15)
           // リファレンスが2なので、CoWが発火する
           #if false
             // LV1が本体保持になっているので、結果が異なる
@@ -98,7 +97,7 @@ final class AllocationTests: RedBlackTreeTestCase {
         var A = RedBlackTreeSet<Int>()
         let B = A
         XCTAssertTrue(A.__tree_.isTriviallyIdentical(to: B.__tree_))
-        A.__tree_._ensureUnique()
+        A.__tree_.ensureUnique()
         XCTAssertTrue(!A.__tree_.isTriviallyIdentical(to: B.__tree_))
       }
 
@@ -109,7 +108,7 @@ final class AllocationTests: RedBlackTreeTestCase {
           // treeの保持が単一ではない場合
           let C = A.__tree_
           defer { _fixLifetime(C) }
-          A.__tree_._ensureUnique()
+          A.__tree_.ensureUnique()
           #if false
             // シングルトンバッファを使っているので、コピーが発生するようになった
             // 弱ユニーク化は発火しないが
@@ -132,39 +131,9 @@ final class AllocationTests: RedBlackTreeTestCase {
       }
     }
 
-    #if false
-      func testCapacityGrowth() throws {
-        throw XCTSkip("メモリのチェックは別途追加すること")
-        #if false
-          let set = RedBlackTreeSet<Int>()
-          var tree = set.__tree_
-          var capacities: [Int] = [0]
-          while let l = capacities.last, l < 1_000_000 {
-            tree.initializedCount = l
-            tree.capacity = l
-            capacities.append(tree.growthCapacity(to: l + 1, linearly: false))
-          }
-          // [0, 1, 2, 3, 4, 6, 8, 10, 12, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576]
-          // [0, 1, 2, 3, 4, 6, 8, 10, 12, 25, 51, 102, 204, 409, 819, 1638, 3276, 6553, 13107, 26214, 52428, 104857, 209715, 419430, 838860, 1677721]
-          // [0, 1, 2, 3, 4, 6, 8, 10, 12, 24, 49, 101, 203, 408, 817, 1637, 3275, 6552, 13105, 26213, 52427, 104856, 209713, 419429, 838859, 1677720]
-          // [0, 1, 2, 3, 4, 6, 8, 10, 12, 24, 48, 96, 192, 384, 768, 1536, 3072, 6144, 12288, 24576, 49152, 98304, 196608, 393216, 786432, 1572864]
-          XCTAssertNotEqual(capacities, [])
-          #if !ALLOCATION_DRILL
-            // 小さく確保していく方針に切り替えた
-            // アロケーション改良中で未確定
-            // TODO: FIXME
-            //          XCTAssertEqual(capacities.count, 1054)
-            //          XCTAssertEqual(capacities.last, 1_000_747)
-          #endif
-          //    XCTAssertEqual(capacities.last, 1572864)
-          tree.initializedCount = 0  // これをしないと未初期化メモリに触ってクラッシュとなる
-        #endif
-      }
-    #endif
-
     func testHoge() throws {
       var a = RedBlackTreeSet<Int>()
-      a.__tree_._ensureUnique()
+      a.__tree_.ensureUnique()
       XCTAssertEqual(a.capacity, 0)
       a.__tree_._buffer.header.pushFreshBucket(capacity: 512)
       XCTAssertGreaterThanOrEqual(a.capacity, 512)

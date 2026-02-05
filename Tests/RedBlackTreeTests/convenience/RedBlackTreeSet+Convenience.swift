@@ -4,6 +4,7 @@ import RedBlackTreeModule
 // https://github.com/tatyam-prime/SortedSet
 //
 // 標準コンテナに寄せた結果、メソッドとして浮き始めてきたので、盆栽対象とすることにした
+#if COMPATIBLE_ATCODER_2025
 extension RedBlackTreeSet {
 
   @inlinable public func lessThan(_ p: Element) -> Element? {
@@ -24,6 +25,7 @@ extension RedBlackTreeSet {
     return (lo.pointee.map { p == $0 } ?? false) ? lo.pointee : upperBound(p).pointee
   }
 }
+#endif
 
 extension RedBlackTreeSet {
   
@@ -34,6 +36,7 @@ extension RedBlackTreeSet {
   }
 }
 
+#if COMPATIBLE_ATCODER_2025
 extension RedBlackTreeSet {
 
   @inlinable
@@ -46,3 +49,17 @@ extension RedBlackTreeSet {
     removeSubrange(lowerBound(range.lowerBound) ..< upperBound(range.upperBound))
   }
 }
+#else
+extension RedBlackTreeSet {
+
+  @inlinable
+  public mutating func removeSubrange(_ range: Range<Element>) {
+    removeAll(in: lowerBound(range.lowerBound) ..< lowerBound(range.upperBound))
+  }
+  
+  @inlinable
+  public mutating func removeSubrange(_ range: ClosedRange<Element>) {
+    removeAll(in: lowerBound(range.lowerBound) ..< upperBound(range.upperBound))
+  }
+}
+#endif

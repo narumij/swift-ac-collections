@@ -15,11 +15,3 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _Tree_IsMultiTraitProtocol:
-  _Tree_IsMultiTraitInterface & _Base_IsMultiTraitInterface
-{}
-
-extension _Tree_IsMultiTraitProtocol {
-  @inlinable @inline(__always)
-  public var isMulti: Bool { Self.isMulti }
-}

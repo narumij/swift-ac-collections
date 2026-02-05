@@ -53,7 +53,7 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
     typealias _Key = Element
 
   public
-    typealias _RawValue = Element
+    typealias _PayloadValue = Element
 
   @usableFromInline
   var __tree_: Tree
@@ -68,7 +68,7 @@ extension RedBlackTreeMultiSet {
   public typealias Base = Self
 }
 
-extension RedBlackTreeMultiSet: ___RedBlackTreeKeyOnlyBase {}
+extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyBase {}
 extension RedBlackTreeMultiSet: CompareMultiTrait {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {
   public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {
@@ -183,60 +183,15 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-#if COMPATIBLE_ATCODER_2025
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    __tree_.___ensureValid(
-      begin: __tree_.rawValue(bounds.lowerBound),
-      end: __tree_.rawValue(bounds.upperBound))
-
-    return .init(
-      tree: __tree_,
-      start: __tree_.rawValue(bounds.lowerBound),
-      end: __tree_.rawValue(bounds.upperBound))
-  }
-  #endif
-
-  #if !COMPATIBLE_ATCODER_2025 && false
-    @inlinable
-    @inline(__always)
-    public subscript<R>(bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Index {
-      let bounds: Range<Index> = bounds.relative(to: self)
-
-      __tree_.___ensureValid(
-        begin: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-
-      return .init(
-        tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+  #if COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public subscript(unchecked bounds: Range<Index>) -> SubSequence {
-      .init(
-        tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public subscript<R>(unchecked bounds: R) -> SubSequence
-    where R: RangeExpression, R.Bound == Index {
-      let bounds: Range<Index> = bounds.relative(to: self)
+    public subscript(bounds: Range<Index>) -> SubSequence {
       return .init(
         tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
+        start: __tree_._remap_to_safe_(bounds.lowerBound),
+        end: __tree_._remap_to_safe_(bounds.upperBound))
     }
   #endif
 }
@@ -252,7 +207,7 @@ extension RedBlackTreeMultiSet {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    __tree_._ensureUniqueAndCapacity()
+    __tree_.ensureUniqueAndCapacity()
     _ = __tree_.__insert_multi(newMember)
     return (true, newMember)
   }
@@ -262,7 +217,7 @@ extension RedBlackTreeMultiSet {
 
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    __tree_._ensureUniqueAndCapacity(to: minimumCapacity)
+    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -276,7 +231,7 @@ extension RedBlackTreeMultiSet {
   /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_multi(
         tree: __tree_,
         other: other.__tree_,
@@ -289,7 +244,7 @@ extension RedBlackTreeMultiSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_multi(
         tree: __tree_,
         other: other.__tree_,
@@ -302,7 +257,7 @@ extension RedBlackTreeMultiSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
-    __tree_._ensureUnique { __tree_ in
+    __tree_.ensureUnique { __tree_ in
       .___insert_range_multi(tree: __tree_, other)
     }
   }
@@ -406,11 +361,11 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
-    __tree_._ensureUnique()
-    guard let element = ___remove(at: __tree_.rawValue(index)) else {
+    __tree_.ensureUnique()
+    guard case .success(let __p) = __tree_._remap_to_safe_(index) else {
       fatalError(.invalidIndex)
     }
-    return element
+    return _unchecked_remove(at: __p.pointer).payload
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -450,10 +405,10 @@ extension RedBlackTreeMultiSet {
     ) where R.Bound == Index {
 
       let bounds = bounds.relative(to: self)
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       ___remove(
-        from: __tree_.rawValue(bounds.lowerBound),
-        to: __tree_.rawValue(bounds.upperBound))
+        from: __tree_._remap_to_safe_(bounds.lowerBound).pointer!,
+        to: __tree_._remap_to_safe_(bounds.upperBound).pointer!)
     }
   #endif
 
@@ -474,7 +429,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity {
-      __tree_._ensureUnique()
+      __tree_.ensureUnique()
       __tree_.deinitialize()
     } else {
       self = .init()
@@ -555,14 +510,20 @@ extension RedBlackTreeMultiSet {
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Element, to end: Element) -> SubSequence {
-      .init(tree: __tree_, start: ___lower_bound(start), end: ___lower_bound(end))
+      .init(
+        tree: __tree_,
+        start: __tree_.lower_bound(start).sealed,
+        end: __tree_.lower_bound(end).sealed)
     }
 
     /// 値レンジ `[start, end]` に含まれる要素のスライス
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Element, through end: Element) -> SubSequence {
-      .init(tree: __tree_, start: ___lower_bound(start), end: ___upper_bound(end))
+      .init(
+        tree: __tree_,
+        start: __tree_.lower_bound(start).sealed,
+        end: __tree_.upper_bound(end).sealed)
     }
   }
 #endif
@@ -599,13 +560,13 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func makeIterator() -> Tree._RawValues {
+  public func makeIterator() -> Tree._PayloadValues {
     _makeIterator()
   }
 
   @inlinable
   @inline(__always)
-  public func forEach(_ body: (_RawValue) throws -> Void) rethrows {
+  public func forEach(_ body: (_PayloadValue) throws -> Void) rethrows {
     try _forEach(body)
   }
 
@@ -613,7 +574,7 @@ extension RedBlackTreeMultiSet {
     /// 特殊なforEach
     @inlinable
     @inline(__always)
-    public func forEach(_ body: (Index, _RawValue) throws -> Void) rethrows {
+    public func forEach(_ body: (Index, _PayloadValue) throws -> Void) rethrows {
       try _forEach(body)
     }
   #endif
@@ -702,18 +663,11 @@ extension RedBlackTreeMultiSet {
     _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
 
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: Index) -> _RawValue {
-    @inline(__always) _read { yield self[_checked: position] }
-  }
-
-  #if !COMPATIBLE_ATCODER_2025
-    /// - Warning: This subscript trades safety for performance. Using an invalid index results in undefined behavior.
+  #if COMPATIBLE_ATCODER_2025 || true
     /// - Complexity: O(1)
     @inlinable
-    public subscript(unchecked position: Index) -> _RawValue {
-      @inline(__always) _read { yield self[_unchecked: position] }
+    public subscript(position: Index) -> _PayloadValue {
+      @inline(__always) _read { yield self[_checked: position] }
     }
   #endif
 
@@ -741,7 +695,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func reversed() -> Tree._RawValues.Reversed {
+  public func reversed() -> Tree._PayloadValues.Reversed {
     _reversed()
   }
 
@@ -757,7 +711,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @inline(__always)
   public func elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (_RawValue, OtherSequence.Element) throws -> Bool
+    _ other: OtherSequence, by areEquivalent: (_PayloadValue, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
     try _elementsEqual(other, by: areEquivalent)
   }
@@ -767,8 +721,8 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (_RawValue, _RawValue) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, _RawValue == OtherSequence.Element {
+    _ other: OtherSequence, by areInIncreasingOrder: (_PayloadValue, _PayloadValue) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, _PayloadValue == OtherSequence.Element {
     try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
   }
 }

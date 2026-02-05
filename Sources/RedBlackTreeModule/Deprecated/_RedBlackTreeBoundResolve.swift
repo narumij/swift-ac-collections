@@ -6,7 +6,6 @@
 //
 
 #if COMPATIBLE_ATCODER_2025
-  // TODO: 現行互換実装の作業をする
 
   @usableFromInline
   protocol RedBlackTreeBoundResolverProtocol: Collection
@@ -20,7 +19,7 @@
     func upperBound(_: _Key) -> Index
   }
 
-  extension RedBlackTreeBound {
+  extension RedBlackTreeBoundExpression {
 
     @usableFromInline
     func relative<C: RedBlackTreeBoundResolverProtocol>(to collection: C)
@@ -28,20 +27,35 @@
     where _Key == C._Key {
       switch self {
       case .start:
-        collection.startIndex
+        return collection.startIndex
       case .end:
-        collection.endIndex
+        return collection.endIndex
       case .lower(let l):
-        collection.lowerBound(l)
+        return collection.lowerBound(l)
       case .upper(let r):
-        collection.upperBound(r)
+        return collection.upperBound(r)
+      case .advanced(let __self, by: let offset):
+        let i = __self.relative(to: collection)
+        return collection.index(i, offsetBy: offset)
+      case .before(let __self):
+        return
+          RedBlackTreeBoundExpression
+          .advanced(__self, by: -1)
+          .relative(to: collection)
+      case .after(let __self):
+        return
+          RedBlackTreeBoundExpression
+          .advanced(__self, by: 1)
+          .relative(to: collection)
+      default:
+        fatalError("NOT IMPLEMENTED YET")
       }
     }
   }
 
   extension RedBlackTreeBoundResolverProtocol {
 
-    func relative<K>(to boundsExpression: RedBlackTreeBoundsExpression<K>) -> (Index, Index)
+    func relative<K>(to boundsExpression: RedBlackTreeBoundRangeExpression<K>) -> (Index, Index)
     where K == _Key {
       switch boundsExpression {
       case .range(let lhs, let rhs):
@@ -69,6 +83,8 @@
           lhs.relative(to: self),
           endIndex
         )
+      default:
+        fatalError("NOT IMPLEMENTED YET")
       }
     }
   }
@@ -76,9 +92,10 @@
   extension RedBlackTreeSet: RedBlackTreeBoundResolverProtocol {
 
     public mutating func removeBounds(
-      _ bounds: RedBlackTreeBoundsExpression<Element>,
+      _ bounds: RedBlackTreeBoundRangeExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
+      reserveCapacity(capacity)
       var (lower, upper) = relative(to: bounds)
       while lower != upper, lower != endIndex {
         if try shouldBeRemoved(self[lower]) {

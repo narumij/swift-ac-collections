@@ -15,17 +15,13 @@
 //
 //===----------------------------------------------------------------------===//
 
-// TODO: 余力あるときにこちらを削減するか検討
-// ハンドルがBaseではなく_Valueでの特殊化を行っていて、static版を利用できない
-// このため併存となりそう。併存してることの明記は必要そう
-
 @usableFromInline
 protocol _TreeNode_PtrCompProtocol:
   _UnsafeNodePtrType
     & _TreeNode_PtrCompInterface
     & _TreeKey_CompInterface
     & _Tree_IsMultiTraitInterface
-    & _nullptr_interface
+    & NullPtrInterface
     & EndInterface
 {
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
@@ -74,11 +70,52 @@ extension _TreeNode_PtrCompProtocol {
   }
 }
 
+extension _TreeNode_PtrCompProtocol {
+
+  /// ptrのrange判定
+  @inlinable
+  @inline(__always)
+  internal func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool {
+    
+    assert(!__f.___is_null)
+    assert(!__p.___is_null)
+    assert(!__l.___is_null)
+    assert(!__f.___is_garbaged)
+    assert(!__p.___is_garbaged)
+    assert(!__l.___is_garbaged)
+    
+    guard !__f.___is_end else {
+      // end <= end <= endは有効
+      return __p.___is_end && __l.___is_end
+    }
+
+    guard !__l.___is_end else {
+      
+      // __f <= __p
+      return !___ptr_comp(__p, __f)
+    }
+
+    if isMulti {
+      let (f, p, l) = (
+        __f.___ptr_bitmap_128(),
+        __p.___ptr_bitmap_128(),
+        __l.___ptr_bitmap_128()
+      )
+      
+      // __f <= __p && __p <= __l
+      return f <= p && p <= l
+    }
+    
+    // __f <= __p && __p <= __l
+    return !___ptr_comp_unique(__p, __f) && !___ptr_comp_unique(__l, __p)
+  }
+}
+
 @usableFromInline
 protocol _TreeNode_PtrCompUniqueProtocol:
   _TreeNode_KeyInterface
     & EndInterface
-    & _nullptr_interface
+    & NullPtrInterface
     & _TreeKey_CompInterface
 {}
 

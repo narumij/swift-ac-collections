@@ -5,15 +5,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: __tree_.rawValue(bounds.lowerBound),
-        end: __tree_.rawValue(bounds.upperBound))
-    }
-  }
-
-  extension RedBlackTreeMultiMap {
-    @available(*, deprecated)
-    public subscript(_unsafe position: Index) -> (key: Key, value: Value) {
-      @inline(__always) get { self[_unchecked: position] }
+        start: __tree_._remap_to_safe_(bounds.lowerBound),
+        end: __tree_._remap_to_safe_(bounds.upperBound))
     }
   }
 
@@ -29,7 +22,7 @@
     @inlinable
     @inline(__always)
     public func values() -> Values {
-      .init(start: __tree_.__begin_node_, end: __tree_.__end_node, tie: __tree_.tied)
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
     }
   }
 
@@ -90,8 +83,8 @@
     public func elements(in range: Range<Key>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: ___lower_bound(range.lowerBound),
-        end: ___lower_bound(range.upperBound))
+        start: __tree_.lower_bound(range.lowerBound).sealed,
+        end: __tree_.lower_bound(range.upperBound).sealed)
     }
 
     /// キーレンジ `[lower, upper]` に含まれる要素のスライス
@@ -110,8 +103,8 @@
     public func elements(in range: ClosedRange<Key>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: ___lower_bound(range.lowerBound),
-        end: ___upper_bound(range.upperBound))
+        start: __tree_.lower_bound(range.lowerBound).sealed,
+        end: __tree_.upper_bound(range.upperBound).sealed)
     }
   }
 
@@ -122,8 +115,8 @@
     @inline(__always)
     public mutating func remove(contentsOf keyRange: Range<Key>) {
       __tree_._strongEnsureUnique()
-      let lower = ___lower_bound(keyRange.lowerBound)
-      let upper = ___lower_bound(keyRange.upperBound)
+      let lower = __tree_.lower_bound(keyRange.lowerBound)
+      let upper = __tree_.lower_bound(keyRange.upperBound)
       ___remove(from: lower, to: upper)
     }
 
@@ -132,8 +125,8 @@
     @inline(__always)
     public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
       __tree_._strongEnsureUnique()
-      let lower = ___lower_bound(keyRange.lowerBound)
-      let upper = ___upper_bound(keyRange.upperBound)
+      let lower = __tree_.lower_bound(keyRange.lowerBound)
+      let upper = __tree_.upper_bound(keyRange.upperBound)
       ___remove(from: lower, to: upper)
     }
   }

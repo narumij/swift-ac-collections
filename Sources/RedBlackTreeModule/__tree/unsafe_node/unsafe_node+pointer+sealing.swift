@@ -33,23 +33,29 @@ public struct _NodePtrSealing: Equatable {
   // UnsafeNode.SealはUInt32となっていて、オーバーフローして一周すると、
   // かたわれどきが生じて同一判定となるが、これは仕様
 
+  /// 現在の状態で封印する
   @inlinable @inline(__always)
   init(_p: _NodePtr) {
     self.init(_p: _p, _seal: _p.pointee.___recycle_count)
   }
 
+  /// 過去の状態で封印する
   @inlinable @inline(__always)
   init(_p: _NodePtr, _seal: UnsafeNode.Seal) {
     pointer = _p
     seal = _seal
   }
 
-  @inlinable
+  // 特段の意味は無い。利用箇所での可読性向上のためのフック
+  /// 現在の状態で封印する
+  @inlinable @inline(__always)
   static func uncheckedSeal(_ _p: _NodePtr) -> _NodePtrSealing {
     .init(_p: _p)
   }
-
-  @inlinable
+  
+  // 特段の意味は無い。利用箇所での可読性向上のためのフック
+  /// 過去の状態で封印する
+  @inlinable @inline(__always)
   static func uncheckedSeal(_ _p: _NodePtr, _ seal: UnsafeNode.Seal) -> _NodePtrSealing {
     .init(_p: _p, _seal: seal)
   }
@@ -75,6 +81,7 @@ public struct _NodePtrSealing: Equatable {
     isUnsealed ? .failure(.unsealed) : .success(self)
   }
 
+  /// 引換券
   @inlinable @inline(__always)
   var tag: TaggedSeal {
     .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))

@@ -567,7 +567,7 @@ extension RedBlackTreeSet {
     public func firstIndex(of member: Element)
       -> TaggedSeal?
     {
-      .create_as_optional(__tree_.find(member))
+      .taggedSealOrNil(__tree_.find(member))
     }
 
     // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
@@ -585,12 +585,12 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var startIndex: Index { .create(_start) }
+    public var startIndex: Index { .taggedSeal(_start) }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var endIndex: Index { .create(_end) }
+    public var endIndex: Index { .taggedSeal(_end) }
   }
 
   extension RedBlackTreeSet {
@@ -598,12 +598,12 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n* + *k*)
     @inlinable
     @inline(__always)
-    public func distance(from start: Index, to end: TaggedSeal)
+    public func distance(from start: Index, to end: Index)
       -> Int
     {
       __tree_.___distance(
-        from: start.relative(to: __tree_).pointer!,
-        to: end.relative(to: __tree_).pointer!)
+        from: start.relative(to: __tree_).purified.pointer!,
+        to: end.relative(to: __tree_).purified.pointer!)
     }
   }
 
@@ -623,7 +623,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func lowerBound(_ member: Element) -> Index {
-      .create(__tree_.lower_bound(member))
+      .taggedSeal(__tree_.lower_bound(member))
     }
 
     /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
@@ -641,7 +641,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func upperBound(_ member: Element) -> Index {
-      .create(__tree_.upper_bound(member))
+      .taggedSeal(__tree_.upper_bound(member))
     }
   }
 
@@ -653,7 +653,7 @@ extension RedBlackTreeSet {
       lower: Index, upper: Index
     ) {
       let (lower, upper) = __tree_.__equal_range_unique(element)
-      return (.create(lower), .create(upper))
+      return (.taggedSeal(lower), .taggedSeal(upper))
     }
   }
 
@@ -664,7 +664,7 @@ extension RedBlackTreeSet {
     public func index(before i: Index) -> Index {
       i.relative(to: __tree_)
         .flatMap { ___tree_prev_iter($0.pointer) }
-        .flatMap { .create($0) }
+        .flatMap { .taggedSeal($0) }
     }
 
     /// - Complexity: O(1)
@@ -672,7 +672,7 @@ extension RedBlackTreeSet {
     public func index(after i: Index) -> Index {
       i.relative(to: __tree_)
         .flatMap { ___tree_next_iter($0.pointer) }
-        .flatMap { .create($0) }
+        .flatMap { .taggedSeal($0) }
     }
 
     /// - Complexity: O(`distance`)
@@ -682,7 +682,7 @@ extension RedBlackTreeSet {
     {
       i.relative(to: __tree_)
         .flatMap { ___tree_adv_iter($0.pointer, distance) }
-        .flatMap { .create($0) }
+        .flatMap { .taggedSeal($0) }
     }
 
     /// - Complexity: O(`distance`)
@@ -695,7 +695,7 @@ extension RedBlackTreeSet {
       let __l = limit.relative(to: __tree_).map(\.pointer)
       return try? i.relative(to: __tree_)
         .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-        .map { .create($0) }
+        .map { .taggedSeal($0) }
         .get()
     }
   }

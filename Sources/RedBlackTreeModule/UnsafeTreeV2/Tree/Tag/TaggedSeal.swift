@@ -13,30 +13,13 @@ extension Result where Success == TagSeal_, Failure == SealError {
 
   /// 失敗とendを除外する
   @inlinable
-  static func create_as_optional(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Result? {
-    t.flatMap { TagSeal_(rawValue: ($0.trackingTag, $0.pointee.___recycle_count)) }
-      .flatMap {
-        switch $0 {
-        case .end:
-          return nil
-        case .tag:
-          return .success($0)
-        }
-      }
+  static func taggedSealOrNil(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Result? {
+    t.flatMap { .sealOrNil($0) }.map { .success($0) }
   }
 
   @inlinable
-  static func create(_ t: UnsafeMutablePointer<UnsafeNode>?) -> Result {
-    t.flatMap { TagSeal_(rawValue: ($0.trackingTag, $0.pointee.___recycle_count)) }
-      .map { .success($0) }
-      ?? .failure(.null)
-  }
-
-  @inlinable
-  static func create(_ t: _NodePtrSealing?) -> Result {
-    t.flatMap { TagSeal_(rawValue: ($0.pointer.trackingTag, $0.seal)) }
-      .map { .success($0) }
-      ?? .failure(.null)
+  static func taggedSeal(_ t: UnsafeMutablePointer<UnsafeNode>) -> Result {
+    .success(.seal(t))
   }
 }
 

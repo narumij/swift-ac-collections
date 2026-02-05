@@ -26,13 +26,31 @@ public enum TagSeal_: Equatable {
 extension TagSeal_ {
 
   @inlinable
-  static func create(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> Self {
+  static func seal(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> Self {
     switch raw {
     case .end: return .end
     case 0...: return .tag(raw: raw, seal: seal)
     default:
       fatalError(.invalidIndex)
     }
+  }
+  
+  @inlinable
+  static func sealOrNil(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> Self? {
+    switch raw {
+    case 0...: return .tag(raw: raw, seal: seal)
+    default: return nil
+    }
+  }
+  
+  @inlinable
+  static func seal(_ p:  UnsafeMutablePointer<UnsafeNode>) -> Self {
+    .seal(raw: p.pointee.___tracking_tag, seal: p.pointee.___recycle_count)
+  }
+  
+  @inlinable
+  static func sealOrNil(_ p: UnsafeMutablePointer<UnsafeNode>) -> Self? {
+    .sealOrNil(raw: p.pointee.___tracking_tag, seal: p.pointee.___recycle_count)
   }
 }
 

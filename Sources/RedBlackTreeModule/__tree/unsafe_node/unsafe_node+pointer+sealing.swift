@@ -77,7 +77,7 @@ public struct _NodePtrSealing: Equatable {
 
   @inlinable @inline(__always)
   var tag: TaggedSeal {
-    .success(.create(raw: pointer.pointee.___tracking_tag, seal: seal))
+    .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))
   }
 }
 

@@ -164,7 +164,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     let (_start, _end) = _range
     guard _start != _end else { return nil }
     let (_p, _r) = _unchecked_remove(at: _start.pointer!)
-    startIndex = .create(_p)
+    startIndex = .taggedSeal(_p)
     return _r
   }
 
@@ -184,7 +184,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     let (_start, _end) = _range
     guard _start != _end else { fatalError(.emptyFirst) }
     let (_p, _r) = _unchecked_remove(at: _start.pointer!)
-    startIndex = .create(_p)
+    startIndex = .taggedSeal(_p)
     return _r
   }
 
@@ -339,7 +339,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   public func index(before i: Index) -> Index {
     i.relative(to: __tree_)
       .flatMap { ___tree_prev_iter($0.pointer) }
-      .flatMap { .create($0) }
+      .flatMap { .taggedSeal($0) }
   }
 
   /// - Complexity: O(1)
@@ -347,7 +347,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   public func index(after i: Index) -> Index {
     i.relative(to: __tree_)
       .flatMap { ___tree_next_iter($0.pointer) }
-      .flatMap { .create($0) }
+      .flatMap { .taggedSeal($0) }
   }
 }
 
@@ -359,7 +359,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
       i.relative(to: __tree_).purified
         .flatMap { ___tree_adv_iter($0.pointer, distance) }
-        .flatMap { .create($0) }
+        .flatMap { .taggedSeal($0) }
     }
 
     /// - Complexity: O(`distance`)
@@ -372,7 +372,7 @@ extension RedBlackTreeKeyOnlyRangeView {
       let __l = limit.relative(to: __tree_).map { $0.pointer }
       return try? i.relative(to: __tree_).purified
         .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-        .map { .create($0) }
+        .map { .taggedSeal($0) }
         .get()
     }
   }

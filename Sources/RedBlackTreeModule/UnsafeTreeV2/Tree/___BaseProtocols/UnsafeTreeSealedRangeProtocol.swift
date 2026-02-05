@@ -54,6 +54,6 @@ extension UnsafeTreeSealedRangeProtocol {
         cont = false
       }
     }
-    return .create_as_optional(__r)
+    return .taggedSealOrNil(__r)
   }
 }

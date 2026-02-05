@@ -40,14 +40,14 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 
   @inlinable
-  internal var ___is_root: Bool {
-    __parent_.___is_end
-  }
-  
-  @inlinable
   internal var ___is_garbaged: Bool {
     pointee.isGarbaged
   }
+  
+  @inlinable
+  internal var ___is_root: Bool {
+    __parent_.___is_end
+  }  
 }
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {

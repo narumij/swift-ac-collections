@@ -42,6 +42,7 @@ protocol BoundAlgorithmProtocol_ptr:
   BoundAlgorithmProtocol_common_ptr
     & _TreeKey_ThreeWayCompInterface
     & NullPtrInterface
+    & TreeAlgorithmBaseInterface
 {}
 
 extension BoundAlgorithmProtocol_ptr {

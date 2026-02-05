@@ -15,6 +15,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// static系の実装もある。気が向いたらこちらを削除してもよいような、だめだったような。
+
 @usableFromInline
 protocol _TreeNode_PtrCompProtocol:
   _UnsafeNodePtrType

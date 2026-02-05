@@ -18,6 +18,8 @@
 /// 三方比較結果
 ///
 /// <=>演算子に対応するものらしい
+///
+/// <=>はspaceship operatorというらしい
 public
   protocol ThreeWayCompareResult
 {

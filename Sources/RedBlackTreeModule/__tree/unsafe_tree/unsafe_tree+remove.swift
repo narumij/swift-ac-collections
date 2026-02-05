@@ -41,7 +41,7 @@ extension RemoveProtocol_ptr {
     _ptr__tree_remove(__root, __ptr)
     return __r
   }
-  
+
   /// 返却値を利用しない場合に向けた実験版
   @inlinable
   @inline(__always)

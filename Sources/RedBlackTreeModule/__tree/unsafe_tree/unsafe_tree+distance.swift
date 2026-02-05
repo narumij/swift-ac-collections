@@ -15,6 +15,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// 関数での実装もある。nullptrアクセスコストの問題はないので、気が向いたらこちらを削除していく
+
 @usableFromInline
 protocol DistanceProtocol_ptr: _UnsafeNodePtrType & _TreeNode_PtrCompInterface {}
 

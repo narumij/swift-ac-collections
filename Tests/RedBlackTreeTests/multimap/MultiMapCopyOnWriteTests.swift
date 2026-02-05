@@ -161,15 +161,6 @@ import XCTest
       XCTAssertEqual(tree._copyCount, 0)
     }
 
-    func testSet12() throws {
-      tree._copyCount = 0
-      for v in tree.filter({ _ in true }) {
-        tree.removeAll(_unsafeForKey: v.key)
-      }
-      XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 0)
-    }
-
     func testSet3000() throws {
       let count = 1500
       var loopCount = 0

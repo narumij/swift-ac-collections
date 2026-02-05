@@ -422,16 +422,6 @@ extension RedBlackTreeMultiMap {
     __tree_._strongEnsureUnique()
     return __tree_.___erase_multi(key)
   }
-
-  // TODO: CoWの挙動変更後、deprecatedまたは削除すること
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  @discardableResult
-  public mutating func removeAll(_unsafeForKey key: Key) -> Int {
-    __tree_.ensureUnique()
-    return __tree_.___erase_multi(key)
-  }
 }
 
 extension RedBlackTreeMultiMap {

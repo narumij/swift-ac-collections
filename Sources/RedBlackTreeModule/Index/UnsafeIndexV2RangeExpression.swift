@@ -47,7 +47,7 @@ extension UnsafeIndexV2RangeExpression: Sequence {
   public typealias Iterator = UnsafeIterator.IndexObverse<Base>
 
   public func makeIterator() -> Iterator {
-    let (lower, upper) = rawRange.relative(to: tied)
+    let (lower, upper) = relative(to: tied)
     return .init(start: lower, end: upper, tie: tied)
   }
 }
@@ -55,8 +55,13 @@ extension UnsafeIndexV2RangeExpression: Sequence {
 extension UnsafeIndexV2RangeExpression {
 
   @usableFromInline
-  func relative(to __tree_: Tree) -> (_NodePtr, _NodePtr) {
-    unwrapLowerUpperOrFatal(rawRange.relative(to: __tree_))
+  func relative(to __tree_: Tree) -> (_SealedPtr, _SealedPtr) {
+    rawRange.relative(to: __tree_)
+  }
+  
+  @usableFromInline
+  func relative(to tied: _TiedRawBuffer) -> (_SealedPtr, _SealedPtr) {
+    rawRange.relative(to: tied)
   }
 }
 

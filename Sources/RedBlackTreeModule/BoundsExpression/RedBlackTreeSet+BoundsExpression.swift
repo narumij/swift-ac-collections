@@ -41,7 +41,7 @@
     {
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
-      return .create(p)
+      return .taggedSeal(p)
     }
 
     // MARK: -
@@ -63,9 +63,6 @@
       -> Int?
     {
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard !lower.___is_null_or_end, !upper.___is_null else {
-        return nil
-      }
       return __tree_.___distance(from: lower, to: upper)
     }
 
@@ -73,11 +70,11 @@
       -> RedBlackTreeKeyOnlyRangeView<Self>
     {
       @inline(__always) get {
-        let (lower, upper) = __tree_.rangeSanitize(bounds.__relative(to: __tree_))
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
         return .init(__tree_: __tree_, _start: lower, _end: upper)
       }
       @inline(__always) _modify {
-        let (lower, upper) = __tree_.rangeSanitize(bounds.__relative(to: __tree_))
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
         var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
         self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
         defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
@@ -90,10 +87,10 @@
     ) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      __tree_.___checking_erase(lower, upper)
+      __tree_.___checking_erase(lower.pointer!, upper.pointer!)
     }
 
     public mutating func removeAll(
@@ -102,10 +99,10 @@
     ) rethrows {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
+      try __tree_.___erase_if(lower.pointer!, upper.pointer!, shouldBeRemoved: shouldBeRemoved)
     }
   }
 #endif

@@ -22,8 +22,8 @@ extension UnsafeTreeV2 where Base: ___TreeIndex {
 
   @inlinable
   @inline(__always)
-  internal func makeIndex(rawValue: _NodePtr) -> Index {
-    .init(rawValue: rawValue, tie: tied)
+  internal func makeIndex(sealed: _SealedPtr) -> Index {
+    .init(sealed: sealed, tie: tied)
   }
 }
 
@@ -48,13 +48,13 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func
-    ___distance(from start: _NodePtr, to end: _NodePtr) -> Int
+    ___distance(from start: _SealedPtr, to end: _SealedPtr) -> Int?
   {
     guard
-      start.isValid,
-      end.isValid
+      let start = start.purified.pointer,
+      let end = end.purified.pointer
     else {
-      fatalError(.invalidIndex)
+      return nil
     }
     return ___signed_distance(start, end)
   }
@@ -83,7 +83,7 @@ extension UnsafeTreeV2 {
     ___index(_ i: _SealedPtr, offsetBy distance: Int, limitedBy limit: _SealedPtr)
     -> _SealedPtr?
   {
-    let i = i.flatMap { ___tree_adv_iter($0.pointer, distance, limit.unchecked_pointer) }.seal
+    let i = i.flatMap { ___tree_adv_iter($0.pointer, distance, limit.temporaryUnseal) }.seal
     return i.isError(.limit) ? nil : i
   }
 }

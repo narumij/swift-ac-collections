@@ -16,26 +16,24 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
-extension RedBlackTreeSliceV2.KeyValue {
+  extension RedBlackTreeSliceV2.KeyValue {
 
     public typealias _RangeExpression = UnsafeIndexV2RangeExpression<Base>
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      return _start.isValid && _end.isValid
+      return _start.sealed.isValid && _end.sealed.isValid
     }
 
     @inlinable
     public func isValid(_ bounds: _RangeExpression) -> Bool {
-      if let (l, u) = unwrapLowerUpper(bounds.rawRange.relative(to: __tree_)) {
-        return l.isValid && u.isValid
-      }
-      return false
+      let (l, u) = bounds.relative(to: __tree_)
+      return l.isValid && u.isValid
     }
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> SubSequence {
-      ___subscript(UnsafeTreeSealedRangeExpression.unboundedRange)
+      ___subscript(.unboundedRange)
     }
 
     @inlinable

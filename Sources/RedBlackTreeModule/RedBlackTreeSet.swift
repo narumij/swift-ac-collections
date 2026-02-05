@@ -516,8 +516,6 @@ extension RedBlackTreeSet {
 #endif
 
 // MARK: - Sequence
-// MARK: - Collection
-// MARK: - BidirectionalCollection
 
 extension RedBlackTreeSet: Sequence {}
 
@@ -529,14 +527,6 @@ extension RedBlackTreeSet {
   public func makeIterator() -> Tree._PayloadValues {
     _makeIterator()
   }
-
-  #if false
-    @inlinable
-    @inline(__always)
-    public func forEach(_ body: (Element) throws -> Void) rethrows {
-      try _forEach(body)
-    }
-  #endif
 }
 
 #if !COMPATIBLE_ATCODER_2025
@@ -577,7 +567,7 @@ extension RedBlackTreeSet {
     public func firstIndex(of member: Element)
       -> TaggedSeal?
     {
-      .create_as_optional(__tree_.find(member))
+      .taggedSealOrNil(__tree_.find(member))
     }
 
     // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
@@ -595,12 +585,12 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var startIndex: TaggedSeal { .create(_start) }
+    public var startIndex: Index { .taggedSeal(_start) }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var endIndex: TaggedSeal { .create(_end) }
+    public var endIndex: Index { .taggedSeal(_end) }
   }
 
   extension RedBlackTreeSet {
@@ -608,12 +598,14 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n* + *k*)
     @inlinable
     @inline(__always)
-    public func distance(from start: TaggedSeal, to end: TaggedSeal)
+    public func distance(from start: Index, to end: Index)
       -> Int
     {
-      __tree_.___distance(
-        from: start.relative(to: __tree_).pointer!,
-        to: end.relative(to: __tree_).pointer!)
+      guard let d = __tree_.___distance(
+        from: start.relative(to: __tree_),
+        to: end.relative(to: __tree_))
+      else { fatalError(.invalidIndex) }
+      return d
     }
   }
 
@@ -633,7 +625,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func lowerBound(_ member: Element) -> Index {
-      .create(__tree_.lower_bound(member))
+      .taggedSeal(__tree_.lower_bound(member))
     }
 
     /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
@@ -651,7 +643,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func upperBound(_ member: Element) -> Index {
-      .create(__tree_.upper_bound(member))
+      .taggedSeal(__tree_.upper_bound(member))
     }
   }
 
@@ -660,10 +652,10 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func equalRange(_ element: Element) -> (
-      lower: TaggedSeal, upper: TaggedSeal
+      lower: Index, upper: Index
     ) {
       let (lower, upper) = __tree_.__equal_range_unique(element)
-      return (.create(lower), .create(upper))
+      return (.taggedSeal(lower), .taggedSeal(upper))
     }
   }
 
@@ -671,45 +663,41 @@ extension RedBlackTreeSet {
 
     /// - Complexity: O(1)
     @inlinable
-    public func index(before i: TaggedSeal) -> TaggedSeal {
+    public func index(before i: Index) -> Index {
       i.relative(to: __tree_)
-        .map(\.pointer)
-        .flatMap { ___tree_prev_iter($0) }
-        .flatMap { .create($0) }
+        .flatMap { ___tree_prev_iter($0.pointer) }
+        .flatMap { .taggedSeal($0) }
     }
 
     /// - Complexity: O(1)
     @inlinable
-    public func index(after i: TaggedSeal) -> TaggedSeal {
+    public func index(after i: Index) -> Index {
       i.relative(to: __tree_)
-        .map(\.pointer)
-        .flatMap { ___tree_next_iter($0) }
-        .flatMap { .create($0) }
+        .flatMap { ___tree_next_iter($0.pointer) }
+        .flatMap { .taggedSeal($0) }
     }
 
     /// - Complexity: O(`distance`)
     @inlinable
-    public func index(_ i: TaggedSeal, offsetBy distance: Int)
+    public func index(_ i: Index, offsetBy distance: Int)
       -> TaggedSeal
     {
       i.relative(to: __tree_)
-        .map(\.pointer)
-        .flatMap { ___tree_adv_iter($0, distance) }
-        .flatMap { .create($0) }
+        .flatMap { ___tree_adv_iter($0.pointer, distance) }
+        .flatMap { .taggedSeal($0) }
     }
 
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(
-      _ i: TaggedSeal, offsetBy distance: Int, limitedBy limit: TaggedSeal
+      _ i: TaggedSeal, offsetBy distance: Int, limitedBy limit: Index
     )
-      -> TaggedSeal?
+      -> Index?
     {
       let __l = limit.relative(to: __tree_).map(\.pointer)
       return try? i.relative(to: __tree_)
-        .map(\.pointer)
-        .flatMap { ___tree_adv_iter($0, distance, __l) }
-        .map { .create($0) }
+        .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
+        .map { .taggedSeal($0) }
         .get()
     }
   }
@@ -719,21 +707,21 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func formIndex(before i: inout TaggedSeal) {
+    public func formIndex(before i: inout Index) {
       i = index(before: i)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func formIndex(after i: inout TaggedSeal) {
+    public func formIndex(after i: inout Index) {
       i = index(after: i)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
     //  @inline(__always)
-    public func formIndex(_ i: inout TaggedSeal, offsetBy distance: Int) {
+    public func formIndex(_ i: inout Index, offsetBy distance: Int) {
       i = index(i, offsetBy: distance)
     }
 
@@ -741,9 +729,9 @@ extension RedBlackTreeSet {
     @inlinable
     @inline(__always)
     public func formIndex(
-      _ i: inout TaggedSeal,
+      _ i: inout Index,
       offsetBy distance: Int,
-      limitedBy limit: TaggedSeal
+      limitedBy limit: Index
     )
       -> Bool
     {
@@ -759,9 +747,9 @@ extension RedBlackTreeSet {
 
     @inlinable
     @discardableResult
-    public mutating func remove(at index: TaggedSeal) -> Element {
+    public mutating func remove(at index: Index) -> Element {
       __tree_.ensureUnique()
-      guard case .success(let __p) = index.relative(to: __tree_).unchecked_pointer else {
+      guard case .success(let __p) = index.relative(to: __tree_).temporaryUnseal else {
         fatalError(.invalidIndex)
       }
       return _unchecked_remove(at: __p).payload
@@ -772,7 +760,7 @@ extension RedBlackTreeSet {
 
     /// - Complexity: O(1)
     @inlinable
-    public subscript(position: TaggedSeal) -> Element {
+    public subscript(position: Index) -> Element {
       @inline(__always) get {
         guard
           let p: _NodePtr = __tree_.resolve(position).pointer,
@@ -789,7 +777,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func isValid(index: TaggedSeal) -> Bool {
+    public func isValid(index: Index) -> Bool {
       guard
         let p: _NodePtr = __tree_.resolve(index).pointer,
         !p.___is_end
@@ -797,17 +785,6 @@ extension RedBlackTreeSet {
         return false
       }
       return true
-    }
-  }
-
-  extension RedBlackTreeSet {
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    package var __indices: [TaggedSeal] {
-      // TODO: 基本的に廃止
-      _indices.map(\.trackingTag)
     }
   }
 #endif

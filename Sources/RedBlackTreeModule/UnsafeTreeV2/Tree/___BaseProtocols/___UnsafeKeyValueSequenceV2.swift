@@ -168,7 +168,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
     -> RedBlackTreeSliceV2<Base>.KeyValue
   {
     let (lower, upper) = rawRange.relative(to: __tree_)
-    guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+    guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
       fatalError(.invalidIndex)
     }
     return .init(tree: __tree_, start: lower, end: upper)
@@ -191,7 +191,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
     @inline(__always)
     internal func _forEach(_ body: (Index, Element) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-        try body(___index($0), Self.__element_(__tree_[$0]))
+        try body(___index($0.sealed), Self.__element_(__tree_[$0]))
       }
     }
   }
@@ -205,7 +205,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   @inlinable
   internal subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
     @inline(__always) get {
-      return __element_(__tree_[try! __tree_._remap_to_safe_(position).get().pointer])
+      return __element_(__tree_[try! __tree_.__sealed_(position).get().pointer])
     }
   }
 }

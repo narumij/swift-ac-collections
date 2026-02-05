@@ -70,8 +70,8 @@ extension UnsafeIndexV2Collection {
 
 extension UnsafeIndexV2Collection {
 
-  public var startIndex: Index { ___index(_start) }
-  public var endIndex: Index { ___index(_end) }
+  public var startIndex: Index { ___index(_start.sealed) }
+  public var endIndex: Index { ___index(_end.sealed) }
 
   public func makeIterator() -> Iterator {
     .init(start: _sealed_start, end: _sealed_end, tie: tied)
@@ -104,7 +104,7 @@ extension UnsafeIndexV2Collection {
 
   #if !COMPATIBLE_ATCODER_2025
     public subscript(bounds: UnsafeIndexV2RangeExpression<Base>) -> UnsafeIndexV2Collection {
-      let (lower, upper) = bounds.rawRange.relative(to: tied)
+      let (lower, upper) = bounds.relative(to: tied)
       return .init(start: lower, end: upper, tie: tied)
     }
   #endif

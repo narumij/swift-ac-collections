@@ -122,19 +122,19 @@ extension ___UnsafeIndexBaseV2 {
 
   @inlinable
   @inline(__always)
-  internal func ___index(_ p: _NodePtr) -> Index {
-    __tree_.makeIndex(rawValue: p)
+  internal func ___index(_ p: _SealedPtr) -> Index {
+    __tree_.makeIndex(sealed: p)
   }
 
   @inlinable
   @inline(__always)
-  internal func ___index_or_nil(_ p: _NodePtr) -> Index? {
-    p == __tree_.nullptr ? nil : ___index(p)
+  internal func ___index_or_nil(_ p: _SealedPtr) -> Index? {
+    !p.isValid ? nil : ___index(p)
   }
 
   @inlinable
   @inline(__always)
-  internal func ___index_or_nil(_ p: _NodePtr?) -> Index? {
+  internal func ___index_or_nil(_ p: _SealedPtr?) -> Index? {
     p.flatMap { ___index_or_nil($0) }
   }
 }

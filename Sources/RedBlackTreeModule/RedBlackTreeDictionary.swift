@@ -354,8 +354,8 @@ extension RedBlackTreeDictionary {
     public subscript(bounds: Range<Index>) -> SubSequence {
       return .init(
         tree: __tree_,
-        start: __tree_._remap_to_safe_(bounds.lowerBound),
-        end: __tree_._remap_to_safe_(bounds.upperBound))
+        start: __tree_.__sealed_(bounds.lowerBound),
+        end: __tree_.__sealed_(bounds.upperBound))
     }
   #endif
 }
@@ -548,7 +548,7 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
-    guard case .success(let __p) = __tree_._remap_to_safe_(index) else {
+    guard case .success(let __p) = __tree_.__sealed_(index) else {
       fatalError(.invalidIndex)
     }
     return __element_(_unchecked_remove(at: __p.pointer).payload)
@@ -570,8 +570,8 @@ extension RedBlackTreeDictionary {
       let bounds = bounds.relative(to: self)
       __tree_.ensureUnique()
       ___remove(
-        from: __tree_._remap_to_safe_(bounds.lowerBound).pointer!,
-        to: __tree_._remap_to_safe_(bounds.upperBound).pointer!)
+        from: __tree_.__sealed_(bounds.lowerBound).pointer!,
+        to: __tree_.__sealed_(bounds.upperBound).pointer!)
     }
   #endif
 }

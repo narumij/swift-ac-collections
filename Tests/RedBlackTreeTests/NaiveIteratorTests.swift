@@ -15,16 +15,16 @@ import XCTest
     func testNaiveForward() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = UnsafeIterator._Obverse(
-        __first: a.__tree_.__begin_node_,
-        __last: a.__tree_.__end_node)
+        _start: a.__tree_.__begin_node_,
+        _end: a.__tree_.__end_node)
       XCTAssertEqual(it.map { a.__tree_[$0] }, [Int](0..<5))
     }
 
     func testNaiveReverse() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = UnsafeIterator._Reverse(
-        __first: a.__tree_.__begin_node_,
-        __last: a.__tree_.__end_node)
+        _start: a.__tree_.__begin_node_,
+        _end: a.__tree_.__end_node)
       XCTAssertEqual(it.map { a.__tree_[$0] }, [Int](0..<5).reversed())
     }
 
@@ -32,8 +32,8 @@ import XCTest
       let a = RedBlackTreeSet<Int>(0..<5)
       let wrapped = UnsafeIterator._RemoveAware(
         source: UnsafeIterator._Obverse(
-          __first: a.__tree_.__begin_node_,
-          __last: a.__tree_.__end_node))
+          _start: a.__tree_.__begin_node_,
+          _end: a.__tree_.__end_node))
       XCTAssertEqual(wrapped.map { a.__tree_[$0] }, [Int](0..<5))
     }
 
@@ -41,8 +41,8 @@ import XCTest
       let a = RedBlackTreeSet<Int>(0..<5)
       let wrapped = UnsafeIterator._RemoveAware(
         source: UnsafeIterator._Reverse(
-          __first: a.__tree_.__begin_node_,
-          __last: a.__tree_.__end_node))
+          _start: a.__tree_.__begin_node_,
+          _end: a.__tree_.__end_node))
       XCTAssertEqual(wrapped.map { a.__tree_[$0] }, [Int](0..<5).reversed())
     }
 
@@ -50,8 +50,8 @@ import XCTest
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = UnsafeIterator._Payload<RedBlackTreeSet<Int>, UnsafeIterator._Obverse>(
         source: .init(
-          __first: a.__tree_.__begin_node_,
-          __last: a.__tree_.__end_node))
+          _start: a.__tree_.__begin_node_,
+          _end: a.__tree_.__end_node))
       XCTAssertEqual(it.map { $0 }, [Int](0..<5))
     }
 
@@ -59,8 +59,8 @@ import XCTest
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = UnsafeIterator._Payload<RedBlackTreeSet<Int>, UnsafeIterator._Reverse>(
         source: .init(
-          __first: a.__tree_.__begin_node_,
-          __last: a.__tree_.__end_node))
+          _start: a.__tree_.__begin_node_,
+          _end: a.__tree_.__end_node))
       XCTAssertEqual(it.map { $0 }, [Int](0..<5).reversed())
     }
   }

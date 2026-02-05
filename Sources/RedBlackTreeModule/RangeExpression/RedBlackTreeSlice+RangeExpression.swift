@@ -22,20 +22,18 @@
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      return _start.isValid && _end.isValid
+      return _start.sealed.isValid && _end.sealed.isValid
     }
 
     @inlinable
     public func isValid(_ bounds: _RangeExpression) -> Bool {
-      if let (l, u) = unwrapLowerUpper(bounds.rawRange.relative(to: __tree_)) {
-        return l.isValid && u.isValid
-      }
-      return false
+      let (l, u) = bounds.rawRange.relative(to: __tree_)
+      return l.isValid && u.isValid
     }
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      ___subscript(UnsafeTreeSealedRangeExpression.unboundedRange)
+      ___subscript(.unboundedRange)
     }
 
     @inlinable
@@ -44,9 +42,9 @@
     }
 
     @inlinable
-    public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      let (lower, upper) = bounds.__relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+    public subscript(bounds: TaggedSealRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
+      let (lower, upper) = bounds.relative(to: __tree_)
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       return .init(__tree_: __tree_, _start: lower, _end: upper)

@@ -19,8 +19,9 @@ final class SetPointerTests: RedBlackTreeTestCase {
 
   #if COMPATIBLE_ATCODER_2025
     func testPointer() throws {
-      XCTAssertTrue(members.startIndex.isStart)
-      XCTAssertFalse(members.endIndex.isStart)
+      // 邪魔くさく感じたので廃止した
+//      XCTAssertTrue(members.startIndex.isStart)
+//      XCTAssertFalse(members.endIndex.isStart)
       XCTAssertFalse(members.startIndex.isEnd)
       XCTAssertTrue(members.endIndex.isEnd)
     }

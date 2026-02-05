@@ -56,7 +56,7 @@ extension UnsafeIterator {
 
     public mutating func next() -> UnsafeIndexV2<Base>? {
       source.next().map {
-        ___index($0)
+        ___index($0.sealed)
       }
     }
   }

@@ -94,11 +94,9 @@ extension UnsafeTreeV2 {
   @inlinable
   internal subscript(_ pointer: _NodePtr) -> _PayloadValue {
     @inline(__always) _read {
-      assert(pointer.isValid && !pointer.___is_end)
       yield pointer.__value_().pointee
     }
     @inline(__always) _modify {
-      assert(pointer.isValid && !pointer.___is_end)
       yield &pointer.__value_().pointee
     }
   }
@@ -181,7 +179,7 @@ extension UnsafeTreeV2 {
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
   @inline(__always)
-  internal func _remap_to_safe_(_ index: Index) -> _SealedPtr
+  internal func __sealed_(_ index: Index) -> _SealedPtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
     tied === index.tied ? index.sealed : self.resolve(index.trackingTag)
   }

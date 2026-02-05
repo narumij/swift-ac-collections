@@ -30,9 +30,12 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func _distance(from start: Index, to end: Index) -> Int {
-    __tree_.___distance(
-      from: try! __tree_._remap_to_safe_(start).get().pointer,
-      to: try! __tree_._remap_to_safe_(end).get().pointer)
+    guard let d = __tree_.___distance(
+      from: __tree_.__sealed_(start),
+      to: __tree_.__sealed_(end)) else {
+      fatalError(.invalidIndex)
+    }
+    return d
   }
 }
 
@@ -41,20 +44,20 @@ extension ___UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal var _startIndex: Index {
-    ___index(_start)
+    ___index(_start.sealed)
   }
 
   @inlinable
   @inline(__always)
   internal var _endIndex: Index {
-    ___index(_end)
+    ___index(_end.sealed)
   }
 
   @inlinable
   @inline(__always)
   internal func _index(after i: Index) -> Index {
     var i = i
-    i.sealed = __tree_.___index(after: __tree_._remap_to_safe_(i))
+    i.sealed = __tree_.___index(after: __tree_.__sealed_(i))
     return i
   }
 
@@ -68,7 +71,7 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   internal func _index(before i: Index) -> Index {
     var i = i
-    i.sealed = __tree_.___index(before: __tree_._remap_to_safe_(i))
+    i.sealed = __tree_.___index(before: __tree_.__sealed_(i))
     return i
   }
 
@@ -82,7 +85,7 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int) -> Index {
     var i = i
-    i.sealed = __tree_.___index(__tree_._remap_to_safe_(i), offsetBy: distance)
+    i.sealed = __tree_.___index(__tree_.__sealed_(i), offsetBy: distance)
     return i
   }
 
@@ -97,9 +100,9 @@ extension ___UnsafeIndexV2 {
   internal func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
     guard
       let sealed = __tree_.___index(
-        __tree_._remap_to_safe_(i),
+        __tree_.__sealed_(i),
         offsetBy: distance,
-        limitedBy: __tree_._remap_to_safe_(limit))
+        limitedBy: __tree_.__sealed_(limit))
     else {
       return nil
     }
@@ -129,7 +132,7 @@ extension ___UnsafeIndexV2 {
     var result: Index?
     try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
       if try predicate(__tree_[__p]) {
-        result = ___index(__p)
+        result = ___index(__p.sealed)
         cont = false
       }
     }
@@ -143,7 +146,7 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   internal func _isValid(index: Index) -> Bool {
     // ___is_endのみを判定するわけじゃないので、お清めお祓いが必要
-    __tree_._remap_to_safe_(index).purified.___is_end == false
+    __tree_.__sealed_(index).purified.___is_end == false
   }
 }
 
@@ -157,8 +160,8 @@ extension ___UnsafeIndexV2 {
     ) -> Bool where R.Bound == Index {
 
       let bounds = bounds.relative(to: self)
-      if let _ = try? __tree_._remap_to_safe_(bounds.lowerBound).get(),
-        let _ = try? __tree_._remap_to_safe_(bounds.upperBound).get()
+      if let _ = try? __tree_.__sealed_(bounds.lowerBound).get(),
+        let _ = try? __tree_.__sealed_(bounds.upperBound).get()
       {
         return true
       }
@@ -180,7 +183,7 @@ extension ___UnsafeIndexV2 where Base: CompareUniqueTrait {
   @inline(__always)
   internal func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
     let (lo, hi) = ___equal_range(k)
-    return (___index(lo), ___index(hi))
+    return (___index(lo.sealed), ___index(hi.sealed))
   }
 }
 
@@ -197,7 +200,7 @@ extension ___UnsafeIndexV2 where Base: CompareMultiTrait {
   @inline(__always)
   internal func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
     let (lo, hi) = ___equal_range(k)
-    return (___index(lo), ___index(hi))
+    return (___index(lo.sealed), ___index(hi.sealed))
   }
 }
 
@@ -209,7 +212,7 @@ extension ___UnsafeIndexV2 {
   @inline(__always)
   @discardableResult
   public mutating func ___erase(_ ptr: Index) -> Index {
-    ___index(__tree_.erase(try! __tree_._remap_to_safe_(ptr).get().pointer))
+    ___index(__tree_.erase(try! __tree_.__sealed_(ptr).get().pointer).sealed)
   }
 }
 

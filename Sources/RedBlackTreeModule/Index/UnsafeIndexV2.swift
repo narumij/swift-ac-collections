@@ -63,13 +63,10 @@ where Base: ___TreeBase & ___TreeIndex {
 
   // MARK: -
 
-  @inlinable
-  @inline(__always)
-  internal init(rawValue: _NodePtr, tie: _TiedRawBuffer) {
-    assert(rawValue != .nullptr)
-    assert(!rawValue.___is_garbaged)
+  @inlinable @inline(__always)
+  internal init(sealed: _SealedPtr, tie: _TiedRawBuffer) {
     self.tied = tie
-    self.sealed = rawValue.sealed
+    self.sealed = sealed
   }
 
   /*
@@ -117,7 +114,7 @@ extension UnsafeIndexV2: Equatable {
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
       guard let r = rhs.sealed.pointer,
-        let l = rhs._remap_to_sealed_(lhs).pointer
+        let l = rhs.__sealed_(lhs).pointer
       else {
         preconditionFailure(.garbagedIndex)
       }
@@ -137,7 +134,7 @@ extension UnsafeIndexV2 {
   public func distance(to other: Self) -> Int {
     guard
       let from = sealed.pointer,
-      let to = _remap_to_sealed_(other).pointer
+      let to = __sealed_(other).pointer
     else {
       preconditionFailure(.garbagedIndex)
     }
@@ -163,10 +160,10 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var next: Self? {
-    let next = sealed.purified.flatMap { ___tree_next_iter($0.pointer) }
+    let next = sealed.purified.flatMap { ___tree_next_iter($0.pointer) }.seal
     guard next.isValid, tied.isValueAccessAllowed else { return nil }
     var result = self
-    result.sealed = next.seal
+    result.sealed = next
     return result
   }
 
@@ -176,10 +173,10 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var previous: Self? {
-    let prev = sealed.purified.flatMap { ___tree_prev_iter($0.pointer) }
+    let prev = sealed.purified.flatMap { ___tree_prev_iter($0.pointer) }.seal
     guard prev.isValid, tied.isValueAccessAllowed else { return nil }
     var result = self
-    result.sealed = prev.seal
+    result.sealed = prev
     return result
   }
 }
@@ -188,21 +185,8 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  public var isStart: Bool {
-    tied.begin_ptr.flatMap { sealed.__is_equals($0.pointee) } ?? false
-  }
-
-  @inlinable
-  @inline(__always)
   public var isEnd: Bool {
     sealed.___is_end ?? false
-  }
-
-  // 利用価値はないが、おまけ。
-  @inlinable
-  @inline(__always)
-  public var isRoot: Bool {
-    sealed.___is_root ?? false
   }
 }
 
@@ -333,7 +317,7 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  internal func _remap_to_sealed_(_ index: UnsafeIndexV2) -> _SealedPtr {
+  internal func __sealed_(_ index: UnsafeIndexV2) -> _SealedPtr {
     tied === index.tied ? index.sealed : _resolve(index.trackingTag)
   }
 }

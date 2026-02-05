@@ -42,8 +42,8 @@ extension ___UnsafeSubSequenceV2 {
     @inlinable
     @inline(__always)
     internal func ___contains(_ bounds: Range<Index>) -> Bool {
-      guard let l = __tree_._remap_to_safe_(bounds.lowerBound).pointer,
-            let u = __tree_._remap_to_safe_(bounds.upperBound).pointer
+      guard let l = __tree_.__sealed_(bounds.lowerBound).pointer,
+            let u = __tree_.__sealed_(bounds.upperBound).pointer
       else {
         return false
       }

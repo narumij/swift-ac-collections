@@ -35,19 +35,19 @@ where Base: ___TreeBase {
 
 extension RedBlackTreeKeyOnlyRangeView {
 
-//  @usableFromInline
-//  var _range: (_NodePtr, _NodePtr) {
-//    guard
-//      let _start = __tree_.resolve(startIndex).pointer,
-//      let _end = __tree_.resolve(endIndex).pointer
-//    else {
-//      return (__tree_.__end_node, __tree_.__end_node)
-//    }
-//    return (_start, _end)
-//  }
-  
+  //  @usableFromInline
+  //  var _range: (_NodePtr, _NodePtr) {
+  //    guard
+  //      let _start = __tree_.resolve(startIndex).pointer,
+  //      let _end = __tree_.resolve(endIndex).pointer
+  //    else {
+  //      return (__tree_.__end_node, __tree_.__end_node)
+  //    }
+  //    return (_start, _end)
+  //  }
+
   // TODO: _NodePtrであるべきか、_SealedPtrであるべきか。使い分けの吟味
-  
+
   @usableFromInline
   var _range: (_SealedPtr, _SealedPtr) {
     let _start = __tree_.resolve(startIndex)
@@ -92,6 +92,8 @@ extension RedBlackTreeKeyOnlyRangeView {
 
 // MARK: -
 
+// TODO: 検討
+
 @usableFromInline
 package protocol BaseInit {
   associatedtype Tree
@@ -129,9 +131,14 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public func distance(from start: Index, to end: Index) -> Int {
-    __tree_.___distance(
-      from: start.relative(to: __tree_).pointer!,
-      to: end.relative(to: __tree_).pointer!)
+    guard
+      let d = __tree_.___distance(
+        from: start.relative(to: __tree_),
+        to: end.relative(to: __tree_))
+    else {
+      fatalError(.invalidIndex)
+    }
+    return d
   }
 }
 
@@ -164,7 +171,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     let (_start, _end) = _range
     guard _start != _end else { return nil }
     let (_p, _r) = _unchecked_remove(at: _start.pointer!)
-    startIndex = .create(_p)
+    startIndex = .taggedSeal(_p)
     return _r
   }
 
@@ -184,7 +191,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     let (_start, _end) = _range
     guard _start != _end else { fatalError(.emptyFirst) }
     let (_p, _r) = _unchecked_remove(at: _start.pointer!)
-    startIndex = .create(_p)
+    startIndex = .taggedSeal(_p)
     return _r
   }
 
@@ -208,7 +215,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     __tree_.ensureUnique()
     let (_start, _end) = _range
-    try __tree_.___checking_erase_if(_start.pointer!, _end.pointer!, shouldBeRemoved: shouldBeRemoved)
+    try __tree_.___checking_erase_if(
+      _start.pointer!, _end.pointer!, shouldBeRemoved: shouldBeRemoved)
   }
 }
 
@@ -233,7 +241,8 @@ extension RedBlackTreeKeyOnlyRangeView {
     _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
     let (_start, _end) = _range
-    return try __tree_.lexicographicallyPrecedes(_start.pointer!, _end.pointer!, other, by: areInIncreasingOrder)
+    return try __tree_.lexicographicallyPrecedes(
+      _start.pointer!, _end.pointer!, other, by: areInIncreasingOrder)
   }
 }
 
@@ -336,34 +345,18 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   public func index(before i: Index) -> Index {
     i.relative(to: __tree_)
-      .map { $0.pointer }
-      .flatMap { ___tree_prev_iter($0) }
-      .flatMap { .create($0) }
+      .flatMap { ___tree_prev_iter($0.pointer) }
+      .flatMap { .taggedSeal($0) }
   }
 
   /// - Complexity: O(1)
   @inlinable
   public func index(after i: Index) -> Index {
     i.relative(to: __tree_)
-      .map { $0.pointer }
-      .flatMap { ___tree_next_iter($0) }
-      .flatMap { .create($0) }
+      .flatMap { ___tree_next_iter($0.pointer) }
+      .flatMap { .taggedSeal($0) }
   }
 }
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeKeyOnlyRangeView {
-
-    @inlinable
-    public subscript(bounds: TrackingTagRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      let (lower, upper) = bounds.__relative(to: __tree_)
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
-      }
-      return .init(__tree_: __tree_, _start: lower, _end: upper)
-    }
-  }
-#endif
 
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeKeyOnlyRangeView {
@@ -373,7 +366,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
       i.relative(to: __tree_).purified
         .flatMap { ___tree_adv_iter($0.pointer, distance) }
-        .flatMap { .create($0) }
+        .flatMap { .taggedSeal($0) }
     }
 
     /// - Complexity: O(`distance`)
@@ -386,7 +379,7 @@ extension RedBlackTreeKeyOnlyRangeView {
       let __l = limit.relative(to: __tree_).map { $0.pointer }
       return try? i.relative(to: __tree_).purified
         .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-        .map { .create($0) }
+        .map { .taggedSeal($0) }
         .get()
     }
   }

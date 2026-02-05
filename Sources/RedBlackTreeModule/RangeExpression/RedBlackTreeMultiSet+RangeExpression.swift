@@ -27,15 +27,13 @@
 
     @inlinable
     public func isValid(_ bounds: _RangeExpression) -> Bool {
-      if let (l, u) = unwrapLowerUpper(bounds.rawRange.relative(to: __tree_)) {
-        return l.isValid && u.isValid
-      }
-      return false
+      let (l, u) = bounds.relative(to: __tree_)
+      return l.isValid && u.isValid
     }
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> SubSequence {
-      ___subscript(UnsafeTreeSealedRangeExpression.unboundedRange)
+      ___subscript(.unboundedRange)
     }
 
     @inlinable
@@ -45,7 +43,7 @@
 
     @inlinable
     public subscript(unchecked bounds: UnboundedRange) -> SubSequence {
-      ___unchecked_subscript(UnsafeTreeSealedRangeExpression.unboundedRange)
+      ___unchecked_subscript(.unboundedRange)
     }
 
     @inlinable
@@ -62,7 +60,7 @@
     @inlinable
     public mutating func removeSubrange(_ bounds: _RangeExpression) {
       __tree_.ensureUnique()
-      let (lower, upper) = unwrapLowerUpperOrFatal(bounds.rawRange.relative(to: __tree_))
+      let (lower, upper) = unwrapLowerUpperOrFatal(bounds.relative(to: __tree_))
       _ = ___remove(from: lower, to: upper)
     }
 
@@ -73,12 +71,12 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let (lower, upper) = unwrapLowerUpperOrFatal(bounds.rawRange.relative(to: __tree_))
-      guard __tree_.isValidRawRange(lower: lower, upper: upper) else {
+      let (lower, upper) = bounds.relative(to: __tree_)
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       try __tree_.___checking_erase_if(
-        lower, upper,
+        lower.pointer!, upper.pointer!,
         shouldBeRemoved: shouldBeRemoved)
     }
   }

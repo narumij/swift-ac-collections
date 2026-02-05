@@ -43,19 +43,19 @@ public typealias _RawTrackingTag = Int
 
 extension _RawTrackingTag {
 
-  /// 赤黒木の`_TrackingTag`で、nullを表す
+  /// 赤黒木の`_RawTrackingTag`で、nullを表す
   @inlinable
   package static var nullptr: Self {
     -2
   }
 
-  /// 赤黒木の`_TrackingTag`で、終端を表す
+  /// 赤黒木の`_RawTrackingTag`で、終端を表す
   @inlinable
   package static var end: Self {
     -1
   }
 
-  /// メモリでバッグのための`_TrackingTag`のダミー値
+  /// メモリでバッグのための`_RawTrackingTag`のダミー値
   @inlinable
   package static var debug: Self {
     -999
@@ -64,7 +64,7 @@ extension _RawTrackingTag {
 
 /// 追跡タグが nullptr または end を表すかを判定する
 ///
-/// `_TrackingTag` は負数を特殊ノード識別に使用しているため、
+/// `_RawTrackingTag` は負数を特殊ノード識別に使用しているため、
 /// `0` 以上は通常ノード、`0` 未満は sentinel として扱われる。
 @inlinable
 @inline(__always)

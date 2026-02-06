@@ -22,14 +22,12 @@ protocol UnsafeIndexProviderProtocol: UnsafeIndexBinding & UnsafeTreeHost {
 
 extension UnsafeIndexProviderProtocol {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___index_or_nil(_ p: _SealedPtr) -> Index? {
     !p.isValid ? nil : ___index(p)
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___index_or_nil(_ p: _SealedPtr?) -> Index? {
     p.flatMap { ___index_or_nil($0) }
   }
@@ -46,8 +44,7 @@ where Index == UnsafeIndexV2<Base> {
 
 extension UnsafeIndexProtocol_tie {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   package func ___index(_ p: _SealedPtr) -> Index {
     Index(sealed: p, tie: tied)
   }
@@ -60,8 +57,7 @@ protocol UnsafeIndexProtocol_tree: UnsafeIndexBinding & UnsafeTreeHost {
 
 extension UnsafeIndexProtocol_tree {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___index(_ p: _SealedPtr) -> Index {
     Index(sealed: p, tie: __tree_.tied)
   }
@@ -72,8 +68,7 @@ protocol UnsafeIndicesProtoocl: UnsafeTreeSealedRangeBaseInterface & UnsafeIndic
 
 extension UnsafeIndicesProtoocl {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal var _indices: Indices {
     .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }

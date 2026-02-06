@@ -25,14 +25,17 @@ protocol _SequenceV2: UnsafeTreeHost, _PayloadValueBride, _KeyBride {}
 
 extension _SequenceV2 {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
+  internal var ___is_empty: Bool {
+    __tree_.count == 0
+  }
+
+  @inlinable @inline(__always)
   internal var ___count: Int {
     __tree_.count
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___contains(_ __k: _Key) -> Bool {
     __tree_.__count_unique(__k) != 0
   }
@@ -40,32 +43,27 @@ extension _SequenceV2 {
 
 extension _SequenceV2 {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   package var _start: _NodePtr {
     __tree_.__begin_node_
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   package var _end: _NodePtr {
     __tree_.__end_node
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   package var _sealed_start: _SealedPtr {
     __tree_.__begin_node_.sealed
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   package var _sealed_end: _SealedPtr {
     __tree_.__end_node.sealed
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   package var ___capacity: Int {
     __tree_.capacity
   }

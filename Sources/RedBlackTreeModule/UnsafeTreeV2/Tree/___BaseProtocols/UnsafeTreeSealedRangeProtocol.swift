@@ -6,18 +6,13 @@
 //
 
 @usableFromInline
-protocol UnsafeTreeSealedRangeProtocol: UnsafeTreeSealedRangeBaseInterface, _PayloadValueBride {}
+protocol UnsafeTreeSealedRangeProtocol: UnsafeTreeSealedRangeBaseInterface, _PayloadValueBride {
+  var ___is_empty: Bool { get }
+}
 
 extension UnsafeTreeSealedRangeProtocol {
 
-  @inlinable
-  @inline(__always)
-  internal var ___is_empty: Bool {
-    __tree_.count == 0 || _sealed_start == _sealed_end
-  }
-
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal var ___first: _PayloadValue? {
     ___is_empty
       ? nil
@@ -26,8 +21,7 @@ extension UnsafeTreeSealedRangeProtocol {
         .get()
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal var ___last: _PayloadValue? {
     ___is_empty
       ? nil
@@ -40,8 +34,7 @@ extension UnsafeTreeSealedRangeProtocol {
 
 extension UnsafeTreeSealedRangeProtocol {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___first(where predicate: (_PayloadValue) throws -> Bool) rethrows -> _PayloadValue?
   {
     var result: _PayloadValue?
@@ -57,8 +50,7 @@ extension UnsafeTreeSealedRangeProtocol {
 
 extension UnsafeTreeSealedRangeProtocol {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___first_tracking_tag(where predicate: (_PayloadValue) throws -> Bool) rethrows
     -> TaggedSeal?
   {
@@ -75,8 +67,7 @@ extension UnsafeTreeSealedRangeProtocol {
 
 extension UnsafeTreeSealedRangeProtocol {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func _isTriviallyIdentical(to other: Self) -> Bool {
     __tree_.isTriviallyIdentical(to: other.__tree_)
       && _sealed_start == other._sealed_start

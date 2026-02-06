@@ -25,12 +25,18 @@ protocol _SubSequenceV2: UnsafeTreeSealedRangeProtocol, UnsafeIndexBinding {}
 
 extension _SubSequenceV2 {
 
-  /// - Complexity: O(log *n* + *k*)
-  ///
-  /// 無効の場合0を返す
-  /// 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
+  internal var ___is_empty: Bool {
+    guard
+      let start = _sealed_start.pointer,
+      let end = _sealed_end.pointer
+    else {
+      return true
+    }
+    return start == end
+  }
+
+  @inlinable @inline(__always)
   internal var ___count: Int {
     guard
       let start = _sealed_start.pointer,
@@ -41,8 +47,7 @@ extension _SubSequenceV2 {
     return __tree_.__distance(start, end)
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___contains(_ i: _NodePtr) -> Bool {
     guard
       let start = _sealed_start.pointer,
@@ -56,8 +61,8 @@ extension _SubSequenceV2 {
 
 #if COMPATIBLE_ATCODER_2025
   extension ___UnsafeSubSequenceV2 {
-    @inlinable
-    @inline(__always)
+
+    @inlinable @inline(__always)
     internal func ___contains(_ bounds: Range<Index>) -> Bool {
 
       guard

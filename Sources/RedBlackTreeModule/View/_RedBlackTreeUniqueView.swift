@@ -12,12 +12,12 @@ public struct _RedBlackTreeUniqueView<Base>:
   _KeyBride,
   _PayloadValueBride,
   UnsafeIndexBinding,
-  ___UnsafeBaseSequenceV2,
+  ___UnsafeBaseSequenceV2__,
   ___UnsafeIndexV2
 where
   Base: ___TreeBase & ___TreeIndex
 {
-  
+
   @usableFromInline
   internal init(__tree_: UnsafeTreeV2<Base>) {
     self.__tree_ = __tree_
@@ -28,7 +28,7 @@ where
 }
 
 extension _RedBlackTreeUniqueView {
-  
+
   @usableFromInline
   func ___index(_ p: _SealedPtr) -> Index {
     Index(sealed: p, tie: __tree_.tied)
@@ -73,7 +73,7 @@ extension _RedBlackTreeUniqueView {
 }
 
 extension _RedBlackTreeUniqueView {
-  
+
   @inlinable
   public mutating func erase(_ ptr: Index) -> Index {
     __tree_.ensureUnique()

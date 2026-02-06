@@ -135,7 +135,7 @@ protocol _RedBlackTreeKeyOnlyBase:
     & _SetBridge
     & _CompareV2
     & ___UnsafeIndexV2
-    & ___UnsafeBaseSequenceV2
+    & ___UnsafeBaseSequenceV2__
     & ___UnsafeKeyOnlySequenceV2
 {}
 
@@ -147,7 +147,7 @@ protocol _RedBlackTreeKeyValuesBase:
     & _MapBridge
     & _CompareV2
     & ___UnsafeIndexV2
-    & ___UnsafeBaseSequenceV2
+    & ___UnsafeBaseSequenceV2__
     & ___UnsafeKeyValueSequenceV2
 {}
 

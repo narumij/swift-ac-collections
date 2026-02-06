@@ -13,7 +13,7 @@ public struct _RedBlackTreeUnsafeView<Base>:
   _KeyBride,
   _PayloadValueBride,
   UnsafeIndexBinding,
-  ___UnsafeBaseSequenceV2,
+  ___UnsafeBaseSequenceV2__,
   ___UnsafeIndexV2
 where
   Base: ___TreeBase & ___TreeIndex

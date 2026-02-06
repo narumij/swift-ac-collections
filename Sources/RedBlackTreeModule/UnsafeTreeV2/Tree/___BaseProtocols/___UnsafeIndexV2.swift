@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIndexV2: UnsafeTreeSealedRangeProtocol & UnsafeIndexProviderProtocol {}
+protocol ___UnsafeIndexV2: UnsafeTreeSealedRangeProtocol & UnsafeIndexProviderProtocol & _KeyBride {}
 
 extension ___UnsafeIndexV2 {
 
@@ -153,5 +153,30 @@ extension ___UnsafeIndexV2 {
   @discardableResult
   public mutating func ___erase(_ ptr: Index) -> Index {
     ___index(__tree_.erase(try! __tree_.__sealed_(ptr).get().pointer).sealed)
+  }
+}
+
+extension ___UnsafeIndexV2 {
+
+  @inlinable
+  @inline(__always)
+  internal func ___index_lower_bound(_ __k: _Key) -> Index {
+    ___index(__tree_.lower_bound(__k).sealed)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___index_upper_bound(_ __k: _Key) -> Index {
+    ___index(__tree_.upper_bound(__k).sealed)
+  }
+}
+
+extension ___UnsafeIndexV2 {
+
+  @inlinable
+  @inline(__always)
+  internal func ___first_index(of member: _Key) -> Index? {
+    let ptr = __tree_.__ptr_(__tree_.__find_equal(member).__child)
+    return ___index_or_nil(ptr.sealed)
   }
 }

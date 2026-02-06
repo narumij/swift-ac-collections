@@ -77,11 +77,13 @@ protocol UnsafeMutableTreeHost: UnsafeTreeHost, _PayloadValueBride {
 }
 
 extension UnsafeMutableTreeHost {
-  
+
   @inlinable
   @inline(__always)
   @discardableResult
-  package mutating func _unchecked_remove(at ptr: _NodePtr) -> (__r: _NodePtr, payload: _PayloadValue) {
+  package mutating func _unchecked_remove(at ptr: _NodePtr) -> (
+    __r: _NodePtr, payload: _PayloadValue
+  ) {
     let ___e = __tree_[ptr]
     let __r = __tree_.erase(ptr)
     return (__r, ___e)
@@ -143,7 +145,7 @@ extension ___UnsafeIndexBaseV2 {
 protocol UnsafeIndicesProtoocl: UnsafeTreeSealedRangeBaseInterface & UnsafeIndicesBinding {}
 
 extension UnsafeIndicesProtoocl {
-  
+
   @inlinable
   @inline(__always)
   internal var _indices: Indices {
@@ -166,7 +168,7 @@ public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase:
   UnsafeMutableTreeRangeProtocol
-    & ___UnsafeCommonV2
+    & UnsafeTreeRangeProtocol & _PayloadValueBride & _KeyBride
     & ___UnsafeIndexV2
     & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyOnlySequenceV2
@@ -186,7 +188,7 @@ protocol _RedBlackTreeKeyValuesBase:
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase__:
   UnsafeMutableTreeRangeProtocol
-    & ___UnsafeCommonV2
+    & UnsafeTreeRangeProtocol & _PayloadValueBride & _KeyBride
     & ___UnsafeBaseSequenceV2__
     & ___UnsafeKeyOnlySequenceV2__
     & UnsafeIndicesProtoocl

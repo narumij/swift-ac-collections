@@ -29,6 +29,14 @@ where
 }
 
 extension _RedBlackTreeUnsafeView {
+  
+  @usableFromInline
+  func ___index(_ p: _SealedPtr) -> Index {
+    Index(sealed: p, tie: __tree_.tied)
+  }
+}
+
+extension _RedBlackTreeUnsafeView {
 
   /// - Complexity: O(1)
   @inlinable

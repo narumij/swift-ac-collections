@@ -25,6 +25,7 @@ extension RedBlackTreeSliceV2 {
       & ___UnsafeIndexV2
       & ___UnsafeKeyValueSequenceV2
       & UnsafeIndicesProtoocl
+      & UnsafeIndexingProtocol_tree
   where
     Base: ___TreeBase
       & KeyValueComparer

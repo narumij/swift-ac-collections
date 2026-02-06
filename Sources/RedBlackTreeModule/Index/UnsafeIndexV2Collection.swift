@@ -26,7 +26,7 @@
 
 public
   struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>:
-    UnsafeTreeBinding, UnsafeIndexingProtocol
+    UnsafeTreeBinding, UnsafeIndexingProtocol_tie
 {
   public typealias Element = Index
   public typealias SubSequence = Self

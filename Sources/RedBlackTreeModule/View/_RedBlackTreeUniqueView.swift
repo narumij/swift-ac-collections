@@ -28,6 +28,14 @@ where
 }
 
 extension _RedBlackTreeUniqueView {
+  
+  @usableFromInline
+  func ___index(_ p: _SealedPtr) -> Index {
+    Index(sealed: p, tie: __tree_.tied)
+  }
+}
+
+extension _RedBlackTreeUniqueView {
 
   /// - Complexity: O(1)
   @inlinable

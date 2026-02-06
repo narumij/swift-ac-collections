@@ -54,16 +54,6 @@ where Element == Base.Element, Base: _ElementType {}
 public protocol UnsafeTreeBinding: ___Root & _UnsafeNodePtrType
 where Tree == UnsafeTreeV2<Base>, Base: ___TreeBase {}
 
-public protocol UnsafeIndexBinding: UnsafeTreeBinding
-where Index == UnsafeTreeV2<Base>.Index, Base: ___TreeIndex {
-  associatedtype Index
-}
-
-public protocol UnsafeIndicesBinding: UnsafeTreeBinding
-where Indices == UnsafeTreeV2<Base>.Indices, Base: ___TreeIndex {
-  associatedtype Indices
-}
-
 /// 共通生木メンバー
 @usableFromInline
 protocol UnsafeTreeHost: UnsafeTreeBinding {
@@ -78,6 +68,8 @@ protocol UnsafeMutableTreeHost: UnsafeTreeHost & _PayloadValueBride {
 
 extension UnsafeMutableTreeHost {
 
+  // たぶんめんどくさくなってサボってここにある
+  
   @inlinable
   @inline(__always)
   @discardableResult
@@ -118,42 +110,6 @@ protocol UnsafeMutableTreeSealedRangeBaseInterface: UnsafeMutableTreeHost {
 }
 
 @usableFromInline
-protocol ___UnsafeIndexBaseV2: UnsafeIndexBinding & UnsafeTreeHost {}
-
-extension ___UnsafeIndexBaseV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func ___index(_ p: _SealedPtr) -> Index {
-    __tree_.makeIndex(sealed: p)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___index_or_nil(_ p: _SealedPtr) -> Index? {
-    !p.isValid ? nil : ___index(p)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___index_or_nil(_ p: _SealedPtr?) -> Index? {
-    p.flatMap { ___index_or_nil($0) }
-  }
-}
-
-@usableFromInline
-protocol UnsafeIndicesProtoocl: UnsafeTreeSealedRangeBaseInterface & UnsafeIndicesBinding {}
-
-extension UnsafeIndicesProtoocl {
-
-  @inlinable
-  @inline(__always)
-  internal var _indices: Indices {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-  }
-}
-
-@usableFromInline
 protocol ___UnsafeIndexRangeBaseV2:
   UnsafeTreeRangeBaseInterface
     & ___UnsafeIndexBaseV2
@@ -181,6 +137,7 @@ protocol _RedBlackTreeKeyOnlyBase:
     & ___UnsafeKeyOnlySequenceV2
     & UnsafeIndicesProtoocl
     & ___CompareV2
+    & UnsafeIndexingProtocol_tree
 {}
 
 @usableFromInline
@@ -191,6 +148,7 @@ protocol _RedBlackTreeKeyValuesBase:
     & ___UnsafeKeyValueSequenceV2
     & UnsafeIndicesProtoocl
     & ___CompareV2
+    & UnsafeIndexingProtocol_tree
 {}
 
 @usableFromInline
@@ -202,4 +160,5 @@ protocol _RedBlackTreeKeyOnlyBase__:
     & ___UnsafeKeyOnlySequenceV2__
     & UnsafeIndicesProtoocl
     & ___CompareV2
+    & UnsafeIndexingProtocol_tree
 {}

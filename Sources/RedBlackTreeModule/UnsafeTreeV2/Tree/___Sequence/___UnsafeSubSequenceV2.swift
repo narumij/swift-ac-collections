@@ -21,13 +21,14 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeSubSequenceV2: UnsafeTreeSealedRangeProtocol,
-  UnsafeIndexBinding
-{}
+protocol ___UnsafeSubSequenceV2: UnsafeTreeSealedRangeProtocol, UnsafeIndexBinding {}
 
 extension ___UnsafeSubSequenceV2 {
 
   /// - Complexity: O(log *n* + *k*)
+  ///
+  /// 無効の場合0を返す
+  /// 
   @inlinable
   @inline(__always)
   internal var ___count: Int {
@@ -35,7 +36,7 @@ extension ___UnsafeSubSequenceV2 {
       let start = _sealed_start.pointer,
       let end = _sealed_end.pointer
     else {
-      return 0 // TODO: 再検討。無効で空なわけなので0でいいようには思う
+      return 0
     }
     return __tree_.__distance(start, end)
   }
@@ -51,8 +52,10 @@ extension ___UnsafeSubSequenceV2 {
     }
     return __tree_.___ptr_range_comp(start, i, end)
   }
+}
 
-  #if COMPATIBLE_ATCODER_2025
+#if COMPATIBLE_ATCODER_2025
+  extension ___UnsafeSubSequenceV2 {
     @inlinable
     @inline(__always)
     internal func ___contains(_ bounds: Range<Index>) -> Bool {
@@ -74,5 +77,5 @@ extension ___UnsafeSubSequenceV2 {
       return __tree_.___ptr_range_contains(start, end, l)
         && __tree_.___ptr_range_contains(start, end, u)
     }
-  #endif
-}
+  }
+#endif

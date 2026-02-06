@@ -21,8 +21,11 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIndexV2: UnsafeTreeSealedRangeProtocol & UnsafeIndexProviderProtocol & _KeyBride {
-}
+protocol ___UnsafeIndexV2:
+  UnsafeTreeSealedRangeProtocol
+    & UnsafeIndexProviderProtocol
+    & _KeyBride
+{}
 
 extension ___UnsafeIndexV2 {
 

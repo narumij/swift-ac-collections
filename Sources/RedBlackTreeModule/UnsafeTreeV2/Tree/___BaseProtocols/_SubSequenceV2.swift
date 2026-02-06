@@ -60,7 +60,7 @@ extension _SubSequenceV2 {
 }
 
 #if COMPATIBLE_ATCODER_2025
-  extension ___UnsafeSubSequenceV2 {
+  extension _SubSequenceV2 {
 
     @inlinable @inline(__always)
     internal func ___contains(_ bounds: Range<Index>) -> Bool {

@@ -127,7 +127,7 @@ extension RedBlackTreeSliceV2.KeyValue {
     /// - Complexity: O(log *n*)
     @inlinable
     public func firstIndex(of key: _Key) -> Index? {
-      ___first_index { ($0 as _PayloadValue).key == key }
+      ___first_index { $0.key == key }
     }
 
     /// - Complexity: O(*n*)

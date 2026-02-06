@@ -24,9 +24,7 @@
 protocol ___UnsafeKeyValueSequenceV2__:
   UnsafeTreeSealedRangeProtocol
     & UnsafeTreeRangeProtocol
-    & _KeyBride
-    & _MappedValueBride
-    & _ElementBride
+    & _MapBridge
 where
   Base: KeyValueComparer & _PairBase_ElementProtocol
 {}
@@ -70,17 +68,11 @@ extension ___UnsafeKeyValueSequenceV2__ {
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeIndexV2 {
+extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
   internal func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first { try predicate(Base.__element_($0)) }.map(Base.__element_)
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index { try predicate(Base.__element_($0)) }
   }
 }
 
@@ -166,10 +158,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
 }
 
 @usableFromInline
-protocol ___UnsafeKeyValueSequenceV2:
-  ___UnsafeKeyValueSequenceV2__
-    & ___UnsafeIndexRangeBaseV2
-{}
+protocol ___UnsafeKeyValueSequenceV2: ___UnsafeKeyValueSequenceV2__ & ___UnsafeIndexRangeBaseV2 {}
 
 #if COMPATIBLE_ATCODER_2025
   extension ___UnsafeKeyValueSequenceV2 {
@@ -195,5 +184,21 @@ extension ___UnsafeKeyValueSequenceV2 {
     @inline(__always) get {
       return Base.__element_(__tree_[try! __tree_.__sealed_(position).get().pointer])
     }
+  }
+}
+
+extension ___UnsafeKeyValueSequenceV2 {
+
+  @inlinable
+  @inline(__always)
+  internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    var result: Index?
+    try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
+      if try predicate(Base.__element_((__tree_[__p]))) {
+        result = ___index(__p.sealed)
+        cont = false
+      }
+    }
+    return result
   }
 }

@@ -166,15 +166,21 @@ public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2
 public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
 
 @usableFromInline
+typealias _SetBridge = _PayloadValueBride & _KeyBride & _ElementBride
+
+@usableFromInline
+typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride & _ElementBride
+
+@usableFromInline
 protocol _RedBlackTreeKeyOnlyBase:
   UnsafeMutableTreeRangeProtocol
     & UnsafeTreeRangeProtocol
-    & _PayloadValueBride
-    & _KeyBride
+    & _SetBridge
     & ___UnsafeIndexV2
     & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyOnlySequenceV2
     & UnsafeIndicesProtoocl
+    & ___CompareV2
 {}
 
 @usableFromInline
@@ -184,15 +190,16 @@ protocol _RedBlackTreeKeyValuesBase:
     & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyValueSequenceV2
     & UnsafeIndicesProtoocl
+    & ___CompareV2
 {}
 
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase__:
   UnsafeMutableTreeRangeProtocol
     & UnsafeTreeRangeProtocol
-    & _PayloadValueBride
-    & _KeyBride
+    & _SetBridge
     & ___UnsafeBaseSequenceV2__
     & ___UnsafeKeyOnlySequenceV2__
     & UnsafeIndicesProtoocl
+    & ___CompareV2
 {}

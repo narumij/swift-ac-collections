@@ -153,8 +153,8 @@
       let bounds = bounds.relative(to: self)
       __tree_.ensureUnique()
       ___remove(
-      from: __tree_.__sealed_(bounds.lowerBound).pointer!,
-      to: __tree_.__sealed_(bounds.upperBound).pointer!)
+        from: __tree_.__sealed_(bounds.lowerBound).pointer!,
+        to: __tree_.__sealed_(bounds.upperBound).pointer!)
     }
   }
 #endif
@@ -294,14 +294,16 @@
     }
   }
 
-  extension RedBlackTreeSet {
+  #if COMPATIBLE_ATCODER_2025
+    extension RedBlackTreeSet {
 
-    /// - Complexity: O(log *n*), where *n* is the number of elements.
-    @inlinable
-    public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
-      ___index_equal_range(element)
+      /// - Complexity: O(log *n*), where *n* is the number of elements.
+      @inlinable
+      public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
+        ___index_equal_range(element)
+      }
     }
-  }
+  #endif
 
   extension RedBlackTreeSet {
 
@@ -418,17 +420,17 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-// MARK: - SubSequence
+  // MARK: - SubSequence
 
-extension RedBlackTreeSet {
+  extension RedBlackTreeSet {
 
-  public typealias SubSequence = RedBlackTreeSliceV2<Base>.KeyOnly
-}
+    public typealias SubSequence = RedBlackTreeSliceV2<Base>.KeyOnly
+  }
 
-// MARK: - Index Range
+  // MARK: - Index Range
 
-extension RedBlackTreeSet {
+  extension RedBlackTreeSet {
 
-  public typealias Indices = Tree.Indices
-}
+    public typealias Indices = Tree.Indices
+  }
 #endif

@@ -21,12 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIndexV2:
-  UnsafeTreeRangeProtocol
-    & UnsafeTreeSealedRangeProtocol
-    & ___UnsafeIndexBaseV2
-    & _PayloadValueBride
-{}
+protocol ___UnsafeIndexV2: UnsafeTreeSealedRangeProtocol & ___UnsafeIndexBaseV2 {}
 
 extension ___UnsafeIndexV2 {
 
@@ -48,12 +43,12 @@ extension ___UnsafeIndexV2 {
 
   @inlinable @inline(__always)
   internal var _startIndex: Index {
-    ___index(_start.sealed)
+    ___index(_sealed_start)
   }
 
   @inlinable @inline(__always)
   internal var _endIndex: Index {
-    ___index(_end.sealed)
+    ___index(_sealed_end)
   }
 
   @inlinable @inline(__always)
@@ -123,22 +118,6 @@ extension ___UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  internal func ___first_index(where predicate: (_PayloadValue) throws -> Bool) rethrows -> Index? {
-    var result: Index?
-    try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
-      if try predicate(__tree_[__p]) {
-        result = ___index(__p.sealed)
-        cont = false
-      }
-    }
-    return result
-  }
-}
-
-extension ___UnsafeIndexV2 {
-
-  @inlinable
-  @inline(__always)
   internal func _isValid(index: Index) -> Bool {
     // ___is_endのみを判定するわけじゃないので、お清めお祓いが必要
     __tree_.__sealed_(index).purified.___is_end == false
@@ -164,40 +143,6 @@ extension ___UnsafeIndexV2 {
     }
   }
 #endif
-
-extension ___UnsafeIndexV2 where Base: CompareUniqueTrait {
-
-  ///（重複なし）
-  @inlinable
-  @inline(__always)
-  internal func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
-    __tree_.__equal_range_unique(k)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
-    let (lo, hi) = ___equal_range(k)
-    return (___index(lo.sealed), ___index(hi.sealed))
-  }
-}
-
-extension ___UnsafeIndexV2 where Base: CompareMultiTrait {
-
-  /// （重複あり）
-  @inlinable
-  @inline(__always)
-  internal func ___equal_range(_ k: Tree._Key) -> (lower: _NodePtr, upper: _NodePtr) {
-    __tree_.__equal_range_multi(k)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___index_equal_range(_ k: Tree._Key) -> (lower: Index, upper: Index) {
-    let (lo, hi) = ___equal_range(k)
-    return (___index(lo.sealed), ___index(hi.sealed))
-  }
-}
 
 // TODO: 削除または正式公開の検討
 // 初期の名残

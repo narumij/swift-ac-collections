@@ -23,8 +23,7 @@
 @usableFromInline
 protocol ___UnsafeKeyOnlySequenceV2__:
   UnsafeTreeSealedRangeProtocol
-    & _KeyBride
-    & _ElementBride
+    & _SetBridge
 where
   Base: _ScalarBase_ElementProtocol
 {}
@@ -153,5 +152,21 @@ extension ___UnsafeKeyOnlySequenceV2 {
     @inline(__always) _read {
       yield __tree_[try! __tree_.__sealed_(position).get().pointer]
     }
+  }
+}
+
+extension ___UnsafeKeyOnlySequenceV2 {
+
+  @inlinable
+  @inline(__always)
+  internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    var result: Index?
+    try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
+      if try predicate(__tree_[__p]) {
+        result = ___index(__p.sealed)
+        cont = false
+      }
+    }
+    return result
   }
 }

@@ -25,7 +25,6 @@ final class DictionaryPointerTests: RedBlackTreeTestCase {
       XCTAssertNotNil(it.next)
       members.remove(at: it)
       XCTAssertTrue(members.___is_garbaged(it))
-      throw XCTSkip("CoWの挙動変更のため")
       XCTAssertNil(it.pointee)
       XCTAssertNil(it.previous)
       XCTAssertNil(it.next)

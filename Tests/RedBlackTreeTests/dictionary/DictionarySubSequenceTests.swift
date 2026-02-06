@@ -84,13 +84,20 @@ final class RedBlackTreeDictionarySubSequenceTests: RedBlackTreeTestCase {
     let slice = base.elements(in: "x"..."y")  // x,y
 
     let idx = slice.firstIndex(where: { $0.key == "x" })!
+    XCTAssertTrue(base.isValid(index: idx))
+    XCTAssertTrue(slice.isValid(index: idx))
 
-    // CoW 発動しない
-    _ = base.removeValue(forKey: "x")
+    // CoW 発動する
+    let v = base.removeValue(forKey: "x") // 消せてないやないかーい
+    
+    XCTAssertEqual(v, 1)
+    XCTAssertNil(base["x"])
 
     // 共有ストレージの木が差し替わらないので、双方Valid
-    throw XCTSkip("CoWの挙動変更のため")
-    XCTAssertFalse(base.isValid(index: idx))
-    XCTAssertFalse(slice.isValid(index: idx))
+    XCTAssertFalse(base.isValid(index: idx)) // 期待と逆
+    XCTAssertTrue(slice.isValid(index: idx)) // 期待と逆
+    
+    XCTAssertEqual(base._copyCount, 1)
+    XCTAssertEqual(slice._copyCount, 0)
   }
 }

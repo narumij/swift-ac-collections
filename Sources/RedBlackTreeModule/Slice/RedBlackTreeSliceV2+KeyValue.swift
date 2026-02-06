@@ -373,3 +373,12 @@ extension RedBlackTreeSliceV2.KeyValue: CustomDebugStringConvertible {
     description
   }
 }
+
+#if AC_COLLECTIONS_INTERNAL_CHECKS
+  extension RedBlackTreeSliceV2.KeyValue {
+
+    package var _copyCount: UInt {
+      __tree_.copyCount
+    }
+  }
+#endif

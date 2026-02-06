@@ -21,7 +21,9 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeSubSequenceV2: UnsafeTreeRangeProtocol, UnsafeIndexBinding {}
+protocol ___UnsafeSubSequenceV2: UnsafeTreeSealedRangeProtocol,
+  UnsafeIndexBinding
+{}
 
 extension ___UnsafeSubSequenceV2 {
 
@@ -29,26 +31,48 @@ extension ___UnsafeSubSequenceV2 {
   @inlinable
   @inline(__always)
   internal var ___count: Int {
-    __tree_.__distance(_start, _end)
+    guard
+      let start = _sealed_start.pointer,
+      let end = _sealed_end.pointer
+    else {
+      return 0 // TODO: 再検討。無効で空なわけなので0でいいようには思う
+    }
+    return __tree_.__distance(start, end)
   }
 
   @inlinable
   @inline(__always)
   internal func ___contains(_ i: _NodePtr) -> Bool {
-    __tree_.___ptr_range_comp(_start, i, _end)
+    guard
+      let start = _sealed_start.pointer,
+      let end = _sealed_end.pointer
+    else {
+      return false
+    }
+    return __tree_.___ptr_range_comp(start, i, end)
   }
 
   #if COMPATIBLE_ATCODER_2025
     @inlinable
     @inline(__always)
     internal func ___contains(_ bounds: Range<Index>) -> Bool {
-      guard let l = __tree_.__sealed_(bounds.lowerBound).pointer,
-            let u = __tree_.__sealed_(bounds.upperBound).pointer
+
+      guard
+        let start = _sealed_start.pointer,
+        let end = _sealed_end.pointer
       else {
         return false
       }
-      return __tree_.___ptr_range_contains(_start, _end, l)
-        && __tree_.___ptr_range_contains(_start, _end, u)
+
+      guard
+        let l = __tree_.__sealed_(bounds.lowerBound).pointer,
+        let u = __tree_.__sealed_(bounds.upperBound).pointer
+      else {
+        return false
+      }
+
+      return __tree_.___ptr_range_contains(start, end, l)
+        && __tree_.___ptr_range_contains(start, end, u)
     }
   #endif
 }

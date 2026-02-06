@@ -168,7 +168,9 @@ public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase:
   UnsafeMutableTreeRangeProtocol
-    & UnsafeTreeRangeProtocol & _PayloadValueBride & _KeyBride
+    & UnsafeTreeRangeProtocol
+    & _PayloadValueBride
+    & _KeyBride
     & ___UnsafeIndexV2
     & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyOnlySequenceV2
@@ -178,7 +180,6 @@ protocol _RedBlackTreeKeyOnlyBase:
 @usableFromInline
 protocol _RedBlackTreeKeyValuesBase:
   UnsafeMutableTreeRangeProtocol
-    & ___UnsafeCommonV2
     & ___UnsafeIndexV2
     & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyValueSequenceV2
@@ -189,7 +190,9 @@ protocol _RedBlackTreeKeyValuesBase:
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase__:
   UnsafeMutableTreeRangeProtocol
-    & UnsafeTreeRangeProtocol & _PayloadValueBride & _KeyBride
+    & UnsafeTreeRangeProtocol
+    & _PayloadValueBride
+    & _KeyBride
     & ___UnsafeBaseSequenceV2__
     & ___UnsafeKeyOnlySequenceV2__
     & UnsafeIndicesProtoocl

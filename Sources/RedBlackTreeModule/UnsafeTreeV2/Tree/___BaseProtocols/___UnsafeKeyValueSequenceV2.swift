@@ -21,8 +21,13 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyValueSequenceV2__: UnsafeTreeSealedRangeProtocol &
-  _PayloadValueBride & _KeyBride & _MappedValueBride & _ElementBride
+protocol ___UnsafeKeyValueSequenceV2__:
+  UnsafeTreeSealedRangeProtocol
+    & UnsafeTreeRangeProtocol
+    & _PayloadValueBride
+    & _KeyBride
+    & _MappedValueBride
+    & _ElementBride
 where
   Base: KeyValueComparer & _PairBase_ElementProtocol
 {}
@@ -43,7 +48,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeCommonV2 {
+extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
   @inline(__always)

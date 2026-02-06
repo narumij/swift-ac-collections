@@ -129,7 +129,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
 }
 
 @usableFromInline
-protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, ___UnsafeIndexBaseV2 {}
+protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, UnsafeIndexProviderProtocol {}
 
 #if COMPATIBLE_ATCODER_2025
   extension ___UnsafeKeyOnlySequenceV2 {

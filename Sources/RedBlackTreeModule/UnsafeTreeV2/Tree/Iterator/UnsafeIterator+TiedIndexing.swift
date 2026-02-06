@@ -19,7 +19,7 @@ extension UnsafeIterator {
 
   public struct TiedIndexing<Base, Source: IteratorProtocol>:
     _UnsafeNodePtrType,
-    UnsafeIndexingProtocol_tie,
+    UnsafeIndexProtocol_tie,
     IteratorProtocol,
     Sequence
   where

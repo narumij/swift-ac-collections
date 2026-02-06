@@ -112,7 +112,7 @@ protocol UnsafeMutableTreeSealedRangeBaseInterface: UnsafeMutableTreeHost {
 @usableFromInline
 protocol ___UnsafeIndexRangeBaseV2:
   UnsafeTreeRangeBaseInterface
-    & ___UnsafeIndexBaseV2
+    & UnsafeIndexProviderProtocol
     & UnsafeIndicesBinding
 {}
 
@@ -137,7 +137,7 @@ protocol _RedBlackTreeKeyOnlyBase:
     & ___UnsafeKeyOnlySequenceV2
     & UnsafeIndicesProtoocl
     & ___CompareV2
-    & UnsafeIndexingProtocol_tree
+    & UnsafeIndexProtocol_tree
 {}
 
 @usableFromInline
@@ -148,7 +148,7 @@ protocol _RedBlackTreeKeyValuesBase:
     & ___UnsafeKeyValueSequenceV2
     & UnsafeIndicesProtoocl
     & ___CompareV2
-    & UnsafeIndexingProtocol_tree
+    & UnsafeIndexProtocol_tree
 {}
 
 @usableFromInline
@@ -160,5 +160,5 @@ protocol _RedBlackTreeKeyOnlyBase__:
     & ___UnsafeKeyOnlySequenceV2__
     & UnsafeIndicesProtoocl
     & ___CompareV2
-    & UnsafeIndexingProtocol_tree
+    & UnsafeIndexProtocol_tree
 {}

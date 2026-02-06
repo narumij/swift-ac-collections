@@ -16,11 +16,11 @@ where Indices == UnsafeTreeV2<Base>.Indices, Base: ___TreeIndex {
 }
 
 @usableFromInline
-protocol ___UnsafeIndexBaseV2: UnsafeIndexBinding & UnsafeTreeHost {
+protocol UnsafeIndexProviderProtocol: UnsafeIndexBinding & UnsafeTreeHost {
   func ___index(_ p: _SealedPtr) -> Index
 }
 
-extension ___UnsafeIndexBaseV2 {
+extension UnsafeIndexProviderProtocol {
 
   @inlinable
   @inline(__always)
@@ -37,14 +37,14 @@ extension ___UnsafeIndexBaseV2 {
 
 /// Indexが何であるかをしり、その生成には何が必要で、どう生成するのかを知っている
 @usableFromInline
-protocol UnsafeIndexingProtocol_tie: _UnsafeNodePtrType
+protocol UnsafeIndexProtocol_tie: _UnsafeNodePtrType
 where Index == UnsafeIndexV2<Base> {
   associatedtype Base: ___TreeBase & ___TreeIndex
   associatedtype Index
   var tied: _TiedRawBuffer { get }
 }
 
-extension UnsafeIndexingProtocol_tie {
+extension UnsafeIndexProtocol_tie {
 
   @inlinable
   @inline(__always)
@@ -54,11 +54,11 @@ extension UnsafeIndexingProtocol_tie {
 }
 
 @usableFromInline
-protocol UnsafeIndexingProtocol_tree: UnsafeIndexBinding & UnsafeTreeHost {
+protocol UnsafeIndexProtocol_tree: UnsafeIndexBinding & UnsafeTreeHost {
   func ___index(_ p: _SealedPtr) -> Index
 }
 
-extension UnsafeIndexingProtocol_tree {
+extension UnsafeIndexProtocol_tree {
 
   @inlinable
   @inline(__always)

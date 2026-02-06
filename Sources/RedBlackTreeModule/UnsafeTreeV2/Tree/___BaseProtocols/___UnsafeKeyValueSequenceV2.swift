@@ -24,18 +24,11 @@
 protocol ___UnsafeKeyValueSequenceV2__:
   UnsafeTreeSealedRangeProtocol
     & UnsafeTreeRangeProtocol
-    & _PayloadValueBride
     & _KeyBride
     & _MappedValueBride
     & _ElementBride
 where
   Base: KeyValueComparer & _PairBase_ElementProtocol
-{}
-
-@usableFromInline
-protocol ___UnsafeKeyValueSequenceV2:
-  ___UnsafeKeyValueSequenceV2__
-    & ___UnsafeIndexRangeBaseV2
 {}
 
 extension ___UnsafeKeyValueSequenceV2__ {
@@ -171,6 +164,12 @@ extension ___UnsafeKeyValueSequenceV2__ {
     }
   }
 }
+
+@usableFromInline
+protocol ___UnsafeKeyValueSequenceV2:
+  ___UnsafeKeyValueSequenceV2__
+    & ___UnsafeIndexRangeBaseV2
+{}
 
 #if COMPATIBLE_ATCODER_2025
   extension ___UnsafeKeyValueSequenceV2 {

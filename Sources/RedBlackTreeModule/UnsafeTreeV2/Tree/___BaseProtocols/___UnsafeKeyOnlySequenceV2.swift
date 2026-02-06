@@ -21,10 +21,12 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyOnlySequenceV2__: UnsafeTreeSealedRangeProtocol, _ScalarBase_ElementProtocol,
-  _PayloadValueBride, _KeyBride
+protocol ___UnsafeKeyOnlySequenceV2__:
+  UnsafeTreeSealedRangeProtocol
+    & _KeyBride
+    & _ElementBride
 where
-  Base: ___TreeIndex
+  Base: _ScalarBase_ElementProtocol
 {}
 
 extension ___UnsafeKeyOnlySequenceV2__ {
@@ -83,7 +85,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
     let (lower, upper) = rawRange.relative(to: __tree_)
     return .init(tree: __tree_, start: lower, end: upper)
   }
-  
+
   @inlinable
   public func ___subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
     -> RedBlackTreeKeyOnlyRangeView<Base>
@@ -97,7 +99,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
 
   @inlinable
   public func ___unchecked_subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
-  -> RedBlackTreeKeyOnlyRangeView<Base>
+    -> RedBlackTreeKeyOnlyRangeView<Base>
   {
     let (lower, upper) = rawRange.relative(to: __tree_)
     return .init(__tree_: __tree_, _start: lower, _end: upper)
@@ -112,7 +114,8 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   internal func _elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (_PayloadValue, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
-    try __tree_.elementsEqual(_sealed_start.pointer!, _sealed_end.pointer!, other, by: areEquivalent)
+    try __tree_.elementsEqual(
+      _sealed_start.pointer!, _sealed_end.pointer!, other, by: areEquivalent)
   }
 
   // 制約で値の型が一致する必要があり、KeyValue側では標準実装を使っている
@@ -121,7 +124,8 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   internal func _lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (_PayloadValue, _PayloadValue) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, _PayloadValue == OtherSequence.Element {
-    try __tree_.lexicographicallyPrecedes(_sealed_start.pointer!, _sealed_end.pointer!, other, by: areInIncreasingOrder)
+    try __tree_.lexicographicallyPrecedes(
+      _sealed_start.pointer!, _sealed_end.pointer!, other, by: areInIncreasingOrder)
   }
 }
 

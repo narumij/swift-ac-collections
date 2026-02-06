@@ -184,6 +184,7 @@ extension RedBlackTreeSet: ScalarValueComparer {
     p.__value_().pointee
   }
 }
+extension RedBlackTreeSet: _ScalarBase_ElementProtocol {}
 
 // MARK: - Creating a Set
 

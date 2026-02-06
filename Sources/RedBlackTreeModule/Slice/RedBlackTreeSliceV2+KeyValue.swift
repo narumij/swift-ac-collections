@@ -26,9 +26,9 @@ extension RedBlackTreeSliceV2 {
       & ___UnsafeKeyValueSequenceV2
       & UnsafeIndicesProtoocl
   where
-    Base: ___TreeBase & ___TreeIndex & KeyValueComparer,
-    Base: _PairBase_ElementProtocol,
-    Base._PayloadValue == RedBlackTreePair<Base._Key, Base._MappedValue>
+    Base: ___TreeBase
+      & KeyValueComparer
+      & _PairBase_ElementProtocol
   {
 
     public typealias Tree = UnsafeTreeV2<Base>

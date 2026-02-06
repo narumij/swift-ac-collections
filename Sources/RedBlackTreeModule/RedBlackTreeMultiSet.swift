@@ -75,6 +75,7 @@ extension RedBlackTreeMultiSet: ScalarValueComparer {
     p.__value_().pointee
   }
 }
+extension RedBlackTreeMultiSet: _ScalarBase_ElementProtocol {}
 
 // MARK: - Creating a MultSet
 

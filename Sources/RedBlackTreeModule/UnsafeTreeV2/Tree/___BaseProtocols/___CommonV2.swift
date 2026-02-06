@@ -22,20 +22,3 @@
 
 @usableFromInline
 protocol ___UnsafeCommonV2: UnsafeTreeRangeProtocol, _PayloadValueBride, _KeyBride {}
-
-#if DEBUG
-extension ___UnsafeCommonV2 {
-
-  @inlinable
-  @inline(__always)
-  internal var ___key_comp: (_Key, _Key) -> Bool {
-    __tree_.value_comp
-  }
-
-  @inlinable
-  @inline(__always)
-  internal var ___value_comp: (_PayloadValue, _PayloadValue) -> Bool {
-    { __tree_.value_comp(Base.__key($0), Base.__key($1)) }
-  }
-}
-#endif

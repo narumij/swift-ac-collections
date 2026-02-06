@@ -88,7 +88,7 @@ extension _TiedRawBuffer {
 
     @inlinable
     subscript(___tracking_tag: _RawTrackingTag) -> _NodePtr? {
-      assert(___tracking_tag >= 0)
+      assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
       var remaining = ___tracking_tag
       var p = bucketHead?.accessor(payload: deallocator.payload)
       while let h = p {
@@ -99,7 +99,7 @@ extension _TiedRawBuffer {
         remaining -= cap
         p = h.next(payload: deallocator.payload)
       }
-      assert(false)
+      assert(false, "ここには到達しないこと")
       return nil
     }
   }

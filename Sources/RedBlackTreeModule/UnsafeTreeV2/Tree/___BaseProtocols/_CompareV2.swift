@@ -6,9 +6,9 @@
 //
 
 @usableFromInline
-protocol ___CompareV2: UnsafeTreeHost & _KeyBride {}
+protocol _CompareV2: UnsafeTreeHost & _KeyBride {}
 
-extension ___CompareV2 where Base: CompareUniqueTrait {
+extension _CompareV2 where Base: CompareUniqueTrait {
   
   ///（重複なし）
   @inlinable
@@ -18,7 +18,7 @@ extension ___CompareV2 where Base: CompareUniqueTrait {
   }
 }
 
-extension ___CompareV2 where Base: CompareMultiTrait {
+extension _CompareV2 where Base: CompareMultiTrait {
   
   /// （重複あり）
   @inlinable
@@ -28,7 +28,7 @@ extension ___CompareV2 where Base: CompareMultiTrait {
   }
 }
 
-extension ___CompareV2 where Base: CompareUniqueTrait, Self: UnsafeIndexProviderProtocol {
+extension _CompareV2 where Base: CompareUniqueTrait, Self: UnsafeIndexProviderProtocol {
 
   ///（重複なし）
   @inlinable
@@ -39,7 +39,7 @@ extension ___CompareV2 where Base: CompareUniqueTrait, Self: UnsafeIndexProvider
   }
 }
 
-extension ___CompareV2 where Base: CompareMultiTrait, Self: UnsafeIndexProviderProtocol {
+extension _CompareV2 where Base: CompareMultiTrait, Self: UnsafeIndexProviderProtocol {
 
   /// （重複あり）
   @inlinable

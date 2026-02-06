@@ -81,9 +81,8 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func
     ___index(_ i: _SealedPtr, offsetBy distance: Int, limitedBy limit: _SealedPtr)
-    -> _SealedPtr?
+    -> _SealedPtr
   {
-    let i = i.flatMap { ___tree_adv_iter($0.pointer, distance, limit.temporaryUnseal) }.seal
-    return i.isError(.limit) ? nil : i
+    i.flatMap { ___tree_adv_iter($0.pointer, distance, limit.temporaryUnseal) }.seal
   }
 }

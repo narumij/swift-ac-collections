@@ -35,7 +35,7 @@ extension ___UnsafeSubSequenceV2 {
   @inlinable
   @inline(__always)
   internal func ___contains(_ i: _NodePtr) -> Bool {
-    __tree_.___ptr_closed_range_contains(_start, _end, i)
+    __tree_.___ptr_range_comp(_start, i, _end)
   }
 
   #if COMPATIBLE_ATCODER_2025

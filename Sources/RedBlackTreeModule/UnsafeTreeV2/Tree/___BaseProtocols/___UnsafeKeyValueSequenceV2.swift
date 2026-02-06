@@ -33,6 +33,16 @@ where
   Base: KeyValueComparer
 {}
 
+extension ___UnsafeKeyValueSequenceV2__ {
+
+  @inlinable
+  @inline(__always)
+  internal func ___value_for(_ __k: _Key) -> _PayloadValue? {
+    let __ptr = __tree_.find(__k)
+    return __ptr.___is_null_or_end ? nil : __tree_[__ptr]
+  }
+}
+
 extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeCommonV2 {
 
   @inlinable
@@ -77,22 +87,25 @@ extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeIndexV2 {
 }
 
 extension ___UnsafeKeyValueSequenceV2__ {
-
-  @inlinable
-  @inline(__always)
-  internal func ___value_for(_ __k: _Key) -> _PayloadValue? {
-    let __ptr = __tree_.find(__k)
-    return __ptr.___is_null_or_end ? nil : __tree_[__ptr]
-  }
-}
-
-extension ___UnsafeKeyValueSequenceV2__ {
-
+  
   @inlinable
   @inline(__always)
   internal func _makeIterator() -> Tree._KeyValues {
     .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
+}
+
+extension ___UnsafeKeyValueSequenceV2__ {
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  @inline(__always)
+  internal func _sorted() -> [Element] {
+    __tree_.___copy_to_array(_sealed_start.pointer!, _sealed_end.pointer!, transform: Self.__element_)
+  }
+}
+
+extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
   @inline(__always)
@@ -123,27 +136,6 @@ extension ___UnsafeKeyValueSequenceV2__ {
 extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
-  @inline(__always)
-  internal func _forEach(_ body: (Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-      try body(Self.__element_(__tree_[$0]))
-    }
-  }
-}
-
-extension ___UnsafeKeyValueSequenceV2__ {
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  @inline(__always)
-  internal func _sorted() -> [Element] {
-    __tree_.___copy_to_array(_sealed_start.pointer!, _sealed_end.pointer!, transform: Self.__element_)
-  }
-}
-
-extension ___UnsafeKeyValueSequenceV2__ {
-
-  @inlinable
   public func ___subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
     -> RedBlackTreeSliceV2<Base>.KeyValue
   {
@@ -160,6 +152,17 @@ extension ___UnsafeKeyValueSequenceV2__ {
   {
     let (lower, upper) = rawRange.relative(to: __tree_)
     return .init(tree: __tree_, start: lower, end: upper)
+  }
+}
+
+extension ___UnsafeKeyValueSequenceV2__ {
+
+  @inlinable
+  @inline(__always)
+  internal func _forEach(_ body: (Element) throws -> Void) rethrows {
+    try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
+      try body(Self.__element_(__tree_[$0]))
+    }
   }
 }
 

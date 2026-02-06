@@ -21,9 +21,9 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeBaseSequenceV2__: UnsafeTreeHost, _PayloadValueBride, _KeyBride {}
+protocol _SequenceV2: UnsafeTreeHost, _PayloadValueBride, _KeyBride {}
 
-extension ___UnsafeBaseSequenceV2__ {
+extension _SequenceV2 {
 
   @inlinable
   @inline(__always)
@@ -38,7 +38,7 @@ extension ___UnsafeBaseSequenceV2__ {
   }
 }
 
-extension ___UnsafeBaseSequenceV2__ {
+extension _SequenceV2 {
 
   @inlinable
   @inline(__always)
@@ -71,7 +71,7 @@ extension ___UnsafeBaseSequenceV2__ {
   }
 }
 
-extension ___UnsafeBaseSequenceV2__ {
+extension _SequenceV2 {
 
   @inlinable @inline(__always)
   internal func ___min() -> _PayloadValue? {

@@ -21,7 +21,7 @@ extension RedBlackTreeSliceV2 {
 
   public struct KeyValue:
     UnsafeTreeRangeBaseInterface
-      & ___UnsafeSubSequenceV2
+      & _SubSequenceV2
       & ___UnsafeIndexV2
       & ___UnsafeKeyValueSequenceV2
       & UnsafeIndicesProtoocl

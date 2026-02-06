@@ -12,7 +12,7 @@ public struct _RedBlackTreeUniqueView<Base>:
   _KeyBride,
   _PayloadValueBride,
   UnsafeIndexBinding,
-  ___UnsafeBaseSequenceV2__,
+  _SequenceV2,
   ___UnsafeIndexV2
 where
   Base: ___TreeBase & ___TreeIndex

@@ -24,7 +24,7 @@ extension RedBlackTreeSliceV2 {
   @frozen
   public struct KeyOnly:
     UnsafeTreeRangeBaseInterface
-      & ___UnsafeSubSequenceV2
+      & _SubSequenceV2
       & ___UnsafeIndexV2
       & ___UnsafeKeyOnlySequenceV2
       & UnsafeIndexProtocol_tree

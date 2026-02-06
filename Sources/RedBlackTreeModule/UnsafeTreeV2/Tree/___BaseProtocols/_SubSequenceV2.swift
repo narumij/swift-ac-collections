@@ -21,9 +21,9 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeSubSequenceV2: UnsafeTreeSealedRangeProtocol, UnsafeIndexBinding {}
+protocol _SubSequenceV2: UnsafeTreeSealedRangeProtocol, UnsafeIndexBinding {}
 
-extension ___UnsafeSubSequenceV2 {
+extension _SubSequenceV2 {
 
   /// - Complexity: O(log *n* + *k*)
   ///

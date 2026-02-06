@@ -115,17 +115,33 @@ final class SetSubSequenceTests: RedBlackTreeTestCase {
 
   #if COMPATIBLE_ATCODER_2025
     func testIndexInvalidationAfterBaseMutation() throws {
+      // TODO: 再度確認
       var base: RedBlackTreeSet = [0, 1, 2, 3]
       let slice = base.elements(in: 1..<3)  // [1,2]
 
+      let b_idx = base.firstIndex(of: 1)!
       let idx = slice.firstIndex(of: 1)!
+      XCTAssertTrue(base.isValid(index: b_idx)) // これは従来と同じ挙動
+      XCTAssertTrue(base.isValid(index: idx)) // これは従来と同じ挙動
+      XCTAssertTrue(slice.isValid(index: idx)) // これは従来と同じ挙動
+      
       base.remove(1)  // 基集合を変化させる
 
-      throw XCTSkip("CoWの挙動変更のため")
-      XCTAssertFalse(base.isValid(index: idx))
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertFalse(slice.isValid(index: idx))
+      XCTAssertFalse(base.isValid(index: b_idx)) // これは従来と同じ挙動
+      XCTAssertFalse(base.isValid(index: idx)) // これは従来と同じ挙動
+//      XCTAssertFalse(slice.isValid(index: idx)) // なぜ連動してfalseになる想定だったのか思い出せない
+      XCTAssertTrue(slice.isValid(index: idx), " 内部挙動の変更でCoW後のslideに強く紐付いている")
+
+      base.insert(1)
+      #if DEBUG
+        // 内部的には再利用で同一ノードとなる
+        XCTAssertEqual(base.firstIndex(of: 1)?._rawTag, idx._rawTag, "これは固定された仕様では無く、あくまで確認")
       #endif
+
+      XCTAssertFalse(base.isValid(index: b_idx), "内部挙動変更でfalseとなった")
+      XCTAssertFalse(base.isValid(index: idx)) // これは従来と同じ挙動
+//      XCTAssertFalse(slice.isValid(index: idx)) // なぜ連動してfalseになる想定だったのか思い出せない
+      XCTAssertTrue(slice.isValid(index: idx), " 内部挙動の変更でCoW後のslideに強く紐付いている")
     }
   #endif
 }

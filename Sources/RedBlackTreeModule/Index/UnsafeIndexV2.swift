@@ -40,7 +40,7 @@ where Base: ___TreeBase & ___TreeIndex {
   typealias _PayloadValue = Tree._PayloadValue
 
   @usableFromInline
-  internal var _rawTag: _RawTrackingTag {
+  package var _rawTag: _RawTrackingTag {
     // benchmark5で謎のコンパイルエラーが発生する
     // バグ報告はいったん見送り
     // (try? sealed.map(\.tag).map(\._rawTag).get()) ?? .nullptr

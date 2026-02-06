@@ -624,10 +624,10 @@ final class SetTests: RedBlackTreeTestCase {
   }
 
   func testSubsequence4() throws {
-    //    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-    //    let sub = set.elements(in: 1 ..< 3)
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    let sub = set.elements(in: 1..<3)
     throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
-    //    XCTAssertNotEqual(sub[set.startIndex ..< set.endIndex].map{ $0 }, [1, 2, 3, 4, 5])
+    XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0 }, [1, 2, 3, 4, 5])
   }
 
   #if COMPATIBLE_ATCODER_2025

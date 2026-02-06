@@ -27,6 +27,7 @@ extension RedBlackTreeSliceV2 {
       & UnsafeIndicesProtoocl
   where
     Base: ___TreeBase & ___TreeIndex & KeyValueComparer,
+    Base: _PairBase_ElementProtocol,
     Base._PayloadValue == RedBlackTreePair<Base._Key, Base._MappedValue>
   {
 
@@ -113,14 +114,14 @@ extension RedBlackTreeSliceV2.KeyValue {
     @inline(__always)
     public var first: Element? {
       guard !___is_empty else { return nil }
-      return __element_(__tree_[_start])
+      return Base.__element_(__tree_[_start])
     }
 
     @inlinable
     @inline(__always)
     public var last: Element? {
       guard !___is_empty else { return nil }
-      return __element_(__tree_[__tree_prev_iter(_end)])
+      return Base.__element_(__tree_[__tree_prev_iter(_end)])
     }
 
     /// - Complexity: O(log *n*)

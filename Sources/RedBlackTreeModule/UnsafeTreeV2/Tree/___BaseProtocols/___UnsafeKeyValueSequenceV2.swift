@@ -24,13 +24,13 @@
 protocol ___UnsafeKeyValueSequenceV2__: UnsafeTreeSealedRangeProtocol, _PairBase_ElementProtocol,
   _PayloadValueBride, _KeyBride, _MappedValueBride
 where
-  Base: KeyValueComparer & _BasePaylodValue_ElementInterface
+  Base: KeyValueComparer & _PairBase_ElementProtocol
 {}
 
 @usableFromInline
-protocol ___UnsafeKeyValueSequenceV2: ___UnsafeKeyValueSequenceV2__, ___UnsafeIndexRangeBaseV2,  _PayloadValueBride, _KeyBride, _MappedValueBride
-where
-  Base: KeyValueComparer
+protocol ___UnsafeKeyValueSequenceV2:
+  ___UnsafeKeyValueSequenceV2__
+    & ___UnsafeIndexRangeBaseV2
 {}
 
 extension ___UnsafeKeyValueSequenceV2__ {
@@ -87,7 +87,7 @@ extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeIndexV2 {
 }
 
 extension ___UnsafeKeyValueSequenceV2__ {
-  
+
   @inlinable
   @inline(__always)
   internal func _makeIterator() -> Tree._KeyValues {
@@ -101,7 +101,8 @@ extension ___UnsafeKeyValueSequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _sorted() -> [Element] {
-    __tree_.___copy_to_array(_sealed_start.pointer!, _sealed_end.pointer!, transform: Self.__element_)
+    __tree_.___copy_to_array(
+      _sealed_start.pointer!, _sealed_end.pointer!, transform: Self.__element_)
   }
 }
 

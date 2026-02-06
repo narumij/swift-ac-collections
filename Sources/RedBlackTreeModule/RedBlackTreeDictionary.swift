@@ -1107,7 +1107,7 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
     @inlinable
     public init<Source>(naive sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
-      self.init(__tree_: .create_unique(naive: sequence, transform: Self.___tree_value))
+      self.init(__tree_: .create_unique(naive: sequence, transform: Base.__payload_(_:)))
     }
   }
 #endif

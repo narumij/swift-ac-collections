@@ -21,12 +21,12 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIndexV2: UnsafeTreeSealedRangeProtocol & UnsafeIndexProviderProtocol & _KeyBride {}
+protocol ___UnsafeIndexV2: UnsafeTreeSealedRangeProtocol & UnsafeIndexProviderProtocol & _KeyBride {
+}
 
 extension ___UnsafeIndexV2 {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func _distance(from start: Index, to end: Index) -> Int {
     guard
       let d = __tree_.___distance(
@@ -116,8 +116,7 @@ extension ___UnsafeIndexV2 {
 
 extension ___UnsafeIndexV2 {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func _isValid(index: Index) -> Bool {
     // ___is_endのみを判定するわけじゃないので、お清めお祓いが必要
     __tree_.__sealed_(index).purified.___is_end == false
@@ -127,8 +126,7 @@ extension ___UnsafeIndexV2 {
 #if COMPATIBLE_ATCODER_2025
   extension ___UnsafeIndexV2 where Self: Collection {
 
-    @inlinable
-    @inline(__always)
+    @inlinable @inline(__always)
     internal func _isValid<R: RangeExpression>(
       _ bounds: R
     ) -> Bool where R.Bound == Index {
@@ -148,9 +146,8 @@ extension ___UnsafeIndexV2 {
 // 初期の名残
 extension ___UnsafeIndexV2 {
 
-  @inlinable
-  @inline(__always)
   @discardableResult
+  @inlinable @inline(__always)
   public mutating func ___erase(_ ptr: Index) -> Index {
     ___index(__tree_.erase(try! __tree_.__sealed_(ptr).get().pointer).sealed)
   }
@@ -158,14 +155,12 @@ extension ___UnsafeIndexV2 {
 
 extension ___UnsafeIndexV2 {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___index_lower_bound(_ __k: _Key) -> Index {
     ___index(__tree_.lower_bound(__k).sealed)
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___index_upper_bound(_ __k: _Key) -> Index {
     ___index(__tree_.upper_bound(__k).sealed)
   }
@@ -173,8 +168,7 @@ extension ___UnsafeIndexV2 {
 
 extension ___UnsafeIndexV2 {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___first_index(of member: _Key) -> Index? {
     let ptr = __tree_.__ptr_(__tree_.__find_equal(member).__child)
     return ___index_or_nil(ptr.sealed)

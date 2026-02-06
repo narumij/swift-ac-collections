@@ -23,7 +23,7 @@ extension RedBlackTreeSliceV2 {
 
   @frozen
   public struct KeyOnly:
-    ___UnsafeCommonV2
+    UnsafeTreeRangeProtocol
       & ___UnsafeSubSequenceV2
       & ___UnsafeIndexV2
       & ___UnsafeKeyOnlySequenceV2
@@ -61,7 +61,7 @@ extension RedBlackTreeSliceV2 {
 extension RedBlackTreeSliceV2.KeyOnly: Sequence {}
 
 extension RedBlackTreeSliceV2.KeyOnly {
-  
+
   @usableFromInline
   var _start: _NodePtr { _sealed_start.pointer! }
 

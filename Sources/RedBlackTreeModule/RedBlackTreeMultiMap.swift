@@ -96,6 +96,7 @@ extension RedBlackTreeMultiMap: KeyValueComparer {
     p.__value_().pointee
   }  
 }
+extension RedBlackTreeMultiMap: _PairBase_ElementProtocol {}
 
 // MARK: - Creating a MultiMap
 

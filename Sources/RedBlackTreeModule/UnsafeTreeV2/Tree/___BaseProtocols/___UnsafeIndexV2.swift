@@ -21,8 +21,11 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIndexV2: UnsafeTreeRangeProtocol & UnsafeTreeSealedRangeProtocol
-    & ___UnsafeIndexBaseV2 & _PayloadValueBride
+protocol ___UnsafeIndexV2:
+  UnsafeTreeRangeProtocol
+    & UnsafeTreeSealedRangeProtocol
+    & ___UnsafeIndexBaseV2
+    & _PayloadValueBride
 {}
 
 extension ___UnsafeIndexV2 {
@@ -207,12 +210,3 @@ extension ___UnsafeIndexV2 {
     ___index(__tree_.erase(try! __tree_.__sealed_(ptr).get().pointer).sealed)
   }
 }
-
-//extension ___UnsafeIndexV2 where Self: ___UnsafeIndicesBaseV2 {
-//
-//  @inlinable
-//  @inline(__always)
-//  internal var _indices: Indices {
-//    .init(start: _start, end: _end, tie: __tree_.tied)
-//  }
-//}

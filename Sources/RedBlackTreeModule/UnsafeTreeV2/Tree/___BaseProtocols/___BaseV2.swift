@@ -72,7 +72,7 @@ protocol UnsafeTreeHost: UnsafeTreeBinding {
 
 /// 変更可能共通生木メンバー
 @usableFromInline
-protocol UnsafeMutableTreeHost: UnsafeTreeHost, _PayloadValueBride {
+protocol UnsafeMutableTreeHost: UnsafeTreeHost & _PayloadValueBride {
   var __tree_: Tree { get set }
 }
 
@@ -118,7 +118,7 @@ protocol UnsafeMutableTreeSealedRangeBaseInterface: UnsafeMutableTreeHost {
 }
 
 @usableFromInline
-protocol ___UnsafeIndexBaseV2: UnsafeIndexBinding, UnsafeTreeHost {}
+protocol ___UnsafeIndexBaseV2: UnsafeIndexBinding & UnsafeTreeHost {}
 
 extension ___UnsafeIndexBaseV2 {
 
@@ -184,7 +184,6 @@ protocol _RedBlackTreeKeyValuesBase:
     & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyValueSequenceV2
     & UnsafeIndicesProtoocl
-    & _PairBase_ElementProtocol
 {}
 
 @usableFromInline

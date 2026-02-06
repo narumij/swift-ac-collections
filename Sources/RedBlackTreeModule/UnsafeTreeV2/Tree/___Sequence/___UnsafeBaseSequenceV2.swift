@@ -21,11 +21,10 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeBaseSequenceV2__: UnsafeTreeHost, _PayloadValueBride, _KeyBride
-{}
+protocol ___UnsafeBaseSequenceV2__: UnsafeTreeHost, _PayloadValueBride, _KeyBride {}
 
 extension ___UnsafeBaseSequenceV2__ {
-  
+
   @inlinable
   @inline(__always)
   internal var ___count: Int {
@@ -52,7 +51,7 @@ extension ___UnsafeBaseSequenceV2__ {
   package var _end: _NodePtr {
     __tree_.__end_node
   }
-  
+
   @inlinable
   @inline(__always)
   package var _sealed_start: _SealedPtr {
@@ -65,7 +64,6 @@ extension ___UnsafeBaseSequenceV2__ {
     __tree_.__end_node.sealed
   }
 
-
   @inlinable
   @inline(__always)
   package var ___capacity: Int {
@@ -75,23 +73,22 @@ extension ___UnsafeBaseSequenceV2__ {
 
 extension ___UnsafeBaseSequenceV2__ {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___min() -> _PayloadValue? {
-    __tree_.__root == __tree_.nullptr ? nil : __tree_[__tree_.__tree_min(__tree_.__root)]
+    __tree_.___min()
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___max() -> _PayloadValue? {
-    __tree_.__root == __tree_.nullptr ? nil : __tree_[__tree_.__tree_max(__tree_.__root)]
+    __tree_.___max()
   }
 }
 
 // MARK: -
 
 @usableFromInline
-protocol ___UnsafeBaseSequenceV2: ___UnsafeBaseSequenceV2__, ___UnsafeIndexRangeBaseV2, _PayloadValueBride, _KeyBride
+protocol ___UnsafeBaseSequenceV2: ___UnsafeBaseSequenceV2__, ___UnsafeIndexRangeBaseV2,
+  _PayloadValueBride, _KeyBride
 {
   func ___index_or_nil(_ p: _SealedPtr) -> Index?
 }

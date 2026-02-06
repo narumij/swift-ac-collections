@@ -93,6 +93,7 @@ extension RedBlackTreeDictionary: KeyValueComparer {
     p.__value_().pointee
   }
 }
+extension RedBlackTreeDictionary: _PairBase_ElementProtocol {}
 
 // MARK: - Creating a Dictionay
 

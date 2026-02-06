@@ -184,3 +184,18 @@ extension UnsafeTreeV2 {
     tied === index.tied ? index.sealed : self.resolve(index.trackingTag)
   }
 }
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  internal func ___min() -> _PayloadValue? {
+    __root == nullptr ? nil : self[__tree_min(__root)]
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___max() -> _PayloadValue? {
+    __root == nullptr ? nil : self[__tree_max(__root)]
+  }
+}

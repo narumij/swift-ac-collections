@@ -63,17 +63,17 @@ extension ___UnsafeKeyValueSequenceV2__ {
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeBaseSequenceV2 {
+extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
   internal func ___min() -> Element? {
-    ___min().map(Base.__element_)
+    __tree_.___min().map(Base.__element_)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   internal func ___max() -> Element? {
-    ___max().map(Base.__element_)
+    __tree_.___max().map(Base.__element_)
   }
 }
 

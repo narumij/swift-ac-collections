@@ -86,6 +86,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   /// どのくらいゆっくりかというとO(log N)ぐらい
   ///
   /// ルートのペアレントまたはペアレントがヌルなのがend
+  @usableFromInline
   func __slow_end() -> _NodePtr {
     var __r = self
     while __r.__parent_ != .nullptr {

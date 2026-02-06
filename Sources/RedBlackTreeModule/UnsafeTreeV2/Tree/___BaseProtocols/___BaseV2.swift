@@ -155,7 +155,7 @@ extension UnsafeIndicesProtoocl {
 
 @usableFromInline
 protocol ___UnsafeIndexRangeBaseV2:
-  UnsafeTreeRangeProtocol
+  UnsafeTreeRangeBaseInterface
     & ___UnsafeIndexBaseV2
     & UnsafeIndicesBinding
 {}
@@ -174,7 +174,7 @@ typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride & _Ele
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase:
   UnsafeMutableTreeRangeProtocol
-    & UnsafeTreeRangeProtocol
+    & UnsafeTreeRangeBaseInterface
     & _SetBridge
     & ___UnsafeIndexV2
     & ___UnsafeBaseSequenceV2
@@ -196,7 +196,7 @@ protocol _RedBlackTreeKeyValuesBase:
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase__:
   UnsafeMutableTreeRangeProtocol
-    & UnsafeTreeRangeProtocol
+    & UnsafeTreeRangeBaseInterface
     & _SetBridge
     & ___UnsafeBaseSequenceV2__
     & ___UnsafeKeyOnlySequenceV2__

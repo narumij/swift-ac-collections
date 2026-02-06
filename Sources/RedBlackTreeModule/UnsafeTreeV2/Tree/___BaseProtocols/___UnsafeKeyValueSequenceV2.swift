@@ -23,7 +23,7 @@
 @usableFromInline
 protocol ___UnsafeKeyValueSequenceV2__:
   UnsafeTreeSealedRangeProtocol
-    & UnsafeTreeRangeProtocol
+    & UnsafeTreeRangeBaseInterface
     & _MapBridge
 where
   Base: KeyValueComparer & _PairBase_ElementProtocol

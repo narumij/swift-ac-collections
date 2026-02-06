@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIsIdenticalToV2: UnsafeTreeRangeProtocol {}
+protocol ___UnsafeIsIdenticalToV2: UnsafeTreeSealedRangeProtocol {}
 
 // MARK: - Is Identical To
 

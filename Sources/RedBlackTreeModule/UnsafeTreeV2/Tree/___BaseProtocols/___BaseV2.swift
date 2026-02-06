@@ -183,6 +183,7 @@ protocol _RedBlackTreeKeyValuesBase:
     & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyValueSequenceV2
     & UnsafeIndicesProtoocl
+    & _PairBase_ElementProtocol
 {}
 
 @usableFromInline

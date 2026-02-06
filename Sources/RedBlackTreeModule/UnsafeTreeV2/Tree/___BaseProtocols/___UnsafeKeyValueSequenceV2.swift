@@ -21,8 +21,8 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyValueSequenceV2__: UnsafeTreeSealedRangeProtocol, _PairBase_ElementProtocol,
-  _PayloadValueBride, _KeyBride, _MappedValueBride
+protocol ___UnsafeKeyValueSequenceV2__: UnsafeTreeSealedRangeProtocol &
+  _PayloadValueBride & _KeyBride & _MappedValueBride & _ElementBride
 where
   Base: KeyValueComparer & _PairBase_ElementProtocol
 {}
@@ -48,13 +48,13 @@ extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeCommonV2 {
   @inlinable
   @inline(__always)
   internal var ___first: Element? {
-    ___first.map(Self.__element_)
+    ___first.map(Base.__element_)
   }
 
   @inlinable
   @inline(__always)
   internal var ___last: Element? {
-    ___last.map(Self.__element_)
+    ___last.map(Base.__element_)
   }
 }
 
@@ -62,13 +62,13 @@ extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeBaseSequenceV2 {
 
   @inlinable
   internal func ___min() -> Element? {
-    ___min().map(Self.__element_)
+    ___min().map(Base.__element_)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   internal func ___max() -> Element? {
-    ___max().map(Self.__element_)
+    ___max().map(Base.__element_)
   }
 }
 
@@ -76,13 +76,13 @@ extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeIndexV2 {
 
   @inlinable
   internal func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___first { try predicate(Self.__element_($0)) }.map(Self.__element_)
+    try ___first { try predicate(Base.__element_($0)) }.map(Base.__element_)
   }
 
   /// - Complexity: O(*n*)
   @inlinable
   internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index { try predicate(Self.__element_($0)) }
+    try ___first_index { try predicate(Base.__element_($0)) }
   }
 }
 
@@ -102,7 +102,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
   @inline(__always)
   internal func _sorted() -> [Element] {
     __tree_.___copy_to_array(
-      _sealed_start.pointer!, _sealed_end.pointer!, transform: Self.__element_)
+      _sealed_start.pointer!, _sealed_end.pointer!, transform: Base.__element_)
   }
 }
 
@@ -162,7 +162,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
   @inline(__always)
   internal func _forEach(_ body: (Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-      try body(Self.__element_(__tree_[$0]))
+      try body(Base.__element_(__tree_[$0]))
     }
   }
 }
@@ -175,7 +175,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
     @inline(__always)
     internal func _forEach(_ body: (Index, Element) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-        try body(___index($0.sealed), Self.__element_(__tree_[$0]))
+        try body(___index($0.sealed), Base.__element_(__tree_[$0]))
       }
     }
   }
@@ -189,7 +189,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   @inlinable
   internal subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
     @inline(__always) get {
-      return Self.__element_(__tree_[try! __tree_.__sealed_(position).get().pointer])
+      return Base.__element_(__tree_[try! __tree_.__sealed_(position).get().pointer])
     }
   }
 }

@@ -69,7 +69,7 @@ protocol UnsafeMutableTreeHost: UnsafeTreeHost & _PayloadValueBride {
 extension UnsafeMutableTreeHost {
 
   // たぶんめんどくさくなってサボってここにある
-  
+
   @inlinable
   @inline(__always)
   @discardableResult
@@ -113,7 +113,6 @@ protocol UnsafeMutableTreeSealedRangeBaseInterface: UnsafeMutableTreeHost {
 protocol ___UnsafeIndexRangeBaseV2:
   UnsafeTreeRangeBaseInterface
     & UnsafeIndexProviderProtocol
-    & UnsafeIndicesBinding
 {}
 
 public typealias RedBlackTreeIndex = UnsafeIndexV2
@@ -130,25 +129,26 @@ typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride & _Ele
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase:
   UnsafeMutableTreeRangeProtocol
+    & UnsafeIndexProtocol_tree
+    & UnsafeIndicesProtoocl
     & UnsafeTreeRangeBaseInterface
     & _SetBridge
+    & ___CompareV2
     & ___UnsafeIndexV2
     & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyOnlySequenceV2
-    & UnsafeIndicesProtoocl
-    & ___CompareV2
-    & UnsafeIndexProtocol_tree
 {}
 
 @usableFromInline
 protocol _RedBlackTreeKeyValuesBase:
   UnsafeMutableTreeRangeProtocol
+    & UnsafeIndexProtocol_tree
+    & UnsafeIndicesProtoocl
+    & _MapBridge
+    & ___CompareV2
     & ___UnsafeIndexV2
     & ___UnsafeBaseSequenceV2
     & ___UnsafeKeyValueSequenceV2
-    & UnsafeIndicesProtoocl
-    & ___CompareV2
-    & UnsafeIndexProtocol_tree
 {}
 
 @usableFromInline
@@ -156,9 +156,7 @@ protocol _RedBlackTreeKeyOnlyBase__:
   UnsafeMutableTreeRangeProtocol
     & UnsafeTreeRangeBaseInterface
     & _SetBridge
+    & ___CompareV2
     & ___UnsafeBaseSequenceV2__
     & ___UnsafeKeyOnlySequenceV2__
-    & UnsafeIndicesProtoocl
-    & ___CompareV2
-    & UnsafeIndexProtocol_tree
 {}

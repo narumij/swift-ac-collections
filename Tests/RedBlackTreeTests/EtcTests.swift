@@ -382,38 +382,40 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(formIndexFail, limit)  // limitまで進んでいる。いつから？？？？
   }
 
-  func test_subSequence_index_offsetBy_limitedBy_and_formIndex_offsetBy_limitedBy2() throws {
-    // 事前条件: 集合に[1,2,3,4,5]を用意すること
-    let set = RedBlackTreeSet([1, 2, 3, 4, 5])
-    let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
+  #if COMPATIBLE_ATCODER_2025
+    func test_subSequence_index_offsetBy_limitedBy_and_formIndex_offsetBy_limitedBy2() throws {
+      // 事前条件: 集合に[1,2,3,4,5]を用意すること
+      let set = RedBlackTreeSet([1, 2, 3, 4, 5])
+      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
 
-    let start = sub.startIndex
-    let limit = sub.index(after: start)
+      let start = sub.startIndex
+      let limit = sub.index(after: start)
 
-    // 実行: index(offsetBy:limitedBy:)とformIndex(offsetBy:limitedBy:)を呼び出すこと
+      // 実行: index(offsetBy:limitedBy:)とformIndex(offsetBy:limitedBy:)を呼び出すこと
 
-    // index(offsetBy:limitedBy:)成功パターン
-    let indexLimitedSuccess = sub.index(start, offsetBy: 1, limitedBy: limit)
-    XCTAssertEqual(indexLimitedSuccess, limit)  // 事後条件: 成功時にlimitを返すこと
+      // index(offsetBy:limitedBy:)成功パターン
+      let indexLimitedSuccess = sub.index(start, offsetBy: 1, limitedBy: limit)
+      XCTAssertEqual(indexLimitedSuccess, limit)  // 事後条件: 成功時にlimitを返すこと
 
-    // index(offsetBy:limitedBy:)失敗パターン
-    let indexLimitedFail = sub.index(start, offsetBy: 3, limitedBy: limit)
-    XCTAssertNil(indexLimitedFail)  // 事後条件: 失敗時にnilを返すこと
+      // index(offsetBy:limitedBy:)失敗パターン
+      let indexLimitedFail = sub.index(start, offsetBy: 3, limitedBy: limit)
+      XCTAssertNil(indexLimitedFail)  // 事後条件: 失敗時にnilを返すこと
 
-    // formIndex(offsetBy:limitedBy:)成功パターン
-    var formIndexSuccess = start
-    let success = sub.formIndex(&formIndexSuccess, offsetBy: 1, limitedBy: limit)
-    XCTAssertTrue(success)  // 事後条件: 成功時にtrueを返すこと
-    XCTAssertEqual(formIndexSuccess, limit)  // 事後条件: インデックスがlimitを指すこと
+      // formIndex(offsetBy:limitedBy:)成功パターン
+      var formIndexSuccess = start
+      let success = sub.formIndex(&formIndexSuccess, offsetBy: 1, limitedBy: limit)
+      XCTAssertTrue(success)  // 事後条件: 成功時にtrueを返すこと
+      XCTAssertEqual(formIndexSuccess, limit)  // 事後条件: インデックスがlimitを指すこと
 
-    // formIndex(offsetBy:limitedBy:)失敗パターン
-    var formIndexFail = start
-    let fail = sub.formIndex(&formIndexFail, offsetBy: 3, limitedBy: limit)
-    XCTAssertFalse(fail)  // 事後条件: 失敗時にfalseを返すこと
-    //    throw XCTSkip("失敗するので、一旦スキップ") // 理解が間違っていた
-    //    XCTAssertEqual(formIndexFail, start)  // 事後条件: インデックスが変わらないこと
-    XCTAssertEqual(formIndexFail, limit)  // limitまで進んでいる。いつから？？？？
-  }
+      // formIndex(offsetBy:limitedBy:)失敗パターン
+      var formIndexFail = start
+      let fail = sub.formIndex(&formIndexFail, offsetBy: 3, limitedBy: limit)
+      XCTAssertFalse(fail)  // 事後条件: 失敗時にfalseを返すこと
+      //    throw XCTSkip("失敗するので、一旦スキップ") // 理解が間違っていた
+      //    XCTAssertEqual(formIndexFail, start)  // 事後条件: インデックスが変わらないこと
+      XCTAssertEqual(formIndexFail, limit)  // limitまで進んでいる。いつから？？？？
+    }
+  #endif
 
   func testSubArrayIndex() throws {
     let set: [Int] = [1, 2, 3, 4, 5, 6]

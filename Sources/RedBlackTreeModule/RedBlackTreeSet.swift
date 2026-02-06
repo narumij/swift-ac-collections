@@ -601,9 +601,10 @@ extension RedBlackTreeSet {
     public func distance(from start: Index, to end: Index)
       -> Int
     {
-      guard let d = __tree_.___distance(
-        from: start.relative(to: __tree_),
-        to: end.relative(to: __tree_))
+      guard
+        let d = __tree_.___distance(
+          from: start.relative(to: __tree_),
+          to: end.relative(to: __tree_))
       else { fatalError(.invalidIndex) }
       return d
     }
@@ -694,11 +695,9 @@ extension RedBlackTreeSet {
     )
       -> Index?
     {
-      let __l = limit.relative(to: __tree_).map(\.pointer)
-      return try? i.relative(to: __tree_)
-        .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-        .map { .taggedSeal($0) }
-        .get()
+      var i = i
+      let result = formIndex(&i, offsetBy: distance, limitedBy: limit)
+      return result ? i : nil
     }
   }
 
@@ -735,11 +734,24 @@ extension RedBlackTreeSet {
     )
       -> Bool
     {
-      if let result = index(i, offsetBy: distance, limitedBy: limit) {
-        i = result
-        return true
+      let __l = limit.relative(to: __tree_).map(\.pointer)
+      
+      let sealed = i.relative(to: __tree_)
+        .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
+        .flatMap { .taggedSeal($0) }
+
+      guard !sealed.isError(.limit) else {
+        i = limit
+        return false
       }
-      return false
+      
+      guard case .success = sealed else {
+        return false
+      }
+      
+      i = sealed
+      
+      return true
     }
   }
 

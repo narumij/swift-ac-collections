@@ -33,38 +33,18 @@ where
   Base: KeyValueComparer
 {}
 
-extension ___UnsafeKeyValueSequenceV2__ {
-
-  // TODO: これを共通インターフェースの一部に引き上げたい
-  @inlinable
-  @inline(__always)
-  internal static func ___tree_value(_ __element: Element) -> _PayloadValue {
-    RedBlackTreePair(__element.key, __element.value)
-  }
-}
-
-extension ___UnsafeKeyValueSequenceV2__ {
-
-  // TODO: リファクタリング検討
-  @inlinable
-  @inline(__always)
-  internal func __element_(_ __value: _PayloadValue) -> Element {
-    Self.__element_(__value)
-  }
-}
-
 extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeCommonV2 {
 
   @inlinable
   @inline(__always)
   internal var ___first: Element? {
-    ___first.map(__element_)
+    ___first.map(Self.__element_)
   }
 
   @inlinable
   @inline(__always)
   internal var ___last: Element? {
-    ___last.map(__element_)
+    ___last.map(Self.__element_)
   }
 }
 
@@ -72,13 +52,13 @@ extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeBaseSequenceV2 {
 
   @inlinable
   internal func ___min() -> Element? {
-    ___min().map(__element_)
+    ___min().map(Self.__element_)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   internal func ___max() -> Element? {
-    ___max().map(__element_)
+    ___max().map(Self.__element_)
   }
 }
 
@@ -86,13 +66,13 @@ extension ___UnsafeKeyValueSequenceV2__ where Self: ___UnsafeIndexV2 {
 
   @inlinable
   internal func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___first { try predicate(__element_($0)) }.map(__element_)
+    try ___first { try predicate(Self.__element_($0)) }.map(Self.__element_)
   }
 
   /// - Complexity: O(*n*)
   @inlinable
   internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index { try predicate(__element_($0)) }
+    try ___first_index { try predicate(Self.__element_($0)) }
   }
 }
 
@@ -205,7 +185,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   @inlinable
   internal subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
     @inline(__always) get {
-      return __element_(__tree_[try! __tree_.__sealed_(position).get().pointer])
+      return Self.__element_(__tree_[try! __tree_.__sealed_(position).get().pointer])
     }
   }
 }

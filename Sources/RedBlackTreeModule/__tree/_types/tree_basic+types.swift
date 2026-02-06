@@ -173,6 +173,12 @@ extension _PairBase_ElementProtocol {
   public static func __element_(_ __value: _PayloadValue) -> Element {
     (__value.key, __value.value)
   }
+  
+  @inlinable
+  @inline(__always)
+  public static func __payload_(_ __e: Element) -> _PayloadValue {
+    RedBlackTreePair(__e)
+  }
 }
 
 // MARK: - Aliases

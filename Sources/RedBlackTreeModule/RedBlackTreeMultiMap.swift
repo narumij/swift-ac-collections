@@ -123,7 +123,7 @@ extension RedBlackTreeMultiMap {
     self.init(
       __tree_:
         .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) {
-          Self.___tree_value($0)
+          Self.__payload_($0)
         })
   }
 }
@@ -261,7 +261,7 @@ extension RedBlackTreeMultiMap {
     inserted: Bool, memberAfterInsert: Element
   ) {
     __tree_.ensureUniqueAndCapacity()
-    _ = __tree_.__insert_multi(Self.___tree_value(newMember))
+    _ = __tree_.__insert_multi(Self.__payload_(newMember))
     return (true, newMember)
   }
 }
@@ -280,7 +280,7 @@ extension RedBlackTreeMultiMap {
     }
     let old = __tree_[p]
     __tree_[p].value = newValue
-    return __element_(old)
+    return Self.__element_(old)
   }
 }
 
@@ -316,7 +316,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
     __tree_.ensureUnique { __tree_ in
-      .___insert_range_multi(tree: __tree_, other.map { Self.___tree_value($0) })
+      .___insert_range_multi(tree: __tree_, other.map { Self.__payload_($0) })
     }
   }
 
@@ -459,7 +459,7 @@ extension RedBlackTreeMultiMap {
     guard case .success(let __p) = __tree_.__sealed_(index) else {
       fatalError(.invalidIndex)
     }
-    return __element_(_unchecked_remove(at: __p.pointer).payload)
+    return Self.__element_(_unchecked_remove(at: __p.pointer).payload)
   }
 
 #if COMPATIBLE_ATCODER_2025
@@ -598,7 +598,7 @@ extension RedBlackTreeMultiMap {
   ) rethrows -> Self {
     .init(
       __tree_: try __tree_.___filter(_start, _end) {
-        try isIncluded(__element_($0))
+        try isIncluded(Self.__element_($0))
       }
     )
   }
@@ -1020,6 +1020,6 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    self.init(__tree_: .create_multi(naive: sequence, transform: Self.___tree_value))
+    self.init(__tree_: .create_multi(naive: sequence, transform: Self.__payload_))
   }
 }

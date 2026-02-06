@@ -123,7 +123,7 @@ extension RedBlackTreeDictionary {
     self.init(
       __tree_: .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
-        transform: Self.___tree_value
+        transform: Self.__payload_
       ))
   }
 }
@@ -141,7 +141,7 @@ extension RedBlackTreeDictionary {
       __tree_: try .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
         uniquingKeysWith: combine,
-        transform: Self.___tree_value
+        transform: Self.__payload_
       ))
   }
 }
@@ -283,7 +283,7 @@ extension RedBlackTreeDictionary {
         defer {
           if let value {
             //            _ensureUniqueAndCapacity()
-            let __h = __tree_.__construct_node(Self.___tree_value((key, value)))
+            let __h = __tree_.__construct_node(Self.__payload_((key, value)))
             __tree_.__insert_node_at(__parent, __child, __h)
           }
         }
@@ -320,7 +320,7 @@ extension RedBlackTreeDictionary {
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == __tree_.nullptr {
         assert(__tree_.capacity > __tree_.count)
-        __ptr = __tree_.__construct_node(Self.___tree_value((key, defaultValue())))
+        __ptr = __tree_.__construct_node(Self.__payload_((key, defaultValue())))
         __tree_.__insert_node_at(__parent, __child, __ptr)
       } else {
         __tree_.ensureUnique()
@@ -383,8 +383,8 @@ extension RedBlackTreeDictionary {
     inserted: Bool, memberAfterInsert: Element
   ) {
     __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(Self.___tree_value(newMember))
-    return (__inserted, __inserted ? newMember : __element_(__tree_[__r]))
+    let (__r, __inserted) = __tree_.__insert_unique(Self.__payload_(newMember))
+    return (__inserted, __inserted ? newMember : Self.__element_(__tree_[__r]))
   }
 }
 
@@ -399,10 +399,10 @@ extension RedBlackTreeDictionary {
     forKey key: Key
   ) -> Value? {
     __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(Self.___tree_value((key, value)))
+    let (__r, __inserted) = __tree_.__insert_unique(Self.__payload_((key, value)))
     guard !__inserted else { return nil }
     let oldMember = __tree_[__r]
-    __tree_[__r] = Self.___tree_value((key, value))
+    __tree_[__r] = Self.__payload_((key, value))
     return oldMember.value
   }
 }
@@ -453,7 +453,7 @@ extension RedBlackTreeDictionary {
         tree: __tree_,
         other,
         uniquingKeysWith: combine
-      ) { Self.___tree_value($0) }
+      ) { Self.__payload_($0) }
     }
   }
 
@@ -551,7 +551,7 @@ extension RedBlackTreeDictionary {
     guard case .success(let __p) = __tree_.__sealed_(index) else {
       fatalError(.invalidIndex)
     }
-    return __element_(_unchecked_remove(at: __p.pointer).payload)
+    return Self.__element_(_unchecked_remove(at: __p.pointer).payload)
   }
 
   #if COMPATIBLE_ATCODER_2025
@@ -690,7 +690,7 @@ extension RedBlackTreeDictionary {
   ) rethrows -> Self {
     .init(
       __tree_: try __tree_.___filter(_start, _end) {
-        try isIncluded(__element_($0))
+        try isIncluded(Self.__element_($0))
       })
   }
 }

@@ -51,9 +51,7 @@
 
 /// `__key(_:)`を定義するとプロトコルで他のBase系メソッドを生成するプロトコル
 public protocol ValueComparer:
-  _BaseType
-    & _BaseComparableKey_LessThanProtocol
-    & _BaseEquatableKey_EquivProtocol
+  _BaseKey_LessThanInterface
     & _BasePayloadValue_KeyInterface
     & _BaseNode_KeyInterface
 where _Key: Comparable {}
@@ -65,7 +63,9 @@ public protocol ScalarValueComparer:
   ValueComparer
     & _ScalarBaseType
     & _BasePayloadValue_KeyInterface
-{}
+    & _BaseComparableKey_LessThanProtocol
+    & _BaseEquatableKey_EquivProtocol
+where _Key: Comparable {}
 
 /// 要素がキーバリューの場合のひな形
 public protocol KeyValueComparer:
@@ -74,7 +74,9 @@ public protocol KeyValueComparer:
     & _BasePayloadValue_KeyInterface
     & _BasePayloadValue_MappedValueInterface
     & _BasePayloadValue_WithMappedValueInterface
-{}
+    & _BaseComparableKey_LessThanProtocol
+    & _BaseEquatableKey_EquivProtocol
+where _Key: Comparable {}
 
 /// 要素がキーバリューでペイロードがペアの場合のひな形
 public protocol PairKeyValueComparer:

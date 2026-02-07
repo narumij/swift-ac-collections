@@ -40,12 +40,12 @@ public protocol _BaseNode_PayloadValueInterface: _NodePtrType & _PayloadValueTyp
   static func __value_(_ p: _NodePtr) -> _PayloadValue
 }
 
-public protocol _BasePayload_KeyInterface: _KeyType & _PayloadValueType {
+public protocol _BasePayloadValue_KeyInterface: _KeyType & _PayloadValueType {
   /// 要素から比較キー値がとれること
   static func __key(_: _PayloadValue) -> _Key
 }
 
-public protocol _BasePayload_MappedValueInterface: _PayloadValueType & _MappedValueType {
+public protocol _BasePayloadValue_MappedValueInterface: _PayloadValueType & _MappedValueType {
   static func ___mapped_value(_: _PayloadValue) -> _MappedValue
 }
 
@@ -61,7 +61,7 @@ public protocol _BaseKey_EquivInterface: _KeyType {
 
 // MARK: -
 
-public protocol WithMappedValueInterface: _PayloadValueType & _MappedValueType {
+public protocol _BasePayloadValue_WithMappedValueInterface: _PayloadValueType & _MappedValueType {
   static func ___with_mapped_value<T>(
     _ element: inout _PayloadValue, _ f: (inout _MappedValue) throws -> T
   ) rethrows -> T

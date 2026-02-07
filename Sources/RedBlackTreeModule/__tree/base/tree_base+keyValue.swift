@@ -15,7 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _PairBaseRawValue_KeyProtocol: _PairBaseType & _BasePayload_KeyInterface {}
+public protocol _PairBaseRawValue_KeyProtocol: _PairBaseType & _BasePayloadValue_KeyInterface {}
 
 extension _PairBaseRawValue_KeyProtocol {
 
@@ -25,7 +25,7 @@ extension _PairBaseRawValue_KeyProtocol {
 }
 
 public protocol _PairBaseRawValue_MappedValueProtocol: _PairBaseType
-    & _BasePayload_MappedValueInterface
+    & _BasePayloadValue_MappedValueInterface
 {}
 
 extension _PairBaseRawValue_MappedValueProtocol {
@@ -35,7 +35,7 @@ extension _PairBaseRawValue_MappedValueProtocol {
   public static func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue { __v.value }
 }
 
-public protocol _BasePairRawValue_WithMappedValueProtocol: _PairBaseType & WithMappedValueInterface {}
+public protocol _BasePairRawValue_WithMappedValueProtocol: _PairBaseType & _BasePayloadValue_WithMappedValueInterface {}
 
 extension _BasePairRawValue_WithMappedValueProtocol {
 

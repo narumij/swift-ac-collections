@@ -52,7 +52,7 @@
 /// `__key(_:)`を定義するとプロトコルで他のBase系メソッドを生成するプロトコル
 public protocol ValueComparer:
   _BaseType
-    & _BasePayload_KeyInterface
+    & _BasePayloadValue_KeyInterface
     & _BaseKey_LessThanProtocol
     & _BaseNode_PtrUniqueCompProtocol
     & _BaseNode_PtrCompProtocol
@@ -65,18 +65,16 @@ where _Key: Comparable {}
 public protocol ScalarValueComparer:
   ValueComparer
     & _ScalarBaseType
-    & _ScalarBasePayload_KeyProtocol
+    & _BasePayloadValue_KeyInterface
 {}
-
-extension ScalarValueComparer {}
 
 /// 要素がキーバリューの場合のひな形
 public protocol KeyValueComparer:
   ValueComparer
     & _KeyValueBaseType
-    & _BasePayload_KeyInterface
-    & _BasePayload_MappedValueInterface
-    & WithMappedValueInterface
+    & _BasePayloadValue_KeyInterface
+    & _BasePayloadValue_MappedValueInterface
+    & _BasePayloadValue_WithMappedValueInterface
 {}
 
 // LRUキャッシュがPairではないので、統一できなかった
@@ -84,16 +82,13 @@ public protocol KeyValueComparer:
 
 extension KeyValueComparer where _PayloadValue == RedBlackTreePair<_Key, _MappedValue> {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public static func __key(_ __v: _PayloadValue) -> _Key { __v.key }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public static func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue { __v.value }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public static func ___with_mapped_value<ResultType>(
     _ __v: inout _PayloadValue,
     _ __body: (inout _MappedValue) throws -> ResultType

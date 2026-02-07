@@ -23,7 +23,7 @@ protocol ValueComparator:
   _BaseType
     & _TreeRawValue_KeyInterface
     & _TreeKey_CompInterface
-    & _BasePayload_KeyInterface
+    & _BasePayloadValue_KeyInterface
     & _BaseKey_LessThanInterface
 where
   _Key == Base._Key,
@@ -31,7 +31,7 @@ where
 {
   associatedtype
     Base:
-      _BasePayload_KeyInterface
+      _BasePayloadValue_KeyInterface
         & _BaseKey_LessThanInterface
 }
 
@@ -65,7 +65,7 @@ extension ValueComparator {
   }
 }
 
-extension ValueComparator where Base: _BasePayload_MappedValueInterface {
+extension ValueComparator where Base: _BasePayloadValue_MappedValueInterface {
   
   @usableFromInline
   typealias _MappedValue = Base._MappedValue
@@ -77,7 +77,7 @@ extension ValueComparator where Base: _BasePayload_MappedValueInterface {
   }
 }
 
-extension ValueComparator where Base: _BasePayload_MappedValueInterface {
+extension ValueComparator where Base: _BasePayloadValue_MappedValueInterface {
   
   @inlinable
   @inline(__always)

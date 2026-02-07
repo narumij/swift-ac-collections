@@ -165,7 +165,7 @@ protocol _RedBlackTreeKeyOnlyBase__:
 protocol _ScalarBasePayload_KeyProtocol_ptr:
   _ScalarBaseType
     & _ScalarBase_ElementProtocol
-    & _ScalarBasePayload_KeyProtocol
+    & _ScalarBasePayloadValue_KeyProtocol
 {}
 
 extension _ScalarBasePayload_KeyProtocol_ptr {

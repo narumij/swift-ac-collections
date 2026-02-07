@@ -240,7 +240,10 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2: _BaseTraitBridge {}
+extension UnsafeTreeV2: _PayloadKeyBridge & _ValueCompBridge {}
+
+extension UnsafeTreeV2: _SignedDistanceBridge where Base: _BaseNode_SignedDistanceInterface {}
+
 extension UnsafeTreeV2: BoundBothInterface {
 
   @inlinable

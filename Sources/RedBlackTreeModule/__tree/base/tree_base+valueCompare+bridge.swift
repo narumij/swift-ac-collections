@@ -17,29 +17,27 @@
 
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 @usableFromInline
-protocol _BaseTraitBridge:
-  _BaseType
-    & _NodePtrType
-    & _TreePayloadValue_KeyInterface
-    & _TreeKey_CompInterface
-where
-  _Key == Base._Key,
-  _PayloadValue == Base._PayloadValue
-{
-  associatedtype
-    Base:
-  _NodePtrType
-        & _BasePayloadValue_KeyInterface
-        & _BaseKey_LessThanInterface
+protocol _PayloadKeyBridge: _PayloadValueBride & _KeyBride
+where Base: _BasePayloadValue_KeyInterface {
+  associatedtype Base
 }
 
-extension _BaseTraitBridge {
-
+extension _PayloadKeyBridge {
   @inlinable
   @inline(__always)
   public func __key(_ e: _PayloadValue) -> _Key {
     Base.__key(e)
   }
+}
+
+/// ツリー使用条件をインジェクションされる側の実装プロトコル
+@usableFromInline
+protocol _ValueCompBridge: _KeyBride
+where Base: _BaseKey_LessThanInterface {
+  associatedtype Base
+}
+
+extension _ValueCompBridge {
 
   @inlinable
   @inline(__always)
@@ -48,11 +46,18 @@ extension _BaseTraitBridge {
   }
 }
 
-extension _BaseTraitBridge where Self: _UnsafeNodePtrType, Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
+/// ツリー使用条件をインジェクションされる側の実装プロトコル
+@usableFromInline
+protocol _SignedDistanceBridge
+where Base: _BaseNode_SignedDistanceInterface {
+  associatedtype Base
+}
+
+extension _SignedDistanceBridge {
 
   @inlinable
   @inline(__always)
-  func ___signed_distance(_ l: _NodePtr, _ r: _NodePtr) -> Int {
+  func ___signed_distance(_ l: Base._NodePtr, _ r: Base._NodePtr) -> Int {
     Base.___signed_distance(l, r)
   }
 }

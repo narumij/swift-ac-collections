@@ -15,10 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// TODO: ちぐはぐってるので、あらためて整理すること
-
-// _Tree_IsMultiTraitProtocolはBaseでは機能してないはず
-
 public protocol CompareUniqueTrait: _Base_IsMultiTraitInterface {}
 
 extension CompareUniqueTrait {

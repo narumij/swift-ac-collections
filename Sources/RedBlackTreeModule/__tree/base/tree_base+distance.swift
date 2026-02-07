@@ -15,9 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// TODO: 別のプロトコルにする
-// 手抜きをしてしまって、微妙に違うプロトコルにぶら下がっている
-
 public protocol _BaseNode_SignedDistanceInterface: _NodePtrType {
   static func ___signed_distance(_: _NodePtr, _: _NodePtr) -> Int
 }

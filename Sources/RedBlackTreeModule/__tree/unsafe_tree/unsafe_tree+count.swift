@@ -18,22 +18,14 @@
 @usableFromInline
 protocol CountProtocol_ptr:
   _UnsafeNodePtrType
+    & _TreeKey_ThreeWayCompInterface
+    & _TreeNode_KeyInterface
     & EndNodeInterface
     & RootInterface
-    & _TreeKey_ThreeWayCompInterface
     & BoundInteface
-    & _TreeNode_KeyInterface
-    & BoundAlgorithmProtocol_common_ptr
     & NullPtrInterface
-//where
-//  _InputIter == _NodePtr,
-//  difference_type == Int
-{
-//  associatedtype _InputIter
-//  associatedtype difference_type
-//  func
-//    __distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
-}
+    & BoundAlgorithmProtocol_common_ptr
+{}
 
 extension CountProtocol_ptr {
 

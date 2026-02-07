@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// MARK: -
-
 @usableFromInline
 protocol _TreeNode_KeyProtocol:
   _TreeNode_KeyInterface

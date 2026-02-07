@@ -21,35 +21,23 @@
 
 public typealias ___TreeBase = ComparableKeyTrait & _Base_IsMultiTraitInterface
 
-public typealias ___TreeIndex = _BasePaylodValue_ElementInterface & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
+public typealias ___TreeIndex = _BasePaylodValue_ElementInterface
+  & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
+
+public protocol _BaseBridge {
+  /// 基本情報
+  associatedtype Base
+}
 
 // コレクション実装の基点
-public protocol ___Root {
-  /// 木の基本情報
-  associatedtype Base
+public protocol ___Root: _BaseBridge {
   /// 木
   associatedtype Tree
 }
 
 /// LRUキャッシュは異なるが、それ以外はBaseをホストしている
-public protocol __BaseHosting: ___Root
+public protocol __BaseHosting: _BaseBridge
 where Base == Self {}
-
-/// ベースのキー型を受け継ぐ
-public protocol _KeyBride: ___Root & _KeyType
-where _Key == Base._Key, Base: _KeyType {}
-
-/// ベースの積載型を受け継ぐ
-public protocol _PayloadValueBride: ___Root & _PayloadValueType
-where _PayloadValue == Base._PayloadValue, Base: _PayloadValueType {}
-
-/// ベースのバリュー型を受け継ぐ
-public protocol _MappedValueBride: ___Root & _MappedValueType
-where _MappedValue == Base._MappedValue, Base: _MappedValueType {}
-
-/// ベースの要素型を受け継ぐ
-public protocol _ElementBride: ___Root & _ElementType
-where Element == Base.Element, Base: _ElementType {}
 
 /// 木にどれを使うのかしっている
 public protocol UnsafeTreeBinding: ___Root & _UnsafeNodePtrType

@@ -146,6 +146,11 @@ public protocol _BasePaylodValue_ElementInterface: _PayloadValueType, _ElementTy
   static func __element_(_ __value: _PayloadValue) -> Element
 }
 
+/// DictionaryやMultiMapは、コレクション要素型から積載型への変換方法も必要になる
+public protocol _KeyValueBasePaylodValue_ElementInterface: _BasePaylodValue_ElementInterface {
+  static func __payload_(_ __e: Element) -> _PayloadValue
+}
+
 /// SetやMultiSetの、積載型からコレクション要素型への変換方法
 public protocol _ScalarBase_ElementProtocol:
   _BasePaylodValue_ElementInterface
@@ -159,9 +164,9 @@ extension _ScalarBase_ElementProtocol {
   public static func __element_(_ __value: _PayloadValue) -> Element { __value }
 }
 
-/// DictionaryやMultiMapの積載型がペアの場合、コレクション要素型への変換方法
+/// DictionaryやMultiMap、積載型からコレクション要素型への変換方法
 public protocol _PairBase_ElementProtocol:
-  _BasePaylodValue_ElementInterface
+  _KeyValueBasePaylodValue_ElementInterface
     & _PairBaseType
     & _KeyValueElementType
 {}

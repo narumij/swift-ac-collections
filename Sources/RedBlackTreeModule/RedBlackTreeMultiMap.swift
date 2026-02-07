@@ -92,6 +92,7 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeMultiMap: CompareMultiTrait {}
 extension RedBlackTreeMultiMap: KeyValueComparer {}
+extension RedBlackTreeMultiMap: _PairBasePayload_KeyProtocol_ptr {}
 
 // MARK: - Creating a MultiMap
 

@@ -179,7 +179,8 @@ public struct RedBlackTreeSet<Element: Comparable> {
 #endif
 
 extension RedBlackTreeSet: CompareUniqueTrait {}
-extension RedBlackTreeSet: ScalarValueComparer {}
+extension RedBlackTreeSet: ValueComparer {}
+extension RedBlackTreeSet: _ScalarBasePayload_KeyProtocol_ptr {}
 
 // MARK: - Creating a Set
 

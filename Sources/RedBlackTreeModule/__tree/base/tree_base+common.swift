@@ -33,9 +33,9 @@ extension _BaseNode_KeyProtocol {
   }
 }
 
-public protocol _BaseKey_LessThanProtocol: _BaseKey_LessThanInterface {}
+public protocol _BaseComparableKey_LessThanProtocol: _BaseKey_LessThanInterface {}
 
-extension _BaseKey_LessThanProtocol where _Key: Comparable {
+extension _BaseComparableKey_LessThanProtocol where _Key: Comparable {
   /// Comparableプロトコルの場合の標準実装
   @inlinable
   @inline(__always)

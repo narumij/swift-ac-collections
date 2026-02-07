@@ -52,8 +52,8 @@
 /// `__key(_:)`を定義するとプロトコルで他のBase系メソッドを生成するプロトコル
 public protocol ValueComparer:
   _BaseType
+    & _BaseComparableKey_LessThanProtocol
     & _BasePayloadValue_KeyInterface
-    & _BaseKey_LessThanProtocol
     & _BaseNode_KeyInterface
     & _UnsafeNodePtrType
 where _Key: Comparable {}

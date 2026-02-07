@@ -54,29 +54,33 @@ public protocol ValueComparer:
   _BaseKey_LessThanInterface
     & _BasePayloadValue_KeyInterface
     & _BaseNode_KeyInterface
-where _Key: Comparable {}
+{}
+
+public protocol ComparableValueComparer:
+  ValueComparer
+    & _BaseComparableKey_LessThanProtocol
+    & _BaseEquatableKey_EquivProtocol
+where
+  _Key: Comparable
+{}
 
 // MARK: -
 
 /// 要素とキーが一致する場合のひな形
 public protocol ScalarValueComparer:
-  ValueComparer
+  ComparableValueComparer
     & _ScalarBaseType
     & _BasePayloadValue_KeyInterface
-    & _BaseComparableKey_LessThanProtocol
-    & _BaseEquatableKey_EquivProtocol
-where _Key: Comparable {}
+{}
 
 /// 要素がキーバリューの場合のひな形
 public protocol KeyValueComparer:
-  ValueComparer
+  ComparableValueComparer
     & _KeyValueBaseType
     & _BasePayloadValue_KeyInterface
     & _BasePayloadValue_MappedValueInterface
     & _BasePayloadValue_WithMappedValueInterface
-    & _BaseComparableKey_LessThanProtocol
-    & _BaseEquatableKey_EquivProtocol
-where _Key: Comparable {}
+{}
 
 /// 要素がキーバリューでペイロードがペアの場合のひな形
 public protocol PairKeyValueComparer:

@@ -125,7 +125,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
     /// - Complexity: O(`count`)
     @inlinable
     public func firstIndex(of member: Element) -> Index? {
-      ___first_index { $0 == member }
+      ___first_index { Base.value_equiv($0, member) }
     }
 
     /// - Complexity: O(`count`)

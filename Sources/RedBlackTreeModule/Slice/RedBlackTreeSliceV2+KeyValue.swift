@@ -29,7 +29,6 @@ extension RedBlackTreeSliceV2 {
   where
     Base: ___TreeBase
       & PairValueTrait
-      & _PairBase_ElementProtocol
       & _BaseNode_SignedDistanceInterface
       & _BaseNode_PtrCompInterface
   {

@@ -30,7 +30,7 @@ extension RedBlackTreeSliceV2 {
       & UnsafeIndexProtocol_tree
   where
     Base: ___TreeBase
-      & _ScalarBase_ElementProtocol
+      & ScalarValueTrait
       & _BaseNode_SignedDistanceInterface
       & _BaseNode_PtrCompInterface
   {

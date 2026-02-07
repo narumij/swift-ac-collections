@@ -25,7 +25,7 @@ protocol ___UnsafeKeyOnlySequenceV2__:
   UnsafeTreeSealedRangeProtocol
     & _SetBridge
 where
-  Base: _ScalarBase_ElementProtocol & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
+  Base: ScalarValueTrait & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
 {}
 
 extension ___UnsafeKeyOnlySequenceV2__ {

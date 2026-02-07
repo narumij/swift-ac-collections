@@ -45,7 +45,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   )
     rethrows -> UnsafeTreeV2<Other>
   where
-    Other: PairValueTrait & _PairBase_ElementProtocol,
+    Other: PairValueTrait,
     Other._Key == Base._Key
   {
     let other = UnsafeTreeV2<Other>.create(minimumCapacity: count)
@@ -68,7 +68,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   )
     rethrows -> UnsafeTreeV2<Other>
   where
-    Other: PairValueTrait & _PairBase_ElementProtocol,
+    Other: PairValueTrait,
     Other._Key == Base._Key
   {
     var other = UnsafeTreeV2<Other>.create(minimumCapacity: count)

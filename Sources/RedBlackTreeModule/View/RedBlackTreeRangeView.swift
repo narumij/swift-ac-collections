@@ -5,9 +5,9 @@
 //  Created by narumij on 2026/01/29.
 //
 
-public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost
-    & _ScalarBase_ElementProtocol, BidirectionalSequence
-where Base: ___TreeBase {
+public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost, BidirectionalSequence
+where Base: ___TreeBase & ScalarValueTrait {
+
   @usableFromInline
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
@@ -125,7 +125,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   }
 }
 
-extension RedBlackTreeKeyOnlyRangeView where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
+extension RedBlackTreeKeyOnlyRangeView
+where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable

@@ -169,7 +169,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   }
 }
 
-extension UnsafeTreeV2 where Base: PairValueTrait & _PairBase_ElementProtocol {
+extension UnsafeTreeV2 where Base: PairValueTrait {
 
   /// ソート済みの配列から木を生成する
   ///

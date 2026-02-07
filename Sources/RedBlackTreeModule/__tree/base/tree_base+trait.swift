@@ -15,7 +15,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-// llvm尊重でこの名前のまま
+/// 平衡木のキーの最低限の性質に関する定義
+///
+///  llvmのソース由来の名前となっている
+///
 public protocol ValueComparer:
   _BaseKey_LessThanInterface
     & _BasePayloadValue_KeyInterface
@@ -24,6 +27,10 @@ public protocol ValueComparer:
 
 // MARK: -
 
+/// キーのComparable制限と比較の標準実装ひょ
+///
+/// 比較実装を実際に使うかは、各実行形態側で決まり、ここで決めるわけではない
+///
 public protocol ComparableKeyTrait:
   ValueComparer
     & _BaseComparableKey_LessThanProtocol

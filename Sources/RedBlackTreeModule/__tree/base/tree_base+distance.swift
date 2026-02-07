@@ -23,13 +23,15 @@ public protocol _BaseNode_SignedDistanceProtocol:
   _UnsafeNodePtrType
     & _BaseNode_SignedDistanceInterface
     & _BaseNode_PtrCompInterface
-{}
+where
+  difference_type == Int,
+  _InputIter == _NodePtr
+{
+  associatedtype difference_type
+  associatedtype _InputIter
+}
 
 extension _BaseNode_SignedDistanceProtocol {
-
-  public typealias difference_type = Int
-
-  public typealias _InputIter = _NodePtr
 
   @inlinable
   @inline(__always)

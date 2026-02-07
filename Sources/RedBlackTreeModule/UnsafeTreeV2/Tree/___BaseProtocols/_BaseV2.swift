@@ -137,7 +137,16 @@ protocol _RedBlackTreeKeyOnlyBase:
     & _SequenceV2
     & ___UnsafeIndexV2
     & ___UnsafeKeyOnlySequenceV2
+    & _ScalarBase_ElementProtocol
 {}
+
+extension _RedBlackTreeKeyOnlyBase {
+
+  @inlinable @inline(__always)
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
+    p.__key_ptr(of: Self.self).pointee
+  }
+}
 
 @usableFromInline
 protocol _RedBlackTreeKeyValuesBase:
@@ -149,7 +158,16 @@ protocol _RedBlackTreeKeyValuesBase:
     & _SequenceV2
     & ___UnsafeIndexV2
     & ___UnsafeKeyValueSequenceV2
+    & _PairBase_ElementProtocol
 {}
+
+extension _RedBlackTreeKeyValuesBase {
+
+  @inlinable @inline(__always)
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
+    p.__key_ptr(of: Self.self).pointee
+  }
+}
 
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase__:
@@ -159,4 +177,35 @@ protocol _RedBlackTreeKeyOnlyBase__:
     & _CompareV2
     & _SequenceV2
     & ___UnsafeKeyOnlySequenceV2__
+    & _ScalarBase_ElementProtocol
 {}
+
+extension _RedBlackTreeKeyOnlyBase__ {
+
+  @inlinable @inline(__always)
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
+    p.__key_ptr(of: Self.self).pointee
+  }
+}
+
+@usableFromInline
+protocol _ScalarBasePayload_KeyProtocol_ptr: _ScalarBaseType {}
+
+extension _ScalarBasePayload_KeyProtocol_ptr {
+  
+  @inlinable @inline(__always)
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
+    p.__key_ptr(of: Self.self).pointee
+  }
+}
+
+@usableFromInline
+protocol _PairBasePayload_KeyProtocol_ptr: _PairBaseType {}
+
+extension _PairBasePayload_KeyProtocol_ptr {
+  
+  @inlinable @inline(__always)
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
+    p.__key_ptr(of: Self.self).pointee
+  }
+}

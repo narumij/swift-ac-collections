@@ -179,15 +179,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
 #endif
 
 extension RedBlackTreeSet: CompareUniqueTrait {}
-extension RedBlackTreeSet: ScalarValueComparer {
-  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {
-    p.__value_(as: _PayloadValue.self).pointee
-  }
-//  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {
-//    p.__value_().pointee
-//  }
-}
-extension RedBlackTreeSet: _ScalarBase_ElementProtocol {}
+extension RedBlackTreeSet: ScalarValueComparer {}
 
 // MARK: - Creating a Set
 

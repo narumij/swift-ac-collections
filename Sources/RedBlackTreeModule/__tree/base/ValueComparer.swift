@@ -65,7 +65,7 @@ where _Key: Comparable {}
 public protocol ScalarValueComparer:
   ValueComparer
     & _ScalarBaseType
-    & _ScalarBaseRawValue_KeyProtocol
+    & _ScalarBasePayload_KeyProtocol
 {}
 
 extension ScalarValueComparer {}

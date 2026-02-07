@@ -15,9 +15,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// Index用のメソッド中継
+/// 資料的に残されている
 ///
-/// `__key(_:)`が定義されてる場合に`__get_value(_:)`を定義する
+/// 実際には特殊化されたものをつかっている
 public protocol _BaseNode_KeyProtocol:
   _BaseNode_KeyInterface
     & _BasePayloadValue_KeyInterface
@@ -28,24 +28,19 @@ public protocol _BaseNode_KeyProtocol:
 
 extension _BaseNode_KeyProtocol {
 
+  /// 資料的に残されている
+  ///
+  /// 実際には特殊化されたものをつかっている
+  ///
+  /// `__key(_:)`が定義されてる場合に`__get_value(_:)`を定義する
   public static func __get_value(_ p: _NodePtr) -> _Key {
     __key(__value_(p))
   }
 }
 
-public protocol _BaseComparableKey_LessThanProtocol: _BaseKey_LessThanInterface
-where _Key: Comparable
-{}
-
-extension _BaseComparableKey_LessThanProtocol {
-  /// Comparableプロトコルの場合の標準実装
-  @inlinable
-  @inline(__always)
-  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    a < b
-  }
-}
-
+/// 資料的に残されている
+///
+/// 実際には特殊化されたものをつかっている
 public protocol _BaseKey_EquivProtocol: _BaseKey_EquivInterface & _BaseKey_LessThanInterface {}
 
 extension _BaseKey_EquivProtocol {
@@ -54,6 +49,18 @@ extension _BaseKey_EquivProtocol {
   @inline(__always)
   public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
     !value_comp(lhs, rhs) && !value_comp(rhs, lhs)
+  }
+}
+
+public protocol _BaseComparableKey_LessThanProtocol: _BaseKey_LessThanInterface
+where _Key: Comparable {}
+
+extension _BaseComparableKey_LessThanProtocol {
+  /// Comparableプロトコルの場合の標準実装
+  @inlinable
+  @inline(__always)
+  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
+    a < b
   }
 }
 

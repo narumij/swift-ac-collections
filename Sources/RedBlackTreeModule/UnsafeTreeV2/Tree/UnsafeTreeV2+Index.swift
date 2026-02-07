@@ -42,13 +42,13 @@ extension UnsafeTreeV2 where Base: KeyValueComparer & ___TreeIndex {
   public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
 }
 
-extension UnsafeTreeV2 {
-
+extension UnsafeTreeV2 where Base: _BaseNode_SignedDistanceInterface {
+  
   // この実装がないと、迷子になる?
   @inlinable
   @inline(__always)
   internal func
-    ___distance(from start: _SealedPtr, to end: _SealedPtr) -> Int?
+  ___distance(from start: _SealedPtr, to end: _SealedPtr) -> Int?
   {
     guard
       let start = start.purified.pointer,
@@ -58,6 +58,9 @@ extension UnsafeTreeV2 {
     }
     return ___signed_distance(start, end)
   }
+}
+
+extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)

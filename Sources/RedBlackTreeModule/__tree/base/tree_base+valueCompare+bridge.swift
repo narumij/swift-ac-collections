@@ -19,17 +19,21 @@
 @usableFromInline
 protocol _ValueComparerBridge:
   _BaseType
+    & _NodePtrType
     & _TreeRawValue_KeyInterface
     & _TreeKey_CompInterface
     & _BasePayloadValue_KeyInterface
     & _BaseKey_LessThanInterface
 where
   _Key == Base._Key,
+  _NodePtr == Base._NodePtr,
+  _NodeRef == Base._NodeRef,
   _PayloadValue == Base._PayloadValue
 {
   associatedtype
     Base:
-      _BasePayloadValue_KeyInterface
+      _NodePtrType
+        & _BasePayloadValue_KeyInterface
         & _BaseKey_LessThanInterface
 }
 
@@ -64,22 +68,31 @@ extension _ValueComparerBridge {
 }
 
 extension _ValueComparerBridge where Base: _BasePayloadValue_MappedValueInterface {
-  
+
   @usableFromInline
   typealias _MappedValue = Base._MappedValue
-  
-  @inlinable
-  @inline(__always)
-  static func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue {
-    Base.___mapped_value(__v)
-  }
-}
 
-extension _ValueComparerBridge where Base: _BasePayloadValue_MappedValueInterface {
-  
   @inlinable
   @inline(__always)
   func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue {
     Base.___mapped_value(__v)
+  }
+}
+
+extension _ValueComparerBridge where Base: _BaseNode_PtrCompInterface {
+
+  @inlinable
+  @inline(__always)
+  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+    Base.___ptr_comp(l, r)
+  }
+}
+
+extension _ValueComparerBridge where Base: _BaseNode_SignedDistanceInterface {
+
+  @inlinable
+  @inline(__always)
+  func ___signed_distance(_ l: _NodePtr, _ r: _NodePtr) -> Int {
+    Base.___signed_distance(l, r)
   }
 }

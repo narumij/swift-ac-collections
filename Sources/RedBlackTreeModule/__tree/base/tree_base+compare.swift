@@ -18,14 +18,13 @@
 public protocol _BaseNode_PtrCompProtocol_b:
   _BaseNode_PtrUniqueCompProtocol
     & _BaseNode_PtrCompProtocol
+    & _BaseNode_SignedDistanceProtocol
 {}
 
 public protocol _BaseNode_PtrCompProtocol:
-  _UnsafeNodePtrType
-    & _BaseNode_PtrUniqueCompInterface
+  _BaseNode_PtrUniqueCompInterface
     & _BaseNode_PtrCompInterface
     & _Base_IsMultiTraitInterface
-    & _BaseNode_SignedDistanceInterface
 {}
 
 extension _BaseNode_PtrCompProtocol {

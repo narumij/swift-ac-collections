@@ -44,7 +44,7 @@ extension _SubSequenceV2 {
     else {
       return 0
     }
-    return __tree_.__distance(start, end)
+    return __distance(start, end)
   }
 
   @inlinable @inline(__always)

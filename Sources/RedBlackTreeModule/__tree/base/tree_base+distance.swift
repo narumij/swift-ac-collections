@@ -22,17 +22,23 @@ public protocol _BaseNode_SignedDistanceInterface: _NodePtrType {
   static func ___signed_distance(_: _NodePtr, _: _NodePtr) -> Int
 }
 
-extension _BaseNode_PtrCompProtocol {
+public protocol _BaseNode_SignedDistanceProtocol:
+  _UnsafeNodePtrType
+    & _BaseNode_SignedDistanceInterface
+    & _BaseNode_PtrCompInterface
+{}
 
-//  public typealias difference_type = Int
-//
-//  public typealias _InputIter = _NodePtr
+extension _BaseNode_SignedDistanceProtocol {
+
+  public typealias difference_type = Int
+
+  public typealias _InputIter = _NodePtr
 
   @inlinable
   @inline(__always)
   public static func
-//    ___signed_distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
-  ___signed_distance(_ __first: _NodePtr, _ __last: _NodePtr) -> Int
+    ___signed_distance(_ __first: _InputIter, _ __last: _InputIter)
+    -> difference_type
   {
     guard __first != __last else { return 0 }
     var (__first, __last) = (__first, __last)

@@ -125,7 +125,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   }
 }
 
-extension RedBlackTreeKeyOnlyRangeView {
+extension RedBlackTreeKeyOnlyRangeView where Base: _BaseNode_SignedDistanceInterface {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable

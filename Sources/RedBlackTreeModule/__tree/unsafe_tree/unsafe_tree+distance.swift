@@ -28,6 +28,7 @@ extension DistanceProtocol_ptr {
   @usableFromInline
   typealias _InputIter = _NodePtr
 
+#if false
   @inlinable
   @inline(__always)
   internal func
@@ -84,6 +85,7 @@ extension DistanceProtocol_ptr {
       return ___dual_distance(__first, __last)
     #endif
   }
+#endif
 }
 
 #if false

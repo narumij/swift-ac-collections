@@ -56,7 +56,7 @@ public protocol ValueComparer:
     & _BaseNode_KeyInterface
 {}
 
-public protocol ComparableValueComparer:
+public protocol ComparableKeyTrait:
   ValueComparer
     & _BaseComparableKey_LessThanProtocol
     & _BaseEquatableKey_EquivProtocol
@@ -68,14 +68,14 @@ where
 
 /// 要素とキーが一致する場合のひな形
 public protocol ScalarValueComparer:
-  ComparableValueComparer
+  ComparableKeyTrait
     & _ScalarBaseType
     & _BasePayloadValue_KeyInterface
 {}
 
 /// 要素がキーバリューの場合のひな形
 public protocol KeyValueComparer:
-  ComparableValueComparer
+  ComparableKeyTrait
     & _KeyValueBaseType
     & _BasePayloadValue_KeyInterface
     & _BasePayloadValue_MappedValueInterface

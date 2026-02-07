@@ -19,7 +19,7 @@
   public typealias CompareTrait = _Base_IsMultiTraitInterface
 #endif
 
-public typealias ___TreeBase = ComparableValueComparer & _Base_IsMultiTraitInterface
+public typealias ___TreeBase = ComparableKeyTrait & _Base_IsMultiTraitInterface
 
 public typealias ___TreeIndex = _BasePaylodValue_ElementInterface & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
 

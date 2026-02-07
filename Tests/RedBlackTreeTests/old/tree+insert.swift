@@ -65,7 +65,7 @@ extension InsertNodeAtProtocol_std {
 protocol InsertUniqueProtocol_std:
   InsertUniqueInterface
     & TreeNodeRefAccessInterface
-    & _TreeRawValue_KeyInterface
+    & _TreePayloadValue_KeyInterface
     & AllocationInterface
 {
   func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)

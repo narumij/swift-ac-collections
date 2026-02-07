@@ -109,7 +109,7 @@ protocol _TreeNode_PayloadValueInterface: NullPtrInterface & _PayloadValueType &
 }
 
 @usableFromInline
-protocol _TreeRawValue_KeyInterface: _KeyType, _PayloadValueType {
+protocol _TreePayloadValue_KeyInterface: _KeyType, _PayloadValueType {
   /// 要素から比較用のキー値を取り出す。
   @inlinable func __key(_ e: _PayloadValue) -> _Key
 }

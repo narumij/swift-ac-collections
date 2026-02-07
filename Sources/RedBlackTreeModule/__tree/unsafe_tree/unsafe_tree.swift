@@ -20,7 +20,7 @@
 @usableFromInline
 protocol _TreeNode_KeyProtocol:
   _TreeNode_KeyInterface
-    & _TreeRawValue_KeyInterface
+    & _TreePayloadValue_KeyInterface
     & _TreeNode_PayloadValueInterface
 {}
 

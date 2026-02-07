@@ -20,10 +20,8 @@
 protocol _ValueComparerBridge:
   _BaseType
     & _NodePtrType
-    & _TreeRawValue_KeyInterface
+    & _TreePayloadValue_KeyInterface
     & _TreeKey_CompInterface
-    & _BasePayloadValue_KeyInterface
-    & _BaseKey_LessThanInterface
 where
   _Key == Base._Key,
   _NodePtr == Base._NodePtr,
@@ -41,50 +39,14 @@ extension _ValueComparerBridge {
 
   @inlinable
   @inline(__always)
-  public static func __key(_ e: _PayloadValue) -> _Key {
-    Base.__key(e)
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
-    Base.value_comp(a, b)
-  }
-}
-
-extension _ValueComparerBridge {
-
-  @inlinable
-  @inline(__always)
   public func __key(_ e: _PayloadValue) -> _Key {
     Base.__key(e)
   }
 
   @inlinable
   @inline(__always)
-  public func value_comp(_ a: _Key, _ b: _Key) -> Bool {
+  func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     Base.value_comp(a, b)
-  }
-}
-
-extension _ValueComparerBridge where Base: _BasePayloadValue_MappedValueInterface {
-
-  @usableFromInline
-  typealias _MappedValue = Base._MappedValue
-
-  @inlinable
-  @inline(__always)
-  func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue {
-    Base.___mapped_value(__v)
-  }
-}
-
-extension _ValueComparerBridge where Base: _BaseNode_PtrCompInterface {
-
-  @inlinable
-  @inline(__always)
-  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    Base.___ptr_comp(l, r)
   }
 }
 

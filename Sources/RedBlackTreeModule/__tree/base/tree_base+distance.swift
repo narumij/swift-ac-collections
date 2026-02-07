@@ -18,17 +18,19 @@
 // TODO: 別のプロトコルにする
 // 手抜きをしてしまって、微妙に違うプロトコルにぶら下がっている
 
+public protocol _BaseNode_SignedDistanceInterface: _NodePtrType {
+  static func ___signed_distance(_: _NodePtr, _: _NodePtr) -> Int
+}
+
 extension _BaseNode_PtrCompProtocol {
 
-  @usableFromInline
-  typealias difference_type = Int
+  public typealias difference_type = Int
 
-  @usableFromInline
-  typealias _InputIter = _NodePtr
+  public typealias _InputIter = _NodePtr
 
   @inlinable
   @inline(__always)
-  static func
+  public static func
     ___signed_distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
   {
     guard __first != __last else { return 0 }

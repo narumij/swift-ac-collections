@@ -15,11 +15,17 @@
 //
 //===----------------------------------------------------------------------===//
 
+public protocol _BaseNode_PtrCompProtocol_b:
+  _BaseNode_PtrUniqueCompProtocol
+    & _BaseNode_PtrCompProtocol
+{}
+
 public protocol _BaseNode_PtrCompProtocol:
   _UnsafeNodePtrType
     & _BaseNode_PtrUniqueCompInterface
     & _BaseNode_PtrCompInterface
     & _Base_IsMultiTraitInterface
+    & _BaseNode_SignedDistanceInterface
 {}
 
 extension _BaseNode_PtrCompProtocol {
@@ -41,7 +47,7 @@ extension _BaseNode_PtrCompProtocol {
     if isMulti {
 
       #if true
-        
+
         // ポインタ化によりこちらのほうが速くなった
         return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_multi(l, r))
 

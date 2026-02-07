@@ -41,6 +41,8 @@ public indirect enum RedBlackTreeBoundExpression<_Key> {
   /// - Complexity: O(1)
   /// ただし評価時の計算量
   case after(Self)
+  
+  // TODO: last追加の検討
 }
 
 extension RedBlackTreeBoundExpression {

@@ -23,8 +23,8 @@ where Base: _BasePayloadValue_KeyInterface {
 }
 
 extension _PayloadKeyBridge {
-  @inlinable
-  @inline(__always)
+
+  @inlinable @inline(__always)
   public func __key(_ e: _PayloadValue) -> _Key {
     Base.__key(e)
   }
@@ -39,8 +39,7 @@ where Base: _BaseKey_LessThanInterface {
 
 extension _ValueCompBridge {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     Base.value_comp(a, b)
   }
@@ -55,8 +54,7 @@ where Base: _BaseNode_SignedDistanceInterface {
 
 extension _SignedDistanceBridge {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   func ___signed_distance(_ l: Base._NodePtr, _ r: Base._NodePtr) -> Int {
     Base.___signed_distance(l, r)
   }

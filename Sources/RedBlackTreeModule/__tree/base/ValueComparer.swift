@@ -77,22 +77,10 @@ public protocol KeyValueComparer:
     & _BasePayloadValue_WithMappedValueInterface
 {}
 
-// LRUキャッシュがPairではないので、統一できなかった
-// デコレーターパターン化できれば統一できそうだが、それはまたいずれ
-
-extension KeyValueComparer where _PayloadValue == RedBlackTreePair<_Key, _MappedValue> {
-
-  @inlinable @inline(__always)
-  public static func __key(_ __v: _PayloadValue) -> _Key { __v.key }
-
-  @inlinable @inline(__always)
-  public static func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue { __v.value }
-
-  @inlinable @inline(__always)
-  public static func ___with_mapped_value<ResultType>(
-    _ __v: inout _PayloadValue,
-    _ __body: (inout _MappedValue) throws -> ResultType
-  ) rethrows -> ResultType {
-    try __body(&__v.value)
-  }
-}
+/// 要素がキーバリューでペイロードがペアの場合のひな形
+public protocol PairKeyValueComparer:
+  KeyValueComparer
+    & _PairBasePayloadValue_KeyProtocol
+    & _PairBasePayloadValue_MappedValueProtocol
+    & _PairBasePayloadValue_WithMappedValueProtocol
+{}

@@ -87,7 +87,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeDictionary: CompareUniqueTrait {}
-extension RedBlackTreeDictionary: KeyValueComparer {}
+extension RedBlackTreeDictionary: PairKeyValueComparer {}
 extension RedBlackTreeDictionary: _PairBasePayload_KeyProtocol_ptr {}
 
 // MARK: - Creating a Dictionay

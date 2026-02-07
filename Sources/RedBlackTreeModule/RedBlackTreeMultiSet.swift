@@ -72,7 +72,7 @@ extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyBase {}
 extension RedBlackTreeMultiSet: CompareMultiTrait {}
 extension RedBlackTreeMultiSet: ScalarValueTrait {}
 extension RedBlackTreeMultiSet: _ScalarBasePayload_KeyProtocol_ptr {}
-extension RedBlackTreeMultiSet: _BaseNode_PtrCompProtocol_b {}
+extension RedBlackTreeMultiSet: _BaseNode_NodeCompareProtocol {}
 
 // MARK: - Creating a MultSet
 

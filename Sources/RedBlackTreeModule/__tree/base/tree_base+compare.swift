@@ -15,7 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _BaseNode_PtrCompProtocol_b:
+public protocol _BaseNode_NodeCompareProtocol:
   _BaseNode_PtrUniqueCompProtocol
     & _BaseNode_PtrCompProtocol
     & _BaseNode_SignedDistanceProtocol
